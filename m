@@ -2,62 +2,72 @@ Return-Path: <SRS0=RGWB=OY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4787C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 11:28:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A5B8C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 11:57:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CBAD061354
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 11:28:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CBAD061354
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=socionext.com
+	by mail.kernel.org (Postfix) with ESMTPS id D1A8461244
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 11:57:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D1A8461244
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5B88D1691;
-	Mon,  4 Oct 2021 13:27:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5B88D1691
+	by alsa0.perex.cz (Postfix) with ESMTPS id 922A21687;
+	Mon,  4 Oct 2021 13:56:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 922A21687
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633346905;
-	bh=HGAOu243eW/p5oIur9xXjqI6vixKkoCNC1KvfZoybsc=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=grfLiq/jcnMeig4XlBpj8mrAiffC/lvDo7ra4pihHH4ThsGWaQKzl9aGBrQzKZ0B2
-	 EFv1lsbavZtQRF7cGGcmMdLQ2rHFcyP/VOVswIXr5ZaSRKarvrfhE1kyIfDZ795HFz
-	 myzHLq8I6jsVVXE75Egw64EkSG6GceiTpHbGx1SQ=
+	s=default; t=1633348621;
+	bh=MWcG9NEjxgVBGm616kMEZe+ozaXZJxdLzllFjscHawQ=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=q/adW4YYx5hMkAo/XDyy5uWWwnaFs0qgBR0p+KNe02nnQs6dceH851pW6f86b8d2G
+	 BzZtSO+pr1dMLTXcSy7gonY7QXw7FUggNt8/W0NbRGALrvE8fhegSSMKDEMyt/KLlv
+	 UOQgzPvFRrNMFOoHLgvg6hxKqKd4JxJbpNdhwuYg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 38B0BF8025C;
-	Mon,  4 Oct 2021 13:26:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 18444F80229;
+	Mon,  4 Oct 2021 13:56:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E6F98F80240; Mon,  4 Oct 2021 04:12:41 +0200 (CEST)
-Received: from mx.socionext.com (mx.socionext.com [202.248.49.38])
- by alsa1.perex.cz (Postfix) with ESMTP id 2ECEFF800BA
- for <alsa-devel@alsa-project.org>; Mon,  4 Oct 2021 04:12:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2ECEFF800BA
-Received: from unknown (HELO kinkan2-ex.css.socionext.com) ([172.31.9.52])
- by mx.socionext.com with ESMTP; 04 Oct 2021 11:12:27 +0900
-Received: from mail.mfilter.local (m-filter-2 [10.213.24.62])
- by kinkan2-ex.css.socionext.com (Postfix) with ESMTP id 7B48C2059034;
- Mon,  4 Oct 2021 11:12:27 +0900 (JST)
-Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP;
- Mon, 4 Oct 2021 11:12:27 +0900
-Received: from plum.e01.socionext.com (unknown [10.212.243.119])
- by kinkan2.css.socionext.com (Postfix) with ESMTP id DE589B62B7;
- Mon,  4 Oct 2021 11:12:26 +0900 (JST)
-From: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-To: Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [PATCH] ASoC: dt-bindings: uniphier: Add description of each port
- number
-Date: Mon,  4 Oct 2021 11:12:26 +0900
-Message-Id: <1633313546-23258-1-git-send-email-hayashi.kunihiko@socionext.com>
-X-Mailer: git-send-email 2.7.4
-X-Mailman-Approved-At: Mon, 04 Oct 2021 13:26:48 +0200
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
- Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
+ id 2C8BFF80240; Mon,  4 Oct 2021 13:55:46 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5C619F80171
+ for <alsa-devel@alsa-project.org>; Mon,  4 Oct 2021 13:55:38 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 60D04A003F;
+ Mon,  4 Oct 2021 13:55:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 60D04A003F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1633348533; bh=Hf03CNHhv3KX0HwlWuKzXB0MfiOOSsJRgmR5KVU4Vdk=;
+ h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+ b=BWexQ1JzNJpRnPgIwSFFe6w/MoUDgLRC0gX1+iC5zoLCyIkwR+1pP9MX+HcWMDJJJ
+ GF6QUtoRyF1bLLnzSe1T3r3333O+ksKdO8dEbdReWMLAZlXeFFi1UW7xElAiMlDRiz
+ aKGXm+K7ysqFof+rjkkNAba+Kls2MS681w0bK1x4=
+Received: from [192.168.100.98] (unknown [192.168.100.98])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Mon,  4 Oct 2021 13:55:31 +0200 (CEST)
+Message-ID: <2ad744ed-5618-0ea0-e2a4-b919ee9dfeeb@perex.cz>
+Date: Mon, 4 Oct 2021 13:55:30 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: Alsaloop: sync mode PLAYSHIFT + Loopback on playback side
+Content-Language: en-US
+To: Pavel Hofman <pavel.hofman@ivitera.com>
+References: <a87670e2-302b-8408-cdc2-f0f010646fdc@ivitera.com>
+ <958623cd-7d0d-5329-567b-74edbbf0c16d@perex.cz>
+ <b18c5b00-e3a8-14d1-15aa-c7d7c577530d@ivitera.com>
+From: Jaroslav Kysela <perex@perex.cz>
+In-Reply-To: <b18c5b00-e3a8-14d1-15aa-c7d7c577530d@ivitera.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: ALSA development <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -73,66 +83,124 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-To eliminate FIXME, add descriptions of what each port number is
-associated with.
+On 04. 10. 21 13:24, Pavel Hofman wrote:
+> 
+> Dne 04. 10. 21 v 11:24 Jaroslav Kysela napsal(a):
+>> On 01. 10. 21 10:35, Pavel Hofman wrote:
+>>> Hi,
+>>>
+>>> I added support for "Playback Pitch 1000000" ctl elem to UAC2 gadget
+>>> (not submitted to USB yet) and now I am working on alsaloop support for
+>>> this ctl elem. The changes are simple (tested to work perfectly, patch
+>>> to follow), but during the work I hit the following issue with playback
+>>> Loopback "PCM Rate Shift 100000".
+>>>
+>>> If the snd-aloop device is on playback side (i.e. capture from soundcard
+>>> -> Loopback), the required sync mode is PLAYSHIFT. That means Loopback
+>>> ctl elem "PCM Rate Shift 100000" should be controlled (by a reciprocal).
+>>> That is simple by a patch like this:
+>>>
+>>> diff --git a/alsaloop/pcmjob.c b/alsaloop/pcmjob.c
+>>> index 845ab82..619bf35 100644
+>>> --- a/alsaloop/pcmjob.c
+>>> +++ b/alsaloop/pcmjob.c
+>>> @@ -1061,7 +1061,13 @@ static int set_rate_shift(struct loopback_handle
+>>> *lhandle, double pitch)
+>>>            int err;
+>>>
+>>>            if (lhandle->ctl_rate_shift) {
+>>> -               snd_ctl_elem_value_set_integer(lhandle->ctl_rate_shift,
+>>> 0, pitch * 100000);
+>>> +               long value;
+>>> +               if (lhandle->loopback->play == lhandle)
+>>> +                       // playback => reciprocal
+>>> +                       value = 1/(pitch) * 100000;
+>>> +               else
+>>> +                       value = pitch * 100000;
+>>> +               snd_ctl_elem_value_set_integer(lhandle->ctl_rate_shift,
+>>> 0, value);
+>>>                    err = snd_ctl_elem_write(lhandle->ctl,
+>>> lhandle->ctl_rate_shift);
+>>>            } else if (lhandle->capt_pitch) {
+>>>                    snd_ctl_elem_value_set_integer(lhandle->capt_pitch, 0,
+>>> (1 / pitch) * 1000000);
+>>> @@ -1205,15 +1211,18 @@ static int openctl(struct loopback_handle
+>>> *lhandle, int device, int subdevice)
+>>>            int err;
+>>>
+>>>            lhandle->ctl_rate_shift = NULL;
+>>> +       // both play and capture
+>>> +       openctl_elem(lhandle, device, subdevice, "PCM Notify",
+>>> +                       &lhandle->ctl_notify);
+>>> +       openctl_elem(lhandle, device, subdevice, "PCM Rate Shift 100000",
+>>> +                       &lhandle->ctl_rate_shift);
+>>>            if (lhandle->loopback->play == lhandle) {
+>>> +               // play only
+>>>                    if (lhandle->loopback->controls)
+>>>                            goto __events;
+>>>                    return 0;
+>>>            }
+>>> -       openctl_elem(lhandle, device, subdevice, "PCM Notify",
+>>> -                       &lhandle->ctl_notify);
+>>> -       openctl_elem(lhandle, device, subdevice, "PCM Rate Shift 100000",
+>>> -                       &lhandle->ctl_rate_shift);
+>>> +       // capture only
+>>>            openctl_elem(lhandle, device, subdevice, "Capture Pitch
+>>> 1000000",
+>>>                            &lhandle->capt_pitch);
+>>>            set_rate_shift(lhandle, 1);
+>>>
+>>>
+>>> However, IIUC how the Loopback device works, the "PCM Rate Shift 100000"
+>>> ctl elem applicable to device=0 on playback side is that of the capture
+>>> side, i.e. for device=1. The patch above would pick the playback-side
+>>> device=0 ctl elem in pcmjob.c:openctl_elem. Hard-coding the device=0 ->
+>>> device=1 is possible, but Loopback supports more devices.
+>>>
+>>> Please what solution for picking the correct "PCM Rate Shift 100000" ctl
+>>> elem for the PLAYSHIFT sync mode would you recommend?
+>>
+>> Hi,
+>>
+>> I would not touch the controls associated to the capture PCM by default.
+>> It would be possible to add another alsaloop option and code to
+>> configure the rate shift control identifier separately for this use
+>> case. The user should avoid the double pitch control (playback +
+>> capture) for the loopback devices.
+> 
+> Thanks for your input. I am not sure I understand correctly your intention.
+> 
+> The current code already avoids running playback and capture pitch
+> control concurrently by one alsaloop as the loop->sync is either
+> SYNC_TYPE_CAPTRATESHIFT or SYNC_TYPE_PLAYRATESHIFT. IMO the current code
+> ignores SYNC_TYPE_PLAYRATESHIFT because the code jumps to
+> set_rate_shift(loop->play, pitch)
+> https://github.com/alsa-project/alsa-utils/blob/master/alsaloop/pcmjob.c#L1103
+> but the lhandle->ctl_rate_shift elem is never set for playback side in
+> pcmjob.c:openctl
+> https://github.com/alsa-project/alsa-utils/blob/master/alsaloop/pcmjob.c#L1208
+> (lhandle->loopback->play == lhandle). I confirmed it using the debug
+> patch you accepted today (thanks! :-)).
+> 
+> Therefore my patch of the openctl moves the "PCM Notify" and "PCM Rate
+> Shift 100000" setup before the playback check, so that lhandles of both
+> directions can have the two elems configured.
+> 
+> But the loopback->play lhandle should configure elements for the capture
+> side of the snd-aloop pipe which I do not know how to locate nicely. I
+> can always use some hack "if device==0 then use device = 1" for the
+> playback side etc. but that does not look nice.
 
-Cc: Rob Herring <robh@kernel.org>
-Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
----
- .../bindings/sound/socionext,uniphier-aio.yaml     | 22 +++++++++++++++++++++-
- .../bindings/sound/socionext,uniphier-evea.yaml    |  6 +++++-
- 2 files changed, 26 insertions(+), 2 deletions(-)
+Please, assume that the 'PCM Rate Shift 100000' control is for the capture PCM 
+only by default. The applications should not handle those driver specific mapping.
 
-diff --git a/Documentation/devicetree/bindings/sound/socionext,uniphier-aio.yaml b/Documentation/devicetree/bindings/sound/socionext,uniphier-aio.yaml
-index 55ae198..70f62ec 100644
---- a/Documentation/devicetree/bindings/sound/socionext,uniphier-aio.yaml
-+++ b/Documentation/devicetree/bindings/sound/socionext,uniphier-aio.yaml
-@@ -46,7 +46,27 @@ properties:
- 
- patternProperties:
-   "^port@[0-9]$":
--    description: FIXME, Need to define what each port is.
-+    description: |
-+      Port number of DT node is specified by the following DAI channels that
-+      depends on SoC.
-+      ld11-aio,ld20-aio:
-+        0: hdmi
-+        1: pcmin2
-+        2: line
-+        3: hpcmout1
-+        4: pcmout3
-+        5: hiecout1
-+        6: epcmout2
-+        7: epcmout3
-+        8: hieccompout1
-+      pxs2-aio:
-+        0: hdmi
-+        1: line
-+        2: aux
-+        3: hiecout1
-+        4: iecout1
-+        5: hieccompout1
-+        6: ieccompout1
-     $ref: audio-graph-port.yaml#
-     unevaluatedProperties: false
- 
-diff --git a/Documentation/devicetree/bindings/sound/socionext,uniphier-evea.yaml b/Documentation/devicetree/bindings/sound/socionext,uniphier-evea.yaml
-index 48ddfcb..be6acfd 100644
---- a/Documentation/devicetree/bindings/sound/socionext,uniphier-evea.yaml
-+++ b/Documentation/devicetree/bindings/sound/socionext,uniphier-evea.yaml
-@@ -40,7 +40,11 @@ properties:
- 
- patternProperties:
-   "^port@[0-9]$":
--    description: FIXME, Need to define what each port is.
-+    description: |
-+      Port number of DT node is specified by the following DAI channels.
-+        0: line1
-+        1: hp
-+        2: line2
-     $ref: audio-graph-port.yaml#
-     unevaluatedProperties: false
- 
+If the user wants to use this control for the playback side, a new command 
+line option may be added to cope with the alternate playback rate shift 
+control indentifier (it may be parsed using snd_ctl_ascii_elem_id_parse() for 
+example). So the user may specify the correct (different) device number there.
+
+					Jaroslav
+
 -- 
-2.7.4
-
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
