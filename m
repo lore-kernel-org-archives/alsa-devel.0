@@ -2,66 +2,66 @@ Return-Path: <SRS0=RGWB=OY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 71A10C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 21:37:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 60044C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 21:37:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E60236121F
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 21:37:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E60236121F
+	by mail.kernel.org (Postfix) with ESMTPS id CFF276121F
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 21:37:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CFF276121F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4D2EB168B;
-	Mon,  4 Oct 2021 23:36:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4D2EB168B
+	by alsa0.perex.cz (Postfix) with ESMTPS id D75C41677;
+	Mon,  4 Oct 2021 23:36:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D75C41677
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633383442;
-	bh=yNGYbZfF0Tsa04SbRIdiQf1HgKBeVdL+8egYLk+5fDg=;
+	s=default; t=1633383468;
+	bh=v3Yrfmh/rPnFLGsAqzOqUwBJT8TaYt3b8DbIQKae4UE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rEczWK70b8Z00GxXM5NiylCZHszXx5+ffnKb0Hn0QgbMKISKruRJpDa3R+Htuoqhy
-	 HOZ/76TSO7e5tG7HcGZnNt+DPfwBr8K1M8Tk13FMFuZ/MhapsJIh2paUPqYLKwpHWB
-	 VGumbPU2EKd+pIgSmZaorLg919dhAGC7kHZqYMuY=
+	b=eJ/ICbjRKIMhJh/L5nbgjsYxV5Io9nxcuK5bDD10YYXJuwgeTeB5wZ8XxAb+FsgjG
+	 wuYAOIj3b4sxYDggMyTuKRW+cLNhxzw0UCL2TjCRXNE7COqQsP3KQKPfvUDQ7ZjkYu
+	 yoM0SyUnO06ah575FzTJ0F03+o4gSqJN7E3nyEDs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 25ACFF804E6;
-	Mon,  4 Oct 2021 23:35:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 113F8F80424;
+	Mon,  4 Oct 2021 23:35:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7FDDEF804E5; Mon,  4 Oct 2021 23:35:46 +0200 (CEST)
+ id 170DDF804ED; Mon,  4 Oct 2021 23:35:54 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 032A2F80240
- for <alsa-devel@alsa-project.org>; Mon,  4 Oct 2021 23:35:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 032A2F80240
-X-IronPort-AV: E=McAfee;i="6200,9189,10127"; a="223012792"
-X-IronPort-AV: E=Sophos;i="5.85,346,1624345200"; d="scan'208";a="223012792"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6B183F80424
+ for <alsa-devel@alsa-project.org>; Mon,  4 Oct 2021 23:35:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B183F80424
+X-IronPort-AV: E=McAfee;i="6200,9189,10127"; a="223012813"
+X-IronPort-AV: E=Sophos;i="5.85,346,1624345200"; d="scan'208";a="223012813"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Oct 2021 14:35:33 -0700
-X-IronPort-AV: E=Sophos;i="5.85,346,1624345200"; d="scan'208";a="521588498"
+ 04 Oct 2021 14:35:36 -0700
+X-IronPort-AV: E=Sophos;i="5.85,346,1624345200"; d="scan'208";a="521588519"
 Received: from ksgonzal-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.209.181.38])
  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Oct 2021 14:35:32 -0700
+ 04 Oct 2021 14:35:35 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/5] ASoC: Intel: soc-acpi: apl/glk/tgl: add entry for devices
- based on ES8336 codec
-Date: Mon,  4 Oct 2021 16:35:08 -0500
-Message-Id: <20211004213512.220836-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 4/5] ASoC: Intel: soc-acpi: add missing quirk for TGL SDCA
+ single amp
+Date: Mon,  4 Oct 2021 16:35:11 -0500
+Message-Id: <20211004213512.220836-5-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211004213512.220836-1-pierre-louis.bossart@linux.intel.com>
 References: <20211004213512.220836-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, Huajun Li <huajun.li@intel.com>, broonie@kernel.org,
+Cc: tiwai@suse.de, broonie@kernel.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>
+ Bard Liao <bard.liao@intel.com>, Rander Wang <rander.wang@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,73 +77,82 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-A number of devices, such as the "Chuwi HI10x" and "UNIQCELL Q15.6",
-are based on APL/GLK with an I2C/I2S ES8336 codec.
+We don't have a configuration for a single amp on link1.
 
-Add table to find topology and firmware files.
-
-Co-developed-by: Huajun Li <huajun.li@intel.com>
-Signed-off-by: Huajun Li <huajun.li@intel.com>
+BugLink: https://github.com/thesofproject/linux/issues/3161
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Bard Liao <bard.liao@intel.com>
 ---
- sound/soc/intel/common/soc-acpi-intel-bxt-match.c | 6 ++++++
- sound/soc/intel/common/soc-acpi-intel-glk-match.c | 7 ++++++-
- sound/soc/intel/common/soc-acpi-intel-tgl-match.c | 6 ++++++
- 3 files changed, 18 insertions(+), 1 deletion(-)
+ .../intel/common/soc-acpi-intel-tgl-match.c   | 41 +++++++++++++++++++
+ 1 file changed, 41 insertions(+)
 
-diff --git a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
-index 576407b5daf2..78cfdc48ad45 100644
---- a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
-@@ -82,6 +82,12 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_bxt_machines[] = {
- 		.sof_fw_filename = "sof-apl.ri",
- 		.sof_tplg_filename = "sof-apl-tdf8532.tplg",
- 	},
-+	{
-+		.id = "ESSX8336",
-+		.drv_name = "sof-essx8336",
-+		.sof_fw_filename = "sof-apl.ri",
-+		.sof_tplg_filename = "sof-apl-es8336.tplg",
-+	},
- 	{},
- };
- EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_bxt_machines);
-diff --git a/sound/soc/intel/common/soc-acpi-intel-glk-match.c b/sound/soc/intel/common/soc-acpi-intel-glk-match.c
-index da1e151190b4..32fff9389eb3 100644
---- a/sound/soc/intel/common/soc-acpi-intel-glk-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-glk-match.c
-@@ -49,7 +49,12 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_glk_machines[] = {
- 		.sof_fw_filename = "sof-glk.ri",
- 		.sof_tplg_filename = "sof-glk-cs42l42.tplg",
- 	},
--
-+	{
-+		.id = "ESSX8336",
-+		.drv_name = "sof-essx8336",
-+		.sof_fw_filename = "sof-glk.ri",
-+		.sof_tplg_filename = "sof-glk-es8336.tplg",
-+	},
- 	{},
- };
- EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_glk_machines);
 diff --git a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
-index 91ef71c2535d..5332f96eb938 100644
+index 5332f96eb938..9d89f01d6b84 100644
 --- a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
 +++ b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
-@@ -355,6 +355,12 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_machines[] = {
- 		.sof_fw_filename = "sof-tgl.ri",
- 		.sof_tplg_filename = "sof-tgl-rt1011-rt5682.tplg",
+@@ -156,6 +156,15 @@ static const struct snd_soc_acpi_adr_device rt711_sdca_0_adr[] = {
+ 	}
+ };
+ 
++static const struct snd_soc_acpi_adr_device rt1316_1_single_adr[] = {
++	{
++		.adr = 0x000131025D131601ull,
++		.num_endpoints = 1,
++		.endpoints = &single_endpoint,
++		.name_prefix = "rt1316-1"
++	}
++};
++
+ static const struct snd_soc_acpi_adr_device rt1316_1_group1_adr[] = {
+ 	{
+ 		.adr = 0x000131025D131601ull, /* unique ID is set for some reason */
+@@ -320,6 +329,25 @@ static const struct snd_soc_acpi_link_adr tgl_3_in_1_sdca[] = {
+ 	{}
+ };
+ 
++static const struct snd_soc_acpi_link_adr tgl_3_in_1_sdca_mono[] = {
++	{
++		.mask = BIT(0),
++		.num_adr = ARRAY_SIZE(rt711_sdca_0_adr),
++		.adr_d = rt711_sdca_0_adr,
++	},
++	{
++		.mask = BIT(1),
++		.num_adr = ARRAY_SIZE(rt1316_1_single_adr),
++		.adr_d = rt1316_1_single_adr,
++	},
++	{
++		.mask = BIT(3),
++		.num_adr = ARRAY_SIZE(rt714_3_adr),
++		.adr_d = rt714_3_adr,
++	},
++	{}
++};
++
+ static const struct snd_soc_acpi_codecs tgl_max98373_amp = {
+ 	.num_codecs = 1,
+ 	.codecs = {"MX98373"}
+@@ -418,6 +446,19 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_sdw_machines[] = {
+ 		.drv_name = "sof_sdw",
+ 		.sof_tplg_filename = "sof-tgl-rt711-rt1316-rt714.tplg",
  	},
 +	{
-+		.id = "ESSX8336",
-+		.drv_name = "sof-essx8336",
-+		.sof_fw_filename = "sof-tgl.ri",
-+		.sof_tplg_filename = "sof-tgl-es8336.tplg",
++		/*
++		 * link_mask should be 0xB, but all links are enabled by BIOS.
++		 * This entry will be selected if there is no rt1316 amplifier exposed
++		 * on link2 since it will fail to match the above entry.
++		 */
++
++		.link_mask = 0xF, /* 4 active links required */
++		.links = tgl_3_in_1_sdca_mono,
++		.drv_name = "sof_sdw",
++		.sof_tplg_filename = "sof-tgl-rt711-l0-rt1316-l1-mono-rt714-l3.tplg",
 +	},
- 	{},
- };
- EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_tgl_machines);
++
+ 	{
+ 		.link_mask = 0x3, /* rt711 on link 0 and 1 rt1308 on link 1 */
+ 		.links = tgl_hp,
 -- 
 2.25.1
 
