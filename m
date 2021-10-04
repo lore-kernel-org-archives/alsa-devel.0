@@ -2,74 +2,63 @@ Return-Path: <SRS0=RGWB=OY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C43EC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 17:04:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 71FF7C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 17:56:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C1A62613CF
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 17:04:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C1A62613CF
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 1D820613A3
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 17:56:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1D820613A3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 681581675;
-	Mon,  4 Oct 2021 19:03:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 681581675
+	by alsa0.perex.cz (Postfix) with ESMTPS id C9C4A1663;
+	Mon,  4 Oct 2021 19:55:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C9C4A1663
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633367078;
-	bh=Gx/CYCFVJu84iQ/txzZ7rjGlD1I/Qy9L32fCT0MwsCQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=JW0bcozhH44XeTvsbIQkONuVg/FOStczCT3qAXXSbrTtdounM8K83fqGDGZI0cV7u
-	 LwnEHOgvrbSlZH5el8uawgRhVng8wCMmxO/gBDwsuzXOuFD3zuZXjL+3/6YRvOpHEl
-	 u9wgRdx1rDlaCAZgM9jk5M1Y+kFntNv0eFds255k=
+	s=default; t=1633370204;
+	bh=kv0QnjxGy9puaBX2xNVruJMx3/LV3CwS1c0VlWlqT28=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=WOdWwQMEqsiFxPsv/FmSuZ/7dWNhY18ORvC8uu64itg+rZxZxKZuX9ASe3rcBYPF7
+	 XXgyN1wRJCv5P847/idsUSC/LbB3dHhzpc6ZfOJd7v418XmD36AlcUq1iYcTwx+Svg
+	 g0YJKnTqevw7lPSrZ6+Qg/pUTbM4hASGsM3W+Ats=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 23B39F804F3;
-	Mon,  4 Oct 2021 19:03:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2BC76F800BA;
+	Mon,  4 Oct 2021 19:55:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 96B24F804FA; Mon,  4 Oct 2021 19:03:01 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 2608AF800BA; Mon,  4 Oct 2021 19:55:52 +0200 (CEST)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 38C28F804E5
- for <alsa-devel@alsa-project.org>; Mon,  4 Oct 2021 19:02:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38C28F804E5
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="haCRp0q6"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 847DC6120A;
- Mon,  4 Oct 2021 17:02:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1633366968;
- bh=Gx/CYCFVJu84iQ/txzZ7rjGlD1I/Qy9L32fCT0MwsCQ=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=haCRp0q6vEu7267/hmBwEWWjTOY2l11CSxN7JJkNu7wTw9cdaY+SFa2Bxx3C8Rgx7
- bPjpCj+mWk6uzY0LsKok54Fzi0cB+K3NVUf5E9v2NduyguTKRJVYwetLNdu6RbNz+W
- ZX+Kb0RFA+9BsuqvAQO7kauy1vv40I2p3qjUxiMRAf2mC8TxeFdy8yf1x938/p2Xwr
- 1n4iZCxDG6j1fNUQ98HtGVdAH89FvDBM9iHDBNPgSTWoxgKEgG6s6om59U8OyW3njb
- kHFz9e11D3KGiiS6dzKl+wz5WwcDpm4iDe3e4DxXD4SSVVuist4PjaZ90LDseUZxaO
- gVd4vjfhSzFsw==
-From: Mark Brown <broonie@kernel.org>
-To: Rob Herring <robh+dt@kernel.org>,
- Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
- Masami Hiramatsu <mhiramat@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Subject: Re: [PATCH] ASoC: dt-bindings: uniphier: Add description of each port
- number
-Date: Mon,  4 Oct 2021 18:02:33 +0100
-Message-Id: <163336659968.3340210.15989674520560079639.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <1633313546-23258-1-git-send-email-hayashi.kunihiko@socionext.com>
-References: <1633313546-23258-1-git-send-email-hayashi.kunihiko@socionext.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id D1C3BF800BA
+ for <alsa-devel@alsa-project.org>; Mon,  4 Oct 2021 19:55:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1C3BF800BA
+X-IronPort-AV: E=McAfee;i="6200,9189,10127"; a="206334026"
+X-IronPort-AV: E=Sophos;i="5.85,346,1624345200"; d="scan'208";a="206334026"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 04 Oct 2021 09:24:38 -0700
+X-IronPort-AV: E=Sophos;i="5.85,346,1624345200"; d="scan'208";a="558594207"
+Received: from mbrescia-mobl1.amr.corp.intel.com (HELO
+ pbossart-mobl3.intel.com) ([10.212.77.4])
+ by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 04 Oct 2021 09:24:37 -0700
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH v2 0/3] ASoC: SOF: Intel: power optimizations with HDaudio
+ SPIB register
+Date: Mon,  4 Oct 2021 11:24:20 -0500
+Message-Id: <20211004162423.85323-1-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: Rob Herring <robh@kernel.org>, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+Cc: tiwai@suse.de, broonie@kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,36 +74,66 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 4 Oct 2021 11:12:26 +0900, Kunihiko Hayashi wrote:
-> To eliminate FIXME, add descriptions of what each port number is
-> associated with.
-> 
-> 
+This patchset was initially provided in a larger series that was split
+in two [1]. This part only provides support for the SPIB register
+support, added on Intel platforms since Skylake (2015).
 
-Applied to
+The use of the SPIB register helps reduce power consumption - though
+to a smaller degree than DMI_L1. This hardware capability is however
+incompatible with userspace-initiated rewinds typically used by
+PulseAudio.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+In the past (2015..2017) Intel suggested an API extension to let
+applications disable rewinds. At the time the feedback was that such a
+capability was too Intel-specific and SPIB remained unused except for
+loading DSP code. We now see devices with smaller batteries being
+released, and it's time to revisit Linux support for SPIB to extend
+battery life.
 
-Thanks!
+In this update the rewinds are disabled via an opt-in kernel
+parameter. In the previous reviews, there was consensus that a Kconfig
+option was too complicated for distributions to set, and we are
+missing a TBD API to expose such capabilities to user-space.
 
-[1/1] ASoC: dt-bindings: uniphier: Add description of each port number
-      commit: 2a04151ff95a3c430150064b0c8beb1981f81187
+The debate on whether or not to use rewinds, and the impact of
+disabling rewinds, will likely be closed when Intel releases the
+'deep-buffer' support, currently under development [2][3]. With this
+solution, rewinds will not be needed, ever. When an application deals
+with content that is not latency-sensitive (e.g. music playback), it
+will be able to reduce power consumption by selecting a different PCM
+device with increased buffering capabilities.  Low-latency streams
+will be handled by the 'regular' path. In other words, the impossible
+compromise between power and latency will be handled with different
+PCM devices/profiles for the same endpoint, and we can push the design
+of capability negotiation to a later time when all the building blocks
+(firmware topology, kernel, userspace) are ready - we still have
+firmware xruns, DPCM race conditions to solve, and a need to describe
+these alternate PCM devices with UCM using 'modifiers'.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+[1] https://lore.kernel.org/alsa-devel/20210610205326.1176400-1-pierre-louis.bossart@linux.intel.com/
+[2] https://github.com/thesofproject/linux/pull/3146
+[3] https://github.com/thesofproject/sof/pull/4611
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Pierre-Louis Bossart (1):
+  ALSA: pcm: introduce INFO_NO_REWINDS flag
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Ranjani Sridharan (2):
+  ASOC: SOF: pcm: add .ack callback support
+  ASoC: SOF: Intel: add .ack support for HDaudio platforms
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+ include/uapi/sound/asound.h      |  2 +-
+ sound/core/pcm_native.c          |  2 ++
+ sound/soc/sof/intel/apl.c        |  1 +
+ sound/soc/sof/intel/cnl.c        |  1 +
+ sound/soc/sof/intel/hda-pcm.c    | 41 ++++++++++++++++++++++++++++++--
+ sound/soc/sof/intel/hda-stream.c |  2 ++
+ sound/soc/sof/intel/hda.h        |  1 +
+ sound/soc/sof/intel/tgl.c        |  1 +
+ sound/soc/sof/ops.h              | 10 ++++++++
+ sound/soc/sof/pcm.c              |  9 +++++++
+ sound/soc/sof/sof-priv.h         |  3 +++
+ 11 files changed, 70 insertions(+), 3 deletions(-)
 
-Thanks,
-Mark
+-- 
+2.25.1
+
