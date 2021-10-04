@@ -2,74 +2,69 @@ Return-Path: <SRS0=RGWB=OY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90AF6C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 07:41:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C117C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 08:46:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6C71E611C8
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 07:41:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6C71E611C8
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 790BA6137C
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 08:46:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 790BA6137C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A1A171688;
-	Mon,  4 Oct 2021 09:40:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A1A171688
+	by alsa0.perex.cz (Postfix) with ESMTPS id DE1711687;
+	Mon,  4 Oct 2021 10:45:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE1711687
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633333309;
-	bh=tz0oGrqUjSB2HkyaONoiD/osLDrrqTLVAlSHd0X7q+g=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=idtAhY+CJhtfUg/RpjSe9YvozJgtNCbAYCsSzIE6LLZFTh1NOkTKl844lglAgQnq4
-	 oLdiVN2pAPZsJ+YEWnQwD3Ot2UwFcsqdYksQk70HdeoquaegEh4WaheAXNIVdTmrev
-	 SUcdgZ9V+jYZq0s9JNtlinlrcm9ya9wgI/MASOps=
+	s=default; t=1633337191;
+	bh=rWrqEGh/cZq4hcrLd7cqC0rOQXLLK99gk10HWa4Ocn8=;
+	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Vt5knRCo10Tjss0f0IwDKwC6ouDNn1RiY7YsvouqnWcw20gyfXPQQGqMf2fdGjitA
+	 S+2/cqDgOHDNA99yAM9LTAj+nbpN7wZcLb64VmjIzh61fMOR70rZ6Hqx5Q0GSCmfUZ
+	 sMLGnSERU2ieaJnBGVUxJdkUDwRvofz24sKGLIQo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 165B3F80229;
-	Mon,  4 Oct 2021 09:40:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 42350F80229;
+	Mon,  4 Oct 2021 10:45:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3E0F8F80240; Mon,  4 Oct 2021 09:40:57 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 09D6BF80240; Mon,  4 Oct 2021 10:45:39 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D9402F8010B
- for <alsa-devel@alsa-project.org>; Mon,  4 Oct 2021 09:40:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9402F8010B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="0fMgCV4q"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="HJzxu4fl"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 208EE22190
- for <alsa-devel@alsa-project.org>; Mon,  4 Oct 2021 07:40:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1633333252; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=nBjcrRtStCgECb4z3YsFIbOZkdXVIQ6aACXcp6rXOuA=;
- b=0fMgCV4qQkD3XbkUvq9dWwLi+KdWTfjO4EAxIsue6P7Pzzh8ZgbOgyy8YF6++DjOH/PH/b
- NTvTAdURoXaVVikGIS+te8aCQztqquz+BqDAbn2icI987vDXrEKb8deFv2qRnsidwa/VWF
- qavaZotfRnWAloKUp2Dt5wIZWeORJ08=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1633333252;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=nBjcrRtStCgECb4z3YsFIbOZkdXVIQ6aACXcp6rXOuA=;
- b=HJzxu4flQMFZXbOPUYTjElOZA/nTNYGpOot9+WyLXJluM+thfJcAdqdKKJhXft4oz+ARLi
- oNFtaYgnLNW4A/DA==
-Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 10FF8A3B83;
- Mon,  4 Oct 2021 07:40:52 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: usb-audio: Enable rate validation for Scarlett devices
-Date: Mon,  4 Oct 2021 09:40:50 +0200
-Message-Id: <20211004074050.28241-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 54B3AF80171
+ for <alsa-devel@alsa-project.org>; Mon,  4 Oct 2021 10:45:29 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 990BAA003F;
+ Mon,  4 Oct 2021 10:45:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 990BAA003F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1633337128; bh=GyxVEALYjAZmDQ/V4158CFwkWVvEKHOCKxihnfuJl8Q=;
+ h=Date:Subject:To:References:From:In-Reply-To:From;
+ b=meHn+LHgxY+OTS3tGlHUSfQaRovK1KZEkv8fnFmEqIdCe50Wep4dXvK98zlI6ehVO
+ qnsLxBAgyOkJl0TGRGSrc3Wb4/CdBC29Wdqu3TcHrOiAJz8ZZQOlO0m6q7nxEj0bCA
+ 47r+vf5toORPEbyIM1xkShQcz3kLK+uvN2xJo2bc=
+Received: from [192.168.100.98] (unknown [192.168.100.98])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Mon,  4 Oct 2021 10:45:26 +0200 (CEST)
+Message-ID: <c350bd52-8be4-fceb-15b1-30692f9d7f49@perex.cz>
+Date: Mon, 4 Oct 2021 10:45:26 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH] alsaloop: Adding openctl_elem debug log
+Content-Language: en-US
+To: Pavel Hofman <pavel.hofman@ivitera.com>, alsa-devel@alsa-project.org
+References: <20211001080028.6423-1-pavel.hofman@ivitera.com>
+From: Jaroslav Kysela <perex@perex.cz>
+In-Reply-To: <20211001080028.6423-1-pavel.hofman@ivitera.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,34 +80,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The Scarlett device series from Focusrite Novation seem requiring the
-sample rate validations as we've done for MOTU devices; otherwise the
-driver probes invalid audioformat entries that contain the sample
-rates that actually don't work, and this may result in an incomplete
-setup as reported recently.
+On 01. 10. 21 10:00, Pavel Hofman wrote:
+> When debugging what ctl elem was found and opened (if any) a debug log is
+> helpful.
+> 
+> Signed-off-by: Pavel Hofman <pavel.hofman@ivitera.com>
+> ---
+>   alsaloop/pcmjob.c | 5 +++++
+>   1 file changed, 5 insertions(+)
+> 
+> diff --git a/alsaloop/pcmjob.c b/alsaloop/pcmjob.c
+> index 8b72af4..845ab82 100644
+> --- a/alsaloop/pcmjob.c
+> +++ b/alsaloop/pcmjob.c
+> @@ -1191,6 +1191,11 @@ static void openctl_elem(struct loopback_handle *lhandle,
+>   		if (err < 0) {
+>   			snd_ctl_elem_value_free(*elem);
+>   			*elem = NULL;
+> +		} else {
+> +			if (verbose)
+> +				snd_output_printf(lhandle->loopback->output,
+> +						"Opened PCM element %s of %s, device %d, subdevice %d\n",
+> +						name, snd_ctl_name(lhandle->ctl), device, subdevice);
+>   		}
+>   	}
+>   }
+> 
 
-This patch adds the needed quirk flag for enabling the sample rate
-validation for Focusrite Novation devices.
+Applied. Thank you.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=214493
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/quirks.c | 2 ++
- 1 file changed, 2 insertions(+)
+				Jaroslav
 
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 6ee6d24c847f..889c855addfc 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1900,6 +1900,8 @@ static const struct usb_audio_quirk_flags_table quirk_flags_table[] = {
- 		   QUIRK_FLAG_CTL_MSG_DELAY | QUIRK_FLAG_IFACE_DELAY),
- 	VENDOR_FLG(0x07fd, /* MOTU */
- 		   QUIRK_FLAG_VALIDATE_RATES),
-+	VENDOR_FLG(0x1235, /* Focusrite Novation */
-+		   QUIRK_FLAG_VALIDATE_RATES),
- 	VENDOR_FLG(0x152a, /* Thesycon devices */
- 		   QUIRK_FLAG_DSD_RAW),
- 	VENDOR_FLG(0x1de7, /* Phoenix Audio */
 -- 
-2.26.2
-
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
