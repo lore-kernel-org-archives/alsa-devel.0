@@ -2,71 +2,71 @@ Return-Path: <SRS0=RGWB=OY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DFF0BC433F5
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 16:22:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 05419C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 16:43:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4C2996124D
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 16:22:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4C2996124D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=axis.com
+	by mail.kernel.org (Postfix) with ESMTPS id A711161213
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 16:43:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A711161213
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0529F165D;
-	Mon,  4 Oct 2021 18:21:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0529F165D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 716031664;
+	Mon,  4 Oct 2021 18:42:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 716031664
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633364538;
-	bh=ungWKopc25U9zLmTGFSVX7ebllJKMe5qNfozGGg+2YE=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1633365817;
+	bh=565tHhBmRCysZjzSxOrrWmyYpky5MCNVPd5AEIAVT5M=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CH4bvtSZ11SEXppe46qjcEGhFn7B22W4zJKjWGMhh/03fNb7ZaxafiD0ryxNXCvo5
-	 XoWtB5AOozltGTLDE07+eeIR8Hf7N5h/b9i9Iztvps9tfb2wWNWctoGmSrE/8VLAPq
-	 DR/hdJfk5WzAHal9HaxBc4IQOMML+rJyPNbpqUfQ=
+	b=F2JiLGKAftbOEdfYqxUOTeyeeG8dcjVa9t+7WigYFih3ku4ULfiGnlFV7c1FPkm69
+	 tF7ZvRdyjx43vbQXvMs3fD/uURxpezxs84FnOY3nkdgjF6sCaYuRX+9t8Q/0BQN5ts
+	 I0U5mD5slsbBgGP2L8JIeBLnO5AEV985LjemwmI8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7F1DCF80229;
-	Mon,  4 Oct 2021 18:21:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B415CF80229;
+	Mon,  4 Oct 2021 18:42:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3E1B9F80240; Mon,  4 Oct 2021 18:21:26 +0200 (CEST)
-Received: from smtp1.axis.com (smtp1.axis.com [195.60.68.17])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 02793F80240; Mon,  4 Oct 2021 18:42:44 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 95A85F800BA
- for <alsa-devel@alsa-project.org>; Mon,  4 Oct 2021 18:21:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95A85F800BA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 54BF3F800BA
+ for <alsa-devel@alsa-project.org>; Mon,  4 Oct 2021 18:42:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54BF3F800BA
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=axis.com header.i=@axis.com
- header.b="jMj/gjn3"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=axis.com; q=dns/txt; s=axis-central1; t=1633364480;
- x=1664900480; h=date:from:to:cc:subject:in-reply-to:message-id:
- references:mime-version;
- bh=2TKID2Za9GYSOg5AoELfLrsUZguAVKMjn7pS3vDuwr0=;
- b=jMj/gjn3fnJ61SnfRivxWwDc13VYWUyykdvLjnPh+UX23gLSUvNPro89
- HXMSsjeqU5Th0qotmh7AfhMpvQLPc0crixupNmOJBDsyRjvZ5jmWrHYnW
- 7bNkkAnbAOSMMbV1NFa605P5TgqSo06yaxftGpFrsTFmtki3ghYm/oW81
- 17C1scW1SBo0tW4cjJAynw7qQ7f/ev87XQantqOIruueflDkAqiClL7fr
- 0vMbleYgpZR0HiNf9r8Y3GQfiWEMQDBk1Yc8znrn2Qi59oUPr5dXs2dRQ
- W6xqjY2KyCyMlVA3A1hPTNjyT0A5ScLiDcYM5XbcdDiSj7w/msNbFnP0P w==;
-Date: Mon, 4 Oct 2021 18:21:10 +0200
-From: Ricard Wanderlof <ricardw@axis.com>
-X-X-Sender: ricardw@lnxricardw1.se.axis.com
-To: Mark Brown <broonie@kernel.org>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="S/NM7V4Z"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 322DD61213;
+ Mon,  4 Oct 2021 16:42:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1633365755;
+ bh=565tHhBmRCysZjzSxOrrWmyYpky5MCNVPd5AEIAVT5M=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=S/NM7V4Zuu7OGEuBCi0YRpBF0xawsQ/LLX5uPlrSMHv3i8+d9Y9TorfYpYNwOJkXm
+ OJ+nrO5bGWHfW8ePe2PbXHD8Q0nAqzKX7i7cE5caXqqf7H5ow2fEu9Y9gUmbBSeZfy
+ QVgdUFP6jUbbN+ZjEXbNBi+4qGLkXscEVyWYCKGVTHbXE2Aap2BEHzBUY1G05WtztA
+ zSTmQG1ef9VkfNmH1fPtICOYt0gKnz9Ry1A4rinuiQ7RPvnUNgh/zaLLxd38oHtC5z
+ eXBGIFdtC5X2x+5UBo+dOGYi8t32m6oihaSduFwXFuRNwI2Z25Y1sV+Iu/q654mfL8
+ 6McKvijRxgrfA==
+Date: Mon, 4 Oct 2021 17:42:33 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Ricard Wanderlof <ricardw@axis.com>
 Subject: Re: [PATCH 2/2] ASoC: codec: tlv320adc3xxx: New codec driver
-In-Reply-To: <YVsETxqzhZI8Fb6D@sirena.org.uk>
-Message-ID: <alpine.DEB.2.21.2110041716190.14472@lnxricardw1.se.axis.com>
+Message-ID: <YVsu+QMjOQz8pAzY@sirena.org.uk>
 References: <alpine.DEB.2.21.2110041117540.14472@lnxricardw1.se.axis.com>
  <YVsETxqzhZI8Fb6D@sirena.org.uk>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+ <alpine.DEB.2.21.2110041716190.14472@lnxricardw1.se.axis.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-X-Originating-IP: [10.0.5.60]
-X-ClientProxiedBy: se-mail08w.axis.com (10.20.40.14) To se-mail07w.axis.com
- (10.20.40.13)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="s4rg/Bs7+Dxer0A5"
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.21.2110041716190.14472@lnxricardw1.se.axis.com>
+X-Cookie: If it heals good, say it.
 Cc: alsa-devel <alsa-devel@alsa-project.org>,
  Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
@@ -85,106 +85,108 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Thanks for your prompt review Mark!
+--s4rg/Bs7+Dxer0A5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 4 Oct 2021, Mark Brown wrote:
+On Mon, Oct 04, 2021 at 06:21:10PM +0200, Ricard Wanderlof wrote:
+> On Mon, 4 Oct 2021, Mark Brown wrote:
+> > On Mon, Oct 04, 2021 at 11:19:21AM +0200, Ricard Wanderlof wrote:
 
-> On Mon, Oct 04, 2021 at 11:19:21AM +0200, Ricard Wanderlof wrote:
-> 
-> There's an awful lot of code in here that just doesn't really look like
-> a normal Linux driver or follow conventions for ASoC, just from a quick
-> visual overview without actually reading anything it's fairly clear the
-> driver needs quite a bit of a refresh for mainline.
+> > > +++ b/sound/soc/codecs/tlv320adc3xxx.c
+> > > @@ -0,0 +1,1239 @@
+> > > +// SPDX-License-Identifier: GPL-2.0
+> > > +/*
+> > > + * Based on sound/soc/codecs/tlv320aic3x.c by  Vladimir Barinov
 
-To a large extent this is because I've retained as much of the original 
-driver as possible, only changing things that seemed absolutely necessary.
-However your remark makes it clear that this is a less than successful 
-strategy so I'll make a general overhaul based on your remarks, and 
-resubmit.
+> > Please make the entire comment a C++ one so things look more
+> > intentional.
 
-A few specific questions below, however:
+> Ok, I'll change this. I was trying to follow the style of existing=20
+> drivers, as the majority seem to have C style header comments even though=
+=20
+> the SPDX line uses C++. I'm now guessing this is for legacy reasons=20
+> (minimizing changes in existing drivers when the SPDX line was added)?
 
-> > +++ b/sound/soc/codecs/tlv320adc3xxx.c
-> > @@ -0,0 +1,1239 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Based on sound/soc/codecs/tlv320aic3x.c by  Vladimir Barinov
-> 
-> Please make the entire comment a C++ one so things look more
-> intentional.
+A lot of SPDX stuff was done mechanically.
 
-Ok, I'll change this. I was trying to follow the style of existing 
-drivers, as the majority seem to have C style header comments even though 
-the SPDX line uses C++. I'm now guessing this is for legacy reasons 
-(minimizing changes in existing drivers when the SPDX line was added)?
+> > > +static bool adc3xxx_volatile_reg(struct device *dev, unsigned int re=
+g)
+> > > +{
+> > > +	switch (reg) {
+> > > +	case PAGE_SELECT: /* required by regmap implementation */
 
-> > +static bool adc3xxx_volatile_reg(struct device *dev, unsigned int reg)
-> > +{
-> > +	switch (reg) {
-> > +	case PAGE_SELECT: /* required by regmap implementation */
-> 
-> This is not required by regmap.
+> > This is not required by regmap.
 
-Ok, I'll remove it. The regmap code was taken from tlv320aic3x.c which has 
-a similar paging structure, but I see now that other drivers don't have 
-this, so I guess it's not necessary for tlv320aic3x.c either and is there 
-either erroneously or because it once was necessary?
+> Ok, I'll remove it. The regmap code was taken from tlv320aic3x.c which ha=
+s=20
+> a similar paging structure, but I see now that other drivers don't have=
+=20
+> this, so I guess it's not necessary for tlv320aic3x.c either and is there=
+=20
+> either erroneously or because it once was necessary?
 
-> > +static const char * const micbias_voltage[] = { "off", "2V", "2.5V", 
-> > "AVDD" };
-> 
-> This should be configured in the DT, it's going to be a property of the
-> electrical design of the system.
+It's probably an error in either the description of the pages or just
+the driver.
 
-I can very well imagine that this something that should be runtime 
-userspace configurable. In fact where I work we have had products where 
-the bias voltage (for an externally connected microphone) could be 
-configured by the end user, (although not for this specific driver quite 
-honestly, we have had the need for hardware engineers to change it runtime 
-during circuit verification though).
+> > > +static const char * const micbias_voltage[] =3D { "off", "2V", "2.5V=
+",=20
+> > > "AVDD" };
 
-Would it be ok to have this configurable both in the DT as well as using a 
-control? Or should it be implemented in another way, such as a number of 
-pre set voltages that are selected between using a control?
+> > This should be configured in the DT, it's going to be a property of the
+> > electrical design of the system.
 
-> > +static const struct snd_kcontrol_new adc3xxx_snd_controls[] = {
-> > +	SOC_DOUBLE_R_TLV("PGA Gain Volume", LEFT_APGA_CTRL, RIGHT_APGA_CTRL,
-> > +			 0, 80, 0, pga_tlv),
-> 
-> s/Gain //
+> I can very well imagine that this something that should be runtime=20
+> userspace configurable. In fact where I work we have had products where=
+=20
+> the bias voltage (for an externally connected microphone) could be=20
+> configured by the end user, (although not for this specific driver quite=
+=20
+> honestly, we have had the need for hardware engineers to change it runtim=
+e=20
+> during circuit verification though).
 
-But this would mean that the resulting control will be exposed as 
-"PGA" when viewed in amixer as an scontrol which seems less than intutive, 
-but perhaps there's nothing that can be done about that (other than 
-perhaps expanding PGA to Programmable Gain Amplifier perhaps)?
+> Would it be ok to have this configurable both in the DT as well as using =
+a=20
+> control? Or should it be implemented in another way, such as a number of=
+=20
+> pre set voltages that are selected between using a control?
 
-> > +		/* Switch on NADC Divider */
-> > +		snd_soc_component_update_bits(component, ADC_NADC,
-> > +					      ENABLE_NADC, ENABLE_NADC);
-> > +
-> > +		/* Switch on MADC Divider */
-> > +		snd_soc_component_update_bits(component, ADC_MADC,
-> > +					      ENABLE_MADC, ENABLE_MADC);
-> 
-> Why are these not managed through DAPM?
+It seems like a lot less work to just not have the runtime control and
+let someone who needs it figure out how to represent it to userspace.
+Something that's basically a backdoor for validation doesn't seem
+persuasive, validation often wants to do things we actively wish to
+prevent at runtime.
 
-The simple answer is that the driver was originally written like this and 
-I saw no reason to change it.
+> > > +static const struct snd_kcontrol_new adc3xxx_snd_controls[] =3D {
+> > > +	SOC_DOUBLE_R_TLV("PGA Gain Volume", LEFT_APGA_CTRL, RIGHT_APGA_CTRL,
+> > > +			 0, 80, 0, pga_tlv),
 
-> > +	adc3xxx->mclk = devm_clk_get(dev, NULL);
-> > +	if (IS_ERR(adc3xxx->mclk)) {
-> > +		if (PTR_ERR(adc3xxx->mclk) != -ENOENT)
-> > +			return PTR_ERR(adc3xxx->mclk);
-> > +		/* Make a note that there is no mclk specified. */
-> > +		adc3xxx->mclk = NULL;
-> 
-> Does the device work without a MCLK?
+> > s/Gain //
 
-Yes, if so configured it can use the BCLK as the source clock for the 
-clock generation using the internal PLL.
+> But this would mean that the resulting control will be exposed as=20
+> "PGA" when viewed in amixer as an scontrol which seems less than intutive=
+,=20
+> but perhaps there's nothing that can be done about that (other than=20
+> perhaps expanding PGA to Programmable Gain Amplifier perhaps)?
 
-/Ricard
--- 
-Ricard Wolf Wanderlof                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+The TLV information should mean that UIs can figure out to represent it
+as a volume control which should be clear enough.
+
+--s4rg/Bs7+Dxer0A5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFbLvgACgkQJNaLcl1U
+h9AhCwf+K1M38yE4nawL6LzxNY8S0PX8zIVyA4KXhpFQieGSfk2J3XcYvqQrIew/
+9f+6JJFDuUr+aXLsU/Tydbk+VPOIzLg7VpSbEdR9S2+9fEpijzH/pfEOJuY55jhb
+iz7T3YsTGZGouJQEbeoze6qQGr/7W/nLn7xlMhyQJngt/OCZVy4XscVR2BNllHWb
+ehbhoKrmB7aU6BnKia/kI124i+DF5v/IydJ8W8YsEK6UNtCGf/KytvUlTJrRuPoH
+NVZJLO1h+SE7ccQp003NXHQZHp7nJVsLJKlVO14fv/SWNFU/m4Ya9k6piVvatOWx
+Iv85Yef9ArVizYiaakC51CyDveiJjA==
+=isUJ
+-----END PGP SIGNATURE-----
+
+--s4rg/Bs7+Dxer0A5--
