@@ -2,57 +2,57 @@ Return-Path: <SRS0=RGWB=OY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B9EDBC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 22:57:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80C01C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 22:57:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E8EF0613AC
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 22:57:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E8EF0613AC
+	by mail.kernel.org (Postfix) with ESMTPS id D7AA16126A
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 22:57:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D7AA16126A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4F17D1684;
-	Tue,  5 Oct 2021 00:56:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F17D1684
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5BDB91691;
+	Tue,  5 Oct 2021 00:56:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5BDB91691
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633388250;
-	bh=uw0wLjlt1bYcb+PadrHyxMzRs07ulwQgIfWownSSUZw=;
+	s=default; t=1633388266;
+	bh=fH8zNs72aXkOLn/aTxFRApaXCp2XHH+pyg0PkQWL33Q=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LgEu3QNgaOjJREoPplTQbPPT2KsFgcL5bYEHV2lw6dBZFxa5OxShhjfA+0CFiHpg9
-	 doVLoSYvPd9sds6EgckG8lt/HxuLtOgze5dCOlTaOPjMybchLjl0bJOHrOwa0CyGZp
-	 ij90Z73Y6JA3+Ni1DUh7yJQ7bhGxLfn0Sq415rQI=
+	b=Lf6eF0GjgOmEPyLdTrGQQ53+/uyFE4LskuGrjRpk6vtZj6XUh7GDv5AMzRau2v1VU
+	 iuxjq6rm5/GQYGtNhL2lpgLoKeGw+lNVue68bHbDLB+M8/vPVp6OWRcXVv10YsmtsI
+	 lzPiSfWg8EXjgITIZ0n4HXlYyHCxSIyYfrpiAwIE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A416FF80249;
-	Tue,  5 Oct 2021 00:55:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 83DC8F804FD;
+	Tue,  5 Oct 2021 00:55:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6FCFDF804FC; Tue,  5 Oct 2021 00:55:20 +0200 (CEST)
+ id 77A9FF804FB; Tue,  5 Oct 2021 00:55:21 +0200 (CEST)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 71010F80249
- for <alsa-devel@alsa-project.org>; Tue,  5 Oct 2021 00:55:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71010F80249
-X-IronPort-AV: E=McAfee;i="6200,9189,10127"; a="205727444"
-X-IronPort-AV: E=Sophos;i="5.85,347,1624345200"; d="scan'208";a="205727444"
+ by alsa1.perex.cz (Postfix) with ESMTPS id BC43EF80171
+ for <alsa-devel@alsa-project.org>; Tue,  5 Oct 2021 00:55:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC43EF80171
+X-IronPort-AV: E=McAfee;i="6200,9189,10127"; a="205727469"
+X-IronPort-AV: E=Sophos;i="5.85,347,1624345200"; d="scan'208";a="205727469"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Oct 2021 15:55:05 -0700
-X-IronPort-AV: E=Sophos;i="5.85,347,1624345200"; d="scan'208";a="559011914"
+ 04 Oct 2021 15:55:09 -0700
+X-IronPort-AV: E=Sophos;i="5.85,347,1624345200"; d="scan'208";a="559011961"
 Received: from ksgonzal-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.209.181.38])
  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Oct 2021 15:55:03 -0700
+ 04 Oct 2021 15:55:08 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [RFC PATCH v2 3/5] ASoC: soc-pcm: replace dpcm_lock with dpcm_mutex
-Date: Mon,  4 Oct 2021 17:54:39 -0500
-Message-Id: <20211004225441.233375-4-pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH v2 5/5] ASoC: soc-pcm: test refcount before triggering
+Date: Mon,  4 Oct 2021 17:54:41 -0500
+Message-Id: <20211004225441.233375-6-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211004225441.233375-1-pierre-louis.bossart@linux.intel.com>
 References: <20211004225441.233375-1-pierre-louis.bossart@linux.intel.com>
@@ -80,180 +80,168 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-It's not clear why a spinlock was used, and even less why the
-'dpcm_lock' is used with the irqsave/irqrestore: DPCM functions are
-typically not used in interrupt context.
+On start/pause_release/resume, when more than one FE is connected to
+the same BE, it's possible that the trigger is sent more than
+once. This is not desirable, we only want to trigger a BE once, which
+is straightforward to implement with a refcount.
 
-Move to a mutex which will allow us to sleep for longer periods of
-time and handle non-atomic triggers.
+For stop/pause/suspend, the problem is more complicated: the check
+implemented in snd_soc_dpcm_can_be_free_stop() may fail due to a
+conceptual deadlock when we trigger the BE before the FE. In this
+case, the FE states have not yet changed, so there are corner cases
+where the TRIGGER_STOP is never sent - the dual case of start where
+multiple triggers might be sent.
+
+This patch suggests an unconditional trigger in all cases, without
+checking the FE states, using a refcount protected by a mutex.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- include/sound/soc.h  |  2 +-
- sound/soc/soc-core.c |  2 +-
- sound/soc/soc-pcm.c  | 30 ++++++++++++------------------
- 3 files changed, 14 insertions(+), 20 deletions(-)
+ include/sound/soc-dpcm.h |  2 ++
+ sound/soc/soc-pcm.c      | 53 +++++++++++++++++++++++++++++++---------
+ 2 files changed, 44 insertions(+), 11 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 8e6dd8a257c5..c13d8ec72d62 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -893,7 +893,7 @@ struct snd_soc_card {
- 	struct mutex pcm_mutex;
- 	enum snd_soc_pcm_subclass pcm_subclass;
+diff --git a/include/sound/soc-dpcm.h b/include/sound/soc-dpcm.h
+index 9c00118603e7..6d84e2c60ca8 100644
+--- a/include/sound/soc-dpcm.h
++++ b/include/sound/soc-dpcm.h
+@@ -101,6 +101,8 @@ struct snd_soc_dpcm_runtime {
+ 	enum snd_soc_dpcm_state state;
  
--	spinlock_t dpcm_lock;
-+	struct mutex dpcm_mutex; /* protect all dpcm states and updates */
+ 	int trigger_pending; /* trigger cmd + 1 if pending, 0 if not */
++
++	int be_start; /* refcount protected by card's dpcm_mutex */
+ };
  
- 	int (*probe)(struct snd_soc_card *card);
- 	int (*late_probe)(struct snd_soc_card *card);
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index c830e96afba2..e94d43c392e0 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -2339,7 +2339,7 @@ int snd_soc_register_card(struct snd_soc_card *card)
- 	mutex_init(&card->mutex);
- 	mutex_init(&card->dapm_mutex);
- 	mutex_init(&card->pcm_mutex);
--	spin_lock_init(&card->dpcm_lock);
-+	mutex_init(&card->dpcm_mutex);
- 
- 	return snd_soc_bind_card(card);
- }
+ #define for_each_dpcm_fe(be, stream, _dpcm)				\
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 360811f8a18c..af12593b033a 100644
+index 6089e0c1bf9f..ed898d83fe17 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -85,7 +85,6 @@ static ssize_t dpcm_show_state(struct snd_soc_pcm_runtime *fe,
- 	struct snd_pcm_hw_params *params = &fe->dpcm[stream].hw_params;
- 	struct snd_soc_dpcm *dpcm;
- 	ssize_t offset = 0;
--	unsigned long flags;
- 
- 	/* FE state */
- 	offset += scnprintf(buf + offset, size - offset,
-@@ -113,7 +112,7 @@ static ssize_t dpcm_show_state(struct snd_soc_pcm_runtime *fe,
- 		goto out;
- 	}
- 
--	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
-+	mutex_lock(&fe->card->dpcm_mutex);
- 	for_each_dpcm_be(fe, stream, dpcm) {
- 		struct snd_soc_pcm_runtime *be = dpcm->be;
- 		params = &dpcm->hw_params;
-@@ -134,7 +133,7 @@ static ssize_t dpcm_show_state(struct snd_soc_pcm_runtime *fe,
- 					   params_channels(params),
- 					   params_rate(params));
- 	}
--	spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
-+	mutex_unlock(&fe->card->dpcm_mutex);
- out:
- 	return offset;
- }
-@@ -1141,7 +1140,6 @@ static int dpcm_be_connect(struct snd_soc_pcm_runtime *fe,
- 		struct snd_soc_pcm_runtime *be, int stream)
- {
- 	struct snd_soc_dpcm *dpcm;
--	unsigned long flags;
- 
- 	/* only add new dpcms */
- 	for_each_dpcm_be(fe, stream, dpcm) {
-@@ -1157,10 +1155,10 @@ static int dpcm_be_connect(struct snd_soc_pcm_runtime *fe,
- 	dpcm->fe = fe;
- 	be->dpcm[stream].runtime = fe->dpcm[stream].runtime;
- 	dpcm->state = SND_SOC_DPCM_LINK_STATE_NEW;
--	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
-+	mutex_lock(&fe->card->dpcm_mutex);
- 	list_add(&dpcm->list_be, &fe->dpcm[stream].be_clients);
- 	list_add(&dpcm->list_fe, &be->dpcm[stream].fe_clients);
--	spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
-+	mutex_unlock(&fe->card->dpcm_mutex);
- 
- 	dev_dbg(fe->dev, "connected new DPCM %s path %s %s %s\n",
- 			stream ? "capture" : "playback",  fe->dai_link->name,
-@@ -1203,7 +1201,6 @@ static void dpcm_be_reparent(struct snd_soc_pcm_runtime *fe,
- void dpcm_be_disconnect(struct snd_soc_pcm_runtime *fe, int stream)
- {
- 	struct snd_soc_dpcm *dpcm, *d;
--	unsigned long flags;
- 
- 	for_each_dpcm_be_safe(fe, stream, dpcm, d) {
- 		dev_dbg(fe->dev, "ASoC: BE %s disconnect check for %s\n",
-@@ -1222,10 +1219,10 @@ void dpcm_be_disconnect(struct snd_soc_pcm_runtime *fe, int stream)
- 
- 		dpcm_remove_debugfs_state(dpcm);
- 
--		spin_lock_irqsave(&fe->card->dpcm_lock, flags);
-+		mutex_lock(&fe->card->dpcm_mutex);
- 		list_del(&dpcm->list_be);
- 		list_del(&dpcm->list_fe);
--		spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
-+		mutex_unlock(&fe->card->dpcm_mutex);
- 		kfree(dpcm);
- 	}
- }
-@@ -1441,12 +1438,11 @@ int dpcm_process_paths(struct snd_soc_pcm_runtime *fe,
- void dpcm_clear_pending_state(struct snd_soc_pcm_runtime *fe, int stream)
- {
- 	struct snd_soc_dpcm *dpcm;
--	unsigned long flags;
- 
--	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
-+	mutex_lock(&fe->card->dpcm_mutex);
- 	for_each_dpcm_be(fe, stream, dpcm)
- 		dpcm_set_be_update_state(dpcm->be, stream, SND_SOC_DPCM_UPDATE_NO);
--	spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
-+	mutex_unlock(&fe->card->dpcm_mutex);
- }
- 
- void dpcm_be_dai_stop(struct snd_soc_pcm_runtime *fe, int stream,
-@@ -2364,7 +2360,6 @@ static int dpcm_run_update_startup(struct snd_soc_pcm_runtime *fe, int stream)
- 	struct snd_soc_dpcm *dpcm;
- 	enum snd_soc_dpcm_trigger trigger = fe->dai_link->trigger[stream];
- 	int ret = 0;
--	unsigned long flags;
- 
- 	dev_dbg(fe->dev, "ASoC: runtime %s open on FE %s\n",
- 			stream ? "capture" : "playback", fe->dai_link->name);
-@@ -2433,7 +2428,7 @@ static int dpcm_run_update_startup(struct snd_soc_pcm_runtime *fe, int stream)
- 	dpcm_be_dai_shutdown(fe, stream);
- disconnect:
- 	/* disconnect any pending BEs */
--	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
-+	mutex_lock(&fe->card->dpcm_mutex);
- 	for_each_dpcm_be(fe, stream, dpcm) {
- 		struct snd_soc_pcm_runtime *be = dpcm->be;
- 
-@@ -2445,7 +2440,7 @@ static int dpcm_run_update_startup(struct snd_soc_pcm_runtime *fe, int stream)
- 			be->dpcm[stream].state == SND_SOC_DPCM_STATE_NEW)
- 				dpcm->state = SND_SOC_DPCM_LINK_STATE_FREE;
- 	}
--	spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
-+	mutex_unlock(&fe->card->dpcm_mutex);
- 
- 	if (ret < 0)
- 		dev_err(fe->dev, "ASoC: %s() failed (%d)\n", __func__, ret);
-@@ -2845,10 +2840,9 @@ static int snd_soc_dpcm_check_state(struct snd_soc_pcm_runtime *fe,
- 	struct snd_soc_dpcm *dpcm;
- 	int state;
- 	int ret = 1;
--	unsigned long flags;
- 	int i;
- 
--	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
-+	mutex_lock(&fe->card->dpcm_mutex);
- 	for_each_dpcm_fe(be, stream, dpcm) {
- 
- 		if (dpcm->fe == fe)
-@@ -2862,7 +2856,7 @@ static int snd_soc_dpcm_check_state(struct snd_soc_pcm_runtime *fe,
- 			}
+@@ -1556,7 +1556,7 @@ int dpcm_be_dai_startup(struct snd_soc_pcm_runtime *fe, int stream)
+ 			be->dpcm[stream].state = SND_SOC_DPCM_STATE_CLOSE;
+ 			goto unwind;
  		}
+-
++		be->dpcm[stream].be_start = 0;
+ 		be->dpcm[stream].state = SND_SOC_DPCM_STATE_OPEN;
+ 		count++;
  	}
--	spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
-+	mutex_unlock(&fe->card->dpcm_mutex);
+@@ -2051,14 +2051,21 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
  
- 	/* it's safe to do this BE DAI */
- 	return ret;
+ 		switch (cmd) {
+ 		case SNDRV_PCM_TRIGGER_START:
+-			if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_PREPARE) &&
++			if (!be->dpcm[stream].be_start &&
++			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PREPARE) &&
+ 			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_STOP) &&
+ 			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
+ 				continue;
+ 
++			be->dpcm[stream].be_start++;
++			if (be->dpcm[stream].be_start != 1)
++				continue;
++
+ 			ret = soc_pcm_trigger(be_substream, cmd);
+-			if (ret)
++			if (ret) {
++				be->dpcm[stream].be_start--;
+ 				goto end;
++			}
+ 
+ 			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
+ 			break;
+@@ -2066,9 +2073,15 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 			if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_SUSPEND))
+ 				continue;
+ 
++			be->dpcm[stream].be_start++;
++			if (be->dpcm[stream].be_start != 1)
++				continue;
++
+ 			ret = soc_pcm_trigger(be_substream, cmd);
+-			if (ret)
++			if (ret) {
++				be->dpcm[stream].be_start--;
+ 				goto end;
++			}
+ 
+ 			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
+ 			break;
+@@ -2076,9 +2089,15 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 			if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
+ 				continue;
+ 
++			be->dpcm[stream].be_start++;
++			if (be->dpcm[stream].be_start != 1)
++				continue;
++
+ 			ret = soc_pcm_trigger(be_substream, cmd);
+-			if (ret)
++			if (ret) {
++				be->dpcm[stream].be_start--;
+ 				goto end;
++			}
+ 
+ 			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
+ 			break;
+@@ -2087,12 +2106,18 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
+ 				continue;
+ 
+-			if (!snd_soc_dpcm_can_be_free_stop(fe, be, stream))
++			if (be->dpcm[stream].state == SND_SOC_DPCM_STATE_START)
++				be->dpcm[stream].be_start--;
++
++			if (be->dpcm[stream].be_start != 0)
+ 				continue;
+ 
+ 			ret = soc_pcm_trigger(be_substream, cmd);
+-			if (ret)
++			if (ret) {
++				if (be->dpcm[stream].state == SND_SOC_DPCM_STATE_START)
++					be->dpcm[stream].be_start++;
+ 				goto end;
++			}
+ 
+ 			be->dpcm[stream].state = SND_SOC_DPCM_STATE_STOP;
+ 			break;
+@@ -2100,12 +2125,15 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 			if (be->dpcm[stream].state != SND_SOC_DPCM_STATE_START)
+ 				continue;
+ 
+-			if (!snd_soc_dpcm_can_be_free_stop(fe, be, stream))
++			be->dpcm[stream].be_start--;
++			if (be->dpcm[stream].be_start != 0)
+ 				continue;
+ 
+ 			ret = soc_pcm_trigger(be_substream, cmd);
+-			if (ret)
++			if (ret) {
++				be->dpcm[stream].be_start++;
+ 				goto end;
++			}
+ 
+ 			be->dpcm[stream].state = SND_SOC_DPCM_STATE_SUSPEND;
+ 			break;
+@@ -2113,12 +2141,15 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 			if (be->dpcm[stream].state != SND_SOC_DPCM_STATE_START)
+ 				continue;
+ 
+-			if (!snd_soc_dpcm_can_be_free_stop(fe, be, stream))
++			be->dpcm[stream].be_start--;
++			if (be->dpcm[stream].be_start != 0)
+ 				continue;
+ 
+ 			ret = soc_pcm_trigger(be_substream, cmd);
+-			if (ret)
++			if (ret) {
++				be->dpcm[stream].be_start++;
+ 				goto end;
++			}
+ 
+ 			be->dpcm[stream].state = SND_SOC_DPCM_STATE_PAUSED;
+ 			break;
 -- 
 2.25.1
 
