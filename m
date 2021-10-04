@@ -2,66 +2,60 @@ Return-Path: <SRS0=RGWB=OY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C3915C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 21:30:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC00AC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 21:36:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 637E761528
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 21:30:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 637E761528
+	by mail.kernel.org (Postfix) with ESMTPS id C37CC615A3
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 21:36:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C37CC615A3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B06981677;
-	Mon,  4 Oct 2021 23:29:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B06981677
+	by alsa0.perex.cz (Postfix) with ESMTPS id 57516165E;
+	Mon,  4 Oct 2021 23:35:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57516165E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633383003;
-	bh=n9hj9p/AaJXN9SKJBQMETNMVWmyqxkK2++xqSYBnyF0=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=L2j5KJgtY21pRslCSIcoyIVj0DsGMNQdImIPcAK9Sd4NxZhyvVFstf1sFgDQDZcUv
-	 B7GaUuUoWzrGv2XB2YT25RcSKQ8ppvoyTPKO3VAl6iODzrvJGoYCB4hIt3atOvTL74
-	 bG7FvRG7powtaqJuLrfYqH8i2yZtfgPzpVhlK9x0=
+	s=default; t=1633383390;
+	bh=aADFZH6ZLyAzXRBXaL2d6lkJ0ovS3novwZy0w4NiFg8=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=K6L3dhqlcuK46F+J9LPTxZHxKOcsUf2DnhE+tQ+OGj0N3iEfbbtw2AnVBwyWMsMt5
+	 7pTuNAyY0IouxvtRfNeei5FQqopAzkMaqSs5FuExROUtOrP2z+j3KrIdpYO1MNNvyb
+	 NQXUNoZq8kX8RH8OU2a5cHIc8AbuRQmB01/Brbg0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 39B0FF804ED;
-	Mon,  4 Oct 2021 23:27:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C49DBF80229;
+	Mon,  4 Oct 2021 23:35:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 68A86F804F1; Mon,  4 Oct 2021 23:27:56 +0200 (CEST)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ id EBC85F8010B; Mon,  4 Oct 2021 23:35:38 +0200 (CEST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B29B5F80249
- for <alsa-devel@alsa-project.org>; Mon,  4 Oct 2021 23:27:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B29B5F80249
-X-IronPort-AV: E=McAfee;i="6200,9189,10127"; a="206410599"
-X-IronPort-AV: E=Sophos;i="5.85,346,1624345200"; d="scan'208";a="206410599"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 887FFF8010B
+ for <alsa-devel@alsa-project.org>; Mon,  4 Oct 2021 23:35:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 887FFF8010B
+X-IronPort-AV: E=McAfee;i="6200,9189,10127"; a="223012788"
+X-IronPort-AV: E=Sophos;i="5.85,346,1624345200"; d="scan'208";a="223012788"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Oct 2021 14:27:40 -0700
-X-IronPort-AV: E=Sophos;i="5.85,346,1624345200"; d="scan'208";a="521586237"
+ by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 04 Oct 2021 14:35:32 -0700
+X-IronPort-AV: E=Sophos;i="5.85,346,1624345200"; d="scan'208";a="521588490"
 Received: from ksgonzal-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.209.181.38])
  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Oct 2021 14:27:39 -0700
+ 04 Oct 2021 14:35:31 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 3/3] ASoC: SOF: topology: return error if
- sof_connect_dai_widget() fails
-Date: Mon,  4 Oct 2021 16:27:29 -0500
-Message-Id: <20211004212729.199550-4-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 0/5] ASoC: Intel: machine driver updates for 5.16
+Date: Mon,  4 Oct 2021 16:35:07 -0500
+Message-Id: <20211004213512.220836-1-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211004212729.199550-1-pierre-louis.bossart@linux.intel.com>
-References: <20211004212729.199550-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de,
- Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- broonie@kernel.org, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+Cc: tiwai@suse.de, broonie@kernel.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -78,42 +72,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+One quirk for a Dell TigerLake/SoundWire device, and initial support
+for platforms based on the ES8336 codec (aka ES8316). For full
+functionality, an update of the codec driver will be needed.
 
-Return the error if sof_connect_dai_widget() fails to
-abort topology loading and prevent card registration.
+Pierre-Louis Bossart (5):
+  ASoC: Intel: soc-acpi: apl/glk/tgl: add entry for devices based on
+    ES8336 codec
+  ALSA: intel-dsp-config: add quirk for APL/GLK/TGL devices based on
+    ES8336 codec
+  ASoC: Intel: add machine driver for SOF+ES8336
+  ASoC: Intel: soc-acpi: add missing quirk for TGL SDCA single amp
+  ASoC: Intel: sof_sdw: add missing quirk for Dell SKU 0A45
 
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/sof/topology.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ sound/hda/intel-dsp-config.c                  |  22 +-
+ sound/soc/intel/boards/Kconfig                |  14 +
+ sound/soc/intel/boards/Makefile               |   2 +
+ sound/soc/intel/boards/sof_es8336.c           | 569 ++++++++++++++++++
+ sound/soc/intel/boards/sof_sdw.c              |  10 +
+ .../intel/common/soc-acpi-intel-bxt-match.c   |   6 +
+ .../intel/common/soc-acpi-intel-glk-match.c   |   7 +-
+ .../intel/common/soc-acpi-intel-tgl-match.c   |  47 ++
+ 8 files changed, 674 insertions(+), 3 deletions(-)
+ create mode 100644 sound/soc/intel/boards/sof_es8336.c
 
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index cc6a96b552d3..e81fa2058c7d 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -2379,13 +2379,14 @@ static int sof_widget_ready(struct snd_soc_component *scomp, int index,
- 		}
- 
- 		ret = sof_widget_load_dai(scomp, index, swidget, tw, dai);
--		if (ret == 0) {
--			sof_connect_dai_widget(scomp, w, tw, dai);
--			list_add(&dai->list, &sdev->dai_list);
--			swidget->private = dai;
--		} else {
-+		if (!ret)
-+			ret = sof_connect_dai_widget(scomp, w, tw, dai);
-+		if (ret < 0) {
- 			kfree(dai);
-+			break;
- 		}
-+		list_add(&dai->list, &sdev->dai_list);
-+		swidget->private = dai;
- 		break;
- 	case snd_soc_dapm_mixer:
- 		ret = sof_widget_load_mixer(scomp, index, swidget, tw);
 -- 
 2.25.1
 
