@@ -2,75 +2,71 @@ Return-Path: <SRS0=RGWB=OY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 32E49C433FE
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 12:59:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 949C7C4332F
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 13:09:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1265861A78
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 12:59:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1265861A78
+	by mail.kernel.org (Postfix) with ESMTPS id B82C661BB5
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 13:09:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B82C661BB5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B53F31688;
-	Mon,  4 Oct 2021 14:58:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B53F31688
+	by alsa0.perex.cz (Postfix) with ESMTPS id D7F041685;
+	Mon,  4 Oct 2021 15:08:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D7F041685
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633352348;
-	bh=MqJcKmpJBZxYnuOMxcI+OAOFxQC7RN9GvMIgXjLKBMI=;
+	s=default; t=1633352951;
+	bh=ZbQjrZR42pArRDC3vnc9mJCBY82N8zGx3FwEMerx06Q=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Bczu2PmNMCDNEx1Ne3W5QwQqTUwTJ5TvNzeOxISOkEu4ZqGYA0ez8r75vuABljg++
-	 Nl0jaRehTn7Jc8d9WXf/32qOkmBOG4uuQZkTXAfwrHZyhJnDT25EzFPB0Wk208vBnp
-	 7BKNGRG096XsVtHJSoMmM/rwcNB1nzi44uwoz178=
+	b=icIxfxDIdSZZ/iEqxzXXUejxsdXfTKw7fgxwf+KSLZY+xY3AXkVRuB4OEJ9Y596t4
+	 yOZ6/8olhR+1fym/PVvr+foAHMwMZT6BLvBQwis59UBdvZmROUuv7zmgeYt44VByQ7
+	 4JMaoKwMk1Qr8W3svwjOX44qcbuYjArcPJkfkqFE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2F984F80229;
-	Mon,  4 Oct 2021 14:58:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 46360F800BA;
+	Mon,  4 Oct 2021 15:08:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 272C2F80240; Mon,  4 Oct 2021 14:58:16 +0200 (CEST)
+ id EEE7CF80240; Mon,  4 Oct 2021 15:08:19 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 85429F800BA
- for <alsa-devel@alsa-project.org>; Mon,  4 Oct 2021 14:58:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85429F800BA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 14341F800BA
+ for <alsa-devel@alsa-project.org>; Mon,  4 Oct 2021 15:08:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14341F800BA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="XjRR9lGG"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 547A061872;
- Mon,  4 Oct 2021 12:58:08 +0000 (UTC)
+ header.b="A8CTiSkQ"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 42DB761B52;
+ Mon,  4 Oct 2021 13:08:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1633352288;
- bh=MqJcKmpJBZxYnuOMxcI+OAOFxQC7RN9GvMIgXjLKBMI=;
+ s=k20201202; t=1633352888;
+ bh=ZbQjrZR42pArRDC3vnc9mJCBY82N8zGx3FwEMerx06Q=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=XjRR9lGGV0YuB9MUBUOiSyXbfw/+o8idThLUF8vmy+yz+MJX5t2CRECSJzkoq214c
- OnU6ejWw/pmky5/BIWle6oBCQ5KKn1nCu4lD5/GfSoxNYygQisL1m8ypV5K4sY7HYQ
- mNROQDPGDYBGmJwG3Bc/Dq4UVcauq72+HDjxN8LWUjJCFa1XO+mm9D4XI6XE1EHCIj
- uOHUB4gZkhKo6ZTrs0a/M/0ECT2VG6X2DltOGN1Sp7ob9Tsje5FlTFLRmBRKrmK71x
- y1OusRazP5Il7ckxFiNzvrxap6udvAFvyYHvfjg5XKzQ2VG5fcaARRR0JA4bOJxE+q
- uUO+Y1Q4kcYzg==
-Date: Mon, 4 Oct 2021 13:58:06 +0100
+ b=A8CTiSkQwy7W3F/CU0zTaVZpHJF8Y0ivroT4oxo0joa7xTkF3oiFIpJYAEZ61EASo
+ jwYiWXPTHGE0TJg63S4VhNmxoRaHIllVDkQ9l9A6XeAN4WJi1hgUXXbbAu/Nd6i9+N
+ baaRu0HGQiLVK27yI4rbFf7JRNpGwSLD+aaDMVGukI9J6affTtBUtLI5HvdQHFIiVl
+ iq1hZD6CUVYnmE9ncWPjzICtbS0+iL6ZuVF+YLd/AMJZHYY4a005x8onDQ7lyp17gg
+ ogIIVa0sEkztngC8+Ftm3jvJ623kcHDcWiCWR+P4cW2nOwyUYgznOnPKj/2eeaVjRr
+ OcOnuQEMqPZ4A==
+Date: Mon, 4 Oct 2021 14:08:06 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: DAPM PIN switches do not update in alsamixer when changed
- through UCM profile
-Message-ID: <YVr6Xkm0tm0IghON@sirena.org.uk>
-References: <b8cf9bb0-bad1-26a0-0806-0a7c66b228d0@redhat.com>
- <s5hv92ego8y.wl-tiwai@suse.de>
- <8e0a6491-bc87-0f9a-099f-3baff1fc0e0d@redhat.com>
+To: Ricard Wanderlof <ricardw@axis.com>
+Subject: Re: [PATCH 1/2] dt-bindings: sound: tlv320adc3xxx: New codec driver
+Message-ID: <YVr8tqRoyyiWR4xl@sirena.org.uk>
+References: <alpine.DEB.2.21.2110041115070.14472@lnxricardw1.se.axis.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="Gbfi9HYTdvx/28OO"
+ protocol="application/pgp-signature"; boundary="NenT2xvAZufCMaV7"
 Content-Disposition: inline
-In-Reply-To: <8e0a6491-bc87-0f9a-099f-3baff1fc0e0d@redhat.com>
+In-Reply-To: <alpine.DEB.2.21.2110041115070.14472@lnxricardw1.se.axis.com>
 X-Cookie: If it heals good, say it.
-Cc: Takashi Iwai <tiwai@suse.de>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- Takashi Iwai <tiwai@suse.com>
+Cc: devicetree@vger.kernel.org, alsa-devel <alsa-devel@alsa-project.org>,
+ Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,39 +83,58 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---Gbfi9HYTdvx/28OO
+--NenT2xvAZufCMaV7
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sun, Oct 03, 2021 at 06:32:13PM +0200, Hans de Goede wrote:
-> On 10/3/21 4:46 PM, Takashi Iwai wrote:
+On Mon, Oct 04, 2021 at 11:17:47AM +0200, Ricard Wanderlof wrote:
 
-> But it does not work for the "Headphone" and "Line Out" switches,
-> these are actually hooked up to jack-detect, so I guess that the
-> jack-detection is already flipping them and then when the UCM
-> profile changes them it is a no-op causing the UCM setting of
-> the control to not cause an event because it is not a change.
+> +  gpios:
+> +    maxItems: 1
+> +    description: GPIO pin used for codec reset (RESET pin)
 
-It's not meaningful or sensible to have a pin switch and jack detection
-connected to the same pin, any machine driver doing that is buggy.  It's
-unclear how the two would be supposed to interact and there's nothing
-that makes an effort to keep them in sync.  Either jack detection should
-be disconnected from DAPM and userspace responsible for managing the
-paths via the pin switches or the pin switches should be removed.
+Usually this would be called reset-gpios and/or have a name to improve
+readability and allow for extensibility, from the binding we can see
+that the device has other signals that can be used as GPIOs.
 
---Gbfi9HYTdvx/28OO
+> +  ti,pll-mode:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum:
+> +      - 0 # ADC3XXX_PLL_DONT_SET - leave mode unchanged
+> +      - 1 # ADC3XXX_PLL_ENABLE - use the on-chip PLL
+> +      - 2 # ADC3XXX_PLL_BYPASS - do not use the on-chip PLL
+> +      - 3 # ADC3XXX_PLL_AUTO - use on-chip PLL if possible
+> +    default: 0
+> +    description: |
+> +      Set on-chip PLL mode.
+> +      ADC3XXX_PLL_DONT_SET is intended for use when setting the clock mod
+> +      via the clock id in a machine driver and it is not to be changed
+> +      from the previous setting.
+> +      ADC3XXX_PLL_AUTO will enable  on-chip PLL if possible, depending on the
+> +      master clock and sample rate combination.
+
+Why is this configured through the DT binding and not via the machine
+driver as done for other drivers?
+
+> +      Note that there is currently no support for reading the GPIO pins as
+> +      inputs.
+
+This doesn't belong in the binding document, it's describing the binding
+not any particular implementation.
+
+--NenT2xvAZufCMaV7
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFa+l0ACgkQJNaLcl1U
-h9A5Twf/fFbQm4adkEjJE+4D2OGMRAAuUWT94GC8xA3MyZoOS+qzKUaEJqoIoffO
-+wuDWOKrPgWXolQ5VHuNOQ74i4c8llLGYkGRsv4UXkxkSmTdQNZCoFjFJ2uZnXeb
-tuA7xtERBn2VGwjMLs2+WJJGwZGCvnBbNGyhGysEX3/AppKdn06usgs/AoDA2TKi
-EC/cbKjpgK+/1P53l5ZjWqT+PcnSxRs5guJGwGhBzR+c4hipXjv/rw6zwx/nkj3c
-4f7YTeTvldFd4C1li2EHwty5tXan4yHjlfqhwgT+SEBNTtG++KzKcMONmbGZupl1
-/cEeT0Z7B4nnz5lfw0O2EdTPmQvCVQ==
-=qSqX
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFa/LUACgkQJNaLcl1U
+h9COawf/ex6fba/shQiY2DAsg2j0WtxTAMX1z+MkUIUNeWBpXM/bEijwgtwEm6D9
+tqZP8m1Xo08N7dMIgNy9Wt3yFlktP6NQBA9CXIZdRlVhVY5olHtQVd2wqeR0XCX5
+bR3rudz7Cq0ilBtUkVD9TeR51xg73GcrJPoZbd08GrNTaKVUtNX3SPzWBT4lAgT3
+EUv/LXPti5vduwj85wfk2WR2zIkbi5a0LsH5HrezP+udaL5wmn8piRcdAinW4dEi
+Hjjb6gBTzKeNFKlbJn5VhavrmJturisvDA4zBwahlE9PwhLSktMX6STnmF26jjed
+ODcX0OQk0rnb59+G/o/PYV87ELMroA==
+=198I
 -----END PGP SIGNATURE-----
 
---Gbfi9HYTdvx/28OO--
+--NenT2xvAZufCMaV7--
