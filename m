@@ -2,69 +2,74 @@ Return-Path: <SRS0=RGWB=OY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 208DAC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 14:41:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7806DC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 15:17:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 02AA96113D
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 14:41:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 02AA96113D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 27BE961248
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 15:17:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 27BE961248
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=axis.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 200B01686;
-	Mon,  4 Oct 2021 16:40:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 200B01686
+	by alsa0.perex.cz (Postfix) with ESMTPS id 10CF4166D;
+	Mon,  4 Oct 2021 17:16:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 10CF4166D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633358507;
-	bh=OwUzOnAHfIAimiZW257is8horZdEJv7U4E4M0X0yaNQ=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1633360632;
+	bh=4YOCudVqmkAQg0RmDhKJVbpmxR7GM7fnpoRvxKTmHck=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UoQ2wHtM7WXEzEXPnncwbfSq5TbCSSBA9YTubxOPBFt9CPul0lMkVypNNAFKHu4Sz
-	 JRMOQYijf9gTxq66FKuv/gVBtayWrlEAa6ZdnkmhJGuUBUucKFxc0FMS4nd/60NU6a
-	 R/le5RFxEWZTaBQj0BfTZ5XVMV5v1kA4L3ZWBdf4=
+	b=d59LLFNFxz1tF68YtD81ogGCH5YoZpLtsO47oWnuVNhOmj4DftGwwJKRnuSZqxPB5
+	 3oQ9tbuxQuPTwF2PxhhqFA3qWwCLdi5P23Isez8fnAuSmb5zcBP79Y2BCB2huBAPzM
+	 XOhSeRd4sTbhkDV51e3SsJgej7qZ+NuSWQj888uY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 87495F80171;
-	Mon,  4 Oct 2021 16:40:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 746D7F80229;
+	Mon,  4 Oct 2021 17:16:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 116D3F80240; Mon,  4 Oct 2021 16:40:55 +0200 (CEST)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ id 3238EF80171; Mon,  4 Oct 2021 17:16:19 +0200 (CEST)
+Received: from smtp2.axis.com (smtp2.axis.com [195.60.68.18])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0414AF80171
- for <alsa-devel@alsa-project.org>; Mon,  4 Oct 2021 16:40:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0414AF80171
-X-IronPort-AV: E=McAfee;i="6200,9189,10126"; a="224221930"
-X-IronPort-AV: E=Sophos;i="5.85,346,1624345200"; d="scan'208";a="224221930"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Oct 2021 07:39:07 -0700
-X-IronPort-AV: E=Sophos;i="5.85,346,1624345200"; d="scan'208";a="544317384"
-Received: from aoki-mobl.amr.corp.intel.com (HELO [10.212.121.50])
- ([10.212.121.50])
- by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Oct 2021 07:38:57 -0700
-Subject: Re: [PATCH 1/4] ASoC: nau8824: Fix NAU8824_JACK_LOGIC define
-To: Hans de Goede <hdegoede@redhat.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Jie Yang <yang.jie@linux.intel.com>,
- Mark Brown <broonie@kernel.org>
-References: <20211002211459.110124-1-hdegoede@redhat.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <c4bac1d3-b72e-fc51-c201-b4e0df97d108@linux.intel.com>
-Date: Mon, 4 Oct 2021 09:22:30 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 90EFAF80171
+ for <alsa-devel@alsa-project.org>; Mon,  4 Oct 2021 17:16:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90EFAF80171
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=axis.com header.i=@axis.com
+ header.b="jd4T8VeW"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=axis.com; q=dns/txt; s=axis-central1; t=1633360573;
+ x=1664896573; h=date:from:to:cc:subject:in-reply-to:message-id:
+ references:mime-version;
+ bh=2KTYP+6+Oa+eVOZ4J5T/8XxYyfJctb51pSOnZcy78io=;
+ b=jd4T8VeWu0k9vCE8wYwqlX7Fo6AwVZdd8SCCjBd7f2WIInENS4tqtdUR
+ ys9AqIymk8pIrNE+53GqCmcM5OKkaxFlJzLPdgAN20EjSPYAT1DHPzkDR
+ Z0nIBGjk/b3QWz54+zOp1UOmhUD5TkGynw9TYtrJiRWkwyzpdwZ4nZ//q
+ LLRReGYZ4GrNLutBZKN77DBrR6qnwEVJ88wnz2bFJ0AAYK7GOi0NdBFRv
+ 4kZ0gJJn8aaIRHopl3UBG8xhqSgUma+RfRlLW5xdMZf6yQk3NiY/04Sw0
+ plp5+BzSchDTVtKGiR6GINqj6ylBUwt7x96xQf0iYnCL4ONQte9KYIFH9 w==;
+Date: Mon, 4 Oct 2021 17:16:04 +0200
+From: Ricard Wanderlof <ricardw@axis.com>
+X-X-Sender: ricardw@lnxricardw1.se.axis.com
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/2] dt-bindings: sound: tlv320adc3xxx: New codec
+ driver
+In-Reply-To: <YVr8tqRoyyiWR4xl@sirena.org.uk>
+Message-ID: <alpine.DEB.2.21.2110041656220.14472@lnxricardw1.se.axis.com>
+References: <alpine.DEB.2.21.2110041115070.14472@lnxricardw1.se.axis.com>
+ <YVr8tqRoyyiWR4xl@sirena.org.uk>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <20211002211459.110124-1-hdegoede@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="US-ASCII"
+X-Originating-IP: [10.0.5.60]
+X-ClientProxiedBy: se-mail04w.axis.com (10.20.40.10) To se-mail07w.axis.com
+ (10.20.40.13)
+Cc: devicetree@vger.kernel.org, alsa-devel <alsa-devel@alsa-project.org>,
+ Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,35 +86,64 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+On Mon, 4 Oct 2021, Mark Brown wrote:
 
-On 10/2/21 4:14 PM, Hans de Goede wrote:
-> The NAU8824_JACK_LOGIC define was wrong, for active high jack-detect
-> to work bit 1 needs to be set, rather then bit 0.
+> On Mon, Oct 04, 2021 at 11:17:47AM +0200, Ricard Wanderlof wrote:
 > 
-> The correct bit was found in the Android kernel source dump for
-> a Cyberbook T116 tablet; and this was also tested on that same tablet.
+> > +  gpios:
+> > +    maxItems: 1
+> > +    description: GPIO pin used for codec reset (RESET pin)
+> 
+> Usually this would be called reset-gpios and/or have a name to improve
+> readability and allow for extensibility, from the binding we can see
+> that the device has other signals that can be used as GPIOs.
 
-For the series
+In this case, 'GPIO pin' refers to the GPIO pin on the host side that is 
+connected to the reset pin on the codec, not which pin on the codec that 
+is used for the reset function. So I probably didn't express this 
+correctly in the binding document.
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+My strategy was to just call the property 'gpios' and if more host control 
+signals were needed, one can add a 'gpio-names' property in the future, 
+but I see no other codec bindings have a 'gpio-names' so I think I'll 
+simply change this to 'reset-gpios', as there are not any other pins that 
+it's likely a host would have any need to control; if that happens we can 
+add another 'foo-gpios' property when the time comes.
 
+> > +  ti,pll-mode:
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    enum:
+> > +      - 0 # ADC3XXX_PLL_DONT_SET - leave mode unchanged
+> > +      - 1 # ADC3XXX_PLL_ENABLE - use the on-chip PLL
+> > +      - 2 # ADC3XXX_PLL_BYPASS - do not use the on-chip PLL
+> > +      - 3 # ADC3XXX_PLL_AUTO - use on-chip PLL if possible
+> > +    default: 0
+> > +    description: |
+> > +      Set on-chip PLL mode.
+> > +      ADC3XXX_PLL_DONT_SET is intended for use when setting the clock mod
+> > +      via the clock id in a machine driver and it is not to be changed
+> > +      from the previous setting.
+> > +      ADC3XXX_PLL_AUTO will enable  on-chip PLL if possible, depending on the
+> > +      master clock and sample rate combination.
 > 
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-> ---
->  sound/soc/codecs/nau8824.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Why is this configured through the DT binding and not via the machine
+> driver as done for other drivers?
+
+The reason is that I want to be able to use this driver with the 
+simple-card machine driver which doesn't have any PLL control options 
+AFAIK, as the .set_sysclk callback clk_id parameter is always set to 0 
+by simple-card.
+
+> > +      Note that there is currently no support for reading the GPIO pins as
+> > +      inputs.
 > 
-> diff --git a/sound/soc/codecs/nau8824.h b/sound/soc/codecs/nau8824.h
-> index 1d7bdd8e0523..6e61405f623b 100644
-> --- a/sound/soc/codecs/nau8824.h
-> +++ b/sound/soc/codecs/nau8824.h
-> @@ -197,7 +197,7 @@
->  /* JACK_DET_CTRL (0x0D) */
->  #define NAU8824_JACK_EJECT_DT_SFT	2
->  #define NAU8824_JACK_EJECT_DT_MASK (0x3 << NAU8824_JACK_EJECT_DT_SFT)
-> -#define NAU8824_JACK_LOGIC		0x1
-> +#define NAU8824_JACK_LOGIC		(0x1 << 1)
->  
->  
->  /* INTERRUPT_SETTING_1 (0x0F) */
-> 
+> This doesn't belong in the binding document, it's describing the binding
+> not any particular implementation.
+
+Good point, I'll remove it.
+
+/Ricard
+-- 
+Ricard Wolf Wanderlof                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
