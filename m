@@ -2,93 +2,67 @@ Return-Path: <SRS0=RGWB=OY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 26274C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 21:25:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47E63C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 21:28:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EAB1F610A8
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 21:25:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EAB1F610A8
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 6B17C61526
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Oct 2021 21:28:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6B17C61526
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 564DB1660;
-	Mon,  4 Oct 2021 23:24:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 564DB1660
+	by alsa0.perex.cz (Postfix) with ESMTPS id 98E53165E;
+	Mon,  4 Oct 2021 23:27:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 98E53165E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633382748;
-	bh=QWd+8f+EJvv9dAmehsUxw/qocktDJu/mZ3LZdW1r/CE=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1633382922;
+	bh=a3h0Gtfj44lmSBVx2sbxZX4x5As5nA3ZIV0kdbxGGj0=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=A177KUp/wtd5EYP5moL6moXKNawl6fHZigMjycch7jOpQUei2hq+s0DfVw+YfRoEa
-	 GB57pZImFNwIz6DIilE6V+3b/3j4Mt/txlZ+OvQf52bu7oN8sV+DJ58r1JRvAS7bVS
-	 8ygyfPD6H/f20L3bi31/2bjnF/dU5WW76cdwiG3k=
+	b=LCNX1IZ21tIMCRY7jxLv5IbCPMVnijZPKNBhlzRlLIJIwMFB47F0cElAVfTndCKZ4
+	 1OBQ1qz5HhcYPaQdiS1/vzUMkunMh6efmbGjnorw3jeDhOp2QIQau1CSXz3Drfc4Aa
+	 3uituB6sRyoMvphOhcvp8J7iHEbMydxbXDPIHEuU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D8E9AF8010B;
-	Mon,  4 Oct 2021 23:24:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0E561F80240;
+	Mon,  4 Oct 2021 23:27:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F2E73F80240; Mon,  4 Oct 2021 23:24:55 +0200 (CEST)
-Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com
- [IPv6:2607:f8b0:4864:20::e2e])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 1391EF802D2; Mon,  4 Oct 2021 23:27:50 +0200 (CEST)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E0AF5F8010B
- for <alsa-devel@alsa-project.org>; Mon,  4 Oct 2021 23:24:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0AF5F8010B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="XeKdDYey"
-Received: by mail-vs1-xe2e.google.com with SMTP id o124so21320312vsc.6
- for <alsa-devel@alsa-project.org>; Mon, 04 Oct 2021 14:24:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to;
- bh=D9WOH7fNPsnwUlDbqjOlG5MZnjj/cAEIIuiZLgSOMx8=;
- b=XeKdDYeyo4OKUK3Yc2FXU2XiJtApv+GN8Wlo6HGqlM5unY6eR4IwDN7Y7szfWwhtcT
- XbGP0seeGZE7fpwJu4wAx9VSFEW7MvATJK8yGrqMprSwT+RliPgH8OpGvpBHNaz2AUQc
- CU3N7hSzmf/LNe+Y5pRTig5TNUT0PXFwtOfeMIOEoVDWIpCG+nrDWHKdAkCQrD4g7goi
- X+AqeSi0k8L5LIU40OSxVodH135jhnU1vJvlaJ+dlxn7czqVieSmulg+kkYNL6aHjhlz
- Ir7aRitQ/bd8JzXLWdzqr4lg2m38QrQCvJj/u54WbGVlmmLo6l3eUvGGa+g/ivvfer+w
- lt8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=D9WOH7fNPsnwUlDbqjOlG5MZnjj/cAEIIuiZLgSOMx8=;
- b=3cTIQNIsp0y2MSPWrtoq8STzRXdmDohzRgurDa9v4s462MiDLZM/1ZT3bOS57WK6oU
- xpKbkKJLbgtiQaG8fReF9IFzSJ5YKtBbgA3nJPdXfDpeemqiE9lHzy9/5XB0QbYUltuV
- lJZ1tSeyRsBP5J+nlGpqbNYYTruH8ngeiRwaIbOgPHurhgorkm1r+iCKPQbqYtTXq0LE
- 3OBzInZ0RPa4JjFotVLOQMHBURnt8+FuS9ebX9Al/C5+vPoh3PT95nDWKv1MU37s6RUA
- gBKStDuklU2aQjw8zgC2iC/Ef3tEzEfJ0UOV63SdPfsAghLlV9dYH5l4OFEAgwMzcIxT
- OiCg==
-X-Gm-Message-State: AOAM530j6X9k9mS4VHXssCQwSoiikiWcRjIKZwS46LFPnfwEnTUxOTvX
- GCik3GxwSw33VteXnxNdb3c=
-X-Google-Smtp-Source: ABdhPJxVgl9bahNDH4aHjlm7RvjNG3kIQzYUi8cjcJa2azUvjNRVFTbqwdwuqwNBoacNjFzUWmUO+A==
-X-Received: by 2002:a67:c81c:: with SMTP id u28mr15539326vsk.36.1633382688769; 
- Mon, 04 Oct 2021 14:24:48 -0700 (PDT)
-Received: from geday ([2804:7f2:8280:9a0f:98f0:31ff:fe93:2dc7])
- by smtp.gmail.com with ESMTPSA id r11sm8301997uad.7.2021.10.04.14.24.47
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 04 Oct 2021 14:24:48 -0700 (PDT)
-Date: Mon, 4 Oct 2021 18:24:47 -0300
-From: Geraldo Nascimento <geraldogabriel@gmail.com>
-To: Zhang Boyang <zhangboyang.id@gmail.com>
-Subject: Re: [BUG?] Setting (start_threshold > stop_threshold) makes
- snd_pcm_writei(a_small_buffer) XRUN immediately
-Message-ID: <YVtxH4b3iBYX4juF@geday>
-References: <0b00ad37-41a3-f078-6600-d3580ad903a1@gmail.com>
- <YVeawIksIf1wKa2s@geday> <YVevasDJYHjIxwjg@geday>
- <YVfj7SA4uhYKWTH6@geday>
- <9bd7f88a-d2a3-b064-2ca7-7305012ef679@gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4F54BF8010B
+ for <alsa-devel@alsa-project.org>; Mon,  4 Oct 2021 23:27:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F54BF8010B
+X-IronPort-AV: E=McAfee;i="6200,9189,10127"; a="206410595"
+X-IronPort-AV: E=Sophos;i="5.85,346,1624345200"; d="scan'208";a="206410595"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 04 Oct 2021 14:27:38 -0700
+X-IronPort-AV: E=Sophos;i="5.85,346,1624345200"; d="scan'208";a="521586227"
+Received: from ksgonzal-mobl.amr.corp.intel.com (HELO
+ pbossart-mobl3.intel.com) ([10.209.181.38])
+ by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 04 Oct 2021 14:27:37 -0700
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 1/3] ASoC: SOF: topology: show clks_control value in dynamic
+ debug
+Date: Mon,  4 Oct 2021 16:27:27 -0500
+Message-Id: <20211004212729.199550-2-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211004212729.199550-1-pierre-louis.bossart@linux.intel.com>
+References: <20211004212729.199550-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9bd7f88a-d2a3-b064-2ca7-7305012ef679@gmail.com>
-Cc: alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>, tiwai@suse.de,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
+ Bard Liao <bard.liao@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -104,113 +78,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Oct 04, 2021 at 05:48:49PM +0800, Zhang Boyang wrote:
-> On 2021/10/2 12:45, Geraldo Nascimento wrote:
-> > On Fri, Oct 01, 2021 at 10:01:34PM -0300, Geraldo Nascimento wrote:
-> >> On Fri, Oct 01, 2021 at 08:33:23PM -0300, Geraldo Nascimento wrote:
-> >>> On Sat, Oct 02, 2021 at 01:31:12AM +0800, Zhang Boyang wrote:
-> >>>> Hello,
-> >>>
-> >>> Hello, Zhang!
-> >>>
-> >>>>
-> >>>>     I'm using ALSA to develop an audio-streaming application. I try to
-> >>>> use start_threshold and stop_threshold in combination with small
-> >>>> buffers. However, I think I probably found a bug about this.
-> >>>>     I'm setting start_threshold=100 and stop_threshold=50. I'm also using
-> >>>> a buffer of 44 frames. When I call
-> >>>> snd_pcm_writei(the_small_44_frames_buffer), pcm state came to XRUN from
-> >>>> PREPARED directly. I think this is a bug because the stream hasn't
-> >>>> started. It's hard to say a xrun occurred while stream not started.
-> >>>>     I'm wondering if this is a ALSA-bug or a misuse of ALSA. A simple bug
-> >>>> test program is attached.
-> >>>
-> >>> No, I don't think it's a bug. You're bound to run into problems with a
-> >>> period size of only 44 frames.
-> >>>
-> >>> Moreover, working with the code you provided, I was able to get a RUNNING
-> >>> state without XRUNs with a period size of 4410 frames (100 milliseconds of
-> >>> audio) but I had to comment out snd_pcm_sw_params_set_stop_threshold() for
-> >>> it to work or I'd have those instant XRUNs.
-> >>>
-> >>> That's how snd_pcm_sw_params_set_stop_threshold() is supposed to work by
-> >>> the way. It creates a XRUN once the threshold is hit.
-> >>
-> >> Oh, and snd_pcm_sw_params_set_stop_threshold() is a little
-> >> counter-intuitive. The threshold you give the function is compared to
-> >> the available free space in the ring buffer, not the filled space.
-> >>
-> >> That's why lowering the stop threshold makes XRUNs more likely...
-> >>
-> >> Thanks,
-> >> Geraldo Nascimento
-> > 
-> > Zhang,
-> > 
-> > I was able to make your code work in the end, even with 44 frames
-> > writes, which is unadvisable since it eats too much CPU specially if
-> > they are low-end like the ARM64 box I'm writing you from.
-> > 
-> > The trick was to use high values such as 500000. Lower values such as
-> > 250000 were enough to trigger XRUNs in my machine. Of course you can set
-> > it to -1 and it will ignore XRUNs but that's a bit like setting it to
-> > 16777216 or 4096 * 4096 which is a hardcoded limit in alsa-lib, I
-> > believe.
-> > 
-> > And plainly ignoring XRUNs may sound bad under load, believe me.
-> > 
-> > Thank you,
-> > Geraldo Nascimento
-> > 
-> > 
-> 
-> Hi,
+We log most of the SSP configurations except the clks_control. This
+will be used to enable bclk/mclk early start so it's useful to show
+the information to the user.
 
-Hey there, Zhang,
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Bard Liao <bard.liao@intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+---
+ sound/soc/sof/topology.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> 
-> Thank you for your reply.
-
-It was my pleasure.
-
-> 
-> I realized my mistake about the meaning of stop_threshold. The 
-> stop_threshold should be (bufsz-50), where (bufsz = alsa buffer size). I 
-> fixed my code and new code is attached.
-> 
-> However, the problem still exists. I'm trying to minimize audio latency, 
-> so I must use a small buffer. In fact, the problem is not related to the 
-> absoulte size of buffer, but the relationship between the size of 
-> start_threshold, stop_threshold and the buffer. The problem still exists 
-> even using manual start mode (i.e. start_threshold>bufsz).
-
-Sure it's the relationship.
-
-If you insist on using (bufsz-50) you will get those instant XRUNs
-forever.
-
-Try using ((bufsz - frames) + 1) and enlarge your start_threshold
-to at least 264. Your original code works for me with such values but
-your mileage may vary. If you get XRUNs, play with the threshold values,
-enlarging stop threshold and/or enlarging start threshold.
-
-> 
-> Currently, I'm using a workaround. After PREPARED or XRUN'd, I manually 
-> buffer incoming audio frames, and when (n_buffered_frames >= 
-> start_threshold && n_buffered_frames >= bufsz-stop_threshold), I write 
-> them in a single write() call. Note that the write must in whole, any 
-> short write may result in immediate XRUN.
-
-Clever. Reminds me of the workings of the new low latency mode recently
-introduced for snd-usb-audio. I haven't been able to test your revised
-code but that's certainly something you'd like to keep in your codebase,
-to deal nicely with eventual XRUNs.
-
-Thank you,
-Geraldo Nascimento
-
-> 
-> Anyway, Thank you for your advice. Have a nice day. :)
-> 
-> Zhang Boyang
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index 43bd2f18c1c2..bd0d82b91465 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -2827,12 +2827,12 @@ static int sof_link_ssp_load(struct snd_soc_component *scomp, int index,
+ 		config[i].ssp.rx_slots = le32_to_cpu(hw_config[i].rx_slots);
+ 		config[i].ssp.tx_slots = le32_to_cpu(hw_config[i].tx_slots);
+ 
+-		dev_dbg(scomp->dev, "tplg: config SSP%d fmt 0x%x mclk %d bclk %d fclk %d width (%d)%d slots %d mclk id %d quirks %d\n",
++		dev_dbg(scomp->dev, "tplg: config SSP%d fmt %#x mclk %d bclk %d fclk %d width (%d)%d slots %d mclk id %d quirks %d clks_control %#x\n",
+ 			config[i].dai_index, config[i].format,
+ 			config[i].ssp.mclk_rate, config[i].ssp.bclk_rate,
+ 			config[i].ssp.fsync_rate, config[i].ssp.sample_valid_bits,
+ 			config[i].ssp.tdm_slot_width, config[i].ssp.tdm_slots,
+-			config[i].ssp.mclk_id, config[i].ssp.quirks);
++			config[i].ssp.mclk_id, config[i].ssp.quirks, config[i].ssp.clks_control);
+ 
+ 		/* validate SSP fsync rate and channel count */
+ 		if (config[i].ssp.fsync_rate < 8000 || config[i].ssp.fsync_rate > 192000) {
+-- 
+2.25.1
 
