@@ -2,70 +2,75 @@ Return-Path: <SRS0=jGB1=OZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D01BDC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Oct 2021 14:37:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9021C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Oct 2021 15:07:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8846E61381
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Oct 2021 14:37:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8846E61381
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
+	by mail.kernel.org (Postfix) with ESMTPS id 2C17D61409
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Oct 2021 15:07:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2C17D61409
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 811A11669;
-	Tue,  5 Oct 2021 16:36:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 811A11669
+	by alsa0.perex.cz (Postfix) with ESMTPS id F0688166A;
+	Tue,  5 Oct 2021 17:06:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F0688166A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633444622;
-	bh=WvZ8JLb5v93QBADCd0vUKgm5lhpJbxIW9TwhqZ0TzdM=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1633446440;
+	bh=JKOjCGY893z/0pQ41HgosIfukEbjgM6S8Ecj7Kz1ZNk=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OWUmGhzkiSZkuH6Sm3GwCGqE6JENZN4GEVt40NnFrxApY+2kXj0wraaUPlfIBzl/y
-	 027rRsjTFDZD01XKrn5RrMAc2ChvwYEkHacB+D2UaPqurAvbaEQdeaEg0MLT6tNYRZ
-	 8B/USSqC72HCW2roJupzfJ3jc17PHthAY9O3QUTQ=
+	b=sJh919ey25sB3UktZO382EIw3zs0tiiA68kUyMaknn06Wu7Qw7Qb5PVTdVpUvJjMn
+	 BOdl7pNFPlB3NY0gIkI7RHW3Bcstcn4Qo2RMYO6AQyNkqRkQWeub8mya/p9VeupksH
+	 MOKXfAKRaJ58BV2hXvcIUE+I/T98zdFMfW3m5T3s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0DC52F80259;
-	Tue,  5 Oct 2021 16:36:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 56BF9F80154;
+	Tue,  5 Oct 2021 17:06:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D0273F8027D; Tue,  5 Oct 2021 16:36:09 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id AF036F8027D; Tue,  5 Oct 2021 17:06:27 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2C332F80154
- for <alsa-devel@alsa-project.org>; Tue,  5 Oct 2021 16:36:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C332F80154
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=linuxfoundation.org
- header.i=@linuxfoundation.org header.b="JjFWcOLG"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DE7161372;
- Tue,  5 Oct 2021 14:35:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1633444557;
- bh=WvZ8JLb5v93QBADCd0vUKgm5lhpJbxIW9TwhqZ0TzdM=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=JjFWcOLGO1DYCmQLBXXDU7pHE4TCziZiUu68bh6z27RvqRP1ihbXe1Ukc99/QzH78
- JPaz5bk7gVXpoOMDb2UOHjch5c17x6n9GX3+wNanmyCgiKoRGKX7//xQ+umkLA+Hm3
- fWgJx+vTpPM2oJGtjz7bzQFiYgBLKbmxo0CC4XxM=
-Date: Tue, 5 Oct 2021 16:35:55 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: Re: [PATCH v2] component: do not leave master devres group open
- after bind
-Message-ID: <YVxiyzNrKG8S1GDb@kroah.com>
-References: <20210922085432.2776886-1-kai.vehmanen@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 26B11F8020D
+ for <alsa-devel@alsa-project.org>; Tue,  5 Oct 2021 17:06:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26B11F8020D
+X-IronPort-AV: E=McAfee;i="6200,9189,10128"; a="249027162"
+X-IronPort-AV: E=Sophos;i="5.85,349,1624345200"; d="scan'208";a="249027162"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 05 Oct 2021 08:04:01 -0700
+X-IronPort-AV: E=Sophos;i="5.85,349,1624345200"; d="scan'208";a="523803649"
+Received: from emccutch-mobl.amr.corp.intel.com (HELO [10.212.34.81])
+ ([10.212.34.81])
+ by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 05 Oct 2021 08:03:59 -0700
+Subject: Re: [PATCH] ASoC: qcom: soundwire: Enable soundwire bus clock for
+ version 1.6
+To: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>, agross@kernel.org,
+ bjorn.andersson@linaro.org, lgirdwood@gmail.com, broonie@kernel.org,
+ robh+dt@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
+ perex@perex.cz, tiwai@suse.com, srinivas.kandagatla@linaro.org,
+ rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
+ alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, swboyd@chromium.org, judyhsiao@chromium.org
+References: <1633105471-30928-1-git-send-email-srivasam@codeaurora.org>
+ <a2b6a9c7-2191-4bc9-b03b-3b22b495a4be@linux.intel.com>
+ <2c18ff0c-cd24-356c-0104-086837ed7ff0@codeaurora.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <d485af5f-4dfb-df08-9a22-901b7534ca3b@linux.intel.com>
+Date: Tue, 5 Oct 2021 10:03:56 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210922085432.2776886-1-kai.vehmanen@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, "Rafael J . Wysocki" <rafael@kernel.org>,
- tiwai@suse.de, Imre Deak <imre.deak@intel.com>,
- dri-devel@lists.freedesktop.org, jani.nikula@intel.com,
- Russell King <rmk+kernel@armlinux.org.uk>,
- Russell King <rmk+kernel@arm.linux.org.uk>, intel-gfx@lists.freedesktop.org
+In-Reply-To: <2c18ff0c-cd24-356c-0104-086837ed7ff0@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+Cc: Venkata Prasad Potturu <potturu@codeaurora.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,64 +86,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Sep 22, 2021 at 11:54:32AM +0300, Kai Vehmanen wrote:
-> In current code, the devres group for aggregate master is left open
-> after call to component_master_add_*(). This leads to problems when the
-> master does further managed allocations on its own. When any
-> participating driver calls component_del(), this leads to immediate
-> release of resources.
-> 
-> This came up when investigating a page fault occurring with i915 DRM
-> driver unbind with 5.15-rc1 kernel. The following sequence occurs:
-> 
->  i915_pci_remove()
->    -> intel_display_driver_unregister()
->      -> i915_audio_component_cleanup()
->        -> component_del()
->          -> component.c:take_down_master()
->            -> hdac_component_master_unbind() [via master->ops->unbind()]
->            -> devres_release_group(master->parent, NULL)
-> 
-> With older kernels this has not caused issues, but with audio driver
-> moving to use managed interfaces for more of its allocations, this no
-> longer works. Devres log shows following to occur:
-> 
-> component_master_add_with_match()
-> [  126.886032] snd_hda_intel 0000:00:1f.3: DEVRES ADD 00000000323ccdc5 devm_component_match_release (24 bytes)
-> [  126.886045] snd_hda_intel 0000:00:1f.3: DEVRES ADD 00000000865cdb29 grp< (0 bytes)
-> [  126.886049] snd_hda_intel 0000:00:1f.3: DEVRES ADD 000000001b480725 grp< (0 bytes)
-> 
-> audio driver completes its PCI probe()
-> [  126.892238] snd_hda_intel 0000:00:1f.3: DEVRES ADD 000000001b480725 pcim_iomap_release (48 bytes)
-> 
-> component_del() called() at DRM/i915 unbind()
-> [  137.579422] i915 0000:00:02.0: DEVRES REL 00000000ef44c293 grp< (0 bytes)
-> [  137.579445] snd_hda_intel 0000:00:1f.3: DEVRES REL 00000000865cdb29 grp< (0 bytes)
-> [  137.579458] snd_hda_intel 0000:00:1f.3: DEVRES REL 000000001b480725 pcim_iomap_release (48 bytes)
-> 
-> So the "devres_release_group(master->parent, NULL)" ends up freeing the
-> pcim_iomap allocation. Upon next runtime resume, the audio driver will
-> cause a page fault as the iomap alloc was released without the driver
-> knowing about it.
-> 
-> Fix this issue by using the "struct master" pointer as identifier for
-> the devres group, and by closing the devres group after
-> the master->ops->bind() call is done. This allows devres allocations
-> done by the driver acting as master to be isolated from the binding state
-> of the aggregate driver. This modifies the logic originally introduced in
-> commit 9e1ccb4a7700 ("drivers/base: fix devres handling for master device")
-> 
-> BugLink: https://gitlab.freedesktop.org/drm/intel/-/issues/4136
-> Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-> Acked-by: Imre Deak <imre.deak@intel.com>
-> Acked-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> ---
->  drivers/base/component.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
 
-What commit does this "fix:"?  And does it need to go to stable
-kernel(s)?
 
-thanks,
+>>> +        ctrl->swrm_hctl_reg = devm_ioremap(&pdev->dev,
+>>> swrm_hctl_reg, 0x4);
+>> if (!ctrl->swrm_hctl_reg)
+>>      return -ENODEV;
+>>
+>> ?
+> I think here error check is not required, as this change is required
+> only for soundwire version 1.6 and above.
 
-greg k-h
+My comment had nothing to do with versions, it's just that ioremap can
+fail and in general it's wise to test for errors...
