@@ -2,70 +2,73 @@ Return-Path: <SRS0=jGB1=OZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83307C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Oct 2021 15:38:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AA5BC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Oct 2021 15:39:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 55314610EA
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Oct 2021 15:38:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 55314610EA
+	by mail.kernel.org (Postfix) with ESMTPS id 3BC6360F9D
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Oct 2021 15:39:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3BC6360F9D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9E066843;
-	Tue,  5 Oct 2021 17:38:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E066843
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4E7BB1673;
+	Tue,  5 Oct 2021 17:38:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E7BB1673
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633448335;
-	bh=wxM1HrBUbOxR+oaxUvV3jC2PlWYDCKxsf6JVk9cGtEs=;
+	s=default; t=1633448380;
+	bh=NDqzyzVRCseVfehnZCfJwcwxRplzAv5y7xgVWiv5h6o=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=X9tR7ml/fvaIB2mECztgYFnSD/t9fT2hnpD8NHNydti9ClDhaoSodAmmeVGEiC+pj
-	 TciQyNED9s3nONwWgQcPunBA5qVlX1XHH3fueiEN8Axh7E17Gibb4nDTHUawSWTwW2
-	 N3mb19QBSfU+5jKa+nnB/Wa3ThIHfIwEVdhORkSQ=
+	b=twNjFV+XuaZLTtgyj/Hrw0Ydi48U9B2VTMZlPK7B8FQ5grLCXKYzfg9hJXbIB8tBB
+	 w3Vhlog0ReR7xXwt6C9wyY96mz1AVEha3O3HqAITX+wiPQ3I4C+PuET+bQ4XlBUijz
+	 sQfC8y7jX+eOYJcVBLRPDTqr3OJOyoVnBJufp+Ck=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B0A59F8028B;
-	Tue,  5 Oct 2021 17:38:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 09F9FF8020D;
+	Tue,  5 Oct 2021 17:38:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 75BE1F80259; Tue,  5 Oct 2021 17:38:03 +0200 (CEST)
+ id 5B8C4F802A0; Tue,  5 Oct 2021 17:38:04 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 87579F80259
- for <alsa-devel@alsa-project.org>; Tue,  5 Oct 2021 17:38:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87579F80259
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5E0A9F8010B
+ for <alsa-devel@alsa-project.org>; Tue,  5 Oct 2021 17:37:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5E0A9F8010B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="t6Imz5ry"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 53A3961159;
- Tue,  5 Oct 2021 15:37:58 +0000 (UTC)
+ header.b="mRLB1i18"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EC24861131;
+ Tue,  5 Oct 2021 15:37:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1633448278;
- bh=wxM1HrBUbOxR+oaxUvV3jC2PlWYDCKxsf6JVk9cGtEs=;
+ s=k20201202; t=1633448273;
+ bh=NDqzyzVRCseVfehnZCfJwcwxRplzAv5y7xgVWiv5h6o=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=t6Imz5ryJAmygEWOKxwmRxasiIqJhrdnM0FEj9SajcEHSL7BGF+7CXKhADp1CEtEs
- fNW7x9Jox7i0o8sB8r4PhcjAkjXpKkN+J3uLOixWiUKQHgMUQIddOisML8oOf8h6BK
- nYi8Ehl7aj19GijisB9L4qfbqfa9XaAeDjr0pzsScAMh0WCC3GEyjWI8ifquyYHc6o
- uyh2AX+YsnS38lwXxJ1FNXMRo3YhMhtCWtsd53m6HcgR140ZGg/y8Eoqd4y8NpL0PW
- QBgiv/cuTgYGMfTt9/HaBPg3Q5bDutDfO/g8/5nbmuhjz3FXUR1VOJLAi3QWBzbUV1
- o8QhtmasmIGDQ==
+ b=mRLB1i18yBikWXrcSr2dYUdfryincbW+qKniOtsmqO5zfQOl62P6VUBu/zWN9rLGe
+ iA9L168JWk91b0fezdApNvNbMXDs8mvIcP25+SvInF8x4b6Cy/YKXbGdh8dSfQ3+X+
+ mA6drQW9GOlHpV0vfF4/CnyvmTGgLSAFpofDBfiRWueO/p+f2DXvkjcU2vaRIfnSSo
+ XRsSjIjZ7b5B39AFBZwg7bjCzoEjsRx5S9qmlKjd/xMSOgJGdHOM0uDJNBSo/FTIl7
+ Vtc0RwNvbyJ20j0Ts06507gw5UkKavLwqE5Of3GsaNgoTt5J4dThzl8kAMi3fChM+K
+ 3WWZ5oRhihKTA==
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org
-Subject: Re: [PATCH 0/5] ASoC: Intel: machine driver updates for 5.16
-Date: Tue,  5 Oct 2021 16:37:43 +0100
-Message-Id: <163344779742.1075058.1024866148378739407.b4-ty@kernel.org>
+To: alsa-devel@alsa-project.org,
+	Daniel Baluta <daniel.baluta@oss.nxp.com>
+Subject: Re: [PATCH] ASoC: SOF: OF: Add fw_path and tplg_path parameters
+Date: Tue,  5 Oct 2021 16:37:41 +0100
+Message-Id: <163344779742.1075058.4675393648242065057.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211004213512.220836-1-pierre-louis.bossart@linux.intel.com>
-References: <20211004213512.220836-1-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20211005071949.1277613-1-daniel.baluta@oss.nxp.com>
+References: <20211005071949.1277613-1-daniel.baluta@oss.nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, Mark Brown <broonie@kernel.org>
+Cc: kai.vehmanen@linux.intel.com, lgirdwood@gmail.com,
+ linux-kernel@vger.kernel.org, pierre-louis.bossart@linux.intel.com,
+ ranjani.sridharan@linux.intel.com, Mark Brown <broonie@kernel.org>,
+ Daniel Baluta <daniel.baluta@nxp.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,19 +84,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 4 Oct 2021 16:35:07 -0500, Pierre-Louis Bossart wrote:
-> One quirk for a Dell TigerLake/SoundWire device, and initial support
-> for platforms based on the ES8336 codec (aka ES8316). For full
-> functionality, an update of the codec driver will be needed.
+On Tue, 5 Oct 2021 10:19:49 +0300, Daniel Baluta wrote:
+> From: Daniel Baluta <daniel.baluta@nxp.com>
 > 
-> Pierre-Louis Bossart (5):
->   ASoC: Intel: soc-acpi: apl/glk/tgl: add entry for devices based on
->     ES8336 codec
->   ALSA: intel-dsp-config: add quirk for APL/GLK/TGL devices based on
->     ES8336 codec
->   ASoC: Intel: add machine driver for SOF+ES8336
->   ASoC: Intel: soc-acpi: add missing quirk for TGL SDCA single amp
->   ASoC: Intel: sof_sdw: add missing quirk for Dell SKU 0A45
+> This allows specifying an alternate path for SOF firmware or
+> SOF topology.
+> 
+> This is particularly useful for i.MX when running Linux vs Android.
 > 
 > [...]
 
@@ -103,16 +100,8 @@ Applied to
 
 Thanks!
 
-[1/5] ASoC: Intel: soc-acpi: apl/glk/tgl: add entry for devices based on ES8336 codec
-      commit: 790049fb6623af8bc25d63b1c5103bbd51f95d89
-[2/5] ALSA: intel-dsp-config: add quirk for APL/GLK/TGL devices based on ES8336 codec
-      commit: 9d36ceab94151f07cf3fcb067213ac87937adf12
-[3/5] ASoC: Intel: add machine driver for SOF+ES8336
-      commit: a164137ce91a95a1a5e2f2ca381741aa5ba14b63
-[4/5] ASoC: Intel: soc-acpi: add missing quirk for TGL SDCA single amp
-      commit: f2470679b070a77ea22f8b791fae7084c2340c7d
-[5/5] ASoC: Intel: sof_sdw: add missing quirk for Dell SKU 0A45
-      commit: 64ba6d2ce72ffde70dc5a1794917bf1573203716
+[1/1] ASoC: SOF: OF: Add fw_path and tplg_path parameters
+      commit: 7b84fd262d8a54ca609dd719c20c8a8e1a7ff759
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
