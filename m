@@ -2,71 +2,70 @@ Return-Path: <SRS0=jGB1=OZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF269C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Oct 2021 13:11:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DADDC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Oct 2021 13:18:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7ACC061373
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Oct 2021 13:11:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7ACC061373
+	by mail.kernel.org (Postfix) with ESMTPS id 37D7F61090
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Oct 2021 13:18:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 37D7F61090
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 37CAD15F2;
-	Tue,  5 Oct 2021 15:10:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 37CAD15F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id F1DEE165E;
+	Tue,  5 Oct 2021 15:18:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F1DEE165E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633439508;
-	bh=VdbWKqkSi8C76mefS5o/H0dvAw+MefDXh5ZnCzEh50U=;
+	s=default; t=1633439933;
+	bh=xHot8P2EAysF6jPI4ItnwpbcnqHU6rh3Hrf2FOmvXfI=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AWO+J/p3/xX82TXTgbabb273uVmqyC0YsQk2DVgGY9SXxnnQaTg9dV6qFlnFBlPbj
-	 Gew/0VG3TPSwwK+Oj3AjT84WfhZADLLhpNEksQoLzaRl0Xzf8pMIqoiFLMytQQqjqd
-	 ZKGb0XiBpIdwN08klsJeW0rAtX3yboom5DYl3F8Q=
+	b=fl2fS4KuDfQ47K+oS6J0G1H1BJm0LTOj0wTbCC8juH/vQ6YHodB9/7NNk50h1R1/t
+	 PfrLezvglBH6/u2Znywteb5LX1rFAJ829UC1p8lfFKoNCZkFpEhtEHbQhpDo/EizLF
+	 rC7jwhGkc8g5+HOFfcFOQ55GbQDxUgOXzqv4PlHU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B0BE0F80259;
-	Tue,  5 Oct 2021 15:10:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 53FD2F80259;
+	Tue,  5 Oct 2021 15:18:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A01C3F8027D; Tue,  5 Oct 2021 15:10:55 +0200 (CEST)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ id 9E577F8027D; Tue,  5 Oct 2021 15:18:00 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A197BF8010B
- for <alsa-devel@alsa-project.org>; Tue,  5 Oct 2021 15:10:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A197BF8010B
-X-IronPort-AV: E=McAfee;i="6200,9189,10127"; a="289239044"
-X-IronPort-AV: E=Sophos;i="5.85,348,1624345200"; d="scan'208";a="289239044"
+ by alsa1.perex.cz (Postfix) with ESMTPS id A618AF8010B
+ for <alsa-devel@alsa-project.org>; Tue,  5 Oct 2021 15:17:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A618AF8010B
+X-IronPort-AV: E=McAfee;i="6200,9189,10127"; a="248994036"
+X-IronPort-AV: E=Sophos;i="5.85,348,1624345200"; d="scan'208";a="248994036"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Oct 2021 06:10:43 -0700
-X-IronPort-AV: E=Sophos;i="5.85,348,1624345200"; d="scan'208";a="523764251"
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 05 Oct 2021 06:17:45 -0700
+X-IronPort-AV: E=Sophos;i="5.85,348,1624345200"; d="scan'208";a="523766323"
 Received: from emccutch-mobl.amr.corp.intel.com (HELO [10.212.34.81])
  ([10.212.34.81])
  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Oct 2021 06:10:42 -0700
-Subject: Re: [PATCH v2 1/3] ALSA: pcm: introduce INFO_NO_REWINDS flag
-To: Takashi Iwai <tiwai@suse.de>
-References: <20211004162423.85323-1-pierre-louis.bossart@linux.intel.com>
- <20211004162423.85323-2-pierre-louis.bossart@linux.intel.com>
- <s5h8rz8ez3s.wl-tiwai@suse.de>
+ 05 Oct 2021 06:17:44 -0700
+Subject: Re: [RFC PATCH v2 0/5] ASoC: soc-pcm: fix trigger race conditions
+ with shared BE
+To: Sameer Pujar <spujar@nvidia.com>, alsa-devel@alsa-project.org
+References: <20211004225441.233375-1-pierre-louis.bossart@linux.intel.com>
+ <cce82420-d744-ee43-d514-b77ac4905ffa@nvidia.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <c62b3749-c5ea-7b1e-2831-272c8a14d3ac@linux.intel.com>
-Date: Tue, 5 Oct 2021 08:10:40 -0500
+Message-ID: <1efa1c31-7342-05f8-5f73-95e2462d4179@linux.intel.com>
+Date: Tue, 5 Oct 2021 08:17:42 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <s5h8rz8ez3s.wl-tiwai@suse.de>
+In-Reply-To: <cce82420-d744-ee43-d514-b77ac4905ffa@nvidia.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org,
- =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Content-Transfer-Encoding: 8bit
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, tiwai@suse.de,
+ vkoul@kernel.org, broonie@kernel.org, Gyeongtaek Lee <gt82.lee@samsung.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,29 +82,58 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-
-On 10/5/21 1:59 AM, Takashi Iwai wrote:
-> On Mon, 04 Oct 2021 18:24:21 +0200,
-> Pierre-Louis Bossart wrote:
->>
->> When the hardware can only deal with a monotonically increasing
->> appl_ptr, this flag can be set. In case the application requests a
->> rewind, snd_pcm_rewind() will not return an error code but signal that
->> the appl_ptr was not modified.
+> I did a quick test of your patches on my Tegra board and seeing issues
+> with multiple streams. For instance, I ran it for a 2x1 mixer
+> configuration and hitting below:
 > 
-> This modification itself is fine, but I guess that application may
-> still move the appl_ptr directly via SNDRV_PCM_IOCTL_SYNC_PTR ioctl.
-> We need to verify the backward move there, I suppose?
+> [  277.661886] BUG: scheduling while atomic: aplay/1306/0x00000100
+> [  287.713193] BUG: spinlock cpu recursion on CPU#0, aplay/1307
+> [  287.719138]  lock: 0xffff00008cc820f0, .magic: dead4ead, .owner:
+> aplay/1306, .owner_cpu: 0
+> [  287.727319] CPU: 0 PID: 1307 Comm: aplay Tainted: G W        
+> 5.15.0-rc3-next-20210927-00026-gffdabce987b1 #12
+> [  287.737783] Hardware name: NVIDIA Jetson AGX Xavier Developer Kit (DT)
+> [  287.744228] Call trace:
+> [  287.746656]  dump_backtrace+0x0/0x1c0
+> [  287.750300]  show_stack+0x18/0x28
+> [  287.753604]  dump_stack_lvl+0x7c/0xa8
+> [  287.757236]  dump_stack+0x18/0x34
+> [  287.760536]  spin_dump+0x70/0x90
+> [  287.763732]  do_raw_spin_lock+0xd8/0x120
+> [  287.767615]  _raw_spin_lock_irq+0x60/0x80
+> [  287.771581]  snd_pcm_stream_lock_irq+0x20/0x48 [snd_pcm]
+> [  287.776853]  snd_pcm_drain+0x1ec/0x348 [snd_pcm]
+> [  287.781421]  snd_pcm_common_ioctl+0xacc/0x1938 [snd_pcm]
+> [  287.786685]  snd_pcm_ioctl+0x2c/0x48 [snd_pcm]
+> [  287.791101]  __arm64_sys_ioctl+0xb0/0xf0
+> [  287.794982]  invoke_syscall+0x44/0x108
+> [  287.798683]  el0_svc_common.constprop.3+0x74/0x100
+> [  287.803416]  do_el0_svc+0x24/0x90
+> [  287.806687]  el0_svc+0x20/0x60
+> [  287.809705]  el0t_64_sync_handler+0x94/0xb8
+> [  287.813839]  el0t_64_sync+0x180/0x184
+> 
+> 
+> And in some case just below:
+> 
+> [ 1074.212276] BUG: scheduling while atomic: aplay/12327/0x00000100
+> [ 1095.227509] rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
+> [ 1095.233443] rcu:     0-...0: (1 GPs behind)
+> idle=4af/1/0x4000000000000004 softirq=19902/19902 fqs=2626
+> [ 1095.242528] rcu:     2-...0: (1 GPs behind)
+> idle=9d5/1/0x4000000000000000 softirq=22707/22707 fqs=262
 
-Sorry Takashi, I wasn't able to fully follow your question.
+Thanks Sameer for the overnight tests, much appreciated.
 
-In the previous version, I had an explicit check to see if the appl_ptr
-was modified by a rewind, but you mentioned this would be broken for
-32-bit devices due to the use of the 'boundary'. I really have no idea
-how we can detect a rewind in this configuration, so  if you are asking
-to detect when the appl_ptr is modified through some other means (which
-I didn't get) we will have the same problem, won't we?
+My patches don't change anything related to a spinlock or pcm stream
+management, so not sure what could cause this rather spectacular
+failure. That hints at a fundamental configuration difference, possibly
+caused by your component chaining?
 
-see the initial thread here:
+Since in your case you have a 1:1 mapping between FE and BE, would you
+mind testing by backtracking, one patch at a time to see which one of
+the three last patches could cause a problem on your board?
 
-https://lore.kernel.org/alsa-devel/de5e91c6-5f0e-9866-a1c2-0943b4342359@linux.intel.com/
+Thanks again for your time!
+-Pierre
+
