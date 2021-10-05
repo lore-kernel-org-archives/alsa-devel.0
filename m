@@ -2,71 +2,71 @@ Return-Path: <SRS0=jGB1=OZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 33B45C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Oct 2021 15:39:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 888DFC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Oct 2021 15:40:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B015860F9D
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Oct 2021 15:39:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B015860F9D
+	by mail.kernel.org (Postfix) with ESMTPS id DB2E0610EA
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Oct 2021 15:40:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DB2E0610EA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 097531684;
-	Tue,  5 Oct 2021 17:38:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 097531684
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6529C1688;
+	Tue,  5 Oct 2021 17:39:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6529C1688
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633448388;
-	bh=w6wTKQ+ZYOU5+PQXui4JmahGQ+oKzGwVmgNXUICcScM=;
+	s=default; t=1633448414;
+	bh=dMaNVcV9n/AsE7FV5OdxX7BiQfijv6VpA9Xu4cdrapw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=B9YHsAoj5Hb/GSWj/5AaegDHc7LjkNRrNLeYviyz7ET8/eq68olEhHxN30Jbj4T5M
-	 tr4xcpJZBldqjUk/4Nv9t65b9iBs8wafCK2jsUcz2VqDZmms0/YYhi35pZHGdotRkz
-	 QPVTIo8Ttg9jJdcNAt3mi/b599R1vrlW2v+6m/HA=
+	b=EIQCCEouULb3SCsbWZs6YrPmvszUWPtg3mR5BQ7DfCaIx8oTj2iFvtC/FDrs5Dgo1
+	 jO9WzsfyIrg02ngdv+FMhkditkRuGY1LdSA14gL4xISIWF1sHIozdxKirS0vSaTF7i
+	 oxBDzHIvYfO0oxeJirarSQdBOBXe/3/b9naqI9yI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 55608F804BD;
-	Tue,  5 Oct 2021 17:38:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1F7D0F804E7;
+	Tue,  5 Oct 2021 17:38:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 106B5F804CF; Tue,  5 Oct 2021 17:38:06 +0200 (CEST)
+ id 2EF5FF804D9; Tue,  5 Oct 2021 17:38:09 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2E91FF8020D
- for <alsa-devel@alsa-project.org>; Tue,  5 Oct 2021 17:38:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E91FF8020D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 34474F80259
+ for <alsa-devel@alsa-project.org>; Tue,  5 Oct 2021 17:37:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34474F80259
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="tw/h4Qy+"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0149561165;
- Tue,  5 Oct 2021 15:38:00 +0000 (UTC)
+ header.b="eS3PMGo5"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A133760F9D;
+ Tue,  5 Oct 2021 15:37:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1633448281;
- bh=w6wTKQ+ZYOU5+PQXui4JmahGQ+oKzGwVmgNXUICcScM=;
+ s=k20201202; t=1633448276;
+ bh=dMaNVcV9n/AsE7FV5OdxX7BiQfijv6VpA9Xu4cdrapw=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=tw/h4Qy+dkw4Y4D9C/2j9vU4VEviPN5r6+gF7a5gHTaj499vPCnzElUfZrfi0N5fn
- 3c5E7ZK1l+aIICfX/WFrNjNYx9kf/OowyIPUnQuRtDZHEzUNrAAiM9MvrCoa46dgd/
- xwoVqjsBDtPjgD27hitYMgyOQkGRI2oyIjXlb83ddmOiUCfXPOYYKd9lBudSeykphz
- JA+oJ4KEo8uGA+kOwY6mqPtkz7LJMe/Qie0yqwM43IRx9BJtuDYo5Pt3os2DtGXLuu
- /L0nyUfC/avM+Z6GSyWC7rO5CInc8mVni/c6O4bmtAHNmjpZ+m4dThl8Bf9FNqvX8L
- PTNaEWVEE5psQ==
+ b=eS3PMGo5W7Dc/urhyhwMEbNZZrjk0emog2jLwrNLzjbAbGwKy718OEWvAJ+8gOKnv
+ 7UMz28kvv3b9Qqh7e+Vj1/TCdkJZZ0KIQS9TecjV1ykv3ZEnbI9V3O22v4eFjSSfut
+ 7lycsS63Do4K1eFjpMkINsSb4Qn1tKQdkVUFnpj5TOQtxJT7uq5ffsjSajJNXfN+Eh
+ ED6zqWBGxYor6+RDAcwHzlMNpw0geAQJmRbIMDGqgIytPJW40RMXMORuScNvyrMdjz
+ Q77siaMvFkQnEvhpFef03HsWcFCPSTIz5XxRYbSn9X7UYYndSIwrEnf8Gc0AiphShZ
+ D+r66FQd0mvIw==
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org
-Subject: Re: [PATCH 0/5] ASoC: SOF: Intel: add flags to turn on SSP clocks
- early
-Date: Tue,  5 Oct 2021 16:37:44 +0100
-Message-Id: <163344779739.1075058.6330760789502624929.b4-ty@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+ Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: Re: [PATCH] ASoC: amd: acp-rt5645: Constify static snd_soc_ops
+Date: Tue,  5 Oct 2021 16:37:42 +0100
+Message-Id: <163344779742.1075058.2948246848855482699.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211004171430.103674-1-pierre-louis.bossart@linux.intel.com>
-References: <20211004171430.103674-1-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20211004224514.8783-1-rikard.falkeborn@gmail.com>
+References: <20211004224514.8783-1-rikard.falkeborn@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, Mark Brown <broonie@kernel.org>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,15 +82,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 4 Oct 2021 12:14:25 -0500, Pierre-Louis Bossart wrote:
-> With the chip shortage, some GeminiLake Intel-based designs were
-> respun and now rely on codecs that need the SSP bit clock turned on in
-> the hw_params stage, not the trigger stage. This patchset mirrors the
-> flags added in the SOF DAI_CONFIG IPC, and sets the flags when this
-> capability is indicated as necessary in the topology files where the
-> SSP configuration is stored.
+On Tue, 5 Oct 2021 00:45:14 +0200, Rikard Falkeborn wrote:
+> The struct cz_aif1_ops is only assigned to the ops field in the
+> snd_soc_dai_link struct which is a pointer to const struct snd_soc_ops.
+> Make it const to allow the compiler to put it in read-only memory.
 > 
-> [...]
+> 
 
 Applied to
 
@@ -98,16 +95,8 @@ Applied to
 
 Thanks!
 
-[1/5] ASoC: SOF: dai: mirror group_id definition added in firmware
-      commit: 663742307fd7b695f34597e28a846afbc9d5f3e8
-[2/5] ASoC: SOF: dai: include new flags for DAI_CONFIG
-      commit: 21c51692fcdf9ceb36eeda48849e0ac155ff84f8
-[3/5] ASoC: SOF: Intel: hda: add new flags for DAI_CONFIG
-      commit: b30b60a26a2369d6cbb63d63245f3b13f0403449
-[4/5] ASoC: SOF: dai-intel: add SOF_DAI_INTEL_SSP_CLKCTRL_MCLK/BCLK_ES bits
-      commit: 68776b2fb06e7e438a2c4ebca5ca7f216e31d678
-[5/5] ASoC: SOF: Intel: hda-dai: improve SSP DAI handling for dynamic pipelines
-      commit: 84e3cfd16a72c7b7d569b72661093cdd16346d29
+[1/1] ASoC: amd: acp-rt5645: Constify static snd_soc_ops
+      commit: d54aa2aeaa70237f4482336e86195235ea1de032
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
