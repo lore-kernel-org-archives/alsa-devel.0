@@ -2,59 +2,59 @@ Return-Path: <SRS0=AF2s=O2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B3EDDC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 11:08:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F0BFC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 11:08:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 903A66117A
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 11:08:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 903A66117A
+	by mail.kernel.org (Postfix) with ESMTPS id DAED2610CC
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 11:08:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DAED2610CC
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CF2B7827;
-	Wed,  6 Oct 2021 13:07:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF2B7827
+	by alsa0.perex.cz (Postfix) with ESMTPS id 56B5F1673;
+	Wed,  6 Oct 2021 13:07:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 56B5F1673
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633518510;
-	bh=Xz7dmKXOK/c9tgZEk03Y43V2bOOQ+PFAqcyZpFZ1Z6o=;
+	s=default; t=1633518518;
+	bh=ABq1gnndob6kMqLLF4MVU+yy/BlqDC5W1o/yN5MLG7A=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GtAz7DyWMLbBKdl5uMR3nqQDckRtBQ2d0cWtGS8ie3W4Fx5WOeO0HHCUa8t3EcRqx
-	 yknfYzSwHE2cffcrLPJgUAUqBt+Zzx/C0qlUpwmh6oox911bYQtQZ6yMrkEShykAjr
-	 UVGm0n3xtLNSLo+EOJUi+x5umWqLU9L30DWpC4Go=
+	b=COtUJ9JNNSRrSdOQPPi1yxDdcGvKsmhP43sbK/39YnUAdyn0Eyool/O5iNMJL1F4e
+	 vqdwZZVgTNCvukn1Rl6+aBRDD/3G5zX/3MgB9KNd4N+0QbnaWwCMaM8f5Fq8ItzvuE
+	 GjGgeOfjk6OWSpv0gQOArNhSIeNIEYl4HQBrea6c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 20C6EF804E2;
-	Wed,  6 Oct 2021 13:06:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6BF1DF804E7;
+	Wed,  6 Oct 2021 13:06:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C20A4F800FE; Wed,  6 Oct 2021 13:06:54 +0200 (CEST)
+ id 3AFBEF804EB; Wed,  6 Oct 2021 13:06:58 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 92CF2F800FE
- for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 13:06:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92CF2F800FE
-X-IronPort-AV: E=McAfee;i="6200,9189,10128"; a="223366418"
-X-IronPort-AV: E=Sophos;i="5.85,350,1624345200"; d="scan'208";a="223366418"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 965CEF80240
+ for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 13:06:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 965CEF80240
+X-IronPort-AV: E=McAfee;i="6200,9189,10128"; a="223366431"
+X-IronPort-AV: E=Sophos;i="5.85,350,1624345200"; d="scan'208";a="223366431"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Oct 2021 04:06:43 -0700
-X-IronPort-AV: E=Sophos;i="5.85,350,1624345200"; d="scan'208";a="439080924"
+ 06 Oct 2021 04:06:45 -0700
+X-IronPort-AV: E=Sophos;i="5.85,350,1624345200"; d="scan'208";a="439080949"
 Received: from byurovit-mobl1.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.249.39.239])
  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Oct 2021 04:06:40 -0700
+ 06 Oct 2021 04:06:43 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com, broonie@kernel.org,
  pierre-louis.bossart@linux.intel.com
-Subject: [PATCH 01/19] ASoC: SOF: core: debug: force all processing on primary
- core
-Date: Wed,  6 Oct 2021 14:06:27 +0300
-Message-Id: <20211006110645.26679-2-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 02/19] ASoC: SOF: debug: Swap the dsp_dump and ipc_dump
+ sequence for fw_exception
+Date: Wed,  6 Oct 2021 14:06:28 +0300
+Message-Id: <20211006110645.26679-3-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211006110645.26679-1-peter.ujfalusi@linux.intel.com>
 References: <20211006110645.26679-1-peter.ujfalusi@linux.intel.com>
@@ -77,71 +77,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+snd_sof_dsp_panic() only prints dsp_dump followed by flushing the DMA trace
+buffer.
 
-The topology file currently provides information on which
-pipeline/processing is to be scheduled on which DSP core.
+To retain similar 'sequence' first do an ipc_dump then the dsp_dump and
+finally flush the trace buffer in case of fw_exception.
 
-To help diagnose potential issues, this patch provides an override of
-the 'core' tokens to use the primary core (typically core0). Of course
-this may result in a Core0 activity that exceeds hardware
-capabilities, so this should only be used when the total processing
-fits on DSP - possibly using firmware mockup processing and stubs.
-
-No new dmesg log was added to avoid adding noise during topology
-parsing, but the existing logs will show the primary core being used.
-
-This is strictly for validation/debug, products should NEVER use this
-override, the topology is assumed to be the description of the
-firmware graph.
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Bard Liao <bard.liao@intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/sof-priv.h | 3 +++
- sound/soc/sof/topology.c | 6 ++++++
- 2 files changed, 9 insertions(+)
+ sound/soc/sof/debug.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index 4e5bab838cbf..0ca64f0f8873 100644
---- a/sound/soc/sof/sof-priv.h
-+++ b/sound/soc/sof/sof-priv.h
-@@ -30,6 +30,9 @@
- #define SOF_DBG_DYNAMIC_PIPELINES_ENABLE	BIT(4) /* 0: use static pipelines
- 							* 1: use dynamic pipelines
- 							*/
-+#define SOF_DBG_DISABLE_MULTICORE		BIT(5) /* schedule all pipelines/widgets
-+							* on primary core
-+							*/
- 
- #define SOF_DBG_DUMP_REGS		BIT(0)
- #define SOF_DBG_DUMP_MBOX		BIT(1)
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index 534f004f6162..73c0ee7b88ac 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -1759,6 +1759,9 @@ static int sof_widget_load_pipeline(struct snd_soc_component *scomp, int index,
- 		goto err;
+diff --git a/sound/soc/sof/debug.c b/sound/soc/sof/debug.c
+index f37ea1956406..3b85e0484411 100644
+--- a/sound/soc/sof/debug.c
++++ b/sound/soc/sof/debug.c
+@@ -832,8 +832,8 @@ void snd_sof_handle_fw_exception(struct snd_sof_dev *sdev)
  	}
  
-+	if (sof_core_debug & SOF_DBG_DISABLE_MULTICORE)
-+		pipeline->core = SOF_DSP_PRIMARY_CORE;
-+
- 	if (sof_core_debug & SOF_DBG_DYNAMIC_PIPELINES_OVERRIDE)
- 		swidget->dynamic_pipeline_widget = sof_core_debug &
- 			SOF_DBG_DYNAMIC_PIPELINES_ENABLE;
-@@ -2356,6 +2359,9 @@ static int sof_widget_ready(struct snd_soc_component *scomp, int index,
- 		return ret;
- 	}
- 
-+	if (sof_core_debug & SOF_DBG_DISABLE_MULTICORE)
-+		comp.core = SOF_DSP_PRIMARY_CORE;
-+
- 	swidget->core = comp.core;
- 
- 	ret = sof_parse_tokens(scomp, &swidget->comp_ext, comp_ext_tokens,
+ 	/* dump vital information to the logs */
+-	snd_sof_dsp_dbg_dump(sdev, SOF_DBG_DUMP_REGS | SOF_DBG_DUMP_MBOX);
+ 	snd_sof_ipc_dump(sdev);
++	snd_sof_dsp_dbg_dump(sdev, SOF_DBG_DUMP_REGS | SOF_DBG_DUMP_MBOX);
+ 	snd_sof_trace_notify_for_error(sdev);
+ }
+ EXPORT_SYMBOL(snd_sof_handle_fw_exception);
 -- 
 2.33.0
 
