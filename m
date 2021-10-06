@@ -2,94 +2,75 @@ Return-Path: <SRS0=AF2s=O2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DCF13C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 11:47:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9513AC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 12:05:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 62BFB61131
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 11:47:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 62BFB61131
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id 2B95961163
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 12:05:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2B95961163
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=axis.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F183D16A3;
-	Wed,  6 Oct 2021 13:46:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F183D16A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2509F820;
+	Wed,  6 Oct 2021 14:05:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2509F820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633520865;
-	bh=qX4HDYsoyC/S+GtJuoZwau8IrzeDtrvjr51L9jOLMeY=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1633521951;
+	bh=blvn4wCc4MDRXJvkIMG3Xbk3TERlg//SigMVZBZVzx8=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JvH2z0y7Q3pBPFj5KX2EjBWHmTmHukn4bzcHDt0fcHmWYiDq/kqh8Hx4Ic45Y5WY7
-	 +WyUvY34Rwg855baE3HjOhRTJxnVLEG5N2EAV8aKRgNdVwjwkzo/biCxHn0ILUnyFd
-	 GpTR1S28IXIM7pX5TOPyDEaOBXJuN9GnLcJs3cYw=
+	b=Vw2qH/qzFv0Tk7RpzW85RTVSCsIk+CJMHVNVX82wIs8uAIIAkT/gV8XQWiAJKIpBo
+	 b+uBIkxYM02zHN9VOY2eP/51wGE7Kqz8WcnKm9gBud5i/oMp6hA2AJowrpI3mq1kfY
+	 ntWrIW+p5ijIwtxk7SG0rSMSc7jx55iAURN9D3qQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 907A8F805B3;
-	Wed,  6 Oct 2021 13:40:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 55000F80229;
+	Wed,  6 Oct 2021 14:05:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 788BEF80566; Wed,  6 Oct 2021 13:40:50 +0200 (CEST)
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com
- [IPv6:2a00:1450:4864:20::431])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 79886F80240; Wed,  6 Oct 2021 14:04:41 +0200 (CEST)
+Received: from smtp1.axis.com (smtp1.axis.com [195.60.68.17])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 985E0F804E2
- for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 13:40:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 985E0F804E2
+ by alsa1.perex.cz (Postfix) with ESMTPS id BB5DDF80229
+ for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 14:03:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB5DDF80229
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="WDV9NffK"
-Received: by mail-wr1-x431.google.com with SMTP id u18so7933291wrg.5
- for <alsa-devel@alsa-project.org>; Wed, 06 Oct 2021 04:40:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=FYgv1eoGx9NFbm/uI8k2s23DY3/Vaao0ojhIbD31vzo=;
- b=WDV9NffKpdhPFk4HWBwotwWh0W6xGQgfjunXo6vEax054Yneh/O28QkOUQK7Oo1tUQ
- TwT0wV9/SguhPV1KGJDDA/J77qjYkw/DfZJTc94oZnqbNYvV7O0HBTraiUvRqAi4Nedo
- gpoJrFotLuwo5hefq6r1RdGRoUAaY1FaoJ6bmWnA611NHDX8mbYGtGLqe7Tf2NBc68IA
- wciZI6+J+JFi72SrcSbTDpMS6tTgsuyqkhOeg44uRE/+3Gf9mVlGt15no6VvOAym50UN
- jPXtNNWajwjmsswtim9tNCoHISYiIbc4SjrrRzzijXzNSZ2twQmO+g7naHyBn++ndUbs
- WBRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=FYgv1eoGx9NFbm/uI8k2s23DY3/Vaao0ojhIbD31vzo=;
- b=DBxcN2ASy5OJHM7uhNRfbn4b/czY2w0O7R+utwPfpe3nkNQ2lAxdeWAQRwF2u7heec
- CzvMD20XXnxg0QsqieM9QYx+5sU9jM+sK8u8TMpvcnZsnp0xhvQD/GkTvVmtpX8s3oLd
- No3N3Dmn+5TcyKL6Y3lOd6L8ECCecx6iqGBzaNRCQIHyAPN+yJrjqP2rHDjpH1MAnPHN
- xu5RmF8UNUEmfVW6BpRuuH9OXAVvOmZHfhRIzytUOM1WZZutx2mr2QiEELW/lnBAlAMb
- E2ewXaiamtfrJHpTsJU1zoh/kH+wG9zPSry49kigHRYMZUv6EGBD+TtJrcO1fCRY2udQ
- mGDg==
-X-Gm-Message-State: AOAM533AYYe3Rmp4ms56w3ikqF8gUwDptZ7VsznFQ7yS7jz21IfH1yUC
- lcKL2EpQ+Mz9Hrc72qQiXvmtziLDitNAyQ==
-X-Google-Smtp-Source: ABdhPJxlff4FgGeww58d7eqa3mugt9pY9syvMsrFxIBXZ8ecUsoGatGuq0XWPidzLvQLnUy7mUs01A==
-X-Received: by 2002:a05:600c:b41:: with SMTP id k1mr9429483wmr.4.1633520425816; 
- Wed, 06 Oct 2021 04:40:25 -0700 (PDT)
-Received: from srini-hackbox.lan
- (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id n11sm5540110wmq.19.2021.10.06.04.40.24
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 06 Oct 2021 04:40:25 -0700 (PDT)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: broonie@kernel.org,
-	bjorn.andersson@linaro.org,
-	robh@kernel.org
-Subject: [PATCH v9 16/17] ASoC: qdsp6: audioreach: add q6prm support
-Date: Wed,  6 Oct 2021 12:39:49 +0100
-Message-Id: <20211006113950.10782-17-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20211006113950.10782-1-srinivas.kandagatla@linaro.org>
-References: <20211006113950.10782-1-srinivas.kandagatla@linaro.org>
+ dkim=pass (2048-bit key) header.d=axis.com header.i=@axis.com
+ header.b="jsMF6fT3"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=axis.com; q=dns/txt; s=axis-central1; t=1633521810;
+ x=1665057810; h=date:from:to:cc:subject:in-reply-to:message-id:
+ references:mime-version;
+ bh=0f8PMQce6UaT1ls4fFQIxbZcR//ZOXFzkRIIn+7Ayk4=;
+ b=jsMF6fT3I6HlK70jETIe0gyvl1lNSMKf8xgm9JXsweICoZvSdc1Xflil
+ 3eVi7RfuBUMIaAR/mYLM4QbdpD9z6eAI//p4sA2MsKPkbiShz2QLOvRLW
+ nA2PXHU1f8D/kZRr0kGLbz3cQ2MA2LqvxAl7V/XYMjemG3DqgzVT+drib
+ cxhLcVwq9ucXFOJGlsg3rEZ5Qr9nvUZyt+CkTi7StcrLuQFat82h+Ouv2
+ A5aDYSxWHqx3KZDX8WV8D310GnXBqGC4fxcDcCXt6KU8eLN7ZhnFOfdrs
+ 1hryzHF0IXKjCsbySNTHV30i11qIaFDVJRAFlOjEEXT29wvub84OJ8mCG w==;
+Date: Wed, 6 Oct 2021 14:03:18 +0200
+From: Ricard Wanderlof <ricardw@axis.com>
+X-X-Sender: ricardw@lnxricardw1.se.axis.com
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/2] ASoC: codec: tlv320adc3xxx: New codec driver
+In-Reply-To: <YVsu+QMjOQz8pAzY@sirena.org.uk>
+Message-ID: <alpine.DEB.2.21.2110051556250.32437@lnxricardw1.se.axis.com>
+References: <alpine.DEB.2.21.2110041117540.14472@lnxricardw1.se.axis.com>
+ <YVsETxqzhZI8Fb6D@sirena.org.uk>
+ <alpine.DEB.2.21.2110041716190.14472@lnxricardw1.se.axis.com>
+ <YVsu+QMjOQz8pAzY@sirena.org.uk>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- bgoswami@codeaurora.org, lgirdwood@gmail.com, tiwai@suse.de,
- plai@codeaurora.org, pierre-louis.bossart@linux.intel.com
+Content-Type: text/plain; charset="US-ASCII"
+X-Originating-IP: [10.0.5.60]
+X-ClientProxiedBy: se-mail02w.axis.com (10.20.40.8) To se-mail07w.axis.com
+ (10.20.40.13)
+Cc: alsa-devel <alsa-devel@alsa-project.org>,
+ Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,342 +86,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add support to q6prm (Proxy Resource Manager) module used for clock resources
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/qcom/Kconfig        |   4 +
- sound/soc/qcom/qdsp6/Makefile |   1 +
- sound/soc/qcom/qdsp6/q6prm.c  | 202 ++++++++++++++++++++++++++++++++++
- sound/soc/qcom/qdsp6/q6prm.h  |  78 +++++++++++++
- 4 files changed, 285 insertions(+)
- create mode 100644 sound/soc/qcom/qdsp6/q6prm.c
- create mode 100644 sound/soc/qcom/qdsp6/q6prm.h
+On Mon, 4 Oct 2021, Mark Brown wrote:
 
-diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index d1132c4174db..465a2a603401 100644
---- a/sound/soc/qcom/Kconfig
-+++ b/sound/soc/qcom/Kconfig
-@@ -96,6 +96,9 @@ config SND_SOC_QDSP6_APM
- 	select SND_SOC_QDSP6_APM_DAI
- 	select SND_SOC_QDSP6_APM_LPASS_DAI
- 
-+config SND_SOC_QDSP6_PRM
-+	tristate
-+
- config SND_SOC_QDSP6
- 	tristate "SoC ALSA audio driver for QDSP6"
- 	depends on QCOM_APR
-@@ -111,6 +114,7 @@ config SND_SOC_QDSP6
- 	select SND_SOC_QDSP6_ASM_DAI
- 	select SND_SOC_TOPOLOGY
- 	select SND_SOC_QDSP6_APM
-+	select SND_SOC_QDSP6_PRM
- 	help
- 	 To add support for MSM QDSP6 Soc Audio.
- 	 This will enable sound soc platform specific
-diff --git a/sound/soc/qcom/qdsp6/Makefile b/sound/soc/qcom/qdsp6/Makefile
-index bdcbfdfa9bd0..c932f8e24b32 100644
---- a/sound/soc/qcom/qdsp6/Makefile
-+++ b/sound/soc/qcom/qdsp6/Makefile
-@@ -15,3 +15,4 @@ obj-$(CONFIG_SND_SOC_QDSP6_ASM_DAI) += q6asm-dai.o
- obj-$(CONFIG_SND_SOC_QDSP6_APM) += snd-q6apm.o
- obj-$(CONFIG_SND_SOC_QDSP6_APM_DAI) += q6apm-dai.o
- obj-$(CONFIG_SND_SOC_QDSP6_APM_LPASS_DAI) += q6apm-lpass-dais.o
-+obj-$(CONFIG_SND_SOC_QDSP6_PRM) += q6prm.o
-diff --git a/sound/soc/qcom/qdsp6/q6prm.c b/sound/soc/qcom/qdsp6/q6prm.c
-new file mode 100644
-index 000000000000..82c40f2d4e1d
---- /dev/null
-+++ b/sound/soc/qcom/qdsp6/q6prm.c
-@@ -0,0 +1,202 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2021, Linaro Limited
-+
-+#include <linux/slab.h>
-+#include <linux/wait.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/delay.h>
-+#include <linux/of_platform.h>
-+#include <linux/jiffies.h>
-+#include <linux/soc/qcom/apr.h>
-+#include <dt-bindings/soc/qcom,gpr.h>
-+#include <dt-bindings/sound/qcom,q6dsp-lpass-ports.h>
-+#include "q6prm.h"
-+#include "audioreach.h"
-+
-+struct q6prm {
-+	struct device *dev;
-+	gpr_device_t *gdev;
-+	wait_queue_head_t wait;
-+	struct gpr_ibasic_rsp_result_t result;
-+	struct mutex lock;
-+};
-+
-+#define PRM_CMD_REQUEST_HW_RSC		0x0100100F
-+#define PRM_CMD_RSP_REQUEST_HW_RSC	0x02001002
-+#define PRM_CMD_RELEASE_HW_RSC		0x01001010
-+#define PRM_CMD_RSP_RELEASE_HW_RSC	0x02001003
-+#define PARAM_ID_RSC_HW_CORE		0x08001032
-+#define PARAM_ID_RSC_LPASS_CORE		0x0800102B
-+#define PARAM_ID_RSC_AUDIO_HW_CLK	0x0800102C
-+
-+struct prm_cmd_request_hw_core {
-+	struct apm_module_param_data param_data;
-+	uint32_t hw_clk_id;
-+} __packed;
-+
-+struct prm_cmd_request_rsc {
-+	struct apm_module_param_data param_data;
-+	uint32_t num_clk_id;
-+	struct audio_hw_clk_cfg clock_id;
-+} __packed;
-+
-+static int q6prm_send_cmd_sync(struct q6prm *prm, struct gpr_pkt *pkt, uint32_t rsp_opcode)
-+{
-+	return audioreach_send_cmd_sync(prm->dev, prm->gdev, &prm->result, &prm->lock,
-+					NULL, &prm->wait, pkt, rsp_opcode);
-+}
-+
-+static int q6prm_set_hw_core_req(struct device *dev, uint32_t hw_block_id, bool enable)
-+{
-+	struct q6prm *prm = dev_get_drvdata(dev->parent);
-+	struct apm_module_param_data *param_data;
-+	struct prm_cmd_request_hw_core *req;
-+	gpr_device_t *gdev = prm->gdev;
-+	uint32_t opcode, rsp_opcode;
-+	struct gpr_pkt *pkt;
-+	int rc;
-+
-+	if (enable) {
-+		opcode = PRM_CMD_REQUEST_HW_RSC;
-+		rsp_opcode = PRM_CMD_RSP_REQUEST_HW_RSC;
-+	} else {
-+		opcode = PRM_CMD_RELEASE_HW_RSC;
-+		rsp_opcode = PRM_CMD_RSP_RELEASE_HW_RSC;
-+	}
-+
-+	pkt = audioreach_alloc_cmd_pkt(sizeof(*req), opcode, 0, gdev->svc.id, GPR_PRM_MODULE_IID);
-+	if (IS_ERR(pkt))
-+		return PTR_ERR(pkt);
-+
-+	req = (void *)pkt + GPR_HDR_SIZE + APM_CMD_HDR_SIZE;
-+
-+	param_data = &req->param_data;
-+
-+	param_data->module_instance_id = GPR_PRM_MODULE_IID;
-+	param_data->error_code = 0;
-+	param_data->param_id = PARAM_ID_RSC_HW_CORE;
-+	param_data->param_size = sizeof(*req) - APM_MODULE_PARAM_DATA_SIZE;
-+
-+	req->hw_clk_id = hw_block_id;
-+
-+	rc = q6prm_send_cmd_sync(prm, pkt, rsp_opcode);
-+
-+	kfree(pkt);
-+
-+	return rc;
-+}
-+
-+int q6prm_vote_lpass_core_hw(struct device *dev, uint32_t hw_block_id,
-+			     const char *client_name, uint32_t *client_handle)
-+{
-+	return q6prm_set_hw_core_req(dev, hw_block_id, true);
-+
-+}
-+EXPORT_SYMBOL_GPL(q6prm_vote_lpass_core_hw);
-+
-+int q6prm_unvote_lpass_core_hw(struct device *dev, uint32_t hw_block_id, uint32_t client_handle)
-+{
-+	return q6prm_set_hw_core_req(dev, hw_block_id, false);
-+}
-+EXPORT_SYMBOL_GPL(q6prm_unvote_lpass_core_hw);
-+
-+int q6prm_set_lpass_clock(struct device *dev, int clk_id, int clk_attr, int clk_root,
-+			  unsigned int freq)
-+{
-+	struct q6prm *prm = dev_get_drvdata(dev->parent);
-+	struct apm_module_param_data *param_data;
-+	struct prm_cmd_request_rsc *req;
-+	gpr_device_t *gdev = prm->gdev;
-+	struct gpr_pkt *pkt;
-+	int rc;
-+
-+	pkt = audioreach_alloc_cmd_pkt(sizeof(*req), PRM_CMD_REQUEST_HW_RSC, 0, gdev->svc.id,
-+				       GPR_PRM_MODULE_IID);
-+	if (IS_ERR(pkt))
-+		return PTR_ERR(pkt);
-+
-+	req = (void *)pkt + GPR_HDR_SIZE + APM_CMD_HDR_SIZE;
-+
-+	param_data = &req->param_data;
-+
-+	param_data->module_instance_id = GPR_PRM_MODULE_IID;
-+	param_data->error_code = 0;
-+	param_data->param_id = PARAM_ID_RSC_AUDIO_HW_CLK;
-+	param_data->param_size = sizeof(*req) - APM_MODULE_PARAM_DATA_SIZE;
-+
-+	req->num_clk_id = 1;
-+	req->clock_id.clock_id = clk_id;
-+	req->clock_id.clock_freq = freq;
-+	req->clock_id.clock_attri = clk_attr;
-+	req->clock_id.clock_root = clk_root;
-+
-+	rc = q6prm_send_cmd_sync(prm, pkt, PRM_CMD_RSP_REQUEST_HW_RSC);
-+
-+	kfree(pkt);
-+
-+	return rc;
-+}
-+EXPORT_SYMBOL_GPL(q6prm_set_lpass_clock);
-+
-+static int prm_callback(struct gpr_resp_pkt *data, void *priv, int op)
-+{
-+	gpr_device_t *gdev = priv;
-+	struct q6prm *prm = dev_get_drvdata(&gdev->dev);
-+	struct gpr_ibasic_rsp_result_t *result;
-+	struct gpr_hdr *hdr = &data->hdr;
-+
-+	switch (hdr->opcode) {
-+	case PRM_CMD_RSP_REQUEST_HW_RSC:
-+	case PRM_CMD_RSP_RELEASE_HW_RSC:
-+		result = data->payload;
-+		prm->result.opcode = hdr->opcode;
-+		prm->result.status = result->status;
-+		wake_up(&prm->wait);
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int prm_probe(gpr_device_t *gdev)
-+{
-+	struct device *dev = &gdev->dev;
-+	struct q6prm *cc;
-+
-+	cc = devm_kzalloc(dev, sizeof(*cc), GFP_KERNEL);
-+	if (!cc)
-+		return -ENOMEM;
-+
-+	cc->dev = dev;
-+	cc->gdev = gdev;
-+	mutex_init(&cc->lock);
-+	init_waitqueue_head(&cc->wait);
-+	dev_set_drvdata(dev, cc);
-+
-+	return devm_of_platform_populate(dev);
-+}
-+
-+#ifdef CONFIG_OF
-+static const struct of_device_id prm_device_id[]  = {
-+	{ .compatible = "qcom,q6prm" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, prm_device_id);
-+#endif
-+
-+static gpr_driver_t prm_driver = {
-+	.probe = prm_probe,
-+	.gpr_callback = prm_callback,
-+	.driver = {
-+		.name = "qcom-prm",
-+		.of_match_table = of_match_ptr(prm_device_id),
-+	},
-+};
-+
-+module_gpr_driver(prm_driver);
-+MODULE_DESCRIPTION("Audio Process Manager");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/qcom/qdsp6/q6prm.h b/sound/soc/qcom/qdsp6/q6prm.h
-new file mode 100644
-index 000000000000..fea4d1954bc1
---- /dev/null
-+++ b/sound/soc/qcom/qdsp6/q6prm.h
-@@ -0,0 +1,78 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#ifndef __Q6PRM_H__
-+#define __Q6PRM_H__
-+
-+/* Clock ID for Primary I2S IBIT */
-+#define Q6PRM_LPASS_CLK_ID_PRI_MI2S_IBIT                          0x100
-+/* Clock ID for Primary I2S EBIT */
-+#define Q6PRM_LPASS_CLK_ID_PRI_MI2S_EBIT                          0x101
-+/* Clock ID for Secondary I2S IBIT */
-+#define Q6PRM_LPASS_CLK_ID_SEC_MI2S_IBIT                          0x102
-+/* Clock ID for Secondary I2S EBIT */
-+#define Q6PRM_LPASS_CLK_ID_SEC_MI2S_EBIT                          0x103
-+/* Clock ID for Tertiary I2S IBIT */
-+#define Q6PRM_LPASS_CLK_ID_TER_MI2S_IBIT                          0x104
-+/* Clock ID for Tertiary I2S EBIT */
-+#define Q6PRM_LPASS_CLK_ID_TER_MI2S_EBIT                          0x105
-+/* Clock ID for Quartnery I2S IBIT */
-+#define Q6PRM_LPASS_CLK_ID_QUAD_MI2S_IBIT                         0x106
-+/* Clock ID for Quartnery I2S EBIT */
-+#define Q6PRM_LPASS_CLK_ID_QUAD_MI2S_EBIT                         0x107
-+/* Clock ID for Speaker I2S IBIT */
-+#define Q6PRM_LPASS_CLK_ID_SPEAKER_I2S_IBIT                       0x108
-+/* Clock ID for Speaker I2S EBIT */
-+#define Q6PRM_LPASS_CLK_ID_SPEAKER_I2S_EBIT                       0x109
-+/* Clock ID for Speaker I2S OSR */
-+#define Q6PRM_LPASS_CLK_ID_SPEAKER_I2S_OSR                        0x10A
-+
-+/* Clock ID for QUINARY  I2S IBIT */
-+#define Q6PRM_LPASS_CLK_ID_QUI_MI2S_IBIT			0x10B
-+/* Clock ID for QUINARY  I2S EBIT */
-+#define Q6PRM_LPASS_CLK_ID_QUI_MI2S_EBIT			0x10C
-+/* Clock ID for SENARY  I2S IBIT */
-+#define Q6PRM_LPASS_CLK_ID_SEN_MI2S_IBIT			0x10D
-+/* Clock ID for SENARY  I2S EBIT */
-+#define Q6PRM_LPASS_CLK_ID_SEN_MI2S_EBIT			0x10E
-+/* Clock ID for INT0 I2S IBIT  */
-+#define Q6PRM_LPASS_CLK_ID_INT0_MI2S_IBIT                       0x10F
-+/* Clock ID for INT1 I2S IBIT  */
-+#define Q6PRM_LPASS_CLK_ID_INT1_MI2S_IBIT                       0x110
-+/* Clock ID for INT2 I2S IBIT  */
-+#define Q6PRM_LPASS_CLK_ID_INT2_MI2S_IBIT                       0x111
-+/* Clock ID for INT3 I2S IBIT  */
-+#define Q6PRM_LPASS_CLK_ID_INT3_MI2S_IBIT                       0x112
-+/* Clock ID for INT4 I2S IBIT  */
-+#define Q6PRM_LPASS_CLK_ID_INT4_MI2S_IBIT                       0x113
-+/* Clock ID for INT5 I2S IBIT  */
-+#define Q6PRM_LPASS_CLK_ID_INT5_MI2S_IBIT                       0x114
-+/* Clock ID for INT6 I2S IBIT  */
-+#define Q6PRM_LPASS_CLK_ID_INT6_MI2S_IBIT                       0x115
-+
-+/* Clock ID for QUINARY MI2S OSR CLK  */
-+#define Q6PRM_LPASS_CLK_ID_QUI_MI2S_OSR                         0x116
-+
-+#define Q6PRM_LPASS_CLK_ID_WSA_CORE_MCLK			0x305
-+#define Q6PRM_LPASS_CLK_ID_WSA_CORE_NPL_MCLK			0x306
-+
-+#define Q6PRM_LPASS_CLK_ID_VA_CORE_MCLK				0x307
-+#define Q6PRM_LPASS_CLK_ID_VA_CORE_2X_MCLK			0x308
-+
-+#define Q6PRM_LPASS_CLK_ID_TX_CORE_MCLK				0x30c
-+#define Q6PRM_LPASS_CLK_ID_TX_CORE_NPL_MCLK			0x30d
-+
-+#define Q6PRM_LPASS_CLK_ID_RX_CORE_MCLK				0x30e
-+#define Q6PRM_LPASS_CLK_ID_RX_CORE_NPL_MCLK			0x30f
-+
-+#define Q6PRM_LPASS_CLK_SRC_INTERNAL	1
-+#define Q6PRM_LPASS_CLK_ROOT_DEFAULT	0
-+#define Q6PRM_HW_CORE_ID_LPASS		1
-+#define Q6PRM_HW_CORE_ID_DCODEC		2
-+
-+int q6prm_set_lpass_clock(struct device *dev, int clk_id, int clk_attr,
-+			  int clk_root, unsigned int freq);
-+int q6prm_vote_lpass_core_hw(struct device *dev, uint32_t hw_block_id,
-+			     const char *client_name, uint32_t *client_handle);
-+int q6prm_unvote_lpass_core_hw(struct device *dev, uint32_t hw_block_id,
-+			       uint32_t client_handle);
-+#endif /* __Q6PRM_H__ */
+> > > > +static const char * const micbias_voltage[] = { "off", "2V", "2.5V", 
+> > > > "AVDD" };
+> 
+> > > This should be configured in the DT, it's going to be a property of the
+> > > electrical design of the system.
+> 
+> > I can very well imagine that this something that should be runtime 
+> > userspace configurable. In fact where I work we have had products where 
+> > the bias voltage (for an externally connected microphone) could be 
+> > configured by the end user, (although not for this specific driver quite 
+> > honestly, we have had the need for hardware engineers to change it runtime 
+> > during circuit verification though).
+> 
+> > Would it be ok to have this configurable both in the DT as well as using a 
+> > control? Or should it be implemented in another way, such as a number of 
+> > pre set voltages that are selected between using a control?
+> 
+> It seems like a lot less work to just not have the runtime control and
+> let someone who needs it figure out how to represent it to userspace.
+> Something that's basically a backdoor for validation doesn't seem
+> persuasive, validation often wants to do things we actively wish to
+> prevent at runtime.
+
+True about validation, however, I would still say that there is a usecase 
+for having this user settable, if for instance the microphone is an 
+external device and not a fixed part of the design of which the codec is a 
+part.
+
+Nevertheless it's not something I have any use for at the moment so I'll 
+relegate the function to a DT property. I see there are at least several 
+other codecs which do it that way.
+
+/Ricard
 -- 
-2.21.0
-
+Ricard Wolf Wanderlof                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
