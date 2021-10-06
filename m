@@ -2,102 +2,70 @@ Return-Path: <SRS0=AF2s=O2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3565CC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 16:48:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D1081C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 16:54:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BF71160235
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 16:48:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BF71160235
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 0220061130
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 16:54:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0220061130
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1A487820;
-	Wed,  6 Oct 2021 18:47:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A487820
+	by alsa0.perex.cz (Postfix) with ESMTPS id 58398820;
+	Wed,  6 Oct 2021 18:53:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 58398820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633538907;
-	bh=1+vev+FZgo4N9iRP5cVkmE18KVafKcBNUS5QAB2HHsU=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1633539280;
+	bh=CAVXqrzcKv0Y4Y4v7Ce6sdLnH7ZXTVh7NaXqrDTc/uk=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YBltPZiesAvByoqLIuEkitEGYYJWbvv3abww4OKTwVe4bNAnq4DSCFY2bQC/9i8M0
-	 Ypar36gdQ3Oy6KLRY6kj0EaLl35ggyEvgK08Irqjv4kH6bQfms8TAb/lqh01LHLkJj
-	 CHJEH7MgtQqKJLs8xSpPeF+UrKFVEpOA9VWBTHeg=
+	b=T1wdj0mLGLrFvO40CSPSHTuDMLAmE0k6kQmOmhxh8dlkkSPJqyOeaOxF86duBNmNY
+	 qT0PvSEXrVIbXsm+4V2chX856aoqYynElMGRuSGemS67+W9lYnHQJlswk/VG9y0ZSQ
+	 Sg2oZLdOjcuIgsn9MzKf97cgsfTZ+xfelJLkFgZg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A39B0F80229;
-	Wed,  6 Oct 2021 18:47:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D595FF8010B;
+	Wed,  6 Oct 2021 18:53:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 47CA7F80240; Wed,  6 Oct 2021 18:47:35 +0200 (CEST)
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com
- [IPv6:2a00:1450:4864:20::52f])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id C0B64F80240; Wed,  6 Oct 2021 18:53:47 +0200 (CEST)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B3CC4F800FE
- for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 18:47:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3CC4F800FE
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="p3qZXdpk"
-Received: by mail-ed1-x52f.google.com with SMTP id g10so11874511edj.1
- for <alsa-devel@alsa-project.org>; Wed, 06 Oct 2021 09:47:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=cokz5/aCsU+6IISL087/xdQjeJJNdXltlIJFHh9WDIY=;
- b=p3qZXdpk4WQccufsvK4m6KyFOU8memXMUyYFo+6dgqN/7w5vd1mJOPqpQd5hVoAmJW
- mo3UEMujCeB28FTLtFjvOsRV3CwDnd84QaN9X+KYYIYzJC7HZHmwcdhrs0XVFyZ4I889
- RjDpF+2JfBMiVQcRDfhBkL9b8ephHuCo5Pt2BuCpF0qqNhEXJkn1tjE+wnyRuhAcFAAc
- cb8UinmC2gFZyS5PxVQnHqeK96xv00CP8qjrqswmeTd8Sxr/Qsszw1irQnGHhqXwCOOg
- uVvDcatwfhkeolZvGnzylYwqvBiU5iEIYMtxg+es717pKCmcniqQfzSLxAokJ+Sa+iDz
- gx8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=cokz5/aCsU+6IISL087/xdQjeJJNdXltlIJFHh9WDIY=;
- b=0J9yaaxqXrPh5wJbvONqyGzhWjDOea768RAOhthVNalMAGYtkgRs+pkGGnrHz6uwez
- niVLfzETWoiNOuQ6oOcY6EfS07mwSljkwOE802FgFhsgo5OoRJWoMmG4bu1GvC+3tz4H
- u8F2+ByZ/dy0RB4GkYNpnjxEsQUtDHWL5mnaeDIP/rstlACY3iVTok4OBktchP9n5OxT
- khp1IiqU1hLVAri0XyLpy5JvogqbOjWijyVFxNc+39N5yLmnmfHF5WmhiBsKxS8DWgoi
- ovJn7ue+FwVo8xaDBNMRva3pWKONo59qNQx+7xdvWZIl0WKzxJhXZNE4Twhzus8FbY3J
- 8zSw==
-X-Gm-Message-State: AOAM530cBlD7uPThrDg56pSEcV9g0nrPHHyZzMcjPJDY958OqeXy2qPr
- aNV1YWRd5QzreF+M8NZfMfO/+P62DQdR1nAKgoE=
-X-Google-Smtp-Source: ABdhPJw29j4D9bZHuEI9lrPKZesgz4NvAhcdBJSs1TuAV5KtEWAPPnDmALdoHcnOBJ5iVVZTlIoFdWNWh6/0/YAL2lo=
-X-Received: by 2002:a17:906:2887:: with SMTP id
- o7mr32800370ejd.425.1633538843226; 
- Wed, 06 Oct 2021 09:47:23 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 57DCDF8010B
+ for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 18:53:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57DCDF8010B
+X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="289547226"
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; d="scan'208";a="289547226"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+ by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 06 Oct 2021 09:52:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; d="scan'208";a="439186557"
+Received: from black.fi.intel.com ([10.237.72.28])
+ by orsmga006.jf.intel.com with ESMTP; 06 Oct 2021 09:52:24 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+ id 4BA3756; Wed,  6 Oct 2021 19:52:30 +0300 (EEST)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/4] ASoC: Intel: bytcht_es8316: Get platform data via
+ dev_get_platdata()
+Date: Wed,  6 Oct 2021 19:52:25 +0300
+Message-Id: <20211006165228.1692-2-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20211006165228.1692-1-andriy.shevchenko@linux.intel.com>
+References: <20211006165228.1692-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-References: <20211006161805.938950-1-brent.lu@intel.com>
- <20211006161805.938950-4-brent.lu@intel.com>
-In-Reply-To: <20211006161805.938950-4-brent.lu@intel.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Wed, 6 Oct 2021 19:46:47 +0300
-Message-ID: <CAHp75Vd7A4yjA+BN_4PwCNNSyy=JbGTDh7U6FdacRYLYPJaYCQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] ASoC: Intel: sof_rt5682: use id_alt to enumerate
- rt5682s
-To: Brent Lu <brent.lu@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Jie Yang <yang.jie@linux.intel.com>,
- ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- Rander Wang <rander.wang@intel.com>, Mac Chiang <mac.chiang@intel.com>,
- Gongjun Song <gongjun.song@intel.com>, Bard Liao <bard.liao@intel.com>,
- Takashi Iwai <tiwai@suse.com>,
+Content-Transfer-Encoding: 8bit
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>,
- Yong Zhi <yong.zhi@intel.com>, Charles Keepax <ckeepax@opensource.cirrus.com>,
- Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>,
- Paul Olaru <paul.olaru@oss.nxp.com>, Libin Yang <libin.yang@intel.com>,
- Malik_Hsu <malik_hsu@wistron.corp-partner.google.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Curtis Malainey <cujomalainey@chromium.org>
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -113,64 +81,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Oct 6, 2021 at 7:23 PM Brent Lu <brent.lu@intel.com> wrote:
->
-> Use the id_alt field to enumerate rt5682s headphone codec and remove
-> redundant entries in tables.
+Access to platform data via dev_get_platdata() getter to make code cleaner.
 
-...
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Pierre-Louis Bossart <pierre-louis.bossart@linux.com>
+---
+ sound/soc/intel/boards/bytcht_es8316.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-> +static struct snd_soc_acpi_codecs adl_rt5682s_hp = {
-> +       .num_codecs = 1,
-> +       .codecs = {"RTL5682"}
-
-Keeping commas in non-terminator entries is always good to avoid churn
-in the future.
-
-> +};
-
-...
-
-> +static struct snd_soc_acpi_codecs rt5682s_hp = {
-> +       .num_codecs = 1,
-> +       .codecs = {"RTL5682"}
-
-Ditto.
-
-> +};
-
-...
-
-> +static struct snd_soc_acpi_codecs rt5682s_hp = {
-> +       .num_codecs = 1,
-> +       .codecs = {"RTL5682"}
-
-Ditto.
-
-> +};
-
-...
-
-> +static struct snd_soc_acpi_codecs rt5682s_hp = {
-> +       .num_codecs = 1,
-> +       .codecs = {"RTL5682"}
-
-Ditto.
-
-> +};
-
-...
-
-> +static struct snd_soc_acpi_codecs rt5682s_hp = {
-> +       .num_codecs = 1,
-> +       .codecs = {"RTL5682"}
-
-Ditto.
-
-> +};
-
-...and so on.
-
+diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
+index 1bb9b8e7bcc7..4360519fbb0c 100644
+--- a/sound/soc/intel/boards/bytcht_es8316.c
++++ b/sound/soc/intel/boards/bytcht_es8316.c
+@@ -456,12 +456,12 @@ static const struct dmi_system_id byt_cht_es8316_quirk_table[] = {
+ 
+ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ {
++	struct device *dev = &pdev->dev;
+ 	static const char * const mic_name[] = { "in1", "in2" };
++	struct snd_soc_acpi_mach *mach = dev_get_platdata(dev);
+ 	struct property_entry props[MAX_NO_PROPS] = {};
+ 	struct byt_cht_es8316_private *priv;
+ 	const struct dmi_system_id *dmi_id;
+-	struct device *dev = &pdev->dev;
+-	struct snd_soc_acpi_mach *mach;
+ 	struct fwnode_handle *fwnode;
+ 	const char *platform_name;
+ 	struct acpi_device *adev;
+@@ -476,7 +476,6 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ 	if (!priv)
+ 		return -ENOMEM;
+ 
+-	mach = dev->platform_data;
+ 	/* fix index of codec dai */
+ 	for (i = 0; i < ARRAY_SIZE(byt_cht_es8316_dais); i++) {
+ 		if (!strcmp(byt_cht_es8316_dais[i].codecs->name,
 -- 
-With Best Regards,
-Andy Shevchenko
+2.33.0
+
