@@ -2,84 +2,84 @@ Return-Path: <SRS0=AF2s=O2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CA4FC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 17:29:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06461C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 17:29:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E1223610CC
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 17:29:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E1223610CC
+	by mail.kernel.org (Postfix) with ESMTPS id 3A14A610CC
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 17:29:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3A14A610CC
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 75539846;
-	Wed,  6 Oct 2021 19:28:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75539846
+	by alsa0.perex.cz (Postfix) with ESMTPS id B93A8166B;
+	Wed,  6 Oct 2021 19:28:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B93A8166B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633541374;
-	bh=CNfpsRXLK9TPE4J3pEErlimUeipeP2CmDKHuRUyoc6k=;
+	s=default; t=1633541382;
+	bh=k6ZefLAqe6elsiIcRWLDUYO5JsQKadLXcXjPIWFp4fU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WoOohp3K8deZi4smOTwmGpiswnLHr40VNKpR+43HVFUdAaYykRXf4fmrOSA2lj2T9
-	 14fd2jEHIzUyzlzkd4srUhGqFDVuPxiP8YaqgZB25QtC/HJ2Bt369A0OpVzjNaxFT2
-	 OAWhiaQsSQUaI71lAFPa2VBpz3tPH8IWpiX1JNJM=
+	b=Zd0Ykx4efBHOpm3sRgoSURQfJNsqmTZiMPoVe4R6IV/B0DsC4ixDBSyxtZRGzg7YA
+	 +wsdjFt8BEnaAZX4rzB6278gTEN2CqoQEg83Ze5/1Sk1uR9leKvoSzn+PE5JAvA5RA
+	 qP8n+fZwjCJru9x1qmc+8u1IWhfb3b8f/QMTHQE8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8EC13F80229;
-	Wed,  6 Oct 2021 19:28:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 97E37F80302;
+	Wed,  6 Oct 2021 19:28:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 93D04F8010B; Wed,  6 Oct 2021 19:28:05 +0200 (CEST)
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com
- [IPv6:2a00:1450:4864:20::42d])
+ id 52EF3F8032D; Wed,  6 Oct 2021 19:28:05 +0200 (CEST)
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com
+ [IPv6:2a00:1450:4864:20::42f])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3B502F80229
- for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 19:27:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3B502F80229
+ by alsa1.perex.cz (Postfix) with ESMTPS id EE9DEF8010B
+ for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 19:27:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EE9DEF8010B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="pXchB/eJ"
-Received: by mail-wr1-x42d.google.com with SMTP id j8so11056070wro.7
- for <alsa-devel@alsa-project.org>; Wed, 06 Oct 2021 10:27:55 -0700 (PDT)
+ header.b="rLDSEqXL"
+Received: by mail-wr1-x42f.google.com with SMTP id r10so11051488wra.12
+ for <alsa-devel@alsa-project.org>; Wed, 06 Oct 2021 10:27:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=uxwyR1SSXYQBt6jgS0PCiuFdMHEtTjrNhaid3BJiZuI=;
- b=pXchB/eJd7RBAP0ZXlMZ6hZ/P8D6UHC17BiBmhNFrCAGEUd32MGMA7I/tmcjc+A8By
- 0Gqvng6bC8GsB2asW9AW2OI2OHH/vyzkIev1eg+Pd1Ha7BinTVyY81ZPdmosHyw43Tog
- R0fZGOyZIssQKM7s2EVuOv3vsoqZ/YRUxA/BukU6w6gBsj7W79S9I7Kgvl3ys7ZIQcZH
- sz1lJvbtJx8XPy2BgZjRKTozVV+L+fQLMYhTBK0hpPYttp1tVN+9yKVC5LVZ7Lg1fpW2
- /eofFOolBpPzQEXMrLu22sNMysatwELRekS5nSFVi61sXTFpDhx3r5arQKIsXpoR/kT3
- 3Wxw==
+ bh=r6o4t/p25htQCYFB1Syo8cpncY8cABgVWrSIMRp8knM=;
+ b=rLDSEqXLQ/exB8A0794u3lxqVMMOxQ++/mq3JFQMDqILkcyQaWR0d3GIdRMMGEiUKD
+ DZATWo25TyesFa0I9IdJKp7Gva2D5cnLl2AL61TDKDsqsBFGH45B8LF9sOJbTWSogbcv
+ la9qgGDLyDj/vfno38GvV3nT/SKbT1sFWYXHVJ8Cz4SMo9enYGI2MbRfKYROoevWf8ik
+ R//9VIIOnrwqPU6MCOAZBScA/zfDNqXQsAWSjy5fKcBku1vQjhCj72sxDzigli9m7nTt
+ /QwCoS1VpIY6ggqRV8m8kpe4pEi0rqfC8uVnypVR6Wt47TgUhyAbCRpkK+GfmtzDWU3q
+ eXng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=uxwyR1SSXYQBt6jgS0PCiuFdMHEtTjrNhaid3BJiZuI=;
- b=lVH0rcfLEr5JMfHr3JxveyVniFJdjclbBqAkYh3gLRukpAaP2X64vikChCsObvKevp
- K9IMS9sHR+yCM3THxPyHEAhSDBCWgq7bNs7FhqdI2R0DH9/BEQL+3nI18aqLss1gPY7r
- ceaQN7IKWn9W82m5qhKO4otYTv0x5bgFLmgkU/nepK9twfxBWaUK1ZQSMmdXZmNi5J4s
- uK/ZLGFMqyQiznSEVd10OzwWv8Z8CxzgailpZJBgLsCY3VlGtE5Hz6+cEcVbkez2K4cT
- bBYkrgkVBL8oVoW9+dNaA56FHYnZx4x7YnYIS8gVvzAK23uLQWjU004lM2WLmFoIat8u
- HZRg==
-X-Gm-Message-State: AOAM530lXBnIInT9qtZL7oXMJ+tq7KqTNQOnkMfwAJxcxTSaCl2whAs2
- lQqEStoMRVwH9Gcr0J4JvSsR2Q==
-X-Google-Smtp-Source: ABdhPJx6URigulL9jxR4AWSH9dXjdVcRlIpD5s7kjpJfSYAqV17Eb4bKuI7JV+VOrllGgFem0Qsehw==
-X-Received: by 2002:a1c:2b02:: with SMTP id r2mr11384374wmr.55.1633541275300; 
- Wed, 06 Oct 2021 10:27:55 -0700 (PDT)
+ bh=r6o4t/p25htQCYFB1Syo8cpncY8cABgVWrSIMRp8knM=;
+ b=gJZUgG8EZz5Z+VIxvkuW8Pd7/AuHql3BjMWgnynccifqcLZ0Qa5vUnoCriNDumKN5b
+ RMAhxcWSs/l2ARLkXx4MfTaa0Bu2CoGniLpGiQHfYCuhirsY24idq092OwWERrXxJB0m
+ jd9TI5zqKD8FYvpBXk50HEiApiEEYm8Ig48qQCEyVXTjxzsbax8+wRH6KOCDkTsxYdiQ
+ s/2E1ncZGOcb6Oc9Myd/WUti2PbCxDx/ZjsAN+7JOUgd4KD8aE6shdaLJZlRgF2t4vXF
+ GBrUvL0JqTXS6jO1d/p9t5tGZmh53CvBT9UVXx0LQBQ2v9dMx0SIZP37koh0oeRyLIP9
+ LVjQ==
+X-Gm-Message-State: AOAM53277AuKelABhMs9jCpiHJwoIrnECiI47pknuaCmAwIwv5BAD7Rk
+ eGlBxKRK0Hm1Lrn+Iclm51jx5A==
+X-Google-Smtp-Source: ABdhPJyUm3GpAki+cFgjiZS4oOPc8zCMGmVbxBxCnrtlqt0RItsLkdcyf7YxCVNc2To1snfDbkHBLQ==
+X-Received: by 2002:adf:c048:: with SMTP id c8mr20797253wrf.96.1633541274232; 
+ Wed, 06 Oct 2021 10:27:54 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id q204sm3976475wme.10.2021.10.06.10.27.54
+ by smtp.gmail.com with ESMTPSA id q204sm3976475wme.10.2021.10.06.10.27.53
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 06 Oct 2021 10:27:54 -0700 (PDT)
+ Wed, 06 Oct 2021 10:27:53 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH 2/2] ASoC: qcom: sm8250: Add Jack support
-Date: Wed,  6 Oct 2021 18:27:45 +0100
-Message-Id: <20211006172745.22103-3-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 1/2] ASoC: qcom: sm8250: add support for TX and RX Macro dais
+Date: Wed,  6 Oct 2021 18:27:44 +0100
+Message-Id: <20211006172745.22103-2-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20211006172745.22103-1-srinivas.kandagatla@linaro.org>
 References: <20211006172745.22103-1-srinivas.kandagatla@linaro.org>
@@ -102,102 +102,57 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-WCD938X on SM8250 MTP is connected via TX macro which has MBHC support,
-So add this jack support in the soundcard driver too.
+On SM8250 MTP boards WCD938x codec is connected via TX and RX Macros,
+so add support for this dais in the soundcard driver.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/sm8250.c | 61 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 61 insertions(+)
+ sound/soc/qcom/sm8250.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
 diff --git a/sound/soc/qcom/sm8250.c b/sound/soc/qcom/sm8250.c
-index 9f2f0598a222..b2ca2579810b 100644
+index fe8fd7367e21..9f2f0598a222 100644
 --- a/sound/soc/qcom/sm8250.c
 +++ b/sound/soc/qcom/sm8250.c
-@@ -8,6 +8,8 @@
- #include <sound/soc-dapm.h>
- #include <sound/pcm.h>
- #include <linux/soundwire/sdw.h>
-+#include <sound/jack.h>
-+#include <linux/input-event-codes.h>
- #include "qdsp6/q6afe.h"
- #include "common.h"
+@@ -69,6 +69,12 @@ static int sm8250_snd_hw_params(struct snd_pcm_substream *substream,
  
-@@ -18,8 +20,66 @@ struct sm8250_snd_data {
- 	bool stream_prepared[AFE_PORT_MAX];
- 	struct snd_soc_card *card;
- 	struct sdw_stream_runtime *sruntime[AFE_PORT_MAX];
-+	struct snd_soc_jack jack;
-+	bool jack_setup;
- };
- 
-+static int sm8250_snd_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct sm8250_snd_data *data = snd_soc_card_get_drvdata(rtd->card);
-+	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-+	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
-+	struct snd_soc_card *card = rtd->card;
-+	int rval, i;
-+
-+	if (!data->jack_setup) {
-+		struct snd_jack *jack;
-+
-+		rval = snd_soc_card_jack_new(card, "Headset Jack",
-+					     SND_JACK_HEADSET | SND_JACK_LINEOUT |
-+					     SND_JACK_MECHANICAL |
-+					     SND_JACK_BTN_0 | SND_JACK_BTN_1 |
-+					     SND_JACK_BTN_2 | SND_JACK_BTN_3 |
-+					     SND_JACK_BTN_4 | SND_JACK_BTN_5,
-+					     &data->jack, NULL, 0);
-+
-+		if (rval < 0) {
-+			dev_err(card->dev, "Unable to add Headphone Jack\n");
-+			return rval;
-+		}
-+
-+		jack = data->jack.jack;
-+
-+		snd_jack_set_key(jack, SND_JACK_BTN_0, KEY_MEDIA);
-+		snd_jack_set_key(jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
-+		snd_jack_set_key(jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
-+		snd_jack_set_key(jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
-+		data->jack_setup = true;
-+	}
-+
-+	switch (cpu_dai->id) {
+ 	switch (cpu_dai->id) {
+ 	case WSA_CODEC_DMA_RX_0:
++	case RX_CODEC_DMA_RX_0:
++	case RX_CODEC_DMA_RX_1:
 +	case TX_CODEC_DMA_TX_0:
 +	case TX_CODEC_DMA_TX_1:
 +	case TX_CODEC_DMA_TX_2:
 +	case TX_CODEC_DMA_TX_3:
-+		for_each_rtd_codec_dais(rtd, i, codec_dai) {
-+			rval = snd_soc_component_set_jack(codec_dai->component,
-+							  &data->jack, NULL);
-+			if (rval != 0 && rval != -ENOTSUPP) {
-+				dev_warn(card->dev, "Failed to set jack: %d\n", rval);
-+				return rval;
-+			}
-+		}
-+
-+		break;
-+	default:
-+		break;
-+	}
-+
-+
-+	return 0;
-+}
-+
- static int sm8250_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
- 				     struct snd_pcm_hw_params *params)
- {
-@@ -192,6 +252,7 @@ static void sm8250_add_be_ops(struct snd_soc_card *card)
- 
- 	for_each_card_prelinks(card, i, link) {
- 		if (link->no_pcm == 1) {
-+			link->init = sm8250_snd_init;
- 			link->be_hw_params_fixup = sm8250_be_hw_params_fixup;
- 			link->ops = &sm8250_be_ops;
- 		}
+ 		for_each_rtd_codec_dais(rtd, i, codec_dai) {
+ 			sruntime = snd_soc_dai_get_sdw_stream(codec_dai,
+ 						      substream->stream);
+@@ -129,6 +135,12 @@ static int sm8250_snd_prepare(struct snd_pcm_substream *substream)
+ 	switch (cpu_dai->id) {
+ 	case WSA_CODEC_DMA_RX_0:
+ 	case WSA_CODEC_DMA_RX_1:
++	case RX_CODEC_DMA_RX_0:
++	case RX_CODEC_DMA_RX_1:
++	case TX_CODEC_DMA_TX_0:
++	case TX_CODEC_DMA_TX_1:
++	case TX_CODEC_DMA_TX_2:
++	case TX_CODEC_DMA_TX_3:
+ 		return sm8250_snd_wsa_dma_prepare(substream);
+ 	default:
+ 		break;
+@@ -147,6 +159,12 @@ static int sm8250_snd_hw_free(struct snd_pcm_substream *substream)
+ 	switch (cpu_dai->id) {
+ 	case WSA_CODEC_DMA_RX_0:
+ 	case WSA_CODEC_DMA_RX_1:
++	case RX_CODEC_DMA_RX_0:
++	case RX_CODEC_DMA_RX_1:
++	case TX_CODEC_DMA_TX_0:
++	case TX_CODEC_DMA_TX_1:
++	case TX_CODEC_DMA_TX_2:
++	case TX_CODEC_DMA_TX_3:
+ 		if (sruntime && data->stream_prepared[cpu_dai->id]) {
+ 			sdw_disable_stream(sruntime);
+ 			sdw_deprepare_stream(sruntime);
 -- 
 2.21.0
 
