@@ -2,67 +2,67 @@ Return-Path: <SRS0=AF2s=O2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE208C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 11:14:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C815C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 11:15:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4CE1D610E5
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 11:14:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4CE1D610E5
+	by mail.kernel.org (Postfix) with ESMTPS id 809AE610FC
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 11:15:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 809AE610FC
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E32A91695;
-	Wed,  6 Oct 2021 13:14:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E32A91695
+	by alsa0.perex.cz (Postfix) with ESMTPS id 15CCB1697;
+	Wed,  6 Oct 2021 13:14:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 15CCB1697
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633518894;
-	bh=3bZ0l2e9fq6OQbxRWcrK/pEDNJzTx0y2BSzq7eI+KEQ=;
+	s=default; t=1633518913;
+	bh=nP9Gz40YheGjmXGenK6aSQJa95wN7Jthsqmc5DCDn7Q=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FuaL91P4wswy5hei8IGjrcO8MUneYrtSJwiZ2PPcUm6FVvG4Bx+d1qQyLvI6uJQpA
-	 m1+1i0UNPylfBhUQGG8dc6Pn8osr5Js904he9uEtqAbLpbvZwiSs7lfRqtXpuXehUN
-	 Y7QqfrLMaFDNmvQ20+NoF330NFHwLFm3SkAyuKfw=
+	b=C0j+lOYLcxVNZrBDmTbl1Qp1eyjsDysch5tVShwXuaAcAQOmWJIvH9J3dR3DcS0bT
+	 nAz9TWoNE+xIgM6oXCWfWSQZ67MXaly+2TwrHCTHVpcRws8xlj3Fsyyn9h7AZ8rQtY
+	 teXut8tBxpRrTPsiFwWhQSPmMivhazKcir+FbfAc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1806EF80249;
-	Wed,  6 Oct 2021 13:13:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4ABE8F8020D;
+	Wed,  6 Oct 2021 13:13:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 76337F80249; Wed,  6 Oct 2021 13:13:03 +0200 (CEST)
+ id 561A6F804E2; Wed,  6 Oct 2021 13:13:06 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 155D0F8020D
- for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 13:12:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 155D0F8020D
+ by alsa1.perex.cz (Postfix) with ESMTPS id ECE37F8020D
+ for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 13:13:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ECE37F8020D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="o0rLr4Qv"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3539261100;
- Wed,  6 Oct 2021 11:12:48 +0000 (UTC)
+ header.b="dn4AQz2h"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 11172610FC;
+ Wed,  6 Oct 2021 11:12:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1633518769;
- bh=3bZ0l2e9fq6OQbxRWcrK/pEDNJzTx0y2BSzq7eI+KEQ=;
+ s=k20201202; t=1633518778;
+ bh=nP9Gz40YheGjmXGenK6aSQJa95wN7Jthsqmc5DCDn7Q=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=o0rLr4QvGMvDK5GTcgn3nBfUZ9VRM6xyAoP4VtevrjUttjgccfc+KUMnU4AogHl6S
- Z8hwr1wKfT/TnTK4NGivEaVV7gpU0SvxDektaie9y0st1grDig4jzQ0D0C6eaNRqbR
- 9iJWLolpWFeVjYX1kMXhd50HDiFZcLSbAzQqR6YdEXG+dVBnUmwTz7QphjXDfPRjCh
- xaZ1fZWSVK+sKp3w+QvUF0RZuR+YMKBRS4ACxVPVGoIFEUgpzeXbForRuu24CjP4dY
- HkcHGzdV4wn5EXI/b3e6+hbtVy+SiY7vhiNvIjV86OTElW5WGNU8iu259xUELf9aAK
- jqXuAIo0jZr7Q==
+ b=dn4AQz2hgLL13u3uefGM3BA1JoVRCvY+/ROFa+3N0o/vdlwgex2YM/3JXFw/GUwPO
+ PrGbrw3lwQMrFu2BgGVAPsVQsSOL7ZLyUagoo4sChrL8+GRNIYi+iddtXf98kqpyeB
+ 2wHyIgiqD9iJj0XiIklOvyPtb8LB3U3S3++ZRQfGWZWvAMWaAFH7SkwMZox37SyPk1
+ b+t9UWL1iDq6KexVIWjseHb1tX0pXz8uP/DM90/E9n+U4t6QqrSeib4ERhxs8lzHN0
+ tFuvZMumW5/72UfrwAM8m/ESJOGK1g1EN/2NWqexPXS1wIbBm9bIlnsQwsQ96ncaKv
+ 0jbypelvfsZKQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH MANUALSEL 5.10 7/7] ALSA: pcsp: Make hrtimer forwarding more
+Subject: [PATCH MANUALSEL 5.4 4/4] ALSA: pcsp: Make hrtimer forwarding more
  robust
-Date: Wed,  6 Oct 2021 07:12:33 -0400
-Message-Id: <20211006111234.264020-7-sashal@kernel.org>
+Date: Wed,  6 Oct 2021 07:12:50 -0400
+Message-Id: <20211006111250.264294-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211006111234.264020-1-sashal@kernel.org>
-References: <20211006111234.264020-1-sashal@kernel.org>
+In-Reply-To: <20211006111250.264294-1-sashal@kernel.org>
+References: <20211006111250.264294-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -119,10 +119,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/drivers/pcsp/pcsp_lib.c b/sound/drivers/pcsp/pcsp_lib.c
-index ed40d0f7432c..773db4bf0876 100644
+index 8f0f05bbc081..23a15d892e50 100644
 --- a/sound/drivers/pcsp/pcsp_lib.c
 +++ b/sound/drivers/pcsp/pcsp_lib.c
-@@ -143,7 +143,7 @@ enum hrtimer_restart pcsp_do_timer(struct hrtimer *handle)
+@@ -145,7 +145,7 @@ enum hrtimer_restart pcsp_do_timer(struct hrtimer *handle)
  	if (pointer_update)
  		pcsp_pointer_update(chip);
  
