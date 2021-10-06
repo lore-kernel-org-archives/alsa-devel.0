@@ -2,68 +2,62 @@ Return-Path: <SRS0=AF2s=O2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DFD96C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 13:02:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 55361C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 13:05:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B753460FD8
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 13:02:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B753460FD8
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 53863610A1
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 13:05:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 53863610A1
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=tuxedocomputers.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0F6C115E2;
-	Wed,  6 Oct 2021 15:01:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F6C115E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id A2D6F839;
+	Wed,  6 Oct 2021 15:04:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A2D6F839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633525338;
-	bh=NcVANR3MespWZq/3f1e2FIX09Tuiz6VTTMKJi7G5pWI=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=e4A336oh4JUvu/oZhQ80dnM/1TxuqSC4ZSVNnoYtG8lQZZtvX/T8dvyEOazziZFxM
-	 w9YAVfgZXngiFQ/Cf+bvSOuTpDMHpvnkazh15lOalH0FGSefUdTUffhsDetcIuaVYD
-	 3mioXcQY69C1QWsPEIlxzfc4D4Ppmg2Sz5S4Caa0=
+	s=default; t=1633525520;
+	bh=o5x/P5jjSTyr81T7Bn3SiBeO5VgrEsQPNbFDRehHWBs=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=MJgDWZI9hHCTo6Hf6mLMVLHm4KRfznpFJv4/NiE6WeE79niUg0v/tNAiv+QomhENu
+	 Q6mw+aUSJcQDKZw93pLttmbKLtzsYpPx8MLceAskFtgjf9Inpk/NjQjuLWUeaHKVUf
+	 FXfuoCzoLZqf7Z27Cp9+cvHVsDLnBGJiJfwiDjRM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D4F1DF8025C;
-	Wed,  6 Oct 2021 15:01:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 39629F80229;
+	Wed,  6 Oct 2021 15:04:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 14C47F80240; Wed,  6 Oct 2021 15:00:37 +0200 (CEST)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 22253F80240; Wed,  6 Oct 2021 15:04:28 +0200 (CEST)
+Received: from srv6.fidu.org (srv6.fidu.org [IPv6:2a01:4f8:231:de0::2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EB32EF800FE
- for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 15:00:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB32EF800FE
-X-IronPort-AV: E=McAfee;i="6200,9189,10128"; a="289487108"
-X-IronPort-AV: E=Sophos;i="5.85,350,1624345200"; d="scan'208";a="289487108"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Oct 2021 06:00:21 -0700
-X-IronPort-AV: E=Sophos;i="5.85,350,1624345200"; d="scan'208";a="439108427"
-Received: from nbasa-mobl2.amr.corp.intel.com (HELO [10.213.170.135])
- ([10.213.170.135])
- by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Oct 2021 06:00:20 -0700
-Subject: Re: [PATCH] ASoC: soc-acpi: add alternative id field for machine
- driver matching
-To: Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org
-References: <20211006084351.438510-1-brent.lu@intel.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <da650858-6523-4813-6433-438e974d060a@linux.intel.com>
-Date: Wed, 6 Oct 2021 07:17:46 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8B9C9F800FE
+ for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 15:04:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B9C9F800FE
+Received: from localhost (localhost.localdomain [127.0.0.1])
+ by srv6.fidu.org (Postfix) with ESMTP id D7F68C800A8;
+ Wed,  6 Oct 2021 15:04:15 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
+Received: from srv6.fidu.org ([127.0.0.1])
+ by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10026)
+ with LMTP id YqVPxxQtB_uR; Wed,  6 Oct 2021 15:04:15 +0200 (CEST)
+Received: from wsembach-tuxedo.fritz.box
+ (host-212-18-30-247.customer.m-online.net [212.18.30.247])
+ (Authenticated sender: wse@tuxedocomputers.com)
+ by srv6.fidu.org (Postfix) with ESMTPA id 74B99C800A5;
+ Wed,  6 Oct 2021 15:04:15 +0200 (CEST)
+From: Werner Sembach <wse@tuxedocomputers.com>
+To: perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH] ALSA: hda/realtek: Add quirk for TongFang PHxTxX1
+Date: Wed,  6 Oct 2021 15:04:15 +0200
+Message-Id: <20211006130415.538243-1-wse@tuxedocomputers.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20211006084351.438510-1-brent.lu@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,98 +73,82 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+This applies a SND_PCI_QUIRK(...) to the TongFang PHxTxX1 barebone. This
+fixes the issue of the internal Microphone not working after booting
+another OS.
 
+When booting a certain another OS this barebone keeps some coeff settings
+even after a cold shutdown. These coeffs prevent the microphone detection
+from working in Linux, making the Laptop think that there is always an
+external microphone plugged-in and therefore preventing the use of the
+internal one.
 
-On 10/6/21 3:43 AM, Brent Lu wrote:
-> Current design to support second headphone driver in the same machine
-> driver is to duplicate the entries in snd_soc_acpi_mach array and
-> board configs in machine driver. We can avoid this by adding an id_alt
-> field in snd_soc_acpi_mach structure to specify alternative ACPI HIDs
-> for machine driver enumeration and leave the codec type detection to
-> machine driver if necessary.
+The relevant indexes and values where gathered by naively diff-ing and
+reading a working and a non-working coeff dump.
 
-I am not following your suggestion. The machine drivers for I2S/TDM
-platforms are typically based on specific headphone codecs, and they we
-add possible swaps for amplifiers. The key to find a machine is
-typically the headphone HID. Exhibit A for this in your own contribution
-in the recent weeks with the sof_cs42l42.c machine driver.
+Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+---
+ sound/pci/hda/patch_realtek.c | 26 +++++++++++++++++++++++++-
+ 1 file changed, 25 insertions(+), 1 deletion(-)
 
-Are you suggesting we unify e.g. sof_rt5682.c and sof_cs42l42.c?
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 4407f7da57c4..55d3c9d85fd2 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6449,6 +6449,24 @@ static void alc287_fixup_legion_15imhg05_speakers(struct hda_codec *codec,
+ /* for alc285_fixup_ideapad_s740_coef() */
+ #include "ideapad_s740_helper.c"
+ 
++static void alc256_fixup_tongfang_reset_persistent_settings(struct hda_codec *codec,
++							    const struct hda_fixup *fix,
++							    int action)
++{
++	/*
++	* A certain other OS sets these coeffs to different values. On at least one TongFang
++	* barebone these settings might survive even a cold reboot. So to restore a clean slate the
++	* values are explicitly reset to default here. Without this, the external microphone is
++	* always in a plugged-in state, while the internal microphone is always in an unplugged
++	* state, breaking the ability to use the internal microphone.
++	*/
++	alc_write_coef_idx(codec, 0x24, 0x0000);
++	alc_write_coef_idx(codec, 0x26, 0x0000);
++	alc_write_coef_idx(codec, 0x29, 0x3000);
++	alc_write_coef_idx(codec, 0x37, 0xfe05);
++	alc_write_coef_idx(codec, 0x45, 0x5089);
++}
++
+ enum {
+ 	ALC269_FIXUP_GPIO2,
+ 	ALC269_FIXUP_SONY_VAIO,
+@@ -6663,7 +6681,8 @@ enum {
+ 	ALC287_FIXUP_LEGION_15IMHG05_SPEAKERS,
+ 	ALC287_FIXUP_LEGION_15IMHG05_AUTOMUTE,
+ 	ALC287_FIXUP_YOGA7_14ITL_SPEAKERS,
+-	ALC287_FIXUP_13S_GEN2_SPEAKERS
++	ALC287_FIXUP_13S_GEN2_SPEAKERS,
++	ALC256_FIXUP_TONGFANG_RESET_PERSISTENT_SETTINGS,
+ };
+ 
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -8361,6 +8380,10 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_HEADSET_MODE,
+ 	},
++	[ALC256_FIXUP_TONGFANG_RESET_PERSISTENT_SETTINGS] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc256_fixup_tongfang_reset_persistent_settings,
++	},
+ };
+ 
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -8789,6 +8812,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1b7d, 0xa831, "Ordissimo EVE2 ", ALC269VB_FIXUP_ORDISSIMO_EVE2), /* Also known as Malata PC-B1303 */
+ 	SND_PCI_QUIRK(0x1c06, 0x2013, "Lemote A1802", ALC269_FIXUP_LEMOTE_A1802),
+ 	SND_PCI_QUIRK(0x1c06, 0x2015, "Lemote A190X", ALC269_FIXUP_LEMOTE_A190X),
++	SND_PCI_QUIRK(0x1d05, 0x1132, "TongFang PHxTxX1", ALC256_FIXUP_TONGFANG_RESET_PERSISTENT_SETTINGS),
+ 	SND_PCI_QUIRK(0x1d72, 0x1602, "RedmiBook", ALC255_FIXUP_XIAOMI_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1d72, 0x1701, "XiaomiNotebook Pro", ALC298_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1d72, 0x1901, "RedmiBook 14", ALC256_FIXUP_ASUS_HEADSET_MIC),
+-- 
+2.25.1
 
-The other problem is that today we have one main HID along with
-'quirk_data' for amplifiers. If we have alternate HIDs, what would be
-the rule for quirk_data? Can the quirks apply to all possible alternate
-HIDs? Only one of them?
-
-Without an example where this new alternate ID is used it's hard to see
-what the ask and directions might be.
-
-Care to elaborate?
-Thanks!
-
-> Signed-off-by: Brent Lu <brent.lu@intel.com>
-> ---
->  include/sound/soc-acpi.h |  2 ++
->  sound/soc/soc-acpi.c     | 21 ++++++++++++++++++++-
->  2 files changed, 22 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
-> index 2f3fa385c092..fcf6bae9f9d7 100644
-> --- a/include/sound/soc-acpi.h
-> +++ b/include/sound/soc-acpi.h
-> @@ -129,6 +129,7 @@ struct snd_soc_acpi_link_adr {
->   * all firmware/topology related fields.
->   *
->   * @id: ACPI ID (usually the codec's) used to find a matching machine driver.
-> + * @id_alt: array of ACPI IDs used as an alternative of id field.
->   * @link_mask: describes required board layout, e.g. for SoundWire.
->   * @links: array of link _ADR descriptors, null terminated.
->   * @drv_name: machine driver name
-> @@ -146,6 +147,7 @@ struct snd_soc_acpi_link_adr {
->  /* Descriptor for SST ASoC machine driver */
->  struct snd_soc_acpi_mach {
->  	const u8 id[ACPI_ID_LEN];
-> +	struct snd_soc_acpi_codecs *id_alt;
->  	const u32 link_mask;
->  	const struct snd_soc_acpi_link_adr *links;
->  	const char *drv_name;
-> diff --git a/sound/soc/soc-acpi.c b/sound/soc/soc-acpi.c
-> index 395229bf5c51..ab67d640c20f 100644
-> --- a/sound/soc/soc-acpi.c
-> +++ b/sound/soc/soc-acpi.c
-> @@ -8,6 +8,25 @@
->  #include <linux/module.h>
->  #include <sound/soc-acpi.h>
->  
-> +static bool snd_soc_acpi_id_present(struct snd_soc_acpi_mach *machine)
-> +{
-> +	struct snd_soc_acpi_codecs *id_alt = machine->id_alt;
-> +	int i;
-> +
-> +	if (acpi_dev_present(machine->id, NULL, -1))
-> +		return true;
-> +
-> +	if (id_alt == NULL)
-> +		return false;
-> +
-> +	for (i = 0; i < id_alt->num_codecs; i++) {
-> +		if (acpi_dev_present(id_alt->codecs[i], NULL, -1))
-> +			return true;
-> +	}
-> +
-> +	return false;
-> +}
-> +
->  struct snd_soc_acpi_mach *
->  snd_soc_acpi_find_machine(struct snd_soc_acpi_mach *machines)
->  {
-> @@ -15,7 +34,7 @@ snd_soc_acpi_find_machine(struct snd_soc_acpi_mach *machines)
->  	struct snd_soc_acpi_mach *mach_alt;
->  
->  	for (mach = machines; mach->id[0]; mach++) {
-> -		if (acpi_dev_present(mach->id, NULL, -1)) {
-> +		if (snd_soc_acpi_id_present(mach) != false) {
->  			if (mach->machine_quirk) {
->  				mach_alt = mach->machine_quirk(mach);
->  				if (!mach_alt)
-> 
