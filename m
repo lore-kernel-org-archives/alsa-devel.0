@@ -2,70 +2,83 @@ Return-Path: <SRS0=AF2s=O2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F09DC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 14:26:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 48E6FC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 14:27:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9A8AD61056
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 14:26:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9A8AD61056
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=tuxedocomputers.com
+	by mail.kernel.org (Postfix) with ESMTPS id 4C6406109F
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 14:27:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4C6406109F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CC661839;
-	Wed,  6 Oct 2021 16:25:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC661839
+	by alsa0.perex.cz (Postfix) with ESMTPS id 93BFA836;
+	Wed,  6 Oct 2021 16:26:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93BFA836
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633530378;
-	bh=P5fJRAs6hdeKxsNDMy/kRPP23vjvmQizvE/JaG3Gz7k=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1633530450;
+	bh=AnSElYwlqYSZAcLwfoyFV38dqHrLP3VuVHKN6LM2it8=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nlMeXYsz/bYz23VxP1FlMxQyD9SI4i7v6fZGXOti02duXS58PgWDAqn6+g6RQytb7
-	 4iRio964Dwb2/xNGWpVC2UmETV0Pl/HJBkEVRhNtjQcJYtMwhB5rpCSlXryTRxqDHZ
-	 KhZIwnxI0sy/cLpcDVvzGStWGaWkY0+iHPW/Em2s=
+	b=DZOl+cIHQS0xrs6SQurEZW+jKyIe8o0HdlAVYLcYDsd6+N6AJDZ9Ejrjj9WRDUsvZ
+	 tJ7iOJrYOKJpk7uuYAmS4BgOvKlSFy9XynxOz53nMTEcBdue+pNMWCoKwcysFWI2aI
+	 NO1XzPCVB3Etp7pZWemn05gFSCrRuR4QonlwEN1s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 69639F80229;
-	Wed,  6 Oct 2021 16:25:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 37A34F80249;
+	Wed,  6 Oct 2021 16:26:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7453CF80240; Wed,  6 Oct 2021 16:25:24 +0200 (CEST)
-Received: from srv6.fidu.org (srv6.fidu.org [IPv6:2a01:4f8:231:de0::2])
+ id 930A1F8025C; Wed,  6 Oct 2021 16:26:38 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E9EBDF8010B
- for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 16:25:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9EBDF8010B
-Received: from localhost (localhost.localdomain [127.0.0.1])
- by srv6.fidu.org (Postfix) with ESMTP id 5D86FC800AA;
- Wed,  6 Oct 2021 16:25:14 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
-Received: from srv6.fidu.org ([127.0.0.1])
- by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10024)
- with LMTP id cK3OxzFKXTNg; Wed,  6 Oct 2021 16:25:14 +0200 (CEST)
-Received: from [192.168.178.82] (host-212-18-30-247.customer.m-online.net
- [212.18.30.247])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
- (No client certificate requested)
- (Authenticated sender: wse@tuxedocomputers.com)
- by srv6.fidu.org (Postfix) with ESMTPSA id F0CF6C800A8;
- Wed,  6 Oct 2021 16:25:13 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4C286F8010B
+ for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 16:26:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C286F8010B
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="yd30QTqL"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="g8Dc6Nte"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id B3E7D20381;
+ Wed,  6 Oct 2021 14:26:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1633530390; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=8blPcIDRn8wgZpHnyTjwPBHxn3x/PErMAMLru6BHaMY=;
+ b=yd30QTqLmaurd754m+eeroJ5IEUeD7QSTgoPKy10aabUl6Qko6NXqDMYbou2AalEpTuM6y
+ wJpA30j/5ekiU0pYJ0oE9XcyRp7zIvF2xd1ThVzUEAJ8qQv1lbHew7al2UT3R+jaDyfGzD
+ jErK92NMWT6GHhD3w0LVULC0qqTkU5g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1633530390;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=8blPcIDRn8wgZpHnyTjwPBHxn3x/PErMAMLru6BHaMY=;
+ b=g8Dc6NteLzSA5fLottbmBYskj+/NdPYUPyUpyI0UKa1FOZug9jlevV/u7Rlyf3GCsmGdVR
+ 2YM9tMxcsv2bK8Aw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id A7E87A3B88;
+ Wed,  6 Oct 2021 14:26:30 +0000 (UTC)
+Date: Wed, 06 Oct 2021 16:26:30 +0200
+Message-ID: <s5hilyab561.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Werner Sembach <wse@tuxedocomputers.com>
 Subject: Re: [PATCH] ALSA: hda/realtek: Add quirk for TongFang PHxTxX1
-To: Takashi Iwai <tiwai@suse.de>
+In-Reply-To: <ca37123b-5779-b546-089b-9af61f68a2b2@tuxedocomputers.com>
 References: <20211006130415.538243-1-wse@tuxedocomputers.com>
  <s5hpmsib5wp.wl-tiwai@suse.de>
-From: Werner Sembach <wse@tuxedocomputers.com>
-Message-ID: <ca37123b-5779-b546-089b-9af61f68a2b2@tuxedocomputers.com>
-Date: Wed, 6 Oct 2021 16:25:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <s5hpmsib5wp.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: de-DE
+ <ca37123b-5779-b546-089b-9af61f68a2b2@tuxedocomputers.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -82,36 +95,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Am 06.10.21 um 16:10 schrieb Takashi Iwai:
+On Wed, 06 Oct 2021 16:25:13 +0200,
+Werner Sembach wrote:
+> 
+> Am 06.10.21 um 16:10 schrieb Takashi Iwai:
+> 
+> > On Wed, 06 Oct 2021 15:04:15 +0200,
+> > Werner Sembach wrote:
+> >> This applies a SND_PCI_QUIRK(...) to the TongFang PHxTxX1 barebone. This
+> >> fixes the issue of the internal Microphone not working after booting
+> >> another OS.
+> >>
+> >> When booting a certain another OS this barebone keeps some coeff settings
+> >> even after a cold shutdown. These coeffs prevent the microphone detection
+> >> from working in Linux, making the Laptop think that there is always an
+> >> external microphone plugged-in and therefore preventing the use of the
+> >> internal one.
+> >>
+> >> The relevant indexes and values where gathered by naively diff-ing and
+> >> reading a working and a non-working coeff dump.
+> >>
+> >> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+> > Thanks, applied.
+> >
+> >
+> > Takashi
+> 
+> Thanks for being quick as always ^^
+> 
+> I forgot to add cc: stable to the patch. Whats the best practie to do that after the patch has already been applied?
+> 
+> Just send it again mit with cc: stable?
 
-> On Wed, 06 Oct 2021 15:04:15 +0200,
-> Werner Sembach wrote:
->> This applies a SND_PCI_QUIRK(...) to the TongFang PHxTxX1 barebone. This
->> fixes the issue of the internal Microphone not working after booting
->> another OS.
->>
->> When booting a certain another OS this barebone keeps some coeff settings
->> even after a cold shutdown. These coeffs prevent the microphone detection
->> from working in Linux, making the Laptop think that there is always an
->> external microphone plugged-in and therefore preventing the use of the
->> internal one.
->>
->> The relevant indexes and values where gathered by naively diff-ing and
->> reading a working and a non-working coeff dump.
->>
->> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
-> Thanks, applied.
->
->
-> Takashi
+Don't worry, I already added it :)
 
-Thanks for being quick as always ^^
 
-I forgot to add cc: stable to the patch. Whats the best practie to do that after the patch has already been applied?
-
-Just send it again mit with cc: stable?
-
-Kind regards,
-
-Werner Sembach
-
+Takashi
