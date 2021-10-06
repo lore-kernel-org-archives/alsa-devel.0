@@ -2,60 +2,60 @@ Return-Path: <SRS0=AF2s=O2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D1081C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 16:54:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C38B9C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 16:55:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0220061130
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 16:54:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0220061130
+	by mail.kernel.org (Postfix) with ESMTPS id 99A0661130
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 16:55:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 99A0661130
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 58398820;
-	Wed,  6 Oct 2021 18:53:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 58398820
+	by alsa0.perex.cz (Postfix) with ESMTPS id CC34C950;
+	Wed,  6 Oct 2021 18:54:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC34C950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633539280;
-	bh=CAVXqrzcKv0Y4Y4v7Ce6sdLnH7ZXTVh7NaXqrDTc/uk=;
+	s=default; t=1633539324;
+	bh=AruGNKN3/ogLVj/qf1UyWp5Do98EAyA+4RPqkBmNBxA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=T1wdj0mLGLrFvO40CSPSHTuDMLAmE0k6kQmOmhxh8dlkkSPJqyOeaOxF86duBNmNY
-	 qT0PvSEXrVIbXsm+4V2chX856aoqYynElMGRuSGemS67+W9lYnHQJlswk/VG9y0ZSQ
-	 Sg2oZLdOjcuIgsn9MzKf97cgsfTZ+xfelJLkFgZg=
+	b=fOTBnN1zXEK+j5C2ZC5Cydw8dJFMwSN/bmtwcZHirNCYQJsVTrccVhGUKb8req0OS
+	 xpWyVBHDkCyYA3FxoD+qLqhOok41mjr9022pQMfLbaEHVTY7XM6iAf8QirDY6jeqVk
+	 h7fOdv5+2xZ+nRGdJuaA4dfPThsHnmJgHbRxAeMY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D595FF8010B;
-	Wed,  6 Oct 2021 18:53:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B7B67F80249;
+	Wed,  6 Oct 2021 18:54:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C0B64F80240; Wed,  6 Oct 2021 18:53:47 +0200 (CEST)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ id 5D131F8020D; Wed,  6 Oct 2021 18:54:12 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 57DCDF8010B
- for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 18:53:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57DCDF8010B
-X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="289547226"
-X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; d="scan'208";a="289547226"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Oct 2021 09:52:27 -0700
+ by alsa1.perex.cz (Postfix) with ESMTPS id CCDBCF8020D
+ for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 18:54:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CCDBCF8020D
+X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="213168963"
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; d="scan'208";a="213168963"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+ by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 06 Oct 2021 09:52:28 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; d="scan'208";a="439186557"
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; d="scan'208";a="713011705"
 Received: from black.fi.intel.com ([10.237.72.28])
- by orsmga006.jf.intel.com with ESMTP; 06 Oct 2021 09:52:24 -0700
+ by fmsmga006.fm.intel.com with ESMTP; 06 Oct 2021 09:52:23 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
- id 4BA3756; Wed,  6 Oct 2021 19:52:30 +0300 (EEST)
+ id 6E15D299; Wed,  6 Oct 2021 19:52:30 +0300 (EEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/4] ASoC: Intel: bytcht_es8316: Get platform data via
- dev_get_platdata()
-Date: Wed,  6 Oct 2021 19:52:25 +0300
-Message-Id: <20211006165228.1692-2-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 4/4] ASoC: Intel: bytcht_es8316: Utilize dev_err_probe() to
+ avoid log saturation
+Date: Wed,  6 Oct 2021 19:52:28 +0300
+Message-Id: <20211006165228.1692-5-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211006165228.1692-1-andriy.shevchenko@linux.intel.com>
 References: <20211006165228.1692-1-andriy.shevchenko@linux.intel.com>
@@ -81,41 +81,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Access to platform data via dev_get_platdata() getter to make code cleaner.
+dev_err_probe() avoids printing into log when the deferred probe is invoked.
+This is possible when clock provider is pending to appear.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Pierre-Louis Bossart <pierre-louis.bossart@linux.com>
 ---
- sound/soc/intel/boards/bytcht_es8316.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ sound/soc/intel/boards/bytcht_es8316.c | 18 +++++-------------
+ 1 file changed, 5 insertions(+), 13 deletions(-)
 
 diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
-index 1bb9b8e7bcc7..4360519fbb0c 100644
+index d8dcf63825a6..9d86fea51a7d 100644
 --- a/sound/soc/intel/boards/bytcht_es8316.c
 +++ b/sound/soc/intel/boards/bytcht_es8316.c
-@@ -456,12 +456,12 @@ static const struct dmi_system_id byt_cht_es8316_quirk_table[] = {
+@@ -532,11 +532,8 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
  
- static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
- {
-+	struct device *dev = &pdev->dev;
- 	static const char * const mic_name[] = { "in1", "in2" };
-+	struct snd_soc_acpi_mach *mach = dev_get_platdata(dev);
- 	struct property_entry props[MAX_NO_PROPS] = {};
- 	struct byt_cht_es8316_private *priv;
- 	const struct dmi_system_id *dmi_id;
--	struct device *dev = &pdev->dev;
--	struct snd_soc_acpi_mach *mach;
- 	struct fwnode_handle *fwnode;
- 	const char *platform_name;
- 	struct acpi_device *adev;
-@@ -476,7 +476,6 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
- 	if (!priv)
- 		return -ENOMEM;
+ 	/* get the clock */
+ 	priv->mclk = devm_clk_get(dev, "pmc_plt_clk_3");
+-	if (IS_ERR(priv->mclk)) {
+-		ret = PTR_ERR(priv->mclk);
+-		dev_err(dev, "clk_get pmc_plt_clk_3 failed: %d\n", ret);
+-		return ret;
+-	}
++	if (IS_ERR(priv->mclk))
++		return dev_err_probe(dev, PTR_ERR(priv->mclk), "clk_get pmc_plt_clk_3 failed\n");
  
--	mach = dev->platform_data;
- 	/* fix index of codec dai */
- 	for (i = 0; i < ARRAY_SIZE(byt_cht_es8316_dais); i++) {
- 		if (!strcmp(byt_cht_es8316_dais[i].codecs->name,
+ 	/* get speaker enable GPIO */
+ 	codec_dev = acpi_get_first_physical_node(adev);
+@@ -570,14 +567,9 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ 				   /* see comment in byt_cht_es8316_resume() */
+ 				   GPIOD_OUT_LOW | GPIOD_FLAGS_BIT_NONEXCLUSIVE);
+ 	if (IS_ERR(priv->speaker_en_gpio)) {
+-		ret = PTR_ERR(priv->speaker_en_gpio);
+-		switch (ret) {
+-		default:
+-			dev_err(dev, "get speaker GPIO failed: %d\n", ret);
+-			fallthrough;
+-		case -EPROBE_DEFER:
+-			goto err_put_codec;
+-		}
++		ret = dev_err_probe(dev, PTR_ERR(priv->speaker_en_gpio),
++				    "get speaker GPIO failed\n");
++		goto err_put_codec;
+ 	}
+ 
+ 	snprintf(components_string, sizeof(components_string),
 -- 
 2.33.0
 
