@@ -2,51 +2,52 @@ Return-Path: <SRS0=AF2s=O2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B195CC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 00:38:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 40B71C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 00:38:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 21F0261207
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 00:38:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 21F0261207
+	by mail.kernel.org (Postfix) with ESMTPS id AA56E611C6
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 00:38:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AA56E611C6
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B98331692;
-	Wed,  6 Oct 2021 02:37:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B98331692
+	by alsa0.perex.cz (Postfix) with ESMTPS id 45B17166E;
+	Wed,  6 Oct 2021 02:37:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45B17166E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633480699;
-	bh=3tYBQN4T9opIdJV9aIJfbIbO8NWfzd9DzS7goJ6J1go=;
+	s=default; t=1633480723;
+	bh=Ooe3t2KG1cOLi/BVjpx3DYHQfuYkCa+ivrY3tZjGBWA=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bGdBuhEKz0Uhpi5L3dmC4aNbrAK70IQSC4Ytl1QZUJdX2Gj/F+64bsjcImmLW3Ut0
-	 hIfo1YvJkl2aQND4ECZfbS5gLMpgGY2n22vx2K2LdZdr0ywM2BxXwkWiVK9uUkbI1r
-	 I5Zgl5zr9LBH3HZZwtnXpTYktmFDytmL/iXmRzI4=
+	b=foc9FWltS9pKew5PtvG0Ff5CStdD5432yH6IBWj3NtTjnr/CBv1rNvkJJclMsSaxY
+	 t7mUkndBAQ45liA0YqOtQVZbL+g62abIbdgj8i7x6VDfuzctifQslPSrFxZwZUjTV3
+	 J3OvdZzzD+4Xkzf+iOHngYXaSS92Vy2t0nCXTK7g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5133EF80524;
-	Wed,  6 Oct 2021 02:35:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 66BEDF802A0;
+	Wed,  6 Oct 2021 02:35:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3E1D0F80525; Wed,  6 Oct 2021 02:35:42 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 9F4D6F804E5
- for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 02:35:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F4D6F804E5
-Date: 06 Oct 2021 09:35:33 +0900
-X-IronPort-AV: E=Sophos;i="5.85,350,1624287600"; d="scan'208";a="96067738"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 06 Oct 2021 09:35:33 +0900
+ id A4021F80526; Wed,  6 Oct 2021 02:35:51 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 5CDF0F802A0
+ for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 02:35:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5CDF0F802A0
+Date: 06 Oct 2021 09:35:38 +0900
+X-IronPort-AV: E=Sophos;i="5.85,350,1624287600"; d="scan'208";a="96235411"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 06 Oct 2021 09:35:38 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 2B0F7400F79A;
- Wed,  6 Oct 2021 09:35:33 +0900 (JST)
-Message-ID: <87v92b3s8a.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 3903441728D1;
+ Wed,  6 Oct 2021 09:35:38 +0900 (JST)
+Message-ID: <87tuhv3s85.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v4 10/16] ASoC: add Audio Graph Card2 Custom Sample
+Subject: [PATCH v4 11/16] ASoC: audio-graph-card2-custom-sample.dtsi: add
+ Sample DT for Normal (Single)
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87a6jn56x0.wl-kuninori.morimoto.gx@renesas.com>
@@ -69,240 +70,120 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-audio-graph-card2 has customizing support.
-This means user can re-use audio-graph-card2 DT parsing, and possible
-to expand to own special handling.
+Audio Graph Card2 settings is a little bit difficult for beginner,
+and Customizing it also difficult/confusable too.
+So, this patch adds sample for it.
 
-This patch adds Audio Graph Card2 Customize Sample Driver.
-It can re-use audio-graph-card2 parsing by calling
-audio_graph2_parse_of(...), and user can expand each functions by
-using hooks.
+You can easily use it by adding below line on your DT file,
+and select CONFIGs to your .config.
+
+	#include "../../../../../sound/soc/generic/audio-graph-card2-custom-sample.dtsi"
+
+	CONFIG_SND_AUDIO_GRAPH_CARD2
+	CONFIG_SND_AUDIO_GRAPH_CARD2_CUSTOM_SAMPLE
+	CONFIG_SND_TEST_COMPONENT
+
+This patch uses audio-graph-card2 base custom sample driver.
+You can directly use audio-graph-card2 instead of custom sample driver
+by modifing compatible.
+
+	- compatible = "audio-graph-card2-custom-sample";
+	+ compatible = "audio-graph-card2";
+
+Sample custom driver will indicate customized print.
+
+It is using Test-Component driver for CPU/Codec.
+It can indicate more detail print of each behavior if user want to.
+In such case, you need to update compatible to "xxx-nv" or "xxx-vv".
+
+	- compatible = "test-cpu";
+	+ compatible = "test-cpu-verbose";
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/generic/Kconfig                     |   6 +
- sound/soc/generic/Makefile                    |   2 +
- .../generic/audio-graph-card2-custom-sample.c | 174 ++++++++++++++++++
- 3 files changed, 182 insertions(+)
- create mode 100644 sound/soc/generic/audio-graph-card2-custom-sample.c
+ .../audio-graph-card2-custom-sample.dtsi      | 71 +++++++++++++++++++
+ 1 file changed, 71 insertions(+)
+ create mode 100644 sound/soc/generic/audio-graph-card2-custom-sample.dtsi
 
-diff --git a/sound/soc/generic/Kconfig b/sound/soc/generic/Kconfig
-index 829ca2b0bf76..b6df4e26bc4a 100644
---- a/sound/soc/generic/Kconfig
-+++ b/sound/soc/generic/Kconfig
-@@ -26,6 +26,12 @@ config SND_AUDIO_GRAPH_CARD2
- 	  This option enables generic simple sound card2 support
- 	  with OF-graph DT bindings.
- 
-+config SND_AUDIO_GRAPH_CARD2_CUSTOM_SAMPLE
-+	tristate "ASoC Audio Graph Card2 base custom sample support"
-+	depends on SND_AUDIO_GRAPH_CARD2
-+	help
-+	  This option enables Audio Graph Card2 base custom sample
-+
- config SND_TEST_COMPONENT
- 	tristate "ASoC Test component sound support"
- 	depends on OF
-diff --git a/sound/soc/generic/Makefile b/sound/soc/generic/Makefile
-index b480f47a330d..084862156506 100644
---- a/sound/soc/generic/Makefile
-+++ b/sound/soc/generic/Makefile
-@@ -3,10 +3,12 @@ snd-soc-simple-card-utils-objs	:= simple-card-utils.o
- snd-soc-simple-card-objs	:= simple-card.o
- snd-soc-audio-graph-card-objs	:= audio-graph-card.o
- snd-soc-audio-graph-card2-objs	:= audio-graph-card2.o
-+snd-soc-audio-graph-card2-custom-sample-objs := audio-graph-card2-custom-sample.o
- snd-soc-test-component-objs	:= test-component.o
- 
- obj-$(CONFIG_SND_SIMPLE_CARD_UTILS)	+= snd-soc-simple-card-utils.o
- obj-$(CONFIG_SND_SIMPLE_CARD)		+= snd-soc-simple-card.o
- obj-$(CONFIG_SND_AUDIO_GRAPH_CARD)	+= snd-soc-audio-graph-card.o
- obj-$(CONFIG_SND_AUDIO_GRAPH_CARD2)	+= snd-soc-audio-graph-card2.o
-+obj-$(CONFIG_SND_AUDIO_GRAPH_CARD2_CUSTOM_SAMPLE) += snd-soc-audio-graph-card2-custom-sample.o
- obj-$(CONFIG_SND_TEST_COMPONENT)	+= snd-soc-test-component.o
-diff --git a/sound/soc/generic/audio-graph-card2-custom-sample.c b/sound/soc/generic/audio-graph-card2-custom-sample.c
+diff --git a/sound/soc/generic/audio-graph-card2-custom-sample.dtsi b/sound/soc/generic/audio-graph-card2-custom-sample.dtsi
 new file mode 100644
-index 000000000000..25fe40aa5aca
+index 000000000000..c2511da31530
 --- /dev/null
-+++ b/sound/soc/generic/audio-graph-card2-custom-sample.c
-@@ -0,0 +1,174 @@
++++ b/sound/soc/generic/audio-graph-card2-custom-sample.dtsi
+@@ -0,0 +1,71 @@
 +// SPDX-License-Identifier: GPL-2.0
-+//
-+// audio-graph-card2-custom-sample.c
-+//
-+// Copyright (C) 2020 Renesas Electronics Corp.
-+// Copyright (C) 2020 Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-+//
-+#include <linux/module.h>
-+#include <linux/of_gpio.h>
-+#include <linux/platform_device.h>
-+#include <sound/graph_card.h>
-+
 +/*
-+ * Custom driver can have own priv
-+ * which includes asoc_simple_priv.
++ * audio-graph-card2-custom-sample.dtsi
++ *
++ * Copyright (C) 2020 Renesas Electronics Corp.
++ * Copyright (C) 2020 Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
++ *
++ * This sample indicates how to use audio-graph-card2 and its
++ * custom driver. "audio-graph-card2-custom-sample" is the custome driver
++ * which is using audio-graph-card2.
++ *
++ * You can easily use this sample by adding below line on your DT file,
++ * and add new CONFIG to your .config.
++ *
++ *	#include "../../../../../sound/soc/generic/audio-graph-card2-custom-sample.dtsi"
++ *
++ *	CONFIG_SND_AUDIO_GRAPH_CARD2
++ *	CONFIG_SND_AUDIO_GRAPH_CARD2_CUSTOM_SAMPLE
++ *	CONFIG_SND_TEST_COMPONENT
 + */
-+struct custom_priv {
-+	struct asoc_simple_priv simple_priv;
++/ {
++	/*
++	 * @ : used at links
++	 *
++	 * [Normal]
++	 *	cpu0 <-@-----------------> codec0
++	 */
++	audio-graph-card2-custom-sample {
++		/*
++		 * You can use audio-graph-card2 directly by using
++		 *
++		 * compatible = "audio-graph-card2";
++		 */
++		compatible = "audio-graph-card2-custom-sample";
 +
-+	/* custom driver's own params */
-+	int custom_params;
++		links = <&cpu0			/* normal: cpu side only */
++		>;
++	};
++
++	test_cpu {
++		/*
++		 * update compatible to indicate more detail behaviour
++		 * if you want. see test-compatible for more detail.
++		 *
++		 * ex)
++		 *	- compatible = "test-cpu";
++		 *	+ compatible = "test-cpu-verbose";
++		 */
++		compatible = "test-cpu";
++		ports {
++			bitclock-master;
++			frame-master;
++			cpu0: port@0 { cpu0_ep: endpoint { remote-endpoint = <&codec0_ep>; }; };
++		};
++	};
++
++	test_codec {
++		/*
++		 * update compatible to indicate more detail behaviour
++		 * if you want. see test-compatible for more detail.
++		 *
++		 * ex)
++		 *	- compatible = "test-codec";
++		 *	+ compatible = "test-codec-verbose";
++		 */
++		compatible = "test-codec";
++		ports {
++			port@0  { codec0_ep:  endpoint { remote-endpoint = <&cpu0_ep>; }; };
++		};
++	};
 +};
-+
-+/* You can get custom_priv from simple_priv */
-+#define simple_to_custom(simple) container_of((simple), struct custom_priv, simple_priv)
-+
-+static int custom_card_probe(struct snd_soc_card *card)
-+{
-+	struct asoc_simple_priv *simple_priv = snd_soc_card_get_drvdata(card);
-+	struct custom_priv *custom_priv = simple_to_custom(simple_priv);
-+	struct device *dev = simple_priv_to_dev(simple_priv);
-+
-+	dev_info(dev, "custom probe\n");
-+
-+	custom_priv->custom_params = 1;
-+
-+	/* you can use generic probe function */
-+	return asoc_graph_card_probe(card);
-+}
-+
-+static int custom_hook_pre(struct asoc_simple_priv *priv)
-+{
-+	struct device *dev = simple_priv_to_dev(priv);
-+
-+	/* You can custom before parsing */
-+	dev_info(dev, "hook : %s\n", __func__);
-+
-+	return 0;
-+}
-+
-+static int custom_hook_post(struct asoc_simple_priv *priv)
-+{
-+	struct device *dev = simple_priv_to_dev(priv);
-+	struct snd_soc_card *card;
-+
-+	/* You can custom after parsing */
-+	dev_info(dev, "hook : %s\n", __func__);
-+
-+	card = simple_priv_to_card(priv);
-+	card->probe = custom_card_probe; /* overwrite .probe */
-+
-+	return 0;
-+}
-+
-+static int custom_normal(struct asoc_simple_priv *priv,
-+			 struct device_node *lnk,
-+			 struct link_info *li)
-+{
-+	struct device *dev = simple_priv_to_dev(priv);
-+
-+	/* You can custom for DPCM parsing */
-+	dev_info(dev, "hook : %s\n", __func__);
-+
-+	return audio_graph2_link_normal(priv, lnk, li);
-+}
-+
-+
-+static int custom_dpcm(struct asoc_simple_priv *priv,
-+		       struct device_node *lnk,
-+		       struct link_info *li)
-+{
-+	struct device *dev = simple_priv_to_dev(priv);
-+
-+	/* You can custom for DPCM parsing */
-+	dev_info(dev, "hook : %s\n", __func__);
-+
-+	return audio_graph2_link_dpcm(priv, lnk, li);
-+}
-+
-+static int custom_c2c(struct asoc_simple_priv *priv,
-+		      struct device_node *lnk,
-+		      struct link_info *li)
-+{
-+	struct device *dev = simple_priv_to_dev(priv);
-+
-+	/* You can custom for Codec2Codec parsing */
-+	dev_info(dev, "hook : %s\n", __func__);
-+
-+	return audio_graph2_link_c2c(priv, lnk, li);
-+}
-+
-+/*
-+ * audio-graph-card2 has many hooks for your customizing.
-+ */
-+static struct graph2_custom_hooks custom_hooks = {
-+	.hook_pre	= custom_hook_pre,
-+	.hook_post	= custom_hook_post,
-+	.custom_normal	= custom_normal,
-+	.custom_dpcm	= custom_dpcm,
-+	.custom_c2c	= custom_c2c,
-+};
-+
-+static int custom_startup(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
-+	struct asoc_simple_priv *priv = snd_soc_card_get_drvdata(rtd->card);
-+	struct device *dev = simple_priv_to_dev(priv);
-+
-+	dev_info(dev, "custom startup\n");
-+
-+	return asoc_simple_startup(substream);
-+}
-+
-+/* You can use custom ops */
-+static const struct snd_soc_ops custom_ops = {
-+	.startup	= custom_startup,
-+	.shutdown	= asoc_simple_shutdown,
-+	.hw_params	= asoc_simple_hw_params,
-+};
-+
-+static int custom_probe(struct platform_device *pdev)
-+{
-+	struct custom_priv *custom_priv;
-+	struct asoc_simple_priv *simple_priv;
-+	struct device *dev = &pdev->dev;
-+	int ret;
-+
-+	custom_priv = devm_kzalloc(dev, sizeof(*custom_priv), GFP_KERNEL);
-+	if (!custom_priv)
-+		return -ENOMEM;
-+
-+	simple_priv		= &custom_priv->simple_priv;
-+	simple_priv->ops	= &custom_ops; /* customize dai_link ops */
-+
-+	/* use audio-graph-card2 parsing with own custom hooks */
-+	ret = audio_graph2_parse_of(simple_priv, dev, &custom_hooks);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* customize more if needed */
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id custom_of_match[] = {
-+	{ .compatible = "audio-graph-card2-custom-sample", },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, custom_of_match);
-+
-+static struct platform_driver custom_card = {
-+	.driver = {
-+		.name = "audio-graph-card2-custom-sample",
-+		.of_match_table = custom_of_match,
-+	},
-+	.probe	= custom_probe,
-+	.remove	= asoc_simple_remove,
-+};
-+module_platform_driver(custom_card);
-+
-+MODULE_ALIAS("platform:asoc-audio-graph-card2-custom-sample");
-+MODULE_LICENSE("GPL v2");
-+MODULE_DESCRIPTION("ASoC Audio Graph Card2 Custom Sample");
-+MODULE_AUTHOR("Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>");
 -- 
 2.25.1
 
