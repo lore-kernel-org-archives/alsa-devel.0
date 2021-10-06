@@ -2,71 +2,70 @@ Return-Path: <SRS0=AF2s=O2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ACA2FC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 15:07:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 12B1BC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 15:07:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 31475610C9
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 15:07:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 31475610C9
+	by mail.kernel.org (Postfix) with ESMTPS id 90AC5611AE
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 15:07:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 90AC5611AE
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C12B3839;
-	Wed,  6 Oct 2021 17:06:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C12B3839
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2BF29844;
+	Wed,  6 Oct 2021 17:06:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2BF29844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633532837;
-	bh=hLbt4RukKdNTYVishghq468DKGfwAalHouKo9xsiGLg=;
+	s=default; t=1633532861;
+	bh=RFaj4ALBuwerGhhxrZJuj8ksu9ThX8DByBk9pqhnJKQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nB1m6kZxwn8iHM7+G/7/UlXXM0V4mGAp1b78bm6agtWPQXXx3i4y9HBTXYUQxeae9
-	 ObVQ4luUgjB4yYb/vdWDplAtzDRjUo7y3vwSZ59UPUal6dE422MA9lV9ztlDUqmJRK
-	 /IFq9QsaQl/snxKTLm7rEXc6s07XowM8dW2Sf82w=
+	b=vYdPsKPsIZfaFWah7kwewsB3Yj+pfGskFRKbaCMWdAtYYv9ttaj1oSAoEKH4sAB9E
+	 oNktzy9oNz1EEsrd1SoC4P/4xjpkDin3KrkNoAJfQKnbFv7t9IViW/a/16rQaWQjjZ
+	 E4sV9icTf2WbTYsB93/DATX5vUScU7UWpjVt1wOg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 985C9F804F1;
-	Wed,  6 Oct 2021 17:05:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B4562F80508;
+	Wed,  6 Oct 2021 17:05:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 391AAF804F2; Wed,  6 Oct 2021 17:05:07 +0200 (CEST)
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ id 9F756F80508; Wed,  6 Oct 2021 17:05:20 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3AE82F804ED
- for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 17:05:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3AE82F804ED
-X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="286894803"
-X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; d="scan'208";a="286894803"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Oct 2021 08:04:42 -0700
+ by alsa1.perex.cz (Postfix) with ESMTPS id B9AE9F804FE
+ for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 17:05:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9AE9F804FE
+X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="312221259"
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; d="scan'208";a="312221259"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 06 Oct 2021 08:04:49 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; d="scan'208";a="484153985"
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; d="scan'208";a="568170516"
 Received: from black.fi.intel.com ([10.237.72.28])
- by fmsmga007.fm.intel.com with ESMTP; 06 Oct 2021 08:04:39 -0700
+ by fmsmga002.fm.intel.com with ESMTP; 06 Oct 2021 08:04:46 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
- id B3751170; Wed,  6 Oct 2021 18:04:45 +0300 (EEST)
+ id 54AEF170; Wed,  6 Oct 2021 18:04:53 +0300 (EEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org,
+To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org
-Subject: [PATCH v1 2/4] ASoC: Intel: bytcr_rt5640: Use temporary variable for
+Subject: [PATCH v1 2/4] ASoC: Intel: bytcr_rt5651: Use temporary variable for
  struct device
-Date: Wed,  6 Oct 2021 18:04:40 +0300
-Message-Id: <20211006150442.16503-2-andriy.shevchenko@linux.intel.com>
+Date: Wed,  6 Oct 2021 18:04:49 +0300
+Message-Id: <20211006150451.16561-2-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211006150442.16503-1-andriy.shevchenko@linux.intel.com>
-References: <20211006150442.16503-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20211006150451.16561-1-andriy.shevchenko@linux.intel.com>
+References: <20211006150451.16561-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
  Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,102 +83,124 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 32 +++++++++++++--------------
- 1 file changed, 15 insertions(+), 17 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5651.c | 42 ++++++++++++---------------
+ 1 file changed, 18 insertions(+), 24 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 43997048a825..0f609a0b3527 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -1511,12 +1511,12 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 	int aif;
+diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+index 2335cca17cc8..36f63516f0cb 100644
+--- a/sound/soc/intel/boards/bytcr_rt5651.c
++++ b/sound/soc/intel/boards/bytcr_rt5651.c
+@@ -907,12 +907,12 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 	int dai_index = 0;
+ 	int i;
  
- 	is_bytcr = false;
 -	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
 +	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
  	if (!priv)
  		return -ENOMEM;
  
  	/* register the soc card */
--	byt_rt5640_card.dev = &pdev->dev;
-+	byt_rt5640_card.dev = dev;
- 	snd_soc_card_set_drvdata(&byt_rt5640_card, priv);
+-	byt_rt5651_card.dev = &pdev->dev;
++	byt_rt5651_card.dev = dev;
+ 	snd_soc_card_set_drvdata(&byt_rt5651_card, priv);
  
  	/* fix index of codec dai */
-@@ -1536,7 +1536,7 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+@@ -932,7 +932,7 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
  		put_device(&adev->dev);
- 		byt_rt5640_dais[dai_index].codecs->name = byt_rt5640_codec_name;
+ 		byt_rt5651_dais[dai_index].codecs->name = byt_rt5651_codec_name;
  	} else {
 -		dev_err(&pdev->dev, "Error cannot find '%s' dev\n", mach->id);
 +		dev_err(dev, "Error cannot find '%s' dev\n", mach->id);
  		return -ENXIO;
  	}
  
-@@ -1579,13 +1579,13 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+@@ -980,13 +980,13 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
  							       &pkg_ctx);
  		if (pkg_found) {
  			if (chan_package.aif_value == 1) {
 -				dev_info(&pdev->dev, "BIOS Routing: AIF1 connected\n");
 +				dev_info(dev, "BIOS Routing: AIF1 connected\n");
- 				byt_rt5640_quirk |= BYT_RT5640_SSP0_AIF1;
+ 				byt_rt5651_quirk |= BYT_RT5651_SSP0_AIF1;
  			} else  if (chan_package.aif_value == 2) {
 -				dev_info(&pdev->dev, "BIOS Routing: AIF2 connected\n");
 +				dev_info(dev, "BIOS Routing: AIF2 connected\n");
- 				byt_rt5640_quirk |= BYT_RT5640_SSP0_AIF2;
+ 				byt_rt5651_quirk |= BYT_RT5651_SSP0_AIF2;
  			} else {
 -				dev_info(&pdev->dev, "BIOS Routing isn't valid, ignored\n");
 +				dev_info(dev, "BIOS Routing isn't valid, ignored\n");
  				pkg_found = false;
  			}
  		}
-@@ -1609,7 +1609,7 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 	if (dmi_id)
- 		byt_rt5640_quirk = (unsigned long)dmi_id->driver_data;
+@@ -1001,7 +1001,7 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 	dmi_check_system(byt_rt5651_quirk_table);
+ 
  	if (quirk_override != -1) {
 -		dev_info(&pdev->dev, "Overriding quirk 0x%lx => 0x%x\n",
 +		dev_info(dev, "Overriding quirk 0x%lx => 0x%x\n",
- 			 byt_rt5640_quirk, quirk_override);
- 		byt_rt5640_quirk = quirk_override;
+ 			 byt_rt5651_quirk, quirk_override);
+ 		byt_rt5651_quirk = quirk_override;
  	}
-@@ -1623,12 +1623,12 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 		acpi_dev_add_driver_gpios(ACPI_COMPANION(priv->codec_dev),
- 					  byt_rt5640_hp_elitepad_1000g2_gpios);
+@@ -1017,8 +1017,7 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
  
--		priv->hsmic_detect = devm_fwnode_gpiod_get(&pdev->dev, codec_dev->fwnode,
-+		priv->hsmic_detect = devm_fwnode_gpiod_get(dev, codec_dev->fwnode,
- 							   "headset-mic-detect", GPIOD_IN,
- 							   "headset-mic-detect");
- 		if (IS_ERR(priv->hsmic_detect)) {
- 			ret_val = PTR_ERR(priv->hsmic_detect);
--			dev_err_probe(&pdev->dev, ret_val, "getting hsmic-detect GPIO\n");
-+			dev_err_probe(dev, ret_val, "getting hsmic-detect GPIO\n");
- 			goto err_device;
+ 	if (byt_rt5651_gpios) {
+ 		devm_acpi_dev_add_driver_gpios(codec_dev, byt_rt5651_gpios);
+-		priv->ext_amp_gpio = devm_fwnode_gpiod_get(&pdev->dev,
+-							   codec_dev->fwnode,
++		priv->ext_amp_gpio = devm_fwnode_gpiod_get(dev, codec_dev->fwnode,
+ 							   "ext-amp-enable",
+ 							   GPIOD_OUT_LOW,
+ 							   "speaker-amp");
+@@ -1029,15 +1028,13 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 				priv->ext_amp_gpio = NULL;
+ 				break;
+ 			default:
+-				dev_err(&pdev->dev, "Failed to get ext-amp-enable GPIO: %d\n",
+-					ret_val);
++				dev_err(dev, "Failed to get ext-amp-enable GPIO: %d\n", ret_val);
+ 				fallthrough;
+ 			case -EPROBE_DEFER:
+ 				goto err;
+ 			}
+ 		}
+-		priv->hp_detect = devm_fwnode_gpiod_get(&pdev->dev,
+-							codec_dev->fwnode,
++		priv->hp_detect = devm_fwnode_gpiod_get(dev, codec_dev->fwnode,
+ 							"hp-detect",
+ 							GPIOD_IN,
+ 							"hp-detect");
+@@ -1048,8 +1045,7 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 				priv->hp_detect = NULL;
+ 				break;
+ 			default:
+-				dev_err(&pdev->dev, "Failed to get hp-detect GPIO: %d\n",
+-					ret_val);
++				dev_err(dev, "Failed to get hp-detect GPIO: %d\n", ret_val);
+ 				fallthrough;
+ 			case -EPROBE_DEFER:
+ 				goto err;
+@@ -1057,7 +1053,7 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
  		}
  	}
-@@ -1638,7 +1638,7 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 	if (ret_val)
- 		goto err_remove_gpios;
  
 -	log_quirks(&pdev->dev);
 +	log_quirks(dev);
  
- 	if ((byt_rt5640_quirk & BYT_RT5640_SSP2_AIF2) ||
- 	    (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2)) {
-@@ -1653,11 +1653,11 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 		byt_rt5640_dais[dai_index].cpus->dai_name = "ssp0-port";
+ 	if ((byt_rt5651_quirk & BYT_RT5651_SSP2_AIF2) ||
+ 	    (byt_rt5651_quirk & BYT_RT5651_SSP0_AIF2))
+@@ -1068,10 +1064,10 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 		byt_rt5651_dais[dai_index].cpus->dai_name = "ssp0-port";
  
- 	if (byt_rt5640_quirk & BYT_RT5640_MCLK_EN) {
+ 	if (byt_rt5651_quirk & BYT_RT5651_MCLK_EN) {
 -		priv->mclk = devm_clk_get(&pdev->dev, "pmc_plt_clk_3");
 +		priv->mclk = devm_clk_get(dev, "pmc_plt_clk_3");
  		if (IS_ERR(priv->mclk)) {
  			ret_val = PTR_ERR(priv->mclk);
- 
 -			dev_err(&pdev->dev,
 +			dev_err(dev,
  				"Failed to get MCLK from pmc_plt_clk_3: %d\n",
  				ret_val);
- 
-@@ -1713,7 +1713,7 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+ 			/*
+@@ -1111,7 +1107,7 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
  	if (ret_val)
  		goto err;
  
@@ -188,20 +209,23 @@ index 43997048a825..0f609a0b3527 100644
  
  	/* set card and driver name */
  	if (sof_parent) {
-@@ -1728,11 +1728,9 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 	if (sof_parent)
- 		dev->driver->pm = &snd_soc_pm_ops;
+@@ -1124,13 +1120,11 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
  
--	ret_val = devm_snd_soc_register_card(&pdev->dev, &byt_rt5640_card);
+ 	/* set pm ops */
+ 	if (sof_parent)
+-		pdev->dev.driver->pm = &snd_soc_pm_ops;
 -
-+	ret_val = devm_snd_soc_register_card(dev, &byt_rt5640_card);
+-	ret_val = devm_snd_soc_register_card(&pdev->dev, &byt_rt5651_card);
++		dev->driver->pm = &snd_soc_pm_ops;
+ 
++	ret_val = devm_snd_soc_register_card(dev, &byt_rt5651_card);
  	if (ret_val) {
 -		dev_err(&pdev->dev, "devm_snd_soc_register_card failed %d\n",
 -			ret_val);
 +		dev_err(dev, "devm_snd_soc_register_card failed %d\n", ret_val);
  		goto err;
  	}
- 	platform_set_drvdata(pdev, &byt_rt5640_card);
+ 	platform_set_drvdata(pdev, &byt_rt5651_card);
 -- 
 2.33.0
 
