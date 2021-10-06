@@ -2,52 +2,52 @@ Return-Path: <SRS0=AF2s=O2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 40B71C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 00:38:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 655B5C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 00:39:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AA56E611C6
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 00:38:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AA56E611C6
+	by mail.kernel.org (Postfix) with ESMTPS id 842CD61207
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 00:39:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 842CD61207
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 45B17166E;
-	Wed,  6 Oct 2021 02:37:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45B17166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2567E844;
+	Wed,  6 Oct 2021 02:38:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2567E844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633480723;
-	bh=Ooe3t2KG1cOLi/BVjpx3DYHQfuYkCa+ivrY3tZjGBWA=;
+	s=default; t=1633480746;
+	bh=DeANByBFbS8MjneYLXxNJkfgetQTH3jL8Lb5jCArvp0=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=foc9FWltS9pKew5PtvG0Ff5CStdD5432yH6IBWj3NtTjnr/CBv1rNvkJJclMsSaxY
-	 t7mUkndBAQ45liA0YqOtQVZbL+g62abIbdgj8i7x6VDfuzctifQslPSrFxZwZUjTV3
-	 J3OvdZzzD+4Xkzf+iOHngYXaSS92Vy2t0nCXTK7g=
+	b=sVVXcAcBgIOllyRj0kiGr231rlnxEdPf0F9A8djxnevLzHxPN1i3i8n20x7/tpOxq
+	 frqTBqdXyjR/HLeDj6jVCihwaovcxUyUvY/P4mF7MrN6D/Eu9aGlo5FUHdcKq4sTUf
+	 VkOb+fkLLSyBW6asx7wvaa4pXHQ7vRMM/U7NqnsQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 66BEDF802A0;
-	Wed,  6 Oct 2021 02:35:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 697D3F80525;
+	Wed,  6 Oct 2021 02:35:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A4021F80526; Wed,  6 Oct 2021 02:35:51 +0200 (CEST)
+ id 3A84FF80527; Wed,  6 Oct 2021 02:35:54 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 5CDF0F802A0
- for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 02:35:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5CDF0F802A0
-Date: 06 Oct 2021 09:35:38 +0900
-X-IronPort-AV: E=Sophos;i="5.85,350,1624287600"; d="scan'208";a="96235411"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 06 Oct 2021 09:35:38 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 59ED7F80259
+ for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 02:35:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59ED7F80259
+Date: 06 Oct 2021 09:35:43 +0900
+X-IronPort-AV: E=Sophos;i="5.85,350,1624287600"; d="scan'208";a="96235417"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 06 Oct 2021 09:35:43 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 3903441728D1;
- Wed,  6 Oct 2021 09:35:38 +0900 (JST)
-Message-ID: <87tuhv3s85.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 18EB240041BA;
+ Wed,  6 Oct 2021 09:35:43 +0900 (JST)
+Message-ID: <87sfxf3s80.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v4 11/16] ASoC: audio-graph-card2-custom-sample.dtsi: add
- Sample DT for Normal (Single)
+Subject: [PATCH v4 12/16] ASoC: audio-graph-card2-custom-sample.dtsi: add
+ Sample DT for Normal (Nulti)
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87a6jn56x0.wl-kuninori.morimoto.gx@renesas.com>
@@ -72,118 +72,76 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Audio Graph Card2 settings is a little bit difficult for beginner,
-and Customizing it also difficult/confusable too.
-So, this patch adds sample for it.
+This patch adds Normal link Multi-CPU/Codec sample to
+audio-graph-card2-custom-sample.dtsi.
 
-You can easily use it by adding below line on your DT file,
-and select CONFIGs to your .config.
-
-	#include "../../../../../sound/soc/generic/audio-graph-card2-custom-sample.dtsi"
-
-	CONFIG_SND_AUDIO_GRAPH_CARD2
-	CONFIG_SND_AUDIO_GRAPH_CARD2_CUSTOM_SAMPLE
-	CONFIG_SND_TEST_COMPONENT
-
-This patch uses audio-graph-card2 base custom sample driver.
-You can directly use audio-graph-card2 instead of custom sample driver
-by modifing compatible.
-
-	- compatible = "audio-graph-card2-custom-sample";
-	+ compatible = "audio-graph-card2";
-
-Sample custom driver will indicate customized print.
-
-It is using Test-Component driver for CPU/Codec.
-It can indicate more detail print of each behavior if user want to.
-In such case, you need to update compatible to "xxx-nv" or "xxx-vv".
-
-	- compatible = "test-cpu";
-	+ compatible = "test-cpu-verbose";
+               +-+       +-+
+        CPU1 --| | <---> | | -- Codec1
+        CPU2 --| |       | | -- Codec2
+               +-+       +-+
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- .../audio-graph-card2-custom-sample.dtsi      | 71 +++++++++++++++++++
- 1 file changed, 71 insertions(+)
- create mode 100644 sound/soc/generic/audio-graph-card2-custom-sample.dtsi
+ .../audio-graph-card2-custom-sample.dtsi      | 24 +++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
 diff --git a/sound/soc/generic/audio-graph-card2-custom-sample.dtsi b/sound/soc/generic/audio-graph-card2-custom-sample.dtsi
-new file mode 100644
-index 000000000000..c2511da31530
---- /dev/null
+index c2511da31530..b4f4fa743c2b 100644
+--- a/sound/soc/generic/audio-graph-card2-custom-sample.dtsi
 +++ b/sound/soc/generic/audio-graph-card2-custom-sample.dtsi
-@@ -0,0 +1,71 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * audio-graph-card2-custom-sample.dtsi
-+ *
-+ * Copyright (C) 2020 Renesas Electronics Corp.
-+ * Copyright (C) 2020 Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-+ *
-+ * This sample indicates how to use audio-graph-card2 and its
-+ * custom driver. "audio-graph-card2-custom-sample" is the custome driver
-+ * which is using audio-graph-card2.
-+ *
-+ * You can easily use this sample by adding below line on your DT file,
-+ * and add new CONFIG to your .config.
-+ *
-+ *	#include "../../../../../sound/soc/generic/audio-graph-card2-custom-sample.dtsi"
-+ *
-+ *	CONFIG_SND_AUDIO_GRAPH_CARD2
-+ *	CONFIG_SND_AUDIO_GRAPH_CARD2_CUSTOM_SAMPLE
-+ *	CONFIG_SND_TEST_COMPONENT
-+ */
-+/ {
-+	/*
-+	 * @ : used at links
+@@ -24,6 +24,12 @@ / {
+ 	 *
+ 	 * [Normal]
+ 	 *	cpu0 <-@-----------------> codec0
 +	 *
-+	 * [Normal]
-+	 *	cpu0 <-@-----------------> codec0
-+	 */
-+	audio-graph-card2-custom-sample {
-+		/*
-+		 * You can use audio-graph-card2 directly by using
-+		 *
-+		 * compatible = "audio-graph-card2";
-+		 */
-+		compatible = "audio-graph-card2-custom-sample";
++	 * [Multi-CPU/Codec]
++	 *		+-+		+-+
++	 *	cpu1 <--| |<-@--------->| |-> codec1
++	 *	cpu2 <--| |		| |-> codec2
++	 *		+-+		+-+
+ 	 */
+ 	audio-graph-card2-custom-sample {
+ 		/*
+@@ -34,7 +40,21 @@ audio-graph-card2-custom-sample {
+ 		compatible = "audio-graph-card2-custom-sample";
+ 
+ 		links = <&cpu0			/* normal: cpu side only */
++			 &mcpu0			/* multi:  cpu side only */
+ 		>;
 +
-+		links = <&cpu0			/* normal: cpu side only */
-+		>;
-+	};
-+
-+	test_cpu {
-+		/*
-+		 * update compatible to indicate more detail behaviour
-+		 * if you want. see test-compatible for more detail.
-+		 *
-+		 * ex)
-+		 *	- compatible = "test-cpu";
-+		 *	+ compatible = "test-cpu-verbose";
-+		 */
-+		compatible = "test-cpu";
-+		ports {
-+			bitclock-master;
-+			frame-master;
-+			cpu0: port@0 { cpu0_ep: endpoint { remote-endpoint = <&codec0_ep>; }; };
++		multi {
++			ports@0 {
++			mcpu0:	port@0 { mcpu0_ep: endpoint { remote-endpoint = <&mcodec0_ep>; }; };
++				port@1 { mcpu1_ep: endpoint { remote-endpoint = <&cpu1_ep>;    }; };
++				port@2 { mcpu2_ep: endpoint { remote-endpoint = <&cpu2_ep>;    }; };
++			};
++			ports@1 {
++				port@0 { mcodec0_ep: endpoint { remote-endpoint = <&mcpu0_ep>;  }; };
++				port@1 { mcodec1_ep: endpoint { remote-endpoint = <&codec1_ep>; }; };
++				port@2 { mcodec2_ep: endpoint { remote-endpoint = <&codec2_ep>; }; };
++			};
 +		};
-+	};
-+
-+	test_codec {
-+		/*
-+		 * update compatible to indicate more detail behaviour
-+		 * if you want. see test-compatible for more detail.
-+		 *
-+		 * ex)
-+		 *	- compatible = "test-codec";
-+		 *	+ compatible = "test-codec-verbose";
-+		 */
-+		compatible = "test-codec";
-+		ports {
-+			port@0  { codec0_ep:  endpoint { remote-endpoint = <&cpu0_ep>; }; };
-+		};
-+	};
-+};
+ 	};
+ 
+ 	test_cpu {
+@@ -51,6 +71,8 @@ ports {
+ 			bitclock-master;
+ 			frame-master;
+ 			cpu0: port@0 { cpu0_ep: endpoint { remote-endpoint = <&codec0_ep>; }; };
++			      port@1 { cpu1_ep: endpoint { remote-endpoint = <&mcpu1_ep>; }; };
++			      port@2 { cpu2_ep: endpoint { remote-endpoint = <&mcpu2_ep>; }; };
+ 		};
+ 	};
+ 
+@@ -66,6 +88,8 @@ test_codec {
+ 		compatible = "test-codec";
+ 		ports {
+ 			port@0  { codec0_ep:  endpoint { remote-endpoint = <&cpu0_ep>; }; };
++			port@1  { codec1_ep:  endpoint { remote-endpoint = <&mcodec1_ep>; }; };
++			port@2  { codec2_ep:  endpoint { remote-endpoint = <&mcodec2_ep>; }; };
+ 		};
+ 	};
+ };
 -- 
 2.25.1
 
