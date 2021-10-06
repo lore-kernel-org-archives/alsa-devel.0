@@ -2,64 +2,62 @@ Return-Path: <SRS0=AF2s=O2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8473EC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 16:57:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E4CBC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 16:57:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EEE7261056
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 16:57:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EEE7261056
+	by mail.kernel.org (Postfix) with ESMTPS id BD03F610E5
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 16:57:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BD03F610E5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9152B83B;
-	Wed,  6 Oct 2021 18:56:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9152B83B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 401921678;
+	Wed,  6 Oct 2021 18:56:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 401921678
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633539460;
-	bh=khuzzno4oYauIOQdvGOLTQ+ANrjOxPLorS4p2cIUK/I=;
+	s=default; t=1633539464;
+	bh=kviJjdPslXksPN9BfPY8XCmCdjg5SPeAndDnUpa3t6U=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RqQVpo4xDLJC7bu1nCRZ8fTDG1m4O7UO/11toNMc2bA8Jwnso6J/l+NrRKQc4ZC0F
-	 hNltsWeRINSEVanrJKyj3xKwvMPqIA7frrgZ8gHpV6ptd5d9aYjGic/t2SOFJyjwVT
-	 QXesDkMaJWdsn+fcloZDPs75yLvsWln0V88+Ard4=
+	b=fq6vBAPXpylvr0ZgszgAgJwskK/+jjym8KS9KsOeRdDOsc38ttL5hP12S9OmUk4JF
+	 rbZqzHsPLjmDpCO8pmJdeD+mcud1gPDOVI5T6sZPQOiF6eNW8SraHoBkIP+4RXT6KX
+	 XpHssrU8WBMALnzUQcETjRk2T7CDGVcH1F/gUj+U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3CD8EF80302;
+	by alsa1.perex.cz (Postfix) with ESMTP id C64C5F804E2;
 	Wed,  6 Oct 2021 18:56:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1A97EF804E2; Wed,  6 Oct 2021 18:56:48 +0200 (CEST)
+ id 44F34F80424; Wed,  6 Oct 2021 18:56:49 +0200 (CEST)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9BDADF8032D
- for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 18:56:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9BDADF8032D
-X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="226357130"
-X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; d="scan'208";a="226357130"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 53A7FF8010B
+ for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 18:56:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53A7FF8010B
+X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="226357118"
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; d="scan'208";a="226357118"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Oct 2021 09:53:00 -0700
-X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; d="scan'208";a="439186795"
+ 06 Oct 2021 09:52:58 -0700
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; d="scan'208";a="439186776"
 Received: from nbasa-mobl2.amr.corp.intel.com (HELO [10.213.170.135])
  ([10.213.170.135])
  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Oct 2021 09:52:58 -0700
-Subject: Re: [PATCH 1/3] ASoC: soc-acpi: add alternative id field for machine
- driver matching
+ 06 Oct 2021 09:52:54 -0700
+Subject: Re: [PATCH 0/3] Multiple headphone codec driver support
 To: Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org
 References: <20211006161805.938950-1-brent.lu@intel.com>
- <20211006161805.938950-2-brent.lu@intel.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <9067ad51-11e1-a51c-4201-a8f0449dca68@linux.intel.com>
-Date: Wed, 6 Oct 2021 11:50:59 -0500
+Message-ID: <33538866-03a3-4866-2edc-f5fb5928b08f@linux.intel.com>
+Date: Wed, 6 Oct 2021 11:50:08 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20211006161805.938950-2-brent.lu@intel.com>
+In-Reply-To: <20211006161805.938950-1-brent.lu@intel.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -69,14 +67,14 @@ Cc: Libin Yang <libin.yang@intel.com>,
  Malik_Hsu <malik_hsu@wistron.corp-partner.google.com>,
  Charles Keepax <ckeepax@opensource.cirrus.com>,
  Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ Rander Wang <rander.wang@intel.com>, linux-kernel@vger.kernel.org,
  Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
- Rander Wang <rander.wang@intel.com>, Hans de Goede <hdegoede@redhat.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Hans de Goede <hdegoede@redhat.com>,
  Mac Chiang <mac.chiang@intel.com>, Mark Brown <broonie@kernel.org>,
- Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>,
- Paul Olaru <paul.olaru@oss.nxp.com>,
+ Bard Liao <bard.liao@intel.com>, Paul Olaru <paul.olaru@oss.nxp.com>,
  Curtis Malainey <cujomalainey@chromium.org>,
- Gongjun Song <gongjun.song@intel.com>, Bard Liao <bard.liao@intel.com>,
+ Gongjun Song <gongjun.song@intel.com>,
+ Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>,
  Yong Zhi <yong.zhi@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -95,25 +93,42 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
+On 10/6/21 11:18 AM, Brent Lu wrote:
+> Support multiple headphone drivers in same machine driver. In this
+> case, both rt5682 and rt5682s are supported and enumerated by different
+> ACPI HID "10EC5682" and "RTL5682".
 
-> +static bool snd_soc_acpi_id_present(struct snd_soc_acpi_mach *machine)
-> +{
-> +	struct snd_soc_acpi_codecs *id_alt = machine->id_alt;
-> +	int i;
-> +
-> +	if (acpi_dev_present(machine->id, NULL, -1))
-> +		return true;
-> +
-> +	if (id_alt == NULL)
+Ah, now I get what you're trying to do. I like this a lot!
 
-if (!id_alt)
+This is really a 'compatible_id' that the machine driver is capable of
+handling.
 
-> +		return false;
-> +
-> +	for (i = 0; i < id_alt->num_codecs; i++) {
-> +		if (acpi_dev_present(id_alt->codecs[i], NULL, -1))
-> +			return true;
-> +	}
-> +
-> +	return false;
-> +}
+It would be quite useful indeed to prune some of the tables we have, e.g.
+
+"10EC5640" "10EC5642", "INTCCFFD"
+"10EC5645" "10EC5648", etc
+
+In your case you pushed the logic a bit further in that the codec driver
+might be different, but the machine driver can deal with it with
+run-time autodetection.
+
+Would you mind going through the tables and suggest additional
+simplifications with more patches when relevant?
+
+> Brent Lu (3):
+>   ASoC: soc-acpi: add alternative id field for machine driver matching
+>   ASoC: Intel: sof_rt5682: detect codec variant in probe function
+>   ASoC: Intel: sof_rt5682: use id_alt to enumerate rt5682s
+> 
+>  include/sound/soc-acpi.h                      |  2 ++
+>  sound/soc/intel/boards/sof_rt5682.c           | 34 +++----------------
+>  .../intel/common/soc-acpi-intel-adl-match.c   |  8 +++++
+>  .../intel/common/soc-acpi-intel-byt-match.c   |  6 ++++
+>  .../intel/common/soc-acpi-intel-cht-match.c   |  6 ++++
+>  .../intel/common/soc-acpi-intel-cml-match.c   |  8 +++++
+>  .../intel/common/soc-acpi-intel-icl-match.c   |  6 ++++
+>  .../intel/common/soc-acpi-intel-jsl-match.c   | 32 +++++------------
+>  .../intel/common/soc-acpi-intel-tgl-match.c   |  8 +++++
+>  sound/soc/soc-acpi.c                          | 21 +++++++++++-
+>  10 files changed, 76 insertions(+), 55 deletions(-)
+> 
