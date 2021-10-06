@@ -2,66 +2,74 @@ Return-Path: <SRS0=AF2s=O2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0157C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 11:14:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE208C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 11:14:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6AD50610E5
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 11:14:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6AD50610E5
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 4CE1D610E5
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 11:14:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4CE1D610E5
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E6AA31698;
-	Wed,  6 Oct 2021 13:13:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6AA31698
+	by alsa0.perex.cz (Postfix) with ESMTPS id E32A91695;
+	Wed,  6 Oct 2021 13:14:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E32A91695
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633518865;
-	bh=WAk0DumgVVhaJ9hBAfv+BRiT/aJFarWub12D9sjjYbM=;
+	s=default; t=1633518894;
+	bh=3bZ0l2e9fq6OQbxRWcrK/pEDNJzTx0y2BSzq7eI+KEQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HNVMLaRQg4EvsMXxTtHTeTC0Uf8+Qp/OdcX7N95uhNb+uv5czFklPHkDjBHlrY1e+
-	 k2v90i2tcKPM3yLrWDYgYGWI4LuJnF+wOBADhEOjx2TnCd6lTB2GTN3rW75S9+7tdx
-	 ysDeRrjqyHM1XR56fQDb/g3+q72vacdiMVdQgh5Y=
+	b=FuaL91P4wswy5hei8IGjrcO8MUneYrtSJwiZ2PPcUm6FVvG4Bx+d1qQyLvI6uJQpA
+	 m1+1i0UNPylfBhUQGG8dc6Pn8osr5Js904he9uEtqAbLpbvZwiSs7lfRqtXpuXehUN
+	 Y7QqfrLMaFDNmvQ20+NoF330NFHwLFm3SkAyuKfw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2C435F80578;
-	Wed,  6 Oct 2021 13:07:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1806EF80249;
+	Wed,  6 Oct 2021 13:13:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BC252F80570; Wed,  6 Oct 2021 13:07:43 +0200 (CEST)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 76337F80249; Wed,  6 Oct 2021 13:13:03 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E3D4FF80539
- for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 13:07:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3D4FF80539
-X-IronPort-AV: E=McAfee;i="6200,9189,10128"; a="223366510"
-X-IronPort-AV: E=Sophos;i="5.85,350,1624345200"; d="scan'208";a="223366510"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Oct 2021 04:07:26 -0700
-X-IronPort-AV: E=Sophos;i="5.85,350,1624345200"; d="scan'208";a="439081233"
-Received: from byurovit-mobl1.ger.corp.intel.com (HELO
- pujfalus-desk.ger.corp.intel.com) ([10.249.39.239])
- by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Oct 2021 04:07:23 -0700
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-To: lgirdwood@gmail.com, broonie@kernel.org,
- pierre-louis.bossart@linux.intel.com
-Subject: [PATCH 18/19] ASoC: SOF: Intel: hda-loader: Drop SOF_DBG_DUMP_REGS
- flag from dbg_dump calls
-Date: Wed,  6 Oct 2021 14:06:44 +0300
-Message-Id: <20211006110645.26679-19-peter.ujfalusi@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 155D0F8020D
+ for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 13:12:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 155D0F8020D
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="o0rLr4Qv"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3539261100;
+ Wed,  6 Oct 2021 11:12:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1633518769;
+ bh=3bZ0l2e9fq6OQbxRWcrK/pEDNJzTx0y2BSzq7eI+KEQ=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=o0rLr4QvGMvDK5GTcgn3nBfUZ9VRM6xyAoP4VtevrjUttjgccfc+KUMnU4AogHl6S
+ Z8hwr1wKfT/TnTK4NGivEaVV7gpU0SvxDektaie9y0st1grDig4jzQ0D0C6eaNRqbR
+ 9iJWLolpWFeVjYX1kMXhd50HDiFZcLSbAzQqR6YdEXG+dVBnUmwTz7QphjXDfPRjCh
+ xaZ1fZWSVK+sKp3w+QvUF0RZuR+YMKBRS4ACxVPVGoIFEUgpzeXbForRuu24CjP4dY
+ HkcHGzdV4wn5EXI/b3e6+hbtVy+SiY7vhiNvIjV86OTElW5WGNU8iu259xUELf9aAK
+ jqXuAIo0jZr7Q==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: [PATCH MANUALSEL 5.10 7/7] ALSA: pcsp: Make hrtimer forwarding more
+ robust
+Date: Wed,  6 Oct 2021 07:12:33 -0400
+Message-Id: <20211006111234.264020-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211006110645.26679-1-peter.ujfalusi@linux.intel.com>
-References: <20211006110645.26679-1-peter.ujfalusi@linux.intel.com>
+In-Reply-To: <20211006111234.264020-1-sashal@kernel.org>
+References: <20211006111234.264020-1-sashal@kernel.org>
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: guennadi.liakhovetski@linux.intel.com, alsa-devel@alsa-project.org,
- ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.de>, Takashi Iwai <tiwai@suse.com>,
+ Thomas Gleixner <tglx@linutronix.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,42 +85,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-In cl_dsp_init() we are powering up the DSP, register dump is not valid.
-In hda_dsp_cl_boot_firmware() we are downloading the firmware to DSP, again
-the register dump is not a valid concept.
+From: Thomas Gleixner <tglx@linutronix.de>
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+[ Upstream commit f2ff7147c6834f244b8ce636b12e71a3bd044629 ]
+
+The hrtimer callback pcsp_do_timer() prepares rearming of the timer with
+hrtimer_forward(). hrtimer_forward() is intended to provide a mechanism to
+forward the expiry time of the hrtimer by a multiple of the period argument
+so that the expiry time greater than the time provided in the 'now'
+argument.
+
+pcsp_do_timer() invokes hrtimer_forward() with the current timer expiry
+time as 'now' argument. That's providing a periodic timer expiry, but is
+not really robust when the timer callback is delayed so that the resulting
+new expiry time is already in the past which causes the callback to be
+invoked immediately again. If the timer is delayed then the back to back
+invocation is not really making it better than skipping the missed
+periods. Sound is distorted in any case.
+
+Use hrtimer_forward_now() which ensures that the next expiry is in the
+future. This prevents hogging the CPU in the timer expiry code and allows
+later on to remove hrtimer_forward() from the public interfaces.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Link: https://lore.kernel.org/r/20210923153339.623208460@linutronix.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sof/intel/hda-loader.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ sound/drivers/pcsp/pcsp_lib.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/intel/hda-loader.c b/sound/soc/sof/intel/hda-loader.c
-index 10b37e8ad30b..abad6d0ceb83 100644
---- a/sound/soc/sof/intel/hda-loader.c
-+++ b/sound/soc/sof/intel/hda-loader.c
-@@ -177,8 +177,7 @@ static int cl_dsp_init(struct snd_sof_dev *sdev, int stream_tag)
- 			__func__);
+diff --git a/sound/drivers/pcsp/pcsp_lib.c b/sound/drivers/pcsp/pcsp_lib.c
+index ed40d0f7432c..773db4bf0876 100644
+--- a/sound/drivers/pcsp/pcsp_lib.c
++++ b/sound/drivers/pcsp/pcsp_lib.c
+@@ -143,7 +143,7 @@ enum hrtimer_restart pcsp_do_timer(struct hrtimer *handle)
+ 	if (pointer_update)
+ 		pcsp_pointer_update(chip);
  
- err:
--	flags = SOF_DBG_DUMP_REGS | SOF_DBG_DUMP_PCI | SOF_DBG_DUMP_MBOX |
--		SOF_DBG_DUMP_OPTIONAL;
-+	flags = SOF_DBG_DUMP_PCI | SOF_DBG_DUMP_MBOX | SOF_DBG_DUMP_OPTIONAL;
+-	hrtimer_forward(handle, hrtimer_get_expires(handle), ns_to_ktime(ns));
++	hrtimer_forward_now(handle, ns_to_ktime(ns));
  
- 	/* after max boot attempts make sure that the dump is printed */
- 	if (hda->boot_iteration == HDA_FW_BOOT_ATTEMPTS)
-@@ -415,8 +414,7 @@ int hda_dsp_cl_boot_firmware(struct snd_sof_dev *sdev)
- 	if (!ret) {
- 		dev_dbg(sdev->dev, "Firmware download successful, booting...\n");
- 	} else {
--		snd_sof_dsp_dbg_dump(sdev, SOF_DBG_DUMP_REGS | SOF_DBG_DUMP_PCI |
--				     SOF_DBG_DUMP_MBOX);
-+		snd_sof_dsp_dbg_dump(sdev, SOF_DBG_DUMP_PCI | SOF_DBG_DUMP_MBOX);
- 		dev_err(sdev->dev, "error: load fw failed ret: %d\n", ret);
- 	}
- 
+ 	return HRTIMER_RESTART;
+ }
 -- 
 2.33.0
 
