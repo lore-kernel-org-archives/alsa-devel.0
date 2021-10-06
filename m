@@ -2,63 +2,68 @@ Return-Path: <SRS0=AF2s=O2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4AC6C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 17:37:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BCA0C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 17:37:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 370D96052B
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 17:37:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 370D96052B
+	by mail.kernel.org (Postfix) with ESMTPS id 517816052B
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 17:37:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 517816052B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CC8141674;
-	Wed,  6 Oct 2021 19:36:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC8141674
+	by alsa0.perex.cz (Postfix) with ESMTPS id DBE561666;
+	Wed,  6 Oct 2021 19:37:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DBE561666
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633541852;
-	bh=k8uuRDhLdxhfUN7qEbd8brg4j25efIDYcodk0R4Ln54=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Ec31DNJrpD0qvlKjhMnO/nOeeAwtF8DtFN/qqByIFXAY8EvN9q19qLCuFe69tny3s
-	 DSwS3YzPN2Y5Z2BX7Soz8z9ecWrPclevzbEBTGv6/yyP0BrliYdAHI8a+CJ737NAqu
-	 ziDDChBd4RSNWy3qbuKKJ7ROP/yYpg5HoV566iQY=
+	s=default; t=1633541876;
+	bh=mpQmWubCNcAfh0LGt+EhT8Z7yCH00Z8EXqdCSRToRPU=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=IhCp6RI+VsVXq5SapdUN2msgHcuj2lzCq1PUj7mlOY0gnKXh0eQIJ3V/Uk0XLHXe9
+	 cboegqTgslB53eSzsRM7mRQiydRCVMqY132PA/cznw/Ps1Ja/uU9SY77T+g16X7Ba+
+	 72JKzV50Ru4rNMQJwVfyf3Dchasg7Hcvuahfdyuo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 87572F80424;
-	Wed,  6 Oct 2021 19:35:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9E851F804F1;
+	Wed,  6 Oct 2021 19:35:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E49D8F804EC; Wed,  6 Oct 2021 19:35:48 +0200 (CEST)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ id 4E0B4F804EB; Wed,  6 Oct 2021 19:35:50 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F0C60F804E7
- for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 19:35:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0C60F804E7
-X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="312264549"
-X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; d="scan'208";a="312264549"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6F9ECF804E6
+ for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 19:35:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F9ECF804E6
+X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="213182025"
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; d="scan'208";a="213182025"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  06 Oct 2021 10:35:11 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; d="scan'208";a="524337490"
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; d="scan'208";a="657073962"
 Received: from black.fi.intel.com ([10.237.72.28])
- by fmsmga008.fm.intel.com with ESMTP; 06 Oct 2021 10:35:08 -0700
+ by orsmga005.jf.intel.com with ESMTP; 06 Oct 2021 10:35:09 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
- id 9B10A159; Wed,  6 Oct 2021 20:35:15 +0300 (EEST)
+ id A8DDB56; Wed,  6 Oct 2021 20:35:15 +0300 (EEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org
-Subject: [PATCH v3 0/4] ASoC: Intel: bytcht_es8316: few cleanups
-Date: Wed,  6 Oct 2021 20:33:45 +0300
-Message-Id: <20211006173349.84684-1-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v3 1/4] ASoC: Intel: bytcht_es8316: Get platform data via
+ dev_get_platdata()
+Date: Wed,  6 Oct 2021 20:33:46 +0300
+Message-Id: <20211006173349.84684-2-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20211006173349.84684-1-andriy.shevchenko@linux.intel.com>
+References: <20211006173349.84684-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.com>,
  Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
  Liam Girdwood <liam.r.girdwood@linux.intel.com>,
  Andy Shevchenko <andriy.shevchenko@linux.intel.com>
@@ -77,25 +82,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The small set of cleanups against bytcht_es8316 board file.
+Access to platform data via dev_get_platdata() getter to make code cleaner.
 
-In v3:
-- actually added a Pierre's tag (Mark)
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.com>
+---
+ sound/soc/intel/boards/bytcht_es8316.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-In v2:
-- added tag (Pierre)
-- added commit message to the patch 2 (Joe)
-
-Andy Shevchenko (4):
-  ASoC: Intel: bytcht_es8316: Get platform data via dev_get_platdata()
-  ASoC: Intel: bytcht_es8316: Use temporary variable for struct device
-  ASoC: Intel: bytcht_es8316: Switch to use gpiod_get_optional()
-  ASoC: Intel: bytcht_es8316: Utilize dev_err_probe() to avoid log
-    saturation
-
- sound/soc/intel/boards/bytcht_es8316.c | 37 +++++++++-----------------
- 1 file changed, 12 insertions(+), 25 deletions(-)
-
+diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
+index 1bb9b8e7bcc7..4360519fbb0c 100644
+--- a/sound/soc/intel/boards/bytcht_es8316.c
++++ b/sound/soc/intel/boards/bytcht_es8316.c
+@@ -456,12 +456,12 @@ static const struct dmi_system_id byt_cht_es8316_quirk_table[] = {
+ 
+ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ {
++	struct device *dev = &pdev->dev;
+ 	static const char * const mic_name[] = { "in1", "in2" };
++	struct snd_soc_acpi_mach *mach = dev_get_platdata(dev);
+ 	struct property_entry props[MAX_NO_PROPS] = {};
+ 	struct byt_cht_es8316_private *priv;
+ 	const struct dmi_system_id *dmi_id;
+-	struct device *dev = &pdev->dev;
+-	struct snd_soc_acpi_mach *mach;
+ 	struct fwnode_handle *fwnode;
+ 	const char *platform_name;
+ 	struct acpi_device *adev;
+@@ -476,7 +476,6 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ 	if (!priv)
+ 		return -ENOMEM;
+ 
+-	mach = dev->platform_data;
+ 	/* fix index of codec dai */
+ 	for (i = 0; i < ARRAY_SIZE(byt_cht_es8316_dais); i++) {
+ 		if (!strcmp(byt_cht_es8316_dais[i].codecs->name,
 -- 
 2.33.0
 
