@@ -2,73 +2,70 @@ Return-Path: <SRS0=AF2s=O2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6EDEFC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 15:50:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 487D5C433FE
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 16:08:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 40CBB610E6
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 15:50:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 40CBB610E6
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 01C7A610EA
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 16:08:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 01C7A610EA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 80982112;
-	Wed,  6 Oct 2021 17:49:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 80982112
+	by alsa0.perex.cz (Postfix) with ESMTPS id BBD3E836;
+	Wed,  6 Oct 2021 18:07:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BBD3E836
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633535399;
-	bh=47gQvTqBUwVekDVQzpGg9z1YxiQhRhuibQ0ZZS8DDms=;
+	s=default; t=1633536499;
+	bh=21rO1Ta+V+Y0VJIs4/EBNiK1Q8BTUVwSJqeKW0hOtcA=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DWUWvz/cSYgEVep7wZpThdGiu0C6urikE+2I0mIhDANalva0XdhE2GqxOgwLaf3cs
-	 RLpPuweFrkI3F+TUtDUvS/dFV6COqbh3rDRSpS9Bbx2MSwhA2fRBD9Lj4ItvnAIrNn
-	 QoMRkJ6L9gdwdYZdwbkimsrTntIIyzDCeqXpqD7w=
+	b=j2GKX5Gs5zqvautcXB/SQCrdDAy2vOysTZT5EeVVKIhWW/XERTGT1TgeBZWYv6yXZ
+	 XQnTU/mvgFbsmGkjBRg0gguYRULG0ZaP2iMAWrWvxITBOX+37Y8v2zH/K59REpye5J
+	 agZZ7UlqLKwBcJ7htWraETFqmMZVJsmlJfoFlr5w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D849AF80229;
-	Wed,  6 Oct 2021 17:49:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 41231F80229;
+	Wed,  6 Oct 2021 18:07:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 43818F80240; Wed,  6 Oct 2021 17:49:07 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id CE0BBF80240; Wed,  6 Oct 2021 18:07:27 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 958C7F8020D
- for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 17:49:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 958C7F8020D
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="GROolJw0"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0876561058;
- Wed,  6 Oct 2021 15:48:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1633535339;
- bh=47gQvTqBUwVekDVQzpGg9z1YxiQhRhuibQ0ZZS8DDms=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=GROolJw06y0WPU8RbKw/7NqgAV4KoLfBV8lLaFc2FmLRCleim5MTMGzrKWQZg1AEi
- SGri5CduGoeqDIboZo6Nj2+jYGQBQ0cu8GyZktrgzSPI9ShBDDzdXoKYOK7j5ZUGta
- mDo3x7hZjst4piPdrrZFrs0QYmnrKe8MkfQHHmbMCHj+MmT3qnAFZPGAvho2smR87S
- AZ1wtSI5j27Oj8y/xLh6a5VeD7D+pnqUwT76guGybO4bAmcO4hL9gbJBEsDZhoNegh
- 7Z9SKrmP3oDzBjACsjGrIFvNECLgfVQgAUPYg6vODyxs9F25tSS3Mj0jIsrR0gnpMd
- mDJeRcfhSPXng==
-Date: Wed, 6 Oct 2021 16:48:57 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id B0327F8010B
+ for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 18:07:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0327F8010B
+X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="213153340"
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; d="scan'208";a="213153340"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+ by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 06 Oct 2021 09:05:54 -0700
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; d="scan'208";a="568222307"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+ by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 06 Oct 2021 09:05:50 -0700
+Received: from andy by smile with local (Exim 4.95)
+ (envelope-from <andriy.shevchenko@linux.intel.com>)
+ id 1mY9QR-009FXV-97; Wed, 06 Oct 2021 19:05:47 +0300
+Date: Wed, 6 Oct 2021 19:05:47 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH v1 2/4] ASoC: Intel: bytcr_rt5640: Use temporary variable
  for struct device
-Message-ID: <YV3FaZ+afuZZSIth@sirena.org.uk>
+Message-ID: <YV3JWzNgGInZ1Bt5@smile.fi.intel.com>
 References: <20211006150442.16503-1-andriy.shevchenko@linux.intel.com>
  <20211006150442.16503-2-andriy.shevchenko@linux.intel.com>
  <4b81a10dca78e286a9f806464b97111b5a15a91e.camel@perches.com>
  <YV3ER4uIL4aRWBjz@smile.fi.intel.com>
+ <YV3FaZ+afuZZSIth@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="kyawfiakXrTSOOdd"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YV3ER4uIL4aRWBjz@smile.fi.intel.com>
-X-Cookie: A is for Apple.
+In-Reply-To: <YV3FaZ+afuZZSIth@sirena.org.uk>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
  Takashi Iwai <tiwai@suse.com>, Jie Yang <yang.jie@linux.intel.com>,
  Cezary Rojewski <cezary.rojewski@intel.com>,
@@ -90,38 +87,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Wed, Oct 06, 2021 at 04:48:57PM +0100, Mark Brown wrote:
+> On Wed, Oct 06, 2021 at 06:44:07PM +0300, Andy Shevchenko wrote:
+> > On Wed, Oct 06, 2021 at 08:21:01AM -0700, Joe Perches wrote:
+> 
+> > > Some will complain about a lack of commit message.
+> 
+> > Yeah, sorry for that, it wasn't deliberate. I forgot to run `git msg-filter`
+> > on these three patches to add it.
+> 
+> > Mark, do you want me resend entire bunch(es) or just starting from these
+> > patches? Or...?
+> 
+> If you're adding a commit message with automation it's probably not
+> adding any value.
 
---kyawfiakXrTSOOdd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+What do you mean? I add it exceptionally for the same (by nature) patches.
+What do you expect to be altered in these three, if the idea behind the change
+is very well the same?
 
-On Wed, Oct 06, 2021 at 06:44:07PM +0300, Andy Shevchenko wrote:
-> On Wed, Oct 06, 2021 at 08:21:01AM -0700, Joe Perches wrote:
+-- 
+With Best Regards,
+Andy Shevchenko
 
-> > Some will complain about a lack of commit message.
 
-> Yeah, sorry for that, it wasn't deliberate. I forgot to run `git msg-filter`
-> on these three patches to add it.
-
-> Mark, do you want me resend entire bunch(es) or just starting from these
-> patches? Or...?
-
-If you're adding a commit message with automation it's probably not
-adding any value.
-
---kyawfiakXrTSOOdd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFdxWgACgkQJNaLcl1U
-h9Dj6Qf/d4hZFf/MYBhKCyGf2BxUJWrfHkBWX9kcLxCJmVG5Yz2jw9oBQKgq7pZM
-pYF4EntfZ2RDTGY7/aV7ZmrG8Wk3gYHgaZSzjTYR2KcldtFHTo0VikUbSvArp5HB
-gPpP2BpyO4k8+O8aNjeGAjKcQ1jBd+Buezd9jELU/IAdoeuJVMkfeI9Fkd/7IzzM
-4gJw6b++c9IuaZ1m1Gz33cB6qkSqfiinWcd6sO6wOzJ9gcnYrZBHtKQwsvkf5iZe
-vP7YN9Yl9yR9ngyPUGegbrk9OX9mUOWUkM0t1Z9SoWrZgq9VoUJ+QWYENo0gkt19
-qqIuupXs2MN80/oJeD21JGRJlOIZNA==
-=MIjN
------END PGP SIGNATURE-----
-
---kyawfiakXrTSOOdd--
