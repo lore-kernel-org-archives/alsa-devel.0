@@ -2,72 +2,75 @@ Return-Path: <SRS0=AF2s=O2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7156C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 16:26:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B632C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 16:26:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5AA55610EA
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 16:26:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5AA55610EA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 7EEE8610EA
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 16:26:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7EEE8610EA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 02FE0839;
-	Wed,  6 Oct 2021 18:25:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 02FE0839
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0D09483D;
+	Wed,  6 Oct 2021 18:25:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D09483D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633537573;
-	bh=08GV4lmQXqOCYu5eyzDM5qsul+20vKMpVFJi0X14+/I=;
+	s=default; t=1633537609;
+	bh=yMaIO/vd9u6EImrWxqcYNEJlDSKGJFG3owN7iCX+71A=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=c/b2FLeZ9RuIO3RohOaWMc7fpPyzHk3Afkyffd/sENteBCskETttwExewV3Gz6NL5
-	 oUQk+3fvawtk85yO4ALmlF6hurOX078gavP+pv3ijJLi/120OxToDQHDPwo+hP9dIl
-	 hDyoY2U3p/7PmNg4GJvTHm2VasSgi9LEciWZ/V/U=
+	b=Nd79bUIdgAGWqGGhY79V3072qdxmH/Euzgw0kIU6nP7ggwCSYvMHyCdzYjkUzaf+z
+	 XZRaL+1N43cFB9rN+LgT8VDU2jHW9bo0Evw+X/CtuhvaYT7L+MjzR3ZtJilYCCirXy
+	 nY8kS9zBxFr1obHVHxFhuMYNQ+vAResPjbb+QHjc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8FB11F8010B;
-	Wed,  6 Oct 2021 18:25:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 420DDF80229;
+	Wed,  6 Oct 2021 18:25:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EBBFAF8032D; Wed,  6 Oct 2021 18:25:20 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 19360F80424; Wed,  6 Oct 2021 18:25:57 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D4C82F800FE
- for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 18:25:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D4C82F800FE
-X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="249317593"
-X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; d="scan'208";a="249317593"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Oct 2021 09:23:08 -0700
-X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; d="scan'208";a="439175129"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
- by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Oct 2021 09:23:05 -0700
-Received: from andy by smile with local (Exim 4.95)
- (envelope-from <andriy.shevchenko@linux.intel.com>)
- id 1mY9h8-009FoT-9J; Wed, 06 Oct 2021 19:23:02 +0300
-Date: Wed, 6 Oct 2021 19:23:02 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 64CD6F800FE
+ for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 18:25:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64CD6F800FE
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="jFazALmV"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E2D61610E5;
+ Wed,  6 Oct 2021 16:25:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1633537546;
+ bh=yMaIO/vd9u6EImrWxqcYNEJlDSKGJFG3owN7iCX+71A=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=jFazALmVxw2rZ1+El/acDelSWVyVEpwrxEZeSIgfwQKuM7JseeOjQNchG09/jBLeI
+ z7mTJ74NRPa+btJsFJgjsqow1fkKJuo4AjqMDm24FN5GFAbkuvHhBu9Went3/sDt9p
+ MFUYP+WdInjYC51xT4BXNLmahT3yPpBcpZ9g/L0GB0TQfpSCqRsjDTRqABB7eRr3iO
+ 7tBYXX/M68BXbwB4bm9X/lVkvF/5yHyJUjYvuaXbRaLA5vXQi4EmqqwdP5RcU4YjpS
+ KFUrboC5dYv7Xk5LeoFLeSS9wViYI4P4Bo59j/oFy0FUCZ1XyHhpA0BVPX1g6dWZN5
+ tm6b4I4kQtLMQ==
+Date: Wed, 6 Oct 2021 17:25:44 +0100
+From: Mark Brown <broonie@kernel.org>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v1 3/4] ASoC: Intel: bytcr_rt5651: use
- devm_clk_get_optional() for mclk
-Message-ID: <YV3NZnb6mg43nUC1@smile.fi.intel.com>
-References: <20211006150451.16561-1-andriy.shevchenko@linux.intel.com>
- <20211006150451.16561-3-andriy.shevchenko@linux.intel.com>
- <2d190513-7ac4-731c-7c9a-1f60a98f6345@linux.intel.com>
+Subject: Re: [PATCH v1 1/4] ASoC: Intel: bytcht_es8316: Get platform data via
+ dev_get_platdata()
+Message-ID: <YV3OCDEgsy1NywTT@sirena.org.uk>
+References: <20211006150428.16434-1-andriy.shevchenko@linux.intel.com>
+ <c8b85524-6b9f-8fd3-3978-1d26b92660fd@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="cLozU3SCA/iEvNWJ"
 Content-Disposition: inline
-In-Reply-To: <2d190513-7ac4-731c-7c9a-1f60a98f6345@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <c8b85524-6b9f-8fd3-3978-1d26b92660fd@linux.intel.com>
+X-Cookie: A is for Apple.
 Cc: Cezary Rojewski <cezary.rojewski@intel.com>, Takashi Iwai <tiwai@suse.com>,
  Jie Yang <yang.jie@linux.intel.com>, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Mark Brown <broonie@kernel.org>
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,51 +86,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Oct 06, 2021 at 10:51:52AM -0500, Pierre-Louis Bossart wrote:
+
+--cLozU3SCA/iEvNWJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Oct 06, 2021 at 10:52:54AM -0500, Pierre-Louis Bossart wrote:
 > On 10/6/21 10:04 AM, Andy Shevchenko wrote:
-> > The devm_clk_get_optional() helper returns NULL when devm_clk_get()
-> > returns -ENOENT. This makes things slightly cleaner. The added benefit
-> > is mostly cosmetic.
+> > Access to platform data via dev_get_platdata() getter to make code cleaner.
 
-...
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-> >  	if (SND_SOC_DAPM_EVENT_ON(event)) {
-> > -		if (byt_rt5651_quirk & BYT_RT5651_MCLK_EN) {
-> > -			ret = clk_prepare_enable(priv->mclk);
-> > -			if (ret < 0) {
-> > -				dev_err(card->dev,
-> > -					"could not configure MCLK state");
-> > -				return ret;
-> > -			}
-> > +		ret = clk_prepare_enable(priv->mclk);
-> > +		if (ret < 0) {
-> > +			dev_err(card->dev, "could not configure MCLK state");
-> > +			return ret;
-> >  		}
-> 
-> I don't get why you removed the test on the BYT_RT5651_MCLK_EN quirk,
-> see below it was designed as a fall-back mode. We don't want to return
-> an error when we know the clock is not present/desired.
+> For the series
 
-Why should we do a unneeded test? When we switch to the optional, there
-will be no error from these CCF APIs. Besides that it drops indentation
-level and makes code neat.
+> Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.com>
 
-...
+> FWIW Marc likes a cover letter that's kept in the merge logs.
 
-> same here, why was the quirk removed?
+And for Mark it's more about the fact that it means that b4 can figure
+out that any tags like Acked-by apply to all the patches in the series
+instead of needing manual editing to add the tags.
 
-Same answer.
+--cLozU3SCA/iEvNWJ
+Content-Type: application/pgp-signature; name="signature.asc"
 
-...
+-----BEGIN PGP SIGNATURE-----
 
-> that part in the probe looks fine, but the changes above are controversial.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFdzgcACgkQJNaLcl1U
+h9CUXgf+JIYwxgw/R8tGnzq26yu7CEbph09Q5/lfkYm0whq7yFISmL5sD3CPsCJE
+1mQTpd36K2XUMv6bTN6AKyY8JCn/TilBde9vp1oCfX3Rb+be734HtY8m3EeLpAx3
++/epxCXM08ac2gf5dHbtzj6gjNL+uwtwTCCNOAwjwT+n2A2tlXl2Y0bNKfTYpPlD
+tCcHbEkGhK84zSwymSOaSre3GC4QcGquf6Wl+aibNvOwqt2SONH+M9kXsObdesVo
+swIHZsbywgaahkWXhrGUVRcE/uHUDUmZctSnQ/IlMXP21waUFLfA6ZkUdr1vX3rH
+9iJbD+psO7AaVe4U+bmUzQCgbS+qtQ==
+=4kTl
+-----END PGP SIGNATURE-----
 
-I didn't get. How controversial? Why? The whole point of _optional is to get
-rid of unneeded checks (since they are _anyway_ be called).
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+--cLozU3SCA/iEvNWJ--
