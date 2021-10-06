@@ -2,72 +2,72 @@ Return-Path: <SRS0=AF2s=O2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 150E4C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 16:25:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D7156C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 16:26:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 921DC60F6C
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 16:25:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 921DC60F6C
+	by mail.kernel.org (Postfix) with ESMTPS id 5AA55610EA
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 16:26:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5AA55610EA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3112B9F6;
-	Wed,  6 Oct 2021 18:25:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3112B9F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 02FE0839;
+	Wed,  6 Oct 2021 18:25:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 02FE0839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633537555;
-	bh=n60Wzv1t8EOq1ed5DS9y50Ht6vJQjDXH6BuErsXsDmM=;
+	s=default; t=1633537573;
+	bh=08GV4lmQXqOCYu5eyzDM5qsul+20vKMpVFJi0X14+/I=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=r7HLi7Ti9dTkdrq2azNv67T4Bi+wT+CxFj3Xbg9LYoyP3OQUeGX9+XhlsXd6ZcXjQ
-	 9nzXHAePOH9zqba7zLOscU2qOXat/I2j8qQjLp/xKFZivPhaM9jC1xnzYw6Wdi7oKZ
-	 M2F0mQ/703MH/fCejV5AumVBm1QW7NNHAFigjKnM=
+	b=c/b2FLeZ9RuIO3RohOaWMc7fpPyzHk3Afkyffd/sENteBCskETttwExewV3Gz6NL5
+	 oUQk+3fvawtk85yO4ALmlF6hurOX078gavP+pv3ijJLi/120OxToDQHDPwo+hP9dIl
+	 hDyoY2U3p/7PmNg4GJvTHm2VasSgi9LEciWZ/V/U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C6999F80240;
-	Wed,  6 Oct 2021 18:24:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8FB11F8010B;
+	Wed,  6 Oct 2021 18:25:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 48BE0F80249; Wed,  6 Oct 2021 18:24:52 +0200 (CEST)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ id EBBFAF8032D; Wed,  6 Oct 2021 18:25:20 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9145AF8010B
- for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 18:24:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9145AF8010B
-X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="224808559"
-X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; d="scan'208";a="224808559"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Oct 2021 09:24:45 -0700
-X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; d="scan'208";a="713002556"
+ by alsa1.perex.cz (Postfix) with ESMTPS id D4C82F800FE
+ for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 18:25:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D4C82F800FE
+X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="249317593"
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; d="scan'208";a="249317593"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 06 Oct 2021 09:23:08 -0700
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; d="scan'208";a="439175129"
 Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
- by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Oct 2021 09:24:41 -0700
+ by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 06 Oct 2021 09:23:05 -0700
 Received: from andy by smile with local (Exim 4.95)
  (envelope-from <andriy.shevchenko@linux.intel.com>)
- id 1mY9ie-009Fpl-Qk; Wed, 06 Oct 2021 19:24:36 +0300
-Date: Wed, 6 Oct 2021 19:24:36 +0300
+ id 1mY9h8-009FoT-9J; Wed, 06 Oct 2021 19:23:02 +0300
+Date: Wed, 6 Oct 2021 19:23:02 +0300
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v1 3/4] ASoC: Intel: bytcr_rt5640: use
+Subject: Re: [PATCH v1 3/4] ASoC: Intel: bytcr_rt5651: use
  devm_clk_get_optional() for mclk
-Message-ID: <YV3NxPehVt3Ju+5p@smile.fi.intel.com>
-References: <20211006150442.16503-1-andriy.shevchenko@linux.intel.com>
- <20211006150442.16503-3-andriy.shevchenko@linux.intel.com>
- <31338a32-a870-4bf8-52ba-5204109cf974@linux.intel.com>
+Message-ID: <YV3NZnb6mg43nUC1@smile.fi.intel.com>
+References: <20211006150451.16561-1-andriy.shevchenko@linux.intel.com>
+ <20211006150451.16561-3-andriy.shevchenko@linux.intel.com>
+ <2d190513-7ac4-731c-7c9a-1f60a98f6345@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <31338a32-a870-4bf8-52ba-5204109cf974@linux.intel.com>
+In-Reply-To: <2d190513-7ac4-731c-7c9a-1f60a98f6345@linux.intel.com>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Cc: Cezary Rojewski <cezary.rojewski@intel.com>, Takashi Iwai <tiwai@suse.com>,
  Jie Yang <yang.jie@linux.intel.com>, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>
+ Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,7 +83,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Oct 06, 2021 at 10:54:12AM -0500, Pierre-Louis Bossart wrote:
+On Wed, Oct 06, 2021 at 10:51:52AM -0500, Pierre-Louis Bossart wrote:
 > On 10/6/21 10:04 AM, Andy Shevchenko wrote:
 > > The devm_clk_get_optional() helper returns NULL when devm_clk_get()
 > > returns -ENOENT. This makes things slightly cleaner. The added benefit
@@ -92,12 +92,39 @@ On Wed, Oct 06, 2021 at 10:54:12AM -0500, Pierre-Louis Bossart wrote:
 ...
 
 > >  	if (SND_SOC_DAPM_EVENT_ON(event)) {
-> > -		if (byt_rt5640_quirk & BYT_RT5640_MCLK_EN) {
+> > -		if (byt_rt5651_quirk & BYT_RT5651_MCLK_EN) {
+> > -			ret = clk_prepare_enable(priv->mclk);
+> > -			if (ret < 0) {
+> > -				dev_err(card->dev,
+> > -					"could not configure MCLK state");
+> > -				return ret;
+> > -			}
+> > +		ret = clk_prepare_enable(priv->mclk);
+> > +		if (ret < 0) {
+> > +			dev_err(card->dev, "could not configure MCLK state");
+> > +			return ret;
+> >  		}
 > 
-> same comment as for rt5651, I don't see the point of removing the test
-> on this quirk?
+> I don't get why you removed the test on the BYT_RT5651_MCLK_EN quirk,
+> see below it was designed as a fall-back mode. We don't want to return
+> an error when we know the clock is not present/desired.
 
-Same answers.
+Why should we do a unneeded test? When we switch to the optional, there
+will be no error from these CCF APIs. Besides that it drops indentation
+level and makes code neat.
+
+...
+
+> same here, why was the quirk removed?
+
+Same answer.
+
+...
+
+> that part in the probe looks fine, but the changes above are controversial.
+
+I didn't get. How controversial? Why? The whole point of _optional is to get
+rid of unneeded checks (since they are _anyway_ be called).
 
 -- 
 With Best Regards,
