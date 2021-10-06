@@ -2,84 +2,88 @@ Return-Path: <SRS0=AF2s=O2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7ACEFC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 17:25:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED4E2C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 17:28:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CBD2D61175
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 17:25:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CBD2D61175
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 01C9A610E6
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 17:28:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 01C9A610E6
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E131B839;
-	Wed,  6 Oct 2021 19:24:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E131B839
+	by alsa0.perex.cz (Postfix) with ESMTPS id CDDF1820;
+	Wed,  6 Oct 2021 19:28:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CDDF1820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633541147;
-	bh=FQX+U0uEJAQaKNmrXugpCjDrTeLOs9u5EEeqq4Uep4U=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=DwN+guJXV5/oT+AwQS1ukACdgQWejeOuPhk9fUEC55ABIyLNlps2P+dFZo2I91agj
-	 wafUbm9FZ5L3QKY2qxA0GAorW0ZFwEEzVEIIFQRxvBlQh2GZpP128ZV7n5vI/gp1Ey
-	 GVIvYdcp170BwQ90ew7LPN8CmRAaGklSwHOYvL5c=
+	s=default; t=1633541330;
+	bh=4EiL0DxQMffQrJ/i2sPYkfj4MKjnxMjzhgv8FrSPbww=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=oG4UhcvXdNAYBMHbr70QdW/BFGB4yg90LdanWzV9dmSm1zFUeMcIMY/FyPyK4xykf
+	 I65xOqc7BYHcJaKM937f1Op6adosmNGJlLpYHRY4bZ2WHvxC1hHDjaZqmZqqb+HRD8
+	 fE0UtHdESc0n4FLtuvXuZE/Z6qwF30h51Zd8s1I0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6D768F8010B;
-	Wed,  6 Oct 2021 19:24:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 54D28F80240;
+	Wed,  6 Oct 2021 19:28:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CE64BF80240; Wed,  6 Oct 2021 19:24:54 +0200 (CEST)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 8B912F8025C; Wed,  6 Oct 2021 19:27:58 +0200 (CEST)
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com
+ [IPv6:2a00:1450:4864:20::436])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7633BF8020D
- for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 19:24:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7633BF8020D
-X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="206174623"
-X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; d="scan'208";a="206174623"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Oct 2021 10:24:44 -0700
-X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; d="scan'208";a="439198434"
-Received: from nbasa-mobl2.amr.corp.intel.com (HELO [10.213.170.135])
- ([10.213.170.135])
- by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Oct 2021 10:24:37 -0700
-Subject: Re: [PATCH 3/3] ASoC: Intel: sof_rt5682: use id_alt to enumerate
- rt5682s
-To: Hans de Goede <hdegoede@redhat.com>, Brent Lu <brent.lu@intel.com>,
- alsa-devel@alsa-project.org, Bard liao <yung-chuan.liao@linux.intel.com>
-References: <20211006161805.938950-1-brent.lu@intel.com>
- <20211006161805.938950-4-brent.lu@intel.com>
- <fdcdf447-352f-3dbc-f55d-b3bb3588dca3@redhat.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <ecde4150-2782-9529-3288-b1eb9e247883@linux.intel.com>
-Date: Wed, 6 Oct 2021 12:24:33 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2680CF8020D
+ for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 19:27:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2680CF8020D
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="L/u3cCEe"
+Received: by mail-wr1-x436.google.com with SMTP id r10so11051372wra.12
+ for <alsa-devel@alsa-project.org>; Wed, 06 Oct 2021 10:27:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=CLQR3ZCHgS6teLwnGcBU/nvuqIvqPuyjjVpaJ3OWZZE=;
+ b=L/u3cCEe8KxiIkgo1yk9QbOW98Z3FHU79WWdMsQ8gpu7UQkwVsHvzUqzjV3UKX+/9t
+ uaIelZQtY0UFb0Ezo/YWTl0TZvx1jbGeU+MUcEiJWwsGWKnF8qCu4g1eE0qVnwkqm+yZ
+ KGvamehJ07Lv6UpXjWuOEhQHG/y56IbEHXFvm0AWueWQRc/mtpZzdHMBvIMmUfrUCm5G
+ kYjWRPvmofeeOi732zA+1VToR9df/QE0xcMqNyRGr4TfdLVw9a5WkoOuzU7o4PF2F+LN
+ 2Ey6uZDVvFnhmHFSF6ioDV1nG+igE3PgO6wQVJVclBtLdj/DCAa5a53NmSFi7AG0HaUo
+ ilkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=CLQR3ZCHgS6teLwnGcBU/nvuqIvqPuyjjVpaJ3OWZZE=;
+ b=Dz+XHEyVyCxq8+QudA5kVesEuBbHZQ22FFXlfbXILaf9cevhWQLYFVWLGmLx/OuIqO
+ vsMGeePLolnRLQ8DPavL6rlA+CTGyI7AtNmYrseVti79pcXflnTx9C3lo4pFWOS5GUSF
+ dJkHbngMe7RyOK1RP6bkEVX5PQZqFgq3a30kwy+nQKwic8F9og5a9Eg0gnWDzftpkl3u
+ lW5sWKxKlFxE7DeetgA3h8O/h01lR9wIx1DfYXpCzMeVh2T7BrLORicM4jtIBsCAOvpx
+ a43u/i7gcYmVXfKcfP0e2xYP2crquzFEOIHnf7T+x86PwwZNUKZgk+qV3oIrRForzxDC
+ /I4g==
+X-Gm-Message-State: AOAM5336TyhY8cSAKxnjvr/AhW4EJX9OC8A7GLwMwfKILZoQmIomKZ0a
+ VMC2UGnYjfOaAf0ATN+54Vt3rA==
+X-Google-Smtp-Source: ABdhPJyxTsichNl3hFKEdTa4Hs387iPUBHJJXBKainDXePRPMd7S6mG5M3CTqPDPip/MrIlhykiW+w==
+X-Received: by 2002:adf:b1c5:: with SMTP id r5mr18385620wra.357.1633541273263; 
+ Wed, 06 Oct 2021 10:27:53 -0700 (PDT)
+Received: from srini-hackbox.lan
+ (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+ by smtp.gmail.com with ESMTPSA id q204sm3976475wme.10.2021.10.06.10.27.52
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 06 Oct 2021 10:27:52 -0700 (PDT)
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: broonie@kernel.org
+Subject: [PATCH 0/2] ASoC: qcom: sm8250: add support for TX and RX Macro dais
+Date: Wed,  6 Oct 2021 18:27:43 +0100
+Message-Id: <20211006172745.22103-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <fdcdf447-352f-3dbc-f55d-b3bb3588dca3@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: Libin Yang <libin.yang@intel.com>,
- Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Malik_Hsu <malik_hsu@wistron.corp-partner.google.com>,
- Charles Keepax <ckeepax@opensource.cirrus.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Rander Wang <rander.wang@intel.com>, linux-kernel@vger.kernel.org,
- Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mac Chiang <mac.chiang@intel.com>,
- Mark Brown <broonie@kernel.org>, Bard Liao <bard.liao@intel.com>,
- Paul Olaru <paul.olaru@oss.nxp.com>,
- Curtis Malainey <cujomalainey@chromium.org>,
- Gongjun Song <gongjun.song@intel.com>,
- Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>,
- Yong Zhi <yong.zhi@intel.com>
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, bgoswami@codeaurora.org, tiwai@suse.de,
+ plai@codeaurora.org, lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,32 +99,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+This patchset adds support for testing WCD938X connected via TX and RX Macros
+on SM8250 MTP.
 
->> @@ -196,6 +201,7 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_baytrail_machines[] = {
->>  	},
->>  	{
->>  		.id = "10EC5682",
->> +		.id_alt = &rt5682s_hp,
->>  		.drv_name = "sof_rt5682",
->>  		.sof_fw_filename = "sof-byt.ri",
->>  		.sof_tplg_filename = "sof-byt-rt5682.tplg",
-> 
-> So this is only useful if there actually are any BYT devices using the "RTL5682"
-> ACPI HID, the 100+ BYT/CHT DSDTs which I've gather over time say there aren't any.
-> 
-> Actually there also aren't any using the non alt "10EC5682" ACPI HID either...
-> 
-> Bard Liao, you added this in commit f70abd75b7c6 ("ASoC: Intel: add sof-rt5682 machine driver")
-> but I wonder how useful this is. I guess it may be available as (and tested on?) some dev-kit.
-> 
-> But I don't think there us any hardware out there in the wild using this ?
+Srinivas Kandagatla (2):
+  ASoC: qcom: sm8250: add support for TX and RX Macro dais
+  ASoC: qcom: sm8250: Add Jack support
 
-In the past we used this configuration for SOF CI tests with the
-MinnowBoard + an RT5682 eval board. We gradually fried most boards and
-no longer check this capability for each SOF PR.
+ sound/soc/qcom/sm8250.c | 79 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 79 insertions(+)
 
-So I would agree we can avoid changing anything for BYT/CHT and possibly
-APL, it'd be an untested configuration.
+-- 
+2.21.0
 
-in other words, let's add this compatible/alt_id for platforms where we
-know it'll be used.
