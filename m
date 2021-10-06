@@ -2,84 +2,70 @@ Return-Path: <SRS0=AF2s=O2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48E6FC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 14:27:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8AEA0C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 15:05:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4C6406109F
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 14:27:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4C6406109F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id EF9A8611AE
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Oct 2021 15:05:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EF9A8611AE
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 93BFA836;
-	Wed,  6 Oct 2021 16:26:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93BFA836
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9F368839;
+	Wed,  6 Oct 2021 17:04:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F368839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633530450;
-	bh=AnSElYwlqYSZAcLwfoyFV38dqHrLP3VuVHKN6LM2it8=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1633532736;
+	bh=L0ssyrCNSqC9LyFw/4Y4DT+SsZ2voy8Ud1VAq23m7DU=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DZOl+cIHQS0xrs6SQurEZW+jKyIe8o0HdlAVYLcYDsd6+N6AJDZ9Ejrjj9WRDUsvZ
-	 tJ7iOJrYOKJpk7uuYAmS4BgOvKlSFy9XynxOz53nMTEcBdue+pNMWCoKwcysFWI2aI
-	 NO1XzPCVB3Etp7pZWemn05gFSCrRuR4QonlwEN1s=
+	b=p2fXQR8510/JlVtm22ovH9LykVW6S6qV6rDUWiCI+nB1W72j/pl0Jh/HmupLpHi8a
+	 lwkD5zByFdx05CGihIpyfThO8EeVXma4Xd6gfP7P/xThjTdYzozyl5q0mSk7K1T1it
+	 ZevNxbPEqn9UFW1RNZzJlcTCTjlHHIuun4RC453o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 37A34F80249;
-	Wed,  6 Oct 2021 16:26:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1FA74F80229;
+	Wed,  6 Oct 2021 17:04:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 930A1F8025C; Wed,  6 Oct 2021 16:26:38 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 69685F80249; Wed,  6 Oct 2021 17:04:43 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4C286F8010B
- for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 16:26:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C286F8010B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="yd30QTqL"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="g8Dc6Nte"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id B3E7D20381;
- Wed,  6 Oct 2021 14:26:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1633530390; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=8blPcIDRn8wgZpHnyTjwPBHxn3x/PErMAMLru6BHaMY=;
- b=yd30QTqLmaurd754m+eeroJ5IEUeD7QSTgoPKy10aabUl6Qko6NXqDMYbou2AalEpTuM6y
- wJpA30j/5ekiU0pYJ0oE9XcyRp7zIvF2xd1ThVzUEAJ8qQv1lbHew7al2UT3R+jaDyfGzD
- jErK92NMWT6GHhD3w0LVULC0qqTkU5g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1633530390;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=8blPcIDRn8wgZpHnyTjwPBHxn3x/PErMAMLru6BHaMY=;
- b=g8Dc6NteLzSA5fLottbmBYskj+/NdPYUPyUpyI0UKa1FOZug9jlevV/u7Rlyf3GCsmGdVR
- 2YM9tMxcsv2bK8Aw==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id A7E87A3B88;
- Wed,  6 Oct 2021 14:26:30 +0000 (UTC)
-Date: Wed, 06 Oct 2021 16:26:30 +0200
-Message-ID: <s5hilyab561.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Werner Sembach <wse@tuxedocomputers.com>
-Subject: Re: [PATCH] ALSA: hda/realtek: Add quirk for TongFang PHxTxX1
-In-Reply-To: <ca37123b-5779-b546-089b-9af61f68a2b2@tuxedocomputers.com>
-References: <20211006130415.538243-1-wse@tuxedocomputers.com>
- <s5hpmsib5wp.wl-tiwai@suse.de>
- <ca37123b-5779-b546-089b-9af61f68a2b2@tuxedocomputers.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id 77785F8020D
+ for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 17:04:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77785F8020D
+X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="312221144"
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; d="scan'208";a="312221144"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 06 Oct 2021 08:04:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,352,1624345200"; d="scan'208";a="545297384"
+Received: from black.fi.intel.com ([10.237.72.28])
+ by fmsmga004.fm.intel.com with ESMTP; 06 Oct 2021 08:04:25 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+ id DF1CB56; Wed,  6 Oct 2021 18:04:31 +0300 (EEST)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH v1 2/4] ASoC: Intel: bytcht_es8316: Use temporary variable for
+ struct device
+Date: Wed,  6 Oct 2021 18:04:26 +0300
+Message-Id: <20211006150428.16434-2-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20211006150428.16434-1-andriy.shevchenko@linux.intel.com>
+References: <20211006150428.16434-1-andriy.shevchenko@linux.intel.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,39 +81,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 06 Oct 2021 16:25:13 +0200,
-Werner Sembach wrote:
-> 
-> Am 06.10.21 um 16:10 schrieb Takashi Iwai:
-> 
-> > On Wed, 06 Oct 2021 15:04:15 +0200,
-> > Werner Sembach wrote:
-> >> This applies a SND_PCI_QUIRK(...) to the TongFang PHxTxX1 barebone. This
-> >> fixes the issue of the internal Microphone not working after booting
-> >> another OS.
-> >>
-> >> When booting a certain another OS this barebone keeps some coeff settings
-> >> even after a cold shutdown. These coeffs prevent the microphone detection
-> >> from working in Linux, making the Laptop think that there is always an
-> >> external microphone plugged-in and therefore preventing the use of the
-> >> internal one.
-> >>
-> >> The relevant indexes and values where gathered by naively diff-ing and
-> >> reading a working and a non-working coeff dump.
-> >>
-> >> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
-> > Thanks, applied.
-> >
-> >
-> > Takashi
-> 
-> Thanks for being quick as always ^^
-> 
-> I forgot to add cc: stable to the patch. Whats the best practie to do that after the patch has already been applied?
-> 
-> Just send it again mit with cc: stable?
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ sound/soc/intel/boards/bytcht_es8316.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Don't worry, I already added it :)
+diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
+index 4360519fbb0c..171f3d8c5996 100644
+--- a/sound/soc/intel/boards/bytcht_es8316.c
++++ b/sound/soc/intel/boards/bytcht_es8316.c
+@@ -493,7 +493,7 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ 		put_device(&adev->dev);
+ 		byt_cht_es8316_dais[dai_index].codecs->name = codec_name;
+ 	} else {
+-		dev_err(&pdev->dev, "Error cannot find '%s' dev\n", mach->id);
++		dev_err(dev, "Error cannot find '%s' dev\n", mach->id);
+ 		return -ENXIO;
+ 	}
+ 
+@@ -596,7 +596,7 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ 	byt_cht_es8316_card.long_name = long_name;
+ #endif
+ 
+-	sof_parent = snd_soc_acpi_sof_parent(&pdev->dev);
++	sof_parent = snd_soc_acpi_sof_parent(dev);
+ 
+ 	/* set card and driver name */
+ 	if (sof_parent) {
+-- 
+2.33.0
 
-
-Takashi
