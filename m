@@ -2,100 +2,75 @@ Return-Path: <SRS0=Vpzd=O3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1691CC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 13:58:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5041C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 14:00:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E191361075
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 13:58:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E191361075
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id 86AD161040
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 14:00:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 86AD161040
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 09E4B166A;
-	Thu,  7 Oct 2021 15:57:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 09E4B166A
+	by alsa0.perex.cz (Postfix) with ESMTPS id CF086166A;
+	Thu,  7 Oct 2021 15:59:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF086166A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633615085;
-	bh=eomZvTUJ8GaozJDXvWx0AL7Kf1/QV3su5vcsts3PKNQ=;
+	s=default; t=1633615245;
+	bh=//2L6fZhSmLYXeEj56NJ/3LVWAKfB8n2vC/pu0njWKM=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eIf+y8eA5/YZTemO1Pw4IUuImI1VWzptWVfTNmmjxIm4Te+BWmCtir125D/llbNK0
-	 844MzRz8y4bLBHa02JQyEN4PISmhWnUxjEjQstzyUSq1LNsmOS9gE+nZb3VHoZ8UMt
-	 v+YQ2fYbevCm91Tbu2UdKIQKwuP5roQjasnBPl2U=
+	b=MOBTFXPmXQ0WGHmh0EWZx6tbLTMMSLl8/eXAsNU83yfojA2raM8yGT09v6JAohCZc
+	 3EaLZx/+Z2h6E0UmOED4OVOL/w9ou9X+zQuxUOzwwKMet2o6VKvcTFa9b2ZPWCWUiT
+	 ge5Vs8Rg45MEIKmwecHuUiVoDQ/Cas4doKSGzx5k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 998E1F80259;
-	Thu,  7 Oct 2021 15:57:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 73A06F8027D;
+	Thu,  7 Oct 2021 15:59:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 80B36F8027D; Thu,  7 Oct 2021 15:57:12 +0200 (CEST)
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com
- [IPv6:2a00:1450:4864:20::42b])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 6CCC2F800F0; Thu,  7 Oct 2021 15:59:54 +0200 (CEST)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 322B1F800F0
- for <alsa-devel@alsa-project.org>; Thu,  7 Oct 2021 15:57:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 322B1F800F0
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="HWsW/9Oc"
-Received: by mail-wr1-x42b.google.com with SMTP id m22so19505908wrb.0
- for <alsa-devel@alsa-project.org>; Thu, 07 Oct 2021 06:57:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=kQq0xCGqotFLmmvs4jPCrD6mVz7A9gMb8nAtNV0dxeM=;
- b=HWsW/9OcJDxgqkkiBU5+qjxZoCSIB1shHRB+Sb9HVtqJ4XUIq8IHStPoon98fq5AlA
- tQL18prYExD5HuJ/q51xDAIxa73iSTqP+caEJgVhotTekYDxw3GzzTrUzl3xD1kbIbte
- GSGrDPY7amQU1ZtLPxS+v7aoyzRwH1/x6XGBgrCsOa3k7ygT5YXUoMCJwPORlfJD/VBe
- RPd70qF/boWR6xWNPKzUrZgvA8SpqW6YnEjut8ZWGpwDtiNsIFb6eyEGdv9/BkgESm1W
- X1+I/n7PQewysIaWhfp3QoAzDTOdUG/O0FGplrFvZS0GnO5/VSvVehqEaWvq5eBLjzj9
- o6hQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=kQq0xCGqotFLmmvs4jPCrD6mVz7A9gMb8nAtNV0dxeM=;
- b=dPeADSCDpz092JsR6rYvQtJvmqMzc1Ao7BLt0tWNvsMAdMoG+EPYKWU+KJYoK2E6os
- p3ytWnaF3ARj8WRRf75k7hLK9AL29TdwipToJ/NnfX3y+DnDOYHUth4uCdBPDm7e+jvI
- u3cCTE2hW2ngfozIeKLDPYpj5l5hw6g5P2tCvEBruPiS0aGKigUEw5YeYMr1ehulUBSk
- 4hjfq8eFO4zF1eOgGz4EUDARtclDYKDEMe2dRTE7NP6P+ddry9wjUMMgqLF5v8C3b6+F
- gc9lv8/eFG+H64YnSq2KB/83SwVkBHptbeNa+p3FXxrpBO7230P2czfpntobFTt7TKGt
- kkTA==
-X-Gm-Message-State: AOAM532+jXEoVtbznAqh6vphkgMEyq/c8k6HM0feMQ+La8jfGKC6XAg+
- qZKq+yOEMQHp/f8TxRqnicRY0A==
-X-Google-Smtp-Source: ABdhPJxHCzaN93g3HhmQUt/+mxJ7EZDf5b2xG9w94uqi//2O64Y6WdJ6bv5skd3oTFllx0TjKqLm7A==
-X-Received: by 2002:adf:c70b:: with SMTP id k11mr5478970wrg.154.1633615020393; 
- Thu, 07 Oct 2021 06:57:00 -0700 (PDT)
-Received: from [192.168.86.34]
- (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.googlemail.com with ESMTPSA id q18sm8800003wmc.7.2021.10.07.06.56.59
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 07 Oct 2021 06:56:59 -0700 (PDT)
-Subject: Re: [PATCH] ASoC: codec: wcd938x: Add irq config support
-To: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>, agross@kernel.org,
- bjorn.andersson@linaro.org, lgirdwood@gmail.com, broonie@kernel.org,
- robh+dt@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
- perex@perex.cz, tiwai@suse.com, rohitkr@codeaurora.org,
- linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- swboyd@chromium.org, judyhsiao@chromium.org
-References: <1633614675-27122-1-git-send-email-srivasam@codeaurora.org>
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <217797a8-b37d-9084-f2de-b9162e21718f@linaro.org>
-Date: Thu, 7 Oct 2021 14:56:58 +0100
+ by alsa1.perex.cz (Postfix) with ESMTPS id BC0A5F800F0
+ for <alsa-devel@alsa-project.org>; Thu,  7 Oct 2021 15:59:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC0A5F800F0
+X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="225027000"
+X-IronPort-AV: E=Sophos;i="5.85,354,1624345200"; d="scan'208";a="225027000"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Oct 2021 06:59:38 -0700
+X-IronPort-AV: E=Sophos;i="5.85,354,1624345200"; d="scan'208";a="440273795"
+Received: from klmutolo-mobl.amr.corp.intel.com (HELO [10.212.1.203])
+ ([10.212.1.203])
+ by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Oct 2021 06:59:37 -0700
+Subject: Re: [PATCH v1 1/4] ASoC: Intel: bytcht_es8316: Get platform data via
+ dev_get_platdata()
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+References: <20211006150428.16434-1-andriy.shevchenko@linux.intel.com>
+ <c8b85524-6b9f-8fd3-3978-1d26b92660fd@linux.intel.com>
+ <CAHp75VdiY98mO2Sj_Urv6m3GgpoUrSyDiPttGxTQeCv_z_1DzQ@mail.gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <16f652da-2473-35bb-acde-9b9cfd23a31a@linux.intel.com>
+Date: Thu, 7 Oct 2021 07:59:10 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <1633614675-27122-1-git-send-email-srivasam@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <CAHp75VdiY98mO2Sj_Urv6m3GgpoUrSyDiPttGxTQeCv_z_1DzQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Cc: Venkata Prasad Potturu <potturu@codeaurora.org>
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -113,33 +88,21 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 07/10/2021 14:51, Srinivasa Rao Mandadapu wrote:
-> This patch fixes compilation error in wcd98x codec driver.
+On 10/7/21 2:08 AM, Andy Shevchenko wrote:
+> On Wed, Oct 6, 2021 at 7:14 PM Pierre-Louis Bossart
+> <pierre-louis.bossart@linux.intel.com> wrote:
+>> On 10/6/21 10:04 AM, Andy Shevchenko wrote:
+>>> Access to platform data via dev_get_platdata() getter to make code cleaner.
+>>>
+>>> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>>
+>> For the series
+>>
+>> Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.com>
 > 
-> Fixes: 045442228868 ("ASoC: codecs: wcd938x: add audio routing and Kconfig")
-> 
-> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> Are you sure you gave the correct email here?
 
-LGTM,
+Thanks for catching this, I need a break obviously.
 
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-
-> ---
->   sound/soc/codecs/Kconfig | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-> index 82ee233..216cea0 100644
-> --- a/sound/soc/codecs/Kconfig
-> +++ b/sound/soc/codecs/Kconfig
-> @@ -1583,6 +1583,7 @@ config SND_SOC_WCD938X_SDW
->   	tristate "WCD9380/WCD9385 Codec - SDW"
->   	select SND_SOC_WCD938X
->   	select SND_SOC_WCD_MBHC
-> +	select REGMAP_IRQ
->   	depends on SOUNDWIRE
->   	select REGMAP_SOUNDWIRE
->   	help
-> 
