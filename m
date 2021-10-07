@@ -2,73 +2,70 @@ Return-Path: <SRS0=Vpzd=O3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DBB3AC433FE
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 21:39:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BF18C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 21:39:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6337860EBD
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 21:39:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6337860EBD
+	by mail.kernel.org (Postfix) with ESMTPS id 067B961152
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 21:39:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 067B961152
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 05F41166A;
-	Thu,  7 Oct 2021 23:38:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 05F41166A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 72C881663;
+	Thu,  7 Oct 2021 23:38:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 72C881663
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633642765;
-	bh=4M2RnkwoHY+VtqkKdQus2Ogl+01q/5pNdV+oU8rItUw=;
+	s=default; t=1633642773;
+	bh=M0JScwCK6dY7QbVsEnkNN+IZlnMsuYMilyBSTNOFTCA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WZlac9FJ8aXVkkxrA1Xxf6H99g6OieQ0YL/6LtQXQ99hjsmz/3LpsQ6txaE9+mh8Q
-	 wG5ZT9kIafZ+drL4VBmqiCitYVvgXuq/4WqJOhTMHyDIW2liHgY6f0R0NlbguE97bg
-	 OFHq+DqQsq2LlYjGpkGaMrozv0TDVSf66+pwLwfA=
+	b=NZxfhU5ZPhWk11Nv9d6y83IiPApTXtA1p2+weHgGH1Cwusg3mqRrGUnLFhZpvyxen
+	 2UbB+9E1N280hPe6MiP9CQNSso4BTOQNowyMvaasuTkDcqTnDleBD7vBOlMb/HXJb8
+	 e2A+UiErBOinRvZAg3VfcamFQ1QL9qhBeoUi70aM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 03407F804BB;
-	Thu,  7 Oct 2021 23:37:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DB274F804E2;
+	Thu,  7 Oct 2021 23:37:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 76BEDF8027D; Thu,  7 Oct 2021 23:37:50 +0200 (CEST)
+ id D8853F804E6; Thu,  7 Oct 2021 23:37:55 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CED65F80259
- for <alsa-devel@alsa-project.org>; Thu,  7 Oct 2021 23:37:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CED65F80259
+ by alsa1.perex.cz (Postfix) with ESMTPS id 837B4F804BD
+ for <alsa-devel@alsa-project.org>; Thu,  7 Oct 2021 23:37:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 837B4F804BD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="teRmpjXK"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 32743610C8;
- Thu,  7 Oct 2021 21:37:44 +0000 (UTC)
+ header.b="lsV5RMPu"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CADB6120D;
+ Thu,  7 Oct 2021 21:37:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1633642664;
- bh=4M2RnkwoHY+VtqkKdQus2Ogl+01q/5pNdV+oU8rItUw=;
+ s=k20201202; t=1633642670;
+ bh=M0JScwCK6dY7QbVsEnkNN+IZlnMsuYMilyBSTNOFTCA=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=teRmpjXK7nQWqjSF3u0Iu+JmKEKbWNLNixXatIgeNTRkUVamjX4AkIJqmVKpv07Ml
- 3zmfTIQ3RusropXDzqJvg1RV8rfAYbKPDIpWdAuh8vTo3RRGtVh11N0P3Cb8qccfyR
- V6+9QJNFypgXyyEIqA9CwybZEWYQYe20grzMC1XX97dAKVA/D70fqkJeflCHp7ZFMv
- OakXBWYZU6ua7R+I8P+N8f0/XZwZ9dj5LzTrBl9ZHgswr+IYMRjyw3z64puAj1E5it
- 67DPobgW+e4X8CU79ZTg7exUzrCUbdHXZUJ8CMUOyOUE4+qIhGwAqsVmdkHp1v1SN7
- 9APCsk3W/OD2g==
+ b=lsV5RMPuJp5pZ9++YPV+7cBgmTN/2UYfsuJlrQSpTeIV2URfpnMo6jL0XkXvmBJSR
+ TvJPHujqPw0VldZV57Ux7dIjEcdYY0k3NqipoSPHZs1vN1d+OftGRl3z+tTG1iiR+Z
+ gGTj+OJlRgoH3orvmBa7RtgYy0e7lQKVPAwyygO5T3kQyR+OsRKUHY3v/06eyHECHc
+ EjeVQ2FjvvaoAXmMknEuZwM8iZ3CqyTzIA9L0mys5pycYIHVPh70ujNOPVJQ1y1snY
+ KTIOTRZ+OABxXtiamqJ0H2rN7GEkakYczESmrefKJCxjzPZUK1ZugPufvrTOwfURGD
+ oAvAM1FKlip1g==
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org
-Subject: Re: [PATCH] ASoC: soc-pcm: restore mixer functionality
-Date: Thu,  7 Oct 2021 22:37:24 +0100
-Message-Id: <163364264607.649699.9814430784093751468.b4-ty@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Subject: Re: [PATCH] ASoC: DAPM: Fix missing kctl change notifications
+Date: Thu,  7 Oct 2021 22:37:26 +0100
+Message-Id: <163364264607.649699.9456169458169532979.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211004212141.193136-1-pierre-louis.bossart@linux.intel.com>
-References: <20211004212141.193136-1-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20211006141712.2439-1-tiwai@suse.de>
+References: <20211006141712.2439-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, Sameer Pujar <spujar@nvidia.com>,
- Mark Brown <broonie@kernel.org>,
- =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,15 +81,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 4 Oct 2021 16:21:41 -0500, Pierre-Louis Bossart wrote:
-> Recent changes in soc-pcm completely broke basic support for mixers on
-> Intel systems: the filters on BE states prevent the connection of a
-> second mixer input while the back-end is already active.
+On Wed, 6 Oct 2021 16:17:12 +0200, Takashi Iwai wrote:
+> The put callback of a kcontrol is supposed to return 1 when the value
+> is changed, and this will be notified to user-space.  However, some
+> DAPM kcontrols always return 0 (except for errors), hence the
+> user-space misses the update of a control value.
 > 
-> Rather than reverting the changes, which would be problematic for
-> Tegra systems, this patch suggests an additional filter which will
-> only apply to Tegra systems. This is a temporary solution which will
-> have to be revisited - additional issues have been reported with DPCM.
+> This patch corrects the behavior by properly returning 1 when the
+> value gets updated.
 > 
 > [...]
 
@@ -102,8 +98,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: soc-pcm: restore mixer functionality
-      commit: 9609cfcda00771859b2177de3bf0c3da62fe7233
+[1/1] ASoC: DAPM: Fix missing kctl change notifications
+      commit: 5af82c81b2c49cfb1cad84d9eb6eab0e3d1c4842
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
