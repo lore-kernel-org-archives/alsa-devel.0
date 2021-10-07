@@ -2,73 +2,72 @@ Return-Path: <SRS0=Vpzd=O3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 97082C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 21:40:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13E01C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 21:40:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 17E77610C8
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 21:40:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 17E77610C8
+	by mail.kernel.org (Postfix) with ESMTPS id 8907C610C8
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 21:40:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8907C610C8
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9626D166E;
-	Thu,  7 Oct 2021 23:39:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9626D166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0D451166B;
+	Thu,  7 Oct 2021 23:40:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D451166B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633642834;
-	bh=+XFheclGijsJkX5Wef9fRQUiRbEAPw3jt9c9OIWnZw8=;
+	s=default; t=1633642852;
+	bh=/Tv2AJXNqG1K6AaAZPNmFslYpyfGUUUZMyM5Sy8SveY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YZjXdazTRqrKYaGAABFRoEkGLjUXu1jY6ZcXr7eELaXgiELuPuYKaZAuTZHjR28ol
-	 PZL8DxRUaEYi2ZpDtRCEMPEfRGC3t4XE/YrC82/FXgU/POFlXgxiGvFocRNGgdxKAC
-	 vE6taVx8iGDDRbvZzmNfY82mWdYHNRZH4FLU9B5s=
+	b=rCZh5VtvwhtErcTEwnhGs3CTSSC9TggGknDCVs7FRxinN2YvljQfSslkXHaNpFx8A
+	 ChGGDayxNVOjoT+JZf40n5oQqfrh2X5RXIT8ABfXZmxG0AyNquEDA3TcZ4mLGabz00
+	 orO09LDefMsj9x+uBG+Mt31UrGuycBU13UNT6xlc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E0DE4F804FD;
-	Thu,  7 Oct 2021 23:38:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6FF82F80506;
+	Thu,  7 Oct 2021 23:38:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 50A23F804ED; Thu,  7 Oct 2021 23:38:01 +0200 (CEST)
+ id 0B199F804FF; Thu,  7 Oct 2021 23:38:06 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 92EC9F804E0
- for <alsa-devel@alsa-project.org>; Thu,  7 Oct 2021 23:37:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92EC9F804E0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5C26EF804E5
+ for <alsa-devel@alsa-project.org>; Thu,  7 Oct 2021 23:38:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C26EF804E5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ejeDJru8"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EBDB60EBD;
- Thu,  7 Oct 2021 21:37:52 +0000 (UTC)
+ header.b="sxlGx/Sv"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B15B60EBD;
+ Thu,  7 Oct 2021 21:37:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1633642672;
- bh=+XFheclGijsJkX5Wef9fRQUiRbEAPw3jt9c9OIWnZw8=;
+ s=k20201202; t=1633642678;
+ bh=/Tv2AJXNqG1K6AaAZPNmFslYpyfGUUUZMyM5Sy8SveY=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=ejeDJru8DN0LVQ3vQnNhn6ZauR+bUQpLE1okqT4vV4Ia80XJd3UywkwcYEMkUcaVG
- mkqSsvllloKZ/r4dHAtwePB8xucZwbJaEH6aRcL9A8o59i5yXjaUASTxkxQeD/vP1T
- xUipXRgGX3atop0HJE8vzFS8enZUzoxxtusa9v+HAlzRZH+biHqSEl8dVwKZ1k6CVG
- z5JsDsurguT36p877A3orksdy4e+D3GYvH0y4kfMs/KU0zMVId0r/zbPtcPf2KUXe6
- KWbtpUsMpaOi4RpsD+1znmL6L6AHCFnC2PawaY3kyit0M7EooefJTBYwN8xzp1/bwo
- G81+0aD6ninPg==
+ b=sxlGx/Sv2YvZQnVG+HzczGEHYz2Ton2qegauJXIS2DxykvYzBQe2reeOV2lgScYt3
+ ovbqfzzDtbn+N0Z+SYzERV/oRrGfqsvaNuV55DNF8aFHqYsEV+6oSEL0Ayb4yTi/qL
+ pVpQMBrDy6TyYJR2HvOmPQImJ2jy9Z9bZ0ER0xOCurmB2Vwk7XUNfhmimdnwFqClPU
+ 6tqdb10JUJZ85ye5eMUBIeKCHpnlm+b9MidUU1NijiB53gD8UJ2cRrXVq0uJ8/TSsZ
+ 9ZSmFhoqtikyrI+65cP6LsVZLQkcgRehU/zXJR1oAUOeGNSi9W0QMqNKkngMVSBgM5
+ hk0fVwU4l0okQ==
 From: Mark Brown <broonie@kernel.org>
 To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
  pierre-louis.bossart@linux.intel.com
-Subject: Re: [PATCH] ASoC: SOF: topology: do not power down primary core
- during topology removal
-Date: Thu,  7 Oct 2021 22:37:27 +0100
-Message-Id: <163364264606.649699.3455055658335794221.b4-ty@kernel.org>
+Subject: Re: [PATCH] ASoC: SOF: pipelines: Harmonize all functions to use
+ struct snd_sof_dev
+Date: Thu,  7 Oct 2021 22:37:29 +0100
+Message-Id: <163364264607.649699.12990451160699048118.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211006104041.27183-1-peter.ujfalusi@linux.intel.com>
-References: <20211006104041.27183-1-peter.ujfalusi@linux.intel.com>
+In-Reply-To: <20211006111651.10027-1-peter.ujfalusi@linux.intel.com>
+References: <20211006111651.10027-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: guennadi.liakhovetski@linux.intel.com, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, ranjani.sridharan@linux.intel.com,
- kai.vehmanen@linux.intel.com
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,14 +83,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 6 Oct 2021 13:40:41 +0300, Peter Ujfalusi wrote:
-> From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+On Wed, 6 Oct 2021 14:16:51 +0300, Peter Ujfalusi wrote:
+> First thing the pipelines function which have "struct device *dev" as
+> parameter do is:
+> struct snd_sof_dev *sdev = dev_get_drvdata(dev);
 > 
-> When removing the topology components, do not power down
-> the primary core. Doing so will result in an IPC timeout
-> when the SOF PCI device runtime suspends.
+> and in all cases the passed dev is actually coming from sdev->dev.
 > 
-> Fixes: 0dcdf84289fb ("ASoC: SOF: add a "core" parameter to widget loading functions")
+> Skip this steps and pass directly the sdev to all pipelines related
+> functions as few of them already does this.
 > 
 > [...]
 
@@ -101,8 +101,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: topology: do not power down primary core during topology removal
-      commit: ec626334eaffe101df9ed79e161eba95124e64ad
+[1/1] ASoC: SOF: pipelines: Harmonize all functions to use struct snd_sof_dev
+      commit: d8a15e5fcae132dc6a44847535ce355f6fba46f8
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
