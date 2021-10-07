@@ -2,74 +2,77 @@ Return-Path: <SRS0=Vpzd=O3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4B6CC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 21:42:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 55341C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 21:42:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2849360F23
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 21:42:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2849360F23
+	by mail.kernel.org (Postfix) with ESMTPS id C15D760F23
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 21:42:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C15D760F23
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A67FD1663;
-	Thu,  7 Oct 2021 23:41:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A67FD1663
+	by alsa0.perex.cz (Postfix) with ESMTPS id 565EA168A;
+	Thu,  7 Oct 2021 23:41:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 565EA168A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633642935;
-	bh=4TP2znbdwj0H4YvHogb8ZrGweVg56RD4YiI0IW4v1e8=;
+	s=default; t=1633642964;
+	bh=4vRh1y+xg/pfgwZWyOIc9oYS+SyNhWVKlApXMzlafFM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jJKC6/gn9pmk7ceZmmeGsn4/j2gQQVr7sL66ESuljzbeDZ1Lvl/MrRm300yvrfINz
-	 iPzihEnTLIW39LWTYuhTzQwiqkvWLOOuESKAvkdEx3kcLIaGc0XhjloADr+Mjib9SW
-	 fLA+uR5AIgWkxspmUn1eXCa0DcCQN7Brz2s3Dpno=
+	b=ZwI6+O3M8GMoXyrWdP/C95P5NP1nBJTRPPc1BVH5xs+GywVMAl13M02/JtPrZmKF2
+	 0Xprdhq4UAHnirJBHsEfDM55rltRn9mz+2sw6iglkfywQb5IVwtPfSoFuzslP6aJcg
+	 qul6cnQgJZd2RJeclT5ceJOspwwAVUhDJPvsay4Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AEECAF8051C;
-	Thu,  7 Oct 2021 23:38:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 167C6F80533;
+	Thu,  7 Oct 2021 23:38:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 28D6CF80525; Thu,  7 Oct 2021 23:38:18 +0200 (CEST)
+ id 222A4F80528; Thu,  7 Oct 2021 23:38:19 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B1274F80511;
- Thu,  7 Oct 2021 23:38:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1274F80511
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1D7FEF8051C
+ for <alsa-devel@alsa-project.org>; Thu,  7 Oct 2021 23:38:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D7FEF8051C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ptLS1W8B"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C371961212;
- Thu,  7 Oct 2021 21:38:07 +0000 (UTC)
+ header.b="qk+xMv47"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F86B61245;
+ Thu,  7 Oct 2021 21:38:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1633642688;
- bh=4TP2znbdwj0H4YvHogb8ZrGweVg56RD4YiI0IW4v1e8=;
+ s=k20201202; t=1633642690;
+ bh=4vRh1y+xg/pfgwZWyOIc9oYS+SyNhWVKlApXMzlafFM=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=ptLS1W8BTb9pfQqTxETwpsqQZdqJZ0FG2SPbnpFoiMvY5qENhgokCN7g/NcddRD17
- jl2qoveZamrSVsK8OncuOrNQmhS18xGB1kB7IXDtUJV4CFDZYuLzDIxk3HgNk3XE1F
- H3N7wB0Ax05E5kT3s1dkoXthtkCESYryURJD8VEkuYckLh1n4rlGz9iM0sr40K7ENm
- rP9+RhFtUz5f3TmDyAMcXwYX4A5pU/Z+3yNhEj7WSXqTppTUfGUtm04qp/mcavEeFi
- MwCgH0UiyrXdsMXc4M9DVRrJkpKDnr4GNjW6tmb26a8+eDR8ipcrXjkFtyG97ehyzf
- 8NCrcda73htjw==
+ b=qk+xMv47J8u8vh4QEs92r0oEkKY4tQReLijaMwkLCJDbxpMGAKb6Is8y7+feI7RvE
+ pp3akkZeROrwMosXVTOt/Lu0ulZX5o5Btdvkp+5bqj+mSqlPQBwTV9+93UfpPS5Ypr
+ qryJocO/3lgs+VVhBWxpxs2kHfZchef/OnAgIZ+rphytjuU09fRPtvlS65wUMe5nkd
+ GXdy6kCg0TUpp6xa+G/hmE6d4h8DBGsp0rJe7zsPS+Ykshz6PtrWg1Uo2zB0fGksxm
+ rhlSNRO1xEJEGjZw0CVezPdJXgonfmA6MakV2ZHUr5Yd6r2gYJ17CWMLuLdEBII3jf
+ yAWq16282CdKg==
 From: Mark Brown <broonie@kernel.org>
-To: Daniel Baluta <daniel.baluta@oss.nxp.com>
-Subject: Re: [PATCH 0/4] Introduce new SOF helpers
-Date: Thu,  7 Oct 2021 22:37:33 +0100
-Message-Id: <163364264608.649699.787228689014334103.b4-ty@kernel.org>
+To: devicetree@vger.kernel.org, agross@kernel.org, rohitkr@codeaurora.org,
+ robh+dt@kernel.org, perex@perex.cz, linux-kernel@vger.kernel.org,
+ alsa-devel@alsa-project.org, swboyd@chromium.org, plai@codeaurora.org,
+ srinivas.kandagatla@linaro.org, lgirdwood@gmail.com,
+ judyhsiao@chromium.org, bgoswami@codeaurora.org,
+ linux-arm-msm@vger.kernel.org,
+ Srinivasa Rao Mandadapu <srivasam@codeaurora.org>, tiwai@suse.com,
+ bjorn.andersson@linaro.org
+Subject: Re: [PATCH] ASoC: wcd938x: Fix jack detection issue
+Date: Thu,  7 Oct 2021 22:37:34 +0100
+Message-Id: <163364264608.649699.14554141644947512653.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211004152147.1268978-1-daniel.baluta@oss.nxp.com>
-References: <20211004152147.1268978-1-daniel.baluta@oss.nxp.com>
+In-Reply-To: <1633614619-27026-1-git-send-email-srivasam@codeaurora.org>
+References: <1633614619-27026-1-git-send-email-srivasam@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: guennadi.liakhovetski@linux.intel.com, alsa-devel@alsa-project.org,
- kai.vehmanen@linux.intel.com, Daniel Baluta <daniel.baluta@nxp.com>,
- yang.jie@linux.intel.com, linux-kernel@vger.kernel.org,
- pierre-louis.bossart@linux.intel.com, Mark Brown <broonie@kernel.org>,
- ranjani.sridharan@linux.intel.com, budliviu@gmail.com,
- peter.ujfalusi@linux.intel.com, sound-open-firmware@alsa-project.org
+Cc: Venkata Prasad Potturu <potturu@codeaurora.org>,
+ Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,16 +88,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 4 Oct 2021 18:21:43 +0300, Daniel Baluta wrote:
-> From: Daniel Baluta <daniel.baluta@nxp.com>
+On Thu, 7 Oct 2021 19:20:19 +0530, Srinivasa Rao Mandadapu wrote:
+> This patch is to fix audio 3.5mm jack detection failure
+> on wcd938x codec based target.
 > 
-> This patchseries adds new helpers in order to reduce code duplication
-> and prepare for compress audio support with SOF.
+> Fixes: bcee7ed09b8e (ASoC: codecs: wcd938x: add Multi Button Headset Control support)
 > 
-> Bud Liviu-Alexandru (1):
->   ASoC: SOF: Make Intel IPC stream ops generic
 > 
-> [...]
 
 Applied to
 
@@ -102,14 +102,8 @@ Applied to
 
 Thanks!
 
-[1/4] ASoC: SOF: Introduce snd_sof_mailbox_read / snd_sof_mailbox_write callbacks
-      commit: f71f59dd450813684d838e0c1d6602186b7d2d8f
-[2/4] ASoC: SOF: Make Intel IPC stream ops generic
-      commit: 97e22cbd0dc318f1cedb3546d2047403506bdc2d
-[3/4] ASoC: SOF: imx: Use newly introduced generic IPC stream ops
-      commit: 40834190aa81270c52104fa9c82a1cae4bd1d359
-[4/4] ASoC: SOF: Introduce fragment elapsed notification API
-      commit: 858f7a5c45cacbf9965c4735330ee34baa0728f4
+[1/1] ASoC: wcd938x: Fix jack detection issue
+      commit: db0767b8a6e620b99459d2e688c1983c2e5add0d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
