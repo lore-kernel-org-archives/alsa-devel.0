@@ -2,64 +2,60 @@ Return-Path: <SRS0=Vpzd=O3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BD31AC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 16:47:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80B80C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 16:48:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4F61A6103B
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 16:47:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4F61A6103B
+	by mail.kernel.org (Postfix) with ESMTPS id 69D9A6103B
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 16:48:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 69D9A6103B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 193AD15E0;
-	Thu,  7 Oct 2021 18:47:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 193AD15E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id AEC1B1664;
+	Thu,  7 Oct 2021 18:47:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AEC1B1664
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633625274;
-	bh=NS/fzMl2IJQhPVmzxMwpB9C7ho+4R7lcrkT748ZcAvk=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=NzYXxmwkK+NbhzAhILCvdQKvsny5kTbMpBkgPuFzIheIDInteACUS9bMN1+xmsiMA
-	 TmmyuBXX1mDpgzDlQZFBCBF+gsNu4uv1fXwkpInfXxD05e01z+jtlwf7MUpVHNbe11
-	 CPbXNkqtCFM1/AZknA+B/PGUq3Ep9mOM20Q0LhT4=
+	s=default; t=1633625318;
+	bh=veqtLgFSwTPk0VpO0TpcfUCapHEbt3tWeteptcWF3Gk=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=jyuyaAyBJJr7OrHGR7aHfdU9JB6j17KfjFEyVaJKay2CPKRlHFkYemX0c4pMDmgBI
+	 vKAITbBnmHUu3oLZMgFO1XpXeA6s4xCrDLQPuXvYi039wp0zZXDahiXVjWNBPWrVhX
+	 RYbhS4m86ZCjC2/OzoRZQLKcduI0s7237/e4Ge/U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9CB50F800FE;
-	Thu,  7 Oct 2021 18:47:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AC535F802A0;
+	Thu,  7 Oct 2021 18:47:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C5EC5F8027D; Thu,  7 Oct 2021 18:47:02 +0200 (CEST)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ id BC273F804BB; Thu,  7 Oct 2021 18:47:11 +0200 (CEST)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0B4CAF800FE
- for <alsa-devel@alsa-project.org>; Thu,  7 Oct 2021 18:46:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B4CAF800FE
-X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="213445777"
-X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; d="scan'208";a="213445777"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Oct 2021 09:45:25 -0700
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5497BF80259
+ for <alsa-devel@alsa-project.org>; Thu,  7 Oct 2021 18:47:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5497BF80259
+X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="213254553"
+X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; d="scan'208";a="213254553"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Oct 2021 09:45:26 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; d="scan'208";a="522666011"
+X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; d="scan'208";a="524733189"
 Received: from black.fi.intel.com ([10.237.72.28])
- by orsmga001.jf.intel.com with ESMTP; 07 Oct 2021 09:45:22 -0700
+ by fmsmga008.fm.intel.com with ESMTP; 07 Oct 2021 09:45:22 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
- id CCB18299; Thu,  7 Oct 2021 19:45:29 +0300 (EEST)
+ id 98BFB159; Thu,  7 Oct 2021 19:45:29 +0300 (EEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org
-Subject: [PATCH v4 3/4] ASoC: Intel: bytcht_es8316: Switch to use
- gpiod_get_optional()
-Date: Thu,  7 Oct 2021 19:45:22 +0300
-Message-Id: <20211007164523.27094-4-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v4 0/4] ASoC: Intel: bytcht_es8316: few cleanups
+Date: Thu,  7 Oct 2021 19:45:19 +0300
+Message-Id: <20211007164523.27094-1-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211007164523.27094-1-andriy.shevchenko@linux.intel.com>
-References: <20211007164523.27094-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
@@ -82,39 +78,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-First of all, replace indexed API by plain one since we have index 0.
-Second, switch to optional variant and drop duplicated code.
+The small set of cleanups against bytcht_es8316 board file.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/intel/boards/bytcht_es8316.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+In v4:
+- fixed Pierre's email (Pierre)
+- added Hans to the Cc list
 
-diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
-index 171f3d8c5996..d8dcf63825a6 100644
---- a/sound/soc/intel/boards/bytcht_es8316.c
-+++ b/sound/soc/intel/boards/bytcht_es8316.c
-@@ -566,16 +566,12 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
- 
- 	devm_acpi_dev_add_driver_gpios(codec_dev, byt_cht_es8316_gpios);
- 	priv->speaker_en_gpio =
--		gpiod_get_index(codec_dev, "speaker-enable", 0,
--				/* see comment in byt_cht_es8316_resume */
--				GPIOD_OUT_LOW | GPIOD_FLAGS_BIT_NONEXCLUSIVE);
--
-+		gpiod_get_optional(codec_dev, "speaker-enable",
-+				   /* see comment in byt_cht_es8316_resume() */
-+				   GPIOD_OUT_LOW | GPIOD_FLAGS_BIT_NONEXCLUSIVE);
- 	if (IS_ERR(priv->speaker_en_gpio)) {
- 		ret = PTR_ERR(priv->speaker_en_gpio);
- 		switch (ret) {
--		case -ENOENT:
--			priv->speaker_en_gpio = NULL;
--			break;
- 		default:
- 			dev_err(dev, "get speaker GPIO failed: %d\n", ret);
- 			fallthrough;
+In v3:
+- actually added a Pierre's tag (Mark)
+
+In v2:
+- added tag (Pierre)
+- added commit message to the patch 2 (Joe)
+
+Andy Shevchenko (4):
+  ASoC: Intel: bytcht_es8316: Get platform data via dev_get_platdata()
+  ASoC: Intel: bytcht_es8316: Use temporary variable for struct device
+  ASoC: Intel: bytcht_es8316: Switch to use gpiod_get_optional()
+  ASoC: Intel: bytcht_es8316: Utilize dev_err_probe() to avoid log
+    saturation
+
+ sound/soc/intel/boards/bytcht_es8316.c | 37 +++++++++-----------------
+ 1 file changed, 12 insertions(+), 25 deletions(-)
+
 -- 
 2.33.0
 
