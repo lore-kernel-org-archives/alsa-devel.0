@@ -2,91 +2,91 @@ Return-Path: <SRS0=Vpzd=O3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02E12C433FE
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 18:38:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 05DCDC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 18:39:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B252761130
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 18:38:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B252761130
+	by mail.kernel.org (Postfix) with ESMTPS id 870B5610EA
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 18:39:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 870B5610EA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2629C1662;
-	Thu,  7 Oct 2021 20:37:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2629C1662
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2F77C1661;
+	Thu,  7 Oct 2021 20:38:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F77C1661
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633631929;
-	bh=gGWprYn5gQ7KbkjpX2h4XDNlbjRBAtf8CLo4/ccffiI=;
+	s=default; t=1633631946;
+	bh=15F2rqynkTNmXCViqkvtCk8OEwqwlTAEmW//wtmZhBk=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HbYk7BHY6ddL0xXwJqBoRYt+oyZqunXVLR5Zu7pN8f3FLSmWSK0zWfvhfHYXmAyRQ
-	 bJbw4NQQaWzgh6vQS++0dS4ZbFrHZsK7mL9Tcg0OuNQgi4RZqgNwKOJ4mmnGlOOG0M
-	 OKnNAPZKoXVP62eip4Ed+4+d4ulG4CmyvNfTEZDM=
+	b=fxUwTQdEvs2hnyCAiV2FCOgP0Q0wJ3OJ2xbDBQWkusBpghx9dyeJn00FqhB0GSn70
+	 Olme7tMKIydoVwI78mxMWKy2D16Q+y5Xgs7VSmV3hKBYV7B1dyoAw0/F0KI4an2370
+	 9ac6fE1fdzzuv0CyQTYiX2DV2czuRUsDb35hbJ+M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B7A6EF80259;
-	Thu,  7 Oct 2021 20:37:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A2044F802A0;
+	Thu,  7 Oct 2021 20:38:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D6C41F8027D; Thu,  7 Oct 2021 20:37:56 +0200 (CEST)
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com
- [IPv6:2a00:1450:4864:20::42b])
+ id 5332DF804BD; Thu,  7 Oct 2021 20:38:13 +0200 (CEST)
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
+ [IPv6:2a00:1450:4864:20::42a])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9A78DF800F0
- for <alsa-devel@alsa-project.org>; Thu,  7 Oct 2021 20:37:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A78DF800F0
+ by alsa1.perex.cz (Postfix) with ESMTPS id B7DBAF800FE
+ for <alsa-devel@alsa-project.org>; Thu,  7 Oct 2021 20:38:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7DBAF800FE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="OSjlVb8w"
-Received: by mail-wr1-x42b.google.com with SMTP id i12so9332437wrb.7
- for <alsa-devel@alsa-project.org>; Thu, 07 Oct 2021 11:37:45 -0700 (PDT)
+ header.b="DH6fzr+I"
+Received: by mail-wr1-x42a.google.com with SMTP id m22so22053625wrb.0
+ for <alsa-devel@alsa-project.org>; Thu, 07 Oct 2021 11:38:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=date:from:to:cc:subject:message-id:references:mime-version
  :content-disposition:in-reply-to:user-agent;
- bh=9c0I8cRx8jK0W8d7jKTwNFVW6wL8kZltQMKSstF2Znk=;
- b=OSjlVb8wT2q7EdDA+g/0wSgQgoOt5re93pmDF5glyO7HsFfOrMlncFLM+9YEX0WnJZ
- iouKTodqJ0ZS7WC9HGDbtLxLgjGx7DlmVhSOKxEfut2G4AZzBDEciiNandMHvF1LcLNE
- 4wIMz+nYMfC0pvBEOP/5+wXHyxHppDobzxG9q8Ob1loNzC8bryLTj3FwoRUkfPtbYQSU
- TKvjIJXZ2vNVQqL6BBDomIV/6gL8udDv7RoB1v624IbfQzTKuPfhlQNDSfp6DkVMltLz
- AxsieB0bz1x1Bw45w8AyLBHa45xw4KBgwKlC9zSWuIzhQmcDWcL+JVUJy386t2Y7QTDH
- Rxqw==
+ bh=0T4sFmsFD4jLWnAWeMtgvLVvevwwzto8DJfNckqAtjk=;
+ b=DH6fzr+IIzvip9zeeAFecwpDyaHALa4B1Oe0c/V/M91O7gttobD0SPdeyjx95lbLJL
+ W+XMI7LFo1/Yb718Lz5oI6G+nenZ1v4SAKbLSpheS/IMWMAJMQTrgMSP5oUOm5sLNJVD
+ 66SXUtnopJLlySa9fWdXU9f06q1GfGykRH4QZezgx1aHDXlRJZORvhUT0p0s0xYOZy0+
+ U0NPIQtE818CunbhYVeyd5/Tx9ElijJBBRhACr9dVw0KCU4BGhOLwezRm0pSZtKTm7Sw
+ lY/R5JldsmD29j9U8/y1Lf96e9XpYnVNnksLNAE4PKvFr8SVR0AmxV0P6a753XU58SUn
+ F8kQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to:user-agent;
- bh=9c0I8cRx8jK0W8d7jKTwNFVW6wL8kZltQMKSstF2Znk=;
- b=XX2U1DJyV5qiFESeG/UdU64lg6jwL0kINAnjd3HU1udPmz2z5afGBSQDXKVFDDjtIH
- CQQT7Sr6/dodJH56QCsT+nL0c3qZm8V2AJhXj6P5WfQBaFZLhEx4donKNhy1aY95jC47
- r+PBvBNrr4Au1MJ4S0+xW00hEJZ9aQGb1YIxie+mbPCIx2uQ5vMbr4OArak90HcslJhh
- YoZqt0JPNvr9y/jyHtZrJtDMpdceNjeoyHcBH8k1W6yZdEqSyK7us5zF7XS89SVJycuu
- 6HfrhEyia9V+T6QAkIxYYI8pPY3/8h2QM43M8sKpG07B/Wop1p8sqKfK2jIMURfnkDu6
- dP1Q==
-X-Gm-Message-State: AOAM5318e8c/+OY9W7ScwjGsfqJQHPQn11q57FQteVLJp3kq9t+wAjLQ
- KyBQmOT3MiK4cOEGeSbQ1dE=
-X-Google-Smtp-Source: ABdhPJw+3k8i+aDhy2Kyv88+w4QaP6p/hfjawdFZXl6Uwv2lSIx3xNm2xp19D+hW745LO+3phBIcDQ==
-X-Received: by 2002:adf:9796:: with SMTP id s22mr7151096wrb.224.1633631864980; 
- Thu, 07 Oct 2021 11:37:44 -0700 (PDT)
+ bh=0T4sFmsFD4jLWnAWeMtgvLVvevwwzto8DJfNckqAtjk=;
+ b=2WbeX3kCJsA8Ut39XQLW/OK+V/4sy7Zm68jVBPhslwXV37s1AF7WjHeT36mnbqjUlK
+ BgNPY39oB5N0/DtspSRdWW1WniR2le31KXYLBLwrSrRIikvSJRbTlqTfAQKoR2iRl/gD
+ y3ttwu4vc/4S3zWGjUCknx5E4Zk6SURQ9Hc3eEAp0XbRqFAnBWZIxGe6ryFYXLYg5/Ho
+ QDFO3xtsTcNivk4qwvFK9ENH7ky4aLfNFgEarzS8dVDcLCAYZRKwZspAS0LQP/3QMt+/
+ 1BxpV5ylzP1Ag7xX/f7bmPd4j6QhLkX4FTwkmVwE2gnXuz/r0kebCOjNb0ckqCBR1R0n
+ 90mw==
+X-Gm-Message-State: AOAM530jopvFurl7LVHzvN89yLLayKZn7iV5InKSzTuVyJA4kXJfhZBe
+ 1Tr9hxbY7d/A3eJKoSpA7qw=
+X-Google-Smtp-Source: ABdhPJzJfuDW9EQbVCHx1gflY1tLjMExzGosRt6WHhIO2MXUwwvJLhDGBqt/htKqf6iSgvJNqqHdww==
+X-Received: by 2002:adf:b19b:: with SMTP id q27mr7627454wra.125.1633631882331; 
+ Thu, 07 Oct 2021 11:38:02 -0700 (PDT)
 Received: from localhost ([217.111.27.204])
- by smtp.gmail.com with ESMTPSA id l12sm134044wro.14.2021.10.07.11.37.43
+ by smtp.gmail.com with ESMTPSA id w5sm102868wrq.86.2021.10.07.11.38.01
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 07 Oct 2021 11:37:43 -0700 (PDT)
-Date: Thu, 7 Oct 2021 20:37:41 +0200
+ Thu, 07 Oct 2021 11:38:01 -0700 (PDT)
+Date: Thu, 7 Oct 2021 20:38:00 +0200
 From: Thierry Reding <thierry.reding@gmail.com>
 To: Sameer Pujar <spujar@nvidia.com>
-Subject: Re: [PATCH v2 12/13] arm64: tegra: Add few AHUB devices for Tegra210
- and later
-Message-ID: <YV8+dWihAa2MbYlf@orome.fritz.box>
+Subject: Re: [PATCH v2 13/13] arm64: tegra: Extend APE audio support on
+ Jetson platforms
+Message-ID: <YV8+iNu+BFWtUi0k@orome.fritz.box>
 References: <1631551342-25469-1-git-send-email-spujar@nvidia.com>
- <1631551342-25469-13-git-send-email-spujar@nvidia.com>
+ <1631551342-25469-14-git-send-email-spujar@nvidia.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="1/J06XLWWnwIzgIm"
+ protocol="application/pgp-signature"; boundary="WYOR3Bx3yFK/LlLF"
 Content-Disposition: inline
-In-Reply-To: <1631551342-25469-13-git-send-email-spujar@nvidia.com>
+In-Reply-To: <1631551342-25469-14-git-send-email-spujar@nvidia.com>
 User-Agent: Mutt/2.1.3 (987dde4c) (2021-09-10)
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
  kuninori.morimoto.gx@renesas.com, catalin.marinas@arm.com, tiwai@suse.com,
@@ -110,53 +110,66 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---1/J06XLWWnwIzgIm
+--WYOR3Bx3yFK/LlLF
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Sep 13, 2021 at 10:12:20PM +0530, Sameer Pujar wrote:
-> Add DT nodes for following AHUB devices:
->  * SFC (Sampling Frequency Converter)
->  * MVC (Master Volume Control)
->  * AMX (Audio Multiplexer)
->  * ADX (Audio Demultiplexer)
->  * Mixer
+On Mon, Sep 13, 2021 at 10:12:21PM +0530, Sameer Pujar wrote:
+> Extend APE audio support by adding more audio components such as SFC,
+> MVC, AMX, ADX and Mixer. These components can be plugged into an audio
+> path and required processing can be done. ASoC audio-graph based sound
+> driver is used to facilitate this and thus extend sound bindings as
+> well.
 >=20
-> Above devices are added for Tegra210, Tegra186 and Tegra194 generations
-> of Tegra SoC.
+> The components in the path may require different PCM parameters (such
+> as sample rate, channels or sample size). Depending on the pre-defined
+> audio paths, these can be statically configured with "convert-xxx" DT
+> properties in endpoint subnode. The support for the rate and channel
+> conversion is already available in generic audio-graph driver. Sample
+> size conversion support can be added based on the need in future.
+>=20
+> The support is extended for following platforms:
+>  * Jertson TX1
+>  * Jetson Nano
+>  * Jetson TX2
+>  * Jetson AGX Xavier
+>  * Jetson Xavier NX
 >=20
 > Signed-off-by: Sameer Pujar <spujar@nvidia.com>
 > ---
->  arch/arm64/boot/dts/nvidia/tegra186.dtsi | 120 +++++++++++++++++++++++++=
-++++++
->  arch/arm64/boot/dts/nvidia/tegra194.dtsi | 116 +++++++++++++++++++++++++=
-+++++
->  arch/arm64/boot/dts/nvidia/tegra210.dtsi |  77 ++++++++++++++++++++
->  3 files changed, 313 insertions(+)
+>  arch/arm64/boot/dts/nvidia/tegra186-p2771-0000.dts | 1554 ++++++++++++++=
+++++--
+>  arch/arm64/boot/dts/nvidia/tegra194-p2972-0000.dts | 1493 ++++++++++++++=
++++--
+>  .../arm64/boot/dts/nvidia/tegra194-p3509-0000.dtsi | 1520 ++++++++++++++=
++++--
+>  arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts |  876 +++++++++++
+>  arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts |  876 +++++++++++
+>  5 files changed, 5900 insertions(+), 419 deletions(-)
 
 Applied, thanks.
 
 Thierry
 
---1/J06XLWWnwIzgIm
+--WYOR3Bx3yFK/LlLF
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmFfPnUACgkQ3SOs138+
-s6HFtg//cQtQS7tW5Hkq8Mssis9LrXKdxK4iYsVCb5jl1gJmkv3eDs/1/hvt4L5h
-mZIneAD2028ADaXM6DE7TAZVW+7lp/DQhwZhre3wgmM8RD4YqN4dvcMFz0+zFEYI
-qUGxzkTw37x4RYyiTH508dGP5CkelyoSAbxSU3YcyK9A3P4l1T2s7dDkeXBm60Su
-uiWe8GmH4ae67cgNNY19VqNL/PHDRugEZvwIxcmaa6J5DtUgbmgdFEnUYXF4S6CV
-WOGxmlSCzgZrqjmYvZRa8ZHeVd2de25LeqWRBUXQpb3EXIvvOQCSPCVzaxknORCL
-hAECHXrjwgXa7kdjdygapNLLGXZ0sc9fpOHQ+QpqdWb6+QG5iFTC7EX7io7rGHCl
-AtYvUQJfXHiApKhLeAYgqXV7x1ZH6gKACm/Fn6nAqnWJapxYzD1HoIdJ524wEyt0
-Z3zYBFh1ZTXAOAR4wX/3EmkjzUCJJI1uqvEqDD0d8JiIXtqLnbGejODFZGMCzu7q
-Hy1XyaUxL1/dvHDX/3lpBOWHEnP8oe7c8XF53mxRggm4hDB2pYi/2+7VK+KDkJC1
-2EQlVoZ5t+QEQzX85tknfJNVm7q+crNpj72q3+sZKnPP+B9Rz/zIDp5MLhHhkyEc
-FGZBUvgim28vzruDIRDTczut1/ntkyQSlOusEKRTWfLWHfhDXlk=
-=J7vV
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmFfPogACgkQ3SOs138+
+s6E0BA//V/eXDLK/uGRMAQbd9X+wxshlGqYWKNNJgBMMyoAm0pmjd9zMOsHzZEZi
+0lgEL7Bdy2BvzUF2KG79yQfyggFZPNLG8eGtSmSrbTtJresRXXHO0R75vN071bF7
+KFYG4rVvYiucFakXV56UaqesjPUJLWW6Gp9XmTkkyBIA+UA4IpOJHoIxF8NZ4Kb5
+37yQfqqweQf9B/eblz699rnZMYlZHKRQh4TXlyav3HiMUOb2JcowF3wLF+nac7mj
+6QsV48xa0gFSgMy9k9KeiAmhS4EYEAsGKbxyrf594U6cfLpXgKFhZv4QJ3w3UZHJ
+mrY9ktzkjDj2fbOqtQ/U5/pMGBa71IJWgdc1/HZbXcvzxQ9y4A6p3143XFLHdw0z
+s7VDJ4teuu4lPaE+LocpWVqXepIUNlvKZzQZOdFMMJSlXOwI+Git+wBT4vS9+tDX
+VDMLvjf+0LOhGtw0gPuFxr3GBnWy+3gwakqVnSnCHZoEvdCo49TPbWOA8GUjfOve
+YWrFw7Om6iQspODn/uNTrtg47sTonx9+6iITIC/o4Ie3+kZHWqm6OxOz5Bx2hQ7T
+dqC2WqbjRCGvYzdAY7fGo+wycz4gGihabgEQ/sjs8J9J/+Pv5Zezwrkda7kc1Al/
+jNG5ZgbLb74oHlXwPtQFtF5DuQ1NCYo25GSOevRXj4fDx24vLro=
+=B2Sx
 -----END PGP SIGNATURE-----
 
---1/J06XLWWnwIzgIm--
+--WYOR3Bx3yFK/LlLF--
