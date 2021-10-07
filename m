@@ -2,55 +2,76 @@ Return-Path: <SRS0=Vpzd=O3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 25F0AC4332F
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 15:35:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F0E14C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 15:45:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 95F7361261
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 15:35:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 95F7361261
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id C5D44610E6
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 15:45:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C5D44610E6
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 12A28950;
-	Thu,  7 Oct 2021 17:34:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 12A28950
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1FF8615E0;
+	Thu,  7 Oct 2021 17:44:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1FF8615E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633620907;
-	bh=RZtC9SckuBYLR6n3989lXcUoUAjlvqR2cIuhENugt/k=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1633621548;
+	bh=KiDE74ZN7fP0dSmsu7aBtGR/fyG1/hiDnn7kbQTkluY=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ltQpCG62TlpvCKTqLyOaLLwK5oj3o++E2PbH5nCQ5LUmgYZydKKEOxc20lZR3IWZp
-	 M/nz9Tr2MEQlPH0zTowm88ji4rrW70J2NZhNsmrJbh/ziwWXYBnNuImMUw8qHDz4ge
-	 oDC37XA3Pfgbjdj5/7ymEv9+d0CaGua/KEZ4zTwA=
+	b=MIcXBuhMfn9KbwcoeXckyPJ7Euab66/DHZWxvnWIIkJ6ytKce19c2s6bdPb2oV2Z1
+	 +/EPFUxyeN7xtOq1EU1blsvZ9nO6M4iBeNNKIS3KQQQfXkd9yWslQ3DAhXgAuceZE5
+	 UwDnROUys3YlYV+n4KuaplHyLsZcQmIL2QxgH08I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EB3E7F802A0;
-	Thu,  7 Oct 2021 17:33:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 87853F80259;
+	Thu,  7 Oct 2021 17:44:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 117BAF804BB; Thu,  7 Oct 2021 17:33:36 +0200 (CEST)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 08B9DF800F0; Thu,  7 Oct 2021 17:44:56 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6ACA5F80259
- for <alsa-devel@alsa-project.org>; Thu,  7 Oct 2021 17:33:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6ACA5F80259
-X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="226590145"
-X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; d="scan'208";a="226590145"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Oct 2021 08:24:50 -0700
-X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; d="scan'208";a="440301474"
-Received: from klmutolo-mobl.amr.corp.intel.com (HELO [10.212.1.203])
- ([10.212.1.203])
- by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Oct 2021 08:24:48 -0700
+ by alsa1.perex.cz (Postfix) with ESMTPS id BFDCAF800F0
+ for <alsa-devel@alsa-project.org>; Thu,  7 Oct 2021 17:44:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BFDCAF800F0
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="mySzRsWH"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="3JGuP1As"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 59D641FE71;
+ Thu,  7 Oct 2021 15:44:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1633621491; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Nqn8vlZv+WFSkVj7eePT5bHk0A1MxSeE+xp3BxC/O2Y=;
+ b=mySzRsWHFdTAb4ylvhCgiSe5AYIzQ/j31jDN+gszve5BPte2i9s8O0W21OdJeyzZ8K1odF
+ ArexAjT/fTqIbtXilJ93ybqV/Awx/hGBOZQMMQ9swkKxycSdLG49dEPydrwYDzUV2XQ451
+ Q8Nt72Y5VFkeUmQHoAS7tZp2y6dN9Rk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1633621491;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Nqn8vlZv+WFSkVj7eePT5bHk0A1MxSeE+xp3BxC/O2Y=;
+ b=3JGuP1AsxxhmGAjghZFRSxEWw+sWOX0TO3v9vRsUYYJOI9RTt7v8ZV7NmoPymtFa455iJr
+ h/Xa1WnvSbAGvNAQ==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id AD2DAA3B81;
+ Thu,  7 Oct 2021 15:44:50 +0000 (UTC)
+Date: Thu, 07 Oct 2021 17:44:50 +0200
+Message-ID: <s5hwnmo96vh.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Subject: Re: [RFC PATCH v2 0/5] ASoC: soc-pcm: fix trigger race conditions
  with shared BE
-To: Takashi Iwai <tiwai@suse.de>
+In-Reply-To: <80882fe6-ea30-43f6-8d83-8995dd28c748@linux.intel.com>
 References: <20211004225441.233375-1-pierre-louis.bossart@linux.intel.com>
  <cce82420-d744-ee43-d514-b77ac4905ffa@nvidia.com>
  <1efa1c31-7342-05f8-5f73-95e2462d4179@linux.intel.com>
@@ -59,16 +80,12 @@ References: <20211004225441.233375-1-pierre-louis.bossart@linux.intel.com>
  <s5hk0ip9js7.wl-tiwai@suse.de>
  <ff43fede-aa66-3cb7-6365-e1f279cd135f@linux.intel.com>
  <s5hzgrk98y9.wl-tiwai@suse.de>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <80882fe6-ea30-43f6-8d83-8995dd28c748@linux.intel.com>
-Date: Thu, 7 Oct 2021 10:24:45 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <s5hzgrk98y9.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+ <80882fe6-ea30-43f6-8d83-8995dd28c748@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Cc: alsa-devel@alsa-project.org,
  Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
  Sameer Pujar <spujar@nvidia.com>, vkoul@kernel.org, broonie@kernel.org,
@@ -89,67 +106,85 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
->>>> Takashi, Mark, do you think that an all/none assumption on FE nonatomic
->>>> properties would make sense?
->>>
->>> As long as BE's are updated from FE's PCM callback, BE has to follow
->>> the atomicity of its FE, so we can't assume all or none globally.
->>
->> A BE may have more than one FEs. That's precisely the point of
->> mixers/demux, and if the BE has FEs with different 'atomicity' then I
->> don't see how locking can work: the BE operations are run in the context
->> of each of its FE, typically using the following loop:
->>
->> for_each_dpcm_be(fe, stream, dpcm) {
->>    do_something();
->> }
+On Thu, 07 Oct 2021 17:24:45 +0200,
+Pierre-Louis Bossart wrote:
 > 
-> Do we really have the cases where FEs have different atomicity?
-> I don't think it's a valid configuration, and we should catch it via
-> WARN_ON() or such.
-
-I don't think we have this configuration today, that's why I suggested
-making the assumption it's an unsupported configuration.
-
-That would allow us to use the relevant locking mechanism, as done for
-PCM streams.
-
->> Applications will view multiple FEs as completely independent. They may
->> be opened/prepared/started/stopped/paused as needed. When the BE is
->> shared, then there is a need for consistency, such as starting the BE
->> when the first FE becomes active and stopping it when the last FE stops.
->>
->>> How is the expected lock granularity and the protection context?  Do
->>> we need a card global lock/mutex, or is it specific to each BE
->>> substream?
->>
->> We already have a dpcm_lock at the card level, which protects the
->> addition of BEs and BE states. That spin_lock is fine for most cases.
->>
->> The only real problem is the trigger, which is currently completely
->> unprotected: we have to serialize the BE triggers, otherwise you could
->> STOP before you START due to scheduling, or other problems that I saw in
->> my SoundWire tests with two START triggers, or the STOP never sent.
 > 
-> So it's about calling triggers to the same BE stream concurrently?
-> If that's the case, can't we simply protect the trigger handling of
-> each BE like below?
+> 
+> >>>> Takashi, Mark, do you think that an all/none assumption on FE nonatomic
+> >>>> properties would make sense?
+> >>>
+> >>> As long as BE's are updated from FE's PCM callback, BE has to follow
+> >>> the atomicity of its FE, so we can't assume all or none globally.
+> >>
+> >> A BE may have more than one FEs. That's precisely the point of
+> >> mixers/demux, and if the BE has FEs with different 'atomicity' then I
+> >> don't see how locking can work: the BE operations are run in the context
+> >> of each of its FE, typically using the following loop:
+> >>
+> >> for_each_dpcm_be(fe, stream, dpcm) {
+> >>    do_something();
+> >> }
+> > 
+> > Do we really have the cases where FEs have different atomicity?
+> > I don't think it's a valid configuration, and we should catch it via
+> > WARN_ON() or such.
+> 
+> I don't think we have this configuration today, that's why I suggested
+> making the assumption it's an unsupported configuration.
+> 
+> That would allow us to use the relevant locking mechanism, as done for
+> PCM streams.
+> 
+> >> Applications will view multiple FEs as completely independent. They may
+> >> be opened/prepared/started/stopped/paused as needed. When the BE is
+> >> shared, then there is a need for consistency, such as starting the BE
+> >> when the first FE becomes active and stopping it when the last FE stops.
+> >>
+> >>> How is the expected lock granularity and the protection context?  Do
+> >>> we need a card global lock/mutex, or is it specific to each BE
+> >>> substream?
+> >>
+> >> We already have a dpcm_lock at the card level, which protects the
+> >> addition of BEs and BE states. That spin_lock is fine for most cases.
+> >>
+> >> The only real problem is the trigger, which is currently completely
+> >> unprotected: we have to serialize the BE triggers, otherwise you could
+> >> STOP before you START due to scheduling, or other problems that I saw in
+> >> my SoundWire tests with two START triggers, or the STOP never sent.
+> > 
+> > So it's about calling triggers to the same BE stream concurrently?
+> > If that's the case, can't we simply protect the trigger handling of
+> > each BE like below?
+> 
+> Using snd_pcm_stream_lock_irqsave(be_substream, flags); will prevent
+> multiple triggers indeed, but the state management is handled by
+> dpcm_lock, so I think we have to use dpcm_lock/mutex in all BE transitions.
+> 
+> if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_PREPARE) &&
+>     (be->dpcm[stream].state != SND_SOC_DPCM_STATE_STOP) &&
+>  			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
+> 
+> if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_PREPARE) &&
+>     (be->dpcm[stream].state != SND_SOC_DPCM_STATE_STOP) &&
+>  			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
 
-Using snd_pcm_stream_lock_irqsave(be_substream, flags); will prevent
-multiple triggers indeed, but the state management is handled by
-dpcm_lock, so I think we have to use dpcm_lock/mutex in all BE transitions.
+The stream lock can be put around those appropriate places, I suppose?
 
-if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_PREPARE) &&
-    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_STOP) &&
- 			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
 
-if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_PREPARE) &&
-    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_STOP) &&
- 			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
+> The position of the lock also matters, we may have to take the lock
+> before walking through the list, since that list can be modified. that's
+> what Gyeongtaek Lee reported with a separate patch, I was hoping that we
+> can fix all BE state handling in a consistent manner.
 
-The position of the lock also matters, we may have to take the lock
-before walking through the list, since that list can be modified. that's
-what Gyeongtaek Lee reported with a separate patch, I was hoping that we
-can fix all BE state handling in a consistent manner.
+The list belongs to FE, so possibly we can take FE's stream lock while
+manipulating the list for protecting from the racy trigger access.
+
+But beware that the stream lock would be needed only if nonatomic is
+false.  In the nonatomic PCM, the stream lock is a mutex and it's used
+for all PCM ops.  OTOH, in normal PCM mode, the spinlock is used for
+trigger and a few others while mutex is used for prepare and co, hence
+an extra stream lock is needed there.
+
+
+Takashi
