@@ -2,95 +2,69 @@ Return-Path: <SRS0=g44s=O6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81671C433EF
-	for <alsa-devel@archiver.kernel.org>; Sun, 10 Oct 2021 07:51:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4C97C433F5
+	for <alsa-devel@archiver.kernel.org>; Sun, 10 Oct 2021 07:51:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E9F4C61056
-	for <alsa-devel@archiver.kernel.org>; Sun, 10 Oct 2021 07:51:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E9F4C61056
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id CA42460F35
+	for <alsa-devel@archiver.kernel.org>; Sun, 10 Oct 2021 07:51:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CA42460F35
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=libc.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 22C8B1664;
-	Sun, 10 Oct 2021 09:50:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22C8B1664
+	by alsa0.perex.cz (Postfix) with ESMTPS id 31B041695;
+	Sun, 10 Oct 2021 09:50:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31B041695
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633852267;
-	bh=XztkHHBko9Otp7UYrs4TVmHm1HrNlkMmqCRgxQa0Ntw=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1633852275;
+	bh=Zrx7ruFzKPBPLqEuesE69c32O6A2faxfd6hGGHydciI=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EFcmmeM48HLE/9ucxJW6qJx3MSkwHFzqxOH8vTgR/ODWkAyCRJp3k3dwC3JRRltg8
-	 6GoCWzjAZhhoCxcR3kjAQRkEaHmkFLr+q8nTruBgbqA+MaQ9/PmJUHljz2KR/peBcn
-	 2763VIqHh3kQOHnQMnD2ubOx7Sro4ABw6M2H+pgI=
+	b=QdADId60HX3HquKI9xy81yJKoL2nKedFcXwcFf4BMVTW2vh6LWPXFjQh8Lk3l/tsw
+	 Ia6Km/3m0wZl6D6P7+MoRSgjKl6aGA2pnVFqr3HhE0cjZ2+Jr8a6/I6Fxyy0e/l2FW
+	 Cgu3lHMZEm/s2OMFJAojncfNjwssAv9bHU3c/+cU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 376F6F80302;
+	by alsa1.perex.cz (Postfix) with ESMTP id EBA2DF804AF;
 	Sun, 10 Oct 2021 09:49:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C5DA7F8020D; Wed,  6 Oct 2021 11:09:28 +0200 (CEST)
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com
- [IPv6:2a00:1450:4864:20::132])
+ id 945A4F8027D; Thu,  7 Oct 2021 18:06:48 +0200 (CEST)
+Received: from brightrain.aerifal.cx (brightrain.aerifal.cx [216.12.86.13])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CB8C2F8020D
- for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2021 11:09:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB8C2F8020D
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="Y+lq3L8P"
-Received: by mail-lf1-x132.google.com with SMTP id i4so7599739lfv.4
- for <alsa-devel@alsa-project.org>; Wed, 06 Oct 2021 02:09:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc:content-transfer-encoding;
- bh=3vIcEyr7QuVBCeh3mAP0j/ko23BFx3UEwrFTydDoOjw=;
- b=Y+lq3L8PXp/1DJR4LuSkH4uvV2i5I7JQW+Mg5eysonjJbDnGZYTGpaPdiR11IGqjhG
- JKH30t3CTeuWR3tTFw37vPdfhQwu5/jIu1wDWVkbzn89HlN35RhhEDICcFfEyNVMjckn
- SjqvEwF93o+Dll9Ho4OF2rQq/2zRsHdhwwtEhEOIwmkXpKoFcrqFxO4DVljYJs9D2ltS
- oFRDnzfCFwXbYYBsbXNY19dMVpF/xPb1fOKPr0zirVmIqBcGNmZLUQdMU4uSmOpxMzvJ
- 0Ku5Vl+pdpzY8bLAUf/jPHbkD0qTEQzay2idwQYGswCmlxim/4JK2TC07JRXpKgjrVdf
- A3vg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=3vIcEyr7QuVBCeh3mAP0j/ko23BFx3UEwrFTydDoOjw=;
- b=EhzUKAgRWMOHFvrNMSWTStIlFef+FxYjOwimMuKV4Jlc2klQ3EIITT2mVZmQch1RoB
- QHmJ/ysSxtjwqzC7EwSO61ImPWUqWV1VvGpVGLGdMENUTS02eOghMpPWdafKJoczVwK1
- SWGrGvF7I9D5XxsgX4yOXdt/KrqPi1WqYlzKCCVYkPLFSOzbBiY2pduRhm9tG2WKz36l
- 3X+A/xkZDGOsb76wtdXA0P4Zk0c0GVMM1V7cDgeOBA94bRIyDmdmImlqX9aHrW3f6+ed
- IKUpgUpbBkXyn3+s2ItDehkYFx3XkCrfJDsScN/2+YD0AvINOFUAKgp9B8UAXs7tO3co
- kFYA==
-X-Gm-Message-State: AOAM532cCXuT8nepWpjCtauN1D8535pj08GTBHNvsa+gurTEyX+2MfKj
- 08kcVsp9tWzso+o3HARjvdBnqIoXhRcaOshhoV8=
-X-Google-Smtp-Source: ABdhPJzMfNeD2VPG/6FkmkYV9CXq06WhI5WUIlsAqQRktPRR9FccwJ9bJa1onYE9OFp6sVr+8NN/olw+7nSRxwBQT1k=
-X-Received: by 2002:a2e:80cd:: with SMTP id r13mr26860600ljg.415.1633511363662; 
- Wed, 06 Oct 2021 02:09:23 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7E711F80130
+ for <alsa-devel@alsa-project.org>; Thu,  7 Oct 2021 18:06:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E711F80130
+Date: Thu, 7 Oct 2021 12:06:36 -0400
+From: Rich Felker <dalias@libc.org>
+To: Takashi Iwai <tiwai@suse.de>
+Subject: Re: [musl] Re: [alsa-devel] [PATCH v7 8/9] ALSA: add new 32-bit
+ layout for snd_pcm_mmap_status/control
+Message-ID: <20211007160634.GB7074@brightrain.aerifal.cx>
+References: <20191211212025.1981822-1-arnd@arndb.de>
+ <20191211212025.1981822-9-arnd@arndb.de>
+ <29QBMJU8DE71E.2YZSH8IHT5HMH@mforney.org>
+ <s5hpmsh9kdx.wl-tiwai@suse.de>
+ <CAK8P3a0K3XtjiszC3XWgG0L8+AgO+xUGr_KEAnb9a5GmyecoUQ@mail.gmail.com>
+ <s5hee8x9f92.wl-tiwai@suse.de>
+ <CAK8P3a0pSZxqfk-bn+idrDYDwANSfiP9L6U1O5jLQvK+3vwyVQ@mail.gmail.com>
+ <s5hy27497eo.wl-tiwai@suse.de>
 MIME-Version: 1.0
-References: <1633396615-14043-1-git-send-email-u0084500@gmail.com>
- <1633396615-14043-2-git-send-email-u0084500@gmail.com>
- <YVw87lc4uXSvCiyC@sirena.org.uk>
- <CADiBU38X6nY1D7NpgW8+61AX6rUU7jngnPagryDKxUAKdtGjAg@mail.gmail.com>
- <YVxIv6NOiVdNSkXf@sirena.org.uk>
-In-Reply-To: <YVxIv6NOiVdNSkXf@sirena.org.uk>
-From: ChiYuan Huang <u0084500@gmail.com>
-Date: Wed, 6 Oct 2021 17:09:12 +0800
-Message-ID: <CADiBU3-A3vcn9ekKnL+mRjafHzi25W0OQs8HzGg_t99mtJurWQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ASoC: rt9120: Add rt9210 audio amplifier support
-To: Mark Brown <broonie@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <s5hy27497eo.wl-tiwai@suse.de>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 X-Mailman-Approved-At: Sun, 10 Oct 2021 09:49:29 +0200
-Cc: oder_chiou@realtek.com,
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>, alsa-devel@alsa-project.org,
- lkml <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- tiwai@suse.com, cy_huang <cy_huang@richtek.com>,
- Rob Herring <robh+dt@kernel.org>, allen lin <allen_lin@richtek.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Arnd Bergmann <arnd@arndb.de>, Baolin Wang <baolin.wang@linaro.org>,
+ y2038 Mailman List <y2038@lists.linaro.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ musl@lists.openwall.com, Takashi Iwai <tiwai@suse.com>,
+ Michael Forney <mforney@mforney.org>, Mark Brown <broonie@kernel.org>,
+ Baolin Wang <baolin.wang7@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,50 +80,120 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi, Mark:
+On Thu, Oct 07, 2021 at 05:33:19PM +0200, Takashi Iwai wrote:
+> On Thu, 07 Oct 2021 15:11:00 +0200,
+> Arnd Bergmann wrote:
+> > 
+> >  On Thu, Oct 7, 2021 at 2:43 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > > On Thu, 07 Oct 2021 13:48:44 +0200, Arnd Bergmann wrote:
+> > > > On Thu, Oct 7, 2021 at 12:53 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > > > > On Wed, 06 Oct 2021 19:49:17 +0200, Michael Forney wrote:
+> > > >
+> > > > As far as I can tell, the broken interface will always result in
+> > > > user space seeing a zero value for "avail_min". Can you
+> > > > make a prediction what that would mean for actual
+> > > > applications? Will they have no audio output, run into
+> > > > a crash, or be able to use recover and appear to work normally
+> > > > here?
+> > >
+> > > No, fortunately it's only about control->avail_min, and fiddling this
+> > > value can't break severely (otherwise it'd be a security problem ;)
+> > >
+> > > In the buggy condition, it's always zero, and the kernel treated as if
+> > > 1, i.e. wake up as soon as data is available, which is OK-ish for most
+> > > applications.   Apps usually don't care about the wake-up condition so
+> > > much.  There are subtle difference and may influence on the stability
+> > > of stream processing, but the stability usually depends more strongly
+> > > on the hardware and software configurations.
+> > >
+> > > That being said, the impact by this bug (from the application behavior
+> > > POV) is likely quite small, but the contamination is large; as you
+> > > pointed out, it's much larger than I thought.
+> > 
+> > Ok, got it.
+> > 
+> > > The definition in uapi/sound/asound.h is a bit cryptic, but IIUC,
+> > > __snd_pcm_mmap_control64 is used for 64bit archs, right?  If so, the
+> > > problem rather hits more widely on 64bit archs silently.  Then, the
+> > > influence by this bug must be almost negligible, as we've had no bug
+> > > report about the behavior change.
+> > 
+> > While __snd_pcm_mmap_control64 is only used on 32-bit
+> > architectures when 64-bit time_t is used. At the moment, this
+> > means all users of musl-1.2.x libc, but not glibc.
+> > 
+> > On 64-bit architectures, __snd_pcm_mmap_control and
+> > __snd_pcm_mmap_control64 are meant to be identical,
+> > and this is actually true regardless of the bug, since
+> > __pad_before_uframe and __pad_after_uframe both
+> > end up as zero-length arrays here.
+> > 
+> > > We may just fix it in kernel and for new library with hoping that no
+> > > one sees the actual problem.  Or, we may provide a complete new set of
+> > > mmap offsets and ioctl to cover both broken and fixed interfaces...
+> > > The decision depends on how perfectly we'd like to address the bug.
+> > > As of now, I'm inclined to go for the former, but I'm open for more
+> > > opinions.
+> > 
+> > Adding the musl list to Cc for additional testers, anyone interested
+> > please see [1] for the original report.
+> > 
+> > It would be good to hear from musl users that are already using
+> > audio support with 32-bit applications on 64-bit kernels, which
+> > is the case that has the problem today. Have you noticed any
+> > problems with audio support here? If not, we can probably
+> > "fix" the kernel here and make the existing binaries behave
+> > the same way on 32-bit kernels. If there are applications that
+> > don't work in that environment today, I think we need to instead
+> > change the kernel to accept the currently broken format on
+> > both 32-bit and 64-bit kernels, possibly introducing yet another
+> > format that works as originally intended but requires a newly
+> > built kernel.
+> 
+> Thanks!
+> 
+> And now, looking more deeply, I feel more desperate.
+> 
+> This bug makes the expected padding gone on little-endian.
+> On LE 32bit, the buggy definition is:
+> 
+> 	char __pad1[0];
+> 	u32 appl_ptr;
+> 	char __pad2[0]; // this should have been [4]
+> 	char __pad3[0];
+> 	u32 avail_min;
+> 	char __pad4[4];
+> 	
+> When an application issues SYNC_PTR64 ioctl to submit appl_ptr and
+> avail_min updates, 64bit kernel (in compat mode) reads directly as:
+> 
+> 	u64 appl_ptr;
+> 	u64 avail_min;
+> 
+> Hence a bogus appl_ptr would be passed if avail_min != 0.
+> And usually application sets non-zero avail_min.
+> That is, the bug must hit more severely if the new API were really
+> used.  It wouldn't crash, but some weird streaming behavior can
+> happen like noise, jumping or underruns.
+> 
+> (Reading back avail_min=0 to user-space is rather harmless.  Ditto for
+>  the case of BE, then at least there is no appl_ptr corruption.)
+> 
+> This made me wonder which way to go:
+> it's certainly possible to fix the new kernel to treat both buggy and
+> sane formats (disabling compat mmap and re-define ioctls, having the
+> code for old APIs).  The problem is, however, in the case where the
+> application needs to run on the older kernel that expects the buggy
+> format.  Then apps would still have to send in the old buggy format --
+> or maybe better in the older 32bit format that won't hit the bug
+> above.  It makes situation more complicated.
 
-Mark Brown <broonie@kernel.org> =E6=96=BC 2021=E5=B9=B410=E6=9C=885=E6=97=
-=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=888:44=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> On Tue, Oct 05, 2021 at 08:36:44PM +0800, ChiYuan Huang wrote:
-> > Mark Brown <broonie@kernel.org> =E6=96=BC 2021=E5=B9=B410=E6=9C=885=E6=
-=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=887:54=E5=AF=AB=E9=81=93=EF=BC=9A
-> > > On Tue, Oct 05, 2021 at 09:16:55AM +0800, cy_huang wrote:
->
-> > > > +     /* Default config volume to 0dB */
-> > > > +     snd_soc_component_write(comp, RT9120_REG_MSVOL, 0x180);
-> > > > +     /* Mute by default */
-> > > > +     snd_soc_component_update_bits(comp, RT9120_REG_VOLRAMP,
-> > > > +                                   RT9120_MUTE_MASK, RT9120_MUTE_M=
-ASK);
->
-> > > As ever you should leave the defaults at whatever the hardware defaul=
-ts
-> > > to, the defaults for one machine may not be suitable for another so w=
-e
-> > > shouldn't be trying to do that in software.
->
-> > The default volume will be kept in value 0x7ff (mute).
-> > I just want to follow the ASoC flow to control mute/unmute mask by AMP =
-on/off.
-> > If to default set volume to 0dB and mute is improper, user have to use
-> > mixer control to configure the volume.
-> > Does mute function also need to be removed also?
->
-> It's totally fine and indeed quite common for devices to be muted by
-> default - usually systems will have UCM profiles that unmute things by
-> the time users actually interact with them.
->
-> Please don't take things off-list unless there is a really strong reason
-> to do so.  Sending things to the list ensures that everyone gets a
-> chance to read and comment on things.
+Can't an ioctl number just be redefined so that, on old kernels with
+the buggy one, newly built applications get told that mmap is not
+available and use the unaffected non-mmap fallback?
 
-After asking the HW member, there's already builtin HW volume ramp function=
-.
-Mute API is still no need. There's already no pop issue without mute functi=
-on.
+> Do we know how widely the __USE_TIME_BITS64 is deployed nowadays?
 
-So the next change, I'll remove the default volume and mute config,
-and also mute API.
+Anyone using musl on 32-bit archs who's not >=2 years behind current.
 
-Thx.
+Rich
