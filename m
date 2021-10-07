@@ -2,60 +2,60 @@ Return-Path: <SRS0=Vpzd=O3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A5F4C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 17:05:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CABE2C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 17:05:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7F0C76101A
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 17:05:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7F0C76101A
+	by mail.kernel.org (Postfix) with ESMTPS id F170A6101A
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 17:05:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org F170A6101A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 262F1165E;
-	Thu,  7 Oct 2021 19:04:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 262F1165E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8A3B81686;
+	Thu,  7 Oct 2021 19:04:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A3B81686
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633626330;
-	bh=Fg/2hOnEYxQpibPVJ+RHq0wPeHuBYNzyw71uE5qaWIo=;
+	s=default; t=1633626346;
+	bh=TvBRxcscdJkOdoVaMwnkndHz0npwNlMpcou0CkoPx9U=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FsqGYmXngMKbcK8MPDzT1x83d/ctU/LbSRarZnlHqjRiFjmeB+6dWCYwzpYyey11C
-	 K2qzVW+bTZVDMHBb/lDng5UZ6ghF8Od7rD/5AJPKyT9+xYgSsxlHF/Fx/QlLA938be
-	 orLJYAvPXWbN36pubre5Mb/fETSS1ffOuR9hDO3w=
+	b=e6qVd824emXPQvI1nQqf/dgcP9lartSYQDcToyIHh1F3NApGAPi6zx7ejjyiQ64Ib
+	 GaRhwddiwT32qPvqtfqS6W35dTMYJS357VceVa/A8tpDAOJR9cox3TnuAdgaepSCnK
+	 xTD0yMLRX00FjmVwlYxnNrWbY36RNdV6aiWd7Dcc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7AE22F804FA;
-	Thu,  7 Oct 2021 19:03:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4A4C5F804FD;
+	Thu,  7 Oct 2021 19:03:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6F72AF804EB; Thu,  7 Oct 2021 19:03:48 +0200 (CEST)
+ id 00B9CF804E0; Thu,  7 Oct 2021 19:03:53 +0200 (CEST)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 15D75F800FE
- for <alsa-devel@alsa-project.org>; Thu,  7 Oct 2021 19:03:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15D75F800FE
-X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="213450375"
-X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; d="scan'208";a="213450375"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6744DF804E0
+ for <alsa-devel@alsa-project.org>; Thu,  7 Oct 2021 19:03:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6744DF804E0
+X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="213450383"
+X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; d="scan'208";a="213450383"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Oct 2021 10:02:48 -0700
+ 07 Oct 2021 10:02:49 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; d="scan'208";a="657461405"
+X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; d="scan'208";a="715241975"
 Received: from black.fi.intel.com ([10.237.72.28])
- by orsmga005.jf.intel.com with ESMTP; 07 Oct 2021 10:02:45 -0700
+ by fmsmga005.fm.intel.com with ESMTP; 07 Oct 2021 10:02:45 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
- id 4D685B7; Thu,  7 Oct 2021 20:02:52 +0300 (EEST)
+ id 624A5291; Thu,  7 Oct 2021 20:02:52 +0300 (EEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/4] ASoC: Intel: bytcr_rt5651: Get platform data via
- dev_get_platdata()
-Date: Thu,  7 Oct 2021 20:02:47 +0300
-Message-Id: <20211007170250.27997-2-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 3/4] ASoC: Intel: bytcr_rt5651: use devm_clk_get_optional()
+ for mclk
+Date: Thu,  7 Oct 2021 20:02:49 +0300
+Message-Id: <20211007170250.27997-4-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211007170250.27997-1-andriy.shevchenko@linux.intel.com>
 References: <20211007170250.27997-1-andriy.shevchenko@linux.intel.com>
@@ -82,38 +82,124 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Access to platform data via dev_get_platdata() getter to make code cleaner.
+The devm_clk_get_optional() helper returns NULL when devm_clk_get()
+returns -ENOENT. This makes things slightly cleaner. The added benefit
+is mostly cosmetic.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- sound/soc/intel/boards/bytcr_rt5651.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5651.c | 69 ++++++++++++---------------
+ 1 file changed, 30 insertions(+), 39 deletions(-)
 
 diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 00c347b52863..2335cca17cc8 100644
+index 36f63516f0cb..28c561302e69 100644
 --- a/sound/soc/intel/boards/bytcr_rt5651.c
 +++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -894,9 +894,10 @@ struct acpi_chan_package {   /* ACPICA seems to require 64 bit integers */
+@@ -188,13 +188,10 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
+ 	}
  
- static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
- {
-+	struct device *dev = &pdev->dev;
- 	static const char * const mic_name[] = { "dmic", "in1", "in2", "in12" };
-+	struct snd_soc_acpi_mach *mach = dev_get_platdata(dev);
- 	struct byt_rt5651_private *priv;
--	struct snd_soc_acpi_mach *mach;
- 	const char *platform_name;
- 	struct acpi_device *adev;
- 	struct device *codec_dev;
-@@ -912,8 +913,6 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 	if (SND_SOC_DAPM_EVENT_ON(event)) {
+-		if (byt_rt5651_quirk & BYT_RT5651_MCLK_EN) {
+-			ret = clk_prepare_enable(priv->mclk);
+-			if (ret < 0) {
+-				dev_err(card->dev,
+-					"could not configure MCLK state");
+-				return ret;
+-			}
++		ret = clk_prepare_enable(priv->mclk);
++		if (ret < 0) {
++			dev_err(card->dev, "could not configure MCLK state");
++			return ret;
+ 		}
+ 		ret = byt_rt5651_prepare_and_enable_pll1(codec_dai, 48000, 50);
+ 	} else {
+@@ -207,8 +204,7 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
+ 					     48000 * 512,
+ 					     SND_SOC_CLOCK_IN);
+ 		if (!ret)
+-			if (byt_rt5651_quirk & BYT_RT5651_MCLK_EN)
+-				clk_disable_unprepare(priv->mclk);
++			clk_disable_unprepare(priv->mclk);
+ 	}
  
- 	/* register the soc card */
- 	byt_rt5651_card.dev = &pdev->dev;
--
--	mach = byt_rt5651_card.dev->platform_data;
- 	snd_soc_card_set_drvdata(&byt_rt5651_card, priv);
+ 	if (ret < 0) {
+@@ -629,29 +625,25 @@ static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
+ 		return ret;
+ 	}
  
- 	/* fix index of codec dai */
+-	if (byt_rt5651_quirk & BYT_RT5651_MCLK_EN) {
+-		/*
+-		 * The firmware might enable the clock at
+-		 * boot (this information may or may not
+-		 * be reflected in the enable clock register).
+-		 * To change the rate we must disable the clock
+-		 * first to cover these cases. Due to common
+-		 * clock framework restrictions that do not allow
+-		 * to disable a clock that has not been enabled,
+-		 * we need to enable the clock first.
+-		 */
+-		ret = clk_prepare_enable(priv->mclk);
+-		if (!ret)
+-			clk_disable_unprepare(priv->mclk);
++	/*
++	 * The firmware might enable the clock at boot (this information
++	 * may or may not be reflected in the enable clock register).
++	 * To change the rate we must disable the clock first to cover
++	 * these cases. Due to common clock framework restrictions that
++	 * do not allow to disable a clock that has not been enabled,
++	 * we need to enable the clock first.
++	 */
++	ret = clk_prepare_enable(priv->mclk);
++	if (!ret)
++		clk_disable_unprepare(priv->mclk);
+ 
+-		if (byt_rt5651_quirk & BYT_RT5651_MCLK_25MHZ)
+-			ret = clk_set_rate(priv->mclk, 25000000);
+-		else
+-			ret = clk_set_rate(priv->mclk, 19200000);
++	if (byt_rt5651_quirk & BYT_RT5651_MCLK_25MHZ)
++		ret = clk_set_rate(priv->mclk, 25000000);
++	else
++		ret = clk_set_rate(priv->mclk, 19200000);
+ 
+-		if (ret)
+-			dev_err(card->dev, "unable to set MCLK rate\n");
+-	}
++	if (ret)
++		dev_err(card->dev, "unable to set MCLK rate\n");
+ 
+ 	report = 0;
+ 	if (BYT_RT5651_JDSRC(byt_rt5651_quirk))
+@@ -1064,21 +1056,20 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 		byt_rt5651_dais[dai_index].cpus->dai_name = "ssp0-port";
+ 
+ 	if (byt_rt5651_quirk & BYT_RT5651_MCLK_EN) {
+-		priv->mclk = devm_clk_get(dev, "pmc_plt_clk_3");
++		priv->mclk = devm_clk_get_optional(dev, "pmc_plt_clk_3");
+ 		if (IS_ERR(priv->mclk)) {
+ 			ret_val = PTR_ERR(priv->mclk);
+ 			dev_err(dev,
+ 				"Failed to get MCLK from pmc_plt_clk_3: %d\n",
+ 				ret_val);
+-			/*
+-			 * Fall back to bit clock usage for -ENOENT (clock not
+-			 * available likely due to missing dependencies), bail
+-			 * for all other errors, including -EPROBE_DEFER
+-			 */
+-			if (ret_val != -ENOENT)
+-				goto err;
+-			byt_rt5651_quirk &= ~BYT_RT5651_MCLK_EN;
++			goto err;
+ 		}
++		/*
++		 * Fall back to bit clock usage when clock is not
++		 * available likely due to missing dependencies.
++		 */
++		if (!priv->mclk)
++			byt_rt5651_quirk &= ~BYT_RT5651_MCLK_EN;
+ 	}
+ 
+ 	snprintf(byt_rt5651_components, sizeof(byt_rt5651_components),
 -- 
 2.33.0
 
