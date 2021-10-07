@@ -2,81 +2,194 @@ Return-Path: <SRS0=Vpzd=O3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2432DC433FE
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 13:46:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D7749C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 13:50:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3D8A661075
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 13:46:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3D8A661075
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 5977461056
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 13:50:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5977461056
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 93E6715E2;
-	Thu,  7 Oct 2021 15:45:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93E6715E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8D97C15E2;
+	Thu,  7 Oct 2021 15:49:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D97C15E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633614406;
-	bh=CzLXUpNEPe+Fc8D4lYwwX2ixsJtBDWtyruzWFlfomeE=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1633614602;
+	bh=uJ6UDAI5g9eaGzYV9KvIgPce5lfb9Kt5EwRIvLJ7U9s=;
+	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=T2uVYEOMSNd130twe+ht/1EgfIyEb1kfnFm8Ba490aWiJSZRnHX7Udt8nGeJnzYDZ
-	 F6XkBoXqi0H1KRbXe+OBHdfIMKEHlVl3L5+4tXa4WmQOIAGxBAj31PfdEvTN5DG803
-	 NqPlITF70SBIL/l+gtP206xm0ioYT9fLpcjFBSfA=
+	b=TU+FNYw/0x5izELcdauER80r1JGrmhxsJdbYbSOmJAfvBJZie8II3Y/b62Y81+dzn
+	 a3+HiQ8ZS/rBVgEHRaXhDFXvMQIn7mP1eCVC4OocOTzA34DrZJnn+3Q6RFLby9P3rl
+	 Hb0/Hx8RJ7lkZfYmZuxzyJESF3oY5+asSrv1qjP0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 264E6F80259;
-	Thu,  7 Oct 2021 15:45:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2A662F8027D;
+	Thu,  7 Oct 2021 15:49:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 47F59F8027D; Thu,  7 Oct 2021 15:45:54 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 82E99F8028B; Thu,  7 Oct 2021 15:49:10 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 04C01F800F0
- for <alsa-devel@alsa-project.org>; Thu,  7 Oct 2021 15:45:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04C01F800F0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6392DF800F0
+ for <alsa-devel@alsa-project.org>; Thu,  7 Oct 2021 15:49:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6392DF800F0
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Cp/yQ+YY"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E466460F6F;
- Thu,  7 Oct 2021 13:45:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1633614346;
- bh=CzLXUpNEPe+Fc8D4lYwwX2ixsJtBDWtyruzWFlfomeE=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=Cp/yQ+YYegFh4JOVWZf2urVOANhRMdw83gJczirTSVqDvtLVaLXlg0ddDdNjuCR3V
- Hvc0MheowvxrzO36pEkvUNMBuupIyKILRvKHvCHm/f7jfFwltuLyNakC8gschlV58F
- RCh4SU28B2udGU5Wu/j0/+ayhvdDNKf1eG8t2LrDCzZUxl82xAQuta2A/HCYRmD227
- 66xOEzpmSQoZycpSc00TpIaL0ATmTkXBh2xrJ7PxoEXzLiEDjjG26x+e1uohwtzto4
- Bv3Obpy2isyDcHITI8gfS1BKVMYLatzy1+u5dzQq4O2buus1y1zQh9c1DnUy74jMKh
- pSyKCw/EjIp4Q==
-Date: Thu, 7 Oct 2021 14:45:43 +0100
-From: Mark Brown <broonie@kernel.org>
-To: ChiYuan Huang <u0084500@gmail.com>
-Subject: Re: [PATCH 1/2] ASoC: dt-bindings: rt9120: Add initial bindings
-Message-ID: <YV76ByQWKvKNOvF0@sirena.org.uk>
-References: <1633396615-14043-1-git-send-email-u0084500@gmail.com>
- <YVw7vbpu4TS+7Su8@sirena.org.uk>
- <CADiBU39dvKS_a5FDgw9yMVFe8Uycn6bfjGwBWq+7MN_DdxkL1g@mail.gmail.com>
- <YVxFMaPhZdAFniMa@sirena.org.uk>
- <CADiBU3_TuHKiVG-r1TG-8WK_tW2GXi4VuqkidPwTyebOgE60OA@mail.gmail.com>
- <CADiBU3-4F-FdJxaa4Qp4xmUD3vsA=6u5_ojwDSr8zrDuW8JbXg@mail.gmail.com>
- <CADiBU38zCZk_P-q8BtbPfdeSacUF7LOvQYUFgvidbWZwcLY=wA@mail.gmail.com>
+ dkim=pass (1024-bit key) header.d=intel.onmicrosoft.com
+ header.i=@intel.onmicrosoft.com header.b="wQXKWljc"
+X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="226564275"
+X-IronPort-AV: E=Sophos;i="5.85,354,1624345200"; d="scan'208";a="226564275"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Oct 2021 06:49:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,354,1624345200"; d="scan'208";a="522604051"
+Received: from orsmsx606.amr.corp.intel.com ([10.22.229.19])
+ by orsmga001.jf.intel.com with ESMTP; 07 Oct 2021 06:49:02 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Thu, 7 Oct 2021 06:49:01 -0700
+Received: from orsmsx609.amr.corp.intel.com (10.22.229.22) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Thu, 7 Oct 2021 06:49:01 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx609.amr.corp.intel.com (10.22.229.22) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12 via Frontend Transport; Thu, 7 Oct 2021 06:49:01 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.48) by
+ edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.12; Thu, 7 Oct 2021 06:49:01 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eOPmjTY2remZvE9qeG498S50LD6o5YzJ90Jue2oOhs6NksKclrob8ta7+7vOz1mQhPY/AfgX0aq0pKHE31FvwCMk+UrPbJuw3ThymfAs1wKhlfR3C9/+X+MYG5HrucsoIKEfP7bs3XCV3pBsyUWL89yGoI4bPIRQKSGQIVzEIg8XCSWw1ecXJxvBeJjJ8QHi56z9Nqf7IfkBQbNl2Eo6MxBorirUZUhWMTpzhZRrnxRDYYF6lcpvQG89aEykmiXe1ne8mee1Uhsoqf4cu7H9taHM+xfRxAfkSWCO7Pc9ACCcOmBlM0msJNdJPKh1KS5PINiNmJpc5VZ9RYoQXmJeKg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=uJ6UDAI5g9eaGzYV9KvIgPce5lfb9Kt5EwRIvLJ7U9s=;
+ b=oAyICz7SewyhhuR8TeYyp758lr17K047fNcAfUddZviVYqiGhvpSOI9vr94IdYrV6FQl0ozR0xFSFvJL11Tj9JQfijljsUM80TyllbIBfumcr2AsPZn/yky3o7Zqg/+rY/QeL4ZQhH2hb6daK5GSAf1A/YbIc6XYIK0kCgXNtSUDOfBREh8tXTzScyao+/kkMU8LHag2/deC3IFjRSs+IAbIuNwpAfeI8Vo1gGU6njaARsTvOrENoMAFYa01tE33EaCGAW9CvQV0QPYIGkjhpeeUvXzV9M+DYfCa2gOpan8at8CRs4ibxu5pZQOy6Vp4t4gHKy312GJ5OUOb4zw52A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com; 
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uJ6UDAI5g9eaGzYV9KvIgPce5lfb9Kt5EwRIvLJ7U9s=;
+ b=wQXKWljcZCrFSH+ZNvpPqPbArmPpQbiRdTlDaknN1rfUkI6mxxqXetWWOIAdk/wfFcLBqltShCm2p1mbkgBeNzIGH/q4XA5DXWvRIITQ3ApZOqwBQPjgMjvyoiyGSRIK5xacLnDBhL+YdU+yagJ6/SSvPn4E0ILjie42iZyHPoI=
+Received: from MWHPR11MB1919.namprd11.prod.outlook.com (2603:10b6:300:106::22)
+ by MWHPR1101MB2095.namprd11.prod.outlook.com (2603:10b6:301:5b::18)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.20; Thu, 7 Oct
+ 2021 13:49:00 +0000
+Received: from MWHPR11MB1919.namprd11.prod.outlook.com
+ ([fe80::698e:991:9d18:3727]) by MWHPR11MB1919.namprd11.prod.outlook.com
+ ([fe80::698e:991:9d18:3727%6]) with mapi id 15.20.4587.019; Thu, 7 Oct 2021
+ 13:49:00 +0000
+From: "Lu, Brent" <brent.lu@intel.com>
+To: "Liao, Bard" <bard.liao@intel.com>, Pierre-Louis Bossart
+ <pierre-louis.bossart@linux.intel.com>, Hans de Goede <hdegoede@redhat.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Bard liao
+ <yung-chuan.liao@linux.intel.com>
+Subject: RE: [PATCH 3/3] ASoC: Intel: sof_rt5682: use id_alt to enumerate
+ rt5682s
+Thread-Topic: [PATCH 3/3] ASoC: Intel: sof_rt5682: use id_alt to enumerate
+ rt5682s
+Thread-Index: AQHXus4W5/VsLw98jkS1akrmyRygKavGNrGAgAABwICAAJzyAIAAuFKQ
+Date: Thu, 7 Oct 2021 13:49:00 +0000
+Message-ID: <MWHPR11MB1919202E2EE479BD1EF540D997B19@MWHPR11MB1919.namprd11.prod.outlook.com>
+References: <20211006161805.938950-1-brent.lu@intel.com>
+ <20211006161805.938950-4-brent.lu@intel.com>
+ <fdcdf447-352f-3dbc-f55d-b3bb3588dca3@redhat.com>
+ <ecde4150-2782-9529-3288-b1eb9e247883@linux.intel.com>
+ <DM6PR11MB40743B517390C8F04938CBBEFFB19@DM6PR11MB4074.namprd11.prod.outlook.com>
+In-Reply-To: <DM6PR11MB40743B517390C8F04938CBBEFFB19@DM6PR11MB4074.namprd11.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.6.200.16
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: c2d29d3e-094d-4a3a-36b0-08d9899937b8
+x-ms-traffictypediagnostic: MWHPR1101MB2095:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR1101MB209555BAE41A19E86AAAFA0E97B19@MWHPR1101MB2095.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Aks0XjtwBzgM8ns5tU+RA6jbEa52cp8QNU/NVw1TYojc6bcNXcp0UgvDBa/3oC/pFTR3Xg0jwoTo3tiNR3pz7w1e1mmkiz/6thfEOGyItEdMjKGp5HsK8uVTrce+TkO8CrZ9rzatXIcjZN8pilW8juKPztP6xJ2/shtRm4OfT2j8PAOsStd4CYehFQU38HIcbw5r5/6qqgEBPdUZvToWayAHEP43YpNLI4IL3XstZ2hLJJuV8GhZ+Gn7rDMPx3ZhdmucXhxFROsDZ8aSSAEcqB4SZR89KGuRUtQkdgZ4nVAsTbAmkN9aIOJYuLT/eErxA+ts76EjXIlPXEpyrJORKmXAeD8Lg50vJV/mZ1D1xrP0d2OxUW/TQdDYeW0NY1oBGI9hSqzO4/7EH7Slf47CrzC5QhbJg0neaOj9SxeBD7Guw++RnGwsBrqZdxGNmfhUlrUM5vPL4jg8tgtkG31+ecb5uH1p6FLxAQ/eF6lAUJZ/p82QisSjINNPSF+qtM7UqURW/62O7nFq5hQzLcvLRwMkQsgkVoIv+JhhmM2Ub4zBSWXr3d4ecMlt6X0uWfAj8GJOiw8MQNFYQNt3QaE4BTHdlTwmN2rikXHiMhtsuQVe3qSpCjNIB1nmMT+fD6jx2RF8iwhOyLPs/vK3JA3ZjOU59vM7FvNJHFksjNy02I3V33s7MwQ/i+JWM8bHq5GmIhBG27g59zp0IgZ1YUrw39+TsTEg6ruUqoewmazza4w=
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:MWHPR11MB1919.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(4636009)(366004)(86362001)(7696005)(6506007)(316002)(110136005)(71200400001)(8936002)(54906003)(2906002)(26005)(186003)(33656002)(122000001)(38070700005)(8676002)(4326008)(7416002)(5660300002)(38100700002)(9686003)(508600001)(4744005)(55016002)(76116006)(66446008)(52536014)(66946007)(66556008)(64756008)(66476007)(11716005);
+ DIR:OUT; SFP:1102; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?aTZ2Z1poN2hCNCtyLzJJZU4rdHBRT0REU1lJNTY0VjYycEhKbzhBVGUwQlNp?=
+ =?utf-8?B?ZVZvb0tyMnVsRTlKVVhiMWpaN2hkQm40SERqS1JjaXo1cEhyaFh5dTNSQ0FI?=
+ =?utf-8?B?bmlaT0orU1VKd2ZzLzZubWZBWXlqUnhpMmRHOVFpYWpFa2dSZURxSnZsUlU5?=
+ =?utf-8?B?cEhFKytCR0Y1cnRhSWxkaFE5TEc1R0ordHRmVkdXbUxxREdibjZZdnJRL2tE?=
+ =?utf-8?B?RFdYdXpjQVRkYzhUUy94d2RGV2ozUkU0dENRaUN0S0ROY3B4RDdsbmFpYXdE?=
+ =?utf-8?B?a3ViSmxsa0MrTWJrbFBWNnVROWdaRUQrR3JpcnBqbFVTdTRHVmYvVkVFUVdt?=
+ =?utf-8?B?bHJjanBWM1d4cDBiR3ZSN2p0QjBsbjZzcWtVemF6RDEvWUE0U3duRExaU3Z4?=
+ =?utf-8?B?RlF4QzgrQlkvdG11SHhXNXhnbGtyYjNtMmUvU2FEZmsxQktlVnJJbjJyZE0r?=
+ =?utf-8?B?d3UvOXpqU3V6eVFZTGZtc3VLb0tnZzMyMGZjWFlJaVRvUmZxTVdSbWdqeFNS?=
+ =?utf-8?B?cHNpdG1ITHpXVVA4QzBwVUZoK05oNkxodG1kKy8yaEpla3Z5RllpQVBOazZj?=
+ =?utf-8?B?Ti9aZnRyTnRXQUFqR0lNSTI5SkFCVGZ5RllESlI3K09jc0sycnRpa2w2YTVU?=
+ =?utf-8?B?ODczWUxzcWJTQVZ4bERMN2ozWjFFcm9jYlo2SXFRdUhCN3J2d2tkK0JMR2ht?=
+ =?utf-8?B?WXoxb1BEUFRwWmVNVEdXelArNHJyRjlLNUlJMWl2czZnd2RkSmZIZWJOQ3oy?=
+ =?utf-8?B?Z3ByQnd1MzY5N29SSkR0ZVd5elJIanRKaTMxdHphSkxiSHEranQwMWtTcS9W?=
+ =?utf-8?B?VXUyYzJyNDJmWmFYakJaZytrZjQ5SzBXd0ZpOXp0ZlIvUkhRcEU0VjIyZHFl?=
+ =?utf-8?B?RFhvcXYvenNrZjJUcHZmcktwdFVYN0ZHS01oSk03V1lUNXVORGJnaVR4UHFt?=
+ =?utf-8?B?V1l3dm40eUdNM1pYNnBlS2lzbjUxN2t2ckNHMk03OWJCLzVjTGxaV1RDNU9l?=
+ =?utf-8?B?UkhQY3FzNnBMRWFVVS9Ic1Z3ckpVL1hsUHB3aFp1ZnNsZnZKaGJraDYwc3la?=
+ =?utf-8?B?ek9GSzhXSVVMQlQzOWNtazMyK285SkdnQjMvSzlKYWlEOC9URGpDSlhmVHlR?=
+ =?utf-8?B?ZkN3Vk5RMWlETEZiWjNLWlB6MGY5N090amtuYmliQXFwcWpQMUp1QW9CRGlS?=
+ =?utf-8?B?MlFBYWZMVGVGdTBHK1RCVHk0RlR0S1lhOExXRHZrNkpHOTMyNUkwRUo0anA4?=
+ =?utf-8?B?d1MrMU1kaUVpajZldm16dmZtRjdJb1Z0a1habnNaYUhROUxTbHVmUkdLRG1x?=
+ =?utf-8?B?RVl3eHArNHJJSEM4bDNnZFpQK3R1R3pjTnliVjIxRVpMZzdLaFRUUk8xQ2pL?=
+ =?utf-8?B?QmlMMUxKdkdTNEdJLzRHYVJ1RU9XaFU4TGNMMi8wanlkY1pRNVVsUjdmcU00?=
+ =?utf-8?B?SkxSc3psalUweFNVU0ovRkIxcGJnZWVQdlVXTHlzVFI1dzYxb3pibWxFV01G?=
+ =?utf-8?B?NlpFempqZW9STXZmeU9uS0ZyaEM0SWdhMDFuSC9hN1FCUEJPMkFoYmNaQmt3?=
+ =?utf-8?B?KzdabWhsQzJkQXB5RHVhdVdNRjhwY2ZZbnRqUjAxbE52OGQvUFpZN0dZcFhn?=
+ =?utf-8?B?bXVpWGllWVJNMEFyN3Y2VWZqSVVyYktUV2h2RGIyKytCdytIeVZSSk9QeG9I?=
+ =?utf-8?B?R2RFOTR1NFM2R3hqTHFWUHV1WXNmSXVzL0dMMDNpalpDakVnY3Y2NEZ5Sndm?=
+ =?utf-8?Q?1Etpy1tz5LoVKMSXFQ=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="KwxzcL8DXmUlXdOr"
-Content-Disposition: inline
-In-Reply-To: <CADiBU38zCZk_P-q8BtbPfdeSacUF7LOvQYUFgvidbWZwcLY=wA@mail.gmail.com>
-X-Cookie: Colors may fade.
-Cc: oder_chiou@realtek.com,
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>, alsa-devel@alsa-project.org,
- lkml <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- tiwai@suse.com, cy_huang <cy_huang@richtek.com>,
- Rob Herring <robh+dt@kernel.org>, allen lin <allen_lin@richtek.com>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB1919.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c2d29d3e-094d-4a3a-36b0-08d9899937b8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Oct 2021 13:49:00.5108 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: g4gEBaSMSZ5ZZugD/yF55VND9tFm1bcoJhhI595i4dd5Z3WiYOH43Bg2bW1x2Z50QJ66XOoUqUNlgIIZFKKy8g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1101MB2095
+X-OriginatorOrg: intel.com
+Cc: "Yang, Libin" <libin.yang@intel.com>,
+ Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>, "Rojewski, 
+ Cezary" <cezary.rojewski@intel.com>,
+ Malik_Hsu <malik_hsu@wistron.corp-partner.google.com>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, "Wang,
+ Rander" <rander.wang@intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, "Chiang, Mac" <mac.chiang@intel.com>,
+ Mark Brown <broonie@kernel.org>, Paul
+ Olaru <paul.olaru@oss.nxp.com>, Curtis Malainey <cujomalainey@chromium.org>,
+ "Song, Gongjun" <gongjun.song@intel.com>, "Gopal,
+ Vamshi Krishna" <vamshi.krishna.gopal@intel.com>, "Zhi,
+ Yong" <yong.zhi@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,62 +205,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
---KwxzcL8DXmUlXdOr
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Oct 07, 2021 at 10:44:49AM +0800, ChiYuan Huang wrote:
-> ChiYuan Huang <u0084500@gmail.com> =E6=96=BC 2021=E5=B9=B410=E6=9C=886=E6=
-=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=884:47=E5=AF=AB=E9=81=93=EF=BC=9A
-> > ChiYuan Huang <u0084500@gmail.com> =E6=96=BC 2021=E5=B9=B410=E6=9C=885=
-=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=888:39=E5=AF=AB=E9=81=93=EF=BC=
-=9A
-> > > Mark Brown <broonie@kernel.org> =E6=96=BC 2021=E5=B9=B410=E6=9C=885=
-=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=888:29=E5=AF=AB=E9=81=93=EF=BC=
-=9A
-
-> > > > > > I would expect this to be done through the regulator bindings, =
-they
-> > > > > > would allow the driver to query the supply voltage.
-
-> > > > Please don't take things off-list unless there is a really strong r=
-eason
-> > > > to do so.  Sending things to the list ensures that everyone gets a
-> > > > chance to read and comment on things.
-
-> > After contacting our HW RD, to support DVDD 1.8V not just SW config,
-> > also HW connections.
-> > To get only DVDD supply voltage is not enough to meet the HW design.
-> > The property seems indeed and need to be used by user's HW connection.
-
-> > Can this property to be kept?
-
-> After thinking, This property name may be improper.
-> I think this change depends on HW external circuit for lowv application.
-> Currently, I'm modifying the V3 change, this property name also affect
-> the property parsing code change.
-> May I directly change the name to 'richtek,dvdd-lowv-application' and
-> submit the patch v3?
-
-I still don't understand why you wouldn't describe this through the
-regulator bindings, those exist to describe the physical supplies ont he
-board and their constraints.
-
---KwxzcL8DXmUlXdOr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFe+gcACgkQJNaLcl1U
-h9CxxQf/XLbUqCBWX7z5jeyDmyDvwzHIRGbjEWm8prqmKXOYerIrsa1wQAASMVIq
-CUtmTRz779PvbCbSxbrV/3PWBvAU8f+ViQdCdma3TEn5TuCjhNczdySN+g1psMto
-34MvNT+bJSyiaL6dXErgyXSEbbNAbbcKTVGe0he258QVMYefv3KfWoN98AG67cKM
-pzKdjihlrgvzG8lXnxwOEcaKTJSsbsrSe9F+sUbUe9A9TWPP7KAouF6LGczYmdHE
-0HyOYoqjFNg6fhVqJSHSRUv5qsBFUZdblgOv4W83CTzKARal9+K2aLuchHn50yla
-03nh+5FcXTlNEvuuegJZGkhjwMQs/w==
-=wb/1
------END PGP SIGNATURE-----
-
---KwxzcL8DXmUlXdOr--
+PiA+DQo+ID4gSW4gdGhlIHBhc3Qgd2UgdXNlZCB0aGlzIGNvbmZpZ3VyYXRpb24gZm9yIFNPRiBD
+SSB0ZXN0cyB3aXRoIHRoZQ0KPiA+IE1pbm5vd0JvYXJkDQo+ID4gKyBhbiBSVDU2ODIgZXZhbCBi
+b2FyZC4gV2UgZ3JhZHVhbGx5IGZyaWVkIG1vc3QgYm9hcmRzIGFuZCBubyBsb25nZXINCj4gPiAr
+IGNoZWNrDQo+ID4gdGhpcyBjYXBhYmlsaXR5IGZvciBlYWNoIFNPRiBQUi4NCj4gPg0KPiA+IFNv
+IEkgd291bGQgYWdyZWUgd2UgY2FuIGF2b2lkIGNoYW5naW5nIGFueXRoaW5nIGZvciBCWVQvQ0hU
+IGFuZA0KPiA+IHBvc3NpYmx5IEFQTCwgaXQnZCBiZSBhbiB1bnRlc3RlZCBjb25maWd1cmF0aW9u
+Lg0KPiA+DQo+ID4gaW4gb3RoZXIgd29yZHMsIGxldCdzIGFkZCB0aGlzIGNvbXBhdGlibGUvYWx0
+X2lkIGZvciBwbGF0Zm9ybXMgd2hlcmUNCj4gPiB3ZSBrbm93IGl0J2xsIGJlIHVzZWQuDQo+IA0K
+PiBBZ3JlZSB3aXRoIFBpZXJyZS4gIlJUTDU2ODIiIGlzIGEgbmV3IGNvZGVjIHdoaWNoIGlzIGRp
+ZmZlcmVudCBmcm9tDQo+ICIxMEVDNTY4MiIgYW5kIG5vdCB0ZXN0ZWQgb24gb2xkIHBsYXRmb3Jt
+cy4NCg0KQXMgSSBrbm93IHRoZSBwYXJ0IGlzIGludHJvZHVjZWQgdG8gSlNMIGFuZCBBREwgcHJv
+amVjdHMgc28gbWF5YmUgd2UgY2FuDQprZWVwIHRoZSBjaGFuZ2UgdG8gSlNML1RHTC9BREwgYm9h
+cmRzPw0KDQoNCg==
