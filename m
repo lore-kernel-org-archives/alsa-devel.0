@@ -2,81 +2,82 @@ Return-Path: <SRS0=Vpzd=O3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D52D7C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 12:44:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19C36C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 13:03:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 66CD7610E6
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 12:44:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 66CD7610E6
+	by mail.kernel.org (Postfix) with ESMTPS id A670661139
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 13:03:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A670661139
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0ACA415E0;
-	Thu,  7 Oct 2021 14:44:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0ACA415E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 634AA15E0;
+	Thu,  7 Oct 2021 15:02:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 634AA15E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633610693;
-	bh=/oRb81+/NYSs746O+SWl3RYQZ9OH6Fi2L1QILPiJfMk=;
+	s=default; t=1633611805;
+	bh=dmsPiGtKVEdK54EBKq7qibL7o254uHaD+RC33eGtcvM=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LupFo7KDZ/rVKwurqW3kbGhIBAboOK/5d963TfGskXx8zIAIfmRi2gRlH7B2MtN17
-	 rZy7HjYMVKSPSA5kXydl0GhT/in7ox/XlZvdWY20onFWYun0LWyXFFg8HQOwJfrk4x
-	 SWbFj2huu6Wld0kTb0mE4tGyr9bSFkSExm5jaPP4=
+	b=XY7bNqDtVDZ3zS6l6QBzH2hB/qIoO8SaLaiGTwzvP0bZxaoAB0surofL9EJGvwR7i
+	 vwt+VpICTIxPz7NNmvOx5R4/EL/iSEisv7KleQKRAoC4hcw4F4gGvXkW2+LWISzCWE
+	 CagUAJijJK8DDjqLnF0b9CPZVdtWTLo0c+lJe7EU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 899A6F80259;
-	Thu,  7 Oct 2021 14:44:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E756DF80259;
+	Thu,  7 Oct 2021 15:02:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B34BEF8027D; Thu,  7 Oct 2021 14:44:00 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id DC35FF8027D; Thu,  7 Oct 2021 15:02:33 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6F4A2F800FE
- for <alsa-devel@alsa-project.org>; Thu,  7 Oct 2021 14:43:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F4A2F800FE
+ by alsa1.perex.cz (Postfix) with ESMTPS id B36EBF80130
+ for <alsa-devel@alsa-project.org>; Thu,  7 Oct 2021 15:02:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B36EBF80130
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="VpPCI6DX"; 
+ header.b="CfLavqdl"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="EPBqY4mr"
+ header.b="LZwr8xF7"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 9692D200BD;
- Thu,  7 Oct 2021 12:43:53 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 0B97822510;
+ Thu,  7 Oct 2021 13:02:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1633610633; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1633611736; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=dUPSP/0CtUbFbuA5ncd6Qxn0jzmtyI9tiiEfTYZb3tI=;
- b=VpPCI6DX4Z51iWnPexYihCcG1/bUO19FGljHB+jWacUbn8DALONv7RjBDTQSQSUelSJ8Mg
- 3TXwEuXHhSfqQTp5sWfTDnaSlnaQR0Brca84uBUc7oRf973an5UzUZI9xKe6QAopenhmd9
- OasO7CeUwYDugxrS9WJPS1q8BbNMZHI=
+ bh=3qtYRZP6Gs9I/CN0IeGf6RDo/F9wSztCW31mmQWWKjI=;
+ b=CfLavqdlsdLywmVQ/YxXaEbcM8h1+wM5c/bGPX1PYAiVH1LQs0YVrwB39UbWs/WjBl9SMd
+ kwnLnxV1v5QODaTp9DZmMyZxGdBljyj964bYQUV71n7CyBnJA9u29XJbhPXsDIN9t+M7k/
+ 8h1YSmvi4Hq6o0fZC0m8HGipSnkksIY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1633610633;
+ s=susede2_ed25519; t=1633611736;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=dUPSP/0CtUbFbuA5ncd6Qxn0jzmtyI9tiiEfTYZb3tI=;
- b=EPBqY4mrlFhWO6vZrdx8L0t7psWZPwjj/svW7BnIZW5talQSgpLM3GYK3PsGmj6SBX57My
- uvTAQdqVQvV3tdDw==
+ bh=3qtYRZP6Gs9I/CN0IeGf6RDo/F9wSztCW31mmQWWKjI=;
+ b=LZwr8xF70VeBmItpycHoEk42drWtrZHnNfXkWHG01hEzgNHlMfrP7AOXM/rrBCLRAAJrRk
+ BuZy6EwLYbN5tLAA==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 74978A3B84;
- Thu,  7 Oct 2021 12:43:53 +0000 (UTC)
-Date: Thu, 07 Oct 2021 14:43:53 +0200
-Message-ID: <s5hee8x9f92.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id EF1C7A3B85;
+ Thu,  7 Oct 2021 13:02:15 +0000 (UTC)
+Date: Thu, 07 Oct 2021 15:02:15 +0200
+Message-ID: <s5ha6jl9eeg.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Arnd Bergmann <arnd@arndb.de>
 Subject: Re: [alsa-devel] [PATCH v7 8/9] ALSA: add new 32-bit layout for
  snd_pcm_mmap_status/control
-In-Reply-To: <CAK8P3a0K3XtjiszC3XWgG0L8+AgO+xUGr_KEAnb9a5GmyecoUQ@mail.gmail.com>
+In-Reply-To: <s5hee8x9f92.wl-tiwai@suse.de>
 References: <20191211212025.1981822-1-arnd@arndb.de>
  <20191211212025.1981822-9-arnd@arndb.de>
  <29QBMJU8DE71E.2YZSH8IHT5HMH@mforney.org>
  <s5hpmsh9kdx.wl-tiwai@suse.de>
  <CAK8P3a0K3XtjiszC3XWgG0L8+AgO+xUGr_KEAnb9a5GmyecoUQ@mail.gmail.com>
+ <s5hee8x9f92.wl-tiwai@suse.de>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -103,108 +104,113 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 07 Oct 2021 13:48:44 +0200,
-Arnd Bergmann wrote:
+On Thu, 07 Oct 2021 14:43:53 +0200,
+Takashi Iwai wrote:
 > 
-> On Thu, Oct 7, 2021 at 12:53 PM Takashi Iwai <tiwai@suse.de> wrote:
-> > On Wed, 06 Oct 2021 19:49:17 +0200, Michael Forney wrote:
-> > >
-> > > Arnd Bergmann <arnd@arndb.de> wrote:
-> > > > +#if defined(__BYTE_ORDER) ? __BYTE_ORDER == __BIG_ENDIAN : defined(__BIG_ENDIAN)
-> > > > +typedef char __pad_before_uframe[sizeof(__u64) - sizeof(snd_pcm_uframes_t)];
-> > > > +typedef char __pad_after_uframe[0];
-> > > > +#endif
-> > > > +
-> > > > +#if defined(__BYTE_ORDER) ? __BYTE_ORDER == __LITTLE_ENDIAN : defined(__LITTLE_ENDIAN)
-> > > > +typedef char __pad_before_uframe[0];
-> > > > +typedef char __pad_after_uframe[sizeof(__u64) - sizeof(snd_pcm_uframes_t)];
-> > > > +#endif
-> > > > +
-> > > > +struct __snd_pcm_mmap_status64 {
-> > > > +   __s32 state;                    /* RO: state - SNDRV_PCM_STATE_XXXX */
-> > > > +   __u32 pad1;                     /* Needed for 64 bit alignment */
-> > > > +   __pad_before_uframe __pad1;
-> > > > +   snd_pcm_uframes_t hw_ptr;       /* RO: hw ptr (0...boundary-1) */
-> > > > +   __pad_after_uframe __pad2;
-> > > > +   struct __snd_timespec64 tstamp; /* Timestamp */
-> > > > +   __s32 suspended_state;          /* RO: suspended stream state */
-> > > > +   __u32 pad3;                     /* Needed for 64 bit alignment */
-> > > > +   struct __snd_timespec64 audio_tstamp; /* sample counter or wall clock */
-> > > > +};
-> > > > +
-> > > > +struct __snd_pcm_mmap_control64 {
-> > > > +   __pad_before_uframe __pad1;
-> > > > +   snd_pcm_uframes_t appl_ptr;      /* RW: appl ptr (0...boundary-1) */
-> > > > +   __pad_before_uframe __pad2;
-> > >
-> > > I was looking through this header and happened to notice that this
-> > > padding is wrong. I believe it should be __pad_after_uframe here.
-> > >
-> > > I'm not sure of the implications of this typo, but I suspect it
-> > > breaks something on 32-bit systems with 64-bit time (regardless of
-> > > the endianness, since it changes the offset of avail_min).
+> On Thu, 07 Oct 2021 13:48:44 +0200,
+> Arnd Bergmann wrote:
+> > 
+> > On Thu, Oct 7, 2021 at 12:53 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > > On Wed, 06 Oct 2021 19:49:17 +0200, Michael Forney wrote:
+> > > >
+> > > > Arnd Bergmann <arnd@arndb.de> wrote:
+> > > > > +#if defined(__BYTE_ORDER) ? __BYTE_ORDER == __BIG_ENDIAN : defined(__BIG_ENDIAN)
+> > > > > +typedef char __pad_before_uframe[sizeof(__u64) - sizeof(snd_pcm_uframes_t)];
+> > > > > +typedef char __pad_after_uframe[0];
+> > > > > +#endif
+> > > > > +
+> > > > > +#if defined(__BYTE_ORDER) ? __BYTE_ORDER == __LITTLE_ENDIAN : defined(__LITTLE_ENDIAN)
+> > > > > +typedef char __pad_before_uframe[0];
+> > > > > +typedef char __pad_after_uframe[sizeof(__u64) - sizeof(snd_pcm_uframes_t)];
+> > > > > +#endif
+> > > > > +
+> > > > > +struct __snd_pcm_mmap_status64 {
+> > > > > +   __s32 state;                    /* RO: state - SNDRV_PCM_STATE_XXXX */
+> > > > > +   __u32 pad1;                     /* Needed for 64 bit alignment */
+> > > > > +   __pad_before_uframe __pad1;
+> > > > > +   snd_pcm_uframes_t hw_ptr;       /* RO: hw ptr (0...boundary-1) */
+> > > > > +   __pad_after_uframe __pad2;
+> > > > > +   struct __snd_timespec64 tstamp; /* Timestamp */
+> > > > > +   __s32 suspended_state;          /* RO: suspended stream state */
+> > > > > +   __u32 pad3;                     /* Needed for 64 bit alignment */
+> > > > > +   struct __snd_timespec64 audio_tstamp; /* sample counter or wall clock */
+> > > > > +};
+> > > > > +
+> > > > > +struct __snd_pcm_mmap_control64 {
+> > > > > +   __pad_before_uframe __pad1;
+> > > > > +   snd_pcm_uframes_t appl_ptr;      /* RW: appl ptr (0...boundary-1) */
+> > > > > +   __pad_before_uframe __pad2;
+> > > >
+> > > > I was looking through this header and happened to notice that this
+> > > > padding is wrong. I believe it should be __pad_after_uframe here.
+> > > >
+> > > > I'm not sure of the implications of this typo, but I suspect it
+> > > > breaks something on 32-bit systems with 64-bit time (regardless of
+> > > > the endianness, since it changes the offset of avail_min).
+> > 
+> > Thanks a lot for the report! Yes, this is definitely broken in some ways.
+> > 
+> > > Right, that's the expected breakage.  It seems that the 64bit time on
+> > > 32bit arch is still rare, so we haven't heard a regression by that, so
+> > > far...
+> > 
+> > It might actually be worse: on a native 32-bit kernel, both user space
+> > and kernel see the same broken definition with a 64-bit time_t, which
+> > would end up actually making it work as expected. However, in
+> > compat mode, the layout seen on the 32-bit user space is now
+> > different from what the 64-bit kernel has, which would in turn not
+> > work, in both the SNDRV_PCM_IOCTL_SYNC_PTR ioctl and in
+> > the mmap() interface.
+> > 
+> > Fixing the layout to look like the way we had intended would make
+> > newly compiled applications work in compat mode, but would break
+> > applications built against the old header on new kernels and also
+> > newly built applications on old kernels.
+> > 
+> > I still hope I missed something and it's not quite that bad, but I
+> > fear the best we can do in this case make the broken interface
+> > the normative one and fixing compat mode to write
+> > mmap_control64->avail_min in the wrong location for
+> > SNDRV_PCM_IOCTL_SYNC_PTR, as well as disabling
+> > the mmap() interface again for compat tasks.
+> >
+> > As far as I can tell, the broken interface will always result in
+> > user space seeing a zero value for "avail_min". Can you
+> > make a prediction what that would mean for actual
+> > applications? Will they have no audio output, run into
+> > a crash, or be able to use recover and appear to work normally
+> > here?
 > 
-> Thanks a lot for the report! Yes, this is definitely broken in some ways.
+> No, fortunately it's only about control->avail_min, and fiddling this
+> value can't break severely (otherwise it'd be a security problem ;)
 > 
-> > Right, that's the expected breakage.  It seems that the 64bit time on
-> > 32bit arch is still rare, so we haven't heard a regression by that, so
-> > far...
+> In the buggy condition, it's always zero, and the kernel treated as if
+> 1, i.e. wake up as soon as data is available, which is OK-ish for most
+> applications.   Apps usually don't care about the wake-up condition so
+> much.  There are subtle difference and may influence on the stability
+> of stream processing, but the stability usually depends more strongly
+> on the hardware and software configurations.
 > 
-> It might actually be worse: on a native 32-bit kernel, both user space
-> and kernel see the same broken definition with a 64-bit time_t, which
-> would end up actually making it work as expected. However, in
-> compat mode, the layout seen on the 32-bit user space is now
-> different from what the 64-bit kernel has, which would in turn not
-> work, in both the SNDRV_PCM_IOCTL_SYNC_PTR ioctl and in
-> the mmap() interface.
+> That being said, the impact by this bug (from the application behavior
+> POV) is likely quite small, but the contamination is large; as you
+> pointed out, it's much larger than I thought.
 > 
-> Fixing the layout to look like the way we had intended would make
-> newly compiled applications work in compat mode, but would break
-> applications built against the old header on new kernels and also
-> newly built applications on old kernels.
-> 
-> I still hope I missed something and it's not quite that bad, but I
-> fear the best we can do in this case make the broken interface
-> the normative one and fixing compat mode to write
-> mmap_control64->avail_min in the wrong location for
-> SNDRV_PCM_IOCTL_SYNC_PTR, as well as disabling
-> the mmap() interface again for compat tasks.
->
-> As far as I can tell, the broken interface will always result in
-> user space seeing a zero value for "avail_min". Can you
-> make a prediction what that would mean for actual
-> applications? Will they have no audio output, run into
-> a crash, or be able to use recover and appear to work normally
-> here?
+> The definition in uapi/sound/asound.h is a bit cryptic, but IIUC,
+> __snd_pcm_mmap_control64 is used for 64bit archs, right?  If so, the
+> problem rather hits more widely on 64bit archs silently.  Then, the
+> influence by this bug must be almost negligible, as we've had no bug
+> report about the behavior change.
 
-No, fortunately it's only about control->avail_min, and fiddling this
-value can't break severely (otherwise it'd be a security problem ;)
+Erm, scratch this part: on 64bit arch, both __pad_before_uframe and
+__pad_after_uframe is 0-size, so the bug doesn't hit.  It's only about
+32bit arch.
 
-In the buggy condition, it's always zero, and the kernel treated as if
-1, i.e. wake up as soon as data is available, which is OK-ish for most
-applications.   Apps usually don't care about the wake-up condition so
-much.  There are subtle difference and may influence on the stability
-of stream processing, but the stability usually depends more strongly
-on the hardware and software configurations.
+> We may just fix it in kernel and for new library with hoping that no
+> one sees the actual problem.  Or, we may provide a complete new set of
+> mmap offsets and ioctl to cover both broken and fixed interfaces...
+> The decision depends on how perfectly we'd like to address the bug.
+> As of now, I'm inclined to go for the former, but I'm open for more
+> opinions.
 
-That being said, the impact by this bug (from the application behavior
-POV) is likely quite small, but the contamination is large; as you
-pointed out, it's much larger than I thought.
-
-The definition in uapi/sound/asound.h is a bit cryptic, but IIUC,
-__snd_pcm_mmap_control64 is used for 64bit archs, right?  If so, the
-problem rather hits more widely on 64bit archs silently.  Then, the
-influence by this bug must be almost negligible, as we've had no bug
-report about the behavior change.
-
-We may just fix it in kernel and for new library with hoping that no
-one sees the actual problem.  Or, we may provide a complete new set of
-mmap offsets and ioctl to cover both broken and fixed interfaces...
-The decision depends on how perfectly we'd like to address the bug.
-As of now, I'm inclined to go for the former, but I'm open for more
-opinions.
-
-
-thanks,
 
 Takashi
