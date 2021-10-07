@@ -2,85 +2,50 @@ Return-Path: <SRS0=Vpzd=O3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BCC17C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 09:49:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 305A9C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 10:05:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 48E4961090
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 09:49:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 48E4961090
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=dnyon.com
+	by mail.kernel.org (Postfix) with ESMTPS id A3B44610E6
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Oct 2021 10:05:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A3B44610E6
+Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EF9879F6;
-	Thu,  7 Oct 2021 11:48:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF9879F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id AF6D815E0;
+	Thu,  7 Oct 2021 12:04:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF6D815E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633600153;
-	bh=qd7kluRu5cKVXNfP+NrNpCRiRCxNL9FJkxiisrNtYzM=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1633601137;
+	bh=sVIdineeAMYdRUdlcwDeYTPTOFXAg6VtHflxLLASdp4=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lap7u2b8Ok+XKOTAOWeyAFJJ4o28RfbkDhIuAMIGNdC51GKTapBcm5r5aNC5ZJFzd
-	 xux3+3L/Ac38Ewhs1+/34x17/NqbxmuV3P6gc7m2PaQssLRpxxU8wX9lVU9pn/KosG
-	 4M+8RJG/jK7XOLp+IPNZvTpwY+qhhsucjgIHlSw0=
+	b=lg+FSYktgJjyPajqSf3TknzBnTCshtNnpL7u02Cwd/d08S+SS+bQsq2Hb2//38Ix5
+	 kI6+2t3uZ7yfKX2xZoge+bABXErh18l5X8vdNEeqtCXzljmS3k0CKyctB3M1DHx8kd
+	 Vl0cDsjx1HyegGsO0iSs2QsxxJ0yBJ6KmMAu6I40=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 077A8F80259;
-	Thu,  7 Oct 2021 11:48:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 45869F80259;
+	Thu,  7 Oct 2021 12:04:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 17431F8027D; Thu,  7 Oct 2021 11:48:19 +0200 (CEST)
-Received: from dnyon.com (unknown [IPv6:2001:ba0:1800:12f::1])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CDD5DF80130
- for <alsa-devel@alsa-project.org>; Thu,  7 Oct 2021 11:48:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CDD5DF80130
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=dnyon.com header.i=@dnyon.com
- header.b="L7+U4QBw"
-Received: from dnyon.com (55.red-81-39-194.dynamicip.rima-tde.net
- [81.39.194.55])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by dnyon.com (Postfix) with ESMTPSA id 0E1443FD71;
- Thu,  7 Oct 2021 09:47:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dnyon.com; s=mail;
- t=1633600073; bh=qd7kluRu5cKVXNfP+NrNpCRiRCxNL9FJkxiisrNtYzM=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=L7+U4QBwCMGyl+J+gFJ4w569/sVHmCHJ/cv/+NK/69qyg5/UHGmRJDHvJJMKwWcnC
- i/Eiwg7nIWfMrlYeP4c5rVQPR8HE+uc1kaG4HD/a4mB6nnOD1PsUeok00w8M92KHp0
- 0RKOFJxTxx9X9AZSiHZ1f24so4LK00CuznGzPWfCLeseF95DgY27uw6UK8bFq7lYEj
- /QHMRxiDPMAMtfjTTVeEIJ9eTkvP/pewzN6VJ5xm/m0c1CWKy8FgiS1aq3fo3Ig0RS
- YlUDZ5eB4klGSH+/V60Ky9S0pHSo47b+5VS+wNF9MjpX6zJnBkAVnYPsYSCqRlEncI
- H+n2TSDTlgISw==
-From: Alejandro Tafalla <atafalla@dnyon.com>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v4 2/2] dt-bindings: sound: max98927: Add reset-gpios
- optional property
-Date: Thu, 07 Oct 2021 11:47:46 +0200
-Message-ID: <5529627.DvuYhMxLoT@alexpc>
-In-Reply-To: <CAHp75VdbZmGeCq8A1E3AJU4T39xPUhomzrQqZNaDj8Zi0x9WrA@mail.gmail.com>
-References: <cover.1633572679.git.atafalla@dnyon.com>
- <4682758.31r3eYUQgx@alexpc>
- <CAHp75VdbZmGeCq8A1E3AJU4T39xPUhomzrQqZNaDj8Zi0x9WrA@mail.gmail.com>
+ id D78D6F8027D; Thu,  7 Oct 2021 12:04:45 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 51B1BF80130
+ for <alsa-devel@alsa-project.org>; Thu,  7 Oct 2021 12:04:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51B1BF80130
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
-Cc: devicetree <devicetree@vger.kernel.org>,
- ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- Takashi Iwai <tiwai@suse.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>,
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS
- <devicetree@vger.kernel.org>, Hans de Goede <hdegoede@redhat.com>,
- Andy Shevchenko <andy.shevchenko@gmail.com>,
- " <~postmarketos/upstreaming@lists.sr.ht>,
- =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@linux.intel.com>
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1633601079600691080-webhooks-bot@alsa-project.org>
+References: <1633601079600691080-webhooks-bot@alsa-project.org>
+Subject: Double snd_dlobj_unlock()
+Message-Id: <20211007100445.D78D6F8027D@alsa1.perex.cz>
+Date: Thu,  7 Oct 2021 12:04:45 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,22 +61,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 7/10/21 9:06 Andy Shevchenko wrote:
-> On Thu, Oct 7, 2021 at 5:45 AM Alejandro Tafalla <atafalla@dnyon.com> wrote:
-> > On 7/10/21 4:38 Alejandro Tafalla wrote:
-> > > Signed-off-by: Alejandro Tafalla <atafalla@dnyon.com>
-> > > ---
-> > > 
-> > >  Documentation/devicetree/bindings/sound/max9892x.txt | 3 +++
-> > >  1 file changed, 3 insertions(+)
-> > 
-> > Sorry, I forgot to add:  Acked-by: Rob Herring <robh@kernel.org>
-> 
-> And commit messages?
+alsa-project/alsa-lib issue #181 was opened from johado:
 
-Right, can I resend this patch with the commit message or I have to resend the 
-other one too?
--- 
-Alejandro Tafalla
+In dlmisc.c:snd_dlobj_cache_get0() there is a call to snd_dlobj_unlock() in the __err: path which should not be there.
+All lock/unlock are done by the callers to this function.
 
+--- a/src/dlmisc.c
++++ b/src/dlmisc.c
+@@ -359,7 +359,6 @@ snd_dlobj_cache_get0(const char *lib, const char *name,
+                free(c);
+              __err:
+                snd_dlclose(dlobj);
+-               snd_dlobj_unlock();
+                return NULL;
+        }
+        c->dlobj = dlobj;
 
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/181
+Repository URL: https://github.com/alsa-project/alsa-lib
