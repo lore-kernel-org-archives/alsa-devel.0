@@ -2,83 +2,89 @@ Return-Path: <SRS0=g44s=O6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 106F3C433EF
-	for <alsa-devel@archiver.kernel.org>; Sun, 10 Oct 2021 20:35:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4EE0C433F5
+	for <alsa-devel@archiver.kernel.org>; Sun, 10 Oct 2021 21:57:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6BEDA60E78
-	for <alsa-devel@archiver.kernel.org>; Sun, 10 Oct 2021 20:35:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6BEDA60E78
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 642BD60ED7
+	for <alsa-devel@archiver.kernel.org>; Sun, 10 Oct 2021 21:57:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 642BD60ED7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B150D1674;
-	Sun, 10 Oct 2021 22:34:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B150D1674
+	by alsa0.perex.cz (Postfix) with ESMTPS id DC766166E;
+	Sun, 10 Oct 2021 23:56:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC766166E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633898104;
-	bh=Ln1AmkdRdeD20JGULet5cOMdMV1vx2E/5oTV+06RMSg=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Koge8PpGbr1P1EEr00Amxq894fWIsRxjT3gKW8i+m3LsffZXwz9dOCCINm1SIvsuv
-	 wfKf2ljicBYSM2iWMkJ56xN972RmVZcpamZSiztJWYEGmwqspbzUvfTjB6wj2s1Bn2
-	 K7FvuSR0aaX1TvdHO9aE2MFtL9OebWzslAdh4ue0=
+	s=default; t=1633903051;
+	bh=e8RTZXD5QTUofNkZ4RNO8R1URtpbDdtF+YCVLaP/siI=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=TPh+imiWbpHys1CLXjBXarozXtqastP0Ae4oqq4dfRDPyblzRAqCV/1EFOpZ/6C0P
+	 7GEzGebdk1p2nGnWBKZXsWCwBORfHfbHdIG/L6gJHN6StOBOsos8pf6bO1y6KemNlB
+	 Bji3ztDyM0+Q8bXu1EBieS5xBCr0gntqD0/QKIvU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4FF58F801D5;
-	Sun, 10 Oct 2021 22:34:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5ADE4F8016D;
+	Sun, 10 Oct 2021 23:56:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D6985F801F7; Sun, 10 Oct 2021 22:34:11 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id 63982F801F7; Sun, 10 Oct 2021 23:56:39 +0200 (CEST)
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com
+ [IPv6:2607:f8b0:4864:20::831])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B5BA4F80059
- for <alsa-devel@alsa-project.org>; Sun, 10 Oct 2021 22:34:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5BA4F80059
+ by alsa1.perex.cz (Postfix) with ESMTPS id 48C53F8016D
+ for <alsa-devel@alsa-project.org>; Sun, 10 Oct 2021 23:56:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48C53F8016D
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="egyeRr4M"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="Hgs6461W"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 2F74021FF7;
- Sun, 10 Oct 2021 20:34:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1633898044; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=CoobIO2Ryj3jPOKk3KXrDUvdSTnE5w00dlnJDfbdZFg=;
- b=egyeRr4Mp77o2IqDynp7DSdY0pdZsMy+6kYUvG7tGep1itcUTsCGUEKf6rjOPdrjz/TvgK
- a3ls+tV92APBLOImPgxSXQIBCRnQpacwUcYL0rXGvc4fYbPUwx9qx1FtZFnaRc14YUmLw/
- qKzbXujcWEz0szifEqOJjccsdHvIJfA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1633898044;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=CoobIO2Ryj3jPOKk3KXrDUvdSTnE5w00dlnJDfbdZFg=;
- b=Hgs6461W1sGaP0uZufTXSOX4J+c9KDA9/wazGaiaR2HWu6MXLlBVMFG5rDdXmEAE3362Az
- /zl0dw4TqNSo5tDg==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 1ED06A3B81;
- Sun, 10 Oct 2021 20:34:04 +0000 (UTC)
-Date: Sun, 10 Oct 2021 22:34:04 +0200
-Message-ID: <s5hee8s62mb.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Cameron Berkenpas <cam@neo-zeon.de>
-Subject: Re: [PATCH] ALSA: hda/realtek: Fix for quirk to enable speaker output
- on the Lenovo 13s Gen2.
-In-Reply-To: <20211010180228.16137-1-cam@neo-zeon.de>
-References: <20211010180228.16137-1-cam@neo-zeon.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="VtRSwv+T"
+Received: by mail-qt1-x831.google.com with SMTP id r17so9454927qtx.10
+ for <alsa-devel@alsa-project.org>; Sun, 10 Oct 2021 14:56:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=sender:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=jJbVzM7l1D7JuwqpAtI5nI7LnVZbvtzYKA+zk7EWtHU=;
+ b=VtRSwv+TAjnM/7UgaXIXwuA4sdNX3Yyrgv0NaB8ScyZrroWaYPWsvfZfwY2yLQN7pE
+ E0SJCYR5fOR5SulTnrIb417GrpSYo0DcyPvvLMCLdkdEJ7y6DT4w+0Acl4q+e21gW1t6
+ AIh/YSakbWaNy+is/VTAFywLZHqjLupRNA4RKD3fN2vim+PARDioldLQHZiaqZDNSVK1
+ UoivOuewKg9BcZjWmcOje5CLAjrY7fTEVSSABQ1z4H28S7nkx1ul+I3nS3+5BUR422MH
+ 8lXFbYCpJGjtPHsb8tvI+kYFdWqRLy81G3r0vQX9ATQhiSGa6ALOo3TniCpPP7GdyORq
+ 4Nmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+ :mime-version:content-transfer-encoding;
+ bh=jJbVzM7l1D7JuwqpAtI5nI7LnVZbvtzYKA+zk7EWtHU=;
+ b=X/0/On/IqIfO9TE8lFGqWXVWJcBNz2fZbrNcH5UEqA83M9TRo5/1Gvf5ci1IjX/Ghy
+ PlabYpxcb56jLJDaB1NBWtS8D5x6YqASjiq0sgjvXYwFvyuxfSOzdkpXCYjUEaLiPfx4
+ XYdoiAcOYrhrw1JoXkIKE4iXlI23or80/6aXKOAePuDyyT8oFgLFfeMq8H/XGexxbs4d
+ tk+pEI08uPKpGHOPYdAfrBaR2bkIvFqMMDnYlj1S/0njoifj4pWmyLOKEpyFJqHk7AV3
+ HI9QFqfnUiql+Nj9PhteFIP1ajF8HwHMG4Ck62LF9vLj1uTWF1ta6dNWqfqSvBpeOlER
+ DkoA==
+X-Gm-Message-State: AOAM532VmAg46Ib65DkjidoBTJPkX6YY74+SYjfEB7aO3Xi4Sei2w38m
+ 7idw5F9ns9Wi1UowuW9rzFA=
+X-Google-Smtp-Source: ABdhPJy2Uxes532xgkBffYFXTLfI44OGqyQwMouf2EzqAGyGgrgAVWINChSTbrTrXuZd2/8FBsc9FA==
+X-Received: by 2002:a05:622a:11c9:: with SMTP id
+ n9mr11536236qtk.295.1633902993496; 
+ Sun, 10 Oct 2021 14:56:33 -0700 (PDT)
+Received: from localhost.localdomain ([67.8.38.84])
+ by smtp.gmail.com with ESMTPSA id t11sm1851951qkm.92.2021.10.10.14.56.32
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sun, 10 Oct 2021 14:56:33 -0700 (PDT)
+From: Julian Braha <julianbraha@gmail.com>
+To: linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org
+Subject: [PATCH] ASoC: fix unmet dependency on GPIOLIB
+Date: Sun, 10 Oct 2021 17:56:27 -0400
+Message-Id: <20211010215627.17869-1-julianbraha@gmail.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: bgoswami@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com,
+ broonie@kernel.org, ajitp@codeaurora.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,23 +100,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 10 Oct 2021 20:02:30 +0200,
-Cameron Berkenpas wrote:
-> 
-> The previous patch's HDA verb initialization for the Lenovo 13s sequence was
-> slightly off. This updated verb sequence has been tested and confirmed working.
+When SND_SOC_SC7180 or SND_SOC_STORM is selected,
+and GPIOLIB is not selected, Kbuild gives the following
+warning:
 
-You forgot your Signed-off-by line.  Please resubmit with it.
-Also, at the next submission, please add the BugLink tag to the
-relevant bugzilla URL, as well as Fixes tag pointing to the commit to
-be corrected, too.  And, put Cc to stable in the patch (not need to
-actually send to stable but add a line Cc: <stable@vger.kernel.org> in
-the patch description around your sign-off).
+WARNING: unmet direct dependencies detected for SND_SOC_MAX98357A
+  Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && GPIOLIB [=n]
+  Selected by [y]:
+  - SND_SOC_STORM [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_QCOM [=y]
+  - SND_SOC_SC7180 [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_QCOM [=y] && I2C [=y]
 
-Last but not lease, please Cc to me at the next patch submission
-(actually send to me).
+This is because SND_SOC_MAX98357A is selected
+by SND_SOC_STORM and SND_SOC_SC7180, but
+these config options do not select or depend on
+GPIOLIB, despite SND_SOC_MAX98357A depending on
+GPIOLIB.
 
+These unmet dependency bugs were detected by Kismet,
+a static analysis tool for Kconfig. Please advise if this
+is not the appropriate solution.
 
-thanks,
+Signed-off-by: Julian Braha <julianbraha@gmail.com>
+---
+ sound/soc/qcom/Kconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Takashi
+diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
+index cc7c1de2f1d9..8c5c1ed54bc7 100644
+--- a/sound/soc/qcom/Kconfig
++++ b/sound/soc/qcom/Kconfig
+@@ -38,6 +38,7 @@ config SND_SOC_LPASS_SC7180
+ 
+ config SND_SOC_STORM
+ 	tristate "ASoC I2S support for Storm boards"
++	depends on GPIOLIB
+ 	select SND_SOC_LPASS_IPQ806X
+ 	select SND_SOC_MAX98357A
+ 	help
+@@ -141,7 +142,7 @@ config SND_SOC_SM8250
+ 
+ config SND_SOC_SC7180
+ 	tristate "SoC Machine driver for SC7180 boards"
+-	depends on I2C
++	depends on I2C && GPIOLIB
+ 	select SND_SOC_QCOM_COMMON
+ 	select SND_SOC_LPASS_SC7180
+ 	select SND_SOC_MAX98357A
+-- 
+2.25.1
+
