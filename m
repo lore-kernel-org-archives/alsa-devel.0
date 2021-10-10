@@ -2,66 +2,83 @@ Return-Path: <SRS0=g44s=O6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BC72C433F5
-	for <alsa-devel@archiver.kernel.org>; Sun, 10 Oct 2021 18:03:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C473C433EF
+	for <alsa-devel@archiver.kernel.org>; Sun, 10 Oct 2021 20:26:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 823BF60F22
-	for <alsa-devel@archiver.kernel.org>; Sun, 10 Oct 2021 18:03:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 823BF60F22
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=neo-zeon.de
+	by mail.kernel.org (Postfix) with ESMTPS id CFF6160F3A
+	for <alsa-devel@archiver.kernel.org>; Sun, 10 Oct 2021 20:26:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CFF6160F3A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F073F166E;
-	Sun, 10 Oct 2021 20:02:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F073F166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 54AED1674;
+	Sun, 10 Oct 2021 22:25:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 54AED1674
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633889029;
-	bh=Z98Crp4ebpOzZdDFAsoZa7MCVX97BDnsCRN6zNWZoUs=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=s754l6a+BEXHMBtjQbkRuBL0TkxwRcPc4tq72oiSbLT2/g/pH7btJz6HOhujECfx5
-	 DxVaosxUSDmGI/H8js0M8HqahGMIAngiCqJYIfpuSfsJPo7VoFXtdD/jPSEPLXDnbC
-	 S0WNmk4QgWyp63s5Ew+0tuVuUCV2MbCuO7Y53Keg=
+	s=default; t=1633897570;
+	bh=lUXHLM9MzqxMyYU9q2vZJKH+yZYI2yJKrvrnXZiZWBg=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=ZENPxvhPOXstVtgMYQeDQtAYVo2HiJ0DzmBM0O7KRg3XQ90umyakWzdix1+6qeCXW
+	 GDhP3uU4ZgHzewe31MiU/HkwpT1pogifhfwAtCyhCBqMfntxHH7CTQX0xWu/ZX5nsD
+	 NNYSPkdQ6asRZN05vpM+MbCr4KIDTSahB1Zt+QTA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 82532F801D5;
-	Sun, 10 Oct 2021 20:02:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CFBA4F8016D;
+	Sun, 10 Oct 2021 22:25:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2E06BF801F7; Sun, 10 Oct 2021 20:02:57 +0200 (CEST)
-Received: from neo-zeon.de (neo-zeon.de [70.229.12.130])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 2B06AF801F7; Sun, 10 Oct 2021 22:25:18 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 65E5FF800F0
- for <alsa-devel@alsa-project.org>; Sun, 10 Oct 2021 20:02:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 65E5FF800F0
+ by alsa1.perex.cz (Postfix) with ESMTPS id C1AECF8016D
+ for <alsa-devel@alsa-project.org>; Sun, 10 Oct 2021 22:25:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1AECF8016D
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=neo-zeon.de header.i=@neo-zeon.de
- header.b="opLXQG3C"
-Received: from neo-zeon.de (localhost [127.0.0.1])
- by neo-zeon.de (OpenSMTPD) with ESMTP id d0676e10;
- Sun, 10 Oct 2021 11:02:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=neo-zeon.de; h=from:to:cc
- :subject:date:message-id:mime-version:content-transfer-encoding;
- s=1; bh=xKWhW4S40JlrX2vAJ5KrWgtVI7A=; b=opLXQG3CIg1blmGVSS/Be09
- ntcabItcjNmzKn4h9jzMctfYQmnrD29GJydiE0u2VxXsziOqCZoq9ib6Bp2lD437
- 5KlQs+jHrSfjmrIQJIXRmQfR6w3V17sf3/Ptrdu++6EgpfrFPh4T++Nc0W6LyhqL
- GP19e4JmUXYQmKO7WIIk=
-Received: by neo-zeon.de (OpenSMTPD) with ESMTPSA id 1bf4f699
- (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO); 
- Sun, 10 Oct 2021 11:02:44 -0700 (PDT)
-From: Cameron Berkenpas <cam@neo-zeon.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: hda/realtek: Fix for quirk to enable speaker output on
- the Lenovo 13s Gen2.
-Date: Sun, 10 Oct 2021 11:02:30 -0700
-Message-Id: <20211010180228.16137-1-cam@neo-zeon.de>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Cameron Berkenpas <cam@neo-zeon.de>
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="u/T4QtmO"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="eipG8Dou"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 1A18421FE1;
+ Sun, 10 Oct 2021 20:25:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1633897510; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=GEQcDzhZ8Ka5CSVQvfxwlWYWOhU/3/GhrODN3V13RPI=;
+ b=u/T4QtmO4zjpWP4G6PpsJYj8evddBVP5dABrjZMZ8CqJbfZUoqzHgHzZlDxk080ekTJTOR
+ FnVqbL2/kEtp1nAvWgB3vmPw6WtaIe54m+Xj94yu8dxg9fQjsG1yUPxVx+R5+HaCXwLwz2
+ YMIg25qOhHH+4FFj6i8tkiQ55eRU83k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1633897510;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=GEQcDzhZ8Ka5CSVQvfxwlWYWOhU/3/GhrODN3V13RPI=;
+ b=eipG8Doua46nR7vEC1XNGKPBUEGveXX7uStsTSmBb2NhhNFJd9GuLwtCB/FluGSb1yeZgu
+ XcZpQvh5ZrswNlAg==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id F3877A3B83;
+ Sun, 10 Oct 2021 20:25:09 +0000 (UTC)
+Date: Sun, 10 Oct 2021 22:25:09 +0200
+Message-ID: <s5hily46316.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] ALSA: usb-audio: allow -EPIPE errors for some v2 messages
+In-Reply-To: <YWLbEdHUE3k/i0fe@kroah.com>
+References: <YWLbEdHUE3k/i0fe@kroah.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-usb@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,25 +94,54 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The previous patch's HDA verb initialization for the Lenovo 13s sequence was
-slightly off. This updated verb sequence has been tested and confirmed working.
----
- sound/pci/hda/patch_realtek.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Sun, 10 Oct 2021 14:22:41 +0200,
+Greg Kroah-Hartman wrote:
+> 
+> The Schiit Hel device does not like to respond to all get_ctl_value_v2()
+> requests for some reason.  This used to work in older kernels, but now
+> with more strict checking, this failure causes the device to fail to
+> work.
+> 
+> Cc: Jaroslav Kysela <perex@perex.cz>
+> Cc: Takashi Iwai <tiwai@suse.com>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+> 
+> This fixes the Shiit Hel device that I have.  It used to work on older
+> kernels (a year ago?), but stopped working for some reason and I didn't
+> take the time to track it down.  This change fixes the issue for me, but
+> feels wrong for some reason.  At least now I can use the device as a
+> headphone driver, much better than the built-in one for my current
+> machine...
+> 
+> If needed, I can take the time to do bisection to track down the real
+> issue here, it might be due to stricter endpoint checking in the USB
+> core, but that feels wrong somehow.
+> 
+> Here's the debugfs USB output for this device, showing the endpoints:
+> 
+> T:  Bus=07 Lev=02 Prnt=02 Port=01 Cnt=01 Dev#=  5 Spd=480 MxCh= 0
+> D:  Ver= 2.00 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs=  1
+> P:  Vendor=30be ProdID=0101 Rev=01.02
+> S:  Manufacturer=Schiit Audio
+> S:  Product=Schiit Hel
+> C:  #Ifs= 4 Cfg#= 1 Atr=c0 MxPwr=0mA
+> I:  If#= 0 Alt= 0 #EPs= 1 Cls=01(audio) Sub=01 Prot=20 Driver=snd-usb-audio
+> E:  Ad=8f(I) Atr=03(Int.) MxPS=   6 Ivl=1ms
+> I:  If#= 1 Alt= 1 #EPs= 2 Cls=01(audio) Sub=02 Prot=20 Driver=snd-usb-audio
+> E:  Ad=05(O) Atr=05(Isoc) MxPS= 104 Ivl=125us
+> E:  Ad=85(I) Atr=11(Isoc) MxPS=   4 Ivl=1ms
+> I:  If#= 2 Alt= 1 #EPs= 1 Cls=01(audio) Sub=02 Prot=20 Driver=snd-usb-audio
+> E:  Ad=88(I) Atr=05(Isoc) MxPS= 156 Ivl=125us
+> I:  If#= 3 Alt= 0 #EPs= 1 Cls=03(HID  ) Sub=00 Prot=00 Driver=usbhid
+> E:  Ad=84(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
+> 
+> Any other suggestions to fix this are welcome.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 4407f7da57c4..84d3e062a335 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -8344,7 +8344,7 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.v.verbs = (const struct hda_verb[]) {
- 			{ 0x20, AC_VERB_SET_COEF_INDEX, 0x24 },
- 			{ 0x20, AC_VERB_SET_PROC_COEF, 0x41 },
--			{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+			{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
- 			{ 0x20, AC_VERB_SET_PROC_COEF, 0x2 },
- 			{ 0x20, AC_VERB_SET_PROC_COEF, 0x0 },
- 			{ 0x20, AC_VERB_SET_PROC_COEF, 0x0 },
--- 
-2.30.2
+Could you show the exact error messages and lsusb -v output?
+We may paper over only the problematic node instead.
 
+
+thanks,
+
+Takashi
