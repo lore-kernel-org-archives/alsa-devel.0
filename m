@@ -1,52 +1,52 @@
-Return-Path: <SRS0=LWy3=O5=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=g44s=O6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 01B1BC433EF
-	for <alsa-devel@archiver.kernel.org>; Sat,  9 Oct 2021 21:07:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 36152C433F5
+	for <alsa-devel@archiver.kernel.org>; Sun, 10 Oct 2021 03:59:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4690360C4C
-	for <alsa-devel@archiver.kernel.org>; Sat,  9 Oct 2021 21:07:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4690360C4C
+	by mail.kernel.org (Postfix) with ESMTPS id 595DE60F57
+	for <alsa-devel@archiver.kernel.org>; Sun, 10 Oct 2021 03:59:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 595DE60F57
 Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EAD6C1662;
-	Sat,  9 Oct 2021 23:06:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EAD6C1662
+	by alsa0.perex.cz (Postfix) with ESMTPS id C65DA167E;
+	Sun, 10 Oct 2021 05:58:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C65DA167E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633813627;
-	bh=2nk35H08mPZU8n9sOGujBsULCVwCkK4psbzXzNcY0kQ=;
+	s=default; t=1633838350;
+	bh=pbqHWILJIHXH0cBeXxGPuLY/UxvLt3PJBFMNKqITWnE=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TLrty7R8oOozehSF5hqjYMV6RwsDM3WXJJoe77Pa4hSyId3CzmT3zscUAHAlnMY4y
-	 7YcU+N+JzgdWvUHyv4QhMmM8DZSOHuuJfHNNVdKkDQ3UVFAeHypLmWZFMxUgidjpQ1
-	 Bjlxij/0w82+mQ7PpDq2vhvQUtSxOFAZTDAvrFKs=
+	b=r+EEfGOQzG/07wEgZH28u895XnsQv0h7+QMN+cqNNibXqXrhnu01bDXIloFh/lg2S
+	 HNHjCe/NdRfp3AIWL0wwiStjXwDZg9jf2FYXlLCOSEvZN0+JKtHLcNT1oBRLkNyYmU
+	 Gd9JANdRQPQjdEVQwsvURv24I3HXt7hFpKgjP6xY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 67B36F80259;
-	Sat,  9 Oct 2021 23:06:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4EF1DF801D5;
+	Sun, 10 Oct 2021 05:58:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 83C94F8027D; Sat,  9 Oct 2021 23:06:14 +0200 (CEST)
+ id 2550BF801F7; Sun, 10 Oct 2021 05:58:17 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 87E03F800EB
- for <alsa-devel@alsa-project.org>; Sat,  9 Oct 2021 23:06:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87E03F800EB
+ by alsa1.perex.cz (Postfix) with ESMTP id 71D12F80059
+ for <alsa-devel@alsa-project.org>; Sun, 10 Oct 2021 05:58:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71D12F80059
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1633813564135840893-webhooks-bot@alsa-project.org>
-References: <1633813564135840893-webhooks-bot@alsa-project.org>
+In-Reply-To: <1633838290217240095-webhooks-bot@alsa-project.org>
+References: <1633838290217240095-webhooks-bot@alsa-project.org>
 Subject: Tenacity throws error when running "build/bin/Debug/tenacity" to run
  it
-Message-Id: <20211009210614.83C94F8027D@alsa1.perex.cz>
-Date: Sat,  9 Oct 2021 23:06:14 +0200 (CEST)
+Message-Id: <20211010035817.2550BF801F7@alsa1.perex.cz>
+Date: Sun, 10 Oct 2021 05:58:17 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,8 +68,24 @@ context: https://github.com/tenacityteam/tenacity/issues/649
 
 `cat /proc/asound/version` output: Advanced Linux Sound Architecture Driver Version k5.10.0-kali9-amd64
 
+backtrace, which is only produced in a popup once I comment out the lines "pcm.rear #cards.pcm.rear 
+pcm.center_lfe #cards.pcm.center_lfe
+pcm.side #cards.pcm.side", which produce the following backtrace in a popup labeled "../src/AudioIOBase.cpp(501): assert "false" failed in getRecordDevIndex():":
 
+ASSERT INFO:
+../src/AudioIOBase.cpp(501): assert "false" failed in getRecordDevIndex().
 
+BACKTRACE:
+[1] AudioIOBase::getRecordDevIndex(wxString const&)
+[2] AudioIO::Init()
+[3] AudacityApp::InitPart2()
+[4] AudacityApp::OnInit()
+[5] wxAppConsoleBase::CallOnInit()
+[6] wxEntry(int&, wchar_t**)
+[7] wxEntry(int&, char**)
+[8] main
+[9] __libc_start_main
+[10] _sta
 
 When going through the steps in https://github.com/tenacityteam/tenacity/blob/master/BUILDING.md, I eventually get to a point where I run the command in the issue title which brings up the tenacity logo on screen and then provides the following errors in the terminal:
 
