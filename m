@@ -2,78 +2,63 @@ Return-Path: <SRS0=u8hq=O7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 80994C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Oct 2021 20:19:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DC28C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Oct 2021 21:49:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3945B60E54
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Oct 2021 20:19:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3945B60E54
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+	by mail.kernel.org (Postfix) with ESMTPS id 2BA9F60EB4
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Oct 2021 21:49:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2BA9F60EB4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cknow.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 55D4616CE;
-	Mon, 11 Oct 2021 22:18:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 55D4616CE
+	by alsa0.perex.cz (Postfix) with ESMTPS id A2A6C16CB;
+	Mon, 11 Oct 2021 23:48:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A2A6C16CB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633983548;
-	bh=GZJDcbARWQB5iOx0R46M91bP4R1bGWWmn0R4ycRE+gk=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1633988988;
+	bh=CizBxvPT/1Om1GG7WSKVxbCBWyjL6FdlfXPomXbUFLo=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fOn261FLAQyAqNA6wZ0iQCtZAHUotCSn5e4tneyvbP2+ibPR+2u+BApGWR4lwhVe3
-	 lFqx7hcgp7/WSfD46CyceBiYN9vTs/SoL9YH8mySyNVh5fkLoFDirv4flUCG5JiPq7
-	 0fMYTYIOqpyGS5ugAfzJWbfr9DVgC7n6mrPDiR/k=
+	b=gfgUcijjpWmNnNC56zqKi3SZMf6Xpgw0LcinJdedjfe0YQdb00wVaLdUnhLu2HH8d
+	 2mLKyEHuqfqnBGwoe1CaprSR3po8aFmzfk2xaAqZp63EfcroQnYRn+7OKSUPlLNib9
+	 CBrpuKqYWlhJ14i3X85+uB7TMA3OVa1IDM2Jhk8U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D92ABF8025B;
-	Mon, 11 Oct 2021 22:18:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 11078F8025B;
+	Mon, 11 Oct 2021 23:48:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 34737F80269; Mon, 11 Oct 2021 22:18:16 +0200 (CEST)
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 903F8F80269; Mon, 11 Oct 2021 23:48:55 +0200 (CEST)
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net
+ [217.70.183.197])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8CB72F8016D
- for <alsa-devel@alsa-project.org>; Mon, 11 Oct 2021 22:18:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8CB72F8016D
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
- header.b="Mx+UIY8A"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
- Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
- Subject:Sender:Reply-To:Content-ID:Content-Description;
- bh=6BfPWdxhcFBaDDiqb/ocng4a5UziACoHk6Kt3bc/Ucs=; b=Mx+UIY8Ae1UxIFrrPnDylXYQ+x
- FAia0x7Uo+IMLcLAywfKlbBvmNrfZ6GlEISlRNiryrXFcluXOOICS7leMouGEqiz+gmcrDe75W6w2
- Eg807Pi78UdLS6byK37MYl+Dp+kBDbUDtOAr6p5onCY9g3bf0ISgRdnwk6QClWb5nU8DFHObEQzSZ
- SNtwcgszHmmyBgelkgRLcme2w05lp8z1XJ2H6FRJ3A6NP7LCM/PA19YrSr1zb/Bz6uu7STLCd5opk
- b4R0segMo8Mb5nhBLQrBecw2mzOF95oVXSayxRtK2Xf/Bb85Snngg4i7dmPRBo+3X74NBq7Eb/GTg
- Fyh/DqRA==;
-Received: from [2601:1c0:6280:3f0::aa0b]
- by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ma1kL-00AaLK-Ir; Mon, 11 Oct 2021 20:18:05 +0000
-Subject: Re: [PATCH v2 5/8] ASoC: amd: acp: Add legacy sound card support for
- Chrome audio
-To: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>, broonie@kernel.org,
- alsa-devel@alsa-project.org
-References: <20211011154452.76849-1-AjitKumar.Pandey@amd.com>
- <20211011154452.76849-6-AjitKumar.Pandey@amd.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <c3a93858-65ee-d68e-d805-4248850e8553@infradead.org>
-Date: Mon, 11 Oct 2021 13:18:04 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2396BF80104
+ for <alsa-devel@alsa-project.org>; Mon, 11 Oct 2021 23:48:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2396BF80104
+Received: (Authenticated sender: didi.debian@cknow.org)
+ by relay5-d.mail.gandi.net (Postfix) with ESMTPA id AB6031C0002;
+ Mon, 11 Oct 2021 21:48:48 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20211011154452.76849-6-AjitKumar.Pandey@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Date: Mon, 11 Oct 2021 23:48:48 +0200
+From: didi.debian@cknow.org
+To: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH] ASoC: simple-card: Fill in driver name
+In-Reply-To: <f7efde11-067d-8822-45fa-7cdbe2d17d93@perex.cz>
+References: <YNGe3akAntQi8qJD@qwark.sigxcpu.org> <4974503.Y8KB3sNASq@bagend>
+ <61a82214-0de8-816f-ff63-3979b86343bf@perex.cz> <5069869.zQgEQKRxDW@bagend>
+ <f7efde11-067d-8822-45fa-7cdbe2d17d93@perex.cz>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <97a1c38c48765fb6634de34387e3ce3c@cknow.org>
+X-Sender: didi.debian@cknow.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Sunil-kumar.Dommati@amd.com, open list <linux-kernel@vger.kernel.org>,
- Basavaraj.Hiregoudar@amd.com, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Vijendar.Mukunda@amd.com,
- Alexander.Deucher@amd.com
+Cc: alsa-devel@alsa-project.org,
+ =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,24 +74,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 10/11/21 8:44 AM, Ajit Kumar Pandey wrote:
-> diff --git a/sound/soc/amd/acp/Kconfig b/sound/soc/amd/acp/Kconfig
-> index 5cb7115662d2..2b9440372346 100644
-> --- a/sound/soc/amd/acp/Kconfig
-> +++ b/sound/soc/amd/acp/Kconfig
-> @@ -34,3 +34,9 @@ config SND_SOC_AMD_MACH_COMMON
->   	depends on X86 && PCI && I2C
->   	help
->   	  This option enables common Machine driver module for ACP.
-> +
-> +config SND_SOC_AMD_LEGACY_MACH
-> +	tristate "AMD Legacy Machine Driver Support"
-> +	select SND_SOC_AMD_MACH_COMMON
-> +	help
-> +	 This option enables legacy sound card support for ACP audio.
+On 2021-10-11 19:16, Jaroslav Kysela wrote:
+> On 10. 10. 21 12:40, Diederik de Haas wrote:
+>> On Sunday, 10 October 2021 10:40:09 CEST Jaroslav Kysela wrote:
+>>>> Unfortunately this change broke multichannel audio on my Rock64 
+>>>> device
+>>>> running Debian. My Rock64 is connected to my AVR (Pioneer SC-1224) 
+>>>> via a
+>>>> HDMI cable.
+>>> This looks like an user space configuration problem.
+>> 
+>> I have placed ALSA card definitions (I think) from LibreELEC on my 
+>> system from
+>> https://github.com/LibreELEC/LibreELEC.tv/tree/master/projects/Rockchip/
+>> filesystem/usr/share/alsa/cards
+> 
+> Apparently, the alsa-lib configuration is used in this case.
+> 
+> It seems that there are four sound cards (Analog/HDMI/I2S/SPDIF)
+> created for your hardware. The alsa-lib configuration is a bit weird -
+> an obfuscation for the simple-card driver use. The simple way to
+> resolve this is to create a proper UCM configuration.
+> 
+> If you need further assistance, create an issue for alsa-lib or
+> alsa-ucm-conf on github and with an output from the 'alsa-info.sh'
+> script.
 
-Add one more space just before "This" to conform to kernel Kconfig
-style, please.
+Will do.
 
--- 
-~Randy
+FTR: It's now working again for me on a kernel with this patch included:
+https://github.com/LibreELEC/LibreELEC.tv/issues/5734#issuecomment-940088156
+
+I have no idea whether this is a proper solution or another 
+'workaround', but
+it's working for me again :)
+
+Thanks for your help.
+
+Diederik
