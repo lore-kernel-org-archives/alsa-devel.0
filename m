@@ -2,70 +2,74 @@ Return-Path: <SRS0=u8hq=O7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DF9DAC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Oct 2021 17:03:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 908BDC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Oct 2021 17:03:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EF7A8603E7
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Oct 2021 17:03:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EF7A8603E7
+	by mail.kernel.org (Postfix) with ESMTPS id E3427606A5
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Oct 2021 17:03:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E3427606A5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 93BDD16B0;
-	Mon, 11 Oct 2021 19:02:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93BDD16B0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 632BC16BE;
+	Mon, 11 Oct 2021 19:02:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 632BC16BE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633971813;
-	bh=5cqL9zWFZBEBMTUX4ZfpDqFN24XzofHHL51jBod0crk=;
+	s=default; t=1633971822;
+	bh=sA9IPFPv1s4drjA088OPVEJGCy9qliVmy40+zSZtmG0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=agEsbRF4USpWQgyOaJOyWsBVPi7bQHdlkRj7MahqXvV3KEF8fItG2bFOjIAzJnDWW
-	 JRahPX3SAe47FwIzKeYJdmgtbkmSuFnHI30vsPcQEqqlKZzrXKhUSW3rkMQaEhY9dO
-	 abBcRGrRBl/fZynRtdWzvw6ndxBOW8GLipFgHs5A=
+	b=EQBrZ5ay1KW1ctH1Rpe5Cn5K+QsmulctAo/BWTNV+cpYL7WV8oAB5tye59fLi7a//
+	 D7UeDfyQ6ftnnZFVQZ0N57v0vbuxIPPIh0Q5A2tLPZ2ZzDSV1YnBlUKQpeoKYfj38h
+	 8sajKDwUe/dBvhhg39G7BJEN6+Er1G9mcCrDYxQk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 26ABFF80290;
-	Mon, 11 Oct 2021 19:02:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1415AF804E3;
+	Mon, 11 Oct 2021 19:02:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D4BB9F80423; Mon, 11 Oct 2021 19:02:02 +0200 (CEST)
+ id 07D7BF8016D; Mon, 11 Oct 2021 19:02:04 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1427BF80269
- for <alsa-devel@alsa-project.org>; Mon, 11 Oct 2021 19:01:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1427BF80269
+ by alsa1.perex.cz (Postfix) with ESMTPS id 23C81F8016D
+ for <alsa-devel@alsa-project.org>; Mon, 11 Oct 2021 19:02:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23C81F8016D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="PB1fq8/V"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C0A460F3A;
- Mon, 11 Oct 2021 17:01:52 +0000 (UTC)
+ header.b="SYyYWH9m"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 95BDA60F6E;
+ Mon, 11 Oct 2021 17:01:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1633971713;
- bh=5cqL9zWFZBEBMTUX4ZfpDqFN24XzofHHL51jBod0crk=;
+ s=k20201202; t=1633971719;
+ bh=sA9IPFPv1s4drjA088OPVEJGCy9qliVmy40+zSZtmG0=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=PB1fq8/VYbqOg3HlflwTVaaHg9aibDKfx91ypOkx1H2qs1SxAs14Oj/+pdmMX/2ZW
- brEt4C2FEwsqsBRR2wJk6/CfEhXNvSbW+xvzt5CUru6Ek8vSXh5PI7+dLUKTZF6akp
- vaeTvsSl+1aXbAFgZoA5oCgVx7NPCmHNGkpTTj6e1wToSNsGMgn9Fyr5Lxv6vCTA3J
- hMjDCeQTqpuus+U6BHbjgdw76hYMlE0Yc+ufAz56CJp5D0DinR+gp475pqNWcLkp0E
- 7iQx+glAMWVpPJHWT5JWOLBryz+KVevcIsCd9KMBhS/VpQ7a/RxkWLChuArXWtf5H8
- egSS6YVOe85LA==
+ b=SYyYWH9mT/iTcdd9Z0mFqZXKMTVYnCoSOPHBr/QCsUzmbNnV28TlSnR/5VR+P/FaB
+ bWfaHzBfBsr6IOO9IkCYXkCqiT3amj5kcOjOa4YsVWPFJKJNwGCWtCAv1STSuvd8QC
+ RGaewUOX+MyOhkQGV1f0t+lAZNbyrsyjFATIQpOOMdiq10nRqpnEcc6/5KADLVCrpG
+ 7JkETWoPbRO1rb4DvFKAcSk5X09neTSbONIPiMxFBQqejgNRHPlngzQqKbLOrlc/VZ
+ bgASmtGH86JPDlLWi2ExGEoPIbqQ1Py2oFWKliNT20BNgVXSjV885PKI8Z/uKCJx8O
+ eOmskq8GQilyw==
 From: Mark Brown <broonie@kernel.org>
-To: Mark Brown <broonie@kernel.org>,
- Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>
-Subject: Re: [PATCH] sh: Use modern ASoC DAI format terminology
-Date: Mon, 11 Oct 2021 18:01:40 +0100
-Message-Id: <163397094549.6567.3207662556586178987.b4-ty@kernel.org>
+To: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>, alsa-devel@alsa-project.org
+Subject: Re: [PATCH] ASoC: amd: Kconfig: Select fch clock support with machine
+ driver
+Date: Mon, 11 Oct 2021 18:01:42 +0100
+Message-Id: <163397094549.6567.3180566951499093730.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210915172302.36677-1-broonie@kernel.org>
-References: <20210915172302.36677-1-broonie@kernel.org>
+In-Reply-To: <20211011055354.67719-1-AjitKumar.Pandey@amd.com>
+References: <20211011055354.67719-1-AjitKumar.Pandey@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linux-sh@vger.kernel.org
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Sunil-kumar.Dommati@amd.com, open list <linux-kernel@vger.kernel.org>,
+ Basavaraj.Hiregoudar@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
+ Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
+ Vijendar.Mukunda@amd.com, Alexander.Deucher@amd.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,10 +85,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 15 Sep 2021 18:23:02 +0100, Mark Brown wrote:
-> The SH machine drivers have some ASoC DAI format specifications that use
-> older defines based on outdated terminology which we're trying to retire,
-> update to the new bindings.
+On Mon, 11 Oct 2021 11:23:53 +0530, Ajit Kumar Pandey wrote:
+> We are using fch clock controller as parent mclk source for rt5682
+> codec. Add config to enable clock framework support for 48MHz fixed
+> clock when machine driver config is selected.
 > 
 > 
 
@@ -94,8 +98,8 @@ Applied to
 
 Thanks!
 
-[1/1] sh: Use modern ASoC DAI format terminology
-      commit: 81a13ac7e3e490a76fafb7f62d1dd751ae94ca11
+[1/1] ASoC: amd: Kconfig: Select fch clock support with machine driver
+      commit: 281ddf62f551321982c7d6f525a83a3b3c1d5eae
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
