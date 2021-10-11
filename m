@@ -2,151 +2,88 @@ Return-Path: <SRS0=u8hq=O7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 45AFBC433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Oct 2021 18:44:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 161FFC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Oct 2021 20:08:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C2E2660F0F
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Oct 2021 18:44:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C2E2660F0F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=amd.com
+	by mail.kernel.org (Postfix) with ESMTPS id EA0F160EE9
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Oct 2021 20:08:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EA0F160EE9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0EAD316BF;
-	Mon, 11 Oct 2021 20:44:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0EAD316BF
+	by alsa0.perex.cz (Postfix) with ESMTPS id A5FD316C2;
+	Mon, 11 Oct 2021 22:07:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5FD316C2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633977893;
-	bh=eSfAZ5mo/dCi4uFf6tWvCpR55UV6ZvcVHWBBtT2tmVU=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1633982880;
+	bh=0jYNLfkakyL2f/xSc1EUsHdxIrw9lr5lR5BO0nBc8uA=;
+	h=Subject:From:To:References:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XHheruwd3zVhmLwYP/dE6f5tRI6QkLLccJYxmuZrNoDRgp4dd1g6cfo09/kkCrJgd
-	 d+3rRK1hJJy2vTuVWQba0ZJkjHGOsrsPzBjuhzeJ84FNc6ek1OPhOnHy5DqK2q+zak
-	 ZeCFj8yCj9s2+wQpdhSaB0oRDYrLv4Sv5Jz8RShI=
+	b=nA76IY2acwx00LAcCn8VGC6b0cFwiU3BnwBCNMHvS17UB/UUGV6QiJQemABmDMat5
+	 05x8IK+UXGt8WXxMwp2Dic8JhGfIFOAHCEnxzQ9in/blmUYmY1PzoCi0FnGkytW6RS
+	 tlnx7uLimfMVPpAVDWBK6hLmZ0N81oFxe7HkFxUw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 89137F8016D;
-	Mon, 11 Oct 2021 20:44:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2E8F4F8025B;
+	Mon, 11 Oct 2021 22:07:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 367AFF80269; Mon, 11 Oct 2021 20:44:01 +0200 (CEST)
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com
- (mail-dm6nam12on2084.outbound.protection.outlook.com [40.107.243.84])
+ id 038D8F80269; Mon, 11 Oct 2021 22:07:08 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E5B86F800C0
- for <alsa-devel@alsa-project.org>; Mon, 11 Oct 2021 20:43:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5B86F800C0
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com
- header.b="l0hxNkP5"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QhEmpfjS/hJ955U50UD5Z2+yKwErR7F0QM/wtNRTdY6B6t5/vh553hbPR/tynUUsAo6pYlWWNBob7LYpv3uZzKGreUOFGac6s++2FrioVUcNRT5ZEplSymb23onEsWTly+K4HcS6I3NSxCAtTmUNF5f6appBNEdRLwpB5NCq5+Dc0bhENGsnSAssQbVtY1zmLjCaTtOzKE7UJ6bsPQTroIa6PRUB+iN7LSQ3fT0eKegwZaJ2xVkzQv7a7bqfAM9fDdJyjwEyROLq7h/yRyTQk9MJJJSwY5X0TbonA50M3JsU8+v10mG4YSs1//1WSZIKGFiuHRg9j2aw0Lox8EITkQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5gVqNzQn8DBvWudXNP7UGO+U1ap/sk89DG267MVy9p0=;
- b=C0pvWhDsmpiX8b9tKjjhjQlBvGMeQt1mqHJBSLd8GpqgAMSKk/mQBC+Lj3xtqBHGnLO9zps1NjfXLOukVgc1CGhrnvin5YhplMDPwUGaZhD2HrDf90f17dz2Dyde1dpJjdM45Qmbr1OL9YOAh4P/CWMty+4CiEHaDuHXF3n0YlPW7muTh90P35rh8BA5MYAOyCSJmomy5yIbhNGqrTQ96wU711Y2qV/7xupN5vxiAfOFQzlL2tvPfjLycoV8yDBCyr7GvcrEGVYrYFc/6xebO1Pj4E5KeI/M1Wfk9Mdh8W+n3NT0VMcSlGR19jE8rSxYYqmqVx4sCjRnoJRAY3hckg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1; 
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5gVqNzQn8DBvWudXNP7UGO+U1ap/sk89DG267MVy9p0=;
- b=l0hxNkP5CzLr+hD0nceGRPG44EjQC9/LhGdQWIldIzf7xiFzrEt6t8SX5PCvR+do+JgEsf2mEvmqNU3NqR9wh3VOD4Mz7jLiEHq1ll+r0l+Rt+/Ke+CNuR4p5uUTfhlddQ3HwJFYGXGJXEzgvubK9VighIvP6JO+SKCdd1eVZ7I=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from DM6PR12MB4123.namprd12.prod.outlook.com (2603:10b6:5:21f::23)
- by DM6PR12MB2684.namprd12.prod.outlook.com (2603:10b6:5:4a::33) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.22; Mon, 11 Oct
- 2021 18:43:48 +0000
-Received: from DM6PR12MB4123.namprd12.prod.outlook.com
- ([fe80::e887:8ff6:34b5:99b3]) by DM6PR12MB4123.namprd12.prod.outlook.com
- ([fe80::e887:8ff6:34b5:99b3%9]) with mapi id 15.20.4587.026; Mon, 11 Oct 2021
- 18:43:48 +0000
-Subject: Re: [PATCH 1/3] ASoc: amd: create platform device for VG machine
- driver
-To: Mark Brown <broonie@kernel.org>
-References: <20211011184715.61573-1-Vijendar.Mukunda@amd.com>
- <YWR5QH1lYqiT1cX+@sirena.org.uk>
- <57f313fe-fb8e-8b4b-8839-d9d8653880d1@amd.com>
- <YWSCg2Nzi8lRDiIE@sirena.org.uk>
-From: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
-Message-ID: <4ded51b9-efcf-8acb-f399-e169a34badba@amd.com>
-Date: Mon, 11 Oct 2021 12:13:59 +0530
+ by alsa1.perex.cz (Postfix) with ESMTPS id 67539F800C0
+ for <alsa-devel@alsa-project.org>; Mon, 11 Oct 2021 22:06:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67539F800C0
+X-IronPort-AV: E=McAfee;i="6200,9189,10134"; a="226917484"
+X-IronPort-AV: E=Sophos;i="5.85,365,1624345200"; d="scan'208";a="226917484"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+ by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 Oct 2021 13:06:55 -0700
+X-IronPort-AV: E=Sophos;i="5.85,365,1624345200"; d="scan'208";a="562345735"
+Received: from cpeng4-mobl.amr.corp.intel.com (HELO [10.213.182.8])
+ ([10.213.182.8])
+ by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 Oct 2021 13:06:54 -0700
+Subject: Re: [RFC PATCH v2 0/5] ASoC: soc-pcm: fix trigger race conditions
+ with shared BE
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+References: <20211004225441.233375-1-pierre-louis.bossart@linux.intel.com>
+ <cce82420-d744-ee43-d514-b77ac4905ffa@nvidia.com>
+ <1efa1c31-7342-05f8-5f73-95e2462d4179@linux.intel.com>
+ <3683cf39-632b-50df-c65d-63779c464850@nvidia.com>
+ <11257d77-9975-3b00-94da-5dc1b5c95fc6@linux.intel.com>
+ <s5hk0ip9js7.wl-tiwai@suse.de>
+ <ff43fede-aa66-3cb7-6365-e1f279cd135f@linux.intel.com>
+ <s5hzgrk98y9.wl-tiwai@suse.de>
+ <80882fe6-ea30-43f6-8d83-8995dd28c748@linux.intel.com>
+ <s5hwnmo96vh.wl-tiwai@suse.de>
+ <60c6a90b-290d-368c-ce61-4d86e70eaa78@linux.intel.com>
+ <s5hily88rri.wl-tiwai@suse.de>
+ <75894aba-ca1a-51d6-df7d-ad53fcd89f79@linux.intel.com>
+ <s5hee8w82ng.wl-tiwai@suse.de>
+ <e9340874-320a-8fc6-f3a4-9cf77f85db25@linux.intel.com>
+ <s5hczof7eoq.wl-tiwai@suse.de>
+ <dcdb8f74-51db-86a1-959f-909dfac22b26@linux.intel.com>
+ <29397354-dc5b-7837-c71b-df4bde707df2@linux.intel.com>
+Message-ID: <8c1353f0-e897-e7b0-c7b9-5712b05ac91f@linux.intel.com>
+Date: Mon, 11 Oct 2021 15:06:51 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-In-Reply-To: <YWSCg2Nzi8lRDiIE@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
+ Firefox/78.0 Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <29397354-dc5b-7837-c71b-df4bde707df2@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PN1PR0101CA0024.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c00:e::34) To DM6PR12MB4123.namprd12.prod.outlook.com
- (2603:10b6:5:21f::23)
-MIME-Version: 1.0
-Received: from [10.129.9.123] (165.204.159.251) by
- PN1PR0101CA0024.INDPRD01.PROD.OUTLOOK.COM (2603:1096:c00:e::34) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18 via Frontend
- Transport; Mon, 11 Oct 2021 18:43:44 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 180e15e8-2b57-4aee-738e-08d98ce71026
-X-MS-TrafficTypeDiagnostic: DM6PR12MB2684:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB26849640EED7CAB272DFF95797B59@DM6PR12MB2684.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BuUWzexIWp6LaPippqsL0rOk1p6A2sz2cHz08agOcj8OHBc0x1ybY/fMDnLxR4Lylx0Zriqyx0D+ZCZIdy6UO+N2aruVBhZm6tXKrRjPC6H/C/22hler0/KfSumdOMzjbw11RQkK4v4vjWPIJKK+NWfxr0MHzpJvd6Kwmd1WUEnl3/BleJ63OFRfFwPvhTaLIB4J9n/2Jwa0b7CiA5FX7BZn/b8gP0C5CnGn5EMVbnl6diyIa7LVp7XyCUu3ct/2+iTnd7sxb0etJv0bnVgdiWnosr5zEK91DPF4DH5AZHD5ulQVo5mCAqJQrJV1g9ojIwSTKBVw/txi76NNQkhSqC+nbwmk6t7+f0IycmamDiTfWA/2bsIsVZDx2/JUqKRxOzdvaVSsmix39metkRjLpbcxA5Uuy1BUWv3NDa6uFqfanNNbbNmosUKqzyLlIN28m5k+eTLeIUyt8f1xTy4GMmxhQd0o8bPnNJi69IrLCCjmMfBeK0eMH2BgddzCuFLN7MTJIFSsy/sJIWFsHvI65JJhivEO7toXdxOTy0F8Mr5UMBdvXK393EUqH/USkzD3OzevGTV13aixLIEqg4WCyFZfqLvAzSlGf2U4cnmVmDCCB1YrFBcN9C+yYMahqVpQX+mxqwXJQ3q4SZMSfyLWkx0GQlW4egrNtWlfFvPrbB1QLbAZcKSVo1eGnOh3iClXPp/qtUrt31Prr3aYf5PeapoVOorUw109qBGOQxs9Krc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:DM6PR12MB4123.namprd12.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(4636009)(366004)(8676002)(316002)(186003)(66556008)(4326008)(26005)(36756003)(54906003)(6916009)(66476007)(8936002)(16576012)(31686004)(38100700002)(53546011)(508600001)(5660300002)(6486002)(956004)(2616005)(2906002)(31696002)(6666004)(86362001)(66946007)(45980500001)(43740500002);
- DIR:OUT; SFP:1101; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?Windows-1252?Q?/KO9dPQwIHSflZOkwnpWZrdZDx8pvLeS07d/HueOSs0cI21iSUxOpeAC?=
- =?Windows-1252?Q?vBbuNK7sb6vhNG52M0VDjrBFJVz3xNiViY/jx0aFKl5tdvHQVUkZhMGD?=
- =?Windows-1252?Q?MaYiMdfs7Chiy8S03tUMKCiynahOnY/0vy+X/oKeRgls4z21/wHegzWy?=
- =?Windows-1252?Q?ABh/O9SYSk5BClUHyAWKk2UIO6HlTDDvYbsSgBKKqcPaEuHnKeN+dZR+?=
- =?Windows-1252?Q?KANm9Vv+5mq0mBj5jn3KArDJOK7Xgi4RklRH5WZJECji4OITMqnvt+6T?=
- =?Windows-1252?Q?K18cQd1tkmr2uDN0oIIElAeAVHwUvdhkAhru9qaG70w9sg5mX1vOykYh?=
- =?Windows-1252?Q?wZ50YygF4I+0EZfibh3XWgDZHlFWoEJcY6ECpJlr2+uGpWrrdE40eoHn?=
- =?Windows-1252?Q?P4JiVf4S7NiJDLg6W71+qYbPPF8UrYGV0/yftdLB5IHfgPfzXuwKiQZ6?=
- =?Windows-1252?Q?99i7Rmw5c8soLjJ8nIcELpqOCjc1BsDcAi0AC0Kh+sS8Q95IASu6tDlz?=
- =?Windows-1252?Q?5aB7lmzsER4ZFU+YtnUCjNYk631YrUrene5wYaIewrg2yAfNZ8j6DLQ6?=
- =?Windows-1252?Q?y+4vuamJNl7AAr8UH1AZy9KTDj7+7HbuFe+zWWJmOCMxtJCabZ/qCVye?=
- =?Windows-1252?Q?GegplzLGEniMXlDkFUombNwgg2e5r5mAT78FXVFTcAzOvQQ6BvRQ1Ghc?=
- =?Windows-1252?Q?PKSZCRT0Xxx/wgnfvlDASf4VvVkaBB2f1nDp61HWp9A+X8HRipDvB9Jw?=
- =?Windows-1252?Q?Dbs1guR4WHDCKknaRpPWM1MuQOQ/uoqbS8RrKzJuWSqO6GqlQ7vsblpk?=
- =?Windows-1252?Q?Qm1Slj0lnnHP0XD9PEmAQnXv2ABYm4fRuQuisc1a2HlISj5TAZhdtWgm?=
- =?Windows-1252?Q?FMvAsZl+EBn2qXfkPW5jB+1JXNlJTSQx7jD5ff4mxv6rSQH1gdDDJ8zY?=
- =?Windows-1252?Q?msMVbiU8mi5Xp4NjPkpiJR9HbLZdqXJ1jIka6TSYwzI568kbHNnNHGlj?=
- =?Windows-1252?Q?/mHTI+cIC7ua11bnJ36M8mYdkFmLaTHGLl7Zz1NVo1ZNGzRQAj1je1/R?=
- =?Windows-1252?Q?IWzBkUa8w4e3arZsTRcaZOMK2SBoddeSGTLSPyVGWP8iWFvPJf4A7d1b?=
- =?Windows-1252?Q?VgJckemcj6uXgU0kUHtVO2fx6TNCty03Esi+Ytt31HZA2sqsR4fYjRxg?=
- =?Windows-1252?Q?DNOTjqYWjg1u8CugKQCMYAeHkjeB/xQPqI0n3ntwIWFyFkj+1KAEHGHM?=
- =?Windows-1252?Q?0pHkg19dg3JFIiyQjZz0kCiz4Pjd01JWlxHvg2XVjhf72HbjVY6u3Tob?=
- =?Windows-1252?Q?k+Jb74Kbf+mXmwCBswu2V1XGTeeKZKuIMizf/I7qPu4JJ06Hx5Ll4oYW?=
- =?Windows-1252?Q?bd9yrdrn5RAQZKPdN9PyN+CLeG/G93aeE/Y+wGRcTTFvrCBor7NkHrFD?=
- =?Windows-1252?Q?tF9SUXcbHyCZJa+jKBKNNA=3D=3D?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 180e15e8-2b57-4aee-738e-08d98ce71026
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB4123.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Oct 2021 18:43:48.7498 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0JST7Ef+blQtpqr9mI2HB8RcaiN8KWhLynKdXUJE/X0xNHS7fG8eV22njHbA2X3hAo5ULNUqlMJuV32o3giNew==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2684
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org, Sunil-kumar.Dommati@amd.com, wtli@nuvoton.com,
- open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, David.Rhodes@cirrus.com,
- Alexander.Deucher@amd.com
+Cc: alsa-devel@alsa-project.org,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Sameer Pujar <spujar@nvidia.com>, vkoul@kernel.org, broonie@kernel.org,
+ Gyeongtaek Lee <gt82.lee@samsung.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -162,36 +99,115 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 10/11/21 11:59 PM, Mark Brown wrote:
-> On Mon, Oct 11, 2021 at 11:48:40AM +0530, Mukunda,Vijendar wrote:
->> On 10/11/21 11:19 PM, Mark Brown wrote:
-> 
->>>> +		pdevinfo[3].name = "acp5x_nu8821_cs35l41_mach";
-> 
->>> This appears to unconditionally assume that any machine with this
->>> hardware is going to have exactly the same CODEC/amp combination - that
->>> seems like it's going to go badly at some point.  Shouldn't there be
->>> some other check that we're instantiating the right machine driver?
-> 
->> we will make the platform device as generic one something like "acp5x_mach".
-> 
->> Currently we have only one target platform with above codec combinations
->> for this APU series.
-> 
->> When we get new codecs combinations to support, we will address it in
->> machine driver by adding DMI checks for distinguishing codec combinations.
-> 
-> If that's the case then this machine driver that's being instantiated is
-> poorly named, and I expect you're going to get issues with assuming a
-> default here and trying to instantiate this machine on unsuitable
-> hardware.  It'd be better to at least put a bit of the framework in now
-> and positively indentify systems that can run this machine driver.
 
-Will address it by adding DMI checks in machine driver code.
+>>> Basically we need to protect two things:
+>>> - The BE links
+>>> - The concurrent accesses to BEs
+>>> The former belongs to each FE that holds the links, and the FE stream
+>>> lock would cover.  The latter is rather a per-BE business.
+>>>
+>>> An oft-seen risk of multiple locks is deadlocking, but in this case,
+>>> as long as we keep the lock order FE->BE, nothing wrong can happen.
+>>
+>> famous last words  "nothing wrong can happen." :-)
+>>
+>> I already added a helper to do this FE lock, I can easily replace the
+>> implementation to remove the spin_lock and use the FE PCM lock.
+>> we might even add the lock in the definition of for_each_dpcm_be() to
+>> avoid misses.
+>>
+>> Let me try this out today, thanks for the suggestions.
 > 
-> It really would be good if ACPI system vendors were to adopt a more
-> standards based approach to platform enumeration, this really isn't
-> good.  Something more standards based like DT has would be much more
-> scalable.
+> well, it's not successful at all...
 > 
+> When I replace the existing dpcm_lock with the FE PCM lock as you
+> suggested, without any additional changes, speaker-test produces valid
+> audio on the endpoints, but if I try a Ctrl-C or limit the number of
+> loops with the '-l' option, I hear an endless loop on the same buffer
+> and I have to power cycle my test device to stop the sound.
+> 
+> See 2 patches attached, the first patch with the introduction of the
+> helper works fine, the second with the use of the FE PCM lock doesn't.
+> In hindsight I am glad I worked on minimal patches, one after the other,
+> to identify problems.
+> 
+> And when I add the BE lock, then nothing happens. Device stuck and no
+> audio...
+> 
+> There must be something we're missing related to the locking...
+
+And indeed there's a deadlock!
+
+snd_pcm_period_elapsed() takes the FE pcm stream lock, and will call
+snd_pcm_trigger. So if we also take the pcm stream lock in the BE
+trigger, there's a conceptual deadlock: we painted ourselves in a corner
+by using the same lock twice.
+
+Takashi, are you really sure we should protect these for_each_dpcm_be()
+loops with the same pcm lock? it seems like asking for trouble to
+revisit the ALSA core just to walking through a list of BEs? Would you
+object to changing dpcm_lock as I suggested, but not interfering with
+stream handling?
+
+See the traces below based on the hack in
+https://github.com/plbossart/sound/tree/test/dpcm-lock-loop-on-stop
+
+[   67.892082] skl_hda_dsp_generic skl_hda_dsp_generic:
+snd_sof_pcm_period_elapsed_work: plb taking lock
+[   67.892088] skl_hda_dsp_generic skl_hda_dsp_generic:
+snd_sof_pcm_period_elapsed_work: plb taking lock - done
+[   67.892092] skl_hda_dsp_generic skl_hda_dsp_generic:
+snd_pcm_period_elapsed_under_stream_lock: start
+[   67.892096] skl_hda_dsp_generic skl_hda_dsp_generic:
+snd_pcm_period_elapsed_under_stream_lock: check running
+[   67.892099] skl_hda_dsp_generic skl_hda_dsp_generic:
+snd_pcm_period_elapsed_under_stream_lock: check update_hw_ptr0
+[   67.892103] skl_hda_dsp_generic skl_hda_dsp_generic:
+snd_pcm_update_hw_ptr0: start
+[   67.892110] skl_hda_dsp_generic skl_hda_dsp_generic:
+snd_pcm_update_hw_ptr0: delta
+[   67.892113] skl_hda_dsp_generic skl_hda_dsp_generic:
+snd_pcm_update_hw_ptr0: check1
+[   67.892116] skl_hda_dsp_generic skl_hda_dsp_generic:
+snd_pcm_update_hw_ptr0: no_delta_check
+[   67.892119] skl_hda_dsp_generic skl_hda_dsp_generic:
+snd_pcm_update_hw_ptr0: playback silence
+[   67.892123] skl_hda_dsp_generic skl_hda_dsp_generic:
+snd_pcm_update_hw_ptr0: checks 3
+[   67.892126] skl_hda_dsp_generic skl_hda_dsp_generic:
+snd_pcm_update_hw_ptr0: done
+[   67.892129] skl_hda_dsp_generic skl_hda_dsp_generic:
+snd_pcm_update_state: start
+[   67.892132] skl_hda_dsp_generic skl_hda_dsp_generic:
+snd_pcm_update_state: before draining
+[   67.892136] skl_hda_dsp_generic skl_hda_dsp_generic:
+snd_pcm_update_state: before draining2
+[   67.892139] skl_hda_dsp_generic skl_hda_dsp_generic:
+snd_pcm_update_state: before snd_pcm_drain_done
+[   67.892143] skl_hda_dsp_generic skl_hda_dsp_generic: snd_pcm_do_stop:
+start
+[   67.892147] skl_hda_dsp_generic skl_hda_dsp_generic: snd_pcm_do_stop:
+before TRIGGER_STOP
+
+<<< we never reach the end of this TRIGGER_STOP
+
+[   67.892153] sof-audio-pci-intel-cnl 0000:00:1f.3: pcm: trigger stream
+0 dir 0 cmd 0
+[   67.892166] sof-audio-pci-intel-cnl 0000:00:1f.3: ipc tx: 0x60050000:
+GLB_STREAM_MSG: TRIG_STOP
+[   67.892396] sof-audio-pci-intel-cnl 0000:00:1f.3: ipc tx succeeded:
+0x60050000: GLB_STREAM_MSG: TRIG_STOP
+[   67.892408] sof-audio-pci-intel-cnl 0000:00:1f.3: FW Poll Status:
+reg[0x160]=0x140000 successful
+[   67.892418] sof-audio-pci-intel-cnl 0000:00:1f.3: ipc tx: 0x60030000:
+GLB_STREAM_MSG: PCM_FREE
+[   67.892564] sof-audio-pci-intel-cnl 0000:00:1f.3: ipc tx succeeded:
+0x60030000: GLB_STREAM_MSG: PCM_FREE
+[   67.892571]  HDA Analog: dpcm_be_dai_trigger: BE TRIGGER_STOP start
+[   67.892575]  HDA Analog: dpcm_be_dai_trigger: BE TRIGGER_STOP check
+can_be_free_stop
+[   67.892579]  HDA Analog: snd_soc_dpcm_check_state: plb: taking fe
+lock_irqsave from snd_soc_dpcm_check_state
+
+<<< checkmate at this point, we're trying to take the same lock twice.
 
