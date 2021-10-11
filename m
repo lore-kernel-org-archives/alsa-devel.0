@@ -2,74 +2,75 @@ Return-Path: <SRS0=u8hq=O7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A362C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Oct 2021 17:04:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 36758C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Oct 2021 17:04:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0AE59606A5
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Oct 2021 17:04:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0AE59606A5
+	by mail.kernel.org (Postfix) with ESMTPS id 5D783603E7
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Oct 2021 17:04:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5D783603E7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 28D941689;
-	Mon, 11 Oct 2021 19:03:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 28D941689
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3434816BC;
+	Mon, 11 Oct 2021 19:03:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3434816BC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633971847;
-	bh=jm+MmghP27mX/Vw4z1PWGh2UsatbCOer/kNjOSXtGSI=;
+	s=default; t=1633971871;
+	bh=F8/FG4wlt4xTlS+woET9GXpzyRycR0DvcYe7q5SnHFw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ncNCsXbFEBvuutcsQn//k+DOOuDr++BtF1FUjc7FQ42V6BYTp6c09AzWpRSWX6vt8
-	 tUbVydaxrC4faJUZtOmx4PHkoW8o+ZkRTH/+QBrGRvcu/zGshlfntnIP3UeCA2VgpJ
-	 6gTGr3xuyWMuxMcDrNVzCGHe/l129upa/VdCby0A=
+	b=U3NR+Jc+Af8sNV6ocoEaiicAXaaJhmWNo7PH36okPCYydxMm9J0M3Y/+w1t6uXgfs
+	 q9rwzT0SSp01vqnsgBHABsH6QilFq2pjN82l97/jOl7PKnNfgqRuGyNmortcMOlni9
+	 kMO23ZySBlGDsaxuMRMYJixF1jt0IjXdpClRBr4U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D35DBF804EB;
-	Mon, 11 Oct 2021 19:02:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C3C20F804F1;
+	Mon, 11 Oct 2021 19:02:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0B7F8F80269; Mon, 11 Oct 2021 19:02:05 +0200 (CEST)
+ id 22D8BF804EC; Mon, 11 Oct 2021 19:02:08 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CD1E4F80269
- for <alsa-devel@alsa-project.org>; Mon, 11 Oct 2021 19:01:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CD1E4F80269
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7290FF8016D
+ for <alsa-devel@alsa-project.org>; Mon, 11 Oct 2021 19:02:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7290FF8016D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="SprZptrV"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E0CA56103C;
- Mon, 11 Oct 2021 17:01:55 +0000 (UTC)
+ header.b="BOEJGj1u"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5011F61040;
+ Mon, 11 Oct 2021 17:02:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1633971716;
- bh=jm+MmghP27mX/Vw4z1PWGh2UsatbCOer/kNjOSXtGSI=;
+ s=k20201202; t=1633971721;
+ bh=F8/FG4wlt4xTlS+woET9GXpzyRycR0DvcYe7q5SnHFw=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=SprZptrV5S23fsND4ATcbmrILSVzjoDUuw2bGr9aAyNU1u1MumrMa7BFyULBRae9O
- JsqmxucdbNDFkuTkBrt6vssF8zUCSKyRA8i9+aVZmpM4ECjKRdo6fg+gdyvRI6l/CG
- gACeQPsyyVJG6RHI/3K9Jm+1BfOlKjwRQuCCjQOLW74DNe/qSFAWiLH+jJCs1poQef
- 0Ksv2ME3Fs78L+4gWlbJ2F66sqKkeliJXLAJNpJoPv/VaYrJUIjDLLnIQsUv07ecof
- xbYPDaDNF5rAXkSlyLcRcYxe3yfTCsg3VoFCyKkHOKN86yho4P1vv3rRU3Ue16iSNq
- OWLOA5qlxilsQ==
+ b=BOEJGj1u9dbGKE8w4fKpNL0m6V1DxY7jUO7YzAo5XDJSvaDy0deXoz8ZE7n/yCHoT
+ QgE7GVO8DoFlM/97lzHoUaw7ZNw3lOiCqGELTDDUzaCtHbkpvXODeglAy6b/ycvH7R
+ nZzArhZwMtcT9tnGgjrCXxpbY45ehs3X610CdikbqSsM+CX9Dg+MvfXI2U40ELDPvY
+ 0RsfLS0GILO3TRUF5R6Ka0sQKKSskMBqqLPisT2Eqka5lHWjsOM3G7Y7xu2sUcESDS
+ 2Ksst7CyqYJsqRpd7sGIJDprPoTSM4MER8NkZbZHxKfz8VOCT94n2xcUvyI1lp+wFy
+ /ar+hSjkKi6Dg==
 From: Mark Brown <broonie@kernel.org>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: Re: [PATCH v2 0/4] ASoC: Intel: bytcr_rt5651: few cleanups
-Date: Mon, 11 Oct 2021 18:01:41 +0100
-Message-Id: <163397094550.6567.12613609707745181814.b4-ty@kernel.org>
+To: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ Hans de Goede <hdegoede@redhat.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v2 0/4] ASoC: Intel: bytcr_rt5640: few cleanups
+Date: Mon, 11 Oct 2021 18:01:43 +0100
+Message-Id: <163397094549.6567.12509842562892439300.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211007170250.27997-1-andriy.shevchenko@linux.intel.com>
-References: <20211007170250.27997-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20211007165715.27463-1-andriy.shevchenko@linux.intel.com>
+References: <20211007165715.27463-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
  Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
  Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>
+ Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,8 +86,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 7 Oct 2021 20:02:46 +0300, Andy Shevchenko wrote:
-> The small set of cleanups against bytcr_rt5651 board file.
+On Thu, 7 Oct 2021 19:57:11 +0300, Andy Shevchenko wrote:
+> The small set of cleanups against bytcr_rt5640 board file.
 > 
 > In v2:
 > - added commit message to patch 2 (Joe, Pierre)
@@ -101,14 +102,14 @@ Applied to
 
 Thanks!
 
-[1/4] ASoC: Intel: bytcr_rt5651: Get platform data via dev_get_platdata()
-      commit: 0c465e7a8ea26f4ad52dd9548f22afdaf6e039a5
-[2/4] ASoC: Intel: bytcr_rt5651: Use temporary variable for struct device
-      commit: 269da8f7626b1de69998fe1a0c0e069749d18a28
-[3/4] ASoC: Intel: bytcr_rt5651: use devm_clk_get_optional() for mclk
-      commit: a8627df5491e00e23d4f2e648ff796adbfa23cc5
-[4/4] ASoC: Intel: bytcr_rt5651: Utilize dev_err_probe() to avoid log saturation
-      commit: 45c5dc45d80d41596bc0364fafc523648e6124d8
+[1/4] ASoC: Intel: bytcr_rt5640: Get platform data via dev_get_platdata()
+      commit: e86c1893d6785a0f5e5d82cd161b991564720eaa
+[2/4] ASoC: Intel: bytcr_rt5640: Use temporary variable for struct device
+      commit: 81d43ca17506ba32c6ead7fe4cf3b7f37368cc83
+[3/4] ASoC: Intel: bytcr_rt5640: use devm_clk_get_optional() for mclk
+      commit: a15ca6e3b8a21ff335a2eedbc5ba4708967be2be
+[4/4] ASoC: Intel: bytcr_rt5640: Utilize dev_err_probe() to avoid log saturation
+      commit: ee233500eea421118cd9d53c82fd5e612f6d7bd5
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
