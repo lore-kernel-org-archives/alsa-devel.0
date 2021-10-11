@@ -2,131 +2,84 @@ Return-Path: <SRS0=u8hq=O7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3169FC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Oct 2021 15:49:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EF18C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Oct 2021 16:08:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B24B560E98
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Oct 2021 15:49:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B24B560E98
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=amd.com
+	by mail.kernel.org (Postfix) with ESMTPS id 1066760551
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Oct 2021 16:08:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1066760551
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C454D169D;
-	Mon, 11 Oct 2021 17:48:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C454D169D
+	by alsa0.perex.cz (Postfix) with ESMTPS id B96DE1698;
+	Mon, 11 Oct 2021 18:07:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B96DE1698
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633967363;
-	bh=wrn1YhCplKbT53OlfJUTJoL7izTRXOwbPt+N3mYNO30=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1633968486;
+	bh=25o6LEfMzrBIx18k79d/4QxtjmNlzjl0kShc5+1agRk=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=I1rvaccQMQjPHE0YMwbOqP0P72Vek0HvRo8Kd/sLSFC1GHJVRhxGdsk+5TKLvfCkj
-	 CcWLByBY1bKJQrOorlc8Q5tXluBGfM97fTyP15AZ+PZvZL6DmVGBoCoV93cEPoeFP9
-	 JVtRrNFOkJp2AvqvR9F4JccJl7ep7VzlzwbUZ4YU=
+	b=QAQ1a/DZjjWu2aVnmchv228MuhxtaZN+Tsmv3QWKDlr79ij3Td6iI07oTymddcmu1
+	 573kwQRAaV/oX6y/2PAOVLqXgzQ2oYZ6FFAv2QmHy6YBVG/PPksOUGboV516lbxkQY
+	 pu8alPoD0Wpb2bKbeYGcLfBbAnOgSxPKkICtHfpU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 13D30F804FF;
-	Mon, 11 Oct 2021 17:47:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 47411F800C0;
+	Mon, 11 Oct 2021 18:07:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 633E1F80506; Mon, 11 Oct 2021 17:47:40 +0200 (CEST)
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com
- (mail-dm6nam12on2075.outbound.protection.outlook.com [40.107.243.75])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id C8D68F80269; Mon, 11 Oct 2021 18:07:14 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5A027F804FA
- for <alsa-devel@alsa-project.org>; Mon, 11 Oct 2021 17:47:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5A027F804FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1D7FEF800C0
+ for <alsa-devel@alsa-project.org>; Mon, 11 Oct 2021 18:07:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D7FEF800C0
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com
- header.b="yOKloZJq"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=T2cHOeMyvHqz6/fZJAvpJ0DFUPNvI+1lrP5taSGOmpDUKwlj3zyzF1e2lPnAnC7uIcRGHnuP445CV7NUrmg27fpeMe7tJb2gz3GSKQDAUnQ8nYbrDkrW3+3JAzorTO0Yz6gEJEmUlvYfWtz68fP49vd2YcOF46mMFlB184mf6asJvxnbHw2ENDakIbQAL5UNCZILfXTCHrUimdUGMLrevba3l1eIbzPknUrijyzaZ8cN7PM8Qn9BbmUpPrHXJ9P29Z+TPfIVRiy7Z6w19CtLC6C7j2gh0q13hl7JSPnjyaz3+cYjfsuvlwMJlD4oE9xB+dhf1tHAYL1FA/wmtf7CIw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JS1tKaaOGkuD6OByJE5ZxCtJdjY33eLCbUVZzJTPfyc=;
- b=jm0kg34gHUeZesE9ejC+v7WwF6llMiQ8dw4naCRjIjdjjMfDGWTwNeAasYyUpCIO6yMttLh5YakDL5qVK8O40FMR/96yp1pZGCupeIGXQmJNOFBjBTfe7OPdDM5JaAuD6ELo0i3WTjkNHBNtppy1Z/Sjg7CCtxRnvmmPG8nr8tuwdp3fQd14xvNuylv5TNIgPTIIf54LCoWOBQs4MH3b/928cGLPHdC45/+i26chzRJcGyp+vigcyJbK7Z3uTJsFOQrsSxRznLxPnVeEmoW0irVGwYBS+0rh0qMIvkp+CfqTegSSr+ZaxhyXabcbfxkka6UawqOTelyT9PqosDBwBQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1; 
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JS1tKaaOGkuD6OByJE5ZxCtJdjY33eLCbUVZzJTPfyc=;
- b=yOKloZJqAuaTseURgyuI9eaM1w+uNZBN9F5cylc+KuDBpZs+MCbA+VwJxvUS2XksIYem23xgXrzdrveMW6hE8JyQRaJpCfslTQyQcS/E11Q1hhywYQM+w2/EjrCneCrQQY8Bkw1i8BcYYSw87hZR/3SmXJRCjNBPwq/Uh4gvZU8=
-Received: from BN9PR03CA0106.namprd03.prod.outlook.com (2603:10b6:408:fd::21)
- by BL0PR12MB2500.namprd12.prod.outlook.com (2603:10b6:207:4e::23)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.20; Mon, 11 Oct
- 2021 15:47:29 +0000
-Received: from BN8NAM11FT036.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:fd:cafe::ce) by BN9PR03CA0106.outlook.office365.com
- (2603:10b6:408:fd::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.25 via Frontend
- Transport; Mon, 11 Oct 2021 15:47:29 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BN8NAM11FT036.mail.protection.outlook.com (10.13.177.168) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4587.18 via Frontend Transport; Mon, 11 Oct 2021 15:47:28 +0000
-Received: from SATLEXMB08.amd.com (10.181.40.132) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Mon, 11 Oct
- 2021 10:47:27 -0500
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB08.amd.com
- (10.181.40.132) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Mon, 11 Oct
- 2021 08:47:27 -0700
-Received: from chrome.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2308.8 via Frontend
- Transport; Mon, 11 Oct 2021 10:47:23 -0500
-From: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
-To: <broonie@kernel.org>, <alsa-devel@alsa-project.org>
-Subject: [PATCH v2 8/8] ASoC: amd: acp: Add support for RT5682-VS codec
-Date: Mon, 11 Oct 2021 21:14:52 +0530
-Message-ID: <20211011154452.76849-9-AjitKumar.Pandey@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211011154452.76849-1-AjitKumar.Pandey@amd.com>
-References: <20211011154452.76849-1-AjitKumar.Pandey@amd.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: cbb4568f-b028-40aa-7039-08d98cce6e39
-X-MS-TrafficTypeDiagnostic: BL0PR12MB2500:
-X-Microsoft-Antispam-PRVS: <BL0PR12MB25005B8BF204DC150C24A56E82B59@BL0PR12MB2500.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:200;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jNOvg+flmB2q+nb0+XtnvXeQwSdZ/TNl41eGybjlCyjsgRXrsDlqJw4oxqDkAU8muspy6jVy3Pk/znrOVXVepP6NWL9o3vZ/UBS1VdM3S8mNZ75sXvT9Iyt8BIG7cDPwfcMvoS3OGBGj1CAs8DTR/aN/nQmnYAAhLVGtSVnXO41X3bAet+Ok0yVid70Hzhfbro4mTLCliOOEyI8n2HlUGmBjyOrHCMbGLdg9bwCj4YxlFfdwCZUza4GElEoY84UzVQMQEmAv9dk7Unh2FD8Sm1l8Pyarx4rrjOLY6e2LyiLmuSSX8lrVrswXJ1OLovpa/oghmSh/Qr/+P2GHYCvcB/R4nWaOE2fvbH919B3csnsOTDdq1G6f1eQVtTpKxhXe5w3/hVsjjzc1iUab+KXKbaGN/LdYEVtWsIEnLyK8LeJoHR1iJ/qGr9v4myCA3RczbHAZX9AzjnSAWVxg5cDGSVy7qIbeMQ4HUai/FL/sIcC/BELf1MWJEzFZ8G3v2q9WjmZPhhSA1Ity+SWQb7FGy1cAX7ByIqNWZCbpJhblJikiRBwVn0TKlIp+BH6LXfELHA0fZXnNP/67tn7OQseb2pG5hbvkyYxCJeqG/NyKKoPW4p03Nr0KnYEnH9iiQR3s9+70D+kQVrnxqOjWW79yl8FTSySJBDyvGE+yD/C/AnMRfH+3bFWSkbTAkrLKYVUZ2SR6/X0XjekTobF1fiVpvKpCZvnWGBpeHLt3DE9B0BQ=
-X-Forefront-Antispam-Report: CIP:165.204.84.17; CTRY:US; LANG:en; SCL:1; SRV:;
- IPV:CAL; SFV:NSPM; H:SATLEXMB04.amd.com; PTR:InfoDomainNonexistent; CAT:NONE;
- SFS:(4636009)(46966006)(36840700001)(356005)(316002)(81166007)(508600001)(54906003)(336012)(110136005)(47076005)(5660300002)(6666004)(426003)(36756003)(2616005)(82310400003)(1076003)(4326008)(8936002)(2906002)(86362001)(8676002)(83380400001)(186003)(70206006)(7696005)(36860700001)(26005)(70586007)(36900700001);
- DIR:OUT; SFP:1101; 
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Oct 2021 15:47:28.9245 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: cbb4568f-b028-40aa-7039-08d98cce6e39
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d; Ip=[165.204.84.17];
- Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT036.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB2500
-Cc: Sunil-kumar.Dommati@amd.com, Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
- open list <linux-kernel@vger.kernel.org>, Basavaraj.Hiregoudar@amd.com,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Vijendar.Mukunda@amd.com, Alexander.Deucher@amd.com
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="l4w4XSBn"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="PVpe5pMS"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id ED8E422114;
+ Mon, 11 Oct 2021 16:07:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1633968421; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hUpQYqN5r29YnnBS8Aw3gLg+1IeYzv6/vancdzpN1BA=;
+ b=l4w4XSBnXWVLGwXZZgFxVxd916j3iHz7DMtfPJ8X+zj+kSvx2/V1Dq7TBwy5nT5GMTn1Cn
+ TC84tWjG5yqZQ0nPGmkrfNrWhScoeo3asvYkKT+er8rKSnh2TnGKf1LvC1eQPujjOED3AA
+ PIgpHPQEuaiaRm0zYQXQgahVCDUFN54=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1633968421;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hUpQYqN5r29YnnBS8Aw3gLg+1IeYzv6/vancdzpN1BA=;
+ b=PVpe5pMSM/GwhrdNsue8j0RnxfFG8dgEePsmUenoSbYa3h1LGYJ/VzhVlRreELCdWSBG0H
+ j+5FwwYh/8cPGEAw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id CD880A3B8C;
+ Mon, 11 Oct 2021 16:07:01 +0000 (UTC)
+Date: Mon, 11 Oct 2021 18:07:01 +0200
+Message-ID: <s5h7dej4kbe.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] ALSA: usb-audio: allow -EPIPE errors for some v2 messages
+In-Reply-To: <YWRYD7fphcaWKEOG@kroah.com>
+References: <YWLbEdHUE3k/i0fe@kroah.com> <s5hily46316.wl-tiwai@suse.de>
+ <YWRYD7fphcaWKEOG@kroah.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-usb@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -142,207 +95,97 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-In newer variants primary codec is rt5682vs. Add support for newer
-codec variants in generic machine driver module and define driver
-data to register SOF sound card.
+On Mon, 11 Oct 2021 17:28:15 +0200,
+Greg Kroah-Hartman wrote:
+> 
+> On Sun, Oct 10, 2021 at 10:25:09PM +0200, Takashi Iwai wrote:
+> > On Sun, 10 Oct 2021 14:22:41 +0200,
+> > Greg Kroah-Hartman wrote:
+> > > 
+> > > The Schiit Hel device does not like to respond to all get_ctl_value_v2()
+> > > requests for some reason.  This used to work in older kernels, but now
+> > > with more strict checking, this failure causes the device to fail to
+> > > work.
+> > > 
+> > > Cc: Jaroslav Kysela <perex@perex.cz>
+> > > Cc: Takashi Iwai <tiwai@suse.com>
+> > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > ---
+> > > 
+> > > This fixes the Shiit Hel device that I have.  It used to work on older
+> > > kernels (a year ago?), but stopped working for some reason and I didn't
+> > > take the time to track it down.  This change fixes the issue for me, but
+> > > feels wrong for some reason.  At least now I can use the device as a
+> > > headphone driver, much better than the built-in one for my current
+> > > machine...
+> > > 
+> > > If needed, I can take the time to do bisection to track down the real
+> > > issue here, it might be due to stricter endpoint checking in the USB
+> > > core, but that feels wrong somehow.
+> > > 
+> > > Here's the debugfs USB output for this device, showing the endpoints:
+> > > 
+> > > T:  Bus=07 Lev=02 Prnt=02 Port=01 Cnt=01 Dev#=  5 Spd=480 MxCh= 0
+> > > D:  Ver= 2.00 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs=  1
+> > > P:  Vendor=30be ProdID=0101 Rev=01.02
+> > > S:  Manufacturer=Schiit Audio
+> > > S:  Product=Schiit Hel
+> > > C:  #Ifs= 4 Cfg#= 1 Atr=c0 MxPwr=0mA
+> > > I:  If#= 0 Alt= 0 #EPs= 1 Cls=01(audio) Sub=01 Prot=20 Driver=snd-usb-audio
+> > > E:  Ad=8f(I) Atr=03(Int.) MxPS=   6 Ivl=1ms
+> > > I:  If#= 1 Alt= 1 #EPs= 2 Cls=01(audio) Sub=02 Prot=20 Driver=snd-usb-audio
+> > > E:  Ad=05(O) Atr=05(Isoc) MxPS= 104 Ivl=125us
+> > > E:  Ad=85(I) Atr=11(Isoc) MxPS=   4 Ivl=1ms
+> > > I:  If#= 2 Alt= 1 #EPs= 1 Cls=01(audio) Sub=02 Prot=20 Driver=snd-usb-audio
+> > > E:  Ad=88(I) Atr=05(Isoc) MxPS= 156 Ivl=125us
+> > > I:  If#= 3 Alt= 0 #EPs= 1 Cls=03(HID  ) Sub=00 Prot=00 Driver=usbhid
+> > > E:  Ad=84(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
+> > > 
+> > > Any other suggestions to fix this are welcome.
+> > 
+> > Could you show the exact error messages and lsusb -v output?
+> > We may paper over only the problematic node instead.
+> 
+> Sure, here's the dmesg output on 5.15-rc5 when it is turned on:
+> 
+> [Oct11 17:25] usb 7-2.2: new high-speed USB device number 9 using xhci_hcd
+> [  +0.122422] usb 7-2.2: New USB device found, idVendor=30be, idProduct=0101, bcdDevice= 1.02
+> [  +0.000009] usb 7-2.2: New USB device strings: Mfr=1, Product=2, SerialNumber=0
+> [  +0.000002] usb 7-2.2: Product: Schiit Hel
+> [  +0.000002] usb 7-2.2: Manufacturer: Schiit Audio
+> [  +0.327172] input: Schiit Audio Schiit Hel as /devices/pci0000:40/0000:40:01.1/0000:41:00.0/0000:42:08.0/0000:47:00.1/usb7/7-2/7-2.2/7-2.2:1.3/0003:30BE:0101.0009/input/input21
+> [  +0.055134] hid-generic 0003:30BE:0101.0009: input,hidraw8: USB HID v1.00 Device [Schiit Audio Schiit Hel] on usb-0000:47:00.1-2.2/input3
+> [  +0.135988] usb 7-2.2: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x1100, type = 1
+> [  +0.060647] usb 7-2.2: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x1100, type = 1
+> [  +0.065362] usb 7-2.2: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x1100, type = 1
+> [  +0.192121] usb 7-2.2: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x1100, type = 1
 
-Signed-off-by: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
----
- sound/soc/amd/acp/Kconfig           |  1 +
- sound/soc/amd/acp/acp-mach-common.c | 96 +++++++++++++++++++++++++++++
- sound/soc/amd/acp/acp-mach.h        |  1 +
- sound/soc/amd/acp/acp-sof-mach.c    | 14 +++++
- 4 files changed, 112 insertions(+)
+Thanks.  So this happens at the unit 17, and ...
 
-diff --git a/sound/soc/amd/acp/Kconfig b/sound/soc/amd/acp/Kconfig
-index 04d8df7a6e11..3279894414da 100644
---- a/sound/soc/amd/acp/Kconfig
-+++ b/sound/soc/amd/acp/Kconfig
-@@ -32,6 +32,7 @@ config SND_SOC_AMD_MACH_COMMON
- 	select SND_SOC_DMIC
- 	select SND_SOC_RT1019
- 	select SND_SOC_MAX98357A
-+	select SND_SOC_RT5682S
- 	depends on X86 && PCI && I2C
- 	help
- 	  This option enables common Machine driver module for ACP.
-diff --git a/sound/soc/amd/acp/acp-mach-common.c b/sound/soc/amd/acp/acp-mach-common.c
-index b9d77d761cca..cecf7e5a44e2 100644
---- a/sound/soc/amd/acp/acp-mach-common.c
-+++ b/sound/soc/amd/acp/acp-mach-common.c
-@@ -23,6 +23,7 @@
- 
- #include "../../codecs/rt5682.h"
- #include "../../codecs/rt1019.h"
-+#include "../../codecs/rt5682s.h"
- #include "acp-mach.h"
- 
- #define PCO_PLAT_CLK 48000000
-@@ -182,6 +183,89 @@ static const struct snd_soc_ops acp_card_rt5682_ops = {
- 	.shutdown = acp_card_shutdown,
- };
- 
-+/* Define RT5682S CODEC component*/
-+SND_SOC_DAILINK_DEF(rt5682s,
-+		    DAILINK_COMP_ARRAY(COMP_CODEC("i2c-RTL5682:00", "rt5682s-aif1")));
-+
-+static const struct snd_soc_dapm_route rt5682s_map[] = {
-+	{ "Headphone Jack", NULL, "HPOL" },
-+	{ "Headphone Jack", NULL, "HPOR" },
-+	{ "IN1P", NULL, "Headset Mic" },
-+};
-+
-+static int acp_card_rt5682s_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_card *card = rtd->card;
-+	struct acp_card_drvdata *drvdata = card->drvdata;
-+	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
-+	struct snd_soc_component *component = codec_dai->component;
-+	int ret;
-+
-+	dev_info(rtd->dev, "codec dai name = %s\n", codec_dai->name);
-+
-+	if (drvdata->hs_codec_id != RT5682S)
-+		return -EINVAL;
-+
-+	ret =  snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
-+				   | SND_SOC_DAIFMT_CBP_CFP);
-+	if (ret < 0) {
-+		dev_err(rtd->card->dev, "Failed to set dai fmt: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = snd_soc_dai_set_pll(codec_dai, RT5682S_PLL2, RT5682S_PLL_S_MCLK,
-+				  PCO_PLAT_CLK, RT5682_PLL_FREQ);
-+	if (ret < 0) {
-+		dev_err(rtd->dev, "Failed to set codec PLL: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = snd_soc_dai_set_sysclk(codec_dai, RT5682S_SCLK_S_PLL2,
-+				     RT5682_PLL_FREQ, SND_SOC_CLOCK_IN);
-+	if (ret < 0) {
-+		dev_err(rtd->dev, "Failed to set codec SYSCLK: %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* Set tdm/i2s1 master bclk ratio */
-+	ret = snd_soc_dai_set_bclk_ratio(codec_dai, 64);
-+	if (ret < 0) {
-+		dev_err(rtd->dev, "Failed to set rt5682 tdm bclk ratio: %d\n", ret);
-+		return ret;
-+	}
-+
-+	drvdata->wclk = clk_get(component->dev, "rt5682-dai-wclk");
-+	drvdata->bclk = clk_get(component->dev, "rt5682-dai-bclk");
-+
-+	ret = snd_soc_card_jack_new(card, "Headset Jack",
-+				    SND_JACK_HEADSET | SND_JACK_LINEOUT |
-+				    SND_JACK_BTN_0 | SND_JACK_BTN_1 |
-+				    SND_JACK_BTN_2 | SND_JACK_BTN_3,
-+				    &pco_jack, NULL, 0);
-+	if (ret) {
-+		dev_err(card->dev, "HP jack creation failed %d\n", ret);
-+		return ret;
-+	}
-+
-+	snd_jack_set_key(pco_jack.jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
-+	snd_jack_set_key(pco_jack.jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
-+	snd_jack_set_key(pco_jack.jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
-+	snd_jack_set_key(pco_jack.jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
-+
-+	ret = snd_soc_component_set_jack(component, &pco_jack, NULL);
-+	if (ret) {
-+		dev_err(rtd->dev, "Headset Jack call-back failed: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return snd_soc_dapm_add_routes(&rtd->card->dapm, rt5682s_map, ARRAY_SIZE(rt5682s_map));
-+}
-+
-+static const struct snd_soc_ops acp_card_rt5682s_ops = {
-+	.startup = acp_card_hs_startup,
-+	.shutdown = acp_card_shutdown,
-+};
-+
- /* Declare RT1019 codec components */
- SND_SOC_DAILINK_DEF(rt1019,
- 	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-10EC1019:01", "rt1019-aif"),
-@@ -370,6 +454,12 @@ int acp_sofdsp_dai_links_create(struct snd_soc_card *card)
- 			links[i].init = acp_card_rt5682_init;
- 			links[i].ops = &acp_card_rt5682_ops;
- 		}
-+		if (drv_data->hs_codec_id == RT5682S) {
-+			links[i].codecs = rt5682s;
-+			links[i].num_codecs = ARRAY_SIZE(rt5682s);
-+			links[i].init = acp_card_rt5682s_init;
-+			links[i].ops = &acp_card_rt5682s_ops;
-+		}
- 		i++;
- 	}
- 
-@@ -462,6 +552,12 @@ int acp_legacy_dai_links_create(struct snd_soc_card *card)
- 			links[i].init = acp_card_rt5682_init;
- 			links[i].ops = &acp_card_rt5682_ops;
- 		}
-+		if (drv_data->hs_codec_id == RT5682S) {
-+			links[i].codecs = rt5682s;
-+			links[i].num_codecs = ARRAY_SIZE(rt5682s);
-+			links[i].init = acp_card_rt5682s_init;
-+			links[i].ops = &acp_card_rt5682s_ops;
-+		}
- 		i++;
- 	}
- 
-diff --git a/sound/soc/amd/acp/acp-mach.h b/sound/soc/amd/acp/acp-mach.h
-index b6a43d1b9ad4..5dc47cfbff10 100644
---- a/sound/soc/amd/acp/acp-mach.h
-+++ b/sound/soc/amd/acp/acp-mach.h
-@@ -36,6 +36,7 @@ enum codec_endpoints {
- 	RT5682,
- 	RT1019,
- 	MAX98360A,
-+	RT5682S,
- };
- 
- struct acp_card_drvdata {
-diff --git a/sound/soc/amd/acp/acp-sof-mach.c b/sound/soc/amd/acp/acp-sof-mach.c
-index f7103beedf32..854eb7214cea 100644
---- a/sound/soc/amd/acp/acp-sof-mach.c
-+++ b/sound/soc/amd/acp/acp-sof-mach.c
-@@ -38,6 +38,15 @@ static struct acp_card_drvdata sof_rt5682_max_data = {
- 	.dmic_codec_id = DMIC,
- };
- 
-+static struct acp_card_drvdata sof_rt5682s_max_data = {
-+	.hs_cpu_id = I2S_SP,
-+	.amp_cpu_id = I2S_SP,
-+	.dmic_cpu_id = DMIC,
-+	.hs_codec_id = RT5682S,
-+	.amp_codec_id = MAX98360A,
-+	.dmic_codec_id = DMIC,
-+};
-+
- static const struct snd_kcontrol_new acp_controls[] = {
- 	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
- 	SOC_DAPM_PIN_SWITCH("Headset Mic"),
-@@ -98,6 +107,10 @@ static const struct platform_device_id board_ids[] = {
- 		.name = "rt5682-max",
- 		.driver_data = (kernel_ulong_t)&sof_rt5682_max_data
- 	},
-+	{
-+		.name = "rt5682s-max",
-+		.driver_data = (kernel_ulong_t)&sof_rt5682s_max_data
-+	},
- 	{ }
- };
- static struct platform_driver acp_asoc_audio = {
-@@ -114,4 +127,5 @@ MODULE_IMPORT_NS(SND_SOC_AMD_MACH);
- MODULE_DESCRIPTION("ACP chrome SOF audio support");
- MODULE_ALIAS("platform:rt5682-rt1019");
- MODULE_ALIAS("platform:rt5682-max");
-+MODULE_ALIAS("platform:rt5682s-max");
- MODULE_LICENSE("GPL v2");
--- 
-2.25.1
 
+> And here is the 'lsusb -v' output of the device.
+> 
+> 
+> Bus 007 Device 009: ID 30be:0101 Schiit Audio Schiit Hel
+(snip)
+>       AudioControl Interface Descriptor:
+>         bLength                18
+>         bDescriptorType        36
+>         bDescriptorSubtype      6 (FEATURE_UNIT)
+>         bUnitID                17
+>         bSourceID               5
+>         bmaControls(0)     0x00000003
+>           Mute Control (read/write)
+>         bmaControls(1)     0x00000000
+>         bmaControls(2)     0x00000000
+>         iFeature                0 
+
+... this is the entry.
+
+Could you also post the contents of /proc/asound/card*/usbmixer (only
+for the corresponding device), too?
+
+
+thanks,
+
+Takashi
