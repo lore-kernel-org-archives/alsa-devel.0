@@ -2,72 +2,86 @@ Return-Path: <SRS0=u8hq=O7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF2B1C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Oct 2021 16:17:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BF5DC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Oct 2021 16:18:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 08D2360EBB
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Oct 2021 16:17:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 08D2360EBB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id C684760EBB
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Oct 2021 16:18:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C684760EBB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BE40F16A4;
-	Mon, 11 Oct 2021 18:16:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE40F16A4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 018C816A0;
+	Mon, 11 Oct 2021 18:17:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 018C816A0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633969036;
-	bh=cefr71k6IFbyTv/oHQNXoZoNswOwHmEQ5cdDspoYyic=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1633969105;
+	bh=Vspx5xiygi4lPir1xtwYomSgbA7EKFqkVLTRwxKVp30=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HvCuJw8zUOzRMD7Mivb7asoKCZMWYa7/hPxh2ZMf5IFHj4v/146KiE6vPJCbFyIOZ
-	 2SlHrWdJTHmu4/fxwd8bQaMutF23y1uO2MhTK/ViRgkcYm9QmG/vzLROaucyGDSmaV
-	 UjGnty+4OyofRWMfi7YMrMOZJ0CTBS3CqGj9q0mE=
+	b=GfDcDpHWVoKLpBVMPCbuK6FMMVwQZC2yLZyzuhCVYiHe/YTJ+4gU3eL4tSexW/Qrb
+	 4Icw50PgEaIMc+vEUDJPtM7es8+JogHiFH0jm/FjzOM2O7muMznftDgZ9Fa0f+R6Ng
+	 Cqgw5e5wdkRjW1jMQNhjpo6yD/7j0OgaLaeiZK5I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D4AC8F80290;
-	Mon, 11 Oct 2021 18:15:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9727BF80269;
+	Mon, 11 Oct 2021 18:17:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ECD65F80430; Mon, 11 Oct 2021 18:15:43 +0200 (CEST)
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id BFBD6F80269; Mon, 11 Oct 2021 18:17:32 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DE99CF80104
- for <alsa-devel@alsa-project.org>; Mon, 11 Oct 2021 18:15:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE99CF80104
-X-IronPort-AV: E=McAfee;i="6200,9189,10134"; a="287788351"
-X-IronPort-AV: E=Sophos;i="5.85,364,1624345200"; d="scan'208";a="287788351"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
- by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Oct 2021 09:14:20 -0700
-X-IronPort-AV: E=Sophos;i="5.85,364,1624345200"; d="scan'208";a="562278398"
-Received: from cpeng4-mobl.amr.corp.intel.com (HELO [10.213.182.8])
- ([10.213.182.8])
- by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Oct 2021 09:14:19 -0700
-Subject: Re: [PATCH v2 0/4] ASoC: Intel: bytcr_rt5651: few cleanups
-To: Hans de Goede <hdegoede@redhat.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
-References: <20211007170250.27997-1-andriy.shevchenko@linux.intel.com>
- <0a74d8d1-2f36-18dc-56a3-4e5033dcab85@redhat.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <d669b2ad-dbe8-f069-5f02-7ddcf2f90b78@linux.intel.com>
-Date: Mon, 11 Oct 2021 09:19:27 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <0a74d8d1-2f36-18dc-56a3-4e5033dcab85@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 732AEF80104
+ for <alsa-devel@alsa-project.org>; Mon, 11 Oct 2021 18:17:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 732AEF80104
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="mEm55Q1P"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="AE0cFOJe"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id AEBD4220BC;
+ Mon, 11 Oct 2021 16:17:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1633969040; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=CQRLVASzM88HPKp0YPTtWJo/mv7OOa6xJj+N4ChnuWc=;
+ b=mEm55Q1P1R969y8GFV7MsuS3Na3SbR0BeJczRW4HFHs+NLvnJwviC29Hxkq0Pa47ZdkvO5
+ nqHiB8hXCCdgGJFWQ4uy+824RanWuuPFYB2z/RqacZDP+eM0iNidpwN9WYzaJSB3IB7XOt
+ Wwj1FRuwBHlEeyiYGvmcOJ3icbAqYEk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1633969040;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=CQRLVASzM88HPKp0YPTtWJo/mv7OOa6xJj+N4ChnuWc=;
+ b=AE0cFOJeuLBY0h4rzAkVkGK8NYk1bBpy3zYYc6BCPvkK197L9GODIFndNMf7rZHy1pFUew
+ am9L+GVFli6U4+Aw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 2D605A3B84;
+ Mon, 11 Oct 2021 16:17:20 +0000 (UTC)
+Date: Mon, 11 Oct 2021 18:17:20 +0200
+Message-ID: <s5h35p74ju7.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] ALSA: pcm: Workaround for a wrong offset in SYNC_PTR
+ compat ioctl
+In-Reply-To: <s5hlf306h9o.wl-tiwai@suse.de>
+References: <20211010075546.23220-1-tiwai@suse.de>
+ <CAK8P3a0HYw_pO=EdsYBxPRXk8mv3gxUoch5ba_o2Q58wBrm4iA@mail.gmail.com>
+ <s5hlf306h9o.wl-tiwai@suse.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: multipart/mixed; boundary="Multipart_Mon_Oct_11_18:17:20_2021-1"
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Rich Felker <dalias@libc.org>, Michael Forney <mforney@mforney.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,19 +97,192 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+--Multipart_Mon_Oct_11_18:17:20_2021-1
+Content-Type: text/plain; charset=US-ASCII
+
+On Sun, 10 Oct 2021 17:17:39 +0200,
+Takashi Iwai wrote:
+> 
+> On Sun, 10 Oct 2021 12:10:53 +0200,
+> Arnd Bergmann wrote:
+> > 
+> > On Sun, Oct 10, 2021 at 9:55 AM Takashi Iwai <tiwai@suse.de> wrote:
+> > >
+> > > Michael Forney reported an incorrect padding type that was defined in
+> > > the commit 80fe7430c708 ("ALSA: add new 32-bit layout for
+> > > snd_pcm_mmap_status/control") for PCM control mmap data.
+> > > His analysis is correct, and this caused the misplacements of PCM
+> > > control data on 32bit arch and 32bit compat mode.
+> > >
+> > > The bug is that the __pad2 definition in __snd_pcm_mmap_control64
+> > > struct was wrongly with __pad_before_uframe, which should have been
+> > > __pad_after_uframe instead.  This struct is used in SYNC_PTR ioctl and
+> > > control mmap.  Basically this bug leads to two problems:
+> > >
+> > > - The offset of avail_min field becomes wrong, it's placed right after
+> > >   appl_ptr without padding on little-endian
+> > >
+> > > - When appl_ptr and avail_min are read as 64bit values in kernel side,
+> > >   the values become either zero or corrupted (mixed up)
+> > >
+> > > One good news is that, because both user-space and kernel
+> > > misunderstand the wrong offset, at least, 32bit application running on
+> > > 32bit kernel works as is.  Also, 64bit applications are unaffected
+> > > because the padding size is zero.  The remaining problem is the 32bit
+> > > compat mode; as mentioned in the above, avail_min is placed right
+> > > after appl_ptr on little-endian archs, 64bit kernel reads bogus values
+> > > for appl_ptr updates, which may lead to streaming bugs like jumping,
+> > > XRUN or whatever unexpected.
+> > > (However, we haven't heard any serious bug reports due to this over
+> > > years, so practically seen, it's fairly safe to assume that the impact
+> > > by this bug is limited.)
+> > >
+> > > Ideally speaking, we should correct the wrong mmap status control
+> > > definition.  But this would cause again incompatibility with the
+> > > existing binaries, and fixing it (e.g. by renumbering ioctls) would be
+> > > really messy.
+> > >
+> > > So, as of this patch, we only correct the behavior of 32bit compat
+> > > mode and keep the rest as is.  Namely, the SYNC_PTR ioctl is now
+> > > handled differently in compat mode to read/write the 32bit values at
+> > > the right offsets.  The control mmap of 32bit apps on 64bit kernels
+> > > has been already disabled (which is likely rather an overlook, but
+> > > this worked fine at this time :), so covering SYNC_PTR ioctl should
+> > > suffice as a fallback.
+> > >
+> > > Fixes: 80fe7430c708 ("ALSA: add new 32-bit layout for snd_pcm_mmap_status/control")
+> > > Reported-by: Michael Forney <mforney@mforney.org>
+> > > Cc: <stable@vger.kernel.org>
+> > > Cc: Arnd Bergmann <arnd@arndb.de>
+> > > Cc: Rich Felker <dalias@libc.org>
+> > > Link: https://lore.kernel.org/r/29QBMJU8DE71E.2YZSH8IHT5HMH@mforney.org
+> > > Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> > 
+> > Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+> > 
+> > This does look like it's the best way we can get out of the mess we're
+> > in for the kernel interface.
+> > 
+> > Do you have any ideas for how to test this properly to ensure that
+> > there are no further problems in these ioctls? Is there a testsuite
+> > for ALSA that can be run on a musl-enabled distro in both native
+> > and compat mode to exercise the ioctl and mmap interfaces?
+> 
+> There is no known test program, and it's what I planned to check in
+> the next week before merging :)
+
+I checked a small code to write PCM data (that was used for testing
+the low-latency I/O on USB-audio -- attached below) together with
+salsa-lib [*] (devel branch, in which I hacked to enforce 64bit
+timespec), and confirmed that 32bit compat mode indeed leading to the
+bogus appl_ptr updates in the current kernel.  And, my patch was
+confirmed to work as well.
+
+So the fix was queued to for-linus branch.
 
 
->> Andy Shevchenko (4):
->>   ASoC: Intel: bytcr_rt5651: Get platform data via dev_get_platdata()
->>   ASoC: Intel: bytcr_rt5651: Use temporary variable for struct device
->>   ASoC: Intel: bytcr_rt5651: use devm_clk_get_optional() for mclk
->>   ASoC: Intel: bytcr_rt5651: Utilize dev_err_probe() to avoid log
->>     saturation
-> 
-> Thanks, the entire series looks good to me:
-> 
-> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-> 
-> for the series.
+Takashi
 
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+[*] https://github.com/tiwai/salsa-lib
+
+
+--Multipart_Mon_Oct_11_18:17:20_2021-1
+Content-Type: application/octet-stream
+Content-Disposition: attachment; filename="aiotest.c"
+Content-Transfer-Encoding: 7bit
+
+#include <stdio.h>
+#include <alsa/asoundlib.h>
+
+#if 0
+#define ACCESS_TYPE	SND_PCM_ACCESS_RW_INTERLEAVED
+#define do_write	snd_pcm_writei
+#else
+#define ACCESS_TYPE	SND_PCM_ACCESS_MMAP_INTERLEAVED
+#define do_write	snd_pcm_mmap_writei
+#endif
+
+int main(int argc, char **argv)
+{
+	snd_pcm_t *pcm;
+	snd_pcm_hw_params_t *hw;
+	snd_pcm_stream_t stream;
+	snd_pcm_uframes_t psize, bsize, ret;
+	char *buf;
+	struct pollfd pfd;
+
+	if (argc < 5) {
+		fprintf(stderr, "aiotest device direction period-size buffer-size\n");
+		return 1;
+	}
+	if (*argv[2] == 'p' || *argv[2] == 'P')
+		stream = SND_PCM_STREAM_PLAYBACK;
+	else
+		stream = SND_PCM_STREAM_CAPTURE;
+	psize = atoi(argv[3]);
+	bsize = atoi(argv[4]);
+
+	buf = calloc(4, bsize);
+
+	if (snd_pcm_open(&pcm, argv[1], stream, 0)) {
+		perror("open");
+		return 1;
+	}
+	
+	snd_pcm_hw_params_alloca(&hw);
+	snd_pcm_hw_params_any(pcm, hw);
+	snd_pcm_hw_params_set_access(pcm, hw, ACCESS_TYPE);
+	snd_pcm_hw_params_set_format(pcm, hw, SND_PCM_FORMAT_S16_LE);
+	snd_pcm_hw_params_set_channels(pcm, hw, 2);
+	snd_pcm_hw_params_set_rate(pcm, hw, 48000, 0);
+	snd_pcm_hw_params_set_period_size_near(pcm, hw, &psize, 0);
+	snd_pcm_hw_params_set_buffer_size_near(pcm, hw, &bsize);
+
+	if (snd_pcm_hw_params(pcm, hw)) {
+		perror("hw_params");
+		return 1;
+	}
+	
+	snd_pcm_poll_descriptors(pcm, &pfd, 1);
+
+ again:
+	if ((ret = do_write(pcm, buf, psize)) < (snd_pcm_sframes_t)psize ||
+	    (ret = do_write(pcm, buf, psize)) < (snd_pcm_sframes_t)psize) {
+		perror("initial write");
+		fprintf(stderr, "psize = %ld / %ld\n", psize, ret);
+		return 1;
+	}
+
+	if (snd_pcm_state(pcm) != SND_PCM_STATE_RUNNING) {
+		if (snd_pcm_start(pcm)) {
+			perror("start");
+			return 1;
+		}
+	}
+
+	for (;;) {
+		int err = poll(&pfd, 1, -1);
+		if (err < 0) {
+			if (snd_pcm_state(pcm) == SND_PCM_STATE_XRUN) {
+				fprintf(stderr, "XRUN, recovering\n");
+				snd_pcm_recover(pcm, err, 1);
+				goto again;
+			}
+			perror("poll");
+			return 1;
+		}
+		//avail = snd_pcm_avail(pcm);
+		err = do_write(pcm, buf, psize);
+		if (err < 0) {
+			if (snd_pcm_state(pcm) == SND_PCM_STATE_XRUN) {
+				fprintf(stderr, "XRUN, recovering\n");
+				snd_pcm_recover(pcm, err, 1);
+				goto again;
+			}
+			perror("poll");
+			return 1;
+		}
+	}
+}
+
+--Multipart_Mon_Oct_11_18:17:20_2021-1--
