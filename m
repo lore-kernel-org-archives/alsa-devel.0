@@ -2,130 +2,79 @@ Return-Path: <SRS0=u8hq=O7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BF39C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Oct 2021 05:55:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AF67C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Oct 2021 07:56:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 64A0460238
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Oct 2021 05:55:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 64A0460238
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=amd.com
+	by mail.kernel.org (Postfix) with ESMTPS id AB64D60EDF
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Oct 2021 07:56:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AB64D60EDF
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BFD161673;
-	Mon, 11 Oct 2021 07:54:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BFD161673
+	by alsa0.perex.cz (Postfix) with ESMTPS id AEBCE1666;
+	Mon, 11 Oct 2021 09:55:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AEBCE1666
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1633931710;
-	bh=sfxthqhpcowdWgkMxrYid07tqsyu1+CLjk9Gs1uyt2s=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=lSUzOPJHm/iE1RRf6O8WORz4to21NKbu4rO0JHoPvxiphZTFRhiJuUTOpS8he7r9q
-	 QP+M7XCwggM9VgoqTzSB0ulc1F1zHo3aO+BkELCP91KlFDVUvqIa3UUaOL9RKeKSBr
-	 9RaDLPmfzO4JSrEwwSsG0wE9xLXZb9UFEalYPa6o=
+	s=default; t=1633938999;
+	bh=RomjUg8H0W7np8CFRs+fGSZ/djKoHXfWim1SwBfbBkA=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=fIpNmu7LzL0qdxNSimY55FbScRlgrKdHAAb5IS0cZSOJUrBqOSG2QXLTZlcVI544W
+	 Hkjm5r7Y7WNwe9AoqP7SvCh6jmJ3e+AdhncbAIRVB6oalp/NT+uTh5WHMpI2ZZqlNL
+	 TR375sGqRuTbMHBTAgE8JOS2m6RooyP8wwzdhW8c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 53B35F8025B;
-	Mon, 11 Oct 2021 07:54:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 35AE9F8025B;
+	Mon, 11 Oct 2021 09:55:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 768A0F80269; Mon, 11 Oct 2021 07:54:19 +0200 (CEST)
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com
- (mail-co1nam11on2049.outbound.protection.outlook.com [40.107.220.49])
+ id BB66DF80104; Mon, 11 Oct 2021 09:55:46 +0200 (CEST)
+Received: from bombadil.infradead.org (bombadil.infradead.org
+ [IPv6:2607:7c80:54:e::133])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 621B6F8016D
- for <alsa-devel@alsa-project.org>; Mon, 11 Oct 2021 07:54:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 621B6F8016D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 69CDDF80104
+ for <alsa-devel@alsa-project.org>; Mon, 11 Oct 2021 09:55:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69CDDF80104
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com
- header.b="p38iy4ez"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=n+5/wQj+fPsGvAMrtE9hWurs5XTHTVzvGsuKhGTBs65ixp7XBqgKb4w5UibIzF5J1HuibTIM4+QDn28kSEI7LkKsjv4HvZpxuTak4ydtM6mcxAK2IZ1Kj59e/A1RRFLm4rMFKPweoBsm8s4s7cpwh/alnY5bp+OqlmoadYHW8f7a1wIZnVMZOj3KJVq8eJAv7U8v0g9oIpfrxY3qdowVXQXVuFCcojtMoAh9YxPPkFnYrWmXFsbU2Ox17jbycSq/ZJcGJEQv5yM3etJUsiiqau1/B5C2txiLZgHM3TLNhU5qGLhniE3n7gkWDQN/JZm7TvNoULP9tbjFpceZwR79dg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1pOy6LqmgSBBtu403W9qa+2xxpZoxTlcYPuQoiRSD+0=;
- b=NDwnqbRZzox9if3Mg0KJwe2OGh9ub1RKT9CQ6AJbRHzbAILWAG5jZEiA8l795EPxhzD3Mr4W+KHjATvRy5tmwv+po9IIE+b6e4aMkOhH/nsyHl8xQPkzCerJju/Q0mUD9c1xpSJiie2PpZfDn1vXRsnj5l5ZkiG4BVBSEIcoxvYZnGb/L69wsjyMwWuR0W+ORb7BFbgbymZWkY+xqAwsXOQjxVGmXiep2n7oMFxOy3tvk1nL5322kPSMgIAzAAet47bczWhBQyOnBu1mesyyYzN6qwP2OwM9mxVcBtS73ARPbvcIVI7njX4+jVtZabPUqfSdzuQASsMaTtU9oCkFBg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1; 
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1pOy6LqmgSBBtu403W9qa+2xxpZoxTlcYPuQoiRSD+0=;
- b=p38iy4ezu9JN/3zScbrqMo6OH+j8SqI18jQPmzcYdO3nURRt1E6jLToXNKexWc2+gPP27Qy6oaAVWqLZxcBD/Lk4/J+XTjYSEuPwixqVnhC4J18i7/v6XdMlPVwW4K9sBk9T53W7BBCaajztr4hzt88OQJMi7gFcJJYV4Ni5PO4=
-Received: from MW4PR04CA0079.namprd04.prod.outlook.com (2603:10b6:303:6b::24)
- by MWHPR1201MB0221.namprd12.prod.outlook.com (2603:10b6:301:56::19)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.24; Mon, 11 Oct
- 2021 05:54:08 +0000
-Received: from CO1NAM11FT041.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:6b:cafe::64) by MW4PR04CA0079.outlook.office365.com
- (2603:10b6:303:6b::24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18 via Frontend
- Transport; Mon, 11 Oct 2021 05:54:08 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com;
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- CO1NAM11FT041.mail.protection.outlook.com (10.13.174.217) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4587.18 via Frontend Transport; Mon, 11 Oct 2021 05:54:08 +0000
-Received: from SATLEXMB07.amd.com (10.181.41.45) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Mon, 11 Oct
- 2021 00:54:07 -0500
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB07.amd.com
- (10.181.41.45) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Sun, 10 Oct
- 2021 22:54:06 -0700
-Received: from chrome.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2308.8 via Frontend
- Transport; Mon, 11 Oct 2021 00:53:57 -0500
-From: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
-To: <broonie@kernel.org>, <alsa-devel@alsa-project.org>
-Subject: [PATCH] ASoC: amd: Kconfig: Select fch clock support with machine
- driver
-Date: Mon, 11 Oct 2021 11:23:53 +0530
-Message-ID: <20211011055354.67719-1-AjitKumar.Pandey@amd.com>
-X-Mailer: git-send-email 2.25.1
+ dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
+ header.b="V9gwkBI9"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+ Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+ Subject:Sender:Reply-To:Content-ID:Content-Description;
+ bh=7aFBilyQzv3eGjfhC1Mgx1dqBHvelIzNlMAAN5gT0Ac=; b=V9gwkBI9pbATcC/40PsmeMBlNw
+ 6uNUwP20UUN4B51LnX2b/bLhkHldWu02eXKf+JX8B4Gy116HRsBAXj+DSQYF/45dB4Lv0cxDJOnqy
+ 3XmcDypGwNbJf0ZnCRnLcQtWokdAILmj/CFmsfQQ4CYXKW1ElF97UHRrjGJ+VvxzkHCGwzHcL69yf
+ euSlh5KrqNejYPeV1U+lQsVw170ykc/iH1euV2bhzTUE3IC3Ab1HL1BlSQ5LcGYjqSA3vclwtLSy9
+ fmpyGPnNDNffGm+o0tokHY8ycR47OE81VtkYnkubQgMBsmXFUBjFjGdW7/T8oPg8x8zxBZ+gvMHg2
+ mL7+Da4Q==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+ by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mZq9f-008CaO-EB; Mon, 11 Oct 2021 07:55:27 +0000
+Subject: Re: [PATCH 13/13] ASoC: amd: enable yc machine driver build
+To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>, broonie@kernel.org,
+ alsa-devel@alsa-project.org
+References: <20211011055621.13240-1-Vijendar.Mukunda@amd.com>
+ <20211011055621.13240-14-Vijendar.Mukunda@amd.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <7d58fea8-cd45-c25d-300f-1e7438079c94@infradead.org>
+Date: Mon, 11 Oct 2021 00:55:26 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8e03226d-b9d1-4c4d-46bd-08d98c7b8a84
-X-MS-TrafficTypeDiagnostic: MWHPR1201MB0221:
-X-Microsoft-Antispam-PRVS: <MWHPR1201MB0221D5749B5559E00B64631482B59@MWHPR1201MB0221.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1186;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fyFqaky8uFSWf0NGHrsTYk630u0mg1QCTRpivgBpw9VLJFvB8asL5Oo6g98fZ6f1cEw6jl+EBcinSAPlAVBftC0uLmLOTxkB84aenMR5pHi/t8W6GWIWcL1Ma+oqmsmYjvyYu6yBk9wGpOWPQqLSwBqG6MnlCBMDxNdnwSHfMq4MsfpfHotAggu7yO5/mbPEnN2sSjj8s9IZGfvBtX5RmWusb9Y0iN06q+9GjjZxickT0FKK0r7vZJHdUx4AdeH8CVPOxApJVrVYz4kI9UPL8UhWdGJ69YgVNw6F0SbBlOrIedBHlU4K4t5Zfq/pk0JL/iTkxKg3/KgrPCaf5uEfdkv85qL1tQ/4VQqDHgiV3rMBHzA+rLafniYhHTnBge4p9mp7Yka4cVQtFTUwEVpq8XT5XiTgw5QLze9Sqmbntq7dszrLMZL6wggcidKIf9jPYn8xb6vAH3IsLNJYy2iotC6WawZUnrvqQcwjygGY5HzqNcfwbmTTCR24xs8fKaeChvCY0m/JvS9S4e5b+YFjKI3wwubfa7O51vCiKmdfWq0/6ORxQvoW3n+L+qFp7aCbdH1sUABBW5qrL8unmtsDjxpkolInNetJcktUJFcS6/qjW50OnH3pVO0vjcQtGQ75RF54pjlG9ZoUYUB5sILVKQ8apVJHGdRsMl04I5nbiHEoLDvHi+u01SRtGE+xRXNueohILtmvrK/6fd2ntSwulewWSnpgTrY4YXsKPEnnzqY=
-X-Forefront-Antispam-Report: CIP:165.204.84.17; CTRY:US; LANG:en; SCL:1; SRV:;
- IPV:CAL; SFV:NSPM; H:SATLEXMB03.amd.com; PTR:InfoDomainNonexistent; CAT:NONE;
- SFS:(4636009)(36840700001)(46966006)(2906002)(8676002)(70206006)(2616005)(110136005)(36860700001)(70586007)(356005)(186003)(7696005)(54906003)(426003)(4326008)(26005)(5660300002)(336012)(81166007)(82310400003)(1076003)(508600001)(36756003)(6666004)(316002)(47076005)(4744005)(8936002)(86362001)(83380400001)(36900700001);
- DIR:OUT; SFP:1101; 
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Oct 2021 05:54:08.0977 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8e03226d-b9d1-4c4d-46bd-08d98c7b8a84
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d; Ip=[165.204.84.17];
- Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT041.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1201MB0221
+In-Reply-To: <20211011055621.13240-14-Vijendar.Mukunda@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Sunil-kumar.Dommati@amd.com, Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
- open list <linux-kernel@vger.kernel.org>, Basavaraj.Hiregoudar@amd.com,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Vijendar Mukunda <vijendar.mukunda@amd.com>, Alexander.Deucher@amd.com
+ Sunil-kumar.Dommati@amd.com, Richard.Gong@amd.com,
+ Basavaraj.Hiregoudar@amd.com, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mario.Limonciello@amd.com,
+ Alexander.Deucher@amd.com, open list <linux-kernel@vger.kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -141,35 +90,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We are using fch clock controller as parent mclk source for rt5682
-codec. Add config to enable clock framework support for 48MHz fixed
-clock when machine driver config is selected.
+On 10/10/21 10:56 PM, Vijendar Mukunda wrote:
+> Enable YC platform dmic machine driver build.
+> 
+> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+> ---
+>   sound/soc/amd/Kconfig     | 7 +++++++
+>   sound/soc/amd/yc/Makefile | 2 ++
+>   2 files changed, 9 insertions(+)
+> 
+> diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
+> index 42825e8ad2ad..864d80f14421 100644
+> --- a/sound/soc/amd/Kconfig
+> +++ b/sound/soc/amd/Kconfig
+> @@ -67,3 +67,10 @@ config SND_SOC_AMD_ACP6x
+>   	depends on X86 && PCI
+>   	help
+>   	 This option enables ACP v6.x DMIC support on AMD platform
+> +
 
-Signed-off-by: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
----
- sound/soc/amd/Kconfig | 2 ++
- 1 file changed, 2 insertions(+)
+For the help text above here and the one below:
 
-diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
-index 49ff5e73e9ba..a2cb50d09980 100644
---- a/sound/soc/amd/Kconfig
-+++ b/sound/soc/amd/Kconfig
-@@ -6,6 +6,7 @@ config SND_SOC_AMD_ACP
- 
- config SND_SOC_AMD_CZ_DA7219MX98357_MACH
- 	tristate "AMD CZ support for DA7219, RT5682 and MAX9835"
-+	select CLK_FIXED_FCH
- 	select SND_SOC_DA7219
- 	select SND_SOC_RT5682_I2C
- 	select SND_SOC_MAX98357A
-@@ -30,6 +31,7 @@ config SND_SOC_AMD_ACP3x
- 
- config SND_SOC_AMD_RV_RT5682_MACH
- 	tristate "AMD RV support for RT5682"
-+	select CLK_FIXED_FCH
- 	select SND_SOC_RT5682_I2C
- 	select SND_SOC_MAX98357A
- 	select SND_SOC_CROS_EC_CODEC
+a. End the sentence with a period ('.').
+
+b. Pay attention to the documented/accepted kernel style:
+
+(from Documentation/process/coding-style.rst, section 10):
+
+For all of the Kconfig* configuration files throughout the source tree,
+the indentation is somewhat different.  Lines under a ``config`` definition
+are indented with one tab, while help text is indented an additional two
+spaces.
+
+> +config SND_SOC_AMD_YC_MACH
+> +        tristate "AMD YC support for DMIC"
+> +        select SND_SOC_DMIC
+> +        depends on SND_SOC_AMD_ACP6x
+> +        help
+> +         This option enables machine driver for DMIC endpoint
+
+
+thanks.
 -- 
-2.25.1
-
+~Randy
