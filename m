@@ -2,85 +2,102 @@ Return-Path: <SRS0=z7f8=PA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 65E23C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Oct 2021 07:36:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D38C2C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Oct 2021 09:05:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3E32C60D42
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Oct 2021 07:36:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3E32C60D42
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 30C2061039
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Oct 2021 09:05:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 30C2061039
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A9D7A1664;
-	Tue, 12 Oct 2021 09:35:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A9D7A1664
+	by alsa0.perex.cz (Postfix) with ESMTPS id AAF2D1662;
+	Tue, 12 Oct 2021 11:04:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AAF2D1662
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634024177;
-	bh=OT88Fh/j177aljPyts/B56IiGqtyMlr/HtdDZhw2pGI=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1634029529;
+	bh=ifgNcAB2SNLRjQPj48ikB/L7+o+Vq9ZN17N1zylgUDQ=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gu6uyPTZXxS7dSBuxFH6FchTIfNxkquR9d69N3V6TZlrG8K3SfcXNby4fmK/3qz+O
-	 4b5S2+VGyj+g0w+yidrxd/FhsepGXfAptUEG7zq2EWF51puRPLgD46VSAs4Tmx8BMj
-	 yJxYp5YT2iJAlW/7qrxephLncDEy7SLweRIZDO+w=
+	b=BpmvFgXtwx6oqyesK+/Hl7OBZXhRoo2YLacEJkeiZl0INDgxGVQO0Yx5n++m/+SoY
+	 tnviu3tAkgVQtryZOJhGBU+uZRQ8zzBSBjgWGSVZxcU3XSS2Od5FEZ0qJFy3neUpcX
+	 A5Gh+yPLrvYcsOeZcK84PtUqPJE+vBLqBoc0NF+A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3B677F801F7;
-	Tue, 12 Oct 2021 09:35:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3B1DAF80212;
+	Tue, 12 Oct 2021 11:04:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 64EADF800C0; Tue, 12 Oct 2021 09:35:25 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id 62D1AF80245; Tue, 12 Oct 2021 11:04:37 +0200 (CEST)
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com
+ [IPv6:2a00:1450:4864:20::435])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 41234F80083
- for <alsa-devel@alsa-project.org>; Tue, 12 Oct 2021 09:35:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41234F80083
+ by alsa1.perex.cz (Postfix) with ESMTPS id 36525F800CB
+ for <alsa-devel@alsa-project.org>; Tue, 12 Oct 2021 11:04:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36525F800CB
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="deeaLoY1"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="pWxtcK1r"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 4340E1FF2A;
- Tue, 12 Oct 2021 07:35:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1634024116; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=tFCztFG0NMzu9QUaokuXv6oskYuEM7OIjk8q5b1QKmM=;
- b=deeaLoY1E/z/wmhY6SlfmEIF79usbAz4JOh5UwnEucv0H4S8GxDZ0J+G8/mDfdBDBnH4nb
- B7VuSU3ockDrWm0Qjwl9socQVto0y7+n425ClOdEUvLQ+LaudFysMUkuKU+yPqR22vMLB2
- KgnYO8EAKvksmVySp0tiKjm5EjhePOI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1634024116;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=tFCztFG0NMzu9QUaokuXv6oskYuEM7OIjk8q5b1QKmM=;
- b=pWxtcK1rtSj4CMlAUVXexNrniQrKjYQIRCMWjUI4gUu+v0JSjHwjW0Njekh5TCIjDcV5Id
- 8+z6aZtjtwybCpAw==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 27E0EA3B85;
- Tue, 12 Oct 2021 07:35:16 +0000 (UTC)
-Date: Tue, 12 Oct 2021 09:35:16 +0200
-Message-ID: <s5ho87u3dcb.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] ALSA: usb-audio: allow -EPIPE errors for some v2 messages
-In-Reply-To: <YWRy+UoG1YHcQ7UM@kroah.com>
-References: <YWLbEdHUE3k/i0fe@kroah.com> <s5hily46316.wl-tiwai@suse.de>
- <YWRYD7fphcaWKEOG@kroah.com> <s5h7dej4kbe.wl-tiwai@suse.de>
- <YWRy+UoG1YHcQ7UM@kroah.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-usb@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="OUCqqoYl"
+Received: by mail-wr1-x435.google.com with SMTP id e12so64707440wra.4
+ for <alsa-devel@alsa-project.org>; Tue, 12 Oct 2021 02:04:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=nM9ryI+c+NLtTNUZo2AiWUoKoEPFgkQ1TAdM3Mn2iis=;
+ b=OUCqqoYliTYGu9oksn4qZr2MyPWixyHxjPTni2yDBH1kmgpybP40V9gCaPPdkiIr7u
+ PkPxey9VPJZ/TNZS3NiV2AzsmP736DOYJKF8jYVVCsnIwNS3liD1B2gqbNrpyK2YGzto
+ K43oDQU9dxwfR7PVP2cfjhMeILXRQ4bRPoa40Fhgg+IMULk5UksDqwKgdupIdkEGftqm
+ DxRbmQRRSvQzD+ZQRH6D4+AyVbI6CFd2NdISUClrRDtOk2Cm1eTq9OUbznMi9wz3lcam
+ qg7afqFWap7t4DqaiVhLN2ib5AOttDy/YQoMDnggEodqWiZgYxUv6Xw8VxsOYEtvNMrH
+ uq+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=nM9ryI+c+NLtTNUZo2AiWUoKoEPFgkQ1TAdM3Mn2iis=;
+ b=52CcaMwJ/50jiCqFpTvMg0bvdyrIH8AhBDeYsWLH9x+023rXE8NOUSLtBRtg5lAySf
+ 2831eXzo37e6Z1z3G02NFSQGGK0QzbgIWncuG2uVrKhpRk2PzYWOwhpbon5YhWADgegj
+ k6LDZ3OZKtMsaiPgQ1SobT6T6jNKCbaOgBGYq+aQSDg2Kz2RE0PCV7hJHIOrE43Bn5g2
+ s2tdemuKwEJmJIk6FEXMqkzLAjDh84/Lt96hFPXeKCgOOrdKDcnkYClR2rzDAsRvuBUN
+ MItrI7O6ovpbN4rthZFRpKL4knyjUpbidUbcwusBpDDnVgKLb+6aMmBTIfg69pze9PnF
+ pWYw==
+X-Gm-Message-State: AOAM533drna/n8c5vg6HR+V998CtMeoTbyvx165Hxh2Jexka+UptLB9M
+ qp6BCVd1c4kL54zTRLnbGfzTxA==
+X-Google-Smtp-Source: ABdhPJzldmhbBry7GuAupyMrQ6kcGWOkrHsnOW8VChM5aqK1EEGJqirPQaDdD4vD8TnhCDjQXD0xLg==
+X-Received: by 2002:a7b:c114:: with SMTP id w20mr4093213wmi.143.1634029470271; 
+ Tue, 12 Oct 2021 02:04:30 -0700 (PDT)
+Received: from [192.168.86.34]
+ (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+ by smtp.googlemail.com with ESMTPSA id b19sm1987114wmb.1.2021.10.12.02.04.28
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 12 Oct 2021 02:04:29 -0700 (PDT)
+Subject: Re: [PATCH v3 2/5] ASoC: qcom: dt-bindings: Add compatible names for
+ lpass sc7280 digital codecs
+To: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>, agross@kernel.org,
+ bjorn.andersson@linaro.org, lgirdwood@gmail.com, broonie@kernel.org,
+ robh+dt@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
+ perex@perex.cz, tiwai@suse.com, rohitkr@codeaurora.org,
+ linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ swboyd@chromium.org, judyhsiao@chromium.org
+References: <1633702144-19017-1-git-send-email-srivasam@codeaurora.org>
+ <1633702144-19017-3-git-send-email-srivasam@codeaurora.org>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <8e042343-a40e-d00f-31a8-8368160329e4@linaro.org>
+Date: Tue, 12 Oct 2021 10:04:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <1633702144-19017-3-git-send-email-srivasam@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: Venkata Prasad Potturu <potturu@codeaurora.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,139 +113,87 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 11 Oct 2021 19:23:05 +0200,
-Greg Kroah-Hartman wrote:
+
+
+On 08/10/2021 15:09, Srinivasa Rao Mandadapu wrote:
+> Update compatible names in va, wsa, rx and tx macro codes for lpass sc7280
 > 
-> On Mon, Oct 11, 2021 at 06:07:01PM +0200, Takashi Iwai wrote:
-> > Could you also post the contents of /proc/asound/card*/usbmixer (only
-> > for the corresponding device), too?
+
+TBH, I was also expecting the clks that are mandatory for sc7280 in this 
+binding patch.
+
+I think we need this and this will allow us to validate on the dt-entries.
+
+
+
+--srini
+> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
+> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> ---
+>   Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml  | 4 +++-
+>   Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml  | 4 +++-
+>   Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml  | 4 +++-
+>   Documentation/devicetree/bindings/sound/qcom,lpass-wsa-macro.yaml | 4 +++-
+>   4 files changed, 12 insertions(+), 4 deletions(-)
 > 
-> Sure, here it is:
+> diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml
+> index 443d556..bc762b3 100644
+> --- a/Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml
+> +++ b/Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml
+> @@ -11,7 +11,9 @@ maintainers:
+>   
+>   properties:
+>     compatible:
+> -    const: qcom,sm8250-lpass-rx-macro
+> +    enum:
+> +      - qcom,sc7280-lpass-rx-macro
+> +      - qcom,sm8250-lpass-rx-macro
+>   
+>     reg:
+>       maxItems: 1
+> diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml
+> index 6b5ca02..74f5386 100644
+> --- a/Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml
+> +++ b/Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml
+> @@ -11,7 +11,9 @@ maintainers:
+>   
+>   properties:
+>     compatible:
+> -    const: qcom,sm8250-lpass-tx-macro
+> +    enum:
+> +      - qcom,sc7280-lpass-tx-macro
+> +      - qcom,sm8250-lpass-tx-macro
+>   
+>     reg:
+>       maxItems: 1
+> diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml
+> index 679b49c..99f2c36 100644
+> --- a/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml
+> +++ b/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml
+> @@ -11,7 +11,9 @@ maintainers:
+>   
+>   properties:
+>     compatible:
+> -    const: qcom,sm8250-lpass-va-macro
+> +    enum:
+> +      - qcom,sc7280-lpass-va-macro
+> +      - qcom,sm8250-lpass-va-macro
+>   
+>     reg:
+>       maxItems: 1
+> diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-wsa-macro.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-wsa-macro.yaml
+> index 435b019..13cdb8a 100644
+> --- a/Documentation/devicetree/bindings/sound/qcom,lpass-wsa-macro.yaml
+> +++ b/Documentation/devicetree/bindings/sound/qcom,lpass-wsa-macro.yaml
+> @@ -11,7 +11,9 @@ maintainers:
+>   
+>   properties:
+>     compatible:
+> -    const: qcom,sm8250-lpass-wsa-macro
+> +    enum:
+> +      - qcom,sc7280-lpass-wsa-macro
+> +      - qcom,sm8250-lpass-wsa-macro
+>   
+>     reg:
+>       maxItems: 1
 > 
-> USB Mixer: usb_id=0x30be0101, ctrlif=0, ctlerr=0
-> Card: Schiit Audio Schiit Hel at usb-0000:47:00.1-2.2, high speed
->   Unit: 5
->     Control: name="Mic - Input Jack", index=0
->     Info: id=5, control=2, cmask=0x0, channels=1, type="BOOLEAN"
->     Volume: min=0, max=1, dBmin=0, dBmax=0
->   Unit: 7
->     Control: name="Speaker - Output Jack", index=0
->     Info: id=7, control=2, cmask=0x0, channels=1, type="BOOLEAN"
->     Volume: min=0, max=1, dBmin=0, dBmax=0
->   Unit: 13
->     Control: name="PCM Playback Switch", index=0
->     Info: id=13, control=1, cmask=0x0, channels=1, type="INV_BOOLEAN"
->     Volume: min=0, max=1, dBmin=0, dBmax=0
->   Unit: 17
->     Control: name="Mic Capture Switch", index=0
->     Info: id=17, control=1, cmask=0x0, channels=1, type="INV_BOOLEAN"
->     Volume: min=0, max=1, dBmin=0, dBmax=0
->   Unit: 18
->     Control: name="Clock Source 18 Validity", index=0
->     Info: id=18, control=2, cmask=0x0, channels=1, type="BOOLEAN"
->     Volume: min=0, max=1, dBmin=0, dBmax=0
->   Unit: 22
->     Control: name="Clock Source 22 Validity", index=0
->     Info: id=22, control=2, cmask=0x0, channels=1, type="BOOLEAN"
->     Volume: min=0, max=1, dBmin=0, dBmax=0
-
-Hm, I expected more exotic control that failed, but it was Mic Capture
-Switch, which should be treated normally.
-
-Could you try the patch below?  This will still show other warning
-messages, but it'll forcibly initialize the mixer elements at probe
-time, and the rest should work.
-
-Once after it's confirmed to work, we may shut up the device warnings
-with a quirk.
-
-
-thanks,
-
-Takashi
-
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -361,9 +361,8 @@ static int get_ctl_value_v2(struct usb_mixer_elem_info *cval, int request,
- 
- 	memset(buf, 0, sizeof(buf));
- 
--	ret = snd_usb_lock_shutdown(chip) ? -EIO : 0;
--	if (ret)
--		goto error;
-+	if (snd_usb_lock_shutdown(chip))
-+		return -EIO;
- 
- 	idx = mixer_ctrl_intf(cval->head.mixer) | (cval->head.id << 8);
- 	ret = snd_usb_ctl_msg(chip->dev, usb_rcvctrlpipe(chip->dev, 0), bRequest,
-@@ -372,8 +371,7 @@ static int get_ctl_value_v2(struct usb_mixer_elem_info *cval, int request,
- 	snd_usb_unlock_shutdown(chip);
- 
- 	if (ret < 0) {
--error:
--		usb_audio_err(chip,
-+		usb_audio_dbg(chip,
- 			"cannot get ctl value: req = %#x, wValue = %#x, wIndex = %#x, type = %d\n",
- 			request, validx, idx, cval->val_type);
- 		return ret;
-@@ -1201,12 +1199,32 @@ static void volume_control_quirks(struct usb_mixer_elem_info *cval,
- 	}
- }
- 
-+/* forcibly initialize the current mixer value; if GET_CUR fails, set to
-+ * the minimum as default
-+ */
-+static void init_cur_mix_raw(struct usb_mixer_elem_info *cval, int ch, int idx)
-+{
-+	int val, err;
-+
-+	err = snd_usb_get_cur_mix_value(cval, ch, idx, &val);
-+	if (!err)
-+		return;
-+	if (!cval->head.mixer->ignore_ctl_error)
-+		usb_audio_warn(cval->head.mixer->chip,
-+			       "%d:%d: failed to get current value for ch %d (%d)\n",
-+			       cval->head.id, mixer_ctrl_intf(cval->head.mixer),
-+			       ch, err);
-+	snd_usb_set_cur_mix_value(cval, ch, idx, cval->min);
-+}
-+
- /*
-  * retrieve the minimum and maximum values for the specified control
-  */
- static int get_min_max_with_quirks(struct usb_mixer_elem_info *cval,
- 				   int default_min, struct snd_kcontrol *kctl)
- {
-+	int i, idx;
-+
- 	/* for failsafe */
- 	cval->min = default_min;
- 	cval->max = cval->min + 1;
-@@ -1219,7 +1237,6 @@ static int get_min_max_with_quirks(struct usb_mixer_elem_info *cval,
- 	} else {
- 		int minchn = 0;
- 		if (cval->cmask) {
--			int i;
- 			for (i = 0; i < MAX_CHANNELS; i++)
- 				if (cval->cmask & (1 << i)) {
- 					minchn = i + 1;
-@@ -1320,6 +1337,19 @@ static int get_min_max_with_quirks(struct usb_mixer_elem_info *cval,
- 		}
- 	}
- 
-+	/* initialize all elements */
-+	if (!cval->cmask) {
-+		init_cur_mix_raw(cval, 0, 0);
-+	} else {
-+		idx = 0;
-+		for (i = 0; i < MAX_CHANNELS; i++) {
-+			if (cval->cmask & (1 << i)) {
-+				init_cur_mix_raw(cval, i + 1, idx);
-+				idx++;
-+			}
-+		}
-+	}
-+
- 	return 0;
- }
- 
