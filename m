@@ -2,86 +2,62 @@ Return-Path: <SRS0=z7f8=PA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DA03C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Oct 2021 13:25:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 534EBC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Oct 2021 14:37:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 79EA86101D
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Oct 2021 13:25:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 79EA86101D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id E05976103D
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Oct 2021 14:37:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E05976103D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F3BD71662;
-	Tue, 12 Oct 2021 15:24:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F3BD71662
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7047A167D;
+	Tue, 12 Oct 2021 16:37:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7047A167D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634045105;
-	bh=pxIRGvY/i+OLZGu8DgM6tmRr+Pb/3/VSOT2QETqrehg=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=S7qZTYBgrMWQbJ/v21eFcIVDUxkdBCusDqWI5yKBL4J0d9EYVB6sqJOJjaHlaeU4d
-	 nN8yhnWrogHZInFhS3rVcUrIc/Yxctto/B1JbZPWEKP9veZPRc+i/eZc0tUnk8tZu2
-	 TU++Ok+0SXfEbRv87jBywmNzsACb0nSpxjpYREGM=
+	s=default; t=1634049475;
+	bh=vvDmLIHzdmY23ENJ2klDBUYGhpTWQiXCRE4MxW7RKYY=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=UMjUXOP4lv2FA6vGueJ1srsR5LllxbeaWZgGEnHOUCfduFo6+B/deftt1KWmw/aB2
+	 VhEGeuTGoMvHzsx6/0k1RFwmze5WNQ7czdKJTWs3vcsYm9kcEch5sZYpsMolHV5IBn
+	 OoU/qG/1sV6Eocl4mKl76X7rKdVB+arnyzw8UaPg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 790B7F801F7;
-	Tue, 12 Oct 2021 15:24:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ED509F801F7;
+	Tue, 12 Oct 2021 16:37:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 82A61F80212; Tue, 12 Oct 2021 15:24:13 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id D581DF80212; Tue, 12 Oct 2021 16:37:02 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B064EF80088
- for <alsa-devel@alsa-project.org>; Tue, 12 Oct 2021 15:24:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B064EF80088
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="kL8nwYRK"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="/rL67Ip2"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 5748F2009E;
- Tue, 12 Oct 2021 13:24:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1634045044; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=n3GgDvylGNJ7V1J2rldQvLGL+9Bh4F5sQ7kCcd8S7RM=;
- b=kL8nwYRKsxneTCZl2UsPJBlQ7KenSrLldX8DTudpBryFw/t+YyzrmjTB2HFxtSIyMC9Gir
- XgQdp8vE1jQz7zSu7J8QS7AqVvrwTS54WvGIhvh+GpUWBzeZF7LcrzQshIVl+Gn6JyyEkz
- vD6/+VFD6vfyD5+xcCWBMxjGmzlOYPg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1634045044;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=n3GgDvylGNJ7V1J2rldQvLGL+9Bh4F5sQ7kCcd8S7RM=;
- b=/rL67Ip2ThtFFd6yxcEM8gYPr1qTBrwW7CVIXmDTVZQeI3BOeTOOX657ZVbfndOjqRRLgJ
- oBD5Z1JCbbC89vAA==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 3BD34A3B96;
- Tue, 12 Oct 2021 13:24:04 +0000 (UTC)
-Date: Tue, 12 Oct 2021 15:24:04 +0200
-Message-ID: <s5hsfx61imj.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] ALSA: usb-audio: allow -EPIPE errors for some v2 messages
-In-Reply-To: <YWWCiLE6id43uJjp@kroah.com>
-References: <YWLbEdHUE3k/i0fe@kroah.com> <s5hily46316.wl-tiwai@suse.de>
- <YWRYD7fphcaWKEOG@kroah.com> <s5h7dej4kbe.wl-tiwai@suse.de>
- <YWRy+UoG1YHcQ7UM@kroah.com> <s5ho87u3dcb.wl-tiwai@suse.de>
- <YWWCiLE6id43uJjp@kroah.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-usb@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id F326DF80088
+ for <alsa-devel@alsa-project.org>; Tue, 12 Oct 2021 16:36:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F326DF80088
+X-IronPort-AV: E=McAfee;i="6200,9189,10135"; a="313361625"
+X-IronPort-AV: E=Sophos;i="5.85,367,1624345200"; d="scan'208";a="313361625"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 Oct 2021 07:36:32 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,367,1624345200"; d="scan'208";a="591790196"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+ by orsmga004.jf.intel.com with ESMTP; 12 Oct 2021 07:36:29 -0700
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+To: alsa-devel@alsa-project.org, tiwai@suse.de,
+ Danny Tholen <obiwan@mailmij.org>, perex@suse.cz
+Subject: [PATCH] ALSA: hda: avoid write to STATESTS if controller is in reset
+Date: Tue, 12 Oct 2021 17:29:35 +0300
+Message-Id: <20211012142935.3731820-1-kai.vehmanen@linux.intel.com>
+X-Mailer: git-send-email 2.33.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: kai.vehmanen@linux.intel.com, pierre-louis.bossart@linux.intel.com,
+ ranjani.sridharan@linux.intel.com, Alex Deucher <alexander.deucher@amd.com>,
+ Dmitry Osipenko <digetx@gmail.com>, Thierry Reding <treding@nvidia.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,94 +73,59 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 12 Oct 2021 14:41:44 +0200,
-Greg Kroah-Hartman wrote:
-> 
-> On Tue, Oct 12, 2021 at 09:35:16AM +0200, Takashi Iwai wrote:
-> > On Mon, 11 Oct 2021 19:23:05 +0200,
-> > Greg Kroah-Hartman wrote:
-> > > 
-> > > On Mon, Oct 11, 2021 at 06:07:01PM +0200, Takashi Iwai wrote:
-> > > > Could you also post the contents of /proc/asound/card*/usbmixer (only
-> > > > for the corresponding device), too?
-> > > 
-> > > Sure, here it is:
-> > > 
-> > > USB Mixer: usb_id=0x30be0101, ctrlif=0, ctlerr=0
-> > > Card: Schiit Audio Schiit Hel at usb-0000:47:00.1-2.2, high speed
-> > >   Unit: 5
-> > >     Control: name="Mic - Input Jack", index=0
-> > >     Info: id=5, control=2, cmask=0x0, channels=1, type="BOOLEAN"
-> > >     Volume: min=0, max=1, dBmin=0, dBmax=0
-> > >   Unit: 7
-> > >     Control: name="Speaker - Output Jack", index=0
-> > >     Info: id=7, control=2, cmask=0x0, channels=1, type="BOOLEAN"
-> > >     Volume: min=0, max=1, dBmin=0, dBmax=0
-> > >   Unit: 13
-> > >     Control: name="PCM Playback Switch", index=0
-> > >     Info: id=13, control=1, cmask=0x0, channels=1, type="INV_BOOLEAN"
-> > >     Volume: min=0, max=1, dBmin=0, dBmax=0
-> > >   Unit: 17
-> > >     Control: name="Mic Capture Switch", index=0
-> > >     Info: id=17, control=1, cmask=0x0, channels=1, type="INV_BOOLEAN"
-> > >     Volume: min=0, max=1, dBmin=0, dBmax=0
-> > >   Unit: 18
-> > >     Control: name="Clock Source 18 Validity", index=0
-> > >     Info: id=18, control=2, cmask=0x0, channels=1, type="BOOLEAN"
-> > >     Volume: min=0, max=1, dBmin=0, dBmax=0
-> > >   Unit: 22
-> > >     Control: name="Clock Source 22 Validity", index=0
-> > >     Info: id=22, control=2, cmask=0x0, channels=1, type="BOOLEAN"
-> > >     Volume: min=0, max=1, dBmin=0, dBmax=0
-> > 
-> > Hm, I expected more exotic control that failed, but it was Mic Capture
-> > Switch, which should be treated normally.
-> > 
-> > Could you try the patch below?  This will still show other warning
-> > messages, but it'll forcibly initialize the mixer elements at probe
-> > time, and the rest should work.
-> > 
-> > Once after it's confirmed to work, we may shut up the device warnings
-> > with a quirk.
-> 
-> Only one warning message shows up, here's the dmesg with this patch
-> applied:
-> 
-> 
-> [Oct12 14:39] usb 7-2.2: new high-speed USB device number 10 using xhci_hcd
-> [  +0.123157] usb 7-2.2: New USB device found, idVendor=30be, idProduct=0101, bcdDevice= 1.02
-> [  +0.000009] usb 7-2.2: New USB device strings: Mfr=1, Product=2, SerialNumber=0
-> [  +0.000003] usb 7-2.2: Product: Schiit Hel
-> [  +0.000002] usb 7-2.2: Manufacturer: Schiit Audio
-> [  +0.339785] usb 7-2.2: 17:0: failed to get current value for ch 0 (-32)
-> [  +0.020373] input: Schiit Audio Schiit Hel as /devices/pci0000:40/0000:40:01.1/0000:41:00.0/0000:42:08.0/0000:47:00.1/usb7/7-2/7-2.2/7-2.2:1.3/0003:30BE:0101.000B/input/input24
-> [  +0.056868] hid-generic 0003:30BE:0101.000B: input,hidraw6: USB HID v1.00 Device [Schiit Audio Schiit Hel] on usb-0000:47:00.1-2.2/input3
+The snd_hdac_bus_reset_link() contains logic to clear STATESTS register
+before performing controller reset. This code dates back to an old
+bugfix in commit e8a7f136f5ed ("[ALSA] hda-intel - Improve HD-audio
+codec probing robustness"). Originally the code was added to
+azx_reset().
 
-OK, then the problem is only about this unit and about the master
-channel.
+The code was moved around in commit a41d122449be ("ALSA: hda - Embed bus
+into controller object") and ended up to snd_hdac_bus_reset_link() and
+called primarily via snd_hdac_bus_init_chip().
 
-> I don't see a "mic capture switch" on this device, but maybe it triggers
-> when I plug a mic into the microphone port, which is currently empty?
+The logic to clear STATESTS is correct when snd_hdac_bus_init_chip() is
+called when controller is not in reset. In this case, STATESTS can be
+cleared. This can be useful e.g. when forcing a controller reset to retry
+codec probe. A normal non-power-on reset will not clear the bits.
 
-This should be persistent and visible; try to run "amixer -c1" (or the
-different card index for the device).
+However, this old logic is problematic when controller is already in
+reset. The HDA specification states that controller must be taken out of
+reset before writing to registers other than GCTL.CRST (1.0a spec,
+3.3.7). The write to STATESTS in snd_hdac_bus_reset_link() will be lost
+if the controller is already in reset per the HDA specification mentioned.
 
-So far, so good.  The only remaining piece is how this -EPIPE error
-comes up.  Is this a protocol stall error or such?  Would it be
-avoided by adding the delay like done for some devices?
+This has been harmless on older hardware. On newer generation of Intel
+PCIe based HDA controllers, if configured to report issues, this write
+will emit an unsupported request error. If ACPI Platform Error Interface
+(APEI) is enabled in kernel, this will end up to kernel log.
 
-With the 5.15-rc kernel, you can pass quirk_flags option to
-snd-usb-audio module for applying known quirks.
-e.g. quirk_flags=0x100 will set the 1msec delay at each control
-message.  Please check whether it makes any difference.
-The option is an integer array for multiple devices, so if you have
-multiple USB-audio devices, put at the appropriate position in the
-array (e.g. quirk_flags=,,0x100 for the 3rd slot).
+Fix the code in snd_hdac_bus_reset_link() to only clear the STATESTS if
+the function is called when controller is not in reset. Otherwise
+clearing the bits is not possible and should be skipped.
 
-The quirk bit 0x4000 will shut up the control errors.  If the above
-doesn't fix the warning and the device is working more or less, set
-this quirk to shut up the warning.  It can be set statically in the
-table at the end in sound/usb/quirks.c.
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+---
+ sound/hda/hdac_controller.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
+diff --git a/sound/hda/hdac_controller.c b/sound/hda/hdac_controller.c
+index 062da7a7a586..f7bd6e2db085 100644
+--- a/sound/hda/hdac_controller.c
++++ b/sound/hda/hdac_controller.c
+@@ -421,8 +421,9 @@ int snd_hdac_bus_reset_link(struct hdac_bus *bus, bool full_reset)
+ 	if (!full_reset)
+ 		goto skip_reset;
+ 
+-	/* clear STATESTS */
+-	snd_hdac_chip_writew(bus, STATESTS, STATESTS_INT_MASK);
++	/* clear STATESTS if not in reset */
++	if (snd_hdac_chip_readb(bus, GCTL) & AZX_GCTL_RESET)
++		snd_hdac_chip_writew(bus, STATESTS, STATESTS_INT_MASK);
+ 
+ 	/* reset controller */
+ 	snd_hdac_bus_enter_link_reset(bus);
 
-Takashi
+base-commit: 0fc27129ed268b619135b99d365ce44daaf85602
+-- 
+2.33.0
+
