@@ -2,72 +2,72 @@ Return-Path: <SRS0=z7f8=PA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C4B03C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Oct 2021 11:26:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 687C0C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Oct 2021 11:46:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6E47260F11
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Oct 2021 11:26:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6E47260F11
+	by mail.kernel.org (Postfix) with ESMTPS id 1A6FB61074
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Oct 2021 11:46:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1A6FB61074
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8229F1674;
-	Tue, 12 Oct 2021 13:25:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8229F1674
+	by alsa0.perex.cz (Postfix) with ESMTPS id 53AD21674;
+	Tue, 12 Oct 2021 13:45:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 53AD21674
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634037969;
-	bh=qnqPDkW3PEuRHrH7fEFlwj1INa9JZghbCmyes7XDZtc=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1634039185;
+	bh=YqGQHIeclGE3rrxpHL3otX/2GEBFvzn7qYCPeJ5/f8c=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=B60rJPjxT6EZBKhYicTJw1CWfIpjkF7RSaM0NFE0qu+Clie+cQoJfPgt0e+G6Sc9s
-	 Re2bORTthm+MxQTKhd6uybLZJZUX04Kc5DFJbSBrq0A1IK8cGPx5HDul/9zabEivkb
-	 UNdtjf2eYRCa4naiQ57PuSJNgmvQUvjOvGkUhqOk=
+	b=awctdPoOd2jzzT6uVnDyFynHX1YNASZVWPmHF82G5yNe2T7d8OR6pJw4iGkrHZIxU
+	 Z5XM5IzfO16iyfLqsXJn7037Ga9Ian6J4rLE165E0k+gICnFjM4B4oAlWm7r9GYRkC
+	 47K3zfkYKclN0N0LlTLxNbW+K02nxH9XXvp0Zeos=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 13237F801F7;
-	Tue, 12 Oct 2021 13:25:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CAA5AF800CB;
+	Tue, 12 Oct 2021 13:45:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 94823F80212; Tue, 12 Oct 2021 13:25:17 +0200 (CEST)
+ id 1D883F80245; Tue, 12 Oct 2021 13:45:32 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 07F88F80088
- for <alsa-devel@alsa-project.org>; Tue, 12 Oct 2021 13:25:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07F88F80088
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5AE73F800CB
+ for <alsa-devel@alsa-project.org>; Tue, 12 Oct 2021 13:45:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5AE73F800CB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Zra4gQuG"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B978C60F11;
- Tue, 12 Oct 2021 11:25:09 +0000 (UTC)
+ header.b="OJUy6Tyk"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 45AB8610C9;
+ Tue, 12 Oct 2021 11:45:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1634037910;
- bh=qnqPDkW3PEuRHrH7fEFlwj1INa9JZghbCmyes7XDZtc=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=Zra4gQuG/UTWpwnl9rH1pLCnKl+1SHvoyjxNBszC96etvTcWQIgWJRIhV/y/P9uaS
- ndGwytiCrrBgq4S05SPN8ZM7EXc7cjzrsevWXuH/pLatNUmbEtwE+uq2R/bDpD7RnL
- beDQ698aGTzyvSFnE4MpbDRxnlLhfgbAudAzd6Cfhb3UltUHd2DMwrpIygoGavKCIj
- s4ESe4MP1ZP1G95uWg5ozLHN9TwgPHT9aCcvubtqsUy2EfrjZdAPU/330vuVbiahqA
- o8o+NKSFip7d6PvNALTSrPifquECuuBuk3ycixg/KpkkpcqoOmkf1EmL+MJS/YZPOr
- bR7kVXA5Qy75Q==
-Date: Tue, 12 Oct 2021 12:25:07 +0100
+ s=k20201202; t=1634039124;
+ bh=YqGQHIeclGE3rrxpHL3otX/2GEBFvzn7qYCPeJ5/f8c=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=OJUy6TykzRiwXrE/X/vbdxzyKcXTuejUfqJV7qSfPVOXbXJzSifj8+4wDNTPsdDRc
+ dWyqnxFnuERkk4nK44gz/fyjr+P8Ox08gp+ONza4+YwHh3Zmx5V3r73WdaVYQtAWZc
+ 1OtfXiGkcA3jHynFTp31ec5YlzN9d3SRC4pak0gjiQOqc3N1iJkH608wL3tGTXKN6e
+ Tiq6TQeTb2D2W+EPymrUNngD/y7ifQ3BKXCok6omanspz9U5Fr+kDtiCZpkpHs3fTg
+ l/VIXzhL7T4shUnBkP8JRp2pxRwuCcNSFEVLN0sPEYGmtD5AdwBhP6MSwh7fsacYU4
+ mKeAJbDOOiK4Q==
 From: Mark Brown <broonie@kernel.org>
-To: Shengjiu Wang <shengjiu.wang@nxp.com>
-Subject: Re: [RESEND PATCH] ASoC: wm8960: Fix clock configuration on slave mode
-Message-ID: <YWVwk1kqyF+gzEC0@sirena.org.uk>
-References: <1634036070-2671-1-git-send-email-shengjiu.wang@nxp.com>
+To: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, oder_chiou@realtek.com,
+ jack.yu@realtek.com, lgirdwood@gmail.com
+Subject: Re: [PATCH v3] ASoC: rt1011: Fix 'I2S Reference' enum control caused
+ error
+Date: Tue, 12 Oct 2021 12:45:19 +0100
+Message-Id: <163403898174.2091644.13928014844510803055.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20211011144518.2518-1-peter.ujfalusi@linux.intel.com>
+References: <20211011144518.2518-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="xmS7fg8H5aUGfp6g"
-Content-Disposition: inline
-In-Reply-To: <1634036070-2671-1-git-send-email-shengjiu.wang@nxp.com>
-X-Cookie: Swim at your own risk.
-Cc: alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com,
- kuninori.morimoto.gx@renesas.com, patches@opensource.cirrus.com,
- tiwai@suse.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ pierre-louis.bossart@linux.intel.com, seppo.ingalsuo@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,32 +83,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Mon, 11 Oct 2021 17:45:18 +0300, Peter Ujfalusi wrote:
+> Access to 'I2S Reference' enum causes alsamixer to fail to load:
+> $ alsamixer
+> cannot load mixer controls: Invalid argument
+> 
+> cml_rt1011_rt5682 cml_rt1011_rt5682: control 2:0:0:TL I2S Reference:0: access overflow
+> 
+> The reason is that the original patch adding the code was using
+> ucontrol->value.integer.value[0]
+> instead the correct
+> ucontrol->value.enumerated.item[0]
+> 
+> [...]
 
---xmS7fg8H5aUGfp6g
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Applied to
 
-On Tue, Oct 12, 2021 at 06:54:30PM +0800, Shengjiu Wang wrote:
-> There is a noise issue for 8kHz sample rate on slave mode.
-> Compared with master mode, the difference is the DACDIV
-> setting, after correcting the DACDIV, the noise is gone.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Charles suggested some updates to the patch to improve the error
-reporting here which you don't seem to have addressed.
+Thanks!
 
---xmS7fg8H5aUGfp6g
-Content-Type: application/pgp-signature; name="signature.asc"
+[1/1] ASoC: rt1011: Fix 'I2S Reference' enum control caused error
+      commit: c3de683c4d1d68ff27f21606b921d92ffdea3352
 
------BEGIN PGP SIGNATURE-----
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFlcJIACgkQJNaLcl1U
-h9Bj7Af6AoUC0r7+IN4MGFP2D+GI8ETZVSb6+NtZHAxw+TaFmQLwIhjzcEcDRtjf
-hwLaEhsJNeks7PautGeGBzCpzO87FXDMcTh98x53l0nZDPX+OOYqPgicrRsPgPZ1
-g1SdtDg4dlJCyj0Iymr0l8Famw7s2HlnLhufqrGigzdAT/ZDTL/tIc+G0YJR+p1q
-Bmn2P1TVWvtIBBwVoVczqD9foLpX79Bz9l9PjFCQ3CG9HcAeceXI2mxc/xBaP00B
-Eh7CU+QDvDe73E66/+9dTnZpoffnxK7bu5TwnXvLJ2RlDlwBAnF/f0G/1A82VVnB
-2fuvTTKz2aFZG9lBtIvl0O3PhPI1MQ==
-=F7Y8
------END PGP SIGNATURE-----
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---xmS7fg8H5aUGfp6g--
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
