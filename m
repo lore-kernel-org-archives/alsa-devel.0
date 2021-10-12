@@ -2,51 +2,51 @@ Return-Path: <SRS0=z7f8=PA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CCB03C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Oct 2021 04:55:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 567DAC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Oct 2021 04:55:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2EB5660F21
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Oct 2021 04:55:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2EB5660F21
+	by mail.kernel.org (Postfix) with ESMTPS id D3DC960EE5
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Oct 2021 04:55:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D3DC960EE5
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A231B84C;
-	Tue, 12 Oct 2021 06:54:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A231B84C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 25DEF16A3;
+	Tue, 12 Oct 2021 06:55:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 25DEF16A3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634014535;
-	bh=U4hwlKGaa1yY/6ZYCtqH+CXS7twnJXm2iGAr9xO2/sY=;
+	s=default; t=1634014553;
+	bh=O4XBab1N9uqSgFc3j0UR7vp8MVkzElnmow5OzwCprUk=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PZYAkEr8v33/WKhtiXxPwxM6TQCtElrw7I4J+/zRBQn75Tl87iV9ku7XgP9DrtY6G
-	 G+D56V/x1/d8WEHVCWzsjtBlHLYNyPfVu5wbChplwGyv6ArYrW+R5P6lxLoAeJ2fxg
-	 7TeflBlwWblmKO+G4wFj7a0saVfywAK6mWuNz7mA=
+	b=mINsP6e2peGoO3+KiFJlgwSsH1egHnnnVbx88Q8jtXslSsoIxPMSOfR2c/zJZPCFL
+	 2L7Y5EKgM1sPA0xMOTjFGnh+J7cKDOljpgUB3xsZLHHhZCebE26LdJk8JbeGCjHnmL
+	 YWEvAYANocbdNnRpB6nWgbW+/L/mk7Mnpff45ODw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3445FF80212;
-	Tue, 12 Oct 2021 06:54:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 459B3F804F1;
+	Tue, 12 Oct 2021 06:54:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8D658F804F2; Tue, 12 Oct 2021 06:54:11 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 6D1B3F80212
- for <alsa-devel@alsa-project.org>; Tue, 12 Oct 2021 06:54:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D1B3F80212
-Date: 12 Oct 2021 13:54:01 +0900
-X-IronPort-AV: E=Sophos;i="5.85,366,1624287600"; d="scan'208";a="96900725"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 12 Oct 2021 13:54:01 +0900
+ id 5DC1DF804FB; Tue, 12 Oct 2021 06:54:21 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 520DEF804F1
+ for <alsa-devel@alsa-project.org>; Tue, 12 Oct 2021 06:54:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 520DEF804F1
+Date: 12 Oct 2021 13:54:13 +0900
+X-IronPort-AV: E=Sophos;i="5.85,366,1624287600"; d="scan'208";a="96710610"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 12 Oct 2021 13:54:13 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id E76AC41DBEAA;
- Tue, 12 Oct 2021 13:54:01 +0900 (JST)
-Message-ID: <875yu2n8ra.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 7F37C4000A83;
+ Tue, 12 Oct 2021 13:54:13 +0900 (JST)
+Message-ID: <874k9mn8qy.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v5 03/16] ASoC: simple-card-utils: add asoc_graph_is_ports0()
+Subject: [PATCH v5 04/16] ASoC: simple-card-utils: add codec2codec support
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87a6jen8su.wl-kuninori.morimoto.gx@renesas.com>
@@ -72,69 +72,100 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-audio-graph-card2 will support DPCM/Multi/Codec2Codec,
-and these will use almost same DT settings which uses
-ports0 and ports1.
-This patch adds asoc_graph_is_ports0() which checks
-port is under port0 or not.
+codec2codec needs snd_soc_pcm_stream settings.
+This patch adds it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- include/sound/simple_card_utils.h     |  1 +
- sound/soc/generic/simple-card-utils.c | 28 +++++++++++++++++++++++++++
- 2 files changed, 29 insertions(+)
+ include/sound/simple_card_utils.h     |  3 +++
+ sound/soc/generic/simple-card-utils.c | 18 +++++++++++++++++-
+ 2 files changed, 20 insertions(+), 1 deletion(-)
 
 diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
-index 6b780346eaa7..03d07541d958 100644
+index 03d07541d958..df430f1c2a10 100644
 --- a/include/sound/simple_card_utils.h
 +++ b/include/sound/simple_card_utils.h
-@@ -180,6 +180,7 @@ int asoc_simple_init_priv(struct asoc_simple_priv *priv,
- int asoc_simple_remove(struct platform_device *pdev);
+@@ -42,6 +42,7 @@ struct prop_nums {
+ 	int cpus;
+ 	int codecs;
+ 	int platforms;
++	int c2c;
+ };
  
- int asoc_graph_card_probe(struct snd_soc_card *card);
-+int asoc_graph_is_ports0(struct device_node *port);
- 
- #ifdef DEBUG
- static inline void asoc_simple_debug_dai(struct asoc_simple_priv *priv,
+ struct asoc_simple_priv {
+@@ -54,6 +55,7 @@ struct asoc_simple_priv {
+ 		struct snd_soc_dai_link_component *platforms;
+ 		struct asoc_simple_data adata;
+ 		struct snd_soc_codec_conf *codec_conf;
++		struct snd_soc_pcm_stream *c2c_conf;
+ 		struct prop_nums num;
+ 		unsigned int mclk_fs;
+ 	} *dai_props;
+@@ -64,6 +66,7 @@ struct asoc_simple_priv {
+ 	struct snd_soc_dai_link_component *dlcs;
+ 	struct snd_soc_dai_link_component dummy;
+ 	struct snd_soc_codec_conf *codec_conf;
++	struct snd_soc_pcm_stream *c2c_conf;
+ 	struct gpio_desc *pa_gpio;
+ 	const struct snd_soc_ops *ops;
+ 	unsigned int dpcm_selectable:1;
 diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index 437a0e2ee113..22d4bdb7383b 100644
+index 22d4bdb7383b..850e968677f1 100644
 --- a/sound/soc/generic/simple-card-utils.c
 +++ b/sound/soc/generic/simple-card-utils.c
-@@ -759,6 +759,34 @@ int asoc_graph_card_probe(struct snd_soc_card *card)
- }
- EXPORT_SYMBOL_GPL(asoc_graph_card_probe);
+@@ -619,7 +619,8 @@ int asoc_simple_init_priv(struct asoc_simple_priv *priv,
+ 	struct asoc_simple_dai *dais;
+ 	struct snd_soc_dai_link_component *dlcs;
+ 	struct snd_soc_codec_conf *cconf = NULL;
+-	int i, dai_num = 0, dlc_num = 0, cnf_num = 0;
++	struct snd_soc_pcm_stream *c2c_conf = NULL;
++	int i, dai_num = 0, dlc_num = 0, cnf_num = 0, c2c_num = 0;
  
-+int asoc_graph_is_ports0(struct device_node *np)
-+{
-+	struct device_node *port, *ports, *ports0, *top;
-+	int ret;
+ 	dai_props = devm_kcalloc(dev, li->link, sizeof(*dai_props), GFP_KERNEL);
+ 	dai_link  = devm_kcalloc(dev, li->link, sizeof(*dai_link),  GFP_KERNEL);
+@@ -638,6 +639,8 @@ int asoc_simple_init_priv(struct asoc_simple_priv *priv,
+ 
+ 		if (!li->num[i].cpus)
+ 			cnf_num += li->num[i].codecs;
 +
-+	/* np is "endpoint" or "port" */
-+	if (of_node_name_eq(np, "endpoint")) {
-+		port = of_get_parent(np);
-+	} else {
-+		port = np;
-+		of_node_get(port);
++		c2c_num += li->num[i].c2c;
+ 	}
+ 
+ 	dais = devm_kcalloc(dev, dai_num, sizeof(*dais), GFP_KERNEL);
+@@ -651,6 +654,12 @@ int asoc_simple_init_priv(struct asoc_simple_priv *priv,
+ 			return -ENOMEM;
+ 	}
+ 
++	if (c2c_num) {
++		c2c_conf = devm_kcalloc(dev, c2c_num, sizeof(*c2c_conf), GFP_KERNEL);
++		if (!c2c_conf)
++			return -ENOMEM;
 +	}
 +
-+	ports	= of_get_parent(port);
-+	top	= of_get_parent(ports);
-+	ports0	= of_get_child_by_name(top, "ports");
+ 	dev_dbg(dev, "link %d, dais %d, ccnf %d\n",
+ 		li->link, dai_num, cnf_num);
+ 
+@@ -664,6 +673,7 @@ int asoc_simple_init_priv(struct asoc_simple_priv *priv,
+ 	priv->dais		= dais;
+ 	priv->dlcs		= dlcs;
+ 	priv->codec_conf	= cconf;
++	priv->c2c_conf		= c2c_conf;
+ 
+ 	card->dai_link		= priv->dai_link;
+ 	card->num_links		= li->link;
+@@ -681,6 +691,12 @@ int asoc_simple_init_priv(struct asoc_simple_priv *priv,
+ 
+ 			dlcs += li->num[i].cpus;
+ 			dais += li->num[i].cpus;
 +
-+	ret = ports0 == ports;
-+
-+	of_node_put(port);
-+	of_node_put(ports);
-+	of_node_put(ports0);
-+	of_node_put(top);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(asoc_graph_is_ports0);
-+
- /* Module information */
- MODULE_AUTHOR("Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>");
- MODULE_DESCRIPTION("ALSA SoC Simple Card Utils");
++			if (li->num[i].c2c) {
++				/* Codec2Codec */
++				dai_props[i].c2c_conf = c2c_conf;
++				c2c_conf += li->num[i].c2c;
++			}
+ 		} else {
+ 			/* DPCM Be's CPU = dummy */
+ 			dai_props[i].cpus	=
 -- 
 2.25.1
 
