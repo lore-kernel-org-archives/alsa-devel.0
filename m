@@ -2,68 +2,86 @@ Return-Path: <SRS0=z7f8=PA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 92006C433FE
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Oct 2021 14:56:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 85FF4C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Oct 2021 15:01:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C9FF561076
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Oct 2021 14:56:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C9FF561076
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 4E58761076
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Oct 2021 15:01:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4E58761076
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 074FA168C;
-	Tue, 12 Oct 2021 16:55:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 074FA168C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 446D51674;
+	Tue, 12 Oct 2021 17:00:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 446D51674
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634050607;
-	bh=xoi/R3Hvar/BdYNxIp/slBUDni265xptAEqo9yRGcE0=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1634050899;
+	bh=J8SxJ2IDiRWUQfFSIWkUXX1hM4+FxMKUS+bFyBEq9rc=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tni5zE0FKiQ4mR7NXGFilCQhxq/neLLCqQCyCSWDKnz3s7OVsvaNK5SK2sQHXswGs
-	 VtlNMLUiEgUYwk05LQWlzI2+K47fhvGT64fg/6+xwR59yJh1iVGqrcut2C5pPexk1d
-	 jXtL6IhwuGPOShE2+I2HHMz99yE3Vs19QREFjFv0=
+	b=QY6vtf/IHPsptJG24z7/2rftZQrtlltV3IqWU6VbOJaRdX73voeXn3oEfxndfKEfU
+	 SgAUuaN6LQzUUbYbYq++RQBFXJg0B+TzW2LpVkaT+eV28Va4wrCsymx+7RkyDoId85
+	 CmqST7U/9AoMIRTd1MVR+pdB1LnYr1VyWJ06frVA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D05FEF80212;
-	Tue, 12 Oct 2021 16:55:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C6B41F80088;
+	Tue, 12 Oct 2021 17:00:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3A63CF8032D; Tue, 12 Oct 2021 16:55:16 +0200 (CEST)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 67837F80212; Tue, 12 Oct 2021 17:00:47 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F083AF800C0
- for <alsa-devel@alsa-project.org>; Tue, 12 Oct 2021 16:55:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F083AF800C0
-X-IronPort-AV: E=McAfee;i="6200,9189,10135"; a="290662533"
-X-IronPort-AV: E=Sophos;i="5.85,367,1624345200"; d="scan'208";a="290662533"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Oct 2021 07:54:53 -0700
-X-IronPort-AV: E=Sophos;i="5.85,367,1624345200"; d="scan'208";a="486417496"
-Received: from csharp1-mobl.amr.corp.intel.com (HELO [10.213.183.127])
- ([10.213.183.127])
- by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Oct 2021 07:54:52 -0700
-Subject: Re: [PATCH] soundwire: bus: stop dereferencing invalid slave pointer
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, vkoul@kernel.org
-References: <20211012101521.32087-1-srinivas.kandagatla@linaro.org>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <cb1d0d1d-100f-48b7-f809-7c84148ae0ba@linux.intel.com>
-Date: Tue, 12 Oct 2021 08:32:35 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <20211012101521.32087-1-srinivas.kandagatla@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: guennadi.liakhovetski@linux.intel.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, rander.wang@intel.com, sanyog.r.kale@intel.com,
- yung-chuan.liao@linux.intel.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3D05AF80088
+ for <alsa-devel@alsa-project.org>; Tue, 12 Oct 2021 17:00:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3D05AF80088
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="mLJt7iFo"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="JlDl3bza"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 4C351220DA;
+ Tue, 12 Oct 2021 15:00:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1634050835; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ZePrqKFR1RZclZto78JKGTIg+B+naGQR4MKau6L7rqM=;
+ b=mLJt7iFoT0U5xktfjJnIXIz6vyfnI7i2/8uUHnO8rNLEybaULwdmCV1eEsaIfbmSl/GcM4
+ Ad8C1PPWM1x4bOZEjK/McOXZ0LuxjUEIor55blxIs4pqLnoSmdSrbxGaDbk0MR5DwBiKtN
+ lR3UJKIF13o/xji4ezPLhxA9dEggKiE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1634050835;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ZePrqKFR1RZclZto78JKGTIg+B+naGQR4MKau6L7rqM=;
+ b=JlDl3bzaXZDvfCHD23bw8uoEAsNVIYb0WruO5r9sbwmyU9PdLYcqR/NZ2s1ZlCgYnZSyRg
+ ezwBvJ9zSqCkVSBg==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 36EF8A3B85;
+ Tue, 12 Oct 2021 15:00:35 +0000 (UTC)
+Date: Tue, 12 Oct 2021 17:00:35 +0200
+Message-ID: <s5ho87u1e5o.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH] ALSA: hda: avoid write to STATESTS if controller is in
+ reset
+In-Reply-To: <20211012142935.3731820-1-kai.vehmanen@linux.intel.com>
+References: <20211012142935.3731820-1-kai.vehmanen@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, Danny Tholen <obiwan@mailmij.org>,
+ pierre-louis.bossart@linux.intel.com, ranjani.sridharan@linux.intel.com,
+ Alex Deucher <alexander.deucher@amd.com>, Dmitry Osipenko <digetx@gmail.com>,
+ Thierry Reding <treding@nvidia.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,53 +97,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Tue, 12 Oct 2021 16:29:35 +0200,
+Kai Vehmanen wrote:
+> 
+> The snd_hdac_bus_reset_link() contains logic to clear STATESTS register
+> before performing controller reset. This code dates back to an old
+> bugfix in commit e8a7f136f5ed ("[ALSA] hda-intel - Improve HD-audio
+> codec probing robustness"). Originally the code was added to
+> azx_reset().
+> 
+> The code was moved around in commit a41d122449be ("ALSA: hda - Embed bus
+> into controller object") and ended up to snd_hdac_bus_reset_link() and
+> called primarily via snd_hdac_bus_init_chip().
+> 
+> The logic to clear STATESTS is correct when snd_hdac_bus_init_chip() is
+> called when controller is not in reset. In this case, STATESTS can be
+> cleared. This can be useful e.g. when forcing a controller reset to retry
+> codec probe. A normal non-power-on reset will not clear the bits.
+> 
+> However, this old logic is problematic when controller is already in
+> reset. The HDA specification states that controller must be taken out of
+> reset before writing to registers other than GCTL.CRST (1.0a spec,
+> 3.3.7). The write to STATESTS in snd_hdac_bus_reset_link() will be lost
+> if the controller is already in reset per the HDA specification mentioned.
+> 
+> This has been harmless on older hardware. On newer generation of Intel
+> PCIe based HDA controllers, if configured to report issues, this write
+> will emit an unsupported request error. If ACPI Platform Error Interface
+> (APEI) is enabled in kernel, this will end up to kernel log.
+> 
+> Fix the code in snd_hdac_bus_reset_link() to only clear the STATESTS if
+> the function is called when controller is not in reset. Otherwise
+> clearing the bits is not possible and should be skipped.
+> 
+> Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+
+Do we have a bug reference?  I guess it worth to be pushed to 5.15-rc
+and Cc-to-stable, if this is hitting already on the recent machines.
 
 
-On 10/12/21 5:15 AM, Srinivas Kandagatla wrote:
-> Slave pointer is invalid after end of list iteration, using this
-> would result in below Memory abort.
-> 
-> Unable to handle kernel NULL pointer dereference at virtual address 0000000000000004
-> ...
-> Call trace:
->  __dev_printk+0x34/0x7c
->  _dev_warn+0x6c/0x90
->  sdw_bus_exit_clk_stop+0x194/0x1d0
->  swrm_runtime_resume+0x13c/0x238
->  pm_generic_runtime_resume+0x2c/0x48
->  __rpm_callback+0x44/0x150
->  rpm_callback+0x6c/0x78
->  rpm_resume+0x314/0x558
->  rpm_resume+0x378/0x558
->  rpm_resume+0x378/0x558
->  __pm_runtime_resume+0x3c/0x88
-> 
-> Use bus->dev instead to print this error message.
-> 
-> Fixes: b50bb8ba369cd ("soundwire: bus: handle -ENODATA errors in clock stop/start sequences")
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+thanks,
 
-Nice catch, even if the 'slave' pointer was valid it makes no sense to
-use this device for a bus-level operation. Using the bus->dev is the
-right thing to do.
-
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-> ---
->  drivers/soundwire/bus.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-> index 1b115734a8f6..67369e941d0d 100644
-> --- a/drivers/soundwire/bus.c
-> +++ b/drivers/soundwire/bus.c
-> @@ -1110,7 +1110,7 @@ int sdw_bus_exit_clk_stop(struct sdw_bus *bus)
->  	if (!simple_clk_stop) {
->  		ret = sdw_bus_wait_for_clk_prep_deprep(bus, SDW_BROADCAST_DEV_NUM);
->  		if (ret < 0)
-> -			dev_warn(&slave->dev, "clock stop deprepare wait failed:%d\n", ret);
-> +			dev_warn(bus->dev, "clock stop deprepare wait failed:%d\n", ret);
->  	}
->  
->  	list_for_each_entry(slave, &bus->slaves, node) {
-> 
+Takashi
