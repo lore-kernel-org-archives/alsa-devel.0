@@ -2,70 +2,131 @@ Return-Path: <SRS0=9Cbg=PC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86AF5C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Oct 2021 13:50:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98F2CC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Oct 2021 13:51:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8973B610E6
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Oct 2021 13:50:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8973B610E6
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
+	by mail.kernel.org (Postfix) with ESMTPS id 13BE0610CC
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Oct 2021 13:51:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 13BE0610CC
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 076D2168D;
-	Thu, 14 Oct 2021 15:49:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 076D2168D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 762D4166B;
+	Thu, 14 Oct 2021 15:50:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 762D4166B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634219447;
-	bh=PmFsZNmqpFpV0YzTx06R+2EEE2BoE6MPJr8sD0dLiSw=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=MVMcRMbcm+SJQ4RASOFLOIzT7pf4ha2xSahakiDvmRGzIYH6bdIGylYa48Zflgh0B
-	 xVwGl5g/jh3x75u2UkrGwyGh6alh7xp64NovCeB/hFxfZzmouG1BmbzUyQLy/Py7US
-	 dfMbq3IbOxJj39lQebuZzGevBjshnTCzUGNZd8q4=
+	s=default; t=1634219469;
+	bh=Jrp+rLiF2xLKPDeJFx+0J69bk2QEdhdvQr54qmGYjq8=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=DehN9zvmy8odCwmklRxEH0lcCE9cU5/rzQ3MZaG+PGudkw/vEB78HG3vxXn3m/oXq
+	 eOoz6bAn2whFMf8EgEZ8+7qUlTIk59Q9Kwg9GH4gYpbDUH1bJgnSeQFB3ZTcuo4pDb
+	 bcmDuAleC4HfiqLXCkPz95MgiewcoUqV5cEB/56k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 823A2F80516;
-	Thu, 14 Oct 2021 15:47:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 59B64F8051A;
+	Thu, 14 Oct 2021 15:47:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E5DEBF80269; Wed, 13 Oct 2021 11:18:05 +0200 (CEST)
-Received: from cstnet.cn (smtp23.cstnet.cn [159.226.251.23])
- by alsa1.perex.cz (Postfix) with ESMTP id B942DF800C0
- for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2021 11:17:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B942DF800C0
-Received: from localhost.localdomain (unknown [124.16.138.128])
- by APP-03 (Coremail) with SMTP id rQCowABnb6s6pGZhPDBrAw--.20277S2;
- Wed, 13 Oct 2021 17:17:46 +0800 (CST)
-From: Jiasheng Jiang <jiasheng@iscas.ac.cn>
-To: vkoul@kernel.org, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
- tiwai@suse.com, alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: soc-compress: prevent the potentially use of null
- pointer
-Date: Wed, 13 Oct 2021 09:17:44 +0000
-Message-Id: <1634116664-1784856-1-git-send-email-jiasheng@iscas.ac.cn>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: rQCowABnb6s6pGZhPDBrAw--.20277S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7uw13KFyDur17JF43XFy8Grg_yoW8WF18pw
- s7uFWIqFWrtFyIvw1rJw4F9F1fGFyxua1F9F1ag348Ar45Xanxur1UJr4kAFy8GrWjqr1v
- v3sFy3y3XF15CrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
- 9KBjDU0xBIdaVrnRJUUUkm14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
- rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
- 1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
- JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
- CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
- 2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
- W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4f
- MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
- 0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0E
- wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
- W8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI
- 42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUeLvtDUUUU
-X-Originating-IP: [124.16.138.128]
-X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
+ id 883A0F80269; Wed, 13 Oct 2021 17:46:20 +0200 (CEST)
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com
+ [IPv6:2607:f8b0:4864:20::535])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1F206F800C0
+ for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2021 17:46:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F206F800C0
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="gfAizaxT"
+Received: by mail-pg1-x535.google.com with SMTP id a73so2748894pge.0
+ for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2021 08:46:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to;
+ bh=5P0ocxXM0vPODGkh8na4Mfy39/EYyFv4GMRrvhNNOUo=;
+ b=gfAizaxTiwRe31oPHuSEfCuoU3UyNzjvSGFjRtR0+20ybGnOJHR2SNvIUYXuMY2xpD
+ gjbOwicFvptk+HxbA9gztDS/NFb/B9PCmms4ywTb+W6ZfybGlSGnqIF9BrEyW3lnzugF
+ 1xOsRizGgXSxqW3rE2o7H3pOyE6LnVUrXJS6JM8CS2LKu70yomZ+jIXvV9GC/9hEoAdh
+ pZgLdZj46NdkkNldf1y6Zal4VF0OHZO5HByoWBC8S5+MsG5/UJx0h6V+EfRdjNyAV2md
+ QHEhpyLmWUQN/xdLKYedMbdiT11toyum2MbaAnr8R6GfEwVc/Pi4akUF4ElQql0esd+K
+ tzhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=5P0ocxXM0vPODGkh8na4Mfy39/EYyFv4GMRrvhNNOUo=;
+ b=UUu6fxNB5mlKuSpngmwunpOfnTMD9ytzLsG4tnG4HoYiKtOUtW6bOqrdkaHirW5rzp
+ B6BXMHXJ3cqIAi5VuAIEQsIiFMelTIo8fe15wAbHCZ8L/fj7b8wlDsWl07humWdjiq38
+ exOMYW+bAKIZoWZtwc24kh3DQJG+F7zHsJZUxCakkoK4C+WkkeBuXTM/PbYVuj5lurZF
+ wv6qYiwDQ0nGpwR913+KUe6J/gdYto9v4ORrgCYN3SQl0EJMxFHd3teKLFPVhTzR4yzw
+ j0Ec5+m9V0ztGxp0bj+tS00omw4p30nITepa+7L8nD9HmaG0orkeYUgs94hSygSkk12K
+ /0Fw==
+X-Gm-Message-State: AOAM5303KLp0WjBZWa5YiWr41ZrK0zVq/pEmQrx90Sg1uOiCPf6LSxHd
+ 5CVfMjR7cBGbKulwArfQm4yWuw==
+X-Google-Smtp-Source: ABdhPJxOS97EPwZsGm56NgXmycC48sC/ZWo8Q8DTT9IZBXIVEcdfskLSNijWrQkjT1bVWFJiZLyKew==
+X-Received: by 2002:aa7:949c:0:b0:44c:a0df:2c7f with SMTP id
+ z28-20020aa7949c000000b0044ca0df2c7fmr128668pfk.34.1634139970091; 
+ Wed, 13 Oct 2021 08:46:10 -0700 (PDT)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+ by smtp.gmail.com with ESMTPSA id x27sm2452841pfo.90.2021.10.13.08.46.06
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 13 Oct 2021 08:46:09 -0700 (PDT)
+Date: Wed, 13 Oct 2021 09:46:04 -0600
+From: Mathieu Poirier <mathieu.poirier@linaro.org>
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Subject: Re: [PATCH RFC] virtio: wrap config->reset calls
+Message-ID: <20211013154604.GB4135908@p14s>
+References: <20211013105226.20225-1-mst@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211013105226.20225-1-mst@redhat.com>
 X-Mailman-Approved-At: Thu, 14 Oct 2021 15:47:06 +0200
-Cc: Jiasheng Jiang <jiasheng@iscas.ac.cn>, linux-kernel@vger.kernel.org
+Cc: Latchesar Ionkov <lucho@ionkov.net>, nvdimm@lists.linux.dev,
+ Dominique Martinet <asmadeus@codewreck.org>,
+ Stefan Hajnoczi <stefanha@redhat.com>, kvm@vger.kernel.org,
+ David Hildenbrand <david@redhat.com>, David Airlie <airlied@linux.ie>,
+ Viresh Kumar <vireshk@kernel.org>, Jason Wang <jasowang@redhat.com>,
+ linux-remoteproc@vger.kernel.org, alsa-devel@alsa-project.org,
+ dri-devel@lists.freedesktop.org, Bjorn Andersson <bjorn.andersson@linaro.org>,
+ netdev@vger.kernel.org, Gerd Hoffmann <kraxel@redhat.com>,
+ linux-scsi@vger.kernel.org, Will Deacon <will@kernel.org>,
+ v9fs-developer@lists.sourceforge.net,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Jean-Philippe Brucker <jean-philippe@linaro.org>,
+ Linus Walleij <linus.walleij@linaro.org>, Dave Jiang <dave.jiang@intel.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>, linux-arm-kernel@lists.infradead.org,
+ Miklos Szeredi <miklos@szeredi.hu>, Richard Weinberger <richard@nod.at>,
+ Bartosz Golaszewski <brgl@bgdev.pl>, Takashi Iwai <tiwai@suse.com>,
+ Gonglei <arei.gonglei@huawei.com>, Kalle Valo <kvalo@codeaurora.org>,
+ "James E.J. Bottomley" <jejb@linux.ibm.com>, Jakub Kicinski <kuba@kernel.org>,
+ Ira Weiny <ira.weiny@intel.com>, virtualization@lists.linux-foundation.org,
+ Jeff Dike <jdike@addtoit.com>, Vivek Goyal <vgoyal@redhat.com>,
+ Stefano Garzarella <sgarzare@redhat.com>, Ohad Ben-Cohen <ohad@wizery.com>,
+ Johan Hedberg <johan.hedberg@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
+ Amit Shah <amit@kernel.org>, Eric Van Hensbergen <ericvh@gmail.com>,
+ Marcel Holtmann <marcel@holtmann.org>, linux-um@lists.infradead.org,
+ linux-crypto@vger.kernel.org, linux-block@vger.kernel.org,
+ Vishal Verma <vishal.l.verma@intel.com>,
+ Luiz Augusto von Dentz <luiz.dentz@gmail.com>, Matt Mackall <mpm@selenic.com>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Cristian Marussi <cristian.marussi@arm.com>, Jens Axboe <axboe@kernel.dk>,
+ Jie Deng <jie.deng@intel.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>, linux-gpio@vger.kernel.org,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-i2c@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+ iommu@lists.linux-foundation.org,
+ Anton Yakovlev <anton.yakovlev@opensynergy.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Sudeep Holla <sudeep.holla@arm.com>,
+ linux-fsdevel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+ Johannes Berg <johannes@sipsolutions.net>, "Enrico Weigelt,
+ metux IT consult" <info@metux.net>, "David S. Miller" <davem@davemloft.net>,
+ Joerg Roedel <joro@8bytes.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,42 +142,56 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The codec_dai and the cpu_dai are from rtd. When the rtd->dais[0]
-or rtd->dais[rtd->num_cpus] is None, it could lead to the use of
-null pointer in the snd_soc_dai_stream_valid(). So it might be better
-to add the check before the use of snd_soc_dai_stream_valid().
+On Wed, Oct 13, 2021 at 06:55:31AM -0400, Michael S. Tsirkin wrote:
+> This will enable cleanups down the road.
+> The idea is to disable cbs, then add "flush_queued_cbs" callback
+> as a parameter, this way drivers can flush any work
+> queued after callbacks have been disabled.
+> 
+> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+> ---
+>  arch/um/drivers/virt-pci.c                 | 2 +-
+>  drivers/block/virtio_blk.c                 | 4 ++--
+>  drivers/bluetooth/virtio_bt.c              | 2 +-
+>  drivers/char/hw_random/virtio-rng.c        | 2 +-
+>  drivers/char/virtio_console.c              | 4 ++--
+>  drivers/crypto/virtio/virtio_crypto_core.c | 8 ++++----
+>  drivers/firmware/arm_scmi/virtio.c         | 2 +-
+>  drivers/gpio/gpio-virtio.c                 | 2 +-
+>  drivers/gpu/drm/virtio/virtgpu_kms.c       | 2 +-
+>  drivers/i2c/busses/i2c-virtio.c            | 2 +-
+>  drivers/iommu/virtio-iommu.c               | 2 +-
+>  drivers/net/caif/caif_virtio.c             | 2 +-
+>  drivers/net/virtio_net.c                   | 4 ++--
+>  drivers/net/wireless/mac80211_hwsim.c      | 2 +-
+>  drivers/nvdimm/virtio_pmem.c               | 2 +-
+>  drivers/rpmsg/virtio_rpmsg_bus.c           | 2 +-
+>  drivers/scsi/virtio_scsi.c                 | 2 +-
+>  drivers/virtio/virtio.c                    | 5 +++++
+>  drivers/virtio/virtio_balloon.c            | 2 +-
+>  drivers/virtio/virtio_input.c              | 2 +-
+>  drivers/virtio/virtio_mem.c                | 2 +-
+>  fs/fuse/virtio_fs.c                        | 4 ++--
+>  include/linux/virtio.h                     | 1 +
+>  net/9p/trans_virtio.c                      | 2 +-
+>  net/vmw_vsock/virtio_transport.c           | 4 ++--
+>  sound/virtio/virtio_card.c                 | 4 ++--
+>  26 files changed, 39 insertions(+), 33 deletions(-)
+> 
+>  static struct virtio_driver virtio_pmem_driver = {
+> diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
+> index 8e49a3bacfc7..6a11952822df 100644
+> --- a/drivers/rpmsg/virtio_rpmsg_bus.c
+> +++ b/drivers/rpmsg/virtio_rpmsg_bus.c
+> @@ -1015,7 +1015,7 @@ static void rpmsg_remove(struct virtio_device *vdev)
+>  	size_t total_buf_space = vrp->num_bufs * vrp->buf_size;
+>  	int ret;
+>  
+> -	vdev->config->reset(vdev);
+> +	virtio_reset_device(vdev);
+> 
 
-Fixes: 467fece ("ASoC: soc-dai: move snd_soc_dai_stream_valid() to soc-dai.c")
-Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
----
- sound/soc/soc-compress.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index b4f5935..67c3df1 100644
---- a/sound/soc/soc-compress.c
-+++ b/sound/soc/soc-compress.c
-@@ -535,12 +535,14 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
- 	}
- 
- 	/* check client and interface hw capabilities */
--	if (snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_PLAYBACK) &&
--	    snd_soc_dai_stream_valid(cpu_dai,   SNDRV_PCM_STREAM_PLAYBACK))
--		playback = 1;
--	if (snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_CAPTURE) &&
--	    snd_soc_dai_stream_valid(cpu_dai,   SNDRV_PCM_STREAM_CAPTURE))
--		capture = 1;
-+	if (codec_dai && cpu_dai) {
-+		if (snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_PLAYBACK) &&
-+		    snd_soc_dai_stream_valid(cpu_dai,   SNDRV_PCM_STREAM_PLAYBACK))
-+			playback = 1;
-+		if (snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_CAPTURE) &&
-+		    snd_soc_dai_stream_valid(cpu_dai,   SNDRV_PCM_STREAM_CAPTURE))
-+			capture = 1;
-+	}
- 
- 	/*
- 	 * Compress devices are unidirectional so only one of the directions
--- 
-2.7.4
-
+>  	ret = device_for_each_child(&vdev->dev, NULL, rpmsg_remove_device);
+>  	if (ret)
