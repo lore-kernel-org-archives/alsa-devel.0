@@ -2,77 +2,69 @@ Return-Path: <SRS0=EWQz=PB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E2F75C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Oct 2021 12:01:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77EB2C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Oct 2021 12:06:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0C3E160273
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Oct 2021 12:01:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0C3E160273
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ivitera.com
+	by mail.kernel.org (Postfix) with ESMTPS id 8B574610E7
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Oct 2021 12:06:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8B574610E7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 60871166A;
-	Wed, 13 Oct 2021 14:01:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 60871166A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9634A1612;
+	Wed, 13 Oct 2021 14:05:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9634A1612
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634126514;
-	bh=x5oXQhKsB8378L/MIFea34xC73BoGRWw4oX85gnlOmE=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=XyDAojlD0K+LTRB7WlqimkhOyWkZvkJnpg6jAzDV6+c9g/vPI1aIWjABTFC5AVaf+
-	 T41tgv8LIkBXvZcF2c3vOMOr3anPB2M40+3SIPFnJLKHdAs6XbCmubCjg9hlil7qDf
-	 trMWSzZFYUXz8cpRcBuNxIXnl2ng7i1nuW0EPvNI=
+	s=default; t=1634126800;
+	bh=OIQVX3Xp4OuMp2R9kkF35IthSzPYAAiZHIUd4W6MJoo=;
+	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=ZFzWi+YUCCSmz+HurdTjyEs/X3tGKJqLn5a4DBvz7JlQC/0/dH8VOWGNLyD7WlkWK
+	 tevE3WBU2sD7oxV9jezC3Xt3QEWbPsX9Ps38z79PGvfrbY4M3VVLd1X8DHCwocPKBa
+	 s8SxUa/0yxbjr7yYynE83l0MLl4CO+YbOzkTfwA0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EA214F8025B;
-	Wed, 13 Oct 2021 14:01:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 25609F8025B;
+	Wed, 13 Oct 2021 14:05:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 67FA7F80269; Wed, 13 Oct 2021 14:01:01 +0200 (CEST)
-Received: from cable.insite.cz (cable.insite.cz [84.242.75.189])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 15ED0F80269; Wed, 13 Oct 2021 14:05:48 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E1325F80088
- for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2021 14:00:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1325F80088
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ivitera.com header.i=@ivitera.com
- header.b="Vphjku6E"; 
- dkim=pass (1024-bit key) header.d=ivitera.com header.i=@ivitera.com
- header.b="Y1XyMW1y"
-Received: from localhost (localhost [127.0.0.1])
- by cable.insite.cz (Postfix) with ESMTP id 42EDDA1A3D402;
- Wed, 13 Oct 2021 14:00:55 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ivitera.com; s=mail;
- t=1634126455; bh=x5oXQhKsB8378L/MIFea34xC73BoGRWw4oX85gnlOmE=;
- h=From:To:Cc:Subject:Date:From;
- b=Vphjku6Em9VmdFlY1ip0NSAZjI5SBOxwFHIR0E/1FaBaH82RRD5tf9u518/i8dTSV
- PmnSv4GX/whsQdDFCtCCDnSdXpmmyax/kGLGOcRI0P+U/84MEJ11ed/IQ8TUIN8zI6
- k7QSZlLikIC7a8fhuv91xOKVR5bk0yBD07ME23To=
-Received: from cable.insite.cz ([84.242.75.189])
- by localhost (server.insite.cz [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id UE2yNIUPLZ2K; Wed, 13 Oct 2021 14:00:50 +0200 (CEST)
-Received: from precision.doma (ip28.insite.cz [81.0.237.28])
- (Authenticated sender: pavel)
- by cable.insite.cz (Postfix) with ESMTPSA id 061C7A1A3D403;
- Wed, 13 Oct 2021 14:00:49 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ivitera.com; s=mail;
- t=1634126450; bh=x5oXQhKsB8378L/MIFea34xC73BoGRWw4oX85gnlOmE=;
- h=From:To:Cc:Subject:Date:From;
- b=Y1XyMW1ydYQsbE8IZplDt7g4irJaabWeJb3KF2Rs/ZrubYepHDxLRXjHKMlwUIiQU
- mZ2gJjF6mbp6t+s5V2XD4e7JXa+lE6OIYN+2YbIMFC5yXrO8M0BMbkjOm0z+BjGpBn
- B3UYSGKL8K2JiJ1D9RDvxSrLW2V3IFt/hF2tNMZA=
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] alsaloop: fixed parsing value 'auto' of option 'sync'
-Date: Wed, 13 Oct 2021 14:00:49 +0200
-Message-Id: <20211013120049.51047-1-pavel.hofman@ivitera.com>
-X-Mailer: git-send-email 2.25.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id BA992F80088
+ for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2021 14:05:38 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 135BBA003F;
+ Wed, 13 Oct 2021 14:05:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 135BBA003F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1634126738; bh=cDrrNyoFGsH2Gb4wjo8KaNC7LENACCXEVvggl0yyQYA=;
+ h=Date:Subject:To:References:From:In-Reply-To:From;
+ b=RrT6coEO0eg5UpyXTaGAijBdZFo1Hk9UJfAQrxJCvBgE6lnfFUFaIX2bGThxxQ7Bv
+ NEx6CxJK7219lSIUhhKPicZ1C9iS4Rs2GNve+y9fo/j5ndvs9D5It0L0mE1ziK76vs
+ Fjh+/ceH73LQ3Ul6jdL1S/lhYaQ9NvxZICaOUB50=
+Received: from [192.168.100.98] (unknown [192.168.100.98])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Wed, 13 Oct 2021 14:05:35 +0200 (CEST)
+Message-ID: <56526958-994b-bffd-b19e-6d9e2fa49de4@perex.cz>
+Date: Wed, 13 Oct 2021 14:05:35 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Pavel Hofman <pavel.hofman@ivitera.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH] alsaloop: fixed parsing value 'auto' of option 'sync'
+Content-Language: en-US
+To: Pavel Hofman <pavel.hofman@ivitera.com>, alsa-devel@alsa-project.org
+References: <20211013120049.51047-1-pavel.hofman@ivitera.com>
+From: Jaroslav Kysela <perex@perex.cz>
+In-Reply-To: <20211013120049.51047-1-pavel.hofman@ivitera.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,27 +80,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The value 'auto' was not checked which resulted in using
-SYNC_TYPE_NONE instead of SYNC_TYPE_AUTO.
+On 13. 10. 21 14:00, Pavel Hofman wrote:
+> The value 'auto' was not checked which resulted in using
+> SYNC_TYPE_NONE instead of SYNC_TYPE_AUTO.
 
-Signed-off-by: Pavel Hofman <pavel.hofman@ivitera.com>
----
- alsaloop/alsaloop.c | 2 ++
- 1 file changed, 2 insertions(+)
+Applied. Thank you.
 
-diff --git a/alsaloop/alsaloop.c b/alsaloop/alsaloop.c
-index 4192712..f5f2e37 100644
---- a/alsaloop/alsaloop.c
-+++ b/alsaloop/alsaloop.c
-@@ -528,6 +528,8 @@ static int parse_config(int argc, char *argv[], snd_output_t *output,
- 				arg_sync = SYNC_TYPE_PLAYRATESHIFT;
- 			else if (optarg[0] == 'r')
- 				arg_sync = SYNC_TYPE_SAMPLERATE;
-+			else if (optarg[0] == 'a')
-+				arg_sync = SYNC_TYPE_AUTO;
- 			else
- 				arg_sync = atoi(optarg);
- 			if (arg_sync < 0 || arg_sync > SYNC_TYPE_LAST)
+				Jaroslav
+
 -- 
-2.25.1
-
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
