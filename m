@@ -2,125 +2,70 @@ Return-Path: <SRS0=9Cbg=PC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 53821C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Oct 2021 13:50:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86AF5C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Oct 2021 13:50:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C817E610CC
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Oct 2021 13:50:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C817E610CC
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+	by mail.kernel.org (Postfix) with ESMTPS id 8973B610E6
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Oct 2021 13:50:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8973B610E6
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0D765168A;
-	Thu, 14 Oct 2021 15:49:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D765168A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 076D2168D;
+	Thu, 14 Oct 2021 15:49:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 076D2168D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634219432;
-	bh=J+jyAvuojQSn/hJHjUTC4zRU0OQIX3Akgmrxk5clj0Y=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Ug/kjXQHIxbtd6nWcAfir0P3WMwIaD/9QteR9nz3r1UwYi5KqYno/I47+iYBXob/U
-	 IKyTzGRv5QgMVM/P/GUQcSOXEK9e3ip0kMJcFXgQx2mccpatT15zddvtRWj45aK6oZ
-	 +yxIuvMjcX6c9UUaSP6Npuk6vivj6LL9oyzowgpw=
+	s=default; t=1634219447;
+	bh=PmFsZNmqpFpV0YzTx06R+2EEE2BoE6MPJr8sD0dLiSw=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=MVMcRMbcm+SJQ4RASOFLOIzT7pf4ha2xSahakiDvmRGzIYH6bdIGylYa48Zflgh0B
+	 xVwGl5g/jh3x75u2UkrGwyGh6alh7xp64NovCeB/hFxfZzmouG1BmbzUyQLy/Py7US
+	 dfMbq3IbOxJj39lQebuZzGevBjshnTCzUGNZd8q4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C2684F8050F;
-	Thu, 14 Oct 2021 15:47:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 823A2F80516;
+	Thu, 14 Oct 2021 15:47:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B28CFF80269; Wed, 13 Oct 2021 15:16:40 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 28083F80085
- for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2021 15:16:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 28083F80085
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="F5uPftqW"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1634130995;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=3UweUBspHinuJSQhguEdx6WU40R4nh4wg670z3EQDCs=;
- b=F5uPftqWETTIRnnpUnYDz02EAbTDIL9UfcURo1cKmFjihuciKx0s8HYnpXq3SOtsI08URb
- jWCSWylsy3F+YVp+pZ/EndWZiqAAiSIXjNrA3VxPB98iJIjOVg17keTA/GZLAlpl8Nliww
- wf6MftvojYyKRwJouhIfLMXt7a/aTmk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-54-lYDb9o67Mf-rDMq57zxd3g-1; Wed, 13 Oct 2021 09:16:31 -0400
-X-MC-Unique: lYDb9o67Mf-rDMq57zxd3g-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com
- [10.5.11.14])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 41EC3100CCC0;
- Wed, 13 Oct 2021 13:16:24 +0000 (UTC)
-Received: from horse.redhat.com (unknown [10.22.33.167])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 9599DADD0;
- Wed, 13 Oct 2021 13:16:20 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
- id DEFAB22023A; Wed, 13 Oct 2021 09:16:19 -0400 (EDT)
-Date: Wed, 13 Oct 2021 09:16:19 -0400
-From: Vivek Goyal <vgoyal@redhat.com>
-To: "Michael S. Tsirkin" <mst@redhat.com>
-Subject: Re: [PATCH RFC] virtio: wrap config->reset calls
-Message-ID: <YWbcI15YOkhnPh5x@redhat.com>
-References: <20211013105226.20225-1-mst@redhat.com>
-MIME-Version: 1.0
-In-Reply-To: <20211013105226.20225-1-mst@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=vgoyal@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+ id E5DEBF80269; Wed, 13 Oct 2021 11:18:05 +0200 (CEST)
+Received: from cstnet.cn (smtp23.cstnet.cn [159.226.251.23])
+ by alsa1.perex.cz (Postfix) with ESMTP id B942DF800C0
+ for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2021 11:17:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B942DF800C0
+Received: from localhost.localdomain (unknown [124.16.138.128])
+ by APP-03 (Coremail) with SMTP id rQCowABnb6s6pGZhPDBrAw--.20277S2;
+ Wed, 13 Oct 2021 17:17:46 +0800 (CST)
+From: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+To: vkoul@kernel.org, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+ tiwai@suse.com, alsa-devel@alsa-project.org
+Subject: [PATCH] ASoC: soc-compress: prevent the potentially use of null
+ pointer
+Date: Wed, 13 Oct 2021 09:17:44 +0000
+Message-Id: <1634116664-1784856-1-git-send-email-jiasheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: rQCowABnb6s6pGZhPDBrAw--.20277S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7uw13KFyDur17JF43XFy8Grg_yoW8WF18pw
+ s7uFWIqFWrtFyIvw1rJw4F9F1fGFyxua1F9F1ag348Ar45Xanxur1UJr4kAFy8GrWjqr1v
+ v3sFy3y3XF15CrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+ 9KBjDU0xBIdaVrnRJUUUkm14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+ rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+ 1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+ JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+ CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+ 2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+ W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4f
+ MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
+ 0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0E
+ wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
+ W8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI
+ 42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUeLvtDUUUU
+X-Originating-IP: [124.16.138.128]
+X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
 X-Mailman-Approved-At: Thu, 14 Oct 2021 15:47:06 +0200
-Cc: Latchesar Ionkov <lucho@ionkov.net>, nvdimm@lists.linux.dev,
- v9fs-developer@lists.sourceforge.net, Stefan Hajnoczi <stefanha@redhat.com>,
- kvm@vger.kernel.org, David Hildenbrand <david@redhat.com>,
- David Airlie <airlied@linux.ie>, Viresh Kumar <vireshk@kernel.org>,
- Jason Wang <jasowang@redhat.com>, linux-remoteproc@vger.kernel.org,
- alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org,
- Bjorn Andersson <bjorn.andersson@linaro.org>, netdev@vger.kernel.org,
- Gerd Hoffmann <kraxel@redhat.com>, linux-scsi@vger.kernel.org,
- Will Deacon <will@kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>,
- Jean-Philippe Brucker <jean-philippe@linaro.org>,
- Linus Walleij <linus.walleij@linaro.org>, Dave Jiang <dave.jiang@intel.com>,
- Herbert Xu <herbert@gondor.apana.org.au>, linux-arm-kernel@lists.infradead.org,
- Miklos Szeredi <miklos@szeredi.hu>, Richard Weinberger <richard@nod.at>,
- Bartosz Golaszewski <brgl@bgdev.pl>, Takashi Iwai <tiwai@suse.com>,
- Gonglei <arei.gonglei@huawei.com>, Kalle Valo <kvalo@codeaurora.org>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- "James E.J. Bottomley" <jejb@linux.ibm.com>, Jakub Kicinski <kuba@kernel.org>,
- Ira Weiny <ira.weiny@intel.com>, virtualization@lists.linux-foundation.org,
- Jeff Dike <jdike@addtoit.com>, Dominique Martinet <asmadeus@codewreck.org>,
- Stefano Garzarella <sgarzare@redhat.com>, Ohad Ben-Cohen <ohad@wizery.com>,
- Johan Hedberg <johan.hedberg@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
- Amit Shah <amit@kernel.org>, Eric Van Hensbergen <ericvh@gmail.com>,
- Marcel Holtmann <marcel@holtmann.org>, linux-um@lists.infradead.org,
- linux-crypto@vger.kernel.org, linux-block@vger.kernel.org,
- Vishal Verma <vishal.l.verma@intel.com>,
- Luiz Augusto von Dentz <luiz.dentz@gmail.com>, Matt Mackall <mpm@selenic.com>,
- Dan Williams <dan.j.williams@intel.com>,
- Cristian Marussi <cristian.marussi@arm.com>, Jens Axboe <axboe@kernel.dk>,
- Jie Deng <jie.deng@intel.com>, Mathieu Poirier <mathieu.poirier@linaro.org>,
- linux-gpio@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-i2c@vger.kernel.org, linux-bluetooth@vger.kernel.org,
- iommu@lists.linux-foundation.org,
- Anton Yakovlev <anton.yakovlev@opensynergy.com>,
- Daniel Vetter <daniel@ffwll.ch>, Sudeep Holla <sudeep.holla@arm.com>,
- linux-fsdevel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
- Johannes Berg <johannes@sipsolutions.net>, "Enrico Weigelt,
- metux IT consult" <info@metux.net>, "David S. Miller" <davem@davemloft.net>,
- Joerg Roedel <joro@8bytes.org>
+Cc: Jiasheng Jiang <jiasheng@iscas.ac.cn>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -136,68 +81,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Oct 13, 2021 at 06:55:31AM -0400, Michael S. Tsirkin wrote:
-> This will enable cleanups down the road.
-> The idea is to disable cbs, then add "flush_queued_cbs" callback
-> as a parameter, this way drivers can flush any work
-> queued after callbacks have been disabled.
-> 
-> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-> ---
->  arch/um/drivers/virt-pci.c                 | 2 +-
->  drivers/block/virtio_blk.c                 | 4 ++--
->  drivers/bluetooth/virtio_bt.c              | 2 +-
->  drivers/char/hw_random/virtio-rng.c        | 2 +-
->  drivers/char/virtio_console.c              | 4 ++--
->  drivers/crypto/virtio/virtio_crypto_core.c | 8 ++++----
->  drivers/firmware/arm_scmi/virtio.c         | 2 +-
->  drivers/gpio/gpio-virtio.c                 | 2 +-
->  drivers/gpu/drm/virtio/virtgpu_kms.c       | 2 +-
->  drivers/i2c/busses/i2c-virtio.c            | 2 +-
->  drivers/iommu/virtio-iommu.c               | 2 +-
->  drivers/net/caif/caif_virtio.c             | 2 +-
->  drivers/net/virtio_net.c                   | 4 ++--
->  drivers/net/wireless/mac80211_hwsim.c      | 2 +-
->  drivers/nvdimm/virtio_pmem.c               | 2 +-
->  drivers/rpmsg/virtio_rpmsg_bus.c           | 2 +-
->  drivers/scsi/virtio_scsi.c                 | 2 +-
->  drivers/virtio/virtio.c                    | 5 +++++
->  drivers/virtio/virtio_balloon.c            | 2 +-
->  drivers/virtio/virtio_input.c              | 2 +-
->  drivers/virtio/virtio_mem.c                | 2 +-
->  fs/fuse/virtio_fs.c                        | 4 ++--
+The codec_dai and the cpu_dai are from rtd. When the rtd->dais[0]
+or rtd->dais[rtd->num_cpus] is None, it could lead to the use of
+null pointer in the snd_soc_dai_stream_valid(). So it might be better
+to add the check before the use of snd_soc_dai_stream_valid().
 
-fs/fuse/virtio_fs.c changes look good to me.
+Fixes: 467fece ("ASoC: soc-dai: move snd_soc_dai_stream_valid() to soc-dai.c")
+Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+---
+ sound/soc/soc-compress.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-Reviewed-by: Vivek Goyal <vgoyal@redhat.com>
-
-Vivek
-
-[..]
-> diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
-> index 0ad89c6629d7..27c3b74070a2 100644
-> --- a/fs/fuse/virtio_fs.c
-> +++ b/fs/fuse/virtio_fs.c
-> @@ -895,7 +895,7 @@ static int virtio_fs_probe(struct virtio_device *vdev)
->  	return 0;
->  
->  out_vqs:
-> -	vdev->config->reset(vdev);
-> +	virtio_reset_device(vdev);
->  	virtio_fs_cleanup_vqs(vdev, fs);
->  	kfree(fs->vqs);
->  
-> @@ -927,7 +927,7 @@ static void virtio_fs_remove(struct virtio_device *vdev)
->  	list_del_init(&fs->list);
->  	virtio_fs_stop_all_queues(fs);
->  	virtio_fs_drain_all_queues_locked(fs);
-> -	vdev->config->reset(vdev);
-> +	virtio_reset_device(vdev);
->  	virtio_fs_cleanup_vqs(vdev, fs);
->  
->  	vdev->priv = NULL;
-
-
-Thanks
-Vivek
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index b4f5935..67c3df1 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -535,12 +535,14 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
+ 	}
+ 
+ 	/* check client and interface hw capabilities */
+-	if (snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_PLAYBACK) &&
+-	    snd_soc_dai_stream_valid(cpu_dai,   SNDRV_PCM_STREAM_PLAYBACK))
+-		playback = 1;
+-	if (snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_CAPTURE) &&
+-	    snd_soc_dai_stream_valid(cpu_dai,   SNDRV_PCM_STREAM_CAPTURE))
+-		capture = 1;
++	if (codec_dai && cpu_dai) {
++		if (snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_PLAYBACK) &&
++		    snd_soc_dai_stream_valid(cpu_dai,   SNDRV_PCM_STREAM_PLAYBACK))
++			playback = 1;
++		if (snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_CAPTURE) &&
++		    snd_soc_dai_stream_valid(cpu_dai,   SNDRV_PCM_STREAM_CAPTURE))
++			capture = 1;
++	}
+ 
+ 	/*
+ 	 * Compress devices are unidirectional so only one of the directions
+-- 
+2.7.4
 
