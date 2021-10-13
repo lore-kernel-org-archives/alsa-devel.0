@@ -2,58 +2,57 @@ Return-Path: <SRS0=EWQz=PB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0589DC433FE
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Oct 2021 14:33:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A597FC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Oct 2021 14:33:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 56894610FE
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Oct 2021 14:33:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 56894610FE
+	by mail.kernel.org (Postfix) with ESMTPS id CAB69610EA
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Oct 2021 14:33:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CAB69610EA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AB94D168F;
-	Wed, 13 Oct 2021 16:32:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB94D168F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 37D2D168E;
+	Wed, 13 Oct 2021 16:32:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 37D2D168E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634135581;
-	bh=PdnPaJEryUOFrynwAloHCKQL31x6ZlJuQ7CSkZljO8s=;
+	s=default; t=1634135607;
+	bh=+/vdt+UAe5Qi+GzfCdT0qO/gLrIROcclzyExp0vWBi4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kNXvkYC6Ujd99D03NFGEgpLL8JDkK1IFY44hVGoMjbXHiXm+YTl/cBiAcJKfgGers
-	 lioEqvOMOrMsPLH2O0/t6T6MM2Swanva7rNHycefZZeCzUgi3ulLdg2R9tcj4BNh+C
-	 iamfUQN+pI5PLnvJ06Swn1KBQaPPRWgq7s5OQS+4=
+	b=hqR7BW8uFix0RUDQ1WVw/TxtsNJVOewp4GFGOPtpSK4f1yY3wqyhZrZSFKHGvZGnu
+	 ZsYVxTezLWRA0qeGmRfxg0UobHPk0Y22ocF/aan63ZoFqFN/xWL5P/t9Gme8iR9j7N
+	 71Qxqf6ClKk0tfrZegVg1YafJldc/UPm3G3ZrGLY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 44318F804FC;
-	Wed, 13 Oct 2021 16:31:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 122E9F804FD;
+	Wed, 13 Oct 2021 16:31:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 762F4F80269; Wed, 13 Oct 2021 16:31:22 +0200 (CEST)
+ id 2FCF8F804FA; Wed, 13 Oct 2021 16:31:26 +0200 (CEST)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4C85DF800C0
- for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2021 16:31:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C85DF800C0
-X-IronPort-AV: E=McAfee;i="6200,9189,10135"; a="313639495"
-X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; d="scan'208";a="313639495"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 29929F804ED
+ for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2021 16:31:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 29929F804ED
+X-IronPort-AV: E=McAfee;i="6200,9189,10135"; a="313639557"
+X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; d="scan'208";a="313639557"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Oct 2021 07:31:06 -0700
-X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; d="scan'208";a="524649465"
+ 13 Oct 2021 07:31:18 -0700
+X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; d="scan'208";a="524649537"
 Received: from ssafavib-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.209.164.198])
  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Oct 2021 07:31:05 -0700
+ 13 Oct 2021 07:31:16 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [RFC PATCH v3 01/13] ASoC: soc-pcm: remove
- snd_soc_dpcm_fe_can_update()
-Date: Wed, 13 Oct 2021 09:30:38 -0500
-Message-Id: <20211013143050.244444-2-pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH v3 07/13] ASoC: soc-pcm: protect for_each_dpcm_be() loops
+Date: Wed, 13 Oct 2021 09:30:44 -0500
+Message-Id: <20211013143050.244444-8-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211013143050.244444-1-pierre-louis.bossart@linux.intel.com>
 References: <20211013143050.244444-1-pierre-louis.bossart@linux.intel.com>
@@ -81,50 +80,366 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This function is not used anywhere, including soc-pcm.c
+The D in DPCM stands for 'dynamic', which means that connections
+between FE and BE can evolve.
 
-Remove dead code.
+Commit a97648697790 ("ASoC: dpcm: prevent snd_soc_dpcm use after
+free") started to protect some of the for_each_dpcm_be() loops, but
+there are still many cases that were not modified.
+
+This patch adds protection for all the remaining loops, with the
+notable exception of the dpcm_be_dai_trigger(), where the lock is
+already taken at a higher level, e.g. in snd_pcm_period_elapsed().
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- include/sound/soc-dpcm.h | 3 ---
- sound/soc/soc-pcm.c      | 9 ---------
- 2 files changed, 12 deletions(-)
+ sound/soc/soc-pcm.c | 86 ++++++++++++++++++++-------------------------
+ 1 file changed, 39 insertions(+), 47 deletions(-)
 
-diff --git a/include/sound/soc-dpcm.h b/include/sound/soc-dpcm.h
-index bc7af90099a8..72d45ad47ee3 100644
---- a/include/sound/soc-dpcm.h
-+++ b/include/sound/soc-dpcm.h
-@@ -121,9 +121,6 @@ int snd_soc_dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
- int snd_soc_dpcm_can_be_params(struct snd_soc_pcm_runtime *fe,
- 		struct snd_soc_pcm_runtime *be, int stream);
- 
--/* is the current PCM operation for this FE ? */
--int snd_soc_dpcm_fe_can_update(struct snd_soc_pcm_runtime *fe, int stream);
--
- /* is the current PCM operation for this BE ? */
- int snd_soc_dpcm_be_can_update(struct snd_soc_pcm_runtime *fe,
- 		struct snd_soc_pcm_runtime *be, int stream);
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 0aa0ae9703d1..2790379015ca 100644
+index 797f0d114c83..5f2368059e14 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -2815,15 +2815,6 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+@@ -42,15 +42,12 @@ void snd_soc_dpcm_fe_unlock_irq(struct snd_soc_pcm_runtime *fe, int stream)
+ EXPORT_SYMBOL_GPL(snd_soc_dpcm_fe_unlock_irq);
+ 
+ /* can this BE stop and free */
+-static int snd_soc_dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
+-					 struct snd_soc_pcm_runtime *be, int stream);
+-
+ static int snd_soc_dpcm_can_be_free_stop_locked(struct snd_soc_pcm_runtime *fe,
+ 						struct snd_soc_pcm_runtime *be, int stream);
+ 
+ /* can this BE perform a hw_params() */
+-static int snd_soc_dpcm_can_be_params(struct snd_soc_pcm_runtime *fe,
+-				      struct snd_soc_pcm_runtime *be, int stream);
++static int snd_soc_dpcm_can_be_params_locked(struct snd_soc_pcm_runtime *fe,
++					     struct snd_soc_pcm_runtime *be, int stream);
+ 
+ /* is the current PCM operation for this BE ? */
+ static int snd_soc_dpcm_be_can_update(struct snd_soc_pcm_runtime *fe,
+@@ -335,6 +332,7 @@ int dpcm_dapm_stream_event(struct snd_soc_pcm_runtime *fe, int dir,
+ {
+ 	struct snd_soc_dpcm *dpcm;
+ 
++	snd_soc_dpcm_fe_lock_irq(fe, dir);
+ 	for_each_dpcm_be(fe, dir, dpcm) {
+ 
+ 		struct snd_soc_pcm_runtime *be = dpcm->be;
+@@ -348,6 +346,8 @@ int dpcm_dapm_stream_event(struct snd_soc_pcm_runtime *fe, int dir,
+ 
+ 		snd_soc_dapm_stream_event(be, dir, event);
+ 	}
++	snd_soc_dpcm_fe_unlock_irq(fe, dir);
++
+ 
+ 	snd_soc_dapm_stream_event(fe, dir, event);
+ 
+@@ -1237,6 +1237,7 @@ void dpcm_be_disconnect(struct snd_soc_pcm_runtime *fe, int stream)
+ {
+ 	struct snd_soc_dpcm *dpcm, *d;
+ 
++	snd_soc_dpcm_fe_lock_irq(fe, stream);
+ 	for_each_dpcm_be_safe(fe, stream, dpcm, d) {
+ 		dev_dbg(fe->dev, "ASoC: BE %s disconnect check for %s\n",
+ 				stream ? "capture" : "playback",
+@@ -1254,12 +1255,11 @@ void dpcm_be_disconnect(struct snd_soc_pcm_runtime *fe, int stream)
+ 
+ 		dpcm_remove_debugfs_state(dpcm);
+ 
+-		snd_soc_dpcm_fe_lock_irq(fe, stream);
+ 		list_del(&dpcm->list_be);
+ 		list_del(&dpcm->list_fe);
+-		snd_soc_dpcm_fe_unlock_irq(fe, stream);
+ 		kfree(dpcm);
+ 	}
++	snd_soc_dpcm_fe_unlock_irq(fe, stream);
+ }
+ 
+ /* get BE for DAI widget and stream */
+@@ -1386,6 +1386,7 @@ static int dpcm_prune_paths(struct snd_soc_pcm_runtime *fe, int stream,
+ 	int prune = 0;
+ 
+ 	/* Destroy any old FE <--> BE connections */
++	snd_soc_dpcm_fe_lock_irq(fe, stream);
+ 	for_each_dpcm_be(fe, stream, dpcm) {
+ 		if (dpcm_be_is_active(dpcm, stream, *list_))
+ 			continue;
+@@ -1397,6 +1398,7 @@ static int dpcm_prune_paths(struct snd_soc_pcm_runtime *fe, int stream,
+ 		dpcm_set_be_update_state(dpcm->be, stream, SND_SOC_DPCM_UPDATE_BE);
+ 		prune++;
+ 	}
++	snd_soc_dpcm_fe_unlock_irq(fe, stream);
+ 
+ 	dev_dbg(fe->dev, "ASoC: found %d old BE paths for pruning\n", prune);
+ 	return prune;
+@@ -1496,13 +1498,16 @@ void dpcm_be_dai_stop(struct snd_soc_pcm_runtime *fe, int stream,
+ 	struct snd_soc_dpcm *dpcm;
+ 
+ 	/* disable any enabled and non active backends */
++	snd_soc_dpcm_fe_lock_irq(fe, stream);
+ 	for_each_dpcm_be(fe, stream, dpcm) {
+ 		struct snd_soc_pcm_runtime *be = dpcm->be;
+ 		struct snd_pcm_substream *be_substream =
+ 			snd_soc_dpcm_get_substream(be, stream);
+ 
+-		if (dpcm == last)
++		if (dpcm == last) {
++			snd_soc_dpcm_fe_unlock_irq(fe, stream);
+ 			return;
++		}
+ 
+ 		/* is this op for this BE ? */
+ 		if (!snd_soc_dpcm_be_can_update(fe, be, stream))
+@@ -1532,6 +1537,7 @@ void dpcm_be_dai_stop(struct snd_soc_pcm_runtime *fe, int stream,
+ 		be_substream->runtime = NULL;
+ 		be->dpcm[stream].state = SND_SOC_DPCM_STATE_CLOSE;
+ 	}
++	snd_soc_dpcm_fe_unlock_irq(fe, stream);
+ }
+ 
+ int dpcm_be_dai_startup(struct snd_soc_pcm_runtime *fe, int stream)
+@@ -1541,6 +1547,7 @@ int dpcm_be_dai_startup(struct snd_soc_pcm_runtime *fe, int stream)
+ 	int err, count = 0;
+ 
+ 	/* only startup BE DAIs that are either sinks or sources to this FE DAI */
++	snd_soc_dpcm_fe_lock_irq(fe, stream);
+ 	for_each_dpcm_be(fe, stream, dpcm) {
+ 		struct snd_pcm_substream *be_substream;
+ 
+@@ -1591,11 +1598,13 @@ int dpcm_be_dai_startup(struct snd_soc_pcm_runtime *fe, int stream)
+ 		be->dpcm[stream].state = SND_SOC_DPCM_STATE_OPEN;
+ 		count++;
+ 	}
++	snd_soc_dpcm_fe_unlock_irq(fe, stream);
+ 
+ 	return count;
+ 
+ unwind:
+ 	dpcm_be_dai_startup_rollback(fe, stream, dpcm);
++	snd_soc_dpcm_fe_unlock_irq(fe, stream);
+ 
+ 	dev_err(fe->dev, "ASoC: %s() failed at %s (%d)\n",
+ 		__func__, be->dai_link->name, err);
+@@ -1650,6 +1659,7 @@ static void dpcm_runtime_setup_be_format(struct snd_pcm_substream *substream)
+ 	 * if FE want to use it (= dpcm_merged_format)
+ 	 */
+ 
++	snd_soc_dpcm_fe_lock_irq(fe, stream);
+ 	for_each_dpcm_be(fe, stream, dpcm) {
+ 		struct snd_soc_pcm_runtime *be = dpcm->be;
+ 		struct snd_soc_pcm_stream *codec_stream;
+@@ -1668,6 +1678,7 @@ static void dpcm_runtime_setup_be_format(struct snd_pcm_substream *substream)
+ 			soc_pcm_hw_update_format(hw, codec_stream);
+ 		}
+ 	}
++	snd_soc_dpcm_fe_unlock_irq(fe, stream);
+ }
+ 
+ static void dpcm_runtime_setup_be_chan(struct snd_pcm_substream *substream)
+@@ -1685,7 +1696,7 @@ static void dpcm_runtime_setup_be_chan(struct snd_pcm_substream *substream)
+ 	 * It returns merged BE codec channel;
+ 	 * if FE want to use it (= dpcm_merged_chan)
+ 	 */
+-
++	snd_soc_dpcm_fe_lock_irq(fe, stream);
+ 	for_each_dpcm_be(fe, stream, dpcm) {
+ 		struct snd_soc_pcm_runtime *be = dpcm->be;
+ 		struct snd_soc_pcm_stream *cpu_stream;
+@@ -1716,6 +1727,7 @@ static void dpcm_runtime_setup_be_chan(struct snd_pcm_substream *substream)
+ 			soc_pcm_hw_update_chan(hw, codec_stream);
+ 		}
+ 	}
++	snd_soc_dpcm_fe_unlock_irq(fe, stream);
+ }
+ 
+ static void dpcm_runtime_setup_be_rate(struct snd_pcm_substream *substream)
+@@ -1733,7 +1745,7 @@ static void dpcm_runtime_setup_be_rate(struct snd_pcm_substream *substream)
+ 	 * It returns merged BE codec channel;
+ 	 * if FE want to use it (= dpcm_merged_chan)
+ 	 */
+-
++	snd_soc_dpcm_fe_lock_irq(fe, stream);
+ 	for_each_dpcm_be(fe, stream, dpcm) {
+ 		struct snd_soc_pcm_runtime *be = dpcm->be;
+ 		struct snd_soc_pcm_stream *pcm;
+@@ -1753,6 +1765,7 @@ static void dpcm_runtime_setup_be_rate(struct snd_pcm_substream *substream)
+ 			soc_pcm_hw_update_rate(hw, pcm);
+ 		}
+ 	}
++	snd_soc_dpcm_fe_unlock_irq(fe, stream);
+ }
+ 
+ static int dpcm_apply_symmetry(struct snd_pcm_substream *fe_substream,
+@@ -1775,6 +1788,7 @@ static int dpcm_apply_symmetry(struct snd_pcm_substream *fe_substream,
+ 	}
+ 
+ 	/* apply symmetry for BE */
++	snd_soc_dpcm_fe_lock_irq(fe, stream);
+ 	for_each_dpcm_be(fe, stream, dpcm) {
+ 		struct snd_soc_pcm_runtime *be = dpcm->be;
+ 		struct snd_pcm_substream *be_substream =
+@@ -1800,6 +1814,7 @@ static int dpcm_apply_symmetry(struct snd_pcm_substream *fe_substream,
+ 		}
+ 	}
+ error:
++	snd_soc_dpcm_fe_unlock_irq(fe, stream);
+ 	if (err < 0)
+ 		dev_err(fe->dev, "ASoC: %s failed (%d)\n", __func__, err);
+ 
+@@ -1875,6 +1890,7 @@ void dpcm_be_dai_hw_free(struct snd_soc_pcm_runtime *fe, int stream)
+ 
+ 	/* only hw_params backends that are either sinks or sources
+ 	 * to this frontend DAI */
++	snd_soc_dpcm_fe_lock_irq(fe, stream);
+ 	for_each_dpcm_be(fe, stream, dpcm) {
+ 
+ 		struct snd_soc_pcm_runtime *be = dpcm->be;
+@@ -1886,7 +1902,7 @@ void dpcm_be_dai_hw_free(struct snd_soc_pcm_runtime *fe, int stream)
+ 			continue;
+ 
+ 		/* only free hw when no longer used - check all FEs */
+-		if (!snd_soc_dpcm_can_be_free_stop(fe, be, stream))
++		if (!snd_soc_dpcm_can_be_free_stop_locked(fe, be, stream))
+ 			continue;
+ 
+ 		/* do not free hw if this BE is used by other FE */
+@@ -1908,6 +1924,7 @@ void dpcm_be_dai_hw_free(struct snd_soc_pcm_runtime *fe, int stream)
+ 
+ 		be->dpcm[stream].state = SND_SOC_DPCM_STATE_HW_FREE;
+ 	}
++	snd_soc_dpcm_fe_unlock_irq(fe, stream);
+ }
+ 
+ static int dpcm_fe_dai_hw_free(struct snd_pcm_substream *substream)
+@@ -1941,6 +1958,7 @@ int dpcm_be_dai_hw_params(struct snd_soc_pcm_runtime *fe, int stream)
+ 	struct snd_soc_dpcm *dpcm;
+ 	int ret;
+ 
++	snd_soc_dpcm_fe_lock_irq(fe, stream);
+ 	for_each_dpcm_be(fe, stream, dpcm) {
+ 		be = dpcm->be;
+ 		be_substream = snd_soc_dpcm_get_substream(be, stream);
+@@ -1963,7 +1981,7 @@ int dpcm_be_dai_hw_params(struct snd_soc_pcm_runtime *fe, int stream)
+ 		       sizeof(struct snd_pcm_hw_params));
+ 
+ 		/* only allow hw_params() if no connected FEs are running */
+-		if (!snd_soc_dpcm_can_be_params(fe, be, stream))
++		if (!snd_soc_dpcm_can_be_params_locked(fe, be, stream))
+ 			continue;
+ 
+ 		if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_OPEN) &&
+@@ -1980,6 +1998,7 @@ int dpcm_be_dai_hw_params(struct snd_soc_pcm_runtime *fe, int stream)
+ 
+ 		be->dpcm[stream].state = SND_SOC_DPCM_STATE_HW_PARAMS;
+ 	}
++	snd_soc_dpcm_fe_unlock_irq(fe, stream);
+ 	return 0;
+ 
+ unwind:
+@@ -1995,7 +2014,7 @@ int dpcm_be_dai_hw_params(struct snd_soc_pcm_runtime *fe, int stream)
+ 			continue;
+ 
+ 		/* only allow hw_free() if no connected FEs are running */
+-		if (!snd_soc_dpcm_can_be_free_stop(fe, be, stream))
++		if (!snd_soc_dpcm_can_be_free_stop_locked(fe, be, stream))
+ 			continue;
+ 
+ 		if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_OPEN) &&
+@@ -2006,6 +2025,7 @@ int dpcm_be_dai_hw_params(struct snd_soc_pcm_runtime *fe, int stream)
+ 
+ 		soc_pcm_hw_free(be_substream);
+ 	}
++	snd_soc_dpcm_fe_unlock_irq(fe, stream);
+ 
+ 	return ret;
+ }
+@@ -2290,6 +2310,7 @@ int dpcm_be_dai_prepare(struct snd_soc_pcm_runtime *fe, int stream)
+ 	struct snd_soc_dpcm *dpcm;
+ 	int ret = 0;
+ 
++	snd_soc_dpcm_fe_lock_irq(fe, stream);
+ 	for_each_dpcm_be(fe, stream, dpcm) {
+ 
+ 		struct snd_soc_pcm_runtime *be = dpcm->be;
+@@ -2315,6 +2336,7 @@ int dpcm_be_dai_prepare(struct snd_soc_pcm_runtime *fe, int stream)
+ 
+ 		be->dpcm[stream].state = SND_SOC_DPCM_STATE_PREPARE;
+ 	}
++	snd_soc_dpcm_fe_unlock_irq(fe, stream);
+ 
+ 	if (ret < 0)
+ 		dev_err(fe->dev, "ASoC: %s() failed (%d)\n", __func__, ret);
+@@ -2588,8 +2610,10 @@ static void dpcm_fe_dai_cleanup(struct snd_pcm_substream *fe_substream)
+ 	int stream = fe_substream->stream;
+ 
+ 	/* mark FE's links ready to prune */
++	snd_soc_dpcm_fe_lock_irq(fe, stream);
+ 	for_each_dpcm_be(fe, stream, dpcm)
+ 		dpcm->state = SND_SOC_DPCM_LINK_STATE_FREE;
++	snd_soc_dpcm_fe_unlock_irq(fe, stream);
+ 
+ 	dpcm_be_disconnect(fe, stream);
+ 
+@@ -2905,22 +2929,6 @@ static int snd_soc_dpcm_check_state_locked(struct snd_soc_pcm_runtime *fe,
  	return ret;
  }
  
--/* is the current PCM operation for this FE ? */
--int snd_soc_dpcm_fe_can_update(struct snd_soc_pcm_runtime *fe, int stream)
+-static int snd_soc_dpcm_check_state(struct snd_soc_pcm_runtime *fe,
+-				    struct snd_soc_pcm_runtime *be,
+-				    int stream,
+-				    const enum snd_soc_dpcm_state *states,
+-				    int num_states)
 -{
--	if (fe->dpcm[stream].runtime_update == SND_SOC_DPCM_UPDATE_FE)
--		return 1;
--	return 0;
--}
--EXPORT_SYMBOL_GPL(snd_soc_dpcm_fe_can_update);
+-	int ret;
 -
- /* is the current PCM operation for this BE ? */
- int snd_soc_dpcm_be_can_update(struct snd_soc_pcm_runtime *fe,
+-	snd_soc_dpcm_fe_lock_irq(fe, stream);
+-	ret = snd_soc_dpcm_check_state_locked(fe, be, stream, states, num_states);
+-	snd_soc_dpcm_fe_unlock_irq(fe, stream);
+-
+-	/* it's safe to do this BE DAI */
+-	return ret;
+-}
+-
+ /*
+  * We can only hw_free, stop, pause or suspend a BE DAI if any of it's FE
+  * are not running, paused or suspended for the specified stream direction.
+@@ -2937,27 +2945,11 @@ static int snd_soc_dpcm_can_be_free_stop_locked(struct snd_soc_pcm_runtime *fe,
+ 	return snd_soc_dpcm_check_state_locked(fe, be, stream, state, ARRAY_SIZE(state));
+ }
+ 
+-/*
+- * We can only hw_free, stop, pause or suspend a BE DAI if any of it's FE
+- * are not running, paused or suspended for the specified stream direction.
+- */
+-static int snd_soc_dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
+-		struct snd_soc_pcm_runtime *be, int stream)
+-{
+-	const enum snd_soc_dpcm_state state[] = {
+-		SND_SOC_DPCM_STATE_START,
+-		SND_SOC_DPCM_STATE_PAUSED,
+-		SND_SOC_DPCM_STATE_SUSPEND,
+-	};
+-
+-	return snd_soc_dpcm_check_state(fe, be, stream, state, ARRAY_SIZE(state));
+-}
+-
+ /*
+  * We can only change hw params a BE DAI if any of it's FE are not prepared,
+  * running, paused or suspended for the specified stream direction.
+  */
+-static int snd_soc_dpcm_can_be_params(struct snd_soc_pcm_runtime *fe,
++static int snd_soc_dpcm_can_be_params_locked(struct snd_soc_pcm_runtime *fe,
  		struct snd_soc_pcm_runtime *be, int stream)
+ {
+ 	const enum snd_soc_dpcm_state state[] = {
+@@ -2967,5 +2959,5 @@ static int snd_soc_dpcm_can_be_params(struct snd_soc_pcm_runtime *fe,
+ 		SND_SOC_DPCM_STATE_PREPARE,
+ 	};
+ 
+-	return snd_soc_dpcm_check_state(fe, be, stream, state, ARRAY_SIZE(state));
++	return snd_soc_dpcm_check_state_locked(fe, be, stream, state, ARRAY_SIZE(state));
+ }
 -- 
 2.25.1
 
