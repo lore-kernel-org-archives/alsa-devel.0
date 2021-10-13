@@ -2,146 +2,138 @@ Return-Path: <SRS0=9Cbg=PC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E55F5C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Oct 2021 13:48:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13987C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Oct 2021 13:49:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 10B87601FA
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Oct 2021 13:48:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 10B87601FA
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=maximintegrated.com
+	by mail.kernel.org (Postfix) with ESMTPS id 85FDA610CC
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Oct 2021 13:49:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 85FDA610CC
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E3F4B1687;
-	Thu, 14 Oct 2021 15:48:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3F4B1687
+	by alsa0.perex.cz (Postfix) with ESMTPS id E69F41675;
+	Thu, 14 Oct 2021 15:48:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E69F41675
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634219331;
-	bh=9erXIWVfb1EMJey5sDbBYM7lvm87dvpPKEj/ic1sqoY=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1634219355;
+	bh=5PVmtT1pkKZHZU39p/se8FqKmO12/yZkYOWY9uifWjs=;
+	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=Yhca+ikdJl/3jaxiBwl9xZbgvDgMu3tMODm7mAn74QIHDSMLcEQe7QZg/Iu5ZJy4k
-	 138GQgkOof4jEdB1pn8Re48bOtRJ/eC8u+oYqu0HJCYDyepi3/gKxL25VO4nriUOCU
-	 o9M4icpuZLFRj6IgXr/+FLuZ60xTYRp2aUUvwioI=
+	b=BjaoISV4nANKO4hfLu0hyKfvK+dOuBLLbjZzLMBAe7jpOMQiMwzgCAiej3b7kMuVN
+	 MTBdK47JWDn0JmWhOMiGIyObeMsaTBZvzdHQ3Kfvl5CjNzWv8S3M43ejBx8yIO9MRK
+	 zg3eQV0OM9/LK1Hoc8Mh5jfm9GfI19Ydq8r4qwfA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 19223F804AF;
+	by alsa1.perex.cz (Postfix) with ESMTP id ED3E5F804E7;
 	Thu, 14 Oct 2021 15:47:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1C505F80088; Wed, 13 Oct 2021 09:52:52 +0200 (CEST)
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com
- (mail-dm6nam12on2097.outbound.protection.outlook.com [40.107.243.97])
+ id 2AD78F80269; Wed, 13 Oct 2021 12:55:55 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9D7C0F80088
- for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2021 09:52:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D7C0F80088
+ by alsa1.perex.cz (Postfix) with ESMTPS id 86F6FF80085
+ for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2021 12:55:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86F6FF80085
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=maximintegrated.onmicrosoft.com
- header.i=@maximintegrated.onmicrosoft.com header.b="Tyujq4tP"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lasVc1givvMg4tUvQMIWfATEsCxE+DDFLCNC6cwU3mhRlNnfTfev8YxLqqZGq6ngiv3lL0rNd/I7cBb5lC9l02R3aYaRV/HEuo5mX0jrQXIqe5AkXNGPvLJlcaem8gJMuoN2oebU34WpvCiT5W+MiM1e2zz2MxJrFEDl24xTf+IPG1wGZKouyu3BavZU8ggXbEd/2zWZ6gTUvB8b4+5ELqx6i5xTQEjaT4vKufRK7OUFdhMwm692/OqLNv/pMt6DKkNNqzvEqMG/9fhLwt/v5ozfVjq+lC7r4aLlp3JrzbwBdhAcdSnTRQo9Jj01009nXbBrusoZe2WcsgsD1+JggQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7cJTZP0pOOTZJA77eVddxNk01IS3yrLx0Ya9yX4V/wE=;
- b=TAGK7EL7/OzTSyl7zCz8zju/MlmhHXMkw6KLwiL6Su3ATfYqPA201tt3NswULWnymHXoavoMei/nT6ybExwXiHr02UoTHyMon9Hcrxd144Jrqs6Lu+3FOshAsH2GfG+TcZzJa6pQum8vOkTrvXRcCZI2zIGOwvkGuKZqezMmRuAZwdBqXAq9rhFM1e5vf5RSWuDTpPfZ/OZv651C1uRqQeQ9fdIR+KZVzAEcP6xjK+2DvQmSdsv6R0GxSdsRVjhNzlp9DPHqPMPtYx/2wGdAVTHA+/YGYF2N/GNpVkSyNfNTrUN+4Db/idlkimpx5y/o1SoF1JSid+3r2U7fjPd94A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=maximintegrated.com; dmarc=pass action=none
- header.from=maximintegrated.com; dkim=pass header.d=maximintegrated.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=maximintegrated.onmicrosoft.com;
- s=selector2-maximintegrated-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7cJTZP0pOOTZJA77eVddxNk01IS3yrLx0Ya9yX4V/wE=;
- b=Tyujq4tPstkmf0owy2wi4HbkWBuLU7qSDAoNdzSf2Z+htCr4JOr3ZjpJSyeUCOvLplMxwfeEnQx+Yr9IQrvv/V440Fg6l67tGQSzUyZG9imVKpQ5H6C9u0qJdWtMUt8g0n8DW4rrl+7Dgih5BbZ5+kPaNE2cpTSBwhn5XDX60Ac=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none
- header.from=maximintegrated.com;
-Received: from BYAPR11MB3671.namprd11.prod.outlook.com (2603:10b6:a03:b3::15)
- by BYAPR11MB2808.namprd11.prod.outlook.com (2603:10b6:a02:c8::26)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18; Wed, 13 Oct
- 2021 07:52:39 +0000
-Received: from BYAPR11MB3671.namprd11.prod.outlook.com
- ([fe80::49d4:a1dd:5b55:4c94]) by BYAPR11MB3671.namprd11.prod.outlook.com
- ([fe80::49d4:a1dd:5b55:4c94%6]) with mapi id 15.20.4587.030; Wed, 13 Oct 2021
- 07:52:39 +0000
-From: George Song <george.song@maximintegrated.com>
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- srinivas.kandagatla@linaro.org, pierre-louis.bossart@linux.intel.com,
- arnd@arndb.de, alexandre.belloni@bootlin.com, jack.yu@realtek.com,
- jiri.prchal@aksignal.cz, shumingf@realtek.com, pbrobinson@gmail.com,
- lars@metafoo.de, geert@linux-m68k.org, hdegoede@redhat.com,
- paul@crapouillou.net, george.song@maximintegrated.com,
- linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: [PATCH 2/2] ASoC: max98520: Add max98520 audio amplifier driver
-Date: Wed, 13 Oct 2021 16:52:23 +0900
-Message-Id: <20211013075223.19299-1-george.song@maximintegrated.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SL2P216CA0136.KORP216.PROD.OUTLOOK.COM
- (2603:1096:101:1::15) To BYAPR11MB3671.namprd11.prod.outlook.com
- (2603:10b6:a03:b3::15)
+ dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
+ header.b="hDXn7dxE"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1634122547;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+ bh=HOHQBuq5n1jvyoAk83wUOf4Uik9+loiLDFU1S+KWwJc=;
+ b=hDXn7dxErfsJ78eTjG/oMzThekAKgQJxUOkc5wdvzCDwMoLXJt3M+kxyQNo/vCa/erVbtQ
+ f/9XKDhIar/nWgux7Y7nWlHZO685W4Ej/WgTh9rLjCy+PuJvwKktCv6CIhpgpoG4Jb4YrW
+ 3jCTB8zZvOmWxzibSNqIjJRbUMJnGQY=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-442-kvcsY9GtMP2FsmvgmeBCMA-1; Wed, 13 Oct 2021 06:55:46 -0400
+X-MC-Unique: kvcsY9GtMP2FsmvgmeBCMA-1
+Received: by mail-wr1-f72.google.com with SMTP id
+ h11-20020adfa4cb000000b00160c791a550so1669580wrb.6
+ for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2021 03:55:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+ :content-disposition;
+ bh=HOHQBuq5n1jvyoAk83wUOf4Uik9+loiLDFU1S+KWwJc=;
+ b=zn9F3N/3Ul2rJLLP02SA3fYFwifcb5sfDxcuUEHPA8Ekd7GRG9IjPlg2JcDOK5VwcG
+ zCJF4YZEMmzSHEZ7/XNdIm0a3Sw+3Yj2cpkObMfJyDiMGnpiA9RtNzj3sqnuXsAgPlo6
+ fdSLmTRi+Mo+gKuFNmIBG+swzvNXu0zlZNqpf80PngIHyJAFcoRFaCNYIRstDEOHDNZE
+ Zy1cE6ps9YycW6ypaSpRRni+NPCnRljvxcWOh1dLa5KcETuzEBF1TyPqZkTaj2vgclka
+ UGBl+fpWFJpHk/+bB+KUdbwO0toNIFCh5Wso3rsFRMkAKFmZ3T2NzwjToKdRDCGNvxG0
+ c20A==
+X-Gm-Message-State: AOAM530F5gipXCiSnZeUP1AFHIMt3tlXPxnW8Cns0PudBKw/ICcS2Ew0
+ RlbT+GoznDG/wZE88mi/CIH2gRX0zVSkPVnmAi7soxwmyl7/y4ouYSX9Q4mYo0yiLGuSSN6ci79
+ hSpyLaTn5FzGelbWpmgV52WI=
+X-Received: by 2002:a1c:f216:: with SMTP id s22mr12239174wmc.27.1634122544666; 
+ Wed, 13 Oct 2021 03:55:44 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxIFKVzN3wSeM2Mpi+3ebMvrIe+xpiLg9sofnH/e5wmfza96yWoV1W27PJsbS9IH10+WwuJlw==
+X-Received: by 2002:a1c:f216:: with SMTP id s22mr12239123wmc.27.1634122544323; 
+ Wed, 13 Oct 2021 03:55:44 -0700 (PDT)
+Received: from redhat.com ([2.55.30.112])
+ by smtp.gmail.com with ESMTPSA id a81sm5721952wmd.30.2021.10.13.03.55.33
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 13 Oct 2021 03:55:42 -0700 (PDT)
+Date: Wed, 13 Oct 2021 06:55:31 -0400
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH RFC] virtio: wrap config->reset calls
+Message-ID: <20211013105226.20225-1-mst@redhat.com>
 MIME-Version: 1.0
-Received: from SEL-LT-028891.maxim-ic.internal (223.38.27.165) by
- SL2P216CA0136.KORP216.PROD.OUTLOOK.COM (2603:1096:101:1::15) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4608.15 via Frontend Transport; Wed, 13 Oct 2021 07:52:35 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0e1ce02b-893f-4900-9db0-08d98e1e6dd5
-X-MS-TrafficTypeDiagnostic: BYAPR11MB2808:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR11MB2808FAAAEB9FE49BDFC87A5DF4B79@BYAPR11MB2808.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:16;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fm/CATvvNERSP+zz9eY326kZUTL96eYrSjUBEyPLCQLegFalody56Ghmh+BKqie3fkn6wAH7GdOqNGiUk7C3F2xHdTEvZcPcrHBTmbS+iLHDC81ju64X7setN4fCcDNyVJUG/KB3YXWbsUKDfZL7aSAswmDoqChh6GNDxuIdzLUv9J2ZOo7giYnqQB46p08+17txxZqTj8xLV0Rc9oha6kLnWXE5wtRvm352aa6QapawqRg0gXPe2ynVy7ra30B4p+KXG069ywk3BzV3HZitQO8Ca6zCfF9pDKqEF23b5RUKX/JrsEKpfFaMoKe3C6dKHN40CVic7aRSu8/yaV2mMd6TD5BAKYNQoLiABwPFASJyzWql1A9206Qsk/ovlGtiPRO5ji2UjM2dKsF03VMS4+EmuMFWYu0UA+SaSa/tRxRtyMdzAkIbv1DdylWJ8MU/SOR6O9NggbxKFp+Ke+SsHnBFErHXpz2vyTPYH13q5qnsVaazzb8aqOaBFMdjF0/iCk9vFsbubfx8/ZAKqn8d8BNbiZaZQeODLyYLH8vLahp18OZplQbLiONMab5S/vwsloR2txtl9UKiK/U/r8/l0UQupc45MZH3TXyb/wDWnkLAi0kQIfG+Fcwi2bgPwgudo6gsmmSOzwyJ9uDQt5pgo89VFqtYbWC0nUO7WMcj51VunbPw1zxk9zuLDZsTKsWhw9S70QuCoiaEcIf51uTa+YFXJ8OxdaIBvx4K7OKfuxU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:BYAPR11MB3671.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(4636009)(366004)(2906002)(6512007)(66946007)(30864003)(66476007)(38350700002)(38100700002)(508600001)(1076003)(66556008)(316002)(44832011)(2616005)(26005)(86362001)(6666004)(8676002)(4326008)(52116002)(5660300002)(6486002)(186003)(956004)(7416002)(8936002)(83380400001)(36756003)(921005)(6506007);
- DIR:OUT; SFP:1102; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?pH03xn2LM8fNHFXe8ydkvIAyFuNsoawl9mKyCAv6gSNOrY767yB+bn58g0vc?=
- =?us-ascii?Q?SFda6cMGpZgeJj77TJuEauKE092QQQIiwMswaNmVpp6JT0L3Jo306DWmlLwG?=
- =?us-ascii?Q?0d/LIxiBO13Ly4fHTu9Jmu9ojR7x3GN6QeESzhGMcUzsRJgiwjFI8FbJN73j?=
- =?us-ascii?Q?SeGdNZxFCWcpX5ubxMGji37qMOJUJ7SWONCTs6g4kZeuZT5I3wEDdVbM9gcL?=
- =?us-ascii?Q?EX1iIWH6p0VVKH+A5cciF0rKasm0z/gZuLnm3wzgUUiWbcQbs3Ne0yh6WELb?=
- =?us-ascii?Q?0C4+O3SpJcdDC8WxG+0be2jqGFH9ZJFFQBlC9KLRA43/8Q2o69hsgXrB4xIk?=
- =?us-ascii?Q?6doLA3x4tJv05YugM4xvpUzYI/dFtUZXsfz/6exVQDdQIei3Tap4xdJhwAwl?=
- =?us-ascii?Q?Zj13Py/goAW3V9OmKG0Ye9iEAvPWEud4KAMH6iBiuJQ52jXjWJ86qUgfm0NV?=
- =?us-ascii?Q?jIKXh72Ij3HYYxn7FPplP1f3fRuHB5Mq1GRE3M+BIP1RjIyZhMt5Z5JaSlEk?=
- =?us-ascii?Q?kKPcHKb2gNXz6jkzkQ1RUUkqdx0SZGvPQ2djr0BjfICP8V4fLCCxO/bHX3E5?=
- =?us-ascii?Q?GRr598N5hr/9VCfOMMoC1EcwYJSOYh0NVGLPpQ1nLpbYnxLPB8XGkTg78/CZ?=
- =?us-ascii?Q?iZGcyjfh/PZz/rLXO6MyPE8AaVey1aasPsRyvZbTEftNZoK1OMSH8DNOcuIP?=
- =?us-ascii?Q?HYzxqoZ/25NtRW7nPj2MKfTyW6w800tfQffs70WhBDPqLycpe6TzHkt1Dchj?=
- =?us-ascii?Q?mPUeisqe22aUAeLY+PS1EnAHhxXJiCQT9vlVfHi3RgMtuBy8GpkM0Hx371B0?=
- =?us-ascii?Q?eGaBr2h/LDnLU2JNj1l0xcB7QumxSxTvvzzvm4ZiqEq+GviXzvI/F5VgtpQ4?=
- =?us-ascii?Q?CIQoaiMYqwtEwYzbkTjyaFjpPDogtqYLGk6bDEpv3kcVhMZbeqmcDe4H2lM9?=
- =?us-ascii?Q?Y397r/2hIVChsgfjNnPKvsP85P0Wf2JBfrx20nVtrttAw7NoSKjAk/wbc4Ck?=
- =?us-ascii?Q?/8jEeYmkos0gJ+XYogWPSAIV6CkPkE8zGAwFUG43J6K6LvOcv8hX4TvQPV6M?=
- =?us-ascii?Q?8idsbd/Ye9CSqb8IpXtPQ1xzY7hYnzzanQguFH2Mf6s1gF/CDvCB5smv888P?=
- =?us-ascii?Q?OSsmgR02+AW9un0dmx34bAIA5xSKu3Me8v3oz6DtL83www675L8kWCtv16SR?=
- =?us-ascii?Q?smuTDz7MnTTX2N9SnN4RrxtgQ6QKFVfy+q/tVPNmHIK6HU5u3B2LuwG6nW1Z?=
- =?us-ascii?Q?1UEVnLRYcvXMAUlZWx7y8AFOAe0mdSuy5vz8vFNySrZbuCjQadgtoCvCWbv6?=
- =?us-ascii?Q?V5vlbAddXJ4hH83l7L7A1/Q/?=
-X-OriginatorOrg: maximintegrated.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0e1ce02b-893f-4900-9db0-08d98e1e6dd5
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3671.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2021 07:52:39.5793 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: fbd909df-ea69-4788-a554-f24b7854ad03
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: J2lwkDkYRbyJU1W+DWoin66Ux8lxRIJuS0m0ZbjI2WZMJO39dI1fCjPv8VyTpRxRU6ZCDLoXWOESScCGnX+A2xKX803OI67dN0QqJyraNTg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB2808
-X-Mailman-Approved-At: Thu, 14 Oct 2021 15:47:06 +0200
-Cc: George Song <george.song@analog.com>
+X-Mailer: git-send-email 2.27.0.106.g8ac3dc51b1
+X-Mutt-Fcc: =sent
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=mst@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailman-Approved-At: Thu, 14 Oct 2021 15:47:05 +0200
+Cc: Latchesar Ionkov <lucho@ionkov.net>, nvdimm@lists.linux.dev,
+ Dominique Martinet <asmadeus@codewreck.org>,
+ Stefan Hajnoczi <stefanha@redhat.com>, kvm@vger.kernel.org,
+ David Hildenbrand <david@redhat.com>, David Airlie <airlied@linux.ie>,
+ Viresh Kumar <vireshk@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
+ linux-remoteproc@vger.kernel.org, alsa-devel@alsa-project.org,
+ dri-devel@lists.freedesktop.org, Bjorn Andersson <bjorn.andersson@linaro.org>,
+ netdev@vger.kernel.org, Gerd Hoffmann <kraxel@redhat.com>,
+ linux-scsi@vger.kernel.org, Will Deacon <will@kernel.org>,
+ v9fs-developer@lists.sourceforge.net,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Jean-Philippe Brucker <jean-philippe@linaro.org>,
+ Dave Jiang <dave.jiang@intel.com>, Herbert Xu <herbert@gondor.apana.org.au>,
+ linux-arm-kernel@lists.infradead.org, Miklos Szeredi <miklos@szeredi.hu>,
+ Richard Weinberger <richard@nod.at>, Bartosz Golaszewski <brgl@bgdev.pl>,
+ Gonglei <arei.gonglei@huawei.com>, Kalle Valo <kvalo@codeaurora.org>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ "James E.J. Bottomley" <jejb@linux.ibm.com>, Jakub Kicinski <kuba@kernel.org>,
+ Ira Weiny <ira.weiny@intel.com>, virtualization@lists.linux-foundation.org,
+ Marcel Holtmann <marcel@holtmann.org>, Vivek Goyal <vgoyal@redhat.com>,
+ Stefano Garzarella <sgarzare@redhat.com>, Ohad Ben-Cohen <ohad@wizery.com>,
+ Johan Hedberg <johan.hedberg@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
+ Amit Shah <amit@kernel.org>, Eric Van Hensbergen <ericvh@gmail.com>,
+ Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org,
+ linux-crypto@vger.kernel.org, linux-block@vger.kernel.org,
+ Vishal Verma <vishal.l.verma@intel.com>,
+ Luiz Augusto von Dentz <luiz.dentz@gmail.com>, Matt Mackall <mpm@selenic.com>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Cristian Marussi <cristian.marussi@arm.com>, Jens Axboe <axboe@kernel.dk>,
+ Jie Deng <jie.deng@intel.com>, Mathieu Poirier <mathieu.poirier@linaro.org>,
+ linux-gpio@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Jason Wang <jasowang@redhat.com>, linux-wireless@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, linux-i2c@vger.kernel.org,
+ linux-bluetooth@vger.kernel.org, iommu@lists.linux-foundation.org,
+ Anton Yakovlev <anton.yakovlev@opensynergy.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Sudeep Holla <sudeep.holla@arm.com>,
+ linux-fsdevel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+ Johannes Berg <johannes@sipsolutions.net>, "Enrico Weigelt,
+ metux IT consult" <info@metux.net>, "David S. Miller" <davem@davemloft.net>,
+ Joerg Roedel <joro@8bytes.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -157,1007 +149,462 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Signed-off-by: George Song <george.song@analog.com>
----
- sound/soc/codecs/Kconfig    |   5 +
- sound/soc/codecs/Makefile   |   2 +
- sound/soc/codecs/max98520.c | 777 ++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/max98520.h | 159 ++++++++
- 4 files changed, 943 insertions(+)
- create mode 100644 sound/soc/codecs/max98520.c
- create mode 100644 sound/soc/codecs/max98520.h
+This will enable cleanups down the road.
+The idea is to disable cbs, then add "flush_queued_cbs" callback
+as a parameter, this way drivers can flush any work
+queued after callbacks have been disabled.
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 82ee233a269d..86b121d2f381 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -115,6 +115,7 @@ config SND_SOC_ALL_CODECS
- 	imply SND_SOC_MAX98357A
- 	imply SND_SOC_MAX98371
- 	imply SND_SOC_MAX98504
-+	imply SND_SOC_MAX98520
- 	imply SND_SOC_MAX9867
- 	imply SND_SOC_MAX98925
- 	imply SND_SOC_MAX98926
-@@ -922,6 +923,10 @@ config SND_SOC_MAX98927
- 	tristate "Maxim Integrated MAX98927 Speaker Amplifier"
- 	depends on I2C
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+---
+ arch/um/drivers/virt-pci.c                 | 2 +-
+ drivers/block/virtio_blk.c                 | 4 ++--
+ drivers/bluetooth/virtio_bt.c              | 2 +-
+ drivers/char/hw_random/virtio-rng.c        | 2 +-
+ drivers/char/virtio_console.c              | 4 ++--
+ drivers/crypto/virtio/virtio_crypto_core.c | 8 ++++----
+ drivers/firmware/arm_scmi/virtio.c         | 2 +-
+ drivers/gpio/gpio-virtio.c                 | 2 +-
+ drivers/gpu/drm/virtio/virtgpu_kms.c       | 2 +-
+ drivers/i2c/busses/i2c-virtio.c            | 2 +-
+ drivers/iommu/virtio-iommu.c               | 2 +-
+ drivers/net/caif/caif_virtio.c             | 2 +-
+ drivers/net/virtio_net.c                   | 4 ++--
+ drivers/net/wireless/mac80211_hwsim.c      | 2 +-
+ drivers/nvdimm/virtio_pmem.c               | 2 +-
+ drivers/rpmsg/virtio_rpmsg_bus.c           | 2 +-
+ drivers/scsi/virtio_scsi.c                 | 2 +-
+ drivers/virtio/virtio.c                    | 5 +++++
+ drivers/virtio/virtio_balloon.c            | 2 +-
+ drivers/virtio/virtio_input.c              | 2 +-
+ drivers/virtio/virtio_mem.c                | 2 +-
+ fs/fuse/virtio_fs.c                        | 4 ++--
+ include/linux/virtio.h                     | 1 +
+ net/9p/trans_virtio.c                      | 2 +-
+ net/vmw_vsock/virtio_transport.c           | 4 ++--
+ sound/virtio/virtio_card.c                 | 4 ++--
+ 26 files changed, 39 insertions(+), 33 deletions(-)
+
+diff --git a/arch/um/drivers/virt-pci.c b/arch/um/drivers/virt-pci.c
+index c08066633023..22c4d87c9c15 100644
+--- a/arch/um/drivers/virt-pci.c
++++ b/arch/um/drivers/virt-pci.c
+@@ -616,7 +616,7 @@ static void um_pci_virtio_remove(struct virtio_device *vdev)
+ 	int i;
  
-+config SND_SOC_MAX98520
-+	tristate "Maxim Integrated MAX98520 Speaker Amplifier"
-+	depends on I2C
-+
- config SND_SOC_MAX98373
- 	tristate
+         /* Stop all virtqueues */
+-        vdev->config->reset(vdev);
++        virtio_reset_device(vdev);
+         vdev->config->del_vqs(vdev);
  
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 8dcea2c4604a..daf63e31fdd0 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -123,6 +123,7 @@ snd-soc-max9867-objs := max9867.o
- snd-soc-max98925-objs := max98925.o
- snd-soc-max98926-objs := max98926.o
- snd-soc-max98927-objs := max98927.o
-+snd-soc-max98520-objs := max98520.o
- snd-soc-max98373-objs := max98373.o
- snd-soc-max98373-i2c-objs := max98373-i2c.o
- snd-soc-max98373-sdw-objs := max98373-sdw.o
-@@ -450,6 +451,7 @@ obj-$(CONFIG_SND_SOC_MAX9867)	+= snd-soc-max9867.o
- obj-$(CONFIG_SND_SOC_MAX98925)	+= snd-soc-max98925.o
- obj-$(CONFIG_SND_SOC_MAX98926)	+= snd-soc-max98926.o
- obj-$(CONFIG_SND_SOC_MAX98927)	+= snd-soc-max98927.o
-+obj-$(CONFIG_SND_SOC_MAX98520)	+= snd-soc-max98520.o
- obj-$(CONFIG_SND_SOC_MAX98373)	+= snd-soc-max98373.o
- obj-$(CONFIG_SND_SOC_MAX98373_I2C)   += snd-soc-max98373-i2c.o
- obj-$(CONFIG_SND_SOC_MAX98373_SDW)   += snd-soc-max98373-sdw.o
-diff --git a/sound/soc/codecs/max98520.c b/sound/soc/codecs/max98520.c
-new file mode 100644
-index 000000000000..1a5e0ceae362
---- /dev/null
-+++ b/sound/soc/codecs/max98520.c
-@@ -0,0 +1,777 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2021, Maxim Integrated
-+
-+#include <linux/acpi.h>
-+#include <linux/delay.h>
-+#include <linux/i2c.h>
-+#include <linux/module.h>
-+#include <linux/regmap.h>
-+#include <linux/slab.h>
-+#include <linux/cdev.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <linux/gpio.h>
-+#include <linux/of.h>
-+#include <linux/of_gpio.h>
-+#include <sound/tlv.h>
-+#include "max98520.h"
-+
-+static struct reg_default max98520_reg[] = {
-+	{MAX98520_R2000_SW_RESET, 0x00},
-+	{MAX98520_R2001_STATUS_1, 0x00},
-+	{MAX98520_R2002_STATUS_2, 0x00},
-+	{MAX98520_R2020_THERM_WARN_THRESH, 0x46},
-+	{MAX98520_R2021_THERM_SHDN_THRESH, 0x64},
-+	{MAX98520_R2022_THERM_HYSTERESIS, 0x02},
-+	{MAX98520_R2023_THERM_FOLDBACK_SET, 0x31},
-+	{MAX98520_R2027_THERM_FOLDBACK_EN, 0x01},
-+	{MAX98520_R2030_CLK_MON_CTRL, 0x00},
-+	{MAX98520_R2037_ERR_MON_CTRL, 0x01},
-+	{MAX98520_R2040_PCM_MODE_CFG, 0xC0},
-+	{MAX98520_R2041_PCM_CLK_SETUP, 0x04},
-+	{MAX98520_R2042_PCM_SR_SETUP, 0x08},
-+	{MAX98520_R2043_PCM_RX_SRC1, 0x00},
-+	{MAX98520_R2044_PCM_RX_SRC2, 0x00},
-+	{MAX98520_R204F_PCM_RX_EN, 0x00},
-+	{MAX98520_R2090_AMP_VOL_CTRL, 0x00},
-+	{MAX98520_R2091_AMP_PATH_GAIN, 0x03},
-+	{MAX98520_R2092_AMP_DSP_CFG, 0x02},
-+	{MAX98520_R2094_SSM_CFG, 0x01},
-+	{MAX98520_R2095_AMP_CFG, 0xF0},
-+	{MAX98520_R209F_AMP_EN, 0x00},
-+	{MAX98520_R20B0_ADC_SR, 0x00},
-+	{MAX98520_R20B1_ADC_RESOLUTION, 0x00},
-+	{MAX98520_R20B2_ADC_PVDD0_CFG, 0x02},
-+	{MAX98520_R20B3_ADC_THERMAL_CFG, 0x02},
-+	{MAX98520_R20B4_ADC_READBACK_CTRL, 0x00},
-+	{MAX98520_R20B5_ADC_READBACK_UPDATE, 0x00},
-+	{MAX98520_R20B6_ADC_PVDD_READBACK_MSB, 0x00},
-+	{MAX98520_R20B7_ADC_PVDD_READBACK_LSB, 0x00},
-+	{MAX98520_R20B8_ADC_TEMP_READBACK_MSB, 0x00},
-+	{MAX98520_R20B9_ADC_TEMP_READBACK_LSB, 0x00},
-+	{MAX98520_R20BA_ADC_LOW_PVDD_READBACK_MSB, 0xFF},
-+	{MAX98520_R20BB_ADC_LOW_READBACK_LSB, 0x01},
-+	{MAX98520_R20BC_ADC_HIGH_TEMP_READBACK_MSB, 0x00},
-+	{MAX98520_R20BD_ADC_HIGH_TEMP_READBACK_LSB, 0x00},
-+	{MAX98520_R20CF_MEAS_ADC_CFG, 0x00},
-+	{MAX98520_R20D0_DHT_CFG1, 0x00},
-+	{MAX98520_R20D1_LIMITER_CFG1, 0x08},
-+	{MAX98520_R20D2_LIMITER_CFG2, 0x00},
-+	{MAX98520_R20D3_DHT_CFG2, 0x14},
-+	{MAX98520_R20D4_DHT_CFG3, 0x02},
-+	{MAX98520_R20D5_DHT_CFG4, 0x04},
-+	{MAX98520_R20D6_DHT_HYSTERESIS_CFG, 0x07},
-+	{MAX98520_R20D8_DHT_EN, 0x00},
-+	{MAX98520_R210E_AUTO_RESTART_BEHAVIOR, 0x00},
-+	{MAX98520_R210F_GLOBAL_EN, 0x00},
-+	{MAX98520_R21FF_REVISION_ID, 0x00},
-+};
-+
-+static int max98520_dai_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 	device_set_wakeup_enable(&vdev->dev, false);
+diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
+index 303caf2d17d0..83d0af3fbf30 100644
+--- a/drivers/block/virtio_blk.c
++++ b/drivers/block/virtio_blk.c
+@@ -910,7 +910,7 @@ static void virtblk_remove(struct virtio_device *vdev)
+ 	mutex_lock(&vblk->vdev_mutex);
+ 
+ 	/* Stop all the virtqueues. */
+-	vdev->config->reset(vdev);
++	virtio_reset_device(vdev);
+ 
+ 	/* Virtqueues are stopped, nothing can use vblk->vdev anymore. */
+ 	vblk->vdev = NULL;
+@@ -929,7 +929,7 @@ static int virtblk_freeze(struct virtio_device *vdev)
+ 	struct virtio_blk *vblk = vdev->priv;
+ 
+ 	/* Ensure we don't receive any more interrupts */
+-	vdev->config->reset(vdev);
++	virtio_reset_device(vdev);
+ 
+ 	/* Make sure no work handler is accessing the device. */
+ 	flush_work(&vblk->config_work);
+diff --git a/drivers/bluetooth/virtio_bt.c b/drivers/bluetooth/virtio_bt.c
+index 57908ce4fae8..24a9258962fa 100644
+--- a/drivers/bluetooth/virtio_bt.c
++++ b/drivers/bluetooth/virtio_bt.c
+@@ -364,7 +364,7 @@ static void virtbt_remove(struct virtio_device *vdev)
+ 	struct hci_dev *hdev = vbt->hdev;
+ 
+ 	hci_unregister_dev(hdev);
+-	vdev->config->reset(vdev);
++	virtio_reset_device(vdev);
+ 
+ 	hci_free_dev(hdev);
+ 	vbt->hdev = NULL;
+diff --git a/drivers/char/hw_random/virtio-rng.c b/drivers/char/hw_random/virtio-rng.c
+index a90001e02bf7..95980489514b 100644
+--- a/drivers/char/hw_random/virtio-rng.c
++++ b/drivers/char/hw_random/virtio-rng.c
+@@ -134,7 +134,7 @@ static void remove_common(struct virtio_device *vdev)
+ 	vi->hwrng_removed = true;
+ 	vi->data_avail = 0;
+ 	complete(&vi->have_data);
+-	vdev->config->reset(vdev);
++	virtio_reset_device(vdev);
+ 	vi->busy = false;
+ 	if (vi->hwrng_register_done)
+ 		hwrng_unregister(&vi->hwrng);
+diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_console.c
+index 7eaf303a7a86..08bbd693436f 100644
+--- a/drivers/char/virtio_console.c
++++ b/drivers/char/virtio_console.c
+@@ -1957,7 +1957,7 @@ static void virtcons_remove(struct virtio_device *vdev)
+ 	spin_unlock_irq(&pdrvdata_lock);
+ 
+ 	/* Disable interrupts for vqs */
+-	vdev->config->reset(vdev);
++	virtio_reset_device(vdev);
+ 	/* Finish up work that's lined up */
+ 	if (use_multiport(portdev))
+ 		cancel_work_sync(&portdev->control_work);
+@@ -2139,7 +2139,7 @@ static int virtcons_freeze(struct virtio_device *vdev)
+ 
+ 	portdev = vdev->priv;
+ 
+-	vdev->config->reset(vdev);
++	virtio_reset_device(vdev);
+ 
+ 	if (use_multiport(portdev))
+ 		virtqueue_disable_cb(portdev->c_ivq);
+diff --git a/drivers/crypto/virtio/virtio_crypto_core.c b/drivers/crypto/virtio/virtio_crypto_core.c
+index e2375d992308..8e977b7627cb 100644
+--- a/drivers/crypto/virtio/virtio_crypto_core.c
++++ b/drivers/crypto/virtio/virtio_crypto_core.c
+@@ -404,7 +404,7 @@ static int virtcrypto_probe(struct virtio_device *vdev)
+ free_engines:
+ 	virtcrypto_clear_crypto_engines(vcrypto);
+ free_vqs:
+-	vcrypto->vdev->config->reset(vdev);
++	virtio_reset_device(vdev);
+ 	virtcrypto_del_vqs(vcrypto);
+ free_dev:
+ 	virtcrypto_devmgr_rm_dev(vcrypto);
+@@ -436,7 +436,7 @@ static void virtcrypto_remove(struct virtio_device *vdev)
+ 
+ 	if (virtcrypto_dev_started(vcrypto))
+ 		virtcrypto_dev_stop(vcrypto);
+-	vdev->config->reset(vdev);
++	virtio_reset_device(vdev);
+ 	virtcrypto_free_unused_reqs(vcrypto);
+ 	virtcrypto_clear_crypto_engines(vcrypto);
+ 	virtcrypto_del_vqs(vcrypto);
+@@ -456,7 +456,7 @@ static int virtcrypto_freeze(struct virtio_device *vdev)
+ {
+ 	struct virtio_crypto *vcrypto = vdev->priv;
+ 
+-	vdev->config->reset(vdev);
++	virtio_reset_device(vdev);
+ 	virtcrypto_free_unused_reqs(vcrypto);
+ 	if (virtcrypto_dev_started(vcrypto))
+ 		virtcrypto_dev_stop(vcrypto);
+@@ -492,7 +492,7 @@ static int virtcrypto_restore(struct virtio_device *vdev)
+ free_engines:
+ 	virtcrypto_clear_crypto_engines(vcrypto);
+ free_vqs:
+-	vcrypto->vdev->config->reset(vdev);
++	virtio_reset_device(vdev);
+ 	virtcrypto_del_vqs(vcrypto);
+ 	return err;
+ }
+diff --git a/drivers/firmware/arm_scmi/virtio.c b/drivers/firmware/arm_scmi/virtio.c
+index 11e8efb71375..6b8d93fe8848 100644
+--- a/drivers/firmware/arm_scmi/virtio.c
++++ b/drivers/firmware/arm_scmi/virtio.c
+@@ -452,7 +452,7 @@ static void scmi_vio_remove(struct virtio_device *vdev)
+ 	 * outstanding message on any vqueue to be ignored by complete_cb: now
+ 	 * we can just stop processing buffers and destroy the vqueues.
+ 	 */
+-	vdev->config->reset(vdev);
++	virtio_reset_device(vdev);
+ 	vdev->config->del_vqs(vdev);
+ 	/* Ensure scmi_vdev is visible as NULL */
+ 	smp_store_mb(scmi_vdev, NULL);
+diff --git a/drivers/gpio/gpio-virtio.c b/drivers/gpio/gpio-virtio.c
+index d24f1c9264bc..5029f01966f4 100644
+--- a/drivers/gpio/gpio-virtio.c
++++ b/drivers/gpio/gpio-virtio.c
+@@ -203,7 +203,7 @@ static void virtio_gpio_request_vq(struct virtqueue *vq)
+ 
+ static void virtio_gpio_free_vqs(struct virtio_device *vdev)
+ {
+-	vdev->config->reset(vdev);
++	virtio_reset_device(vdev);
+ 	vdev->config->del_vqs(vdev);
+ }
+ 
+diff --git a/drivers/gpu/drm/virtio/virtgpu_kms.c b/drivers/gpu/drm/virtio/virtgpu_kms.c
+index f3379059f324..6aa605b8d3a1 100644
+--- a/drivers/gpu/drm/virtio/virtgpu_kms.c
++++ b/drivers/gpu/drm/virtio/virtgpu_kms.c
+@@ -257,7 +257,7 @@ void virtio_gpu_deinit(struct drm_device *dev)
+ 	flush_work(&vgdev->ctrlq.dequeue_work);
+ 	flush_work(&vgdev->cursorq.dequeue_work);
+ 	flush_work(&vgdev->config_changed_work);
+-	vgdev->vdev->config->reset(vgdev->vdev);
++	virtio_reset_device(vgdev->vdev);
+ 	vgdev->vdev->config->del_vqs(vgdev->vdev);
+ }
+ 
+diff --git a/drivers/i2c/busses/i2c-virtio.c b/drivers/i2c/busses/i2c-virtio.c
+index f10a603b13fb..eb3261ac64dc 100644
+--- a/drivers/i2c/busses/i2c-virtio.c
++++ b/drivers/i2c/busses/i2c-virtio.c
+@@ -177,7 +177,7 @@ static int virtio_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
+ 
+ static void virtio_i2c_del_vqs(struct virtio_device *vdev)
+ {
+-	vdev->config->reset(vdev);
++	virtio_reset_device(vdev);
+ 	vdev->config->del_vqs(vdev);
+ }
+ 
+diff --git a/drivers/iommu/virtio-iommu.c b/drivers/iommu/virtio-iommu.c
+index 80930ce04a16..1d4e1e7cf175 100644
+--- a/drivers/iommu/virtio-iommu.c
++++ b/drivers/iommu/virtio-iommu.c
+@@ -1115,7 +1115,7 @@ static void viommu_remove(struct virtio_device *vdev)
+ 	iommu_device_unregister(&viommu->iommu);
+ 
+ 	/* Stop all virtqueues */
+-	vdev->config->reset(vdev);
++	virtio_reset_device(vdev);
+ 	vdev->config->del_vqs(vdev);
+ 
+ 	dev_info(&vdev->dev, "device removed\n");
+diff --git a/drivers/net/caif/caif_virtio.c b/drivers/net/caif/caif_virtio.c
+index 91230894692d..444ef6a342f6 100644
+--- a/drivers/net/caif/caif_virtio.c
++++ b/drivers/net/caif/caif_virtio.c
+@@ -754,7 +754,7 @@ static void cfv_remove(struct virtio_device *vdev)
+ 	debugfs_remove_recursive(cfv->debugfs);
+ 
+ 	vringh_kiov_cleanup(&cfv->ctx.riov);
+-	vdev->config->reset(vdev);
++	virtio_reset_device(vdev);
+ 	vdev->vringh_config->del_vrhs(cfv->vdev);
+ 	cfv->vr_rx = NULL;
+ 	vdev->config->del_vqs(cfv->vdev);
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index 79bd2585ec6b..8c10fcad73a4 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -3274,7 +3274,7 @@ static int virtnet_probe(struct virtio_device *vdev)
+ 	return 0;
+ 
+ free_unregister_netdev:
+-	vi->vdev->config->reset(vdev);
++	virtio_reset_device(vdev);
+ 
+ 	unregister_netdev(dev);
+ free_failover:
+@@ -3290,7 +3290,7 @@ static int virtnet_probe(struct virtio_device *vdev)
+ 
+ static void remove_vq_common(struct virtnet_info *vi)
+ {
+-	vi->vdev->config->reset(vi->vdev);
++	virtio_reset_device(vi->vdev);
+ 
+ 	/* Free unused buffers in both send and recv, if any. */
+ 	free_unused_bufs(vi);
+diff --git a/drivers/net/wireless/mac80211_hwsim.c b/drivers/net/wireless/mac80211_hwsim.c
+index 0adae76eb8df..9ee430c1d4a2 100644
+--- a/drivers/net/wireless/mac80211_hwsim.c
++++ b/drivers/net/wireless/mac80211_hwsim.c
+@@ -4369,7 +4369,7 @@ static void remove_vqs(struct virtio_device *vdev)
+ {
+ 	int i;
+ 
+-	vdev->config->reset(vdev);
++	virtio_reset_device(vdev);
+ 
+ 	for (i = 0; i < ARRAY_SIZE(hwsim_vqs); i++) {
+ 		struct virtqueue *vq = hwsim_vqs[i];
+diff --git a/drivers/nvdimm/virtio_pmem.c b/drivers/nvdimm/virtio_pmem.c
+index 726c7354d465..995b6cdc67ed 100644
+--- a/drivers/nvdimm/virtio_pmem.c
++++ b/drivers/nvdimm/virtio_pmem.c
+@@ -105,7 +105,7 @@ static void virtio_pmem_remove(struct virtio_device *vdev)
+ 
+ 	nvdimm_bus_unregister(nvdimm_bus);
+ 	vdev->config->del_vqs(vdev);
+-	vdev->config->reset(vdev);
++	virtio_reset_device(vdev);
+ }
+ 
+ static struct virtio_driver virtio_pmem_driver = {
+diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
+index 8e49a3bacfc7..6a11952822df 100644
+--- a/drivers/rpmsg/virtio_rpmsg_bus.c
++++ b/drivers/rpmsg/virtio_rpmsg_bus.c
+@@ -1015,7 +1015,7 @@ static void rpmsg_remove(struct virtio_device *vdev)
+ 	size_t total_buf_space = vrp->num_bufs * vrp->buf_size;
+ 	int ret;
+ 
+-	vdev->config->reset(vdev);
++	virtio_reset_device(vdev);
+ 
+ 	ret = device_for_each_child(&vdev->dev, NULL, rpmsg_remove_device);
+ 	if (ret)
+diff --git a/drivers/scsi/virtio_scsi.c b/drivers/scsi/virtio_scsi.c
+index 07d0250f17c3..f2502a8a5213 100644
+--- a/drivers/scsi/virtio_scsi.c
++++ b/drivers/scsi/virtio_scsi.c
+@@ -778,7 +778,7 @@ static void virtscsi_init_vq(struct virtio_scsi_vq *virtscsi_vq,
+ static void virtscsi_remove_vqs(struct virtio_device *vdev)
+ {
+ 	/* Stop all the virtqueues. */
+-	vdev->config->reset(vdev);
++	virtio_reset_device(vdev);
+ 	vdev->config->del_vqs(vdev);
+ }
+ 
+diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
+index 0a5b54034d4b..a67dd0eca578 100644
+--- a/drivers/virtio/virtio.c
++++ b/drivers/virtio/virtio.c
+@@ -204,6 +204,11 @@ int virtio_finalize_features(struct virtio_device *dev)
+ }
+ EXPORT_SYMBOL_GPL(virtio_finalize_features);
+ 
++static void virtio_reset_device(struct virtio_device *dev)
 +{
-+	struct snd_soc_component *component = codec_dai->component;
-+	struct max98520_priv *max98520 =
-+		snd_soc_component_get_drvdata(component);
-+	unsigned int format = 0;
-+	unsigned int invert = 0;
-+
-+	dev_dbg(component->dev, "%s: fmt 0x%08X\n", __func__, fmt);
-+
-+	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-+	case SND_SOC_DAIFMT_NB_NF:
-+		break;
-+	case SND_SOC_DAIFMT_IB_NF:
-+		invert = MAX98520_PCM_MODE_CFG_PCM_BCLKEDGE;
-+		break;
-+	default:
-+		dev_err(component->dev, "DAI invert mode unsupported\n");
-+		return -EINVAL;
-+	}
-+
-+	regmap_update_bits(max98520->regmap,
-+						MAX98520_R2041_PCM_CLK_SETUP,
-+						MAX98520_PCM_MODE_CFG_PCM_BCLKEDGE,
-+						invert);
-+
-+	/* interface format */
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_I2S:
-+		format = MAX98520_PCM_FORMAT_I2S;
-+		break;
-+	case SND_SOC_DAIFMT_LEFT_J:
-+		format = MAX98520_PCM_FORMAT_LJ;
-+		break;
-+	case SND_SOC_DAIFMT_DSP_A:
-+		format = MAX98520_PCM_FORMAT_TDM_MODE1;
-+		break;
-+	case SND_SOC_DAIFMT_DSP_B:
-+		format = MAX98520_PCM_FORMAT_TDM_MODE0;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	regmap_update_bits(max98520->regmap,
-+						MAX98520_R2040_PCM_MODE_CFG,
-+						MAX98520_PCM_MODE_CFG_FORMAT_MASK,
-+						format << MAX98520_PCM_MODE_CFG_FORMAT_SHIFT);
-+
-+	return 0;
++	dev->config->reset(dev);
 +}
 +
-+/* BCLKs per LRCLK */
-+static const int bclk_sel_table[] = {
-+	32, 48, 64, 96, 128, 192, 256, 384, 512, 320,
-+};
-+
-+static int max98520_get_bclk_sel(int bclk)
-+{
-+	int i;
-+	/* match BCLKs per LRCLK */
-+	for (i = 0; i < ARRAY_SIZE(bclk_sel_table); i++) {
-+		if (bclk_sel_table[i] == bclk)
-+			return i + 2;
-+	}
-+	return 0;
-+}
-+
-+static int max98520_set_clock(struct snd_soc_component *component,
-+	struct snd_pcm_hw_params *params)
-+{
-+	struct max98520_priv *max98520 =
-+		snd_soc_component_get_drvdata(component);
-+	/* BCLK/LRCLK ratio calculation */
-+	int blr_clk_ratio = params_channels(params) * max98520->ch_size;
-+	int value;
-+
-+	if (!max98520->tdm_mode) {
-+		/* BCLK configuration */
-+		value = max98520_get_bclk_sel(blr_clk_ratio);
-+		if (!value) {
-+			dev_err(component->dev, "format unsupported %d\n",
-+				params_format(params));
-+			return -EINVAL;
-+		}
-+
-+		regmap_update_bits(max98520->regmap,
-+							MAX98520_R2041_PCM_CLK_SETUP,
-+							MAX98520_PCM_CLK_SETUP_BSEL_MASK,
-+							value);
-+	}
-+	dev_dbg(component->dev, "%s tdm_mode:%d out\n", __func__, max98520->tdm_mode);
-+	return 0;
-+}
-+
-+static int max98520_dai_hw_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params,
-+	struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_component *component = dai->component;
-+	struct max98520_priv *max98520 =
-+		snd_soc_component_get_drvdata(component);
-+	unsigned int sampling_rate = 0;
-+	unsigned int chan_sz = 0;
-+
-+	/* pcm mode configuration */
-+	switch (snd_pcm_format_width(params_format(params))) {
-+	case 16:
-+		chan_sz = MAX98520_PCM_MODE_CFG_CHANSZ_16;
-+		break;
-+	case 24:
-+		chan_sz = MAX98520_PCM_MODE_CFG_CHANSZ_24;
-+		break;
-+	case 32:
-+		chan_sz = MAX98520_PCM_MODE_CFG_CHANSZ_32;
-+		break;
-+	default:
-+		dev_err(component->dev, "format unsupported %d\n",
-+			params_format(params));
-+		goto err;
-+	}
-+
-+	max98520->ch_size = snd_pcm_format_width(params_format(params));
-+
-+	regmap_update_bits(max98520->regmap,
-+						MAX98520_R2040_PCM_MODE_CFG,
-+						MAX98520_PCM_MODE_CFG_CHANSZ_MASK, chan_sz);
-+
-+	dev_dbg(component->dev, "format supported %d",
-+		params_format(params));
-+
-+	/* sampling rate configuration */
-+	switch (params_rate(params)) {
-+	case 8000:
-+		sampling_rate = MAX98520_PCM_SR_8000;
-+		break;
-+	case 11025:
-+		sampling_rate = MAX98520_PCM_SR_11025;
-+		break;
-+	case 12000:
-+		sampling_rate = MAX98520_PCM_SR_12000;
-+		break;
-+	case 16000:
-+		sampling_rate = MAX98520_PCM_SR_16000;
-+		break;
-+	case 22050:
-+		sampling_rate = MAX98520_PCM_SR_22050;
-+		break;
-+	case 24000:
-+		sampling_rate = MAX98520_PCM_SR_24000;
-+		break;
-+	case 32000:
-+		sampling_rate = MAX98520_PCM_SR_32000;
-+		break;
-+	case 44100:
-+		sampling_rate = MAX98520_PCM_SR_44100;
-+		break;
-+	case 48000:
-+		sampling_rate = MAX98520_PCM_SR_48000;
-+		break;
-+	case 88200:
-+		sampling_rate = MAX98520_PCM_SR_88200;
-+		break;
-+	case 96000:
-+		sampling_rate = MAX98520_PCM_SR_96000;
-+		break;
-+	case 176400:
-+		sampling_rate = MAX98520_PCM_SR_176400;
-+		break;
-+	case 192000:
-+		sampling_rate = MAX98520_PCM_SR_192000;
-+		break;
-+	default:
-+		dev_err(component->dev, "rate %d not supported\n",
-+			params_rate(params));
-+		goto err;
-+	}
-+
-+	dev_dbg(component->dev, " %s ch_size: %d, sampling rate : %d out\n", __func__,
-+		snd_pcm_format_width(params_format(params)), params_rate(params));
-+	/* set DAI_SR to correct LRCLK frequency */
-+	regmap_update_bits(max98520->regmap,
-+						MAX98520_R2042_PCM_SR_SETUP,
-+						MAX98520_PCM_SR_MASK,
-+						sampling_rate);
-+
-+	return max98520_set_clock(component, params);
-+err:
-+	dev_dbg(component->dev, "%s out error", __func__);
-+	return -EINVAL;
-+}
-+
-+static int max98520_dai_tdm_slot(struct snd_soc_dai *dai,
-+	unsigned int tx_mask, unsigned int rx_mask,
-+	int slots, int slot_width)
-+{
-+	struct snd_soc_component *component = dai->component;
-+	struct max98520_priv *max98520 =
-+		snd_soc_component_get_drvdata(component);
-+	int bsel = 0;
-+	unsigned int chan_sz = 0;
-+
-+	if (!tx_mask && !rx_mask && !slots && !slot_width)
-+		max98520->tdm_mode = false;
-+	else
-+		max98520->tdm_mode = true;
-+
-+	/* BCLK configuration */
-+	bsel = max98520_get_bclk_sel(slots * slot_width);
-+	if (bsel == 0) {
-+		dev_err(component->dev, "BCLK %d not supported\n",
-+			slots * slot_width);
-+		return -EINVAL;
-+	}
-+
-+	regmap_update_bits(max98520->regmap,
-+						MAX98520_R2041_PCM_CLK_SETUP,
-+						MAX98520_PCM_CLK_SETUP_BSEL_MASK,
-+						bsel);
-+
-+	/* Channel size configuration */
-+	switch (slot_width) {
-+	case 16:
-+		chan_sz = MAX98520_PCM_MODE_CFG_CHANSZ_16;
-+		break;
-+	case 24:
-+		chan_sz = MAX98520_PCM_MODE_CFG_CHANSZ_24;
-+		break;
-+	case 32:
-+		chan_sz = MAX98520_PCM_MODE_CFG_CHANSZ_32;
-+		break;
-+	default:
-+		dev_err(component->dev, "format unsupported %d\n",
-+			slot_width);
-+		return -EINVAL;
-+	}
-+
-+	regmap_update_bits(max98520->regmap,
-+						MAX98520_R2040_PCM_MODE_CFG,
-+						MAX98520_PCM_MODE_CFG_CHANSZ_MASK, chan_sz);
-+
-+	/* Rx slot configuration */
-+	regmap_update_bits(max98520->regmap,
-+						MAX98520_R2044_PCM_RX_SRC2,
-+						MAX98520_PCM_DMIX_CH0_SRC_MASK,
-+						rx_mask);
-+	regmap_update_bits(max98520->regmap,
-+						MAX98520_R2044_PCM_RX_SRC2,
-+						MAX98520_PCM_DMIX_CH1_SRC_MASK,
-+						rx_mask << MAX98520_PCM_DMIX_CH1_SHIFT);
-+
-+	return 0;
-+}
-+
-+#define MAX98520_RATES SNDRV_PCM_RATE_8000_192000
-+
-+#define MAX98520_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | \
-+	SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
-+
-+static const struct snd_soc_dai_ops max98520_dai_ops = {
-+	.set_fmt = max98520_dai_set_fmt,
-+	.hw_params = max98520_dai_hw_params,
-+	.set_tdm_slot = max98520_dai_tdm_slot,
-+};
-+
-+static int max98520_dac_event(struct snd_soc_dapm_widget *w,
-+	struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_component *component =
-+		snd_soc_dapm_to_component(w->dapm);
-+	struct max98520_priv *max98520 =
-+		snd_soc_component_get_drvdata(component);
-+
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		dev_dbg(component->dev, " AMP ON\n");
-+
-+		regmap_write(max98520->regmap, MAX98520_R210F_GLOBAL_EN, 1);
-+		usleep_range(30000, 31000);
-+		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		dev_dbg(component->dev, " AMP OFF\n");
-+
-+		regmap_write(max98520->regmap, MAX98520_R210F_GLOBAL_EN, 0);
-+		usleep_range(30000, 31000);
-+		max98520->tdm_mode = false;
-+		break;
-+	default:
-+		return 0;
-+	}
-+	return 0;
-+}
-+
-+static const char * const max98520_switch_text[] = {
-+	"Left", "Right", "LeftRight"};
-+
-+static const struct soc_enum dai_sel_enum =
-+	SOC_ENUM_SINGLE(MAX98520_R2043_PCM_RX_SRC1,
-+		0, 3, max98520_switch_text);
-+
-+static const struct snd_kcontrol_new max98520_dai_controls =
-+	SOC_DAPM_ENUM("DAI Sel", dai_sel_enum);
-+
-+static const struct snd_soc_dapm_widget max98520_dapm_widgets[] = {
-+	SND_SOC_DAPM_DAC_E("Amp Enable", "HiFi Playback",
-+	MAX98520_R209F_AMP_EN, 0, 0, max98520_dac_event,
-+	SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
-+	SND_SOC_DAPM_MUX("DAI Sel Mux", SND_SOC_NOPM, 0, 0,	&max98520_dai_controls),
-+	SND_SOC_DAPM_OUTPUT("BE_OUT"),
-+};
-+
-+static DECLARE_TLV_DB_SCALE(max98520_digital_tlv, -6300, 50, 1);
-+static const DECLARE_TLV_DB_RANGE(max98520_spk_tlv,
-+	0, 5, TLV_DB_SCALE_ITEM(600, 300, 0),
-+);
-+
-+static const DECLARE_TLV_DB_RANGE(max98520_dht_lim_thresh_tlv,
-+	0, 15, TLV_DB_SCALE_ITEM(-1500, 100, 0),
-+);
-+
-+static const DECLARE_TLV_DB_RANGE(max98520_dht_hysteresis_tlv,
-+	0, 3, TLV_DB_SCALE_ITEM(100, 100, 0),
-+	4, 7, TLV_DB_SCALE_ITEM(600, 200, 0),
-+);
-+
-+static const DECLARE_TLV_DB_RANGE(max98520_dht_rotation_point_tlv,
-+	0, 1, TLV_DB_SCALE_ITEM(-1500, 300, 0),
-+	2, 4, TLV_DB_SCALE_ITEM(-1000, 200, 0),
-+	5, 10, TLV_DB_SCALE_ITEM(-500, 100, 0),
-+);
-+
-+static const DECLARE_TLV_DB_RANGE(max98520_dht_supply_hr_tlv,
-+	0, 16, TLV_DB_SCALE_ITEM(-2000, 250, 0),
-+);
-+
-+static const DECLARE_TLV_DB_RANGE(max98520_dht_max_atten_tlv,
-+	1, 20, TLV_DB_SCALE_ITEM(-2000, 100, 0),
-+);
-+
-+static const char * const max98520_dht_attack_rate_text[] = {
-+	"20us", "40us", "80us", "160us", "320us", "640us",
-+	"1.28ms", "2.56ms",	"5.12ms", "10.24ms", "20.48ms", "40.96ms",
-+	"81.92ms", "163.84ms"
-+};
-+
-+static SOC_ENUM_SINGLE_DECL(max98520_dht_attack_rate_enum,
-+			    MAX98520_R20D4_DHT_CFG3, 0,
-+			    max98520_dht_attack_rate_text);
-+
-+static const char * const max98520_dht_release_rate_text[] = {
-+	"2ms", "4ms", "8ms", "16ms", "32ms", "64ms", "128ms", "256ms", "512ms",
-+	"1.024s", "2.048s", "4.096s", "8.192s", "16.384s"
-+};
-+
-+static SOC_ENUM_SINGLE_DECL(max98520_dht_release_rate_enum,
-+			    MAX98520_R20D5_DHT_CFG4, 0,
-+			    max98520_dht_release_rate_text);
-+
-+static bool max98520_readable_register(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case MAX98520_R2000_SW_RESET:
-+	case MAX98520_R2027_THERM_FOLDBACK_EN:
-+	case MAX98520_R2030_CLK_MON_CTRL:
-+	case MAX98520_R2037_ERR_MON_CTRL:
-+	case MAX98520_R204F_PCM_RX_EN:
-+	case MAX98520_R209F_AMP_EN:
-+	case MAX98520_R20CF_MEAS_ADC_CFG:
-+	case MAX98520_R20D8_DHT_EN:
-+	case MAX98520_R21FF_REVISION_ID:
-+	case MAX98520_R2001_STATUS_1... MAX98520_R2002_STATUS_2:
-+	case MAX98520_R2020_THERM_WARN_THRESH... MAX98520_R2023_THERM_FOLDBACK_SET:
-+	case MAX98520_R2040_PCM_MODE_CFG... MAX98520_R2044_PCM_RX_SRC2:
-+	case MAX98520_R2090_AMP_VOL_CTRL... MAX98520_R2092_AMP_DSP_CFG:
-+	case MAX98520_R2094_SSM_CFG... MAX98520_R2095_AMP_CFG:
-+	case MAX98520_R20B0_ADC_SR... MAX98520_R20BD_ADC_HIGH_TEMP_READBACK_LSB:
-+	case MAX98520_R20D0_DHT_CFG1... MAX98520_R20D6_DHT_HYSTERESIS_CFG:
-+	case MAX98520_R210E_AUTO_RESTART_BEHAVIOR... MAX98520_R210F_GLOBAL_EN:
-+	case MAX98520_R2161_BOOST_TM1... MAX98520_R2163_BOOST_TM3:
-+		return true;
-+	default:
-+		return false;
-+	}
-+};
-+
-+static bool max98520_volatile_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case MAX98520_R210F_GLOBAL_EN:
-+	case MAX98520_R21FF_REVISION_ID:
-+	case MAX98520_R2000_SW_RESET:
-+	case MAX98520_R2001_STATUS_1 ... MAX98520_R2002_STATUS_2:
-+	case MAX98520_R20B4_ADC_READBACK_CTRL
-+		... MAX98520_R20BD_ADC_HIGH_TEMP_READBACK_LSB:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+static const struct snd_kcontrol_new max98520_snd_controls[] = {
-+/* Volume */
-+SOC_SINGLE_TLV("Digital Volume", MAX98520_R2090_AMP_VOL_CTRL,
-+	0, 0x7F, 1, max98520_digital_tlv),
-+SOC_SINGLE_TLV("Speaker Volume", MAX98520_R2091_AMP_PATH_GAIN,
-+	0, 0x5, 0, max98520_spk_tlv),
-+/* Volume Ramp Up/Down Enable*/
-+SOC_SINGLE("Ramp Up Switch", MAX98520_R2092_AMP_DSP_CFG,
-+	MAX98520_DSP_SPK_VOL_RMPUP_SHIFT, 1, 0),
-+SOC_SINGLE("Ramp Down Switch", MAX98520_R2092_AMP_DSP_CFG,
-+	MAX98520_DSP_SPK_VOL_RMPDN_SHIFT, 1, 0),
-+/* Clock Monitor Enable */
-+SOC_SINGLE("CLK Monitor Switch", MAX98520_R2037_ERR_MON_CTRL,
-+	   MAX98520_CTRL_CMON_EN_SHIFT, 1, 0),
-+/* Clock Monitor Config */
-+SOC_SINGLE("CLKMON Autorestart Switch", MAX98520_R2030_CLK_MON_CTRL,
-+	   MAX98520_CMON_AUTORESTART_SHIFT, 1, 0),
-+/* Dither Enable */
-+SOC_SINGLE("Dither Switch", MAX98520_R2092_AMP_DSP_CFG,
-+	   MAX98520_DSP_SPK_DITH_EN_SHIFT, 1, 0),
-+/* DC Blocker Enable */
-+SOC_SINGLE("DC Blocker Switch", MAX98520_R2092_AMP_DSP_CFG,
-+	   MAX98520_DSP_SPK_DCBLK_EN_SHIFT, 1, 0),
-+/* Speaker Safe Mode Enable */
-+SOC_SINGLE("Speaker Safemode Switch", MAX98520_R2092_AMP_DSP_CFG,
-+	   MAX98520_DSP_SPK_SAFE_EN_SHIFT, 1, 0),
-+/* AMP SSM Enable */
-+SOC_SINGLE("CP Bypass Switch", MAX98520_R2094_SSM_CFG,
-+	   MAX98520_SSM_RCVR_MODE_SHIFT, 1, 0),
-+/* AMP Dynamic Mode Configuration */
-+SOC_SINGLE("Dynamic Mode Switch", MAX98520_R2095_AMP_CFG,
-+	   MAX98520_CFG_DYN_MODE_SHIFT, 1, 1),
-+/* AMP Speaker Mode Switch */
-+SOC_SINGLE("Speaker Mode Switch", MAX98520_R2095_AMP_CFG,
-+	   MAX98520_CFG_SPK_MODE_SHIFT, 1, 0),
-+/* Dynamic Headroom Tracking */
-+SOC_SINGLE("DHT Switch", MAX98520_R20D8_DHT_EN, 0, 1, 0),
-+SOC_SINGLE("DHT Limiter Mode", MAX98520_R20D2_LIMITER_CFG2,
-+	MAX98520_DHT_LIMITER_MODE_SHIFT, 1, 0),
-+SOC_SINGLE("DHT Hysteresis Switch", MAX98520_R20D6_DHT_HYSTERESIS_CFG,
-+	MAX98520_DHT_HYSTERESIS_SWITCH_SHIFT, 1, 0),
-+SOC_SINGLE_TLV("DHT Rot Pnt", MAX98520_R20D0_DHT_CFG1,
-+	MAX98520_DHT_VROT_PNT_SHIFT, 10, 1, max98520_dht_rotation_point_tlv),
-+SOC_SINGLE_TLV("DHT Supply Headroom", MAX98520_R20D1_LIMITER_CFG1,
-+	MAX98520_DHT_SUPPLY_HR_SHIFT, 16, 0, max98520_dht_supply_hr_tlv),
-+SOC_SINGLE_TLV("DHT Limiter Threshold", MAX98520_R20D2_LIMITER_CFG2,
-+	MAX98520_DHT_LIMITER_THRESHOLD_SHIFT, 0xF, 1, max98520_dht_lim_thresh_tlv),
-+SOC_SINGLE_TLV("DHT Max Attenuation", MAX98520_R20D3_DHT_CFG2,
-+	MAX98520_DHT_MAX_ATTEN_SHIFT, 20, 1, max98520_dht_max_atten_tlv),
-+SOC_SINGLE_TLV("DHT Hysteresis", MAX98520_R20D6_DHT_HYSTERESIS_CFG,
-+	MAX98520_DHT_HYSTERESIS_SHIFT, 0x7, 0, max98520_dht_hysteresis_tlv),
-+SOC_ENUM("DHT Attack Rate", max98520_dht_attack_rate_enum),
-+SOC_ENUM("DHT Release Rate", max98520_dht_release_rate_enum),
-+/* ADC configuration */
-+SOC_SINGLE("ADC PVDD CH Switch", MAX98520_R20CF_MEAS_ADC_CFG, 0, 1, 0),
-+SOC_SINGLE("ADC PVDD FLT Switch", MAX98520_R20B2_ADC_PVDD0_CFG,
-+	MAX98520_FLT_EN_SHIFT, 1, 0),
-+SOC_SINGLE("ADC TEMP FLT Switch", MAX98520_R20B3_ADC_THERMAL_CFG,
-+	MAX98520_FLT_EN_SHIFT, 1, 0),
-+SOC_SINGLE("ADC PVDD MSB", MAX98520_R20B6_ADC_PVDD_READBACK_MSB, 0, 0xFF, 0),
-+SOC_SINGLE("ADC PVDD LSB", MAX98520_R20B7_ADC_PVDD_READBACK_LSB, 0, 0x01, 0),
-+SOC_SINGLE("ADC TEMP MSB", MAX98520_R20B8_ADC_TEMP_READBACK_MSB, 0, 0xFF, 0),
-+SOC_SINGLE("ADC TEMP LSB", MAX98520_R20B9_ADC_TEMP_READBACK_LSB, 0, 0x01, 0),
-+};
-+
-+static const struct snd_soc_dapm_route max98520_audio_map[] = {
-+	/* Plabyack */
-+	{"DAI Sel Mux", "Left", "Amp Enable"},
-+	{"DAI Sel Mux", "Right", "Amp Enable"},
-+	{"DAI Sel Mux", "LeftRight", "Amp Enable"},
-+	{"BE_OUT", NULL, "DAI Sel Mux"},
-+};
-+
-+static struct snd_soc_dai_driver max98520_dai[] = {
-+	{
-+		.name = "max98520-aif1",
-+		.playback = {
-+			.stream_name = "HiFi Playback",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = MAX98520_RATES,
-+			.formats = MAX98520_FORMATS,
-+		},
-+		.ops = &max98520_dai_ops,
-+	}
-+
-+};
-+
-+static void max98520_reset(struct max98520_priv *max98520, struct device *dev)
-+{
-+	int ret, reg, count;
-+
-+	/* Software Reset */
-+	ret = regmap_write(max98520->regmap, MAX98520_R2000_SW_RESET, 1);
-+	if (ret)
-+		dev_err(dev, "Reset command failed. (ret:%d)\n", ret);
-+
-+	count = 0;
-+	while (count < 3) {
-+		usleep_range(10000, 11000);
-+		/* Software Reset Verification */
-+		ret = regmap_read(max98520->regmap, MAX98520_R21FF_REVISION_ID, &reg);
-+		if (!ret) {
-+			dev_info(dev, "Reset completed (retry:%d)\n", count);
-+			return;
-+		}
-+		count++;
-+	}
-+	dev_err(dev, "Reset failed. (ret:%d)\n", ret);
-+}
-+
-+static int max98520_probe(struct snd_soc_component *component)
-+{
-+	struct max98520_priv *max98520 =
-+		snd_soc_component_get_drvdata(component);
-+
-+	/* Software Reset */
-+	max98520_reset(max98520, component->dev);
-+	usleep_range(30000, 31000);
-+
-+	/* L/R mix configuration */
-+	regmap_write(max98520->regmap, MAX98520_R2043_PCM_RX_SRC1, 0x2);
-+
-+	regmap_write(max98520->regmap, MAX98520_R2044_PCM_RX_SRC2, 0x10);
-+	/* Enable DC blocker */
-+	regmap_update_bits(max98520->regmap, MAX98520_R2092_AMP_DSP_CFG, 1, 1);
-+	/* Disable Speaker Safe Mode */
-+	regmap_update_bits(max98520->regmap,
-+						MAX98520_R2092_AMP_DSP_CFG, MAX98520_SPK_SAFE_EN_MASK, 0);
-+	/* Enable Clock Monitor Auto-restart */
-+	regmap_write(max98520->regmap, MAX98520_R2030_CLK_MON_CTRL, 0x1);
-+
-+	/* Hard coded values for the experiments */
-+	regmap_write(max98520->regmap, MAX98520_R21FF_REVISION_ID, 0x54);
-+	regmap_write(max98520->regmap, MAX98520_R21FF_REVISION_ID, 0x4d);
-+	regmap_write(max98520->regmap, MAX98520_R2161_BOOST_TM1, 0x2);
-+	regmap_write(max98520->regmap, MAX98520_R2095_AMP_CFG, 0xc8);
-+
-+	/* set Rx Enable */
-+	regmap_update_bits(max98520->regmap,
-+						MAX98520_R204F_PCM_RX_EN,
-+						MAX98520_PCM_RX_EN_MASK, 1);
-+
-+	return 0;
-+}
-+
-+#ifdef CONFIG_PM_SLEEP
-+static int max98520_suspend(struct device *dev)
-+{
-+	struct max98520_priv *max98520 = dev_get_drvdata(dev);
-+
-+	regcache_cache_only(max98520->regmap, true);
-+	regcache_mark_dirty(max98520->regmap);
-+	return 0;
-+}
-+static int max98520_resume(struct device *dev)
-+{
-+	struct max98520_priv *max98520 = dev_get_drvdata(dev);
-+
-+	regcache_cache_only(max98520->regmap, false);
-+	max98520_reset(max98520, dev);
-+	regcache_sync(max98520->regmap);
-+	return 0;
-+}
-+#endif
-+
-+static const struct dev_pm_ops max98520_pm = {
-+	SET_SYSTEM_SLEEP_PM_OPS(max98520_suspend, max98520_resume)
-+};
-+
-+static const struct snd_soc_component_driver soc_codec_dev_max98520 = {
-+	.probe			= max98520_probe,
-+	.controls		= max98520_snd_controls,
-+	.num_controls		= ARRAY_SIZE(max98520_snd_controls),
-+	.dapm_widgets		= max98520_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(max98520_dapm_widgets),
-+	.dapm_routes		= max98520_audio_map,
-+	.num_dapm_routes	= ARRAY_SIZE(max98520_audio_map),
-+	.idle_bias_on		= 1,
-+	.use_pmdown_time	= 1,
-+	.endianness		= 1,
-+	.non_legacy_dai_naming	= 1,
-+};
-+
-+static const struct regmap_config max98520_regmap = {
-+	.reg_bits = 16,
-+	.val_bits = 8,
-+	.max_register = MAX98520_R21FF_REVISION_ID,
-+	.reg_defaults  = max98520_reg,
-+	.num_reg_defaults = ARRAY_SIZE(max98520_reg),
-+	.readable_reg = max98520_readable_register,
-+	.volatile_reg = max98520_volatile_reg,
-+	.cache_type = REGCACHE_RBTREE,
-+};
-+
-+static int max98520_i2c_probe(struct i2c_client *i2c,
-+	const struct i2c_device_id *id)
-+{
-+
-+	int ret = 0;
-+	int reg = 0;
-+	struct max98520_priv *max98520 = NULL;
-+	struct i2c_adapter *adapter = to_i2c_adapter(i2c->dev.parent);
-+
-+	ret = i2c_check_functionality(adapter,
-+		I2C_FUNC_SMBUS_BYTE
-+		| I2C_FUNC_SMBUS_BYTE_DATA);
-+	if (!ret) {
-+		dev_err(&i2c->dev, "I2C check functionality failed\n");
-+		return -ENXIO;
-+	}
-+
-+	max98520 = devm_kzalloc(&i2c->dev, sizeof(*max98520), GFP_KERNEL);
-+
-+	if (!max98520) {
-+		ret = -ENOMEM;
-+		return ret;
-+	}
-+	i2c_set_clientdata(i2c, max98520);
-+
-+	/* regmap initialization */
-+	max98520->regmap
-+		= devm_regmap_init_i2c(i2c, &max98520_regmap);
-+	if (IS_ERR(max98520->regmap)) {
-+		ret = PTR_ERR(max98520->regmap);
-+		dev_err(&i2c->dev,
-+			"Failed to allocate regmap: %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* Power on device */
-+	if (gpio_is_valid(max98520->reset_gpio)) {
-+		ret = devm_gpio_request(&i2c->dev, max98520->reset_gpio,
-+					"MAX98520_RESET");
-+		if (ret) {
-+			dev_err(&i2c->dev, "%s: Failed to request gpio %d\n",
-+				__func__, max98520->reset_gpio);
-+			return -EINVAL;
-+		}
-+		gpio_direction_output(max98520->reset_gpio, 0);
-+		msleep(50);
-+		gpio_direction_output(max98520->reset_gpio, 1);
-+		msleep(20);
-+	}
-+
-+	/* Check Revision ID */
-+	ret = regmap_read(max98520->regmap,
-+		MAX98520_R21FF_REVISION_ID, &reg);
-+	if (ret < 0) {
-+		dev_err(&i2c->dev,
-+			"Failed to read: 0x%02X\n", MAX98520_R21FF_REVISION_ID);
-+		return ret;
-+	}
-+	dev_info(&i2c->dev, "MAX98520 revisionID: 0x%02X\n", reg);
-+
-+	/* codec registration */
-+	ret = devm_snd_soc_register_component(&i2c->dev,
-+					      &soc_codec_dev_max98520,
-+		max98520_dai, ARRAY_SIZE(max98520_dai));
-+	if (ret < 0)
-+		dev_err(&i2c->dev, "Failed to register codec: %d\n", ret);
-+
-+	return ret;
-+}
-+
-+static const struct i2c_device_id max98520_i2c_id[] = {
-+	{ "max98520", 0},
-+	{ },
-+};
-+
-+MODULE_DEVICE_TABLE(i2c, max98520_i2c_id);
-+
-+#if defined(CONFIG_OF)
-+static const struct of_device_id max98520_of_match[] = {
-+	{ .compatible = "maxim,max98520", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, max98520_of_match);
-+#endif
-+
-+#ifdef CONFIG_ACPI
-+static const struct acpi_device_id max98520_acpi_match[] = {
-+	{ "MX98520", 0 },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(acpi, max98520_acpi_match);
-+#endif
-+
-+static struct i2c_driver max98520_i2c_driver = {
-+	.driver = {
-+		.name = "max98520",
-+		.of_match_table = of_match_ptr(max98520_of_match),
-+		.acpi_match_table = ACPI_PTR(max98520_acpi_match),
-+		.pm = &max98520_pm,
-+	},
-+	.probe = max98520_i2c_probe,
-+	.id_table = max98520_i2c_id,
-+};
-+
-+module_i2c_driver(max98520_i2c_driver)
-+
-+MODULE_DESCRIPTION("ALSA SoC MAX98520 driver");
-+MODULE_AUTHOR("Ryan Lee <ryans.lee@analog.com>");
-+MODULE_AUTHOR("George Song <george.song@analog.com>");
-+MODULE_LICENSE("GPL");
-+
-diff --git a/sound/soc/codecs/max98520.h b/sound/soc/codecs/max98520.h
-new file mode 100644
-index 000000000000..afb5f3917136
---- /dev/null
-+++ b/sound/soc/codecs/max98520.h
-@@ -0,0 +1,159 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (c) 2021, Maxim Integrated.
-+ */
-+
-+#ifndef _MAX98520_H
-+#define _MAX98520_H
-+
-+#define MAX98520_R2000_SW_RESET 0x2000
-+#define MAX98520_R2001_STATUS_1 0x2001
-+#define MAX98520_R2002_STATUS_2 0x2002
-+#define MAX98520_R2020_THERM_WARN_THRESH 0x2020
-+#define MAX98520_R2021_THERM_SHDN_THRESH 0x2021
-+#define MAX98520_R2022_THERM_HYSTERESIS 0x2022
-+#define MAX98520_R2023_THERM_FOLDBACK_SET 0x2023
-+#define MAX98520_R2027_THERM_FOLDBACK_EN 0x2027
-+#define MAX98520_R2030_CLK_MON_CTRL 0x2030
-+#define MAX98520_R2037_ERR_MON_CTRL 0x2037
-+#define MAX98520_R2040_PCM_MODE_CFG	0x2040
-+#define MAX98520_R2041_PCM_CLK_SETUP 0x2041
-+#define MAX98520_R2042_PCM_SR_SETUP 0x2042
-+#define MAX98520_R2043_PCM_RX_SRC1 0x2043
-+#define MAX98520_R2044_PCM_RX_SRC2 0x2044
-+#define MAX98520_R204F_PCM_RX_EN 0x204F
-+#define MAX98520_R2090_AMP_VOL_CTRL 0x2090
-+#define MAX98520_R2091_AMP_PATH_GAIN 0x2091
-+#define MAX98520_R2092_AMP_DSP_CFG 0x2092
-+#define MAX98520_R2094_SSM_CFG 0x2094
-+#define MAX98520_R2095_AMP_CFG 0x2095
-+#define MAX98520_R209F_AMP_EN 0x209F
-+#define MAX98520_R20B0_ADC_SR 0x20B0
-+#define MAX98520_R20B1_ADC_RESOLUTION 0x20B1
-+#define MAX98520_R20B2_ADC_PVDD0_CFG 0x20B2
-+#define MAX98520_R20B3_ADC_THERMAL_CFG 0x20B3
-+#define MAX98520_R20B4_ADC_READBACK_CTRL 0x20B4
-+#define MAX98520_R20B5_ADC_READBACK_UPDATE 0x20B5
-+#define MAX98520_R20B6_ADC_PVDD_READBACK_MSB 0x20B6
-+#define MAX98520_R20B7_ADC_PVDD_READBACK_LSB 0x20B7
-+#define MAX98520_R20B8_ADC_TEMP_READBACK_MSB 0x20B8
-+#define MAX98520_R20B9_ADC_TEMP_READBACK_LSB 0x20B9
-+#define MAX98520_R20BA_ADC_LOW_PVDD_READBACK_MSB 0x20BA
-+#define MAX98520_R20BB_ADC_LOW_READBACK_LSB 0x20BB
-+#define MAX98520_R20BC_ADC_HIGH_TEMP_READBACK_MSB 0x20BC
-+#define MAX98520_R20BD_ADC_HIGH_TEMP_READBACK_LSB 0x20BD
-+#define MAX98520_R20CF_MEAS_ADC_CFG 0x20CF
-+#define MAX98520_R20D0_DHT_CFG1 0x20D0
-+#define MAX98520_R20D1_LIMITER_CFG1 0x20D1
-+#define MAX98520_R20D2_LIMITER_CFG2 0x20D2
-+#define MAX98520_R20D3_DHT_CFG2 0x20D3
-+#define MAX98520_R20D4_DHT_CFG3 0x20D4
-+#define MAX98520_R20D5_DHT_CFG4 0x20D5
-+#define MAX98520_R20D6_DHT_HYSTERESIS_CFG 0x20D6
-+#define MAX98520_R20D8_DHT_EN 0x20D8
-+#define MAX98520_R210E_AUTO_RESTART_BEHAVIOR 0x210E
-+#define MAX98520_R210F_GLOBAL_EN 0x210F
-+#define MAX98520_R2161_BOOST_TM1 0x2161
-+#define MAX98520_R2162_BOOST_TM2 0x2162
-+#define MAX98520_R2163_BOOST_TM3 0x2163
-+#define MAX98520_R21FF_REVISION_ID 0x21FF
-+
-+/* MAX98520_R2030_CLK_MON_CTRL */
-+#define MAX98520_CMON_AUTORESTART_SHIFT (0)
-+
-+/* MAX98520_R2037_ERR_MON_CTRL */
-+#define MAX98520_CTRL_CMON_EN_SHIFT (0)
-+
-+/* MAX98520_R2040_PCM_MODE_CFG */
-+#define MAX98520_PCM_MODE_CFG_FORMAT_MASK (0x7 << 3)
-+#define MAX98520_PCM_MODE_CFG_FORMAT_SHIFT (3)
-+#define MAX98520_PCM_TX_CH_INTERLEAVE_MASK (0x1 << 2)
-+#define MAX98520_PCM_FORMAT_I2S (0x0 << 3)
-+#define MAX98520_PCM_FORMAT_LJ (0x1 << 3)
-+#define MAX98520_PCM_FORMAT_TDM_MODE0 (0x3 << 3)
-+#define MAX98520_PCM_FORMAT_TDM_MODE1 (0x4 << 3)
-+#define MAX98520_PCM_FORMAT_TDM_MODE2 (0x5 << 3)
-+#define MAX98520_PCM_MODE_CFG_CHANSZ_MASK (0x3 << 6)
-+#define MAX98520_PCM_MODE_CFG_CHANSZ_16 (0x1 << 6)
-+#define MAX98520_PCM_MODE_CFG_CHANSZ_24 (0x2 << 6)
-+#define MAX98520_PCM_MODE_CFG_CHANSZ_32 (0x3 << 6)
-+
-+/* MAX98520_R2041_PCM_CLK_SETUP */
-+#define MAX98520_PCM_MODE_CFG_PCM_BCLKEDGE (0x1 << 4)
-+#define MAX98520_PCM_CLK_SETUP_BSEL_MASK (0xF << 0)
-+
-+/* MAX98520_R2042_PCM_SR_SETUP */
-+#define MAX98520_PCM_SR_SHIFT (0)
-+#define MAX98520_IVADC_SR_SHIFT (4)
-+#define MAX98520_PCM_SR_MASK (0xF << MAX98520_PCM_SR_SHIFT)
-+#define MAX98520_IVADC_SR_MASK (0xF << MAX98520_IVADC_SR_SHIFT)
-+#define MAX98520_PCM_SR_8000 (0x0)
-+#define MAX98520_PCM_SR_11025 (0x1)
-+#define MAX98520_PCM_SR_12000 (0x2)
-+#define MAX98520_PCM_SR_16000 (0x3)
-+#define MAX98520_PCM_SR_22050 (0x4)
-+#define MAX98520_PCM_SR_24000 (0x5)
-+#define MAX98520_PCM_SR_32000 (0x6)
-+#define MAX98520_PCM_SR_44100 (0x7)
-+#define MAX98520_PCM_SR_48000 (0x8)
-+#define MAX98520_PCM_SR_88200 (0x9)
-+#define MAX98520_PCM_SR_96000 (0xA)
-+#define MAX98520_PCM_SR_176400 (0xB)
-+#define MAX98520_PCM_SR_192000 (0xC)
-+
-+/* MAX98520_R2044_PCM_RX_SRC2 */
-+#define MAX98520_PCM_DMIX_CH1_SHIFT (0xF << 0)
-+#define MAX98520_PCM_DMIX_CH0_SRC_MASK (0xF << 0)
-+#define MAX98520_PCM_DMIX_CH1_SRC_MASK (0xF << MAX98520_PCM_DMIX_CH1_SHIFT)
-+
-+/* MAX98520_R204F_PCM_RX_EN */
-+#define MAX98520_PCM_RX_EN_MASK (0x1 << 0)
-+#define MAX98520_PCM_RX_BYP_EN_MASK (0x1 << 1)
-+
-+/* MAX98520_R2092_AMP_DSP_CFG */
-+#define MAX98520_DSP_SPK_DCBLK_EN_SHIFT (0)
-+#define MAX98520_DSP_SPK_DITH_EN_SHIFT (1)
-+#define MAX98520_DSP_SPK_INVERT_SHIFT (2)
-+#define MAX98520_DSP_SPK_VOL_RMPUP_SHIFT (3)
-+#define MAX98520_DSP_SPK_VOL_RMPDN_SHIFT (4)
-+#define MAX98520_DSP_SPK_SAFE_EN_SHIFT (5)
-+
-+#define MAX98520_SPK_SAFE_EN_MASK (0x1 << MAX98520_DSP_SPK_SAFE_EN_SHIFT)
-+
-+/* MAX98520_R2094_SSM_CFG */
-+#define MAX98520_SSM_EN_SHIFT (0)
-+#define MAX98520_SSM_MOD_SHIFT (1)
-+#define MAX98520_SSM_RCVR_MODE_SHIFT (3)
-+
-+/* MAX98520_R2095_AMP_CFG */
-+#define MAX98520_CFG_DYN_MODE_SHIFT (4)
-+#define MAX98520_CFG_SPK_MODE_SHIFT (3)
-+
-+/* MAX98520_R20D0_DHT_CFG1 */
-+#define MAX98520_DHT_VROT_PNT_SHIFT	(0)
-+
-+/* MAX98520_R20D1_LIMITER_CFG1 */
-+#define MAX98520_DHT_SUPPLY_HR_SHIFT (0)
-+
-+/* MAX98520_R20D2_DHT_CFG2 */
-+#define MAX98520_DHT_LIMITER_MODE_SHIFT (0)
-+#define MAX98520_DHT_LIMITER_THRESHOLD_SHIFT (1)
-+
-+/* MAX98520_R20D3_DHT_CFG2 */
-+#define MAX98520_DHT_MAX_ATTEN_SHIFT (0)
-+
-+/* MAX98520_R20D6_DHT_HYSTERESIS_CFG */
-+#define MAX98520_DHT_HYSTERESIS_SWITCH_SHIFT (0)
-+#define MAX98520_DHT_HYSTERESIS_SHIFT (1)
-+
-+/* MAX98520_R20B2_ADC_PVDD0_CFG, MAX98520_R20B3_ADC_THERMAL_CFG */
-+#define MAX98520_FLT_EN_SHIFT (4)
-+
-+struct max98520_priv {
-+	struct regmap *regmap;
-+	int reset_gpio;
-+	unsigned int ch_size;
-+	bool tdm_mode;
-+};
-+#endif
-+
+ static int virtio_dev_probe(struct device *_d)
+ {
+ 	int err, i;
+diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
+index c22ff0117b46..f4c34a2a6b8e 100644
+--- a/drivers/virtio/virtio_balloon.c
++++ b/drivers/virtio/virtio_balloon.c
+@@ -1056,7 +1056,7 @@ static void remove_common(struct virtio_balloon *vb)
+ 		return_free_pages_to_mm(vb, ULONG_MAX);
+ 
+ 	/* Now we reset the device so we can clean up the queues. */
+-	vb->vdev->config->reset(vb->vdev);
++	virtio_reset_device(vb->vdev);
+ 
+ 	vb->vdev->config->del_vqs(vb->vdev);
+ }
+diff --git a/drivers/virtio/virtio_input.c b/drivers/virtio/virtio_input.c
+index ce51ae165943..3aa46703872d 100644
+--- a/drivers/virtio/virtio_input.c
++++ b/drivers/virtio/virtio_input.c
+@@ -347,7 +347,7 @@ static void virtinput_remove(struct virtio_device *vdev)
+ 	spin_unlock_irqrestore(&vi->lock, flags);
+ 
+ 	input_unregister_device(vi->idev);
+-	vdev->config->reset(vdev);
++	virtio_reset_device(vdev);
+ 	while ((buf = virtqueue_detach_unused_buf(vi->sts)) != NULL)
+ 		kfree(buf);
+ 	vdev->config->del_vqs(vdev);
+diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
+index bef8ad6bf466..3bab0a625a4b 100644
+--- a/drivers/virtio/virtio_mem.c
++++ b/drivers/virtio/virtio_mem.c
+@@ -2722,7 +2722,7 @@ static void virtio_mem_remove(struct virtio_device *vdev)
+ 	}
+ 
+ 	/* reset the device and cleanup the queues */
+-	vdev->config->reset(vdev);
++	virtio_reset_device(vdev);
+ 	vdev->config->del_vqs(vdev);
+ 
+ 	kfree(vm);
+diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
+index 0ad89c6629d7..27c3b74070a2 100644
+--- a/fs/fuse/virtio_fs.c
++++ b/fs/fuse/virtio_fs.c
+@@ -895,7 +895,7 @@ static int virtio_fs_probe(struct virtio_device *vdev)
+ 	return 0;
+ 
+ out_vqs:
+-	vdev->config->reset(vdev);
++	virtio_reset_device(vdev);
+ 	virtio_fs_cleanup_vqs(vdev, fs);
+ 	kfree(fs->vqs);
+ 
+@@ -927,7 +927,7 @@ static void virtio_fs_remove(struct virtio_device *vdev)
+ 	list_del_init(&fs->list);
+ 	virtio_fs_stop_all_queues(fs);
+ 	virtio_fs_drain_all_queues_locked(fs);
+-	vdev->config->reset(vdev);
++	virtio_reset_device(vdev);
+ 	virtio_fs_cleanup_vqs(vdev, fs);
+ 
+ 	vdev->priv = NULL;
+diff --git a/include/linux/virtio.h b/include/linux/virtio.h
+index 41edbc01ffa4..72292a62cd90 100644
+--- a/include/linux/virtio.h
++++ b/include/linux/virtio.h
+@@ -138,6 +138,7 @@ int virtio_finalize_features(struct virtio_device *dev);
+ int virtio_device_freeze(struct virtio_device *dev);
+ int virtio_device_restore(struct virtio_device *dev);
+ #endif
++void virtio_reset_device(struct virtio_device *dev);
+ 
+ size_t virtio_max_dma_size(struct virtio_device *vdev);
+ 
+diff --git a/net/9p/trans_virtio.c b/net/9p/trans_virtio.c
+index 490a4c900339..19c69821dd04 100644
+--- a/net/9p/trans_virtio.c
++++ b/net/9p/trans_virtio.c
+@@ -721,7 +721,7 @@ static void p9_virtio_remove(struct virtio_device *vdev)
+ 
+ 	mutex_unlock(&virtio_9p_lock);
+ 
+-	vdev->config->reset(vdev);
++	virtio_reset_device(vdev);
+ 	vdev->config->del_vqs(vdev);
+ 
+ 	sysfs_remove_file(&(vdev->dev.kobj), &dev_attr_mount_tag.attr);
+diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
+index 4f7c99dfd16c..fb3302fff627 100644
+--- a/net/vmw_vsock/virtio_transport.c
++++ b/net/vmw_vsock/virtio_transport.c
+@@ -665,7 +665,7 @@ static void virtio_vsock_remove(struct virtio_device *vdev)
+ 	vsock_for_each_connected_socket(virtio_vsock_reset_sock);
+ 
+ 	/* Stop all work handlers to make sure no one is accessing the device,
+-	 * so we can safely call vdev->config->reset().
++	 * so we can safely call virtio_reset_device().
+ 	 */
+ 	mutex_lock(&vsock->rx_lock);
+ 	vsock->rx_run = false;
+@@ -682,7 +682,7 @@ static void virtio_vsock_remove(struct virtio_device *vdev)
+ 	/* Flush all device writes and interrupts, device will not use any
+ 	 * more buffers.
+ 	 */
+-	vdev->config->reset(vdev);
++	virtio_reset_device(vdev);
+ 
+ 	mutex_lock(&vsock->rx_lock);
+ 	while ((pkt = virtqueue_detach_unused_buf(vsock->vqs[VSOCK_VQ_RX])))
+diff --git a/sound/virtio/virtio_card.c b/sound/virtio/virtio_card.c
+index 150ab3e37013..e2847c040f75 100644
+--- a/sound/virtio/virtio_card.c
++++ b/sound/virtio/virtio_card.c
+@@ -350,7 +350,7 @@ static void virtsnd_remove(struct virtio_device *vdev)
+ 		snd_card_free(snd->card);
+ 
+ 	vdev->config->del_vqs(vdev);
+-	vdev->config->reset(vdev);
++	virtio_reset_device(vdev);
+ 
+ 	for (i = 0; snd->substreams && i < snd->nsubstreams; ++i) {
+ 		struct virtio_pcm_substream *vss = &snd->substreams[i];
+@@ -379,7 +379,7 @@ static int virtsnd_freeze(struct virtio_device *vdev)
+ 	virtsnd_ctl_msg_cancel_all(snd);
+ 
+ 	vdev->config->del_vqs(vdev);
+-	vdev->config->reset(vdev);
++	virtio_reset_device(vdev);
+ 
+ 	for (i = 0; i < snd->nsubstreams; ++i)
+ 		cancel_work_sync(&snd->substreams[i].elapsed_period);
 -- 
-2.25.1
+MST
 
