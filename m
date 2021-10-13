@@ -2,72 +2,90 @@ Return-Path: <SRS0=9Cbg=PC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CA69C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Oct 2021 13:19:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B4DDC4332F
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Oct 2021 13:48:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7C2FF610CC
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Oct 2021 13:19:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7C2FF610CC
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 7A54B610CF
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Oct 2021 13:48:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7A54B610CF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AD11882E;
-	Thu, 14 Oct 2021 15:18:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD11882E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0FA5841;
+	Thu, 14 Oct 2021 15:47:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FA5841
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634217565;
-	bh=auGL29uOG0r1S8n7blEYC3BWsg1IMZCKnXJmreGBf9c=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=uzIxTgJo0CH6cji+kz4vMaFfXQ9VtaOpgrsVlM1TJrS/e+dLGPYkiPitQQ0Ruuf4g
-	 4h4TzO4gldpqjm3rM6ZC3UMQWVKYiZNkX+p+d4v/wR4HdTw6894bFRnLMao2UGJbdY
-	 MuAfgk1u0GuceUxo7R/oUOVmfrPctFfFoRX+ihuE=
+	s=default; t=1634219279;
+	bh=2Xje8pKfkwfEzJnN5Km/T/71jC9qThKArd4i/qedYX8=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=tL9uTu9HiWxZyVe4UXkEcHVH8qTKUqcrTNmicN0XtjzwqLudWTj4ozwQ0IOaE0qfh
+	 353xxGs12Nqt7xsbfy6bZsBnAOAlVBo9qhTZZ3sVGBk/EAlG5MPLm5m9y+JT2fAyqA
+	 iQu+Eh31euYEYqx/p352Z4wHftqlM/wcQjaMj28M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 43E32F801F7;
-	Thu, 14 Oct 2021 15:18:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 84C26F80088;
+	Thu, 14 Oct 2021 15:47:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A60A2F80212; Thu, 14 Oct 2021 15:18:34 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id F1825F80269; Wed, 13 Oct 2021 08:04:57 +0200 (CEST)
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com
+ [IPv6:2607:f8b0:4864:20::431])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4B1F7F8016C
- for <alsa-devel@alsa-project.org>; Thu, 14 Oct 2021 15:18:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B1F7F8016C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 96312F80088
+ for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2021 08:04:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96312F80088
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ZLJr/hz0"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 73B53610E7;
- Thu, 14 Oct 2021 13:18:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1634217505;
- bh=auGL29uOG0r1S8n7blEYC3BWsg1IMZCKnXJmreGBf9c=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=ZLJr/hz09S/oFbtb0+zrKyCZM+3akWSk4HtIqRKeSPvhvLllxs2/jCnNu7w4Wf2v7
- 70s3Iit1tLbMEoTPwWsjbBE2IE8osMf8NbsKqgReP6l+7BCvXnUREWmEOkKNeGZN7P
- n4QQ/io5+Q8mx045TOa52+ZSRZSGCGeQ3UuxCn+Ub+sPW58pARvpMO5V8LyFh9jQcW
- C6S4Of4ODOffP+uk3jdWaepGY0cg3QRGGacxvoRaKp7+r1Wq5703y3oHPQhkRluA8H
- ISu+7EHrvUZfhLDLOVJoZsaSrsr/hS+LlOgTiSxrgUgDaQSFEUKdkPGVf0tj1zsP1j
- KwRElePYBIaUA==
-From: Mark Brown <broonie@kernel.org>
-To: derek.fang@realtek.com,
-	lgirdwood@gmail.com
-Subject: Re: [PATCH] ASoC: rt5682: fix a little pop while playback
-Date: Thu, 14 Oct 2021 14:18:16 +0100
-Message-Id: <163421747887.2468192.18189874831753774527.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211014094054.811-1-derek.fang@realtek.com>
-References: <20211014094054.811-1-derek.fang@realtek.com>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="jsFSQ/yE"
+Received: by mail-pf1-x431.google.com with SMTP id q19so1513361pfl.4
+ for <alsa-devel@alsa-project.org>; Tue, 12 Oct 2021 23:04:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=MH9z8oRP1WEDSYSBSdmgw7YkHAb/fp8UIslbgmjVY44=;
+ b=jsFSQ/yE1vIMk0ZXSOG9PWuCn5JQscSjwdkdEmx5aOvUYwvASQnDZakuR6eciLBhCD
+ 92h6e10Hpbm8ucmaq1aPOmMgftVR0sX95ktsmJ/WiRmU9Ayk7dCoe1VSFlq8ZA2hM2HU
+ y2eKEyPSFUaDIn31Ep4clKCxYx/16sreoichvvDvxip+viqowN5qndQ4XvqcMpnEOqYT
+ cqdDNwZvuF325dM6dDUmzd+ENrmQiCGm3PriDqt57028lAcewW7aWUxCLkdFmXXj6hU2
+ AvAKXTnqjDIbL+YVRDtUrwUJNlqj38bL9KS/5aMy86pwVpw6Ox5HlXfuEsAf8lA6Cwto
+ y7lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=MH9z8oRP1WEDSYSBSdmgw7YkHAb/fp8UIslbgmjVY44=;
+ b=In/d7YGfgQY6MAD2FDz13q1DPHYxNi8eHmmIuaQlQFqZkPeFeKNfl4GtlMMCx4lM9U
+ 7i30+dTPI10xwvN3VOaxPP8Kbo1WbrAeWO5YLUHxknfikCI3TmNnpAK3LQCCRZckMDIt
+ EWtHwIx5b3FTMeHsCSmp45JyyfxtOCy7oc3qjVus5yrLfmqvpBFUVHWBQysUifWcwBep
+ 6tCbRplqnCqjhx64gUqoAfwybsbnOd6uOqe2Y+dBRT20Oce1dAmjqi3A6GLWU+a3ht1Z
+ i4gtz5BLtth2f7Aklez99pqjCaCW9CM4+31/HlAS8XkINdWIrSFy8T4qbAtP7t6HQN6U
+ xZWA==
+X-Gm-Message-State: AOAM531uuZ6RmCrJRPbi9exbHhWMvXLHEEhrENn99JbIc0zgiO4EUwH8
+ +ewoQHgdED4bsStr1L9gJyA=
+X-Google-Smtp-Source: ABdhPJyqqqSApXRNIzuuH5iQRESjESRbu7jNUNmMjLGTCrUAzRTOBbZ2z4ajKRyTDITgvwz2iFDUkg==
+X-Received: by 2002:a63:f410:: with SMTP id g16mr25875791pgi.201.1634105088816; 
+ Tue, 12 Oct 2021 23:04:48 -0700 (PDT)
+Received: from SEL-LT-028891.maxim-ic.internal ([223.62.162.93])
+ by smtp.gmail.com with ESMTPSA id w9sm5003461pjk.28.2021.10.12.23.04.46
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 12 Oct 2021 23:04:48 -0700 (PDT)
+From: George Song <georgesong0119@gmail.com>
+To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
+ george.song@maximintegrated.com, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] ALSA SoC MAX98520 dt-bindings : Added device tree binding
+ for max98520 Signed-off-by: George Song <george.song@maximintegrated.com>
+Date: Wed, 13 Oct 2021 15:04:41 +0900
+Message-Id: <20211013060441.18177-1-georgesong0119@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
- lars@metafoo.de, albertchen@realtek.com, Mark Brown <broonie@kernel.org>,
- kevin_chen_ym@realtek.com, shumingf@realtek.com, flove@realtek.com
+X-Mailman-Approved-At: Thu, 14 Oct 2021 15:47:05 +0200
+Cc: "george.song" <george.song@analog.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,40 +101,54 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 14 Oct 2021 17:40:54 +0800, derek.fang@realtek.com wrote:
-> From: Derek Fang <derek.fang@realtek.com>
-> 
-> A little pop can be heard obviously from HP while playing a silent.
-> This patch fixes it by using two functions:
-> 1. Enable HP 1bit output mode.
-> 2. Change the charge pump switch size during playback on and off.
-> 
-> [...]
+From: "george.song" <george.song@analog.com>
 
-Applied to
+---
+ .../bindings/sound/maxim,max98520.yaml        | 35 +++++++++++++++++++
+ 1 file changed, 35 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/maxim,max98520.yaml
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+diff --git a/Documentation/devicetree/bindings/sound/maxim,max98520.yaml b/Documentation/devicetree/bindings/sound/maxim,max98520.yaml
+new file mode 100644
+index 000000000000..02481428e2ed
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/maxim,max98520.yaml
+@@ -0,0 +1,35 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/maxim,max98520.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Maxim Integrated MAX98520 Speaker Amplifier Driver
++
++maintainers:
++  - Goerge Song <George.song@maximintegrated.com>
++
++properties:
++  compatible:
++    const: maxim,max98520
++
++  reg:
++    maxItems: 1
++    description: I2C address of the device.
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c {
++      #address-cells = <1>;
++      #size-cells = <0>;
++      max98520: amplifier@38 {
++        compatible = "maxim,max98520";
++        reg = <0x38>;
++      };
++    };
+-- 
+2.25.1
 
-Thanks!
-
-[1/1] ASoC: rt5682: fix a little pop while playback
-      commit: 4b19e4a77cc6baa0f840e8bae62ab974667f6207
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
