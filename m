@@ -2,67 +2,65 @@ Return-Path: <SRS0=EWQz=PB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF0F4C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Oct 2021 13:50:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C3EAC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Oct 2021 14:32:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E5CB66109E
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Oct 2021 13:50:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E5CB66109E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be
+	by mail.kernel.org (Postfix) with ESMTPS id B034B610CB
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Oct 2021 14:32:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B034B610CB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7491882C;
-	Wed, 13 Oct 2021 15:49:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7491882C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 64D571663;
+	Wed, 13 Oct 2021 16:31:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64D571663
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634133049;
-	bh=nRPDRhezXgbjNUwR2KKDqwjOts6DKygUWLtp48OcxEs=;
+	s=default; t=1634135529;
+	bh=wg2hO1AtzDTxBpWxZfnZ54dkEzVV+SjDrKjJ6ixmvK4=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=nQXUNLXS/2kukS+SWKCZsOWRVdDUm0ONTcn/3BIVGd0tOhg7+orHQGpRiHC4nxPko
-	 U5z1QTbAuou/gZUCEkpoJyXU+dw5mgqwjtpk9zfFiSjL7xb/Q1Y5dMp01FmqOElxMZ
-	 a0P7OAHVlg/N5pJIc227ME8HQyb6jkW593AvgG48=
+	b=cIceyqupi+Ig7aga2YJ81fESc1UhsamZKXdBMw+F9qmSeNQDrvCbF0xXf16tjxgjB
+	 Ljtt1ms5gMaIK6Hplv6AeDA4CwFMugN9rXG/yLnK7XvVs3hxnjhNscWf/22q5+rGA0
+	 +k/qGakb4USzgSBwP9UsJX0KdCPbV09NnaGg3mm0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ECABDF8025B;
-	Wed, 13 Oct 2021 15:49:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B02F6F80290;
+	Wed, 13 Oct 2021 16:31:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6F254F80269; Wed, 13 Oct 2021 15:49:56 +0200 (CEST)
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be
- [IPv6:2a02:1800:120:4::f00:13])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id D1F60F8028D; Wed, 13 Oct 2021 16:31:15 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 67EA1F800C0
- for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2021 15:49:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67EA1F800C0
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:9c93:91ff:d58:ecfb])
- by baptiste.telenet-ops.be with bizsmtp
- id 5Rpk2600J0KW32a01RpkbH; Wed, 13 Oct 2021 15:49:46 +0200
-Received: from rox.of.borg ([192.168.97.57])
- by ramsan.of.borg with esmtps (TLS1.3) tls
- TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.93)
- (envelope-from <geert@linux-m68k.org>)
- id 1maedc-004bZh-7n; Wed, 13 Oct 2021 15:49:44 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
- (envelope-from <geert@linux-m68k.org>)
- id 1maedb-0035bZ-Nx; Wed, 13 Oct 2021 15:49:43 +0200
-From: Geert Uytterhoeven <geert+renesas@glider.be>
-To: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>
-Subject: [PATCH] ASoC: dt-bindings: rockchip: i2s-tdm: Fix rockchip,
- i2s-[rt]x-route
-Date: Wed, 13 Oct 2021 15:49:42 +0200
-Message-Id: <606809e10db02f92b1e7f90c491cc72dd8e16f79.1634132907.git.geert+renesas@glider.be>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 91B47F800C0
+ for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2021 16:31:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91B47F800C0
+X-IronPort-AV: E=McAfee;i="6200,9189,10135"; a="313639486"
+X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; d="scan'208";a="313639486"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 13 Oct 2021 07:31:05 -0700
+X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; d="scan'208";a="524649446"
+Received: from ssafavib-mobl.amr.corp.intel.com (HELO
+ pbossart-mobl3.intel.com) ([10.209.164.198])
+ by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 13 Oct 2021 07:31:03 -0700
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [RFC PATCH v3 00/13] ASoC : soc-pcm: fix trigger race conditions with
+ shared BE
+Date: Wed, 13 Oct 2021 09:30:37 -0500
+Message-Id: <20211013143050.244444-1-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, tiwai@suse.de,
+ Sameer Pujar <spujar@nvidia.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, vkoul@kernel.org,
+ broonie@kernel.org, Gyeongtaek Lee <gt82.lee@samsung.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,48 +76,118 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-make dt_binding_check:
+We've been adding a 'deep buffer' PCM device to several SOF topologies
+in order to reduce power consumption. The typical use-case would be
+music playback over a headset: this additional PCM device provides
+more buffering and longer latencies, leaving the rest of the system
+sleep for longer periods. Notifications and 'regular' low-latency
+audio playback would still use the 'normal' PCM device and be mixed
+with the 'deep buffer' before rendering on the headphone endpoint. The
+tentative direction would be to expose this alternate device to
+PulseAudio/PipeWire/CRAS via the UCM SectionModifier definitions.
 
-    Documentation/devicetree/bindings/sound/rockchip,i2s-tdm.yaml: properties:rockchip,i2s-rx-route: {'required': ['maxItems']} is not allowed for {'$ref': '/schemas/types.yaml#/definitions/uint32-array', 'description': 'Defines the mapping of I2S RX sdis to I2S data bus lines. By default, they are mapped one-to-one. rockchip,i2s-rx-route = <3> would mean sdi3 is receiving from data0.', 'maxItems': 4, 'items': [{'enum': [0, 1, 2, 3]}]}
-	    hint: "maxItems" is not needed with an "items" list
-	    from schema $id: http://devicetree.org/meta-schemas/items.yaml#
-    Documentation/devicetree/bindings/sound/rockchip,i2s-tdm.yaml: properties:rockchip,i2s-tx-route: {'required': ['maxItems']} is not allowed for {'$ref': '/schemas/types.yaml#/definitions/uint32-array', 'description': 'Defines the mapping of I2S TX sdos to I2S data bus lines. By default, they are mapped one-to-one. rockchip,i2s-tx-route = <3> would mean sdo3 is sending to data0.', 'maxItems': 4, 'items': [{'enum': [0, 1, 2, 3]}]}
-	    hint: "maxItems" is not needed with an "items" list
-	    from schema $id: http://devicetree.org/meta-schemas/items.yaml#
+That seemed a straightforward topology change until our automated
+validation stress tests started reporting issues on SoundWire
+platforms, when e.g. two START triggers might be send and conversely
+the STOP trigger is never sent. The SoundWire stream state management
+flagged inconsistent states when the two 'normal' and 'deep buffer'
+devices are used concurrently with rapid play/stop/pause monkey
+testing.
 
-Drop the "-" from the enums to fix this.
+Looking at the soc-pcm.c code, it seems that the BE state
+management needs a lot of love.
 
-Fixes: 510f1c133aedcf69 ("ASoC: dt-bindings: rockchip: add i2s-tdm bindings")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-v4/v5 differed slightly from what Rob suggested in his review of v3
-https://lore.kernel.org/all/YS6kHkeOKCJMOOIf@robh.at.kernel.org/
----
- Documentation/devicetree/bindings/sound/rockchip,i2s-tdm.yaml | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+a) there is no consistent protection for the BE state. In some parts
+of the code, the state updates are protected by a spinlock but in the
+trigger they are not. When we open/play/close the two PCM devices in
+stress tests, we end-up testing a state that is being modified. That
+can't be good.
 
-diff --git a/Documentation/devicetree/bindings/sound/rockchip,i2s-tdm.yaml b/Documentation/devicetree/bindings/sound/rockchip,i2s-tdm.yaml
-index dce8b4136ec6db4e..ce3e18b50230dc9b 100644
---- a/Documentation/devicetree/bindings/sound/rockchip,i2s-tdm.yaml
-+++ b/Documentation/devicetree/bindings/sound/rockchip,i2s-tdm.yaml
-@@ -112,7 +112,7 @@ properties:
-       rockchip,i2s-rx-route = <3> would mean sdi3 is receiving from data0.
-     maxItems: 4
-     items:
--      - enum: [0, 1, 2, 3]
-+      enum: [0, 1, 2, 3]
- 
-   rockchip,i2s-tx-route:
-     $ref: /schemas/types.yaml#/definitions/uint32-array
-@@ -122,7 +122,7 @@ properties:
-       rockchip,i2s-tx-route = <3> would mean sdo3 is sending to data0.
-     maxItems: 4
-     items:
--      - enum: [0, 1, 2, 3]
-+      enum: [0, 1, 2, 3]
- 
-   rockchip,io-multiplex:
-     description:
+b) there is a conceptual deadlock: on stop we check the FE states to
+see if a shared BE can be stopped, but since we trigger the BE first
+the FE states have not been modified yet, so the TRIGGER_STOP is never
+sent.
+
+This patchset suggests the removal of the dedicated 'dpcm_lock', and
+the use of the FE PCM lock before walking through the BE list, a
+mutual exclusion between triggers using the BE PCM lock, and the use
+of a refcount to decide when to trigger the BE. With these patches I
+am able to run our entire validation suite without any issues with
+this new 'deep buffer' topology, and no regressions on existing
+solutions [1]
+
+One might ask 'how come we didn't see this earlier'? The answer is
+probably that the .trigger callbacks in most implementations seems to
+perform DAPM operations, and sending the triggers multiple times is
+not an issue. In the case of SoundWire, we do use the .trigger
+callback to reconfigure the bus using the 'bank switch' mechanism. It
+could be acceptable to tolerate a trigger multiple times, but the
+deadlock on stop cannot be fixed at the SoundWire layer alone.
+
+I chose to send this patchset as an RFCv3 to gather more feedback and
+make use others know about DPCM issues. We're going to spend more time
+on this but if others can provide feedback/test results it would be
+greatly appreciated. The change in the locking model could be
+problematic on other platforms so we do want more time to comment/test
+before even considering a merge.
+
+Opens:
+
+1) is this the right solution? The DPCM code is far from simple, has
+notions such as SND_SOC_DPCM_UPDATE_NO and 'trigger_pending' that I
+have no background on. It's not clear if these cases are still needed
+with the locking changes.
+
+2) There are other reports of kernel oopses [2] that seem related to
+the lack of protection. I'd be good to confirm if this patchset solve
+these problems as well.
+
+[1] https://github.com/thesofproject/linux/pull/3146
+[2] https://lore.kernel.org/alsa-devel/002f01d7b4f5$c030f4a0$4092dde0$@samsung.com/
+
+changes since RFCv2:
+Removal of dpcm_lock to use FE PCM locks (credits to Takashi Iwai for
+the suggestion). The FE PCM lock is now used before each use of
+for_each_dpcm_be() - with the exception of the trigger where the lock
+is already taken. This change is also applied in drivers which make
+use of this loop (compress, SH, FSL).
+Addition of BE PCM lock to deal with mutual exclusion between triggers
+for the same BE.
+Alignment of the BE atomicity on the FE on connections, this is
+required to avoid sleeping in atomic context.
+Additional cleanups (indentation, static functions)
+
+changes since RFC v1:
+Removed unused function
+Removed exported symbols only used in soc-pcm.c, used static instead
+Use a mutex instead of a spinlock
+Protect all for_each_dpcm_be() loops
+Fix bugs introduced in the refcount
+
+Pierre-Louis Bossart (13):
+  ASoC: soc-pcm: remove snd_soc_dpcm_fe_can_update()
+  ASoC: soc-pcm: don't export local functions, use static
+  ASoC: soc-pcm: use proper indentation on 'continue'
+  ASoC: soc-pcm: introduce snd_soc_dpcm_fe_lock_irq/unlock_irq()
+  ASoC: soc-pcm: align BE 'atomicity' with that of the FE
+  ASoC: soc-pcm: remove dpcm spin_lock, use PCM stream lock
+  ASoC: soc-pcm: protect for_each_dpcm_be() loops
+  ASoC: soc-compress: protect for_each_dpcm_be() loops
+  ASoC: sh: rcar: protect for_each_dpcm_be() loops
+  ASoC: fsl: asrc_dma: protect for_each_dpcm_be() loops
+  ASoC: soc-pcm: serialize BE triggers
+  ASoC: soc-pcm: test refcount before triggering
+  ASoC: soc-pcm: fix BE handling of PAUSE_RELEASE
+
+ include/sound/soc-dpcm.h     |  20 +--
+ include/sound/soc.h          |   2 -
+ sound/soc/fsl/fsl_asrc_dma.c |   2 +
+ sound/soc/sh/rcar/core.c     |   2 +
+ sound/soc/soc-compress.c     |   4 +
+ sound/soc/soc-core.c         |   1 -
+ sound/soc/soc-pcm.c          | 253 ++++++++++++++++++++++++-----------
+ 7 files changed, 187 insertions(+), 97 deletions(-)
+
 -- 
 2.25.1
 
