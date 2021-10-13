@@ -1,92 +1,92 @@
-Return-Path: <SRS0=z7f8=PA=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=EWQz=PB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B7AFEC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Oct 2021 21:16:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A0C3CC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Oct 2021 01:30:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 432FB610CC
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Oct 2021 21:16:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 432FB610CC
+	by mail.kernel.org (Postfix) with ESMTPS id 3C0AB60FDA
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Oct 2021 01:30:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3C0AB60FDA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E062E1687;
-	Tue, 12 Oct 2021 23:15:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E062E1687
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8CDE482B;
+	Wed, 13 Oct 2021 03:29:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8CDE482B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634073380;
-	bh=W4gCIrAGXERnwE3cQfIvskKiswP48t6/sb9lj9LghTA=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=taL0D+MhuR41RkYa3FqutRRP7VoH+Pk1SP0i2vDN+wF10BctAuIzWMqCEWRmtmv5J
-	 vSHVgqWEZUWckyeGIm979xT4MOeFkgRByCTPmEsnt7fn53X/4taeJxafUw2ukem2I7
-	 5wZfeesJQKnwt7PBBlvFjysu32Q9sJ5MSXQklHgg=
+	s=default; t=1634088641;
+	bh=oebmxZPFm+a7d5U0gkFFe+O2NtJVuw5pEofg3wSADKo=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=tl0OeJS5Av6VElQHL5TxGr9uubz4gQZ1yRvR5zBEkhZ1sp4iQXLb0sGGq2Wk9BgDl
+	 5fiF+IDLktln0M3Y3oJslu8SQH4bH8aLI6EFbZH+9DqJwsHVG3DZnsgKovAgEAKg6+
+	 ImIUikw0NPSxJ2R61IKICkqJYZnEU15jjpRrVcUk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 66F6DF801F7;
-	Tue, 12 Oct 2021 23:15:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AF772F8025B;
+	Wed, 13 Oct 2021 03:29:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0FFFAF80212; Tue, 12 Oct 2021 23:15:28 +0200 (CEST)
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com
- [IPv6:2a00:1450:4864:20::12a])
+ id 7D6F7F800C0; Wed, 13 Oct 2021 03:29:25 +0200 (CEST)
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com
+ [IPv6:2607:f8b0:4864:20::52a])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 594EEF800CB
- for <alsa-devel@alsa-project.org>; Tue, 12 Oct 2021 23:15:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 594EEF800CB
+ by alsa1.perex.cz (Postfix) with ESMTPS id EE7FAF800C0
+ for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2021 03:29:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EE7FAF800C0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="Wa8LeIAT"
-Received: by mail-lf1-x12a.google.com with SMTP id y26so2321727lfa.11
- for <alsa-devel@alsa-project.org>; Tue, 12 Oct 2021 14:15:12 -0700 (PDT)
+ header.b="Ahn7C41x"
+Received: by mail-pg1-x52a.google.com with SMTP id f5so713727pgc.12
+ for <alsa-devel@alsa-project.org>; Tue, 12 Oct 2021 18:29:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=bRMO0z5rTRyoYHGRA8sAjbt4Yk595vyUUqlmV7aHWE4=;
- b=Wa8LeIAT7oIwgjxcaVjMzphzxb+0WJ0kl6XTeqWwLUKqAGwu7E5ZW9OujQ62ge7qyF
- 2t6tm75GjISjkKdkhapoD9HutSZ/rMZVrEjTOXjEEsaJjmGt+9035YPLD+Prx309pzoD
- cCc3b9M6XylQ9P9SAeD0bbrA9AA0cWK7byz/DtWr2k40CN1CHDem/yRGWjMZQ5rxByuW
- 3lHzsXUM66BFBhoEiL2Kn0lPO1P46M1ooIvzbDg/ayNtPQCWLnM5sG71yhSjevJedAlK
- +esH2VsCqrMcfJWqx7+WMq+2VjNhCyWHGlTsL513eJeXZj51jF4fnmIxEbMZle14/C96
- VbSQ==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references;
+ bh=6Zj8iHIqH+Xnz2r7eN2MsdU1Zj8zoSo9u4Ea2uh5oVk=;
+ b=Ahn7C41xaOSYn5i5/CFIjFR2Iyuwx1hVDH5QUxnP8pm1qDeoTWsDoK7JfdqGgWMtcI
+ dsZqGakmxoTylJxnZE7HDRL1984eG52K03hcU36Zt4AWFn0mYgty1p/m8cVYZhB6HZeG
+ frB1lIiz0BBSS9b/aC/aDCOsrLKhcx76jeZW7h3GsVbMRbMxmO0pvtVmsjW7fauC52Cz
+ Dgz0YsWnYCCe+ZlCkkDAkQApUjGlvVSS/5CHW54LNdl0PT0kvzp/llKj3ACpe6wL2n2J
+ 6ToQ01cgcfqM2pzcncLEEwPL0dADx66K+Nx2nyPB2aehgNlyQ3CfqmmFTNOuX4pIMIkM
+ nnNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=bRMO0z5rTRyoYHGRA8sAjbt4Yk595vyUUqlmV7aHWE4=;
- b=z4uF6bHOgeT28hWAq0wkgG+0AhAA6aTWS2iKXJkk6UfwzmJwhvvRKZEmMTgOwO1m4n
- w8cpE/FoGVgAhiUGCZCs1+sjtXynIqqSSP8LyRWBcN9q7DZQWvvvZFZzxZ6fVrIYccNS
- sj19mudmSv09xxru0y8TnVvuskoZbBD4Kt0h1OMBVWnqVRGcQsEcANG1Yj0KorI5bv8f
- PhzKeVCe7z23DWSCZadbj4QyrMgaOsGKVGOLGjy/fWE9sRS57CVoEs39i4fIUH9ZSke2
- qR1YR0REQxKEPVD/b0NnQLgbsd28IDa5/USLi0UurwahIOnQOQc7zQSGGSbiq8q8vREG
- NmEA==
-X-Gm-Message-State: AOAM531nkzDcKGjrVNKB/6ZZoEnmW3vTw57wZphTLwPvGXmBVCmBVbIQ
- taXbOTDoKxDVINjlqP++am4=
-X-Google-Smtp-Source: ABdhPJzex1DnN+8pV4Yeexc04aFMuXAGDTxNuEP6mVTEyiUgsO4+RF0VzccF5dtADuruU2tVwwjPhA==
-X-Received: by 2002:a2e:9b12:: with SMTP id u18mr23476462lji.447.1634073310313; 
- Tue, 12 Oct 2021 14:15:10 -0700 (PDT)
-Received: from localhost.localdomain (h-158-174-22-5.NA.cust.bahnhof.se.
- [158.174.22.5])
- by smtp.gmail.com with ESMTPSA id l23sm1362132ljg.99.2021.10.12.14.15.09
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 12 Oct 2021 14:15:09 -0700 (PDT)
-From: Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To: Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ASoC: amd: vangogh: constify static struct snd_soc_dai_ops
-Date: Tue, 12 Oct 2021 23:15:06 +0200
-Message-Id: <20211012211506.21159-1-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.33.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Rikard Falkeborn <rikard.falkeborn@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references;
+ bh=6Zj8iHIqH+Xnz2r7eN2MsdU1Zj8zoSo9u4Ea2uh5oVk=;
+ b=M/NvadNCb/Y9zqXzTRQCNpEjJZdQvKI1tBN77ivS1kmg4ilIMj/mkPp+NNFvUW7Gu+
+ HcxSkudluASMk3OE52gYleOmGOx62P8e/eMiTk7ctUMWKOSKZxKgf+GM4rLCg7pxNMzE
+ jMvMgORUYcqozKpvn+OyFRQcmjvuPBUlr2uk5yW+dwmDEmR/XSs9PcphPrRvTvFu6o0L
+ CjuaajAEZ4vsY3iuyvKXnZrVtmuRWb1rGIlkzW/svoOy4ESag0nxmuY2twmmXILMOdOf
+ keMMDOa/4Iw36IX+Tl5oCd/KNwzEkQNO3uQ7dPO99tv87waEe6Jx9gd2+22B+tbZ0P0e
+ jdFg==
+X-Gm-Message-State: AOAM532G4PJ6jmSumixlfIkwv6mlwS29zXudBYbsrEtNr3fd77fxWph9
+ miHr+ayGBqd4Ib9fvHCz5J0=
+X-Google-Smtp-Source: ABdhPJya3lUcWGxhpCf/15nteOT6Ymflh7gNPtL3WX+m3rWs7z9SK4GdLklnCnEBEEJTL9dqNlIV7A==
+X-Received: by 2002:a62:1786:0:b0:445:1a9c:952a with SMTP id
+ 128-20020a621786000000b004451a9c952amr35493622pfx.39.1634088554179; 
+ Tue, 12 Oct 2021 18:29:14 -0700 (PDT)
+Received: from localhost.localdomain ([2402:7500:578:7fd7:52a:ae77:5bec:efe9])
+ by smtp.gmail.com with ESMTPSA id
+ b11sm12144788pge.57.2021.10.12.18.29.10
+ (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+ Tue, 12 Oct 2021 18:29:13 -0700 (PDT)
+From: cy_huang <u0084500@gmail.com>
+To: oder_chiou@realtek.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+ robh+dt@kernel.org
+Subject: [PATCH v4 1/2] ASoC: dt-bindings: rt9120: Add initial bindings
+Date: Wed, 13 Oct 2021 09:28:38 +0800
+Message-Id: <1634088519-995-2-git-send-email-u0084500@gmail.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1634088519-995-1-git-send-email-u0084500@gmail.com>
+References: <1634088519-995-1-git-send-email-u0084500@gmail.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ lgirdwood@gmail.com, linux-kernel@vger.kernel.org, cy_huang@richtek.com,
+ allen_lin@richtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,28 +102,81 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The only usage of acp5x_i2s_dai_ops is to assign its address to the ops
-field in the snd_soc_dai_driver struct, which is a pointer to const.
-Make it const to allow the compiler to put it in read-only memory.
+From: ChiYuan Huang <cy_huang@richtek.com>
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Add initial bindings for Richtek rt9120 audio amplifier.
+
+Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
 ---
- sound/soc/amd/vangogh/acp5x-i2s.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../devicetree/bindings/sound/richtek,rt9120.yaml  | 59 ++++++++++++++++++++++
+ 1 file changed, 59 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/richtek,rt9120.yaml
 
-diff --git a/sound/soc/amd/vangogh/acp5x-i2s.c b/sound/soc/amd/vangogh/acp5x-i2s.c
-index 2705e57eb713..002db3971ca9 100644
---- a/sound/soc/amd/vangogh/acp5x-i2s.c
-+++ b/sound/soc/amd/vangogh/acp5x-i2s.c
-@@ -348,7 +348,7 @@ static int acp5x_i2s_trigger(struct snd_pcm_substream *substream,
- 	return ret;
- }
- 
--static struct snd_soc_dai_ops acp5x_i2s_dai_ops = {
-+static const struct snd_soc_dai_ops acp5x_i2s_dai_ops = {
- 	.hw_params = acp5x_i2s_hwparams,
- 	.trigger = acp5x_i2s_trigger,
- 	.set_fmt = acp5x_i2s_set_fmt,
+diff --git a/Documentation/devicetree/bindings/sound/richtek,rt9120.yaml b/Documentation/devicetree/bindings/sound/richtek,rt9120.yaml
+new file mode 100644
+index 00000000..5655ca5
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/richtek,rt9120.yaml
+@@ -0,0 +1,59 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/richtek,rt9120.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Richtek RT9120 Class-D audio amplifier
++
++maintainers:
++  - ChiYuan Huang <cy_huang@richtek.com>
++
++description: |
++  The RT9120 is a high efficiency, I2S-input, stereo audio power amplifier
++  delivering 2*20W into 8 Ohm BTL speaker loads. It supports the wide input
++  voltage  range from 4.5V to 26.4V to meet the need on most common
++  applications like as TV, monitors. home entertainment, electronic music
++  equipment.
++
++properties:
++  compatible:
++    enum:
++      - richtek,rt9120
++
++  reg:
++    description: I2C device address
++    maxItems: 1
++
++  pwdnn-gpios:
++    description: GPIO used for power down, low active
++    maxItems: 1
++
++  dvdd-supply:
++    description: |
++      Supply for the default on DVDD power, voltage domain must be 3P3V or 1P8V
++
++  '#sound-dai-cells':
++    const: 0
++
++required:
++  - compatible
++  - reg
++  - dvdd-supply
++  - '#sound-dai-cells'
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c {
++      #address-cells = <1>;
++      #size-cells = <0>;
++      rt9120@1a {
++        compatible = "richtek,rt9120";
++        reg = <0x1a>;
++        pwdnn-gpios = <&gpio26 2 0>;
++        dvdd-supply = <&vdd_io_reg>;
++        #sound-dai-cells = <0>;
++      };
++    };
 -- 
-2.33.0
+2.7.4
 
