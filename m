@@ -2,76 +2,77 @@ Return-Path: <SRS0=EWQz=PB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CFCDCC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Oct 2021 11:57:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E2F75C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Oct 2021 12:01:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EB9796109E
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Oct 2021 11:57:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EB9796109E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 0C3E160273
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Oct 2021 12:01:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0C3E160273
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ivitera.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 44B9F1663;
-	Wed, 13 Oct 2021 13:56:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 44B9F1663
+	by alsa0.perex.cz (Postfix) with ESMTPS id 60871166A;
+	Wed, 13 Oct 2021 14:01:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 60871166A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634126222;
-	bh=cAN+tog71qOFvOetsmSk0T5LVIdrumWHX3E93X1jboI=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=DG8Lw1rhZmYc7a78q4JN1/CfJahwK6Y4/o8cKeOZbXpVSseDYwZNFY1VhlJm2k33g
-	 xZVAOQi13vb4sgvLiYmuK2WuaT5Z9b04pjqKgtyn6oeEX26J1zGBfmYwEtYyo5tcus
-	 41/wcpMNQrIAXwIsOxGdGq2GiU79H5o1Q1fUijZU=
+	s=default; t=1634126514;
+	bh=x5oXQhKsB8378L/MIFea34xC73BoGRWw4oX85gnlOmE=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=XyDAojlD0K+LTRB7WlqimkhOyWkZvkJnpg6jAzDV6+c9g/vPI1aIWjABTFC5AVaf+
+	 T41tgv8LIkBXvZcF2c3vOMOr3anPB2M40+3SIPFnJLKHdAs6XbCmubCjg9hlil7qDf
+	 trMWSzZFYUXz8cpRcBuNxIXnl2ng7i1nuW0EPvNI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C7607F8025B;
-	Wed, 13 Oct 2021 13:56:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EA214F8025B;
+	Wed, 13 Oct 2021 14:01:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8F5B1F80269; Wed, 13 Oct 2021 13:56:10 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 67FA7F80269; Wed, 13 Oct 2021 14:01:01 +0200 (CEST)
+Received: from cable.insite.cz (cable.insite.cz [84.242.75.189])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7CBA3F800C0
- for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2021 13:56:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7CBA3F800C0
+ by alsa1.perex.cz (Postfix) with ESMTPS id E1325F80088
+ for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2021 14:00:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1325F80088
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="uENrnGTW"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EBB6761040;
- Wed, 13 Oct 2021 11:55:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1634126160;
- bh=cAN+tog71qOFvOetsmSk0T5LVIdrumWHX3E93X1jboI=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=uENrnGTWu3ftPzGh0aLTpbD7KfE6hC6rXGQrCX5a/cbvuH2SyGDwsgPic7o21nPRL
- JB5QhvWH6o44Rtn217XNNuYWKw4uHXFbWZMpdH+Z2AjIyZJ3R/MLMZQeEvYL56z++1
- GMw5ub7OCX6dR0Wr94s1PnXu0Im9/NsCaPaHZ/YhRDD0KA6l1vmExkDHT0Ig9ESYYB
- 69Bapo5b5rdtGDUaCbVUrz46W+Bz+S7SSOJB8rOoYTevHFBNrCH5D9zv6VxmCugC9W
- IeEof/s//iYWw+4ifaCzNULLBxYCDd/sKWuZ1F7xuERBtm/OBHTBTKjTCtdElOqNAg
- xgf0yzVl60JWA==
-Date: Wed, 13 Oct 2021 12:55:58 +0100
-From: Mark Brown <broonie@kernel.org>
-To: George Song <george.song@maximintegrated.com>
-Subject: Re: [v2 2/2] ASoC : max98520 : Added AMplifier Driver Signed-off-by:
- George Song <george.song@maximintegrated.com>
-Message-ID: <YWbJTgI3Jpo7LiJp@sirena.org.uk>
-References: <20211013071616.18592-1-george.song@maximintegrated.com>
+ dkim=pass (1024-bit key) header.d=ivitera.com header.i=@ivitera.com
+ header.b="Vphjku6E"; 
+ dkim=pass (1024-bit key) header.d=ivitera.com header.i=@ivitera.com
+ header.b="Y1XyMW1y"
+Received: from localhost (localhost [127.0.0.1])
+ by cable.insite.cz (Postfix) with ESMTP id 42EDDA1A3D402;
+ Wed, 13 Oct 2021 14:00:55 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ivitera.com; s=mail;
+ t=1634126455; bh=x5oXQhKsB8378L/MIFea34xC73BoGRWw4oX85gnlOmE=;
+ h=From:To:Cc:Subject:Date:From;
+ b=Vphjku6Em9VmdFlY1ip0NSAZjI5SBOxwFHIR0E/1FaBaH82RRD5tf9u518/i8dTSV
+ PmnSv4GX/whsQdDFCtCCDnSdXpmmyax/kGLGOcRI0P+U/84MEJ11ed/IQ8TUIN8zI6
+ k7QSZlLikIC7a8fhuv91xOKVR5bk0yBD07ME23To=
+Received: from cable.insite.cz ([84.242.75.189])
+ by localhost (server.insite.cz [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id UE2yNIUPLZ2K; Wed, 13 Oct 2021 14:00:50 +0200 (CEST)
+Received: from precision.doma (ip28.insite.cz [81.0.237.28])
+ (Authenticated sender: pavel)
+ by cable.insite.cz (Postfix) with ESMTPSA id 061C7A1A3D403;
+ Wed, 13 Oct 2021 14:00:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ivitera.com; s=mail;
+ t=1634126450; bh=x5oXQhKsB8378L/MIFea34xC73BoGRWw4oX85gnlOmE=;
+ h=From:To:Cc:Subject:Date:From;
+ b=Y1XyMW1ydYQsbE8IZplDt7g4irJaabWeJb3KF2Rs/ZrubYepHDxLRXjHKMlwUIiQU
+ mZ2gJjF6mbp6t+s5V2XD4e7JXa+lE6OIYN+2YbIMFC5yXrO8M0BMbkjOm0z+BjGpBn
+ B3UYSGKL8K2JiJ1D9RDvxSrLW2V3IFt/hF2tNMZA=
+From: Pavel Hofman <pavel.hofman@ivitera.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] alsaloop: fixed parsing value 'auto' of option 'sync'
+Date: Wed, 13 Oct 2021 14:00:49 +0200
+Message-Id: <20211013120049.51047-1-pavel.hofman@ivitera.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="ku/5dXV8PYOYncmB"
-Content-Disposition: inline
-In-Reply-To: <20211013071616.18592-1-george.song@maximintegrated.com>
-X-Cookie: Where do you think you're going today?
-Cc: alsa-devel@alsa-project.org, jack.yu@realtek.com,
- alexandre.belloni@bootlin.com, lars@metafoo.de, jiri.prchal@aksignal.cz,
- arnd@arndb.de, lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
- "george.song" <george.song@analog.com>, pierre-louis.bossart@linux.intel.com,
- tiwai@suse.com, paul@crapouillou.net, hdegoede@redhat.com,
- pbrobinson@gmail.com, shumingf@realtek.com, geert@linux-m68k.org
+Content-Transfer-Encoding: 8bit
+Cc: Pavel Hofman <pavel.hofman@ivitera.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,40 +88,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+The value 'auto' was not checked which resulted in using
+SYNC_TYPE_NONE instead of SYNC_TYPE_AUTO.
 
---ku/5dXV8PYOYncmB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Pavel Hofman <pavel.hofman@ivitera.com>
+---
+ alsaloop/alsaloop.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-On Wed, Oct 13, 2021 at 04:16:16PM +0900, George Song wrote:
-> From: "george.song" <george.song@analog.com>
->=20
-> ---
->  sound/soc/codecs/Kconfig    |   5 +
+diff --git a/alsaloop/alsaloop.c b/alsaloop/alsaloop.c
+index 4192712..f5f2e37 100644
+--- a/alsaloop/alsaloop.c
++++ b/alsaloop/alsaloop.c
+@@ -528,6 +528,8 @@ static int parse_config(int argc, char *argv[], snd_output_t *output,
+ 				arg_sync = SYNC_TYPE_PLAYRATESHIFT;
+ 			else if (optarg[0] == 'r')
+ 				arg_sync = SYNC_TYPE_SAMPLERATE;
++			else if (optarg[0] == 'a')
++				arg_sync = SYNC_TYPE_AUTO;
+ 			else
+ 				arg_sync = atoi(optarg);
+ 			if (arg_sync < 0 || arg_sync > SYNC_TYPE_LAST)
+-- 
+2.25.1
 
-You've not provided a Signed-off-by for this so I can't do anything with
-it, please see Documentation/process/submitting-patches.rst for details
-on what this is and why it's important.
-
-You've also sent two different versions of patch 2 but only one version
-of patch 1, please don't do this - if you need to send a new version
-please resend the whole thread otherwise it gets very hard to follow
-what's going on.
-
---ku/5dXV8PYOYncmB
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFmyU0ACgkQJNaLcl1U
-h9Dd+Qf+PlCO66assozKLwJoeEHfTSPv5V5u5jCgEhW1MBZHV42rMIXPsghW524P
-yl14RiN5BS5zoD6OupGuKLns4Cq/egs5U4FG7qM3QpxdhKVGt0828pl/IiokebTV
-ZwEe0IgORmE+0VhuF4mx8/gVqX+DVsDQTsXH1lBbKvMt8W81ahLmec78B9Mut3UV
-fh+V7h6DtneIUNbwJOyGvmx0mEQymqhtM+JhtUcopkx+iD2KMUvBQ6IM2s9+CZm/
-P9Ka0Fwsf5Xo5iSQBpy3FnYt4i6mCN+oKORQKztP77UxNfWbNjOH8aFiafFYBfJ2
-pisCrGEBwbm8cpehNinbcbYqZ3DsHw==
-=c71Z
------END PGP SIGNATURE-----
-
---ku/5dXV8PYOYncmB--
