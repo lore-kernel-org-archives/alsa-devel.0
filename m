@@ -2,130 +2,72 @@ Return-Path: <SRS0=9Cbg=PC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C0668C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Oct 2021 13:53:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AE83BC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Oct 2021 14:01:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3E878610CC
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Oct 2021 13:53:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3E878610CC
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id 36773610D2
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Oct 2021 14:01:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 36773610D2
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AE9CB1692;
-	Thu, 14 Oct 2021 15:52:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE9CB1692
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2ACB482C;
+	Thu, 14 Oct 2021 16:00:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2ACB482C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634219600;
-	bh=l7jejWDilA6pTF0R/x4bRTgTts47guQYAhULSrCPeEE=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1634220082;
+	bh=TuKiT5C5v9JW/KuCRoGDvKWAa7CZV5cKrcyhHCJQp/I=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=k4Mhi9fSxNWPDn8bQiHhnX5XJQbmi5Pydk8k3tJWTMVdFxYUhmtfXUjQUVAcEthBC
-	 WW4bfyld9K4cPDkoKLx88rmJKcnaPiQ9gS7hSIz7b5VA20t4N4MKZVyKZ+4/sZs8u+
-	 Q4B1Ziy66XSFhfJAjrybrnltwmQhIY5LF9XY1els=
+	b=k+s/mgotlvOGWTIM/ONggFGpR3AVpVBn8U/dwlnzO9ya7ZSqJnMtAx0z/tCpgPkDO
+	 wfkShhVbt6Sneprh+L6Nd7W5Fgr1jIeUwtDE0xaQJO0ulX1YAneRC7asZ1EmlskkEb
+	 CYQKbdePfymU6XmT7+yLAMGt6Zd57M4DHYK6khL8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EFEEBF80543;
-	Thu, 14 Oct 2021 15:47:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AF39EF801F7;
+	Thu, 14 Oct 2021 16:00:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9ED82F80212; Thu, 14 Oct 2021 10:36:40 +0200 (CEST)
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com
- [IPv6:2a00:1450:4864:20::430])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id C69ACF80212; Thu, 14 Oct 2021 16:00:29 +0200 (CEST)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 140D9F80088
- for <alsa-devel@alsa-project.org>; Thu, 14 Oct 2021 10:36:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 140D9F80088
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="h40uJnzR"
-Received: by mail-wr1-x430.google.com with SMTP id g25so16952154wrb.2
- for <alsa-devel@alsa-project.org>; Thu, 14 Oct 2021 01:36:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to;
- bh=cfakvhen/wxw5fHdRu0DEuLT5DMfJlXe2a/johLjqxo=;
- b=h40uJnzRy4bIKfqfvwm3i/kik60+Kgx2sfXbHxmv0MsZax7HkeDmryc9yctryM7xlU
- 37bg2VuoZWdH4kTXGosC95Fa3QYJayYirIbI/UeFVNH/Nzn2/7/VodB6g1hiMuG9zp+p
- egl0Br7pM5vnKxSuUDa7BUq17cmPH9MsIYOosVtDeEDQMUaCZ6h+AWD2esXOH1LRk+zZ
- X2uV1Nn3ulaudun/4f5AT6jS5oilV0myDq9ozSQAqUnytF1YgcEInQmj+cCLjl5OgT5o
- 004n5bwSXge4iP3a4skCS8avlQccw5QvPN8BVpAjam8zZmlkvShcDVpQvgmxjplGDMKz
- pkRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=cfakvhen/wxw5fHdRu0DEuLT5DMfJlXe2a/johLjqxo=;
- b=Wy2kWmkz1vu1OsbmYX9SEXylJ7TBTxZUXgiDjTYPGcgYnxXYDlit1+BPoGHOdnTJGw
- HWUu74igPUM4H9rslOg6//NKlXi7TU73dvuR3y+LQjxuEk8b2vSKtLwcw4jOJzRgQeuq
- pb8Dea+G9nYgu+/Pxv7QgE56hZZosKeg2kW4vDbcgKeVDRDi2U5Wxs1oYktuJ/ii0bfZ
- 9y7yrwBaDhFM5ZH63hudogl0dG6f78rKgboqe/K1Rr48zucYIcgqtB7+3Hp9GkZKtPHG
- 29mXc3JSPP3/pMFT1cbVDMrPs2MYWFQaWhXud3nvF8KFrHdeqrJY26ZlejM2Bau4MGfM
- G+1Q==
-X-Gm-Message-State: AOAM531KFoDOTHoON/LLi6zv7rYMGuBTqd5bG1VvFW5yL5gqpT8FVh7W
- e3+Fla8fLGgfRj2fKr9H/7GFRQ==
-X-Google-Smtp-Source: ABdhPJzpVg8OIER+zTALG2ilasSHxD7bC/dTlVAeWBUDgRwrRvN9DCthCd2lRX0ZyZDpw2FTk6Hq6g==
-X-Received: by 2002:a5d:59a9:: with SMTP id p9mr5151873wrr.386.1634200593067; 
- Thu, 14 Oct 2021 01:36:33 -0700 (PDT)
-Received: from myrica (cpc92880-cmbg19-2-0-cust679.5-4.cable.virginm.net.
- [82.27.106.168])
- by smtp.gmail.com with ESMTPSA id r4sm2299114wrz.58.2021.10.14.01.36.30
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 14 Oct 2021 01:36:32 -0700 (PDT)
-Date: Thu, 14 Oct 2021 09:36:09 +0100
-From: Jean-Philippe Brucker <jean-philippe@linaro.org>
-To: "Michael S. Tsirkin" <mst@redhat.com>
-Subject: Re: [PATCH RFC] virtio: wrap config->reset calls
-Message-ID: <YWfr+Z0wgpQ48yC5@myrica>
-References: <20211013105226.20225-1-mst@redhat.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id B4534F80088
+ for <alsa-devel@alsa-project.org>; Thu, 14 Oct 2021 16:00:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4534F80088
+X-IronPort-AV: E=McAfee;i="6200,9189,10136"; a="214619724"
+X-IronPort-AV: E=Sophos;i="5.85,372,1624345200"; d="scan'208";a="214619724"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+ by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 14 Oct 2021 07:00:14 -0700
+X-IronPort-AV: E=Sophos;i="5.85,372,1624345200"; d="scan'208";a="461197202"
+Received: from ktrimble-mobl.amr.corp.intel.com (HELO [10.209.188.150])
+ ([10.209.188.150])
+ by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 14 Oct 2021 07:00:12 -0700
+Subject: Re: [PATCH 2/2] ASoC: max98520: Add max98520 audio amplifier driver
+To: George Song <george.song@maximintegrated.com>, lgirdwood@gmail.com,
+ broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+ srinivas.kandagatla@linaro.org, arnd@arndb.de,
+ alexandre.belloni@bootlin.com, jack.yu@realtek.com, jiri.prchal@aksignal.cz,
+ shumingf@realtek.com, pbrobinson@gmail.com, lars@metafoo.de,
+ geert@linux-m68k.org, hdegoede@redhat.com, paul@crapouillou.net,
+ linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+References: <20211013075223.19299-1-george.song@maximintegrated.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <a30d8839-0684-cbf8-8ece-639b69550959@linux.intel.com>
+Date: Thu, 14 Oct 2021 09:00:09 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211013105226.20225-1-mst@redhat.com>
-X-Mailman-Approved-At: Thu, 14 Oct 2021 15:47:06 +0200
-Cc: Latchesar Ionkov <lucho@ionkov.net>, nvdimm@lists.linux.dev,
- Dominique Martinet <asmadeus@codewreck.org>,
- Stefan Hajnoczi <stefanha@redhat.com>, kvm@vger.kernel.org,
- David Hildenbrand <david@redhat.com>, David Airlie <airlied@linux.ie>,
- Viresh Kumar <vireshk@kernel.org>, Jason Wang <jasowang@redhat.com>,
- linux-remoteproc@vger.kernel.org, alsa-devel@alsa-project.org,
- dri-devel@lists.freedesktop.org, Bjorn Andersson <bjorn.andersson@linaro.org>,
- netdev@vger.kernel.org, Gerd Hoffmann <kraxel@redhat.com>,
- linux-scsi@vger.kernel.org, Will Deacon <will@kernel.org>,
- v9fs-developer@lists.sourceforge.net,
- Anton Ivanov <anton.ivanov@cambridgegreys.com>,
- Linus Walleij <linus.walleij@linaro.org>, Dave Jiang <dave.jiang@intel.com>,
- Herbert Xu <herbert@gondor.apana.org.au>, linux-arm-kernel@lists.infradead.org,
- Miklos Szeredi <miklos@szeredi.hu>, Richard Weinberger <richard@nod.at>,
- Bartosz Golaszewski <brgl@bgdev.pl>, Takashi Iwai <tiwai@suse.com>,
- Gonglei <arei.gonglei@huawei.com>, Kalle Valo <kvalo@codeaurora.org>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- "James E.J. Bottomley" <jejb@linux.ibm.com>, Jakub Kicinski <kuba@kernel.org>,
- Ira Weiny <ira.weiny@intel.com>, virtualization@lists.linux-foundation.org,
- Jeff Dike <jdike@addtoit.com>, Vivek Goyal <vgoyal@redhat.com>,
- Stefano Garzarella <sgarzare@redhat.com>, Ohad Ben-Cohen <ohad@wizery.com>,
- Johan Hedberg <johan.hedberg@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
- Amit Shah <amit@kernel.org>, Eric Van Hensbergen <ericvh@gmail.com>,
- Marcel Holtmann <marcel@holtmann.org>, linux-um@lists.infradead.org,
- linux-crypto@vger.kernel.org, linux-block@vger.kernel.org,
- Vishal Verma <vishal.l.verma@intel.com>,
- Luiz Augusto von Dentz <luiz.dentz@gmail.com>, Matt Mackall <mpm@selenic.com>,
- Dan Williams <dan.j.williams@intel.com>,
- Cristian Marussi <cristian.marussi@arm.com>, Jens Axboe <axboe@kernel.dk>,
- Jie Deng <jie.deng@intel.com>, Mathieu Poirier <mathieu.poirier@linaro.org>,
- linux-gpio@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-i2c@vger.kernel.org, linux-bluetooth@vger.kernel.org,
- iommu@lists.linux-foundation.org,
- Anton Yakovlev <anton.yakovlev@opensynergy.com>,
- Daniel Vetter <daniel@ffwll.ch>, Sudeep Holla <sudeep.holla@arm.com>,
- linux-fsdevel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
- Johannes Berg <johannes@sipsolutions.net>, "Enrico Weigelt,
- metux IT consult" <info@metux.net>, "David S. Miller" <davem@davemloft.net>,
- Joerg Roedel <joro@8bytes.org>
+In-Reply-To: <20211013075223.19299-1-george.song@maximintegrated.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: George Song <george.song@analog.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -141,15 +83,230 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Oct 13, 2021 at 06:55:31AM -0400, Michael S. Tsirkin wrote:
-> This will enable cleanups down the road.
-> The idea is to disable cbs, then add "flush_queued_cbs" callback
-> as a parameter, this way drivers can flush any work
-> queued after callbacks have been disabled.
-> 
-> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-> ---
+quite a few alignment/style issues and more importantly your
+Signed-off-by: tag mixes your two emails addresses.
 
->  drivers/iommu/virtio-iommu.c               | 2 +-
+scripts/checkpatch.pl --strict --codespell
+0001-ASoC-max98520-Add-max98520-audio-amplifier-driver.patch
+WARNING: Missing commit description - Add an appropriate one
 
-Reviewed-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+WARNING: please write a paragraph that describes the config symbol fully
+#32: FILE: sound/soc/codecs/Kconfig:941:
++config SND_SOC_MAX98520
+
+WARNING: added, moved or deleted file(s), does MAINTAINERS need updating?
+#60:
+new file mode 100644
+
+CHECK: Alignment should match open parenthesis
+#157: FILE: sound/soc/codecs/max98520.c:93:
++	regmap_update_bits(max98520->regmap,
++						MAX98520_R2041_PCM_CLK_SETUP,
+
+CHECK: Alignment should match open parenthesis
+#180: FILE: sound/soc/codecs/max98520.c:116:
++	regmap_update_bits(max98520->regmap,
++						MAX98520_R2040_PCM_MODE_CFG,
+
+CHECK: Alignment should match open parenthesis
+#204: FILE: sound/soc/codecs/max98520.c:140:
++static int max98520_set_clock(struct snd_soc_component *component,
++	struct snd_pcm_hw_params *params)
+
+CHECK: Alignment should match open parenthesis
+#222: FILE: sound/soc/codecs/max98520.c:158:
++		regmap_update_bits(max98520->regmap,
++							MAX98520_R2041_PCM_CLK_SETUP,
+
+CHECK: Alignment should match open parenthesis
+#231: FILE: sound/soc/codecs/max98520.c:167:
++static int max98520_dai_hw_params(struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *params,
+
+CHECK: Alignment should match open parenthesis
+#260: FILE: sound/soc/codecs/max98520.c:196:
++	regmap_update_bits(max98520->regmap,
++						MAX98520_R2040_PCM_MODE_CFG,
+
+CHECK: Alignment should match open parenthesis
+#317: FILE: sound/soc/codecs/max98520.c:253:
++	regmap_update_bits(max98520->regmap,
++						MAX98520_R2042_PCM_SR_SETUP,
+
+CHECK: Alignment should match open parenthesis
+#328: FILE: sound/soc/codecs/max98520.c:264:
++static int max98520_dai_tdm_slot(struct snd_soc_dai *dai,
++	unsigned int tx_mask, unsigned int rx_mask,
+
+CHECK: Alignment should match open parenthesis
+#351: FILE: sound/soc/codecs/max98520.c:287:
++	regmap_update_bits(max98520->regmap,
++						MAX98520_R2041_PCM_CLK_SETUP,
+
+CHECK: Alignment should match open parenthesis
+#373: FILE: sound/soc/codecs/max98520.c:309:
++	regmap_update_bits(max98520->regmap,
++						MAX98520_R2040_PCM_MODE_CFG,
+
+CHECK: Alignment should match open parenthesis
+#378: FILE: sound/soc/codecs/max98520.c:314:
++	regmap_update_bits(max98520->regmap,
++						MAX98520_R2044_PCM_RX_SRC2,
+
+CHECK: Alignment should match open parenthesis
+#382: FILE: sound/soc/codecs/max98520.c:318:
++	regmap_update_bits(max98520->regmap,
++						MAX98520_R2044_PCM_RX_SRC2,
+
+CHECK: Alignment should match open parenthesis
+#401: FILE: sound/soc/codecs/max98520.c:337:
++static int max98520_dac_event(struct snd_soc_dapm_widget *w,
++	struct snd_kcontrol *kcontrol, int event)
+
+CHECK: Please don't use multiple blank lines
+#408: FILE: sound/soc/codecs/max98520.c:344:
++
++
+
+CHECK: Alignment should match open parenthesis
+#434: FILE: sound/soc/codecs/max98520.c:370:
++	SOC_ENUM_SINGLE(MAX98520_R2043_PCM_RX_SRC1,
++		0, 3, max98520_switch_text);
+
+CHECK: Alignment should match open parenthesis
+#441: FILE: sound/soc/codecs/max98520.c:377:
++	SND_SOC_DAPM_DAC_E("Amp Enable", "HiFi Playback",
++	MAX98520_R209F_AMP_EN, 0, 0, max98520_dac_event,
+
+CHECK: Alignment should match open parenthesis
+#539: FILE: sound/soc/codecs/max98520.c:475:
++SOC_SINGLE_TLV("Digital Volume", MAX98520_R2090_AMP_VOL_CTRL,
++	0, 0x7F, 1, max98520_digital_tlv),
+
+CHECK: Alignment should match open parenthesis
+#541: FILE: sound/soc/codecs/max98520.c:477:
++SOC_SINGLE_TLV("Speaker Volume", MAX98520_R2091_AMP_PATH_GAIN,
++	0, 0x5, 0, max98520_spk_tlv),
+
+CHECK: Alignment should match open parenthesis
+#544: FILE: sound/soc/codecs/max98520.c:480:
++SOC_SINGLE("Ramp Up Switch", MAX98520_R2092_AMP_DSP_CFG,
++	MAX98520_DSP_SPK_VOL_RMPUP_SHIFT, 1, 0),
+
+CHECK: Alignment should match open parenthesis
+#546: FILE: sound/soc/codecs/max98520.c:482:
++SOC_SINGLE("Ramp Down Switch", MAX98520_R2092_AMP_DSP_CFG,
++	MAX98520_DSP_SPK_VOL_RMPDN_SHIFT, 1, 0),
+
+CHECK: Alignment should match open parenthesis
+#574: FILE: sound/soc/codecs/max98520.c:510:
++SOC_SINGLE("DHT Limiter Mode", MAX98520_R20D2_LIMITER_CFG2,
++	MAX98520_DHT_LIMITER_MODE_SHIFT, 1, 0),
+
+CHECK: Alignment should match open parenthesis
+#576: FILE: sound/soc/codecs/max98520.c:512:
++SOC_SINGLE("DHT Hysteresis Switch", MAX98520_R20D6_DHT_HYSTERESIS_CFG,
++	MAX98520_DHT_HYSTERESIS_SWITCH_SHIFT, 1, 0),
+
+CHECK: Alignment should match open parenthesis
+#578: FILE: sound/soc/codecs/max98520.c:514:
++SOC_SINGLE_TLV("DHT Rot Pnt", MAX98520_R20D0_DHT_CFG1,
++	MAX98520_DHT_VROT_PNT_SHIFT, 10, 1, max98520_dht_rotation_point_tlv),
+
+CHECK: Alignment should match open parenthesis
+#580: FILE: sound/soc/codecs/max98520.c:516:
++SOC_SINGLE_TLV("DHT Supply Headroom", MAX98520_R20D1_LIMITER_CFG1,
++	MAX98520_DHT_SUPPLY_HR_SHIFT, 16, 0, max98520_dht_supply_hr_tlv),
+
+CHECK: Alignment should match open parenthesis
+#582: FILE: sound/soc/codecs/max98520.c:518:
++SOC_SINGLE_TLV("DHT Limiter Threshold", MAX98520_R20D2_LIMITER_CFG2,
++	MAX98520_DHT_LIMITER_THRESHOLD_SHIFT, 0xF, 1,
+max98520_dht_lim_thresh_tlv),
+
+CHECK: Alignment should match open parenthesis
+#584: FILE: sound/soc/codecs/max98520.c:520:
++SOC_SINGLE_TLV("DHT Max Attenuation", MAX98520_R20D3_DHT_CFG2,
++	MAX98520_DHT_MAX_ATTEN_SHIFT, 20, 1, max98520_dht_max_atten_tlv),
+
+CHECK: Alignment should match open parenthesis
+#586: FILE: sound/soc/codecs/max98520.c:522:
++SOC_SINGLE_TLV("DHT Hysteresis", MAX98520_R20D6_DHT_HYSTERESIS_CFG,
++	MAX98520_DHT_HYSTERESIS_SHIFT, 0x7, 0, max98520_dht_hysteresis_tlv),
+
+CHECK: Alignment should match open parenthesis
+#592: FILE: sound/soc/codecs/max98520.c:528:
++SOC_SINGLE("ADC PVDD FLT Switch", MAX98520_R20B2_ADC_PVDD0_CFG,
++	MAX98520_FLT_EN_SHIFT, 1, 0),
+
+CHECK: Alignment should match open parenthesis
+#594: FILE: sound/soc/codecs/max98520.c:530:
++SOC_SINGLE("ADC TEMP FLT Switch", MAX98520_R20B3_ADC_THERMAL_CFG,
++	MAX98520_FLT_EN_SHIFT, 1, 0),
+
+WARNING: line length of 106 exceeds 100 columns
+#664: FILE: sound/soc/codecs/max98520.c:600:
++						MAX98520_R2092_AMP_DSP_CFG, MAX98520_SPK_SAFE_EN_MASK, 0);
+
+CHECK: Alignment should match open parenthesis
+#664: FILE: sound/soc/codecs/max98520.c:600:
++	regmap_update_bits(max98520->regmap,
++						MAX98520_R2092_AMP_DSP_CFG, MAX98520_SPK_SAFE_EN_MASK, 0);
+
+CHECK: Alignment should match open parenthesis
+#676: FILE: sound/soc/codecs/max98520.c:612:
++	regmap_update_bits(max98520->regmap,
++						MAX98520_R204F_PCM_RX_EN,
+
+CHECK: Please use a blank line after function/struct/union/enum declarations
+#691: FILE: sound/soc/codecs/max98520.c:627:
++}
++static int max98520_resume(struct device *dev)
+
+CHECK: Alignment should match open parenthesis
+#732: FILE: sound/soc/codecs/max98520.c:668:
++static int max98520_i2c_probe(struct i2c_client *i2c,
++	const struct i2c_device_id *id)
+
+CHECK: Blank lines aren't necessary after an open brace '{'
+#734: FILE: sound/soc/codecs/max98520.c:670:
++{
++
+
+CHECK: Alignment should match open parenthesis
+#741: FILE: sound/soc/codecs/max98520.c:677:
++	ret = i2c_check_functionality(adapter,
++		I2C_FUNC_SMBUS_BYTE
+
+CHECK: Assignment operator '=' should be on the previous line
+#758: FILE: sound/soc/codecs/max98520.c:694:
++	max98520->regmap
++		= devm_regmap_init_i2c(i2c, &max98520_regmap);
+
+CHECK: Alignment should match open parenthesis
+#783: FILE: sound/soc/codecs/max98520.c:719:
++	ret = regmap_read(max98520->regmap,
++		MAX98520_R21FF_REVISION_ID, &reg);
+
+WARNING: DT compatible string "maxim,max98520" appears un-documented --
+check ./Documentation/devicetree/bindings/
+#810: FILE: sound/soc/codecs/max98520.c:746:
++	{ .compatible = "maxim,max98520", },
+
+WARNING: From:/Signed-off-by: email address mismatch: 'From: George Song
+<george.song@maximintegrated.com>' != 'Signed-off-by: George Song
+<george.song@analog.com>'
+
+total: 0 errors, 6 warnings, 37 checks, 967 lines checked
+
+NOTE: For some of the reported defects, checkpatch may be able to
+      mechanically convert to the typical style using --fix or
+--fix-inplace.
+
+0001-ASoC-max98520-Add-max98520-audio-amplifier-driver.patch has style
+problems, please review.
+
+NOTE: If any of the errors are false positives, please report
+      them to the maintainer, see CHECKPATCH in MAINTAINERS.
+
+On 10/13/21 2:52 AM, George Song wrote:
