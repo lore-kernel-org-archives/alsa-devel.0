@@ -2,66 +2,71 @@ Return-Path: <SRS0=9Cbg=PC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6EBDFC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Oct 2021 16:32:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D45EC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Oct 2021 19:55:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 01C0C61181
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Oct 2021 16:32:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 01C0C61181
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 30AF6610E6
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Oct 2021 19:55:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 30AF6610E6
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 893031661;
-	Thu, 14 Oct 2021 18:31:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 893031661
+	by alsa0.perex.cz (Postfix) with ESMTPS id A76EC165E;
+	Thu, 14 Oct 2021 21:54:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A76EC165E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634229153;
-	bh=Jodyu61Gk7GHzcGZ5s/BudrZVfrP7qQwQrGeIP6i86w=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1634241316;
+	bh=wo6BAwjiiEqa8jhEFac5jjrzRbnU/STDnLvtcmAKWps=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Pn+29vef9ICI6Awi+nJLNtdg2FdASl2MigNxXiZdpICABZkYZYLcpYxYXq2taZvdN
-	 3Pigwm2gkgOLi+BPdn0aJ8Hyr2GNCRcRl8X/oi9RZ7DecwnITWt14HfPDy8RbJ8U8u
-	 0bg3Bwew+e6YOl/TiXkmjroTaFIGEhgaqy/S5BL0=
+	b=B8nl3Y0a9gHAWmebskq6v8TOtffhzT9aeh0ByNeZJlZLeZh3OjfCe6CDkrV8GchcM
+	 M+l/SL7ulZ43u4lI00CmcJQ2HHGGDERFceH5xfl5ct/oGmwLcoY8RFYNHgLu4rdato
+	 798+jb6yEJhfb3WaTnJa+ZxWKspSdW/rPiQlnhtA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1A18AF801D5;
-	Thu, 14 Oct 2021 18:31:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2C5FFF801F7;
+	Thu, 14 Oct 2021 21:54:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 84551F80212; Thu, 14 Oct 2021 18:31:41 +0200 (CEST)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 83D8BF80212; Thu, 14 Oct 2021 21:54:23 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4593CF801D5
- for <alsa-devel@alsa-project.org>; Thu, 14 Oct 2021 18:31:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4593CF801D5
-X-IronPort-AV: E=McAfee;i="6200,9189,10137"; a="207834643"
-X-IronPort-AV: E=Sophos;i="5.85,372,1624345200"; d="scan'208";a="207834643"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Oct 2021 09:31:28 -0700
-X-IronPort-AV: E=Sophos;i="5.85,372,1624345200"; d="scan'208";a="461247690"
-Received: from ktrimble-mobl.amr.corp.intel.com (HELO [10.209.188.150])
- ([10.209.188.150])
- by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Oct 2021 09:31:27 -0700
-Subject: Re: [PATCH] ASoC: soc-component: improve error reporting for register
- access
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, broonie@kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 71F79F8016C
+ for <alsa-devel@alsa-project.org>; Thu, 14 Oct 2021 21:54:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71F79F8016C
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="Ud7YaU7S"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E4CFE610A0;
+ Thu, 14 Oct 2021 19:54:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1634241255;
+ bh=wo6BAwjiiEqa8jhEFac5jjrzRbnU/STDnLvtcmAKWps=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=Ud7YaU7SkvUkXIxz91SvXpICf6Lqex4voRqwwyQQDUvV3qKK/sDUeE4V+PLWal79z
+ i/xcJACVpOr+Uh9TdIXbuBOm+okfsqtRhIEM9cARO76mZiQ2x5Z1EXFHskJsXowuSK
+ hdP3A/82lCWuFmHN55aFCOLAVkerdImcu7UY7Pq7y9qdduETUM6L4kPNyPT0+9aok9
+ q4/K4C9u35azIVOngg8mgjtKJm1G4ZoauETJoFUjHyCjytbILsOpGLVWTL3glxxXxz
+ mpIKV9GF8BGRCgrQE+syTHdNo+tsApHpozEpvH7z3aKaN/0pqrRsTYgMrohhqjUY+9
+ IzAVDNFcVzt4A==
+Date: Thu, 14 Oct 2021 20:54:12 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: soc-component: improve error reporting for
+ register access
+Message-ID: <YWiK5Hq5Cyt/8Kq0@sirena.org.uk>
 References: <20211014161330.26645-1-srinivas.kandagatla@linaro.org>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <cdd5fb0f-ff3e-9da0-1ea4-1d1ae5e982bc@linux.intel.com>
-Date: Thu, 14 Oct 2021 11:31:24 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+ <cdd5fb0f-ff3e-9da0-1ea4-1d1ae5e982bc@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20211014161330.26645-1-srinivas.kandagatla@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="rtpS0x/rRirlfQRr"
+Content-Disposition: inline
+In-Reply-To: <cdd5fb0f-ff3e-9da0-1ea4-1d1ae5e982bc@linux.intel.com>
+X-Cookie: I'm having a BIG BANG THEORY!!
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -79,140 +84,35 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+--rtpS0x/rRirlfQRr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 10/14/21 11:13 AM, Srinivas Kandagatla wrote:
-> Currently errors on register read/write/update are reported with
-> an error code and the corresponding function but does not provide
-> any details on the which register number did it actually fail.
-> 
-> register number can give better clue and it should be easy to
-> locate the code and fix.
-> 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
-> 
-> Personally I found this patch very useful while developing and debugging.
-> 
-> Ex: below error 
-> "ASoC: error at soc_component_read_no_lock on soc@0:codec: -16"
-> did not provide much info except that it failed to read,
-> but after this patch error message looks like:
-> "ASoC: error at soc_component_read_no_lock on soc@0:codec for register: [0x00003125] -16"
-> which was easy to locate and fix.
+On Thu, Oct 14, 2021 at 11:31:24AM -0500, Pierre-Louis Bossart wrote:
 
-LGTM
+> BTW while looking at the code, I started to wonder if it's intentional
+> that we cannot check any error code on component->driver->read(). We do
+> for the write and on regmap read, which suggests this API is problematic?
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+I dunno about intentional but it's always been that way since ASoC was
+originally merged, it's just that nobody's ever changed that as part of
+one of the refactorings.  I did add error checking to the regmap read
+interface when I wrote that but I wasn't about to go fixing up all the
+ASoC drivers for a new API.
 
-BTW while looking at the code, I started to wonder if it's intentional
-that we cannot check any error code on component->driver->read(). We do
-for the write and on regmap read, which suggests this API is problematic?
+--rtpS0x/rRirlfQRr
+Content-Type: application/pgp-signature; name="signature.asc"
 
-static unsigned int soc_component_read_no_lock(
-	struct snd_soc_component *component,
-	unsigned int reg)
-{
-	int ret;
-	unsigned int val = 0;
+-----BEGIN PGP SIGNATURE-----
 
-	if (component->regmap)
-		ret = regmap_read(component->regmap, reg, &val);
-	else if (component->driver->read) {
-		ret = 0;
-		val = component->driver->read(component, reg); <<< NO ERROR CHECKS?
-	}
-	else
-		ret = -EIO;
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFoiuEACgkQJNaLcl1U
+h9ByXgf/df+gaTCEozPawBCiHh+Jji4HpPaLVivkIaqafN7257IAOgNIQaZpUmno
+zL1YMFVxF/EsTziLTi5Yq5e5c+8EhqVj8MiprF02Eu4FnB34ofwNASm2onA2PQr0
+h14Pkp74R14BAJHUUgNapPIMFvDqvb1t3BK0hARx0sEElYYHduqT+nuCuY3ZxKgg
+E5UDf1z/oqvToDmBIOfrUs5KAefQZ+YrXeQ0xdQcFTHIb7oChU0Kfd329R3mZKE4
+VZD8IIkPHmgyes6NrSFcRX1yQxEixKgtiYMtHJNmfedLmlYNjKFg75V8SIwzrQWH
+bBF49p/Fa3O6xteZNWu8SO9NFxOm4g==
+=MkaK
+-----END PGP SIGNATURE-----
 
-	if (ret < 0)
-		return soc_component_ret(component, ret);
-
-	return val;
-}
-
-
-> 
->  sound/soc/soc-component.c | 26 ++++++++++++++++----------
->  1 file changed, 16 insertions(+), 10 deletions(-)
-> 
-> diff --git a/sound/soc/soc-component.c b/sound/soc/soc-component.c
-> index a08a897c5230..c76ff9c59dfb 100644
-> --- a/sound/soc/soc-component.c
-> +++ b/sound/soc/soc-component.c
-> @@ -13,9 +13,10 @@
->  #include <sound/soc.h>
->  #include <linux/bitops.h>
->  
-> -#define soc_component_ret(dai, ret) _soc_component_ret(dai, __func__, ret)
-> +#define soc_component_ret(dai, ret) _soc_component_ret(dai, __func__, ret, -1)
-> +#define soc_component_ret_reg_rw(dai, ret, reg) _soc_component_ret(dai, __func__, ret, reg)
->  static inline int _soc_component_ret(struct snd_soc_component *component,
-> -				     const char *func, int ret)
-> +				     const char *func, int ret, int reg)
->  {
->  	/* Positive/Zero values are not errors */
->  	if (ret >= 0)
-> @@ -27,9 +28,14 @@ static inline int _soc_component_ret(struct snd_soc_component *component,
->  	case -ENOTSUPP:
->  		break;
->  	default:
-> -		dev_err(component->dev,
-> -			"ASoC: error at %s on %s: %d\n",
-> -			func, component->name, ret);
-> +		if (reg == -1)
-> +			dev_err(component->dev,
-> +				"ASoC: error at %s on %s: %d\n",
-> +				func, component->name, ret);
-> +		else
-> +			dev_err(component->dev,
-> +				"ASoC: error at %s on %s for register: [0x%08x] %d\n",
-> +				func, component->name, reg, ret);
->  	}
->  
->  	return ret;
-> @@ -687,7 +693,7 @@ static unsigned int soc_component_read_no_lock(
->  		ret = -EIO;
->  
->  	if (ret < 0)
-> -		return soc_component_ret(component, ret);
-> +		return soc_component_ret_reg_rw(component, ret, reg);
->  
->  	return val;
->  }
-> @@ -723,7 +729,7 @@ static int soc_component_write_no_lock(
->  	else if (component->driver->write)
->  		ret = component->driver->write(component, reg, val);
->  
-> -	return soc_component_ret(component, ret);
-> +	return soc_component_ret_reg_rw(component, ret, reg);
->  }
->  
->  /**
-> @@ -765,7 +771,7 @@ static int snd_soc_component_update_bits_legacy(
->  
->  	mutex_unlock(&component->io_mutex);
->  
-> -	return soc_component_ret(component, ret);
-> +	return soc_component_ret_reg_rw(component, ret, reg);
->  }
->  
->  /**
-> @@ -793,7 +799,7 @@ int snd_soc_component_update_bits(struct snd_soc_component *component,
->  							   mask, val, &change);
->  
->  	if (ret < 0)
-> -		return soc_component_ret(component, ret);
-> +		return soc_component_ret_reg_rw(component, ret, reg);
->  	return change;
->  }
->  EXPORT_SYMBOL_GPL(snd_soc_component_update_bits);
-> @@ -829,7 +835,7 @@ int snd_soc_component_update_bits_async(struct snd_soc_component *component,
->  							   mask, val, &change);
->  
->  	if (ret < 0)
-> -		return soc_component_ret(component, ret);
-> +		return soc_component_ret_reg_rw(component, ret, reg);
->  	return change;
->  }
->  EXPORT_SYMBOL_GPL(snd_soc_component_update_bits_async);
-> 
+--rtpS0x/rRirlfQRr--
