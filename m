@@ -2,68 +2,85 @@ Return-Path: <SRS0=9Cbg=PC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4479C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Oct 2021 11:22:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D561DC4332F
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Oct 2021 11:39:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 94885610D0
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Oct 2021 11:22:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 94885610D0
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
+	by mail.kernel.org (Postfix) with ESMTPS id 41E4A610E7
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Oct 2021 11:39:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 41E4A610E7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 68BAF165E;
-	Thu, 14 Oct 2021 13:21:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 68BAF165E
+	by alsa0.perex.cz (Postfix) with ESMTPS id D5FF182E;
+	Thu, 14 Oct 2021 13:38:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D5FF182E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634210542;
-	bh=nfBLqRD8hyaVxeiAEgh9wn6cT9oaQoNUUh+UjEFp2fg=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1634211573;
+	bh=NXoHFTjFGpmyG3+Ow1uPxaZmlPEMkJ1QeVtcbpHt8gI=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pKRMl0/4VW0i/cvAcYeq5NHY/ZFWenK+EkZwJCqGQUdBVOegvft17zLp1bSvvJtfl
-	 /gqIhBxcaUODkIF4SSK54VhDKLbl3Vr7QqLm8pfkOsAK3sPr3QuN7GQULDBEBOemHs
-	 k3NnWF9RQy6Ek0KA2SoKN3IVxQjjvkXU/UulVTnQ=
+	b=OO4PvgoR3HDp0m7v/NsdNOcgKbIvwRHahLIRJSaDw0z0pDx/j7VXrz7bs4J7zeQtB
+	 npTWS4ua80K5KUHSZ3gjbGUDQZ5i9fyPGG0XVQrQ1pexBlrdO0cfOl+BKKpZaRpMpQ
+	 CznJgTE4OGWDGs/3qtOyw+YStzDG4Hl5yhm5XpAM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CC60BF801F7;
-	Thu, 14 Oct 2021 13:21:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 48353F801D5;
+	Thu, 14 Oct 2021 13:38:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9C560F80212; Thu, 14 Oct 2021 13:21:29 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 9AF46F80212; Thu, 14 Oct 2021 13:38:41 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C5DF1F8016C
- for <alsa-devel@alsa-project.org>; Thu, 14 Oct 2021 13:21:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5DF1F8016C
+ by alsa1.perex.cz (Postfix) with ESMTPS id A74FBF801D5
+ for <alsa-devel@alsa-project.org>; Thu, 14 Oct 2021 13:38:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A74FBF801D5
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=linuxfoundation.org
- header.i=@linuxfoundation.org header.b="YZAo9MFB"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 78543610E7;
- Thu, 14 Oct 2021 11:21:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1634210482;
- bh=nfBLqRD8hyaVxeiAEgh9wn6cT9oaQoNUUh+UjEFp2fg=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=YZAo9MFBUixf+EZlG0RFmd4hjinV0+VCckJAVWU+9dGTTkDqt/VA+t9O7nGfoUnth
- mbNhvT8LDJ15vA7CsQ2Brixf2TSpQNoGVuosI4jMNmoLTluraLzyp+3xQGphxnBzMl
- CAOYqLwE/AequdBH7vC1np+G5KsqHC4vUy71rKDo=
-Date: Thu, 14 Oct 2021 13:21:20 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Takashi Iwai <tiwai@suse.de>
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="MDpVaXdS"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="N7z33a5R"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 69E6921A74;
+ Thu, 14 Oct 2021 11:38:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1634211512; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=tL+SOKDX3hkNa5BvmV5TRBLsoF/YWzQI6GrS/Q70rrw=;
+ b=MDpVaXdSQFeihigd0+QU19BVWmxHJKcEhciHmxRs/NSwHNxj3kQJUaVY9vVZXCtw+O0FHL
+ qbDHv2FxjnogajxPeaZj3bKRbuIIkGkgCrSX2hGhQvRzLB6L13aodNujGSV5Vj0IIlp0bs
+ +0i6lr3xSYeq9ndRlpd6tsZ9wH7I5vg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1634211512;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=tL+SOKDX3hkNa5BvmV5TRBLsoF/YWzQI6GrS/Q70rrw=;
+ b=N7z33a5RoXkZAV7wfPa5HmybVVpm+w07v42Laf3Po300BCX5TUn1+BF6CNe8I+9lca8H2l
+ gF4AewzZ5qavoGAQ==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 3BEFDA3B84;
+ Thu, 14 Oct 2021 11:38:32 +0000 (UTC)
+Date: Thu, 14 Oct 2021 13:38:32 +0200
+Message-ID: <s5hr1cnx2dj.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Subject: Re: [PATCH] ALSA: usb-audio: allow -EPIPE errors for some v2 messages
-Message-ID: <YWgSsDQUOAZs+Add@kroah.com>
+In-Reply-To: <YWgM2jI94fZLfP09@kroah.com>
 References: <YWLbEdHUE3k/i0fe@kroah.com> <s5hily46316.wl-tiwai@suse.de>
  <YWRYD7fphcaWKEOG@kroah.com> <s5h7dej4kbe.wl-tiwai@suse.de>
  <YWRy+UoG1YHcQ7UM@kroah.com> <s5ho87u3dcb.wl-tiwai@suse.de>
  <YWWCiLE6id43uJjp@kroah.com> <s5hsfx61imj.wl-tiwai@suse.de>
  <YWgM2jI94fZLfP09@kroah.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YWgM2jI94fZLfP09@kroah.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
  linux-usb@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
@@ -81,7 +98,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Oct 14, 2021 at 12:56:26PM +0200, Greg Kroah-Hartman wrote:
+On Thu, 14 Oct 2021 12:56:26 +0200,
+Greg Kroah-Hartman wrote:
+> 
 > On Tue, Oct 12, 2021 at 03:24:04PM +0200, Takashi Iwai wrote:
 > > On Tue, 12 Oct 2021 14:41:44 +0200,
 > > Greg Kroah-Hartman wrote:
@@ -180,6 +199,10 @@ On Thu, Oct 14, 2021 at 12:56:26PM +0200, Greg Kroah-Hartman wrote:
 > 
 > Let me send a patch that adds this device to the quirk table.
 
-Now done:
-	https://lore.kernel.org/r/YWgR3nOI1osvr5Yo@kroah.com
+OK, thanks!  The remaining error message should be suppressed with the
+patch in my previous mail.  Or maybe we can add a patch to downgrade
+the error message to dev_dbg() at first for 5.15, then another one
+(initializing all controls at first) to 5.16.
 
+
+Takashi
