@@ -2,71 +2,68 @@ Return-Path: <SRS0=9Cbg=PC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D45EC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Oct 2021 19:55:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F03EC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Oct 2021 21:24:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 30AF6610E6
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Oct 2021 19:55:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 30AF6610E6
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 545826109F
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Oct 2021 21:24:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 545826109F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A76EC165E;
-	Thu, 14 Oct 2021 21:54:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A76EC165E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8EB091663;
+	Thu, 14 Oct 2021 23:24:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8EB091663
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634241316;
-	bh=wo6BAwjiiEqa8jhEFac5jjrzRbnU/STDnLvtcmAKWps=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1634246690;
+	bh=GoRKiMowd+fV6Eq+LWsXcWCnIxjddWj77CjYyyQTTK4=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=B8nl3Y0a9gHAWmebskq6v8TOtffhzT9aeh0ByNeZJlZLeZh3OjfCe6CDkrV8GchcM
-	 M+l/SL7ulZ43u4lI00CmcJQ2HHGGDERFceH5xfl5ct/oGmwLcoY8RFYNHgLu4rdato
-	 798+jb6yEJhfb3WaTnJa+ZxWKspSdW/rPiQlnhtA=
+	b=uBnSMzuR/wJ2Z78/eeZ5QWCfEcQhviUiofwled/lQPDynFGzKpdJjznR8G5DgrHrV
+	 EY+fBLZRi2AD99TTBeUJokK7frIerarTtEmaj9Q8sokWh6OhqNPT0R6oMhBeCrYV3P
+	 quEyu/sdR6ZUQ1r3fgGHLqSeZZ3AlkqjZtcD2jGk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2C5FFF801F7;
-	Thu, 14 Oct 2021 21:54:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 16967F8016C;
+	Thu, 14 Oct 2021 23:23:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 83D8BF80212; Thu, 14 Oct 2021 21:54:23 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 7F535F80212; Thu, 14 Oct 2021 23:23:58 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 71F79F8016C
- for <alsa-devel@alsa-project.org>; Thu, 14 Oct 2021 21:54:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71F79F8016C
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Ud7YaU7S"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E4CFE610A0;
- Thu, 14 Oct 2021 19:54:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1634241255;
- bh=wo6BAwjiiEqa8jhEFac5jjrzRbnU/STDnLvtcmAKWps=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=Ud7YaU7SkvUkXIxz91SvXpICf6Lqex4voRqwwyQQDUvV3qKK/sDUeE4V+PLWal79z
- i/xcJACVpOr+Uh9TdIXbuBOm+okfsqtRhIEM9cARO76mZiQ2x5Z1EXFHskJsXowuSK
- hdP3A/82lCWuFmHN55aFCOLAVkerdImcu7UY7Pq7y9qdduETUM6L4kPNyPT0+9aok9
- q4/K4C9u35azIVOngg8mgjtKJm1G4ZoauETJoFUjHyCjytbILsOpGLVWTL3glxxXxz
- mpIKV9GF8BGRCgrQE+syTHdNo+tsApHpozEpvH7z3aKaN/0pqrRsTYgMrohhqjUY+9
- IzAVDNFcVzt4A==
-Date: Thu, 14 Oct 2021 20:54:12 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: soc-component: improve error reporting for
- register access
-Message-ID: <YWiK5Hq5Cyt/8Kq0@sirena.org.uk>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 71D03F8016C
+ for <alsa-devel@alsa-project.org>; Thu, 14 Oct 2021 23:23:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71D03F8016C
+X-IronPort-AV: E=McAfee;i="6200,9189,10137"; a="227748391"
+X-IronPort-AV: E=Sophos;i="5.85,373,1624345200"; d="scan'208";a="227748391"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+ by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 14 Oct 2021 14:23:44 -0700
+X-IronPort-AV: E=Sophos;i="5.85,373,1624345200"; d="scan'208";a="461343932"
+Received: from ktrimble-mobl.amr.corp.intel.com (HELO [10.209.188.150])
+ ([10.209.188.150])
+ by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 14 Oct 2021 14:23:37 -0700
+Subject: Re: [PATCH] ASoC: soc-component: improve error reporting for register
+ access
+To: Mark Brown <broonie@kernel.org>
 References: <20211014161330.26645-1-srinivas.kandagatla@linaro.org>
  <cdd5fb0f-ff3e-9da0-1ea4-1d1ae5e982bc@linux.intel.com>
+ <YWiK5Hq5Cyt/8Kq0@sirena.org.uk>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <867076c3-d0fa-991e-a32f-17239b089d68@linux.intel.com>
+Date: Thu, 14 Oct 2021 16:23:34 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="rtpS0x/rRirlfQRr"
-Content-Disposition: inline
-In-Reply-To: <cdd5fb0f-ff3e-9da0-1ea4-1d1ae5e982bc@linux.intel.com>
-X-Cookie: I'm having a BIG BANG THEORY!!
+In-Reply-To: <YWiK5Hq5Cyt/8Kq0@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -84,35 +81,18 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---rtpS0x/rRirlfQRr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Thu, Oct 14, 2021 at 11:31:24AM -0500, Pierre-Louis Bossart wrote:
 
-> BTW while looking at the code, I started to wonder if it's intentional
-> that we cannot check any error code on component->driver->read(). We do
-> for the write and on regmap read, which suggests this API is problematic?
+>> BTW while looking at the code, I started to wonder if it's intentional
+>> that we cannot check any error code on component->driver->read(). We do
+>> for the write and on regmap read, which suggests this API is problematic?
+> 
+> I dunno about intentional but it's always been that way since ASoC was
+> originally merged, it's just that nobody's ever changed that as part of
+> one of the refactorings.  I did add error checking to the regmap read
+> interface when I wrote that but I wasn't about to go fixing up all the
+> ASoC drivers for a new API.
 
-I dunno about intentional but it's always been that way since ASoC was
-originally merged, it's just that nobody's ever changed that as part of
-one of the refactorings.  I did add error checking to the regmap read
-interface when I wrote that but I wasn't about to go fixing up all the
-ASoC drivers for a new API.
-
---rtpS0x/rRirlfQRr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFoiuEACgkQJNaLcl1U
-h9ByXgf/df+gaTCEozPawBCiHh+Jji4HpPaLVivkIaqafN7257IAOgNIQaZpUmno
-zL1YMFVxF/EsTziLTi5Yq5e5c+8EhqVj8MiprF02Eu4FnB34ofwNASm2onA2PQr0
-h14Pkp74R14BAJHUUgNapPIMFvDqvb1t3BK0hARx0sEElYYHduqT+nuCuY3ZxKgg
-E5UDf1z/oqvToDmBIOfrUs5KAefQZ+YrXeQ0xdQcFTHIb7oChU0Kfd329R3mZKE4
-VZD8IIkPHmgyes6NrSFcRX1yQxEixKgtiYMtHJNmfedLmlYNjKFg75V8SIwzrQWH
-bBF49p/Fa3O6xteZNWu8SO9NFxOm4g==
-=MkaK
------END PGP SIGNATURE-----
-
---rtpS0x/rRirlfQRr--
+I started looking, there aren't that many users of that callback, but
+some of the tlv320dac33 and twl6040 drivers would need a lot of changes.
+that's probably going to be legacy code at this point.
