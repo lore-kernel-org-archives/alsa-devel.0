@@ -2,83 +2,75 @@ Return-Path: <SRS0=9Cbg=PC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FDAFC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Oct 2021 13:07:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 79764C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Oct 2021 13:07:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6DACD60555
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Oct 2021 13:07:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6DACD60555
+	by mail.kernel.org (Postfix) with ESMTPS id 96E7560EDF
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Oct 2021 13:07:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 96E7560EDF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 90145165E;
-	Thu, 14 Oct 2021 15:06:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 90145165E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 07DCD1675;
+	Thu, 14 Oct 2021 15:07:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 07DCD1675
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634216832;
-	bh=yD2R0rEJ2lgXC7Y8uLLdRDFNE44Hw4OeEhm4usfzVcU=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=aodoYwrL4TKEmoMieXuu4kNMKZZyFTUipaebv2UKJLUMr7g+M12Tuem/fK8xjKG5Z
-	 L8CC8C2AMFkorlfEOhCP6SwHX0O8GQ+XihyptTz/yZ6jdOt1BRqGi19UEqlkCLoh9B
-	 9gy226dwxuQ4YMXcNlpH34CWaukb+cjjxRy6YCdQ=
+	s=default; t=1634216874;
+	bh=auF8lDnr7S62rpWgMQpeavD3yriSAnlJB2yZpogwNTk=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=emUBWQBeDBQhg40PL8yxZmzBoA6nj1LgkwjRdySuJNq28PYcGDJWjH1odMCrWP8eB
+	 J21fm3T5te1XP8O8s+VuuCJ8SVYg+Mp9WuMVvAIn6JsT1h3uIYDkYTSO2UBXOytp1t
+	 6xljR22mf0n8ZTmiiwWCe0LenAECIj5m4WGrX1yU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2818CF801F7;
-	Thu, 14 Oct 2021 15:06:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 57D7EF804AD;
+	Thu, 14 Oct 2021 15:06:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 11060F80212; Thu, 14 Oct 2021 15:06:21 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id D14A2F804AD; Thu, 14 Oct 2021 15:06:43 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4F7CBF80088
- for <alsa-devel@alsa-project.org>; Thu, 14 Oct 2021 15:06:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F7CBF80088
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7B7E5F80212
+ for <alsa-devel@alsa-project.org>; Thu, 14 Oct 2021 15:06:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B7E5F80212
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="tt4waYGM"; 
+ header.b="yStf+bXm"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="J6gkL+PH"
+ header.b="7Irst2Yc"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id D36EB21A7F;
- Thu, 14 Oct 2021 13:06:13 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 044031FD29;
+ Thu, 14 Oct 2021 13:06:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1634216773; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=9+SHqdTem8HfAIDBCXljsCjxjk7GDwc+C+QA1hRl49Y=;
- b=tt4waYGMbi+jRmWizltxZw7r+RLBxrmVfnkyUdPU37DX0irKAAO5COx7TAVbK8yTGta5rx
- PEVxVi34qVPIW5flczJtqNn6LT8a/8Uj51aS6tpbCNRCbzyOsVFB41P7EzE6wPEEI1BBND
- rj8ThN2l4GsmZ8H5SihJqh/+mYMalqk=
+ t=1634216799; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=iRmJ5zgA3EGLKJ8MRCeiAD16yv1Yi9Ms5l7mbe5Hzrw=;
+ b=yStf+bXmdLiY44eHTjH330TRVm0yZTP65hL4YCRAblgZDrXRiqW59AfE485l1Ai/AomOhg
+ YrlxTlknIaSJZ4Xe5I/IVn6stFeG5/oF3AyZnUMRgb7WV+HWrgMkkUXvNweGK1DKxc6Ip9
+ kIq7nD70O4E8eH6nvihpVJ1Z8Q2af2g=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1634216773;
+ s=susede2_ed25519; t=1634216799;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=9+SHqdTem8HfAIDBCXljsCjxjk7GDwc+C+QA1hRl49Y=;
- b=J6gkL+PHrYt/24irlQxChkK9LJPtKM1asHoz1+b2Ats9uPtUfCkM7+R3EvQBX2p4PpAX5w
- DxMAOquzHR9i9tCQ==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id C10D4A3B90;
- Thu, 14 Oct 2021 13:06:13 +0000 (UTC)
-Date: Thu, 14 Oct 2021 15:06:13 +0200
-Message-ID: <s5hh7djwybe.wl-tiwai@suse.de>
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=iRmJ5zgA3EGLKJ8MRCeiAD16yv1Yi9Ms5l7mbe5Hzrw=;
+ b=7Irst2YcVzlKGOc8Kkk7AYZ0a+hTEuPxjQmQDzL90s2LusdR399b/qREuO1DlOy4svKYtv
+ OtYGdt9F3nb7u0CQ==
+Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id E5D55A3B84;
+ Thu, 14 Oct 2021 13:06:38 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] ALSA: usb-audio: add Schiit Hel device to quirk table
-In-Reply-To: <YWgR3nOI1osvr5Yo@kroah.com>
-References: <YWgR3nOI1osvr5Yo@kroah.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-usb@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 0/3] ALSA: usb-audio: Small improvements in mixer handling
+Date: Thu, 14 Oct 2021 15:06:33 +0200
+Message-Id: <20211014130636.17860-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,28 +86,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 14 Oct 2021 13:17:50 +0200,
-Greg Kroah-Hartman wrote:
-> 
-> The Shciit Hel device responds to the ctl message for the mic capture
-> switch with a timeout of -EPIPE:
-> 
-> 	usb 7-2.2: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x1100, type = 1
-> 	usb 7-2.2: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x1100, type = 1
-> 	usb 7-2.2: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x1100, type = 1
-> 	usb 7-2.2: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x1100, type = 1
-> 
-> This seems safe to ignore as the device works properly with the control
-> message quirk, so add it to the quirk table so all is good.
-> 
-> Cc: Jaroslav Kysela <perex@perex.cz>
-> Cc: Takashi Iwai <tiwai@suse.com>
-> Cc: alsa-devel@alsa-project.org
-> Cc: linux-usb@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Hi,
 
-Thanks, applied now.
+this is a patchset with small fixes for improving the USB-audio mixer
+behavior.  Instead of treating the error from a control message
+continuously, initialize all at the probe and keep the rest working.
+
+The first two patches are rather fixes for error messages in
+get_ctl_value_v2() function, the last one implements the new
+behavior.
 
 
 Takashi
+
+===
+
+Takashi Iwai (3):
+  ALSA: usb-audio: Downgrade error message in get_ctl_value_v2()
+  ALSA: usb-audio: Drop superfluous error message after disconnection
+  ALSA: usb-audio: Initialize every feature unit once at probe time
+
+ sound/usb/mixer.c | 42 ++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 36 insertions(+), 6 deletions(-)
+
+-- 
+2.26.2
+
