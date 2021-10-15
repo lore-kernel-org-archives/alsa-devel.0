@@ -2,56 +2,56 @@ Return-Path: <SRS0=/1nv=PD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DCC3C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 16:40:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 748D4C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 16:40:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4676F61151
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 16:40:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4676F61151
+	by mail.kernel.org (Postfix) with ESMTPS id AE46A60C41
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 16:40:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AE46A60C41
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 66091183A;
-	Fri, 15 Oct 2021 18:39:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 66091183A
+	by alsa0.perex.cz (Postfix) with ESMTPS id F06A1184E;
+	Fri, 15 Oct 2021 18:39:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F06A1184E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634316001;
-	bh=IzaNeADeFu7AszlRHuC3vFDJ/MAeCPRCIeUSQZgsJhs=;
+	s=default; t=1634316012;
+	bh=vBv8h08pcv0K3Ul+JXhrfgjcDY7YInmhghYlhZraNZ8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vMCbgYiHwdruA09Klky+2ddPGzCHlJHivagJYwC5G/x33yZqgVdTmnreQqkOaZSen
-	 G3jTPLQo8tWDmPGfpX75lGm9/fjrYOyuakfC8oF+APQ6Yd9XRUMmgld+3CdoEBM5aC
-	 5L9GUqXpt4kQ+FAwgFDz8dyMLo9j5vsbNZAlxq5Y=
+	b=Y7YHsrTXUJ4oSCijWrtcaK34v5URUzQwIBvcqfgxdBMmFYD8ZmaEDfARBVWR7d9hi
+	 M+PeTV0EqUhfC+QtxcnjsqlBq4kUsTEhGvbIpMlwrfg6nSiWO5Q9KjekU/4qapksZm
+	 +SAugRGnFJQatcLbI9IzOlgKLCjXTMdN8KVBFkKU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C78F4F804AC;
-	Fri, 15 Oct 2021 18:38:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ABCDFF804E6;
+	Fri, 15 Oct 2021 18:38:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6F26CF804AC; Fri, 15 Oct 2021 18:38:31 +0200 (CEST)
+ id C077FF8025B; Fri, 15 Oct 2021 18:38:33 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6A4B4F80167
- for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2021 18:38:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A4B4F80167
-X-IronPort-AV: E=McAfee;i="6200,9189,10138"; a="251395120"
-X-IronPort-AV: E=Sophos;i="5.85,376,1624345200"; d="scan'208";a="251395120"
+ by alsa1.perex.cz (Postfix) with ESMTPS id C8E9EF8025B
+ for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2021 18:38:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8E9EF8025B
+X-IronPort-AV: E=McAfee;i="6200,9189,10138"; a="251395136"
+X-IronPort-AV: E=Sophos;i="5.85,376,1624345200"; d="scan'208";a="251395136"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Oct 2021 09:38:21 -0700
+ 15 Oct 2021 09:38:26 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,376,1624345200"; d="scan'208";a="593028300"
+X-IronPort-AV: E=Sophos;i="5.85,376,1624345200"; d="scan'208";a="593028326"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by orsmga004.jf.intel.com with ESMTP; 15 Oct 2021 09:38:18 -0700
+ by orsmga004.jf.intel.com with ESMTP; 15 Oct 2021 09:38:23 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/5] ALSA: hda: Drop device-argument in NHLT functions
-Date: Fri, 15 Oct 2021 18:40:43 +0200
-Message-Id: <20211015164047.44492-2-cezary.rojewski@intel.com>
+Subject: [PATCH 3/5] ALSA: hda: Fill gaps in NHLT endpoint-interface
+Date: Fri, 15 Oct 2021 18:40:45 +0200
+Message-Id: <20211015164047.44492-4-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211015164047.44492-1-cezary.rojewski@intel.com>
 References: <20211015164047.44492-1-cezary.rojewski@intel.com>
@@ -80,202 +80,162 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 
-ACPI is device independent, so printing warnings using device functions
-is misleading. Replace dev_xxx() with pr_xxx() and remove now
-unnecessary argument.
+Two key operations missings are: endpoint presence-check and retrieval
+of matching endpoint hardware configuration (blob). Add operations for
+both use cases.
 
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- include/sound/intel-nhlt.h    |  9 ++++-----
- sound/hda/intel-dsp-config.c  |  4 ++--
- sound/hda/intel-nhlt.c        | 24 +++++++++++++-----------
- sound/soc/intel/skylake/skl.c |  5 ++---
- sound/soc/sof/intel/hda.c     |  4 ++--
- 5 files changed, 23 insertions(+), 23 deletions(-)
+ include/sound/intel-nhlt.h | 20 ++++++++
+ sound/hda/intel-nhlt.c     | 99 ++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 119 insertions(+)
 
 diff --git a/include/sound/intel-nhlt.h b/include/sound/intel-nhlt.h
-index d0574805865f..4debab7c1996 100644
+index b7eec4b3ca01..2cd3f27b7a72 100644
 --- a/include/sound/intel-nhlt.h
 +++ b/include/sound/intel-nhlt.h
-@@ -126,17 +126,17 @@ enum {
- 	NHLT_MIC_ARRAY_VENDOR_DEFINED = 0xf,
- };
+@@ -132,6 +132,12 @@ void intel_nhlt_free(struct acpi_table_nhlt *addr);
  
--struct nhlt_acpi_table *intel_nhlt_init(struct device *dev);
-+struct nhlt_acpi_table *intel_nhlt_init(void);
+ int intel_nhlt_get_dmic_geo(struct acpi_table_nhlt *nhlt);
  
- void intel_nhlt_free(struct nhlt_acpi_table *addr);
- 
--int intel_nhlt_get_dmic_geo(struct device *dev, struct nhlt_acpi_table *nhlt);
-+int intel_nhlt_get_dmic_geo(struct nhlt_acpi_table *nhlt);
- 
++bool intel_nhlt_has_endpoint_type(struct acpi_table_nhlt *nhlt, u8 link_type);
++struct nhlt_specific_cfg *
++intel_nhlt_get_endpoint_blob(struct acpi_table_nhlt *nhlt,
++			     u32 bus_id, u8 link_type, u8 vbps, u8 bps,
++			     u8 num_ch, u32 rate, u8 dir, u8 dev_type);
++
  #else
  
- struct nhlt_acpi_table;
- 
--static inline struct nhlt_acpi_table *intel_nhlt_init(struct device *dev)
-+static inline struct nhlt_acpi_table *intel_nhlt_init(void)
- {
- 	return NULL;
- }
-@@ -145,8 +145,7 @@ static inline void intel_nhlt_free(struct nhlt_acpi_table *addr)
- {
- }
- 
--static inline int intel_nhlt_get_dmic_geo(struct device *dev,
--					  struct nhlt_acpi_table *nhlt)
-+static inline int intel_nhlt_get_dmic_geo(struct nhlt_acpi_table *nhlt)
+ struct acpi_table_nhlt;
+@@ -149,6 +155,20 @@ static inline int intel_nhlt_get_dmic_geo(struct acpi_table_nhlt *nhlt)
  {
  	return 0;
  }
-diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
-index b9ac9e9e45a4..60cc4735c6ec 100644
---- a/sound/hda/intel-dsp-config.c
-+++ b/sound/hda/intel-dsp-config.c
-@@ -382,9 +382,9 @@ static int snd_intel_dsp_check_dmic(struct pci_dev *pci)
- 	struct nhlt_acpi_table *nhlt;
- 	int ret = 0;
++
++bool intel_nhlt_has_endpoint_type(struct acpi_table_nhlt *nhlt, u8 link_type)
++{
++	return false;
++}
++
++struct nhlt_specific_cfg *
++intel_nhlt_get_endpoint_blob(struct acpi_table_nhlt *nhlt,
++			     u32 bus_id, u8 link_type, u8 vbps, u8 bps,
++			     u8 num_ch, u32 rate, u8 dir, u8 dev_type)
++{
++	return NULL;
++}
++
+ #endif
  
--	nhlt = intel_nhlt_init(&pci->dev);
-+	nhlt = intel_nhlt_init();
- 	if (nhlt) {
--		if (intel_nhlt_get_dmic_geo(&pci->dev, nhlt))
-+		if (intel_nhlt_get_dmic_geo(nhlt))
- 			ret = 1;
- 		intel_nhlt_free(nhlt);
- 	}
+ #endif
 diff --git a/sound/hda/intel-nhlt.c b/sound/hda/intel-nhlt.c
-index e2237239d922..195d9e193a6c 100644
+index c41d20e1b349..d97fe57a7ef2 100644
 --- a/sound/hda/intel-nhlt.c
 +++ b/sound/hda/intel-nhlt.c
-@@ -1,10 +1,12 @@
- // SPDX-License-Identifier: GPL-2.0-only
- // Copyright (c) 2015-2019 Intel Corporation
- 
-+#define pr_fmt(fmt)     "NHLT: " fmt
-+
- #include <linux/acpi.h>
- #include <sound/intel-nhlt.h>
- 
--struct nhlt_acpi_table *intel_nhlt_init(struct device *dev)
-+struct nhlt_acpi_table *intel_nhlt_init(void)
- {
- 	struct nhlt_acpi_table *nhlt;
- 	acpi_status status;
-@@ -12,7 +14,7 @@ struct nhlt_acpi_table *intel_nhlt_init(struct device *dev)
- 	status = acpi_get_table(ACPI_SIG_NHLT, 0,
- 				(struct acpi_table_header **)&nhlt);
- 	if (ACPI_FAILURE(status)) {
--		dev_warn(dev, "NHLT table not found\n");
-+		pr_warn("NHLT table not found\n");
- 		return NULL;
- 	}
- 
-@@ -26,7 +28,7 @@ void intel_nhlt_free(struct nhlt_acpi_table *nhlt)
- }
- EXPORT_SYMBOL_GPL(intel_nhlt_free);
- 
--int intel_nhlt_get_dmic_geo(struct device *dev, struct nhlt_acpi_table *nhlt)
-+int intel_nhlt_get_dmic_geo(struct nhlt_acpi_table *nhlt)
- {
- 	struct nhlt_endpoint *epnt;
- 	struct nhlt_dmic_array_config *cfg;
-@@ -40,7 +42,7 @@ int intel_nhlt_get_dmic_geo(struct device *dev, struct nhlt_acpi_table *nhlt)
- 		return 0;
- 
- 	if (nhlt->header.length <= sizeof(struct acpi_table_header)) {
--		dev_warn(dev, "Invalid DMIC description table\n");
-+		pr_warn("Invalid DMIC description table\n");
- 		return 0;
- 	}
- 
-@@ -55,7 +57,7 @@ int intel_nhlt_get_dmic_geo(struct device *dev, struct nhlt_acpi_table *nhlt)
- 
- 		/* find max number of channels based on format_configuration */
- 		if (fmt_configs->fmt_count) {
--			dev_dbg(dev, "%s: found %d format definitions\n",
-+			pr_debug("%s: found %d format definitions\n",
- 				__func__, fmt_configs->fmt_count);
- 
- 			for (i = 0; i < fmt_configs->fmt_count; i++) {
-@@ -66,9 +68,9 @@ int intel_nhlt_get_dmic_geo(struct device *dev, struct nhlt_acpi_table *nhlt)
- 				if (fmt_ext->fmt.channels > max_ch)
- 					max_ch = fmt_ext->fmt.channels;
- 			}
--			dev_dbg(dev, "%s: max channels found %d\n", __func__, max_ch);
-+			pr_debug("%s: max channels found %d\n", __func__, max_ch);
- 		} else {
--			dev_dbg(dev, "%s: No format information found\n", __func__);
-+			pr_debug("%s: No format information found\n", __func__);
- 		}
- 
- 		if (cfg->device_config.config_type != NHLT_CONFIG_TYPE_MIC_ARRAY) {
-@@ -90,21 +92,21 @@ int intel_nhlt_get_dmic_geo(struct device *dev, struct nhlt_acpi_table *nhlt)
- 				dmic_geo = cfg_vendor->nb_mics;
- 				break;
- 			default:
--				dev_warn(dev, "%s: undefined DMIC array_type 0x%0x\n",
-+				pr_warn("%s: undefined DMIC array_type 0x%0x\n",
- 					 __func__, cfg->array_type);
- 			}
- 
- 			if (dmic_geo > 0) {
--				dev_dbg(dev, "%s: Array with %d dmics\n", __func__, dmic_geo);
-+				pr_debug("%s: Array with %d dmics\n", __func__, dmic_geo);
- 			}
- 			if (max_ch > dmic_geo) {
--				dev_dbg(dev, "%s: max channels %d exceed dmic number %d\n",
-+				pr_debug("%s: max channels %d exceed dmic number %d\n",
- 					__func__, max_ch, dmic_geo);
- 			}
- 		}
- 	}
- 
--	dev_dbg(dev, "%s: dmic number %d max_ch %d\n",
-+	pr_debug("%s: dmic number %d max_ch %d\n",
- 		__func__, dmic_geo, max_ch);
- 
+@@ -112,3 +112,102 @@ int intel_nhlt_get_dmic_geo(struct acpi_table_nhlt *nhlt)
  	return dmic_geo;
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 5b1a15e39912..4f122616b636 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -517,8 +517,7 @@ static int skl_find_machine(struct skl_dev *skl, void *driver_data)
- 	if (pdata) {
- 		skl->use_tplg_pcm = pdata->use_tplg_pcm;
- 		mach->mach_params.dmic_num =
--			intel_nhlt_get_dmic_geo(&skl->pci->dev,
--						skl->nhlt);
-+			intel_nhlt_get_dmic_geo(skl->nhlt);
- 	}
- 
- 	return 0;
-@@ -1009,7 +1008,7 @@ static int skl_probe(struct pci_dev *pci,
- 
- 	device_disable_async_suspend(bus->dev);
- 
--	skl->nhlt = intel_nhlt_init(bus->dev);
-+	skl->nhlt = intel_nhlt_init();
- 
- 	if (skl->nhlt == NULL) {
- #if !IS_ENABLED(CONFIG_SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC)
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 883d78dd01b5..75c2ee91bf13 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -651,9 +651,9 @@ static int check_nhlt_dmic(struct snd_sof_dev *sdev)
- 	struct nhlt_acpi_table *nhlt;
- 	int dmic_num;
- 
--	nhlt = intel_nhlt_init(sdev->dev);
-+	nhlt = intel_nhlt_init();
- 	if (nhlt) {
--		dmic_num = intel_nhlt_get_dmic_geo(sdev->dev, nhlt);
-+		dmic_num = intel_nhlt_get_dmic_geo(nhlt);
- 		intel_nhlt_free(nhlt);
- 		if (dmic_num >= 1 && dmic_num <= 4)
- 			return dmic_num;
+ }
+ EXPORT_SYMBOL_GPL(intel_nhlt_get_dmic_geo);
++
++bool intel_nhlt_has_endpoint_type(struct acpi_table_nhlt *nhlt, u8 link_type)
++{
++	struct nhlt_endpoint *epnt;
++	int i;
++
++	if (!nhlt)
++		return false;
++
++	epnt = (struct nhlt_endpoint *)nhlt->desc;
++	for (i = 0; i < nhlt->endpoint_count; i++) {
++		if (epnt->linktype == link_type)
++			return true;
++
++		epnt = (struct nhlt_endpoint *)((u8 *)epnt + epnt->length);
++	}
++	return false;
++}
++EXPORT_SYMBOL(intel_nhlt_has_endpoint_type);
++
++static struct nhlt_specific_cfg *
++nhlt_get_specific_cfg(struct nhlt_fmt *fmt, u8 num_ch, u32 rate, u8 vbps, u8 bps)
++{
++	struct nhlt_fmt_cfg *cfg = fmt->fmt_config;
++	struct wav_fmt *wfmt;
++	u16 _bps, _vbps;
++	int i;
++
++	pr_debug("Endpoint format count=%d\n", fmt->fmt_count);
++
++	for (i = 0; i < fmt->fmt_count; i++) {
++		wfmt = &cfg->fmt_ext.fmt;
++		_bps = wfmt->bits_per_sample;
++		_vbps = cfg->fmt_ext.sample.valid_bits_per_sample;
++
++		pr_debug("Endpoint format: ch=%d fmt=%d/%d rate=%d\n",
++			 wfmt->channels, _vbps, _bps, wfmt->samples_per_sec);
++
++		if (wfmt->channels == num_ch && wfmt->samples_per_sec == rate &&
++		    vbps == _vbps && bps == _bps)
++			return &cfg->config;
++
++		cfg = (struct nhlt_fmt_cfg *)(cfg->config.caps + cfg->config.size);
++	}
++
++	return NULL;
++}
++
++static bool nhlt_check_ep_match(struct nhlt_endpoint *epnt,
++				u32 bus_id, u8 link_type, u8 dir, u8 dev_type)
++{
++	pr_debug("Endpoint: vbus_id=%d link_type=%d dir=%d dev_type = %d\n",
++		 epnt->virtual_bus_id, epnt->linktype,
++		 epnt->direction, epnt->device_type);
++
++	if ((epnt->virtual_bus_id != bus_id) ||
++	    (epnt->linktype != link_type) ||
++	    (epnt->direction != dir))
++		return false;
++
++	/* link of type DMIC bypasses device_type check */
++	return epnt->linktype == NHLT_LINK_DMIC ||
++	       epnt->device_type == dev_type;
++}
++
++struct nhlt_specific_cfg *
++intel_nhlt_get_endpoint_blob(struct acpi_table_nhlt *nhlt,
++			     u32 bus_id, u8 link_type, u8 vbps, u8 bps,
++			     u8 num_ch, u32 rate, u8 dir, u8 dev_type)
++{
++	struct nhlt_specific_cfg *cfg;
++	struct nhlt_endpoint *epnt;
++	struct nhlt_fmt *fmt;
++	int i;
++
++	if (!nhlt)
++		return NULL;
++
++	pr_debug("Looking for configuration:\n");
++	pr_debug("  vbus_id=%d link_type=%d dir=%d, dev_type=%d\n",
++		 bus_id, link_type, dir, dev_type);
++	pr_debug("  ch=%d fmt=%d/%d rate=%d\n", num_ch, vbps, bps, rate);
++	pr_debug("Endpoint count=%d\n", nhlt->endpoint_count);
++
++	epnt = (struct nhlt_endpoint *)nhlt->desc;
++	for (i = 0; i < nhlt->endpoint_count; i++) {
++		if (nhlt_check_ep_match(epnt, bus_id, link_type, dir, dev_type)) {
++			fmt = (struct nhlt_fmt *)(epnt->config.caps + epnt->config.size);
++			cfg = nhlt_get_specific_cfg(fmt, num_ch, rate, vbps, bps);
++			if (cfg)
++				return cfg;
++		}
++
++		epnt = (struct nhlt_endpoint *)((u8 *)epnt + epnt->length);
++	}
++
++	return NULL;
++}
++EXPORT_SYMBOL(intel_nhlt_get_endpoint_blob);
 -- 
 2.25.1
 
