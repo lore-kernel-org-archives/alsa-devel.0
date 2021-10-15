@@ -2,82 +2,67 @@ Return-Path: <SRS0=/1nv=PD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C7E5AC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 07:43:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E9F17C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 07:44:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0BA8E61151
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 07:43:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0BA8E61151
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 4D7336108E
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 07:44:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4D7336108E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=grieve.com.au
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 07D191687;
-	Fri, 15 Oct 2021 09:42:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 07D191687
+	by alsa0.perex.cz (Postfix) with ESMTPS id 833581695;
+	Fri, 15 Oct 2021 09:43:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 833581695
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634283820;
-	bh=R9WK5RIChA38b2BDDWEa4xkiVLXpQNEockuY7DmE/lw=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=jNGc/PkEIcY1smnBInM5/Jc2Y2z3BDdgkH7XYljTTGrVef9ga/L4cG2+WtxoiXzzZ
-	 kFZLtOsPbwTiQd+pdcacwgNmL0/U60Qyl9krRaMxrC6zI23a/o5dMXLiD/n0GcwrUr
-	 L9oKaQr+m9KIq9rfzBG7xiKF/QoLKxrRXGVtCR1c=
+	s=default; t=1634283861;
+	bh=q7JLyFI/DmFiTBbaru8IY2x2ZwyD+PPziWTEiaGQTf0=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=gFQTB3OmLHovDZ8SsPOmwU7p0S4HmJp72TiMjvvFIof8OVlw3KTGhNtmEEK+bausB
+	 hao5gR501whmdH1kgUGu26MldRNKqfW8LYC5sKa755YjFDx3vHh7+3lKoj0zFd9AIL
+	 75TIv/zkArPXZFnpvJj4YOYuI4AaCJ3yYOk8YG0E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 90249F8025B;
-	Fri, 15 Oct 2021 09:42:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 75C74F80290;
+	Fri, 15 Oct 2021 09:43:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A161FF80269; Fri, 15 Oct 2021 09:42:48 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4EBE8F8012E
- for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2021 09:42:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4EBE8F8012E
+ id F1EFAF80269; Fri, 15 Oct 2021 04:53:58 +0200 (CEST)
+Received: from mail.worldguard.com.au (balthazar.worldguard.com.au
+ [202.164.16.89])
+ by alsa1.perex.cz (Postfix) with ESMTP id 6D507F80167
+ for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2021 04:53:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D507F80167
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="KP2vOdjC"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="tZGWCah1"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id A3A551FD39;
- Fri, 15 Oct 2021 07:42:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1634283756; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=4tT+U+iu6MgtB0bscSDXSipxlOwBanct++unllxXxmM=;
- b=KP2vOdjCpzIeQU8Y0XkhWlFkfbTP/riyMndHiS88Sk+xg1piF/mEEK2N9yibmW9OUeWfRl
- 27/tV5CqG56TPCkakoNqQ6g66PdZM64HHmNoX5aRXnoKS/VY6S+iFym7HGBNUx1hpiyyMz
- xpkxVF0RVubcqvIKKHQpwvh+cJQoP8U=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1634283756;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=4tT+U+iu6MgtB0bscSDXSipxlOwBanct++unllxXxmM=;
- b=tZGWCah1Rn4Nzq9pvcGbNcsqDS6ugcC2s2+Vcz2oW4o22QcI71nq/lymyXpMS+tAJtxYX7
- Y4ft50mNA3yVlBDw==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 9BF34A3B84;
- Fri, 15 Oct 2021 07:42:36 +0000 (UTC)
-Date: Fri, 15 Oct 2021 09:42:36 +0200
-Message-ID: <s5hlf2uvimr.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Davide Baldo <davide@baldo.me>
-Subject: Re: [PATCH v2] Fixes HP Spectre x360 15-eb1xxx speakers
-In-Reply-To: <20211015072121.5287-1-davide@baldo.me>
-References: <20211015072121.5287-1-davide@baldo.me>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+ dkim=pass (2048-bit key) header.d=grieve.com.au header.i=@grieve.com.au
+ header.b="lOaw2uNd"
+Received: from wg-server-submission (unknown [10.96.11.69])
+ by mail.worldguard.com.au (Postfix) with ESMTP id B83B4A001D;
+ Fri, 15 Oct 2021 02:53:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=grieve.com.au;
+ h=from:to:cc:subject:date:message-id:mime-version:content-transfer-encoding;
+ s=aug2021; bh=q7JLyFI/DmFiTBbaru8IY2x2ZwyD+PPziWTEiaGQTf0=;
+ b=lOaw2uNd9wL2jXDzF+BKgcWc7x09RLjTQRY2HZA1cuhi6zSDW53zY+IDB9LbsP+h+S6KyBZn4uAA/38w9S0t01NjlqXFsQL2Bizx+yjZ1pMk3aNjcjC+6TFgZmhwSBpXxhdLdrIaPcAxE9Lr38aNB5JiBr2kT3f48ghQHpd9cnhY0y1essdWI4WP6jHu7b7l4SwcBp9xaAy3cEkKvkXKlu4CtPzzpQZ3LYXklMZ2yeMmuEGb9V5OFCVEp4BA38KQWEDRR6ixMQNuFNqYdRmV8QbJQ1MRTUIjbex6yzQbtXXRhUi6OEAqr64KfRCDxKckFKiYKgqSATGdbIf5oSF53g==
+Received: from 238.125.218.139.sta.wbroadband.net.au (HELO
+ cat.internal.worldguard.com.au) (139.218.125.238)
+ by wg-server-submission (qpsmtpd/0.94) with (TLS_AES_256_GCM_SHA384 encrypted)
+ ESMTPSA; Fri, 15 Oct 2021 02:53:41 +0000
+Authentication-Results: wg-server-submission;
+ auth=pass (plain) smtp.auth=brendan@grieve.com.au
+From: Brendan Grieve <brendan@grieve.com.au>
+To: tiwai@suse.com
+Subject: [PATCH] sound/usb: Provide quirk for Sennheiser GSP670 Headset
+Date: Fri, 15 Oct 2021 10:53:35 +0800
+Message-Id: <20211015025335.196592-1-brendan@grieve.com.au>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Virus-Checked: Checked by ClamAV on wg-server-submission
+X-Mailman-Approved-At: Fri, 15 Oct 2021 09:43:06 +0200
+Cc: alsa-devel@alsa-project.org, Brendan Grieve <brendan@grieve.com.au>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,30 +78,63 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 15 Oct 2021 09:21:22 +0200,
-Davide Baldo wrote:
-> 
-> In laptop 'HP Spectre x360 Convertible 15-eb1xxx/8811' both front and
-> rear speakers are silent, this patch fixes that by overriding the pin
-> layout and by initializing the amplifier which needs a GPIO pin to be
-> set to 1 then 0, similar to the existing HP Spectre x360 14 model.
-> 
-> In order to have volume control, both front and rear speakers were
-> forced to use the DAC1.
-> 
-> This patch also correctly map the mute LED but since there is no
-> microphone on/off switch exposed by the alsa subsystem it never turns
-> on by itself.
-> 
-> There are still known audio issues in this laptop: headset microphone
-> doesn't work, the button to mute/unmute microphone is not yet mapped,
-> the LED of the mute/unmute speakers doesn't seems to be exposed via
-> GPIO and never turns on.
-> 
-> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=213953
-> Signed-off-by: Davide Baldo <davide@baldo.me>
+As per discussion at: https://github.com/szszoke/sennheiser-gsp670-pulseaudio-profile/issues/13
 
-Thanks, applied now.
+The GSP670 has 2 playback and 1 recording device that by default are
+detected in an incompatible order for alsa. This may have been done to make
+it compatible for the console by the manufacturer and only affects the
+latest firmware which uses its own ID.
 
+This quirk will resolve this by reordering the channels.
 
-Takashi
+Signed-off-by: Brendan Grieve <brendan@grieve.com.au>
+---
+ sound/usb/quirks-table.h | 32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
+
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index de18fff69280..2af8c68fac27 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -4012,6 +4012,38 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 		}
+ 	}
+ },
++{
++	/*
++	 * Sennheiser GSP670
++	 * Change order of interfaces loaded
++	 */
++	USB_DEVICE(0x1395, 0x0300),
++	.bInterfaceClass = USB_CLASS_PER_INTERFACE,
++	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_COMPOSITE,
++		.data = &(const struct snd_usb_audio_quirk[]) {
++			// Communication
++			{
++				.ifnum = 3,
++				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++			},
++			// Recording
++			{
++				.ifnum = 4,
++				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++			},
++			// Main
++			{
++				.ifnum = 1,
++				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++			},
++			{
++				.ifnum = -1
++			}
++		}
++	}
++},
+ 
+ #undef USB_DEVICE_VENDOR_SPEC
+ #undef USB_AUDIO_DEVICE
+-- 
+2.25.1
+
