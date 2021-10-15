@@ -2,104 +2,70 @@ Return-Path: <SRS0=/1nv=PD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 541C6C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 08:14:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DDA08C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 08:15:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D11D0611C2
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 08:13:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D11D0611C2
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
+	by mail.kernel.org (Postfix) with ESMTPS id 2D30D6108B
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 08:15:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2D30D6108B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 22F2F16DD;
-	Fri, 15 Oct 2021 10:13:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22F2F16DD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9AC6E169D;
+	Fri, 15 Oct 2021 10:14:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9AC6E169D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634285638;
-	bh=vP3hClcV6/Kk3JOiF+qvwrqyBSsG+aW7ehh14med6iE=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=vMlfk5ILVrFHcKapXsf7hCvV5/yGxFnkVZWFBYRc8Jrcp05LCHBMn7lOIZrGbX2Wa
-	 DOja8wy2LbYaMDajMH2RcDQqE2AR5LaI8FicyXocsEyB2Bt0EdetSK7EinV4neD2kg
-	 pbNDDFFCL40z4xC4E60aqiO+FY77EQd1S1QRwQeM=
+	s=default; t=1634285706;
+	bh=HLIorxZDAdMo7td1ElrvgUjqV44JVAr8Kh3xz2oCPDQ=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=q3VTkcn1vsHIQ6RnYHlFrgl5P4Ti29Z5j1CKPgrLxlQUM7RDtdLRfgF9atef1GeYf
+	 FtM9yorGrbMH9nUv0hDwqNK5vDi+NNxwk0zjhKXR6go/D0W7aNDguN3rGie+W/GbBI
+	 AbtYbt9hDN3l47eevTKTo7+Bn6Bdi9hT1iekIjOA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EFD95F8053D;
-	Fri, 15 Oct 2021 10:10:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 29614F8025B;
+	Fri, 15 Oct 2021 10:14:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1EA50F80167; Fri, 15 Oct 2021 10:09:56 +0200 (CEST)
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com
- [64.147.123.19])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 01829F80430
- for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2021 10:08:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01829F80430
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="U8CeSNXv"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="EeG0NORM"
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
- by mailout.west.internal (Postfix) with ESMTP id 898403201D11;
- Fri, 15 Oct 2021 04:08:47 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
- by compute4.internal (MEProxy); Fri, 15 Oct 2021 04:08:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm2; bh=2hpr/MXJfcxez
- I5KLHLw0BQf4sAtUYpUA+PIEWG6zT0=; b=U8CeSNXvA6nD9ZzjuYvzRmejHxOZC
- KaTLaID2Y9r4tDzw2H1dH6twqX8xzGmq8zpEqqJvF7Ut1/N457K+Q6/g/UAugR/P
- lyx00LxwAW/0uc1Cokow1XeTHxcsmSN2oOBFXrlZqX9NrwJT3I06kBgagY3VhT/v
- W7TGFT+TQt6stDycHQejl+O5VkIhFEK89aXQ6IWpa8etvOZSS5xfKuwngF0n0ZGS
- aqEPCe7ZoLBJU/ELrubuaPhy0yXUvGd/KpY/NTmN32EtsX1zx/0jbpwZcHg5g1ed
- jTf2CeKwa6vSNO3gJepvYyQpEyBkZ6aUSfYHtCRRLmhjqA+fcn/DwxjZw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-transfer-encoding:date:from
- :in-reply-to:message-id:mime-version:references:subject:to
- :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm1; bh=2hpr/MXJfcxezI5KLHLw0BQf4sAtUYpUA+PIEWG6zT0=; b=EeG0NORM
- VFsgtAsXTxkuR+r3i8tEM9K2dec4Z4CLoXn7Bve5Uy2CPjMDpRCWODdGK6EJOJGa
- zXiGA8kcB24H9rcnc8X2C38JqqeR3Hkpddxr7Z98rBtkP8OxWWpu5BP5BjfiyDrT
- c7VhF2rhZwcnyFfn8ZO9Mxw0k+fd02m75pbhd19784uXKqq6rLbBCBFTrS7tvWEp
- q99qdcVAkAPDqdQKWobt5VWHBIyV83AKV5ccAgSffc/ocel8hJAijIBQ3TJmq+sw
- KO5gQ8fUFtSl1eP9zh9KUm23tV/NJfIeHrnmBEAulXLEPmAwjEg1ssLImthTeMGK
- pslcxuuYRKShqw==
-X-ME-Sender: <xms:DzdpYWqjxSxYh25KTwkshE-hCrhmTkVn5lVI0aEUWwA_oo9WHveEeA>
- <xme:DzdpYUrspXquR_3xkzYTofThShPGd55SKPIbK5fPnyGzbOVRa3txS3GZz1z_iZyXH
- wvH1IPdeOH_V8n-KtM>
-X-ME-Received: <xmr:DzdpYbNviEJtVCUg9VJ82F7PvIrvczwRZUuuz8SACuWwQMP9TJHyds8vWF9kdgR_InmWXvscTLWiwGq24uJQVDd-fojaIm9z1UOK2QSZyvKhYgNTD48d>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddugecutefuodetggdotefrodftvfcurf
- hrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecuuegr
- ihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertdertd
- dtnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghkrghshhhi
- sehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpeevfefffeektefgve
- egfeelheffhfeujedtjeevtefhkeevkedtjeejvddtjefhjeenucevlhhushhtvghrufhi
- iigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrg
- hmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:DzdpYV7NWWBC5uoENNGzgQBLWZTJMJCGbx3pgtVXoQabCWV3r3J2PA>
- <xmx:DzdpYV6pqse7yg_6FjmXk15WXIT0KSnzpjBemrWGnlUzcbaq_mLrjA>
- <xmx:DzdpYVgtY3-Vz8lLKIeANxE9IwDPHHqJxEr6cqIES_3JeIZ0lMjyVQ>
- <xmx:DzdpYVFEklW1UMqLijncZVA3OXcqIRD5b2Wh3jjrzQafo23zN2UFmg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 15 Oct 2021 04:08:45 -0400 (EDT)
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: tiwai@suse.de
-Subject: [PATCH 06/11] ALSA: firewire-motu: parse messages for output
- parameters in register DSP model
-Date: Fri, 15 Oct 2021 17:08:21 +0900
-Message-Id: <20211015080826.34847-7-o-takashi@sakamocchi.jp>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211015080826.34847-1-o-takashi@sakamocchi.jp>
-References: <20211015080826.34847-1-o-takashi@sakamocchi.jp>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: ffado-devel@lists.sourceforge.net, alsa-devel@alsa-project.org,
- clemens@ladisch.de
+ id AC93BF8025B; Fri, 15 Oct 2021 10:14:14 +0200 (CEST)
+Received: from cstnet.cn (smtp21.cstnet.cn [159.226.251.21])
+ by alsa1.perex.cz (Postfix) with ESMTP id E17FBF8028D
+ for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2021 10:14:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E17FBF8028D
+Received: from localhost.localdomain (unknown [124.16.138.128])
+ by APP-01 (Coremail) with SMTP id qwCowAAXHAhCOGlhinkUBA--.25093S2;
+ Fri, 15 Oct 2021 16:13:54 +0800 (CST)
+From: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+To: vkoul@kernel.org, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+ tiwai@suse.com
+Subject: [PATCH v2] ASoC: soc-compress: prevent the potentially use of null
+ pointer
+Date: Fri, 15 Oct 2021 08:13:53 +0000
+Message-Id: <1634285633-529368-1-git-send-email-jiasheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: qwCowAAXHAhCOGlhinkUBA--.25093S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Ww4kKFW8Kr4xAFy3Jr1kZrb_yoW8KF1Upr
+ s7WrZ7tFyfJr4Ivw1rA3yF9F1fGryxuF409w1aq34xAr43XFsxWr1UtrWvyFy7ArZ8t34D
+ X3sFv3y7X3Z8AFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+ 9KBjDU0xBIdaVrnRJUUUkS14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+ rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+ 1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+ 6F4UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+ 0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+ jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
+ 1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8ZwCF
+ 04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
+ 18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vI
+ r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
+ 1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
+ cVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfUeHUDDUUUU
+X-Originating-IP: [124.16.138.128]
+X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
+Cc: alsa-devel@alsa-project.org, Jiasheng Jiang <jiasheng@iscas.ac.cn>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -115,72 +81,56 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This commit parses message and cache current parameters of output
-function, commonly available for all of register DSP model.
+There is one call trace that snd_soc_register_card()
+->snd_soc_bind_card()->soc_init_pcm_runtime()
+->snd_soc_dai_compress_new()->snd_soc_new_compress().
+In the trace the 'codec_dai' transfers from card->dai_link,
+and we can see from the snd_soc_add_pcm_runtime() in
+snd_soc_bind_card() that, if value of card->dai_link->num_codecs
+is 0, then 'codec_dai' could be null pointer caused
+by index out of bound in 'asoc_rtd_to_codec(rtd, 0)'.
+And snd_soc_register_card() is called by various platforms.
+Therefore, it is better to add the check in the case of misusing.
+And because 'cpu_dai' has already checked in soc_init_pcm_runtime(),
+there is no need to check again.
+Adding the check as follow, then if 'codec_dai' is null,
+snd_soc_new_compress() will not pass through the check 
+'if (playback + capture != 1)', avoiding the leftover use of
+'codec_dai'.
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Fixes: 467fece ("ASoC: soc-dai: move snd_soc_dai_stream_valid() to soc-dai.c")
+Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 ---
- include/uapi/sound/firewire.h                         | 10 ++++++++++
- .../firewire/motu/motu-register-dsp-message-parser.c  | 11 ++++++++++-
- 2 files changed, 20 insertions(+), 1 deletion(-)
+ sound/soc/soc-compress.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/include/uapi/sound/firewire.h b/include/uapi/sound/firewire.h
-index f663a26c5205..16ca7b43568b 100644
---- a/include/uapi/sound/firewire.h
-+++ b/include/uapi/sound/firewire.h
-@@ -160,6 +160,10 @@ struct snd_firewire_motu_register_dsp_meter {
-  *			       Audio Express.
-  * @mixer.output.paired_volume: The volume of paired output from mixer.
-  * @mixer.output.paired_flag: The flag of paired output from mixer.
-+ * @output.main_paired_volume: The volume of paired main output.
-+ * @output.hp_paired_volume: The volume of paired hp output.
-+ * @output.hp_paired_assignment: The source assigned to paired hp output.
-+ * @output.reserved: Padding for 32 bit alignment for future extension.
-  *
-  * The structure expresses the set of parameters for DSP controlled by register access.
-  */
-@@ -177,6 +181,12 @@ struct snd_firewire_motu_register_dsp_parameter {
- 			__u8 paired_flag[SNDRV_FIREWIRE_MOTU_REGISTER_DSP_MIXER_COUNT];
- 		} output;
- 	} mixer;
-+	struct {
-+		__u8 main_paired_volume;
-+		__u8 hp_paired_volume;
-+		__u8 hp_paired_assignment;
-+		__u8 reserved[5];
-+	} output;
- };
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index b4f5935..67c3df1 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -535,12 +535,14 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
+ 	}
  
- // In below MOTU models, software is allowed to control their DSP by command in frame of
-diff --git a/sound/firewire/motu/motu-register-dsp-message-parser.c b/sound/firewire/motu/motu-register-dsp-message-parser.c
-index 867cb09a3521..244f7ada851f 100644
---- a/sound/firewire/motu/motu-register-dsp-message-parser.c
-+++ b/sound/firewire/motu/motu-register-dsp-message-parser.c
-@@ -54,7 +54,7 @@ enum register_dsp_msg_type {
- 	MIXER_OUTPUT_PAIRED_FLAG = 0x06,
- 	MAIN_OUTPUT_PAIRED_VOLUME = 0x07,
- 	HP_OUTPUT_PAIRED_VOLUME = 0x08,
--	HP_OUTPUT_ASSIGN = 0x09,
-+	HP_OUTPUT_PAIRED_ASSIGNMENT = 0x09,
- 	// Transferred by all models but the purpose is still unknown.
- 	UNKNOWN_0 = 0x0a,
- 	// Specific to 828mk2, 896hd, Traveler.
-@@ -210,6 +210,15 @@ void snd_motu_register_dsp_message_parser_parse(struct snd_motu *motu, const str
- 				}
- 				break;
- 			}
-+			case MAIN_OUTPUT_PAIRED_VOLUME:
-+				parser->param.output.main_paired_volume = val;
-+				break;
-+			case HP_OUTPUT_PAIRED_VOLUME:
-+				parser->param.output.hp_paired_volume = val;
-+				break;
-+			case HP_OUTPUT_PAIRED_ASSIGNMENT:
-+				parser->param.output.hp_paired_assignment = val;
-+				break;
- 			case METER:
- 			{
- 				u8 pos;
+ 	/* check client and interface hw capabilities */
+-	if (snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_PLAYBACK) &&
+-	    snd_soc_dai_stream_valid(cpu_dai,   SNDRV_PCM_STREAM_PLAYBACK))
+-		playback = 1;
+-	if (snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_CAPTURE) &&
+-	    snd_soc_dai_stream_valid(cpu_dai,   SNDRV_PCM_STREAM_CAPTURE))
+-		capture = 1;
++	if (codec_dai) {
++		if (snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_PLAYBACK) &&
++		    snd_soc_dai_stream_valid(cpu_dai,   SNDRV_PCM_STREAM_PLAYBACK))
++			playback = 1;
++		if (snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_CAPTURE) &&
++		    snd_soc_dai_stream_valid(cpu_dai,   SNDRV_PCM_STREAM_CAPTURE))
++			capture = 1;
++	}
+ 
+ 	/*
+ 	 * Compress devices are unidirectional so only one of the directions
 -- 
-2.30.2
+2.7.4
 
