@@ -2,105 +2,90 @@ Return-Path: <SRS0=/1nv=PD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE8D3C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 13:36:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BF06C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 13:37:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AB37E6115C
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 13:36:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AB37E6115C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	by mail.kernel.org (Postfix) with ESMTPS id AD686611C3
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 13:37:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AD686611C3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B990010E;
-	Fri, 15 Oct 2021 15:35:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B990010E
+	by alsa0.perex.cz (Postfix) with ESMTPS id E910216BD;
+	Fri, 15 Oct 2021 15:36:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E910216BD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634304986;
-	bh=Jfdr7yQfgMhpLh9jKiKNdtlf2IOA8lkNH03elRFkYXY=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=GgPzKyW+2pynU8XuzupeUMGENUTDWUfDFIw3N6BufDE8ORNIH86n11FsBO4aHAQBK
-	 RkaSwb0C4zLrXoxRGVLVUuDYB5er80P4MfIkygU8zDAqtPKSiFoAURCGgzDEdotlZ4
-	 ITrArqUQaj9SzJTZNzpW6va7IR5n2QUKJ7XI6MtE=
+	s=default; t=1634305047;
+	bh=IHOmojYLYQs0RHANRXErOWmcxBe1+gtAUIdkNGV3t0c=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=nHz1bKlSgbLjPDuvzvmJRIY+DP0ELXKHav6p8UQd9Y3kyQaQyXxmVDuziCgIRf9F1
+	 5wy9s+5zy1CgMwB+xlhUwnuPol8nEqaCOip7MfP77T84UAQztWg1ihiGzj9SEbq4mK
+	 7aTGI3tzoddTvXW7/3vlWbU4QYbasRqm8P/Ibn68=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3C05FF8025B;
-	Fri, 15 Oct 2021 15:35:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D8F5BF80269;
+	Fri, 15 Oct 2021 15:36:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 86E37F80269; Fri, 15 Oct 2021 15:35:34 +0200 (CEST)
-Received: from smtp-relay-internal-0.canonical.com
- (smtp-relay-internal-0.canonical.com [185.125.188.122])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 614C0F804F2; Fri, 15 Oct 2021 15:36:34 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B9313F80167
- for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2021 15:35:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9313F80167
+ by alsa1.perex.cz (Postfix) with ESMTPS id E6ED3F80269
+ for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2021 15:36:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6ED3F80269
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com
- header.b="kUfr5mjM"
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 7AD5340060
- for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2021 13:35:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1634304924;
- bh=Y4U/fJqXuLgg52bUOfbV+iRZ91dG+diGxyV+QIZgnxY=;
- h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
- b=kUfr5mjMpWFC5fPiFxCb6T4BMnjK/15PB3L6/VqLFx4Jcsw8pzdkje5TEy9oCjoSY
- ik63wXBH1BOXootrUfRGy7XVQfF7qgUMxZc6EqozPrKCj82Q8bXmxylmkEWUMp2KaZ
- X9SAUI69iSEbyLPBD87pa2s97+Kl/TgjdbSGyGujbD/mlkS0ld45Yfw7RK4ZA791xy
- j6TE4JljXWNsToaiE2m5udve/Vwh0EZcFEIB1K/d8n+efMcm2TsPdGqy2tit5XpheK
- MUyBWJ6SNSoZ//QEoa1qu+vZQdFesyMMei3BslhKXnsFXBHN++akZaJHhbTcnUZY4K
- GFZYNokAGAGJA==
-Received: by mail-pj1-f69.google.com with SMTP id
- my5-20020a17090b4c8500b001a0bf4025c1so5316772pjb.8
- for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2021 06:35:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=Y4U/fJqXuLgg52bUOfbV+iRZ91dG+diGxyV+QIZgnxY=;
- b=5fl+p4imEwQkOVTTOBu8TXgr7K0wL9ULGQmyArZV8VVHZIEkAKMzHc0oBBALbYZjCj
- 7hE65SCULrjA/Yt7W0htV4J1zaHb9jP68tbDQxqUQoBEPxVIy3Yza2r7CdNubBIL9Kyn
- sDlkI9iW6BnV+B2Reh0u2pEv3Rg9375P6qnemuJfaUQ8w1WweULwRJS3ziTqqY0Kjquq
- WkyI0iaanQAMZ/7/0n6AYL7z+LWSn78l+OYGtvAMSNe7feCaWRPOO+n6/MouEKfTRxFB
- PysLvfU4B7W5feyWFXVxfHmZqrujabTa6LKTdP5TJ94y+9JOefF33Ax7COjY1qHOjOo5
- aIvw==
-X-Gm-Message-State: AOAM531QYpJATVufADa66fQAGjRbDGM5z6GrR7VQa81DmVow8CD4GnuC
- /vfnjNJNYuQbzRF+CsbObt12fp36KpTBP5kFcBktHKfGyD6VIjrRRccvubDaGxcDN8rbPnJV6GE
- eBCMzBgMgMENtJaV/j6U3F+zkQSniZjoT2ubFc7kc
-X-Received: by 2002:a62:e90d:0:b0:44d:35a1:e5a0 with SMTP id
- j13-20020a62e90d000000b0044d35a1e5a0mr11806359pfh.54.1634304922960; 
- Fri, 15 Oct 2021 06:35:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz07OGlC4jPnkxjhJx1/FXGc+HkyjOrYc/PtEHciW7RhWaLFxsvrbGwzHFbiuv9FCIULMRE8Q==
-X-Received: by 2002:a62:e90d:0:b0:44d:35a1:e5a0 with SMTP id
- j13-20020a62e90d000000b0044d35a1e5a0mr11806331pfh.54.1634304922600; 
- Fri, 15 Oct 2021 06:35:22 -0700 (PDT)
-Received: from localhost.localdomain
- (2001-b011-3814-7c46-b875-7e50-69b7-4e53.dynamic-ip6.hinet.net.
- [2001:b011:3814:7c46:b875:7e50:69b7:4e53])
- by smtp.gmail.com with ESMTPSA id y8sm5143327pfe.217.2021.10.15.06.35.20
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 15 Oct 2021 06:35:22 -0700 (PDT)
-From: Chris Chiu <chris.chiu@canonical.com>
-To: cezary.rojewski@intel.com, pierre-louis.bossart@linux.intel.com,
- liam.r.girdwood@linux.intel.com, yang.jie@linux.intel.com,
- broonie@kernel.org, tiwai@suse.com
-Subject: [PATCH] ASoC: Intel: sof_sdw: Initialize the sof_sdw_quirk with
- RT711_JD_NULL
-Date: Fri, 15 Oct 2021 21:34:24 +0800
-Message-Id: <20211015133424.494463-1-chris.chiu@canonical.com>
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="UBlfRUv0"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19F4c2sx023483; 
+ Fri, 15 Oct 2021 08:36:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=5CUM0Kld1tqcGicVvfKYh/DrTNh8/7H4cHyTX8EpzVQ=;
+ b=UBlfRUv0R0q85QeDeUtR4AQdMRI4gMDKJsNRxUqToA+iHQyHNoF+K4QG+fmJvAvvubox
+ bwVtGHpcpCb/cmW4MID2uXbKlOTqsIUjSab/Xnv5Em9RCNxjvCi99EhsdE+diEyOxkcH
+ PGzI8y09MzUyCR1yrLZyKeAYqG3SCw3Rt60POwBJjGXmlRu6CPa7bgy5NTy1t/Qe5nrs
+ doU6OzSEwSeSJbf8sOctH3coRkMYyBIlXNk1wHFpm0pJ7pPeWCeyfR44BWO0ZBtv1468
+ 2kNxKulLaQKbBmxugURqRXHXxETjaT84fBrJ83+136Vf5eVAjqMiniPk1WZxmAWrL3L7 Pg== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+ by mx0a-001ae601.pphosted.com with ESMTP id 3bq1gagp5v-2
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Fri, 15 Oct 2021 08:36:24 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.7; Fri, 15 Oct
+ 2021 14:36:22 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.7 via Frontend
+ Transport; Fri, 15 Oct 2021 14:36:22 +0100
+Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com
+ [198.61.65.254])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 5027A11D2;
+ Fri, 15 Oct 2021 13:36:22 +0000 (UTC)
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+To: <broonie@kernel.org>
+Subject: [PATCH 02/16] ASoC: cs42l42: Always configure both ASP TX channels
+Date: Fri, 15 Oct 2021 14:36:05 +0100
+Message-ID: <20211015133619.4698-3-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20211015133619.4698-1-rf@opensource.cirrus.com>
+References: <20211015133619.4698-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Chris Chiu <chris.chiu@canonical.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: M8xPAyg2K-EqFPMtZl0eRO8il4XIaDP9
+X-Proofpoint-GUID: M8xPAyg2K-EqFPMtZl0eRO8il4XIaDP9
+X-Proofpoint-Spam-Reason: safe
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -116,31 +101,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The jd_src of RT711 which is initialized in rt711/rt711_sdca_init
-will be overridden by rt711/rt711_sdca_add_codec_device_props when
-the sof_sdw_quirk is not RT711_JD_NULL. It will force the JD mode
-to RT711_JD1 and cause confusion while debugging the JD mode of
-the boards without quirk. Initialize sof_sdw_quirk with RT711_JD_NULL
-to honor the jd_src value in rt711/rt711_sdca init.
+An I2S frame always has two slots (left and right) even when sending
+mono. The right channel (channel 2) of ASP TX will always have the
+same bit width as the left channel and will always be on the high
+phase of LRCLK.
 
-Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
+The previous implementation always passed the field masks for both
+channels to snd_soc_component_update_bits() but for mono the written value
+only contained the settings for channel 1. The result was that for mono
+channel 2 was set to 8-bit (which is an invalid configuration) with both
+channels on the low phase of LRCLK.
+
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Fixes: 585e7079de0e ("ASoC: cs42l42: Add Capture Support")
 ---
- sound/soc/intel/boards/sof_sdw.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/cs42l42.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index 6b06248a9327..d05c0565e09c 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -15,7 +15,7 @@
- #include "sof_sdw_common.h"
- #include "../../codecs/rt711.h"
+diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
+index 26f6a3510a03..c52393301294 100644
+--- a/sound/soc/codecs/cs42l42.c
++++ b/sound/soc/codecs/cs42l42.c
+@@ -861,11 +861,10 @@ static int cs42l42_pcm_hw_params(struct snd_pcm_substream *substream,
  
--unsigned long sof_sdw_quirk = RT711_JD1;
-+unsigned long sof_sdw_quirk = RT711_JD_NULL;
- static int quirk_override = -1;
- module_param_named(quirk, quirk_override, int, 0444);
- MODULE_PARM_DESC(quirk, "Board-specific quirk override");
+ 	switch (substream->stream) {
+ 	case SNDRV_PCM_STREAM_CAPTURE:
+-		if (channels == 2) {
+-			val |= CS42L42_ASP_TX_CH2_AP_MASK;
+-			val |= width << CS42L42_ASP_TX_CH2_RES_SHIFT;
+-		}
+-		val |= width << CS42L42_ASP_TX_CH1_RES_SHIFT;
++		/* channel 2 on high LRCLK */
++		val = CS42L42_ASP_TX_CH2_AP_MASK |
++		      (width << CS42L42_ASP_TX_CH2_RES_SHIFT) |
++		      (width << CS42L42_ASP_TX_CH1_RES_SHIFT);
+ 
+ 		snd_soc_component_update_bits(component, CS42L42_ASP_TX_CH_AP_RES,
+ 				CS42L42_ASP_TX_CH1_AP_MASK | CS42L42_ASP_TX_CH2_AP_MASK |
 -- 
-2.20.1
+2.11.0
 
