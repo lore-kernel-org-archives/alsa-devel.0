@@ -2,90 +2,72 @@ Return-Path: <SRS0=/1nv=PD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B28D2C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 13:42:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9AF26C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 14:31:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2AB0A61040
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 13:42:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2AB0A61040
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	by mail.kernel.org (Postfix) with ESMTPS id 50483611C1
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 14:31:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 50483611C1
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8F6A917CB;
-	Fri, 15 Oct 2021 15:41:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F6A917CB
+	by alsa0.perex.cz (Postfix) with ESMTPS id D87B44E;
+	Fri, 15 Oct 2021 16:30:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D87B44E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634305360;
-	bh=xDMrrdfHeFnYy3iQH3fkoTAjai3Csh2vvXHiJt0TfP0=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1634308271;
+	bh=AEtWb/xpPvXYdf5GA4X8ida+83gqErYx/NpU8kM27To=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PxNi+Ublp3hWzInUKmV1mjARhave+xkQTPsAYTsPCNIRKVRPOYDOFP2soiJ6YZZPh
-	 LdlIAmjHF3/Cl+nh+fmxJwLWEXrwUB+zbvNCNLqYRM9CTCQ5IZUS/d2nAW78hZ2lfD
-	 5LsPuiDy7viZO8G9hqXFq1WqUo+Gfd5oCG66Udfc=
+	b=eTbIZEDc6znbeD42oPcbSRJY+Pl/XOzzlPpFz5VXpXgR96PsPXww5eU8m2/42Azoa
+	 dJ0/74ZTA0xTbR/H3OKk+/s4XVn6O/5ClnhRwPxK+V8bcvHOEMIJF5GMPNxtfzDN0C
+	 QsR/8LLmcCR8ABHUA0eJ1X5O/3+5/UI2HF+nyKXY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 84C47F8055A;
-	Fri, 15 Oct 2021 15:37:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 343F1F8025B;
+	Fri, 15 Oct 2021 16:30:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 02B34F8052D; Fri, 15 Oct 2021 15:37:01 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 75CC8F80269; Fri, 15 Oct 2021 16:30:19 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CCFEFF804FB
- for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2021 15:36:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CCFEFF804FB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7125EF80167
+ for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2021 16:30:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7125EF80167
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="P5yZcoTo"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19F4c2t6023483; 
- Fri, 15 Oct 2021 08:36:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=DtmrbVEDj8YC1fje3yFmaYOH8ysvv0F8w7e6MfV9Rzo=;
- b=P5yZcoTopoTZIGDoVrYaezTgfodH76Zbl/yUr7YbcxiDfURmmXQaohBtOR5Au31RbmNM
- LaeSLKdZT4T702rjHY/KBJlZMMSj5q2bubg621zlZCFHMV5wCIeUwjZmjNZY/dkJa3FZ
- lGB2rcDku6ZZt+YsZTEanRDs68efRH+B5TyVBjOTc25L7amuWh/JtgQNtltA3LoLfiPC
- Nn5IHfF+V2RgN8Vfr+Iy9B36hkqo64gJtj+Kuq8Ci+WXhxu1XRyl8NuNYyLTvOVV0ke9
- /rFH060OOxvRMGF6MzydEz3JpHNzd0AUa1atAF3n8fuir6N5Af4F+9gernTPiGma4FhC Sg== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 3bq1gagp5v-9
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Fri, 15 Oct 2021 08:36:29 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.7; Fri, 15 Oct
- 2021 14:36:25 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.7 via Frontend
- Transport; Fri, 15 Oct 2021 14:36:25 +0100
-Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com
- [198.61.65.254])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 5970111DC;
- Fri, 15 Oct 2021 13:36:25 +0000 (UTC)
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-To: <broonie@kernel.org>
-Subject: [PATCH 13/16] ASoC: cs42l42: Set correct SRC MCLK
-Date: Fri, 15 Oct 2021 14:36:16 +0100
-Message-ID: <20211015133619.4698-14-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20211015133619.4698-1-rf@opensource.cirrus.com>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="ueP0q1Ga"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 70DF8610E5;
+ Fri, 15 Oct 2021 14:30:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1634308211;
+ bh=AEtWb/xpPvXYdf5GA4X8ida+83gqErYx/NpU8kM27To=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=ueP0q1Ga0z7mOhcyKp/GuEGLiCZThinNlPsNosw9QnHZaOMvYTqeJ4lwBMzuP68vV
+ GgEVup4n4FW2P7NGUwUyiygSyPT4lg5tl9tM4cljUmC9AYEyKRQhE2VIYqCM8315pB
+ DzyyXz9yelcP9M5njE+39pYX7w8RSLgwalaSJbCqN29U54OJStSQU10lNR7Af/ERZQ
+ W7sbJRdE1FRiULJJrxhDKIE50jsaR1IJbx533jER8wUbGTteia+vy8x1KmhZ5B1KPE
+ y3UMpKckf4vipJ68+B/aAdlmt5Ht6NSJPuiFcvc7NNkLwVE8q9NQGKamq1RQQI2dTB
+ fZYFB28Gf93aw==
+Date: Fri, 15 Oct 2021 15:30:07 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: Re: [PATCH 06/16] ASoC: cs42l42: Reset GPIO is mandatory
+Message-ID: <YWmQb8oudyZr8tsz@sirena.org.uk>
 References: <20211015133619.4698-1-rf@opensource.cirrus.com>
+ <20211015133619.4698-7-rf@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: ttAWipDQqKL27igCEkVf4C_OTk-ubBdC
-X-Proofpoint-GUID: ttAWipDQqKL27igCEkVf4C_OTk-ubBdC
-X-Proofpoint-Spam-Reason: safe
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="jSS0e2uIyUoUwoHo"
+Content-Disposition: inline
+In-Reply-To: <20211015133619.4698-7-rf@opensource.cirrus.com>
+X-Cookie: I'm having an emotional outburst!!
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,118 +83,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-According to the datasheet the SRC MCLK must be as near as possible to
-(125 * sample rate). This means it should be ~6MHz for rates up to 48k
-and ~12MHz for rates above that. As per datasheet table 4-21.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- sound/soc/codecs/cs42l42.c | 58 ++++++++++++++++++++++++++++++++--------------
- sound/soc/codecs/cs42l42.h |  1 +
- 2 files changed, 42 insertions(+), 17 deletions(-)
+--jSS0e2uIyUoUwoHo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 54b4bc391ee9..05b8ae62b20d 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -668,22 +668,6 @@ static int cs42l42_pll_config(struct snd_soc_component *component)
- 					CS42L42_FSYNC_PULSE_WIDTH_MASK,
- 					CS42L42_FRAC1_VAL(fsync - 1) <<
- 					CS42L42_FSYNC_PULSE_WIDTH_SHIFT);
--			/* Set the sample rates (96k or lower) */
--			snd_soc_component_update_bits(component, CS42L42_FS_RATE_EN,
--					CS42L42_FS_EN_MASK,
--					(CS42L42_FS_EN_IASRC_96K |
--					CS42L42_FS_EN_OASRC_96K) <<
--					CS42L42_FS_EN_SHIFT);
--			/* Set the input/output internal MCLK clock ~12 MHz */
--			snd_soc_component_update_bits(component, CS42L42_IN_ASRC_CLK,
--					CS42L42_CLK_IASRC_SEL_MASK,
--					CS42L42_CLK_IASRC_SEL_12 <<
--					CS42L42_CLK_IASRC_SEL_SHIFT);
--			snd_soc_component_update_bits(component,
--					CS42L42_OUT_ASRC_CLK,
--					CS42L42_CLK_OASRC_SEL_MASK,
--					CS42L42_CLK_OASRC_SEL_12 <<
--					CS42L42_CLK_OASRC_SEL_SHIFT);
- 			if (pll_ratio_table[i].mclk_src_sel == 0) {
- 				/* Pass the clock straight through */
- 				snd_soc_component_update_bits(component,
-@@ -746,6 +730,39 @@ static int cs42l42_pll_config(struct snd_soc_component *component)
- 	return -EINVAL;
- }
- 
-+static void cs42l42_src_config(struct snd_soc_component *component, unsigned int sample_rate)
-+{
-+	struct cs42l42_private *cs42l42 = snd_soc_component_get_drvdata(component);
-+	unsigned int fs;
-+
-+	/* Don't reconfigure if there is an audio stream running */
-+	if (cs42l42->stream_use)
-+		return;
-+
-+	/* SRC MCLK must be as close as possible to 125 * sample rate */
-+	if (sample_rate <= 48000)
-+		fs = CS42L42_CLK_IASRC_SEL_6;
-+	else
-+		fs = CS42L42_CLK_IASRC_SEL_12;
-+
-+	/* Set the sample rates (96k or lower) */
-+	snd_soc_component_update_bits(component,
-+				      CS42L42_FS_RATE_EN,
-+				      CS42L42_FS_EN_MASK,
-+				      (CS42L42_FS_EN_IASRC_96K |
-+				       CS42L42_FS_EN_OASRC_96K) <<
-+				      CS42L42_FS_EN_SHIFT);
-+
-+	snd_soc_component_update_bits(component,
-+				      CS42L42_IN_ASRC_CLK,
-+				      CS42L42_CLK_IASRC_SEL_MASK,
-+				      fs << CS42L42_CLK_IASRC_SEL_SHIFT);
-+	snd_soc_component_update_bits(component,
-+				      CS42L42_OUT_ASRC_CLK,
-+				      CS42L42_CLK_OASRC_SEL_MASK,
-+				      fs << CS42L42_CLK_OASRC_SEL_SHIFT);
-+}
-+
- static int cs42l42_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
- {
- 	struct snd_soc_component *component = codec_dai->component;
-@@ -836,6 +853,7 @@ static int cs42l42_pcm_hw_params(struct snd_pcm_substream *substream,
- 	unsigned int channels = params_channels(params);
- 	unsigned int width = (params_width(params) / 8) - 1;
- 	unsigned int val = 0;
-+	int ret;
- 
- 	cs42l42->srate = params_rate(params);
- 	cs42l42->bclk = snd_soc_params_to_bclk(params);
-@@ -889,7 +907,13 @@ static int cs42l42_pcm_hw_params(struct snd_pcm_substream *substream,
- 		break;
- 	}
- 
--	return cs42l42_pll_config(component);
-+	ret = cs42l42_pll_config(component);
-+	if (ret)
-+		return ret;
-+
-+	cs42l42_src_config(component, params_rate(params));
-+
-+	return 0;
- }
- 
- static int cs42l42_set_sysclk(struct snd_soc_dai *dai,
-diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
-index 024760300937..46074624d300 100644
---- a/sound/soc/codecs/cs42l42.h
-+++ b/sound/soc/codecs/cs42l42.h
-@@ -347,6 +347,7 @@
- #define CS42L42_IN_ASRC_CLK		(CS42L42_PAGE_12 + 0x0A)
- #define CS42L42_CLK_IASRC_SEL_SHIFT	0
- #define CS42L42_CLK_IASRC_SEL_MASK	(1 << CS42L42_CLK_IASRC_SEL_SHIFT)
-+#define CS42L42_CLK_IASRC_SEL_6		0
- #define CS42L42_CLK_IASRC_SEL_12	1
- 
- #define CS42L42_OUT_ASRC_CLK		(CS42L42_PAGE_12 + 0x0B)
--- 
-2.11.0
+On Fri, Oct 15, 2021 at 02:36:09PM +0100, Richard Fitzgerald wrote:
 
+> The hard RESET must be used to correctly power-up the cs42l42, as
+> described in the datasheet.
+
+> The code was getting the GPIO with devm_gpiod_get_optional(). Change
+> this to devm_gpiod_get().
+
+Does that power sequencing have to be done by the CPU though?  Usually
+if a GPIO is not supplied it's because the sequencing is done during the
+general power up sequence (PMICs can be programmed to assert GPIOs as
+part of the their sequencing for example).
+
+--jSS0e2uIyUoUwoHo
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFpkG8ACgkQJNaLcl1U
+h9Dyqgf+LJrZXj+uSKJIZ0JT5Qh4ifQCqaIfbbYyPJ4Bdnq2KyOv9i8KNczYj8sS
+yfb2lRfd0I5iFDg9gKshaeER4HsgD/AetI9Ndz+AI4pYQHtyj7GEU0jj2rw4jQbO
+EgjqNobNWM8BkIbwZf4de/e7oL44wlgq4REspzgFUDO7nfbsfc8y5F40VOSeLbat
+B+tv99B7EKofPRlx6gFVdXdWn5LW//8SMyDcFpRqLWX/iKeYBcPGc/P9Q2NCIi1Z
++Xz9J4XOZ3VH5n2nXrA7E9GYYM7G0s1er2tJs7pXFW8k5RPAD+ONMJ/bPz9flX/f
+7eKJLWkhyRLt5F8ekZmY7nNPNJBERQ==
+=cfD/
+-----END PGP SIGNATURE-----
+
+--jSS0e2uIyUoUwoHo--
