@@ -2,142 +2,133 @@ Return-Path: <SRS0=/1nv=PD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B8D32C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 03:25:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9343CC433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 06:25:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8231660F4A
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 03:25:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8231660F4A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=vivo.com
+	by mail.kernel.org (Postfix) with ESMTPS id 0605761163
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 06:25:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0605761163
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1E98810E;
-	Fri, 15 Oct 2021 05:24:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E98810E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 86F991663;
+	Fri, 15 Oct 2021 08:24:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86F991663
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634268303;
-	bh=NCTGC8ed9kac3/ufR1lusF4GMfzaRp4+5JTQyJnjD5k=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=gxDsiJtRRmhFV+8e6Rymsi/tJagmssPkVdvC0kMmra4JK7YfLzLg6wxAwGFTj+PEc
-	 WSKIJSOyhAfh2d6PtDXMyZ7xskQhVVRv66cdnFf/Cjx1NV6ZUwYZl8DickYBzUoFMm
-	 ySSpyl/amEj/KQvKUoUf18OlSuFLnDk4dZWDTV48=
+	s=default; t=1634279149;
+	bh=kIAxVleYoiAYq3nJxHkUIlPjY0/Hoii14hCtS2R9XEo=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=q3wdbeKk/1/fIjw1m2bfmWaCvn74oAwikzyFxzvpdT3JWLjqmrNAkOpY6vm7IwCqG
+	 41FQgELlt6cA3JEKPR9NWveALSQc0CtPEMfVU/GVuP5rbQhvdW20Q7QNU/SG4N3s3P
+	 T6KVQ2/4UARYZgoN83b3L4RywHXrwoC/jNiNLgZo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8A73FF8025B;
-	Fri, 15 Oct 2021 05:24:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A8881F8025B;
+	Fri, 15 Oct 2021 08:24:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 06644F80269; Fri, 15 Oct 2021 05:24:08 +0200 (CEST)
-Received: from APC01-HK2-obe.outbound.protection.outlook.com
- (mail-eopbgr1300104.outbound.protection.outlook.com [40.107.130.104])
+ id 5B5B7F8028D; Fri, 15 Oct 2021 08:24:55 +0200 (CEST)
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com
+ (mail-mw2nam12on2045.outbound.protection.outlook.com [40.107.244.45])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DE3EAF8012E
- for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2021 05:24:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE3EAF8012E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6691FF80167
+ for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2021 08:24:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6691FF80167
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=vivo0.onmicrosoft.com
- header.i=@vivo0.onmicrosoft.com header.b="PZ2KfZOG"
+ dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com
+ header.b="b6Mkgg46"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GQVjG54TqkIl+nPelgGPaRmup2RGWY6fvE3ZSDWcwUzgV0jwzuBCbQtBaA3B8qe6K5IVv/ZEwEesQibV4HC2sq2CH1GPAL/PrHqww2+6y1tvjVLoECYC0rbQSMZfn2F0a1uPTTz5MDLMWLX515Orq6VA9wwSNea1d7esfJZDzE1wZGB5obm3LGkZ2DHEC9rCkY1J9dbNa+5TwsQORBcSy6twwlq6poO08BYRMvWIPAgwofNBJWJLW5COxeKSu9UT8eD5uSmD0HvdqS0aeKyISx+24Jz5JS+5cW1Xx3axUZklZ81HGXpaKdMiWXp1OUYUI5UY427jZl0nH4PXz05eEA==
+ b=JKhpzGDWFJ9GkeEPHR9bnRaXNluQFI1nX9f3pzxaDW9DvfMtwJYdE5kX0o5/GYD/TWWjhVoBfsa7zqW3a1DSce6owljuK2j38TKNcTBPwQzU8U2xOwEllbmJByehwLAcyb2ACExLb6YiJMfHCmVhT/bj5IB8u7QTHQiKYNoLb2K5m8EmDgx+1Vh+tR1JLWxoUdUxm7Kj12YHimIcZaqRUDWdomdrDA7ZJE8KpQ5+3l0eQWrohN5niYq486lNn7be+2f3LYeUhSRekGoVHEuWhLH9WUZfXLq0uDIfAL9DpJdgQHi/kOXAB7Z7fORYZo3mw2aCQJqk5/h/t3FOAQz4pg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cW6ax0p1G1cwJsRZpqcEyPuJQ/7WSFdyM0bT0RIOwQc=;
- b=m+N8O51/5T2LnY0X464LHPomGGdzZ+fRRTK97Zc7DhJv18VLn7P5XUWG/7uz5RVFKPReqmFyHmViJsWulHFjgfyjcOueB87+xUndOVFmxf3zSJ72OrYiJoIMXXyWb9ONZ6I5d26RM6Nx/1no9BJga2POwiv9cU2GLLv4JVtHrTiZ2Ji4EqzCE/PGZlB31W3/Wdy/jWCLi7wFTyTmMgvA3RqP+Y43R6S8oNfPOtW6NPz+HZWjLvRIFU7QQxf+1f44sJzQxHz0PbMuJZSGwwtNQR4JXKlGD9sMxKgKC0fN3krGp1TUs2njvFbachkMjYi8wjUsvGCcac6zEV+ZVIZSbA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com; 
- s=selector2-vivo0-onmicrosoft-com;
+ bh=Hc7Y1YUqupuq0pARW229CukMQKDnUf9bXiuCo5CW+tg=;
+ b=AXpSr4iHuHE764xCKn5SzYaj/3lRtSuhkZFvCqVOirgRUhjLTXR+4Qq8DZDNiSv4sXIioRq9Bz+O+6JR8529M4vh6ywRlvFljYi67F4uAqaAHjjHdtrhTb8NUhMtPGycanVYT7siL1gjAVRIW6+jAb6bhcZLWKKidoY0cRA2l3O2fXKp8kNqfpKsUT4Fbb61UCwjhDYTqy8jWSZTv/E76+iLLWRgAyvywKqzKouQGYHRjyIGPMCw/kYy23ykkcvfHcenc7+hYlt3UrjeYx3gNWic0t2TDB+vrB16yVBUT5uKhy6eEvcP1J3hNfpPFryBYQGD3AY6DL+r7PjQqtQyaQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=nvidia.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cW6ax0p1G1cwJsRZpqcEyPuJQ/7WSFdyM0bT0RIOwQc=;
- b=PZ2KfZOGwiUCFwYjQtc4DsmaOt4yEVlF7eGZ+KuIYS8PjXffsUZcA3gqs5NiBFDbE2POg0oS7DWOMdUpFiu5ilf1IVKaT8gjugcexppZLTqD8/hwwmx3/O4broEJR1kxuh330VVT2R6CUM2EN8oBefHUQZ2si3hGPb8Sj6Pmj8U=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=vivo.com;
-Received: from SG2PR06MB3367.apcprd06.prod.outlook.com (2603:1096:4:78::19) by
- SG2PR06MB2859.apcprd06.prod.outlook.com (2603:1096:4:18::17) with
- Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4587.20; Fri, 15 Oct 2021 03:23:51 +0000
-Received: from SG2PR06MB3367.apcprd06.prod.outlook.com
- ([fe80::fc12:4e1b:cc77:6c0]) by SG2PR06MB3367.apcprd06.prod.outlook.com
- ([fe80::fc12:4e1b:cc77:6c0%6]) with mapi id 15.20.4608.017; Fri, 15 Oct 2021
- 03:23:51 +0000
-From: Wan Jiabing <wanjiabing@vivo.com>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Mikhail Durnev <mikhail_durnev@mentor.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Wan Jiabing <wanjiabing@vivo.com>, Joe Perches <joe@perches.com>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: rsnd: Add of_node_put() before return
-Date: Thu, 14 Oct 2021 23:22:10 -0400
-Message-Id: <20211015032305.3771-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.20.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: HKAPR03CA0028.apcprd03.prod.outlook.com
- (2603:1096:203:c9::15) To SG2PR06MB3367.apcprd06.prod.outlook.com
- (2603:1096:4:78::19)
+ bh=Hc7Y1YUqupuq0pARW229CukMQKDnUf9bXiuCo5CW+tg=;
+ b=b6Mkgg46Bl1oWIChjQOmVenNSQ6B/GP3xI4Uu2VJpucU7WIf0aRvJetRQNLTzXdv5IoMTzrCJQNyaf7FI8c7tynI4DL48GpSpicv0lsdu8DrVnX6yaSOzKU3B5HAschYnp5oZIH3VLLKP+wyJtFMLnLiBdb+qze12dj6RFiflO/6l8FwBnw9kv3IzrKGVDC2paaBVainyjd1c+QitiTFnghgCFpAJ2wkL1ygnt+XbP0/Hyz1x3jw4udFpfHydISA+1glrea282l+LHzk3sOK/md94CljrTbs4T4EUH6dN8sanajM0tyq+7AliF3Vcy0L2uM75MEjWgxQbrDKIMG6Dg==
+Received: from DM6PR04CA0001.namprd04.prod.outlook.com (2603:10b6:5:334::6) by
+ BYAPR12MB4981.namprd12.prod.outlook.com (2603:10b6:a03:10d::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.15; Fri, 15 Oct
+ 2021 06:24:43 +0000
+Received: from DM6NAM11FT066.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:5:334:cafe::bc) by DM6PR04CA0001.outlook.office365.com
+ (2603:10b6:5:334::6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16 via Frontend
+ Transport; Fri, 15 Oct 2021 06:24:42 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ DM6NAM11FT066.mail.protection.outlook.com (10.13.173.179) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4608.15 via Frontend Transport; Fri, 15 Oct 2021 06:24:42 +0000
+Received: from [10.25.97.183] (172.20.187.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 15 Oct
+ 2021 06:24:37 +0000
+Subject: Re: [RFC PATCH v3 04/13] ASoC: soc-pcm: introduce
+ snd_soc_dpcm_fe_lock_irq/unlock_irq()
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ <alsa-devel@alsa-project.org>
+References: <20211013143050.244444-1-pierre-louis.bossart@linux.intel.com>
+ <20211013143050.244444-5-pierre-louis.bossart@linux.intel.com>
+From: Sameer Pujar <spujar@nvidia.com>
+Message-ID: <a98ea2c6-e617-0fb7-8b24-99b8edc8868a@nvidia.com>
+Date: Fri, 15 Oct 2021 11:54:34 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Received: from localhost.localdomain (203.90.234.87) by
- HKAPR03CA0028.apcprd03.prod.outlook.com (2603:1096:203:c9::15) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4628.10 via Frontend Transport; Fri, 15 Oct 2021 03:23:49 +0000
+In-Reply-To: <20211013143050.244444-5-pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+X-Originating-IP: [172.20.187.6]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 861b0a24-afb3-46ed-5d2d-08d98f8b351c
-X-MS-TrafficTypeDiagnostic: SG2PR06MB2859:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SG2PR06MB2859677D496D90F9E6BD6DE5ABB99@SG2PR06MB2859.apcprd06.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:935;
+X-MS-Office365-Filtering-Correlation-Id: bc0807cb-c554-45b5-6880-08d98fa47981
+X-MS-TrafficTypeDiagnostic: BYAPR12MB4981:
+X-Microsoft-Antispam-PRVS: <BYAPR12MB498103A45260BB27AE4FD5B4A7B99@BYAPR12MB4981.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: OUmeqCilvSvIjnAsk6ysjkH6+G8CO+7CDmDOnUceJPUAkbQp8TkediXOaBGzlRX3aAexGcb7qT4G1ODr3zSkOGejgL00FlDs6Q479CkuXXSS2SAQLd7Op/uSNM4gUniW7B+4xafQmTCHRd45Y8tFNbJJVNGPVac5vZwt8t5C5q+T4m1fKPD/Xzr0pgVTTKt/AmkcLBbsn+rgXoayVwvqA4u0bWBcunIfOBRfToHtxWKXVCDsXx37sRu3zZm5ocnLJcBzsNesviXeCxXKhzSRUoPQZNLbkSOSroe/NoA2b46pF5LXQIFikglfOpl8Pop64KV4X7wPpp+aP7/ci/6+jjCLSiLqL8GDTAsXXqnl6h7QFHJcVcoJ6VO9o4KWvN7whFLualtGoK+Fzthn3AWEQHEdyCnRsKv3xR1eC748QXL4hcbyAAxvSiZw9dXZuhS1+aGvkt3djWp6yBzDztSJftb+nlqlUL/RFVxSRvi/3ix8JpHR8C16cFUuBLeE/93LITczrKCCKiR1kRJb4Yw2jitc1zfEE+HQwCuSrznlF8A/PN3kPUgaBJPact7I7b7E4MjR4ovW/AjmUXdnQqZBKbh+vH6rj9Ejw7sFT3uRRH1YFQW9t8gwvqrtDUyWlHjbUE9sfvb3HRtD6SizSZ2mLbhVxRAMtlMiB1DttqV4cAlxHHbRD8mwOFMA9oWY3isO17yBfbDlvrVwdrNbjxZMUA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:SG2PR06MB3367.apcprd06.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(4636009)(366004)(6486002)(83380400001)(4326008)(956004)(66476007)(38100700002)(38350700002)(2906002)(6666004)(921005)(5660300002)(316002)(6512007)(52116002)(1076003)(66556008)(2616005)(4744005)(36756003)(6506007)(110136005)(8676002)(86362001)(508600001)(8936002)(26005)(66946007)(186003)(7416002);
- DIR:OUT; SFP:1102; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?OIjxUlV4xYD7xPuwWPpM+EQCt8H8I5M36BDoOPM9QsGe/LP1fCeIxflLoM1H?=
- =?us-ascii?Q?T+NUJvOFdg8Mubds4Uu3JLG870QGp2wxQOtcnxJhnjbodKD+qkP0lD1LrUHC?=
- =?us-ascii?Q?BHv99cwBtLZQ/dVqPT2hDGS7LJzAB2nlUQeEYuz/fM4O5aQvAMO+IyK6kAjF?=
- =?us-ascii?Q?PagRwoNLetnA3DSHiXsTNGTn2T9s/RdR7RkfR5FVSv1VUxcD2qA4kI9xHezK?=
- =?us-ascii?Q?SL3N1q/IOK+sV1YqZ6dS0NtmhFhHuBga6wFYRZUYSOoXWwWxQM2+6VSKkQnf?=
- =?us-ascii?Q?qcLqKI8cN553HYaIlfoO7Le2cLfgfrBBBZPm3AbRoUjOJDdQuq1yOhie7JrL?=
- =?us-ascii?Q?TA0jdPlK1qPqYzu1NO0+XRPo01oSebHyIRytAugicu6XqplVhePYUybCSePD?=
- =?us-ascii?Q?5+kFPkHAoHUFZOqWbBmuNbLJifo/7eRdWtJPLQoCY/elkOf/j5u6y+jJ9nXN?=
- =?us-ascii?Q?PK1ha69KJB5ZOwJcIJtk/qBHSl9/ojlZopnXs49wKldS0a/ccBwxV1ZPEgzw?=
- =?us-ascii?Q?HDN2aCeqMZTyf7l4rxiHnF+x3UkuctSexjC1zebuJRt0Bu97WUQYeshnkzKz?=
- =?us-ascii?Q?Tf8sjZW8wS/36/fOs/BuOC8IJF9LSp4pZl2B761Yn5qBdvLlTvtjvX0pqalJ?=
- =?us-ascii?Q?5woqTvjfAP3jZWRbr5l41r7pnPCnE8Ai3M91p+K2K9BrVniIOdBofo4xHSLr?=
- =?us-ascii?Q?sIri6p1hrgW35axmueDrJAthfSk59nMlorxQDNguTeJRl7WHxU+jY2IT4OtI?=
- =?us-ascii?Q?M/MUUfcG1KZkniCmgQyVcOB1Egiv4qLx/1zszlx6ET815bX2EzdcvLYRJqxg?=
- =?us-ascii?Q?cn0bN+5pkiL8ZHj1L43d2DsLLAftomAg09ZQx5ey21h9EpNtO86bMgiHT3i5?=
- =?us-ascii?Q?Kc9Rn1+SgHH0dSWy16xt6gst7IMiQX/T7PU7Sg5lMSo+pQXmgyX3lZoksP1x?=
- =?us-ascii?Q?3uOoBDyejLl7vcwWy4zFIVFhwD95G9bbqxQHp8D8BC6mE7S8dyNpZ24thzj8?=
- =?us-ascii?Q?F9jbDKBxbXh0FdYMQJcM2v+AzO86aUcTgsQ+rw3gMnK0DzBuGSuYkycFVMsf?=
- =?us-ascii?Q?MXnB9fNMvBQHmrUPVJZwKo7J/qh4ERjcUqtJut/42lGaB8vtzrRzspDvnfCh?=
- =?us-ascii?Q?rlotaQK8IzYpIEm+CLxhE0IhZwl41QVXzAjFIEWqVSL2IkECjcamXAGwgfaU?=
- =?us-ascii?Q?W2Jd6ku0DSqlUOcU0SgiYe7yj/dd5p6i/Tf1zW/EoahKLUrte6TmJD84P5NX?=
- =?us-ascii?Q?wPAfjkkpwzmp9llN0Lu1PsH/IgncMgb0pxJCydGiHGvhyDKd+kh4cRl4IW8J?=
- =?us-ascii?Q?SsZ5uVxHW61/gWVqBzLoxwGa?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 861b0a24-afb3-46ed-5d2d-08d98f8b351c
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB3367.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2021 03:23:50.8200 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jnGtCienE34ObXwy7jBDq0pK5DtWWiAmI5gz7NOVp0L7NgFH+p2q2+gC0aSkYjb0E0QabtKTohtF+hCYvzXuOQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR06MB2859
-Cc: kael_w@yeah.net
+X-Microsoft-Antispam-Message-Info: /HZGnOrCLJgHhKUfrwapwzgwRE3FwdVJRKGdvUPS9cGHbosVAomheHaT7X+Dq/TKOiq8VIRzxGvWDmuyI8zgrlY+zxBYPU712fG+48QxSAU6Xai5ZBIpXwo+X/zEqlvuT9vRYseRAqFz+uRRC54FCxE5Tvl7Zdc/yiaUKXLG6gNVYNKEc9LPOKU7Ur1dJmqtBmkoi8TS/B0b2bDKNq2YxNOslmlvrrlUV2N8Fx7XmKb10wl0iXE2J03C1wnEEluLlHEFTV+NtK7LPP2G6GIn5xFhCGVNfKOUfNwcR36bkq53Islc8lGrSdLF4FL4xyyNJpoEpkDRIkim/VZ6dWWHVhh5wGrlPEhiYfyDA/41uKJwBetW50PDn6wHHTHRgDwVZmlpqQXV02NFJG3t4QgyY+Zo2eYa7agaBb+buO7SxNMbYQX3uJQmPlnd/S2ktDuy+deRNG5O1YTLibrP0LMIhJCOxt2BpaQwJU4mPxAK36JWLqO92Dx1Moem/gbaxmKwXP1UM3kJOtjfTWBE1QbmGvDpfrc9tyOEODtqDgT/zcTpj/9DtDtMR1p6DdxZyhahGMFYXU0btqCdkSG7dmOhOrrVXom+5RQESNQl+7hjCfMXbQqGel0ndik6gkqtQ68lpxxc+bppvh017Rd+sMMr2wpq6la2KZ29StK7RskwWIqrHjpbx1s1lv8bkHKwY4+zwf7Vd2Gc1ZXPlap+1cGouNR2wLL5+9cdhiPNnubyG6U=
+X-Forefront-Antispam-Report: CIP:216.228.112.34; CTRY:US; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:mail.nvidia.com; PTR:schybrid03.nvidia.com; CAT:NONE;
+ SFS:(4636009)(36840700001)(46966006)(31696002)(70586007)(7636003)(5660300002)(31686004)(336012)(16576012)(7416002)(54906003)(316002)(36860700001)(508600001)(82310400003)(6666004)(83380400001)(2616005)(70206006)(8936002)(86362001)(4326008)(53546011)(36756003)(426003)(47076005)(16526019)(356005)(8676002)(186003)(2906002)(110136005)(26005)(43740500002);
+ DIR:OUT; SFP:1101; 
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2021 06:24:42.4598 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: bc0807cb-c554-45b5-6880-08d98fa47981
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a; Ip=[216.228.112.34];
+ Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT066.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB4981
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, tiwai@suse.de,
+ open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, vkoul@kernel.org, broonie@kernel.org,
+ Gyeongtaek Lee <gt82.lee@samsung.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -153,30 +144,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Fix following coccicheck warning:
-./sound/soc/sh/rcar/core.c:1223:1-23: WARNING: Function
-for_each_child_of_node should have of_node_put() before return
 
-Early exits from for_each_child_of_node should decrement the
-node reference counter.
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
----
- sound/soc/sh/rcar/core.c | 1 +
- 1 file changed, 1 insertion(+)
+On 10/13/2021 8:00 PM, Pierre-Louis Bossart wrote:
+> In preparation for more changes, add two new helpers to gradually
+> modify the DPCM locks.
+>
+> Since DPCM functions are not used from interrupt handlers, we can only
+> use the lock_irq case.
+>
+> While most of the uses of DPCM are internal to soc-pcm.c, some drivers
+> in soc/fsl and soc/sh do make use of DPCM-related loops that will
+> require protection, adding EXPORT_SYMBOL_GPL() is needed for those
+> drivers.
+>
+> The stream argument is unused in this patch but will be enabled in
+> follow-up patches.
+>
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> ---
+>   include/sound/soc-dpcm.h |  3 +++
+>   sound/soc/soc-pcm.c      | 42 +++++++++++++++++++++++-----------------
+>   2 files changed, 27 insertions(+), 18 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 978bd0406729..6a8fe0da7670 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -1225,6 +1225,7 @@ int rsnd_node_count(struct rsnd_priv *priv, struct device_node *node, char *name
- 		if (i < 0) {
- 			dev_err(dev, "strange node numbering (%s)",
- 				of_node_full_name(node));
-+			of_node_put(np);
- 			return 0;
- 		}
- 		i++;
--- 
-2.20.1
+1. Till this patch and with DEBUG_LOCKDEP config enabled, I see 
+following warning:
+    "WARNING: CPU: 0 PID: 0 at kernel/locking/irqflag-debug.c:10 
+warn_bogus_irq_restore+0x30/0x40"
 
+    However test passed though. Interestingly it was seen only for the 
+first time I ran a 2x1 mixer test.
+
+2. Also after I load sound modules and card gets registered, I see some 
+hw_param() calls for FE and BE. This seems harmless at this point, but 
+is getting problematic with subsequent patches. This was not happening 
+earier.
