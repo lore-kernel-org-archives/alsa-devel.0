@@ -2,87 +2,84 @@ Return-Path: <SRS0=/1nv=PD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D866C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 13:40:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A923CC433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 13:40:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CFE3961151
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 13:40:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CFE3961151
+	by mail.kernel.org (Postfix) with ESMTPS id 339646115C
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 13:40:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 339646115C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3D1F91741;
-	Fri, 15 Oct 2021 15:39:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D1F91741
+	by alsa0.perex.cz (Postfix) with ESMTPS id A1D601750;
+	Fri, 15 Oct 2021 15:39:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A1D601750
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634305201;
-	bh=aOlQs0e96aTrLTjrb9/TLCMHTPfyH4Rk1vI0WNtRCdw=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=ESpBoBXSz9qcwTExhOIDpZlw/bDz9Y2NZrdnS+TQM23M0phyKLi9kJXEKydXZsvOl
-	 xlaVLI8Z0BqjU7FyAc/P637QEfuJW9DOzPKjVW7AXmzXE9BBJt3T4ozZnBGWp6XUZ0
-	 8jDZAptoGC4GUuEJ5zA0Jn/kKA9LbKZWFdVl6tKc=
+	s=default; t=1634305214;
+	bh=2fflw8F9ANycK8fI7cNOv94WRP4BgBBNzShE1CGtduk=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=eevcZBIXOtBMMh6zUWi+wIbEjrAFMnTwCaS4NyPOrVDiisBUf2EAkU1STFiUva9rv
+	 J44VSoomLS4n4NPzAnNytQv6jzESOzyzyvkHVYqYHS1ftICr2I84735u7hcfILsCbZ
+	 e0YzMwvDS+HqYrSYzt+AAJ0nUJXtOVqyOWa5Ylok=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CD552F80524;
-	Fri, 15 Oct 2021 15:36:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DFB73F80527;
+	Fri, 15 Oct 2021 15:36:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8A5CAF80508; Fri, 15 Oct 2021 15:36:47 +0200 (CEST)
+ id E010FF80508; Fri, 15 Oct 2021 15:36:48 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ADA3DF804E6
- for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2021 15:36:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ADA3DF804E6
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8E5F4F804E7
+ for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2021 15:36:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E5F4F804E7
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="oj+gc5d3"
+ header.b="KT7xzPxA"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19F4c2t4023483; 
- Fri, 15 Oct 2021 08:36:28 -0500
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19F4c2sw023483; 
+ Fri, 15 Oct 2021 08:36:24 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=iN4TmPzNM7WWKcRrvkkVC/l//ijLMU3ogxDWJ3EAvxs=;
- b=oj+gc5d3+J5W4ilW+8GN9h06gjML6Lql7J1gD1M+UtCJjnnG8fy11MgTHU7SGnSNOxEr
- HP5RViA/QvI6+SvjyOiYCSFDbLDDJ6/W2htSd2CDGc7C4r++KrXUSuq5DvaGWYw58oeK
- hEEx2woVm9YLdtFX8nspt/xexY41WGsAO/QWCGdZGTE3H+nGRVd+9yxaj3kq3e4ZGjSY
- Fy5wp1qQ75E0i9fNLxTM9TjNYfzFggLBoVS/8c0KxWwxF+csnJ9GB/l6WQQEOYMnWJun
- 5qvwCsubWcaG8NspKt9lyK9QWE9dqEa5NDh2bu9M1acP6EKq1Vl/J8L4h8wBJFvjhf3O Cw== 
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=ISoBXTDGWYFFg3rMehWnfYSADfXB3Oa0F78uIjumd/w=;
+ b=KT7xzPxAe4Jsi04ao8+PJgzRJS3knFSyr1wtwUNNucppUPj7q7U1udrK10r8ExciX551
+ xmXhnvc+QPl3b6eIrvg3P6r1mK2dEFU57t7u71oZVw3R2Mg+MtF/1eYBa2VrGDWsi6kO
+ uGuiCPSOocp6le4qCm76iuFyEuCKpR5va2GxqbenKH4NkjZaZgmN5onImnjWcRdTiE9R
+ Boux6psqC1fHfWW9iTJN5ycQAZcUd0wHUGPwLhrwwAfZozzZlGqmq51rxq705Cu4DnAf
+ kHUm1kHMk/USuppYVztNjX4Jmf/RVOXIV7PDA/PzGBz8ghgAyiqjNXtw/TGkcXRkXCPl 0A== 
 Received: from ediex01.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 3bq1gagp5v-7
+ by mx0a-001ae601.pphosted.com with ESMTP id 3bq1gagp5v-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Fri, 15 Oct 2021 08:36:28 -0500
+ Fri, 15 Oct 2021 08:36:24 -0500
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.7; Fri, 15 Oct
- 2021 14:36:25 +0100
+ 2021 14:36:21 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.7 via Frontend
- Transport; Fri, 15 Oct 2021 14:36:25 +0100
+ Transport; Fri, 15 Oct 2021 14:36:21 +0100
 Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com
  [198.61.65.254])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id C7F8911D2;
- Fri, 15 Oct 2021 13:36:24 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 31815B2F;
+ Fri, 15 Oct 2021 13:36:21 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 11/16] ASoC: cs42l42: Use PLL for SCLK > 12.288MHz
-Date: Fri, 15 Oct 2021 14:36:14 +0100
-Message-ID: <20211015133619.4698-12-rf@opensource.cirrus.com>
+Subject: [PATCH 00/16] ASoC: cs42l42: Collection of bugfixes
+Date: Fri, 15 Oct 2021 14:36:03 +0100
+Message-ID: <20211015133619.4698-1-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20211015133619.4698-1-rf@opensource.cirrus.com>
-References: <20211015133619.4698-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: rLFusWlfX5byiqv4jUQkx-h4bryLu1hf
-X-Proofpoint-GUID: rLFusWlfX5byiqv4jUQkx-h4bryLu1hf
+X-Proofpoint-ORIG-GUID: NoIEhR9KQwTbt94aPT7dbqSXP3tlq3IR
+X-Proofpoint-GUID: NoIEhR9KQwTbt94aPT7dbqSXP3tlq3IR
 X-Proofpoint-Spam-Reason: safe
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
  Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
@@ -101,87 +98,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-It isn't possible to switch MCLK between 12MHz and 24MHz rate groups
-on-the-fly - this can only be done when cs42l42 is powered-down.
+This patch set contains various bugfixes for the cs42l42 codec
+driver.
 
-All "normal" SCLK rates use an MCLK in the 12MHz group, so change the
-configs for SCLK > 12.288 MHz to use the PLL to generate an MCLK in
-the 12MHz group.
+Patches marked "Fixes" will apply cleanly to the patch that first
+introduced the bug.
 
-As this means MCLK_DIV is always 0 it can be removed from the pll
-configuration setup.
+Patches NOT marked "Fixes" will not apply cleanly to the point
+the bug was first introduced and/or the bug is not having
+sufficient impact to risk churning older code versions.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- sound/soc/codecs/cs42l42.c | 41 ++++++++++++++++++-----------------------
- 1 file changed, 18 insertions(+), 23 deletions(-)
+Richard Fitzgerald (16):
+  ASoC: cs42l42: Don't reconfigure the PLL while it is running
+  ASoC: cs42l42: Always configure both ASP TX channels
+  ASoC: cs42l42: Correct some register default values
+  ASoC: cs42l42: Don't set defaults for volatile registers
+  ASoC: cs42l42: Defer probe if request_threaded_irq() returns
+    EPROBE_DEFER
+  ASoC: cs42l42: Reset GPIO is mandatory
+  ASoC: cs42l42: Correct power-up sequence to match datasheet
+  ASoC: cs42l42: Reset and power-down on driver remove()
+  ASoC: cs42l42: Prevent NULL pointer deref in interrupt handler
+  ASoC: cs42l42: Don't claim to support 192k
+  ASoC: cs42l42: Use PLL for SCLK > 12.288MHz
+  ASoC: cs42l42: Allow time for HP/ADC to power-up after enable
+  ASoC: cs42l42: Set correct SRC MCLK
+  ASoC: cs42l42: Mark OSC_SWITCH_STATUS register volatile
+  ASoC: cs42l42: Fix WARN in remove() if running without an interrupt
+  ASoC: cs42l42: Always enable TS_PLUG and TS_UNPLUG interrupts
 
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index c18f42cc1044..64bcabeb8f57 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -539,7 +539,6 @@ static const struct reg_sequence cs42l42_to_osc_seq[] = {
- 
- struct cs42l42_pll_params {
- 	u32 sclk;
--	u8 mclk_div;
- 	u8 mclk_src_sel;
- 	u8 sclk_prediv;
- 	u8 pll_div_int;
-@@ -556,24 +555,24 @@ struct cs42l42_pll_params {
-  * Table 4-5 from the Datasheet
-  */
- static const struct cs42l42_pll_params pll_ratio_table[] = {
--	{ 1411200, 0, 1, 0x00, 0x80, 0x000000, 0x03, 0x10, 11289600, 128, 2},
--	{ 1536000, 0, 1, 0x00, 0x7D, 0x000000, 0x03, 0x10, 12000000, 125, 2},
--	{ 2304000, 0, 1, 0x00, 0x55, 0xC00000, 0x02, 0x10, 12288000,  85, 2},
--	{ 2400000, 0, 1, 0x00, 0x50, 0x000000, 0x03, 0x10, 12000000,  80, 2},
--	{ 2822400, 0, 1, 0x00, 0x40, 0x000000, 0x03, 0x10, 11289600, 128, 1},
--	{ 3000000, 0, 1, 0x00, 0x40, 0x000000, 0x03, 0x10, 12000000, 128, 1},
--	{ 3072000, 0, 1, 0x00, 0x3E, 0x800000, 0x03, 0x10, 12000000, 125, 1},
--	{ 4000000, 0, 1, 0x00, 0x30, 0x800000, 0x03, 0x10, 12000000,  96, 1},
--	{ 4096000, 0, 1, 0x00, 0x2E, 0xE00000, 0x03, 0x10, 12000000,  94, 1},
--	{ 5644800, 0, 1, 0x01, 0x40, 0x000000, 0x03, 0x10, 11289600, 128, 1},
--	{ 6000000, 0, 1, 0x01, 0x40, 0x000000, 0x03, 0x10, 12000000, 128, 1},
--	{ 6144000, 0, 1, 0x01, 0x3E, 0x800000, 0x03, 0x10, 12000000, 125, 1},
--	{ 11289600, 0, 0, 0, 0, 0, 0, 0, 11289600, 0, 1},
--	{ 12000000, 0, 0, 0, 0, 0, 0, 0, 12000000, 0, 1},
--	{ 12288000, 0, 0, 0, 0, 0, 0, 0, 12288000, 0, 1},
--	{ 22579200, 1, 0, 0, 0, 0, 0, 0, 22579200, 0, 1},
--	{ 24000000, 1, 0, 0, 0, 0, 0, 0, 24000000, 0, 1},
--	{ 24576000, 1, 0, 0, 0, 0, 0, 0, 24576000, 0, 1}
-+	{ 1411200,  1, 0x00, 0x80, 0x000000, 0x03, 0x10, 11289600, 128, 2},
-+	{ 1536000,  1, 0x00, 0x7D, 0x000000, 0x03, 0x10, 12000000, 125, 2},
-+	{ 2304000,  1, 0x00, 0x55, 0xC00000, 0x02, 0x10, 12288000,  85, 2},
-+	{ 2400000,  1, 0x00, 0x50, 0x000000, 0x03, 0x10, 12000000,  80, 2},
-+	{ 2822400,  1, 0x00, 0x40, 0x000000, 0x03, 0x10, 11289600, 128, 1},
-+	{ 3000000,  1, 0x00, 0x40, 0x000000, 0x03, 0x10, 12000000, 128, 1},
-+	{ 3072000,  1, 0x00, 0x3E, 0x800000, 0x03, 0x10, 12000000, 125, 1},
-+	{ 4000000,  1, 0x00, 0x30, 0x800000, 0x03, 0x10, 12000000,  96, 1},
-+	{ 4096000,  1, 0x00, 0x2E, 0xE00000, 0x03, 0x10, 12000000,  94, 1},
-+	{ 5644800,  1, 0x01, 0x40, 0x000000, 0x03, 0x10, 11289600, 128, 1},
-+	{ 6000000,  1, 0x01, 0x40, 0x000000, 0x03, 0x10, 12000000, 128, 1},
-+	{ 6144000,  1, 0x01, 0x3E, 0x800000, 0x03, 0x10, 12000000, 125, 1},
-+	{ 11289600, 0, 0, 0, 0, 0, 0, 11289600, 0, 1},
-+	{ 12000000, 0, 0, 0, 0, 0, 0, 12000000, 0, 1},
-+	{ 12288000, 0, 0, 0, 0, 0, 0, 12288000, 0, 1},
-+	{ 22579200, 1, 0x03, 0x40, 0x000000, 0x03, 0x10, 11289600, 128, 1},
-+	{ 24000000, 1, 0x03, 0x40, 0x000000, 0x03, 0x10, 12000000, 128, 1},
-+	{ 24576000, 1, 0x03, 0x40, 0x000000, 0x03, 0x10, 12288000, 128, 1}
- };
- 
- static int cs42l42_pll_config(struct snd_soc_component *component)
-@@ -609,10 +608,6 @@ static int cs42l42_pll_config(struct snd_soc_component *component)
- 					24000000)) <<
- 					CS42L42_INTERNAL_FS_SHIFT);
- 
--			snd_soc_component_update_bits(component, CS42L42_MCLK_SRC_SEL,
--					CS42L42_MCLKDIV_MASK,
--					(pll_ratio_table[i].mclk_div <<
--					CS42L42_MCLKDIV_SHIFT));
- 			/* Set up the LRCLK */
- 			fsync = clk / cs42l42->srate;
- 			if (((fsync * cs42l42->srate) != clk)
+ sound/soc/codecs/cs42l42.c | 282 +++++++++++++++++++++++++--------------------
+ sound/soc/codecs/cs42l42.h |   9 +-
+ 2 files changed, 160 insertions(+), 131 deletions(-)
+
 -- 
 2.11.0
 
