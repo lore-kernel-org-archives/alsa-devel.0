@@ -2,88 +2,87 @@ Return-Path: <SRS0=/1nv=PD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FC26C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 13:42:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B28D2C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 13:42:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1D20160EFF
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 13:42:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1D20160EFF
+	by mail.kernel.org (Postfix) with ESMTPS id 2AB0A61040
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 13:42:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2AB0A61040
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9035817BD;
-	Fri, 15 Oct 2021 15:41:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9035817BD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8F6A917CB;
+	Fri, 15 Oct 2021 15:41:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F6A917CB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634305340;
-	bh=Mcksoa6bNBIIivirRee9YAur4w6qGKMn1ufrbRGCC1U=;
+	s=default; t=1634305360;
+	bh=xDMrrdfHeFnYy3iQH3fkoTAjai3Csh2vvXHiJt0TfP0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lXqYAKldCVSWPvcB0e6YWTcJMlB1lxb7mYcni/FwmeLypRMuKIjV6BotfbVJHoCG4
-	 X1M4YW9/+CrD8XX8MrQTF1IHd/oovESPhmoFh2Kj5IZesdrU2ts7jJGFjteIe3pizS
-	 FB5Cuq2MlTNiUBSScMzK5N89UvLIVWM0RbLY99Cw=
+	b=PxNi+Ublp3hWzInUKmV1mjARhave+xkQTPsAYTsPCNIRKVRPOYDOFP2soiJ6YZZPh
+	 LdlIAmjHF3/Cl+nh+fmxJwLWEXrwUB+zbvNCNLqYRM9CTCQ5IZUS/d2nAW78hZ2lfD
+	 5LsPuiDy7viZO8G9hqXFq1WqUo+Gfd5oCG66Udfc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EB628F80551;
-	Fri, 15 Oct 2021 15:37:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 84C47F8055A;
+	Fri, 15 Oct 2021 15:37:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 12EABF804ED; Fri, 15 Oct 2021 15:37:01 +0200 (CEST)
+ id 02B34F8052D; Fri, 15 Oct 2021 15:37:01 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B1D65F804ED
- for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2021 15:36:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1D65F804ED
+ by alsa1.perex.cz (Postfix) with ESMTPS id CCFEFF804FB
+ for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2021 15:36:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CCFEFF804FB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="oRkoMvqz"
+ header.b="P5yZcoTo"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19FCfErO009690; 
- Fri, 15 Oct 2021 08:36:27 -0500
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19F4c2t6023483; 
+ Fri, 15 Oct 2021 08:36:29 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=JiZTEjn3rT94DKEzJlHkz1LwFpkNyEzxsu6DgasEdyI=;
- b=oRkoMvqz4OEAco+zgAvFy6SoVU0ETVYfY4qhKNOapmUTryggEqmsqvcsL/MV/E0QUpMY
- er+gQL/Zmccl8rAwSozQuJcanU8sby/wCCuspfXnpXXlkOfSBdsV7c2WKe9ANuXkLj3N
- ORSq9T2gbCs4CbQl1n7Au5ibpwn7qrJhanJtRLaUH5NrmrqeaZ6v9sNC6jRn4OyY1sSk
- FCT9aNrJoyl+07Eb5+GD1GjPNN+GOqS9WwZnP1gHM7haxZt9uvr4d3lzrc/GP7SbVCrl
- 1iqCqQwad5+HI6bDTuOLVn+CGRpvB4hid/ruQRca3f7MJripNTu+IAxCT2kc7XDJOygv lw== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 3bq1gagp5w-5
+ bh=DtmrbVEDj8YC1fje3yFmaYOH8ysvv0F8w7e6MfV9Rzo=;
+ b=P5yZcoTopoTZIGDoVrYaezTgfodH76Zbl/yUr7YbcxiDfURmmXQaohBtOR5Au31RbmNM
+ LaeSLKdZT4T702rjHY/KBJlZMMSj5q2bubg621zlZCFHMV5wCIeUwjZmjNZY/dkJa3FZ
+ lGB2rcDku6ZZt+YsZTEanRDs68efRH+B5TyVBjOTc25L7amuWh/JtgQNtltA3LoLfiPC
+ Nn5IHfF+V2RgN8Vfr+Iy9B36hkqo64gJtj+Kuq8Ci+WXhxu1XRyl8NuNYyLTvOVV0ke9
+ /rFH060OOxvRMGF6MzydEz3JpHNzd0AUa1atAF3n8fuir6N5Af4F+9gernTPiGma4FhC Sg== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+ by mx0a-001ae601.pphosted.com with ESMTP id 3bq1gagp5v-9
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Fri, 15 Oct 2021 08:36:26 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ Fri, 15 Oct 2021 08:36:29 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.7; Fri, 15 Oct
- 2021 14:36:24 +0100
+ 2021 14:36:25 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.7 via Frontend
- Transport; Fri, 15 Oct 2021 14:36:24 +0100
+ Transport; Fri, 15 Oct 2021 14:36:25 +0100
 Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com
  [198.61.65.254])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 41892B2F;
- Fri, 15 Oct 2021 13:36:24 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 5970111DC;
+ Fri, 15 Oct 2021 13:36:25 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 09/16] ASoC: cs42l42: Prevent NULL pointer deref in interrupt
- handler
-Date: Fri, 15 Oct 2021 14:36:12 +0100
-Message-ID: <20211015133619.4698-10-rf@opensource.cirrus.com>
+Subject: [PATCH 13/16] ASoC: cs42l42: Set correct SRC MCLK
+Date: Fri, 15 Oct 2021 14:36:16 +0100
+Message-ID: <20211015133619.4698-14-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20211015133619.4698-1-rf@opensource.cirrus.com>
 References: <20211015133619.4698-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: gSRN3QdAD9LnPsJJ8JpKjsK9mUAZua9D
-X-Proofpoint-GUID: gSRN3QdAD9LnPsJJ8JpKjsK9mUAZua9D
+X-Proofpoint-ORIG-GUID: ttAWipDQqKL27igCEkVf4C_OTk-ubBdC
+X-Proofpoint-GUID: ttAWipDQqKL27igCEkVf4C_OTk-ubBdC
 X-Proofpoint-Spam-Reason: safe
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
  Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
@@ -102,132 +101,118 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The interrupt handling code was getting the struct device* from a
-struct snd_soc_component* stored in struct cs42l42_private. If the
-interrupt was asserted before ASoC calls component_probe() the
-snd_soc_component* will be NULL.
-
-The stored snd_soc_component* is not actually used for anything other
-than indirectly getting the struct device*. Remove it, and store the
-struct device* in struct cs42l42_private.
+According to the datasheet the SRC MCLK must be as near as possible to
+(125 * sample rate). This means it should be ~6MHz for rates up to 48k
+and ~12MHz for rates above that. As per datasheet table 4-21.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- sound/soc/codecs/cs42l42.c | 28 +++++++++-------------------
- sound/soc/codecs/cs42l42.h |  2 +-
- 2 files changed, 10 insertions(+), 20 deletions(-)
+ sound/soc/codecs/cs42l42.c | 58 ++++++++++++++++++++++++++++++++--------------
+ sound/soc/codecs/cs42l42.h |  1 +
+ 2 files changed, 42 insertions(+), 17 deletions(-)
 
 diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index cf1f68474d21..174f738e9e5a 100644
+index 54b4bc391ee9..05b8ae62b20d 100644
 --- a/sound/soc/codecs/cs42l42.c
 +++ b/sound/soc/codecs/cs42l42.c
-@@ -506,17 +506,7 @@ static int cs42l42_set_jack(struct snd_soc_component *component, struct snd_soc_
- 	return 0;
+@@ -668,22 +668,6 @@ static int cs42l42_pll_config(struct snd_soc_component *component)
+ 					CS42L42_FSYNC_PULSE_WIDTH_MASK,
+ 					CS42L42_FRAC1_VAL(fsync - 1) <<
+ 					CS42L42_FSYNC_PULSE_WIDTH_SHIFT);
+-			/* Set the sample rates (96k or lower) */
+-			snd_soc_component_update_bits(component, CS42L42_FS_RATE_EN,
+-					CS42L42_FS_EN_MASK,
+-					(CS42L42_FS_EN_IASRC_96K |
+-					CS42L42_FS_EN_OASRC_96K) <<
+-					CS42L42_FS_EN_SHIFT);
+-			/* Set the input/output internal MCLK clock ~12 MHz */
+-			snd_soc_component_update_bits(component, CS42L42_IN_ASRC_CLK,
+-					CS42L42_CLK_IASRC_SEL_MASK,
+-					CS42L42_CLK_IASRC_SEL_12 <<
+-					CS42L42_CLK_IASRC_SEL_SHIFT);
+-			snd_soc_component_update_bits(component,
+-					CS42L42_OUT_ASRC_CLK,
+-					CS42L42_CLK_OASRC_SEL_MASK,
+-					CS42L42_CLK_OASRC_SEL_12 <<
+-					CS42L42_CLK_OASRC_SEL_SHIFT);
+ 			if (pll_ratio_table[i].mclk_src_sel == 0) {
+ 				/* Pass the clock straight through */
+ 				snd_soc_component_update_bits(component,
+@@ -746,6 +730,39 @@ static int cs42l42_pll_config(struct snd_soc_component *component)
+ 	return -EINVAL;
  }
  
--static int cs42l42_component_probe(struct snd_soc_component *component)
--{
--	struct cs42l42_private *cs42l42 = snd_soc_component_get_drvdata(component);
--
--	cs42l42->component = component;
--
--	return 0;
--}
--
- static const struct snd_soc_component_driver soc_component_dev_cs42l42 = {
--	.probe			= cs42l42_component_probe,
- 	.set_jack		= cs42l42_set_jack,
- 	.dapm_widgets		= cs42l42_dapm_widgets,
- 	.num_dapm_widgets	= ARRAY_SIZE(cs42l42_dapm_widgets),
-@@ -1168,7 +1158,7 @@ static void cs42l42_process_hs_type_detect(struct cs42l42_private *cs42l42)
- 	 */
- 	if (cs42l42->hs_type == CS42L42_PLUG_INVALID ||
- 		cs42l42->hs_type == CS42L42_PLUG_HEADPHONE) {
--		dev_dbg(cs42l42->component->dev, "Running Manual Detection Fallback\n");
-+		dev_dbg(cs42l42->dev, "Running Manual Detection Fallback\n");
- 		cs42l42_manual_hs_type_detect(cs42l42);
- 	}
- 
-@@ -1467,19 +1457,19 @@ static int cs42l42_handle_button_press(struct cs42l42_private *cs42l42)
- 	switch (bias_level) {
- 	case 1: /* Function C button press */
- 		bias_level = SND_JACK_BTN_2;
--		dev_dbg(cs42l42->component->dev, "Function C button press\n");
-+		dev_dbg(cs42l42->dev, "Function C button press\n");
- 		break;
- 	case 2: /* Function B button press */
- 		bias_level = SND_JACK_BTN_1;
--		dev_dbg(cs42l42->component->dev, "Function B button press\n");
-+		dev_dbg(cs42l42->dev, "Function B button press\n");
- 		break;
- 	case 3: /* Function D button press */
- 		bias_level = SND_JACK_BTN_3;
--		dev_dbg(cs42l42->component->dev, "Function D button press\n");
-+		dev_dbg(cs42l42->dev, "Function D button press\n");
- 		break;
- 	case 4: /* Function A button press */
- 		bias_level = SND_JACK_BTN_0;
--		dev_dbg(cs42l42->component->dev, "Function A button press\n");
-+		dev_dbg(cs42l42->dev, "Function A button press\n");
- 		break;
- 	default:
- 		bias_level = 0;
-@@ -1553,7 +1543,6 @@ static const struct cs42l42_irq_params irq_params_table[] = {
- static irqreturn_t cs42l42_irq_thread(int irq, void *data)
++static void cs42l42_src_config(struct snd_soc_component *component, unsigned int sample_rate)
++{
++	struct cs42l42_private *cs42l42 = snd_soc_component_get_drvdata(component);
++	unsigned int fs;
++
++	/* Don't reconfigure if there is an audio stream running */
++	if (cs42l42->stream_use)
++		return;
++
++	/* SRC MCLK must be as close as possible to 125 * sample rate */
++	if (sample_rate <= 48000)
++		fs = CS42L42_CLK_IASRC_SEL_6;
++	else
++		fs = CS42L42_CLK_IASRC_SEL_12;
++
++	/* Set the sample rates (96k or lower) */
++	snd_soc_component_update_bits(component,
++				      CS42L42_FS_RATE_EN,
++				      CS42L42_FS_EN_MASK,
++				      (CS42L42_FS_EN_IASRC_96K |
++				       CS42L42_FS_EN_OASRC_96K) <<
++				      CS42L42_FS_EN_SHIFT);
++
++	snd_soc_component_update_bits(component,
++				      CS42L42_IN_ASRC_CLK,
++				      CS42L42_CLK_IASRC_SEL_MASK,
++				      fs << CS42L42_CLK_IASRC_SEL_SHIFT);
++	snd_soc_component_update_bits(component,
++				      CS42L42_OUT_ASRC_CLK,
++				      CS42L42_CLK_OASRC_SEL_MASK,
++				      fs << CS42L42_CLK_OASRC_SEL_SHIFT);
++}
++
+ static int cs42l42_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
  {
- 	struct cs42l42_private *cs42l42 = (struct cs42l42_private *)data;
--	struct snd_soc_component *component = cs42l42->component;
- 	unsigned int stickies[12];
- 	unsigned int masks[12];
- 	unsigned int current_plug_status;
-@@ -1600,7 +1589,7 @@ static irqreturn_t cs42l42_irq_thread(int irq, void *data)
- 			default:
- 				break;
- 			}
--			dev_dbg(component->dev, "Auto detect done (%d)\n", cs42l42->hs_type);
-+			dev_dbg(cs42l42->dev, "Auto detect done (%d)\n", cs42l42->hs_type);
- 		}
+ 	struct snd_soc_component *component = codec_dai->component;
+@@ -836,6 +853,7 @@ static int cs42l42_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	unsigned int channels = params_channels(params);
+ 	unsigned int width = (params_width(params) / 8) - 1;
+ 	unsigned int val = 0;
++	int ret;
+ 
+ 	cs42l42->srate = params_rate(params);
+ 	cs42l42->bclk = snd_soc_params_to_bclk(params);
+@@ -889,7 +907,13 @@ static int cs42l42_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		break;
  	}
  
-@@ -1634,7 +1623,7 @@ static irqreturn_t cs42l42_irq_thread(int irq, void *data)
- 						    SND_JACK_BTN_0 | SND_JACK_BTN_1 |
- 						    SND_JACK_BTN_2 | SND_JACK_BTN_3);
+-	return cs42l42_pll_config(component);
++	ret = cs42l42_pll_config(component);
++	if (ret)
++		return ret;
++
++	cs42l42_src_config(component, params_rate(params));
++
++	return 0;
+ }
  
--				dev_dbg(component->dev, "Unplug event\n");
-+				dev_dbg(cs42l42->dev, "Unplug event\n");
- 			}
- 			break;
- 
-@@ -1650,7 +1639,7 @@ static irqreturn_t cs42l42_irq_thread(int irq, void *data)
- 			CS42L42_M_HSBIAS_HIZ_MASK)) {
- 
- 			if (current_button_status & CS42L42_M_DETECT_TF_MASK) {
--				dev_dbg(component->dev, "Button released\n");
-+				dev_dbg(cs42l42->dev, "Button released\n");
- 				report = 0;
- 			} else if (current_button_status & CS42L42_M_DETECT_FT_MASK) {
- 				report = cs42l42_handle_button_press(cs42l42);
-@@ -2004,6 +1993,7 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client,
- 	if (!cs42l42)
- 		return -ENOMEM;
- 
-+	cs42l42->dev = &i2c_client->dev;
- 	i2c_set_clientdata(i2c_client, cs42l42);
- 
- 	cs42l42->regmap = devm_regmap_init_i2c(i2c_client, &cs42l42_regmap);
+ static int cs42l42_set_sysclk(struct snd_soc_dai *dai,
 diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
-index 2343213d0cdb..d30643398084 100644
+index 024760300937..46074624d300 100644
 --- a/sound/soc/codecs/cs42l42.h
 +++ b/sound/soc/codecs/cs42l42.h
-@@ -831,7 +831,7 @@ static const char *const cs42l42_supply_names[CS42L42_NUM_SUPPLIES] = {
+@@ -347,6 +347,7 @@
+ #define CS42L42_IN_ASRC_CLK		(CS42L42_PAGE_12 + 0x0A)
+ #define CS42L42_CLK_IASRC_SEL_SHIFT	0
+ #define CS42L42_CLK_IASRC_SEL_MASK	(1 << CS42L42_CLK_IASRC_SEL_SHIFT)
++#define CS42L42_CLK_IASRC_SEL_6		0
+ #define CS42L42_CLK_IASRC_SEL_12	1
  
- struct  cs42l42_private {
- 	struct regmap *regmap;
--	struct snd_soc_component *component;
-+	struct device *dev;
- 	struct regulator_bulk_data supplies[CS42L42_NUM_SUPPLIES];
- 	struct gpio_desc *reset_gpio;
- 	struct completion pdn_done;
+ #define CS42L42_OUT_ASRC_CLK		(CS42L42_PAGE_12 + 0x0B)
 -- 
 2.11.0
 
