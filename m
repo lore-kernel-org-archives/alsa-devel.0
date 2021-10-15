@@ -2,82 +2,91 @@ Return-Path: <SRS0=/1nv=PD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02BE7C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 07:30:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E21EFC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 07:40:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 23C6C61108
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 07:30:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 23C6C61108
+	by mail.kernel.org (Postfix) with ESMTPS id A8D6061053
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 07:40:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A8D6061053
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7C010167F;
-	Fri, 15 Oct 2021 09:29:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7C010167F
+	by alsa0.perex.cz (Postfix) with ESMTPS id DAE251675;
+	Fri, 15 Oct 2021 09:39:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DAE251675
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634283010;
-	bh=BEz+zkX+wzeeqHtoIOBf/WkJXepbry5r3llgZBJVz9c=;
+	s=default; t=1634283607;
+	bh=khjQDC1VGQROYK918EyU44PQl7QT5tms+5Qi94ybGDo=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hKa5HVHPULUs4ii4eXJo/3I8EJN97Ha90SjNhdUcWCxpqvwAnE6/qHgiwr1emXAf7
-	 O9M1zWp2Ox9DyoNW4wN7+E1DUS7bwEsv1lmRf2HthGCKwWPlgmS8Dmk2QQIztCYM11
-	 SjPKTfZHemnqGAsXezA5M0IXWxa/x7yQexuHfE3U=
+	b=i/oMNnD4cgV0fOSywA6ZHsV7TQLhKZecaArrLhl2KD/5LOSS5y7tHn9OrlorFhRxr
+	 996Xf08ZW64VNh0soRXxVJc2Rc+mjwxyww/KjmAAqzVlQRKIPPiWLZWA2ECgubYLoo
+	 PHH/AN+ZIJRx9edHM8XnJgWlZF5Rbt+0tYAggXSc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 02445F80290;
-	Fri, 15 Oct 2021 09:29:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 76D6AF8025B;
+	Fri, 15 Oct 2021 09:39:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2338AF804D8; Fri, 15 Oct 2021 09:29:13 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id D719FF80269; Fri, 15 Oct 2021 09:39:15 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A696FF8012E
- for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2021 09:29:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A696FF8012E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1FE90F8016C
+ for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2021 09:39:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1FE90F8016C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="ZkpTomVf"; 
+ header.b="oj51HIkl"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="uda9+rf4"
+ header.b="n55k6ECZ"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 16D221F770;
- Fri, 15 Oct 2021 07:28:56 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id D33DC21A64;
+ Fri, 15 Oct 2021 07:39:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1634282936; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1634283549; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=URzxolCiRr46x/336/bgGGl3u3PTRUZEB1slDuiiUj0=;
- b=ZkpTomVf3QXaGfiTHkAYWZZN2GklOJZUQO5xFXVk/NkH4VldG2Ocs5WVCNySnNI9xSB3wp
- vdWEzEYgsbbw8UzxUatHql+mTPJsyJuPMUpBi1y8NRc3Z4fCwzvGJ2hhWDfe656ECguLjb
- ihmIiIo5or9+RAiOPPfpqK5BgsPd6/s=
+ bh=olUjLJNS3fOuL0i9/OYwvQaN8GuL6EwBRWO7zYexHW8=;
+ b=oj51HIkl500rl6EIAe+8j9/mwtjuHYj5RC3y074CqaUILqgLhCqVhW1mkafLPQBvSeSGY9
+ N/h7A8W1nYo8dxyRSiITED7powR8KpEh7vT6ombQVsd+tE9m1GzE5iLqwZ3lOEdDpJUwdB
+ lwdMVQotzwvcHXnfUm5CrnejCrdIVIk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1634282936;
+ s=susede2_ed25519; t=1634283549;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=URzxolCiRr46x/336/bgGGl3u3PTRUZEB1slDuiiUj0=;
- b=uda9+rf4um/vBBjLDLERd0Xx7CGHpaC+rayxfcIri4kWLD3e5qP6QorL8ra7luzcytbNZS
- 7ZlHn186zkVzdrBw==
+ bh=olUjLJNS3fOuL0i9/OYwvQaN8GuL6EwBRWO7zYexHW8=;
+ b=n55k6ECZ1kSS1C0b59SV7gXz+NMbvs4ZrXU+QrX8qSTsiwxV846PieN37fIuMff3R3dYdb
+ aOO6bgIzOFjQFNCg==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 0454FA3B85;
- Fri, 15 Oct 2021 07:28:54 +0000 (UTC)
-Date: Fri, 15 Oct 2021 09:28:54 +0200
-Message-ID: <s5ho87qvj9l.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id 2C198A3B84;
+ Fri, 15 Oct 2021 07:39:09 +0000 (UTC)
+Date: Fri, 15 Oct 2021 09:39:09 +0200
+Message-ID: <s5hmtnavisi.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Brendan Grieve <brendan@grieve.com.au>
-Subject: Re: [PATCH] sound/usb: Provide quirk for Sennheiser GSP670 Headset
-In-Reply-To: <20211015025335.196592-1-brendan@grieve.com.au>
-References: <20211015025335.196592-1-brendan@grieve.com.au>
+To: Sameer Pujar <spujar@nvidia.com>
+Subject: Re: [RFC PATCH v3 05/13] ASoC: soc-pcm: align BE 'atomicity' with
+ that of the FE
+In-Reply-To: <2847a6d1-d97f-4161-c8b6-03672cf6645c@nvidia.com>
+References: <20211013143050.244444-1-pierre-louis.bossart@linux.intel.com>
+ <20211013143050.244444-6-pierre-louis.bossart@linux.intel.com>
+ <2847a6d1-d97f-4161-c8b6-03672cf6645c@nvidia.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, vkoul@kernel.org, broonie@kernel.org,
+ Gyeongtaek Lee <gt82.lee@samsung.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,21 +102,65 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 15 Oct 2021 04:53:35 +0200,
-Brendan Grieve wrote:
+On Fri, 15 Oct 2021 08:24:41 +0200,
+Sameer Pujar wrote:
 > 
-> As per discussion at: https://github.com/szszoke/sennheiser-gsp670-pulseaudio-profile/issues/13
 > 
-> The GSP670 has 2 playback and 1 recording device that by default are
-> detected in an incompatible order for alsa. This may have been done to make
-> it compatible for the console by the manufacturer and only affects the
-> latest firmware which uses its own ID.
 > 
-> This quirk will resolve this by reordering the channels.
+> On 10/13/2021 8:00 PM, Pierre-Louis Bossart wrote:
+> > Since the flow for DPCM is based on taking a lock for the FE first, we
+> > need to make sure during the connection between a BE and an FE that
+> > they both use the same 'atomicity', otherwise we may sleep in atomic
+> > context.
+> >
+> > If the FE is nonatomic, this patch forces the BE to be nonatomic as
+> > well. That should have no negative impact since the BE 'inherits' the
+> > FE properties.
+> >
+> > However, if the FE is atomic and the BE is not, then the configuration
+> > is flagged as invalid.
 > 
-> Signed-off-by: Brendan Grieve <brendan@grieve.com.au>
+> In normal PCM, atomicity seems to apply only for trigger(). Other
+> callbacks like prepare, hw_params are executed in non-atomic
+> context. So when 'nonatomic' flag is false, still it is possible to
+> sleep in a prepare or hw_param callback and this is true for FE as
+> well. So I am not sure if atomicity is applicable as a whole even for
+> FE.
+> 
+> At this point it does not cause serious problems, but with subsequent
+> patches (especially when patch 7/13 is picked) I see failures. Please
+> refer to patch 7/13 thread for more details.
+> 
+> 
+> I am wondering if it is possible to only use locks internally for DPCM
+> state management and decouple BE callbacks from this, like normal PCMs
+> do?
 
-Thanks, applied now.
+Actually the patch looks like an overkill by adding the FE stream lock
+at every loop, and this caused the problem, AFAIU.
+
+Basically we need to protect the link addition / deletion while the
+list traversal (there is a need for protection of BE vs BE access
+race, but that's a different code path).  For the normal cases, it
+seems already protected by card->pcm_mutex, but the problem is the FE
+trigger case.  It was attempted by dpcm_lock, but that failed because
+it couldn't be applied properly there.
+
+That said, what we'd need is only:
+- Drop dpcm_lock codes once
+- Put FE stream lock around dpcm_be_connect() and dpcm_be_disconnect()
+
+That should suffice for the race at trigger.  The FE stream lock is
+already taken at trigger callback, and the rest list addition /
+deletion are called from different code paths without stream locks, so
+the explicit FE stream lock is needed there.
+
+In addition, a lock around dpcm_show_state() might be needed to be
+replaced with card->pcm_mutex, and we may need to revisit whether all
+other paths take card->pcm_mutex.
+
+Also, BE-vs-BE race can be protected by taking a BE lock inside
+dpcm_be_dai_trigger().
 
 
 Takashi
