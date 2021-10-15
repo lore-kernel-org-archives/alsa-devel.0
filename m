@@ -2,65 +2,65 @@ Return-Path: <SRS0=/1nv=PD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B48FC433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 13:38:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 99ED2C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 13:38:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 93C2A61151
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 13:38:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 93C2A61151
+	by mail.kernel.org (Postfix) with ESMTPS id 1EAC661151
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 13:38:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1EAC661151
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EEDCD16E9;
-	Fri, 15 Oct 2021 15:37:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EEDCD16E9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9011916F7;
+	Fri, 15 Oct 2021 15:37:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9011916F7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634305100;
-	bh=lkrZWS0Tj5w0xK/nlQbLsCMhT8HafRMcX/Rp/Kbvnhc=;
+	s=default; t=1634305113;
+	bh=gcinP34PTVt3HnQs5KE5tr7QuQS3sGJqUMZ4s+jkLuU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=G5Rzn64kUVqR7Y/2nip21H3HqTVc8/SoJF7eQlO7/Q+irYwXMv2eCGHznDPQl004N
-	 cviUh6UihIvmDNb5TroGV2ErISUl/xbkxKtQNoDZ+06qjO5doINgdkOfgavLx+S0nd
-	 FJqtZ58WM5KZHE4fiUraeR2xUkuciiOXDq3zjYh4=
+	b=OxGx5r5pqCj6GmL50vd1aqW/jScGSwrgio0NOZWWWR4oz+5IaJOnAX586Rq+cXk9i
+	 rKUXVEmKAX9U50ADbTNUQCy0oEWJ1yKcLPWxlhUeSsXfCwRRPGuk33MHVOPWQ7f+3y
+	 P2SWBcVIG+OJJec9ky4/uhHMSHJ4SLDKSR83ITlE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 08E57F80506;
-	Fri, 15 Oct 2021 15:36:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1A1C1F804E5;
+	Fri, 15 Oct 2021 15:36:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EBFC7F80506; Fri, 15 Oct 2021 15:36:41 +0200 (CEST)
+ id 6D47DF80506; Fri, 15 Oct 2021 15:36:43 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6229CF8028D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 68DCBF804E4
  for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2021 15:36:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6229CF8028D
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68DCBF804E4
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="cKyrsZma"
+ header.b="k0obp/Tq"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19FCfErM009690; 
- Fri, 15 Oct 2021 08:36:25 -0500
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19F4c2t1023483; 
+ Fri, 15 Oct 2021 08:36:26 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=dzQo95A00QtC5PZqcJQ7VCfKoMr/qtiEjfJl9QyDCVQ=;
- b=cKyrsZmay+g3onmVI6nzMpfCfThSARao4p+0nuT+91x+xnVrHSJVyU5f78qz1NGpKK7i
- Js2oGyZuUbrr2st7bCtj6LrLHepYLw3Pn09kM2ERHc8OGHlt1xNRVWN35VuW40VfzLfH
- OYDVyAajUZ1nsbFrRy5SJrKJjdVBQtuYZQIoDGCK/7UC3fepBsRXFCly7h+IDCkuOyM9
- 8yEDnJlJG0Dt7X7XqDAUo9sihk1hc1kC2FYQdk5onbqP0V0IYiTQr73W7wtmZC60Qwni
- xUhKuX+YNCiZAnyeM/zTVIR5UYvSGg7qlBLL6auaEsQMULbCQrmbaRaevJptPdZ5UCtR Ew== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 3bq1gagp5w-3
+ bh=l/+RJ9FDEJzZTolUJu3mZT8zz3TFCqtHXqHMWM5hWn4=;
+ b=k0obp/Tq/+Ax4lMJ6ChTaEwYAw08PyWK6aiUo0FcP7QZ2ZHsGlZ65xUtGUqn1799xr88
+ ve/qaSUw4kR9Y0E0/TSjzdrOvUJUmiP3dM5McCsNAbHDmswsYsZDR0P3lyFWUSBdjr7x
+ Qgoi+eE3H8AnMHM8KN7SZlALvblYSYItt4P5OP++dXJVqzwPQ1wUNvthGPI6rbb8WSbQ
+ EixXuzlfdP+1wM791lDwY3p1zwIpfz+H3LWgQXfoy4gsTKWtq3r8AiJpl94M60N7Uq5G
+ KGSLxk+9t4pKIT6ZtwB51s6d+U5OgZMues73W+BC1EDkzL/6A565XBRoW8kXtzoDaFC0 tQ== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+ by mx0a-001ae601.pphosted.com with ESMTP id 3bq1gagp5v-4
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Fri, 15 Oct 2021 08:36:25 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ Fri, 15 Oct 2021 08:36:26 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.7; Fri, 15 Oct
  2021 14:36:23 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
@@ -68,21 +68,22 @@ Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  Transport; Fri, 15 Oct 2021 14:36:23 +0100
 Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com
  [198.61.65.254])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id DB5E946D;
- Fri, 15 Oct 2021 13:36:22 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id AE71746D;
+ Fri, 15 Oct 2021 13:36:23 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 04/16] ASoC: cs42l42: Don't set defaults for volatile registers
-Date: Fri, 15 Oct 2021 14:36:07 +0100
-Message-ID: <20211015133619.4698-5-rf@opensource.cirrus.com>
+Subject: [PATCH 07/16] ASoC: cs42l42: Correct power-up sequence to match
+ datasheet
+Date: Fri, 15 Oct 2021 14:36:10 +0100
+Message-ID: <20211015133619.4698-8-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20211015133619.4698-1-rf@opensource.cirrus.com>
 References: <20211015133619.4698-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: VVTmusYFh5SH1dCBqv6VaAiTwwP83VPM
-X-Proofpoint-GUID: VVTmusYFh5SH1dCBqv6VaAiTwwP83VPM
+X-Proofpoint-ORIG-GUID: 66iAUKjlTzJqnu9hdaA-sH5t7G3c3Eak
+X-Proofpoint-GUID: 66iAUKjlTzJqnu9hdaA-sH5t7G3c3Eak
 X-Proofpoint-Spam-Reason: safe
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
  Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
@@ -101,83 +102,91 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Volatile registers don't need a default value.
+The power-up sequence mandated in the datasheet is:
+
+- VP must turn on first
+- VA, VCP, VL, in any order
+- VD_FILT after VL
+- RESET must be asserted while VP turns on
+
+- VD_FILT must turn off before VL
+- VP must turn off last
+
+This patch fixes the order the regulators are enabled and holds RESET
+asserted around the power-up. The datasheet power-down order is the reverse
+of the power-up order so this is automatically covered by listing the bulk
+regulators in power-up order.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Fixes: 2c394ca79604 ("ASoC: Add support for CS42L42 codec")
 ---
- sound/soc/codecs/cs42l42.c | 20 --------------------
- 1 file changed, 20 deletions(-)
+ sound/soc/codecs/cs42l42.c | 22 ++++++++++++----------
+ sound/soc/codecs/cs42l42.h |  4 ++--
+ 2 files changed, 14 insertions(+), 12 deletions(-)
 
 diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index a5c460f2ec8c..c4efdc8f5d24 100644
+index 629a0783e693..420e16563c45 100644
 --- a/sound/soc/codecs/cs42l42.c
 +++ b/sound/soc/codecs/cs42l42.c
-@@ -41,7 +41,6 @@
- static const struct reg_default cs42l42_reg_defaults[] = {
- 	{ CS42L42_FRZ_CTL,			0x00 },
- 	{ CS42L42_SRC_CTL,			0x10 },
--	{ CS42L42_MCLK_STATUS,			0x02 },
- 	{ CS42L42_MCLK_CTL,			0x02 },
- 	{ CS42L42_SFTRAMP_RATE,			0xA4 },
- 	{ CS42L42_I2C_DEBOUNCE,			0x88 },
-@@ -57,11 +56,9 @@ static const struct reg_default cs42l42_reg_defaults[] = {
- 	{ CS42L42_RSENSE_CTL3,			0x1B },
- 	{ CS42L42_TSENSE_CTL,			0x1B },
- 	{ CS42L42_TSRS_INT_DISABLE,		0x00 },
--	{ CS42L42_TRSENSE_STATUS,		0x00 },
- 	{ CS42L42_HSDET_CTL1,			0x77 },
- 	{ CS42L42_HSDET_CTL2,			0x00 },
- 	{ CS42L42_HS_SWITCH_CTL,		0xF3 },
--	{ CS42L42_HS_DET_STATUS,		0x00 },
- 	{ CS42L42_HS_CLAMP_DISABLE,		0x00 },
- 	{ CS42L42_MCLK_SRC_SEL,			0x00 },
- 	{ CS42L42_SPDIF_CLK_CFG,		0x00 },
-@@ -75,18 +72,6 @@ static const struct reg_default cs42l42_reg_defaults[] = {
- 	{ CS42L42_IN_ASRC_CLK,			0x00 },
- 	{ CS42L42_OUT_ASRC_CLK,			0x00 },
- 	{ CS42L42_PLL_DIV_CFG1,			0x00 },
--	{ CS42L42_ADC_OVFL_STATUS,		0x00 },
--	{ CS42L42_MIXER_STATUS,			0x00 },
--	{ CS42L42_SRC_STATUS,			0x00 },
--	{ CS42L42_ASP_RX_STATUS,		0x00 },
--	{ CS42L42_ASP_TX_STATUS,		0x00 },
--	{ CS42L42_CODEC_STATUS,			0x00 },
--	{ CS42L42_DET_INT_STATUS1,		0x00 },
--	{ CS42L42_DET_INT_STATUS2,		0x00 },
--	{ CS42L42_SRCPL_INT_STATUS,		0x00 },
--	{ CS42L42_VPMON_STATUS,			0x00 },
--	{ CS42L42_PLL_LOCK_STATUS,		0x00 },
--	{ CS42L42_TSRS_PLUG_STATUS,		0x00 },
- 	{ CS42L42_ADC_OVFL_INT_MASK,		0x01 },
- 	{ CS42L42_MIXER_INT_MASK,		0x0F },
- 	{ CS42L42_SRC_INT_MASK,			0x0F },
-@@ -105,8 +90,6 @@ static const struct reg_default cs42l42_reg_defaults[] = {
- 	{ CS42L42_PLL_CTL3,			0x10 },
- 	{ CS42L42_PLL_CAL_RATIO,		0x80 },
- 	{ CS42L42_PLL_CTL4,			0x03 },
--	{ CS42L42_LOAD_DET_RCSTAT,		0x00 },
--	{ CS42L42_LOAD_DET_DONE,		0x00 },
- 	{ CS42L42_LOAD_DET_EN,			0x00 },
- 	{ CS42L42_HSBIAS_SC_AUTOCTL,		0x03 },
- 	{ CS42L42_WAKE_CTL,			0xC0 },
-@@ -115,8 +98,6 @@ static const struct reg_default cs42l42_reg_defaults[] = {
- 	{ CS42L42_MISC_DET_CTL,			0x03 },
- 	{ CS42L42_MIC_DET_CTL1,			0x1F },
- 	{ CS42L42_MIC_DET_CTL2,			0x2F },
--	{ CS42L42_DET_STATUS1,			0x00 },
--	{ CS42L42_DET_STATUS2,			0x00 },
- 	{ CS42L42_DET_INT1_MASK,		0xE0 },
- 	{ CS42L42_DET_INT2_MASK,		0xFF },
- 	{ CS42L42_HS_BIAS_CTL,			0xC2 },
-@@ -182,7 +163,6 @@ static const struct reg_default cs42l42_reg_defaults[] = {
- 	{ CS42L42_ASP_RX_DAI1_CH2_AP_RES,	0x03 },
- 	{ CS42L42_ASP_RX_DAI1_CH2_BIT_MSB,	0x00 },
- 	{ CS42L42_ASP_RX_DAI1_CH2_BIT_LSB,	0x00 },
--	{ CS42L42_SUB_REVID,			0x03 },
+@@ -2025,22 +2025,23 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client,
+ 		return ret;
+ 	}
+ 
+-	ret = regulator_bulk_enable(ARRAY_SIZE(cs42l42->supplies),
+-				    cs42l42->supplies);
+-	if (ret != 0) {
+-		dev_err(&i2c_client->dev,
+-			"Failed to enable supplies: %d\n", ret);
+-		return ret;
+-	}
+-
+-	/* Reset the Device */
++	/* Hold device in reset while it powers up */
+ 	cs42l42->reset_gpio = devm_gpiod_get(&i2c_client->dev, "reset", GPIOD_OUT_LOW);
+ 	if (IS_ERR(cs42l42->reset_gpio)) {
+ 		ret = PTR_ERR(cs42l42->reset_gpio);
+ 		dev_err(&i2c_client->dev, "Failed to request reset gpio: %d\n", ret);
+-		goto err_disable;
++		return ret;
+ 	}
+ 
++	ret = regulator_bulk_enable(ARRAY_SIZE(cs42l42->supplies),
++				    cs42l42->supplies);
++	if (ret != 0) {
++		dev_err(&i2c_client->dev,
++			"Failed to enable supplies: %d\n", ret);
++		return ret;
++	}
++
++	/* Release reset and wait for boot */
+ 	gpiod_set_value_cansleep(cs42l42->reset_gpio, 1);
+ 	usleep_range(CS42L42_BOOT_TIME_US, CS42L42_BOOT_TIME_US * 2);
+ 
+@@ -2116,6 +2117,7 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client,
+ 	return 0;
+ 
+ err_disable:
++	gpiod_set_value_cansleep(cs42l42->reset_gpio, 0);
+ 	regulator_bulk_disable(ARRAY_SIZE(cs42l42->supplies),
+ 				cs42l42->supplies);
+ 	return ret;
+diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
+index 0704c902475f..2343213d0cdb 100644
+--- a/sound/soc/codecs/cs42l42.h
++++ b/sound/soc/codecs/cs42l42.h
+@@ -822,11 +822,11 @@
+ #define CS42L42_PLL_LOCK_TIMEOUT_US	1250
+ 
+ static const char *const cs42l42_supply_names[CS42L42_NUM_SUPPLIES] = {
+-	"VA",
+ 	"VP",
++	"VA",
+ 	"VCP",
+-	"VD_FILT",
+ 	"VL",
++	"VD_FILT",
  };
  
- static bool cs42l42_readable_register(struct device *dev, unsigned int reg)
+ struct  cs42l42_private {
 -- 
 2.11.0
 
