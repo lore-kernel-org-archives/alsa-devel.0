@@ -2,56 +2,56 @@ Return-Path: <SRS0=/1nv=PD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 57355C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 16:18:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3ACB5C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 16:18:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D25D961053
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 16:18:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D25D961053
+	by mail.kernel.org (Postfix) with ESMTPS id AD7A96109E
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 16:18:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AD7A96109E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 31FB817DF;
-	Fri, 15 Oct 2021 18:17:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31FB817DF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 11701184D;
+	Fri, 15 Oct 2021 18:17:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 11701184D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634314707;
-	bh=ILHZJYRigU931UgIfc50nrd5ZO2J9FTaHfMBAEbawYk=;
+	s=default; t=1634314727;
+	bh=FlPO2I7xIXAxjEaHrt3hTXXegehNXuD43FwrCXID30k=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gRXeZCOyiceaxBG3YkHt1mEtQbRcHQqvwOzFLcDWFy3xAByyBCAxyVyhwa3r2d7BO
-	 xQAljXgQXAkdqA+J69Hkoj4N0RSnqAxP6oaaUN0BdVtVIFryQTBU0Xu2YZcqQ9NCMx
-	 CCftmFHZIVVDRY29XXe9b/SRwovpe7vop2knDGkY=
+	b=AlSQMoNDEBocw/xWHz2CiaK7QLfecmzsT+Yer05uNSfLi1A1Gnm6jbLw2+Lp3/wiE
+	 /kF9dvA3dZBYQtxXb3nZ935Ndc5wXfvzgr5nnEqnsO+QEo5doU7u/Rm2paA8XU7Qnk
+	 Qq4wZMswtFwV6jaJKA7tPfpmP5M/QPRzxkAsS7kQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 714DAF804FB;
-	Fri, 15 Oct 2021 18:16:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 427CFF804FF;
+	Fri, 15 Oct 2021 18:16:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5B9A1F80269; Fri, 15 Oct 2021 18:15:59 +0200 (CEST)
+ id 4902FF80269; Fri, 15 Oct 2021 18:16:00 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E48F1F8012E
- for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2021 18:15:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E48F1F8012E
-X-IronPort-AV: E=McAfee;i="6200,9189,10138"; a="225404684"
-X-IronPort-AV: E=Sophos;i="5.85,376,1624345200"; d="scan'208";a="225404684"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4F650F804AC
+ for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2021 18:15:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F650F804AC
+X-IronPort-AV: E=McAfee;i="6200,9189,10138"; a="225404694"
+X-IronPort-AV: E=Sophos;i="5.85,376,1624345200"; d="scan'208";a="225404694"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Oct 2021 09:11:21 -0700
+ 15 Oct 2021 09:11:23 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,376,1624345200"; d="scan'208";a="564375298"
+X-IronPort-AV: E=Sophos;i="5.85,376,1624345200"; d="scan'208";a="564375309"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by FMSMGA003.fm.intel.com with ESMTP; 15 Oct 2021 09:11:18 -0700
+ by FMSMGA003.fm.intel.com with ESMTP; 15 Oct 2021 09:11:21 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 5/6] ASoC: topology: Change topology device to card device
-Date: Fri, 15 Oct 2021 18:12:56 +0200
-Message-Id: <20211015161257.27052-6-cezary.rojewski@intel.com>
+Subject: [PATCH 6/6] ASoC: Stop dummy from overriding hwparams
+Date: Fri, 15 Oct 2021 18:12:57 +0200
+Message-Id: <20211015161257.27052-7-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211015161257.27052-1-cezary.rojewski@intel.com>
 References: <20211015161257.27052-1-cezary.rojewski@intel.com>
@@ -80,49 +80,52 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 
-Topology needs device for prints and resource allocation. So far,
-component->dev is used. However, this may lead to high memory use in
-model where card is an independent driver which can be reloaded and
-topology is loaded from component's probe() method. Every time machine
-driver is reloaded topology is being loaded anew, each time allocating
-new memory. Said memory will only be freed when component itself is
-being freed.
+In case that there are other components assigned to runtime device,
+depending on order dummy component can override their params with its
+own, which shouldn't happen. Check if there are any other components
+assigned to rtd and if so, skip setting hwparams.
 
-Address the problem by tying topology to component->card->dev instead,
-so memory occupied by the topology is freed whenever related machine
-device gets removed.
+Occurs when using topology where 'snd-soc-dummy' gets assigned by
+default as codec and platform component.
+
+Alternative approach would be to copy whole dummy handling and rename it
+to "snd-soc-null" or something similar. And remove hwparams assignment
+to make it really do nothing.
 
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/soc-topology.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/soc-utils.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 712b706af677..53b8f88998e7 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -2668,17 +2668,17 @@ int snd_soc_tplg_component_load(struct snd_soc_component *comp,
- 	/*
- 	 * check if we have sane parameters:
- 	 * comp - needs to exist to keep and reference data while parsing
--	 * comp->dev - used for resource management and prints
- 	 * comp->card - used for setting card related parameters
-+	 * comp->card->dev - used for resource management and prints
- 	 * fw - we need it, as it is the very thing we parse
- 	 */
--	if (!comp || !comp->dev || !comp->card || !fw)
-+	if (!comp || !comp->card || !comp->card->dev || !fw)
- 		return -EINVAL;
+diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
+index 299b5d6ebfd1..a4efe7e52a8b 100644
+--- a/sound/soc/soc-utils.c
++++ b/sound/soc/soc-utils.c
+@@ -63,10 +63,23 @@ static const struct snd_pcm_hardware dummy_dma_hardware = {
+ 	.periods_max		= 128,
+ };
  
- 	/* setup parsing context */
- 	memset(&tplg, 0, sizeof(tplg));
- 	tplg.fw = fw;
--	tplg.dev = comp->dev;
-+	tplg.dev = comp->card->dev;
- 	tplg.comp = comp;
- 	if (ops) {
- 		tplg.ops = ops;
++
++static const struct snd_soc_component_driver dummy_platform;
++
+ static int dummy_dma_open(struct snd_soc_component *component,
+ 			  struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
++	int i;
++
++	/*
++	 * If there are other components associated with rtd, we shouldn't
++	 * override their hwparams
++	 */
++	for_each_rtd_components(rtd, i, component) {
++		if (component->driver == &dummy_platform)
++			return 0;
++	}
+ 
+ 	/* BE's dont need dummy params */
+ 	if (!rtd->dai_link->no_pcm)
 -- 
 2.25.1
 
