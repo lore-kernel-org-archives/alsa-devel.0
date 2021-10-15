@@ -2,97 +2,97 @@ Return-Path: <SRS0=/1nv=PD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C347C433FE
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 08:13:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 07126C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 08:13:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 918D76108B
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 08:13:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 918D76108B
+	by mail.kernel.org (Postfix) with ESMTPS id 806DF610D2
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 08:13:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 806DF610D2
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DE78A1693;
-	Fri, 15 Oct 2021 10:12:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE78A1693
+	by alsa0.perex.cz (Postfix) with ESMTPS id CA37D16C3;
+	Fri, 15 Oct 2021 10:12:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA37D16C3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634285588;
-	bh=bT51uX5xrDP+T7Nj8bgDlISH6pp3V+/0gWr0qfogXq4=;
+	s=default; t=1634285608;
+	bh=HNnwUPiZfuv/Aw3vJ6IlVJwY6jwNKy/JnOXlWN5ZCGI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KgY7LOWeBq6ErhR7yETEDBHDFlpNfD8oqjJmsHIKAdg0a22kAjt14yS0tJXW/SmHU
-	 UXW1N4KzRuMt8peFEtTn3f9PIkYbaPeSH4daGDMb1VPjc5q693H0gGfJSBp5YLv/tM
-	 m4blCXBI8+lqSFac7DGEz/caynp6nmdvrTU6qxcc=
+	b=HVjIxkGK2EM5O83iobNS6d6NmMLMjKKDbrRzK5MoWMTqU8t7aQXjWTOB0ZGyuY8Tt
+	 kylC8A+NGeDJ3T3JBYJHYLI0+VuIzHytQlPtY65wOu2z2EN8BhO+7GQbJBcYLmY/ES
+	 Ec1hQVULDro+vTSXTk0MJqj4H796xeHb9AKNb0fk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D20A8F8028D;
-	Fri, 15 Oct 2021 10:09:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 94A91F80430;
+	Fri, 15 Oct 2021 10:09:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 13291F80269; Fri, 15 Oct 2021 10:09:56 +0200 (CEST)
+ id 18B32F80423; Fri, 15 Oct 2021 10:09:56 +0200 (CEST)
 Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com
  [64.147.123.19])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3D2F9F80423
- for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2021 10:08:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3D2F9F80423
+ by alsa1.perex.cz (Postfix) with ESMTPS id 13184F804EC
+ for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2021 10:08:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13184F804EC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="6JilZfKD"; 
+ header.b="n2SZfKIo"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="ESKsG9rz"
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
- by mailout.west.internal (Postfix) with ESMTP id EE3F23201CF8;
- Fri, 15 Oct 2021 04:08:39 -0400 (EDT)
+ header.i=@messagingengine.com header.b="CIpegp4h"
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+ by mailout.west.internal (Postfix) with ESMTP id 660FD3201D2C;
+ Fri, 15 Oct 2021 04:08:52 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
- by compute6.internal (MEProxy); Fri, 15 Oct 2021 04:08:40 -0400
+ by compute2.internal (MEProxy); Fri, 15 Oct 2021 04:08:52 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm2; bh=lr3uFGjGpE1KF
- ZhtOxGrGI6Ul6aQOwIkffux4WxM2As=; b=6JilZfKD1Uec6cA5bD0vF2iCiVNXU
- prf3+noYihAMs4oudeukRHV8XjHCmPKT3BouF+IpcZpdEGh0gX1w2+7RhdO1jOuh
- BbrsijRwIyvEGub4ssLJzmjT8EnQnFBUypmVGCJZKvZW8rXQD8rBfAwsTQvz1UeM
- 5SwuEyj8jZqVSU2IjrkaHxKA2J1MVFbkXw7KlsMqeS+SHqdBmk7+8moOHyvaHAj0
- s/Pru42czU4mxD0HdosCfP4Nia69A+wo+N/bFWAIuVW3vwN/KUhJXGwi1eqjaEZn
- RGDdzDRfBeTTmHHUvE7svZi3Si7kYh41/LxcTHQClNHIih8AlpM5EWByQ==
+ :mime-version:content-transfer-encoding; s=fm2; bh=navGhxA4EgrBr
+ MatGQRObwhpsBzRKXcYbnWd52XMQ6k=; b=n2SZfKIoab1h19OymLIK7l2lX2mxt
+ kwYJDUtM+i7sNR57MF92xiSghedKYcdybRPZkkXYuwcw3xJTAXiRWbYfHJhk3D7d
+ T97V/9nWFK29LGkeyJTZQvrmtG6bO80loaRKTUVK7vVma64g3AGBAsUPFj+S2zEh
+ 2d/nTZVjJ/91H9WTzL/7joNWypSYxaVvDLcrpkX4eEvscsyurHPEyoleY2Qq7WOS
+ v1NCYsWizHuNXNFubz13g70ft7IcCT6k/v3vccyys9eKkp7A0QAyxS+joJ5qWK7W
+ 1/yppt7xW+2+D+ao77uS5sj5KTmjOLopFuHXm1ZZ4Ad1mmKhA9q2BnFjA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
  :in-reply-to:message-id:mime-version:references:subject:to
  :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm1; bh=lr3uFGjGpE1KFZhtOxGrGI6Ul6aQOwIkffux4WxM2As=; b=ESKsG9rz
- 5QXjw0aC+Z4aa+r6U6SLuL1vbCCtILWfrao0GHxtmYTO+d6L5czSBSaMdn+dqdhW
- /mqB4hYfZP/Xt/s8G18Rc8kJ3ZFWFDngo4bVcuYvZhA9H9ZKX1vn0r4z/HTx3zZu
- uXtR8lTuQjc6qFF4gxAm+cdnKizgpuJ3gRjzJMycs23KC0rG0tuUNbmGPZ7weObr
- lxocxU+An/zTt525gaA6xWd6fvL1hE8T0WWudIy/SQa02ZA3O91L7JJUOqziFzkS
- CBMvJtHocS5SVTf/2Jwv4rYczwqD0htR6OrakiSIa4Lrd1sx/DFx0SFhNXBunqAr
- knLPjxCkUroc/Q==
-X-ME-Sender: <xms:BzdpYS3lkhnuIrfL71K0fkUZjT3AqTuQGjbi92XqD0I6f-IlnpDa3w>
- <xme:BzdpYVEe5HC9L1oe9io1wsfsKDN1i-B6I-3WzVOujUH1t4KDPnyl7AAGTBuw9E03-
- xBxghh-erWYCGrBaqs>
-X-ME-Received: <xmr:BzdpYa4GaiyzrX6n1jZ2mX1HOfs96tTeXh0PbgGFnxzeVaYiIjfZJC62A7zUCJyPi2DzUGQO0Cx3802Sii_mK14pwbi_sDArQaxpGKTEeX_dXn5KU6t1>
+ fm1; bh=navGhxA4EgrBrMatGQRObwhpsBzRKXcYbnWd52XMQ6k=; b=CIpegp4h
+ iApJ1tH6USj1Vsvswwx2+mAfPIEl7F4tWm6viyM7vWQOpATSvr9dxnpIqkrcsol4
+ 70hTgt9ThXICM9XJGKoopbr4FUg3EV8pKY0FQpqMJjGzlZyU8VS+l7B0oD6/0ckV
+ 3glOAkD+FK//qua21Eb2CZWkRAi/gnyDvfZ5Ft5k2PcPe1dkVn0m4EvJOS5sXJbi
+ pQg3I1L0pL5pj16/DBeQS4rbYQ7Z52PkrNlSLq/SgTDdo7/JMUHgQqNQsU3RkoXh
+ KmVaHzVm3fFgIbOhOgnOJ6PJ1P4UkOd7KDQOZQ/nvGSdQnuMl9JfLSldxSV8Brcs
+ LFQ7jikA059jcw==
+X-ME-Sender: <xms:EzdpYcgDZ3udOYoOSf2zCP-bzoD9Ha8MrEQFz6EY-QaEFyAtbwGmLg>
+ <xme:EzdpYVBomEz3Cb3WSHLEHFKW-QMmVEcqVN0-dcmaMFCZT6B1qryjZWMsFOeLZqvgB
+ GYkaISgoWnD_zD-W4s>
+X-ME-Received: <xmr:EzdpYUGivAtoNz93mTMhhZIOvkniFm-qxaKdtkBkUSfWuiGMm-T_movZMvVy-aCyIwOq2tGP8OBLMHDkISX0gytsp0F5-nZsrrE_szJBZ670GBehH6zy>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddugecutefuodetggdotefrodftvfcurf
  hrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecuuegr
  ihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertdertd
  dtnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghkrghshhhi
  sehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpeevfefffeektefgve
  egfeelheffhfeujedtjeevtefhkeevkedtjeejvddtjefhjeenucevlhhushhtvghrufhi
- iigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrg
+ iigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrg
  hmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:BzdpYT2YcHxqAa-TLHyNzdRtv0FFc2re3ZZf-AVmT5Hwc6qpN1xqcA>
- <xmx:BzdpYVFkN5_pXkyIL56QAocUQPND19SYo2hXjJEYkjyMD4XuCB6jvg>
- <xmx:BzdpYc8YScirW6ambP-3SLRuH8yE1JgpKrC1_C0TyaoJiNsWK9215Q>
- <xmx:BzdpYaRK8njGbVUdgnZ6eCDejXWPpp6nriqaFz-txlqM6TOhTUyaEw>
+X-ME-Proxy: <xmx:EzdpYdTn5q-3Cr3j-Hc2q90YzVK70oNNM3QJHb9ekrqRhrY5GEGvSA>
+ <xmx:EzdpYZzxTCXMmTr6e0nlvGfR3r8i54d6yIpcmvsC67NAmiG9GACdug>
+ <xmx:EzdpYb6ji4f3048KDufCQc_B2v2LdA9ktUpsLseHXoeE3LUdVvqLuA>
+ <xmx:FDdpYU8WUiXsu6XPAdpw3-lBRXKnUsC_BiG0U9KskQd_bS80bT1GJg>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 15 Oct 2021 04:08:38 -0400 (EDT)
+ 15 Oct 2021 04:08:50 -0400 (EDT)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: tiwai@suse.de
-Subject: [PATCH 03/11] ALSA: firewire-motu: add ioctl command to read cached
- hardware meter
-Date: Fri, 15 Oct 2021 17:08:18 +0900
-Message-Id: <20211015080826.34847-4-o-takashi@sakamocchi.jp>
+Subject: [PATCH 08/11] ALSA: firewire-motu: parse messages for input
+ parameters in register DSP model
+Date: Fri, 15 Oct 2021 17:08:23 +0900
+Message-Id: <20211015080826.34847-9-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211015080826.34847-1-o-takashi@sakamocchi.jp>
 References: <20211015080826.34847-1-o-takashi@sakamocchi.jp>
@@ -115,209 +115,130 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch adds new ioctl commands for userspace applications to read
-cached image about hardware meters in register DSP and command DSP models.
-
-The content of image differs depending on models. Model-specific parser
-should be implemented in userspace.
+This commit parses message and cache current parameters of input function,
+available for MOTU Ultralite, 4 pre, and Audio Express.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- include/uapi/sound/firewire.h                 |  2 +
- .../motu/motu-command-dsp-message-parser.c    | 18 ++++++++
- sound/firewire/motu/motu-hwdep.c              | 44 +++++++++++++++++++
- .../motu/motu-register-dsp-message-parser.c   | 18 ++++++++
- sound/firewire/motu/motu.h                    |  4 ++
- 5 files changed, 86 insertions(+)
+ include/uapi/sound/firewire.h                 | 12 ++++++
+ .../motu/motu-register-dsp-message-parser.c   | 43 ++++++++++++++++++-
+ 2 files changed, 53 insertions(+), 2 deletions(-)
 
 diff --git a/include/uapi/sound/firewire.h b/include/uapi/sound/firewire.h
-index 82d4765fbeee..a8df8fb03b52 100644
+index 049934e2a53c..6366127e923e 100644
 --- a/include/uapi/sound/firewire.h
 +++ b/include/uapi/sound/firewire.h
-@@ -80,6 +80,8 @@ union snd_firewire_event {
- #define SNDRV_FIREWIRE_IOCTL_LOCK      _IO('H', 0xf9)
- #define SNDRV_FIREWIRE_IOCTL_UNLOCK    _IO('H', 0xfa)
- #define SNDRV_FIREWIRE_IOCTL_TASCAM_STATE _IOR('H', 0xfb, struct snd_firewire_tascam_state)
-+#define SNDRV_FIREWIRE_IOCTL_MOTU_REGISTER_DSP_METER	_IOR('H', 0xfc, struct snd_firewire_motu_register_dsp_meter)
-+#define SNDRV_FIREWIRE_IOCTL_MOTU_COMMAND_DSP_METER	_IOR('H', 0xfd, struct snd_firewire_motu_command_dsp_meter)
+@@ -147,6 +147,8 @@ struct snd_firewire_motu_register_dsp_meter {
  
- #define SNDRV_FIREWIRE_TYPE_DICE	1
- #define SNDRV_FIREWIRE_TYPE_FIREWORKS	2
-diff --git a/sound/firewire/motu/motu-command-dsp-message-parser.c b/sound/firewire/motu/motu-command-dsp-message-parser.c
-index 6716074f8bc1..18689fcfb288 100644
---- a/sound/firewire/motu/motu-command-dsp-message-parser.c
-+++ b/sound/firewire/motu/motu-command-dsp-message-parser.c
-@@ -23,6 +23,7 @@ enum msg_parser_state {
+ #define SNDRV_FIREWIRE_MOTU_REGISTER_DSP_MIXER_COUNT		4
+ #define SNDRV_FIREWIRE_MOTU_REGISTER_DSP_MIXER_SRC_COUNT	20
++#define SNDRV_FIREWIRE_MOTU_REGISTER_DSP_INPUT_COUNT		10
++#define SNDRV_FIREWIRE_MOTU_REGISTER_DSP_ALIGNED_INPUT_COUNT	(SNDRV_FIREWIRE_MOTU_REGISTER_DSP_INPUT_COUNT + 2)
+ 
+ /**
+  * snd_firewire_motu_register_dsp_parameter - the container for parameters of DSP controlled
+@@ -168,6 +170,11 @@ struct snd_firewire_motu_register_dsp_meter {
+  * @line_input.nominal_level_flag: The flags of nominal level for line inputs, only for 828mk2 and
+  *				   Traveler.
+  * @line_input.reserved: Padding for 32 bit alignment for future extension.
++ * @input.gain_and_invert: The value including gain and invert for input, only for Ultralite, 4 pre
++ *			   and Audio Express.
++ * @input.flag: The flag of input; e.g. jack detection, phantom power, and pad, only for Ultralite,
++ *		4 pre and Audio express.
++ * @reserved: Padding so that the size of structure is kept to 512 byte, but for future extension.
+  *
+  * The structure expresses the set of parameters for DSP controlled by register access.
+  */
+@@ -196,6 +203,11 @@ struct snd_firewire_motu_register_dsp_parameter {
+ 		__u8 nominal_level_flag;
+ 		__u8 reserved[6];
+ 	} line_input;
++	struct {
++		__u8 gain_and_invert[SNDRV_FIREWIRE_MOTU_REGISTER_DSP_ALIGNED_INPUT_COUNT];
++		__u8 flag[SNDRV_FIREWIRE_MOTU_REGISTER_DSP_ALIGNED_INPUT_COUNT];
++	} input;
++	__u8 reserved[64];
  };
  
- struct msg_parser {
-+	spinlock_t lock;
- 	enum msg_parser_state state;
- 	unsigned int interval;
- 	unsigned int message_count;
-@@ -39,6 +40,7 @@ int snd_motu_command_dsp_message_parser_new(struct snd_motu *motu)
- 	parser = devm_kzalloc(&motu->card->card_dev, sizeof(*parser), GFP_KERNEL);
- 	if (!parser)
- 		return -ENOMEM;
-+	spin_lock_init(&parser->lock);
- 	motu->message_parser = parser;
- 
- 	return 0;
-@@ -83,8 +85,11 @@ void snd_motu_command_dsp_message_parser_parse(struct snd_motu *motu, const stru
- {
- 	struct msg_parser *parser = motu->message_parser;
- 	unsigned int interval = parser->interval;
-+	unsigned long flags;
- 	int i;
- 
-+	spin_lock_irqsave(&parser->lock, flags);
-+
- 	for (i = 0; i < desc_count; ++i) {
- 		const struct pkt_desc *desc = descs + i;
- 		__be32 *buffer = desc->ctx_payload;
-@@ -157,4 +162,17 @@ void snd_motu_command_dsp_message_parser_parse(struct snd_motu *motu, const stru
- 			}
- 		}
- 	}
-+
-+	spin_unlock_irqrestore(&parser->lock, flags);
-+}
-+
-+void snd_motu_command_dsp_message_parser_copy_meter(struct snd_motu *motu,
-+					struct snd_firewire_motu_command_dsp_meter *meter)
-+{
-+	struct msg_parser *parser = motu->message_parser;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&parser->lock, flags);
-+	memcpy(meter, &parser->meter, sizeof(*meter));
-+	spin_unlock_irqrestore(&parser->lock, flags);
- }
-diff --git a/sound/firewire/motu/motu-hwdep.c b/sound/firewire/motu/motu-hwdep.c
-index b5ced5d27758..7be576fe4516 100644
---- a/sound/firewire/motu/motu-hwdep.c
-+++ b/sound/firewire/motu/motu-hwdep.c
-@@ -155,6 +155,50 @@ static int hwdep_ioctl(struct snd_hwdep *hwdep, struct file *file,
- 		return hwdep_lock(motu);
- 	case SNDRV_FIREWIRE_IOCTL_UNLOCK:
- 		return hwdep_unlock(motu);
-+	case SNDRV_FIREWIRE_IOCTL_MOTU_REGISTER_DSP_METER:
-+	{
-+		struct snd_firewire_motu_register_dsp_meter *meter;
-+		int err;
-+
-+		if (!(motu->spec->flags & SND_MOTU_SPEC_REGISTER_DSP))
-+			return -ENXIO;
-+
-+		meter = kzalloc(sizeof(*meter), GFP_KERNEL);
-+		if (!meter)
-+			return -ENOMEM;
-+
-+		snd_motu_register_dsp_message_parser_copy_meter(motu, meter);
-+
-+		err = copy_to_user((void __user *)arg, meter, sizeof(*meter));
-+		kfree(meter);
-+
-+		if (err)
-+			return -EFAULT;
-+
-+		return 0;
-+	}
-+	case SNDRV_FIREWIRE_IOCTL_MOTU_COMMAND_DSP_METER:
-+	{
-+		struct snd_firewire_motu_command_dsp_meter *meter;
-+		int err;
-+
-+		if (!(motu->spec->flags & SND_MOTU_SPEC_COMMAND_DSP))
-+			return -ENXIO;
-+
-+		meter = kzalloc(sizeof(*meter), GFP_KERNEL);
-+		if (!meter)
-+			return -ENOMEM;
-+
-+		snd_motu_command_dsp_message_parser_copy_meter(motu, meter);
-+
-+		err = copy_to_user((void __user *)arg, meter, sizeof(*meter));
-+		kfree(meter);
-+
-+		if (err)
-+			return -EFAULT;
-+
-+		return 0;
-+	}
- 	default:
- 		return -ENOIOCTLCMD;
- 	}
+ // In below MOTU models, software is allowed to control their DSP by command in frame of
 diff --git a/sound/firewire/motu/motu-register-dsp-message-parser.c b/sound/firewire/motu/motu-register-dsp-message-parser.c
-index efb9708b5b5f..fe804615294c 100644
+index 85faf7a4e8a3..d94ca4875714 100644
 --- a/sound/firewire/motu/motu-register-dsp-message-parser.c
 +++ b/sound/firewire/motu/motu-register-dsp-message-parser.c
-@@ -79,6 +79,7 @@ enum register_dsp_msg_type {
- };
- 
- struct msg_parser {
-+	spinlock_t lock;
- 	struct snd_firewire_motu_register_dsp_meter meter;
- 	bool meter_pos_quirk;
- };
-@@ -89,6 +90,7 @@ int snd_motu_register_dsp_message_parser_new(struct snd_motu *motu)
- 	parser = devm_kzalloc(&motu->card->card_dev, sizeof(*parser), GFP_KERNEL);
- 	if (!parser)
- 		return -ENOMEM;
-+	spin_lock_init(&parser->lock);
- 	if (motu->spec == &snd_motu_spec_4pre || motu->spec == &snd_motu_spec_audio_express)
- 		parser->meter_pos_quirk = true;
- 	motu->message_parser = parser;
-@@ -105,8 +107,11 @@ void snd_motu_register_dsp_message_parser_parse(struct snd_motu *motu, const str
- {
- 	struct msg_parser *parser = motu->message_parser;
- 	bool meter_pos_quirk = parser->meter_pos_quirk;
-+	unsigned long flags;
- 	int i;
- 
-+	spin_lock_irqsave(&parser->lock, flags);
+@@ -87,6 +87,9 @@ struct msg_parser {
+ 	u8 prev_mixer_src_type;
+ 	u8 mixer_ch;
+ 	u8 mixer_src_ch;
 +
- 	for (i = 0; i < desc_count; ++i) {
- 		const struct pkt_desc *desc = descs + i;
- 		__be32 *buffer = desc->ctx_payload;
-@@ -142,4 +147,17 @@ void snd_motu_register_dsp_message_parser_parse(struct snd_motu *motu, const str
++	u8 input_ch;
++	u8 prev_msg_type;
+ };
+ 
+ int snd_motu_register_dsp_message_parser_new(struct snd_motu *motu)
+@@ -109,6 +112,7 @@ int snd_motu_register_dsp_message_parser_init(struct snd_motu *motu)
+ 	parser->prev_mixer_src_type = INVALID;
+ 	parser->mixer_ch = 0xff;
+ 	parser->mixer_src_ch = 0xff;
++	parser->prev_msg_type = INVALID;
+ 
+ 	return 0;
+ }
+@@ -225,6 +229,35 @@ void snd_motu_register_dsp_message_parser_parse(struct snd_motu *motu, const str
+ 			case LINE_INPUT_NOMINAL_LEVEL:
+ 				parser->param.line_input.nominal_level_flag = val;
+ 				break;
++			case INPUT_GAIN_AND_INVERT:
++			case INPUT_FLAG:
++			{
++				struct snd_firewire_motu_register_dsp_parameter *param = &parser->param;
++				u8 input_ch = parser->input_ch;
++
++				if (parser->prev_msg_type != msg_type)
++					input_ch = 0;
++				else
++					++input_ch;
++
++				if (input_ch < SNDRV_FIREWIRE_MOTU_REGISTER_DSP_INPUT_COUNT) {
++					switch (msg_type) {
++					case INPUT_GAIN_AND_INVERT:
++						param->input.gain_and_invert[input_ch] = val;
++						break;
++					case INPUT_FLAG:
++						param->input.flag[input_ch] = val;
++						break;
++					default:
++						break;
++					}
++					parser->input_ch = input_ch;
++				}
++				break;
++			}
++			case UNKNOWN_0:
++			case UNKNOWN_2:
++				break;
+ 			case METER:
+ 			{
+ 				u8 pos;
+@@ -239,11 +272,17 @@ void snd_motu_register_dsp_message_parser_parse(struct snd_motu *motu, const str
+ 				else
+ 					pos = (pos & 0x1f) + 20;
+ 				parser->meter.data[pos] = val;
+-				break;
++				// The message for meter is interruptible to the series of other
++				// types of messages. Don't cache it.
++				fallthrough;
  			}
++			case INVALID:
+ 			default:
+-				break;
++				// Don't cache it.
++				continue;
+ 			}
++
++			parser->prev_msg_type = msg_type;
  		}
  	}
-+
-+	spin_unlock_irqrestore(&parser->lock, flags);
-+}
-+
-+void snd_motu_register_dsp_message_parser_copy_meter(struct snd_motu *motu,
-+						struct snd_firewire_motu_register_dsp_meter *meter)
-+{
-+	struct msg_parser *parser = motu->message_parser;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&parser->lock, flags);
-+	memcpy(meter, &parser->meter, sizeof(*meter));
-+	spin_unlock_irqrestore(&parser->lock, flags);
- }
-diff --git a/sound/firewire/motu/motu.h b/sound/firewire/motu/motu.h
-index d818ce4901c9..4f70036dea25 100644
---- a/sound/firewire/motu/motu.h
-+++ b/sound/firewire/motu/motu.h
-@@ -278,11 +278,15 @@ int snd_motu_register_dsp_message_parser_new(struct snd_motu *motu);
- int snd_motu_register_dsp_message_parser_init(struct snd_motu *motu);
- void snd_motu_register_dsp_message_parser_parse(struct snd_motu *motu, const struct pkt_desc *descs,
- 					unsigned int desc_count, unsigned int data_block_quadlets);
-+void snd_motu_register_dsp_message_parser_copy_meter(struct snd_motu *motu,
-+					struct snd_firewire_motu_register_dsp_meter *meter);
  
- 
- int snd_motu_command_dsp_message_parser_new(struct snd_motu *motu);
- int snd_motu_command_dsp_message_parser_init(struct snd_motu *motu, enum cip_sfc sfc);
- void snd_motu_command_dsp_message_parser_parse(struct snd_motu *motu, const struct pkt_desc *descs,
- 					unsigned int desc_count, unsigned int data_block_quadlets);
-+void snd_motu_command_dsp_message_parser_copy_meter(struct snd_motu *motu,
-+					struct snd_firewire_motu_command_dsp_meter *meter);
- 
- #endif
 -- 
 2.30.2
 
