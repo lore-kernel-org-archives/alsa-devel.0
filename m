@@ -2,58 +2,57 @@ Return-Path: <SRS0=/1nv=PD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F91AC433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 20:01:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C355C433FE
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 20:01:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B19F561164
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 20:01:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B19F561164
+	by mail.kernel.org (Postfix) with ESMTPS id BC1FE61181
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Oct 2021 20:01:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BC1FE61181
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 29E551890;
-	Fri, 15 Oct 2021 22:00:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29E551890
+	by alsa0.perex.cz (Postfix) with ESMTPS id 27C4E17E1;
+	Fri, 15 Oct 2021 22:00:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 27C4E17E1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634328082;
-	bh=lvQsvx615qVvy1/hJux2gY9BbbEfRTMcTF0+Q9fIGR0=;
+	s=default; t=1634328098;
+	bh=ecQOJIIqa1ii0ARk4CfTEBj3o1TgHfga22ntUtAfYBw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EcKuyXOJbLJHaVy9m14V1dOKrheBg3i7Wh/Yj1W/1GxgyzjUBuFXM3W26d5562HMb
-	 eM5dsHbFgtEA5a5Q4B8rZg16xB1V9cHvCmKHP/dLgdBdkFTTAqYCeBAG6z3IySs93w
-	 NXDiBhHlxtTTPEyDeXWVK5k3rfQXAKY8FfuTLKY0=
+	b=ZuOaDOccYF1pxvgUutujd2KQrpLpFYzbckJmysQFvm7yeITYbBEgkl0cH12lRQg/J
+	 LKEPeBNAJ7/jrFquop6FnanCNHNyR/7zzHTk/pwSJemY+0Fb5PG/EhPR+zs7z7Gcq3
+	 PAGkojCQlQTT5+CZXbT++tt0mp8CGJb2PRf+Yp+w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 09A35F804AC;
-	Fri, 15 Oct 2021 21:59:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5E8C1F804F1;
+	Fri, 15 Oct 2021 21:59:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 00139F804D8; Fri, 15 Oct 2021 21:59:51 +0200 (CEST)
+ id D2229F804E5; Fri, 15 Oct 2021 21:59:53 +0200 (CEST)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4FA94F8025B
- for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2021 21:59:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4FA94F8025B
-X-IronPort-AV: E=McAfee;i="6200,9189,10138"; a="228257929"
-X-IronPort-AV: E=Sophos;i="5.85,376,1624345200"; d="scan'208";a="228257929"
+ by alsa1.perex.cz (Postfix) with ESMTPS id D0585F80167
+ for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2021 21:59:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0585F80167
+X-IronPort-AV: E=McAfee;i="6200,9189,10138"; a="228257930"
+X-IronPort-AV: E=Sophos;i="5.85,376,1624345200"; d="scan'208";a="228257930"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Oct 2021 12:59:41 -0700
-X-IronPort-AV: E=Sophos;i="5.85,376,1624345200"; d="scan'208";a="593081845"
+ 15 Oct 2021 12:59:42 -0700
+X-IronPort-AV: E=Sophos;i="5.85,376,1624345200"; d="scan'208";a="593081853"
 Received: from ssureshc-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.209.190.93])
  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Oct 2021 12:59:40 -0700
+ 15 Oct 2021 12:59:41 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v3 1/4] ALSA: pcm: unconditionally check if appl_ptr is in
- 0..boundary range
-Date: Fri, 15 Oct 2021 14:59:29 -0500
-Message-Id: <20211015195932.224925-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v3 2/4] ALSA: pcm: introduce INFO_NO_REWINDS flag
+Date: Fri, 15 Oct 2021 14:59:30 -0500
+Message-Id: <20211015195932.224925-3-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211015195932.224925-1-pierre-louis.bossart@linux.intel.com>
 References: <20211015195932.224925-1-pierre-louis.bossart@linux.intel.com>
@@ -77,32 +76,71 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-In some cases, the appl_ptr passed by userspace is not checked before
-being used. This patch adds an unconditional check and returns an
-error code should the appl_ptr exceed the ALSA 'boundary'.
+When the hardware can only deal with a monotonically increasing
+appl_ptr, this flag can be set.
+
+In case the application requests a rewind, be it with a
+snd_pcm_rewind() or with a direct change of a mmap'ed pointer followed
+by a SNDRV_PCM_IOCTL_SYNC_PTR, this patch checks if a rewind
+occurred and returns an error.
+
+Credits to Takashi Iwai for identifying the path with SYNC_PTR and
+suggesting the pointer checks.
 
 Suggested-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@intel.com>
 ---
- sound/core/pcm_lib.c | 3 +++
- 1 file changed, 3 insertions(+)
+ include/uapi/sound/asound.h |  2 +-
+ sound/core/pcm_lib.c        | 14 ++++++++++++++
+ 2 files changed, 15 insertions(+), 1 deletion(-)
 
+diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+index 5859ca0a1439..59fcf39f022e 100644
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
+@@ -300,7 +300,7 @@ typedef int __bitwise snd_pcm_subformat_t;
+ #define SNDRV_PCM_INFO_HAS_LINK_ESTIMATED_ATIME    0x04000000  /* report estimated link audio time */
+ #define SNDRV_PCM_INFO_HAS_LINK_SYNCHRONIZED_ATIME 0x08000000  /* report synchronized audio/system time */
+ #define SNDRV_PCM_INFO_EXPLICIT_SYNC	0x10000000	/* needs explicit sync of pointers and data */
+-
++#define SNDRV_PCM_INFO_NO_REWINDS	0x20000000	/* hardware can only support monotonic changes of appl_ptr */
+ #define SNDRV_PCM_INFO_DRAIN_TRIGGER	0x40000000		/* internal kernel flag - trigger in drain */
+ #define SNDRV_PCM_INFO_FIFO_IN_FRAMES	0x80000000	/* internal kernel flag - FIFO size is in frames */
+ 
 diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index a144a3f68e9e..ec53a3e7cf35 100644
+index ec53a3e7cf35..1d3927aa3dd8 100644
 --- a/sound/core/pcm_lib.c
 +++ b/sound/core/pcm_lib.c
-@@ -2132,6 +2132,9 @@ int pcm_lib_apply_appl_ptr(struct snd_pcm_substream *substream,
- 	if (old_appl_ptr == appl_ptr)
- 		return 0;
+@@ -2127,6 +2127,7 @@ int pcm_lib_apply_appl_ptr(struct snd_pcm_substream *substream,
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	snd_pcm_uframes_t old_appl_ptr = runtime->control->appl_ptr;
++	snd_pcm_sframes_t diff;
+ 	int ret;
  
-+	if (appl_ptr >= runtime->boundary)
-+		return -EINVAL;
-+
+ 	if (old_appl_ptr == appl_ptr)
+@@ -2134,6 +2135,19 @@ int pcm_lib_apply_appl_ptr(struct snd_pcm_substream *substream,
+ 
+ 	if (appl_ptr >= runtime->boundary)
+ 		return -EINVAL;
++	/*
++	 * check if a rewind is requested by the application
++	 */
++	if (substream->runtime->info & SNDRV_PCM_INFO_NO_REWINDS) {
++		diff = appl_ptr - old_appl_ptr;
++		if (diff >= 0) {
++			if (diff > runtime->buffer_size)
++				return -EINVAL;
++		} else {
++			if (runtime->boundary + diff > runtime->buffer_size)
++				return -EINVAL;
++		}
++	}
+ 
  	runtime->control->appl_ptr = appl_ptr;
  	if (substream->ops->ack) {
- 		ret = substream->ops->ack(substream);
 -- 
 2.25.1
 
