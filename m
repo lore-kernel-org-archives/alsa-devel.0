@@ -2,73 +2,80 @@ Return-Path: <SRS0=RDt5=PF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 378B5C433FE
-	for <alsa-devel@archiver.kernel.org>; Sun, 17 Oct 2021 07:50:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EC216C433EF
+	for <alsa-devel@archiver.kernel.org>; Sun, 17 Oct 2021 07:50:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B4CD861152
-	for <alsa-devel@archiver.kernel.org>; Sun, 17 Oct 2021 07:50:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B4CD861152
+	by mail.kernel.org (Postfix) with ESMTPS id 73DC16103B
+	for <alsa-devel@archiver.kernel.org>; Sun, 17 Oct 2021 07:50:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 73DC16103B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1C54B181F;
-	Sun, 17 Oct 2021 09:50:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C54B181F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7B3631867;
+	Sun, 17 Oct 2021 09:50:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B3631867
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634457050;
-	bh=/EkBDCO/J7oeJ3iqATpTh/tYXnhf+SmTh/m9oORjXrk=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=MWxvkYKu62aUKsXx/Teo1v+M5qJduz/R8tYJlIh7uDucCGnocm6gOSSca37mSLHN2
-	 sibdjb3KrfAHZg3OosVjv0n/9wGCBtXmJN4EqBAW31EL2axAVg0K2qf/Qq1AaL/cZ1
-	 o/YtIHxuk3RXpY7yX9JSKIr0ZRqf0s1Pdl/SXP5U=
+	s=default; t=1634457053;
+	bh=jVt5rDkLdOSuYOV/f1C+WViSdEwD4SonNFAaXsneboY=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=qB7GqRs0EJqAuvnkFv+2ktZ18usr1NsssS3JNy7iAE/XfG+qUqLtG+9xIuytNQZCG
+	 7kyOMap0C/gmO13pfdreRiDScTHN9LqDlGhHXncn3RemlTTcGinl5/FQRvl2qHZPma
+	 X6FRxl//lk+HN9HV6ZnBnD+f1xlg3wsKujxGiw2g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AD836F804E5;
-	Sun, 17 Oct 2021 09:49:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 429D2F804EB;
+	Sun, 17 Oct 2021 09:49:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 01908F802E0; Sun, 17 Oct 2021 09:49:09 +0200 (CEST)
+ id 766FBF804ED; Sun, 17 Oct 2021 09:49:14 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C36E6F800E5
+ by alsa1.perex.cz (Postfix) with ESMTPS id BBB9EF80254
  for <alsa-devel@alsa-project.org>; Sun, 17 Oct 2021 09:49:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C36E6F800E5
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BBB9EF80254
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="Ukmyfq7o"; 
+ header.b="QuSDXITQ"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="DmjGT8Rs"
+ header.b="6VtrvPNE"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 9B2C021984
+ by smtp-out1.suse.de (Postfix) with ESMTP id B1ABB2199E
  for <alsa-devel@alsa-project.org>; Sun, 17 Oct 2021 07:49:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1634456940; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=+P1rVZxCYkbF2C5iHHYoQzqeIX077BQoH4Vgu2r9Gv0=;
- b=Ukmyfq7oKZ2ln6HechoKyTWBhqfWSygu6XgWyAfB2QRVESW/T03llRxXODMcaJTgXgn7dW
- 4pvWAGlt3zPR3mqY4YT9xdJVOlniyxM95sHWLLzXzDz2BAuP/BP3+pUIO8dZs/Vqz1uH93
- mj+00bBdBFWO4d8tLZwYI9fPcbYhEis=
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=B1JsLi2Zz0o4zD3DPg6HQWbOTg6iVJfKp4v/IK8Kdvs=;
+ b=QuSDXITQZk99WNJ+XB5plBvUuiVXFHXvrnJ02I8zpL63GzQ+RwRfL4ZvdAEaKJjrEE7pZ/
+ 38AYYhzJuKLqpPjrQlCTGnoE0DEWEKqS+l1qr9wszs2mkaP3S5L8TJ/njTYV29UdaXVFt+
+ pm2HWNHf+Ao1L15IEJBP2c7NgZbS6ow=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1634456940;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=+P1rVZxCYkbF2C5iHHYoQzqeIX077BQoH4Vgu2r9Gv0=;
- b=DmjGT8RsOt2TvpA1BV45tKp16SFWvwkxxvSwJUvEFAuBySzZXh3ljRQjoCA0+Dy/V5Az57
- gO7NAG8A7PZzxiCA==
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=B1JsLi2Zz0o4zD3DPg6HQWbOTg6iVJfKp4v/IK8Kdvs=;
+ b=6VtrvPNEYmuFJi0fEAE6HZfb3W1lhGcxeIrQCIMroaUXZP4eIzIOehX+pjGAuOvXXyB9e6
+ KxkSSn27TSe9o4Cg==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 8BC5FA3B81;
+ by relay2.suse.de (Postfix) with ESMTP id A0AF1A3B81;
  Sun, 17 Oct 2021 07:49:00 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 0/3] ALSA: Support for non-contiguous and non-coherent page
- allocations
-Date: Sun, 17 Oct 2021 09:48:56 +0200
-Message-Id: <20211017074859.24112-1-tiwai@suse.de>
+Subject: [PATCH v2 2/3] ALSA: memalloc: Support for non-coherent page
+ allocation
+Date: Sun, 17 Oct 2021 09:48:58 +0200
+Message-Id: <20211017074859.24112-3-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20211017074859.24112-1-tiwai@suse.de>
+References: <20211017074859.24112-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -86,42 +93,97 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+Following after the addition of non-contiguous pages, this patch adds
+the new contiguous non-coherent page allocation to the standard
+memalloc helper.  Like the previous non-contig type, this non-coherent
+type is also directional and requires the explicit sync, too.  Hence
+the driver using this type of buffer may need to set
+SNDRV_PCM_INFO_EXPLICIT_SYNC flag to the PCM hardware.info as well,
+unless it's set up in the managed mode.
 
-this is a revised patchset that is created from the latest code.
-The previous one caused a slight conflict with the recent changes,
-also some patch descriptions have been updated.
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ include/sound/memalloc.h |  1 +
+ sound/core/memalloc.c    | 47 ++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 48 insertions(+)
 
-***
-
-Here is a patch set to add the support for non-contiguous and
-non-coherent page allocations to the ALSA core memalloc helpers.
-Currently no driver is using, but this also gave a nice cleanup for
-the existing SG-buffer helpers on x86.
-
-
-Takashi
-
-===
-
-Takashi Iwai (3):
-  ALSA: memalloc: Support for non-contiguous page allocation
-  ALSA: memalloc: Support for non-coherent page allocation
-  ALSA: memalloc: Convert x86 SG-buffer handling with non-contiguous
-    type
-
- include/sound/memalloc.h    |  61 +++++++++--
- sound/core/Makefile         |   1 -
- sound/core/memalloc.c       | 207 +++++++++++++++++++++++++++++++++---
- sound/core/memalloc_local.h |   1 +
- sound/core/pcm_lib.c        |   3 +
- sound/core/pcm_local.h      |   7 ++
- sound/core/pcm_memory.c     |  13 ++-
- sound/core/pcm_native.c     |  16 +++
- sound/core/sgbuf.c          | 201 ----------------------------------
- 9 files changed, 282 insertions(+), 228 deletions(-)
- delete mode 100644 sound/core/sgbuf.c
-
+diff --git a/include/sound/memalloc.h b/include/sound/memalloc.h
+index 1457eba1ac53..0bdaa6753282 100644
+--- a/include/sound/memalloc.h
++++ b/include/sound/memalloc.h
+@@ -50,6 +50,7 @@ struct snd_dma_device {
+ #endif
+ #define SNDRV_DMA_TYPE_VMALLOC		7	/* vmalloc'ed buffer */
+ #define SNDRV_DMA_TYPE_NONCONTIG	8	/* non-coherent SG buffer */
++#define SNDRV_DMA_TYPE_NONCOHERENT	9	/* non-coherent buffer */
+ 
+ /*
+  * info for buffer allocation
+diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
+index 11f9a68bf94c..99681e651223 100644
+--- a/sound/core/memalloc.c
++++ b/sound/core/memalloc.c
+@@ -560,6 +560,52 @@ static const struct snd_malloc_ops snd_dma_noncontig_ops = {
+ 	.get_chunk_size = snd_dma_vmalloc_get_chunk_size,
+ };
+ 
++/*
++ * Non-coherent pages allocator
++ */
++static void *snd_dma_noncoherent_alloc(struct snd_dma_buffer *dmab, size_t size)
++{
++	dmab->dev.need_sync = dma_need_sync(dmab->dev.dev, dmab->dev.dir);
++	return dma_alloc_noncoherent(dmab->dev.dev, size, &dmab->addr,
++				     dmab->dev.dir, DEFAULT_GFP);
++}
++
++static void snd_dma_noncoherent_free(struct snd_dma_buffer *dmab)
++{
++	dma_free_noncoherent(dmab->dev.dev, dmab->bytes, dmab->area,
++			     dmab->addr, dmab->dev.dir);
++}
++
++static int snd_dma_noncoherent_mmap(struct snd_dma_buffer *dmab,
++				    struct vm_area_struct *area)
++{
++	area->vm_page_prot = vm_get_page_prot(area->vm_flags);
++	return dma_mmap_pages(dmab->dev.dev, area,
++			      area->vm_end - area->vm_start,
++			      virt_to_page(dmab->area));
++}
++
++static void snd_dma_noncoherent_sync(struct snd_dma_buffer *dmab,
++				     enum snd_dma_sync_mode mode)
++{
++	if (mode == SNDRV_DMA_SYNC_CPU) {
++		if (dmab->dev.dir != DMA_TO_DEVICE)
++			dma_sync_single_for_cpu(dmab->dev.dev, dmab->addr,
++						dmab->bytes, dmab->dev.dir);
++	} else {
++		if (dmab->dev.dir != DMA_FROM_DEVICE)
++			dma_sync_single_for_device(dmab->dev.dev, dmab->addr,
++						   dmab->bytes, dmab->dev.dir);
++	}
++}
++
++static const struct snd_malloc_ops snd_dma_noncoherent_ops = {
++	.alloc = snd_dma_noncoherent_alloc,
++	.free = snd_dma_noncoherent_free,
++	.mmap = snd_dma_noncoherent_mmap,
++	.sync = snd_dma_noncoherent_sync,
++};
++
+ #endif /* CONFIG_HAS_DMA */
+ 
+ /*
+@@ -572,6 +618,7 @@ static const struct snd_malloc_ops *dma_ops[] = {
+ 	[SNDRV_DMA_TYPE_DEV] = &snd_dma_dev_ops,
+ 	[SNDRV_DMA_TYPE_DEV_WC] = &snd_dma_wc_ops,
+ 	[SNDRV_DMA_TYPE_NONCONTIG] = &snd_dma_noncontig_ops,
++	[SNDRV_DMA_TYPE_NONCOHERENT] = &snd_dma_noncoherent_ops,
+ #ifdef CONFIG_GENERIC_ALLOCATOR
+ 	[SNDRV_DMA_TYPE_DEV_IRAM] = &snd_dma_iram_ops,
+ #endif /* CONFIG_GENERIC_ALLOCATOR */
 -- 
 2.26.2
 
