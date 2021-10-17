@@ -2,108 +2,73 @@ Return-Path: <SRS0=RDt5=PF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FDEFC433F5
-	for <alsa-devel@archiver.kernel.org>; Sun, 17 Oct 2021 09:26:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D2202C433EF
+	for <alsa-devel@archiver.kernel.org>; Sun, 17 Oct 2021 11:40:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BFAEA61054
-	for <alsa-devel@archiver.kernel.org>; Sun, 17 Oct 2021 09:26:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BFAEA61054
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
+	by mail.kernel.org (Postfix) with ESMTPS id 08FDD60F57
+	for <alsa-devel@archiver.kernel.org>; Sun, 17 Oct 2021 11:40:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 08FDD60F57
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5FC6F1833;
-	Sun, 17 Oct 2021 11:25:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5FC6F1833
+	by alsa0.perex.cz (Postfix) with ESMTPS id D82BE184E;
+	Sun, 17 Oct 2021 13:39:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D82BE184E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634462807;
-	bh=fr8j7OFSDOPMw9HovUDTYiXht6G0osnwh1XSFbIM0Yk=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1634470818;
+	bh=ohuMuYmmuyqyemJ4Qv+2X0qk6HWlk0oTy0Gz89ptlUo=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZRA6lcyQrEJshzca96/qYvJOk/m9jSS3coO1eR1r8H6mPn7f0jZVxW5jNggxAXzo3
-	 QSCL7gz5ZXjLrUgSqGgIz150iPCxCiswn3eWi/fEMs1ich8mTNfC+DlOUjLQmAb1aw
-	 Gpg00j/ksgQHNazPn6mI3E9zXPATSTUa88od8038=
+	b=u2nUs8dgA2UaplT6+m4KRAH4G7lUmd0l7WmWZEORxbZX4VCbVnlnk/QPnFhFI3SLC
+	 PHa53hD8tOUT95U2bFYEDIjCMy5YQGeOwM65yd63+4LAk3/dAaE0oB5Ckl3Mweaz9r
+	 19WDPwWIDPwQJa6B6t2qogCrDEWAf+uRGfBA+f3o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AAFDEF80254;
-	Sun, 17 Oct 2021 11:25:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 538FDF80254;
+	Sun, 17 Oct 2021 13:39:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F3237F80256; Sun, 17 Oct 2021 11:25:54 +0200 (CEST)
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com
- [64.147.123.24])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 5A04AF80256; Sun, 17 Oct 2021 13:39:27 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 59EFFF80111
- for <alsa-devel@alsa-project.org>; Sun, 17 Oct 2021 11:25:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59EFFF80111
+ by alsa1.perex.cz (Postfix) with ESMTPS id DE1EDF800E5
+ for <alsa-devel@alsa-project.org>; Sun, 17 Oct 2021 13:39:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE1EDF800E5
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="PAXNBdA6"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="ZY9oIy0T"
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
- by mailout.west.internal (Postfix) with ESMTP id 82E553200929;
- Sun, 17 Oct 2021 05:25:41 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
- by compute6.internal (MEProxy); Sun, 17 Oct 2021 05:25:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-type:in-reply-to; s=fm2; bh=IJHe+73IUIl5CfcqD1R60UfPtfz
- DL6hecpVuU3B4aTU=; b=PAXNBdA6brjah2eMWvzhW+0q2JLmckGf7nU3zGSJei4
- 5iXeOwJKpC7dIycVlKIcJFCwzARC153wa2l4pv+0oY7miQrMNfRRvklV5ImWRm4a
- 6B51bVTxiiAi+yYrupI7vWNTESiejtjp4UlasSHrmRfyJX2Vp04lC2vrf0gaqL+O
- tbAi9Ld6AvvYZrbb5wkP9JtTivqWT0E9rAnk8ARI49yhmvpfyPv+nkTHOsEGV98S
- RaLM9xcGeKlNVAi+a2Hb3gBsDK88Kj2C8wU6I1ADgOkCyESwSeDyRidoBLGHhWOn
- Xs7mokVk8ysl2/YMuHmNBVWKyv0KFQgG9FF4NZw1ECw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to:x-me-proxy
- :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=IJHe+7
- 3IUIl5CfcqD1R60UfPtfzDL6hecpVuU3B4aTU=; b=ZY9oIy0TIlMda64ZVUeodh
- zxBmw0JO3lsvD99aiMy1SEeGVXjcUMRapLkDeU+02HJFUWjqYuNJHciprF86sJ3Y
- LBSaNZMbWjjrD5hjf/S436Euff0BfGTruij3MkhDDBW+ZAsAHeMXbOhb0OekuKIm
- DMpkFs4ZuMRG1zWCUJlrMZJqP8unm7rFH0HdutM+G0HF1ZZ1EzwGloPdxb9dme4u
- srwWvhnZE0Tfq2Z69XG5zMuiST/ipwtsrVYhp/xYCSuunN6svQZ10MH17ttwH2gj
- GtzXRUl3o96NZX0gqK1Sd+dBJHe51QLO4MRra8m2r6W4qre8e3LEyxWhJ/wBKt/g
- ==
-X-ME-Sender: <xms:FOxrYQfW0T5QzXCD3h9ZBz0zAufmeKbq2xDey4xA2hZ3ouapo2ZWTA>
- <xme:FOxrYSOHDO7zZGjsxCGB1G3wM302n8_I6ZFAUA-q88jM-qHuQRoZRWzNTHpPgoPw9
- d_JJIADaoVs515UFzc>
-X-ME-Received: <xmr:FOxrYRhUY4K9widreonKvgubQEUYhv4Wbv6D2hYKbQ0O_jBwY4552q_F-kAEtZXIsq9aZekbGfW8VAU22I7TW5dPyDh_Lav4NA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddukedgudeiucetufdoteggodetrfdotf
- fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
- uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
- cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvrghkrghs
- hhhiucfurghkrghmohhtohcuoehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjh
- hpqeenucggtffrrghtthgvrhhnpeelhfeugedvjefgjefgudekfedutedvtddutdeuieev
- tddtgeetjeekvdefgeefhfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
- grihhlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:FOxrYV_K21wjl1Z-w28qnkIi9_2UxEcUm9yZ-ulg_cHgO2Pbcajbuw>
- <xmx:FOxrYctIPi-GqdPyw8ayVOT2z2r5nU-jnTSnhTgcj0vFvKdx1QJFmA>
- <xmx:FOxrYcH89bh2p2D-Kzofupii5pm7TPQrIdVx7f6ZWHDmklpTysSZmA>
- <xmx:FexrYV6EXx1-QE6ZjmWG7zBYPov5fmzon-qLP1sXaXiWw3ihcGHyxw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 17 Oct 2021 05:25:39 -0400 (EDT)
-Date: Sun, 17 Oct 2021 18:25:37 +0900
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH 00/11] ALSA: firewire-motu: add ioctl commands to
- retrieve information in messages delivered by isoc packet
-Message-ID: <YWvsEY2aGYtDloou@workstation>
-Mail-Followup-To: Takashi Iwai <tiwai@suse.de>, clemens@ladisch.de,
- alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
-References: <20211015080826.34847-1-o-takashi@sakamocchi.jp>
- <s5hv91ythay.wl-tiwai@suse.de> <YWt6179lGu6xM3Gw@workstation>
- <s5hczo4t9q1.wl-tiwai@suse.de>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="fv8qMW6b"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF72160F56;
+ Sun, 17 Oct 2021 11:39:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1634470760;
+ bh=ohuMuYmmuyqyemJ4Qv+2X0qk6HWlk0oTy0Gz89ptlUo=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=fv8qMW6bkN0agW2c4cNgIEbetZ3JiM7DYltNzcFsbFJvRfmprlEBrODU/Ql3DOYyu
+ r24ViDHOEcEdUQKjXHX9T27Pz5tFz8B/S0UhnwvQW/dJdxty4XeOHaG22aNt8BU2FY
+ ba7yPcoY3u6ElSA6/JLK3vW1JnPtrCXAHn/m+nQmoswk6SzNrJBFpkX4YFYqc/dRG8
+ jJ/BzR4aY9cT9aMqcuZlOdHUNJDJG0olbNfSxB2K3WjVImjJAigQdMEnXeAFTda/Vf
+ h+CApieJzBHKu1aNpRdxo0krso6aVAw5UG8HFg+lx/MRymFZ86mWdNqFagWKiPI2Zh
+ QCz/N1vr6jmVQ==
+From: Mark Brown <broonie@kernel.org>
+To: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
+In-Reply-To: <20211016105354.116513-1-frattaroli.nicolas@gmail.com>
+References: <20211016105354.116513-1-frattaroli.nicolas@gmail.com>
+Subject: Re: (subset) [PATCH 0/4] Getting rid of the reset controller in
+ i2s-tdm
+Message-Id: <163447061131.1864024.8259786717418291207.b4-ty@kernel.org>
+Date: Sun, 17 Oct 2021 12:36:51 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <s5hczo4t9q1.wl-tiwai@suse.de>
-Cc: ffado-devel@lists.sourceforge.net, alsa-devel@alsa-project.org,
- clemens@ladisch.de
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Heiko Stuebner <heiko@sntech.de>, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-rockchip@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
+ Philipp Zabel <p.zabel@pengutronix.de>, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -119,117 +84,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, Oct 17, 2021 at 09:02:30AM +0200, Takashi Iwai wrote:
-> On Sun, 17 Oct 2021 03:22:31 +0200,
-> Takashi Sakamoto wrote:
-> > 
-> > Hi,
-> > 
-> > On Fri, Oct 15, 2021 at 05:54:13PM +0200, Takashi Iwai wrote:
-> > > On Fri, 15 Oct 2021 10:08:15 +0200,
-> > > Takashi Sakamoto wrote:
-> > > > 
-> > > > Hi,
-> > > > 
-> > > > The purpose of this patchset is to add message parser to ALSA
-> > > > firewire-motu driver so that userspace applications can read information
-> > > > in message delivered by isochronous packet as well as PCM frames.
-> > > > The message includes information about hardware meter and user action
-> > > > over hardware component such as knob, and MIDI message bytes.
-> > > > 
-> > > > Models in MOTU FireWire series can be categorized to 4 groups in regard
-> > > > of message mechanism:
-> > > > 
-> > > > Group 1. 828 and 896
-> > > >  * quadlet message to registered destination address
-> > > > Group 2. 828mk2, 896hd, Traveler, 8 pre, Ultralite, 4 pre, and Audio Express
-> > > >  * quadlet message to registered destination address
-> > > >  * message delivered by isochronous packet
-> > > > Group 3. 828mk3, 896mk3, Ultralite mk3, Traveler mk3, and Track 16
-> > > >  * quadlet message to registered destination address
-> > > >  * message delivered by isochronous packet
-> > > >  * block message to registered destination address, including command
-> > > > Group 4. V3HD/V4HD
-> > > >  * quadlet message to registered destination address
-> > > >  * block message to registered destination address
-> > > > 
-> > > > The patchset is for message delivered by isochronous packet in group 2
-> > > > and 3. In Group 2, the message includes information of hardware meter,
-> > > > information of user action over hardware component. The model in Group
-> > > > 2 is called as 'register DSP' in the patchset since parameters of DSP
-> > > > can be configured by asynchronous transaction for register access. In
-> > > > Group 3, the message includes information of hardware meter only. The
-> > > > model in Group 3 is called as 'command DSP' since software and device
-> > > > communicate with commands transferred by asynchronous transaction in
-> > > > regard of DSP parameters. Two types of message parser is going to be
-> > > > added so that the driver caches images for the information. The cache
-> > > > is available for userspace application by ioctl commands newly introduced.
-> > > > 
-> > > > I note that no control element is added for the hardware meters and user
-> > > > actions. It's expected for userspace application to retrieve and parse the
-> > > > information of image then operate for user-defined control element set.
-> > > > 
-> > > > Takashi Sakamoto (11):
-> > > >   ALSA: firewire-motu: add message parser to gather meter information in
-> > > >     register DSP model
-> > > >   ALSA: firewire-motu: add message parser for meter information in
-> > > >     command DSP model
-> > > >   ALSA: firewire-motu: add ioctl command to read cached hardware meter
-> > > >   ALSA: firewire-motu: parse messages for mixer source parameters in
-> > > >     register-DSP model
-> > > >   ALSA: firewire-motu: parse messages for mixer output parameters in
-> > > >     register DSP model
-> > > >   ALSA: firewire-motu: parse messages for output parameters in register
-> > > >     DSP model
-> > > >   ALSA: firewire-motu: parse messages for line input parameters in
-> > > >     register DSP model
-> > > >   ALSA: firewire-motu: parse messages for input parameters in register
-> > > >     DSP model
-> > > >   ALSA: firewire-motu: add ioctl command to read cached DSP parameters
-> > > >   ALSA: firewire-motu: queue event for parameter change in register DSP
-> > > >     model
-> > > >   ALSA: firewire-motu: notify event for parameter change in register DSP
-> > > >     model
-> > > 
-> > > Applied all patches now.  Thanks.
-> > 
-> > Thanks for your applying the above patches into your tree. I have some
-> > slight concerns about them. I'd like to ask your opinion.
-> > 
-> > The snd_firewire_motu_command_dsp_meter structure includes array of 32 bit
-> > storage elements. As I added its documentation, the storage includes
-> > IEEE 764 binary32 values between 0.0 and +1.0. In the patchset I use __u32
-> > type since I can find just a few usage of float type in UAPI header. In
-> > driver side, no floating point arithmetic is used since the float value
-> > is just constructed by gathering messages from target device. In the case,
-> > is it adequate to expose the value as float type in UAPI?
-> >
-> > Additionally, current ALSA control interface have no support for control
-> > element with float value, like SNDRV_CTL_ELEM_TYPE_IEEE764_BINARY32. As
-> > long as I know, no discussion about it in the list for recent decades.
-> > Have you ever seen such discussion in the list? (Here I intensionally
-> > ignore that we have several binary expressions for floating point since
-> > I'm just interested in the existence of discussion.)
+On Sat, 16 Oct 2021 12:53:49 +0200, Nicolas Frattaroli wrote:
+> after some discussion with Heiko on IRC, he has admitted to me
+> that the rockchip,cru property, and its corresponding half a reset
+> controller in the driver, is weighing heavily on his mind.
 > 
-> It's not been proposed, AFAIK.
+> The background is that if the lrck only uses one clock for both rx
+> and tx direction, then according to the downstream driver, the rx
+> and tx resets should be asserted at roughly the same time to keep
+> things in sync.
 > 
-> The biggest concern is that, *if* any reference or calculation of the
-> float type is required, what to do.  e.g. the kernel has a validation
-> code for each values (min/max check), and how could it be implemented
-> for the float type?
+> [...]
 
-Indeed. It's probably unavoidable to min/max check and it brings issue
-to ALSA control core. It's absolutely out of my scope and thanks for
-your indication.
+Applied, thanks!
 
-Would I ask you opinion about my concern about firewire UAPI header? Is
-it allowed to use float type instead of __u32 type?
+[1/4] ASoC: rockchip: i2s-tdm: Strip out direct CRU use
+      commit: d6365d0f0a03c1feb28d86dfd192972ddc647013
+[2/4] ASoC: dt-bindings: rockchip: i2s-tdm: Drop rockchip,cru property
+      commit: 4e52cb9e2c22c9d860910794c82461064baadd9f
 
-> thanks,
-> 
-> Takashi
-
-
-Thanks
-
-Takashi Sakamoto
+Best regards,
+-- 
+Mark Brown <broonie@kernel.org>
