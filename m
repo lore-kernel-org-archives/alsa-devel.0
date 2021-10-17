@@ -2,77 +2,166 @@ Return-Path: <SRS0=CVmM=PH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 67FB6C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Oct 2021 08:06:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F1C4BC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Oct 2021 08:14:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E6BBE6112D
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Oct 2021 08:06:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E6BBE6112D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 2521A60EB4
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Oct 2021 08:14:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2521A60EB4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5633D16CB;
-	Tue, 19 Oct 2021 10:05:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5633D16CB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 86EE116AE;
+	Tue, 19 Oct 2021 10:13:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86EE116AE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634630795;
-	bh=FjHndgjZYOn7HZsiOy00G0QBp0VJyfSzKULzv9bxW3I=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1634631245;
+	bh=RmSMKTg5TcL3qjURkxbM+BvVnDKiX6oL/7vB+Xbd55c=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kFmYHlcdAOCAf1Mj89FW3k+QNRprwUd20mlWv+zUTUJgR0PcByHe/4oJAkntqwWoR
-	 ejYNlOy5fuvTYr6NJ8GgFmoItX+YlyIzR25NhOTbqWk0ye/iS8PgfwWFC2K+YJobTX
-	 JujoclU53rkCMgGT9QLG6eenmKDKHKdkeSNG7pYE=
+	b=URjCRgGrMEvTojniziPB88h2i0Vu1pjzSExrwUECWBAxayRERrQK7Fqqj65ekHau1
+	 GdpLKVCFUvPoqpmNYdD/A9WDGzfdQ3JKpvbby1wQMe7vhb7daXN2DeQkYogo9DgfiP
+	 navwsf0cS2oCX39NVLb3uas1mRO79vANtg7ObNH4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5924EF80155;
-	Tue, 19 Oct 2021 10:04:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1D842F80254;
+	Tue, 19 Oct 2021 10:13:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 569ECF80518; Tue, 19 Oct 2021 10:04:16 +0200 (CEST)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id EBBA2F80256; Sun, 17 Oct 2021 16:12:35 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4702EF80111
- for <alsa-devel@alsa-project.org>; Tue, 19 Oct 2021 10:04:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4702EF80111
-X-IronPort-AV: E=McAfee;i="6200,9189,10141"; a="208551081"
-X-IronPort-AV: E=Sophos;i="5.85,383,1624345200"; d="scan'208";a="208551081"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Oct 2021 01:03:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,383,1624345200"; d="scan'208";a="493984921"
-Received: from brentlu-brix.itwn.intel.com ([10.5.253.56])
- by orsmga008.jf.intel.com with ESMTP; 19 Oct 2021 01:03:14 -0700
-From: Brent Lu <brent.lu@intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH v3 5/6] ASoC: Intel: soc-acpi-cht: shrink tables using
- compatible IDs
-Date: Tue, 19 Oct 2021 15:59:40 +0800
-Message-Id: <20211019075941.2037787-6-brent.lu@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211019075941.2037787-1-brent.lu@intel.com>
-References: <20211019075941.2037787-1-brent.lu@intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id A760DF80111
+ for <alsa-devel@alsa-project.org>; Sun, 17 Oct 2021 16:12:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A760DF80111
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="p9N+SfeM"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C7F0604DB;
+ Sun, 17 Oct 2021 14:12:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1634479948;
+ bh=RmSMKTg5TcL3qjURkxbM+BvVnDKiX6oL/7vB+Xbd55c=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=p9N+SfeMaoSGCiyxtDBec1UPv6WMgXjFcy/M3JLFPbVafXBNaxdjpG9B30dDW+YCM
+ 1w7o17spKr/RDQdS/NDnncfMCzYUuyBikegmGijUFJIAFKXC6JxKBQkOyxWpOPSkMG
+ Xcf3Ny84a19kDTXcxLIlTN6rmnIPZn1mjgXZZ9+Dc8WFgbhY12z4AcuEe7HWqRja5M
+ sJePhxIZkZFRjmpYsRgp1Xe1IXRkzbSJzbuO1E9W0NfEhJS5mWuBnyV95F9ShTR0m/
+ N7QNQaMRxo2QFps6aw3PgKihE2TivErXbQejJdKE4pf9mljG1KyIeEc1cS3pdn6VoR
+ 5yxzQIavynIbg==
+Date: Sun, 17 Oct 2021 16:12:19 +0200
+From: Wolfram Sang <wsa@kernel.org>
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Subject: Re: [PATCH RFC] virtio: wrap config->reset calls
+Message-ID: <YWwvQ+YMAKzX1aO3@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+ "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org,
+ Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Jason Wang <jasowang@redhat.com>,
+ Paolo Bonzini <pbonzini@redhat.com>,
+ Stefan Hajnoczi <stefanha@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+ Marcel Holtmann <marcel@holtmann.org>,
+ Johan Hedberg <johan.hedberg@gmail.com>,
+ Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+ Matt Mackall <mpm@selenic.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>,
+ Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Gonglei <arei.gonglei@huawei.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ Sudeep Holla <sudeep.holla@arm.com>,
+ Cristian Marussi <cristian.marussi@arm.com>,
+ "Enrico Weigelt, metux IT consult" <info@metux.net>,
+ Viresh Kumar <vireshk@kernel.org>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Bartosz Golaszewski <brgl@bgdev.pl>,
+ David Airlie <airlied@linux.ie>, Gerd Hoffmann <kraxel@redhat.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Jie Deng <jie.deng@intel.com>,
+ Jean-Philippe Brucker <jean-philippe@linaro.org>,
+ Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+ Jakub Kicinski <kuba@kernel.org>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ Kalle Valo <kvalo@codeaurora.org>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Vishal Verma <vishal.l.verma@intel.com>,
+ Dave Jiang <dave.jiang@intel.com>, Ira Weiny <ira.weiny@intel.com>,
+ Ohad Ben-Cohen <ohad@wizery.com>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>,
+ "James E.J. Bottomley" <jejb@linux.ibm.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ David Hildenbrand <david@redhat.com>,
+ Vivek Goyal <vgoyal@redhat.com>, Miklos Szeredi <miklos@szeredi.hu>,
+ Eric Van Hensbergen <ericvh@gmail.com>,
+ Latchesar Ionkov <lucho@ionkov.net>,
+ Dominique Martinet <asmadeus@codewreck.org>,
+ Stefano Garzarella <sgarzare@redhat.com>,
+ Anton Yakovlev <anton.yakovlev@opensynergy.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ linux-um@lists.infradead.org,
+ virtualization@lists.linux-foundation.org,
+ linux-block@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+ linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-gpio@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-i2c@vger.kernel.org, iommu@lists.linux-foundation.org,
+ netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+ nvdimm@lists.linux.dev, linux-remoteproc@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ v9fs-developer@lists.sourceforge.net, kvm@vger.kernel.org,
+ alsa-devel@alsa-project.org
+References: <20211013105226.20225-1-mst@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Rander Wang <rander.wang@intel.com>, Jie Yang <yang.jie@linux.intel.com>,
- linux-kernel@vger.kernel.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Mac Chiang <mac.chiang@intel.com>, Gongjun Song <gongjun.song@intel.com>,
- Bard Liao <bard.liao@intel.com>, Takashi Iwai <tiwai@suse.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>,
- Rander Wang <rander.wang@linux.intel.com>, Yong Zhi <yong.zhi@intel.com>,
- Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>,
- Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
- Paul Olaru <paul.olaru@oss.nxp.com>, Brent Lu <brent.lu@intel.com>,
- Libin Yang <libin.yang@intel.com>, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Curtis Malainey <cujomalainey@chromium.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="byZ/nyBYz0KyHzOz"
+Content-Disposition: inline
+In-Reply-To: <20211013105226.20225-1-mst@redhat.com>
+X-Mailman-Approved-At: Tue, 19 Oct 2021 10:13:12 +0200
+Cc: Latchesar Ionkov <lucho@ionkov.net>, nvdimm@lists.linux.dev,
+ Dominique Martinet <asmadeus@codewreck.org>,
+ Stefan Hajnoczi <stefanha@redhat.com>, kvm@vger.kernel.org,
+ David Hildenbrand <david@redhat.com>, David Airlie <airlied@linux.ie>,
+ Viresh Kumar <vireshk@kernel.org>, Jason Wang <jasowang@redhat.com>,
+ linux-remoteproc@vger.kernel.org, alsa-devel@alsa-project.org,
+ dri-devel@lists.freedesktop.org, Bjorn Andersson <bjorn.andersson@linaro.org>,
+ netdev@vger.kernel.org, Gerd Hoffmann <kraxel@redhat.com>,
+ linux-scsi@vger.kernel.org, Will Deacon <will@kernel.org>,
+ v9fs-developer@lists.sourceforge.net,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Jean-Philippe Brucker <jean-philippe@linaro.org>,
+ Linus Walleij <linus.walleij@linaro.org>, Dave Jiang <dave.jiang@intel.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>, linux-arm-kernel@lists.infradead.org,
+ Miklos Szeredi <miklos@szeredi.hu>, Richard Weinberger <richard@nod.at>,
+ Bartosz Golaszewski <brgl@bgdev.pl>, Takashi Iwai <tiwai@suse.com>,
+ Gonglei <arei.gonglei@huawei.com>, Kalle Valo <kvalo@codeaurora.org>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ "James E.J. Bottomley" <jejb@linux.ibm.com>, Jakub Kicinski <kuba@kernel.org>,
+ Ira Weiny <ira.weiny@intel.com>, virtualization@lists.linux-foundation.org,
+ Jeff Dike <jdike@addtoit.com>, Vivek Goyal <vgoyal@redhat.com>,
+ Stefano Garzarella <sgarzare@redhat.com>, Ohad Ben-Cohen <ohad@wizery.com>,
+ Johan Hedberg <johan.hedberg@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
+ Amit Shah <amit@kernel.org>, Eric Van Hensbergen <ericvh@gmail.com>,
+ Marcel Holtmann <marcel@holtmann.org>, linux-um@lists.infradead.org,
+ linux-crypto@vger.kernel.org, linux-block@vger.kernel.org,
+ Vishal Verma <vishal.l.verma@intel.com>,
+ Luiz Augusto von Dentz <luiz.dentz@gmail.com>, Matt Mackall <mpm@selenic.com>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Cristian Marussi <cristian.marussi@arm.com>, Jens Axboe <axboe@kernel.dk>,
+ Jie Deng <jie.deng@intel.com>, Mathieu Poirier <mathieu.poirier@linaro.org>,
+ linux-gpio@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-i2c@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+ iommu@lists.linux-foundation.org,
+ Anton Yakovlev <anton.yakovlev@opensynergy.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Sudeep Holla <sudeep.holla@arm.com>,
+ linux-fsdevel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+ Johannes Berg <johannes@sipsolutions.net>, "Enrico Weigelt,
+ metux IT consult" <info@metux.net>, "David S. Miller" <davem@davemloft.net>,
+ Joerg Roedel <joro@8bytes.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,127 +177,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-We have multiple entries for the same codecs, use the new compatible
-IDs to have a single entry.
+--byZ/nyBYz0KyHzOz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- .../intel/common/soc-acpi-intel-cht-match.c   | 69 +++++++------------
- 1 file changed, 25 insertions(+), 44 deletions(-)
+On Wed, Oct 13, 2021 at 06:55:31AM -0400, Michael S. Tsirkin wrote:
+> This will enable cleanups down the road.
+> The idea is to disable cbs, then add "flush_queued_cbs" callback
+> as a parameter, this way drivers can flush any work
+> queued after callbacks have been disabled.
+>=20
+> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 
-diff --git a/sound/soc/intel/common/soc-acpi-intel-cht-match.c b/sound/soc/intel/common/soc-acpi-intel-cht-match.c
-index 227424236fd5..c60a5e8e7bc9 100644
---- a/sound/soc/intel/common/soc-acpi-intel-cht-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-cht-match.c
-@@ -51,18 +51,31 @@ static struct snd_soc_acpi_mach *cht_quirk(void *arg)
- 		return mach;
- }
- 
-+static const struct snd_soc_acpi_codecs rt5640_comp_ids = {
-+	.num_codecs = 2,
-+	.codecs = { "10EC5640", "10EC3276" },
-+};
-+
-+static const struct snd_soc_acpi_codecs rt5670_comp_ids = {
-+	.num_codecs = 2,
-+	.codecs = { "10EC5670", "10EC5672" },
-+};
-+
-+static const struct snd_soc_acpi_codecs rt5645_comp_ids = {
-+	.num_codecs = 3,
-+	.codecs = { "10EC5645", "10EC5650", "10EC3270" },
-+};
-+
-+static const struct snd_soc_acpi_codecs da7213_comp_ids = {
-+	.num_codecs = 2,
-+	.codecs = { "DGLS7212", "DGLS7213"},
-+
-+};
-+
- /* Cherryview-based platforms: CherryTrail and Braswell */
- struct snd_soc_acpi_mach  snd_soc_acpi_intel_cherrytrail_machines[] = {
- 	{
--		.id = "10EC5670",
--		.drv_name = "cht-bsw-rt5672",
--		.fw_filename = "intel/fw_sst_22a8.bin",
--		.board = "cht-bsw",
--		.sof_fw_filename = "sof-cht.ri",
--		.sof_tplg_filename = "sof-cht-rt5670.tplg",
--	},
--	{
--		.id = "10EC5672",
-+		.comp_ids = &rt5670_comp_ids,
- 		.drv_name = "cht-bsw-rt5672",
- 		.fw_filename = "intel/fw_sst_22a8.bin",
- 		.board = "cht-bsw",
-@@ -70,23 +83,7 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_cherrytrail_machines[] = {
- 		.sof_tplg_filename = "sof-cht-rt5670.tplg",
- 	},
- 	{
--		.id = "10EC5645",
--		.drv_name = "cht-bsw-rt5645",
--		.fw_filename = "intel/fw_sst_22a8.bin",
--		.board = "cht-bsw",
--		.sof_fw_filename = "sof-cht.ri",
--		.sof_tplg_filename = "sof-cht-rt5645.tplg",
--	},
--	{
--		.id = "10EC5650",
--		.drv_name = "cht-bsw-rt5645",
--		.fw_filename = "intel/fw_sst_22a8.bin",
--		.board = "cht-bsw",
--		.sof_fw_filename = "sof-cht.ri",
--		.sof_tplg_filename = "sof-cht-rt5645.tplg",
--	},
--	{
--		.id = "10EC3270",
-+		.comp_ids = &rt5645_comp_ids,
- 		.drv_name = "cht-bsw-rt5645",
- 		.fw_filename = "intel/fw_sst_22a8.bin",
- 		.board = "cht-bsw",
-@@ -110,15 +107,7 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_cherrytrail_machines[] = {
- 		.sof_tplg_filename = "sof-cht-nau8824.tplg",
- 	},
- 	{
--		.id = "DLGS7212",
--		.drv_name = "bytcht_da7213",
--		.fw_filename = "intel/fw_sst_22a8.bin",
--		.board = "bytcht_da7213",
--		.sof_fw_filename = "sof-cht.ri",
--		.sof_tplg_filename = "sof-cht-da7213.tplg",
--	},
--	{
--		.id = "DLGS7213",
-+		.comp_ids = &da7213_comp_ids,
- 		.drv_name = "bytcht_da7213",
- 		.fw_filename = "intel/fw_sst_22a8.bin",
- 		.board = "bytcht_da7213",
-@@ -135,7 +124,7 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_cherrytrail_machines[] = {
- 	},
- 	/* some CHT-T platforms rely on RT5640, use Baytrail machine driver */
- 	{
--		.id = "10EC5640",
-+		.comp_ids = &rt5640_comp_ids,
- 		.drv_name = "bytcr_rt5640",
- 		.fw_filename = "intel/fw_sst_22a8.bin",
- 		.board = "bytcr_rt5640",
-@@ -143,14 +132,6 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_cherrytrail_machines[] = {
- 		.sof_fw_filename = "sof-cht.ri",
- 		.sof_tplg_filename = "sof-cht-rt5640.tplg",
- 	},
--	{
--		.id = "10EC3276",
--		.drv_name = "bytcr_rt5640",
--		.fw_filename = "intel/fw_sst_22a8.bin",
--		.board = "bytcr_rt5640",
--		.sof_fw_filename = "sof-cht.ri",
--		.sof_tplg_filename = "sof-cht-rt5640.tplg",
--	},
- 	{
- 		.id = "10EC5682",
- 		.drv_name = "sof_rt5682",
--- 
-2.25.1
+Acked-by: Wolfram Sang <wsa@kernel.org> # for I2C changes
 
+
+--byZ/nyBYz0KyHzOz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmFsLz8ACgkQFA3kzBSg
+KbbhcRAAqrAP/5XyaQEyoVcqsJ6xfTgBJXC8/fUFVary0yMagmjEQLKzCbVBRQiF
+UyKdQuoAJkemPBp13oZuYHgojk26k9r+hRKLoXigmy0tMboLZisXMh7/pcFDyz2e
+1C+0lbx3IQ5Q9LV590CAlOS1i7wPOXFDW0LkIu1mb8TX2Z2NU4G7Tz9TQlGBXO39
+MhIC6ggPDf141nztlFknKIlcLzpBXatCQrhN7cdcr3LxTjoKa20bHHVIGokKmFma
+sJK0vVc5vuqlye+Ea8AZ1jzol4xFQRcSHoNCC5MfHUfxVaJ3mvYQ6jXl9cAfYkLN
+0V5IehblsGFyBZ/Kpw/9SnPGTBV2Chs/o4JURyiKp3wVIpkAMagVz9OI4cOC+TTt
+8007Fqv9jQtFpu+w9FC3//i0C+JiUH12eYjCt8Me4FZC4EHIosqfm8i7yRB+MZIv
+WtaR04OJSlPS/DVFNb1AhUrvITU7uOw2fvVRyyC33iPXIJpvDoyoS9voJTGWYxRn
+u7CYO2yy9EfLoB6bPLn4wbfk1TUlbBpSuuycqOpSfjJ0CSEK0d/t4fKkwsDZ+gxb
+bS6NiNuzBiaxzsm8EUVR1q+gqY46ywMDIOYmbBykiXipERJofhxjro8Czauj9+b6
+FgdQ6J1aFiV8/k36NqD1M5WdM3VecyPECGa7Ba2Nce+uc/k8jCw=
+=Y+5l
+-----END PGP SIGNATURE-----
+
+--byZ/nyBYz0KyHzOz--
