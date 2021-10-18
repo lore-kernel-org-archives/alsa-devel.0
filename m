@@ -2,109 +2,73 @@ Return-Path: <SRS0=JS7s=PG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C0CEC433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 12:48:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22707C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 12:48:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7BADF60FD9
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 12:48:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7BADF60FD9
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
+	by mail.kernel.org (Postfix) with ESMTPS id CC5FF60FC2
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 12:48:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CC5FF60FC2
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AF7541AAF;
-	Mon, 18 Oct 2021 14:47:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF7541AAF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3AE411ABD;
+	Mon, 18 Oct 2021 14:48:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3AE411ABD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634561286;
-	bh=z2dn+DJIORRt1AvzeyHdGrjXX0hVTdlUGQfIQeXdkcw=;
+	s=default; t=1634561330;
+	bh=G+OtVSihKHgS3rS/qDD5HXpv3eDV+Hn9lxSng8pjIB0=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=A3kbAHHDbYEMOLbU0HgZB5Yb51koAq4ITeESlTGUQCtAKpjrngGmYnldV2ItJ44Wz
-	 WdsFbF/CRY4cG2bUz38jfacEgcOb28GP6CbVwxXwoKi9I24F+2ofW6lpzeDr47bFR+
-	 LDXwl7MbFKdRhGxPOzuPTWwRXCceyg5BoPPuCx6U=
+	b=qEjl5XIJbJ9srv9eIhHay3yWLZ7mzBRRa9o1DCSVZKNRmanZ1Zsz9zSjAtQuoNrp6
+	 VvaDoFHfvv3GAhVHlomgmvRMwwS7tLRxezhdoTrrZllo/NUWmi9O4kYNUH5UJlQUzj
+	 j4/JKInKfN/R1BMJ/wZ9KXvrSooqnhiIHYmBXqxQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 29A4EF80159;
+	by alsa1.perex.cz (Postfix) with ESMTP id E6A8AF802DF;
 	Mon, 18 Oct 2021 14:47:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 164EBF80253; Mon, 18 Oct 2021 14:47:09 +0200 (CEST)
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com
- [64.147.123.25])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 0D6B1F80224; Mon, 18 Oct 2021 14:47:09 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5207BF80217
- for <alsa-devel@alsa-project.org>; Mon, 18 Oct 2021 14:47:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5207BF80217
+ by alsa1.perex.cz (Postfix) with ESMTPS id 805C7F80159
+ for <alsa-devel@alsa-project.org>; Mon, 18 Oct 2021 14:46:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 805C7F80159
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="Es4SrDEV"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="H4ii4lqe"
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
- by mailout.west.internal (Postfix) with ESMTP id 2E59F320091B;
- Mon, 18 Oct 2021 08:46:58 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
- by compute5.internal (MEProxy); Mon, 18 Oct 2021 08:46:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-type:in-reply-to; s=fm2; bh=Ti+baPBivGaw69gGNupiitVXA9B
- C4o98jTI8B0gYoGQ=; b=Es4SrDEVWQ43SFJIZmh+wXN87GhGEkFFzMHDJ1hmTHg
- LcYQfs3BkxYdAXfpiDzS6TgiBGZvjzlj+8//mjbnFIWmXNRTSiXVTR+jDXcL7+e8
- 2FJtbKU/gLA6lOR3jwU0ZbzTKndViX/WE7E8fjiByZS7C2+COh8azAo42Syj3n/8
- iqMuiammB8xRu2qvkiMczQxWKB63JuDJCJtxmoLnlBv2ImPq2VG0fAQNmHvKshCM
- ZilRuaO0U+pF+tZlDe6afuzAIZq3l0tvgNYpYQGPMjDBgpMHacURolpHSLw2XrSZ
- N/sDACwolPKMtVYC6p3pzvAwI3wpW5XTuyERffNF8+w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to:x-me-proxy
- :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=Ti+baP
- BivGaw69gGNupiitVXA9BC4o98jTI8B0gYoGQ=; b=H4ii4lqefQbzI60DPIIPin
- G+IaFMImt2TBdzfDIK1Y/nWO+9M/sGZPAkkGZddBC4QoxlJ87r1ox/j4JJrSiH2X
- fcskapKt27AMLaNQYdAuyuUli2fZD5K8zBMshbjJdQs05gIA0Y1z6McLbkUXQo2V
- say4BWdhxv90mDYHLF9sawc/h4dBsnfr/lVYNExbia2S1aTyAYplmgRgDrRNb5/8
- RcFvNhPMFXeN14smQ4A15wmnByr4vyeKIGSxzLXLzXOfIQDfwzJfhbnSApWAUmDR
- MMIWMJ0XLb2myFXF68XcOgaYpZXZfkeqv7W9HtGRIZwucJBBZl6k5xDr7gpgzlyw
- ==
-X-ME-Sender: <xms:wWxtYRGf0ySW773AE_vSYkQgSF6Fqttx4AmdqQJLkGrRXdQzcT1QNA>
- <xme:wWxtYWUcpnjlsSvEv0OcaJxNudIggasCqnMICRVOLg7bmC1Tn4bYorR_o6PPPZQpH
- 8XhW51xQN-gwXqLKok>
-X-ME-Received: <xmr:wWxtYTItuVZKPcnB4kRS3cyHDB7YM2cCWmMfjT3QcOUkk28o0ZJfPPHZO0KZy8kJMe04l7UAoCYzmeWrkENO7KlaixsuqmaNoA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddvtddgheegucetufdoteggodetrfdotf
- fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
- uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
- cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvrghkrghs
- hhhiucfurghkrghmohhtohcuoehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjh
- hpqeenucggtffrrghtthgvrhhnpeelhfeugedvjefgjefgudekfedutedvtddutdeuieev
- tddtgeetjeekvdefgeefhfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
- grihhlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:wWxtYXGWbpZi8ePMkRhUD_5881JEWQydaw1MwAPiHsdiUZK4968AXA>
- <xmx:wWxtYXVYr1KOCeFYbb2CydJjnQlMaMGhejRYDgraQAeIqcndR4r25g>
- <xmx:wWxtYSNk5EB37TzgcGLuflX9E8czIbBOg6PgzUSG4dPT3pu-gfPE5g>
- <xmx:wWxtYUgfP8EiQKnWNZfWu7mk5cbELpWjHc9O7KdS2_dU3zcyrOHDdw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 18 Oct 2021 08:46:56 -0400 (EDT)
-Date: Mon, 18 Oct 2021 21:46:54 +0900
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH 00/11] ALSA: firewire-motu: add ioctl commands to
- retrieve information in messages delivered by isoc packet
-Message-ID: <YW1svlqJvG1oQGK2@workstation>
-Mail-Followup-To: Takashi Iwai <tiwai@suse.de>, clemens@ladisch.de,
- alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
-References: <20211015080826.34847-1-o-takashi@sakamocchi.jp>
- <s5hv91ythay.wl-tiwai@suse.de> <YWt6179lGu6xM3Gw@workstation>
- <s5hczo4t9q1.wl-tiwai@suse.de> <YWvsEY2aGYtDloou@workstation>
- <s5hee8i69mb.wl-tiwai@suse.de>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="dkUwXAuB"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A48160F8F;
+ Mon, 18 Oct 2021 12:46:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1634561214;
+ bh=G+OtVSihKHgS3rS/qDD5HXpv3eDV+Hn9lxSng8pjIB0=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=dkUwXAuB5mLgOixx5LY7oUOpM2KezFLhdaVcdBsGeHANlA3B9aAqlsN0S/cfbvBVf
+ kuHSG8felsWBIwwuC5kRgDHgN6oAbjuCVgBM5Ugb6wZrEdXieWp9GRqluj9kF5WM3u
+ hXcKkyjgyize8KNVfyrekZ9FHrPNBFJn7E4OIXq71AyvIERRk9czHV7FB1I3fErZeU
+ CklDxxcChO8YiQHdos/MqrmUgsLtYIOxZrqA8tI+JnLRB1+fxL+URqlXsOH/5s1pWI
+ EV+uM/NfVqmc3RWYAa4bNLNR22jUQun+VaJGc5AYeCNk8K4/kJT2qSVLavuLkvg7SA
+ CMvK31BQlzWRw==
+Date: Mon, 18 Oct 2021 13:46:52 +0100
+From: Mark Brown <broonie@kernel.org>
+To: John Keeping <john@metanate.com>
+Subject: Re: [PATCH] ASoC: rockchip: use generic DMA engine configuration
+Message-ID: <YW1svMVSgBJygfpV@sirena.org.uk>
+References: <20211018114844.1746351-1-john@metanate.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="LLIdPGt+BVjw3+wI"
 Content-Disposition: inline
-In-Reply-To: <s5hee8i69mb.wl-tiwai@suse.de>
-Cc: ffado-devel@lists.sourceforge.net, alsa-devel@alsa-project.org,
- clemens@ladisch.de
+In-Reply-To: <20211018114844.1746351-1-john@metanate.com>
+X-Cookie: Here there be tygers.
+Cc: alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, linux-rockchip@lists.infradead.org,
+ Jianqun Xu <jay.xu@rock-chips.com>, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -120,25 +84,166 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
 
-On Mon, Oct 18, 2021 at 10:05:32AM +0200, Takashi Iwai wrote:
-> On Sun, 17 Oct 2021 11:25:37 +0200,
-> Takashi Sakamoto wrote:
-> > 
-> > Would I ask you opinion about my concern about firewire UAPI header? Is
-> > it allowed to use float type instead of __u32 type?
-> 
-> I guess the safest way would be like include/uapi/linux/acct.h.
-> The ifdef KERNEL will be omitted at installation, so user-space would
-> see only float type while the kernel sees only __u32.
+--LLIdPGt+BVjw3+wI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Yes. I've already found the header and it would be the safest, However,
-conditional macro sometimes confuses userspace developers...
+On Mon, Oct 18, 2021 at 12:48:44PM +0100, John Keeping wrote:
+> This effectively reverts commit 75b31192fe6a ("ASoC: rockchip: add
+> config for rockchip dmaengine pcm register").
 
-I decide to keep current usage of __u32 as is. Thanks for your opinion!
+> There doesn't seem to be any rationale given for why these specific
+> values are helpful.  The generic DMA engine provides sensible defaults
+> here and works well with Rockchip I2S.
 
+> In fact the period size here is really quite restrictive when dealing
+> with 8 channels of 32-bit data as the effective period size is just 256
+> frames.
 
-Regards
+Copying in Jianqun who wrote that patch.  If you're reverting a patch
+it's generally good to make sure the original author is aware,
+particularly if you're unsure as to why the patch does what it does.
 
-Takashi Sakamoto
+> Signed-off-by: John Keeping <john@metanate.com>
+> ---
+>  sound/soc/rockchip/Makefile       |  3 +--
+>  sound/soc/rockchip/rockchip_i2s.c |  3 +--
+>  sound/soc/rockchip/rockchip_pcm.c | 44 -------------------------------
+>  sound/soc/rockchip/rockchip_pcm.h | 11 --------
+>  4 files changed, 2 insertions(+), 59 deletions(-)
+>  delete mode 100644 sound/soc/rockchip/rockchip_pcm.c
+>  delete mode 100644 sound/soc/rockchip/rockchip_pcm.h
+>=20
+> diff --git a/sound/soc/rockchip/Makefile b/sound/soc/rockchip/Makefile
+> index b10f5e7b136d..6a3e61178152 100644
+> --- a/sound/soc/rockchip/Makefile
+> +++ b/sound/soc/rockchip/Makefile
+> @@ -2,11 +2,10 @@
+>  # ROCKCHIP Platform Support
+>  snd-soc-rockchip-i2s-objs :=3D rockchip_i2s.o
+>  snd-soc-rockchip-i2s-tdm-objs :=3D rockchip_i2s_tdm.o
+> -snd-soc-rockchip-pcm-objs :=3D rockchip_pcm.o
+>  snd-soc-rockchip-pdm-objs :=3D rockchip_pdm.o
+>  snd-soc-rockchip-spdif-objs :=3D rockchip_spdif.o
+> =20
+> -obj-$(CONFIG_SND_SOC_ROCKCHIP_I2S) +=3D snd-soc-rockchip-i2s.o snd-soc-r=
+ockchip-pcm.o
+> +obj-$(CONFIG_SND_SOC_ROCKCHIP_I2S) +=3D snd-soc-rockchip-i2s.o
+>  obj-$(CONFIG_SND_SOC_ROCKCHIP_I2S_TDM) +=3D snd-soc-rockchip-i2s-tdm.o
+>  obj-$(CONFIG_SND_SOC_ROCKCHIP_PDM) +=3D snd-soc-rockchip-pdm.o
+>  obj-$(CONFIG_SND_SOC_ROCKCHIP_SPDIF) +=3D snd-soc-rockchip-spdif.o
+> diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockc=
+hip_i2s.c
+> index 7e89f5b0c237..a6d7656c206e 100644
+> --- a/sound/soc/rockchip/rockchip_i2s.c
+> +++ b/sound/soc/rockchip/rockchip_i2s.c
+> @@ -20,7 +20,6 @@
+>  #include <sound/dmaengine_pcm.h>
+> =20
+>  #include "rockchip_i2s.h"
+> -#include "rockchip_pcm.h"
+> =20
+>  #define DRV_NAME "rockchip-i2s"
+> =20
+> @@ -756,7 +755,7 @@ static int rockchip_i2s_probe(struct platform_device =
+*pdev)
+>  		goto err_suspend;
+>  	}
+> =20
+> -	ret =3D rockchip_pcm_platform_register(&pdev->dev);
+> +	ret =3D devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
+>  	if (ret) {
+>  		dev_err(&pdev->dev, "Could not register PCM\n");
+>  		goto err_suspend;
+> diff --git a/sound/soc/rockchip/rockchip_pcm.c b/sound/soc/rockchip/rockc=
+hip_pcm.c
+> deleted file mode 100644
+> index 02254e42135e..000000000000
+> --- a/sound/soc/rockchip/rockchip_pcm.c
+> +++ /dev/null
+> @@ -1,44 +0,0 @@
+> -// SPDX-License-Identifier: GPL-2.0-only
+> -/*
+> - * Copyright (c) 2018 Rockchip Electronics Co. Ltd.
+> - */
+> -
+> -#include <linux/device.h>
+> -#include <linux/init.h>
+> -#include <linux/module.h>
+> -
+> -#include <sound/core.h>
+> -#include <sound/pcm.h>
+> -#include <sound/soc.h>
+> -#include <sound/dmaengine_pcm.h>
+> -
+> -#include "rockchip_pcm.h"
+> -
+> -static const struct snd_pcm_hardware snd_rockchip_hardware =3D {
+> -	.info			=3D SNDRV_PCM_INFO_MMAP |
+> -				  SNDRV_PCM_INFO_MMAP_VALID |
+> -				  SNDRV_PCM_INFO_PAUSE |
+> -				  SNDRV_PCM_INFO_RESUME |
+> -				  SNDRV_PCM_INFO_INTERLEAVED,
+> -	.period_bytes_min	=3D 32,
+> -	.period_bytes_max	=3D 8192,
+> -	.periods_min		=3D 1,
+> -	.periods_max		=3D 52,
+> -	.buffer_bytes_max	=3D 64 * 1024,
+> -	.fifo_size		=3D 32,
+> -};
+> -
+> -static const struct snd_dmaengine_pcm_config rk_dmaengine_pcm_config =3D=
+ {
+> -	.pcm_hardware =3D &snd_rockchip_hardware,
+> -	.prepare_slave_config =3D snd_dmaengine_pcm_prepare_slave_config,
+> -	.prealloc_buffer_size =3D 32 * 1024,
+> -};
+> -
+> -int rockchip_pcm_platform_register(struct device *dev)
+> -{
+> -	return devm_snd_dmaengine_pcm_register(dev, &rk_dmaengine_pcm_config,
+> -		SND_DMAENGINE_PCM_FLAG_COMPAT);
+> -}
+> -EXPORT_SYMBOL_GPL(rockchip_pcm_platform_register);
+> -
+> -MODULE_LICENSE("GPL v2");
+> diff --git a/sound/soc/rockchip/rockchip_pcm.h b/sound/soc/rockchip/rockc=
+hip_pcm.h
+> deleted file mode 100644
+> index 7f00e2ce3603..000000000000
+> --- a/sound/soc/rockchip/rockchip_pcm.h
+> +++ /dev/null
+> @@ -1,11 +0,0 @@
+> -/* SPDX-License-Identifier: GPL-2.0-only */
+> -/*
+> - * Copyright (c) 2018 Rockchip Electronics Co. Ltd.
+> - */
+> -
+> -#ifndef _ROCKCHIP_PCM_H
+> -#define _ROCKCHIP_PCM_H
+> -
+> -int rockchip_pcm_platform_register(struct device *dev);
+> -
+> -#endif
+> --=20
+> 2.33.1
+>=20
+
+--LLIdPGt+BVjw3+wI
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFtbLsACgkQJNaLcl1U
+h9CjRgf9F+1fSarPqDt2LrsQCEJcgFE78KkSwsP7XCT32GaDY2NnjgXK+nVA67eD
+VD1St/hwPnZEeVfebQ8xA/koS9D3KVThkt6UEpoD1XOI3BIBhc2pFMCifaZC+rFX
+IO8CV0Uh/AEIR8rjjnvXp1UfAHJcwhh9bNuveQKrIksLn0ugcGam0PauIYHpIgQU
+6hunuhaO7qH9lwW2Ba5mRB3/+q5bvKIL/6yBmAqLIxBpitqrTaLsTBr2J1D7mFJU
+yHkdigqW5y05+RMkJ/csW/ile0qeWQZ9fMSN5epOVpkMob7nuO37gXcfze5Lq0AY
+elcIUkNlkR+iYcbu0ruxERwy9tjq6Q==
+=ej6A
+-----END PGP SIGNATURE-----
+
+--LLIdPGt+BVjw3+wI--
