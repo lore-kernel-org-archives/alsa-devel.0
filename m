@@ -2,67 +2,70 @@ Return-Path: <SRS0=JS7s=PG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B5984C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 14:42:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A0C36C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 14:44:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3D6D160EB2
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 14:42:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3D6D160EB2
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id BBD1160FC3
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 14:44:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BBD1160FC3
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=libc.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9CBCD17B7;
-	Mon, 18 Oct 2021 16:41:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CBCD17B7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 14BEE1791;
+	Mon, 18 Oct 2021 16:43:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 14BEE1791
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634568123;
-	bh=NAB0gGn7M86a+e/pU//ZC9L3bZSq3SM6eS9s9wsvkS4=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1634568247;
+	bh=mp5slY3pH6jtKvFPeDz7Bq+9oE34L302stiLXtdIS7A=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eHKCF5RMByzNhpG3wXDiD9S4IqNMqUyeyukjbZ1CF6V/rHoN7umS2J2L0mJfsXtXn
-	 zoJerAa5+VeIHZpFFho7a0J2A96hPf9c8c9r3K4ktQ3BiYfZGK5DTJARDZWD9duwod
-	 OUL2KaPkMLeRJ1Sgo6mK2Y2dA94BhNZHScv9hiUU=
+	b=HYCSwYCylaSHlMh23pps5sq1fpkRtn9M9kbR6N/JgDnSs573mbrO/hGPZIz17E/2w
+	 pzurXfNVdKE4l/iRwvRGVhH2ol0/dpAcDhqcxG/JeaILoI6AYA24y1xVEQu6Znt3k0
+	 3XejWktwNwkXpIU2PjnroEAgcN6hzVOI5q3YaFd0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C0049F80507;
-	Mon, 18 Oct 2021 16:39:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AECC0F80217;
+	Mon, 18 Oct 2021 16:43:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 54F42F804F3; Mon, 18 Oct 2021 16:39:39 +0200 (CEST)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 2FBE0F80224; Mon, 18 Oct 2021 16:43:15 +0200 (CEST)
+Received: from brightrain.aerifal.cx (brightrain.aerifal.cx [216.12.86.13])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6562AF802DF
- for <alsa-devel@alsa-project.org>; Mon, 18 Oct 2021 16:39:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6562AF802DF
-X-IronPort-AV: E=McAfee;i="6200,9189,10140"; a="291731896"
-X-IronPort-AV: E=Sophos;i="5.85,382,1624345200"; d="scan'208";a="291731896"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Oct 2021 07:39:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,382,1624345200"; d="scan'208";a="629218949"
-Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga001.fm.intel.com with ESMTP; 18 Oct 2021 07:39:24 -0700
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 2/4] ALSA: hda: Fill gaps in NHLT endpoint-interface
-Date: Mon, 18 Oct 2021 16:40:52 +0200
-Message-Id: <20211018144054.286268-3-cezary.rojewski@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211018144054.286268-1-cezary.rojewski@intel.com>
-References: <20211018144054.286268-1-cezary.rojewski@intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id D0110F801DB
+ for <alsa-devel@alsa-project.org>; Mon, 18 Oct 2021 16:43:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0110F801DB
+Date: Mon, 18 Oct 2021 10:43:00 -0400
+From: Rich Felker <dalias@libc.org>
+To: Takashi Iwai <tiwai@suse.de>
+Subject: Re: [musl] Re: [alsa-devel] [PATCH v7 8/9] ALSA: add new 32-bit
+ layout for snd_pcm_mmap_status/control
+Message-ID: <20211018144259.GK7074@brightrain.aerifal.cx>
+References: <CAK8P3a0pSZxqfk-bn+idrDYDwANSfiP9L6U1O5jLQvK+3vwyVQ@mail.gmail.com>
+ <s5hy27497eo.wl-tiwai@suse.de>
+ <20211007160634.GB7074@brightrain.aerifal.cx>
+ <s5hr1cw95ar.wl-tiwai@suse.de>
+ <20211007165158.GC7074@brightrain.aerifal.cx>
+ <s5h5yu79aab.wl-tiwai@suse.de>
+ <CAK8P3a0qxNLv3_RcR5COcRGPcTnYMcfbOjdWKiT2hKdcof9WUg@mail.gmail.com>
+ <s5hv9277oux.wl-tiwai@suse.de>
+ <20211008120736.GF7074@brightrain.aerifal.cx>
+ <s5hsfx95n99.wl-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: pierre-louis.bossart@linux.intel.com,
- Cezary Rojewski <cezary.rojewski@intel.com>, tiwai@suse.com,
- hdegoede@redhat.com, broonie@kernel.org,
- =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <s5hsfx95n99.wl-tiwai@suse.de>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Arnd Bergmann <arnd@arndb.de>, Baolin Wang <baolin.wang@linaro.org>,
+ y2038 Mailman List <y2038@lists.linaro.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ musl@lists.openwall.com, Takashi Iwai <tiwai@suse.com>,
+ Michael Forney <mforney@mforney.org>, Mark Brown <broonie@kernel.org>,
+ Baolin Wang <baolin.wang7@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,205 +81,97 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+On Sun, Oct 10, 2021 at 09:53:38AM +0200, Takashi Iwai wrote:
+> On Fri, 08 Oct 2021 14:07:39 +0200,
+> Rich Felker wrote:
+> > 
+> > On Fri, Oct 08, 2021 at 01:11:34PM +0200, Takashi Iwai wrote:
+> > > On Fri, 08 Oct 2021 11:24:39 +0200,
+> > > Arnd Bergmann wrote:
+> > > > 
+> > > > On Fri, Oct 8, 2021 at 10:43 AM Takashi Iwai <tiwai@suse.de> wrote:
+> > > > > On Thu, 07 Oct 2021 18:51:58 +0200, Rich Felker wrote:
+> > > > > > On Thu, Oct 07, 2021 at 06:18:52PM +0200, Takashi Iwai wrote:
+> > > > >
+> > > > > @@ -557,11 +558,15 @@ struct __snd_pcm_sync_ptr {
+> > > > >  #if defined(__BYTE_ORDER) ? __BYTE_ORDER == __BIG_ENDIAN : defined(__BIG_ENDIAN)
+> > > > >  typedef char __pad_before_uframe[sizeof(__u64) - sizeof(snd_pcm_uframes_t)];
+> > > > >  typedef char __pad_after_uframe[0];
+> > > > > +typedef char __pad_before_u32[4];
+> > > > > +typedef char __pad_after_u32[0];
+> > > > >  #endif
+> > > > >
+> > > > >  #if defined(__BYTE_ORDER) ? __BYTE_ORDER == __LITTLE_ENDIAN : defined(__LITTLE_ENDIAN)
+> > > > >  typedef char __pad_before_uframe[0];
+> > > > >  typedef char __pad_after_uframe[sizeof(__u64) - sizeof(snd_pcm_uframes_t)];
+> > > > > +typedef char __pad_before_u32[0];
+> > > > > +typedef char __pad_after_u32[4];
+> > > > >  #endif
+> > > > 
+> > > > I think these should remain unchanged, the complex expression was intentionally
+> > > > done so the structures are laid out the same way on 64-bit
+> > > > architectures, so that
+> > > > the kernel can use the __SND_STRUCT_TIME64 path internally on both 32-bit
+> > > > and 64-bit architectures.
+> > > 
+> > > That was explicitly defined, but OK, this isn't necessarily defined
+> > > here.
+> > > 
+> > > > > @@ -2970,8 +2981,17 @@ static int snd_pcm_sync_ptr(struct snd_pcm_substream *substream,
+> > > > >         memset(&sync_ptr, 0, sizeof(sync_ptr));
+> > > > >         if (get_user(sync_ptr.flags, (unsigned __user *)&(_sync_ptr->flags)))
+> > > > >                 return -EFAULT;
+> > > > > -       if (copy_from_user(&sync_ptr.c.control, &(_sync_ptr->c.control), sizeof(struct snd_pcm_mmap_control)))
+> > > > > -               return -EFAULT;
+> > > > > +       if (buggy_control) {
+> > > > > +               if (copy_from_user(&sync_ptr.c.control_api_2_0_15,
+> > > > > +                                  &(_sync_ptr->c.control_api_2_0_15),
+> > > > > +                                  sizeof(sync_ptr.c.control_api_2_0_15)))
+> > > > > +                       return -EFAULT;
+> > > > > +       } else {
+> > > > > +               if (copy_from_user(&sync_ptr.c.control,
+> > > > > +                                  &(_sync_ptr->c.control),
+> > > > > +                                  sizeof(sync_ptr.c.control)))
+> > > > > +                       return -EFAULT;
+> > > > > +       }
+> > > > 
+> > > > The problem I see with this is that it might break musl's ability to
+> > > > emulate the new
+> > > > interface on top of the old (time32) one for linux-4.x and older
+> > > > kernels, as the conversion
+> > > > function is no longer stateless but has to know the negotiated
+> > > > interface version.
+> > > > 
+> > > > It's probably fine as long as we can be sure that the 2.0.16+ API
+> > > > version only gets
+> > > > negotiated if both the kernel and user sides support it, and musl only emulates
+> > > > the 2.0.15 API version from the current kernels.
+> > > > 
+> > > > I've tried to understand this part of musl's convert_ioctl_struct(), but I just
+> > > > can't figure out whether it does the conversion based the on the layout that
+> > > > is currently used in the kernel, or based on the layout we should have been
+> > > > using, and would use with the above fix. Rich, can you help me here?
+> > > 
+> > > So, at this moment, I'm not sure whether we should correct the struct
+> > > at all.  This will lead to yet more breakage, and basically the struct
+> > > itself *works* -- the only bug is in 32bit compat handling in the
+> > > kernel (again).
+> > > 
+> > > The below is a revised kernel patch (again untested), just correcting
+> > > the behavior of 32bit compat mode.  32bit apps on 32bit kernel work
+> > > fine as is, as well as 64bit apps on 64bit kernel.
+> > 
+> > I'm perfectly okay with this if Arnd is! It's probably the least
+> > invasive and has the least long-term maintenance cost and fallout on
+> > other projects.
+> 
+> OK, I'll submit a proper patch now, to be included in the next PR for
+> 5.15-rc.  For further fixes, let's think carefully.
 
-Two key operations missings are: endpoint presence-check and retrieval
-of matching endpoint hardware configuration (blob). Add operations for
-both use cases.
+Am I correct in my understanding that the fix of keeping the "broken"
+definition (and having the 64-bit kernel honor it for 32-bit binaries)
+has been accepted? Since musl's translation for pre-time64 kernels
+seems to have been using the "non-broken" definition, I think
+completing the fix requires a change in musl too.
 
-Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
----
-
-Changes in v2:
-- updated newly added declarations in intel-nhlt.h so warning:
-  "no-previous-prototype-for-function" and error:
-  "use-of-undeclared-identifier" are no longer observed when
-  CONFIG_SND_INTEL_NHLT is not enabled
-
- include/sound/intel-nhlt.h |  37 +++++++++++---
- sound/hda/intel-nhlt.c     | 102 +++++++++++++++++++++++++++++++++++++
- 2 files changed, 131 insertions(+), 8 deletions(-)
-
-diff --git a/include/sound/intel-nhlt.h b/include/sound/intel-nhlt.h
-index b0796225f82e..7a54d3801608 100644
---- a/include/sound/intel-nhlt.h
-+++ b/include/sound/intel-nhlt.h
-@@ -10,6 +10,14 @@
- 
- #include <linux/acpi.h>
- 
-+enum nhlt_link_type {
-+	NHLT_LINK_HDA = 0,
-+	NHLT_LINK_DSP = 1,
-+	NHLT_LINK_DMIC = 2,
-+	NHLT_LINK_SSP = 3,
-+	NHLT_LINK_INVALID
-+};
-+
- #if IS_ENABLED(CONFIG_ACPI) && IS_ENABLED(CONFIG_SND_INTEL_NHLT)
- 
- struct wav_fmt {
-@@ -33,14 +41,6 @@ struct wav_fmt_ext {
- 	u8 sub_fmt[16];
- } __packed;
- 
--enum nhlt_link_type {
--	NHLT_LINK_HDA = 0,
--	NHLT_LINK_DSP = 1,
--	NHLT_LINK_DMIC = 2,
--	NHLT_LINK_SSP = 3,
--	NHLT_LINK_INVALID
--};
--
- enum nhlt_device_type {
- 	NHLT_DEVICE_BT = 0,
- 	NHLT_DEVICE_DMIC = 1,
-@@ -132,6 +132,12 @@ void intel_nhlt_free(struct acpi_table_nhlt *addr);
- 
- int intel_nhlt_get_dmic_geo(struct device *dev, struct acpi_table_nhlt *nhlt);
- 
-+bool intel_nhlt_has_endpoint_type(struct acpi_table_nhlt *nhlt, u8 link_type);
-+struct nhlt_specific_cfg *
-+intel_nhlt_get_endpoint_blob(struct device *dev, struct acpi_table_nhlt *nhlt,
-+			     u32 bus_id, u8 link_type, u8 vbps, u8 bps,
-+			     u8 num_ch, u32 rate, u8 dir, u8 dev_type);
-+
- #else
- 
- struct acpi_table_nhlt;
-@@ -150,6 +156,21 @@ static inline int intel_nhlt_get_dmic_geo(struct device *dev,
- {
- 	return 0;
- }
-+
-+static inline bool intel_nhlt_has_endpoint_type(struct acpi_table_nhlt *nhlt,
-+						u8 link_type)
-+{
-+	return false;
-+}
-+
-+static inline struct nhlt_specific_cfg *
-+intel_nhlt_get_endpoint_blob(struct device *dev, struct acpi_table_nhlt *nhlt,
-+			     u32 bus_id, u8 link_type, u8 vbps, u8 bps,
-+			     u8 num_ch, u32 rate, u8 dir, u8 dev_type)
-+{
-+	return NULL;
-+}
-+
- #endif
- 
- #endif
-diff --git a/sound/hda/intel-nhlt.c b/sound/hda/intel-nhlt.c
-index e6baa7af5c5d..2108be213d4f 100644
---- a/sound/hda/intel-nhlt.c
-+++ b/sound/hda/intel-nhlt.c
-@@ -110,3 +110,105 @@ int intel_nhlt_get_dmic_geo(struct device *dev, struct acpi_table_nhlt *nhlt)
- 	return dmic_geo;
- }
- EXPORT_SYMBOL_GPL(intel_nhlt_get_dmic_geo);
-+
-+bool intel_nhlt_has_endpoint_type(struct acpi_table_nhlt *nhlt, u8 link_type)
-+{
-+	struct nhlt_endpoint *epnt;
-+	int i;
-+
-+	if (!nhlt)
-+		return false;
-+
-+	epnt = (struct nhlt_endpoint *)nhlt->desc;
-+	for (i = 0; i < nhlt->endpoint_count; i++) {
-+		if (epnt->linktype == link_type)
-+			return true;
-+
-+		epnt = (struct nhlt_endpoint *)((u8 *)epnt + epnt->length);
-+	}
-+	return false;
-+}
-+EXPORT_SYMBOL(intel_nhlt_has_endpoint_type);
-+
-+static struct nhlt_specific_cfg *
-+nhlt_get_specific_cfg(struct device *dev, struct nhlt_fmt *fmt, u8 num_ch,
-+		      u32 rate, u8 vbps, u8 bps)
-+{
-+	struct nhlt_fmt_cfg *cfg = fmt->fmt_config;
-+	struct wav_fmt *wfmt;
-+	u16 _bps, _vbps;
-+	int i;
-+
-+	dev_dbg(dev, "Endpoint format count=%d\n", fmt->fmt_count);
-+
-+	for (i = 0; i < fmt->fmt_count; i++) {
-+		wfmt = &cfg->fmt_ext.fmt;
-+		_bps = wfmt->bits_per_sample;
-+		_vbps = cfg->fmt_ext.sample.valid_bits_per_sample;
-+
-+		dev_dbg(dev, "Endpoint format: ch=%d fmt=%d/%d rate=%d\n",
-+			wfmt->channels, _vbps, _bps, wfmt->samples_per_sec);
-+
-+		if (wfmt->channels == num_ch && wfmt->samples_per_sec == rate &&
-+		    vbps == _vbps && bps == _bps)
-+			return &cfg->config;
-+
-+		cfg = (struct nhlt_fmt_cfg *)(cfg->config.caps + cfg->config.size);
-+	}
-+
-+	return NULL;
-+}
-+
-+static bool nhlt_check_ep_match(struct device *dev, struct nhlt_endpoint *epnt,
-+				u32 bus_id, u8 link_type, u8 dir, u8 dev_type)
-+{
-+	dev_dbg(dev, "Endpoint: vbus_id=%d link_type=%d dir=%d dev_type = %d\n",
-+		epnt->virtual_bus_id, epnt->linktype,
-+		epnt->direction, epnt->device_type);
-+
-+	if ((epnt->virtual_bus_id != bus_id) ||
-+	    (epnt->linktype != link_type) ||
-+	    (epnt->direction != dir))
-+		return false;
-+
-+	/* link of type DMIC bypasses device_type check */
-+	return epnt->linktype == NHLT_LINK_DMIC ||
-+	       epnt->device_type == dev_type;
-+}
-+
-+struct nhlt_specific_cfg *
-+intel_nhlt_get_endpoint_blob(struct device *dev, struct acpi_table_nhlt *nhlt,
-+			     u32 bus_id, u8 link_type, u8 vbps, u8 bps,
-+			     u8 num_ch, u32 rate, u8 dir, u8 dev_type)
-+{
-+	struct nhlt_specific_cfg *cfg;
-+	struct nhlt_endpoint *epnt;
-+	struct nhlt_fmt *fmt;
-+	int i;
-+
-+	if (!nhlt)
-+		return NULL;
-+
-+	dev_dbg(dev, "Looking for configuration:\n");
-+	dev_dbg(dev, "  vbus_id=%d link_type=%d dir=%d, dev_type=%d\n",
-+		bus_id, link_type, dir, dev_type);
-+	dev_dbg(dev, "  ch=%d fmt=%d/%d rate=%d\n", num_ch, vbps, bps, rate);
-+	dev_dbg(dev, "Endpoint count=%d\n", nhlt->endpoint_count);
-+
-+	epnt = (struct nhlt_endpoint *)nhlt->desc;
-+
-+	for (i = 0; i < nhlt->endpoint_count; i++) {
-+		if (nhlt_check_ep_match(dev, epnt, bus_id, link_type, dir, dev_type)) {
-+			fmt = (struct nhlt_fmt *)(epnt->config.caps + epnt->config.size);
-+
-+			cfg = nhlt_get_specific_cfg(dev, fmt, num_ch, rate, vbps, bps);
-+			if (cfg)
-+				return cfg;
-+		}
-+
-+		epnt = (struct nhlt_endpoint *)((u8 *)epnt + epnt->length);
-+	}
-+
-+	return NULL;
-+}
-+EXPORT_SYMBOL(intel_nhlt_get_endpoint_blob);
--- 
-2.25.1
-
+Rich
