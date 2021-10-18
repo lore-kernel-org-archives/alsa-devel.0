@@ -2,51 +2,51 @@ Return-Path: <SRS0=JS7s=PG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A68DFC433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 02:06:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 90E1AC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 02:06:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 04D7060524
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 02:06:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 04D7060524
+	by mail.kernel.org (Postfix) with ESMTPS id E4EBB60524
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 02:06:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E4EBB60524
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 64A45180F;
-	Mon, 18 Oct 2021 04:05:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64A45180F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 511681891;
+	Mon, 18 Oct 2021 04:05:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 511681891
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634522771;
-	bh=8wk6SCVnh04jUsiP+WACgL0P5sF5HHu1rjMimXkqNsQ=;
+	s=default; t=1634522780;
+	bh=tR+JXwi+pdiQqTCPAc2kp0T7kqiaroHRoJj3NbdjtH0=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Fh3ZqRNtaNI1TjmsKqO/t0+4YKQSezjK0yiZ4Wrib6L2QXwyoRAVyt2ii5EK0iWke
-	 wLKf6TFYPbo4FAzR9MGS52JWy/nnYYzfMNxq9SWcXdNFr30BRFSr/wyB1MjoJTuVOx
-	 ChNMZeQQHgM538payRv+NM9VZcSrjGyNITu9G7js=
+	b=hCSfTxbziXBevv7hE7JUS00p/Sh4+p7B507RXDpxzsB8RZIi35H9rBjAmN989MBwo
+	 7ApUMJ8Bo+51OE2+OnMyvs8PBf3j7nQ/LWQnm9C1QPk/lUThF5SuB7AA2eO1Lwrbw4
+	 iGdc0KHTaWU5NRqTna4y3CUNXAQlTMgvCYDzIHu8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 412DEF802A9;
-	Mon, 18 Oct 2021 04:05:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A8BF5F804E0;
+	Mon, 18 Oct 2021 04:05:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D74A5F802DF; Mon, 18 Oct 2021 04:05:03 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id EBFBBF801DB
- for <alsa-devel@alsa-project.org>; Mon, 18 Oct 2021 04:04:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EBFBBF801DB
-Date: 18 Oct 2021 11:04:52 +0900
-X-IronPort-AV: E=Sophos;i="5.85,380,1624287600"; d="scan'208";a="97517566"
+ id C4209F804EC; Mon, 18 Oct 2021 04:05:16 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id DFAF6F804B2
+ for <alsa-devel@alsa-project.org>; Mon, 18 Oct 2021 04:05:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DFAF6F804B2
+Date: 18 Oct 2021 11:05:05 +0900
+X-IronPort-AV: E=Sophos;i="5.85,380,1624287600"; d="scan'208";a="97304809"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 18 Oct 2021 11:04:52 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 18 Oct 2021 11:05:05 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 5AF0D4187DD3;
- Mon, 18 Oct 2021 11:04:52 +0900 (JST)
-Message-ID: <87k0ibt7ej.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 74D2E4185A7A;
+ Mon, 18 Oct 2021 11:05:05 +0900 (JST)
+Message-ID: <87ilxvt7e6.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 1/5] ASoC: soc-pcm: tidyup soc_pcm_hw_clean() - step1
+Subject: [PATCH 2/5] ASoC: soc-pcm: tidyup soc_pcm_hw_clean() - step2
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87lf2rt7fg.wl-kuninori.morimoto.gx@renesas.com>
@@ -72,34 +72,33 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-soc_pcm_hw_clean() is using "continue" during for_each_rtd_dais(),
-but it is very verbose. This patch cleanup it.
+DAI active count is not exchanged during for_each_rtd_dais()
+loops. We don't need to keep snd_soc_dai_stream_active() as
+"active" on soc_pcm_hw_clean(). This patch avoid verbose code.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-pcm.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ sound/soc/soc-pcm.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index d22a285b9964..0e51dd6d95bd 100644
+index 0e51dd6d95bd..4309e6131c40 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -898,12 +898,9 @@ static int soc_pcm_hw_clean(struct snd_pcm_substream *substream, int rollback)
- 	snd_soc_pcm_component_hw_free(substream, rollback);
+@@ -879,12 +879,10 @@ static int soc_pcm_hw_clean(struct snd_pcm_substream *substream, int rollback)
  
- 	/* now free hw params for the DAIs  */
--	for_each_rtd_dais(rtd, i, dai) {
--		if (!snd_soc_dai_stream_valid(dai, substream->stream))
--			continue;
+ 	/* clear the corresponding DAIs parameters when going to be inactive */
+ 	for_each_rtd_dais(rtd, i, dai) {
+-		int active = snd_soc_dai_stream_active(dai, substream->stream);
 -
--		snd_soc_dai_hw_free(dai, substream, rollback);
--	}
-+	for_each_rtd_dais(rtd, i, dai)
-+		if (snd_soc_dai_stream_valid(dai, substream->stream))
-+			snd_soc_dai_hw_free(dai, substream, rollback);
+ 		if (snd_soc_dai_active(dai) == 1)
+ 			soc_pcm_set_dai_params(dai, NULL);
  
- 	mutex_unlock(&rtd->card->pcm_mutex);
- 	return 0;
+-		if (active == 1)
++		if (snd_soc_dai_stream_active(dai, substream->stream) == 1)
+ 			snd_soc_dai_digital_mute(dai, 1, substream->stream);
+ 	}
+ 
 -- 
 2.25.1
 
