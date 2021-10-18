@@ -2,87 +2,93 @@ Return-Path: <SRS0=JS7s=PG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9E6BC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 10:23:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19639C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 10:34:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CA3FF60FF2
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 10:23:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CA3FF60FF2
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	by mail.kernel.org (Postfix) with ESMTPS id 90A73610A3
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 10:34:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 90A73610A3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3509E18E4;
-	Mon, 18 Oct 2021 12:22:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3509E18E4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3AE7D1787;
+	Mon, 18 Oct 2021 12:33:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3AE7D1787
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634552579;
-	bh=PQlyYQMPkoqgeYLbL7YIan3kXJnmkjILym6YC4NShT4=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=f1+W7P/mf6UnxG/MIU6M2SP1n4VUXlAV4w8ReFvHyIy47/ECgTzBxcuqMNL8rx/wm
-	 t/3BEl3/smVNonZ4fX6uqPluh7C9ps3DjJPuIlqBdcI1yN/lW1sxka/Qhluh5etlam
-	 YhgABUk4mWFOWRvVykku4Pa5VSqMv72vz6txuiYI=
+	s=default; t=1634553270;
+	bh=Nd6zckoDq3RmG7Di8ZKnpzcjsMl5pEGgrugW2hhoj5c=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=dYpRPil/qyrEFRZb5baCSqd+D4LZHIh+bc9xGP4harJhRm1Mpp9/vMKI2/IBrde+H
+	 SyWDDNMPykYYgz2XlfdKgh6cAlTBAmEDVTyEMAyEIE/6l+3ZlT1Qdk+ejB5srGfFSH
+	 2GA0V4Ui9un5jpOlxPTePltMA1CE0P0jB6mDeyC4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D373CF80224;
-	Mon, 18 Oct 2021 12:22:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C280FF80217;
+	Mon, 18 Oct 2021 12:33:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7D17BF802A9; Mon, 18 Oct 2021 12:22:07 +0200 (CEST)
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com
- [IPv6:2607:f8b0:4864:20::102b])
+ id 964D8F80224; Mon, 18 Oct 2021 12:33:37 +0200 (CEST)
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
+ [IPv6:2a00:1450:4864:20::434])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3182CF80253
- for <alsa-devel@alsa-project.org>; Mon, 18 Oct 2021 12:22:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3182CF80253
+ by alsa1.perex.cz (Postfix) with ESMTPS id DD24AF80159
+ for <alsa-devel@alsa-project.org>; Mon, 18 Oct 2021 12:33:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD24AF80159
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="WYdQNbKe"
-Received: by mail-pj1-x102b.google.com with SMTP id oa4so11888224pjb.2
- for <alsa-devel@alsa-project.org>; Mon, 18 Oct 2021 03:22:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=/TZLehJ/hDMRtkj0rrB2dSWebDz1FDgoJGvlylziczE=;
- b=WYdQNbKeD3mhKTaZ3XkNhbgTsqQlEsqtsHNlVi7Ro7ccexyI/SmcepJOGoe6kNcKFH
- 6keQCwh9qlw+HeYlDTkixvjCfcGC60VNk5HFkO4vLV9J2txIX2JSs1NbSnIfUn6f2w0P
- iv79GvV5OiLvvN7Nt3GcHY++EW+0BUZPORRMaRHHN9KkBGN5Pb4qZMNSatkGeD2Z4yet
- LnPbAsEmyP0neXoOdfjP7N5TDLEiWut8gRgk6Z61x1fEUhAPpJIPOIQhnOejZX+zssDX
- HRl+hABwhd/zVSR1hHTufYpicT5yj6TgjbZzGl3d9dOzmMf6zIGThY66t/Bb5GmImp1/
- Yf+Q==
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="SGbLdHaC"
+Received: by mail-wr1-x434.google.com with SMTP id r10so40370656wra.12
+ for <alsa-devel@alsa-project.org>; Mon, 18 Oct 2021 03:33:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=moJQ78F9oXsWwcjsOjRc3VK50C8FMLYVsh1+aqFOWVI=;
+ b=SGbLdHaCHPafWnkcsKJrt8C7uSJJKjuE1s0WSZxitXueyV10vheKPI1GlKLjamhR/h
+ mzJe7a7FXuugyTVhDzqGFD5GuQghM67V3ISQDyrU8nPg/cQiSrXe3J66oFyhkHih/NF0
+ BdCrNdo5R+hFb42+dri9MqiCvzR/dhNPv8Q+J4EMAb8qm7RRslzt4ax60VC8rcXsi9ge
+ MC/DGjcXXBt3mjSLfYrF2HDt9weYL8Rh2SeZVHeczTZ9PyR4Si7FmCJgZGUwxVUGCVe9
+ nyiMg/NnHmrPgQSEx1pL2fXo2x/kqd4BbGTYkSfhDE3Sx5hBcAx/dLpadpjASFYPGjp8
+ Ku5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=/TZLehJ/hDMRtkj0rrB2dSWebDz1FDgoJGvlylziczE=;
- b=PczwkiC3AOFvA+0cLLLbZwh09TY3uqnRsBnobhOGVQgAkc/LCCmsaS+NjForjkvrhM
- c+PlWwn2lxtzwtQDD9965azaUr6dEClHR8iQAYuu4ZLAZGufwrPoSiAb0iDE/7CuWVrG
- 2pBXCqC3u2tpD++SgF4SN9juFhFw4ohqe8xVK+rtudPYetRupX7C8Mk2TF9+WsWenb2U
- 2gjLLSeYJtVb+ytIyuAdstswjMSzlXBfiNyDDKcwnJXKjHyqookbsiPP04xztTnBwOxy
- OX8UjH6OOyNrrvY7C16/bcU9pzdVBcz3xA/Bc47hbqKcgb+wY/E1l98WZk7upHlz5yfS
- EWeg==
-X-Gm-Message-State: AOAM532FG8jCvHHqmBerb2JNdXpn953TcynsFQAYCZK3sm/5Zs4jYdez
- plx4E6qJNmnzgXRtT/Gq4mUqkAeJkJyMJT8qoGArpA==
-X-Google-Smtp-Source: ABdhPJxSQvcSPtF8mkOmZlSZeFJ2met+as1mLMT6yIqDnKm+G6lJAdALnr4C9K1Hb2fHbtOLJPghlRaV27YLvBptm2s=
-X-Received: by 2002:a17:90b:4f4c:: with SMTP id
- pj12mr10698062pjb.231.1634552518107; 
- Mon, 18 Oct 2021 03:21:58 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=moJQ78F9oXsWwcjsOjRc3VK50C8FMLYVsh1+aqFOWVI=;
+ b=2Xjr6qBWF2tifB6Zkv8Ijn2jnnMIBLVW7X4EpIQR8LzSJ3iCqNR6wzIrjNLMjE6H6j
+ phCtih0DKXUfkEkxwTEaMHD1d0NwzuDGt5AD7kpYXp1dI97bQGvlfAwzY3GQxxz2s6rJ
+ sJDqXOj0Bv4RCivbx5Dsq9DYVje6liAvL5pc1qYRyKmIG8EuDBgvLIfWjWvqtsEwOwEk
+ cm3MpqXFHDJ3LtOqeypjFop9f3/ryAV3tLSrpd1+eP8dtAMwNVGeVu/G9L0dwL4xT+cB
+ RFh0qlTGDvFIlqGN4EDXC1dbZDPNFJ+jS40+r1GZrJrLPqrOJx+FMI0wfAWZJb+klEIs
+ JK6A==
+X-Gm-Message-State: AOAM532wXFl4g+miSQ3ofXVMoXK61iwX9TQkNrlytA4/DR14kiZzPzsu
+ Aqk7ZS5AwIqqUMHxnDiioRQ=
+X-Google-Smtp-Source: ABdhPJx+JeHhyFTrMDRiVtMFDM8Kd4upVKRwte0zT1MHPBh7pH9grloOuAgxFRGNtd41Is/2nY1F8g==
+X-Received: by 2002:a5d:6888:: with SMTP id h8mr16880082wru.395.1634553212482; 
+ Mon, 18 Oct 2021 03:33:32 -0700 (PDT)
+Received: from localhost.localdomain ([195.245.16.219])
+ by smtp.gmail.com with ESMTPSA id o8sm19062252wme.38.2021.10.18.03.33.30
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 18 Oct 2021 03:33:31 -0700 (PDT)
+From: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+List-Id: <soc.lore.kernel.org>
+To: soc@kernel.org
+Subject: [PATCH v3 0/2] arm: ep93xx: CCF conversion
+Date: Mon, 18 Oct 2021 12:31:03 +0200
+Message-Id: <20211018103105.146380-1-alexander.sverdlin@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <20210914091204.2204278-1-tzungbi@google.com>
- <CAL_JsqL7QbCJrqLZtRX9eNJC39kJWwbva2ZQeD+Azb+pKHzJ=Q@mail.gmail.com>
-In-Reply-To: <CAL_JsqL7QbCJrqLZtRX9eNJC39kJWwbva2ZQeD+Azb+pKHzJ=Q@mail.gmail.com>
-From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Mon, 18 Oct 2021 18:21:47 +0800
-Message-ID: <CA+Px+wV-1adVEm-iB7ow0JG5=p50X=xV1KJT5V9_7n-Ao63zBQ@mail.gmail.com>
-Subject: Re: [PATCH v3] ASoC: dt-bindings: mediatek: mt8192: re-add audio afe
- document
-To: Rob Herring <robh+dt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Cc: devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>,
- Mark Brown <broonie@kernel.org>
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, Nikita Shubin <nikita.shubin@maquefel.me>,
+ Arnd Bergmann <arnd@arndb.de>, Takashi Iwai <tiwai@suse.com>,
+ linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+ Hartley Sweeten <hsweeten@visionengravers.com>,
+ Mark Brown <broonie@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>,
+ Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,18 +104,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, Oct 16, 2021 at 8:41 PM Rob Herring <robh+dt@kernel.org> wrote:
-> Sigh. What's the status of
-> dt-bindings/reset-controller/mt8192-resets.h? Because now this is
-> applied again and has an error in linux-next since the header is
-> missing.
+This series series of patches converts ep93xx to Common Clock Framework.
 
-It was moved by [1] and applied in [2].
+It consists of preparation patches to use clk_prepare_enable where it is
+needed, instead of clk_enable used in ep93xx drivers prior to CCF and
+a patch converting mach-ep93xx/clock.c to CCF.
 
-[1]: https://lore.kernel.org/all/20210930103105.v4.1.I514d9aafff3a062f751b37d3fea7402f67595b86@changeid/
-[2]: https://git.kernel.org/pub/scm/linux/kernel/git/matthias.bgg/linux.git/commit/?h=for-next&id=f07c776f6d7ed5f8423863efd2445016e690aba1
+Link: https://lore.kernel.org/patchwork/cover/1445563/
+Link: https://lore.kernel.org/patchwork/patch/1435884/
 
-Have proposed a patch[3] for fixing the issue in linux-next.  But it
-would be still broken in ASoC tree for now.
+v2->v3:
+Rebased the series onto v5.15-rc5
+v1->v2:
+- added SoB
 
-[3]: https://mailman.alsa-project.org/pipermail/alsa-devel/2021-October/191317.html
+Alexander Sverdlin (1):
+  ASoC: cirrus: i2s: Prepare clock before using it
+
+Nikita Shubin (1):
+  ep93xx: clock: convert in-place to COMMON_CLK
+
+ arch/arm/Kconfig              |   2 +-
+ arch/arm/mach-ep93xx/clock.c  | 975 +++++++++++++++++++---------------
+ arch/arm/mach-ep93xx/core.c   |   2 +-
+ arch/arm/mach-ep93xx/soc.h    |  42 +-
+ sound/soc/cirrus/ep93xx-i2s.c |  12 +-
+ 5 files changed, 587 insertions(+), 446 deletions(-)
+
+-- 
+2.33.0
+
