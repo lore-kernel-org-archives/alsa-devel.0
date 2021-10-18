@@ -2,72 +2,70 @@ Return-Path: <SRS0=JS7s=PG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 321BFC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 15:06:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CFB93C43217
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 15:09:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 24AAE61212
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 15:06:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 24AAE61212
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id E14F86103D
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 15:09:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E14F86103D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=libc.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 759B517BF;
-	Mon, 18 Oct 2021 17:05:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 759B517BF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 57F4217CE;
+	Mon, 18 Oct 2021 17:08:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57F4217CE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634569598;
-	bh=ORABL7zgsb8rRI4uEwP4o7q5K7sO40QV/lUTaCVjwzM=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1634569773;
+	bh=InjVxwLDFz86u2mcpAEmaeUzq8+yj1GOMcbXP5TS+m8=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eA975lkfgD+Q3KmDiObsX3OTEu4SFL/Y3P8lQklSfEw4jiz61/Kf49fd0+8cpa3Bq
-	 A9e0eIZlqMsrq7AKrTlfhfMH8KztRb1TT3y2Ag6kPvPsy8gc2AirJ7Oih/qbOJ578c
-	 CyQXaL0SyRIgLiXBd5VPsk5//27g2uWgrgQCvjPU=
+	b=UwJS7cp9ah2LvMfyVTwUjZAnWv8pz//zsfn2L19sHDoQNU5T2GwhMxJKlsbfLbYPG
+	 qbiTXjPxLNiiMcO5ihnF9Tg7920rOKmQiNHkq4UXuugHPctY9CaT6jnSz2eT6yYj7W
+	 nij6/i8SKYbowEVqGEoqU01ayC9fM+JaB3mkOU/w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 115C7F80224;
-	Mon, 18 Oct 2021 17:05:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E690AF80217;
+	Mon, 18 Oct 2021 17:08:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7D94CF80253; Mon, 18 Oct 2021 17:05:46 +0200 (CEST)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 77A6EF80224; Mon, 18 Oct 2021 17:08:41 +0200 (CEST)
+Received: from brightrain.aerifal.cx (brightrain.aerifal.cx [216.12.86.13])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A6409F80217
- for <alsa-devel@alsa-project.org>; Mon, 18 Oct 2021 17:05:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6409F80217
-X-IronPort-AV: E=McAfee;i="6200,9189,10141"; a="291735916"
-X-IronPort-AV: E=Sophos;i="5.85,382,1624345200"; d="scan'208";a="291735916"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Oct 2021 08:05:35 -0700
-X-IronPort-AV: E=Sophos;i="5.85,382,1624345200"; d="scan'208";a="566099516"
-Received: from dsardana-mobl.amr.corp.intel.com (HELO [10.209.189.174])
- ([10.209.189.174])
- by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Oct 2021 08:05:35 -0700
-Subject: Re: [PATCH v3 4/4] ASoC: SOF: Intel: add .ack support for HDaudio
- platforms
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0550DF80159
+ for <alsa-devel@alsa-project.org>; Mon, 18 Oct 2021 17:08:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0550DF80159
+Date: Mon, 18 Oct 2021 11:08:24 -0400
+From: Rich Felker <dalias@libc.org>
 To: Takashi Iwai <tiwai@suse.de>
-References: <20211015195932.224925-1-pierre-louis.bossart@linux.intel.com>
- <20211015195932.224925-5-pierre-louis.bossart@linux.intel.com>
- <s5hzgr85c6v.wl-tiwai@suse.de>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <97cd3a79-bf2a-bb1a-7da1-89bc8bac2c13@linux.intel.com>
-Date: Mon, 18 Oct 2021 10:05:13 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+Subject: Re: [musl] Re: [alsa-devel] [PATCH v7 8/9] ALSA: add new 32-bit
+ layout for snd_pcm_mmap_status/control
+Message-ID: <20211018150824.GL7074@brightrain.aerifal.cx>
+References: <20211007160634.GB7074@brightrain.aerifal.cx>
+ <s5hr1cw95ar.wl-tiwai@suse.de>
+ <20211007165158.GC7074@brightrain.aerifal.cx>
+ <s5h5yu79aab.wl-tiwai@suse.de>
+ <CAK8P3a0qxNLv3_RcR5COcRGPcTnYMcfbOjdWKiT2hKdcof9WUg@mail.gmail.com>
+ <s5hv9277oux.wl-tiwai@suse.de>
+ <20211008120736.GF7074@brightrain.aerifal.cx>
+ <s5hsfx95n99.wl-tiwai@suse.de>
+ <20211018144259.GK7074@brightrain.aerifal.cx>
+ <s5hlf2q4byc.wl-tiwai@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <s5hzgr85c6v.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org,
- =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Content-Type: multipart/mixed; boundary="+HP7ph2BbKc20aGI"
+Content-Disposition: inline
+In-Reply-To: <s5hlf2q4byc.wl-tiwai@suse.de>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Arnd Bergmann <arnd@arndb.de>, Baolin Wang <baolin.wang@linaro.org>,
+ y2038 Mailman List <y2038@lists.linaro.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ musl@lists.openwall.com, Takashi Iwai <tiwai@suse.com>,
+ Michael Forney <mforney@mforney.org>, Mark Brown <broonie@kernel.org>,
+ Baolin Wang <baolin.wang7@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,26 +82,162 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+--+HP7ph2BbKc20aGI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->> From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
->>
->> When we disable rewinds, then the .ack can be used to program SPIB
->> with the application pointer, which allows the HDaudio DMA to save
->> power by opportunistically bursting data transfers when the path to
->> memory is enabled (and conversely to shut it down when there are no
->> transfer requests).
->>
->> The SPIB register can only be programmed with incremental values with
->> wrap-around after the DMA RUN bits are set. For simplicity, we set the
->> INFO_NO_REWINDS flag in the .open callback when we already need to
->> program the SNDRV_PCM_INFO_EXPLICIT_SYNC flag.
+On Mon, Oct 18, 2021 at 04:58:03PM +0200, Takashi Iwai wrote:
+> On Mon, 18 Oct 2021 16:43:00 +0200,
+> Rich Felker wrote:
+> > 
+> > On Sun, Oct 10, 2021 at 09:53:38AM +0200, Takashi Iwai wrote:
+> > > On Fri, 08 Oct 2021 14:07:39 +0200,
+> > > Rich Felker wrote:
+> > > > 
+> > > > On Fri, Oct 08, 2021 at 01:11:34PM +0200, Takashi Iwai wrote:
+> > > > > On Fri, 08 Oct 2021 11:24:39 +0200,
+> > > > > Arnd Bergmann wrote:
+> > > > > > 
+> > > > > > On Fri, Oct 8, 2021 at 10:43 AM Takashi Iwai <tiwai@suse.de> wrote:
+> > > > > > > On Thu, 07 Oct 2021 18:51:58 +0200, Rich Felker wrote:
+> > > > > > > > On Thu, Oct 07, 2021 at 06:18:52PM +0200, Takashi Iwai wrote:
+> > > > > > >
+> > > > > > > @@ -557,11 +558,15 @@ struct __snd_pcm_sync_ptr {
+> > > > > > >  #if defined(__BYTE_ORDER) ? __BYTE_ORDER == __BIG_ENDIAN : defined(__BIG_ENDIAN)
+> > > > > > >  typedef char __pad_before_uframe[sizeof(__u64) - sizeof(snd_pcm_uframes_t)];
+> > > > > > >  typedef char __pad_after_uframe[0];
+> > > > > > > +typedef char __pad_before_u32[4];
+> > > > > > > +typedef char __pad_after_u32[0];
+> > > > > > >  #endif
+> > > > > > >
+> > > > > > >  #if defined(__BYTE_ORDER) ? __BYTE_ORDER == __LITTLE_ENDIAN : defined(__LITTLE_ENDIAN)
+> > > > > > >  typedef char __pad_before_uframe[0];
+> > > > > > >  typedef char __pad_after_uframe[sizeof(__u64) - sizeof(snd_pcm_uframes_t)];
+> > > > > > > +typedef char __pad_before_u32[0];
+> > > > > > > +typedef char __pad_after_u32[4];
+> > > > > > >  #endif
+> > > > > > 
+> > > > > > I think these should remain unchanged, the complex expression was intentionally
+> > > > > > done so the structures are laid out the same way on 64-bit
+> > > > > > architectures, so that
+> > > > > > the kernel can use the __SND_STRUCT_TIME64 path internally on both 32-bit
+> > > > > > and 64-bit architectures.
+> > > > > 
+> > > > > That was explicitly defined, but OK, this isn't necessarily defined
+> > > > > here.
+> > > > > 
+> > > > > > > @@ -2970,8 +2981,17 @@ static int snd_pcm_sync_ptr(struct snd_pcm_substream *substream,
+> > > > > > >         memset(&sync_ptr, 0, sizeof(sync_ptr));
+> > > > > > >         if (get_user(sync_ptr.flags, (unsigned __user *)&(_sync_ptr->flags)))
+> > > > > > >                 return -EFAULT;
+> > > > > > > -       if (copy_from_user(&sync_ptr.c.control, &(_sync_ptr->c.control), sizeof(struct snd_pcm_mmap_control)))
+> > > > > > > -               return -EFAULT;
+> > > > > > > +       if (buggy_control) {
+> > > > > > > +               if (copy_from_user(&sync_ptr.c.control_api_2_0_15,
+> > > > > > > +                                  &(_sync_ptr->c.control_api_2_0_15),
+> > > > > > > +                                  sizeof(sync_ptr.c.control_api_2_0_15)))
+> > > > > > > +                       return -EFAULT;
+> > > > > > > +       } else {
+> > > > > > > +               if (copy_from_user(&sync_ptr.c.control,
+> > > > > > > +                                  &(_sync_ptr->c.control),
+> > > > > > > +                                  sizeof(sync_ptr.c.control)))
+> > > > > > > +                       return -EFAULT;
+> > > > > > > +       }
+> > > > > > 
+> > > > > > The problem I see with this is that it might break musl's ability to
+> > > > > > emulate the new
+> > > > > > interface on top of the old (time32) one for linux-4.x and older
+> > > > > > kernels, as the conversion
+> > > > > > function is no longer stateless but has to know the negotiated
+> > > > > > interface version.
+> > > > > > 
+> > > > > > It's probably fine as long as we can be sure that the 2.0.16+ API
+> > > > > > version only gets
+> > > > > > negotiated if both the kernel and user sides support it, and musl only emulates
+> > > > > > the 2.0.15 API version from the current kernels.
+> > > > > > 
+> > > > > > I've tried to understand this part of musl's convert_ioctl_struct(), but I just
+> > > > > > can't figure out whether it does the conversion based the on the layout that
+> > > > > > is currently used in the kernel, or based on the layout we should have been
+> > > > > > using, and would use with the above fix. Rich, can you help me here?
+> > > > > 
+> > > > > So, at this moment, I'm not sure whether we should correct the struct
+> > > > > at all.  This will lead to yet more breakage, and basically the struct
+> > > > > itself *works* -- the only bug is in 32bit compat handling in the
+> > > > > kernel (again).
+> > > > > 
+> > > > > The below is a revised kernel patch (again untested), just correcting
+> > > > > the behavior of 32bit compat mode.  32bit apps on 32bit kernel work
+> > > > > fine as is, as well as 64bit apps on 64bit kernel.
+> > > > 
+> > > > I'm perfectly okay with this if Arnd is! It's probably the least
+> > > > invasive and has the least long-term maintenance cost and fallout on
+> > > > other projects.
+> > > 
+> > > OK, I'll submit a proper patch now, to be included in the next PR for
+> > > 5.15-rc.  For further fixes, let's think carefully.
+> > 
+> > Am I correct in my understanding that the fix of keeping the "broken"
+> > definition (and having the 64-bit kernel honor it for 32-bit binaries)
+> > has been accepted?
 > 
-> Using this flag itself isn't wrong, but if we need to check only
-> appl_ptr updates, a more appropriate flag is
-> SNDRV_PCM_INFO_SYNC_APPLPTR.  This will still allow the mmap of status
-> (i.e. hwptr update) while the mmap of control is disabled for
-> appl_ptr.  SNDRV_PCM_INFO_EXPLICIT_SYNC flag disables both, instead.
+> Yes, as it was already set in stone, we accept the broken definition
+> as is.
+> 
+> > Since musl's translation for pre-time64 kernels
+> > seems to have been using the "non-broken" definition, I think
+> > completing the fix requires a change in musl too.
+> 
+> Hm, musl translator contains the own definition of ioctl?
+> 
+> If so, we may reconsider about renumbering ioctls altogether.
 
-I don't mind, but now we're officially out of INFO flags :-)
+No, I don't think so. The musl translator is to translate between the
+time64 ioctl structures and the old time32 ones for the sake of
+executing on an old kernel. Up til now, it has been broken comparably
+to how 32-bit binaries running in compat mode on a 64-bit kernel were
+broken: the code in musl translated the time64 structure to (and back
+from) the time32 one assuming the intended padding. But the
+application was using the actual kernel uapi struct where the padding
+was (and still is) illogical. Thus, nothing was built with the wrong
+ABI; it's only the musl-internal translation logic that was wrong (and
+only pre-time64 kernels are affected).
 
-NO_REWINDS took the last available bit...
+The attached patch should fix it, I think.
+
+Rich
+
+--+HP7ph2BbKc20aGI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="musl_snd_pcm_mmap_control.diff"
+
+diff --git a/src/misc/ioctl.c b/src/misc/ioctl.c
+index 49282811..6d3e5095 100644
+--- a/src/misc/ioctl.c
++++ b/src/misc/ioctl.c
+@@ -6,6 +6,7 @@
+ #include <stddef.h>
+ #include <stdint.h>
+ #include <string.h>
++#include <endian.h>
+ #include "syscall.h"
+ 
+ #define alignof(t) offsetof(struct { char c; t x; }, x)
+@@ -90,7 +91,14 @@ static void convert_ioctl_struct(const struct ioctl_compat_map *map, char *old,
+ 		 * if another exception appears this needs changing. */
+ 		convert_ioctl_struct(map+1, old, new, dir);
+ 		convert_ioctl_struct(map+2, old+4, new+8, dir);
+-		convert_ioctl_struct(map+3, old+68, new+72, dir);
++		int adj = BYTE_ORDER==BIG_ENDIAN ? 4 : 0;
++		if (dir==W) {
++			memcpy(old+68, new+72+adj, 4);
++			memcpy(old+72, new+72+4+2*adj, 4);
++		} else {
++			memcpy(new+72+adj, old+68, 4);
++			memcpy(new+72+4+2*adj, old+72, 4);
++		}
+ 		return;
+ 	}
+ 	for (int i=0; i < map->noffs; i++) {
+
+--+HP7ph2BbKc20aGI--
