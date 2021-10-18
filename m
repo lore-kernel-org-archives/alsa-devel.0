@@ -2,89 +2,89 @@ Return-Path: <SRS0=JS7s=PG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A0F2EC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 16:19:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 88C88C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 16:27:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5AEEE6108E
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 16:19:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5AEEE6108E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 699D360E0C
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 16:27:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 699D360E0C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E208917E7;
-	Mon, 18 Oct 2021 18:18:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E208917E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7B5DE17F6;
+	Mon, 18 Oct 2021 18:26:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B5DE17F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634573940;
-	bh=L17XbkjSgwOXy/oQhDPqcidWMraMNCwGfWE+iuBNDbk=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1634574428;
+	bh=d3Xt4qVC6ibpEwuCFWwmnYfrL6qUh3OZIesWoCYhbRI=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Suo2dAgYgfO3Z1li9qifwcVWcqoSWOWWEAcKBDpqhrOPVkcLSJcsIwfmCsVLtP7nL
-	 kIHeXPxIQFD8aqIrPjYzQFMdJiD/m/CVUFxE/B6YMxiNk3cMUcuzI6EJwHEmha/hDz
-	 2vIaxlLROiizeypr3srr+7CdZbspHCGF96wnxAdY=
+	b=Yud2mbLl/YiWCaNyS8Kndjrv1ftds4sZMuzOL3+gzCsoVY4JL7x4TWmc5cprQGfr0
+	 rz0UibcZvzS8nqa8jhVfJuQVE7UtLcF2IAXTeYZNbb/o0WL+Q+h6xyHspTIfaLDT/4
+	 SAQEGIUXhUzC3RC6Sf6dswAVIQe+3rS0igTuEZS8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6E6ECF80159;
-	Mon, 18 Oct 2021 18:18:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 111AEF80217;
+	Mon, 18 Oct 2021 18:26:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7F13AF80224; Mon, 18 Oct 2021 18:18:08 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id 3DAF3F80224; Mon, 18 Oct 2021 18:26:17 +0200 (CEST)
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com
+ [IPv6:2a00:1450:4864:20::533])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3B919F801DB
- for <alsa-devel@alsa-project.org>; Mon, 18 Oct 2021 18:18:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3B919F801DB
+ by alsa1.perex.cz (Postfix) with ESMTPS id A5625F801DB
+ for <alsa-devel@alsa-project.org>; Mon, 18 Oct 2021 18:26:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5625F801DB
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="mzxzQITa"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="ctYIBvhx"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 003F821965;
- Mon, 18 Oct 2021 16:17:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1634573876; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=tjYbLYL7z0m6nLPlETl40ptf5uotuordlLvSRSHiypY=;
- b=mzxzQITaCoiGpyWDVKtH8inS1A0pvEsHOCmrvQa5XZbs/hO9RRK2BUmzx1U+exauYnTSnU
- BD8MAYGLKEl/0cf/WdiO+MulfsZpEFf9j6SXO7WcHrm2MwNLkyvXUUglIn9AEAWi3h5y9g
- UYpy9xL1JhL4qZBq9CDPTqhTmGtDzeo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1634573876;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=tjYbLYL7z0m6nLPlETl40ptf5uotuordlLvSRSHiypY=;
- b=ctYIBvhxcfvmnklOJ6h6eSbKWTyKBJqiQ5l5o3HKfOqZgeObkR5pXZ71Qa2t6/IOKyh/Gw
- vc6C18QjPxtCoECw==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id E52E0A3B81;
- Mon, 18 Oct 2021 16:17:55 +0000 (UTC)
-Date: Mon, 18 Oct 2021 18:17:55 +0200
-Message-ID: <s5hilxu4898.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v3 4/4] ASoC: SOF: Intel: add .ack support for HDaudio
- platforms
-In-Reply-To: <97cd3a79-bf2a-bb1a-7da1-89bc8bac2c13@linux.intel.com>
-References: <20211015195932.224925-1-pierre-louis.bossart@linux.intel.com>
- <20211015195932.224925-5-pierre-louis.bossart@linux.intel.com>
- <s5hzgr85c6v.wl-tiwai@suse.de>
- <97cd3a79-bf2a-bb1a-7da1-89bc8bac2c13@linux.intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org,
- P9ter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="J0d7sfrB"
+Received: by mail-ed1-x533.google.com with SMTP id y12so1696883eda.4
+ for <alsa-devel@alsa-project.org>; Mon, 18 Oct 2021 09:26:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=A+GXMnl/f+l7VoWObM6F65h/sXbJpNsxC091FmXdtq0=;
+ b=J0d7sfrBMZ+YIQByNGWLiissvGwaVdxaCHIiw415+QwIgFrMfk5BmypNU8SPidhpL7
+ XtCNlkPLdfW3mCMEew2jViNkvTR470L1WIvlcxmemg55iapzs4v1asmUnGiZA+/q1uy4
+ TpBgFK7I4eLPH5n328dz5VaFX5pI1fVSm4mFBChv+tYLmCv9lS/lA+I3wi1YPANrUxNg
+ 1bek+oHhsyEHKZREyXuzPQ2CUekHGxEmw6uFa+bkA1/fmxnNTnBIPs6CUQ0EgTL1JEkh
+ 9vGrVDD7MM97fvfRZitPiSW1iBt76/AZU6BqNHHKjifVmqcFGxemBF+GIwmiz4ZEMiIh
+ 47PA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=A+GXMnl/f+l7VoWObM6F65h/sXbJpNsxC091FmXdtq0=;
+ b=MjlzXJMpIc8Lv0e3cvkU93a/LOVNaBmxX96nYyNVdBNeTLi+5cvK25nC8UYkygeBtA
+ zXnEo9cuwipYRsKYLFtEhSsDIlQGR2lPiTCPmAZfduPFVvTIbqe4AYOD9Ls0MgvVsxPi
+ 0AVIyydQtUZR2vybbqY7tjMf20qdRWHqg02p1hka6ZZgW1/18L+jO8gNmHZff+B34lTz
+ 6drv3eaTVioGBUlSM6Z0Zh6swI/Gni2Q3wl+680gP9mUHLNUeNosCDB5gIcqxPFijpaD
+ 4iGAp+9OeIy7zuj5p5QzTIUMbWLhxqwhlzsChQ7b+J7w1Q4/jQeHlCxdiHqiV4kuSHGH
+ n7aA==
+X-Gm-Message-State: AOAM531JC5dZToYIc5ysjTeYVQppF6Fj6GKL2GWiqsb1fkPtR6Q6BaYL
+ hSal6HwOYHXvkXKaXLc7ZySc6y2HcAI0qg==
+X-Google-Smtp-Source: ABdhPJzdsXtZgQGe2Xht99axsdzuNOQpSuSBmGb5tHq4nzt0QMh8API4DDN9hYRGaAqh5YIGYiH1dg==
+X-Received: by 2002:aa7:cd8b:: with SMTP id x11mr45994158edv.384.1634574362265; 
+ Mon, 18 Oct 2021 09:26:02 -0700 (PDT)
+Received: from fedtop.. ([2.234.154.208])
+ by smtp.gmail.com with ESMTPSA id t6sm10320498edj.27.2021.10.18.09.26.01
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 18 Oct 2021 09:26:01 -0700 (PDT)
+From: Marco Giunta <giun7a@gmail.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH v3] ALSA: usb-audio: Fix microphone sound on Jieli webcam.
+Date: Mon, 18 Oct 2021 18:25:52 +0200
+Message-Id: <20211018162552.12082-1-giun7a@gmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <s5ha6j8t99c.wl-tiwai@suse.de>
+References: <s5ha6j8t99c.wl-tiwai@suse.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: tiwai@suse.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,40 +100,68 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 18 Oct 2021 17:05:13 +0200,
-Pierre-Louis Bossart wrote:
-> 
-> 
-> 
-> >> From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> >>
-> >> When we disable rewinds, then the .ack can be used to program SPIB
-> >> with the application pointer, which allows the HDaudio DMA to save
-> >> power by opportunistically bursting data transfers when the path to
-> >> memory is enabled (and conversely to shut it down when there are no
-> >> transfer requests).
-> >>
-> >> The SPIB register can only be programmed with incremental values with
-> >> wrap-around after the DMA RUN bits are set. For simplicity, we set the
-> >> INFO_NO_REWINDS flag in the .open callback when we already need to
-> >> program the SNDRV_PCM_INFO_EXPLICIT_SYNC flag.
-> > 
-> > Using this flag itself isn't wrong, but if we need to check only
-> > appl_ptr updates, a more appropriate flag is
-> > SNDRV_PCM_INFO_SYNC_APPLPTR.  This will still allow the mmap of status
-> > (i.e. hwptr update) while the mmap of control is disabled for
-> > appl_ptr.  SNDRV_PCM_INFO_EXPLICIT_SYNC flag disables both, instead.
-> 
-> I don't mind, but now we're officially out of INFO flags :-)
-> 
-> NO_REWINDS took the last available bit...
+When a Jieli Technology USB Webcam is connected, the video part works
+well, but the mic sound is speeded up. On dmesg there are messages
+about different rates from the runtime rates, warnings about volume
+resolution and lastly, the log is filled, every 5 seconds, with
+retire_capture_urb error messages.
 
-I mean only about the use EXPLICIT_SYNC flag.  There has been already
-an info flag SYNC_APPLPTR, and this should suffice for your purpose.
-In a nutshell:
+The mic works only when ep packet size is set to wMaxPacketSize (normal
+sound and no more retire_capture_urb error messages). Skipping reading
+sample rate, fixes the messages about different rates and forcing a volume
+resolution, fixes warnings about volume range. I have arbitrarily choosed
+the value (16): I read in a comment that there should be no more than 255
+levels, so 4096 (max volume) / 16 = 0-255.
 
-EXPLICIT_SYNC = disable both control and status mmaps
-SYNC_APPLPTR = disable only control mmap
+Signed-off-by: Marco Giunta <giun7a@gmail.com>
+---
+ sound/usb/mixer.c  | 7 +++++++
+ sound/usb/quirks.c | 7 +++++++
+ 2 files changed, 14 insertions(+)
 
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index a2ce535..8e030b1 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -1198,6 +1198,13 @@ static void volume_control_quirks(struct usb_mixer_elem_info *cval,
+ 			cval->res = 1;
+ 		}
+ 		break;
++	case USB_ID(0x1224, 0x2a25): /* Jieli Technology USB PHY 2.0 */
++		if (!strcmp(kctl->id.name, "Mic Capture Volume")) {
++			usb_audio_info(chip,
++				"set resolution quirk: cval->res = 16\n");
++			cval->res = 16;
++		}
++		break;
+ 	}
+ }
+ 
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 889c855..712b699 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1719,6 +1719,11 @@ void snd_usb_audioformat_attributes_quirk(struct snd_usb_audio *chip,
+ 		 */
+ 		fp->attributes &= ~UAC_EP_CS_ATTR_FILL_MAX;
+ 		break;
++	case USB_ID(0x1224, 0x2a25):  /* Jieli Technology USB PHY 2.0 */
++		/* mic works only when ep packet size is set to wMaxPacketSize */
++		fp->attributes |= UAC_EP_CS_ATTR_FILL_MAX;
++		break;
++
+ 	}
+ }
+ 
+@@ -1888,6 +1893,8 @@ static const struct usb_audio_quirk_flags_table quirk_flags_table[] = {
+ 		   QUIRK_FLAG_GET_SAMPLE_RATE),
+ 	DEVICE_FLG(0x534d, 0x2109, /* MacroSilicon MS2109 */
+ 		   QUIRK_FLAG_ALIGN_TRANSFER),
++	DEVICE_FLG(0x1224, 0x2a25, /* Jieli Technology USB PHY 2.0 */
++		   QUIRK_FLAG_GET_SAMPLE_RATE),
+ 
+ 	/* Vendor matches */
+ 	VENDOR_FLG(0x045e, /* MS Lifecam */
+-- 
+2.31.1
 
-Takashi
