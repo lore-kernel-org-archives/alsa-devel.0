@@ -2,74 +2,103 @@ Return-Path: <SRS0=JS7s=PG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D626C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 12:39:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D062CC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 12:44:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C749360FD9
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 12:39:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C749360FD9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id AA5A760F22
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 12:44:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AA5A760F22
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 923D51AA5;
-	Mon, 18 Oct 2021 14:38:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 923D51AA5
+	by alsa0.perex.cz (Postfix) with ESMTPS id AE5601AA8;
+	Mon, 18 Oct 2021 14:43:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE5601AA8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634560760;
-	bh=WlwTg1yw9IU67cIXcQRUw5IENTxjXIpyBwSrgAoG3LY=;
+	s=default; t=1634561075;
+	bh=MMpXx4EvmjSnQ6FOaDXBc7/DAcngFQdNpwtSMukX8rg=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qZRGt2fm4O3XvuVR2lNkoEeRCqpT8FZcyKAbSQn23crFgkzt+4CcSA8iE1O9tuGYk
-	 r2PA1Pf8G7u6EAIngdZJAKmQuUz1XCPnCyVSwYoQXbUjnzFIyNZAXh6+lcNr25e8PS
-	 06OO1hjXlUzqKldUe6ZeyEnaIp0Qya6DuWpkidBM=
+	b=rOM0X2foL7z4+YD9HOwH9fc3r8EDEhapOlxtoRS5051pN/0V9sOErsB9VSJJ8CVfv
+	 qi8V9vZ8yS77uZ4LbwZ7Vg3K0HWOx8JO5RGZFrST1baYH8HdZge+2hjkU7TfWVWH5f
+	 8zO4Tr1b17iwsAygw970us/imK8DTfs2HeEabwKg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 23F69F801DB;
-	Mon, 18 Oct 2021 14:38:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4542CF80217;
+	Mon, 18 Oct 2021 14:43:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CFCC9F80224; Mon, 18 Oct 2021 14:38:28 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 616C0F80224; Mon, 18 Oct 2021 14:43:43 +0200 (CEST)
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com
+ [64.147.123.25])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3895AF801DB
- for <alsa-devel@alsa-project.org>; Mon, 18 Oct 2021 14:38:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3895AF801DB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4C811F801DB
+ for <alsa-devel@alsa-project.org>; Mon, 18 Oct 2021 14:43:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C811F801DB
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="dSDLVK2N"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D28AE60EE9;
- Mon, 18 Oct 2021 12:38:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1634560701;
- bh=WlwTg1yw9IU67cIXcQRUw5IENTxjXIpyBwSrgAoG3LY=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=dSDLVK2Nfrp4O1GjyiCFeEiIJ5cFkO0aS00mjQ50A0mvXbkxTFyPJyPA14HNbKSWE
- a+5ERbiqah4Zlixb18lW+Z/dV9tmrKtxNCwowPgwCJA2OsH/22e2ekjv7MGkzB+hee
- 5Cpcvj2ye7m9A85sDnbgxLH/PATaM9ZG2E+g7Bu212bgIdbyGpkrWMWb+xjPGv3htx
- XDsS72j+OJsCmz+CX6BdlX0Vr9+/F1jwQVrq7NXcHt8qSzdl9PDub7b8WifqoXuAf+
- Bx7GqfxFmic3DCKZWnxmETym12rWXcx5xigTH0CVHQf/D+MgtVeM9UyhEUFDtJujrb
- d5trEhXlGRvoA==
-Date: Mon, 18 Oct 2021 13:38:18 +0100
-From: Mark Brown <broonie@kernel.org>
-To: George Song <george.song@maximintegrated.com>
-Subject: Re: [v3 2/2] ASoC: max98520: add max98520 audio amplifier driver
-Message-ID: <YW1quluaCzsUpET0@sirena.org.uk>
-References: <20211018083554.5360-1-george.song@maximintegrated.com>
- <20211018083554.5360-2-george.song@maximintegrated.com>
+ dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
+ header.b="cNAdne7b"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="Rlhx4scR"
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+ by mailout.west.internal (Postfix) with ESMTP id 60AA53200E31;
+ Mon, 18 Oct 2021 08:43:28 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute4.internal (MEProxy); Mon, 18 Oct 2021 08:43:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-type:in-reply-to; s=fm2; bh=VMvPUAeWdT5q9P36poNQ5jDABWB
+ QkypGj4rnfryxjEY=; b=cNAdne7biKAQbRaa6PjlahE4Mr3tEtHOa1zpc5/UH88
+ fmwU/JU3pCYhWVTROKQoAmZbl7LVIN1VClub39gP7coMWRDSwL/+pDamvnGDmhGJ
+ QfYf4iCbuPYh5lzUq8FPnwm80MMIHA0ogGTpKNsqolfWYCfW1iaRqr86XIZVZzE8
+ OBLpQeczsQjBhWE7JzTFns2t4fjE9MvnCxCHQHOoSaAAFYm+4AGRUlaI8plTEGwy
+ nYUazr4E+1+ObxWD9RpdJRzEhfteUQko5x8STE1Qq9CYpYigMtmuytUbBmrbS6Fy
+ lPTzNv3GsM2USxn1s4UUUZRIrEPkd1B/tpaZFcY2iJw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to:x-me-proxy
+ :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=VMvPUA
+ eWdT5q9P36poNQ5jDABWBQkypGj4rnfryxjEY=; b=Rlhx4scRfUDHJBbWL3U3Nd
+ qz526dBCBBkuuM1h2OUNB/t+Rg3dx6LRLAfBtQ1OA9NIOT/Cn2/aT/8PpdGCuqEZ
+ 3cpQNaPHWLbzhaLRkHeHcLpkGuC7/2dlOU0eQK/NTRuwTAwVjHBUqvqt8F6IjgKD
+ 9bNNdA1253CEUSf8o01sP+jFd6VAIonNzdZf62hQ/lMm30MQobGup7tv+fNuGRHw
+ VlESyLL/YeXRZZrAOIUDqvilaZWHp8QlKx5UcOEFM/HtdmXvzxYFmkJv0qN+qtgS
+ drhqZrETKGagjOGXtuIYqqWNO1ywIXGHV8LBJXuXIU7CHWUbyNppfwKNxQ019qSw
+ ==
+X-ME-Sender: <xms:72ttYea9S9hgdUf-nrwkssTbOptOr9h0BLcOvbPzd4oopb4_GcwArQ>
+ <xme:72ttYRab2vCd9hTSCguL_N681feeiXuAZcmfzDJ5kjJ6_OF0xoXSLIKOldlHacmg4
+ MDvwOhWM5ggMSZeeq0>
+X-ME-Received: <xmr:72ttYY8kEviL_Wusuel8hM57iXdNFUjjZx24OO-F8IkFxz9A3IGfeFs3hYyASLFPfRIhzhO8KwoFjJTlY8X6bneLw62ctEek9g>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddvtddghedvucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+ cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvrghkrghs
+ hhhiucfurghkrghmohhtohcuoehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjh
+ hpqeenucggtffrrghtthgvrhhnpeelhfeugedvjefgjefgudekfedutedvtddutdeuieev
+ tddtgeetjeekvdefgeefhfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
+ grihhlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjhhp
+X-ME-Proxy: <xmx:72ttYQp3Sefv1AGxCmRP9JCwrY03LddODoxX3PIdNlPG9QnCTx8N-Q>
+ <xmx:72ttYZpvtiAsrKqTq7PPkMTvZOBApEB24LEBnJPdsD1v6mA8X0vUkg>
+ <xmx:72ttYeR80MRt3H249tOSAhPWEwDQ0W0Ng1wBeSN7x27nXWOm5wYoBA>
+ <xmx:8GttYYSkA4GoIfHhjMKOMDSa5uQFU11CjUBKasjBw55Rvx8gqKcO5w>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 18 Oct 2021 08:43:26 -0400 (EDT)
+Date: Mon, 18 Oct 2021 21:43:24 +0900
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: Takashi Iwai <tiwai@suse.de>
+Subject: Re: [PATCH] ALSA: uapi: Fix a C++ style comment in asound.h
+Message-ID: <YW1r7KL+I9XBiAlw@workstation>
+Mail-Followup-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+References: <20211018114035.18433-1-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="m3G3LtiB/A3jRHZR"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211018083554.5360-2-george.song@maximintegrated.com>
-X-Cookie: Here there be tygers.
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- steves.lee@maximintegrated.com, ryans.lee@maximintegrated.com,
- george.song@analog.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
- robh+dt@kernel.org
+In-Reply-To: <20211018114035.18433-1-tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,120 +114,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi,
 
---m3G3LtiB/A3jRHZR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Mon, Oct 18, 2021 at 01:40:35PM +0200, Takashi Iwai wrote:
+> UAPI header should have no C++ style comment but only in the
+> traditional C style comment, but there is still one place we used it
+> mistakenly.  This patch corrects it.
+> 
+> Fixes: 542283566679 ("ALSA: ctl: remove unused macro for timestamping of elem_value")
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  include/uapi/sound/asound.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+ 
+Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-On Mon, Oct 18, 2021 at 05:35:54PM +0900, George Song wrote:
+When adding code comment into UAPI, I'll take enough care of its style...
 
-> +	case SND_SOC_DAPM_POST_PMD:
-> +		dev_dbg(component->dev, " AMP OFF\n");
-> +
-> +		regmap_write(max98520->regmap, MAX98520_R210F_GLOBAL_EN, 0);
-> +		usleep_range(30000, 31000);
-> +		max98520->tdm_mode = false;
-> +		break;
+> diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+> index 5859ca0a1439..5fbb79e30819 100644
+> --- a/include/uapi/sound/asound.h
+> +++ b/include/uapi/sound/asound.h
+> @@ -1002,7 +1002,7 @@ typedef int __bitwise snd_ctl_elem_iface_t;
+>  #define SNDRV_CTL_ELEM_ACCESS_WRITE		(1<<1)
+>  #define SNDRV_CTL_ELEM_ACCESS_READWRITE		(SNDRV_CTL_ELEM_ACCESS_READ|SNDRV_CTL_ELEM_ACCESS_WRITE)
+>  #define SNDRV_CTL_ELEM_ACCESS_VOLATILE		(1<<2)	/* control value may be changed without a notification */
+> -// (1 << 3) is unused.
+> +/* (1 << 3) is unused. */
+>  #define SNDRV_CTL_ELEM_ACCESS_TLV_READ		(1<<4)	/* TLV read is possible */
+>  #define SNDRV_CTL_ELEM_ACCESS_TLV_WRITE		(1<<5)	/* TLV write is possible */
+>  #define SNDRV_CTL_ELEM_ACCESS_TLV_READWRITE	(SNDRV_CTL_ELEM_ACCESS_TLV_READ|SNDRV_CTL_ELEM_ACCESS_TLV_WRITE)
+> -- 
+> 2.26.2
 
-Why would stopping the DAC put us out of TDM mode?  Not that I can see
-anything which ever sets tdm_mode to anything other than false or checks
-the value...
 
-> +static const struct snd_soc_dapm_widget max98520_dapm_widgets[] = {
-> +	SND_SOC_DAPM_DAC_E("Amp Enable", "HiFi Playback",
-> +			   MAX98520_R209F_AMP_EN, 0, 0, max98520_dac_event,
-> +	SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
+Thanks
 
-I can't help think that the global enable ought to be a _SUPPLY widget,
-it would get enabled before the DAC rather than after it but it's not
-clear that the ordering is critical here.
-
-> +static DECLARE_TLV_DB_SCALE(max98520_digital_tlv, -6300, 50, 1);
-> +static const DECLARE_TLV_DB_RANGE(max98520_spk_tlv,
-> +	0, 5, TLV_DB_SCALE_ITEM(600, 300, 0),
-> +);
-
-Why is _digital_tlv not const?  It's also a bit weird that _spk_tlv is a
-range with one entry not a scale.
-
-> +	count = 0;
-> +	while (count < 3) {
-> +		usleep_range(10000, 11000);
-> +		/* Software Reset Verification */
-> +		ret = regmap_read(max98520->regmap, MAX98520_R21FF_REVISION_ID, &reg);
-> +		if (!ret) {
-> +			dev_info(dev, "Reset completed (retry:%d)\n", count);
-> +			return;
-> +		}
-> +		count++;
-
-Does this really need to be logged?
-
-> +	/* Software Reset */
-> +	max98520_reset(max98520, component->dev);
-> +	usleep_range(30000, 31000);
-
-Shouldn't that delay be in the reset routine?  Perhaps between the
-attempts to read the ID register?
-
-> +	/* L/R mix configuration */
-> +	regmap_write(max98520->regmap, MAX98520_R2043_PCM_RX_SRC1, 0x2);
-> +
-> +	regmap_write(max98520->regmap, MAX98520_R2044_PCM_RX_SRC2, 0x10);
-
-These should be exposed to the user, not hard coded - different systems
-may need different configurations.
-
-> +	/* Disable Speaker Safe Mode */
-> +	regmap_update_bits(max98520->regmap,
-> +			   MAX98520_R2092_AMP_DSP_CFG, MAX98520_SPK_SAFE_EN_MASK, 0);
-
-This seems like something that should be left as is by default given the
-name (or forced on if it were disabled by default)?
-
-> +	/* Hard coded values for the experiments */
-> +	regmap_write(max98520->regmap, MAX98520_R21FF_REVISION_ID, 0x54);
-> +	regmap_write(max98520->regmap, MAX98520_R21FF_REVISION_ID, 0x4d);
-> +	regmap_write(max98520->regmap, MAX98520_R2161_BOOST_TM1, 0x2);
-> +	regmap_write(max98520->regmap, MAX98520_R2095_AMP_CFG, 0xc8);
-
-This doesn't seem suitable for upstream.
-
-> +	/* Power on device */
-> +	if (gpio_is_valid(max98520->reset_gpio)) {
-> +		ret = devm_gpio_request(&i2c->dev, max98520->reset_gpio,
-> +					"MAX98520_RESET");
-
-You should use the gpiod APIs for new code, not the legacy GPIO
-interface.  This GPIO wasn't mentioned in the DT bindings but should
-have been described there.
-
-> +		if (ret) {
-> +			dev_err(&i2c->dev, "%s: Failed to request gpio %d\n",
-> +				__func__, max98520->reset_gpio);
-> +			return -EINVAL;
-> +		}
-> +		gpio_direction_output(max98520->reset_gpio, 0);
-> +		msleep(50);
-> +		gpio_direction_output(max98520->reset_gpio, 1);
-> +		msleep(20);
-> +	}
-
-Shouldn't the disable/enable of the reset GPIO be in the reset function?
-
---m3G3LtiB/A3jRHZR
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFtarkACgkQJNaLcl1U
-h9BT4gf/QR6w7LabHCZNodaVu3kffkYWlvtTouzKSwvEEr3Zt4qnTKEUfNM+KIN9
-uP6PejCluvtRppGy0m+nXmeGh8VRrwo5bGFY5I4w2uYFcroBttkdinSpzjbqxYrJ
-9pMBpB82b/0HdDxNBaDEmuKCiRuaYksr/Cc/ck/Mb6VWYQMm/4OC9L5rxfPKG92z
-VfuvGSnNmlTP0nUCJRY+ZP7OxXG5iDqg3TYheJ+VgBEn1AX2g6XDVMbMERMf/v2Q
-kyHkQsibQNeOhXgSncGqVBRgoAVq7F5NPyVw6DRGSLkl4klibmfdaW0EmJvtkIfc
-ZrlPXVbufHz/Npk+10ubvRdiu3IYdQ==
-=h8hz
------END PGP SIGNATURE-----
-
---m3G3LtiB/A3jRHZR--
+Takashi Sakamoto
