@@ -2,52 +2,55 @@ Return-Path: <SRS0=JS7s=PG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E096BC433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 02:05:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A68DFC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 02:06:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8348160524
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 02:05:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8348160524
+	by mail.kernel.org (Postfix) with ESMTPS id 04D7060524
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 02:06:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 04D7060524
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0BB1E17C6;
-	Mon, 18 Oct 2021 04:04:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0BB1E17C6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 64A45180F;
+	Mon, 18 Oct 2021 04:05:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64A45180F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634522728;
-	bh=Qu3h05NRdD9E4ch/jvqke+NDmuVJnMZJmbSAA858I5k=;
-	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=tp1O/Y1s/yhviBmuGvFOVjGaDsHdd8OyCBJyNo8rcmBknP5ZybGLnrZva35uGihlB
-	 mVzifRtyCaYdl6Buu22wafSbWSL322z9DsZnTYbR6AqX4+5rXOle79MWamsJmteaLA
-	 3hVhAWZgOhCn9PqnU5t4SeFxr0g+4tmtluu069sU=
+	s=default; t=1634522771;
+	bh=8wk6SCVnh04jUsiP+WACgL0P5sF5HHu1rjMimXkqNsQ=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Fh3ZqRNtaNI1TjmsKqO/t0+4YKQSezjK0yiZ4Wrib6L2QXwyoRAVyt2ii5EK0iWke
+	 wLKf6TFYPbo4FAzR9MGS52JWy/nnYYzfMNxq9SWcXdNFr30BRFSr/wyB1MjoJTuVOx
+	 ChNMZeQQHgM538payRv+NM9VZcSrjGyNITu9G7js=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3B851F80217;
-	Mon, 18 Oct 2021 04:04:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 412DEF802A9;
+	Mon, 18 Oct 2021 04:05:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BE465F801DB; Mon, 18 Oct 2021 04:04:33 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 60854F801DB
- for <alsa-devel@alsa-project.org>; Mon, 18 Oct 2021 04:04:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60854F801DB
-Date: 18 Oct 2021 11:04:19 +0900
-X-IronPort-AV: E=Sophos;i="5.85,380,1624287600"; d="scan'208";a="97304728"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 18 Oct 2021 11:04:19 +0900
+ id D74A5F802DF; Mon, 18 Oct 2021 04:05:03 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id EBFBBF801DB
+ for <alsa-devel@alsa-project.org>; Mon, 18 Oct 2021 04:04:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EBFBBF801DB
+Date: 18 Oct 2021 11:04:52 +0900
+X-IronPort-AV: E=Sophos;i="5.85,380,1624287600"; d="scan'208";a="97517566"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 18 Oct 2021 11:04:52 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id A0F3B4009F74;
- Mon, 18 Oct 2021 11:04:19 +0900 (JST)
-Message-ID: <87lf2rt7fg.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 5AF0D4187DD3;
+ Mon, 18 Oct 2021 11:04:52 +0900 (JST)
+Message-ID: <87k0ibt7ej.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 0/5] ASoC: cleanup / tidyup soc-pcm/core/component
+Subject: [PATCH 1/5] ASoC: soc-pcm: tidyup soc_pcm_hw_clean() - step1
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <87lf2rt7fg.wl-kuninori.morimoto.gx@renesas.com>
+References: <87lf2rt7fg.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
@@ -67,24 +70,36 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Mark
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-These are not a big deal, but cleanup / tidyup patch for ALSA SoC.
+soc_pcm_hw_clean() is using "continue" during for_each_rtd_dais(),
+but it is very verbose. This patch cleanup it.
 
-Kuninori Morimoto (5):
-  ASoC: soc-pcm: tidyup soc_pcm_hw_clean() - step1
-  ASoC: soc-pcm: tidyup soc_pcm_hw_clean() - step2
-  ASoC: soc-component: add snd_soc_component_is_codec()
-  ASoC: soc-core: tidyup empty function
-  ASoC: soc-core: accept zero format at snd_soc_runtime_set_dai_fmt()
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ sound/soc/soc-pcm.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
- include/sound/soc-component.h         |  5 +++
- sound/soc/generic/simple-card-utils.c |  4 +--
- sound/soc/meson/meson-codec-glue.c    |  3 --
- sound/soc/soc-core.c                  | 51 ++++++++-------------------
- sound/soc/soc-pcm.c                   | 13 +++----
- 5 files changed, 26 insertions(+), 50 deletions(-)
-
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index d22a285b9964..0e51dd6d95bd 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -898,12 +898,9 @@ static int soc_pcm_hw_clean(struct snd_pcm_substream *substream, int rollback)
+ 	snd_soc_pcm_component_hw_free(substream, rollback);
+ 
+ 	/* now free hw params for the DAIs  */
+-	for_each_rtd_dais(rtd, i, dai) {
+-		if (!snd_soc_dai_stream_valid(dai, substream->stream))
+-			continue;
+-
+-		snd_soc_dai_hw_free(dai, substream, rollback);
+-	}
++	for_each_rtd_dais(rtd, i, dai)
++		if (snd_soc_dai_stream_valid(dai, substream->stream))
++			snd_soc_dai_hw_free(dai, substream, rollback);
+ 
+ 	mutex_unlock(&rtd->card->pcm_mutex);
+ 	return 0;
 -- 
 2.25.1
 
