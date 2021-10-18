@@ -2,51 +2,51 @@ Return-Path: <SRS0=JS7s=PG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EABFC433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 02:06:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1126C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 02:07:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B3D7261260
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 02:06:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B3D7261260
+	by mail.kernel.org (Postfix) with ESMTPS id 0686760EE5
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 02:07:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0686760EE5
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 11F9317E5;
-	Mon, 18 Oct 2021 04:05:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 11F9317E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6F8761852;
+	Mon, 18 Oct 2021 04:06:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F8761852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634522805;
-	bh=hbw6FZHwQQLJZdsLE73RcPD+Ui8wFU+DYr5AJRhu30M=;
+	s=default; t=1634522832;
+	bh=/XdWi8Ievfi6nAg5+MukDHRh/1wHB1xCitpjlOLaixM=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=f27PH2CSs/mQFj0ggaVIrH5hc/Vzl7/y2Wo2ghKHsHD3LzR4WxniKrZlUxTfHLrP8
-	 2InpSala2U2aIWM1Zy8gFiJi8wR7Ho2Uhi/QK3k1wcm2C+ri6xxLI3nxHsnK/hKuo7
-	 lO/PGQ8h+/JRfu5Mq49ZuaQmojxjicTjTIsM1W8A=
+	b=A7JKEvaXrV1UCD0iziSaRwwzn74PEZAAGhJUd40FYR/jfrM3ziBzSNkxAwSD6M2Zu
+	 Q1UD1lVulcNydO98EDVVt9r7VIG8Z7hyioKNhXOJfECwandmSPP5bbSdR1UFZ3pguy
+	 XprO4CkTUVowUnxN6NKuChK75ffZJ/50NHuOvOlA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6189DF80217;
-	Mon, 18 Oct 2021 04:05:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 18CCAF804FF;
+	Mon, 18 Oct 2021 04:05:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 26C91F80224; Mon, 18 Oct 2021 04:05:36 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 20F9DF80217
- for <alsa-devel@alsa-project.org>; Mon, 18 Oct 2021 04:05:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 20F9DF80217
-Date: 18 Oct 2021 11:05:24 +0900
-X-IronPort-AV: E=Sophos;i="5.85,380,1624287600"; d="scan'208";a="97517686"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 18 Oct 2021 11:05:24 +0900
+ id 8C4BEF80506; Mon, 18 Oct 2021 04:05:47 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 861FEF80224
+ for <alsa-devel@alsa-project.org>; Mon, 18 Oct 2021 04:05:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 861FEF80224
+Date: 18 Oct 2021 11:05:34 +0900
+X-IronPort-AV: E=Sophos;i="5.85,380,1624287600"; d="scan'208";a="97304929"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 18 Oct 2021 11:05:34 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 050D9400A0F2;
- Mon, 18 Oct 2021 11:05:25 +0900 (JST)
-Message-ID: <87h7dft7dn.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 918E94188A15;
+ Mon, 18 Oct 2021 11:05:34 +0900 (JST)
+Message-ID: <87fsszt7dd.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 3/5] ASoC: soc-component: add snd_soc_component_is_codec()
+Subject: [PATCH 4/5] ASoC: soc-core: tidyup empty function
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87lf2rt7fg.wl-kuninori.morimoto.gx@renesas.com>
@@ -72,77 +72,66 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Checking .non_legacy_dai_naming is not readable.
-Let's add new snd_soc_component_is_codec().
+This patch makes empty function to 1 line.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- include/sound/soc-component.h         | 5 +++++
- sound/soc/generic/simple-card-utils.c | 4 ++--
- sound/soc/soc-core.c                  | 5 ++---
- 3 files changed, 9 insertions(+), 5 deletions(-)
+ sound/soc/soc-core.c | 35 +++++++----------------------------
+ 1 file changed, 7 insertions(+), 28 deletions(-)
 
-diff --git a/include/sound/soc-component.h b/include/sound/soc-component.h
-index 3a35d149e92f..a4317144ab62 100644
---- a/include/sound/soc-component.h
-+++ b/include/sound/soc-component.h
-@@ -333,6 +333,11 @@ static inline int snd_soc_component_cache_sync(
- 	return regcache_sync(component->regmap);
- }
- 
-+static inline int snd_soc_component_is_codec(struct snd_soc_component *component)
-+{
-+	return component->driver->non_legacy_dai_naming;
-+}
-+
- void snd_soc_component_set_aux(struct snd_soc_component *component,
- 			       struct snd_soc_aux_dev *aux);
- int snd_soc_component_init(struct snd_soc_component *component);
-diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index 39ba70088127..850e968677f1 100644
---- a/sound/soc/generic/simple-card-utils.c
-+++ b/sound/soc/generic/simple-card-utils.c
-@@ -355,9 +355,9 @@ static int asoc_simple_init_dai_link_params(struct snd_soc_pcm_runtime *rtd,
- 	struct snd_pcm_hardware hw;
- 	int i, ret, stream;
- 
--	/* Only codecs should have non_legacy_dai_naming set. */
-+	/* Only Codecs */
- 	for_each_rtd_components(rtd, i, component) {
--		if (!component->driver->non_legacy_dai_naming)
-+		if (!snd_soc_component_is_codec(component))
- 			return 0;
- 	}
- 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index c830e96afba2..beb3ac6e433d 100644
+index beb3ac6e433d..6253cfea827c 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -1247,14 +1247,13 @@ int snd_soc_runtime_set_dai_fmt(struct snd_soc_pcm_runtime *rtd,
+@@ -229,31 +229,12 @@ static void snd_soc_debugfs_exit(void)
  
- 	/*
- 	 * Flip the polarity for the "CPU" end of a CODEC<->CODEC link
--	 * the component which has non_legacy_dai_naming is Codec
- 	 */
- 	inv_dai_fmt = snd_soc_daifmt_clock_provider_fliped(dai_fmt);
+ #else
  
- 	for_each_rtd_cpu_dais(rtd, i, cpu_dai) {
- 		unsigned int fmt = dai_fmt;
+-static inline void soc_init_component_debugfs(
+-	struct snd_soc_component *component)
+-{
+-}
+-
+-static inline void soc_cleanup_component_debugfs(
+-	struct snd_soc_component *component)
+-{
+-}
+-
+-static inline void soc_init_card_debugfs(struct snd_soc_card *card)
+-{
+-}
+-
+-static inline void soc_cleanup_card_debugfs(struct snd_soc_card *card)
+-{
+-}
+-
+-static inline void snd_soc_debugfs_init(void)
+-{
+-}
+-
+-static inline void snd_soc_debugfs_exit(void)
+-{
+-}
++static inline void soc_init_component_debugfs(struct snd_soc_component *component) { }
++static inline void soc_cleanup_component_debugfs(struct snd_soc_component *component) { }
++static inline void soc_init_card_debugfs(struct snd_soc_card *card) { }
++static inline void soc_cleanup_card_debugfs(struct snd_soc_card *card) { }
++static inline void snd_soc_debugfs_init(void) { }
++static inline void snd_soc_debugfs_exit(void) { }
  
--		if (cpu_dai->component->driver->non_legacy_dai_naming)
-+		if (snd_soc_component_is_codec(cpu_dai->component))
- 			fmt = inv_dai_fmt;
+ #endif
  
- 		ret = snd_soc_dai_set_fmt(cpu_dai, fmt);
-@@ -2521,7 +2520,7 @@ static int snd_soc_register_dais(struct snd_soc_component *component,
+@@ -739,9 +720,7 @@ static void soc_resume_init(struct snd_soc_card *card)
+ #else
+ #define snd_soc_suspend NULL
+ #define snd_soc_resume NULL
+-static inline void soc_resume_init(struct snd_soc_card *card)
+-{
+-}
++static inline void soc_resume_init(struct snd_soc_card *card) { }
+ #endif
  
- 	for (i = 0; i < count; i++) {
- 		dai = snd_soc_register_dai(component, dai_drv + i, count == 1 &&
--				  !component->driver->non_legacy_dai_naming);
-+					   !snd_soc_component_is_codec(component));
- 		if (dai == NULL) {
- 			ret = -ENOMEM;
- 			goto err;
+ static struct device_node
 -- 
 2.25.1
 
