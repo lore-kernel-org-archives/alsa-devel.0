@@ -2,77 +2,89 @@ Return-Path: <SRS0=JS7s=PG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0618CC433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 15:36:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A0F2EC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 16:19:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C913F610C7
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 15:36:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C913F610C7
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 5AEEE6108E
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Oct 2021 16:19:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5AEEE6108E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AF04217EA;
-	Mon, 18 Oct 2021 17:35:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF04217EA
+	by alsa0.perex.cz (Postfix) with ESMTPS id E208917E7;
+	Mon, 18 Oct 2021 18:18:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E208917E7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634571379;
-	bh=JibSQjxE3eYl/3LJTIS9KI3uMWewWr7xZzBC0dfWGTU=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1634573940;
+	bh=L17XbkjSgwOXy/oQhDPqcidWMraMNCwGfWE+iuBNDbk=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rYi4q1i6QVVOmqOd2XeRGSC0F6fInRPu7xvjCrMhTv8266MWB0I1eOTZq73gT+xVi
-	 1sWRvk2bVkkEzrjTBtJkY6a2ljTHww2wdfunJXK/jhOyhX3VMS7IllE1EPnUb03c0V
-	 9D7oo1sAR/Aw/5qTQ46moKC7FCp00ohG3S/o/RaE=
+	b=Suo2dAgYgfO3Z1li9qifwcVWcqoSWOWWEAcKBDpqhrOPVkcLSJcsIwfmCsVLtP7nL
+	 kIHeXPxIQFD8aqIrPjYzQFMdJiD/m/CVUFxE/B6YMxiNk3cMUcuzI6EJwHEmha/hDz
+	 2vIaxlLROiizeypr3srr+7CdZbspHCGF96wnxAdY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 367E3F80217;
-	Mon, 18 Oct 2021 17:35:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6E6ECF80159;
+	Mon, 18 Oct 2021 18:18:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E5B6DF80224; Mon, 18 Oct 2021 17:35:27 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 7F13AF80224; Mon, 18 Oct 2021 18:18:08 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 286E7F80159
- for <alsa-devel@alsa-project.org>; Mon, 18 Oct 2021 17:35:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 286E7F80159
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3B919F801DB
+ for <alsa-devel@alsa-project.org>; Mon, 18 Oct 2021 18:18:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3B919F801DB
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="aTiMfr82"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51C95610C7;
- Mon, 18 Oct 2021 15:35:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1634571320;
- bh=JibSQjxE3eYl/3LJTIS9KI3uMWewWr7xZzBC0dfWGTU=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=aTiMfr82haKToQNJsWafwbAPkKDz4OMKjDlHN4AzHZWc5OGHEx82vqxPis3A44u47
- h1o4bOWucgwPQn6QmLRZbtQKZuEfMAcpjDqJKKyrUsBYSoxIg0EIYaAX5EaSSDIUiA
- uN6kHbOPl5GghmzEGqONfQrl6TqOiZfNmzByK3qCWtqrTV7tpWc+KadjH2v+zKBOYk
- ZGD1CkuzrJFqwJczsZDjgw66Js23G5MkBCE67oKtBiuVePB6F3mhBgGolnGblLo7uc
- xF+lD1MKKB52R66Qg+yvvfIK5YzQJpLYX3V7YP7y0kVZ8OSLexRWMSqaeDdExrKdob
- oiJjtsXY177ww==
-Date: Mon, 18 Oct 2021 16:35:17 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH 1/3] ASoC: Intel: Move soc_intel_is_foo() helpers to a
- generic header
-Message-ID: <YW2UNRAWUphJqhyW@sirena.org.uk>
-References: <20211018143324.296961-1-hdegoede@redhat.com>
- <20211018143324.296961-2-hdegoede@redhat.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="pdySZJpBnvtzNFGZ"
-Content-Disposition: inline
-In-Reply-To: <20211018143324.296961-2-hdegoede@redhat.com>
-X-Cookie: I program, therefore I am.
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Gross <markgross@kernel.org>,
- Andy Shevchenko <andy.shevchenko@gmail.com>, linux-input@vger.kernel.org,
- platform-driver-x86@vger.kernel.org, Andy Shevchenko <andy@infradead.org>
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="mzxzQITa"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="ctYIBvhx"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 003F821965;
+ Mon, 18 Oct 2021 16:17:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1634573876; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=tjYbLYL7z0m6nLPlETl40ptf5uotuordlLvSRSHiypY=;
+ b=mzxzQITaCoiGpyWDVKtH8inS1A0pvEsHOCmrvQa5XZbs/hO9RRK2BUmzx1U+exauYnTSnU
+ BD8MAYGLKEl/0cf/WdiO+MulfsZpEFf9j6SXO7WcHrm2MwNLkyvXUUglIn9AEAWi3h5y9g
+ UYpy9xL1JhL4qZBq9CDPTqhTmGtDzeo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1634573876;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=tjYbLYL7z0m6nLPlETl40ptf5uotuordlLvSRSHiypY=;
+ b=ctYIBvhxcfvmnklOJ6h6eSbKWTyKBJqiQ5l5o3HKfOqZgeObkR5pXZ71Qa2t6/IOKyh/Gw
+ vc6C18QjPxtCoECw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id E52E0A3B81;
+ Mon, 18 Oct 2021 16:17:55 +0000 (UTC)
+Date: Mon, 18 Oct 2021 18:17:55 +0200
+Message-ID: <s5hilxu4898.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v3 4/4] ASoC: SOF: Intel: add .ack support for HDaudio
+ platforms
+In-Reply-To: <97cd3a79-bf2a-bb1a-7da1-89bc8bac2c13@linux.intel.com>
+References: <20211015195932.224925-1-pierre-louis.bossart@linux.intel.com>
+ <20211015195932.224925-5-pierre-louis.bossart@linux.intel.com>
+ <s5hzgr85c6v.wl-tiwai@suse.de>
+ <97cd3a79-bf2a-bb1a-7da1-89bc8bac2c13@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org,
+ P9ter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,31 +100,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Mon, 18 Oct 2021 17:05:13 +0200,
+Pierre-Louis Bossart wrote:
+> 
+> 
+> 
+> >> From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> >>
+> >> When we disable rewinds, then the .ack can be used to program SPIB
+> >> with the application pointer, which allows the HDaudio DMA to save
+> >> power by opportunistically bursting data transfers when the path to
+> >> memory is enabled (and conversely to shut it down when there are no
+> >> transfer requests).
+> >>
+> >> The SPIB register can only be programmed with incremental values with
+> >> wrap-around after the DMA RUN bits are set. For simplicity, we set the
+> >> INFO_NO_REWINDS flag in the .open callback when we already need to
+> >> program the SNDRV_PCM_INFO_EXPLICIT_SYNC flag.
+> > 
+> > Using this flag itself isn't wrong, but if we need to check only
+> > appl_ptr updates, a more appropriate flag is
+> > SNDRV_PCM_INFO_SYNC_APPLPTR.  This will still allow the mmap of status
+> > (i.e. hwptr update) while the mmap of control is disabled for
+> > appl_ptr.  SNDRV_PCM_INFO_EXPLICIT_SYNC flag disables both, instead.
+> 
+> I don't mind, but now we're officially out of INFO flags :-)
+> 
+> NO_REWINDS took the last available bit...
 
---pdySZJpBnvtzNFGZ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I mean only about the use EXPLICIT_SYNC flag.  There has been already
+an info flag SYNC_APPLPTR, and this should suffice for your purpose.
+In a nutshell:
 
-On Mon, Oct 18, 2021 at 04:33:22PM +0200, Hans de Goede wrote:
-> The soc_intel_is_foo() helpers from
-> sound/soc/intel/common/soc-intel-quirks.h are useful outside of the
-> sound subsystem too.
+EXPLICIT_SYNC = disable both control and status mmaps
+SYNC_APPLPTR = disable only control mmap
 
-Acked-by: Mark Brown <broonie@kernel.org>
 
---pdySZJpBnvtzNFGZ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFtlDUACgkQJNaLcl1U
-h9AmLAf/akoQqvZR7V/vLj9gdKLLnHFVYPkDDXQ/rV347EYuW1MwbPWahTmi5Ptx
-BK063G0PZVbcYuqyrJWFbGMZRnbqLOPITzjq7z0qsMvNfSpS6emjT+jlTA7gGxGa
-22tp9TkO2QxeQ1ZK6qXF6ppQHI7VunrVNkDHdGjFGpNtNrHJ/BrTfsEswMXvPaYd
-nIWF0qzlS6v2Vy9CV1xuZXtdIUuME3UIPHBaEyr5K+Rszj2S0A6pGVM/mVLA4CUe
-BQ5GFTEMgjMJgz4zNvtv3+QGn3C+QgeP3fzROg3Gnv9xFGpk6ia1yvuvcKAslAgL
-ABlCBNnMRMeYtS3E5k56LuwghbwTFA==
-=jPfX
------END PGP SIGNATURE-----
-
---pdySZJpBnvtzNFGZ--
+Takashi
