@@ -2,56 +2,60 @@ Return-Path: <SRS0=CVmM=PH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D0F42C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Oct 2021 08:05:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 02C79C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Oct 2021 08:05:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5593C61264
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Oct 2021 08:05:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5593C61264
+	by mail.kernel.org (Postfix) with ESMTPS id 817EB6137F
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Oct 2021 08:05:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 817EB6137F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9BB4316C6;
-	Tue, 19 Oct 2021 10:04:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9BB4316C6
+	by alsa0.perex.cz (Postfix) with ESMTPS id EA30B16C0;
+	Tue, 19 Oct 2021 10:05:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA30B16C0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634630732;
-	bh=PsLA8LveBjaxqNdvHnA1SDoQiO+SsyfdoT4pGQvL8+Q=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=PSSTJXIaWDHggQDn6wQ+bas99YNY6dTSN3eZYzcyF+o/MYD+8ZjduugdZMglClbiw
-	 VLx0l9qUqWN0IHkwSXn0vd3rvjfPBA9XldCjkYT/u8tL2R1I6TrK9DI5OPaPM46XgV
-	 ZCJS2h5PGYArj8eCFJMz2JnOlpLqDvSQAp2nqCzc=
+	s=default; t=1634630757;
+	bh=qunD1LFytCdT94vLyWjP5Qx8in/THn2SM5twip/oBaI=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=JUXcKDn/XiGaSxusc52gQZRDMEF3u9NOc3SX9KCFDvHw0WKQMvyQtAQsEK+a5GUzI
+	 V83HUojT7uHhzMh2C/E7+AnBf+9TDy0LZXYQpGfvCpTbIUWlYsZ7N6KdHoY8FsJuqp
+	 iAfHO1BdSqLmnogzFSCdgtSz7geA7pMcCoeiEZDY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 43454F804F2;
-	Tue, 19 Oct 2021 10:03:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 35BD1F804FD;
+	Tue, 19 Oct 2021 10:04:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EA308F804F3; Tue, 19 Oct 2021 10:03:30 +0200 (CEST)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ id CBE80F804FE; Tue, 19 Oct 2021 10:03:56 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6E2B6F804CA
- for <alsa-devel@alsa-project.org>; Tue, 19 Oct 2021 10:03:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6E2B6F804CA
-X-IronPort-AV: E=McAfee;i="6200,9189,10141"; a="215374064"
-X-IronPort-AV: E=Sophos;i="5.85,383,1624345200"; d="scan'208";a="215374064"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3F6ACF804F3
+ for <alsa-devel@alsa-project.org>; Tue, 19 Oct 2021 10:03:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3F6ACF804F3
+X-IronPort-AV: E=McAfee;i="6200,9189,10141"; a="228398763"
+X-IronPort-AV: E=Sophos;i="5.85,383,1624345200"; d="scan'208";a="228398763"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Oct 2021 01:02:40 -0700
+ by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Oct 2021 01:03:14 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,383,1624345200"; d="scan'208";a="493984187"
+X-IronPort-AV: E=Sophos;i="5.85,383,1624345200"; d="scan'208";a="493984698"
 Received: from brentlu-brix.itwn.intel.com ([10.5.253.56])
- by orsmga008.jf.intel.com with ESMTP; 19 Oct 2021 01:02:33 -0700
+ by orsmga008.jf.intel.com with ESMTP; 19 Oct 2021 01:03:05 -0700
 From: Brent Lu <brent.lu@intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v3 0/6] Multiple headphone codec driver support
-Date: Tue, 19 Oct 2021 15:59:35 +0800
-Message-Id: <20211019075941.2037787-1-brent.lu@intel.com>
+Subject: [PATCH v3 4/6] ASoC: Intel: soc-acpi-byt: shrink tables using
+ compatible IDs
+Date: Tue, 19 Oct 2021 15:59:39 +0800
+Message-Id: <20211019075941.2037787-5-brent.lu@intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211019075941.2037787-1-brent.lu@intel.com>
+References: <20211019075941.2037787-1-brent.lu@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
@@ -84,46 +88,125 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Support multiple headphone drivers in same machine driver. In this
-case, both rt5682 and rt5682s are supported and enumerated by different
-ACPI HID "10EC5682" and "RTL5682".
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-V2 Changes:
-- remove useless 'NULL', 'false' in if-condition
-- can use 'comp_ids' field alone to enumerate driver
-- add comma to the end of entry in structure initialization
-- keep the table of byt/cht/cml/icl untouched
+We have multiple entries for the same codecs, use the new compatible
+IDs to have a single entry.
 
-V3 Changes:
-- upstreamd from SOF github, PR#3200
-- use new compatiable IDs to shrink the enumerate table of BYT and CHT
-- add 'const' to snd_soc_acpi_codecs structures
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ .../intel/common/soc-acpi-intel-byt-match.c   | 68 +++++++------------
+ 1 file changed, 24 insertions(+), 44 deletions(-)
 
-Brent Lu (3):
-  ASoC: soc-acpi: add comp_ids field for machine driver matching
-  ASoC: Intel: sof_rt5682: detect codec variant in probe function
-  ASoC: Intel: sof_rt5682: use comp_ids to enumerate rt5682s
-
-Pierre-Louis Bossart (3):
-  ASoC: Intel: soc-acpi-byt: shrink tables using compatible IDs
-  ASoC: Intel: soc-acpi-cht: shrink tables using compatible IDs
-  ASoC: Intel: soc-acpi: use const for all uses of snd_soc_acpi_codecs
-
- include/sound/soc-acpi.h                      |  3 +
- sound/soc/intel/boards/sof_rt5682.c           | 34 ++-------
- .../intel/common/soc-acpi-intel-adl-match.c   | 11 ++-
- .../intel/common/soc-acpi-intel-bxt-match.c   |  2 +-
- .../intel/common/soc-acpi-intel-byt-match.c   | 68 +++++++-----------
- .../intel/common/soc-acpi-intel-cht-match.c   | 69 +++++++------------
- .../intel/common/soc-acpi-intel-cml-match.c   |  8 +--
- .../intel/common/soc-acpi-intel-glk-match.c   |  2 +-
- .../intel/common/soc-acpi-intel-jsl-match.c   | 43 ++++--------
- .../intel/common/soc-acpi-intel-kbl-match.c   | 12 ++--
- .../intel/common/soc-acpi-intel-skl-match.c   |  2 +-
- .../intel/common/soc-acpi-intel-tgl-match.c   | 11 ++-
- sound/soc/soc-acpi.c                          | 24 ++++++-
- 13 files changed, 119 insertions(+), 170 deletions(-)
-
+diff --git a/sound/soc/intel/common/soc-acpi-intel-byt-match.c b/sound/soc/intel/common/soc-acpi-intel-byt-match.c
+index 510a5f38b7f1..142000991813 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-byt-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-byt-match.c
+@@ -120,9 +120,29 @@ static struct snd_soc_acpi_mach *byt_quirk(void *arg)
+ 	}
+ }
+ 
++static const struct snd_soc_acpi_codecs rt5640_comp_ids = {
++	.num_codecs = 3,
++	.codecs = { "10EC5640", "10EC5642", "INTCCFFD"},
++};
++
++static const struct snd_soc_acpi_codecs wm5102_comp_ids = {
++	.num_codecs = 2,
++	.codecs = { "WM510204", "WM510205"},
++};
++
++static const struct snd_soc_acpi_codecs da7213_comp_ids = {
++	.num_codecs = 2,
++	.codecs = { "DGLS7212", "DGLS7213"},
++};
++
++static const struct snd_soc_acpi_codecs rt5645_comp_ids = {
++	.num_codecs = 2,
++	.codecs = { "10EC5645", "10EC5648"},
++};
++
+ struct snd_soc_acpi_mach  snd_soc_acpi_intel_baytrail_machines[] = {
+ 	{
+-		.id = "10EC5640",
++		.comp_ids = &rt5640_comp_ids,
+ 		.drv_name = "bytcr_rt5640",
+ 		.fw_filename = "intel/fw_sst_0f28.bin",
+ 		.board = "bytcr_rt5640",
+@@ -130,22 +150,6 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_baytrail_machines[] = {
+ 		.sof_fw_filename = "sof-byt.ri",
+ 		.sof_tplg_filename = "sof-byt-rt5640.tplg",
+ 	},
+-	{
+-		.id = "10EC5642",
+-		.drv_name = "bytcr_rt5640",
+-		.fw_filename = "intel/fw_sst_0f28.bin",
+-		.board = "bytcr_rt5640",
+-		.sof_fw_filename = "sof-byt.ri",
+-		.sof_tplg_filename = "sof-byt-rt5640.tplg",
+-	},
+-	{
+-		.id = "INTCCFFD",
+-		.drv_name = "bytcr_rt5640",
+-		.fw_filename = "intel/fw_sst_0f28.bin",
+-		.board = "bytcr_rt5640",
+-		.sof_fw_filename = "sof-byt.ri",
+-		.sof_tplg_filename = "sof-byt-rt5640.tplg",
+-	},
+ 	{
+ 		.id = "10EC5651",
+ 		.drv_name = "bytcr_rt5651",
+@@ -155,7 +159,7 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_baytrail_machines[] = {
+ 		.sof_tplg_filename = "sof-byt-rt5651.tplg",
+ 	},
+ 	{
+-		.id = "WM510204",
++		.comp_ids = &wm5102_comp_ids,
+ 		.drv_name = "bytcr_wm5102",
+ 		.fw_filename = "intel/fw_sst_0f28.bin",
+ 		.board = "bytcr_wm5102",
+@@ -163,23 +167,7 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_baytrail_machines[] = {
+ 		.sof_tplg_filename = "sof-byt-wm5102.tplg",
+ 	},
+ 	{
+-		.id = "WM510205",
+-		.drv_name = "bytcr_wm5102",
+-		.fw_filename = "intel/fw_sst_0f28.bin",
+-		.board = "bytcr_wm5102",
+-		.sof_fw_filename = "sof-byt.ri",
+-		.sof_tplg_filename = "sof-byt-wm5102.tplg",
+-	},
+-	{
+-		.id = "DLGS7212",
+-		.drv_name = "bytcht_da7213",
+-		.fw_filename = "intel/fw_sst_0f28.bin",
+-		.board = "bytcht_da7213",
+-		.sof_fw_filename = "sof-byt.ri",
+-		.sof_tplg_filename = "sof-byt-da7213.tplg",
+-	},
+-	{
+-		.id = "DLGS7213",
++		.comp_ids = &da7213_comp_ids,
+ 		.drv_name = "bytcht_da7213",
+ 		.fw_filename = "intel/fw_sst_0f28.bin",
+ 		.board = "bytcht_da7213",
+@@ -202,15 +190,7 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_baytrail_machines[] = {
+ 	},
+ 	/* some Baytrail platforms rely on RT5645, use CHT machine driver */
+ 	{
+-		.id = "10EC5645",
+-		.drv_name = "cht-bsw-rt5645",
+-		.fw_filename = "intel/fw_sst_0f28.bin",
+-		.board = "cht-bsw",
+-		.sof_fw_filename = "sof-byt.ri",
+-		.sof_tplg_filename = "sof-byt-rt5645.tplg",
+-	},
+-	{
+-		.id = "10EC5648",
++		.comp_ids = &rt5645_comp_ids,
+ 		.drv_name = "cht-bsw-rt5645",
+ 		.fw_filename = "intel/fw_sst_0f28.bin",
+ 		.board = "cht-bsw",
 -- 
 2.25.1
 
