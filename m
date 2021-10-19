@@ -2,175 +2,77 @@ Return-Path: <SRS0=CVmM=PH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 22A85C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Oct 2021 08:02:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A213C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Oct 2021 08:04:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B0880610E5
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Oct 2021 08:02:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B0880610E5
+	by mail.kernel.org (Postfix) with ESMTPS id 58DD26136F
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Oct 2021 08:04:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 58DD26136F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0B4CF16A4;
-	Tue, 19 Oct 2021 10:01:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B4CF16A4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9490916A4;
+	Tue, 19 Oct 2021 10:03:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9490916A4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634630529;
-	bh=2BCiNk+CVBs4SA49hMYpwkA5FwmEyjFeXlwwixcdzsE=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1634630655;
+	bh=nCTTRdkBVQsmlfKiKMdx2GMWMTgZC+dXQp/8w2Octa8=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NSq2PuD0jRH9gv9zvag5q2CLqnpo5QdE9XAtcuC5pQOYyaOouQLE1Z6kuHEgIef6x
-	 jqvwOxn0pf9caDajiCip283+q7yMywjDXHMwBiLm1nPwjdCPYIwPIhnYEussud5R0B
-	 oHjiTLGDIy++AxOBYlyco8ISGK5LsXGAoNhgqQBI=
+	b=tvDpqR2Nd6KybZxXl8yM01eA0Ho+y7wELocQw4I6X/RpAueJ6e5m4Jt5eTh5Sewm0
+	 vfX6JYKvUb3UlAoNfTL7ytImqx0nPKpeXdlokebVaE/zvVRxJ+faw5SZLth6CbMpRe
+	 cS2OLXU+a7J3ZmUq6c4lBJYKAXPkCDdP2xX5SO+c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 99078F80082;
-	Tue, 19 Oct 2021 10:01:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3E9ECF80256;
+	Tue, 19 Oct 2021 10:03:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 588B4F80256; Tue, 19 Oct 2021 10:01:16 +0200 (CEST)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ id 7A880F80256; Tue, 19 Oct 2021 10:03:19 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B64C4F80155
- for <alsa-devel@alsa-project.org>; Tue, 19 Oct 2021 10:01:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B64C4F80155
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=intel.onmicrosoft.com
- header.i=@intel.onmicrosoft.com header.b="vP7KFkbY"
-X-IronPort-AV: E=McAfee;i="6200,9189,10141"; a="225909722"
-X-IronPort-AV: E=Sophos;i="5.85,383,1624345200"; d="scan'208";a="225909722"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Oct 2021 01:01:02 -0700
+ by alsa1.perex.cz (Postfix) with ESMTPS id 867CCF80254
+ for <alsa-devel@alsa-project.org>; Tue, 19 Oct 2021 10:03:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 867CCF80254
+X-IronPort-AV: E=McAfee;i="6200,9189,10141"; a="228327404"
+X-IronPort-AV: E=Sophos;i="5.85,383,1624345200"; d="scan'208";a="228327404"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Oct 2021 01:03:05 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,383,1624345200"; d="scan'208";a="661699794"
-Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
- by orsmga005.jf.intel.com with ESMTP; 19 Oct 2021 01:01:02 -0700
-Received: from fmsmsx608.amr.corp.intel.com (10.18.126.88) by
- fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Tue, 19 Oct 2021 01:01:01 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx608.amr.corp.intel.com (10.18.126.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Tue, 19 Oct 2021 01:01:01 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12 via Frontend Transport; Tue, 19 Oct 2021 01:01:01 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.173)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.12; Tue, 19 Oct 2021 01:00:57 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KiqBsSRa9QT2OWxeyPww7wwpv5Z+Lg00tDJnBbQqSJKqKGjb5/Kx7tP2WzdTln6azFSahksCvmDkzN4Fvi2WMzNGdDIzVOkoaEQkN8oPNelJ4mMcS0droqo7J0lyWjn8ewuIlBGW5/I+HC1xENcoSuMddDUJngdPjDPl8J85Lg119kSq5Iwdnf9lBlGdZoYy67uTxHpr09/kYmRmzosTbiuG9WcHxRm9ivbmLTK3epK3E06m3VHR8VphuiIQwS7sIwenbakwO7JSsMAnIZyJv4F4ToIDaYg39zJrY+CLP66mhfqvCXMjESWTJhmx2BO6KYkUqMXbvPrHnB3GEEz8IA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=31PQk4VCJrGRITpwUGBFaBUAHeqiz6D2xoCqaObUvVk=;
- b=MafwQk9VphOegTG93qe2bPtFKskaccPRuAKxuxi7NHwWbtalRxtGJEV3Pc+3cqpkruvmbxPaKsR+BChzenGVms5Nw0EjXqYum4NLAkhUgSZvJJ1XWTTlKBd8OU6iwN6DKtpfO1AVvImIJInmFsQJA2WRhgp5y/rRvRotJGOCBei/mh+8c0iewrkaMLIvh2wkZJds/EAluJlXsylFvLkwZ99XOZuz40xyg6dNtA/MfVPRb0JOFYnCGjI2ioHv3UNp+Xz2J6tnfPVfhWHud3xRfc+nnyrat6nv5Ls0piKNST8J427wxBTBzG3DicVPWxTWXlDOLxiwojPRGB4y/9mkJA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com; 
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=31PQk4VCJrGRITpwUGBFaBUAHeqiz6D2xoCqaObUvVk=;
- b=vP7KFkbYG4sv6sS6piKKJOvA3sGu8aRggoio5Vu2YCjkz7qgF1gXk5zO+lrSnwkP/uxrKubCJJg2fMyMM84b87hdlk/m8cBmnY1OY/y0Lg250hvUTGw+G2XB1rECBXC0V9uTFqoiV4A4shppkgodW+j2ny56S6BzaqlVNjpIcjw=
-Authentication-Results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=intel.com;
-Received: from BN6PR11MB4049.namprd11.prod.outlook.com (2603:10b6:405:7f::12)
- by BN0PR11MB5727.namprd11.prod.outlook.com (2603:10b6:408:162::6)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16; Tue, 19 Oct
- 2021 08:00:50 +0000
-Received: from BN6PR11MB4049.namprd11.prod.outlook.com
- ([fe80::2091:65f4:8530:1542]) by BN6PR11MB4049.namprd11.prod.outlook.com
- ([fe80::2091:65f4:8530:1542%6]) with mapi id 15.20.4608.018; Tue, 19 Oct 2021
- 08:00:50 +0000
-Subject: Re: [PATCH] ASoC: Intel: Unify HDAudio-ext bus initialization
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- <alsa-devel@alsa-project.org>
-References: <20211018192134.353931-1-cezary.rojewski@intel.com>
- <991d0129-a566-d078-9174-bccb55e49d01@linux.intel.com>
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-Message-ID: <272c5a9f-847d-14bd-f330-ec51781f2c42@intel.com>
-Date: Tue, 19 Oct 2021 10:00:44 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
-In-Reply-To: <991d0129-a566-d078-9174-bccb55e49d01@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DB8P191CA0010.EURP191.PROD.OUTLOOK.COM
- (2603:10a6:10:130::20) To BN6PR11MB4049.namprd11.prod.outlook.com
- (2603:10b6:405:7f::12)
+X-IronPort-AV: E=Sophos;i="5.85,383,1624345200"; d="scan'208";a="493984534"
+Received: from brentlu-brix.itwn.intel.com ([10.5.253.56])
+ by orsmga008.jf.intel.com with ESMTP; 19 Oct 2021 01:02:55 -0700
+From: Brent Lu <brent.lu@intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH v3 3/6] ASoC: Intel: sof_rt5682: use comp_ids to enumerate
+ rt5682s
+Date: Tue, 19 Oct 2021 15:59:38 +0800
+Message-Id: <20211019075941.2037787-4-brent.lu@intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211019075941.2037787-1-brent.lu@intel.com>
+References: <20211019075941.2037787-1-brent.lu@intel.com>
 MIME-Version: 1.0
-Received: from [192.168.0.164] (89.64.110.142) by
- DB8P191CA0010.EURP191.PROD.OUTLOOK.COM (2603:10a6:10:130::20) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4608.15 via Frontend Transport; Tue, 19 Oct 2021 08:00:48 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: abda4407-94a6-48c3-1bff-08d992d690f8
-X-MS-TrafficTypeDiagnostic: BN0PR11MB5727:
-X-Microsoft-Antispam-PRVS: <BN0PR11MB5727899103333639B1CAA791E3BD9@BN0PR11MB5727.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xGAgthSHOYbr7aQdWOLBUdVR/EUvRlbyugvAtKkUIP7dk6Ica4GpNIPlSgR7Y3fc6YzkkYIOKBNpXs/FKrbBtWi9JH/AUxo/UeCZFMq5F1BDy3AqUNRwmGA+yevqK1MSELdPCMW9VZS2XxXxpNzssCoSm0yv3EAdkc7QIx+eLHSHy6telm4LHAUae0xWaCi00EvsAYQeXgzCuV0dRzxhEY9cxAMr3XEJAvJpVC1hWrGe+wCscrmnZ0o5pkdv9EfsWmsIu5CVXAZe9M3TbgxSh+WMuS8eMXXrreygKnK38gSGriX/G62AsVV//wzkl2gzZwo3cMuVrBxwj/Ti1H0btiDf+jBTSySjOX5rRjh7VCih4CH/lTLB28e24tkGr+YK+BygVbYVPLPRVJDnRmP9NgXap2uOWgi3XJM/XQ1zPs8cMzwDmFSKZzcDTcsSzE2V4sTjOMKwTnuH/l1admUl7xJOW8IvZtRvX2yRlDBd1mlBOkkVb1Q0uQgb+K0J2bTnHUma8HHzb+boAUPCRshvBkZg4M8XPaVl6dis92o6nUR9ronFVXJuHOLzSad0sbW2KJLknsJ4pEaCrQJfV4Ax94p4G6kC0TRukHpmWdgsXpXKM+TGzN9COLm8/z3zASwp0gqnkP9ZKHiBKnTioc9TgFxHH20058qO7njp0MvrLX8LaE6tTqGntQ3S0aHWFid7pFiMNKTW0+XgO/VoKvfoKhevN+cZIbeoHsvTo91ntQaE5FryQDrz/p6n7oYgur1h6M5ZqlQUWPtvfeCVaYeVIQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:BN6PR11MB4049.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(366004)(66476007)(66556008)(54906003)(44832011)(4001150100001)(66946007)(86362001)(508600001)(2906002)(956004)(31696002)(8676002)(6486002)(2616005)(8936002)(4326008)(82960400001)(31686004)(16576012)(36756003)(26005)(38100700002)(83380400001)(316002)(53546011)(6666004)(5660300002)(186003)(21314003)(45980500001)(43740500002);
- DIR:OUT; SFP:1102; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WWYrMFNtOWxiVzREZFdsWGtjZjBUOEk5YVlySDVSdHFJYlhET0toejUwVUNH?=
- =?utf-8?B?MkpOeDVDZkdZRC9idEZXUng0WlRWTFdlQklHRkxPNWFuSngvcWU5SGtZUW9U?=
- =?utf-8?B?eVdqSWp3ajJNWlR1WFlvSnFNcm0rNmI0eUs4Skh6VnJVZjREWUp1T1pMNGg0?=
- =?utf-8?B?YklQRDFBeExFcHNUcy9NSG9CeEVKdndHRlVtUzN4TzM0cmt6dXNaY2xhL2sx?=
- =?utf-8?B?ZjJBZ1pvWDNSdWduTTFTcDhwTkh5WEc0RXNsaFZ6aGRuNklTOXg1bDFrQ2V6?=
- =?utf-8?B?N21jWTdOakNuRWhvV0NsT2ZnL1JEd1NrTlJSZjg2dFllcFVlTHB6ajNwaXli?=
- =?utf-8?B?clVmd3ZFZU9iVjZJdS8zVHhlRUZsbTZuRnlBRksyc0ErZWY4Y2w2emQveUpO?=
- =?utf-8?B?ZjBkMXVFMUZYazFiZTkvZ0dCenZIa28ydWJxOHJUZi9tRkhUc3pSUFFkUVBJ?=
- =?utf-8?B?Y1g1VDFRV1dXL1crYS9qSlcvVDV3bVpmWVp6Z1cvMXRPd3B4YWIrUWY5N2pS?=
- =?utf-8?B?KzRmQUo3ZTFhMUs5dXhETi9CMjdqTVVoNjNYRW10MDMrbVVGby9PWnZDRnpq?=
- =?utf-8?B?NFdBK3BlWS9kbmU5WFdGYU85SzNJd2FDcFZzbk9ac3FEaVJLOGVrRHRIaVUz?=
- =?utf-8?B?eUJENmtSOGlTU0hPbUhPUGlVVzEzWG5KcHpyQmRCNk9hUjR2RU5ZZVJHOFFY?=
- =?utf-8?B?andGa29yUmg0WUtvMjlVUFZXaE5xaWlGeXlZdC9hUW85dUJ5TUJOTDhkUk1U?=
- =?utf-8?B?ZUtjWkI3ZHNDNDA5Q3RKc3ZSTVd4Qzh1K0ZNZGtoSFYwMHhJUk9Lcit4dFJC?=
- =?utf-8?B?UnNvQkpaSk5scXRzYXdtQ3ZNaldBcWIrNWxkQUthSHFNblA3TFRzWmpGSlVt?=
- =?utf-8?B?cEdNTXZKTndGTFE0cVNqUmZQSTRoSWN5SEtwcmkwS1hQTDh6UjVJTXk5eEhk?=
- =?utf-8?B?WkIvWmNNUnlNZ2V0YnVPZ2ZwaC8rY2NsdjdDcWg2SG5ZMFFOK1pXVGEzZFNK?=
- =?utf-8?B?WGEybFFOVlc5MlMxbVBXN09CTkgxUzdKTE1Gd1d3Q0xBVk50TXdvRU1Sc0dG?=
- =?utf-8?B?bFdVVW1vNTc5Ty9Mclk5N25vak90YkNzZDlINnBRU0prTlZlcStHa0RxVHpL?=
- =?utf-8?B?dnA1WVBNQUJURmZMSFlMWXpXWFEwV1AwendDbnJpSnA2b1BPMU5YV291NTIy?=
- =?utf-8?B?QU1yaEdpM2MzWE05aG5BNXdGWG5uTXBUa09CYy85RFAyRC9zbTB1cXBJanE4?=
- =?utf-8?B?VlFEeXpSdGgvWXFLc29GQllYRDZ6OS9SQVpaM25QTDlLSzRkaWVJMjNwZURG?=
- =?utf-8?B?QkVaM1FGWnJmeHJ2RG16emhVWVhHQ1BnRE9zUGFtSXpNc01JR1gxZmMrT04y?=
- =?utf-8?B?T2lTQXpVcm9zaEpkUG9LYlNsdWdSSGsyeDJ1YnBYc1NFblFxdnhZc25PSTFw?=
- =?utf-8?B?QnhVdjhaN2FuSVFTL3Z6eVNXMFhucm9pZkN3TEgyQlc2blFsem1mMkZaOENJ?=
- =?utf-8?B?Q1J6Z0xzcWY5a1hpdEk5eDY5aG9yMVpwMUEvaHlEa1pOR0Q3WW1JWm9ieGc1?=
- =?utf-8?B?OTJWcTFxUk11S3NlVFVxR09oRzN6Yk1Kbm1KdDZ2c0tpcVduVFNDWTRlcVVH?=
- =?utf-8?B?dXNVZlhWYkZ1SUVUTHMzMFhQbnFFUGNyUGRsN0FFY0h3OVRxYTA2anFieDhu?=
- =?utf-8?B?aGxLcVZ0TG5kKzNVb0ZXTDJ0b1BWejEzU05saUV2NUxpSDRZdHpaOUVHbUVx?=
- =?utf-8?Q?UWRoyFuFBr78BlzmbSesUffZ6AMxEKsKkLrl3oI?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: abda4407-94a6-48c3-1bff-08d992d690f8
-X-MS-Exchange-CrossTenant-AuthSource: BN6PR11MB4049.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2021 08:00:50.3810 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gF5AfaTfdZ1PvOji5ZZayKy+ioscFcICAEK3ITGLlQOqKRVKtoR0HmUMjWHq1X2VqnVexJP7mLJTnoF+aIjFJVDUlJK3rLBk0e6ogTl2/A0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR11MB5727
-X-OriginatorOrg: intel.com
-Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>, Ranjani
- Sridharan <ranjani.sridharan@linux.intel.com>, tiwai@suse.com,
- hdegoede@redhat.com, broonie@kernel.org
+Content-Transfer-Encoding: 8bit
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Rander Wang <rander.wang@intel.com>, Jie Yang <yang.jie@linux.intel.com>,
+ linux-kernel@vger.kernel.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Mac Chiang <mac.chiang@intel.com>, Gongjun Song <gongjun.song@intel.com>,
+ Bard Liao <bard.liao@intel.com>, Takashi Iwai <tiwai@suse.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>,
+ Rander Wang <rander.wang@linux.intel.com>, Yong Zhi <yong.zhi@intel.com>,
+ Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>,
+ Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+ Paul Olaru <paul.olaru@oss.nxp.com>, Brent Lu <brent.lu@intel.com>,
+ Libin Yang <libin.yang@intel.com>, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Curtis Malainey <cujomalainey@chromium.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -186,149 +88,208 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 2021-10-18 11:18 PM, Pierre-Louis Bossart wrote:
-> On 10/18/21 2:21 PM, Cezary Rojewski wrote:
->> HDAudio-extended bus initialization parts are scattered throughout Intel
->> ADSP drivers code. Gather them up in snd_hda_ext_bus_init() to provide
->> unified initialization point.
-> 
-> What unification are we talking about?
-> 
-> The code for HDaudio differs a great deal between the two Intel drivers,
-> and specifically the 'nocodec' mode in SOF does not rely on this
-> library, so there's no burning desire on my side to add this dependency
-> when we carefully tried to avoid it to use the DMA parts only.
-> 
-> I would add we recently looked at the code and the coupling/decoupling
-> in this library seems questionable if not broken.
-> 
-> edit: this patch also seems to add a layer of indirection through a
-> 'core' layer, not sure where this is going at all. I must be missing
-> something.
-> 
-> CC: Ranjani and Kai.
-> 
+Use comp_ids field to enumerate rt5682/rt5682s headphone codec for
+JSL/TGL/ADL devices and remove redundant entries in tables.
 
-Thanks for the comments!
+Signed-off-by: Brent Lu <brent.lu@intel.com>
+---
+ sound/soc/intel/boards/sof_rt5682.c           | 30 ----------------
+ .../intel/common/soc-acpi-intel-adl-match.c   | 11 ++++--
+ .../intel/common/soc-acpi-intel-jsl-match.c   | 35 +++++--------------
+ .../intel/common/soc-acpi-intel-tgl-match.c   | 11 ++++--
+ 4 files changed, 24 insertions(+), 63 deletions(-)
 
-Pretty sure you overestimated the goal of this patch, though. In both 
-skylake and sof -drivers various bus->xxx and bus->core.xxx fields are 
-scattered and initialized with basically the exact same values. These 
-values more often than not even match the sound/pci/hda ones. The 
-ultimate goal is probably to extract similar parts and move them to 
-snd_hdac_bus_init() or some other wrapper. For now, 'ext-bus' is being 
-addressed.
+diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
+index c41c584379d9..c41f386b4138 100644
+--- a/sound/soc/intel/boards/sof_rt5682.c
++++ b/sound/soc/intel/boards/sof_rt5682.c
+@@ -1050,36 +1050,6 @@ static const struct platform_device_id board_ids[] = {
+ 					SOF_RT5682_SSP_AMP(2) |
+ 					SOF_RT5682_NUM_HDMIDEV(4)),
+ 	},
+-	{
+-		.name = "jsl_rt5682s_rt1015",
+-		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
+-					SOF_RT5682_MCLK_24MHZ |
+-					SOF_RT5682_SSP_CODEC(0) |
+-					SOF_RT5682S_HEADPHONE_CODEC_PRESENT |
+-					SOF_SPEAKER_AMP_PRESENT |
+-					SOF_RT1015_SPEAKER_AMP_PRESENT |
+-					SOF_RT5682_SSP_AMP(1)),
+-	},
+-	{
+-		.name = "jsl_rt5682s_rt1015p",
+-		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
+-					SOF_RT5682_MCLK_24MHZ |
+-					SOF_RT5682_SSP_CODEC(0) |
+-					SOF_RT5682S_HEADPHONE_CODEC_PRESENT |
+-					SOF_SPEAKER_AMP_PRESENT |
+-					SOF_RT1015P_SPEAKER_AMP_PRESENT |
+-					SOF_RT5682_SSP_AMP(1)),
+-	},
+-	{
+-		.name = "jsl_rt5682s_mx98360",
+-		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
+-					SOF_RT5682_MCLK_24MHZ |
+-					SOF_RT5682_SSP_CODEC(0) |
+-					SOF_RT5682S_HEADPHONE_CODEC_PRESENT |
+-					SOF_SPEAKER_AMP_PRESENT |
+-					SOF_MAX98360A_SPEAKER_AMP_PRESENT |
+-					SOF_RT5682_SSP_AMP(1)),
+-	},
+ 	{
+ 		.name = "adl_mx98360_rt5682",
+ 		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
+diff --git a/sound/soc/intel/common/soc-acpi-intel-adl-match.c b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
+index f5b21a95d222..06f503452aa5 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-adl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
+@@ -285,9 +285,14 @@ static const struct snd_soc_acpi_codecs adl_max98360a_amp = {
+ 	.codecs = {"MX98360A"}
+ };
+ 
++static const struct snd_soc_acpi_codecs adl_rt5682_rt5682s_hp = {
++	.num_codecs = 2,
++	.codecs = {"10EC5682", "RTL5682"},
++};
++
+ struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[] = {
+ 	{
+-		.id = "10EC5682",
++		.comp_ids = &adl_rt5682_rt5682s_hp,
+ 		.drv_name = "adl_mx98373_rt5682",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &adl_max98373_amp,
+@@ -295,7 +300,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[] = {
+ 		.sof_tplg_filename = "sof-adl-max98373-rt5682.tplg",
+ 	},
+ 	{
+-		.id = "10EC5682",
++		.comp_ids = &adl_rt5682_rt5682s_hp,
+ 		.drv_name = "adl_mx98357_rt5682",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &adl_max98357a_amp,
+@@ -303,7 +308,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[] = {
+ 		.sof_tplg_filename = "sof-adl-max98357a-rt5682.tplg",
+ 	},
+ 	{
+-		.id = "10EC5682",
++		.comp_ids = &adl_rt5682_rt5682s_hp,
+ 		.drv_name = "adl_mx98360_rt5682",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &adl_max98360a_amp,
+diff --git a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
+index 20fd9dcc74af..46aa96bfbf14 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
+@@ -29,6 +29,11 @@ static struct snd_soc_acpi_codecs mx98360a_spk = {
+ 	.codecs = {"MX98360A"}
+ };
+ 
++static const struct snd_soc_acpi_codecs rt5682_rt5682s_hp = {
++	.num_codecs = 2,
++	.codecs = {"10EC5682", "RTL5682"},
++};
++
+ /*
+  * When adding new entry to the snd_soc_acpi_intel_jsl_machines array,
+  * use .quirk_data member to distinguish different machine driver,
+@@ -50,7 +55,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_jsl_machines[] = {
+ 		.sof_tplg_filename = "sof-jsl-da7219-mx98360a.tplg",
+ 	},
+ 	{
+-		.id = "10EC5682",
++		.comp_ids = &rt5682_rt5682s_hp,
+ 		.drv_name = "jsl_rt5682_rt1015",
+ 		.sof_fw_filename = "sof-jsl.ri",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+@@ -58,7 +63,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_jsl_machines[] = {
+ 		.sof_tplg_filename = "sof-jsl-rt5682-rt1015.tplg",
+ 	},
+ 	{
+-		.id = "10EC5682",
++		.comp_ids = &rt5682_rt5682s_hp,
+ 		.drv_name = "jsl_rt5682_rt1015p",
+ 		.sof_fw_filename = "sof-jsl.ri",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+@@ -66,7 +71,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_jsl_machines[] = {
+ 		.sof_tplg_filename = "sof-jsl-rt5682-rt1015.tplg",
+ 	},
+ 	{
+-		.id = "10EC5682",
++		.comp_ids = &rt5682_rt5682s_hp,
+ 		.drv_name = "jsl_rt5682_mx98360",
+ 		.sof_fw_filename = "sof-jsl.ri",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+@@ -81,30 +86,6 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_jsl_machines[] = {
+ 		.quirk_data = &mx98360a_spk,
+ 		.sof_tplg_filename = "sof-jsl-cs42l42-mx98360a.tplg",
+ 	},
+-	{
+-		.id = "RTL5682",
+-		.drv_name = "jsl_rt5682s_rt1015",
+-		.sof_fw_filename = "sof-jsl.ri",
+-		.machine_quirk = snd_soc_acpi_codec_list,
+-		.quirk_data = &rt1015_spk,
+-		.sof_tplg_filename = "sof-jsl-rt5682-rt1015.tplg",
+-	},
+-	{
+-		.id = "RTL5682",
+-		.drv_name = "jsl_rt5682s_rt1015p",
+-		.sof_fw_filename = "sof-jsl.ri",
+-		.machine_quirk = snd_soc_acpi_codec_list,
+-		.quirk_data = &rt1015p_spk,
+-		.sof_tplg_filename = "sof-jsl-rt5682-rt1015.tplg",
+-	},
+-	{
+-		.id = "RTL5682",
+-		.drv_name = "jsl_rt5682s_mx98360",
+-		.sof_fw_filename = "sof-jsl.ri",
+-		.machine_quirk = snd_soc_acpi_codec_list,
+-		.quirk_data = &mx98360a_spk,
+-		.sof_tplg_filename = "sof-jsl-rt5682-mx98360a.tplg",
+-	},
+ 	{},
+ };
+ EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_jsl_machines);
+diff --git a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
+index 9d89f01d6b84..da31bb3cca17 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
+@@ -358,9 +358,14 @@ static const struct snd_soc_acpi_codecs tgl_rt1011_amp = {
+ 	.codecs = {"10EC1011"}
+ };
+ 
++static const struct snd_soc_acpi_codecs tgl_rt5682_rt5682s_hp = {
++	.num_codecs = 2,
++	.codecs = {"10EC5682", "RTL5682"},
++};
++
+ struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_machines[] = {
+ 	{
+-		.id = "10EC5682",
++		.comp_ids = &tgl_rt5682_rt5682s_hp,
+ 		.drv_name = "tgl_mx98357_rt5682",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &tgl_codecs,
+@@ -368,7 +373,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_machines[] = {
+ 		.sof_tplg_filename = "sof-tgl-max98357a-rt5682.tplg",
+ 	},
+ 	{
+-		.id = "10EC5682",
++		.comp_ids = &tgl_rt5682_rt5682s_hp,
+ 		.drv_name = "tgl_mx98373_rt5682",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &tgl_max98373_amp,
+@@ -376,7 +381,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_machines[] = {
+ 		.sof_tplg_filename = "sof-tgl-max98373-rt5682.tplg",
+ 	},
+ 	{
+-		.id = "10EC5682",
++		.comp_ids = &tgl_rt5682_rt5682s_hp,
+ 		.drv_name = "tgl_rt1011_rt5682",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &tgl_rt1011_amp,
+-- 
+2.25.1
 
-Patch would have 'greater' effect if not for the fact that sof-intel-hda 
-code conditionally initializes several fields for the reasons unknown to 
-me. So, instead of just removing those assignments, preproccesor 
-directive is used instead.
-
-
-...
-
->>   /**
->> - * snd_hdac_ext_bus_init - initialize a HD-audio extended bus
->> + * snd_hda_ext_bus_init - initialize a HD-audio extended bus
->>    * @bus: the pointer to HDAC bus object
->>    * @dev: device pointer
->>    * @ops: bus verb operators
->> @@ -26,28 +28,37 @@ MODULE_LICENSE("GPL v2");
->>    *
->>    * Returns 0 if successful, or a negative error code.
->>    */
->> -int snd_hdac_ext_bus_init(struct hdac_bus *bus, struct device *dev,
->> -			const struct hdac_bus_ops *ops,
->> -			const struct hdac_ext_bus_ops *ext_ops)
->> +int snd_hda_ext_bus_init(struct hda_bus *bus, struct pci_dev *pdev,
->> +			 const struct hdac_bus_ops *ops,
->> +			 const struct hdac_ext_bus_ops *ext_ops,
->> +			 const char *model)
-> 
-> missing kernel doc update?
-> 
-
-Ack.
-
-...
-
->> @@ -53,24 +54,25 @@ static const struct hdac_bus_ops bus_core_ops = {
->>   /*
->>    * This can be used for both with/without hda link support.
->>    */
->> -void sof_hda_bus_init(struct hdac_bus *bus, struct device *dev)
->> +void sof_hda_bus_init(struct hda_bus *bus, struct pci_dev *pdev,
->> +		      const char *model)
->>   {
->>   #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
->> -	snd_hdac_ext_bus_init(bus, dev, &bus_core_ops, sof_hda_ext_ops);
->> +	snd_hda_ext_bus_init(bus, pdev, &bus_core_ops, sof_hda_ext_ops, model);
->>   #else /* CONFIG_SND_SOC_SOF_HDA */
->>   	memset(bus, 0, sizeof(*bus));
->> -	bus->dev = dev;
->> +	bus->core.dev = &pdev->dev;
->>   
->> -	INIT_LIST_HEAD(&bus->stream_list);
->> +	INIT_LIST_HEAD(&bus->core.stream_list);
->>   
->> -	bus->irq = -1;
->> +	bus->core.irq = -1;
->>   
->>   	/*
->>   	 * There is only one HDA bus atm. keep the index as 0.
->>   	 * Need to fix when there are more than one HDA bus.
->>   	 */
->> -	bus->idx = 0;
->> +	bus->core.idx = 0;
-> 
-> why is this level of indirection through 'core' needed in this code
-> which doesn't use the hdaudio-ext library?
-> 
-> the changes here have nothing to do with snd_hda_ext_bus_init()?
-> 
-
-I don't understand the comment. First argument in parameter-list for 
-function sof_hda_bus_init() has its type changed from 'struct hdac_bus 
-*' to 'struct hda_bus *'. Without updating those assignments, code 
-wouldn't compile with CONFIG_SND_SOC_SOF_HDA disabled.
-
->> -	spin_lock_init(&bus->reg_lock);
->> +	spin_lock_init(&bus->core.reg_lock);
-> 
-> same, we've just added reg_lock everywhere, why use a different one
-> 
-
-It's not a different one, it's exactly the same one : )
-
->>   #endif /* CONFIG_SND_SOC_SOF_HDA */
->>   }
->> diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
->> index fbc2421c77f8..03a68d286c7c 100644
->> --- a/sound/soc/sof/intel/hda.c
->> +++ b/sound/soc/sof/intel/hda.c
->> @@ -609,8 +609,9 @@ static int hda_init(struct snd_sof_dev *sdev)
->>   	bus = sof_to_bus(sdev);
->>   
->>   	/* HDA bus init */
->> -	sof_hda_bus_init(bus, &pci->dev);
->> +	sof_hda_bus_init(hbus, pci, hda_model);
->>   
->> +#if !IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
->>   	bus->use_posbuf = 1;
->>   	bus->bdl_pos_adj = 0;
->>   	bus->sync_write = 1;
->> @@ -619,7 +620,7 @@ static int hda_init(struct snd_sof_dev *sdev)
->>   	hbus->pci = pci;
->>   	hbus->mixer_assigned = -1;
->>   	hbus->modelname = hda_model;
->> -
-> 
-> spurious line change
-> 
->> +#endif
-
-Well, I've just inserted #endif in place of this newline. No problem 
-with appending additional Enter if that's what you prefer.
-
-
-Czarek
