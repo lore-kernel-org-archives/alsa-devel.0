@@ -2,192 +2,76 @@ Return-Path: <SRS0=Jips=PI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EA18C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Oct 2021 16:07:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AF1FC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Oct 2021 16:49:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5983B6136F
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Oct 2021 16:06:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5983B6136F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 47BFF6137C
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Oct 2021 16:48:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 47BFF6137C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nxt.ru
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B35B616CF;
-	Wed, 20 Oct 2021 18:06:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B35B616CF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 284061674;
+	Wed, 20 Oct 2021 18:48:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 284061674
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634746017;
-	bh=ReiDor2U+GakrQd+Mh1CqxAFCHODBVywwQIYkqVxsRU=;
-	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Bk6cTNK+9IdLyT0AYDbRmI0UcpI50SXq9kcNG1XfpryTEx6aKEOdwVA6AOoMACksM
-	 ghG4fkIGSg35P5biKYUwMgMRkJpGtzqK8WObrHQpyvImPTz8ZqSDxX0FCGIUA2vY40
-	 5bYdEjkJkHzzRT4yCF4WwvKmBqKUssO1DDrIvO0Y=
+	s=default; t=1634748538;
+	bh=8X4CEBaMvHnZ/ykUsrBW1TzXfkP1+KQl98ZuA92lrkQ=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=AHybOiTrEvTg7yrdrPwgbQ46z3GfijyBpEd0C5g5LGPaNR082Td2UYTW7wbs8erJZ
+	 yjqk/+cC5N7+13kakEnzMhIgTIGL5hohW5I+95TnzTpehyR5ga6GC1miaqSSoEXKWA
+	 Vr8JxDFKN4Cz0bIQo5bXlULJwd0owKYNBxuSzqLA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 591B4F80253;
-	Wed, 20 Oct 2021 18:04:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B2E17F80082;
+	Wed, 20 Oct 2021 18:48:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D691CF80518; Wed, 20 Oct 2021 18:04:22 +0200 (CEST)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 3E046F80240; Tue, 19 Oct 2021 17:03:20 +0200 (CEST)
+Received: from forward400p.mail.yandex.net (forward400p.mail.yandex.net
+ [77.88.28.105])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7732AF80082
- for <alsa-devel@alsa-project.org>; Wed, 20 Oct 2021 18:04:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7732AF80082
+ by alsa1.perex.cz (Postfix) with ESMTPS id 10E12F80111
+ for <alsa-devel@alsa-project.org>; Tue, 19 Oct 2021 17:03:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10E12F80111
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=intel.onmicrosoft.com
- header.i=@intel.onmicrosoft.com header.b="DVvQAhmP"
-X-IronPort-AV: E=McAfee;i="6200,9189,10143"; a="228766375"
-X-IronPort-AV: E=Sophos;i="5.87,167,1631602800"; d="scan'208";a="228766375"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Oct 2021 09:00:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,167,1631602800"; d="scan'208";a="527125188"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
- by orsmga001.jf.intel.com with ESMTP; 20 Oct 2021 09:00:23 -0700
-Received: from orsmsx605.amr.corp.intel.com (10.22.229.18) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Wed, 20 Oct 2021 09:00:23 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx605.amr.corp.intel.com (10.22.229.18) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12 via Frontend Transport; Wed, 20 Oct 2021 09:00:23 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
- edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.12; Wed, 20 Oct 2021 09:00:23 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SINseYGfNPHoMHGK/gt4Z+wsirNkJtrCgrSiFr05BymRPRtahklwSFsKwnFwcswswr8UNm3m75dCrizR+i3oVfRzC7iBnXOEQbYDaRZME/WM1UoDym26iwS5+2d1Oq7uzZpx2M8wZP7HJz/lCPl33iS9BZ+XPzWWBgWavgMAyvqlDpo6eLC/4qVBewifNCK8ajaLvYbXBgwmc3CoZZJPKyL88YodSA+Z1qYrxTeuL4bQ4WMYzRS04kENJvycWdeskudTRVDg8S4CjNDuRNa1IricAz70VnuPQhDw6kAw/OirWxgcWSuCOecJsNWavJscJIhZRSlupx8wS9vlZ9csiw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ReiDor2U+GakrQd+Mh1CqxAFCHODBVywwQIYkqVxsRU=;
- b=kTUhJGusl+Ax7XKEf/J0/H3ZAAeW3M+OjS/2r5k3aOTSu2cVKZKoPa9B6a/Chx2GyGa+opBC/5C170ZQQAhG8XinUmDeCYraj1SthGFYwTcfXdsYO+yiHEO6Mo00zmmUzyUqJCs/drN9r/y1zPhF2zaWjUGDmyYB1d3ra1tKk4I33fuCinb60dzdg694XtGLEdhhWlZTXqR2X8SYmjnIp03O4nRn+FVgnS66WG+8fMf54jml+kVYtBT0f/7x8SQstduoCtgNCk6AxBEtG5MaewCfHKkaS4ljNpj+VclVGFF7sXPc2zuqfOsn4tOnOq63CpWJDhTVnGLmXdhN0+hipw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com; 
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ReiDor2U+GakrQd+Mh1CqxAFCHODBVywwQIYkqVxsRU=;
- b=DVvQAhmPDRVmpEEDia5/zoq6oNt8Jk9UjtFusxumQWAdtf1FRWvsz7lQVEvExF7T0hHc8YgIpTWhJurl70CpEm0RIeKu1zGxb8gtBxWlQ7NReU0rQFckOCzeHzmuPSwq08fkA+G8pTn+QYrpayVtM6N1ShJ9e8PVqR6vvv5sFH8=
-Received: from SA2PR11MB4891.namprd11.prod.outlook.com (2603:10b6:806:11e::18)
- by SA2PR11MB4841.namprd11.prod.outlook.com (2603:10b6:806:113::18)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16; Wed, 20 Oct
- 2021 16:00:21 +0000
-Received: from SA2PR11MB4891.namprd11.prod.outlook.com
- ([fe80::3d8a:d8b6:947c:f2c3]) by SA2PR11MB4891.namprd11.prod.outlook.com
- ([fe80::3d8a:d8b6:947c:f2c3%6]) with mapi id 15.20.4608.018; Wed, 20 Oct 2021
- 16:00:21 +0000
-From: "Lu, Brent" <brent.lu@intel.com>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Subject: RE: [PATCH v3 4/6] ASoC: Intel: soc-acpi-byt: shrink tables using
- compatible IDs
-Thread-Topic: [PATCH v3 4/6] ASoC: Intel: soc-acpi-byt: shrink tables using
- compatible IDs
-Thread-Index: AQHXxL/TUFdht+QtGUCp18D0r9eufKvahpgAgAGG60A=
-Date: Wed, 20 Oct 2021 16:00:21 +0000
-Message-ID: <SA2PR11MB489179E750B31875E42AADF397BE9@SA2PR11MB4891.namprd11.prod.outlook.com>
-References: <20211019075941.2037787-1-brent.lu@intel.com>
- <20211019075941.2037787-5-brent.lu@intel.com>
- <d432bf1b-5922-f3b8-4ab2-f82aa6bcc3e0@linux.intel.com>
-In-Reply-To: <d432bf1b-5922-f3b8-4ab2-f82aa6bcc3e0@linux.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.6.200.16
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: df186d78-1c97-4795-c379-08d993e2b8ac
-x-ms-traffictypediagnostic: SA2PR11MB4841:
-x-microsoft-antispam-prvs: <SA2PR11MB4841B0342799C95CD07AA40897BE9@SA2PR11MB4841.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:800;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: RvDm2mhBEFnfKf/nq77GnMWyrtCqqZUAIcRczz5y6L+xC9BtJfastRxCAk/6J02ofJNX0ZxNtVviXTaDPfvOHdaCqVGnXNZ9cL+L6DIM/RAs7Y94pX4UOUlhBrpPXIU2h8ctNAS6R41ijKBS8nFeQN44VyQVBqHtfMOD93zwjVE1I0P1EiPviUqwhQLkukh+Vegu/AraXOUrrjiNyLwTwn5GKHN6koJvLyKZ5P7SdSWa/kdSleXeCAnXaM1uomx4e5U0l92z8TxNUtK5j8sfTVq+eGnow+fpsG6R5zAwIt4zbbn1r2kGqiSaeJs5QgGzHBIt6H8GIhzvmQwW3RkfJHLv3ILP111Y1kLTkfSPJB+JTs2kTst2yro5uNa9IyqjGXIg4/uR1v5z0aY+fllNXeSmbfNUqxqMvFwu1pb4rELOcxtKVlR5gq/v7ywDS9st6sdMm+7+DCv2mdIphVgBxowmilXnZg7K3249oUN0RhtABi38aIGwQlceNg6LO7G5qFTMxtYf6uUM/yv0vrMhX9a+e/jeK67amMNlfJ3tKrKUmf+HdZUamsrBm7ke8hLUg/nArpcq6JivGssqJ+ShhTCy+dYr/POM/ss9SCl66y8v62PsF3bFqSIKTMN4qfM7/fnRew4PaDMNEU9VNg9/XSkoj4KJw04h9A3i42cozPsRVreuBxF5ORt61ASBpNuc5dqUvwrgPOtLvaeb7cnQAfTBF7lvsyUUDcHhiPRE1zKaJXD/PbNhLGhRd68TpmTtkohyHThgFvJX57jibUK/k5MYj7YG/ERsiHV9LTOXyv3AY9B35ikWOKFM5hzzuvb9
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:SA2PR11MB4891.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(366004)(7416002)(82960400001)(5660300002)(86362001)(66556008)(508600001)(52536014)(2906002)(66476007)(4744005)(26005)(38070700005)(55016002)(71200400001)(66946007)(66446008)(64756008)(4326008)(7696005)(54906003)(966005)(8936002)(6506007)(316002)(33656002)(76116006)(186003)(122000001)(110136005)(8676002)(9686003)(38100700002)(11716005);
- DIR:OUT; SFP:1102; 
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?WXR5SlFtNnpwVWFnNGFMdUhRVStsYlZ6YUF0UUcvemdRTzJ5YzlCcitybWhi?=
- =?utf-8?B?bU8wNlBqMklrQ3RGaTdIc1VmcVBMaVptTlEyV01IT1NONjBRcEdxRGIxeUZM?=
- =?utf-8?B?ZjRMR1pGaXpLZ2pybVVjcjFCcEpzU2NDSlNERG5BV2xGRm94TTl1NThxcysy?=
- =?utf-8?B?bWQ3UWVVL3lGOUlmTk9uaTRCMmxjRmFUL2NSSXF2Z3M3aDFYb1hnQUlveDFC?=
- =?utf-8?B?VmNaeFUwNzlWejE2V01LTkpoVFZyN21Wa2RQVlEwOUFmQXFhbUVPNmdINkN5?=
- =?utf-8?B?T1I2TmVYbXc3blliTFlxcXQxTWNubWV4UHFDa01YRmNNYVhWcWhrR3grR29q?=
- =?utf-8?B?WDEzQVNHNm1IbkliNFZQTFlJaFYrenRvY2tFNDg0TTNpM0hmYStTZmw3VnlP?=
- =?utf-8?B?RXNUakgydHRvUnk3dUNQbkV5aDE2TUlkdGIvSEw5Y3ppZExvRGVPNVNBU3VF?=
- =?utf-8?B?M1VSemwxaFlTYlhtSlRhUHlvYUsxN2kxcU9RWjcvWVZQVmZkc1VkSi9oV2hy?=
- =?utf-8?B?VzNYNUxLbkRHWnc0MC9UVnpsdlBDanFUa0dWc3VWRzhBdFZaTVRyeHpBOFhh?=
- =?utf-8?B?UjQ4ZTFvSVRtanBDRGh5R1pjVXBya2x2UGxJaHJIWFkxaFVTMTFza0srVzY2?=
- =?utf-8?B?MjVvbnhQSGlGRXdLRFhWZnBrbFMwaG5CbGVTMG1hWlA2Sy9RQ1ZPNjJMY3FS?=
- =?utf-8?B?OGkrTUNkZXE4RU90YVRFOXI2VnhMQ2NiR2FicmwxK2s1cG13eHgvRE1FZDNv?=
- =?utf-8?B?eG5ZNWZPSEllZ2V5VWFnT2NTRkwyMHlUV0NtQWNyV3BpNTZxMTBnQ001Wll0?=
- =?utf-8?B?cWlmd3JabklXeExaT1hRTmxQR00veURqY2pacWNNRTlBTWQ4ajAzZmplYzFk?=
- =?utf-8?B?MjRIZEwwK0d0SWNDem9uWCtaTVVSUndhemdNOXdTU04wZFBWWDF6aXdjUm4v?=
- =?utf-8?B?a3gvdU5uMkRldFBVYjBBYW1UclErQ2RYeXZ2aHQ5YkVpVERTdnNSOStuY0xY?=
- =?utf-8?B?cjBHYlZsNXNkV1BiQjdRMXV1cGxDY2lOK0x6MDBrN2VBNE44OGwwR0NEckZp?=
- =?utf-8?B?ejMzdmpvZkZkNzRVOGlKSEQ2MzZiVnZScm1nQmdZbk45VWE2MnZaelhsT01i?=
- =?utf-8?B?dTZBb1dOUlhnblljTXRhOElpNEhRZTQ2T29BTWJBbkw3NkpqYU9uamFDYTkx?=
- =?utf-8?B?TnNWNTlyMnJaSnBDK1l0Z1ZPYW9LTTBCRHM1TktnN2ZCS1l4K0J6ZllKbVdE?=
- =?utf-8?B?RHJMMTl6S0I1ZnVmNTFXcHgzc1cvUzl1VlBEc0dTNUlZR3hSaHZoT3VSVG5J?=
- =?utf-8?B?U09iZk9JOGFGRkw0R1NiQk1IZWduSEJYVkc4Mmx5SEh4dmxoOFozYlYxbUpW?=
- =?utf-8?B?d1FmU3dMN2dDcmdUWTFwL2dPcEJZVm50amFXaW1CZ0tJTVQ4VTlFQ2tmNGZr?=
- =?utf-8?B?SGRXM1pMbDdVQkprTGk3TW9FOUptNHRqWjhxZFRkMy9mbmtYN3hSMkJ6NWlS?=
- =?utf-8?B?MW1OTGNWaTl2eFhaMlNVUlFYdG9JL1E2VXNpSS92WkdVZmFLV0xRYjE3dFBK?=
- =?utf-8?B?VUNaSkp1ei9XbDM0Qm5TaEFtMTJxem9WTmc4RWJNM08vMklpQWNGdGJxbFha?=
- =?utf-8?B?SEJyMnRJTXBSOCtQWi9JeitTdUJXZ3ZhLzhjbXpBNk5GL005MFJzRWs4NkFN?=
- =?utf-8?B?VVM5bWoyblRXN1RITEhkS0lKSTl3NXI3YmJXb0RaNnFwV1ZMWXA0U0xuL2k1?=
- =?utf-8?B?QUFHWDNKSVJXc2pncE1qQmpJUkFjdEFmOGRnUVVyYW5ydzlmbENNWTJZSHRB?=
- =?utf-8?B?d0FubkpkQmVWYzBvS0U4RnlaQkJLb0NsSVVyUnVYbUQxQ0pGOVpSL1g2YzQ5?=
- =?utf-8?B?MW9OaTU4UkdhMGVFQ0lrMUtkUTNVVGIrT0dlbi80bUk1ZXVGTG9WTHFlL2d3?=
- =?utf-8?B?VzFaOWZYZXFNZ0hUaWRGTk1NbWx4N2NYSVAwc2taNnZDQkVZcmlUSFNqcjVM?=
- =?utf-8?B?RUY3RXBaSld3VWhtR2oyaFAwMDViU2JMakcwdG5Sb0tLa1l5Nk9lRExjb3U1?=
- =?utf-8?B?UkpDZkNPREM0SGNPTTVJaVdmVVJhNExZbUVWU3VhL2oyc1hJQ0RXQVltVi9I?=
- =?utf-8?B?ZXZRZGs1S0todENqWHo2UU9NeXMxN1U4cVlBV0wvVFg4bWM5U1ZLbkJpQ0ZO?=
- =?utf-8?B?NlE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ dkim=pass (1024-bit key) header.d=nxt.ru header.i=@nxt.ru header.b="LuYqnK6k"
+Received: from sas1-35b601a382d3.qloud-c.yandex.net
+ (sas1-35b601a382d3.qloud-c.yandex.net
+ [IPv6:2a02:6b8:c08:c505:0:640:35b6:1a3])
+ by forward400p.mail.yandex.net (Yandex) with ESMTP id B3FDE642286;
+ Tue, 19 Oct 2021 18:03:09 +0300 (MSK)
+Received: from 2a02:6b8:c08:ff10:0:640:4fe1:bb3c
+ (2a02:6b8:c08:ff10:0:640:4fe1:bb3c [2a02:6b8:c08:ff10:0:640:4fe1:bb3c])
+ by sas1-35b601a382d3.qloud-c.yandex.net (mxback/Yandex) with HTTP id
+ 73eMvu1D8uQ1-38DSiAdb; Tue, 19 Oct 2021 18:03:08 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxt.ru; s=mail;
+ t=1634655788; bh=RySuvpUFF5Z2mnwc3pWWlYjRFA8psdGb79jKB96dvSo=;
+ h=Message-Id:Date:Cc:Subject:To:From;
+ b=LuYqnK6keNdYKAST6FSAFHNtkE91MS1PB7lj3MqEcXkvoNy6ClnCbKgYv1ioDICqU
+ vJECXjXXppNR75wJDFwcufKKOiUm3Od2aAUbM5z4/QApjhIPttIo8zYAUUHULa3l3i
+ PsrTqbm5gNTJLZpfRsEoLG6QpsCpvLyaA1Jlscrs=
+Authentication-Results: sas1-35b601a382d3.qloud-c.yandex.net;
+ dkim=pass header.i=@nxt.ru
+Received: by sas2-4fe1bb3c0a49.qloud-c.yandex.net with HTTP;
+ Tue, 19 Oct 2021 18:03:08 +0300
+From: sanekf@nxt.ru
+To: Takashi Iwai <tiwai@suse.com>
+Subject: WC vs UC mappings in snd_dma_sg_alloc()
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA2PR11MB4891.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: df186d78-1c97-4795-c379-08d993e2b8ac
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Oct 2021 16:00:21.8961 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: cKBqg7rdlX9aH37N5656I1b5qRCbOb+wHDOosxkLxoe+mNDY+9xjt+5plzUXemlVQK+J80g5Be1K1BjNN09Ycw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB4841
-X-OriginatorOrg: intel.com
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>, "Rojewski,
- Cezary" <cezary.rojewski@intel.com>, "Wang, Rander" <rander.wang@intel.com>,
- Jie Yang <yang.jie@linux.intel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>, "Chiang,
- Mac" <mac.chiang@intel.com>, "Song, Gongjun" <gongjun.song@intel.com>, "Liao,
- Bard" <bard.liao@intel.com>, Takashi Iwai <tiwai@suse.com>, "Gopal,
- Vamshi Krishna" <vamshi.krishna.gopal@intel.com>,
- Rander Wang <rander.wang@linux.intel.com>, "Zhi, Yong" <yong.zhi@intel.com>,
- Hans de Goede <hdegoede@redhat.com>, Mark
- Brown <broonie@kernel.org>, Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
- Paul Olaru <paul.olaru@oss.nxp.com>, "Yang, 
- Libin" <libin.yang@intel.com>, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Curtis Malainey <cujomalainey@chromium.org>
+X-Mailer: Yamail [ http://yandex.ru ] 5.0
+Date: Tue, 19 Oct 2021 18:03:08 +0300
+Message-Id: <493661634654791@mail.yandex.ru>
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Mailman-Approved-At: Wed, 20 Oct 2021 18:48:06 +0200
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -203,10 +87,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-PiANCj4gWW91IG5lZWQgdG8gYWRkIHlvdXIgU2lnbmVkLW9mZi1ieSB0YWcgYmVsb3cgbWluZSwg
-dGhhdCdzIGEgcmVxdWlyZW1lbnQNCj4gd2hlbiBzZW5kaW5nIHBhdGNoZXMgImZyb20iIHNvbWVv
-bmUgZWxzZQ0KPiANCj4gaHR0cHM6Ly93d3cua2VybmVsLm9yZy9kb2MvaHRtbC92NC4xNy9wcm9j
-ZXNzL3N1Ym1pdHRpbmctDQo+IHBhdGNoZXMuaHRtbCNkZXZlbG9wZXItcy1jZXJ0aWZpY2F0ZS1v
-Zi1vcmlnaW4tMS0xDQo+IA0KPiBDYW4geW91IHJlLXNlbmQgYSB2NCB3aXRoIHBhdGNoZXMgNCw1
-LDYgbW9kaWZpZWQ/DQo+IFRoYW5rcyENCg0KRG9uZS4gVGhhbmtzIGZvciByZW1pbmRpbmcuDQoN
-Cg==
+Hi
+
+I've stumbled across this code in sound/core/sgbuf.c:
+
+66 static void *snd_dma_sg_alloc(struct snd_dma_buffer *dmab, size_t size)
+67 {
+< ... >
+80 	if (dmab->dev.type == SNDRV_DMA_TYPE_DEV_WC_SG) {
+81 		type = SNDRV_DMA_TYPE_DEV_WC;
+82 #ifdef pgprot_noncached
+83 		prot = pgprot_noncached(PAGE_KERNEL);
+84 #endif
+85 	}
+< ... >
+131 	area = vmap(sgbuf->page_table, sgbuf->pages, VM_MAP, prot);
+
+Does not this violate x86 rules about using the same memory mapping type for all mappings? It seems that the following patch should fix it (only compile tested - my x86 PCs are either without Linux or without sound, and probably in practice this might not trigger any problems since both WC and UC-minus are incoherent types):
+
+-----------------------------
+
+ALSA: memalloc: duly use pgprot_writecombine() for WC mapping
+
+x86 has strict rules about not having memory type aliasing (Documentation/x86/pat.rst). snd_dma_sg_alloc() violates them by mapping first as WC (with set_memory_wc()) and then as UC- (with pgprot_noncached() + vmap()). Switching to pgprot_writecombine() should fix this.
+
+Signed-off-by: Aleksandr Fedorov <halcien@gmail.com>
+diff --git a/sound/core/sgbuf.c b/sound/core/sgbuf.c
+index 8352a5cdb19f..670b30c3b6e5 100644
+--- a/sound/core/sgbuf.c
++++ b/sound/core/sgbuf.c
+@@ -79,9 +79,7 @@ static void *snd_dma_sg_alloc(struct snd_dma_buffer *dmab, size_t size)
+ 		return NULL;
+ 	if (dmab->dev.type == SNDRV_DMA_TYPE_DEV_WC_SG) {
+ 		type = SNDRV_DMA_TYPE_DEV_WC;
+-#ifdef pgprot_noncached
+-		prot = pgprot_noncached(PAGE_KERNEL);
+-#endif
++		prot = pgprot_writecombine(PAGE_KERNEL);
+ 	}
+ 	sgbuf->dev = dmab->dev.dev;
+ 	pages = snd_sgbuf_aligned_pages(size);
