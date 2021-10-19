@@ -2,152 +2,175 @@ Return-Path: <SRS0=CVmM=PH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8365C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Oct 2021 07:58:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22A85C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Oct 2021 08:02:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 39C336136F
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Oct 2021 07:58:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 39C336136F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=maximintegrated.com
+	by mail.kernel.org (Postfix) with ESMTPS id B0880610E5
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Oct 2021 08:02:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B0880610E5
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 090ED16A4;
-	Tue, 19 Oct 2021 09:57:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 090ED16A4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0B4CF16A4;
+	Tue, 19 Oct 2021 10:01:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B4CF16A4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634630312;
-	bh=+pHzUpe1KCg9Vh7P56S9TyEvAW0uVOvR2B1824yVA50=;
-	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1634630529;
+	bh=2BCiNk+CVBs4SA49hMYpwkA5FwmEyjFeXlwwixcdzsE=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=e24GXcWxs83H77aE4e4tqdXvtU9qdDYCu6aE1UxB0l33jVNG02y5lbyt7KmysaXPp
-	 EFSzzPWYXH18f3vsUrrFw+km4IeJ7YyWyQysIqHLi3u+yQvgX7Kdw63FYj6DCjvId2
-	 Rq9lt5+IHPplFVZRQmkCkCFz9i1NWdBy7uwl7O9E=
+	b=NSq2PuD0jRH9gv9zvag5q2CLqnpo5QdE9XAtcuC5pQOYyaOouQLE1Z6kuHEgIef6x
+	 jqvwOxn0pf9caDajiCip283+q7yMywjDXHMwBiLm1nPwjdCPYIwPIhnYEussud5R0B
+	 oHjiTLGDIy++AxOBYlyco8ISGK5LsXGAoNhgqQBI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8CD23F80254;
-	Tue, 19 Oct 2021 09:57:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 99078F80082;
+	Tue, 19 Oct 2021 10:01:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 272D0F80256; Tue, 19 Oct 2021 09:57:40 +0200 (CEST)
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com
- (mail-mw2nam12on20703.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:fe5a::703])
+ id 588B4F80256; Tue, 19 Oct 2021 10:01:16 +0200 (CEST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9C695F80155
- for <alsa-devel@alsa-project.org>; Tue, 19 Oct 2021 09:57:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C695F80155
+ by alsa1.perex.cz (Postfix) with ESMTPS id B64C4F80155
+ for <alsa-devel@alsa-project.org>; Tue, 19 Oct 2021 10:01:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B64C4F80155
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=maximintegrated.onmicrosoft.com
- header.i=@maximintegrated.onmicrosoft.com header.b="J6TQVHnQ"
+ dkim=pass (1024-bit key) header.d=intel.onmicrosoft.com
+ header.i=@intel.onmicrosoft.com header.b="vP7KFkbY"
+X-IronPort-AV: E=McAfee;i="6200,9189,10141"; a="225909722"
+X-IronPort-AV: E=Sophos;i="5.85,383,1624345200"; d="scan'208";a="225909722"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Oct 2021 01:01:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,383,1624345200"; d="scan'208";a="661699794"
+Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
+ by orsmga005.jf.intel.com with ESMTP; 19 Oct 2021 01:01:02 -0700
+Received: from fmsmsx608.amr.corp.intel.com (10.18.126.88) by
+ fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Tue, 19 Oct 2021 01:01:01 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx608.amr.corp.intel.com (10.18.126.88) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Tue, 19 Oct 2021 01:01:01 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12 via Frontend Transport; Tue, 19 Oct 2021 01:01:01 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.173)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.12; Tue, 19 Oct 2021 01:00:57 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KMBAqb4osItwAlLSv2mVXrfeESnPFBrTBGyX6Q70rnnhqqUsyAOKjuF4I0JD09gCV4+2GwjYPAAHcv8hWR/onzUwv1OzRa+2yCNjfNcPVMdRMNrkQPfjHld0ryz6DHGPsnMXAqBlXRA0ErvA7JUes86Edqw58qhcWkZJma3gNO/Xib7o7++qbeuetPfj1/it0a4s+gqMHiqYq/D6ukvgy2jTNV6WXIiItpFg/dqHCzzJyuCwIC/xA9PAv2w+M6yTp7U86BCmBuksFcoWylyVFt1O8hOdpeeSeoKrOHc1gaKKRdg1CyFR46RUREQLls+GRRIGHOjtr0QWO9Mk0mTUPw==
+ b=KiqBsSRa9QT2OWxeyPww7wwpv5Z+Lg00tDJnBbQqSJKqKGjb5/Kx7tP2WzdTln6azFSahksCvmDkzN4Fvi2WMzNGdDIzVOkoaEQkN8oPNelJ4mMcS0droqo7J0lyWjn8ewuIlBGW5/I+HC1xENcoSuMddDUJngdPjDPl8J85Lg119kSq5Iwdnf9lBlGdZoYy67uTxHpr09/kYmRmzosTbiuG9WcHxRm9ivbmLTK3epK3E06m3VHR8VphuiIQwS7sIwenbakwO7JSsMAnIZyJv4F4ToIDaYg39zJrY+CLP66mhfqvCXMjESWTJhmx2BO6KYkUqMXbvPrHnB3GEEz8IA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=e+I56tpV+0lwXd/quSJ+34BJ4mXTClCIT8z2bPeuGc8=;
- b=m3rdQ8pCppVXOrfTZT7qHeQagv3Abj4eaNfTV8pFHJgS+n2fCm82O2iig7eA+/9RG4id3MTBZrYlBbk+Knpm17c25Cf3Qgp7VFdS+uV2WgIvzvVzNQeKdI3qxhtKGiw/CxiZ13M7Iv1zDtmJ97sGZIWvEqK5GdwOTjEaDff+CKQ8B9SYNr/kGfY9qmXFB2taPftgkTBO4FmzK4lDB3PbadBeSUFEaYxuIzX4JpEKhJE8iFX6JUMDTBvFVazXDZxhsFq1RLxWl6jKH2fbOp6UqNIweNjGdzw/3Kq2FHNfX33Afdmb8OwETFXJHOPdgJqZSOoQwd7omRZ6NsgydO6NPA==
+ bh=31PQk4VCJrGRITpwUGBFaBUAHeqiz6D2xoCqaObUvVk=;
+ b=MafwQk9VphOegTG93qe2bPtFKskaccPRuAKxuxi7NHwWbtalRxtGJEV3Pc+3cqpkruvmbxPaKsR+BChzenGVms5Nw0EjXqYum4NLAkhUgSZvJJ1XWTTlKBd8OU6iwN6DKtpfO1AVvImIJInmFsQJA2WRhgp5y/rRvRotJGOCBei/mh+8c0iewrkaMLIvh2wkZJds/EAluJlXsylFvLkwZ99XOZuz40xyg6dNtA/MfVPRb0JOFYnCGjI2ioHv3UNp+Xz2J6tnfPVfhWHud3xRfc+nnyrat6nv5Ls0piKNST8J427wxBTBzG3DicVPWxTWXlDOLxiwojPRGB4y/9mkJA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=maximintegrated.com; dmarc=pass action=none
- header.from=maximintegrated.com; dkim=pass header.d=maximintegrated.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=maximintegrated.onmicrosoft.com;
- s=selector2-maximintegrated-onmicrosoft-com;
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com; 
+ s=selector2-intel-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=e+I56tpV+0lwXd/quSJ+34BJ4mXTClCIT8z2bPeuGc8=;
- b=J6TQVHnQyfX8O8O0QdgBXAm3XHoDVX4bStcluEVejha32x3TRpfcOGOL8+t7G7si6INmGv921oPFSWEG3Q2FtzRFkTZWuADAkvl+KHnaH06FPt+73cXTcfIg6B9hcMw+L7Pv1QJO4oAVLy2/R0AE5uwCO2pTfFK95OTvkkhT/CY=
-Received: from BYAPR11MB3671.namprd11.prod.outlook.com (2603:10b6:a03:b3::15)
- by BYAPR11MB2918.namprd11.prod.outlook.com (2603:10b6:a03:92::20)
+ bh=31PQk4VCJrGRITpwUGBFaBUAHeqiz6D2xoCqaObUvVk=;
+ b=vP7KFkbYG4sv6sS6piKKJOvA3sGu8aRggoio5Vu2YCjkz7qgF1gXk5zO+lrSnwkP/uxrKubCJJg2fMyMM84b87hdlk/m8cBmnY1OY/y0Lg250hvUTGw+G2XB1rECBXC0V9uTFqoiV4A4shppkgodW+j2ny56S6BzaqlVNjpIcjw=
+Authentication-Results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none header.from=intel.com;
+Received: from BN6PR11MB4049.namprd11.prod.outlook.com (2603:10b6:405:7f::12)
+ by BN0PR11MB5727.namprd11.prod.outlook.com (2603:10b6:408:162::6)
  with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.18; Tue, 19 Oct
- 2021 07:57:27 +0000
-Received: from BYAPR11MB3671.namprd11.prod.outlook.com
- ([fe80::49d4:a1dd:5b55:4c94]) by BYAPR11MB3671.namprd11.prod.outlook.com
- ([fe80::49d4:a1dd:5b55:4c94%6]) with mapi id 15.20.4608.018; Tue, 19 Oct 2021
- 07:57:27 +0000
-From: George Song <George.Song@maximintegrated.com>
-To: Mark Brown <broonie@kernel.org>
-Subject: RE: [EXTERNAL] Re: [v3 2/2] ASoC: max98520: add max98520 audio
- amplifier driver
-Thread-Topic: [EXTERNAL] Re: [v3 2/2] ASoC: max98520: add max98520 audio
- amplifier driver
-Thread-Index: AQHXw/s2x3A5X1ZlPEurKpXCb3FgFavYshcAgAFD2bA=
-Date: Tue, 19 Oct 2021 07:57:26 +0000
-Message-ID: <BYAPR11MB367106FDD5394AA4F88A42D4F4BD9@BYAPR11MB3671.namprd11.prod.outlook.com>
-References: <20211018083554.5360-1-george.song@maximintegrated.com>
- <20211018083554.5360-2-george.song@maximintegrated.com>
- <YW1quluaCzsUpET0@sirena.org.uk>
-In-Reply-To: <YW1quluaCzsUpET0@sirena.org.uk>
-Accept-Language: ko-KR, en-US
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16; Tue, 19 Oct
+ 2021 08:00:50 +0000
+Received: from BN6PR11MB4049.namprd11.prod.outlook.com
+ ([fe80::2091:65f4:8530:1542]) by BN6PR11MB4049.namprd11.prod.outlook.com
+ ([fe80::2091:65f4:8530:1542%6]) with mapi id 15.20.4608.018; Tue, 19 Oct 2021
+ 08:00:50 +0000
+Subject: Re: [PATCH] ASoC: Intel: Unify HDAudio-ext bus initialization
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ <alsa-devel@alsa-project.org>
+References: <20211018192134.353931-1-cezary.rojewski@intel.com>
+ <991d0129-a566-d078-9174-bccb55e49d01@linux.intel.com>
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+Message-ID: <272c5a9f-847d-14bd-f330-ec51781f2c42@intel.com>
+Date: Tue, 19 Oct 2021 10:00:44 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
+In-Reply-To: <991d0129-a566-d078-9174-bccb55e49d01@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none
- header.from=maximintegrated.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e9299050-c638-4b5e-9fc7-08d992d617e7
-x-ms-traffictypediagnostic: BYAPR11MB2918:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR11MB2918C32E4D49D15B649C04F1F4BD9@BYAPR11MB2918.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: b1KdyAh7+Sb2gMMtTLgAYqy1xT0tyOi/s7czLBRceYMcf6FmYz5zydZqPS6k91E257x4rObE+a3iu3+YnAZQfVW6a6e6pb5wobruyYgLB+uIQgshrcq14e7c3o9eD4JReS7vUzgTTTm2jk2StT7ZhRWNMh84Rjzykf9vQ5UNO3didFUVXiK9acX0Dm5b9nx0OTdqRKN/FZtPYJ3zQUYmmiS9HU9+gnjoP1DlWY5o04gd0Pj1Wf0HawwpccWVzUa0ODWMHgatqpPTp9Tf2n1sfT9SBbyr8qbJ0pHu4LK/wOhB7kAHDVFpL7FfI5sZ+y++iquPBhRe7cHs4aAIMUmstiFWXsZI7A4OAFyeGG5McfMTqKlNYRIrd2PdIz23zVtEuj79CmPzi6zWom28LZn3c8d9uON3qAtiIxg08wkMbsWRzAL/TzQLJS6V3KE4r4TNNYKsQp+LrJYzC0LLcjgi7UQnbVhWhYHndHJLJW9K/20cnk+Y9aWYIdMuE5D8AW/MecP1kQ8waDGZDH/RpP8B0sd4kvif7BZ3HKx6uLUk+Hfxo4AYVaq2OgLsRmjrXSHusTmc/CtAWbA0VC54pqXSKi+SQCyzj4Lnk2LDm+ij+DkJar4U51Lcf3x7sdlF+svnqdxyPTdCFG+Jypb+2EwOAQhDhrM53iYLn0rkAgByNRE2PJ7weJNCNGSgmkvMJY6iAN+zMQtB28s5o0r5ovFqqA==
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:BYAPR11MB3671.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(4636009)(366004)(316002)(54906003)(71200400001)(2906002)(83380400001)(5660300002)(7696005)(122000001)(9686003)(38070700005)(66446008)(86362001)(64756008)(66556008)(508600001)(55016002)(38100700002)(8936002)(33656002)(26005)(186003)(8676002)(4326008)(76116006)(6916009)(66476007)(6506007)(52536014)(107886003)(66946007);
- DIR:OUT; SFP:1102; 
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?BC6aTa8XhI5dGIRxk8XneZhPfMnGD2LcmqMPmpYu5n4/WCgwDbzKRvbyGeAG?=
- =?us-ascii?Q?3rLiCrqLPiFEmRKdQ63+oamU0k5NrxZiWNa9wtW2MmVzNqf00MLHd1eyDqH7?=
- =?us-ascii?Q?nBHdf8d7fSWgAU4K3YWZhE/0YMRANG9Bqg7DBrVe9FtXtQCs6EzT0yxCOb9i?=
- =?us-ascii?Q?ssiEdMfzEQ+9wFppPYzQVwtJoIywV3ejuxKkbzfPyD9oSNtjsMSJKjUQXWZC?=
- =?us-ascii?Q?fRmHfq469LYBarBrk6i44wFa/wMyEIVIHvRcZGb5s5wYp1r9q8f2gG6/X/ip?=
- =?us-ascii?Q?JqzOcHsj6asZf/1cH0bjCURhnmQTin4tXUAehb1YOJWvm87Fr+PCss5tO0Yw?=
- =?us-ascii?Q?y6u90N5GNEhpJbJriQczDK55iWOrghrf/0Fs/0MiMYvRZtPGfSJxCc9nrJAr?=
- =?us-ascii?Q?qRHgWVXLlxO+PFAE9pyNsjqPZNAnD2YnEt7/FJqOCox66swr5+Bm799nh1ID?=
- =?us-ascii?Q?8DSlumg4ZlurrJVuwuMF9NERu4i7I/dTp7R2QMxLiIGwiVaMFLUH0R68fLZl?=
- =?us-ascii?Q?+xpTI6LEXEXm7kvUhBorw1/2pUbRqf4TBo+RgLABzvzi1jAkuAMvnwzXJRxx?=
- =?us-ascii?Q?sItEd3rXGtEmT93FjXJ0AXRfK1YHA3tqBi4I+GYxjyeC5POAoKPlkvRVg4QW?=
- =?us-ascii?Q?kCuxLT8VuFf9sB0/3cy3lGzgNsDhEMKgnULZv94epdKQ2SUugiGkb77+c8Ml?=
- =?us-ascii?Q?WP1orveQv1USY7DtuxSiXS+vqoRxVGr99FKbmQwT6gF3/EVPt8g+OKMOAecP?=
- =?us-ascii?Q?WDhxAWeP8DzhONHsS/J5Ju3qHySHTz1sz6emfgqVdXpI7j5D6WinEeTziEre?=
- =?us-ascii?Q?85ryz4k1svxsrw1gDX0RJHaiWXkLKmftfzZ1pcQSSu1K5oRp+2S+HNmY1iDm?=
- =?us-ascii?Q?BlUCRAh0199JXIK9OI90y4cD/T1dk8+lUxvUQyCjYHqu02qEDx8wtM7EHWzg?=
- =?us-ascii?Q?J6V/fTiDKaG1qQv0fVZl8UUIsbg3pctgzPcY0jnPtWz56r4AxKZOj8lIkjA6?=
- =?us-ascii?Q?3RgHOUbfMCzSK5gOOacv6L6QPXqKaTlIB0VsZ0o691X71LU0Exj3h1M3ATRQ?=
- =?us-ascii?Q?YgA7uGG6i2c4hp6vEk/VSec56IMMG+lvIJIeqUvKXZayKNSVU6rF75u658te?=
- =?us-ascii?Q?a4fXCsLZ4HqhpEw3Nh+2KVw4h0jJHex4tx9G6CiVDePjTEYDH5R3wG5WEvjX?=
- =?us-ascii?Q?2c1+NawXjKkEb/UM3jiUs5dZwPvNR47auTov8fHKajER/0iEuthuEmg1gMU/?=
- =?us-ascii?Q?hIyf8Zg8UieBzx8ip3MYZzgAkJwTr2BR7qho06CplPTUvmGGIVIWKDxSn4If?=
- =?us-ascii?Q?qcc=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: DB8P191CA0010.EURP191.PROD.OUTLOOK.COM
+ (2603:10a6:10:130::20) To BN6PR11MB4049.namprd11.prod.outlook.com
+ (2603:10b6:405:7f::12)
 MIME-Version: 1.0
-X-OriginatorOrg: maximintegrated.com
+Received: from [192.168.0.164] (89.64.110.142) by
+ DB8P191CA0010.EURP191.PROD.OUTLOOK.COM (2603:10a6:10:130::20) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4608.15 via Frontend Transport; Tue, 19 Oct 2021 08:00:48 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: abda4407-94a6-48c3-1bff-08d992d690f8
+X-MS-TrafficTypeDiagnostic: BN0PR11MB5727:
+X-Microsoft-Antispam-PRVS: <BN0PR11MB5727899103333639B1CAA791E3BD9@BN0PR11MB5727.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xGAgthSHOYbr7aQdWOLBUdVR/EUvRlbyugvAtKkUIP7dk6Ica4GpNIPlSgR7Y3fc6YzkkYIOKBNpXs/FKrbBtWi9JH/AUxo/UeCZFMq5F1BDy3AqUNRwmGA+yevqK1MSELdPCMW9VZS2XxXxpNzssCoSm0yv3EAdkc7QIx+eLHSHy6telm4LHAUae0xWaCi00EvsAYQeXgzCuV0dRzxhEY9cxAMr3XEJAvJpVC1hWrGe+wCscrmnZ0o5pkdv9EfsWmsIu5CVXAZe9M3TbgxSh+WMuS8eMXXrreygKnK38gSGriX/G62AsVV//wzkl2gzZwo3cMuVrBxwj/Ti1H0btiDf+jBTSySjOX5rRjh7VCih4CH/lTLB28e24tkGr+YK+BygVbYVPLPRVJDnRmP9NgXap2uOWgi3XJM/XQ1zPs8cMzwDmFSKZzcDTcsSzE2V4sTjOMKwTnuH/l1admUl7xJOW8IvZtRvX2yRlDBd1mlBOkkVb1Q0uQgb+K0J2bTnHUma8HHzb+boAUPCRshvBkZg4M8XPaVl6dis92o6nUR9ronFVXJuHOLzSad0sbW2KJLknsJ4pEaCrQJfV4Ax94p4G6kC0TRukHpmWdgsXpXKM+TGzN9COLm8/z3zASwp0gqnkP9ZKHiBKnTioc9TgFxHH20058qO7njp0MvrLX8LaE6tTqGntQ3S0aHWFid7pFiMNKTW0+XgO/VoKvfoKhevN+cZIbeoHsvTo91ntQaE5FryQDrz/p6n7oYgur1h6M5ZqlQUWPtvfeCVaYeVIQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:BN6PR11MB4049.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(366004)(66476007)(66556008)(54906003)(44832011)(4001150100001)(66946007)(86362001)(508600001)(2906002)(956004)(31696002)(8676002)(6486002)(2616005)(8936002)(4326008)(82960400001)(31686004)(16576012)(36756003)(26005)(38100700002)(83380400001)(316002)(53546011)(6666004)(5660300002)(186003)(21314003)(45980500001)(43740500002);
+ DIR:OUT; SFP:1102; 
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WWYrMFNtOWxiVzREZFdsWGtjZjBUOEk5YVlySDVSdHFJYlhET0toejUwVUNH?=
+ =?utf-8?B?MkpOeDVDZkdZRC9idEZXUng0WlRWTFdlQklHRkxPNWFuSngvcWU5SGtZUW9U?=
+ =?utf-8?B?eVdqSWp3ajJNWlR1WFlvSnFNcm0rNmI0eUs4Skh6VnJVZjREWUp1T1pMNGg0?=
+ =?utf-8?B?YklQRDFBeExFcHNUcy9NSG9CeEVKdndHRlVtUzN4TzM0cmt6dXNaY2xhL2sx?=
+ =?utf-8?B?ZjJBZ1pvWDNSdWduTTFTcDhwTkh5WEc0RXNsaFZ6aGRuNklTOXg1bDFrQ2V6?=
+ =?utf-8?B?N21jWTdOakNuRWhvV0NsT2ZnL1JEd1NrTlJSZjg2dFllcFVlTHB6ajNwaXli?=
+ =?utf-8?B?clVmd3ZFZU9iVjZJdS8zVHhlRUZsbTZuRnlBRksyc0ErZWY4Y2w2emQveUpO?=
+ =?utf-8?B?ZjBkMXVFMUZYazFiZTkvZ0dCenZIa28ydWJxOHJUZi9tRkhUc3pSUFFkUVBJ?=
+ =?utf-8?B?Y1g1VDFRV1dXL1crYS9qSlcvVDV3bVpmWVp6Z1cvMXRPd3B4YWIrUWY5N2pS?=
+ =?utf-8?B?KzRmQUo3ZTFhMUs5dXhETi9CMjdqTVVoNjNYRW10MDMrbVVGby9PWnZDRnpq?=
+ =?utf-8?B?NFdBK3BlWS9kbmU5WFdGYU85SzNJd2FDcFZzbk9ac3FEaVJLOGVrRHRIaVUz?=
+ =?utf-8?B?eUJENmtSOGlTU0hPbUhPUGlVVzEzWG5KcHpyQmRCNk9hUjR2RU5ZZVJHOFFY?=
+ =?utf-8?B?andGa29yUmg0WUtvMjlVUFZXaE5xaWlGeXlZdC9hUW85dUJ5TUJOTDhkUk1U?=
+ =?utf-8?B?ZUtjWkI3ZHNDNDA5Q3RKc3ZSTVd4Qzh1K0ZNZGtoSFYwMHhJUk9Lcit4dFJC?=
+ =?utf-8?B?UnNvQkpaSk5scXRzYXdtQ3ZNaldBcWIrNWxkQUthSHFNblA3TFRzWmpGSlVt?=
+ =?utf-8?B?cEdNTXZKTndGTFE0cVNqUmZQSTRoSWN5SEtwcmkwS1hQTDh6UjVJTXk5eEhk?=
+ =?utf-8?B?WkIvWmNNUnlNZ2V0YnVPZ2ZwaC8rY2NsdjdDcWg2SG5ZMFFOK1pXVGEzZFNK?=
+ =?utf-8?B?WGEybFFOVlc5MlMxbVBXN09CTkgxUzdKTE1Gd1d3Q0xBVk50TXdvRU1Sc0dG?=
+ =?utf-8?B?bFdVVW1vNTc5Ty9Mclk5N25vak90YkNzZDlINnBRU0prTlZlcStHa0RxVHpL?=
+ =?utf-8?B?dnA1WVBNQUJURmZMSFlMWXpXWFEwV1AwendDbnJpSnA2b1BPMU5YV291NTIy?=
+ =?utf-8?B?QU1yaEdpM2MzWE05aG5BNXdGWG5uTXBUa09CYy85RFAyRC9zbTB1cXBJanE4?=
+ =?utf-8?B?VlFEeXpSdGgvWXFLc29GQllYRDZ6OS9SQVpaM25QTDlLSzRkaWVJMjNwZURG?=
+ =?utf-8?B?QkVaM1FGWnJmeHJ2RG16emhVWVhHQ1BnRE9zUGFtSXpNc01JR1gxZmMrT04y?=
+ =?utf-8?B?T2lTQXpVcm9zaEpkUG9LYlNsdWdSSGsyeDJ1YnBYc1NFblFxdnhZc25PSTFw?=
+ =?utf-8?B?QnhVdjhaN2FuSVFTL3Z6eVNXMFhucm9pZkN3TEgyQlc2blFsem1mMkZaOENJ?=
+ =?utf-8?B?Q1J6Z0xzcWY5a1hpdEk5eDY5aG9yMVpwMUEvaHlEa1pOR0Q3WW1JWm9ieGc1?=
+ =?utf-8?B?OTJWcTFxUk11S3NlVFVxR09oRzN6Yk1Kbm1KdDZ2c0tpcVduVFNDWTRlcVVH?=
+ =?utf-8?B?dXNVZlhWYkZ1SUVUTHMzMFhQbnFFUGNyUGRsN0FFY0h3OVRxYTA2anFieDhu?=
+ =?utf-8?B?aGxLcVZ0TG5kKzNVb0ZXTDJ0b1BWejEzU05saUV2NUxpSDRZdHpaOUVHbUVx?=
+ =?utf-8?Q?UWRoyFuFBr78BlzmbSesUffZ6AMxEKsKkLrl3oI?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: abda4407-94a6-48c3-1bff-08d992d690f8
+X-MS-Exchange-CrossTenant-AuthSource: BN6PR11MB4049.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3671.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e9299050-c638-4b5e-9fc7-08d992d617e7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Oct 2021 07:57:26.9938 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: fbd909df-ea69-4788-a554-f24b7854ad03
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: TypROab26yg3DtcZc5rOxkFO2JjrYkqA3IAW+tQzFqKG64HQvfVyS5qPzkK/yGa7qhL8nIwzwIQsCEAn3uxByLX5hsAgG1JPCnf99Wz+kyw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB2918
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- Steve Lee <SteveS.Lee@maximintegrated.com>,
- Ryan Lee <RyanS.Lee@maximintegrated.com>,
- "george.song@analog.com" <george.song@analog.com>,
- "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "robh+dt@kernel.org" <robh+dt@kernel.org>
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2021 08:00:50.3810 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: gF5AfaTfdZ1PvOji5ZZayKy+ioscFcICAEK3ITGLlQOqKRVKtoR0HmUMjWHq1X2VqnVexJP7mLJTnoF+aIjFJVDUlJK3rLBk0e6ogTl2/A0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR11MB5727
+X-OriginatorOrg: intel.com
+Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>, Ranjani
+ Sridharan <ranjani.sridharan@linux.intel.com>, tiwai@suse.com,
+ hdegoede@redhat.com, broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -163,116 +186,149 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-> On Mon, Oct 18, 2021 at 05:35:54PM +0900, George Song wrote:
->=20
-> > +	case SND_SOC_DAPM_POST_PMD:
-> > +		dev_dbg(component->dev, " AMP OFF\n");
-> > +
-> > +		regmap_write(max98520->regmap, MAX98520_R210F_GLOBAL_EN, 0);
-> > +		usleep_range(30000, 31000);
-> > +		max98520->tdm_mode =3D false;
-> > +		break;
->=20
-> Why would stopping the DAC put us out of TDM mode?  Not that I can see
-> anything which ever sets tdm_mode to anything other than false or checks
-> the value...
-It will be removed tdm_mode to false line.
->=20
-> > +static const struct snd_soc_dapm_widget max98520_dapm_widgets[] =3D {
-> > +	SND_SOC_DAPM_DAC_E("Amp Enable", "HiFi Playback",
-> > +			   MAX98520_R209F_AMP_EN, 0, 0, max98520_dac_event,
-> > +	SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
->=20
-> I can't help think that the global enable ought to be a _SUPPLY widget, i=
-t
-> would get enabled before the DAC rather than after it but it's not clear
-> that the ordering is critical here.
-It will be modified SND_SOC_NOPM instead of MAX98520_R209F_AMP_EN.
->=20
-> > +static DECLARE_TLV_DB_SCALE(max98520_digital_tlv, -6300, 50, 1);
-> > +static const DECLARE_TLV_DB_RANGE(max98520_spk_tlv,
-> > +	0, 5, TLV_DB_SCALE_ITEM(600, 300, 0), );
->=20
-> Why is _digital_tlv not const?  It's also a bit weird that _spk_tlv is a
-> range with one entry not a scale.
-It will be added const casting in front of DECLARE_TLV_DB_SCALE.
->=20
-> > +	count =3D 0;
-> > +	while (count < 3) {
-> > +		usleep_range(10000, 11000);
-> > +		/* Software Reset Verification */
-> > +		ret =3D regmap_read(max98520->regmap,
-> MAX98520_R21FF_REVISION_ID, &reg);
-> > +		if (!ret) {
-> > +			dev_info(dev, "Reset completed (retry:%d)\n", count);
-> > +			return;
-> > +		}
-> > +		count++;
->=20
-> Does this really need to be logged?
-It will be removed for logging regarding reset completed.
->=20
-> > +	/* Software Reset */
-> > +	max98520_reset(max98520, component->dev);
-> > +	usleep_range(30000, 31000);
->=20
-> Shouldn't that delay be in the reset routine?  Perhaps between the
-> attempts to read the ID register?
-It will be removed 30ms sleep after reset function.
->=20
-> > +	/* L/R mix configuration */
-> > +	regmap_write(max98520->regmap, MAX98520_R2043_PCM_RX_SRC1, 0x2);
-> > +
-> > +	regmap_write(max98520->regmap, MAX98520_R2044_PCM_RX_SRC2, 0x10);
->=20
-> These should be exposed to the user, not hard coded - different systems
-> may need different configurations.
-It`s already exposed for 2043 register which is regarding mono mixer for "D=
-AI Sel Mux"
-It will be exposed for 2044 register which is regarding pcm input channel s=
-election to dapm mixer.
->=20
-> > +	/* Disable Speaker Safe Mode */
-> > +	regmap_update_bits(max98520->regmap,
-> > +			   MAX98520_R2092_AMP_DSP_CFG,
-> MAX98520_SPK_SAFE_EN_MASK, 0);
->=20
-> This seems like something that should be left as is by default given the
-> name (or forced on if it were disabled by default)?
-It will be removed to be left as is by default given the name.
->=20
-> > +	/* Hard coded values for the experiments */
-> > +	regmap_write(max98520->regmap, MAX98520_R21FF_REVISION_ID, 0x54);
-> > +	regmap_write(max98520->regmap, MAX98520_R21FF_REVISION_ID, 0x4d);
-> > +	regmap_write(max98520->regmap, MAX98520_R2161_BOOST_TM1, 0x2);
-> > +	regmap_write(max98520->regmap, MAX98520_R2095_AMP_CFG, 0xc8);
->=20
-> This doesn't seem suitable for upstream.
-They will be removed.
->=20
-> > +	/* Power on device */
-> > +	if (gpio_is_valid(max98520->reset_gpio)) {
-> > +		ret =3D devm_gpio_request(&i2c->dev, max98520->reset_gpio,
-> > +					"MAX98520_RESET");
->=20
-> You should use the gpiod APIs for new code, not the legacy GPIO interface=
-.
-> This GPIO wasn't mentioned in the DT bindings but should have been
-> described there.
-It will be modified to gpiod APIs like devm_gpiod_get_optional for getting =
-reset_gpio (struct gpio_desc *reset_gpio).
->=20
-> > +		if (ret) {
-> > +			dev_err(&i2c->dev, "%s: Failed to request gpio %d\n",
-> > +				__func__, max98520->reset_gpio);
-> > +			return -EINVAL;
-> > +		}
-> > +		gpio_direction_output(max98520->reset_gpio, 0);
-> > +		msleep(50);
-> > +		gpio_direction_output(max98520->reset_gpio, 1);
-> > +		msleep(20);
-> > +	}
->=20
-> Shouldn't the disable/enable of the reset GPIO be in the reset function?
-It will be modified to gpiod APIs like gpiod_set_value_cansleep function in=
-stead of gpio_direction_output.
+On 2021-10-18 11:18 PM, Pierre-Louis Bossart wrote:
+> On 10/18/21 2:21 PM, Cezary Rojewski wrote:
+>> HDAudio-extended bus initialization parts are scattered throughout Intel
+>> ADSP drivers code. Gather them up in snd_hda_ext_bus_init() to provide
+>> unified initialization point.
+> 
+> What unification are we talking about?
+> 
+> The code for HDaudio differs a great deal between the two Intel drivers,
+> and specifically the 'nocodec' mode in SOF does not rely on this
+> library, so there's no burning desire on my side to add this dependency
+> when we carefully tried to avoid it to use the DMA parts only.
+> 
+> I would add we recently looked at the code and the coupling/decoupling
+> in this library seems questionable if not broken.
+> 
+> edit: this patch also seems to add a layer of indirection through a
+> 'core' layer, not sure where this is going at all. I must be missing
+> something.
+> 
+> CC: Ranjani and Kai.
+> 
+
+Thanks for the comments!
+
+Pretty sure you overestimated the goal of this patch, though. In both 
+skylake and sof -drivers various bus->xxx and bus->core.xxx fields are 
+scattered and initialized with basically the exact same values. These 
+values more often than not even match the sound/pci/hda ones. The 
+ultimate goal is probably to extract similar parts and move them to 
+snd_hdac_bus_init() or some other wrapper. For now, 'ext-bus' is being 
+addressed.
+
+Patch would have 'greater' effect if not for the fact that sof-intel-hda 
+code conditionally initializes several fields for the reasons unknown to 
+me. So, instead of just removing those assignments, preproccesor 
+directive is used instead.
+
+
+...
+
+>>   /**
+>> - * snd_hdac_ext_bus_init - initialize a HD-audio extended bus
+>> + * snd_hda_ext_bus_init - initialize a HD-audio extended bus
+>>    * @bus: the pointer to HDAC bus object
+>>    * @dev: device pointer
+>>    * @ops: bus verb operators
+>> @@ -26,28 +28,37 @@ MODULE_LICENSE("GPL v2");
+>>    *
+>>    * Returns 0 if successful, or a negative error code.
+>>    */
+>> -int snd_hdac_ext_bus_init(struct hdac_bus *bus, struct device *dev,
+>> -			const struct hdac_bus_ops *ops,
+>> -			const struct hdac_ext_bus_ops *ext_ops)
+>> +int snd_hda_ext_bus_init(struct hda_bus *bus, struct pci_dev *pdev,
+>> +			 const struct hdac_bus_ops *ops,
+>> +			 const struct hdac_ext_bus_ops *ext_ops,
+>> +			 const char *model)
+> 
+> missing kernel doc update?
+> 
+
+Ack.
+
+...
+
+>> @@ -53,24 +54,25 @@ static const struct hdac_bus_ops bus_core_ops = {
+>>   /*
+>>    * This can be used for both with/without hda link support.
+>>    */
+>> -void sof_hda_bus_init(struct hdac_bus *bus, struct device *dev)
+>> +void sof_hda_bus_init(struct hda_bus *bus, struct pci_dev *pdev,
+>> +		      const char *model)
+>>   {
+>>   #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
+>> -	snd_hdac_ext_bus_init(bus, dev, &bus_core_ops, sof_hda_ext_ops);
+>> +	snd_hda_ext_bus_init(bus, pdev, &bus_core_ops, sof_hda_ext_ops, model);
+>>   #else /* CONFIG_SND_SOC_SOF_HDA */
+>>   	memset(bus, 0, sizeof(*bus));
+>> -	bus->dev = dev;
+>> +	bus->core.dev = &pdev->dev;
+>>   
+>> -	INIT_LIST_HEAD(&bus->stream_list);
+>> +	INIT_LIST_HEAD(&bus->core.stream_list);
+>>   
+>> -	bus->irq = -1;
+>> +	bus->core.irq = -1;
+>>   
+>>   	/*
+>>   	 * There is only one HDA bus atm. keep the index as 0.
+>>   	 * Need to fix when there are more than one HDA bus.
+>>   	 */
+>> -	bus->idx = 0;
+>> +	bus->core.idx = 0;
+> 
+> why is this level of indirection through 'core' needed in this code
+> which doesn't use the hdaudio-ext library?
+> 
+> the changes here have nothing to do with snd_hda_ext_bus_init()?
+> 
+
+I don't understand the comment. First argument in parameter-list for 
+function sof_hda_bus_init() has its type changed from 'struct hdac_bus 
+*' to 'struct hda_bus *'. Without updating those assignments, code 
+wouldn't compile with CONFIG_SND_SOC_SOF_HDA disabled.
+
+>> -	spin_lock_init(&bus->reg_lock);
+>> +	spin_lock_init(&bus->core.reg_lock);
+> 
+> same, we've just added reg_lock everywhere, why use a different one
+> 
+
+It's not a different one, it's exactly the same one : )
+
+>>   #endif /* CONFIG_SND_SOC_SOF_HDA */
+>>   }
+>> diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+>> index fbc2421c77f8..03a68d286c7c 100644
+>> --- a/sound/soc/sof/intel/hda.c
+>> +++ b/sound/soc/sof/intel/hda.c
+>> @@ -609,8 +609,9 @@ static int hda_init(struct snd_sof_dev *sdev)
+>>   	bus = sof_to_bus(sdev);
+>>   
+>>   	/* HDA bus init */
+>> -	sof_hda_bus_init(bus, &pci->dev);
+>> +	sof_hda_bus_init(hbus, pci, hda_model);
+>>   
+>> +#if !IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
+>>   	bus->use_posbuf = 1;
+>>   	bus->bdl_pos_adj = 0;
+>>   	bus->sync_write = 1;
+>> @@ -619,7 +620,7 @@ static int hda_init(struct snd_sof_dev *sdev)
+>>   	hbus->pci = pci;
+>>   	hbus->mixer_assigned = -1;
+>>   	hbus->modelname = hda_model;
+>> -
+> 
+> spurious line change
+> 
+>> +#endif
+
+Well, I've just inserted #endif in place of this newline. No problem 
+with appending additional Enter if that's what you prefer.
+
+
+Czarek
