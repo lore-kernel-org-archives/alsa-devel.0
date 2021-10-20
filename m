@@ -2,88 +2,74 @@ Return-Path: <SRS0=Jips=PI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 823AEC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Oct 2021 09:18:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D172C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Oct 2021 11:30:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EAF0B60F9E
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Oct 2021 09:18:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EAF0B60F9E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id EE0FA61359
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Oct 2021 11:30:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EE0FA61359
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B3F5D16E3;
-	Wed, 20 Oct 2021 11:17:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3F5D16E3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6117C16DD;
+	Wed, 20 Oct 2021 13:29:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6117C16DD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634721506;
-	bh=M65ERvVuU3IAKLeEPia98DWS2Q2ldYd4uUFwE6kXOu4=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1634729400;
+	bh=wTQloiZs/BuLYX5Yg3LlKrHdopyQzbSJH5f/Y/+nJdU=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=O9qqsYP53bfD0sl6g9qP8v5V26BmA9JQxicX87Go72s5JDR0PAdhXr0WUjfYd+uEb
-	 VsgHlsEE+r2DT7iOaNNbIphInU8whr/QiCrMoNBVOj8eZHzZu19M1l4ZQIUH0L5Pt4
-	 ZgQ2rPn7j9tNZeOZNPbTkYSMf955rd14xOjBlVos=
+	b=BCSDgJKM2ulqEz2weEDtcZbeR5UaM8oBnpDIFHXVyJubVyyrdOS2JuVs093BiA9+w
+	 UC4awbLXYanDG2JUhvv9DnBTxz1rXhIE8RSK8N4NThLuxCRpOmBnJQsv6Wu3ofCLy8
+	 bCbdjlIRnFQ24c7tOAFVgWWLYftD7Tx5QQFK63mg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 49A01F80082;
-	Wed, 20 Oct 2021 11:17:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7A492F80224;
+	Wed, 20 Oct 2021 13:29:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0397EF80224; Wed, 20 Oct 2021 11:17:35 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 4E899F802A9; Wed, 20 Oct 2021 13:29:00 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9C626F80082
- for <alsa-devel@alsa-project.org>; Wed, 20 Oct 2021 11:17:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C626F80082
+ by alsa1.perex.cz (Postfix) with ESMTPS id B38A2F80082
+ for <alsa-devel@alsa-project.org>; Wed, 20 Oct 2021 13:28:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B38A2F80082
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="fc1si36e"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="pEnnCCdR"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 2412821A95;
- Wed, 20 Oct 2021 09:17:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1634721444; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=mDhieyIXeE4V5jHwQZTe7ZXZZbr+qjBnbmqOemXSzlk=;
- b=fc1si36eMekGSQDqcS/Hn3Eorlm6YyDIm/s2QHHgKQUzjS46rECZKO3+n1oE9Nbk4ifixX
- lHutHNI6ClB8dkbZYqDyWqO4MSVM5OdXNwSw0pd/TeeNDcLAcLbQu7Al7YRxspvGYABhm/
- kEFqql32f4JdNRImBy/VF3c03nUsD6Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1634721444;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=mDhieyIXeE4V5jHwQZTe7ZXZZbr+qjBnbmqOemXSzlk=;
- b=pEnnCCdRCZrs86YOnpoamSueJv/AfbpZdfLMiHOcWnBqMS+tMPKzKMwcS74ex8rJLtlK+x
- yUV8QW7y9zvj8BBQ==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 04F4FA3B83;
- Wed, 20 Oct 2021 09:17:24 +0000 (UTC)
-Date: Wed, 20 Oct 2021 11:17:24 +0200
-Message-ID: <s5hr1cgys0r.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Lucas Tanure <tanureal@opensource.cirrus.com>
-Subject: Re: [RFC PATCH v2 2/3] ALSA: hda/realtek: Add support for Legion 7
- 16ACHg6 laptop Speakers
-In-Reply-To: <20211020085944.17577-3-tanureal@opensource.cirrus.com>
-References: <20211020085944.17577-1-tanureal@opensource.cirrus.com>
- <20211020085944.17577-3-tanureal@opensource.cirrus.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, "Rafael J . Wysocki" <rafael@kernel.org>,
- patches@opensource.cirrus.com, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, David Rhodes <david.rhodes@cirrus.com>,
- linux-acpi@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- linux-kernel@vger.kernel.org, Len Brown <lenb@kernel.org>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="n3eSBerg"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 753266135E;
+ Wed, 20 Oct 2021 11:28:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1634729332;
+ bh=wTQloiZs/BuLYX5Yg3LlKrHdopyQzbSJH5f/Y/+nJdU=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=n3eSBergbHy5zgvxaAoAveP9Bi9qIaMsR9UsAb7OpUkOA5hNNoSinHCgLxT3M6j3x
+ isbmgUQZ9O0VU6enRGoJxUljlqlw0SjVggMHohwmveeRlkJ4ibOHJZQqQPLa60kFCZ
+ u1S+2++oPJFnW3vNsj7KjThnXZgvH4HPP2thzFxgGXzSZm9X4Z5DgMKedL2D7YE7cy
+ ZlCzUgzTlExFHjswmLq1BARGvnKnb7ktgC3HXLjqqOkS8UU75rDxmPdvcqDf9V6/+5
+ poapQeOXKQu8/5K5oAiVBjjqw99M7cebid3jn3Dc3IPXh3FjZnU7J3Ff0Zl/SM4k4U
+ JkqiFwVKKLXaQ==
+From: Mark Brown <broonie@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+ Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
+ Heiko Stuebner <heiko@sntech.de>, Takashi Iwai <tiwai@suse.com>,
+ Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH] ASoC: rockchip: i2s-tdm: Fix refcount test
+Date: Wed, 20 Oct 2021 12:28:37 +0100
+Message-Id: <163472931363.2896549.8558505612147911310.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20211015210730.308946-1-frattaroli.nicolas@gmail.com>
+References: <20211015210730.308946-1-frattaroli.nicolas@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,46 +85,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 20 Oct 2021 10:59:43 +0200,
-Lucas Tanure wrote:
+On Fri, 15 Oct 2021 23:07:29 +0200, Nicolas Frattaroli wrote:
+> During development of V5 of the i2s-tdm patch series, I replaced
+> the atomic refcount with a regular integer, as it was only ever
+> accessed within a spinlock.
 > 
-> Find the associated Amps by dai name, and use dai ops to configure it.
-> Disable support for Amps if ASoC not built.
+> Foolishly, I got the semantics of atomic_dec_and_test wrong, which
+> resulted in a test for 0 actually becoming a test for >0.
+> 
+> [...]
 
-Hrm, it's the question whether such a sneaking into DAI access in open
-code is a good idea.  If any, it could be done by some helper function
-instead.
+Applied to
 
-And some more details:
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-> +static int alc_add_soc_dai_list(struct alc_spec *spec, const char *dai_name)
-> +{
-> +#if IS_ENABLED(CONFIG_SND_SOC)
-> +	struct snd_soc_dai_link_component dlc;
-> +	struct alc_soc_dai_node *dai_node;
-> +	//struct snd_soc_component *comp;
-> +	struct snd_soc_dai *dai;
-> +
-> +	dlc.dai_name = dai_name;
-> +	dlc.of_node = NULL;
-> +	dlc.name = NULL;
-> +
-> +	dai = snd_soc_find_dai(&dlc);
-> +	if (!dai)
-> +		return -EPROBE_DEFER;
+Thanks!
 
-The deferred probe won't work at this stage for HD-audio codecs unlike
-many ASoC codec drivers.  And moreover, the fixup action doesn't
-handle the error at all...
+[1/1] ASoC: rockchip: i2s-tdm: Fix refcount test
+      commit: 0ea15e98cfbe56147e227360282ccd311e824b61
 
-Second, this way may lead to use-after-free if the ASoC stuff is
-unbound while the usage from HD-audio codec side.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-Also, the dependency mess is still there.  Even if we allow the hard
-binding to ASoC core here, IS_ENABLED() wouldn't work properly.  It
-must be IS_REACHABLE().
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-thanks,
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-Takashi
+Thanks,
+Mark
