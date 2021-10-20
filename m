@@ -2,74 +2,76 @@ Return-Path: <SRS0=Jips=PI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64233C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Oct 2021 15:27:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8C7CC433FE
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Oct 2021 16:01:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3D9A661371
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Oct 2021 15:27:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3D9A661371
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 85F526136F
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Oct 2021 16:01:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 85F526136F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5AF99168F;
-	Wed, 20 Oct 2021 17:27:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5AF99168F
+	by alsa0.perex.cz (Postfix) with ESMTPS id B301C1657;
+	Wed, 20 Oct 2021 18:00:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B301C1657
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634743675;
-	bh=CE3xAhSZp/6tcl/r/3qwygCbpvLygcXbmqamY6V8mNY=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=p7cdQ29tVJiHsTWgb5jRZjq8MS9zTcGzwdPBVY8T7fRyhtXar2ZGveG4QZX1UEoxo
-	 QRdIG23wkxs9mN9xCbgfH/xG+4n/ITxdSQYGFdQpG4EFfbw0A+uEBxtBQna5NDFzMK
-	 I6mMLVYinI5O08JUCYNJ88xPqE11gUyHw0DHIPlI=
+	s=default; t=1634745703;
+	bh=yZQGqcixn3akt3DO+10qEkc/glUASyUfxkV9M8n6qCc=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=gMjT/oVRLJdm2ChBI/1oN9OGJ3hkoSV+97+gMtnC3ullr1KHuAofrX6XnuSc2l1Ey
+	 4Tt77vAbzyM1EXa4EesBfhO+PYgkTtx2GN9r+lAdOFU69DFFEo5cgnKt8i2P4SMqSu
+	 xF4to+ta2S1+QZG4ZDEUD2fxMWleKUC2gR5z5WIA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4D7E7F80253;
-	Wed, 20 Oct 2021 17:26:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3B2A3F80224;
+	Wed, 20 Oct 2021 18:00:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5CE7FF802E0; Wed, 20 Oct 2021 17:26:25 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 6E14AF80229; Wed, 20 Oct 2021 18:00:50 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1F2ADF80253
- for <alsa-devel@alsa-project.org>; Wed, 20 Oct 2021 17:26:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F2ADF80253
+ by alsa1.perex.cz (Postfix) with ESMTPS id A66FBF800ED
+ for <alsa-devel@alsa-project.org>; Wed, 20 Oct 2021 18:00:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A66FBF800ED
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="SODgY0MV"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="cxsQX5wD"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id A2C541FD39
- for <alsa-devel@alsa-project.org>; Wed, 20 Oct 2021 15:26:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1634743570; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=489TJPc7O/FGwqXHKEz17ETkdogvLRstQrdHsa6WMbU=;
- b=SODgY0MV8rbwh7x9TLbmAVXXIFXqi+erPbxwqsR1HxeYeKylGiKnwyRh0CPdjeu4dCLEVD
- 6//MsBnw/ObU1nbeRdFEx75Din+1iSNIJR7yL/s3OUzcA5lssXbo8R7Eqd5i0C7IUApglP
- wDGrCU5yIn8WUcQtVIuHQ5mkqi8Os/8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1634743570;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=489TJPc7O/FGwqXHKEz17ETkdogvLRstQrdHsa6WMbU=;
- b=cxsQX5wD+Qih6SPT2JNfd693MiMs5tS43wocbnkI4siwd78x9osGKRwqhV+8rtpfbI1om6
- lokkmgg9UmO7c8Dg==
-Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 91B4BA3B81;
- Wed, 20 Oct 2021 15:26:10 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH alsa-utils 1/2] alsamixer: Check the availability of mouse
-Date: Wed, 20 Oct 2021 17:26:07 +0200
-Message-Id: <20211020152608.27985-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="Rjt9JHUW"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 82FF8611F2;
+ Wed, 20 Oct 2021 16:00:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1634745638;
+ bh=yZQGqcixn3akt3DO+10qEkc/glUASyUfxkV9M8n6qCc=;
+ h=From:List-Id:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=Rjt9JHUW7MQXkOkcU+8UEdlOyGBRl7yVL+E94b+xSJ5dQHIrlLkVTRtf29Wd/VLB2
+ A7/QP51NKa47c1EymIrdVwvzHHMu6d7lDcxXEJNAGJmOc6mbLCCk5k0YnjP9L2hfQe
+ UzBRl8dXLtF6i6mbyT8dltAzy0mTIaD3d8a/bhEHltOds57SjD1ElmX0KCtWA36KLX
+ h3mgWwwuOJjzrDL/4ffEb6woupTaTuceG+8MvBQ5T9YRuJjGeVSJA7cVRiVX+2hZoT
+ SBAotHk0MO2QxQaGcu3F+JlKDk6DdBODZ8+UPno5XJrAtMWWbjswQeoo/oMfZizaLF
+ ChYR4Px6Hb4Fg==
+From: Arnd Bergmann <arnd@kernel.org>
+List-Id: <soc.lore.kernel.org>
+To: soc@kernel.org,
+	Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Subject: Re: [PATCH v3 0/2] arm: ep93xx: CCF conversion
+Date: Wed, 20 Oct 2021 18:00:30 +0200
+Message-Id: <163474562303.2274953.3990592094326359852.b4-ty@arndb.de>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20211018103105.146380-1-alexander.sverdlin@gmail.com>
+References: <20211018103105.146380-1-alexander.sverdlin@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>,
+ Nikita Shubin <nikita.shubin@maquefel.me>, linux-kernel@vger.kernel.org,
+ Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ Hartley Sweeten <hsweeten@visionengravers.com>,
+ Mark Brown <broonie@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,27 +87,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Let's check the availiabiy via has_mouse().  Otherwise the program
-aborts unexpectedly just focusing on my rxvt terminal :-(
+From: Arnd Bergmann <arnd@arndb.de>
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- alsamixer/mainloop.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Mon, 18 Oct 2021 12:31:03 +0200, Alexander Sverdlin wrote:
+> This series series of patches converts ep93xx to Common Clock Framework.
+> 
+> It consists of preparation patches to use clk_prepare_enable where it is
+> needed, instead of clk_enable used in ep93xx drivers prior to CCF and
+> a patch converting mach-ep93xx/clock.c to CCF.
+> 
+> Link: https://lore.kernel.org/patchwork/cover/1445563/
+> Link: https://lore.kernel.org/patchwork/patch/1435884/
+> 
+> [...]
 
-diff --git a/alsamixer/mainloop.c b/alsamixer/mainloop.c
-index e67c0f821e8a..cdbe28e390fd 100644
---- a/alsamixer/mainloop.c
-+++ b/alsamixer/mainloop.c
-@@ -50,7 +50,7 @@ void initialize_curses(bool use_color, bool use_mouse)
- #endif
- 	window_size_changed(); /* update screen_lines/cols */
- 	init_colors(use_color);
--	if (use_mouse)
-+	if (use_mouse && has_mouse())
- 		mousemask(ALL_MOUSE_EVENTS, NULL);
- 	snd_lib_error_set_handler(black_hole_error_handler);
- }
--- 
-2.26.2
+Applied to arm/drivers, thanks!
 
+[1/2] ASoC: cirrus: i2s: Prepare clock before using it
+      commit: f4ff6b56bc8ab2fcad6885813cd28ccc81224981
+[2/2] ep93xx: clock: convert in-place to COMMON_CLK
+      commit: 9645ccc7bd7a16cd73c3be9dee70cd702b03be37
+
+       Arnd
