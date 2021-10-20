@@ -2,56 +2,60 @@ Return-Path: <SRS0=Jips=PI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CFA41C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Oct 2021 16:04:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96DAAC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Oct 2021 16:05:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D182361373
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Oct 2021 16:04:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D182361373
+	by mail.kernel.org (Postfix) with ESMTPS id 110F5611F2
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Oct 2021 16:05:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 110F5611F2
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 086471657;
-	Wed, 20 Oct 2021 18:03:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 086471657
+	by alsa0.perex.cz (Postfix) with ESMTPS id 01D7E169B;
+	Wed, 20 Oct 2021 18:04:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 01D7E169B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634745863;
-	bh=EqT1ej4U+NyBPiP4Vny++okHQRZRw+SseUQLXrSZUek=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=PJW9m5EumpxuDCskQQrCsuCyQePFOb37dLnesecvAmTdprp70oWnNXabLr1CA3QAX
-	 skL1F1qTdoaVO9tvIG9+BIbPpdCZiLgVDVhn9hWf4vyPtw/DVu6zqlIZaKdOWaxaVY
-	 soAFEo68FY5MxTsdW9Du5skD23BPXBTOdL1gzGpI=
+	s=default; t=1634745915;
+	bh=tvhL9AkPkzwBze5gsTF7QWDQKe+9+MeVZCHlqzBjNbo=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Qi3ug+Nn2fwVhDQ2x35r6luk0gLgOV2UO+pANE5+5d++6Ej3oYpwG+st+s4sQKN3Y
+	 /QVralAM/TpTj8RoKSb5Kh7MeIGJPz7/++SdwbSwhMvPalsoVAJgSUJNhK82o67qU2
+	 B+osyTALsl75UIvMJrc3yNC4LqtT8i0JEGPzsI3w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9461DF80253;
-	Wed, 20 Oct 2021 18:03:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0DF92F80300;
+	Wed, 20 Oct 2021 18:03:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2BE1DF80082; Wed, 20 Oct 2021 18:03:31 +0200 (CEST)
+ id C263BF80229; Wed, 20 Oct 2021 18:03:36 +0200 (CEST)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7E5FEF80082
- for <alsa-devel@alsa-project.org>; Wed, 20 Oct 2021 18:03:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E5FEF80082
-X-IronPort-AV: E=McAfee;i="6200,9189,10143"; a="292280157"
-X-IronPort-AV: E=Sophos;i="5.87,167,1631602800"; d="scan'208";a="292280157"
+ by alsa1.perex.cz (Postfix) with ESMTPS id A68A7F80229
+ for <alsa-devel@alsa-project.org>; Wed, 20 Oct 2021 18:03:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A68A7F80229
+X-IronPort-AV: E=McAfee;i="6200,9189,10143"; a="292280209"
+X-IronPort-AV: E=Sophos;i="5.87,167,1631602800"; d="scan'208";a="292280209"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Oct 2021 08:59:12 -0700
+ 20 Oct 2021 08:59:21 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,167,1631602800"; d="scan'208";a="494685355"
+X-IronPort-AV: E=Sophos;i="5.87,167,1631602800"; d="scan'208";a="494685422"
 Received: from brentlu-brix.itwn.intel.com ([10.5.253.56])
- by orsmga008.jf.intel.com with ESMTP; 20 Oct 2021 08:59:07 -0700
+ by orsmga008.jf.intel.com with ESMTP; 20 Oct 2021 08:59:16 -0700
 From: Brent Lu <brent.lu@intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v4 0/6] Multiple headphone codec driver support
-Date: Wed, 20 Oct 2021 23:57:09 +0800
-Message-Id: <20211020155715.2045947-1-brent.lu@intel.com>
+Subject: [PATCH v4 2/6] ASoC: Intel: sof_rt5682: detect codec variant in probe
+ function
+Date: Wed, 20 Oct 2021 23:57:11 +0800
+Message-Id: <20211020155715.2045947-3-brent.lu@intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211020155715.2045947-1-brent.lu@intel.com>
+References: <20211020155715.2045947-1-brent.lu@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
@@ -85,49 +89,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Support multiple headphone drivers in same machine driver. In this
-case, both rt5682 and rt5682s are supported and enumerated by different
-ACPI HID "10EC5682" and "RTL5682".
+Detect whether the headphone codec is ALC5682I-VS or not in probe
+function so we don't need to duplicate all board configs for this new
+variant.
 
-V2 Changes:
-- remove useless 'NULL', 'false' in if-condition
-- can use 'comp_ids' field alone to enumerate driver
-- add comma to the end of entry in structure initialization
-- keep the table of byt/cht/cml/icl untouched
+Signed-off-by: Brent Lu <brent.lu@intel.com>
+---
+ sound/soc/intel/boards/sof_rt5682.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-V3 Changes:
-- upstreamd from SOF github, PR#3200
-- use new compatiable IDs to shrink the enumerate table of BYT and CHT
-- add 'const' to snd_soc_acpi_codecs structures
-
-V4 Changes:
-- add signoff to patch 4~6
-
-Brent Lu (3):
-  ASoC: soc-acpi: add comp_ids field for machine driver matching
-  ASoC: Intel: sof_rt5682: detect codec variant in probe function
-  ASoC: Intel: sof_rt5682: use comp_ids to enumerate rt5682s
-
-Pierre-Louis Bossart (3):
-  ASoC: Intel: soc-acpi-byt: shrink tables using compatible IDs
-  ASoC: Intel: soc-acpi-cht: shrink tables using compatible IDs
-  ASoC: Intel: soc-acpi: use const for all uses of snd_soc_acpi_codecs
-
- include/sound/soc-acpi.h                      |  3 +
- sound/soc/intel/boards/sof_rt5682.c           | 34 ++-------
- .../intel/common/soc-acpi-intel-adl-match.c   | 11 ++-
- .../intel/common/soc-acpi-intel-bxt-match.c   |  2 +-
- .../intel/common/soc-acpi-intel-byt-match.c   | 68 +++++++-----------
- .../intel/common/soc-acpi-intel-cht-match.c   | 69 +++++++------------
- .../intel/common/soc-acpi-intel-cml-match.c   |  8 +--
- .../intel/common/soc-acpi-intel-glk-match.c   |  2 +-
- .../intel/common/soc-acpi-intel-jsl-match.c   | 43 ++++--------
- .../intel/common/soc-acpi-intel-kbl-match.c   | 12 ++--
- .../intel/common/soc-acpi-intel-skl-match.c   |  2 +-
- .../intel/common/soc-acpi-intel-tgl-match.c   | 11 ++-
- sound/soc/soc-acpi.c                          | 24 ++++++-
- 13 files changed, 119 insertions(+), 170 deletions(-)
-
+diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
+index 613662eedd0d..c41c584379d9 100644
+--- a/sound/soc/intel/boards/sof_rt5682.c
++++ b/sound/soc/intel/boards/sof_rt5682.c
+@@ -864,6 +864,10 @@ static int sof_audio_probe(struct platform_device *pdev)
+ 	if ((sof_rt5682_quirk & SOF_SPEAKER_AMP_PRESENT) && !mach->quirk_data)
+ 		sof_rt5682_quirk &= ~SOF_SPEAKER_AMP_PRESENT;
+ 
++	/* Detect the headset codec variant */
++	if (acpi_dev_present("RTL5682", NULL, -1))
++		sof_rt5682_quirk |= SOF_RT5682S_HEADPHONE_CODEC_PRESENT;
++
+ 	if (soc_intel_is_byt() || soc_intel_is_cht()) {
+ 		is_legacy_cpu = 1;
+ 		dmic_be_num = 0;
 -- 
 2.25.1
 
