@@ -2,73 +2,69 @@ Return-Path: <SRS0=Jips=PI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E15BAC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Oct 2021 11:31:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 57674C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Oct 2021 11:31:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 62E0A61359
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Oct 2021 11:31:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 62E0A61359
+	by mail.kernel.org (Postfix) with ESMTPS id A4C9861359
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Oct 2021 11:31:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A4C9861359
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BAC1216EB;
-	Wed, 20 Oct 2021 13:30:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BAC1216EB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1181F16E3;
+	Wed, 20 Oct 2021 13:31:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1181F16E3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634729502;
-	bh=FfhgtDYVyNHCcHSEhOy5i16MCYOtKPZkE4GgwNgqH4I=;
+	s=default; t=1634729513;
+	bh=SmXeUT3+sC3BTOvbH7MEMIharaH0UWgAjHgq7ur9K6E=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NwKBPzX5op1URp5IOwCHTTbLXPX+cOjn+dKhEjjd6oFBsZzA5KZHoYBMIuEThfj3Q
-	 /t5dhVS2JHKQFwp0nyq1B4tksvW8PIlGijhNNGmubLX6G3Z7LkJ4Fh5QwGk9KLhGZH
-	 nuoXowHR2pt25HazNrVT+BYtx+ws8r/MwuN+7yNs=
+	b=KySg74AnFAY4v/CrGNMjBKGZE6QYzPAkvlY7lrAnn4urPw3zRxG6au6RnDKL0sBwT
+	 fJiyRrIfhSHt0qsroh8awdUFANGPdgfUYNgR/+6qy4EK+ANchhUW0iJfe4BLF6zsuQ
+	 d7MKFVIOnjo4pPuSUjdIEz0yJTzclkLV9D2HJMRU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B5AB7F804F1;
-	Wed, 20 Oct 2021 13:29:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6A83EF804F2;
+	Wed, 20 Oct 2021 13:29:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D732EF80253; Wed, 20 Oct 2021 13:29:04 +0200 (CEST)
+ id 9F933F80229; Wed, 20 Oct 2021 13:29:07 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 35766F80082
- for <alsa-devel@alsa-project.org>; Wed, 20 Oct 2021 13:29:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35766F80082
+ by alsa1.perex.cz (Postfix) with ESMTPS id D3AA5F80082
+ for <alsa-devel@alsa-project.org>; Wed, 20 Oct 2021 13:29:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3AA5F80082
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="V18vCLG8"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1750C6136A;
- Wed, 20 Oct 2021 11:28:58 +0000 (UTC)
+ header.b="TpzGXbuU"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D37226137D;
+ Wed, 20 Oct 2021 11:29:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1634729339;
- bh=FfhgtDYVyNHCcHSEhOy5i16MCYOtKPZkE4GgwNgqH4I=;
+ s=k20201202; t=1634729343;
+ bh=SmXeUT3+sC3BTOvbH7MEMIharaH0UWgAjHgq7ur9K6E=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=V18vCLG8eYUjC6wP+1kve4j0OvK7oPHCXlPTcEFbt0TwJUXxOx2ttRODk8SkSCmU+
- ev9FLt86+pmC+Wmn4bQCUfWimiALBfslgerkEGvzVHQxKY/lGVFmTrPmuU0eOBjzwH
- UB+KwyxqrF0okF1bk2gB6EH+xLOboGU9/LaoMRho4hI/TwO1IC46Aq+qzX1e9xqqwJ
- lx8IF48Io9Fv47cpasakx6tqAIb++4lARZzrXHtT0riYwEhZrtWrUjUYlsfi8/jqcd
- 8gnMCwapd7T5jt11EffJDjMZDn91igwWGBNYBBuK0l9C8RIp3dq6sBTsstY8T8NjD2
- bdaV/9siMlIdA==
+ b=TpzGXbuUc8SoHhZprTY9ldpHpi8m3ueu+yK7zVYku91hM4Y04i2XhrHcFPdquj+Iy
+ yQpOeeW7UKAOXJwv2fPaR0yc3+WIn5zH+8BopnwPkCZ8hjTgqvOiyg+S1mWjYsU/kd
+ KyprVufC461kV05TSyNszl/9146Ikm+24WYKGVl+I50AjydefWmLfjrDiMCLZnPTR/
+ ON8bUz6r+ohw1WNME7nzyciaFKCEEEve75qzT/+NX7Qm41OjSHdA1wWZgjLXusKK4L
+ 5QYckkRTrtXehqM37Orv0UmOFSC5r9fczpN/GdUJzQsG+6rlGaY+TDcj5e17nXE9Ij
+ q1ZVQTRNevOxg==
 From: Mark Brown <broonie@kernel.org>
-To: robh+dt@kernel.org, Tzung-Bi Shih <tzungbi@google.com>,
- matthias.bgg@gmail.com
-Subject: Re: [PATCH] ASoC: dt-bindings: mediatek: rename reset controller
- headers in DT example
-Date: Wed, 20 Oct 2021 12:28:39 +0100
-Message-Id: <163472931364.2896549.9580992240702562423.b4-ty@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 0/5] ASoC: cleanup / tidyup soc-pcm/core/component
+Date: Wed, 20 Oct 2021 12:28:40 +0100
+Message-Id: <163472931364.2896549.8933437230587611502.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211018101608.3818840-1-tzungbi@google.com>
-References: <20211018101608.3818840-1-tzungbi@google.com>
+In-Reply-To: <87lf2rt7fg.wl-kuninori.morimoto.gx@renesas.com>
+References: <87lf2rt7fg.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-watchdog@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- linux-mediatek@lists.infradead.org, enric.balletbo@collabora.com
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,13 +80,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 18 Oct 2021 18:16:08 +0800, Tzung-Bi Shih wrote:
-> Commit f07c776f6d7e ("arm64: dts: mediatek: Move reset controller
-> constants into common location") moves the reset controller headers.
-> However, it forgot to rename the DT example in mt8192-afe-pcm.yaml.
+On 18 Oct 2021 11:04:19 +0900, Kuninori Morimoto wrote:
+> These are not a big deal, but cleanup / tidyup patch for ALSA SoC.
 > 
-> Renames the DT example to pass dt_binding_check.
-> 
+> Kuninori Morimoto (5):
+>   ASoC: soc-pcm: tidyup soc_pcm_hw_clean() - step1
+>   ASoC: soc-pcm: tidyup soc_pcm_hw_clean() - step2
+>   ASoC: soc-component: add snd_soc_component_is_codec()
+>   ASoC: soc-core: tidyup empty function
+>   ASoC: soc-core: accept zero format at snd_soc_runtime_set_dai_fmt()
 > 
 > [...]
 
@@ -100,8 +98,16 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: dt-bindings: mediatek: rename reset controller headers in DT example
-      commit: a2b5c48abd485b289d3502466a9e8e1785f5adf3
+[1/5] ASoC: soc-pcm: tidyup soc_pcm_hw_clean() - step1
+      commit: 121966d03b320efe77852aaf68aa8af3fb4a72cd
+[2/5] ASoC: soc-pcm: tidyup soc_pcm_hw_clean() - step2
+      commit: 86e4aef6c9a113374f69c6dc63877e10935926a7
+[3/5] ASoC: soc-component: add snd_soc_component_is_codec()
+      commit: 01e90ee15e81f57d309d0ce1f0e16869e011b800
+[4/5] ASoC: soc-core: tidyup empty function
+      commit: 41b1774fb814544d2224bdfd893c060fdfed995b
+[5/5] ASoC: soc-core: accept zero format at snd_soc_runtime_set_dai_fmt()
+      commit: 7db07e37e13cfd46039d82aed91092185eac6565
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
