@@ -2,69 +2,92 @@ Return-Path: <SRS0=Jips=PI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 57674C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Oct 2021 11:31:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 97100C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Oct 2021 11:43:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A4C9861359
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Oct 2021 11:31:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A4C9861359
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 1CE0A610CB
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Oct 2021 11:43:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1CE0A610CB
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1181F16E3;
-	Wed, 20 Oct 2021 13:31:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1181F16E3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4AD8716D9;
+	Wed, 20 Oct 2021 13:42:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4AD8716D9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634729513;
-	bh=SmXeUT3+sC3BTOvbH7MEMIharaH0UWgAjHgq7ur9K6E=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=KySg74AnFAY4v/CrGNMjBKGZE6QYzPAkvlY7lrAnn4urPw3zRxG6au6RnDKL0sBwT
-	 fJiyRrIfhSHt0qsroh8awdUFANGPdgfUYNgR/+6qy4EK+ANchhUW0iJfe4BLF6zsuQ
-	 d7MKFVIOnjo4pPuSUjdIEz0yJTzclkLV9D2HJMRU=
+	s=default; t=1634730209;
+	bh=VtfFn1Tng4YYL+l/ErFVAz0ZBhNjharg0rPqPNqCkBc=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=nmWiSEUuBDDUnAoC6nV5uGtns7H3YxFgf2cA99HV5l2dz69Z6hjDZ9kt1knSi/9hx
+	 vzHD8v3EqG+LbDkoKXidC0E8iqiBIEkRUx6OLNE6mmwP3nE0cQBVdBpZrvghnpEH2L
+	 UR1Ycd4WMY5tMpmzLlp2TCRK9A725uOVxvlNpq+E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6A83EF804F2;
-	Wed, 20 Oct 2021 13:29:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 44729F80229;
+	Wed, 20 Oct 2021 13:42:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9F933F80229; Wed, 20 Oct 2021 13:29:07 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id E709FF80253; Wed, 20 Oct 2021 13:42:36 +0200 (CEST)
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
+ [IPv6:2a00:1450:4864:20::32d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D3AA5F80082
- for <alsa-devel@alsa-project.org>; Wed, 20 Oct 2021 13:29:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3AA5F80082
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4ACB5F80082
+ for <alsa-devel@alsa-project.org>; Wed, 20 Oct 2021 13:42:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4ACB5F80082
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="TpzGXbuU"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D37226137D;
- Wed, 20 Oct 2021 11:29:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1634729343;
- bh=SmXeUT3+sC3BTOvbH7MEMIharaH0UWgAjHgq7ur9K6E=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=TpzGXbuUc8SoHhZprTY9ldpHpi8m3ueu+yK7zVYku91hM4Y04i2XhrHcFPdquj+Iy
- yQpOeeW7UKAOXJwv2fPaR0yc3+WIn5zH+8BopnwPkCZ8hjTgqvOiyg+S1mWjYsU/kd
- KyprVufC461kV05TSyNszl/9146Ikm+24WYKGVl+I50AjydefWmLfjrDiMCLZnPTR/
- ON8bUz6r+ohw1WNME7nzyciaFKCEEEve75qzT/+NX7Qm41OjSHdA1wWZgjLXusKK4L
- 5QYckkRTrtXehqM37Orv0UmOFSC5r9fczpN/GdUJzQsG+6rlGaY+TDcj5e17nXE9Ij
- q1ZVQTRNevOxg==
-From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH 0/5] ASoC: cleanup / tidyup soc-pcm/core/component
-Date: Wed, 20 Oct 2021 12:28:40 +0100
-Message-Id: <163472931364.2896549.8933437230587611502.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <87lf2rt7fg.wl-kuninori.morimoto.gx@renesas.com>
-References: <87lf2rt7fg.wl-kuninori.morimoto.gx@renesas.com>
+ dkim=pass (2048-bit key) header.d=baylibre-com.20210112.gappssmtp.com
+ header.i=@baylibre-com.20210112.gappssmtp.com header.b="clVBu1hn"
+Received: by mail-wm1-x32d.google.com with SMTP id
+ d198-20020a1c1dcf000000b00322f53b9b89so9544460wmd.0
+ for <alsa-devel@alsa-project.org>; Wed, 20 Oct 2021 04:42:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=1H7Jji7fIBx6bP4sgM7SKKuxwv994hR/z172a1Gf+IQ=;
+ b=clVBu1hn1ydfk9h4lru/P+UxNhcv1Kv3w9oJAiA8PQbnMt0aRyKG3l3dAU4NBndB7q
+ Pzg7rt2/mgBfXQ7zGU3HYXy+t9Jp/32h/JWn6Un/ciCyJ/mOLlWS+Lwa5QgWgvkPtF7A
+ 7KrzklV1v5pGzTatrZceRo1p5uMk6zz3xwww4iOoJrhg75Ky5i9NYkvbdqWIAYrpvpjg
+ yHii6VOaUDAU6zrSGXgzb37ksn0HxQuG2k93RIFDiEXm/SdF/D4yH89hnLBtsWbf1L4Z
+ 3PZXRdYyqnKAi2u1hANQyRwqx/jcU+WtX/K7TMefqXHDOziedCeR/VO2wkuYnfEf1vS1
+ zPfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=1H7Jji7fIBx6bP4sgM7SKKuxwv994hR/z172a1Gf+IQ=;
+ b=20ilV0NlwK1QiM9cZWpkA/zkpBvLmEJZtagxb1VjiUp0BfG9G6SylmL2Oe4Ri5c/tV
+ OTzH2Xbk/JQ0ov701KlbzPa5mTaFCNTIUpOmQyO9zJcGhYRxlHJKNIh+c07EsWCUYXYn
+ LYg1Mq0HEZZABCGmnj/UnM9/yZ/m3fNfyZu8pNgtBNljWztpwqLJsCIgEZuR90b6wqOP
+ UIsp6sX+QmBcZ9siUgqiiku2SuDptXHcB9jWPKVzD5mgSeEXy4/WjUN2k78+ffYDC+cG
+ PtG01cDGpimW+UAtM38NJoqYqToAXErcJ1OCEAGWuWoYV41GwVBSy8pM7Gt7/SaE8O6j
+ Fwag==
+X-Gm-Message-State: AOAM5308HInWBuVSFMMfmEhaYDF1CIB8XYO7gIMK2EnlHht2UQZs0iX2
+ A7SfnxtpHbuZclUqONSuUDBpPw==
+X-Google-Smtp-Source: ABdhPJz8QPobdNYOL533FNTMX2BasL1v0I2f1T3Hos3cXMcZGEiO6xYWEl9dLTPZbfnGUl78FI7H8Q==
+X-Received: by 2002:a1c:f712:: with SMTP id v18mr13600190wmh.104.1634730152920; 
+ Wed, 20 Oct 2021 04:42:32 -0700 (PDT)
+Received: from jackdaw.baylibre.local
+ (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+ by smtp.googlemail.com with ESMTPSA id s14sm1732927wro.76.2021.10.20.04.42.32
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 20 Oct 2021 04:42:32 -0700 (PDT)
+From: Jerome Brunet <jbrunet@baylibre.com>
+To: Mark Brown <broonie@kernel.org>,
+	Liam Girdwood <lgirdwood@gmail.com>
+Subject: [PATCH 0/2] ASoC: meson: axg: fix TDM channel order sync
+Date: Wed, 20 Oct 2021 13:42:15 +0200
+Message-Id: <20211020114217.133153-1-jbrunet@baylibre.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Cc: linux-amlogic@lists.infradead.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Jerome Brunet <jbrunet@baylibre.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,50 +103,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 18 Oct 2021 11:04:19 +0900, Kuninori Morimoto wrote:
-> These are not a big deal, but cleanup / tidyup patch for ALSA SoC.
-> 
-> Kuninori Morimoto (5):
->   ASoC: soc-pcm: tidyup soc_pcm_hw_clean() - step1
->   ASoC: soc-pcm: tidyup soc_pcm_hw_clean() - step2
->   ASoC: soc-component: add snd_soc_component_is_codec()
->   ASoC: soc-core: tidyup empty function
->   ASoC: soc-core: accept zero format at snd_soc_runtime_set_dai_fmt()
-> 
-> [...]
+On the Amlogic AXG series, the TODDR FIFO may get out of sync with the TDM
+decoder if the decoder is started before the FIFO. The channel appears
+shifted in memory in an unpredictable way.
 
-Applied to
+To fix this, the trick is to start the FIFO before the TDM decoder. This
+way the FIFO is already waiting when the 1st channel is produced and it is
+correctly placed in memory.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Jerome Brunet (2):
+  ASoC: meson: axg-card: make links nonatomic
+  ASoC: meson: axg-tdm-interface: manage formatters in trigger
 
-Thanks!
+ sound/soc/meson/axg-card.c          |  1 +
+ sound/soc/meson/axg-tdm-interface.c | 26 +++++++++++++++++++++-----
+ 2 files changed, 22 insertions(+), 5 deletions(-)
 
-[1/5] ASoC: soc-pcm: tidyup soc_pcm_hw_clean() - step1
-      commit: 121966d03b320efe77852aaf68aa8af3fb4a72cd
-[2/5] ASoC: soc-pcm: tidyup soc_pcm_hw_clean() - step2
-      commit: 86e4aef6c9a113374f69c6dc63877e10935926a7
-[3/5] ASoC: soc-component: add snd_soc_component_is_codec()
-      commit: 01e90ee15e81f57d309d0ce1f0e16869e011b800
-[4/5] ASoC: soc-core: tidyup empty function
-      commit: 41b1774fb814544d2224bdfd893c060fdfed995b
-[5/5] ASoC: soc-core: accept zero format at snd_soc_runtime_set_dai_fmt()
-      commit: 7db07e37e13cfd46039d82aed91092185eac6565
+-- 
+2.33.0
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
