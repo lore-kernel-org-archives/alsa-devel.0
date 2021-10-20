@@ -2,76 +2,74 @@ Return-Path: <SRS0=Jips=PI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8C7CC433FE
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Oct 2021 16:01:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CFA41C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Oct 2021 16:04:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 85F526136F
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Oct 2021 16:01:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 85F526136F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id D182361373
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Oct 2021 16:04:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D182361373
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B301C1657;
-	Wed, 20 Oct 2021 18:00:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B301C1657
+	by alsa0.perex.cz (Postfix) with ESMTPS id 086471657;
+	Wed, 20 Oct 2021 18:03:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 086471657
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634745703;
-	bh=yZQGqcixn3akt3DO+10qEkc/glUASyUfxkV9M8n6qCc=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=gMjT/oVRLJdm2ChBI/1oN9OGJ3hkoSV+97+gMtnC3ullr1KHuAofrX6XnuSc2l1Ey
-	 4Tt77vAbzyM1EXa4EesBfhO+PYgkTtx2GN9r+lAdOFU69DFFEo5cgnKt8i2P4SMqSu
-	 xF4to+ta2S1+QZG4ZDEUD2fxMWleKUC2gR5z5WIA=
+	s=default; t=1634745863;
+	bh=EqT1ej4U+NyBPiP4Vny++okHQRZRw+SseUQLXrSZUek=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=PJW9m5EumpxuDCskQQrCsuCyQePFOb37dLnesecvAmTdprp70oWnNXabLr1CA3QAX
+	 skL1F1qTdoaVO9tvIG9+BIbPpdCZiLgVDVhn9hWf4vyPtw/DVu6zqlIZaKdOWaxaVY
+	 soAFEo68FY5MxTsdW9Du5skD23BPXBTOdL1gzGpI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3B2A3F80224;
-	Wed, 20 Oct 2021 18:00:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9461DF80253;
+	Wed, 20 Oct 2021 18:03:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6E14AF80229; Wed, 20 Oct 2021 18:00:50 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 2BE1DF80082; Wed, 20 Oct 2021 18:03:31 +0200 (CEST)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A66FBF800ED
- for <alsa-devel@alsa-project.org>; Wed, 20 Oct 2021 18:00:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A66FBF800ED
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Rjt9JHUW"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 82FF8611F2;
- Wed, 20 Oct 2021 16:00:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1634745638;
- bh=yZQGqcixn3akt3DO+10qEkc/glUASyUfxkV9M8n6qCc=;
- h=From:List-Id:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=Rjt9JHUW7MQXkOkcU+8UEdlOyGBRl7yVL+E94b+xSJ5dQHIrlLkVTRtf29Wd/VLB2
- A7/QP51NKa47c1EymIrdVwvzHHMu6d7lDcxXEJNAGJmOc6mbLCCk5k0YnjP9L2hfQe
- UzBRl8dXLtF6i6mbyT8dltAzy0mTIaD3d8a/bhEHltOds57SjD1ElmX0KCtWA36KLX
- h3mgWwwuOJjzrDL/4ffEb6woupTaTuceG+8MvBQ5T9YRuJjGeVSJA7cVRiVX+2hZoT
- SBAotHk0MO2QxQaGcu3F+JlKDk6DdBODZ8+UPno5XJrAtMWWbjswQeoo/oMfZizaLF
- ChYR4Px6Hb4Fg==
-From: Arnd Bergmann <arnd@kernel.org>
-List-Id: <soc.lore.kernel.org>
-To: soc@kernel.org,
-	Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Subject: Re: [PATCH v3 0/2] arm: ep93xx: CCF conversion
-Date: Wed, 20 Oct 2021 18:00:30 +0200
-Message-Id: <163474562303.2274953.3990592094326359852.b4-ty@arndb.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20211018103105.146380-1-alexander.sverdlin@gmail.com>
-References: <20211018103105.146380-1-alexander.sverdlin@gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7E5FEF80082
+ for <alsa-devel@alsa-project.org>; Wed, 20 Oct 2021 18:03:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E5FEF80082
+X-IronPort-AV: E=McAfee;i="6200,9189,10143"; a="292280157"
+X-IronPort-AV: E=Sophos;i="5.87,167,1631602800"; d="scan'208";a="292280157"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 Oct 2021 08:59:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,167,1631602800"; d="scan'208";a="494685355"
+Received: from brentlu-brix.itwn.intel.com ([10.5.253.56])
+ by orsmga008.jf.intel.com with ESMTP; 20 Oct 2021 08:59:07 -0700
+From: Brent Lu <brent.lu@intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH v4 0/6] Multiple headphone codec driver support
+Date: Wed, 20 Oct 2021 23:57:09 +0800
+Message-Id: <20211020155715.2045947-1-brent.lu@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>,
- Nikita Shubin <nikita.shubin@maquefel.me>, linux-kernel@vger.kernel.org,
- Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- Hartley Sweeten <hsweeten@visionengravers.com>,
- Mark Brown <broonie@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>,
- linux-arm-kernel@lists.infradead.org
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Rander Wang <rander.wang@intel.com>, Jie Yang <yang.jie@linux.intel.com>,
+ linux-kernel@vger.kernel.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Mac Chiang <mac.chiang@intel.com>, Gongjun Song <gongjun.song@intel.com>,
+ Bard Liao <bard.liao@intel.com>, Takashi Iwai <tiwai@suse.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Andy Shevchenko <andy.shevchenko@gmail.com>,
+ Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>,
+ Rander Wang <rander.wang@linux.intel.com>, Yong Zhi <yong.zhi@intel.com>,
+ Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>,
+ Paul Olaru <paul.olaru@oss.nxp.com>, Brent Lu <brent.lu@intel.com>,
+ Libin Yang <libin.yang@intel.com>, Huajun Li <huajun.li@intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Curtis Malainey <cujomalainey@chromium.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,25 +85,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Arnd Bergmann <arnd@arndb.de>
+Support multiple headphone drivers in same machine driver. In this
+case, both rt5682 and rt5682s are supported and enumerated by different
+ACPI HID "10EC5682" and "RTL5682".
 
-On Mon, 18 Oct 2021 12:31:03 +0200, Alexander Sverdlin wrote:
-> This series series of patches converts ep93xx to Common Clock Framework.
-> 
-> It consists of preparation patches to use clk_prepare_enable where it is
-> needed, instead of clk_enable used in ep93xx drivers prior to CCF and
-> a patch converting mach-ep93xx/clock.c to CCF.
-> 
-> Link: https://lore.kernel.org/patchwork/cover/1445563/
-> Link: https://lore.kernel.org/patchwork/patch/1435884/
-> 
-> [...]
+V2 Changes:
+- remove useless 'NULL', 'false' in if-condition
+- can use 'comp_ids' field alone to enumerate driver
+- add comma to the end of entry in structure initialization
+- keep the table of byt/cht/cml/icl untouched
 
-Applied to arm/drivers, thanks!
+V3 Changes:
+- upstreamd from SOF github, PR#3200
+- use new compatiable IDs to shrink the enumerate table of BYT and CHT
+- add 'const' to snd_soc_acpi_codecs structures
 
-[1/2] ASoC: cirrus: i2s: Prepare clock before using it
-      commit: f4ff6b56bc8ab2fcad6885813cd28ccc81224981
-[2/2] ep93xx: clock: convert in-place to COMMON_CLK
-      commit: 9645ccc7bd7a16cd73c3be9dee70cd702b03be37
+V4 Changes:
+- add signoff to patch 4~6
 
-       Arnd
+Brent Lu (3):
+  ASoC: soc-acpi: add comp_ids field for machine driver matching
+  ASoC: Intel: sof_rt5682: detect codec variant in probe function
+  ASoC: Intel: sof_rt5682: use comp_ids to enumerate rt5682s
+
+Pierre-Louis Bossart (3):
+  ASoC: Intel: soc-acpi-byt: shrink tables using compatible IDs
+  ASoC: Intel: soc-acpi-cht: shrink tables using compatible IDs
+  ASoC: Intel: soc-acpi: use const for all uses of snd_soc_acpi_codecs
+
+ include/sound/soc-acpi.h                      |  3 +
+ sound/soc/intel/boards/sof_rt5682.c           | 34 ++-------
+ .../intel/common/soc-acpi-intel-adl-match.c   | 11 ++-
+ .../intel/common/soc-acpi-intel-bxt-match.c   |  2 +-
+ .../intel/common/soc-acpi-intel-byt-match.c   | 68 +++++++-----------
+ .../intel/common/soc-acpi-intel-cht-match.c   | 69 +++++++------------
+ .../intel/common/soc-acpi-intel-cml-match.c   |  8 +--
+ .../intel/common/soc-acpi-intel-glk-match.c   |  2 +-
+ .../intel/common/soc-acpi-intel-jsl-match.c   | 43 ++++--------
+ .../intel/common/soc-acpi-intel-kbl-match.c   | 12 ++--
+ .../intel/common/soc-acpi-intel-skl-match.c   |  2 +-
+ .../intel/common/soc-acpi-intel-tgl-match.c   | 11 ++-
+ sound/soc/soc-acpi.c                          | 24 ++++++-
+ 13 files changed, 119 insertions(+), 170 deletions(-)
+
+-- 
+2.25.1
+
