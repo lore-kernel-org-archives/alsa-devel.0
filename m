@@ -2,72 +2,74 @@ Return-Path: <SRS0=mh1Z=PJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CC7CC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Oct 2021 13:02:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA3A5C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Oct 2021 13:44:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3538560F6E
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Oct 2021 13:02:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3538560F6E
+	by mail.kernel.org (Postfix) with ESMTPS id 55CB5610CB
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Oct 2021 13:44:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 55CB5610CB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 64C8D166F;
-	Thu, 21 Oct 2021 15:01:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64C8D166F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0A568166E;
+	Thu, 21 Oct 2021 15:43:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A568166E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634821322;
-	bh=VmP4B2lo3kUf8wlKV5Je0VpFexZcN7wm6MRyVXxp394=;
+	s=default; t=1634823854;
+	bh=M4F6Y2fqa1ub/BkynSNuVBd769HCJAtvmYbRbnkScfs=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Jv0RfeG1kI2W25tSf0uUgC2e5kywfclpma+Zzl7+CGa594kEGBFrphDjSY+af8Lj1
-	 usoeY6RTFHsiXai+Y/IG/aWGn63eHhqsgl1LP02egGKa2PaRB1BWcWZwVQlWS7fc+P
-	 ksmAxRQynnKdKKKYXcuoTNWPxWa5K1tvBbrObKBE=
+	b=XOSHJtZ/kJIjGPJyLlNm2zRxvU4VDuLlyQ/6P3gvw8H/iErum69oFP0U7LWq345B7
+	 ICEtMyQGwCbmHAN1RzEG1XgnoGio9vaD993nSKMf90hTse4Cy3PL+RUfty+T6/lkhZ
+	 Tthnt/v5Vm+11Tbm/6wG6z1zSw/kf/3/cj/y7ptM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E11C3F80155;
-	Thu, 21 Oct 2021 15:01:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8112CF80155;
+	Thu, 21 Oct 2021 15:43:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 82099F80240; Thu, 21 Oct 2021 15:01:09 +0200 (CEST)
+ id 9B053F80240; Thu, 21 Oct 2021 15:43:20 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0B514F80155
- for <alsa-devel@alsa-project.org>; Thu, 21 Oct 2021 15:01:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B514F80155
+ by alsa1.perex.cz (Postfix) with ESMTPS id 191CDF80155
+ for <alsa-devel@alsa-project.org>; Thu, 21 Oct 2021 15:43:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 191CDF80155
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="UhLh9j79"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B728611C7;
- Thu, 21 Oct 2021 13:00:58 +0000 (UTC)
+ header.b="i/19NMdZ"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B3D96112D;
+ Thu, 21 Oct 2021 13:43:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1634821258;
- bh=VmP4B2lo3kUf8wlKV5Je0VpFexZcN7wm6MRyVXxp394=;
+ s=k20201202; t=1634823783;
+ bh=M4F6Y2fqa1ub/BkynSNuVBd769HCJAtvmYbRbnkScfs=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=UhLh9j790U93XfKQcSc6GJbwnJ/K0De8FudO62AbuZS/qm209mkd5sxFwOhXuJguM
- Z8xEkPW0xzZvz1/3ssC94A+56s2s2XR6T1qP7cWDdn8DN0zgx/cqhKOi0pFvw0E3XV
- Uv/srdW/MVGo1lrcgO+cDjjq7gElobNcZMxCWfr2aHZqmkWZGgMgER/MFPqu3NL6aP
- bLCp7mtSK7nwAwFZ2tfEAZrQMiLmAtZwO15F+OP4vZoGSvj7AR5Qk3/Znf5TS8P2i8
- pLnsS4iMCrNQjDa0Kww+ruxniVKkzPjUjLl/pE557GYtit8jpH1KYd0xOVAKXWvSG5
- HCrnr46vX51vw==
+ b=i/19NMdZz/wsZwLgxnIDyM7mqX3zHWSn/Ah1Dff7zME8n0ZiyyAKEeLREFSIogMBk
+ M/z9g7jN81wDuYuPWUU9kDpQR/AFIDKKU9/Ro0SYqxY1EOs1/PjwuR7FVEZjbvFqSA
+ MVxxo2Umg2YuVlpi5AUt1zsTT46zFNhFx8/fzveT28ZzU6GmG4ItxN8rqFSeMsiaSg
+ nRO+Tjf8+Ev2DZDSvXZKMVT3xArcid4+f0M2QLCcD/1AC2IQ/Gs9f92irKkavSj3SB
+ 8hH+BLkxYihs8bZPYvHu+BoABwofxabldFXjS1cfkF0JZRirUoqRuA7Hm9P1vjP8Kr
+ 454YRBABYg7Pw==
 From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH 0/2] ASoC: qcom: sm8250: add support for TX and RX Macro
- dais
-Date: Thu, 21 Oct 2021 14:00:55 +0100
-Message-Id: <163482123862.1407406.1935219292132897705.b4-ty@kernel.org>
+To: heiko@sntech.de,
+	Sugar Zhang <sugar.zhang@rock-chips.com>
+Subject: Re: [PATCH] Revert "ASoC: rockchip: add config for rockchip dmaengine
+ pcm register"
+Date: Thu, 21 Oct 2021 14:42:58 +0100
+Message-Id: <163482376624.1547375.15550615168301470105.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211006172745.22103-1-srinivas.kandagatla@linaro.org>
-References: <20211006172745.22103-1-srinivas.kandagatla@linaro.org>
+In-Reply-To: <1632792957-80428-1-git-send-email-sugar.zhang@rock-chips.com>
+References: <1632792957-80428-1-git-send-email-sugar.zhang@rock-chips.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, bgoswami@codeaurora.org, tiwai@suse.de,
- plai@codeaurora.org, pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com,
- Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,13 +85,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 6 Oct 2021 18:27:43 +0100, Srinivas Kandagatla wrote:
-> This patchset adds support for testing WCD938X connected via TX and RX Macros
-> on SM8250 MTP.
+On Tue, 28 Sep 2021 09:35:57 +0800, Sugar Zhang wrote:
+> This reverts commit 75b31192fe6ad20b42276b20ee3bdf1493216d63.
 > 
-> Srinivas Kandagatla (2):
->   ASoC: qcom: sm8250: add support for TX and RX Macro dais
->   ASoC: qcom: sm8250: Add Jack support
+> The original purpose of customized pcm was to config prealloc buffer size
+> flexibly. but, we can do the same thing by soc-generic-dmaengine-pcm.
+> 
+> And the generic one can generated the better config by querying DMA
+> capabilities from dmaengine driver rather than the Hard-Coded one.
 > 
 > [...]
 
@@ -99,10 +102,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: qcom: sm8250: add support for TX and RX Macro dais
-      commit: 961e7ba550c7a1f51012713afb75fb8d86a636eb
-[2/2] ASoC: qcom: sm8250: Add Jack support
-      commit: 810532e7392e764be5ee1b85603585065fa3e86b
+[1/1] Revert "ASoC: rockchip: add config for rockchip dmaengine pcm register"
+      commit: 5ba8ecf2272d34de9cd2271a0ac12f5f615ef7aa
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
