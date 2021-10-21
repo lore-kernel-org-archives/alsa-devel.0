@@ -2,76 +2,75 @@ Return-Path: <SRS0=mh1Z=PJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AFF8DC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Oct 2021 19:10:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F0485C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Oct 2021 20:59:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 93FCF610EA
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Oct 2021 19:10:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 93FCF610EA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 391DE60FF2
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Oct 2021 20:59:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 391DE60FF2
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0D8191669;
-	Thu, 21 Oct 2021 21:09:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D8191669
+	by alsa0.perex.cz (Postfix) with ESMTPS id 882BC1670;
+	Thu, 21 Oct 2021 22:58:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 882BC1670
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634843408;
-	bh=aKIkAz7YYmQd0zSX4RtSdC1q/EAeo1LBEGlCEzAYdoc=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1634849989;
+	bh=BLJtZTHYlHlvkkSH89cbP4RtrSj8GuddDYj2EO2G9Qw=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nTvyT2/uhjQgrpK5xZ/+d/haEE5xkMJ7GD7YBolv6YhwAmP3vfPy2WpQwGMCacBlc
-	 3i4QYModepPBeUe2OCiTJ24QpLoUrA1+k+2gABjZW0XzUdjFSSWxMHe7w1ECZydhGY
-	 dmj9QL+391iUMzJs1uzo+41qbIqc15R2nQHO0Y1g=
+	b=ueT99AT604F0spAi+rxaGHEwMbWKJ3PCvertT1VU4p+myGlQGKi9NXoKVK3MqYXsh
+	 zGqN/hvp9S/BduXd5ZcwmLljfpxYzdG6kHZersgpEJNE1fM/BE5BAyeK30pUux+MyW
+	 J6JiYSmpMiDWJKajiUfhu2DWG9UkUed9+zQGGGjo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 75F98F801DB;
-	Thu, 21 Oct 2021 21:09:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 26F27F80155;
+	Thu, 21 Oct 2021 22:58:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 52E7CF80240; Thu, 21 Oct 2021 21:09:16 +0200 (CEST)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ id 0FF99F80240; Thu, 21 Oct 2021 22:58:54 +0200 (CEST)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9BDF8F8011C
- for <alsa-devel@alsa-project.org>; Thu, 21 Oct 2021 21:09:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9BDF8F8011C
-X-IronPort-AV: E=McAfee;i="6200,9189,10144"; a="315322547"
-X-IronPort-AV: E=Sophos;i="5.87,170,1631602800"; d="scan'208";a="315322547"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Oct 2021 12:08:59 -0700
-X-IronPort-AV: E=Sophos;i="5.87,170,1631602800"; d="scan'208";a="463746455"
-Received: from dtjenkin-mobl1.amr.corp.intel.com (HELO [10.213.185.117])
- ([10.213.185.117])
- by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Oct 2021 12:08:58 -0700
-Subject: Re: [PATCH] ASoC: Intel: Unify HDAudio-ext bus initialization
-To: Cezary Rojewski <cezary.rojewski@intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>
-References: <20211018192134.353931-1-cezary.rojewski@intel.com>
- <alpine.DEB.2.22.394.2110191203390.3554566@eliteleevi.tm.intel.com>
- <4bf04607-0779-fe47-61b1-1780ab1a3d20@intel.com>
- <25811f8f-c7bc-89c2-f616-4102293a2deb@linux.intel.com>
- <d8b90004-6c64-8cef-266a-17b2a4a480d7@intel.com>
- <569f6bf6-c346-3059-fc7e-e8c46c7dc4b6@linux.intel.com>
- <994c6339-6f67-58e9-77a1-a2faa20ade72@intel.com>
- <857438fc-1d63-84a8-f42a-79b082297035@linux.intel.com>
- <f9320fb8-4609-8399-9b57-440f6cfd48e3@intel.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <290ccb39-94ee-3b13-f18b-4a7f145942e2@linux.intel.com>
-Date: Thu, 21 Oct 2021 14:08:55 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id DA193F80155
+ for <alsa-devel@alsa-project.org>; Thu, 21 Oct 2021 22:58:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA193F80155
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <ukl@pengutronix.de>)
+ id 1mdf97-00041R-KR; Thu, 21 Oct 2021 22:58:41 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+ by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+ (envelope-from <ukl@pengutronix.de>)
+ id 1mdf95-0001VG-Bj; Thu, 21 Oct 2021 22:58:39 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+ (envelope-from <ukl@pengutronix.de>)
+ id 1mdf95-0003zH-Am; Thu, 21 Oct 2021 22:58:39 +0200
+Date: Thu, 21 Oct 2021 22:58:39 +0200
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: cs42l51: improve error handling in cs42l51_remove()
+Message-ID: <20211021205839.mbknjtfwzkjf3brg@pengutronix.de>
+References: <20211021103627.70975-1-u.kleine-koenig@pengutronix.de>
+ <YXGzkNEUpil9lsdh@sirena.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <f9320fb8-4609-8399-9b57-440f6cfd48e3@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: hdegoede@redhat.com, alsa-devel@alsa-project.org, broonie@kernel.org,
- tiwai@suse.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="bstx6uze62smomjj"
+Content-Disposition: inline
+In-Reply-To: <YXGzkNEUpil9lsdh@sirena.org.uk>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, James Schulman <james.schulman@cirrus.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, kernel@pengutronix.de,
+ David Rhodes <david.rhodes@cirrus.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,33 +87,55 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+--bstx6uze62smomjj
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, Oct 21, 2021 at 07:38:08PM +0100, Mark Brown wrote:
+> On Thu, Oct 21, 2021 at 12:36:27PM +0200, Uwe Kleine-K=F6nig wrote:
+>=20
+> > a bit unsure if regulator_bulk_force_disable() is indeed the right
+> > function here, its documentation specifies a different usecase.
+>=20
+> > My motivation for this change was to make it obvious in
+> > cs42l51_i2c_remove() that there is no error to handle to eventually make
+> > i2c remove callbacks return void, too.
+>=20
+> It would be better to just ignore the errors on disable.=20
 
->>> Well, please see the updated declaration of snd_hda_ext_bus_init() in
->>> this very patch and then the existing code of
->>> sound/soc/intel/skylake/skl.c - skl_create().
->>> Last argument in updated declaration reads 'modelname'. Skylake-driver
->>> has its own, SOF initializes it differently.
->>
->> Not sure why you have your own?
->>
-> 
-> Not sure I understand the question. If you are talking about changing
-> string 'sklbus' to something else, then I don't believe mixing changes:
-> update to actual values assigned and assignment relocation in one patch
-> is good. I used 'sklbus' as that's what is being currently assigned to
-> ->modelname within skl_create(). Such approach makes the change more
-> transparent.
+Yeah, and part of this is if regulator #1 fails to disable still disable
+regulators #2 and #3. (I don't know how many there are.) That was why I
+picked regulator_bulk_force_disable() which has this behaviour.
 
-What I meant is that this 'modelname' is a module parameter for legacy
-and SOF driver, it's attached to the bus, but eventually used by the codec
+> Realistically you'd have to really be trying to trigger an error here
+> and it's most likely that the system is in enough trouble if one is
+> triggered that it's just not worrying about.  I'm not sure how likely
+> it is that anyone would ever remove one of these devices in production
+> though.
 
-hda_codec.c:    if (codec->bus->modelname) {
-hda_codec.c:            codec->modelname =
-kstrdup(codec->bus->modelname, GFP_KERNEL);
+So compared to my patch you'd just drop the warning?!
 
-and even further down used to apply board-specific fixups.
+Best regards
+Uwe
 
-"sklbus" doesn't seem to be related to codecs, boards or fixups, so not
-sure what this parameter does in the end?
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
+--bstx6uze62smomjj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmFx1HwACgkQwfwUeK3K
+7AkGrQf9EH5LjK1NQrgnEEsXYd2KNyLCtcM1AvXwTLHcoVUstYvUlJdXfU+GurG8
+QGLR5QTIYQx2wckdYVrnl5Jcx2EEnZPC8kUlwh6Uf96cscpLmTUsd5TuXpshywo5
+N1VeD0XVpASFm3nDqRFD/VSM+eQ/aXtl/iY11mv6Av8JV/WHnqFqXabx1SPJRf7H
+YO9fStfnQH2uvhDqx+Ec8RsZbpHAUmHp+J8DL+jiAADU4Qz64qbCuWmvgmuZbAF8
+PeY4CGwDeQmOL1bpQD8jyPtswRD4MtzWaKduI8ZDnb+lsVJ1xEo6gzHUQ5ZzOgBU
+Q9Lg3Dd5UZi1DWnbIS5vEMoJ6jOgjg==
+=RFel
+-----END PGP SIGNATURE-----
+
+--bstx6uze62smomjj--
