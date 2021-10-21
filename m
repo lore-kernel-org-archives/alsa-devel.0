@@ -2,89 +2,50 @@ Return-Path: <SRS0=mh1Z=PJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AC32AC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Oct 2021 05:08:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 49BBAC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Oct 2021 08:13:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4468961183
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Oct 2021 05:08:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4468961183
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 1D72260F25
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Oct 2021 08:13:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1D72260F25
+Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A9F701673;
-	Thu, 21 Oct 2021 07:07:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A9F701673
+	by alsa0.perex.cz (Postfix) with ESMTPS id 99F861673;
+	Thu, 21 Oct 2021 10:12:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99F861673
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634792923;
-	bh=VRaFpIPdoGUhTDljk2UHwqRs9TLwjOI2V4F5k+Wlmao=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1634804017;
+	bh=YND/5smmiXjUM4JIbZgZIY6jZdlUmg+nSBRSgTOnqws=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PLN+zfus8XgrMv/Ajydsop+B7IkujSR9Z7nfSpBet+/rDq+j1iQU79jMMlIS1RaIx
-	 5meKGSp9H2Snf0nc/q2UO3nUh9VpNLDb7mhXtWmn4uc8eYyAo62q7B8h6/HvaMWsQ7
-	 MWDvH5hJJI36VNBFZkIUjY+SW8WAZMMYmELNQ8YA=
+	b=bNqDuP9bi5BXr3X9yykE3bvuMsYFFjMaVVFWJPvFMUz7ocML75C+j2BbKIIYyhj/i
+	 pO/9IsmG0ioJ/ZdkhTHtf5qX79mbhZJ1JGH7Ai/ThfaHyHjHn8nS9sAIhrewbivjGt
+	 k5KrWB7P/SOwCANAjhU948d2Y4s+1jRUMKDP5FBg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1150EF80155;
-	Thu, 21 Oct 2021 07:07:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 24AADF801DB;
+	Thu, 21 Oct 2021 10:12:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 258E1F80240; Thu, 21 Oct 2021 07:07:50 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 23462F80155
- for <alsa-devel@alsa-project.org>; Thu, 21 Oct 2021 07:07:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23462F80155
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="kcdiRH53"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="cBQAA28h"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id EA02021A6A;
- Thu, 21 Oct 2021 05:07:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1634792860; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=9wNmbn6Pd5LH7+0+PnO8D85sDs9kwNqmU6VhDxsCdrY=;
- b=kcdiRH53tDVki/gk/b9nyWUpE9EGkZ91gcvPy3P6gctXq6pS73hIAgpUcJGcmF1w2AOn3u
- 5RQaep182VX2AItftO6qnI2LK3OsbPGaKyxzoOiatpyFzhDYwqUkaWEROyUvT/rTUB20yI
- nxBFsaBWk+UJDdH3crBUz+meR41zEy8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1634792860;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=9wNmbn6Pd5LH7+0+PnO8D85sDs9kwNqmU6VhDxsCdrY=;
- b=cBQAA28hggkKYtM78IcSHModWRTane44gyRC/6ueMzduDl0WX984wTJHX0VBTF/OkatLaV
- eNDRqDujDfOYyAAg==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 76C0EA3B85;
- Thu, 21 Oct 2021 05:07:40 +0000 (UTC)
-Date: Thu, 21 Oct 2021 07:07:40 +0200
-Message-ID: <s5hv91rx8wz.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Johnathon Clark <john.clark@cantab.net>
-Subject: Re: [PATCH] ALSA: hda/realtek: Fix mic mute LED for the HP Spectre
- x360 14
-In-Reply-To: <20211020131253.35894-1-john.clark@cantab.net>
-References: <20211020131253.35894-1-john.clark@cantab.net>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: Chris Chiu <chris.chiu@canonical.com>,
- "moderated list:SOUND" <alsa-devel@alsa-project.org>,
- Kailang Yang <kailang@realtek.com>, Jeremy Szu <jeremy.szu@canonical.com>,
- open list <linux-kernel@vger.kernel.org>, Elia Devito <eliadevito@gmail.com>,
- Takashi Iwai <tiwai@suse.com>, Werner Sembach <wse@tuxedocomputers.com>,
- Hui Wang <hui.wang@canonical.com>, PeiSen Hou <pshou@realtek.com>,
- Sami Loone <sami@loone.fi>, Cameron Berkenpas <cam@neo-zeon.de>
+ id 27775F80155; Thu, 21 Oct 2021 10:12:42 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 35725F80155
+ for <alsa-devel@alsa-project.org>; Thu, 21 Oct 2021 10:12:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35725F80155
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1634803952254664898-webhooks-bot@alsa-project.org>
+References: <1634803952254664898-webhooks-bot@alsa-project.org>
+Subject: a52 plugin not working with PipeWire
+Message-Id: <20211021081242.27775F80155@alsa1.perex.cz>
+Date: Thu, 21 Oct 2021 10:12:42 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,18 +61,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 20 Oct 2021 15:12:51 +0200,
-Johnathon Clark wrote:
-> 
-> On the 'HP Spectre x360 Convertible 14-ea0xx' the microphone mute led is
-> controlled by GPIO 0x04. The speaker mute LED does not seem to be
-> exposed by GPIO and is there not set.
-> 
-> Signed-off-by: Johnathon Clark <john.clark@cantab.net>
+alsa-project/alsa-plugins issue #37 was opened from sjnewbury:
 
-Applied with a slight coding-style fix now.
+Using the lastest code since v1.2.5 I can successfully get AC3 output through HDMI when using speaker-test.  Defaults uses a huge buffer and gives terrible latency, but it works.
 
+PulseAudio also works fine with fairly low-latency using "tsched=1 tsched_buffer_size=32768 tsched_buffer_watermark=8192 fixed_latency_range=yes mmap=1".  This doesn't need the rate kludge any more.
 
-thanks,
+When I try pipewire using mmap I get the below messages in the log, no audio:
 
-Takashi
+`spa.alsa: alsa-pcm a52hdmi: mmap_commit wrote 512 instead of 1024`
+
+With mmap disabled, no errors are reported, but still no sound.
+
+Is there a configuration for pipewire which works with the a52 plugin, a pipewire bug, or is this another a52 plugin bug?
+
+Issue URL     : https://github.com/alsa-project/alsa-plugins/issues/37
+Repository URL: https://github.com/alsa-project/alsa-plugins
