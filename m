@@ -2,83 +2,171 @@ Return-Path: <SRS0=GC6S=PO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0118C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Oct 2021 06:13:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4184C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Oct 2021 06:15:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7532061074
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Oct 2021 06:13:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7532061074
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id E3B4B60FD7
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Oct 2021 06:15:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E3B4B60FD7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A7C321663;
-	Tue, 26 Oct 2021 08:12:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A7C321663
+	by alsa0.perex.cz (Postfix) with ESMTPS id 119D016AF;
+	Tue, 26 Oct 2021 08:14:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 119D016AF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635228812;
-	bh=/px4ezUAQflEYQyhI37EvpJnmoLMfOuR03fqgIOKTAM=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1635228928;
+	bh=LdanSgNdJlLd1XlMSfY+GZ6X4htuqE3y8zV9BWjQOA0=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YzjdnU/YCdZi3VnzMxfG2pZtoq4B0byCxx53mQGMxY0mZjgjeXIQN4gY+U8HT+zEi
-	 7vM6n66tzndifLUhXhyLaG95KYGgX9HWocFNGH68YD1pXLNmWzHmMJ+GcrjG2juyxQ
-	 o4QzpSsSw63GydP5uCki7znq2H35zFRpNVM8RzJc=
+	b=R4FWBQBpEkvDHsYSQdON8+CkANmPKoCM8U9biBwX/sRZu7DdNR/pDtzfz9cI+WbQ1
+	 N+2Y2SAasDZr9nZivfJnmNu5VuM4cB4VnyXQYilnkpX0a3Js4w3n9VyUo8Yel/FSnH
+	 EHCJUIrfwpiQV9GmLipOJHBExl0f9TZEuzeljhRM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BF0FBF80105;
-	Tue, 26 Oct 2021 08:12:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 817F6F80269;
+	Tue, 26 Oct 2021 08:14:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 97632F802C8; Tue, 26 Oct 2021 08:12:40 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id A6254F80229; Fri, 22 Oct 2021 09:24:50 +0200 (CEST)
+Received: from de-smtp-delivery-102.mimecast.com
+ (de-smtp-delivery-102.mimecast.com [194.104.109.102])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 33231F80105
- for <alsa-devel@alsa-project.org>; Tue, 26 Oct 2021 08:12:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33231F80105
+ by alsa1.perex.cz (Postfix) with ESMTPS id 342CEF80086
+ for <alsa-devel@alsa-project.org>; Fri, 22 Oct 2021 09:24:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 342CEF80086
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="JJXSVpms"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="FVT8gPXX"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id EF51E21956;
- Tue, 26 Oct 2021 06:12:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1635228757; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com
+ header.b="WzbQBjll"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com;
+ s=mimecast20200619; t=1634887485;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=k9FAe59z3J2EBSRYg2q4NuVEIoCoOcW2NfrBTQ4p9/o=;
- b=JJXSVpmsUjGJ+x3dDJ9P/ecCTetSh1PLihTccx21wdRMLyz2yB7QcC1ZXSftqx9Jh0LZKx
- Y74mTZIqR2oFE4SdDXaWutqcwOzS+FyFrODlAaZGW1b91WaFXPdk40BS2RTj1xTAZPsjgs
- /prQzs6PCjNjdV1TnG4VDm8Le5X+gls=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1635228757;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=k9FAe59z3J2EBSRYg2q4NuVEIoCoOcW2NfrBTQ4p9/o=;
- b=FVT8gPXXyRfioCtTyhwztGkcH4RbICa9ubdbjG/mjskziYTDRjsLzxI/oOYUZNOmBUMgud
- emLVptgW8LxjPIDg==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id DCD6DA3B83;
- Tue, 26 Oct 2021 06:12:37 +0000 (UTC)
-Date: Tue, 26 Oct 2021 08:12:37 +0200
-Message-ID: <s5hilxkxqju.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Johan Hovold <johan@kernel.org>
-Subject: Re: [PATCH 0/2] sound: fix USB message timeouts
-In-Reply-To: <20211025121142.6531-1-johan@kernel.org>
-References: <20211025121142.6531-1-johan@kernel.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-usb@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
+ bh=+5aA5JWunl6cDqlrP3RRxmbEkj409sVyOwlDKFt7cS0=;
+ b=WzbQBjllQSyI0ARbHsYNNTA6qb/y7X9GQ8F0z3mH8XX7HMsPaJcKxFYrqYedCTGFiAvQHR
+ uCZj2Ha/uvvUlNbVcKnx7HEwltJLvu+fevDFAwNhTegALwAuEZTuFiKe8g8ATLhpOl8lLr
+ HAj8c/O7vd8NjG5Y293vFFexjIehPsE=
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com
+ (mail-db8eur05lp2113.outbound.protection.outlook.com [104.47.17.113])
+ (Using TLS) by relay.mimecast.com with ESMTP id
+ de-mta-11-m3b__l39NUGNKSFgU8FKrQ-2; Fri, 22 Oct 2021 09:24:43 +0200
+X-MC-Unique: m3b__l39NUGNKSFgU8FKrQ-2
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aXoOIjkVHXyH5VWCgjKdEjml89yYP7/LIcWtUHQLKHKKAaBuw/FztvcuwYAdNTDeSY1QOWeIjsk4/FFzXRg5dt3LGhrgnzihSpiqlCtX6KrdMbbBIxNHJoEisJM7BBE5534nrcjXDgyaEEqfIU4CWTw1rQWR6RDX1S7/f2B/7GKapnpH2MQ4ZJhFiA/PK5D3/jBmZasLnM/svcOU6s4ZkII1gHKG/dU4d36hnTXelswSMfP9jgRltVwb3ZJ1Iz2bO7UxwnN9pnTAQGubWi8s5n2RTq9VBcHYhZkXf39yCXbwrfcEaMkg8K+TCraZcJnH7U4jOBZj1hTuYIkp2m4y3g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+5aA5JWunl6cDqlrP3RRxmbEkj409sVyOwlDKFt7cS0=;
+ b=GxOR6EOi9zZFXx4heDfh7T7WIJHUbnEwKGjf2jWrKGiBO1ffakSznMxsMluYZnTNc14j4vUvzkQcLZgCkZn4ars43i2k8VKpBd2MpAqTyAjCWoTRwSxvgHfhOveGh0BYSb5QTc2gssMvIZdLtQKpJFhJ9jZMg2ZUlXx+yfwdPIutOKOB+O3kFu94Il4K+6YznmkkL+njLzsg5Odz2wT7NBmAN9WYoPqWIHBJvHtxJ0sT4ew1EhGXOsQkUen/4fA6qiKzg9jtYtF1tCC0L+LPWA7LULUrOgEmkPJYCDQcl7gBbfXU6buJYwSqHYB1Q6pRvZJoG9kdsLrWOfaKGMMSKA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
+ by VI1PR0402MB3773.eurprd04.prod.outlook.com (2603:10a6:803:1c::27)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18; Fri, 22 Oct
+ 2021 07:24:41 +0000
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::8062:d7cb:ca45:1898]) by VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::8062:d7cb:ca45:1898%3]) with mapi id 15.20.4628.018; Fri, 22 Oct 2021
+ 07:24:41 +0000
+Subject: Re: [PATCH 0/5] xen: cleanup detection of non-essential pv devices
+To: Juergen Gross <jgross@suse.com>
+References: <20211022064800.14978-1-jgross@suse.com>
+From: Jan Beulich <jbeulich@suse.com>
+Message-ID: <c4f534f1-8f07-085e-6a10-edbeb884d1a4@suse.com>
+Date: Fri, 22 Oct 2021 09:24:38 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+In-Reply-To: <20211022064800.14978-1-jgross@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AM6PR08CA0026.eurprd08.prod.outlook.com
+ (2603:10a6:20b:c0::14) To VI1PR04MB5600.eurprd04.prod.outlook.com
+ (2603:10a6:803:e7::16)
+MIME-Version: 1.0
+Received: from [10.156.60.236] (37.24.206.209) by
+ AM6PR08CA0026.eurprd08.prod.outlook.com (2603:10a6:20b:c0::14) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4628.16 via Frontend Transport; Fri, 22 Oct 2021 07:24:39 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: cc72ac65-a16c-4d9c-8173-08d9952d0344
+X-MS-TrafficTypeDiagnostic: VI1PR0402MB3773:
+X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
+X-Microsoft-Antispam-PRVS: <VI1PR0402MB377313A7B9A58A00D8058630B3809@VI1PR0402MB3773.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: eijGHaq8+NVKXLDZhehKwUeaePIgKPgdNtejen1dJaLMwLom6gN6l47L2jjlP2OHc3/ZKyR9bNw8qrZZ6Ryr9Y26a80XkUL/24rCTNLMj830Th1VAf14Vf/c6bJE1cFldGgjdII0mwwT56T2eDgHJNREnjeZ9Y6Q61Rfc3XdExTvCrvBkcQb7V8c2j2TrCPjTNwga6cEm7JjvWcDBf61wzSZUajzKTPMDU6uDxlgq/5sXrPY45swTMpsq8sYbVZyQuUG5TN6zua6eS05HpxSrRk0QwJL9mLXu6B9x89ljwnULfXtgVLmfsIVsU+BJ7HekTPigHxtjTwDaFMj8wFyzZGp6eBWnEHe/kJhSY/9qS/ETyD+IhNb769awtoTAqvZxIHZRfDV4Oqn2++hHi2eSmhHgqchQXD0a8dJZiA7tcWWH87ATijpe5YqT/byWDk/IvAV7jlvh+5M4tqX9G/4ph0BeJb/t7iA6Aym8ekhI/4B8K9EVHy5MfuCaKa99TZkCz7DGR970jEZhWymnsRtQ+9JcxwlFgAQVL4AV6XZXOaSEKFu+q1py/wmH41hblBUDB3yFHkRGSzo6Lpta2lc/ZuLD6J5N+QEeshoPkGc8F9BeWjYHSKEklMEJ4IeaJLMIW3tEu2e1dNuAYtc/7Az1rF3D+mDVyh6ioEGxUtDXATfQz3AylIsGYDNWLVXswvQv9k0UttmJy8+SzbMC0h2WMJLGj2GK/t1F5OxgWMKYKL104t4+voxDSuDzFyeJ/4L
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:VI1PR04MB5600.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(366004)(86362001)(54906003)(31686004)(8936002)(16576012)(2616005)(38100700002)(8676002)(5660300002)(6862004)(66556008)(4326008)(66476007)(316002)(6486002)(37006003)(508600001)(956004)(186003)(6636002)(53546011)(31696002)(7416002)(26005)(2906002)(36756003)(83380400001)(4744005)(66946007)(43740500002)(45980500001);
+ DIR:OUT; SFP:1101; 
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?c3Ztb0lBL1IyZ0N1N1VWTDg0Z05tOFlRWTRkSmFINWxuZ1gvSDhBVE5JMFB6?=
+ =?utf-8?B?L1BaSGZPVGc0VmZjeUh3aVhDZkc3WDRmYmNlTHVSZEpZdFNPbkJrTVZwOHhq?=
+ =?utf-8?B?aWNGd01QQTdObE9NZGtzcGFxcHJpeFErc1lEa0NsakkyUzVOYmsvNWVZOHpK?=
+ =?utf-8?B?MWxqTmgwcHoyc0s2SERhNzhtMWwxeEQxWU9XRGF1RTJuYUpyU2lZL3Frb3cz?=
+ =?utf-8?B?T2hzWDlpcXF1R0o4eUt5aktsUXhzT01qL3RsWUREQ3JoN2FONklNKzV2RDRW?=
+ =?utf-8?B?bk1NWmcrb0NPOUszN2Z2OEl0V2JXN2Jsc1pXOFBacytCUW1MckFLb1FtRmRO?=
+ =?utf-8?B?WHhnUE5jOUViUFNIVWxwTld6cS9paFowWllJU1RoMUhGRzluWVlzaVNRc1N0?=
+ =?utf-8?B?VzJMbXJZWmozQ1dtZ2RUb2VMem5zd2F2Z0tIcnRGUXlNM0hEZlZtNjE4TEtK?=
+ =?utf-8?B?T3pwM3RyVllNcm9LWDhQTFlNbFlrd2N1R0VSRXZiU3Jjd1VxV2hYdXhTRi8y?=
+ =?utf-8?B?U2RzOHBtbkZQRk9LUFNpMVhhUnVMSnMycVE2bmJOYmU3MmpocHg4YWJMRTZ4?=
+ =?utf-8?B?Z0FqNWxDVno2bGUxWHFlOWRzWVBjL2lUZERTM1ZWSnFjRERqaldtQ29NaHZN?=
+ =?utf-8?B?ZXZLR00wT09mUElQNzVrdDY4S05sWE5iQmkwRlhUSmM2VGNScmd2Qk1tQ1Zn?=
+ =?utf-8?B?djcrZlR0ejBwdHdGTUFtSDVFeDBYZUg1em9GY1NQV2FPcWdxMHJaeUZtYkVB?=
+ =?utf-8?B?bHFzbEFzMllLZDFmYVN1bHpMZ0lDOUs4VUpTRTFjTUNEeHhISFZvcVhEeGF1?=
+ =?utf-8?B?dTdHSFJiakZNWmR3dmc3TTg5d2dtYlZKeDEzVzdiOU9sUWNEOEdVMW9vY1BH?=
+ =?utf-8?B?cDhPTHljcnhnNkFPbnZwb21kMmdJVnpZY2REbXJhNTByYTRKclNGNXNEZVJE?=
+ =?utf-8?B?MkhOZHJFNW5vTEZOQm5rM3pkeGVtbmtrOXhDaUZLbU85RUM3VlMwYjBCaktJ?=
+ =?utf-8?B?bzZRSFdxMW1TSGVtZ0JjZDNnSnk0dXQ3SXY1K0FFbkhYUEQ2V1l5M3RaTXFr?=
+ =?utf-8?B?Qlc5YUwyTWFnK1ZZcnYwa01wdjFKMnI2NTM4MVJtRnBiZDc0NEF6M1FhVkZG?=
+ =?utf-8?B?a0NQM1hyM3VzYTRyWlZyS2pGYmIraDY4RUZDRWtIT2VOZ2ZKWkZGb3BObW1Y?=
+ =?utf-8?B?RnQ0eE54cmFZKys5aTFTSm1STng1TlcvTzNQZE9XaEJwVW5wVmJtNTJwVnM3?=
+ =?utf-8?B?enQrTkgxaFhmT1NVWHFCdC9qQi9iYlRwT0F4WmVFVTJaZENxdWtSSjNHczFk?=
+ =?utf-8?B?dzJMTUxFZFZqLy9uOFFYTXFtd3BQSE5vYy83dXpTNXFwQU0veTFCem94Tisv?=
+ =?utf-8?B?WmNPV0F6YWV1S0U3SXFlUDlINlFQZWliOEZqZ1BhRzRPYXVBNlB2dTllUEEw?=
+ =?utf-8?B?RVRMTE1MUU1YUGRKY3Vyak1pYkhobTNKR0wyTjNDMVplYWNMUXpINzduWFZF?=
+ =?utf-8?B?UHQ5Yzcxc0hRTlltUC8zdTg4MFZrbGx4M21DY3g3NzRkVUVKc0ozSHZ2TjNP?=
+ =?utf-8?B?YkZlS0xuSjFjSWhUSXE0RlFIcWFLemxYZEFIVVowUThocjh4bloyWUNpSndU?=
+ =?utf-8?B?djVuUHB4aWdoZEV2ODg5dFlRL1l4RGhTd2htYzlicjR1dDZYS0VLOE5Ta1pn?=
+ =?utf-8?B?KytUbG9vSUh0VGZvSGhFbVNQYTlwNXV0cElTWGNtb3A5YkZsODMxVGs1OHRm?=
+ =?utf-8?B?VFJPQ2I4dG9NUU1xbVUzcGZSMVcyMHlpTU9JZXk1L2hSa0JWaEZXeUhpYk5S?=
+ =?utf-8?B?SFlvU0JLaEFTR2F2MlhCOUtlYjB4TXRpaHB6N1ZjcVNaTlI4aFNuV0J5SXJM?=
+ =?utf-8?B?VFlsKyt1UG9aSldtbVVVanFkandENWQzUEJwSWphQXpLTEJvM0NkaC9qRzUr?=
+ =?utf-8?Q?YhrCTgfmS1s=3D?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cc72ac65-a16c-4d9c-8173-08d9952d0344
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Oct 2021 07:24:41.2263 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: jbeulich@suse.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3773
+X-Mailman-Approved-At: Tue, 26 Oct 2021 08:14:36 +0200
+Cc: alsa-devel@alsa-project.org, Stefano Stabellini <sstabellini@kernel.org>,
+ Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+ David Airlie <airlied@linux.ie>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ dri-devel@lists.freedesktop.org, linuxppc-dev@lists.ozlabs.org,
+ linux-fbdev@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
+ linux-input@vger.kernel.org, xen-devel@lists.xenproject.org,
+ Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ Jiri Slaby <jirislaby@kernel.org>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,22 +182,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 25 Oct 2021 14:11:40 +0200,
-Johan Hovold wrote:
+On 22.10.2021 08:47, Juergen Gross wrote:
+> Today the non-essential pv devices are hard coded in the xenbus driver
+> and this list is lacking multiple entries.
 > 
-> A number of drivers throughout the tree were incorrectly specifying USB
-> message timeout values in jiffies instead of milliseconds.
-> 
-> This series fixes the two sound drivers that got it wrong.
-> 
-> Johan
-> 
-> 
-> Johan Hovold (2):
->   sound: 6fire: fix control and bulk message timeouts
->   sound: line6: fix control and interrupt message timeouts
+> This series reworks the detection logic of non-essential devices by
+> adding a flag for that purpose to struct xenbus_driver.
 
-Applied both patches now.  Thanks!
+I'm wondering whether it wouldn't better be the other way around: The
+(hopefully few) essential ones get flagged, thus also making it more
+prominent during patch review that a flag gets added (and justification
+provided), instead of having to spot the lack of a flag getting set.
 
+Jan
 
-Takashi
