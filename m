@@ -2,84 +2,77 @@ Return-Path: <SRS0=JyZJ=PK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D9EDCC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Oct 2021 06:50:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DC7D9C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Oct 2021 07:13:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EAA3A60F50
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Oct 2021 06:50:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EAA3A60F50
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=suse.com
+	by mail.kernel.org (Postfix) with ESMTPS id 3835B610C8
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Oct 2021 07:13:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3835B610C8
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 144801675;
-	Fri, 22 Oct 2021 08:49:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 144801675
+	by alsa0.perex.cz (Postfix) with ESMTPS id C97069F6;
+	Fri, 22 Oct 2021 09:12:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C97069F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634885448;
-	bh=V/7h/HWgYu47JjyyoomvGtaep/9RRePXtoBUCgngOeM=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1634886822;
+	bh=2JsabZkAwIodc8EAeHuIwq5G9NPopFgxazEZB7ZlI2I=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GnByVHngjErXEnOLtptYBUQZ2nsNKKATYTV3Hgfqv/pUMBU3Hx+QE+r0koR5M3qGL
-	 /m2gmiw7XyOs3jqBffpkS8NqTVGH/41090X9HK6qN9pliFlP5sUKFJ7xExNE5Aa18R
-	 JgbDWdQ6bVo5yzBPR3kUtl+/B3miMD7woco07FR0=
+	b=Q/UD1GoDXqjH8eaTxeGJyj2PX/NuZafQ5YOQQIrWZf9EEXwm8Xs2nRC7Ji457lKFY
+	 hl33Dda4lM1NG6nSyt+Do58AWklTcGXKRJa46cqsQYzBZOMbcT2fZ/r4FqBLJUShHY
+	 E851J62NC8d8qPkcMpW5SbYEhZihec9MjpWboBtQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 669B6F802A9;
-	Fri, 22 Oct 2021 08:49:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5EB0AF80224;
+	Fri, 22 Oct 2021 09:12:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2FBA1F802DF; Fri, 22 Oct 2021 08:49:16 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 57F1EF80229; Fri, 22 Oct 2021 09:12:51 +0200 (CEST)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 725C0F8011C
- for <alsa-devel@alsa-project.org>; Fri, 22 Oct 2021 08:49:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 725C0F8011C
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com
- header.b="SdSUM0Fo"
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id E3BC221990;
- Fri, 22 Oct 2021 06:49:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1634885345; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=GAsfBSRBhYlwXE3GyHCt8Ao1r3itvvqFCqQg0v1jsus=;
- b=SdSUM0FodxI8IXPl1XHMXJhVw3Me2pABjtUdj1hKPdqshPqCIsAAXZqsRZO1aUudUaxmtl
- JuhtTn1OVnzf6RV7Te3zCJgEJIA3GyWHiKamnv57aSsq/rEENoQ9shSlnVgKz/g5U4u9/L
- hCTdddL//8JOOmVeoYV+a8q+iqYfjdY=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A440413AAD;
- Fri, 22 Oct 2021 06:49:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id AC3KJuFecmEIEwAAMHmgww
- (envelope-from <jgross@suse.com>); Fri, 22 Oct 2021 06:49:05 +0000
-From: Juergen Gross <jgross@suse.com>
-To: xen-devel@lists.xenproject.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 5/5] xen: flag xen_snd_front to be not essential for system
- boot
-Date: Fri, 22 Oct 2021 08:48:00 +0200
-Message-Id: <20211022064800.14978-6-jgross@suse.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20211022064800.14978-1-jgross@suse.com>
-References: <20211022064800.14978-1-jgross@suse.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0D349F8011C
+ for <alsa-devel@alsa-project.org>; Fri, 22 Oct 2021 09:12:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0D349F8011C
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <ukl@pengutronix.de>)
+ id 1mdojF-0006Fr-Jv; Fri, 22 Oct 2021 09:12:37 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+ by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+ (envelope-from <ukl@pengutronix.de>)
+ id 1mdojD-0002gv-VM; Fri, 22 Oct 2021 09:12:35 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+ (envelope-from <ukl@pengutronix.de>)
+ id 1mdojD-0006ZV-UR; Fri, 22 Oct 2021 09:12:35 +0200
+Date: Fri, 22 Oct 2021 09:12:17 +0200
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: cs42l51: improve error handling in cs42l51_remove()
+Message-ID: <20211022071217.462qrfutxvufqssc@pengutronix.de>
+References: <20211021103627.70975-1-u.kleine-koenig@pengutronix.de>
+ <YXGzkNEUpil9lsdh@sirena.org.uk>
+ <20211021205839.mbknjtfwzkjf3brg@pengutronix.de>
+ <YXHcTKSJoABKuJ7J@sirena.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Juergen Gross <jgross@suse.com>, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.com>,
- Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="34xp72ufsep32gfp"
+Content-Disposition: inline
+In-Reply-To: <YXHcTKSJoABKuJ7J@sirena.org.uk>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, David Rhodes <david.rhodes@cirrus.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, kernel@pengutronix.de,
+ James Schulman <james.schulman@cirrus.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,26 +88,57 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The Xen pv sound driver is not essential for booting. Set the respective
-flag.
 
-Signed-off-by: Juergen Gross <jgross@suse.com>
----
- sound/xen/xen_snd_front.c | 1 +
- 1 file changed, 1 insertion(+)
+--34xp72ufsep32gfp
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/xen/xen_snd_front.c b/sound/xen/xen_snd_front.c
-index 2cb0a19be2b8..7be9fbcf788f 100644
---- a/sound/xen/xen_snd_front.c
-+++ b/sound/xen/xen_snd_front.c
-@@ -358,6 +358,7 @@ static struct xenbus_driver xen_driver = {
- 	.probe = xen_drv_probe,
- 	.remove = xen_drv_remove,
- 	.otherend_changed = sndback_changed,
-+	.not_essential = true;
- };
- 
- static int __init xen_drv_init(void)
--- 
-2.26.2
+On Thu, Oct 21, 2021 at 10:31:56PM +0100, Mark Brown wrote:
+> On Thu, Oct 21, 2021 at 10:58:39PM +0200, Uwe Kleine-K=F6nig wrote:
+> > On Thu, Oct 21, 2021 at 07:38:08PM +0100, Mark Brown wrote:
+>=20
+> > > Realistically you'd have to really be trying to trigger an error here
+> > > and it's most likely that the system is in enough trouble if one is
+> > > triggered that it's just not worrying about.  I'm not sure how likely
+> > > it is that anyone would ever remove one of these devices in production
+> > > though.
+>=20
+> > So compared to my patch you'd just drop the warning?!
+>=20
+> The warning is fine so long as there's no action on it but use regular
+> regulator_bulk_disable() since as you youself said force disable is not
+> appropriate here.
 
+It's just the documentation of regulator_bulk_force_disable() that
+irritates me. It's behaviour is exactly fine. If a user of several
+regulators goes away, it should try to disable all regulators and if one
+fails to disable it's better to the others instead of keeping all
+enabled.
+
+But I didn't feel strong enough to continue to argue, my focus is a
+different one. Will send a v2 with keeping regulator_bulk_disable().
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--34xp72ufsep32gfp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmFyZEcACgkQwfwUeK3K
+7AlASwf/eP9vkh5J5GgYRdRuQ83L5JzOI0rS/t0OGWc6ZniH6h+KMaZVoUGo/Rdu
+TkwSdfAs6bznxLSQC9PetWSaSI1A2Fk9ePWzbxdOW+wW8KoJud8jCjoKnVSBJYpR
+5SrezjEIAtM9XJvm1Z+UEA8rFMTHQr0u8pniZKjiE4WPQz3k2lPv90rv3fiumRR+
+1eNQdXYdcuz95/Qotx4jGddb/xjnxedTvC/ubbHgjHYPQiPreGwIJyxzM27KPUh1
+dKmL2MBwos1qH0YacvLMBZ9a4Q4s6prJ62UPDnvXqvWIZ1eESk/T7wW4FO3mOjKE
+E2KXTmNfCIneJmXiSlZX0TqntG/aGQ==
+=LWK4
+-----END PGP SIGNATURE-----
+
+--34xp72ufsep32gfp--
