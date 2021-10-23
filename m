@@ -2,71 +2,72 @@ Return-Path: <SRS0=LHDW=PL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9846C433F5
-	for <alsa-devel@archiver.kernel.org>; Sat, 23 Oct 2021 11:44:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 50765C433F5
+	for <alsa-devel@archiver.kernel.org>; Sat, 23 Oct 2021 13:35:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 82E7360FD9
-	for <alsa-devel@archiver.kernel.org>; Sat, 23 Oct 2021 11:44:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 82E7360FD9
+	by mail.kernel.org (Postfix) with ESMTPS id A276560FE8
+	for <alsa-devel@archiver.kernel.org>; Sat, 23 Oct 2021 13:35:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A276560FE8
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D999A166E;
-	Sat, 23 Oct 2021 13:44:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D999A166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3678A84A;
+	Sat, 23 Oct 2021 15:34:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3678A84A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634989497;
-	bh=Yvlt04UMZo9r9G03SEhseVvENp7wes7fQwwecv9UEPA=;
+	s=default; t=1634996133;
+	bh=c6mbqREQAVdUOYLddTyyKU8U9FOPcxP20n3Bos7KfK8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QDrNayV3QVmXoqdWHlb5woGNLmJv6pqryT7dPxCyKxGX6Xu+gmMydg2ppImqSesG6
-	 s0VWaPqRxeIgJgvainN2g65sfYne9p0p0CyKhuTRzzTY1hLbeJgWcTf0v5eBkmNUXT
-	 TyJhGfZgBqUx8nIkNbr0jnCpYNw7CozP1lOrs0Bk=
+	b=sdP9Am4+HTbo3kH5hcGebDyxGQDnke+PQERHQbejqfibjQhll9h4js1JuNOBJ1APb
+	 8PhmREtoYqcc3ARh2m/cp+4ipYmi03DL7eMzsFkWXB+wP9QLCTkRh2MEmixaxpRMcz
+	 mhiPFOwVn5pUMR3rIrPNmJ1roTcjJgt5cHugY7O0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E0A50F80249;
-	Sat, 23 Oct 2021 13:43:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9EB23F80240;
+	Sat, 23 Oct 2021 15:34:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E7FD0F80249; Sat, 23 Oct 2021 13:43:22 +0200 (CEST)
+ id 8FF49F80246; Sat, 23 Oct 2021 15:34:39 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CCCDBF80086
- for <alsa-devel@alsa-project.org>; Sat, 23 Oct 2021 13:43:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CCCDBF80086
+ by alsa1.perex.cz (Postfix) with ESMTPS id 02ECCF8010B
+ for <alsa-devel@alsa-project.org>; Sat, 23 Oct 2021 15:34:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02ECCF8010B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="NtqYuzB1"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 173E860F46;
- Sat, 23 Oct 2021 11:43:09 +0000 (UTC)
+ header.b="uqj6H/Sx"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E3C1D60F8F;
+ Sat, 23 Oct 2021 13:34:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1634989390;
- bh=Yvlt04UMZo9r9G03SEhseVvENp7wes7fQwwecv9UEPA=;
+ s=k20201202; t=1634996068;
+ bh=c6mbqREQAVdUOYLddTyyKU8U9FOPcxP20n3Bos7KfK8=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=NtqYuzB10yjdrgBHxR1eky3iUFsvQBe5VmO0YSh6VagOql//MHx0LVaal0QdroL92
- mJ706Sv0mFheW9Kq/mkpbHGbMjdbcuh4rmp8N6XT+I7s4n457sRRYZZ8wA7n5Txovf
- Yn6rd0E7mW73K/xTDu7IWglpHDG7nMJvKfPizMXA2AbLjuI+X8znvVzsraDSjsAcy7
- 9Ja7noE0ofJPwxpOSbZcT8fQKBinraa66fDhFTE37tmHNu123+H5EfV3N7Lmm0Nd2k
- K/76y+TG7vsbaashcBELDvx/Jk5mP9SdBaqJvErxlWA8VKTLtkRl6XhTgOwauPIxIS
- ef6AvYSTnzyBQ==
+ b=uqj6H/SxpAKara+yoJ/a3BwexShDACnVCl2nIn260j6AqUfjW0ozdvQOx0XO42U2Y
+ Q4OQwjlixvKLRmskmAnfjas2211sqxxLqAEQUkBDwOto1vfJ9t8QXMGF+tQiNynEaO
+ BkDgtGFa4ABLzOVilAOncziEinczCqcqrzD+NuNqdUgduRpIynoi6bXhd7h3iLRbLh
+ rzKATDr+uPxxdEf2qubGME9jZNW3PxRU5d/dX54rBaasaV81MOOAlyPTTk1EjA3KCQ
+ DihNRoS8aF4QhG0Vlus6cJRggGR3mSMKahWiHELLlfmPdjsr9ilevFX4g6dNTU1DHM
+ VxW9NLjpkScNA==
 From: Mark Brown <broonie@kernel.org>
-To: linux-kernel@vger.kernel.org, Julian Braha <julianbraha@gmail.com>,
- alsa-devel@alsa-project.org
-Subject: Re: [PATCH] ASoC: fix unmet dependency on GPIOLIB
-Date: Sat, 23 Oct 2021 12:43:07 +0100
-Message-Id: <163498938018.2020965.6267176645734620337.b4-ty@kernel.org>
+To: derek.fang@realtek.com,
+	lgirdwood@gmail.com
+Subject: Re: [PATCH] ASoC: rt5682s: Downsizing the DAC volume scale
+Date: Sat, 23 Oct 2021 14:34:24 +0100
+Message-Id: <163499605421.842779.6605242080972857028.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211010215627.17869-1-julianbraha@gmail.com>
-References: <20211010215627.17869-1-julianbraha@gmail.com>
+In-Reply-To: <20211021120303.4601-1-derek.fang@realtek.com>
+References: <20211021120303.4601-1-derek.fang@realtek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: bgoswami@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com,
- ajitp@codeaurora.org, Mark Brown <broonie@kernel.org>
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
+ lars@metafoo.de, albertchen@realtek.com, Mark Brown <broonie@kernel.org>,
+ shumingf@realtek.com, flove@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,18 +83,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 10 Oct 2021 17:56:27 -0400, Julian Braha wrote:
-> When SND_SOC_SC7180 or SND_SOC_STORM is selected,
-> and GPIOLIB is not selected, Kbuild gives the following
-> warning:
+On Thu, 21 Oct 2021 20:03:03 +0800, derek.fang@realtek.com wrote:
+> From: Derek Fang <derek.fang@realtek.com>
 > 
-> WARNING: unmet direct dependencies detected for SND_SOC_MAX98357A
->   Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && GPIOLIB [=n]
->   Selected by [y]:
->   - SND_SOC_STORM [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_QCOM [=y]
->   - SND_SOC_SC7180 [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_QCOM [=y] && I2C [=y]
+> Use 0.75db/step of DAC volume instead of 1.5 to get
+> a more smooth volume curve.
 > 
-> [...]
+> 
 
 Applied to
 
@@ -101,8 +97,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: fix unmet dependency on GPIOLIB
-      commit: 6cace797f1a8d54ecb42a3d327cbc0b231114ed0
+[1/1] ASoC: rt5682s: Downsizing the DAC volume scale
+      commit: e7ee1ac4ecb5114d60b8ead333b6d52cdcf78862
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
