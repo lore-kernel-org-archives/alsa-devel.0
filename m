@@ -2,90 +2,71 @@ Return-Path: <SRS0=LHDW=PL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 082EBC433F5
-	for <alsa-devel@archiver.kernel.org>; Sat, 23 Oct 2021 09:59:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B709C433EF
+	for <alsa-devel@archiver.kernel.org>; Sat, 23 Oct 2021 11:44:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 75B1C60EB8
-	for <alsa-devel@archiver.kernel.org>; Sat, 23 Oct 2021 09:59:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 75B1C60EB8
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+	by mail.kernel.org (Postfix) with ESMTPS id DA46060F46
+	for <alsa-devel@archiver.kernel.org>; Sat, 23 Oct 2021 11:44:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DA46060F46
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DBF40852;
-	Sat, 23 Oct 2021 11:58:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DBF40852
+	by alsa0.perex.cz (Postfix) with ESMTPS id 54F6E950;
+	Sat, 23 Oct 2021 13:43:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 54F6E950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1634983152;
-	bh=eUjHjDJDTVC7I8ttZdjlQmODeI+Xzx8CLdAkdwR5QJ0=;
+	s=default; t=1634989453;
+	bh=4XWHzvmtR+wyqWJ4k/FFXOcBIOC+UMb5i8hvEybrro0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sTlUI8bUCzVOJKzo+fBaC0PslN9OD/j0iByfYM57MKtJ8rOWrYQMbvPzbI30tzmP9
-	 oT50lYStmemKrt/apf6h+NQFw9yotQ222sgq7lqf6n92bdE6XHtk2YFujd1lme4QGR
-	 uNDp7RIUJ/l0SU+seiEVFCkweOeFyVenuqDf1cgk=
+	b=W0xVnRAEmAJmWaKTKQ5mxXuuVDKw72oPXMJM1N24ADIOA+7umz7h9w5d2FNfXCCVT
+	 HAx/wO9SEuUyGnTDcqtXI490P8UMPYIuqI8eAnJNcGO/iGBPWFAYNCbko0apXpf9B1
+	 WmB836Af+gt876FVRgSEUrrRnyizvun/47zUtauU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BC1BAF80528;
-	Sat, 23 Oct 2021 11:55:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BB7FFF8019B;
+	Sat, 23 Oct 2021 13:43:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E8A82F80256; Sat, 23 Oct 2021 11:55:48 +0200 (CEST)
-Received: from so254-9.mailgun.net (so254-9.mailgun.net [198.61.254.9])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 3D570F80246; Sat, 23 Oct 2021 13:43:21 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 46104F80240
- for <alsa-devel@alsa-project.org>; Sat, 23 Oct 2021 11:54:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46104F80240
+ by alsa1.perex.cz (Postfix) with ESMTPS id D0A92F801DB
+ for <alsa-devel@alsa-project.org>; Sat, 23 Oct 2021 13:43:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0A92F801DB
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=mg.codeaurora.org
- header.i=@mg.codeaurora.org header.b="FXMzCF8H"
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
- q=dns/txt; 
- s=smtp; t=1634982879; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=4HMGSd2J7w/dZxguyl5N9umCkfxLtsuKLR7inPyn4DM=;
- b=FXMzCF8HXr6s9XXLCH/fkU/NnltOS0ZAlFHAq0+7Cn4LGZ8eKJXyKOfYs3CGDM46gz94WaAF
- HqUNSMJqpuc5iY3DyYiJ8rmUOC0mys+eO5GnuUha3wBTcUW7L1KnvNHLk3/Cl4tkV6Gn6HCo
- D9GtjrX9eJUyIMnzMgohfANyVs0=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 6173dbd18e67b5f04e1a4986 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 23 Oct 2021 09:54:25
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id 704EEC43637; Sat, 23 Oct 2021 09:54:24 +0000 (UTC)
-Received: from hu-srivasam-hyd.qualcomm.com (unknown [202.46.22.19])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: srivasam)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id 4C41DC4360C;
- Sat, 23 Oct 2021 09:54:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 4C41DC4360C
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- spf=fail smtp.mailfrom=codeaurora.org
-From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To: agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
- broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
- bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
- srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
- linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- swboyd@chromium.org, judyhsiao@chromium.org
-Subject: [PATCH v3 01/10] ASoC: qcom: Move lpass_pcm_data structure to lpass
- header
-Date: Sat, 23 Oct 2021 15:23:53 +0530
-Message-Id: <1634982842-7477-2-git-send-email-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1634982842-7477-1-git-send-email-srivasam@codeaurora.org>
-References: <1634982842-7477-1-git-send-email-srivasam@codeaurora.org>
-Cc: Venkata Prasad Potturu <potturu@codeaurora.org>,
- Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="uWCGOpFm"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 001226101D;
+ Sat, 23 Oct 2021 11:43:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1634989393;
+ bh=4XWHzvmtR+wyqWJ4k/FFXOcBIOC+UMb5i8hvEybrro0=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=uWCGOpFmHw594t9/j++tNZ7cvKVnwFfIjur8Dpcc3JvolLixfuvhgG1g/5Oo1xcXa
+ AZ7p2MhfmHV2WPD+O4Qr7W3+nus7oJfwYzkbflMYWs/tjR/vtvUjqsNL2SBYQC7UGV
+ jmOwmNkEJzZZxfObAQpQAI5lsi8ycht9r4PTQe7e7vGklxvQwwu4d5BGaRN34To6/A
+ HF19/YOvnOwOWJaylnNX2swke+U48ymfnJh9IIrVVZu+OTWGcq7BTTkspM6LGtk1mf
+ 8WJdowxh3AeO0X0IxODhQkZ3BWQQMvVjympSsStSHLRMHOGq8foun88Pmk9L8zKajZ
+ EA/LhrRymdTHg==
+From: Mark Brown <broonie@kernel.org>
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: Re: [PATCH] ASoC: cs42l42: Remove unused
+ runtime_suspend/runtime_resume callbacks
+Date: Sat, 23 Oct 2021 12:43:08 +0100
+Message-Id: <163498938018.2020965.16977108609282715073.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20211018164431.5871-1-rf@opensource.cirrus.com>
+References: <20211018164431.5871-1-rf@opensource.cirrus.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,50 +82,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Declare lpass_pcm_data structure in lpass header file instead of
-platform source file to make common use of it by other drivers
+On Mon, 18 Oct 2021 17:44:31 +0100, Richard Fitzgerald wrote:
+> The driver has runtime_suspend and runtime_resume callbacks, but
+> pm_runtime is never enabled so these functions won't be called. They
+> could not be used anyway because the runtime_suspend would cause jack
+> detect to stop working.
+> 
+> These functions are unused - delete them.
+> 
+> [...]
 
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Co-developed-by: Venkata Prasad Potturu <potturu@codeaurora.org>
-Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
----
- sound/soc/qcom/lpass-platform.c | 5 -----
- sound/soc/qcom/lpass.h          | 5 +++++
- 2 files changed, 5 insertions(+), 5 deletions(-)
+Applied to
 
-diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
-index a59e9d2..a44162c 100644
---- a/sound/soc/qcom/lpass-platform.c
-+++ b/sound/soc/qcom/lpass-platform.c
-@@ -18,11 +18,6 @@
- 
- #define DRV_NAME "lpass-platform"
- 
--struct lpass_pcm_data {
--	int dma_ch;
--	int i2s_port;
--};
--
- #define LPASS_PLATFORM_BUFFER_SIZE	(24 *  2 * 1024)
- #define LPASS_PLATFORM_PERIODS		2
- 
-diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
-index 67ef497..63aaa6f 100644
---- a/sound/soc/qcom/lpass.h
-+++ b/sound/soc/qcom/lpass.h
-@@ -256,6 +256,11 @@ struct lpass_variant {
- 	int num_clks;
- };
- 
-+struct lpass_pcm_data {
-+	int dma_ch;
-+	int i2s_port;
-+};
-+
- /* register the platform driver from the CPU DAI driver */
- int asoc_qcom_lpass_platform_register(struct platform_device *);
- int asoc_qcom_lpass_cpu_platform_remove(struct platform_device *pdev);
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
+Thanks!
+
+[1/1] ASoC: cs42l42: Remove unused runtime_suspend/runtime_resume callbacks
+      commit: c778c01d3e665045d29d548d946f7cd64aec0ff9
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
