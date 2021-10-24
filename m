@@ -2,80 +2,71 @@ Return-Path: <SRS0=sa53=PM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 95A84C433F5
-	for <alsa-devel@archiver.kernel.org>; Sun, 24 Oct 2021 08:33:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 704B5C433EF
+	for <alsa-devel@archiver.kernel.org>; Sun, 24 Oct 2021 09:00:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DBE8A60F46
-	for <alsa-devel@archiver.kernel.org>; Sun, 24 Oct 2021 08:33:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DBE8A60F46
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ivitera.com
+	by mail.kernel.org (Postfix) with ESMTPS id 9EEE660E74
+	for <alsa-devel@archiver.kernel.org>; Sun, 24 Oct 2021 09:00:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9EEE660E74
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mailoo.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 209DD166E;
-	Sun, 24 Oct 2021 10:32:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 209DD166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5151511C;
+	Sun, 24 Oct 2021 10:59:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5151511C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635064426;
-	bh=HktbUeovVsKMDmAdvisTSWNPLwNFJlsv3taz6KIBtt8=;
+	s=default; t=1635066018;
+	bh=/ypa2kU25/kKnTZCdL90F0H4ic02JIr43Lis4n0Ge7M=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uJZ/8N71qaFKzdOKpXuK4GFGrIi+tdHgocc6sZKKY5Bqv4E6NYGptrpJWQoYBNN5J
-	 SMbs5hKif6cvl64GGC7R3xJqqZFCKSwwa46DDlKxzSseTDQTbrJ4iHfeTERwppSyzz
-	 3GF9OtCy+Yb41z06AmFksIfbuWf9Y3SsFyqVPC3E=
+	b=eAySJ/gLvp72wSl0jyX/KhT9urULDVGfWQ6LVuVxqUfnV7XNgtnnixCiL1BPzLqcI
+	 T8Bz0QquFMv/QWEU8AxMT2vGwll5BIQGoxKTSTv+I20gOlIJoFWCK0ZXltV4L39fU8
+	 4tK91RB5XKhz7liBf929AgxWl3dSYU78I9yKwzEI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DA3F3F80300;
-	Sun, 24 Oct 2021 10:32:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B0A15F802E7;
+	Sun, 24 Oct 2021 10:59:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D31FEF802C8; Sun, 24 Oct 2021 10:32:10 +0200 (CEST)
-Received: from cable.insite.cz (cable.insite.cz [84.242.75.189])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id CE0C4F80300; Sun, 24 Oct 2021 10:59:25 +0200 (CEST)
+Received: from msg-4.mailo.com (ip-15.mailobj.net [213.182.54.15])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8E731F80269
- for <alsa-devel@alsa-project.org>; Sun, 24 Oct 2021 10:32:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E731F80269
+ by alsa1.perex.cz (Postfix) with ESMTPS id 72649F80269
+ for <alsa-devel@alsa-project.org>; Sun, 24 Oct 2021 10:59:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72649F80269
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ivitera.com header.i=@ivitera.com
- header.b="YiPaUYDM"; 
- dkim=pass (1024-bit key) header.d=ivitera.com header.i=@ivitera.com
- header.b="RttRpydY"
-Received: from localhost (localhost [127.0.0.1])
- by cable.insite.cz (Postfix) with ESMTP id 70B93A1A3D403;
- Sun, 24 Oct 2021 10:32:02 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ivitera.com; s=mail;
- t=1635064322; bh=HktbUeovVsKMDmAdvisTSWNPLwNFJlsv3taz6KIBtt8=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=YiPaUYDMHYXPIz2LIrMQqrnhzP3Evn63PTms2nOcdqHdB7EcyTDHrX7KUlLCN5APA
- YrQfffnIOxjSXIrlVr2vEJJl+SfoLrXn4reErNVLRU76LN5Pv2AxVZIoCdUoB4TqGR
- x7PrPnznoLp2culc2QtIPvoHQAo0LGfouHh0nu5s=
-Received: from cable.insite.cz ([84.242.75.189])
- by localhost (server.insite.cz [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id dRrWICkiPkSU; Sun, 24 Oct 2021 10:31:57 +0200 (CEST)
-Received: from precision.doma (ip28.insite.cz [81.0.237.28])
- (Authenticated sender: pavel)
- by cable.insite.cz (Postfix) with ESMTPSA id 00595A1A3D404;
- Sun, 24 Oct 2021 10:31:56 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ivitera.com; s=mail;
- t=1635064317; bh=HktbUeovVsKMDmAdvisTSWNPLwNFJlsv3taz6KIBtt8=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=RttRpydYc1ZCXHdlq/zKR3rCNAjOWTbnv8jl7oDZetH6tlQ7i8Ib6jq8UeZADPnaz
- 8CMhk3PC69+OorFhC3QD25yjL/TcpyaCBBuHwU5IhUCbTX2xxyW8v23YQMOACGNsz9
- nKiXbwPqbIE56qxEP3+2Zg1PDOyPXL50P3Cjyoa4=
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 2/2] alsaloop: Support "Playback Pitch 1000000" rate shift
-Date: Sun, 24 Oct 2021 10:31:55 +0200
-Message-Id: <20211024083156.4743-2-pavel.hofman@ivitera.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211024083156.4743-1-pavel.hofman@ivitera.com>
-References: <20211024083156.4743-1-pavel.hofman@ivitera.com>
+ dkim=pass (1024-bit key) header.d=mailoo.org header.i=@mailoo.org
+ header.b="cqEFyluH"
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailoo.org; s=mailo;
+ t=1635065951; bh=/ypa2kU25/kKnTZCdL90F0H4ic02JIr43Lis4n0Ge7M=;
+ h=X-EA-Auth:From:To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:
+ References:MIME-Version:Content-Transfer-Encoding;
+ b=cqEFyluHUoJwbAefGCQvBcutpZbw13F6Bkou7FK3qGiTgoOEKN4M118GqEl8MOg0h
+ NSFjmzVYsyFP0KonaTwCAEUMDj5oPz9qHwbiKgHk9BorpNdvyeoWqA05Zfz8c5V9TD
+ SjONuUZERgmgaY3Jd693xRM6AJ7sXToaCLQiSZXg=
+Received: by b-2.in.mailobj.net [192.168.90.12] with ESMTP
+ via proxy.mailoo.org [213.182.55.207]
+ Sun, 24 Oct 2021 10:59:11 +0200 (CEST)
+X-EA-Auth: 3Wq8fnNOPO+2BI21khWtdZJk+3txfy7SD9qhVZ/8UPzQ2r8hT4j0csvyxAngR7k1uM46XR0phM3Ozi6LXVmtNjTWeznwf2Qj0usfYgvXOyQ=
+From: Vincent Knecht <vincent.knecht@mailoo.org>
+To: stephan@gerhold.net, lgirdwood@gmail.com, broonie@kernel.org,
+ robh+dt@kernel.org, perex@perex.cz, tiwai@suse.com
+Subject: [PATCH v1 1/4] ASoC: codecs: tfa989x: Add switch to allow disabling
+ amplifier
+Date: Sun, 24 Oct 2021 10:58:37 +0200
+Message-Id: <20211024085840.1536438-2-vincent.knecht@mailoo.org>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20211024085840.1536438-1-vincent.knecht@mailoo.org>
+References: <20211024085840.1536438-1-vincent.knecht@mailoo.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Pavel Hofman <pavel.hofman@ivitera.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Vincent Knecht <vincent.knecht@mailoo.org>, linux-kernel@vger.kernel.org,
+ ~postmarketos/upstreaming@lists.sr.ht
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,52 +82,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Linux 5.15 will introduce a new control element "Playback Pitch 1000000"
-(commit 6fec018 ("usb: gadget: u_audio.c: Adding Playback Pitch ctl for
-sync playback") which provides feedback mechanism for playback direction
-of USB Audio Gadget. The control operates in the same way as the
-existing control element "Capture Pitch 1000000".
+From: Stephan Gerhold <stephan@gerhold.net>
 
-This patch adds support for this feature.
+In some configurations it may be necessary to explicitly disable
+the amplifier with an ALSA mixer. An example for this is a stereo
+setup with two TFA989X. If only one of them should be used (e.g.
+to use it as an earpiece) the other one must be explicitly disabled.
 
-Signed-off-by: Pavel Hofman <pavel.hofman@ivitera.com>
+Add a virtual "Amp Switch" to implement that. There is no register
+for this (SND_SOC_NOPM) so it only prevents DAPM from activating
+the amplifier. Also it is inverted (= enabled by default) for
+compatibility with devices that do not need this functionality.
+
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
 ---
- alsaloop/pcmjob.c | 8 ++++++--
+ sound/soc/codecs/tfa989x.c | 8 ++++++--
  1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/alsaloop/pcmjob.c b/alsaloop/pcmjob.c
-index 7b47c40..59ca0ff 100644
---- a/alsaloop/pcmjob.c
-+++ b/alsaloop/pcmjob.c
-@@ -1064,6 +1064,7 @@ static int set_rate_shift(struct loopback_handle *lhandle, double pitch)
- 		snd_ctl_elem_value_set_integer(lhandle->ctl_rate_shift, 0, pitch * 100000);
- 		err = snd_ctl_elem_write(lhandle->ctl, lhandle->ctl_rate_shift);
- 	} else if (lhandle->ctl_pitch) {
-+		// 'Playback/Capture Pitch 1000000' requires reciprocal to pitch
- 		snd_ctl_elem_value_set_integer(lhandle->ctl_pitch, 0, (1 / pitch) * 1000000);
- 		err = snd_ctl_elem_write(lhandle->ctl, lhandle->ctl_pitch);
- 	} else {
-@@ -1241,7 +1242,10 @@ static int openctl(struct loopback_handle *lhandle, int device, int subdevice)
- 						lhandle->prateshift_name);
- 				exit(EXIT_FAILURE);
- 			}
--		}
-+		} else
-+			openctl_elem(lhandle, device, subdevice, "Playback Pitch 1000000",
-+					&lhandle->ctl_pitch);
-+		set_rate_shift(lhandle, 1);
- 		if (lhandle->loopback->controls)
- 			goto __events;
- 		return 0;
-@@ -1388,7 +1392,7 @@ int pcmjob_init(struct loopback *loop)
- 	loop->id = strdup(id);
- 	if (loop->sync == SYNC_TYPE_AUTO && (loop->capt->ctl_rate_shift || loop->capt->ctl_pitch))
- 		loop->sync = SYNC_TYPE_CAPTRATESHIFT;
--	if (loop->sync == SYNC_TYPE_AUTO && loop->play->ctl_rate_shift)
-+	if (loop->sync == SYNC_TYPE_AUTO && (loop->play->ctl_rate_shift || loop->play->ctl_pitch))
- 		loop->sync = SYNC_TYPE_PLAYRATESHIFT;
- #ifdef USE_SAMPLERATE
- 	if (loop->sync == SYNC_TYPE_AUTO && loop->src_enable)
+diff --git a/sound/soc/codecs/tfa989x.c b/sound/soc/codecs/tfa989x.c
+index 643b45188b6f..1ae47d4f1ca7 100644
+--- a/sound/soc/codecs/tfa989x.c
++++ b/sound/soc/codecs/tfa989x.c
+@@ -77,13 +77,16 @@ static const struct regmap_config tfa989x_regmap = {
+ 
+ static const char * const chsa_text[] = { "Left", "Right", /* "DSP" */ };
+ static SOC_ENUM_SINGLE_DECL(chsa_enum, TFA989X_I2SREG, TFA989X_I2SREG_CHSA, chsa_text);
+-static const struct snd_kcontrol_new chsa_mux = SOC_DAPM_ENUM("Amp Input", chsa_enum);
++static const struct snd_kcontrol_new
++	chsa_mux = SOC_DAPM_ENUM("Amp Input", chsa_enum),
++	amp_switch = SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 0, 1, 1);
+ 
+ static const struct snd_soc_dapm_widget tfa989x_dapm_widgets[] = {
+ 	SND_SOC_DAPM_OUTPUT("OUT"),
+ 	SND_SOC_DAPM_SUPPLY("POWER", TFA989X_SYS_CTRL, TFA989X_SYS_CTRL_PWDN, 1, NULL, 0),
+ 	SND_SOC_DAPM_OUT_DRV("AMPE", TFA989X_SYS_CTRL, TFA989X_SYS_CTRL_AMPE, 0, NULL, 0),
+ 
++	SND_SOC_DAPM_SWITCH("Amp", SND_SOC_NOPM, 0, 0, &amp_switch),
+ 	SND_SOC_DAPM_MUX("Amp Input", SND_SOC_NOPM, 0, 0, &chsa_mux),
+ 	SND_SOC_DAPM_AIF_IN("AIFINL", "HiFi Playback", 0, SND_SOC_NOPM, 0, 0),
+ 	SND_SOC_DAPM_AIF_IN("AIFINR", "HiFi Playback", 1, SND_SOC_NOPM, 0, 0),
+@@ -92,7 +95,8 @@ static const struct snd_soc_dapm_widget tfa989x_dapm_widgets[] = {
+ static const struct snd_soc_dapm_route tfa989x_dapm_routes[] = {
+ 	{"OUT", NULL, "AMPE"},
+ 	{"AMPE", NULL, "POWER"},
+-	{"AMPE", NULL, "Amp Input"},
++	{"AMPE", NULL, "Amp"},
++	{"Amp", "Switch", "Amp Input"},
+ 	{"Amp Input", "Left", "AIFINL"},
+ 	{"Amp Input", "Right", "AIFINR"},
+ };
 -- 
-2.25.1
+2.31.1
+
+
 
