@@ -2,95 +2,70 @@ Return-Path: <SRS0=sa53=PM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A2BDC433EF
-	for <alsa-devel@archiver.kernel.org>; Sun, 24 Oct 2021 14:08:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 300F9C433F5
+	for <alsa-devel@archiver.kernel.org>; Sun, 24 Oct 2021 15:18:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 282D760EDF
-	for <alsa-devel@archiver.kernel.org>; Sun, 24 Oct 2021 14:08:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 282D760EDF
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id D05FD60F21
+	for <alsa-devel@archiver.kernel.org>; Sun, 24 Oct 2021 15:18:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D05FD60F21
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=metanate.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EB293165E;
-	Sun, 24 Oct 2021 16:07:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB293165E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 76E93165E;
+	Sun, 24 Oct 2021 17:18:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 76E93165E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635084527;
-	bh=Op8ILNWgUIwbTCygwxpqgU5xKKSeAoZ9DwYqjg409UA=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=IzB++Acr/2gJc/WgXwuEpCVszi2l0r9XGJv6MGIlmnr+Fy7by1sr/8bs4EXP+hrJ9
-	 3RdpJEfFaNTGGSswdsW62uHo62LVR+fwjb2mkZrmp3oIA7srsgsQI6Z72m1Mef4H6+
-	 gRSdD6OXdQeR7IQXhEr3qD2v1g2jAKmSXYv2OcaA=
+	s=default; t=1635088730;
+	bh=3P16SzDCZ5uGsdIrnV0b03bXx/UN7wtQestfP3x5CJs=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=RRs7tHLjyXfFLFPey+pWxWc16XKYOPoWPp+H0/3dxoIaMs3DkXqZrWww0c3OZN4gs
+	 Q9YEluXPyCPbEJ+LBv4ThLaEkjWfbqz4pGvmCi4zr6zGD5VzBonfglPoFu5H3fdoT2
+	 zdE9wKmuolE6vKWiBOnhXKu3WvvQldAq9rhu+B8E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 813F0F80269;
-	Sun, 24 Oct 2021 16:07:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0561CF80269;
+	Sun, 24 Oct 2021 17:18:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 98BE2F802C8; Sun, 24 Oct 2021 16:07:55 +0200 (CEST)
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com
- [IPv6:2a00:1450:4864:20::22c])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 01029F802C8; Sun, 24 Oct 2021 17:17:53 +0200 (CEST)
+Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B6787F80086
- for <alsa-devel@alsa-project.org>; Sun, 24 Oct 2021 16:07:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6787F80086
+ by alsa1.perex.cz (Postfix) with ESMTPS id 98AACF80166
+ for <alsa-devel@alsa-project.org>; Sun, 24 Oct 2021 17:17:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98AACF80166
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="FExO0P6X"
-Received: by mail-lj1-x22c.google.com with SMTP id r6so3972026ljg.6
- for <alsa-devel@alsa-project.org>; Sun, 24 Oct 2021 07:07:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=message-id:date:mime-version:user-agent:subject:content-language:to
- :references:from:in-reply-to:content-transfer-encoding;
- bh=2xg8b0PhImUgFD1vlcegBC3Dkb/ADebVx1OoidLwJVg=;
- b=FExO0P6XGeA99jiK3jYyzGzYwfir+9cK3AbnVKHG0jw8cklwsMepg+lvdP/ng/WkJw
- Z0Brf2IZGrAmoWOnZCJabD0mAkYYPL7q4pSOmlQfvJBIPRGdcwKHIFAcZEW2IOQ+VBuX
- 4H8rwZ4R/hKgIrHTOx5eXUWV9kr/a0PrlxGWMR/iovA/DX+CB5Ri6CBN7wpLYMzPh19i
- n15PCbbMYzY42y1vxxOJgZ1QPz8azrgWKoKuOPImlBIzXh8n9LzbaCVRLPt2RSt1mhC4
- KpsYSbvh/IQhUCTutjn5jLe/dNBW3b9q9bKTL1fKngILL04w/d57mLGvuQ2TNeGqIB5p
- AhYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
- :content-language:to:references:from:in-reply-to
- :content-transfer-encoding;
- bh=2xg8b0PhImUgFD1vlcegBC3Dkb/ADebVx1OoidLwJVg=;
- b=th0t4OuSwts7vBjjkCprJsMgoMNRFb1/QaeSpfKUgvZNvXOI7uuEkyVHShu+HNjjf/
- 6A7DSNClE8EKKTs9KynodFj8VKnBrJ5a6yGM3zm/IVqobYg/lA3+M/ef7vJ0oUmYCdQa
- 7y+nuq0I5wq2bz7MKP2o84S0PBwxRnnjgqIVmQvuz9axGxhdtJguxLka+4DQCZYXTub+
- bJl+v/7MAdsh+8fhu8HaxCMp/VmvYCnyJEHt41NnAeOpn9QoSYE5Zp47rPYe8mRI9rvm
- nSPvavMhGKEwLWUJdTHbNtfjob/VlTUHiivXImrCrg3mt+Zm1jrU9lSQ5zh8OGiAwrln
- eZag==
-X-Gm-Message-State: AOAM5308iwDHIVhhdUJCHMRt0H+C1LQjCW/xIsQB5AgXfBfM19ZFJqHR
- 3AxXwMhzMVktSrJJm24zKfw=
-X-Google-Smtp-Source: ABdhPJxmkRTwgt82Aprhr0dbm9VZy5cvpqlWfDoGR/+Iaj57ZsQhuowrE5c6LYnNo9oAKm8YXTZ55Q==
-X-Received: by 2002:a2e:2e03:: with SMTP id u3mr12779117lju.269.1635084464059; 
- Sun, 24 Oct 2021 07:07:44 -0700 (PDT)
-Received: from [192.168.1.11] ([94.103.235.8])
- by smtp.gmail.com with ESMTPSA id g18sm813835lfv.25.2021.10.24.07.07.42
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Sun, 24 Oct 2021 07:07:43 -0700 (PDT)
-Message-ID: <b6ec6d46-1eb8-42c1-33ab-0142dd142c84@gmail.com>
-Date: Sun, 24 Oct 2021 17:07:42 +0300
+ dkim=pass (2048-bit key) header.d=metanate.com header.i=@metanate.com
+ header.b="QvWbbBuc"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=metanate.com; s=stronger; h=Content-Transfer-Encoding:Message-Id:Date:
+ Subject:Cc:To:From:Content-Type:Reply-To:Content-ID:Content-Description:
+ In-Reply-To:References; bh=Wx0knZzTTV3Xd6oi7w1NDuFxpSk5IUn+b6TO2aUcEUY=; b=Qv
+ WbbBuc/AlP0qdIMpm9MQ0d51msICbWr+GY0F5eGFoA1abcRCPA1BX8wx0ghNXBxErE+TCtNFit/0q
+ A5nBohhn0JbEGppLK4DRvrV5zxQ/VQjrSc6vRfxgPNKqVbfgfbAsIWzAl8bVVmf++jInwVYC4+Cex
+ DMoXyPr3GbgwgLxEeRX3KliSvRe6N1pI1wmdn1ZXYaVo1aGIG29b+SK+mJ77o/gB1F5qixZ/Fzmn4
+ 7eXa3VCnWDMBSzPaZSxkFDpTrBog7onaVHZNJNPNjBx/ca6qFFP05Q+nuKatctMJf17DazfBQ0NRo
+ T+9wxapJOpb0zhAuMEtypkntlZya5FLA==;
+Received: from [81.174.171.191] (helo=donbot.metanate.com)
+ by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+ (Exim 4.93) (envelope-from <john@metanate.com>)
+ id 1mefFn-0005Px-Iz; Sun, 24 Oct 2021 16:17:43 +0100
+From: John Keeping <john@metanate.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ASoC: doc: update codec example code
+Date: Sun, 24 Oct 2021 16:17:31 +0100
+Message-Id: <20211024151731.360638-1-john@metanate.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [syzbot] possible deadlock in snd_mixer_oss_ioctl1
-Content-Language: en-US
-To: syzbot <syzbot+ace149a75a9a0a399ac7@syzkaller.appspotmail.com>,
- alsa-devel@alsa-project.org, broonie@kernel.org, joe@perches.com,
- lars@metafoo.de, linux-kernel@vger.kernel.org, perex@perex.cz,
- syzkaller-bugs@googlegroups.com, tiwai@suse.com, tiwai@suse.de
-References: <00000000000067a98805cf0a3a98@google.com>
-From: Pavel Skripkin <paskripkin@gmail.com>
-In-Reply-To: <00000000000067a98805cf0a3a98@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Authenticated: YES
+Cc: Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ John Keeping <john@metanate.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,69 +81,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 10/23/21 22:35, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    cf6c9d12750c Add linux-next specific files for 20211022
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=15d3d4c4b00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=e694204255ade3a3
-> dashboard link: https://syzkaller.appspot.com/bug?extid=ace149a75a9a0a399ac7
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17c0530cb00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1129c952b00000
-> 
-> The issue was bisected to:
-> 
-> commit 411cef6adfb38a5bb6bd9af3941b28198e7fb680
-> Author: Takashi Iwai <tiwai@suse.de>
-> Date:   Wed Oct 20 16:48:46 2021 +0000
-> 
->      ALSA: mixer: oss: Fix racy access to slots
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=167f6454b00000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=157f6454b00000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=117f6454b00000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+ace149a75a9a0a399ac7@syzkaller.appspotmail.com
-> Fixes: 411cef6adfb3 ("ALSA: mixer: oss: Fix racy access to slots")
-> 
-> ============================================
-> WARNING: possible recursive locking detected
-> 5.15.0-rc6-next-20211022-syzkaller #0 Not tainted
-> --------------------------------------------
-> syz-executor206/6529 is trying to acquire lock:
-> ffff888021ff09c8 (&mixer->reg_mutex){+.+.}-{3:3}, at: snd_mixer_oss_set_volume sound/core/oss/mixer_oss.c:316 [inline]
-> ffff888021ff09c8 (&mixer->reg_mutex){+.+.}-{3:3}, at: snd_mixer_oss_ioctl1+0x630/0x19a0 sound/core/oss/mixer_oss.c:375
-> 
-> but task is already holding lock:
-> ffff888021ff09c8 (&mixer->reg_mutex){+.+.}-{3:3}, at: snd_mixer_oss_set_volume sound/core/oss/mixer_oss.c:300 [inline]
-> ffff888021ff09c8 (&mixer->reg_mutex){+.+.}-{3:3}, at: snd_mixer_oss_ioctl1+0x4b1/0x19a0 sound/core/oss/mixer_oss.c:375
-> 
-> other info that might help us debug this:
->   Possible unsafe locking scenario:
-> 
->         CPU0
->         ----
->    lock(&mixer->reg_mutex);
->    lock(&mixer->reg_mutex);
-> 
->   *** DEADLOCK ***
-> 
->   May be due to missing lock nesting notation
-> 
+As the codec API has evolved the documentation has not kept up and still
+uses old fields that have been removed.  Update the examples to
+represent the current API.
 
-Looks like typo in previous ALSA patch. [1] should fix it
+Signed-off-by: John Keeping <john@metanate.com>
+---
+ Documentation/sound/soc/codec.rst | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
+diff --git a/Documentation/sound/soc/codec.rst b/Documentation/sound/soc/codec.rst
+index 8a9737eb7597..57df149acafc 100644
+--- a/Documentation/sound/soc/codec.rst
++++ b/Documentation/sound/soc/codec.rst
+@@ -40,7 +40,7 @@ e.g.
+ 	.prepare	= wm8731_pcm_prepare,
+ 	.hw_params	= wm8731_hw_params,
+ 	.shutdown	= wm8731_shutdown,
+-	.digital_mute	= wm8731_mute,
++	.mute_stream	= wm8731_mute,
+ 	.set_sysclk	= wm8731_set_dai_sysclk,
+ 	.set_fmt	= wm8731_set_dai_fmt,
+   };
+@@ -60,7 +60,7 @@ e.g.
+ 		.rates = WM8731_RATES,
+ 		.formats = WM8731_FORMATS,},
+ 	.ops = &wm8731_dai_ops,
+-	.symmetric_rates = 1,
++	.symmetric_rate = 1,
+   };
+ 
+ 
+@@ -177,10 +177,10 @@ when the mute is applied or freed.
+ i.e.
+ ::
+ 
+-  static int wm8974_mute(struct snd_soc_dai *dai, int mute)
++  static int wm8974_mute(struct snd_soc_dai *dai, int mute, int direction)
+   {
+ 	struct snd_soc_component *component = dai->component;
+-	u16 mute_reg = snd_soc_component_read32(component, WM8974_DAC) & 0xffbf;
++	u16 mute_reg = snd_soc_component_read(component, WM8974_DAC) & 0xffbf;
+ 
+ 	if (mute)
+ 		snd_soc_component_write(component, WM8974_DAC, mute_reg | 0x40);
+-- 
+2.33.1
 
-[1] 
-https://lore.kernel.org/alsa-devel/20211024140315.16704-1-paskripkin@gmail.com/T/#u
-
-
-
-
-With regards,
-Pavel Skripkin
