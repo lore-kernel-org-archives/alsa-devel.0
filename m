@@ -2,70 +2,91 @@ Return-Path: <SRS0=sa53=PM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 300F9C433F5
-	for <alsa-devel@archiver.kernel.org>; Sun, 24 Oct 2021 15:18:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D608C433F5
+	for <alsa-devel@archiver.kernel.org>; Sun, 24 Oct 2021 19:31:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D05FD60F21
-	for <alsa-devel@archiver.kernel.org>; Sun, 24 Oct 2021 15:18:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D05FD60F21
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=metanate.com
+	by mail.kernel.org (Postfix) with ESMTPS id EAA2A6103D
+	for <alsa-devel@archiver.kernel.org>; Sun, 24 Oct 2021 19:31:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EAA2A6103D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 76E93165E;
-	Sun, 24 Oct 2021 17:18:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 76E93165E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5F1A0165D;
+	Sun, 24 Oct 2021 21:30:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5F1A0165D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635088730;
-	bh=3P16SzDCZ5uGsdIrnV0b03bXx/UN7wtQestfP3x5CJs=;
+	s=default; t=1635103860;
+	bh=b4xL0fAZ7re1f6p4MOs3gQ/SpyfAG14POALtZXQ49uY=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=RRs7tHLjyXfFLFPey+pWxWc16XKYOPoWPp+H0/3dxoIaMs3DkXqZrWww0c3OZN4gs
-	 Q9YEluXPyCPbEJ+LBv4ThLaEkjWfbqz4pGvmCi4zr6zGD5VzBonfglPoFu5H3fdoT2
-	 zdE9wKmuolE6vKWiBOnhXKu3WvvQldAq9rhu+B8E=
+	b=q/oBKSZf/HO69FdIQ3QK4oH0MeUDKqQhGygHOgK7D36vCB0QOvUmqp9scj4S1Dw16
+	 GSOeCUWJbUc3ZAZxf5/TDZHaOiPHA6bnz/AvnUMSIaqR/THzck99cC+imE0jE++QGN
+	 F9AUgB/ycakFslGBPZl1CSHQuqa1S292ltdXGxAg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0561CF80269;
-	Sun, 24 Oct 2021 17:18:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D39C6F80269;
+	Sun, 24 Oct 2021 21:30:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 01029F802C8; Sun, 24 Oct 2021 17:17:53 +0200 (CEST)
-Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id DF85EF80300; Sun, 24 Oct 2021 21:30:06 +0200 (CEST)
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com
+ [IPv6:2a00:1450:4864:20::12b])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 98AACF80166
- for <alsa-devel@alsa-project.org>; Sun, 24 Oct 2021 17:17:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98AACF80166
+ by alsa1.perex.cz (Postfix) with ESMTPS id 74236F80166
+ for <alsa-devel@alsa-project.org>; Sun, 24 Oct 2021 21:29:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74236F80166
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=metanate.com header.i=@metanate.com
- header.b="QvWbbBuc"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=metanate.com; s=stronger; h=Content-Transfer-Encoding:Message-Id:Date:
- Subject:Cc:To:From:Content-Type:Reply-To:Content-ID:Content-Description:
- In-Reply-To:References; bh=Wx0knZzTTV3Xd6oi7w1NDuFxpSk5IUn+b6TO2aUcEUY=; b=Qv
- WbbBuc/AlP0qdIMpm9MQ0d51msICbWr+GY0F5eGFoA1abcRCPA1BX8wx0ghNXBxErE+TCtNFit/0q
- A5nBohhn0JbEGppLK4DRvrV5zxQ/VQjrSc6vRfxgPNKqVbfgfbAsIWzAl8bVVmf++jInwVYC4+Cex
- DMoXyPr3GbgwgLxEeRX3KliSvRe6N1pI1wmdn1ZXYaVo1aGIG29b+SK+mJ77o/gB1F5qixZ/Fzmn4
- 7eXa3VCnWDMBSzPaZSxkFDpTrBog7onaVHZNJNPNjBx/ca6qFFP05Q+nuKatctMJf17DazfBQ0NRo
- T+9wxapJOpb0zhAuMEtypkntlZya5FLA==;
-Received: from [81.174.171.191] (helo=donbot.metanate.com)
- by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
- (Exim 4.93) (envelope-from <john@metanate.com>)
- id 1mefFn-0005Px-Iz; Sun, 24 Oct 2021 16:17:43 +0100
-From: John Keeping <john@metanate.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: doc: update codec example code
-Date: Sun, 24 Oct 2021 16:17:31 +0100
-Message-Id: <20211024151731.360638-1-john@metanate.com>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="DV+dcYL3"
+Received: by mail-lf1-x12b.google.com with SMTP id u21so8609941lff.8
+ for <alsa-devel@alsa-project.org>; Sun, 24 Oct 2021 12:29:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=KuWfVJmwiYFrjBYD5I8hPFxxzsgnJfeoN2PJ/5VwVFo=;
+ b=DV+dcYL3tCQ7pZQBBoGyJIzfKEiIOS4K/M2JDQH0hHHWhOXQmpoLKrkVY0d7carPZH
+ 4b5yIMH5NmePlmnJnMpuXGXOHD6Q+Q15j5rFgci0sL7loM/ti27NnufY2rNcGIRNKXIx
+ XBclvZ6LjxuTxSM2vphWK6g6HSzHv6WwFmvU7PdxlQGEtN6georbm/6cNAuQxF3Vnnwc
+ /iasdD1mJ1fjrHhHdGfzmzAffccAEGksHgAt2EfEg/ckwiFtAjEAHCeIK3pedSk4LRBz
+ HRCsdIF6Vif0uRf1Oyo4GANHGlrKDknOgD5xctbM+eW0XFQyQGj8c58GkpyOP881qNVU
+ 7+CA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=KuWfVJmwiYFrjBYD5I8hPFxxzsgnJfeoN2PJ/5VwVFo=;
+ b=GuTacE7Fq3dHyQ6ZBcGjfnfYbGnkJrrOoexCTgisLD4H9WMxEQp4wZ4qu/RSKalj7w
+ CbuAeBRCbmVRdMjkjbIEAMWQ54H5iZAaJT4OMwxw1OE7DrzsID+wfa419olFuwRyGxKu
+ E7U6C/3d1ESf6z3FXzV5sXC/PlOAxnGoi598LQkHVsC3PZZ98tldXjoRUsDmx/KX7nEy
+ meDBontJqI3K333uHoh2N6k8wtPY9bstGL3qaUaJOrrcTsfZL0gcf8+vSEM7mW1Vp39Q
+ 6BR69CcfgNlNyaXLcyCSrLrr0j6wegjC1WZFlL64V4PwyDrTed/buPeR5/7Tsahb47nD
+ w/jg==
+X-Gm-Message-State: AOAM5313tcC20LXLhfUB3//JXGacPkQhjoZUQoB8lHlMlTSMXRBr0y87
+ GAAQlJt6iMFhKoR2p3ofwRA=
+X-Google-Smtp-Source: ABdhPJywrkYKDO2m53ZlDClFzmqKQW/4vr28mkI+ML3NJZ3QDwXCAqQ2Z9CEZuZSTgVzihSr7GrzyQ==
+X-Received: by 2002:ac2:561c:: with SMTP id v28mr2325912lfd.604.1635103794358; 
+ Sun, 24 Oct 2021 12:29:54 -0700 (PDT)
+Received: from localhost.localdomain (46-138-50-159.dynamic.spd-mgts.ru.
+ [46.138.50.159])
+ by smtp.gmail.com with ESMTPSA id t20sm1616902lft.240.2021.10.24.12.29.53
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sun, 24 Oct 2021 12:29:53 -0700 (PDT)
+From: Dmitry Osipenko <digetx@gmail.com>
+To: Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>, Mark Brown <broonie@kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
+ Liam Girdwood <lgirdwood@gmail.com>
+Subject: [PATCH v1 1/2] ASoC: tegra: Restore AC97 support
+Date: Sun, 24 Oct 2021 22:28:52 +0300
+Message-Id: <20211024192853.21957-1-digetx@gmail.com>
 X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Authenticated: YES
-Cc: Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- John Keeping <john@metanate.com>
+Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,50 +102,119 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-As the codec API has evolved the documentation has not kept up and still
-uses old fields that have been removed.  Update the examples to
-represent the current API.
+The device-tree of AC97 codecs need to be parsed differently from I2S
+codecs, plus codec device may need to be created. This was missed by the
+patch that unified machine drivers into a single driver, fix it. It should
+restore audio on Toradex Colibri board.
 
-Signed-off-by: John Keeping <john@metanate.com>
+Cc: <stable@vger.kernel.org>
+Fixes: cc8f70f56039 ("ASoC: tegra: Unify ASoC machine drivers")
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- Documentation/sound/soc/codec.rst | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/tegra/tegra_asoc_machine.c | 59 +++++++++++++++++++++++-----
+ sound/soc/tegra/tegra_asoc_machine.h |  1 +
+ 2 files changed, 50 insertions(+), 10 deletions(-)
 
-diff --git a/Documentation/sound/soc/codec.rst b/Documentation/sound/soc/codec.rst
-index 8a9737eb7597..57df149acafc 100644
---- a/Documentation/sound/soc/codec.rst
-+++ b/Documentation/sound/soc/codec.rst
-@@ -40,7 +40,7 @@ e.g.
- 	.prepare	= wm8731_pcm_prepare,
- 	.hw_params	= wm8731_hw_params,
- 	.shutdown	= wm8731_shutdown,
--	.digital_mute	= wm8731_mute,
-+	.mute_stream	= wm8731_mute,
- 	.set_sysclk	= wm8731_set_dai_sysclk,
- 	.set_fmt	= wm8731_set_dai_fmt,
-   };
-@@ -60,7 +60,7 @@ e.g.
- 		.rates = WM8731_RATES,
- 		.formats = WM8731_FORMATS,},
- 	.ops = &wm8731_dai_ops,
--	.symmetric_rates = 1,
-+	.symmetric_rate = 1,
-   };
+diff --git a/sound/soc/tegra/tegra_asoc_machine.c b/sound/soc/tegra/tegra_asoc_machine.c
+index 3cbe6ef1cf9f..d92fabff08bc 100644
+--- a/sound/soc/tegra/tegra_asoc_machine.c
++++ b/sound/soc/tegra/tegra_asoc_machine.c
+@@ -341,9 +341,34 @@ tegra_machine_parse_phandle(struct device *dev, const char *name)
+ 	return np;
+ }
  
++static void tegra_machine_unregister_codec(void *pdev)
++{
++	platform_device_unregister(pdev);
++}
++
++static int tegra_machine_register_codec(struct device *dev, const char *name)
++{
++	struct platform_device *pdev;
++	int err;
++
++	if (!name)
++		return 0;
++
++	pdev = platform_device_register_simple(name, -1, NULL, 0);
++	if (IS_ERR(pdev))
++		return PTR_ERR(pdev);
++
++	err = devm_add_action_or_reset(dev, tegra_machine_unregister_codec,
++				       pdev);
++	if (err)
++		return err;
++
++	return 0;
++}
++
+ int tegra_asoc_machine_probe(struct platform_device *pdev)
+ {
+-	struct device_node *np_codec, *np_i2s;
++	struct device_node *np_codec, *np_i2s, *np_ac97;
+ 	const struct tegra_asoc_data *asoc;
+ 	struct device *dev = &pdev->dev;
+ 	struct tegra_machine *machine;
+@@ -404,17 +429,30 @@ int tegra_asoc_machine_probe(struct platform_device *pdev)
+ 			return err;
+ 	}
  
-@@ -177,10 +177,10 @@ when the mute is applied or freed.
- i.e.
- ::
+-	np_codec = tegra_machine_parse_phandle(dev, "nvidia,audio-codec");
+-	if (IS_ERR(np_codec))
+-		return PTR_ERR(np_codec);
++	if (asoc->set_ac97) {
++		err = tegra_machine_register_codec(dev, asoc->codec_dev_name);
++		if (err)
++			return err;
++
++		np_ac97 = tegra_machine_parse_phandle(dev, "nvidia,ac97-controller");
++		if (IS_ERR(np_ac97))
++			return PTR_ERR(np_ac97);
  
--  static int wm8974_mute(struct snd_soc_dai *dai, int mute)
-+  static int wm8974_mute(struct snd_soc_dai *dai, int mute, int direction)
-   {
- 	struct snd_soc_component *component = dai->component;
--	u16 mute_reg = snd_soc_component_read32(component, WM8974_DAC) & 0xffbf;
-+	u16 mute_reg = snd_soc_component_read(component, WM8974_DAC) & 0xffbf;
+-	np_i2s = tegra_machine_parse_phandle(dev, "nvidia,i2s-controller");
+-	if (IS_ERR(np_i2s))
+-		return PTR_ERR(np_i2s);
++		card->dai_link->cpus->of_node = np_ac97;
++		card->dai_link->platforms->of_node = np_ac97;
++	} else {
++		np_codec = tegra_machine_parse_phandle(dev, "nvidia,audio-codec");
++		if (IS_ERR(np_codec))
++			return PTR_ERR(np_codec);
  
- 	if (mute)
- 		snd_soc_component_write(component, WM8974_DAC, mute_reg | 0x40);
+-	card->dai_link->cpus->of_node = np_i2s;
+-	card->dai_link->codecs->of_node = np_codec;
+-	card->dai_link->platforms->of_node = np_i2s;
++		np_i2s = tegra_machine_parse_phandle(dev, "nvidia,i2s-controller");
++		if (IS_ERR(np_i2s))
++			return PTR_ERR(np_i2s);
++
++		card->dai_link->cpus->of_node = np_i2s;
++		card->dai_link->codecs->of_node = np_codec;
++		card->dai_link->platforms->of_node = np_i2s;
++	}
+ 
+ 	if (asoc->add_common_controls) {
+ 		card->controls = tegra_machine_controls;
+@@ -589,6 +627,7 @@ static struct snd_soc_card snd_soc_tegra_wm9712 = {
+ static const struct tegra_asoc_data tegra_wm9712_data = {
+ 	.card = &snd_soc_tegra_wm9712,
+ 	.add_common_dapm_widgets = true,
++	.codec_dev_name = "wm9712-codec",
+ 	.set_ac97 = true,
+ };
+ 
+diff --git a/sound/soc/tegra/tegra_asoc_machine.h b/sound/soc/tegra/tegra_asoc_machine.h
+index 8ee0ec814f67..d6a8d1320551 100644
+--- a/sound/soc/tegra/tegra_asoc_machine.h
++++ b/sound/soc/tegra/tegra_asoc_machine.h
+@@ -13,6 +13,7 @@ struct snd_soc_pcm_runtime;
+ 
+ struct tegra_asoc_data {
+ 	unsigned int (*mclk_rate)(unsigned int srate);
++	const char *codec_dev_name;
+ 	struct snd_soc_card *card;
+ 	unsigned int mclk_id;
+ 	bool hp_jack_gpio_active_low;
 -- 
 2.33.1
 
