@@ -2,73 +2,73 @@ Return-Path: <SRS0=4dkw=PN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9619DC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Oct 2021 12:14:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0825AC433FE
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Oct 2021 12:16:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1A2C260FDA
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Oct 2021 12:14:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1A2C260FDA
+	by mail.kernel.org (Postfix) with ESMTPS id 83B0B6108B
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Oct 2021 12:16:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 83B0B6108B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 78EDB16E5;
-	Mon, 25 Oct 2021 14:13:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 78EDB16E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id A867016CD;
+	Mon, 25 Oct 2021 14:16:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A867016CD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635164046;
-	bh=AIRpCXor1U3q6Kur0f/NIMUI4ChvteaRnPofgExILTU=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1635164210;
+	bh=c20Y+CBVP1rQ3q8ZreYoK6aSKZoxnVw1Pl+dYFfGyI8=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=i8OxCLowqLu2ymJrSu0SAy9e0HfaySL985OqneJd7/X8cD3oWQalzlsUuNWKzOId2
-	 SeIWEXL/255RBJv6QSnZMpaiyRl+DqIkcvcy2l6ECFYqPAjY5rCSTETTj1RaYkU7eo
-	 +5AYqsuQrtSqCf5v2UKcDV4MPQWFLwD2ZtWFLbVE=
+	b=NHYnfYlmPeoyMV8Np6ktb+uri84/3WDDf0m90E0MTHOAI/NsnCh70tlq4oSSyODVX
+	 Qpf+yXKS1zhcl00iIDmOzjljVWxOoZYgFi9kStKWUp6QZbz81yDdzU9PcLGNNaloBS
+	 MBmlqGwjojYCoXfhm9uGQk0Zs1AbgZmaWUpwnnRQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BBD70F804E5;
-	Mon, 25 Oct 2021 14:12:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 415B3F80166;
+	Mon, 25 Oct 2021 14:16:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5E3A3F80166; Mon, 25 Oct 2021 14:12:24 +0200 (CEST)
+ id C340AF8025A; Mon, 25 Oct 2021 14:15:56 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5AFC9F80166
- for <alsa-devel@alsa-project.org>; Mon, 25 Oct 2021 14:12:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5AFC9F80166
+ by alsa1.perex.cz (Postfix) with ESMTPS id B0C99F8010A
+ for <alsa-devel@alsa-project.org>; Mon, 25 Oct 2021 14:15:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0C99F8010A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="iaKp0d2w"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9612F60EBC;
- Mon, 25 Oct 2021 12:12:15 +0000 (UTC)
+ header.b="AgYEfspL"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C53F960FDA;
+ Mon, 25 Oct 2021 12:15:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1635163935;
- bh=AIRpCXor1U3q6Kur0f/NIMUI4ChvteaRnPofgExILTU=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=iaKp0d2wbZft43JNyI03st7htu3joHqUI07uYXGUBF+J93Ptg1A9m1HLQAFEOTkpq
- FXDl5A3uUwwX0ke103BDG/1EeMujLlz+2WkDTzMdkdNIHrTCw0ktngfI70QRXAXDyg
- 5zmIkQD1PxrE6AOb1drDQDt8B0blqisHJb5duNUTrRKuf1gPs2qjaHoCci/nJfDVD7
- Xv6VlLIRAVc+eQP1aPJmxs8pi72I3pGiI6LcbMscT3lzHhOX9D2aTZ4qLKymEYTS7d
- v5lXRxb2OlDSyWPDSu/XmaB3e0+ppn6gjACmZQw7oo71nnCZ2zR19H6iNRnxMuC/hq
- feF2MpoxelV1w==
-Received: from johan by xi.lan with local (Exim 4.94.2)
- (envelope-from <johan@kernel.org>)
- id 1meypa-0001iH-DA; Mon, 25 Oct 2021 14:11:58 +0200
-From: Johan Hovold <johan@kernel.org>
-To: Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 1/2] sound: 6fire: fix control and bulk message timeouts
-Date: Mon, 25 Oct 2021 14:11:41 +0200
-Message-Id: <20211025121142.6531-2-johan@kernel.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211025121142.6531-1-johan@kernel.org>
-References: <20211025121142.6531-1-johan@kernel.org>
+ s=k20201202; t=1635164147;
+ bh=c20Y+CBVP1rQ3q8ZreYoK6aSKZoxnVw1Pl+dYFfGyI8=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=AgYEfspLjhU5wHqVSWk4XHgkr9RIWttYase0BwKdwZm/S6EtipiEIqPj0kck11s1b
+ /hlXYuydR2V655dcrr3vN1YBfl4U0FYbfadkfPJXmwSWIJFZz5mt7U5fTzYWUlV/PY
+ qD+eLmuXEeUMApLNp5PGLbpD/5bRunCKJBzejrlYN/eyWjC9ZRTHBeGsP81vAxRCzp
+ IeJGLQ8/YgtbJCpIHM7tUlN+1Tgp8Sm3DaPjGzZhyxXOsS2w0fKsiHrctX61V0wdqW
+ sR+1UmjkPWoWCtqRx0E9yA9XWM9H78wf+ZhPPZahJelxPdVyUwFY4w2FtWfydyjIen
+ Khbw8DQsNM5eA==
+Date: Mon, 25 Oct 2021 13:15:44 +0100
+From: Mark Brown <broonie@kernel.org>
+To: David Lin <CTLIN0@nuvoton.com>
+Subject: Re: [PATCH 1/2] ASoC: nau8825: add set_jack coponment support
+Message-ID: <YXaf8GGVtH0S9oAe@sirena.org.uk>
+References: <20211025113857.3860951-1-CTLIN0@nuvoton.com>
+ <20211025113857.3860951-2-CTLIN0@nuvoton.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org,
- Johan Hovold <johan@kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="iZzbKOFQQ2wp/57I"
+Content-Disposition: inline
+In-Reply-To: <20211025113857.3860951-2-CTLIN0@nuvoton.com>
+X-Cookie: From concentrate.
+Cc: alsa-devel@alsa-project.org, WTLI@nuvoton.com, SJLIN0@nuvoton.com,
+ KCHSU0@nuvoton.com, lgirdwood@gmail.com, YHCHuang@nuvoton.com,
+ mac.chiang@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,61 +84,59 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-USB control and bulk message timeouts are specified in milliseconds and
-should specifically not vary with CONFIG_HZ.
 
-Fixes: c6d43ba816d1 ("ALSA: usb/6fire - Driver for TerraTec DMX 6Fire USB")
-Cc: stable@vger.kernel.org      # 2.6.39
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- sound/usb/6fire/comm.c     | 2 +-
- sound/usb/6fire/firmware.c | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+--iZzbKOFQQ2wp/57I
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/usb/6fire/comm.c b/sound/usb/6fire/comm.c
-index 43a2a62d66f7..49629d4bb327 100644
---- a/sound/usb/6fire/comm.c
-+++ b/sound/usb/6fire/comm.c
-@@ -95,7 +95,7 @@ static int usb6fire_comm_send_buffer(u8 *buffer, struct usb_device *dev)
- 	int actual_len;
- 
- 	ret = usb_interrupt_msg(dev, usb_sndintpipe(dev, COMM_EP),
--			buffer, buffer[1] + 2, &actual_len, HZ);
-+			buffer, buffer[1] + 2, &actual_len, 1000);
- 	if (ret < 0)
- 		return ret;
- 	else if (actual_len != buffer[1] + 2)
-diff --git a/sound/usb/6fire/firmware.c b/sound/usb/6fire/firmware.c
-index 8981e61f2da4..c51abc54d2f8 100644
---- a/sound/usb/6fire/firmware.c
-+++ b/sound/usb/6fire/firmware.c
-@@ -160,7 +160,7 @@ static int usb6fire_fw_ezusb_write(struct usb_device *device,
- {
- 	return usb_control_msg_send(device, 0, type,
- 				    USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
--				    value, 0, data, len, HZ, GFP_KERNEL);
-+				    value, 0, data, len, 1000, GFP_KERNEL);
- }
- 
- static int usb6fire_fw_ezusb_read(struct usb_device *device,
-@@ -168,7 +168,7 @@ static int usb6fire_fw_ezusb_read(struct usb_device *device,
- {
- 	return usb_control_msg_recv(device, 0, type,
- 				    USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
--				    value, 0, data, len, HZ, GFP_KERNEL);
-+				    value, 0, data, len, 1000, GFP_KERNEL);
- }
- 
- static int usb6fire_fw_fpga_write(struct usb_device *device,
-@@ -178,7 +178,7 @@ static int usb6fire_fw_fpga_write(struct usb_device *device,
- 	int ret;
- 
- 	ret = usb_bulk_msg(device, usb_sndbulkpipe(device, FPGA_EP), data, len,
--			&actual_len, HZ);
-+			&actual_len, 1000);
- 	if (ret < 0)
- 		return ret;
- 	else if (actual_len != len)
--- 
-2.32.0
+On Mon, Oct 25, 2021 at 07:38:57PM +0800, David Lin wrote:
+> Use set_jack ops to set jack for new machine drivers. Meanwhile,
+> the old machine drivers can still call previous export function
+> "nau8825_enable_jack_detect".
+>=20
+> Signed-off-by: David Lin <CTLIN0@nuvoton.com>
+> Signed-off-by: Mac Chiang <mac.chiang@intel.com>
+> ---
+>  sound/soc/codecs/nau8825.c | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+>=20
+> diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
+> index 67de0e49ccf4..e7a6bd918be3 100644
+> --- a/sound/soc/codecs/nau8825.c
+> +++ b/sound/soc/codecs/nau8825.c
+> @@ -1434,6 +1434,12 @@ int nau8825_enable_jack_detect(struct snd_soc_comp=
+onent *component,
+> =20
+>  	nau8825->jack =3D jack;
+> =20
+> +	if (!nau8825->jack) {
+> +		regmap_update_bits(regmap, NAU8825_REG_HSD_CTRL,
+> +				   NAU8825_HSD_AUTO_MODE | NAU8825_SPKR_DWN1R |
+> +				   NAU8825_SPKR_DWN1L, 0);
 
+This looks like a separate change to support disabling jack detect which
+should be in a separate commit.
+
+> +		return 0;
+> +	}
+>  	/* Ground HP Outputs[1:0], needed for headset auto detection
+
+Should really be a blank line here.
+
+--iZzbKOFQQ2wp/57I
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmF2n+8ACgkQJNaLcl1U
+h9BRswgAgunSlEDrFtpQ17tteZgjhyzOntQeNGNh132EScXSDHNDpPYaK8aWEA47
+UezsFkan8LC1H0UsRbX7szsokNjlVfwck55IuXXhWGQxYzjU/IjROikrdfC9bH7J
+ZA2oQMA8sj7tVqGiKmwUy4ujTf42b0nZOC/8u9eMIH5vshu9IszBIRFjTz+CJjAQ
+ctNJmvkddM5X0NUc3QjigA6WNdjf/65qIjCGDKLwKhZadRCgQ7TuQix98/EBnKyZ
+Wb5M3hqdNxDZc2h4O1Rw2IsBKFLssPBhYiBS+WPvJdG8g8MuM6tMNfrYB4FZlSjr
+rFBKvigP4FVIDiJXgI7LsTTw+su4kw==
+=l5Ee
+-----END PGP SIGNATURE-----
+
+--iZzbKOFQQ2wp/57I--
