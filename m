@@ -2,80 +2,64 @@ Return-Path: <SRS0=GC6S=PO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 67084C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Oct 2021 06:18:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 74CD1C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Oct 2021 06:18:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 962B461074
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Oct 2021 06:18:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 962B461074
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id DE9AA61039
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Oct 2021 06:18:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DE9AA61039
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 010F716CF;
-	Tue, 26 Oct 2021 08:17:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 010F716CF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 51D5216D3;
+	Tue, 26 Oct 2021 08:18:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 51D5216D3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635229120;
-	bh=rYmM2tHF5GwYOrVO2pifT1zJDl5ObPQs5/1DUqbNeoc=;
-	h=From:Date:Subject:To:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=oq1nEre+IgVFdWyoJyQn1GLSUqLf6ViHqtyTtTQeJW0KiaFLQes2+5W4GrRNEC0IO
-	 gLB+qQVxH62gsTxbH5r0i927+ThD4ryNmOPyYZ6rlrM5WQVs6WEnfftF2TpD412vAw
-	 RAb+tE2iLwrCl4ng+HkPf6s0biw4kIEKoma/Wp8c=
+	s=default; t=1635229134;
+	bh=UC5+kIB/cQuuDVHU5gR2AvUz2KmkMvQYXYiH83T5d/E=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=aS6qedGZ+L9DBXITSvHNuuWhnqPVqAngBPjox6WTe9imeZfYsQ9Q7pcKpbyGlR0DZ
+	 neJ7pGJVVBkL4hDyaV4dVfnOqfCijjdUo6vedYnt+0RjRXvvj979cKldbyITCYZH/4
+	 oYsl7wVHd6M3YQacmGDci4+bDBQUOPFO1bw+IjYw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 41FF2F80517;
-	Tue, 26 Oct 2021 08:14:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C2AC1F8051D;
+	Tue, 26 Oct 2021 08:14:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D9128F802C8; Sun, 24 Oct 2021 22:56:08 +0200 (CEST)
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com
- [IPv6:2607:f8b0:4864:20::b2d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 32153F8013D
- for <alsa-devel@alsa-project.org>; Sun, 24 Oct 2021 22:56:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32153F8013D
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="R+g1fa+L"
-Received: by mail-yb1-xb2d.google.com with SMTP id y80so2689792ybe.12
- for <alsa-devel@alsa-project.org>; Sun, 24 Oct 2021 13:56:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:from:date:message-id:subject:to;
- bh=ETRiIAnvUod5Qf3W8eihUx0QJEqi5chByaPkyic/oU0=;
- b=R+g1fa+LjaTNJ+dd/0ghtAAomvNWMkcUtRT++kIawmfzkD6fA9OFfVUsryxmbfJEFJ
- r3aaShC0ix5Gq6VPdgJnHuuwTF1erpVA6qJIUOBYQub9S2Rz1aY1ePt1HMtIEIKf/2RX
- 3VzI59VDmEJNNin0yWTd49ryz1vA42ixzOPc4287O63wgpRK9BPhRorLEdWPrmSWqFQ/
- TtenHr0x630t3dfHmGJhqTVd5sPv3UV8PWMLjYrluHkZWLG+4Q5nvEAnWf1x1H1f1gf5
- luvl1bMYJD5W7PM1+FSo07X/0mI5lhou94lj7vbGv8uEntJ3XiEK3KntybOLV4ngZ5Ax
- XHGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
- bh=ETRiIAnvUod5Qf3W8eihUx0QJEqi5chByaPkyic/oU0=;
- b=sBHsfQs43hPhoBFMzviyMDjYgyQzivZp3+hSaAtBKSQD0TwEbnuUfxQiUQXR4214Ea
- Ab9fomDVmKcBIMcS9h1UEeGzD1Sg588SJyPMC5Zks8J+SrOCT+9IZh2hQDIeneW5Kdsx
- 9hsON+x7v9IlGsE1jJaobKgsr0WtQFgi4okMoem8ZOL6w7oyp6oOKwNWJzVN2iCGM9Bl
- c0lqoHNzHXZRoh3195iqI+y4iwQ0YNn+Ayg9GeFkmYYtzrHah8roOXKzYdBbxnEDSymy
- MulbAkIiAKYX3MOUQoER+UwAXZ3m2ErvOdjgty/rBG9FYtG54I00FJOBoHUHmbURRlFG
- Hxxw==
-X-Gm-Message-State: AOAM5324dXB6rL4x7NAXpuSVW6FpUOZvgWwcrRQ+0c1GzXazo0Ol5zuP
- C8aZqtqY27ao4E3CtFOYSYj8xH4YYHCy/vyipWS6M4dVlh0t/w==
-X-Google-Smtp-Source: ABdhPJz0YWxShh9RZtL9dbjJddDoZnEPkItV+rRJRvndZO8Ij2k+D6gjJbss7RdatrAEWwr+Sn5vX+4iW164Cok+OHI=
-X-Received: by 2002:a25:2d48:: with SMTP id s8mr13732600ybe.380.1635108959081; 
- Sun, 24 Oct 2021 13:55:59 -0700 (PDT)
+ id BAF7DF8025A; Mon, 25 Oct 2021 16:33:11 +0200 (CEST)
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1AFA8F80086
+ for <alsa-devel@alsa-project.org>; Mon, 25 Oct 2021 16:33:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1AFA8F80086
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+ (Authenticated sender: kholk11) with ESMTPSA id 5DB1C1F42EAA
+Subject: Re: [PATCH v3 1/2] ASoC: SOF: mediatek: Add mt8195 dsp clock support
+To: YC Hung <yc.hung@mediatek.com>, broonie@kernel.org, tiwai@suse.com,
+ robh+dt@kernel.org, matthias.bgg@gmail.com
+References: <20211025105635.30625-1-yc.hung@mediatek.com>
+ <20211025105635.30625-2-yc.hung@mediatek.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Message-ID: <b11f6124-9c94-3c09-7f15-ce952b5f27bf@collabora.com>
+Date: Mon, 25 Oct 2021 16:32:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-From: =?UTF-8?B?0JLQu9Cw0LQg0JzQsNC60LDRgNC+0LI=?= <vladmak04@gmail.com>
-Date: Sun, 24 Oct 2021 23:54:14 +0300
-Message-ID: <CAEMSB4AGR53OVO=htrrKhy28WTAsw9+P++CX6i751Nms-4gdmw@mail.gmail.com>
-Subject: Mute LED on HP OMEN 15 needs a fixup in hda_intel
-To: alsa-devel@alsa-project.org
+In-Reply-To: <20211025105635.30625-2-yc.hung@mediatek.com>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 X-Mailman-Approved-At: Tue, 26 Oct 2021 08:14:36 +0200
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ allen-kh.cheng@mediatek.com, linux-kernel@vger.kernel.org,
+ linux-mediatek@lists.infradead.org, trevor.wu@mediatek.com,
+ daniel.baluta@nxp.com, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,27 +75,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Greetings everyone
-I am not sure if this is the right place to ask, but I don't know where
-else to look for help. I have a laptop (HP Omen 15 2020 amd)  which has a
-mute button (Fn + F5) which works great, however, the LED indicator on it
-doesn't light up. With the help of this article
-<https://asus-linux.org/blog/sound-2021-01-11/> I managed to figure out
-that I can trigger the LED with the following command:
+Il 25/10/21 12:56, YC Hung ha scritto:
+> Add adsp clock on/off support on mt8195 platform.
+> 
+> Signed-off-by: YC Hung <yc.hung@mediatek.com>
 
-sudo hda-verb /dev/snd/hwC1D0 0x20 0x500 0x0B && sudo hda-verb
-/dev/snd/hwC1D0 0x20 0x400 0x7778
-And disable it with
-sudo hda-verb /dev/snd/hwC1D0 0x20 0x500 0x0B && sudo hda-verb
-/dev/snd/hwC1D0 0x20 0x400 0x777
-I think that a fix should be added to patch_realtek.c
-<https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/sound/pci/hda/patch_realtek.c>
- (to change those values when mute button is pressed) but this
-requires knowledge of C and kernel stuff.
-I don't have much experience with those so I would be very grateful if
-anyone could help me.
-I have also filed a kernel bug report
-<https://bugzilla.kernel.org/show_bug.cgi?id=214735> (with some useful
-attachments) but nobody responded there.
+Acked-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-Thanks in advance
+> ---
+>   sound/soc/sof/mediatek/adsp_helper.h       |   2 +-
+>   sound/soc/sof/mediatek/mt8195/Makefile     |   2 +-
+>   sound/soc/sof/mediatek/mt8195/mt8195-clk.c | 163 +++++++++++++++++++++
+>   sound/soc/sof/mediatek/mt8195/mt8195-clk.h |  28 ++++
+>   sound/soc/sof/mediatek/mt8195/mt8195.c     |  22 ++-
+>   5 files changed, 213 insertions(+), 4 deletions(-)
+>   create mode 100644 sound/soc/sof/mediatek/mt8195/mt8195-clk.c
+>   create mode 100644 sound/soc/sof/mediatek/mt8195/mt8195-clk.h
+> 
+
