@@ -2,64 +2,73 @@ Return-Path: <SRS0=4dkw=PN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D2595C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Oct 2021 19:03:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7558CC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Oct 2021 19:37:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 513F960E74
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Oct 2021 19:03:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 513F960E74
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 22B4A6115B
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Oct 2021 19:37:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 22B4A6115B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AAF7216D9;
-	Mon, 25 Oct 2021 21:03:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AAF7216D9
+	by alsa0.perex.cz (Postfix) with ESMTPS id B3B6516C7;
+	Mon, 25 Oct 2021 21:36:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3B6516C7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635188631;
-	bh=Vl7md2wy+tZFAWLivDTZpnUuFA5m5I2ZJUYjjE2IPeU=;
+	s=default; t=1635190648;
+	bh=sd3zvU0WPnXXuXfSlXu+WUjd1HBO5uCDKHkTws2cNuY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ATquYhYK+HzpSVC+1ktNB/NbH4AfWXF2bv5wKWM3s/MXFv1md7l2FC2mt6K+x6mF+
-	 lPSKIL7PPrHZgYE73/zCUOqjM4QaaqARmvTkX3jnHdi0jOBl9efM2gWWallnZfCSjv
-	 LwfbUo3Miqk91W93DPWGeoCfUoyWsKyP69j4gb3w=
+	b=VNDJnYGKqj5R5gsG1iGv6HxYGawqO8Zl9AWUp0ASK6+npJ4uFH4aCxtLz8BaV70Ni
+	 qbqE+COqCV0uz1mxYjDIHU7TjBTKTFBDAURLnRl+hm+8gzkKDqQZ655KJQ8R6R7M8D
+	 lB8wlGUIpS2l3rJblXwpx3JV/oGXRtrVsPpBL5Wk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4CB3BF80516;
-	Mon, 25 Oct 2021 21:00:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 35144F80166;
+	Mon, 25 Oct 2021 21:36:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8C89DF804E7; Mon, 25 Oct 2021 21:00:19 +0200 (CEST)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 87CD8F8025A; Mon, 25 Oct 2021 21:36:36 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E2AD2F8032B
- for <alsa-devel@alsa-project.org>; Mon, 25 Oct 2021 21:00:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2AD2F8032B
-X-IronPort-AV: E=McAfee;i="6200,9189,10148"; a="216908162"
-X-IronPort-AV: E=Sophos;i="5.87,181,1631602800"; d="scan'208";a="216908162"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Oct 2021 11:59:56 -0700
-X-IronPort-AV: E=Sophos;i="5.87,181,1631602800"; d="scan'208";a="554318467"
-Received: from ssubbar1-mobl.amr.corp.intel.com (HELO
- pbossart-mobl3.intel.com) ([10.212.118.197])
- by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Oct 2021 11:59:55 -0700
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 3/8] ASoC: nau8821: fix kernel-doc
-Date: Mon, 25 Oct 2021 13:59:28 -0500
-Message-Id: <20211025185933.144327-4-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211025185933.144327-1-pierre-louis.bossart@linux.intel.com>
-References: <20211025185933.144327-1-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id F2946F80153
+ for <alsa-devel@alsa-project.org>; Mon, 25 Oct 2021 21:36:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2946F80153
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=linuxfoundation.org
+ header.i=@linuxfoundation.org header.b="zK2VeW/1"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 564126115A;
+ Mon, 25 Oct 2021 19:36:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+ s=korg; t=1635190585;
+ bh=sd3zvU0WPnXXuXfSlXu+WUjd1HBO5uCDKHkTws2cNuY=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=zK2VeW/1txNghIsMLy9FUOfuWlpNglW6wE6W6lGx26mLM02mRleqpEmV8yu2YYFCo
+ qo9PM6+QNqU5Z941zO2pRVcaY41G1pF89ThLh33gBq6A+dfizvjvbdNvU8IrZu0s0+
+ 5Mw+RcrLKfMMfR0QX7VrUc1MKcZ00RPBpggF3sQA=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH 5.14 018/169] ASoC: pcm512x: Mend accesses to the I2S_1 and
+ I2S_2 registers
+Date: Mon, 25 Oct 2021 21:13:19 +0200
+Message-Id: <20211025191019.970769595@linuxfoundation.org>
+X-Mailer: git-send-email 2.33.1
+In-Reply-To: <20211025191017.756020307@linuxfoundation.org>
+References: <20211025191017.756020307@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.com>,
+ stable@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+ Peter Ujfalusi <peter.ujfalusi@ti.com>,
+ Kirill Marinushkin <kmarinushkin@birdec.com>, Mark Brown <broonie@kernel.org>,
+ Peter Ujfalusi <peter.ujfalusi@gmail.com>, Peter Rosin <peda@axentia.se>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,40 +84,59 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-make W=1 reports warnings:
+From: Peter Rosin <peda@axentia.se>
 
-sound/soc/codecs/nau8821.c:1192: warning: Function parameter or member
-'component' not described in 'nau8821_set_fll'
+[ Upstream commit 3f4b57ad07d9237acf1b8cff3f8bf530cacef87a ]
 
-sound/soc/codecs/nau8821.c:1192: warning: Function parameter or member
-'pll_id' not described in 'nau8821_set_fll'
+Commit 25d27c4f68d2 ("ASoC: pcm512x: Add support for more data formats")
+breaks the TSE-850 device, which is using a pcm5142 in I2S and
+CBM_CFS mode (maybe not relevant). Without this fix, the result
+is:
 
-sound/soc/codecs/nau8821.c:1192: warning: Function parameter or member
-'source' not described in 'nau8821_set_fll'
+pcm512x 0-004c: Failed to set data format: -16
 
-sound/soc/codecs/nau8821.c:1192: warning: Excess function parameter
-'codec' description in 'nau8821_set_fll'
+And after that, no sound.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+This fix is not 100% correct. The datasheet of at least the pcm5142
+states that four bits (0xcc) in the I2S_1 register are "RSV"
+("Reserved. Do not access.") and no hint is given as to what the
+initial values are supposed to be. So, specifying defaults for
+these bits is wrong. But perhaps better than a broken driver?
+
+Fixes: 25d27c4f68d2 ("ASoC: pcm512x: Add support for more data formats")
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: Kirill Marinushkin <kmarinushkin@birdec.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Peter Rosin <peda@axentia.se>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+Reviewed-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+Link: https://lore.kernel.org/r/2d221984-7a2e-7006-0f8a-ffb5f64ee885@axentia.se
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/nau8821.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/codecs/pcm512x.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/codecs/nau8821.c b/sound/soc/codecs/nau8821.c
-index 4ea56d2f9509..2757d2eeb48a 100644
---- a/sound/soc/codecs/nau8821.c
-+++ b/sound/soc/codecs/nau8821.c
-@@ -1178,7 +1178,9 @@ static void nau8821_fll_apply(struct nau8821 *nau8821,
+diff --git a/sound/soc/codecs/pcm512x.c b/sound/soc/codecs/pcm512x.c
+index 4dc844f3c1fc..60dee41816dc 100644
+--- a/sound/soc/codecs/pcm512x.c
++++ b/sound/soc/codecs/pcm512x.c
+@@ -116,6 +116,8 @@ static const struct reg_default pcm512x_reg_defaults[] = {
+ 	{ PCM512x_FS_SPEED_MODE,     0x00 },
+ 	{ PCM512x_IDAC_1,            0x01 },
+ 	{ PCM512x_IDAC_2,            0x00 },
++	{ PCM512x_I2S_1,             0x02 },
++	{ PCM512x_I2S_2,             0x00 },
+ };
  
- /**
-  * nau8821_set_fll - FLL configuration of nau8821
-- * @codec:  codec component
-+ * @component:  codec component
-+ * @pll_id:  PLL requested
-+ * @source:  clock source
-  * @freq_in:  frequency of input clock source
-  * @freq_out:  must be 256*Fs in order to achieve the best performance
-  *
+ static bool pcm512x_readable(struct device *dev, unsigned int reg)
 -- 
-2.25.1
+2.33.0
+
+
 
