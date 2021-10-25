@@ -2,87 +2,87 @@ Return-Path: <SRS0=4dkw=PN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EA8EC433FE
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Oct 2021 17:20:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C6EC1C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Oct 2021 17:20:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9EAF560F4F
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Oct 2021 17:20:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9EAF560F4F
+	by mail.kernel.org (Postfix) with ESMTPS id E759F60551
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Oct 2021 17:20:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E759F60551
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D13D616DD;
-	Mon, 25 Oct 2021 19:19:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D13D616DD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4DC6D16CB;
+	Mon, 25 Oct 2021 19:19:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4DC6D16CB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635182398;
-	bh=4B1wsaYpvP9Q0nIMHRpLABqAQTF7xIuuvJzQbVvfdN4=;
+	s=default; t=1635182426;
+	bh=cinCTm5fcIJq9gzZ2LKqynCXE0BCgU8gGocs0cx4xUA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bv/zGaXiMGrxnvoZAlBcVE6LX49uHoQFFs57qDmTGb9qpy5JSnIBqYxYMOa7H9WUq
-	 xtQ7xQ0gcLX4+I2o9Eg6Byyp8K6pJYpu+cB0yprFz24VzrCGxDjFc+Nxr8vHvPKoIo
-	 4VdtJPWEoklzIF4ZHPVWfdPVGpWjGtj51Jon3aBY=
+	b=OMj09Pv585TmIHr1q61dL1SDuftVUT5ydcB/5NTViDy4cgBzMPWhAal8MBaeQoQab
+	 oQ0uQ3C3g+N7uERQc7Y6zM0OWT0RxQ+BFUevsPltp7BEiNnQQrgROJw+lueYNmQD3p
+	 3wwpy7TGA8l6fyodR1WzOm/GSCRu5xntM4giDmJo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 698CCF80518;
-	Mon, 25 Oct 2021 19:17:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 541EAF80520;
+	Mon, 25 Oct 2021 19:17:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 69697F80507; Mon, 25 Oct 2021 19:17:34 +0200 (CEST)
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com
- [IPv6:2a00:1450:4864:20::436])
+ id A7A0CF804FC; Mon, 25 Oct 2021 19:17:34 +0200 (CEST)
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com
+ [IPv6:2a00:1450:4864:20::433])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3A517F80166
+ by alsa1.perex.cz (Postfix) with ESMTPS id B1C58F8032B
  for <alsa-devel@alsa-project.org>; Mon, 25 Oct 2021 19:17:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3A517F80166
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1C58F8032B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="nxdXf7HR"
-Received: by mail-wr1-x436.google.com with SMTP id d13so11627399wrf.11
+ header.b="LKclu6Sa"
+Received: by mail-wr1-x433.google.com with SMTP id k7so9483932wrd.13
  for <alsa-devel@alsa-project.org>; Mon, 25 Oct 2021 10:17:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=1SYNXa9BSEU6BVfGZ3maNgsEM4Zr64CRywqKjDQaPHg=;
- b=nxdXf7HRhR5rWl3rO5yIIll01RAxUenIPQ2mxk4Rs/QPjIWPaT2HRX+nPRvDc/n5R6
- y6f7QE4GlodBuwbIkNNP7MzhLXBwIJguL0AY3AcILptcZ+Z4KBLDhK5U+Le5WPcvcX4I
- ay4YPo7ai9P81Gw3DGNbGXz4YYR7EUs1iXzCtTLJRbfwc884fWZK11kXA//JRNEkWdW3
- DfJggWREsRiQMDhQpHTQ8Ix7aaHezbk/EhlKbet6Bwa7rXxl93iaLGAAAT2RuWTVxMia
- r4daWq6xI5yCXHjNH92hcLHMnVMvx7HmjhvY/9BJdjmU2EBBejuK3uIJobMbK6QbfX1I
- G0XQ==
+ bh=0sqozBq+aXNpDnMO1F1fpUtm2LewFLxPBuJo7vey+3c=;
+ b=LKclu6SaBqhTgfIomva1urEsQC7HK41HTgVlE4kwot0qJTvGeMcVlVPQLU4LQyazha
+ oNfSFuchFvtCYXVFwWCCEI02XvG+EVcm1A+y2mCvZvVx/yBfaIrtZxWEP/5KQOrf/yqR
+ ohDPDi3/DPlLYWm3IWqDBHUdTq2Lh7Obz+bo4rjKBNzwKFmmmyYcl82m0+jOVoJlFTZN
+ hCwLRxNYchwuWlUtC0bCDMox8YfBFctk+Zu404GVZ02iOIVjBDnjZbBBEBUkcX1vQCxC
+ mInJqpo51VhgLAdWer0ZFZDIUWRHlo3fqhX8OXHkOJYMHGGUKcpmVmnqW3LM/qV27okC
+ u0bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=1SYNXa9BSEU6BVfGZ3maNgsEM4Zr64CRywqKjDQaPHg=;
- b=lMfuRwyVH6vI4ho7z6wAioy6qGFYR75xGyDVG1E7Ws5FDBjr5ZKTXHKEOGJ8PZG0V0
- hc8yMKVZI+XnzzI5I66uVpFZ1v/0sb2EsIhVy2sb2Z91D10HNbvrdJkQd8x/zFxn2Veq
- f7YzGWkJBQQDzSsFIUcOPBG/diGCby0tYwgc7JVUwWJlqgEBuACzR6CBIOOChiohcE6j
- 3Umlr5iIN9YHEeAmH+Y36Fy0HzcnbWimfC0xb5FPdpHRQDG3qXFq6oKGbKOFwTBzc4iC
- TM4oT0Cjphuib8qxgnuWSZBhnqW2b4ak7JgnPfcPGajMHkmIXe7k/pEA33YfZd2CxNX0
- wbjw==
-X-Gm-Message-State: AOAM531MdjC+GN0eWP3AUBqH1Hh0Zpg5NUP7h/4CXljYGjjSExulMJzG
- FdTWKtI8D7NQMPW36JsplvpxoQ==
-X-Google-Smtp-Source: ABdhPJzV06Ru5E4Ij97tuI0E40/DyuLy4YyxaqGb/s4mIOz8GF5R95omBboX0961PLrOJRV01kgfiQ==
-X-Received: by 2002:adf:f58c:: with SMTP id f12mr25069487wro.413.1635182233857; 
- Mon, 25 Oct 2021 10:17:13 -0700 (PDT)
+ bh=0sqozBq+aXNpDnMO1F1fpUtm2LewFLxPBuJo7vey+3c=;
+ b=R6ibeOgVRxEbI2KdoBr+Kj6W1+Jys+/XWzxl3MLOGPs+DYmSIx0ELWDm5eUhVd7nKD
+ Qfh/aAUE4/QU3F8FLenkPwqMzSesntClQ5NxlmUzCFpB+5i9bc1XKlccVKUFeDli01//
+ aOxkcWJ0y+BLOHMjRGN6gYSpG8YH1eahZ2735QdqQ7hhetiCN3gfWlx18jy2mGBkk1iY
+ lVoAkZqYNBR3j9u3qk5Cid4+w1PvBYi7aily9ZYzcuLsiLx4umgj8NNGi3ZAfVn3HgP1
+ uV/gS0Do9/poDrp6t124hluR7e5pq8WkoxmxMA7BR7Wiv5xMfNgQ7HU5W9Jxs01JxAnU
+ JH7Q==
+X-Gm-Message-State: AOAM530lAYJnoA5g0zodFjC2U2VpTnWld/9eOgYeUyyvE4xzUxSua8jT
+ GA8NYLqiZCBajCkxYIL6gvIZaQ==
+X-Google-Smtp-Source: ABdhPJz3bpjZhDyhWe1dzyBfIY5pNqjiRvc6PQoJSMRO0cS1RD5XGbNeieCgYhPK8Lq141Wpy5DjHA==
+X-Received: by 2002:a5d:6941:: with SMTP id r1mr13478593wrw.373.1635182231744; 
+ Mon, 25 Oct 2021 10:17:11 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id r11sm5181012wrt.42.2021.10.25.10.17.12
+ by smtp.gmail.com with ESMTPSA id r11sm5181012wrt.42.2021.10.25.10.17.10
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 25 Oct 2021 10:17:13 -0700 (PDT)
+ Mon, 25 Oct 2021 10:17:11 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org,
 	bjorn.andersson@linaro.org,
 	robh@kernel.org
-Subject: [PATCH v10 03/17] ASoC: dt-bindings: rename q6afe.h to
- q6dsp-lpass-ports.h
-Date: Mon, 25 Oct 2021 18:16:35 +0100
-Message-Id: <20211025171649.17730-4-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v10 01/17] ASoC: dt-bindings: move LPASS dai related bindings
+ out of q6afe
+Date: Mon, 25 Oct 2021 18:16:33 +0100
+Message-Id: <20211025171649.17730-2-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20211025171649.17730-1-srinivas.kandagatla@linaro.org>
 References: <20211025171649.17730-1-srinivas.kandagatla@linaro.org>
@@ -106,449 +106,386 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-move all LPASS audio ports defines from q6afe.h to q6dsp-lpass-ports.h
-as these belong to LPASS IP.
-Also this move helps in reusing this header across multiple audio
-frameworks on Qualcomm Audio DSP.
+q6afe (Audio Front End) is one of the DSP service that handles both
+LPASS (Low Power Audio SubSystem) Audio ports and LPASS clocks.
+As LPASS is a hardwware IP and commonly used by Qualcomm Audio DSP.
+In order to allow  multiple DSP frameworks to use these bindings
+its best to move it out from the dsp specific bindings.
 
-This patch is split out of the dt-bindings patch to enable easy review.
+For compatibility reasons and not breaking which is already working
+we still maintain same compatible string "qcom,q6afe-dais"
+
+Also as part of this change convert these LPASS dai related bindings
+into yaml format.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- include/dt-bindings/sound/qcom,q6afe.h        | 203 +----------------
- .../sound/qcom,q6dsp-lpass-ports.h            | 208 ++++++++++++++++++
- 2 files changed, 210 insertions(+), 201 deletions(-)
- create mode 100644 include/dt-bindings/sound/qcom,q6dsp-lpass-ports.h
+ .../devicetree/bindings/sound/qcom,q6afe.txt  | 158 ----------------
+ .../sound/qcom,q6dsp-lpass-ports.yaml         | 178 ++++++++++++++++++
+ 2 files changed, 178 insertions(+), 158 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6dsp-lpass-ports.yaml
 
-diff --git a/include/dt-bindings/sound/qcom,q6afe.h b/include/dt-bindings/sound/qcom,q6afe.h
-index 66c21ab03eef..9d5d89cfabcf 100644
---- a/include/dt-bindings/sound/qcom,q6afe.h
-+++ b/include/dt-bindings/sound/qcom,q6afe.h
-@@ -2,207 +2,8 @@
- #ifndef __DT_BINDINGS_Q6_AFE_H__
- #define __DT_BINDINGS_Q6_AFE_H__
+diff --git a/Documentation/devicetree/bindings/sound/qcom,q6afe.txt b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
+index 1677448347da..fcf81058504c 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
++++ b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
+@@ -12,92 +12,6 @@ used by all apr services. Must contain the following properties.
+ 		  from DSP.
+ 		  example "qcom,q6afe"
  
--/* Audio Front End (AFE) virtual ports IDs */
--#define HDMI_RX		1
--#define SLIMBUS_0_RX    2
--#define SLIMBUS_0_TX    3
--#define SLIMBUS_1_RX    4
--#define SLIMBUS_1_TX    5
--#define SLIMBUS_2_RX    6
--#define SLIMBUS_2_TX    7
--#define SLIMBUS_3_RX    8
--#define SLIMBUS_3_TX    9
--#define SLIMBUS_4_RX    10
--#define SLIMBUS_4_TX    11
--#define SLIMBUS_5_RX    12
--#define SLIMBUS_5_TX    13
--#define SLIMBUS_6_RX    14
--#define SLIMBUS_6_TX    15
--#define PRIMARY_MI2S_RX		16
--#define PRIMARY_MI2S_TX		17
--#define SECONDARY_MI2S_RX	18
--#define SECONDARY_MI2S_TX	19
--#define TERTIARY_MI2S_RX	20
--#define TERTIARY_MI2S_TX	21
--#define QUATERNARY_MI2S_RX	22
--#define QUATERNARY_MI2S_TX	23
--#define PRIMARY_TDM_RX_0	24
--#define PRIMARY_TDM_TX_0	25
--#define PRIMARY_TDM_RX_1	26
--#define PRIMARY_TDM_TX_1	27
--#define PRIMARY_TDM_RX_2	28
--#define PRIMARY_TDM_TX_2	29
--#define PRIMARY_TDM_RX_3	30
--#define PRIMARY_TDM_TX_3	31
--#define PRIMARY_TDM_RX_4	32
--#define PRIMARY_TDM_TX_4	33
--#define PRIMARY_TDM_RX_5	34
--#define PRIMARY_TDM_TX_5	35
--#define PRIMARY_TDM_RX_6	36
--#define PRIMARY_TDM_TX_6	37
--#define PRIMARY_TDM_RX_7	38
--#define PRIMARY_TDM_TX_7	39
--#define SECONDARY_TDM_RX_0	40
--#define SECONDARY_TDM_TX_0	41
--#define SECONDARY_TDM_RX_1	42
--#define SECONDARY_TDM_TX_1	43
--#define SECONDARY_TDM_RX_2	44
--#define SECONDARY_TDM_TX_2	45
--#define SECONDARY_TDM_RX_3	46
--#define SECONDARY_TDM_TX_3	47
--#define SECONDARY_TDM_RX_4	48
--#define SECONDARY_TDM_TX_4	49
--#define SECONDARY_TDM_RX_5	50
--#define SECONDARY_TDM_TX_5	51
--#define SECONDARY_TDM_RX_6	52
--#define SECONDARY_TDM_TX_6	53
--#define SECONDARY_TDM_RX_7	54
--#define SECONDARY_TDM_TX_7	55
--#define TERTIARY_TDM_RX_0	56
--#define TERTIARY_TDM_TX_0	57
--#define TERTIARY_TDM_RX_1	58
--#define TERTIARY_TDM_TX_1	59
--#define TERTIARY_TDM_RX_2	60
--#define TERTIARY_TDM_TX_2	61
--#define TERTIARY_TDM_RX_3	62
--#define TERTIARY_TDM_TX_3	63
--#define TERTIARY_TDM_RX_4	64
--#define TERTIARY_TDM_TX_4	65
--#define TERTIARY_TDM_RX_5	66
--#define TERTIARY_TDM_TX_5	67
--#define TERTIARY_TDM_RX_6	68
--#define TERTIARY_TDM_TX_6	69
--#define TERTIARY_TDM_RX_7	70
--#define TERTIARY_TDM_TX_7	71
--#define QUATERNARY_TDM_RX_0	72
--#define QUATERNARY_TDM_TX_0	73
--#define QUATERNARY_TDM_RX_1	74
--#define QUATERNARY_TDM_TX_1	75
--#define QUATERNARY_TDM_RX_2	76
--#define QUATERNARY_TDM_TX_2	77
--#define QUATERNARY_TDM_RX_3	78
--#define QUATERNARY_TDM_TX_3	79
--#define QUATERNARY_TDM_RX_4	80
--#define QUATERNARY_TDM_TX_4	81
--#define QUATERNARY_TDM_RX_5	82
--#define QUATERNARY_TDM_TX_5	83
--#define QUATERNARY_TDM_RX_6	84
--#define QUATERNARY_TDM_TX_6	85
--#define QUATERNARY_TDM_RX_7	86
--#define QUATERNARY_TDM_TX_7	87
--#define QUINARY_TDM_RX_0	88
--#define QUINARY_TDM_TX_0	89
--#define QUINARY_TDM_RX_1	90
--#define QUINARY_TDM_TX_1	91
--#define QUINARY_TDM_RX_2	92
--#define QUINARY_TDM_TX_2	93
--#define QUINARY_TDM_RX_3	94
--#define QUINARY_TDM_TX_3	95
--#define QUINARY_TDM_RX_4	96
--#define QUINARY_TDM_TX_4	97
--#define QUINARY_TDM_RX_5	98
--#define QUINARY_TDM_TX_5	99
--#define QUINARY_TDM_RX_6	100
--#define QUINARY_TDM_TX_6	101
--#define QUINARY_TDM_RX_7	102
--#define QUINARY_TDM_TX_7	103
--#define DISPLAY_PORT_RX		104
--#define WSA_CODEC_DMA_RX_0	105
--#define WSA_CODEC_DMA_TX_0	106
--#define WSA_CODEC_DMA_RX_1	107
--#define WSA_CODEC_DMA_TX_1	108
--#define WSA_CODEC_DMA_TX_2	109
--#define VA_CODEC_DMA_TX_0	110
--#define VA_CODEC_DMA_TX_1	111
--#define VA_CODEC_DMA_TX_2	112
--#define RX_CODEC_DMA_RX_0	113
--#define TX_CODEC_DMA_TX_0	114
--#define RX_CODEC_DMA_RX_1	115
--#define TX_CODEC_DMA_TX_1	116
--#define RX_CODEC_DMA_RX_2	117
--#define TX_CODEC_DMA_TX_2	118
--#define RX_CODEC_DMA_RX_3	119
--#define TX_CODEC_DMA_TX_3	120
--#define RX_CODEC_DMA_RX_4	121
--#define TX_CODEC_DMA_TX_4	122
--#define RX_CODEC_DMA_RX_5	123
--#define TX_CODEC_DMA_TX_5	124
--#define RX_CODEC_DMA_RX_6	125
--#define RX_CODEC_DMA_RX_7	126
--#define QUINARY_MI2S_RX		127
--#define QUINARY_MI2S_TX		128
-+/* This file exists due to backward compatibility reasons, Please do not DELETE! */
+-= AFE DAIs (Digital Audio Interface)
+-"dais" subnode of the AFE node. It represents afe dais, each afe dai is a
+-subnode of "dais" representing board specific dai setup.
+-"dais" node should have following properties followed by dai children.
+-
+-- compatible:
+-	Usage: required
+-	Value type: <stringlist>
+-	Definition: must be "qcom,q6afe-dais"
+-
+-- #sound-dai-cells
+-	Usage: required
+-	Value type: <u32>
+-	Definition: Must be 1
+-
+-- #address-cells
+-	Usage: required
+-	Value type: <u32>
+-	Definition: Must be 1
+-
+-- #size-cells
+-	Usage: required
+-	Value type: <u32>
+-	Definition: Must be 0
+-
+-== AFE DAI is subnode of "dais" and represent a dai, it includes board specific
+-configuration of each dai. Must contain the following properties.
+-
+-- reg
+-	Usage: required
+-	Value type: <u32>
+-	Definition: Must be dai id
+-
+-- qcom,sd-lines
+-	Usage: required for mi2s interface
+-	Value type: <prop-encoded-array>
+-	Definition: Must be list of serial data lines used by this dai.
+-	should be one or more of the 0-3 sd lines.
+-
+- - qcom,tdm-sync-mode:
+-	Usage: required for tdm interface
+-	Value type: <prop-encoded-array>
+-	Definition: Synchronization mode.
+-		0 - Short sync bit mode
+-		1 - Long sync mode
+-		2 - Short sync slot mode
+-
+- - qcom,tdm-sync-src:
+-	Usage: required for tdm interface
+-	Value type: <prop-encoded-array>
+-	Definition: Synchronization source.
+-		0 - External source
+-		1 - Internal source
+-
+- - qcom,tdm-data-out:
+-	Usage: required for tdm interface
+-	Value type: <prop-encoded-array>
+-	Definition: Data out signal to drive with other masters.
+-		0 - Disable
+-		1 - Enable
+-
+- - qcom,tdm-invert-sync:
+-	Usage: required for tdm interface
+-	Value type: <prop-encoded-array>
+-	Definition: Invert the sync.
+-		0 - Normal
+-		1 - Invert
+-
+- - qcom,tdm-data-delay:
+-	Usage: required for tdm interface
+-	Value type: <prop-encoded-array>
+-	Definition: Number of bit clock to delay data
+-		with respect to sync edge.
+-		0 - 0 bit clock cycle
+-		1 - 1 bit clock cycle
+-		2 - 2 bit clock cycle
+-
+- - qcom,tdm-data-align:
+-	Usage: required for tdm interface
+-	Value type: <prop-encoded-array>
+-	Definition: Indicate how data is packed
+-		within the slot. For example, 32 slot width in case of
+-		sample bit width is 24.
+-		0 - MSB
+-		1 - LSB
+-
+ = AFE CLOCKSS
+ "clocks" subnode of the AFE node. It represents q6afe clocks
+ "clocks" node should have following properties.
+@@ -122,78 +36,6 @@ apr-service@4 {
+ 	compatible = "qcom,q6afe";
+ 	reg = <APR_SVC_AFE>;
  
--#define LPASS_CLK_ID_PRI_MI2S_IBIT	1
--#define LPASS_CLK_ID_PRI_MI2S_EBIT	2
--#define LPASS_CLK_ID_SEC_MI2S_IBIT	3
--#define LPASS_CLK_ID_SEC_MI2S_EBIT	4
--#define LPASS_CLK_ID_TER_MI2S_IBIT	5
--#define LPASS_CLK_ID_TER_MI2S_EBIT	6
--#define LPASS_CLK_ID_QUAD_MI2S_IBIT	7
--#define LPASS_CLK_ID_QUAD_MI2S_EBIT	8
--#define LPASS_CLK_ID_SPEAKER_I2S_IBIT	9
--#define LPASS_CLK_ID_SPEAKER_I2S_EBIT	10
--#define LPASS_CLK_ID_SPEAKER_I2S_OSR	11
--#define LPASS_CLK_ID_QUI_MI2S_IBIT	12
--#define LPASS_CLK_ID_QUI_MI2S_EBIT	13
--#define LPASS_CLK_ID_SEN_MI2S_IBIT	14
--#define LPASS_CLK_ID_SEN_MI2S_EBIT	15
--#define LPASS_CLK_ID_INT0_MI2S_IBIT	16
--#define LPASS_CLK_ID_INT1_MI2S_IBIT	17
--#define LPASS_CLK_ID_INT2_MI2S_IBIT	18
--#define LPASS_CLK_ID_INT3_MI2S_IBIT	19
--#define LPASS_CLK_ID_INT4_MI2S_IBIT	20
--#define LPASS_CLK_ID_INT5_MI2S_IBIT	21
--#define LPASS_CLK_ID_INT6_MI2S_IBIT	22
--#define LPASS_CLK_ID_QUI_MI2S_OSR	23
--#define LPASS_CLK_ID_PRI_PCM_IBIT	24
--#define LPASS_CLK_ID_PRI_PCM_EBIT	25
--#define LPASS_CLK_ID_SEC_PCM_IBIT	26
--#define LPASS_CLK_ID_SEC_PCM_EBIT	27
--#define LPASS_CLK_ID_TER_PCM_IBIT	28
--#define LPASS_CLK_ID_TER_PCM_EBIT	29
--#define LPASS_CLK_ID_QUAD_PCM_IBIT	30
--#define LPASS_CLK_ID_QUAD_PCM_EBIT	31
--#define LPASS_CLK_ID_QUIN_PCM_IBIT	32
--#define LPASS_CLK_ID_QUIN_PCM_EBIT	33
--#define LPASS_CLK_ID_QUI_PCM_OSR	34
--#define LPASS_CLK_ID_PRI_TDM_IBIT	35
--#define LPASS_CLK_ID_PRI_TDM_EBIT	36
--#define LPASS_CLK_ID_SEC_TDM_IBIT	37
--#define LPASS_CLK_ID_SEC_TDM_EBIT	38
--#define LPASS_CLK_ID_TER_TDM_IBIT	39
--#define LPASS_CLK_ID_TER_TDM_EBIT	40
--#define LPASS_CLK_ID_QUAD_TDM_IBIT	41
--#define LPASS_CLK_ID_QUAD_TDM_EBIT	42
--#define LPASS_CLK_ID_QUIN_TDM_IBIT	43
--#define LPASS_CLK_ID_QUIN_TDM_EBIT	44
--#define LPASS_CLK_ID_QUIN_TDM_OSR	45
--#define LPASS_CLK_ID_MCLK_1		46
--#define LPASS_CLK_ID_MCLK_2		47
--#define LPASS_CLK_ID_MCLK_3		48
--#define LPASS_CLK_ID_MCLK_4		49
--#define LPASS_CLK_ID_INTERNAL_DIGITAL_CODEC_CORE	50
--#define LPASS_CLK_ID_INT_MCLK_0		51
--#define LPASS_CLK_ID_INT_MCLK_1		52
--#define LPASS_CLK_ID_MCLK_5		53
--#define LPASS_CLK_ID_WSA_CORE_MCLK	54
--#define LPASS_CLK_ID_WSA_CORE_NPL_MCLK	55
--#define LPASS_CLK_ID_VA_CORE_MCLK	56
--#define LPASS_CLK_ID_TX_CORE_MCLK	57
--#define LPASS_CLK_ID_TX_CORE_NPL_MCLK	58
--#define LPASS_CLK_ID_RX_CORE_MCLK	59
--#define LPASS_CLK_ID_RX_CORE_NPL_MCLK	60
--#define LPASS_CLK_ID_VA_CORE_2X_MCLK	61
+-	dais {
+-		compatible = "qcom,q6afe-dais";
+-		#sound-dai-cells = <1>;
+-		#address-cells = <1>;
+-		#size-cells = <0>;
 -
--#define LPASS_HW_AVTIMER_VOTE		101
--#define LPASS_HW_MACRO_VOTE		102
--#define LPASS_HW_DCODEC_VOTE		103
+-		dai@1 {
+-			reg = <HDMI_RX>;
+-		};
 -
--#define Q6AFE_MAX_CLK_ID			104
+-		dai@24 {
+-			reg = <PRIMARY_TDM_RX_0>;
+-			qcom,tdm-sync-mode = <1>:
+-			qcom,tdm-sync-src = <1>;
+-			qcom,tdm-data-out = <0>;
+-			qcom,tdm-invert-sync = <1>;
+-			qcom,tdm-data-delay = <1>;
+-			qcom,tdm-data-align = <0>;
 -
--#define LPASS_CLK_ATTRIBUTE_INVALID		0x0
--#define LPASS_CLK_ATTRIBUTE_COUPLE_NO		0x1
--#define LPASS_CLK_ATTRIBUTE_COUPLE_DIVIDEND	0x2
--#define LPASS_CLK_ATTRIBUTE_COUPLE_DIVISOR	0x3
-+#include <dt-bindings/sound/qcom,q6dsp-lpass-ports.h>
- 
- #endif /* __DT_BINDINGS_Q6_AFE_H__ */
-diff --git a/include/dt-bindings/sound/qcom,q6dsp-lpass-ports.h b/include/dt-bindings/sound/qcom,q6dsp-lpass-ports.h
+-		};
+-
+-		dai@25 {
+-			reg = <PRIMARY_TDM_TX_0>;
+-			qcom,tdm-sync-mode = <1>:
+-			qcom,tdm-sync-src = <1>;
+-			qcom,tdm-data-out = <0>;
+-			qcom,tdm-invert-sync = <1>;
+-			qcom,tdm-data-delay <1>:
+-			qcom,tdm-data-align = <0>;
+-		};
+-
+-		dai@16 {
+-			reg = <PRIMARY_MI2S_RX>;
+-			qcom,sd-lines = <0 2>;
+-		};
+-
+-		dai@17 {
+-			reg = <PRIMARY_MI2S_TX>;
+-			qcom,sd-lines = <1>;
+-		};
+-
+-		dai@18 {
+-			reg = <SECONDARY_MI2S_RX>;
+-			qcom,sd-lines = <0 3>;
+-		};
+-
+-		dai@19 {
+-			reg = <SECONDARY_MI2S_TX>;
+-			qcom,sd-lines = <1>;
+-		};
+-
+-		dai@20 {
+-			reg = <TERTIARY_MI2S_RX>;
+-			qcom,sd-lines = <1 3>;
+-		};
+-
+-		dai@21 {
+-			reg = <TERTIARY_MI2S_TX>;
+-			qcom,sd-lines = <0>;
+-		};
+-
+-		dai@22 {
+-			reg = <QUATERNARY_MI2S_RX>;
+-			qcom,sd-lines = <0>;
+-		};
+-
+-		dai@23 {
+-			reg = <QUATERNARY_MI2S_TX>;
+-			qcom,sd-lines = <1>;
+-		};
+-	};
+-
+ 	clocks {
+ 		compatible = "qcom,q6afe-clocks";
+ 		#clock-cells = <2>;
+diff --git a/Documentation/devicetree/bindings/sound/qcom,q6dsp-lpass-ports.yaml b/Documentation/devicetree/bindings/sound/qcom,q6dsp-lpass-ports.yaml
 new file mode 100644
-index 000000000000..0d3276c8fc11
+index 000000000000..e6148c17419b
 --- /dev/null
-+++ b/include/dt-bindings/sound/qcom,q6dsp-lpass-ports.h
-@@ -0,0 +1,208 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __DT_BINDINGS_Q6_AUDIO_PORTS_H__
-+#define __DT_BINDINGS_Q6_AUDIO_PORTS_H__
++++ b/Documentation/devicetree/bindings/sound/qcom,q6dsp-lpass-ports.yaml
+@@ -0,0 +1,178 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/sound/qcom,q6dsp-lpass-ports.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
 +
-+/* LPASS Audio virtual ports IDs */
-+#define HDMI_RX		1
-+#define SLIMBUS_0_RX    2
-+#define SLIMBUS_0_TX    3
-+#define SLIMBUS_1_RX    4
-+#define SLIMBUS_1_TX    5
-+#define SLIMBUS_2_RX    6
-+#define SLIMBUS_2_TX    7
-+#define SLIMBUS_3_RX    8
-+#define SLIMBUS_3_TX    9
-+#define SLIMBUS_4_RX    10
-+#define SLIMBUS_4_TX    11
-+#define SLIMBUS_5_RX    12
-+#define SLIMBUS_5_TX    13
-+#define SLIMBUS_6_RX    14
-+#define SLIMBUS_6_TX    15
-+#define PRIMARY_MI2S_RX		16
-+#define PRIMARY_MI2S_TX		17
-+#define SECONDARY_MI2S_RX	18
-+#define SECONDARY_MI2S_TX	19
-+#define TERTIARY_MI2S_RX	20
-+#define TERTIARY_MI2S_TX	21
-+#define QUATERNARY_MI2S_RX	22
-+#define QUATERNARY_MI2S_TX	23
-+#define PRIMARY_TDM_RX_0	24
-+#define PRIMARY_TDM_TX_0	25
-+#define PRIMARY_TDM_RX_1	26
-+#define PRIMARY_TDM_TX_1	27
-+#define PRIMARY_TDM_RX_2	28
-+#define PRIMARY_TDM_TX_2	29
-+#define PRIMARY_TDM_RX_3	30
-+#define PRIMARY_TDM_TX_3	31
-+#define PRIMARY_TDM_RX_4	32
-+#define PRIMARY_TDM_TX_4	33
-+#define PRIMARY_TDM_RX_5	34
-+#define PRIMARY_TDM_TX_5	35
-+#define PRIMARY_TDM_RX_6	36
-+#define PRIMARY_TDM_TX_6	37
-+#define PRIMARY_TDM_RX_7	38
-+#define PRIMARY_TDM_TX_7	39
-+#define SECONDARY_TDM_RX_0	40
-+#define SECONDARY_TDM_TX_0	41
-+#define SECONDARY_TDM_RX_1	42
-+#define SECONDARY_TDM_TX_1	43
-+#define SECONDARY_TDM_RX_2	44
-+#define SECONDARY_TDM_TX_2	45
-+#define SECONDARY_TDM_RX_3	46
-+#define SECONDARY_TDM_TX_3	47
-+#define SECONDARY_TDM_RX_4	48
-+#define SECONDARY_TDM_TX_4	49
-+#define SECONDARY_TDM_RX_5	50
-+#define SECONDARY_TDM_TX_5	51
-+#define SECONDARY_TDM_RX_6	52
-+#define SECONDARY_TDM_TX_6	53
-+#define SECONDARY_TDM_RX_7	54
-+#define SECONDARY_TDM_TX_7	55
-+#define TERTIARY_TDM_RX_0	56
-+#define TERTIARY_TDM_TX_0	57
-+#define TERTIARY_TDM_RX_1	58
-+#define TERTIARY_TDM_TX_1	59
-+#define TERTIARY_TDM_RX_2	60
-+#define TERTIARY_TDM_TX_2	61
-+#define TERTIARY_TDM_RX_3	62
-+#define TERTIARY_TDM_TX_3	63
-+#define TERTIARY_TDM_RX_4	64
-+#define TERTIARY_TDM_TX_4	65
-+#define TERTIARY_TDM_RX_5	66
-+#define TERTIARY_TDM_TX_5	67
-+#define TERTIARY_TDM_RX_6	68
-+#define TERTIARY_TDM_TX_6	69
-+#define TERTIARY_TDM_RX_7	70
-+#define TERTIARY_TDM_TX_7	71
-+#define QUATERNARY_TDM_RX_0	72
-+#define QUATERNARY_TDM_TX_0	73
-+#define QUATERNARY_TDM_RX_1	74
-+#define QUATERNARY_TDM_TX_1	75
-+#define QUATERNARY_TDM_RX_2	76
-+#define QUATERNARY_TDM_TX_2	77
-+#define QUATERNARY_TDM_RX_3	78
-+#define QUATERNARY_TDM_TX_3	79
-+#define QUATERNARY_TDM_RX_4	80
-+#define QUATERNARY_TDM_TX_4	81
-+#define QUATERNARY_TDM_RX_5	82
-+#define QUATERNARY_TDM_TX_5	83
-+#define QUATERNARY_TDM_RX_6	84
-+#define QUATERNARY_TDM_TX_6	85
-+#define QUATERNARY_TDM_RX_7	86
-+#define QUATERNARY_TDM_TX_7	87
-+#define QUINARY_TDM_RX_0	88
-+#define QUINARY_TDM_TX_0	89
-+#define QUINARY_TDM_RX_1	90
-+#define QUINARY_TDM_TX_1	91
-+#define QUINARY_TDM_RX_2	92
-+#define QUINARY_TDM_TX_2	93
-+#define QUINARY_TDM_RX_3	94
-+#define QUINARY_TDM_TX_3	95
-+#define QUINARY_TDM_RX_4	96
-+#define QUINARY_TDM_TX_4	97
-+#define QUINARY_TDM_RX_5	98
-+#define QUINARY_TDM_TX_5	99
-+#define QUINARY_TDM_RX_6	100
-+#define QUINARY_TDM_TX_6	101
-+#define QUINARY_TDM_RX_7	102
-+#define QUINARY_TDM_TX_7	103
-+#define DISPLAY_PORT_RX		104
-+#define WSA_CODEC_DMA_RX_0	105
-+#define WSA_CODEC_DMA_TX_0	106
-+#define WSA_CODEC_DMA_RX_1	107
-+#define WSA_CODEC_DMA_TX_1	108
-+#define WSA_CODEC_DMA_TX_2	109
-+#define VA_CODEC_DMA_TX_0	110
-+#define VA_CODEC_DMA_TX_1	111
-+#define VA_CODEC_DMA_TX_2	112
-+#define RX_CODEC_DMA_RX_0	113
-+#define TX_CODEC_DMA_TX_0	114
-+#define RX_CODEC_DMA_RX_1	115
-+#define TX_CODEC_DMA_TX_1	116
-+#define RX_CODEC_DMA_RX_2	117
-+#define TX_CODEC_DMA_TX_2	118
-+#define RX_CODEC_DMA_RX_3	119
-+#define TX_CODEC_DMA_TX_3	120
-+#define RX_CODEC_DMA_RX_4	121
-+#define TX_CODEC_DMA_TX_4	122
-+#define RX_CODEC_DMA_RX_5	123
-+#define TX_CODEC_DMA_TX_5	124
-+#define RX_CODEC_DMA_RX_6	125
-+#define RX_CODEC_DMA_RX_7	126
-+#define QUINARY_MI2S_RX		127
-+#define QUINARY_MI2S_TX		128
++title: Qualcomm DSP LPASS(Low Power Audio SubSystem) Audio Ports binding
 +
-+#define LPASS_CLK_ID_PRI_MI2S_IBIT	1
-+#define LPASS_CLK_ID_PRI_MI2S_EBIT	2
-+#define LPASS_CLK_ID_SEC_MI2S_IBIT	3
-+#define LPASS_CLK_ID_SEC_MI2S_EBIT	4
-+#define LPASS_CLK_ID_TER_MI2S_IBIT	5
-+#define LPASS_CLK_ID_TER_MI2S_EBIT	6
-+#define LPASS_CLK_ID_QUAD_MI2S_IBIT	7
-+#define LPASS_CLK_ID_QUAD_MI2S_EBIT	8
-+#define LPASS_CLK_ID_SPEAKER_I2S_IBIT	9
-+#define LPASS_CLK_ID_SPEAKER_I2S_EBIT	10
-+#define LPASS_CLK_ID_SPEAKER_I2S_OSR	11
-+#define LPASS_CLK_ID_QUI_MI2S_IBIT	12
-+#define LPASS_CLK_ID_QUI_MI2S_EBIT	13
-+#define LPASS_CLK_ID_SEN_MI2S_IBIT	14
-+#define LPASS_CLK_ID_SEN_MI2S_EBIT	15
-+#define LPASS_CLK_ID_INT0_MI2S_IBIT	16
-+#define LPASS_CLK_ID_INT1_MI2S_IBIT	17
-+#define LPASS_CLK_ID_INT2_MI2S_IBIT	18
-+#define LPASS_CLK_ID_INT3_MI2S_IBIT	19
-+#define LPASS_CLK_ID_INT4_MI2S_IBIT	20
-+#define LPASS_CLK_ID_INT5_MI2S_IBIT	21
-+#define LPASS_CLK_ID_INT6_MI2S_IBIT	22
-+#define LPASS_CLK_ID_QUI_MI2S_OSR	23
-+#define LPASS_CLK_ID_PRI_PCM_IBIT	24
-+#define LPASS_CLK_ID_PRI_PCM_EBIT	25
-+#define LPASS_CLK_ID_SEC_PCM_IBIT	26
-+#define LPASS_CLK_ID_SEC_PCM_EBIT	27
-+#define LPASS_CLK_ID_TER_PCM_IBIT	28
-+#define LPASS_CLK_ID_TER_PCM_EBIT	29
-+#define LPASS_CLK_ID_QUAD_PCM_IBIT	30
-+#define LPASS_CLK_ID_QUAD_PCM_EBIT	31
-+#define LPASS_CLK_ID_QUIN_PCM_IBIT	32
-+#define LPASS_CLK_ID_QUIN_PCM_EBIT	33
-+#define LPASS_CLK_ID_QUI_PCM_OSR	34
-+#define LPASS_CLK_ID_PRI_TDM_IBIT	35
-+#define LPASS_CLK_ID_PRI_TDM_EBIT	36
-+#define LPASS_CLK_ID_SEC_TDM_IBIT	37
-+#define LPASS_CLK_ID_SEC_TDM_EBIT	38
-+#define LPASS_CLK_ID_TER_TDM_IBIT	39
-+#define LPASS_CLK_ID_TER_TDM_EBIT	40
-+#define LPASS_CLK_ID_QUAD_TDM_IBIT	41
-+#define LPASS_CLK_ID_QUAD_TDM_EBIT	42
-+#define LPASS_CLK_ID_QUIN_TDM_IBIT	43
-+#define LPASS_CLK_ID_QUIN_TDM_EBIT	44
-+#define LPASS_CLK_ID_QUIN_TDM_OSR	45
-+#define LPASS_CLK_ID_MCLK_1		46
-+#define LPASS_CLK_ID_MCLK_2		47
-+#define LPASS_CLK_ID_MCLK_3		48
-+#define LPASS_CLK_ID_MCLK_4		49
-+#define LPASS_CLK_ID_INTERNAL_DIGITAL_CODEC_CORE	50
-+#define LPASS_CLK_ID_INT_MCLK_0		51
-+#define LPASS_CLK_ID_INT_MCLK_1		52
-+#define LPASS_CLK_ID_MCLK_5		53
-+#define LPASS_CLK_ID_WSA_CORE_MCLK	54
-+#define LPASS_CLK_ID_WSA_CORE_NPL_MCLK	55
-+#define LPASS_CLK_ID_VA_CORE_MCLK	56
-+#define LPASS_CLK_ID_TX_CORE_MCLK	57
-+#define LPASS_CLK_ID_TX_CORE_NPL_MCLK	58
-+#define LPASS_CLK_ID_RX_CORE_MCLK	59
-+#define LPASS_CLK_ID_RX_CORE_NPL_MCLK	60
-+#define LPASS_CLK_ID_VA_CORE_2X_MCLK	61
++maintainers:
++  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 +
-+#define LPASS_HW_AVTIMER_VOTE		101
-+#define LPASS_HW_MACRO_VOTE		102
-+#define LPASS_HW_DCODEC_VOTE		103
++description: |
++  This binding describes the Qualcomm DSP LPASS Audio ports
 +
-+#define Q6AFE_MAX_CLK_ID			104
++properties:
++  compatible:
++    enum:
++      - qcom,q6afe-dais
 +
-+#define LPASS_CLK_ATTRIBUTE_INVALID		0x0
-+#define LPASS_CLK_ATTRIBUTE_COUPLE_NO		0x1
-+#define LPASS_CLK_ATTRIBUTE_COUPLE_DIVIDEND	0x2
-+#define LPASS_CLK_ATTRIBUTE_COUPLE_DIVISOR	0x3
++  reg:
++    maxItems: 1
 +
-+#endif /* __DT_BINDINGS_Q6_AUDIO_PORTS_H__ */
++  '#sound-dai-cells':
++    const: 1
++
++  '#address-cells':
++    const: 1
++
++  '#size-cells':
++    const: 0
++
++#Digital Audio Interfaces
++patternProperties:
++  '^dai@[0-9]+$':
++    type: object
++    description:
++      Q6DSP Digital Audio Interfaces.
++
++    properties:
++      reg:
++        description:
++          Digital Audio Interface ID
++
++      qcom,sd-lines:
++        $ref: /schemas/types.yaml#/definitions/uint32-array
++        description:
++          List of serial data lines used by this dai.should be one or more of the 0-3 sd lines.
++        minItems: 1
++        maxItems: 4
++        uniqueItems: true
++        items:
++          minimum: 0
++          maximum: 3
++
++      qcom,tdm-sync-mode:
++        $ref: /schemas/types.yaml#/definitions/uint32
++        enum: [0, 1, 2]
++        description:
++          TDM Synchronization mode
++            0 = Short sync bit mode
++            1 = Long sync mode
++            2 = Short sync slot mode
++
++      qcom,tdm-sync-src:
++        $ref: /schemas/types.yaml#/definitions/uint32
++        enum: [0, 1]
++        description:
++          TDM Synchronization source
++            0 = External source
++            1 = Internal source
++
++      qcom,tdm-data-out:
++        $ref: /schemas/types.yaml#/definitions/uint32
++        enum: [0, 1]
++        description:
++          TDM Data out signal to drive with other masters
++            0 = Disable
++            1 = Enable
++
++      qcom,tdm-invert-sync:
++        $ref: /schemas/types.yaml#/definitions/uint32
++        enum: [0, 1]
++        description:
++          TDM Invert the sync
++            0 = Normal
++            1 = Invert
++
++      qcom,tdm-data-delay:
++        $ref: /schemas/types.yaml#/definitions/uint32
++        enum: [0, 1, 2]
++        description:
++          TDM Number of bit clock to delay data
++            0 = 0 bit clock cycle
++            1 = 1 bit clock cycle
++            2 = 2 bit clock cycle
++
++      qcom,tdm-data-align:
++        $ref: /schemas/types.yaml#/definitions/uint32
++        enum: [0, 1]
++        description:
++          Indicate how data is packed within the slot. For example, 32 slot
++          width in case of sample bit width is 24TDM Invert the sync.
++            0 = MSB
++            1 = LSB
++
++    required:
++      - reg
++
++    allOf:
++      - if:
++          properties:
++            reg:
++              contains:
++                # TDM DAI ID range from PRIMARY_TDM_RX_0 - QUINARY_TDM_TX_7
++                items:
++                  minimum: 24
++                  maximum: 103
++        then:
++          required:
++            - qcom,tdm-sync-mode
++            - qcom,tdm-sync-src
++            - qcom,tdm-data-out
++            - qcom,tdm-invert-sync
++            - qcom,tdm-data-delay
++            - qcom,tdm-data-align
++
++      - if:
++          properties:
++            reg:
++              contains:
++                # MI2S DAI ID range PRIMARY_MI2S_RX - QUATERNARY_MI2S_TX and
++                # QUINARY_MI2S_RX - QUINARY_MI2S_TX
++                items:
++                  oneOf:
++                    - minimum: 16
++                      maximum: 23
++                    - minimum: 127
++                      maximum: 128
++        then:
++          required:
++            - qcom,sd-lines
++
++    additionalProperties: false
++
++required:
++  - compatible
++  - reg
++  - "#sound-dai-cells"
++  - "#address-cells"
++  - "#size-cells"
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/soc/qcom,apr.h>
++    #include <dt-bindings/sound/qcom,q6afe.h>
++    apr {
++        #address-cells = <1>;
++        #size-cells = <0>;
++        apr-service@4 {
++            reg = <APR_SVC_AFE>;
++            #address-cells = <1>;
++            #size-cells = <0>;
++            q6afedai@1 {
++              compatible = "qcom,q6afe-dais";
++              reg = <1>;
++              #address-cells = <1>;
++              #size-cells = <0>;
++              #sound-dai-cells = <1>;
++
++              dai@22 {
++                reg = <QUATERNARY_MI2S_RX>;
++                qcom,sd-lines = <0 1 2 3>;
++              };
++            };
++        };
++      };
 -- 
 2.21.0
 
