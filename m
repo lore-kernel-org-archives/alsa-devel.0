@@ -2,87 +2,87 @@ Return-Path: <SRS0=GC6S=PO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C276C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Oct 2021 11:18:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F3D0C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Oct 2021 11:19:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DEFD360238
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Oct 2021 11:18:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DEFD360238
+	by mail.kernel.org (Postfix) with ESMTPS id C9BA360232
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Oct 2021 11:19:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C9BA360232
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1D04B16EE;
-	Tue, 26 Oct 2021 13:18:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D04B16EE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4A0BA16EB;
+	Tue, 26 Oct 2021 13:18:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A0BA16EB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635247137;
-	bh=JZQzshkhmop36bb+Vh9XP2nuXha8figps5of1PUNUzE=;
+	s=default; t=1635247154;
+	bh=cinCTm5fcIJq9gzZ2LKqynCXE0BCgU8gGocs0cx4xUA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EyV4PTVrB9lcKvvkr8ylPqnVEY46xFLWk6zEaWpW8foI/Yy2D43wDYxHEMxacpE+2
-	 8WBCRJuetS6KQEZlesjHKvQHRuot1/gjkP6WPil+JVJB++FdECKEfcqEoXHi2FBjT5
-	 1B0UbHdJifInPnhFvX2M0LHZ2OapI6Uf0AD75fYQ=
+	b=dmY+2BMTQy7wreT1wtI06wlV5LwytPJaPDwvw4dKIGWbipwCNHhUA/D/hDmGFWIkX
+	 sylgIX6bb70NsWjeKJ7mInzrpbrooIWt+ZMEgIZ32NLvuA9t20qGAL73fGXi+KOMon
+	 tzcJhcidfSLvHXgelWiBy4e8gl34jC1Advng+nM8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A3489F804E6;
-	Tue, 26 Oct 2021 13:17:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5BEB2F804FE;
+	Tue, 26 Oct 2021 13:17:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7C607F804E5; Tue, 26 Oct 2021 13:17:24 +0200 (CEST)
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com
- [IPv6:2a00:1450:4864:20::431])
+ id E87A7F804FB; Tue, 26 Oct 2021 13:17:31 +0200 (CEST)
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com
+ [IPv6:2a00:1450:4864:20::32b])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9FA97F80105
- for <alsa-devel@alsa-project.org>; Tue, 26 Oct 2021 13:17:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9FA97F80105
+ by alsa1.perex.cz (Postfix) with ESMTPS id 560A9F80269
+ for <alsa-devel@alsa-project.org>; Tue, 26 Oct 2021 13:17:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 560A9F80269
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="PnBD5rSK"
-Received: by mail-wr1-x431.google.com with SMTP id i9so2709029wrc.3
- for <alsa-devel@alsa-project.org>; Tue, 26 Oct 2021 04:17:17 -0700 (PDT)
+ header.b="ssxob8vu"
+Received: by mail-wm1-x32b.google.com with SMTP id v127so13700957wme.5
+ for <alsa-devel@alsa-project.org>; Tue, 26 Oct 2021 04:17:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=TQi26kZD3NU6o9BQW3gnN4Gz9rwWQ34SGLUx3B9aDNU=;
- b=PnBD5rSKy478W+5PchMVMOdBq5jedGzyXusGyhLr+koNpDE+L64dSTroBLAWTXGBnk
- Efw2nq5gAi6q3Rxrmgxl5LlvYfWtaPwYMcfGo3oPT65S/EJD/WsfmhA6L2+RKwizfB3T
- /4tVPbUt74dxRPT0nk6+0ix2bLs1J25tS9vKBCHGQabUKVOY1hvu8BBA/h3Ao4HuSY8T
- GqvWSfYI0AQ29OIEP8YCTSkaMvKk17xqso9gOWS+RFqGxLQroNYbx6RyUBU5KqakbP09
- 3fRZJjtMKashb5n2hqdStPr7Ll9C4ja9E4RI5D8eBFQjI3rDe7rnMELl3KTG6PkcDmWX
- yoKw==
+ bh=0sqozBq+aXNpDnMO1F1fpUtm2LewFLxPBuJo7vey+3c=;
+ b=ssxob8vuEy+tqrym6N7nXn6RXaHH07Gdtl/elasP+IJyqmCnw6LngyV6+6EjasSuM1
+ hihbNRCikanfRpYqnmegnHLQuwPCO05x3SsiXoXnVmucbB23CW9m/lDi0++ki0UT8R6H
+ e7fagxWxrgoxFbgiWW7vOiVAtcc8bqjqYRMRd7hddmhD6S/JnYXG5fNk2QgI+gx6Y66i
+ e69fceJaNGZkmwoK7Bfp619ElgVLQRtwxz/R3lHyCQ5tpAswxPKdaemKr5Q1IipnLP80
+ EYMSr4xgR9w+a3oDz1iwqFbhwk7cP6i8i12t+yl3PrIpx1exu1INcBQ3mHUsQapFUT9v
+ ekzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=TQi26kZD3NU6o9BQW3gnN4Gz9rwWQ34SGLUx3B9aDNU=;
- b=53n04DyY6uwqreI3GhG45xHDmC+jj+R5CJHOkDGs/uzOUlStXCikf7QKz68sGRqHWP
- qFBAOFWoub0Y4MbLSSyAX8ThgJa7OpxIqU3Ryz+YpJtTuoiT+zhzr9mlETvZp/ObLFVP
- 8OLhh4QLSZPYXymGdNXNDM1KNYL6vGy49gkjvWrl+sTQeXuJdGGzgV3cgeV+/8BIizkP
- DVt5jwaPBvdK2XwLAiUd7If0ngOzWLQoBO780y84PNcVaNneRPGHBDGjlPLEaoU9lCUr
- CGwegjebbGhBO/CWBRpSgLhZvms+vYpOfFWmWjBZyafoZCunIbwhvQpKqiEwUlASedRq
- 0e9g==
-X-Gm-Message-State: AOAM533aabJaUHo5DfQBqPVaC0D8sX8AdbkLplpSm8LONA/8BOUxweKL
- 22HvY8GTPM74adaf2+vu6Xe3DQ==
-X-Google-Smtp-Source: ABdhPJy3Gur/u6u5VPorO0QEJyEBZ0oFfFUSWcwl1hnK6xz8Z+BZ5B6VgPKVsKxy0VNvYsoCY61GQg==
-X-Received: by 2002:a5d:59a7:: with SMTP id p7mr31375421wrr.141.1635247036775; 
- Tue, 26 Oct 2021 04:17:16 -0700 (PDT)
+ bh=0sqozBq+aXNpDnMO1F1fpUtm2LewFLxPBuJo7vey+3c=;
+ b=C/zii7Xw+ncIhwX+6rUvZgJqUz1ZdnKR+q0TgSv6AxHpPs8YSUhc6wqsY8R0DYO1Id
+ YzLYcnzaGfvS6MbxSaZWiPMikf9npfeSS0tk4yynvDBLBjduhrqZBeLrn20sofp0E08L
+ 6JJarfwITlM0clJCDtUFLKFFC8gDiKp5zQFXpoQf0eBycaf49Yqvo6PKY+qXOMb3zYUx
+ wvJ0LmFpLwWieVDcTvHcadJrE4xCIZ1NruVX44q2i8uHNZZGR0ffBsfzsyN8UHdkGxYu
+ tvgEKhrIHKI56LOE+GRQpzg3ZBQxF0mo+O8Lqp4rY5LhiSI7n/OuMrne/7pinbhmHoy+
+ Aytw==
+X-Gm-Message-State: AOAM533IqeE0MHcSgsJEW+pTITk/612BgLvp/LLTdQkqY85lSDBuhqKX
+ WofjOt7b9y/ksJvOV4zZi5AOWg==
+X-Google-Smtp-Source: ABdhPJypP9cHC0jRQw6PvChZ+JACYERipY4z2ouZckYpMgUe1hGPTLzKxXM8vIUqjJ8Z5F1PnRiQfQ==
+X-Received: by 2002:a1c:790e:: with SMTP id l14mr13281470wme.12.1635247032054; 
+ Tue, 26 Oct 2021 04:17:12 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id l124sm355483wml.8.2021.10.26.04.17.15
+ by smtp.gmail.com with ESMTPSA id l124sm355483wml.8.2021.10.26.04.17.11
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 26 Oct 2021 04:17:16 -0700 (PDT)
+ Tue, 26 Oct 2021 04:17:11 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org,
 	bjorn.andersson@linaro.org,
 	robh@kernel.org
-Subject: [PATCH v11 05/17] ASoC: qdsp6: q6afe-clocks: move audio-clocks to
- common file
-Date: Tue, 26 Oct 2021 12:16:43 +0100
-Message-Id: <20211026111655.1702-6-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v11 01/17] ASoC: dt-bindings: move LPASS dai related bindings
+ out of q6afe
+Date: Tue, 26 Oct 2021 12:16:39 +0100
+Message-Id: <20211026111655.1702-2-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20211026111655.1702-1-srinivas.kandagatla@linaro.org>
 References: <20211026111655.1702-1-srinivas.kandagatla@linaro.org>
@@ -106,493 +106,386 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Move common parts of  q6afe-clocks to q6dsp-lpass-clocks so that we could
-reuse most of the driver for new Q6DSP audio frameworks.
+q6afe (Audio Front End) is one of the DSP service that handles both
+LPASS (Low Power Audio SubSystem) Audio ports and LPASS clocks.
+As LPASS is a hardwware IP and commonly used by Qualcomm Audio DSP.
+In order to allow  multiple DSP frameworks to use these bindings
+its best to move it out from the dsp specific bindings.
 
-This is to make the code reuseable for new Q6DSP AudioReach framework.
+For compatibility reasons and not breaking which is already working
+we still maintain same compatible string "qcom,q6afe-dais"
+
+Also as part of this change convert these LPASS dai related bindings
+into yaml format.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- sound/soc/qcom/qdsp6/Makefile             |   2 +-
- sound/soc/qcom/qdsp6/q6afe-clocks.c       | 187 ++--------------------
- sound/soc/qcom/qdsp6/q6dsp-lpass-clocks.c | 186 +++++++++++++++++++++
- sound/soc/qcom/qdsp6/q6dsp-lpass-clocks.h |  30 ++++
- 4 files changed, 232 insertions(+), 173 deletions(-)
- create mode 100644 sound/soc/qcom/qdsp6/q6dsp-lpass-clocks.c
- create mode 100644 sound/soc/qcom/qdsp6/q6dsp-lpass-clocks.h
+ .../devicetree/bindings/sound/qcom,q6afe.txt  | 158 ----------------
+ .../sound/qcom,q6dsp-lpass-ports.yaml         | 178 ++++++++++++++++++
+ 2 files changed, 178 insertions(+), 158 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6dsp-lpass-ports.yaml
 
-diff --git a/sound/soc/qcom/qdsp6/Makefile b/sound/soc/qcom/qdsp6/Makefile
-index 11e8705bbc5c..a4191d395557 100644
---- a/sound/soc/qcom/qdsp6/Makefile
-+++ b/sound/soc/qcom/qdsp6/Makefile
-@@ -1,5 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0-only
--snd-q6dsp-common-objs := q6dsp-common.o q6dsp-lpass-ports.o
-+snd-q6dsp-common-objs := q6dsp-common.o q6dsp-lpass-ports.o q6dsp-lpass-clocks.o
+diff --git a/Documentation/devicetree/bindings/sound/qcom,q6afe.txt b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
+index 1677448347da..fcf81058504c 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
++++ b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
+@@ -12,92 +12,6 @@ used by all apr services. Must contain the following properties.
+ 		  from DSP.
+ 		  example "qcom,q6afe"
  
- obj-$(CONFIG_SND_SOC_QDSP6_COMMON) += snd-q6dsp-common.o
- obj-$(CONFIG_SND_SOC_QDSP6_CORE) += q6core.o
-diff --git a/sound/soc/qcom/qdsp6/q6afe-clocks.c b/sound/soc/qcom/qdsp6/q6afe-clocks.c
-index 9431656283cd..1ccab64ff00b 100644
---- a/sound/soc/qcom/qdsp6/q6afe-clocks.c
-+++ b/sound/soc/qcom/qdsp6/q6afe-clocks.c
-@@ -7,115 +7,18 @@
- #include <linux/module.h>
- #include <linux/device.h>
- #include <linux/platform_device.h>
--#include <linux/of.h>
--#include <linux/slab.h>
-+#include "q6dsp-lpass-clocks.h"
- #include "q6afe.h"
+-= AFE DAIs (Digital Audio Interface)
+-"dais" subnode of the AFE node. It represents afe dais, each afe dai is a
+-subnode of "dais" representing board specific dai setup.
+-"dais" node should have following properties followed by dai children.
+-
+-- compatible:
+-	Usage: required
+-	Value type: <stringlist>
+-	Definition: must be "qcom,q6afe-dais"
+-
+-- #sound-dai-cells
+-	Usage: required
+-	Value type: <u32>
+-	Definition: Must be 1
+-
+-- #address-cells
+-	Usage: required
+-	Value type: <u32>
+-	Definition: Must be 1
+-
+-- #size-cells
+-	Usage: required
+-	Value type: <u32>
+-	Definition: Must be 0
+-
+-== AFE DAI is subnode of "dais" and represent a dai, it includes board specific
+-configuration of each dai. Must contain the following properties.
+-
+-- reg
+-	Usage: required
+-	Value type: <u32>
+-	Definition: Must be dai id
+-
+-- qcom,sd-lines
+-	Usage: required for mi2s interface
+-	Value type: <prop-encoded-array>
+-	Definition: Must be list of serial data lines used by this dai.
+-	should be one or more of the 0-3 sd lines.
+-
+- - qcom,tdm-sync-mode:
+-	Usage: required for tdm interface
+-	Value type: <prop-encoded-array>
+-	Definition: Synchronization mode.
+-		0 - Short sync bit mode
+-		1 - Long sync mode
+-		2 - Short sync slot mode
+-
+- - qcom,tdm-sync-src:
+-	Usage: required for tdm interface
+-	Value type: <prop-encoded-array>
+-	Definition: Synchronization source.
+-		0 - External source
+-		1 - Internal source
+-
+- - qcom,tdm-data-out:
+-	Usage: required for tdm interface
+-	Value type: <prop-encoded-array>
+-	Definition: Data out signal to drive with other masters.
+-		0 - Disable
+-		1 - Enable
+-
+- - qcom,tdm-invert-sync:
+-	Usage: required for tdm interface
+-	Value type: <prop-encoded-array>
+-	Definition: Invert the sync.
+-		0 - Normal
+-		1 - Invert
+-
+- - qcom,tdm-data-delay:
+-	Usage: required for tdm interface
+-	Value type: <prop-encoded-array>
+-	Definition: Number of bit clock to delay data
+-		with respect to sync edge.
+-		0 - 0 bit clock cycle
+-		1 - 1 bit clock cycle
+-		2 - 2 bit clock cycle
+-
+- - qcom,tdm-data-align:
+-	Usage: required for tdm interface
+-	Value type: <prop-encoded-array>
+-	Definition: Indicate how data is packed
+-		within the slot. For example, 32 slot width in case of
+-		sample bit width is 24.
+-		0 - MSB
+-		1 - LSB
+-
+ = AFE CLOCKSS
+ "clocks" subnode of the AFE node. It represents q6afe clocks
+ "clocks" node should have following properties.
+@@ -122,78 +36,6 @@ apr-service@4 {
+ 	compatible = "qcom,q6afe";
+ 	reg = <APR_SVC_AFE>;
  
- #define Q6AFE_CLK(id) {					\
- 		.clk_id	= id,				\
--		.afe_clk_id	= Q6AFE_##id,		\
-+		.q6dsp_clk_id	= Q6AFE_##id,		\
- 		.name = #id,				\
- 		.rate = 19200000,			\
- 	}
- 
--#define Q6AFE_VOTE_CLK(id, blkid, n) {			\
--		.clk_id	= id,				\
--		.afe_clk_id = blkid,			\
--		.name = n,				\
--	}
+-	dais {
+-		compatible = "qcom,q6afe-dais";
+-		#sound-dai-cells = <1>;
+-		#address-cells = <1>;
+-		#size-cells = <0>;
 -
--struct q6afe_clk_init {
--	int clk_id;
--	int afe_clk_id;
--	char *name;
--	int rate;
--};
--
--struct q6afe_clk {
--	struct device *dev;
--	int afe_clk_id;
--	int attributes;
--	int rate;
--	uint32_t handle;
--	struct clk_hw hw;
--};
--
--#define to_q6afe_clk(_hw) container_of(_hw, struct q6afe_clk, hw)
--
--struct q6afe_cc {
--	struct device *dev;
--	struct q6afe_clk *clks[Q6AFE_MAX_CLK_ID];
--};
--
--static int clk_q6afe_prepare(struct clk_hw *hw)
--{
--	struct q6afe_clk *clk = to_q6afe_clk(hw);
--
--	return q6afe_set_lpass_clock(clk->dev, clk->afe_clk_id, clk->attributes,
--				     Q6AFE_LPASS_CLK_ROOT_DEFAULT, clk->rate);
--}
--
--static void clk_q6afe_unprepare(struct clk_hw *hw)
--{
--	struct q6afe_clk *clk = to_q6afe_clk(hw);
--
--	q6afe_set_lpass_clock(clk->dev, clk->afe_clk_id, clk->attributes,
--			      Q6AFE_LPASS_CLK_ROOT_DEFAULT, 0);
--}
--
--static int clk_q6afe_set_rate(struct clk_hw *hw, unsigned long rate,
--			      unsigned long parent_rate)
--{
--	struct q6afe_clk *clk = to_q6afe_clk(hw);
--
--	clk->rate = rate;
--
--	return 0;
--}
--
--static unsigned long clk_q6afe_recalc_rate(struct clk_hw *hw,
--					   unsigned long parent_rate)
--{
--	struct q6afe_clk *clk = to_q6afe_clk(hw);
--
--	return clk->rate;
--}
--
--static long clk_q6afe_round_rate(struct clk_hw *hw, unsigned long rate,
--				 unsigned long *parent_rate)
--{
--	return rate;
--}
--
--static const struct clk_ops clk_q6afe_ops = {
--	.prepare	= clk_q6afe_prepare,
--	.unprepare	= clk_q6afe_unprepare,
--	.set_rate	= clk_q6afe_set_rate,
--	.round_rate	= clk_q6afe_round_rate,
--	.recalc_rate	= clk_q6afe_recalc_rate,
--};
--
--static int clk_vote_q6afe_block(struct clk_hw *hw)
--{
--	struct q6afe_clk *clk = to_q6afe_clk(hw);
--
--	return q6afe_vote_lpass_core_hw(clk->dev, clk->afe_clk_id,
--					clk_hw_get_name(&clk->hw), &clk->handle);
--}
- 
--static void clk_unvote_q6afe_block(struct clk_hw *hw)
--{
--	struct q6afe_clk *clk = to_q6afe_clk(hw);
--
--	q6afe_unvote_lpass_core_hw(clk->dev, clk->afe_clk_id, clk->handle);
--}
--
--static const struct clk_ops clk_vote_q6afe_ops = {
--	.prepare	= clk_vote_q6afe_block,
--	.unprepare	= clk_unvote_q6afe_block,
--};
--
--static const struct q6afe_clk_init q6afe_clks[] = {
-+static const struct q6dsp_clk_init q6afe_clks[] = {
- 	Q6AFE_CLK(LPASS_CLK_ID_PRI_MI2S_IBIT),
- 	Q6AFE_CLK(LPASS_CLK_ID_PRI_MI2S_EBIT),
- 	Q6AFE_CLK(LPASS_CLK_ID_SEC_MI2S_IBIT),
-@@ -176,88 +79,28 @@ static const struct q6afe_clk_init q6afe_clks[] = {
- 	Q6AFE_CLK(LPASS_CLK_ID_RX_CORE_MCLK),
- 	Q6AFE_CLK(LPASS_CLK_ID_RX_CORE_NPL_MCLK),
- 	Q6AFE_CLK(LPASS_CLK_ID_VA_CORE_2X_MCLK),
--	Q6AFE_VOTE_CLK(LPASS_HW_AVTIMER_VOTE,
-+	Q6DSP_VOTE_CLK(LPASS_HW_AVTIMER_VOTE,
- 		       Q6AFE_LPASS_CORE_AVTIMER_BLOCK,
- 		       "LPASS_AVTIMER_MACRO"),
--	Q6AFE_VOTE_CLK(LPASS_HW_MACRO_VOTE,
-+	Q6DSP_VOTE_CLK(LPASS_HW_MACRO_VOTE,
- 		       Q6AFE_LPASS_CORE_HW_MACRO_BLOCK,
- 		       "LPASS_HW_MACRO"),
--	Q6AFE_VOTE_CLK(LPASS_HW_DCODEC_VOTE,
-+	Q6DSP_VOTE_CLK(LPASS_HW_DCODEC_VOTE,
- 		       Q6AFE_LPASS_CORE_HW_DCODEC_BLOCK,
- 		       "LPASS_HW_DCODEC"),
- };
- 
--static struct clk_hw *q6afe_of_clk_hw_get(struct of_phandle_args *clkspec,
--					  void *data)
--{
--	struct q6afe_cc *cc = data;
--	unsigned int idx = clkspec->args[0];
--	unsigned int attr = clkspec->args[1];
--
--	if (idx >= Q6AFE_MAX_CLK_ID || attr > LPASS_CLK_ATTRIBUTE_COUPLE_DIVISOR) {
--		dev_err(cc->dev, "Invalid clk specifier (%d, %d)\n", idx, attr);
--		return ERR_PTR(-EINVAL);
--	}
--
--	if (cc->clks[idx]) {
--		cc->clks[idx]->attributes = attr;
--		return &cc->clks[idx]->hw;
--	}
--
--	return ERR_PTR(-ENOENT);
--}
--
--static int q6afe_clock_dev_probe(struct platform_device *pdev)
--{
--	struct q6afe_cc *cc;
--	struct device *dev = &pdev->dev;
--	int i, ret;
--
--	cc = devm_kzalloc(dev, sizeof(*cc), GFP_KERNEL);
--	if (!cc)
--		return -ENOMEM;
--
--	cc->dev = dev;
--	for (i = 0; i < ARRAY_SIZE(q6afe_clks); i++) {
--		unsigned int id = q6afe_clks[i].clk_id;
--		struct clk_init_data init = {
--			.name =  q6afe_clks[i].name,
+-		dai@1 {
+-			reg = <HDMI_RX>;
 -		};
--		struct q6afe_clk *clk;
 -
--		clk = devm_kzalloc(dev, sizeof(*clk), GFP_KERNEL);
--		if (!clk)
--			return -ENOMEM;
+-		dai@24 {
+-			reg = <PRIMARY_TDM_RX_0>;
+-			qcom,tdm-sync-mode = <1>:
+-			qcom,tdm-sync-src = <1>;
+-			qcom,tdm-data-out = <0>;
+-			qcom,tdm-invert-sync = <1>;
+-			qcom,tdm-data-delay = <1>;
+-			qcom,tdm-data-align = <0>;
 -
--		clk->dev = dev;
--		clk->afe_clk_id = q6afe_clks[i].afe_clk_id;
--		clk->rate = q6afe_clks[i].rate;
--		clk->hw.init = &init;
+-		};
 -
--		if (clk->rate)
--			init.ops = &clk_q6afe_ops;
--		else
--			init.ops = &clk_vote_q6afe_ops;
+-		dai@25 {
+-			reg = <PRIMARY_TDM_TX_0>;
+-			qcom,tdm-sync-mode = <1>:
+-			qcom,tdm-sync-src = <1>;
+-			qcom,tdm-data-out = <0>;
+-			qcom,tdm-invert-sync = <1>;
+-			qcom,tdm-data-delay <1>:
+-			qcom,tdm-data-align = <0>;
+-		};
 -
--		cc->clks[id] = clk;
+-		dai@16 {
+-			reg = <PRIMARY_MI2S_RX>;
+-			qcom,sd-lines = <0 2>;
+-		};
 -
--		ret = devm_clk_hw_register(dev, &clk->hw);
--		if (ret)
--			return ret;
--	}
+-		dai@17 {
+-			reg = <PRIMARY_MI2S_TX>;
+-			qcom,sd-lines = <1>;
+-		};
 -
--	ret = devm_of_clk_add_hw_provider(dev, q6afe_of_clk_hw_get, cc);
--	if (ret)
--		return ret;
+-		dai@18 {
+-			reg = <SECONDARY_MI2S_RX>;
+-			qcom,sd-lines = <0 3>;
+-		};
 -
--	dev_set_drvdata(dev, cc);
+-		dai@19 {
+-			reg = <SECONDARY_MI2S_TX>;
+-			qcom,sd-lines = <1>;
+-		};
 -
--	return 0;
--}
-+static const struct q6dsp_clk_desc q6dsp_clk_q6afe __maybe_unused = {
-+	.clks = q6afe_clks,
-+	.num_clks = ARRAY_SIZE(q6afe_clks),
-+	.lpass_set_clk = q6afe_set_lpass_clock,
-+	.lpass_vote_clk = q6afe_vote_lpass_core_hw,
-+	.lpass_unvote_clk = q6afe_unvote_lpass_core_hw,
-+};
- 
- #ifdef CONFIG_OF
- static const struct of_device_id q6afe_clock_device_id[] = {
--	{ .compatible = "qcom,q6afe-clocks" },
-+	{ .compatible = "qcom,q6afe-clocks", .data = &q6dsp_clk_q6afe },
- 	{},
- };
- MODULE_DEVICE_TABLE(of, q6afe_clock_device_id);
-@@ -268,7 +111,7 @@ static struct platform_driver q6afe_clock_platform_driver = {
- 		.name = "q6afe-clock",
- 		.of_match_table = of_match_ptr(q6afe_clock_device_id),
- 	},
--	.probe = q6afe_clock_dev_probe,
-+	.probe = q6dsp_clock_dev_probe,
- };
- module_platform_driver(q6afe_clock_platform_driver);
- 
-diff --git a/sound/soc/qcom/qdsp6/q6dsp-lpass-clocks.c b/sound/soc/qcom/qdsp6/q6dsp-lpass-clocks.c
+-		dai@20 {
+-			reg = <TERTIARY_MI2S_RX>;
+-			qcom,sd-lines = <1 3>;
+-		};
+-
+-		dai@21 {
+-			reg = <TERTIARY_MI2S_TX>;
+-			qcom,sd-lines = <0>;
+-		};
+-
+-		dai@22 {
+-			reg = <QUATERNARY_MI2S_RX>;
+-			qcom,sd-lines = <0>;
+-		};
+-
+-		dai@23 {
+-			reg = <QUATERNARY_MI2S_TX>;
+-			qcom,sd-lines = <1>;
+-		};
+-	};
+-
+ 	clocks {
+ 		compatible = "qcom,q6afe-clocks";
+ 		#clock-cells = <2>;
+diff --git a/Documentation/devicetree/bindings/sound/qcom,q6dsp-lpass-ports.yaml b/Documentation/devicetree/bindings/sound/qcom,q6dsp-lpass-ports.yaml
 new file mode 100644
-index 000000000000..4613867d1133
+index 000000000000..e6148c17419b
 --- /dev/null
-+++ b/sound/soc/qcom/qdsp6/q6dsp-lpass-clocks.c
-@@ -0,0 +1,186 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2020, Linaro Limited
++++ b/Documentation/devicetree/bindings/sound/qcom,q6dsp-lpass-ports.yaml
+@@ -0,0 +1,178 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/sound/qcom,q6dsp-lpass-ports.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
 +
-+#include <linux/err.h>
-+#include <linux/init.h>
-+#include <linux/clk-provider.h>
-+#include <linux/module.h>
-+#include <linux/device.h>
-+#include <linux/platform_device.h>
-+#include <linux/of.h>
-+#include <linux/of_device.h>
-+#include <linux/slab.h>
-+#include <dt-bindings/sound/qcom,q6dsp-lpass-ports.h>
-+#include "q6dsp-lpass-clocks.h"
++title: Qualcomm DSP LPASS(Low Power Audio SubSystem) Audio Ports binding
 +
-+#define Q6DSP_MAX_CLK_ID			104
-+#define Q6DSP_LPASS_CLK_ROOT_DEFAULT		0
++maintainers:
++  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 +
++description: |
++  This binding describes the Qualcomm DSP LPASS Audio ports
 +
-+struct q6dsp_clk {
-+	struct device *dev;
-+	int q6dsp_clk_id;
-+	int attributes;
-+	int rate;
-+	uint32_t handle;
-+	struct clk_hw hw;
-+};
++properties:
++  compatible:
++    enum:
++      - qcom,q6afe-dais
 +
-+#define to_q6dsp_clk(_hw) container_of(_hw, struct q6dsp_clk, hw)
++  reg:
++    maxItems: 1
 +
-+struct q6dsp_cc {
-+	struct device *dev;
-+	struct q6dsp_clk *clks[Q6DSP_MAX_CLK_ID];
-+	const struct q6dsp_clk_desc *desc;
-+};
++  '#sound-dai-cells':
++    const: 1
 +
-+static int clk_q6dsp_prepare(struct clk_hw *hw)
-+{
-+	struct q6dsp_clk *clk = to_q6dsp_clk(hw);
-+	struct q6dsp_cc *cc = dev_get_drvdata(clk->dev);
++  '#address-cells':
++    const: 1
 +
-+	return cc->desc->lpass_set_clk(clk->dev, clk->q6dsp_clk_id, clk->attributes,
-+				     Q6DSP_LPASS_CLK_ROOT_DEFAULT, clk->rate);
-+}
++  '#size-cells':
++    const: 0
 +
-+static void clk_q6dsp_unprepare(struct clk_hw *hw)
-+{
-+	struct q6dsp_clk *clk = to_q6dsp_clk(hw);
-+	struct q6dsp_cc *cc = dev_get_drvdata(clk->dev);
++#Digital Audio Interfaces
++patternProperties:
++  '^dai@[0-9]+$':
++    type: object
++    description:
++      Q6DSP Digital Audio Interfaces.
 +
-+	cc->desc->lpass_set_clk(clk->dev, clk->q6dsp_clk_id, clk->attributes,
-+			      Q6DSP_LPASS_CLK_ROOT_DEFAULT, 0);
-+}
++    properties:
++      reg:
++        description:
++          Digital Audio Interface ID
 +
-+static int clk_q6dsp_set_rate(struct clk_hw *hw, unsigned long rate,
-+			      unsigned long parent_rate)
-+{
-+	struct q6dsp_clk *clk = to_q6dsp_clk(hw);
++      qcom,sd-lines:
++        $ref: /schemas/types.yaml#/definitions/uint32-array
++        description:
++          List of serial data lines used by this dai.should be one or more of the 0-3 sd lines.
++        minItems: 1
++        maxItems: 4
++        uniqueItems: true
++        items:
++          minimum: 0
++          maximum: 3
 +
-+	clk->rate = rate;
++      qcom,tdm-sync-mode:
++        $ref: /schemas/types.yaml#/definitions/uint32
++        enum: [0, 1, 2]
++        description:
++          TDM Synchronization mode
++            0 = Short sync bit mode
++            1 = Long sync mode
++            2 = Short sync slot mode
 +
-+	return 0;
-+}
++      qcom,tdm-sync-src:
++        $ref: /schemas/types.yaml#/definitions/uint32
++        enum: [0, 1]
++        description:
++          TDM Synchronization source
++            0 = External source
++            1 = Internal source
 +
-+static unsigned long clk_q6dsp_recalc_rate(struct clk_hw *hw,
-+					   unsigned long parent_rate)
-+{
-+	struct q6dsp_clk *clk = to_q6dsp_clk(hw);
++      qcom,tdm-data-out:
++        $ref: /schemas/types.yaml#/definitions/uint32
++        enum: [0, 1]
++        description:
++          TDM Data out signal to drive with other masters
++            0 = Disable
++            1 = Enable
 +
-+	return clk->rate;
-+}
++      qcom,tdm-invert-sync:
++        $ref: /schemas/types.yaml#/definitions/uint32
++        enum: [0, 1]
++        description:
++          TDM Invert the sync
++            0 = Normal
++            1 = Invert
 +
-+static long clk_q6dsp_round_rate(struct clk_hw *hw, unsigned long rate,
-+				 unsigned long *parent_rate)
-+{
-+	return rate;
-+}
++      qcom,tdm-data-delay:
++        $ref: /schemas/types.yaml#/definitions/uint32
++        enum: [0, 1, 2]
++        description:
++          TDM Number of bit clock to delay data
++            0 = 0 bit clock cycle
++            1 = 1 bit clock cycle
++            2 = 2 bit clock cycle
 +
-+static const struct clk_ops clk_q6dsp_ops = {
-+	.prepare	= clk_q6dsp_prepare,
-+	.unprepare	= clk_q6dsp_unprepare,
-+	.set_rate	= clk_q6dsp_set_rate,
-+	.round_rate	= clk_q6dsp_round_rate,
-+	.recalc_rate	= clk_q6dsp_recalc_rate,
-+};
++      qcom,tdm-data-align:
++        $ref: /schemas/types.yaml#/definitions/uint32
++        enum: [0, 1]
++        description:
++          Indicate how data is packed within the slot. For example, 32 slot
++          width in case of sample bit width is 24TDM Invert the sync.
++            0 = MSB
++            1 = LSB
 +
-+static int clk_vote_q6dsp_block(struct clk_hw *hw)
-+{
-+	struct q6dsp_clk *clk = to_q6dsp_clk(hw);
-+	struct q6dsp_cc *cc = dev_get_drvdata(clk->dev);
++    required:
++      - reg
 +
-+	return cc->desc->lpass_vote_clk(clk->dev, clk->q6dsp_clk_id,
-+				  clk_hw_get_name(&clk->hw), &clk->handle);
-+}
++    allOf:
++      - if:
++          properties:
++            reg:
++              contains:
++                # TDM DAI ID range from PRIMARY_TDM_RX_0 - QUINARY_TDM_TX_7
++                items:
++                  minimum: 24
++                  maximum: 103
++        then:
++          required:
++            - qcom,tdm-sync-mode
++            - qcom,tdm-sync-src
++            - qcom,tdm-data-out
++            - qcom,tdm-invert-sync
++            - qcom,tdm-data-delay
++            - qcom,tdm-data-align
 +
-+static void clk_unvote_q6dsp_block(struct clk_hw *hw)
-+{
-+	struct q6dsp_clk *clk = to_q6dsp_clk(hw);
-+	struct q6dsp_cc *cc = dev_get_drvdata(clk->dev);
++      - if:
++          properties:
++            reg:
++              contains:
++                # MI2S DAI ID range PRIMARY_MI2S_RX - QUATERNARY_MI2S_TX and
++                # QUINARY_MI2S_RX - QUINARY_MI2S_TX
++                items:
++                  oneOf:
++                    - minimum: 16
++                      maximum: 23
++                    - minimum: 127
++                      maximum: 128
++        then:
++          required:
++            - qcom,sd-lines
 +
-+	cc->desc->lpass_unvote_clk(clk->dev, clk->q6dsp_clk_id, clk->handle);
-+}
++    additionalProperties: false
 +
-+static const struct clk_ops clk_vote_q6dsp_ops = {
-+	.prepare	= clk_vote_q6dsp_block,
-+	.unprepare	= clk_unvote_q6dsp_block,
-+};
++required:
++  - compatible
++  - reg
++  - "#sound-dai-cells"
++  - "#address-cells"
++  - "#size-cells"
 +
++additionalProperties: false
 +
-+static struct clk_hw *q6dsp_of_clk_hw_get(struct of_phandle_args *clkspec,
-+					  void *data)
-+{
-+	struct q6dsp_cc *cc = data;
-+	unsigned int idx = clkspec->args[0];
-+	unsigned int attr = clkspec->args[1];
++examples:
++  - |
++    #include <dt-bindings/soc/qcom,apr.h>
++    #include <dt-bindings/sound/qcom,q6afe.h>
++    apr {
++        #address-cells = <1>;
++        #size-cells = <0>;
++        apr-service@4 {
++            reg = <APR_SVC_AFE>;
++            #address-cells = <1>;
++            #size-cells = <0>;
++            q6afedai@1 {
++              compatible = "qcom,q6afe-dais";
++              reg = <1>;
++              #address-cells = <1>;
++              #size-cells = <0>;
++              #sound-dai-cells = <1>;
 +
-+	if (idx >= Q6DSP_MAX_CLK_ID || attr > LPASS_CLK_ATTRIBUTE_COUPLE_DIVISOR) {
-+		dev_err(cc->dev, "Invalid clk specifier (%d, %d)\n", idx, attr);
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	if (cc->clks[idx]) {
-+		cc->clks[idx]->attributes = attr;
-+		return &cc->clks[idx]->hw;
-+	}
-+
-+	return ERR_PTR(-ENOENT);
-+}
-+
-+int q6dsp_clock_dev_probe(struct platform_device *pdev)
-+{
-+	struct q6dsp_cc *cc;
-+	struct device *dev = &pdev->dev;
-+	const struct q6dsp_clk_init *q6dsp_clks;
-+	const struct q6dsp_clk_desc *desc;
-+	int i, ret;
-+
-+	cc = devm_kzalloc(dev, sizeof(*cc), GFP_KERNEL);
-+	if (!cc)
-+		return -ENOMEM;
-+
-+	desc = of_device_get_match_data(&pdev->dev);
-+	if (!desc)
-+		return -EINVAL;
-+
-+	cc->desc = desc;
-+	cc->dev = dev;
-+	q6dsp_clks = desc->clks;
-+
-+	for (i = 0; i < desc->num_clks; i++) {
-+		unsigned int id = q6dsp_clks[i].clk_id;
-+		struct clk_init_data init = {
-+			.name =  q6dsp_clks[i].name,
-+		};
-+		struct q6dsp_clk *clk;
-+
-+		clk = devm_kzalloc(dev, sizeof(*clk), GFP_KERNEL);
-+		if (!clk)
-+			return -ENOMEM;
-+
-+		clk->dev = dev;
-+		clk->q6dsp_clk_id = q6dsp_clks[i].q6dsp_clk_id;
-+		clk->rate = q6dsp_clks[i].rate;
-+		clk->hw.init = &init;
-+
-+		if (clk->rate)
-+			init.ops = &clk_q6dsp_ops;
-+		else
-+			init.ops = &clk_vote_q6dsp_ops;
-+
-+		cc->clks[id] = clk;
-+
-+		ret = devm_clk_hw_register(dev, &clk->hw);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	ret = devm_of_clk_add_hw_provider(dev, q6dsp_of_clk_hw_get, cc);
-+	if (ret)
-+		return ret;
-+
-+	dev_set_drvdata(dev, cc);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(q6dsp_clock_dev_probe);
-diff --git a/sound/soc/qcom/qdsp6/q6dsp-lpass-clocks.h b/sound/soc/qcom/qdsp6/q6dsp-lpass-clocks.h
-new file mode 100644
-index 000000000000..3770d81f2bd6
---- /dev/null
-+++ b/sound/soc/qcom/qdsp6/q6dsp-lpass-clocks.h
-@@ -0,0 +1,30 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#ifndef __Q6DSP_AUDIO_CLOCKS_H__
-+#define __Q6DSP_AUDIO_CLOCKS_H__
-+
-+struct q6dsp_clk_init {
-+	int clk_id;
-+	int q6dsp_clk_id;
-+	char *name;
-+	int rate;
-+};
-+
-+#define Q6DSP_VOTE_CLK(id, blkid, n) {			\
-+		.clk_id	= id,				\
-+		.q6dsp_clk_id = blkid,			\
-+		.name = n,				\
-+	}
-+
-+struct q6dsp_clk_desc {
-+	const struct q6dsp_clk_init *clks;
-+	size_t num_clks;
-+	int (*lpass_set_clk)(struct device *dev, int clk_id, int attr,
-+			      int root_clk, unsigned int freq);
-+	int (*lpass_vote_clk)(struct device *dev, uint32_t hid, const char *n, uint32_t *h);
-+	int (*lpass_unvote_clk)(struct device *dev, uint32_t hid, uint32_t h);
-+};
-+
-+int q6dsp_clock_dev_probe(struct platform_device *pdev);
-+
-+#endif  /* __Q6DSP_AUDIO_CLOCKS_H__ */
++              dai@22 {
++                reg = <QUATERNARY_MI2S_RX>;
++                qcom,sd-lines = <0 1 2 3>;
++              };
++            };
++        };
++      };
 -- 
 2.21.0
 
