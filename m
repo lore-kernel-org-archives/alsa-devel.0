@@ -1,74 +1,86 @@
-Return-Path: <SRS0=4dkw=PN=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=GC6S=PO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83B63C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Oct 2021 21:40:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EF167C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Oct 2021 06:01:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1299560F22
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Oct 2021 21:40:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1299560F22
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 92DE061078
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Oct 2021 06:01:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 92DE061078
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3503E16C7;
-	Mon, 25 Oct 2021 23:39:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3503E16C7
+	by alsa0.perex.cz (Postfix) with ESMTPS id F178316A4;
+	Tue, 26 Oct 2021 08:00:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F178316A4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635198015;
-	bh=P5P55FijK727UA6F5ONMA2rpeTYp2UxNoaQwbIlQjBU=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1635228081;
+	bh=4cVUx8PESp64bL6OgbDdBssHjPYktOGCNOmlLFgLxiA=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iOiVd/8dCICycPoOTnnouJ/4XoD9U/MMzrt0DkefBDs24EK5o7E7HZxN3FEU8VfQy
-	 NTkhwbEYdBZxpRrSpcGlWwaEnnioWgDf9tnxiq+PrHGh/IaR6KydyKI3OoKHxjabwK
-	 onzdHunGvrtkaAfxaSJQhGfS38X7WO58iJboG1XE=
+	b=B9MMH/sA+dvo36zWVtKrb57A8FEMRttz+EFJaZcTkR/gPBHp6YuQfKtB+/EqfB337
+	 LfSywWLaL6gOkbIw1XsonOvUs3pG62XK6VHr+MZjcKBIWSH/8CBFFvYIjjjkGm3w35
+	 x70Pr5ecaSTVLWgFuyumNAb7BM9IEFr4rwykIgYw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9A586F80166;
-	Mon, 25 Oct 2021 23:39:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7811CF8014D;
+	Tue, 26 Oct 2021 08:00:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D999BF8025A; Mon, 25 Oct 2021 23:39:22 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 2E4C4F802C8; Tue, 26 Oct 2021 08:00:29 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4938AF8010A
- for <alsa-devel@alsa-project.org>; Mon, 25 Oct 2021 23:39:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4938AF8010A
+ by alsa1.perex.cz (Postfix) with ESMTPS id AB49DF80105
+ for <alsa-devel@alsa-project.org>; Tue, 26 Oct 2021 08:00:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB49DF80105
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Au8bFpTq"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B013D60F22;
- Mon, 25 Oct 2021 21:39:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1635197954;
- bh=P5P55FijK727UA6F5ONMA2rpeTYp2UxNoaQwbIlQjBU=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=Au8bFpTqg1XyGJYgsAd+NVW9soa9kG4hLjJ1tZ7nEX9SzyGXZWHXwg6UQ/cEMahUZ
- AZnp8WfHosZW6JUSmJrGKn202PsKC4VGoNRgj2jG6LNKAw+SAWJ+ZIAObzgeq1FTa+
- 7m5mM9x/carvdqMxO+NddO/vHMDSEmgrlHrGJv659/XOFpuiA2ro9MytZSoVtJypHn
- LLInUff1rS02dM5BbV+9u3mmAAwho1mjnALshT3CrYnH0vZ4ENcORT4jNj27W73wuB
- EB1/6/GoLxQDyIGipfEUUv7Unkqd5Hc+B6WBHlfE78GIzRP58zR7Pp6GiRPVtZAH1R
- w+JUR5D5MCLZw==
-From: Mark Brown <broonie@kernel.org>
-To: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>, 
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: topology: Fix stub for
- snd_soc_tplg_component_remove()
-Date: Mon, 25 Oct 2021 22:39:10 +0100
-Message-ID: <163519067113.407220.298262625715409113.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211025154844.2342120-1-broonie@kernel.org>
-References: <20211025154844.2342120-1-broonie@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="eBhOJgPg"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="R8gP5i8K"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id EBC441F770;
+ Tue, 26 Oct 2021 06:00:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1635228018; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Er17uZj5lNnNB09LnO1O9fGl7hL1BW2tQkx9sB8YbfI=;
+ b=eBhOJgPgFZ16RnwVCTAWynSDsbi3KY8eSYmnqweJO7rGubGF/34bkQ/oWOczClGmkE7T7V
+ CVsviVLOz+5J73iAWHdZa6F8v3f1ikzxWudxCf4uAbaFRha30Rjdi59+TvGVTedF7g9WNV
+ /u1ViH6/Udd0KnZey9abg45ss3BQqhM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1635228018;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Er17uZj5lNnNB09LnO1O9fGl7hL1BW2tQkx9sB8YbfI=;
+ b=R8gP5i8KP5gOg2c1a9Mi1UD9gNiBTaEZRFsBkF3DStSQbsYr2Q5WJ28+sVPyAy2W4heGC5
+ WNPwfwvz60PBsMCA==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 9F309A3B81;
+ Tue, 26 Oct 2021 06:00:18 +0000 (UTC)
+Date: Tue, 26 Oct 2021 08:00:18 +0200
+Message-ID: <s5hmtmwxr4d.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Pavel Skripkin <paskripkin@gmail.com>
+Subject: Re: [PATCH next] ALSA: mixer: fix deadlock in snd_mixer_oss_set_volume
+In-Reply-To: <20211024140315.16704-1-paskripkin@gmail.com>
+References: <20211024140315.16704-1-paskripkin@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de,
+ syzbot+ace149a75a9a0a399ac7@syzkaller.appspotmail.com,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, broonie@kernel.org,
+ joe@perches.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,40 +95,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20211025213910.24gNcySAMogtqmx6ShJREYf5h3jDj5V3Fa-Quj3n6g0@z>
 
-On Mon, 25 Oct 2021 16:48:44 +0100, Mark Brown wrote:
-> When removing the index argument from snd_soc_topology_component_remove()
-> commit a5b8f71c5477f (ASoC: topology: Remove multistep topology loading)
-> forgot to update the stub for !SND_SOC_TOPOLOGY use, causing build failures
-> for anything that tries to make use of it.
+On Sun, 24 Oct 2021 16:03:15 +0200,
+Pavel Skripkin wrote:
 > 
+> In commit 411cef6adfb3 ("ALSA: mixer: oss: Fix racy access to slots")
+> added mutex protection in snd_mixer_oss_set_volume(). Second
+> mutex_lock() in same function looks like typo, fix it.
 > 
+> Reported-by: syzbot+ace149a75a9a0a399ac7@syzkaller.appspotmail.com
+> Fixes: 411cef6adfb3 ("ALSA: mixer: oss: Fix racy access to slots")
+> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 
-Applied to
+Applied now, thanks!
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Thanks!
-
-[1/1] ASoC: topology: Fix stub for snd_soc_tplg_component_remove()
-      commit: 1198ff12cbdd5f42c032cba1d96ebc7af8024cf9
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Takashi
