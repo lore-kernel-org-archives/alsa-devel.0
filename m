@@ -2,94 +2,95 @@ Return-Path: <SRS0=GC6S=PO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 22E85C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Oct 2021 11:24:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E77D5C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Oct 2021 11:28:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 97C8760C4B
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Oct 2021 11:24:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 97C8760C4B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id 1656E604E9
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Oct 2021 11:28:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1656E604E9
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 11AD4173E;
-	Tue, 26 Oct 2021 13:24:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 11AD4173E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 783471706;
+	Tue, 26 Oct 2021 13:27:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 783471706
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635247490;
-	bh=QlIJ8GQDf4DRzUcBfKhCNsxDTMvE6MPJMQeV/azIwkQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1635247707;
+	bh=4lBhhHg3DGf1pWvW0hrJld1dFreG5oRKaY0A9hInS6U=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pgsRGEUbNo6OYrX0uWvZ0SwSDJdZPWgsdJX4CluHHaTxyE+cAmnkp9W6rpZchx5S6
-	 XVHn9e89XLK1hilb3QH9t91jjJxQkmIrbUBXQcFBfSf863v8bLLwUKrYNawDjLLfCe
-	 NR2MKQqDKyx6RITSG5vs9Bn1xFz3LwJQInllPxi4=
+	b=owaQ6Iew8nTZfnjZcgVKcZVRLnztF9lJ4rr3BCDz9avUXpftPoDWqyDu3fbruhaaN
+	 lFMYjF/aeewDZQK9UWRGzcp4rsTUywWsYLeSEFUNflrtEy0krlYoAhIicA/lzaEldS
+	 QKgcI6EQolR/lmkkXdJKoka2ZmJHmeQOIr+I1UyA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8FDB4F805AC;
-	Tue, 26 Oct 2021 13:18:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0E315F80269;
+	Tue, 26 Oct 2021 13:27:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 36AAFF80589; Tue, 26 Oct 2021 13:18:16 +0200 (CEST)
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
- [IPv6:2a00:1450:4864:20::42a])
+ id D8AE8F802C8; Tue, 26 Oct 2021 13:27:35 +0200 (CEST)
+Received: from m43-7.mailgun.net (m43-7.mailgun.net [69.72.43.7])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2F02DF80507
- for <alsa-devel@alsa-project.org>; Tue, 26 Oct 2021 13:17:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F02DF80507
+ by alsa1.perex.cz (Postfix) with ESMTPS id B8F88F80105
+ for <alsa-devel@alsa-project.org>; Tue, 26 Oct 2021 13:27:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8F88F80105
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="ezniuoIj"
-Received: by mail-wr1-x42a.google.com with SMTP id v17so17233036wrv.9
- for <alsa-devel@alsa-project.org>; Tue, 26 Oct 2021 04:17:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=WS+ifHp9YieYhhFn7sdNabOmVQ8eABncZ4BoQKf0O6E=;
- b=ezniuoIjA5UqImo+hkKnFL82leXcRm2BlEaXWj4fTbfvqnYTKp9mzfUeITk/6cmlOk
- 6JLdU5jrHkeP0roL08dAUpt8683c8Sx3WqiPiOTqN/tOpH39VW3/Xh1RaPpwuaD1HLts
- 1YW+rCyolGwaiP5RSBt1sFphSykSfOhLG30MJNYXuxup8vP5d2VN3PhqmO7gYpjRRWcu
- MXZOYoY+tecHkDJr6VRvibQrHMRxBwPh0dfoml5piqxwutZYK59TaRC5eYkqlMEbhIQV
- A2ttu52+JE4nukg+VQFHSLXx4Rev9OnFbX2/VvbuizwdaoSwXViVaLvNUD53+0rhNAiP
- +dUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=WS+ifHp9YieYhhFn7sdNabOmVQ8eABncZ4BoQKf0O6E=;
- b=ngVOQSrEVjBY+ghov4FuDN7rgMmpXO64dWTm+sLTtYocPAYA1Qu69q9IkvN0y4vgAA
- SAU3VHnfRL7kQXlDANA1jcZoh3BeKzpvQkmQwCiGugYlNmO7eV+5nKRkT6Ev+c4zO7/l
- rq1UYya+6iFxewza4UXQ0/1aG3Fs1xw4PEwV0JcIL9vebT7I0MwdMOB5Cxts1iqOEua4
- TCSmke3l1IERvzW4ojvtddd3fjj3snkrrcaxp/J20nTs9SANjBfw4MNngCmLm2cd3NGn
- ZnmHD6Oth0dWkXu86qxwyIygwUzOlze2A53eovXIdhD6rMWUbbup+yBd3+nDI6RYXhO8
- w9Mg==
-X-Gm-Message-State: AOAM533cBVa3wvUkDRsvOZNe6o0zcZltWvrBTXpamZNg7G5Lm2S/QFfs
- cwpmvBX3472CX4bCWcKzuO0yyP3IZON9pw==
-X-Google-Smtp-Source: ABdhPJz7+IJUahtwcYBbG9aRSKx1p25MLupleRB1Q5xNXaPVHUGtLvjXgGy4VsW3Fj/Lch+CymmGnQ==
-X-Received: by 2002:a5d:47cb:: with SMTP id o11mr30208685wrc.184.1635247047599; 
- Tue, 26 Oct 2021 04:17:27 -0700 (PDT)
-Received: from srini-hackbox.lan
- (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id l124sm355483wml.8.2021.10.26.04.17.26
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 26 Oct 2021 04:17:27 -0700 (PDT)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: broonie@kernel.org,
-	bjorn.andersson@linaro.org,
-	robh@kernel.org
-Subject: [PATCH v11 14/17] ASoC: qdsp6: audioreach: add q6apm-dai support
-Date: Tue, 26 Oct 2021 12:16:52 +0100
-Message-Id: <20211026111655.1702-15-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20211026111655.1702-1-srinivas.kandagatla@linaro.org>
-References: <20211026111655.1702-1-srinivas.kandagatla@linaro.org>
+ dkim=pass (1024-bit key) header.d=mg.codeaurora.org
+ header.i=@mg.codeaurora.org header.b="sC4XxROS"
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
+ q=dns/txt; 
+ s=smtp; t=1635247650; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=+VfAOGNRqKPzh6Cqta9+SYjWQCyLtNY13BI23W5daME=;
+ b=sC4XxROSmTAulk2vDbPNqqgJ1+TFlCD46Otr8w7S9GlX2vxJaRECH58CZ6CJh24PoOq98umy
+ wUzhxh4REmA6UFsgBe1+Kt5FEglQivkUaKNlbqCH8m3emSj0dZRfGEYmMK5itKAsNoDuq4Up
+ xab+xZQ/X7pfZ1LwWT/T0SgkC1A=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 6177e60dc75c436a30c59a30 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 26 Oct 2021 11:27:09
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+ id E9E24C43617; Tue, 26 Oct 2021 11:27:08 +0000 (UTC)
+Received: from [10.242.143.72] (unknown [202.46.23.19])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: srivasam)
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id D3FDCC4338F;
+ Tue, 26 Oct 2021 11:27:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org D3FDCC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH v3] ASoC: qcom: soundwire: Enable soundwire bus clock for
+ version 1.6
+To: Bjorn Andersson <bjorn.andersson@linaro.org>
+References: <1633671232-30310-1-git-send-email-srivasam@codeaurora.org>
+ <YWBXIIjPP7Qunyvf@ripper>
+From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Organization: Qualcomm India Private Limited.
+Message-ID: <11a57c35-5e38-1b74-bc70-c1eeeb81fbfe@codeaurora.org>
+Date: Tue, 26 Oct 2021 16:57:00 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
+In-Reply-To: <YWBXIIjPP7Qunyvf@ripper>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- bgoswami@codeaurora.org, lgirdwood@gmail.com, tiwai@suse.de,
- plai@codeaurora.org, pierre-louis.bossart@linux.intel.com
+ bgoswami@codeaurora.org, Venkata Prasad Potturu <potturu@codeaurora.org>,
+ linux-arm-msm@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com,
+ agross@kernel.org, robh+dt@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
+ rohitkr@codeaurora.org, swboyd@chromium.org, judyhsiao@chromium.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,466 +106,143 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add support to pcm dais in Audio Process Manager.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/qcom/Kconfig           |   5 +
- sound/soc/qcom/qdsp6/Makefile    |   1 +
- sound/soc/qcom/qdsp6/q6apm-dai.c | 416 +++++++++++++++++++++++++++++++
- 3 files changed, 422 insertions(+)
- create mode 100644 sound/soc/qcom/qdsp6/q6apm-dai.c
+On 10/8/2021 8:05 PM, Bjorn Andersson wrote:
+Thanks for Your time Bjorn!!!
+> On Thu 07 Oct 22:33 PDT 2021, Srinivasa Rao Mandadapu wrote:
+>
+>> Add support for soundwire 1.6 version to gate RX/TX bus clock.
+>>
+> Are you really adding soundwire 1.6 support in order to gate RX/TX bus
+> clock?
+>
+> Could it be that you're ungating the bus clock so that soundwire 1.6
+> starts working? The commit message should properly describe why you're
+> doing your change.
+Yes. After updating RX/TX CGCR Register so it's started working. Will 
+update proper commit message.
+>> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
+>> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> Venkata is the first who certified the origin of this patch, yet you're
+> the author. Either this should be From Venkata (i.e. git commit
+> --author) or perhaps you need a Co-developed-by here to say that you
+> collaborated on this and both certify its origin.
+Okay. Actually Venakta is the Co developer. Will change accordingly.
+>> ---
+>> Changes since v2:
+>>      -- Update error check after ioremap.
+> What about the other things I noted in v2?
+Okay. Will update.
+>
+>> Changes since v1:
+>>      -- Add const name to mask value.
+>>
+>>   drivers/soundwire/qcom.c | 15 ++++++++++++++-
+>>   1 file changed, 14 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+>> index 0ef79d6..bd6fabd 100644
+>> --- a/drivers/soundwire/qcom.c
+>> +++ b/drivers/soundwire/qcom.c
+>> @@ -109,6 +109,7 @@
+>>   #define SWR_MAX_CMD_ID	14
+>>   #define MAX_FIFO_RD_RETRY 3
+>>   #define SWR_OVERFLOW_RETRY_COUNT 30
+>> +#define SWRM_HCTL_REG_MASK ~BIT(1)
+>>   
+>>   struct qcom_swrm_port_config {
+>>   	u8 si;
+>> @@ -127,6 +128,7 @@ struct qcom_swrm_ctrl {
+>>   	struct device *dev;
+>>   	struct regmap *regmap;
+>>   	void __iomem *mmio;
+>> +	char __iomem *swrm_hctl_reg;
+>>   	struct completion broadcast;
+>>   	struct completion enumeration;
+>>   	struct work_struct slave_work;
+>> @@ -610,6 +612,12 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
+>>   	val = FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK, ctrl->rows_index);
+>>   	val |= FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK, ctrl->cols_index);
+>>   
+>> +	if (ctrl->swrm_hctl_reg) {
+>> +		val = ioread32(ctrl->swrm_hctl_reg);
+>> +		val &= SWRM_HCTL_REG_MASK;
+> Make a define with a name that clarifies what BIT(1) is and use that
+> here, hiding a magic number in an empty define isn't making this more
+> maintainable.
+>
+> Essentially put the name of the bit in the register description in a
+> define and use that here.
+Okay. Will change name appropriately.
+>
+>> +		iowrite32(val, ctrl->swrm_hctl_reg);
+>> +	}
+>> +
+>>   	ctrl->reg_write(ctrl, SWRM_MCP_FRAME_CTRL_BANK_ADDR(0), val);
+>>   
+>>   	/* Enable Auto enumeration */
+>> @@ -1200,7 +1208,7 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+>>   	struct qcom_swrm_ctrl *ctrl;
+>>   	const struct qcom_swrm_data *data;
+>>   	int ret;
+>> -	u32 val;
+>> +	int val, swrm_hctl_reg = 0;
+> Don't you get a warning from passing val as an int to a function that
+> takes a u32 pointer?
+Yeah. Will revert val variable type change.
+> Also there's no reason to zero-initialize swrm_hctl_reg.
+Okay. Will change.
+>>   
+>>   	ctrl = devm_kzalloc(dev, sizeof(*ctrl), GFP_KERNEL);
+>>   	if (!ctrl)
+>> @@ -1251,6 +1259,11 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+>>   	ctrl->bus.port_ops = &qcom_swrm_port_ops;
+>>   	ctrl->bus.compute_params = &qcom_swrm_compute_params;
+>>   
+>> +	if (!of_property_read_u32(dev->of_node, "qcom,swrm-hctl-reg", &swrm_hctl_reg)) {
+> As I said in my feedback of v2, this property is not documented in the
+> DT binding.
+Okay. Will update dt bindings.
+>
+> But more important, upstream we do not approve of the downstream
+> methodology of having properties pointing to single registers in some
+> memory block somewhere.
+>
+> Describe the hardware block that you reference fully in devicetree and
+> make a proper reference to it.
+>
+> Unfortunately your patch lacks details necessary to know where this
+> register lives, so it's not possible for me to recommend a proper
+> design.
 
-diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index 66d8436ab0a8..2e5625b93b38 100644
---- a/sound/soc/qcom/Kconfig
-+++ b/sound/soc/qcom/Kconfig
-@@ -84,8 +84,13 @@ config SND_SOC_QDSP6_ASM_DAI
- 	select SND_SOC_COMPRESS
- 	tristate
- 
-+config SND_SOC_QDSP6_APM_DAI
-+	tristate
-+	select SND_SOC_COMPRESS
-+
- config SND_SOC_QDSP6_APM
- 	tristate
-+	select SND_SOC_QDSP6_APM_DAI
- 
- config SND_SOC_QDSP6
- 	tristate "SoC ALSA audio driver for QDSP6"
-diff --git a/sound/soc/qcom/qdsp6/Makefile b/sound/soc/qcom/qdsp6/Makefile
-index 766b824f6597..a4ec7c4d0e48 100644
---- a/sound/soc/qcom/qdsp6/Makefile
-+++ b/sound/soc/qcom/qdsp6/Makefile
-@@ -13,3 +13,4 @@ obj-$(CONFIG_SND_SOC_QDSP6_ASM) += q6asm.o
- obj-$(CONFIG_SND_SOC_QDSP6_ASM_DAI) += q6asm-dai.o
- 
- obj-$(CONFIG_SND_SOC_QDSP6_APM) += snd-q6apm.o
-+obj-$(CONFIG_SND_SOC_QDSP6_APM_DAI) += q6apm-dai.o
-diff --git a/sound/soc/qcom/qdsp6/q6apm-dai.c b/sound/soc/qcom/qdsp6/q6apm-dai.c
-new file mode 100644
-index 000000000000..eb1c3aec479b
---- /dev/null
-+++ b/sound/soc/qcom/qdsp6/q6apm-dai.c
-@@ -0,0 +1,416 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2021, Linaro Limited
-+
-+#include <linux/init.h>
-+#include <linux/err.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+#include <sound/pcm.h>
-+#include <asm/dma.h>
-+#include <linux/dma-mapping.h>
-+#include <linux/of_device.h>
-+#include <sound/pcm_params.h>
-+#include "q6apm.h"
-+
-+#define DRV_NAME "q6apm-dai"
-+
-+#define PLAYBACK_MIN_NUM_PERIODS	2
-+#define PLAYBACK_MAX_NUM_PERIODS	8
-+#define PLAYBACK_MAX_PERIOD_SIZE	65536
-+#define PLAYBACK_MIN_PERIOD_SIZE	128
-+#define CAPTURE_MIN_NUM_PERIODS		2
-+#define CAPTURE_MAX_NUM_PERIODS		8
-+#define CAPTURE_MAX_PERIOD_SIZE		4096
-+#define CAPTURE_MIN_PERIOD_SIZE		320
-+#define BUFFER_BYTES_MAX (PLAYBACK_MAX_NUM_PERIODS * PLAYBACK_MAX_PERIOD_SIZE)
-+#define BUFFER_BYTES_MIN (PLAYBACK_MIN_NUM_PERIODS * PLAYBACK_MIN_PERIOD_SIZE)
-+#define SID_MASK_DEFAULT	0xF
-+
-+enum stream_state {
-+	Q6APM_STREAM_IDLE = 0,
-+	Q6APM_STREAM_STOPPED,
-+	Q6APM_STREAM_RUNNING,
-+};
-+
-+struct q6apm_dai_rtd {
-+	struct snd_pcm_substream *substream;
-+	struct snd_compr_stream *cstream;
-+	struct snd_compr_params codec_param;
-+	struct snd_dma_buffer dma_buffer;
-+	phys_addr_t phys;
-+	unsigned int pcm_size;
-+	unsigned int pcm_count;
-+	unsigned int pos;       /* Buffer position */
-+	unsigned int periods;
-+	unsigned int bytes_sent;
-+	unsigned int bytes_received;
-+	unsigned int copied_total;
-+	uint16_t bits_per_sample;
-+	uint16_t source; /* Encoding source bit mask */
-+	uint16_t session_id;
-+	enum stream_state state;
-+	struct q6apm_graph *graph;
-+};
-+
-+struct q6apm_dai_data {
-+	long long sid;
-+};
-+
-+static struct snd_pcm_hardware q6apm_dai_hardware_capture = {
-+	.info =                 (SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_BLOCK_TRANSFER |
-+				 SNDRV_PCM_INFO_MMAP_VALID | SNDRV_PCM_INFO_INTERLEAVED |
-+				 SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME),
-+	.formats =              (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE),
-+	.rates =                SNDRV_PCM_RATE_8000_48000,
-+	.rate_min =             8000,
-+	.rate_max =             48000,
-+	.channels_min =         2,
-+	.channels_max =         4,
-+	.buffer_bytes_max =     CAPTURE_MAX_NUM_PERIODS * CAPTURE_MAX_PERIOD_SIZE,
-+	.period_bytes_min =	CAPTURE_MIN_PERIOD_SIZE,
-+	.period_bytes_max =     CAPTURE_MAX_PERIOD_SIZE,
-+	.periods_min =          CAPTURE_MIN_NUM_PERIODS,
-+	.periods_max =          CAPTURE_MAX_NUM_PERIODS,
-+	.fifo_size =            0,
-+};
-+
-+static struct snd_pcm_hardware q6apm_dai_hardware_playback = {
-+	.info =                 (SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_BLOCK_TRANSFER |
-+				 SNDRV_PCM_INFO_MMAP_VALID | SNDRV_PCM_INFO_INTERLEAVED |
-+				 SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME),
-+	.formats =              (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE),
-+	.rates =                SNDRV_PCM_RATE_8000_192000,
-+	.rate_min =             8000,
-+	.rate_max =             192000,
-+	.channels_min =         2,
-+	.channels_max =         8,
-+	.buffer_bytes_max =     (PLAYBACK_MAX_NUM_PERIODS * PLAYBACK_MAX_PERIOD_SIZE),
-+	.period_bytes_min =	PLAYBACK_MIN_PERIOD_SIZE,
-+	.period_bytes_max =     PLAYBACK_MAX_PERIOD_SIZE,
-+	.periods_min =          PLAYBACK_MIN_NUM_PERIODS,
-+	.periods_max =          PLAYBACK_MAX_NUM_PERIODS,
-+	.fifo_size =            0,
-+};
-+
-+static void event_handler(uint32_t opcode, uint32_t token, uint32_t *payload, void *priv)
-+{
-+	struct q6apm_dai_rtd *prtd = priv;
-+	struct snd_pcm_substream *substream = prtd->substream;
-+
-+	switch (opcode) {
-+	case APM_CLIENT_EVENT_CMD_EOS_DONE:
-+		prtd->state = Q6APM_STREAM_STOPPED;
-+		break;
-+	case APM_CLIENT_EVENT_DATA_WRITE_DONE:
-+		prtd->pos += prtd->pcm_count;
-+		snd_pcm_period_elapsed(substream);
-+		if (prtd->state == Q6APM_STREAM_RUNNING)
-+			q6apm_write_async(prtd->graph, prtd->pcm_count, 0, 0, 0);
-+
-+		break;
-+	case APM_CLIENT_EVENT_DATA_READ_DONE:
-+		prtd->pos += prtd->pcm_count;
-+		snd_pcm_period_elapsed(substream);
-+		if (prtd->state == Q6APM_STREAM_RUNNING)
-+			q6apm_read(prtd->graph);
-+
-+		break;
-+	default:
-+		break;
-+	}
-+}
-+
-+static int q6apm_dai_prepare(struct snd_soc_component *component,
-+			     struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct q6apm_dai_rtd *prtd = runtime->private_data;
-+	struct audioreach_module_config cfg;
-+	struct device *dev = component->dev;
-+	struct q6apm_dai_data *pdata;
-+	int ret;
-+
-+	pdata = snd_soc_component_get_drvdata(component);
-+	if (!pdata)
-+		return -EINVAL;
-+
-+	if (!prtd || !prtd->graph) {
-+		dev_err(dev, "%s: private data null or audio client freed\n", __func__);
-+		return -EINVAL;
-+	}
-+
-+	cfg.direction = substream->stream;
-+	cfg.sample_rate = runtime->rate;
-+	cfg.num_channels = runtime->channels;
-+	cfg.bit_width = prtd->bits_per_sample;
-+
-+	prtd->pcm_count = snd_pcm_lib_period_bytes(substream);
-+	prtd->pos = 0;
-+	/* rate and channels are sent to audio driver */
-+	ret = q6apm_graph_media_format_shmem(prtd->graph, &cfg);
-+	if (ret < 0) {
-+		dev_err(dev, "%s: q6apm_open_write failed\n", __func__);
-+		return ret;
-+	}
-+
-+	ret = q6apm_graph_media_format_pcm(prtd->graph, &cfg);
-+	if (ret < 0)
-+		dev_err(dev, "%s: CMD Format block failed\n", __func__);
-+
-+	ret = q6apm_map_memory_regions(prtd->graph, substream->stream, prtd->phys,
-+				       (prtd->pcm_size / prtd->periods), prtd->periods);
-+
-+	if (ret < 0) {
-+		dev_err(dev, "Audio Start: Buffer Allocation failed rc = %d\n",	ret);
-+		return -ENOMEM;
-+	}
-+
-+	ret = q6apm_graph_prepare(prtd->graph);
-+	if (ret) {
-+		dev_err(dev, "Failed to prepare Graph %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = q6apm_graph_start(prtd->graph);
-+	if (ret) {
-+		dev_err(dev, "Failed to Start Graph %d\n", ret);
-+		return ret;
-+	}
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
-+		int i;
-+		/* Queue the buffers for Capture ONLY after graph is started */
-+		for (i = 0; i < runtime->periods; i++)
-+			q6apm_read(prtd->graph);
-+
-+	}
-+
-+	/* Now that graph as been prepared and started update the internal state accordingly */
-+	prtd->state = Q6APM_STREAM_RUNNING;
-+
-+	return 0;
-+}
-+
-+static int q6apm_dai_trigger(struct snd_soc_component *component,
-+			     struct snd_pcm_substream *substream, int cmd)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct q6apm_dai_rtd *prtd = runtime->private_data;
-+	int ret = 0;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		 /* start writing buffers for playback only as we already queued capture buffers */
-+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+			ret = q6apm_write_async(prtd->graph, prtd->pcm_count, 0, 0, 0);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		/* TODO support be handled via SoftPause Module */
-+		prtd->state = Q6APM_STREAM_STOPPED;
-+		break;
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
-+static int q6apm_dai_open(struct snd_soc_component *component,
-+			  struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct snd_soc_pcm_runtime *soc_prtd = substream->private_data;
-+	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(soc_prtd, 0);
-+	struct device *dev = component->dev;
-+	struct q6apm_dai_data *pdata;
-+	struct q6apm_dai_rtd *prtd;
-+	int graph_id, ret;
-+
-+	graph_id = cpu_dai->driver->id;
-+
-+	pdata = snd_soc_component_get_drvdata(component);
-+	if (!pdata) {
-+		dev_err(dev, "Drv data not found ..\n");
-+		return -EINVAL;
-+	}
-+
-+	prtd = kzalloc(sizeof(*prtd), GFP_KERNEL);
-+	if (prtd == NULL)
-+		return -ENOMEM;
-+
-+	prtd->substream = substream;
-+	prtd->graph = q6apm_graph_open(dev, (q6apm_cb)event_handler, prtd, graph_id);
-+	if (IS_ERR(prtd->graph)) {
-+		dev_err(dev, "%s: Could not allocate memory\n", __func__);
-+		ret = PTR_ERR(prtd->graph);
-+		goto err;
-+	}
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		runtime->hw = q6apm_dai_hardware_playback;
-+	else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-+		runtime->hw = q6apm_dai_hardware_capture;
-+
-+	/* Ensure that buffer size is a multiple of period size */
-+	ret = snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS);
-+	if (ret < 0) {
-+		dev_err(dev, "snd_pcm_hw_constraint_integer failed\n");
-+		goto err;
-+	}
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		ret = snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
-+						   BUFFER_BYTES_MIN, BUFFER_BYTES_MAX);
-+		if (ret < 0) {
-+			dev_err(dev, "constraint for buffer bytes min max ret = %d\n", ret);
-+			goto err;
-+		}
-+	}
-+
-+	ret = snd_pcm_hw_constraint_step(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_BYTES, 32);
-+	if (ret < 0) {
-+		dev_err(dev, "constraint for period bytes step ret = %d\n", ret);
-+		goto err;
-+	}
-+
-+	ret = snd_pcm_hw_constraint_step(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_BYTES, 32);
-+	if (ret < 0) {
-+		dev_err(dev, "constraint for buffer bytes step ret = %d\n", ret);
-+		goto err;
-+	}
-+
-+	runtime->private_data = prtd;
-+	runtime->dma_bytes = BUFFER_BYTES_MAX;
-+	if (pdata->sid < 0)
-+		prtd->phys = substream->dma_buffer.addr;
-+	else
-+		prtd->phys = substream->dma_buffer.addr | (pdata->sid << 32);
-+
-+	return 0;
-+err:
-+	kfree(prtd);
-+
-+	return ret;
-+}
-+
-+static int q6apm_dai_close(struct snd_soc_component *component,
-+			   struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct q6apm_dai_rtd *prtd = runtime->private_data;
-+
-+	q6apm_graph_stop(prtd->graph);
-+	q6apm_unmap_memory_regions(prtd->graph, substream->stream);
-+	q6apm_graph_close(prtd->graph);
-+	prtd->graph = NULL;
-+	kfree(prtd);
-+	runtime->private_data = NULL;
-+
-+	return 0;
-+}
-+
-+static snd_pcm_uframes_t q6apm_dai_pointer(struct snd_soc_component *component,
-+					   struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct q6apm_dai_rtd *prtd = runtime->private_data;
-+
-+	if (prtd->pos == prtd->pcm_size)
-+		prtd->pos = 0;
-+
-+	return bytes_to_frames(runtime, prtd->pos);
-+}
-+
-+static int q6apm_dai_hw_params(struct snd_soc_component *component,
-+			       struct snd_pcm_substream *substream,
-+			       struct snd_pcm_hw_params *params)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct q6apm_dai_rtd *prtd = runtime->private_data;
-+
-+	prtd->pcm_size = params_buffer_bytes(params);
-+	prtd->periods = params_periods(params);
-+
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+		prtd->bits_per_sample = 16;
-+		break;
-+	case SNDRV_PCM_FORMAT_S24_LE:
-+		prtd->bits_per_sample = 24;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int q6apm_dai_pcm_new(struct snd_soc_component *component, struct snd_soc_pcm_runtime *rtd)
-+{
-+	int size = BUFFER_BYTES_MAX;
-+
-+	return snd_pcm_set_fixed_buffer_all(rtd->pcm, SNDRV_DMA_TYPE_DEV, component->dev, size);
-+}
-+
-+static const struct snd_soc_component_driver q6apm_fe_dai_component = {
-+	.name		= DRV_NAME,
-+	.open		= q6apm_dai_open,
-+	.close		= q6apm_dai_close,
-+	.prepare	= q6apm_dai_prepare,
-+	.pcm_construct	= q6apm_dai_pcm_new,
-+	.hw_params	= q6apm_dai_hw_params,
-+	.pointer	= q6apm_dai_pointer,
-+	.trigger	= q6apm_dai_trigger,
-+};
-+
-+static int q6apm_dai_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct device_node *node = dev->of_node;
-+	struct q6apm_dai_data *pdata;
-+	struct of_phandle_args args;
-+	int rc;
-+
-+	pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
-+	if (!pdata)
-+		return -ENOMEM;
-+
-+	rc = of_parse_phandle_with_fixed_args(node, "iommus", 1, 0, &args);
-+	if (rc < 0)
-+		pdata->sid = -1;
-+	else
-+		pdata->sid = args.args[0] & SID_MASK_DEFAULT;
-+
-+	dev_set_drvdata(dev, pdata);
-+
-+	return devm_snd_soc_register_component(dev, &q6apm_fe_dai_component, NULL, 0);
-+}
-+
-+#ifdef CONFIG_OF
-+static const struct of_device_id q6apm_dai_device_id[] = {
-+	{ .compatible = "qcom,q6apm-dais" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, q6apm_dai_device_id);
-+#endif
-+
-+static struct platform_driver q6apm_dai_platform_driver = {
-+	.driver = {
-+		.name = "q6apm-dai",
-+		.of_match_table = of_match_ptr(q6apm_dai_device_id),
-+	},
-+	.probe = q6apm_dai_probe,
-+};
-+module_platform_driver(q6apm_dai_platform_driver);
-+
-+MODULE_DESCRIPTION("Q6APM dai driver");
-+MODULE_LICENSE("GPL");
+These Registers lies in LPASS_AUDIO_LPASS_AUDIO_CSR | 0x032A9000 Range.
+
+Register description:
+
+LPASS_AUDIO_SWR_RX_CGCR(0x032A90A0) & LPASS_AUDIO_SWR_TX_CGCR (0x032A90A8)
+
+Bits  Field Name    Description
+1        HW_CTL        HW Dynamic Clock Gating Control Register
+                                  1: HW Controlled
+                                  0: SW Controlled
+0        CLK_ENABLE    Enabling the clock when in SW Controlled Mode
+                                     1: Clock Enabled
+                                      0: Clock Disabled
+> Regards,
+> Bjorn
+>
+>> +		ctrl->swrm_hctl_reg = devm_ioremap(&pdev->dev, swrm_hctl_reg, 0x4);
+>> +		if (!ctrl->swrm_hctl_reg)
+>> +			return -ENODEV;
+>> +	}
+>>   	ret = qcom_swrm_get_port_config(ctrl);
+>>   	if (ret)
+>>   		goto err_clk;
+>> -- 
+>> Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+>> is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+>>
 -- 
-2.21.0
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
