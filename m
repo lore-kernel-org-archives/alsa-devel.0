@@ -2,69 +2,69 @@ Return-Path: <SRS0=GC6S=PO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7342DC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Oct 2021 07:45:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 555AFC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Oct 2021 07:45:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5DA6260F70
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Oct 2021 07:45:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5DA6260F70
+	by mail.kernel.org (Postfix) with ESMTPS id CAECC60F70
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Oct 2021 07:45:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CAECC60F70
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 81A1916DA;
-	Tue, 26 Oct 2021 09:44:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 81A1916DA
+	by alsa0.perex.cz (Postfix) with ESMTPS id EE6CF16DF;
+	Tue, 26 Oct 2021 09:44:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE6CF16DF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635234318;
-	bh=0LBMnYQNRpnV8xasoiE+rbwbrLH5y2gcI7BSbtdxd5E=;
+	s=default; t=1635234328;
+	bh=1GKhL+3ztGb/LV2/OxItO3afwhocW/EXkWtf+2gNDK4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PfxUGGdto6k7p/fXSsQJA4oni2t3oHlCFaRIESRv38h/UsyCIm97ZQzsgJByaIRrS
-	 Kctc+yjkwegh7xETIrXgnvSnYZEKgL44J0hJUZIjjZU1b7SusK4SsjmycByxihOW7R
-	 z7JX8GSTgQSw8TSH0zACFjbN1T36E+OFuoXGISr0=
+	b=Tgt5dDr29c9cVDvH1L7JxT4d3I6l5mPrHPVjdi2zxiUTFRiukuthYFl1Hc3BxNfzo
+	 IFOVKs+OyZic5tHbjOnbl/IQ/x43s8Im0EmiguOtku3AVCkHUBpzg/2+1+ENyf9TKF
+	 zEhpW/IqBLO/rNcAHGuMgzKSF+C2bDqQQGNtizek=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EF7D0F80300;
-	Tue, 26 Oct 2021 09:43:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E89A2F804E3;
+	Tue, 26 Oct 2021 09:44:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3B444F8010A; Tue, 26 Oct 2021 09:43:46 +0200 (CEST)
+ id 027E9F804C2; Tue, 26 Oct 2021 09:43:58 +0200 (CEST)
 Received: from so254-9.mailgun.net (so254-9.mailgun.net [198.61.254.9])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 37FC2F8010A
- for <alsa-devel@alsa-project.org>; Tue, 26 Oct 2021 09:43:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 37FC2F8010A
+ by alsa1.perex.cz (Postfix) with ESMTPS id D6DEAF804C2
+ for <alsa-devel@alsa-project.org>; Tue, 26 Oct 2021 09:43:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6DEAF804C2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=mg.codeaurora.org
- header.i=@mg.codeaurora.org header.b="flVD2J1f"
+ header.i=@mg.codeaurora.org header.b="YpznkA7g"
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
  q=dns/txt; 
- s=smtp; t=1635234222; h=References: In-Reply-To: Message-Id: Date:
+ s=smtp; t=1635234233; h=References: In-Reply-To: Message-Id: Date:
  Subject: Cc: To: From: Sender;
- bh=yem2NXhbW8s1O08Anivuo63xWML7D3l99wRsqypL9HM=;
- b=flVD2J1fodBEVYnwQcvvPkHnviVE5Xk1AdCrZLAW1rHEDF5l+f6QhKdYuZvI77r+uMhip24c
- AO1G/qD/JxntCy+NerM1aBsDej3yEawq6eGOBi/KJJ0QKg9hRWhUShyEPpRDk0IrFEJxhK8P
- 0FM8FpSbGhHuyGX8OVdSlUfhe/o=
+ bh=+s++iB/K1GP8Z/Z6XQer0Jkhludqmq4imyH1aB81Igs=;
+ b=YpznkA7gSQjGRtInc70Qanfq10Bqmr6vVc3B/aCATH6//+HNeFzp2eWI5li6EkOjF8ydWt/S
+ xl/ofAbzJE/EOs0XAfdi45eDKmvClknyabMKV/JTMKm/F7U0ZNZ22+hHupWFj2O8Cb0U8UUL
+ R4Y5fTBB6NlEYs6WKOd6sg3hNI4=
 X-Mailgun-Sending-Ip: 198.61.254.9
 X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 6177b1a3b03398c06cc76961 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 26 Oct 2021 07:43:31
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 6177b1a95baa84c77b633385 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 26 Oct 2021 07:43:37
  GMT
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id 1EF7FC43460; Tue, 26 Oct 2021 07:43:31 +0000 (UTC)
+ id 1D875C4361C; Tue, 26 Oct 2021 07:43:37 +0000 (UTC)
 Received: from hu-srivasam-hyd.qualcomm.com (unknown [202.46.22.19])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
  (No client certificate requested) (Authenticated sender: srivasam)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id E8FB5C43618;
- Tue, 26 Oct 2021 07:43:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org E8FB5C43618
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id AF572C43616;
+ Tue, 26 Oct 2021 07:43:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org AF572C43616
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
  dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
@@ -77,10 +77,10 @@ To: agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
  linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
  swboyd@chromium.org, judyhsiao@chromium.org
-Subject: [PATCH v4 1/5] ASoC: qcom: Add compatible names in va, wsa, rx,
- tx codec drivers for sc7280
-Date: Tue, 26 Oct 2021 13:13:04 +0530
-Message-Id: <1635234188-7746-2-git-send-email-srivasam@codeaurora.org>
+Subject: [PATCH v4 2/5] ASoC: qcom: dt-bindings: Add compatible names for
+ lpass sc7280 digital codecs
+Date: Tue, 26 Oct 2021 13:13:05 +0530
+Message-Id: <1635234188-7746-3-git-send-email-srivasam@codeaurora.org>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1635234188-7746-1-git-send-email-srivasam@codeaurora.org>
 References: <1635234188-7746-1-git-send-email-srivasam@codeaurora.org>
@@ -101,68 +101,78 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add compatible names for sc7280 based targets in digital codec drivers
-va,wsa,rx and tx.
+Update compatible names in va, wsa, rx and tx macro codes for lpass sc7280
 
 Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 Co-developed-by: Venkata Prasad Potturu <potturu@codeaurora.org>
 Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/codecs/lpass-rx-macro.c  | 1 +
- sound/soc/codecs/lpass-tx-macro.c  | 1 +
- sound/soc/codecs/lpass-va-macro.c  | 1 +
- sound/soc/codecs/lpass-wsa-macro.c | 1 +
- 4 files changed, 4 insertions(+)
+ Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml  | 4 +++-
+ Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml  | 4 +++-
+ Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml  | 4 +++-
+ Documentation/devicetree/bindings/sound/qcom,lpass-wsa-macro.yaml | 4 +++-
+ 4 files changed, 12 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/lpass-rx-macro.c b/sound/soc/codecs/lpass-rx-macro.c
-index 196b068..c2b9333 100644
---- a/sound/soc/codecs/lpass-rx-macro.c
-+++ b/sound/soc/codecs/lpass-rx-macro.c
-@@ -3577,6 +3577,7 @@ static int rx_macro_remove(struct platform_device *pdev)
- }
+diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml
+index 443d556..bc762b3 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml
++++ b/Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml
+@@ -11,7 +11,9 @@ maintainers:
  
- static const struct of_device_id rx_macro_dt_match[] = {
-+	{ .compatible = "qcom,sc7280-lpass-rx-macro" },
- 	{ .compatible = "qcom,sm8250-lpass-rx-macro" },
- 	{ }
- };
-diff --git a/sound/soc/codecs/lpass-tx-macro.c b/sound/soc/codecs/lpass-tx-macro.c
-index 27a0d5d..5dcae73 100644
---- a/sound/soc/codecs/lpass-tx-macro.c
-+++ b/sound/soc/codecs/lpass-tx-macro.c
-@@ -1843,6 +1843,7 @@ static int tx_macro_remove(struct platform_device *pdev)
- }
+ properties:
+   compatible:
+-    const: qcom,sm8250-lpass-rx-macro
++    enum:
++      - qcom,sc7280-lpass-rx-macro
++      - qcom,sm8250-lpass-rx-macro
  
- static const struct of_device_id tx_macro_dt_match[] = {
-+	{ .compatible = "qcom,sc7280-lpass-tx-macro" },
- 	{ .compatible = "qcom,sm8250-lpass-tx-macro" },
- 	{ }
- };
-diff --git a/sound/soc/codecs/lpass-va-macro.c b/sound/soc/codecs/lpass-va-macro.c
-index 56c93f4..70f09b4 100644
---- a/sound/soc/codecs/lpass-va-macro.c
-+++ b/sound/soc/codecs/lpass-va-macro.c
-@@ -1472,6 +1472,7 @@ static int va_macro_remove(struct platform_device *pdev)
- }
+   reg:
+     maxItems: 1
+diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml
+index 6b5ca02..74f5386 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml
++++ b/Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml
+@@ -11,7 +11,9 @@ maintainers:
  
- static const struct of_device_id va_macro_dt_match[] = {
-+	{ .compatible = "qcom,sc7280-lpass-va-macro" },
- 	{ .compatible = "qcom,sm8250-lpass-va-macro" },
- 	{}
- };
-diff --git a/sound/soc/codecs/lpass-wsa-macro.c b/sound/soc/codecs/lpass-wsa-macro.c
-index d3ac318..75baf8e 100644
---- a/sound/soc/codecs/lpass-wsa-macro.c
-+++ b/sound/soc/codecs/lpass-wsa-macro.c
-@@ -2445,6 +2445,7 @@ static int wsa_macro_remove(struct platform_device *pdev)
- }
+ properties:
+   compatible:
+-    const: qcom,sm8250-lpass-tx-macro
++    enum:
++      - qcom,sc7280-lpass-tx-macro
++      - qcom,sm8250-lpass-tx-macro
  
- static const struct of_device_id wsa_macro_dt_match[] = {
-+	{.compatible = "qcom,sc7280-lpass-wsa-macro"},
- 	{.compatible = "qcom,sm8250-lpass-wsa-macro"},
- 	{}
- };
+   reg:
+     maxItems: 1
+diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml
+index 679b49c..99f2c36 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml
++++ b/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml
+@@ -11,7 +11,9 @@ maintainers:
+ 
+ properties:
+   compatible:
+-    const: qcom,sm8250-lpass-va-macro
++    enum:
++      - qcom,sc7280-lpass-va-macro
++      - qcom,sm8250-lpass-va-macro
+ 
+   reg:
+     maxItems: 1
+diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-wsa-macro.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-wsa-macro.yaml
+index 435b019..13cdb8a 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,lpass-wsa-macro.yaml
++++ b/Documentation/devicetree/bindings/sound/qcom,lpass-wsa-macro.yaml
+@@ -11,7 +11,9 @@ maintainers:
+ 
+ properties:
+   compatible:
+-    const: qcom,sm8250-lpass-wsa-macro
++    enum:
++      - qcom,sc7280-lpass-wsa-macro
++      - qcom,sm8250-lpass-wsa-macro
+ 
+   reg:
+     maxItems: 1
 -- 
 Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
 is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
