@@ -2,85 +2,83 @@ Return-Path: <SRS0=GC6S=PO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF167C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Oct 2021 06:01:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9D38C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Oct 2021 06:03:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 92DE061078
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Oct 2021 06:01:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 92DE061078
+	by mail.kernel.org (Postfix) with ESMTPS id 1716860FD7
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Oct 2021 06:03:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1716860FD7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F178316A4;
-	Tue, 26 Oct 2021 08:00:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F178316A4
+	by alsa0.perex.cz (Postfix) with ESMTPS id E26D316B1;
+	Tue, 26 Oct 2021 08:02:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E26D316B1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635228081;
-	bh=4cVUx8PESp64bL6OgbDdBssHjPYktOGCNOmlLFgLxiA=;
+	s=default; t=1635228214;
+	bh=w6eg52hzYTLeuf5507ineyQzUEszX3zDEUjMFU/Fui4=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=B9MMH/sA+dvo36zWVtKrb57A8FEMRttz+EFJaZcTkR/gPBHp6YuQfKtB+/EqfB337
-	 LfSywWLaL6gOkbIw1XsonOvUs3pG62XK6VHr+MZjcKBIWSH/8CBFFvYIjjjkGm3w35
-	 x70Pr5ecaSTVLWgFuyumNAb7BM9IEFr4rwykIgYw=
+	b=JrDttWeJ6qijuS2hf/UzLoSdlFPsTKutzuxA87EjomtkqbXLmgYNT63jVnAo5XTig
+	 OsURCmfev5vfAjtD0Pb3wvNbnl3wy4Yq8ijKVth1gf8Mfx224ehSUR6QhodOGH88Wf
+	 uhbFxX4M10BeCtgvqnJA7ks2FqaY5WhBEuJn/rpA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7811CF8014D;
-	Tue, 26 Oct 2021 08:00:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 83190F80105;
+	Tue, 26 Oct 2021 08:02:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2E4C4F802C8; Tue, 26 Oct 2021 08:00:29 +0200 (CEST)
+ id F2A20F8014D; Tue, 26 Oct 2021 08:02:41 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AB49DF80105
- for <alsa-devel@alsa-project.org>; Tue, 26 Oct 2021 08:00:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB49DF80105
+ by alsa1.perex.cz (Postfix) with ESMTPS id D62F2F80105
+ for <alsa-devel@alsa-project.org>; Tue, 26 Oct 2021 08:02:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D62F2F80105
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="eBhOJgPg"; 
+ header.b="D/qXAf7E"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="R8gP5i8K"
+ header.b="/KBXeWoQ"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id EBC441F770;
- Tue, 26 Oct 2021 06:00:18 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 8DD131F770;
+ Tue, 26 Oct 2021 06:02:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1635228018; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1635228151; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Er17uZj5lNnNB09LnO1O9fGl7hL1BW2tQkx9sB8YbfI=;
- b=eBhOJgPgFZ16RnwVCTAWynSDsbi3KY8eSYmnqweJO7rGubGF/34bkQ/oWOczClGmkE7T7V
- CVsviVLOz+5J73iAWHdZa6F8v3f1ikzxWudxCf4uAbaFRha30Rjdi59+TvGVTedF7g9WNV
- /u1ViH6/Udd0KnZey9abg45ss3BQqhM=
+ bh=gKjUTHtHr46Zc0mVSdHDGYdXrEbguNkHOoWnUzmutUs=;
+ b=D/qXAf7Eu7sWFSHvK/0ZeELZ9ibSQjoAvrPrPCvw1OElb2vV7eDe8N7JdwYNuFM3ic4Rpn
+ jp3IpEKI8oGQ/FpK5nnlmblAmOx11LzdEKFtZcmUrrisqwWH9z29AR++vn2uXAjrIWRauB
+ BTBMDYcp6BQu6QD17Jf+tQQmLLaEdKk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1635228018;
+ s=susede2_ed25519; t=1635228151;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Er17uZj5lNnNB09LnO1O9fGl7hL1BW2tQkx9sB8YbfI=;
- b=R8gP5i8KP5gOg2c1a9Mi1UD9gNiBTaEZRFsBkF3DStSQbsYr2Q5WJ28+sVPyAy2W4heGC5
- WNPwfwvz60PBsMCA==
+ bh=gKjUTHtHr46Zc0mVSdHDGYdXrEbguNkHOoWnUzmutUs=;
+ b=/KBXeWoQOOaLAVKwtgDpxwJ0dxhCEvShId6hoqwNn546nxPwB6IoEcunZMfrv1VIS3FScP
+ aFyeHF57wZz3TtDA==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 9F309A3B81;
- Tue, 26 Oct 2021 06:00:18 +0000 (UTC)
-Date: Tue, 26 Oct 2021 08:00:18 +0200
-Message-ID: <s5hmtmwxr4d.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id 7AD14A3B85;
+ Tue, 26 Oct 2021 06:02:29 +0000 (UTC)
+Date: Tue, 26 Oct 2021 08:02:29 +0200
+Message-ID: <s5hlf2gxr0q.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Pavel Skripkin <paskripkin@gmail.com>
-Subject: Re: [PATCH next] ALSA: mixer: fix deadlock in snd_mixer_oss_set_volume
-In-Reply-To: <20211024140315.16704-1-paskripkin@gmail.com>
-References: <20211024140315.16704-1-paskripkin@gmail.com>
+To: Chengfeng Ye <cyeaa@connect.ust.hk>
+Subject: Re: [PATCH] sound/isa/gus: fix null pointer dereference on pointer
+ block
+In-Reply-To: <20211024104611.9919-1-cyeaa@connect.ust.hk>
+References: <20211024104611.9919-1-cyeaa@connect.ust.hk>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de,
- syzbot+ace149a75a9a0a399ac7@syzkaller.appspotmail.com,
- linux-kernel@vger.kernel.org, tiwai@suse.com, broonie@kernel.org,
- joe@perches.com
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,18 +94,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 24 Oct 2021 16:03:15 +0200,
-Pavel Skripkin wrote:
+On Sun, 24 Oct 2021 12:46:11 +0200,
+Chengfeng Ye wrote:
 > 
-> In commit 411cef6adfb3 ("ALSA: mixer: oss: Fix racy access to slots")
-> added mutex protection in snd_mixer_oss_set_volume(). Second
-> mutex_lock() in same function looks like typo, fix it.
+> The pointer block return from snd_gf1_dma_next_block could be
+> null, so there is a potential null pointer dereference issue.
+> Fix this by adding a null check before dereference.
 > 
-> Reported-by: syzbot+ace149a75a9a0a399ac7@syzkaller.appspotmail.com
-> Fixes: 411cef6adfb3 ("ALSA: mixer: oss: Fix racy access to slots")
-> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+> Signed-off-by: Chengfeng Ye <cyeaa@connect.ust.hk>
 
-Applied now, thanks!
+Thanks, applied.
 
 
 Takashi
