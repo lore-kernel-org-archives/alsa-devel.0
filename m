@@ -2,69 +2,84 @@ Return-Path: <SRS0=GC6S=PO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D960DC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Oct 2021 19:09:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B6D2C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Oct 2021 19:39:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 613D161078
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Oct 2021 19:09:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 613D161078
+	by mail.kernel.org (Postfix) with ESMTPS id 04B186103C
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Oct 2021 19:39:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 04B186103C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A0C2B173C;
-	Tue, 26 Oct 2021 21:08:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A0C2B173C
+	by alsa0.perex.cz (Postfix) with ESMTPS id F303D1695;
+	Tue, 26 Oct 2021 21:38:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F303D1695
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635275369;
-	bh=Gk/E5pK7kTnAy9ngQOvmnvKRnxHL1Xj2ImsmZMQXr68=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1635277157;
+	bh=Bec2bqSA+vK9Lp3idTB4fIoLCigGM7noem3AM1DlFJc=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=a9yIX5050zPTr3Nj0waUga0JQs2GDwJPle/KRyoeYRc9UZBv6KO64F29INXcJyvtt
-	 jr7klhk8C79fhGut7nag9rURqZwqxUnH+jgcarxOJRzvRvRtBypROqr7ZyXSLBGfeb
-	 iuU3uhQLgVTIzxW0QejVhS11ZexTyDXm47FBGLkA=
+	b=dOWJ2xT/QhbRmxXvQNWx9ybnmJ8HwLuPTQQUDAZc40ZlrNjSqEaUQQJ/gtc5DJCjB
+	 erauyolNrVLqrA9nyXlucUQCUTHU3YY7yKXnXdYdIXX+e9yd/EnstzC+0ehQJnvM+R
+	 Gkuwc1NdjauvI6g3IoNcRfd++0Mz+Z4e45/RwjYo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8EF1BF80510;
-	Tue, 26 Oct 2021 21:07:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 579AEF80269;
+	Tue, 26 Oct 2021 21:38:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 95DCAF80507; Tue, 26 Oct 2021 21:07:05 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 7D280F802C8; Tue, 26 Oct 2021 21:38:24 +0200 (CEST)
+Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com
+ [209.85.210.54])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 135F4F804FF
- for <alsa-devel@alsa-project.org>; Tue, 26 Oct 2021 21:06:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 135F4F804FF
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="e54RXcWY"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 84351610A4;
- Tue, 26 Oct 2021 19:06:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1635275216;
- bh=Gk/E5pK7kTnAy9ngQOvmnvKRnxHL1Xj2ImsmZMQXr68=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=e54RXcWYoR6i1K/7TOTYwCjIjFo7TIBtXnUsM4ATboPpJBNNnr+VaBVYoJECPnkwg
- epNzwH5IMIVq9F/zSv620iGNRuqZ89TSbDYSG28IrO8OaDKU0F8IpzBVhny4OinQnP
- aAIv09q4WVDYMwGH39Rxhy+keJ0sSGB3hETkn8sIdKKTi1YGPp7kzAYIPNY+gKFL4a
- Pb0DR3Us5GfrofDfkFYS47sYzJEU8n92XqDH5wIkNIasXuXYafD7kmqHUfZcEO2ay9
- XS/Ics2mjOq06Ur0WJbCEgNtsIxdGAJCR/kuvEegpe+Uf43vSYhhP8JTKdxuVRCpz5
- n17A8c4KVzF9g==
-From: Mark Brown <broonie@kernel.org>
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-In-Reply-To: <20211026125722.10220-1-rf@opensource.cirrus.com>
-References: <20211026125722.10220-1-rf@opensource.cirrus.com>
-Subject: Re: [PATCH 0/2] ASoC: cs42l42: Fixes to power-down
-Message-Id: <163527521527.2033755.16584543049697234503.b4-ty@kernel.org>
-Date: Tue, 26 Oct 2021 20:06:55 +0100
+ by alsa1.perex.cz (Postfix) with ESMTPS id 40A90F8010A
+ for <alsa-devel@alsa-project.org>; Tue, 26 Oct 2021 21:38:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40A90F8010A
+Received: by mail-ot1-f54.google.com with SMTP id
+ d21-20020a9d4f15000000b0054e677e0ac5so177818otl.11
+ for <alsa-devel@alsa-project.org>; Tue, 26 Oct 2021 12:38:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=7anbp20VhpEFISp7BgAsV6EJPG6+J1HMLEmCYOo/hT0=;
+ b=Z766d75FE42xmo71w5Xjp9c9fX7WdfkV5eqkEL+oVgs1Gw5MB6q8nAI+Yq8xPoSxnj
+ LPVK94x1rFIgxZVMqEcsVANry1a9o6hyBcxYiHsPAUweUipH6og4HWnZDmLdSJ9MR+YL
+ rri9jycVlSvN2wpHO0W/wzmDDCDKwcqbKeFXwDeqc950seUyo0U45xA1D+H02Lnx5iqg
+ 0a7UwEeXDASE1KaibzO3GDoyaH58NGi8nmZFGp4Gd9Jmd8VjDcHp+AdCCDq5u5mqGBJy
+ nncLkQCacleywRjOAZ+pT+8rSclPmZz6WL5rFUQhie6QZhstg1dA/CiZ4BPzKEFJSBXu
+ 0wnw==
+X-Gm-Message-State: AOAM531JjO9HvxXgLvXoxCPqouO27oKnsKd+ORINC1wRa2CCoAdO8Vji
+ N7juPhxKPojocWVmqX6eig==
+X-Google-Smtp-Source: ABdhPJwTt1pkFtye7CZvJrO0zF7kPvPNQfmV3RlknuymPSTwxN9abcq5ilMolzT2PWa7uM55vMhopw==
+X-Received: by 2002:a9d:4b94:: with SMTP id k20mr21059144otf.203.1635277096250; 
+ Tue, 26 Oct 2021 12:38:16 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net.
+ [66.90.148.213])
+ by smtp.gmail.com with ESMTPSA id 16sm4962498oty.20.2021.10.26.12.38.15
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 26 Oct 2021 12:38:15 -0700 (PDT)
+Received: (nullmailer pid 3102541 invoked by uid 1000);
+ Tue, 26 Oct 2021 19:38:14 -0000
+Date: Tue, 26 Oct 2021 14:38:14 -0500
+From: Rob Herring <robh@kernel.org>
+To: George Song <georgesong0119@gmail.com>
+Subject: Re: [PATCH 1/2] ALSA SoC MAX98520 dt-bindings : Added device tree
+ binding for max98520 Signed-off-by: George Song
+ <george.song@maximintegrated.com>
+Message-ID: <YXhZJiXmT/duNu/M@robh.at.kernel.org>
+References: <20211013060441.18177-1-georgesong0119@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211013060441.18177-1-georgesong0119@gmail.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ george.song@maximintegrated.com, "george.song" <george.song@analog.com>,
+ lgirdwood@gmail.com, linux-kernel@vger.kernel.org, broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,43 +95,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 26 Oct 2021 13:57:20 +0100, Richard Fitzgerald wrote:
-> Driver probe and remove were inconsistent in what they did to power-down
-> and neither did all steps. In addition to that, neither function
-> prevented the interrupt handler from running during and after power-down.
+On Wed, Oct 13, 2021 at 03:04:41PM +0900, George Song wrote:
+> From: "george.song" <george.song@analog.com>
+
+Patches must have an author name, commit message, and a Signed-off-by. 
+Please use checkpatch.pl which will point out some of this.
+
 > 
-> Richard Fitzgerald (2):
->   ASoC: cs42l42: Reset and power-down on remove() and failed probe()
->   ASoC: cs42l42: free_irq() before powering-down on probe() fail
+> ---
+>  .../bindings/sound/maxim,max98520.yaml        | 35 +++++++++++++++++++
+>  1 file changed, 35 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/maxim,max98520.yaml
 > 
-> [...]
-
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/2] ASoC: cs42l42: Reset and power-down on remove() and failed probe()
-      commit: 6cb725b8a5cc7b9106d5d6dd5d2ca78c76913775
-[2/2] ASoC: cs42l42: free_irq() before powering-down on probe() fail
-      commit: a10148a8cf561d728c0f57994330b2da1df35577
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+> diff --git a/Documentation/devicetree/bindings/sound/maxim,max98520.yaml b/Documentation/devicetree/bindings/sound/maxim,max98520.yaml
+> new file mode 100644
+> index 000000000000..02481428e2ed
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/maxim,max98520.yaml
+> @@ -0,0 +1,35 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/sound/maxim,max98520.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Maxim Integrated MAX98520 Speaker Amplifier Driver
+> +
+> +maintainers:
+> +  - Goerge Song <George.song@maximintegrated.com>
+> +
+> +properties:
+> +  compatible:
+> +    const: maxim,max98520
+> +
+> +  reg:
+> +    maxItems: 1
+> +    description: I2C address of the device.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +      max98520: amplifier@38 {
+> +        compatible = "maxim,max98520";
+> +        reg = <0x38>;
+> +      };
+> +    };
+> -- 
+> 2.25.1
+> 
+> 
