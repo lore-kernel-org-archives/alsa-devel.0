@@ -2,57 +2,60 @@ Return-Path: <SRS0=Z19R=PP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3BC36C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 02:20:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 52625C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 02:20:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 20F05610A1
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 02:20:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 20F05610A1
+	by mail.kernel.org (Postfix) with ESMTPS id 97CDA60F90
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 02:20:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 97CDA60F90
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1E6EF16B5;
-	Wed, 27 Oct 2021 04:19:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E6EF16B5
+	by alsa0.perex.cz (Postfix) with ESMTPS id DAB2E16D7;
+	Wed, 27 Oct 2021 04:19:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DAB2E16D7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635301228;
-	bh=l8NVcFx1UtPiGLOQnf/XdgVu5ChbfBnerADa+8WYqD4=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=N3BpUMrpPRRNOLcYRBGyxOTtX1ml3zPpy6YMjenlQWaTPVuWIDtSxy7l4j4NQXIXM
-	 vEnN6lyO8a4pu5x6Co1VKgiJ2YYDOvjOGjmugJbJz0zmrY+6nU7IAE/Br6hUAFKLVC
-	 AIh81izHsSOeP1yPY0EP2de8hRk69TIyDZCcL4S4=
+	s=default; t=1635301236;
+	bh=2SSVGlonMseDnczzQXz8nP1HtBVDKFgHx8UyCPP3M6g=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=ji4gbqKxFxgCvrDjcEnPRurdO7UIkAwoRAEls2kmOREXiTiveKJH4UvdWe3IjFB1a
+	 brPzc6Vfy8L5XGCs3zQngyfZiDtxV3PdmCQwI3J7umBbAAl889LtbwGjP/cP1BNM6y
+	 Vh8FZFh5FqEbXvBUwSc1ffeukdOxLlzOqoDRWuqA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B74DCF804E5;
-	Wed, 27 Oct 2021 04:18:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B16B8F8025E;
+	Wed, 27 Oct 2021 04:19:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E2DC2F80271; Wed, 27 Oct 2021 04:18:47 +0200 (CEST)
+ id 029F2F8049C; Wed, 27 Oct 2021 04:18:51 +0200 (CEST)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DC726F800FF
- for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2021 04:18:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC726F800FF
-X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="217229374"
-X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; d="scan'208";a="217229374"
+ by alsa1.perex.cz (Postfix) with ESMTPS id C573FF8010A
+ for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2021 04:18:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C573FF8010A
+X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="217229385"
+X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; d="scan'208";a="217229385"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Oct 2021 19:18:37 -0700
-X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; d="scan'208";a="486446254"
+ 26 Oct 2021 19:18:40 -0700
+X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; d="scan'208";a="486446260"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Oct 2021 19:18:35 -0700
+ 26 Oct 2021 19:18:37 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: broonie@kernel.org,
 	tiwai@suse.de
-Subject: [PATCH 00/10] ASoC: Intel: sof_sdw: Use fixed DAI link id
-Date: Wed, 27 Oct 2021 10:18:14 +0800
-Message-Id: <20211027021824.24776-1-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 01/10] ASoC: intel: sof_sdw: return the original error number
+Date: Wed, 27 Oct 2021 10:18:15 +0800
+Message-Id: <20211027021824.24776-2-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20211027021824.24776-1-yung-chuan.liao@linux.intel.com>
+References: <20211027021824.24776-1-yung-chuan.liao@linux.intel.com>
 Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
  bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
@@ -70,33 +73,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This series provides a way to use constant dailink numbers for different
-devices. So that we don't need to renumber them in topologies.
-Some patches with different purpose are sent together in this series
-since they are dependent.
+We don't want to convert create_sdw_dailink()'s return value to -ENOMEM.
 
-Bard Liao (8):
-  ASoC: intel: sof_sdw: return the original error number
-  ASoC: intel: sof_sdw: rename be_index/link_id to link_index
-  ASoC: intel: sof_sdw: Use a fixed DAI link id for AMP
-  ASoC: intel: sof_sdw: move DMIC link id overwrite to
-    create_sdw_dailink
-  ASoC: intel: sof_sdw: remove SOF_RT715_DAI_ID_FIX quirk
-  ASoC: intel: sof_sdw: remove sof_sdw_mic_codec_mockup_init
-  ASoC: intel: sof_sdw: remove get_next_be_id
-  ASoC: intel: sof_sdw: add link adr order check
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+---
+ sound/soc/intel/boards/sof_sdw.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Pierre-Louis Bossart (2):
-  ASoC: Intel: sof_sdw: fix jack detection on HP Spectre x360
-    convertible
-  ASoC: Intel: sof_sdw: add SKU for Dell Latitude 9520
-
- sound/soc/intel/boards/sof_sdw.c            | 152 ++++++++++----------
- sound/soc/intel/boards/sof_sdw_common.h     |   7 +-
- sound/soc/intel/boards/sof_sdw_rt715.c      |   7 -
- sound/soc/intel/boards/sof_sdw_rt715_sdca.c |   7 -
- 4 files changed, 85 insertions(+), 88 deletions(-)
-
+diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
+index f10496206cee..a1fb41136cf0 100644
+--- a/sound/soc/intel/boards/sof_sdw.c
++++ b/sound/soc/intel/boards/sof_sdw.c
+@@ -1134,7 +1134,7 @@ static int sof_card_dai_links_create(struct device *dev,
+ 					 &ignore_pch_dmic);
+ 		if (ret < 0) {
+ 			dev_err(dev, "failed to create dai link %d", be_id);
+-			return -ENOMEM;
++			return ret;
+ 		}
+ 	}
+ 
 -- 
 2.17.1
 
