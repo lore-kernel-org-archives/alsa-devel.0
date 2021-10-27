@@ -2,70 +2,70 @@ Return-Path: <SRS0=Z19R=PP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 75AA5C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 17:32:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A9E7C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 17:32:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F349B60E74
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 17:32:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org F349B60E74
+	by mail.kernel.org (Postfix) with ESMTPS id 7D50460231
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 17:32:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7D50460231
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5AA2D16CC;
-	Wed, 27 Oct 2021 19:31:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5AA2D16CC
+	by alsa0.perex.cz (Postfix) with ESMTPS id A379216A3;
+	Wed, 27 Oct 2021 19:31:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A379216A3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635355936;
-	bh=5dv0HGz4bWpWJPI+ZLbq2SON0N8XFp8vjVzsWv6u1gI=;
+	s=default; t=1635355948;
+	bh=Pq3SfGHDpc88FKh0R+K0PoZh6QwgzrTWqovNNpy6rmo=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Isi7dz7qJtFb7iFSWbQteUVOghkFR62EqUzu0M/Jk8jwMHiQHHjGBkUaCR+Ad/sOH
-	 ve0dwTpsM7qvupiu4K+e5uGa/5whM5Vs5AVlSwf5ShREWdTHIO1fEkrbdC/ztI0DHy
-	 7VwUBnwOwU+OWnMeb2nnDKanQBRfgrt1AzsqlUrc=
+	b=eXOVCwX7MTFsaoeeDi9J2PghuVx89Ly5OMgXDywWae8FJUpR8VEJVvA5dYsRjPduw
+	 /MOVt95fHDeaBxYcaJaG3IQ3/hyKpvIWvn2o0DUCRH33IHxzU9N0TuzyMODmU4/tG2
+	 Rz7STvq1JABezma35MD0p8g9GH/GwCQoomUlMDpM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D9C84F804F1;
-	Wed, 27 Oct 2021 19:29:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C56C7F804F3;
+	Wed, 27 Oct 2021 19:29:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6EC8DF804E5; Wed, 27 Oct 2021 19:29:25 +0200 (CEST)
+ id 7AE6DF8025A; Wed, 27 Oct 2021 19:29:25 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 76032F8032B
- for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2021 19:29:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76032F8032B
+ by alsa1.perex.cz (Postfix) with ESMTPS id B9F24F8025A
+ for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2021 19:29:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9F24F8025A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="UFX8KAyi"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 536A1610A0;
- Wed, 27 Oct 2021 17:29:13 +0000 (UTC)
+ header.b="ful2KLto"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D30E60E74;
+ Wed, 27 Oct 2021 17:29:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1635355754;
- bh=5dv0HGz4bWpWJPI+ZLbq2SON0N8XFp8vjVzsWv6u1gI=;
+ s=k20201202; t=1635355760;
+ bh=Pq3SfGHDpc88FKh0R+K0PoZh6QwgzrTWqovNNpy6rmo=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=UFX8KAyigPYakyshO2cMNU6BMxeiz+hrBvd2joCBB42KXMt0ODkOJ5+cQTrYxEYMd
- pCGX0Pd2XFlFkaetWP611YM5kX7Yh7qdpehaNOPXAhjTK9uZG2IsOjLUgz0IAUFgV2
- ArXrvB1F1h9KMZTCzw8fZ1hWCp+iWsDiIC4LOfQtirvuwg5ix5SQEqJp0RhZCczeEU
- URjewVIhoEJv/KCD1fUkzEBYe6GAIL48g0jP3oRJ4AOFuZ7HSrkoSHlTfGWyJ56EwN
- wIjgqdSSTlpDDePF+MtDutLmsOI5x9qQNFvPkN9fYccuw3DS72DesuqHlc7zWikKxE
- OxAsURSDXfRjg==
+ b=ful2KLto8dvC5tLEQXCOItXdinLKEkfq37sxy5tO3i51GxZHX5GEXygnE0mavqkVj
+ CXeTOWmrQqAsFkSjO7qJKHVfaxAhBW2UG+bQ7TjvZsV3IhzJN82znaT9V9ckqN4mef
+ RgJhOSWcdhT7uJgPuu285EDqUMbugFGpIUn3uJNuASvGp27eroU/gKb43l8VhQ5NG8
+ 5y4Euc56qtbqVkKdUDNeF/3gvId0ZlvvpGG8rNvljHVoicNX5PmmbL/enw58NgRcds
+ 1iZyTC+PAXBzlawhblwDP5zlPt/jlazvZjGTKtjboeVOmBlirtBEDNu/VT5LMrxLqn
+ aD9L7g4AjUXiw==
 From: Mark Brown <broonie@kernel.org>
-To: Yang Yingliang <yangyingliang@huawei.com>, linux-kernel@vger.kernel.org,
- alsa-devel@alsa-project.org
-In-Reply-To: <20211027065228.833825-1-yangyingliang@huawei.com>
-References: <20211027065228.833825-1-yangyingliang@huawei.com>
-Subject: Re: [PATCH -next] ASoC: amd: acp: Fix return value check in
- acp_machine_select()
-Message-Id: <163535575308.4012075.1966286577719870369.b4-ty@kernel.org>
-Date: Wed, 27 Oct 2021 18:29:13 +0100
+To: David Lin <CTLIN0@nuvoton.com>
+In-Reply-To: <20211027025142.25898-1-CTLIN0@nuvoton.com>
+References: <20211027025142.25898-1-CTLIN0@nuvoton.com>
+Subject: Re: [PATCH 0/3] Make genaral and simple for new sof machine driver
+Message-Id: <163535575832.4012075.5610998531157694851.b4-ty@kernel.org>
+Date: Wed, 27 Oct 2021 18:29:18 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: lgirdwood@gmail.com, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, WTLI@nuvoton.com, SJLIN0@nuvoton.com,
+ KCHSU0@nuvoton.com, lgirdwood@gmail.com, YHCHuang@nuvoton.com,
+ mac.chiang@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,12 +81,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 27 Oct 2021 14:52:28 +0800, Yang Yingliang wrote:
-> In case of error, platform_device_register_data() returns ERR_PTR()
-> and never returns NULL. The NULL test in the return value check
-> should be replaced with IS_ERR().
+On Wed, 27 Oct 2021 10:51:40 +0800, David Lin wrote:
+> The series of features will make general and simple for new sof machine driver.
 > 
+> David Lin (3):
+>   ASoC: nau8825: add set_jack coponment support
+>   ASoC: nau8825: add disable jack detection support
+>   ASoC: nau8825: add clock management for power saving
 > 
+> [...]
 
 Applied to
 
@@ -94,8 +97,12 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: amd: acp: Fix return value check in acp_machine_select()
-      commit: fdde18b9773636cc5866ccd8f2093e1cf0022dea
+[1/3] ASoC: nau8825: add set_jack coponment support
+      commit: c6167e10e76fb97d37613004046e66027b3a569b
+[2/3] ASoC: nau8825: add disable jack detection support
+      (no commit info)
+[3/3] ASoC: nau8825: add clock management for power saving
+      commit: 6133148ca08a097ed8c57d7f5a7826723273049b
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
