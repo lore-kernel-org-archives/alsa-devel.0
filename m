@@ -2,71 +2,90 @@ Return-Path: <SRS0=Z19R=PP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 142D1C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 17:33:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EDBF4C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 18:49:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8AC7B60E74
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 17:33:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8AC7B60E74
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 9ACCE61039
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 18:49:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9ACCE61039
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DAD18169F;
-	Wed, 27 Oct 2021 19:32:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DAD18169F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0CF3D169E;
+	Wed, 27 Oct 2021 20:48:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0CF3D169E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635356028;
-	bh=Dmy2eSxMesrXx3Kt54NoJu+ASFtTZgXO7s9XqZs9lFc=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=qtHfWQ4t785K73tVPDmEhrOZfudRd2JFjozOeOMeIVbJzZ9nhdE6tOMBjbQOPdNXP
-	 QYE6yj8wcBEvQPOA8cz0hzaKRard6fxQdqJKnZTOIg2Ly1uMZOS8F7X43E9VMj1XY+
-	 6yw2oW93WAZRkb2pUTXQ2/fqAtBlguHjlKoghlhg=
+	s=default; t=1635360584;
+	bh=FZnnKG86B/HeFJ5VRl4mCRiAeuaNdHslgiaNE1NTxHc=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=GfrKI6JAuKwbcgYKzDr7yPAwTHz2YbuptHDu0WQmZHcab/nwdj4BogGtdF/f/IIg6
+	 RseRDuQ66J5XUgNueLSZHFvZs43KMzEKPJUgVs0/tZgph44cM3YnpleqkI1japAetX
+	 VazJW4Y0/CprWvbLazFSdmvqNrb1GzvirB6kUdW4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 427DFF8051A;
-	Wed, 27 Oct 2021 19:29:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 84AEEF8016C;
+	Wed, 27 Oct 2021 20:48:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E2F55F8016C; Wed, 27 Oct 2021 19:29:33 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 41373F8025A; Wed, 27 Oct 2021 20:48:51 +0200 (CEST)
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com
+ [IPv6:2607:f8b0:4864:20::f2f])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1F450F8049C
- for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2021 19:29:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F450F8049C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3E116F800D1
+ for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2021 20:48:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E116F800D1
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="utolcpQ8"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 15776610C7;
- Wed, 27 Oct 2021 17:29:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1635355763;
- bh=Dmy2eSxMesrXx3Kt54NoJu+ASFtTZgXO7s9XqZs9lFc=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=utolcpQ85h/f5oh9Q/bK6syRgpbaiVM1k/d8JoOYChk/iV5EtxKi/VoTkyQHVofY7
- zUGNW4xjtV3/NOI4OLZZP8tc6YGrPPhNevb7Bxj2bCBa8FHwVjpjRHItgc6hMuI0pZ
- HPT1EVUZi7W8AJ3E3d0g2CU+2QXZfLBO3teKKd2FMWf1aAn18DcjeOD2gzKD4f9Oz5
- JvwdyhUuzb4nmuc2arTmGhtz/j7FvxyzSxWrV0K2imoqDj3Xw+try+HoLD5gfUI4UW
- TLCjCGpKlKUARHf0IOpHlaCEegIFHLfoXecoeH4PQuaDRQPACRpi1a95MWtedMlPTy
- kuit7R26ABYDQ==
-From: Mark Brown <broonie@kernel.org>
-To: Arnd Bergmann <arnd@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>
-In-Reply-To: <20211027082359.52248-1-arnd@kernel.org>
-References: <20211027082359.52248-1-arnd@kernel.org>
-Subject: Re: [PATCH] ASoC: amd: acp: fix Kconfig dependencies
-Message-Id: <163535576182.4012075.12901832843673816206.b4-ty@kernel.org>
-Date: Wed, 27 Oct 2021 18:29:21 +0100
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="cDWn67pD"
+Received: by mail-qv1-xf2f.google.com with SMTP id jk5so2412592qvb.9
+ for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2021 11:48:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=sender:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=1FJiBpCKtlOpMH0mW30VRaesYawySjY66iCeXFJ7SYM=;
+ b=cDWn67pDYQ4ozbi60h6BD3NfdckXrfUip7IWC34IVy1/rYlnmBOzphnxc6Pi3yAjyA
+ Pv8kQIIssiYDyvqEQSOKXlr8cs/4/lihrt+BrBvnQl2cimAK5iwaCmpMjpMzRz/56dL8
+ 5cq/u2Ku3/4elbpVQTji55mG0USBSrrkxeKMtRD7gUNfP7z+lcy/ij8Jz3lKfLd9k1xg
+ Zmoc+W2MdRmXJo3KTMLkG74L46hszFgScQkmC6jpJieNjtABCsh2+iXdwOXDSpkB/gLb
+ SikHEhpSwCaS62wHtTn+gCyLzVI4/0zQB3uPdJcvOFzHleH1XHMbKVeFqJhxa4+jLJDR
+ 71MA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+ :mime-version:content-transfer-encoding;
+ bh=1FJiBpCKtlOpMH0mW30VRaesYawySjY66iCeXFJ7SYM=;
+ b=q6cFLgpwtA+Py4DcNAuSP3QqgH7NfxRNa9VexONkZxJMGnG10BWzioBTIBspKFM+D1
+ 0hJb11tWWf1hlHuaWTlWyn9DbUpXtAggmzKMMi7WIdLkm4gsNk9IvajuRvkQzr6c2dpy
+ D/gCx/HvQ0VqyK2055bzcK4to5mMGomcxnVZTqdUXK87GI8uzLfoce6BEM2i5yKf4KGn
+ OI46vocvTGMmTkXTuPR9BAf3Z01wrK8OznaJWbUsgirJdOqmWNHaQwtDTR2tk324H9Tv
+ QdeU/WoW4K8t4F4Z99HBBdzQxG0c+R4SGwubjr2SDorWbE8rYdoPu/ECFfIDZPYsc1bb
+ ZTKQ==
+X-Gm-Message-State: AOAM532aGoNC5TbEXBB8mDcEF50qCdLCbgfrJ9zpzaoP0RlSx+GTXgMc
+ CYNec4SxgFmQD20nny8iTwc=
+X-Google-Smtp-Source: ABdhPJzW4teN0Shtei3LjruOVmsoXFBmBZv8vnnzvzVAQ8/cAUbcALlfr9AxoR8Y4j8KD3WG/clZVA==
+X-Received: by 2002:ad4:5423:: with SMTP id g3mr27947804qvt.45.1635360516980; 
+ Wed, 27 Oct 2021 11:48:36 -0700 (PDT)
+Received: from ubuntu-mate-laptop.therobinsoncafe.local
+ (097-068-131-026.biz.spectrum.com. [97.68.131.26])
+ by smtp.gmail.com with ESMTPSA id o6sm503131qta.2.2021.10.27.11.48.36
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 27 Oct 2021 11:48:36 -0700 (PDT)
+From: Julian Braha <julianbraha@gmail.com>
+To: broonie@kernel.org, Vijendar.Mukunda@amd.com, perex@perex.cz,
+ tiwai@suse.com, pierre-louis.bossart@linux.intel.com
+Subject: [PATCH RESEND] ASoC: fix unmet dependencies on GPIOLIB for
+ SND_SOC_DMIC
+Date: Wed, 27 Oct 2021 14:48:35 -0400
+Message-Id: <20211027184835.112916-1-julianbraha@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Arnd Bergmann <arnd@arndb.de>
+Cc: alsa-devel@alsa-project.org, fazilyildiran@gmail.com,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,44 +101,57 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 27 Oct 2021 10:23:46 +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The CONFIG_SND_SOC_AMD_MACH_COMMON has some dependencies that
-> are not checked by the symbols that select it:
-> 
-> WARNING: unmet direct dependencies detected for SND_SOC_AMD_MACH_COMMON
->   Depends on [n]: SOUND [=y] && !UML && SND [=m] && SND_SOC [=m] && X86 && PCI [=y] && I2C [=n]
->   Selected by [m]:
->   - SND_SOC_AMD_LEGACY_MACH [=m] && SOUND [=y] && !UML && SND [=m] && SND_SOC [=m]
->   - SND_SOC_AMD_SOF_MACH [=m] && SOUND [=y] && !UML && SND [=m] && SND_SOC [=m]
-> 
-> [...]
+When SND_SOC_AMD_RENOIR_MACH or SND_SOC_AMD_RV_RT5682_MACH
+are selected, and GPIOLIB is not selected, Kbuild gives
+the following warnings, respectively:
 
-Applied to
+WARNING: unmet direct dependencies detected for SND_SOC_DMIC
+  Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && GPIOLIB [=n]
+  Selected by [y]:
+  - SND_SOC_AMD_RENOIR_MACH [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_AMD_RENOIR [=y]
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+and
 
-Thanks!
+WARNING: unmet direct dependencies detected for SND_SOC_MAX98357A
+  Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && GPIOLIB [=n]
+  Selected by [y]:
+  - SND_SOC_AMD_RV_RT5682_MACH [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_AMD_ACP3x [=y] && I2C [=y] && CROS_EC [=y]
 
-[1/1] ASoC: amd: acp: fix Kconfig dependencies
-      commit: 1dcc81d95b910dc404c40ff6101bfa2520a3528e
+This is because SND_SOC_DMIC and SND_SOC_MAX98357A are
+selected by SND_SOC_AMD_RV_RT5682_MACH and SND_SOC_AMD_RENOIR_MACH,
+respectively. However, neither of the selectors depend on or select GPIOLIB,
+despite their selectees depending on GPIOLIB.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+These unmet dependency bugs were detected by Kismet,
+a static analysis tool for Kconfig. Please advise if this
+is not the appropriate solution.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Signed-off-by: Julian Braha <julianbraha@gmail.com>
+---
+ sound/soc/amd/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
+index 56e7c079deac..2c6af3f8f296 100644
+--- a/sound/soc/amd/Kconfig
++++ b/sound/soc/amd/Kconfig
+@@ -38,7 +38,7 @@ config SND_SOC_AMD_RV_RT5682_MACH
+ 	select I2C_CROS_EC_TUNNEL
+ 	select SND_SOC_RT1015
+ 	select SND_SOC_RT1015P
+-	depends on SND_SOC_AMD_ACP3x && I2C && CROS_EC
++	depends on SND_SOC_AMD_ACP3x && I2C && CROS_EC && GPIOLIB
+ 	help
+ 	 This option enables machine driver for RT5682 and MAX9835.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+@@ -51,7 +51,7 @@ config SND_SOC_AMD_RENOIR
+ config SND_SOC_AMD_RENOIR_MACH
+ 	tristate "AMD Renoir support for DMIC"
+ 	select SND_SOC_DMIC
+-	depends on SND_SOC_AMD_RENOIR
++	depends on SND_SOC_AMD_RENOIR && GPIOLIB
+ 	help
+ 	 This option enables machine driver for DMIC
 
-Thanks,
-Mark
+--
+2.30.2
