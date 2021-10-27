@@ -2,71 +2,72 @@ Return-Path: <SRS0=Z19R=PP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9721C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 17:31:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 548FDC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 17:31:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 310B160E78
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 17:31:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 310B160E78
+	by mail.kernel.org (Postfix) with ESMTPS id C264860E74
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 17:31:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C264860E74
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 863F21698;
-	Wed, 27 Oct 2021 19:30:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 863F21698
+	by alsa0.perex.cz (Postfix) with ESMTPS id F19AD16B8;
+	Wed, 27 Oct 2021 19:30:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F19AD16B8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635355879;
-	bh=ktlPmVCSuV7Ef/nALqcRLnbx6/f5ml2xH/fYWgAsxJc=;
+	s=default; t=1635355887;
+	bh=wF4ITQHovrfi+/zFjLWRp1/RkCOOsze0ZdjK6Q3RTvI=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IJJSE8lEI6KFAbPQh42sM1ENnHmE2VbGAtfdX+SCJ0C1YU+FLCm9i/NBPxYB4p7q5
-	 opxbkNG5NK5UbUpRxoro2O8joQ+MZnkeFZCl0OOciS/QOV99dzduMhZGo1FHdLNT1t
-	 SpW2oetZPpNiCMOzxeba9uqAbi7fWD9zCp4Y5oes=
+	b=l7GB2O8GN/NzkLMVUi7Q6j0KiaMQlxUfwGVV1HcbtHcgJGJb9B7fTibIiGGAHnpYw
+	 kOPJlhmjdifsc5ASbed78PnwBY1FTPQdXl5/uAjkZAscmeECq74UJe8NZsh2Gafcqi
+	 j4kAcb0aRua6X2hXif1RN+6tO1Dh4ZmxAl/j2e4s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 19CCCF800FF;
-	Wed, 27 Oct 2021 19:29:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4235FF804D0;
+	Wed, 27 Oct 2021 19:29:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 66D05F8027B; Wed, 27 Oct 2021 19:29:18 +0200 (CEST)
+ id DFD3EF804D0; Wed, 27 Oct 2021 19:29:20 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 63E4FF8016C
- for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2021 19:29:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63E4FF8016C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1CA47F8016C
+ for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2021 19:29:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1CA47F8016C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="pL0ARhvI"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 77B9E60E78;
- Wed, 27 Oct 2021 17:29:10 +0000 (UTC)
+ header.b="AlNsDPBE"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E069A610A4;
+ Wed, 27 Oct 2021 17:29:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1635355751;
- bh=ktlPmVCSuV7Ef/nALqcRLnbx6/f5ml2xH/fYWgAsxJc=;
+ s=k20201202; t=1635355756;
+ bh=wF4ITQHovrfi+/zFjLWRp1/RkCOOsze0ZdjK6Q3RTvI=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=pL0ARhvIuTDpnZzTHvC37mnkGGdIh6TCsLk9wndwACPfzHaIB2ZwjWFPuOZdQeW7S
- K2bSQzhP+yF/71gLYN3IYgJ0Un1DU4U5F3sx3Bzafrm8YuXEUyuTkZdXQa0Sll8AYk
- NuzSIJlpZqQFUo3R8ES7+wNZGlMvKJhhXMZxBX2ICwqkcMi8RJP1bSYn+PEfitmcCW
- Q71efwCnNZzfO8vL8tH34Fkt1Pvx2sWc7rNKaeOlNcNjtFBymz6CNbVaaBK3y8TwYK
- p+WSJ0rNsiCaE5UHvmQQg5ovJLgn8OZhfgTOuWMJsYgs7vD+exLf+r36YK70xsX8vG
- pWMq+MWdzp+JA==
+ b=AlNsDPBEV84Pene+w55lrYdugdtmn9Sn6nsAUpH0VQ+rOugxtPjcK5mpkbN7tucK0
+ OrRA0F6uYaswUBHcViU1yUyWc9c5DT4xNgDRRi2edtBGaN8ukx2f1V7sDjJMN97XD9
+ Nf/F9YJOxi1JGSVX47p2BP+iyMoPK55FJy0YhTp9rLSx15wqCkhqd/miC4TDJp+TkL
+ Ns9yqQqAM/Ub0PWHXOqG1NT7njNGgmNTftfH2g881weHDg12Zvy+PbGSF3nyUGQjiE
+ oWb0/mxwx6oyRCPdlJ2FHgZizSGIdK5K5YqTCBuBk8JpArotEnLxx73LQ5HJhZglNY
+ yWOo21a+LXiHQ==
 From: Mark Brown <broonie@kernel.org>
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- oder_chiou@realtek.com
-In-Reply-To: <20211026081030.422481-1-angelogioacchino.delregno@collabora.com>
-References: <20211026081030.422481-1-angelogioacchino.delregno@collabora.com>
-Subject: Re: [PATCH] ASoC: rt5682-i2c: Use devm_clk_get_optional for optional
- clock
-Message-Id: <163535575023.4012075.17015997876203514512.b4-ty@kernel.org>
-Date: Wed, 27 Oct 2021 18:29:10 +0100
+To: robh+dt@kernel.org, lgirdwood@gmail.com,
+ George Song <george.song@maximintegrated.com>
+In-Reply-To: <20211027001431.363-1-george.song@maximintegrated.com>
+References: <20211027001431.363-1-george.song@maximintegrated.com>
+Subject: Re: [RESEND, v6 1/2] ASoC: dt-bindings: max98520: add initial bindings
+Message-Id: <163535575465.4012075.8539101072953032948.b4-ty@kernel.org>
+Date: Wed, 27 Oct 2021 18:29:14 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com,
- lgirdwood@gmail.com
+Cc: Rob Herring <robh@kernel.org>, alsa-devel@alsa-project.org,
+ steves.lee@maximintegrated.com, ryans.lee@maximintegrated.com,
+ devicetree@vger.kernel.org, george.song@analog.com,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,9 +83,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 26 Oct 2021 10:10:30 +0200, AngeloGioacchino Del Regno wrote:
-> The mclk clock is optional, but it's currently using devm_clk_get:
-> simplify the handling by using devm_clk_get_optional instead.
+On Wed, 27 Oct 2021 09:14:30 +0900, George Song wrote:
+> add initial bindings for max98520 audio amplifier
 > 
 > 
 
@@ -94,8 +94,10 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: rt5682-i2c: Use devm_clk_get_optional for optional clock
-      commit: 709d297503e64ec3804b3b8150628656db164d4b
+[1/2] ASoC: dt-bindings: max98520: add initial bindings
+      commit: 8af1f903391419809160aef3dac0641fa15680f5
+[2/2] ASoC: max98520: add max98520 audio amplifier driver
+      commit: f88ee76b8645c6da37eec79cfd45f2cc646bd01a
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
