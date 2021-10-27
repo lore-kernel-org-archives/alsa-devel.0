@@ -2,96 +2,100 @@ Return-Path: <SRS0=Z19R=PP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5EF88C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 12:57:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24A7BC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 12:57:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 57E3F60EBD
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 12:57:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 57E3F60EBD
+	by mail.kernel.org (Postfix) with ESMTPS id 75EBD60200
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 12:57:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 75EBD60200
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7667016BB;
-	Wed, 27 Oct 2021 14:56:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7667016BB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 844E416C2;
+	Wed, 27 Oct 2021 14:56:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 844E416C2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635339446;
-	bh=y0evngiqW5OVXm5ZVQsLkPy+cOTsmL5YxZIx5s1BjgQ=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=fs14qmqSxVKXPZVIiCp5wiD0WMQGx0jbpMXT5Fpzw/OIOclYfyM02jH5JDYYCqyNT
-	 jgWHuHQZH1I6vs3XBHDYJIoPIRD13yhBF2ZPGkPMNgZU6pbGkTFf62Mk+X4KO5+Jd8
-	 ucV7PGelBF2Wy/zWF0tk4lC7ZDDPF/eroV0y2BdU=
+	s=default; t=1635339454;
+	bh=q3vL4FjTXhIazy83oG2VOAtdyMiqei+5/jSavwL7wxE=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=siyNyScv3+PIjeazguFHXDLGF754HOwZc0qlJ5OMYWSrMyVFWw1sU9DSwqJ7lCo+r
+	 bXOhjVT45NTUSuDZ3bwG82cmsS9Y9bUhHP6OG6M/7G5+MOyFGaQRSZMKLGkcC9xFz/
+	 XpEjaSVBnnPidt5s+MQ0ZatyRARrzDLiqDCnMm90=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B6569F8025A;
-	Wed, 27 Oct 2021 14:55:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4B624F804E2;
+	Wed, 27 Oct 2021 14:55:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0976BF80271; Wed, 27 Oct 2021 14:55:51 +0200 (CEST)
+ id 27D08F8032B; Wed, 27 Oct 2021 14:55:54 +0200 (CEST)
 Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
  [66.111.4.27])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DFAFFF800D1
- for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2021 14:55:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DFAFFF800D1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1068CF8025A
+ for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2021 14:55:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1068CF8025A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="gNsXz/vP"; 
+ header.b="fFRQxgpO"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="E14NSVev"
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
- by mailout.nyi.internal (Postfix) with ESMTP id 395D55C006F;
- Wed, 27 Oct 2021 08:55:37 -0400 (EDT)
+ header.i=@messagingengine.com header.b="TADbxYrl"
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+ by mailout.nyi.internal (Postfix) with ESMTP id 8DD6D5C0211;
+ Wed, 27 Oct 2021 08:55:42 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
- by compute5.internal (MEProxy); Wed, 27 Oct 2021 08:55:37 -0400
+ by compute4.internal (MEProxy); Wed, 27 Oct 2021 08:55:42 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding; s=fm2; bh=PkU+xhK/v2q8xGDJdm9oEoif/1
- fHF5Ss+xNpkUKpHV0=; b=gNsXz/vPqiKayMTs4bpuCCBPm2bPmjXDuGZuo7vcM9
- 3lNfgYRdsC1MxeybAbdqo2vbcUzoPkxkmkeERfE4mi4LsvPSQYClbJQoSFd9Z8Ge
- QtO8DtBCnFbN/WjJr5DxZww4XymWpoZ/SvANPJLZAGSB9ukd6iuNOCXOp8JH6huy
- ByWxcnkK+1n6ODJlHQpBNxBQlJy3zyrpkpyqPDZ6RJsTbLrWsEi0nJz9GqropbF0
- 9XqRoWZfHReezNFFCvmKUQcb9NPPLByFMNMoh7fDxWP2M0cJUpdJIg/N4opgeWdl
- wNLv7suB4jGVBV9jTWbblMKGVXeF07EBgaQcA7vpBadA==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding; s=fm2; bh=ybdm4MrgODAHt
+ HbfgT45jRvxfSX0HNGR0g+FMzPd45A=; b=fFRQxgpOr+B86xj/YBwkW2WA6J0J6
+ kpa8o95TEqDoJYIdrScl2iI1+xQbGhGSRwCYbrZesM570npZXNBqJG2fzqFMkeuM
+ QFaqmmdy5qgTnhnSaNqYQTXw53qq4oz58LDHI0TcVl7iqMHf16YBrRcLR/znTG7+
+ n0L1y1S3AdW9f6JtPo2bWh1fUwUojynWu7GR2Y6VhDKJOU7YwoB8YREoX7pdgYQM
+ BnTWQFRfrGxmbEzVQydKGgHcXgEtPw779Qe2wHVMhSZ7UjLMmy9gSVUc8Y655J2N
+ 3Icqxznyp1ir/xDAdu2fi1dZu690vcNm9w767ZwoL8sn/Yt5yPeC+UHHQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
- :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
- :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=PkU+xhK/v2q8xGDJd
- m9oEoif/1fHF5Ss+xNpkUKpHV0=; b=E14NSVev+PR8MCcJBzfFXIx4k9DMwZUrv
- WFsU0hycY57ev5m10W+SwzN+ma8MqHkLogF7y3MrqhvR4B1VofoY4LJVrZttd5DR
- Cg4k34RQQ4xJPg5Mq/iHWCxI7bXqD1lHdWzK0gmcDMk/Cqj3N5ibMwQxbYEUGgj6
- BcFcwwza4K9fjqycJTGNmymNqNcHlVONMR4cPTE96/jTYLZj2v5pmBSaMo0nwQms
- WWm7J3xIezPPK0uC5zJiJ3uXflcyeQnafudDL9jTHq/PShKV8j17qulXbdhSD1UV
- OzTF7LErQyMTa9P2MPQzMd1Zu6b6BTQy8KoZDBRRq9xnPVWzmItEA==
-X-ME-Sender: <xms:R0x5YVMF_RhkVH-5WazDE4pshNy31PD_SYtxjy5zLgtXBFTvnZzHog>
- <xme:R0x5YX_y_SBrLkA2L-2a-i3g2aumUqsVdyKnMszdM88fLES0r1rpqkq8PBCYxnl6C
- ER2tgivA93gGIFaGv8>
-X-ME-Received: <xmr:R0x5YUSyctqc2tbJO8Z1qT7GP2mMQj03d9WlBLyto7lO6nZpRDWjOKeCyvR20XDocypFS2_dMcb4yDpnJcl6-RSp4QITTNCJSMAtwe_X6k2QQXJuaPEE>
+ :in-reply-to:message-id:mime-version:references:subject:to
+ :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+ fm1; bh=ybdm4MrgODAHtHbfgT45jRvxfSX0HNGR0g+FMzPd45A=; b=TADbxYrl
+ IhIZhQ3hONoqNPK3v5C4b40ErSXGmu/2bRta5LqIOtdlegWMjKdET/cN2W0h6Xbw
+ w0kEPUs49MyYCOZhJFzTB7w87igou+20IK21F8APYbvd41jtAvKtLBaIJivBdUSH
+ SX+aIrKBFpDALrsVyk2E2/PKvUoobv6mvt6OysJjOyq8/g3PHVi0vFGpGQcXh/Eh
+ lztNOGH8gwqRW6cr5W29bEV+xgXMlAYtd7VeyilXUbSZuAetgGF/yQjTW3pwJnCZ
+ uUqMy+dFPasSCV4aQINM7Cm75jsPvgDQZIyq4ykfOrO5ET5amG0OrPihNyNk6YWL
+ qgPOneaflP9qNA==
+X-ME-Sender: <xms:Tkx5YQiE-W8a4SOXijOIefVlLgAcc4BhZ9d4iLuIfq5BQZsUyRBexA>
+ <xme:Tkx5YZCDMskjcV4E2E24wX24MHqzU2_xtVWgL5tHOgg4rOM5857k9zIFSAyKmRx2s
+ piGXixTmO6bCJSe-Yc>
+X-ME-Received: <xmr:Tkx5YYG81SwUSk2hjkizKa9JO7RmF7xVzqhS6EelUl4BbmEVZUCwD84-BSUoFNSP-4xYUfSo5-h8xFL8ucgm8E0TLD0S7SyPSoFii0kSngl_bPM6CisF>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdegtddgheehucetufdoteggodetrfdotf
  fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
- uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
- dttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhh
- ihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepkedtvdduhfekfe
- fhfeduffffvdfhieduveegleekveehveefvdffudefudejfefgnecuffhomhgrihhnpehk
- vghrnhgvlhdrohhrghdpghhithhhuhgsrdgtohhmnecuvehluhhsthgvrhfuihiivgeptd
- enucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggt
- hhhirdhjph
-X-ME-Proxy: <xmx:R0x5YRtrkqLly4mPuguD2FuhJZttryOAjh5RvgDYNJ9ghFB--VLvPg>
- <xmx:R0x5YdeguSerX6d4_0a8BNhLFLWlc_jZvKgA6xJG-ZkrwtvfwYpOIg>
- <xmx:R0x5Yd1BpelCwKYN4Pt-y798OkYSMNxAqi9ovnFk_XlL2CauDHNSAg>
- <xmx:SUx5YepRse7FjO-Riu7swD3GhJp1BuMOgUiKMsIsmQmFFoAZHscBLA>
+ uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
+ dtredttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgr
+ shhhihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepveefffefke
+ etgfevgeefleehfffhueejtdejveethfekveektdejjedvtdejhfejnecuvehluhhsthgv
+ rhfuihiivgepudenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihessh
+ grkhgrmhhotggthhhirdhjph
+X-ME-Proxy: <xmx:Tkx5YRSVLAgoQauUlbbab8Rfvbf8XQUDqTmxmJY64oY9g_Mo3bs1Jw>
+ <xmx:Tkx5Ydw1n4tMr2uJpCs66epQ5_AJlupleTLj-wxtZ0-NgMpJzEmKEw>
+ <xmx:Tkx5Yf4y5GyzWTwwOukF2ZHaliUsBkdfARNoArLB4mrRcxceKm7PdQ>
+ <xmx:Tkx5YY-ikAsXDrDbKQd1xnl0d64X_yukZ6WYaJQX2lh20B6UrTFzeA>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 27 Oct 2021 08:55:34 -0400 (EDT)
+ 27 Oct 2021 08:55:41 -0400 (EDT)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: tiwai@suse.de
-Subject: [PATCH 0/3] ALSA: firewire-motu: fix message parser and refine UAPI
-Date: Wed, 27 Oct 2021 21:55:26 +0900
-Message-Id: <20211027125529.54295-1-o-takashi@sakamocchi.jp>
+Subject: [PATCH 3/3] ALSA: firewire-motu: export mete information to userspace
+ as float value
+Date: Wed, 27 Oct 2021 21:55:29 +0900
+Message-Id: <20211027125529.54295-4-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20211027125529.54295-1-o-takashi@sakamocchi.jp>
+References: <20211027125529.54295-1-o-takashi@sakamocchi.jp>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: ffado-devel@lists.sourceforge.net, alsa-devel@alsa-project.org,
@@ -111,49 +115,78 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+In command DSP models, one meter information consists of 4 bytes for
+IEEE 764 floating point (binary32). In previous patch, it is exported
+to userspace as 32 bit storage since the storage is also handled in
+ALSA firewire-motu driver as well in kernel space in which floating point
+arithmetic is not preferable. On the other hand, ALSA firewire-motu driver
+doesn't perform floating point calculation. The driver just gather meter
+information from isochronous packets and fill structure fields for
+userspace.
 
-This patchset is to fix message parser and refine UAPI added in below
-patchset.
-https://lore.kernel.org/alsa-devel/20211015080826.34847-1-o-takashi@sakamocchi.jp/
+In 'header' target of Kbuild, UAPI headers are processed before installed.
+In this timing, #ifdef macro with __KERNEL__ is removed. This mechanism
+is useful in the case so that the 32 bit storage can be accessible as u32
+type in kernel space and float type in user space. We can see the same
+usage in ''struct acct_v3' in 'include/uapi/linux/acct.h'.
 
-Current implementation of message parser for register DSP models has a
-bug to cause invalid memory access in the other type of models. I
-attempted to fix it in my previous patch[1] but got a comment for simpler
-solution. The first patch in the patchset is revised version of the
-previous one.
+This commit is for the above idea. Additionally, due to message
+protocol, meter information is filled with 0xffffffff in the end of
+period but 0xffffffff is invalid as binary32. To avoid confusion in
+userspace application, the last two elements are left without any
+assignment.
 
-After working for libhinawa(g-i binding)[2], Rust bindings[3], and
-service program[4] as application of the new features in UAPI, I found
-that the number of input meters is greater than current structure in UAPI
-for some models.  The second patch is to refine the structure and message
-parser. I note that the other part of UAPI is pretty good, and the service
-program now supports control notification in register DSP mdoels as well
-as command DSP models.
+Suggested-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ include/uapi/sound/firewire.h                         | 8 +++++---
+ sound/firewire/motu/motu-command-dsp-message-parser.c | 7 +++++--
+ 2 files changed, 10 insertions(+), 5 deletions(-)
 
-After discussion about usage of float type in UAPI, it shall be allowed
-in some cases. The third patch is to interpret the UAPI for float type in
-userspace and u32 type in kernel space.
-
-[1] https://lore.kernel.org/alsa-devel/20211020042555.40866-1-o-takashi@sakamocchi.jp/
-[2] https://github.com/alsa-project/libhinawa/tree/topic/motu-mixer-ioctl
-[3] https://github.com/alsa-project/hinawa-rs/tree/topic/v0.5.0
-[4] https://github.com/alsa-project/snd-firewire-ctl-services/tree/topic/motu-mixer-ioctl
-
-Takashi Sakamoto (3):
-  ALSA: firewire-motu: fix null pointer dereference when polling hwdep
-    character device
-  ALSA: firewire-motu: refine parser for meter information in register
-    DSP models
-  ALSA: firewire-motu: export mete information to userspace as float
-    value
-
- include/uapi/sound/firewire.h                    | 13 +++++++++----
- .../motu/motu-command-dsp-message-parser.c       |  7 +++++--
- sound/firewire/motu/motu-hwdep.c                 | 16 +++++++++++-----
- .../motu/motu-register-dsp-message-parser.c      | 14 +++++++++-----
- 4 files changed, 34 insertions(+), 16 deletions(-)
-
+diff --git a/include/uapi/sound/firewire.h b/include/uapi/sound/firewire.h
+index 68eb0e43c052..39cf6eb75940 100644
+--- a/include/uapi/sound/firewire.h
++++ b/include/uapi/sound/firewire.h
+@@ -248,12 +248,14 @@ struct snd_firewire_motu_register_dsp_parameter {
+  *
+  * The structure expresses the part of DSP status for hardware meter. The 32 bit storage is
+  * estimated to include IEEE 764 32 bit single precision floating point (binary32) value. It is
+- * expected to be linear value (not logarithm) for audio signal level between 0.0 and +1.0. However,
+- * the last two quadlets (data[398] and data[399]) are filled with 0xffffffff since they are the
+- * marker of one period.
++ * expected to be linear value (not logarithm) for audio signal level between 0.0 and +1.0.
+  */
+ struct snd_firewire_motu_command_dsp_meter {
++#ifdef __KERNEL__
+ 	__u32 data[SNDRV_FIREWIRE_MOTU_COMMAND_DSP_METER_COUNT];
++#else
++	float data[SNDRV_FIREWIRE_MOTU_COMMAND_DSP_METER_COUNT];
++#endif
+ };
+ 
+ #endif /* _UAPI_SOUND_FIREWIRE_H_INCLUDED */
+diff --git a/sound/firewire/motu/motu-command-dsp-message-parser.c b/sound/firewire/motu/motu-command-dsp-message-parser.c
+index 18689fcfb288..9efe4d364baf 100644
+--- a/sound/firewire/motu/motu-command-dsp-message-parser.c
++++ b/sound/firewire/motu/motu-command-dsp-message-parser.c
+@@ -141,12 +141,15 @@ void snd_motu_command_dsp_message_parser_parse(struct snd_motu *motu, const stru
+ 					++parser->fragment_pos;
+ 
+ 					if (parser->fragment_pos == 4) {
++						// Skip the last two quadlets since they could be
++						// invalid value (0xffffffff) as floating point
++						// number.
+ 						if (parser->value_index <
+-						    SNDRV_FIREWIRE_MOTU_COMMAND_DSP_METER_COUNT) {
++						    SNDRV_FIREWIRE_MOTU_COMMAND_DSP_METER_COUNT - 2) {
+ 							u32 val = (u32)(parser->value >> 32);
+ 							parser->meter.data[parser->value_index] = val;
+-							++parser->value_index;
+ 						}
++						++parser->value_index;
+ 						parser->fragment_pos = 0;
+ 					}
+ 
 -- 
 2.30.2
 
