@@ -2,61 +2,57 @@ Return-Path: <SRS0=Z19R=PP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B64EC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 02:19:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3BC36C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 02:20:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 032D2610A5
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 02:19:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 032D2610A5
+	by mail.kernel.org (Postfix) with ESMTPS id 20F05610A1
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 02:20:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 20F05610A1
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9D73E16C1;
-	Wed, 27 Oct 2021 04:18:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D73E16C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1E6EF16B5;
+	Wed, 27 Oct 2021 04:19:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E6EF16B5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635301184;
-	bh=/csl+dGX+BaU8goQFBljMLQTm8tdq91B4gdyIuAsGhE=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=eEedmNAhvVQJ0MblO+zRQn9t3PuBJMVr7ByEDY462q75EbVTFh/jhiRZRxNoKzfsg
-	 FHrCDEiB+TKqKqKcmTxSirESLwuU0c2DlGFVWGmKPdn3F3V0WEtmvjGykaGsvyACvM
-	 rbM46XVmayjTIr/9MnyWpD8f/TTnDuxIh+3veY3k=
+	s=default; t=1635301228;
+	bh=l8NVcFx1UtPiGLOQnf/XdgVu5ChbfBnerADa+8WYqD4=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=N3BpUMrpPRRNOLcYRBGyxOTtX1ml3zPpy6YMjenlQWaTPVuWIDtSxy7l4j4NQXIXM
+	 vEnN6lyO8a4pu5x6Co1VKgiJ2YYDOvjOGjmugJbJz0zmrY+6nU7IAE/Br6hUAFKLVC
+	 AIh81izHsSOeP1yPY0EP2de8hRk69TIyDZCcL4S4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E19F1F8027B;
-	Wed, 27 Oct 2021 04:18:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B74DCF804E5;
+	Wed, 27 Oct 2021 04:18:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7D529F804D0; Wed, 27 Oct 2021 04:18:51 +0200 (CEST)
+ id E2DC2F80271; Wed, 27 Oct 2021 04:18:47 +0200 (CEST)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4EE40F8025A
- for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2021 04:18:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4EE40F8025A
-X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="217229390"
-X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; d="scan'208";a="217229390"
+ by alsa1.perex.cz (Postfix) with ESMTPS id DC726F800FF
+ for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2021 04:18:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC726F800FF
+X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="217229374"
+X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; d="scan'208";a="217229374"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Oct 2021 19:18:41 -0700
-X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; d="scan'208";a="486446269"
+ 26 Oct 2021 19:18:37 -0700
+X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; d="scan'208";a="486446254"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Oct 2021 19:18:39 -0700
+ 26 Oct 2021 19:18:35 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: broonie@kernel.org,
 	tiwai@suse.de
-Subject: [PATCH 02/10] ASoC: Intel: sof_sdw: fix jack detection on HP Spectre
- x360 convertible
-Date: Wed, 27 Oct 2021 10:18:16 +0800
-Message-Id: <20211027021824.24776-3-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 00/10] ASoC: Intel: sof_sdw: Use fixed DAI link id
+Date: Wed, 27 Oct 2021 10:18:14 +0800
+Message-Id: <20211027021824.24776-1-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211027021824.24776-1-yung-chuan.liao@linux.intel.com>
-References: <20211027021824.24776-1-yung-chuan.liao@linux.intel.com>
 Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
  bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
@@ -74,58 +70,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+This series provides a way to use constant dailink numbers for different
+devices. So that we don't need to renumber them in topologies.
+Some patches with different purpose are sent together in this series
+since they are dependent.
 
-Tests on device show the JD2 mode does not work at all, the 'Headphone
-Jack' and 'Headset Mic Jack' are shown as 'on' always.
+Bard Liao (8):
+  ASoC: intel: sof_sdw: return the original error number
+  ASoC: intel: sof_sdw: rename be_index/link_id to link_index
+  ASoC: intel: sof_sdw: Use a fixed DAI link id for AMP
+  ASoC: intel: sof_sdw: move DMIC link id overwrite to
+    create_sdw_dailink
+  ASoC: intel: sof_sdw: remove SOF_RT715_DAI_ID_FIX quirk
+  ASoC: intel: sof_sdw: remove sof_sdw_mic_codec_mockup_init
+  ASoC: intel: sof_sdw: remove get_next_be_id
+  ASoC: intel: sof_sdw: add link adr order check
 
-JD1 seems to be the better option, with at least a change between the
-two cases.
+Pierre-Louis Bossart (2):
+  ASoC: Intel: sof_sdw: fix jack detection on HP Spectre x360
+    convertible
+  ASoC: Intel: sof_sdw: add SKU for Dell Latitude 9520
 
-Jack not plugged-in:
-[root@fedora ~]# amixer -Dhw:0 cget numid=12
-numid=12,iface=CARD,name='Headphone Jack'
-  ; type=BOOLEAN,access=r-------,values=1
-  : values=off
-[root@fedora ~]# amixer -Dhw:0 cget numid=13
-numid=13,iface=CARD,name='Headset Mic Jack'
-  ; type=BOOLEAN,access=r-------,values=1
-  : values=off
+ sound/soc/intel/boards/sof_sdw.c            | 152 ++++++++++----------
+ sound/soc/intel/boards/sof_sdw_common.h     |   7 +-
+ sound/soc/intel/boards/sof_sdw_rt715.c      |   7 -
+ sound/soc/intel/boards/sof_sdw_rt715_sdca.c |   7 -
+ 4 files changed, 85 insertions(+), 88 deletions(-)
 
-Jack plugged-in:
-[root@fedora ~]# amixer -Dhw:0 cget numid=13
-numid=13,iface=CARD,name='Headset Mic Jack'
-  ; type=BOOLEAN,access=r-------,values=1
-  : values=on
-[root@fedora ~]# amixer -Dhw:0 cget numid=13
-numid=13,iface=CARD,name='Headset Mic Jack'
-  ; type=BOOLEAN,access=r-------,values=1
-  : values=on
-
-The 'Headset Mic Jack' is updated with a delay which seems normal with
-additional calibration needed.
-
-Fixes: d92e279dee56 ('ASoC: Intel: sof_sdw: add quirk for HP Spectre x360 convertible')
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- sound/soc/intel/boards/sof_sdw.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index a1fb41136cf0..523de5bfef60 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -188,7 +188,7 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
- 		},
- 		.driver_data = (void *)(SOF_SDW_TGL_HDMI |
- 					SOF_SDW_PCH_DMIC |
--					RT711_JD2),
-+					RT711_JD1),
- 	},
- 	{
- 		/* NUC15 'Bishop County' LAPBC510 and LAPBC710 skews */
 -- 
 2.17.1
 
