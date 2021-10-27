@@ -2,69 +2,70 @@ Return-Path: <SRS0=Z19R=PP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B49EC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 17:31:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75AA5C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 17:32:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7D8E960E78
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 17:31:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7D8E960E78
+	by mail.kernel.org (Postfix) with ESMTPS id F349B60E74
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 17:32:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org F349B60E74
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DBBF916B0;
-	Wed, 27 Oct 2021 19:31:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DBBF916B0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5AA2D16CC;
+	Wed, 27 Oct 2021 19:31:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5AA2D16CC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635355912;
-	bh=Y7OlbI7dpHDSCTo/Pgfa3iE3fPseMCCntZQAERdVvkQ=;
+	s=default; t=1635355936;
+	bh=5dv0HGz4bWpWJPI+ZLbq2SON0N8XFp8vjVzsWv6u1gI=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SOApgOyZf5xrzKYRRHQACdmhnJW+mkT3yLkcD5EgPredqs0AkCAGNE0pViHXHwSyp
-	 HCeUrzCYJGOMOgQyljziN0FhPaA7eddR8o5CZwPWWIiXH0Zfqr8tCB6IYEKCLw1W3y
-	 oEh5QzD+7vhuWD3uz7K/g8xZgAyP/EM5sWcLs6UE=
+	b=Isi7dz7qJtFb7iFSWbQteUVOghkFR62EqUzu0M/Jk8jwMHiQHHjGBkUaCR+Ad/sOH
+	 ve0dwTpsM7qvupiu4K+e5uGa/5whM5Vs5AVlSwf5ShREWdTHIO1fEkrbdC/ztI0DHy
+	 7VwUBnwOwU+OWnMeb2nnDKanQBRfgrt1AzsqlUrc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1D37AF804E6;
+	by alsa1.perex.cz (Postfix) with ESMTP id D9C84F804F1;
 	Wed, 27 Oct 2021 19:29:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0819CF804E2; Wed, 27 Oct 2021 19:29:23 +0200 (CEST)
+ id 6EC8DF804E5; Wed, 27 Oct 2021 19:29:25 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 00CE6F80271
- for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2021 19:29:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00CE6F80271
+ by alsa1.perex.cz (Postfix) with ESMTPS id 76032F8032B
+ for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2021 19:29:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76032F8032B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="pzhyuOtF"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BAA86109D;
- Wed, 27 Oct 2021 17:29:12 +0000 (UTC)
+ header.b="UFX8KAyi"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 536A1610A0;
+ Wed, 27 Oct 2021 17:29:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1635355752;
- bh=Y7OlbI7dpHDSCTo/Pgfa3iE3fPseMCCntZQAERdVvkQ=;
+ s=k20201202; t=1635355754;
+ bh=5dv0HGz4bWpWJPI+ZLbq2SON0N8XFp8vjVzsWv6u1gI=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=pzhyuOtF2kSfkguYUeCDve2b6DDJ+1oPGMusnd8sEKEIFT8KvYyV8stOhEjBVTi3K
- jmtd2o+NPmFgpJhUC5HuRnHtZxd+7oZwniTp/pZZ9MHrqoi2o68b1hkEMIMy+R61za
- WPXybtsyo6bXoe4TNFOTIPe/JFDHjGAgamCqbwTwPhrxeGrXhapWIBdZU0Nvh7VAyr
- 9TE4z6OVRVZQM2F0dRXxZ2TTdhgucU/0zlB84EOI1fRGO6RACYkGA9KP0j1a4ZktAy
- 44Co0TmoUwnLaOCYdA7Fs3MDHkUGXbV+WUaBRqBPpgapKQWayzc8MZSgNrOe40TwSy
- 3pXmersxPhOLA==
+ b=UFX8KAyigPYakyshO2cMNU6BMxeiz+hrBvd2joCBB42KXMt0ODkOJ5+cQTrYxEYMd
+ pCGX0Pd2XFlFkaetWP611YM5kX7Yh7qdpehaNOPXAhjTK9uZG2IsOjLUgz0IAUFgV2
+ ArXrvB1F1h9KMZTCzw8fZ1hWCp+iWsDiIC4LOfQtirvuwg5ix5SQEqJp0RhZCczeEU
+ URjewVIhoEJv/KCD1fUkzEBYe6GAIL48g0jP3oRJ4AOFuZ7HSrkoSHlTfGWyJ56EwN
+ wIjgqdSSTlpDDePF+MtDutLmsOI5x9qQNFvPkN9fYccuw3DS72DesuqHlc7zWikKxE
+ OxAsURSDXfRjg==
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+To: Yang Yingliang <yangyingliang@huawei.com>, linux-kernel@vger.kernel.org,
  alsa-devel@alsa-project.org
-In-Reply-To: <20211025185933.144327-1-pierre-louis.bossart@linux.intel.com>
-References: <20211025185933.144327-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/8] ASoC: minor cleanup of warnings
-Message-Id: <163535575198.4012075.17769018172349090714.b4-ty@kernel.org>
-Date: Wed, 27 Oct 2021 18:29:11 +0100
+In-Reply-To: <20211027065228.833825-1-yangyingliang@huawei.com>
+References: <20211027065228.833825-1-yangyingliang@huawei.com>
+Subject: Re: [PATCH -next] ASoC: amd: acp: Fix return value check in
+ acp_machine_select()
+Message-Id: <163535575308.4012075.1966286577719870369.b4-ty@kernel.org>
+Date: Wed, 27 Oct 2021 18:29:13 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de
+Cc: lgirdwood@gmail.com, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,23 +81,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 25 Oct 2021 13:59:25 -0500, Pierre-Louis Bossart wrote:
-> Sparse, make W=1 and cppcheck all report minor warnings.
+On Wed, 27 Oct 2021 14:52:28 +0800, Yang Yingliang wrote:
+> In case of error, platform_device_register_data() returns ERR_PTR()
+> and never returns NULL. The NULL test in the return value check
+> should be replaced with IS_ERR().
 > 
-> The only functional change is in patch7 where the error code is now
-> returned to the caller.
 > 
-> Pierre-Louis Bossart (8):
->   ASoC: topology: handle endianness warning
->   ASoC: rt5682s: use 'static' qualifier
->   ASoC: nau8821: fix kernel-doc
->   ASoC: nau8821: clarify out-of-bounds check
->   ASoC: mediatek: remove unnecessary initialization
->   ASoC: mediatek: mt8195: rename shadowed array
->   ASoC: mediatek: mt8195: fix return value
->   ASoC: rockchip: i2s_tdm: improve return value handling
-> 
-> [...]
 
 Applied to
 
@@ -104,22 +94,8 @@ Applied to
 
 Thanks!
 
-[1/8] ASoC: topology: handle endianness warning
-      commit: 1baad7dad115ea3976fb5e5d0e3f3bec83dfd7ca
-[2/8] ASoC: rt5682s: use 'static' qualifier
-      commit: 49ba5e936e1512d4c7812d433048f8909234fca0
-[3/8] ASoC: nau8821: fix kernel-doc
-      commit: 765e08bdc7faa44b13bf96df4663a580d68a1c49
-[4/8] ASoC: nau8821: clarify out-of-bounds check
-      commit: 46ae0b3f554a323322a770c0edee50aa8019a655
-[5/8] ASoC: mediatek: remove unnecessary initialization
-      commit: 33fb790fcc02a717c1cac90958f203f06da14f7e
-[6/8] ASoC: mediatek: mt8195: rename shadowed array
-      commit: 73983ad922764e747d40b486ec7c2526e0355db1
-[7/8] ASoC: mediatek: mt8195: fix return value
-      commit: 439c06f341aa1f09ad7def774998db1076946c98
-[8/8] ASoC: rockchip: i2s_tdm: improve return value handling
-      commit: f913582190ddfe2380ecf8ee87b4ff2c8dcb5d48
+[1/1] ASoC: amd: acp: Fix return value check in acp_machine_select()
+      commit: fdde18b9773636cc5866ccd8f2093e1cf0022dea
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
