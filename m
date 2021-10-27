@@ -2,57 +2,58 @@ Return-Path: <SRS0=Z19R=PP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A34AC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 02:22:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 887C9C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 02:22:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A74646023F
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 02:22:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A74646023F
+	by mail.kernel.org (Postfix) with ESMTPS id 034926023F
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 02:22:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 034926023F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1028616D9;
-	Wed, 27 Oct 2021 04:21:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1028616D9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 71CE016CA;
+	Wed, 27 Oct 2021 04:21:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 71CE016CA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635301338;
-	bh=2HYNdAvi3mhoXWxDVl9VP4ERYSagXwuAOaQfKQX3Tiw=;
+	s=default; t=1635301355;
+	bh=0t6rQ0pp7xtD/0ZvRHnvLfYRqY+7ruLjAPJGMg3AFlQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Mb+wWWkkkmZ4ZoXJUbFn1K7oAI9CAw82h/KM6utH9nWoYzTs4EHdMwaCzvANO2uOS
-	 aIjiW3FV2Jb/WAXnmPptQ4Y+REnLrd9HzNt1dJfbhWDFGwRXy4Vxa7Da38e0C609d6
-	 M0CEmLeHTzDsNDnYqFFMoPBV4gJkefV53utmQjFk=
+	b=rf1WWeAmM43MWdv9gjqSmO87ZR6mPg/niWeMHsUkpwDJ+WiYH8GgGRb3TR623Lgd9
+	 ++6jR5GzSD84waYYZgBHclX7VqVvyTHNngFOcv8SNjINp6gmCIPJa91ZVjUmwQUrp8
+	 wkzw/RCSWswqRLoVo+50UT4py5yK2CtroqZTFtHo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C49E9F804D0;
-	Wed, 27 Oct 2021 04:19:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 40BB1F80510;
+	Wed, 27 Oct 2021 04:19:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 451BAF8032B; Wed, 27 Oct 2021 04:19:02 +0200 (CEST)
+ id C1EF8F80516; Wed, 27 Oct 2021 04:19:07 +0200 (CEST)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 86398F800FF
- for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2021 04:18:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86398F800FF
-X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="217229407"
-X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; d="scan'208";a="217229407"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 66D4BF804D0
+ for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2021 04:18:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66D4BF804D0
+X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="217229416"
+X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; d="scan'208";a="217229416"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Oct 2021 19:18:47 -0700
-X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; d="scan'208";a="486446290"
+ 26 Oct 2021 19:18:52 -0700
+X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; d="scan'208";a="486446315"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Oct 2021 19:18:45 -0700
+ 26 Oct 2021 19:18:51 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: broonie@kernel.org,
 	tiwai@suse.de
-Subject: [PATCH 05/10] ASoC: intel: sof_sdw: Use a fixed DAI link id for AMP
-Date: Wed, 27 Oct 2021 10:18:19 +0800
-Message-Id: <20211027021824.24776-6-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 08/10] ASoC: intel: sof_sdw: remove
+ sof_sdw_mic_codec_mockup_init
+Date: Wed, 27 Oct 2021 10:18:22 +0800
+Message-Id: <20211027021824.24776-9-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20211027021824.24776-1-yung-chuan.liao@linux.intel.com>
 References: <20211027021824.24776-1-yung-chuan.liao@linux.intel.com>
@@ -73,212 +74,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Currently, we assign SoundWire DAI link id according to the order in
-the link address table, with the assumption that the headset codec is
-listed first, then amplifiers and last capture devices. If the headset
-codec is not present in a platform, the dai link for amplifiers will be
-shifted, which can be handled in two ways
-a) modify the topology to renumber the dailink changes
-b) keep the dailink numbers constant in topology but also avoid the
-   variations in the machine driver.
-
-This patch adds support for option b), the dailink index for amplifiers
-and capture devices becomes fixed.
+Now, we set DAI link id as SDW_DMIC_DAI_ID for all DMICs.
+No need to set it in sof_sdw_mic_codec_mockup_init.
 
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_sdw.c        | 26 ++++++++++++++++++++++---
- sound/soc/intel/boards/sof_sdw_common.h |  6 ++++++
- 2 files changed, 29 insertions(+), 3 deletions(-)
+ sound/soc/intel/boards/sof_sdw.c | 15 ---------------
+ 1 file changed, 15 deletions(-)
 
 diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index 8eccbac43306..db4f16613baf 100644
+index c59e0a553ffb..2adadcf554ff 100644
 --- a/sound/soc/intel/boards/sof_sdw.c
 +++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -393,6 +393,7 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 		.direction = {true, true},
- 		.dai_name = "rt700-aif1",
- 		.init = sof_sdw_rt700_init,
-+		.codec_type = SOF_SDW_CODEC_TYPE_JACK,
- 	},
- 	{
- 		.part_id = 0x711,
-@@ -401,6 +402,7 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 		.dai_name = "rt711-sdca-aif1",
- 		.init = sof_sdw_rt711_sdca_init,
- 		.exit = sof_sdw_rt711_sdca_exit,
-+		.codec_type = SOF_SDW_CODEC_TYPE_JACK,
- 	},
- 	{
- 		.part_id = 0x711,
-@@ -409,6 +411,7 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 		.dai_name = "rt711-aif1",
- 		.init = sof_sdw_rt711_init,
- 		.exit = sof_sdw_rt711_exit,
-+		.codec_type = SOF_SDW_CODEC_TYPE_JACK,
- 	},
- 	{
- 		.part_id = 0x1308,
-@@ -417,12 +420,14 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 		.dai_name = "rt1308-aif",
- 		.ops = &sof_sdw_rt1308_i2s_ops,
- 		.init = sof_sdw_rt1308_init,
-+		.codec_type = SOF_SDW_CODEC_TYPE_AMP,
- 	},
- 	{
- 		.part_id = 0x1316,
- 		.direction = {true, true},
- 		.dai_name = "rt1316-aif",
- 		.init = sof_sdw_rt1316_init,
-+		.codec_type = SOF_SDW_CODEC_TYPE_AMP,
- 	},
- 	{
- 		.part_id = 0x714,
-@@ -431,6 +436,7 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 		.ignore_pch_dmic = true,
- 		.dai_name = "rt715-aif2",
- 		.init = sof_sdw_rt715_sdca_init,
-+		.codec_type = SOF_SDW_CODEC_TYPE_MIC,
- 	},
- 	{
- 		.part_id = 0x715,
-@@ -439,6 +445,7 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 		.ignore_pch_dmic = true,
- 		.dai_name = "rt715-aif2",
- 		.init = sof_sdw_rt715_sdca_init,
-+		.codec_type = SOF_SDW_CODEC_TYPE_MIC,
- 	},
- 	{
- 		.part_id = 0x714,
-@@ -447,6 +454,7 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 		.ignore_pch_dmic = true,
- 		.dai_name = "rt715-aif2",
- 		.init = sof_sdw_rt715_init,
-+		.codec_type = SOF_SDW_CODEC_TYPE_MIC,
- 	},
- 	{
- 		.part_id = 0x715,
-@@ -455,6 +463,7 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 		.ignore_pch_dmic = true,
- 		.dai_name = "rt715-aif2",
- 		.init = sof_sdw_rt715_init,
-+		.codec_type = SOF_SDW_CODEC_TYPE_MIC,
- 	},
- 	{
- 		.part_id = 0x8373,
-@@ -462,12 +471,14 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 		.dai_name = "max98373-aif1",
- 		.init = sof_sdw_mx8373_init,
- 		.codec_card_late_probe = sof_sdw_mx8373_late_probe,
-+		.codec_type = SOF_SDW_CODEC_TYPE_AMP,
- 	},
- 	{
- 		.part_id = 0x5682,
- 		.direction = {true, true},
- 		.dai_name = "rt5682-sdw",
- 		.init = sof_sdw_rt5682_init,
-+		.codec_type = SOF_SDW_CODEC_TYPE_JACK,
- 	},
- 	{
- 		.part_id = 0xaaaa, /* generic codec mockup */
-@@ -475,6 +486,7 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 		.direction = {true, true},
- 		.dai_name = "sdw-mockup-aif1",
- 		.init = NULL,
-+		.codec_type = SOF_SDW_CODEC_TYPE_JACK,
- 	},
- 	{
- 		.part_id = 0xaa55, /* headset codec mockup */
-@@ -482,6 +494,7 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 		.direction = {true, true},
- 		.dai_name = "sdw-mockup-aif1",
- 		.init = NULL,
-+		.codec_type = SOF_SDW_CODEC_TYPE_JACK,
- 	},
- 	{
- 		.part_id = 0x55aa, /* amplifier mockup */
-@@ -489,6 +502,7 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 		.direction = {true, false},
- 		.dai_name = "sdw-mockup-aif1",
- 		.init = NULL,
-+		.codec_type = SOF_SDW_CODEC_TYPE_AMP,
- 	},
- 	{
- 		.part_id = 0x5555,
-@@ -496,6 +510,7 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 		.direction = {false, true},
- 		.dai_name = "sdw-mockup-aif1",
- 		.init = sof_sdw_mic_codec_mockup_init,
-+		.codec_type = SOF_SDW_CODEC_TYPE_MIC,
- 	},
+@@ -360,20 +360,6 @@ static const struct snd_soc_ops sdw_ops = {
+ 	.shutdown = sdw_shutdown,
  };
  
-@@ -837,7 +852,7 @@ static int create_sdw_dailink(struct snd_soc_card *card,
- 			      const struct snd_soc_acpi_link_adr *link,
- 			      int *cpu_id, bool *group_generated,
- 			      struct snd_soc_codec_conf *codec_conf,
--			      int codec_count,
-+			      int codec_count, int *link_id,
- 			      int *codec_conf_index,
- 			      bool *ignore_pch_dmic)
- {
-@@ -895,6 +910,11 @@ static int create_sdw_dailink(struct snd_soc_card *card,
- 	if (codec_info_list[codec_index].ignore_pch_dmic)
- 		*ignore_pch_dmic = true;
- 
-+	/* Shift the first amplifier's *link_id to SDW_AMP_DAI_ID */
-+	if (codec_info_list[codec_index].codec_type == SOF_SDW_CODEC_TYPE_AMP &&
-+	    *link_id < SDW_AMP_DAI_ID)
-+		*link_id = SDW_AMP_DAI_ID;
-+
- 	cpu_dai_index = *cpu_id;
- 	for_each_pcm_streams(stream) {
- 		char *name, *cpu_name;
-@@ -949,7 +969,7 @@ static int create_sdw_dailink(struct snd_soc_card *card,
- 
- 		playback = (stream == SNDRV_PCM_STREAM_PLAYBACK);
- 		capture = (stream == SNDRV_PCM_STREAM_CAPTURE);
--		init_dai_link(dev, dai_links + *link_index, *link_index, name,
-+		init_dai_link(dev, dai_links + *link_index, (*link_id)++, name,
- 			      playback, capture,
- 			      cpus + *cpu_id, cpu_dai_num,
- 			      codecs, codec_num,
-@@ -1146,7 +1166,7 @@ static int sof_card_dai_links_create(struct device *dev,
- 					 sdw_cpu_dai_num, cpus, adr_link,
- 					 &cpu_id, group_generated,
- 					 codec_conf, codec_conf_count,
--					 &codec_conf_index,
-+					 &be_id, &codec_conf_index,
- 					 &ignore_pch_dmic);
- 		if (ret < 0) {
- 			dev_err(dev, "failed to create dai link %d", link_index);
-diff --git a/sound/soc/intel/boards/sof_sdw_common.h b/sound/soc/intel/boards/sof_sdw_common.h
-index b35f5a9b96f5..c6200aa14089 100644
---- a/sound/soc/intel/boards/sof_sdw_common.h
-+++ b/sound/soc/intel/boards/sof_sdw_common.h
-@@ -15,6 +15,7 @@
- 
- #define MAX_NO_PROPS 2
- #define MAX_HDMI_NUM 4
-+#define SDW_AMP_DAI_ID 2
- #define SDW_DMIC_DAI_ID 4
- #define SDW_MAX_CPU_DAIS 16
- #define SDW_INTEL_BIDIR_PDI_BASE 2
-@@ -52,9 +53,14 @@ enum {
- 	(((quirk) << SOF_BT_OFFLOAD_SSP_SHIFT) & SOF_BT_OFFLOAD_SSP_MASK)
- #define SOF_SSP_BT_OFFLOAD_PRESENT	BIT(18)
- 
-+#define SOF_SDW_CODEC_TYPE_JACK		0
-+#define SOF_SDW_CODEC_TYPE_AMP		1
-+#define SOF_SDW_CODEC_TYPE_MIC		2
-+
- struct sof_sdw_codec_info {
- 	const int part_id;
- 	const int version_id;
-+	const int codec_type;
- 	int amp_num;
- 	const u8 acpi_id[ACPI_ID_LEN];
- 	const bool direction[2]; // playback & capture support
+-static int sof_sdw_mic_codec_mockup_init(struct snd_soc_card *card,
+-					 const struct snd_soc_acpi_link_adr *link,
+-					 struct snd_soc_dai_link *dai_links,
+-					 struct sof_sdw_codec_info *info,
+-					 bool playback)
+-{
+-	/*
+-	 * force DAI link to use same ID as RT715 and DMIC
+-	 * to reuse topologies
+-	 */
+-	dai_links->id = SDW_DMIC_DAI_ID;
+-	return 0;
+-}
+-
+ static struct sof_sdw_codec_info codec_info_list[] = {
+ 	{
+ 		.part_id = 0x700,
+@@ -496,7 +482,6 @@ static struct sof_sdw_codec_info codec_info_list[] = {
+ 		.version_id = 0,
+ 		.direction = {false, true},
+ 		.dai_name = "sdw-mockup-aif1",
+-		.init = sof_sdw_mic_codec_mockup_init,
+ 		.codec_type = SOF_SDW_CODEC_TYPE_MIC,
+ 	},
+ };
 -- 
 2.17.1
 
