@@ -2,57 +2,56 @@ Return-Path: <SRS0=Z19R=PP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BCC89C433FE
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 02:34:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EF68C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 02:35:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A899360232
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 02:34:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A899360232
+	by mail.kernel.org (Postfix) with ESMTPS id 5363660232
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 02:35:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5363660232
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 005C316D0;
-	Wed, 27 Oct 2021 04:33:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 005C316D0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 88B2C16E6;
+	Wed, 27 Oct 2021 04:34:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 88B2C16E6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635302051;
-	bh=t5ucI/k8cu+C8GJ273zA2Di7kkqq27rlf0P0aZxoHWs=;
+	s=default; t=1635302101;
+	bh=hgSdSxBZu5xj1j4t1DTadFlsmp94xNxOeqiUi/phHEI=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=BSRSZPcw1oNAwyq/FWtsu8fKtpVXIMUzrV9jwQSuDv8tJvzJo6hB8u3yWPx/Qu2FW
-	 9qhvIUFD+2tV5Une69PX35I/t+v6PI5F0fmmFmMqF1YGJVomYdkwp5w3eVNa+xmdOn
-	 OewT6VeEQCfy0163gr1ElCCC8YGmJYgV+U7Ulee8=
+	b=RHaVWmAbBQDkDUK3bIKVyJp69WdvNY4oqxTJ4CLwmx83evcO0lTGh0lmAhEfQmoXC
+	 wwbxgy99niVbOCLDTM0ac66MoiIUM9RbHfbZ8vvpssrivjCOvg72kn0NHRQtU+ZSrk
+	 gjFB9VNIiZqbgoCjW7pmwGHLw8fwHJWc9ZkVYTi0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7B1A7F8016C;
-	Wed, 27 Oct 2021 04:33:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A5F39F804E3;
+	Wed, 27 Oct 2021 04:33:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 89649F8025A; Wed, 27 Oct 2021 04:33:13 +0200 (CEST)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ id CC54FF804E5; Wed, 27 Oct 2021 04:33:35 +0200 (CEST)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 944BCF8010A
- for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2021 04:33:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 944BCF8010A
-X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="217231148"
-X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; d="scan'208";a="217231148"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 293BCF804D0
+ for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2021 04:33:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 293BCF804D0
+X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="290896163"
+X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; d="scan'208";a="290896163"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Oct 2021 19:33:04 -0700
-X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; d="scan'208";a="497638190"
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Oct 2021 19:33:24 -0700
+X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; d="scan'208";a="497638325"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Oct 2021 19:33:02 -0700
+ 26 Oct 2021 19:33:22 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: broonie@kernel.org,
 	tiwai@suse.de
-Subject: [PATCH] ALSA: intel-dsp-config: add quirk for JSL devices based on
- ES8336 codec
-Date: Wed, 27 Oct 2021 10:32:54 +0800
-Message-Id: <20211027023254.24955-1-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH] ASoC: Intel: soc-acpi: add entry for ESSX8336 on JSL
+Date: Wed, 27 Oct 2021 10:33:11 +0800
+Message-Id: <20211027023311.25005-1-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
  bard.liao@intel.com
@@ -73,42 +72,35 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-These devices are based on an I2C/I2S device, we need to force the use
-of the SOF driver otherwise the legacy HDaudio driver will be loaded -
-only HDMI will be supported.
-
-We previously added support for other Intel platforms but missed
-JasperLake.
+We have configurations for this codec on APL, GLK and TGL, somehow the
+information that some designs rely on JasperLake was not shared.
 
 BugLink: https://github.com/thesofproject/linux/issues/3210
-Fixes: 9d36ceab9415 ('ALSA: intel-dsp-config: add quirk for APL/GLK/TGL devices based on ES8336 codec')
+Fixes: 790049fb6623 ('ASoC: Intel: soc-acpi: apl/glk/tgl: add entry for devices based on ES8336 codec')
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/hda/intel-dsp-config.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/soc/intel/common/soc-acpi-intel-jsl-match.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
-index b9ac9e9e45a4..10a0bffc3cf6 100644
---- a/sound/hda/intel-dsp-config.c
-+++ b/sound/hda/intel-dsp-config.c
-@@ -299,6 +299,15 @@ static const struct config_entry config_table[] = {
+diff --git a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
+index 20fd9dcc74af..e7d22e397299 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
+@@ -105,6 +105,12 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_jsl_machines[] = {
+ 		.quirk_data = &mx98360a_spk,
+ 		.sof_tplg_filename = "sof-jsl-rt5682-mx98360a.tplg",
  	},
- #endif
- 
-+/* JasperLake */
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_JASPERLAKE)
 +	{
-+		.flags = FLAG_SOF,
-+		.device = 0x4dc8,
-+		.codec_hid = "ESSX8336",
++		.id = "ESSX8336",
++		.drv_name = "sof-essx8336",
++		.sof_fw_filename = "sof-jsl.ri",
++		.sof_tplg_filename = "sof-jsl-es8336.tplg",
 +	},
-+#endif
-+
- /* Tigerlake */
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_TIGERLAKE)
- 	{
+ 	{},
+ };
+ EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_jsl_machines);
 -- 
 2.17.1
 
