@@ -2,70 +2,71 @@ Return-Path: <SRS0=Z19R=PP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A9E7C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 17:32:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE5BBC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 17:32:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7D50460231
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 17:32:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7D50460231
+	by mail.kernel.org (Postfix) with ESMTPS id 3957E60E74
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 17:32:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3957E60E74
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A379216A3;
-	Wed, 27 Oct 2021 19:31:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A379216A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 993C916D3;
+	Wed, 27 Oct 2021 19:31:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 993C916D3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635355948;
-	bh=Pq3SfGHDpc88FKh0R+K0PoZh6QwgzrTWqovNNpy6rmo=;
+	s=default; t=1635355966;
+	bh=cJp8gs8AleZxnawpuHmN71D6zTfYnuA2fLvcbSbgeBA=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eXOVCwX7MTFsaoeeDi9J2PghuVx89Ly5OMgXDywWae8FJUpR8VEJVvA5dYsRjPduw
-	 /MOVt95fHDeaBxYcaJaG3IQ3/hyKpvIWvn2o0DUCRH33IHxzU9N0TuzyMODmU4/tG2
-	 Rz7STvq1JABezma35MD0p8g9GH/GwCQoomUlMDpM=
+	b=cPHNTV48u8OioQMwWQ9jOTPwI5QEA2ID1JMZqVLKDi/PgdAeFcyaLnn5Nberzjtq4
+	 7b+miJ9IK9Ja/Bpv7iIFPTls+3sYYSKJVB3RpLMXT+BR7r2oTQ4Urh0ADn7GlFDO5o
+	 5ntZymWiwZPnuB6jwi8EFbYKmPLCLdJ4rO9n1uug=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C56C7F804F3;
-	Wed, 27 Oct 2021 19:29:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5BE66F804FF;
+	Wed, 27 Oct 2021 19:29:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7AE6DF8025A; Wed, 27 Oct 2021 19:29:25 +0200 (CEST)
+ id D49EEF80271; Wed, 27 Oct 2021 19:29:25 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B9F24F8025A
- for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2021 19:29:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9F24F8025A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 06BA1F8049C
+ for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2021 19:29:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06BA1F8049C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ful2KLto"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D30E60E74;
- Wed, 27 Oct 2021 17:29:18 +0000 (UTC)
+ header.b="EN8VG8ko"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 78CCC60F02;
+ Wed, 27 Oct 2021 17:29:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1635355760;
- bh=Pq3SfGHDpc88FKh0R+K0PoZh6QwgzrTWqovNNpy6rmo=;
+ s=k20201202; t=1635355761;
+ bh=cJp8gs8AleZxnawpuHmN71D6zTfYnuA2fLvcbSbgeBA=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=ful2KLto8dvC5tLEQXCOItXdinLKEkfq37sxy5tO3i51GxZHX5GEXygnE0mavqkVj
- CXeTOWmrQqAsFkSjO7qJKHVfaxAhBW2UG+bQ7TjvZsV3IhzJN82znaT9V9ckqN4mef
- RgJhOSWcdhT7uJgPuu285EDqUMbugFGpIUn3uJNuASvGp27eroU/gKb43l8VhQ5NG8
- 5y4Euc56qtbqVkKdUDNeF/3gvId0ZlvvpGG8rNvljHVoicNX5PmmbL/enw58NgRcds
- 1iZyTC+PAXBzlawhblwDP5zlPt/jlazvZjGTKtjboeVOmBlirtBEDNu/VT5LMrxLqn
- aD9L7g4AjUXiw==
+ b=EN8VG8ko9h6CuFi9zsIHTIWsQHENACoDoFdOak7dAwr+wVZ3a0e7Ae/L2ntB3YGUh
+ VfywyLYcWTnaM0e3LV+aaftmofiUpxkljlAGa3a8mhQiRY/qixyA5MwWTVAibydUVP
+ OzNKKbbQ6F6VpeiRNxmlZ71fcLl6onWdCaa7xpQGdrNJCpg/OKueOBZLwR1Uzug0U7
+ +36ObdpcYcgtqChrCbEtjOGUQnxvb5FWHTKafrQjwjMfO/fwuLfqXwc5Z5ABXJEj+r
+ qkRfe91gIDMdrsghKotYKR4+JhaxMR1R3YmZmgTP6khvTwq98dhAMGaaHy2FCJF3Zb
+ ze1MgD3iyfrmg==
 From: Mark Brown <broonie@kernel.org>
-To: David Lin <CTLIN0@nuvoton.com>
-In-Reply-To: <20211027025142.25898-1-CTLIN0@nuvoton.com>
-References: <20211027025142.25898-1-CTLIN0@nuvoton.com>
-Subject: Re: [PATCH 0/3] Make genaral and simple for new sof machine driver
-Message-Id: <163535575832.4012075.5610998531157694851.b4-ty@kernel.org>
-Date: Wed, 27 Oct 2021 18:29:18 +0100
+To: Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Alexander Stein <alexander.stein@mailbox.org>
+In-Reply-To: <20211026182754.900688-1-alexander.stein@mailbox.org>
+References: <20211026182754.900688-1-alexander.stein@mailbox.org>
+Subject: Re: [PATCH v2 1/1] ASoC: meson: t9015: Add missing AVDD-supply
+ property
+Message-Id: <163535576023.4012075.11294627556140470131.b4-ty@kernel.org>
+Date: Wed, 27 Oct 2021 18:29:20 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, WTLI@nuvoton.com, SJLIN0@nuvoton.com,
- KCHSU0@nuvoton.com, lgirdwood@gmail.com, YHCHuang@nuvoton.com,
- mac.chiang@intel.com
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Jerome Brunet <jbrunet@baylibre.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,15 +82,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 27 Oct 2021 10:51:40 +0800, David Lin wrote:
-> The series of features will make general and simple for new sof machine driver.
+On Tue, 26 Oct 2021 20:27:54 +0200, Alexander Stein wrote:
+> Fixes the schema check warning "audio-controller@32000: 'AVDD-supply'
+> do not match any of the regexes: 'pinctrl-[0-9]+'"
 > 
-> David Lin (3):
->   ASoC: nau8825: add set_jack coponment support
->   ASoC: nau8825: add disable jack detection support
->   ASoC: nau8825: add clock management for power saving
 > 
-> [...]
 
 Applied to
 
@@ -97,12 +94,8 @@ Applied to
 
 Thanks!
 
-[1/3] ASoC: nau8825: add set_jack coponment support
-      commit: c6167e10e76fb97d37613004046e66027b3a569b
-[2/3] ASoC: nau8825: add disable jack detection support
-      (no commit info)
-[3/3] ASoC: nau8825: add clock management for power saving
-      commit: 6133148ca08a097ed8c57d7f5a7826723273049b
+[1/1] ASoC: meson: t9015: Add missing AVDD-supply property
+      commit: 5d03907bbf9ccf10e0d2cfb4f4d312b7cc4274f4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
