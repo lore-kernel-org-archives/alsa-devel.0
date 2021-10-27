@@ -2,71 +2,70 @@ Return-Path: <SRS0=Z19R=PP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BE5BC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 17:26:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E0CBEC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 17:30:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E5D8D60E78
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 17:26:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E5D8D60E78
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	by mail.kernel.org (Postfix) with ESMTPS id BA19B60E74
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 17:30:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BA19B60E74
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 41CB21697;
-	Wed, 27 Oct 2021 19:25:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41CB21697
+	by alsa0.perex.cz (Postfix) with ESMTPS id C98DF1699;
+	Wed, 27 Oct 2021 19:29:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C98DF1699
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635355591;
-	bh=ZUeiPZa6n2J/N9xqVGmWqkC+gNcPR2QfkLPXhdq7x94=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1635355834;
+	bh=QsB0o9iZyLniecSH1J6KAGYPmw5EvswLCa0a3kuGrW4=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sQarJe5qa+85CJ04RyEbaxymP1zHbpFOJo13RD/Y64Mavlfn7wcrtfkdVxTnuJNiA
-	 5NshZThADfinDdWgXntA4BtalFp9PsqcqR3rfNp9Wn0Ucm6MQWQxVz8usYR8eqVb3M
-	 y2zWcDQ5b+kXrP2D21GQ1jL1O2k4aAo7k1W/3DxM=
+	b=W/w+zwZpERfvSwdhSRjzOqiJRNP3m82W6gwQ+wN6Co7G6laLjKsy992lf1gpfKIfd
+	 eGDO2AdbnvrVTbYF7KX4VtsTnkdwGp0DsUnXX7bbJXyJf85WVNG8Dmr9tCsE1lZhYG
+	 4QgXTDkfgAEh9k3gzq8KwyZt4kWerjbEb6YYZxmw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C2BF0F8016C;
-	Wed, 27 Oct 2021 19:25:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0AC88F8016C;
+	Wed, 27 Oct 2021 19:29:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EAE65F8025A; Wed, 27 Oct 2021 19:25:39 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ id 5CF20F8010A; Wed, 27 Oct 2021 19:29:19 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BB008F8010A
- for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2021 19:25:33 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 4EF17A0040;
- Wed, 27 Oct 2021 19:25:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 4EF17A0040
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1635355532; bh=2Jo5cGI5SCR0+/CjnCp+O018CY5GYMdbsCvNpWf0pic=;
- h=Date:Subject:To:References:From:Cc:In-Reply-To:From;
- b=YtI5R0J7+DS4RHPfMSj5n67PG7RYdOAjrXXukCGW8ojekFs2IFxjrntLfiYg7f8mp
- m5lu2+B+LqEW1SjmjBdibZF5K1CgfqduV/b7oYjQJitbddl1WzXIK84VA8NzWhLpI4
- 85MUmtG8AxLLyGIBNziCCkesgJyAnhwMDYQKD/Wo=
-Received: from [192.168.100.98] (unknown [192.168.100.98])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Wed, 27 Oct 2021 19:25:30 +0200 (CEST)
-Message-ID: <e7de13ce-ee03-761d-0890-527bd00883e3@perex.cz>
-Date: Wed, 27 Oct 2021 19:25:29 +0200
+ by alsa1.perex.cz (Postfix) with ESMTPS id 18794F8010A
+ for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2021 19:29:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18794F8010A
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="WQ7HIJXm"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C33560F02;
+ Wed, 27 Oct 2021 17:29:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1635355750;
+ bh=QsB0o9iZyLniecSH1J6KAGYPmw5EvswLCa0a3kuGrW4=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=WQ7HIJXmQ2+MORKZl3R7A/w7XIl5BaHZshrFqk1Smo0fjiTSRjoX5PXbDGLjRGM9p
+ NVYN0Qb/xG+HhYFYMv1z8ZSbG8xn//QdI2HaTVmxY3vz1r2BglzI9AetTcfVqxhmOc
+ MSwbU17AECX9GKQwf+h5lScTjNgTXqc+fZGvefpWRMQ9bBrR1WXt5KYIwCAkHGWO6/
+ J/cFafh+MqulN8bXThC30Yzx3whQlCPRmfm0VSpFaYE//L5UnWM6L8ODcCD3Fx2Grb
+ cQegxGDcdHfWhYwtlyeQuJ5vaDlsHK7LOD9ocfkD6qqsksxQx988946Yl3XSVmYwVj
+ 45Ku0e9uPdNdg==
+From: Mark Brown <broonie@kernel.org>
+To: David Lin <CTLIN0@nuvoton.com>
+In-Reply-To: <20211026093828.4188145-1-CTLIN0@nuvoton.com>
+References: <20211026093828.4188145-1-CTLIN0@nuvoton.com>
+Subject: Re: [PATCH 0/3] Make genaral and simple for new sof machine driver
+Message-Id: <163535574829.4012075.6799937823075242004.b4-ty@kernel.org>
+Date: Wed, 27 Oct 2021 18:29:08 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH alsa-utils] alsactl: Add --quiet option to suppress
- alsa-lib error messages
-Content-Language: en-US
-To: Takashi Iwai <tiwai@suse.de>
-References: <20211027144008.27002-1-tiwai@suse.de>
-From: Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <20211027144008.27002-1-tiwai@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: ALSA development <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, WTLI@nuvoton.com, SJLIN0@nuvoton.com,
+ KCHSU0@nuvoton.com, lgirdwood@gmail.com, YHCHuang@nuvoton.com,
+ mac.chiang@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,26 +81,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 27. 10. 21 16:40, Takashi Iwai wrote:
-> alsactl prints error messages from alsa-lib as is, and it's rather
-> annoying to see the error messages like
+On Tue, 26 Oct 2021 17:38:25 +0800, David Lin wrote:
+> The series of features will make general and simple for new sof machine driver.
 > 
->    alsactl[xxx]: alsa-lib parser.c:242:(error_node) UCM is not supported for this HDA model (HDA Intel PCH...)
->    alsactl[xxx]: alsa-lib main.c:1405:(snd_use_case_mgr_open) error: failed to import hw:0 use case configuration -6
+> David Lin (3):
+>   ASoC: nau8825: add set_jack coponment support
+>   ASoC: nau8825: add disable jack detection support
+>   ASoC: nau8825: add clock management for power saving
 > 
-> that are recorded in the syslog at each boot.
-> 
-> This patch adds --quiet (or -q) option to suppress those error
-> messages from alsa-lib, and applies to the systemd services as
-> default.
+> [...]
 
-The fix is inaccurate as it's just a warning not an error. The question is, 
-how to signal those warnings to users to eliminate the confusion.
+Applied to
 
-The suppression of all alsa-lib errors does not seem like a good idea to me.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-					Jaroslav
+Thanks!
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+[1/3] ASoC: nau8825: add set_jack coponment support
+      commit: c6167e10e76fb97d37613004046e66027b3a569b
+[2/3] ASoC: nau8825: add disable jack detection support
+      (no commit info)
+[3/3] ASoC: nau8825: add clock management for power saving
+      commit: 6133148ca08a097ed8c57d7f5a7826723273049b
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
