@@ -2,75 +2,74 @@ Return-Path: <SRS0=Z19R=PP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 55AD1C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 07:49:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 36DECC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 07:50:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DFC2A610CA
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 07:49:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DFC2A610CA
+	by mail.kernel.org (Postfix) with ESMTPS id 42BDA610C7
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Oct 2021 07:50:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 42BDA610C7
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 84DB316C9;
-	Wed, 27 Oct 2021 09:48:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84DB316C9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 276DB16D3;
+	Wed, 27 Oct 2021 09:49:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 276DB16D3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635320943;
-	bh=pyTW4zEXRe4uCe0kUzuLXJBf+/IUk3wiSGGqjt6yi0A=;
+	s=default; t=1635321002;
+	bh=gS78O4YU0shiGK4aj3NB8RTUYQAyTKwHVIWpOezeTh4=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=q44Z7Q55WYJ4ZMweZGDy5uNlrW+Hk4NwsT4yk83HrQFCjJiuIBcz37kh6iD6rlipW
-	 OTsp9KmW9va0hHpsYlLIyidhVn9pvnQ56Rhm1eXIUDlq78tEFxbdU4xkJjmG4Re4zJ
-	 8M5BVLe2D8IFve0IapTYt7e7xCBXYHZhM2oQhZLQ=
+	b=ClX7ntYTkCKoIPq/iAjdgVuMy2oDa6D1IV28z1ce76MIVe2C5GC3XX06Wz6O6QSfC
+	 mchxExadox8/cDKZAIUj0WW11nEbLKjrBum9jJ3epb3dmFEjnNKQxsjH5qK7BVPIID
+	 3EHKDJsjgRcSa4+bqllJ0jybJA4dwDAhYFXhH2F0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F07C4F8016C;
-	Wed, 27 Oct 2021 09:48:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B46A5F8025A;
+	Wed, 27 Oct 2021 09:49:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B4881F8025A; Wed, 27 Oct 2021 09:48:11 +0200 (CEST)
-Received: from so254-9.mailgun.net (so254-9.mailgun.net [198.61.254.9])
+ id A5600F80271; Wed, 27 Oct 2021 09:49:10 +0200 (CEST)
+Received: from m43-7.mailgun.net (m43-7.mailgun.net [69.72.43.7])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 727AFF800D1
- for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2021 09:48:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 727AFF800D1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2BC1CF800D1
+ for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2021 09:49:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2BC1CF800D1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=mg.codeaurora.org
- header.i=@mg.codeaurora.org header.b="TgwE1mfp"
+ header.i=@mg.codeaurora.org header.b="G9AwVS78"
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
  q=dns/txt; 
- s=smtp; t=1635320883; h=Content-Transfer-Encoding: Content-Type:
+ s=smtp; t=1635320949; h=Content-Transfer-Encoding: Content-Type:
  In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=sC0yyA4Ai6oK5LtbInVCUdqb1RatXgE+DLE9qmVuBzE=;
- b=TgwE1mfpP2WBFsQrRix0pbBY4KQLb9VX3p2EEn74kcIAKRLuZtd0RAg7MtgF9clRU/tHOQYY
- ZjVqa72Hg/AJgpt2YPVx33YKWJD/Sso/Y2grgt4rbBxrngfAXsV6avlRj+FX9INfCpGN4xJT
- XKL9xDBBMHJqmY558iZqUyI63mM=
-X-Mailgun-Sending-Ip: 198.61.254.9
+ Subject: Sender; bh=8GMdHbbqAULcs7zIj12mg8RI8efLCizjjiOsYZymurY=;
+ b=G9AwVS78V0QPKbpAsjictYWGuY3LVcL6Mi/ELc0pwXDKpquqMb2mx/u8aWvyo+UxWa+XkJNp
+ WfF+5DeBv3OcEyznUz1fYsL67H+qplKTX8As57LtXq9G77vcTeZSGpbp1ZLyvafv9Vn/h+Ck
+ uWzKSI8jQpSsTxHekLPwrqS8eYo=
+X-Mailgun-Sending-Ip: 69.72.43.7
 X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 61790430c75c436a30ca602a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 27 Oct 2021 07:48:00
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 61790469308e0dd330203953 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 27 Oct 2021 07:48:57
  GMT
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id 29170C43617; Wed, 27 Oct 2021 07:48:00 +0000 (UTC)
+ id F22D8C43617; Wed, 27 Oct 2021 07:48:56 +0000 (UTC)
 Received: from [10.242.143.72] (unknown [202.46.23.19])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested) (Authenticated sender: srivasam)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id 8E225C43460;
- Wed, 27 Oct 2021 07:47:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 8E225C43460
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id 99EA1C43616;
+ Wed, 27 Oct 2021 07:48:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 99EA1C43616
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
  dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
  spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH 2/3] dt-bindings: pinctrl: qcom: Add sc7280 lpass lpi
- pinctrl compatible
+Subject: Re: [PATCH 3/3] pinctrl: qcom: Add SC7280 lpass pin configuration
 To: Stephen Boyd <swboyd@chromium.org>, agross@kernel.org,
  alsa-devel@alsa-project.org, bgoswami@codeaurora.org,
  bjorn.andersson@linaro.org, broonie@kernel.org, devicetree@vger.kernel.org,
@@ -79,16 +78,16 @@ To: Stephen Boyd <swboyd@chromium.org>, agross@kernel.org,
  robh+dt@kernel.org, rohitkr@codeaurora.org, srinivas.kandagatla@linaro.org,
  tiwai@suse.com
 References: <1633614519-26680-1-git-send-email-srivasam@codeaurora.org>
- <1633614519-26680-3-git-send-email-srivasam@codeaurora.org>
- <CAE-0n51qO1q5ZF-fAf2Gma9a2B+iSyoQnJdJ8Fnmsz+DG0rwPg@mail.gmail.com>
+ <1633614519-26680-4-git-send-email-srivasam@codeaurora.org>
+ <CAE-0n53SqOHKDpMQicrFNmZ1YxAPesTAk4j6kJVi3xMV8re4-w@mail.gmail.com>
 From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 Organization: Qualcomm India Private Limited.
-Message-ID: <d92c73d1-32b1-8d95-f3b5-ff103b330621@codeaurora.org>
-Date: Wed, 27 Oct 2021 13:17:52 +0530
+Message-ID: <1d951b30-8298-b739-51c4-13cb2de741b9@codeaurora.org>
+Date: Wed, 27 Oct 2021 13:18:49 +0530
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <CAE-0n51qO1q5ZF-fAf2Gma9a2B+iSyoQnJdJ8Fnmsz+DG0rwPg@mail.gmail.com>
+In-Reply-To: <CAE-0n53SqOHKDpMQicrFNmZ1YxAPesTAk4j6kJVi3xMV8re4-w@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
@@ -109,41 +108,30 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-On 10/7/2021 11:29 PM, Stephen Boyd wrote:
-> Quoting Srinivasa Rao Mandadapu (2021-10-07 06:48:38)
->> Add device tree binding compatible name for Qualcomm SC7280 LPASS LPI pinctrl driver.
+On 10/7/2021 11:24 PM, Stephen Boyd wrote:
+> Quoting Srinivasa Rao Mandadapu (2021-10-07 06:48:39)
+>> diff --git a/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c b/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
+>> index c0117c5..0b68065 100644
+>> --- a/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
+>> +++ b/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
+>> @@ -237,6 +264,15 @@ static struct lpi_pinctrl_variant_data sm8250_lpi_data = {
+>>          .nfunctions = ARRAY_SIZE(lpass_functions),
+>>   };
 >>
->> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
->> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
->> ---
->>   Documentation/devicetree/bindings/pinctrl/qcom,lpass-lpi-pinctrl.yaml | 4 +++-
->>   1 file changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,lpass-lpi-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,lpass-lpi-pinctrl.yaml
->> index e47ebf9..578b283 100644
->> --- a/Documentation/devicetree/bindings/pinctrl/qcom,lpass-lpi-pinctrl.yaml
->> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,lpass-lpi-pinctrl.yaml
->> @@ -16,7 +16,9 @@ description: |
->>
->>   properties:
->>     compatible:
->> -    const: qcom,sm8250-lpass-lpi-pinctrl
->> +    enum:
->> +      - qcom,sc7280-lpass-lpi-pinctrl
->> +      - qcom,sm8250-lpass-lpi-pinctrl
-> I suspect we need to split the binding because the function list needs
-> to change. Can you make a whole new file that's probably largely a copy
-> of this file and/or extract the common bits into a meta schema and
-> include that in both the files? Then the function list can be different
-> and the clock property can be omitted in the sc7280 file.
-
-As most are common functions and fixed number of LPASS Lpi pin 
-configuration across platforms,
-
-Only diff is ADSP bypass platforms 2 clocks are optional. Otherwise 
-clock design also same for SC7280 and SM8250 based architecture.
-
-So I feel Keeping common file is better for now.
+>> +static struct lpi_pinctrl_variant_data sc7280_lpi_data = {
+> Can this variant data be const?
+Okay. Will change accordingly.
+>> +       .pins = lpass_lpi_pins,
+>> +       .npins = ARRAY_SIZE(lpass_lpi_pins),
+>> +       .groups = sc7280_groups,
+>> +       .ngroups = ARRAY_SIZE(sc7280_groups),
+>> +       .functions = lpass_functions,
+>> +       .nfunctions = ARRAY_SIZE(lpass_functions),
+>> +};
+>> +
+>>   static int lpi_gpio_read(struct lpi_pinctrl *state, unsigned int pin,
+>>                           unsigned int addr)
+>>   {
 
 -- 
 Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
