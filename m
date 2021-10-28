@@ -2,62 +2,64 @@ Return-Path: <SRS0=jYMw=PQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3314AC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 Oct 2021 13:58:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EB334C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 Oct 2021 13:59:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C57E2610A0
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 Oct 2021 13:58:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C57E2610A0
+	by mail.kernel.org (Postfix) with ESMTPS id 26234610A0
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 Oct 2021 13:59:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 26234610A0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 96556169B;
-	Thu, 28 Oct 2021 15:58:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 96556169B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 39DF316B0;
+	Thu, 28 Oct 2021 15:58:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 39DF316B0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635429531;
-	bh=2SqKOulEdug787xrZHPxXi/uue4QIlEKKuos6YApJY0=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=EnwV/V5TzTChISrNDUcdSXmGpa09YIrVm8EUCAjQ5GWGMxa3Q2hHRrufNkc74Vnr7
-	 NHJvQ7SEKLXrA7vftx+coHjmB8pF6QGGIXNcIb9YdsvAzpcSmRSQTt3faFicE2g/7C
-	 SQIh3jNuN0Y/fr9meX/g9RZJoPjcCQLe3WDXcucI=
+	s=default; t=1635429576;
+	bh=OscfH5mWx3oBsArY1uNXt1aIAe0fHNx8taTN5kxfOw4=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Ws4fwYrnsfsRqwGwo8yJN3aZmpp3iBox9XmSLhL74PjyGoJbbqFsf/ZUZvK7M0CeK
+	 rhueA5SCgI6n1pkn7iOZLiuuQmHMRLLSXw1DpvCWp0L4OzDSPByGwdk3lYB1WnM8M0
+	 l4xheoEilUB7VvWwIdIrvItuUmp3/qqs+oVo4I5c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1AED1F800D1;
-	Thu, 28 Oct 2021 15:58:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0FAD5F804AE;
+	Thu, 28 Oct 2021 15:58:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CB938F80300; Thu, 28 Oct 2021 15:57:58 +0200 (CEST)
+ id 2738CF802E7; Thu, 28 Oct 2021 15:58:00 +0200 (CEST)
 Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 477D6F8010A
- for <alsa-devel@alsa-project.org>; Thu, 28 Oct 2021 15:57:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 477D6F8010A
-X-UUID: 0451979e83e94840b4987c38a3560eb0-20211028
-X-UUID: 0451979e83e94840b4987c38a3560eb0-20211028
+ by alsa1.perex.cz (Postfix) with ESMTPS id 59F9AF800D1
+ for <alsa-devel@alsa-project.org>; Thu, 28 Oct 2021 15:57:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59F9AF800D1
+X-UUID: 1464a5cd677e45688009f47e60029246-20211028
+X-UUID: 1464a5cd677e45688009f47e60029246-20211028
 Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
  (envelope-from <yc.hung@mediatek.com>)
  (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
- with ESMTP id 892179986; Thu, 28 Oct 2021 21:57:41 +0800
+ with ESMTP id 1669125369; Thu, 28 Oct 2021 21:57:45 +0800
 Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.792.3; 
- Thu, 28 Oct 2021 21:57:40 +0800
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 28 Oct 2021 21:57:43 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
  mtkmbs10n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.792.3 via Frontend Transport; Thu, 28 Oct 2021 21:57:40 +0800
+ 15.2.792.3 via Frontend Transport; Thu, 28 Oct 2021 21:57:43 +0800
 From: YC Hung <yc.hung@mediatek.com>
 To: <broonie@kernel.org>, <tiwai@suse.com>, <robh+dt@kernel.org>,
  <matthias.bgg@gmail.com>
-Subject: [PATCH v4 0/2] Add code to manage DSP clocks and provide dts-binding
- document
-Date: Thu, 28 Oct 2021 21:57:35 +0800
-Message-ID: <20211028135737.8625-1-yc.hung@mediatek.com>
+Subject: [PATCH v4 2/2] dt-bindings: dsp: mediatek: Add mt8195 DSP binding
+ support
+Date: Thu, 28 Oct 2021 21:57:37 +0800
+Message-ID: <20211028135737.8625-3-yc.hung@mediatek.com>
 X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20211028135737.8625-1-yc.hung@mediatek.com>
+References: <20211028135737.8625-1-yc.hung@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-MTK: N
@@ -81,28 +83,159 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: "yc.hung" <yc.hung@mediatek.com>
+This describes the mt8195 DSP device tree node.
 
-This code is based on top of SOF topic/sof-dev branch and we want to have a review 
-with ALSA and device Tree communities the it will be merged to SOF tree and then
-merged into ALSA tree. It provides two patches, one is for mt8195 dsp clocks related.
-Another is for mt8195 dsp dts binding decription.
-
-YC Hung (2):
-  ASoC: SOF: mediatek: Add mt8195 dsp clock support
-  dt-bindings: dsp: mediatek: Add mt8195 DSP binding support
-
- .../bindings/dsp/mtk,mt8195-dsp.yaml          | 139 +++++++++++++++
- sound/soc/sof/mediatek/adsp_helper.h          |   2 +-
- sound/soc/sof/mediatek/mt8195/Makefile        |   2 +-
- sound/soc/sof/mediatek/mt8195/mt8195-clk.c    | 158 ++++++++++++++++++
- sound/soc/sof/mediatek/mt8195/mt8195-clk.h    |  28 ++++
- sound/soc/sof/mediatek/mt8195/mt8195.c        |  22 ++-
- 6 files changed, 347 insertions(+), 4 deletions(-)
+Signed-off-by: YC Hung <yc.hung@mediatek.com>
+---
+ .../bindings/dsp/mtk,mt8195-dsp.yaml          | 139 ++++++++++++++++++
+ 1 file changed, 139 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/dsp/mtk,mt8195-dsp.yaml
- create mode 100644 sound/soc/sof/mediatek/mt8195/mt8195-clk.c
- create mode 100644 sound/soc/sof/mediatek/mt8195/mt8195-clk.h
 
+diff --git a/Documentation/devicetree/bindings/dsp/mtk,mt8195-dsp.yaml b/Documentation/devicetree/bindings/dsp/mtk,mt8195-dsp.yaml
+new file mode 100644
+index 000000000000..f113f71ca094
+--- /dev/null
++++ b/Documentation/devicetree/bindings/dsp/mtk,mt8195-dsp.yaml
+@@ -0,0 +1,139 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/dsp/mtk,mt8195-dsp.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Mediatek mt8195 DSP core
++
++maintainers:
++  - YC Hung <yc.hung@mediatek.com>
++
++description: |
++  Some boards from mt8195 contain a DSP core used for
++  advanced pre- and post- audio processing.
++properties:
++  compatible:
++    const: mediatek,mt8195-dsp
++
++  reg:
++    maxItems: 2
++
++  reg-names:
++    maxItems: 2
++
++  interrupts:
++    maxItems: 1
++
++  interrupt-names:
++    maxItems: 1
++
++  clocks:
++    items:
++      - description: mux for audio dsp clock
++      - description: 26M clock
++      - description: mux for audio dsp local bus
++      - description: default audio dsp local bus clock source
++      - description: clock gate for audio dsp clock
++      - description: mux for audio dsp access external bus
++
++  clock-names:
++    items:
++      - const: adsp_sel
++      - const: clk26m_ck
++      - const: audio_local_bus
++      - const: mainpll_d7_d2
++      - const: scp_adsp_audiodsp
++      - const: audio_h
++
++  power-domains:
++    maxItems: 1
++
++  mboxes:
++    maxItems: 2
++
++  mbox-names:
++    description:
++      Specifies the mailboxes used to communicate with audio DSP
++    items:
++      - const: mbox0
++      - const: mbox1
++
++  memory-region:
++    description:
++      phandle to a node describing reserved memory (System RAM memory)
++      used by DSP (see bindings/reserved-memory/reserved-memory.txt)
++    maxItems: 2
++
++  sound:
++    description:
++      Sound subnode includes ASoC platform, DPTx codec node, and
++      HDMI codec node.
++
++    type: object
++
++    properties:
++      mediatek,platform:
++        $ref: "/schemas/types.yaml#/definitions/phandle"
++        description: The phandle of MT8195 ASoC platform.
++
++      mediatek,dptx-codec:
++        $ref: "/schemas/types.yaml#/definitions/phandle"
++        description: The phandle of MT8195 Display Port Tx codec node.
++
++      mediatek,hdmi-codec:
++        $ref: "/schemas/types.yaml#/definitions/phandle"
++        description: The phandle of MT8195 HDMI codec node.
++
++required:
++  - compatible
++  - reg
++  - reg-names
++  - interrupts
++  - interrupt-names
++  - clocks
++  - clock-names
++  - memory-region
++  - power-domains
++  - mbox-names
++  - mboxes
++  - sound
++
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++    adsp: adsp@10803000 {
++       compatible =  "mediatek,mt8195-dsp";
++       reg = <0x10803000  0x1000>,
++             <0x10840000  0x40000>;
++       reg-names = "cfg", "sram";
++       interrupts = <GIC_SPI 694 IRQ_TYPE_LEVEL_HIGH 0>;
++       interrupt-names = "wdt";
++       clocks = <&topckgen 10>, //CLK_TOP_ADSP
++                <&clk26m>,
++                <&topckgen 107>, //CLK_TOP_AUDIO_LOCAL_BUS
++                <&topckgen 136>, //CLK_TOP_MAINPLL_D7_D2
++                <&scp_adsp 0>, //CLK_SCP_ADSP_AUDIODSP
++                <&topckgen 34>; //CLK_TOP_AUDIO_H
++       clock-names = "adsp_sel",
++                     "clk26m_ck",
++                     "audio_local_bus",
++                     "mainpll_d7_d2",
++                     "scp_adsp_audiodsp",
++                     "audio_h";
++       memory-region = <&adsp_dma_mem_reserved>,
++                       <&adsp_mem_reserved>;
++       power-domains = <&spm 6>; //MT8195_POWER_DOMAIN_ADSP
++       mbox-names = "mbox0", "mbox1";
++       mboxes = <&adsp_mailbox 0>, <&adsp_mailbox 1>;
++       status = "disabled";
++       sound {
++              mediatek,dptx-codec = <&dp_tx>;
++              mediatek,hdmi-codec = <&hdmi0>;
++              mediatek,platform = <&afe>;
++             };
++       };
 -- 
 2.18.0
 
