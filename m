@@ -2,69 +2,73 @@ Return-Path: <SRS0=jYMw=PQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1AC92C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 Oct 2021 10:34:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E8BEC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 Oct 2021 12:30:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C5C4C610D2
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 Oct 2021 10:34:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C5C4C610D2
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	by mail.kernel.org (Postfix) with ESMTPS id A7F46610D2
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 Oct 2021 12:30:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A7F46610D2
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F3E761694;
-	Thu, 28 Oct 2021 12:33:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F3E761694
+	by alsa0.perex.cz (Postfix) with ESMTPS id A15361676;
+	Thu, 28 Oct 2021 14:29:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A15361676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635417269;
-	bh=nXaHjsAiBzzc2QIQZHfTDmCeTd0h9GLEfh5VoLHsZEk=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	s=default; t=1635424237;
+	bh=0IyHeV0L08KxqGj2Yi4V76DmhaAi20BHj3eWpXmjuSc=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZpZpwIjRrT3PCO6NntvLo1SW6qTx6hGBiqQoLXSl7hG1n1k2zWvJNwlonstjoHaKd
-	 I3zt+JdHJyIVRKr2UMZ1FTtYewntE0Atgm5IaqtA9Bp0g54o+F1ksbCvHq6MjiHgjG
-	 U/sJbjDD6vh8LHDxCrMpEgjNNhSZ5JyGVW8pK9Mo=
+	b=kVz0r91lMYVx0sNWV4/4X2AK+9/+/jxh0T+NWmExQGoKXvMJj4O843uvUdfU9iFXN
+	 Emtczx3nTYB6x2ZYtGV05Y60B7z/jAGDnMnhcB5aYdeSlJwwLxdmdIzMXtAyXtwPrW
+	 D99s9xcpvYBkRA04v5KzLYxoqNup3xXqhrbhPLgY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8268AF80269;
-	Thu, 28 Oct 2021 12:33:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4D8CCF8010A;
+	Thu, 28 Oct 2021 14:29:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 79391F8010A; Thu, 28 Oct 2021 12:33:36 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ id D3D00F802C8; Thu, 28 Oct 2021 14:28:56 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 358C9F8014E
- for <alsa-devel@alsa-project.org>; Thu, 28 Oct 2021 12:33:28 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 7F12CA003F;
- Thu, 28 Oct 2021 12:33:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 7F12CA003F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1635417207; bh=CL+QX8ui1kgCPFYnJYOdUd2VcMrOogKTV+VFqK4O44s=;
- h=Date:Subject:To:References:From:In-Reply-To:From;
- b=bdWSB/YY7ge3nOyoxdB//j0ZWzsadew4/uSAaMH/NBybclStzrU/7/gSIBxBR8Xch
- CrRZwgGTN1Bnnc3tWpv4iqVcTEQZ0HOqAjOg96usvat28k2qgnMaxGWeXASi5oMRP6
- 6XeUDyJu4C+/vN2jpMcPN6tvreGQplnX8nQp/Tv4=
-Received: from [192.168.100.98] (unknown [192.168.100.98])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Thu, 28 Oct 2021 12:33:25 +0200 (CEST)
-Message-ID: <ae55f1c6-57f1-b940-5902-e1160be25d4c@perex.cz>
-Date: Thu, 28 Oct 2021 12:33:25 +0200
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7BE02F8010A
+ for <alsa-devel@alsa-project.org>; Thu, 28 Oct 2021 14:28:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7BE02F8010A
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="BPtm2gf6"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A28E610CA;
+ Thu, 28 Oct 2021 12:28:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1635424122;
+ bh=0IyHeV0L08KxqGj2Yi4V76DmhaAi20BHj3eWpXmjuSc=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=BPtm2gf6ueNW4PwQim7p7pYHbw1vohTXjCquTE2CXOEdA7saNvRjaRHPiYer91bzW
+ GKazsdh1TA8kb9OhaSQbzFZXIp0RLzdrR2D1oeibRXMWmU4LfHQZ4B/7m1/nRa7/7N
+ fs4NjX2fMDRIj/oxke/iNXJfm9Jv4XEV6jeVt4YRaG3wThFWzisY2gRbwmEUO/NdxU
+ YLbhLRQR0I1Fipgx/4GQd2nRcdRAixMkWgGukGIZft1pdCzsG2QXLGtqZoPO+hIEQQ
+ wCZQuX3gYFqG+P7spK25lmGMHP04ZeiE/mToZxo6/+y+iBmJXB88oacFZM4po+W79n
+ jzWTQlaNv1qlw==
+Date: Thu, 28 Oct 2021 13:28:37 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Julian Braha <julianbraha@gmail.com>
+Subject: Re: [PATCH RESEND] ASoC: fix unmet dependencies on GPIOLIB for
+ SND_SOC_DMIC
+Message-ID: <YXqXdV0YC5BhEARB@sirena.org.uk>
+References: <20211027184835.112916-1-julianbraha@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH 1/2] alsaloop: Renamed field capt_pitch to ctl_pitch
-Content-Language: en-US
-To: Pavel Hofman <pavel.hofman@ivitera.com>, alsa-devel@alsa-project.org
-References: <20211024083156.4743-1-pavel.hofman@ivitera.com>
-From: Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <20211024083156.4743-1-pavel.hofman@ivitera.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="DdE/G2GeDUUSa88j"
+Content-Disposition: inline
+In-Reply-To: <20211027184835.112916-1-julianbraha@gmail.com>
+X-Cookie: try again
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ fazilyildiran@gmail.com, tiwai@suse.com, pierre-louis.bossart@linux.intel.com,
+ Vijendar.Mukunda@amd.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,17 +84,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 24. 10. 21 10:31, Pavel Hofman wrote:
-> Renaming capt_pitch to ctl_pitch to respect the naming style of
-> snd_ctl_elem_value_t fields in loopback_handle. Also making the variable
-> name suitable for planned support of playback pitch.
-> 
-> Signed-off-by: Pavel Hofman <pavel.hofman@ivitera.com>
 
-Applied both patches. Thank you.
+--DdE/G2GeDUUSa88j
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-				Jaroslav
+On Wed, Oct 27, 2021 at 02:48:35PM -0400, Julian Braha wrote:
+> When SND_SOC_AMD_RENOIR_MACH or SND_SOC_AMD_RV_RT5682_MACH
+> are selected, and GPIOLIB is not selected, Kbuild gives
+> the following warnings, respectively:
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+I can't seem to find any indication that this has been sent before...
+
+--DdE/G2GeDUUSa88j
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmF6l3QACgkQJNaLcl1U
+h9DjMgf+NZ1xB5WHfg/qE5AWTWl3sQk/3x1QHEWf9GvEbnabN53Q4mI2Gl8BruND
+Bo2jUu7e6Gk8QCBqRbPG4QBtq3E6Kp8iU5COhvwfII/YtUI48hF673+VWe5zUN/V
+bGzv/5PCMHq9z4ExbSV/fRYjgWpGBundZfnkj8+NzgrzRh4LOLJz4tksc4I3oNzk
+HucsQHqL/nJ4D4UG+b+mR/jHWf0BOarTY+/yY/VLUGRNV+ndAkTecPXEUucDxn5A
+Zc04LducScKdd4oOBzXhF5jhdhdJNGiIMXu+byUbxbTBwwjwz7W3vYFflbPufIWF
+lxLueOIx0+F4BIGUeUCVguCPfpF6Sg==
+=zRlM
+-----END PGP SIGNATURE-----
+
+--DdE/G2GeDUUSa88j--
