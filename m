@@ -2,74 +2,83 @@ Return-Path: <SRS0=jYMw=PQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F26EC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 Oct 2021 07:10:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CDCAC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 Oct 2021 07:23:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F377D6108F
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 Oct 2021 07:10:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org F377D6108F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 0605C60E8B
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 Oct 2021 07:23:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0605C60E8B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8CC2D1692;
-	Thu, 28 Oct 2021 09:09:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8CC2D1692
+	by alsa0.perex.cz (Postfix) with ESMTPS id 423CE1694;
+	Thu, 28 Oct 2021 09:22:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 423CE1694
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635405015;
-	bh=kUm8LWJjv+dVCrO/KR4jdyacR62707zabeUSy//Cmbk=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=YOmwT6598vDOncndN0i0Y86IMUoxv04wlrzaBJFKceK3CW8ivkWv+o+m0CNyWs+FU
-	 Nu7GphPDSbNCXcGpjN7SphbLTKIdKsOkwR17iuaqlzq3OSq/VW7j+x0lDkZD/CZxFM
-	 Rqz62ggv10bqnqgR3yQzuCXyVNVf10uoZHSPjKu8=
+	s=default; t=1635405792;
+	bh=5zz1JsBkkA9G4b9QgPdFVziJjOzJr1shUHIi1HS+VGw=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=C8ZJVyKnQBmgJrzruAgUAQ69jD5r/64FmmZFVaQiX+u4M4G/lp9VOpZO1KuQcZyUv
+	 94x+wQ3qPxWN+ee/LKxKshajhqfDD+Sn7CMlmnDJdpy1Ofp01kERw4nzPISoJZBFAW
+	 DNSuJEtoIKE0qMq48lgexfu0+jP1ld10j73YNS74=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 00D11F80269;
-	Thu, 28 Oct 2021 09:09:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CCFEAF80269;
+	Thu, 28 Oct 2021 09:22:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5213BF802C8; Thu, 28 Oct 2021 09:09:21 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 3A425F802C8; Thu, 28 Oct 2021 09:22:20 +0200 (CEST)
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de
+ [85.215.255.53])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6F061F800D1
- for <alsa-devel@alsa-project.org>; Thu, 28 Oct 2021 09:09:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F061F800D1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8B773F800D1
+ for <alsa-devel@alsa-project.org>; Thu, 28 Oct 2021 09:22:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B773F800D1
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="iF+gDX3n"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="VWZ/MAag"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id A71952196A
- for <alsa-devel@alsa-project.org>; Thu, 28 Oct 2021 07:09:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1635404952; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=VOQANBWMWo5+gwNAK4nvFUT+uZ0Rdt9roWHmprEb6rI=;
- b=iF+gDX3nCgQCAviavm+pg2d6JPss28kx8Do5aSTdHc3GgpT6WrBO6edsP7Ppv8N0CgxiXP
- vhvUdkB7L1g0metqOJdlCBTf+wMRpPREgBZTGOya3jgeW7riLbSBHC1wWtYNAt86vMJLLX
- Ewp13IoGqny4lR2CZj1UH5PW8yqwmUg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1635404952;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=VOQANBWMWo5+gwNAK4nvFUT+uZ0Rdt9roWHmprEb6rI=;
- b=VWZ/MAag4cQk8CL8Kka5Gs49Qlwd9Y3jaX88tnZ8/1/v5nnd0ZbtLRxn5ybmbkct3sQXz1
- SrA7JYs76UceaeBQ==
-Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 96CA3A3B81;
- Thu, 28 Oct 2021 07:09:12 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: hda/realtek: Add a quirk for HP OMEN 15 mute LED
-Date: Thu, 28 Oct 2021 09:09:11 +0200
-Message-Id: <20211028070911.18891-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
+ dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net
+ header.b="nP3fEgWu"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1635405727;
+ s=strato-dkim-0002; d=gerhold.net;
+ h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+ From:Subject:Sender;
+ bh=kOBZjRlCxa2iH7iZrnGYd692rY43y4CmP/9XW3tcKfQ=;
+ b=nP3fEgWu6xJnfqllIlADlnzTrnju370sDmyroJ3WIqU2bwe4TfndmT2MaBVLK0G0f4
+ 7R1NS8fhWimfE41KR1/x62xPwzVQSu8fyQhUi3VQXNSnmEyT4n20hqcB+RdEsqz17cH+
+ lglEnTbshGHNhlL1etYfpt9DuGlN/t4Gm4k7LRaSwcEF3bnHjsVZEhbWX0YUjbOo1fPG
+ suL6JDnR8yKTbXrg9GvyICJwVZGtngqjLA2ON5C8XUN98WPCbFZ7KiAKQwYR0tZHgfoF
+ ZuQ0Uzunk2jqg2DmYh3D4UbkStZ+4EVKMwi+caZibCmgUfWuNgRdTqePJAHF2TFFiomR
+ XaQw==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u267FZF9PwpcNKLUrKw7/aY="
+X-RZG-CLASS-ID: mo00
+Received: from gerhold.net by smtp.strato.de (RZmta 47.34.1 AUTH)
+ with ESMTPSA id 207811x9S7M79PH
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+ (Client did not present a certificate);
+ Thu, 28 Oct 2021 09:22:07 +0200 (CEST)
+Date: Thu, 28 Oct 2021 09:22:05 +0200
+From: Stephan Gerhold <stephan@gerhold.net>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v1 1/4] ASoC: codecs: tfa989x: Add switch to allow
+ disabling amplifier
+Message-ID: <YXpPnQ2YTo5ZdQnm@gerhold.net>
+References: <20211024085840.1536438-1-vincent.knecht@mailoo.org>
+ <20211024085840.1536438-2-vincent.knecht@mailoo.org>
+ <YXaMVHo9drCIuD3u@sirena.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YXaMVHo9drCIuD3u@sirena.org.uk>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com,
+ robh+dt@kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+ Vincent Knecht <vincent.knecht@mailoo.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,29 +94,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-HP OMEN 15 laptop requires the quirk to fiddle with COEF 0x0b bit 2
-for toggling the mute LED.  It's already implemented for other HP
-laptops, and we just need to add a proper fixup entry.
+On Mon, Oct 25, 2021 at 11:52:04AM +0100, Mark Brown wrote:
+> On Sun, Oct 24, 2021 at 10:58:37AM +0200, Vincent Knecht wrote:
+> > From: Stephan Gerhold <stephan@gerhold.net>
+> > 
+> > In some configurations it may be necessary to explicitly disable
+> > the amplifier with an ALSA mixer. An example for this is a stereo
+> > setup with two TFA989X. If only one of them should be used (e.g.
+> > to use it as an earpiece) the other one must be explicitly disabled.
+> > 
+> > Add a virtual "Amp Switch" to implement that. There is no register
+> > for this (SND_SOC_NOPM) so it only prevents DAPM from activating
+> > the amplifier. Also it is inverted (= enabled by default) for
+> > compatibility with devices that do not need this functionality.
+> 
+> Why can you not use a standard pin switch on the speaker output for
+> this?
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=214735
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+Thanks for the suggestion! For some reason I was not aware of the pin
+switch mechanism... :) We have tried this and it seems to work fine.
+I will submit a separate series to allow setting up the pin switches
+for the qcom sound cards instead.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index e82d756ab850..6322fac9e694 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -8634,6 +8634,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 		      ALC285_FIXUP_HP_GPIO_AMP_INIT),
- 	SND_PCI_QUIRK(0x103c, 0x8783, "HP ZBook Fury 15 G7 Mobile Workstation",
- 		      ALC285_FIXUP_HP_GPIO_AMP_INIT),
-+	SND_PCI_QUIRK(0x103c, 0x8788, "HP OMEN 15", ALC285_FIXUP_HP_MUTE_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87c8, "HP", ALC287_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87e5, "HP ProBook 440 G8 Notebook PC", ALC236_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87e7, "HP ProBook 450 G8 Notebook PC", ALC236_FIXUP_HP_GPIO_LED),
--- 
-2.31.1
+The other patches in this series are independent of this one and still
+apply cleanly for me. Can you just ignore PATCH 1/4 or would you prefer
+a resend without this patch?
 
+Thanks,
+Stephan
