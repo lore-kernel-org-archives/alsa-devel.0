@@ -2,75 +2,50 @@ Return-Path: <SRS0=puNT=PR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E3FAC433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Oct 2021 15:27:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24C4AC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Oct 2021 15:30:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4DE9B61165
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Oct 2021 15:27:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4DE9B61165
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	by mail.kernel.org (Postfix) with ESMTPS id 2DF166117A
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Oct 2021 15:30:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2DF166117A
+Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8201C167F;
-	Fri, 29 Oct 2021 17:26:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8201C167F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8961A16C3;
+	Fri, 29 Oct 2021 17:29:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8961A16C3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635521264;
-	bh=B1Cd4tVc2r7XUI3JXwmUIXBku/fVyACR0rou73Am3LQ=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1635521442;
+	bh=WxHjlPlpt+IMA1I2UDEZcmqkPFbp48F8UgwPX/wuaHc=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HhCPeakyjWV6okLpaJoKpuvw50qMyRzRUH8bQqTwZGqQw1PDSEX/De4k+QAYYUAg/
-	 6YAynB7jo4sKQdy1ow+3V8A+IVoL59E71M+bcTQtiHCbD9wgmwrZ//nN3kmYgjHL3v
-	 5Rc5waBp5BFpCZeDe7LrtdlvlaAXAviXayS1YM2A=
+	b=kgAnOug2yMzAjPG205QOKUkxlOQcrRSlW0Y+PGQLzd5o24wfkb/nYVnN0KXH4Hucq
+	 XLXVFEUGFUKo4RaD/e7Ny/gPD1V5RBLJQpEH4vebebyxRZx/wYuHEEcTBbP6mHkr7J
+	 NSR8z8DORTfi2/mokGDbuo+XcrWEXEEtRU5agquY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 122EAF801EC;
-	Fri, 29 Oct 2021 17:26:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C7736F800D1;
+	Fri, 29 Oct 2021 17:29:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 53877F8025A; Fri, 29 Oct 2021 17:26:52 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3CD4EF800D1
- for <alsa-devel@alsa-project.org>; Fri, 29 Oct 2021 17:26:44 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id F345FA0049;
- Fri, 29 Oct 2021 17:26:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz F345FA0049
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1635521204; bh=34OOJZeF7fIOonM6ercXMgmUTe4EfYzKs0a5zkCpoYc=;
- h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
- b=dXwLqXlpGfaHehXGmpIoYdksLlU+13fd773929LyRw7lINOI4EqkJa7kmapPRce49
- G61m9UNfn2srSKxqQNJOY5gNdaZPv0ne+/4n7smc1xjAHKe01G23CK+s+ibNH8s3y2
- EgBCWmtld7RksURsJu1cYNEWpOvVyU8/kRne/yts=
-Received: from [192.168.100.98] (unknown [192.168.100.98])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Fri, 29 Oct 2021 17:26:34 +0200 (CEST)
-Message-ID: <f709fcff-1bd4-1251-1471-aad01fdfdedd@perex.cz>
-Date: Fri, 29 Oct 2021 17:26:34 +0200
+ id 8F06CF8025A; Fri, 29 Oct 2021 17:29:18 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 9EA16F800D1
+ for <alsa-devel@alsa-project.org>; Fri, 29 Oct 2021 17:29:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9EA16F800D1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH] ASoC: tegra: Add master volume/mute control support
-Content-Language: en-US
-To: Sameer Pujar <spujar@nvidia.com>, broonie@kernel.org,
- lgirdwood@gmail.com, tiwai@suse.com
-References: <1635159976-17355-1-git-send-email-spujar@nvidia.com>
- <79541c76-2c2b-fd4b-60c8-67ee6b8ea3fa@perex.cz>
- <8cb777f9-b73b-136c-f560-de4c31af931e@nvidia.com>
- <18b61046-ac0b-0fb3-669c-6524a03eecf0@nvidia.com>
-From: Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <18b61046-ac0b-0fb3-669c-6524a03eecf0@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
- thierry.reding@gmail.com, linux-kernel@vger.kernel.org, jonathanh@nvidia.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1635521340011014938-webhooks-bot@alsa-project.org>
+References: <1635521340011014938-webhooks-bot@alsa-project.org>
+Subject: AM_PATH_ALSA. error
+Message-Id: <20211029152918.8F06CF8025A@alsa1.perex.cz>
+Date: Fri, 29 Oct 2021 17:29:18 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,38 +61,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 29. 10. 21 17:08, Sameer Pujar wrote:
-> 
-> 
-> On 10/26/2021 11:53 AM, Sameer Pujar wrote:
->>
->>
->> On 10/25/2021 6:28 PM, Jaroslav Kysela wrote:
->>> On 25. 10. 21 13:06, Sameer Pujar wrote:
->>>
->>>> @@ -150,11 +186,22 @@ static int tegra210_mvc_put_mute(struct
->>>> snd_kcontrol *kcontrol,
->>>
->>> ...
->>>>
->>>>        return 1;
->>>
->>> It's a bit unrelated comment to this change, but it may be worth to
->>> verify all
->>> kcontrol put callbacks in the tegra code. Ensure that value 1 is
->>> returned only
->>> when something was really changed in hardware.
-> 
-> There are cases when the mixer control update is not immediately written
-> to HW, instead the update is ACKed (stored in variable) and writen to HW
-> at a later point of time. Do these cases qualify for "return 1" as well?
+alsa-project/alsa-utils issue #116 was opened from steeley:
 
-Yes - assuming that the get callback returns the cached value. The get/put 
-implementation should be consistent from the caller view. The driver 
-implementation (delayed write) is a separate thing.
+Hi,
+I'm installing on latest raspios buster lite 32bit:
+(Linux cm432 5.10.63-v7l+ #1459 SMP Wed Oct 6 16:41:57 BST 2021 armv7l GNU/Linux)
 
-						Jaroslav
+my build process is:
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+`git clone https://github.com/alsa-project/alsa-utils.git
+cd alsa-utils/
+git checkout v1.1.9
+autoreconf -i
+./configure --prefix=/usr/local
+make
+sudo make install`
+
+I have built and installed alsa-libs correctly, but get this error with alas-utils when I autoreconf:
+
+`configure.ac:22: warning: macro 'AM_PATH_ALSA' not found in library
+configure.ac:22: error: possibly undefined macro: AM_PATH_ALSA
+      If this token and others are legitimate, please use m4_pattern_allow.
+      See the Autoconf documentation.
+autoreconf: /usr/bin/autoconf failed with exit status: 1`
+
+How to resolve?
+TIA
+
+Issue URL     : https://github.com/alsa-project/alsa-utils/issues/116
+Repository URL: https://github.com/alsa-project/alsa-utils
