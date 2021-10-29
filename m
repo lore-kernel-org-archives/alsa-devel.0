@@ -2,84 +2,80 @@ Return-Path: <SRS0=puNT=PR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 01779C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Oct 2021 20:57:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 71E36C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Oct 2021 21:16:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5B61760FC3
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Oct 2021 20:57:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5B61760FC3
+	by mail.kernel.org (Postfix) with ESMTPS id 4C95C60F4B
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Oct 2021 21:16:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4C95C60F4B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8729F171F;
-	Fri, 29 Oct 2021 22:56:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8729F171F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1C5E91708;
+	Fri, 29 Oct 2021 23:15:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C5E91708
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635541056;
-	bh=2XzSq4mVbWcQ9X6sHFBxKYl/i6WLCiLInFmuv1V6Ido=;
+	s=default; t=1635542174;
+	bh=NApRpT97YjCTLweJMQYGNRmjqvkE4DYX14TtaZmj7m4=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YxElR2Y0frELXtTtZKz4zOm2w91dp0z2SH+astezx7SonYAoc9FBnrqwM0lGfN2g7
-	 K4AIcmvYdKYsMk3AdnK+xGJROdLLZlaWlmFXgGMw/VclRL+IzfFyyZ1jU5CBh2W8gh
-	 TBrxy9eW/iM+PkFHm7FQV99AdGKs5NE8e9Awvk+4=
+	b=TqAefugAHcaR+Tlwn/v3Rbam2uzCTfAF57M+Q8KzIIZ2PamBSpntg8gj4gaxxrA+C
+	 8p7JEjqa8dXb0DLRqUwaslPpIpzF9fBsD8BMhYa2jaW6CWZ/UObGaQ/o9WYctYjsvO
+	 w/Y/P1z7CjQOCYONw7yUWwFzliCiV7q8sFd4PLwU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F2ACCF804F1;
-	Fri, 29 Oct 2021 22:55:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 97376F801EC;
+	Fri, 29 Oct 2021 23:15:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 08148F804EB; Fri, 29 Oct 2021 22:55:12 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 34B8EF8025E; Fri, 29 Oct 2021 23:15:22 +0200 (CEST)
+Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com
+ [209.85.167.176])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AB621F8027B
- for <alsa-devel@alsa-project.org>; Fri, 29 Oct 2021 22:55:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB621F8027B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="SCwi14Q3"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F72A61040;
- Fri, 29 Oct 2021 20:55:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1635540906;
- bh=2XzSq4mVbWcQ9X6sHFBxKYl/i6WLCiLInFmuv1V6Ido=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=SCwi14Q32wkQulSG3D10Dm6er2K3MeGlI+QUsfLSGsZJbzlv07jDgpMx4Yye5akU4
- 06Wmo6gO43cbS4g06g93cTtXetvM1MLPwKbTl7AErRrv0jXPZnYZiqxWF6adw+lEah
- udL1sYBYX4dTtYMkcDQ7pY57EkNm73cd4j8BbbrRj16WlMRiAEfwsLVm1sNs3rSevj
- GA40yLMcQv6qWvrhZlN5Hra3fzPhrirN02jM7Hp7O52gD8R9YdI0C2Bu1I5qkQ1qg+
- PFtdog9FbohtpSoxnHJgrkwHztIU6omDZ4CxPjX8UWzY0sW27sntf4Tbfh97g2YUzq
- abEB9occrYu2g==
-From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, Brent Lu <brent.lu@intel.com>
-In-Reply-To: <20211029171409.611600-1-brent.lu@intel.com>
-References: <20211029171409.611600-1-brent.lu@intel.com>
-Subject: Re: [PATCH v5 0/6] Multiple headphone codec driver support
-Message-Id: <163554090182.1997146.17202242422434789612.b4-ty@kernel.org>
-Date: Fri, 29 Oct 2021 21:55:01 +0100
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Rander Wang <rander.wang@intel.com>, Jie Yang <yang.jie@linux.intel.com>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Mac Chiang <mac.chiang@intel.com>, Bard Liao <yung-chuan.liao@linux.intel.com>,
- Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>,
- Gongjun Song <gongjun.song@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Bard Liao <bard.liao@intel.com>, Rander Wang <rander.wang@linux.intel.com>,
- Yong Zhi <yong.zhi@intel.com>, Charles Keepax <ckeepax@opensource.cirrus.com>,
- Hans de Goede <hdegoede@redhat.com>,
- Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
- Paul Olaru <paul.olaru@oss.nxp.com>, Libin Yang <libin.yang@intel.com>,
- Malik_Hsu <malik_hsu@wistron.corp-partner.google.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
- Curtis Malainey <cujomalainey@chromium.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1E4A5F8010A
+ for <alsa-devel@alsa-project.org>; Fri, 29 Oct 2021 23:15:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E4A5F8010A
+Received: by mail-oi1-f176.google.com with SMTP id x8so10896138oix.2
+ for <alsa-devel@alsa-project.org>; Fri, 29 Oct 2021 14:15:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+ :message-id;
+ bh=sgH+xfQQun/T1q5TEyK5JVkL2nNXV/yTPlo0T/9exOo=;
+ b=ed66gThuETk98r0s5pkcjLX91TFBtUfCj/9R+/xWouykaGb3mSFUR5OKiuadWhms0A
+ Z0qwkVEiiQA/WJXd9LyUyUr2xmqiqYC4tgGyRomfSeKj+WRbynHDcg3xN8mpyTdd6swC
+ XyQ06ZQYxjmHv9uP9hOdniQWcTUDiqdxt3MGa8LvJxTmBaLYeOtZF5K41PpH72lNLKLJ
+ nCuONlrImUbBZyBzRLZDLEvOWLFTCT1Bb0yzlp1BVxMUa4+WKbLKvHFuDBXAu7lyuHEj
+ yP+q5tmrGqWxe8ett19fp1cXD5LfZ/qNqI/tkw5VP+JerzQ+BBkKs9kVcXq+MKKaqU/k
+ Sukw==
+X-Gm-Message-State: AOAM530cWgkUxsJ2NsSNJrL+ZL5mfMMLda+e6wEbn/Aa6C6bG9ufbmY/
+ OBsktkNFDSru1lcV83fOojS5t7v4yQ==
+X-Google-Smtp-Source: ABdhPJw6XFkSbvjRrn148G/ujZSxZmSDgqGMI/0mCVkDsmKEVLTZFos8weawXD1ekMeBj89OF7QlNQ==
+X-Received: by 2002:aca:aacc:: with SMTP id
+ t195mr15715685oie.118.1635542114218; 
+ Fri, 29 Oct 2021 14:15:14 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net.
+ [66.90.148.213])
+ by smtp.gmail.com with ESMTPSA id a71sm2144955ooc.10.2021.10.29.14.15.12
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 29 Oct 2021 14:15:13 -0700 (PDT)
+Received: (nullmailer pid 3221285 invoked by uid 1000);
+ Fri, 29 Oct 2021 21:15:10 -0000
+From: Rob Herring <robh@kernel.org>
+To: David Heidelberg <david@ixit.cz>
+In-Reply-To: <20211029175418.83899-1-david@ixit.cz>
+References: <20211029175418.83899-1-david@ixit.cz>
+Subject: Re: [PATCH] dt-bindings: sound: gtm601: convert to YAML
+Date: Fri, 29 Oct 2021 16:15:10 -0500
+Message-Id: <1635542110.119595.3221284.nullmailer@robh.at.kernel.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, angus@akkea.ca,
+ linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ ~okias/devicetree@lists.sr.ht
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,53 +91,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 30 Oct 2021 01:14:03 +0800, Brent Lu wrote:
-> Support multiple headphone drivers in same machine driver. In this
-> case, both rt5682 and rt5682s are supported and enumerated by different
-> ACPI HID "10EC5682" and "RTL5682".
+On Fri, 29 Oct 2021 19:54:17 +0200, David Heidelberg wrote:
+> Convert GTM601 binding to the YAML format.
 > 
-> V2 Changes:
-> - remove useless 'NULL', 'false' in if-condition
-> - can use 'comp_ids' field alone to enumerate driver
-> - add comma to the end of entry in structure initialization
-> - keep the table of byt/cht/cml/icl untouched
+> Signed-off-by: David Heidelberg <david@ixit.cz>
+> ---
+>  .../devicetree/bindings/sound/gtm601.txt      | 19 -----------
+>  .../devicetree/bindings/sound/gtm601.yaml     | 33 +++++++++++++++++++
+>  2 files changed, 33 insertions(+), 19 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/sound/gtm601.txt
+>  create mode 100644 Documentation/devicetree/bindings/sound/gtm601.yaml
 > 
-> [...]
 
-Applied to
+Running 'make dtbs_check' with the schema in this patch gives the
+following warnings. Consider if they are expected or the schema is
+incorrect. These may not be new warnings.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Note that it is not yet a requirement to have 0 warnings for dtbs_check.
+This will change in the future.
 
-Thanks!
+Full log is available here: https://patchwork.ozlabs.org/patch/1548195
 
-[1/6] ASoC: soc-acpi: add comp_ids field for machine driver matching
-      commit: cafa39b650ec3ba8e9efa0825f1c08e029b5a1ed
-[2/6] ASoC: Intel: sof_rt5682: detect codec variant in probe function
-      commit: 8fe6ec03183ac04fa6529fdf0d4da1328946a9d0
-[3/6] ASoC: Intel: sof_rt5682: use comp_ids to enumerate rt5682s
-      commit: d4f3fdc2b7e16e8203c5d55bb91d6572647d4b0f
-[4/6] ASoC: Intel: soc-acpi-byt: shrink tables using compatible IDs
-      commit: dac7cbd55dca4fd9e646e37401079ebfae3935e0
-[5/6] ASoC: Intel: soc-acpi-cht: shrink tables using compatible IDs
-      commit: 959ae8215a9e8955f45b41e274a1294d7c9aba1b
-[6/6] ASoC: Intel: soc-acpi: use const for all uses of snd_soc_acpi_codecs
-      commit: 9a5d96add514079660b3f1270a55f8c2dbdbc1b6
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+gsm_codec: '#sound-dai-cells' does not match any of the regexes: 'pinctrl-[0-9]+'
+	arch/arm/boot/dts/omap3-gta04a3.dt.yaml
+	arch/arm/boot/dts/omap3-gta04a4.dt.yaml
+	arch/arm/boot/dts/omap3-gta04a5.dt.yaml
+	arch/arm/boot/dts/omap3-gta04a5one.dt.yaml
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+sound-wwan-codec: '#sound-dai-cells' does not match any of the regexes: 'pinctrl-[0-9]+'
+	arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dt.yaml
+	arch/arm64/boot/dts/freescale/imx8mq-librem5-r2.dt.yaml
+	arch/arm64/boot/dts/freescale/imx8mq-librem5-r3.dt.yaml
+	arch/arm64/boot/dts/freescale/imx8mq-librem5-r4.dt.yaml
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
