@@ -2,81 +2,83 @@ Return-Path: <SRS0=puNT=PR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 727D9C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Oct 2021 20:57:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01779C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Oct 2021 20:57:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9D00260F9B
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Oct 2021 20:57:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9D00260F9B
+	by mail.kernel.org (Postfix) with ESMTPS id 5B61760FC3
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Oct 2021 20:57:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5B61760FC3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9BC111718;
-	Fri, 29 Oct 2021 22:56:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9BC111718
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8729F171F;
+	Fri, 29 Oct 2021 22:56:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8729F171F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635541033;
-	bh=IPg6nSSMi2IfwMSUIGvn+Ln1n/eLa9+lEO9Jbi5n7kw=;
+	s=default; t=1635541056;
+	bh=2XzSq4mVbWcQ9X6sHFBxKYl/i6WLCiLInFmuv1V6Ido=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=t6KUOUG1VG3Upg7yMbzHyEvr9sztB2FMIVjgXuaZxjZViYvjE1kh5aJL1p5d/M8Oh
-	 hpCn4aAUtMaJNmVIGXXlkGUba//WBeaga8NnWHjpqeavQSBtBHFHwHtidefx7z4JKD
-	 cg+12EsS4C5QvxBER3tA6RjJ9ekLErwnRaJBHHg0=
+	b=YxElR2Y0frELXtTtZKz4zOm2w91dp0z2SH+astezx7SonYAoc9FBnrqwM0lGfN2g7
+	 K4AIcmvYdKYsMk3AdnK+xGJROdLLZlaWlmFXgGMw/VclRL+IzfFyyZ1jU5CBh2W8gh
+	 TBrxy9eW/iM+PkFHm7FQV99AdGKs5NE8e9Awvk+4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6254FF804E7;
-	Fri, 29 Oct 2021 22:55:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F2ACCF804F1;
+	Fri, 29 Oct 2021 22:55:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AF007F8032B; Fri, 29 Oct 2021 22:55:06 +0200 (CEST)
+ id 08148F804EB; Fri, 29 Oct 2021 22:55:12 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D9222F80271
- for <alsa-devel@alsa-project.org>; Fri, 29 Oct 2021 22:55:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9222F80271
+ by alsa1.perex.cz (Postfix) with ESMTPS id AB621F8027B
+ for <alsa-devel@alsa-project.org>; Fri, 29 Oct 2021 22:55:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB621F8027B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="mvPzReQD"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51EAD60F57;
- Fri, 29 Oct 2021 20:54:57 +0000 (UTC)
+ header.b="SCwi14Q3"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F72A61040;
+ Fri, 29 Oct 2021 20:55:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1635540901;
- bh=IPg6nSSMi2IfwMSUIGvn+Ln1n/eLa9+lEO9Jbi5n7kw=;
+ s=k20201202; t=1635540906;
+ bh=2XzSq4mVbWcQ9X6sHFBxKYl/i6WLCiLInFmuv1V6Ido=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=mvPzReQDpfMEeyj5/9ZeCP5gI6VL39O85cIOCc+w6QM9WR2u3mE7tBfy7un0Vw3jE
- 5U7M/Xs0p5cbeJwCeCCdXSmbCQEe/8WZlsGGZ3wr4xszNXlTuNBctKAXhXtpRJgJ4j
- 52ssX5G/4r+tsLjw6Xhq7zqftx6F25shuge21I3nDd2gAKAec9kPgSEKo4Vx8/uzrc
- B02WxkRgDDMBQOPwNnSbUkHDfbWBLPn3gpfnnuQm1/Am1MB2lV1rk30/NJx5kgrNg1
- s00soI7ra9s7DtQcpibl+qPO9QF+SKXGQLpdbw6Cfj8vcZnKkWrrcWK7qYMFLqkQLu
- wBYHtiWewUc7Q==
+ b=SCwi14Q32wkQulSG3D10Dm6er2K3MeGlI+QUsfLSGsZJbzlv07jDgpMx4Yye5akU4
+ 06Wmo6gO43cbS4g06g93cTtXetvM1MLPwKbTl7AErRrv0jXPZnYZiqxWF6adw+lEah
+ udL1sYBYX4dTtYMkcDQ7pY57EkNm73cd4j8BbbrRj16WlMRiAEfwsLVm1sNs3rSevj
+ GA40yLMcQv6qWvrhZlN5Hra3fzPhrirN02jM7Hp7O52gD8R9YdI0C2Bu1I5qkQ1qg+
+ PFtdog9FbohtpSoxnHJgrkwHztIU6omDZ4CxPjX8UWzY0sW27sntf4Tbfh97g2YUzq
+ abEB9occrYu2g==
 From: Mark Brown <broonie@kernel.org>
 To: alsa-devel@alsa-project.org, Brent Lu <brent.lu@intel.com>
-In-Reply-To: <20211020155715.2045947-1-brent.lu@intel.com>
-References: <20211020155715.2045947-1-brent.lu@intel.com>
-Subject: Re: [PATCH v4 0/6] Multiple headphone codec driver support
-Message-Id: <163554089709.1997146.9920801603298776810.b4-ty@kernel.org>
-Date: Fri, 29 Oct 2021 21:54:57 +0100
+In-Reply-To: <20211029171409.611600-1-brent.lu@intel.com>
+References: <20211029171409.611600-1-brent.lu@intel.com>
+Subject: Re: [PATCH v5 0/6] Multiple headphone codec driver support
+Message-Id: <163554090182.1997146.17202242422434789612.b4-ty@kernel.org>
+Date: Fri, 29 Oct 2021 21:55:01 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
  Cezary Rojewski <cezary.rojewski@intel.com>,
  Rander Wang <rander.wang@intel.com>, Jie Yang <yang.jie@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Mac Chiang <mac.chiang@intel.com>, Gongjun Song <gongjun.song@intel.com>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Mac Chiang <mac.chiang@intel.com>, Bard Liao <yung-chuan.liao@linux.intel.com>,
  Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>,
- Takashi Iwai <tiwai@suse.com>,
+ Gongjun Song <gongjun.song@intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Andy Shevchenko <andy.shevchenko@gmail.com>, Bard Liao <bard.liao@intel.com>,
- Rander Wang <rander.wang@linux.intel.com>, Yong Zhi <yong.zhi@intel.com>,
- Hans de Goede <hdegoede@redhat.com>, Paul Olaru <paul.olaru@oss.nxp.com>,
- Libin Yang <libin.yang@intel.com>, Huajun Li <huajun.li@intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, linux-kernel@vger.kernel.org,
+ Bard Liao <bard.liao@intel.com>, Rander Wang <rander.wang@linux.intel.com>,
+ Yong Zhi <yong.zhi@intel.com>, Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Hans de Goede <hdegoede@redhat.com>,
+ Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+ Paul Olaru <paul.olaru@oss.nxp.com>, Libin Yang <libin.yang@intel.com>,
+ Malik_Hsu <malik_hsu@wistron.corp-partner.google.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
  Curtis Malainey <cujomalainey@chromium.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -93,7 +95,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 20 Oct 2021 23:57:09 +0800, Brent Lu wrote:
+On Sat, 30 Oct 2021 01:14:03 +0800, Brent Lu wrote:
 > Support multiple headphone drivers in same machine driver. In this
 > case, both rt5682 and rt5682s are supported and enumerated by different
 > ACPI HID "10EC5682" and "RTL5682".
