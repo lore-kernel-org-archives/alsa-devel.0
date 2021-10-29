@@ -2,68 +2,82 @@ Return-Path: <SRS0=puNT=PR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CC36AC4332F
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Oct 2021 20:56:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 727D9C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Oct 2021 20:57:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4A151610A0
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Oct 2021 20:56:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4A151610A0
+	by mail.kernel.org (Postfix) with ESMTPS id 9D00260F9B
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Oct 2021 20:57:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9D00260F9B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4B04B1712;
-	Fri, 29 Oct 2021 22:55:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B04B1712
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9BC111718;
+	Fri, 29 Oct 2021 22:56:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9BC111718
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635541007;
-	bh=LpGNZwT4aagpghW7i3+R2HDAVuJ+NS7X/D1QITONxME=;
+	s=default; t=1635541033;
+	bh=IPg6nSSMi2IfwMSUIGvn+Ln1n/eLa9+lEO9Jbi5n7kw=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oGhMHaQLP+w2jmpoyRfyhnc9vQrTi+Ck2ajD9d8ItE2tI6JC6wtlTlN3njjlteJFk
-	 NrVQFNMdvphQ/b9W0Nu0/zxtp9gCj0WRMwXD5DVG0R5jbQCoTPxEHumC4RW9xqASPv
-	 HwFjgucTzqiezP+ImxzOFlkx1Qi/vp7MlE5L1/x0=
+	b=t6KUOUG1VG3Upg7yMbzHyEvr9sztB2FMIVjgXuaZxjZViYvjE1kh5aJL1p5d/M8Oh
+	 hpCn4aAUtMaJNmVIGXXlkGUba//WBeaga8NnWHjpqeavQSBtBHFHwHtidefx7z4JKD
+	 cg+12EsS4C5QvxBER3tA6RjJ9ekLErwnRaJBHHg0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C6250F804E0;
-	Fri, 29 Oct 2021 22:55:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6254FF804E7;
+	Fri, 29 Oct 2021 22:55:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B06BDF8025A; Fri, 29 Oct 2021 22:55:04 +0200 (CEST)
+ id AF007F8032B; Fri, 29 Oct 2021 22:55:06 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9BB61F801EC
- for <alsa-devel@alsa-project.org>; Fri, 29 Oct 2021 22:55:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9BB61F801EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id D9222F80271
+ for <alsa-devel@alsa-project.org>; Fri, 29 Oct 2021 22:55:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9222F80271
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="rB9CwIZu"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E67BD6108F;
- Fri, 29 Oct 2021 20:54:55 +0000 (UTC)
+ header.b="mvPzReQD"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 51EAD60F57;
+ Fri, 29 Oct 2021 20:54:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1635540896;
- bh=LpGNZwT4aagpghW7i3+R2HDAVuJ+NS7X/D1QITONxME=;
+ s=k20201202; t=1635540901;
+ bh=IPg6nSSMi2IfwMSUIGvn+Ln1n/eLa9+lEO9Jbi5n7kw=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=rB9CwIZu/hh7B7SMq8+QCo1sf3hqr2uMUTxKWUXjeIXTeKFWRlWMThSmVpfnHsT0b
- p7ay+G6CmdVFywCAuBr/pxzKxEUEIlwkrAP3ntfxUinhbjCMTG3S35ivjryXqEe3mD
- y0aH1YL23XwPqnfCbDEA/L9JP4Vqmd4mScDut9TiDtIuNSmBhXyEnq+Ly/TTY9ivhW
- ZdFC8apao6eirPQztTWW679Juz8COmSLLruzPpQDuQuPIgxOw2aNmOr+hNEKzRIYEQ
- alEcrr434iln6zYgxfjvJEtIxuxz2ZaFBuySiMafWKBSEpo8WWqJoTbRhIcMR941qu
- +RqhQPSmx1S6Q==
+ b=mvPzReQDpfMEeyj5/9ZeCP5gI6VL39O85cIOCc+w6QM9WR2u3mE7tBfy7un0Vw3jE
+ 5U7M/Xs0p5cbeJwCeCCdXSmbCQEe/8WZlsGGZ3wr4xszNXlTuNBctKAXhXtpRJgJ4j
+ 52ssX5G/4r+tsLjw6Xhq7zqftx6F25shuge21I3nDd2gAKAec9kPgSEKo4Vx8/uzrc
+ B02WxkRgDDMBQOPwNnSbUkHDfbWBLPn3gpfnnuQm1/Am1MB2lV1rk30/NJx5kgrNg1
+ s00soI7ra9s7DtQcpibl+qPO9QF+SKXGQLpdbw6Cfj8vcZnKkWrrcWK7qYMFLqkQLu
+ wBYHtiWewUc7Q==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, Cezary Rojewski <cezary.rojewski@intel.com>
-In-Reply-To: <20211015161257.27052-1-cezary.rojewski@intel.com>
-References: <20211015161257.27052-1-cezary.rojewski@intel.com>
-Subject: Re: [PATCH 0/6] ASoC: Sanity checks and soc-topology updates
-Message-Id: <163554089570.1997146.12535245005312499427.b4-ty@kernel.org>
-Date: Fri, 29 Oct 2021 21:54:55 +0100
+To: alsa-devel@alsa-project.org, Brent Lu <brent.lu@intel.com>
+In-Reply-To: <20211020155715.2045947-1-brent.lu@intel.com>
+References: <20211020155715.2045947-1-brent.lu@intel.com>
+Subject: Re: [PATCH v4 0/6] Multiple headphone codec driver support
+Message-Id: <163554089709.1997146.9920801603298776810.b4-ty@kernel.org>
+Date: Fri, 29 Oct 2021 21:54:57 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: hdegoede@redhat.com, pierre-louis.bossart@linux.intel.com, tiwai@suse.com
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Rander Wang <rander.wang@intel.com>, Jie Yang <yang.jie@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Mac Chiang <mac.chiang@intel.com>, Gongjun Song <gongjun.song@intel.com>,
+ Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>,
+ Takashi Iwai <tiwai@suse.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Andy Shevchenko <andy.shevchenko@gmail.com>, Bard Liao <bard.liao@intel.com>,
+ Rander Wang <rander.wang@linux.intel.com>, Yong Zhi <yong.zhi@intel.com>,
+ Hans de Goede <hdegoede@redhat.com>, Paul Olaru <paul.olaru@oss.nxp.com>,
+ Libin Yang <libin.yang@intel.com>, Huajun Li <huajun.li@intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, linux-kernel@vger.kernel.org,
+ Curtis Malainey <cujomalainey@chromium.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,13 +93,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 15 Oct 2021 18:12:51 +0200, Cezary Rojewski wrote:
-> Couple of soc-topology related changes and a use-after-free fix. Said fix
-> and two sanity checks for soc-topology lead the way. While the
-> use-after-free is quite obvious, the sanity checks are here to cover for
-> cases where user malformed the topology file -or- access to filesystem
-> somehow got interrupted during copy operation. We shouldn't be reading
-> outside the file boundary.
+On Wed, 20 Oct 2021 23:57:09 +0800, Brent Lu wrote:
+> Support multiple headphone drivers in same machine driver. In this
+> case, both rt5682 and rt5682s are supported and enumerated by different
+> ACPI HID "10EC5682" and "RTL5682".
+> 
+> V2 Changes:
+> - remove useless 'NULL', 'false' in if-condition
+> - can use 'comp_ids' field alone to enumerate driver
+> - add comma to the end of entry in structure initialization
+> - keep the table of byt/cht/cml/icl untouched
 > 
 > [...]
 
@@ -95,18 +112,18 @@ Applied to
 
 Thanks!
 
-[1/6] ASoC: core: Remove invalid snd_soc_component_set_jack call
-      commit: 7db53c21b1c3c25676d1125049bc92c756421cd6
-[2/6] ASoC: topology: Add header payload_size verification
-      commit: 86e2d14b6d1a68941b6c0ef39502ec1433b680cb
-[3/6] ASoC: topology: Check for dapm widget completeness
-      commit: 2e288333e9e0a14f9895321a848992b25a0e5563
-[4/6] ASoC: topology: Use correct device for prints
-      commit: 2a710bb35a5abfbca48ed7c229205ace472692d3
-[5/6] ASoC: topology: Change topology device to card device
-      commit: f714fbc1e89a3533b2578e0c90ce4f5c05a57f96
-[6/6] ASoC: Stop dummy from overriding hwparams
-      commit: 6c504663ba2ee2abeaf5622e27082819326c1bd4
+[1/6] ASoC: soc-acpi: add comp_ids field for machine driver matching
+      commit: cafa39b650ec3ba8e9efa0825f1c08e029b5a1ed
+[2/6] ASoC: Intel: sof_rt5682: detect codec variant in probe function
+      commit: 8fe6ec03183ac04fa6529fdf0d4da1328946a9d0
+[3/6] ASoC: Intel: sof_rt5682: use comp_ids to enumerate rt5682s
+      commit: d4f3fdc2b7e16e8203c5d55bb91d6572647d4b0f
+[4/6] ASoC: Intel: soc-acpi-byt: shrink tables using compatible IDs
+      commit: dac7cbd55dca4fd9e646e37401079ebfae3935e0
+[5/6] ASoC: Intel: soc-acpi-cht: shrink tables using compatible IDs
+      commit: 959ae8215a9e8955f45b41e274a1294d7c9aba1b
+[6/6] ASoC: Intel: soc-acpi: use const for all uses of snd_soc_acpi_codecs
+      commit: 9a5d96add514079660b3f1270a55f8c2dbdbc1b6
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
