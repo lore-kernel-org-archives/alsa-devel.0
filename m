@@ -2,93 +2,79 @@ Return-Path: <SRS0=puNT=PR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A1E2CC433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Oct 2021 11:56:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B851FC433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Oct 2021 15:00:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5C10D610EA
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Oct 2021 11:56:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5C10D610EA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	by mail.kernel.org (Postfix) with ESMTPS id 93B8F610C7
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Oct 2021 15:00:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 93B8F610C7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F3FB516CB;
-	Fri, 29 Oct 2021 13:55:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F3FB516CB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3D2F816E0;
+	Fri, 29 Oct 2021 16:59:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D2F816E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635508558;
-	bh=tNYWsba+D0W/csXywpKQFDLzllRPQcdyIe3tH7mDTCg=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1635519602;
+	bh=mJ033J2sJBsTod2JwVjQBrjrWKl9Rdn8C5KXPYMgGCE=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AXBAQUOh8FDKCFsRwWcW0Bd9dN9iOZBTzqFOrq1efY6YJr3kowJH4MQvXJTH1Uya6
-	 hkUVklYlFDJ2fTOFCauNs6iTdh5GX/W1sfeWXX2lrRkGI3W4BuGvM91fsuJ+yYbeB8
-	 osjkLbHeUCy89nTB698266AOwDtUA175mBuG/APw=
+	b=m0BdyZDgOmnF5DRjtqgHsbs5X/VTIkwYpj/v7FDPF4bWCKDnm72rf4h+oKauvUtdv
+	 1ixlQ5d0G76NvfXfAetj9BTqh7x0x2iuSridlMIjG1n6h5c72cDjK6pRx7oSoYesmh
+	 EXgqKaw2+e0JN1EpikKk9RChxoB/KERYhm6HuzNI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5A634F801EC;
-	Fri, 29 Oct 2021 13:55:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A9B2DF8025E;
+	Fri, 29 Oct 2021 16:59:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C05A8F8025A; Fri, 29 Oct 2021 13:55:05 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 6A52DF8027B; Fri, 29 Oct 2021 16:59:09 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F1351F800D1
- for <alsa-devel@alsa-project.org>; Fri, 29 Oct 2021 13:54:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1351F800D1
+ by alsa1.perex.cz (Postfix) with ESMTPS id B33C0F800D1
+ for <alsa-devel@alsa-project.org>; Fri, 29 Oct 2021 16:59:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B33C0F800D1
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="p8RLolHR"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19T9dXwP027028; 
- Fri, 29 Oct 2021 06:54:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=kEDTtI4Kmg97IJO2WoQYdCw1XIYOjOxgPMAGQLirbPc=;
- b=p8RLolHRjCEpyfhksh07E2LR3dbEr4IZn13OqlX5t247kcqz/I3m2b47Y6cM6MKNlBQf
- V0H57S1tYPiYUeUiZ0DzHxyt9uxlatqUUxJdZip3FqNyskcZ8VuHEb4OONK539Pj6iL/
- 8ph8K8K2+VboJMW0cLD8Ul1RzGaEnxlpmv89shlXizowGwL/sMRuxzaOJQoYErw8b0ZR
- dQVfJf1m7SmRWEqgpEf/Y0MfNfxLZ49R/uS34HbgGImQxtOKhjyhzkwYUJVJWKm/fIhn
- l3zKICucUxtPI/XZ+gGVriqke5Pyne0jwN6KM+HhwZrKlAN+gESh+C7YShHyrkj/+JrJ Pw== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 3c0egyr48q-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Fri, 29 Oct 2021 06:54:53 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.7; Fri, 29 Oct
- 2021 12:54:51 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.7 via Frontend
- Transport; Fri, 29 Oct 2021 12:54:51 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 805B711CB;
- Fri, 29 Oct 2021 11:54:50 +0000 (UTC)
-Date: Fri, 29 Oct 2021 11:54:50 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: David Heidelberg <david@ixit.cz>
-Subject: Re: [PATCH v2] dt-bindings: sound: wlf,wm8903: Convert txt bindings
- to yaml
-Message-ID: <20211029115450.GH28292@ediswmail.ad.cirrus.com>
-References: <20211028124639.38420-1-david@ixit.cz>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="MGB4hdZq"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC7A661166;
+ Fri, 29 Oct 2021 14:58:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1635519540;
+ bh=mJ033J2sJBsTod2JwVjQBrjrWKl9Rdn8C5KXPYMgGCE=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=MGB4hdZqpFevXYbJhsmebtLYANQ6zfaGiFi5czl20fTo9auFxTl49hpAGxmiLdSro
+ Lc/TDdy7BTBQbbDdeuSYpWKaZlePbSGaLUfkIMg+6aNDa0+bYzFaFwx/r2ARLGd7kV
+ uUy30QwZjp2iHBtUxzN3/qK425QSFki/QEn/lyU1+sD7dBawzPWQmChd9V8Z8hVJ3N
+ SesVE+VZwv9awx6oGcLUNa5dzD5+80xh/43x1Idk3HbYg9wjMZ+gtZqv5E3wp5lRpI
+ fhSDtxaSrbHI7FLQbKU7f0DuvX1aFDTJRC5a+995ry8H5oTgZ9Gg6UpSacHhj2LHK9
+ Z2xXKYto1dzRA==
+From: Mark Brown <broonie@kernel.org>
+To: Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org
+In-Reply-To: <20211028140909.496022-1-brent.lu@intel.com>
+References: <20211028140909.496022-1-brent.lu@intel.com>
+Subject: Re: [PATCH v2] ASoc: Intel: glk_rt5682_max98357a: support ALC5682I-VS
+ codec
+Message-Id: <163551953757.3555751.3149323718698508108.b4-ty@kernel.org>
+Date: Fri, 29 Oct 2021 15:58:57 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20211028124639.38420-1-david@ixit.cz>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: AFVpuzUCs6QToA3GPdZe_C-FWua-QtNg
-X-Proofpoint-ORIG-GUID: AFVpuzUCs6QToA3GPdZe_C-FWua-QtNg
-X-Proofpoint-Spam-Reason: safe
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- - <patches@opensource.cirrus.com>, Mark Brown <broonie@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>, ~okias/devicetree@lists.sr.ht
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ Rander Wang <rander.wang@intel.com>, linux-kernel@vger.kernel.org,
+ Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
+ Nathan Chancellor <nathan@kernel.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>, Paul Olaru <paul.olaru@oss.nxp.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Julian Braha <julianbraha@gmail.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -104,14 +90,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Oct 28, 2021 at 02:46:38PM +0200, David Heidelberg wrote:
-> Convert the Wolfson WM8903 Ultra-Low Power Stereo CODEC Device Tree
-> binding documentation to json-schema.
+On Thu, 28 Oct 2021 22:09:09 +0800, Brent Lu wrote:
+> Detect the codec variant in probe function and update DAI link
+> accordingly. Also add an new entry in enumeration table for machine
+> driver enumeration.
 > 
-> Signed-off-by: David Heidelberg <david@ixit.cz>
-> ---
+> 
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/1] ASoc: Intel: glk_rt5682_max98357a: support ALC5682I-VS codec
+      commit: 88b4d77d6035dcf1182c4bf05c743e30363f3078
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
 Thanks,
-Charles
+Mark
