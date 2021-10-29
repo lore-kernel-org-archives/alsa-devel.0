@@ -2,84 +2,88 @@ Return-Path: <SRS0=puNT=PR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04CE9C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Oct 2021 21:17:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 07112C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Oct 2021 21:42:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1F83860E8C
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Oct 2021 21:17:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1F83860E8C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id AEF5D60EB4
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Oct 2021 21:42:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AEF5D60EB4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7C62F1717;
-	Fri, 29 Oct 2021 23:16:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7C62F1717
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4DD511709;
+	Fri, 29 Oct 2021 23:41:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4DD511709
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635542218;
-	bh=0ol6oDqGVKwqjjJ29Gn2Vp8FIbNfdo5YShmIfe6iflk=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=l6TW4q3SjcmDabj4pj9EAf6GmV9nW8P3FQK1mOMrFQ3dqFOKtpkREmBW7e+mJFXJo
-	 jKxs5itlWBr8Ngo8h7We3FhDsBPQUVSLfn813RF8eWiOMcBoxNeOLn2y9votUJG6B0
-	 jiErhnPgsGcbNKeaSlKmH96IE1isTPA+Rf/pPWAA=
+	s=default; t=1635543730;
+	bh=5ferWMMUq8HaP27DzsP5+GEEugU4p65E+2ilWbjnKVU=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=XpDQ+g228fCHi2gjbw2bAQaKaLeyxgquj2SCCVemEqbCZ2zanRBesBuCb1YqVEi/S
+	 YiUenBcrlVDFl3qHAkNAEwbH1iwSYNOltrUe3K+8+4PlA/8r5xDqlooQZjAIvSD0z2
+	 Q8e+x0sj9e/YyeTTvMa+uux3x8CfAIhNowJfJRtg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 64B6CF80271;
-	Fri, 29 Oct 2021 23:15:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A15FEF800D1;
+	Fri, 29 Oct 2021 23:41:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 420A8F8025A; Fri, 29 Oct 2021 23:15:23 +0200 (CEST)
-Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com
- [209.85.167.181])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id EA8A4F8025A; Fri, 29 Oct 2021 23:40:58 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2E801F801EC
- for <alsa-devel@alsa-project.org>; Fri, 29 Oct 2021 23:15:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E801F801EC
-Received: by mail-oi1-f181.google.com with SMTP id y207so15149135oia.11
- for <alsa-devel@alsa-project.org>; Fri, 29 Oct 2021 14:15:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
- :message-id;
- bh=Lrv4HMu3pJ4ELKYQ4yExPi3yFrqg0rLji7k8MjNUXdo=;
- b=Z8fuGwR4B8R6Iqy9BzYtYsDViS9aesPPpBr4Y38j3sauSf5URSkBINqt2W+ZYNjZee
- nGo+nXlk2qZb55kO7xEfkqf34ltSE10xZkSrc1o5fLaFCmJRJxjhyLB3tQBYYUWN4vU9
- m1YQOnMpXMsR6UamCAgaUSITVb5pBkZjZWNX/00AZnInzk3Zqq2FtoXsUDFfNEeTH6VI
- Kc+j5dVadRthx2wgSj+/ghjDL9JsegFPUay3aNixdcRt5ZUooOyUgs87NXVaiar1KRDK
- oWLE+N+DQlSH4+PRWJFDuwrQ8mtIcAqk6+qDWk9zMHVx26fQAMwStgeqW2ZrHYIBg+jE
- D9Gg==
-X-Gm-Message-State: AOAM5319ST65JTDaTN1FSvMfBAmETl/H4Ee/U+mcnmxeXuwPwkESZC3e
- uIGL0S1EbmGzIH8mJD3Fxg==
-X-Google-Smtp-Source: ABdhPJwjB0Kh6gEJISuzMDCDeL6VRh6W0N6NspeRpaWZ/L4c9zigIOszctikcivP1FbgRMi2+kWcQA==
-X-Received: by 2002:a05:6808:2127:: with SMTP id
- r39mr4600232oiw.116.1635542111994; 
- Fri, 29 Oct 2021 14:15:11 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net.
- [66.90.148.213])
- by smtp.gmail.com with ESMTPSA id q15sm2163138otk.81.2021.10.29.14.15.10
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 29 Oct 2021 14:15:11 -0700 (PDT)
-Received: (nullmailer pid 3221282 invoked by uid 1000);
- Fri, 29 Oct 2021 21:15:10 -0000
-From: Rob Herring <robh@kernel.org>
-To: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-In-Reply-To: <1635519876-7112-2-git-send-email-srivasam@codeaurora.org>
-References: <1635519876-7112-1-git-send-email-srivasam@codeaurora.org>
- <1635519876-7112-2-git-send-email-srivasam@codeaurora.org>
-Subject: Re: [PATCH v4 1/2] ASoC: google: dt-bindings: Add sc7280-herobrine
- machine bindings
-Date: Fri, 29 Oct 2021 16:15:10 -0500
-Message-Id: <1635542110.100441.3221281.nullmailer@robh.at.kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- bgoswami@codeaurora.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
- broonie@kernel.org, tiwai@suse.com, robh+dt@kernel.org,
- bjorn.andersson@linaro.org, agross@kernel.org, rohitkr@codeaurora.org,
- linux-arm-msm@vger.kernel.org, swboyd@chromium.org, judyhsiao@chromium.org,
- plai@codeaurora.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3907EF800D1
+ for <alsa-devel@alsa-project.org>; Fri, 29 Oct 2021 23:40:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3907EF800D1
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="AYKEvG7V"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19TKsG6w012703; 
+ Fri, 29 Oct 2021 16:40:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=T8jQ6ew7YFPmqWTC+Uo0Kmb3mepU33F2U9YO9ol1mPI=;
+ b=AYKEvG7V307OvxXAPAI8msMtTpquZc81crGBbyccVMxgFfbqjXOdhevrL03MVu+xgSCq
+ bCZMm2bP4YImUjQbyLeWUkE2IG2vBV4+HJNc1vnnhyjxF6xiLiUMTvM2mQcgQEkiKngP
+ 2eIDrqd+nDhrhNJ7QetMjarfXjfTW7onNw1SJAqOYC4VD7A3Hsslvw9pA9GLnw6mUB97
+ Wo4nFKlTOPkXkujKxWFlHVu+q3VUCzRLFmBFOodh4P88ubvZwO1RLrP54dx/SAw6tekA
+ CT5dQ2L4tvbZhErhn0vnEUm+ai6zZbMP1mR2JVUdKhhWQAxPXb5Rs7JdjtGVZg/LpaxI QQ== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+ by mx0b-001ae601.pphosted.com with ESMTP id 3c0cm70unc-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Fri, 29 Oct 2021 16:40:47 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.12; Fri, 29 Oct
+ 2021 22:40:46 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.12 via
+ Frontend Transport; Fri, 29 Oct 2021 22:40:46 +0100
+Received: from david-ubuntu20.crystal.cirrus.com
+ (macC02XQ1DJJG5K.ad.cirrus.com [141.131.64.157])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 52EA9B38;
+ Fri, 29 Oct 2021 21:40:44 +0000 (UTC)
+From: David Rhodes <drhodes@opensource.cirrus.com>
+To: <broonie@kernel.org>, <ckeepax@opensource.cirrus.com>,
+ <patches@opensource.cirrus.com>, <alsa-devel@alsa-project.org>,
+ <david.rhodes@cirrus.com>, <brian.austin@cirrus.com>
+Subject: [PATCH 1/2] ASoC: cs35l41: Change monitor widgets to siggens
+Date: Fri, 29 Oct 2021 16:40:27 -0500
+Message-ID: <20211029214028.401284-1-drhodes@opensource.cirrus.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: s6VqP52vxdoNbUVLKTSsdB6YSEAZBk1n
+X-Proofpoint-ORIG-GUID: s6VqP52vxdoNbUVLKTSsdB6YSEAZBk1n
+X-Proofpoint-Spam-Reason: safe
+Cc: David Rhodes <drhodes@opensource.cirrus.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,41 +99,62 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 29 Oct 2021 20:34:35 +0530, Srinivasa Rao Mandadapu wrote:
-> Add devicetree bindings documentation file for sc7280 sound card
-> registration.
-> 
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-> ---
->  .../bindings/sound/google,sc7280-herobrine.yaml    | 170 +++++++++++++++++++++
->  1 file changed, 170 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
-> 
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Currently the internal monitor sources are input widgets, which means
+if the card is set to fully routed these will not enable unless connected
+to something in the machine driver. However, all these are internal
+monitor signals so it makes no sense to connect them to something in the
+machine driver. As such switch them to siggen widgets which will have
+the same behaviour except not require external linkage on a fully routed
+card.
 
-yamllint warnings/errors:
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Signed-off-by: David Rhodes <drhodes@opensource.cirrus.com>
+---
+ sound/soc/codecs/cs35l41.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-dtschema/dtc warnings/errors:
-Error: Documentation/devicetree/bindings/sound/google,sc7280-herobrine.example.dts:46.24-25 syntax error
-FATAL ERROR: Unable to parse input tree
-make[1]: *** [scripts/Makefile.lib:385: Documentation/devicetree/bindings/sound/google,sc7280-herobrine.example.dt.yaml] Error 1
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1441: dt_binding_check] Error 2
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/patch/1548069
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
+diff --git a/sound/soc/codecs/cs35l41.c b/sound/soc/codecs/cs35l41.c
+index 94ed21d7676f..9d0530dde996 100644
+--- a/sound/soc/codecs/cs35l41.c
++++ b/sound/soc/codecs/cs35l41.c
+@@ -612,6 +612,12 @@ static const struct snd_soc_dapm_widget cs35l41_dapm_widgets[] = {
+ 	SND_SOC_DAPM_AIF_OUT("ASPTX3", NULL, 0, CS35L41_SP_ENABLES, 2, 0),
+ 	SND_SOC_DAPM_AIF_OUT("ASPTX4", NULL, 0, CS35L41_SP_ENABLES, 3, 0),
+ 
++	SND_SOC_DAPM_SIGGEN("VSENSE"),
++	SND_SOC_DAPM_SIGGEN("ISENSE"),
++	SND_SOC_DAPM_SIGGEN("VP"),
++	SND_SOC_DAPM_SIGGEN("VBST"),
++	SND_SOC_DAPM_SIGGEN("TEMP"),
++
+ 	SND_SOC_DAPM_ADC("VMON ADC", NULL, CS35L41_PWR_CTRL2, 12, 0),
+ 	SND_SOC_DAPM_ADC("IMON ADC", NULL, CS35L41_PWR_CTRL2, 13, 0),
+ 	SND_SOC_DAPM_ADC("VPMON ADC", NULL, CS35L41_PWR_CTRL2, 8, 0),
+@@ -623,12 +629,6 @@ static const struct snd_soc_dapm_widget cs35l41_dapm_widgets[] = {
+ 			       cs35l41_main_amp_event,
+ 			       SND_SOC_DAPM_POST_PMD |	SND_SOC_DAPM_POST_PMU),
+ 
+-	SND_SOC_DAPM_INPUT("VP"),
+-	SND_SOC_DAPM_INPUT("VBST"),
+-	SND_SOC_DAPM_INPUT("ISENSE"),
+-	SND_SOC_DAPM_INPUT("VSENSE"),
+-	SND_SOC_DAPM_INPUT("TEMP"),
+-
+ 	SND_SOC_DAPM_MUX("ASP TX1 Source", SND_SOC_NOPM, 0, 0, &asp_tx1_mux),
+ 	SND_SOC_DAPM_MUX("ASP TX2 Source", SND_SOC_NOPM, 0, 0, &asp_tx2_mux),
+ 	SND_SOC_DAPM_MUX("ASP TX3 Source", SND_SOC_NOPM, 0, 0, &asp_tx3_mux),
+@@ -674,8 +674,8 @@ static const struct snd_soc_dapm_route cs35l41_audio_map[] = {
+ 	{"VMON ADC", NULL, "VSENSE"},
+ 	{"IMON ADC", NULL, "ISENSE"},
+ 	{"VPMON ADC", NULL, "VP"},
+-	{"TEMPMON ADC", NULL, "TEMP"},
+ 	{"VBSTMON ADC", NULL, "VBST"},
++	{"TEMPMON ADC", NULL, "TEMP"},
+ 
+ 	{"ASPRX1", NULL, "AMP Playback"},
+ 	{"ASPRX2", NULL, "AMP Playback"},
+-- 
+2.25.1
 
