@@ -2,78 +2,77 @@ Return-Path: <SRS0=puNT=PR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 197A2C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Oct 2021 07:50:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C1260C433FE
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Oct 2021 08:03:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A2199604DC
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Oct 2021 07:50:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A2199604DC
+	by mail.kernel.org (Postfix) with ESMTPS id E3D196115B
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Oct 2021 08:03:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E3D196115B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3813916B2;
-	Fri, 29 Oct 2021 09:49:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3813916B2
+	by alsa0.perex.cz (Postfix) with ESMTPS id C683E16D3;
+	Fri, 29 Oct 2021 10:02:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C683E16D3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635493836;
-	bh=b0VLOnr720903/SKr8LZRYdD2OF3IfUjXxSV8/+BZhU=;
+	s=default; t=1635494596;
+	bh=x0HOfmxG8PHKdsdOUqZudrGWmswY4FpqkdgMbv2xj94=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=D7I6HX5Jkk3twuAd6cPm3IPmL0yiAFi39fzbkekYFQkZeGKc1csPgeVlc6pZr5c/S
-	 JxDKKxNaEvWYYFKeoXzt8wwe2U0Q66yJhZ4+8zESTpdZPpn8xPApPgjJ5WsNJRq35K
-	 9RzGqeW/QLAMDcrCI8s1Eyt3DMulZofgofxhDgDQ=
+	b=dyI2Ul/CyJVDqTnZU/G5TmBRfouNauBijYD38hHJrr6bdqSf2YLJP7lCeafUCNHhC
+	 c+B41MyMsq6+XPuPr8i74ph8fWGoalrIwXLqav0w27QTGTNM+eL6c5rAege3AtqUjt
+	 OJBSlMEMUPrq215u2QEDf6T3250+5eUPP4hF8Jzg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9F4A3F801EC;
-	Fri, 29 Oct 2021 09:49:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5521FF801EC;
+	Fri, 29 Oct 2021 10:02:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C29B6F8025A; Fri, 29 Oct 2021 09:49:43 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id 43D88F8025A; Fri, 29 Oct 2021 10:02:19 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A7C10F800D1
- for <alsa-devel@alsa-project.org>; Fri, 29 Oct 2021 09:49:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7C10F800D1
+ by alsa1.perex.cz (Postfix) with ESMTPS id E6085F8010A
+ for <alsa-devel@alsa-project.org>; Fri, 29 Oct 2021 10:02:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6085F8010A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="tzOGOWVr"; 
+ header.b="nL5Yp2J7"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="6dpJUTpW"
+ header.b="0VeTtUFX"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 4FAA71FD60;
- Fri, 29 Oct 2021 07:49:35 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 28D6B212C9;
+ Fri, 29 Oct 2021 08:02:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1635493775; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1635494528; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=P7QczZe6UukLkWNHszkC1jlgIi1qD3c5Cc8F+RIUzs0=;
- b=tzOGOWVrBgi+3UgmmT1StKciepHWqImwta2JtyYxeEpodcOAutOzj0q0uhO2zdhyKd4F9c
- dHKvcZElGHztLsfcTsiPNWkMfIfYOx9i0tITd4UOh/iQhtIF9MH8dj6aiddgHjwZLs/3bW
- v/t+we2mLEf8Atzqwk+H54WFOmpU7UY=
+ bh=oxOSxyFzWFUd4cDplAIwxmUNZu6Yzy+3l+r/0a2STBc=;
+ b=nL5Yp2J7YOYGIgRBnM+6dxZUlwvAPVnL2Pbw/22KeZdfRgKZGXtYgyA1pyQg3hQHeWRJkC
+ OiuYcqsg5khA/yMrMuLW9Oznuee/RSDEqaFoe5cHsBADjjyt+x2KCeXwlyi+DiBB9gKTa7
+ edCXQBRU6q9BItBl1qz4f2LWr85qXf8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1635493775;
+ s=susede2_ed25519; t=1635494528;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=P7QczZe6UukLkWNHszkC1jlgIi1qD3c5Cc8F+RIUzs0=;
- b=6dpJUTpWcC2GRGbVmoD1pVzWj32T7fuPFLS2cErumscQSd3eHLA/nwJvI9z7xambqGsdHq
- 1ityP+v6J4OOc5DQ==
+ bh=oxOSxyFzWFUd4cDplAIwxmUNZu6Yzy+3l+r/0a2STBc=;
+ b=0VeTtUFXOsqcyKqcC10WTRm6phtCclluDSe2xsu6XGIkUopOsRTLKiAF3sZJuqFCmV8C7q
+ 72Op3lOwt4K3yMCg==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 3D210A3B81;
- Fri, 29 Oct 2021 07:49:35 +0000 (UTC)
-Date: Fri, 29 Oct 2021 09:49:35 +0200
-Message-ID: <s5hh7d0tgmo.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id 14BCFA3B83;
+ Fri, 29 Oct 2021 08:02:08 +0000 (UTC)
+Date: Fri, 29 Oct 2021 10:02:08 +0200
+Message-ID: <s5hee84tg1r.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH] ALSA: oxfw: fix functional regression for Mackie Onyx
- 1640i in v5.14 or later
-In-Reply-To: <YXtAnvKI13hQb/ex@workstation>
-References: <20211028130325.45772-1-o-takashi@sakamocchi.jp>
- <s5hlf2dtaqi.wl-tiwai@suse.de> <YXtAnvKI13hQb/ex@workstation>
+Subject: Re: [PATCH] ALSA: firewire-motu: remove TODO for interaction with
+ userspace about control message
+In-Reply-To: <20211029012847.11839-1-o-takashi@sakamocchi.jp>
+References: <20211029012847.11839-1-o-takashi@sakamocchi.jp>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -95,49 +94,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 29 Oct 2021 02:30:22 +0200,
+On Fri, 29 Oct 2021 03:28:47 +0200,
 Takashi Sakamoto wrote:
 > 
-> On Thu, Oct 28, 2021 at 05:44:37PM +0200, Takashi Iwai wrote:
-> > On Thu, 28 Oct 2021 15:03:25 +0200,
-> > Takashi Sakamoto wrote:
-> > > 
-> > > A user reports functional regression for Mackie Onyx 1640i that the device
-> > > generates slow sound with ALSA oxfw driver which supports media clock
-> > > recovery. Although the device is based on OXFW971 ASIC, it does not
-> > > transfer isochronous packet with own event frequency as expected. The
-> > > device seems to adjust event frequency according to events in received
-> > > isochronous packets in the beginning of packet streaming. This is
-> > > unknown quirk.
-> > > 
-> > > This commit fixes the regression to turn the recovery off in driver
-> > > side. As a result, nominal frequency is used in duplex packet streaming
-> > > between device and driver. For stability of sampling rate in events of
-> > > transferred isochronous packet, 4,000 isochronous packets are skipped
-> > > in the beginning of packet streaming.
-> > > 
-> > > Reference: https://github.com/takaswie/snd-firewire-improve/issues/38
-> > > Fixes: 029ffc429440 ("ALSA: oxfw: perform sequence replay for media clock recovery")
-> > > Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-> > 
-> > Thanks, applied.
-> > 
-> > 
-> > Takashi
+> Now UAPI of ALSA firewire stack got enough functions to interact with
+> userspace for protocol of MOTU FireWire series. Let's remove the relevant
+> TODO.
 > 
-> Oops. I forget to add tag to stable. It's preferable to apply the
-> patch to current stable (5.14.15) and mainline RC (5.15-rc7) as well...
-> 
-> Would I request you to post the patch for the purpose alternatively?
-> (It is perhaps too late for mainline, I guess...)
+> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-You can inform Greg and Sasha once after the commit gets merged to
-Linus tree by yourself.  Just tell them the upstream commit id and
-corresponding stable trees to merge.  Usually the stable AUTOSEL
-mechanism will pick up such a commit automatically, but doing the
-manual selection is more certain and faster.
+Thanks, applied.
 
-
-thanks,
 
 Takashi
