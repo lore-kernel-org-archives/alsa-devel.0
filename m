@@ -2,71 +2,72 @@ Return-Path: <SRS0=dquB=PT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 36A31C433F5
-	for <alsa-devel@archiver.kernel.org>; Sun, 31 Oct 2021 21:12:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4201DC433EF
+	for <alsa-devel@archiver.kernel.org>; Sun, 31 Oct 2021 21:42:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7C6AF608FE
-	for <alsa-devel@archiver.kernel.org>; Sun, 31 Oct 2021 21:12:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7C6AF608FE
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mailoo.org
+	by mail.kernel.org (Postfix) with ESMTPS id 1667460FD9
+	for <alsa-devel@archiver.kernel.org>; Sun, 31 Oct 2021 21:42:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1667460FD9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=ixit.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E4FC9169D;
-	Sun, 31 Oct 2021 22:11:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4FC9169D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 295AA166A;
+	Sun, 31 Oct 2021 22:41:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 295AA166A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635714747;
-	bh=LNkreUhiu43JsXeeJiApozKI0sEfD92k9YXF89qjvq8=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=fgWuZViIME/5hRye6A6SAay1gbN5LgUM7KhYCMKwuIyZUvy9NGYpQBT4IImGizSVK
-	 XJ7m94Z/TJGeMw4ahS9fpgCVhK3ExE69siuyv2Gx7ubkKhxuEWZAe5h+44hpgoXFmj
-	 ZiJantQpMPi6aLo651xp9kcfE52fS0gDIEwrLX7c=
+	s=default; t=1635716536;
+	bh=htUNV3nN9rfSJKHFTABppvdwrhyH2fPZn2kZFTYSLPM=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=DIhBZeOplkGkMO5GZi2sCFxvkB0+TX5VhdXLDq3oq1GlCTcBBXrSKbYBGm4PqH73d
+	 /do5v8ZU6vg6qNgNSw6MGnoWyZXs8jLsTNu07uVXlNw4an4Uhey3iFMQmyeQzUxnrO
+	 MG+FAuWalSOMUodJ/1cVLPbWtwCJ4qM0m4HqGVM0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 126B8F804E3;
-	Sun, 31 Oct 2021 22:11:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 994ADF80224;
+	Sun, 31 Oct 2021 22:41:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B8A8BF804E5; Sun, 31 Oct 2021 22:11:11 +0100 (CET)
-Received: from msg-6.mailo.com (ip-16.mailobj.net [213.182.54.16])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id DEBA5F80229; Sun, 31 Oct 2021 22:41:14 +0100 (CET)
+Received: from ixit.cz (ixit.cz [94.230.151.217])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4FFEAF804B2
- for <alsa-devel@alsa-project.org>; Sun, 31 Oct 2021 22:11:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4FFEAF804B2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9BE2AF800F8
+ for <alsa-devel@alsa-project.org>; Sun, 31 Oct 2021 22:41:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9BE2AF800F8
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=mailoo.org header.i=@mailoo.org
- header.b="J9LcOBca"
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailoo.org; s=mailo;
- t=1635714614; bh=LNkreUhiu43JsXeeJiApozKI0sEfD92k9YXF89qjvq8=;
- h=X-EA-Auth:From:To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:
- References:MIME-Version:Content-Transfer-Encoding;
- b=J9LcOBcaGVZ3x6+YTvtJnp3prkvfKX4WAtnjbgeZiEVyPar+Q92bAILUF4noRKOIE
- TrZBdCVSrAwGD+MWSP1X/E8RVYsdQsoFGCrrNOZ/dbAaXnUXat6HHLc8bXO5sh2XK8
- r5RrUuG1eGZxj/VVv5D9ZdTZIaaskk1F3GYqUARk=
-Received: by b-6.in.mailobj.net [192.168.90.16] with ESMTP
- via proxy.mailoo.org [213.182.55.207]
- Sun, 31 Oct 2021 22:10:14 +0100 (CET)
-X-EA-Auth: td5AK5cFG4jHZ8IYXJbkHQS/M3KoPeaMR30Ppnd5l2BXyJrvpMEKFA6z6aV9haR/yFAZHKmUKs2lPEag3uk80vfpIYkWlYJhr8Ia5eg/DMk=
-From: Vincent Knecht <vincent.knecht@mailoo.org>
-To: stephan@gerhold.net, lgirdwood@gmail.com, broonie@kernel.org,
- robh+dt@kernel.org, perex@perex.cz, tiwai@suse.com
-Subject: [PATCH 1/2] ASoC: dt-bindings: nxp,
- tfa989x: Add rcv-gpios property for tfa9897
-Date: Sun, 31 Oct 2021 22:09:55 +0100
-Message-Id: <20211031210956.812101-2-vincent.knecht@mailoo.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211031210956.812101-1-vincent.knecht@mailoo.org>
-References: <20211031210956.812101-1-vincent.knecht@mailoo.org>
+ dkim=pass (1024-bit key) header.d=ixit.cz header.i=@ixit.cz
+ header.b="V7deDvKA"
+Received: from localhost.localdomain (ip-89-176-96-70.net.upcbroadband.cz
+ [89.176.96.70])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by ixit.cz (Postfix) with ESMTPSA id 48A1823D91;
+ Sat, 30 Oct 2021 14:17:57 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+ t=1635596277;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=FR7paib0uEl/sED3/mdXPaDr+eojob1hVhc0mmDwmaQ=;
+ b=V7deDvKAoAijgrcoJYKl84VyHZiVhsRr/EbyTU+Raf8Ldt5fnxv7Rd6cOSnf/c7fLtjuzB
+ IKp886hB2PJZHV5oHefoS7ikPAEDRcIt9pdhhMSKNw5tLzI3dkS++bwkRnKdPv7afAYzg8
+ /JRelF4Jl4yPQep3mYblWWcf4PxA8B4=
+From: David Heidelberg <david@ixit.cz>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>, - <kernel@puri.sm>
+Subject: [PATCH v2] dt-bindings: sound: gtm601: convert to YAML
+Date: Sat, 30 Oct 2021 14:17:52 +0200
+Message-Id: <20211030121753.50191-1-david@ixit.cz>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Vincent Knecht <vincent.knecht@mailoo.org>, linux-kernel@vger.kernel.org,
- ~postmarketos/upstreaming@lists.sr.ht
+ linux-kernel@vger.kernel.org, David Heidelberg <david@ixit.cz>,
+ phone-devel@vger.kernel.org, ~okias/devicetree@lists.sr.ht
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,76 +83,87 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add optional rcv-gpios property specific to tfa9897 receiver mode.
+Convert GTM601 binding to the YAML format.
 
-Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
+Signed-off-by: David Heidelberg <david@ixit.cz>
 ---
- .../bindings/sound/nxp,tfa989x.yaml           | 41 +++++++++++++++++++
- 1 file changed, 41 insertions(+)
+v2:
+ - add #sound-dai-cells
+ - put kernel@puri.sm into maintainers
 
-diff --git a/Documentation/devicetree/bindings/sound/nxp,tfa989x.yaml b/Documentation/devicetree/bindings/sound/nxp,tfa989x.yaml
-index 7667471be1e4..b9b1dba40856 100644
---- a/Documentation/devicetree/bindings/sound/nxp,tfa989x.yaml
-+++ b/Documentation/devicetree/bindings/sound/nxp,tfa989x.yaml
-@@ -24,11 +24,23 @@ properties:
-   '#sound-dai-cells':
-     const: 0
- 
-+  rcv-gpios:
-+    description: optional GPIO to be asserted when receiver mode is enabled.
+ .../devicetree/bindings/sound/gtm601.txt      | 19 ----------
+ .../devicetree/bindings/sound/gtm601.yaml     | 36 +++++++++++++++++++
+ 2 files changed, 36 insertions(+), 19 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/gtm601.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/gtm601.yaml
+
+diff --git a/Documentation/devicetree/bindings/sound/gtm601.txt b/Documentation/devicetree/bindings/sound/gtm601.txt
+deleted file mode 100644
+index efa32a486c4a..000000000000
+--- a/Documentation/devicetree/bindings/sound/gtm601.txt
++++ /dev/null
+@@ -1,19 +0,0 @@
+-GTM601 UMTS modem audio interface CODEC
+-
+-This device has no configuration interface. The sample rate and channels are
+-based on the compatible string
+-	"option,gtm601" = 8kHz mono
+-	"broadmobi,bm818" = 48KHz stereo
+-
+-Required properties:
+-
+-  - compatible : one of
+-	"option,gtm601"
+-	"broadmobi,bm818"
+-
+-
+-Example:
+-
+-codec: gtm601_codec {
+-	compatible = "option,gtm601";
+-};
+diff --git a/Documentation/devicetree/bindings/sound/gtm601.yaml b/Documentation/devicetree/bindings/sound/gtm601.yaml
+new file mode 100644
+index 000000000000..e81a6aa75522
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/gtm601.yaml
+@@ -0,0 +1,36 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/gtm601.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-   sound-name-prefix: true
- 
-   vddd-supply:
-     description: regulator phandle for the VDDD power supply.
- 
-+if:
-+  not:
-+    properties:
-+      compatible:
-+        const: nxp,tfa9897
-+then:
-+  properties:
-+    rcv-gpios: false
++title: GTM601 UMTS modem audio interface CODEC
 +
- required:
-   - compatible
-   - reg
-@@ -55,3 +67,32 @@ examples:
-         #sound-dai-cells = <0>;
-       };
-     };
++maintainers:
++  - kernel@puri.sm
 +
++description: >
++  This device has no configuration interface. The sample rate and channels are
++  based on the compatible string
++
++properties:
++  compatible:
++    oneOf:
++      - items:
++          - const: broadmobi,bm818
++          - const: option,gtm601
++      - items:
++          - enum:
++              - broadmobi,bm818  # 48 kHz stereo
++              - option,gtm601  # 8 kHz mono
++
++  '#sound-dai-cells':
++    const: 0
++
++additionalProperties: false
++
++examples:
 +  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+    i2c {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      speaker_codec_top: audio-codec@34 {
-+        compatible = "nxp,tfa9897";
-+        reg = <0x34>;
-+        vddd-supply = <&pm8916_l6>;
-+        rcv-gpios = <&msmgpio 50 GPIO_ACTIVE_HIGH>;
-+        pinctrl-names = "default";
-+        pinctrl-0 = <&speaker_top_default>;
-+        sound-name-prefix = "Speaker Top";
-+        #sound-dai-cells = <0>;
-+      };
-+
-+      speaker_codec_bottom: audio-codec@36 {
-+        compatible = "nxp,tfa9897";
-+        reg = <0x36>;
-+        vddd-supply = <&pm8916_l6>;
-+        rcv-gpios = <&msmgpio 111 GPIO_ACTIVE_HIGH>;
-+        pinctrl-names = "default";
-+        pinctrl-0 = <&speaker_bottom_default>;
-+        sound-name-prefix = "Speaker Bottom";
-+        #sound-dai-cells = <0>;
-+      };
++    gtm601_codec {
++        compatible = "option,gtm601";
 +    };
 -- 
-2.31.1
-
-
+2.33.0
 
