@@ -2,66 +2,62 @@ Return-Path: <SRS0=dquB=PT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 200DFC433F5
-	for <alsa-devel@archiver.kernel.org>; Sun, 31 Oct 2021 21:11:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DB39FC433EF
+	for <alsa-devel@archiver.kernel.org>; Sun, 31 Oct 2021 21:12:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 415C461077
-	for <alsa-devel@archiver.kernel.org>; Sun, 31 Oct 2021 21:11:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 415C461077
+	by mail.kernel.org (Postfix) with ESMTPS id 0126060FD9
+	for <alsa-devel@archiver.kernel.org>; Sun, 31 Oct 2021 21:12:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0126060FD9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mailoo.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DDAC5167D;
-	Sun, 31 Oct 2021 22:10:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DDAC5167D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 605D61676;
+	Sun, 31 Oct 2021 22:11:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 605D61676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635714695;
-	bh=5M2J6VLtolkff8vbL1cmeU25yPVsQnA4hle2/XFfcb4=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=mKSe0lcAQ9ohhk6MvpFhbBGCQQf6cS2qguQTiTBw9bn/rddh4yE0bgCrdAGc5YjnS
-	 A8Acz7Pe0uBuuAc6nob4bdLs0VWwZS6PYMW03ZuqM4eUGQicDV4cSEQt0B5lkBHErj
-	 zo7BEFwVucfl0k275OuiP2UoRcYjMYRg5BrRPhwY=
+	s=default; t=1635714739;
+	bh=akLm6mpjT90D/3YVJPqQM1JvsIyznVLKAosT+ZJ2Bno=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=u3QsoNyaOkNhf/y37lEY7kyy3ZAZWbBwuQ7hUhC6zf569bXFIOK4evc8PII+RAtdO
+	 s+N6NfCcRluHqgOUfsqaRCj4umUUKxcYaBP8/yhq8mLqXwWynQ6M80mnD9AcwrD4/5
+	 Txdo5I8AfoXaHgl/5bot6wOL19WKvC51i+hbDfYA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 68843F80224;
-	Sun, 31 Oct 2021 22:10:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 427D5F8027C;
+	Sun, 31 Oct 2021 22:11:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6BB8FF80229; Sun, 31 Oct 2021 22:10:41 +0100 (CET)
-Received: from msg-1.mailo.com (msg-1.mailo.com [213.182.54.11])
+ id 3F0BEF802E8; Sun, 31 Oct 2021 22:11:03 +0100 (CET)
+Received: from msg-6.mailo.com (ip-16.mailobj.net [213.182.54.16])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6D851F800F8
- for <alsa-devel@alsa-project.org>; Sun, 31 Oct 2021 22:10:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D851F800F8
+ by alsa1.perex.cz (Postfix) with ESMTPS id A0C15F8025D
+ for <alsa-devel@alsa-project.org>; Sun, 31 Oct 2021 22:10:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0C15F8025D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=mailoo.org header.i=@mailoo.org
- header.b="ksglUMhl"
+ header.b="UrsGd5fO"
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailoo.org; s=mailo;
- t=1635714614; bh=5M2J6VLtolkff8vbL1cmeU25yPVsQnA4hle2/XFfcb4=;
- h=X-EA-Auth:From:To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:
- References:MIME-Version:Content-Transfer-Encoding;
- b=ksglUMhlfW/6R1rCq5s/sNSSDMVQiW1A6cgKo8vTmzABYpO5PJOU/HLr2iVV8cN6M
- I0+QykUU/9pTks3sUCyxOmpTsUJf6SXOqp2nVY2RbOnFB3szi/pnRECXXBS2SQtU8m
- Vu3BGO+Jq1WBeKhYGMxhPJEtud290n6982Itd7jE=
+ t=1635714614; bh=akLm6mpjT90D/3YVJPqQM1JvsIyznVLKAosT+ZJ2Bno=;
+ h=X-EA-Auth:From:To:Cc:Subject:Date:Message-Id:X-Mailer:
+ MIME-Version:Content-Transfer-Encoding;
+ b=UrsGd5fOdGCQELdy90i+J9MMHqBdO8MB+WbEwvni9iXsWue0iSOtFVF96E0G1CbTP
+ i1ADq6bwiijnlgp1kHdwiszCnFciGXnJsnkxX6g4vpElMyS4EcUf8zlcAnEmlSBS5s
+ qFQ0J52+u/9ukhzG8PLrKNAMHOWSXIdsq3H/DrK0=
 Received: by b-6.in.mailobj.net [192.168.90.16] with ESMTP
  via proxy.mailoo.org [213.182.55.207]
  Sun, 31 Oct 2021 22:10:14 +0100 (CET)
-X-EA-Auth: gZo/ybajlv073f448wFjPx4WQIIaL02CzThx5GBwARSXnxDwCW7LmmdLvTSg00uCynT4RpDnULaV49m5odBlDHk+qSdLmCea/QRcIWb3kUc=
+X-EA-Auth: 1WIvScNvxc5QIVSNyo9KlBZg6hqEvdYfHkhllM9TSu8uqh1lDXo64Vp8jZN18LegR6aq73WPmW96r/9n7bU1IEVpxxHKVDjHA1pqUjqg7/U=
 From: Vincent Knecht <vincent.knecht@mailoo.org>
 To: stephan@gerhold.net, lgirdwood@gmail.com, broonie@kernel.org,
  robh+dt@kernel.org, perex@perex.cz, tiwai@suse.com
-Subject: [PATCH 2/2] ASoC: codecs: tfa989x: Add support for tfa9897 optional
- rcv-gpios
-Date: Sun, 31 Oct 2021 22:09:56 +0100
-Message-Id: <20211031210956.812101-3-vincent.knecht@mailoo.org>
+Subject: [PATCH 0/2] Add tfa9897 rcv-gpios support
+Date: Sun, 31 Oct 2021 22:09:54 +0100
+Message-Id: <20211031210956.812101-1-vincent.knecht@mailoo.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211031210956.812101-1-vincent.knecht@mailoo.org>
-References: <20211031210956.812101-1-vincent.knecht@mailoo.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
@@ -82,71 +78,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Some OEM use a GPIO in addition to the tfa9897 RCV bit to
-switch between loudspeaker and earpiece/receiver mode.
+This is the continuation of a previous series [1] where
+- patch 1/4 is removed in favor of using pin switch
+  This will be posted independently of tfa989x support,
+  since it mainly require changes to sound/soc/qcom/common.c
+  and device DTS.
+- patch 2/4 is already merged
+so here are reworked patch 3/4 (bindings fixed and example added)
+and patch 4/4 unchanged.
 
-Add support for the GPIO switching by specifying rcv-gpios in DT.
+[1] https://patchwork.kernel.org/project/alsa-devel/cover/20211024085840.1536438-1-vincent.knecht@mailoo.org/
 
-Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
----
- sound/soc/codecs/tfa989x.c | 20 +++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
+Vincent Knecht (2):
+  ASoC: dt-bindings: nxp, tfa989x: Add rcv-gpios property for tfa9897
+  ASoC: codecs: tfa989x: Add support for tfa9897 optional rcv-gpios
 
-diff --git a/sound/soc/codecs/tfa989x.c b/sound/soc/codecs/tfa989x.c
-index eb2a7870148d..dc86852752c5 100644
---- a/sound/soc/codecs/tfa989x.c
-+++ b/sound/soc/codecs/tfa989x.c
-@@ -7,6 +7,7 @@
-  * Copyright (C) 2013 Sony Mobile Communications Inc.
-  */
- 
-+#include <linux/gpio/consumer.h>
- #include <linux/i2c.h>
- #include <linux/module.h>
- #include <linux/regmap.h>
-@@ -56,6 +57,7 @@ struct tfa989x_rev {
- struct tfa989x {
- 	const struct tfa989x_rev *rev;
- 	struct regulator *vddd_supply;
-+	struct gpio_desc *rcv_gpiod;
- };
- 
- static bool tfa989x_writeable_reg(struct device *dev, unsigned int reg)
-@@ -99,10 +101,20 @@ static const struct snd_soc_dapm_route tfa989x_dapm_routes[] = {
- 	{"Amp Input", "Right", "AIFINR"},
- };
- 
-+static int tfa989x_put_mode(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct tfa989x *tfa989x = snd_soc_component_get_drvdata(component);
-+
-+	gpiod_set_value_cansleep(tfa989x->rcv_gpiod, ucontrol->value.enumerated.item[0]);
-+
-+	return snd_soc_put_enum_double(kcontrol, ucontrol);
-+}
-+
- static const char * const mode_text[] = { "Speaker", "Receiver" };
- static SOC_ENUM_SINGLE_DECL(mode_enum, TFA989X_I2SREG, TFA989X_I2SREG_RCV, mode_text);
- static const struct snd_kcontrol_new tfa989x_mode_controls[] = {
--	SOC_ENUM("Mode", mode_enum),
-+	SOC_ENUM_EXT("Mode", mode_enum, snd_soc_get_enum_double, tfa989x_put_mode),
- };
- 
- static int tfa989x_probe(struct snd_soc_component *component)
-@@ -301,6 +313,12 @@ static int tfa989x_i2c_probe(struct i2c_client *i2c)
- 		return dev_err_probe(dev, PTR_ERR(tfa989x->vddd_supply),
- 				     "Failed to get vddd regulator\n");
- 
-+	if (tfa989x->rev->rev == TFA9897_REVISION) {
-+		tfa989x->rcv_gpiod = devm_gpiod_get_optional(dev, "rcv", GPIOD_OUT_LOW);
-+		if (IS_ERR(tfa989x->rcv_gpiod))
-+			return PTR_ERR(tfa989x->rcv_gpiod);
-+	}
-+
- 	regmap = devm_regmap_init_i2c(i2c, &tfa989x_regmap);
- 	if (IS_ERR(regmap))
- 		return PTR_ERR(regmap);
+ .../bindings/sound/nxp,tfa989x.yaml           | 41 +++++++++++++++++++
+ sound/soc/codecs/tfa989x.c                    | 20 ++++++++-
+ 2 files changed, 60 insertions(+), 1 deletion(-)
+
 -- 
 2.31.1
 
