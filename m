@@ -2,83 +2,95 @@ Return-Path: <SRS0=AYCm=PV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8EFBC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Nov 2021 12:39:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64181C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Nov 2021 12:46:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 90C6E60EDF
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Nov 2021 12:39:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 90C6E60EDF
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 95D2C60F24
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Nov 2021 12:46:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 95D2C60F24
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AFA7716CF;
-	Tue,  2 Nov 2021 13:39:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AFA7716CF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7F4391693;
+	Tue,  2 Nov 2021 13:45:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F4391693
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635856795;
-	bh=nrC8IMYVDnSOQHrq19rkRShvY4+eyERme40svcQeYm4=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1635857184;
+	bh=8gkHrYWGHwVLT0Rg+6tUXxcDyfBwshFZBGSt6IqVBn8=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mv6byH86osTJvvhsdh+uHcFM8oSxskMoXJmqC6wKqXhA6T8oxTdJifk1upbEJeCPS
-	 BIABLczvXQP5RXbIU7752cofpuKndRI/cVsgNi3v/RpTrfP55FRult57mOGZMNu7qt
-	 O+c5sELTWwA+T3tNHTj0zXeQClQ8MPsPHh2BDyug=
+	b=nB+ZJzBmRVqwOOMk8BL/ecK61fz06HvLAaqw42VRShv7OFIAqUtqnpH0d8e86MU7B
+	 NXgbvziPHvWP3x2aljvp0k9yoeYAdiCgnQe/WEMrlQ3sSfGJyZotceidSIiOUHPKef
+	 f98hJCCJuna02ylDCzro6sqOCmBc6Bz0xc4zf9cY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3AEE9F80229;
-	Tue,  2 Nov 2021 13:39:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E89B6F80229;
+	Tue,  2 Nov 2021 13:45:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E0EA6F8025D; Tue,  2 Nov 2021 13:39:02 +0100 (CET)
-Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com
- [209.85.167.169])
+ id 4A9BEF8025D; Tue,  2 Nov 2021 13:45:30 +0100 (CET)
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
+ [IPv6:2a00:1450:4864:20::331])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 47329F800BF
- for <alsa-devel@alsa-project.org>; Tue,  2 Nov 2021 13:38:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47329F800BF
-Received: by mail-oi1-f169.google.com with SMTP id g125so29762827oif.9
- for <alsa-devel@alsa-project.org>; Tue, 02 Nov 2021 05:38:56 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D1674F80224
+ for <alsa-devel@alsa-project.org>; Tue,  2 Nov 2021 13:45:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1674F80224
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="a5BUgCpS"
+Received: by mail-wm1-x331.google.com with SMTP id
+ f7-20020a1c1f07000000b0032ee11917ceso2015133wmf.0
+ for <alsa-devel@alsa-project.org>; Tue, 02 Nov 2021 05:45:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to;
+ bh=ZZkZVqa+3Plnn+r7mlQ/DHzi6CEkEgG/JnTm+RoF3Os=;
+ b=a5BUgCpSrtUkDJpbZB1JWGRjd29moku/hgoRNXpgoUydTPcHt/wZ+Mn2D21V4PyZZ9
+ Vx8dSEvCioF/cLT6iQgvNOKDrGVK4aGS/oMld+LZZ7+gWvsmWzTKnmhwPf5wKO+GE5s0
+ Dl1PgbJsFtIvBSshpJxhmJ39uAK2LAFN+N+KVJIgjucoTmfsOz00WhzY+J9cZoMceF/X
+ zkruyXFjaQ8nhIV+zS6svKW6vGw0/RHvrayN7hEZSTJvAofn1mY50hLttZvDBV5xezi8
+ gnQJtbXquJcW43+wuhCkoQudE+sJgwjiEISmCRgTmzcMMFTolHy2g4YDijtOwwTN65rA
+ zCSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
- :message-id;
- bh=0yfbsryEjmN9vwwP//YfNBCrdvNe0yYLPhJeAfuOOQs=;
- b=3WKWM5idnd+GECXJTOo/JXPvndsRDyfeOwUC10KKlKA0Eh3qoFLwEhwbvI2gUBNyDk
- Rr781Nb4Rk6YYCBHND8dur1GFzj0ZPUg9ldHEp0V6bYBJwIgQDQwB2Ugsiljej8HC+YD
- PFj8BI5HrF7yJfnA144cYlJ//ujG6WdYEVjK3SiDUveUsiAMV5sxDWnuNaL38n3DRSJ1
- RjYR1ZBjkjS0g2wZbTt4SCMcGNV/MI94ehsKDSSlFSivHzCALNkCwJgvj2JyiNdHhIcN
- 8hzrjvM/GnAe5NLcbnKOh7AALgcFmSWNNNhuBlRznltAD6WsjM1i3NDGaYreBHF5mCZq
- KYng==
-X-Gm-Message-State: AOAM532SFjAtU27Xfry5PfqymGHJFN0sBy5GFIwJmVK9PKqFCR9D2KoA
- z5YtKlIUqgTv1TcMEslmnQ==
-X-Google-Smtp-Source: ABdhPJzNemQUYREkjWtK4Z7J5RwmZFURPklIkPVqCmGlI2S/6JIc3SWDKlpQ8oWJVKw+syDJjuRyDQ==
-X-Received: by 2002:a05:6808:e84:: with SMTP id
- k4mr4928387oil.135.1635856734298; 
- Tue, 02 Nov 2021 05:38:54 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net.
- [66.90.148.213])
- by smtp.gmail.com with ESMTPSA id bd5sm2582438oib.2.2021.11.02.05.38.53
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=ZZkZVqa+3Plnn+r7mlQ/DHzi6CEkEgG/JnTm+RoF3Os=;
+ b=FRiHzNObk3VLAK5X/swGeWUqwC91FD1u12UkNgAemSDQNRV+Wz6bgj8atrm6UAuhBK
+ jGMRLdgvnjMVzLdEAIkumaccDr5WKURf/gWUQMUt7K0lyQkkyDN0KQtV9VPe3KkBAeZX
+ 2MDZq8mKQYs7Xpo912e8TTji1zkP9NQSYdqu87qbiD1cF3JSTmbNeQ57jmq6ZlaFLpUN
+ yUDdyOlHZSzsAcaedkKFdphau0GYjbMUahdJWKEpuMBJHL35ot02XZQEZHdfkAE35CSC
+ 08ldXSOe0KENoLGtLtsviBz0OerJdwWNwYpgCgFBSce63INrd4Da1cE6FNGli/Uwtbb6
+ +/BA==
+X-Gm-Message-State: AOAM5318TJVHrbx27aLi03+qCsEE8A4Jl3hyUykxMylsUVD+k83abmKE
+ HCWhHMeLxzWxeoN0vI40Yg==
+X-Google-Smtp-Source: ABdhPJzKEJONKSknqb28hjNBtqlKzn1WjVheQ7JDq8SUVGJAbIFvwd7VSeromLyp3heo9ZB3kOmWqA==
+X-Received: by 2002:a7b:c76e:: with SMTP id x14mr6612110wmk.27.1635857115568; 
+ Tue, 02 Nov 2021 05:45:15 -0700 (PDT)
+Received: from rampage-hp2 ([80.169.207.154])
+ by smtp.gmail.com with ESMTPSA id y12sm15437552wrn.73.2021.11.02.05.45.14
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 02 Nov 2021 05:38:53 -0700 (PDT)
-Received: (nullmailer pid 2636024 invoked by uid 1000);
- Tue, 02 Nov 2021 12:38:52 -0000
-From: Rob Herring <robh@kernel.org>
-To: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-In-Reply-To: <1635838265-27346-9-git-send-email-srivasam@codeaurora.org>
-References: <1635838265-27346-1-git-send-email-srivasam@codeaurora.org>
- <1635838265-27346-9-git-send-email-srivasam@codeaurora.org>
-Subject: Re: [PATCH v4 08/10] ASoC: dt-bindings: Add SC7280 sound card bindings
-Date: Tue, 02 Nov 2021 07:38:52 -0500
-Message-Id: <1635856732.594488.2636023.nullmailer@robh.at.kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- bgoswami@codeaurora.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
- Venkata Prasad Potturu <potturu@codeaurora.org>, linux-arm-msm@vger.kernel.org,
- plai@codeaurora.org, broonie@kernel.org, tiwai@suse.com, robh+dt@kernel.org,
- agross@kernel.org, rohitkr@codeaurora.org, swboyd@chromium.org,
- judyhsiao@chromium.org, linux-kernel@vger.kernel.org
+ Tue, 02 Nov 2021 05:45:15 -0700 (PDT)
+Date: Tue, 2 Nov 2021 12:45:13 +0000
+From: Jonathan Clarke <jonathan.a.clarke@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Subject: Re: [PATCH] Make top/rear speaker, mute and micmute leds work on HP
+ x360 14-ea000 laptops that use Realtek 245 codec
+Message-ID: <20211102124513.GA1298862@rampage-hp2>
+References: <20211029154313.1005394-1-jonathan.a.clarke@gmail.com>
+ <s5h35oisug0.wl-tiwai@suse.de>
+ <20211101103445.GA1064130@rampage-hp2>
+ <s5hzgqnotpu.wl-tiwai@suse.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <s5hzgqnotpu.wl-tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,48 +106,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 02 Nov 2021 13:01:03 +0530, Srinivasa Rao Mandadapu wrote:
-> Add bindings for lpass sc7280 based soundcards which supports
-> audio over i2s based speaker, soundwire based headset, msm dmics
-> and HDMI Port.
+On Tue, Nov 02, 2021 at 09:19:25AM +0100, Takashi Iwai wrote:
+> Could you try just to flip the bit 0x08?  At LED off state?
 > 
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-> Co-developed-by: Venkata Prasad Potturu <potturu@codeaurora.org>
-> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
-> ---
->  .../devicetree/bindings/sound/qcom,lpass-cpu.yaml  | 69 +++++++++++++++++++---
->  1 file changed, 61 insertions(+), 8 deletions(-)
+> % hda-verb /dev/snd/hwC0D0 0x20 SET_COEF_INDEX 0x0b
+> % hda-verb /dev/snd/hwC0D0 0x20 SET_PROC_COEF 0x77f4
 > 
+> That is, the implementation in alc286_fixup_hp_mute_led_coefbit(),
+> which is used by many other HP laptops.
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Ah, I see what you mean.  
 
-yamllint warnings/errors:
+Yes, you're right, changing from 0x77f4 to 0x77fc makes the mute led light up.
+The changes to the other proc_coef bits in my patch are not needed.
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.example.dt.yaml: lpass@62d80000: reg: [[0, 1658351616, 0, 425984], [0, 1659895808, 0, 167936]] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.example.dt.yaml: lpass@62d80000: reg-names: ['lpass-hdmiif', 'lpass-lpaif'] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.example.dt.yaml: lpass@62d80000: interrupts: [[0, 160, 1], [0, 268, 1]] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.example.dt.yaml: lpass@62d80000: interrupt-names: ['lpass-irq-lpaif', 'lpass-irq-hdmi'] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.example.dt.yaml: lpass@62d80000: iommus: [[4294967295, 4128, 0], [4294967295, 4146, 0]] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/patch/1549500
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+I will revise and revert in next few days.  Thanks
