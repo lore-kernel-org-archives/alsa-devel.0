@@ -2,94 +2,94 @@ Return-Path: <SRS0=AYCm=PV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D818AC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Nov 2021 10:59:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FBD2C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Nov 2021 11:02:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 68FDA603E9
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Nov 2021 10:59:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 68FDA603E9
+	by mail.kernel.org (Postfix) with ESMTPS id BE3D560EE9
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Nov 2021 11:02:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BE3D560EE9
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AE8B616D5;
-	Tue,  2 Nov 2021 11:59:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE8B616D5
+	by alsa0.perex.cz (Postfix) with ESMTPS id D0AAA16D5;
+	Tue,  2 Nov 2021 12:01:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D0AAA16D5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635850790;
-	bh=qtCy+4Fg2hKaHJi+q5siJd6XWMA50FECeQC2SaXawKc=;
+	s=default; t=1635850962;
+	bh=aQMUDlAG5XQ5cpoeRZgci1zEFVWm4IQ4plB2zf8w9vo=;
 	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=O27yBthzliXcccdMzfghKv+pDf4vjjhtiv0uoS/NUlsKP0a6C04rMHdqbVZGq5DUT
-	 4GrurKUmulk/+j6vcTxYyZgjeu9FteG1BZPhBi1m0TiU99DNaYHauNVE+/KWxbBbwP
-	 EBMFfcUZU6ku8ZE7RjyzHj3QoRgEm5xpRfv4roOw=
+	b=B/T5xMukn5lkEkg93GA78s74e+7re7x1UDtrtyoHuZ5l5lfANMgS3ceK9olOkthq7
+	 HRwweXzmdlUKU6IPXNo9AAkbNxX6HzyB+xz7+6mZNgvnNH+WYi2YDNhQBviiDOQyfd
+	 n8ZsLQzlhLBAj0mauEL/yzQmbymNeUnlRpm0zaK8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4FACEF80229;
-	Tue,  2 Nov 2021 11:59:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6044DF80229;
+	Tue,  2 Nov 2021 12:01:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7CF3EF800BF; Tue,  2 Nov 2021 11:58:54 +0100 (CET)
-Received: from so254-9.mailgun.net (so254-9.mailgun.net [198.61.254.9])
+ id D6F3DF8025D; Tue,  2 Nov 2021 12:01:49 +0100 (CET)
+Received: from m43-7.mailgun.net (m43-7.mailgun.net [69.72.43.7])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4A2B0F800BF
- for <alsa-devel@alsa-project.org>; Tue,  2 Nov 2021 11:58:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4A2B0F800BF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 580F9F8012E
+ for <alsa-devel@alsa-project.org>; Tue,  2 Nov 2021 12:01:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 580F9F8012E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=mg.codeaurora.org
- header.i=@mg.codeaurora.org header.b="uRCUouiP"
+ header.i=@mg.codeaurora.org header.b="avg0T8mR"
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
  q=dns/txt; 
- s=smtp; t=1635850731; h=Content-Transfer-Encoding: Content-Type:
+ s=smtp; t=1635850908; h=Content-Transfer-Encoding: Content-Type:
  In-Reply-To: MIME-Version: Date: Message-ID: From: References: To:
- Subject: Sender; bh=bisdeD3X1MxFxI1OCeAyuj8O9/LL4EAudrvUEowmfCw=;
- b=uRCUouiPnNgW2IHO4h2TARCsG3TO1JEbGxgrLlytrKztRTZh6sRIOU5lUqU3jRpiRaeE5bzT
- zt9PtpX12JKQ8/8F3754weQwmxs2KnM2Y8XfcGmHisF0KATfoBV+aVw+cI4JKr/qUKyZqW3s
- BDEqSx9Ya9cEt3umMTKhSch8tjQ=
-X-Mailgun-Sending-Ip: 198.61.254.9
+ Subject: Sender; bh=qXzp9Dq3okeTeCCG2IPt/sqOPmtUhJPZ3qV0EbiFkQo=;
+ b=avg0T8mRyoJps18t+vN4+huTu5WuTeqwYxOgynga6tf6sp7bedtQKBL1JQSVFKu9l8100PxY
+ D98tNLtmbkFNWSjxBZp4r//0bA+lDirQJtYov5zH0PIQSk0EzNxlgR3Ftcqa41oG7zHjSW5k
+ JL3D6tg6TYtqxTp5HN+FHIenFOU=
+X-Mailgun-Sending-Ip: 69.72.43.7
 X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 618119e8c8c1b282a56ceb44 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Nov 2021 10:58:48
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 61811a93aeb2390556afd332 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Nov 2021 11:01:39
  GMT
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id 63350C43460; Tue,  2 Nov 2021 10:58:48 +0000 (UTC)
+ id 7CD12C4338F; Tue,  2 Nov 2021 11:01:39 +0000 (UTC)
 Received: from [10.242.143.72] (unknown [202.46.23.19])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested) (Authenticated sender: srivasam)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id 3002FC4338F;
- Tue,  2 Nov 2021 10:58:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 3002FC4338F
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id 76430C43616;
+ Tue,  2 Nov 2021 11:01:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 76430C43616
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
  dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
  spf=fail smtp.mailfrom=codeaurora.org
 Subject: Re: [PATCH v4 2/2] ASoC: qcom: SC7280: Add machine driver
-To: Randy Dunlap <rdunlap@infradead.org>, agross@kernel.org,
- bjorn.andersson@linaro.org, lgirdwood@gmail.com, broonie@kernel.org,
- robh+dt@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
- perex@perex.cz, tiwai@suse.com, srinivas.kandagatla@linaro.org,
- rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
- alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, swboyd@chromium.org, judyhsiao@chromium.org
+To: Stephen Boyd <swboyd@chromium.org>, agross@kernel.org,
+ alsa-devel@alsa-project.org, bgoswami@codeaurora.org,
+ bjorn.andersson@linaro.org, broonie@kernel.org, devicetree@vger.kernel.org,
+ judyhsiao@chromium.org, lgirdwood@gmail.com, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, perex@perex.cz, plai@codeaurora.org,
+ robh+dt@kernel.org, rohitkr@codeaurora.org, srinivas.kandagatla@linaro.org,
+ tiwai@suse.com
 References: <1635519876-7112-1-git-send-email-srivasam@codeaurora.org>
  <1635519876-7112-3-git-send-email-srivasam@codeaurora.org>
- <4d1ca1b5-6656-1b3b-65a0-c05c92824d18@infradead.org>
+ <CAE-0n51zXLZiaB9aCdv=p_Wcxr5ZEdN-=b1hd5VATL6-CD0vRw@mail.gmail.com>
 From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 Organization: Qualcomm India Private Limited.
-Message-ID: <25b2a191-ff9e-25e0-1d46-bc37a92e1ff1@codeaurora.org>
-Date: Tue, 2 Nov 2021 16:28:40 +0530
+Message-ID: <ee81276a-0715-0e55-9944-6c021075911e@codeaurora.org>
+Date: Tue, 2 Nov 2021 16:31:32 +0530
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <4d1ca1b5-6656-1b3b-65a0-c05c92824d18@infradead.org>
+In-Reply-To: <CAE-0n51zXLZiaB9aCdv=p_Wcxr5ZEdN-=b1hd5VATL6-CD0vRw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -107,31 +107,128 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-On 10/30/2021 5:04 AM, Randy Dunlap wrote:
-Thanks for your time Randy!!!
-> On 10/29/21 8:04 AM, Srinivasa Rao Mandadapu wrote:
+On 10/30/2021 12:40 AM, Stephen Boyd wrote:
+Thanks for our time Stephen!!!
+> Quoting Srinivasa Rao Mandadapu (2021-10-29 08:04:36)
 >> diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
 >> index cc7c1de..d9ffcb7 100644
 >> --- a/sound/soc/qcom/Kconfig
 >> +++ b/sound/soc/qcom/Kconfig
 >> @@ -152,4 +152,16 @@ config SND_SOC_SC7180
->>         SC7180 SoC-based systems.
->>         Say Y if you want to use audio device on this SoCs.
->>   +config SND_SOC_SC7280
->> +    tristate "SoC Machine driver for SC7280 boards"
->> +    depends on I2C && SOUNDWIRE
->> +    select SND_SOC_QCOM_COMMON
->> +    select SND_SOC_MAX98357A
->> +    select SND_SOC_LPASS_RX_MACRO
->> +    select SND_SOC_LPASS_TX_MACRO
->> +    help
->> +      To add support for audio on Qualcomm Technologies Inc.
->> +      SC7280 SoC-based systems.
->> +      Say Y if you want to use audio device on this SoCs.
+>>            SC7180 SoC-based systems.
+>>            Say Y if you want to use audio device on this SoCs.
+>>
+>> +config SND_SOC_SC7280
+>> +       tristate "SoC Machine driver for SC7280 boards"
+>> +       depends on I2C && SOUNDWIRE
+> Add || COMPILE_TEST so we can compile test this driver?
+Okay. Will add it.
 >
->       Say Y or M if you want to use audio devices on this SoC.
+>> +       select SND_SOC_QCOM_COMMON
+>> +       select SND_SOC_MAX98357A
+>> +       select SND_SOC_LPASS_RX_MACRO
+>> +       select SND_SOC_LPASS_TX_MACRO
+>> +       help
+>> +         To add support for audio on Qualcomm Technologies Inc.
+> Drop "To"?
+Okay.
 >
-Okay. Will change accordingly.
+>> +         SC7280 SoC-based systems.
+>> +         Say Y if you want to use audio device on this SoCs.
+>> +
+>>   endif #SND_SOC_QCOM
+>> diff --git a/sound/soc/qcom/sc7280.c b/sound/soc/qcom/sc7280.c
+>> new file mode 100644
+>> index 0000000..1d73b4f
+>> --- /dev/null
+>> +++ b/sound/soc/qcom/sc7280.c
+>> @@ -0,0 +1,343 @@
+>> +// SPDX-License-Identifier: GPL-2.0-only
+>> +//
+>> +// Copyright (c) 2020-2021, The Linux Foundation. All rights reserved.
+>> +//
+>> +// sc7280.c -- ALSA SoC Machine driver for sc7280
+> Please remove filename from the comment as it's not useful and may
+> change.
+Okay.
+>> +
+>> +#include <linux/gpio.h>
+> [...]
+>> +
+>> +static void sc7280_snd_shutdown(struct snd_pcm_substream *substream)
+>> +{
+>> +       struct snd_soc_pcm_runtime *rtd = substream->private_data;
+>> +       struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
+>> +
+>> +       switch (cpu_dai->id) {
+>> +       case LPASS_CDC_DMA_RX0:
+>> +       case LPASS_CDC_DMA_TX3:
+>> +       case LPASS_CDC_DMA_VA_TX0:
+>> +               break;
+>> +       case MI2S_SECONDARY:
+>> +               break;
+>> +       case LPASS_DP_RX:
+>> +               break;
+>> +       default:
+>> +               dev_err(rtd->dev, "%s: invalid dai id %d\n", __func__, cpu_dai->id);
+>> +               break;
+>> +       }
+> The function doesn't do anything though. Why do we care?
+Okay. will remove 'sc7280_snd_startup' and 'sc7280_snd_shutdown'.
+>
+>> +}
+>> +
+>> +static const struct snd_soc_ops sc7280_ops = {
+>> +       .startup = sc7280_snd_startup,
+>> +       .shutdown = sc7280_snd_shutdown,
+>> +       .hw_params = sc7280_snd_hw_params,
+>> +       .hw_free = sc7280_snd_hw_free,
+>> +       .prepare = sc7280_snd_prepare,
+>> +};
+>> +
+>> +static const struct snd_soc_dapm_widget sc7280_snd_widgets[] = {
+>> +       SND_SOC_DAPM_HP("Headphone Jack", NULL),
+>> +       SND_SOC_DAPM_MIC("Headset Mic", NULL),
+>> +};
+>> +
+>> +static int sc7280_snd_platform_probe(struct platform_device *pdev)
+>> +{
+>> +       struct snd_soc_card *card;
+>> +       struct sc7280_snd_data *data;
+>> +       struct device *dev = &pdev->dev;
+>> +       struct snd_soc_dai_link *link;
+>> +       int ret, i;
+>> +
+>> +       data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
+>> +       if (!data)
+>> +               return -ENOMEM;
+>> +
+>> +       card = &data->card;
+>> +       snd_soc_card_set_drvdata(card, data);
+>> +
+>> +       card->owner = THIS_MODULE;
+>> +       card->driver_name = "SC7280";
+>> +       card->dev = dev;
+>> +
+>> +       ret = qcom_snd_parse_of(card);
+>> +       if (ret)
+>> +               return ret;
+>> +
+>> +       for_each_card_prelinks(card, i, link) {
+>> +               link->init = sc7280_init;
+>> +               link->ops = &sc7280_ops;
+>> +       }
+>> +
+>> +       return devm_snd_soc_register_card(dev, card);
+>> +}
+>> +
+>> +static const struct of_device_id sc7280_snd_device_id[]  = {
+>> +       {.compatible = "google,sc7280-herobrine"},
+> Please add space after { and before }
+Okay.
+>> +       {}
+>> +};
+>> +MODULE_DEVICE_TABLE(of, sc7280_snd_device_id);
 
 -- 
 Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
