@@ -2,69 +2,69 @@ Return-Path: <SRS0=AYCm=PV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F197C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Nov 2021 07:33:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B21AC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Nov 2021 07:33:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 807F760C51
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Nov 2021 07:33:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 807F760C51
+	by mail.kernel.org (Postfix) with ESMTPS id E2DAF60EB8
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Nov 2021 07:33:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E2DAF60EB8
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C33F316C1;
-	Tue,  2 Nov 2021 08:32:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C33F316C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 21CBF16DA;
+	Tue,  2 Nov 2021 08:32:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 21CBF16DA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635838388;
-	bh=eUjHjDJDTVC7I8ttZdjlQmODeI+Xzx8CLdAkdwR5QJ0=;
+	s=default; t=1635838397;
+	bh=fX0q9XldlU8fIkhLlija3KzZbc5ExnE17kJphegKf1w=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tokN31S8/llU0SzU2tv0VM8HSpHhs5BvMu4GCIRQNvleCX50ydSsiFI2X+pq6VD4y
-	 3LbIoQvwtlOOIWdzPobuoPyvUH7TFfyHFC5O4Ch+oRh/CEizmoGCcTv26xjjSBhUuA
-	 nhgrk4JwxOEii6/E7FjqU3WHLAtVttFRn+lAL3C0=
+	b=r4BCMUE8oBM355cO0ZI1z7K0TLFlyXHxHXb/7fwaOMCZB0HC0Bzx/DI2M5QTnXY02
+	 ZJsMBAkvusjSwnLZVABFqjD+OAfnSCTSRqtsf6u4MnOLHh2ISIbNXVI1xcwcKKQ8ra
+	 PYV04HJ6Syx9q7oZU1EgXJjBE4temHHlQr+kK0AQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ECC79F8025D;
-	Tue,  2 Nov 2021 08:31:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 34D17F804EB;
+	Tue,  2 Nov 2021 08:31:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 29F53F802E8; Tue,  2 Nov 2021 08:31:41 +0100 (CET)
-Received: from so254-9.mailgun.net (so254-9.mailgun.net [198.61.254.9])
+ id 39103F804EB; Tue,  2 Nov 2021 08:31:50 +0100 (CET)
+Received: from m43-7.mailgun.net (m43-7.mailgun.net [69.72.43.7])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 82470F8025D
- for <alsa-devel@alsa-project.org>; Tue,  2 Nov 2021 08:31:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 82470F8025D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 652F1F80229
+ for <alsa-devel@alsa-project.org>; Tue,  2 Nov 2021 08:31:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 652F1F80229
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=mg.codeaurora.org
- header.i=@mg.codeaurora.org header.b="kJtmSRek"
+ header.i=@mg.codeaurora.org header.b="vMydVsAX"
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
  q=dns/txt; 
- s=smtp; t=1635838289; h=References: In-Reply-To: Message-Id: Date:
+ s=smtp; t=1635838306; h=References: In-Reply-To: Message-Id: Date:
  Subject: Cc: To: From: Sender;
- bh=4HMGSd2J7w/dZxguyl5N9umCkfxLtsuKLR7inPyn4DM=;
- b=kJtmSRekR/qvkjipZLP++EK9FLBAaD8JvsPoP1xT6IAh9f9RzxVRncl93qP/HKxeIX8wSQg4
- Ppv+Zcj6nOcEJXWHjaTkGCUr5zTehewCbMV0HxbOugDel2sleKbDIN0tY7G2DLdLMT5QY489
- vX5ZRbDojupYqmjdv3sN1ZyCSYk=
-X-Mailgun-Sending-Ip: 198.61.254.9
+ bh=OsUZiYrKLNspuyvnbTr1LHXpWac1qZEaRljmpgojjss=;
+ b=vMydVsAXnYyeTP3w1/3gOHubHENeffD0CVceIkh2VDi8trk2H91AAqHBXbGUXRWEVFqAbxJe
+ /WC1xMNLADxkaQUShfJ34kvAOIsOFjSOc4C2dopef0Tw+fs1H5eqFYHhpoo4xWqq10fWL6rx
+ +41VR6385qB3S5GZZLp+y5+rcg4=
+X-Mailgun-Sending-Ip: 69.72.43.7
 X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 6180e94ff6a3eeacf905ad72 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Nov 2021 07:31:27
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 6180e9625c66efd3723801ef (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Nov 2021 07:31:46
  GMT
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id B49C4C4338F; Tue,  2 Nov 2021 07:31:26 +0000 (UTC)
+ id 3B71DC4361B; Tue,  2 Nov 2021 07:31:45 +0000 (UTC)
 Received: from hu-srivasam-hyd.qualcomm.com (unknown [202.46.22.19])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
  (No client certificate requested) (Authenticated sender: srivasam)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id 29675C43618;
- Tue,  2 Nov 2021 07:31:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 29675C43618
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id D5BC5C43616;
+ Tue,  2 Nov 2021 07:31:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org D5BC5C43616
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
  dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
@@ -77,10 +77,10 @@ To: agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
  linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
  swboyd@chromium.org, judyhsiao@chromium.org
-Subject: [PATCH v4 01/10] ASoC: qcom: Move lpass_pcm_data structure to lpass
- header
-Date: Tue,  2 Nov 2021 13:00:56 +0530
-Message-Id: <1635838265-27346-2-git-send-email-srivasam@codeaurora.org>
+Subject: [PATCH v4 04/10] ASoC: qcom: Add lpass CPU driver for codec dma
+ control
+Date: Tue,  2 Nov 2021 13:00:59 +0530
+Message-Id: <1635838265-27346-5-git-send-email-srivasam@codeaurora.org>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1635838265-27346-1-git-send-email-srivasam@codeaurora.org>
 References: <1635838265-27346-1-git-send-email-srivasam@codeaurora.org>
@@ -101,49 +101,230 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Declare lpass_pcm_data structure in lpass header file instead of
-platform source file to make common use of it by other drivers
+Add lpass cpu driver to support audio over codec dma for
+ADSP bypass usecase.
 
 Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 Co-developed-by: Venkata Prasad Potturu <potturu@codeaurora.org>
 Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
 ---
- sound/soc/qcom/lpass-platform.c | 5 -----
- sound/soc/qcom/lpass.h          | 5 +++++
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/qcom/lpass-cdc-dma.c | 195 +++++++++++++++++++++++++++++++++++++++++
+ sound/soc/qcom/lpass.h         |   1 +
+ 2 files changed, 196 insertions(+)
+ create mode 100644 sound/soc/qcom/lpass-cdc-dma.c
 
-diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
-index a59e9d2..a44162c 100644
---- a/sound/soc/qcom/lpass-platform.c
-+++ b/sound/soc/qcom/lpass-platform.c
-@@ -18,11 +18,6 @@
- 
- #define DRV_NAME "lpass-platform"
- 
--struct lpass_pcm_data {
--	int dma_ch;
--	int i2s_port;
--};
--
- #define LPASS_PLATFORM_BUFFER_SIZE	(24 *  2 * 1024)
- #define LPASS_PLATFORM_PERIODS		2
- 
+diff --git a/sound/soc/qcom/lpass-cdc-dma.c b/sound/soc/qcom/lpass-cdc-dma.c
+new file mode 100644
+index 0000000..f5bfda9
+--- /dev/null
++++ b/sound/soc/qcom/lpass-cdc-dma.c
+@@ -0,0 +1,195 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (c) 2021 The Linux Foundation. All rights reserved.
++ *
++ * lpass-cdc-dma.c -- ALSA SoC WCD -CPU DAI driver for QTi LPASS WCD
++ */
++
++#include <linux/clk.h>
++#include <linux/module.h>
++#include <sound/soc.h>
++#include <sound/soc-dai.h>
++
++#include "lpass-lpaif-reg.h"
++#include "lpass.h"
++
++static void __get_dmactl_handle(struct snd_pcm_substream *substream, struct snd_soc_dai *dai,
++					struct lpaif_dmactl **dmactl, int *id)
++{
++	struct snd_soc_pcm_runtime *soc_runtime = asoc_substream_to_rtd(substream);
++	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(soc_runtime, 0);
++	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
++	struct snd_pcm_runtime *rt = substream->runtime;
++	struct lpass_pcm_data *pcm_data = rt->private_data;
++	struct lpass_variant *v = drvdata->variant;
++	int dir = substream->stream;
++	unsigned int dai_id = cpu_dai->driver->id;
++
++	if (dir == SNDRV_PCM_STREAM_PLAYBACK) {
++		*dmactl = drvdata->rxtx_rd_dmactl;
++		*id = pcm_data->dma_ch;
++	} else {
++		if (dai_id == LPASS_CDC_DMA_TX3) {
++			*dmactl = drvdata->rxtx_wr_dmactl;
++			*id = pcm_data->dma_ch - v->rxtx_wrdma_channel_start;
++		} else if (dai_id == LPASS_CDC_DMA_VA_TX0) {
++			*dmactl = drvdata->va_wr_dmactl;
++			*id = pcm_data->dma_ch - v->va_wrdma_channel_start;
++		}
++	}
++}
++
++static int __lpass_platform_codec_intf_init(struct snd_soc_dai *dai,
++					 struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *soc_runtime = asoc_substream_to_rtd(substream);
++	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(soc_runtime, 0);
++	struct lpaif_dmactl *dmactl;
++	int dir = substream->stream;
++	int ret, id, codec_intf;
++	unsigned int dai_id = cpu_dai->driver->id;
++
++	if (dir == SNDRV_PCM_STREAM_PLAYBACK)
++		codec_intf = LPASS_CDC_DMA_RX0_INTERFACE;
++	else
++		codec_intf = LPASS_CDC_DMA_INTERFACE(dai_id);
++
++	__get_dmactl_handle(substream, dai, &dmactl, &id);
++
++	ret = regmap_fields_write(dmactl->codec_intf, id, codec_intf);
++	if (ret) {
++		dev_err(soc_runtime->dev,
++			"error writing to dmactl codec_intf reg field: %d\n", ret);
++		return ret;
++	}
++	ret = regmap_fields_write(dmactl->codec_fs_sel, id, 0x0);
++	if (ret) {
++		dev_err(soc_runtime->dev,
++			"error writing to dmactl codec_fs_sel reg field: %d\n", ret);
++		return ret;
++	}
++	ret = regmap_fields_write(dmactl->codec_fs_delay, id, 0x0);
++	if (ret) {
++		dev_err(soc_runtime->dev,
++			"error writing to dmactl codec_fs_delay reg field: %d\n", ret);
++		return ret;
++	}
++	ret = regmap_fields_write(dmactl->codec_pack, id, 0x1);
++	if (ret) {
++		dev_err(soc_runtime->dev,
++			"error writing to dmactl codec_pack reg field: %d\n", ret);
++		return ret;
++	}
++	ret = regmap_fields_write(dmactl->codec_enable, id, LPAIF_DMACTL_ENABLE_ON);
++	if (ret) {
++		dev_err(soc_runtime->dev,
++			"error writing to dmactl codec_enable reg field: %d\n", ret);
++		return ret;
++	}
++	return 0;
++}
++
++static int lpass_wcd_daiops_startup(struct snd_pcm_substream *substream,
++		struct snd_soc_dai *dai)
++{
++	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
++	int ret;
++
++	ret = clk_bulk_prepare_enable(drvdata->cdc_num_clks, drvdata->cdc_clks);
++	if (ret) {
++		dev_err(dai->dev, "error in enabling cdc dma clks: %d\n", ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++static void lpass_wcd_daiops_shutdown(struct snd_pcm_substream *substream,
++		struct snd_soc_dai *dai)
++{
++	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
++
++	clk_bulk_disable_unprepare(drvdata->cdc_num_clks, drvdata->cdc_clks);
++}
++
++static int lpass_wcd_daiops_hw_params(struct snd_pcm_substream *substream,
++		struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
++{
++	struct snd_soc_pcm_runtime *soc_runtime = asoc_substream_to_rtd(substream);
++	struct lpaif_dmactl *dmactl;
++	unsigned int ret, regval;
++	unsigned int channels = params_channels(params);
++	int id;
++
++	__get_dmactl_handle(substream, dai, &dmactl, &id);
++
++	switch (channels) {
++	case 1:
++		regval = LPASS_CDC_DMA_INTF_ONE_CHANNEL;
++		break;
++	case 2:
++		regval = LPASS_CDC_DMA_INTF_TWO_CHANNEL;
++		break;
++	case 4:
++		regval = LPASS_CDC_DMA_INTF_FOUR_CHANNEL;
++		break;
++	case 6:
++		regval = LPASS_CDC_DMA_INTF_SIX_CHANNEL;
++		break;
++	case 8:
++		regval = LPASS_CDC_DMA_INTF_EIGHT_CHANNEL;
++		break;
++	default:
++		dev_err(soc_runtime->dev, "invalid PCM config\n");
++		return -EINVAL;
++	}
++
++	ret = regmap_fields_write(dmactl->codec_channel, id, regval);
++	if (ret) {
++		dev_err(soc_runtime->dev,
++			"error writing to dmactl codec_channel reg field: %d\n", ret);
++		return ret;
++	}
++	return 0;
++}
++
++static int lpass_wcd_daiops_trigger(struct snd_pcm_substream *substream,
++		int cmd, struct snd_soc_dai *dai)
++{
++	struct snd_soc_pcm_runtime *soc_runtime = asoc_substream_to_rtd(substream);
++	struct lpaif_dmactl *dmactl;
++	int ret = 0, id;
++
++	__get_dmactl_handle(substream, dai, &dmactl, &id);
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_RESUME:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		__lpass_platform_codec_intf_init(dai, substream);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		ret = regmap_fields_write(dmactl->codec_enable, id, LPAIF_DMACTL_ENABLE_OFF);
++		if (ret) {
++			dev_err(soc_runtime->dev,
++				"error writing to dmactl codec_enable reg: %d\n", ret);
++			return ret;
++		}
++
++		break;
++	}
++	return ret;
++}
++
++const struct snd_soc_dai_ops asoc_qcom_lpass_wcd_dai_ops = {
++	.startup	= lpass_wcd_daiops_startup,
++	.shutdown	= lpass_wcd_daiops_shutdown,
++	.hw_params	= lpass_wcd_daiops_hw_params,
++	.trigger	= lpass_wcd_daiops_trigger,
++};
++EXPORT_SYMBOL_GPL(asoc_qcom_lpass_wcd_dai_ops);
++
++MODULE_DESCRIPTION("QTi LPASS CDC DMA Driver");
++MODULE_LICENSE("GPL v2");
 diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
-index 67ef497..63aaa6f 100644
+index b068534..f912425 100644
 --- a/sound/soc/qcom/lpass.h
 +++ b/sound/soc/qcom/lpass.h
-@@ -256,6 +256,11 @@ struct lpass_variant {
- 	int num_clks;
- };
+@@ -414,5 +414,6 @@ int asoc_qcom_lpass_cpu_dai_probe(struct snd_soc_dai *dai);
+ extern const struct snd_soc_dai_ops asoc_qcom_lpass_cpu_dai_ops;
+ int lpass_cpu_pcm_new(struct snd_soc_pcm_runtime *rtd,
+ 				struct snd_soc_dai *dai);
++extern const struct snd_soc_dai_ops asoc_qcom_lpass_wcd_dai_ops;
  
-+struct lpass_pcm_data {
-+	int dma_ch;
-+	int i2s_port;
-+};
-+
- /* register the platform driver from the CPU DAI driver */
- int asoc_qcom_lpass_platform_register(struct platform_device *);
- int asoc_qcom_lpass_cpu_platform_remove(struct platform_device *pdev);
+ #endif /* __LPASS_H__ */
 -- 
 Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
 is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
