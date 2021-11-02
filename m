@@ -1,88 +1,85 @@
-Return-Path: <SRS0=20LX=PU=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=AYCm=PV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 28D07C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Nov 2021 21:38:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B7F5AC433FE
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Nov 2021 07:32:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0C70F60F02
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Nov 2021 21:38:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0C70F60F02
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 5A01F60F56
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Nov 2021 07:32:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5A01F60F56
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ACA3A1663;
-	Mon,  1 Nov 2021 22:37:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ACA3A1663
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1355F16B0;
+	Tue,  2 Nov 2021 08:31:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1355F16B0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635802694;
-	bh=9TF3gGAhuHNCG24L/rBo3Ct/4tDDLf3RhkGmTbmZqQw=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=n7NptU4Xj6jAucJIYR7QRinOqrz5k6U/jGrR+TC6ZuaG+01fzydLo6i4wq5rdr4Fo
-	 tzK93CQRoKZgqjhwXL+2FoMndjadFGPs7wwzPkBP5J+3rUtSiPyJtEPiLaibbsVkeN
-	 G+tFL49x0G1aq1zP4325WpGu/2PpL3M8R2uHVw24=
+	s=default; t=1635838344;
+	bh=atp9VnqhdmO4vQiUAr/FMc0qqRqCLu2dG91RwZki82s=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=kVMg9u99VRFk593uyswKMo3GeHpB4vp82tQQM3ejfKxh01QhmpusXGAExz9J9TNWk
+	 /VyuhOKpJWOWaZZ71KGbRz1V5jfMxE5sMjU088pyOih0KMxG1H+/l7LwGNsfAiABJD
+	 l2qp3Z8oQs4+tTr4GUPRPg2T10/FeHYQxAqW7Bms=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 27060F8025F;
-	Mon,  1 Nov 2021 22:37:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 62028F800BF;
+	Tue,  2 Nov 2021 08:31:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0B53CF80269; Mon,  1 Nov 2021 22:37:20 +0100 (CET)
-Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com
- [209.85.167.175])
+ id 5B664F8025D; Tue,  2 Nov 2021 08:31:30 +0100 (CET)
+Received: from m43-7.mailgun.net (m43-7.mailgun.net [69.72.43.7])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1B165F8012E
- for <alsa-devel@alsa-project.org>; Mon,  1 Nov 2021 22:37:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B165F8012E
-Received: by mail-oi1-f175.google.com with SMTP id o83so26949785oif.4
- for <alsa-devel@alsa-project.org>; Mon, 01 Nov 2021 14:37:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=JAg6KdmFAXzUuXNGb8fBqgMEGAaw9CamDaT7qNQbpL8=;
- b=Dd5wxv7U6BLCGNHigMkP5Sn9WC6kDTOcB/ccYkg978kbFjTU/0Wro7/HDE1bUr6Cou
- 6o9K/8xsur6PB3QCpmJ3GJDhRRc60OMhe6yaVajYH18Whqq9nLXkrOAsTLZXQjo6L22H
- nBJ2xnfKJHUpZeyo1YT8DnHvW2aofS6bgaWAsFhUrngQhrdAg/wBfwPcoe4Pf0uocXbq
- K8zngD17mO18jET2lvrlLHxn4x7BSjxx1ICCt806WzVekEwR+OkHpv64X0bOhjdki1SO
- od00wYexbvtz4T++5yujSrscu+ZqLosSjpodpABbBeTouwlk/CkPsPTkGQV5RA+hHYRj
- 32YA==
-X-Gm-Message-State: AOAM531OO5chU3YwuBwsA4RYPBe6LfMD7ENfBq/MEUIQLgUTcJXfNBIS
- 8HOMDVrHnsuzQyJeDXvCPA==
-X-Google-Smtp-Source: ABdhPJwwHJSQi7dkJRcGUNwGb6a7bA1FO3rXq7O3icm5Iokg0YPIWwbrh3XTqnkeg8LqfAGHRmgsWQ==
-X-Received: by 2002:aca:42c5:: with SMTP id p188mr1447707oia.125.1635802629571; 
- Mon, 01 Nov 2021 14:37:09 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net.
- [66.90.148.213])
- by smtp.gmail.com with ESMTPSA id z22sm4001594oth.63.2021.11.01.14.37.08
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 01 Nov 2021 14:37:09 -0700 (PDT)
-Received: (nullmailer pid 1110199 invoked by uid 1000);
- Mon, 01 Nov 2021 21:37:07 -0000
-Date: Mon, 1 Nov 2021 16:37:07 -0500
-From: Rob Herring <robh@kernel.org>
-To: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Subject: Re: [PATCH v2 2/3] dt-bindings: pinctrl: qcom: Add sc7280 lpass lpi
- pinctrl compatible
-Message-ID: <YYBeA7Qt2vhFoMeO@robh.at.kernel.org>
-References: <1635342097-2726-1-git-send-email-srivasam@codeaurora.org>
- <1635342097-2726-3-git-send-email-srivasam@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1635342097-2726-3-git-send-email-srivasam@codeaurora.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- bgoswami@codeaurora.org, lgirdwood@gmail.com,
- Venkata Prasad Potturu <potturu@codeaurora.org>, linux-arm-msm@vger.kernel.org,
- swboyd@chromium.org, tiwai@suse.com, linux-kernel@vger.kernel.org,
- robh+dt@kernel.org, bjorn.andersson@linaro.org, agross@kernel.org,
- broonie@kernel.org, rohitkr@codeaurora.org, judyhsiao@chromium.org,
- plai@codeaurora.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id A474EF8012E
+ for <alsa-devel@alsa-project.org>; Tue,  2 Nov 2021 08:31:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A474EF8012E
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=mg.codeaurora.org
+ header.i=@mg.codeaurora.org header.b="cWRRYF8Y"
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
+ q=dns/txt; 
+ s=smtp; t=1635838283; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=ZtcWXP/DICrrVoa56QdFrH9TdBdluRLfCuEUwQ9cLuU=;
+ b=cWRRYF8YuQXifSQ1JdSM0fwJLCPuuohQic2j24vEiIRtLgZ8ZOO5J3/mA0O4ntPEuWH7no8Q
+ k4ta13/Bi+YUEVmqi8oYPCpnzKDSMC4zWKqXO5POY3/D+5uJWNFD3sFcjMsKXFwaQ4vPxXho
+ D1I7AL3OB4+zkUZxg07LjHWeESI=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 6180e949f6a3eeacf9059976 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Nov 2021 07:31:21
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+ id 1AE37C43616; Tue,  2 Nov 2021 07:31:21 +0000 (UTC)
+Received: from hu-srivasam-hyd.qualcomm.com (unknown [202.46.22.19])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: srivasam)
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id 7B5DFC4360D;
+ Tue,  2 Nov 2021 07:31:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 7B5DFC4360D
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ spf=fail smtp.mailfrom=codeaurora.org
+From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+To: agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+ broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+ bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+ srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
+ linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ swboyd@chromium.org, judyhsiao@chromium.org
+Subject: [PATCH v4 00/10] Add support for audio on SC7280 based targets
+Date: Tue,  2 Nov 2021 13:00:55 +0530
+Message-Id: <1635838265-27346-1-git-send-email-srivasam@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+Cc: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,15 +95,54 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 27 Oct 2021 19:11:36 +0530, Srinivasa Rao Mandadapu wrote:
-> Add device tree binding compatible name for Qualcomm SC7280 LPASS LPI pinctrl driver.
-> 
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-> Co-developed-by: Venkata Prasad Potturu <potturu@codeaurora.org>
-> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
-> ---
->  Documentation/devicetree/bindings/pinctrl/qcom,lpass-lpi-pinctrl.yaml | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
+This patch set is to add support for Audio over wcd codec,
+digital mics, through digital codecs and without ADSP.
+This patch set depends on:
+	-- https://patchwork.kernel.org/project/alsa-devel/list/?series=570161
+	-- https://patchwork.kernel.org/project/alsa-devel/list/?series=572615
+	-- https://patchwork.kernel.org/project/alsa-devel/list/?series=559677
 
-Acked-by: Rob Herring <robh@kernel.org>
+Changes Since V3:
+    -- Remove redundant power domain controls. As power domains can be configured from dtsi.
+Changes Since V2:
+    -- Split lpass sc7280 cpu driver patch and create regmap config patch.
+    -- Create patches based on latest kernel tip.
+    -- Add helper function to get dma control and lpaif handle.
+    -- Remove unused variables.
+Changes Since V1:
+    -- Typo errors fix
+    -- CPU driver readable/writable apis optimization.
+    -- Add Missing config patch
+    -- Add Common api for repeated dmactl initialization.
+
+Srinivasa Rao Mandadapu (10):
+  ASoC: qcom: Move lpass_pcm_data structure to lpass header
+  ASoC: qcom: lpass: Add dma fields for codec dma lpass interface
+  ASoC: qcom: Add register definition for codec rddma and wrdma
+  ASoC: qcom: Add lpass CPU driver for codec dma control
+  ASoC: qcom: Add helper function to get dma control and lpaif handle
+  ASoC: qcom: Add support for codec dma driver
+  ASoC: qcom: Add regmap config support for codec dma driver
+  ASoC: dt-bindings: Add SC7280 sound card bindings
+  ASoC: qcom: lpass-sc7280: Add platform driver for lpass audio
+  ASoC: qcom: SC7280: Update config for building codec dma drivers
+
+ .../devicetree/bindings/sound/qcom,lpass-cpu.yaml  |  69 ++-
+ sound/soc/qcom/Kconfig                             |  13 +
+ sound/soc/qcom/Makefile                            |   4 +
+ sound/soc/qcom/common.c                            |  39 ++
+ sound/soc/qcom/common.h                            |   1 +
+ sound/soc/qcom/lpass-cdc-dma.c                     | 195 ++++++++
+ sound/soc/qcom/lpass-cpu.c                         | 245 +++++++++-
+ sound/soc/qcom/lpass-lpaif-reg.h                   | 103 ++++-
+ sound/soc/qcom/lpass-platform.c                    | 513 ++++++++++++++++++---
+ sound/soc/qcom/lpass-sc7280.c                      | 417 +++++++++++++++++
+ sound/soc/qcom/lpass.h                             | 150 ++++++
+ 11 files changed, 1670 insertions(+), 79 deletions(-)
+ create mode 100644 sound/soc/qcom/lpass-cdc-dma.c
+ create mode 100644 sound/soc/qcom/lpass-sc7280.c
+
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+
