@@ -2,61 +2,67 @@ Return-Path: <SRS0=wMeK=PW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D4ECC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Nov 2021 19:20:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BA43C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Nov 2021 22:10:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C3ACA60EB4
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Nov 2021 19:20:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C3ACA60EB4
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=wanadoo.fr
+	by mail.kernel.org (Postfix) with ESMTPS id 4533961101
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Nov 2021 22:10:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4533961101
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 690251664;
-	Wed,  3 Nov 2021 20:19:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 690251664
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0ACA6166B;
+	Wed,  3 Nov 2021 23:09:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0ACA6166B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635967231;
-	bh=ygoptkZCxsV0maH7EDniQRP4/qNekd0pVkmyAMqJRbY=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Z508ubA0de5caBjMuZbPreXW5WbDsA9ixQB9tfvAYEwQNF/oplLzy8qXY7vg+gWcK
-	 T0ytAz7gj5JrElk52qT1mJj0bgNUb7Gg55m0DOi8ztXMai+gSpdbTv4tsKV3d2yitx
-	 9fk+IjABjrOZcRYJFFzIWeFNK7zJ0iotLO9ckUO8=
+	s=default; t=1635977445;
+	bh=1Y7s9XKGOhVcrDzPDw6mT6Vmftu/ds9ncXRrAMDn0KM=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Fxu+AzwjFFewwm9BPVZPWXooCvZJ+PzY6oLrZcv19OBaY6z85Bx1nh+4IM+XoWFj5
+	 RnJxvYX0H60OZvmX4NP88MwjhZZBjgTHw6uWg6lnU23F33wqQy66navWkNEbW/yvEZ
+	 rAxW9V5gFzDs5Ovzc61O8ohD3Y+opRmf2bPbleoo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DD04AF80269;
-	Wed,  3 Nov 2021 20:19:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 670DEF80269;
+	Wed,  3 Nov 2021 23:09:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C9BF5F8026A; Wed,  3 Nov 2021 20:19:37 +0100 (CET)
-Received: from smtp.smtpout.orange.fr (smtp03.smtpout.orange.fr
- [80.12.242.125])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 4044DF8026A; Wed,  3 Nov 2021 23:09:51 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4B8B6F800D2
- for <alsa-devel@alsa-project.org>; Wed,  3 Nov 2021 20:19:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B8B6F800D2
-Received: from pop-os.home ([86.243.171.122]) by smtp.orange.fr with ESMTPA
- id iLnEmtQIGUGqliLnEms32M; Wed, 03 Nov 2021 20:19:29 +0100
-X-ME-Helo: pop-os.home
-X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
-X-ME-Date: Wed, 03 Nov 2021 20:19:29 +0100
-X-ME-IP: 86.243.171.122
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- srinivas.kandagatla@linaro.org, yang.lee@linux.alibaba.com
-Subject: [PATCH] ASoC: codecs: Axe some dead code in
- 'wcd_mbhc_adc_hs_rem_irq()'
-Date: Wed,  3 Nov 2021 20:19:27 +0100
-Message-Id: <57a89cc31eb2312addd3c77896d7df8206aef138.1635967035.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3799FF80224
+ for <alsa-devel@alsa-project.org>; Wed,  3 Nov 2021 23:09:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3799FF80224
+X-IronPort-AV: E=McAfee;i="6200,9189,10157"; a="231451819"
+X-IronPort-AV: E=Sophos;i="5.87,207,1631602800"; d="scan'208";a="231451819"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 03 Nov 2021 15:09:07 -0700
+X-IronPort-AV: E=Sophos;i="5.87,207,1631602800"; d="scan'208";a="578357318"
+Received: from dennisal-mobl.amr.corp.intel.com ([10.254.55.201])
+ by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 03 Nov 2021 15:09:06 -0700
+Message-ID: <742d9c1c833d5857538343e9ceeb2fcca2f77708.camel@linux.intel.com>
+Subject: Re: [PATCH] ASoC: SOF:control: Fix variable type in
+ snd_sof_refresh_control()
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+To: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, lgirdwood@gmail.com, 
+ broonie@kernel.org
+Date: Wed, 03 Nov 2021 15:09:06 -0700
+In-Reply-To: <20211103082710.17165-1-peter.ujfalusi@linux.intel.com>
+References: <20211103082710.17165-1-peter.ujfalusi@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
- alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
- linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Cc: guennadi.liakhovetski@linux.intel.com, alsa-devel@alsa-project.org,
+ seppo.ingalsuo@linux.intel.com, pierre-louis.bossart@linux.intel.com,
+ kai.vehmanen@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,41 +78,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-'hphpa_on' is know to be false, so this is just dead code that should be
-removed.
+On Wed, 2021-11-03 at 10:27 +0200, Peter Ujfalusi wrote:
+> From: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+> 
+> The second parameter for snd_sof_ipc_set_get_comp_data() is ipc_cmd,
+> not
+> ipc_ctrl_type and the type is u32.
+> 
+> Fixes: 756bbe4205bc6 ("ASoC: SOF: Handle control change notification
+> from firmware")
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
 
-Suggested-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-This patch is a follow-up of:
-https://lore.kernel.org/kernel-janitors/988948f7f266aa00698704687537335b7e6a67b2.1634455711.git.christophe.jaillet@wanadoo.fr/
----
- sound/soc/codecs/wcd-mbhc-v2.c | 5 -----
- 1 file changed, 5 deletions(-)
+Thanks, Peter.
 
-diff --git a/sound/soc/codecs/wcd-mbhc-v2.c b/sound/soc/codecs/wcd-mbhc-v2.c
-index 405128ccb4b0..b905eb8f3c67 100644
---- a/sound/soc/codecs/wcd-mbhc-v2.c
-+++ b/sound/soc/codecs/wcd-mbhc-v2.c
-@@ -1176,7 +1176,6 @@ static irqreturn_t wcd_mbhc_adc_hs_rem_irq(int irq, void *data)
- 	struct wcd_mbhc *mbhc = data;
- 	unsigned long timeout;
- 	int adc_threshold, output_mv, retry = 0;
--	bool hphpa_on = false;
- 
- 	mutex_lock(&mbhc->lock);
- 	timeout = jiffies + msecs_to_jiffies(WCD_FAKE_REMOVAL_MIN_PERIOD_MS);
-@@ -1210,10 +1209,6 @@ static irqreturn_t wcd_mbhc_adc_hs_rem_irq(int irq, void *data)
- 	wcd_mbhc_elec_hs_report_unplug(mbhc);
- 	wcd_mbhc_write_field(mbhc, WCD_MBHC_BTN_ISRC_CTL, 0);
- 
--	if (hphpa_on) {
--		hphpa_on = false;
--		wcd_mbhc_write_field(mbhc, WCD_MBHC_HPH_PA_EN, 3);
--	}
- exit:
- 	mutex_unlock(&mbhc->lock);
- 	return IRQ_HANDLED;
--- 
-2.30.2
+Acked-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+
 
