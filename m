@@ -2,75 +2,77 @@ Return-Path: <SRS0=wMeK=PW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BD02FC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Nov 2021 16:08:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 37654C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Nov 2021 16:16:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E3C9D60F39
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Nov 2021 16:08:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E3C9D60F39
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 5BFCD610A8
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Nov 2021 16:16:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5BFCD610A8
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2A0A41687;
-	Wed,  3 Nov 2021 17:07:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A0A41687
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3BED1166D;
+	Wed,  3 Nov 2021 17:15:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BED1166D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635955709;
-	bh=MaSIloMma1h68TqpIPv3a5lAJzn3BC/0xO0iyfJrqa4=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=q5F24BpxJFPymK2H6eWollIYYB/FfOP/cnld39tObP785XZmghfSJj8KdJ2zFsyu9
-	 KexMdd7Rzto1DGDoJ2GAmLQ/MNtV8oOmpyvtI/cZmUcbNk8PpW11cP1S1g+o1XKhUk
-	 mjduSaRkuee+mum7DjN9lN4WjAX8frVyjwoOGLzo=
+	s=default; t=1635956207;
+	bh=bqBJ56J0CP2TvKKRYSy4DpCbzMwsLYXmeBRNoMcH0NI=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=f4YywoLJv9Ymxch1Yo7el8KGVtlWNvhF47uz4kI0vo3YKN4ca5TjA+n/ZYEs0bVNh
+	 16LuCf3Mp0cgDPK5IU7nBbXORLfVGuVlngUJ4SxOAPZLW8EvhsWhgAV4i2xnsSOn/K
+	 oH4R07M5IO4GY8bhUeWfyu/LXPEkc9D81+IXxLQo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5AA98F802BE;
-	Wed,  3 Nov 2021 17:07:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C3A35F80269;
+	Wed,  3 Nov 2021 17:15:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 63C14F8049E; Wed,  3 Nov 2021 17:07:16 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 5584FF8026A; Wed,  3 Nov 2021 17:15:55 +0100 (CET)
+Received: from bombadil.infradead.org (bombadil.infradead.org
+ [IPv6:2607:7c80:54:e::133])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D7D9FF80279
- for <alsa-devel@alsa-project.org>; Wed,  3 Nov 2021 17:07:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7D9FF80279
+ by alsa1.perex.cz (Postfix) with ESMTPS id DABBDF800FA
+ for <alsa-devel@alsa-project.org>; Wed,  3 Nov 2021 17:15:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DABBDF800FA
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="Og427z/d"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="DcAU3Hg2"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id CF338212C5;
- Wed,  3 Nov 2021 16:07:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1635955628; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=k3OuvJSvgbahNULZlpe5E31EuVuqOKxqUPYjT9vG3sY=;
- b=Og427z/dC6JsH3LpQbR/EaB25LVQplg2EgAU4QYn/HDojP4PbjK1AeO535FRI8TvNm2hAN
- Y+KyDGxjYh3m2ID5jM3Ce4fGf6o/qDrV2MTLI3njPpPNnnSpzpFU8zdLRXDwdqez46cwmi
- 6KjFNTQ5AvK00W7K49Hj5W1oSouqYPU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1635955628;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=k3OuvJSvgbahNULZlpe5E31EuVuqOKxqUPYjT9vG3sY=;
- b=DcAU3Hg2QxM5P/PQsu1S78bmFcLr6NkhS3p07P139XvbegoLIBf17YjL8fTHzlJKCsLesu
- JjqN6E82MUEBggDA==
-Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id C98BD2C168;
- Wed,  3 Nov 2021 16:07:08 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: timer: Unconditionally unlink slave instances, too
-Date: Wed,  3 Nov 2021 17:07:07 +0100
-Message-Id: <20211103160707.21928-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
+ dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
+ header.b="aLUGp44N"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+ Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+ Subject:Sender:Reply-To:Content-ID:Content-Description;
+ bh=AOsyCgZE6MJ4p0vyz+bhHBA8QhVxzWHGR03f3rBg+1o=; b=aLUGp44NafpCSUm7Qy08z/kw24
+ JYbtsX4n3idfMynbyx+Ae0BkGO6EH5tXIvw4qEA1eLFv1p8d1udn77qtqLznUegSLR86nracRJ17X
+ kqQ0OKaQSS8t5AZipevuRJmIUSGOVLF1RCJtLPX95u/PJTsK1wcX2cAdW4vnDHscpyk141TsqF/+H
+ BEGDQaBiJK2BQXW/NJlBgTMeAPOTisz4FTFVCFSk+EqUek/2nRRaJb5Jq9iSk8Q2tanfzce6//erL
+ 3KJW3KQ0FTVLYb9h3PsYKZFi1qT0x1FADtVEEo1JKTy99FUlKi/xQIY3jJUJ67aPVCydODa40kpRY
+ MXZ4PsFA==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+ by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1miIvM-005hxE-TK; Wed, 03 Nov 2021 16:15:41 +0000
+Subject: Re: [PATCH] ASoC: amd: vangogh: add SPI dependency
+To: Arnd Bergmann <arnd@kernel.org>, Mark Brown <broonie@kernel.org>
+References: <20211019191453.3047514-1-arnd@kernel.org>
+From: Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <b2a01d9f-7012-3e7c-5792-2620acce8967@infradead.org>
+Date: Wed, 3 Nov 2021 09:15:40 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Wang Wensheng <wangwensheng4@huawei.com>
+In-Reply-To: <20211019191453.3047514-1-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org, Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
+ Arnd Bergmann <arnd@arndb.de>, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-kernel@vger.kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.com>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,47 +88,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Like the previous fix (commit c0317c0e8709 "ALSA: timer: Fix
-use-after-free problem"), we have to unlink slave timer instances
-immediately at snd_timer_stop(), too.  Otherwise it may leave a stale
-entry in the list if the slave instance is freed before actually
-running.
+On 10/19/21 12:14 PM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Without CONFIG_SPI, this fails to build:
+> 
+> WARNING: unmet direct dependencies detected for SND_SOC_CS35L41_SPI
+>    Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SPI_MASTER [=n]
+>    Selected by [m]:
+>    - SND_SOC_AMD_VANGOGH_MACH [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_SOC_AMD_ACP5x [=m] && I2C [=y]
+> ERROR: modpost: "spi_setup" [sound/soc/codecs/snd-soc-cs35l41-spi.ko] undefined!
+> ERROR: modpost: "__devm_regmap_init_spi" [sound/soc/codecs/snd-soc-cs35l41-spi.ko] undefined!
+> 
+> Fixes: 96792fdd77cd ("ASoC: amd: enable vangogh platform machine driver build")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>   sound/soc/amd/Kconfig | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
+> index d91a9399777c..edee2098c82e 100644
+> --- a/sound/soc/amd/Kconfig
+> +++ b/sound/soc/amd/Kconfig
+> @@ -68,7 +68,7 @@ config SND_SOC_AMD_VANGOGH_MACH
+>   	tristate "AMD Vangogh support for NAU8821 CS35L41"
+>   	select SND_SOC_NAU8821
+>   	select SND_SOC_CS35L41_SPI
+> -	depends on SND_SOC_AMD_ACP5x && I2C
+> +	depends on SND_SOC_AMD_ACP5x && I2C && SPI
+>   	help
+>   	  This option enables machine driver for Vangogh platform
+>   	  using NAU8821 and CS35L41 codecs.
+> 
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/timer.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
 
-diff --git a/sound/core/timer.c b/sound/core/timer.c
-index 4f9bab931951..5749e5275ba5 100644
---- a/sound/core/timer.c
-+++ b/sound/core/timer.c
-@@ -665,19 +665,18 @@ static int snd_timer_stop1(struct snd_timer_instance *timeri, bool stop)
- static int snd_timer_stop_slave(struct snd_timer_instance *timeri, bool stop)
- {
- 	unsigned long flags;
-+	bool running;
- 
- 	spin_lock_irqsave(&slave_active_lock, flags);
--	if (!(timeri->flags & SNDRV_TIMER_IFLG_RUNNING)) {
--		spin_unlock_irqrestore(&slave_active_lock, flags);
--		return -EBUSY;
--	}
-+	running = timeri->flags & SNDRV_TIMER_IFLG_RUNNING;
- 	timeri->flags &= ~SNDRV_TIMER_IFLG_RUNNING;
- 	if (timeri->timer) {
- 		spin_lock(&timeri->timer->lock);
- 		list_del_init(&timeri->ack_list);
- 		list_del_init(&timeri->active_list);
--		snd_timer_notify1(timeri, stop ? SNDRV_TIMER_EVENT_STOP :
--				  SNDRV_TIMER_EVENT_PAUSE);
-+		if (running)
-+			snd_timer_notify1(timeri, stop ? SNDRV_TIMER_EVENT_STOP :
-+					  SNDRV_TIMER_EVENT_PAUSE);
- 		spin_unlock(&timeri->timer->lock);
- 	}
- 	spin_unlock_irqrestore(&slave_active_lock, flags);
+Just had this build error in linux-next-20211103
+so this patch is needed there.
+
+Thanks.
+
 -- 
-2.26.2
-
+~Randy
