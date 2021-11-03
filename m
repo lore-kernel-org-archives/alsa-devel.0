@@ -2,53 +2,53 @@ Return-Path: <SRS0=wMeK=PW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E784C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Nov 2021 13:55:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94F4DC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Nov 2021 13:55:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 27A56610FD
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Nov 2021 13:55:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 27A56610FD
+	by mail.kernel.org (Postfix) with ESMTPS id 7EDB661166
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Nov 2021 13:55:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7EDB661166
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 657F416AA;
-	Wed,  3 Nov 2021 14:54:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 657F416AA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 54B7816B4;
+	Wed,  3 Nov 2021 14:54:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 54B7816B4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635947709;
-	bh=F1bGNf+j2sI+p9sZOyMctur/VhqOxrDqXZVOZeIclPU=;
+	s=default; t=1635947735;
+	bh=gvmQ6QStlfDuamUV9ZOddKFYfhbXrtb5HOEAx4V17wU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kIKdOUNXQ4ue8sKmdhCLBWgwlqUts9NR6Mk1c1QC0psv4AMJPIniHTVtVdP7sbgty
-	 2IhEqSPzZa3Ciie5GulCAHLv1B68Mffi3B8YQKhc03JhrRRZencAI2iZSZHArYfN1s
-	 fw1K7oOFgSg1/HNRpfMA9BLY3s/929ZxAOhjaDZ0=
+	b=jlywCF6xF+zcDSCX1kQZ5fCL0beQOa2Zr6heqwl66SsueRNdndPpNPvcmMaAfbD8a
+	 R5RJT5RXvrh5W5ETbENQeagRExc1f6SKaJ9oXi64nHBvlPyUtAXc0LnXbQqambTmrQ
+	 8r0m3dbxIMQpYh2iZom/kJ8nnsM7WtMC5nR0Uqdg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 44564F804F1;
-	Wed,  3 Nov 2021 14:53:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E86A9F80507;
+	Wed,  3 Nov 2021 14:53:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 173DAF80269; Wed,  3 Nov 2021 14:53:00 +0100 (CET)
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com
- (mail-bn1nam07on2061.outbound.protection.outlook.com [40.107.212.61])
+ id 24526F804EC; Wed,  3 Nov 2021 14:53:08 +0100 (CET)
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com
+ (mail-dm6nam12on2067.outbound.protection.outlook.com [40.107.243.67])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E5AEBF80269
- for <alsa-devel@alsa-project.org>; Wed,  3 Nov 2021 14:52:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5AEBF80269
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5AC58F804E5
+ for <alsa-devel@alsa-project.org>; Wed,  3 Nov 2021 14:52:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5AC58F804E5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com
- header.b="jUEj3ppG"
+ header.b="NHeM6BZ9"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LOMfd82PVCeRqE004UfmOAO8sMscZYhPHpMfs9mxsReuak1Vy8C5IZsT8s0+Yz97rPnsajBx/hMcxdeiawu2bAlNrhz+b1s3GSZ8EFXTQLZpc7KxhDJYaboGA23zyuEXaZCYIiA30Zbs8K1vzRLBi80c+An/EcFltliIFELEIH97kotex7bE+dirSq01rO0YbyNXhOboIz2tie6HdKJHbN7iuUspg1h7s2r89r3Zl8W2MecASiS1Y9sTt0Z6TmVcHqtgV//coOxTVl4i/xVoRo1r0TbWi9j6XUEaF52S+5AQKLgn+93qZxr34cQ3EXcerj7LPcLKPtV0k7IcxhfMtA==
+ b=nFPE02EmobO1X3KEucBFk4V0OztIfU6HO3wnXVymUI30TGtNEgZJ3ggdxxy1mf78S2KxDnKS2i3u8gFPPVyXmbZKuFty8Ei9FXt//2zU2WudQ2QjqZE7v+xOX4dfFYHJ1mXyclm2nBxV2GdR6xR5MJgGfTloRxvoKXsPnJ7vqgUDiyRW3g8dKd/FQPvSkykmz83TWGfjSZhsA53YQj5FFJ8KpBkmD3mDLHRXrhhoAPJFLb/C7oW48Oaqf8ltwHl/gUg3tji1GF6g3+1Kf/YQiolA1Zb8UETh635RiSZXRPyBYjZRkTDY6bcnhXNgpO7IUCPMmBCf1XX4D9M4xOzc+A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IXqLwbKo7AloZe9GpCoOeG1wpo91/LMKM1UlGi1eBJA=;
- b=Hyxkkh568SOKQKAT7F5hQelYvDi0lqbPmzmySwEvZK/qUnvDOw1FyN+BUYYAc7shV255qfcs1aZtE4T34nGmnAsaqql2ZeFEAnJ7H5RKJx2GZY6sRuFjOLg8WnDjB+K8ViMStVrnIdUkHRqH9p1Lh0P8531KaISMOPsCJFbKLI8A9o1G9P4MeSA7CMNVMH0JAn1NP/2lkEwCE+mocFlYExbINIc6fkD3SmvFR1Rf891A3/r4mwA4RN6sFa9pwi8e59f+u15lzuAMrWMWMLSVBzJvN6ocRuO3AOC2VBKetCe4nbfvuZsISDLzaXPaPP7xGZv0vzrXyOM0TgIdI9hNYA==
+ bh=z9ZOKYQmuNuZwc2ljgbVpmsRj+kKvpiSn/G+mClgeXU=;
+ b=Iifjl5Mpb86ULepw9YAUryolB0aDdDWsQ/IXVAXuzOrNNVn9HEIbSL8+ZERJMNrcv66Di+Ep9SSRQV6t2uB6Q7ppbkF47UJSBW9DXREAZft9/442L69lvSk9/NV81cun80xuzh7dUYXmTVDk/m8nd3Tii3jlvSy872U+eU4V+9wb3rjIKfLLQrJrxj9aG/pQp2sd3zNOf41qyySsKYiYojcor1SmhTz8hkuE02fk6q4Lim2q6JCdRqJbl/u9MV/aRyDBEwpwg2hFqCgc9YOvmbL3/QBPpi9MeTTI1rqrCSXA2nRoKjHFwZ9da0JRKewj4IcD3jj/rCTBJ+gJ7+/RGg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  216.228.112.35) smtp.rcpttodomain=alsa-project.org smtp.mailfrom=nvidia.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
@@ -56,18 +56,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IXqLwbKo7AloZe9GpCoOeG1wpo91/LMKM1UlGi1eBJA=;
- b=jUEj3ppGTg4e3U5c/JRQv1jXjuEHVk0YPsy5C72jzKqr65Qs10XAyiCslukTM8uOAMt32SST0Dms7CDYpy2D776NbstRzx7V69E3HSaxYZyiBqCIpogNrckxDMaUM+E079LnN4jIeOUgK7k+M265j9XMO+44Ue+Uk44rqoyPJier6TCsOhV3cZP6wzUpxpKHuh2cvpg1czPAeVn+dKyXPJS156YSTbfQyHUxK7XXGgSbSLgEtDT8GuJVC+R5rXDVQpFcgV3S5NWn7VhBj4IP+4v1xQJB9OR4NhDwbeYJgk4F1de++IXVPqad98KJPGzTIsZvM6sihhpH5K8iLFzYBg==
-Received: from BN9PR03CA0698.namprd03.prod.outlook.com (2603:10b6:408:ef::13)
- by BN6PR12MB1729.namprd12.prod.outlook.com (2603:10b6:404:108::16)
+ bh=z9ZOKYQmuNuZwc2ljgbVpmsRj+kKvpiSn/G+mClgeXU=;
+ b=NHeM6BZ9IrUsT0Cort8BbPsmEIdzpy4YkDtVsJ5RzDKN0sEPbMeu1GAk8XOaVX8mR8JEmVmybRByTP/kQgYws1aHKNaK/Cbv+kBznLgUiTuogfOXvxlq9rNF0k7g0wSyMla2rAgY1MUs6A+GruAZc/ivitwQrk6DlFT3XCbM4Ggrm7UhDh70ysPnuLwGoiEPcmN7UeZTrEPew2neUaS2I7tTUdGeIZ9CIGwLlfzZ/bj/QCT53QT7JBAX+E/2ZzU97dSy6ugkwFBQxgvkB0x/f/Ob9Ngtwxsso+JmY2u+SPZ5ewwk6xkrmHZ6ud5ELuuS7izj7tP5NCI1gaUwpHvnhw==
+Received: from BN9PR03CA0712.namprd03.prod.outlook.com (2603:10b6:408:ef::27)
+ by BN6PR12MB1203.namprd12.prod.outlook.com (2603:10b6:404:19::18)
  with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15; Wed, 3 Nov
- 2021 13:52:49 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.11; Wed, 3 Nov
+ 2021 13:52:56 +0000
 Received: from BN8NAM11FT042.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:ef:cafe::8d) by BN9PR03CA0698.outlook.office365.com
- (2603:10b6:408:ef::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.11 via Frontend
- Transport; Wed, 3 Nov 2021 13:52:49 +0000
+ (2603:10b6:408:ef:cafe::58) by BN9PR03CA0712.outlook.office365.com
+ (2603:10b6:408:ef::27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15 via Frontend
+ Transport; Wed, 3 Nov 2021 13:52:56 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.35)
  smtp.mailfrom=nvidia.com; alsa-project.org; dkim=none (message not signed)
  header.d=none;alsa-project.org; dmarc=pass action=none
@@ -78,19 +78,19 @@ Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
 Received: from mail.nvidia.com (216.228.112.35) by
  BN8NAM11FT042.mail.protection.outlook.com (10.13.177.85) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4669.10 via Frontend Transport; Wed, 3 Nov 2021 13:52:48 +0000
+ 15.20.4669.10 via Frontend Transport; Wed, 3 Nov 2021 13:52:53 +0000
 Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL111.nvidia.com
  (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 3 Nov
- 2021 13:52:43 +0000
+ 2021 13:52:52 +0000
 Received: from audio.nvidia.com (172.20.187.6) by mail.nvidia.com
  (172.20.187.15) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
- Transport; Wed, 3 Nov 2021 06:52:40 -0700
+ Transport; Wed, 3 Nov 2021 06:52:49 -0700
 From: Sameer Pujar <spujar@nvidia.com>
 To: <broonie@kernel.org>, <lgirdwood@gmail.com>, <perex@perex.cz>,
  <tiwai@suse.com>
-Subject: [PATCH v2 01/10] ASoC: tegra: Fix kcontrol put callback in ADMAIF
-Date: Wed, 3 Nov 2021 19:22:17 +0530
-Message-ID: <1635947547-24391-2-git-send-email-spujar@nvidia.com>
+Subject: [PATCH v2 04/10] ASoC: tegra: Fix kcontrol put callback in DSPK
+Date: Wed, 3 Nov 2021 19:22:20 +0530
+Message-ID: <1635947547-24391-5-git-send-email-spujar@nvidia.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1635947547-24391-1-git-send-email-spujar@nvidia.com>
 References: <1635947547-24391-1-git-send-email-spujar@nvidia.com>
@@ -98,28 +98,28 @@ MIME-Version: 1.0
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1a904a2b-a4dc-4c9d-6891-08d99ed13876
-X-MS-TrafficTypeDiagnostic: BN6PR12MB1729:
-X-Microsoft-Antispam-PRVS: <BN6PR12MB17296932FDCE280D69382C42A78C9@BN6PR12MB1729.namprd12.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: ce0edf17-7e9e-4240-289b-08d99ed13b89
+X-MS-TrafficTypeDiagnostic: BN6PR12MB1203:
+X-Microsoft-Antispam-PRVS: <BN6PR12MB1203467D0E4ED8F8DD72C97EA78C9@BN6PR12MB1203.namprd12.prod.outlook.com>
 X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /CFR+4fEHl+nIiV/UNct8FlZp7wTF049NlfzGADPOQCxPxCUgx1nTeZsVLcGLkfVKMgB2wDWELQHZLTy+E3DKZrrT5RvlE30fVbBpGBTfZYL4Fc+jXyAF7+vdihiZ7B/pAUQC7dE6JJMyDHq+4KbDVKwOCxMwPI2Wegdzi/FxkPzt5X9wrmRyWaOhUdfJ4Knb7mDQVHsN5iqiZrqmgXyrFawypGZK6Zk8107biVo7cE4e+gvS0Hvoh/E4JKEZag1MgNH05+RhTTLP1vEz+eehtdpbiKfEzeq34RSnFKynA2KHwNpIT3BPpeNADJJX0PRWbx5SFl9i/IXxW/qdkMelMY4Rq7GfJQ2g7zetzZVxWKdv283vtusotafYVFn1sghg3g/Q4JfXUkTcJ5Xvq7GbbqfRfw1364LTsAb4wLpd6fZdpBU0OvCtNu2Z5y57yU0QzgSWlPCCkndQHMOd9fZ3HscDrHTGOL0UhQ3BXnMaz2eTVhkrmYqQA/fvneDU4w48WT2YMUY3QMKFamVpPL/ECYxKe5PYAPWiSgX1FYNe0WXXJM2/WlWtWotMyHMdiBJ6j3UCnqxxupUOhxPtachPV1vPJwGOJJdHw9KsY7aaDcEdeYbeiBYS2VeqPP4733gs0IdUb0vvjGT+f17i7cezM4K2os3U6ZSOipdar0iUjDKiUkLbsvmk1X7hdfEHsdzX4M2XzGaSvwioLnF8io0KQ==
+X-Microsoft-Antispam-Message-Info: /pCP5sY1Lrj0TiFhoL60FKOlblcQSCe/3NVPuWMkXA18tF0V5agRnGTpJG5KbrR0TqPHMETGFOM26jE4ONbT+57AubGToqsK1azHr1GztG+0e/LJ4UpQYf6SStRKk6tcRIXKxDxqa4CanL+DliCmb5JgEvH75XKFJC50xt6o/kZoK5wRox/zfHkzpnOGn9PubMaY2G2D+inH0/nkskcszSZvAOeSdfVdJgo1EPcDM1SlsxAISfr+TvcgaY+MRIPuB8/x0QdxlzPJJw+i9orx5H3B9Iv4DJWZlKTfz4P47/O+h/Fq6PFO4x0Y0jE3J7X1HVraCJQO0F9RdGcs/CoLOSO9CoqF+WOsxyu81Abi91JXHd2l7Cb2qd0xlszUPTqj2DXapEPBEcse3UUrTwlFObQUsAZ8k+Q6mOPG/rY0ExNWB/stl1yJchnxcTjaeMFHAq77fgGNlk7JeR5f2yCdztsvAup/UxESAWhU8F0taut9XpOX81WfH9yCXrAAFPjaaf2pEzXIAWYt3sBYCPoh6GBXnM5fv3UWh/MQxvSc/+8PZBJ4g895tSnZQMsi/52Str0eKjJ1x5OjwC6izqquWMokWZtxlFXUwi9Bif2jo7TJn0wj4D6wrfe+JsAB7JpXRqTmYQ2bTbKxFzz/d9hNp+i+zBauV2aAhzB6b5rgaRQr5mvAdxI2juFUT6099sEXDM8gESahzKs4ab01MhqF7w==
 X-Forefront-Antispam-Report: CIP:216.228.112.35; CTRY:US; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:mail.nvidia.com; PTR:schybrid04.nvidia.com; CAT:NONE;
- SFS:(4636009)(36840700001)(46966006)(36860700001)(8936002)(86362001)(508600001)(8676002)(70586007)(70206006)(107886003)(2906002)(36756003)(356005)(7636003)(82310400003)(83380400001)(4326008)(5660300002)(6666004)(426003)(7696005)(336012)(47076005)(186003)(26005)(36906005)(316002)(54906003)(110136005)(2616005);
+ SFS:(4636009)(36840700001)(46966006)(6666004)(70586007)(82310400003)(54906003)(8676002)(2906002)(2616005)(356005)(86362001)(47076005)(7696005)(107886003)(316002)(186003)(5660300002)(110136005)(508600001)(26005)(7636003)(83380400001)(36860700001)(4326008)(426003)(70206006)(336012)(8936002)(36756003);
  DIR:OUT; SFP:1101; 
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2021 13:52:48.0574 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1a904a2b-a4dc-4c9d-6891-08d99ed13876
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2021 13:52:53.2184 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: ce0edf17-7e9e-4240-289b-08d99ed13b89
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a; Ip=[216.228.112.35];
  Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT042.eop-nam11.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1729
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1203
 Cc: alsa-devel@alsa-project.org, Sameer Pujar <spujar@nvidia.com>,
  linux-kernel@vger.kernel.org, jonathanh@nvidia.com, thierry.reding@gmail.com,
  linux-tegra@vger.kernel.org
@@ -141,55 +141,67 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 The kcontrol put callback is expected to return 1 when there is change
 in HW or when the update is acknowledged by driver. This would ensure
 that change notifications are sent to subscribed applications. Update
-the ADMAIF driver accordingly
+the DSPK driver accordingly.
 
-Fixes: f74028e159bb ("ASoC: tegra: Add Tegra210 based ADMAIF driver")
+Fixes: 327ef6470266 ("ASoC: tegra: Add Tegra186 based DSPK driver")
 Suggested-by: Jaroslav Kysela <perex@perex.cz>
 Suggested-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sameer Pujar <spujar@nvidia.com>
 ---
- sound/soc/tegra/tegra210_admaif.c | 23 ++++++++++++++++++-----
- 1 file changed, 18 insertions(+), 5 deletions(-)
+ sound/soc/tegra/tegra186_dspk.c | 33 ++++++++++++++++++++++++++-------
+ 1 file changed, 26 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/tegra/tegra210_admaif.c b/sound/soc/tegra/tegra210_admaif.c
-index bcccdf3..dc71075 100644
---- a/sound/soc/tegra/tegra210_admaif.c
-+++ b/sound/soc/tegra/tegra210_admaif.c
-@@ -452,16 +452,29 @@ static int tegra_admaif_put_control(struct snd_kcontrol *kcontrol,
- 	struct tegra_admaif *admaif = snd_soc_component_get_drvdata(cmpnt);
- 	int value = ucontrol->value.integer.value[0];
+diff --git a/sound/soc/tegra/tegra186_dspk.c b/sound/soc/tegra/tegra186_dspk.c
+index 8ee9a77..4cc06e9 100644
+--- a/sound/soc/tegra/tegra186_dspk.c
++++ b/sound/soc/tegra/tegra186_dspk.c
+@@ -55,20 +55,39 @@ static int tegra186_dspk_put_control(struct snd_kcontrol *kcontrol,
+ 	struct tegra186_dspk *dspk = snd_soc_component_get_drvdata(codec);
+ 	int val = ucontrol->value.integer.value[0];
  
--	if (strstr(kcontrol->id.name, "Playback Mono To Stereo"))
-+	if (strstr(kcontrol->id.name, "Playback Mono To Stereo")) {
-+		if (admaif->mono_to_stereo[ADMAIF_TX_PATH][ec->reg] == value)
+-	if (strstr(kcontrol->id.name, "FIFO Threshold"))
++	if (strstr(kcontrol->id.name, "FIFO Threshold")) {
++		if (dspk->rx_fifo_th == val)
 +			return 0;
 +
- 		admaif->mono_to_stereo[ADMAIF_TX_PATH][ec->reg] = value;
--	else if (strstr(kcontrol->id.name, "Capture Mono To Stereo"))
-+	} else if (strstr(kcontrol->id.name, "Capture Mono To Stereo")) {
-+		if (admaif->mono_to_stereo[ADMAIF_RX_PATH][ec->reg] == value)
+ 		dspk->rx_fifo_th = val;
+-	else if (strstr(kcontrol->id.name, "OSR Value"))
++	} else if (strstr(kcontrol->id.name, "OSR Value")) {
++		if (dspk->osr_val == val)
 +			return 0;
 +
- 		admaif->mono_to_stereo[ADMAIF_RX_PATH][ec->reg] = value;
--	else if (strstr(kcontrol->id.name, "Playback Stereo To Mono"))
-+	} else if (strstr(kcontrol->id.name, "Playback Stereo To Mono")) {
-+		if (admaif->stereo_to_mono[ADMAIF_TX_PATH][ec->reg] == value)
+ 		dspk->osr_val = val;
+-	else if (strstr(kcontrol->id.name, "LR Polarity Select"))
++	} else if (strstr(kcontrol->id.name, "LR Polarity Select")) {
++		if (dspk->lrsel == val)
 +			return 0;
 +
- 		admaif->stereo_to_mono[ADMAIF_TX_PATH][ec->reg] = value;
--	else if (strstr(kcontrol->id.name, "Capture Stereo To Mono"))
-+	} else if (strstr(kcontrol->id.name, "Capture Stereo To Mono")) {
-+		if (admaif->stereo_to_mono[ADMAIF_RX_PATH][ec->reg] == value)
+ 		dspk->lrsel = val;
+-	else if (strstr(kcontrol->id.name, "Channel Select"))
++	} else if (strstr(kcontrol->id.name, "Channel Select")) {
++		if (dspk->ch_sel == val)
 +			return 0;
 +
- 		admaif->stereo_to_mono[ADMAIF_RX_PATH][ec->reg] = value;
+ 		dspk->ch_sel = val;
+-	else if (strstr(kcontrol->id.name, "Mono To Stereo"))
++	} else if (strstr(kcontrol->id.name, "Mono To Stereo")) {
++		if (dspk->mono_to_stereo == val)
++			return 0;
++
+ 		dspk->mono_to_stereo = val;
+-	else if (strstr(kcontrol->id.name, "Stereo To Mono"))
++	} else if (strstr(kcontrol->id.name, "Stereo To Mono")) {
++		if (dspk->stereo_to_mono == val)
++			return 0;
++
+ 		dspk->stereo_to_mono = val;
 +	}
  
 -	return 0;
 +	return 1;
  }
  
- static int tegra_admaif_dai_probe(struct snd_soc_dai *dai)
+ static int __maybe_unused tegra186_dspk_runtime_suspend(struct device *dev)
 -- 
 2.7.4
 
