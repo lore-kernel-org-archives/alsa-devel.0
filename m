@@ -2,83 +2,84 @@ Return-Path: <SRS0=wMeK=PW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82C15C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Nov 2021 16:06:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24A35C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Nov 2021 16:07:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CC4EB60F39
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Nov 2021 16:06:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CC4EB60F39
+	by mail.kernel.org (Postfix) with ESMTPS id 3988C60F39
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Nov 2021 16:07:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3988C60F39
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D0D34166D;
-	Wed,  3 Nov 2021 17:05:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D0D34166D
+	by alsa0.perex.cz (Postfix) with ESMTPS id A3F3A1670;
+	Wed,  3 Nov 2021 17:06:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3F3A1670
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635955577;
-	bh=bCJhIT+3I1Ji5B/bt6XLIK9yWAn4Ri1Q2tXLzqDf+wY=;
+	s=default; t=1635955665;
+	bh=25A2m9VUSMgCklB5GU9Hxt8YGtRo4c7BHMeaabSUvao=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rwX7TmR2olNo0xfS+cUY5W54kh7DM/aRcSYLcJsWOcLAFPnWo8qkZjMEWbm/TfSvt
-	 fhUZy3JCB9gAgnHnWt58KzkzmgB4S6UvFBa5Uycswxl1t5Riym/IrMx5Xq3JRQ4QSJ
-	 /VM+qYvRebOh2VqdarO1P9byrg9/4Hb8orEdglgY=
+	b=YRemRRF7Yr0TVj7XO551KNWACtwFikhxuCMi2FkF1csRzkPsRhwkIMPDEHjoc4Mh+
+	 FfvT+ZFeSJKfL3PPaYUrYYZhGAKbmOgc5U4/vMjjyq76PXT8kRRPnI//7tH3CBX8fn
+	 oQWUvGyZCjMjlaeYvhXZtQJ1aCbo9NvkTkQufNBk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 69923F80269;
-	Wed,  3 Nov 2021 17:05:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 43D57F800D2;
+	Wed,  3 Nov 2021 17:06:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0C4A3F8026A; Wed,  3 Nov 2021 17:05:26 +0100 (CET)
+ id 7133BF8026A; Wed,  3 Nov 2021 17:06:49 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EEFA2F80224
- for <alsa-devel@alsa-project.org>; Wed,  3 Nov 2021 17:05:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EEFA2F80224
+ by alsa1.perex.cz (Postfix) with ESMTPS id 76BDEF800D2
+ for <alsa-devel@alsa-project.org>; Wed,  3 Nov 2021 17:06:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76BDEF800D2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="CnzWN73+"; 
+ header.b="FrdWvGUF"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="I7CV+zz5"
+ header.b="9ixKY4jE"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 4C93F218D9;
- Wed,  3 Nov 2021 16:05:20 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id B639E21952;
+ Wed,  3 Nov 2021 16:06:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1635955520; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1635955601; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=c5l7o4BpcCECvrTRkaeec82J8pPFkC/PNz7Hw9xeeZQ=;
- b=CnzWN73+id0aYbpEqL/vDzLFz9FkOCUMEQJ3DpOEEv36NlubR8649lm2r66CM+oi70mk46
- 5Io1eJrlC1LPsZyQF0yB/yWAFY2PDMH5hpdu8kUE/xfJPkh95NlpC5+YzVegy19FktQ6vS
- 5wGxNjaBaQbC2ZAHN4SbCseyj8GyhuM=
+ bh=c0mHsJ6qQaBk3pcqi2j3lzukH4beIAHJNv0ekMXLZ+s=;
+ b=FrdWvGUFPyxDPd6M8w0E+p9x/NLna2i7bXyuEjCXk7ClS+MEmARVqCbS6CPc5W4AIAK69O
+ cwXP4+/bCJrSm7b80uCw3IoBjvDeqqZH2pdFNIDXBmzh0Ib5HRis/tGntwi69Tr1/JY9WD
+ ifiTBKJsstrNvrYhERtG6J/riwMiOz4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1635955520;
+ s=susede2_ed25519; t=1635955601;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=c5l7o4BpcCECvrTRkaeec82J8pPFkC/PNz7Hw9xeeZQ=;
- b=I7CV+zz5Feb2BozLeT7PLPJzYdPIZVEnDbp7eAdq6/0u5R6ZJZTGE7LeR20+rPSX5Wauwn
- w5OGYf3mdvxbsLAw==
+ bh=c0mHsJ6qQaBk3pcqi2j3lzukH4beIAHJNv0ekMXLZ+s=;
+ b=9ixKY4jExs6qVivLdHvvTzLsNkYj4gdzAZT1jqSzEXqNOfz7UHu0FYLWlDcBtlF1Zyx1v3
+ 9M5VPvLkScwhBoAA==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 3A0BCA3B84;
- Wed,  3 Nov 2021 16:05:20 +0000 (UTC)
-Date: Wed, 03 Nov 2021 17:05:20 +0100
-Message-ID: <s5hcznhkywv.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id 95798A3B8B;
+ Wed,  3 Nov 2021 16:06:41 +0000 (UTC)
+Date: Wed, 03 Nov 2021 17:06:41 +0100
+Message-ID: <s5ha6ilkyum.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: "Tim Crawford" <tcrawford@system76.com>
-Subject: Re: [PATCH] ALSA: hda/realtek: Headset fixup for Clevo NH77HJQ
-In-Reply-To: <b293f612-75ba-4f3c-973a-e7722590f3ce@www.fastmail.com>
-References: <20211102172104.10610-1-tcrawford@system76.com>
- <b293f612-75ba-4f3c-973a-e7722590f3ce@www.fastmail.com>
+To: Wang Wensheng <wangwensheng4@huawei.com>
+Subject: Re: [PATCH -next v2] ALSA: timer: Fix use-after-free problem
+In-Reply-To: <s5hh7ctkzi8.wl-tiwai@suse.de>
+References: <20211103033517.80531-1-wangwensheng4@huawei.com>
+ <s5hh7ctkzi8.wl-tiwai@suse.de>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: productdev@system76.com, alsa-devel@alsa-project.org, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com,
+ rui.xiang@huawei.com, broonie@kernel.org, joe@perches.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,14 +95,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 02 Nov 2021 19:10:07 +0100,
-Tim Crawford wrote:
+On Wed, 03 Nov 2021 16:52:31 +0100,
+Takashi Iwai wrote:
 > 
-> > correctly, and a new ALC256_FIXUP_HEADSET_MODE_NO_HP_MIC fixup is
+> On Wed, 03 Nov 2021 04:35:17 +0100,
+> Wang Wensheng wrote:
+> > 
+> > When the timer instance was add into ack_list but was not currently in
+> > process, the user could stop it via snd_timer_stop1() without delete it
+> > from the ack_list. Then the user could free the timer instance and when
+> > it was actually processed UAF occurred.
+> > 
+> > This issue could be reproduced via testcase snd_timer01 in ltp - running
+> > several instances of that testcase at the same time.
+> > 
+> > What I actually met was that the ack_list of the timer broken and the
+> > kernel went into deadloop with irqoff. That could be detected by
+> > hardlockup detector on board or when we run it on qemu, we could use gdb
+> > to dump the ack_list when the console has no response.
+> > 
+> > To fix this issue, we delete the timer instance from ack_list and
+> > active_list unconditionally in snd_timer_stop1().
+> > 
+> > Signed-off-by: Wang Wensheng <wangwensheng4@huawei.com>
+> > Suggested-by: Takashi Iwai <tiwai@suse.de>
 > 
-> Sorry, that should say ALC256_FIXUP_SYSTEM76_MIC_NO_PRESENCE.
+> Thanks, applied now.
 
-Don't worry, I corrected and applied now.  Thanks.
+BTW, while reviewing the patch, I noticed that we have also the
+similar code path for a slave timer instance that has the same kind of
+linked list entries.  I'll submit the corresponding fix patch.
 
 
 Takashi
