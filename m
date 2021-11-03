@@ -2,85 +2,103 @@ Return-Path: <SRS0=wMeK=PW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 87E03C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Nov 2021 11:20:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 55045C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Nov 2021 11:23:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 096BD6115B
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Nov 2021 11:20:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 096BD6115B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+	by mail.kernel.org (Postfix) with ESMTPS id 7412E610E8
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Nov 2021 11:23:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7412E610E8
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 70F56167B;
-	Wed,  3 Nov 2021 12:19:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70F56167B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 85E681674;
+	Wed,  3 Nov 2021 12:22:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 85E681674
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1635938412;
-	bh=fN8rRkxFlqXfMvflTvkBhu1iT96RlvfsA6JK2tFk/+0=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=IYYnl6OcD7NA7MQypkVg+0LbnlX14R8ndq/qhHEIEMCQF/Fs3pvHm+SqqmSl1EG6w
-	 yIC7/erv0YvhrJSKn/uUXrrxUJFN0StyDinEez1U/x2jgdbeufFh8x57EULoN1YI1W
-	 0a7ChbA78Jdb1hSa142rPXrDx8jdQRJc6JIVRj1A=
+	s=default; t=1635938602;
+	bh=r1kUWPqZLfOdKeo4H+aTOs6CChf1PsTrCIGTGRFh/2E=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=mxq1LIqtM7sVl0GD6Ja3ghhRzWRFXntAVr9+BbhRTfEKGffjC2HbTyBtbjcht7FPb
+	 qSS3b6+Rj5oQuMSBmnuUu4tSojJ2VhWkJy8yu+l5TAO2qQADskadSppigXc5Ws3JWW
+	 czr61afCzrnqo5gzzxdNiVYmg2KiMNEQXa2SCBnA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 055B1F80269;
-	Wed,  3 Nov 2021 12:19:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EF6A8F8026A;
+	Wed,  3 Nov 2021 12:22:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D76BBF8026A; Wed,  3 Nov 2021 12:19:19 +0100 (CET)
-Received: from so254-9.mailgun.net (so254-9.mailgun.net [198.61.254.9])
+ id 74CF5F80279; Wed,  3 Nov 2021 12:22:30 +0100 (CET)
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com
+ [IPv6:2a00:1450:4864:20::430])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3F60BF800FA
- for <alsa-devel@alsa-project.org>; Wed,  3 Nov 2021 12:19:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3F60BF800FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id DFC82F800FA
+ for <alsa-devel@alsa-project.org>; Wed,  3 Nov 2021 12:22:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DFC82F800FA
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=mg.codeaurora.org
- header.i=@mg.codeaurora.org header.b="xlYvWjY6"
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
- q=dns/txt; 
- s=smtp; t=1635938347; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=oLZUnexHipFhVS5amL3s8Fca7/+eucc3eTwLaelyq90=;
- b=xlYvWjY6sg47rpHyYnSYA03O2VwYpEd5st4YT+32GUCFqDroh0mWpjOoLk+cXNn5n9HihwX3
- Let5UkLvYx2yu+hxozOBSO3hJLfwA/KFaHyCv8N99gXvoFX8xcC3Npoyauh4/Gb8veozopSx
- 3GgFJqAWvIpE/t+zkQ/GFv0kcp0=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 61827025545d7d365fef644a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 03 Nov 2021 11:19:01
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id 299FFC43460; Wed,  3 Nov 2021 11:19:01 +0000 (UTC)
-Received: from hu-srivasam-hyd.qualcomm.com (unknown [202.46.22.19])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: srivasam)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id 4A634C4338F;
- Wed,  3 Nov 2021 11:18:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 4A634C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- spf=fail smtp.mailfrom=codeaurora.org
-From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To: agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
- broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
- bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
- srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="OXNFVzvq"
+Received: by mail-wr1-x430.google.com with SMTP id u1so2967212wru.13
+ for <alsa-devel@alsa-project.org>; Wed, 03 Nov 2021 04:22:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=KoBsY/v2YAD1F++lHfydsccb+T5wE0Od+5p17s3OU2Y=;
+ b=OXNFVzvq+7nEH4ch8+to3fOVoIMMO2gBiWS8xhy4MCq7yWZtUQBJOUu4Jb6nLeJS+Y
+ B/Dkakm3hIhKqUPfR2I4SN/WC8e+78yYmVUZOBEvEF/RfxOXixnTsG1AYGlBjpEo0pcd
+ D+msUGoGtZlwXrFYumjvhJkf0ILFoRnMppVcfMWhVCJ9aeDs3O6xZLMO8WEMYFC77P2x
+ TOLwQImtGQ/tiKjAKBM9Saj5Vx2gmTmpI+v+n2G0VMr3QkRxWuN0BI5YDHhLrcQs92Nd
+ pEvqGYISAQ47iw76UENR4ukRS0PJ8vKZOd7sJpQNPsEK/wXV3gjnmUf2BrJMnY3K1GIC
+ At7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=KoBsY/v2YAD1F++lHfydsccb+T5wE0Od+5p17s3OU2Y=;
+ b=NRIDTd9KadMwgzYXW+jrvbLyXrBhGAlEty/YzZs5iHtqhENiLXw3BvwdBs6fpbSDSS
+ QeKIbACQT02vUEsR84ejafOIfjIBxvgl+MSEuSU1Dx2W5yKG6QAoUTlSXqgZVEm04Ks0
+ 2Wdo2d5Vlgxyj+Z4pkWKUUQLSoKtV7kFF+cky7psBE0+uc6s6DaEnc8qgowRo5OwnP9j
+ 8A4WZcxTy1ahM7wgjUFrXDDnqdlnxzzR7yKeg2lpOrAz83ohFz7ZLirKN5T+j3BCUvkA
+ U3NSitC36qq1v8N3lYHsFJ+TDPea3PkoQc1VYh+ACXQAY3PHsMX+GAMxkSEXY4VqkQLh
+ Xzyg==
+X-Gm-Message-State: AOAM533TH/u2RErsDGxmB0HGdu45y0DqgsvGD2ml4YvrCN4ED4HdtVDe
+ RLfxwbUKgxzuwConfXdc0xtSOA==
+X-Google-Smtp-Source: ABdhPJwv+grHB+mZcRA+5mD+6l0sJS48c0xkSjK7q3ekgXs5ZAd7UVU1ZmlJW0S5D07s0h7TMr7rcA==
+X-Received: by 2002:a05:6000:120a:: with SMTP id
+ e10mr11955108wrx.156.1635938537706; 
+ Wed, 03 Nov 2021 04:22:17 -0700 (PDT)
+Received: from [192.168.86.34]
+ (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+ by smtp.googlemail.com with ESMTPSA id u5sm1696919wrg.57.2021.11.03.04.22.16
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 03 Nov 2021 04:22:17 -0700 (PDT)
+Subject: Re: [PATCH v2 1/3] pinctrl: qcom: Update lpass variant independent
+ functions as generic
+To: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>, agross@kernel.org,
+ bjorn.andersson@linaro.org, lgirdwood@gmail.com, broonie@kernel.org,
+ robh+dt@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
+ perex@perex.cz, tiwai@suse.com, rohitkr@codeaurora.org,
  linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
  swboyd@chromium.org, judyhsiao@chromium.org
-Subject: [PATCH] ASoC: codecs: MBHC: Add support for special headset
-Date: Wed,  3 Nov 2021 16:48:44 +0530
-Message-Id: <1635938324-17763-1-git-send-email-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-Cc: Venkata Prasad Potturu <potturu@codeaurora.org>,
- Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+References: <1635342097-2726-1-git-send-email-srivasam@codeaurora.org>
+ <1635342097-2726-2-git-send-email-srivasam@codeaurora.org>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <01c32c7f-9639-b3c8-045b-35469a3e54aa@linaro.org>
+Date: Wed, 3 Nov 2021 11:22:15 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <1635342097-2726-2-git-send-email-srivasam@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: Venkata Prasad Potturu <potturu@codeaurora.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,137 +114,87 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Update MBHC driver to support special headset such as apple
-and huwawei headsets.
+Hi Srinivasa,
+Thanks for the patches, I think you forgot to add correct mailing list 
+for this drivers.
 
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Co-developed-by: Venkata Prasad Potturu <potturu@codeaurora.org>
-Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
----
- sound/soc/codecs/wcd-mbhc-v2.c | 78 +++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 74 insertions(+), 4 deletions(-)
+Please consider using scripts/get_maintainer.pl to help you with this list.
 
-diff --git a/sound/soc/codecs/wcd-mbhc-v2.c b/sound/soc/codecs/wcd-mbhc-v2.c
-index 405128c..3b4cd39 100644
---- a/sound/soc/codecs/wcd-mbhc-v2.c
-+++ b/sound/soc/codecs/wcd-mbhc-v2.c
-@@ -1022,6 +1022,57 @@ static int wcd_mbhc_get_plug_from_adc(struct wcd_mbhc *mbhc, int adc_result)
- 	return plug_type;
- }
- 
-+static int wcd_mbhc_get_spl_hs_thres(struct wcd_mbhc *mbhc)
-+{
-+	int hs_threshold, micbias_mv;
-+
-+	micbias_mv = wcd_mbhc_get_micbias(mbhc);
-+	if (mbhc->cfg->hs_thr && mbhc->cfg->micb_mv != WCD_MBHC_ADC_MICBIAS_MV) {
-+		if (mbhc->cfg->micb_mv == micbias_mv)
-+			hs_threshold = mbhc->cfg->hs_thr;
-+		else
-+			hs_threshold = (mbhc->cfg->hs_thr * micbias_mv) /
-+								mbhc->cfg->micb_mv;
-+	} else {
-+		hs_threshold = ((WCD_MBHC_ADC_HS_THRESHOLD_MV * micbias_mv) /
-+							WCD_MBHC_ADC_MICBIAS_MV);
-+	}
-+	return hs_threshold;
-+}
-+
-+static bool wcd_mbhc_check_for_spl_headset(struct wcd_mbhc *mbhc)
-+{
-+	bool is_spl_hs = false;
-+	int output_mv, hs_threshold, hph_threshold;
-+
-+	if (!mbhc->mbhc_cb->mbhc_micb_ctrl_thr_mic)
-+		return false;
-+
-+	/* Bump up MIC_BIAS2 to 2.7V */
-+	mbhc->mbhc_cb->mbhc_micb_ctrl_thr_mic(mbhc->component, MIC_BIAS_2, true);
-+	usleep_range(10000, 10100);
-+
-+	output_mv = wcd_measure_adc_once(mbhc, MUX_CTL_IN2P);
-+	hs_threshold = wcd_mbhc_get_spl_hs_thres(mbhc);
-+	hph_threshold = wcd_mbhc_adc_get_hph_thres(mbhc);
-+
-+	if (output_mv > hs_threshold || output_mv < hph_threshold) {
-+		if (mbhc->force_linein == true)
-+			is_spl_hs = false;
-+	} else {
-+		is_spl_hs = true;
-+	}
-+
-+	/* Back MIC_BIAS2 to 1.8v if the type is not special headset */
-+	if (!is_spl_hs) {
-+		mbhc->mbhc_cb->mbhc_micb_ctrl_thr_mic(mbhc->component, MIC_BIAS_2, false);
-+		/* Add 10ms delay for micbias to settle */
-+		usleep_range(10000, 10100);
-+	}
-+
-+	return is_spl_hs;
-+}
-+
- static void wcd_correct_swch_plug(struct work_struct *work)
- {
- 	struct wcd_mbhc *mbhc;
-@@ -1029,12 +1080,14 @@ static void wcd_correct_swch_plug(struct work_struct *work)
- 	enum wcd_mbhc_plug_type plug_type = MBHC_PLUG_TYPE_INVALID;
- 	unsigned long timeout;
- 	int pt_gnd_mic_swap_cnt = 0;
--	int output_mv, cross_conn, hs_threshold, try = 0;
-+	int output_mv, cross_conn, hs_threshold, try = 0, micbias_mv;
-+	bool is_spl_hs = false;
- 	bool is_pa_on;
- 
- 	mbhc = container_of(work, struct wcd_mbhc, correct_plug_swch);
- 	component = mbhc->component;
- 
-+	micbias_mv = wcd_mbhc_get_micbias(mbhc);
- 	hs_threshold = wcd_mbhc_adc_get_hs_thres(mbhc);
- 
- 	/* Mask ADC COMPLETE interrupt */
-@@ -1097,6 +1150,18 @@ static void wcd_correct_swch_plug(struct work_struct *work)
- 		plug_type = wcd_mbhc_get_plug_from_adc(mbhc, output_mv);
- 		is_pa_on = wcd_mbhc_read_field(mbhc, WCD_MBHC_HPH_PA_EN);
- 
-+
-+		if ((output_mv > hs_threshold) &&
-+		    (!is_spl_hs)) {
-+			is_spl_hs = wcd_mbhc_check_for_spl_headset(mbhc);
-+			output_mv = wcd_measure_adc_once(mbhc, MUX_CTL_IN2P);
-+
-+			if (is_spl_hs) {
-+				hs_threshold = (hs_threshold * wcd_mbhc_get_micbias(mbhc)) /
-+									micbias_mv;
-+			}
-+		}
-+
- 		if ((output_mv <= hs_threshold) && !is_pa_on) {
- 			/* Check for cross connection*/
- 			cross_conn = wcd_check_cross_conn(mbhc);
-@@ -1122,14 +1187,19 @@ static void wcd_correct_swch_plug(struct work_struct *work)
- 			}
- 		}
- 
--		if (output_mv > hs_threshold) /* cable is extension cable */
-+		/* cable is extension cable */
-+		if (output_mv > hs_threshold || mbhc->force_linein == true)
- 			plug_type = MBHC_PLUG_TYPE_HIGH_HPH;
- 	}
- 
- 	wcd_mbhc_bcs_enable(mbhc, plug_type, true);
- 
--	if (plug_type == MBHC_PLUG_TYPE_HIGH_HPH)
--		wcd_mbhc_write_field(mbhc, WCD_MBHC_ELECT_ISRC_EN, 1);
-+	if (plug_type == MBHC_PLUG_TYPE_HIGH_HPH) {
-+		if (is_spl_hs)
-+			plug_type = MBHC_PLUG_TYPE_HEADSET;
-+		else
-+			wcd_mbhc_write_field(mbhc, WCD_MBHC_ELECT_ISRC_EN, 1);
-+	}
- 
- 	wcd_mbhc_write_field(mbhc, WCD_MBHC_ADC_MODE, 0);
- 	wcd_mbhc_write_field(mbhc, WCD_MBHC_ADC_EN, 0);
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+On 27/10/2021 14:41, Srinivasa Rao Mandadapu wrote:
+> Update pin control variable names to make common for all lpass varients.
+> Update bulk clock voting to optional voting as ADSP bypass platform doesn't
+> need macro and decodec clocks, these are maintained as power domains and
+> operated from lpass audio core cc.
 
+How are you going to ensure that the powerdomains are switched on when 
+setting up the pinctrl configuration.
+
+Should we not take a reference to the power-domain in this driver?
+
+--srini
+> 
+> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> Co-developed-by: Venkata Prasad Potturu <potturu@codeaurora.org>
+> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
+> ---
+>   drivers/pinctrl/qcom/pinctrl-lpass-lpi.c | 16 ++++++++--------
+>   1 file changed, 8 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c b/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
+> index 2f19ab4..0bd0c16 100644
+> --- a/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
+> +++ b/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
+> @@ -107,7 +107,7 @@ struct lpi_pinctrl {
+>   };
+>   
+>   /* sm8250 variant specific data */
+> -static const struct pinctrl_pin_desc sm8250_lpi_pins[] = {
+> +static const struct pinctrl_pin_desc lpass_lpi_pins[] = {
+>   	PINCTRL_PIN(0, "gpio0"),
+>   	PINCTRL_PIN(1, "gpio1"),
+>   	PINCTRL_PIN(2, "gpio2"),
+> @@ -124,7 +124,7 @@ static const struct pinctrl_pin_desc sm8250_lpi_pins[] = {
+>   	PINCTRL_PIN(13, "gpio13"),
+>   };
+>   
+> -enum sm8250_lpi_functions {
+> +enum lpass_lpi_functions {
+>   	LPI_MUX_dmic1_clk,
+>   	LPI_MUX_dmic1_data,
+>   	LPI_MUX_dmic2_clk,
+> @@ -203,7 +203,7 @@ static const struct lpi_pingroup sm8250_groups[] = {
+>   	LPI_PINGROUP(13, NO_SLEW, dmic3_data, i2s2_data, _, _),
+>   };
+>   
+> -static const struct lpi_function sm8250_functions[] = {
+> +static const struct lpi_function lpass_functions[] = {
+>   	LPI_FUNCTION(dmic1_clk),
+>   	LPI_FUNCTION(dmic1_data),
+>   	LPI_FUNCTION(dmic2_clk),
+> @@ -228,12 +228,12 @@ static const struct lpi_function sm8250_functions[] = {
+>   };
+>   
+>   static struct lpi_pinctrl_variant_data sm8250_lpi_data = {
+> -	.pins = sm8250_lpi_pins,
+> -	.npins = ARRAY_SIZE(sm8250_lpi_pins),
+> +	.pins = lpass_lpi_pins,
+> +	.npins = ARRAY_SIZE(lpass_lpi_pins),
+>   	.groups = sm8250_groups,
+>   	.ngroups = ARRAY_SIZE(sm8250_groups),
+> -	.functions = sm8250_functions,
+> -	.nfunctions = ARRAY_SIZE(sm8250_functions),
+> +	.functions = lpass_functions,
+> +	.nfunctions = ARRAY_SIZE(lpass_functions),
+>   };
+>   
+>   static int lpi_gpio_read(struct lpi_pinctrl *state, unsigned int pin,
+> @@ -615,7 +615,7 @@ static int lpi_pinctrl_probe(struct platform_device *pdev)
+>   		return dev_err_probe(dev, PTR_ERR(pctrl->slew_base),
+>   				     "Slew resource not provided\n");
+>   
+> -	ret = devm_clk_bulk_get(dev, MAX_LPI_NUM_CLKS, pctrl->clks);
+> +	ret = devm_clk_bulk_get_optional(dev, MAX_LPI_NUM_CLKS, pctrl->clks);
+>   	if (ret)
+>   		return dev_err_probe(dev, ret, "Can't get clocks\n");
+>   
+> 
