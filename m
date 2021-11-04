@@ -2,71 +2,82 @@ Return-Path: <SRS0=uvWr=PX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5338AC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Nov 2021 14:21:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5955BC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Nov 2021 15:33:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DBF3C611C1
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Nov 2021 14:21:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DBF3C611C1
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 1C3AE60FD7
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Nov 2021 15:33:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1C3AE60FD7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 49C7E166F;
-	Thu,  4 Nov 2021 15:20:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 49C7E166F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 693FE1674;
+	Thu,  4 Nov 2021 16:32:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 693FE1674
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1636035676;
-	bh=ByZ++88aqm+rxOyVNmjgldyzNjdaWDgCe3kEuMai6Kg=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1636040025;
+	bh=mD7P0mt+UmqVLLGmBcKypRkbhqcskZ0/EHYAZbq0IcI=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OPuKjVJ6pLeXbKOQnJMtytyL0oVDVNEq9uK5qk7iAL5H627DOm9p7/ceONH6axfFe
-	 euQsQd/fHev7FM0yimiLJaNQb0+zIl8ki7LBl4LruxT67CGXQ2Wbvzz8fnsHof6rq4
-	 oNyq5NH17vLWOnk8+RcjlaieG4/0a0qD7weenePQ=
+	b=Y28V7v3QsqyDNj7Bg7Vk4bVjJ+J6XOAu7tb2QOMirb/YhcQDtLG8M4aTwsd3LL0d7
+	 IxpGpR3GUsASc8m36F6x6f5jonZdT3hzOl5kVeJEk1+tMsbheqVewBOVJv0Cehlxwd
+	 kjENJPX77NK8dwOHs/U7w+eKFHw/bCD8v9K3ZTS8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BFFB2F80229;
-	Thu,  4 Nov 2021 15:20:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D1907F80229;
+	Thu,  4 Nov 2021 16:32:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B5222F8025D; Thu,  4 Nov 2021 15:20:24 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 49DA3F8025D; Thu,  4 Nov 2021 16:32:53 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9CB61F80125
- for <alsa-devel@alsa-project.org>; Thu,  4 Nov 2021 15:20:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9CB61F80125
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6B37DF80224
+ for <alsa-devel@alsa-project.org>; Thu,  4 Nov 2021 16:32:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B37DF80224
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="qfM3OqgB"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F8E7610FD;
- Thu,  4 Nov 2021 14:20:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1636035614;
- bh=ByZ++88aqm+rxOyVNmjgldyzNjdaWDgCe3kEuMai6Kg=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=qfM3OqgB/Xp7oPskJDD7f19qbEK7NGXijlsdcyPEwRt9M2KZlxvdCKlnxSrSxKYJh
- mJzKwfrNFST2+hL0edwKhxuS0366JCmKFe2qq/pyzuyL9ExKWcKgZqddAkDgJDUtk9
- 7L2EVYr7UhE0tfr5fI1WD9TRH8Zajq+xHLVlJT+Uk0rXyPAJV4chcJlYU7VGJFRXo4
- vWkrF30xAzZ+grQoLlf8Ii6LK9ghDBdJ8T8LhyMWke+LPZMRT4v7a+zGRkcfR30a7u
- AHiZl2TJqineurqFJAheWMAP1riMG4lnuOx+R3gth1G2biQBgK8WQCcrzj68OHMxcj
- UByfpQZ7zT7hQ==
-From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <20211103082710.17165-1-peter.ujfalusi@linux.intel.com>
-References: <20211103082710.17165-1-peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH] ASoC: SOF:control: Fix variable type in
- snd_sof_refresh_control()
-Message-Id: <163603561215.857840.11871752299643012196.b4-ty@kernel.org>
-Date: Thu, 04 Nov 2021 14:20:12 +0000
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: guennadi.liakhovetski@linux.intel.com, alsa-devel@alsa-project.org,
- seppo.ingalsuo@linux.intel.com, kai.vehmanen@linux.intel.com,
- ranjani.sridharan@linux.intel.com, pierre-louis.bossart@linux.intel.com
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="XqkgPoru"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="x8IlFE2V"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 575DE1FD3F;
+ Thu,  4 Nov 2021 15:32:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1636039965; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=YvoorH7SYra+mifM4lAeP+5OL4x6ucHciHiMIovMszY=;
+ b=XqkgPoru9HvyWK7Y0XpgKtA0vdFn4uReQhSCdLwfAzGqDJgMeQdiD5lU5y7UMzRoIE9BOr
+ udsFLjNvrF2sl8Y9N6+eBsA8wPFd516KXH5NfMtqh7uUei/yJHvUSuVqQSwkvDbHBXHFjr
+ JleZrOwwS5utCzyYHYu/DVkGpACgTTQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1636039965;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=YvoorH7SYra+mifM4lAeP+5OL4x6ucHciHiMIovMszY=;
+ b=x8IlFE2Vsbrsgkwcj/F4cudDRh7zUtyQIOg8mNL9Zq0wjRbBfOduXyUm/f6HnKY0+4gvyv
+ ybUpt25eVfUeniBA==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 43A712C154;
+ Thu,  4 Nov 2021 15:32:45 +0000 (UTC)
+Date: Thu, 04 Nov 2021 16:32:45 +0100
+Message-ID: <s5hcznghr6q.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] ALSA: firewire-motu: add support for MOTU Traveler mk3
+In-Reply-To: <20211104110627.94469-1-o-takashi@sakamocchi.jp>
+References: <20211104110627.94469-1-o-takashi@sakamocchi.jp>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,38 +93,63 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 3 Nov 2021 10:27:10 +0200, Peter Ujfalusi wrote:
-> From: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+On Thu, 04 Nov 2021 12:06:27 +0100,
+Takashi Sakamoto wrote:
 > 
-> The second parameter for snd_sof_ipc_set_get_comp_data() is ipc_cmd, not
-> ipc_ctrl_type and the type is u32.
+> Mark of the Unicorn (MOTU) shipped Traveler mk3 as one of models in third
+> generation of its FireWire series, and discontinued it already. The model
+> consists of below ICs:
 > 
+>  * Texas Instruments TSB41AB2
+>  * Phillips Semiconductors PDI1394L40
+>  * Altera cyclone EP1C3
+>  * Texas Instruments TMS320VC5402
 > 
+> It supports sampling transfer frequency up to 192.0 kHz. The packet
+> format differs depending on both of current sampling transfer frequency
+> and whether to enable ADAT channels in rx/tx packets. The model supports
+> transmission of PCM frames as well as MIDI messages.
+> 
+> The model supports command mechanism to configure internal DSP. Hardware
+> meter information is available in the first 2 chunks of each data block
+> of tx packet.
+> 
+> This commit adds support for it.
+> 
+> $ cd linux-firewire-tools/src
+> $ python crpp < /sys/bus/firewire/devices/fw1/config_rom
+>                ROM header and bus information block
+>                -----------------------------------------------------------------
+> 400  0410af0a  bus_info_length 4, crc_length 16, crc 44810
+> 404  31333934  bus_name "1394"
+> 408  20ff7000  irmc 0, cmc 0, isc 1, bmc 0, cyc_clk_acc 255, max_rec 7 (256)
+> 40c  0001f200  company_id 0001f2     |
+> 410  00090911  device_id 0000090911  | EUI-64 0001f20000090911
+> 
+>                root directory
+>                -----------------------------------------------------------------
+> 414  0004ef04  directory_length 4, crc 61188
+> 418  030001f2  vendor
+> 41c  0c0083c0  node capabilities per IEEE 1394
+> 420  d1000002  --> unit directory at 428
+> 424  8d000005  --> eui-64 leaf at 438
+> 
+>                unit directory at 428
+>                -----------------------------------------------------------------
+> 428  00031733  directory_length 3, crc 5939
+> 42c  120001f2  specifier id
+> 430  1300001b  version
+> 434  17102800  model
+> 
+>                eui-64 leaf at 438
+>                -----------------------------------------------------------------
+> 438  00028484  leaf_length 2, crc 33924
+> 43c  0001f200  company_id 0001f2     |
+> 440  00090911  device_id 0000090911  | EUI-64 0001f20000090911
+> 
+> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-Applied to
+Thanks, applied now.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-linus
 
-Thanks!
-
-[1/1] ASoC: SOF:control: Fix variable type in snd_sof_refresh_control()
-      commit: d9835eaa3e9fb4770745294fef3f8416446178c0
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Takashi
