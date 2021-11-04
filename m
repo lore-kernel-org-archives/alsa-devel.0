@@ -2,50 +2,82 @@ Return-Path: <SRS0=uvWr=PX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 26504C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Nov 2021 19:20:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A827AC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Nov 2021 21:10:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4B005611CE
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Nov 2021 19:20:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4B005611CE
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	by mail.kernel.org (Postfix) with ESMTPS id 2B98361251
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Nov 2021 21:10:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2B98361251
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A70EF1674;
-	Thu,  4 Nov 2021 20:19:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A70EF1674
+	by alsa0.perex.cz (Postfix) with ESMTPS id D64CB1674;
+	Thu,  4 Nov 2021 22:09:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D64CB1674
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1636053647;
-	bh=Ykl3Lj+NwMWsYNjI5/APA0oCq8H84jWzemcD5ccJM/4=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1636060225;
+	bh=EKQRLK+tP3FnG5HT2Fa1sSwe+t136Ui09ByFw4smpAs=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YvSgvOXtfoIA+yFI0bqugTAR/ywPhgVI7RILs+o+gshWiCNlFbaG4LOdmUKShZUUn
-	 67UKW3r1xPgYpRPB9ud3LZ+PIb8OL9ufDJp1P0BxJc5w42Jk9vVzGY7CV4Fxkr6r9G
-	 2pJRd+7ea4bGAb36ohOeZUEloil1fXK9V1iSGkwU=
+	b=Z2btclj13ygoAoVso9rrW7nCvFOzReMqZw43g0lTg1lYlktlmsefdkRPtFzLCa+Fz
+	 +uWzJNzP3WCfeZyCvXFQ+w0hiFWscbmYv/3x/KQjBZkXrvgaKmRvTvCtNiVZJYGBMw
+	 lex908XfSh0B1P4tHzOfXpQZM3La5W4HhBMlINlU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 278F7F80224;
-	Thu,  4 Nov 2021 20:19:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5E984F80229;
+	Thu,  4 Nov 2021 22:09:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BD43CF8025D; Thu,  4 Nov 2021 20:19:46 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id CABC1F80224
- for <alsa-devel@alsa-project.org>; Thu,  4 Nov 2021 20:19:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CABC1F80224
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1636053578088563919-webhooks-bot@alsa-project.org>
-References: <1636053578088563919-webhooks-bot@alsa-project.org>
-Subject: topology: Add option to pass pre-processor definitions
-Message-Id: <20211104191946.BD43CF8025D@alsa1.perex.cz>
-Date: Thu,  4 Nov 2021 20:19:46 +0100 (CET)
+ id 32FEDF8025D; Thu,  4 Nov 2021 22:09:33 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0DD88F80125
+ for <alsa-devel@alsa-project.org>; Thu,  4 Nov 2021 22:09:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0DD88F80125
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="Fa4Cfm57"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="7s0K6/m1"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 54C8D1FD3F;
+ Thu,  4 Nov 2021 21:09:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1636060165; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=wM2WW9nmMdZasSUjiu9dVr5L8gRuZJJQg1goeJFdMFQ=;
+ b=Fa4Cfm57qoOsassUxAzFvlGScl0l8Q4xleS1FtYmfioN7rTgAd5Z1ZdtIH+wv664OuuVSw
+ 56P0eqqbazbGwWfRs9CZidnH9ZH6DCaWFIDoVYlTg1C+EHhYxC8ooYOPIh/uuG52VEt0CW
+ 8pJpLiy8T/M1xU6+OOto4jrBpUHvTxA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1636060165;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=wM2WW9nmMdZasSUjiu9dVr5L8gRuZJJQg1goeJFdMFQ=;
+ b=7s0K6/m1V8rwOWSSZw2h2EkBTjxv4Xp0tk1HBIq/4chorzmnN5NnUsV90CvdJJ9YA5ZLCb
+ 5wZ7K8AH4HWSRlAQ==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 4062E2C144;
+ Thu,  4 Nov 2021 21:09:25 +0000 (UTC)
+Date: Thu, 04 Nov 2021 22:09:25 +0100
+Message-ID: <s5htugrhblm.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH] ALSA: hda/realtek: Add a quirk for Acer Spin SP513-54N
+In-Reply-To: <20211104155726.2090997-1-perex@perex.cz>
+References: <20211104155726.2090997-1-perex@perex.cz>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: ALSA development <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -61,34 +93,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-utils pull request #117 was opened from ranj063:
+On Thu, 04 Nov 2021 16:57:26 +0100,
+Jaroslav Kysela wrote:
+> 
+> Another model requires ALC255_FIXUP_ACER_MIC_NO_PRESENCE fixup.
+> 
+> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=211853
+> Signed-off-by: Jaroslav Kysela <perex@perex.cz>
 
-Add a -D switch to be able to pass pre-processor definitions that will
-be used to expand arguments in the input config file. This will be
-useful to generate multiple topology binaries from the same input config
-file with different argument values.
+Thanks, applied.
 
-For example: if we had a pipeline config as follows:
 
-Object.Pipeline {
-	volume-playback.1 {
-		dynamic_pipeline $DYNAMIC_PIPELINE
-	}
-}
-
-We can define an argument for DYNAMIC_PIPELINE as:
-
-@args [ DYNAMIC_PIPELINE ]
-@args.DYNAMIC_PIPELINE {
-	type integer
-	default 0
-}
-
-And when pre-processin the conf file pass "-D DYNAMIC_PIPELINE=1" to enable
-dynamic pipeline in the topology.
-
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-
-Request URL   : https://github.com/alsa-project/alsa-utils/pull/117
-Patch URL     : https://github.com/alsa-project/alsa-utils/pull/117.patch
-Repository URL: https://github.com/alsa-project/alsa-utils
+Takashi
