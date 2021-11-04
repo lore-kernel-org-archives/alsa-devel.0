@@ -2,50 +2,50 @@ Return-Path: <SRS0=uvWr=PX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F2DB2C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Nov 2021 09:31:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AA401C433FE
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Nov 2021 09:32:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8B46361157
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Nov 2021 09:31:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8B46361157
+	by mail.kernel.org (Postfix) with ESMTPS id ADDF261157
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Nov 2021 09:32:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org ADDF261157
 Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CBA81166B;
-	Thu,  4 Nov 2021 10:30:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CBA81166B
+	by alsa0.perex.cz (Postfix) with ESMTPS id C0331166D;
+	Thu,  4 Nov 2021 10:31:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C0331166D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1636018259;
-	bh=oWgzgR9AZMtOzbgEarqHNoVxyjzuuzYpBR4CwU4rNyU=;
+	s=default; t=1636018331;
+	bh=eazuPM/F46s4H3v2ebLfsUhrrPzRPoGTJDyHhPBgO8A=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UZi4KzfaZDv8rQAoW4FcMVE8+s/1RVIZxZdoN+UNxEsE+4YzfT6YDzFywpfO4Bn2Z
-	 4kJELTjODjPmbl97U0PfXqDVn2ZbJxYIdv+DTzsfD+oNe7K9lBvQ6yJYcf5rJYredz
-	 msY0/E2wZyyqzRX6z3uuf10OOZywjB+Zpby6YXhk=
+	b=KYXbL9NzMUipMGU0bVNxRU0OH/L7rtFpYF+9wOlbcUOHGFJrEmTr+HAYwrZCHXd8m
+	 DCbUOU+Gcdc/8Ng6PpICcOu5bk8fxkN/uSyrzVS32FJunBqFOoOGXCubJq5PQ0pVN6
+	 MusEpkRs/0gv5y9ZuuXjpOyA+uhkdmzC2Mcg8o2g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 498FEF80125;
-	Thu,  4 Nov 2021 10:30:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5FE1AF80229;
+	Thu,  4 Nov 2021 10:31:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DB49AF8025D; Thu,  4 Nov 2021 10:29:59 +0100 (CET)
+ id 96B76F80229; Thu,  4 Nov 2021 10:31:20 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 95340F80224
- for <alsa-devel@alsa-project.org>; Thu,  4 Nov 2021 10:29:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95340F80224
+ by alsa1.perex.cz (Postfix) with ESMTP id EFC80F80125
+ for <alsa-devel@alsa-project.org>; Thu,  4 Nov 2021 10:31:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EFC80F80125
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1636018187580435991-webhooks-bot@alsa-project.org>
-References: <1636018187580435991-webhooks-bot@alsa-project.org>
+In-Reply-To: <1636018273714946032-webhooks-bot@alsa-project.org>
+References: <1636018273714946032-webhooks-bot@alsa-project.org>
 Subject: Intel SOF HDA: Lenovo m920sff support (Realtek ALC 233)
-Message-Id: <20211104092959.DB49AF8025D@alsa1.perex.cz>
-Date: Thu,  4 Nov 2021 10:29:59 +0100 (CET)
+Message-Id: <20211104093120.96B76F80229@alsa1.perex.cz>
+Date: Thu,  4 Nov 2021 10:31:20 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -67,14 +67,15 @@ Description: An issue with the headphone detection (Speaker/Headphone auto-mute)
 
 More info: https://github.com/thesofproject/linux/issues/3088 and https://bugzilla.suse.com/show_bug.cgi?id=1188685
 
+Mixer:
 ```
 Simple mixer control 'Master',0
-Simple mixer control 'Headphone',0           # Switch only
+Simple mixer control 'Headphone',0       # Switch only
 Simple mixer control 'Headphone+LO',0    # Volume only
 Simple mixer control 'Speaker',0
 Simple mixer control 'Front Mic',0
 Simple mixer control 'Front Mic Boost',0
-Simple mixer control 'Line Out',0                # Switch only
+Simple mixer control 'Line Out',0        # Switch only
 Simple mixer control 'Mic',0
 Simple mixer control 'Mic Boost',0
 Simple mixer control 'IEC958',0
@@ -94,15 +95,16 @@ Simple mixer control 'PGA8.0 8 Master',0
 Simple mixer control 'PGA9.0 9 Master',0
 ```
 
+Jacks:
 ```
-		name 'Mic Jack'
-		name 'Front Mic Jack'
-		name 'Line Out Jack'
-		name 'Front Headphone Jack'
-		name 'Speaker Phantom Jack'
-		name 'HDMI/DP,pcm=3 Jack'
-		name 'HDMI/DP,pcm=4 Jack'
-		name 'HDMI/DP,pcm=5 Jack'
+name 'Mic Jack'
+name 'Front Mic Jack'
+name 'Line Out Jack'
+name 'Front Headphone Jack'
+name 'Speaker Phantom Jack'
+name 'HDMI/DP,pcm=3 Jack'
+name 'HDMI/DP,pcm=4 Jack'
+name 'HDMI/DP,pcm=5 Jack'
 ```
 
 Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/114
