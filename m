@@ -2,50 +2,80 @@ Return-Path: <SRS0=XtK2=PY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9400AC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 Nov 2021 20:24:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 38B8BC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 Nov 2021 22:20:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 64AA861186
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 Nov 2021 20:24:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 64AA861186
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	by mail.kernel.org (Postfix) with ESMTPS id C266D611CE
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 Nov 2021 22:20:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C266D611CE
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=thevertigo.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 71B67166D;
-	Fri,  5 Nov 2021 21:23:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 71B67166D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 57AE0166F;
+	Fri,  5 Nov 2021 23:19:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57AE0166F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1636143861;
-	bh=DjJKzJxL/JaZsgZ83lpSxmtbIjbBJlMLypn5HqT2UMY=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1636150824;
+	bh=YOKsBsFqLxQ0HInH6hzyPIsDCsbLj+1DnwkpMukB7FE=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=M058c6w84SzOI+lCI8Msr+2/ZKA3/e8iwANBh330EnR9F5/yIZqc6lNK5HcnBW619
-	 hIrppZnRe6wvUH8b/+S1XDkXdhtx6skF55+C3YAeyfyDBuiokgEm0wvIbnjNYvmdJy
-	 +ZkaK45IoBsYjYe6rXOy/v3LzbzVPaYzoYP3rNqY=
+	b=blC/mhMuw2cNVsBhxW3pSdghKFtZnUvaZHe6BrVoZJfb/WDF8WxrnQKqPsb6+1eny
+	 GQZb7kPCiALwuJF4f5DdWaBzt70D6G8z0O8PTat0EHgNcEgIeNvSF1A8iG+Jq9EWSq
+	 UOipBl1g2sy7sfgwB/5HF7tVlUpeE1OpMXMaJq2g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0AD73F80148;
-	Fri,  5 Nov 2021 21:23:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DD51BF80269;
+	Fri,  5 Nov 2021 23:19:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0E00DF8026A; Fri,  5 Nov 2021 21:23:30 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id B32E6F80148
- for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2021 21:23:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B32E6F80148
+ id 1DE2CF8026A; Fri,  5 Nov 2021 23:19:30 +0100 (CET)
+Received: from pdx1-sub0-mail-fallback-mx200.dreamhost.com (mx2.dreamhost.com
+ [64.90.62.164])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B484AF80148
+ for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2021 23:19:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B484AF80148
+Authentication-Results: alsa1.perex.cz;
+ dkim=fail reason="signature verification failed" (1024-bit key)
+ header.d=thevertigo.com header.i=@thevertigo.com header.b="FJN0wGL7"
+Received: from pdx1-sub0-mail-a308.dreamhost.com (unknown [10.35.49.102])
+ by pdx1-sub0-mail-fallback-mx200.dreamhost.com (Postfix) with ESMTP id
+ 4HmFKb02D8zSDc; Fri,  5 Nov 2021 15:19:15 -0700 (PDT)
+Received: from kip-desktop.kip-router (unknown [192.252.230.5])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits))
+ (No client certificate requested)
+ (Authenticated sender: kip@thevertigo.com)
+ by pdx1-sub0-mail-a308.dreamhost.com (Postfix) with ESMTPSA id 4HmFKZ2SJsz10; 
+ Fri,  5 Nov 2021 15:19:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=thevertigo.com;
+ s=thevertigo.com; t=1636150754; bh=URKreZsPSpALeMEa43jHT6+DtZk=;
+ h=Subject:From:To:Cc:Date:Content-Type;
+ b=FJN0wGL78yTTW2BsHI6ox8yB7oGmEOauciey6V66GEzNdTh58TtldY/xoApN4Eb0H
+ pJAWFZS/+5VBl5eDfadNQO71EkilzGvN07bm6T0OFTMvvdAn5eg12CKeP5BIqpE3DJ
+ 4Mz9EMrwsb0SBVTNTMRyLTYUNwHa7xQ3NwxKdS9E=
+Message-ID: <35c65f0177395968c01ea4b00d52c021cf2f9191.camel@thevertigo.com>
+Subject: Re: [Alsa-user] USB audio on riscv64
+From: Kip Warner <kip@thevertigo.com>
+To: Takashi Iwai <tiwai@suse.de>
+Date: Fri, 05 Nov 2021 15:19:13 -0700
+In-Reply-To: <s5hr1bue8fz.wl-tiwai@suse.de>
+References: <f2ec64dab6a74c7eee0625533d3c3630adb62a41.camel@thevertigo.com>
+ <CAJZ5D0bnMA=zZPztvQB4h0sXhU2og9D84QH8CXx5-GRWeu+4Ug@mail.gmail.com>
+ <e91d7a44b9a456141d856ea57aa2948c3be4422f.camel@thevertigo.com>
+ <s5h35oahppb.wl-tiwai@suse.de>
+ <3832054fd315605b19bd9d74977f83078a95ee08.camel@thevertigo.com>
+ <s5hr1bue8fz.wl-tiwai@suse.de>
+Content-Type: multipart/signed; micalg="pgp-sha512";
+ protocol="application/pgp-signature"; boundary="=-PbqpGr8dZdRtRu+SJi+M"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1636143804696264029-webhooks-bot@alsa-project.org>
-References: <1636143804696264029-webhooks-bot@alsa-project.org>
-Subject: Need info: How can I have conditional includes in a topology conf file
-Message-Id: <20211105202330.0E00DF8026A@alsa1.perex.cz>
-Date: Fri,  5 Nov 2021 21:23:30 +0100 (CET)
+Cc: Alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org,
+ Dmitri Seletski <drjoms@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -61,9 +91,59 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-utils issue #118 was opened from ranj063:
 
-For example: I want to be able to conditionally include the DMIC pipelines/DAI's depending on whether the device has DMICs or not.
+--=-PbqpGr8dZdRtRu+SJi+M
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Issue URL     : https://github.com/alsa-project/alsa-utils/issues/118
-Repository URL: https://github.com/alsa-project/alsa-utils
+On Fri, 2021-11-05 at 19:58 +0100, Takashi Iwai wrote:
+> No, it contains the card entry.=C2=A0 You can see it in alsa-info.sh outp=
+ut
+> you attached, which is:
+
+I thought cards was supposed to be a directory populated with
+something, but I see now that its a file containing the aforementioned.
+
+> Try to run like
+> =C2=A0 % aplay -Dplughw:1 -vv foo.wav
+> =C2=A0=20
+> If this works, the problem is rather the access via PulseAudio.
+
+Unfortunately it didn't:
+
+   $ aplay -Dplughw:1 -vv /usr/share/games/lincity-ng/sounds/Water1.wav=20
+   ALSA lib pcm_hw.c:1829:(_snd_pcm_hw_open) Invalid value for card
+   aplay: main:852: audio open error: No such file or directory
+  =20
+   $ aplay -l
+   aplay: device_list:276: no soundcards found...
+
+--=20
+Kip Warner -- Senior Software Engineer
+OpenPGP=C2=A0signed/encrypted mail preferred
+https://www.thevertigo.com
+
+--=-PbqpGr8dZdRtRu+SJi+M
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEaUi0dj/qpTzsKe4xRLRlxF7U4wQFAmGFreEACgkQRLRlxF7U
+4wTdNQ/+NhFVb6Bmon8tax1FEGzJWb3Ue8aqDv6RsJGXCrUK4MuRYj0CVAp2Y68p
+6M7N7F5oTVsNmDvggcjiy86fpsVoZfD3BkCTYBZqv8iIEhzKkp2sZW6aRp0+NqLw
+gVV5VaXhTO9YTSAn+QH1v082Be8SIDPtSg2LC2dg4QpYu0/5iBdoD/DtTuwU6IDW
+wVifj08+inQ0s+jgO1HLnB9fydKnZnvQ4TK15PIJD7rn+ulvn/LYn9hy7+o1O5aA
+2iT/aaUx8qKm4coIZiy6Dh5EXqi0p5KA9+hlwFxrexVMaBuX83aCcTibCS+m2SPg
+kE4YJjJnHpkFkZce0EORDyBcF3K7U7XMN8TgxIn9QR3eKASb/8LHbVeMc0Nxa9Os
+jiREl4rh1k0LFGWxgSgG0891B9bIfJTuGk+Em+isF4HJ+jpQIa+FurmJQOuBSeoy
+P4ztC5rzBxypocUzR2tu4y6aH+9Ie+CRkDHGRdM5chFgW1ZbIy1gHzXUxWKjy2FK
+i75YXVIghi3hpegIUNRcghynluKFPzCwi/1JyV7EBa0ycOODmNYWeg/WTBTUNrSJ
+3vUzaMb0NwkOxIWkd8Ad+BwY9TTlSUCegIZDE6Ft92k2hBdATujgTbLQJKd0BKJ7
+tUdexhCmJUKQLPoi8Nh0mp7vG1jFf06UpY39bbGE5SUwJKQFtTU=
+=x2WI
+-----END PGP SIGNATURE-----
+
+--=-PbqpGr8dZdRtRu+SJi+M--
+
