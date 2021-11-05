@@ -2,90 +2,69 @@ Return-Path: <SRS0=XtK2=PY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C3BF6C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 Nov 2021 18:59:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A299C43219
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 Nov 2021 20:15:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BC3B461242
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 Nov 2021 18:59:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BC3B461242
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id F1647611C4
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 Nov 2021 20:15:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org F1647611C4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 019DB166D;
-	Fri,  5 Nov 2021 19:58:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 019DB166D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7DA6B166D;
+	Fri,  5 Nov 2021 21:14:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7DA6B166D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1636138747;
-	bh=sej3V1eRy6IrZybZz7+fs6v5xIzi/i76juQz5KrBo2I=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1636143314;
+	bh=LSAMD4csi9LYb+2Qq3f88TWLgN3S61nRAGU8TYjsLjM=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=em42UWsUKfnCzuhDOsKWysbI6eONf0cnpK9evSWRk8oxhoU8qZ3Sen+pl1GpLANOP
-	 iRjDnYOdEUIJ69e3S3iSURdPHu41fMnddhVF3CIQJOygUZLcDRiK94ld2FyRs1XG2G
-	 Ghj4/WqsLXNXq/NmmaEX4AlNwQB0RKyIO8pdzuJM=
+	b=TFiP5/69TpERFKBvuwC1XwSvV/1p6xEY8Db1cJMnmOpSQwHUBYsRYh9ds2TO93qSO
+	 l9Q3rnEUonBej0Fa0fncZTBM0uFcSG4KEsUS83nqInlFN7tuZ3odk5Rz8JMevyRME4
+	 vB7KZvlyJCG45QYknsnlNTxJ/grzzqr2rBWlvjs0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A3323F80269;
-	Fri,  5 Nov 2021 19:58:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 125CEF80269;
+	Fri,  5 Nov 2021 21:14:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 30600F8026A; Fri,  5 Nov 2021 19:58:15 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 1FDCAF80279; Fri,  5 Nov 2021 21:14:23 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1CBD7F80148
- for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2021 19:58:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1CBD7F80148
+ by alsa1.perex.cz (Postfix) with ESMTPS id 862B3F80224
+ for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2021 21:14:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 862B3F80224
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="dpdKGdA7"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="tNTd5uiw"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 68B88218A9;
- Fri,  5 Nov 2021 18:58:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1636138688; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=ZQQbp4iVPwtDis/qFFW8EuNS1RkpwNN/kl+X3VUeZY8=;
- b=dpdKGdA7feY4+fETOQMXlfkrqS0xLWbiDjv+5BVx9zUUrIOBfctaJ7yERsLYEZTG04S2oI
- wGm5yVYk2qbAcNckcvwPmzpou16arvyCHFWF8pYW/IyMCmV43zDh/w1eBaRpVh/W/vugfQ
- wOIIC85IGZYjKC4NbN76VfELLFXrO1g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1636138688;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=ZQQbp4iVPwtDis/qFFW8EuNS1RkpwNN/kl+X3VUeZY8=;
- b=tNTd5uiwL0DtjFPJ0Juv4e+wWydW9QH7t18oY/1x2G5CWBEURUmaojcSnM6C1bFv+/WBmi
- Uz5C8Cxtl8anVDCg==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 60D9D2C14A;
- Fri,  5 Nov 2021 18:58:08 +0000 (UTC)
-Date: Fri, 05 Nov 2021 19:58:08 +0100
-Message-ID: <s5hr1bue8fz.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Kip Warner <kip@thevertigo.com>
-Subject: Re: [Alsa-user] USB audio on riscv64
-In-Reply-To: <3832054fd315605b19bd9d74977f83078a95ee08.camel@thevertigo.com>
-References: <f2ec64dab6a74c7eee0625533d3c3630adb62a41.camel@thevertigo.com>
- <CAJZ5D0bnMA=zZPztvQB4h0sXhU2og9D84QH8CXx5-GRWeu+4Ug@mail.gmail.com>
- <e91d7a44b9a456141d856ea57aa2948c3be4422f.camel@thevertigo.com>
- <s5h35oahppb.wl-tiwai@suse.de>
- <3832054fd315605b19bd9d74977f83078a95ee08.camel@thevertigo.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=UTF-8
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="hUHYVV8k"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 17CEC61183;
+ Fri,  5 Nov 2021 20:14:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1636143255;
+ bh=LSAMD4csi9LYb+2Qq3f88TWLgN3S61nRAGU8TYjsLjM=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=hUHYVV8kqKPAb/85qkCgZqkzvHDOVfURm3L/Ef+hGYJnQ6wBBAhdy37CPwEhswmYZ
+ zm6cNHaozYk6RPaG0aUZOoEbMzipDXBiBQdYCUA52rNNyBtoaTWoO5vBEJro4yBlQo
+ W1G7g+yZpalD3G7yAkLDM0WFsrKtmGUM4LC6KfU49/o4ldNJ5cxAsVCHtFsMYUS8fe
+ cw/Y1Xe9Vh33UxejeeWRtofruW5l8gTXmOgQVGcAzS9y8tQ+M1y74MTLgEZheyLvt3
+ Aof2znEUZKxYe0ueRv475Xwb7z1jysWUJnWveAc//qYbrmhunIasxEiRniarvC/k0b
+ W4+qUqTGlZMoA==
+From: Mark Brown <broonie@kernel.org>
+To: tiwai@suse.de, Bard Liao <yung-chuan.liao@linux.intel.com>
+In-Reply-To: <20211105022646.26305-1-yung-chuan.liao@linux.intel.com>
+References: <20211105022646.26305-1-yung-chuan.liao@linux.intel.com>
+Subject: Re: [PATCH 0/9] ASoC: Ietel: Add Dell ADL products support
+Message-Id: <163614325381.3446536.13120847316924354587.b4-ty@kernel.org>
+Date: Fri, 05 Nov 2021 20:14:13 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org,
- Dmitri Seletski <drjoms@gmail.com>
+Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
+ bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,63 +80,62 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 05 Nov 2021 19:47:16 +0100,
-Kip Warner wrote:
+On Fri, 5 Nov 2021 10:26:37 +0800, Bard Liao wrote:
+> This series adds configurations for Dell ADL products.
 > 
-> On Fri, 2021-11-05 at 11:17 +0100, Takashi Iwai wrote:
-> > Check the contents in /proc/asound/cards.  Is that empty as well?
+> Gongjun Song (9):
+>   ASoC: Intel: sof_sdw: Add support for SKU 0AF3 product
+>   ASoC: Intel: soc-acpi: add SKU 0AF3 SoundWire configuration
+>   ASoC: Intel: sof_sdw: Add support for SKU 0B00 and 0B01 products
+>   ASoC: Intel: sof_sdw: Add support for SKU 0B11 product
+>   ASoC: Intel: sof_sdw: Add support for SKU 0B13 product
+>   ASoC: Intel: soc-acpi: add SKU 0B13 SoundWire configuration
+>   ASoC: Intel: sof_sdw: Add support for SKU 0B29 product
+>   ASoC: Intel: soc-acpi: add SKU 0B29 SoundWire configuration
+>   ASoC: Intel: sof_sdw: Add support for SKU 0B12 product
 > 
-> Thanks for getting back to me, Takashi. Looks like it's empty:
+> [...]
 
-No, it contains the card entry.  You can see it in alsa-info.sh output
-you attached, which is:
+Applied to
 
-> !!Soundcards recognised by ALSA
-> !!-----------------------------
-> 
->  1 [Device         ]: USB-Audio - USB2.0 Device
->                       Generic USB2.0 Device at usb-0000:04:00.0-2.1, full speed
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-linus
 
-> > If the card is recognized there, check the /sys/class/sound/*.
-> 
-> This is what I see in that directory:
-> 
->    $ sudo tree /sys/class/sound/
->    /sys/class/sound/
->    ├── card1 -> ../../devices/platform/soc/e00000000.pcie/pci0000:00/0000:00:00.0/0000:01:00.0/0000:02:02.0/0000:04:00.0/usb1/1-2/1-2.1/1-2.1:1.0/sound/card1
->    ├── controlC1 -> ../../devices/platform/soc/e00000000.pcie/pci0000:00/0000:00:00.0/0000:01:00.0/0000:02:02.0/0000:04:00.0/usb1/1-2/1-2.1/1-2.1:1.0/sound/card1/controlC1
->    ├── pcmC1D0p -> ../../devices/platform/soc/e00000000.pcie/pci0000:00/0000:00:00.0/0000:01:00.0/0000:02:02.0/0000:04:00.0/usb1/1-2/1-2.1/1-2.1:1.0/sound/card1/pcmC1D0p
->    ├── seq -> ../../devices/virtual/sound/seq
->    └── timer -> ../../devices/virtual/sound/timer
+Thanks!
 
-So all files look fine.
+[1/9] ASoC: Intel: sof_sdw: Add support for SKU 0AF3 product
+      commit: 8f4fa45982b3f2daf5b3626ca0f12bde735f31ff
+[2/9] ASoC: Intel: soc-acpi: add SKU 0AF3 SoundWire configuration
+      commit: a1797d61cb35848432867a5bc294ce43058b5ead
+[3/9] ASoC: Intel: sof_sdw: Add support for SKU 0B00 and 0B01 products
+      commit: cf304329e4afb97ffabce232eadaba94f025641d
+[4/9] ASoC: Intel: sof_sdw: Add support for SKU 0B11 product
+      commit: 6fef4c2f458680399b7c512cb810c1e1784d7444
+[5/9] ASoC: Intel: sof_sdw: Add support for SKU 0B13 product
+      commit: 6448d0596e48dbc16a910f04ffc248c3f3c0a65c
+[6/9] ASoC: Intel: soc-acpi: add SKU 0B13 SoundWire configuration
+      commit: 11e18f582c14fdf08f52d99d439d2b82d98ac37d
+[7/9] ASoC: Intel: sof_sdw: Add support for SKU 0B29 product
+      commit: 0c2ed4f03f0bfe2be34efbabbebe9875c3aa9ca9
+[8/9] ASoC: Intel: soc-acpi: add SKU 0B29 SoundWire configuration
+      commit: 359ace2b9a411c3bd4b89fdc56f8b60e0f6696d2
+[9/9] ASoC: Intel: sof_sdw: Add support for SKU 0B12 product
+      commit: f55af7055cd465f6b767a0c1126977d4529c63c8
 
-> > If a PCM device is found there, it must be the lack of the
-> > corresponding device in /dev/snd/* that is usually created via udev.
-> 
-> And this is what I see there:
-> 
->    $ sudo tree /dev/snd/
->    /dev/snd/
->    ├── by-id
->    │   └── usb-Generic_USB2.0_Device_20130100ph0-00 -> ../controlC1
->    ├── by-path
->    │   └── platform-e00000000.pcie-pci-0000:04:00.0-usb-0:2.1:1.0 -> ../controlC1
->    ├── controlC1
->    ├── pcmC1D0p
->    ├── seq
->    └── timer
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-Here, too.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> I've also attached the output of the alsa-info(1) generated log.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-... and this looks also fine.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-Try to run like
-  % aplay -Dplughw:1 -vv foo.wav
-  
-If this works, the problem is rather the access via PulseAudio.
-
-
-Takashi
+Thanks,
+Mark
