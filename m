@@ -2,72 +2,50 @@ Return-Path: <SRS0=XtK2=PY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4627AC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 Nov 2021 20:16:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9400AC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 Nov 2021 20:24:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2B0A561183
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 Nov 2021 20:16:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2B0A561183
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 64AA861186
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 Nov 2021 20:24:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 64AA861186
+Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DC7B31688;
-	Fri,  5 Nov 2021 21:15:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC7B31688
+	by alsa0.perex.cz (Postfix) with ESMTPS id 71B67166D;
+	Fri,  5 Nov 2021 21:23:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 71B67166D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1636143357;
-	bh=BfJkmp/zQUz58AjoefSLkKZ/YEytniomZ7ATR4zR/dk=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1636143861;
+	bh=DjJKzJxL/JaZsgZ83lpSxmtbIjbBJlMLypn5HqT2UMY=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=st+N7jkhbM+IeiIusbmcJq5jm6lcg6lL1nq2vOD/QJ6ZH6M5E4/W+9dMtqjFymnND
-	 /Z9/oGmkbmocCxlZOAM4+EWSzybvNXJkgzcx/cjpG1sUG1eaU+IxJGMz02qYQ+hLDB
-	 aYej6PAUlItLvB6+IzQM19XFOCgjQx8l+rpdYZH0=
+	b=M058c6w84SzOI+lCI8Msr+2/ZKA3/e8iwANBh330EnR9F5/yIZqc6lNK5HcnBW619
+	 hIrppZnRe6wvUH8b/+S1XDkXdhtx6skF55+C3YAeyfyDBuiokgEm0wvIbnjNYvmdJy
+	 +ZkaK45IoBsYjYe6rXOy/v3LzbzVPaYzoYP3rNqY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C26ECF80279;
-	Fri,  5 Nov 2021 21:14:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0AD73F80148;
+	Fri,  5 Nov 2021 21:23:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BDDD9F8026A; Fri,  5 Nov 2021 21:14:23 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 06FDBF80148
- for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2021 21:14:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06FDBF80148
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="neJH8bau"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 95DD56108F;
- Fri,  5 Nov 2021 20:14:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1636143253;
- bh=BfJkmp/zQUz58AjoefSLkKZ/YEytniomZ7ATR4zR/dk=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=neJH8bauoAdPDOcCsijwl4LUlljFlHGa6hlx/RGRvD81oLSiHUFYAYb8vR1GLk3oa
- gCI2fpW3IGK0SWqCXJQCRkBzlCLrWA3aERn39UuttW4lrbF4CTYtknU0hepaXmpT7O
- G40+YRqq6hbCO2fs49deGTimDZThoqK8b8Besbj5hIT4XTsvXUGA4yuOR0+d8iY+Gs
- c/UozEcRJK4ywA6hxN9yOdUmeLCsca924RYw9Y9Ip2jZsKsXoesK3ndna+tbdap32t
- 90PjjJOhw2VwMP7M/mveTlZpdwTkKkQdoiR6MLiIGVsQe4JdsRmTGbnWwgJnRQe7s3
- x3wFHU6rYk7iw==
-From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20211105152013.75252-1-angelogioacchino.delregno@collabora.com>
-References: <20211105152013.75252-1-angelogioacchino.delregno@collabora.com>
-Subject: Re: [PATCH] ASoC: mediatek: mt8173-rt5650: Rename Speaker control to
- Ext Spk
-Message-Id: <163614325129.3446536.8434137401670448140.b4-ty@kernel.org>
-Date: Fri, 05 Nov 2021 20:14:11 +0000
+ id 0E00DF8026A; Fri,  5 Nov 2021 21:23:30 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id B32E6F80148
+ for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2021 21:23:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B32E6F80148
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com,
- linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
- kernel@collabora.com, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1636143804696264029-webhooks-bot@alsa-project.org>
+References: <1636143804696264029-webhooks-bot@alsa-project.org>
+Subject: Need info: How can I have conditional includes in a topology conf file
+Message-Id: <20211105202330.0E00DF8026A@alsa1.perex.cz>
+Date: Fri,  5 Nov 2021 21:23:30 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,41 +61,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 5 Nov 2021 16:20:13 +0100, AngeloGioacchino Del Regno wrote:
-> Some RT5645 and RT5650 powered platforms are using "Ext Spk"
-> instead of "Speaker", and this is also reflected in alsa-lib
-> configurations for the generic RT5645 usecase manager configs.
-> 
-> Rename the "Speaker" control to "Ext Spk" in order to be able
-> to make the userspace reuse/inherit the same configurations also
-> for this machine, along with the others.
-> 
-> [...]
+alsa-project/alsa-utils issue #118 was opened from ranj063:
 
-Applied to
+For example: I want to be able to conditionally include the DMIC pipelines/DAI's depending on whether the device has DMICs or not.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-linus
-
-Thanks!
-
-[1/1] ASoC: mediatek: mt8173-rt5650: Rename Speaker control to Ext Spk
-      commit: 0a8facac0d1e38dc8b86ade6d3f0d8b33dae7c58
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Issue URL     : https://github.com/alsa-project/alsa-utils/issues/118
+Repository URL: https://github.com/alsa-project/alsa-utils
