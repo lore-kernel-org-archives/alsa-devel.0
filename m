@@ -2,85 +2,74 @@ Return-Path: <SRS0=XtK2=PY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E9D85C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 Nov 2021 10:18:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ABC02C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 Nov 2021 10:22:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 275656125F
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 Nov 2021 10:18:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 275656125F
+	by mail.kernel.org (Postfix) with ESMTPS id AB9D060F21
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 Nov 2021 10:22:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AB9D060F21
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 57766828;
-	Fri,  5 Nov 2021 11:17:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57766828
+	by alsa0.perex.cz (Postfix) with ESMTPS id 966F8165D;
+	Fri,  5 Nov 2021 11:21:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 966F8165D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1636107480;
-	bh=QYDd1VmTS74y+0BgaZNgNmySWgiLb3o7dcbTZEJrfpQ=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=jyl5UjAK+4k8KQn51RocpLv2AI379tYoasrtePUJpwXbf4Rb9Y1fUN3IVGOQ9dmSi
-	 oq0R4Tf0qXzYFhkXyaSKribTotUHnCv8k92es6ykXQWk1YvWVMRr/F3khH7W4Hvvzy
-	 w6tY6Xg02Xjn30wCvJfnxAqpkcHKVSuwI0gz7Z1s=
+	s=default; t=1636107726;
+	bh=4OhHVQQIs0bF+HMW3FUiJ54PFpzy7+RMtDKxrL7AmXc=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=EAKeZ6EPJvbQQkok7KZekKiCPtkcwPDurRD4DBNbfmmMmPmrIe4dHNOYa6sEWwgiZ
+	 qHSeDYcJRlOao9tyrvPEvDnGPcDwggHImRI48Qk01YGDucCLmVjT75kVmXW3SjaAk6
+	 KGGsn5tVpZRmjUYZGVdQmZjoiwijkax/ef0q+uGs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D02D2F80269;
-	Fri,  5 Nov 2021 11:17:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 25F0EF80148;
+	Fri,  5 Nov 2021 11:21:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 90F03F8026A; Fri,  5 Nov 2021 11:17:08 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id D00B9F8026A; Fri,  5 Nov 2021 11:21:14 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A7758F80148
- for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2021 11:17:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7758F80148
+ by alsa1.perex.cz (Postfix) with ESMTPS id AC563F80224
+ for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2021 11:21:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC563F80224
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="ZjG56Yxq"; 
+ header.b="1vdMVCeB"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="krGWWGge"
+ header.b="5h0USV7U"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id E78F81FD43;
- Fri,  5 Nov 2021 10:17:04 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id AD7AE212BB
+ for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2021 10:21:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1636107424; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=JH7Mhc39jRAN7uaCAivgMMpeLYOdzY0qygOqgH+ahGQ=;
- b=ZjG56Yxqtjm4RqiP+sci12cFZa6HU4/VTU4I/ky5/U/3Wiqa7N7ckO1q/gD1cm/91YjQM5
- qS1JOXO0Vaccc+qntj0FroB+MFvEQ1hWrtCG8FdcLUdvlfDJyS5YGoo7Flr/75KG2Z7wlk
- qbU+m7XFLcsITwvtT0scShS/oTrBpso=
+ t=1636107665; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=kZw4A7Tixt7gwkJbsdNVapGkXdC6w1fot026JxImMzo=;
+ b=1vdMVCeB0P9cnZogiyqIicLDpb1QJmlXkXT4hNSlgtD8jGPZqIf/gKkte0JiF1lO1zcJFP
+ bIAn0INtCFxGIPMXwqRitg26T8VHQLCsAo588sgmLCJsOQ0BZBEeB/vP2SLtBMO9bPdtss
+ Ak9BCsX/d1HbhnThVrIhP6UNKaE45Uc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1636107424;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=JH7Mhc39jRAN7uaCAivgMMpeLYOdzY0qygOqgH+ahGQ=;
- b=krGWWGgeiYX4xJLwSbTo+X1/59LNoICPY1B74JSCgnIpTui50zwgTvCVHo18KdLIMn9hdZ
- oeKuNH0jJIqjFCBA==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id DD2FA2C154;
- Fri,  5 Nov 2021 10:17:04 +0000 (UTC)
-Date: Fri, 05 Nov 2021 11:17:04 +0100
-Message-ID: <s5h35oahppb.wl-tiwai@suse.de>
+ s=susede2_ed25519; t=1636107665;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=kZw4A7Tixt7gwkJbsdNVapGkXdC6w1fot026JxImMzo=;
+ b=5h0USV7UTaFaMie6x4wUwXor5FQEkwM7UHNFz9MdT/EfByvQV/4t/QbWD1u349IWMl2adX
+ OUpEijdrg59sA7Bw==
+Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 9E9352C157;
+ Fri,  5 Nov 2021 10:21:05 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
-To: Kip Warner <kip@thevertigo.com>
-Subject: Re: [Alsa-user] USB audio on riscv64
-In-Reply-To: <e91d7a44b9a456141d856ea57aa2948c3be4422f.camel@thevertigo.com>
-References: <f2ec64dab6a74c7eee0625533d3c3630adb62a41.camel@thevertigo.com>
- <CAJZ5D0bnMA=zZPztvQB4h0sXhU2og9D84QH8CXx5-GRWeu+4Ug@mail.gmail.com>
- <e91d7a44b9a456141d856ea57aa2948c3be4422f.camel@thevertigo.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: Alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org,
- Dmitri Seletski <drjoms@gmail.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: memalloc: Catch call with NULL snd_dma_buffer pointer
+Date: Fri,  5 Nov 2021 11:21:03 +0100
+Message-Id: <20211105102103.28148-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,46 +85,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 04 Nov 2021 22:37:26 +0100,
-Kip Warner wrote:
-> 
-> On Thu, 2021-11-04 at 08:40 +0000, Dmitri Seletski wrote:
-> > I am just a user.
-> > Can't help but wonder if usb snd modules were compiled in or loaded?
-> 
-> Hey Dmitri,
-> 
-> CC'ing the lists. When I plug in the device, I see the following on the
-> bus:
-> 
->    $ lsusb
->    ...
->    Bus 001 Device 003: ID 1908:2070 GEMBIRD Honk HK-5002 USB Speaker
->    ...
-> 
-> The kernel logs the following in kern.log:
-> 
->    [  291.681086] usb 1-2.3: new full-speed USB device number 3 using xhci_hcd
->    [  291.850299] usb 1-2.3: New USB device found, idVendor=1908, idProduct=2070, bcdDevice= 1.00
->    [  291.850333] usb 1-2.3: New USB device strings: Mfr=1, Product=2, SerialNumber=3
->    [  291.850345] usb 1-2.3: Product: USB2.0 Device
->    [  291.850355] usb 1-2.3: Manufacturer: Generic
->    [  291.850365] usb 1-2.3: SerialNumber: 20130100ph0
->    [  292.434209] mc: Linux media interface: v0.10
->    [  292.734949] usb 1-2.3: 1:1: cannot get freq at ep 0x2
->    [  292.802612] usb 1-2.3: 2:0: bogus dB values (-12800/-12700), disabling dB reporting
->    [  292.803733] usbcore: registered new interface driver snd-usb-audio
-> 
-> The device still doesn't appear to be visible to ALSA:
-> 
->    $ aplay -l
->    aplay: device_list:276: no soundcards found...
+Although we've covered all calls with NULL dma buffer pointer, so far,
+there may be still some else in the wild.  For catching such a case
+more easily, add a WARN_ON_ONCE() in snd_dma_get_ops().
 
-Check the contents in /proc/asound/cards.  Is that empty as well?
+Fixes: 37af81c5998f ("ALSA: core: Abstract memory alloc helpers")
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/memalloc.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-If the card is recognized there, check the /sys/class/sound/*.
-If a PCM device is found there, it must be the lack of the
-corresponding device in /dev/snd/* that is usually created via udev.
+diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
+index ea778f868cf3..ea9698cea2e3 100644
+--- a/sound/core/memalloc.c
++++ b/sound/core/memalloc.c
+@@ -631,6 +631,8 @@ static const struct snd_malloc_ops *dma_ops[] = {
+ 
+ static const struct snd_malloc_ops *snd_dma_get_ops(struct snd_dma_buffer *dmab)
+ {
++	if (WARN_ON_ONCE(!dmab))
++		return NULL;
+ 	if (WARN_ON_ONCE(dmab->dev.type <= SNDRV_DMA_TYPE_UNKNOWN ||
+ 			 dmab->dev.type >= ARRAY_SIZE(dma_ops)))
+ 		return NULL;
+-- 
+2.31.1
 
-
-Takashi
