@@ -2,75 +2,83 @@ Return-Path: <SRS0=PqUC=PZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8AD3BC433EF
-	for <alsa-devel@archiver.kernel.org>; Sat,  6 Nov 2021 21:14:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 837D4C433EF
+	for <alsa-devel@archiver.kernel.org>; Sat,  6 Nov 2021 21:33:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 136D761165
-	for <alsa-devel@archiver.kernel.org>; Sat,  6 Nov 2021 21:14:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 136D761165
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 3FB6F600EF
+	for <alsa-devel@archiver.kernel.org>; Sat,  6 Nov 2021 21:33:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3FB6F600EF
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=thevertigo.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9B2C1826;
-	Sat,  6 Nov 2021 22:14:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B2C1826
+	by alsa0.perex.cz (Postfix) with ESMTPS id CA6EB14E;
+	Sat,  6 Nov 2021 22:32:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA6EB14E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1636233294;
-	bh=DrZ1/R6JDpVnQzkHLtDByGNK/U5yDl5hs2KAq/CB9MQ=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1636234423;
+	bh=7sv3PS/S2Yogwyvs8Y7pKxwKcAvujl736cT5jF4irIE=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LFzNp9FEDlVK/ajBpA/YQ8G+rpqsHQcElal27rAcIvFCB++SBBSzz12AejV6b0m/B
-	 dCVYR4c3s2Y5b6TxyMIKVGfUr84iLndfpQKOpKRFgr9NXn9eyEQEOGzgSSRSqz8wbZ
-	 kjXkddfEIa35lbpmnKo2mxEX5vMMKzNYNw/3zK+M=
+	b=vKyncmKuH8DIXVNP/muNxIExtRwyBROm/9Soos92+lbExusJFLVrdjyzYBIm0cnmE
+	 lWGqwijPXJLf2TZaFGhuqEa2GJxCKoOYLKeadDTwtTJnQcurOhaqCKsdUspjPMhRxA
+	 bfe07X6INUQN9K5yuSgJguwID/P1eActVCCpV3u0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1DBEEF80229;
-	Sat,  6 Nov 2021 22:14:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5445FF80229;
+	Sat,  6 Nov 2021 22:32:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DE2A0F8025D; Sat,  6 Nov 2021 22:14:00 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 09E46F8025D; Sat,  6 Nov 2021 22:32:43 +0100 (CET)
+Received: from dog.elm.relay.mailchannels.net (dog.elm.relay.mailchannels.net
+ [23.83.212.48])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8F696F8012A
- for <alsa-devel@alsa-project.org>; Sat,  6 Nov 2021 22:13:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F696F8012A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1FFAFF8012A
+ for <alsa-devel@alsa-project.org>; Sat,  6 Nov 2021 22:32:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1FFAFF8012A
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="uWEFwVLH"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="ZXB3TmZJ"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id BCDF71FD3C;
- Sat,  6 Nov 2021 21:13:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1636233235; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=FS5gaYlt86W55n2Dl9ZpoiK+U/r3xGbYv27wkjzcAuo=;
- b=uWEFwVLHtBswZgf/tvuUCRHbGTOB3xWdsLxxIhzt7usHcUpxzI1RyzJH+sMqekB7b9qGrg
- Xca63F1ug1KCmwufYCZ9lNi1VcovwwX5zOkZXY5aw0DrgUhUwUZcyO877Gu87xcAssBJMX
- mt9VBFQ4TwlkYJC4GTz5J0l8T7YfR48=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1636233235;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=FS5gaYlt86W55n2Dl9ZpoiK+U/r3xGbYv27wkjzcAuo=;
- b=ZXB3TmZJ7BI/lbetc4xalW1ZR4N7lNwDnBj0+QoTuIHOmqf3XRvhHllJ2Q+K3UHJCdJ2gY
- 4MweeEqnJhJXWqBQ==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id A968A2C144;
- Sat,  6 Nov 2021 21:13:55 +0000 (UTC)
-Date: Sat, 06 Nov 2021 22:13:55 +0100
-Message-ID: <s5ha6ihdm24.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Kip Warner <kip@thevertigo.com>
+ dkim=fail reason="signature verification failed" (1024-bit key)
+ header.d=thevertigo.com header.i=@thevertigo.com header.b="CYwSLL4G"
+X-Sender-Id: dreamhost|x-authsender|kip@thevertigo.com
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+ by relay.mailchannels.net (Postfix) with ESMTP id 6F876620DEE;
+ Sat,  6 Nov 2021 21:32:32 +0000 (UTC)
+Received: from pdx1-sub0-mail-a275.central1.pdx1.dh-int.com (unknown
+ [127.0.0.6]) (Authenticated sender: dreamhost)
+ by relay.mailchannels.net (Postfix) with ESMTPA id 0C9EB620D50;
+ Sat,  6 Nov 2021 21:32:32 +0000 (UTC)
+X-Sender-Id: dreamhost|x-authsender|kip@thevertigo.com
+Received: from pdx1-sub0-mail-a275.central1.pdx1.dh-int.com (pop.dreamhost.com
+ [64.90.62.162]) (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
+ by 100.105.57.75 (trex/6.4.3); Sat, 06 Nov 2021 21:32:32 +0000
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: dreamhost|x-authsender|kip@thevertigo.com
+X-MailChannels-Auth-Id: dreamhost
+X-Slimy-Thread: 28abc0b524cd4dcd_1636234352324_3987246292
+X-MC-Loop-Signature: 1636234352324:4202973197
+X-MC-Ingress-Time: 1636234352324
+Received: from kip-desktop.kip-router (unknown [192.252.230.5])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest
+ SHA256) (No client certificate requested)
+ (Authenticated sender: kip@thevertigo.com)
+ by pdx1-sub0-mail-a275.central1.pdx1.dh-int.com (Postfix) with ESMTPSA id
+ 4HmrFC4mL1z1NS; Sat,  6 Nov 2021 14:32:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=thevertigo.com;
+ s=thevertigo.com; t=1636234351; bh=0p77l1wotqJ53nnpMh8Oqd9ik4g=;
+ h=Subject:From:To:Cc:Date:Content-Type;
+ b=CYwSLL4GXckSDjop074W1giUz0u/OhAgsIW81JHcWR6PeqnaP8AOrgDweVxNLfgzJ
+ kWp2Yp3hbTI2ZHhQFXgO2ITYVBuCriTQRZ0nbWejiEDwXQIVXqIS2IVuzOGnXoonjz
+ voeaf0u4dC0ypk4bcmPvxI2C8BJm1U+rrN+faTa4=
+Message-ID: <4cbf9bb8d417414d720560c05bddc9a2714e0975.camel@thevertigo.com>
 Subject: Re: [Alsa-user] USB audio on riscv64
-In-Reply-To: <07abba7df72f0dd27432a5dcda46f6b24483b78d.camel@thevertigo.com>
+From: Kip Warner <kip@thevertigo.com>
+To: Takashi Iwai <tiwai@suse.de>
+Date: Sat, 06 Nov 2021 14:32:30 -0700
+In-Reply-To: <s5ha6ihdm24.wl-tiwai@suse.de>
 References: <f2ec64dab6a74c7eee0625533d3c3630adb62a41.camel@thevertigo.com>
  <CAJZ5D0bnMA=zZPztvQB4h0sXhU2og9D84QH8CXx5-GRWeu+4Ug@mail.gmail.com>
  <e91d7a44b9a456141d856ea57aa2948c3be4422f.camel@thevertigo.com>
@@ -80,11 +88,11 @@ References: <f2ec64dab6a74c7eee0625533d3c3630adb62a41.camel@thevertigo.com>
  <35c65f0177395968c01ea4b00d52c021cf2f9191.camel@thevertigo.com>
  <s5ho86xeoiy.wl-tiwai@suse.de>
  <07abba7df72f0dd27432a5dcda46f6b24483b78d.camel@thevertigo.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
+ <s5ha6ihdm24.wl-tiwai@suse.de>
+Content-Type: multipart/signed; micalg="pgp-sha512";
+ protocol="application/pgp-signature"; boundary="=-8yjUSESx2Bp0R4/X6PLG"
+User-Agent: Evolution 3.40.0-1 
+MIME-Version: 1.0
 Cc: Alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org,
  Dmitri Seletski <drjoms@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
@@ -102,23 +110,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 06 Nov 2021 20:58:59 +0100,
-Kip Warner wrote:
-> 
-> On Sat, 2021-11-06 at 08:23 +0100, Takashi Iwai wrote:
-> > How about to run as root?
-> 
-> It works as root!
-> 
->    $ sudo aplay -Dplughw:1 -vv /usr/share/games/lincity-ng/sounds/Water1.wav
-> 
-> So there appears to be a permission issue. I wonder why?
 
-It depends rather on your system setup and desktop environment.
-Usually the device file permissions are managed by logind and modified
-dynamically at login via ACL.
+--=-8yjUSESx2Bp0R4/X6PLG
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-As it's no kernel issue, better to ask your distro.
+On Sat, 2021-11-06 at 22:13 +0100, Takashi Iwai wrote:
+> It depends rather on your system setup and desktop environment.
+> Usually the device file permissions are managed by logind and
+> modified dynamically at login via ACL.
+>
+> As it's no kernel issue, better to ask your distro.
 
+It probably is a distro issue. But at least we know now that it works
+and it's just a matter of fiddling with permissions. Thanks Takashi.
 
-Takashi
+--=20
+Kip Warner -- Senior Software Engineer
+OpenPGP=C2=A0signed/encrypted mail preferred
+https://www.thevertigo.com
+
+--=-8yjUSESx2Bp0R4/X6PLG
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEaUi0dj/qpTzsKe4xRLRlxF7U4wQFAmGG9G4ACgkQRLRlxF7U
+4wTIjA//RYXrQaWhg13M1MnAVaMy4k44Cir2Wio3fuGKKrCo1y+zX4GTu6w3ogxN
+C6dYJj5PQ4+rpXwNchKaXUXVz5oCtcU8cW4UO7gFxJtMYJVfLKEGDN900EUqRMwq
+L8UKv6w9D8pNLTfUr9nfYoXAyJHcNg7BkWDbXKrT1ZrTX34Vn7lbcT2i7dKa09/+
+Cj/x2bmeSt/rmiZmZHmfdHwsptG5TPA8c2pzh95+XBS4HKt8xKNxkug7mO7ctoOV
+++xXFPj8UpjXIM0xxwR4sX9Kr5Wk5r9Fq8Mo8nd4rfOBfVBrwCjvlHoZ7X3xZDEG
+sS831opfvtWK51jjRcFJCeJPAp2PLZX7hd7hxsYGCq2cJpw0P5M460Tw/b3YVvCQ
+3c7LHXWu9cP35ihGOve+/2xr5pYdy6Kz3XjawTof5/5WBt4s1lHN4F0UhHT62GmU
+79zyCXPIUknIMBKAVJLWnIsu23hcp/qRpbaUgYXvA1NmHiXxjtfJphds/V/IbIy7
+RG5ze/D0LRyDC77+QPQhJFSX+fOmAoWPZS3il9WnUuYIvCQ05eIA8dg1niYgWoeY
+gMQbuYGmNlTIVQSMLmfst4zWEckzMKh5stDxM9BhNzcfyH4wgqt+nCrKiOEWlLwq
+BMZ2LBHOtngwY2+1mcuOsKxh4P4Wab3IIgPan7R0SbbGgTj/bnQ=
+=NtmZ
+-----END PGP SIGNATURE-----
+
+--=-8yjUSESx2Bp0R4/X6PLG--
+
