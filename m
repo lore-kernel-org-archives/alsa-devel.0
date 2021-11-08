@@ -2,50 +2,80 @@ Return-Path: <SRS0=zqBf=P3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 410DCC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Nov 2021 08:22:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 607C9C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Nov 2021 09:42:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A4AB4610FF
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Nov 2021 08:22:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A4AB4610FF
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	by mail.kernel.org (Postfix) with ESMTPS id 02E456120D
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Nov 2021 09:42:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 02E456120D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0FC151673;
-	Mon,  8 Nov 2021 09:21:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FC151673
+	by alsa0.perex.cz (Postfix) with ESMTPS id 83E881676;
+	Mon,  8 Nov 2021 10:41:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 83E881676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1636359739;
-	bh=wR+2JWM8PPmOu4gc1LARW6Dngm2Nn2OFqhE2RSYopO8=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1636364526;
+	bh=hUZQBpLZMpslaJ/pg9xfxQGF7GUkeTxOPRFLjFYEGHQ=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CJnApgFDInoIGpPRmL4JGIvneSm9BobOvN6WGmap5tzN7JlrZSvihSruP9WIkIfC/
-	 7CgRT6iDEr26q5llHpko0ZXl6o6o2TQtZz6uztfEUuK3pH9JksxV2vo1OM84FUhMOI
-	 C/Iya6ZKPp9ClGSJd3G4dzqHQhA00vUPRCMKDjc4=
+	b=D6LhKtcNP3Lb18TkufJxz2MrHPWQJKsWVC1Z1G2kT0zYF1iuL0PbaGn+nbDVV6N+B
+	 1m2qQgL/VUgUiuE/4zBeh0VW2od1WsRYIi/U9Z0PCcAFAdyNFMlGCsN6isdFhcG0Hu
+	 tkpEta71h1tsIKFHAD1B+XQ1qQAiqPtGl/YbrfWs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9016BF80227;
-	Mon,  8 Nov 2021 09:21:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1C279F801D8;
+	Mon,  8 Nov 2021 10:41:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1FE51F80107; Mon,  8 Nov 2021 09:21:27 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id BAEB4F80107
- for <alsa-devel@alsa-project.org>; Mon,  8 Nov 2021 09:21:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BAEB4F80107
+ id EFF7DF8049E; Mon,  8 Nov 2021 10:41:09 +0100 (CET)
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 093C8F8007E
+ for <alsa-devel@alsa-project.org>; Mon,  8 Nov 2021 10:41:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 093C8F8007E
+X-UUID: d313024215cb41fc999a422a7d299fe0-20211108
+X-UUID: d313024215cb41fc999a422a7d299fe0-20211108
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
+ (envelope-from <yc.hung@mediatek.com>)
+ (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+ with ESMTP id 753959213; Mon, 08 Nov 2021 17:40:53 +0800
+Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.792.15; Mon, 8 Nov 2021 17:40:52 +0800
+Received: from mtksdccf07 (172.21.84.99) by mtkmbs10n1.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.2.792.15 via Frontend
+ Transport; Mon, 8 Nov 2021 17:40:52 +0800
+Message-ID: <4e876c89ee58cd1408511a34573005e3df359cd0.camel@mediatek.com>
+Subject: Re: [PATCH 3/4] ASoC: mediatek: mt8195: separate the common code
+ from machine driver
+From: YC Hung <yc.hung@mediatek.com>
+To: Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart
+ <pierre-louis.bossart@linux.intel.com>
+Date: Mon, 8 Nov 2021 17:40:52 +0800
+In-Reply-To: <YYVez/V9ocCXhYmg@sirena.org.uk>
+References: <20211103100040.11933-1-trevor.wu@mediatek.com>
+ <20211103100040.11933-4-trevor.wu@mediatek.com>
+ <YYP+l7tMofYoB+aC@sirena.org.uk>
+ <b4360ea17c3045759e85ee13fa9c001afe73c93c.camel@mediatek.com>
+ <YYVQC7KLZx8oxdXT@sirena.org.uk>
+ <e404d241-0685-643b-4b9d-d85bb8783385@linux.intel.com>
+ <YYVez/V9ocCXhYmg@sirena.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1636359679557734966-webhooks-bot@alsa-project.org>
-References: <1636359679557734966-webhooks-bot@alsa-project.org>
-Subject: ucm2: Add support for RT5650 on MediaTek SoCs
-Message-Id: <20211108082127.1FE51F80107@alsa1.perex.cz>
-Date: Mon,  8 Nov 2021 09:21:27 +0100 (CET)
+X-MTK: N
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, robh+dt@kernel.org,
+ linux-mediatek@lists.infradead.org, Trevor Wu <trevor.wu@mediatek.com>,
+ matthias.bgg@gmail.com, daniel.baluta@nxp.com,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -61,15 +91,69 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #117 was opened from kholk:
+Hi Mark,
 
-At least one MT8173 machine uses a RT5650 codec and that's Google Elm:
-add a UCM2 configuration for this codec.
+I am YC Hung from Mediatek. Let me show our block diagram as the link
+below for the sound card which support SOF.
 
-This was tested on Acer Chromebook R13 (MT8173 Elm).
+https://user-images.githubusercontent.com/62316/132476344-923dfe3a-5305-43e5-9fc8-c63d9ab2c58f.png
+In this sound card, there are two components , one is SOF based
+component and another is non-SOF based component(called Normal in the
+block).
+We want to reuse some BEs of Normal which can control Mediatek Audio
+Front End hardware power, clock , and DAI module and still keep some
+FEs(e.g. DPTX) then we can use it on the same sound card.
+Therefore, we use late_probe callback function
+"mt8195_mt6359_rt1019_rt5682_card_late_probe" to add route path from
+SOF widget to non-SOF BEs.
+For two patches https://github.com/thesofproject/linux/pull/3217 and 
+https://github.com/thesofproject/linux/pull/3236, we want to keep FEs
+of non-SOF components and can reuse them. Please let me know if I am
+not clear enough.Thanks.
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+On Fri, 2021-11-05 at 16:41 +0000, Mark Brown wrote:
+> On Fri, Nov 05, 2021 at 11:16:05AM -0500, Pierre-Louis Bossart wrote:
+> > On 11/5/21 10:38 AM, Mark Brown wrote:
+> > > We shouldn't be requiring people to load completely different
+> > > drivers
+> > > based on software configuration, what if a system wants to bypass
+> > > the
+> > > DSP in some but not all configurations?  Can we not just have
+> > > controls
+> > > allowing users to route round the DSP where appropriate?
+> > It was my understanding the card relies on separate components
+> > - a SOF-based component to provide support for DSP-managed
+> > interfaces
+> > - a 'non-SOF' component for 'regular' interfaces not handled by the
+> > DSP.
+> > this was the basis for the changes discussed in
+> > https://github.com/thesofproject/linux/pull/3217 and
+> > https://github.com/thesofproject/linux/pull/3236
+> 
+> So it's actually supposed to end up as two different cards which
+> can't
+> possibly be interlinked?  That doesn't seem to add up entirely given
+> that there's stuff being moved out of the current card, and I thought
+> these systems had a fairly comprehensive audio muxing capability.
+> Trevor, could you be a bit more specific about what's actually going
+> on
+> here physically please?
+> 
+> > But indeed if the same interface can be managed by the DSP or not,
+> > depending on software choices it's a different problem altogether.
+> > We've looked into this recently, if the choice to involve the DSP
+> > or not
+> > is at the interface level, it might be better to have both
+> > components
+> > expose different DAIs for the same interface, with some sort of
+> > run-time
+> > mutual exclusion, so that all possible/allowed permutations are
+> > allowed.
+> 
+> Yes, if the interface can optionally be completely hidden by the DSP
+> that's adding another layer of complication.
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
 
-Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/117
-Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/117.patch
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
