@@ -2,88 +2,77 @@ Return-Path: <SRS0=Fseo=P4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F3E0AC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Nov 2021 06:58:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DDA1BC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Nov 2021 06:58:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 145AA61159
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Nov 2021 06:58:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 145AA61159
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	by mail.kernel.org (Postfix) with ESMTPS id 49F0C61151
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Nov 2021 06:58:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 49F0C61151
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=alien8.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6E71484D;
-	Tue,  9 Nov 2021 07:57:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E71484D
+	by alsa0.perex.cz (Postfix) with ESMTPS id A90F1167E;
+	Tue,  9 Nov 2021 07:57:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A90F1167E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1636441119;
-	bh=oeo1PSu+lSLdhrm7Pz+G8io/MKP55D+vex8RJtX/2YE=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1636441127;
+	bh=M58R6z8lSnGhZfNCfeB6TvClmOoyOVejsl9xoWPOXEo=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=l2HNLKTT5R8UICYkvb1gIArHMhwINs9xIRQFuqrsA4DE8cNKcJ2B8KBQWxzpaRxt6
-	 ECHw7+YL4KtWSlkTJUNsudssm6j204/JRNgtlIWHFVRoDadW/GDuVL8H+Y6keoiJ2v
-	 PtpFTbkJkMAzTgUIvegnWBH6uwB73FyqPk+gGLsY=
+	b=Duq/qQ/mV9gOgzwiHWMX56CLqfvI6WOpBg9EMyZmkpMbXm6jGpWgWNtxfQyoOfC8S
+	 t3PG3D5NGczM72X+Eu2IHn4biiaWtzankeittsEitB72ZVv3FyQFyuUvQVo12kfcvW
+	 OERJkvqcdeWi/WkXatAxrMG+mrymNwl4DOCI0YWw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 237ECF802E3;
+	by alsa1.perex.cz (Postfix) with ESMTP id E38EDF801D8;
 	Tue,  9 Nov 2021 07:57:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E6272F8049E; Mon,  8 Nov 2021 17:12:36 +0100 (CET)
-Received: from mail-vk1-f169.google.com (mail-vk1-f169.google.com
- [209.85.221.169])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id E45DEF8049E; Mon,  8 Nov 2021 17:21:55 +0100 (CET)
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D7E80F801D8
- for <alsa-devel@alsa-project.org>; Mon,  8 Nov 2021 17:12:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7E80F801D8
-Received: by mail-vk1-f169.google.com with SMTP id n201so8489212vkn.12
- for <alsa-devel@alsa-project.org>; Mon, 08 Nov 2021 08:12:30 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=hEQQmRj7LTpJogPgt2xRVOX7N+txus6iMmGepIZghfU=;
- b=Hb1C4/jDe0bZwKz9Yv5+DU0l/+7FbBNLNQqlU69VQQYJ0KIh+lJcshhzrMHn5nMbPo
- 9KXpfjlxcA7hmF3JMowg/ECikbWJSP2JNXqXWrYI10dXjAcT8ct/RZrUqo4kYTxAKX3U
- 5NBgLtb2nti31HVt0B23KYr46BZ070kw1msisIz4zvZ4izrDVnWpsJfrZDeRoJUFCNRO
- TYq0H1DGQiCeckHKoTMs6zSGbAxwWZAUtM5a+6Kr1ODWuc2Rafz8PEI2rPjaSqp3y88A
- r6uI3xDORF+yieVvmsi4JOFmPTzgl7w9xaHiU9RPuJ2nNAtdCpiLV+UEbtg4wiKxUlh0
- p2og==
-X-Gm-Message-State: AOAM533z7SoeOail9IAm92mKCyL7w7HoO/pK168cnWIQP4GyJgFdfgHD
- ZRmdU9Eyg+h67ti+RqhnbHDK8QkhL4W/6Ooa
-X-Google-Smtp-Source: ABdhPJwZ1T/0ep/gtUbWOfFY1PX4m5jGjq4gxOUZuDNSlWnoq6lAZf6fHo2hbQPRGba4iUs6x7/8AA==
-X-Received: by 2002:a05:6122:130d:: with SMTP id
- e13mr15528382vkp.6.1636387948847; 
- Mon, 08 Nov 2021 08:12:28 -0800 (PST)
-Received: from mail-vk1-f170.google.com (mail-vk1-f170.google.com.
- [209.85.221.170])
- by smtp.gmail.com with ESMTPSA id d16sm1575435vko.29.2021.11.08.08.12.27
- for <alsa-devel@alsa-project.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 08 Nov 2021 08:12:27 -0800 (PST)
-Received: by mail-vk1-f170.google.com with SMTP id bc10so8483957vkb.1
- for <alsa-devel@alsa-project.org>; Mon, 08 Nov 2021 08:12:27 -0800 (PST)
-X-Received: by 2002:a1f:f24f:: with SMTP id q76mr347755vkh.11.1636387947335;
- Mon, 08 Nov 2021 08:12:27 -0800 (PST)
-MIME-Version: 1.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id AD422F801D8
+ for <alsa-devel@alsa-project.org>; Mon,  8 Nov 2021 17:21:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AD422F801D8
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=alien8.de header.i=@alien8.de
+ header.b="PwrrR1/9"
+Received: from zn.tnic (p200300ec2f331100181cb4ce2fe9e1de.dip0.t-ipconnect.de
+ [IPv6:2003:ec:2f33:1100:181c:b4ce:2fe9:e1de])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 071501EC0503;
+ Mon,  8 Nov 2021 17:21:51 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+ t=1636388511;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+ bh=BmhP/O36y2kgWhY9wVesOsCT3VZHRN0l2HSALpf1H38=;
+ b=PwrrR1/9r0PtkEkx8l94Lq5o8cthN3NxILevAwj1LoIRoN/B58W84rM+iyPPtwIBmVMRtG
+ 8jlUd2DAmGqQe7+sK0xny6az8RzdndQG0jeU2pdwyReIQXuaywQhQg+JKE/uRG6ku5v9jN
+ K5y81X7+5Pp2iJVW5AZDozV+KOdqQTY=
+Date: Mon, 8 Nov 2021 17:21:45 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH v0 42/42] notifier: Return an error when callback is
+ already registered
+Message-ID: <YYlOmd0AeA8DSluD@zn.tnic>
 References: <20211108101157.15189-1-bp@alien8.de>
  <20211108101157.15189-43-bp@alien8.de>
  <CAMuHMdWH+txiSP_d7Jc4f_bU8Lf9iWpT4E3o5o7BJr-YdA6-VA@mail.gmail.com>
  <YYkyUEqcsOwQMb1S@zn.tnic>
  <CAMuHMdXiBEQyEXJagSfpH44hxVA2t0sDH7B7YubLGHrb2MJLLA@mail.gmail.com>
  <YYlJQYLiIrhjwOmT@zn.tnic>
-In-Reply-To: <YYlJQYLiIrhjwOmT@zn.tnic>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 8 Nov 2021 17:12:16 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXHikGrmUzuq0WG5JRHUUE=5zsaVCTF+e4TiHpM5tc5kA@mail.gmail.com>
-Message-ID: <CAMuHMdXHikGrmUzuq0WG5JRHUUE=5zsaVCTF+e4TiHpM5tc5kA@mail.gmail.com>
-Subject: Re: [PATCH v0 42/42] notifier: Return an error when callback is
- already registered
-To: Borislav Petkov <bp@alien8.de>
-Content-Type: text/plain; charset="UTF-8"
+ <CAMuHMdXHikGrmUzuq0WG5JRHUUE=5zsaVCTF+e4TiHpM5tc5kA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdXHikGrmUzuq0WG5JRHUUE=5zsaVCTF+e4TiHpM5tc5kA@mail.gmail.com>
 X-Mailman-Approved-At: Tue, 09 Nov 2021 07:57:03 +0100
 Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
  the arch/x86 maintainers <x86@kernel.org>,
@@ -130,33 +119,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Borislav,
+On Mon, Nov 08, 2021 at 05:12:16PM +0100, Geert Uytterhoeven wrote:
+> Returning void is the other extreme ;-)
+> 
+> There are 3 levels (ignoring BUG_ON()/panic () inside the callee):
+>   1. Return void: no one can check success or failure,
+>   2. Return an error code: up to the caller to decide,
+>   3. Return a __must_check error code: every caller must check.
+> 
+> I'm in favor of 2, as there are several places where it cannot fail.
 
-On Mon, Nov 8, 2021 at 4:59 PM Borislav Petkov <bp@alien8.de> wrote:
-> On Mon, Nov 08, 2021 at 04:25:47PM +0100, Geert Uytterhoeven wrote:
-> > I'm not against returning proper errors codes.  I'm against forcing
-> > callers to check things that cannot fail and to add individual error
-> > printing to each and every caller.
->
-> If you're against checking things at the callers, then the registration
-> function should be void. IOW, those APIs are not optimally designed atm.
+Makes sense to me. I'll do that in the next iteration.
 
-Returning void is the other extreme ;-)
+Thx.
 
-There are 3 levels (ignoring BUG_ON()/panic () inside the callee):
-  1. Return void: no one can check success or failure,
-  2. Return an error code: up to the caller to decide,
-  3. Return a __must_check error code: every caller must check.
+-- 
+Regards/Gruss,
+    Boris.
 
-I'm in favor of 2, as there are several places where it cannot fail.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+https://people.kernel.org/tglx/notes-about-netiquette
