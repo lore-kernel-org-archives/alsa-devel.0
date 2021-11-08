@@ -2,76 +2,79 @@ Return-Path: <SRS0=zqBf=P3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F6F4C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Nov 2021 16:17:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73FFEC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Nov 2021 17:38:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C323E61075
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Nov 2021 16:17:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C323E61075
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id B7CB561360
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Nov 2021 17:38:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B7CB561360
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 31CB41684;
-	Mon,  8 Nov 2021 17:17:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31CB41684
+	by alsa0.perex.cz (Postfix) with ESMTPS id E489B1654;
+	Mon,  8 Nov 2021 18:37:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E489B1654
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1636388271;
-	bh=ZViGquAcSREf+WCVyvRS1/EQ7NWLBVKUIUxVQpvu/Vk=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1636393105;
+	bh=ksF/ht9OvKDO0GSFx8wYZwFM8UlEGls9WbPt+s8H5Xo=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SlDLkKOoWBK9SvqzF9H6NebSDyrMH/jPhRPv61PQXIPQqAzTxTZBo9sHR8CTHT4C0
-	 CnETkqmdGzEoCbYqn27AbVW3RWe7/UdbDcsPab5wAAnfRvUS9887oiiQMtR8MJkt6p
-	 kTnbHCmq/xeY/t1c5hm06RyjXK1JSaEUexrtOHCg=
+	b=q5YTSwcOzNNCd9/sdn1dZ/nQYF0Btg8Vr/f/mkRXc/bOs0XSCrmEBUsu3x9RYiT/0
+	 rP75pnpYhDjhd2wqB1QR4HYnkUtCIibeDKQGqIOKXqQ4rbf29FltiI4KQelrAPTZoX
+	 1ZqwLf7XC9PLx8mIeODAzDg/MQgaovD9pNzkJJ64=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 59D48F804F1;
-	Mon,  8 Nov 2021 17:16:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EB36BF80227;
+	Mon,  8 Nov 2021 18:37:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1F37AF804F2; Mon,  8 Nov 2021 17:16:13 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 758F3F8049E; Mon,  8 Nov 2021 18:37:30 +0100 (CET)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B3133F8007E
- for <alsa-devel@alsa-project.org>; Mon,  8 Nov 2021 17:16:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3133F8007E
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="qDbi4k8q"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 91AAF61360;
- Mon,  8 Nov 2021 16:16:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1636388168;
- bh=ZViGquAcSREf+WCVyvRS1/EQ7NWLBVKUIUxVQpvu/Vk=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=qDbi4k8q9+LR+6Xqi95afw3Ov2XCJtgQsoPXbqWGwgqOO6qNkaFhBAl0mvjhMmCUc
- BIcFHDyB5TiDpg1vGgCQ7hfumwZCLduUiFoBOWwJa67ftfBNYrveblFgfDRkuqVWrj
- o9qJQiXy4gqxwoCDF2AQUvtXpeVlQTJbSP3ychXOQeQg/YhtD6Irk2DGPcvxh6j9OB
- HsZ+l8XDu+dG9hs7vV6m0+3RpxH36DzeEMzxZk6F3krj5wp77OKAHG6pvchC+qywhv
- W6ESPfwY1BKiFDk8KzELS3xm/wqc+0iyR6Ey3SWiPKPOx492ubZEYx41nQZCbBprrD
- Y0L0GtuSI1aBQ==
-Date: Mon, 8 Nov 2021 16:16:03 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Sameer Pujar <spujar@nvidia.com>
-Subject: Re: [PATCH v2 01/10] ASoC: tegra: Fix kcontrol put callback in ADMAIF
-Message-ID: <YYlNQya+YVg1JCRq@sirena.org.uk>
-References: <1635947547-24391-1-git-send-email-spujar@nvidia.com>
- <1635947547-24391-2-git-send-email-spujar@nvidia.com>
- <s5ha6ilmiiv.wl-tiwai@suse.de>
- <0e2d89ca-84e3-9427-5ce1-c0224d4db089@perex.cz>
- <d27bf513-6f16-5ad6-59cb-79fad5cc951c@nvidia.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id EA057F8007E;
+ Mon,  8 Nov 2021 18:37:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EA057F8007E
+X-IronPort-AV: E=McAfee;i="6200,9189,10162"; a="232228919"
+X-IronPort-AV: E=Sophos;i="5.87,218,1631602800"; d="scan'208";a="232228919"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 08 Nov 2021 09:18:23 -0800
+X-IronPort-AV: E=Sophos;i="5.87,218,1631602800"; d="scan'208";a="533392402"
+Received: from anushave-mobl1.amr.corp.intel.com (HELO [10.255.85.158])
+ ([10.255.85.158])
+ by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 08 Nov 2021 09:18:21 -0800
+Subject: Re: [Sound-open-firmware] [PATCH] ASoC: SOF: build compression
+ interface into snd_sof.ko
+To: Arnd Bergmann <arnd@kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>
+References: <20211108111132.3800548-1-arnd@kernel.org>
+ <63c5b1fb-575e-f026-5a76-f08a366f7f38@linux.intel.com>
+ <bae1a17c-af6e-d77a-19e7-f3f6408951fa@nxp.com>
+ <CAK8P3a2-=-JM+p2b4v4F8O9O2ZhB-3Uhd_F+gcGAinAztSDH9A@mail.gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <948c8add-2a31-a7aa-f16c-8629dab690cc@linux.intel.com>
+Date: Mon, 8 Nov 2021 11:18:18 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="hSCBKJ2X0AP7XGaR"
-Content-Disposition: inline
-In-Reply-To: <d27bf513-6f16-5ad6-59cb-79fad5cc951c@nvidia.com>
-X-Cookie: Kleeneness is next to Godelness.
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
- Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, tiwai@suse.com,
- jonathanh@nvidia.com, thierry.reding@gmail.com, linux-tegra@vger.kernel.org
+In-Reply-To: <CAK8P3a2-=-JM+p2b4v4F8O9O2ZhB-3Uhd_F+gcGAinAztSDH9A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, Arnd Bergmann <arnd@arndb.de>,
+ Bud Liviu-Alexandru <budliviu@gmail.com>, Randy Dunlap <rdunlap@infradead.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ Mark Brown <broonie@kernel.org>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Paul Olaru <paul.olaru@oss.nxp.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,43 +91,35 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---hSCBKJ2X0AP7XGaR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Mon, Nov 08, 2021 at 09:33:25PM +0530, Sameer Pujar wrote:
+On 11/8/21 10:15 AM, Arnd Bergmann wrote:
+> On Mon, Nov 8, 2021 at 3:13 PM Daniel Baluta <daniel.baluta@nxp.com> wrote:
+>> On 11/8/21 3:39 PM, Pierre-Louis Bossart wrote:
+>>> On 11/8/21 5:11 AM, Arnd Bergmann wrote:
+>>>> From: Arnd Bergmann <arnd@arndb.de>
+>>>>
+>>>> Fixes: 858f7a5c45ca ("ASoC: SOF: Introduce fragment elapsed notification API")
+>>>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>>> It's Monday morning and my memory is still foggy but I think we fixed
+>>> this problem with https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgithub.com%2Fthesofproject%2Flinux%2Fpull%2F3180&amp;data=04%7C01%7Cdaniel.baluta%40nxp.com%7C25ac869cfd1040f1be1708d9a2bd3460%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C637719755777370422%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=E4K2DPkpLX2SgVJ1K99Qs3uz7l7mS96gIzYlJw9akbg%3D&amp;reserved=0,
+>>> where we changed the Kconfigs for i.MX. We haven't sent this update
+>>> upstream for some reason.
+>>>
+>>> Arnd, can you share the configuration that breaks with the existing
+>>> upstream code, I can check if the problem still exists.
+> 
+> https://pastebin.com/6JqM6Gkr
 
-> With separate callbacks, the string checks can be removed. However for most
-> of the controls, the common part is minimal. So there would be multiple
-> independent small functions depending on the number of controls and the
-> local variables are duplicated that many times. Would there be any concern
-> on the space these local variables take? One pair of callbacks for a control
-> may look like this.
+Ack, the problem still exists and is fixed by this patch
 
-...
+Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-> Looks like having separate callbacks make it look more cleaner. If this
-> appears fine, I can send next revision.
 
-Looks fine.  It'll result in more code but hopefully they should be
-smaller, especially if you're using substrings rather than the full
-control name to identify the control and we need to store all them
-separately to the copy used to identify the control to userspace (I
-didn't go check).
+On a related note, with this randconfig we have a separate problem on an
+AMD patch on the SOF tree
 
---hSCBKJ2X0AP7XGaR
-Content-Type: application/pgp-signature; name="signature.asc"
+ERROR: modpost: "snd_amd_acp_find_config"
+[sound/soc/amd/snd-acp-config] is a static EXPORT_SYMBOL
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGJTUIACgkQJNaLcl1U
-h9A7OAf/crR93uqsfMvOX0QdbKKWE3VrliVv3O3XEdi19d7/wUTGNbdqm0547n4L
-oyi9HGmFL/pXYpGncL5V+UIqWRftYJ9oy2GIYxRe/eH6RFGM0vthFI+Z8ZJw3D+i
-Rtx7WX9gFANilArMSXwILu4K8CsAeoDF8Tibjh4K1+k5IcO2tNcTnSNA5xlT7OVc
-uzpDDAe9c6c1X0mP2D42MoHJ4RtEcKvue0GxpN+/PKkCAgmpGMsQb+RQ25n9npHv
-8w7lMDaddhi2MQMuBPYDmAHboFkhsCVyVJFKJOPgMzF55SC17iDFHW6QyxT4FimW
-0p60A9ZtmDNkiKXjOo2tj3JEpqQmgw==
-=Xs1h
------END PGP SIGNATURE-----
-
---hSCBKJ2X0AP7XGaR--
+That wasn't detected earlier, any idea what Kconfig option I need to
+enable to filter this out?
