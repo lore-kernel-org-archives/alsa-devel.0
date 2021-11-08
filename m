@@ -2,95 +2,116 @@ Return-Path: <SRS0=zqBf=P3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 14909C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Nov 2021 15:34:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7690AC433FE
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Nov 2021 15:34:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 94A51610C8
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Nov 2021 15:34:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 94A51610C8
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=alien8.de
+	by mail.kernel.org (Postfix) with ESMTPS id 0044B61360
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Nov 2021 15:34:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0044B61360
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0948215E5;
-	Mon,  8 Nov 2021 16:33:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0948215E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4BB041658;
+	Mon,  8 Nov 2021 16:33:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4BB041658
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1636385669;
-	bh=q/Gasl2Ve4BAgo9eU4Tvn7Z8xIWuAEq/+iFz7tkzSV4=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1636385684;
+	bh=Zn7us5XDMLNikCoeCEk+uJ3hKowimgj11DwNAXV4ob0=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MmZjDqumMA7gzTC0KCnUhWDy6nHslzWThjFdfXTnNi1KBI+PSaYXDYPNSCa83+4A3
-	 uzANT9jZRIQEwO3xh/450Ak0IeGHyRiqCCaM93LrQpDpJrV2hbrbpDviF3juG6Gbgl
-	 Gt3h+hE3KH233nclTl5/+v+LoXs70P1ZOQAttJF4=
+	b=FG1J4s0kLYGKswRuOcaldSgi///9jQXms+dh1EyIoLMnY4B7QiKgwXvINgNLI9uyK
+	 NWq6Xn17NvIBf0061/T8Wqtfpgko43SEaTJUFOpEbwtDryYXBYyPZho9h/fJv4rKK+
+	 yNhSSXLjHfHSsECxwomO0CEfReahvphjmCGT+Pzk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D99A7F8051D;
-	Mon,  8 Nov 2021 16:30:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5B0BEF80524;
+	Mon,  8 Nov 2021 16:30:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9C6B1F8049E; Mon,  8 Nov 2021 15:36:03 +0100 (CET)
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 54E9FF8049E; Mon,  8 Nov 2021 16:26:08 +0100 (CET)
+Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com
+ [209.85.222.46])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4B03CF80107
- for <alsa-devel@alsa-project.org>; Mon,  8 Nov 2021 15:35:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B03CF80107
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=alien8.de header.i=@alien8.de
- header.b="Upd25Hzf"
-Received: from zn.tnic (p200300ec2f331100b486bab6e60d7aaf.dip0.t-ipconnect.de
- [IPv6:2003:ec:2f33:1100:b486:bab6:e60d:7aaf])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1A75E1EC01FC;
- Mon,  8 Nov 2021 15:35:56 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
- t=1636382156;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
- bh=B6oOQ1q4gjLTOu5usgfET43xDRmf4tLazw1TZ6CRXFw=;
- b=Upd25HzfEqhrG5TAXmV4X7VLTXjG+2mbIZvAcNaA5XdFGwWxC22cjGdH367SqKuC2YI35V
- XePkT+plNO8Rcdx9qRLbflORPHDjzc4q/HfinrM2oVoUmKJ3f3FbXqZbeiIVI7zzNRafCc
- NDGlsVX5pxz7i7hCYlNzvvCrAxbHbAs=
-Date: Mon, 8 Nov 2021 15:35:50 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Alan Stern <stern@rowland.harvard.edu>,
- Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH v0 00/42] notifiers: Return an error when callback is
- already registered
-Message-ID: <YYk1xi3eJdMJdjHC@zn.tnic>
-References: <20211108101157.15189-1-bp@alien8.de>
- <20211108101924.15759-1-bp@alien8.de>
- <20211108141703.GB1666297@rowland.harvard.edu>
- <YYkzJ3+faVga2Tl3@zn.tnic>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 884AFF8007E
+ for <alsa-devel@alsa-project.org>; Mon,  8 Nov 2021 16:26:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 884AFF8007E
+Received: by mail-ua1-f46.google.com with SMTP id p37so31077993uae.8
+ for <alsa-devel@alsa-project.org>; Mon, 08 Nov 2021 07:26:01 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=x4ykPITI22sSh/L6reU4seHVLFfVjdO/v+W3/SN8DUg=;
+ b=rO6e9u2C7clNuUBopVj+bfU92nBlmM/jGlQLU5yDvnaQB+kt0pU9knmx8UML4p7hgf
+ 8NVMyb1ckEzvjSuBxd9/3ZJsnSBu7A8EI0noWyZWyaCZWewxfvy1VZfLrqU6PzlWQH+h
+ hjEkB1APcjxC5TBRgyGejdopPSr7SDIs6H8NSe1zs9OIVzgIHwAVk7ulrUTen2JO0A2w
+ bhzOn2eugPhdb7rPXb2vfOzfgTkW4HRJYp4NuVJ6eL8Gr85Xnb4uoe2kcFllGuFsoLDL
+ jGHBSYNPjYMw24ZUp8BZKftxjdiqcENV9JiBaWC1WKjoesdzI++wH3qyA+hrgU7c4v1U
+ 8HMQ==
+X-Gm-Message-State: AOAM530XuQapdmbweYhzXuvVQnL6YWvOGJZ9LORscK36OMMeaoKHeQ7R
+ fX0df0+lAIGvFhr42UaZV6Krpnr12XGTJ/2l
+X-Google-Smtp-Source: ABdhPJx5ClM4WvtNMMHa/AgBtq589RfA2ZLps3OMfUetEmfEouqd5zj2u+ySgUXJN1YPXMLytDLTKA==
+X-Received: by 2002:ab0:6354:: with SMTP id f20mr803370uap.116.1636385159662; 
+ Mon, 08 Nov 2021 07:25:59 -0800 (PST)
+Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com.
+ [209.85.222.51])
+ by smtp.gmail.com with ESMTPSA id j15sm782987vsp.8.2021.11.08.07.25.58
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Mon, 08 Nov 2021 07:25:58 -0800 (PST)
+Received: by mail-ua1-f51.google.com with SMTP id i6so32173308uae.6
+ for <alsa-devel@alsa-project.org>; Mon, 08 Nov 2021 07:25:58 -0800 (PST)
+X-Received: by 2002:a9f:2c98:: with SMTP id w24mr725068uaj.89.1636385158322;
+ Mon, 08 Nov 2021 07:25:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YYkzJ3+faVga2Tl3@zn.tnic>
+References: <20211108101157.15189-1-bp@alien8.de>
+ <20211108101157.15189-43-bp@alien8.de>
+ <CAMuHMdWH+txiSP_d7Jc4f_bU8Lf9iWpT4E3o5o7BJr-YdA6-VA@mail.gmail.com>
+ <YYkyUEqcsOwQMb1S@zn.tnic>
+In-Reply-To: <YYkyUEqcsOwQMb1S@zn.tnic>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 8 Nov 2021 16:25:47 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXiBEQyEXJagSfpH44hxVA2t0sDH7B7YubLGHrb2MJLLA@mail.gmail.com>
+Message-ID: <CAMuHMdXiBEQyEXJagSfpH44hxVA2t0sDH7B7YubLGHrb2MJLLA@mail.gmail.com>
+Subject: Re: [PATCH v0 42/42] notifier: Return an error when callback is
+ already registered
+To: Borislav Petkov <bp@alien8.de>
+Content-Type: text/plain; charset="UTF-8"
 X-Mailman-Approved-At: Mon, 08 Nov 2021 16:29:18 +0100
-Cc: alsa-devel@alsa-project.org, x86@kernel.org, linux-sh@vger.kernel.org,
- linux-iio@vger.kernel.org, linux-remoteproc@vger.kernel.org,
- linux-hyperv@vger.kernel.org, linux-mips@vger.kernel.org,
- netdev@vger.kernel.org, Ayush Sawal <ayush.sawal@chelsio.com>,
- sparclinux@vger.kernel.org, linux-clk@vger.kernel.org,
- linux-leds@vger.kernel.org, linux-s390@vger.kernel.org,
- linux-scsi@vger.kernel.org, Rohit Maheshwari <rohitm@chelsio.com>,
- linux-staging@lists.linux.dev, bcm-kernel-feedback-list@broadcom.com,
- xen-devel@lists.xenproject.org, linux-xtensa@linux-xtensa.org,
- Arnd Bergmann <arnd@arndb.de>, linux-pm@vger.kernel.org,
- intel-gfx@lists.freedesktop.org, Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
- linux-um@lists.infradead.org, Steven Rostedt <rostedt@goodmis.org>,
- rcu@vger.kernel.org, linux-fbdev@vger.kernel.org, linux-tegra@vger.kernel.org,
- openipmi-developer@lists.sourceforge.net, intel-gvt-dev@lists.freedesktop.org,
- linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
- linux-parisc@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- linux-usb@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
- linux-renesas-soc@vger.kernel.org, linux-crypto@vger.kernel.org,
- linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ the arch/x86 maintainers <x86@kernel.org>,
+ Linux-sh list <linux-sh@vger.kernel.org>, linux-iio@vger.kernel.org,
+ "open list:REMOTE PROCESSOR \(REMOTEPROC\) SUBSYSTEM"
+ <linux-remoteproc@vger.kernel.org>, linux-hyperv@vger.kernel.org,
+ "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+ netdev <netdev@vger.kernel.org>, Ayush Sawal <ayush.sawal@chelsio.com>,
+ sparclinux <sparclinux@vger.kernel.org>, linux-clk <linux-clk@vger.kernel.org>,
+ linux-leds <linux-leds@vger.kernel.org>,
+ linux-s390 <linux-s390@vger.kernel.org>, scsi <linux-scsi@vger.kernel.org>,
+ Rohit Maheshwari <rohitm@chelsio.com>, linux-staging@lists.linux.dev,
+ bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+ openipmi-developer@lists.sourceforge.net, xen-devel@lists.xenproject.org,
+ "open list:TENSILICA XTENSA PORT \(xtensa\)" <linux-xtensa@linux-xtensa.org>,
+ Arnd Bergmann <arnd@arndb.de>, Linux PM list <linux-pm@vger.kernel.org>,
+ Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+ Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+ linux-um <linux-um@lists.infradead.org>, Steven Rostedt <rostedt@goodmis.org>,
+ rcu@vger.kernel.org,
+ Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+ linux-tegra <linux-tegra@vger.kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>, intel-gvt-dev@lists.freedesktop.org,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>, linux-edac@vger.kernel.org,
+ Parisc List <linux-parisc@vger.kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ USB list <linux-usb@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+ Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+ Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+ alpha <linux-alpha@vger.kernel.org>,
+ linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,63 +127,63 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Nov 08, 2021 at 03:24:39PM +0100, Borislav Petkov wrote:
-> I guess I can add another indirection to notifier_chain_register() and
-> avoid touching all the call sites.
+Hi Borislav,
 
-IOW, something like this below.
+On Mon, Nov 8, 2021 at 3:21 PM Borislav Petkov <bp@alien8.de> wrote:
+> On Mon, Nov 08, 2021 at 03:07:03PM +0100, Geert Uytterhoeven wrote:
+> > I think the addition of __must_check is overkill, leading to the
+> > addition of useless error checks and message printing.
+>
+> See the WARN in notifier_chain_register() - it will already do "message
+> printing".
 
-This way I won't have to touch all the callsites and the registration
-routines would still return a proper value instead of returning 0
-unconditionally.
+I mean the addition of useless error checks and message printing _to
+the callers_.
 
----
-diff --git a/kernel/notifier.c b/kernel/notifier.c
-index b8251dc0bc0f..04f08b2ef17f 100644
---- a/kernel/notifier.c
-+++ b/kernel/notifier.c
-@@ -19,14 +19,12 @@ BLOCKING_NOTIFIER_HEAD(reboot_notifier_list);
-  *	are layered on top of these, with appropriate locking added.
-  */
- 
--static int notifier_chain_register(struct notifier_block **nl,
--		struct notifier_block *n)
-+static int __notifier_chain_register(struct notifier_block **nl,
-+				     struct notifier_block *n)
- {
- 	while ((*nl) != NULL) {
--		if (unlikely((*nl) == n)) {
--			WARN(1, "double register detected");
--			return 0;
--		}
-+		if (unlikely((*nl) == n))
-+			return -EEXIST;
- 		if (n->priority > (*nl)->priority)
- 			break;
- 		nl = &((*nl)->next);
-@@ -36,6 +34,18 @@ static int notifier_chain_register(struct notifier_block **nl,
- 	return 0;
- }
- 
-+static int notifier_chain_register(struct notifier_block **nl,
-+				   struct notifier_block *n)
-+{
-+	int ret = __notifier_chain_register(nl, n);
-+
-+	if (ret == -EEXIST)
-+		WARN(1, "double register of notifier callback %ps detected",
-+			n->notifier_call);
-+
-+	return ret;
-+}
-+
- static int notifier_chain_unregister(struct notifier_block **nl,
- 		struct notifier_block *n)
- {
+> > Many callers call this where it cannot fail, and where nothing can
+> > be done in the very unlikely event that the call would ever start to
+> > fail.
+>
+> This is an attempt to remove this WARN() hack in
+> notifier_chain_register() and have the function return a proper error
+> value instead of this "Currently always returns zero." which is bad
+> design.
+>
+> Some of the registration functions around the tree check that retval and
+> some don't. So if "it cannot fail" those registration either should not
+> return a value or callers should check that return value - what we have
+> now doesn't make a whole lot of sense.
 
+With __must_check callers are required to check, even if they know
+it cannot fail.
 
--- 
-Regards/Gruss,
-    Boris.
+> Oh, and then fixing this should avoid stuff like:
+>
+> +       if (notifier_registered == false) {
+> +               mce_register_decode_chain(&amdgpu_bad_page_nb);
+> +               notifier_registered = true;
+> +       }
+>
+> from propagating in the code.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+That's unrelated to the addition of __must_check.
+
+I'm not against returning proper errors codes.  I'm against forcing
+callers to check things that cannot fail and to add individual error
+printing to each and every caller.
+
+Note that in other areas, we are moving in the other
+direction, to a centralized printing of error messages,
+cfr. e.g. commit 7723f4c5ecdb8d83 ("driver core: platform: Add an
+error message to platform_get_irq*()").
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
