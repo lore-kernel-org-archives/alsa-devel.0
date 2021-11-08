@@ -2,74 +2,82 @@ Return-Path: <SRS0=zqBf=P3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB544C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Nov 2021 11:12:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C78EC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Nov 2021 12:51:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B6CFF603E9
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Nov 2021 11:12:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B6CFF603E9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id D2E4261352
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Nov 2021 12:51:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D2E4261352
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 213531658;
-	Mon,  8 Nov 2021 12:11:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 213531658
+	by alsa0.perex.cz (Postfix) with ESMTPS id 64E2914E;
+	Mon,  8 Nov 2021 13:50:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64E2914E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1636369969;
-	bh=7jjDd9CBG4/LM9amMERhrdw6zgQgalfZow+o2TL+xNc=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=sVwaJQc9380KWLoTohf2vZ9el7wSrEGBbigiFO31S/PbtWI6fTUgbI7B/pmyQOMxC
-	 9Blbx2Nv3QCIO2xETIYRdBbgTmm4Hcqwl+jO+xtvQXzLynx45f+wDtf/tUWO+Izzug
-	 vpykmDMXltBqyAq48blnvTIV3FRKwVQhIGG8o1sw=
+	s=default; t=1636375872;
+	bh=L/GG+8lkvXTSVWf/+skD3ID+KNMIVbeskvQKAuOj8h4=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=BC+KEDXKlZYVM2pycem/s0dMUmI6s2kJxIA5BwjLsPMtHTgxe3bzJOupMVhmJyQf7
+	 WUbqjyWK5jB+7NA2UkQ+5sVW35Q82t77eDN57P2RHF9XPUgSVOhqWB3ckMEEkDabh7
+	 RquFxg/dKdpnqsA90S/+g5tIPj6o7M9o3eZuVt68=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 35D36F80227;
-	Mon,  8 Nov 2021 12:11:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D7EBBF80227;
+	Mon,  8 Nov 2021 13:50:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 79EAAF8049E; Mon,  8 Nov 2021 12:11:55 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id AB390F8049E; Mon,  8 Nov 2021 13:50:14 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 22B44F801D8;
- Mon,  8 Nov 2021 12:11:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22B44F801D8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1D799F8007E
+ for <alsa-devel@alsa-project.org>; Mon,  8 Nov 2021 13:50:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D799F8007E
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ZEAOGc3d"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D44C61360;
- Mon,  8 Nov 2021 11:11:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1636369898;
- bh=7jjDd9CBG4/LM9amMERhrdw6zgQgalfZow+o2TL+xNc=;
- h=From:To:Cc:Subject:Date:From;
- b=ZEAOGc3d4l/towaigTVgofn/UkzylCCIJ+PhIFhCQ3xphTcn1FlajJ0XOeScD0Fyw
- lXNNInOyttPKnW/iVWxjcocDkiwdM9pPv8xJABz1ksoLMlF6g6mGC3pXaiwnEwc1UT
- zmQKV6b66LgBfc+T6dk77dvV1HuvKeCFo5m6AckiAWLzCwz8kOOQs1m24DcXr/5SRF
- XR9WkoJP/sNM0Lm9MRAkpV7knrwo/6ygiH7IZrlZSobStZgOOaYS2rF6zQSXgMgLw/
- 4Sx8TEZVczKCP4O9PVmxH6c3NQdkZAkxHg/cfnlHTjVM+9L6Xw5bG0aNLGveO9brR9
- 91OPC9ACS3psw==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Daniel Baluta <daniel.baluta@nxp.com>
-Subject: [PATCH] ASoC: SOF: build compression interface into snd_sof.ko
-Date: Mon,  8 Nov 2021 12:11:14 +0100
-Message-Id: <20211108111132.3800548-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>,
- Bud Liviu-Alexandru <budliviu@gmail.com>, Randy Dunlap <rdunlap@infradead.org>,
- Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
- Paul Olaru <paul.olaru@oss.nxp.com>, Colin Ian King <colin.king@canonical.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, linux-kernel@vger.kernel.org,
- sound-open-firmware@alsa-project.org
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="m0W/HeDB"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="h/H+MQE0"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 47E001FD73;
+ Mon,  8 Nov 2021 12:50:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1636375806; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=NmkwOV2A9u2JKfXV49s3fsJp+CbdVlMuyqM5KRYgaFU=;
+ b=m0W/HeDBc7Pakuu0M/59HDQK/9tKize4HM05dxexm9llah7KKAZqzep5TldODHYg0gJluj
+ Xw5iW4RfIDpACaMINJlxdUocxLSvLClZSMdTVmG/ksVT26zyTHa5/wV52aZfswjIssx96+
+ Sf2szlvo82bE5cBz5MLx+rSRltyQnYs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1636375806;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=NmkwOV2A9u2JKfXV49s3fsJp+CbdVlMuyqM5KRYgaFU=;
+ b=h/H+MQE02eJUARq24MpxKivpoV0fKyLYGqxcdqfR2OKdbBbihXBQfa4FQhlUNQHCk2Ri9j
+ ohMe4lfZS/S/sBCA==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 3769FA3B83;
+ Mon,  8 Nov 2021 12:50:06 +0000 (UTC)
+Date: Mon, 08 Nov 2021 13:50:06 +0100
+Message-ID: <s5ha6iedd6p.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] ALSA: firewire-motu: add support for MOTU Track 16
+In-Reply-To: <20211107110644.23511-1-o-takashi@sakamocchi.jp>
+References: <20211107110644.23511-1-o-takashi@sakamocchi.jp>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,39 +93,64 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Sun, 07 Nov 2021 12:06:44 +0100,
+Takashi Sakamoto wrote:
+> 
+> Mark of the Unicorn designed Track 16 2011 as one of models in third
+> generation of its FireWire series. The model is already discontinued.
+> It consists of below ICs:
+> 
+>  * Texas Instruments TSB41AB1
+>  * Microchip (SMSC) USB3300
+>  * Xilinx Spartan-3A FPGA, XC3S700A
+>  * Texas Instruments TMS320C6722
+>  * Microchip (Atmel) AT91SAM SAM7S512
+> 
+> It supports sampling transfer frequency up to 192.0 kHz. The packet
+> format differs depending on both of current sampling transfer frequency
+> and the type of signal in optical interfaces. The model supports
+> transmission of PCM frames as well as MIDI messages.
+> 
+> The model supports command mechanism to configure internal DSP. Hardware
+> meter information is available in the first 2 chunks of each data block
+> of tx packet.
+> 
+> This commit adds support for it.
+> 
+> $ cd linux-firewire-tools/src
+> $ python crpp < /sys/bus/firewire/devices/fw1/config_rom
+>                ROM header and bus information block
+>                -----------------------------------------------------------------
+> 400  04107d95  bus_info_length 4, crc_length 16, crc 32149
+> 404  31333934  bus_name "1394"
+> 408  20ff7000  irmc 0, cmc 0, isc 1, bmc 0, cyc_clk_acc 255, max_rec 7 (256)
+> 40c  0001f200  company_id 0001f2     |
+> 410  000a83c4  device_id 00000a83c4  | EUI-64 0001f200000a83c4
+> 
+>                root directory
+>                -----------------------------------------------------------------
+> 414  0004ef04  directory_length 4, crc 61188
+> 418  030001f2  vendor
+> 41c  0c0083c0  node capabilities per IEEE 1394
+> 420  d1000002  --> unit directory at 428
+> 424  8d000005  --> eui-64 leaf at 438
+> 
+>                unit directory at 428
+>                -----------------------------------------------------------------
+> 428  00035b04  directory_length 3, crc 23300
+> 42c  120001f2  specifier id
+> 430  13000039  version
+> 434  17102800  model
+> 
+>                eui-64 leaf at 438
+>                -----------------------------------------------------------------
+> 438  0002b25f  leaf_length 2, crc 45663
+> 43c  0001f200  company_id 0001f2     |
+> 440  000a83c4  device_id 00000a83c4  | EUI-64 0001f200000a83c4
+> 
+> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-With CONFIG_SND_SOC_SOF_COMPRESS=m, the compression code is
-not built into a the main SOF driver when that is built-in:
+Thanks, applied now.
 
-x86_64-linux-ld: sound/soc/sof/ipc.o: in function `ipc_stream_message':
-ipc.c:(.text+0x5a2): undefined reference to `snd_sof_compr_fragment_elapsed'
-x86_64-linux-ld: sound/soc/sof/topology.o: in function `sof_dai_load':
-topology.c:(.text+0x32d1): undefined reference to `snd_sof_compr_init_elapsed_work'
-x86_64-linux-ld: topology.c:(.text+0x32e1): undefined reference to `snd_sof_compr_init_elapsed_work'
 
-Make this a 'bool' symbol so it just decides whether the
-code gets built at all.
-
-Fixes: 858f7a5c45ca ("ASoC: SOF: Introduce fragment elapsed notification API")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- sound/soc/sof/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/sof/Kconfig b/sound/soc/sof/Kconfig
-index 6bb4db87af03..041c54639c4d 100644
---- a/sound/soc/sof/Kconfig
-+++ b/sound/soc/sof/Kconfig
-@@ -47,7 +47,7 @@ config SND_SOC_SOF_OF
- 	  Say Y if you need this option. If unsure select "N".
- 
- config SND_SOC_SOF_COMPRESS
--	tristate
-+	bool
- 	select SND_SOC_COMPRESS
- 
- config SND_SOC_SOF_DEBUG_PROBES
--- 
-2.29.2
-
+Takashi
