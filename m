@@ -2,64 +2,64 @@ Return-Path: <SRS0=Fseo=P4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F568C4332F
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Nov 2021 22:19:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C54CC433FE
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Nov 2021 22:20:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 08ED961A04
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Nov 2021 22:19:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 08ED961A04
+	by mail.kernel.org (Postfix) with ESMTPS id F2F2D61A51
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Nov 2021 22:20:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org F2F2D61A51
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 22C9F1681;
-	Tue,  9 Nov 2021 23:18:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22C9F1681
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3AC031664;
+	Tue,  9 Nov 2021 23:19:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3AC031664
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1636496384;
-	bh=fiSCtKs2E9uPDYpjkML7x9c0vekPxaZTUiEET0nQK7g=;
+	s=default; t=1636496401;
+	bh=rZ9QWQfRU/US9o4SdMAl+V6Df536/kZ9QhPCdC8ndLk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DmGJmcY/nRFS+K/Zwgu/PUuZ08yqDMGZPdhROvc9hXz7gKY1onPuVz7XeC/hJSgIY
-	 v5e1ATclHvGCGcy7zn6i+Z0mIMzx5Yko2GPs8lmrZ8uSej+v1zSMAU4tgBCKtcyvIA
-	 /wpKH7dW9M7rn2LLCzw/AI2xreaHFfimTR+hHaf4=
+	b=X66B+OFyhvwZhaET/d0+mAfee4Rt//vubj04BLEK3iR88cRTvoMJNRjM8XeUpDQSB
+	 VkrQlvlUM1mSUfaPshKOg13JGIqnDtY7PzCDjmPgF1pHn/4WfT9NcPr3kbwxe7DuUX
+	 ZhmyqFewy+4EHG4FRvC9G9FlluyUQguj6+5EikjQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 78F5CF804F3;
-	Tue,  9 Nov 2021 23:18:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2FCA4F80506;
+	Tue,  9 Nov 2021 23:18:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C3AAAF804EB; Tue,  9 Nov 2021 23:18:05 +0100 (CET)
+ id D235FF804ED; Tue,  9 Nov 2021 23:18:06 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 12AE1F804E2
- for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2021 23:18:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 12AE1F804E2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 203E2F802E3
+ for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2021 23:17:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 203E2F802E3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="F4x0K6hu"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 695EF61354;
- Tue,  9 Nov 2021 22:18:00 +0000 (UTC)
+ header.b="U7p8y3gz"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC7E761361;
+ Tue,  9 Nov 2021 22:17:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1636496281;
- bh=fiSCtKs2E9uPDYpjkML7x9c0vekPxaZTUiEET0nQK7g=;
+ s=k20201202; t=1636496275;
+ bh=rZ9QWQfRU/US9o4SdMAl+V6Df536/kZ9QhPCdC8ndLk=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=F4x0K6huSMBBoQ1DGHtnsUEdjEnW30fPq/38gFeemBmEe6yAJlpGD8ZKrJwP823w4
- C/wvtpQw6b8qo/mSPyDcVRWXTefK5ZGQj9T5oIZPk1f2fEvdXyP9YAnp7Rs88m4rzn
- sTnSJkLqOtPiGZRXvG7/2e72N7uZLWFVeROEjYQOBwJIZnYGcji3TqohzRca6JfAuf
- KfV80A9OH0J4YIxokP86DCCoUlT3jtAvID+NpxVd4Hh2TscNfjybQA4sH5boXjvxI0
- EvC1U9KkYUJI/DBm0gIPYsxU5LS6yYxaGD7Eph0eYf1mXe4QJzyyShVJLhrvQneEbK
- 2+Oe7xMaCu/IQ==
+ b=U7p8y3gz8noLjjJbwDmrm/Jb/C42UFPQT4V0oHJPP+wfymq+hkwQ/30EjPSh0OqVE
+ XWnoMvc26tN2J8Kk+llgaq2dRWGGcrIPtr2OGJ2iVU2NRwuENlzi1aAqVgm+HpIwif
+ SXNt9zqDefaDd/ZNI0C+MR1pMxrbLRe6D5S0UQI8OhXH70LofkNOFXE1Vhd2LQDAxP
+ Er03p2R6cnfuPaoTDmYJ4pEUvZB0zJpq+vKME97HJM3eyX+eOhTecjl22vg3ecXukZ
+ 1aUDHPzz9xbxZFviGlIKNk37IBWyhlSQOXRtT07x0pr4Tc71esTFAj2gE6UUyo0z2Q
+ YJ1IQopQIqHgg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 42/82] ASoC: nau8824: Add DMI quirk mechanism for
- active-high jack-detect
-Date: Tue,  9 Nov 2021 17:16:00 -0500
-Message-Id: <20211109221641.1233217-42-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 38/82] ALSA: usb-audio: disable implicit feedback
+ sync for Behringer UFX1204 and UFX1604
+Date: Tue,  9 Nov 2021 17:15:56 -0500
+Message-Id: <20211109221641.1233217-38-sashal@kernel.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211109221641.1233217-1-sashal@kernel.org>
 References: <20211109221641.1233217-1-sashal@kernel.org>
@@ -68,8 +68,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- tiwai@suse.com, lgirdwood@gmail.com, Hans de Goede <hdegoede@redhat.com>,
- Mark Brown <broonie@kernel.org>
+ Takashi Iwai <tiwai@suse.de>, tiwai@suse.com,
+ Geraldo Nascimento <geraldogabriel@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,96 +85,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Geraldo Nascimento <geraldogabriel@gmail.com>
 
-[ Upstream commit 92d3360108f1839ca40451bad20ff67dd24a1964 ]
+[ Upstream commit 28c369e60827f706cef4604a3e2848198f25bd26 ]
 
-Add a quirk mechanism to allow specifying that active-high jack-detection
-should be used on platforms where this info is not available in devicetree.
+Behringer UFX1204 and UFX1604 have Synchronous endpoints to which
+current ALSA code applies implicit feedback sync as if they were
+Asynchronous endpoints. This breaks UAC compliance and is unneeded.
 
-And add an entry for the Cyberbook T116 tablet to the DMI table, so that
-jack-detection will work properly on this tablet.
+The commit 5e35dc0338d85ccebacf3f77eca1e5dea73155e8 and subsequent
+1a15718b41df026cffd0e42cfdc38a1384ce19f9 were meant to clear up noise.
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20211002211459.110124-2-hdegoede@redhat.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Unfortunately, noise persisted for those using higher sample rates and
+this was only solved by commit d2e8f641257d0d3af6e45d6ac2d6f9d56b8ea964
+
+Since there are no more reports of noise, let's get rid of the
+implicit-fb quirks breaking UAC compliance.
+
+Signed-off-by: Geraldo Nascimento <geraldogabriel@gmail.com>
+Link: https://lore.kernel.org/r/YVYSnoQ7nxLXT0Dq@geday
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/nau8824.c | 40 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 40 insertions(+)
+ sound/usb/implicit.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/sound/soc/codecs/nau8824.c b/sound/soc/codecs/nau8824.c
-index f946ef65a4c19..f7018f2dd21fd 100644
---- a/sound/soc/codecs/nau8824.c
-+++ b/sound/soc/codecs/nau8824.c
-@@ -8,6 +8,7 @@
+diff --git a/sound/usb/implicit.c b/sound/usb/implicit.c
+index 23767a14d1266..70319c822c10b 100644
+--- a/sound/usb/implicit.c
++++ b/sound/usb/implicit.c
+@@ -54,8 +54,6 @@ static const struct snd_usb_implicit_fb_match playback_implicit_fb_quirks[] = {
  
- #include <linux/module.h>
- #include <linux/delay.h>
-+#include <linux/dmi.h>
- #include <linux/init.h>
- #include <linux/i2c.h>
- #include <linux/regmap.h>
-@@ -27,6 +28,12 @@
- 
- #include "nau8824.h"
- 
-+#define NAU8824_JD_ACTIVE_HIGH			BIT(0)
-+
-+static int nau8824_quirk;
-+static int quirk_override = -1;
-+module_param_named(quirk, quirk_override, uint, 0444);
-+MODULE_PARM_DESC(quirk, "Board-specific quirk override");
- 
- static int nau8824_config_sysclk(struct nau8824 *nau8824,
- 	int clk_id, unsigned int freq);
-@@ -1845,6 +1852,34 @@ static int nau8824_read_device_properties(struct device *dev,
- 	return 0;
- }
- 
-+/* Please keep this list alphabetically sorted */
-+static const struct dmi_system_id nau8824_quirk_table[] = {
-+	{
-+		/* Cyberbook T116 rugged tablet */
-+		.matches = {
-+			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Default string"),
-+			DMI_EXACT_MATCH(DMI_BOARD_NAME, "Cherry Trail CR"),
-+			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "20170531"),
-+		},
-+		.driver_data = (void *)(NAU8824_JD_ACTIVE_HIGH),
-+	},
-+	{}
-+};
-+
-+static void nau8824_check_quirks(void)
-+{
-+	const struct dmi_system_id *dmi_id;
-+
-+	if (quirk_override != -1) {
-+		nau8824_quirk = quirk_override;
-+		return;
-+	}
-+
-+	dmi_id = dmi_first_match(nau8824_quirk_table);
-+	if (dmi_id)
-+		nau8824_quirk = (unsigned long)dmi_id->driver_data;
-+}
-+
- static int nau8824_i2c_probe(struct i2c_client *i2c,
- 	const struct i2c_device_id *id)
- {
-@@ -1869,6 +1904,11 @@ static int nau8824_i2c_probe(struct i2c_client *i2c,
- 	nau8824->irq = i2c->irq;
- 	sema_init(&nau8824->jd_sem, 1);
- 
-+	nau8824_check_quirks();
-+
-+	if (nau8824_quirk & NAU8824_JD_ACTIVE_HIGH)
-+		nau8824->jkdet_polarity = 0;
-+
- 	nau8824_print_device_properties(nau8824);
- 
- 	ret = regmap_read(nau8824->regmap, NAU8824_REG_I2C_DEVICE_ID, &value);
+ 	/* Fixed EP */
+ 	/* FIXME: check the availability of generic matching */
+-	IMPLICIT_FB_FIXED_DEV(0x1397, 0x0001, 0x81, 1), /* Behringer UFX1604 */
+-	IMPLICIT_FB_FIXED_DEV(0x1397, 0x0002, 0x81, 1), /* Behringer UFX1204 */
+ 	IMPLICIT_FB_FIXED_DEV(0x2466, 0x8010, 0x81, 2), /* Fractal Audio Axe-Fx III */
+ 	IMPLICIT_FB_FIXED_DEV(0x31e9, 0x0001, 0x81, 2), /* Solid State Logic SSL2 */
+ 	IMPLICIT_FB_FIXED_DEV(0x31e9, 0x0002, 0x81, 2), /* Solid State Logic SSL2+ */
 -- 
 2.33.0
 
