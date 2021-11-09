@@ -2,64 +2,64 @@ Return-Path: <SRS0=Fseo=P4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D378CC4332F
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Nov 2021 22:19:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F568C4332F
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Nov 2021 22:19:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 550BA61A0D
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Nov 2021 22:19:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 550BA61A0D
+	by mail.kernel.org (Postfix) with ESMTPS id 08ED961A04
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Nov 2021 22:19:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 08ED961A04
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7B556166F;
-	Tue,  9 Nov 2021 23:18:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B556166F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 22C9F1681;
+	Tue,  9 Nov 2021 23:18:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22C9F1681
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1636496350;
-	bh=bjPXB5HH1GtIMshiC2IBO4Pln2KOJyhpk465bQoQ92w=;
+	s=default; t=1636496384;
+	bh=fiSCtKs2E9uPDYpjkML7x9c0vekPxaZTUiEET0nQK7g=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=A5htrhEAy3TNh1CU16ADCFCSc6mFqFmb0Oe0NiWY9Mb9eG+ganI+ocheEIjziwFG/
-	 lSN5FfSACQI7LyfcjKIZPxRojxbZTdl+gqll7T9EhTfsZMX2vGPleGruWWlLp//8mi
-	 lo6GHIGxEdq0aSCxa7cBYMj0jllUG5FIE79oww2w=
+	b=DmGJmcY/nRFS+K/Zwgu/PUuZ08yqDMGZPdhROvc9hXz7gKY1onPuVz7XeC/hJSgIY
+	 v5e1ATclHvGCGcy7zn6i+Z0mIMzx5Yko2GPs8lmrZ8uSej+v1zSMAU4tgBCKtcyvIA
+	 /wpKH7dW9M7rn2LLCzw/AI2xreaHFfimTR+hHaf4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B98BCF804EB;
-	Tue,  9 Nov 2021 23:18:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 78F5CF804F3;
+	Tue,  9 Nov 2021 23:18:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 64B4BF80425; Tue,  9 Nov 2021 23:18:04 +0100 (CET)
+ id C3AAAF804EB; Tue,  9 Nov 2021 23:18:05 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D5B39F80425
- for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2021 23:18:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5B39F80425
+ by alsa1.perex.cz (Postfix) with ESMTPS id 12AE1F804E2
+ for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2021 23:18:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 12AE1F804E2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ayaUmjoy"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 985CD61881;
- Tue,  9 Nov 2021 22:17:57 +0000 (UTC)
+ header.b="F4x0K6hu"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 695EF61354;
+ Tue,  9 Nov 2021 22:18:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1636496278;
- bh=bjPXB5HH1GtIMshiC2IBO4Pln2KOJyhpk465bQoQ92w=;
+ s=k20201202; t=1636496281;
+ bh=fiSCtKs2E9uPDYpjkML7x9c0vekPxaZTUiEET0nQK7g=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=ayaUmjoyzxm5pgETBYilkWZRSomnrY9+0LuEZ8TrC9rXvSuBg/Kd0+02rfeyoajLM
- Pk3QXGLuSa2LyokuGE2Hpgr6tNjD9aQTzk4e8cdNR7GQbz9XQs05CNxquTybuyw7tA
- As07Ig1G80/L4fX0NtHwX4ygRjKwKx1JPj9iPhopSnz5DkujAtBurm9DULjRADv2Ns
- DvKr3DbJaV0RJWCfm+402Xp6hLljqMNlzmvOdj78fVAMdHYhWqJ8isg4fGj7y6XuMJ
- fI+YNB1+qSwCI8kL6oqX6ocdpYESI4Jo16G2rAir8aknDrcqYybTGeimdqkmrgH7Y4
- ByPY/mHtQnphg==
+ b=F4x0K6huSMBBoQ1DGHtnsUEdjEnW30fPq/38gFeemBmEe6yAJlpGD8ZKrJwP823w4
+ C/wvtpQw6b8qo/mSPyDcVRWXTefK5ZGQj9T5oIZPk1f2fEvdXyP9YAnp7Rs88m4rzn
+ sTnSJkLqOtPiGZRXvG7/2e72N7uZLWFVeROEjYQOBwJIZnYGcji3TqohzRca6JfAuf
+ KfV80A9OH0J4YIxokP86DCCoUlT3jtAvID+NpxVd4Hh2TscNfjybQA4sH5boXjvxI0
+ EvC1U9KkYUJI/DBm0gIPYsxU5LS6yYxaGD7Eph0eYf1mXe4QJzyyShVJLhrvQneEbK
+ 2+Oe7xMaCu/IQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 40/82] ASoC: es8316: Use IRQF_NO_AUTOEN when
- requesting the IRQ
-Date: Tue,  9 Nov 2021 17:15:58 -0500
-Message-Id: <20211109221641.1233217-40-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 42/82] ASoC: nau8824: Add DMI quirk mechanism for
+ active-high jack-detect
+Date: Tue,  9 Nov 2021 17:16:00 -0500
+Message-Id: <20211109221641.1233217-42-sashal@kernel.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211109221641.1233217-1-sashal@kernel.org>
 References: <20211109221641.1233217-1-sashal@kernel.org>
@@ -87,41 +87,94 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 1cf2aa665901054b140eb71748661ceae99b6b5a ]
+[ Upstream commit 92d3360108f1839ca40451bad20ff67dd24a1964 ]
 
-Use the new IRQF_NO_AUTOEN flag when requesting the IRQ, rather then
-disabling it immediately after requesting it.
+Add a quirk mechanism to allow specifying that active-high jack-detection
+should be used on platforms where this info is not available in devicetree.
 
-This fixes a possible race where the IRQ might trigger between requesting
-and disabling it; and this also leads to a small code cleanup.
+And add an entry for the Cyberbook T116 tablet to the DMI table, so that
+jack-detection will work properly on this tablet.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20211003132255.31743-1-hdegoede@redhat.com
+Link: https://lore.kernel.org/r/20211002211459.110124-2-hdegoede@redhat.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/es8316.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ sound/soc/codecs/nau8824.c | 40 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
 
-diff --git a/sound/soc/codecs/es8316.c b/sound/soc/codecs/es8316.c
-index 067757d1d70a3..5fb02635c1406 100644
---- a/sound/soc/codecs/es8316.c
-+++ b/sound/soc/codecs/es8316.c
-@@ -811,12 +811,9 @@ static int es8316_i2c_probe(struct i2c_client *i2c_client,
- 	mutex_init(&es8316->lock);
+diff --git a/sound/soc/codecs/nau8824.c b/sound/soc/codecs/nau8824.c
+index f946ef65a4c19..f7018f2dd21fd 100644
+--- a/sound/soc/codecs/nau8824.c
++++ b/sound/soc/codecs/nau8824.c
+@@ -8,6 +8,7 @@
  
- 	ret = devm_request_threaded_irq(dev, es8316->irq, NULL, es8316_irq,
--					IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
-+					IRQF_TRIGGER_HIGH | IRQF_ONESHOT | IRQF_NO_AUTOEN,
- 					"es8316", es8316);
--	if (ret == 0) {
--		/* Gets re-enabled by es8316_set_jack() */
--		disable_irq(es8316->irq);
--	} else {
-+	if (ret) {
- 		dev_warn(dev, "Failed to get IRQ %d: %d\n", es8316->irq, ret);
- 		es8316->irq = -ENXIO;
- 	}
+ #include <linux/module.h>
+ #include <linux/delay.h>
++#include <linux/dmi.h>
+ #include <linux/init.h>
+ #include <linux/i2c.h>
+ #include <linux/regmap.h>
+@@ -27,6 +28,12 @@
+ 
+ #include "nau8824.h"
+ 
++#define NAU8824_JD_ACTIVE_HIGH			BIT(0)
++
++static int nau8824_quirk;
++static int quirk_override = -1;
++module_param_named(quirk, quirk_override, uint, 0444);
++MODULE_PARM_DESC(quirk, "Board-specific quirk override");
+ 
+ static int nau8824_config_sysclk(struct nau8824 *nau8824,
+ 	int clk_id, unsigned int freq);
+@@ -1845,6 +1852,34 @@ static int nau8824_read_device_properties(struct device *dev,
+ 	return 0;
+ }
+ 
++/* Please keep this list alphabetically sorted */
++static const struct dmi_system_id nau8824_quirk_table[] = {
++	{
++		/* Cyberbook T116 rugged tablet */
++		.matches = {
++			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Default string"),
++			DMI_EXACT_MATCH(DMI_BOARD_NAME, "Cherry Trail CR"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "20170531"),
++		},
++		.driver_data = (void *)(NAU8824_JD_ACTIVE_HIGH),
++	},
++	{}
++};
++
++static void nau8824_check_quirks(void)
++{
++	const struct dmi_system_id *dmi_id;
++
++	if (quirk_override != -1) {
++		nau8824_quirk = quirk_override;
++		return;
++	}
++
++	dmi_id = dmi_first_match(nau8824_quirk_table);
++	if (dmi_id)
++		nau8824_quirk = (unsigned long)dmi_id->driver_data;
++}
++
+ static int nau8824_i2c_probe(struct i2c_client *i2c,
+ 	const struct i2c_device_id *id)
+ {
+@@ -1869,6 +1904,11 @@ static int nau8824_i2c_probe(struct i2c_client *i2c,
+ 	nau8824->irq = i2c->irq;
+ 	sema_init(&nau8824->jd_sem, 1);
+ 
++	nau8824_check_quirks();
++
++	if (nau8824_quirk & NAU8824_JD_ACTIVE_HIGH)
++		nau8824->jkdet_polarity = 0;
++
+ 	nau8824_print_device_properties(nau8824);
+ 
+ 	ret = regmap_read(nau8824->regmap, NAU8824_REG_I2C_DEVICE_ID, &value);
 -- 
 2.33.0
 
