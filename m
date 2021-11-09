@@ -2,63 +2,64 @@ Return-Path: <SRS0=Fseo=P4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A57BAC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Nov 2021 22:29:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 67F53C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Nov 2021 22:29:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3015861151
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Nov 2021 22:29:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3015861151
+	by mail.kernel.org (Postfix) with ESMTPS id D3A9C6109F
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Nov 2021 22:29:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D3A9C6109F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 827A516A0;
-	Tue,  9 Nov 2021 23:28:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 827A516A0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4D4951697;
+	Tue,  9 Nov 2021 23:28:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4D4951697
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1636496943;
-	bh=ZMGpCI8oDIhIjEv0205Deqq+Gh7JpQMOGyNXtAcjAOI=;
+	s=default; t=1636496967;
+	bh=KFya8t7XucbD4ytnXfZ1+zfqS0YsfWJVp8FuMTEXMeU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qGnxUo0JNM9kel12eJQPi7TGshwOi5ootzhVd1IcwpiR9KbkeWO1d3MoBRQavdC+S
-	 qYm2DAs9Ak8Y+h+3aWetdnMDeaS3cmSLB4fEK3RwQluzpl9N5wFWTyY92erYFgDsFK
-	 1YllD8gtKJa9P+jPU2SdJdQ5oSeV8HsXdL8i+tqs=
+	b=vD3YKvdOVViJ7QlIv3swAkHqsuD2e94pEdTlccONKCcDbmEHKnAhUhe9R620fq/ln
+	 sot6MUJ6Dm+PlA0BDr+vMpsRffSm3zyfZ/iMt+hfn7h+NkLgrv0Bk/QlFULAR9RQSa
+	 6X7hBCsLp+IlbOB9L7Ca0DF2wZjsTYQ8oZwNs4Z0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 19888F801D8;
-	Tue,  9 Nov 2021 23:22:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 90AE4F80535;
+	Tue,  9 Nov 2021 23:22:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A0939F805AB; Tue,  9 Nov 2021 23:22:11 +0100 (CET)
+ id 08220F805AB; Tue,  9 Nov 2021 23:22:26 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C0679F805A9
- for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2021 23:22:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0679F805A9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9B92DF8052E
+ for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2021 23:22:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B92DF8052E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ZrLwthaN"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D244A619EA;
- Tue,  9 Nov 2021 22:22:02 +0000 (UTC)
+ header.b="n/IFeZ0P"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62CE2611AD;
+ Tue,  9 Nov 2021 22:22:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1636496523;
- bh=ZMGpCI8oDIhIjEv0205Deqq+Gh7JpQMOGyNXtAcjAOI=;
+ s=k20201202; t=1636496540;
+ bh=KFya8t7XucbD4ytnXfZ1+zfqS0YsfWJVp8FuMTEXMeU=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=ZrLwthaNxaYJpcC1mNppW+TyVWTydyKOty3Nwy3s15bF1eqJIu3WiK94LGHHl8X1i
- u2QRMD9gkUGWaf4P4tMx60Ptfqp7kuaea2U3Kqc6gRjVqBwApb5+m8Tcw3+cEYc+75
- bUIo/HRaKX4NFxelO+JaBaKLanKUTiRlGgb/kV0a5aoL3s5rR8dMVYdvrIdFAPS5Iy
- AUGYWEWzCXjpTY3dG1SaWCIiQn/5Szk40da+Zdgpr6v+rm9iBH02+hh5FTeFefNnm9
- e0Wg7gTr/5Rue9wVnbC7beFmvJgpuQfE2JXMqCmcYx9PQTEfWOVf4CkXJ/shwTSCN4
- 8Y6CHc+IVJjfQ==
+ b=n/IFeZ0Pqqtr1yNjLpEjd2dMhRk+PWAn7T5WSA/EArXoWCKEJvsxAq4Z092V2xLmd
+ Z/493OPDAQR78Q2JopnFQlvoMYLxGPIJTe85uJNxouBd9zK+PVEO+SfXeHLMFBZ9Of
+ UHPgqG22KV014k4EWFTCEGZkXPcejt9EFFv5SsPB0E0vlccIJbZWG7qcCCkwDCC6Lj
+ GFCegLSpvitgzwcSbVnprZ7KV46S6dlp7B9HUk8ItpFb4CN/eox/H5/tnw4iLbR/QD
+ 0ryFBCsgcZHIaGcM7MQjzjjhK8AZgxUm+hmyeO2R4KTCBmS2ZkBynNclW9vN0ir0Oo
+ +r2FRakNrvPYQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 37/50] ALSA: ISA: not for M68K
-Date: Tue,  9 Nov 2021 17:20:50 -0500
-Message-Id: <20211109222103.1234885-37-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 48/50] ALSA: gus: fix null pointer dereference on
+ pointer block
+Date: Tue,  9 Nov 2021 17:21:01 -0500
+Message-Id: <20211109222103.1234885-48-sashal@kernel.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211109222103.1234885-1-sashal@kernel.org>
 References: <20211109222103.1234885-1-sashal@kernel.org>
@@ -67,9 +68,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.de>, Randy Dunlap <rdunlap@infradead.org>,
- Takashi Iwai <tiwai@suse.com>, linux-m68k@lists.linux-m68k.org,
- Geert Uytterhoeven <geert@linux-m68k.org>
+ Takashi Iwai <tiwai@suse.de>, tiwai@suse.com,
+ Chengfeng Ye <cyeaa@connect.ust.hk>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,86 +85,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Chengfeng Ye <cyeaa@connect.ust.hk>
 
-[ Upstream commit 3c05f1477e62ea5a0a8797ba6a545b1dc751fb31 ]
+[ Upstream commit a0d21bb3279476c777434c40d969ea88ca64f9aa ]
 
-On m68k, compiling drivers under SND_ISA causes build errors:
+The pointer block return from snd_gf1_dma_next_block could be
+null, so there is a potential null pointer dereference issue.
+Fix this by adding a null check before dereference.
 
-../sound/core/isadma.c: In function 'snd_dma_program':
-../sound/core/isadma.c:33:17: error: implicit declaration of function 'claim_dma_lock' [-Werror=implicit-function-declaration]
-   33 |         flags = claim_dma_lock();
-      |                 ^~~~~~~~~~~~~~
-../sound/core/isadma.c:41:9: error: implicit declaration of function 'release_dma_lock' [-Werror=implicit-function-declaration]
-   41 |         release_dma_lock(flags);
-      |         ^~~~~~~~~~~~~~~~
-
-../sound/isa/sb/sb16_main.c: In function 'snd_sb16_playback_prepare':
-../sound/isa/sb/sb16_main.c:253:72: error: 'DMA_AUTOINIT' undeclared (first use in this function)
-  253 |         snd_dma_program(dma, runtime->dma_addr, size, DMA_MODE_WRITE | DMA_AUTOINIT);
-      |                                                                        ^~~~~~~~~~~~
-../sound/isa/sb/sb16_main.c:253:72: note: each undeclared identifier is reported only once for each function it appears in
-../sound/isa/sb/sb16_main.c: In function 'snd_sb16_capture_prepare':
-../sound/isa/sb/sb16_main.c:322:71: error: 'DMA_AUTOINIT' undeclared (first use in this function)
-  322 |         snd_dma_program(dma, runtime->dma_addr, size, DMA_MODE_READ | DMA_AUTOINIT);
-      |                                                                       ^~~~~~~~~~~~
-
-and more...
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Link: https://lore.kernel.org/r/20211016062602.3588-1-rdunlap@infradead.org
+Signed-off-by: Chengfeng Ye <cyeaa@connect.ust.hk>
+Link: https://lore.kernel.org/r/20211024104611.9919-1-cyeaa@connect.ust.hk
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/core/Makefile | 2 ++
- sound/isa/Kconfig   | 2 +-
- sound/pci/Kconfig   | 1 +
- 3 files changed, 4 insertions(+), 1 deletion(-)
+ sound/isa/gus/gus_dma.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/core/Makefile b/sound/core/Makefile
-index ee4a4a6b99ba7..d123587c0fd8f 100644
---- a/sound/core/Makefile
-+++ b/sound/core/Makefile
-@@ -9,7 +9,9 @@ ifneq ($(CONFIG_SND_PROC_FS),)
- snd-y += info.o
- snd-$(CONFIG_SND_OSSEMUL) += info_oss.o
- endif
-+ifneq ($(CONFIG_M68K),y)
- snd-$(CONFIG_ISA_DMA_API) += isadma.o
-+endif
- snd-$(CONFIG_SND_OSSEMUL) += sound_oss.o
- snd-$(CONFIG_SND_VMASTER) += vmaster.o
- snd-$(CONFIG_SND_JACK)	  += ctljack.o jack.o
-diff --git a/sound/isa/Kconfig b/sound/isa/Kconfig
-index 6ffa48dd59830..570b88e0b2018 100644
---- a/sound/isa/Kconfig
-+++ b/sound/isa/Kconfig
-@@ -22,7 +22,7 @@ config SND_SB16_DSP
- menuconfig SND_ISA
- 	bool "ISA sound devices"
- 	depends on ISA || COMPILE_TEST
--	depends on ISA_DMA_API
-+	depends on ISA_DMA_API && !M68K
- 	default y
- 	help
- 	  Support for sound devices connected via the ISA bus.
-diff --git a/sound/pci/Kconfig b/sound/pci/Kconfig
-index 93bc9bef7641f..41ce125971777 100644
---- a/sound/pci/Kconfig
-+++ b/sound/pci/Kconfig
-@@ -279,6 +279,7 @@ config SND_CS46XX_NEW_DSP
- config SND_CS5530
- 	tristate "CS5530 Audio"
- 	depends on ISA_DMA_API && (X86_32 || COMPILE_TEST)
-+	depends on !M68K
- 	select SND_SB16_DSP
- 	help
- 	  Say Y here to include support for audio on Cyrix/NatSemi CS5530 chips.
+diff --git a/sound/isa/gus/gus_dma.c b/sound/isa/gus/gus_dma.c
+index a1c770d826dda..6d664dd8dde0b 100644
+--- a/sound/isa/gus/gus_dma.c
++++ b/sound/isa/gus/gus_dma.c
+@@ -126,6 +126,8 @@ static void snd_gf1_dma_interrupt(struct snd_gus_card * gus)
+ 	}
+ 	block = snd_gf1_dma_next_block(gus);
+ 	spin_unlock(&gus->dma_lock);
++	if (!block)
++		return;
+ 	snd_gf1_dma_program(gus, block->addr, block->buf_addr, block->count, (unsigned short) block->cmd);
+ 	kfree(block);
+ #if 0
 -- 
 2.33.0
 
