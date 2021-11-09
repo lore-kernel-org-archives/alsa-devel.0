@@ -2,64 +2,64 @@ Return-Path: <SRS0=Fseo=P4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08529C433FE
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Nov 2021 22:23:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8615AC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Nov 2021 22:24:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 83E9F61B3E
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Nov 2021 22:23:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 83E9F61B3E
+	by mail.kernel.org (Postfix) with ESMTPS id 11ADA61B3E
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Nov 2021 22:24:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 11ADA61B3E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E1FC811C;
-	Tue,  9 Nov 2021 23:23:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1FC811C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 73160168E;
+	Tue,  9 Nov 2021 23:23:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73160168E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1636496637;
-	bh=7+BMEBjdSqQa1qVGB+Y4ucwGefWzUaTFb879pgxxR2w=;
+	s=default; t=1636496653;
+	bh=OXp0f50fIwKe5A8ng8EYY+C7aGVgb0MmMfZBWxF7nFE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=F/lyHwop/q1fN/p67+JaDNeyQB9UU2yBG/Lst2IbbIAwZpHYz917ukxAXtW/R0fMH
-	 m7bIz3gwkU3mOGjQYfcGSyjK+K+p32HVTQuDdxPY5jXGcTwGnsOJr43hJ9aTny7565
-	 XKloZnRLIkod9+wHs9crD0+Id+nP6yp9wFN/Bbrw=
+	b=mIa++Iq1+xLMH2niQnYGPTVVi9lpErRuhg1YGosDirpPIKihtGMIJS6i+dq2LGrFm
+	 RSSGsGVcksWWSmkRJdMM80yHtayVRJs55fG4OMgv9gWOJ4HiLFNrhZL68fCP3T6yBu
+	 4aCp0LSccY1hAeB9JbpXu+zKFu6XXgBDHrkE/D0A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E99C8F80516;
-	Tue,  9 Nov 2021 23:20:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 36B6EF8053C;
+	Tue,  9 Nov 2021 23:20:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 636E5F8053A; Tue,  9 Nov 2021 23:20:14 +0100 (CET)
+ id 86B94F804FA; Tue,  9 Nov 2021 23:20:14 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A28FEF804FA
- for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2021 23:20:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A28FEF804FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1F57AF804FD
+ for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2021 23:20:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F57AF804FD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="goyfl+ed"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A65C461A58;
- Tue,  9 Nov 2021 22:20:08 +0000 (UTC)
+ header.b="p8jVYlU6"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D723361A50;
+ Tue,  9 Nov 2021 22:20:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1636496409;
- bh=7+BMEBjdSqQa1qVGB+Y4ucwGefWzUaTFb879pgxxR2w=;
+ s=k20201202; t=1636496405;
+ bh=OXp0f50fIwKe5A8ng8EYY+C7aGVgb0MmMfZBWxF7nFE=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=goyfl+ednXUkVVTa6LXQFhJOW+UQUl7gHGLKbsknijyNPHfDtibvBm1W6lj60OphP
- IU0iD7g/CcZqeSOgl11gtz7o1CyxzIgMn3xTkxVM4OxP/BgzXBeYVqJfCIeLCcakgW
- ezS3GFkHdRJJJV61Oajk7IDWysMZHNA7eaIMP8j+5HCFNT+rjTzNhZwgJEetNHu4wo
- l+6tWuKe7T+//kPlN1LXO7dXz7cAOiUPjgsLjpqeMO+Lb6JlNM7jtGA5NL8DKZjSgV
- YyISrSeu8IWgTmcURSrEePENoFPapcUxsho2VT3PfHFO3GAZ2TCqUJVw8h4G3Naf8z
- w9EXKbKiLlWPw==
+ b=p8jVYlU6jlxguOj9ePJ1imn0OquIT/VLLEEb2uxiHshEFUXXT1HvqUd4xE/fRG9BN
+ 069QUvr8Zc8zY62U50mGfZgGKqJQILcwZGiNz+JnLdItJNV6YrtcSGKMo812pGzQ+D
+ 8/2zJJ7BxSBxpjfE2kRsb17ZUI5HvFO+dN8oKxx6QPCyMBCIfn2TkTHPntKUvHTtHO
+ rmJNspmhpNVOOXAQhyaAUABrN9yLrlH9Jdst4lFndmYmh2x55MkKoT08RuXzvQzK1V
+ e+2E1k/YDTaCgx1VU7K9KOZZP7IeRKhzMPq9XFNWF6oeYIkhqgGdJgxAIkTuevP/S7
+ nVn0FWEhzapzQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.14 38/75] ASoC: rt5651: Use IRQF_NO_AUTOEN when
- requesting the IRQ
-Date: Tue,  9 Nov 2021 17:18:28 -0500
-Message-Id: <20211109221905.1234094-38-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.14 35/75] ALSA: usb-audio: disable implicit feedback
+ sync for Behringer UFX1204 and UFX1604
+Date: Tue,  9 Nov 2021 17:18:25 -0500
+Message-Id: <20211109221905.1234094-35-sashal@kernel.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211109221905.1234094-1-sashal@kernel.org>
 References: <20211109221905.1234094-1-sashal@kernel.org>
@@ -67,10 +67,9 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, oder_chiou@realtek.com,
- alsa-devel@alsa-project.org, tiwai@suse.com, lgirdwood@gmail.com,
- Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>,
- bardliao@realtek.com
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.de>, tiwai@suse.com,
+ Geraldo Nascimento <geraldogabriel@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,42 +85,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Geraldo Nascimento <geraldogabriel@gmail.com>
 
-[ Upstream commit 6e037b72cf4ea6c28a131ea021d63ee4e7e6fa64 ]
+[ Upstream commit 28c369e60827f706cef4604a3e2848198f25bd26 ]
 
-Use the new IRQF_NO_AUTOEN flag when requesting the IRQ, rather then
-disabling it immediately after requesting it.
+Behringer UFX1204 and UFX1604 have Synchronous endpoints to which
+current ALSA code applies implicit feedback sync as if they were
+Asynchronous endpoints. This breaks UAC compliance and is unneeded.
 
-This fixes a possible race where the IRQ might trigger between requesting
-and disabling it; and this also leads to a small code cleanup.
+The commit 5e35dc0338d85ccebacf3f77eca1e5dea73155e8 and subsequent
+1a15718b41df026cffd0e42cfdc38a1384ce19f9 were meant to clear up noise.
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20211003132255.31743-2-hdegoede@redhat.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Unfortunately, noise persisted for those using higher sample rates and
+this was only solved by commit d2e8f641257d0d3af6e45d6ac2d6f9d56b8ea964
+
+Since there are no more reports of noise, let's get rid of the
+implicit-fb quirks breaking UAC compliance.
+
+Signed-off-by: Geraldo Nascimento <geraldogabriel@gmail.com>
+Link: https://lore.kernel.org/r/YVYSnoQ7nxLXT0Dq@geday
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt5651.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ sound/usb/implicit.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
-index fc0c83b73f099..93820561b9f5d 100644
---- a/sound/soc/codecs/rt5651.c
-+++ b/sound/soc/codecs/rt5651.c
-@@ -2261,11 +2261,8 @@ static int rt5651_i2c_probe(struct i2c_client *i2c,
+diff --git a/sound/usb/implicit.c b/sound/usb/implicit.c
+index 590a0dbba7a21..34461947260b2 100644
+--- a/sound/usb/implicit.c
++++ b/sound/usb/implicit.c
+@@ -54,8 +54,6 @@ static const struct snd_usb_implicit_fb_match playback_implicit_fb_quirks[] = {
  
- 	ret = devm_request_irq(&i2c->dev, rt5651->irq, rt5651_irq,
- 			       IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING
--			       | IRQF_ONESHOT, "rt5651", rt5651);
--	if (ret == 0) {
--		/* Gets re-enabled by rt5651_set_jack() */
--		disable_irq(rt5651->irq);
--	} else {
-+			       | IRQF_ONESHOT | IRQF_NO_AUTOEN, "rt5651", rt5651);
-+	if (ret) {
- 		dev_warn(&i2c->dev, "Failed to reguest IRQ %d: %d\n",
- 			 rt5651->irq, ret);
- 		rt5651->irq = -ENXIO;
+ 	/* Fixed EP */
+ 	/* FIXME: check the availability of generic matching */
+-	IMPLICIT_FB_FIXED_DEV(0x1397, 0x0001, 0x81, 1), /* Behringer UFX1604 */
+-	IMPLICIT_FB_FIXED_DEV(0x1397, 0x0002, 0x81, 1), /* Behringer UFX1204 */
+ 	IMPLICIT_FB_FIXED_DEV(0x2466, 0x8010, 0x81, 2), /* Fractal Audio Axe-Fx III */
+ 	IMPLICIT_FB_FIXED_DEV(0x31e9, 0x0001, 0x81, 2), /* Solid State Logic SSL2 */
+ 	IMPLICIT_FB_FIXED_DEV(0x31e9, 0x0002, 0x81, 2), /* Solid State Logic SSL2+ */
 -- 
 2.33.0
 
