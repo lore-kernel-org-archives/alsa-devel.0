@@ -2,64 +2,64 @@ Return-Path: <SRS0=Fseo=P4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81BE6C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Nov 2021 22:22:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A272C433FE
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Nov 2021 22:23:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0306D61506
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Nov 2021 22:22:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0306D61506
+	by mail.kernel.org (Postfix) with ESMTPS id 972F461B01
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Nov 2021 22:23:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 972F461B01
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 54D6B166B;
-	Tue,  9 Nov 2021 23:22:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 54D6B166B
+	by alsa0.perex.cz (Postfix) with ESMTPS id F3FD61688;
+	Tue,  9 Nov 2021 23:22:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F3FD61688
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1636496575;
-	bh=d1FIuv/dVVxW19ZgxtqFuPC8CVQXUTdfjD91zC5VN2w=;
+	s=default; t=1636496588;
+	bh=KFya8t7XucbD4ytnXfZ1+zfqS0YsfWJVp8FuMTEXMeU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=flQ6hd1WuvEocTvnzobr3bG0EjFSxNK/4gnx7M6P7oJhvuF+VkcYGMksCB75MB1tU
-	 /ot8sAXtxc8xQcUEwKicSSHZ6RLKqoKbOFkSivJr6MkGrgkuVvI9tSJFZIbybm72eh
-	 gnjOSrbze2lJSB5twLgfQW68oqSHdi8FB47lKShk=
+	b=IqBpFSCdlwQJKHBO26ZOZkkhJSqyMBZiizE+VKT2Ma2mPGtIoWxI9ndme558leL0B
+	 M9HUPxLy125NcN2wLrX+muu66jxT1qwSoPIo6+p62MxV4q3TAM6FB11hLfXVsMWow3
+	 zoAGzyMkRUlH2kSZJqzULx8V2gdE7FgZgaojJx+A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E761AF802E3;
-	Tue,  9 Nov 2021 23:19:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A53B8F804EB;
+	Tue,  9 Nov 2021 23:19:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F0A7FF802E3; Tue,  9 Nov 2021 23:19:03 +0100 (CET)
+ id 19B1FF80425; Tue,  9 Nov 2021 23:19:03 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 88FDDF80425
- for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2021 23:18:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88FDDF80425
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7DE02F801D8
+ for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2021 23:18:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7DE02F801D8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="DLBGruY4"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B8FBA61211;
- Tue,  9 Nov 2021 22:18:54 +0000 (UTC)
+ header.b="XQaMizVt"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FD8E61506;
+ Tue,  9 Nov 2021 22:18:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1636496335;
- bh=d1FIuv/dVVxW19ZgxtqFuPC8CVQXUTdfjD91zC5VN2w=;
+ s=k20201202; t=1636496334;
+ bh=KFya8t7XucbD4ytnXfZ1+zfqS0YsfWJVp8FuMTEXMeU=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=DLBGruY4GntLaDxwkqGidoZGNE6VAeL+3qfzgTdZGx19pEaXrxYJDASe8FuBR/Tkr
- mjzC3KzFUNMLzgmc0AoKQwkTV6GDk4LhC9ORl9RCPU1+aBVVt9XPCsGfZNzpnbkc1k
- SOVeEFAn0N04qfGH5RE+dmAbhuTyuv9JQHC1roJ003xbIYp7YTguicpwgj1VwdNKQa
- FcrbjJMwB6bmeWPTphc7686Tu+bXJZ/rhGltV4ERPPIvVYZURXpXFCNNrzdM2RcABB
- X80uvdsE2ksieUrqixRzl1L/AC73kKtF9jaVqCG9QuvG+GdaWWY19hxRHq07rX9Ru9
- ySuPsdQy0qQyQ==
+ b=XQaMizVtXiQ1wTEeYLw1GSlTlUljlf+VuQHLUoTV1kFphF7tefmJreEYpjrSu+rSX
+ A9gKrJzTsy2KYpYSZTFXnoa8GIfjOIMz9xpVp2vwWePbLk8bfdAsOkB/tEPRk7K4LC
+ ULd66Yaly0MWTuL6zwuNWUKrbS9KaoePDMVdcvBwDqF6D5kFa0yBWDFu0QAOigdZgI
+ e/ew3jTHOVS3T8V380goG2E7VqR3+YCGWZa88y6BcXdoqsj/S2f5insJiWq+wy2tTF
+ 7fFL2pj91oj8JMQ8vu6HYwYKEdlHMi2Le4c+bfCJlA9zGjLptp2tVyWtJb8DMBa7PA
+ r/DNgD3gwaW4A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 77/82] ALSA: usb-audio: fix null pointer
- dereference on pointer cs_desc
-Date: Tue,  9 Nov 2021 17:16:35 -0500
-Message-Id: <20211109221641.1233217-77-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 76/82] ALSA: gus: fix null pointer dereference on
+ pointer block
+Date: Tue,  9 Nov 2021 17:16:34 -0500
+Message-Id: <20211109221641.1233217-76-sashal@kernel.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211109221641.1233217-1-sashal@kernel.org>
 References: <20211109221641.1233217-1-sashal@kernel.org>
@@ -87,35 +87,33 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Chengfeng Ye <cyeaa@connect.ust.hk>
 
-[ Upstream commit b97053df0f04747c3c1e021ecbe99db675342954 ]
+[ Upstream commit a0d21bb3279476c777434c40d969ea88ca64f9aa ]
 
-The pointer cs_desc return from snd_usb_find_clock_source could
-be null, so there is a potential null pointer dereference issue.
+The pointer block return from snd_gf1_dma_next_block could be
+null, so there is a potential null pointer dereference issue.
 Fix this by adding a null check before dereference.
 
 Signed-off-by: Chengfeng Ye <cyeaa@connect.ust.hk>
-Link: https://lore.kernel.org/r/20211024111736.11342-1-cyeaa@connect.ust.hk
+Link: https://lore.kernel.org/r/20211024104611.9919-1-cyeaa@connect.ust.hk
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/clock.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/isa/gus/gus_dma.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/usb/clock.c b/sound/usb/clock.c
-index 81d5ce07d548b..98345a695dccb 100644
---- a/sound/usb/clock.c
-+++ b/sound/usb/clock.c
-@@ -496,6 +496,10 @@ int snd_usb_set_sample_rate_v2v3(struct snd_usb_audio *chip,
- 	union uac23_clock_source_desc *cs_desc;
- 
- 	cs_desc = snd_usb_find_clock_source(chip, clock, fmt->protocol);
-+
-+	if (!cs_desc)
-+		return 0;
-+
- 	if (fmt->protocol == UAC_VERSION_3)
- 		bmControls = le32_to_cpu(cs_desc->v3.bmControls);
- 	else
+diff --git a/sound/isa/gus/gus_dma.c b/sound/isa/gus/gus_dma.c
+index a1c770d826dda..6d664dd8dde0b 100644
+--- a/sound/isa/gus/gus_dma.c
++++ b/sound/isa/gus/gus_dma.c
+@@ -126,6 +126,8 @@ static void snd_gf1_dma_interrupt(struct snd_gus_card * gus)
+ 	}
+ 	block = snd_gf1_dma_next_block(gus);
+ 	spin_unlock(&gus->dma_lock);
++	if (!block)
++		return;
+ 	snd_gf1_dma_program(gus, block->addr, block->buf_addr, block->count, (unsigned short) block->cmd);
+ 	kfree(block);
+ #if 0
 -- 
 2.33.0
 
