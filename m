@@ -2,74 +2,91 @@ Return-Path: <SRS0=Fseo=P4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D9816C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Nov 2021 13:27:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92A30C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Nov 2021 13:40:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9918D61178
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Nov 2021 13:27:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9918D61178
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id D491261038
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Nov 2021 13:40:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D491261038
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 580A2950;
-	Tue,  9 Nov 2021 14:26:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 580A2950
+	by alsa0.perex.cz (Postfix) with ESMTPS id B4289950;
+	Tue,  9 Nov 2021 14:39:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B4289950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1636464448;
-	bh=J2HKc1MxYjxe9gpE69xTbA5+nRuj4eiTFvnENQOr37k=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1636465205;
+	bh=uzRp8vCN25ahFTDWjwEjpeTfKpC5L49vieZ5b7ldAJg=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=swUve8DR1cbHvxh9Um1wd7Ty86AgH/80b9VkIT3Auijss87m5fPtkJcFMcWqTitp9
-	 w9oer3SuGiE1ItKESDFLglW4h0ppeKcNVn17JBomkzOxkdPN/Q2sv3KV5pzyicyCgE
-	 GFw0MissSBxYlXQSSv0JKtLDebPCZZGgHgvnXb+s=
+	b=HZquhk3iPbTbMfdOzaJk2GIuMFjGKwCaiTSXJr9FRqY/crHUrhCk7bq3VjBItDeau
+	 PYp3MImJnTDA3TOpvIEallUFMNpEY6MlW3nhpV/9GClBBoGGqSMQJJ5xtV7kM+ZD6i
+	 dTYIvbdh5FJPzRPF3B0K1p4MVTuBIpRnj0AJK2Co=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DBA02F80224;
-	Tue,  9 Nov 2021 14:26:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 08BFFF80224;
+	Tue,  9 Nov 2021 14:39:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 10817F802D2; Tue,  9 Nov 2021 14:26:35 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 22993F802D2; Tue,  9 Nov 2021 14:39:12 +0100 (CET)
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com
+ [IPv6:2a00:1450:4864:20::22a])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8EC91F800C9
- for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2021 14:26:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8EC91F800C9
+ by alsa1.perex.cz (Postfix) with ESMTPS id D16A4F800C1
+ for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2021 14:38:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D16A4F800C1
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="f/gz9DKh"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CCDF361159;
- Tue,  9 Nov 2021 13:26:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1636464383;
- bh=J2HKc1MxYjxe9gpE69xTbA5+nRuj4eiTFvnENQOr37k=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=f/gz9DKhinbAoV/QCOVsqbhS3HF4+Pt5r4HFYK237NhSc01SfbPG6nkny+MI+ARf8
- 8P7upGQlo8lYGWFhik7IN/Jum/EauOkZZVVkOnIQud6jIQ/yr53iJ5rgezpToOCRAE
- DF7PQXrTs+SHEqu5PeBjuls6FEjnEMDr1Q1b753FI0+DvIVxKTQp3MpQtLcf+S44ei
- axkOjztraSoaXVPGqChqbzNPIIQUnwcGsbZDC4vpxi0VHjQlaHooMe+/xJKLsGnr+d
- 5S6HgE7TwHTejEfB7aPKkpW6CfNvNU5x11c8NUSR789I5VOZEQ3A7bRkp1FAMqmdQQ
- n5unOukEaiM4g==
-Date: Tue, 9 Nov 2021 13:26:18 +0000
-From: Mark Brown <broonie@kernel.org>
-To: cy_huang <u0084500@gmail.com>
-Subject: Re: [PATCH 1/2] ASoC: rt9120: Update internal setting and fix auto
- sync problem
-Message-ID: <YYp2+gqjn6+M/hZ7@sirena.org.uk>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="amJfQ8sH"
+Received: by mail-lj1-x22a.google.com with SMTP id s24so36338190lji.12
+ for <alsa-devel@alsa-project.org>; Tue, 09 Nov 2021 05:38:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc:content-transfer-encoding;
+ bh=Xf2lmT83dSNiE9eWoGnGn4bhukTvP6d6+kM7Kc5CSqo=;
+ b=amJfQ8sHmRSWmPUArZTLQgn5LsrKQ3Iz9PAqbKRjFJpXbf+kZpMG6JSvCpmru6i7Rd
+ supmpPHjE8ZTeFLsO8zkQmFLqRA6qpil0n5vTTnEVu+BWFDVuFo4HDC2AtMhX9/XpoJg
+ QEzzNuL1CD0AEWInEWjMkWz6sbLRj/qqj3NSkdwEmfKi+uwiJLPz1CyR8avIX884fQYD
+ Uld/5FlkCls2GOKfZ0YXgvI5peWZTTrtJLVhUWwPy9yMp2aq3kjLKVlFwQQ92jOMlR98
+ VqjDIvuTfaUad4WKoH6o8hhEK/upQXqobvJRL8cbE/pF9dT0TL0J6tMAb4QxeJkJO9fr
+ Fk3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=Xf2lmT83dSNiE9eWoGnGn4bhukTvP6d6+kM7Kc5CSqo=;
+ b=jCmxq0MWgeZiEGK8/6dqo2j/ucDDASQ4gipc1GoseB5+C8aX2e/yNmAyL39EArHUFq
+ u2/m7Aphiqxm4syd0hCDIoZPPWR2JIxEr66rXdmsTSaLT75sUEtLqgDZmo/fkU3L28WV
+ JJgRgkOaWfvTXCh43ZfI6p74e5TI1ol5OsElnDlKTY8lR5pPvziW6pDrcFEFTm5kDR5I
+ r768lty0uRp9Qvx3KWdsYVLgBSghmwZuFmec7jKJMd2VL5fkehNIpLNdOEuGnRlxZGsh
+ 5ui0C6TdntYJ+botkiEJlyis6wBG0KKGZYHEFnTP6P3443FN7+7UGb2RwGkWTUDlHGIq
+ q04w==
+X-Gm-Message-State: AOAM5339pV6w7X/O2g4axWCMY2vtJ4unoY9cYtCsPR3HDtgiX3x9Kg9Q
+ XhUsaWt67Dw5YF82IryTz2KFNmd+PyjDZeYupQc=
+X-Google-Smtp-Source: ABdhPJwp/3yR0aKJzyyxnYPME8tdzmJXZFeiF4l88QOLnGXZJ0FpMU2lEfm3EzN+wCWR9J78xt3O+jujs2yYlAiq3d0=
+X-Received: by 2002:a2e:890d:: with SMTP id d13mr7561859lji.396.1636465136748; 
+ Tue, 09 Nov 2021 05:38:56 -0800 (PST)
+MIME-Version: 1.0
 References: <1636439024-15877-1-git-send-email-u0084500@gmail.com>
  <1636439024-15877-2-git-send-email-u0084500@gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="HVGDxR7W1SSa3wC/"
-Content-Disposition: inline
-In-Reply-To: <1636439024-15877-2-git-send-email-u0084500@gmail.com>
-X-Cookie: Elevators smell different to midgets.
+ <YYp2+gqjn6+M/hZ7@sirena.org.uk>
+In-Reply-To: <YYp2+gqjn6+M/hZ7@sirena.org.uk>
+From: ChiYuan Huang <u0084500@gmail.com>
+Date: Tue, 9 Nov 2021 21:38:45 +0800
+Message-ID: <CADiBU38kyx6hA-xPp-EH34YmvDfXRtOBr3Zuzj2Yc7Sx+HJWcw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] ASoC: rt9120: Update internal setting and fix auto
+ sync problem
+To: Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, lgirdwood@gmail.com, tiwai@suse.com,
- cy_huang@richtek.com, allen_lin@richtek.com
+ lkml <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ tiwai@suse.com, cy_huang <cy_huang@richtek.com>,
+ allen lin <allen_lin@richtek.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,37 +102,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Mark Brown <broonie@kernel.org> =E6=96=BC 2021=E5=B9=B411=E6=9C=889=E6=97=
+=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=889:26=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> On Tue, Nov 09, 2021 at 02:23:43PM +0800, cy_huang wrote:
+> > From: ChiYuan Huang <cy_huang@richtek.com>
+> >
+> > - Update internal setting to fix issue.
+> > - Disable auto sync if fs is divided by 48.
+>
+> Please submit one patch per change, each with a clear changelog, as
+> covered in SubmittingPatches.  This makes it much easier to review
+> things since it's easier to tell if the patch does what it was intended
+> to do.  When splitting patches up git gui can be helpful, you can stage
+> and unstage individual lines by right clicking on them.
 
---HVGDxR7W1SSa3wC/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Nov 09, 2021 at 02:23:43PM +0800, cy_huang wrote:
-> From: ChiYuan Huang <cy_huang@richtek.com>
->=20
-> - Update internal setting to fix issue.
-> - Disable auto sync if fs is divided by 48.
-
-Please submit one patch per change, each with a clear changelog, as
-covered in SubmittingPatches.  This makes it much easier to review
-things since it's easier to tell if the patch does what it was intended
-to do.  When splitting patches up git gui can be helpful, you can stage
-and unstage individual lines by right clicking on them.
-
---HVGDxR7W1SSa3wC/
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGKdvoACgkQJNaLcl1U
-h9CDUwf/empk/L0AB6TG5uu8RYPa6l2xwNsGoK24S7mFsEIsG7ykomIbzY5cn5de
-O6C0OBLyNOZwl6WprWKMRGFtj+yzsAFijk47pq3FYOwEU/EHRt/WtBrcLSlYZQen
-g913L88YViV5l7kCF5LgXQuetDkPMU+uXIFY74zLAPEpE9rCGfzmYkbEAp26bgtm
-b8AMzlh4BBH7YquiB1yyyN23Zf8V7VdUZxzaCJZmLbYXS+iiwFzbTb69FdZvRIwD
-6FVq8+ox0ftvpU4q94bPq/dZCWMIDdfXa1jLRl6axzfGWErvYA+p1+aVyJoy/x2T
-SFvXJh3bMIDIH8XJ7dfn2enhoT62AA==
-=sDK0
------END PGP SIGNATURE-----
-
---HVGDxR7W1SSa3wC/--
+OK, I'll split it with two changes to make it more clear.
