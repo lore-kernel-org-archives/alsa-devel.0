@@ -1,83 +1,75 @@
-Return-Path: <SRS0=zqBf=P3=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=Fseo=P4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 03B49C4332F
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Nov 2021 21:05:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0912DC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Nov 2021 06:23:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B1565619A6
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Nov 2021 21:05:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B1565619A6
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 8518F610A2
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Nov 2021 06:23:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8518F610A2
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4EA8915F9;
-	Mon,  8 Nov 2021 22:05:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4EA8915F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 48E3A15F2;
+	Tue,  9 Nov 2021 07:22:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 48E3A15F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1636405551;
-	bh=Oa194Ks0RK46X5nRKkBW1JWjMOniOqTWY4pcuuCIa1A=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=KYbS7uIA0hIl4/WyIBxBOvdBTCGXhNov4HfL84wwLI0+T54zYOydiMsorgk/LOFsw
-	 2qszIpdGhiZztwYX2Jc4cULkWpm7DcVQpyKpWazw8OVOStpUOWT4aF+2i77KotfHGE
-	 urxCnvfgAH/fV3/lQ6IvG4WyPbfDkFp02ya7GPQk=
+	s=default; t=1636439022;
+	bh=EWO1jBQTUWwyNzDFmTBumS1jSWV6/iYe73en+x7iGFw=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=lsRjnf1hjIKZJOIWC9obp0DRmUdZMDrq6LhUGUBaC87+JuO+4s4go/We9TOt7YSrp
+	 OwBgYCa9/tAxsIyjD6qo2wCb2ykmgkF6wR1TW1whvDNIdenA+EFDPXUcn6arSYrbgk
+	 amjc33gvAQjdg1pCNnE9XztWHMdIs/u2ZQL2PVao=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D158BF80227;
-	Mon,  8 Nov 2021 22:05:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A4FFFF800C1;
+	Tue,  9 Nov 2021 07:22:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 41826F8049E; Mon,  8 Nov 2021 22:04:59 +0100 (CET)
-Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com
- [209.85.167.171])
+ id 4F49DF802D2; Tue,  9 Nov 2021 07:22:48 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 66EF5F801D8
- for <alsa-devel@alsa-project.org>; Mon,  8 Nov 2021 22:04:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66EF5F801D8
-Received: by mail-oi1-f171.google.com with SMTP id q124so29764837oig.3
- for <alsa-devel@alsa-project.org>; Mon, 08 Nov 2021 13:04:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=dLj06l1wmESDNcs8MD+tMJu6hG5JZ+huSjOUnPTWIms=;
- b=o8GU4axySIJhbRhnTTgPU37bXUK2RhGZcOAYM3cq/ii7VYMXmz1N0quLP9LtRlw7AV
- 4KOIQNLrwKdy7Cx98FJj9xR16f7UVtGrDvFhhQmWPoWDpXsGMHlnI0xR5ncTKTiBxeJd
- RD0EN9vKpJBdpqUpFYSC/LpOy2eFjCO7bErPzPgj/z4/RVj9vU/cCw5ChsWW/Z+o0WkI
- APJVfkFzKRmH5lb5out8ujERlHqaWAXItYYtO7ekkk/Q9r9vY85Vec3+M0UQOvzGNwQo
- areajVRIaiYY+9BprWN+rm2OJXPTxp2FS52xWndPZpvhKPaZwI12XBgo1x143XNWBfVn
- opig==
-X-Gm-Message-State: AOAM531IHZszcvM4TinBmSxTi3aOAkHvKSbCgTlHkRMgkJJ3pvZv00bX
- kJU4OkVey6SphLX5OIrj9w==
-X-Google-Smtp-Source: ABdhPJzgvZiyH3h067LzXWI0cQ4/N1FWjU0WpFR4uRRAaF0ibj9cAeUsZYzrHJXzWGQ7Y2Wdivex9Q==
-X-Received: by 2002:aca:3e86:: with SMTP id l128mr1169280oia.120.1636405487943; 
- Mon, 08 Nov 2021 13:04:47 -0800 (PST)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net.
- [66.90.148.213])
- by smtp.gmail.com with ESMTPSA id k4sm6359902oic.48.2021.11.08.13.04.45
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 08 Nov 2021 13:04:46 -0800 (PST)
-Received: (nullmailer pid 16501 invoked by uid 1000);
- Mon, 08 Nov 2021 21:04:44 -0000
-Date: Mon, 8 Nov 2021 15:04:44 -0600
-From: Rob Herring <robh@kernel.org>
-To: David Heidelberg <david@ixit.cz>
-Subject: Re: [PATCH v2] dt-bindings: sound: gtm601: convert to YAML
-Message-ID: <YYmQ7OCIIb2AbnjY@robh.at.kernel.org>
-References: <20211030121753.50191-1-david@ixit.cz>
+ by alsa1.perex.cz (Postfix) with ESMTPS id DB159F801D8
+ for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2021 07:22:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DB159F801D8
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="tLjiyBFZ"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="ptATnzsz"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id A5E471FDB7
+ for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2021 06:22:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1636438957; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=6BfWhyyFwTERULrohouCyLzfEUh7vBavFhIBV5+bSC0=;
+ b=tLjiyBFZSFyOQNge8RkD6FCEIj4uuLkOUauWfV86Jzx31QfKbc1HtARBCX5DAhBJfsnP7N
+ E4KI1qJWliTbGrInzh07Jb1rKbKesi859Y0saMo9aBebthBMB2DVL5QATkMoFnc4ZTFHP/
+ 78vGjdqXSNdsAATcACXRi+pD7TiyhcI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1636438957;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=6BfWhyyFwTERULrohouCyLzfEUh7vBavFhIBV5+bSC0=;
+ b=ptATnzszAxcy7Twt7Im89XbdyUEJ5B4mfFBNSYMUzkM9VNXECoJFbyYpKHYS+9NfPrr1u5
+ vlf5MmZ4xpYRwPCA==
+Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 9385BA3B84;
+ Tue,  9 Nov 2021 06:22:37 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: memalloc: Unify x86 SG-buffer handling (take#2)
+Date: Tue,  9 Nov 2021 07:22:35 +0100
+Message-Id: <20211109062235.22310-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211030121753.50191-1-david@ixit.cz>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, - <kernel@puri.sm>,
- Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
- Mark Brown <broonie@kernel.org>, phone-devel@vger.kernel.org,
- ~okias/devicetree@lists.sr.ht
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,93 +85,345 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, Oct 30, 2021 at 02:17:52PM +0200, David Heidelberg wrote:
-> Convert GTM601 binding to the YAML format.
-> 
-> Signed-off-by: David Heidelberg <david@ixit.cz>
-> ---
-> v2:
->  - add #sound-dai-cells
->  - put kernel@puri.sm into maintainers
-> 
->  .../devicetree/bindings/sound/gtm601.txt      | 19 ----------
->  .../devicetree/bindings/sound/gtm601.yaml     | 36 +++++++++++++++++++
->  2 files changed, 36 insertions(+), 19 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/sound/gtm601.txt
->  create mode 100644 Documentation/devicetree/bindings/sound/gtm601.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/gtm601.txt b/Documentation/devicetree/bindings/sound/gtm601.txt
-> deleted file mode 100644
-> index efa32a486c4a..000000000000
-> --- a/Documentation/devicetree/bindings/sound/gtm601.txt
-> +++ /dev/null
-> @@ -1,19 +0,0 @@
-> -GTM601 UMTS modem audio interface CODEC
-> -
-> -This device has no configuration interface. The sample rate and channels are
-> -based on the compatible string
-> -	"option,gtm601" = 8kHz mono
-> -	"broadmobi,bm818" = 48KHz stereo
-> -
-> -Required properties:
-> -
-> -  - compatible : one of
-> -	"option,gtm601"
-> -	"broadmobi,bm818"
-> -
-> -
-> -Example:
-> -
-> -codec: gtm601_codec {
-> -	compatible = "option,gtm601";
-> -};
-> diff --git a/Documentation/devicetree/bindings/sound/gtm601.yaml b/Documentation/devicetree/bindings/sound/gtm601.yaml
-> new file mode 100644
-> index 000000000000..e81a6aa75522
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/gtm601.yaml
-> @@ -0,0 +1,36 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/sound/gtm601.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: GTM601 UMTS modem audio interface CODEC
-> +
-> +maintainers:
-> +  - kernel@puri.sm
-> +
-> +description: >
-> +  This device has no configuration interface. The sample rate and channels are
-> +  based on the compatible string
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +          - const: broadmobi,bm818
-> +          - const: option,gtm601
+This is a second attempt to unify the x86-specific SG-buffer handling
+code with the new standard non-contiguous page handler.
 
-This does not match what the binding originally said. And generally this 
-combined with the one below should never be valid.
+The first try (in commit 2d9ea39917a4) failed due to the wrong page
+and address calculations, hence reverted.  Now it's corrected with the
+previous fix for noncontig pages, and the proper sg page iteration by
+this patch.
 
-> +      - items:
-> +          - enum:
-> +              - broadmobi,bm818  # 48 kHz stereo
-> +              - option,gtm601  # 8 kHz mono
-> +
-> +  '#sound-dai-cells':
-> +    const: 0
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    gtm601_codec {
-> +        compatible = "option,gtm601";
-> +    };
-> -- 
-> 2.33.0
-> 
-> 
+After the migration, SNDRV_DMA_TYPE_DMA_SG becomes identical with
+SNDRV_DMA_TYPE_NONCONTIG on x86, while others still fall back to
+SNDRV_DMA_TYPE_DEV.
+
+Tested-by: Alex Xu (Hello71) <alex_y_xu@yahoo.ca>
+Link: https://lore.kernel.org/r/20211017074859.24112-4-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ include/sound/memalloc.h |  14 +--
+ sound/core/Makefile      |   1 -
+ sound/core/memalloc.c    |  43 ++++++++-
+ sound/core/sgbuf.c       | 201 ---------------------------------------
+ 4 files changed, 46 insertions(+), 213 deletions(-)
+ delete mode 100644 sound/core/sgbuf.c
+
+diff --git a/include/sound/memalloc.h b/include/sound/memalloc.h
+index 1051b84e8579..653dfffb3ac8 100644
+--- a/include/sound/memalloc.h
++++ b/include/sound/memalloc.h
+@@ -36,13 +36,6 @@ struct snd_dma_device {
+ #define SNDRV_DMA_TYPE_CONTINUOUS	1	/* continuous no-DMA memory */
+ #define SNDRV_DMA_TYPE_DEV		2	/* generic device continuous */
+ #define SNDRV_DMA_TYPE_DEV_WC		5	/* continuous write-combined */
+-#ifdef CONFIG_SND_DMA_SGBUF
+-#define SNDRV_DMA_TYPE_DEV_SG		3	/* generic device SG-buffer */
+-#define SNDRV_DMA_TYPE_DEV_WC_SG	6	/* SG write-combined */
+-#else
+-#define SNDRV_DMA_TYPE_DEV_SG	SNDRV_DMA_TYPE_DEV /* no SG-buf support */
+-#define SNDRV_DMA_TYPE_DEV_WC_SG	SNDRV_DMA_TYPE_DEV_WC
+-#endif
+ #ifdef CONFIG_GENERIC_ALLOCATOR
+ #define SNDRV_DMA_TYPE_DEV_IRAM		4	/* generic device iram-buffer */
+ #else
+@@ -51,6 +44,13 @@ struct snd_dma_device {
+ #define SNDRV_DMA_TYPE_VMALLOC		7	/* vmalloc'ed buffer */
+ #define SNDRV_DMA_TYPE_NONCONTIG	8	/* non-coherent SG buffer */
+ #define SNDRV_DMA_TYPE_NONCOHERENT	9	/* non-coherent buffer */
++#ifdef CONFIG_SND_DMA_SGBUF
++#define SNDRV_DMA_TYPE_DEV_SG		SNDRV_DMA_TYPE_NONCONTIG
++#define SNDRV_DMA_TYPE_DEV_WC_SG	6	/* SG write-combined */
++#else
++#define SNDRV_DMA_TYPE_DEV_SG	SNDRV_DMA_TYPE_DEV /* no SG-buf support */
++#define SNDRV_DMA_TYPE_DEV_WC_SG	SNDRV_DMA_TYPE_DEV_WC
++#endif
+ 
+ /*
+  * info for buffer allocation
+diff --git a/sound/core/Makefile b/sound/core/Makefile
+index 79e1407cd0de..350d704ced98 100644
+--- a/sound/core/Makefile
++++ b/sound/core/Makefile
+@@ -19,7 +19,6 @@ snd-$(CONFIG_SND_JACK)	  += ctljack.o jack.o
+ snd-pcm-y := pcm.o pcm_native.o pcm_lib.o pcm_misc.o \
+ 		pcm_memory.o memalloc.o
+ snd-pcm-$(CONFIG_SND_PCM_TIMER) += pcm_timer.o
+-snd-pcm-$(CONFIG_SND_DMA_SGBUF) += sgbuf.o
+ snd-pcm-$(CONFIG_SND_PCM_ELD) += pcm_drm_eld.o
+ snd-pcm-$(CONFIG_SND_PCM_IEC958) += pcm_iec958.o
+ 
+diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
+index 8c362bb5b81a..29b5c613ca23 100644
+--- a/sound/core/memalloc.c
++++ b/sound/core/memalloc.c
+@@ -621,6 +621,42 @@ static const struct snd_malloc_ops snd_dma_noncontig_ops = {
+ 	.get_chunk_size = snd_dma_noncontig_get_chunk_size,
+ };
+ 
++/* x86-specific SG-buffer with WC pages */
++#ifdef CONFIG_SND_DMA_SGBUF
++#define sg_wc_address(it) ((unsigned long)page_address(sg_page_iter_page(it)))
++
++static void *snd_dma_sg_wc_alloc(struct snd_dma_buffer *dmab, size_t size)
++{
++	void *p = snd_dma_noncontig_alloc(dmab, size);
++	struct sg_table *sgt = dmab->private_data;
++	struct sg_page_iter iter;
++
++	if (!p)
++		return NULL;
++	for_each_sgtable_page(sgt, &iter, 0)
++		set_memory_wc(sg_wc_address(&iter), 1);
++	return p;
++}
++
++static void snd_dma_sg_wc_free(struct snd_dma_buffer *dmab)
++{
++	struct sg_table *sgt = dmab->private_data;
++	struct sg_page_iter iter;
++
++	for_each_sgtable_page(sgt, &iter, 0)
++		set_memory_wb(sg_wc_address(&iter), 1);
++	snd_dma_noncontig_free(dmab);
++}
++
++static int snd_dma_sg_wc_mmap(struct snd_dma_buffer *dmab,
++			      struct vm_area_struct *area)
++{
++	area->vm_page_prot = pgprot_writecombine(area->vm_page_prot);
++	return dma_mmap_noncontiguous(dmab->dev.dev, area,
++				      dmab->bytes, dmab->private_data);
++}
++#endif /* CONFIG_SND_DMA_SGBUF */
++
+ /*
+  * Non-coherent pages allocator
+  */
+@@ -680,14 +716,13 @@ static const struct snd_malloc_ops *dma_ops[] = {
+ 	[SNDRV_DMA_TYPE_DEV_WC] = &snd_dma_wc_ops,
+ 	[SNDRV_DMA_TYPE_NONCONTIG] = &snd_dma_noncontig_ops,
+ 	[SNDRV_DMA_TYPE_NONCOHERENT] = &snd_dma_noncoherent_ops,
++#ifdef CONFIG_SND_DMA_SGBUF
++	[SNDRV_DMA_TYPE_DEV_WC_SG] = &snd_dma_sg_wc_ops,
++#endif
+ #ifdef CONFIG_GENERIC_ALLOCATOR
+ 	[SNDRV_DMA_TYPE_DEV_IRAM] = &snd_dma_iram_ops,
+ #endif /* CONFIG_GENERIC_ALLOCATOR */
+ #endif /* CONFIG_HAS_DMA */
+-#ifdef CONFIG_SND_DMA_SGBUF
+-	[SNDRV_DMA_TYPE_DEV_SG] = &snd_dma_sg_ops,
+-	[SNDRV_DMA_TYPE_DEV_WC_SG] = &snd_dma_sg_ops,
+-#endif
+ };
+ 
+ static const struct snd_malloc_ops *snd_dma_get_ops(struct snd_dma_buffer *dmab)
+diff --git a/sound/core/sgbuf.c b/sound/core/sgbuf.c
+deleted file mode 100644
+index 8352a5cdb19f..000000000000
+--- a/sound/core/sgbuf.c
++++ /dev/null
+@@ -1,201 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-or-later
+-/*
+- * Scatter-Gather buffer
+- *
+- *  Copyright (c) by Takashi Iwai <tiwai@suse.de>
+- */
+-
+-#include <linux/slab.h>
+-#include <linux/mm.h>
+-#include <linux/vmalloc.h>
+-#include <linux/export.h>
+-#include <sound/memalloc.h>
+-#include "memalloc_local.h"
+-
+-struct snd_sg_page {
+-	void *buf;
+-	dma_addr_t addr;
+-};
+-
+-struct snd_sg_buf {
+-	int size;	/* allocated byte size */
+-	int pages;	/* allocated pages */
+-	int tblsize;	/* allocated table size */
+-	struct snd_sg_page *table;	/* address table */
+-	struct page **page_table;	/* page table (for vmap/vunmap) */
+-	struct device *dev;
+-};
+-
+-/* table entries are align to 32 */
+-#define SGBUF_TBL_ALIGN		32
+-#define sgbuf_align_table(tbl)	ALIGN((tbl), SGBUF_TBL_ALIGN)
+-
+-static void snd_dma_sg_free(struct snd_dma_buffer *dmab)
+-{
+-	struct snd_sg_buf *sgbuf = dmab->private_data;
+-	struct snd_dma_buffer tmpb;
+-	int i;
+-
+-	if (!sgbuf)
+-		return;
+-
+-	vunmap(dmab->area);
+-	dmab->area = NULL;
+-
+-	tmpb.dev.type = SNDRV_DMA_TYPE_DEV;
+-	if (dmab->dev.type == SNDRV_DMA_TYPE_DEV_WC_SG)
+-		tmpb.dev.type = SNDRV_DMA_TYPE_DEV_WC;
+-	tmpb.dev.dev = sgbuf->dev;
+-	for (i = 0; i < sgbuf->pages; i++) {
+-		if (!(sgbuf->table[i].addr & ~PAGE_MASK))
+-			continue; /* continuous pages */
+-		tmpb.area = sgbuf->table[i].buf;
+-		tmpb.addr = sgbuf->table[i].addr & PAGE_MASK;
+-		tmpb.bytes = (sgbuf->table[i].addr & ~PAGE_MASK) << PAGE_SHIFT;
+-		snd_dma_free_pages(&tmpb);
+-	}
+-
+-	kfree(sgbuf->table);
+-	kfree(sgbuf->page_table);
+-	kfree(sgbuf);
+-	dmab->private_data = NULL;
+-}
+-
+-#define MAX_ALLOC_PAGES		32
+-
+-static void *snd_dma_sg_alloc(struct snd_dma_buffer *dmab, size_t size)
+-{
+-	struct snd_sg_buf *sgbuf;
+-	unsigned int i, pages, chunk, maxpages;
+-	struct snd_dma_buffer tmpb;
+-	struct snd_sg_page *table;
+-	struct page **pgtable;
+-	int type = SNDRV_DMA_TYPE_DEV;
+-	pgprot_t prot = PAGE_KERNEL;
+-	void *area;
+-
+-	dmab->private_data = sgbuf = kzalloc(sizeof(*sgbuf), GFP_KERNEL);
+-	if (!sgbuf)
+-		return NULL;
+-	if (dmab->dev.type == SNDRV_DMA_TYPE_DEV_WC_SG) {
+-		type = SNDRV_DMA_TYPE_DEV_WC;
+-#ifdef pgprot_noncached
+-		prot = pgprot_noncached(PAGE_KERNEL);
+-#endif
+-	}
+-	sgbuf->dev = dmab->dev.dev;
+-	pages = snd_sgbuf_aligned_pages(size);
+-	sgbuf->tblsize = sgbuf_align_table(pages);
+-	table = kcalloc(sgbuf->tblsize, sizeof(*table), GFP_KERNEL);
+-	if (!table)
+-		goto _failed;
+-	sgbuf->table = table;
+-	pgtable = kcalloc(sgbuf->tblsize, sizeof(*pgtable), GFP_KERNEL);
+-	if (!pgtable)
+-		goto _failed;
+-	sgbuf->page_table = pgtable;
+-
+-	/* allocate pages */
+-	maxpages = MAX_ALLOC_PAGES;
+-	while (pages > 0) {
+-		chunk = pages;
+-		/* don't be too eager to take a huge chunk */
+-		if (chunk > maxpages)
+-			chunk = maxpages;
+-		chunk <<= PAGE_SHIFT;
+-		if (snd_dma_alloc_pages_fallback(type, dmab->dev.dev,
+-						 chunk, &tmpb) < 0) {
+-			if (!sgbuf->pages)
+-				goto _failed;
+-			size = sgbuf->pages * PAGE_SIZE;
+-			break;
+-		}
+-		chunk = tmpb.bytes >> PAGE_SHIFT;
+-		for (i = 0; i < chunk; i++) {
+-			table->buf = tmpb.area;
+-			table->addr = tmpb.addr;
+-			if (!i)
+-				table->addr |= chunk; /* mark head */
+-			table++;
+-			*pgtable++ = virt_to_page(tmpb.area);
+-			tmpb.area += PAGE_SIZE;
+-			tmpb.addr += PAGE_SIZE;
+-		}
+-		sgbuf->pages += chunk;
+-		pages -= chunk;
+-		if (chunk < maxpages)
+-			maxpages = chunk;
+-	}
+-
+-	sgbuf->size = size;
+-	area = vmap(sgbuf->page_table, sgbuf->pages, VM_MAP, prot);
+-	if (!area)
+-		goto _failed;
+-	return area;
+-
+- _failed:
+-	snd_dma_sg_free(dmab); /* free the table */
+-	return NULL;
+-}
+-
+-static dma_addr_t snd_dma_sg_get_addr(struct snd_dma_buffer *dmab,
+-				      size_t offset)
+-{
+-	struct snd_sg_buf *sgbuf = dmab->private_data;
+-	dma_addr_t addr;
+-
+-	addr = sgbuf->table[offset >> PAGE_SHIFT].addr;
+-	addr &= ~((dma_addr_t)PAGE_SIZE - 1);
+-	return addr + offset % PAGE_SIZE;
+-}
+-
+-static struct page *snd_dma_sg_get_page(struct snd_dma_buffer *dmab,
+-					size_t offset)
+-{
+-	struct snd_sg_buf *sgbuf = dmab->private_data;
+-	unsigned int idx = offset >> PAGE_SHIFT;
+-
+-	if (idx >= (unsigned int)sgbuf->pages)
+-		return NULL;
+-	return sgbuf->page_table[idx];
+-}
+-
+-static unsigned int snd_dma_sg_get_chunk_size(struct snd_dma_buffer *dmab,
+-					      unsigned int ofs,
+-					      unsigned int size)
+-{
+-	struct snd_sg_buf *sg = dmab->private_data;
+-	unsigned int start, end, pg;
+-
+-	start = ofs >> PAGE_SHIFT;
+-	end = (ofs + size - 1) >> PAGE_SHIFT;
+-	/* check page continuity */
+-	pg = sg->table[start].addr >> PAGE_SHIFT;
+-	for (;;) {
+-		start++;
+-		if (start > end)
+-			break;
+-		pg++;
+-		if ((sg->table[start].addr >> PAGE_SHIFT) != pg)
+-			return (start << PAGE_SHIFT) - ofs;
+-	}
+-	/* ok, all on continuous pages */
+-	return size;
+-}
+-
+-static int snd_dma_sg_mmap(struct snd_dma_buffer *dmab,
+-			   struct vm_area_struct *area)
+-{
+-	if (dmab->dev.type == SNDRV_DMA_TYPE_DEV_WC_SG)
+-		area->vm_page_prot = pgprot_writecombine(area->vm_page_prot);
+-	return -ENOENT; /* continue with the default mmap handler */
+-}
+-
+-const struct snd_malloc_ops snd_dma_sg_ops = {
+-	.alloc = snd_dma_sg_alloc,
+-	.free = snd_dma_sg_free,
+-	.get_addr = snd_dma_sg_get_addr,
+-	.get_page = snd_dma_sg_get_page,
+-	.get_chunk_size = snd_dma_sg_get_chunk_size,
+-	.mmap = snd_dma_sg_mmap,
+-};
+-- 
+2.26.2
+
