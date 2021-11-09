@@ -2,90 +2,84 @@ Return-Path: <SRS0=Fseo=P4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 37BC7C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Nov 2021 06:25:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8818EC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Nov 2021 06:25:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A9C4B610A2
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Nov 2021 06:25:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A9C4B610A2
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 0650F611BD
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Nov 2021 06:25:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0650F611BD
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 16E73167D;
-	Tue,  9 Nov 2021 07:24:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 16E73167D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 65A52165D;
+	Tue,  9 Nov 2021 07:25:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 65A52165D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1636439134;
-	bh=aGxYC2K+zJAm+iH/6W2TjmpmsHaIvqXzHofR04sbPFE=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1636439156;
+	bh=6imR7W6ESvbWo63L4gWZU2g1192i96YH9ZOjjKYxv5A=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=E5CoHha+oN4Cb1KHH6lQw1n+n4iBcfYi/DE4thmnlL0W4Tp7R4XiIzGZAuhy1grLr
-	 lWAnOWr9HdyN9m5vt0M3QPpdyPF4dHC3F5GEXeEDJnL9WZ9/vsdx8ZuuesiR0k6G+t
-	 fRJhp7dtcEf7REgmEaBrlSBtH7HPErHTjq+8/sV8=
+	b=rips1pc7cHHnAmU/PkWaFdj3GhlwgAvhHq5rXzaybmXCQWeJR6y1O6fUdJFD7Jq09
+	 vdGpVnep8dPTgercNAg7dAXOH6/RDnFf2rO4+4w5/qgYF0MSEORPAR/r1s/ceDNpRo
+	 t5Qi388yWdczEqBJ4IhmPRYYNAnhE9C3QJ9rjYAc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7BD4DF802E3;
-	Tue,  9 Nov 2021 07:24:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A89F5F804FB;
+	Tue,  9 Nov 2021 07:24:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A2C2BF802D2; Tue,  9 Nov 2021 07:24:08 +0100 (CET)
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com
- [IPv6:2607:f8b0:4864:20::635])
+ id E1DB8F804FC; Tue,  9 Nov 2021 07:24:38 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C4BD1F802D2
- for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2021 07:24:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4BD1F802D2
+ by alsa1.perex.cz (Postfix) with ESMTPS id C1456F804F2
+ for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2021 07:24:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1456F804F2
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="oCzarSAY"
-Received: by mail-pl1-x635.google.com with SMTP id b13so19110441plg.2
- for <alsa-devel@alsa-project.org>; Mon, 08 Nov 2021 22:24:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:in-reply-to:references;
- bh=iGYGbg+9l8ssVOmfcebv8ju3BSiG3enW9yQKoptJRsQ=;
- b=oCzarSAYqvAhQ2Wyka7w85rnjr4nvbv552bjvAGXOP48ZZ1HWJr68dR0FbRYt5u8ZI
- uUZs0GQLU6gV7o0PgTpZ6UQGGohZeZVhuM4NU49YovfY2w/dwxYegguIM02e1HYwUeAN
- Hk15z8DXZJ/l79n+sjzu4ZzyWx0pb5hjNzBhVM40Tc4Fzjoh9FWmytXCdQnveKUCIIfM
- fFbBfAxjLqM3qrK/yKhHAQ7YMC8YMlh6F3bRp0taRO5ZtWA5kCUDPa69cnRkTiMC/Mwl
- 2FVNld/5FyVL7sfN1AB8gM4YDxQ6p0ze/7aZMevZ3Qs2UHdrRKLur5hFutDNmOtcoq2x
- kMtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references;
- bh=iGYGbg+9l8ssVOmfcebv8ju3BSiG3enW9yQKoptJRsQ=;
- b=6i5Q0tWZfYZo2IYbG2GNRXybLnM1ygVeqP8jLhdu60yLM7uVmzCkuIVpnpGh+EwClP
- a/Lo9zEX9z2UNxIG5j78/OivhZe2mal2W0v93RftFk63bz+gTBvzakqopiVLc92qeDdi
- S71esrTV7Sym6pfrRm/+P/jPobQQ0UahRMf4kIirX5QLRCSqh3V+xdGzyCfudj6scUR5
- mmNFkHmnolKSftYp8YxTzZxEiAhrv7crzP+dvp6HVv3Rlts6PPQ/koCiTxJAghQkwnJQ
- 3mBNHVEu/duqvTlLucjuroJNmuWKK5FuT4q8bgMfhDssTu0ahwnBxkwJeBAEYsNJ3sGa
- x1mw==
-X-Gm-Message-State: AOAM531lfi0rz/Mkj6mROBhdwba9/aXiMP7KUqwTgQye3EeXdjbNCPjy
- 4PXv+xa+RFzJB2Nv9dhiyTo=
-X-Google-Smtp-Source: ABdhPJxL7Knq0JkBX4KTpSPx9/BalN7ds4cqaw1TYpytKxqBeTgd09WzvXYXtGRATb14xXc5Tw0hAg==
-X-Received: by 2002:a17:90a:690d:: with SMTP id
- r13mr4670069pjj.40.1636439040238; 
- Mon, 08 Nov 2021 22:24:00 -0800 (PST)
-Received: from localhost.localdomain ([2402:7500:578:468f:d592:ff78:ffa9:3df7])
- by smtp.gmail.com with ESMTPSA id x33sm6856718pfh.133.2021.11.08.22.23.57
- (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Mon, 08 Nov 2021 22:23:59 -0800 (PST)
-From: cy_huang <u0084500@gmail.com>
-To: broonie@kernel.org,
-	perex@perex.cz,
-	tiwai@suse.com
-Subject: [PATCH 2/2] ASoC: rt9120: Add the compatibility with rt9120s
-Date: Tue,  9 Nov 2021 14:23:44 +0800
-Message-Id: <1636439024-15877-3-git-send-email-u0084500@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1636439024-15877-1-git-send-email-u0084500@gmail.com>
-References: <1636439024-15877-1-git-send-email-u0084500@gmail.com>
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com,
- linux-kernel@vger.kernel.org, cy_huang@richtek.com, allen_lin@richtek.com
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="KX4vI5Xm"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="aF7YShvF"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id A07D2218BB;
+ Tue,  9 Nov 2021 06:24:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1636439065; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=GTlbhqJysMNyubyEUyGA4/rst+YjF/6CkPSCBOVwqD0=;
+ b=KX4vI5Xm6iNHPBy7QNYwKQ4X3j2IJPOulTPflemW/DMHkNgVANlW8q2/Adim3yGs4zlQjo
+ Ok5QBp1DU65+GMxdsFDewBFpgsrDrM7POElVnmBqYhaHFguis2yqMyC4/x1JNm6Y3goi7s
+ BcK7aZxiAUgppJqVwmTWMwJuy+29Pt8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1636439065;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=GTlbhqJysMNyubyEUyGA4/rst+YjF/6CkPSCBOVwqD0=;
+ b=aF7YShvF8zc6ZTNKbGCgfYkhLhARBIpNWf+lPuzbgW6huaCdNsDQlQtEbcK61ItHwQp8HI
+ n2xrjg7B1EnZ6LDQ==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 1598FA3B8E;
+ Tue,  9 Nov 2021 06:24:25 +0000 (UTC)
+Date: Tue, 09 Nov 2021 07:24:25 +0100
+Message-ID: <s5h5yt1c0di.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Austin Kim <austindh.kim@gmail.com>
+Subject: Re: [PATCH] ALSA: missing check for possible NULL after the call to
+ kstrdup
+In-Reply-To: <20211109003742.GA5423@raspberrypi>
+References: <20211109003742.GA5423@raspberrypi>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com,
+ austin.kim@lge.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,111 +95,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: ChiYuan Huang <cy_huang@richtek.com>
+On Tue, 09 Nov 2021 01:37:42 +0100,
+Austin Kim wrote:
+> 
+> From: Austin Kim <austin.kim@lge.com>
+> 
+> If kcalloc() return NULL due to memory starvation, it is possible for 
+> kstrdup() to return NULL in similar case. So add null check after the call 
+> to kstrdup() is made.
+> 
+> Signed-off-by: Austin Kim <austin.kim@lge.com>
 
-Use device id reg to be compatible with rt9120 and rt9120s.
+Thanks, applied now with a minor coding-style fix (we need no extra
+parentheses), the correction of the subject line with the proper
+prefix, and the addition of Cc-to-stable.
 
-Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
----
- sound/soc/codecs/rt9120.c | 33 +++++++++++++++++++++++++++++----
- 1 file changed, 29 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/rt9120.c b/sound/soc/codecs/rt9120.c
-index d007d00..6974705 100644
---- a/sound/soc/codecs/rt9120.c
-+++ b/sound/soc/codecs/rt9120.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- 
- #include <linux/bits.h>
-+#include <linux/bitfield.h>
- #include <linux/delay.h>
- #include <linux/gpio/consumer.h>
- #include <linux/i2c.h>
-@@ -23,6 +24,7 @@
- #define RT9120_REG_ERRRPT	0x10
- #define RT9120_REG_MSVOL	0x20
- #define RT9120_REG_SWRESET	0x40
-+#define RT9120_REG_INTERCFG	0x63
- #define RT9120_REG_INTERNAL0	0x65
- #define RT9120_REG_INTERNAL1	0x69
- #define RT9120_REG_UVPOPT	0x6C
-@@ -49,7 +51,8 @@
- #define RT9120_DVDD_UVSEL_MASK	GENMASK(5, 4)
- #define RT9120_AUTOSYNC_MASK	BIT(6)
- 
--#define RT9120_VENDOR_ID	0x4200
-+#define RT9120_VENDOR_ID	0x42
-+#define RT9120S_VENDOR_ID	0x43
- #define RT9120_RESET_WAITMS	20
- #define RT9120_CHIPON_WAITMS	20
- #define RT9120_AMPON_WAITMS	50
-@@ -63,9 +66,16 @@
- 				 SNDRV_PCM_FMTBIT_S24_LE |\
- 				 SNDRV_PCM_FMTBIT_S32_LE)
- 
-+enum {
-+	CHIP_IDX_RT9120 = 0,
-+	CHIP_IDX_RT9120S,
-+	CHIP_IDX_MAX
-+};
-+
- struct rt9120_data {
- 	struct device *dev;
- 	struct regmap *regmap;
-+	int chip_idx;
- };
- 
- /* 11bit [min,max,step] = [-103.9375dB, 24dB, 0.0625dB] */
-@@ -151,7 +161,12 @@ static int rt9120_codec_probe(struct snd_soc_component *comp)
- 	snd_soc_component_init_regmap(comp, data->regmap);
- 
- 	/* Internal setting */
--	snd_soc_component_write(comp, RT9120_REG_INTERNAL0, 0x04);
-+	if (data->chip_idx == CHIP_IDX_RT9120S) {
-+		snd_soc_component_write(comp, RT9120_REG_INTERCFG, 0xde);
-+		snd_soc_component_write(comp, RT9120_REG_INTERNAL0, 0x66);
-+	} else
-+		snd_soc_component_write(comp, RT9120_REG_INTERNAL0, 0x04);
-+
- 	return 0;
- }
- 
-@@ -291,6 +306,7 @@ static const struct regmap_range rt9120_rd_yes_ranges[] = {
- 	regmap_reg_range(0x20, 0x27),
- 	regmap_reg_range(0x30, 0x38),
- 	regmap_reg_range(0x3A, 0x40),
-+	regmap_reg_range(0x63, 0x63),
- 	regmap_reg_range(0x65, 0x65),
- 	regmap_reg_range(0x69, 0x69),
- 	regmap_reg_range(0x6C, 0x6C),
-@@ -310,6 +326,7 @@ static const struct regmap_range rt9120_wr_yes_ranges[] = {
- 	regmap_reg_range(0x30, 0x38),
- 	regmap_reg_range(0x3A, 0x3D),
- 	regmap_reg_range(0x40, 0x40),
-+	regmap_reg_range(0x63, 0x63),
- 	regmap_reg_range(0x65, 0x65),
- 	regmap_reg_range(0x69, 0x69),
- 	regmap_reg_range(0x6C, 0x6C),
-@@ -402,8 +419,16 @@ static int rt9120_check_vendor_info(struct rt9120_data *data)
- 	if (ret)
- 		return ret;
- 
--	if ((devid & RT9120_VID_MASK) != RT9120_VENDOR_ID) {
--		dev_err(data->dev, "DEVID not correct [0x%04x]\n", devid);
-+	devid = FIELD_GET(RT9120_VID_MASK, devid);
-+	switch (devid) {
-+	case RT9120_VENDOR_ID:
-+		data->chip_idx = CHIP_IDX_RT9120;
-+		break;
-+	case RT9120S_VENDOR_ID:
-+		data->chip_idx = CHIP_IDX_RT9120S;
-+		break;
-+	default:
-+		dev_err(data->dev, "DEVID not correct [0x%0x]\n", devid);
- 		return -ENODEV;
- 	}
- 
--- 
-2.7.4
-
+Takashi
