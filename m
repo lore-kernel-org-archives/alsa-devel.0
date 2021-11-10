@@ -2,84 +2,76 @@ Return-Path: <SRS0=1gO0=P5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 52830C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Nov 2021 14:34:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D81D7C433FE
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Nov 2021 14:42:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0EBBB611AD
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Nov 2021 14:34:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0EBBB611AD
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 67C846101C
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Nov 2021 14:42:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 67C846101C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D918B1654;
-	Wed, 10 Nov 2021 15:33:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D918B1654
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5CD2D1654;
+	Wed, 10 Nov 2021 15:41:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5CD2D1654
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1636554843;
-	bh=mOPPc0T3XIDqP/4/tk73xJySaQwAzvD27cayC9sYNeg=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Xs3T1NUHzJYkUPTOWwDcDi31uUVmzXeHzPm7FRVNNfNkKD9ShjGWJQa9o5IpDMndF
-	 SlcOyXHfHBIQ1eC9QB90XFFyZtvKN2GSJHIe/AVBsuqSSogFEd0N6BvpFgEGvSGiju
-	 3qU4jHPx82y9O0/4tdlySq7qJxARdsuHJ0Obkbgc=
+	s=default; t=1636555346;
+	bh=AxBxTSr7KZB4C0du8TwjEEIbfPXBYrwqcnrxd4xpn6Q=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=uPR3eGCYAi42xyR4C2EoTt8l/4QAZpIu3T9QFIYkUgBNFFGwINctnNYcY1RpOnoH+
+	 +P04nOg5+Qtgfhe2lar/mKF+nRc86vKhrxYGEsfrd4+4OCn6/dqgsT0+oXbCMgcDNp
+	 K2ces+bw+Sf/G2cvM60rTiRZ7kBwnD1GhDhk+4DI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7BBCBF80227;
-	Wed, 10 Nov 2021 15:33:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EB86FF800C9;
+	Wed, 10 Nov 2021 15:41:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7730BF8049E; Wed, 10 Nov 2021 15:33:12 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 71D28F8049E; Wed, 10 Nov 2021 15:41:34 +0100 (CET)
+Received: from smtp-relay-canonical-0.canonical.com
+ (smtp-relay-canonical-0.canonical.com [185.125.188.120])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 267E9F800C1
- for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2021 15:33:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 267E9F800C1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 401F3F800C9
+ for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2021 15:41:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 401F3F800C9
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="FicL/c0k"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="jfDZfPEG"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id B755B1FD63;
- Wed, 10 Nov 2021 14:33:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1636554788; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=a7/tXrG1LGQXohNn+eUyg7B/bjycMfboDc+vZ1jI5Rg=;
- b=FicL/c0kr+EzHMBL2Bq61fxVheD25oMosP70CyIlNBw6uEBMdJFj2umuTeIaxGe/HFeGFn
- iS82Ab3uYeItt5+s1nRqVaNCThYrcLvU2U1hkHeQpf0OpZGDqgOaDWmfQyqKrJTIS2/b+J
- NxwFi6vs+1PvZXUR1n+WuTar93jLWCg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1636554788;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=a7/tXrG1LGQXohNn+eUyg7B/bjycMfboDc+vZ1jI5Rg=;
- b=jfDZfPEG1xsC2RkB/VfJWkpybybGB1qT8pOSUjs7PD4PsZ5G9logf5i2t6Raq20w6/2U7Y
- sR5IkRyFzIWklTBg==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 2141DA3B84;
- Wed, 10 Nov 2021 14:33:04 +0000 (UTC)
-Date: Wed, 10 Nov 2021 15:33:08 +0100
-Message-ID: <s5hpmr86py3.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Scott Branden <scott.branden@broadcom.com>
-Subject: Re: 5.15 Linux Regression in sound hda
-In-Reply-To: <063e2397-7edb-5f48-7b0d-618b938d9dd8@broadcom.com>
-References: <063e2397-7edb-5f48-7b0d-618b938d9dd8@broadcom.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
- linux-kernel@vger.kernel.org, ranjani.sridharan@linux.intel.com,
- tiwai@suse.com, broonie@kernel.org, regressions@leemhuis.info
+ dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com
+ header.b="rAJ1bnji"
+Received: from localhost.localdomain (unknown [10.101.196.174])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id D448C3F197; 
+ Wed, 10 Nov 2021 14:41:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+ s=20210705; t=1636555283;
+ bh=AmOia6mFVXePE5lwo8LpCWa2Ymdv43SwCIz0a9emYu0=;
+ h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+ b=rAJ1bnjiSaLb0j5n09NYop4w/L9Q8P0VcaXV2OGa7ScfEte+XS6wglwb1CTID5kGt
+ 7DDlVRprwehlasN7bwg7Zc43RiSUWe1lgupLDDmvVoc42YDPu88rvUlkYVBx5gSiPz
+ QWmbXOZ9bKQpR708jHaHzS0MA7X5ZBTUCoWCZDg5msy3vXPCmsx6Xzxm24WqGngHkM
+ yv06yFRCF8Ms94/bi8lnRqk5zlIXiCqQ0zmGccR2oc5ePgekYnQE9goFIzoWuG5VNi
+ 3zRod26IfYouLeArlZo5YIcqG5ujHa+TpJWHfTRplgv9nbtmu9CzcvAEnnnhhG8+c7
+ T2TqzBChZ5nEg==
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+To: tiwai@suse.com
+Subject: [PATCH] ALSA: hda/realtek: Add quirk for HP EliteBook 840 G7 mute LED
+Date: Wed, 10 Nov 2021 22:40:32 +0800
+Message-Id: <20211110144033.118451-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.32.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Chris Chiu <chris.chiu@canonical.com>,
+ "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+ Kailang Yang <kailang@realtek.com>, Jeremy Szu <jeremy.szu@canonical.com>,
+ Elia Devito <eliadevito@gmail.com>, open list <linux-kernel@vger.kernel.org>,
+ Werner Sembach <wse@tuxedocomputers.com>, Hui Wang <hui.wang@canonical.com>,
+ PeiSen Hou <pshou@realtek.com>, Kai-Heng Feng <kai.heng.feng@canonical.com>,
+ Sami Loone <sami@loone.fi>, Cameron Berkenpas <cam@neo-zeon.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,63 +87,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 09 Nov 2021 22:12:30 +0100,
-Scott Branden wrote:
-> 
-> I'm reporting a new WARN_ON in sound/hda/hdac_bus.c that was not
-> present in 5.15.  Sorry, I don't have time to bisect this right now
-> but report is below.
-> 
-> dmesg in 5.14 kernel was:
-> snd_hda_intel 0000:00:1f.3: bound 0000:00:02.0 (ops 0xffffffffaa2ac520)
-> GACT probability on
-> Mirror/redirect action on
-> Simple TC action Loaded
-> u32 classifier
->     Performance counters on
->     input device check on
->     Actions configured
-> hdaudio hdaudioC0D0: Unable to bind the codec
-> hdaudio hdaudioC0D2: Unable to bind the codec
-> 
-> dmesg in 5.15 kernel produces WARN_ON in sound/hda/hdac_bus.c
-> snd_hda_intel 0000:00:1f.3: bound 0000:00:02.0 (ops 0xffffffffad8b02a0)
-> GACT probability on
-> Mirror/redirect action on
-> Simple TC action Loaded
-> u32 classifier
->     Performance counters on
->     input device check on
->     Actions configured
-> snd_hda_intel 0000:00:1f.3: Cannot probe codecs, giving up
-> Initializing XFRM netlink socket
-> ------------[ cut here ]------------
-> NET: Registered PF_INET6 protocol family
-> WARNING: CPU: 14 PID: 186 at sound/hda/hdac_bus.c:73
+The mute and micmute LEDs don't work on HP EliteBook 840 G7. The same
+quirk for other HP laptops can let LEDs work, so apply it.
 
-This indicates the leftover codecs on the bus, and it's likely
-triggered by the recent change to allow retrying the codec probes.
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Did this HD-audio stuff work at all before 5.15?  The codec bind error
-itself shouldn't be brought by that change.
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index a6098c942aeb5..2f1727faec698 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -8636,6 +8636,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x8716, "HP Elite Dragonfly G2 Notebook PC", ALC285_FIXUP_HP_GPIO_AMP_INIT),
+ 	SND_PCI_QUIRK(0x103c, 0x8720, "HP EliteBook x360 1040 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_AMP_INIT),
+ 	SND_PCI_QUIRK(0x103c, 0x8724, "HP EliteBook 850 G7", ALC285_FIXUP_HP_GPIO_LED),
++	SND_PCI_QUIRK(0x103c, 0x8728, "HP EliteBook 840 G7", ALC285_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8729, "HP", ALC285_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8730, "HP ProBook 445 G7", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
+ 	SND_PCI_QUIRK(0x103c, 0x8736, "HP", ALC285_FIXUP_HP_GPIO_AMP_INIT),
+-- 
+2.32.0
 
-The warning itself can be solved by the patch below, I suppose
-(note: totally untested!)
-
-
-thanks,
-
-Takashi
-
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2327,7 +2327,8 @@ static int azx_probe_continue(struct azx *chip)
- 
- out_free:
- 	if (err < 0) {
--		azx_free(chip);
-+		pci_set_drvdata(pci, NULL);
-+		snd_card_free(chip->card);
- 		return err;
- 	}
- 
