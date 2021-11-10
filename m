@@ -1,75 +1,95 @@
-Return-Path: <SRS0=Fseo=P4=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=1gO0=P5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A1E4AC433FE
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Nov 2021 22:32:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E2768C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Nov 2021 00:30:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 27E836134F
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Nov 2021 22:32:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 27E836134F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 7BFFE61179
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Nov 2021 00:30:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7BFFE61179
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0D2D716BE;
-	Tue,  9 Nov 2021 23:31:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D2D716BE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 99B9D41;
+	Wed, 10 Nov 2021 01:29:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99B9D41
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1636497167;
-	bh=nj1FTzjwkeR7B4FSSl63i4tJKlVTSuNv7GNf3Bc4GDw=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=vAg4t8e8OrMVJMPPa7tm4jN2y58NPgSySURYbNajSAw3GViEWfe6joOzqCUQhmK8r
-	 Qux3sf5jUW0t8DGKFc8ilmn2M/r3yIgDyFO5CskIs7L7U2sLcanTkyrlrz0PK6UcJH
-	 mxMMxIM2WN7n4OWd5znEJ/c2kVi1sV+dMqq+j0I4=
+	s=default; t=1636504236;
+	bh=7Es3VeTVW1GnIKahWix+UKGt5Rsc+62EfxineE23Stw=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=n6mPjwA0wWcPul+A5/WQfCCEHWXkIzp6ARP9UoW/uHaQdDtLT3uHj1UkTU3VzeLZb
+	 z1Ixmhr+gUj28Qs7S8Mzes7Z9hgxM+w53NSqb8uua6WKNY1t3UVOaPkYv+YUJ/hPla
+	 dCuixRZOtlfG4ajCD09I1crXBQAI9/Y0CQu69iHQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0EFF3F804FB;
-	Tue,  9 Nov 2021 23:24:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2BCC6F801D8;
+	Wed, 10 Nov 2021 01:29:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 15C0DF80544; Tue,  9 Nov 2021 23:24:54 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 3CD53F802D2; Wed, 10 Nov 2021 01:29:37 +0100 (CET)
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com
+ [IPv6:2607:f8b0:4864:20::432])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 200CAF804FB
- for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2021 23:24:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 200CAF804FB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 86FBFF801D8
+ for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2021 01:29:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86FBFF801D8
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="cGMWS8wS"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EF8F61B46;
- Tue,  9 Nov 2021 22:24:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1636496685;
- bh=nj1FTzjwkeR7B4FSSl63i4tJKlVTSuNv7GNf3Bc4GDw=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=cGMWS8wSeVgthJx9F4VRgVXWmn2a4MfcKdOFCU9zN6iKcE05zhdfSQfIe8cR7Tt5r
- JYlC/6T2fT/nV+yyCk8tuMAPFiP3vOM7Va95APnqwO52/eqgO3qT5sg3YOIjKSXYnh
- yJEV+ypbvutGWMGbs0BaIPKUdE36Hcmkci4EzbcOwYoU2i8or5ajvuKWXbEqwOe3FR
- YaKNsnkb4JX4zWFTqtMsXbE7UqHUDLPAPW31Q8yCvqGXDj/HT9XxFiSsvTNQ1FIMVr
- CCd6hAr+Up8KirgnAwlx14gXCyhxon9SE0xHhEpzHKs/X42yiJCt/+JlXbSclU1Yn0
- wKEwphIJy6jZA==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 11/12] ALSA: gus: fix null pointer dereference on
- pointer block
-Date: Tue,  9 Nov 2021 17:24:25 -0500
-Message-Id: <20211109222426.1236575-11-sashal@kernel.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211109222426.1236575-1-sashal@kernel.org>
-References: <20211109222426.1236575-1-sashal@kernel.org>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="HoUfE9FM"
+Received: by mail-pf1-x432.google.com with SMTP id o4so974285pfp.13
+ for <alsa-devel@alsa-project.org>; Tue, 09 Nov 2021 16:29:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=AEzErmitUUc1WCRwF90GY08l0xszb/xghqlykO8h5XQ=;
+ b=HoUfE9FMPs9FbWg+kuLPHy/L4ScIui5grCU8JXDkrj4jNnMmSBVDJH9ybI+5cI5KyM
+ kiyqA9oGfmaiIp0bg7woJAxlerKajDVP0Qk/XBfycWTsDVEnm1Ig5L4uf/WmUu841bRT
+ aNkR/veAg2w3ULbimJTbQGJEpcF5Bo9bGvdaS3Hf7dsxkwwBaE7ip0vnfwZv8XFHmCcc
+ e57WL3zXoxDqavdn1mSjovQXAXN0QC3Tk6KmEJPh+BtWVmMDtqURDnpB9os97UMcTwr0
+ BAlnEEVb28PTC+hW82HQT5m9w4tC7U+/pinOH0TFk24abX3MYyx4ZcJMfaNlYxmeY9Q0
+ km0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=AEzErmitUUc1WCRwF90GY08l0xszb/xghqlykO8h5XQ=;
+ b=5S90XWceO4nljVRrWRIuzleOdYDr3765G5Qilnr5CCx+OjMRqthFDSdEW3TYRHVH/o
+ lP3q85Tw2MWU2XVxn1eOKER7u3Bohe5KzVKHShmrFChniDg98w0szljJ39tta/zY2lKv
+ VAMb0hJQDHmcd7+0FA0nwzocyUK3cSBxHCXC9wjz0j0LK/p2iJsse0Wz0DgGO0iTLZI4
+ s24Xin/eWxdTH07oVIxFNg3fMlQKo9IZKMnD0WCd+314yC/sXWnKly6JC65pOwX2DJFT
+ 6+EU2ptYtE4T1fRgA21HNz8j72LCJlAr9qrroXk9zFuShKtjQs/NSQb340p8+eLKspED
+ 2e9Q==
+X-Gm-Message-State: AOAM532LYVUGC1kjWp11dSGyj5U2x0RE5Dxz71Etj8slCFUNxZE6lTyb
+ K5LaKZDhQTAwFIT1+fwP3cM=
+X-Google-Smtp-Source: ABdhPJye/VUSnlCLCAknWO+RWaynEg+Kow/VhPktmT23o2DuN4Tmpy6jXdqg82E0C967zkissHr4bg==
+X-Received: by 2002:a05:6a00:1a50:b0:49f:fc2a:fa9f with SMTP id
+ h16-20020a056a001a5000b0049ffc2afa9fmr8630020pfv.43.1636504159274; 
+ Tue, 09 Nov 2021 16:29:19 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+ by smtp.gmail.com with ESMTPSA id f185sm9515716pfg.39.2021.11.09.16.29.15
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 09 Nov 2021 16:29:18 -0800 (PST)
+From: cgel.zte@gmail.com
+X-Google-Original-From: ye.guojin@zte.com.cn
+To: nicoleotsuka@gmail.com
+Subject: [PATCH] ASoC: imx-hdmi: add put_device() after
+ of_find_device_by_node()
+Date: Wed, 10 Nov 2021 00:29:10 +0000
+Message-Id: <20211110002910.134915-1-ye.guojin@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.de>, tiwai@suse.com,
- Chengfeng Ye <cyeaa@connect.ust.hk>
+Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org, Xiubo.Lee@gmail.com, festevam@gmail.com,
+ s.hauer@pengutronix.de, tiwai@suse.com, lgirdwood@gmail.com,
+ broonie@kernel.org, linux-imx@nxp.com, kernel@pengutronix.de,
+ Ye Guojin <ye.guojin@zte.com.cn>, shawnguo@kernel.org, shengjiu.wang@gmail.com,
+ Zeal Robot <zealci@zte.com.cn>, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,35 +105,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Chengfeng Ye <cyeaa@connect.ust.hk>
+From: Ye Guojin <ye.guojin@zte.com.cn>
 
-[ Upstream commit a0d21bb3279476c777434c40d969ea88ca64f9aa ]
+This was found by coccicheck:
+./sound/soc/fsl/imx-hdmi.c,209,1-7,ERROR  missing put_device; call
+of_find_device_by_node on line 119, but without a corresponding object
+release within this function.
 
-The pointer block return from snd_gf1_dma_next_block could be
-null, so there is a potential null pointer dereference issue.
-Fix this by adding a null check before dereference.
-
-Signed-off-by: Chengfeng Ye <cyeaa@connect.ust.hk>
-Link: https://lore.kernel.org/r/20211024104611.9919-1-cyeaa@connect.ust.hk
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Ye Guojin <ye.guojin@zte.com.cn>
 ---
- sound/isa/gus/gus_dma.c | 2 ++
+ sound/soc/fsl/imx-hdmi.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/sound/isa/gus/gus_dma.c b/sound/isa/gus/gus_dma.c
-index 36c27c8323601..2e27cd3427c87 100644
---- a/sound/isa/gus/gus_dma.c
-+++ b/sound/isa/gus/gus_dma.c
-@@ -141,6 +141,8 @@ static void snd_gf1_dma_interrupt(struct snd_gus_card * gus)
- 	}
- 	block = snd_gf1_dma_next_block(gus);
- 	spin_unlock(&gus->dma_lock);
-+	if (!block)
-+		return;
- 	snd_gf1_dma_program(gus, block->addr, block->buf_addr, block->count, (unsigned short) block->cmd);
- 	kfree(block);
- #if 0
+diff --git a/sound/soc/fsl/imx-hdmi.c b/sound/soc/fsl/imx-hdmi.c
+index f10359a28800..929f69b758af 100644
+--- a/sound/soc/fsl/imx-hdmi.c
++++ b/sound/soc/fsl/imx-hdmi.c
+@@ -145,6 +145,8 @@ static int imx_hdmi_probe(struct platform_device *pdev)
+ 	data->dai.capture_only = false;
+ 	data->dai.init = imx_hdmi_init;
+ 
++	put_device(&cpu_pdev->dev);
++
+ 	if (of_node_name_eq(cpu_np, "sai")) {
+ 		data->cpu_priv.sysclk_id[1] = FSL_SAI_CLK_MAST1;
+ 		data->cpu_priv.sysclk_id[0] = FSL_SAI_CLK_MAST1;
 -- 
-2.33.0
+2.25.1
 
