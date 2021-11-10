@@ -2,75 +2,88 @@ Return-Path: <SRS0=1gO0=P5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D81D7C433FE
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Nov 2021 14:42:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C93EC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Nov 2021 14:45:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 67C846101C
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Nov 2021 14:42:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 67C846101C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	by mail.kernel.org (Postfix) with ESMTPS id D385B611ED
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Nov 2021 14:45:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D385B611ED
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5CD2D1654;
-	Wed, 10 Nov 2021 15:41:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5CD2D1654
+	by alsa0.perex.cz (Postfix) with ESMTPS id DC6031654;
+	Wed, 10 Nov 2021 15:44:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC6031654
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1636555346;
-	bh=AxBxTSr7KZB4C0du8TwjEEIbfPXBYrwqcnrxd4xpn6Q=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=uPR3eGCYAi42xyR4C2EoTt8l/4QAZpIu3T9QFIYkUgBNFFGwINctnNYcY1RpOnoH+
-	 +P04nOg5+Qtgfhe2lar/mKF+nRc86vKhrxYGEsfrd4+4OCn6/dqgsT0+oXbCMgcDNp
-	 K2ces+bw+Sf/G2cvM60rTiRZ7kBwnD1GhDhk+4DI=
+	s=default; t=1636555538;
+	bh=xhz3HCwLANiEOKsENUVJjUqzy0WRwW90QfWCgsFlEl8=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Fqk3S+VW7hoGTDjeUVVeS4hEYcjejDTz8adimXjfZW1/GIgwPIkYqxI51YIE7RIYM
+	 P6MX7FsM7+s/l+Mg1Ou1Le96huUSMdEUASEYEx+JKLuYHigMoy6739WZQOYucEnSvS
+	 KSNT6tf7Bb46igatAb7CV74F7JWFBC0bwf/WCGVg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EB86FF800C9;
-	Wed, 10 Nov 2021 15:41:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 71B20F80227;
+	Wed, 10 Nov 2021 15:44:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 71D28F8049E; Wed, 10 Nov 2021 15:41:34 +0100 (CET)
-Received: from smtp-relay-canonical-0.canonical.com
- (smtp-relay-canonical-0.canonical.com [185.125.188.120])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 8259CF8049E; Wed, 10 Nov 2021 15:44:46 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 401F3F800C9
- for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2021 15:41:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 401F3F800C9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 899BCF800C9
+ for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2021 15:44:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 899BCF800C9
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com
- header.b="rAJ1bnji"
-Received: from localhost.localdomain (unknown [10.101.196.174])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id D448C3F197; 
- Wed, 10 Nov 2021 14:41:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1636555283;
- bh=AmOia6mFVXePE5lwo8LpCWa2Ymdv43SwCIz0a9emYu0=;
- h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
- b=rAJ1bnjiSaLb0j5n09NYop4w/L9Q8P0VcaXV2OGa7ScfEte+XS6wglwb1CTID5kGt
- 7DDlVRprwehlasN7bwg7Zc43RiSUWe1lgupLDDmvVoc42YDPu88rvUlkYVBx5gSiPz
- QWmbXOZ9bKQpR708jHaHzS0MA7X5ZBTUCoWCZDg5msy3vXPCmsx6Xzxm24WqGngHkM
- yv06yFRCF8Ms94/bi8lnRqk5zlIXiCqQ0zmGccR2oc5ePgekYnQE9goFIzoWuG5VNi
- 3zRod26IfYouLeArlZo5YIcqG5ujHa+TpJWHfTRplgv9nbtmu9CzcvAEnnnhhG8+c7
- T2TqzBChZ5nEg==
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
-To: tiwai@suse.com
-Subject: [PATCH] ALSA: hda/realtek: Add quirk for HP EliteBook 840 G7 mute LED
-Date: Wed, 10 Nov 2021 22:40:32 +0800
-Message-Id: <20211110144033.118451-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.32.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="Ju8EFf1W"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="zc+uC/rZ"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id BCC471FD33;
+ Wed, 10 Nov 2021 14:44:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1636555478; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=fe8BDkCYzQ83jrvh2fKV9pcOokwClWMfaPsd1HFHFxE=;
+ b=Ju8EFf1WRPJ+kx9R48WeFlgiUxlkRhCw+H1KWa7O6jp0zmLzOUsjDUqw3QqazK95ieOoGp
+ ikyjpk4VKwcWruVDyRXSrVJQXyc7EDJBwf5MoX0L/o9uOpjeRPsh4+BQuMWhy5H0yYATNM
+ sR9pDASE3uhdZwTK857S2IJQdIEq6TU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1636555478;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=fe8BDkCYzQ83jrvh2fKV9pcOokwClWMfaPsd1HFHFxE=;
+ b=zc+uC/rZvIaPptZ4y4rCUc/69WqvJ5AIQwCarlEutsmwo03yHYeeM0oBDuh1MGR2ok30hb
+ 8c/0wSG5V9pSfOCw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 9C0D3A3B85;
+ Wed, 10 Nov 2021 14:44:32 +0000 (UTC)
+Date: Wed, 10 Nov 2021 15:44:37 +0100
+Message-ID: <s5hlf1w6pey.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: Re: [PATCH] ALSA: hda/realtek: Add quirk for HP EliteBook 840 G7 mute
+ LED
+In-Reply-To: <20211110144033.118451-1-kai.heng.feng@canonical.com>
+References: <20211110144033.118451-1-kai.heng.feng@canonical.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Cc: Chris Chiu <chris.chiu@canonical.com>,
  "moderated list:SOUND" <alsa-devel@alsa-project.org>,
  Kailang Yang <kailang@realtek.com>, Jeremy Szu <jeremy.szu@canonical.com>,
- Elia Devito <eliadevito@gmail.com>, open list <linux-kernel@vger.kernel.org>,
- Werner Sembach <wse@tuxedocomputers.com>, Hui Wang <hui.wang@canonical.com>,
- PeiSen Hou <pshou@realtek.com>, Kai-Heng Feng <kai.heng.feng@canonical.com>,
+ open list <linux-kernel@vger.kernel.org>, Elia Devito <eliadevito@gmail.com>,
+ tiwai@suse.com, Werner Sembach <wse@tuxedocomputers.com>,
+ Hui Wang <hui.wang@canonical.com>, PeiSen Hou <pshou@realtek.com>,
  Sami Loone <sami@loone.fi>, Cameron Berkenpas <cam@neo-zeon.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -87,26 +100,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The mute and micmute LEDs don't work on HP EliteBook 840 G7. The same
-quirk for other HP laptops can let LEDs work, so apply it.
+On Wed, 10 Nov 2021 15:40:32 +0100,
+Kai-Heng Feng wrote:
+> 
+> The mute and micmute LEDs don't work on HP EliteBook 840 G7. The same
+> quirk for other HP laptops can let LEDs work, so apply it.
+> 
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+Thanks, applied.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index a6098c942aeb5..2f1727faec698 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -8636,6 +8636,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x103c, 0x8716, "HP Elite Dragonfly G2 Notebook PC", ALC285_FIXUP_HP_GPIO_AMP_INIT),
- 	SND_PCI_QUIRK(0x103c, 0x8720, "HP EliteBook x360 1040 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_AMP_INIT),
- 	SND_PCI_QUIRK(0x103c, 0x8724, "HP EliteBook 850 G7", ALC285_FIXUP_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x8728, "HP EliteBook 840 G7", ALC285_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8729, "HP", ALC285_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8730, "HP ProBook 445 G7", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
- 	SND_PCI_QUIRK(0x103c, 0x8736, "HP", ALC285_FIXUP_HP_GPIO_AMP_INIT),
--- 
-2.32.0
 
+Takashi
