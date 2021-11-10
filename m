@@ -2,101 +2,67 @@ Return-Path: <SRS0=1gO0=P5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4FCA7C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Nov 2021 10:13:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29913C433FE
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Nov 2021 10:30:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0D6DB61168
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Nov 2021 10:13:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0D6DB61168
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id 7FFAA6115B
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Nov 2021 10:30:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7FFAA6115B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 594681614;
-	Wed, 10 Nov 2021 11:12:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 594681614
+	by alsa0.perex.cz (Postfix) with ESMTPS id 223291616;
+	Wed, 10 Nov 2021 11:29:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 223291616
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1636539215;
-	bh=nUnQCiypE+7R2dDwFQUb8M9APQJgl17zkRbRsLKjt60=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1636540227;
+	bh=aCiBA6LLb1mFiU3TyZJYKHyHAi9TnxdVaWRMHNjQP20=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DBLAjR2HVR2QhrHySQ2fe+BRkSgUnd2ygGCnWwFySKJWkAtIaQU3Gd0Gt7mz0Zum8
-	 AcKk4R4ndaXAPWP+LDiLlCAfKHkoODVFlsp49h8H1dxFqg8x+hTIbestTKKYPQQIXv
-	 3fC9cQaE73E2YWITD9QoAJGT1OKRj9Q8G449gaUQ=
+	b=nQkhXVtUa2auKvCOOim7fliU4Q0gWw+F7YRoPSOiA3dvHWBCehICT19L0wp3aKrV8
+	 tshej2vjKMKzZ1qFiIJEq6IQraHQaeD5jYAKU51nXHDmcdnxlhPL+10q+PWlO9IACJ
+	 sVVTrqlaoUCiidddg253vKfEMfdPIpN2oLLpke1A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DD922F800C9;
-	Wed, 10 Nov 2021 11:12:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B57E1F8049E;
+	Wed, 10 Nov 2021 11:29:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7953CF8049E; Wed, 10 Nov 2021 11:12:41 +0100 (CET)
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com
- [IPv6:2a00:1450:4864:20::52c])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 2BB06F804B3; Wed, 10 Nov 2021 11:29:18 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 04973F800C9
- for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2021 11:12:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04973F800C9
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="uP3euyDD"
-Received: by mail-ed1-x52c.google.com with SMTP id m14so8642637edd.0
- for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2021 02:12:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=iwrQkGdUPhk+QMSVvZiSAulM37+6icUvxRn7kPKP+hw=;
- b=uP3euyDDsU9oS9V9jaeqz+9kbCdTk2b/bFUScZCBdkhwnGVOlDfYzb9X/NVGZbY5Wl
- dzsUhlwUCbR0xRdiDe5bVaBSGfoOxxxYmuZgoMofeTGxL8EkJWBqm/Y6ZgyZ4y0xzrWQ
- aYoBHmP0/93iceTpdPCoh04IMRytqrdWYPkLs5T/5pPvyCuTAxF3Um+SuZd9l6c8NdBb
- kA4xuXl3TnWRmCEnL9IcJZssNfTE0uACotqi4UmIe0/vkjDwxs9QnLMGRFNssKy+2t8A
- Z8X33Y5Wlam0kkD7Q9H8rHYgCxy5imrrxEbBI5rwbH/8QNA3JIHG8ne0wDSj8igRMWLp
- al1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=iwrQkGdUPhk+QMSVvZiSAulM37+6icUvxRn7kPKP+hw=;
- b=qgu8LFkUtrwfXDxk0Lh87lWW/UYW2XrKriRKeicCfAkm2B9mw9qEe/9L8bb5snILZa
- VOIk/klLy0ddMZpcFneUieI7zOunVh8jUiNetimeyXSurbARQo4iulnASxootsmL5MYO
- d0ZcamrnuVD0QTYbH5aPiO91l5WM51sj6TMUZTMyIQGXPaY4g5jPvtfdiVxGkc4+yjJC
- 5dIF2GVKOIT4v2Y1ROo4oMUVjuavIJ0jHQ709O6p+a3ToI224nB3FeJU0ptlMfm5XqyR
- PMP40s1pzVbZq0m/6AMXT9kDZPFcza52qWre27mmAaaWu/mpFn/RG1OJF5iWHtbW5xLE
- DgwA==
-X-Gm-Message-State: AOAM533NJx+QfGR+watzkWVjcd/uuHUe8CZ5Q1vHh/ZbQHWfHh33hkYt
- fmXCd7gHYD23ZHgSlG2kgwUxwg==
-X-Google-Smtp-Source: ABdhPJyFMAADT0iNvQneqnoq3jXcfQ9exfItDCCBzjODGF6El21zfS6VYYeAkF3SXF3XSP6ZcoJNwg==
-X-Received: by 2002:a05:6402:42c8:: with SMTP id
- i8mr20478536edc.60.1636539152289; 
- Wed, 10 Nov 2021 02:12:32 -0800 (PST)
-Received: from [192.168.86.34]
- (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.googlemail.com with ESMTPSA id r19sm12287575edt.54.2021.11.10.02.12.30
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 10 Nov 2021 02:12:31 -0800 (PST)
-Subject: Re: [PATCH] ASoC: codecs: MBHC: Add support for special headset
-To: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>, agross@kernel.org,
- bjorn.andersson@linaro.org, lgirdwood@gmail.com, broonie@kernel.org,
- robh+dt@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
- perex@perex.cz, tiwai@suse.com, rohitkr@codeaurora.org,
- linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- swboyd@chromium.org, judyhsiao@chromium.org
-References: <1635938324-17763-1-git-send-email-srivasam@codeaurora.org>
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <8422a82f-5aa7-2458-8080-87f330fa63ea@linaro.org>
-Date: Wed, 10 Nov 2021 10:12:30 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id CC2C6F800C1
+ for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2021 11:29:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC2C6F800C1
+X-IronPort-AV: E=McAfee;i="6200,9189,10163"; a="232489609"
+X-IronPort-AV: E=Sophos;i="5.87,223,1631602800"; d="scan'208";a="232489609"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 10 Nov 2021 02:29:01 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,223,1631602800"; d="scan'208";a="452270796"
+Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
+ by orsmga006.jf.intel.com with ESMTP; 10 Nov 2021 02:28:59 -0800
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH v3 1/4] ALSA: hda: Follow ACPI convention in NHLT struct naming
+Date: Wed, 10 Nov 2021 11:31:14 +0100
+Message-Id: <20211110103117.3142450-2-cezary.rojewski@intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211110103117.3142450-1-cezary.rojewski@intel.com>
+References: <20211110103117.3142450-1-cezary.rojewski@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <1635938324-17763-1-git-send-email-srivasam@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: Venkata Prasad Potturu <potturu@codeaurora.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: pierre-louis.bossart@linux.intel.com,
+ Cezary Rojewski <cezary.rojewski@intel.com>, tiwai@suse.com,
+ hdegoede@redhat.com, broonie@kernel.org,
+ =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,152 +78,182 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Thanks for adding this support.
+From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 
-few minor nits,
+All ACPI table structs except for NHLT ones are defined in postfix way.
+Update NHLT structs naming to make code cohesive.
 
-On 03/11/2021 11:18, Srinivasa Rao Mandadapu wrote:
-> Update MBHC driver to support special headset such as apple
-> and huwawei headsets.
-> 
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-> Co-developed-by: Venkata Prasad Potturu <potturu@codeaurora.org>
-> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
-> ---
->   sound/soc/codecs/wcd-mbhc-v2.c | 78 +++++++++++++++++++++++++++++++++++++++---
->   1 file changed, 74 insertions(+), 4 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/wcd-mbhc-v2.c b/sound/soc/codecs/wcd-mbhc-v2.c
-> index 405128c..3b4cd39 100644
-> --- a/sound/soc/codecs/wcd-mbhc-v2.c
-> +++ b/sound/soc/codecs/wcd-mbhc-v2.c
-> @@ -1022,6 +1022,57 @@ static int wcd_mbhc_get_plug_from_adc(struct wcd_mbhc *mbhc, int adc_result)
->   	return plug_type;
->   }
->   
-> +static int wcd_mbhc_get_spl_hs_thres(struct wcd_mbhc *mbhc)
-> +{
-> +	int hs_threshold, micbias_mv;
-> +
-> +	micbias_mv = wcd_mbhc_get_micbias(mbhc);
-> +	if (mbhc->cfg->hs_thr && mbhc->cfg->micb_mv != WCD_MBHC_ADC_MICBIAS_MV) {
-> +		if (mbhc->cfg->micb_mv == micbias_mv)
-> +			hs_threshold = mbhc->cfg->hs_thr;
-> +		else
-> +			hs_threshold = (mbhc->cfg->hs_thr * micbias_mv) /
-> +								mbhc->cfg->micb_mv;
+Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ include/sound/intel-nhlt.h         | 16 ++++++++--------
+ sound/hda/intel-dsp-config.c       |  2 +-
+ sound/hda/intel-nhlt.c             |  8 ++++----
+ sound/soc/intel/skylake/skl-nhlt.c |  8 ++++----
+ sound/soc/intel/skylake/skl.h      |  2 +-
+ sound/soc/sof/intel/hda.c          |  2 +-
+ 6 files changed, 19 insertions(+), 19 deletions(-)
 
-You should consider using 100 chars per line, so that reading is much easy.
+diff --git a/include/sound/intel-nhlt.h b/include/sound/intel-nhlt.h
+index d0574805865f..b0796225f82e 100644
+--- a/include/sound/intel-nhlt.h
++++ b/include/sound/intel-nhlt.h
+@@ -77,7 +77,7 @@ struct nhlt_endpoint {
+ 	struct nhlt_specific_cfg config;
+ } __packed;
+ 
+-struct nhlt_acpi_table {
++struct acpi_table_nhlt {
+ 	struct acpi_table_header header;
+ 	u8 endpoint_count;
+ 	struct nhlt_endpoint desc[];
+@@ -126,27 +126,27 @@ enum {
+ 	NHLT_MIC_ARRAY_VENDOR_DEFINED = 0xf,
+ };
+ 
+-struct nhlt_acpi_table *intel_nhlt_init(struct device *dev);
++struct acpi_table_nhlt *intel_nhlt_init(struct device *dev);
+ 
+-void intel_nhlt_free(struct nhlt_acpi_table *addr);
++void intel_nhlt_free(struct acpi_table_nhlt *addr);
+ 
+-int intel_nhlt_get_dmic_geo(struct device *dev, struct nhlt_acpi_table *nhlt);
++int intel_nhlt_get_dmic_geo(struct device *dev, struct acpi_table_nhlt *nhlt);
+ 
+ #else
+ 
+-struct nhlt_acpi_table;
++struct acpi_table_nhlt;
+ 
+-static inline struct nhlt_acpi_table *intel_nhlt_init(struct device *dev)
++static inline struct acpi_table_nhlt *intel_nhlt_init(struct device *dev)
+ {
+ 	return NULL;
+ }
+ 
+-static inline void intel_nhlt_free(struct nhlt_acpi_table *addr)
++static inline void intel_nhlt_free(struct acpi_table_nhlt *addr)
+ {
+ }
+ 
+ static inline int intel_nhlt_get_dmic_geo(struct device *dev,
+-					  struct nhlt_acpi_table *nhlt)
++					  struct acpi_table_nhlt *nhlt)
+ {
+ 	return 0;
+ }
+diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
+index b9ac9e9e45a4..64b6c6ab591e 100644
+--- a/sound/hda/intel-dsp-config.c
++++ b/sound/hda/intel-dsp-config.c
+@@ -379,7 +379,7 @@ static const struct config_entry *snd_intel_dsp_find_config
+ 
+ static int snd_intel_dsp_check_dmic(struct pci_dev *pci)
+ {
+-	struct nhlt_acpi_table *nhlt;
++	struct acpi_table_nhlt *nhlt;
+ 	int ret = 0;
+ 
+ 	nhlt = intel_nhlt_init(&pci->dev);
+diff --git a/sound/hda/intel-nhlt.c b/sound/hda/intel-nhlt.c
+index e2237239d922..e6baa7af5c5d 100644
+--- a/sound/hda/intel-nhlt.c
++++ b/sound/hda/intel-nhlt.c
+@@ -4,9 +4,9 @@
+ #include <linux/acpi.h>
+ #include <sound/intel-nhlt.h>
+ 
+-struct nhlt_acpi_table *intel_nhlt_init(struct device *dev)
++struct acpi_table_nhlt *intel_nhlt_init(struct device *dev)
+ {
+-	struct nhlt_acpi_table *nhlt;
++	struct acpi_table_nhlt *nhlt;
+ 	acpi_status status;
+ 
+ 	status = acpi_get_table(ACPI_SIG_NHLT, 0,
+@@ -20,13 +20,13 @@ struct nhlt_acpi_table *intel_nhlt_init(struct device *dev)
+ }
+ EXPORT_SYMBOL_GPL(intel_nhlt_init);
+ 
+-void intel_nhlt_free(struct nhlt_acpi_table *nhlt)
++void intel_nhlt_free(struct acpi_table_nhlt *nhlt)
+ {
+ 	acpi_put_table((struct acpi_table_header *)nhlt);
+ }
+ EXPORT_SYMBOL_GPL(intel_nhlt_free);
+ 
+-int intel_nhlt_get_dmic_geo(struct device *dev, struct nhlt_acpi_table *nhlt)
++int intel_nhlt_get_dmic_geo(struct device *dev, struct acpi_table_nhlt *nhlt)
+ {
+ 	struct nhlt_endpoint *epnt;
+ 	struct nhlt_dmic_array_config *cfg;
+diff --git a/sound/soc/intel/skylake/skl-nhlt.c b/sound/soc/intel/skylake/skl-nhlt.c
+index 64226072f0ee..3033c1bf279f 100644
+--- a/sound/soc/intel/skylake/skl-nhlt.c
++++ b/sound/soc/intel/skylake/skl-nhlt.c
+@@ -88,7 +88,7 @@ struct nhlt_specific_cfg
+ 	struct hdac_bus *bus = skl_to_bus(skl);
+ 	struct device *dev = bus->dev;
+ 	struct nhlt_specific_cfg *sp_config;
+-	struct nhlt_acpi_table *nhlt = skl->nhlt;
++	struct acpi_table_nhlt *nhlt = skl->nhlt;
+ 	u16 bps = (s_fmt == 16) ? 16 : 32;
+ 	u8 j;
+ 
+@@ -132,7 +132,7 @@ static void skl_nhlt_trim_space(char *trim)
+ 
+ int skl_nhlt_update_topology_bin(struct skl_dev *skl)
+ {
+-	struct nhlt_acpi_table *nhlt = (struct nhlt_acpi_table *)skl->nhlt;
++	struct acpi_table_nhlt *nhlt = (struct acpi_table_nhlt *)skl->nhlt;
+ 	struct hdac_bus *bus = skl_to_bus(skl);
+ 	struct device *dev = bus->dev;
+ 
+@@ -155,7 +155,7 @@ static ssize_t platform_id_show(struct device *dev,
+ 	struct pci_dev *pci = to_pci_dev(dev);
+ 	struct hdac_bus *bus = pci_get_drvdata(pci);
+ 	struct skl_dev *skl = bus_to_skl(bus);
+-	struct nhlt_acpi_table *nhlt = (struct nhlt_acpi_table *)skl->nhlt;
++	struct acpi_table_nhlt *nhlt = (struct acpi_table_nhlt *)skl->nhlt;
+ 	char platform_id[32];
+ 
+ 	sprintf(platform_id, "%x-%.6s-%.8s-%d", skl->pci_id,
+@@ -335,7 +335,7 @@ static void skl_get_mclk(struct skl_dev *skl, struct skl_ssp_clk *mclk,
+ 
+ void skl_get_clks(struct skl_dev *skl, struct skl_ssp_clk *ssp_clks)
+ {
+-	struct nhlt_acpi_table *nhlt = (struct nhlt_acpi_table *)skl->nhlt;
++	struct acpi_table_nhlt *nhlt = (struct acpi_table_nhlt *)skl->nhlt;
+ 	struct nhlt_endpoint *epnt;
+ 	struct nhlt_fmt *fmt;
+ 	int i;
+diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
+index 33ed274fc0cb..37195aafbf27 100644
+--- a/sound/soc/intel/skylake/skl.h
++++ b/sound/soc/intel/skylake/skl.h
+@@ -67,7 +67,7 @@ struct skl_dev {
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_dai_driver *dais;
+ 
+-	struct nhlt_acpi_table *nhlt; /* nhlt ptr */
++	struct acpi_table_nhlt *nhlt; /* nhlt ptr */
+ 
+ 	struct list_head ppl_list;
+ 	struct list_head bind_list;
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index 568d351b7a4e..ce65bb089a13 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -648,7 +648,7 @@ static int hda_init(struct snd_sof_dev *sdev)
+ 
+ static int check_nhlt_dmic(struct snd_sof_dev *sdev)
+ {
+-	struct nhlt_acpi_table *nhlt;
++	struct acpi_table_nhlt *nhlt;
+ 	int dmic_num;
+ 
+ 	nhlt = intel_nhlt_init(sdev->dev);
+-- 
+2.25.1
 
-> +	} else {
-> +		hs_threshold = ((WCD_MBHC_ADC_HS_THRESHOLD_MV * micbias_mv) /
-> +							WCD_MBHC_ADC_MICBIAS_MV);
-> +	}
-> +	return hs_threshold;
-> +}
-> +
-> +static bool wcd_mbhc_check_for_spl_headset(struct wcd_mbhc *mbhc)
-> +{
-> +	bool is_spl_hs = false;
-> +	int output_mv, hs_threshold, hph_threshold;
-> +
-> +	if (!mbhc->mbhc_cb->mbhc_micb_ctrl_thr_mic)
-> +		return false;
-> +
-> +	/* Bump up MIC_BIAS2 to 2.7V */
-> +	mbhc->mbhc_cb->mbhc_micb_ctrl_thr_mic(mbhc->component, MIC_BIAS_2, true);
-> +	usleep_range(10000, 10100);
-> +
-> +	output_mv = wcd_measure_adc_once(mbhc, MUX_CTL_IN2P);
-> +	hs_threshold = wcd_mbhc_get_spl_hs_thres(mbhc);
-> +	hph_threshold = wcd_mbhc_adc_get_hph_thres(mbhc);
-> +
-> +	if (output_mv > hs_threshold || output_mv < hph_threshold) {
-> +		if (mbhc->force_linein == true)
-> +			is_spl_hs = false;
-> +	} else {
-> +		is_spl_hs = true;
-> +	}
-> +
-> +	/* Back MIC_BIAS2 to 1.8v if the type is not special headset */
-> +	if (!is_spl_hs) {
-> +		mbhc->mbhc_cb->mbhc_micb_ctrl_thr_mic(mbhc->component, MIC_BIAS_2, false);
-> +		/* Add 10ms delay for micbias to settle */
-> +		usleep_range(10000, 10100);
-> +	}
-> +
-> +	return is_spl_hs;
-> +}
-> +
->   static void wcd_correct_swch_plug(struct work_struct *work)
->   {
->   	struct wcd_mbhc *mbhc;
-> @@ -1029,12 +1080,14 @@ static void wcd_correct_swch_plug(struct work_struct *work)
->   	enum wcd_mbhc_plug_type plug_type = MBHC_PLUG_TYPE_INVALID;
->   	unsigned long timeout;
->   	int pt_gnd_mic_swap_cnt = 0;
-> -	int output_mv, cross_conn, hs_threshold, try = 0;
-> +	int output_mv, cross_conn, hs_threshold, try = 0, micbias_mv;
-> +	bool is_spl_hs = false;
->   	bool is_pa_on;
->   
->   	mbhc = container_of(work, struct wcd_mbhc, correct_plug_swch);
->   	component = mbhc->component;
->   
-> +	micbias_mv = wcd_mbhc_get_micbias(mbhc);
->   	hs_threshold = wcd_mbhc_adc_get_hs_thres(mbhc);
->   
->   	/* Mask ADC COMPLETE interrupt */
-> @@ -1097,6 +1150,18 @@ static void wcd_correct_swch_plug(struct work_struct *work)
->   		plug_type = wcd_mbhc_get_plug_from_adc(mbhc, output_mv);
->   		is_pa_on = wcd_mbhc_read_field(mbhc, WCD_MBHC_HPH_PA_EN);
->   
-> +
-unnecessary extra new line here.
-
-> +		if ((output_mv > hs_threshold) &&
-> +		    (!is_spl_hs)) {
-wrap to 100 chars and unneccessary brackets around the conditions.
-
-With those fixed
-
-
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-
---srini
-
-> +			is_spl_hs = wcd_mbhc_check_for_spl_headset(mbhc);
-> +			output_mv = wcd_measure_adc_once(mbhc, MUX_CTL_IN2P);
-> +
-> +			if (is_spl_hs) {
-> +				hs_threshold = (hs_threshold * wcd_mbhc_get_micbias(mbhc)) /
-> +									micbias_mv; > +			}
-> +		}
-> +
->   		if ((output_mv <= hs_threshold) && !is_pa_on) {
->   			/* Check for cross connection*/
->   			cross_conn = wcd_check_cross_conn(mbhc);
-> @@ -1122,14 +1187,19 @@ static void wcd_correct_swch_plug(struct work_struct *work)
->   			}
->   		}
->   
-> -		if (output_mv > hs_threshold) /* cable is extension cable */
-> +		/* cable is extension cable */
-> +		if (output_mv > hs_threshold || mbhc->force_linein == true)
->   			plug_type = MBHC_PLUG_TYPE_HIGH_HPH;
->   	}
->   
->   	wcd_mbhc_bcs_enable(mbhc, plug_type, true);
->   
-> -	if (plug_type == MBHC_PLUG_TYPE_HIGH_HPH)
-> -		wcd_mbhc_write_field(mbhc, WCD_MBHC_ELECT_ISRC_EN, 1);
-> +	if (plug_type == MBHC_PLUG_TYPE_HIGH_HPH) {
-> +		if (is_spl_hs)
-> +			plug_type = MBHC_PLUG_TYPE_HEADSET;
-> +		else
-> +			wcd_mbhc_write_field(mbhc, WCD_MBHC_ELECT_ISRC_EN, 1);
-> +	}
->   
->   	wcd_mbhc_write_field(mbhc, WCD_MBHC_ADC_MODE, 0);
->   	wcd_mbhc_write_field(mbhc, WCD_MBHC_ADC_EN, 0);
-> 
