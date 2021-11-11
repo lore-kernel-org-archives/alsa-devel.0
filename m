@@ -2,86 +2,98 @@ Return-Path: <SRS0=P3rz=P6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9AD8CC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Nov 2021 10:14:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B803C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Nov 2021 10:31:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 38FB961267
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Nov 2021 10:14:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 38FB961267
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id BF24B61268
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Nov 2021 10:31:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BF24B61268
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CA1881614;
-	Thu, 11 Nov 2021 11:13:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA1881614
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4FE081614;
+	Thu, 11 Nov 2021 11:30:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4FE081614
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1636625678;
-	bh=Kf+0rk1KxRC6N74u6S2iHDeXHSWXWVNtNXLCqWDRXBo=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=KmlQHQ1EcPPG5z7e4u6OaaLubhob1KeqTi/vLyI4+ct9VDtS70p3DJYv0a1+D7HGX
-	 wfheU/57azTQ4vXbyTzLKcs6BD5IYH9ww9q4dZOufaDaZyPOKH1gRqu/BtN4sSZeW3
-	 SVuAStzkLz2kHttnW3SSedb+/4hX7/lUhnuB2aqQ=
+	s=default; t=1636626685;
+	bh=6ryvcwuugkv1MteHQ1mlDIY8Bvepqzej5MAn2oD/yvk=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=UxvQ7E1KRTT4/NAYCSJjh0NENTd/MTdcFxQoIlPvXuHP5YcWimHP9LoeKLwfXFY8r
+	 A0kFkPPGoajTgpIEWzgT/auukskOHiKTI7CkXT8xdXjTPs6vePVF+kNntY+vXwJGe4
+	 6hJd034voClWUCUZhofHWp2gq57iXdD+xH1ykMKs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 620B8F80224;
-	Thu, 11 Nov 2021 11:13:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D2AA1F80224;
+	Thu, 11 Nov 2021 11:30:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 41529F802D2; Thu, 11 Nov 2021 11:13:46 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id B6EB9F802D2; Thu, 11 Nov 2021 11:30:32 +0100 (CET)
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com
+ [64.147.123.25])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EB8FBF80086
- for <alsa-devel@alsa-project.org>; Thu, 11 Nov 2021 11:13:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB8FBF80086
+ by alsa1.perex.cz (Postfix) with ESMTPS id 50F22F800C1
+ for <alsa-devel@alsa-project.org>; Thu, 11 Nov 2021 11:30:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50F22F800C1
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="AahKSBWc"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="Lqa6CTrx"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 408CB1FD2A;
- Thu, 11 Nov 2021 10:13:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1636625617; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=lIdQY+oSuBdvwoX+GxwYObCJjLrckD/2MahghhLDwJE=;
- b=AahKSBWctZAAJZvG/WfaLdl/F1nm682UtPY6W1YQPsQDI8ilOffDg9sBwKT00TBShoc9XS
- lLQdZzxkrLiO4cQj1tX4zylwcgOyU9Ug2xVc8bh4qtOWlqhqnvTY8okq4agmcrHEWDGovf
- uTc+Uxfp7G7eXSUfFyW2Rr96nVbJrRg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1636625617;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=lIdQY+oSuBdvwoX+GxwYObCJjLrckD/2MahghhLDwJE=;
- b=Lqa6CTrxx1iOmIYvcPDlpHMv2hw7h2c6TCtI7ZCgv/8UNW7VvXrcoUzjyELfsz4ryUDL0Y
- TY5xpuKBstkiqqCQ==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 0E216A3CF9;
- Thu, 11 Nov 2021 10:13:37 +0000 (UTC)
-Date: Thu, 11 Nov 2021 11:13:37 +0100
-Message-ID: <s5hmtmb57am.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] ALSA: usb-audio: add the profile name of Dell desktop
-In-Reply-To: <7e82a4cd-ed51-e853-7338-eb570c88cb68@perex.cz>
-References: <20211111091914.20917-1-shumingf@realtek.com>
- <7e82a4cd-ed51-e853-7338-eb570c88cb68@perex.cz>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
- lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org,
- derek.fang@realtek.com, shumingf@realtek.com, Yijun.Shen@dell.com,
- flove@realtek.com
+ dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
+ header.b="m8LRApmD"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="RewpRZAC"
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+ by mailout.west.internal (Postfix) with ESMTP id 94A8E3202135;
+ Thu, 11 Nov 2021 05:30:20 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+ by compute6.internal (MEProxy); Thu, 11 Nov 2021 05:30:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding; s=fm3; bh=XNJWXfmHXQL4e9diX0tHCqZ+f1
+ VOsLYB/zddVlEJ1u8=; b=m8LRApmDQ18x23EA5pytAxv0js8GW6AD5KtIEY+Yyn
+ Rmq9hs4CAKldofWxPDqwbcs0eE+cVKrsIMXyNiwRB3n0JtyjWtLMsGIlUML6hwNz
+ xq33wCP27GT/NxKrv5wOH9NQVWxe0vcLgVV2C5EOW8uFRzY4s9s7PZfXUAqMc+ES
+ 8b/85NlEaHzi/UJ+Ea408d3d4PUEKHgAGDWwZ+wB5P4cOyudsgN+qBqTbzNhDI8L
+ Gv+aQVNAm0aAgaauoQdtPfxHj6K/kGwQEhd2Ry2FSh0XmrbOQLDymrQvWaB1l7RZ
+ PkAScTG1kBmCYStQeIeTocIy13+XJhUAds7QCax394aA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-transfer-encoding:date:from
+ :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+ :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=XNJWXfmHXQL4e9diX
+ 0tHCqZ+f1VOsLYB/zddVlEJ1u8=; b=RewpRZACE+1Q1cm8fFDND9XmmpIr496mv
+ 3m0jZ3o0v0H58aceFhJH5tXsaJ2Vxm6SyPwihnPsS0TYRD/ASmf5yN/7NlCyMCpd
+ CT3cyJHTVkBpcgYx/qe8lEWXUbD2lc0rhYG6tK+o/7U4X5glRACIDu3TT5mQkUZb
+ RRTJmPoe/eMEUFR64/XqMDvfpsRSeC7pcvh6agU8PoPwDB3ESF58KFSsqBsClN/2
+ APpAJFLWweiEah8vZGAcSEZGAIDVgpaTs8iaBiWBzcAvYLQUoT8u5Em3rZfqV2st
+ 7QdemNrMtws4SoifaYu8ERDb5mFpzlzbx7OEh1Jy2bEhSYjF+0tcw==
+X-ME-Sender: <xms:u_CMYc9q4m_HifOaj4upfrlIZMVaENXkvpXiqau_YRCvmbJFAf1PUw>
+ <xme:u_CMYUuQJ1AEEsz3PeBx3kvEKZJ6ujNWOSGl143rxC8V1jg22Dkfn6DjHjKYyMkmF
+ QBKkR1PtbeIdHm-OI4>
+X-ME-Received: <xmr:u_CMYSAqALOD-sZbK1XIpwoudMkBHXmQZJU002wSvDPzgouFW8kfWth3Hst-34vq2UEergamt6gKoRPDQ3FFYUxXK_9ieOHEIYFHNCQ6fkT0ZQDS1dvj>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrvddugddujecutefuodetggdotefrodftvf
+ curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+ uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
+ dtnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghkrghshhhi
+ sehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpedujeetlefhtddtke
+ fgtdeuieelhffgteejjeehkeegveduvdevgeeiheeuueekjeenucevlhhushhtvghrufhi
+ iigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrg
+ hmohgttghhihdrjhhp
+X-ME-Proxy: <xmx:u_CMYccbTjdRrsdC8I3rSqvGWmEemRmZ0q0yk9neyx8qAq4UvGr9Kw>
+ <xmx:u_CMYRNi7iKi3pj9mUj1dqA7gQHhwKB9XK4cnUrXbCstbA6hQxZR-w>
+ <xmx:u_CMYWlwB3AwvkwSsMjAF6sMTnM0k7nueyk7ZU7s4CYXaJXfM-VNUQ>
+ <xmx:vPCMYf04bFyhI5jz_WDM3fr3zwL7gBwo5MTnp5GyC19iCr4jbmfx9A>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 11 Nov 2021 05:30:18 -0500 (EST)
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: tiwai@suse.de
+Subject: [PATCH] ALSA: fireworks: add support for Loud Onyx 1200f quirk
+Date: Thu, 11 Nov 2021 19:30:15 +0900
+Message-Id: <20211111103015.7498-1-o-takashi@sakamocchi.jp>
+X-Mailer: git-send-email 2.32.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,26 +109,104 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 11 Nov 2021 10:34:52 +0100,
-Jaroslav Kysela wrote:
-> 
-> On 11. 11. 21 10:19, shumingf@realtek.com wrote:
-> > From: Shuming Fan <shumingf@realtek.com>
-> >
-> > Add the profile name to let userspace pick correct UCM profile
-> 
-> It's no longer necessary to force the card names in the drivers. UCM
-> can match the USB vendor / device IDs from the 'components' string,
-> too.
-> 
-> I think that we should abandon this way of the UCM configuration
-> selection for new devices with device IDs. The kernel already exports
-> necessary information to select the right UCM configuration in the
-> user space.
+Loud Technologies shipped Onyx 1200f 2008 in its Mackie brand and
+already discontinued. The model uses component of Fireworks board
+module as its communication and DSP function.
 
-Sounds reasonable.  Less changes in kernel, better :)
+The latest firmware (v4.6.0) has a quirk that tx packet includes wrong
+value (0x1f) in its dbs field at middle and higher sampling transfer
+frequency. It brings ALSA fireworks driver discontinuity of data block
+counter.
 
+This commit fixes it by assuming it as a quirk of firmware version
+4.6.0.
 
-Thanks!
+$ cd linux-firewire-tools/src
+$ python crpp < /sys/bus/firewire/devices/fw1/config_rom
+               ROM header and bus information block
+               -----------------------------------------------------------------
+400  0404b9ef  bus_info_length 4, crc_length 4, crc 47599
+404  31333934  bus_name "1394"
+408  e064a212  irmc 1, cmc 1, isc 1, bmc 0, pmc 0, cyc_clk_acc 100,
+               max_rec 10 (2048), max_rom 2, gen 1, spd 2 (S400)
+40c  000ff209  company_id 000ff2     |
+410  62550ce0  device_id 0962550ce0  | EUI-64 000ff20962550ce0
 
-Takashi
+               root directory
+               -----------------------------------------------------------------
+414  0008088e  directory_length 8, crc 2190
+418  03000ff2  vendor
+41c  8100000f  --> descriptor leaf at 458
+420  1701200f  model
+424  81000018  --> descriptor leaf at 484
+428  0c008380  node capabilities
+42c  8d000003  --> eui-64 leaf at 438
+430  d1000005  --> unit directory at 444
+434  08000ff2  (immediate value)
+
+               eui-64 leaf at 438
+               -----------------------------------------------------------------
+438  000281ae  leaf_length 2, crc 33198
+43c  000ff209  company_id 000ff2     |
+440  62550ce0  device_id 0962550ce0  | EUI-64 000ff20962550ce0
+
+               unit directory at 444
+               -----------------------------------------------------------------
+444  00045d94  directory_length 4, crc 23956
+448  1200a02d  specifier id: 1394 TA
+44c  13010000  version
+450  1701200f  model
+454  8100000c  --> descriptor leaf at 484
+
+               descriptor leaf at 458
+               -----------------------------------------------------------------
+458  000a199d  leaf_length 10, crc 6557
+45c  00000000  textual descriptor
+460  00000000  minimal ASCII
+464  4d61636b  "Mack"
+468  69650000  "ie"
+46c  00000000
+470  00000000
+474  00000000
+478  00000000
+47c  00000000
+480  00000000
+
+               descriptor leaf at 484
+               -----------------------------------------------------------------
+484  000a0964  leaf_length 10, crc 2404
+488  00000000  textual descriptor
+48c  00000000  minimal ASCII
+490  4f6e7978  "Onyx"
+494  20313230  " 120"
+498  30460000  "0F"
+49c  00000000
+4a0  00000000
+4a4  00000000
+4a8  00000000
+4ac  00000000
+
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/fireworks/fireworks_stream.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/sound/firewire/fireworks/fireworks_stream.c b/sound/firewire/fireworks/fireworks_stream.c
+index ac66f08acd6b..53dbd4d4b0d0 100644
+--- a/sound/firewire/fireworks/fireworks_stream.c
++++ b/sound/firewire/fireworks/fireworks_stream.c
+@@ -50,8 +50,9 @@ static int init_stream(struct snd_efw *efw, struct amdtp_stream *stream)
+ 		     efw->firmware_version == 0x5070300 ||
+ 		     efw->firmware_version == 0x5080000))
+ 			efw->tx_stream.flags |= CIP_UNALIGHED_DBC;
+-		// AudioFire9 always reports wrong dbs.
+-		if (efw->is_af9)
++		// AudioFire9 always reports wrong dbs. Onyx 1200F with the latest firmware (v4.6.0)
++		// also report wrong dbs at 88.2 kHz or greater.
++		if (efw->is_af9 || efw->firmware_version == 0x4060000)
+ 			efw->tx_stream.flags |= CIP_WRONG_DBS;
+ 		// Firmware version 5.5 reports fixed interval for dbc.
+ 		if (efw->firmware_version == 0x5050000)
+-- 
+2.32.0
+
