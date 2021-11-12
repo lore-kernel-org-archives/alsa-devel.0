@@ -2,85 +2,85 @@ Return-Path: <SRS0=QusE=P7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02E39C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Nov 2021 20:11:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5FAFBC433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Nov 2021 20:16:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8D91760F93
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Nov 2021 20:11:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8D91760F93
+	by mail.kernel.org (Postfix) with ESMTPS id 41BE3610D2
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Nov 2021 20:16:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 41BE3610D2
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 433BE1612;
-	Fri, 12 Nov 2021 21:10:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 433BE1612
+	by alsa0.perex.cz (Postfix) with ESMTPS id 502E31661;
+	Fri, 12 Nov 2021 21:15:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 502E31661
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1636747905;
-	bh=/zHeOhB6ZjQwW8gPSIRWR+vku0hvZ63fSHcn8R6MRU4=;
+	s=default; t=1636748176;
+	bh=4artUiOGxj/QrtNhrVLGBE3tGoRigOW370FqwMthFbo=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZGYGXTN/ty12CGqpEtOyqIcY7MKFO/t9bV2tPy5EUeWWumTiYv9qAY9eXyeB5XAv+
-	 0KuUBFoXVsDmoEVOulw1PYjBNRtIDg4Bi8SwxEoqp+lR0m6F8bw2obd+WZqueVYDdP
-	 VNqL5v8T7J2n2lXLLxScbx8IcCJM0LVJjEe6FfBI=
+	b=Ofs/8zzcCwx8UBbsTw+jiUhVRdjB45ST18s8KgVPPI2h9J1mMO+QuU3QTKdw5Zood
+	 bJjvXnbdUMm0ucxuxUYheciBj8zCsuptywQokj2mFyS/8RmwNoTBlxPCEazrTq24cF
+	 n54mFq+2hpbQUbWyLaHG9oI8xAJXmgSjYgFDEnOc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CCB17F80227;
-	Fri, 12 Nov 2021 21:10:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DBD38F80227;
+	Fri, 12 Nov 2021 21:15:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1B350F8049E; Fri, 12 Nov 2021 21:10:53 +0100 (CET)
-Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com
- [209.85.167.172])
+ id B6398F8049E; Fri, 12 Nov 2021 21:15:24 +0100 (CET)
+Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com
+ [209.85.210.54])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B9ED4F800C1
- for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2021 21:10:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9ED4F800C1
-Received: by mail-oi1-f172.google.com with SMTP id r26so19963252oiw.5
- for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2021 12:10:45 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8E471F80086
+ for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2021 21:15:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E471F80086
+Received: by mail-ot1-f54.google.com with SMTP id
+ r10-20020a056830080a00b0055c8fd2cebdso15529158ots.6
+ for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2021 12:15:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to;
- bh=9WhJ/EjNNePoaOZvGJkmcFbg7yvTKkxsOk56AmN7Y+s=;
- b=qQ08xZHuU1G+BVRy1iJoJTi3fCrgza9SYgpOJ/33QaasxVcC6a1rMoUHUdONEZMzIz
- 3oxMDmFHAM19x68kKSg/YvOuDQFiUyOnLNPDT+7yTnSquJ3jMg3o89JhgUmrCxzeSWIR
- GK4ZnHiS7DWH7KQMqOkGeCD1hjUexUCD3iPkOXSIsA2GDpb435J/51VYIQPk0JYf/3Bb
- mfmy3HLUC5ERKKQgFXkN+JQ947aiWYvyWSONhGN367QKrebB2wP3FCY+oxh8kG/PGtOQ
- yKzfJW1bGKqebbS2zxE6WVtx1bI7CyQHP8RB4lyaa/JJbJ46DSgycKp/3ZVyW53x3rxX
- SM5A==
-X-Gm-Message-State: AOAM532Kvm/r1g0NAfBPXik4+oAYIj22tT+Gt0iRH47qY4VUdUa7ef9Z
- wH6A4w94Xoud/zDBTawUEQ==
-X-Google-Smtp-Source: ABdhPJz5m+fIBjpw5F5peYuJ09KQImnLYi9vaCrFoMWMk0nUKJK3nt3vBV8Ay7r+mVs5n1Db2c5vBQ==
-X-Received: by 2002:a05:6808:120e:: with SMTP id
- a14mr28430803oil.122.1636747843746; 
- Fri, 12 Nov 2021 12:10:43 -0800 (PST)
+ bh=keLT6GqkBxKBg5E7mpziqAGsje8UnIi4oJ/70fWYsOk=;
+ b=RXHBcNfwbyqknOTaLOcCZrIaOPg7tdwHl97CStJ9PO90tuF6A0Q9gp2vTpWxuJiM7B
+ FhgvODYhHLJRxK9z6dRPKOACaTVJt8hwLz4Oc1xwxA2qpnpHMktxTJH6C01LirjCuGh6
+ t5gaRcpopPNF4a7q56ums96SqlLsTUs+pCLV+F2YAFXis4eohbVVyQj6Sk4/UEBUGXCE
+ IiA1prohrZtXoJYhVLG0urqd+F4a6GKQEs8H7txMa7U3IakSnYOJ3KKYGVMsrUqbx51Y
+ w2Z3g8AtROCmwnAPWE4ohTrCBYDBclbTvUfbPCVxocGkmk4KxkrJcrec6eIGNeBGYEs4
+ WGLw==
+X-Gm-Message-State: AOAM530PK/V4TIJ+K1ZnDMqz9b64BzFrMAn7L0Kd2HqN/PS5rWMH8Eeq
+ Bmd5oW4tX/fYRaHlgT6f7w==
+X-Google-Smtp-Source: ABdhPJz0IgudO9I+dADfCJrqhnAcSXUvXv7srFOWzM/tpxDv/VcAcn13Yy2W70rZqXpm+7Y/UoSzNQ==
+X-Received: by 2002:a9d:6307:: with SMTP id q7mr14945920otk.83.1636748115023; 
+ Fri, 12 Nov 2021 12:15:15 -0800 (PST)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net.
  [66.90.148.213])
- by smtp.gmail.com with ESMTPSA id t5sm1221415ool.10.2021.11.12.12.10.42
+ by smtp.gmail.com with ESMTPSA id y9sm1235608oon.8.2021.11.12.12.15.13
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 12 Nov 2021 12:10:43 -0800 (PST)
-Received: (nullmailer pid 3287649 invoked by uid 1000);
- Fri, 12 Nov 2021 20:10:42 -0000
-Date: Fri, 12 Nov 2021 14:10:42 -0600
+ Fri, 12 Nov 2021 12:15:14 -0800 (PST)
+Received: (nullmailer pid 3294254 invoked by uid 1000);
+ Fri, 12 Nov 2021 20:15:13 -0000
+Date: Fri, 12 Nov 2021 14:15:13 -0600
 From: Rob Herring <robh@kernel.org>
-To: Trevor Wu <trevor.wu@mediatek.com>
-Subject: Re: [PATCH 2/4] dt-bindings: mediatek: mt8195: add model property
-Message-ID: <YY7KQi6KN4KzVvh1@robh.at.kernel.org>
-References: <20211103100040.11933-1-trevor.wu@mediatek.com>
- <20211103100040.11933-3-trevor.wu@mediatek.com>
+To: YC Hung <yc.hung@mediatek.com>
+Subject: Re: [PATCH v5] dt-bindings: dsp: mediatek: Add mt8195 DSP binding
+ support
+Message-ID: <YY7LUWS5YDBBl/Kp@robh.at.kernel.org>
+References: <20211103102607.12277-1-yc.hung@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211103100040.11933-3-trevor.wu@mediatek.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, broonie@kernel.org,
- tiwai@suse.com, linux-kernel@vger.kernel.org, robh+dt@kernel.org,
- linux-mediatek@lists.infradead.org, yc.hung@mediatek.com,
+In-Reply-To: <20211103102607.12277-1-yc.hung@mediatek.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ allen-kh.cheng@mediatek.com, tiwai@suse.com, linux-kernel@vger.kernel.org,
+ broonie@kernel.org, linux-mediatek@lists.infradead.org, trevor.wu@mediatek.com,
  matthias.bgg@gmail.com, daniel.baluta@nxp.com,
- linux-arm-kernel@lists.infradead.org
+ linux-arm-kernel@lists.infradead.org, angelogioacchino.delregno@collabora.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,15 +96,120 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 03 Nov 2021 18:00:38 +0800, Trevor Wu wrote:
-> This patch adds the description of model property used to specify card
-> name from dts.
+On Wed, Nov 03, 2021 at 06:26:08PM +0800, YC Hung wrote:
+> From: "yc.hung" <yc.hung@mediatek.com>
 > 
-> Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
+> This describes the mt8195 DSP device tree node.
+> 
+> Signed-off-by: yc.hung <yc.hung@mediatek.com>
 > ---
->  .../bindings/sound/mt8195-mt6359-rt1011-rt5682.yaml           | 4 ++++
->  .../bindings/sound/mt8195-mt6359-rt1019-rt5682.yaml           | 4 ++++
->  2 files changed, 8 insertions(+)
+> Changes since v4:
+>   - remove patch 1 with clocks as it will be reviewed and merged to SOF tree.
+>     https://github.com/thesofproject/linux/pull/3237
+>   - refine DT file binding files with Rob's comments.
 > 
+>  .../bindings/dsp/mtk,mt8195-dsp.yaml          | 142 ++++++++++++++++++
+>  1 file changed, 142 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/dsp/mtk,mt8195-dsp.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/dsp/mtk,mt8195-dsp.yaml b/Documentation/devicetree/bindings/dsp/mtk,mt8195-dsp.yaml
+> new file mode 100644
+> index 000000000000..aeeb7af69625
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/dsp/mtk,mt8195-dsp.yaml
+> @@ -0,0 +1,142 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/dsp/mtk,mt8195-dsp.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Mediatek mt8195 DSP core
+> +
+> +maintainers:
+> +  - YC Hung <yc.hung@mediatek.com>
+> +
+> +description: |
+> +  Some boards from mt8195 contain a DSP core used for
+> +  advanced pre- and post- audio processing.
+> +properties:
+> +  compatible:
+> +    const: mediatek,mt8195-dsp
+> +
+> +  reg:
+> +    items:
+> +      - description: Address and size of the DSP Cfg registers
+> +      - description: Address and size of the DSP SRAM
+> +
+> +  reg-names:
+> +    items:
+> +      - const: cfg
+> +      - const: sram
+> +
+> +  interrupts:
+> +    items:
+> +      - description: watchdog interrupt
+> +
+> +  interrupt-names:
+> +    items:
+> +      - const: wdt
+> +
+> +  clocks:
+> +    items:
+> +      - description: mux for audio dsp clock
+> +      - description: 26M clock
+> +      - description: mux for audio dsp local bus
+> +      - description: default audio dsp local bus clock source
+> +      - description: clock gate for audio dsp clock
+> +      - description: mux for audio dsp access external bus
+> +
+> +  clock-names:
+> +    items:
+> +      - const: adsp_sel
+> +      - const: clk26m_ck
+> +      - const: audio_local_bus
+> +      - const: mainpll_d7_d2
+> +      - const: scp_adsp_audiodsp
+> +      - const: audio_h
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +  mboxes:
+> +    items:
+> +      - description: a mailbox is ised for ipc reply between host and audio DSP.
+> +      - description: a mailbox is ised for ipc reuqest between host and audio DSP.
+> +
+> +  mbox-names:
+> +    items:
+> +      - const: mbox0
+> +      - const: mbox1
+> +
+> +  memory-region:      
+> +    items:
+> +      - description: A phandle to a reserved memory region is used for dma buffer between host and DSP.   
+> +      - description: A phandle to a reserved memory region is used for DSP system memory.
+> +
+> +  sound:
+> +    description:
+> +      Sound subnode includes ASoC platform, DPTx codec node, and
+> +      HDMI codec node.
+> +
+> +    type: object
 
-Acked-by: Rob Herring <robh@kernel.org>
+Same question as v4, why do you need a sub-node here. Just move these 
+properties up a level.
+
+> +
+> +    properties:
+> +      mediatek,platform:
+> +        $ref: "/schemas/types.yaml#/definitions/phandle"
+> +        description: The phandle of MT8195 ASoC platform.
+> +
+> +      mediatek,dptx-codec:
+> +        $ref: "/schemas/types.yaml#/definitions/phandle"
+> +        description: The phandle of MT8195 Display Port Tx codec node.
+> +
+> +      mediatek,hdmi-codec:
+> +        $ref: "/schemas/types.yaml#/definitions/phandle"
+> +        description: The phandle of MT8195 HDMI codec node.
