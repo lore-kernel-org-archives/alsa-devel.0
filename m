@@ -2,71 +2,77 @@ Return-Path: <SRS0=QusE=P7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DBC5C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Nov 2021 21:30:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C57AC433FE
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Nov 2021 21:30:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9E5D6610A2
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Nov 2021 21:30:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9E5D6610A2
+	by mail.kernel.org (Postfix) with ESMTPS id 8DE27610F8
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Nov 2021 21:30:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8DE27610F8
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0032E167B;
-	Fri, 12 Nov 2021 22:29:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0032E167B
+	by alsa0.perex.cz (Postfix) with ESMTPS id F355B166F;
+	Fri, 12 Nov 2021 22:29:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F355B166F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1636752599;
-	bh=v321wXb5ExpBsj4Ht3Qt02JFmLNjlWOT5QGSF6eP2c4=;
+	s=default; t=1636752611;
+	bh=mf1NFqehFwwHUnvV8Idqyi02NlZ+oErngaqk4fic4S4=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rpHpNshFIW3kL74Pxc0jRl7yXLvW5K0+plpjM8E0tXrSzdDcA+Y+6RJNy48yziWzV
-	 dpkyRmv36nGjMDKocy7UNjMSQ62RIEeoheOKQmvsebV+fp9g0RtFAGiSMiRHedaL5X
-	 03i2RZ7xKathiCv5E9dJg37pkO1B9lNKjjdyFfGU=
+	b=hIOZqIiPC0qTINdgqE5B2vUucMfmyy5xMDWx6vbGEBjgC6HNmUZu9RfPR1OpcC6TH
+	 MwCNE6e0cs/8wJ0Mp3xi97MELzZc0HpVRkSPw/vBCZoiwZYAUWcbmKY46C9R1g3q5L
+	 wCwXkUoixKh8TST1PZ5n5Uwtd1NIiJmO5q0AawN0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 77DE9F804FA;
-	Fri, 12 Nov 2021 22:27:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2AE62F804FE;
+	Fri, 12 Nov 2021 22:27:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CA3F7F804F2; Fri, 12 Nov 2021 22:27:30 +0100 (CET)
+ id DAD20F804F1; Fri, 12 Nov 2021 22:27:30 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1EFBCF804B1
- for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2021 22:27:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1EFBCF804B1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0D601F80227;
+ Fri, 12 Nov 2021 22:27:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0D601F80227
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="p2zWjtdF"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F0ED610A5;
- Fri, 12 Nov 2021 21:27:16 +0000 (UTC)
+ header.b="aDvpP+DF"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 94C24610A2;
+ Fri, 12 Nov 2021 21:27:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1636752438;
- bh=v321wXb5ExpBsj4Ht3Qt02JFmLNjlWOT5QGSF6eP2c4=;
+ s=k20201202; t=1636752441;
+ bh=mf1NFqehFwwHUnvV8Idqyi02NlZ+oErngaqk4fic4S4=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=p2zWjtdFVCfkIXqUZlsxUQ4l9cDZOIKpi/xRyzdcIJgkX8AhyJ7jozju67mq06Mbs
- 3qsAGOo220UFWIGCorTrlAFyqqY4BlNJ2JG6Xk69IopMcV72L/kUrbjZc2rnmgmtfS
- ep48q+UvpQvWi1976fD5NkXJXmB8ixZm/IGbEaGv0BZJFrbqKsqx1nK6iHwPboq6Fl
- reOHDJR6q2EqrNwx9Bm47ew8m8+VtQSymhTZQiLE9WyPBBE8KMC5BKEs59KgA65dZm
- 0iVbQGFiiTDxJ84EcVUy3nB+oetDToIY8i6BEfvWyKFT9OPvpLIDKzDZf0GXimOUHP
- lzXjJZ6CoM75g==
+ b=aDvpP+DFJB4bvRNscJMY96pS4qYVLznkd7+8ok6kJBnfEWAG6Rs/zP85uScisafOM
+ 46pLOY/FFDOT/1wXZK0DaCEQyUsM12cnD+i/GLMayaIDICqfqGaaGZB4Qpg76yJSP+
+ 5rdDFu6I0kWG6wyXtucDnhxWYhLy9iqpx2x6P+AsjwLnvsapkiFso/9MKWas9CANA7
+ 8Vr2e9ZBgnUZaHkRgMcgfaUt8YWDmqRwznBQmt/SOktpPwpkkyri0OISTug1cJb5pL
+ 4IgWcF5po7zI6YEXX7bqZaR4C/cfd8+EMTnyUqKmnSFUKcVq+7agKp/uOACy7e8hBb
+ F90d4kadE61lw==
 From: Mark Brown <broonie@kernel.org>
-To: derek.fang@realtek.com, lgirdwood@gmail.com
-In-Reply-To: <20211109095450.12950-1-derek.fang@realtek.com>
-References: <20211109095450.12950-1-derek.fang@realtek.com>
-Subject: Re: [PATCH 1/2] ASoC: rt5682: Avoid the unexpected IRQ event during
- going to suspend
-Message-Id: <163675243626.742274.8169094214133344079.b4-ty@kernel.org>
-Date: Fri, 12 Nov 2021 21:27:16 +0000
+To: Liam Girdwood <lgirdwood@gmail.com>, Daniel Baluta <daniel.baluta@nxp.com>,
+ Arnd Bergmann <arnd@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>
+In-Reply-To: <20211108111132.3800548-1-arnd@kernel.org>
+References: <20211108111132.3800548-1-arnd@kernel.org>
+Subject: Re: [PATCH] ASoC: SOF: build compression interface into snd_sof.ko
+Message-Id: <163675243834.742274.3363954435285911217.b4-ty@kernel.org>
+Date: Fri, 12 Nov 2021 21:27:18 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
- lars@metafoo.de, albertchen@realtek.com, shumingf@realtek.com,
- flove@realtek.com
+Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>,
+ Bud Liviu-Alexandru <budliviu@gmail.com>, Randy Dunlap <rdunlap@infradead.org>,
+ Takashi Iwai <tiwai@suse.com>, Paul Olaru <paul.olaru@oss.nxp.com>,
+ Colin Ian King <colin.king@canonical.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, linux-kernel@vger.kernel.org,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,13 +88,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 9 Nov 2021 17:54:49 +0800, derek.fang@realtek.com wrote:
-> From: Derek Fang <derek.fang@realtek.com>
+On Mon, 8 Nov 2021 12:11:14 +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> When the system suspends, the codec driver will set SAR to
-> power saving mode if a headset is plugged in.
-> There is a chance to generate an unexpected IRQ, and leads to
-> issues after resuming such as noise from OMTP type headsets.
+> With CONFIG_SND_SOC_SOF_COMPRESS=m, the compression code is
+> not built into a the main SOF driver when that is built-in:
+> 
+> x86_64-linux-ld: sound/soc/sof/ipc.o: in function `ipc_stream_message':
+> ipc.c:(.text+0x5a2): undefined reference to `snd_sof_compr_fragment_elapsed'
+> x86_64-linux-ld: sound/soc/sof/topology.o: in function `sof_dai_load':
+> topology.c:(.text+0x32d1): undefined reference to `snd_sof_compr_init_elapsed_work'
+> x86_64-linux-ld: topology.c:(.text+0x32e1): undefined reference to `snd_sof_compr_init_elapsed_work'
 > 
 > [...]
 
@@ -98,10 +108,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: rt5682: Avoid the unexpected IRQ event during going to suspend
-      commit: a3774a2a6544a7a4a85186e768afc07044aa507f
-[2/2] ASoC: rt5682: Re-detect the combo jack after resuming
-      commit: 2cd9b0ef82d936623d789bb3fbb6fcf52c500367
+[1/1] ASoC: SOF: build compression interface into snd_sof.ko
+      commit: 1218f06cb3c6e2c51699998bc17c0d9a41ab37a6
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
