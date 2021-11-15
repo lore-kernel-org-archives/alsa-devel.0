@@ -2,73 +2,70 @@ Return-Path: <SRS0=FucB=QC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64736C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 23:36:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 66A10C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 23:37:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BF12361A40
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 23:36:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BF12361A40
+	by mail.kernel.org (Postfix) with ESMTPS id D990861B53
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 23:37:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D990861B53
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 148BE169D;
-	Tue, 16 Nov 2021 00:35:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 148BE169D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2BF53169E;
+	Tue, 16 Nov 2021 00:36:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2BF53169E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637019409;
-	bh=pPWGsdSRc3ah+Za5nl35yZ+jRecYwDbqdAFCvmivTqQ=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1637019434;
+	bh=fljXcnt0NW4ts0u0HOYNRGJqgyX3OFxwnxjFcxMhNf0=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=L90QWebgPTB2BgmvAI7caD+Nyv684gxXqRyRfIEMeCBblYAcqsKU1w49L0XxpFuq4
-	 C9HPi1UU+4xLZ8QHhP9l+1GcfSvnOlyrG/ZM2jGwg3f8i/TYDqRNvYQAIzMVo30rHj
-	 Lik54iCD+QM9ekIUPNslbFp2JviL0DDV+fRYkWUk=
+	b=IoUwe41KbbOUt+S34r7vQl2Yc25vQQZuY5nzowkrhdcLcrZ3Q0D9isnpVZTjM0jRP
+	 CNwyQjGQUQ/RSGLfyKCcGc6XdEJTAVs4qHRU7EbDa3VNczszB55J0+dlDjdXLHAraQ
+	 uCrvdhChpFJeGgP9VuJ4XVB0dfSHr8no/NMA8V48=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 227DAF804CF;
-	Tue, 16 Nov 2021 00:35:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 191B6F804F3;
+	Tue, 16 Nov 2021 00:35:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9E088F8049C; Tue, 16 Nov 2021 00:35:09 +0100 (CET)
+ id 0B2A6F804E7; Tue, 16 Nov 2021 00:35:10 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BA8E9F8049C
- for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2021 00:35:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA8E9F8049C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 63E0AF800FA
+ for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2021 00:35:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63E0AF800FA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="YLfrj8o2"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AA5C63257;
- Mon, 15 Nov 2021 23:35:02 +0000 (UTC)
+ header.b="IyQrUAT0"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A62FB63252;
+ Mon, 15 Nov 2021 23:35:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1637019305;
- bh=pPWGsdSRc3ah+Za5nl35yZ+jRecYwDbqdAFCvmivTqQ=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=YLfrj8o20Wo/XsGDGyxXCbPKBjuMweX+vvptZPnj8vt7RC9yL9b6x/Wbsf5Bsh0Uz
- 1J0WKO2v9qBsglUnc9qzoaATUhWOJclaFGE8EfGFdFHaqXeMwzOcDAkS7VHEsVqEP/
- T0X2+1TWd00UQM5tzzwr/ov/HRnMtmCHTNpE+k73jc6x5kKnAnCDCc46SjbvcLvNxa
- JQHxTyrrJJTXZD9sMpfMsMMV6uqYUKxgCeC/+QuJfdXZ7RW/o526saQA80/xORbHcS
- NjTPiWdewyfaAJw+wTxVb0soDVZFXmpvlDg+Fqa2yP6InumhzndQz9zrFSY9EsbT5u
- rAyTkKLQIP7Ag==
+ s=k20201202; t=1637019301;
+ bh=fljXcnt0NW4ts0u0HOYNRGJqgyX3OFxwnxjFcxMhNf0=;
+ h=From:To:In-Reply-To:References:Subject:Date:From;
+ b=IyQrUAT0hwOK0DbR7OXEvTaS4LasnZWjC8o6yYlemGJ6Bz54HLskjbfKxC2Fe+353
+ F4/8Ei/0kxKTXqjyegm2Av1cIQki1XIoi3q9qckjomyYsVZjq0YeA5poHRaoEameJ0
+ 9noaIs/0gatDFavUdnZ6EIIrHCE1kqK9tVrv+q8avEFhg5LAuirbGOHqzLJX2wpdxZ
+ r+dexf0fKKZ9yz7UVXmsrxyzrCtAChDRlgsGSB9+Rt3F+GudA2VHvBVukhSDoxA7Qa
+ uCWb40Z9T7rO+6QeZtaG1HN8YfVValQrjOR8Ocq3R/U/98RUZcazZoApsUESayvlYO
+ Z+PlQBKWtghfA==
 From: Mark Brown <broonie@kernel.org>
-To: swboyd@chromium.org, devicetree@vger.kernel.org, bjorn.andersson@linaro.org,
- linux-arm-msm@vger.kernel.org, perex@perex.cz, lgirdwood@gmail.com,
- alsa-devel@alsa-project.org, plai@codeaurora.org, robh+dt@kernel.org,
- rohitkr@codeaurora.org, judyhsiao@chromium.org, linux-kernel@vger.kernel.org,
- Srinivasa Rao Mandadapu <srivasam@codeaurora.org>, tiwai@suse.com,
- bgoswami@codeaurora.org, agross@kernel.org, srinivas.kandagatla@linaro.org
-In-Reply-To: <1635938324-17763-1-git-send-email-srivasam@codeaurora.org>
-References: <1635938324-17763-1-git-send-email-srivasam@codeaurora.org>
-Subject: Re: [PATCH] ASoC: codecs: MBHC: Add support for special headset
-Message-Id: <163701930197.675370.7604536221667945815.b4-ty@kernel.org>
-Date: Mon, 15 Nov 2021 23:35:01 +0000
+To: david.rhodes@cirrus.com, brian.austin@cirrus.com,
+ alsa-devel@alsa-project.org, David Rhodes <drhodes@opensource.cirrus.com>,
+ ckeepax@opensource.cirrus.com, patches@opensource.cirrus.com
+In-Reply-To: <20211029214028.401284-1-drhodes@opensource.cirrus.com>
+References: <20211029214028.401284-1-drhodes@opensource.cirrus.com>
+Subject: Re: (subset) [PATCH 1/2] ASoC: cs35l41: Change monitor widgets to
+ siggens
+Message-Id: <163701930042.675370.4765321366031881305.b4-ty@kernel.org>
+Date: Mon, 15 Nov 2021 23:35:00 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Venkata Prasad Potturu <potturu@codeaurora.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,11 +81,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 3 Nov 2021 16:48:44 +0530, Srinivasa Rao Mandadapu wrote:
-> Update MBHC driver to support special headset such as apple
-> and huwawei headsets.
+On Fri, 29 Oct 2021 16:40:27 -0500, David Rhodes wrote:
+> From: Charles Keepax <ckeepax@opensource.cirrus.com>
 > 
+> Currently the internal monitor sources are input widgets, which means
+> if the card is set to fully routed these will not enable unless connected
+> to something in the machine driver. However, all these are internal
+> monitor signals so it makes no sense to connect them to something in the
+> machine driver. As such switch them to siggen widgets which will have
+> the same behaviour except not require external linkage on a fully routed
+> card.
 > 
+> [...]
 
 Applied to
 
@@ -96,8 +100,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: codecs: MBHC: Add support for special headset
-      commit: 3c8a3ad4019126f06016ab0128dde11817502f52
+[2/2] ASoC: cs35l41: DSP Support
+      commit: bae9e13fc55cbc5ae25409385b2f1ba9187082d0
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
