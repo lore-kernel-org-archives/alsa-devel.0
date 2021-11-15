@@ -2,158 +2,84 @@ Return-Path: <SRS0=FucB=QC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E8222C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 08:57:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BF183C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 08:58:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 23E5660F0F
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 08:57:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 23E5660F0F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id 4720560F0F
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 08:58:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4720560F0F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3270E1616;
-	Mon, 15 Nov 2021 09:57:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3270E1616
+	by alsa0.perex.cz (Postfix) with ESMTPS id 99AFE1673;
+	Mon, 15 Nov 2021 09:57:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99AFE1673
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1636966675;
-	bh=IWWgq3EQVOe+uiZBemzO2FQgxRJkUC8FYft5Gm0mcGQ=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=pr0qRhFdg5/SUBSkMMLRcROWo+FLBNYCEWPBEKEfvWA4N1tyJVSQgVgZaaSa1Q6Te
-	 nIl2HdS5NKysm2AKVsmD0eALKZcntdE6xCgelP82gUjqwtP/D5ms5neMOFjCX3ixsk
-	 3kH5NR8vTQ3Z0PCRAn6u6bf/dM9hqgCZ9IW8C4e8=
+	s=default; t=1636966718;
+	bh=1h0g2AYqXFphX4dDyELLl2t7YQIUXZ6UIHT7JYg2iMs=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=XwitsQFfNfdKxTjtXmtNrMYuEjzAO+ypnqui9C+vK6f7VK8uv9W/fQQ0BzmrhiqoT
+	 nFz931/UFqssEMH8mbAEoBrWNNsNad9MJnhZQ2jddhx1Z8z0U+au1rlmk1vha3MlYo
+	 5qnMWr4Hjj8xfMZWRSo1nrmF3qEEUv8sGKwUzinI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B885FF801D5;
-	Mon, 15 Nov 2021 09:57:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 86C6AF8028B;
+	Mon, 15 Nov 2021 09:57:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3BC79F8049E; Fri, 12 Nov 2021 08:42:52 +0100 (CET)
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com
- [IPv6:2a00:1450:4864:20::334])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 6DAC3F8028B; Mon, 15 Nov 2021 09:55:01 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F1D9CF800C1
- for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2021 08:42:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1D9CF800C1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 32370F80163
+ for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2021 09:54:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32370F80163
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="L0G7vqzI"
-Received: by mail-wm1-x334.google.com with SMTP id
- d72-20020a1c1d4b000000b00331140f3dc8so6148308wmd.1
- for <alsa-devel@alsa-project.org>; Thu, 11 Nov 2021 23:42:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:content-transfer-encoding:in-reply-to;
- bh=d4YpBbYWP9wG3LFBKWknnju7IW21BdQrAXLAFoUfJjk=;
- b=L0G7vqzIu4OmVtWPcfcfA5NzLtPk2i0H7s2BzObNlHQTFEkm03sqk/2QHQ4kjpk9BH
- XMXouE5QpmwrxFfo6B5ZLvuccwWWhT/w9Ko9Yi7L+7BfDDnicqyRLnT+TM8ck5H5bQEY
- cyD6P6qfh9iWldNqTQR7o5UJ+sXkSMXyDzLNU6kkBq7ka/+ZuUqEk/qcSbQ3GxXC7kiU
- cm9dyledHK9n0gr3crraQGaAfhd3vfTQwfXVu/kwmwojjE1dRCSgNEVgeiJJB70r7ke9
- OYePQHHEPa/usZJXytv516/nCeAGVXFsmZBOHnIcNaOTOhsULeXowN7ikvsxKqOo/gxw
- 3O2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:content-transfer-encoding
- :in-reply-to;
- bh=d4YpBbYWP9wG3LFBKWknnju7IW21BdQrAXLAFoUfJjk=;
- b=0IbJ8+BlMbDYvs3qAztj8JKI19UfP4dsDoFEsWIWQjlrYQEZ/04ko+O+PgTfO6p13r
- hg1uJ6ciEj9CK/F+KrIDeObuspLLhHzYZ++R9pD/+zX6EimGCF8ywoY5nCcLNK1eJEWJ
- m87sF5mt9P3ltpaudBwq/ddPX4wDQNAh4nhSIkGL6YqPTJJfvEhhSaegRqjPBRrp+NPs
- KTqyq9kanl/0NfgcbAwp7EOET2aaY+cgHMGujAw5sZte5Z5Il6HeIz4T+G7ENtuJz+qb
- h/7pNkV2NH4tPbqyZ1Lb5qvolEpvOPoU89/ik/CAL2N+ozMdUzcVUpJ21hfpotRbnswI
- Ghow==
-X-Gm-Message-State: AOAM530kqJEjMkzWo0+opGl8CL7wHYz7x6777QaUyMkbsJ6+1mn/4/Jw
- SxOWT98vvWKgPfKZBzZjZKceNg==
-X-Google-Smtp-Source: ABdhPJyYtg+MHn61GMl0MRFqSO/sm1wnHgrm7yORmq7WT7ihtvN7d0mp317CBhRDaom5mAlXGDszmg==
-X-Received: by 2002:a05:600c:2107:: with SMTP id
- u7mr32377342wml.82.1636702961238; 
- Thu, 11 Nov 2021 23:42:41 -0800 (PST)
-Received: from google.com ([95.148.6.174])
- by smtp.gmail.com with ESMTPSA id q8sm4978469wrx.71.2021.11.11.23.42.38
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 11 Nov 2021 23:42:40 -0800 (PST)
-Date: Fri, 12 Nov 2021 07:42:37 +0000
-From: Lee Jones <lee.jones@linaro.org>
-To: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v3 2/5] dt-bindings: mfd: timers: Update maintainers for
- st,stm32-timers
-Message-ID: <YY4a7ZxzhNq6Or+t@google.com>
-References: <20211110150144.18272-1-patrice.chotard@foss.st.com>
- <20211110150144.18272-3-patrice.chotard@foss.st.com>
- <YYwjPAoCtuM6iycz@robh.at.kernel.org>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="kv+C8zB0"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9880061BE2;
+ Mon, 15 Nov 2021 08:54:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1636966486;
+ bh=1h0g2AYqXFphX4dDyELLl2t7YQIUXZ6UIHT7JYg2iMs=;
+ h=From:To:Cc:Subject:Date:From;
+ b=kv+C8zB0tbPMdXf3ORNkXrRH4MrGq92/hxOUWQ7rrNLjPwyN92rkebIKY8icgiOfU
+ pMdG65xZlUKOnr8NUOP6pmXxc3gZzuCmcsiwcDOb6St8hs6LkWB6n1ZZo98RlrnVvp
+ FkqOBIn33Yi9JZOuQ6miAmszWpYRosGKoEiu9hmpXWXS0VgUXakje0NXKySH0Rz+mZ
+ 5B6hNND+tRm0kn91fmSGmzeWYTduFgTH0JLa1xNb8xKQOI2gwIYz/OsIEp39PngVMt
+ ez7HK1j37N1+6Gl5sR4/i/hvvdNCZ5Sdb+Rvh2P8BC4uYTPFd5lIc2Ou5i9m3hH8E0
+ 48X4U7Q98MS4A==
+From: Arnd Bergmann <arnd@kernel.org>
+To: Vinod Koul <vkoul@kernel.org>
+Subject: [PATCH 00/11] dmaengine: kill off dma_slave_config->slave_id
+Date: Mon, 15 Nov 2021 09:53:52 +0100
+Message-Id: <20211115085403.360194-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YYwjPAoCtuM6iycz@robh.at.kernel.org>
 X-Mailman-Approved-At: Mon, 15 Nov 2021 09:57:03 +0100
-Cc: Ludovic Barre <ludovic.barre@foss.st.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- "Rafael J . Wysocki" <rafael@kernel.org>,
- Viresh Kumar <viresh.kumar@linaro.org>,
- Linus Walleij <linus.walleij@linaro.org>, dri-devel@lists.freedesktop.org,
- Miquel Raynal <miquel.raynal@bootlin.com>, linux-clk@vger.kernel.org,
- Jassi Brar <jassisinghbrar@gmail.com>, Jose Abreu <joabreu@synopsys.com>,
- olivier moysan <olivier.moysan@foss.st.com>,
- Guenter Roeck <linux@roeck-us.net>, ohad ben-cohen <ohad@wizery.com>,
- linux-pm@vger.kernel.org, Matt Mackall <mpm@selenic.com>,
- Thomas Gleixner <tglx@linutronix.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
- Gabriel Fernandez <gabriel.fernandez@foss.st.com>,
- linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- david airlie <airlied@linux.ie>,
- Christophe Roullier <christophe.roullier@foss.st.com>,
- thierry reding <thierry.reding@gmail.com>, linux-i2c@vger.kernel.org,
- linux-spi@vger.kernel.org, lars-peter clausen <lars@metafoo.de>,
- Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- linux-stm32@st-md-mailman.stormreply.com,
- Fabien Dessenne <fabien.dessenne@foss.st.com>,
- Jagan Teki <jagan@amarulasolutions.com>, linux-media@vger.kernel.org,
- linux-watchdog@vger.kernel.org, Amelie Delaunay <amelie.delaunay@foss.st.com>,
- linux-gpio@vger.kernel.org, Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
- Giuseppe Cavallaro <peppe.cavallaro@st.com>,
- linux-arm-kernel@lists.infradead.org,
- Mathieu Poirier <mathieu.poirier@linaro.org>, stephen boyd <sboyd@kernel.org>,
- pascal Paillet <p.paillet@foss.st.com>,
- maxime coquelin <mcoquelin.stm32@gmail.com>,
- Sebastian Reichel <sre@kernel.org>, jonathan cameron <jic23@kernel.org>,
- Le Ray <erwan.leray@foss.st.com>, linux-iio@vger.kernel.org,
- michael turquette <mturquette@baylibre.com>, Amit Kucheria <amitk@kernel.org>,
- alsa-devel@alsa-project.org, linux-mtd@lists.infradead.org,
+Cc: alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org,
+ Bjorn Andersson <bjorn.andersson@linaro.org>, linux-tegra@vger.kernel.org,
+ Thierry Reding <thierry.reding@gmail.com>, linux-mtd@lists.infradead.org,
  Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- benjamin gaignard <benjamin.gaignard@linaro.org>,
- linux-phy@lists.infradead.org, sam ravnborg <sam@ravnborg.org>,
- linux-rtc@vger.kernel.org, Kishon Vijay Abraham I <kishon@ti.com>,
- arnaud pouliquen <arnaud.pouliquen@foss.st.com>, patrice.chotard@foss.st.com,
- Mark Brown <broonie@kernel.org>, Mauro Carvalho Chehab <mchehab@kernel.org>,
- Christophe Kerello <christophe.kerello@foss.st.com>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Liam Girdwood <lgirdwood@gmail.com>, baolin wang <baolin.wang7@gmail.com>,
- "david s . miller" <davem@davemloft.net>,
- Vignesh Raghavendra <vigneshr@ti.com>, linux-remoteproc@vger.kernel.org,
- alexandre torgue <alexandre.torgue@foss.st.com>,
- bjorn andersson <bjorn.andersson@linaro.org>,
- Paul Cercueil <paul@crapouillou.net>,
- Lionel Debieve <lionel.debieve@foss.st.com>, Marek Vasut <marex@denx.de>,
- Marc Zyngier <maz@kernel.org>, Ahmad Fatoum <a.fatoum@pengutronix.de>,
- herbert xu <herbert@gondor.apana.org.au>,
- Hugues Fruchet <hugues.fruchet@foss.st.com>, linux-serial@vger.kernel.org,
- Jakub Kicinski <kuba@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
- devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
- Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>,
- Wim Van Sebroeck <wim@linux-watchdog.org>,
- dillon min <dillon.minfei@gmail.com>, Alessandro Zummo <a.zummo@towertech.it>,
- netdev@vger.kernel.org, yannick fertre <yannick.fertre@foss.st.com>,
- vinod koul <vkoul@kernel.org>, philippe cornu <philippe.cornu@foss.st.com>,
- daniel vetter <daniel@ffwll.ch>, Richard Weinberger <richard@nod.at>,
- dmaengine@vger.kernel.org
+ linux-spi@vger.kernel.org, Robert Jarzmik <robert.jarzmik@free.fr>,
+ Lars-Peter Clausen <lars@metafoo.de>, Chunyan Zhang <zhang.lyra@gmail.com>,
+ linux-staging@lists.linux.dev, Michal Simek <michal.simek@xilinx.com>,
+ Jon Hunter <jonathanh@nvidia.com>, Andy Gross <agross@kernel.org>,
+ bcm-kernel-feedback-list@broadcom.com, linux-serial@vger.kernel.org,
+ Orson Zhai <orsonzhai@gmail.com>, Nicolas Saenz Julienne <nsaenz@kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>, Manivannan Sadhasivam <mani@kernel.org>,
+ linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>, linux-rpi-kernel@lists.infradead.org,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ linux-arm-kernel@lists.infradead.org, Scott Branden <sbranden@broadcom.com>,
+ Hyun Kwon <hyun.kwon@xilinx.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-mmc@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+ Laxman Dewangan <ldewangan@nvidia.com>, Baolin Wang <baolin.wang7@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -169,31 +95,96 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 10 Nov 2021, Rob Herring wrote:
+From: Arnd Bergmann <arnd@arndb.de>
 
-> On Wed, 10 Nov 2021 16:01:41 +0100, patrice.chotard@foss.st.com wrote:
-> > From: Patrice Chotard <patrice.chotard@foss.st.com>
-> > 
-> > Benjamin has left the company, remove his name from maintainers.
-> > 
-> > Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
-> > ---
-> >  Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml | 1 -
-> >  1 file changed, 1 deletion(-)
-> > 
-> 
-> Lee indicated he was going to pick this one up, so:
-> 
-> Acked-by: Rob Herring <robh@kernel.org>
+I recently came across some new uses of the 'slave_id' field that
+I had (almost) removed a few years ago. There are no legitimate
+uses of this field in the kernel, only a few stale references and
+two drivers that abuse the field as a side-channel between the
+dmaengine driver and its client.
 
-Since you already merged the treewide patch, you may as well take
-this too.  We'll work through any conflicts that may occur as a
-result.
+Let's change the xilinx and qualcomm drivers to use the documented
+side-channel (peripheral_data) instead, and remove the remnants of
+it to prevent new users from coming in.
 
-Acked-by: Lee Jones <lee.jones@linaro.org>
+As the last patch in the series depends on all the others, it would
+be nice have everything merged into the dmaengine tree for v5.17.
+
+       Arnd
+
+Arnd Bergmann (11):
+  ASoC: dai_dma: remove slave_id field
+  spi: pic32: stop setting dma_config->slave_id
+  mmc: bcm2835: stop setting chan_config->slave_id
+  dmaengine: shdma: remove legacy slave_id parsing
+  dmaengine: pxa/mmp: stop referencing config->slave_id
+  dmaengine: sprd: stop referencing config->slave_id
+  dmaengine: qcom-adm: stop abusing slave_id config
+  dmaengine: xilinx_dpdma: stop using slave_id field
+  dmaengine: tegra20-apb: stop checking config->slave_id
+  staging: ralink-gdma: stop using slave_id config
+  dmaengine: remove slave_id config field
+
+ drivers/dma/mmp_pdma.c                    |  6 ---
+ drivers/dma/pxa_dma.c                     |  7 ---
+ drivers/dma/qcom/qcom_adm.c               | 56 ++++++++++++++++++++---
+ drivers/dma/sh/shdma-base.c               |  8 ----
+ drivers/dma/sprd-dma.c                    |  3 --
+ drivers/dma/tegra20-apb-dma.c             |  6 ---
+ drivers/dma/xilinx/xilinx_dpdma.c         | 12 +++--
+ drivers/gpu/drm/xlnx/zynqmp_disp.c        |  9 +++-
+ drivers/mmc/host/bcm2835.c                |  2 -
+ drivers/mtd/nand/raw/qcom_nandc.c         | 14 +++++-
+ drivers/spi/spi-pic32.c                   |  2 -
+ drivers/staging/ralink-gdma/ralink-gdma.c | 12 ++---
+ drivers/tty/serial/msm_serial.c           | 15 +++++-
+ include/linux/dma/qcom_adm.h              | 12 +++++
+ include/linux/dma/xilinx_dpdma.h          | 11 +++++
+ include/linux/dmaengine.h                 |  4 --
+ include/sound/dmaengine_pcm.h             |  2 -
+ sound/core/pcm_dmaengine.c                |  5 +-
+ sound/soc/tegra/tegra20_spdif.c           |  1 -
+ 19 files changed, 119 insertions(+), 68 deletions(-)
+ create mode 100644 include/linux/dma/qcom_adm.h
+ create mode 100644 include/linux/dma/xilinx_dpdma.h
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.30.2
+
+Cc: Andy Gross <agross@kernel.org>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Baolin Wang <baolin.wang7@gmail.com>
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: Chunyan Zhang <zhang.lyra@gmail.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Hyun Kwon <hyun.kwon@xilinx.com>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Jon Hunter <jonathanh@nvidia.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: Laxman Dewangan <ldewangan@nvidia.com>
+Cc: Manivannan Sadhasivam <mani@kernel.org>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Michal Simek <michal.simek@xilinx.com>
+Cc: Nicolas Saenz Julienne <nsaenz@kernel.org>
+Cc: Orson Zhai <orsonzhai@gmail.com>
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Scott Branden <sbranden@broadcom.com>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: Thierry Reding <thierry.reding@gmail.com>
+Cc: Vinod Koul <vkoul@kernel.org>
+Cc: alsa-devel@alsa-project.org
+Cc: bcm-kernel-feedback-list@broadcom.com
+Cc: dmaengine@vger.kernel.org
+Cc: dri-devel@lists.freedesktop.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-arm-msm@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-mmc@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org
+Cc: linux-rpi-kernel@lists.infradead.org
+Cc: linux-serial@vger.kernel.org
+Cc: linux-spi@vger.kernel.org
+Cc: linux-staging@lists.linux.dev
+Cc: linux-tegra@vger.kernel.org
