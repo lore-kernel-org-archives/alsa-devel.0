@@ -2,69 +2,71 @@ Return-Path: <SRS0=FucB=QC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CA5FBC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 20:20:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 91FBFC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 20:20:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0486D63232
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 20:20:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0486D63232
+	by mail.kernel.org (Postfix) with ESMTPS id 1B2A663236
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 20:20:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1B2A663236
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 68D44169E;
-	Mon, 15 Nov 2021 21:19:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 68D44169E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 67CF016B6;
+	Mon, 15 Nov 2021 21:19:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 67CF016B6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637007607;
-	bh=VoDZ04M7KgSfA79qwh4lw4QFKQUO2TRi2lCT6RkZrwo=;
+	s=default; t=1637007616;
+	bh=K3pfS4NVMA2CpFVPUUWV/jwChtsYnKjFN0rX/alvMW4=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rDLgS/5NDCaPhHeV25d1lJOqtTVyWGqnnbjOSWthKKe1ywzHldeQTjU+iclAbeoYJ
-	 artc+t7Lu9FNAZPZ4Lu9UT43yKcxhh5DVsZCcbuuSWr+hDh9jtKMeeywud0coQz6gK
-	 4y/jAv6Vj4HxAJOMUhWcne2nAXA9LakA0nk5GM4A=
+	b=YSWwfR7R/henN4HNQv+4FjVs5TVi29Epup6kqsfcYO2kXHQ0gfuMGY0Co3PmZlvt1
+	 7iSkZlacVgLBc8ITFGBps0QQsa3t32Kdktu5WefSDHCGTEzZ6SIugPLxwMOKmlmxUu
+	 EE9e35QW8rKJguvCBVN6fonIMxOiUaEbjKULQxLw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 64FC5F8028B;
-	Mon, 15 Nov 2021 21:18:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 19C47F804CF;
+	Mon, 15 Nov 2021 21:18:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A1FA4F8027D; Mon, 15 Nov 2021 21:18:31 +0100 (CET)
+ id 497B7F802A0; Mon, 15 Nov 2021 21:18:35 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B18D5F80163
- for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2021 21:18:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B18D5F80163
+ by alsa1.perex.cz (Postfix) with ESMTPS id A5D5EF8028B
+ for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2021 21:18:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5D5EF8028B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="XfKt/I7J"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 081D161C12;
- Mon, 15 Nov 2021 20:18:24 +0000 (UTC)
+ header.b="GnaAa3OM"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 67C8961BFE;
+ Mon, 15 Nov 2021 20:18:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1637007506;
- bh=VoDZ04M7KgSfA79qwh4lw4QFKQUO2TRi2lCT6RkZrwo=;
+ s=k20201202; t=1637007508;
+ bh=K3pfS4NVMA2CpFVPUUWV/jwChtsYnKjFN0rX/alvMW4=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=XfKt/I7JvVxyiusNUxr6q9qw2xFY/CPes4ibLLmypAcFsC0GioN16jszEV23XXQ90
- R1zgzTFBvLZuCZtosm/W8NpbcXd8oGo8prJJmqAmfsAh+uRoVAUj5lVfgCkSindE/+
- kp/ZMFusITgDXR+FBH6IdK2hpqA+OtkxXzeZSOhlSgN3vUi8s3eGNwW1woJEvdC4KI
- M+qJNOSTg7N4Oy3jd85zfIVRGnxIHo71NPgT9Ip+ZcbpmyMo2HWCzXTh84HFeWYBlt
- w4kMxFeLki2oM2KVqC+uHgyltz/e/0m5V0R15I8It3IdAkOiPk6f0BKAPvCuStQuLo
- uOGJseEzo8BUA==
+ b=GnaAa3OMfZjo0cdkgZJPQdMWdKnJe2oF94QBvMIgKUL2AeeNHfpj6tgH7KjefnNWS
+ xa16sWmbNMynWx89TRjz0BV529TEsM/JAOYDBAP03ub/AzuBqwt5YSM2Nt5jIXIsg/
+ 8USGrkghwCn4f3Qqz9z5aSOaTOxz2S4wdIEqHWDYIsXL9+o8AO3xgY2VFol0RmoHj1
+ NVD8XVrVN+uCfW32VTTc/STp0+ltHjeFVNMGluPHBwXIPFptNqvNHfgHlar1kJXaIJ
+ WRXz4gz/O4sr1flZYelXgBj//rplzrzJ7i+Gxu+rOeQh42qXubmopWE2RP3y4/Wcou
+ 7bVZhgjZPANDg==
 From: Mark Brown <broonie@kernel.org>
-To: Bard Liao <yung-chuan.liao@linux.intel.com>, tiwai@suse.de
-In-Reply-To: <20211027021824.24776-1-yung-chuan.liao@linux.intel.com>
-References: <20211027021824.24776-1-yung-chuan.liao@linux.intel.com>
-Subject: Re: [PATCH 00/10] ASoC: Intel: sof_sdw: Use fixed DAI link id
-Message-Id: <163700750477.2049880.12689563980530529455.b4-ty@kernel.org>
-Date: Mon, 15 Nov 2021 20:18:24 +0000
+To: perex@perex.cz, robh+dt@kernel.org, tiwai@suse.com,
+ Vincent Knecht <vincent.knecht@mailoo.org>, stephan@gerhold.net,
+ lgirdwood@gmail.com
+In-Reply-To: <20211031210956.812101-1-vincent.knecht@mailoo.org>
+References: <20211031210956.812101-1-vincent.knecht@mailoo.org>
+Subject: Re: [PATCH 0/2] Add tfa9897 rcv-gpios support
+Message-Id: <163700750616.2049880.11874024359672809309.b4-ty@kernel.org>
+Date: Mon, 15 Nov 2021 20:18:26 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
- bard.liao@intel.com
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ ~postmarketos/upstreaming@lists.sr.ht, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,22 +82,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 27 Oct 2021 10:18:14 +0800, Bard Liao wrote:
-> This series provides a way to use constant dailink numbers for different
-> devices. So that we don't need to renumber them in topologies.
-> Some patches with different purpose are sent together in this series
-> since they are dependent.
-> 
-> Bard Liao (8):
->   ASoC: intel: sof_sdw: return the original error number
->   ASoC: intel: sof_sdw: rename be_index/link_id to link_index
->   ASoC: intel: sof_sdw: Use a fixed DAI link id for AMP
->   ASoC: intel: sof_sdw: move DMIC link id overwrite to
->     create_sdw_dailink
->   ASoC: intel: sof_sdw: remove SOF_RT715_DAI_ID_FIX quirk
->   ASoC: intel: sof_sdw: remove sof_sdw_mic_codec_mockup_init
->   ASoC: intel: sof_sdw: remove get_next_be_id
->   ASoC: intel: sof_sdw: add link adr order check
+On Sun, 31 Oct 2021 22:09:54 +0100, Vincent Knecht wrote:
+> This is the continuation of a previous series [1] where
+> - patch 1/4 is removed in favor of using pin switch
+>   This will be posted independently of tfa989x support,
+>   since it mainly require changes to sound/soc/qcom/common.c
+>   and device DTS.
+> - patch 2/4 is already merged
+> so here are reworked patch 3/4 (bindings fixed and example added)
+> and patch 4/4 unchanged.
 > 
 > [...]
 
@@ -105,26 +100,10 @@ Applied to
 
 Thanks!
 
-[01/10] ASoC: intel: sof_sdw: return the original error number
-        commit: dd31ddd81904070d0a9cafd5499d3210a322f8af
-[02/10] ASoC: Intel: sof_sdw: fix jack detection on HP Spectre x360 convertible
-        commit: 0527b19fa4f390a6054612e1fa1dd4f8efc96739
-[03/10] ASoC: Intel: sof_sdw: add SKU for Dell Latitude 9520
-        commit: 1071f2415b6b4ee653869acabfb26de1a27da9cd
-[04/10] ASoC: intel: sof_sdw: rename be_index/link_id to link_index
-        commit: b63137cf5167b73d9d68a2334b835996bfc3b941
-[05/10] ASoC: intel: sof_sdw: Use a fixed DAI link id for AMP
-        commit: d471c034f83201f84330e9ed46ad5139d32e77ce
-[06/10] ASoC: intel: sof_sdw: move DMIC link id overwrite to create_sdw_dailink
-        commit: bf605cb042307d162fbcb094738bab5d767f1261
-[07/10] ASoC: intel: sof_sdw: remove SOF_RT715_DAI_ID_FIX quirk
-        commit: f8f8312263e2d0c38dd0330a4503dcdcc94d0cd5
-[08/10] ASoC: intel: sof_sdw: remove sof_sdw_mic_codec_mockup_init
-        commit: bd98394a811c7dc39bcd189cf5f33925f0c30ae2
-[09/10] ASoC: intel: sof_sdw: remove get_next_be_id
-        commit: 4ed65d6ead29a992c4803e1138a6042caa6ec2a3
-[10/10] ASoC: intel: sof_sdw: add link adr order check
-        commit: 296c789ce1e501be8b46ebb24da4ba53063cc10a
+[1/2] ASoC: dt-bindings: nxp, tfa989x: Add rcv-gpios property for tfa9897
+      commit: 77fffb83933ad9e514ea0c7fd93b28cabcdea311
+[2/2] ASoC: codecs: tfa989x: Add support for tfa9897 optional rcv-gpios
+      commit: 9da52c39b33e7bd9c1f56175c0466fa468d7f145
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
