@@ -2,101 +2,103 @@ Return-Path: <SRS0=e+ka=QF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1800CC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 16:35:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 48A35C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 16:36:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 751C561A58
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 16:35:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 751C561A58
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=metafoo.de
+	by mail.kernel.org (Postfix) with ESMTPS id C3A1461A58
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 16:36:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C3A1461A58
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D3695187B;
-	Thu, 18 Nov 2021 17:35:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D3695187B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3A98718A3;
+	Thu, 18 Nov 2021 17:35:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A98718A3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637253352;
-	bh=74nWMRYQHu6gg7ByGecDHk/oQBAwRGY8oU4S/lnSq+8=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1637253370;
+	bh=ngAS50rMmpV59azjOqW2oXCBrEGHx6Ekm0yN36KEY7k=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AW3erhgxzLVmix7lbTKH9Lqa4ZJM/3DpuUbJi5wFME9GeHm/TjOxTXyXvZbLdp9QJ
-	 FsiD83AzxAjueRBfUeEKXvMdJWJLPdcCqJJB4VEFb050LvY49T1XQ+tSGw3pJtIXSf
-	 9gPdWM/2O75CNSgOELeJbj/Tarilws4dpcgApgCs=
+	b=DLlbJ93mNWub1QlGBNEqZ/i48DQaUc/wL+3UPPme8brdvh19rQYgnmfDuPmV9l/tG
+	 SE1LlxN42IJt1YUGp/DESGNNDituE0UmHagt+A2IaBWBRcU75iguMOhUwrGHRTOBMy
+	 r1ofdq77CcKGRho0n7wg4GwLtz18u/R8s1KjdwE4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7C825F804FE;
-	Thu, 18 Nov 2021 17:33:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D3CEEF80508;
+	Thu, 18 Nov 2021 17:33:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E78B2F8027D; Mon, 15 Nov 2021 11:14:34 +0100 (CET)
-Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 9845EF8027D; Mon, 15 Nov 2021 11:22:03 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 367CFF800FA
- for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2021 11:14:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 367CFF800FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id EEAF8F80134
+ for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2021 11:21:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EEAF8F80134
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=metafoo.de header.i=@metafoo.de
- header.b="hwsQlcKA"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de; 
- s=default2002;
- h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
- MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
- Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
- Resent-To:Resent-Cc:Resent-Message-ID;
- bh=zKle5O4Hm0rsP20JwKxCewz8QF7Q9nSdwfLsov0N4vA=; b=hwsQlcKAS/JXya4kJAPUiPtqXb
- 9UMOU27cfaU5N7Tp8fyitDY1674HxtfXStnOTcAeHYihKpPwkh4BzHNyU3L8ni0MlEqLJvF3Tru5q
- B2eTXmMb/S3sAqTnVmA3k/cGfwJUJMXtyrqmrWCjYFQvJczCRjGLBk4fscjkPc04xA/T/XuzDoZfc
- XILRH6/Bd05bjkDrhLZT2E2VeKzK0ieAQRQtDzTV4WK2WZN7kHtarwsy+N/oRQtAZ3G4YUkB/BJh8
- efgVXyOr3W5pPKLt/HNdG7cIpevglHN4SkSIlzyhRsuDMLifVtTNbhdmELMY5HB4kAhXJnGP0TpjZ
- VMZfg1mg==;
-Received: from sslproxy01.your-server.de ([78.46.139.224])
- by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
- (Exim 4.92.3) (envelope-from <lars@metafoo.de>)
- id 1mmZ0A-000A8L-4d; Mon, 15 Nov 2021 11:14:14 +0100
-Received: from [82.135.83.112] (helo=[192.168.178.20])
- by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
- (Exim 4.92) (envelope-from <lars@metafoo.de>)
- id 1mmZ09-0008BB-1V; Mon, 15 Nov 2021 11:14:13 +0100
-Subject: Re: [PATCH 01/11] ASoC: dai_dma: remove slave_id field
-To: Arnd Bergmann <arnd@kernel.org>, Vinod Koul <vkoul@kernel.org>
-References: <20211115085403.360194-1-arnd@kernel.org>
- <20211115085403.360194-2-arnd@kernel.org>
-From: Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <647b842d-76a1-7a96-3ea7-8a37b62bc18e@metafoo.de>
-Date: Mon, 15 Nov 2021 11:14:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="oHFZaspA"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9893C63225
+ for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2021 10:21:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1636971708;
+ bh=ngAS50rMmpV59azjOqW2oXCBrEGHx6Ekm0yN36KEY7k=;
+ h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+ b=oHFZaspA4e0JT2Bappei5MG7xUfxAKnXH43mnsdk+R7rbsdvrD3kUDLGpF994Lv8o
+ iEcy1Ug+arpeVBA1gxKJr+XFzRMEEncjc2K9qzGu6o1iL3o1bXVBgArPKaXh3sM1KT
+ pqByKGVIvlUsnVpeQARzzgb4qc9a17HQolmIyWVeIgrGPfLon8Wq7NbhnRmyj2zeoK
+ 0Pg+gQgghuvRxMHQ7IajfS53HSxlou+O9e931O/rQqPebWyZ0jpnTj4gKlP7r3MKfQ
+ +aPZLeOvA+8d8JqKBiRKzMCqrAk2Zb1jIIa11uVmY4fIYw/I+SHpBH5/oWpHirfE6z
+ g6me8ygTpOC9g==
+Received: by mail-wr1-f49.google.com with SMTP id c4so29523024wrd.9
+ for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2021 02:21:48 -0800 (PST)
+X-Gm-Message-State: AOAM531LROI0mSgovGMqNUSAOyFsNcf52T3X9y2bs94phWdRsIKSW2YD
+ JarL3s6LgE0VIghz+wNPmtQHUyteiYZ7T/YutjI=
+X-Google-Smtp-Source: ABdhPJyrUjRCeMXfDabLLUXG4+a6meFiuvFYQKG804WvMbrQRiaBMGWgH0F0OdgqzdIGH+oZqJIqfFrTkkuSnIDyxB0=
+X-Received: by 2002:adf:df89:: with SMTP id z9mr45196660wrl.336.1636971706955; 
+ Mon, 15 Nov 2021 02:21:46 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20211115085403.360194-2-arnd@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.103.3/26354/Mon Nov 15 10:21:07 2021)
+References: <20211115085403.360194-1-arnd@kernel.org>
+ <20211115085403.360194-9-arnd@kernel.org>
+ <YZIk6cVb7XibrMjf@pendragon.ideasonboard.com>
+In-Reply-To: <YZIk6cVb7XibrMjf@pendragon.ideasonboard.com>
+From: Arnd Bergmann <arnd@kernel.org>
+Date: Mon, 15 Nov 2021 11:21:30 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1Fu11-e0CK2of8u3ebdjom84UKuXhBKi5FUs5ZPPdOVA@mail.gmail.com>
+Message-ID: <CAK8P3a1Fu11-e0CK2of8u3ebdjom84UKuXhBKi5FUs5ZPPdOVA@mail.gmail.com>
+Subject: Re: [PATCH 08/11] dmaengine: xilinx_dpdma: stop using slave_id field
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Mailman-Approved-At: Thu, 18 Nov 2021 17:33:02 +0100
-Cc: alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org,
- Bjorn Andersson <bjorn.andersson@linaro.org>, linux-tegra@vger.kernel.org,
- Thierry Reding <thierry.reding@gmail.com>, linux-mtd@lists.infradead.org,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- linux-spi@vger.kernel.org, Robert Jarzmik <robert.jarzmik@free.fr>,
- Chunyan Zhang <zhang.lyra@gmail.com>, linux-staging@lists.linux.dev,
- Michal Simek <michal.simek@xilinx.com>, Jon Hunter <jonathanh@nvidia.com>,
- Andy Gross <agross@kernel.org>, bcm-kernel-feedback-list@broadcom.com,
- linux-serial@vger.kernel.org, Orson Zhai <orsonzhai@gmail.com>,
- Nicolas Saenz Julienne <nsaenz@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
- Manivannan Sadhasivam <mani@kernel.org>, linux-arm-msm@vger.kernel.org,
- dmaengine@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- linux-rpi-kernel@lists.infradead.org,
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ dri-devel <dri-devel@lists.freedesktop.org>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ "open list:TEGRA ARCHITECTURE SUPPORT" <linux-tegra@vger.kernel.org>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ linux-spi <linux-spi@vger.kernel.org>, Robert Jarzmik <robert.jarzmik@free.fr>,
+ Lars-Peter Clausen <lars@metafoo.de>, Chunyan Zhang <zhang.lyra@gmail.com>,
+ linux-staging@lists.linux.dev, Michal Simek <michal.simek@xilinx.com>,
+ Jon Hunter <jonathanh@nvidia.com>, Andy Gross <agross@kernel.org>,
+ bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+ "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+ Orson Zhai <orsonzhai@gmail.com>, Nicolas Saenz Julienne <nsaenz@kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>, Manivannan Sadhasivam <mani@kernel.org>,
+ linux-arm-msm <linux-arm-msm@vger.kernel.org>, dmaengine@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>,
+ "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE"
+ <linux-rpi-kernel@lists.infradead.org>,
  Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- linux-arm-kernel@lists.infradead.org, Scott Branden <sbranden@broadcom.com>,
- Hyun Kwon <hyun.kwon@xilinx.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-mmc@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
- Laxman Dewangan <ldewangan@nvidia.com>, Baolin Wang <baolin.wang7@gmail.com>
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ Scott Branden <sbranden@broadcom.com>, Hyun Kwon <hyun.kwon@xilinx.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ linux-mmc <linux-mmc@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Vinod Koul <vkoul@kernel.org>, Laxman Dewangan <ldewangan@nvidia.com>,
+ Baolin Wang <baolin.wang7@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,32 +114,74 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 11/15/21 9:53 AM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Mon, Nov 15, 2021 at 10:14 AM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+> On Mon, Nov 15, 2021 at 09:54:00AM +0100, Arnd Bergmann wrote:
+> > @@ -1285,11 +1287,13 @@ static int xilinx_dpdma_config(struct dma_chan *dchan,
+> >       spin_lock_irqsave(&chan->lock, flags);
+> >
+> >       /*
+> > -      * Abuse the slave_id to indicate that the channel is part of a video
+> > -      * group.
+> > +      * Abuse the peripheral_config to indicate that the channel is part
 >
-> This field is never set, and serves no purpose, so remove it.
+> Is it still an abuse, or is this now the right way to pass custom data
+> to the DMA engine driver ?
 
-I agree that we should remove it. Its been legacy support code for a 
-while, but the description that there is no user is not right.
+It doesn't make the driver any more portable, but it's now being
+more explicit about it. As far as I can tell, this is the best way
+to pass data that cannot be expressed through the regular interfaces
+in DT and the dmaengine API.
 
-The tegra20_spdif driver obviously uses it and that user is removed in 
-this patch. I think it makes sense to split that out into a separate 
-patch with a description why the driver will still work even with 
-slave_id removed. Maybe the best is to remove the whole tegra20_spdif 
-driver.
+Ideally there would be a generic way to pass this flag, but I couldn't
+figure out what this is actually doing, or whether there is a better
+way. Maybe Vinod has an idea.
 
-> diff --git a/sound/soc/tegra/tegra20_spdif.c b/sound/soc/tegra/tegra20_spdif.c
-> index 9fdc82d58db3..1c3385da6f82 100644
-> --- a/sound/soc/tegra/tegra20_spdif.c
-> +++ b/sound/soc/tegra/tegra20_spdif.c
-> @@ -284,7 +284,6 @@ static int tegra20_spdif_platform_probe(struct platform_device *pdev)
->   	spdif->playback_dma_data.addr = mem->start + TEGRA20_SPDIF_DATA_OUT;
->   	spdif->playback_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
->   	spdif->playback_dma_data.maxburst = 4;
-> -	spdif->playback_dma_data.slave_id = dmareq->start;
->   
-dmareq is now unused and should be removed as well.
->   	pm_runtime_enable(&pdev->dev);
->   
+I'll change s/Abuse/Use/ for the moment until I get a definite answer.
 
+> > +      * of a video group.
+> >        */
+> > -     if (chan->id <= ZYNQMP_DPDMA_VIDEO2)
+> > -             chan->video_group = config->slave_id != 0;
+> > +     pconfig = config->peripheral_config;
+>
+> This could be moved to the variable declaration above, up to you.
 
+I considered that but since it doesn't fit in a normal 80-column
+line, it seemed best to do it here.
+
+> > +     if (chan->id <= ZYNQMP_DPDMA_VIDEO2 &&
+> > +         config->peripheral_size == sizeof(*pconfig))
+>
+> Silently ignoring a size mismatch isn't nice. Could we validate the size
+> at the beginning of the function and return an error ?
+
+Yes, good idea. Since this would mean a bug in another driver,
+I'll add a WARN_ON() as well to make it clear which driver caused it.
+This is what I have now, let me know if you have any further suggestions:
+
+        /*
+         * Use the peripheral_config to indicate that the channel is part
+         * of a video group. This requires matching use of the custom
+         * structure in each driver.
+         */
+        pconfig = config->peripheral_config;
+        if (WARN_ON(config->peripheral_size != 0 &&
+                    config->peripheral_size != sizeof(*pconfig)))
+                return -EINVAL;
+
+        spin_lock_irqsave(&chan->lock, flags);
+        if (chan->id <= ZYNQMP_DPDMA_VIDEO2 &&
+            config->peripheral_size == sizeof(*pconfig))
+                chan->video_group = pconfig->video_group;
+        spin_unlock_irqrestore(&chan->lock, flags);
+
+        return 0;
+
+> With these issues addressed,
+>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+Thanks,
+
+       Arnd
