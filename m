@@ -2,71 +2,71 @@ Return-Path: <SRS0=FucB=QC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91FBFC433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 20:20:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B5029C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 23:35:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1B2A663236
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 20:20:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1B2A663236
+	by mail.kernel.org (Postfix) with ESMTPS id BBC0B63223
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 23:35:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BBC0B63223
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 67CF016B6;
-	Mon, 15 Nov 2021 21:19:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 67CF016B6
+	by alsa0.perex.cz (Postfix) with ESMTPS id A6CE31684;
+	Tue, 16 Nov 2021 00:35:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6CE31684
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637007616;
-	bh=K3pfS4NVMA2CpFVPUUWV/jwChtsYnKjFN0rX/alvMW4=;
+	s=default; t=1637019356;
+	bh=Pdcmps+Wn75c6JYbY9VoGfURQ8Z1Y05nyXoNRHD+OTQ=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YSWwfR7R/henN4HNQv+4FjVs5TVi29Epup6kqsfcYO2kXHQ0gfuMGY0Co3PmZlvt1
-	 7iSkZlacVgLBc8ITFGBps0QQsa3t32Kdktu5WefSDHCGTEzZ6SIugPLxwMOKmlmxUu
-	 EE9e35QW8rKJguvCBVN6fonIMxOiUaEbjKULQxLw=
+	b=B8FUiX/lyDyKl3UR33JfWS8+UK3Odmy2PpxZiV6IaKLX4qmpCYF2LeYCHOwaKf5o8
+	 n9jHGQHByUGS4LuRwMqNmWrVaRCI/V/9ZzaSZlj8LZkVg3Gu2kWlZSeEx/9+IXAdcW
+	 9GPXGR2IoGNkbiIkgEo3+0PqrXsygDaM0lJ+JKfs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 19C47F804CF;
-	Mon, 15 Nov 2021 21:18:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 199ADF8028B;
+	Tue, 16 Nov 2021 00:35:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 497B7F802A0; Mon, 15 Nov 2021 21:18:35 +0100 (CET)
+ id 152FAF8027D; Tue, 16 Nov 2021 00:35:04 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A5D5EF8028B
- for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2021 21:18:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5D5EF8028B
+ by alsa1.perex.cz (Postfix) with ESMTPS id AE827F800FA
+ for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2021 00:34:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE827F800FA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="GnaAa3OM"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 67C8961BFE;
- Mon, 15 Nov 2021 20:18:26 +0000 (UTC)
+ header.b="h9m4ZIUr"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A5E26324A;
+ Mon, 15 Nov 2021 23:34:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1637007508;
- bh=K3pfS4NVMA2CpFVPUUWV/jwChtsYnKjFN0rX/alvMW4=;
+ s=k20201202; t=1637019294;
+ bh=Pdcmps+Wn75c6JYbY9VoGfURQ8Z1Y05nyXoNRHD+OTQ=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=GnaAa3OMfZjo0cdkgZJPQdMWdKnJe2oF94QBvMIgKUL2AeeNHfpj6tgH7KjefnNWS
- xa16sWmbNMynWx89TRjz0BV529TEsM/JAOYDBAP03ub/AzuBqwt5YSM2Nt5jIXIsg/
- 8USGrkghwCn4f3Qqz9z5aSOaTOxz2S4wdIEqHWDYIsXL9+o8AO3xgY2VFol0RmoHj1
- NVD8XVrVN+uCfW32VTTc/STp0+ltHjeFVNMGluPHBwXIPFptNqvNHfgHlar1kJXaIJ
- WRXz4gz/O4sr1flZYelXgBj//rplzrzJ7i+Gxu+rOeQh42qXubmopWE2RP3y4/Wcou
- 7bVZhgjZPANDg==
+ b=h9m4ZIUrYZJK46lFpAoZLfySpdLpVZ0GK2DIqZpF4Kd0mSTzKJDj1FQ/zbaXv1DKC
+ I4ww6c5oL8jCQN9zyRfWz4qeFdHA9E477Ud1xYqSQDJT3YpP0TJtRYpZZb2xnN25LO
+ SL5TlCs6J8u6IgIkKayqz51CIECSrK2/LeYuQWJ07RRWTC8gdaJIVAGkKHSuK4lR/D
+ 3lssK6vcRJDHyoDQB7BNFPz59inGpI3WBdA05DzkArcjxptyVeoYJRzxm4eyUP2Uuv
+ 8ptP4okq7Fyp/mAa69PaljWPI87N5APdtfYYOeJ+S35ncK2+sf/uuKEAxEaXS0HY4V
+ iYDsatuTKTQZA==
 From: Mark Brown <broonie@kernel.org>
-To: perex@perex.cz, robh+dt@kernel.org, tiwai@suse.com,
- Vincent Knecht <vincent.knecht@mailoo.org>, stephan@gerhold.net,
- lgirdwood@gmail.com
-In-Reply-To: <20211031210956.812101-1-vincent.knecht@mailoo.org>
-References: <20211031210956.812101-1-vincent.knecht@mailoo.org>
-Subject: Re: [PATCH 0/2] Add tfa9897 rcv-gpios support
-Message-Id: <163700750616.2049880.11874024359672809309.b4-ty@kernel.org>
-Date: Mon, 15 Nov 2021 20:18:26 +0000
+To: Simon Trimmer <simont@opensource.cirrus.com>
+In-Reply-To: <20211115120154.56782-1-simont@opensource.cirrus.com>
+References: <20211115120154.56782-1-simont@opensource.cirrus.com>
+Subject: Re: [PATCH] ASoC: wm_adsp: wm_adsp_control_add() error: uninitialized
+ symbol 'ret'
+Message-Id: <163701929291.675332.10025590314980830752.b4-ty@kernel.org>
+Date: Mon, 15 Nov 2021 23:34:52 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- ~postmarketos/upstreaming@lists.sr.ht, linux-kernel@vger.kernel.org
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+ kernel test robot <lkp@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,28 +82,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 31 Oct 2021 22:09:54 +0100, Vincent Knecht wrote:
-> This is the continuation of a previous series [1] where
-> - patch 1/4 is removed in favor of using pin switch
->   This will be posted independently of tfa989x support,
->   since it mainly require changes to sound/soc/qcom/common.c
->   and device DTS.
-> - patch 2/4 is already merged
-> so here are reworked patch 3/4 (bindings fixed and example added)
-> and patch 4/4 unchanged.
+On Mon, 15 Nov 2021 12:01:54 +0000, Simon Trimmer wrote:
+> This patch fixes the static analysis warning as it is correctly
+> indicating a possible code path, it cannot know that for the affected
+> firmware versions subname would always be NULL.
 > 
-> [...]
+> 
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-linus
 
 Thanks!
 
-[1/2] ASoC: dt-bindings: nxp, tfa989x: Add rcv-gpios property for tfa9897
-      commit: 77fffb83933ad9e514ea0c7fd93b28cabcdea311
-[2/2] ASoC: codecs: tfa989x: Add support for tfa9897 optional rcv-gpios
-      commit: 9da52c39b33e7bd9c1f56175c0466fa468d7f145
+[1/1] ASoC: wm_adsp: wm_adsp_control_add() error: uninitialized symbol 'ret'
+      commit: a6e849d0007b374fc7fbb18d55941c77aa7c3923
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
