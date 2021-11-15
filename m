@@ -2,68 +2,73 @@ Return-Path: <SRS0=FucB=QC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E41FAC433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 23:39:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AF816C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 23:39:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6762E61A0C
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 23:39:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6762E61A0C
+	by mail.kernel.org (Postfix) with ESMTPS id EBE5B61B5F
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 23:39:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EBE5B61B5F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C605316A2;
-	Tue, 16 Nov 2021 00:38:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C605316A2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5255D169E;
+	Tue, 16 Nov 2021 00:39:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5255D169E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637019572;
-	bh=HuEl3f7lPL2y6l7FsxchqJg97/trWBdfI6HPcHSFJi4=;
+	s=default; t=1637019590;
+	bh=sepJeKAqWD8OEq16yv5uQxj8oK3WHPvL+LfRcZh0niI=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=esZemz/+xTv2Z7uqpO9cR46+2imCaAhtMd+EOYCFBNvxfiYQNxsgHBANBmw/ipDfI
-	 UN9fqJbz5LhzOAo2KPGiisshvzsPb0+Ug5AfUtl7ruPor8E8EcPVyDUAcYRU6ZdchS
-	 wZctgw1d/v4kcfTrZG1Nkyd2ekH36OEAbczdxd/o=
+	b=DVJfJK+KjDQG0I0jxpSKdBpzR2dZXHyb/yb/LL/06rAbkmT0zMzuA5RXYeXgrrX7v
+	 fbtxEPx5xNXClRAeGw25uNa1X8nrRBa483YTXnGOf6g/TMBxSya5m5eCYmwqHWDmF6
+	 GiZLl/0mlDboqHFehIXUKXQxVFSkk4q6Qj/5btTs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0157CF8052D;
+	by alsa1.perex.cz (Postfix) with ESMTP id CEC0BF80535;
 	Tue, 16 Nov 2021 00:35:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 115A7F80506; Tue, 16 Nov 2021 00:35:21 +0100 (CET)
+ id 425A3F804FF; Tue, 16 Nov 2021 00:35:23 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9FC6AF804FC
- for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2021 00:35:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9FC6AF804FC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3C837F804FE
+ for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2021 00:35:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3C837F804FE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="J4GDPsVX"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 94A8D63252;
- Mon, 15 Nov 2021 23:35:13 +0000 (UTC)
+ header.b="dChFpCCk"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B65786325B;
+ Mon, 15 Nov 2021 23:35:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1637019315;
- bh=HuEl3f7lPL2y6l7FsxchqJg97/trWBdfI6HPcHSFJi4=;
+ s=k20201202; t=1637019319;
+ bh=sepJeKAqWD8OEq16yv5uQxj8oK3WHPvL+LfRcZh0niI=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=J4GDPsVXkBXR7bcx8trgWIQCPnDTSzCAToUNOFIj7ijj6VfH3UZJxfuw7CEUyoSoR
- 4ur3yK4O6JLXc5+5YeljfRJSCKK0DEZVrYiv/M9oot4u7Ta5Zsrd0szm18Ie1f/b/H
- MEqYBd+HceCIUYP2BrGEMCmYUMxVafFw+igERDNdmwxLfI6qrIuZjFvQdCdJ9wSe56
- KDuudZcjbluKhgvodNxW39Rb+YnzhCVRjCRRtXyrEFt4ov1g6LQzsBvTa7kHpi+vY9
- Qan+Fe1xXjHIs6hlQddzPrpe9vbRo0ax5Ah4gJG+Qzmcx4s8EPZHQgqzdrpQnIrRxl
- XVaaUxbEpW5/Q==
+ b=dChFpCCkDxohYHTlOa+kJKHYpjYgV2kJNoJjZS9AIeP6IzOBQXUTvKC+IdcKRsmWJ
+ fUqaXJZfT4aAdPolbpqvut7vCnP2VpqZV5vkQlBSJFAWC6xoDegTyMcWPB2XjqM1yt
+ hJh0cFuIrTpkTCCuvcBGkNhc4mMcroWm3L4hcCSOve1py6hjutrLJLsI5y9VXnDu9g
+ nAQdZrJShGkQ2MblqrPDP1962r6dGehUcxW9Q7c6l3CzYCbna/FoBR5ReoZVDb7YTZ
+ 9RrECdd6AYXgVLbsGmx3M+Y8Iegx+IP0/VkgKzMb8GxJ+RgzleQdKlBvihI8Rtq1uB
+ yviu9M6AEoNHw==
 From: Mark Brown <broonie@kernel.org>
-To: lars@metafoo.de, perex@perex.cz, lgirdwood@gmail.com, tiwai@suse.com, Maíra Canal <maira.canal@usp.br>, nuno.sa@analog.com
-In-Reply-To: <YXWo/9o7ye9a11aR@fedora>
-References: <YXWo/9o7ye9a11aR@fedora>
-Subject: Re: [PATCH] ASoC: adau1701: Replace legacy gpio interface for gpiod
-Message-Id: <163701931331.675370.7417859226915915721.b4-ty@kernel.org>
-Date: Mon, 15 Nov 2021 23:35:13 +0000
+To: swboyd@chromium.org, devicetree@vger.kernel.org, bjorn.andersson@linaro.org,
+ linux-arm-msm@vger.kernel.org, rohitkr@codeaurora.org, robh+dt@kernel.org,
+ alsa-devel@alsa-project.org, plai@codeaurora.org, linux-kernel@vger.kernel.org,
+ perex@perex.cz, judyhsiao@chromium.org, lgirdwood@gmail.com,
+ Srinivasa Rao Mandadapu <srivasam@codeaurora.org>, tiwai@suse.com,
+ bgoswami@codeaurora.org, agross@kernel.org, srinivas.kandagatla@linaro.org
+In-Reply-To: <1636960288-27537-1-git-send-email-srivasam@codeaurora.org>
+References: <1636960288-27537-1-git-send-email-srivasam@codeaurora.org>
+Subject: Re: [PATCH v2] ASoC: codecs: MBHC: Add support for special headset
+Message-Id: <163701931648.675370.4567378408146703552.b4-ty@kernel.org>
+Date: Mon, 15 Nov 2021 23:35:16 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Venkata Prasad Potturu <potturu@codeaurora.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,12 +84,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 24 Oct 2021 15:42:07 -0300, Maíra Canal wrote:
-> Considering the current transition of the GPIO subsystem, remove all
-> dependencies of the legacy GPIO interface (linux/gpio.h and linux
-> /of_gpio.h) and replace it with the descriptor-based GPIO approach.
+On Mon, 15 Nov 2021 12:41:28 +0530, Srinivasa Rao Mandadapu wrote:
+> Update MBHC driver to support special headset such as apple
+> and huwawei headsets.
+> 
+> Changes Since V1:
+>     -- Fix typo errors.
 > 
 > 
+> [...]
 
 Applied to
 
@@ -92,8 +100,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: adau1701: Replace legacy gpio interface for gpiod
-      commit: 5dbec393cd23ecfdeddced217f8a1c11228139c4
+[1/1] ASoC: codecs: MBHC: Add support for special headset
+      commit: 3c8a3ad4019126f06016ab0128dde11817502f52
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
