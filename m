@@ -2,85 +2,85 @@ Return-Path: <SRS0=FucB=QC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9744DC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 05:49:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 51F90C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 07:12:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C6574619E5
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 05:49:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C6574619E5
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id DB5A461C32
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 07:12:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DB5A461C32
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3D31815E5;
-	Mon, 15 Nov 2021 06:49:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D31815E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7266715E5;
+	Mon, 15 Nov 2021 08:11:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7266715E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1636955391;
-	bh=q1+LQP4Wtumh3G+gCTBBfqUo+Zqm1Hpj663BhWdcF/E=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=hwSfFO1R46JShnlmfLEqgShBCemE6bcDyUZsaLb+t7J3xWtdPM2Mk0q2kHwb2gyVU
-	 CFP3DwSctmhqtpl4szpWSApFKLjer4NChzLCQgCvnfJQ4n4n6fM75SSHwrvO9aajWG
-	 FM5Wn6oEpXVirxCqPySyDiHLxGnj/ZZ0fZeSeEaw=
+	s=default; t=1636960369;
+	bh=NmaNMM9z+8Q8V2Jw8CpKQceUOw9d8LTVVzsu6BHTEoo=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=k0WSa2G3GBmwCbFwyIiGeXKfsoftPQASgvmminLJIs5MHALkLsENoKEqj5k1y9dok
+	 KDuRhv6aOjlMQprNoqLLsUk15rFwMaGWJumcZ96WZ6gJf6ZnIZ8h5hfEUkwGiNqRTs
+	 Ih2HYVCMt7eSF29Jsnkb9x0RBPx3BT1Hb6bmszKI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BBA27F800FA;
-	Mon, 15 Nov 2021 06:49:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F2514F801D5;
+	Mon, 15 Nov 2021 08:11:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3B855F8027D; Mon, 15 Nov 2021 06:48:57 +0100 (CET)
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com
- [IPv6:2a00:1450:4864:20::529])
+ id E955DF8027D; Mon, 15 Nov 2021 08:11:56 +0100 (CET)
+Received: from m43-7.mailgun.net (m43-7.mailgun.net [69.72.43.7])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 84DD6F800FA
- for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2021 06:48:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84DD6F800FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id AE892F80163
+ for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2021 08:11:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE892F80163
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="Dc8n07Us"
-Received: by mail-ed1-x529.google.com with SMTP id z10so40129644edc.11
- for <alsa-devel@alsa-project.org>; Sun, 14 Nov 2021 21:48:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=VZHI5dFTpwzj6xvRrQtJt+8+QmoOvMkepg+hCF+mce0=;
- b=Dc8n07Uskf/twoaDy2MpyE2aJFhqnqTA7fRqCuzb0VjDyBgs6gIPm1zRdBMkj3sLf3
- 8ZTtPj75QU08W58l72z0pM37xiB6M/VQiO/ldOdP1nu2e5apeuVJFrwTOPcgogN3/VEn
- eS1o9eDbNHHCc3tefV/jljfcAGv7dlCzz4JXAv14i2OVeDBoaa5KjToTc9CkPT6V7/NU
- Y0NNdH1t36wnbdwiIijr7N19WdoI/BETSEnwxMCqtZV+gTjZ1CK160f7HRyGEN5+UEqO
- VKHyfF12f3MB2FU1s6aMwE4M53E6bxj7DUIhyF78ABfG9FovzIJ7S/HvWzBYzbeYdocs
- ra7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=VZHI5dFTpwzj6xvRrQtJt+8+QmoOvMkepg+hCF+mce0=;
- b=LURhpi01Wnjm77lSbC23kuYy8Qad5QbsCV6peVEbu5YM5b3OYDPJCx+pneLvcF8yNy
- W5RzmoiJldtlVZi940MCMJTRsU1RdVeuEJERH689LB+W8DO/lTgEB3K/NT/K13+V3UeL
- TUa0yxqCMxufACtNPV3ljrZV9uuvQlXXwhcEjBLoRuLHWyp9XtKGxC9FUS8lFSeQ9SOq
- XqSl9mT3e+GHK5AYSxSlsqJLzpUKNiX+XOIWd48x64Mk63ax1So5HggLXRSq76CmE8yd
- y4qsyEs13nlGfudCQn4B9A53t8Ti0bz9/DZr2HzsgJ/xV0lXSNYI0/CV9IoNn0R3nZIM
- HyCQ==
-X-Gm-Message-State: AOAM530JzlyPBMqyzB6c4QA4+mTXh2gP5l3WElPOvv9nMS+4froIwnMq
- 0fVD5w/N87AsMK3kaSwC2Eh3rzPQ7A3YXq/c2Lge/0u/
-X-Google-Smtp-Source: ABdhPJx33goU/Ze3ljs99wvQ8i+D4oQqiBigtHV4CE5MlcO7t5WGq+gPjmNkJ7C7l7CGAcjvJd9g+WzIx4u/fXzP5dE=
-X-Received: by 2002:a17:907:2da2:: with SMTP id
- gt34mr43604775ejc.372.1636955323367; 
- Sun, 14 Nov 2021 21:48:43 -0800 (PST)
-MIME-Version: 1.0
-References: <CAOsVg8oASKrYST0CR_C5GAd4wcBjKcZkbBSrVdV51oPBTHqqdQ@mail.gmail.com>
- <f5f068ac-42dd-a496-b496-a4359114c634@perex.cz>
-In-Reply-To: <f5f068ac-42dd-a496-b496-a4359114c634@perex.cz>
-From: Lucas <jaffa225man@gmail.com>
-Date: Sun, 14 Nov 2021 23:48:32 -0600
-Message-ID: <CAOsVg8o25hDrSTFJraA7vCoA7hCz3MNq7RM7p=-D4si=VaYEXg@mail.gmail.com>
-Subject: Re: Token to create an account on the wiki
-To: Jaroslav Kysela <perex@perex.cz>
-Content-Type: text/plain; charset="UTF-8"
-Cc: alsa-devel@alsa-project.org
+ dkim=pass (1024-bit key) header.d=mg.codeaurora.org
+ header.i=@mg.codeaurora.org header.b="L2fRp9uv"
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
+ q=dns/txt; 
+ s=smtp; t=1636960307; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=qGxv+XsX7+bD5RWmhMsu38FzWS6QGNazoB2gG6O7qcM=;
+ b=L2fRp9uvJgZzhVRkFSRFLszmLSM3a1jWbyXi3jNrhNbtIBHGyjegbsgwNeHtzIvvvEhZiwQY
+ joppSVGELbwMzG0lWXRZPUMSy7u2Voa2++KMtttQepXIpsx/Jfxu2p76t30mLVjFRPnt/EPN
+ ToDj7B8kCiYkDwLYPDL3ARf4Ez0=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 619208314db4233966348453 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 15 Nov 2021 07:11:45
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+ id 8838DC4360D; Mon, 15 Nov 2021 07:11:45 +0000 (UTC)
+Received: from hu-srivasam-hyd.qualcomm.com (unknown [202.46.22.19])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: srivasam)
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id 7A8F9C4338F;
+ Mon, 15 Nov 2021 07:11:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 7A8F9C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ spf=fail smtp.mailfrom=codeaurora.org
+From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+To: agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+ broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+ bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+ srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
+ linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ swboyd@chromium.org, judyhsiao@chromium.org
+Subject: [PATCH v2] ASoC: codecs: MBHC: Add support for special headset
+Date: Mon, 15 Nov 2021 12:41:28 +0530
+Message-Id: <1636960288-27537-1-git-send-email-srivasam@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+Cc: Venkata Prasad Potturu <potturu@codeaurora.org>,
+ Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,19 +96,138 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Thanks!  Yes I noticed.
+Update MBHC driver to support special headset such as apple
+and huwawei headsets.
 
-On Sun, Nov 14, 2021 at 5:09 PM Jaroslav Kysela <perex@perex.cz> wrote:
->
-> On 14. 11. 21 21:56, Lucas wrote:
-> > I was hoping to add some Edirol/Roland devices to the wiki.  Signing
-> > up at https://alsa-project.org/main/index.php?title=Special:UserLogin&type=signup&returnto=Matrix:Vendor-Roland+Edirol
-> > says ask the mailing list for a token.
->
-> I sent the token to you in a separate e-mail message.
->
->                         Jaroslav
->
-> --
-> Jaroslav Kysela <perex@perex.cz>
-> Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+Changes Since V1:
+    -- Fix typo errors.
+
+Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Co-developed-by: Venkata Prasad Potturu <potturu@codeaurora.org>
+Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ sound/soc/codecs/wcd-mbhc-v2.c | 75 +++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 71 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/codecs/wcd-mbhc-v2.c b/sound/soc/codecs/wcd-mbhc-v2.c
+index 405128c..d6545e4 100644
+--- a/sound/soc/codecs/wcd-mbhc-v2.c
++++ b/sound/soc/codecs/wcd-mbhc-v2.c
+@@ -1022,6 +1022,56 @@ static int wcd_mbhc_get_plug_from_adc(struct wcd_mbhc *mbhc, int adc_result)
+ 	return plug_type;
+ }
+ 
++static int wcd_mbhc_get_spl_hs_thres(struct wcd_mbhc *mbhc)
++{
++	int hs_threshold, micbias_mv;
++
++	micbias_mv = wcd_mbhc_get_micbias(mbhc);
++	if (mbhc->cfg->hs_thr && mbhc->cfg->micb_mv != WCD_MBHC_ADC_MICBIAS_MV) {
++		if (mbhc->cfg->micb_mv == micbias_mv)
++			hs_threshold = mbhc->cfg->hs_thr;
++		else
++			hs_threshold = (mbhc->cfg->hs_thr * micbias_mv) / mbhc->cfg->micb_mv;
++	} else {
++		hs_threshold = ((WCD_MBHC_ADC_HS_THRESHOLD_MV * micbias_mv) /
++							WCD_MBHC_ADC_MICBIAS_MV);
++	}
++	return hs_threshold;
++}
++
++static bool wcd_mbhc_check_for_spl_headset(struct wcd_mbhc *mbhc)
++{
++	bool is_spl_hs = false;
++	int output_mv, hs_threshold, hph_threshold;
++
++	if (!mbhc->mbhc_cb->mbhc_micb_ctrl_thr_mic)
++		return false;
++
++	/* Bump up MIC_BIAS2 to 2.7V */
++	mbhc->mbhc_cb->mbhc_micb_ctrl_thr_mic(mbhc->component, MIC_BIAS_2, true);
++	usleep_range(10000, 10100);
++
++	output_mv = wcd_measure_adc_once(mbhc, MUX_CTL_IN2P);
++	hs_threshold = wcd_mbhc_get_spl_hs_thres(mbhc);
++	hph_threshold = wcd_mbhc_adc_get_hph_thres(mbhc);
++
++	if (output_mv > hs_threshold || output_mv < hph_threshold) {
++		if (mbhc->force_linein == true)
++			is_spl_hs = false;
++	} else {
++		is_spl_hs = true;
++	}
++
++	/* Back MIC_BIAS2 to 1.8v if the type is not special headset */
++	if (!is_spl_hs) {
++		mbhc->mbhc_cb->mbhc_micb_ctrl_thr_mic(mbhc->component, MIC_BIAS_2, false);
++		/* Add 10ms delay for micbias to settle */
++		usleep_range(10000, 10100);
++	}
++
++	return is_spl_hs;
++}
++
+ static void wcd_correct_swch_plug(struct work_struct *work)
+ {
+ 	struct wcd_mbhc *mbhc;
+@@ -1029,12 +1079,14 @@ static void wcd_correct_swch_plug(struct work_struct *work)
+ 	enum wcd_mbhc_plug_type plug_type = MBHC_PLUG_TYPE_INVALID;
+ 	unsigned long timeout;
+ 	int pt_gnd_mic_swap_cnt = 0;
+-	int output_mv, cross_conn, hs_threshold, try = 0;
++	int output_mv, cross_conn, hs_threshold, try = 0, micbias_mv;
++	bool is_spl_hs = false;
+ 	bool is_pa_on;
+ 
+ 	mbhc = container_of(work, struct wcd_mbhc, correct_plug_swch);
+ 	component = mbhc->component;
+ 
++	micbias_mv = wcd_mbhc_get_micbias(mbhc);
+ 	hs_threshold = wcd_mbhc_adc_get_hs_thres(mbhc);
+ 
+ 	/* Mask ADC COMPLETE interrupt */
+@@ -1097,6 +1149,16 @@ static void wcd_correct_swch_plug(struct work_struct *work)
+ 		plug_type = wcd_mbhc_get_plug_from_adc(mbhc, output_mv);
+ 		is_pa_on = wcd_mbhc_read_field(mbhc, WCD_MBHC_HPH_PA_EN);
+ 
++		if ((output_mv > hs_threshold) && (!is_spl_hs)) {
++			is_spl_hs = wcd_mbhc_check_for_spl_headset(mbhc);
++			output_mv = wcd_measure_adc_once(mbhc, MUX_CTL_IN2P);
++
++			if (is_spl_hs) {
++				hs_threshold = (hs_threshold * wcd_mbhc_get_micbias(mbhc)) /
++									micbias_mv;
++			}
++		}
++
+ 		if ((output_mv <= hs_threshold) && !is_pa_on) {
+ 			/* Check for cross connection*/
+ 			cross_conn = wcd_check_cross_conn(mbhc);
+@@ -1122,14 +1184,19 @@ static void wcd_correct_swch_plug(struct work_struct *work)
+ 			}
+ 		}
+ 
+-		if (output_mv > hs_threshold) /* cable is extension cable */
++		/* cable is extension cable */
++		if (output_mv > hs_threshold || mbhc->force_linein == true)
+ 			plug_type = MBHC_PLUG_TYPE_HIGH_HPH;
+ 	}
+ 
+ 	wcd_mbhc_bcs_enable(mbhc, plug_type, true);
+ 
+-	if (plug_type == MBHC_PLUG_TYPE_HIGH_HPH)
+-		wcd_mbhc_write_field(mbhc, WCD_MBHC_ELECT_ISRC_EN, 1);
++	if (plug_type == MBHC_PLUG_TYPE_HIGH_HPH) {
++		if (is_spl_hs)
++			plug_type = MBHC_PLUG_TYPE_HEADSET;
++		else
++			wcd_mbhc_write_field(mbhc, WCD_MBHC_ELECT_ISRC_EN, 1);
++	}
+ 
+ 	wcd_mbhc_write_field(mbhc, WCD_MBHC_ADC_MODE, 0);
+ 	wcd_mbhc_write_field(mbhc, WCD_MBHC_ADC_EN, 0);
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+
