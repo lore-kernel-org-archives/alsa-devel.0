@@ -2,58 +2,58 @@ Return-Path: <SRS0=FucB=QC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C0542C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 12:25:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9387AC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 12:26:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 449E96324D
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 12:25:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 449E96324D
+	by mail.kernel.org (Postfix) with ESMTPS id C41596324D
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 12:26:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C41596324D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8B26616B4;
-	Mon, 15 Nov 2021 13:25:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8B26616B4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 288DA16B8;
+	Mon, 15 Nov 2021 13:25:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 288DA16B8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1636979155;
-	bh=78xqgigzZlP57QqF/ukvAfOeNMIuytvGmmfNP1j59LI=;
+	s=default; t=1636979171;
+	bh=NQ2O/N8HLIy58bHTkzR/1GyAiHKFurgTCqtQkTU0rfM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Dt+JlXVtqfOxYsiqhoTeTtO05F8ybul1La7DzafsUBi5KFIgi4MJbijwjbYI/oexy
-	 eTtraf/GZYIXnitv/N4icN4rKDTodrQbUhVCdPf5Zjiub2rSDB0+BdSiMRUnFNFpIy
-	 wCZ56b3I7iZ5HYxDCbGzcpAChy63ezcd2x25Xj9c=
+	b=u/GjTF6IfrkAkT7jBSAQGRYlVea+2S+qUycLtOsaDoWJNMxpKda2bAxqB6JsWsecX
+	 CflVAlHV9qfBql0a7p0q5Kz3o2ZSESCySCq1DeJG2hx+q8+adZ5l6eE6yXiH3YE7C7
+	 SvspQFkcjvY4nvwszBHQ+pO1jQUOxoFVMIxPd5iY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B2A3BF804ED;
-	Mon, 15 Nov 2021 13:23:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 53CE6F80519;
+	Mon, 15 Nov 2021 13:23:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 669E7F80510; Mon, 15 Nov 2021 13:23:17 +0100 (CET)
+ id A6CADF8050F; Mon, 15 Nov 2021 13:23:17 +0100 (CET)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3CB78F8049C
- for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2021 13:23:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3CB78F8049C
-X-IronPort-AV: E=McAfee;i="6200,9189,10168"; a="220639137"
-X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; d="scan'208";a="220639137"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3F839F801D5
+ for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2021 13:23:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3F839F801D5
+X-IronPort-AV: E=McAfee;i="6200,9189,10168"; a="220639139"
+X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; d="scan'208";a="220639139"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Nov 2021 04:23:03 -0800
-X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; d="scan'208";a="505899107"
+ 15 Nov 2021 04:23:05 -0800
+X-IronPort-AV: E=Sophos;i="5.87,236,1631602800"; d="scan'208";a="505899113"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Nov 2021 04:23:01 -0800
+ 15 Nov 2021 04:23:03 -0800
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: broonie@kernel.org,
 	tiwai@suse.de
-Subject: [RESEND PATCH 06/10] ASoC: intel: sof_sdw: move DMIC link id
- overwrite to create_sdw_dailink
-Date: Mon, 15 Nov 2021 20:22:37 +0800
-Message-Id: <20211115122241.13242-7-yung-chuan.liao@linux.intel.com>
+Subject: [RESEND PATCH 07/10] ASoC: intel: sof_sdw: remove
+ SOF_RT715_DAI_ID_FIX quirk
+Date: Mon, 15 Nov 2021 20:22:38 +0800
+Message-Id: <20211115122241.13242-8-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20211115122241.13242-1-yung-chuan.liao@linux.intel.com>
 References: <20211115122241.13242-1-yung-chuan.liao@linux.intel.com>
@@ -74,75 +74,139 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We can apply the fixed dai link id for DMICs in create_sdw_dailink().
-No need to set it in each DMIC's callback.
-The fixed dai link id is not only for rt715 and rt715-sdca, but for all
-DMICs, therefore we remove the SOF_RT715_DAI_ID_FIX check as well.
+SOF_RT715_DAI_ID_FIX is not used anywhere. Remove it.
 
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_sdw.c            | 8 ++++++++
- sound/soc/intel/boards/sof_sdw_rt715.c      | 7 -------
- sound/soc/intel/boards/sof_sdw_rt715_sdca.c | 7 -------
- 3 files changed, 8 insertions(+), 14 deletions(-)
+ sound/soc/intel/boards/sof_sdw.c        | 23 +++++------------------
+ sound/soc/intel/boards/sof_sdw_common.h |  1 -
+ 2 files changed, 5 insertions(+), 19 deletions(-)
 
 diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index 1be5c4754337..b00c1731c2c3 100644
+index b00c1731c2c3..72bc7da2d21e 100644
 --- a/sound/soc/intel/boards/sof_sdw.c
 +++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -984,6 +984,14 @@ static int create_sdw_dailink(struct snd_soc_card *card,
- 	    *link_id < SDW_AMP_DAI_ID)
- 		*link_id = SDW_AMP_DAI_ID;
- 
-+	/*
-+	 * DAI ID is fixed at SDW_DMIC_DAI_ID for MICs to
-+	 * keep sdw DMIC and HDMI setting static in UCM
-+	 */
-+	if (codec_info_list[codec_index].codec_type == SOF_SDW_CODEC_TYPE_MIC &&
-+	    *link_id < SDW_DMIC_DAI_ID)
-+		*link_id = SDW_DMIC_DAI_ID;
-+
- 	cpu_dai_index = *cpu_id;
- 	for_each_pcm_streams(stream) {
- 		char *name, *cpu_name;
-diff --git a/sound/soc/intel/boards/sof_sdw_rt715.c b/sound/soc/intel/boards/sof_sdw_rt715.c
-index c8af3780cbc3..7c068dc6b9cf 100644
---- a/sound/soc/intel/boards/sof_sdw_rt715.c
-+++ b/sound/soc/intel/boards/sof_sdw_rt715.c
-@@ -30,13 +30,6 @@ int sof_sdw_rt715_init(struct snd_soc_card *card,
- 		       struct sof_sdw_codec_info *info,
- 		       bool playback)
- {
--	/*
--	 * DAI ID is fixed at SDW_DMIC_DAI_ID for 715 to
--	 * keep sdw DMIC and HDMI setting static in UCM
--	 */
+@@ -36,8 +36,6 @@ static void log_quirks(struct device *dev)
+ 	if (SOF_SSP_GET_PORT(sof_sdw_quirk))
+ 		dev_dbg(dev, "SSP port %ld\n",
+ 			SOF_SSP_GET_PORT(sof_sdw_quirk));
 -	if (sof_sdw_quirk & SOF_RT715_DAI_ID_FIX)
--		dai_links->id = SDW_DMIC_DAI_ID;
--
- 	dai_links->init = rt715_rtd_init;
+-		dev_dbg(dev, "quirk SOF_RT715_DAI_ID_FIX enabled\n");
+ 	if (sof_sdw_quirk & SOF_SDW_NO_AGGREGATION)
+ 		dev_dbg(dev, "quirk SOF_SDW_NO_AGGREGATION enabled\n");
+ }
+@@ -64,8 +62,7 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc"),
+ 			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "09C6")
+ 		},
+-		.driver_data = (void *)(RT711_JD2 |
+-					SOF_RT715_DAI_ID_FIX),
++		.driver_data = (void *)RT711_JD2,
+ 	},
+ 	{
+ 		/* early version of SKU 09C6 */
+@@ -74,8 +71,7 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc"),
+ 			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "0983")
+ 		},
+-		.driver_data = (void *)(RT711_JD2 |
+-					SOF_RT715_DAI_ID_FIX),
++		.driver_data = (void *)RT711_JD2,
+ 	},
+ 	{
+ 		.callback = sof_sdw_quirk_cb,
+@@ -84,7 +80,6 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
+ 			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "098F"),
+ 		},
+ 		.driver_data = (void *)(RT711_JD2 |
+-					SOF_RT715_DAI_ID_FIX |
+ 					SOF_SDW_FOUR_SPK),
+ 	},
+ 	{
+@@ -94,7 +89,6 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
+ 			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "0990"),
+ 		},
+ 		.driver_data = (void *)(RT711_JD2 |
+-					SOF_RT715_DAI_ID_FIX |
+ 					SOF_SDW_FOUR_SPK),
+ 	},
+ 	/* IceLake devices */
+@@ -126,8 +120,7 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
+ 			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "0A3E")
+ 		},
+ 		.driver_data = (void *)(SOF_SDW_TGL_HDMI |
+-					RT711_JD2 |
+-					SOF_RT715_DAI_ID_FIX),
++					RT711_JD2),
+ 	},
+ 	{
+ 		/* another SKU of Dell Latitude 9520 */
+@@ -137,8 +130,7 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
+ 			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "0A3F")
+ 		},
+ 		.driver_data = (void *)(SOF_SDW_TGL_HDMI |
+-					RT711_JD2 |
+-					SOF_RT715_DAI_ID_FIX),
++					RT711_JD2),
+ 	},
+ 	{
+ 		/* Dell XPS 9710 */
+@@ -149,7 +141,6 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
+ 		},
+ 		.driver_data = (void *)(SOF_SDW_TGL_HDMI |
+ 					RT711_JD2 |
+-					SOF_RT715_DAI_ID_FIX |
+ 					SOF_SDW_FOUR_SPK),
+ 	},
+ 	{
+@@ -160,7 +151,6 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
+ 		},
+ 		.driver_data = (void *)(SOF_SDW_TGL_HDMI |
+ 					RT711_JD2 |
+-					SOF_RT715_DAI_ID_FIX |
+ 					SOF_SDW_FOUR_SPK),
+ 	},
+ 	{
+@@ -221,7 +211,6 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
+ 		},
+ 		.driver_data = (void *)(SOF_SDW_TGL_HDMI |
+ 					RT711_JD2 |
+-					SOF_RT715_DAI_ID_FIX |
+ 					SOF_SDW_FOUR_SPK),
+ 	},
+ 	{
+@@ -231,8 +220,7 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
+ 			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "0A45")
+ 		},
+ 		.driver_data = (void *)(SOF_SDW_TGL_HDMI |
+-					RT711_JD2 |
+-					SOF_RT715_DAI_ID_FIX),
++					RT711_JD2),
+ 	},
+ 	/* AlderLake devices */
+ 	{
+@@ -243,7 +231,6 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
+ 		},
+ 		.driver_data = (void *)(RT711_JD2_100K |
+ 					SOF_SDW_TGL_HDMI |
+-					SOF_RT715_DAI_ID_FIX |
+ 					SOF_BT_OFFLOAD_SSP(2) |
+ 					SOF_SSP_BT_OFFLOAD_PRESENT),
+ 	},
+diff --git a/sound/soc/intel/boards/sof_sdw_common.h b/sound/soc/intel/boards/sof_sdw_common.h
+index c6200aa14089..e2457738a332 100644
+--- a/sound/soc/intel/boards/sof_sdw_common.h
++++ b/sound/soc/intel/boards/sof_sdw_common.h
+@@ -43,7 +43,6 @@ enum {
+ #define SOF_SDW_PCH_DMIC		BIT(6)
+ #define SOF_SSP_PORT(x)		(((x) & GENMASK(5, 0)) << 7)
+ #define SOF_SSP_GET_PORT(quirk)	(((quirk) >> 7) & GENMASK(5, 0))
+-#define SOF_RT715_DAI_ID_FIX		BIT(13)
+ #define SOF_SDW_NO_AGGREGATION		BIT(14)
  
- 	return 0;
-diff --git a/sound/soc/intel/boards/sof_sdw_rt715_sdca.c b/sound/soc/intel/boards/sof_sdw_rt715_sdca.c
-index 85d3d8c355cc..ca0cf3db2e4d 100644
---- a/sound/soc/intel/boards/sof_sdw_rt715_sdca.c
-+++ b/sound/soc/intel/boards/sof_sdw_rt715_sdca.c
-@@ -30,13 +30,6 @@ int sof_sdw_rt715_sdca_init(struct snd_soc_card *card,
- 			    struct sof_sdw_codec_info *info,
- 			    bool playback)
- {
--	/*
--	 * DAI ID is fixed at SDW_DMIC_DAI_ID for 715-SDCA to
--	 * keep sdw DMIC and HDMI setting static in UCM
--	 */
--	if (sof_sdw_quirk & SOF_RT715_DAI_ID_FIX)
--		dai_links->id = SDW_DMIC_DAI_ID;
--
- 	dai_links->init = rt715_sdca_rtd_init;
- 
- 	return 0;
+ /* BT audio offload: reserve 3 bits for future */
 -- 
 2.17.1
 
