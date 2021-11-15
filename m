@@ -2,87 +2,89 @@ Return-Path: <SRS0=FucB=QC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 21A0BC433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 09:02:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F2D5C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 09:20:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9E3C46321A
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 09:02:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9E3C46321A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id E9CAE61BD4
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 09:20:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E9CAE61BD4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0A65416BC;
-	Mon, 15 Nov 2021 10:01:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A65416BC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 925EB1678;
+	Mon, 15 Nov 2021 10:20:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 925EB1678
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1636966924;
-	bh=KymEuSb1ZBu9d4ip60ZapuAOc2fPUmm65BckI1F9t+0=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1636968050;
+	bh=VIljMpEMPg1/ES2oPLBtgPjK2YZDIShiHAuj0ijdPu8=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DYocFWuNF/xBhO7XQ+XY5YlsMc0YHsOiQfjq+LcTvCpcbBHljrltrWC4cyk5mzTBw
-	 BAyXZoidBTv/YXhTjFAhY3gZTF7bD+hSvBatRl34XiVgMTrsApaTpvZMgstLmfpiJO
-	 ka4dEdyIC2K5azfaAlchdpHA2a9ewJlIg0gHeEh8=
+	b=JI2yykaJLN8gVvSKottsmI68MHC0aBrAKHJfN3MiTa+R4i1k35lmyqbuygQcbi1gp
+	 jLdU721zHqTHRX+c9VpGZYuTsGV2uVuzeaQ+ONXRzWHCbaZR4Fe6IxU684sj956GVc
+	 GQLPcIMJOYahQ1GNZ+TA3/GPd3IuKdp9Ztf7iA8M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DD15DF80529;
-	Mon, 15 Nov 2021 09:57:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 21803F801D5;
+	Mon, 15 Nov 2021 10:20:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B79B5F8027D; Mon, 15 Nov 2021 09:56:06 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 12933F8027D; Mon, 15 Nov 2021 10:19:58 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 26DB1F800FA
- for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2021 09:56:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26DB1F800FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id AEDA7F80134
+ for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2021 10:19:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AEDA7F80134
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="LdZ6xF0x"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D85961BF5;
- Mon, 15 Nov 2021 08:55:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1636966558;
- bh=KymEuSb1ZBu9d4ip60ZapuAOc2fPUmm65BckI1F9t+0=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=LdZ6xF0xp+O72e2bWrz1JbVB8H175gzm3ebqcgB4b1TFRnEbOtg/Co/2UVmy2RSYO
- K4PGopsAL2+EPUBQXn3pIZuRLnOiV7Z4ZHRzhRaGpOOilkyT8qB7djWEyRGQxY+o07
- 0pURtU5ha6Bqhqi3VRo20hpuTebBqhRUMgKKcND/ItqTEUbbBG6gtFAFRdgoUlbWQv
- nllnKfHGybN+48IS6aBEK9XM+8ihm/vdNwSp8OLBPdHs4lV1MKpoIy38LN4jK4yIhT
- e7DvDqpq2WV2gb8/H5hLIdnkM9Qc2HOyUeSrulI8xZE0lHPXJ5SUm3GD7JPkNCpR/k
- kEJCWgx/yAgzA==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH 11/11] dmaengine: remove slave_id config field
-Date: Mon, 15 Nov 2021 09:54:03 +0100
-Message-Id: <20211115085403.360194-12-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20211115085403.360194-1-arnd@kernel.org>
-References: <20211115085403.360194-1-arnd@kernel.org>
-MIME-Version: 1.0
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="ApRlEHLe"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="d7PPI8HL"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id D66D32191E;
+ Mon, 15 Nov 2021 09:19:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1636967983; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=g/S5V947AoSD3fmO0d//eeqvrZGg6979pS1q0yOlS30=;
+ b=ApRlEHLeXUIoC3IUEwjjb5r64pfoFTx4wwdsJNIe3PW6cBKe9TFSED5CTyvpSyuCCXicti
+ Gewl96MxgrvhyACw3r63oBN2muGlvjCmyHpC+mitDGmIgCEJERQyOJ/Eqv3W9W2yBsFgHp
+ OKT5ti3vUxgTyXyketFF+zVbIrg4xLY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1636967983;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=g/S5V947AoSD3fmO0d//eeqvrZGg6979pS1q0yOlS30=;
+ b=d7PPI8HLnjWRBweEOBfciSuvvCVCaqMS7EJZoW7MWlughMLg8D6JHY7qiYCVPVK6sTfXUf
+ 6vQaCoOIYYvBq1Aw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id C38D2A3B89;
+ Mon, 15 Nov 2021 09:19:43 +0000 (UTC)
+Date: Mon, 15 Nov 2021 10:19:43 +0100
+Message-ID: <s5h5ystvkr4.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: Re: [PATCH v3 1/4] ALSA: hda: Follow ACPI convention in NHLT struct
+ naming
+In-Reply-To: <20211110103117.3142450-2-cezary.rojewski@intel.com>
+References: <20211110103117.3142450-1-cezary.rojewski@intel.com>
+ <20211110103117.3142450-2-cezary.rojewski@intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Mailman-Approved-At: Mon, 15 Nov 2021 09:57:03 +0100
-Cc: alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org,
- Bjorn Andersson <bjorn.andersson@linaro.org>, linux-tegra@vger.kernel.org,
- Thierry Reding <thierry.reding@gmail.com>, linux-mtd@lists.infradead.org,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- linux-spi@vger.kernel.org, Robert Jarzmik <robert.jarzmik@free.fr>,
- Lars-Peter Clausen <lars@metafoo.de>, Chunyan Zhang <zhang.lyra@gmail.com>,
- linux-staging@lists.linux.dev, Michal Simek <michal.simek@xilinx.com>,
- Jon Hunter <jonathanh@nvidia.com>, Andy Gross <agross@kernel.org>,
- bcm-kernel-feedback-list@broadcom.com, linux-serial@vger.kernel.org,
- Orson Zhai <orsonzhai@gmail.com>, Nicolas Saenz Julienne <nsaenz@kernel.org>,
- Arnd Bergmann <arnd@arndb.de>, Manivannan Sadhasivam <mani@kernel.org>,
- linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org,
- Mark Brown <broonie@kernel.org>, linux-rpi-kernel@lists.infradead.org,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- linux-arm-kernel@lists.infradead.org, Scott Branden <sbranden@broadcom.com>,
- Hyun Kwon <hyun.kwon@xilinx.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-mmc@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
- Laxman Dewangan <ldewangan@nvidia.com>, Baolin Wang <baolin.wang7@gmail.com>
+Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
+ tiwai@suse.com, hdegoede@redhat.com, broonie@kernel.org,
+ Amadeusz =?UTF-8?B?U8WCYXdpxYRza2k=?= <amadeuszx.slawinski@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,39 +100,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Wed, 10 Nov 2021 11:31:14 +0100,
+Cezary Rojewski wrote:
+> 
+> From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+> 
+> All ACPI table structs except for NHLT ones are defined in postfix way.
+> Update NHLT structs naming to make code cohesive.
+> 
+> Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-All references to the slave_id field have been removed, so
-remove the field as well to prevent new references from
-creeping in again.
+This turned out to be conflicting with the definition in
+include/acpi/actbl2.h, which was newly introduced in 5.16-rc1.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- include/linux/dmaengine.h | 4 ----
- 1 file changed, 4 deletions(-)
+So unfortunately I'll have to drop the patches for now.
+Could you rework with 5.16-rc base and resubmit?
 
-diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
-index 9000f3ffce8b..0349b35235e6 100644
---- a/include/linux/dmaengine.h
-+++ b/include/linux/dmaengine.h
-@@ -418,9 +418,6 @@ enum dma_slave_buswidth {
-  * @device_fc: Flow Controller Settings. Only valid for slave channels. Fill
-  * with 'true' if peripheral should be flow controller. Direction will be
-  * selected at Runtime.
-- * @slave_id: Slave requester id. Only valid for slave channels. The dma
-- * slave peripheral will have unique id as dma requester which need to be
-- * pass as slave config.
-  * @peripheral_config: peripheral configuration for programming peripheral
-  * for dmaengine transfer
-  * @peripheral_size: peripheral configuration buffer size
-@@ -448,7 +445,6 @@ struct dma_slave_config {
- 	u32 src_port_window_size;
- 	u32 dst_port_window_size;
- 	bool device_fc;
--	unsigned int slave_id;
- 	void *peripheral_config;
- 	size_t peripheral_size;
- };
--- 
-2.30.2
 
+thanks,
+
+Takashi
