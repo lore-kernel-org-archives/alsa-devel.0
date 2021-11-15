@@ -2,70 +2,70 @@ Return-Path: <SRS0=FucB=QC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 66A10C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 23:37:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C8A58C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 23:37:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D990861B53
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 23:37:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D990861B53
+	by mail.kernel.org (Postfix) with ESMTPS id 56A7161AFF
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 23:37:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 56A7161AFF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2BF53169E;
-	Tue, 16 Nov 2021 00:36:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2BF53169E
+	by alsa0.perex.cz (Postfix) with ESMTPS id AEDC816A2;
+	Tue, 16 Nov 2021 00:36:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AEDC816A2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637019434;
-	bh=fljXcnt0NW4ts0u0HOYNRGJqgyX3OFxwnxjFcxMhNf0=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1637019458;
+	bh=xw6CZxpP/GbyDNELCAndD/UsFGm9K4T5/E9P95cg9JQ=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IoUwe41KbbOUt+S34r7vQl2Yc25vQQZuY5nzowkrhdcLcrZ3Q0D9isnpVZTjM0jRP
-	 CNwyQjGQUQ/RSGLfyKCcGc6XdEJTAVs4qHRU7EbDa3VNczszB55J0+dlDjdXLHAraQ
-	 uCrvdhChpFJeGgP9VuJ4XVB0dfSHr8no/NMA8V48=
+	b=ae72NO+q4gNi0L1MiyyzdK9ozv6CTssM0m9E1ktklC7u/Y5LT3+WUuZNwTdAAg58t
+	 qdT70cvcIJWNHe0nqk0Fv1WEJ9jMJ1JvDz8MoZfsevy8awGbgQB/V3NEjEYYV05HKD
+	 52mc3KdGdgFONRLcysMJ9rUo63EeeMsBZ4BTWy1Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 191B6F804F3;
-	Tue, 16 Nov 2021 00:35:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 74415F80134;
+	Tue, 16 Nov 2021 00:35:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0B2A6F804E7; Tue, 16 Nov 2021 00:35:10 +0100 (CET)
+ id 6043EF804E7; Tue, 16 Nov 2021 00:35:11 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 63E0AF800FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5DD7FF804BD
  for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2021 00:35:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63E0AF800FA
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5DD7FF804BD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="IyQrUAT0"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A62FB63252;
- Mon, 15 Nov 2021 23:35:00 +0000 (UTC)
+ header.b="SQXhwZ9p"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C7F861B49;
+ Mon, 15 Nov 2021 23:34:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1637019301;
- bh=fljXcnt0NW4ts0u0HOYNRGJqgyX3OFxwnxjFcxMhNf0=;
- h=From:To:In-Reply-To:References:Subject:Date:From;
- b=IyQrUAT0hwOK0DbR7OXEvTaS4LasnZWjC8o6yYlemGJ6Bz54HLskjbfKxC2Fe+353
- F4/8Ei/0kxKTXqjyegm2Av1cIQki1XIoi3q9qckjomyYsVZjq0YeA5poHRaoEameJ0
- 9noaIs/0gatDFavUdnZ6EIIrHCE1kqK9tVrv+q8avEFhg5LAuirbGOHqzLJX2wpdxZ
- r+dexf0fKKZ9yz7UVXmsrxyzrCtAChDRlgsGSB9+Rt3F+GudA2VHvBVukhSDoxA7Qa
- uCWb40Z9T7rO+6QeZtaG1HN8YfVValQrjOR8Ocq3R/U/98RUZcazZoApsUESayvlYO
- Z+PlQBKWtghfA==
+ s=k20201202; t=1637019300;
+ bh=xw6CZxpP/GbyDNELCAndD/UsFGm9K4T5/E9P95cg9JQ=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=SQXhwZ9pWJRuEeNnIl4vY+Wrippeyb9D+n5A/iozZvgSUEs7XuFzY9che9kNN8TBN
+ TlBCYCK5wM5CXK1tKprQ1JNXk0ESdihcPGJ3IEXelwHhH1tvTliFqMEDdJe3wNVmoN
+ 3FPe4rnj0VtLOrB2fH4nNPN9yj0u1t0mxKyCEBwLIhjrJvdoDvOSPQpGFfBC93I1eS
+ nsfAk+LvU9KJfPCsIfD/yZxXXlD6W+PN2pjAVHthJPj2c0HwmH1wdpnzZc3CoVgYcI
+ T/m9CxUar8ZaWgqLWDQH+qV+IxSY9vM0nfbLr/3hoyxPFMpvbgNd73y7hj3OkA5NU9
+ hK8jx1v09hE+g==
 From: Mark Brown <broonie@kernel.org>
-To: david.rhodes@cirrus.com, brian.austin@cirrus.com,
- alsa-devel@alsa-project.org, David Rhodes <drhodes@opensource.cirrus.com>,
- ckeepax@opensource.cirrus.com, patches@opensource.cirrus.com
-In-Reply-To: <20211029214028.401284-1-drhodes@opensource.cirrus.com>
-References: <20211029214028.401284-1-drhodes@opensource.cirrus.com>
-Subject: Re: (subset) [PATCH 1/2] ASoC: cs35l41: Change monitor widgets to
- siggens
-Message-Id: <163701930042.675370.4765321366031881305.b4-ty@kernel.org>
-Date: Mon, 15 Nov 2021 23:35:00 +0000
+To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+In-Reply-To: <20211102094756.9317-1-peter.ujfalusi@linux.intel.com>
+References: <20211102094756.9317-1-peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH] ASoC: SOF: core: Unregister machine driver before IPC and
+ debugfs
+Message-Id: <163701929885.675370.12389807799805041465.b4-ty@kernel.org>
+Date: Mon, 15 Nov 2021 23:34:58 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
+ kai.vehmanen@linux.intel.com, ranjani.sridharan@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,16 +81,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 29 Oct 2021 16:40:27 -0500, David Rhodes wrote:
-> From: Charles Keepax <ckeepax@opensource.cirrus.com>
+On Tue, 2 Nov 2021 11:47:56 +0200, Peter Ujfalusi wrote:
+> To ensure clean unload of the machine driver, components and topology, do
+> the unregister before we free IPC and debugfs.
 > 
-> Currently the internal monitor sources are input widgets, which means
-> if the card is set to fully routed these will not enable unless connected
-> to something in the machine driver. However, all these are internal
-> monitor signals so it makes no sense to connect them to something in the
-> machine driver. As such switch them to siggen widgets which will have
-> the same behaviour except not require external linkage on a fully routed
-> card.
+> It is a possibility that part of the unregister we would have IPC
+> communication with the firmware.
+> 
 > 
 > [...]
 
@@ -100,8 +97,8 @@ Applied to
 
 Thanks!
 
-[2/2] ASoC: cs35l41: DSP Support
-      commit: bae9e13fc55cbc5ae25409385b2f1ba9187082d0
+[1/1] ASoC: SOF: core: Unregister machine driver before IPC and debugfs
+      commit: 5b59289bfdbe287d0756e5ccadf039329147de67
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
