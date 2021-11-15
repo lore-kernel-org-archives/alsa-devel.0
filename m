@@ -2,88 +2,88 @@ Return-Path: <SRS0=e+ka=QF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F3819C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 16:36:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E0F1C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 16:36:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7D90B61A58
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 16:36:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7D90B61A58
+	by mail.kernel.org (Postfix) with ESMTPS id 03AB561175
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 16:36:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 03AB561175
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D1C381887;
-	Thu, 18 Nov 2021 17:35:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D1C381887
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4ABD917E9;
+	Thu, 18 Nov 2021 17:36:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4ABD917E9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637253390;
-	bh=/t8XfUWWM8z249haMNnkzo9rz3rqA5hhnI/QUDdDTws=;
+	s=default; t=1637253411;
+	bh=GF5ppKwJBGyzBz8YYmc0v0PuTfRZzEb8KsPYdX9kZys=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VgO9X5Ug0wkUhhaCc5KU1TZS7jM8NuGvyQVRx1EMbgjVkw3PBqH0gBQi+nZN7upCW
-	 KDblW74H3WoM+EAmS/5lLqVJgDHWYqf5BypvPmLgOq4op/82k/1ypMmn7E/XpGng/u
-	 BoM+tjVTzOKIK7wS9RJaCSBIJvi7580fvFJSlwIY=
+	b=iUdpiFz/uGFg4QLyn/CcB9mL5nkwyuscXCHyTMlE98YRGjGEUMeKB4Tif/Yydnd80
+	 lSU34ga/k7MoVjFEfZaxmTvdob6OCt8+iCisT4BKYHxyp288ufTswwyblvNydRSTbL
+	 7Urjxw5S6U4SEbT9eMthOAuAbeku6O0N+pZr43rI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9EACAF80515;
-	Thu, 18 Nov 2021 17:33:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 58824F80517;
+	Thu, 18 Nov 2021 17:33:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2FE8DF8027D; Mon, 15 Nov 2021 11:23:53 +0100 (CET)
+ id 69FE4F8027D; Mon, 15 Nov 2021 11:42:42 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 21B03F80163
- for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2021 11:23:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21B03F80163
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7D26AF80163
+ for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2021 11:42:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D26AF80163
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="BuOY5ELT"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A98063231
- for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2021 10:23:41 +0000 (UTC)
+ header.b="Ah/2tRgi"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 42A0063218
+ for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2021 10:42:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1636971821;
- bh=/t8XfUWWM8z249haMNnkzo9rz3rqA5hhnI/QUDdDTws=;
+ s=k20201202; t=1636972950;
+ bh=GF5ppKwJBGyzBz8YYmc0v0PuTfRZzEb8KsPYdX9kZys=;
  h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
- b=BuOY5ELTwM8ARl8dht0vPj74GqpW7Omi9ye6DZXl4ISYUdhHvn/MD+ynDDUT+QFtA
- v8L7yTHPnv3tNZT+6a7jmvQiyHLX42OhSBtuErgkkpXMWboLAxbpYYXhkMyhP3kE41
- WUL+WGa8r2Ml5m1pmbyJCKNiWaAA/tcOe62yL/fiNo14Evo43QgmMCKuyU9uToylcA
- J85yoCIJTYPD2hiiYP9cnEUTFS41uyXrFoia9J9lYRG9OY91kMrhg72OL5ozjj1uQi
- 01RuRIianAw8FITBywentT0od4DYro7YDzqlmkyd3IDz3Pd+duWc1lFOAhroRxLO8P
- vWZ7OvjtlSIUw==
-Received: by mail-wr1-f49.google.com with SMTP id b12so29659836wrh.4
- for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2021 02:23:41 -0800 (PST)
-X-Gm-Message-State: AOAM532iouKk0FUiXKUOHxiYyzMhAI9OMRCeBrZd0Ulf0n4GjqaMW9GW
- rsXQE659bFo8+eWc1Yr4UokOu7JQY0PuSL+6MOE=
-X-Google-Smtp-Source: ABdhPJzrg17TRzVZ0g7WiohBQZUnVilsZRnhlMklfo7pQF89sOPyjg8lWeE+TbAhUi7fYkrm+wuR9SFoHCL7lz7Lazw=
-X-Received: by 2002:adf:df89:: with SMTP id z9mr45210699wrl.336.1636971819867; 
- Mon, 15 Nov 2021 02:23:39 -0800 (PST)
+ b=Ah/2tRgiVpL5fsi7FPpcL635JDhcln6l2ExZIWHTLBUbMjdBJtz0DoVh8A2lD2GeS
+ Vn5loajjfQVDFPQtLSRLZGgFOOu9gaKK3ygqoSrLlln9jWXCpaNqhh48lZ8c+k+4gu
+ sRf7wuCD69gIDwdqAcDKjxNp/YsEuFSMvDDDQT7VHpaJYuJxZPW/xofRGd5PidTsHa
+ kAWstx1aMCAeHyFhdJIprnubYysWs5QAKZBMy/vWApTOP0uD7D8phUBIQiY3lLQ5f/
+ +MVP+HB9F9xrWDthVsi8GxjjhUCyNhOn85FTRAs3rVEuGA/K5Upw6e+cpw5gK86TyV
+ zRQeafG4VMnqA==
+Received: by mail-wm1-f51.google.com with SMTP id 133so13513130wme.0
+ for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2021 02:42:30 -0800 (PST)
+X-Gm-Message-State: AOAM532MuiFH3zRv9fKcqydt1yPVd5x5YVXqbU+h47Bh+Zg5/5+Z2OpK
+ YLdKsUq7tfj0VG33a54JmqqCp+G7a0li1MaTZWw=
+X-Google-Smtp-Source: ABdhPJxXAexhirAvGW2LKyfe3zijMEf2dKYT5qfqRJ6eAMXzz6GR60sm0yXhnH6+pWfe4YG9EjpedQhiHwxXAXFjyDM=
+X-Received: by 2002:a1c:770e:: with SMTP id t14mr57234330wmi.173.1636972948695; 
+ Mon, 15 Nov 2021 02:42:28 -0800 (PST)
 MIME-Version: 1.0
 References: <20211115085403.360194-1-arnd@kernel.org>
- <20211115085403.360194-11-arnd@kernel.org>
- <CAMhs-H98kPNqH491+X0Mp81Ng++v1aQ=97XSHEhs+vx3g8W_4A@mail.gmail.com>
-In-Reply-To: <CAMhs-H98kPNqH491+X0Mp81Ng++v1aQ=97XSHEhs+vx3g8W_4A@mail.gmail.com>
+ <20211115085403.360194-2-arnd@kernel.org>
+ <647b842d-76a1-7a96-3ea7-8a37b62bc18e@metafoo.de>
+In-Reply-To: <647b842d-76a1-7a96-3ea7-8a37b62bc18e@metafoo.de>
 From: Arnd Bergmann <arnd@kernel.org>
-Date: Mon, 15 Nov 2021 11:23:24 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2hfcbTJ-yKik1hN35dTdqhjhCd=3X6G_hW4MXRHDVrfA@mail.gmail.com>
-Message-ID: <CAK8P3a2hfcbTJ-yKik1hN35dTdqhjhCd=3X6G_hW4MXRHDVrfA@mail.gmail.com>
-Subject: Re: [PATCH 10/11] staging: ralink-gdma: stop using slave_id config
-To: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date: Mon, 15 Nov 2021 11:42:12 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2EVseM4t=e982fFhzBGSZxZ2_V-FHwr-fQPd-bkAKaJg@mail.gmail.com>
+Message-ID: <CAK8P3a2EVseM4t=e982fFhzBGSZxZ2_V-FHwr-fQPd-bkAKaJg@mail.gmail.com>
+Subject: Re: [PATCH 01/11] ASoC: dai_dma: remove slave_id field
+To: Lars-Peter Clausen <lars@metafoo.de>
 Content-Type: text/plain; charset="UTF-8"
 X-Mailman-Approved-At: Thu, 18 Nov 2021 17:33:02 +0100
 Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
  dri-devel <dri-devel@lists.freedesktop.org>,
  Bjorn Andersson <bjorn.andersson@linaro.org>,
  "open list:TEGRA ARCHITECTURE SUPPORT" <linux-tegra@vger.kernel.org>,
- Laxman Dewangan <ldewangan@nvidia.com>,
+ Thierry Reding <thierry.reding@gmail.com>,
  linux-mtd <linux-mtd@lists.infradead.org>,
  Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
  linux-spi <linux-spi@vger.kernel.org>, Robert Jarzmik <robert.jarzmik@free.fr>,
- Lars-Peter Clausen <lars@metafoo.de>, Chunyan Zhang <zhang.lyra@gmail.com>,
- linux-staging@lists.linux.dev, Michal Simek <michal.simek@xilinx.com>,
- Jon Hunter <jonathanh@nvidia.com>, Andy Gross <agross@kernel.org>,
+ Chunyan Zhang <zhang.lyra@gmail.com>, linux-staging@lists.linux.dev,
+ Michal Simek <michal.simek@xilinx.com>, Jon Hunter <jonathanh@nvidia.com>,
+ Andy Gross <agross@kernel.org>,
  bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
  "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
  Orson Zhai <orsonzhai@gmail.com>, Nicolas Saenz Julienne <nsaenz@kernel.org>,
@@ -97,8 +97,8 @@ Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
  Scott Branden <sbranden@broadcom.com>, Hyun Kwon <hyun.kwon@xilinx.com>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  linux-mmc <linux-mmc@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
- linux-kernel <linux-kernel@vger.kernel.org>, Vinod Koul <vkoul@kernel.org>,
- Thierry Reding <thierry.reding@gmail.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Vinod Koul <vkoul@kernel.org>, Laxman Dewangan <ldewangan@nvidia.com>,
  Baolin Wang <baolin.wang7@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -115,16 +115,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Nov 15, 2021 at 10:55 AM Sergio Paracuellos
-<sergio.paracuellos@gmail.com> wrote:
-> On Mon, Nov 15, 2021 at 9:55 AM Arnd Bergmann <arnd@kernel.org> wrote:
-> > ---
-> >  drivers/staging/ralink-gdma/ralink-gdma.c | 12 +++++-------
-> >  1 file changed, 5 insertions(+), 7 deletions(-)
+On Mon, Nov 15, 2021 at 11:14 AM Lars-Peter Clausen <lars@metafoo.de> wrote:
 >
-> This driver has been already deleted from the staging tree. See [0].
+> On 11/15/21 9:53 AM, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > This field is never set, and serves no purpose, so remove it.
+>
+> I agree that we should remove it. Its been legacy support code for a
+> while, but the description that there is no user is not right.
+>
+> The tegra20_spdif driver obviously uses it and that user is removed in
+> this patch. I think it makes sense to split that out into a separate
+> patch with a description why the driver will still work even with
+> slave_id removed. Maybe the best is to remove the whole tegra20_spdif
+> driver.
 
-Ok, thanks! I'll just leave out the patch from future submissions, and remove
-it completely once your commit hits mainline.
+Ok, I'll split out the tegra patch and try to come up with a better
+description for it. What I saw in that driver is it just passes down the
+slave_id number from a 'struct resource', but there is nothing in
+the kernel that sets up this resource.
 
-       Arnd
+Do you or someone else have more information on the state of this
+driver? I can see that it does not contain any of_device_id based
+probing, so it seems that this is either dead code, the platform_device
+gets created by some other code that is no longer compatible with
+this driver.
+
+      Arnd
