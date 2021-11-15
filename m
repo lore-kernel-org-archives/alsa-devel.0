@@ -2,62 +2,62 @@ Return-Path: <SRS0=FucB=QC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 464C0C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 09:01:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2382CC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 09:01:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AEB6D63221
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 09:01:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AEB6D63221
+	by mail.kernel.org (Postfix) with ESMTPS id 977E663221
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 09:01:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 977E663221
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2149E1698;
-	Mon, 15 Nov 2021 10:00:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2149E1698
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0124516B3;
+	Mon, 15 Nov 2021 10:00:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0124516B3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1636966882;
-	bh=dcMQMZncG8IjNijKZNej/gmwTiTYDPeCFK23hEXOfto=;
+	s=default; t=1636966905;
+	bh=t+sujmlGUVrYtWCA2Iqgm4qzwcVm4cE+7MUCYHiTmt8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WpQOe8zxKRcyloVANkUKLZeDa7jCijUHDbUov5tU70IriwrSVhygc8wBRWzwFZdVV
-	 w6RZc2a33Dz9YRVMzR8l7DEPMyNRaL1bhHJsKYu9vk7RgaQCbZATzPG2SXyn75hAbs
-	 tyrZMAWVDsijObsbFLKHxavtPryEl8+B1x3Nu7wM=
+	b=lF2cPllIkhpmZzU4tWhLIHQhUmzSi+a1u4WVOeKl+yT45FH5IHtn8W/CcuGw8fO2E
+	 E/hvGheBlnrxDdt2IRXqewNVCrTgsQWT62baRQWdkMXgxFrOWAp1UY38cku50VQjGy
+	 LyU33rbqc7dUW4V7PGGWc+thYMBPW7u1NNow51oY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 34545F80524;
+	by alsa1.perex.cz (Postfix) with ESMTP id EC8AAF80528;
 	Mon, 15 Nov 2021 09:57:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E405AF8028B; Mon, 15 Nov 2021 09:55:49 +0100 (CET)
+ id DF4D1F8027D; Mon, 15 Nov 2021 09:56:00 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6A947F800FA
- for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2021 09:55:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A947F800FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 80DB4F80163
+ for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2021 09:55:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80DB4F80163
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="VYuJvxO5"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2223663223;
- Mon, 15 Nov 2021 08:55:38 +0000 (UTC)
+ header.b="E3hAwHAF"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 97B2063227;
+ Mon, 15 Nov 2021 08:55:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1636966545;
- bh=dcMQMZncG8IjNijKZNej/gmwTiTYDPeCFK23hEXOfto=;
+ s=k20201202; t=1636966551;
+ bh=t+sujmlGUVrYtWCA2Iqgm4qzwcVm4cE+7MUCYHiTmt8=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=VYuJvxO5lVR/GiGcXXlpTenpQL8tS/RiB2q/z0CMEjbvV3OtExgDGliJ9mPslll9Z
- gJF9jW4NvrAMcYVtan/DOPn491D5evV0DjVoLO4PKbj3djKSiupC9gs/o/JDRousmF
- VfKHtJYY+yuBV0OABHqDiHSUkpE6qGp8SFfe7NSJEmA0l/mxODuVE3wHHx7vsA5sov
- Wa36nu6IAmzkpbTK/7+6RaXeDPwWYCIT8QDeBGczguXuJlI760X3i1oAk8E/g82B3L
- MDBneNRRk20n1rSG1Z9mUgJiWRhrqnptEhFZTTbLf+wXfy+4WmVGvjS1fVUD20TPas
- ktKoOqahs6Lsg==
+ b=E3hAwHAFBi1veWTZ9KC3LUqplVBzvhHkJdmHwzLmUaxHGxHQt/Uao9jUuL7+wYtM1
+ t5/KCd2DhDnIMvpS1fzLHld+q6AChRUElQMbmbJgDaTpHm5vW1Uyudi7cSpoV3wALW
+ 3+TEcRqIWccqr7FIxw+On4njyPKMPuD/VUQ+uBZMxLJI2xjFiVqAFgV6Ym1M8MXblp
+ H3AtGfulWPCW1XQE3Nvr6vFEwAXxjhfbUBy3AmIdd5/EjenYc84yhK4dgbFVtzWJe/
+ uGxVZ0BY9bYvtABbO19Hw4xqxf+bkbhZDmO0g57I7eSW+8dnN8ZNhH3IrlxeCNnqJt
+ h19+P/ZGx52Ig==
 From: Arnd Bergmann <arnd@kernel.org>
 To: Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH 09/11] dmaengine: tegra20-apb: stop checking config->slave_id
-Date: Mon, 15 Nov 2021 09:54:01 +0100
-Message-Id: <20211115085403.360194-10-arnd@kernel.org>
+Subject: [PATCH 10/11] staging: ralink-gdma: stop using slave_id config
+Date: Mon, 15 Nov 2021 09:54:02 +0100
+Message-Id: <20211115085403.360194-11-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20211115085403.360194-1-arnd@kernel.org>
 References: <20211115085403.360194-1-arnd@kernel.org>
@@ -100,31 +100,83 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-Nothing sets the slave_id field any more, so stop accessing
-it to allow the removal of this field.
+Picking the connection between a DMA controller and its attached device
+is done through devicetree using the "dmas" property, which is implemented
+by the gdma driver, but it also allows overriding the "req" configuration
+with the slave_id field, as it was done in some linux-2.6 era drivers.
+
+There is no driver in the tree that sets these values, so stop
+interpreting them before anything accidentally starts relying on it.
+Rename the field in the channel from "slave_id" to "req" to better match
+the purpose and the naming in the hardware.
+
+If any driver actually starts using this DMA engine, it may be necessary
+to implement a .xlate callback that sets this field at probe time.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/dma/tegra20-apb-dma.c | 6 ------
- 1 file changed, 6 deletions(-)
+ drivers/staging/ralink-gdma/ralink-gdma.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/dma/tegra20-apb-dma.c b/drivers/dma/tegra20-apb-dma.c
-index b7260749e8ee..eaafcbe4ca94 100644
---- a/drivers/dma/tegra20-apb-dma.c
-+++ b/drivers/dma/tegra20-apb-dma.c
-@@ -343,12 +343,6 @@ static int tegra_dma_slave_config(struct dma_chan *dc,
- 	}
+diff --git a/drivers/staging/ralink-gdma/ralink-gdma.c b/drivers/staging/ralink-gdma/ralink-gdma.c
+index b5229bc6eae5..f00240e62e1b 100644
+--- a/drivers/staging/ralink-gdma/ralink-gdma.c
++++ b/drivers/staging/ralink-gdma/ralink-gdma.c
+@@ -106,7 +106,7 @@ struct gdma_dma_desc {
+ struct gdma_dmaengine_chan {
+ 	struct virt_dma_chan vchan;
+ 	unsigned int id;
+-	unsigned int slave_id;
++	unsigned int req;
  
- 	memcpy(&tdc->dma_sconfig, sconfig, sizeof(*sconfig));
--	if (tdc->slave_id == TEGRA_APBDMA_SLAVE_ID_INVALID &&
--	    sconfig->device_fc) {
--		if (sconfig->slave_id > TEGRA_APBDMA_CSR_REQ_SEL_MASK)
--			return -EINVAL;
--		tdc->slave_id = sconfig->slave_id;
--	}
- 	tdc->config_init = true;
- 
- 	return 0;
+ 	dma_addr_t fifo_addr;
+ 	enum gdma_dma_transfer_size burst_size;
+@@ -194,7 +194,6 @@ static int gdma_dma_config(struct dma_chan *c,
+ 			dev_err(dma_dev->ddev.dev, "only support 4 byte buswidth\n");
+ 			return -EINVAL;
+ 		}
+-		chan->slave_id = config->slave_id;
+ 		chan->fifo_addr = config->dst_addr;
+ 		chan->burst_size = gdma_dma_maxburst(config->dst_maxburst);
+ 		break;
+@@ -203,7 +202,6 @@ static int gdma_dma_config(struct dma_chan *c,
+ 			dev_err(dma_dev->ddev.dev, "only support 4 byte buswidth\n");
+ 			return -EINVAL;
+ 		}
+-		chan->slave_id = config->slave_id;
+ 		chan->fifo_addr = config->src_addr;
+ 		chan->burst_size = gdma_dma_maxburst(config->src_maxburst);
+ 		break;
+@@ -288,12 +286,12 @@ static int rt305x_gdma_start_transfer(struct gdma_dmaengine_chan *chan)
+ 		dst_addr = chan->fifo_addr;
+ 		ctrl0 = GDMA_REG_CTRL0_DST_ADDR_FIXED |
+ 			(8 << GDMA_RT305X_CTRL0_SRC_REQ_SHIFT) |
+-			(chan->slave_id << GDMA_RT305X_CTRL0_DST_REQ_SHIFT);
++			(chan->req << GDMA_RT305X_CTRL0_DST_REQ_SHIFT);
+ 	} else if (chan->desc->direction == DMA_DEV_TO_MEM) {
+ 		src_addr = chan->fifo_addr;
+ 		dst_addr = sg->dst_addr;
+ 		ctrl0 = GDMA_REG_CTRL0_SRC_ADDR_FIXED |
+-			(chan->slave_id << GDMA_RT305X_CTRL0_SRC_REQ_SHIFT) |
++			(chan->req << GDMA_RT305X_CTRL0_SRC_REQ_SHIFT) |
+ 			(8 << GDMA_RT305X_CTRL0_DST_REQ_SHIFT);
+ 	} else if (chan->desc->direction == DMA_MEM_TO_MEM) {
+ 		/*
+@@ -365,12 +363,12 @@ static int rt3883_gdma_start_transfer(struct gdma_dmaengine_chan *chan)
+ 		dst_addr = chan->fifo_addr;
+ 		ctrl0 = GDMA_REG_CTRL0_DST_ADDR_FIXED;
+ 		ctrl1 = (32 << GDMA_REG_CTRL1_SRC_REQ_SHIFT) |
+-			(chan->slave_id << GDMA_REG_CTRL1_DST_REQ_SHIFT);
++			(chan->req << GDMA_REG_CTRL1_DST_REQ_SHIFT);
+ 	} else if (chan->desc->direction == DMA_DEV_TO_MEM) {
+ 		src_addr = chan->fifo_addr;
+ 		dst_addr = sg->dst_addr;
+ 		ctrl0 = GDMA_REG_CTRL0_SRC_ADDR_FIXED;
+-		ctrl1 = (chan->slave_id << GDMA_REG_CTRL1_SRC_REQ_SHIFT) |
++		ctrl1 = (chan->req << GDMA_REG_CTRL1_SRC_REQ_SHIFT) |
+ 			(32 << GDMA_REG_CTRL1_DST_REQ_SHIFT) |
+ 			GDMA_REG_CTRL1_COHERENT;
+ 	} else if (chan->desc->direction == DMA_MEM_TO_MEM) {
 -- 
 2.30.2
 
