@@ -2,90 +2,76 @@ Return-Path: <SRS0=FucB=QC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D892C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 07:59:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16DC5C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 08:01:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 304D960F5B
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 07:59:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 304D960F5B
+	by mail.kernel.org (Postfix) with ESMTPS id 1CE5760E8D
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 08:01:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1CE5760E8D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6312815E5;
-	Mon, 15 Nov 2021 08:58:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6312815E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id CC66D1616;
+	Mon, 15 Nov 2021 09:00:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC66D1616
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1636963144;
-	bh=8lTcfxGSlo0EzK5A1iOOi03S4Ao0qkQ1KLkOBi2uC/s=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=DayrISCQ5iH8rTSp/k0KacK36PCSKtK4QOjmAB02QR1onDqduT5LRdRGT+acmMvro
-	 ih9XtpPwnI8vAn1QtPWSPbOyO37dtp5jXyehd2U0xx5hkoFNVOtfMl3hjiic+FRUVe
-	 eC4jnBh6kCW8HnitawSScuORW9InKTiEPRdrgTbU=
+	s=default; t=1636963261;
+	bh=enWHFgn7ZFNSDq/7KYYXtB3nyduNfBkZV4id68YXNDg=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=RRb7LAuS+o/7wnAoO5caUQcCGsUaS4hFom3gD9H3dPs2a7dRgA1zr/GxAGHC0oQTL
+	 vIqPHmC0Jo1RYqPSp+YNGB3wkrQBqhySdXAo9A6WEhRCGlf4ea24JlMqXFO4vOYp8A
+	 0PyTDson4l77jXeiMzkFLETimvSpFgzhEJpi67ig=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DE5F6F80134;
-	Mon, 15 Nov 2021 08:58:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6C4CDF80163;
+	Mon, 15 Nov 2021 09:00:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8E6C5F801D5; Mon, 15 Nov 2021 08:58:11 +0100 (CET)
+ id 5E118F801D5; Mon, 15 Nov 2021 09:00:02 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 783C6F80134
- for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2021 08:58:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 783C6F80134
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3801FF80134
+ for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2021 08:59:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3801FF80134
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="kBlKwl9+"; 
+ header.b="CeukGf2Y"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="j/b8AT1L"
+ header.b="Rk/2wkuk"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 892DE1FD50;
- Mon, 15 Nov 2021 07:57:56 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id BDC471FD58;
+ Mon, 15 Nov 2021 07:59:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1636963076; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=MfJK66Q5Yf9s8KyRoh0tj2vHn6+Gv8C2aBOi72F6Px4=;
- b=kBlKwl9+6f4ST8e3iIA8CAHRcMYdUKQm+n48JOaGJsei63MTzvrV/77MnAeNFOoZ1Um3Dj
- FWl3yrW7wBUm+PNfkJIoItrwJaWbGJ1cv3X+khmBi8vwsc002sLlvqWzS+aki7B3nY8Nfy
- s05QN/V02+oDfykWFcTe0xLL69dTrZY=
+ t=1636963185; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=AjkqD6FUjs75UbHn4e+gJ4O0NdBlwhF5LmbaNKBA7qM=;
+ b=CeukGf2YcriZbUBMxo+XbPRuiWe9CQ9N3o+51Er5vSO1erj4ypnCmKaKC9StcE77p47rxK
+ aFZz0BUXDE0t5+huvEuarTyuQvmp8qOsgQi4h+6BawFE9Acgs1AlvtWZOJR9gabdDa48vh
+ wNUjRCIc+EdVLMWeVqQWTH/hx8vTA4c=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1636963076;
+ s=susede2_ed25519; t=1636963185;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=MfJK66Q5Yf9s8KyRoh0tj2vHn6+Gv8C2aBOi72F6Px4=;
- b=j/b8AT1LHsvo5ipNJF28vtdZ60g0LbRDIqfhprKB182oKKANbRAyLsmowHFAiZq1uYPC1r
- 8GAIe9MtN4a81jCQ==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 6ED54A3B85;
- Mon, 15 Nov 2021 07:57:56 +0000 (UTC)
-Date: Mon, 15 Nov 2021 08:57:56 +0100
-Message-ID: <s5hsfvxvojf.wl-tiwai@suse.de>
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=AjkqD6FUjs75UbHn4e+gJ4O0NdBlwhF5LmbaNKBA7qM=;
+ b=Rk/2wkukjAeMrfNIGU/HmtrX11ya8JMPXuDqzhBT3WM7Y7k6LhLMV6L0Rj3uPzKifbJyBz
+ z+B5LlqykbXhWnDQ==
+Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id AD44CA3B8A;
+ Mon, 15 Nov 2021 07:59:45 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: Re: [PATCH] ALSA: hda: fix general protection fault in
- azx_runtime_idle
-In-Reply-To: <alpine.DEB.2.22.394.2111121424170.3554566@eliteleevi.tm.intel.com>
-References: <20211110210307.1172004-1-kai.vehmanen@linux.intel.com>
- <s5hzgqb65h0.wl-tiwai@suse.de>
- <alpine.DEB.2.22.394.2111110015250.3554566@eliteleevi.tm.intel.com>
- <s5h1r3m6csi.wl-tiwai@suse.de>
- <alpine.DEB.2.22.394.2111111920450.3554566@eliteleevi.tm.intel.com>
- <s5hczn53d4l.wl-tiwai@suse.de>
- <alpine.DEB.2.22.394.2111121424170.3554566@eliteleevi.tm.intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org,
- mahesh.meena@intel.com
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: hda: intel: More comprehensive PM runtime setup for
+ controller driver
+Date: Mon, 15 Nov 2021 08:59:44 +0100
+Message-Id: <20211115075944.6972-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,56 +87,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 12 Nov 2021 13:27:34 +0100,
-Kai Vehmanen wrote:
-> 
-> Hi,
-> 
-> On Fri, 12 Nov 2021, Takashi Iwai wrote:
-> 
-> > On Thu, 11 Nov 2021 18:39:36 +0100, Kai Vehmanen wrote:
-> > > And later
-> > > [   54.770701] Enabling runtime PM for inactive device (0000:00:1f.3) with active children
-> > > [   54.770718] WARNING: CPU: 0 PID: 10 at drivers/base/power/runtime.c:1439 pm_runtime_enable+0x98/0xb0
-> > > 
-> > > Adding a "pm_runtime_set_active(&pci->dev)" to both azx_free() and 
-> > > azx_probe_continue() seems to help and fix still works.
-> > 
-> > Ah yes, I was confused as if it were already called in hdac_device.c,
-> > but this was about the HD-audio bus controller, not the codec.
-> > 
-> > Below is the revised one.
-> [...]
-> > Currently we haven't explicitly enable and allow/forbid the runtime PM
-> > at the probe and the remove phases of HD-audio controller driver, and
-> > this was the reason of a GPF mentioned in the commit e81478bbe7a1
-> > ("ALSA: hda: fix general protection fault in azx_runtime_idle");
-> > namely, even after the resources are released, the runtime PM might be
-> > still invoked by the bound graphics driver during the remove of the
-> > controller driver.  Although we've fixed it by clearing the drvdata
-> > reference, it'd be also better to cover the runtime PM issue more
-> > properly.
-> > 
-> > This patch adds a few more pm_runtime_*() calls at the probe and the
-> > remove time for setting and cleaning up the runtime PM.  Particularly,
-> > now more explicitly pm_runtime_enable() and _disable() get called as
-> > well as pm_runtime_forbid() call at the remove callback, so that a
-> > use-after-free should be avoided.
-> > 
-> > Reported-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-> > Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> 
-> ack, tested this and no warnings anymore.
-> 
-> Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-> Tested-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Currently we haven't explicitly enable and allow/forbid the runtime PM
+at the probe and the remove phases of HD-audio controller driver, and
+this was the reason of a GPF mentioned in the commit e81478bbe7a1
+("ALSA: hda: fix general protection fault in azx_runtime_idle");
+namely, even after the resources are released, the runtime PM might be
+still invoked by the bound graphics driver during the remove of the
+controller driver.  Although we've fixed it by clearing the drvdata
+reference, it'd be also better to cover the runtime PM issue more
+properly.
 
-OK, I'll submit and merge the patch.
+This patch adds a few more pm_runtime_*() calls at the probe and the
+remove time for setting and cleaning up the runtime PM.  Particularly,
+now more explicitly pm_runtime_enable() and _disable() get called as
+well as pm_runtime_forbid() call at the remove callback, so that a
+use-after-free should be avoided.
 
-As the original problem was fixed by NULL checks, I'd push this for
-5.16, though.
+Reported-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Tested-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Link: https://lore.kernel.org/r/20211110210307.1172004-1-kai.vehmanen@linux.intel.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/hda_intel.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index fe51163f2d82..45e85180048c 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -1347,8 +1347,14 @@ static void azx_free(struct azx *chip)
+ 	if (hda->freed)
+ 		return;
+ 
+-	if (azx_has_pm_runtime(chip) && chip->running)
++	if (azx_has_pm_runtime(chip) && chip->running) {
+ 		pm_runtime_get_noresume(&pci->dev);
++		pm_runtime_disable(&pci->dev);
++		pm_runtime_set_suspended(&pci->dev);
++		pm_runtime_forbid(&pci->dev);
++		pm_runtime_dont_use_autosuspend(&pci->dev);
++	}
++
+ 	chip->running = 0;
+ 
+ 	azx_del_card_list(chip);
+@@ -2322,6 +2328,8 @@ static int azx_probe_continue(struct azx *chip)
+ 	if (azx_has_pm_runtime(chip)) {
+ 		pm_runtime_use_autosuspend(&pci->dev);
+ 		pm_runtime_allow(&pci->dev);
++		pm_runtime_set_active(&pci->dev);
++		pm_runtime_enable(&pci->dev);
+ 		pm_runtime_put_autosuspend(&pci->dev);
+ 	}
+ 
+-- 
+2.31.1
 
-thanks,
-
-Takashi
