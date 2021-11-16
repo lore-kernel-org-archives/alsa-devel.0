@@ -2,88 +2,87 @@ Return-Path: <SRS0=I3pN=QD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 26624C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 16:28:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D53CCC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 16:29:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A28D060F9C
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 16:28:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A28D060F9C
+	by mail.kernel.org (Postfix) with ESMTPS id 5C8E5611C5
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 16:29:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5C8E5611C5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 807A91752;
-	Tue, 16 Nov 2021 17:27:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 807A91752
+	by alsa0.perex.cz (Postfix) with ESMTPS id 91F61175F;
+	Tue, 16 Nov 2021 17:28:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 91F61175F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637080127;
-	bh=ci6Ukxy0JaCHI7BWdaVVAKnaGruJ1pY2oH2oi1yOA/c=;
+	s=default; t=1637080153;
+	bh=U7RiVpcxF9qqi2jx0LDiQ9dFQer2cGy0Q8JrXDI39Uo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HeSkgrEOvong88KjmnISiBnKw9r8Je3gquFkkyykBFauc1wfQDDLIF2jnv36iWvN2
-	 6EX3OVqVuZhZWvrxydCtp4J4cKmOko6RmMKXt1znLngFnwoGkgkEvb3PIyIIqFL9EN
-	 p68PBAUNeub4N3qww6YzNa8DuyY9hZsMa+GliSKk=
+	b=luSSsoqdRkhTdaDRCscZ9J+vooe7+f0CqjAuSgmwo5ZgR9sp4X3HWmU/7kxn6pKT0
+	 9MfMIJM1/i6BjNBHpb1Cm8Y3nlMYgdLZPnOGsct8dFUnjAXAdBbzqQTu4FFRY3L/Lm
+	 5T0BwofEHG8OhpPvZ4W+ZK+Lnc9AWG5WQiUM+cQg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8F441F804F2;
-	Tue, 16 Nov 2021 17:27:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DBC9DF80423;
+	Tue, 16 Nov 2021 17:27:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 618ABF804F1; Tue, 16 Nov 2021 17:27:08 +0100 (CET)
+ id E49F8F804FC; Tue, 16 Nov 2021 17:27:10 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5126BF80089
- for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2021 17:27:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5126BF80089
+ by alsa1.perex.cz (Postfix) with ESMTPS id B4038F80272
+ for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2021 17:26:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4038F80272
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="m0Miw1oC"
+ header.b="FtkErfQp"
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AG7FCkg005416;
- Tue, 16 Nov 2021 10:26:59 -0600
+ by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AG7FCke005416;
+ Tue, 16 Nov 2021 10:26:58 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=ngBWTmOs4HWlzyxq6lq8y8I2SnDqznU1MlnyKmnPGYE=;
- b=m0Miw1oCtsZPAWbSjLTaGJ4/fljh9hzlT59Cfpz2GwXeqObKbRX7bqK5m1Aw5APkerK+
- M3ZU5xJ54Pn9SiM2RJog4sIVelCtB0y0+gH5jdMeNi1BIyATWdaYbcpAGlUcQntL3+dZ
- PukPOGW3ugYp3BqWyZjONPaf1M1IBO/cIXct/zbEnam75tlBu7KtC/YQMO25tU7Yo0ld
- b8s7hC1Jxb850q44rfG1q2kbm3zXfYpTslBjhHBjwnCcEURD9boKo23Rvncc3TL7YevI
- SJOe/Zw0OdA3oZcRbv6e4hFFqtaj/AISOHasEW3U5atL+h7QOLsHNeWkqXrT5uNIx6V1 tA== 
+ bh=MuHTk7WWbI4FaMOqXKtopVQskFCqIgwcH1k0Lq3hmRo=;
+ b=FtkErfQpHrcA1F7e1fAh8WLBlWxwB3nkGppZgP+eMkXNjz3Hr60Rng82QnqTL8i2rA0u
+ DbjcWY3YEaAnY3XLe+Ik50Se3DMpAPdbp47IxIVLaKZna+91s6C9YpnH5owKugAU79ie
+ qzMd6is3nuyDm2LyZDnKYpe/+h9dhxMXWtLAbksgARse4qWQV9i1b2r6TnQQQXNZaPs7
+ rYyWVqEu0unfNA0E7BEoj0a1wV6X6AbMlRUiWsPmToutaORDM20zO6TrSxXSX4TGZpzs
+ MXG++aNGtfQMFz7a6ozNTCc25PRbWin3nu6Oe8qVixyxMHi86hsnmR+eYX9LEzt/PUBi SQ== 
 Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3cbdjgt3be-4
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3cbdjgt3be-2
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Tue, 16 Nov 2021 10:26:59 -0600
+ Tue, 16 Nov 2021 10:26:58 -0600
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Tue, 16 Nov
- 2021 16:26:57 +0000
+ 2021 16:26:56 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.17 via
- Frontend Transport; Tue, 16 Nov 2021 16:26:57 +0000
+ Frontend Transport; Tue, 16 Nov 2021 16:26:56 +0000
 Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com
  [198.61.65.41])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 0646C11DC;
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 1F75711DC;
  Tue, 16 Nov 2021 16:26:56 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 2/3] ASoC: cs42l42: Correct configuring of switch inversion
- from ts-inv
-Date: Tue, 16 Nov 2021 16:26:48 +0000
-Message-ID: <20211116162652.45225-5-rf@opensource.cirrus.com>
+Subject: [PATCH v2] ASoC: cs42l42: Add control for audio slow-start switch
+Date: Tue, 16 Nov 2021 16:26:45 +0000
+Message-ID: <20211116162652.45225-2-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211116162652.45225-1-rf@opensource.cirrus.com>
 References: <20211116162652.45225-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 7wBvft3qXOae-DlyeaeXY_Gginh-4oFM
-X-Proofpoint-GUID: 7wBvft3qXOae-DlyeaeXY_Gginh-4oFM
+X-Proofpoint-ORIG-GUID: h9OLt3uAPn_xrvF07L9vyobYry-X7YNm
+X-Proofpoint-GUID: h9OLt3uAPn_xrvF07L9vyobYry-X7YNm
 X-Proofpoint-Spam-Reason: safe
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
  Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
@@ -102,76 +101,94 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The setting from the cirrus,ts-inv property should be applied to the
-TIP_SENSE_INV bit, as this is the one that actually affects the jack
-detect block. The TS_INV bit only swaps the meaning of the PLUG and
-UNPLUG interrupts and should always be 1 for the interrupts to have
-the normal meaning.
+This adds an ALSA control so that the slow-start audio ramp feature
+can be disabled. This is useful for high-definition audio applications.
 
-Due to some misunderstanding the driver had been implemented to
-configure the TS_INV bit based on the jack switch polarity. This made
-the interrupts behave the correct way around, but left the jack detect
-block, button detect and analogue circuits always interpreting an open
-switch as unplugged.
-
-The signal chain inside the codec is:
-
-SENSE pin -> TIP_SENSE_INV -> TS_INV -> (invert) -> interrupts
-                  |
-                  v
-             Jack detect,
-          button detect and
-            analog control
-
-As the TIP_SENSE_INV already performs the necessary inversion the
-TS_INV bit never needs to change. It must always be 1 to yield the
-expected interrupt behaviour.
-
-Some extra confusion has arisen because of the additional invert in the
-interrupt path, meaning that a value applied to the TS_INV bit produces
-the opposite effect of applying it to the TIP_SENSE_INV bit. The ts-inv
-property has therefore always had the opposite effect to what might be
-expected (0 = inverted, 1 = not inverted). To maintain the meaning of
-the ts-inv property it must be inverted when applied to TIP_SENSE_INV.
+The register field is unusual in that it is a 3-bit field with only
+two valid values, 000=off and 111=on.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Fixes: 2c394ca79604 ("ASoC: Add support for CS42L42 codec")
 ---
- sound/soc/codecs/cs42l42.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ sound/soc/codecs/cs42l42.c | 30 +++++++++++++++++++++++++++++-
+ sound/soc/codecs/cs42l42.h |  3 +++
+ 2 files changed, 32 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 1029f6b3eb48..27a1c4c73074 100644
+index 27a1c4c73074..56804a3f285e 100644
 --- a/sound/soc/codecs/cs42l42.c
 +++ b/sound/soc/codecs/cs42l42.c
-@@ -1818,12 +1818,15 @@ static void cs42l42_setup_hs_type_detect(struct cs42l42_private *cs42l42)
- 			(1 << CS42L42_HS_CLAMP_DISABLE_SHIFT));
+@@ -42,6 +42,7 @@ static const struct reg_default cs42l42_reg_defaults[] = {
+ 	{ CS42L42_SRC_CTL,			0x10 },
+ 	{ CS42L42_MCLK_CTL,			0x02 },
+ 	{ CS42L42_SFTRAMP_RATE,			0xA4 },
++	{ CS42L42_SLOW_START_ENABLE,		0x70 },
+ 	{ CS42L42_I2C_DEBOUNCE,			0x88 },
+ 	{ CS42L42_I2C_STRETCH,			0x03 },
+ 	{ CS42L42_I2C_TIMEOUT,			0xB7 },
+@@ -177,6 +178,7 @@ static bool cs42l42_readable_register(struct device *dev, unsigned int reg)
+ 	case CS42L42_MCLK_STATUS:
+ 	case CS42L42_MCLK_CTL:
+ 	case CS42L42_SFTRAMP_RATE:
++	case CS42L42_SLOW_START_ENABLE:
+ 	case CS42L42_I2C_DEBOUNCE:
+ 	case CS42L42_I2C_STRETCH:
+ 	case CS42L42_I2C_TIMEOUT:
+@@ -387,6 +389,28 @@ static const struct regmap_config cs42l42_regmap = {
+ static DECLARE_TLV_DB_SCALE(adc_tlv, -9700, 100, true);
+ static DECLARE_TLV_DB_SCALE(mixer_tlv, -6300, 100, true);
  
- 	/* Enable the tip sense circuit */
-+	regmap_update_bits(cs42l42->regmap, CS42L42_TSENSE_CTL,
-+			   CS42L42_TS_INV_MASK, CS42L42_TS_INV_MASK);
++static int cs42l42_slow_start_put(struct snd_kcontrol *kcontrol,
++				  struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	u8 val;
 +
- 	regmap_update_bits(cs42l42->regmap, CS42L42_TIPSENSE_CTL,
- 			CS42L42_TIP_SENSE_CTRL_MASK |
- 			CS42L42_TIP_SENSE_INV_MASK |
- 			CS42L42_TIP_SENSE_DEBOUNCE_MASK,
- 			(3 << CS42L42_TIP_SENSE_CTRL_SHIFT) |
--			(0 << CS42L42_TIP_SENSE_INV_SHIFT) |
-+			(!cs42l42->ts_inv << CS42L42_TIP_SENSE_INV_SHIFT) |
- 			(2 << CS42L42_TIP_SENSE_DEBOUNCE_SHIFT));
++	/* all bits of SLOW_START_EN much change together */
++	switch (ucontrol->value.integer.value[0]) {
++	case 0:
++		val = 0;
++		break;
++	case 1:
++		val = CS42L42_SLOW_START_EN_MASK;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return snd_soc_component_update_bits(component, CS42L42_SLOW_START_ENABLE,
++					     CS42L42_SLOW_START_EN_MASK, val);
++}
++
+ static const char * const cs42l42_hpf_freq_text[] = {
+ 	"1.86Hz", "120Hz", "235Hz", "466Hz"
+ };
+@@ -431,7 +455,11 @@ static const struct snd_kcontrol_new cs42l42_snd_controls[] = {
+ 				CS42L42_DAC_HPF_EN_SHIFT, true, false),
+ 	SOC_DOUBLE_R_TLV("Mixer Volume", CS42L42_MIXER_CHA_VOL,
+ 			 CS42L42_MIXER_CHB_VOL, CS42L42_MIXER_CH_VOL_SHIFT,
+-				0x3f, 1, mixer_tlv)
++				0x3f, 1, mixer_tlv),
++
++	SOC_SINGLE_EXT("Slow Start Switch", CS42L42_SLOW_START_ENABLE,
++			CS42L42_SLOW_START_EN_SHIFT, true, false,
++			snd_soc_get_volsw, cs42l42_slow_start_put),
+ };
  
- 	/* Save the initial status of the tip sense */
-@@ -1867,10 +1870,6 @@ static int cs42l42_handle_device_data(struct device *dev,
- 		cs42l42->ts_inv = CS42L42_TS_INV_DIS;
- 	}
+ static int cs42l42_hp_adc_ev(struct snd_soc_dapm_widget *w,
+diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
+index f45bcc9a3a62..c8b3267a318b 100644
+--- a/sound/soc/codecs/cs42l42.h
++++ b/sound/soc/codecs/cs42l42.h
+@@ -62,6 +62,9 @@
+ #define CS42L42_INTERNAL_FS_MASK	(1 << CS42L42_INTERNAL_FS_SHIFT)
  
--	regmap_update_bits(cs42l42->regmap, CS42L42_TSENSE_CTL,
--			CS42L42_TS_INV_MASK,
--			(cs42l42->ts_inv << CS42L42_TS_INV_SHIFT));
--
- 	ret = device_property_read_u32(dev, "cirrus,ts-dbnc-rise", &val);
- 	if (!ret) {
- 		switch (val) {
+ #define CS42L42_SFTRAMP_RATE		(CS42L42_PAGE_10 + 0x0A)
++#define CS42L42_SLOW_START_ENABLE	(CS42L42_PAGE_10 + 0x0B)
++#define CS42L42_SLOW_START_EN_MASK	GENMASK(6, 4)
++#define CS42L42_SLOW_START_EN_SHIFT	4
+ #define CS42L42_I2C_DEBOUNCE		(CS42L42_PAGE_10 + 0x0E)
+ #define CS42L42_I2C_STRETCH		(CS42L42_PAGE_10 + 0x0F)
+ #define CS42L42_I2C_TIMEOUT		(CS42L42_PAGE_10 + 0x10)
 -- 
 2.11.0
 
