@@ -2,153 +2,89 @@ Return-Path: <SRS0=I3pN=QD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ADC9DC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 15:49:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DB454C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 16:17:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2D5C461414
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 15:49:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2D5C461414
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oss.nxp.com
+	by mail.kernel.org (Postfix) with ESMTPS id 4B9E161B64
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 16:17:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4B9E161B64
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 43657167B;
-	Tue, 16 Nov 2021 16:48:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 43657167B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 00B88167F;
+	Tue, 16 Nov 2021 17:16:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00B88167F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637077770;
-	bh=U+YDMrWv2nPAtY92X8bOgFaHsfN3pxLIqWIJxr6gwik=;
+	s=default; t=1637079432;
+	bh=3fV/B9AlZYXuH8HlDffUvRhvPsD8016wWe/MtGSG/ak=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DuT5udYtr62MTLNoG7WurElzU+XKSemIWljHm2Mmj7dVfAowEYg3XZUzz8cCWw2h4
-	 ELSZQqRZ/GVXXf9f+fkOv9Vp7gvtOXE1/26EIKo1tCU9KVJiHLXNF1+uHd3DVzPiJr
-	 dyAOQkSFOiKRGg7t+O3S5opI3/PeQjHINWcPCu3c=
+	b=IawwXj4qGfAcRxOBYmKzMzYkAmO+5P/4ZjtkjCbUZw2ZFOuHIQv1v9lENxBah5Tez
+	 CARFKyQR32mgeoRv7adCZyEvOhlk7qh+5Jma1LjftD3NrzzlZj6G2HzxHNXdQlED5r
+	 6BbeZfbWPNEAB+A/jVNEJtH3vlJPw2YzW0SVYyeQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 652A3F804FE;
-	Tue, 16 Nov 2021 16:46:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7DE76F804E0;
+	Tue, 16 Nov 2021 17:16:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4B16CF80423; Tue, 16 Nov 2021 16:46:47 +0100 (CET)
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com
- (mail-eopbgr60073.outbound.protection.outlook.com [40.107.6.73])
+ id 26678F804E7; Tue, 16 Nov 2021 17:16:20 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8F0CDF80272
- for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2021 16:46:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F0CDF80272
+ by alsa1.perex.cz (Postfix) with ESMTPS id E4CC3F80134
+ for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2021 17:16:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4CC3F80134
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com
- header.i=@NXP1.onmicrosoft.com header.b="PbluOLEZ"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DY4FDsCojCzDq2yTdzxjW4IgUw/sivQAIQMGnRpVv9fSAWC0v1F/s7NYY0lAkcQ2WSgzoE7xMzeaj8ifWx2gC364QcZOk4kpC8Zwz57uQHIyR9RSAh4bTYMH9aygqPylheMIEAkfSnGIkkO1jes6XWkTdE+RAbcrPyQ1wK9zkAc44iD5Z6ryIJrb+x9f0TnvFhrfYD6WYT/+7SbRO/odhwnL1mlmhLAx8XIpvhvNZ10or0XeAzftHhNl5HwGyv6qO2UFoKnxG7HwVKNcjP6vNB3dzcdBempgYrdf0tebugbdqxQMOH8wQXXglD+v3FogAP3Fdnhis5VD9gbeT0hAlg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Qz9Gz2/8OmZFv6S4YKXp8+Zh0ek8cssRpE6TIWGU6Co=;
- b=kPXqAjP8mMX+fLi2jHAUN14R8L+i7CpqXwwYfuXvwspTiP9mQYwkzDx63yuqL30tO+FkbFriv/wUfOlvA4JMr6SLETgd1L+PK+cMHpUNwVsQofjIIBGVnenDvH2JY+9jTkNNjOZwjExKfUFa1S9heTc683l0l2D2/GIxoCTeXq0xJZ48KRSqTJhEzvl3rDcwJlkKT9T8QHs5Tejlzm0Gvhb89KNn6bd6IZP6BRCsYwCxZpmgyJpCtIvjP+jw2WziWpIE7KMEDEn58dzajWWE1l5IqzU5NXMTktWagOCkM7hgy9S4m22yX5n6tVEo2qZI65ZihzwqksU4S9jFtkzEyQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com; 
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Qz9Gz2/8OmZFv6S4YKXp8+Zh0ek8cssRpE6TIWGU6Co=;
- b=PbluOLEZE9aYneUHgz2DR5q5wnJHyOgRDvn2ReZjZWFF+mH/6nL81b00v4Y73q1aaK7C8uncPFb0bEbAuImk4JlKcmGFHWqD3fJd1RsOM6PdpkhF896v9yPsBHCz27Lr11q3lLzV+0nryw9ZgYFWBi/VVMH4nGymqNv4QBPg+5s=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=oss.nxp.com;
-Received: from VI1PR04MB5151.eurprd04.prod.outlook.com (2603:10a6:803:61::28)
- by VI1PR0402MB3824.eurprd04.prod.outlook.com (2603:10a6:803:22::18)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.16; Tue, 16 Nov
- 2021 15:46:37 +0000
-Received: from VI1PR04MB5151.eurprd04.prod.outlook.com
- ([fe80::85af:f8be:aa99:ba5f]) by VI1PR04MB5151.eurprd04.prod.outlook.com
- ([fe80::85af:f8be:aa99:ba5f%3]) with mapi id 15.20.4690.027; Tue, 16 Nov 2021
- 15:46:37 +0000
-From: Daniel Baluta <daniel.baluta@oss.nxp.com>
-To: broonie@kernel.org,
-	alsa-devel@alsa-project.org
-Subject: [PATCH 5/5] ASoC: SOF: imx8m: Implement reset callback
-Date: Tue, 16 Nov 2021 17:46:13 +0200
-Message-Id: <20211116154613.57122-6-daniel.baluta@oss.nxp.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20211116154613.57122-1-daniel.baluta@oss.nxp.com>
-References: <20211116154613.57122-1-daniel.baluta@oss.nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: AM0PR06CA0076.eurprd06.prod.outlook.com
- (2603:10a6:208:fa::17) To VI1PR04MB5151.eurprd04.prod.outlook.com
- (2603:10a6:803:61::28)
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="ErWegGfL"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AG7FCjc005416;
+ Tue, 16 Nov 2021 10:16:10 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=PODMain02222019;
+ bh=z0nJe9uGRxEe0PLwiAfAnOPr7nVq5vC8ndE2yaGCud4=;
+ b=ErWegGfLxlwPyaZ5G1rBS6BrJFPgNYbwum0ByPw0I2ucKksoO8VtdlEkwLX17QXZYr2g
+ OveYftKwNlftWJt7L/2oditH3Wpom2S07ULNexNw+cd48iCvpRXn1KJfihTD+iJyI5HZ
+ aLJIqQAbqvDNaetWTilhnEVXlf4qPQEB51/TRsOnUnodD7joD6hqIQcujPiF/TgxQ9Qo
+ b36cDNyCWfgu9Qd82Vg9dGI5GAtciCYj/kTiWTcqBglPSTv3HVFlLQAyKuqQS8v/c5xS
+ p0u+7VguNicafVDoPMl0dsC2gXu2SM4IxApl6I3d9VPPvbRcNoxMn7AeLV7E8wOw+mHL TA== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3cbdjgt2t5-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Tue, 16 Nov 2021 10:16:10 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Tue, 16 Nov
+ 2021 16:16:09 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.17 via
+ Frontend Transport; Tue, 16 Nov 2021 16:16:09 +0000
+Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4316615A4;
+ Tue, 16 Nov 2021 16:16:09 +0000 (UTC)
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: <broonie@kernel.org>
+Subject: [PATCH 02/10] firmware: cs_dsp: Add lockdep asserts to interface
+ functions
+Date: Tue, 16 Nov 2021 16:16:01 +0000
+Message-ID: <20211116161609.12223-2-ckeepax@opensource.cirrus.com>
+X-Mailer: git-send-email 2.11.0
+In-Reply-To: <20211116161609.12223-1-ckeepax@opensource.cirrus.com>
+References: <20211116161609.12223-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (2a02:2f08:5706:b700:1e69:ee6:2dad:c9e7)
- by AM0PR06CA0076.eurprd06.prod.outlook.com (2603:10a6:208:fa::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.16 via Frontend
- Transport; Tue, 16 Nov 2021 15:46:35 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2abf873a-1ad6-49be-53b3-08d9a9184607
-X-MS-TrafficTypeDiagnostic: VI1PR0402MB3824:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-Microsoft-Antispam-PRVS: <VI1PR0402MB3824B17D06A6D3216845EA42B8999@VI1PR0402MB3824.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UPgOLziK+tt8HfjARL64siGHCKK/cIKlsBI6yfBR3qLHe2UIJF+GU3EmIDE9rJjLTNWCh5nO1Xb789NsWZ/tRFcCUd8QU93BA83VSKBUSosYrKcxIXYsgE9oQQ7VE2QTTToZYrccguJmK04m060l59A7K+KxtbAlMOeTmI5cnaKOnTtqV84ryIKNqq5cc+8ios6BWL3eD1Zt2Ij5jIQmiMb0l8WsgxlLUc0Cy45Mj4CT5k1sHyrXwvcbpvJ8/aIySNVFw2XfptP+Lc+Y83QLI1eMOZe2VbiAFPhynh/xoJlHWE8agwo1mATXC+n3e1Uqwg+A5+3M5V/EnPWXBfMznFlgDvIbJ1J+EosBb96wnaRFOrpim7Hbt0LbvZjX/ljPu1wJ1OadMBfoAggKNz4ajmiDykEQm9cBzqXkxaLaeB5iaN/GZSOGUEt0tgbTHdZ8blwGqeR+UFsYzjflO/o+n2+86tkATyW0hYYVWde68O/LFXzvhsF5Vzz/dFrfhRvUoYtgJUQzjYi3XupnAUKCcFKLPH4lyIDOw6b5P+82rxXECKhFWIaKuvbWMi9gISfBtXyOOxe+7BS9INA74j0MR/hdA0gjTMIJBKumaf5i0DRd1O+Fk8i5DfIj4n1TRVjlAIv+/6pYD1IgXv46UZCumE/ZP/Yr/oE3pXmsPViD8M8kh1K5LZrOOXKp1C160fpdC/Oq/SB/lKkiGFbUnfJj6Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:VI1PR04MB5151.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(4636009)(366004)(6486002)(186003)(5660300002)(1076003)(8936002)(38100700002)(66946007)(66556008)(66476007)(7416002)(86362001)(44832011)(6506007)(316002)(2906002)(83380400001)(6512007)(6666004)(4326008)(508600001)(8676002)(2616005)(52116002)(32563001);
- DIR:OUT; SFP:1101; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?QniOc87ci9WfhnKn4yys0TNohCV+0seJjWkqzq6qDqw0jBkOJOtkwWgAy8sg?=
- =?us-ascii?Q?w/vevb/ANQVOPPUPEQ36D0QNT2V7vKdLujZcsLNrjlCQ2mSZkjH3H6RbuQBL?=
- =?us-ascii?Q?bd+aTrDonua5I4kkjYKaThXoJpXBaTaEWW/UFujGc2G3ESULDQSLdmaflR+M?=
- =?us-ascii?Q?TXRAEVKgoIyL6Zt3DOdCxnsqBXSFPMFJ95/0RRxd58MpphvLNXkpdjZeslef?=
- =?us-ascii?Q?JuurHBkMP0KO/ypPaH3Z5VPF/R1qwtPoisR1Vw1ZsrG1qbcz1Hb9agvc46jQ?=
- =?us-ascii?Q?ba0+HwBxaWAHmJ5pUp+L4kqD3z4zrKQQnFnUTT0UY9H6wh9fItQIG35FIYuU?=
- =?us-ascii?Q?9/M0vLobcyFl8xFbRfKY/vNP11GnGKSaPIr4XH/mNQOfA31LNpfbVbEH3LRQ?=
- =?us-ascii?Q?VL4I/rbhYF1DKHmQr0Dk1gW0QEMB2h8pqGfyo03JeM9mOvoMekgrYhdGEnM4?=
- =?us-ascii?Q?FuqoJ3o7c0koh+FUtLx8RXCfhkrtmkgrB+4l7G+7G2/WI9iX7JEvdirba0sC?=
- =?us-ascii?Q?tiQQRizVMWdTm3Rhq7AVuVBn6uNP+HqZqsKuQSPrHtptoWR0r9LZwyIpGTBO?=
- =?us-ascii?Q?FM1OtPcRQis7EgwPHEyOzv37FgdILg6ULIKQaWgbr6OwlV4pqK5DbUBYXbeM?=
- =?us-ascii?Q?K30UlqvgDKTByXX4PcJdDdqW4evYI5U9jy7MkdXHvyUzxFDb7OgPiP7TepPb?=
- =?us-ascii?Q?yE7Wxca0DwMdWlZ7UKxCg+INJw2pB7TQd8f9Z+jjGL5ZM4rWWPxIgcDrnpSh?=
- =?us-ascii?Q?dz9mgI6JA+k/axXtR6QFhwnguqJfRZG786TqnK6slQMcpaiQWKX3E+txKeS3?=
- =?us-ascii?Q?Ipu5GKQxxIBIeR7+h440hCENzCZTiviFWfslFY2GZ64ydeXK0fMrqPW7+nfP?=
- =?us-ascii?Q?qDAsT5mNjkjR0cqkaEl0OKRsHyNEpXoFIC6xKXeUxGyeH3SiureFbgjNUkJt?=
- =?us-ascii?Q?+W3DPDh6kpIUFxhJHD00irfXHKUMy+YfU5tDLQlzC/XDZjrWi0Fz2BaR8xfK?=
- =?us-ascii?Q?ZD69gzmwfqyn8yQ+Ay4rUI0QyphW9Rtl8HT4w2oracAdvaXq0OLSi1XMhgRy?=
- =?us-ascii?Q?cMGldVxzyvn40jqM8gOy23YeK+FcjfxO07fEsTjAo4rJUOlg0pVNBbGuNsuJ?=
- =?us-ascii?Q?2GZCVihFKfni3+bXgUs/1/eTJ6U/49SQE5NPUJH4TOHmq+KuYMPInhyAew6Y?=
- =?us-ascii?Q?90STVyU0K+R37iRJ2SdY4AH9u/I3TDQBJDFG8U8pDnxN0S7wBeWSoYI+h0xR?=
- =?us-ascii?Q?5VJYde3jK/+I7fgnZJ3OFPW4w80JwDt5LB26lLDAluGtRYp0KiZ+il2I9+Az?=
- =?us-ascii?Q?je8yM4s4RdaxZDDtFRk5FfBd0urHyZZwcVCN5Km4UfOCfnEoxdxSZ9+OM5Q1?=
- =?us-ascii?Q?/w94V1UMeLc3hHWNRwemoKKXZ6PILJtyI22vyMrftRmrwjH+1awG8lCOBao7?=
- =?us-ascii?Q?5FP9NO6mtEC1C7OpI56ntGLFqMMt9mUbuxg4P+af4PSBEvDo2HS2PKfUadeW?=
- =?us-ascii?Q?WtFKyaUs6UB9Fz51FroXfacKMzfs5alMMoRC90RtO3nflkggcsBu8C/n9mMS?=
- =?us-ascii?Q?1OiFdmiRhFKej8rNcwH9hOMI9XJl+rlynWcWD/BDdgcn895E9QHTRG4fXPE5?=
- =?us-ascii?Q?QzNPXZlMpaumPr1oohahAQ6Ozpp6RxSosd3lkhWc1oRQfNEmVfE6sV1wc/wG?=
- =?us-ascii?Q?yHZDb+WWF0oQ2wfmA/S9JDqnBlw=3D?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2abf873a-1ad6-49be-53b3-08d9a9184607
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5151.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2021 15:46:37.0279 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: k6OPgYmO3iR3947da2hOLPgXpAxxx9HVWboTceHWp7Ie3hzNTwZC1eBtyTQdYb+8eSCSaB+sqMUEE3WnfG2hTw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3824
-Cc: Daniel Baluta <daniel.baluta@nxp.com>,
- guennadi.liakhovetski@linux.intel.com, daniel.baluta@gmail.com,
- kai.vehmanen@linux.intel.com, lgirdwood@gmail.com,
- linux-kernel@vger.kernel.org, ranjani.sridharan@linux.intel.com,
- pierre-louis.bossart@linux.intel.com, linux-imx@nxp.com,
- peter.ujfalusi@linux.intel.com
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: CV-C-aWJem_wlbeCisBWnY_K6F51FFQ0
+X-Proofpoint-GUID: CV-C-aWJem_wlbeCisBWnY_K6F51FFQ0
+X-Proofpoint-Spam-Reason: safe
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -164,120 +100,82 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Daniel Baluta <daniel.baluta@nxp.com>
+Some of the control functions exposed by the cs_dsp code require the
+pwr_lock to be held by the caller. Add lockdep_assert_held calls to
+ensure this is done correctly.
 
-Resume common flow (System PM / Runtime PM) is like this:
-
-    sof_resume
-      -> specific device resume
-      -> snd_sof_load_firmware
-         -> snd_sof_dsp_reset (1)
-         -> load_modules()
-      -> snd_sof_run_firmware (2)
-
-    We need to implement dsp_reset callback (1) that will actually reset
-    the DSP but keep it stalled.
-
-    In order to implement this we do the following:
-            -> put DSP into reset (assert CoreReset bit from PWRCTL)
-            -> stall the DSP using RunStall bit from AudioDSP_REG2 mix
-            -> take DSP out of reset (de-assert CoreReset bit from PWRCTL)
-
-    At this moment the DSP is taken out of reset and Stalled! This means
-    that we can load the firmware and then start the DSP (2).
-
-    Until now we resetted the DSP by turning down the Audiomix PD. This
-    doesn't work for Runtime PM if another IP is keeping Audiomix PD up.
-
-    By introducing dsp_reset() we no longer rely on turning off the
-    audiomix to reset the DSP.
-
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/soc/sof/imx/imx8m.c | 39 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
+ drivers/firmware/cirrus/cs_dsp.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/sound/soc/sof/imx/imx8m.c b/sound/soc/sof/imx/imx8m.c
-index 9972ca8e6ec6..8f24c6db7f5b 100644
---- a/sound/soc/sof/imx/imx8m.c
-+++ b/sound/soc/sof/imx/imx8m.c
-@@ -32,6 +32,12 @@ static struct clk_bulk_data imx8m_dsp_clks[] = {
- 	{ .id = "core" },
- };
+diff --git a/drivers/firmware/cirrus/cs_dsp.c b/drivers/firmware/cirrus/cs_dsp.c
+index 1a0c6c793f6a7..0d1ba7d8efa47 100644
+--- a/drivers/firmware/cirrus/cs_dsp.c
++++ b/drivers/firmware/cirrus/cs_dsp.c
+@@ -653,6 +653,8 @@ int cs_dsp_coeff_write_acked_control(struct cs_dsp_coeff_ctl *ctl, unsigned int
+ 	unsigned int reg;
+ 	int i, ret;
  
-+/* DAP registers */
-+#define IMX8M_DAP_DEBUG                0x28800000
-+#define IMX8M_DAP_DEBUG_SIZE   (64 * 1024)
-+#define IMX8M_DAP_PWRCTL       (0x4000 + 0x3020)
-+#define IMX8M_PWRCTL_CORERESET         BIT(16)
++	lockdep_assert_held(&dsp->pwr_lock);
 +
- /* DSP audio mix registers */
- #define AudioDSP_REG0	0x100
- #define AudioDSP_REG1	0x104
-@@ -50,6 +56,7 @@ struct imx8m_priv {
+ 	if (!dsp->running)
+ 		return -EPERM;
  
- 	struct imx_clocks *clks;
- 
-+	void __iomem *dap;
- 	struct regmap *regmap;
- };
- 
-@@ -116,6 +123,30 @@ static int imx8m_run(struct snd_sof_dev *sdev)
- 	return 0;
- }
- 
-+static int imx8m_reset(struct snd_sof_dev *sdev)
-+{
-+	struct imx8m_priv *priv = (struct imx8m_priv *)sdev->pdata->hw_pdata;
-+	u32 pwrctl;
-+
-+	/* put DSP into reset and stall */
-+	pwrctl = readl(priv->dap + IMX8M_DAP_PWRCTL);
-+	pwrctl |= IMX8M_PWRCTL_CORERESET;
-+	writel(pwrctl, priv->dap + IMX8M_DAP_PWRCTL);
-+
-+	/* keep reset asserted for 10 cycles */
-+	usleep_range(1, 2);
-+
-+	regmap_update_bits(priv->regmap, AudioDSP_REG2,
-+			   AudioDSP_REG2_RUNSTALL, AudioDSP_REG2_RUNSTALL);
-+
-+	/* take the DSP out of reset and keep stalled for FW loading */
-+	pwrctl = readl(priv->dap + IMX8M_DAP_PWRCTL);
-+	pwrctl &= ~IMX8M_PWRCTL_CORERESET;
-+	writel(pwrctl, priv->dap + IMX8M_DAP_PWRCTL);
-+
-+	return 0;
-+}
-+
- static int imx8m_probe(struct snd_sof_dev *sdev)
+@@ -754,6 +756,8 @@ int cs_dsp_coeff_write_ctrl(struct cs_dsp_coeff_ctl *ctl, const void *buf, size_
  {
- 	struct platform_device *pdev =
-@@ -168,6 +199,13 @@ static int imx8m_probe(struct snd_sof_dev *sdev)
- 		goto exit_pdev_unregister;
- 	}
+ 	int ret = 0;
  
-+	priv->dap = devm_ioremap(sdev->dev, IMX8M_DAP_DEBUG, IMX8M_DAP_DEBUG_SIZE);
-+	if (!priv->dap) {
-+		dev_err(sdev->dev, "error: failed to map DAP debug memory area");
-+		ret = -ENODEV;
-+		goto exit_pdev_unregister;
-+	}
++	lockdep_assert_held(&ctl->dsp->pwr_lock);
 +
- 	sdev->bar[SOF_FW_BLK_TYPE_IRAM] = devm_ioremap(sdev->dev, base, size);
- 	if (!sdev->bar[SOF_FW_BLK_TYPE_IRAM]) {
- 		dev_err(sdev->dev, "failed to ioremap base 0x%x size 0x%x\n",
-@@ -378,6 +416,7 @@ struct snd_sof_dsp_ops sof_imx8m_ops = {
- 	.remove		= imx8m_remove,
- 	/* DSP core boot */
- 	.run		= imx8m_run,
-+	.reset		= imx8m_reset,
+ 	if (ctl->flags & WMFW_CTL_FLAG_VOLATILE)
+ 		ret = -EPERM;
+ 	else if (buf != ctl->cache)
+@@ -811,6 +815,8 @@ int cs_dsp_coeff_read_ctrl(struct cs_dsp_coeff_ctl *ctl, void *buf, size_t len)
+ {
+ 	int ret = 0;
  
- 	/* Block IO */
- 	.block_read	= sof_block_read,
++	lockdep_assert_held(&ctl->dsp->pwr_lock);
++
+ 	if (ctl->flags & WMFW_CTL_FLAG_VOLATILE) {
+ 		if (ctl->enabled && ctl->dsp->running)
+ 			return cs_dsp_coeff_read_ctrl_raw(ctl, buf, len);
+@@ -1453,6 +1459,8 @@ struct cs_dsp_coeff_ctl *cs_dsp_get_ctl(struct cs_dsp *dsp, const char *name, in
+ {
+ 	struct cs_dsp_coeff_ctl *pos, *rslt = NULL;
+ 
++	lockdep_assert_held(&dsp->pwr_lock);
++
+ 	list_for_each_entry(pos, &dsp->ctl_list, list) {
+ 		if (!pos->subname)
+ 			continue;
+@@ -1548,6 +1556,8 @@ struct cs_dsp_alg_region *cs_dsp_find_alg_region(struct cs_dsp *dsp,
+ {
+ 	struct cs_dsp_alg_region *alg_region;
+ 
++	lockdep_assert_held(&dsp->pwr_lock);
++
+ 	list_for_each_entry(alg_region, &dsp->alg_regions, list) {
+ 		if (id == alg_region->alg && type == alg_region->type)
+ 			return alg_region;
+@@ -2783,6 +2793,8 @@ int cs_dsp_read_raw_data_block(struct cs_dsp *dsp, int mem_type, unsigned int me
+ 	unsigned int reg;
+ 	int ret;
+ 
++	lockdep_assert_held(&dsp->pwr_lock);
++
+ 	if (!mem)
+ 		return -EINVAL;
+ 
+@@ -2836,6 +2848,8 @@ int cs_dsp_write_data_word(struct cs_dsp *dsp, int mem_type, unsigned int mem_ad
+ 	__be32 val = cpu_to_be32(data & 0x00ffffffu);
+ 	unsigned int reg;
+ 
++	lockdep_assert_held(&dsp->pwr_lock);
++
+ 	if (!mem)
+ 		return -EINVAL;
+ 
 -- 
-2.27.0
+2.11.0
 
