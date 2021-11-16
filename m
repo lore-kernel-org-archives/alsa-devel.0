@@ -2,86 +2,86 @@ Return-Path: <SRS0=I3pN=QD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C1E8C433FE
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 11:48:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43458C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 11:48:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2211461A08
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 11:48:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2211461A08
+	by mail.kernel.org (Postfix) with ESMTPS id C25DB61A08
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 11:48:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C25DB61A08
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 787121698;
-	Tue, 16 Nov 2021 12:47:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 787121698
+	by alsa0.perex.cz (Postfix) with ESMTPS id EA49C16A5;
+	Tue, 16 Nov 2021 12:47:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA49C16A5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637063297;
-	bh=dRzVuikCD2mUd5TDYlprpbrhwNYExGmvz/bLlpe1j00=;
+	s=default; t=1637063306;
+	bh=IvIk8wIHcZSDwreGliP4UeDlnWFDrpIwvbx1FpHujrc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=t0BjNyjU0KKxPhc28Q/RnShhFNEN5ZbM+71CHmCt5JYJDtfU1S46tFd+iqWRXRhaj
-	 wd4m63PNIlqsKSoHTubdyhB41fbpFR4htdR3t3vQnkADuEdGAnJXFhSVO7tpo/ldTT
-	 Yl+j1d8Gd05N98CQjX2CRxRgbfK901BWmey+EliI=
+	b=ZH9BbLz1Vuppts7V2UB+/lqP2/SBi4fl5eHqLQzQxJz6d21DwwezvqbUulUq5yZ9S
+	 xoPC0URkuCyoB/ZrvSh4SM5hPMTBd8Fuzi15iJiXBSVb6DgFAehc7THFyKG6UsNV4u
+	 yMgC/ArgKme/AAlcfcks/87iG3Y73QFH+bGrXg5E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E226CF8026D;
-	Tue, 16 Nov 2021 12:46:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 921DAF800FA;
+	Tue, 16 Nov 2021 12:46:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 208E2F804C3; Tue, 16 Nov 2021 12:46:46 +0100 (CET)
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
- [IPv6:2a00:1450:4864:20::329])
+ id 08A50F804EB; Tue, 16 Nov 2021 12:46:49 +0100 (CET)
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com
+ [IPv6:2a00:1450:4864:20::32e])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E0C76F8026D
- for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2021 12:46:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0C76F8026D
+ by alsa1.perex.cz (Postfix) with ESMTPS id C914FF80423
+ for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2021 12:46:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C914FF80423
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="Xl+s/Y+c"
-Received: by mail-wm1-x329.google.com with SMTP id
- k37-20020a05600c1ca500b00330cb84834fso1700333wms.2
- for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2021 03:46:38 -0800 (PST)
+ header.b="jjxHofpH"
+Received: by mail-wm1-x32e.google.com with SMTP id
+ k37-20020a05600c1ca500b00330cb84834fso1700421wms.2
+ for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2021 03:46:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=d1giUkCfPq6BR7uk0WV+6luLzyXkW70izeBPdkRQixI=;
- b=Xl+s/Y+c6nx9/ssKwbB11JGD0OU2RJVsDDn63pKqMVpiNeTHVx6K9hiW8FIVHP+bED
- ITKubhlPT6+5nxng0+XsDdWfi6wMF/ZesmW9XJSiwV+/3TnK4/MMbm3h0Zpgh5vvSdRp
- I7UOBnwfqlPb+l9BbNgAvqF39e+0aUOA+mx0WADkeNj7nkaXmZ+rQm9ojBaA4uCMqhn3
- qT8cAWndIAnRwwawgi8BTXl9DVk2aqQ4glDG1AcUExeOcqm8VSWIeWFJwqoFhIOuR3H+
- Snc4FvKNc+iBDSYTmOR39Zjb7sXBvE25N44egbMmsM007cB763IJw27M/zj/T3ZVX1Gg
- UmXw==
+ bh=t7SqZxtta+mFLRYTDvdmuGnMtffgbWCF/KOCCvJj+EA=;
+ b=jjxHofpHAKBd0KHns0B1Gry9ElbrUXFC1jp7j94izHFvYPTk0lRL/PU8Wyy7XJIuTG
+ h/gsZH0mtINoyfoFW5dou62IzP4dP5F3kXlJpUk+Bqu7Gf7Hd21U8WOBQNhjK/MnJ4vn
+ kzQIBUzp1g03B+ZgEiR/6Kxj7bqp3W7Z9BSMV5ip9Lm9Ee/rgEbh78ERAFKQEtFADves
+ RkIdzggXJNT1G42ngFVQMyI1uUEJRCH1PT91ObDmouyQwkxmnaJOzBhG7eOnyChPXnqi
+ jC8Upmz+MKR+shhNP8yyGm1dzS5Ye/w56KStFeke3k2E1vYF7ySvmgFvsOGypX8kc8ZL
+ iG6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=d1giUkCfPq6BR7uk0WV+6luLzyXkW70izeBPdkRQixI=;
- b=e0xAAAmO8ckTl/Qdai9HujhuxSNPtZldMot52zDF8DoPf6m+KIP4FOyY71ZLF6co2Z
- DwRB1sFYbiYJqsY8jxk2EvKnHbwbZB3iLxrXY07ippoaDCaTHulhu21+SHwHKoqv1RaI
- jn7zBJXozxCQ7JtV3BqFxsgTYh7evWfa1Ef5G37bhdayJjLaoVEE4U5UK/S339MFMaYW
- 5PreZ/l1Rw/Jiy9qlmcDNXdYRELrs+mIB/zI80KDhjPsPkbXJ6NBQ1lEMYfj+mX8qbOe
- FtgCo2r7Gf8aFQMLpeyQo6OT/Me7djpzLEJA/mIi5xM33sAwrdoj21zSmoFp5MTX1YWW
- X5NQ==
-X-Gm-Message-State: AOAM532ztACXNKzCS5c4JGeYeN86gh6tx+JdZRiyroqby9+NzwBFGxIE
- doe/LFM4aQ318fEidYpzPADjSQ==
-X-Google-Smtp-Source: ABdhPJxaw+wUnniAUrUtV7PikZ66OiA9SnbGXVSJR1Yh/NAhlhXK+STZmfyX2180s1YmVLDGNmCg0g==
-X-Received: by 2002:a05:600c:3b8f:: with SMTP id
- n15mr68986799wms.180.1637063197566; 
- Tue, 16 Nov 2021 03:46:37 -0800 (PST)
+ bh=t7SqZxtta+mFLRYTDvdmuGnMtffgbWCF/KOCCvJj+EA=;
+ b=LwHwSjHoPTm1Gd0zwv1dQtYKvT29tNBjefC/6N3HQtMkNE+2HpC1xIXZDGtB4D2m80
+ fcz2tP1n8f6JKLej1EIPOyyallDlKI8po4COY903TH/qQCzjddEIzQA+sQAiEcpvehVh
+ K+rafi8aLwe3DkwVzty6yVKBJQyf5zaXgE5CxIfNNJHD6aTzgrp/Ffw0nvZSulnhrjsd
+ bs3xDWR2ribTUUSjfAogIQiVdGKuRhUr6U9qBiPgGLZJEq09Q/vFPWLVTn6SNdSo3hWc
+ 7rZ2ASLY7e5/+TXh4tY81g5nsurbclZOM+uVoQIxxgYCEByVEVoo35q+y5yR8dzyofIp
+ cQZA==
+X-Gm-Message-State: AOAM5332iLW5OmigHNUeBJ9ax9Q26xFTyKVnwwdiSyjm8Xk+OnaSjPyA
+ EFzFcaHuhhWZ9j8vetRnux0+vQ==
+X-Google-Smtp-Source: ABdhPJxc/BBjcLSYDlxo9++43Rv4L1uBuM0AajhwiPP2EDZv6VCN+s2RVJhXAa/UGahI9gvifaNVTA==
+X-Received: by 2002:a05:600c:5125:: with SMTP id
+ o37mr6988822wms.81.1637063199925; 
+ Tue, 16 Nov 2021 03:46:39 -0800 (PST)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id z11sm16934698wrt.58.2021.11.16.03.46.36
+ by smtp.gmail.com with ESMTPSA id z11sm16934698wrt.58.2021.11.16.03.46.38
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 16 Nov 2021 03:46:36 -0800 (PST)
+ Tue, 16 Nov 2021 03:46:39 -0800 (PST)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH 1/3] ASoC: codecs: wcd938x: fix volatile register range
-Date: Tue, 16 Nov 2021 11:46:21 +0000
-Message-Id: <20211116114623.11891-2-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 3/3] ASoC: codecs: lpass-rx-macro: fix HPHR setting CLSH mask
+Date: Tue, 16 Nov 2021 11:46:23 +0000
+Message-Id: <20211116114623.11891-4-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20211116114623.11891-1-srinivas.kandagatla@linaro.org>
 References: <20211116114623.11891-1-srinivas.kandagatla@linaro.org>
@@ -105,38 +105,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Interrupt Clear registers WCD938X_INTR_CLEAR_0 -  WCD938X_INTR_CLEAR_2
-are not marked as volatile. This has resulted in a missing interrupt bug
-while performing runtime pm. regcache_sync() during runtime pm resume path
-will write to Interrupt clear registers with previous values which basically
-clears the pending interrupt and actual interrupt handler never sees this
-interrupt.
+For some reason we ended up using snd_soc_component_write_field
+for HPHL and snd_soc_component_update_bits for HPHR, so fix this.
 
-This issue is more visible with headset plug-in plug-out case compared to
-headset button.
-
-Fix this by adding the Interrupt clear registers to volatile range
-
-Fixes: 8d78602aa87a ("ASoC: codecs: wcd938x: add basic driver")
+Fixes: af3d54b99764 ("ASoC: codecs: lpass-rx-macro: add support for lpass rx macro")
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/codecs/wcd938x.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/codecs/lpass-rx-macro.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wcd938x.c b/sound/soc/codecs/wcd938x.c
-index 52de7d14b139..67151c7770c6 100644
---- a/sound/soc/codecs/wcd938x.c
-+++ b/sound/soc/codecs/wcd938x.c
-@@ -1174,6 +1174,9 @@ static bool wcd938x_readonly_register(struct device *dev, unsigned int reg)
- 	case WCD938X_DIGITAL_INTR_STATUS_0:
- 	case WCD938X_DIGITAL_INTR_STATUS_1:
- 	case WCD938X_DIGITAL_INTR_STATUS_2:
-+	case WCD938X_DIGITAL_INTR_CLEAR_0:
-+	case WCD938X_DIGITAL_INTR_CLEAR_1:
-+	case WCD938X_DIGITAL_INTR_CLEAR_2:
- 	case WCD938X_DIGITAL_SWR_HM_TEST_0:
- 	case WCD938X_DIGITAL_SWR_HM_TEST_1:
- 	case WCD938X_DIGITAL_EFUSE_T_DATA_0:
+diff --git a/sound/soc/codecs/lpass-rx-macro.c b/sound/soc/codecs/lpass-rx-macro.c
+index 2bed5cf229be..aec5127260fd 100644
+--- a/sound/soc/codecs/lpass-rx-macro.c
++++ b/sound/soc/codecs/lpass-rx-macro.c
+@@ -2188,7 +2188,7 @@ static int rx_macro_config_classh(struct snd_soc_component *component,
+ 		snd_soc_component_update_bits(component,
+ 				CDC_RX_CLSH_DECAY_CTRL,
+ 				CDC_RX_CLSH_DECAY_RATE_MASK, 0x0);
+-		snd_soc_component_update_bits(component,
++		snd_soc_component_write_field(component,
+ 				CDC_RX_RX1_RX_PATH_CFG0,
+ 				CDC_RX_RXn_CLSH_EN_MASK, 0x1);
+ 		break;
 -- 
 2.21.0
 
