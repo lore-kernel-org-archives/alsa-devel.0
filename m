@@ -2,79 +2,78 @@ Return-Path: <SRS0=I3pN=QD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 082A6C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 15:24:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A302C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 15:24:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 18B8861BFB
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 15:24:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 18B8861BFB
+	by mail.kernel.org (Postfix) with ESMTPS id B606061BF9
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 15:24:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B606061BF9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oss.nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7180516C2;
-	Tue, 16 Nov 2021 16:23:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7180516C2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1478B169A;
+	Tue, 16 Nov 2021 16:23:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1478B169A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637076262;
-	bh=xYfVZylMS1kJOqJESZx349Jvxdes3uKwGEmuwznAoro=;
+	s=default; t=1637076285;
+	bh=R3TCTJ/XHELNVQADjItewi3qgAfiuoilhf1wJ+la7qo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=a07hTCj0DuYDQsD1FCAJRYztzf8NWvt7+CjMw46zMN8AItC8aXhnnyTQBb3EaZYaI
-	 P/ucJ3o8V/RxSkHQDrVsTF2r4gU5aO+fga7YJ34pA1HCsfA1EJkX8kxzmpqORrDIRd
-	 yL4tEeogv7lku76SSv26YpCgkmMXR7fWJS75ZIhI=
+	b=ulYNv1MjhuOrqOlv24PrVQEjHHceUy9AsVnv8S1QzATuDiitDq/GIz7CvN+jkNBhU
+	 ecniN1lGka3zePVMpasfQSCzOOhZPHzr1opZOYk2jrbA2feFzq1ov0mqK6YNSGrbaX
+	 8AASZaNyRaY8TXdXXI0FrLUVMtEoXGQmWWL/xZwI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 008A4F804FA;
+	by alsa1.perex.cz (Postfix) with ESMTP id A6747F80506;
 	Tue, 16 Nov 2021 16:22:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D2889F804FB; Tue, 16 Nov 2021 16:22:18 +0100 (CET)
-Received: from EUR02-AM5-obe.outbound.protection.outlook.com
- (mail-am5eur02on0613.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:fe07::613])
+ id E577DF804F3; Tue, 16 Nov 2021 16:22:18 +0100 (CET)
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com
+ (mail-eopbgr80073.outbound.protection.outlook.com [40.107.8.73])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4E8AAF80272
- for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2021 16:22:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E8AAF80272
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6C7D5F80423
+ for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2021 16:22:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C7D5F80423
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com
- header.i=@NXP1.onmicrosoft.com header.b="arxXVUG7"
+ header.i=@NXP1.onmicrosoft.com header.b="RU7WhU0s"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aEkgF4l8uEpKouRPcbMiyI2KPaAMOdRf2zb3tmq0QMhLqyrCzaUoubkbZkvFoJ+dkHx0F3O8PJDgbaz2g5NVpGBRjhaHxUI+VUPCVlaxZGvDxVWiQUDQbnHGuf6WOX2htQe4SRTEdRgqmaTAC8OVHdxwPvRPhXMFSc5GI9mURnrzTBDauHxcJMFD6h+Ip1MqIKvPNO3TeNQl6taKZU3NA/dH2zfOtezw8krszXJtZK9BBpmaO4jIfGpOuStCQoaiCfRX0Y7Bbin05PVyRuY9aFom2dkRbTD1L/GF7gDQes2LJKlBIVEHUUnPY0cKbPA4wdbbwNH4IQbsbGuByVbm3w==
+ b=YTWCBxVeuN0Blez+5F65mQaBAh92UIw+qhuVKm9HZHYpHPYkCaYE+73zeaOif5KsiP/DZLx02yShg46WHUQ7p5LiCe3oahEJvDMosiquopzImb6XzYUxS6u00wMQx4qYLfpb9YPxS0OBxIVlS4ws46nvritpb1AOBXy2bmNGKc6GsYIP6aeVrx5nsMwXJKu52+l+bZNTuWJ8375l8D4poNf0370oLnn/RobOQcGtUBajBCF4oZWXrFEos7AcwrNb2F+KBdr8/81Oz6JLA0Og5+nS/aMcdXWSR2M966+bBVnPfoWDDrB6C/GA27GayQBPZLrlj6VMY9vwa/jDdqqJuQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=BCZouXwTxARtL61XltXgJV4Uy2gLPG6QyAVTnp5xgiM=;
- b=Aj0VWvHgm969h2JGcB4fnHd7OBUEBIREoVYtza2PReBzXQ+PMARQAjIpUjGpHZf/t2i8XTnTULTSHq4mfIfeAw9rJquSyKPngR93eeikx1plcLQ/unnO3N7z2vaBbSg//IBV15O/0lELQK2H/T8hwDHe9UqGl/EY2F/wVyPyDJ0GQWdfGLx+4yzwHL44HSaDcHoeu/mGk90Oye3K3/QiTfOYx3K1crtf8MmCtpHdJ7w/1lVJDhuObziZEaiVQ0HgWLLI9gqKbaJ6349y+R6dcMJYtftVijzpdJgzY7tJiLfpfA50N2g/1iVU61ozttpYuXwikKt0w7HNI1Lwkk4qPw==
+ bh=tvv/0YJKWYkflLH+1wJtCCao9SKMDhETORHXs0z0yfI=;
+ b=Xu/qsl/RQBbCW8HaA0CJFKYr0ITG8dyUwo14SVk+QOUIag/2S2y8jG/9wEZYwzjIS3xY6rqApmjIVYjlX0P6xZeKp4BuaWPHZmj3moEfUbUEDouwwVlwchfMNpRUq261Jyt8jI/4k28WH8R3BJdEVKRtnpAI7F1cw5RSnwdCFeOfO9fm0dPZFZUzoJcPRqdWbj7V2bBQhVScJJikCx21SKkLDS2ahSDVgp5C8rK7v8J02QwEeRSj0HKeTA2VWkLpDeJo38k18TljeNfftUbpGorvHm5Q9MtpBwDB6ZyTfdkyhgM1FzWbU1OEVIGI1lj6F4nx2bLhmLUXkUZqDKRY2w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
  dkim=pass header.d=oss.nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com; 
  s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BCZouXwTxARtL61XltXgJV4Uy2gLPG6QyAVTnp5xgiM=;
- b=arxXVUG7g7mg+lbPT/AUl9ygI9srypS8ykDR3cAro17nCHNjCAKuoncONTMQnd6dUbyyh3RBtIJtKKkl+nZQskr5D6IwmnHizrkmLRfEgl9r12C8EW7WubouNVH9EIk0oRZhwalWRwC/u9CVevE5GtzWQslD37qkfGEoAMlq5FY=
+ bh=tvv/0YJKWYkflLH+1wJtCCao9SKMDhETORHXs0z0yfI=;
+ b=RU7WhU0sCylX985BARuiNBxsxhgmFFqktt5kipr6WvBrY+j78gY5BEJYG6Izbr0Z44OFyKkGOeGp5rBPZ1+Lu8tD9YOkVhbDOK8eeJeyHGttB9dIlIB7jKh+J22TBSp7kJVZwnhhe4Ke4yaaRMAnSp9SJ7WzPoUrRj9j3GxAT8Y=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=oss.nxp.com;
 Received: from VI1PR04MB5151.eurprd04.prod.outlook.com (2603:10a6:803:61::28)
- by VI1PR04MB6880.eurprd04.prod.outlook.com (2603:10a6:803:130::14)
+ by VE1PR04MB7213.eurprd04.prod.outlook.com (2603:10a6:800:1b3::8)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.26; Tue, 16 Nov
- 2021 15:22:02 +0000
+ 2021 15:22:05 +0000
 Received: from VI1PR04MB5151.eurprd04.prod.outlook.com
  ([fe80::85af:f8be:aa99:ba5f]) by VI1PR04MB5151.eurprd04.prod.outlook.com
  ([fe80::85af:f8be:aa99:ba5f%3]) with mapi id 15.20.4690.027; Tue, 16 Nov 2021
- 15:22:02 +0000
+ 15:22:05 +0000
 From: Daniel Baluta <daniel.baluta@oss.nxp.com>
 To: broonie@kernel.org,
 	peter.ujfalusi@linux.intel.com
-Subject: [PATCH 2/4] ASoC: SOF: imx: Use the generic helper to get the reply
-Date: Tue, 16 Nov 2021 17:21:35 +0200
-Message-Id: <20211116152137.52129-3-daniel.baluta@oss.nxp.com>
+Subject: [PATCH 4/4] ASoC: SOF: debug: Add support for IPC message injection
+Date: Tue, 16 Nov 2021 17:21:37 +0200
+Message-Id: <20211116152137.52129-5-daniel.baluta@oss.nxp.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20211116152137.52129-1-daniel.baluta@oss.nxp.com>
 References: <20211116152137.52129-1-daniel.baluta@oss.nxp.com>
@@ -89,61 +88,61 @@ Received: from localhost.localdomain (2a02:2f08:5706:b700:1e69:ee6:2dad:c9e7)
  by AM4PR0302CA0013.eurprd03.prod.outlook.com (2603:10a6:205:2::26) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.16 via Frontend
- Transport; Tue, 16 Nov 2021 15:22:00 +0000
+ Transport; Tue, 16 Nov 2021 15:22:03 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b0404410-d5f6-47ac-1bc0-08d9a914d6df
-X-MS-TrafficTypeDiagnostic: VI1PR04MB6880:
+X-MS-Office365-Filtering-Correlation-Id: fb3c13db-7e3b-4023-fd73-08d9a914d88e
+X-MS-TrafficTypeDiagnostic: VE1PR04MB7213:
 X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB6880B7F5600A87469AF6E19EB8999@VI1PR04MB6880.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:632;
+X-Microsoft-Antispam-PRVS: <VE1PR04MB7213B8350BDB9FD240DCBD05B8999@VE1PR04MB7213.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:576;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9QO/LwXGfQmfn/fOfYKgQVRNwF2nyL+qVkVHMkZXdUtIEPItNNUNxIOLXB46mkTx9PQRT7jbSDgD3PgcsuLGGSQla4yDpV2AeUQE/gqQ+N8+YaS1hkGYSuEc1XJ3lIci+iAgNIzzoVe/QVJGMe/tlSMXK+hKcYv67VSCDgzr3IgFjeIRR+6pyNKfkcj6eJx5lTWwFCItDnSAL7YiASHTzmsTkWRpQkPmMiYnMyd0WfVldE9mjbra1XbbhJk9qIcYRyWdu759I+cBdshjnkXH7ktaCqwheJ6XaILdK+oVqHpnPBKKT/jlYyz+F8wDdWziX2pk02+Yo1dc2KGqCs5AqBbHvbMPGzGLgN9+Zy3TUAXZ78msr/CH92SDJIifgxS8fWrZpLfnryYzMiVQEufmQbJqAcZ10G8IcfmoawCXbR/GkXqt5d66qzNkbzmoOjhkp7KFN4DjGvhGgN4ajBIFPuqXs+qBvf5xsXJ8Zp+saGwplT4Iu/Kr8qzwYeXGo22aIxBHd0uO5He05C+YGc0V35ErMzl1yCo1uq1HFISM3hVNbottYqQ2yCNnemvkVX37uR6d/aRexXqMIvdflK+XNOWwpaO6Au9jhhWhQXQ7eUNf+R/FsVIYjrvv0v2tA6PhnnGuXGU824942TVGe3twpJJ0m4LRuM7IAdUU9cZx3YADJcL2ulvJ9KVHn2UwIiUXKpyY7lM7JbXqI/mKNmiCxdiJNFpOE5MjXdVgrX4NKBo=
+X-Microsoft-Antispam-Message-Info: qioCDHpL2+UMpyH5C8nC0SvIMt9pWqcxZ87AFnSpX1QuzHIitpZwp/W3Lq2RW3/3Z/uox70iZKrj0hiYnOVfTSjrq+XBt2At5bndGNCKCoEJroG/wP70WEHVPwTEzDZpz7qL1t3UbrnXn7oRTIudbLi4aQn6kp9QrEV07vpj5xCC6fRRyfoi1x47RpnhwSJDkB7LRzVifk08RerfBDnEnFKwqHx8u0mSVNP5nL/BXl6a6cLroEFw9i8GbBOdMnyR9q9ZbYwRw3OvHs5r7mmQV2abMrm06mHHkjfGowoduilqWGCOSV3wHui4gvyHAb4EFTXsrBxx1IG55XnTCainBmWE1H2PdsFFYyOQh1nEwavUzr8wQRCQ/jQHPYshuKjUALHyF+PIisOD3yuy38SW2xNvH06f/DOa2lbStG8SrU1qX/hKBDGGQPpPJTw+M8jNrowsjVJP8az9Ag6gsuYV1A+5Sph103KOGFKG5q8BQDPfi9KoyYNY+QwiA9Y4QgY7WpeFTcAjyfloqLGUxP0ig5mAUt/VsclOMysoPfi6Nzgz4vLHyO1muoVnB1i31fieirgrtzn8DsCTV7PeiJo+aurlYF/7FiKpMrbGDUdmpwQ9Mg7+sJ6hQl823RC7CxhakM9Vv1N4a3+fnsoGlpTBpQ==
 X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:VI1PR04MB5151.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(4636009)(366004)(4326008)(8676002)(6666004)(38100700002)(5660300002)(8936002)(2616005)(52116002)(2906002)(86362001)(6512007)(316002)(66556008)(186003)(1076003)(508600001)(66476007)(54906003)(66946007)(6486002)(7416002)(44832011)(83380400001)(6506007)(41533002)(15583001);
+ SFS:(4636009)(366004)(86362001)(54906003)(15650500001)(6666004)(44832011)(2616005)(66476007)(66556008)(66946007)(8676002)(8936002)(38100700002)(186003)(316002)(83380400001)(1076003)(508600001)(6486002)(5660300002)(52116002)(4326008)(2906002)(6512007)(7416002)(6506007);
  DIR:OUT; SFP:1101; 
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?LcVBJe+1ogOCG10hAqTXBLwiwpshQr6A/aEpw2B1fiGaxVj2EqdELcUEhq5f?=
- =?us-ascii?Q?GNR0gzVGdDK4Np5xOoOClsvvHKGDBZls1NR/ZEciTFKyQNdB2HfMvzcnD+24?=
- =?us-ascii?Q?w2TUo70ppGrT5y5+Q+hITxvbBbESbMJnk3EMhEgw+u8dIo7pm6hnB9afGmHl?=
- =?us-ascii?Q?AvaLCEVzGdBFZiGLh4SJ4zWKtFl0EmXqQA9TzysM1mrmPp/gj1SDLfRoE7qg?=
- =?us-ascii?Q?Bgf7K7j2ACKJ/lkfhUtgoQmwL6OedFTqgk/JYm8EZnz4ialgNmtAySZD2bzI?=
- =?us-ascii?Q?iIv8whK957NwLn4juEszrtgzS+X0QiTEDvURys+pkJnsbqnNe1JBBHu4fn7c?=
- =?us-ascii?Q?z6Doa9I8Ri5c7z4woJ/stoO2v6qCCI6lfdn+UVhO1NxErhx9uMk07LcCfrS+?=
- =?us-ascii?Q?5b8lzSRWlp++rnkAIZHYr2rOQshdaqDaKChMghbxktHw1d2W+GYY+73EuQKK?=
- =?us-ascii?Q?X8YDIfoRsUvabsQF4DYMYU1iSBnIX+7Jder8GJOJjEmTJJax0T5olV8LTYWN?=
- =?us-ascii?Q?9WjVYk24T81EW0tqnYCSIIidCJzboIImgnx2Kfc9S4BI5iA8ZqOH8d0wy6/s?=
- =?us-ascii?Q?GD0FIpURj7ziX94D+C8OqQStAC1gJW1VU5KKM5tTCyApX3jqq3PmaVomfbXl?=
- =?us-ascii?Q?EUe/F2gXiBcNp6kMLSV9g28Wf9IXQlSzaBIM4Ip1XynKf8Hqgsatre+9qtfK?=
- =?us-ascii?Q?r47uQwZZWaMRnhZpy7Y849ppR6Zzcf2oKKIem3ZtRU3LFersjGsxH4jkDOAq?=
- =?us-ascii?Q?AxQnVl4DXH2PF/ox+nRWRdjSdYUj3fy4USF+3csxtSCUFJJF+B5mMSv4hn9e?=
- =?us-ascii?Q?TZvh4qmEqDakInTPtW2QaapLwvjrKZp7ftXsGY8H3z4YRmLx/rTWIaP7pjAf?=
- =?us-ascii?Q?IiIh/+Cj+dedWpsAhHbVrtc90KIzeRGXTHWZA3b3GvY5PEY4MVtYlQAbcXb3?=
- =?us-ascii?Q?haJ2NUd7AQ/7ygG9Rjnan/ez1/O88oo2wc2NX04uqFK1V6RnaHfmV3soliS2?=
- =?us-ascii?Q?I9IF18/Mw3bDCAPfgg6afi6YQFHim3HYw1PosG4wFrLRe/4knxuiMxXRw6vC?=
- =?us-ascii?Q?puZzj7cPOGWLLpUADzs+x02/Y+XC+oKjYzTP9AMOTHL/Qs4mE07EGfM54/Ec?=
- =?us-ascii?Q?52ZCUWvYBRuEBnQ4AxEBwD6dIhylxCWDPNPnRTi9iQNAqMlsWxE6F2MDZXcf?=
- =?us-ascii?Q?C87gKc0HvjOiE/7OH/x8fdIvvneq2vMwubhp8PSihxIYKYvLmyqsxtcgRIfR?=
- =?us-ascii?Q?n7ybVeKV0SM8S+s1vOLwgbt6d/JOZWT9XgUM8vyqZW9FT91kNwNnRi4cnzuw?=
- =?us-ascii?Q?2REj/QT9eSsf3+i98IDgqm7u6/qYwwhP/wwaYVtzSlLCwt2YAxKIYsaLtb5K?=
- =?us-ascii?Q?Gdut8anKm0yQ2Cv4n0IzuS9COd/LVsTmbDVLd3gzTtPIlF0WuAdu0PBavf53?=
- =?us-ascii?Q?fPnUaHnFlqIV84FK4ICaNQ2KKDV/PbV+bfzm4dCiHPrT9VyJllwWOoqCQyh6?=
- =?us-ascii?Q?zSZrSaBWgjmFcgMytPzDvVF+2TqOfCD5STeHy+htjbv4qAc+YAo0XFDdt7Ow?=
- =?us-ascii?Q?cHOTyw61g0ofuDMKKOIHuO8wH3HUXvT6YjRJ4xFSuwyscF4NWOmYnWotYeLl?=
- =?us-ascii?Q?TCmj7GiPlBosB/TEAZ82zUbMXYiLrHK1xYhZ3ztnpampB6D02aKowIslaCiE?=
- =?us-ascii?Q?gL9+Fl8GwrXogIfWtQLlPTgHdNg=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?3GzETrlWWQ/x+j5OgVWdXdoo1UtQ64PDsHPE0N9qjShUN7vS8T3t24nBTWPB?=
+ =?us-ascii?Q?QBtgkaZ693zDsdYiDHz6uCYoVuvDVmLUI1K0ecsmbSbYyyIa3FguyAfrmjFD?=
+ =?us-ascii?Q?3ibQnFYk0AdkhU1TeR8HLnVfBre9qbp1F1st6w7/QjQfKO12AMLgtG9UIaiG?=
+ =?us-ascii?Q?VEteZ0jgbyVkYcbPX5z5XfjwiYUlrdsUKX3MP6YhVYdHsXobvaifnXVfCZPv?=
+ =?us-ascii?Q?nGilTLk1oHycmsE5jpUCbb0iSoa1275In/g5kb/3kMlowGNwG57nw1PYe//y?=
+ =?us-ascii?Q?pd4Hb7b/lBvKmsd6Q/b4a3ebBDmgVpEFAQ2cVnnoqcalSMnspmt9L/0Ms7UV?=
+ =?us-ascii?Q?FcbBbLxuJpJRrDk+G+ygvEYBCHFiQZSnZbTaItn/ZB67Tx18EtPr5a5NtD7U?=
+ =?us-ascii?Q?PN+RP0cw6mf3HOeeqPP+I7sztz2QOK0kOV1lbkHF9NU1biud41iVl+Je75OS?=
+ =?us-ascii?Q?IdciwojiQ8pvY9k1uVFvnyGsyJ8HwGNtEzjeMw5FHkJxRrOwPrfUOEXEKzhz?=
+ =?us-ascii?Q?69SLA7ZbdEBShL2udNmee46hD6hOvAGwQQAwtzF59MVTU29e3mhC9xLWK0l/?=
+ =?us-ascii?Q?y/TmjM97ALWQaa0/mquCJ6c+PlZuxe/p+UG532Q2IhVptKdzoiLwFVFqKnHl?=
+ =?us-ascii?Q?4FOCq4lyCIeM2BP+A0vTaW44640aJy6UqxfgW4tpf0XAdi7A5DmLv7Lomn8I?=
+ =?us-ascii?Q?xe6gwgScm3b6kn3ctFYhMSRyY61lC9UazrAyugZgYBFy3y21/wp1gz5XF0ul?=
+ =?us-ascii?Q?z6o876Y0Bybtd05mFlT7h5CrpSMgnSTFu+S8pN0Q/vrRzYmxl09l7vIdDfch?=
+ =?us-ascii?Q?Nz/C3iFRLZixDJ4s2yt+fepfFCV3z675DtgGeVRkXg5D7UB3vgNfd5/M9++F?=
+ =?us-ascii?Q?MDWItE0ySNu7gvn3M6iB4wfw8ybu2EC4yzKLABa+BTE0TucovPuUs2GDyBT/?=
+ =?us-ascii?Q?Fl0cSuse0QCZzlKT7hJvjc+TmDrzlSdbN+det28QAk7ckNWCz/xhk7fV95bU?=
+ =?us-ascii?Q?2S+EUW0dGET6wdUgMijaBj9OEQymdHlWnlUWB9k5cSoLEfQQ7aNu7WQd9mVM?=
+ =?us-ascii?Q?ZKjs4A8Hzb63Vx22RUvtz9j4Hat3+uvIGLN63fWgubhb6aLy98wI7D606tMV?=
+ =?us-ascii?Q?Vmgg6+NbUCgmA8Z/iNsDeXWmA6+MZXZOIijYmEPPA3BDkQE5E/Ku58aRChmM?=
+ =?us-ascii?Q?WxzB0+cMhlBa3M9WMGXeUL3VefJDyccUONFHaSP1MTAssJNN8F5jLB7swpVN?=
+ =?us-ascii?Q?dUrHmeZ7jX6sDE8GuufOLYOgyHqTI/Qz64e8c4h7HVB5Iz+UfMAGxbidwthZ?=
+ =?us-ascii?Q?oc4r9WfEqM7BUZgyquBZjxcLBuLsCbqXzpYol6hRGd8KbmRqD26FhGhTiEQw?=
+ =?us-ascii?Q?5HivdEc7yLCQrgKmt5fhHQaw6p0qWaFx18+QBKUQ3L+9rZDanx08kdueIeth?=
+ =?us-ascii?Q?C5dEgR+nGXluQJKYUmSnIsgpWyxRR2ia+1/wXuY7xZLrB1Er8TmRqvpl5IZs?=
+ =?us-ascii?Q?ERLL3D5wSSebANo6iiwq7OHGCzErq0aYRJ/TLmoA6HLO81CMjmAoUfApn+gu?=
+ =?us-ascii?Q?+bh9lWMR1ReHuF+hwPoS5Owb8oiKgh40Fbjb26uO1M8woARCcSJP/bZMt9Qr?=
+ =?us-ascii?Q?4MA8QN1uwEHqkSZ0RX8qVcZYMDcRRz55St64bQMZLFySfSEnVIMC/5JGdqIJ?=
+ =?us-ascii?Q?yviXwAAmCosqI10dMMar6Uj2DL2IsYpri8CLZhncQ8YVi3GM?=
 X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b0404410-d5f6-47ac-1bc0-08d9a914d6df
+X-MS-Exchange-CrossTenant-Network-Message-Id: fb3c13db-7e3b-4023-fd73-08d9a914d88e
 X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5151.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2021 15:22:02.0590 (UTC)
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2021 15:22:04.9164 (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BmvZlCVtaKoJS6A6PZedvA8h8iEZUjiHvNixRZEGZAa2jDxOQfZsEvGCQcuU7huTLx5qfJVWcB6sL1D0o1zlxw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6880
+X-MS-Exchange-CrossTenant-UserPrincipalName: lSCCyrA3xlAfyoiwvV3hEFUaicMOBgkAEyNEh7De8FPOAr2hTfffLmCHrVbG7ZyuEtg7kAKBBI0iBwUVYz+NhQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7213
 Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
  daniel.baluta@gmail.com, kai.vehmanen@linux.intel.com, lgirdwood@gmail.com,
  Rander Wang <rander.wang@intel.com>, linux-kernel@vger.kernel.org,
@@ -166,9 +165,12 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 
-Make use of the generic snd_sof_ipc_process_reply() from the core instead
-the local implementation.
-snd_sof_ipc_process_reply() handles the reply retrieving and the ipc reply
+In order to stress test the firmware's ability to handle (mis)crafted
+IPC messages this patch adds a debugfs interface where a binary file
+(message) can be written and the message is sent to the firmware as it is.
+
+Read on the same file will return the reply from the firmware if it is
+available as a binary.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
@@ -177,120 +179,170 @@ Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
 ---
- sound/soc/sof/imx/imx8.c  | 37 +------------------------------------
- sound/soc/sof/imx/imx8m.c | 37 +------------------------------------
- 2 files changed, 2 insertions(+), 72 deletions(-)
+ sound/soc/sof/Kconfig    |   8 +++
+ sound/soc/sof/debug.c    | 107 +++++++++++++++++++++++++++++++++++++++
+ sound/soc/sof/sof-priv.h |   4 ++
+ 3 files changed, 119 insertions(+)
 
-diff --git a/sound/soc/sof/imx/imx8.c b/sound/soc/sof/imx/imx8.c
-index dd59a74480d6..0aeb44d0acc7 100644
---- a/sound/soc/sof/imx/imx8.c
-+++ b/sound/soc/sof/imx/imx8.c
-@@ -59,40 +59,6 @@ struct imx8_priv {
+diff --git a/sound/soc/sof/Kconfig b/sound/soc/sof/Kconfig
+index b6fa659179b6..89eea5558190 100644
+--- a/sound/soc/sof/Kconfig
++++ b/sound/soc/sof/Kconfig
+@@ -194,6 +194,14 @@ config SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST
+ 	  Say Y if you want to enable IPC flood test.
+ 	  If unsure, select "N".
  
- };
- 
--static void imx8_get_reply(struct snd_sof_dev *sdev)
--{
--	struct snd_sof_ipc_msg *msg = sdev->msg;
--	struct sof_ipc_reply reply;
--	int ret = 0;
--
--	if (!msg) {
--		dev_warn(sdev->dev, "unexpected ipc interrupt\n");
--		return;
--	}
--
--	/* get reply */
--	sof_mailbox_read(sdev, sdev->host_box.offset, &reply, sizeof(reply));
--
--	if (reply.error < 0) {
--		memcpy(msg->reply_data, &reply, sizeof(reply));
--		ret = reply.error;
--	} else {
--		/* reply has correct size? */
--		if (reply.hdr.size != msg->reply_size) {
--			dev_err(sdev->dev, "error: reply expected %zu got %u bytes\n",
--				msg->reply_size, reply.hdr.size);
--			ret = -EINVAL;
--		}
--
--		/* read the message */
--		if (msg->reply_size > 0)
--			sof_mailbox_read(sdev, sdev->host_box.offset,
--					 msg->reply_data, msg->reply_size);
--	}
--
--	msg->reply_error = ret;
--}
--
- static int imx8_get_mailbox_offset(struct snd_sof_dev *sdev)
- {
- 	return MBOX_OFFSET;
-@@ -109,8 +75,7 @@ static void imx8_dsp_handle_reply(struct imx_dsp_ipc *ipc)
- 	unsigned long flags;
- 
- 	spin_lock_irqsave(&priv->sdev->ipc_lock, flags);
--	imx8_get_reply(priv->sdev);
--	snd_sof_ipc_reply(priv->sdev, 0);
-+	snd_sof_ipc_process_reply(priv->sdev, 0);
- 	spin_unlock_irqrestore(&priv->sdev->ipc_lock, flags);
++config SND_SOC_SOF_DEBUG_IPC_MSG_INJECTOR
++	bool "SOF enable IPC message injector"
++	help
++	  This option enables the IPC message injector which can be used to send
++	  crafted IPC messages to the DSP to test its robustness.
++	  Say Y if you want to enable the IPC message injector.
++	  If unsure, select "N".
++
+ config SND_SOC_SOF_DEBUG_RETAIN_DSP_CONTEXT
+ 	bool "SOF retain DSP context on any FW exceptions"
+ 	help
+diff --git a/sound/soc/sof/debug.c b/sound/soc/sof/debug.c
+index dc1df5fb7b4c..2f8b5ac9b78a 100644
+--- a/sound/soc/sof/debug.c
++++ b/sound/soc/sof/debug.c
+@@ -336,6 +336,104 @@ static int sof_debug_ipc_flood_test(struct snd_sof_dev *sdev,
  }
+ #endif
  
-diff --git a/sound/soc/sof/imx/imx8m.c b/sound/soc/sof/imx/imx8m.c
-index e4618980cf8b..f454a5d0a87e 100644
---- a/sound/soc/sof/imx/imx8m.c
-+++ b/sound/soc/sof/imx/imx8m.c
-@@ -32,40 +32,6 @@ struct imx8m_priv {
- 	struct platform_device *ipc_dev;
- };
- 
--static void imx8m_get_reply(struct snd_sof_dev *sdev)
--{
--	struct snd_sof_ipc_msg *msg = sdev->msg;
--	struct sof_ipc_reply reply;
--	int ret = 0;
--
--	if (!msg) {
--		dev_warn(sdev->dev, "unexpected ipc interrupt\n");
--		return;
--	}
--
--	/* get reply */
--	sof_mailbox_read(sdev, sdev->host_box.offset, &reply, sizeof(reply));
--
--	if (reply.error < 0) {
--		memcpy(msg->reply_data, &reply, sizeof(reply));
--		ret = reply.error;
--	} else {
--		/* reply has correct size? */
--		if (reply.hdr.size != msg->reply_size) {
--			dev_err(sdev->dev, "error: reply expected %zu got %u bytes\n",
--				msg->reply_size, reply.hdr.size);
--			ret = -EINVAL;
--		}
--
--		/* read the message */
--		if (msg->reply_size > 0)
--			sof_mailbox_read(sdev, sdev->host_box.offset,
--					 msg->reply_data, msg->reply_size);
--	}
--
--	msg->reply_error = ret;
--}
--
- static int imx8m_get_mailbox_offset(struct snd_sof_dev *sdev)
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_MSG_INJECTOR)
++static ssize_t msg_inject_read(struct file *file, char __user *buffer,
++			       size_t count, loff_t *ppos)
++{
++	struct snd_sof_dfsentry *dfse = file->private_data;
++	struct sof_ipc_reply *rhdr = dfse->msg_inject_rx;
++
++	if (!rhdr->hdr.size || !count || *ppos)
++		return 0;
++
++	if (count > rhdr->hdr.size)
++		count = rhdr->hdr.size;
++
++	if (copy_to_user(buffer, dfse->msg_inject_rx, count))
++		return -EFAULT;
++
++	*ppos += count;
++	return count;
++}
++
++static ssize_t msg_inject_write(struct file *file, const char __user *buffer,
++				size_t count, loff_t *ppos)
++{
++	struct snd_sof_dfsentry *dfse = file->private_data;
++	struct snd_sof_dev *sdev = dfse->sdev;
++	struct sof_ipc_cmd_hdr *hdr = dfse->msg_inject_tx;
++	size_t size;
++	int ret, err;
++
++	if (*ppos)
++		return 0;
++
++	size = simple_write_to_buffer(dfse->msg_inject_tx, SOF_IPC_MSG_MAX_SIZE,
++				      ppos, buffer, count);
++	if (size != count)
++		return size > 0 ? -EFAULT : size;
++
++	ret = pm_runtime_get_sync(sdev->dev);
++	if (ret < 0 && ret != -EACCES) {
++		dev_err_ratelimited(sdev->dev, "%s: DSP resume failed: %d\n",
++				    __func__, ret);
++		pm_runtime_put_noidle(sdev->dev);
++		goto out;
++	}
++
++	/* send the message */
++	memset(dfse->msg_inject_rx, 0, SOF_IPC_MSG_MAX_SIZE);
++	ret = sof_ipc_tx_message(sdev->ipc, hdr->cmd, dfse->msg_inject_tx, count,
++				 dfse->msg_inject_rx, SOF_IPC_MSG_MAX_SIZE);
++
++	pm_runtime_mark_last_busy(sdev->dev);
++	err = pm_runtime_put_autosuspend(sdev->dev);
++	if (err < 0)
++		dev_err_ratelimited(sdev->dev, "%s: DSP idle failed: %d\n",
++				    __func__, err);
++
++	/* return size if test is successful */
++	if (ret >= 0)
++		ret = size;
++
++out:
++	return ret;
++}
++
++static const struct file_operations msg_inject_fops = {
++	.open = simple_open,
++	.read = msg_inject_read,
++	.write = msg_inject_write,
++	.llseek = default_llseek,
++};
++
++static int snd_sof_debugfs_msg_inject_item(struct snd_sof_dev *sdev,
++					   const char *name, mode_t mode,
++					   const struct file_operations *fops)
++{
++	struct snd_sof_dfsentry *dfse;
++
++	dfse = devm_kzalloc(sdev->dev, sizeof(*dfse), GFP_KERNEL);
++	if (!dfse)
++		return -ENOMEM;
++
++	/* pre allocate the tx and rx buffers */
++	dfse->msg_inject_tx = devm_kzalloc(sdev->dev, SOF_IPC_MSG_MAX_SIZE, GFP_KERNEL);
++	dfse->msg_inject_rx = devm_kzalloc(sdev->dev, SOF_IPC_MSG_MAX_SIZE, GFP_KERNEL);
++	if (!dfse->msg_inject_tx || !dfse->msg_inject_rx)
++		return -ENOMEM;
++
++	dfse->type = SOF_DFSENTRY_TYPE_BUF;
++	dfse->sdev = sdev;
++
++	debugfs_create_file(name, mode, sdev->debugfs_root, dfse, fops);
++	/* add to dfsentry list */
++	list_add(&dfse->list, &sdev->dfsentry_list);
++
++	return 0;
++}
++#endif
++
+ static ssize_t sof_dfsentry_write(struct file *file, const char __user *buffer,
+ 				  size_t count, loff_t *ppos)
  {
- 	return MBOX_OFFSET;
-@@ -82,8 +48,7 @@ static void imx8m_dsp_handle_reply(struct imx_dsp_ipc *ipc)
- 	unsigned long flags;
+@@ -812,6 +910,15 @@ int snd_sof_dbg_init(struct snd_sof_dev *sdev)
+ 		return err;
+ #endif
  
- 	spin_lock_irqsave(&priv->sdev->ipc_lock, flags);
--	imx8m_get_reply(priv->sdev);
--	snd_sof_ipc_reply(priv->sdev, 0);
-+	snd_sof_ipc_process_reply(priv->sdev, 0);
- 	spin_unlock_irqrestore(&priv->sdev->ipc_lock, flags);
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_MSG_INJECTOR)
++	err = snd_sof_debugfs_msg_inject_item(sdev, "ipc_msg_inject", 0644,
++					      &msg_inject_fops);
++
++	/* errors are only due to memory allocation, not debugfs */
++	if (err < 0)
++		return err;
++#endif
++
+ 	return 0;
  }
- 
+ EXPORT_SYMBOL_GPL(snd_sof_dbg_init);
+diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
+index 2c97ffa98e3e..9a8af76b2f8b 100644
+--- a/sound/soc/sof/sof-priv.h
++++ b/sound/soc/sof/sof-priv.h
+@@ -325,6 +325,10 @@ struct snd_sof_dfsentry {
+ 	enum sof_debugfs_access_type access_type;
+ #if ENABLE_DEBUGFS_CACHEBUF
+ 	char *cache_buf; /* buffer to cache the contents of debugfs memory */
++#endif
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_MSG_INJECTOR)
++	void *msg_inject_tx;
++	void *msg_inject_rx;
+ #endif
+ 	struct snd_sof_dev *sdev;
+ 	struct list_head list;  /* list in sdev dfsentry list */
 -- 
 2.27.0
 
