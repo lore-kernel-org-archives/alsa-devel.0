@@ -2,62 +2,63 @@ Return-Path: <SRS0=I3pN=QD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C56AC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 16:27:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E72BC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 16:28:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7D51961B62
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 16:27:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7D51961B62
+	by mail.kernel.org (Postfix) with ESMTPS id 21D2A61B62
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 16:28:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 21D2A61B62
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CC6F8169B;
-	Tue, 16 Nov 2021 17:27:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC6F8169B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7F4651740;
+	Tue, 16 Nov 2021 17:27:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F4651740
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637080075;
-	bh=eyvU1La7rU7h064EKucefMzgBNXdEOy+VDfwD9s0ze8=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=oej8oGiAtlwNzIfo1eXVILd8sDoHbuW8Deqhi7415DnRlBLZTTxn94FcwWZb3gmMW
-	 Oe0N2A17tq88jtFENg2TRe9UAAHfAzabOP59vddnBI2LdFYNwyMW9XD9iIVM+eeQew
-	 OqE7pp0FA2i7RtabEL7hmfiAmafckEp9HZkJAfsQ=
+	s=default; t=1637080120;
+	bh=0eqcxZircQWR0eDxKLxiauIpZRNpVDa8kjzov4XzOA8=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=WG9C5O3it3B1Mp6VjM8S7b2a7Zk36OHSWWCbIKPRdxPDZOKUHbjYO2RQL5GQ3G3MT
+	 ArQqwbz92ghQBfLxzN1qla5FS01R8MG1IWjD2ywHFpDtz+4CkRwEqIvg8CnltZiN9B
+	 ObIOyUBeXy/0sX/5McWmJUTfpxPagyMYxyv+958U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1884CF804C1;
-	Tue, 16 Nov 2021 17:27:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 557B7F804EB;
+	Tue, 16 Nov 2021 17:27:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 46430F804C1; Tue, 16 Nov 2021 17:27:03 +0100 (CET)
+ id E319BF804C3; Tue, 16 Nov 2021 17:27:04 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0DEDAF80134
- for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2021 17:26:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0DEDAF80134
+ by alsa1.perex.cz (Postfix) with ESMTPS id BD97DF8026D
+ for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2021 17:27:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BD97DF8026D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="MEK3zZWV"
+ header.b="fsBJ/Hwy"
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AG7FCkd005416;
- Tue, 16 Nov 2021 10:26:57 -0600
+ by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AG7FCkf005416;
+ Tue, 16 Nov 2021 10:26:59 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=ODxpdqxltOMoYVFmvaxZez5QOWprLDG9j92jnhb+qXc=;
- b=MEK3zZWVax6o8sttcNnwHIW+/pS3QB3GJeX4AbtA6bp6FBGe1ocesL9NVrBmaCdzdNH/
- bcqeOWWB30nA7UNmbAX/mOqe91g2/JGn71umRCxb3ZlwXMiYmqlhD5TZsws/KfgYpnvA
- UPav/XPA6HTxIFEbxn3o+iKEI4WoTXaYlIovBATMR7M4wAFryKP4pvh5dUBwJJkjBW2u
- yo7+xR5RmoNf3+KizX1UmGzBrXbHlpFNaZckLdnF783gQjtqBC9quuxqs9KkQfmOS5z/
- EmNPsWE6uF3iIgHZA4+otUSs2stR88O8aJS2uZYJ74iAOY+nn0gdTCxX9jGmm0A2LttO 0A== 
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=4FX2fuwgRXUP3OXTschhGuPxmM50MdJ1IjGtnvPd+K8=;
+ b=fsBJ/HwyMPzqafDd/XQJfQyv9UlDeV0osDbFWPp6i9KU+3os3MvkEvOirxc2fLT3vaaL
+ QESaeUu/eTx0SN00zrNVTpmc+Igs1ZLlDyNKbmJQ/F1BrCS7zLhyifZxDZ3ucvhMKTFe
+ D0wqY7FyMk0+PvfVC/WA3YCbVq+MRiWixhOw/DZksPOBIKrYh5qvg1eLyVIasTNYUTeC
+ dNj74DtRCFhPhH6ehkI5NF/op6A/D2hyzGNisIH1XdPLBBdFN6hOQt5KCbaFqgaf9ovN
+ WD2SFXdraZSLWPCy90Fj8AzkdAp2pyuoOZguoYeYTde4GNTJ8JQ/iQ9X24UdDJscQq0p ow== 
 Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3cbdjgt3be-1
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3cbdjgt3be-3
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Tue, 16 Nov 2021 10:26:57 -0600
+ Tue, 16 Nov 2021 10:26:58 -0600
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Tue, 16 Nov
@@ -67,19 +68,21 @@ Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  Frontend Transport; Tue, 16 Nov 2021 16:26:56 +0000
 Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com
  [198.61.65.41])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4360B11DB;
- Tue, 16 Nov 2021 16:26:55 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id B874A15A5;
+ Tue, 16 Nov 2021 16:26:56 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 0/4] ASoC: cs42l42: Remove redundant code
-Date: Tue, 16 Nov 2021 16:26:44 +0000
-Message-ID: <20211116162652.45225-1-rf@opensource.cirrus.com>
+Subject: [PATCH 1/3] ASoC: dt-bindings: cs42l42: Correct description of ts-inv
+Date: Tue, 16 Nov 2021 16:26:47 +0000
+Message-ID: <20211116162652.45225-4-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20211116162652.45225-1-rf@opensource.cirrus.com>
+References: <20211116162652.45225-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 4YKL-Z3b2k61w_ouTLLQ7mYiZSB_zG0V
-X-Proofpoint-GUID: 4YKL-Z3b2k61w_ouTLLQ7mYiZSB_zG0V
+X-Proofpoint-ORIG-GUID: clVfZdCURPULwxFBwgCpwL-PeILC0Rjz
+X-Proofpoint-GUID: clVfZdCURPULwxFBwgCpwL-PeILC0Rjz
 X-Proofpoint-Spam-Reason: safe
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
  Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
@@ -98,24 +101,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-- Remove field writes in regmap_update_bits() calls where the code
-  intends that the field value is not changed.
+This swaps the descriptions of the 0 and 1 values to match
+what the driver actually does with this property.
 
-- Remove unnecessary complexity from reporting jack unplug event
+The background here is somewhat confusing. The codec has two
+invert bits for the tip sense. The DT property should have been
+for the TIP_SENSE_INV bit, which is the one that controls the
+detect block. Due to some misunderstanding of the hardware the
+driver actually implemented setting of the TS_INV bit, which is
+only for swapping the sense of the interrupt bits. The description
+was taken from the datasheet and refers to TIP_SENSE_INV but
+unfortunately TS_INV has a different purpose and the net effect
+of changing it is the reverse of what was intended (this is not
+clearly described in the datasheet). So the ts-inv settings have
+always done the exact opposite of what the description said.
 
-- Remove a PLL config value member that was introduced in a bugfix
-  but made redundant by a later bugfix.
+Given the age of the driver, it's too late now to swap the meanings
+of the values, so the description is changed to match the behaviour.
+They have been annotated with the terminology used in the datasheet
+to avoid the confusion of which one corresponds to what the datasheet
+calls "inverted tip sense".
 
-Richard Fitzgerald (4):
-  ASoC: cs42l42: Remove redundant writes to DETECT_MODE
-  ASoC: cs42l42: Remove redundant writes to RS_PLUG/RS_UNPLUG masks
-  ASoC: cs42l42: Simplify reporting of jack unplug
-  ASoC: cs42l42: Remove redundant pll_divout member
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Fixes: da16c5579353 ("ASoC: cs42l42: Add devicetree bindings for CS42L42")
+---
+ Documentation/devicetree/bindings/sound/cs42l42.txt | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
- sound/soc/codecs/cs42l42.c | 42 +++++++-----------------------------------
- sound/soc/codecs/cs42l42.h |  1 -
- 2 files changed, 7 insertions(+), 36 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/sound/cs42l42.txt b/Documentation/devicetree/bindings/sound/cs42l42.txt
+index 5d416fdaf023..3b7705623980 100644
+--- a/Documentation/devicetree/bindings/sound/cs42l42.txt
++++ b/Documentation/devicetree/bindings/sound/cs42l42.txt
+@@ -19,13 +19,14 @@ Optional properties:
+   (See Documentation/devicetree/bindings/interrupt-controller/interrupts.txt
+   for further information relating to interrupt properties)
+ 
+-  - cirrus,ts-inv : Boolean property. For jacks that invert the tip sense
+-  polarity. Normal jacks will short tip sense pin to HS1 when headphones are
+-  plugged in and leave tip sense floating when not plugged in. Inverting jacks
+-  short tip sense when unplugged and float when plugged in.
++  - cirrus,ts-inv : Boolean property. Sets the behaviour of the jack plug
++  detect switch.
+ 
+-  0 = (Default) Non-inverted
+-  1 = Inverted
++  0 = (Default) Shorted to tip when unplugged, open when plugged.
++      This is "inverted tip sense (ITS)" in the datasheet.
++
++  1 = Open when unplugged, shorted to tip when plugged.
++      This is "normal tip sense (TS)" in the datasheet.
+ 
+   - cirrus,ts-dbnc-rise : Debounce the rising edge of TIP_SENSE_PLUG. With no
+   debounce, the tip sense pin might be noisy on a plug event.
 -- 
 2.11.0
 
