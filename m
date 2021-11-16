@@ -2,90 +2,68 @@ Return-Path: <SRS0=I3pN=QD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 126F0C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 16:41:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33102C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 17:49:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9208260F22
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 16:41:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9208260F22
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	by mail.kernel.org (Postfix) with ESMTPS id EB202611CC
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 17:49:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EB202611CC
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 751A31845;
-	Tue, 16 Nov 2021 17:40:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 751A31845
+	by alsa0.perex.cz (Postfix) with ESMTPS id F1D49186E;
+	Tue, 16 Nov 2021 18:48:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F1D49186E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637080904;
-	bh=7BG8ioGpzOsfvtQPHPQRlnlpj1I8WuFez4UkaZMi1Ps=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1637084951;
+	bh=1305OtawCUzVyN9m8G+QJxi5mVeDe4M1jxp0hLgPpls=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UDbxL+OfgHTAkklEV7WmYCpmFvH08f7GQ6mouCCw+CxIhX8qoxOSxjm0AkAl9zhFc
-	 i4Uo9DcLusoZsu4moMEczdKf8VT2GZDOo36Gy8xx+iiOH21cqy0zg0EHftshubbhIN
-	 Zl3k48lGJaA0kuqlBquCf6jpO6xk+1eeH0OlwbnI=
+	b=qxgoaS6UnEIvWJXOCetPDKxcmCJeIOyQQAKDgLUZMZiXICh/c9H3X7OJO7ndAC+Ug
+	 J0e19hKMPGqUgIdMxaro0iK2c6H9tyhtgEhJzzfzBWr+q2kqz7ChVppNopayEqnPTI
+	 745UWVLY5uIDPEHxodGBqjhHx/lVQs4ASGK9NjjQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 09970F804FA;
-	Tue, 16 Nov 2021 17:39:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 53BEEF802C4;
+	Tue, 16 Nov 2021 18:48:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B4CC9F804F2; Tue, 16 Nov 2021 17:39:21 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id EB052F80272; Tue, 16 Nov 2021 18:48:17 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 75818F8026D
- for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2021 17:39:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75818F8026D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1DCF8F80089
+ for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2021 18:48:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1DCF8F80089
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="mLlflyU5"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AG9thsn031145;
- Tue, 16 Nov 2021 10:39:07 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=LlLWUwoVTY7e/cT3Hvc6VuaHfWQ2FKZj8rcPcydDakw=;
- b=mLlflyU5Wj9ZQnNcAtrMLmXEVfq8hUJUzxw7uYcSZKO/7mfEbHPy7AMbsyDJyYOQ8S2f
- AAkE7oFrc+y13Tbuo6NZnsRUd4kEh7EgaUCUI0d0Hnznby80vi6/i8RHLAYnX02VL7Py
- sNFG95GFJFMD4cCz6Rmgewkc+2NEidhdKHTrYTGkNKvyDfwAsYF/3ieym4ftXnUBrzpG
- p91u7osbzt3zo3nXrvMH/QFW1FjB5IAtUE+GOQmpVwOAq4MiMWFBkq/+bP++Yx0xsVfE
- AkKMK7zHLhurnA/P2Eq2635cXw09MH13zUz7oGMGKtVUAUYBbkSescAG8v8zsJoIxO8U kA== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3cbjn01y8t-2
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Tue, 16 Nov 2021 10:39:07 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Tue, 16 Nov
- 2021 16:39:05 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.17 via
- Frontend Transport; Tue, 16 Nov 2021 16:39:05 +0000
-Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com
- [198.61.65.41])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D272315A4;
- Tue, 16 Nov 2021 16:39:04 +0000 (UTC)
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-To: <broonie@kernel.org>
-Subject: [PATCH v2 3/4] ASoC: cs42l42: Simplify reporting of jack unplug
-Date: Tue, 16 Nov 2021 16:39:00 +0000
-Message-ID: <20211116163901.45390-4-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211116163901.45390-1-rf@opensource.cirrus.com>
-References: <20211116163901.45390-1-rf@opensource.cirrus.com>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="fOvbFbjq"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D1E1C61465;
+ Tue, 16 Nov 2021 17:48:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1637084890;
+ bh=1305OtawCUzVyN9m8G+QJxi5mVeDe4M1jxp0hLgPpls=;
+ h=From:To:In-Reply-To:References:Subject:Date:From;
+ b=fOvbFbjqZnJrOcKfsKFVgVSNIwP1m8IMPuGskmkEsvpxiS6W5Y1ZjwxmKz9XgpCj8
+ K8Uzs9ZPd3wTH0hpl/CHylKukxk6slU11dvhDDyl0LjQgGiO2G1MW0XlFBgjJJzNee
+ GosTp4ubivTIrRDPjbnoqpPvI4W55u2q/sEo350jnfOPoPTqwyaM1dzVtGV0IqRtJy
+ R5FThxSfMx1R9itIGEKjzetE1Wjl/onXm1ecqi+GK3AFzbDkKiPy97zaWjiDgmzTIB
+ 6Iiijs2VMuUvBC9/CeClc/7SPVlXYRA6R+JDRwf0gTos/byskm3/rBnVnY6/XxsPRA
+ MNIoJQZ1XEaWQ==
+From: Mark Brown <broonie@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+In-Reply-To: <20211116071812.18109-1-tiwai@suse.de>
+References: <20211116071812.18109-1-tiwai@suse.de>
+Subject: Re: [PATCH] ASoC: topology: Add missing rwsem around snd_ctl_remove()
+ calls
+Message-Id: <163708488958.808719.11832099817956624987.b4-ty@kernel.org>
+Date: Tue, 16 Nov 2021 17:48:09 +0000
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: FkYlUtjzA0bRxeMbEVqeIUnf4bR2U7rl
-X-Proofpoint-ORIG-GUID: FkYlUtjzA0bRxeMbEVqeIUnf4bR2U7rl
-X-Proofpoint-Spam-Reason: safe
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,44 +79,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When reporting a jack unplug there's no need to make the reported
-flags conditional on which flags were reported during the plug
-event. It's perfectly safe to report all flags and buttons as
-not-present and let the higher code filter for changes.
+On Tue, 16 Nov 2021 08:18:12 +0100, Takashi Iwai wrote:
+> snd_ctl_remove() has to be called with card->controls_rwsem held (when
+> called after the card instantiation).  This patch add the missing
+> rwsem calls around it.
+> 
+> 
 
-There's also no need to make two separate snd_soc_jack_report()
-calls for presence flags and button flags. It can all be done in
-one report.
+Applied to
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- sound/soc/codecs/cs42l42.c | 12 +-----------
- 1 file changed, 1 insertion(+), 11 deletions(-)
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-linus
 
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 3674f73301dc..8efcee3e60d3 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -1657,18 +1657,8 @@ static irqreturn_t cs42l42_irq_thread(int irq, void *data)
- 				cs42l42->plug_state = CS42L42_TS_UNPLUG;
- 				cs42l42_cancel_hs_type_detect(cs42l42);
- 
--				switch (cs42l42->hs_type) {
--				case CS42L42_PLUG_CTIA:
--				case CS42L42_PLUG_OMTP:
--					snd_soc_jack_report(cs42l42->jack, 0, SND_JACK_HEADSET);
--					break;
--				case CS42L42_PLUG_HEADPHONE:
--					snd_soc_jack_report(cs42l42->jack, 0, SND_JACK_HEADPHONE);
--					break;
--				default:
--					break;
--				}
- 				snd_soc_jack_report(cs42l42->jack, 0,
-+						    SND_JACK_HEADSET |
- 						    SND_JACK_BTN_0 | SND_JACK_BTN_1 |
- 						    SND_JACK_BTN_2 | SND_JACK_BTN_3);
- 
--- 
-2.11.0
+Thanks!
 
+[1/1] ASoC: topology: Add missing rwsem around snd_ctl_remove() calls
+      commit: 7e567b5ae06315ef2d70666b149962e2bb4b97af
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
