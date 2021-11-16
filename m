@@ -2,65 +2,65 @@ Return-Path: <SRS0=I3pN=QD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D53CCC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 16:29:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C87B8C433FE
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 16:29:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5C8E5611C5
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 16:29:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5C8E5611C5
+	by mail.kernel.org (Postfix) with ESMTPS id 563176108D
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 16:29:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 563176108D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 91F61175F;
-	Tue, 16 Nov 2021 17:28:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 91F61175F
+	by alsa0.perex.cz (Postfix) with ESMTPS id BE52B1770;
+	Tue, 16 Nov 2021 17:28:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE52B1770
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637080153;
-	bh=U7RiVpcxF9qqi2jx0LDiQ9dFQer2cGy0Q8JrXDI39Uo=;
+	s=default; t=1637080177;
+	bh=WPMFMTwZrSNM8u6JTCQx4iJShBhRnCAA+Pcb1HY+kAA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=luSSsoqdRkhTdaDRCscZ9J+vooe7+f0CqjAuSgmwo5ZgR9sp4X3HWmU/7kxn6pKT0
-	 9MfMIJM1/i6BjNBHpb1Cm8Y3nlMYgdLZPnOGsct8dFUnjAXAdBbzqQTu4FFRY3L/Lm
-	 5T0BwofEHG8OhpPvZ4W+ZK+Lnc9AWG5WQiUM+cQg=
+	b=jVAKkcO3+bEHnLt47gZ0MsDAwTLgPIIywR92S5+Ibl6hrUevrK9bnGpmk7IL0yApv
+	 ny7zJ/8VPuYV/oIv1sywojeeHzRcaeVHR2iOgAEZLN7bjtHi4oWEvUl2JeeHn3VRPQ
+	 1oih7w1lKGqyg3OZyzOnoYikAFkAgmn8NaixpFRY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DBC9DF80423;
-	Tue, 16 Nov 2021 17:27:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2D411F804FB;
+	Tue, 16 Nov 2021 17:27:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E49F8F804FC; Tue, 16 Nov 2021 17:27:10 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id 1B922F804FB; Tue, 16 Nov 2021 17:27:11 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B4038F80272
- for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2021 17:26:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4038F80272
+ by alsa1.perex.cz (Postfix) with ESMTPS id E3559F80423
+ for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2021 17:27:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3559F80423
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="FtkErfQp"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AG7FCke005416;
- Tue, 16 Nov 2021 10:26:58 -0600
+ header.b="UeYRcMf6"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AG7fwo9025797;
+ Tue, 16 Nov 2021 10:26:59 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=MuHTk7WWbI4FaMOqXKtopVQskFCqIgwcH1k0Lq3hmRo=;
- b=FtkErfQpHrcA1F7e1fAh8WLBlWxwB3nkGppZgP+eMkXNjz3Hr60Rng82QnqTL8i2rA0u
- DbjcWY3YEaAnY3XLe+Ik50Se3DMpAPdbp47IxIVLaKZna+91s6C9YpnH5owKugAU79ie
- qzMd6is3nuyDm2LyZDnKYpe/+h9dhxMXWtLAbksgARse4qWQV9i1b2r6TnQQQXNZaPs7
- rYyWVqEu0unfNA0E7BEoj0a1wV6X6AbMlRUiWsPmToutaORDM20zO6TrSxXSX4TGZpzs
- MXG++aNGtfQMFz7a6ozNTCc25PRbWin3nu6Oe8qVixyxMHi86hsnmR+eYX9LEzt/PUBi SQ== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3cbdjgt3be-2
+ bh=Oy3saM2UmplLoigbbp0tgQUHw4B/9OgUQ+Nm+9/Z7yg=;
+ b=UeYRcMf6yhNPUA4Ayc7lknoeUF9kiqvNRFBr34bjdve7s7BZSinjkrPwuKSOcMecQdnT
+ uvJu6ZrMhoOS2BZlpDETxthUyUpS2n/P5axc+acr6SBlIYwPTPULqjKPw6Jpya9ON/mR
+ CVgi1A4ygQaJSVApoMTFJVeDuMDMbAYVQ9udI38JjdTEGPyxezUqOLQiMN8l4+gE9u0k
+ jCnljFoM8hYIPTfXjRGUKPKRuSbxP9nfuHco4AdKyeduGVvJHmnv9H+Vz15ojZ93FmH4
+ UYF0Lgd//Vk0fn+qdLmB3RQ4Gp/oy/zWlgPgdwVCTRjZwg+A7f2s5oSCuaZFvky8CerP rg== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3cbjn01xqf-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
  Tue, 16 Nov 2021 10:26:58 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Tue, 16 Nov
  2021 16:26:56 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
@@ -68,21 +68,21 @@ Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  Frontend Transport; Tue, 16 Nov 2021 16:26:56 +0000
 Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com
  [198.61.65.41])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 1F75711DC;
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 69B7915A4;
  Tue, 16 Nov 2021 16:26:56 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH v2] ASoC: cs42l42: Add control for audio slow-start switch
-Date: Tue, 16 Nov 2021 16:26:45 +0000
-Message-ID: <20211116162652.45225-2-rf@opensource.cirrus.com>
+Subject: [PATCH 1/4] ASoC: cs42l42: Remove redundant writes to DETECT_MODE
+Date: Tue, 16 Nov 2021 16:26:46 +0000
+Message-ID: <20211116162652.45225-3-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211116162652.45225-1-rf@opensource.cirrus.com>
 References: <20211116162652.45225-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: h9OLt3uAPn_xrvF07L9vyobYry-X7YNm
-X-Proofpoint-GUID: h9OLt3uAPn_xrvF07L9vyobYry-X7YNm
+X-Proofpoint-GUID: eOiCRUncqYGjWDdqektCofz_fSCwtWnx
+X-Proofpoint-ORIG-GUID: eOiCRUncqYGjWDdqektCofz_fSCwtWnx
 X-Proofpoint-Spam-Reason: safe
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
  Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
@@ -101,94 +101,87 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This adds an ALSA control so that the slow-start audio ramp feature
-can be disabled. This is useful for high-definition audio applications.
+There are multiple places where DETECT_MODE is included in a register
+write, but in every case it is written as 0. Removing these redundant
+writes makes the code less cluttered and also makes it obvious that
+DETECT_MODE is never changed.
 
-The register field is unusual in that it is a 3-bit field with only
-two valid values, 000=off and 111=on.
+A single initialization to 0 is added to cs42l42_setup_hs_type_detect().
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- sound/soc/codecs/cs42l42.c | 30 +++++++++++++++++++++++++++++-
- sound/soc/codecs/cs42l42.h |  3 +++
- 2 files changed, 32 insertions(+), 1 deletion(-)
+ sound/soc/codecs/cs42l42.c | 13 +++----------
+ 1 file changed, 3 insertions(+), 10 deletions(-)
 
 diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 27a1c4c73074..56804a3f285e 100644
+index 56804a3f285e..92bdc3a355ff 100644
 --- a/sound/soc/codecs/cs42l42.c
 +++ b/sound/soc/codecs/cs42l42.c
-@@ -42,6 +42,7 @@ static const struct reg_default cs42l42_reg_defaults[] = {
- 	{ CS42L42_SRC_CTL,			0x10 },
- 	{ CS42L42_MCLK_CTL,			0x02 },
- 	{ CS42L42_SFTRAMP_RATE,			0xA4 },
-+	{ CS42L42_SLOW_START_ENABLE,		0x70 },
- 	{ CS42L42_I2C_DEBOUNCE,			0x88 },
- 	{ CS42L42_I2C_STRETCH,			0x03 },
- 	{ CS42L42_I2C_TIMEOUT,			0xB7 },
-@@ -177,6 +178,7 @@ static bool cs42l42_readable_register(struct device *dev, unsigned int reg)
- 	case CS42L42_MCLK_STATUS:
- 	case CS42L42_MCLK_CTL:
- 	case CS42L42_SFTRAMP_RATE:
-+	case CS42L42_SLOW_START_ENABLE:
- 	case CS42L42_I2C_DEBOUNCE:
- 	case CS42L42_I2C_STRETCH:
- 	case CS42L42_I2C_TIMEOUT:
-@@ -387,6 +389,28 @@ static const struct regmap_config cs42l42_regmap = {
- static DECLARE_TLV_DB_SCALE(adc_tlv, -9700, 100, true);
- static DECLARE_TLV_DB_SCALE(mixer_tlv, -6300, 100, true);
+@@ -1270,10 +1270,8 @@ static void cs42l42_process_hs_type_detect(struct cs42l42_private *cs42l42)
+ 		/* Turn on level detect circuitry */
+ 		regmap_update_bits(cs42l42->regmap,
+ 			CS42L42_MISC_DET_CTL,
+-			CS42L42_DETECT_MODE_MASK |
+ 			CS42L42_HSBIAS_CTL_MASK |
+ 			CS42L42_PDN_MIC_LVL_DET_MASK,
+-			(0 << CS42L42_DETECT_MODE_SHIFT) |
+ 			(3 << CS42L42_HSBIAS_CTL_SHIFT) |
+ 			(0 << CS42L42_PDN_MIC_LVL_DET_SHIFT));
  
-+static int cs42l42_slow_start_put(struct snd_kcontrol *kcontrol,
-+				  struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	u8 val;
-+
-+	/* all bits of SLOW_START_EN much change together */
-+	switch (ucontrol->value.integer.value[0]) {
-+	case 0:
-+		val = 0;
-+		break;
-+	case 1:
-+		val = CS42L42_SLOW_START_EN_MASK;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return snd_soc_component_update_bits(component, CS42L42_SLOW_START_ENABLE,
-+					     CS42L42_SLOW_START_EN_MASK, val);
-+}
-+
- static const char * const cs42l42_hpf_freq_text[] = {
- 	"1.86Hz", "120Hz", "235Hz", "466Hz"
- };
-@@ -431,7 +455,11 @@ static const struct snd_kcontrol_new cs42l42_snd_controls[] = {
- 				CS42L42_DAC_HPF_EN_SHIFT, true, false),
- 	SOC_DOUBLE_R_TLV("Mixer Volume", CS42L42_MIXER_CHA_VOL,
- 			 CS42L42_MIXER_CHB_VOL, CS42L42_MIXER_CH_VOL_SHIFT,
--				0x3f, 1, mixer_tlv)
-+				0x3f, 1, mixer_tlv),
-+
-+	SOC_SINGLE_EXT("Slow Start Switch", CS42L42_SLOW_START_ENABLE,
-+			CS42L42_SLOW_START_EN_SHIFT, true, false,
-+			snd_soc_get_volsw, cs42l42_slow_start_put),
- };
+@@ -1300,10 +1298,8 @@ static void cs42l42_process_hs_type_detect(struct cs42l42_private *cs42l42)
+ 		/* Make sure button detect and HS bias circuits are off */
+ 		regmap_update_bits(cs42l42->regmap,
+ 			CS42L42_MISC_DET_CTL,
+-			CS42L42_DETECT_MODE_MASK |
+ 			CS42L42_HSBIAS_CTL_MASK |
+ 			CS42L42_PDN_MIC_LVL_DET_MASK,
+-			(0 << CS42L42_DETECT_MODE_SHIFT) |
+ 			(1 << CS42L42_HSBIAS_CTL_SHIFT) |
+ 			(1 << CS42L42_PDN_MIC_LVL_DET_SHIFT));
+ 	}
+@@ -1351,10 +1347,8 @@ static void cs42l42_init_hs_type_detect(struct cs42l42_private *cs42l42)
+ 	/* Make sure button detect and HS bias circuits are off */
+ 	regmap_update_bits(cs42l42->regmap,
+ 				CS42L42_MISC_DET_CTL,
+-				CS42L42_DETECT_MODE_MASK |
+ 				CS42L42_HSBIAS_CTL_MASK |
+ 				CS42L42_PDN_MIC_LVL_DET_MASK,
+-				(0 << CS42L42_DETECT_MODE_SHIFT) |
+ 				(1 << CS42L42_HSBIAS_CTL_SHIFT) |
+ 				(1 << CS42L42_PDN_MIC_LVL_DET_SHIFT));
  
- static int cs42l42_hp_adc_ev(struct snd_soc_dapm_widget *w,
-diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
-index f45bcc9a3a62..c8b3267a318b 100644
---- a/sound/soc/codecs/cs42l42.h
-+++ b/sound/soc/codecs/cs42l42.h
-@@ -62,6 +62,9 @@
- #define CS42L42_INTERNAL_FS_MASK	(1 << CS42L42_INTERNAL_FS_SHIFT)
+@@ -1398,10 +1392,8 @@ static void cs42l42_init_hs_type_detect(struct cs42l42_private *cs42l42)
+ 	/* Power up HS bias to 2.7V */
+ 	regmap_update_bits(cs42l42->regmap,
+ 				CS42L42_MISC_DET_CTL,
+-				CS42L42_DETECT_MODE_MASK |
+ 				CS42L42_HSBIAS_CTL_MASK |
+ 				CS42L42_PDN_MIC_LVL_DET_MASK,
+-				(0 << CS42L42_DETECT_MODE_SHIFT) |
+ 				(3 << CS42L42_HSBIAS_CTL_SHIFT) |
+ 				(1 << CS42L42_PDN_MIC_LVL_DET_SHIFT));
  
- #define CS42L42_SFTRAMP_RATE		(CS42L42_PAGE_10 + 0x0A)
-+#define CS42L42_SLOW_START_ENABLE	(CS42L42_PAGE_10 + 0x0B)
-+#define CS42L42_SLOW_START_EN_MASK	GENMASK(6, 4)
-+#define CS42L42_SLOW_START_EN_SHIFT	4
- #define CS42L42_I2C_DEBOUNCE		(CS42L42_PAGE_10 + 0x0E)
- #define CS42L42_I2C_STRETCH		(CS42L42_PAGE_10 + 0x0F)
- #define CS42L42_I2C_TIMEOUT		(CS42L42_PAGE_10 + 0x10)
+@@ -1448,10 +1440,8 @@ static void cs42l42_cancel_hs_type_detect(struct cs42l42_private *cs42l42)
+ 	/* Ground HS bias */
+ 	regmap_update_bits(cs42l42->regmap,
+ 				CS42L42_MISC_DET_CTL,
+-				CS42L42_DETECT_MODE_MASK |
+ 				CS42L42_HSBIAS_CTL_MASK |
+ 				CS42L42_PDN_MIC_LVL_DET_MASK,
+-				(0 << CS42L42_DETECT_MODE_SHIFT) |
+ 				(1 << CS42L42_HSBIAS_CTL_SHIFT) |
+ 				(1 << CS42L42_PDN_MIC_LVL_DET_SHIFT));
+ 
+@@ -1829,6 +1819,9 @@ static void cs42l42_setup_hs_type_detect(struct cs42l42_private *cs42l42)
+ 
+ 	cs42l42->hs_type = CS42L42_PLUG_INVALID;
+ 
++	regmap_update_bits(cs42l42->regmap, CS42L42_MISC_DET_CTL,
++			   CS42L42_DETECT_MODE_MASK, 0);
++
+ 	/* Latch analog controls to VP power domain */
+ 	regmap_update_bits(cs42l42->regmap, CS42L42_MIC_DET_CTL1,
+ 			CS42L42_LATCH_TO_VP_MASK |
 -- 
 2.11.0
 
