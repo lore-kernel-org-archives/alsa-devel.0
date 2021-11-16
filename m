@@ -2,65 +2,65 @@ Return-Path: <SRS0=I3pN=QD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A51AC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 16:41:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 126F0C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 16:41:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F3C7461391
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 16:41:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org F3C7461391
+	by mail.kernel.org (Postfix) with ESMTPS id 9208260F22
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 16:41:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9208260F22
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4AA061820;
-	Tue, 16 Nov 2021 17:40:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4AA061820
+	by alsa0.perex.cz (Postfix) with ESMTPS id 751A31845;
+	Tue, 16 Nov 2021 17:40:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 751A31845
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637080880;
-	bh=wedYZ7Nxm5Qaepw3wdmqCDTjukW+ygqDG2/iWJwr94Q=;
+	s=default; t=1637080904;
+	bh=7BG8ioGpzOsfvtQPHPQRlnlpj1I8WuFez4UkaZMi1Ps=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=c65AgEjlTVPhBpzU4LR8H4tdKtZ7Ri5E1AkBXFWqEYNy7VPxRuWHTQra1C6JatsmD
-	 YEIgvi7qFXUNHpdHB2WMSAzEnDio2wNJ0DinFXYgbdrY+u692lvO1wXMG2MvIq3ALf
-	 1ETZMZ0GlFWJcnoM2KlomoC/dO2FX/84CFSWEERg=
+	b=UDbxL+OfgHTAkklEV7WmYCpmFvH08f7GQ6mouCCw+CxIhX8qoxOSxjm0AkAl9zhFc
+	 i4Uo9DcLusoZsu4moMEczdKf8VT2GZDOo36Gy8xx+iiOH21cqy0zg0EHftshubbhIN
+	 Zl3k48lGJaA0kuqlBquCf6jpO6xk+1eeH0OlwbnI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 682FCF804ED;
-	Tue, 16 Nov 2021 17:39:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 09970F804FA;
+	Tue, 16 Nov 2021 17:39:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 81541F804F1; Tue, 16 Nov 2021 17:39:21 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id B4CC9F804F2; Tue, 16 Nov 2021 17:39:21 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1EA1DF804C1
- for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2021 17:39:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1EA1DF804C1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 75818F8026D
+ for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2021 17:39:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75818F8026D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="AHvK0RhA"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AG7FCla005416;
+ header.b="mLlflyU5"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AG9thsn031145;
  Tue, 16 Nov 2021 10:39:07 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=ObYlyY35mrZ2j4brNyTBAcoYXoMTcTAqrHnnuwZZOKU=;
- b=AHvK0RhAGAqSax0zTEWuRnyAkSKo+dRW060v8hr7btsWmdqPDxrqgxYB3gJfKcpjqEPR
- b314lxmrEvDcC5d1TUAq/R/wUEAcRhXkrUM2q0plEFiCNFP785dM6AObidzGpJ2o0nXJ
- lsNscKO7dQSBJrG92ci6VUj0p5N6nbTVIdW8cH/ZfLztkEhtkn3yESjQrudPVfMX5I+Z
- 5nq9G+liTDFCYNaYrk4KBbx4GNKfK0CAQL5Oql1AWIglVOhk0/ezfV7ag9fbzwfoNZh+
- KVDvWXTs7jiW/3YZWcy+o83jkywkhr1eXgnmiPYnojC66ZKFSifrXG+wZvhDwxhlGR2X RQ== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3cbdjgt3vp-3
+ bh=LlLWUwoVTY7e/cT3Hvc6VuaHfWQ2FKZj8rcPcydDakw=;
+ b=mLlflyU5Wj9ZQnNcAtrMLmXEVfq8hUJUzxw7uYcSZKO/7mfEbHPy7AMbsyDJyYOQ8S2f
+ AAkE7oFrc+y13Tbuo6NZnsRUd4kEh7EgaUCUI0d0Hnznby80vi6/i8RHLAYnX02VL7Py
+ sNFG95GFJFMD4cCz6Rmgewkc+2NEidhdKHTrYTGkNKvyDfwAsYF/3ieym4ftXnUBrzpG
+ p91u7osbzt3zo3nXrvMH/QFW1FjB5IAtUE+GOQmpVwOAq4MiMWFBkq/+bP++Yx0xsVfE
+ AkKMK7zHLhurnA/P2Eq2635cXw09MH13zUz7oGMGKtVUAUYBbkSescAG8v8zsJoIxO8U kA== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3cbjn01y8t-2
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
  Tue, 16 Nov 2021 10:39:07 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Tue, 16 Nov
  2021 16:39:05 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
@@ -68,21 +68,21 @@ Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  Frontend Transport; Tue, 16 Nov 2021 16:39:05 +0000
 Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com
  [198.61.65.41])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 21A0E11DB;
- Tue, 16 Nov 2021 16:39:05 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D272315A4;
+ Tue, 16 Nov 2021 16:39:04 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH v2 4/4] ASoC: cs42l42: Remove redundant pll_divout member
-Date: Tue, 16 Nov 2021 16:39:01 +0000
-Message-ID: <20211116163901.45390-5-rf@opensource.cirrus.com>
+Subject: [PATCH v2 3/4] ASoC: cs42l42: Simplify reporting of jack unplug
+Date: Tue, 16 Nov 2021 16:39:00 +0000
+Message-ID: <20211116163901.45390-4-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211116163901.45390-1-rf@opensource.cirrus.com>
 References: <20211116163901.45390-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: FUqhdsuT0fNjiZSVSQqn-VeRb0A9BOmF
-X-Proofpoint-GUID: FUqhdsuT0fNjiZSVSQqn-VeRb0A9BOmF
+X-Proofpoint-GUID: FkYlUtjzA0bRxeMbEVqeIUnf4bR2U7rl
+X-Proofpoint-ORIG-GUID: FkYlUtjzA0bRxeMbEVqeIUnf4bR2U7rl
 X-Proofpoint-Spam-Reason: safe
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
  Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
@@ -101,60 +101,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Now that struct cs42l42_private has pll_config, the current PLL
-configuration can be looked up directly in pll_ratio_table. This
-makes the pll_divout member of cs42l42_private redundant since it
-was only a copy of the value from pll_ratio_table.
+When reporting a jack unplug there's no need to make the reported
+flags conditional on which flags were reported during the plug
+event. It's perfectly safe to report all flags and buttons as
+not-present and let the higher code filter for changes.
+
+There's also no need to make two separate snd_soc_jack_report()
+calls for presence flags and button flags. It can all be done in
+one report.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- sound/soc/codecs/cs42l42.c | 9 +++------
- sound/soc/codecs/cs42l42.h | 1 -
- 2 files changed, 3 insertions(+), 7 deletions(-)
+ sound/soc/codecs/cs42l42.c | 12 +-----------
+ 1 file changed, 1 insertion(+), 11 deletions(-)
 
 diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 8efcee3e60d3..0c4303547fd8 100644
+index 3674f73301dc..8efcee3e60d3 100644
 --- a/sound/soc/codecs/cs42l42.c
 +++ b/sound/soc/codecs/cs42l42.c
-@@ -734,10 +734,6 @@ static int cs42l42_pll_config(struct snd_soc_component *component)
- 					CS42L42_PLL_DIVOUT_MASK,
- 					(pll_ratio_table[i].pll_divout * pll_ratio_table[i].n)
- 					<< CS42L42_PLL_DIVOUT_SHIFT);
--				if (pll_ratio_table[i].n != 1)
--					cs42l42->pll_divout = pll_ratio_table[i].pll_divout;
--				else
--					cs42l42->pll_divout = 0;
- 				snd_soc_component_update_bits(component,
- 					CS42L42_PLL_CAL_RATIO,
- 					CS42L42_PLL_CAL_RATIO_MASK,
-@@ -1004,12 +1000,13 @@ static int cs42l42_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
- 				snd_soc_component_update_bits(component, CS42L42_PLL_CTL1,
- 							      CS42L42_PLL_START_MASK, 1);
+@@ -1657,18 +1657,8 @@ static irqreturn_t cs42l42_irq_thread(int irq, void *data)
+ 				cs42l42->plug_state = CS42L42_TS_UNPLUG;
+ 				cs42l42_cancel_hs_type_detect(cs42l42);
  
--				if (cs42l42->pll_divout) {
-+				if (pll_ratio_table[cs42l42->pll_config].n > 1) {
- 					usleep_range(CS42L42_PLL_DIVOUT_TIME_US,
- 						     CS42L42_PLL_DIVOUT_TIME_US * 2);
-+					regval = pll_ratio_table[cs42l42->pll_config].pll_divout;
- 					snd_soc_component_update_bits(component, CS42L42_PLL_CTL3,
- 								      CS42L42_PLL_DIVOUT_MASK,
--								      cs42l42->pll_divout <<
-+								      regval <<
- 								      CS42L42_PLL_DIVOUT_SHIFT);
- 				}
+-				switch (cs42l42->hs_type) {
+-				case CS42L42_PLUG_CTIA:
+-				case CS42L42_PLUG_OMTP:
+-					snd_soc_jack_report(cs42l42->jack, 0, SND_JACK_HEADSET);
+-					break;
+-				case CS42L42_PLUG_HEADPHONE:
+-					snd_soc_jack_report(cs42l42->jack, 0, SND_JACK_HEADPHONE);
+-					break;
+-				default:
+-					break;
+-				}
+ 				snd_soc_jack_report(cs42l42->jack, 0,
++						    SND_JACK_HEADSET |
+ 						    SND_JACK_BTN_0 | SND_JACK_BTN_1 |
+ 						    SND_JACK_BTN_2 | SND_JACK_BTN_3);
  
-diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
-index c8b3267a318b..75ade987d0db 100644
---- a/sound/soc/codecs/cs42l42.h
-+++ b/sound/soc/codecs/cs42l42.h
-@@ -845,7 +845,6 @@ struct  cs42l42_private {
- 	int bclk;
- 	u32 sclk;
- 	u32 srate;
--	u8 pll_divout;
- 	u8 plug_state;
- 	u8 hs_type;
- 	u8 ts_inv;
 -- 
 2.11.0
 
