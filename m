@@ -2,90 +2,91 @@ Return-Path: <SRS0=I3pN=QD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B6FE3C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 16:30:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE52DC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 16:31:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4185461266
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 16:30:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4185461266
+	by mail.kernel.org (Postfix) with ESMTPS id 720346108D
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 16:31:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 720346108D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A3C0817BC;
-	Tue, 16 Nov 2021 17:30:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3C0817BC
+	by alsa0.perex.cz (Postfix) with ESMTPS id D37DC17CF;
+	Tue, 16 Nov 2021 17:30:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D37DC17CF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637080256;
-	bh=7BG8ioGpzOsfvtQPHPQRlnlpj1I8WuFez4UkaZMi1Ps=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1637080285;
+	bh=2bZCjn3IeDy4snUzjHGzaHh04rK2qpJ3SDMZ/6EL3wI=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lWhjgt8vF+3TVWOiCBpzWoG07Q86WiG6h7hFenD2xl5yi7Qk20cjr9UGzlC1A4V3b
-	 lNVnHzEAds1VHcCEYUhf6iy0V9qBVv33b5him0q5UBBYg9lCKU8OGuiHFNr0zF7vn2
-	 FMguoDBD/GeSmcLfaoJi/KFQ0EBVGzrhcT0w/DLU=
+	b=YaI7AdnHEtxtoMkk9ZYjZ5/2MuwrB+LbvSJPjFh+WDsfHxzF1U7yw/aImGykEBJJq
+	 k+vrwgNCKBqbSTBLFX+4x/IOc1H9eRS5jIeOig46Cy0oCpEEo/w3meJXUUhpZqlpe3
+	 XIbcSe6GdS8zsJ2vg4Fb3vK/SyUXsuxObU7ThNvo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5387FF8051F;
-	Tue, 16 Nov 2021 17:27:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A7359F80423;
+	Tue, 16 Nov 2021 17:29:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 63C4BF80515; Tue, 16 Nov 2021 17:27:17 +0100 (CET)
+ id 4C8EEF80423; Tue, 16 Nov 2021 17:29:17 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 03F22F8026D
- for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2021 17:27:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03F22F8026D
+ by alsa1.perex.cz (Postfix) with ESMTPS id C0E5BF80134
+ for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2021 17:29:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0E5BF80134
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="C4Pt06el"
+ header.b="Ndmm5Ycz"
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AG7FCkh005416;
- Tue, 16 Nov 2021 10:27:00 -0600
+ by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AG4SSx1022254;
+ Tue, 16 Nov 2021 10:29:13 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=LlLWUwoVTY7e/cT3Hvc6VuaHfWQ2FKZj8rcPcydDakw=;
- b=C4Pt06elqVXiymxgxJtcxKw2AvSvxo00U9Ziu8l3wFn36YWgpdfiAaOWvhNvtI7dGOrt
- RXqVEIuTCxjytA63L1/+qpsYVWCvPCgmssi5cAxSpGdr6msTY0BRPhGyYfjCzwtpZXsX
- yD59m6S/2cnyS2/SVdUwPrmtysFFqxVpGqf3dDGNZeLXh/Tl5CE+LiJf9wS3wFpxy8sy
- G7tLwAIPFXQ4pmGHBAPc3bcMKHTuBjIi3DZokUrQO2eKSQpRKxwnJebBvUfEXC5pWC+j
- a74w9TFxrqkDgM+DN2ak9rMsPrLh9CtLCBekDv+S2SDagH0WP6mU/euz5ez4DYEOUH79 +A== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3cbdjgt3be-5
+ h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=PODMain02222019;
+ bh=hCa5aNmSupBd70sCNM3jwyNpevNiQT5zW8SgZNKS7Ac=;
+ b=Ndmm5Ycz9QQ44Y5ueNNSycXvujsQ41s5NP0NY4qynHZVldZ9znRdVPpqq9ZHVAMZbP2i
+ h9GZu0w68YUyEBT/4nvrdm5NkN0H8B67upTx28BnNKAR8r+Dafg22EDjHYOyAtks6y4y
+ aKnL89W5Z7vBw+AO8xfjJOY2OW/JWMyJx/3KKXRxwY77H3FNE7eFvqh6NbG/pCvorNFi
+ 21ME7NHMYg9Xa7x7KrlUGlU1Lrlt1m6DNtKh0tkq4VcIfibp2rGAtCDXPwN7QkJQ3tXe
+ TvDybrCwEo598BobzeEBH1kuIYZQCIb7WMb4kSFFWkP8R/32164ikb/jJD/SOPmZ/rDR tw== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3cbdjgt3ej-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Tue, 16 Nov 2021 10:27:00 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ Tue, 16 Nov 2021 10:29:13 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Tue, 16 Nov
- 2021 16:26:57 +0000
+ 2021 16:29:11 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.17 via
- Frontend Transport; Tue, 16 Nov 2021 16:26:57 +0000
-Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com
- [198.61.65.41])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 8E75515A4;
- Tue, 16 Nov 2021 16:26:57 +0000 (UTC)
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
+ Frontend Transport; Tue, 16 Nov 2021 16:29:11 +0000
+Received: from [10.0.2.15] (AUSNPC0LSNW1.ad.cirrus.com [198.61.65.41])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 1EB0411DB;
+ Tue, 16 Nov 2021 16:29:11 +0000 (UTC)
+Subject: Re: [PATCH 0/4] ASoC: cs42l42: Remove redundant code
 To: <broonie@kernel.org>
-Subject: [PATCH 3/4] ASoC: cs42l42: Simplify reporting of jack unplug
-Date: Tue, 16 Nov 2021 16:26:50 +0000
-Message-ID: <20211116162652.45225-7-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211116162652.45225-1-rf@opensource.cirrus.com>
 References: <20211116162652.45225-1-rf@opensource.cirrus.com>
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+Message-ID: <3cd0991b-a396-e885-d324-808e5c5d76c3@opensource.cirrus.com>
+Date: Tue, 16 Nov 2021 16:29:10 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: ldTt1l8IBxKLc0kQp5UwjXoJnEgFCte0
-X-Proofpoint-GUID: ldTt1l8IBxKLc0kQp5UwjXoJnEgFCte0
+In-Reply-To: <20211116162652.45225-1-rf@opensource.cirrus.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-ORIG-GUID: OTEESrYZwGo5on_RuiGEDqNY6OESvZI0
+X-Proofpoint-GUID: OTEESrYZwGo5on_RuiGEDqNY6OESvZI0
 X-Proofpoint-Spam-Reason: safe
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,44 +102,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When reporting a jack unplug there's no need to make the reported
-flags conditional on which flags were reported during the plug
-event. It's perfectly safe to report all flags and buttons as
-not-present and let the higher code filter for changes.
+Sorry, ignore this chain. Some old patches have risen from the dead
+and attached themselves to this.
 
-There's also no need to make two separate snd_soc_jack_report()
-calls for presence flags and button flags. It can all be done in
-one report.
+Will re-send.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- sound/soc/codecs/cs42l42.c | 12 +-----------
- 1 file changed, 1 insertion(+), 11 deletions(-)
-
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 3674f73301dc..8efcee3e60d3 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -1657,18 +1657,8 @@ static irqreturn_t cs42l42_irq_thread(int irq, void *data)
- 				cs42l42->plug_state = CS42L42_TS_UNPLUG;
- 				cs42l42_cancel_hs_type_detect(cs42l42);
- 
--				switch (cs42l42->hs_type) {
--				case CS42L42_PLUG_CTIA:
--				case CS42L42_PLUG_OMTP:
--					snd_soc_jack_report(cs42l42->jack, 0, SND_JACK_HEADSET);
--					break;
--				case CS42L42_PLUG_HEADPHONE:
--					snd_soc_jack_report(cs42l42->jack, 0, SND_JACK_HEADPHONE);
--					break;
--				default:
--					break;
--				}
- 				snd_soc_jack_report(cs42l42->jack, 0,
-+						    SND_JACK_HEADSET |
- 						    SND_JACK_BTN_0 | SND_JACK_BTN_1 |
- 						    SND_JACK_BTN_2 | SND_JACK_BTN_3);
- 
--- 
-2.11.0
-
+On 16/11/2021 16:26, Richard Fitzgerald wrote:
+> - Remove field writes in regmap_update_bits() calls where the code
+>    intends that the field value is not changed.
+> 
+> - Remove unnecessary complexity from reporting jack unplug event
+> 
+> - Remove a PLL config value member that was introduced in a bugfix
+>    but made redundant by a later bugfix.
+> 
+> Richard Fitzgerald (4):
+>    ASoC: cs42l42: Remove redundant writes to DETECT_MODE
+>    ASoC: cs42l42: Remove redundant writes to RS_PLUG/RS_UNPLUG masks
+>    ASoC: cs42l42: Simplify reporting of jack unplug
+>    ASoC: cs42l42: Remove redundant pll_divout member
+> 
+>   sound/soc/codecs/cs42l42.c | 42 +++++++-----------------------------------
+>   sound/soc/codecs/cs42l42.h |  1 -
+>   2 files changed, 7 insertions(+), 36 deletions(-)
+> 
