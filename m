@@ -2,78 +2,78 @@ Return-Path: <SRS0=I3pN=QD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 033E7C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 15:49:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ADC9DC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 15:49:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 815D46128A
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 15:49:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 815D46128A
+	by mail.kernel.org (Postfix) with ESMTPS id 2D5C461414
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 15:49:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2D5C461414
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oss.nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DB3D01681;
-	Tue, 16 Nov 2021 16:48:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB3D01681
+	by alsa0.perex.cz (Postfix) with ESMTPS id 43657167B;
+	Tue, 16 Nov 2021 16:48:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 43657167B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637077753;
-	bh=gDXsePIINijFcRBl0JUvbKmwenpAxv3E2uwk50Gvf3E=;
+	s=default; t=1637077770;
+	bh=U+YDMrWv2nPAtY92X8bOgFaHsfN3pxLIqWIJxr6gwik=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=edUH0sf0VszDNqA16SHZrJuhB4VoN9IMcLOEZA+gS9f6whrprQhcx4NgZOyqxiwwE
-	 YJdsGwF3lN5+fOssrbdjaEfSnC2+obelSOpNUcuDCyri6nkC60wVky3MWnKsn1eA+H
-	 X5N1i8PLQc3ohnVE2LJKCcBkowvLwcOQj76AjK90=
+	b=DuT5udYtr62MTLNoG7WurElzU+XKSemIWljHm2Mmj7dVfAowEYg3XZUzz8cCWw2h4
+	 ELSZQqRZ/GVXXf9f+fkOv9Vp7gvtOXE1/26EIKo1tCU9KVJiHLXNF1+uHd3DVzPiJr
+	 dyAOQkSFOiKRGg7t+O3S5opI3/PeQjHINWcPCu3c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2BD32F804FA;
-	Tue, 16 Nov 2021 16:46:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 652A3F804FE;
+	Tue, 16 Nov 2021 16:46:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0ED90F804E7; Tue, 16 Nov 2021 16:46:47 +0100 (CET)
+ id 4B16CF80423; Tue, 16 Nov 2021 16:46:47 +0100 (CET)
 Received: from EUR04-DB3-obe.outbound.protection.outlook.com
  (mail-eopbgr60073.outbound.protection.outlook.com [40.107.6.73])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1852DF8026D
- for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2021 16:46:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1852DF8026D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8F0CDF80272
+ for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2021 16:46:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F0CDF80272
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com
- header.i=@NXP1.onmicrosoft.com header.b="J4xcqoTf"
+ header.i=@NXP1.onmicrosoft.com header.b="PbluOLEZ"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XcSw3anQNSQxXpPkt/RINmWOaULLaUPhpnXpAK2B5d3iCDFdClMA27dfDIwebZ+gpzadQdzMUi05yyQmofYqB4STpce94qo4luwJFxxbWamhGCiuEzqr+Kwdy6dANX2cnVQPvD45UvyOWylfEd+N7lLbARKIyTgV7y9o4Avv3RwQz3q8AZ3ybizLs2zsGyIJpeLtxELBIeicl9jHvSoSHrsbQtU7XTvgoikbyOaIDYNlyO0B5yv7+ynncY3KaghQ565Gmcpw18kF0PVNneTquwQAkjd1PllYw2Rnz9oSmT9wHpYWvjaAQG/voU1E8YS2aIP4l7WKZPnKFs204KgKxg==
+ b=DY4FDsCojCzDq2yTdzxjW4IgUw/sivQAIQMGnRpVv9fSAWC0v1F/s7NYY0lAkcQ2WSgzoE7xMzeaj8ifWx2gC364QcZOk4kpC8Zwz57uQHIyR9RSAh4bTYMH9aygqPylheMIEAkfSnGIkkO1jes6XWkTdE+RAbcrPyQ1wK9zkAc44iD5Z6ryIJrb+x9f0TnvFhrfYD6WYT/+7SbRO/odhwnL1mlmhLAx8XIpvhvNZ10or0XeAzftHhNl5HwGyv6qO2UFoKnxG7HwVKNcjP6vNB3dzcdBempgYrdf0tebugbdqxQMOH8wQXXglD+v3FogAP3Fdnhis5VD9gbeT0hAlg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cf3aF4hGrNpyw/4Xn2+HETnOhQMqs0Pa78OKvZGJSvs=;
- b=mf+aawfy52ygXsofuW537SVdz/4M2V/+2T52HzJpvo+SgVR2OwqVXQu0Q85HeFBu9RXszOcMTwnLhp/DDJBOLbftCkawmwsDuKOshqARfQmW034cU7PjBjjAmBYsDbBjVvoXczMkwrV2aqmFftlk7eEYc907POMZhwn6ymqbqBEqV4fgU/DXgLta92C2V8LNuAztm3Oakp86Elbos+jXJnPRMTcxUnhbqxKkhezoOdN6gBjJB0m6AH1bU6eb3IbkM0CLxDn9MVoYgOV00EkcLS3IVksEJXp6kLIF4G+bLAIAx0Ax9bErGCHrl8S02SytEJTVMX5lf7lKjQpoZuj78w==
+ bh=Qz9Gz2/8OmZFv6S4YKXp8+Zh0ek8cssRpE6TIWGU6Co=;
+ b=kPXqAjP8mMX+fLi2jHAUN14R8L+i7CpqXwwYfuXvwspTiP9mQYwkzDx63yuqL30tO+FkbFriv/wUfOlvA4JMr6SLETgd1L+PK+cMHpUNwVsQofjIIBGVnenDvH2JY+9jTkNNjOZwjExKfUFa1S9heTc683l0l2D2/GIxoCTeXq0xJZ48KRSqTJhEzvl3rDcwJlkKT9T8QHs5Tejlzm0Gvhb89KNn6bd6IZP6BRCsYwCxZpmgyJpCtIvjP+jw2WziWpIE7KMEDEn58dzajWWE1l5IqzU5NXMTktWagOCkM7hgy9S4m22yX5n6tVEo2qZI65ZihzwqksU4S9jFtkzEyQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
  dkim=pass header.d=oss.nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com; 
  s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cf3aF4hGrNpyw/4Xn2+HETnOhQMqs0Pa78OKvZGJSvs=;
- b=J4xcqoTfRqCthmKjc2FPjkoXo0RVmxcT0h3e8nM28IBk00Ty7GCKDr4XxzuW8vs8cy5fzkwgQGADZ+TEOFbaJqbr8VNVgr0ZicSnS8VgccAx9H86DfKdvZaJngQ66BfXPkulhAMcyI8elQTzfMAqJNsiZrgBwlIhF5PmsldYhFM=
+ bh=Qz9Gz2/8OmZFv6S4YKXp8+Zh0ek8cssRpE6TIWGU6Co=;
+ b=PbluOLEZE9aYneUHgz2DR5q5wnJHyOgRDvn2ReZjZWFF+mH/6nL81b00v4Y73q1aaK7C8uncPFb0bEbAuImk4JlKcmGFHWqD3fJd1RsOM6PdpkhF896v9yPsBHCz27Lr11q3lLzV+0nryw9ZgYFWBi/VVMH4nGymqNv4QBPg+5s=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=oss.nxp.com;
 Received: from VI1PR04MB5151.eurprd04.prod.outlook.com (2603:10a6:803:61::28)
  by VI1PR0402MB3824.eurprd04.prod.outlook.com (2603:10a6:803:22::18)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.16; Tue, 16 Nov
- 2021 15:46:34 +0000
+ 2021 15:46:37 +0000
 Received: from VI1PR04MB5151.eurprd04.prod.outlook.com
  ([fe80::85af:f8be:aa99:ba5f]) by VI1PR04MB5151.eurprd04.prod.outlook.com
  ([fe80::85af:f8be:aa99:ba5f%3]) with mapi id 15.20.4690.027; Tue, 16 Nov 2021
- 15:46:34 +0000
+ 15:46:37 +0000
 From: Daniel Baluta <daniel.baluta@oss.nxp.com>
 To: broonie@kernel.org,
 	alsa-devel@alsa-project.org
-Subject: [PATCH 3/5] ASoC: SOF: imx8m: Add runtime PM / System PM support
-Date: Tue, 16 Nov 2021 17:46:11 +0200
-Message-Id: <20211116154613.57122-4-daniel.baluta@oss.nxp.com>
+Subject: [PATCH 5/5] ASoC: SOF: imx8m: Implement reset callback
+Date: Tue, 16 Nov 2021 17:46:13 +0200
+Message-Id: <20211116154613.57122-6-daniel.baluta@oss.nxp.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20211116154613.57122-1-daniel.baluta@oss.nxp.com>
 References: <20211116154613.57122-1-daniel.baluta@oss.nxp.com>
@@ -88,60 +88,60 @@ Received: from localhost.localdomain (2a02:2f08:5706:b700:1e69:ee6:2dad:c9e7)
  by AM0PR06CA0076.eurprd06.prod.outlook.com (2603:10a6:208:fa::17) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.16 via Frontend
- Transport; Tue, 16 Nov 2021 15:46:33 +0000
+ Transport; Tue, 16 Nov 2021 15:46:35 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 66ec6055-ac40-48c7-868f-08d9a9184468
+X-MS-Office365-Filtering-Correlation-Id: 2abf873a-1ad6-49be-53b3-08d9a9184607
 X-MS-TrafficTypeDiagnostic: VI1PR0402MB3824:
 X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-Microsoft-Antispam-PRVS: <VI1PR0402MB38247430FCE8AA6477406019B8999@VI1PR0402MB3824.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-Microsoft-Antispam-PRVS: <VI1PR0402MB3824B17D06A6D3216845EA42B8999@VI1PR0402MB3824.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: z80Ml5TjsYjrOWR9pLDdVGDNTZ3CQxnoc3po2ZxCM1Xg80RGJcALF2uVU7Csn01PuVNHtA51D6iTTzB7efisRLehj2/tAPYJzeXkr6orUEdEWA5u3ObJDM5hoHMJURGTCiHbuXcQLCqW09kjbQx5aMyQULcInl5YC0LQP6uDkpo+WeEFpCqyULnHIKkC7zuSySU71sLIVXuyKND9khj+RnvdQoPgm+MUTWVarZeLClEg7BOCZxDD4ngNCES9mhYKDylLGcwqRF0eK+VKwVqqTCwfdtumX5QAhjmc5EXcpG4w1XHpKTGdJY2DnYJjB384uWyzTNBV3VDL73gZsb2hF6fOBChAgMxqhUP04bX32JPiML03ODXffBOxUdlJqpaJvsmbVs0N7pZEGWjPPMAF3DpIeJK0Q93SZgJ0DT7vBhBvI3nnTw3evoarOLlOUEwc0XkorOFBmMkl9T8Cn485FCrU9XVSTA7jGgr7afbMI/SZ7f+RX5kQVUeOeTygckSqmpHEt4nJ0YuhSouARqH/Arne++plYylCdvwC4ixHJYal3XOixx3ydspFomIFDft0menAe7l/3ubiVnsrgSVwcl4TGaltI+FfSHQaINPfdpt2GuZqhunKK6Oh1zQ+iSOMmt0LsNFFEj+s79kenX1r0ba2xYjvnbMAx5NjizoXymTlexzFSzJRPS4RceB69kdBML7kzRTNfewkwSPv0XoBFg==
+X-Microsoft-Antispam-Message-Info: UPgOLziK+tt8HfjARL64siGHCKK/cIKlsBI6yfBR3qLHe2UIJF+GU3EmIDE9rJjLTNWCh5nO1Xb789NsWZ/tRFcCUd8QU93BA83VSKBUSosYrKcxIXYsgE9oQQ7VE2QTTToZYrccguJmK04m060l59A7K+KxtbAlMOeTmI5cnaKOnTtqV84ryIKNqq5cc+8ios6BWL3eD1Zt2Ij5jIQmiMb0l8WsgxlLUc0Cy45Mj4CT5k1sHyrXwvcbpvJ8/aIySNVFw2XfptP+Lc+Y83QLI1eMOZe2VbiAFPhynh/xoJlHWE8agwo1mATXC+n3e1Uqwg+A5+3M5V/EnPWXBfMznFlgDvIbJ1J+EosBb96wnaRFOrpim7Hbt0LbvZjX/ljPu1wJ1OadMBfoAggKNz4ajmiDykEQm9cBzqXkxaLaeB5iaN/GZSOGUEt0tgbTHdZ8blwGqeR+UFsYzjflO/o+n2+86tkATyW0hYYVWde68O/LFXzvhsF5Vzz/dFrfhRvUoYtgJUQzjYi3XupnAUKCcFKLPH4lyIDOw6b5P+82rxXECKhFWIaKuvbWMi9gISfBtXyOOxe+7BS9INA74j0MR/hdA0gjTMIJBKumaf5i0DRd1O+Fk8i5DfIj4n1TRVjlAIv+/6pYD1IgXv46UZCumE/ZP/Yr/oE3pXmsPViD8M8kh1K5LZrOOXKp1C160fpdC/Oq/SB/lKkiGFbUnfJj6Q==
 X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:VI1PR04MB5151.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
  SFS:(4636009)(366004)(6486002)(186003)(5660300002)(1076003)(8936002)(38100700002)(66946007)(66556008)(66476007)(7416002)(86362001)(44832011)(6506007)(316002)(2906002)(83380400001)(6512007)(6666004)(4326008)(508600001)(8676002)(2616005)(52116002)(32563001);
  DIR:OUT; SFP:1101; 
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FMVREtEtNmTAzP9qZ/POTzg4HKpefBhaVum5AGtz7CU00ey/yf2yz5+sXoBZ?=
- =?us-ascii?Q?j3qtMpMep8BjGc9eRsf/+s8sRCbXsh/zmzX8duUilOh+lQJN9HchMSS09/n6?=
- =?us-ascii?Q?25nXFj6pDFeM7wtr2QeGF5pvnZVXai0t9f911RvqaL3RZ+vPBcnNtWcJen6k?=
- =?us-ascii?Q?nqgzzpTe1dUi6Aw0voUDTwH7b698F4AAd6C2Jg7cVc6pAeYp+VW4ZBh3NhDU?=
- =?us-ascii?Q?mSXtAe1HZnxSFncJVrVcRjImD3HFH8dQiTk1DkDY9x2AR0TnczsQDqDrVWN7?=
- =?us-ascii?Q?0m/y0gYfEJBFOlfuXrs08b/6bvG4zKzKqlO9U794gEEI07YFd9hn/FK8wq+u?=
- =?us-ascii?Q?osayppqjjwQbKOFlv4PIERUFuQZ9FCoZi/TmZ8dgAqAKijm7nW9w0jNexJgx?=
- =?us-ascii?Q?ecpmpWYGDlINhp0lb4qzn45J2VEpH5o/wjtf316Vbl+yD0VCj5UU7/UIrX9N?=
- =?us-ascii?Q?+nfywpDyGvyh27dL5xv4LxQo5Zd/wIO4b7tWx74oUAln9hNgJYn98AjCHCYm?=
- =?us-ascii?Q?SpCIbHAPiZIq044wYuAf0e/4KDcGtLlJN5bgyBF6eTFPRDa94u7OZrFCXnFj?=
- =?us-ascii?Q?qZ9Sua2GiLmjGIs8WLH9VCHS1aIPKYn1A92oBHd+m/Z+BWwEAYw2jRxOwFtw?=
- =?us-ascii?Q?+Hsmr8gtzkJUeUARa4JnJx/AWk63yDYipM+R8nM/1ZOnGTA6FpsuFMoG+z/6?=
- =?us-ascii?Q?63cXFbqjTzD+1UveoG1tmCZVUkKVgObaFeH+voORBssPkq9qmdk6dfHyDvev?=
- =?us-ascii?Q?l5CVLSNWheqrJkIueHIZyiIBUAKnoYVhTrpQOG091eLnJGedhWHSLOZ190uC?=
- =?us-ascii?Q?Q/kKb13b1ng/9wOV8c8VtGHyj5mb9+XYuq85H52PFIKBSF+4cltnpQcnqXTg?=
- =?us-ascii?Q?6VlvuJu73/SYg9Q6c6lZ0p3n96VJGK9/GkcezvnUPkshYfVTie9xRKM5kZ0M?=
- =?us-ascii?Q?ileZwFjnvV/3YK4cMVPKTmI58CY08R9C0V/ULrBnnxoakEPUo9s+SA64Mj3u?=
- =?us-ascii?Q?E4MmTgMD9NBga/kvnFmQujGDZrb2p8Fxa+mqTJ2z/simE/KS3F+t4z73nvKR?=
- =?us-ascii?Q?VqbDN15Kz4JEQ2Z1EeGSkufTyyTnsk5js+2NRqxhY5DKinhjf9J84YjktSsQ?=
- =?us-ascii?Q?dUHwZMMVMj/p0Mpx8qcx9tcGXUWKVvHzzJQSAfS8K5LiK1lQUG6B/2AE/TCw?=
- =?us-ascii?Q?SVa5rLEvHHVDSQJf7+XaWMbAJ8Hn5/ZIDEJzucZyAahi6nHDZwEUUsVpxMq/?=
- =?us-ascii?Q?UPLVylpGOurtnS77Wp37sH1juLzUOC2TDvPj6G/xnvRW/Pipv1hN7L/eVC8J?=
- =?us-ascii?Q?JqLLjUhzAKg5a1JdIxMRGQhw2FN1J7YMV727gxVRODuYSKXGtFjm1o3FXLQU?=
- =?us-ascii?Q?6i8eDraVUlAXY/9+n9CmUd3U+LwnN/fjoz6W2G0i0ypbzhVsjVdKaFRxihju?=
- =?us-ascii?Q?uumNwaDBiVRXsdjqpbguuMUz5IaJgRzvYvNvHJdBdcDs2AaZvwsD2Six0qQ2?=
- =?us-ascii?Q?wrG41UASteRip/rrNURtdkWY/T6BQWaeFuc36A6xSyLTOHgPW/54PjJQRbfZ?=
- =?us-ascii?Q?+TJS5G0JDmf4YT0XeMxi2jgN3ktsQbPuQTnL+jecen3hKwR2HGFH/QFj2+gG?=
- =?us-ascii?Q?a3TTZJkw0mLYGtgvautH6gkc5W8/G+ikir/pKnONz1IXEgfW15DfAABrFulT?=
- =?us-ascii?Q?0RcTnJiCfy/pMdC7HWSAfPiJVvg=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?QniOc87ci9WfhnKn4yys0TNohCV+0seJjWkqzq6qDqw0jBkOJOtkwWgAy8sg?=
+ =?us-ascii?Q?w/vevb/ANQVOPPUPEQ36D0QNT2V7vKdLujZcsLNrjlCQ2mSZkjH3H6RbuQBL?=
+ =?us-ascii?Q?bd+aTrDonua5I4kkjYKaThXoJpXBaTaEWW/UFujGc2G3ESULDQSLdmaflR+M?=
+ =?us-ascii?Q?TXRAEVKgoIyL6Zt3DOdCxnsqBXSFPMFJ95/0RRxd58MpphvLNXkpdjZeslef?=
+ =?us-ascii?Q?JuurHBkMP0KO/ypPaH3Z5VPF/R1qwtPoisR1Vw1ZsrG1qbcz1Hb9agvc46jQ?=
+ =?us-ascii?Q?ba0+HwBxaWAHmJ5pUp+L4kqD3z4zrKQQnFnUTT0UY9H6wh9fItQIG35FIYuU?=
+ =?us-ascii?Q?9/M0vLobcyFl8xFbRfKY/vNP11GnGKSaPIr4XH/mNQOfA31LNpfbVbEH3LRQ?=
+ =?us-ascii?Q?VL4I/rbhYF1DKHmQr0Dk1gW0QEMB2h8pqGfyo03JeM9mOvoMekgrYhdGEnM4?=
+ =?us-ascii?Q?FuqoJ3o7c0koh+FUtLx8RXCfhkrtmkgrB+4l7G+7G2/WI9iX7JEvdirba0sC?=
+ =?us-ascii?Q?tiQQRizVMWdTm3Rhq7AVuVBn6uNP+HqZqsKuQSPrHtptoWR0r9LZwyIpGTBO?=
+ =?us-ascii?Q?FM1OtPcRQis7EgwPHEyOzv37FgdILg6ULIKQaWgbr6OwlV4pqK5DbUBYXbeM?=
+ =?us-ascii?Q?K30UlqvgDKTByXX4PcJdDdqW4evYI5U9jy7MkdXHvyUzxFDb7OgPiP7TepPb?=
+ =?us-ascii?Q?yE7Wxca0DwMdWlZ7UKxCg+INJw2pB7TQd8f9Z+jjGL5ZM4rWWPxIgcDrnpSh?=
+ =?us-ascii?Q?dz9mgI6JA+k/axXtR6QFhwnguqJfRZG786TqnK6slQMcpaiQWKX3E+txKeS3?=
+ =?us-ascii?Q?Ipu5GKQxxIBIeR7+h440hCENzCZTiviFWfslFY2GZ64ydeXK0fMrqPW7+nfP?=
+ =?us-ascii?Q?qDAsT5mNjkjR0cqkaEl0OKRsHyNEpXoFIC6xKXeUxGyeH3SiureFbgjNUkJt?=
+ =?us-ascii?Q?+W3DPDh6kpIUFxhJHD00irfXHKUMy+YfU5tDLQlzC/XDZjrWi0Fz2BaR8xfK?=
+ =?us-ascii?Q?ZD69gzmwfqyn8yQ+Ay4rUI0QyphW9Rtl8HT4w2oracAdvaXq0OLSi1XMhgRy?=
+ =?us-ascii?Q?cMGldVxzyvn40jqM8gOy23YeK+FcjfxO07fEsTjAo4rJUOlg0pVNBbGuNsuJ?=
+ =?us-ascii?Q?2GZCVihFKfni3+bXgUs/1/eTJ6U/49SQE5NPUJH4TOHmq+KuYMPInhyAew6Y?=
+ =?us-ascii?Q?90STVyU0K+R37iRJ2SdY4AH9u/I3TDQBJDFG8U8pDnxN0S7wBeWSoYI+h0xR?=
+ =?us-ascii?Q?5VJYde3jK/+I7fgnZJ3OFPW4w80JwDt5LB26lLDAluGtRYp0KiZ+il2I9+Az?=
+ =?us-ascii?Q?je8yM4s4RdaxZDDtFRk5FfBd0urHyZZwcVCN5Km4UfOCfnEoxdxSZ9+OM5Q1?=
+ =?us-ascii?Q?/w94V1UMeLc3hHWNRwemoKKXZ6PILJtyI22vyMrftRmrwjH+1awG8lCOBao7?=
+ =?us-ascii?Q?5FP9NO6mtEC1C7OpI56ntGLFqMMt9mUbuxg4P+af4PSBEvDo2HS2PKfUadeW?=
+ =?us-ascii?Q?WtFKyaUs6UB9Fz51FroXfacKMzfs5alMMoRC90RtO3nflkggcsBu8C/n9mMS?=
+ =?us-ascii?Q?1OiFdmiRhFKej8rNcwH9hOMI9XJl+rlynWcWD/BDdgcn895E9QHTRG4fXPE5?=
+ =?us-ascii?Q?QzNPXZlMpaumPr1oohahAQ6Ozpp6RxSosd3lkhWc1oRQfNEmVfE6sV1wc/wG?=
+ =?us-ascii?Q?yHZDb+WWF0oQ2wfmA/S9JDqnBlw=3D?=
 X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 66ec6055-ac40-48c7-868f-08d9a9184468
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2abf873a-1ad6-49be-53b3-08d9a9184607
 X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5151.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2021 15:46:34.3534 (UTC)
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2021 15:46:37.0279 (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HrR96o/yDycpv/nucS8cR6zFyZn0cOYH8bbkNnMCr6t8JtrgSmSJjupFbLYl1EWbkWDaJbnaHQmATeEiMpp2kQ==
+X-MS-Exchange-CrossTenant-UserPrincipalName: k6OPgYmO3iR3947da2hOLPgXpAxxx9HVWboTceHWp7Ie3hzNTwZC1eBtyTQdYb+8eSCSaB+sqMUEE3WnfG2hTw==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3824
 Cc: Daniel Baluta <daniel.baluta@nxp.com>,
  guennadi.liakhovetski@linux.intel.com, daniel.baluta@gmail.com,
@@ -166,175 +166,118 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Daniel Baluta <daniel.baluta@nxp.com>
 
-We make use of common imx8m_suspend / imx8m_resume functions
-for both system PM and runtime PM.
+Resume common flow (System PM / Runtime PM) is like this:
 
-imx8m_suspend:
-	- frees the MU channels
-	- disables the clocks
+    sof_resume
+      -> specific device resume
+      -> snd_sof_load_firmware
+         -> snd_sof_dsp_reset (1)
+         -> load_modules()
+      -> snd_sof_run_firmware (2)
 
-imx8m_resume
-	- enables the clocks
-	- requests the MU channels
+    We need to implement dsp_reset callback (1) that will actually reset
+    the DSP but keep it stalled.
 
-On i.MX8MP there is no dedicated functionality to put the DSP in reset.
-The only way of doing this is to POWER DOWN the Audiomix domain.
+    In order to implement this we do the following:
+            -> put DSP into reset (assert CoreReset bit from PWRCTL)
+            -> stall the DSP using RunStall bit from AudioDSP_REG2 mix
+            -> take DSP out of reset (de-assert CoreReset bit from PWRCTL)
 
-We are able to do this because turning off the clocks and freeing the
-channels makes the Audiomix to have no users thus PM kernel core turns
-it down.
+    At this moment the DSP is taken out of reset and Stalled! This means
+    that we can load the firmware and then start the DSP (2).
 
-SOF core will not call system PM suspend handler if the DSP is already
-down, but at resume it will call the system PM resume. So, we need to
-keep track of the state via snd_sof_dsp_set_power_state
+    Until now we resetted the DSP by turning down the Audiomix PD. This
+    doesn't work for Runtime PM if another IP is keeping Audiomix PD up.
 
-Few insights on how SOF core handles the PM:
- - SOF core uses PM runtime autosuspend (with a timeout of 2 secs)
- - at probe, SOF core boots the DSP and lets the PM runtime suspend to
-   turn it off, if there is no activity
- - when someone opens the ALSA sound card (aplay/arecord, etc) ALSA core
-   calls PM runtime resume to turn on the DSP
- - when the ALSA sound card is closed SOF core make use of PM subsystem
-  to call PM runtime suspend and thus turning off the DSP.
+    By introducing dsp_reset() we no longer rely on turning off the
+    audiomix to reset the DSP.
 
 Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/imx/imx8m.c | 106 +++++++++++++++++++++++++++++++++++++-
- 1 file changed, 105 insertions(+), 1 deletion(-)
+ sound/soc/sof/imx/imx8m.c | 39 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
 
 diff --git a/sound/soc/sof/imx/imx8m.c b/sound/soc/sof/imx/imx8m.c
-index ab40c0bdf796..b050d4cf9cd5 100644
+index 9972ca8e6ec6..8f24c6db7f5b 100644
 --- a/sound/soc/sof/imx/imx8m.c
 +++ b/sound/soc/sof/imx/imx8m.c
-@@ -195,7 +195,9 @@ static int imx8m_probe(struct snd_sof_dev *sdev)
- 	if (ret < 0)
- 		goto exit_pdev_unregister;
- 
--	imx8_enable_clocks(sdev, priv->clks);
-+	ret = imx8_enable_clocks(sdev, priv->clks);
-+	if (ret < 0)
-+		goto exit_pdev_unregister;
- 
- 	return 0;
- 
-@@ -252,6 +254,100 @@ static struct snd_soc_dai_driver imx8m_dai[] = {
- },
+@@ -32,6 +32,12 @@ static struct clk_bulk_data imx8m_dsp_clks[] = {
+ 	{ .id = "core" },
  };
  
-+static int imx8m_dsp_set_power_state(struct snd_sof_dev *sdev,
-+				     const struct sof_dsp_power_state *target_state)
++/* DAP registers */
++#define IMX8M_DAP_DEBUG                0x28800000
++#define IMX8M_DAP_DEBUG_SIZE   (64 * 1024)
++#define IMX8M_DAP_PWRCTL       (0x4000 + 0x3020)
++#define IMX8M_PWRCTL_CORERESET         BIT(16)
++
+ /* DSP audio mix registers */
+ #define AudioDSP_REG0	0x100
+ #define AudioDSP_REG1	0x104
+@@ -50,6 +56,7 @@ struct imx8m_priv {
+ 
+ 	struct imx_clocks *clks;
+ 
++	void __iomem *dap;
+ 	struct regmap *regmap;
+ };
+ 
+@@ -116,6 +123,30 @@ static int imx8m_run(struct snd_sof_dev *sdev)
+ 	return 0;
+ }
+ 
++static int imx8m_reset(struct snd_sof_dev *sdev)
 +{
-+	sdev->dsp_power_state = *target_state;
++	struct imx8m_priv *priv = (struct imx8m_priv *)sdev->pdata->hw_pdata;
++	u32 pwrctl;
++
++	/* put DSP into reset and stall */
++	pwrctl = readl(priv->dap + IMX8M_DAP_PWRCTL);
++	pwrctl |= IMX8M_PWRCTL_CORERESET;
++	writel(pwrctl, priv->dap + IMX8M_DAP_PWRCTL);
++
++	/* keep reset asserted for 10 cycles */
++	usleep_range(1, 2);
++
++	regmap_update_bits(priv->regmap, AudioDSP_REG2,
++			   AudioDSP_REG2_RUNSTALL, AudioDSP_REG2_RUNSTALL);
++
++	/* take the DSP out of reset and keep stalled for FW loading */
++	pwrctl = readl(priv->dap + IMX8M_DAP_PWRCTL);
++	pwrctl &= ~IMX8M_PWRCTL_CORERESET;
++	writel(pwrctl, priv->dap + IMX8M_DAP_PWRCTL);
 +
 +	return 0;
 +}
 +
-+static int imx8m_resume(struct snd_sof_dev *sdev)
-+{
-+	struct imx8m_priv *priv = (struct imx8m_priv *)sdev->pdata->hw_pdata;
-+	int ret;
-+	int i;
-+
-+	ret = imx8_enable_clocks(sdev, priv->clks);
-+	if (ret < 0)
-+		return ret;
-+
-+	for (i = 0; i < DSP_MU_CHAN_NUM; i++)
-+		imx_dsp_request_channel(priv->dsp_ipc, i);
-+
-+	return 0;
-+}
-+
-+static void imx8m_suspend(struct snd_sof_dev *sdev)
-+{
-+	struct imx8m_priv *priv = (struct imx8m_priv *)sdev->pdata->hw_pdata;
-+	int i;
-+
-+	for (i = 0; i < DSP_MU_CHAN_NUM; i++)
-+		imx_dsp_free_channel(priv->dsp_ipc, i);
-+
-+	imx8_disable_clocks(sdev, priv->clks);
-+}
-+
-+static int imx8m_dsp_runtime_resume(struct snd_sof_dev *sdev)
-+{
-+	int ret;
-+	const struct sof_dsp_power_state target_dsp_state = {
-+		.state = SOF_DSP_PM_D0,
-+	};
-+
-+	ret = imx8m_resume(sdev);
-+	if (ret < 0)
-+		return ret;
-+
-+	return snd_sof_dsp_set_power_state(sdev, &target_dsp_state);
-+}
-+
-+static int imx8m_dsp_runtime_suspend(struct snd_sof_dev *sdev)
-+{
-+	const struct sof_dsp_power_state target_dsp_state = {
-+		.state = SOF_DSP_PM_D3,
-+	};
-+
-+	imx8m_suspend(sdev);
-+
-+	return snd_sof_dsp_set_power_state(sdev, &target_dsp_state);
-+}
-+
-+static int imx8m_dsp_resume(struct snd_sof_dev *sdev)
-+{
-+	int ret;
-+	const struct sof_dsp_power_state target_dsp_state = {
-+		.state = SOF_DSP_PM_D0,
-+	};
-+
-+	ret = imx8m_resume(sdev);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (pm_runtime_suspended(sdev->dev)) {
-+		pm_runtime_disable(sdev->dev);
-+		pm_runtime_set_active(sdev->dev);
-+		pm_runtime_mark_last_busy(sdev->dev);
-+		pm_runtime_enable(sdev->dev);
-+		pm_runtime_idle(sdev->dev);
+ static int imx8m_probe(struct snd_sof_dev *sdev)
+ {
+ 	struct platform_device *pdev =
+@@ -168,6 +199,13 @@ static int imx8m_probe(struct snd_sof_dev *sdev)
+ 		goto exit_pdev_unregister;
+ 	}
+ 
++	priv->dap = devm_ioremap(sdev->dev, IMX8M_DAP_DEBUG, IMX8M_DAP_DEBUG_SIZE);
++	if (!priv->dap) {
++		dev_err(sdev->dev, "error: failed to map DAP debug memory area");
++		ret = -ENODEV;
++		goto exit_pdev_unregister;
 +	}
 +
-+	return snd_sof_dsp_set_power_state(sdev, &target_dsp_state);
-+}
-+
-+static int imx8m_dsp_suspend(struct snd_sof_dev *sdev, unsigned int target_state)
-+{
-+	const struct sof_dsp_power_state target_dsp_state = {
-+		.state = target_state,
-+	};
-+
-+	if (!pm_runtime_suspended(sdev->dev))
-+		imx8m_suspend(sdev);
-+
-+	return snd_sof_dsp_set_power_state(sdev, &target_dsp_state);
-+}
-+
- /* i.MX8 ops */
- struct snd_sof_dsp_ops sof_imx8m_ops = {
- 	/* probe and remove */
-@@ -297,6 +393,14 @@ struct snd_sof_dsp_ops sof_imx8m_ops = {
- 	.drv = imx8m_dai,
- 	.num_drv = ARRAY_SIZE(imx8m_dai),
+ 	sdev->bar[SOF_FW_BLK_TYPE_IRAM] = devm_ioremap(sdev->dev, base, size);
+ 	if (!sdev->bar[SOF_FW_BLK_TYPE_IRAM]) {
+ 		dev_err(sdev->dev, "failed to ioremap base 0x%x size 0x%x\n",
+@@ -378,6 +416,7 @@ struct snd_sof_dsp_ops sof_imx8m_ops = {
+ 	.remove		= imx8m_remove,
+ 	/* DSP core boot */
+ 	.run		= imx8m_run,
++	.reset		= imx8m_reset,
  
-+	.suspend	= imx8m_dsp_suspend,
-+	.resume		= imx8m_dsp_resume,
-+
-+	.runtime_suspend = imx8m_dsp_runtime_suspend,
-+	.runtime_resume = imx8m_dsp_runtime_resume,
-+
-+	.set_power_state = imx8m_dsp_set_power_state,
-+
- 	.hw_info = SNDRV_PCM_INFO_MMAP |
- 		SNDRV_PCM_INFO_MMAP_VALID |
- 		SNDRV_PCM_INFO_INTERLEAVED |
+ 	/* Block IO */
+ 	.block_read	= sof_block_read,
 -- 
 2.27.0
 
