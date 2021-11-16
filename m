@@ -1,91 +1,83 @@
-Return-Path: <SRS0=FucB=QC=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=I3pN=QD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 226ECC433FE
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 23:40:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ECA3BC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 06:55:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A2AC061A0C
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Nov 2021 23:40:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A2AC061A0C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	by mail.kernel.org (Postfix) with ESMTPS id 4469361B2A
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 06:55:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4469361B2A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C1A1216B9;
-	Tue, 16 Nov 2021 00:39:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C1A1216B9
+	by alsa0.perex.cz (Postfix) with ESMTPS id E8DE2167F;
+	Tue, 16 Nov 2021 07:54:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8DE2167F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637019612;
-	bh=v1mlWfFHiRA+3iZSckSdPUOhM+AI7Uoc6/CyxUe5EKk=;
-	h=In-Reply-To:References:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1637045722;
+	bh=Gz6QD0CWlDLeTm+A3whk6Rwlfw0dfsjpoqHSnnlkfjo=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=h11YOxiAhgQInE9WW0UH0TPMMUiyt5XkSfRB7NNm7aY1pyQswlpxNguy6QgWHsjeV
-	 pVO6sYFluwEWCxnP9cCnaXixN/QCeF4nzLn+Iv90pE6XfFg5JTgVBfw11oM4WzhX/Z
-	 BLTbEzOXjI3r/FGQNPqAoJPDHG444Z/gZ5MLeox8=
+	b=hvNyFdiGsiP+VOIxh+Mhp5trzjtZ6buFTRlRp5IU2OB5XXZitbsDRgRX6VQU8W9gD
+	 /n2GhZFrx17vC62LKI0YAg2/AWCLgToEW6H5vMcfmcKs3MFLpAp0Rl/DSGCHoVnflK
+	 4I3PbA50ktah6RxSKVG1RCpj/phQDkOTMNJGGj5g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A9AD6F8027D;
-	Tue, 16 Nov 2021 00:36:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E19C8F80423;
+	Tue, 16 Nov 2021 07:54:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 46013F8028B; Tue, 16 Nov 2021 00:36:16 +0100 (CET)
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com
- [IPv6:2607:f8b0:4864:20::22e])
+ id 790F1F804BC; Tue, 16 Nov 2021 07:54:27 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2E01CF8027D
- for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2021 00:36:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E01CF8027D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 96D35F8026D
+ for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2021 07:54:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96D35F8026D
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="Ld8WMJc6"
-Received: by mail-oi1-x22e.google.com with SMTP id m6so38293689oim.2
- for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2021 15:36:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=mime-version:in-reply-to:references:from:user-agent:date:message-id
- :subject:to:cc;
- bh=dWC8K8ncLeoNS//sQPeLcxjUFBd9YRjPbYe+Yaf2cCA=;
- b=Ld8WMJc61fY24i8/fosv3XDha5eYvH4ZtJgZ7Ip/4po3hvifMffK6YpDS4U+K9shX/
- Ye1Fz9V/tCRC8KXDEZBzkYbX/7zV94nOhQtuitRH+0q5aAeldmVgMQDSRhUP/SpssTta
- pPO3Y/bbyq2a6HvAkVdyKc/apDvM2hOQHfGW0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:in-reply-to:references:from
- :user-agent:date:message-id:subject:to:cc;
- bh=dWC8K8ncLeoNS//sQPeLcxjUFBd9YRjPbYe+Yaf2cCA=;
- b=o0W59omEGHQbJXJaJu7NJM3iAJ5+ClVFEzhmKtwteuL7e2NlGHJnmKZppoqmvXaGC5
- 0boYapKr3PBHNrvulKYqyFnUsrzVrCWsUccqz75cDYChQ7J3UVIB8lt8uVTCXtWT5iZf
- wHCVctyBUSDNSD30jgajj8CbDl7dTHMJZwK5ea4loVJXuv8Vt2hQEGsCzlwG84jUgQfl
- +1z3f2tnujTaQlE3tkHpvDIPoXnElYtAkUlquOEHfbdUFCMxMKswJF+tNjsOR+Ir00Am
- mYjnWuetBIgXGBnHwsrvK7UN6zJkWOCTM+/XlRlz0wXkHa42Ra4gwpa0dLOe2U+UE/pG
- TjAw==
-X-Gm-Message-State: AOAM5317XXiKsXu5MPHcwIrP9puKi1JXRmk5wL+9iG6XBgwLE2XILEKr
- Dr6EM8XPpPqGFfj9Umm75jFHTn2gP0RfzKl/CirsGg==
-X-Google-Smtp-Source: ABdhPJxtAo45rLZbDwdWOiRCk+PyKniWJlEnVa2OYhWCNTMvbYmZhhrueYbKLk8uaACFucgFyIQwJ7Fq+eYCbJsj4Hk=
-X-Received: by 2002:aca:2319:: with SMTP id e25mr48820032oie.164.1637019369080; 
- Mon, 15 Nov 2021 15:36:09 -0800 (PST)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 15 Nov 2021 15:36:08 -0800
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="kn2O8FSn"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="xmP+s3p5"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 960931FD33
+ for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2021 06:54:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1637045658; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=AbdGGL/EnXzZstaqWol4rzrpDlCM1ZOAp4oXXsePJaM=;
+ b=kn2O8FSnCdjnKBFKNKL8ynXAuhyQwZKQyjjbJHpYVrKvWRYegRHsnioZQ5+hzDl1P/b0E7
+ zmTfBKEDC35hS/Zp+Ma5Mr/dxYcHmEgONHswXNl7tgjpWmRXEGqaOsnjUFi4M1nF6d2wlR
+ NCcHoNHA8KTd5rmnVDQBvQRs+H5gEvY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1637045658;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=AbdGGL/EnXzZstaqWol4rzrpDlCM1ZOAp4oXXsePJaM=;
+ b=xmP+s3p5Zm13B+0C61iwDrZy3xidErmIl90ZKUB/SbtYNaDrPPMlUMWZE2LEQgFGDY5qqr
+ MckHmMU61IirNQDg==
+Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 87939A3B81;
+ Tue, 16 Nov 2021 06:54:18 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 2/3] ALSA: usb-audio: Add minimal-mute notion in dB mapping
+ table
+Date: Tue, 16 Nov 2021 07:54:14 +0100
+Message-Id: <20211116065415.11159-3-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20211116065415.11159-1-tiwai@suse.de>
+References: <20211116065415.11159-1-tiwai@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <1636960288-27537-1-git-send-email-srivasam@codeaurora.org>
-References: <1636960288-27537-1-git-send-email-srivasam@codeaurora.org>
-From: Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date: Mon, 15 Nov 2021 15:36:08 -0800
-Message-ID: <CAE-0n52n7nscLfqt8-7+UmXdEh2suDNC-ywPRUZL8FdPONbhZQ@mail.gmail.com>
-Subject: Re: [PATCH v2] ASoC: codecs: MBHC: Add support for special headset
-To: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>, agross@kernel.org,
- alsa-devel@alsa-project.org, 
- bgoswami@codeaurora.org, bjorn.andersson@linaro.org, broonie@kernel.org, 
- devicetree@vger.kernel.org, judyhsiao@chromium.org, lgirdwood@gmail.com, 
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, perex@perex.cz, 
- plai@codeaurora.org, robh+dt@kernel.org, rohitkr@codeaurora.org, 
- srinivas.kandagatla@linaro.org, tiwai@suse.com
-Content-Type: text/plain; charset="UTF-8"
-Cc: Venkata Prasad Potturu <potturu@codeaurora.org>
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,137 +93,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Quoting Srinivasa Rao Mandadapu (2021-11-14 23:11:28)
-> diff --git a/sound/soc/codecs/wcd-mbhc-v2.c b/sound/soc/codecs/wcd-mbhc-v2.c
-> index 405128c..d6545e4 100644
-> --- a/sound/soc/codecs/wcd-mbhc-v2.c
-> +++ b/sound/soc/codecs/wcd-mbhc-v2.c
-> @@ -1022,6 +1022,56 @@ static int wcd_mbhc_get_plug_from_adc(struct wcd_mbhc *mbhc, int adc_result)
->         return plug_type;
->  }
->
-> +static int wcd_mbhc_get_spl_hs_thres(struct wcd_mbhc *mbhc)
-> +{
-> +       int hs_threshold, micbias_mv;
-> +
-> +       micbias_mv = wcd_mbhc_get_micbias(mbhc);
-> +       if (mbhc->cfg->hs_thr && mbhc->cfg->micb_mv != WCD_MBHC_ADC_MICBIAS_MV) {
-> +               if (mbhc->cfg->micb_mv == micbias_mv)
-> +                       hs_threshold = mbhc->cfg->hs_thr;
-> +               else
-> +                       hs_threshold = (mbhc->cfg->hs_thr * micbias_mv) / mbhc->cfg->micb_mv;
-> +       } else {
-> +               hs_threshold = ((WCD_MBHC_ADC_HS_THRESHOLD_MV * micbias_mv) /
-> +                                                       WCD_MBHC_ADC_MICBIAS_MV);
-> +       }
-> +       return hs_threshold;
-> +}
-> +
-> +static bool wcd_mbhc_check_for_spl_headset(struct wcd_mbhc *mbhc)
-> +{
-> +       bool is_spl_hs = false;
-> +       int output_mv, hs_threshold, hph_threshold;
-> +
-> +       if (!mbhc->mbhc_cb->mbhc_micb_ctrl_thr_mic)
-> +               return false;
-> +
-> +       /* Bump up MIC_BIAS2 to 2.7V */
-> +       mbhc->mbhc_cb->mbhc_micb_ctrl_thr_mic(mbhc->component, MIC_BIAS_2, true);
-> +       usleep_range(10000, 10100);
-> +
-> +       output_mv = wcd_measure_adc_once(mbhc, MUX_CTL_IN2P);
-> +       hs_threshold = wcd_mbhc_get_spl_hs_thres(mbhc);
-> +       hph_threshold = wcd_mbhc_adc_get_hph_thres(mbhc);
-> +
-> +       if (output_mv > hs_threshold || output_mv < hph_threshold) {
-> +               if (mbhc->force_linein == true)
+Some devices do mute the volume at the minimal volume, and for such
+devices, we need to set SNDRV_CTL_TLVT_DB_MINMAX_MUTE to the TLV
+information.  It corresponds to setting usb_mixer_elem_info.min_mute
+flag in the USB-audio driver.
 
-Just 'if (mbhc->force_linein)'
+This patch adds a new field min_mute in usbmix_dB_map so that the
+mixer map entry can pass the flag.
 
-Also, if this is false, then false is set above. So checking for
-mbhc->force_linein is useless.
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/usb/mixer.c      | 1 +
+ sound/usb/mixer_maps.c | 1 +
+ 2 files changed, 2 insertions(+)
 
-> +                       is_spl_hs = false;
-> +       } else {
-> +               is_spl_hs = true;
-> +       }
-> +
-> +       /* Back MIC_BIAS2 to 1.8v if the type is not special headset */
-> +       if (!is_spl_hs) {
-> +               mbhc->mbhc_cb->mbhc_micb_ctrl_thr_mic(mbhc->component, MIC_BIAS_2, false);
-> +               /* Add 10ms delay for micbias to settle */
-> +               usleep_range(10000, 10100);
-> +       }
-> +
-> +       return is_spl_hs;
-> +}
-> +
->  static void wcd_correct_swch_plug(struct work_struct *work)
->  {
->         struct wcd_mbhc *mbhc;
-> @@ -1029,12 +1079,14 @@ static void wcd_correct_swch_plug(struct work_struct *work)
->         enum wcd_mbhc_plug_type plug_type = MBHC_PLUG_TYPE_INVALID;
->         unsigned long timeout;
->         int pt_gnd_mic_swap_cnt = 0;
-> -       int output_mv, cross_conn, hs_threshold, try = 0;
-> +       int output_mv, cross_conn, hs_threshold, try = 0, micbias_mv;
-> +       bool is_spl_hs = false;
->         bool is_pa_on;
->
->         mbhc = container_of(work, struct wcd_mbhc, correct_plug_swch);
->         component = mbhc->component;
->
-> +       micbias_mv = wcd_mbhc_get_micbias(mbhc);
->         hs_threshold = wcd_mbhc_adc_get_hs_thres(mbhc);
->
->         /* Mask ADC COMPLETE interrupt */
-> @@ -1097,6 +1149,16 @@ static void wcd_correct_swch_plug(struct work_struct *work)
->                 plug_type = wcd_mbhc_get_plug_from_adc(mbhc, output_mv);
->                 is_pa_on = wcd_mbhc_read_field(mbhc, WCD_MBHC_HPH_PA_EN);
->
-> +               if ((output_mv > hs_threshold) && (!is_spl_hs)) {
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 6e7bac8203ba..5b9fd07ce2a2 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -145,6 +145,7 @@ static inline void check_mapped_dB(const struct usbmix_name_map *p,
+ 	if (p && p->dB) {
+ 		cval->dBmin = p->dB->min;
+ 		cval->dBmax = p->dB->max;
++		cval->min_mute = p->dB->min_mute;
+ 		cval->initialized = 1;
+ 	}
+ }
+diff --git a/sound/usb/mixer_maps.c b/sound/usb/mixer_maps.c
+index 92c06b1bb979..9d71c569b148 100644
+--- a/sound/usb/mixer_maps.c
++++ b/sound/usb/mixer_maps.c
+@@ -8,6 +8,7 @@
+ struct usbmix_dB_map {
+ 	int min;
+ 	int max;
++	bool min_mute;
+ };
+ 
+ struct usbmix_name_map {
+-- 
+2.26.2
 
-Please drop useless parenthesis
-
-> +                       is_spl_hs = wcd_mbhc_check_for_spl_headset(mbhc);
-> +                       output_mv = wcd_measure_adc_once(mbhc, MUX_CTL_IN2P);
-> +
-> +                       if (is_spl_hs) {
-> +                               hs_threshold = (hs_threshold * wcd_mbhc_get_micbias(mbhc)) /
-> +                                                                       micbias_mv;
-
-Same. It may be good to split it to two assignments to clarify
-overflow/underflow.
-
-> +                       }
-> +               }
-> +
->                 if ((output_mv <= hs_threshold) && !is_pa_on) {
->                         /* Check for cross connection*/
->                         cross_conn = wcd_check_cross_conn(mbhc);
-> @@ -1122,14 +1184,19 @@ static void wcd_correct_swch_plug(struct work_struct *work)
->                         }
->                 }
->
-> -               if (output_mv > hs_threshold) /* cable is extension cable */
-> +               /* cable is extension cable */
-> +               if (output_mv > hs_threshold || mbhc->force_linein == true)
-
-Drop the == true please.
-
->                         plug_type = MBHC_PLUG_TYPE_HIGH_HPH;
->         }
->
->         wcd_mbhc_bcs_enable(mbhc, plug_type, true);
->
-> -       if (plug_type == MBHC_PLUG_TYPE_HIGH_HPH)
-> -               wcd_mbhc_write_field(mbhc, WCD_MBHC_ELECT_ISRC_EN, 1);
-> +       if (plug_type == MBHC_PLUG_TYPE_HIGH_HPH) {
-> +               if (is_spl_hs)
-> +                       plug_type = MBHC_PLUG_TYPE_HEADSET;
-> +               else
-> +                       wcd_mbhc_write_field(mbhc, WCD_MBHC_ELECT_ISRC_EN, 1);
-> +       }
->
->         wcd_mbhc_write_field(mbhc, WCD_MBHC_ADC_MODE, 0);
->         wcd_mbhc_write_field(mbhc, WCD_MBHC_ADC_EN, 0);
