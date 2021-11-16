@@ -2,86 +2,87 @@ Return-Path: <SRS0=I3pN=QD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 43458C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 11:48:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5FFF8C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 11:48:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C25DB61A08
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 11:48:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C25DB61A08
+	by mail.kernel.org (Postfix) with ESMTPS id 423DA60C4A
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Nov 2021 11:48:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 423DA60C4A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EA49C16A5;
-	Tue, 16 Nov 2021 12:47:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA49C16A5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 95B8C1689;
+	Tue, 16 Nov 2021 12:48:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95B8C1689
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637063306;
-	bh=IvIk8wIHcZSDwreGliP4UeDlnWFDrpIwvbx1FpHujrc=;
+	s=default; t=1637063330;
+	bh=AxORZepENFqLugX4B6hKOMeUK+eXYOrHGzIJf3oqFTs=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZH9BbLz1Vuppts7V2UB+/lqP2/SBi4fl5eHqLQzQxJz6d21DwwezvqbUulUq5yZ9S
-	 xoPC0URkuCyoB/ZrvSh4SM5hPMTBd8Fuzi15iJiXBSVb6DgFAehc7THFyKG6UsNV4u
-	 yMgC/ArgKme/AAlcfcks/87iG3Y73QFH+bGrXg5E=
+	b=PA0dXncBnB4x/oyWhBtLePHGD/qfLRlBpfyLGj/LODARSKTYGQ11FYaX3H2EUqojR
+	 YMShPPzzr0bovDN0Y8AgtXMdy5ac52n66VeRKZSSEo5Hxdk2I9YXkOZYrMsia6NLKM
+	 c4IXKUZrhfK/VMfHhse3s1PkOmPbFC74NE0g2TYQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 921DAF800FA;
-	Tue, 16 Nov 2021 12:46:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 40B09F804ED;
+	Tue, 16 Nov 2021 12:46:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 08A50F804EB; Tue, 16 Nov 2021 12:46:49 +0100 (CET)
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com
- [IPv6:2a00:1450:4864:20::32e])
+ id 4D087F804E7; Tue, 16 Nov 2021 12:46:49 +0100 (CET)
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
+ [IPv6:2a00:1450:4864:20::329])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C914FF80423
- for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2021 12:46:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C914FF80423
+ by alsa1.perex.cz (Postfix) with ESMTPS id A0F65F800FA
+ for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2021 12:46:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0F65F800FA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="jjxHofpH"
-Received: by mail-wm1-x32e.google.com with SMTP id
- k37-20020a05600c1ca500b00330cb84834fso1700421wms.2
- for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2021 03:46:41 -0800 (PST)
+ header.b="q6wAjGae"
+Received: by mail-wm1-x329.google.com with SMTP id
+ c71-20020a1c9a4a000000b0032cdcc8cbafso2148404wme.3
+ for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2021 03:46:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=t7SqZxtta+mFLRYTDvdmuGnMtffgbWCF/KOCCvJj+EA=;
- b=jjxHofpHAKBd0KHns0B1Gry9ElbrUXFC1jp7j94izHFvYPTk0lRL/PU8Wyy7XJIuTG
- h/gsZH0mtINoyfoFW5dou62IzP4dP5F3kXlJpUk+Bqu7Gf7Hd21U8WOBQNhjK/MnJ4vn
- kzQIBUzp1g03B+ZgEiR/6Kxj7bqp3W7Z9BSMV5ip9Lm9Ee/rgEbh78ERAFKQEtFADves
- RkIdzggXJNT1G42ngFVQMyI1uUEJRCH1PT91ObDmouyQwkxmnaJOzBhG7eOnyChPXnqi
- jC8Upmz+MKR+shhNP8yyGm1dzS5Ye/w56KStFeke3k2E1vYF7ySvmgFvsOGypX8kc8ZL
- iG6g==
+ bh=vU5yaEpd/Y0DZa1Q/uJoC95gJS14ZCBm7xrXmd2b678=;
+ b=q6wAjGaeA6r4rXyycstm1UqubMBDnj8KkmEe3inUHwr7tTisgEBUt4wXQAgESktp7h
+ D2ayhCAY74WbLD+9BtrTnKNLwOxlPFGJW9p19LMaR+9oBoEmcWxswLwo9wdzBcu2U/XP
+ M9BHY8eOjDy0kdd2cfO87vmHlyGdNIxLVaUl9H9+bkFfhBR40JieNFh+eDaj2jlOfMq1
+ 7QAwTQd3gwD2QXxgOv8YgaL9bCHBEBcSAKkn3b0C8ijP1DYxyVSnLl9M0aeT/Jd9/xJl
+ FjIitTuv8lsGPvh0+906Y23QM+O+LSzufDTZWFoVktxJgGjSBwmLrF4Pmp3UcBMQLBQ5
+ V1LA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=t7SqZxtta+mFLRYTDvdmuGnMtffgbWCF/KOCCvJj+EA=;
- b=LwHwSjHoPTm1Gd0zwv1dQtYKvT29tNBjefC/6N3HQtMkNE+2HpC1xIXZDGtB4D2m80
- fcz2tP1n8f6JKLej1EIPOyyallDlKI8po4COY903TH/qQCzjddEIzQA+sQAiEcpvehVh
- K+rafi8aLwe3DkwVzty6yVKBJQyf5zaXgE5CxIfNNJHD6aTzgrp/Ffw0nvZSulnhrjsd
- bs3xDWR2ribTUUSjfAogIQiVdGKuRhUr6U9qBiPgGLZJEq09Q/vFPWLVTn6SNdSo3hWc
- 7rZ2ASLY7e5/+TXh4tY81g5nsurbclZOM+uVoQIxxgYCEByVEVoo35q+y5yR8dzyofIp
- cQZA==
-X-Gm-Message-State: AOAM5332iLW5OmigHNUeBJ9ax9Q26xFTyKVnwwdiSyjm8Xk+OnaSjPyA
- EFzFcaHuhhWZ9j8vetRnux0+vQ==
-X-Google-Smtp-Source: ABdhPJxc/BBjcLSYDlxo9++43Rv4L1uBuM0AajhwiPP2EDZv6VCN+s2RVJhXAa/UGahI9gvifaNVTA==
-X-Received: by 2002:a05:600c:5125:: with SMTP id
- o37mr6988822wms.81.1637063199925; 
- Tue, 16 Nov 2021 03:46:39 -0800 (PST)
+ bh=vU5yaEpd/Y0DZa1Q/uJoC95gJS14ZCBm7xrXmd2b678=;
+ b=4LU7nYm1QyuPGibH03N97hS+dfSfkxavfHSDWtSit0TP10edSDEEqW5slfGsDqFtPZ
+ 9yrfYzVukYtf4BevJvZ4AQTvD3GsWncVdDqx5CT/Easwmc2uZs11dCN9L7KOVVdSVeqv
+ ycjCsxk5HgIrmHetT2xjpHYXaAp5OUva9SbYgVuu0oiYoM+AAxA7NHX9WG+opQr2n8GT
+ BBgCwyblv7OyMzzHHP7sE+YGyzgQftV04rN+gFA2V/cAyXIqQMakMPmxeyOVyPDgDUdY
+ 16Bmo0WvTnQczXlQF0BNnBYkqJhg/8SdyecWxEe2MEe3/9wFX/c6/BfNSFMW1jBKuRkw
+ 2nCg==
+X-Gm-Message-State: AOAM5332qHWBmZuZUeDt2gBBo/olKZh8go2FXXTk0Wn9iwmLpdXFVK5h
+ WO0XwWcDcuY/Z+dgNSOv5j6dnA==
+X-Google-Smtp-Source: ABdhPJwXjeDLbMbYVW6fYTxzvgg2sf1oxHDUYlwcNvj2ok4/I9+uItght9lMpiSzEu5pFYc3mBrOGw==
+X-Received: by 2002:a05:600c:1c13:: with SMTP id
+ j19mr68615165wms.175.1637063198772; 
+ Tue, 16 Nov 2021 03:46:38 -0800 (PST)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id z11sm16934698wrt.58.2021.11.16.03.46.38
+ by smtp.gmail.com with ESMTPSA id z11sm16934698wrt.58.2021.11.16.03.46.37
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 16 Nov 2021 03:46:39 -0800 (PST)
+ Tue, 16 Nov 2021 03:46:38 -0800 (PST)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH 3/3] ASoC: codecs: lpass-rx-macro: fix HPHR setting CLSH mask
-Date: Tue, 16 Nov 2021 11:46:23 +0000
-Message-Id: <20211116114623.11891-4-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 2/3] ASoC: codecs: wcd934x: return error code correctly from
+ hw_params
+Date: Tue, 16 Nov 2021 11:46:22 +0000
+Message-Id: <20211116114623.11891-3-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20211116114623.11891-1-srinivas.kandagatla@linaro.org>
 References: <20211116114623.11891-1-srinivas.kandagatla@linaro.org>
@@ -105,28 +106,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-For some reason we ended up using snd_soc_component_write_field
-for HPHL and snd_soc_component_update_bits for HPHR, so fix this.
+Error returned from wcd934x_slim_set_hw_params() are not passed to upper layer,
+this could be misleading to the user which can start sending stream leading
+to unnecessary errors.
 
-Fixes: af3d54b99764 ("ASoC: codecs: lpass-rx-macro: add support for lpass rx macro")
+Fix this by properly returning the errors.
+
+Fixes: a61f3b4f476e ("ASoC: wcd934x: add support to wcd9340/wcd9341 codec")
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/codecs/lpass-rx-macro.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/wcd934x.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/lpass-rx-macro.c b/sound/soc/codecs/lpass-rx-macro.c
-index 2bed5cf229be..aec5127260fd 100644
---- a/sound/soc/codecs/lpass-rx-macro.c
-+++ b/sound/soc/codecs/lpass-rx-macro.c
-@@ -2188,7 +2188,7 @@ static int rx_macro_config_classh(struct snd_soc_component *component,
- 		snd_soc_component_update_bits(component,
- 				CDC_RX_CLSH_DECAY_CTRL,
- 				CDC_RX_CLSH_DECAY_RATE_MASK, 0x0);
--		snd_soc_component_update_bits(component,
-+		snd_soc_component_write_field(component,
- 				CDC_RX_RX1_RX_PATH_CFG0,
- 				CDC_RX_RXn_CLSH_EN_MASK, 0x1);
- 		break;
+diff --git a/sound/soc/codecs/wcd934x.c b/sound/soc/codecs/wcd934x.c
+index c496b359f2f4..4f568abd59e2 100644
+--- a/sound/soc/codecs/wcd934x.c
++++ b/sound/soc/codecs/wcd934x.c
+@@ -1896,9 +1896,8 @@ static int wcd934x_hw_params(struct snd_pcm_substream *substream,
+ 	}
+ 
+ 	wcd->dai[dai->id].sconfig.rate = params_rate(params);
+-	wcd934x_slim_set_hw_params(wcd, &wcd->dai[dai->id], substream->stream);
+ 
+-	return 0;
++	return wcd934x_slim_set_hw_params(wcd, &wcd->dai[dai->id], substream->stream);
+ }
+ 
+ static int wcd934x_hw_free(struct snd_pcm_substream *substream,
 -- 
 2.21.0
 
