@@ -2,63 +2,63 @@ Return-Path: <SRS0=ac5z=QE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A93FC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Nov 2021 13:27:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C5C8C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Nov 2021 13:27:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 02A0661547
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Nov 2021 13:27:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 02A0661547
+	by mail.kernel.org (Postfix) with ESMTPS id BCD4C61547
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Nov 2021 13:27:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BCD4C61547
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 602C718FA;
-	Wed, 17 Nov 2021 14:26:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 602C718FA
+	by alsa0.perex.cz (Postfix) with ESMTPS id F18FF1907;
+	Wed, 17 Nov 2021 14:26:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F18FF1907
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637155635;
-	bh=PckBAme0KW0Bzs9qbnWfDF6iA8JdwMjFHp2tUjkc3bo=;
+	s=default; t=1637155651;
+	bh=PylKyHKKMn6zrW7HNydXwOQN9nKd7SzVbFmfJZ9BXHs=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kB/jhHRlZeogi6VudAgKPfHS1gNQwz3z2mh1KlO4MKQv7Lun20QjlVmp+ToC/3AwV
-	 h5bSEJsRK8noSid1Rkn226M2OoOEc9SxuDltXxqbuLTXr8AeDjkhaKDcDcxfCVgiB6
-	 R8YM9FYzpMWNm0s4OAJMy36E97esNLXSzza9GPlc=
+	b=Exofm6H1uw7i+ksbezxvRPf8HvuGZlU2qfGjg8cn20THxnEsbhUKc16/etxdYaC/q
+	 GJ+uObU9fSgve/3Wmnpm3aKwkLZ++90zhejLpl+5BIzUJU4/KeGLqcVhCpRXKr7Jb+
+	 +HoIbEte/0c2s/plQj678WF7BFFMMTytlxjJ1ao8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 72D3CF80528;
-	Wed, 17 Nov 2021 14:23:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2894DF80533;
+	Wed, 17 Nov 2021 14:23:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4D34AF8051B; Wed, 17 Nov 2021 14:23:28 +0100 (CET)
+ id 4552FF80524; Wed, 17 Nov 2021 14:23:29 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7C017F804D6
- for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2021 14:23:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C017F804D6
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1D5A6F804BD
+ for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2021 14:23:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D5A6F804BD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="SfZFvF+q"
+ header.b="mHEbxYJN"
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AH4qhZe020405;
- Wed, 17 Nov 2021 07:23:05 -0600
+ by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AH4qhZg020405;
+ Wed, 17 Nov 2021 07:23:06 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=PODMain02222019;
- bh=mzE3Dbaalakly94KMLknTeJN5a3hqsD9yPHl2nW6sMY=;
- b=SfZFvF+q7zEjHM+xi+NAu3Wl+lesupxTscEplxDqWxXMyCoABIRC0dvWP4miK6R9Hp+/
- B0vc5AyLg+4yRWyhemztdRcpDdy4H81N819JUl6pnOmOoKZw/OkwaQoBj7stJVtH+xNQ
- IiTEJVyCzDSc2zB6bXteqzO5ueEKpqJOVGDC5iUH5IXN0k0TW7CL3wP0eaZ8hno4NwAO
- 3ZF4IZTIpb4ZlNeA0JwDSl16nvt2uIAqRod2Rg5vnZ2sokb5ypytcjGufK1FDGwt3YH/
- 6TbYP2DAVORd5W2XHu7fX88JbgKpwWmmmTq89ZAuRJzbcri9cq3XS1s6TrOWE03GFHsE 6A== 
+ bh=QAoxXsT5eQgbB1Noac3ZqDQBjgotizDF6cr+IrrWqsI=;
+ b=mHEbxYJN7mHu/UgzetWQK7GGEKqplMSi6H+tFwSkYzB4qfkX62FoDwIpwNvT+oU++fzV
+ nuOtCRaIhYQb/hrgI/oMgcLG8tH3zSOktsNhI+kF75l2rQbqx9kS8Qk8SfPQC4Qyxewb
+ smus31LAJfXBdNuooXn8B2+9zG+4yPLRtikn142dIcDpaFTqqrFlNwCKWrV0NFE36fzT
+ sXzmali+gRv5i221XylMRjZM5kRLtioJju0mwB8s3jWFIXiCEjyPWbl6MNQkno9nnorN
+ PVUlWdA94t77J9K/jq/hhcsdLsWWWSRGcRMP9YnpaaCFPJNyMq8csf4QcAFK+jVTzrrW 9A== 
 Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3ccgtn14sf-6
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3ccgtn14sf-8
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Wed, 17 Nov 2021 07:23:05 -0600
+ Wed, 17 Nov 2021 07:23:06 -0600
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Wed, 17 Nov
@@ -67,21 +67,20 @@ Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.17 via
  Frontend Transport; Wed, 17 Nov 2021 13:23:00 +0000
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id C931B11AF;
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id EF60911AF;
  Wed, 17 Nov 2021 13:23:00 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH v2 07/10] firmware: cs_dsp: Perform NULL check in
- cs_dsp_coeff_write/read_ctrl
-Date: Wed, 17 Nov 2021 13:22:57 +0000
-Message-ID: <20211117132300.1290-7-ckeepax@opensource.cirrus.com>
+Subject: [PATCH v2 10/10] firmware: cs_dsp: Allow creation of event controls
+Date: Wed, 17 Nov 2021 13:23:00 +0000
+Message-ID: <20211117132300.1290-10-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20211117132300.1290-1-ckeepax@opensource.cirrus.com>
 References: <20211117132300.1290-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Proofpoint-GUID: RvkFy2WnyDpT0CMCq9mtf_3n42KgGsnK
-X-Proofpoint-ORIG-GUID: RvkFy2WnyDpT0CMCq9mtf_3n42KgGsnK
+X-Proofpoint-GUID: V8N9hBfA7MLYggb5yBQ70DlRFey8WrsP
+X-Proofpoint-ORIG-GUID: V8N9hBfA7MLYggb5yBQ70DlRFey8WrsP
 X-Proofpoint-Spam-Reason: safe
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
  lgirdwood@gmail.com
@@ -100,40 +99,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add a NULL check to the cs_dsp_coeff_write/read_ctrl functions. This is
-a major convenience for users of the cs_dsp library as it allows the call
-to cs_dsp_get_ctl to be inlined with the call to read/write the control
-itself.
+Some firmwares contain controls intended to convey firmware state back
+to the host. Whilst more infrastructure will probably be needed for
+these in time, as a first step allow creation of the controls, so said
+firmwares arn't completely rejected.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- drivers/firmware/cirrus/cs_dsp.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/firmware/cirrus/cs_dsp.c     | 1 +
+ include/linux/firmware/cirrus/wmfw.h | 1 +
+ 2 files changed, 2 insertions(+)
 
 diff --git a/drivers/firmware/cirrus/cs_dsp.c b/drivers/firmware/cirrus/cs_dsp.c
-index 62ba4ebbf11f5..9eecd16265375 100644
+index 5fe08de91ecd3..3814cbba0a544 100644
 --- a/drivers/firmware/cirrus/cs_dsp.c
 +++ b/drivers/firmware/cirrus/cs_dsp.c
-@@ -758,6 +758,9 @@ int cs_dsp_coeff_write_ctrl(struct cs_dsp_coeff_ctl *ctl, const void *buf, size_
+@@ -1177,6 +1177,7 @@ static int cs_dsp_parse_coeff(struct cs_dsp *dsp,
+ 				return -EINVAL;
+ 			break;
+ 		case WMFW_CTL_TYPE_HOSTEVENT:
++		case WMFW_CTL_TYPE_FWEVENT:
+ 			ret = cs_dsp_check_coeff_flags(dsp, &coeff_blk,
+ 						       WMFW_CTL_FLAG_SYS |
+ 						       WMFW_CTL_FLAG_VOLATILE |
+diff --git a/include/linux/firmware/cirrus/wmfw.h b/include/linux/firmware/cirrus/wmfw.h
+index a19bf7c6fc8b0..74e5a4f6c13a0 100644
+--- a/include/linux/firmware/cirrus/wmfw.h
++++ b/include/linux/firmware/cirrus/wmfw.h
+@@ -29,6 +29,7 @@
+ #define WMFW_CTL_TYPE_ACKED       0x1000 /* acked control */
+ #define WMFW_CTL_TYPE_HOSTEVENT   0x1001 /* event control */
+ #define WMFW_CTL_TYPE_HOST_BUFFER 0x1002 /* host buffer pointer */
++#define WMFW_CTL_TYPE_FWEVENT     0x1004 /* firmware event control */
  
- 	lockdep_assert_held(&ctl->dsp->pwr_lock);
- 
-+	if (!ctl)
-+		return -ENOENT;
-+
- 	if (ctl->flags & WMFW_CTL_FLAG_VOLATILE)
- 		ret = -EPERM;
- 	else if (buf != ctl->cache)
-@@ -817,6 +820,9 @@ int cs_dsp_coeff_read_ctrl(struct cs_dsp_coeff_ctl *ctl, void *buf, size_t len)
- 
- 	lockdep_assert_held(&ctl->dsp->pwr_lock);
- 
-+	if (!ctl)
-+		return -ENOENT;
-+
- 	if (ctl->flags & WMFW_CTL_FLAG_VOLATILE) {
- 		if (ctl->enabled && ctl->dsp->running)
- 			return cs_dsp_coeff_read_ctrl_raw(ctl, buf, len);
+ struct wmfw_header {
+ 	char magic[4];
 -- 
 2.11.0
 
