@@ -2,73 +2,74 @@ Return-Path: <SRS0=ac5z=QE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 07E5BC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Nov 2021 22:32:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E3D71C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Nov 2021 22:33:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BC0FE61882
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Nov 2021 22:32:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BC0FE61882
+	by mail.kernel.org (Postfix) with ESMTPS id DF33F61B5F
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Nov 2021 22:33:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DF33F61B5F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9C1C718BA;
-	Wed, 17 Nov 2021 23:31:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C1C718BA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 25E2818F5;
+	Wed, 17 Nov 2021 23:32:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 25E2818F5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637188341;
-	bh=uU2qHnUEljTCEgcQnVLhefzFnphaBzkPX4DWASgLNyg=;
+	s=default; t=1637188389;
+	bh=jn1cqoJ3XZaDqZgqyRQKukXK0FQ0EKQh7jJIum/8OaQ=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DKXolgP5jK7r4DQM3czbG2QKnaiNM+VZoKdaDcqfRiydhQj2kBfUQL816sHB1OLba
-	 EicW2b11FZIQwlHQklJJ8jO5QXj6OnX75vyU8Qv+vwKQi4hbDfFfzV1eBXzRzg1uIs
-	 +YXTPHug3PJ82iPN6/J6pLH7yjml+3AIDUXQsvAg=
+	b=jpWviM3QvCit1pb9Wt+9QjpQfL2E2VpsWxhHFtxleyLVcwTl+Tnl/flx45NbJElPe
+	 x+ogtcPynsV+BDMrnBrCtYdw395iR5S8bDn/E2KSfjDvVN4frJwAMbspC3tFjxeyun
+	 s5aPkrZLxiGId3Ax0MuDAQgx2jrErMFBJySklJRE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 022EAF8020D;
-	Wed, 17 Nov 2021 23:31:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2FE65F800FA;
+	Wed, 17 Nov 2021 23:31:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 32CAAF8027D; Wed, 17 Nov 2021 23:31:29 +0100 (CET)
+ id 04A5BF804BD; Wed, 17 Nov 2021 23:31:37 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 170C7F800FA
- for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2021 23:31:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 170C7F800FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3FD43F8016C
+ for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2021 23:31:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3FD43F8016C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ijHAK4jp"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 27DC861B51;
- Wed, 17 Nov 2021 22:31:18 +0000 (UTC)
+ header.b="hoTkBKgw"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A10461882;
+ Wed, 17 Nov 2021 22:31:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1637188281;
- bh=uU2qHnUEljTCEgcQnVLhefzFnphaBzkPX4DWASgLNyg=;
+ s=k20201202; t=1637188287;
+ bh=jn1cqoJ3XZaDqZgqyRQKukXK0FQ0EKQh7jJIum/8OaQ=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=ijHAK4jp/W3+yP3SjYIwyudnH1gsROgiOIUR6o3QBOWhju89RKd1Nf+EzfqVJ3y5G
- D8aXK9pihpRlXkeH0IzZydkb/bpVeLKzxye4sWYcMLTfA0psDu9HFDc4Hw+oVfhapc
- ZhTthq0YfMMAIdzXhZ44ZMjKWO5PhEIg6kz8ql7L6npP+CosNDQIPdqPfUDAOjIVVE
- xx1uJ4aUU3/35gP2rNnUlDBknO10Q7Wf3CqG5aptbx1I1IrtpOoBkXHnK7EJkp8esd
- aoIsottl3SoS4aYhuL6HOepm20J6JVlkg3G29pDprOFW8l0o3oBhnkazG89fTUjoUp
- 6ur/vZ+GudlnA==
+ b=hoTkBKgwg3wNI7wPETWtWKDEHpOczYSpXY7Fd7OfCnJaUCcB8havj6RGTOwsoLH90
+ 2jZSxxaMytPyaN2Wh7GIYQbsW7a7Jrrpq4Z5ckeblOBBiaua2ngMNUOISCM5IVsapE
+ Hkt3bv7MBSB0so6oKFS1OQswjxfsPUx4jZPoK+MQiMRQeUoGUwKLbIqhqoJYXw4t2Y
+ ITEgt9B4ELBvXWLwnovHZW/TiBIQZiCv1B7Imrjr9Zcx+Zo4vBMKA1FMnXao9feAfF
+ AbLz8UFBxVi9O46VMrpU9ujlPm0QQaFoq8n6PzMaZmC7eryaQ27NJ2j9QW/lSChkdY
+ wV5NXrh5OD5ww==
 From: Mark Brown <broonie@kernel.org>
-To: Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Olivier Moysan <olivier.moysan@foss.st.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>
-In-Reply-To: <20211117104404.3832-1-olivier.moysan@foss.st.com>
-References: <20211117104404.3832-1-olivier.moysan@foss.st.com>
-Subject: Re: [PATCH] ASoC: stm32: i2s: fix 32 bits channel length without mclk
-Message-Id: <163718827890.136789.10813827893934217729.b4-ty@kernel.org>
-Date: Wed, 17 Nov 2021 22:31:18 +0000
+To: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+ Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>,
+ Olivier Moysan <olivier.moysan@foss.st.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>, Takashi Iwai <tiwai@suse.com>
+In-Reply-To: <20211117110031.19345-1-olivier.moysan@foss.st.com>
+References: <20211117110031.19345-1-olivier.moysan@foss.st.com>
+Subject: Re: [PATCH] ASoC: stm32: sai: increase channels_max limit
+Message-Id: <163718828521.136850.8228648734064724171.b4-ty@kernel.org>
+Date: Wed, 17 Nov 2021 22:31:25 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com
+Cc: alsa-devel@alsa-project.org, Olivier Moysan <olivier.moysan@st.com>,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-stm32@st-md-mailman.stormreply.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,22 +85,24 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 17 Nov 2021 11:44:04 +0100, Olivier Moysan wrote:
-> Fix divider calculation in the case of 32 bits channel
-> configuration, when no master clock is used.
+On Wed, 17 Nov 2021 12:00:31 +0100, Olivier Moysan wrote:
+> From: Olivier Moysan <olivier.moysan@st.com>
 > 
-> Fixes: e4e6ec7b127c ("ASoC: stm32: Add I2S driver")
+> The SAI peripheral supports up to 16 channels in TDM mode (8L+8R).
+> The driver currently supports TDM over two channels.
+> Increase SAI DAI playback/record channels_max,
+> to also allow up to 16 channels in TDM mode.
 > 
-> 
+> [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-linus
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
 Thanks!
 
-[1/1] ASoC: stm32: i2s: fix 32 bits channel length without mclk
-      commit: 424fe7edbed18d47f7b97f7e1322a6f8969b77ae
+[1/1] ASoC: stm32: sai: increase channels_max limit
+      commit: 7fabe7fed182498cac568100d8e28d4b95f8a80e
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
