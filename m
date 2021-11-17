@@ -2,78 +2,79 @@ Return-Path: <SRS0=ac5z=QE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB6AAC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Nov 2021 09:41:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F77FC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Nov 2021 09:41:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 50FC161284
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Nov 2021 09:41:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 50FC161284
+	by mail.kernel.org (Postfix) with ESMTPS id 08EE160C4A
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Nov 2021 09:41:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 08EE160C4A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oss.nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B30BD1853;
-	Wed, 17 Nov 2021 10:40:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B30BD1853
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6DFEE185A;
+	Wed, 17 Nov 2021 10:40:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6DFEE185A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637142072;
-	bh=Rdg+k5vHvWRnO61fUio+Qu01+Be0oO5HbPtMgY/G6+4=;
+	s=default; t=1637142109;
+	bh=vdJXIMFkU91ICNZKTNxzkogR+aDvfMVePg4KrqoycUM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Eb749msFXxXjHAF8QbI1Q2z6c+zjOWxSYRIAQxTtJ/RMRKkeEZIPhxGQPvqxscwA0
-	 BWP4HQ6u5VbxRUhUSBv9Ki158tmVP8Rn2tPmkda4AurZIEpagkVTJUURqI2Vq3YXfj
-	 ApMjdSUJ/Dx/mVDJ9ILIP7RljSHMbQX4TXER9bC8=
+	b=e4JF8ZgTwleNL2D3OFHuzqP+QNNPBTPHEnDBctVt2BIC9IDTcxQzPGsb7fziFSpw6
+	 stl6ZSJKEqmsyZy26CuRyEzjVO9H4wHacAbPppPfd2IvyVMINddsXjQfqLxr2GdGIU
+	 wG0SbAWM1edRx3xP4XbQLeAZ6Mc/dAYxRzLyXu3w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 81719F80516;
-	Wed, 17 Nov 2021 10:38:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A8147F80529;
+	Wed, 17 Nov 2021 10:38:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1F560F804BD; Wed, 17 Nov 2021 10:38:24 +0100 (CET)
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com
- (mail-eopbgr60062.outbound.protection.outlook.com [40.107.6.62])
+ id C9596F804EC; Wed, 17 Nov 2021 10:38:25 +0100 (CET)
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com
+ (mail-vi1eur05on2067.outbound.protection.outlook.com [40.107.21.67])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5B5FBF8016C
- for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2021 10:38:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B5FBF8016C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7041FF8027D
+ for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2021 10:38:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7041FF8027D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com
- header.i=@NXP1.onmicrosoft.com header.b="BzJr9Izu"
+ header.i=@NXP1.onmicrosoft.com header.b="l95fOrk6"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ft4FWtSkAIFYkOqVGbZM0EqMtUC3I3KR+f8vz1STMAU4OvGnHwvliYtAdwVe24CXDnvJMYrxr5f1x9fTlDYfH0QXV1/WVXbt4wpGBbSlSsCqrVUno7qGZPLR8eL3zJxngNO5wleTlt0fQQB0v1USUVFKwQB1s5GQFs3AGiKFK3hbImiwMWAklp+NtkTgzTkFXFyi+9dMmD9BThgiDQlpqBn31c0IU6l7K5FQtqe/NFhmLjGGAJsG2mPOxIQhvRqLqRLNSeKfDyXnprL4LOcgodaUuCUHn31aGjhz8O3N19tjHEp4iHj2zi4iICTIimOzeoRtovsKYW9AoBCSyu5/dg==
+ b=j0+SXI7hiGuw256reNr3hQaeFOZGHGm+BN/GWDKLGU3LF0JHwVClobS40bOFwjvknZM3hVik1tShhwDL414c5ocrwEeO/2toJ8DErjtijRKXNMNEqhdodT/he4Bg6gAo67r0W/ZU9Ob06IPcwl0ujVT7ioXM8zkEUMXTwb0KnhMqfReF+McmO0q7xzdbhcZOzIaJq2dbd1cskdWZFB2thZEFQl/kKNaTZTlE6iwkxzM7eSeNcct72Y4cKZ8eMZXmNZvOziD+GKh3h7CRo7OqxB797kmWTxO5/VcJ3QuYdMjbzEgtKE+RLazP9k5ZxpdXIsO/Z+bzdDslQghDG3DYzw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=B4qRUmATwCb+HVITmZk8a5kV43TQ8HJCX1OlKEbFy+A=;
- b=gWHQXmUIo/wN8yHrcRgbTgQjbwQ3VmbaC6Liaik7RlAHhhz7MQOOTwu8/4wNIBdBwcxpNpy3N1HslUuYOWz85BVwZLshClcClkEMsZosp/m+oYkgRuIpa7FCfj5AYW74JOmrAMiYcKksV+TlXqvO8nTblnWErrAzuMYivNd9wTWldH91vIHmsRBYxqjoH0+BbuZaRjhVwy9PCmTL6dtyPhBxKGz2ZPUoXHNCxBKeW9ReBl03sjQazpuXDpm/vN2Y3K/1SSQDPwUMjAJ9tIiCMABBm5QBC/jxmfEZxTBeA2wQMRAQ+ZjepGv4ZHiWczPtZWiJOb88C1CQIAXVVTU8Kg==
+ bh=FhQ3Xjm9LYLed451PnZa7lr7pWQBC1GLGS66r+lkId4=;
+ b=dYDtdXXvD0TKGfwSOzk2kZBxlnT78kgL26d7y/LySlG9TiW6n7urU5XM+nP9ShnukILRwUMJvg6HATabdCbEgc/oj5xQ0s85iS+ogLzm/Ug0vBxHgHvuxlB6KSAHVkcPvxp7Wn7sHciBPa/48GDguVSZhX1vUZSyItVKUNEfbmWygFETcn88s6CAoiiBJVZ4JDlbcjNayTjAdUc2FKvxfneNH69uQz32SCQl7QNPjT5JZzpq9MIIlibai4ZApGAcXjYhyz7ErbPP/BX0bZBKvPCMFzu84ZHbhsc6wckc+qAFUHEwhgsrkRYtj4dxXm/g225hlPpI0AScraxr9lKC/A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
  dkim=pass header.d=oss.nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com; 
  s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=B4qRUmATwCb+HVITmZk8a5kV43TQ8HJCX1OlKEbFy+A=;
- b=BzJr9IzuBlf+VeUgDJWACIctUycmpRA+URA2iIL8nWZ9Mhz2DTWd8O2NiAuJLJhhvV/t1PmkdR/uMuNIssPGMJPqV6vsyO4BnV20OYa09DmMc/eUyidtYwkqtVybhY7+1BNRBoaxk1Wv9FqAny3dunSzBFoAabQqMhwZSCCtotQ=
+ bh=FhQ3Xjm9LYLed451PnZa7lr7pWQBC1GLGS66r+lkId4=;
+ b=l95fOrk6JJL+oYpA9ed+YnhokDMXyV+AS1NbxnWvjjCDKoaYbHFYpv4TABggZwAfTU4R90xTX37TrFwecpq4kyI4Vn4nNT/En5TxT6tb0NHlfFrnIuxSYSva8LFTvl2UYiAmcf5cYQheXoanZHv2eEeentzF8Y+yYPO/cMVaPHM=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=oss.nxp.com;
 Received: from VI1PR04MB5151.eurprd04.prod.outlook.com (2603:10a6:803:61::28)
- by VI1PR04MB5807.eurprd04.prod.outlook.com (2603:10a6:803:ec::21)
+ by VE1PR04MB6623.eurprd04.prod.outlook.com (2603:10a6:803:125::29)
  with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.27; Wed, 17 Nov
- 2021 09:38:14 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.26; Wed, 17 Nov
+ 2021 09:38:07 +0000
 Received: from VI1PR04MB5151.eurprd04.prod.outlook.com
  ([fe80::85af:f8be:aa99:ba5f]) by VI1PR04MB5151.eurprd04.prod.outlook.com
  ([fe80::85af:f8be:aa99:ba5f%3]) with mapi id 15.20.4690.027; Wed, 17 Nov 2021
- 09:38:14 +0000
+ 09:38:07 +0000
 From: Daniel Baluta <daniel.baluta@oss.nxp.com>
 To: broonie@kernel.org,
 	alsa-devel@alsa-project.org
-Subject: [PATCH 06/21] ASoC: SOF: amd: Add PCM stream callback for Renoir dai's
-Date: Wed, 17 Nov 2021 11:37:19 +0200
-Message-Id: <20211117093734.17407-7-daniel.baluta@oss.nxp.com>
+Subject: [PATCH 02/21] ASoC: SOF: amd: Add helper callbacks for ACP's DMA
+ configuration
+Date: Wed, 17 Nov 2021 11:37:15 +0200
+Message-Id: <20211117093734.17407-3-daniel.baluta@oss.nxp.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20211117093734.17407-1-daniel.baluta@oss.nxp.com>
 References: <20211117093734.17407-1-daniel.baluta@oss.nxp.com>
@@ -88,63 +89,64 @@ Received: from localhost.localdomain (2a02:2f08:5706:b700:22bb:b216:ffff:73e1)
  by AM3PR03CA0060.eurprd03.prod.outlook.com (2603:10a6:207:5::18) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.19 via Frontend
- Transport; Wed, 17 Nov 2021 09:38:13 +0000
+ Transport; Wed, 17 Nov 2021 09:38:05 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: bc7299ad-3495-464c-06b5-08d9a9adfa5a
-X-MS-TrafficTypeDiagnostic: VI1PR04MB5807:
+X-MS-Office365-Filtering-Correlation-Id: 19584666-a9da-4fc7-a4c3-08d9a9adf620
+X-MS-TrafficTypeDiagnostic: VE1PR04MB6623:
 X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB5807BAB865C074AFB9032983B89A9@VI1PR04MB5807.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-Microsoft-Antispam-PRVS: <VE1PR04MB6623334A84CA3A7B618AA5AFB89A9@VE1PR04MB6623.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1303;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Zree7ayPcWzKGjTz5e1RIaP/AgVxO1HuTXMhEbzUO0sleas2fv2N/3EUpmrTUkpo8kjKYYwQGVFFPyalGxPMLtiDD1HhsQ7laL+42nQ0BkxFOyo2W6Ub70Me56Nd7EnahEoOPCKI1ppCjynHUJ35RzQxgcYZtWQGWIXlVeJUBRmDZpH6N6gcgUwimm3/43Pcf/Xzir83/OqntwqNL3I+U7W0Ri7VZbInDn/01yCY0PgDZBaHhe1KO5tPSoEqCLSqKbGwDYOLbpP7IUlziR8coSih3RhwRT41qn2M1bsJFwckFwYUO8bvSSiCuErzdO/hctZfsTd0AHZQYV/1LMcvFTOuzVpowVcEh0BL4HM4CWv0b2d11VYIV7z8iM47X3cbT07M7CYznstWI8Ap0ZoCVWh/40qLDJQy/w5qJfzN+zkqJyJoTjYQg7PkCyknKeJ+Sps5NW1XBis+EWr9R4+x4KQaD32oGwor8ReZlUCG23s9untNtget0rXNDeVdvKVibgQRRWNQJ16Vk6qG8AhODyMYr1Zs9+K2PZnwPYeB0/EkexK9ITZj2VtFBHuZIHKMsGYnzn4mVdZ2Flr5PjogFQlmarWgn6RBiakzT1EfzLP2BjDeoOJWQdhCCuyXqmbfd+hCVmxq4Yk+MySKidIesA==
+X-Microsoft-Antispam-Message-Info: J/mj5wzt+6Y5NaWpUY+HhS/ubRvy8lD/ecFfLBlzhMQPOlKUlD/om7EeGwOk9zPanXZ0nsRCZBpQ+Ti42/kAYlWHEOvlGXo26neou6vJ7PDnUvmOTiANfvcLKHA9L5XgUmpqcSNMceyORWxN3AG0pMtzMjueBNPk3ZS/hLuEwXX9Hc0gfHHIoLJmvCrQzEVs5Reb2K9VKomJyo4A9nFvqnjLPKp2vSkI9mscFZSO5gqurdmfaeVcbirDpjlO+MYfpkVy1FNdjTUiRi/LvlFPy+sS5zMOWxvchT8b35D7gdlfkN0MwkGlLDhJGCeLfjKhid50aG38AnYaHCsy7SOYwRYXyIXvwN3PE5zQb/JLofMZiALglZ8qCCFxn0PPci6gclU/T58v5Ft5mQYg62RgkxPndhxutK/lW4dLKIXRMHr1MIOhgdOMf3mDSUjHX24wMxQmtHwY7W3p61Kto0wlwC7OMquKukf2QwSLMf0OafeBY+XVtmjeepAQQSe/cb7cvz97u5ZOo1etAxQug8Eh4gFHofq1lfA+DsbYfQw8JnRCGzdaho2/i5X6GS1dYy85mu/uZA0O/8lHeNZluGvh7jXnc+QIN4DrUyiNQp+8Bp6l1XyzrujqgklINHDJ+4PZEi7GCRVaDfQjJTG5X2PJmQ==
 X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:VI1PR04MB5151.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(4636009)(366004)(316002)(5660300002)(508600001)(52116002)(86362001)(8676002)(54906003)(8936002)(66946007)(186003)(6512007)(2906002)(6486002)(7416002)(6506007)(30864003)(1076003)(2616005)(66556008)(66476007)(44832011)(83380400001)(38100700002)(4326008);
+ SFS:(4636009)(366004)(8936002)(30864003)(1076003)(52116002)(6506007)(5660300002)(54906003)(8676002)(508600001)(186003)(86362001)(6666004)(2616005)(6512007)(7416002)(83380400001)(44832011)(66556008)(66476007)(4326008)(66946007)(316002)(38100700002)(6486002)(2906002);
  DIR:OUT; SFP:1101; 
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?mrH0KFGyFOzKUQ5k7AJa5ksV3QQbDYOzcSPLLj/8QC2OfoFHia+rH8If+N2O?=
- =?us-ascii?Q?wZb/ZN7dzR02rDHNYyG6ZZLFpI0dVb20F+h2BYIGFxP8flC2FkMiJp4ZlBZd?=
- =?us-ascii?Q?ihWzda6zsn7d6ubi5wBiZHUTWS4ShTB6NC1ZjkjCCXv3WujT2sWeTlVEFqkk?=
- =?us-ascii?Q?1nGyOKRM3hToh5vwUg2Gm/J7Kr6jAY9QyTOTqRGiHqzV8d6m9tqeYy2dv2kf?=
- =?us-ascii?Q?LdsKPqtTTGieLGju0tJQeL4CEIReZxaJcVBhBvpxGUp9P42WYCK/xm4okC//?=
- =?us-ascii?Q?VAo5HhLthz9jFTAcbyui6nk5xN+fgjEQPaJLiGb1GNGf/sFTawJH81gKwChG?=
- =?us-ascii?Q?Bo5AL3Pyg8kSD2ddlxVISbbWxYHBeD4oRoq4wV3z0W8E1cus0nRr5fGwRIJf?=
- =?us-ascii?Q?5BJWNuK/GM67kJ5VcSjIBGYmm55wQ1GZsYbm4UonP/PmeMzfeYsoxhryrPsP?=
- =?us-ascii?Q?7SF7W6pfoE7QIHr3lMX3VPaNMO9+iLf2nfxj5KuXlTdQ6Ca+bROp77Fi0DnF?=
- =?us-ascii?Q?GtumiDlHFsgctvVCtqe3diQzirJlcHLU9GptJbm8W4Nh5hjuZF7XFrweQo5z?=
- =?us-ascii?Q?zJeoO+oObhCFuy+E9wdhr1EVlp6EklGv940EvD54SE1obEQAS0+1Kxh5gf9q?=
- =?us-ascii?Q?K2Zer8+4JTmOk17IX1ojnQ1gRI4b2oTFeRssXMuR9qh75OCNYW9Upy+Rxb8D?=
- =?us-ascii?Q?M+kP7/DiF/l7kn3+BAvVdApZRSk75MbDou51kE3GpISByrFqM7e8+Sf5zWwZ?=
- =?us-ascii?Q?/eOZ2+GZtWnJKV4nmwqRaTkC/+GoKGa29FYPH1JfA97CyONRp4+dZ+GpOwpy?=
- =?us-ascii?Q?y4Ri9Yoo7HNPHTukd1D+6R0aK0P7KW12XVS7AY+tByjFV0CBkn+xFsCxzC/A?=
- =?us-ascii?Q?exixDPpG+0rgua0cX732Bh8J9TXm2bg+LwRziz4xybxKZDK1ypilEshpJhKo?=
- =?us-ascii?Q?lAO+Dm4uwN7zjb6GTTHMXd5DlP3arr/Zy1tRGl5EjpYnkXFr0gzHq0F+ajlD?=
- =?us-ascii?Q?7xl+pG+FBjm9UWaih+lMY+SC39zhhnIFr4kJeRIRuy3VmCN+uXVns2P980Jg?=
- =?us-ascii?Q?Yo8VQ3stkILrLBaP7Tpc8H71Fb03WtbULjKPM/bR2Q0sKXJEH8Y7QMql+Cge?=
- =?us-ascii?Q?AZV2OBMAqnacF5E5AxbnujCTUj3gNoBIegxQeG5HlYH0I7vQPrdXe5VeBzJK?=
- =?us-ascii?Q?sUEbTuKB9apzLuI0amgvy3L61q5KQccIjpd/99jG4lBy6CemuFk/efBLeLFO?=
- =?us-ascii?Q?q9ozgYymyIIqJ6HNFMu4NJjS/9GgOsd7Z0TON6XHyScYRorEecsbucvzatkf?=
- =?us-ascii?Q?8IOoBT0WJcrGp2Mjr75cI+95pjpRYPVWe+ZHsSWzftfHxZte294tKTWq5Hos?=
- =?us-ascii?Q?V866oH2FUnmlOtTDezAA40XiozosEQ+03XtYYHuWIno2yM2xaVVR+eIg3/ua?=
- =?us-ascii?Q?QUqIDx5PZ35FTluCOKboIM59+FCzCFAnsigqVTK8geQwezllYSbpHuP7iYJF?=
- =?us-ascii?Q?ET+QrlPDiuzmwYDsXksAAks91eHbIUAIrk4JNev9BYrBkrhWdj3kYDQgiOEP?=
- =?us-ascii?Q?N2Dblnwxd3sgtSH/8OckM9lvPkyTo5lwSF80XZt9OJRSKzu1cMb0Kvfc1Tee?=
- =?us-ascii?Q?6qncOCe2iywQe5ixIh4vwbwJASvMaPwjp+9HZr1mHYLfrk+CTeA+Bh36/kfz?=
- =?us-ascii?Q?jYVBbTMg6Jj+V6QoxVnQap99krCWhSDDHqlI84YB0KDoZNdt?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?KqpNn7N1/fqjr692djbLRU8/438g6C6ZVqTZR1uKy7Za3m679dBBB75ozQEj?=
+ =?us-ascii?Q?d7vx6dVYd+jSZJW1BYdbpAMXuqwunvloHo2k75ZELm6PEQxVy/BCAFYynJzY?=
+ =?us-ascii?Q?Ymdu8VDIffZmMyc8VB+8eOWTzRSTaRIfdvc95lW7RsOI3cnqp068stG4QOrK?=
+ =?us-ascii?Q?r+0W+g2jS09UxIag+kNJO81a5fPW+k9VOoAHYxARYfItHJKiuXMqqh3AIvW3?=
+ =?us-ascii?Q?DR1KJztUm8x06xweikF9RBzoYpZ9y/srWJckVfV7STTu7MYvPfjAw/jzFJ51?=
+ =?us-ascii?Q?sMPBjBI306WCATrVj5JyoeQXESTs8ldVQw/18hLwIkZxLtH2iwVneUfkGd0Q?=
+ =?us-ascii?Q?yd4dQQZzcaVSJ0JQfMXKmzCBIkLWHrtc3op7J/j/appw38mijusM7u0MdQZV?=
+ =?us-ascii?Q?1NZ4TShuDzSHi0O/Ds9TzRXK3NXpsuLb8YC6GTfv/W1PMa8UvDletayXJdLX?=
+ =?us-ascii?Q?ppukhRxxuSH5sTF01RDrB+ifk7LgUi5qwAZOzTkWtGKJ/7xvbMkqfreBlAms?=
+ =?us-ascii?Q?NSc+l747pdcFPNYTybCb54tG9uuhzr0I8TJhm/DzsRvb+zLQpCiXAA6Ky/f6?=
+ =?us-ascii?Q?HHBsitClA0kBaDpkGym5qtXms2PLbbyigUhrinmuZUix3Bfp9vue4JbZIsMM?=
+ =?us-ascii?Q?EA0A1YQowaPhkTTfQrp+kelRJ2JGbh1WQOFf6XtQwMW/HgAx73yAGeB9joXI?=
+ =?us-ascii?Q?TqnLWM7KwFHd/0riJOW+PKgWU+SI8/UeD9WeP3GL/u9BGGqvQb81E1qFaVFg?=
+ =?us-ascii?Q?8m0QYa9hpZ1FA3RaLXrlCw+mikccz9yB2+v7gLFaC819oV7if2qV5dPh+A8w?=
+ =?us-ascii?Q?fnRVKSSYSS7hJ0IpMLngJvgDwteu5990FVhCXeJ0oAxhSX1aNSLiLaTe4168?=
+ =?us-ascii?Q?XyuypvJxw0Ak1MTlbfOHHht8Ar8j0nNFuADTqYUlWzcUaA92eWy+JsPLQR/V?=
+ =?us-ascii?Q?6y/SooWYlDsfVhvF1XILtyx3SSevYEAZotA4Jhd2LcJ/nuVTmkZxTmH+FSvU?=
+ =?us-ascii?Q?rPtp7wmasI5Ddh23qdaaK/O3ef/N0mlERtvVFKdvSOkVV2YltraW0xvvYeB1?=
+ =?us-ascii?Q?sV7wuR1syJwcGmh820h24Jzo7V6SU5bGlUfcUwKgGMTR9VkfzOUfpiER6wk3?=
+ =?us-ascii?Q?nGjiaTHAVn1I5ik1W/FRAse2mN0A5ZwHH1HN+d35Z0FJBr1+5lYDW91VQeH8?=
+ =?us-ascii?Q?ycirjU/ILhDrGiL3kzJHem9qFeLguiC8WkD6fzrShNr928gwWVes+D2KH3fW?=
+ =?us-ascii?Q?FB6Ah2NeU1LcS3BeU+/GmRecdgqpyfXiTYvj5YIqH/8l2+B3pVYd27IzhyRi?=
+ =?us-ascii?Q?4WAxt59py2LgHKvXSBSHOX/7cf3JtnvUJti0wnJtAbfqrwpgoZcziVYKdFUV?=
+ =?us-ascii?Q?epbzGg8J/DOXyCIrT7OKaFqCNzxtjQHOQwjrQgwGHSJyCDn00kSJEngLZ19M?=
+ =?us-ascii?Q?YbGrUgEqKKqg0Gev8K/D5OsqLf+vOgRubzlaS/FgX/AeaTu1pHOaZc+i6Kbj?=
+ =?us-ascii?Q?fzoO5RBx32fVtql8fJDd6jW7ZEKWz3SvAaOctYdQL+WP13L8TG15CBN0xUPf?=
+ =?us-ascii?Q?Xp9AABmFNayTiNSEY0M8wQKYWAMuV7YpSGc98oMBD+Vgp2OoIuFRyMqWHi08?=
+ =?us-ascii?Q?MDY+3Qs8DOxY3q9t6H/N6a0PMMpz3N7t8wa/GdxHq5shsDgrToVehT0Zn9na?=
+ =?us-ascii?Q?NwPUbxo7Bs+qYcVUeUKHWG9Yb8kaxcnebD/in5/bFkQ3RUu9?=
 X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bc7299ad-3495-464c-06b5-08d9a9adfa5a
+X-MS-Exchange-CrossTenant-Network-Message-Id: 19584666-a9da-4fc7-a4c3-08d9a9adf620
 X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5151.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Nov 2021 09:38:14.7114 (UTC)
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Nov 2021 09:38:07.5155 (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BK5xY9q8JSSPHKBwYP+MH1wtlN4m0JQJ19qlXs9KuwAqk04V+4o2VeO50ZKjQCJtt19NUTfswCcWhgrE3dP/VQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5807
+X-MS-Exchange-CrossTenant-UserPrincipalName: hJpw3uMeIxsyUo+3c0YoYNIFSG2LotvAvsCzXtzFjZ91vtshI35kUqxT0U4vDh9CVjPHJ5j6jZDW2d2HKmCRAQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6623
 Cc: daniel.baluta@gmail.com, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
  AjitKumar.Pandey@amd.com, linux-kernel@vger.kernel.org,
+ Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
  pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com,
  Julian.Schroeder@amd.com, linux-mediatek@lists.infradead.org,
  Balakishore.pati@amd.com, yc.hung@mediatek.com,
@@ -167,406 +169,444 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
 
-Add module to support ALSA pcm stream configurations for ACP I2S
-and DMIC endpoints
+ACP DMA is used for loading SOF firmware into DSP memory and data
+transfer from system memory to DSP memory. Add helper callbacks to
+initialize and configure ACP DMA block for fw loading.
 
+Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 Signed-off-by: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
 Reviewed-by: Bard Liao <bard.liao@intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
 ---
- sound/soc/sof/amd/Makefile     |   2 +-
- sound/soc/sof/amd/acp-pcm.c    |  82 +++++++++++++++
- sound/soc/sof/amd/acp-stream.c | 181 +++++++++++++++++++++++++++++++++
- sound/soc/sof/amd/acp.c        |   2 +
- sound/soc/sof/amd/acp.h        |  28 +++++
- sound/soc/sof/amd/renoir.c     |  11 ++
- 6 files changed, 305 insertions(+), 1 deletion(-)
- create mode 100644 sound/soc/sof/amd/acp-pcm.c
- create mode 100644 sound/soc/sof/amd/acp-stream.c
+ sound/soc/sof/amd/acp-dsp-offset.h |  47 ++++++
+ sound/soc/sof/amd/acp.c            | 222 ++++++++++++++++++++++++++++-
+ sound/soc/sof/amd/acp.h            |  91 ++++++++++++
+ 3 files changed, 359 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/amd/Makefile b/sound/soc/sof/amd/Makefile
-index 29928b16002f..7b88db9c5fb7 100644
---- a/sound/soc/sof/amd/Makefile
-+++ b/sound/soc/sof/amd/Makefile
-@@ -4,7 +4,7 @@
- #
- # Copyright(c) 2021 Advanced Micro Devices, Inc. All rights reserved.
+diff --git a/sound/soc/sof/amd/acp-dsp-offset.h b/sound/soc/sof/amd/acp-dsp-offset.h
+index 2cc2a9a842c5..bfb02390b414 100644
+--- a/sound/soc/sof/amd/acp-dsp-offset.h
++++ b/sound/soc/sof/amd/acp-dsp-offset.h
+@@ -11,10 +11,57 @@
+ #ifndef _ACP_DSP_IP_OFFSET_H
+ #define _ACP_DSP_IP_OFFSET_H
  
--snd-sof-amd-acp-objs := acp.o acp-loader.o acp-ipc.o
-+snd-sof-amd-acp-objs := acp.o acp-loader.o acp-ipc.o acp-pcm.o acp-stream.o
- snd-sof-amd-renoir-objs := renoir.o
++/* Registers from ACP_DMA_0 block */
++#define ACP_DMA_CNTL_0				0x00
++#define ACP_DMA_DSCR_STRT_IDX_0			0x20
++#define ACP_DMA_DSCR_CNT_0			0x40
++#define ACP_DMA_PRIO_0				0x60
++#define ACP_DMA_CUR_DSCR_0			0x80
++#define ACP_DMA_ERR_STS_0			0xC0
++#define ACP_DMA_DESC_BASE_ADDR			0xE0
++#define ACP_DMA_DESC_MAX_NUM_DSCR		0xE4
++#define ACP_DMA_CH_STS				0xE8
++#define ACP_DMA_CH_GROUP			0xEC
++#define ACP_DMA_CH_RST_STS			0xF0
++
++/* Registers from ACP_AXI2AXIATU block */
++#define ACPAXI2AXI_ATU_PAGE_SIZE_GRP_1		0xC00
++#define ACPAXI2AXI_ATU_BASE_ADDR_GRP_1		0xC04
++#define ACPAXI2AXI_ATU_PAGE_SIZE_GRP_2		0xC08
++#define ACPAXI2AXI_ATU_BASE_ADDR_GRP_2		0xC0C
++#define ACPAXI2AXI_ATU_PAGE_SIZE_GRP_3		0xC10
++#define ACPAXI2AXI_ATU_BASE_ADDR_GRP_3		0xC14
++#define ACPAXI2AXI_ATU_PAGE_SIZE_GRP_4		0xC18
++#define ACPAXI2AXI_ATU_BASE_ADDR_GRP_4		0xC1C
++#define ACPAXI2AXI_ATU_PAGE_SIZE_GRP_5		0xC20
++#define ACPAXI2AXI_ATU_BASE_ADDR_GRP_5		0xC24
++#define ACPAXI2AXI_ATU_PAGE_SIZE_GRP_6		0xC28
++#define ACPAXI2AXI_ATU_BASE_ADDR_GRP_6		0xC2C
++#define ACPAXI2AXI_ATU_PAGE_SIZE_GRP_7		0xC30
++#define ACPAXI2AXI_ATU_BASE_ADDR_GRP_7		0xC34
++#define ACPAXI2AXI_ATU_PAGE_SIZE_GRP_8		0xC38
++#define ACPAXI2AXI_ATU_BASE_ADDR_GRP_8		0xC3C
++#define ACPAXI2AXI_ATU_CTRL			0xC40
+ #define ACP_SOFT_RESET				0x1000
  
- obj-$(CONFIG_SND_SOC_SOF_AMD_COMMON) += snd-sof-amd-acp.o
-diff --git a/sound/soc/sof/amd/acp-pcm.c b/sound/soc/sof/amd/acp-pcm.c
-new file mode 100644
-index 000000000000..5b23830cb1f3
---- /dev/null
-+++ b/sound/soc/sof/amd/acp-pcm.c
-@@ -0,0 +1,82 @@
-+// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
-+//
-+// This file is provided under a dual BSD/GPLv2 license. When using or
-+// redistributing this file, you may do so under either license.
-+//
-+// Copyright(c) 2021 Advanced Micro Devices, Inc.
-+//
-+// Authors: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
+ /* Registers from ACP_PGFSM block */
+ #define ACP_PGFSM_CONTROL			0x141C
+ #define ACP_PGFSM_STATUS			0x1420
+ 
++/* Registers from ACP_INTR block */
++#define ACP_DSP_SW_INTR_CNTL			0x1814
++#define ACP_ERROR_STATUS			0x18C4
 +
-+/*
-+ * PCM interface for generic AMD audio ACP DSP block
-+ */
-+#include <sound/pcm_params.h>
++/* Registers from ACP_SHA block */
++#define ACP_SHA_DSP_FW_QUALIFIER		0x1C70
++#define ACP_SHA_DMA_CMD				0x1CB0
++#define ACP_SHA_MSG_LENGTH			0x1CB4
++#define ACP_SHA_DMA_STRT_ADDR			0x1CB8
++#define ACP_SHA_DMA_DESTINATION_ADDR		0x1CBC
++#define ACP_SHA_DMA_CMD_STS			0x1CC0
++#define ACP_SHA_DMA_ERR_STATUS			0x1CC4
++#define ACP_SHA_TRANSFER_BYTE_CNT		0x1CC8
 +
-+#include "../ops.h"
-+#include "acp.h"
-+#include "acp-dsp-offset.h"
++#define ACP_SCRATCH_REG_0			0x10000
 +
-+int acp_pcm_hw_params(struct snd_sof_dev *sdev, struct snd_pcm_substream *substream,
-+		      struct snd_pcm_hw_params *params, struct sof_ipc_stream_params *ipc_params)
+ #endif
+diff --git a/sound/soc/sof/amd/acp.c b/sound/soc/sof/amd/acp.c
+index 687a67419335..3778f781f16a 100644
+--- a/sound/soc/sof/amd/acp.c
++++ b/sound/soc/sof/amd/acp.c
+@@ -20,6 +20,219 @@
+ #include "acp.h"
+ #include "acp-dsp-offset.h"
+ 
++static void configure_acp_groupregisters(struct acp_dev_data *adata)
 +{
-+	struct acp_dsp_stream *stream = substream->runtime->private_data;
-+	unsigned int buf_offset, index;
-+	u32 size;
++	struct snd_sof_dev *sdev = adata->dev;
++
++	/* Group Enable */
++	snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACPAXI2AXI_ATU_BASE_ADDR_GRP_1,
++			  ACP_SRAM_PTE_OFFSET | BIT(31));
++	snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACPAXI2AXI_ATU_PAGE_SIZE_GRP_1,
++			  PAGE_SIZE_4K_ENABLE);
++
++	snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACPAXI2AXI_ATU_CTRL, ACP_ATU_CACHE_INVALID);
++}
++
++static void init_dma_descriptor(struct acp_dev_data *adata)
++{
++	struct snd_sof_dev *sdev = adata->dev;
++	unsigned int addr;
++
++	addr = ACP_SRAM_PTE_OFFSET + offsetof(struct scratch_reg_conf, dma_desc);
++
++	snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACP_DMA_DESC_BASE_ADDR, addr);
++	snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACP_DMA_DESC_MAX_NUM_DSCR, ACP_MAX_DESC_CNT);
++}
++
++static void configure_dma_descriptor(struct acp_dev_data *adata, unsigned short idx,
++				     struct dma_descriptor *dscr_info)
++{
++	struct snd_sof_dev *sdev = adata->dev;
++	unsigned int offset;
++
++	offset = ACP_SCRATCH_REG_0 + offsetof(struct scratch_reg_conf, dma_desc) +
++		 idx * sizeof(struct dma_descriptor);
++
++	snd_sof_dsp_write(sdev, ACP_DSP_BAR, offset, dscr_info->src_addr);
++	snd_sof_dsp_write(sdev, ACP_DSP_BAR, offset + 0x4, dscr_info->dest_addr);
++	snd_sof_dsp_write(sdev, ACP_DSP_BAR, offset + 0x8, dscr_info->tx_cnt.u32_all);
++}
++
++static int config_dma_channel(struct acp_dev_data *adata, unsigned int ch,
++			      unsigned int idx, unsigned int dscr_count)
++{
++	struct snd_sof_dev *sdev = adata->dev;
++	unsigned int val, status;
 +	int ret;
 +
-+	size = ipc_params->buffer.size;
-+	stream->num_pages = ipc_params->buffer.pages;
-+	stream->dmab = substream->runtime->dma_buffer_p;
++	snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACP_DMA_CNTL_0 + ch * sizeof(u32),
++			  ACP_DMA_CH_RST | ACP_DMA_CH_GRACEFUL_RST_EN);
 +
-+	ret = acp_dsp_stream_config(sdev, stream);
++	ret = snd_sof_dsp_read_poll_timeout(sdev, ACP_DSP_BAR, ACP_DMA_CH_RST_STS, val,
++					    val & (1 << ch), ACP_REG_POLL_INTERVAL,
++					    ACP_REG_POLL_TIMEOUT_US);
 +	if (ret < 0) {
-+		dev_err(sdev->dev, "stream configuration failed\n");
++		status = snd_sof_dsp_read(sdev, ACP_DSP_BAR, ACP_ERROR_STATUS);
++		val = snd_sof_dsp_read(sdev, ACP_DSP_BAR, ACP_DMA_ERR_STS_0 + ch * sizeof(u32));
++
++		dev_err(sdev->dev, "ACP_DMA_ERR_STS :0x%x ACP_ERROR_STATUS :0x%x\n", val, status);
 +		return ret;
 +	}
 +
-+	ipc_params->buffer.phy_addr = stream->reg_offset;
-+	ipc_params->stream_tag = stream->stream_tag;
++	snd_sof_dsp_write(sdev, ACP_DSP_BAR, (ACP_DMA_CNTL_0 + ch * sizeof(u32)), 0);
++	snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACP_DMA_DSCR_CNT_0 + ch * sizeof(u32), dscr_count);
++	snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACP_DMA_DSCR_STRT_IDX_0 + ch * sizeof(u32), idx);
++	snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACP_DMA_PRIO_0 + ch * sizeof(u32), 0);
++	snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACP_DMA_CNTL_0 + ch * sizeof(u32), ACP_DMA_CH_RUN);
 +
-+	/* write buffer size of stream in scratch memory */
-+
-+	buf_offset = offsetof(struct scratch_reg_conf, buf_size);
-+	index = stream->stream_tag - 1;
-+	buf_offset = buf_offset + index * 4;
-+
-+	snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACP_SCRATCH_REG_0 + buf_offset, size);
-+
-+	return 0;
++	return ret;
 +}
-+EXPORT_SYMBOL_NS(acp_pcm_hw_params, SND_SOC_SOF_AMD_COMMON);
 +
-+int acp_pcm_open(struct snd_sof_dev *sdev, struct snd_pcm_substream *substream)
++static int acpbus_dma_start(struct acp_dev_data *adata, unsigned int ch,
++			    unsigned int dscr_count, struct dma_descriptor *dscr_info)
 +{
-+	struct acp_dsp_stream *stream;
++	struct snd_sof_dev *sdev = adata->dev;
++	int ret;
++	u16 dscr;
 +
-+	stream = acp_dsp_stream_get(sdev, 0);
-+	if (!stream)
-+		return -ENODEV;
++	if (!dscr_info || !dscr_count)
++		return -EINVAL;
 +
-+	substream->runtime->private_data = stream;
-+	stream->substream = substream;
++	for (dscr = 0; dscr < dscr_count; dscr++)
++		configure_dma_descriptor(adata, dscr, dscr_info++);
 +
-+	return 0;
++	ret = config_dma_channel(adata, ch, 0, dscr_count);
++	if (ret < 0)
++		dev_err(sdev->dev, "config dma ch failed:%d\n", ret);
++
++	return ret;
 +}
-+EXPORT_SYMBOL_NS(acp_pcm_open, SND_SOC_SOF_AMD_COMMON);
 +
-+int acp_pcm_close(struct snd_sof_dev *sdev, struct snd_pcm_substream *substream)
++int configure_and_run_dma(struct acp_dev_data *adata, unsigned int src_addr,
++			  unsigned int dest_addr, int dsp_data_size)
 +{
-+	struct acp_dsp_stream *stream;
++	struct snd_sof_dev *sdev = adata->dev;
++	unsigned int desc_count, index;
++	int ret;
 +
-+	stream = substream->runtime->private_data;
-+	if (!stream) {
-+		dev_err(sdev->dev, "No open stream\n");
++	for (desc_count = 0; desc_count < ACP_MAX_DESC && dsp_data_size >= 0;
++	     desc_count++, dsp_data_size -= ACP_PAGE_SIZE) {
++		adata->dscr_info[desc_count].src_addr = src_addr + desc_count * ACP_PAGE_SIZE;
++		adata->dscr_info[desc_count].dest_addr = dest_addr + desc_count * ACP_PAGE_SIZE;
++		adata->dscr_info[desc_count].tx_cnt.bits.count = ACP_PAGE_SIZE;
++		if (dsp_data_size < ACP_PAGE_SIZE)
++			adata->dscr_info[desc_count].tx_cnt.bits.count = dsp_data_size;
++	}
++
++	ret = acpbus_dma_start(adata, 0, desc_count, adata->dscr_info);
++	if (ret)
++		dev_err(sdev->dev, "acpbus_dma_start failed\n");
++
++	/* Clear descriptor array */
++	for (index = 0; index < desc_count; index++)
++		memset(&adata->dscr_info[index], 0x00, sizeof(struct dma_descriptor));
++
++	return ret;
++}
++
++int configure_and_run_sha_dma(struct acp_dev_data *adata, void *image_addr,
++			      unsigned int start_addr, unsigned int dest_addr,
++			      unsigned int image_length)
++{
++	struct snd_sof_dev *sdev = adata->dev;
++	unsigned int tx_count, fw_qualifier, val;
++	int ret;
++
++	if (!image_addr) {
++		dev_err(sdev->dev, "SHA DMA image address is NULL\n");
 +		return -EINVAL;
 +	}
 +
-+	stream->substream = NULL;
-+	substream->runtime->private_data = NULL;
++	val = snd_sof_dsp_read(sdev, ACP_DSP_BAR, ACP_SHA_DMA_CMD);
++	if (val & ACP_SHA_RUN) {
++		snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACP_SHA_DMA_CMD, ACP_SHA_RESET);
++		ret = snd_sof_dsp_read_poll_timeout(sdev, ACP_DSP_BAR, ACP_SHA_DMA_CMD_STS,
++						    val, val & ACP_SHA_RESET,
++						    ACP_REG_POLL_INTERVAL,
++						    ACP_REG_POLL_TIMEOUT_US);
++		if (ret < 0) {
++			dev_err(sdev->dev, "SHA DMA Failed to Reset\n");
++			return ret;
++		}
++	}
 +
-+	return acp_dsp_stream_put(sdev, stream);
-+}
-+EXPORT_SYMBOL_NS(acp_pcm_close, SND_SOC_SOF_AMD_COMMON);
-diff --git a/sound/soc/sof/amd/acp-stream.c b/sound/soc/sof/amd/acp-stream.c
-new file mode 100644
-index 000000000000..f2837bfbdb20
---- /dev/null
-+++ b/sound/soc/sof/amd/acp-stream.c
-@@ -0,0 +1,181 @@
-+// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
-+//
-+// This file is provided under a dual BSD/GPLv2 license. When using or
-+// redistributing this file, you may do so under either license.
-+//
-+// Copyright(c) 2021 Advanced Micro Devices, Inc.
-+//
-+// Authors: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
++	snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACP_SHA_DMA_STRT_ADDR, start_addr);
++	snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACP_SHA_DMA_DESTINATION_ADDR, dest_addr);
++	snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACP_SHA_MSG_LENGTH, image_length);
++	snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACP_SHA_DMA_CMD, ACP_SHA_RUN);
 +
-+/*
-+ * Hardware interface for generic AMD audio DSP ACP IP
-+ */
++	ret = snd_sof_dsp_read_poll_timeout(sdev, ACP_DSP_BAR, ACP_SHA_TRANSFER_BYTE_CNT,
++					    tx_count, tx_count == image_length,
++					    ACP_REG_POLL_INTERVAL, ACP_DMA_COMPLETE_TIMEOUT_US);
++	if (ret < 0) {
++		dev_err(sdev->dev, "SHA DMA Failed to Transfer Length %x\n", tx_count);
++		return ret;
++	}
 +
-+#include "../ops.h"
-+#include "acp-dsp-offset.h"
-+#include "acp.h"
++	snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACP_SHA_DSP_FW_QUALIFIER, DSP_FW_RUN_ENABLE);
 +
-+#define PTE_GRP1_OFFSET		0x00000000
-+#define PTE_GRP2_OFFSET		0x00800000
-+#define PTE_GRP3_OFFSET		0x01000000
-+#define PTE_GRP4_OFFSET		0x01800000
-+#define PTE_GRP5_OFFSET		0x02000000
-+#define PTE_GRP6_OFFSET		0x02800000
-+#define PTE_GRP7_OFFSET		0x03000000
-+#define PTE_GRP8_OFFSET		0x03800000
-+
-+int acp_dsp_stream_config(struct snd_sof_dev *sdev, struct acp_dsp_stream *stream)
-+{
-+	unsigned int pte_reg, pte_size, phy_addr_offset, index;
-+	int stream_tag = stream->stream_tag;
-+	u32 low, high, offset, reg_val;
-+	dma_addr_t addr;
-+	int page_idx;
-+
-+	switch (stream_tag) {
-+	case 1:
-+		pte_reg = ACPAXI2AXI_ATU_BASE_ADDR_GRP_1;
-+		pte_size = ACPAXI2AXI_ATU_PAGE_SIZE_GRP_1;
-+		offset = offsetof(struct scratch_reg_conf, grp1_pte);
-+		stream->reg_offset = PTE_GRP1_OFFSET;
-+		break;
-+	case 2:
-+		pte_reg = ACPAXI2AXI_ATU_BASE_ADDR_GRP_2;
-+		pte_size = ACPAXI2AXI_ATU_PAGE_SIZE_GRP_2;
-+		offset = offsetof(struct scratch_reg_conf, grp2_pte);
-+		stream->reg_offset = PTE_GRP2_OFFSET;
-+		break;
-+	case 3:
-+		pte_reg = ACPAXI2AXI_ATU_BASE_ADDR_GRP_3;
-+		pte_size = ACPAXI2AXI_ATU_PAGE_SIZE_GRP_3;
-+		offset = offsetof(struct scratch_reg_conf, grp3_pte);
-+		stream->reg_offset = PTE_GRP3_OFFSET;
-+		break;
-+	case 4:
-+		pte_reg = ACPAXI2AXI_ATU_BASE_ADDR_GRP_4;
-+		pte_size = ACPAXI2AXI_ATU_PAGE_SIZE_GRP_4;
-+		offset = offsetof(struct scratch_reg_conf, grp4_pte);
-+		stream->reg_offset = PTE_GRP4_OFFSET;
-+		break;
-+	case 5:
-+		pte_reg = ACPAXI2AXI_ATU_BASE_ADDR_GRP_5;
-+		pte_size = ACPAXI2AXI_ATU_PAGE_SIZE_GRP_5;
-+		offset = offsetof(struct scratch_reg_conf, grp5_pte);
-+		stream->reg_offset = PTE_GRP5_OFFSET;
-+		break;
-+	case 6:
-+		pte_reg = ACPAXI2AXI_ATU_BASE_ADDR_GRP_6;
-+		pte_size = ACPAXI2AXI_ATU_PAGE_SIZE_GRP_6;
-+		offset = offsetof(struct scratch_reg_conf, grp6_pte);
-+		stream->reg_offset = PTE_GRP6_OFFSET;
-+		break;
-+	case 7:
-+		pte_reg = ACPAXI2AXI_ATU_BASE_ADDR_GRP_7;
-+		pte_size = ACPAXI2AXI_ATU_PAGE_SIZE_GRP_7;
-+		offset = offsetof(struct scratch_reg_conf, grp7_pte);
-+		stream->reg_offset = PTE_GRP7_OFFSET;
-+		break;
-+	case 8:
-+		pte_reg = ACPAXI2AXI_ATU_BASE_ADDR_GRP_8;
-+		pte_size = ACPAXI2AXI_ATU_PAGE_SIZE_GRP_8;
-+		offset = offsetof(struct scratch_reg_conf, grp8_pte);
-+		stream->reg_offset = PTE_GRP8_OFFSET;
-+		break;
-+	default:
-+		dev_err(sdev->dev, "Invalid stream tag %d\n", stream_tag);
++	fw_qualifier = snd_sof_dsp_read(sdev, ACP_DSP_BAR, ACP_SHA_DSP_FW_QUALIFIER);
++	if (!(fw_qualifier & DSP_FW_RUN_ENABLE)) {
++		dev_err(sdev->dev, "PSP validation failed\n");
 +		return -EINVAL;
 +	}
 +
-+	/* write phy_addr in scratch memory */
++	return ret;
++}
 +
-+	phy_addr_offset = offsetof(struct scratch_reg_conf, reg_offset);
-+	index = stream_tag - 1;
-+	phy_addr_offset = phy_addr_offset + index * 4;
++int acp_dma_status(struct acp_dev_data *adata, unsigned char ch)
++{
++	struct snd_sof_dev *sdev = adata->dev;
++	unsigned int val;
++	int ret = 0;
 +
-+	snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACP_SCRATCH_REG_0 +
-+			  phy_addr_offset, stream->reg_offset);
-+
-+	/* Group Enable */
-+	reg_val = ACP_SRAM_PTE_OFFSET + offset;
-+	snd_sof_dsp_write(sdev, ACP_DSP_BAR, pte_reg, reg_val | BIT(31));
-+	snd_sof_dsp_write(sdev, ACP_DSP_BAR, pte_size, PAGE_SIZE_4K_ENABLE);
-+
-+	for (page_idx = 0; page_idx < stream->num_pages; page_idx++) {
-+		addr = snd_sgbuf_get_addr(stream->dmab, page_idx * PAGE_SIZE);
-+
-+		/* Load the low address of page int ACP SRAM through SRBM */
-+		low = lower_32_bits(addr);
-+		high = upper_32_bits(addr);
-+
-+		snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACP_SCRATCH_REG_0 + offset, low);
-+
-+		high |= BIT(31);
-+		snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACP_SCRATCH_REG_0 + offset + 4, high);
-+		/* Move to next physically contiguous page */
-+		offset += 8;
++	val = snd_sof_dsp_read(sdev, ACP_DSP_BAR, ACP_DMA_CNTL_0 + ch * sizeof(u32));
++	if (val & ACP_DMA_CH_RUN) {
++		ret = snd_sof_dsp_read_poll_timeout(sdev, ACP_DSP_BAR, ACP_DMA_CH_STS, val, !val,
++						    ACP_REG_POLL_INTERVAL,
++						    ACP_DMA_COMPLETE_TIMEOUT_US);
++		if (ret < 0)
++			dev_err(sdev->dev, "DMA_CHANNEL %d status timeout\n", ch);
 +	}
++
++	return ret;
++}
++
++void memcpy_from_scratch(struct snd_sof_dev *sdev, u32 offset, unsigned int *dst, size_t bytes)
++{
++	unsigned int reg_offset = offset + ACP_SCRATCH_REG_0;
++	int i, j;
++
++	for (i = 0, j = 0; i < bytes; i = i + 4, j++)
++		dst[j] = snd_sof_dsp_read(sdev, ACP_DSP_BAR, reg_offset + i);
++}
++
++void memcpy_to_scratch(struct snd_sof_dev *sdev, u32 offset, unsigned int *src, size_t bytes)
++{
++	unsigned int reg_offset = offset + ACP_SCRATCH_REG_0;
++	int i, j;
++
++	for (i = 0, j = 0; i < bytes; i = i + 4, j++)
++		snd_sof_dsp_write(sdev, ACP_DSP_BAR, reg_offset + i, src[j]);
++}
++
++static int acp_memory_init(struct snd_sof_dev *sdev)
++{
++	struct acp_dev_data *adata = sdev->pdata->hw_pdata;
++
++	snd_sof_dsp_update_bits(sdev, ACP_DSP_BAR, ACP_DSP_SW_INTR_CNTL,
++				ACP_DSP_INTR_EN_MASK, ACP_DSP_INTR_EN_MASK);
++	configure_acp_groupregisters(adata);
++	init_dma_descriptor(adata);
 +
 +	return 0;
 +}
 +
-+struct acp_dsp_stream *acp_dsp_stream_get(struct snd_sof_dev *sdev, int tag)
-+{
-+	struct acp_dev_data *adata = sdev->pdata->hw_pdata;
-+	struct acp_dsp_stream *stream = adata->stream_buf;
-+	int i;
+ static int acp_power_on(struct snd_sof_dev *sdev)
+ {
+ 	unsigned int val;
+@@ -86,6 +299,7 @@ int amd_sof_acp_probe(struct snd_sof_dev *sdev)
+ 	struct pci_dev *pci = to_pci_dev(sdev->dev);
+ 	struct acp_dev_data *adata;
+ 	unsigned int addr;
++	int ret;
+ 
+ 	adata = devm_kzalloc(sdev->dev, sizeof(struct acp_dev_data),
+ 			     GFP_KERNEL);
+@@ -104,7 +318,13 @@ int amd_sof_acp_probe(struct snd_sof_dev *sdev)
+ 
+ 	sdev->pdata->hw_pdata = adata;
+ 
+-	return acp_init(sdev);
++	ret = acp_init(sdev);
++	if (ret < 0)
++		return ret;
 +
-+	for (i = 0; i < ACP_MAX_STREAM; i++, stream++) {
-+		if (stream->active)
-+			continue;
++	acp_memory_init(sdev);
 +
-+		/* return stream if tag not specified*/
-+		if (!tag) {
-+			stream->active = 1;
-+			return stream;
-+		}
-+
-+		/* check if this is the requested stream tag */
-+		if (stream->stream_tag == tag) {
-+			stream->active = 1;
-+			return stream;
-+		}
-+	}
-+
-+	dev_err(sdev->dev, "stream %d active or no inactive stream\n", tag);
-+	return NULL;
-+}
-+EXPORT_SYMBOL_NS(acp_dsp_stream_get, SND_SOC_SOF_AMD_COMMON);
-+
-+int acp_dsp_stream_put(struct snd_sof_dev *sdev,
-+		       struct acp_dsp_stream *acp_stream)
-+{
-+	struct acp_dev_data *adata = sdev->pdata->hw_pdata;
-+	struct acp_dsp_stream *stream = adata->stream_buf;
-+	int i;
-+
-+	/* Free an active stream */
-+	for (i = 0; i < ACP_MAX_STREAM; i++, stream++) {
-+		if (stream == acp_stream) {
-+			stream->active = 0;
-+			return 0;
-+		}
-+	}
-+
-+	dev_err(sdev->dev, "Cannot find active stream tag %d\n", acp_stream->stream_tag);
-+	return -EINVAL;
-+}
-+EXPORT_SYMBOL_NS(acp_dsp_stream_put, SND_SOC_SOF_AMD_COMMON);
-+
-+int acp_dsp_stream_init(struct snd_sof_dev *sdev)
-+{
-+	struct acp_dev_data *adata = sdev->pdata->hw_pdata;
-+	int i;
-+
-+	for (i = 0; i < ACP_MAX_STREAM; i++) {
-+		adata->stream_buf[i].sdev = sdev;
-+		adata->stream_buf[i].active = 0;
-+		adata->stream_buf[i].stream_tag = i + 1;
-+	}
 +	return 0;
-+}
-+EXPORT_SYMBOL_NS(acp_dsp_stream_init, SND_SOC_SOF_AMD_COMMON);
-diff --git a/sound/soc/sof/amd/acp.c b/sound/soc/sof/amd/acp.c
-index 43a57d15e3ca..74ede28aa8d8 100644
---- a/sound/soc/sof/amd/acp.c
-+++ b/sound/soc/sof/amd/acp.c
-@@ -363,6 +363,8 @@ int amd_sof_acp_probe(struct snd_sof_dev *sdev)
- 
- 	acp_memory_init(sdev);
- 
-+	acp_dsp_stream_init(sdev);
-+
- 	return 0;
  }
  EXPORT_SYMBOL_NS(amd_sof_acp_probe, SND_SOC_SOF_AMD_COMMON);
+ 
 diff --git a/sound/soc/sof/amd/acp.h b/sound/soc/sof/amd/acp.h
-index ac8340119125..36d000c3f792 100644
+index c7ac8f9941d5..ff01d0ef67ef 100644
 --- a/sound/soc/sof/amd/acp.h
 +++ b/sound/soc/sof/amd/acp.h
-@@ -13,6 +13,8 @@
- 
- #include "../sof-priv.h"
- 
-+#define ACP_MAX_STREAM	8
-+
- #define ACP_DSP_BAR	0
+@@ -15,6 +15,7 @@
  
  #define ACP_REG_POLL_INTERVAL                   500
-@@ -114,6 +116,17 @@ struct  scratch_reg_conf {
- 	unsigned int    reserve[];
- };
+ #define ACP_REG_POLL_TIMEOUT_US                 2000
++#define ACP_DMA_COMPLETE_TIMEOUT_US		5000
  
-+struct acp_dsp_stream {
-+	struct list_head list;
-+	struct snd_sof_dev *sdev;
-+	struct snd_pcm_substream *substream;
-+	struct snd_dma_buffer *dmab;
-+	int num_pages;
-+	int stream_tag;
-+	int active;
-+	unsigned int reg_offset;
+ #define ACP_PGFSM_CNTL_POWER_ON_MASK		0x01
+ #define ACP_PGFSM_STATUS_MASK			0x03
+@@ -23,11 +24,101 @@
+ #define ACP_RELEASE_RESET			0x00
+ #define ACP_SOFT_RESET_DONE_MASK		0x00010001
+ 
++#define ACP_DSP_INTR_EN_MASK			0x00000001
++#define ACP_SRAM_PTE_OFFSET			0x02050000
++#define PAGE_SIZE_4K_ENABLE			0x2
++#define ACP_PAGE_SIZE				0x1000
++#define ACP_DMA_CH_RUN				0x02
++#define ACP_MAX_DESC_CNT			0x02
++#define DSP_FW_RUN_ENABLE			0x01
++#define ACP_SHA_RUN				0x01
++#define ACP_SHA_RESET				0x02
++#define ACP_DMA_CH_RST				0x01
++#define ACP_DMA_CH_GRACEFUL_RST_EN		0x10
++#define ACP_ATU_CACHE_INVALID			0x01
++#define ACP_MAX_DESC				128
++#define ACPBUS_REG_BASE_OFFSET			ACP_DMA_CNTL_0
++
++struct  acp_atu_grp_pte {
++	u32 low;
++	u32 high;
++};
++
++union dma_tx_cnt {
++	struct {
++		unsigned int count : 19;
++		unsigned int reserved : 12;
++		unsigned ioc : 1;
++	} bitfields, bits;
++	unsigned int u32_all;
++	signed int i32_all;
++};
++
++struct dma_descriptor {
++	unsigned int src_addr;
++	unsigned int dest_addr;
++	union dma_tx_cnt tx_cnt;
++	unsigned int reserved;
++};
++
++/* Scratch memory structure for communication b/w host and dsp */
++struct  scratch_ipc_conf {
++	/* DSP mailbox */
++	u8 sof_out_box[512];
++	/* Host mailbox */
++	u8 sof_in_box[512];
++	/* Debug memory */
++	u8 sof_debug_box[1024];
++	/* Exception memory*/
++	u8 sof_except_box[1024];
++	/* Stream buffer */
++	u8 sof_stream_box[1024];
++	/* Trace buffer */
++	u8 sof_trace_box[1024];
++	/* Host msg flag */
++	u32 sof_host_msg_write;
++	/* Host ack flag*/
++	u32 sof_host_ack_write;
++	/* DSP msg flag */
++	u32 sof_dsp_msg_write;
++	/* Dsp ack flag */
++	u32 sof_dsp_ack_write;
++};
++
++struct  scratch_reg_conf {
++	struct scratch_ipc_conf info;
++	struct acp_atu_grp_pte grp1_pte[16];
++	struct acp_atu_grp_pte grp2_pte[16];
++	struct acp_atu_grp_pte grp3_pte[16];
++	struct acp_atu_grp_pte grp4_pte[16];
++	struct acp_atu_grp_pte grp5_pte[16];
++	struct acp_atu_grp_pte grp6_pte[16];
++	struct acp_atu_grp_pte grp7_pte[16];
++	struct acp_atu_grp_pte grp8_pte[16];
++	struct dma_descriptor dma_desc[64];
++	unsigned int reg_offset[8];
++	unsigned int buf_size[8];
++	u8 acp_tx_fifo_buf[256];
++	u8 acp_rx_fifo_buf[256];
++	unsigned int    reserve[];
 +};
 +
  /* Common device data struct for ACP devices */
  struct acp_dev_data {
  	struct snd_sof_dev  *dev;
-@@ -125,6 +138,7 @@ struct acp_dev_data {
- 	dma_addr_t dma_addr;
- 	u8 *data_buf;
- 	struct dma_descriptor dscr_info[ACP_MAX_DESC];
-+	struct acp_dsp_stream stream_buf[ACP_MAX_STREAM];
++	struct dma_descriptor dscr_info[ACP_MAX_DESC];
  };
  
- void memcpy_to_scratch(struct snd_sof_dev *sdev, u32 offset, unsigned int *src, size_t bytes);
-@@ -165,5 +179,19 @@ int acp_sof_ipc_pcm_params(struct snd_sof_dev *sdev, struct snd_pcm_substream *s
- void acp_mailbox_write(struct snd_sof_dev *sdev, u32 offset, void *message, size_t bytes);
- void acp_mailbox_read(struct snd_sof_dev *sdev, u32 offset, void *message, size_t bytes);
- 
-+/* ACP - DSP  stream callbacks */
-+int acp_dsp_stream_config(struct snd_sof_dev *sdev, struct acp_dsp_stream *stream);
-+int acp_dsp_stream_init(struct snd_sof_dev *sdev);
-+struct acp_dsp_stream *acp_dsp_stream_get(struct snd_sof_dev *sdev, int tag);
-+int acp_dsp_stream_put(struct snd_sof_dev *sdev, struct acp_dsp_stream *acp_stream);
++void memcpy_to_scratch(struct snd_sof_dev *sdev, u32 offset, unsigned int *src, size_t bytes);
++void memcpy_from_scratch(struct snd_sof_dev *sdev, u32 offset, unsigned int *dst, size_t bytes);
 +
-+/*
-+ * DSP PCM Operations.
-+ */
-+int acp_pcm_open(struct snd_sof_dev *sdev, struct snd_pcm_substream *substream);
-+int acp_pcm_close(struct snd_sof_dev *sdev, struct snd_pcm_substream *substream);
-+int acp_pcm_hw_params(struct snd_sof_dev *sdev, struct snd_pcm_substream *substream,
-+		      struct snd_pcm_hw_params *params, struct sof_ipc_stream_params *ipc_params);
++int acp_dma_status(struct acp_dev_data *adata, unsigned char ch);
++int configure_and_run_dma(struct acp_dev_data *adata, unsigned int src_addr,
++			  unsigned int dest_addr, int dsp_data_size);
++int configure_and_run_sha_dma(struct acp_dev_data *adata, void *image_addr,
++			      unsigned int start_addr, unsigned int dest_addr,
++			      unsigned int image_length);
 +
- extern const struct snd_sof_dsp_ops sof_renoir_ops;
- #endif
-diff --git a/sound/soc/sof/amd/renoir.c b/sound/soc/sof/amd/renoir.c
-index ca5582b3f82d..0241c5dce156 100644
---- a/sound/soc/sof/amd/renoir.c
-+++ b/sound/soc/sof/amd/renoir.c
-@@ -140,6 +140,17 @@ const struct snd_sof_dsp_ops sof_renoir_ops = {
- 	/* DAI drivers */
- 	.drv			= renoir_sof_dai,
- 	.num_drv		= ARRAY_SIZE(renoir_sof_dai),
-+
-+	/* stream callbacks */
-+	.pcm_open		= acp_pcm_open,
-+	.pcm_close		= acp_pcm_close,
-+	.pcm_hw_params		= acp_pcm_hw_params,
-+
-+	.hw_info		= SNDRV_PCM_INFO_MMAP |
-+				  SNDRV_PCM_INFO_MMAP_VALID |
-+				  SNDRV_PCM_INFO_INTERLEAVED |
-+				  SNDRV_PCM_INFO_PAUSE |
-+				  SNDRV_PCM_INFO_NO_PERIOD_WAKEUP,
- };
- EXPORT_SYMBOL(sof_renoir_ops);
- 
+ /* ACP device probe/remove */
+ int amd_sof_acp_probe(struct snd_sof_dev *sdev);
+ int amd_sof_acp_remove(struct snd_sof_dev *sdev);
 -- 
 2.27.0
 
