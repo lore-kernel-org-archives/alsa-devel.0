@@ -2,74 +2,72 @@ Return-Path: <SRS0=ac5z=QE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E3D71C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Nov 2021 22:33:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED416C4332F
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Nov 2021 22:33:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DF33F61B5F
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Nov 2021 22:33:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DF33F61B5F
+	by mail.kernel.org (Postfix) with ESMTPS id 7973061B95
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Nov 2021 22:33:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7973061B95
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 25E2818F5;
-	Wed, 17 Nov 2021 23:32:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 25E2818F5
+	by alsa0.perex.cz (Postfix) with ESMTPS id DD8D8190A;
+	Wed, 17 Nov 2021 23:32:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DD8D8190A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637188389;
-	bh=jn1cqoJ3XZaDqZgqyRQKukXK0FQ0EKQh7jJIum/8OaQ=;
+	s=default; t=1637188394;
+	bh=0EBn4iFas/lVt0Plr8qx6oSNvIZ4IcS+xI8hMFa4Mu8=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jpWviM3QvCit1pb9Wt+9QjpQfL2E2VpsWxhHFtxleyLVcwTl+Tnl/flx45NbJElPe
-	 x+ogtcPynsV+BDMrnBrCtYdw395iR5S8bDn/E2KSfjDvVN4frJwAMbspC3tFjxeyun
-	 s5aPkrZLxiGId3Ax0MuDAQgx2jrErMFBJySklJRE=
+	b=iFd74hmeBCkW7sv6XcJks80aIrySeeBDERyDKI5WVOxUyC8ldZu+quidSQCfGBQ4Q
+	 os9DKp9V8SFOq/rOviSlfqu6x6pXf6YuZoNjOfSXQyHX58dP9iw+aOyz2uGMSOnswd
+	 sAuxjDReqWmajOYZiAePrRC2YFRk5JyeW6ikqYSk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2FE65F800FA;
-	Wed, 17 Nov 2021 23:31:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DE162F804EC;
+	Wed, 17 Nov 2021 23:31:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 04A5BF804BD; Wed, 17 Nov 2021 23:31:37 +0100 (CET)
+ id E93DCF804BD; Wed, 17 Nov 2021 23:31:37 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3FD43F8016C
- for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2021 23:31:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3FD43F8016C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 36B64F800FA
+ for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2021 23:31:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36B64F800FA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="hoTkBKgw"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A10461882;
- Wed, 17 Nov 2021 22:31:25 +0000 (UTC)
+ header.b="i93whKvl"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4FC9C61B5F;
+ Wed, 17 Nov 2021 22:31:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1637188287;
- bh=jn1cqoJ3XZaDqZgqyRQKukXK0FQ0EKQh7jJIum/8OaQ=;
+ s=k20201202; t=1637188291;
+ bh=0EBn4iFas/lVt0Plr8qx6oSNvIZ4IcS+xI8hMFa4Mu8=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=hoTkBKgwg3wNI7wPETWtWKDEHpOczYSpXY7Fd7OfCnJaUCcB8havj6RGTOwsoLH90
- 2jZSxxaMytPyaN2Wh7GIYQbsW7a7Jrrpq4Z5ckeblOBBiaua2ngMNUOISCM5IVsapE
- Hkt3bv7MBSB0so6oKFS1OQswjxfsPUx4jZPoK+MQiMRQeUoGUwKLbIqhqoJYXw4t2Y
- ITEgt9B4ELBvXWLwnovHZW/TiBIQZiCv1B7Imrjr9Zcx+Zo4vBMKA1FMnXao9feAfF
- AbLz8UFBxVi9O46VMrpU9ujlPm0QQaFoq8n6PzMaZmC7eryaQ27NJ2j9QW/lSChkdY
- wV5NXrh5OD5ww==
+ b=i93whKvlivBz1M3F37Lm2fKtFcC/L3usl/3SoZR5qIISZp0IZLXlSVwKP5U69V7vt
+ 9Fnrim3Io2Ri3J8PgEAaGY+kz1egw3swHcvZ29vzLK39OrA6mMvEPUS+8M2/aoU5KD
+ SbQD1kCbxMJ75FxITmFrng+GoxCslLNJmKooNzN65+xIIetVPA8bIh3jCGZbX9MKfV
+ Sc0Oa3PLP0Fb112VxoTS+vNhhhq0MPTlsSR8bSKme7h+XLMyk1LcN7mXngoLaWeAXb
+ FHOktjxeBs162nyB1EqA0UvMnm7v9WD3NUDqn69c/bZV2r7Ewla0ZJE+TJlHkmLl+T
+ rnzIbUfAiwtgA==
 From: Mark Brown <broonie@kernel.org>
-To: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
- Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>,
- Olivier Moysan <olivier.moysan@foss.st.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>, Takashi Iwai <tiwai@suse.com>
-In-Reply-To: <20211117110031.19345-1-olivier.moysan@foss.st.com>
-References: <20211117110031.19345-1-olivier.moysan@foss.st.com>
-Subject: Re: [PATCH] ASoC: stm32: sai: increase channels_max limit
-Message-Id: <163718828521.136850.8228648734064724171.b4-ty@kernel.org>
-Date: Wed, 17 Nov 2021 22:31:25 +0000
+To: alsa-devel@alsa-project.org, Daniel Baluta <daniel.baluta@oss.nxp.com>
+In-Reply-To: <20211117093734.17407-1-daniel.baluta@oss.nxp.com>
+References: <20211117093734.17407-1-daniel.baluta@oss.nxp.com>
+Subject: Re: [PATCH 00/21] ASoC: SOF: Platform updates for AMD and Mediatek
+Message-Id: <163718828906.136850.1487051712790530066.b4-ty@kernel.org>
+Date: Wed, 17 Nov 2021 22:31:29 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Olivier Moysan <olivier.moysan@st.com>,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-stm32@st-md-mailman.stormreply.com
+Cc: pierre-louis.bossart@linux.intel.com, daniel.baluta@gmail.com,
+ AjitKumar.Pandey@amd.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
+ Julian.Schroeder@amd.com, linux-mediatek@lists.infradead.org,
+ Balakishore.pati@amd.com, yc.hung@mediatek.com,
+ vishnuvardhanrao.ravulapati@amd.com, vsreddy@amd.com, daniel.baluta@nxp.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,13 +83,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 17 Nov 2021 12:00:31 +0100, Olivier Moysan wrote:
-> From: Olivier Moysan <olivier.moysan@st.com>
+On Wed, 17 Nov 2021 11:37:13 +0200, Daniel Baluta wrote:
+> From: Daniel Baluta <daniel.baluta@nxp.com>
 > 
-> The SAI peripheral supports up to 16 channels in TDM mode (8L+8R).
-> The driver currently supports TDM over two channels.
-> Increase SAI DAI playback/record channels_max,
-> to also allow up to 16 channels in TDM mode.
+> This patchseries adds Renoir ACP HW support and Mediatek MT8195
+> platform.
+> 
+> Notes:
+> - I first send the meditatek support in a previous emails but it failed
+>   to apply because there are some dependencies on AMD patches related to
+>   DAI ids.
 > 
 > [...]
 
@@ -101,8 +102,48 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: stm32: sai: increase channels_max limit
-      commit: 7fabe7fed182498cac568100d8e28d4b95f8a80e
+[01/21] ASoC: SOF: amd: Add Renoir ACP HW support
+        commit: 846aef1d7cc05651e27c17c3b4e2b5ce5cdec97b
+[02/21] ASoC: SOF: amd: Add helper callbacks for ACP's DMA configuration
+        commit: 0e44572a28a49109eae23af1545c658b86c4bf00
+[03/21] ASoC: SOF: amd: Add fw loader and renoir dsp ops to load firmware
+        commit: 7e51a9e38ab204eba2844b8773486392d7444435
+[04/21] ASoC: SOF: amd: Add IPC support for ACP IP block
+        commit: 738a2b5e2cc9fd63d48faac11c8d60a5a2313a9d
+[05/21] ASoC: SOF: amd: Add dai driver dsp ops callback for Renoir
+        commit: bda93076d184ad80a8cab09bf29ace7692de18f7
+[06/21] ASoC: SOF: amd: Add PCM stream callback for Renoir dai's
+        commit: e8afccf8fb75bae9c3292a0e51593af92839415e
+[07/21] ASoC: amd: Add module to determine ACP configuration
+        commit: f1bdd8d385a803565024c8feeedc17bf86aac4f5
+[08/21] ASoC: SOF: amd: Add machine driver dsp ops for Renoir platform
+        commit: 11ddd4e371810017faf7ff7cb2349f321e50d1d3
+[09/21] ASoC: SOF: amd: Add Renoir PCI driver interface
+        commit: ec25a3b14261fcb05568a1fec15ca68152e9d208
+[10/21] ASoC: amd: acp-config: Remove legacy acpi based machine struct
+        commit: 63fba90fc88b6cee9f8bead761a419169ecda6cc
+[11/21] ASoC: SOF: topology: Add support for AMD ACP DAIs
+        commit: efb931cdc4b94a0f7ed17a76844f08cef1bdffe5
+[12/21] ASoC: SOF: amd: Add trace logger support
+        commit: 4627421fb883928af5220c66a304bed1f9b77e8d
+[13/21] ASoC: SOF: amd: Add support for SOF firmware authentication
+        commit: f063eba3e7a6aeec8e2abb00469e70c51432453b
+[14/21] ASoC: SOF: mediatek: Add mt8195 hardware support
+        (no commit info)
+[15/21] ASoC: SOF: tokens: add token for Mediatek AFE
+        (no commit info)
+[16/21] ASoC: SOF: topology: Add support for Mediatek AFE DAI
+        (no commit info)
+[17/21] ASoC: SOF: mediatek: Add fw loader and mt8195 dsp ops to load firmware
+        (no commit info)
+[18/21] ASoC: SOF: Add mt8195 device descriptor
+        (no commit info)
+[19/21] ASoC: SOF: mediatek: Add dai driver dsp ops callback for mt8195
+        (no commit info)
+[20/21] ASoC: SOF: mediatek: Add mt8195 dsp clock support
+        (no commit info)
+[21/21] ASoC: SOF: mediatek: Add DSP system PM callback for mt8195
+        (no commit info)
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
