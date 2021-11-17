@@ -2,166 +2,84 @@ Return-Path: <SRS0=ac5z=QE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CB61C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Nov 2021 09:47:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9E42C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Nov 2021 10:07:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E56B261BD2
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Nov 2021 09:47:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E56B261BD2
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oss.nxp.com
+	by mail.kernel.org (Postfix) with ESMTPS id 8747261BF4
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Nov 2021 10:07:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8747261BF4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5995B187A;
-	Wed, 17 Nov 2021 10:46:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5995B187A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 304CA1778;
+	Wed, 17 Nov 2021 11:06:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 304CA1778
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637142446;
-	bh=uRywt/6Kyw3A59jrRjOw0vqU/slQPz8+odzpqxuhGVY=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=aZtdVzP4D+vv/V/AS68iWlqRggwhcMoe7cK0lxR0+H+fOwuT9chZzfb8ujeY3fTmv
-	 4GwAAnkm+T81dJ5ZI4KcPO/9OfkpA6pEEmgSPcILhgV/PlDtjmP7xGOk+pd+Cv7CW2
-	 79dTbqtge3L01V95iajkLZRlZSI6FL3zuQmXOHsg=
+	s=default; t=1637143626;
+	bh=Z/3+1BWsl+p3M2N6ukUEdFMi/FQNsD4/tqHuUaA616U=;
+	h=From:Date:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=aoVBst9s6odu2ehjiArTzhXQ16cqXlYjXhs9CEh8K+nubgDX1OAavMijoSrEoig3h
+	 T0vcnltUR9QcWPend/oRwLbwET53W6oOYc62V3KMXNelvrCFT/0/HQFn9849UColXv
+	 6g5zTWBbahiFX4xCVX2HmeY59lNnFgAr6+OLXpBU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 787F7F805E5;
-	Wed, 17 Nov 2021 10:39:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A04F4F80134;
+	Wed, 17 Nov 2021 11:06:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3B563F805C5; Wed, 17 Nov 2021 10:38:59 +0100 (CET)
-Received: from EUR03-DB5-obe.outbound.protection.outlook.com
- (mail-eopbgr40061.outbound.protection.outlook.com [40.107.4.61])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 0C12FF8027D; Wed, 17 Nov 2021 11:06:14 +0100 (CET)
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com
+ [IPv6:2607:f8b0:4864:20::b2b])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C1065F8055A
- for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2021 10:38:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1065F8055A
+ by alsa1.perex.cz (Postfix) with ESMTPS id E2363F80134
+ for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2021 11:06:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2363F80134
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com
- header.i=@NXP1.onmicrosoft.com header.b="GlNNqE/s"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ezVj+2ApiMp8hgbf/QZCBfHhjo6jphmEK9GEFs+hHRJ1NyUxz8je+4ikLSK9tsArB8jTUINlnELAbOPvBgNVr2CZFCkenp26KWgaVyERdayNUaseqpuQpYPBKSymvvmOdeQ37P01wtOJ3XVDS8H28GFy/GrhtJ4Ea9KS61mrij4A+t6UE6Lh9+j9fZBZCIGD49Ge29CwBdBkVfAPpO1mErTKp9llD30vjtvBUJXMjCvdJoRgudgrH3/pUhxmjamnuPiG7HEfXYfxJ7FyScI9DLi3ok9tqDZod47FHkDqTnrlyFl56vbbR8lanOmtNQWAVXt1/39ZFDcgM6PwOin7RA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LfCMsRTQHWceFWu6tp44o22ZVYte66A8Zl2PxavSv3g=;
- b=KPLmVvZj3uK4N0dEa0dUshMljywIaJVnQ+eThDydjMcNDvu7HCw6Bb4TfEu5ekkOGE2XmdVgbhpONC2Xe23UG0B/D5/fXlCQiP3a82SwLehpkM/4sNFZrPJ34HuunjpvW5pEoOZR2oO+EN4xPjX+geixdwNreU62FKz7z/auk6qthRFEt1d9lSuMefr6FNTl2dmga0E1QYlGe6xLidN/6stmKIqrqMj+y36m+3gRdXlsM1ghepfMIxngfV7IMW/xm9vUAXQzuHtbnEAPVsMMWbJTY+0VJsAghvq4CKY2W7xQfR8obkeIuEHLYd9rvd3cE3Q9RSTvvKhIhavoenYWhA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com; 
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LfCMsRTQHWceFWu6tp44o22ZVYte66A8Zl2PxavSv3g=;
- b=GlNNqE/sqVJ8p7AkEJPm4AfnHntt/te3ioyBkunB/ghf8vglqNB4wVH7y/XSn1zBCx1wFtz2aNB3ZEUD4+VllT/Y8If08BIHHjWvunVNArLZ/BMeq2g5F460hLKQGZUlquRTm94Wfha08vsf6p5Vy1JvHLWhlvVPyycX15TZ74U=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=oss.nxp.com;
-Received: from VI1PR04MB5151.eurprd04.prod.outlook.com (2603:10a6:803:61::28)
- by VI1PR04MB3039.eurprd04.prod.outlook.com (2603:10a6:802:b::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.16; Wed, 17 Nov
- 2021 09:38:43 +0000
-Received: from VI1PR04MB5151.eurprd04.prod.outlook.com
- ([fe80::85af:f8be:aa99:ba5f]) by VI1PR04MB5151.eurprd04.prod.outlook.com
- ([fe80::85af:f8be:aa99:ba5f%3]) with mapi id 15.20.4690.027; Wed, 17 Nov 2021
- 09:38:41 +0000
-From: Daniel Baluta <daniel.baluta@oss.nxp.com>
-To: broonie@kernel.org,
-	alsa-devel@alsa-project.org
-Subject: [PATCH 19/21] ASoC: SOF: mediatek: Add dai driver dsp ops callback
- for mt8195
-Date: Wed, 17 Nov 2021 11:37:32 +0200
-Message-Id: <20211117093734.17407-20-daniel.baluta@oss.nxp.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20211117093734.17407-1-daniel.baluta@oss.nxp.com>
-References: <20211117093734.17407-1-daniel.baluta@oss.nxp.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: AM3PR03CA0060.eurprd03.prod.outlook.com
- (2603:10a6:207:5::18) To VI1PR04MB5151.eurprd04.prod.outlook.com
- (2603:10a6:803:61::28)
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="QsVzAHjv"
+Received: by mail-yb1-xb2b.google.com with SMTP id e71so5801845ybh.10
+ for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2021 02:06:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:from:date:message-id:subject:to:cc;
+ bh=Ae53HUdIl8LFz+bBsVHItIqLX490EPHb3zwvtgS/7Bw=;
+ b=QsVzAHjv00Jmu6STYR6irh4zaeW8vZFKlBlyKnCGjQpXPHZr59Wvpp3g5LnOIzZDIL
+ fT/drg/fbge7K2fK+W9W+0NnKTLIorrlWXn0hH1tgMAIXIEudNMT6jwlMdCm8w4yZ4XT
+ cm/cLlPMGzsh+TidWmGT3SK0JFysCzIDlxtP0+QfA5KjKU4hJPsfPm2Gi/nNyyJsN7q/
+ GV9ujcFxIpGewMW0eCJusPqBjOICGJ5Y+Pj/6dv/C4D0GlW3VFc79jwHcJTHeiyC+Rw1
+ Wuy30Yi33T9XBxEitlsjrS1DYBADbwxxB726C073E1MQmyIEaHbESNS8OqzGcnvjDDut
+ D0jA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+ bh=Ae53HUdIl8LFz+bBsVHItIqLX490EPHb3zwvtgS/7Bw=;
+ b=CaZXXBvaYwW7Krld/aXA1ySHOxN8v1FSSnlCq/yIbUlbGsOlZek/sCx+3xPO9zE8TO
+ yGdFHojEFqPjy0Y54Xk0q16sFd6pEK/DpvvZ5QiKTRDK4Mf/impxOPY1leaXYa3dP003
+ aR2hr4hH4IFgcBiQeITsxrJTg3d8Ckrvu3canOQfKV7XTjaUX5VBeUp4yl5xl9M0JkS+
+ PQ4Xp+ksZcxWv6e/x1W6Qy5j/1OVkUel+P35gJilRxqmAwixFNnDGjM71/isHAZbKSbT
+ ie1i/8+sYijpXVLrPcev0wgZduEhnrjf+IN5whj1qk0vbrEdITSir+CKCoXRpvK1RZD4
+ 5xbw==
+X-Gm-Message-State: AOAM531LbwY8S8CAmSuLIlVjukbzh6BaEmckf3Ft9ukahsDp2RuoVtnq
+ 4KbJA3ao3FjLOuew+wFxuIUC9Cbx/ZX995Q642Q=
+X-Google-Smtp-Source: ABdhPJzU1BgAUSR7puZxQLDS+Mr79o55Z4vi4pUEiUI2aegBc0O9017bjF5iDE9lWxfrX9RSWbDJoldTysHQCHYYZGs=
+X-Received: by 2002:a25:e016:: with SMTP id x22mr15764494ybg.534.1637143564337; 
+ Wed, 17 Nov 2021 02:06:04 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (2a02:2f08:5706:b700:22bb:b216:ffff:73e1)
- by AM3PR03CA0060.eurprd03.prod.outlook.com (2603:10a6:207:5::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.19 via Frontend
- Transport; Wed, 17 Nov 2021 09:38:39 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1d1bab77-b396-4347-3129-08d9a9ae09e9
-X-MS-TrafficTypeDiagnostic: VI1PR04MB3039:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB30398A6720756198DA95BCBCB89A9@VI1PR04MB3039.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1284;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: z7z7H1V/j+B+31OX0YXy60oALEGOjxRJy123gF3QCAtd/zp/ncJvzsTUAUb+wDOSjjILgqwIKNLVw9tOak3UV6E6DP9fESSLH7eD8joh36gXGTL/W9iT8iHwCVO+TcNcwaTXdd3hFmbmBF/Zki66SQKEiWeGevlQtK0ZXUuiBUJoezKJiTGe/w/9k2dn/dpb9kfEp9ktJFR6Fli7AnpYPlxvZC9ng1XT0Pi41vAZfvCpe3wJovIqHyoQu9rOfipUwIW/+EeAdiZELBNV5EtZI6yUUni4AcP1sxGfE4TNDq+iRVhKtaskiqrIiCAa25bxVwLf/Gjxe3ZuhI4u5kuR6b6lz2lF5s8faHGv4Zc1fL/yd9VRh91d9dmt1IQNAVCiZmy2GHkZ03lwGLg0GU7y594CiTOmpAs+tfGHvZvdSvkRw9AQoMawYjl0bjtVWb8miHJnDLON2oqjlc4zUlfwLoaeQ/IhdPW/0FNSX9yqMx/MGpSOUQssqJK2AlSvENnY8W9kYh7lHnuMaTPjXSbmqqEoWL/k77czi++jkILSvrGrC6Csh1sZEwL34GQVUSfnWsmarmJQSijZYZC493nifUyeZblbqMm7Jep4I7c5PEoQ5uAoSBPtNCF054q+ccJnvDu7dke/uRT0Hx5Coyuwyg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:VI1PR04MB5151.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(4636009)(366004)(66476007)(186003)(6666004)(44832011)(52116002)(6486002)(5660300002)(66556008)(6512007)(6506007)(4326008)(7416002)(2616005)(8936002)(8676002)(1076003)(2906002)(66946007)(508600001)(86362001)(316002)(38100700002)(54906003);
- DIR:OUT; SFP:1101; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aW1sNGRSaTBweU80a2twWWZxR2pIUjRlSm9NMmtkREdVTmQ4VnQ2VEN2eEx0?=
- =?utf-8?B?aE9VMWRYbTdoRFJqeG5WRlV1R0pNelp6WU03cWFCUlpWUTROajRhOHFYVE0r?=
- =?utf-8?B?NHY2bU03N29ObThGeUJwYVh2Q2JMdklvSDc4NlZieDhGTzN3bG5FR1RPRWcw?=
- =?utf-8?B?bG0vRVNua3VFTEFLVmt1T1ZyM0pyL0RjcEVQRkxwaVB3WWlxV3JkTFY1OW85?=
- =?utf-8?B?bE4zQnB0eGVNZ290ZmlmQk1VcFBQaWU2c2VjNUVjSmFqL3kwQ2VrUlBSRmJP?=
- =?utf-8?B?T0VnNU5WYiswQTR3cjRUd3ozcFF5Z0RTV0duSkdOUERHa2NMY2FKeHIyRUpJ?=
- =?utf-8?B?dlhvUVRjNFNCYjdpVEZubm82WFRDaDVBb3lhcEMvVUFsbTlaODB0ZlVBTGdT?=
- =?utf-8?B?RWF3TEtndkw5ejRkR1VUZWVTUFJvTDQ1UUxEY1dnVVRxU3JoSEF5Zm5tNHR3?=
- =?utf-8?B?TTBncXNIS1U1STVsWEk1NlZIUFJUVlg3RkFCMVdYTEtyejdSRVpiWDZTWTRy?=
- =?utf-8?B?Z1l5NWx3WndQVHphbnRsTjlTWFhGa0UxbXVObElmMkMzZzFFV1RSZ1B5eVgw?=
- =?utf-8?B?M2QyZEN3cHdlemwrNjRraUdpTG1SbGl3M2l3aGwxQzZKTFdGbGw4eTFOazQ0?=
- =?utf-8?B?eS8wR3dhY05JU052OWxBZkYyMFlPczFxTWlUeWx4VmtrcFhUaXgrWGtnUUpG?=
- =?utf-8?B?aklhVkVGRWIwL05BOFgyU2Z4L3l3cWZ5V1dMS2dweEtVbTZjaGMyQytrWW9T?=
- =?utf-8?B?c0VoVVdJYjducy9paDJSL2hTWjZ0YzV3d1JNRkhEZzJDMHJTOHN4SE9IcG1j?=
- =?utf-8?B?dDZKMzFHRkVPRCtXUlNtYkxwVkMrSmVZRExXS2ZsQW9ib3UydmlJOERxa1dt?=
- =?utf-8?B?bWFCT0JKQ1ZJeU0wL2UxWDdZZG00N0FNMmRBSmp0MzRNRU1KR1RjMGhhR1BX?=
- =?utf-8?B?bEd1dGRXVmhPZW82Ukp4R283OGEyUHRINGVQZStuN2NMbEc2ajVLTnQzZ201?=
- =?utf-8?B?Y0FrRkFEZGN6bzBzeFVQUGZ5eGZqcTM3ZjMvNktocGRoWUVWTG0yVmpnNnZG?=
- =?utf-8?B?YTd2cjBOSE1BMllvSzJST2t5eExyWmh0Um1GeUF6ekNiM05vWWRZbnAwMS80?=
- =?utf-8?B?OEQ5TElmR0Y3eU9TY1orczdDcTlUakkweUR0ODlIOGpPRjJnQW8vSmNqT1F5?=
- =?utf-8?B?YytFOHd3OXM3RWEwQzZtdUgyYzBpc1NWaUkvdVFCS3V1bkw1dHloVENYUjNm?=
- =?utf-8?B?azc5aHpTbEpBYU53RjE2MkFXNzdLelc0eDhpM2JDcjgydXNieWZvbk5WemVT?=
- =?utf-8?B?QWwvcm9QSHFVdmtCK0pYOS9LWC82d2lFNjVTZG5hRlByZ0dsYVZ2U2d0NkFT?=
- =?utf-8?B?dlIxMDJGQWpaNmtPcy84Vm9Lc3ByU1hOUmdEalJmZTNzQmNzMzBsNDFXc1ZE?=
- =?utf-8?B?aHBUSEFOOE4xc01qcjdlTVdXQ3NRYUVlRUJEOER5VEM0UEgwcTlua3NYTmVN?=
- =?utf-8?B?S1ora3pDK3VQMnFTcll6MlJvdXl5NCtOWVRYaVdoM3phWUVQVE1Vdk9kQ01F?=
- =?utf-8?B?WjdKaUU0dURHemt5YzM3TVNqQ2dUNnlmRGNiMTZtVXhGTThuNUNER2kxaHZx?=
- =?utf-8?B?a2hOTTRycUs4K1loUElmSzR5SzF5MWg4NHVvUDl1c3V5ekNDMkhoWHNGb2ls?=
- =?utf-8?B?aFQ0aTl4SUYxL092cFl2R1AvR3Z5cUN2WmhZRmh6Y0Q4bGx6bFZDanJORUtC?=
- =?utf-8?B?ZUZpcXZCcWxqTURvcnZyWG9NWmgrOEo4eE5kSytXNm5hbU1vRWc2MWtmRjVj?=
- =?utf-8?B?NTBFOVgwditZbEhlMWlsbUt5NXNBdmdiNHhVYWNWSEdid0U5dXBuMWtjOVor?=
- =?utf-8?B?dTVKNFM2QS9WSzdjRnNEWHpqY210N3djQk56SnNBUlhnYjNHUW5vaVMvR3Ay?=
- =?utf-8?B?Q0N6WmN3dGVWcEdIVCtUTEl2RGJ3Uk9icjY3REVJNDRlaEcvb2JxeGVzV05M?=
- =?utf-8?B?S093UDIxZnBNT3kzaTJHblZRRXZzS3A2UUJZVitTWG1tRDFsQnVSb1o3aGhS?=
- =?utf-8?B?ZC9KTWRxemdQVlBrbm10bXkxLzhUVHRPY29INDEyTWRtQTZPOENoclZVNlpQ?=
- =?utf-8?B?OEpsL3ZHUlZXSm1nVU1tNk5nRVdTZHl4Nkh5ekdFK2NOVWpKSndyc0FYandH?=
- =?utf-8?B?Y0JqNjB3dUtnVnFubWI1b0hJQU9YYXpoWHRBZGZlYjhFQ3lBWkxwVFJOQlF0?=
- =?utf-8?Q?io8Jk4h+kk+OuC8vt89UasyAdFlFHlcXih3rtMgc1w=3D?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1d1bab77-b396-4347-3129-08d9a9ae09e9
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5151.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Nov 2021 09:38:41.3612 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3wnpoTM/La2mN3Kw27ZHLRVMK7LFwHYzj0jwQ/JG/j/J5L2MG8aysdFa+NQwJCYOQB5JUzoaQ2Rie6wkdXUumA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB3039
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- daniel.baluta@gmail.com, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- AjitKumar.Pandey@amd.com, linux-kernel@vger.kernel.org,
- =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
- pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com,
- Julian.Schroeder@amd.com, linux-mediatek@lists.infradead.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Balakishore.pati@amd.com, yc.hung@mediatek.com,
- vishnuvardhanrao.ravulapati@amd.com, vsreddy@amd.com, daniel.baluta@nxp.com
+From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date: Wed, 17 Nov 2021 11:05:53 +0100
+Message-ID: <CAKXUXMzqgyNGEnxAMQqZiXJYSK-X8uB-nxHWwPg41H6yS0GWNg@mail.gmail.com>
+Subject: Reference to the non-existing kconfig symbol SND_SOC_AC97_BUS_NEW
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Content-Type: text/plain; charset="UTF-8"
+Cc: alsa-devel@alsa-project.org,
+ kernel-janitors <kernel-janitors@vger.kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Mark Brown <broonie@kernel.org>, Daniel Mack <daniel@zonque.org>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -177,75 +95,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: YC Hung <yc.hung@mediatek.com>
+Dear Robert,
 
-Add dsp ops callback to register AFE DL2/DL3/UL4/UL5 sof dai's with ALSA
+In commit 1c8bc7b3de5e ("ASoC: pxa: switch to new ac97 bus support"),
+you changed the select in config SND_PXA2XX_SOC_AC97 from
+SND_SOC_AC97_BUS to the non-existing symbol SND_SOC_AC97_BUS_NEW.
 
-Signed-off-by: YC Hung <yc.hung@mediatek.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
----
- sound/soc/sof/mediatek/mt8195/mt8195.c | 35 ++++++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
+Hence, since then, ./scripts/checkkconfigsymbols.py is reporting this
+invalid reference:
 
-diff --git a/sound/soc/sof/mediatek/mt8195/mt8195.c b/sound/soc/sof/mediatek/mt8195/mt8195.c
-index 88da6c2de070..99075598a35a 100644
---- a/sound/soc/sof/mediatek/mt8195/mt8195.c
-+++ b/sound/soc/sof/mediatek/mt8195/mt8195.c
-@@ -299,6 +299,37 @@ static int mt8195_get_bar_index(struct snd_sof_dev *sdev, u32 type)
- 	return type;
- }
- 
-+static struct snd_soc_dai_driver mt8195_dai[] = {
-+{
-+	.name = "SOF_DL2",
-+	.playback = {
-+		.channels_min = 1,
-+		.channels_max = 2,
-+	},
-+},
-+{
-+	.name = "SOF_DL3",
-+	.playback = {
-+		.channels_min = 1,
-+		.channels_max = 2,
-+	},
-+},
-+{
-+	.name = "SOF_UL4",
-+	.capture = {
-+		.channels_min = 1,
-+		.channels_max = 2,
-+	},
-+},
-+{
-+	.name = "SOF_UL5",
-+	.capture = {
-+		.channels_min = 1,
-+		.channels_max = 2,
-+	},
-+},
-+};
-+
- /* mt8195 ops */
- const struct snd_sof_dsp_ops sof_mt8195_ops = {
- 	/* probe and remove */
-@@ -329,6 +360,10 @@ const struct snd_sof_dsp_ops sof_mt8195_ops = {
- 	/* Firmware ops */
- 	.dsp_arch_ops = &sof_xtensa_arch_ops,
- 
-+	/* DAI drivers */
-+	.drv = mt8195_dai,
-+	.num_drv = ARRAY_SIZE(mt8195_dai),
-+
- 	/* ALSA HW info flags */
- 	.hw_info =	SNDRV_PCM_INFO_MMAP |
- 			SNDRV_PCM_INFO_MMAP_VALID |
--- 
-2.27.0
+  SND_SOC_AC97_BUS_NEW
+  Referencing files: sound/soc/pxa/Kconfig
 
+Robert, it seems that you were already informed in the past and
+already acknowledged that some work is required to fix this in this
+email response:
+https://lore.kernel.org/all/878skf1zmp.fsf@belgarion.home/
+
+As of next-20211117, this issue is still unaddressed, though. Are you
+going to address this issue? Is this patch just pending somewhere?
+
+Best regards,
+
+Lukas
