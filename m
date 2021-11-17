@@ -2,83 +2,83 @@ Return-Path: <SRS0=ac5z=QE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93395C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Nov 2021 09:44:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E0848C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Nov 2021 09:44:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 08F2461AED
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Nov 2021 09:44:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 08F2461AED
+	by mail.kernel.org (Postfix) with ESMTPS id 63D6961A07
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Nov 2021 09:44:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 63D6961A07
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oss.nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6C144188F;
-	Wed, 17 Nov 2021 10:43:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C144188F
+	by alsa0.perex.cz (Postfix) with ESMTPS id C73A61891;
+	Wed, 17 Nov 2021 10:43:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C73A61891
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637142255;
-	bh=pTH6kEQv/zj/K25KnXPTaWAkYJTbdWhj0MQBn3fefAQ=;
+	s=default; t=1637142285;
+	bh=n46SpkoqjGTyC9qvu/jXeUwAMeZ+dak52xc6LV7soec=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EPymo+hd0SEggavhauExVUOEr3WqnYxGI0f6GmviIXO7ohbJU/lDZu3xWDAki8NIC
-	 KdbT/Bs0Wd1JLVWVDo9eN66W31za9+UNSuzupUBPNj0aa3iS/hDwAeIoGZ2bbUkaZG
-	 ke1xGcvLmPjpyLudpxquXBp3eWxkyghMkfe3eafU=
+	b=f7Elg/jEI2k7WKjgYjfMMK4BPd/Qls9RV3owK9QcCQMV4nRBhBsp+Q4GwGUGjALGc
+	 5NGiyDCb9gze5Vq2bspsZ+v0Ca1V2kkuJ2Vxo6xQRzAS2AJ7X946IbMMkUHZu5MkG2
+	 tGSU84SNcgWoU7Rz1ZP0e5MMjBGbRNoXSoplmp/0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 20345F8057B;
-	Wed, 17 Nov 2021 10:38:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3F480F805A0;
+	Wed, 17 Nov 2021 10:38:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5418EF80510; Wed, 17 Nov 2021 10:38:38 +0100 (CET)
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com
- (mail-db8eur05on2043.outbound.protection.outlook.com [40.107.20.43])
+ id 42135F80533; Wed, 17 Nov 2021 10:38:44 +0100 (CET)
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com
+ (mail-eopbgr80073.outbound.protection.outlook.com [40.107.8.73])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 630B1F804FD
- for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2021 10:38:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 630B1F804FD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 254CCF80507
+ for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2021 10:38:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 254CCF80507
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com
- header.i=@NXP1.onmicrosoft.com header.b="e8k2RDPf"
+ header.i=@NXP1.onmicrosoft.com header.b="WXKjgkiy"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NtRx2u+5hYvhSZN9lYOaACVsNvbk3pclM6nEumAs5D20cqwgPx0jvAlpLW+oCkCKBwGRsYaBr7mGNB+N29+EBu/6GgFj3eeBVr46bGWVjWFjJZAKFOo3ipvG+qcyqjEvV/StCZPVODNlhipnKQxhLYJfYMUjAYyRjRHW1ZJJcNTFWhcrrzDrJvrMSgeVRJCyvV83BSVV4YweoU5gBwRyODp/o/b9sFuGBXJQDd1DwhBK6FhR0KmR9mDNjlONAve1LVT2FvNnDZ0YMIs2UBANxaVZpEB10vWVYPnZPUVG2/lKSL3KHGbyQGSpvXH5cx7+cyHSc2Pr8quheBvnufK/Gg==
+ b=Opft1KRWgug+lbaeOgzvc1z9/rjMOseoxse6cOjaDcd98F/f1NVYS/G5HoPbLm34RdnJlUOLjryAE750RF/cR71YIUbRMUwXKHAMEsEnr5YNQte3Y/zy7X5yPAl9fZjAkGFeF/M5xe9dIAMtXojtQUJXECNNsY2NZPSyR7PBqpo25A+OXzzwlTkJrHndgttxASA+4gmvdYN7Xjt7Y/kC7n9r4ZS+23SSJbVa0+GXZuosj8cTLaT9UMo4KHbwOx2BmPpGZhvyxeydVsmUuVjC+ZcOGTczzEOarq31eZUiHS+bbh3dIBkBpt9yfFyxD0sVuYLUeCls6PMQ57uB+SW4FA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pHAp1DonNFQ+6pj6RVm34ZXbTZzInspElsG00tBCovs=;
- b=UhhZYfXH6oiNEyOQ9YgkZhqBJMQrlN5AupahLXBgzfaEtTEQa5R2g1ZdXC4+5Hvd89Su59dJ3HIKncznbj/+Ynp4QYDotwjIopYKf3TeHEPWnnYHqOajlCdF99yH/BFVoGmUVpHNCOpHEBwBm3CeP3IS4FzPVRcZmYNVKZoLR6O8JITKa+j8C5Ap0z5TH77JNA/0YTnIjO8H3r4ztU+vSBbJzhGWkazsZeSSmAjhvFGUMX4jLcKIXJM1z0AqEPSaCWjcqZgJJARSjyLiYKfVGH0GjKO+Wip4iXO+oJcCIsgrlqzQvK4z0dKK6AHVDAfs0f0o1yaQlZljwTXVWEZgdA==
+ bh=K/TcaXutvCfzOqQoZbUtGznDhLVWnllTNgKTJn+BGJg=;
+ b=HcxAZXbruEDLjRB8QvnmlA6K9LizPomKqCg5DQwARLBOJdifdvEP02eouov3S6qZcu5+pNB/jMTybtOgiLSY2ArosbZe9t9OnTlDbDKziCvyGw2GoaK2eoE04AXabVj3NxDU9/aYOaslSz8Jx1/CNkvvPJvTKDnVETwE5Z/xq/5X9P//RGcfQqmT/M+eHiuIg4qyuxYsoTpc/6VvQsSf1Vwf+VtLOmgDqdAIs2mTS8mmhTbpxrK8fEZygFkYdTAusTODgyfvRA6Go8NKuH8pwJxV2NbR9rav5uvM1hTBWzhHO5F1bXD82vzUOasjaf93jMRTyESiEUJnpZ0PlOj0bA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
  dkim=pass header.d=oss.nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com; 
  s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pHAp1DonNFQ+6pj6RVm34ZXbTZzInspElsG00tBCovs=;
- b=e8k2RDPfMYmABL5Sb0uxDtXEPz2N7ckAgGa+w3k5pwXoEudXcoiKFr4awQ6fLrnUvwksm9SBYVg1eJ88yDQxlMZLN3nhl2VLow4F7cEpJB8HRyhTZDZWhd3+9qjCW3/0AuWIChBII8fKZ/99AooBbO9oRj+i2BvpJa6p3b/gqnM=
+ bh=K/TcaXutvCfzOqQoZbUtGznDhLVWnllTNgKTJn+BGJg=;
+ b=WXKjgkiy2iKDso9O9FU7yEcIPe+PICYMeClP7uCbPLn+K94BIxnKKO82l3JjrTaeLbW/CIbvRrcDpHvWnp9k7HvfmORyytY7rBtbBxL5hRsPI1Sl2UAnw9aVZTdqgjeeKsVEmdM0IIQukBFpIhtbz8ZUMBwig7/ImpnFSARM6PQ=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=oss.nxp.com;
 Received: from VI1PR04MB5151.eurprd04.prod.outlook.com (2603:10a6:803:61::28)
- by VI1PR04MB3039.eurprd04.prod.outlook.com (2603:10a6:802:b::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.16; Wed, 17 Nov
- 2021 09:38:26 +0000
+ by VE1PR04MB6623.eurprd04.prod.outlook.com (2603:10a6:803:125::29)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.26; Wed, 17 Nov
+ 2021 09:38:32 +0000
 Received: from VI1PR04MB5151.eurprd04.prod.outlook.com
  ([fe80::85af:f8be:aa99:ba5f]) by VI1PR04MB5151.eurprd04.prod.outlook.com
  ([fe80::85af:f8be:aa99:ba5f%3]) with mapi id 15.20.4690.027; Wed, 17 Nov 2021
- 09:38:26 +0000
+ 09:38:32 +0000
 From: Daniel Baluta <daniel.baluta@oss.nxp.com>
 To: broonie@kernel.org,
 	alsa-devel@alsa-project.org
-Subject: [PATCH 12/21] ASoC: SOF: amd: Add trace logger support
-Date: Wed, 17 Nov 2021 11:37:25 +0200
-Message-Id: <20211117093734.17407-13-daniel.baluta@oss.nxp.com>
+Subject: [PATCH 15/21] ASoC: SOF: tokens: add token for Mediatek AFE
+Date: Wed, 17 Nov 2021 11:37:28 +0200
+Message-Id: <20211117093734.17407-16-daniel.baluta@oss.nxp.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20211117093734.17407-1-daniel.baluta@oss.nxp.com>
 References: <20211117093734.17407-1-daniel.baluta@oss.nxp.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
 X-ClientProxiedBy: AM3PR03CA0060.eurprd03.prod.outlook.com
  (2603:10a6:207:5::18) To VI1PR04MB5151.eurprd04.prod.outlook.com
  (2603:10a6:803:61::28)
@@ -88,68 +88,79 @@ Received: from localhost.localdomain (2a02:2f08:5706:b700:22bb:b216:ffff:73e1)
  by AM3PR03CA0060.eurprd03.prod.outlook.com (2603:10a6:207:5::18) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.19 via Frontend
- Transport; Wed, 17 Nov 2021 09:38:24 +0000
+ Transport; Wed, 17 Nov 2021 09:38:30 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 55a82735-97e9-4dfd-7b4d-08d9a9ae012a
-X-MS-TrafficTypeDiagnostic: VI1PR04MB3039:
+X-MS-Office365-Filtering-Correlation-Id: ae85fa8f-1f72-49b1-bf05-08d9a9ae04e5
+X-MS-TrafficTypeDiagnostic: VE1PR04MB6623:
 X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB30399EEA124484EE8728677DB89A9@VI1PR04MB3039.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2803;
+X-Microsoft-Antispam-PRVS: <VE1PR04MB662383CF23CD88C38E5D8A03B89A9@VE1PR04MB6623.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2449;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 20B9q8AqbLp+wZ3o0xvZQ8oIPzMVn9En2hvYMycjyS9Lb/LO5b1HDYRvo153RatcrChs4wF/FfERq8206HtlHUKpfhbXiU5AjgMDb1AZE8/f5L7kEcE/akj29z7aV/7Oh5h7YJBi6WblN2CURoL/niglyXsZNla8E1mDX3tXGdWjlfhYkmSz5J0ANcvysWBW//iUrduBz5mSn/CGrDFEPbTcDEax2p1r14/9KYYEUQlEEYrPf8eRUn/r1/PB3/OeJ25GWu2uv/MxD/2aVKN/MVZPZGU53DT4WLj6/ibzYHsKQpAxo7JBAQI+CMgdfQ77fvdTMkYR3KHmzVCRGIrJ6i31oyx9P4DP1FgBSAoe4r2j+se6xTtHCHrybOnw1epKrKAGREVuywpuT8vIbLFf4pvmhz35+FqtwbBy0ffpWYJj55Vr3moMBWH4O9uYXVaMPFxNN7phLDzgCEqcsLDAkIR02ABPUHabPVMiK7LSGvffLmDwWGlnxmJMurTBFElZK6s5OSknvMm6nVWE5HX6p25huU8LGTVrBPMIy0Gvsy4FaYA0QJRkHhIe2/cMLjy1LyUN93WqhgtxPr4aCdhcPtNt/oAybOkV2UUlc106fadngPIeTpq80Yr+KCfMjoDanccNRotSvSSJL93oTa2s1w==
+X-Microsoft-Antispam-Message-Info: HUNybBq2UX+pUGwBtip6d6eTmDoBTilcrAHl2d7aAIzJIF25g018Jn0pLqMXyfU9O1gRL+rIFAdksxjBU15mkFW4N0N/s3X5QrhsQOnZeUuSb8LJrRoWRH9whCtUAoeHTr6fp4iXnU4xiTRL0KFV1UTGnCyi98BJufISmF/VDRhUwzEOeliNlFtgsgdvNcorNimEhJhncz8+ghPTjmcWdEzQqFXqV5bdcCOsuiAG4kKzmjJNLcD4W85dQZbOFj+e2wcAiEGeE26PAGW6Oa3FmoSeu3099Tb1jB9w1OwS+8miE9p1Fb2+ZVjpqTtRl3hi5LlSo/3mbQbwZfxjVdm0x9bJawrvMawqL1b+1Lrq//g8LH7WsdWXznXNkHoSvFJfhnjSsSm/Tok7uoP/txosfRuYIojkrRUdlYiD2ihwnWn57pXOWHyCD/vmtXHAy1hBogE29B54OtXQn4VXw0hujERWYXNHU1RbXgYsUlmpMuEQmF7vcaECtieeNFNqIhJnXyBgPzX/GdkE4fRa64Vcv9zsVdUSnZueyBBf8amGm60jet8dceVOCSGk5pX5tS8dBPGbu/GoaGtHADjh9Wwmqr4dlhsBqT7qdflVD38CLlny6aUDU/rbYiR/PrPPj3verAgJVbnEvxKfx2GbC5yvcg==
 X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:VI1PR04MB5151.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(4636009)(366004)(66476007)(186003)(44832011)(52116002)(6486002)(5660300002)(66556008)(6512007)(6506007)(4326008)(7416002)(2616005)(8936002)(8676002)(1076003)(2906002)(66946007)(83380400001)(508600001)(86362001)(316002)(38100700002)(54906003);
+ SFS:(4636009)(366004)(8936002)(1076003)(52116002)(6506007)(5660300002)(54906003)(8676002)(508600001)(186003)(86362001)(2616005)(6512007)(7416002)(44832011)(66556008)(66476007)(4326008)(66946007)(316002)(38100700002)(6486002)(2906002);
  DIR:OUT; SFP:1101; 
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?HBKmozfm8Qf5MTdz0tGcN50XKr3opQvIBoGgaiG5I8WuVhezqEU/RoDqd0v+?=
- =?us-ascii?Q?kiQ2C6oXCgDsJCeXdZKperhSZnOA4KWEbJh/JqH1+PBzBiOEmqLCPt9Kkinc?=
- =?us-ascii?Q?re5eZLMtjLYPSo8pL0ccxU6uSQBJDDuOigfBl9PLVg/e20+jKuLY7FAcYby0?=
- =?us-ascii?Q?p0upYp8z/YmFq/kgJbYLOeWqk5Y/NNvNZJAEVbfapRNSOtRqrGb39CQ8u/ok?=
- =?us-ascii?Q?B7FUVGtsbszQ8g1rXwHFsBko9Ck6lpAHVZlBZOH6xgIC+Gqak8jyEJdUcxAe?=
- =?us-ascii?Q?uJSDfYluhtzIdYAcwSjJVkHW6hp5kqHLZZAhYB94S6AVjzz/RQWY8ruJTYWe?=
- =?us-ascii?Q?7+t9r4rk1n/DIiwmza93QeYvKGAzC5oc8xqpZiJBIPXUVuIkRnY1AIa7KZGI?=
- =?us-ascii?Q?0+BdQEaE47mRj0EUHkixoPtlaaNGgU2ocZYDtH/D6pfkiFudWJh+tqWZLIUY?=
- =?us-ascii?Q?AgG0BakCzTfxXVWrue3xnby5gG4hB0mgfCFSKy6+55ejO4J7L6rsYgMn+D6C?=
- =?us-ascii?Q?Ctnlx6X2TnBT3hqnYoBuYH3MSqowtMUld9XEnh1L70BGlspTYouOwvA8gf2v?=
- =?us-ascii?Q?S7dZEWkXng1SJ88z6fXlrFm0yMKEnBE40D1Wc6iLekHJhT36myStmGmIQj3/?=
- =?us-ascii?Q?BS2a7iAC9CRqNMJtI2dw4iy1POppVhmiWwPt79wP9jXHIzefgtGZSDCimWBn?=
- =?us-ascii?Q?yzeyP8n2BIIpVfHwUKzW/I6fLtmuLdvUnQS7+cUdG7zpZWQrm2QM5iTrnFkg?=
- =?us-ascii?Q?KU5u4m8S2a5+I72Xbwsl7vGO16OZ8Rl4590ThZ7umcZNCuIRzYWWWgGioDEZ?=
- =?us-ascii?Q?hjnw+x7hAsJVseL+HE6lREQhAVipDRcyX1oQbSrcE+aIHwI0KE/P3Tf4Df31?=
- =?us-ascii?Q?rAYr8Tmr4b4QPKyAfUjk+rCZCsTjcoJNeUxIo+WwnR67/9bAIFxLqBWdB2Ii?=
- =?us-ascii?Q?YFmi6r8tzQPmg7MOhZoUeyDKCvF18qdAQDw8OkhEPgBcSktfdYcWqTZbifAR?=
- =?us-ascii?Q?SkLLFub762jiFyFIHNlvS2fcZsvTrFDgV8wDQITNafuK1DRBUy6JfwAybg8p?=
- =?us-ascii?Q?ye4J8bnInxWjcFixMkcXOgEH9IGwiPViWm9DdxBHON/jrFujNOHKqtPG2dzZ?=
- =?us-ascii?Q?zAV60Bm2Igvdwv7jN5+DbEfG5i1AJF4/0SFV+/ueZu3roX3sdhIxQ/q1kMu5?=
- =?us-ascii?Q?ol2xnG/RnlVN1yT1m6bHrRhM17sz9tXYAUb5/jY0AykrXlq9vXm312Fef1ZU?=
- =?us-ascii?Q?pIA7yxwZ1fG+CpBATEIwIW+QTZdy1w7d94D6aG53wNijpSPe8diw+hCl7kDn?=
- =?us-ascii?Q?+AOWYSxr1wWpYmh+i9WJ9xjrcH/iAjZ1PkQhDwZzrSqa4p1jNhuDDA4iexsV?=
- =?us-ascii?Q?m/e0JD1CCrXytkr+1FjzpJ0oEbBdu/XQRbDGy9UTwA7Kn98RgA/1j5mIjp6K?=
- =?us-ascii?Q?SEb+LxhjxtkIKyCgu+DsG0dkoFMUbdDqH7vscGRQa1gS7MSqrh/aO7ieeNhs?=
- =?us-ascii?Q?t89PY6qktJbiN4Dt2aZmvtnBh+eTFyCAS+dowYNMZx9hzJ4Fy8a16m+ktdWp?=
- =?us-ascii?Q?/M0WcjDphJMYvz7xI6/6FMcTXcaeTi1PpnE4eQzHljPnjzbyufFbMrJb4YZr?=
- =?us-ascii?Q?DN6cor29ez6Ok79VCCRf7ar9om/mpvkQgrnSnCc0WagIQAsl3v1ZXfIV8lOD?=
- =?us-ascii?Q?dSjAA958kz0MPCCDPDLS2UQUk0QOTEDuQPMmaTrTdkedJjX8?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YU9hdHRsUWhTVzdDandXYUUra2NVanNWNkwvTDdDMHEvT0xWYXgvV0YrWTR0?=
+ =?utf-8?B?RzN6TWZ0S2x0ZWRrYmI4aWVRZVQvSWVFdDVocXdLN01hMHRyYkRVbk5EOUZv?=
+ =?utf-8?B?NFFNNG5ZUFhhK0R4RzVTVTBGbXV4bUt3R2NyVU0xQXlpbU8rcDhjZUUwYUha?=
+ =?utf-8?B?MkxjYmhXOWhXTlZCcjRrWGNYN2VDdjU2RW10RVovMWtwNjJPZHJKeW5sbnMv?=
+ =?utf-8?B?Ry9NT0I3NTR1elJOSWRpWnVNOE9NNVNxWCtkQnFLVHpDaWhGSlRTa2J2N1M3?=
+ =?utf-8?B?ZlRBSjZXT0Q2VW9XdzBScHFQSU5KYWlnU1A1ZGdmeDUvY3FNUzJjbU44eTl3?=
+ =?utf-8?B?THVaRXpqY2FyUm5zdzA2U0lvaG1oSTJ2UnIwcEtjYzBQeHF6KzdabU1uRnZG?=
+ =?utf-8?B?b1ppa1dGUy9XRzdrNVM1d3IyRWV6ZXBna21vLzVNMkJLckNEc3N6bGxTR2My?=
+ =?utf-8?B?QnZxbkQ0bVZyOHd0MGorK2dNdFBvSHovZDNZVE9WNzZ0UHE3OWs1SGdlUUlr?=
+ =?utf-8?B?RG9wcVVHNDFSaGNsNE1uWitRbWhRSHdFWGdmQnAveUZsSTljbytJL0Q0NHNz?=
+ =?utf-8?B?ZzhCUEtZNWFDMnViWkFab0x5MEdnU0VBZUdDWDlnMU5vWGR3N2N5aGhKOHVv?=
+ =?utf-8?B?SUtpWFo5eTJ0cVROY21YdmhZU1VqMGtmaTRGL1pYTXZwOENISW1TTVBGbFIw?=
+ =?utf-8?B?ZlR6YWhOdXMza0twUlN6a2Z6aDZFV1Y0b0VRN0xLb0NJL0NqQkEwRmhSN3Z4?=
+ =?utf-8?B?dXpyeS80RmJzZUkrWEQ3R1pkNVVGbjk5VnVuSGxsc2xHRnp0alh1Ny9GU2JP?=
+ =?utf-8?B?RVdQZFpaZzBZZnRXNTVWa2FrRG40MnNzWkxiOUl5S0NMbHRvYWJKWUtnVFI4?=
+ =?utf-8?B?UWF5bmllUUkrVFVERWduVWhMMXlXeUFzRklJK3NRb1lhL3lIK1RLT3NKUlJQ?=
+ =?utf-8?B?QW1PYzE0QytNakJHbC9pbitRQS9WdGRuTTdSV1IrVGlkaFBweXlvV3lzRnpP?=
+ =?utf-8?B?cU1YR00zRFlFay9kREtlREt5YzRDWms0WlZ2SmhHMDY5ZXVFUU04bkVrMExR?=
+ =?utf-8?B?NmQyWG1Oeks2T2VXTng3cGl6Tk5qcGFwTnRJck9TTFA0VERTR3luOGNHVStv?=
+ =?utf-8?B?MlRpNGlMZFJSVEJMV0ZGait1TDBCZStnM3hkVmRxZGpVYlBab2EvTUFGVUxI?=
+ =?utf-8?B?QXRTcDh2Y1RzZnJWbmV2NVZBWlovUDBzMVJPVkNIbjBCdnExaUtTT0FwWXR2?=
+ =?utf-8?B?d0N3K3ppSC9WbGZzSk1abG10MkFVMXIvR2trTGtLSkVRc3Jibm9Sc1BWNUNh?=
+ =?utf-8?B?ckxTVkxLUHYzR3lUTFdLejhSY20vZGxhTW5ibXplUklTdDRKQU5XZG5yV1NI?=
+ =?utf-8?B?bmgxanVLbjVXbHBuWmxTMklhRitQQkRBaDFKUlBSZzB4UTdFQ3JFUlovejJJ?=
+ =?utf-8?B?Y1BiVUJ4NytBU1lHWUNrc2F2NWNJSEVzOUx2QXlUTWNCWkpMaXlDY2o2QWdZ?=
+ =?utf-8?B?R0hBbnRqZXVveUJmZEpLVnp6b1I0L0dvT1FWMWhQRGRGWGN2aXJRRGZ0U0Ft?=
+ =?utf-8?B?bGwvL2tUYkRnK2lqQlE3cjYyWDFpSUhDUDZFVm1XcTg3VWkvVThQTm8xYUxr?=
+ =?utf-8?B?bU9lOHdMdFlMNGtrZGp4T09ldU1zd1RGWXpYQ1RSVTlqQk05MlVSS2FjVmh2?=
+ =?utf-8?B?U3VpeUhTMXRXNXdnTmFwb0ZkVVgyRDVTenRQd2NuSVRUT0pTdkhrSXd0d21n?=
+ =?utf-8?B?eEh1LzJOQmg0cUROUWtTZHltVmplYjNpeWd0eUlGaS95UHN0M1R0MVByNkVp?=
+ =?utf-8?B?eHUrMmtCanltcjNBNGZveXZGRUR2QmJDMVlrbmhGYkl4MDJrMTlBMk9HMWNa?=
+ =?utf-8?B?VDBvSGNUVFFEaXZTQzJtSnQrUWgxZndJUE9JKzhUVHA3TDVMQ01pcm15R1ZB?=
+ =?utf-8?B?bEFBczZxTTBYMGtNVHo2eG4yR25XcE5HRVRreTUxNVVZVVVUS2E3Y0FZMVhL?=
+ =?utf-8?B?QktUNzNuSEpEdEZuU2dPenZWOWMrQ01kQjlhWWFSN2NlVWpScmpnV245dXo1?=
+ =?utf-8?B?NUI0elNtWWZGRjR2RkNuNzRncjBGak5KOHNaTW5pVzV0cXo0bGVEUDhZSGlx?=
+ =?utf-8?B?SlZwMkZlNkZRSFhBbGxXc1NtcGlZbW1JN2daU3JTMkk0ZUFRZzl0T3F5M0lN?=
+ =?utf-8?B?eHgzbDhpNFo0bW1jZ0Q5a2d1dEdpMHdWZkttb1UxOXFybHNRT21ncXd5aVly?=
+ =?utf-8?Q?pBYUWJof9h3WC7Ofe6PFkoN1m5vSjpzfrFe9Gt7ES8=3D?=
 X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 55a82735-97e9-4dfd-7b4d-08d9a9ae012a
+X-MS-Exchange-CrossTenant-Network-Message-Id: ae85fa8f-1f72-49b1-bf05-08d9a9ae04e5
 X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5151.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Nov 2021 09:38:25.9900 (UTC)
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Nov 2021 09:38:32.5622 (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UOU0ycEpY6MbAZCp/JEFYyVYvVQkkLJSiKmyFEGPeYd13MI4OCZmce9eR2GAtFxtNdWYrM98BwDzE/oyAHF3wA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB3039
-Cc: daniel.baluta@gmail.com, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+X-MS-Exchange-CrossTenant-UserPrincipalName: I4mvp+Xn4t9ZMGrg3rnBKQlUq7lAybR3GERAyC4JS1yVFH4kuSzM3SRvJS9dywkJuJ4YmlFRRDZEqmaqLHRx5w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6623
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ daniel.baluta@gmail.com, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
  AjitKumar.Pandey@amd.com, linux-kernel@vger.kernel.org,
+ =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
  pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com,
  Julian.Schroeder@amd.com, linux-mediatek@lists.infradead.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
  Balakishore.pati@amd.com, yc.hung@mediatek.com,
- vishnuvardhanrao.ravulapati@amd.com, vsreddy@amd.com, daniel.baluta@nxp.com,
- Bard Liao <bard.liao@intel.com>
+ vishnuvardhanrao.ravulapati@amd.com, vsreddy@amd.com, daniel.baluta@nxp.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -165,162 +176,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: V sujith kumar Reddy <vsreddy@amd.com>
+From: YC Hung <yc.hung@mediatek.com>
 
-Add trace support and configure trace stream for ACP firmware.
+Add the definition for Mediatek audio front end(AFE) tokens,include
+AFE sampling rate, channels, and format.
 
-Signed-off-by: Vishnuvardhanrao Ravuapati <vishnuvardhanrao.ravulapati@amd.com>
-Signed-off-by: V sujith kumar Reddy <vsreddy@amd.com>
-Reviewed-by: Bard Liao <bard.liao@intel.com>
+Signed-off-by: YC Hung <yc.hung@mediatek.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
 Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
 ---
- sound/soc/sof/amd/Makefile    |  2 +-
- sound/soc/sof/amd/acp-trace.c | 84 +++++++++++++++++++++++++++++++++++
- sound/soc/sof/amd/acp.h       |  5 +++
- sound/soc/sof/amd/renoir.c    |  4 ++
- 4 files changed, 94 insertions(+), 1 deletion(-)
- create mode 100644 sound/soc/sof/amd/acp-trace.c
+ include/uapi/sound/sof/tokens.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/sof/amd/Makefile b/sound/soc/sof/amd/Makefile
-index b27ce50014b8..7b9f1a0af3c8 100644
---- a/sound/soc/sof/amd/Makefile
-+++ b/sound/soc/sof/amd/Makefile
-@@ -4,7 +4,7 @@
- #
- # Copyright(c) 2021 Advanced Micro Devices, Inc. All rights reserved.
+diff --git a/include/uapi/sound/sof/tokens.h b/include/uapi/sound/sof/tokens.h
+index 02b71a8deea4..b72fa385bebf 100644
+--- a/include/uapi/sound/sof/tokens.h
++++ b/include/uapi/sound/sof/tokens.h
+@@ -140,4 +140,9 @@
+ #define SOF_TKN_INTEL_HDA_RATE			1500
+ #define SOF_TKN_INTEL_HDA_CH			1501
  
--snd-sof-amd-acp-objs := acp.o acp-loader.o acp-ipc.o acp-pcm.o acp-stream.o
-+snd-sof-amd-acp-objs := acp.o acp-loader.o acp-ipc.o acp-pcm.o acp-stream.o acp-trace.o
- snd-sof-amd-renoir-objs := pci-rn.o renoir.o
- 
- obj-$(CONFIG_SND_SOC_SOF_AMD_COMMON) += snd-sof-amd-acp.o
-diff --git a/sound/soc/sof/amd/acp-trace.c b/sound/soc/sof/amd/acp-trace.c
-new file mode 100644
-index 000000000000..fa4da8947186
---- /dev/null
-+++ b/sound/soc/sof/amd/acp-trace.c
-@@ -0,0 +1,84 @@
-+// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
-+//
-+// This file is provided under a dual BSD/GPLv2 license.  When using or
-+// redistributing this file, you may do so under either license.
-+//
-+// Copyright(c) 2021 Advanced Micro Devices, Inc. All rights reserved.
-+//
-+// Authors: Vishnuvardhanrao Ravuapati <vishnuvardhanrao.ravulapati@amd.com>
-+//	    V Sujith Kumar Reddy <Vsujithkumar.Reddy@amd.com>
++/* AFE */
++#define SOF_TKN_MEDIATEK_AFE_RATE		1600
++#define SOF_TKN_MEDIATEK_AFE_CH			1601
++#define SOF_TKN_MEDIATEK_AFE_FORMAT		1602
 +
-+/*This file support Host TRACE Logger driver callback for SOF FW */
-+
-+#include "acp.h"
-+
-+#define ACP_LOGGER_STREAM	8
-+#define NUM_PAGES		16
-+
-+int acp_sof_trace_release(struct snd_sof_dev *sdev)
-+{
-+	struct acp_dsp_stream *stream;
-+	struct acp_dev_data *adata;
-+	int ret;
-+
-+	adata = sdev->pdata->hw_pdata;
-+	stream = adata->dtrace_stream;
-+	ret = acp_dsp_stream_put(sdev, stream);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "Failed to release trace stream\n");
-+		return ret;
-+	}
-+
-+	adata->dtrace_stream = NULL;
-+	return 0;
-+}
-+EXPORT_SYMBOL_NS(acp_sof_trace_release, SND_SOC_SOF_AMD_COMMON);
-+
-+static int acp_sof_trace_prepare(struct snd_sof_dev *sdev,
-+				 struct sof_ipc_dma_trace_params_ext *params)
-+{
-+	struct acp_dsp_stream *stream;
-+	struct acp_dev_data *adata;
-+	int ret;
-+
-+	adata = sdev->pdata->hw_pdata;
-+	stream = adata->dtrace_stream;
-+	stream->dmab = &sdev->dmatb;
-+	stream->num_pages = NUM_PAGES;
-+
-+	ret = acp_dsp_stream_config(sdev, stream);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "Failed to configure trace stream\n");
-+		return ret;
-+	}
-+
-+	params->buffer.phy_addr = stream->reg_offset;
-+	params->stream_tag = stream->stream_tag;
-+
-+	return 0;
-+}
-+
-+int acp_sof_trace_init(struct snd_sof_dev *sdev, u32 *stream_tag)
-+{
-+	struct sof_ipc_dma_trace_params_ext *params;
-+	struct acp_dsp_stream *stream;
-+	struct acp_dev_data *adata;
-+	int ret;
-+
-+	adata = sdev->pdata->hw_pdata;
-+	stream = acp_dsp_stream_get(sdev, ACP_LOGGER_STREAM);
-+	if (!stream)
-+		return -ENODEV;
-+
-+	adata->dtrace_stream = stream;
-+	params = container_of(stream_tag, struct sof_ipc_dma_trace_params_ext, stream_tag);
-+	ret = acp_sof_trace_prepare(sdev, params);
-+	if (ret < 0) {
-+		acp_dsp_stream_put(sdev, stream);
-+		return ret;
-+	}
-+
-+	*stream_tag = stream->stream_tag;
-+	return 0;
-+}
-+EXPORT_SYMBOL_NS(acp_sof_trace_init, SND_SOC_SOF_AMD_COMMON);
-diff --git a/sound/soc/sof/amd/acp.h b/sound/soc/sof/amd/acp.h
-index 5f6e9eff116a..fd923f72a01a 100644
---- a/sound/soc/sof/amd/acp.h
-+++ b/sound/soc/sof/amd/acp.h
-@@ -139,6 +139,7 @@ struct acp_dev_data {
- 	u8 *data_buf;
- 	struct dma_descriptor dscr_info[ACP_MAX_DESC];
- 	struct acp_dsp_stream stream_buf[ACP_MAX_STREAM];
-+	struct acp_dsp_stream *dtrace_stream;
- };
- 
- void memcpy_to_scratch(struct snd_sof_dev *sdev, u32 offset, unsigned int *src, size_t bytes);
-@@ -197,4 +198,8 @@ extern const struct snd_sof_dsp_ops sof_renoir_ops;
- 
- /* Machine configuration */
- int snd_amd_acp_find_config(struct pci_dev *pci);
-+
-+/* Trace */
-+int acp_sof_trace_init(struct snd_sof_dev *sdev, u32 *stream_tag);
-+int acp_sof_trace_release(struct snd_sof_dev *sdev);
  #endif
-diff --git a/sound/soc/sof/amd/renoir.c b/sound/soc/sof/amd/renoir.c
-index 3cd269bfe75d..43037109e130 100644
---- a/sound/soc/sof/amd/renoir.c
-+++ b/sound/soc/sof/amd/renoir.c
-@@ -173,6 +173,10 @@ const struct snd_sof_dsp_ops sof_renoir_ops = {
- 	.machine_select		= amd_sof_machine_select,
- 	.machine_register	= sof_machine_register,
- 	.machine_unregister	= sof_machine_unregister,
-+
-+	/* Trace Logger */
-+	.trace_init		= acp_sof_trace_init,
-+	.trace_release		= acp_sof_trace_release,
- };
- EXPORT_SYMBOL(sof_renoir_ops);
- 
 -- 
 2.27.0
 
