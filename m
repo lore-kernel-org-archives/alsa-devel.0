@@ -2,76 +2,88 @@ Return-Path: <SRS0=ac5z=QE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7845EC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Nov 2021 12:59:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E67AC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Nov 2021 13:24:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8C0B661BE5
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Nov 2021 12:59:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8C0B661BE5
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id D59C6611AF
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Nov 2021 13:24:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D59C6611AF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D14621841;
-	Wed, 17 Nov 2021 13:58:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D14621841
+	by alsa0.perex.cz (Postfix) with ESMTPS id A8070180F;
+	Wed, 17 Nov 2021 14:23:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A8070180F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637153973;
-	bh=BiqGHhRim3d8BHLcln1M/+lQP923kEXpdloVrzcTV+c=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1637155445;
+	bh=M2yy0tu2yiLT//ISSCEUBk4SU+JtHKEuisAU4mbVoQg=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UVcyXOyMuJLn0Y80XlB2BWzCSs+lZ6jqa03tuFWk3BYHL5MyXwWGb9f4LrupNa8gG
-	 2LnnlZRzZr1XPK9UWTOA6mGDGerw5kY+VHnJgrwucvdLTAND0R5nXSwj4+RH+YHYxK
-	 3919YCBymR9m0Y9QbJ3iUORkZ0wNX8tyILipAi84=
+	b=GDmr7WfDR1mj+4felLZvrnLeLJZOHUtU6Q+lyuM3NSXBcoDCqMdtJV2s2V2bhix0X
+	 f1KdvmNlZraakLjw6tWX6DiwHp5f5n8IozP5i4/qrjebj7AHZnGZ6oqlOPC2PL3CJl
+	 gshjnFu2ZTyi12tJOdD7eG8sl443EYYQRCwtzXY8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6824AF80134;
-	Wed, 17 Nov 2021 13:58:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3D3B0F8016C;
+	Wed, 17 Nov 2021 14:23:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4E867F8027D; Wed, 17 Nov 2021 13:58:42 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 93935F8020D; Wed, 17 Nov 2021 14:23:12 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CC9B8F80134
- for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2021 13:58:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC9B8F80134
+ by alsa1.perex.cz (Postfix) with ESMTPS id 17472F8020D
+ for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2021 14:23:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 17472F8020D
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="O4iDoCVi"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F1D0863240;
- Wed, 17 Nov 2021 12:58:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1637153913;
- bh=BiqGHhRim3d8BHLcln1M/+lQP923kEXpdloVrzcTV+c=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=O4iDoCViWqV4WupTN6YQIaCBKRFmNZGc6sauoe8wLpQM6KzFaq+zj/yz1Lq3acZ2A
- /XeBlKoWhHEmEUKg9LIxob69c+IbPX1seIKYvjnsNiIY1Ht5Sl62g2J2c7jrOgQBFR
- 1u2mriO87cwIsl6FURhpgd2PQIU/YxQxqpC6Os8K6IB8myHhElTjiEPnbeqhgLaiR4
- hAo5GZ4o0CCa79d/Uudfxbq8nMbSxX9zOjrDLgvUZEj+kqWlANIlFhrIgsKDdVqtqP
- 7SBhnDV0aXFdWcP6XKirnYT7dqdZLF/+3ca5Jt+J2G0imQasdUqX7WKp8cZNAqfWwN
- pDmK8Bp4Fs6WA==
-Date: Wed, 17 Nov 2021 12:58:27 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Daniel Baluta <daniel.baluta@oss.nxp.com>
-Subject: Re: [PATCH 1/5] ASoC: SOF: imx: Add code to manage DSP related clocks
-Message-ID: <YZT8c42cAczfKyMP@sirena.org.uk>
-References: <20211116154613.57122-1-daniel.baluta@oss.nxp.com>
- <20211116154613.57122-2-daniel.baluta@oss.nxp.com>
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="N7ajePXf"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AH4qhZc020405;
+ Wed, 17 Nov 2021 07:23:04 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=PODMain02222019;
+ bh=CwApPCF3hG3Mox50pUSckm5n1NySjOvvsfG42xgsXXw=;
+ b=N7ajePXfNFxywLt6wyUAulqeMrZkmaR/9cAFhYI3o7t7AKeLQKRNjGr0g0XnWox2gdGf
+ yeqaQ89RpsDGEiXw4MQTnhAwtgq9/w/XXFY17jkNNtxdMJSEJKfbZV1gIU25jLVt249w
+ KD+Bqje/t2PFrLvlUvX+QCgceWwCxIkhE6kCi9EIzJEaG56b1BCL28GLzLD6JwizrnSy
+ HYtUY7VOSSTzQTe4Y+cpfy5eB6hnbL1JmYV3+5oSGBq/sHKJiLqwHt9m23RhVY+WsvRq
+ OV1IDKsnjPRdpUW0FdsQrRoDVOkgv8bbMAh00Ne0ilrVYa3PVffBzuuGxnzUoqDaawRQ qw== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3ccgtn14sf-4
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Wed, 17 Nov 2021 07:23:04 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Wed, 17 Nov
+ 2021 13:23:00 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.17 via
+ Frontend Transport; Wed, 17 Nov 2021 13:23:00 +0000
+Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id B0ACA46D;
+ Wed, 17 Nov 2021 13:23:00 +0000 (UTC)
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: <broonie@kernel.org>
+Subject: [PATCH v2 05/10] firmware: cs_dsp: Print messages from bin files
+Date: Wed, 17 Nov 2021 13:22:55 +0000
+Message-ID: <20211117132300.1290-5-ckeepax@opensource.cirrus.com>
+X-Mailer: git-send-email 2.11.0
+In-Reply-To: <20211117132300.1290-1-ckeepax@opensource.cirrus.com>
+References: <20211117132300.1290-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="IqNxkZWaXy7zEpSv"
-Content-Disposition: inline
-In-Reply-To: <20211116154613.57122-2-daniel.baluta@oss.nxp.com>
-X-Cookie: Tomorrow, you can be anywhere.
-Cc: Daniel Baluta <daniel.baluta@nxp.com>, pierre-louis.bossart@linux.intel.com,
- daniel.baluta@gmail.com, kai.vehmanen@linux.intel.com, lgirdwood@gmail.com,
- linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- ranjani.sridharan@linux.intel.com, guennadi.liakhovetski@linux.intel.com,
- linux-imx@nxp.com, Paul Olaru <paul.olaru@oss.nxp.com>,
- peter.ujfalusi@linux.intel.com
+Content-Type: text/plain
+X-Proofpoint-GUID: SN22R4XuowUb6ZejrvmcgykQ9OEMb0XE
+X-Proofpoint-ORIG-GUID: SN22R4XuowUb6ZejrvmcgykQ9OEMb0XE
+X-Proofpoint-Spam-Reason: safe
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,34 +99,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+The coefficient file contains various info strings, and the equivalent
+strings are printed from the WMFW file as it is loaded. Add support
+for printing these from the coefficient file as well.
 
---IqNxkZWaXy7zEpSv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
+ drivers/firmware/cirrus/cs_dsp.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-On Tue, Nov 16, 2021 at 05:46:09PM +0200, Daniel Baluta wrote:
-> From: Daniel Baluta <daniel.baluta@nxp.com>
->=20
-> We need at least 3 clocks in order to power up and access
-> DSP core registers found on i.MX8QM, i.MX8QXP and i.MX8MP
-> platforms.
+diff --git a/drivers/firmware/cirrus/cs_dsp.c b/drivers/firmware/cirrus/cs_dsp.c
+index ef7afadea42d1..3d21574f3a443 100644
+--- a/drivers/firmware/cirrus/cs_dsp.c
++++ b/drivers/firmware/cirrus/cs_dsp.c
+@@ -1968,6 +1968,7 @@ static int cs_dsp_load_coeff(struct cs_dsp *dsp, const struct firmware *firmware
+ 	struct cs_dsp_alg_region *alg_region;
+ 	const char *region_name;
+ 	int ret, pos, blocks, type, offset, reg, version;
++	char *text = NULL;
+ 	struct cs_dsp_buf *buf;
+ 
+ 	if (!firmware)
+@@ -2025,6 +2026,8 @@ static int cs_dsp_load_coeff(struct cs_dsp *dsp, const struct firmware *firmware
+ 		region_name = "Unknown";
+ 		switch (type) {
+ 		case (WMFW_NAME_TEXT << 8):
++			text = kzalloc(le32_to_cpu(blk->len) + 1, GFP_KERNEL);
++			break;
+ 		case (WMFW_INFO_TEXT << 8):
+ 		case (WMFW_METADATA << 8):
+ 			break;
+@@ -2094,6 +2097,13 @@ static int cs_dsp_load_coeff(struct cs_dsp *dsp, const struct firmware *firmware
+ 			break;
+ 		}
+ 
++		if (text) {
++			memcpy(text, blk->data, le32_to_cpu(blk->len));
++			cs_dsp_info(dsp, "%s: %s\n", dsp->fw_name, text);
++			kfree(text);
++			text = NULL;
++		}
++
+ 		if (reg) {
+ 			if (le32_to_cpu(blk->len) >
+ 			    firmware->size - pos - sizeof(*blk)) {
+@@ -2144,6 +2154,7 @@ static int cs_dsp_load_coeff(struct cs_dsp *dsp, const struct firmware *firmware
+ out_fw:
+ 	regmap_async_complete(regmap);
+ 	cs_dsp_buf_free(&buf_list);
++	kfree(text);
+ 	return ret;
+ }
+ 
+-- 
+2.11.0
 
-This doesn't apply against current code, please check and resend.
-
---IqNxkZWaXy7zEpSv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGU/HMACgkQJNaLcl1U
-h9DbMwf/Y2ImIQs2ZcgXwqFemeuwjb1p4nR0JrACkq7Y3Yo7dOswptvX3ngJBPA4
-42pcHMl6wI+nKjqCbsmFpNxsTASko7oXls8H9MApS07yKnG0qWMLB67ljugIDICO
-cPphAPTU2x2fpTrHSf4pf3aW+Z2rM1MsnIeqsAbgw+0NsUtniyHC5TQwU2xnMNzX
-fCS9CFsM9RnzU794HVx3+7u4LbziYQ6iZ/pI2UXgKzEiy1T8Yk6V6eC0L6SCkRSj
-q94sWfWLkFRaarFXmqalp3IpqK8pDop9Oh4GLpDb4VJrzj2/9urZGsnH9nEgRl0K
-+UBpEMrgqXkb+aHQmcpaMSb2gdU95A==
-=msQb
------END PGP SIGNATURE-----
-
---IqNxkZWaXy7zEpSv--
