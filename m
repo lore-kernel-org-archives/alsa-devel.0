@@ -2,97 +2,73 @@ Return-Path: <SRS0=e+ka=QF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E939C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 16:40:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F369EC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 16:40:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BD9CA610A5
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 16:40:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BD9CA610A5
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 6F03B610A5
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 16:40:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6F03B610A5
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 22B931867;
-	Thu, 18 Nov 2021 17:39:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22B931867
+	by alsa0.perex.cz (Postfix) with ESMTPS id E4DEE1868;
+	Thu, 18 Nov 2021 17:39:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4DEE1868
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637253624;
-	bh=rcwRBlCKqfF/fOP7nToqyQtxiDrvbRwb9qhV9pcd3SE=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=tQVO8T4yqdWYoBrQM/smOB1HDkfpTAa3TJq/Lx6dKr4otbfbJl5QjhJM51uLqT/ff
-	 FKPUIrI8d8msigUjwmwra48ye89zUmq3Hkv9yv/CKGrcbNKX0OleUa1iRrDxD86L30
-	 0O4g2zCIZZUb1nlKsAroS9d7Hjp8mqFUMmkMUOWA=
+	s=default; t=1637253643;
+	bh=4M6XLlHVZPyiK92kKEqnvxP9mg9nTC1DZNgg1PWpays=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=asFpjI72/dqx989h1rjdvFFcLbN+Rn61x/wsOtZZMXKPOZ9glUafj22ZcJopOpGHF
+	 J0upDOCDKIjlUjUUdHmjwM1PzuW2ScbBNzB+fbH/VEs7tPf07RJLwQjD265SzSnUzS
+	 zCRRG5LOu5DcSI0LwDL8EW9sFSDZYJIaJDFoI01w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D0F77F8055B;
-	Thu, 18 Nov 2021 17:33:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A9CC6F8056F;
+	Thu, 18 Nov 2021 17:33:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 70781F80272; Tue, 16 Nov 2021 05:29:11 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 76BD4F8028B; Wed, 17 Nov 2021 14:12:42 +0100 (CET)
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DC599F80089
- for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2021 05:29:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC599F80089
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="WCkkYmiC"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 66AA16023D;
- Tue, 16 Nov 2021 04:28:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1637036939;
- bh=rcwRBlCKqfF/fOP7nToqyQtxiDrvbRwb9qhV9pcd3SE=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=WCkkYmiCsuCs6VTYyStyePuhjavoZznkD15Pfk4kfmFcnpOyhqwefXwCEerdsi5BB
- gaxqtKh7IVnWz3O+cSAsdJUjs6zKFkagpHyNquC8O99klBS/lKo/7gFtT7CHdCC6ar
- 6K/pSsHI8+2FH3V1I1L7V2qq8dmjNebnK0MyEtDZ/hdrNv4x1IyseRUmNFq3EiZJ7c
- 1oiPRI0DMs2kje0Hvslatdsud/obFQMRW9uHW8NpKk4mIv94ytNZbHvJadN/Nn9YZY
- tGLIxmhA6nCk6OcdFZAV34UHFuwVplf/2bcz9WsNFmm3THY7N2KypMCnwedbGoDGcy
- AW5qdaBZVvhpQ==
-Date: Tue, 16 Nov 2021 09:58:54 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Arnd Bergmann <arnd@kernel.org>
-Subject: Re: [PATCH 08/11] dmaengine: xilinx_dpdma: stop using slave_id field
-Message-ID: <YZMzhoWX0S5oPI6j@matsya>
-References: <20211115085403.360194-1-arnd@kernel.org>
- <20211115085403.360194-9-arnd@kernel.org>
- <YZIk6cVb7XibrMjf@pendragon.ideasonboard.com>
- <CAK8P3a1Fu11-e0CK2of8u3ebdjom84UKuXhBKi5FUs5ZPPdOVA@mail.gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 16ECEF8016C;
+ Wed, 17 Nov 2021 14:12:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16ECEF8016C
+X-UUID: ea394f21aa0f4a8cadd159874d9c110c-20211117
+X-UUID: ea394f21aa0f4a8cadd159874d9c110c-20211117
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
+ (envelope-from <allen-kh.cheng@mediatek.com>)
+ (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+ with ESMTP id 1795426441; Wed, 17 Nov 2021 21:12:27 +0800
+Received: from mtkexhb02.mediatek.inc (172.21.101.103) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 17 Nov 2021 21:12:25 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by mtkexhb02.mediatek.inc
+ (172.21.101.103) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+ Wed, 17 Nov 2021 21:12:25 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via
+ Frontend Transport; Wed, 17 Nov 2021 21:12:25 +0800
+From: allen-kh.cheng <allen-kh.cheng@mediatek.com>
+To: Jassi Brar <jassisinghbrar@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>, Linux-ALSA
+ <alsa-devel@alsa-project.org>
+Subject: [PATCH 0/3] Mediatek MT8195 ADSP IPC support
+Date: Wed, 17 Nov 2021 21:12:19 +0800
+Message-ID: <20211117131222.30541-1-allen-kh.cheng@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a1Fu11-e0CK2of8u3ebdjom84UKuXhBKi5FUs5ZPPdOVA@mail.gmail.com>
-X-Mailman-Approved-At: Thu, 18 Nov 2021 17:33:03 +0100
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- dri-devel <dri-devel@lists.freedesktop.org>,
- Bjorn Andersson <bjorn.andersson@linaro.org>,
- "open list:TEGRA ARCHITECTURE SUPPORT" <linux-tegra@vger.kernel.org>,
- Thierry Reding <thierry.reding@gmail.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- linux-spi <linux-spi@vger.kernel.org>, Robert Jarzmik <robert.jarzmik@free.fr>,
- Lars-Peter Clausen <lars@metafoo.de>, Chunyan Zhang <zhang.lyra@gmail.com>,
- linux-staging@lists.linux.dev, Michal Simek <michal.simek@xilinx.com>,
- Jon Hunter <jonathanh@nvidia.com>, Andy Gross <agross@kernel.org>,
- bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
- "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
- Orson Zhai <orsonzhai@gmail.com>, Nicolas Saenz Julienne <nsaenz@kernel.org>,
- Arnd Bergmann <arnd@arndb.de>, Manivannan Sadhasivam <mani@kernel.org>,
- linux-arm-msm <linux-arm-msm@vger.kernel.org>, dmaengine@vger.kernel.org,
- Mark Brown <broonie@kernel.org>,
- "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE"
- <linux-rpi-kernel@lists.infradead.org>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>,
- Scott Branden <sbranden@broadcom.com>, Hyun Kwon <hyun.kwon@xilinx.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- linux-mmc <linux-mmc@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Laxman Dewangan <ldewangan@nvidia.com>, Baolin Wang <baolin.wang7@gmail.com>
+Content-Type: text/plain
+X-MTK: N
+X-Mailman-Approved-At: Thu, 18 Nov 2021 17:33:02 +0100
+Cc: devicetree@vger.kernel.org, "allen-kh.cheng" <allen-kh.cheng@mediatek.com>,
+ linux-kernel@vger.kernel.org,
+ Project_Global_Chrome_Upstream_Group@mediatek.com,
+ linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,37 +84,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 15-11-21, 11:21, Arnd Bergmann wrote:
-> On Mon, Nov 15, 2021 at 10:14 AM Laurent Pinchart
-> <laurent.pinchart@ideasonboard.com> wrote:
-> > On Mon, Nov 15, 2021 at 09:54:00AM +0100, Arnd Bergmann wrote:
-> > > @@ -1285,11 +1287,13 @@ static int xilinx_dpdma_config(struct dma_chan *dchan,
-> > >       spin_lock_irqsave(&chan->lock, flags);
-> > >
-> > >       /*
-> > > -      * Abuse the slave_id to indicate that the channel is part of a video
-> > > -      * group.
-> > > +      * Abuse the peripheral_config to indicate that the channel is part
-> >
-> > Is it still an abuse, or is this now the right way to pass custom data
-> > to the DMA engine driver ?
-> 
-> It doesn't make the driver any more portable, but it's now being
-> more explicit about it. As far as I can tell, this is the best way
-> to pass data that cannot be expressed through the regular interfaces
-> in DT and the dmaengine API.
-> 
-> Ideally there would be a generic way to pass this flag, but I couldn't
-> figure out what this is actually doing, or whether there is a better
-> way. Maybe Vinod has an idea.
-> 
-> I'll change s/Abuse/Use/ for the moment until I get a definite answer.
+This patches are providing support for ADSP IPC support
+for MT8195.
 
-I would feel this is still not use for the peripheral_config, but lets
-keep it to get rid of slave_id.
+Mediatek ADSP IPC is used to send notification or short
+message between processors with dsp. It will place the
+message to the share buffer and will access the ADSP
+mailbox registers to kick dsp.
 
-Also, I would be better if this was moved to DT as the next cell, don't
-recall why that was not done/feasible.
+Two mailboxes used to send notification or short message
+between processors with dsp
+
+Allen-KH Cheng (3):
+  dt-bindings: mediatek: add adsp-mbox document
+  mailbox: mediatek: add support for adsp mailbox controller
+  firmware: mediatek: add adsp ipc protocol interface
+
+ .../bindings/mailbox/mtk,adsp-mbox.yaml       |  53 +++++
+ drivers/firmware/Kconfig                      |   1 +
+ drivers/firmware/Makefile                     |   1 +
+ drivers/firmware/mediatek/Kconfig             |  10 +
+ drivers/firmware/mediatek/Makefile            |   2 +
+ drivers/firmware/mediatek/mtk-adsp-ipc.c      | 130 ++++++++++++
+ drivers/mailbox/Kconfig                       |   8 +
+ drivers/mailbox/Makefile                      |   2 +
+ drivers/mailbox/mtk-adsp-mailbox.c            | 187 ++++++++++++++++++
+ .../linux/firmware/mediatek/mtk-adsp-ipc.h    |  72 +++++++
+ 10 files changed, 466 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mailbox/mtk,adsp-mbox.yaml
+ create mode 100644 drivers/firmware/mediatek/Kconfig
+ create mode 100644 drivers/firmware/mediatek/Makefile
+ create mode 100644 drivers/firmware/mediatek/mtk-adsp-ipc.c
+ create mode 100644 drivers/mailbox/mtk-adsp-mailbox.c
+ create mode 100644 include/linux/firmware/mediatek/mtk-adsp-ipc.h
 
 -- 
-~Vinod
+2.18.0
+
