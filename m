@@ -2,85 +2,85 @@ Return-Path: <SRS0=ac5z=QE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 650F7C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Nov 2021 13:26:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F9D7C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Nov 2021 13:27:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D82CF61547
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Nov 2021 13:26:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D82CF61547
+	by mail.kernel.org (Postfix) with ESMTPS id 9EC5A61547
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Nov 2021 13:26:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9EC5A61547
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 380BA18D5;
-	Wed, 17 Nov 2021 14:25:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 380BA18D5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 10A7D18EF;
+	Wed, 17 Nov 2021 14:26:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 10A7D18EF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637155593;
-	bh=dfEJ/0s15Do+JJ6zK0RuzyMsMdINe0b3lUPlUxDAYiQ=;
+	s=default; t=1637155618;
+	bh=Az+FANuxkiRncwA1GTpUZQp4gvXNmhRAC3jkADYM+To=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZLQYU+BvHratdl3QEKACD1ZGbMMWmzIcVwXzezmPE5vuHtzCIU7WkPwdeEKJ+k3tS
-	 5DKrT60WGN4+k5tNYNAaE8LhlLoN865v7Kddld7KzhUlg1gIpEXsUPS3KiuUWo9/cY
-	 47Jx2AzQSStmsMDGtdwprQenVTNQ1T8zygRqhhvs=
+	b=k5IvSgHqV7TEViGnDeTGjB44DTxYF4FZ9zybja1LC2sGdQuREy4ruXluNVvWkj89k
+	 Yg4mojC3Og6mTHCC467Iel+AkbHH5Ff1t5YaGw+jI5lP1xwxQj8Ip++nuHhkDxhypV
+	 F8yixYUjpKJWDlpHdnAzP7d/2Se23CuMClFd+OL0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BA649F8051A;
-	Wed, 17 Nov 2021 14:23:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CE36BF80524;
+	Wed, 17 Nov 2021 14:23:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 014C0F80134; Wed, 17 Nov 2021 14:23:22 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id EF26AF8051D; Wed, 17 Nov 2021 14:23:27 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 88356F80134
+ by alsa1.perex.cz (Postfix) with ESMTPS id E98CBF804BB
  for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2021 14:23:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88356F80134
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E98CBF804BB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="n0VaZcYh"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AH52dPZ021845;
- Wed, 17 Nov 2021 07:23:03 -0600
+ header.b="WblpsxbW"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AH4qhZd020405;
+ Wed, 17 Nov 2021 07:23:04 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=PODMain02222019;
- bh=U794aa6TxqSP/Zbgjvs0fRtCJbqeoJDK/QSWa6C7aF4=;
- b=n0VaZcYhThQSfym+WfB1IbIHLX/eVmgQhGkrVIfG0+NhdeiQkTFfjaKICK9dfWZ/srY/
- ChF7ItypJGXtSmkKue4STsWRPwKEnQA765iEW6duoMx2r1aS65uUOYw7v3WHXlIEOn7b
- tvRD5dKpqUq6NzSYVkl/k9iVtojA0XaWoIswvlD5Afb3O3Gi/XuLx3X3Zs7/1BKWTUF8
- 3RkbXz4zSTbZAOoIij98vYVCNx6P8XajNeD7MM5/8REqJejtB8zYHHZtxpYntcgmgSTX
- cHt+I72JmR6j9abBXlz8irx+fjj2h8SZuy1JdIa324eGtj3F7/KMcllIyzQ4DJVG4fms GQ== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3ccryb8jhf-2
+ bh=yHc5l3+auSKkr5tL9aYk+lBzV8TZVhy1kR4vTylzKng=;
+ b=WblpsxbWU6Y4cCAODTR8eyngH0Rkw97UXq9JCFoSaPOipdHa75EevnB3xMyltRiUkKgU
+ 9DIU3D+Af5PzrfN5Xsfc1KoGEx1QpQZdrM2Sl5RhUaep3c93erRn2G+YQW/O9J572r+8
+ uLqVKe6sGctDZQvDdGFGzKOREOarCA130GwblZBPkab536TdhTVq8fn27LbuQZeQgjix
+ pLJiBMiXn6K9k/WI4K0CiUb8+uHehwEhEKvQ9vdWxvUXpM8rBCybKtkuy9homtAjFeqh
+ YkD5kd6MDbF05KGaee9QoC0M7JY97PTHgREZIJa3qPHNqIlvYfFzH8Ciz005ujhZ0/hA TA== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3ccgtn14sf-5
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Wed, 17 Nov 2021 07:23:03 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ Wed, 17 Nov 2021 07:23:04 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Wed, 17 Nov
  2021 13:23:00 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.17 via
  Frontend Transport; Wed, 17 Nov 2021 13:23:00 +0000
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id E156315A0;
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D52D046D;
  Wed, 17 Nov 2021 13:23:00 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH v2 09/10] firmware: cs_dsp: Add offset to cs_dsp read/write
-Date: Wed, 17 Nov 2021 13:22:59 +0000
-Message-ID: <20211117132300.1290-9-ckeepax@opensource.cirrus.com>
+Subject: [PATCH v2 08/10] firmware: cs_dsp: Clarify some kernel doc comments
+Date: Wed, 17 Nov 2021 13:22:58 +0000
+Message-ID: <20211117132300.1290-8-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20211117132300.1290-1-ckeepax@opensource.cirrus.com>
 References: <20211117132300.1290-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Proofpoint-GUID: nR6NqTShY2Un0g4O3ZBhfqYBNqA-nJ4D
-X-Proofpoint-ORIG-GUID: nR6NqTShY2Un0g4O3ZBhfqYBNqA-nJ4D
+X-Proofpoint-GUID: sjxtY13CWL5hvp5DRcgtah4hr0ObFiVy
+X-Proofpoint-ORIG-GUID: sjxtY13CWL5hvp5DRcgtah4hr0ObFiVy
 X-Proofpoint-Spam-Reason: safe
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
  lgirdwood@gmail.com
@@ -99,263 +99,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Provide a mechanism to access only part of a control through the cs_dsp
-interface.
-
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- drivers/firmware/cirrus/cs_dsp.c       | 44 +++++++++++++++++++++-------------
- include/linux/firmware/cirrus/cs_dsp.h |  6 +++--
- sound/soc/codecs/wm_adsp.c             | 14 +++++------
- 3 files changed, 39 insertions(+), 25 deletions(-)
+ drivers/firmware/cirrus/cs_dsp.c       | 4 ++--
+ include/linux/firmware/cirrus/cs_dsp.h | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/firmware/cirrus/cs_dsp.c b/drivers/firmware/cirrus/cs_dsp.c
-index d1bcade2efe23..5fe08de91ecd3 100644
+index 9eecd16265375..d1bcade2efe23 100644
 --- a/drivers/firmware/cirrus/cs_dsp.c
 +++ b/drivers/firmware/cirrus/cs_dsp.c
-@@ -616,7 +616,8 @@ static void cs_dsp_halo_show_fw_status(struct cs_dsp *dsp)
- 		   offs[0], offs[1], offs[2], offs[3]);
- }
- 
--static int cs_dsp_coeff_base_reg(struct cs_dsp_coeff_ctl *ctl, unsigned int *reg)
-+static int cs_dsp_coeff_base_reg(struct cs_dsp_coeff_ctl *ctl, unsigned int *reg,
-+				 unsigned int off)
- {
- 	const struct cs_dsp_alg_region *alg_region = &ctl->alg_region;
- 	struct cs_dsp *dsp = ctl->dsp;
-@@ -629,7 +630,7 @@ static int cs_dsp_coeff_base_reg(struct cs_dsp_coeff_ctl *ctl, unsigned int *reg
- 		return -EINVAL;
- 	}
- 
--	*reg = dsp->ops->region_to_reg(mem, ctl->alg_region.base + ctl->offset);
-+	*reg = dsp->ops->region_to_reg(mem, ctl->alg_region.base + ctl->offset + off);
- 
- 	return 0;
- }
-@@ -658,7 +659,7 @@ int cs_dsp_coeff_write_acked_control(struct cs_dsp_coeff_ctl *ctl, unsigned int
- 	if (!dsp->running)
- 		return -EPERM;
- 
--	ret = cs_dsp_coeff_base_reg(ctl, &reg);
-+	ret = cs_dsp_coeff_base_reg(ctl, &reg, 0);
- 	if (ret)
- 		return ret;
- 
-@@ -712,14 +713,14 @@ int cs_dsp_coeff_write_acked_control(struct cs_dsp_coeff_ctl *ctl, unsigned int
- EXPORT_SYMBOL_GPL(cs_dsp_coeff_write_acked_control);
- 
- static int cs_dsp_coeff_write_ctrl_raw(struct cs_dsp_coeff_ctl *ctl,
--				       const void *buf, size_t len)
-+				       unsigned int off, const void *buf, size_t len)
- {
- 	struct cs_dsp *dsp = ctl->dsp;
- 	void *scratch;
- 	int ret;
- 	unsigned int reg;
- 
--	ret = cs_dsp_coeff_base_reg(ctl, &reg);
-+	ret = cs_dsp_coeff_base_reg(ctl, &reg, off);
- 	if (ret)
- 		return ret;
- 
-@@ -745,6 +746,7 @@ static int cs_dsp_coeff_write_ctrl_raw(struct cs_dsp_coeff_ctl *ctl,
- /**
+@@ -746,7 +746,7 @@ static int cs_dsp_coeff_write_ctrl_raw(struct cs_dsp_coeff_ctl *ctl,
   * cs_dsp_coeff_write_ctrl() - Writes the given buffer to the given coefficient control
   * @ctl: pointer to coefficient control
-+ * @off: word offset at which data should be written
   * @buf: the buffer to write to the given control
-  * @len: the length of the buffer in bytes
+- * @len: the length of the buffer
++ * @len: the length of the buffer in bytes
   *
-@@ -752,7 +754,8 @@ static int cs_dsp_coeff_write_ctrl_raw(struct cs_dsp_coeff_ctl *ctl,
+  * Must be called with pwr_lock held.
   *
-  * Return: Zero for success, a negative number on error.
-  */
--int cs_dsp_coeff_write_ctrl(struct cs_dsp_coeff_ctl *ctl, const void *buf, size_t len)
-+int cs_dsp_coeff_write_ctrl(struct cs_dsp_coeff_ctl *ctl,
-+			    unsigned int off, const void *buf, size_t len)
- {
- 	int ret = 0;
- 
-@@ -761,27 +764,31 @@ int cs_dsp_coeff_write_ctrl(struct cs_dsp_coeff_ctl *ctl, const void *buf, size_
- 	if (!ctl)
- 		return -ENOENT;
- 
-+	if (len + off * sizeof(u32) > ctl->len)
-+		return -EINVAL;
-+
- 	if (ctl->flags & WMFW_CTL_FLAG_VOLATILE)
- 		ret = -EPERM;
- 	else if (buf != ctl->cache)
--		memcpy(ctl->cache, buf, len);
-+		memcpy(ctl->cache + off * sizeof(u32), buf, len);
- 
- 	ctl->set = 1;
- 	if (ctl->enabled && ctl->dsp->running)
--		ret = cs_dsp_coeff_write_ctrl_raw(ctl, buf, len);
-+		ret = cs_dsp_coeff_write_ctrl_raw(ctl, off, buf, len);
- 
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(cs_dsp_coeff_write_ctrl);
- 
--static int cs_dsp_coeff_read_ctrl_raw(struct cs_dsp_coeff_ctl *ctl, void *buf, size_t len)
-+static int cs_dsp_coeff_read_ctrl_raw(struct cs_dsp_coeff_ctl *ctl,
-+				      unsigned int off, void *buf, size_t len)
- {
- 	struct cs_dsp *dsp = ctl->dsp;
- 	void *scratch;
- 	int ret;
- 	unsigned int reg;
- 
--	ret = cs_dsp_coeff_base_reg(ctl, &reg);
-+	ret = cs_dsp_coeff_base_reg(ctl, &reg, off);
- 	if (ret)
- 		return ret;
- 
-@@ -807,6 +814,7 @@ static int cs_dsp_coeff_read_ctrl_raw(struct cs_dsp_coeff_ctl *ctl, void *buf, s
- /**
+@@ -808,7 +808,7 @@ static int cs_dsp_coeff_read_ctrl_raw(struct cs_dsp_coeff_ctl *ctl, void *buf, s
   * cs_dsp_coeff_read_ctrl() - Reads the given coefficient control into the given buffer
   * @ctl: pointer to coefficient control
-+ * @off: word offset at which data should be read
   * @buf: the buffer to store to the given control
-  * @len: the length of the buffer in bytes
+- * @len: the length of the buffer
++ * @len: the length of the buffer in bytes
   *
-@@ -814,7 +822,8 @@ static int cs_dsp_coeff_read_ctrl_raw(struct cs_dsp_coeff_ctl *ctl, void *buf, s
+  * Must be called with pwr_lock held.
   *
-  * Return: Zero for success, a negative number on error.
-  */
--int cs_dsp_coeff_read_ctrl(struct cs_dsp_coeff_ctl *ctl, void *buf, size_t len)
-+int cs_dsp_coeff_read_ctrl(struct cs_dsp_coeff_ctl *ctl,
-+			   unsigned int off, void *buf, size_t len)
- {
- 	int ret = 0;
- 
-@@ -823,17 +832,20 @@ int cs_dsp_coeff_read_ctrl(struct cs_dsp_coeff_ctl *ctl, void *buf, size_t len)
- 	if (!ctl)
- 		return -ENOENT;
- 
-+	if (len + off * sizeof(u32) > ctl->len)
-+		return -EINVAL;
-+
- 	if (ctl->flags & WMFW_CTL_FLAG_VOLATILE) {
- 		if (ctl->enabled && ctl->dsp->running)
--			return cs_dsp_coeff_read_ctrl_raw(ctl, buf, len);
-+			return cs_dsp_coeff_read_ctrl_raw(ctl, off, buf, len);
- 		else
- 			return -EPERM;
- 	} else {
- 		if (!ctl->flags && ctl->enabled && ctl->dsp->running)
--			ret = cs_dsp_coeff_read_ctrl_raw(ctl, ctl->cache, ctl->len);
-+			ret = cs_dsp_coeff_read_ctrl_raw(ctl, 0, ctl->cache, ctl->len);
- 
- 		if (buf != ctl->cache)
--			memcpy(buf, ctl->cache, len);
-+			memcpy(buf, ctl->cache + off * sizeof(u32), len);
- 	}
- 
- 	return ret;
-@@ -857,7 +869,7 @@ static int cs_dsp_coeff_init_control_caches(struct cs_dsp *dsp)
- 		 * created so we don't need to do anything.
- 		 */
- 		if (!ctl->flags || (ctl->flags & WMFW_CTL_FLAG_READABLE)) {
--			ret = cs_dsp_coeff_read_ctrl_raw(ctl, ctl->cache, ctl->len);
-+			ret = cs_dsp_coeff_read_ctrl_raw(ctl, 0, ctl->cache, ctl->len);
- 			if (ret < 0)
- 				return ret;
- 		}
-@@ -875,7 +887,7 @@ static int cs_dsp_coeff_sync_controls(struct cs_dsp *dsp)
- 		if (!ctl->enabled)
- 			continue;
- 		if (ctl->set && !(ctl->flags & WMFW_CTL_FLAG_VOLATILE)) {
--			ret = cs_dsp_coeff_write_ctrl_raw(ctl, ctl->cache,
-+			ret = cs_dsp_coeff_write_ctrl_raw(ctl, 0, ctl->cache,
- 							  ctl->len);
- 			if (ret < 0)
- 				return ret;
 diff --git a/include/linux/firmware/cirrus/cs_dsp.h b/include/linux/firmware/cirrus/cs_dsp.h
-index 1ad1b173417a0..38b4da3ddfe4f 100644
+index 0bf849baeaa5a..1ad1b173417a0 100644
 --- a/include/linux/firmware/cirrus/cs_dsp.h
 +++ b/include/linux/firmware/cirrus/cs_dsp.h
-@@ -232,8 +232,10 @@ void cs_dsp_init_debugfs(struct cs_dsp *dsp, struct dentry *debugfs_root);
- void cs_dsp_cleanup_debugfs(struct cs_dsp *dsp);
- 
- int cs_dsp_coeff_write_acked_control(struct cs_dsp_coeff_ctl *ctl, unsigned int event_id);
--int cs_dsp_coeff_write_ctrl(struct cs_dsp_coeff_ctl *ctl, const void *buf, size_t len);
--int cs_dsp_coeff_read_ctrl(struct cs_dsp_coeff_ctl *ctl, void *buf, size_t len);
-+int cs_dsp_coeff_write_ctrl(struct cs_dsp_coeff_ctl *ctl, unsigned int off,
-+			    const void *buf, size_t len);
-+int cs_dsp_coeff_read_ctrl(struct cs_dsp_coeff_ctl *ctl, unsigned int off,
-+			   void *buf, size_t len);
- struct cs_dsp_coeff_ctl *cs_dsp_get_ctl(struct cs_dsp *dsp, const char *name, int type,
- 					unsigned int alg);
- 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 404717e30f44d..f084b093cff64 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -401,7 +401,7 @@ static int wm_coeff_put(struct snd_kcontrol *kctl,
- 	int ret = 0;
- 
- 	mutex_lock(&cs_ctl->dsp->pwr_lock);
--	ret = cs_dsp_coeff_write_ctrl(cs_ctl, p, cs_ctl->len);
-+	ret = cs_dsp_coeff_write_ctrl(cs_ctl, 0, p, cs_ctl->len);
- 	mutex_unlock(&cs_ctl->dsp->pwr_lock);
- 
- 	return ret;
-@@ -421,7 +421,7 @@ static int wm_coeff_tlv_put(struct snd_kcontrol *kctl,
- 	if (copy_from_user(cs_ctl->cache, bytes, size))
- 		ret = -EFAULT;
- 	else
--		ret = cs_dsp_coeff_write_ctrl(cs_ctl, cs_ctl->cache, size);
-+		ret = cs_dsp_coeff_write_ctrl(cs_ctl, 0, cs_ctl->cache, size);
- 
- 	mutex_unlock(&cs_ctl->dsp->pwr_lock);
- 
-@@ -464,7 +464,7 @@ static int wm_coeff_get(struct snd_kcontrol *kctl,
- 	int ret;
- 
- 	mutex_lock(&cs_ctl->dsp->pwr_lock);
--	ret = cs_dsp_coeff_read_ctrl(cs_ctl, p, cs_ctl->len);
-+	ret = cs_dsp_coeff_read_ctrl(cs_ctl, 0, p, cs_ctl->len);
- 	mutex_unlock(&cs_ctl->dsp->pwr_lock);
- 
- 	return ret;
-@@ -481,7 +481,7 @@ static int wm_coeff_tlv_get(struct snd_kcontrol *kctl,
- 
- 	mutex_lock(&cs_ctl->dsp->pwr_lock);
- 
--	ret = cs_dsp_coeff_read_ctrl(cs_ctl, cs_ctl->cache, size);
-+	ret = cs_dsp_coeff_read_ctrl(cs_ctl, 0, cs_ctl->cache, size);
- 
- 	if (!ret && copy_to_user(bytes, cs_ctl->cache, size))
- 		ret = -EFAULT;
-@@ -684,7 +684,7 @@ int wm_adsp_write_ctl(struct wm_adsp *dsp, const char *name, int type,
- 	if (len > cs_ctl->len)
- 		return -EINVAL;
- 
--	ret = cs_dsp_coeff_write_ctrl(cs_ctl, buf, len);
-+	ret = cs_dsp_coeff_write_ctrl(cs_ctl, 0, buf, len);
- 	if (ret)
- 		return ret;
- 
-@@ -723,7 +723,7 @@ int wm_adsp_read_ctl(struct wm_adsp *dsp, const char *name, int type,
- 	if (len > cs_ctl->len)
- 		return -EINVAL;
- 
--	return cs_dsp_coeff_read_ctrl(cs_ctl, buf, len);
-+	return cs_dsp_coeff_read_ctrl(cs_ctl, 0, buf, len);
- }
- EXPORT_SYMBOL_GPL(wm_adsp_read_ctl);
- 
-@@ -1432,7 +1432,7 @@ static int wm_adsp_buffer_parse_coeff(struct cs_dsp_coeff_ctl *cs_ctl)
- 	int ret, i;
- 
- 	for (i = 0; i < 5; ++i) {
--		ret = cs_dsp_coeff_read_ctrl(cs_ctl, &coeff_v1, sizeof(coeff_v1));
-+		ret = cs_dsp_coeff_read_ctrl(cs_ctl, 0, &coeff_v1, sizeof(coeff_v1));
- 		if (ret < 0)
- 			return ret;
- 
+@@ -76,8 +76,8 @@ struct cs_dsp_alg_region {
+  * @enabled:		Flag indicating whether control is enabled
+  * @list:		List node for internal use
+  * @cache:		Cached value of the control
+- * @offset:		Offset of control within alg_region
+- * @len:		Length of the cached value
++ * @offset:		Offset of control within alg_region in words
++ * @len:		Length of the cached value in bytes
+  * @set:		Flag indicating the value has been written by the user
+  * @flags:		Bitfield of WMFW_CTL_FLAG_ control flags defined in wmfw.h
+  * @type:		One of the WMFW_CTL_TYPE_ control types defined in wmfw.h
 -- 
 2.11.0
 
