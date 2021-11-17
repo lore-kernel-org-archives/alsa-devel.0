@@ -2,70 +2,69 @@ Return-Path: <SRS0=ac5z=QE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 70EC3C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Nov 2021 22:33:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F026C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Nov 2021 22:34:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C81BE61B5F
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Nov 2021 22:33:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C81BE61B5F
+	by mail.kernel.org (Postfix) with ESMTPS id BED6D61279
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Nov 2021 22:34:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BED6D61279
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 32E7818C0;
-	Wed, 17 Nov 2021 23:32:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32E7818C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 215D61919;
+	Wed, 17 Nov 2021 23:33:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 215D61919
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637188422;
-	bh=iSDarEnFNoad8U3qY5c/ydBpw3ujHCMjwwnb+PZeiXU=;
+	s=default; t=1637188443;
+	bh=82ceyM9vLIZ5d639AKquHRPRlsJyYThu0VLcLZrUCsQ=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kpANxF1snNQVNXzqRWLk1JLOm7ZyQFTJGvgKfVvtPML+grp3SBrn86yo5ptDdu5n3
-	 Uk1GhThiYc40F70H4tOvnLsCBbGC80ZK3Il9E6d+Mi1+Z4BNrg/upAt/ZE5vZGl5D8
-	 beZbBd6YZNVNWbuvRTMo3kwtQeNxsSk6+kONlOGU=
+	b=TUeQJfEGxe1JeNY1a3oRPxtMyQLSEPUVNrkbvyu6gP67wsysFztyBW8p5zHqdcijL
+	 ahwt9JgxgDgsoT20FZtu9t0VUTKv+1AsUd0kSYRZgmGDDjk2/n3bFsq59JHkjIm81k
+	 0E5b21cz4zlYPyZPFXIVTa3H3EAZu8g1JURNCv9U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B39A5F804ED;
-	Wed, 17 Nov 2021 23:31:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5B8D7F804F2;
+	Wed, 17 Nov 2021 23:31:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 95E19F804EB; Wed, 17 Nov 2021 23:31:40 +0100 (CET)
+ id 0EE33F804ED; Wed, 17 Nov 2021 23:31:41 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 69852F8049C
- for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2021 23:31:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69852F8049C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2543CF8016C
+ for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2021 23:31:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2543CF8016C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="N843isnn"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 16C7561B72;
- Wed, 17 Nov 2021 22:31:27 +0000 (UTC)
+ header.b="J3RSmq8f"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6783F61B51;
+ Wed, 17 Nov 2021 22:31:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1637188288;
- bh=iSDarEnFNoad8U3qY5c/ydBpw3ujHCMjwwnb+PZeiXU=;
+ s=k20201202; t=1637188293;
+ bh=82ceyM9vLIZ5d639AKquHRPRlsJyYThu0VLcLZrUCsQ=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=N843isnn5cJDKaOw3J6nP/DygWeI3F9ZThJSd6J6wTlCXL+dG2wNZTqP69fRhW4B9
- OYgvmB2z6RIGRuwGg5Fv+yoEBHo2uEmGwzloDLB1fDv9Q6GBjYEnAVTqKy8bbx6I8o
- sIAM2DOXONJQXostsnPLHzfTBm7bkwf3bFuR/p/ne2xjFSr5hmFxY2DfJ9CIz/B3rq
- K/5IS+4r3RdiVTF521bwd1uKhM2c6D/oNv0B5TBVuew8ZaA4TJaOTBhr46ThqFm8fm
- IMU7+b/k5KhML5pTXmSzk+hVX2m4GlGigAyaLBXhAueHZWuoqg5Nr1oTaZlIC/fZNT
- 4eu7bpVtUpNDQ==
+ b=J3RSmq8f5DtAtBMTpQuFXsUkdjHMe8QUYV+p3x5v+xz796JdL3g8Uv2Nhdw+lwCo6
+ C73plujiJiR6fLtvWWbGALyLIZBTrT5w1+nkAiehFjvKxBKKHBuQDRT4NSC+JFO4s8
+ A14gNpycG6xF8KXIjYVL36OCwe5J//tayhYUdcNvnpTWFozdzZkIhS/j2N9hXV1RQc
+ Vits96ivmEMqmFFtvXAuJdr3crlKtSIezTZFNjebb2eCfjCl/PQwCoxunQRc+qYbly
+ iGdOHWMJNN/CtwamBhT+R2pI5n1hLncm7Bf2C9juyZF0lPF89DUK/EPJyzgfgwru5f
+ +IB1LYwt8JUQg==
 From: Mark Brown <broonie@kernel.org>
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-In-Reply-To: <20211117132300.1290-1-ckeepax@opensource.cirrus.com>
-References: <20211117132300.1290-1-ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH v2 01/10] ASoC: wm_adsp: Remove the wmfw_add_ctl helper
- function
-Message-Id: <163718828783.136850.1412694625868493502.b4-ty@kernel.org>
-Date: Wed, 17 Nov 2021 22:31:27 +0000
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+In-Reply-To: <20211116163901.45390-1-rf@opensource.cirrus.com>
+References: <20211116163901.45390-1-rf@opensource.cirrus.com>
+Subject: Re: [PATCH v2 0/4] ASoC: cs42l42: Remove redundant code
+Message-Id: <163718829216.136850.12619030505977686878.b4-ty@kernel.org>
+Date: Wed, 17 Nov 2021 22:31:32 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- lgirdwood@gmail.com
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,12 +80,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 17 Nov 2021 13:22:51 +0000, Charles Keepax wrote:
-> The helper function wmfw_add_ctl is only called from one place and that
-> place is a function with only 2 lines of code. Merge the helper function
-> into the work function to simplify the code.
+On Tue, 16 Nov 2021 16:38:57 +0000, Richard Fitzgerald wrote:
+> - Remove field writes in regmap_update_bits() calls where the code
+>   intends that the field value is not changed.
 > 
+> - Remove unnecessary complexity from reporting jack unplug event
 > 
+> - Remove a PLL config value member that was introduced in a bugfix
+>   but made redundant by a later bugfix.
+> 
+> [...]
 
 Applied to
 
@@ -94,26 +97,14 @@ Applied to
 
 Thanks!
 
-[01/10] ASoC: wm_adsp: Remove the wmfw_add_ctl helper function
-        commit: 56717d72f7a811799e8d138ff3d49325272c5cf6
-[02/10] firmware: cs_dsp: Add lockdep asserts to interface functions
-        commit: 5065cfabec21a4acf562932f1d0a814c119e0a69
-[03/10] firmware: cs_dsp: Add version checks on coefficient loading
-        commit: 2925748eadc33cba3bded7b69475a1b002b124ac
-[04/10] firmware: cs_dsp: Add pre_run callback
-        commit: 14055b5a3a23204c4702ae5d3f2a819ee081ce33
-[05/10] firmware: cs_dsp: Print messages from bin files
-        commit: 40a34ae7308682bbbf5827145afa23dcdfb1f090
-[06/10] firmware: cs_dsp: Add support for rev 2 coefficient files
-        commit: dcee767667f44ed0d40a3debf507a3ba027a1994
-[07/10] firmware: cs_dsp: Perform NULL check in cs_dsp_coeff_write/read_ctrl
-        commit: 86c6080407740937ed2ba0ccd181e947f77e2154
-[08/10] firmware: cs_dsp: Clarify some kernel doc comments
-        commit: b329b3d39497a9fdb175d7e4fd77ae7170d5d26c
-[09/10] firmware: cs_dsp: Add offset to cs_dsp read/write
-        commit: f444da38ac924748de696c393327a44c4b8d727e
-[10/10] firmware: cs_dsp: Allow creation of event controls
-        commit: 5c903f64ce97172d63f7591cfa9e37cba58867b2
+[1/4] ASoC: cs42l42: Remove redundant writes to DETECT_MODE
+      commit: 976001b10fa4441917f216452e70fd8c5aeccd94
+[2/4] ASoC: cs42l42: Remove redundant writes to RS_PLUG/RS_UNPLUG masks
+      commit: f2dfbaaa5404cadf70213146a5b4b89b647d9092
+[3/4] ASoC: cs42l42: Simplify reporting of jack unplug
+      commit: 3edde6de090617adea18f2068489086c0d8087e3
+[4/4] ASoC: cs42l42: Remove redundant pll_divout member
+      commit: bbf0e1d36519a5cd2c08dc1348f997cd5240eb2e
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
