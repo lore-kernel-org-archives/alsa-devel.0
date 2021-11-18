@@ -2,84 +2,87 @@ Return-Path: <SRS0=e+ka=QF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4C65C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 13:59:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5443AC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 15:31:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 98BAD61AEC
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 13:59:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 98BAD61AEC
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id CF6F9613D3
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 15:31:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CF6F9613D3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7DE5F1843;
-	Thu, 18 Nov 2021 14:58:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7DE5F1843
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6346017A4;
+	Thu, 18 Nov 2021 16:30:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6346017A4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637243965;
-	bh=ZvIvFWL/HM9LzOdH2o/5dAmfXYHay8GPdvZsv9M6RHU=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=vddzlF44I23JO5LaZqCeYlRSbPDdkwNJkNi6WStOQFlQ63goS/T+hxXPj8AsZ3Bab
-	 S4IwXuNL5iqmwK/s5YY3V1zegFjZ0JDC1oqcb2SvBBl56Pcucgv5ikyR/A8mZgZISK
-	 I3Ghdj7aGrnIleEhJDO+fEeEY4vQsklQemjTzREc=
+	s=default; t=1637249506;
+	bh=x19otwcd7TR3jAVZUtxy7lCuWrirH6DYaaHp9G5+DiM=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Ncn7EqRLVq5sVQs/QqcR3mFt2kQbZh18xL9N0zsh0FA4UCrjdVRBGBk17LbDXRaGL
+	 gIlgCFR5YxPXzjN3rMGEd9C5/rk9VUFVEFAUDhPAplMtGlLMJiGoOca4mbqsWLnadR
+	 MJ+/azQBHmESodGWKpZslu8pXLXho4H4j9mLtoIs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 21210F8026D;
-	Thu, 18 Nov 2021 14:58:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9CFF4F800FA;
+	Thu, 18 Nov 2021 16:30:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BE778F80272; Thu, 18 Nov 2021 14:58:33 +0100 (CET)
-Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com
- [209.85.210.52])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 8EB79F80272; Thu, 18 Nov 2021 16:30:53 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AEA8CF80115
- for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2021 14:58:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AEA8CF80115
-Received: by mail-ot1-f52.google.com with SMTP id
- h16-20020a9d7990000000b0055c7ae44dd2so11046682otm.10
- for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2021 05:58:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
- :message-id;
- bh=WmMfhkzPjWTKlEZ9yIh2W7NHeFSMUgJDMyPJqo/TBCY=;
- b=z+ExRqmKTjhOQfpSA9+kIeSxdukvY/4ytrCPn3YFClSgBksDcw0hZ4IvYbSMLKbD+u
- TuPvd2eq9ORkkIDfaQtuD1sbomG/oaU7fwVTbDXDD7QEHil43EBy41J9yFkaT6rNvBJO
- a+fdK8DO86Mhj/HUXR4Z1wtkrF2prqFhRwkFPNNJrLutqXCwETeQtMsca4fTuTMwSwPW
- D17dP8Hos1eWm+uwICx96NWQ5ICA+TwFkO1yckwFfdxj907PVya2yh34WIcprtJ9UDbp
- KiO0GIsJixaii3A9Sris3z4WooKuHpqUFc0DqM0laI8u6H+cGHh7DlJqxc/iCkltwrSj
- 5YdA==
-X-Gm-Message-State: AOAM5301jfMHdDPtmxC8F6AFEbILv45rjfTXLe7OoUq15jX7JVtGTHNh
- lK3Brbl64Hxx+8ZTfWOFsg==
-X-Google-Smtp-Source: ABdhPJzWykudMzngz7+fYsbqh9ICTA5Q5lY0M4wTA9me0nH9FEPyMXguhDFWK2e4MNPzw3UyklnkQw==
-X-Received: by 2002:a9d:7a42:: with SMTP id z2mr21463015otm.362.1637243903121; 
- Thu, 18 Nov 2021 05:58:23 -0800 (PST)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net.
- [66.90.148.213])
- by smtp.gmail.com with ESMTPSA id q33sm522530ooh.16.2021.11.18.05.58.21
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 18 Nov 2021 05:58:22 -0800 (PST)
-Received: (nullmailer pid 998654 invoked by uid 1000);
- Thu, 18 Nov 2021 13:58:21 -0000
-From: Rob Herring <robh@kernel.org>
-To: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-In-Reply-To: <1637239506-9387-2-git-send-email-srivasam@codeaurora.org>
-References: <1637239506-9387-1-git-send-email-srivasam@codeaurora.org>
- <1637239506-9387-2-git-send-email-srivasam@codeaurora.org>
-Subject: Re: [PATCH v6 1/2] ASoC: google: dt-bindings: Add sc7280-herobrine
- machine bindings
-Date: Thu, 18 Nov 2021 07:58:21 -0600
-Message-Id: <1637243901.366064.998653.nullmailer@robh.at.kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- bgoswami@codeaurora.org, lgirdwood@gmail.com, linux-arm-msm@vger.kernel.org,
- plai@codeaurora.org, tiwai@suse.com, linux-kernel@vger.kernel.org,
- robh+dt@kernel.org, bjorn.andersson@linaro.org, agross@kernel.org,
- broonie@kernel.org, rohitkr@codeaurora.org, swboyd@chromium.org,
- judyhsiao@chromium.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 20A9AF800FA
+ for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2021 16:30:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 20A9AF800FA
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
+ header.b="cylFQdHb"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1637249443;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=7XApbZ+GOrUaz1a2WmdLgIjYew9ipMtR0GbiADq22d4=;
+ b=cylFQdHbIH9fKSADT+tNOu6+cjMo+tJFqhFQJtHDoscVjKcHDb/cR5snzG+xYcypiowRQ+
+ xCvIN1OXzBOXzdTSyAegTXkx1glLffYZgvez1XQu+OMAckSxclEH0pr85OyFnB1CW5ZFBf
+ k8cFDYHWP7txPu22WMFzNq1fHBrWIEQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-425-4rDbC1jKOAKOyXBt1P8unw-1; Thu, 18 Nov 2021 10:30:37 -0500
+X-MC-Unique: 4rDbC1jKOAKOyXBt1P8unw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com
+ [10.5.11.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 281FB8799EB;
+ Thu, 18 Nov 2021 15:30:36 +0000 (UTC)
+Received: from x1.localdomain (unknown [10.39.195.190])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id C508E5F4EF;
+ Thu, 18 Nov 2021 15:30:15 +0000 (UTC)
+From: Hans de Goede <hdegoede@redhat.com>
+To: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Jie Yang <yang.jie@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.16 regression fix] ASoC: soc-acpi: Set mach->id field on
+ comp_ids matches
+Date: Thu, 18 Nov 2021 16:30:14 +0100
+Message-Id: <20211118153014.349222-1-hdegoede@redhat.com>
+MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"
+Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org,
+ Brent Lu <brent.lu@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,46 +98,69 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 18 Nov 2021 18:15:05 +0530, Srinivasa Rao Mandadapu wrote:
-> Add devicetree bindings documentation file for sc7280 sound card
-> registration.
-> 
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-> ---
->  .../bindings/sound/google,sc7280-herobrine.yaml    | 171 +++++++++++++++++++++
->  1 file changed, 171 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
-> 
+Commit dac7cbd55dca ("ASoC: Intel: soc-acpi-byt: shrink tables using
+compatible IDs") and commit 959ae8215a9e ("ASoC: Intel: soc-acpi-cht:
+shrink tables using compatible IDs") simplified the match tables in
+soc-acpi-intel-byt-match.c and soc-acpi-intel-cht-match.c by merging
+identical entries using the new .comp_ids snd_soc_acpi_mach field to
+point a single entry to multiple ACPI HIDs and clearing the previously
+unique per entry .id field.
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+But various machine drivers from sound/soc/intel/boards rely on mach->id
+in one or more ways, e.g. some drivers contain the following snippets:
 
-yamllint warnings/errors:
+	adev = acpi_dev_get_first_match_dev(mach->id, NULL, -1);
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.example.dt.yaml: sound: dai-link@0: 'sound-dai' is a required property
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.example.dt.yaml: sound: dai-link@1: 'sound-dai' is a required property
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.example.dt.yaml: sound: dai-link@2: 'sound-dai' is a required property
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.example.dt.yaml: sound: dai-link@3: 'sound-dai' is a required property
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.example.dt.yaml: sound: dai-link@5: 'sound-dai' is a required property
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
+	pkg_found = snd_soc_acpi_find_package_from_hid(mach->id, ...
 
-doc reference errors (make refcheckdocs):
+	if (!strncmp(snd_soc_cards[i].codec_id, mach->id, 8)) { ...
 
-See https://patchwork.ozlabs.org/patch/1556613
+All of which are broken by the match table shrinking.
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
+Make the snd_soc_acpi_mach.id field non const (the storage for the tables
+already is non const) and on a comps_ids match copy the matching HID to
+the id field to fix this.
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+Fixes: dac7cbd55dca ("ASoC: Intel: soc-acpi-byt: shrink tables using compatible IDs")
+Fixes: 959ae8215a9e ("ASoC: Intel: soc-acpi-cht: shrink tables using compatible IDs")
+Suggested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Brent Lu <brent.lu@intel.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+ include/sound/soc-acpi.h | 2 +-
+ sound/soc/soc-acpi.c     | 4 +++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
+diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
+index 31f4c4f9aeea..ac0893df9c76 100644
+--- a/include/sound/soc-acpi.h
++++ b/include/sound/soc-acpi.h
+@@ -147,7 +147,7 @@ struct snd_soc_acpi_link_adr {
+  */
+ /* Descriptor for SST ASoC machine driver */
+ struct snd_soc_acpi_mach {
+-	const u8 id[ACPI_ID_LEN];
++	u8 id[ACPI_ID_LEN];
+ 	const struct snd_soc_acpi_codecs *comp_ids;
+ 	const u32 link_mask;
+ 	const struct snd_soc_acpi_link_adr *links;
+diff --git a/sound/soc/soc-acpi.c b/sound/soc/soc-acpi.c
+index 2ae99b49d3f5..cbd7ea48837b 100644
+--- a/sound/soc/soc-acpi.c
++++ b/sound/soc/soc-acpi.c
+@@ -20,8 +20,10 @@ static bool snd_soc_acpi_id_present(struct snd_soc_acpi_mach *machine)
+ 
+ 	if (comp_ids) {
+ 		for (i = 0; i < comp_ids->num_codecs; i++) {
+-			if (acpi_dev_present(comp_ids->codecs[i], NULL, -1))
++			if (acpi_dev_present(comp_ids->codecs[i], NULL, -1)) {
++				strscpy(machine->id, comp_ids->codecs[i], ACPI_ID_LEN);
+ 				return true;
++			}
+ 		}
+ 	}
+ 
+-- 
+2.31.1
 
