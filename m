@@ -4,64 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 309F8C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Nov 2021 07:03:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57031C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Nov 2021 07:04:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F0E5D169F;
-	Mon, 22 Nov 2021 08:02:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F0E5D169F
+	by alsa0.perex.cz (Postfix) with ESMTPS id D629716A4;
+	Mon, 22 Nov 2021 08:03:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D629716A4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637564614;
-	bh=+WJq9p/OLtoII51RYDtOsRr+UMSRm2h49gRsaYg7JsM=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1637564642;
+	bh=d3P0YhZdZnwFN22BQn2BcKHZqNKK5G4J6qyIDwLSz1g=;
+	h=Date:To:References:From:Subject:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eQfM423Ti9eYMtgOyGFbV4gMKhqaZsVGJLPYsErsndkbIvylNXll5MXIRAU1OMLi4
-	 oGhndz8cq0y3yD9hcZnrq0/07WlMrovNYMcczVBA44X28oL963kTZfS8Inll7i4PVj
-	 +CvbNfsNFepJ9yBPmsNT7DPxVil1pc2TF5ZPddWg=
+	b=P8XdUu7ovkxp1YpOpXyZ6QA+s2xaphlsA7WeB4JC2dqt6eSyKsoKNZ5nBjWMByja1
+	 nUeB+g+UvyXJT/fhfytSMYsefTTo2Gs22TPC48rfykacbWQwVgZboBE9aYBYxjMQ5U
+	 XM8pJsiBavyqZQG90OKZnDxilROXxlvoL60aPCyY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4FA5EF804E3;
-	Mon, 22 Nov 2021 08:01:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 874C4F804EC;
+	Mon, 22 Nov 2021 08:01:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B17BFF80217; Fri, 19 Nov 2021 16:34:19 +0100 (CET)
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3C793F8010B
- for <alsa-devel@alsa-project.org>; Fri, 19 Nov 2021 16:34:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3C793F8010B
+ id 47838F8010B; Thu, 18 Nov 2021 23:14:04 +0100 (CET)
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
+ [IPv6:2a00:1450:4864:20::335])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 86539F8010B
+ for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2021 23:13:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86539F8010B
 Authentication-Results: alsa1.perex.cz;
- dkim=fail reason="signature verification failed" (2048-bit key)
- header.d=collabora.com header.i=@collabora.com header.b="Pb5qrBGK"
-Received: from [127.0.0.1] (localhost [127.0.0.1])
- (Authenticated sender: adalessandro) with ESMTPSA id A9EA01F47557
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
- t=1637336044; bh=+WJq9p/OLtoII51RYDtOsRr+UMSRm2h49gRsaYg7JsM=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=Pb5qrBGKnYlPTaj8/1WNQLtWmVOGSRe0E8uRF/0L9bSDi86RKE62N8nlezDZ6KjZm
- 8QGaChhOUs/3ViCWVCLMAuMLLd5VmxBQN3eeyKTKn3auz/MFrN7n2jTPCZLakLwYiQ
- IpFAhxk85OJlwcWKrgczYcAxo9+OFpN6qbJZ/ukT2sUHq5EpnunraBlPW+kifS3IxF
- pdXLFIvYDrbit6+9hEGbe4mFbyrMAWoU+iu3altB0Zg/5c9qs8z7sVeM7Jv/t1H8+5
- EWf633L0leIPvqFHsUetfQFCkLZaWafm1Lvje2uBDQMeCH0ent6607df+GR1IUmX7C
- K3jkd4ugUFYng==
-From: Ariel D'Alessandro <ariel.dalessandro@collabora.com>
-To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org
-Subject: [RFC patch 1/5] ASoC: tlv320aic31xx: Fix typo in BCLK clock name
-Date: Fri, 19 Nov 2021 12:32:44 -0300
-Message-Id: <20211119153248.419802-2-ariel.dalessandro@collabora.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211119153248.419802-1-ariel.dalessandro@collabora.com>
-References: <20211119153248.419802-1-ariel.dalessandro@collabora.com>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="RCvJUJZm"
+Received: by mail-wm1-x335.google.com with SMTP id
+ r9-20020a7bc089000000b00332f4abf43fso6668993wmh.0
+ for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2021 14:13:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=message-id:date:mime-version:user-agent:content-language:to:cc
+ :references:from:subject:in-reply-to:content-transfer-encoding;
+ bh=tZl2BN55c9nxvN98+IIn8ra567E4ddOU9gxhiJKnjZ4=;
+ b=RCvJUJZm2FtNYHDP4bhbw14jPuqAPAqC280nrvc+vDEF7cUGY4g35nU4hKnBhHU3cO
+ IxPGaUKEw4RIRTzcsXdBDExdFyqeNJLA2XLbD/2wK5rsv0IehkEBQRGzekcDyjJRRapw
+ cNWwMHOTyEnxMdkfxnjg+NL+RMNtl0FF2BOzARCywGZ5dbI4UdthJFXNnUo3PQpjgtac
+ wEyNj0L8+2CuLIS8IKL0EqR4aU4S03CYwpjmxCy7avLkq6tIyBGQEGhTX4D1wzvv1+Pe
+ 1N8LcnCVOt38YFOTO8IhazZxGB1KOPvl+GoLtg4hip1v74gfvimSxA0PSgM7cE7f/HR4
+ JBAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:message-id:date:mime-version:user-agent
+ :content-language:to:cc:references:from:subject:in-reply-to
+ :content-transfer-encoding;
+ bh=tZl2BN55c9nxvN98+IIn8ra567E4ddOU9gxhiJKnjZ4=;
+ b=Dg/ZW6p2H2qqIxPihzwtmNH9Xn8NSkAMlMxFljx6AoaFW3ltnfT0YcyeP4el7AN+1O
+ Yq3qRbAbW/kNGbpDmcN2y1ElY92aaj4bf50axW0FU5HbO0Jc1PEfv5u9I4ndjkmIePmr
+ 9fYOAQq+f3lK2eKzX6y4qF0KQMHlCIITV+wF5H6FKqmsHcMQtKRZFaCb8sD5f/NVluot
+ eurK0hbhpn4+rwpiv4+19v7IoMEXpKfip/a/lqy8/9ozgnCQEJh0EoxGOpd359mG7FpT
+ gsNleh6ZV5VXFHG7uHOnGJne/XiZFSTl+nWC58jw4dbuwbJn9XANrVPL/m1KeHV+FAGG
+ G/aw==
+X-Gm-Message-State: AOAM5301gSiIbFNk22XQR4K3PWmEekBACAozt8UHy675W2BFPg/Q/Ck6
+ LZ9h/qk9M6KRyvm7ZcPvPkpWkNbDuok=
+X-Google-Smtp-Source: ABdhPJyfx4zsZAdKEmZFB/+BHjEh/dN07fNPVH81OesgGKkTZrxc3uHxCpsZhYRA6QYujiVtY+LT8Q==
+X-Received: by 2002:a05:600c:4e07:: with SMTP id b7mr675327wmq.8.1637273636786; 
+ Thu, 18 Nov 2021 14:13:56 -0800 (PST)
+Received: from ?IPV6:2003:ea:8f1a:f00:fc8d:4de8:c1d1:9213?
+ (p200300ea8f1a0f00fc8d4de8c1d19213.dip0.t-ipconnect.de.
+ [2003:ea:8f1a:f00:fc8d:4de8:c1d1:9213])
+ by smtp.googlemail.com with ESMTPSA id o3sm11868127wms.10.2021.11.18.14.13.53
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Thu, 18 Nov 2021 14:13:56 -0800 (PST)
+Message-ID: <bc281416-e28d-4c18-2475-add92d38a554@gmail.com>
+Date: Thu, 18 Nov 2021 23:13:50 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Content-Language: en-US
+To: Takashi Iwai <tiwai@suse.de>
+References: <d9d76980-966a-e031-70d1-3254ba5be5eb@gmail.com>
+ <s5hczmxgnm2.wl-tiwai@suse.de>
+From: Heiner Kallweit <hkallweit1@gmail.com>
+Subject: Re: Warning due to "ALSA: hda: intel: More comprehensive PM runtime
+ setup for controller driver"
+In-Reply-To: <s5hczmxgnm2.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Mailman-Approved-At: Mon, 22 Nov 2021 08:01:48 +0100
-Cc: bkylerussell@gmail.com, ariel.dalessandro@collabora.com,
- kuninori.morimoto.gx@renesas.com, Xiubo.Lee@gmail.com, shengjiu.wang@gmail.com,
- tiwai@suse.com, lgirdwood@gmail.com, nicoleotsuka@gmail.com,
- broonie@kernel.org, michael@amarulasolutions.com, festevam@gmail.com
+Cc: alsa-devel@alsa-project.org, Linux PM <linux-pm@vger.kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,24 +104,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Signed-off-by: Ariel D'Alessandro <ariel.dalessandro@collabora.com>
----
- sound/soc/codecs/tlv320aic31xx.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 18.11.2021 22:28, Takashi Iwai wrote:
+> On Thu, 18 Nov 2021 21:33:34 +0100,
+> Heiner Kallweit wrote:
+>>
+>> I get the following warning caused by 4f66a9ef37d3 ("ALSA: hda: intel: More
+>> comprehensive PM runtime setup for controller driver"):
+>>
+>> snd_hda_intel 0000:00:1f.3: Unbalanced pm_runtime_enable!
+>>
+>> Not sure how this patch was tested because the warning is obvious.
+>> The patch doesn't consider what the PCI sub-system does with regard to
+>> RPM. Have a look at pci_pm_init().
+>>
+>> I'd understand to add the call to pm_runtime_dont_use_autosuspend(),
+>> but for all other added calls I see no justification.
+>>
+>> If being unsure about when to use which RPM call best involve
+>> linux-pm@vger.kernel.org.
+> 
+> Thanks for the notice.  It's been through Intel CI and tests on a few
+> local machines, maybe we haven't checked carefully those errors but
+> only concentrated on the other issues, as it seems.
+> 
+> There were two problems: one was the runtime PM being kicked off even
+> during the PCI driver remove call, and another was the proper runtime
+> PM setup after re-binding.
+> 
 
-diff --git a/sound/soc/codecs/tlv320aic31xx.h b/sound/soc/codecs/tlv320aic31xx.h
-index 2513922a0292..80d062578fb5 100644
---- a/sound/soc/codecs/tlv320aic31xx.h
-+++ b/sound/soc/codecs/tlv320aic31xx.h
-@@ -118,7 +118,7 @@ struct aic31xx_pdata {
- #define AIC31XX_PLL_CLKIN_MASK		GENMASK(3, 2)
- #define AIC31XX_PLL_CLKIN_SHIFT		(2)
- #define AIC31XX_PLL_CLKIN_MCLK		0x00
--#define AIC31XX_PLL_CLKIN_BCKL		0x01
-+#define AIC31XX_PLL_CLKIN_BCLK		0x01
- #define AIC31XX_PLL_CLKIN_GPIO1		0x02
- #define AIC31XX_PLL_CLKIN_DIN		0x03
- #define AIC31XX_CODEC_CLKIN_MASK	GENMASK(1, 0)
--- 
-2.30.2
+Having a look at the commit message of "ALSA: hda: fix general protection
+fault in azx_runtime_idle" the following sounds weird:
+
+  - pci-driver.c:pm_runtime_put_sync() leads to a call
+    to rpm_idle() which again calls azx_runtime_idle()
+
+rpm_idle() is only called if usage_count is 1 when entering
+pm_runtime_put_sync. And this should not be the case.
+pm_runtime_get_sync() increments the usage counter before remove()
+is called, and remove() should also increment the usage counter.
+This doesn't seem to happen. Maybe for whatever reason 
+pm_runtime_get_noresume() isn't called in azx_free(), or azx_free()
+isn't called from remove().
+I think you should trace the call chain from the PCI core calling
+remove() to pm_runtime_get_noresume() getting called or not.
+
+
+> For avoiding the former, only the pm_runtime_forbid() (and maybe
+> pm_runtime_dont_use_autosuspend(), too) would suffice?  Also, for PCI
+> device, no need for pm_runtime_set_supended() at remove, right?
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
 
