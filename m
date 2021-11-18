@@ -2,72 +2,83 @@ Return-Path: <SRS0=e+ka=QF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E884C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 19:08:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AE748C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 21:29:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9C17F611F2
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 19:08:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9C17F611F2
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 4D879611F2
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 21:29:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4D879611F2
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0F1BB1897;
-	Thu, 18 Nov 2021 20:07:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F1BB1897
+	by alsa0.perex.cz (Postfix) with ESMTPS id DBD1017DC;
+	Thu, 18 Nov 2021 22:28:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DBD1017DC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637262510;
-	bh=x/8W7Lu2kSw6qOUXMhXb4en3vbd9NS6PLiCqwX2Q9lg=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1637270985;
+	bh=8iKw5QkZbxsMaxhNKhrSnGAxCXUKA3vSMsTrmdK45L0=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kG+74jgzgj0+EIKe1GTxPUyeMnCpyWaw3tznnPDD7EmH5cvojEhl3B5d3x41YyfjQ
-	 RsT6PaE8CaP47ZuadTNosDy7zXSeOsdPxh+Ut9MFswzKVsOcj23KYUwZ+QFNmR/B4A
-	 FOJLavCcGz6eyVjgtodNRV5rBFEJUQlM9y9fX0mY=
+	b=O3laSuJmfDqaAu7fB0iEiirJUo5kyRI1bYHYBZ7/oO+h8Z45v3taZw0YxLiz6ERPY
+	 tXyDx/hMdUQ9yx4YgThuQo7WKN8ZfRy4JkFJTGNh0EmjItkPhvmVxgQZH6z1WdJ/NL
+	 6FqMFjwEFBwxVPUQrs5JsVH19g+vaCbMZFohK74o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5A437F804ED;
-	Thu, 18 Nov 2021 20:06:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 21B52F8026D;
+	Thu, 18 Nov 2021 22:28:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1C052F804C3; Thu, 18 Nov 2021 20:06:21 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 429FBF80272; Thu, 18 Nov 2021 22:28:33 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 779A2F800FA
- for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2021 20:06:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 779A2F800FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id B6FE7F800FA
+ for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2021 22:28:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6FE7F800FA
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="GwpYSB7X"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1593061179;
- Thu, 18 Nov 2021 19:06:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1637262370;
- bh=x/8W7Lu2kSw6qOUXMhXb4en3vbd9NS6PLiCqwX2Q9lg=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=GwpYSB7Xjn+qX66MvdErOtoL7HF3luTcERkkl9YJFgWm1ZAaa/x13N0smopzX2+dl
- BsQFpKz/gMul0bivrEG3dI8vXcSG7sGkBSPLLAGQv6eXUKvSIS2ZM5vKkzauNhTBum
- UW7mqmmnSPToCQrzWgVDDBuyUll7f/4f92aASGAYPHdUz5c1fL+J+OhDMNusJx60Rc
- aNpLV7qefXTyJwxwWxhLfU61Dhmo6acnGUrdOR2CNMrP1fYsc7pir1vHI91shsH8CQ
- GdFVzH44VJyE9ZgF3kaoGsJosTbfm5OG0wsKuOc8SSA6r/HLmQyU69GBiEGic6HzrG
- mzBEVk7EtD5Pg==
-From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, Daniel Baluta <daniel.baluta@oss.nxp.com>
-In-Reply-To: <20211101080026.297360-1-daniel.baluta@oss.nxp.com>
-References: <20211101080026.297360-1-daniel.baluta@oss.nxp.com>
-Subject: Re: [PATCH 0/6] ASoC: SOF: Add support for Mediatek MT8195
-Message-Id: <163726236782.96213.13499504169654230804.b4-ty@kernel.org>
-Date: Thu, 18 Nov 2021 19:06:07 +0000
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: guennadi.liakhovetski@linux.intel.com, daniel.baluta@gmail.com,
- kai.vehmanen@linux.intel.com, lgirdwood@gmail.com,
- peter.ujfalusi@linux.intel.com, pierre-louis.bossart@linux.intel.com,
- ranjani.sridharan@linux.intel.com, linux-mediatek@lists.infradead.org,
- Daniel Baluta <daniel.baluta@nxp.com>
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="cp3egkEr"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="pafceiVa"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 68F5521637;
+ Thu, 18 Nov 2021 21:28:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1637270901; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Tj2qDPPH7/fdXs4s6fVfZvvEYvOEPb6jEe+qwBqRPH8=;
+ b=cp3egkErElQpA+Ra7uYswz6PK0JERQXemVSktGQsv51ws29izSgOQCpgh45l1WaDKe6oXA
+ 8GWSJ2sL2rkR0hWw8pX6gQ8btoYTXzeWV5YgbkegDJ5OIN4rH2Z06G3CcRat/kQ5vsu6zD
+ 0Tpd8VWy1DwOkpYTTwrrmlZbpYO8axM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1637270901;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Tj2qDPPH7/fdXs4s6fVfZvvEYvOEPb6jEe+qwBqRPH8=;
+ b=pafceiVa6nM/LRnWYfPESgkuUKJYb65IQix2SV4X5OsVD3au22KjfuJoo/zym6uLaAKgND
+ H0295qba0vh5VsAQ==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 5B2CBA3B83;
+ Thu, 18 Nov 2021 21:28:21 +0000 (UTC)
+Date: Thu, 18 Nov 2021 22:28:21 +0100
+Message-ID: <s5hczmxgnm2.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Heiner Kallweit <hkallweit1@gmail.com>
+Subject: Re: Warning due to "ALSA: hda: intel: More comprehensive PM runtime
+ setup for controller driver"
+In-Reply-To: <d9d76980-966a-e031-70d1-3254ba5be5eb@gmail.com>
+References: <d9d76980-966a-e031-70d1-3254ba5be5eb@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, Linux PM <linux-pm@vger.kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,51 +94,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 1 Nov 2021 10:00:20 +0200, Daniel Baluta wrote:
-> From: Daniel Baluta <daniel.baluta@nxp.com>
+On Thu, 18 Nov 2021 21:33:34 +0100,
+Heiner Kallweit wrote:
 > 
+> I get the following warning caused by 4f66a9ef37d3 ("ALSA: hda: intel: More
+> comprehensive PM runtime setup for controller driver"):
 > 
-> This patch series adds initial SOF support on Mediatek mt8195 platform.
-> MT8195 has four Cortex A78 cores paired with four Cortex A55 cores.
-> It also has Cadence HiFi-4 DSP single core. There are shared DRAM and
-> mailbox interrupt between AP and DSP to use for IPC communication.
+> snd_hda_intel 0000:00:1f.3: Unbalanced pm_runtime_enable!
 > 
-> [...]
+> Not sure how this patch was tested because the warning is obvious.
+> The patch doesn't consider what the PCI sub-system does with regard to
+> RPM. Have a look at pci_pm_init().
+> 
+> I'd understand to add the call to pm_runtime_dont_use_autosuspend(),
+> but for all other added calls I see no justification.
+> 
+> If being unsure about when to use which RPM call best involve
+> linux-pm@vger.kernel.org.
 
-Applied to
+Thanks for the notice.  It's been through Intel CI and tests on a few
+local machines, maybe we haven't checked carefully those errors but
+only concentrated on the other issues, as it seems.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+There were two problems: one was the runtime PM being kicked off even
+during the PCI driver remove call, and another was the proper runtime
+PM setup after re-binding.
 
-Thanks!
+For avoiding the former, only the pm_runtime_forbid() (and maybe
+pm_runtime_dont_use_autosuspend(), too) would suffice?  Also, for PCI
+device, no need for pm_runtime_set_supended() at remove, right?
 
-[1/6] ASoC: SOF: mediatek: Add mt8195 hardware support
-      commit: 32d7e03d26fd93187c87ed0fbf59ec7023a61404
-[2/6] ASoC: SOF: tokens: add token for Mediatek AFE
-      commit: e6feefa541f309afed8aa54431681261bc57bcde
-[3/6] ASoC: SOF: topology: Add support for Mediatek AFE DAI
-      commit: b72bfcffcfc11858a8fc92998733372606db485e
-[4/6] ASoC: SOF: mediatek: Add fw loader and mt8195 dsp ops to load firmware
-      commit: b7f6503830cd8f3f7076635409460861b5ff6310
-[5/6] ASoC: SOF: Add mt8195 device descriptor
-      commit: 24281bc2bf1884e665dfbcd17aaaabbc5872e501
-[6/6] ASoC: SOF: mediatek: Add dai driver dsp ops callback for mt8195
-      commit: 24d75049c5ed5193bd12ce0d43c355c4ef74a7fa
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+thanks,
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Takashi
