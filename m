@@ -2,69 +2,71 @@ Return-Path: <SRS0=e+ka=QF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F430C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 09:02:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DAECEC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 09:03:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 20F4E61B30
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 09:02:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 20F4E61B30
+	by mail.kernel.org (Postfix) with ESMTPS id 0F40461B3E
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 09:03:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0F40461B3E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=foss.st.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AF9B81887;
-	Thu, 18 Nov 2021 10:01:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF9B81887
+	by alsa0.perex.cz (Postfix) with ESMTPS id 37FE718A1;
+	Thu, 18 Nov 2021 10:02:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 37FE718A1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637226148;
-	bh=X1RnIhAdr3Rv0gj2tQJITXc/vJHuC2OsWG+WQXG9h9s=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=VoZdGzJeoREOrHAAz/sf4VVa2EvvTD07fuW6WSy4xnT+qcdmR43XdW4cH4NU/50+A
-	 2teALSGSqpnuQqotYmqIcDfpCQzc2zjPcdUELQNsLiRTR/eQgUhvSZS1oPIEBeYf2R
-	 /HAcFhtMp7BQiPsCNyia411Jw+16W++Afgn+5QMY=
+	s=default; t=1637226196;
+	bh=R+//CVBtojMtdgburFu2W/kD2uvQQMz+C2AzpfO10lM=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=W5Nu8UZtZth4zx4eJ2VlflCXdHEvmr6jvzBgfBuQuva+ADvZzdPEgUah6G0UNS7ex
+	 7INtXqR4y5SprsBhKwWzG7PLoQcP7EohgS1tkRCO+X6W84g1wtfPmRFtSEX5dmDGlu
+	 ryEa+msX6DH2m+YBFsB90L6Nhmaeg4o38RwmvJNU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 204C9F80423;
-	Thu, 18 Nov 2021 10:01:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 275CCF804C1;
+	Thu, 18 Nov 2021 10:01:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1F624F804C1; Thu, 18 Nov 2021 10:01:37 +0100 (CET)
+ id 56F1DF804C3; Thu, 18 Nov 2021 10:01:38 +0100 (CET)
 Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
  [185.132.182.106])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1FDEBF8026D
- for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2021 10:01:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1FDEBF8026D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 98DB0F80115
+ for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2021 10:01:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98DB0F80115
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com
- header.b="5qpkOgjK"
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
- by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AI8mxR7025138;
- Thu, 18 Nov 2021 10:01:27 +0100
+ header.b="2EKu3KEJ"
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+ by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AI7gQtE008637;
+ Thu, 18 Nov 2021 10:01:29 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
  h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=selector1;
- bh=wPMmfQr15kVXKrsLCFwgNO3KB7Sm952Qq+p67H38BUc=;
- b=5qpkOgjKX8rzkFOsVm8vR2CxTzAtt+J6xwGubHmhWDDgPzi5LgXO+frcuOYrDdyEYu5v
- X4lcgqroLrM7E9Lny7tr238HxmPq9q2TF2CXTC6tjuFt8xh1xysX9jUAbYPDLMYJnRmg
- lSOX6vZpes8zV0LcoK6Qjs5ws0213JQP5N27omlKFV1jStnQs5c/kWAGx89o71jo+h3b
- zS190HCY9+OKFzSCmJPpkrzhuGx/fCcxsmYFv8vlZT23+Js0vOKNRxu6brAUAIKSFcjH
- AUDTjp64AUgqXZ+mEJ7GHYh1mExEPOSHEv4S5nqPha8V11pe6JxatkVAQ2Nlgg4HNLcM 5g== 
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=selector1;
+ bh=zTa6iwAkenfwAXDfT+3BtATdwtbJNpBWdvBtgRjZfxw=;
+ b=2EKu3KEJC0AvueQsvwMUobtNS5qEWhKk6H5halib2SgQh+mbyKmeuKR2uSKhidzo4PlZ
+ Qspiu3uZ6ctV8osNxT7aopnYKneiU4nacx1kAYAYs5IkZaZOV0+RJNSSVW5evwsvoW2q
+ XxrD3KNwRTd1c3Ijx8LuTRUDZnlPdNCQDZ1UjBi/lPXJSQTDqLPP1oaSZNQvr+MTAZUP
+ XcKmf36O5ZjWTtMDiDWEi4GimsuyaJuZcvOOFT+qfYOED5z6+Xf/ncxJ7HYCbxGvOsJ/
+ AHE8gP9mz+JWRBfQyH6Clyu0S3mscNJrGxYt0xbMbBheLYFoWCB5ec0COHjhQWpak+lH 1g== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
- by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3ccxyppu8h-1
+ by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3cdjp68gs6-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 18 Nov 2021 10:01:27 +0100
+ Thu, 18 Nov 2021 10:01:29 +0100
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
- by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 15B3C10002A;
- Thu, 18 Nov 2021 10:01:27 +0100 (CET)
+ by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id D9EBA10002A;
+ Thu, 18 Nov 2021 10:01:28 +0100 (CET)
 Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
- by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id EC66A21A234;
- Thu, 18 Nov 2021 10:01:26 +0100 (CET)
-Received: from localhost (10.75.127.50) by SFHDAG2NODE2.st.com (10.75.127.5)
- with Microsoft SMTP Server (TLS) id 15.0.1497.26; Thu, 18 Nov 2021 10:01:26
+ by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D046721A234;
+ Thu, 18 Nov 2021 10:01:28 +0100 (CET)
+Received: from localhost (10.75.127.48) by SFHDAG2NODE2.st.com (10.75.127.5)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.26; Thu, 18 Nov 2021 10:01:28
  +0100
 From: Olivier Moysan <olivier.moysan@foss.st.com>
 To: Alexandre Torgue <alexandre.torgue@foss.st.com>, Arnaud Pouliquen
@@ -72,13 +74,15 @@ To: Alexandre Torgue <alexandre.torgue@foss.st.com>, Arnaud Pouliquen
  Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Maxime
  Coquelin <mcoquelin.stm32@gmail.com>, Olivier Moysan
  <olivier.moysan@foss.st.com>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 0/3] ASoC: stm32: add pm runtime support
-Date: Thu, 18 Nov 2021 10:00:32 +0100
-Message-ID: <20211118090035.5331-1-olivier.moysan@foss.st.com>
+Subject: [PATCH 3/3] ASoC: stm32: spdifrx: add pm_runtime support
+Date: Thu, 18 Nov 2021 10:00:35 +0100
+Message-ID: <20211118090035.5331-4-olivier.moysan@foss.st.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20211118090035.5331-1-olivier.moysan@foss.st.com>
+References: <20211118090035.5331-1-olivier.moysan@foss.st.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.75.127.50]
+X-Originating-IP: [10.75.127.48]
 X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE2.st.com
  (10.75.127.5)
 X-Proofpoint-Virus-Version: vendor=baseguard
@@ -101,19 +105,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Enable support of pm runtime on STM32 SPDIFRX, I2S and DFSDM drivers
-to allow power state monitoring.
+Enable support of pm_runtime on STM32 SPDIFRX driver to allow
+SPDIFRX power state monitoring.
 
-Olivier Moysan (3):
-  ASoC: stm32: i2s: add pm_runtime support
-  ASoC: stm32: dfsdm: add pm_runtime support for audio
-  ASoC: stm32: spdifrx: add pm_runtime support
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+---
+ sound/soc/stm/stm32_spdifrx.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
- sound/soc/stm/stm32_adfsdm.c  | 11 ++++++++---
- sound/soc/stm/stm32_i2s.c     |  4 ++++
- sound/soc/stm/stm32_spdifrx.c |  4 ++++
- 3 files changed, 16 insertions(+), 3 deletions(-)
-
+diff --git a/sound/soc/stm/stm32_spdifrx.c b/sound/soc/stm/stm32_spdifrx.c
+index 48145f553588..e885796ca5f4 100644
+--- a/sound/soc/stm/stm32_spdifrx.c
++++ b/sound/soc/stm/stm32_spdifrx.c
+@@ -12,6 +12,7 @@
+ #include <linux/delay.h>
+ #include <linux/module.h>
+ #include <linux/of_platform.h>
++#include <linux/pm_runtime.h>
+ #include <linux/regmap.h>
+ #include <linux/reset.h>
+ 
+@@ -955,6 +956,7 @@ static int stm32_spdifrx_remove(struct platform_device *pdev)
+ 
+ 	snd_dmaengine_pcm_unregister(&pdev->dev);
+ 	snd_soc_unregister_component(&pdev->dev);
++	pm_runtime_disable(&pdev->dev);
+ 
+ 	return 0;
+ }
+@@ -1045,6 +1047,8 @@ static int stm32_spdifrx_probe(struct platform_device *pdev)
+ 			FIELD_GET(SPDIFRX_VERR_MIN_MASK, ver));
+ 	}
+ 
++	pm_runtime_enable(&pdev->dev);
++
+ 	return ret;
+ 
+ error:
 -- 
 2.17.1
 
