@@ -2,97 +2,97 @@ Return-Path: <SRS0=e+ka=QF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C6190C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 07:10:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 20ED1C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 07:11:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1A2C16128C
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 07:10:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1A2C16128C
+	by mail.kernel.org (Postfix) with ESMTPS id 9CE056128C
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 07:11:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9CE056128C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 70E5F18B2;
-	Thu, 18 Nov 2021 08:09:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70E5F18B2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 183DD18C9;
+	Thu, 18 Nov 2021 08:10:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 183DD18C9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637219443;
-	bh=1N7wFyT0DwGLEReW8NgGhhkC9Nt9dihutUgqMiuVc/g=;
+	s=default; t=1637219464;
+	bh=ENfUTimaxCbiVl5o7uSL9/WyanVBBlvEpIgsBmPQhB0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YfzLcWHloIqF4gNsoy7BMOA0o86ktdglNoVcbcslfaUQecnNuoFqqrQpHPycjKQhk
-	 LvftdrMPEoPflA3CjoUjC4dc1nLfUpSrD5vg5QxQTvWnwqhgbjy3iM/U4rg7k34D21
-	 3vafsEti0oDHUFN6/2brqhxQPoKULA5bZd/LWV/M=
+	b=LeMzI6Wh2iO9GbtPDK5DgNUzunyjQG4AGcAWRzVWfNpov47AkGJP3NNAArLRQUZw6
+	 28ttnIuO4DHMj6ONZpaG3hfQipNHZI4axBLbWFhsMQ8c3E8wxOIkOAubsqKak/XQzO
+	 9CeQ2GHD+24RVRt2bWdThJuNdT3S8+LJlcddhXkU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D4F36F8051F;
-	Thu, 18 Nov 2021 08:08:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 81465F804DF;
+	Thu, 18 Nov 2021 08:08:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EEEF7F8051B; Thu, 18 Nov 2021 08:08:08 +0100 (CET)
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com
- (mail-mw2nam10on2053.outbound.protection.outlook.com [40.107.94.53])
+ id 26803F8052E; Thu, 18 Nov 2021 08:08:23 +0100 (CET)
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com
+ (mail-dm6nam10on2049.outbound.protection.outlook.com [40.107.93.49])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 556EBF80115
- for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2021 08:07:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 556EBF80115
+ by alsa1.perex.cz (Postfix) with ESMTPS id C424CF804DF
+ for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2021 08:07:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C424CF804DF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com
- header.b="J4+3hiWS"
+ header.b="BvqoLZ3Q"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MQhqvjH+pHfLbcE1psca/MbAVe/srYTO1BVxvuMv3Gb4ENRAXT2r03+At3hudeJgqItX0OxUK6N+LH0z/j3IY5lmjrNNPk59lcNP7fUD8zZeuB3WcDXt9ZCnDJlh5LlhKYx/hTozRnQBTRrEldFi1t5587bzp/hAFCNRCjC8S6tEsYMwXKc0jHzZdgpS9RILEgWroKhaET0GqzDZfR29D1n3Dj1P0NQmjDBedKO91vU1FnU4y5fVmqTJHqU8Fu4T0dI9dh+nHoaj1iKOcXRWQZ5oUnnOuyr7HvNAP6lbIrSSj/Wa3DJJr2TTmP9GyTPY8fudKpgK/6n0ea2DJ/wmNA==
+ b=ZVVz2BUZ1AYJP3ynRSpXN2mmxuVR9EvXXQJaCvGBE47KQ6l5Oa4qAY9tm1IZeqSF33lqPVq2Omx1gZg5102rjGd5ZWlqowKlgTfTVP1/OXfRz4wossw1XQ6ggr/OpxIyJN6A5sTiD9Uf9A7lZSviopNjDDms3tdqa0/66NSkJ00YnuUcKonVzBk1A03ZW3EK3TJerU79NnTm9a7D/CcoCl8paikCIGkamhrvKOnMgRGkWSDV2ZKtrElTr55ZmEZ4/NCrkXeWGKcAqVbFOF/Rm/vH4bFZ+/h8qWmef3C3tGgV7nwlkw9Pq0GcZk21fwW4PDZnhKIFiDybvtnWJnt1ow==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=eEEKudTWKk0QtMJIDz95B23T25QBZWfOPG0xmcPBvOw=;
- b=YzZqO5BwxvTGw/3ieciHRMfF4/vUQxORd891w1RGHJq2LLXgubzb7db8+cIGCHHxypJLeb+DTYpjL/uTkvldKYuM66hu7aR0owbgwi8ShqM+Mc5F1ZYQU8bTeHLf9qAYLmUoSHlC9gc6u0meADKnLLMHI9ye4LFo8JXvAyQpR+AJzUmugtrl2FKey+kIKu3vQMUR/I1yR4V3zBLPEkCAoLUGwK32lIa3eW0PcCE2rZF1QzNTyz0LEWOxOLKCm8uS85vD05wven1kcpsLqsWK2yN7uT5mUk0PH2Zcw9Jqg1rcF+QqUKxLNJCmR+GgheJPym72Q7xSYdkuW4AF1IRnJg==
+ bh=7EyzUBn0C50ScRpxCiSjR/hwHCTAIwl7ZGwCwMD4AjA=;
+ b=Fuk22ysly6FwJQ/efI/yUx5qtWMPGf4M3HK0UEr8djVPRYmvtMjVSYmyGXBcsj5Wg50OAL19QNXxUw4Z94Rn646DYIekKGTVM63kCVCn1VrSAlElIiehEA4AauwOoSWNxheLEJhvKkKngn6CVyGElbi/B/4tYJ1U9AGk4fhh0m+dWG1lM2v9Rz7xNvlguRQZETRepZ9haPBQ6kPT8IHZMtwt5ewllWgamoOLks7kKPsJpenZqMUaQEPbpZD9U60XKO2D7s/7GGEmO8LDWa3+GFLBsviat2Sqhz1iWcaE4eBnUGzrALGy/czkI4z6DB8n8taw+wimcSCC8x41g83yJg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=perex.cz smtp.mailfrom=nvidia.com;
+ 216.228.112.32) smtp.rcpttodomain=perex.cz smtp.mailfrom=nvidia.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=nvidia.com; dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eEEKudTWKk0QtMJIDz95B23T25QBZWfOPG0xmcPBvOw=;
- b=J4+3hiWSpoDvIH57L3LetMiE5R6HKw80n2ERNBkmSKbkfC89+ybqz6PfKLYgtUr8lZl0srJoQ9UG7ii5l85rodUT+peTlA55g5x3JSJfTBSwfQGDVsq2xRLfE5aKvOx8sZ+YxvsR094HAVtllvzGiwaWm7tWDZJGWewNqly8w8tUxWpC8APozIoaUBF18dJQfkn+3mYMZUHVnU9WEgCYB33A4giUBTZ/w0c0hWICcAERtH9AbJKeqUxo9D9SiRGY637V+NBB5afwxQQAjcevlXbXsOUuXtVCG3sO0SToQcCJ2kWFQ6Aj6MB/WkYL96Tp7Um8dBmoY1w7CZV5jN2TmQ==
-Received: from BN0PR07CA0012.namprd07.prod.outlook.com (2603:10b6:408:141::34)
- by DM6PR12MB3980.namprd12.prod.outlook.com (2603:10b6:5:1cc::16) with
- Microsoft SMTP Server (version=TLS1_2,
+ bh=7EyzUBn0C50ScRpxCiSjR/hwHCTAIwl7ZGwCwMD4AjA=;
+ b=BvqoLZ3Qh24RTLR9wjwnpacqkwhOra0RtgdwZBYyXol4RmVLMkxIaX2ZUjqQR2wg1FIdtPa7zwAGdTeuDZZrBAugV3nG7PHsAqH3liVdCTD2x9oHKabwRueASBtkGGcOM7Mjnbio/DvDs53giNIULSzzaw1xz2aqUBxsGh4ZIZzGypUOjORXYFxYCu6REVo/pBEqy1/7SbjxrRi5SzQHTJN4/Rl+uVUrVybrw+S2zOi6fQirjqyLzxSE1y72WlvpF80KHhNFhHNWvxTlK+HfS6CO4beGxUCiqnAC/26VfsDJ2+6nF50dh8sS4q6NdA/CqR6DZWcvgkIR9wlRU/y20g==
+Received: from BN9PR03CA0809.namprd03.prod.outlook.com (2603:10b6:408:13f::34)
+ by CH2PR12MB3734.namprd12.prod.outlook.com (2603:10b6:610:2a::31)
+ with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19; Thu, 18 Nov
- 2021 07:07:50 +0000
-Received: from BN8NAM11FT068.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:141:cafe::e) by BN0PR07CA0012.outlook.office365.com
- (2603:10b6:408:141::34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.21 via Frontend
- Transport; Thu, 18 Nov 2021 07:07:50 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ 2021 07:07:55 +0000
+Received: from BN8NAM11FT040.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:13f:cafe::a2) by BN9PR03CA0809.outlook.office365.com
+ (2603:10b6:408:13f::34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.27 via Frontend
+ Transport; Thu, 18 Nov 2021 07:07:55 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- BN8NAM11FT068.mail.protection.outlook.com (10.13.177.69) with Microsoft SMTP
+ 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.32; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.32) by
+ BN8NAM11FT040.mail.protection.outlook.com (10.13.177.166) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4713.20 via Frontend Transport; Thu, 18 Nov 2021 07:07:49 +0000
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 18 Nov
- 2021 07:07:48 +0000
+ 15.20.4713.20 via Frontend Transport; Thu, 18 Nov 2021 07:07:54 +0000
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 17 Nov
+ 2021 23:07:54 -0800
 Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL105.nvidia.com
  (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 18 Nov
- 2021 07:07:48 +0000
+ 2021 07:07:53 +0000
 Received: from audio.nvidia.com (172.20.187.5) by mail.nvidia.com
  (172.20.187.18) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
- Transport; Thu, 18 Nov 2021 07:07:45 +0000
+ Transport; Thu, 18 Nov 2021 07:07:51 +0000
 From: Sameer Pujar <spujar@nvidia.com>
 To: <broonie@kernel.org>, <lgirdwood@gmail.com>, <perex@perex.cz>,
  <tiwai@suse.com>
-Subject: [PATCH v3 08/16] ASoC: tegra: Fix kcontrol put callback in I2S
-Date: Thu, 18 Nov 2021 12:37:03 +0530
-Message-ID: <1637219231-406-9-git-send-email-spujar@nvidia.com>
+Subject: [PATCH v3 10/16] ASoC: tegra: Fix kcontrol put callback in DSPK
+Date: Thu, 18 Nov 2021 12:37:05 +0530
+Message-ID: <1637219231-406-11-git-send-email-spujar@nvidia.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1637219231-406-1-git-send-email-spujar@nvidia.com>
 References: <1637219231-406-1-git-send-email-spujar@nvidia.com>
@@ -100,28 +100,28 @@ MIME-Version: 1.0
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 914c3c62-fb88-414d-37de-08d9aa622192
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3980:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB39808A33537152C827D12C20A79B9@DM6PR12MB3980.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Office365-Filtering-Correlation-Id: 5925f29f-87ba-467a-5281-08d9aa6224d1
+X-MS-TrafficTypeDiagnostic: CH2PR12MB3734:
+X-Microsoft-Antispam-PRVS: <CH2PR12MB3734627ED8B85CDE548C090BA79B9@CH2PR12MB3734.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QBMsFnM/GaoUj+u4eidG64ObEQgibWNhODHVlbu0kjcHSZfAM2Xb4Noxdc3esj7ZNO5gsjoIuReuHRHTy3f+pG5sqLORrcln8s3HO2lt1W+xTseMiM2DrsoB8rwsXS230CDlI4qsJIy62Kpt++Ay4ucThcxL2sPHe8q96bA4tehvJSMlY8XZZy1FHRlv9vS/LoxT5H9Zic3bJ2hQd1108j4vRXHxglCASXkt2o74YXlvWR1wgH3Wxb77RqpPzAUoc21ersJEdoGp6HEOWX0kjPW8223sVELLdoss4DY8C20/1ph7UtVZ3RoKzpWIjb0Fsa4D9R0bTupAJ+MRqKF1mHk4m5i70l4iI9Vf6v+oXmXrKm//qvJ0rdbAaE3XxY1LWovwnWQ+lfMQv/tiYAsvllHWW5xSrnEok2orr6FkJAwb9C8Zjdv7Lyk8MDLW/nIysOW2moU5V7a18FcT7GnsxuivG3XDBA1MdjdEj33MaOxWka4AcI0zNG0mKtkfPf32HwNMO6x1WVBcyhUmQupLyQblKtHPA7jgYwCEcJc3k7THaPdS1lOsSYUw28HyJ6ajnqMzLYQ5HtP2e62r3I+oimG+Ez1hDWy2dZqK74b0wpAhtP3dRErtX4sftc2ykxqeg1UvWd4Kj0XW3pk7LN8z1Loo7U4/Pz3ObX+ypJ5jhEWJIcDiGcnygJj1yCQdHjnXWgSQJEcb8hZRFz8hKLF8nA==
-X-Forefront-Antispam-Report: CIP:216.228.112.34; CTRY:US; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:mail.nvidia.com; PTR:schybrid03.nvidia.com; CAT:NONE;
- SFS:(4636009)(36840700001)(46966006)(36860700001)(26005)(7636003)(5660300002)(356005)(508600001)(47076005)(336012)(2616005)(186003)(82310400003)(426003)(30864003)(2906002)(86362001)(7696005)(70206006)(54906003)(70586007)(110136005)(36756003)(8936002)(8676002)(316002)(83380400001)(107886003)(6666004)(4326008);
+X-Microsoft-Antispam-Message-Info: 331NgMp502owJZ3fl/lm4+gS0mVMMqas3NS/e/lJ0aNQTnQWXjK2nwLcpyAzHGPT5Du18E7M5RrrWNnAB17dBL5bCEEDCyLOOvJJO1yvv12GX7a5/PEkUuSKWZuvw86BrmRrjp7ur7KH9zU5pUsPmIM3zxLRhCyCnK2Jh4bRwtRPyckgolnjjvkjVKYjl/SBLUFshhPkRXMInwtoyENe71KOtzyCEfl4Dl/QgBmmHKefkPkMDhNyphixJOuoSNvCu/yH3mZlm2qj0HqF6tSSpvTUUOCmdqq/g4IOnZCiiqeMlQfbhTWrk/5WuQZlq2RYH2xSz36GMhlRxez9hmTwpjiWrZFfYgYxWIOfzF+8M6ft82dXXcLbrzSamhyh5Cj8JAzRmUn4cMZJDG1WGGWHYpBCCPDiI7cZxMlbMsH/s5/rxT3iTp3/q9Wtt7ch0XgP/3mMEvGqx/p3x4PpfM22q8qU66Uavqele+Z7YdOIIaO9n51p2srVwKjDD9v1hpN7KF8LZDnEqc4JbSDYBDE05stVuv1Fe94pt7ubPKYJMh/3Dc5PA3Y9E9GR1Z9D22hhFoq/aU9pyctByZ2i/jG+1glScYDC9otB/YPctrslX21Sx5T4Kuje0hmrbhLZPN7rt2ELfkr+BVKvOLIdZKQTr4JWFCfd/VJo1EzJ+EG5v6kRoJJuwANB6YlavhDmBkKfSwQME5a1j3L95LQMSh7h9A==
+X-Forefront-Antispam-Report: CIP:216.228.112.32; CTRY:US; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:mail.nvidia.com; PTR:schybrid01.nvidia.com; CAT:NONE;
+ SFS:(4636009)(46966006)(36840700001)(26005)(5660300002)(8676002)(2906002)(107886003)(6666004)(8936002)(36756003)(2616005)(82310400003)(426003)(7696005)(4326008)(316002)(186003)(336012)(86362001)(356005)(47076005)(7636003)(110136005)(508600001)(70586007)(54906003)(83380400001)(36860700001)(70206006);
  DIR:OUT; SFP:1101; 
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2021 07:07:49.4184 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 914c3c62-fb88-414d-37de-08d9aa622192
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2021 07:07:54.9171 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5925f29f-87ba-467a-5281-08d9aa6224d1
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a; Ip=[216.228.112.34];
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a; Ip=[216.228.112.32];
  Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT068.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT040.eop-nam11.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3980
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB3734
 Cc: alsa-devel@alsa-project.org, Sameer Pujar <spujar@nvidia.com>,
  linux-kernel@vger.kernel.org, jonathanh@nvidia.com, thierry.reding@gmail.com,
  linux-tegra@vger.kernel.org
@@ -143,361 +143,235 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 The kcontrol put callback is expected to return 1 when there is change
 in HW or when the update is acknowledged by driver. This would ensure
 that change notifications are sent to subscribed applications. Update
-the I2S driver accordingly.
+the DSPK driver accordingly.
 
-Fixes: c0bfa98349d1 ("ASoC: tegra: Add Tegra210 based I2S driver")
+Fixes: 327ef6470266 ("ASoC: tegra: Add Tegra186 based DSPK driver")
 Suggested-by: Jaroslav Kysela <perex@perex.cz>
 Suggested-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sameer Pujar <spujar@nvidia.com>
 ---
- sound/soc/tegra/tegra210_i2s.c | 302 ++++++++++++++++++++++++++++++-----------
- 1 file changed, 226 insertions(+), 76 deletions(-)
+ sound/soc/tegra/tegra186_dspk.c | 178 ++++++++++++++++++++++++++++++++--------
+ 1 file changed, 146 insertions(+), 32 deletions(-)
 
-diff --git a/sound/soc/tegra/tegra210_i2s.c b/sound/soc/tegra/tegra210_i2s.c
-index 5c30461..9552bbb 100644
---- a/sound/soc/tegra/tegra210_i2s.c
-+++ b/sound/soc/tegra/tegra210_i2s.c
-@@ -302,91 +302,235 @@ static int tegra210_i2s_set_tdm_slot(struct snd_soc_dai *dai,
- 	return 0;
- }
- 
--static int tegra210_i2s_set_dai_bclk_ratio(struct snd_soc_dai *dai,
--					   unsigned int ratio)
-+static int tegra210_i2s_get_loopback(struct snd_kcontrol *kcontrol,
-+				     struct snd_ctl_elem_value *ucontrol)
- {
--	struct tegra210_i2s *i2s = snd_soc_dai_get_drvdata(dai);
-+	struct snd_soc_component *compnt = snd_soc_kcontrol_component(kcontrol);
-+	struct tegra210_i2s *i2s = snd_soc_component_get_drvdata(compnt);
- 
--	i2s->bclk_ratio = ratio;
-+	ucontrol->value.integer.value[0] = i2s->loopback;
- 
- 	return 0;
- }
- 
--static int tegra210_i2s_get_control(struct snd_kcontrol *kcontrol,
--				    struct snd_ctl_elem_value *ucontrol)
-+static int tegra210_i2s_put_loopback(struct snd_kcontrol *kcontrol,
-+				     struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_soc_component *compnt = snd_soc_kcontrol_component(kcontrol);
- 	struct tegra210_i2s *i2s = snd_soc_component_get_drvdata(compnt);
-+	int value = ucontrol->value.integer.value[0];
-+
-+	if (value == i2s->loopback)
-+		return 0;
-+
-+	i2s->loopback = value;
- 
--	if (strstr(kcontrol->id.name, "Loopback"))
--		ucontrol->value.integer.value[0] = i2s->loopback;
--	else if (strstr(kcontrol->id.name, "FSYNC Width"))
--		ucontrol->value.integer.value[0] = i2s->fsync_width;
--	else if (strstr(kcontrol->id.name, "Capture Stereo To Mono"))
--		ucontrol->value.enumerated.item[0] =
--			i2s->stereo_to_mono[I2S_TX_PATH];
--	else if (strstr(kcontrol->id.name, "Capture Mono To Stereo"))
--		ucontrol->value.enumerated.item[0] =
--			i2s->mono_to_stereo[I2S_TX_PATH];
--	else if (strstr(kcontrol->id.name, "Playback Stereo To Mono"))
--		ucontrol->value.enumerated.item[0] =
--			i2s->stereo_to_mono[I2S_RX_PATH];
--	else if (strstr(kcontrol->id.name, "Playback Mono To Stereo"))
--		ucontrol->value.enumerated.item[0] =
--			i2s->mono_to_stereo[I2S_RX_PATH];
--	else if (strstr(kcontrol->id.name, "Playback FIFO Threshold"))
--		ucontrol->value.integer.value[0] = i2s->rx_fifo_th;
--	else if (strstr(kcontrol->id.name, "BCLK Ratio"))
--		ucontrol->value.integer.value[0] = i2s->bclk_ratio;
-+	regmap_update_bits(i2s->regmap, TEGRA210_I2S_CTRL, I2S_CTRL_LPBK_MASK,
-+			   i2s->loopback << I2S_CTRL_LPBK_SHIFT);
-+
-+	return 1;
-+}
-+
-+static int tegra210_i2s_get_fsync_width(struct snd_kcontrol *kcontrol,
-+					struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *compnt = snd_soc_kcontrol_component(kcontrol);
-+	struct tegra210_i2s *i2s = snd_soc_component_get_drvdata(compnt);
-+
-+	ucontrol->value.integer.value[0] = i2s->fsync_width;
- 
- 	return 0;
- }
- 
--static int tegra210_i2s_put_control(struct snd_kcontrol *kcontrol,
--				    struct snd_ctl_elem_value *ucontrol)
-+static int tegra210_i2s_put_fsync_width(struct snd_kcontrol *kcontrol,
-+					struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *compnt = snd_soc_kcontrol_component(kcontrol);
-+	struct tegra210_i2s *i2s = snd_soc_component_get_drvdata(compnt);
-+	int value = ucontrol->value.integer.value[0];
-+
-+	if (value == i2s->fsync_width)
-+		return 0;
-+
-+	i2s->fsync_width = value;
-+
-+	/*
-+	 * Frame sync width is used only for FSYNC modes and not
-+	 * applicable for LRCK modes. Reset value for this field is "0",
-+	 * which means the width is one bit clock wide.
-+	 * The width requirement may depend on the codec and in such
-+	 * cases mixer control is used to update custom values. A value
-+	 * of "N" here means, width is "N + 1" bit clock wide.
-+	 */
-+	regmap_update_bits(i2s->regmap, TEGRA210_I2S_CTRL,
-+			   I2S_CTRL_FSYNC_WIDTH_MASK,
-+			   i2s->fsync_width << I2S_FSYNC_WIDTH_SHIFT);
-+
-+	return 1;
-+}
-+
-+static int tegra210_i2s_cget_stereo_to_mono(struct snd_kcontrol *kcontrol,
-+					    struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_soc_component *compnt = snd_soc_kcontrol_component(kcontrol);
- 	struct tegra210_i2s *i2s = snd_soc_component_get_drvdata(compnt);
- 
--	if (strstr(kcontrol->id.name, "Loopback")) {
--		i2s->loopback = ucontrol->value.integer.value[0];
-+	ucontrol->value.enumerated.item[0] = i2s->stereo_to_mono[I2S_TX_PATH];
- 
--		regmap_update_bits(i2s->regmap, TEGRA210_I2S_CTRL,
--				   I2S_CTRL_LPBK_MASK,
--				   i2s->loopback << I2S_CTRL_LPBK_SHIFT);
-+	return 0;
-+}
- 
--	} else if (strstr(kcontrol->id.name, "FSYNC Width")) {
--		/*
--		 * Frame sync width is used only for FSYNC modes and not
--		 * applicable for LRCK modes. Reset value for this field is "0",
--		 * which means the width is one bit clock wide.
--		 * The width requirement may depend on the codec and in such
--		 * cases mixer control is used to update custom values. A value
--		 * of "N" here means, width is "N + 1" bit clock wide.
--		 */
--		i2s->fsync_width = ucontrol->value.integer.value[0];
--
--		regmap_update_bits(i2s->regmap, TEGRA210_I2S_CTRL,
--				   I2S_CTRL_FSYNC_WIDTH_MASK,
--				   i2s->fsync_width << I2S_FSYNC_WIDTH_SHIFT);
--
--	} else if (strstr(kcontrol->id.name, "Capture Stereo To Mono")) {
--		i2s->stereo_to_mono[I2S_TX_PATH] =
--			ucontrol->value.enumerated.item[0];
--	} else if (strstr(kcontrol->id.name, "Capture Mono To Stereo")) {
--		i2s->mono_to_stereo[I2S_TX_PATH] =
--			ucontrol->value.enumerated.item[0];
--	} else if (strstr(kcontrol->id.name, "Playback Stereo To Mono")) {
--		i2s->stereo_to_mono[I2S_RX_PATH] =
--			ucontrol->value.enumerated.item[0];
--	} else if (strstr(kcontrol->id.name, "Playback Mono To Stereo")) {
--		i2s->mono_to_stereo[I2S_RX_PATH] =
--			ucontrol->value.enumerated.item[0];
--	} else if (strstr(kcontrol->id.name, "Playback FIFO Threshold")) {
--		i2s->rx_fifo_th = ucontrol->value.integer.value[0];
--	} else if (strstr(kcontrol->id.name, "BCLK Ratio")) {
--		i2s->bclk_ratio = ucontrol->value.integer.value[0];
--	}
-+static int tegra210_i2s_cput_stereo_to_mono(struct snd_kcontrol *kcontrol,
-+					    struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *compnt = snd_soc_kcontrol_component(kcontrol);
-+	struct tegra210_i2s *i2s = snd_soc_component_get_drvdata(compnt);
-+	unsigned int value = ucontrol->value.enumerated.item[0];
-+
-+	if (value == i2s->stereo_to_mono[I2S_TX_PATH])
-+		return 0;
-+
-+	i2s->stereo_to_mono[I2S_TX_PATH] = value;
-+
-+	return 1;
-+}
-+
-+static int tegra210_i2s_cget_mono_to_stereo(struct snd_kcontrol *kcontrol,
-+					    struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *compnt = snd_soc_kcontrol_component(kcontrol);
-+	struct tegra210_i2s *i2s = snd_soc_component_get_drvdata(compnt);
-+
-+	ucontrol->value.enumerated.item[0] = i2s->mono_to_stereo[I2S_TX_PATH];
-+
-+	return 0;
-+}
-+
-+static int tegra210_i2s_cput_mono_to_stereo(struct snd_kcontrol *kcontrol,
-+					    struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *compnt = snd_soc_kcontrol_component(kcontrol);
-+	struct tegra210_i2s *i2s = snd_soc_component_get_drvdata(compnt);
-+	unsigned int value = ucontrol->value.enumerated.item[0];
-+
-+	if (value == i2s->mono_to_stereo[I2S_TX_PATH])
-+		return 0;
-+
-+	i2s->mono_to_stereo[I2S_TX_PATH] = value;
-+
-+	return 1;
-+}
-+
-+static int tegra210_i2s_pget_stereo_to_mono(struct snd_kcontrol *kcontrol,
-+					    struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *compnt = snd_soc_kcontrol_component(kcontrol);
-+	struct tegra210_i2s *i2s = snd_soc_component_get_drvdata(compnt);
-+
-+	ucontrol->value.enumerated.item[0] = i2s->stereo_to_mono[I2S_RX_PATH];
-+
-+	return 0;
-+}
-+
-+static int tegra210_i2s_pput_stereo_to_mono(struct snd_kcontrol *kcontrol,
-+					    struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *compnt = snd_soc_kcontrol_component(kcontrol);
-+	struct tegra210_i2s *i2s = snd_soc_component_get_drvdata(compnt);
-+	unsigned int value = ucontrol->value.enumerated.item[0];
-+
-+	if (value == i2s->stereo_to_mono[I2S_RX_PATH])
-+		return 0;
-+
-+	i2s->stereo_to_mono[I2S_RX_PATH] = value;
-+
-+	return 1;
-+}
-+
-+static int tegra210_i2s_pget_mono_to_stereo(struct snd_kcontrol *kcontrol,
-+					    struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *compnt = snd_soc_kcontrol_component(kcontrol);
-+	struct tegra210_i2s *i2s = snd_soc_component_get_drvdata(compnt);
-+
-+	ucontrol->value.enumerated.item[0] = i2s->mono_to_stereo[I2S_RX_PATH];
-+
-+	return 0;
-+}
-+
-+static int tegra210_i2s_pput_mono_to_stereo(struct snd_kcontrol *kcontrol,
-+					    struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *compnt = snd_soc_kcontrol_component(kcontrol);
-+	struct tegra210_i2s *i2s = snd_soc_component_get_drvdata(compnt);
-+	unsigned int value = ucontrol->value.enumerated.item[0];
-+
-+	if (value == i2s->mono_to_stereo[I2S_RX_PATH])
-+		return 0;
-+
-+	i2s->mono_to_stereo[I2S_RX_PATH] = value;
-+
-+	return 1;
-+}
-+
-+static int tegra210_i2s_pget_fifo_th(struct snd_kcontrol *kcontrol,
-+				     struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *compnt = snd_soc_kcontrol_component(kcontrol);
-+	struct tegra210_i2s *i2s = snd_soc_component_get_drvdata(compnt);
-+
-+	ucontrol->value.integer.value[0] = i2s->rx_fifo_th;
-+
-+	return 0;
-+}
-+
-+static int tegra210_i2s_pput_fifo_th(struct snd_kcontrol *kcontrol,
-+				     struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *compnt = snd_soc_kcontrol_component(kcontrol);
-+	struct tegra210_i2s *i2s = snd_soc_component_get_drvdata(compnt);
-+	int value = ucontrol->value.integer.value[0];
-+
-+	if (value == i2s->rx_fifo_th)
-+		return 0;
-+
-+	i2s->rx_fifo_th = value;
-+
-+	return 1;
-+}
-+
-+static int tegra210_i2s_get_bclk_ratio(struct snd_kcontrol *kcontrol,
-+				       struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *compnt = snd_soc_kcontrol_component(kcontrol);
-+	struct tegra210_i2s *i2s = snd_soc_component_get_drvdata(compnt);
-+
-+	ucontrol->value.integer.value[0] = i2s->bclk_ratio;
-+
-+	return 0;
-+}
-+
-+static int tegra210_i2s_put_bclk_ratio(struct snd_kcontrol *kcontrol,
-+				       struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *compnt = snd_soc_kcontrol_component(kcontrol);
-+	struct tegra210_i2s *i2s = snd_soc_component_get_drvdata(compnt);
-+	int value = ucontrol->value.integer.value[0];
-+
-+	if (value == i2s->bclk_ratio)
-+		return 0;
-+
-+	i2s->bclk_ratio = value;
-+
-+	return 1;
-+}
-+
-+static int tegra210_i2s_set_dai_bclk_ratio(struct snd_soc_dai *dai,
-+					   unsigned int ratio)
-+{
-+	struct tegra210_i2s *i2s = snd_soc_dai_get_drvdata(dai);
-+
-+	i2s->bclk_ratio = ratio;
- 
- 	return 0;
- }
-@@ -604,22 +748,28 @@ static const struct soc_enum tegra210_i2s_stereo_conv_enum =
- 			tegra210_i2s_stereo_conv_text);
- 
- static const struct snd_kcontrol_new tegra210_i2s_controls[] = {
--	SOC_SINGLE_EXT("Loopback", 0, 0, 1, 0, tegra210_i2s_get_control,
--		       tegra210_i2s_put_control),
--	SOC_SINGLE_EXT("FSYNC Width", 0, 0, 255, 0, tegra210_i2s_get_control,
--		       tegra210_i2s_put_control),
-+	SOC_SINGLE_EXT("Loopback", 0, 0, 1, 0, tegra210_i2s_get_loopback,
-+		       tegra210_i2s_put_loopback),
-+	SOC_SINGLE_EXT("FSYNC Width", 0, 0, 255, 0,
-+		       tegra210_i2s_get_fsync_width,
-+		       tegra210_i2s_put_fsync_width),
- 	SOC_ENUM_EXT("Capture Stereo To Mono", tegra210_i2s_stereo_conv_enum,
--		     tegra210_i2s_get_control, tegra210_i2s_put_control),
-+		     tegra210_i2s_cget_stereo_to_mono,
-+		     tegra210_i2s_cput_stereo_to_mono),
- 	SOC_ENUM_EXT("Capture Mono To Stereo", tegra210_i2s_mono_conv_enum,
--		     tegra210_i2s_get_control, tegra210_i2s_put_control),
-+		     tegra210_i2s_cget_mono_to_stereo,
-+		     tegra210_i2s_cput_mono_to_stereo),
- 	SOC_ENUM_EXT("Playback Stereo To Mono", tegra210_i2s_stereo_conv_enum,
--		     tegra210_i2s_get_control, tegra210_i2s_put_control),
-+		     tegra210_i2s_pget_mono_to_stereo,
-+		     tegra210_i2s_pput_mono_to_stereo),
- 	SOC_ENUM_EXT("Playback Mono To Stereo", tegra210_i2s_mono_conv_enum,
--		     tegra210_i2s_get_control, tegra210_i2s_put_control),
-+		     tegra210_i2s_pget_stereo_to_mono,
-+		     tegra210_i2s_pput_stereo_to_mono),
- 	SOC_SINGLE_EXT("Playback FIFO Threshold", 0, 0, I2S_RX_FIFO_DEPTH - 1,
--		       0, tegra210_i2s_get_control, tegra210_i2s_put_control),
--	SOC_SINGLE_EXT("BCLK Ratio", 0, 0, INT_MAX, 0, tegra210_i2s_get_control,
--		       tegra210_i2s_put_control),
-+		       0, tegra210_i2s_pget_fifo_th, tegra210_i2s_pput_fifo_th),
-+	SOC_SINGLE_EXT("BCLK Ratio", 0, 0, INT_MAX, 0,
-+		       tegra210_i2s_get_bclk_ratio,
-+		       tegra210_i2s_put_bclk_ratio),
+diff --git a/sound/soc/tegra/tegra186_dspk.c b/sound/soc/tegra/tegra186_dspk.c
+index 67269e7..a74c980 100644
+--- a/sound/soc/tegra/tegra186_dspk.c
++++ b/sound/soc/tegra/tegra186_dspk.c
+@@ -26,50 +26,162 @@ static const struct reg_default tegra186_dspk_reg_defaults[] = {
+ 	{ TEGRA186_DSPK_CODEC_CTRL,  0x03000000 },
  };
  
- static const struct snd_soc_dapm_widget tegra210_i2s_widgets[] = {
+-static int tegra186_dspk_get_control(struct snd_kcontrol *kcontrol,
++static int tegra186_dspk_get_fifo_th(struct snd_kcontrol *kcontrol,
+ 				     struct snd_ctl_elem_value *ucontrol)
+ {
+ 	struct snd_soc_component *codec = snd_soc_kcontrol_component(kcontrol);
+ 	struct tegra186_dspk *dspk = snd_soc_component_get_drvdata(codec);
+ 
+-	if (strstr(kcontrol->id.name, "FIFO Threshold"))
+-		ucontrol->value.integer.value[0] = dspk->rx_fifo_th;
+-	else if (strstr(kcontrol->id.name, "OSR Value"))
+-		ucontrol->value.enumerated.item[0] = dspk->osr_val;
+-	else if (strstr(kcontrol->id.name, "LR Polarity Select"))
+-		ucontrol->value.enumerated.item[0] = dspk->lrsel;
+-	else if (strstr(kcontrol->id.name, "Channel Select"))
+-		ucontrol->value.enumerated.item[0] = dspk->ch_sel;
+-	else if (strstr(kcontrol->id.name, "Mono To Stereo"))
+-		ucontrol->value.enumerated.item[0] = dspk->mono_to_stereo;
+-	else if (strstr(kcontrol->id.name, "Stereo To Mono"))
+-		ucontrol->value.enumerated.item[0] = dspk->stereo_to_mono;
++	ucontrol->value.integer.value[0] = dspk->rx_fifo_th;
+ 
+ 	return 0;
+ }
+ 
+-static int tegra186_dspk_put_control(struct snd_kcontrol *kcontrol,
++static int tegra186_dspk_put_fifo_th(struct snd_kcontrol *kcontrol,
+ 				     struct snd_ctl_elem_value *ucontrol)
+ {
+ 	struct snd_soc_component *codec = snd_soc_kcontrol_component(kcontrol);
+ 	struct tegra186_dspk *dspk = snd_soc_component_get_drvdata(codec);
++	int value = ucontrol->value.integer.value[0];
+ 
+-	if (strstr(kcontrol->id.name, "FIFO Threshold"))
+-		dspk->rx_fifo_th = ucontrol->value.integer.value[0];
+-	else if (strstr(kcontrol->id.name, "OSR Value"))
+-		dspk->osr_val = ucontrol->value.enumerated.item[0];
+-	else if (strstr(kcontrol->id.name, "LR Polarity Select"))
+-		dspk->lrsel = ucontrol->value.enumerated.item[0];
+-	else if (strstr(kcontrol->id.name, "Channel Select"))
+-		dspk->ch_sel = ucontrol->value.enumerated.item[0];
+-	else if (strstr(kcontrol->id.name, "Mono To Stereo"))
+-		dspk->mono_to_stereo = ucontrol->value.enumerated.item[0];
+-	else if (strstr(kcontrol->id.name, "Stereo To Mono"))
+-		dspk->stereo_to_mono = ucontrol->value.enumerated.item[0];
++	if (value == dspk->rx_fifo_th)
++		return 0;
++
++	dspk->rx_fifo_th = value;
++
++	return 1;
++}
++
++static int tegra186_dspk_get_osr_val(struct snd_kcontrol *kcontrol,
++				     struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *codec = snd_soc_kcontrol_component(kcontrol);
++	struct tegra186_dspk *dspk = snd_soc_component_get_drvdata(codec);
++
++	ucontrol->value.enumerated.item[0] = dspk->osr_val;
++
++	return 0;
++}
++
++static int tegra186_dspk_put_osr_val(struct snd_kcontrol *kcontrol,
++				     struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *codec = snd_soc_kcontrol_component(kcontrol);
++	struct tegra186_dspk *dspk = snd_soc_component_get_drvdata(codec);
++	unsigned int value = ucontrol->value.enumerated.item[0];
++
++	if (value == dspk->osr_val)
++		return 0;
++
++	dspk->osr_val = value;
++
++	return 1;
++}
++
++static int tegra186_dspk_get_pol_sel(struct snd_kcontrol *kcontrol,
++				     struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *codec = snd_soc_kcontrol_component(kcontrol);
++	struct tegra186_dspk *dspk = snd_soc_component_get_drvdata(codec);
++
++	ucontrol->value.enumerated.item[0] = dspk->lrsel;
++
++	return 0;
++}
++
++static int tegra186_dspk_put_pol_sel(struct snd_kcontrol *kcontrol,
++				     struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *codec = snd_soc_kcontrol_component(kcontrol);
++	struct tegra186_dspk *dspk = snd_soc_component_get_drvdata(codec);
++	unsigned int value = ucontrol->value.enumerated.item[0];
++
++	if (value == dspk->lrsel)
++		return 0;
++
++	dspk->lrsel = value;
++
++	return 1;
++}
++
++static int tegra186_dspk_get_ch_sel(struct snd_kcontrol *kcontrol,
++				    struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *codec = snd_soc_kcontrol_component(kcontrol);
++	struct tegra186_dspk *dspk = snd_soc_component_get_drvdata(codec);
++
++	ucontrol->value.enumerated.item[0] = dspk->ch_sel;
++
++	return 0;
++}
++
++static int tegra186_dspk_put_ch_sel(struct snd_kcontrol *kcontrol,
++				    struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *codec = snd_soc_kcontrol_component(kcontrol);
++	struct tegra186_dspk *dspk = snd_soc_component_get_drvdata(codec);
++	unsigned int value = ucontrol->value.enumerated.item[0];
++
++	if (value == dspk->ch_sel)
++		return 0;
++
++	dspk->ch_sel = value;
++
++	return 1;
++}
++
++static int tegra186_dspk_get_mono_to_stereo(struct snd_kcontrol *kcontrol,
++					    struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *codec = snd_soc_kcontrol_component(kcontrol);
++	struct tegra186_dspk *dspk = snd_soc_component_get_drvdata(codec);
++
++	ucontrol->value.enumerated.item[0] = dspk->mono_to_stereo;
++
++	return 0;
++}
++
++static int tegra186_dspk_put_mono_to_stereo(struct snd_kcontrol *kcontrol,
++					    struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *codec = snd_soc_kcontrol_component(kcontrol);
++	struct tegra186_dspk *dspk = snd_soc_component_get_drvdata(codec);
++	unsigned int value = ucontrol->value.enumerated.item[0];
++
++	if (value == dspk->mono_to_stereo)
++		return 0;
++
++	dspk->mono_to_stereo = value;
++
++	return 1;
++}
++
++static int tegra186_dspk_get_stereo_to_mono(struct snd_kcontrol *kcontrol,
++					    struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *codec = snd_soc_kcontrol_component(kcontrol);
++	struct tegra186_dspk *dspk = snd_soc_component_get_drvdata(codec);
++
++	ucontrol->value.enumerated.item[0] = dspk->stereo_to_mono;
+ 
+ 	return 0;
+ }
+ 
++static int tegra186_dspk_put_stereo_to_mono(struct snd_kcontrol *kcontrol,
++					    struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *codec = snd_soc_kcontrol_component(kcontrol);
++	struct tegra186_dspk *dspk = snd_soc_component_get_drvdata(codec);
++	unsigned int value = ucontrol->value.enumerated.item[0];
++
++	if (value == dspk->stereo_to_mono)
++		return 0;
++
++	dspk->stereo_to_mono = value;
++
++	return 1;
++}
++
+ static int __maybe_unused tegra186_dspk_runtime_suspend(struct device *dev)
+ {
+ 	struct tegra186_dspk *dspk = dev_get_drvdata(dev);
+@@ -278,17 +390,19 @@ static const struct soc_enum tegra186_dspk_lrsel_enum =
+ static const struct snd_kcontrol_new tegrat186_dspk_controls[] = {
+ 	SOC_SINGLE_EXT("FIFO Threshold", SND_SOC_NOPM, 0,
+ 		       TEGRA186_DSPK_RX_FIFO_DEPTH - 1, 0,
+-		       tegra186_dspk_get_control, tegra186_dspk_put_control),
++		       tegra186_dspk_get_fifo_th, tegra186_dspk_put_fifo_th),
+ 	SOC_ENUM_EXT("OSR Value", tegra186_dspk_osr_enum,
+-		     tegra186_dspk_get_control, tegra186_dspk_put_control),
++		     tegra186_dspk_get_osr_val, tegra186_dspk_put_osr_val),
+ 	SOC_ENUM_EXT("LR Polarity Select", tegra186_dspk_lrsel_enum,
+-		     tegra186_dspk_get_control, tegra186_dspk_put_control),
++		     tegra186_dspk_get_pol_sel, tegra186_dspk_put_pol_sel),
+ 	SOC_ENUM_EXT("Channel Select", tegra186_dspk_ch_sel_enum,
+-		     tegra186_dspk_get_control, tegra186_dspk_put_control),
++		     tegra186_dspk_get_ch_sel, tegra186_dspk_put_ch_sel),
+ 	SOC_ENUM_EXT("Mono To Stereo", tegra186_dspk_mono_conv_enum,
+-		     tegra186_dspk_get_control, tegra186_dspk_put_control),
++		     tegra186_dspk_get_mono_to_stereo,
++		     tegra186_dspk_put_mono_to_stereo),
+ 	SOC_ENUM_EXT("Stereo To Mono", tegra186_dspk_stereo_conv_enum,
+-		     tegra186_dspk_get_control, tegra186_dspk_put_control),
++		     tegra186_dspk_get_stereo_to_mono,
++		     tegra186_dspk_put_stereo_to_mono),
+ };
+ 
+ static const struct snd_soc_component_driver tegra186_dspk_cmpnt = {
 -- 
 2.7.4
 
