@@ -2,126 +2,74 @@ Return-Path: <SRS0=e+ka=QF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8724BC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 07:14:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1B52C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 07:17:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 130A0611CC
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 07:14:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 130A0611CC
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=nvidia.com
+	by mail.kernel.org (Postfix) with ESMTPS id 4A227611CC
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 07:17:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4A227611CC
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7650518EA;
-	Thu, 18 Nov 2021 08:13:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7650518EA
+	by alsa0.perex.cz (Postfix) with ESMTPS id A4F361778;
+	Thu, 18 Nov 2021 08:16:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A4F361778
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637219669;
-	bh=E6AhRpqQbQd65CYE2LXCq5rhy4XbPfDm/ZibikuaNGU=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=ZfdYeQfrWM7xrqlkxrFLlVX+Dp+ROIXMCy7RqwpuLvgAY5RsGLP1dnUxlSNhZ2IJP
-	 RP67dOkonu06Pk1r2UXmm9cs5qTctbiUiDe688wTBCLqlRVmWWINj84RaXM0fk2MH2
-	 OL5sPJwZdzSHx6xzeEgjcX7XmRHyhOFz3ZdvvkPw=
+	s=default; t=1637219864;
+	bh=eBYeB7C0DOPdgTOh60wuOVws3z5Mpw0rBuc5mVmNnng=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Qgr6DasDxHuZpDR/hObPUZS9n/c7Qn2dW7tKN7lcGyhEz5itCDmblMiHbuFkv6EMs
+	 XLmgL4qUyvS7cujwyS6HdFw3KglPiQE3svBuR2JzjgZC5+VQHZ64qr+Ba9X+XFtlSj
+	 XBwPgcklZslNocfOdXFDdFL5ykLiQDaNnJPhsJeg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1F98BF80506;
-	Thu, 18 Nov 2021 08:10:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 12D04F80115;
+	Thu, 18 Nov 2021 08:16:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4E958F8010B; Thu, 18 Nov 2021 08:09:36 +0100 (CET)
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com
- (mail-mw2nam12on2070.outbound.protection.outlook.com [40.107.244.70])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 204FAF8026D; Thu, 18 Nov 2021 08:16:52 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 28366F804EC
- for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2021 08:07:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 28366F804EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3C708F800FA
+ for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2021 08:16:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3C708F800FA
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com
- header.b="MmidvVk2"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AQMGw3vgKGErqf91glFTEEftoXQY9rTBOA6Sw9R8/YuEAaLGf2uoU7uKetATuNdmcFE8Inhow+AGwjMdVKqMwsCptK0HdrCNfiMmQVHNlxa35oJX1EnWCtFRw6rrx+DaVuf1iec8newC2d1YTyvi9MffHnfXCnQn2ENph1iYTIuYLKNA6WZwIWl4gzBQTdOaosJszyzOtCS6t7KzTIau+wB4H4t9hDzE52qsNS5AS1yGFqFzwGw238Kvz+HvPWG2DjTagbgQM43jyS4fstg1W8R//INuMBQgecVSTAgnppTp5phqxxmLa2Jfnf+fjkD9d4WIPADkSVjZ/73uudARLg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NysmW/bYkHMp5jSpr73mAkiNXPnkdpZRKkpN5nWiwI4=;
- b=cWoJlnk5gkkpG9VLrExeDNaqo7mxAsHNPLwGS3CCxu4bTWeO/lv9gpcBmYkLIUSmveqdSA5lvvs7JxfQZpuJuBk5qQwid1H7cwdZEuM61x7o/H++88fiYybaTTTymnCqByc25s1LzUUGaLgzkwe2ivlhzeS0R7TVwwno+JXM10U5h8KrHTJRIig/Ad8wHjWqV660muaMZT4url9xl4nUzE3vdw5c0/WZXGDm1mvYWrY2M0EWRH7+oAorminF/dV5oeESjN+phNXWBG7Jb60k5eCJe9YCY05v0EkGMEoEDbj5GApp0JcpQtB899+bEY+g+EH1IZfu6U2W6qDM7YdN6A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=alsa-project.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NysmW/bYkHMp5jSpr73mAkiNXPnkdpZRKkpN5nWiwI4=;
- b=MmidvVk2YI+w/n2CI3FaKd0wQmPzIeDs5BlaxbgEYdtrDxXiaX50sRV5voixot4W5awqAwP0L6d9Eor2d5oHRpN6sC7/PIdXSm05t8afEAUFJVZA2NgCAAGtATu4dpjAr1SnY44y+cXUdPzxeIb0J34bghe9ltQcEIrgrhnZ0C/NsPhD/Z7DwnDy1OrnRlNfS762vFuTgvCdyfYHz6MiIQRNnBxblXKbH03/D5258Y3t6Qb4H0/6fNpVLPFLhXiynPYyg8n1Dy2DPlZQwLWizIZXZb0qChMJBdbbsYNb37Lp24yEvERmGYEFoofIT8PSoz5P346O8N++peQd95JZbg==
-Received: from MW2PR2101CA0016.namprd21.prod.outlook.com (2603:10b6:302:1::29)
- by DM6PR12MB4529.namprd12.prod.outlook.com (2603:10b6:5:2ab::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.21; Thu, 18 Nov
- 2021 07:07:42 +0000
-Received: from CO1NAM11FT005.eop-nam11.prod.protection.outlook.com
- (2603:10b6:302:1:cafe::4b) by MW2PR2101CA0016.outlook.office365.com
- (2603:10b6:302:1::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.11 via Frontend
- Transport; Thu, 18 Nov 2021 07:07:42 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT005.mail.protection.outlook.com (10.13.174.147) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4713.20 via Frontend Transport; Thu, 18 Nov 2021 07:07:40 +0000
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 18 Nov
- 2021 07:07:39 +0000
-Received: from audio.nvidia.com (172.20.187.5) by mail.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
- Transport; Thu, 18 Nov 2021 07:07:36 +0000
-From: Sameer Pujar <spujar@nvidia.com>
-To: <broonie@kernel.org>, <lgirdwood@gmail.com>, <perex@perex.cz>,
- <tiwai@suse.com>
-Subject: [PATCH v3 05/16] ASoC: tegra: Fix wrong value type in SFC
-Date: Thu, 18 Nov 2021 12:37:00 +0530
-Message-ID: <1637219231-406-6-git-send-email-spujar@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1637219231-406-1-git-send-email-spujar@nvidia.com>
-References: <1637219231-406-1-git-send-email-spujar@nvidia.com>
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="OPww1mXo"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="Ge+5kTlg"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id A6823212BF
+ for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2021 07:16:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1637219799; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=/8HnlUme2QlQFQnUTGiDiitOkHxf2xyBk2c0dUNGzL0=;
+ b=OPww1mXodcHsVU9XA5dlx/g62mcFhJ4w7JkDLvbZ99hsw3ciJJHvWlO7XJajVNQv1hL9z3
+ dMId/dU6K28uTlMrVNdCemibEeqTOP14jAnI67G9xxmKdwV77WZuxVB3BII13TFUpegfG6
+ IuuKfzWBb6b9f9dsiWL840n4cz8hurg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1637219799;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=/8HnlUme2QlQFQnUTGiDiitOkHxf2xyBk2c0dUNGzL0=;
+ b=Ge+5kTlg5qlAbMqln9dXXwfe/IID86JrOmkK/otDSDuEFbyPgK6sMByb6v0kRYSAMZ5b07
+ hFB2ujw0/lEGU4DQ==
+Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 93F60A3B87;
+ Thu, 18 Nov 2021 07:16:39 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: hda/realtek: Fix LED on HP ProBook 435 G7
+Date: Thu, 18 Nov 2021 08:16:36 +0100
+Message-Id: <20211118071636.14738-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ce036a89-e927-4dd3-f971-08d9aa621c34
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4529:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB4529162838C0254B85641D6AA79B9@DM6PR12MB4529.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1751;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2PsYRA2ET/TWIXD08bJxTZ2SxtPhS9nSlwePdKeiHc3OoSfqQISt0tb+HgsM5aq/qZbW1huJ21IIXz+Eo/Q68/R8Jzg62UsNrlZTLY4nlvxJgCCHbzvPKYk39EalujqNC6PRUPA9WkvtKQ5TfVyRIrFDyhhIvsNP21/o+M4KnBHUGC0ePVlKBTzyN1FME253fYokIp+qg39YMIIGFyYjhVwzrmzzFkOcFyORQtX4keljRLi7w3bVwUbu0KUQuvudpMA4P+iO0Qpm/wiWZkq/3bTE7IiKUFtKNiTMMylg16WhaSWe6qu0Q/m9hWfjR+K9rJf53k+EUxNMb+NfZPwH4Uoh84c7+VmPHPjAogdn7WQa9Zao6BrdgIJeX6LRGerz2odoEmCAC0JSbMELfCAGBCx93NG+ScOjyXBzPjWu7vz77fEkh30bcZczw+ExFQ7MWBh3uBsNX65xYmN/m9LgoD51YPKdomApjIOWkdhtP/EiHUy/IWAX0W9/TYJQTVMF1lfNDizle0iGqWFzUrCXL5IsnFo1toATCnk02DeFEs3qeRa5xs7X+NNYpUn16q+sfyjhaECaaXNKNBNQ2PPcppIv1jitD2J5R5YHG9wPpbBvbGpor6lEFlBShxXK2JFcZLrha+YS+EYKaeEtnNy8qkIiXT5C+s/W79yYP0NqBkr8ZhjjbhEeU0mwsk1MUGH7RC8DeMxhh07/OM0XsdFbQw==
-X-Forefront-Antispam-Report: CIP:216.228.112.34; CTRY:US; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:mail.nvidia.com; PTR:schybrid03.nvidia.com; CAT:NONE;
- SFS:(4636009)(46966006)(36840700001)(426003)(86362001)(26005)(8676002)(508600001)(36906005)(8936002)(2616005)(2906002)(316002)(47076005)(83380400001)(356005)(110136005)(7636003)(54906003)(5660300002)(36860700001)(7696005)(107886003)(4326008)(186003)(70586007)(336012)(82310400003)(70206006)(6666004)(36756003);
- DIR:OUT; SFP:1101; 
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2021 07:07:40.5227 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ce036a89-e927-4dd3-f971-08d9aa621c34
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a; Ip=[216.228.112.34];
- Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT005.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4529
-Cc: alsa-devel@alsa-project.org, Sameer Pujar <spujar@nvidia.com>,
- linux-kernel@vger.kernel.org, jonathanh@nvidia.com, thierry.reding@gmail.com,
- linux-tegra@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -137,66 +85,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The enum controls are expected to use enumerated value type.
-Update relevant references in control get/put callbacks.
+HP ProBook 435 G7 (SSID 103c:8735) needs the similar quirk as another
+HP ProBook for enabling the mute and the mic-mute LEDs.
 
-Fixes: b2f74ec53a6c ("ASoC: tegra: Add Tegra210 based SFC driver")
-Suggested-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=215021
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/tegra/tegra210_sfc.c | 21 ++++++++++++---------
- 1 file changed, 12 insertions(+), 9 deletions(-)
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/tegra/tegra210_sfc.c b/sound/soc/tegra/tegra210_sfc.c
-index dc477ee..cb592ef 100644
---- a/sound/soc/tegra/tegra210_sfc.c
-+++ b/sound/soc/tegra/tegra210_sfc.c
-@@ -3251,16 +3251,16 @@ static int tegra210_sfc_get_control(struct snd_kcontrol *kcontrol,
- 	struct tegra210_sfc *sfc = snd_soc_component_get_drvdata(cmpnt);
- 
- 	if (strstr(kcontrol->id.name, "Input Stereo To Mono"))
--		ucontrol->value.integer.value[0] =
-+		ucontrol->value.enumerated.item[0] =
- 			sfc->stereo_to_mono[SFC_RX_PATH];
- 	else if (strstr(kcontrol->id.name, "Input Mono To Stereo"))
--		ucontrol->value.integer.value[0] =
-+		ucontrol->value.enumerated.item[0] =
- 			sfc->mono_to_stereo[SFC_RX_PATH];
- 	else if (strstr(kcontrol->id.name, "Output Stereo To Mono"))
--		ucontrol->value.integer.value[0] =
-+		ucontrol->value.enumerated.item[0] =
- 			sfc->stereo_to_mono[SFC_TX_PATH];
- 	else if (strstr(kcontrol->id.name, "Output Mono To Stereo"))
--		ucontrol->value.integer.value[0] =
-+		ucontrol->value.enumerated.item[0] =
- 			sfc->mono_to_stereo[SFC_TX_PATH];
- 
- 	return 0;
-@@ -3271,16 +3271,19 @@ static int tegra210_sfc_put_control(struct snd_kcontrol *kcontrol,
- {
- 	struct snd_soc_component *cmpnt = snd_soc_kcontrol_component(kcontrol);
- 	struct tegra210_sfc *sfc = snd_soc_component_get_drvdata(cmpnt);
--	int value = ucontrol->value.integer.value[0];
- 
- 	if (strstr(kcontrol->id.name, "Input Stereo To Mono"))
--		sfc->stereo_to_mono[SFC_RX_PATH] = value;
-+		sfc->stereo_to_mono[SFC_RX_PATH] =
-+			ucontrol->value.enumerated.item[0];
- 	else if (strstr(kcontrol->id.name, "Input Mono To Stereo"))
--		sfc->mono_to_stereo[SFC_RX_PATH] = value;
-+		sfc->mono_to_stereo[SFC_RX_PATH] =
-+			ucontrol->value.enumerated.item[0];
- 	else if (strstr(kcontrol->id.name, "Output Stereo To Mono"))
--		sfc->stereo_to_mono[SFC_TX_PATH] = value;
-+		sfc->stereo_to_mono[SFC_TX_PATH] =
-+			ucontrol->value.enumerated.item[0];
- 	else if (strstr(kcontrol->id.name, "Output Mono To Stereo"))
--		sfc->mono_to_stereo[SFC_TX_PATH] = value;
-+		sfc->mono_to_stereo[SFC_TX_PATH] =
-+			ucontrol->value.enumerated.item[0];
- 	else
- 		return 0;
- 
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 701c80ed83dc..9ce7457533c9 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -8665,6 +8665,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x8728, "HP EliteBook 840 G7", ALC285_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8729, "HP", ALC285_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8730, "HP ProBook 445 G7", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
++	SND_PCI_QUIRK(0x103c, 0x8735, "HP ProBook 435 G7", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
+ 	SND_PCI_QUIRK(0x103c, 0x8736, "HP", ALC285_FIXUP_HP_GPIO_AMP_INIT),
+ 	SND_PCI_QUIRK(0x103c, 0x8760, "HP", ALC285_FIXUP_HP_MUTE_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x877a, "HP", ALC285_FIXUP_HP_MUTE_LED),
 -- 
-2.7.4
+2.31.1
 
