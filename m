@@ -2,83 +2,82 @@ Return-Path: <SRS0=e+ka=QF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AE748C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 21:29:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 690BFC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 21:30:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4D879611F2
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 21:29:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4D879611F2
+	by mail.kernel.org (Postfix) with ESMTPS id 3763B611F2
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 21:30:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3763B611F2
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DBD1017DC;
-	Thu, 18 Nov 2021 22:28:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DBD1017DC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4A043181A;
+	Thu, 18 Nov 2021 22:29:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A043181A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637270985;
-	bh=8iKw5QkZbxsMaxhNKhrSnGAxCXUKA3vSMsTrmdK45L0=;
+	s=default; t=1637271033;
+	bh=Zpeu6ZkjsOB/IR7WievPyl34AspvbWUm9jW30k7IynI=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=O3laSuJmfDqaAu7fB0iEiirJUo5kyRI1bYHYBZ7/oO+h8Z45v3taZw0YxLiz6ERPY
-	 tXyDx/hMdUQ9yx4YgThuQo7WKN8ZfRy4JkFJTGNh0EmjItkPhvmVxgQZH6z1WdJ/NL
-	 6FqMFjwEFBwxVPUQrs5JsVH19g+vaCbMZFohK74o=
+	b=ARIuVEAfWpUPfg6dSfmUyW4m1ZyVIYabIoYVCg90F0GS45h4hQ9H05jMnKhGUR6Qp
+	 ykYJ3CHw9xkl/Z3+/52s4ia4D0NLt3hS5rX8lJnnw82Lw1Yl8409mwDc7pAzezpGvI
+	 nSyLGXTRkmbNXPYndEyXSJIfmjQjIXKZX+bQeZCU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 21B52F8026D;
-	Thu, 18 Nov 2021 22:28:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2F507F800FA;
+	Thu, 18 Nov 2021 22:28:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 429FBF80272; Thu, 18 Nov 2021 22:28:33 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id B6CB0F802C4; Thu, 18 Nov 2021 22:28:40 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B6FE7F800FA
- for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2021 22:28:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6FE7F800FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0D270F800FA
+ for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2021 22:28:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0D270F800FA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="cp3egkEr"; 
+ header.b="bl23aXzd"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="pafceiVa"
+ header.b="GkgBJ+6A"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 68F5521637;
- Thu, 18 Nov 2021 21:28:21 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 4B8211FD3A;
+ Thu, 18 Nov 2021 21:28:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1637270901; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1637270914; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Tj2qDPPH7/fdXs4s6fVfZvvEYvOEPb6jEe+qwBqRPH8=;
- b=cp3egkErElQpA+Ra7uYswz6PK0JERQXemVSktGQsv51ws29izSgOQCpgh45l1WaDKe6oXA
- 8GWSJ2sL2rkR0hWw8pX6gQ8btoYTXzeWV5YgbkegDJ5OIN4rH2Z06G3CcRat/kQ5vsu6zD
- 0Tpd8VWy1DwOkpYTTwrrmlZbpYO8axM=
+ bh=mCg/fYvn7HEi3jvpU+8oZGb1ipP0O1/RtGyLKIrM30M=;
+ b=bl23aXzdZqzctjnlTtlb+9NtfGm2RfCuR/JLx7qk9jV1crfUu+F1nVIJuk7XbHgW1hAy/Z
+ +V9+gnBWxipXA56qB93+uusd24kYmfBif1bmI2QWgWt7pyDfh8ynPs5hyU9gsgT61t1BZ7
+ 19xW0v4O/j8nnsORKgtovK3bEAJyYvQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1637270901;
+ s=susede2_ed25519; t=1637270914;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Tj2qDPPH7/fdXs4s6fVfZvvEYvOEPb6jEe+qwBqRPH8=;
- b=pafceiVa6nM/LRnWYfPESgkuUKJYb65IQix2SV4X5OsVD3au22KjfuJoo/zym6uLaAKgND
- H0295qba0vh5VsAQ==
+ bh=mCg/fYvn7HEi3jvpU+8oZGb1ipP0O1/RtGyLKIrM30M=;
+ b=GkgBJ+6A9MHkA52C4Mih3P26gzqXUBePXu4hs3k0x2r1J2F6RGryzJC2yL0A2Y+YT0g+E+
+ ip9q8ubldwUiAtAg==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 5B2CBA3B83;
- Thu, 18 Nov 2021 21:28:21 +0000 (UTC)
-Date: Thu, 18 Nov 2021 22:28:21 +0100
-Message-ID: <s5hczmxgnm2.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id 4493BA3B81;
+ Thu, 18 Nov 2021 21:28:34 +0000 (UTC)
+Date: Thu, 18 Nov 2021 22:28:34 +0100
+Message-ID: <s5hbl2hgnlp.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Heiner Kallweit <hkallweit1@gmail.com>
-Subject: Re: Warning due to "ALSA: hda: intel: More comprehensive PM runtime
- setup for controller driver"
-In-Reply-To: <d9d76980-966a-e031-70d1-3254ba5be5eb@gmail.com>
-References: <d9d76980-966a-e031-70d1-3254ba5be5eb@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [GIT PULL] ASoC fixes for v5.16-rc1
+In-Reply-To: <20211118172529.7523861284@mail.kernel.org>
+References: <20211118172529.7523861284@mail.kernel.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Linux PM <linux-pm@vger.kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,37 +93,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 18 Nov 2021 21:33:34 +0100,
-Heiner Kallweit wrote:
+On Thu, 18 Nov 2021 18:25:13 +0100,
+Mark Brown wrote:
 > 
-> I get the following warning caused by 4f66a9ef37d3 ("ALSA: hda: intel: More
-> comprehensive PM runtime setup for controller driver"):
+> The following changes since commit 6195eb15f6d60dd92d1644dc11f1c1c2e84ebfeb:
 > 
-> snd_hda_intel 0000:00:1f.3: Unbalanced pm_runtime_enable!
+>   Merge series "Multiple headphone codec driver support" from Brent Lu <brent.lu@intel.com>: (2021-10-29 21:53:41 +0100)
 > 
-> Not sure how this patch was tested because the warning is obvious.
-> The patch doesn't consider what the PCI sub-system does with regard to
-> RPM. Have a look at pci_pm_init().
+> are available in the Git repository at:
 > 
-> I'd understand to add the call to pm_runtime_dont_use_autosuspend(),
-> but for all other added calls I see no justification.
+>   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v5.16-rc1
 > 
-> If being unsure about when to use which RPM call best involve
-> linux-pm@vger.kernel.org.
+> for you to fetch changes up to 424fe7edbed18d47f7b97f7e1322a6f8969b77ae:
+> 
+>   ASoC: stm32: i2s: fix 32 bits channel length without mclk (2021-11-17 13:04:38 +0000)
+> 
+> ----------------------------------------------------------------
+> ASoC: Fixes for v5.16
+> 
+> A relatively large collection of fixes that came in since the merge
+> window, though a lot of this is just a collection of new machine quirks
+> for x86 platforms.
 
-Thanks for the notice.  It's been through Intel CI and tests on a few
-local machines, maybe we haven't checked carefully those errors but
-only concentrated on the other issues, as it seems.
+Thanks, pulled now.
 
-There were two problems: one was the runtime PM being kicked off even
-during the PCI driver remove call, and another was the proper runtime
-PM setup after re-binding.
-
-For avoiding the former, only the pm_runtime_forbid() (and maybe
-pm_runtime_dont_use_autosuspend(), too) would suffice?  Also, for PCI
-device, no need for pm_runtime_set_supended() at remove, right?
-
-
-thanks,
 
 Takashi
