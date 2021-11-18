@@ -2,97 +2,94 @@ Return-Path: <SRS0=e+ka=QF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4EEE0C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 07:09:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B795BC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 07:10:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C9A546115C
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 07:09:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C9A546115C
+	by mail.kernel.org (Postfix) with ESMTPS id 314896138D
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 07:10:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 314896138D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 32DA118C0;
-	Thu, 18 Nov 2021 08:09:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32DA118C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8DEE218D3;
+	Thu, 18 Nov 2021 08:09:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8DEE218D3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637219396;
-	bh=zHWP1ApygB2X35SYSRxdWP66XTHpopMj2Idhkvxi+EQ=;
+	s=default; t=1637219415;
+	bh=+DpzkZ1BTUPljphqsfad606UEJU7zSUanXqfa6IK87M=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bWlQDBHRw0KPk5Rn3/xDUKUB7d2zD8yyAW1fTSrLzy8I/oy36JXkE0umLjFXLr6lN
-	 xppcMQe9LXDSIVYCA3Q0zCjwaY+FKwdDqXDIcbm+JuScKz7y8UWt4S2WJpSweUljmC
-	 iH3VVhKA4p4SwGFJ2St763kYdvJV/Jo1SJgE9sgE=
+	b=kcSQQCvhMksclnOBQG8z+KbW4zr/xPFODHEzYyuXRjl0nLs5Xu1T82fyVET9r6Jrs
+	 /Z6sZXufkG/OWn2Bztx3Nxqp1u78Tps0dajYVjRcQtifPd8cw/LhhueF8HN7FWcgSB
+	 mA+fFl4e4lvEi6313k/4tPQjcdMMOS5uJA6CADEY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 10291F80508;
-	Thu, 18 Nov 2021 08:08:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AF10CF80516;
+	Thu, 18 Nov 2021 08:08:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 51E91F80507; Thu, 18 Nov 2021 08:07:55 +0100 (CET)
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com
- (mail-mw2nam10on2074.outbound.protection.outlook.com [40.107.94.74])
+ id 4B874F80508; Thu, 18 Nov 2021 08:08:00 +0100 (CET)
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com
+ (mail-sn1anam02on2080.outbound.protection.outlook.com [40.107.96.80])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C3170F80115
- for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2021 08:07:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C3170F80115
+ by alsa1.perex.cz (Postfix) with ESMTPS id 500ABF804DF
+ for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2021 08:07:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 500ABF804DF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com
- header.b="RUpYTkF1"
+ header.b="D1RBVNqD"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bwVAEf2U3qII/jGdApytODATtMpdu4M6LXOin0xBJcsPR706fu2m0SrCnXifmVrPyCr/SzrEAuSwsr3AauFAjEILby6PjWCy4ALlkS33hqZHoNYIjyWY0UWLZfX4DXjVoQ4WTYKjqA0wZ+rU1yyrwoVBgOm31korrWFiEDMkQc8hGQTj8oJjEjqDw3ZegHhINIPHrnzT3fabK7TXTjNp/3fVtpsINDiuoIkM+fT7pV+8/npVdzfbkCTstvFzxiKcBM5abxFXJ8foxlwWwP5yMCYOAc+6oY0lh+lz9est/1DPXveDdwxCBu9OPHF53dkiN44nKZaUCcURr8QCQXqYFA==
+ b=brMnGcqaEfFfxNaHZeuwVi/bNoXkcXPkGOwUOXI+sDGm7NGpS7fb89Dzu6fSqiUM8iCJDhf+P2Eybt68F+893WlrvWG+QKyefQ1V0JveATmdmp54zwRBxPTD+3CyiKG6sm+VuVRG9rpAUORWzT1we8paTZI41HZwnrt1BJP2fwtkHjuQc2ooQqF+FFBzAeKlEWZ5klwOUKqBoB+Sgq/efEwuaUUq66BdBoHoS6TufVMwZSkqY1za8lGTPUKzwTIwMhBcj0eYpFQ8TdVs+3m+BZ3QRE8PJd57/awwzyr8AoBO3jxDZVItmN70Zus7s6VFNRT09x1tJPoJZAfS29JODg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sM15j5fzhraL0w4q+XcwRI6QqWGkPBkP5384VGUNAKA=;
- b=i5KSQ8BXOr9/fUVeltMkESwKgRjyG8yCL402Rghz1dHuu+H/JKws2kry9ZxY3yO4yoqhWxV6dsD4qgmdTJPvOQDbrBPzPdFvX85a0rwE/a6yWMkhWWisUGOuTZ1rs4ebCtnkrUFh+ffNY4k+x9srDBb4QggLpP+4uqdwqpawzGxBShdW05DUK8tjNcLcuueFUT72lYLVAyPHw7/QE2AL2BEarHAG2zjnvYKS5Hkf1vu2F/foAM7UlqAeYtKOAHIp9Dr3GK+aZDT412yW6FD5YB3RI2oMNcbyFO4hBebdMOl39VT1gElpH/S1RV5eoqH6sc5vgY0XJXhHvQkYaq8SqQ==
+ bh=yZb6l6gEMXvJ2FiONZI9dL+tCCHZLLekQ7JCKCcfQho=;
+ b=iISs9W4lh9PX3Sd877R75eYbZAmYKIEg4lBMs9c3cVCAtmUE7wL2e5j9EYoYEXm6fUtrbJo4xKF9MB/cga1PgkVDTnv726AIuHR/5gK426VY9cgNN7XHcylkl7aWNzzKBw0dVfNRkrGhFMLsP3zN5RfAOK1S2K6sDPhl0MS5HgchSEgQJLSw4EpqJHh74hs/msa7Rf7l/z03zCFTcWFnJjrpjYS/Xv+We2i/S9/oWZEN7Rx8CXZ5oPlEXJP4BJgAakN78owEYcR1WF22qL04kRHzyv03p+FcZn3UhTT80BMaONYD7Ekhc+IdR+w6eES0/raNnmol49I8YFkJTYbUwQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=perex.cz smtp.mailfrom=nvidia.com;
+ 216.228.112.32) smtp.rcpttodomain=alsa-project.org smtp.mailfrom=nvidia.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=nvidia.com; dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sM15j5fzhraL0w4q+XcwRI6QqWGkPBkP5384VGUNAKA=;
- b=RUpYTkF1mmQV8FG7zeV6zU5UmUusWF4ut3835dDW6gZsuURIU1GbBIjGfnfj6rw5OB/WHdkySVQfv/jlaZiTgYeABBFFTjfBPKR3s7raeQXF3ueiUd/GvkH2fHZDd4dA/iTWK/Up4jhLvDfO7o+81OVWKUDVlgPj6cYaH7h77Sogb6cLCRMTlsUZjX97kKU2XtfTYJBiIrcChKgD/Esk5nh55RlJ/eqrzN8+lrWTe585x310MPqAuZEwkQPP0NUAV1kJP699eUcfihfBrNRWj1cQf9NqejMuOACAAWEIpbGQnwtnT6UBG7qNL8kgK+wfNdmKI5JJhPSum8+Ps8kswg==
-Received: from MW2PR2101CA0023.namprd21.prod.outlook.com (2603:10b6:302:1::36)
- by DM6PR12MB3882.namprd12.prod.outlook.com (2603:10b6:5:149::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.27; Thu, 18 Nov
- 2021 07:07:38 +0000
-Received: from CO1NAM11FT005.eop-nam11.prod.protection.outlook.com
- (2603:10b6:302:1:cafe::26) by MW2PR2101CA0023.outlook.office365.com
- (2603:10b6:302:1::36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.11 via Frontend
- Transport; Thu, 18 Nov 2021 07:07:38 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ bh=yZb6l6gEMXvJ2FiONZI9dL+tCCHZLLekQ7JCKCcfQho=;
+ b=D1RBVNqDCFQnfyLl3CHePEAmP5MZdjyUL0n0vkxK8ez4blHeE0pam7k+aneRYfvUZkV+tW3QCZUNdCVhl5M8/ZsbOwOmgAtx8sh6mJQ7FmkBFI6IqdZKp8JXHqW/OmI9hLPmZ1zqtaBYJyYzdiZLRjsaPEotNJLZ/ogKZ7j37xWwSwMHChNg2TWJU+rLsseIb6UOw3JK7uUTrtnTzdFoVa4PD/oYtZ7a2Ay/2IGdW9wQGPrnrnB1ki4HREfuLTv7wPQDHsNBnxrPBrz6O2CVF3r1wM2FUxpgTdIDNymH8jHXD0RXl1JC00eWwDauUIxCidcJel6hjvCa/SgboW+pSQ==
+Received: from BN6PR1201CA0015.namprd12.prod.outlook.com
+ (2603:10b6:405:4c::25) by BN8PR12MB4979.namprd12.prod.outlook.com
+ (2603:10b6:408:75::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19; Thu, 18 Nov
+ 2021 07:07:44 +0000
+Received: from BN8NAM11FT063.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:405:4c:cafe::cf) by BN6PR1201CA0015.outlook.office365.com
+ (2603:10b6:405:4c::25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19 via Frontend
+ Transport; Thu, 18 Nov 2021 07:07:44 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT005.mail.protection.outlook.com (10.13.174.147) with Microsoft SMTP
+ 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.32; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.32) by
+ BN8NAM11FT063.mail.protection.outlook.com (10.13.177.110) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4713.20 via Frontend Transport; Thu, 18 Nov 2021 07:07:37 +0000
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 18 Nov
- 2021 07:07:30 +0000
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 18 Nov
- 2021 07:07:30 +0000
+ 15.20.4713.20 via Frontend Transport; Thu, 18 Nov 2021 07:07:42 +0000
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 17 Nov
+ 2021 23:07:42 -0800
 Received: from audio.nvidia.com (172.20.187.5) by mail.nvidia.com
  (172.20.187.18) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
- Transport; Thu, 18 Nov 2021 07:07:27 +0000
+ Transport; Thu, 18 Nov 2021 07:07:39 +0000
 From: Sameer Pujar <spujar@nvidia.com>
 To: <broonie@kernel.org>, <lgirdwood@gmail.com>, <perex@perex.cz>,
  <tiwai@suse.com>
-Subject: [PATCH v3 02/16] ASoC: tegra: Fix wrong value type in I2S
-Date: Thu, 18 Nov 2021 12:36:57 +0530
-Message-ID: <1637219231-406-3-git-send-email-spujar@nvidia.com>
+Subject: [PATCH v3 06/16] ASoC: tegra: Fix wrong value type in MVC
+Date: Thu, 18 Nov 2021 12:37:01 +0530
+Message-ID: <1637219231-406-7-git-send-email-spujar@nvidia.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1637219231-406-1-git-send-email-spujar@nvidia.com>
 References: <1637219231-406-1-git-send-email-spujar@nvidia.com>
@@ -100,28 +97,28 @@ MIME-Version: 1.0
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 598ccb96-473f-4338-0993-08d9aa621a70
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3882:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB388226D408CDF4CFEAFDF2D9A79B9@DM6PR12MB3882.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:854;
+X-MS-Office365-Filtering-Correlation-Id: f89e23e9-bdc8-4bcb-117c-08d9aa621d8d
+X-MS-TrafficTypeDiagnostic: BN8PR12MB4979:
+X-Microsoft-Antispam-PRVS: <BN8PR12MB497928623F25F0CCCD72AB57A79B9@BN8PR12MB4979.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1284;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: yvcHil9Ye2PFtpnftZya1JeZk5IZBo07KkXIpUrJO23r509eUwmDSlTEGZltxAiLfUoZiCF2shNvFI7X2jwnOfsBS+hEVMHJldzZhKvmRITGQImTGMb44v6HdQWhaj5aFfus0BEq2pJzG68vsEAX6Tqg4p+KCO4OMb5x6tioomCcQPb6G0CBxwrS+x5BAT3OAvmbRoSIAGKksPqAp7PysOor3PzmJiaPwi0AtGXlCwjrbkKpF/eKhkFp3GpXY7XArMpeQuZIUMgVfv6ITX+m6pJu5j9rC2C5dzHUmgK4t2JzGJJHcooqwnCnmlBN6i+KuRjHUITYETMLe1YnEosKaz9WwPXN6+2L7vfkfnATRanrCtV0HHiyEaPYKASPv4JHFKLtC5fS8TGHD2wHtKx1I5v14xu0QQKiUU2F8LJxVqaNinmMCIkWByItn0TmWHXsiKOiRwrmYHXDZKVEnzrjIzM7WFjojDt/jJzRB9mrh2UFLkq0+wS4BQX6jYhtHqrx8kx7Ex07QOXo+RwKZWjlaYBEYH8xKS3J2ope7UtIu7TYV61iJw7oIrlUG76CTQpJ7DE1EX7KhdyTcjF5dlsHGBzLB0/uuZZmyP021OBAGknmaVaCdEe+SQO8BrorrMji6tcRZ0pqwZ1rgZ1/XxSz7Ot9f0jBqU8KJPIV7GZTUqT6PmN8pOFTBNxsiiq0lR5FcBRM80XZWKiFRDB/ZyjOxg==
-X-Forefront-Antispam-Report: CIP:216.228.112.34; CTRY:US; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:mail.nvidia.com; PTR:schybrid03.nvidia.com; CAT:NONE;
- SFS:(4636009)(36840700001)(46966006)(6666004)(83380400001)(36906005)(8676002)(86362001)(107886003)(356005)(54906003)(316002)(47076005)(186003)(70586007)(26005)(70206006)(36756003)(508600001)(4326008)(110136005)(2906002)(426003)(2616005)(8936002)(336012)(5660300002)(7636003)(82310400003)(7696005)(36860700001);
+X-Microsoft-Antispam-Message-Info: HYbrOme+4e0aSr2UIwski6gmO7CAYx+HCAw70bMW/cCWZM6/sQa0KMyklERNQEkaDccqXWJjanZ0Pz0dJXUrnXEggRsOX5Cj73TgtY683Wr60GknW3SnWlgucK3nIdUaTCNX4vpRiZummIRLvAZbcT838ZqOZx83OkVcqL02uI+32HWzbFrFL1D+7khaTEuX/c162OuQzGisLXuCVfIzvqytaboqMD20C/mUq13fqdq7vtGNTxQzNdeL1CdueHGaYmCwIfNqlGb7VXJPPNV2VVnPQpCFkehxQEcNed/pC0biNZHIxXCZruukbDcrjpzr4HkEWNkUlxU2pDCYuLY2Iw14VD3xLx3yeCDLIiB0MUdqSF6jTIaDDTELoJN2VzoI8MSIrWPNvpAwAOBhv13mqvPHvpnSE5J3cvFTCv5l4eVn7CXc1rOhiW5er8MpX7ELEZaaGIkcO8UL5a2tlXJoLn2vgP46OcPhBYPeQap4L3mTueAU/lABHufWjoX7lB4fMohI0YcXMBmwQuLoA+Ic5Gfcfh+uasUsjmaby3c57krgnRBBMbVhXE1Tg3VXZkiR+vDFTbPGONN5lgqo/0A9NofUPMEAAUhPNKtaIWAIJEVZQ5CP2r3ZJvjN5ZJNW8K2UI9D+ZKywez2xzohvBg1aDaAKYnEF0nAG6xwtQxH9DsjEGYBlUvWWj8b6cE4Z40pL8ioyKRClG8WIXulI7dreg==
+X-Forefront-Antispam-Report: CIP:216.228.112.32; CTRY:US; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:mail.nvidia.com; PTR:schybrid01.nvidia.com; CAT:NONE;
+ SFS:(4636009)(36840700001)(46966006)(86362001)(4326008)(5660300002)(356005)(36860700001)(54906003)(36756003)(8676002)(82310400003)(26005)(47076005)(6666004)(7636003)(110136005)(316002)(8936002)(508600001)(70586007)(7696005)(336012)(107886003)(186003)(426003)(2616005)(83380400001)(70206006)(2906002);
  DIR:OUT; SFP:1101; 
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2021 07:07:37.5013 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 598ccb96-473f-4338-0993-08d9aa621a70
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2021 07:07:42.7358 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: f89e23e9-bdc8-4bcb-117c-08d9aa621d8d
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a; Ip=[216.228.112.34];
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a; Ip=[216.228.112.32];
  Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT005.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT063.eop-nam11.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3882
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB4979
 Cc: alsa-devel@alsa-project.org, Sameer Pujar <spujar@nvidia.com>,
  linux-kernel@vger.kernel.org, jonathanh@nvidia.com, thierry.reding@gmail.com,
  linux-tegra@vger.kernel.org
@@ -143,102 +140,48 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 The enum controls are expected to use enumerated value type.
 Update relevant references in control get/put callbacks.
 
-Fixes: c0bfa98349d1 ("ASoC: tegra: Add Tegra210 based I2S driver")
+Fixes: e539891f9687 ("ASoC: tegra: Add Tegra210 based MVC driver")
 Suggested-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sameer Pujar <spujar@nvidia.com>
 ---
- sound/soc/tegra/tegra210_i2s.c | 42 ++++++++++++++++++++++++------------------
- 1 file changed, 24 insertions(+), 18 deletions(-)
+ sound/soc/tegra/tegra210_mvc.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/tegra/tegra210_i2s.c b/sound/soc/tegra/tegra210_i2s.c
-index 45f31cc..5c30461 100644
---- a/sound/soc/tegra/tegra210_i2s.c
-+++ b/sound/soc/tegra/tegra210_i2s.c
-@@ -317,24 +317,27 @@ static int tegra210_i2s_get_control(struct snd_kcontrol *kcontrol,
- {
- 	struct snd_soc_component *compnt = snd_soc_kcontrol_component(kcontrol);
- 	struct tegra210_i2s *i2s = snd_soc_component_get_drvdata(compnt);
--	long *uctl_val = &ucontrol->value.integer.value[0];
+diff --git a/sound/soc/tegra/tegra210_mvc.c b/sound/soc/tegra/tegra210_mvc.c
+index 7b9c700..b7e3170 100644
+--- a/sound/soc/tegra/tegra210_mvc.c
++++ b/sound/soc/tegra/tegra210_mvc.c
+@@ -275,7 +275,7 @@ static int tegra210_mvc_get_curve_type(struct snd_kcontrol *kcontrol,
+ 	struct snd_soc_component *cmpnt = snd_soc_kcontrol_component(kcontrol);
+ 	struct tegra210_mvc *mvc = snd_soc_component_get_drvdata(cmpnt);
  
- 	if (strstr(kcontrol->id.name, "Loopback"))
--		*uctl_val = i2s->loopback;
-+		ucontrol->value.integer.value[0] = i2s->loopback;
- 	else if (strstr(kcontrol->id.name, "FSYNC Width"))
--		*uctl_val = i2s->fsync_width;
-+		ucontrol->value.integer.value[0] = i2s->fsync_width;
- 	else if (strstr(kcontrol->id.name, "Capture Stereo To Mono"))
--		*uctl_val = i2s->stereo_to_mono[I2S_TX_PATH];
-+		ucontrol->value.enumerated.item[0] =
-+			i2s->stereo_to_mono[I2S_TX_PATH];
- 	else if (strstr(kcontrol->id.name, "Capture Mono To Stereo"))
--		*uctl_val = i2s->mono_to_stereo[I2S_TX_PATH];
-+		ucontrol->value.enumerated.item[0] =
-+			i2s->mono_to_stereo[I2S_TX_PATH];
- 	else if (strstr(kcontrol->id.name, "Playback Stereo To Mono"))
--		*uctl_val = i2s->stereo_to_mono[I2S_RX_PATH];
-+		ucontrol->value.enumerated.item[0] =
-+			i2s->stereo_to_mono[I2S_RX_PATH];
- 	else if (strstr(kcontrol->id.name, "Playback Mono To Stereo"))
--		*uctl_val = i2s->mono_to_stereo[I2S_RX_PATH];
-+		ucontrol->value.enumerated.item[0] =
-+			i2s->mono_to_stereo[I2S_RX_PATH];
- 	else if (strstr(kcontrol->id.name, "Playback FIFO Threshold"))
--		*uctl_val = i2s->rx_fifo_th;
-+		ucontrol->value.integer.value[0] = i2s->rx_fifo_th;
- 	else if (strstr(kcontrol->id.name, "BCLK Ratio"))
--		*uctl_val = i2s->bclk_ratio;
-+		ucontrol->value.integer.value[0] = i2s->bclk_ratio;
+-	ucontrol->value.integer.value[0] = mvc->curve_type;
++	ucontrol->value.enumerated.item[0] = mvc->curve_type;
  
  	return 0;
  }
-@@ -344,10 +347,9 @@ static int tegra210_i2s_put_control(struct snd_kcontrol *kcontrol,
+@@ -285,7 +285,7 @@ static int tegra210_mvc_put_curve_type(struct snd_kcontrol *kcontrol,
  {
- 	struct snd_soc_component *compnt = snd_soc_kcontrol_component(kcontrol);
- 	struct tegra210_i2s *i2s = snd_soc_component_get_drvdata(compnt);
--	int value = ucontrol->value.integer.value[0];
+ 	struct snd_soc_component *cmpnt = snd_soc_kcontrol_component(kcontrol);
+ 	struct tegra210_mvc *mvc = snd_soc_component_get_drvdata(cmpnt);
+-	int value;
++	unsigned int value;
  
- 	if (strstr(kcontrol->id.name, "Loopback")) {
--		i2s->loopback = value;
-+		i2s->loopback = ucontrol->value.integer.value[0];
- 
- 		regmap_update_bits(i2s->regmap, TEGRA210_I2S_CTRL,
- 				   I2S_CTRL_LPBK_MASK,
-@@ -362,24 +364,28 @@ static int tegra210_i2s_put_control(struct snd_kcontrol *kcontrol,
- 		 * cases mixer control is used to update custom values. A value
- 		 * of "N" here means, width is "N + 1" bit clock wide.
- 		 */
--		i2s->fsync_width = value;
-+		i2s->fsync_width = ucontrol->value.integer.value[0];
- 
- 		regmap_update_bits(i2s->regmap, TEGRA210_I2S_CTRL,
- 				   I2S_CTRL_FSYNC_WIDTH_MASK,
- 				   i2s->fsync_width << I2S_FSYNC_WIDTH_SHIFT);
- 
- 	} else if (strstr(kcontrol->id.name, "Capture Stereo To Mono")) {
--		i2s->stereo_to_mono[I2S_TX_PATH] = value;
-+		i2s->stereo_to_mono[I2S_TX_PATH] =
-+			ucontrol->value.enumerated.item[0];
- 	} else if (strstr(kcontrol->id.name, "Capture Mono To Stereo")) {
--		i2s->mono_to_stereo[I2S_TX_PATH] = value;
-+		i2s->mono_to_stereo[I2S_TX_PATH] =
-+			ucontrol->value.enumerated.item[0];
- 	} else if (strstr(kcontrol->id.name, "Playback Stereo To Mono")) {
--		i2s->stereo_to_mono[I2S_RX_PATH] = value;
-+		i2s->stereo_to_mono[I2S_RX_PATH] =
-+			ucontrol->value.enumerated.item[0];
- 	} else if (strstr(kcontrol->id.name, "Playback Mono To Stereo")) {
--		i2s->mono_to_stereo[I2S_RX_PATH] = value;
-+		i2s->mono_to_stereo[I2S_RX_PATH] =
-+			ucontrol->value.enumerated.item[0];
- 	} else if (strstr(kcontrol->id.name, "Playback FIFO Threshold")) {
--		i2s->rx_fifo_th = value;
-+		i2s->rx_fifo_th = ucontrol->value.integer.value[0];
- 	} else if (strstr(kcontrol->id.name, "BCLK Ratio")) {
--		i2s->bclk_ratio = value;
-+		i2s->bclk_ratio = ucontrol->value.integer.value[0];
+ 	regmap_read(mvc->regmap, TEGRA210_MVC_ENABLE, &value);
+ 	if (value & TEGRA210_MVC_EN) {
+@@ -294,10 +294,10 @@ static int tegra210_mvc_put_curve_type(struct snd_kcontrol *kcontrol,
+ 		return -EINVAL;
  	}
  
- 	return 0;
+-	if (mvc->curve_type == ucontrol->value.integer.value[0])
++	if (mvc->curve_type == ucontrol->value.enumerated.item[0])
+ 		return 0;
+ 
+-	mvc->curve_type = ucontrol->value.integer.value[0];
++	mvc->curve_type = ucontrol->value.enumerated.item[0];
+ 
+ 	tegra210_mvc_reset_vol_settings(mvc, cmpnt->dev);
+ 
 -- 
 2.7.4
 
