@@ -2,70 +2,70 @@ Return-Path: <SRS0=e+ka=QF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 678DCC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 19:07:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E6B4C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 19:08:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 23C97611C0
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 19:07:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 23C97611C0
+	by mail.kernel.org (Postfix) with ESMTPS id EC5D3611C0
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Nov 2021 19:07:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EC5D3611C0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3DDAB181A;
-	Thu, 18 Nov 2021 20:06:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3DDAB181A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1BE3E17F5;
+	Thu, 18 Nov 2021 20:07:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1BE3E17F5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637262428;
-	bh=K0dhONGx5eh8ZXaYYjtDkxxtM9Z92WwRmibNsJcJ738=;
+	s=default; t=1637262477;
+	bh=1p374rqm2yFecVw91tYzgWhh9jitE6ft6AgdASjdY8E=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=i3m5nPmWOIlaLImxWOFrt2yWpa+OTgru/+RnzGP5da9vePSPo2Q4i9m6hFDzli3A6
-	 Ck/xpxSASqhV3HCWhXVN5O8JOlZ7KkVt3ls/z0ebvCaZx44g2oUuij5VPkiIZubM3v
-	 Qu/XN2jh8ns0UlDoXGrkC58ppxQIei0yOvtl7Op4=
+	b=jGOyLTKmPPNdUpw9MDOHAF3XKvSTXLLuR0zgeVvvA2YxeAym7axOCdGt20owL/88c
+	 hLcrzScSV8Uy6wcw5e1H6AIKzFMbXjdHTIwuhpjJZBQvN6+Ny9rAUZGMv2qvdegjDr
+	 Y6lq3HnlRpA6TgDCESUs3jeTIX18tm+Axs+8k4/8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 003AFF802C4;
-	Thu, 18 Nov 2021 20:06:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D67A3F80272;
+	Thu, 18 Nov 2021 20:06:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0E744F80272; Thu, 18 Nov 2021 20:06:15 +0100 (CET)
+ id 005D4F804D6; Thu, 18 Nov 2021 20:06:21 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8B6C2F80115
- for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2021 20:06:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B6C2F80115
+ by alsa1.perex.cz (Postfix) with ESMTPS id 89257F80115
+ for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2021 20:06:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89257F80115
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="EKEu5Dzi"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C1A19611C0;
- Thu, 18 Nov 2021 19:06:01 +0000 (UTC)
+ header.b="DLzxW8cF"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F38AF61AFF;
+ Thu, 18 Nov 2021 19:06:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1637262363;
- bh=K0dhONGx5eh8ZXaYYjtDkxxtM9Z92WwRmibNsJcJ738=;
+ s=k20201202; t=1637262373;
+ bh=1p374rqm2yFecVw91tYzgWhh9jitE6ft6AgdASjdY8E=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=EKEu5DziBC2A7SyJ4RLec0HqRTsc2ECO9INuaYkhiTobP7At82tUH12VdGzvsWcym
- ANtj9KMhL9xoAvioDuBoyMZ0Wq2AP+w0de6muBrT+3UJlxzwF8lZ/qpI1kZm5ty+Sy
- IhpNJJ9qqd9sdU2EqsuXxK/vRjONrsDXVlXgcsID7QJt6fCYrpr6XM1sYTv365fNuN
- mg8LiajK4q1KI7z+5ynVlO2yDARalaFXHwOR3fIbEWOIZVk2KU4se5ja15A2UEdvKd
- l74ebi6Z1uANA8KKEKa98/qtRiCIEkjmg/WQTFBvpqLgm6J+OVKLusAgkHozs2jDtP
- uJyiWXl8qwj/g==
+ b=DLzxW8cFoNvz9pU5J9KMn16xzIERY5PXKT0NMtWYdulf926rXwl6G+IeQs5fJ3Oea
+ LbQ6DtBq++T+CpGi80H5nmKHdTDcVhiPrc50EgBnSqayfxSECvQexLF2OsesULCy2/
+ RzsnElCPB8/Vt0z7cl4WLBxU9hrEm3OjkFSqFMnZStu9qmVHdoJ+6JYPC/FFF0RZr3
+ VHnmx6rJWWm10cwR5kNryAinQpkKCRYMdHTN4xh8ao2rc4vT8IlKsXKVujP3tAM9oa
+ GePClmr5Y1dT27Ce1CpSPXhfZ2NjxjZFv+GIN/x/uOsNLIlolEv4mhOb0/pMMSyPHj
+ ZkGuvCTAxU3NA==
 From: Mark Brown <broonie@kernel.org>
-To: Sameer Pujar <spujar@nvidia.com>, lgirdwood@gmail.com, perex@perex.cz,
- tiwai@suse.com
-In-Reply-To: <1637219231-406-1-git-send-email-spujar@nvidia.com>
-References: <1637219231-406-1-git-send-email-spujar@nvidia.com>
-Subject: Re: [PATCH v3 00/16] Kcontrol get/put cleanup in Tegra drivers
-Message-Id: <163726236152.95988.1168935629731605987.b4-ty@kernel.org>
-Date: Thu, 18 Nov 2021 19:06:01 +0000
+To: alsa-devel@alsa-project.org, Daniel Baluta <daniel.baluta@oss.nxp.com>
+In-Reply-To: <20211118100749.54628-1-daniel.baluta@oss.nxp.com>
+References: <20211118100749.54628-1-daniel.baluta@oss.nxp.com>
+Subject: Re: [PATCH v2 0/8] ASoC: SOF: Add support for Mediatek MT8195
+Message-Id: <163726237074.96213.1724001387708213857.b4-ty@kernel.org>
+Date: Thu, 18 Nov 2021 19:06:10 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
- thierry.reding@gmail.com, linux-kernel@vger.kernel.org, jonathanh@nvidia.com
+Cc: daniel.baluta@gmail.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
+ pierre-louis.bossart@linux.intel.com, linux-mediatek@lists.infradead.org,
+ yc.hung@mediatek.com, daniel.baluta@nxp.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,55 +81,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 18 Nov 2021 12:36:55 +0530, Sameer Pujar wrote:
-> There are two cleanups in the series:
->  1. Use correct value type for enum controls. This is suggested by
->     Takashi during review of v2.
+On Thu, 18 Nov 2021 12:07:41 +0200, Daniel Baluta wrote:
+> From: Daniel Baluta <daniel.baluta@nxp.com>
 > 
->  2. This series fixes kcontrol put callback in some of the Tegra drivers
->     which are used on platforms based on Tegra210 and later. The callback
->     is expected to return 1 whenever the HW update is done.
+> This adds sound open firmware driver support for MT8915 platform.
+> 
+> Changes since v1:
+> - removed AMD patches since they were already applied
+> - fixed compilation error reported by Mark, generated by the fact that
+>   mt8195_run was declared too early in the series.
 > 
 > [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-linus
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
 Thanks!
 
-[01/16] ASoC: tegra: Fix wrong value type in ADMAIF
-        commit: 884c6cb3b7030f75c46e55b9e625d2372708c306
-[02/16] ASoC: tegra: Fix wrong value type in I2S
-        commit: 8a2c2fa0c5331445c801e9241f2bb4e0e2a895a8
-[03/16] ASoC: tegra: Fix wrong value type in DMIC
-        commit: 559d234569a998a4004de1bd1f12da5487fb826e
-[04/16] ASoC: tegra: Fix wrong value type in DSPK
-        commit: 3aa0d5c8bb3f5ef622ec2764823f551a1f630711
-[05/16] ASoC: tegra: Fix wrong value type in SFC
-        commit: 42afca1a65661935cdd54d2e0c5d0cc2426db7af
-[06/16] ASoC: tegra: Fix wrong value type in MVC
-        commit: 6762965d0214df474e3a58e1d4d3ab004c5da0ea
-[07/16] ASoC: tegra: Fix kcontrol put callback in ADMAIF
-        commit: e2b87a18a60c02d0dcd1de801d669587e516cc4d
-[08/16] ASoC: tegra: Fix kcontrol put callback in I2S
-        commit: f21a9df3f7cb0005947679d7b9237c90574e229a
-[09/16] ASoC: tegra: Fix kcontrol put callback in DMIC
-        commit: a347dfa10262fa0a10e2b1970ea0194e3d4a3251
-[10/16] ASoC: tegra: Fix kcontrol put callback in DSPK
-        commit: d6202a57e79d102271d38c34481fedc9d4c79694
-[11/16] ASoC: tegra: Fix kcontrol put callback in AHUB
-        commit: a4e37950c9e9b126f9cbee79b8ab94a94646dcf1
-[12/16] ASoC: tegra: Fix kcontrol put callback in MVC
-        commit: c7b34b51bbac6ab64e873f6c9bd43564a7442e33
-[13/16] ASoC: tegra: Fix kcontrol put callback in SFC
-        commit: b31f8febd1850bbe74aba184779ec54552d92752
-[14/16] ASoC: tegra: Fix kcontrol put callback in AMX
-        commit: 8db78ace1ba897302131422ce15c5eb04510cef8
-[15/16] ASoC: tegra: Fix kcontrol put callback in ADX
-        commit: 3c97881b8c8a2aa8afd4d7a379b7ff03884c9e4a
-[16/16] ASoC: tegra: Fix kcontrol put callback in Mixer
-        commit: 8cf72c4e75a0265135d34a8e29224b4c1e92b51c
+[1/8] ASoC: SOF: mediatek: Add mt8195 hardware support
+      commit: 32d7e03d26fd93187c87ed0fbf59ec7023a61404
+[2/8] ASoC: SOF: tokens: add token for Mediatek AFE
+      commit: e6feefa541f309afed8aa54431681261bc57bcde
+[3/8] ASoC: SOF: topology: Add support for Mediatek AFE DAI
+      commit: b72bfcffcfc11858a8fc92998733372606db485e
+[4/8] ASoC: SOF: mediatek: Add fw loader and mt8195 dsp ops to load firmware
+      commit: b7f6503830cd8f3f7076635409460861b5ff6310
+[5/8] ASoC: SOF: Add mt8195 device descriptor
+      commit: 24281bc2bf1884e665dfbcd17aaaabbc5872e501
+[6/8] ASoC: SOF: mediatek: Add dai driver dsp ops callback for mt8195
+      commit: 24d75049c5ed5193bd12ce0d43c355c4ef74a7fa
+[7/8] ASoC: SOF: mediatek: Add mt8195 dsp clock support
+      commit: 424d6d1a9a51b7e6ab397132700a237082d64cf4
+[8/8] ASoC: SOF: mediatek: Add DSP system PM callback for mt8195
+      commit: 163fa3a5927e1d8f948ea1fc16c897944933a06a
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
