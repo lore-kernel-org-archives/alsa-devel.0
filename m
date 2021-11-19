@@ -4,61 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20FAAC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Nov 2021 23:11:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 482E7C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Nov 2021 23:12:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 296A51788;
-	Sat, 20 Nov 2021 00:10:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 296A51788
+	by alsa0.perex.cz (Postfix) with ESMTPS id 215EB1796;
+	Sat, 20 Nov 2021 00:11:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 215EB1796
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637363505;
-	bh=rNW6NS1kwwkawWGh6KR0EWsvvEmMaqhUoro66HOZJdY=;
+	s=default; t=1637363524;
+	bh=5eG/Kd3riu7qmU626qBW99tCdqOxfyIwccmd+iFj9HY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jCQXH0B3Z0ppZNIN1JCeoQdQEO4KfhmSZRjWvx5A4pUA3pz4th0bzOQ4S+03WWATS
-	 nRvPr9+Sm0XT68Shhm6eHTinEvuxtydN2VPWQi9pPdL5nSSWzblK2AqQaawUlUYAB7
-	 +8UlI1lNXHuTE0E5Fd4aNC6hGFZs6/m4T/Nwptq0=
+	b=V51nq2r4OH9eLoB9WXJ5lo28/ek2Sj4Sayt+yor0t8sC0m0LmGYkkb9VBB5asY50o
+	 9SB+B1/mIrRJ+JrEcEGSqovkirXRJP5VRO1+1up6sskocvL80IH1RfKUN6gy2EPWxh
+	 HSFHXJ5EZIN+uApkVf+RBu67+LJSfTyI14L6LmUE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 48802F8026D;
-	Sat, 20 Nov 2021 00:09:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0D8CDF80506;
+	Sat, 20 Nov 2021 00:09:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 076B4F804FE; Sat, 20 Nov 2021 00:09:38 +0100 (CET)
+ id 906C7F804DF; Sat, 20 Nov 2021 00:09:35 +0100 (CET)
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 56208F8026D
- for <alsa-devel@alsa-project.org>; Sat, 20 Nov 2021 00:09:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56208F8026D
-X-IronPort-AV: E=McAfee;i="6200,9189,10173"; a="234456143"
-X-IronPort-AV: E=Sophos;i="5.87,248,1631602800"; d="scan'208";a="234456143"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2C657F8012E
+ for <alsa-devel@alsa-project.org>; Sat, 20 Nov 2021 00:09:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C657F8012E
+X-IronPort-AV: E=McAfee;i="6200,9189,10173"; a="234456139"
+X-IronPort-AV: E=Sophos;i="5.87,248,1631602800"; d="scan'208";a="234456139"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Nov 2021 15:09:19 -0800
-X-IronPort-AV: E=Sophos;i="5.87,248,1631602800"; d="scan'208";a="496075719"
+ 19 Nov 2021 15:09:17 -0800
+X-IronPort-AV: E=Sophos;i="5.87,248,1631602800"; d="scan'208";a="496075713"
 Received: from mredenti-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.30.252])
  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Nov 2021 15:09:18 -0800
+ 19 Nov 2021 15:09:16 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v4 4/4] ASoC: SOF: Intel: add .ack support for HDaudio
- platforms
-Date: Fri, 19 Nov 2021 17:08:52 -0600
-Message-Id: <20211119230852.206310-5-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v4 2/4] ALSA: pcm: introduce INFO_NO_REWINDS flag
+Date: Fri, 19 Nov 2021 17:08:50 -0600
+Message-Id: <20211119230852.206310-3-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211119230852.206310-1-pierre-louis.bossart@linux.intel.com>
 References: <20211119230852.206310-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>, tiwai@suse.de,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+Cc: tiwai@suse.de, broonie@kernel.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- broonie@kernel.org,
- =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,189 +71,72 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+When the hardware can only deal with a monotonically increasing
+appl_ptr, this flag can be set.
 
-When we disable rewinds, then the .ack can be used to program SPIB
-with the application pointer, which allows the HDaudio DMA to save
-power by opportunistically bursting data transfers when the path to
-memory is enabled (and conversely to shut it down when there are no
-transfer requests).
+In case the application requests a rewind, be it with a
+snd_pcm_rewind() or with a direct change of a mmap'ed pointer followed
+by a SNDRV_PCM_IOCTL_SYNC_PTR, this patch checks if a rewind
+occurred and returns an error.
 
-The SPIB register can only be programmed with incremental values with
-wrap-around after the DMA RUN bits are set. For simplicity, we set the
-INFO_NO_REWINDS flag in the .open callback when we already need to
-program the SNDRV_PCM_INFO_SYNC_APPLPTR flag.
+Credits to Takashi Iwai for identifying the path with SYNC_PTR and
+suggesting the pointer checks.
 
-Rewinds are not used by many applications. One notable application
-using rewinds is PulseAudio. Practical experiments with
-Ubuntu/PulseAudio default settings did not show any audible issues,
-but the user may hear volume changes and notification with a delay,
-depending on the size of the ring buffer and latency constraints.
-
-The choice of disabling rewinds is exposed as a kernel parameter and
-not a Kconfig option to avoid any undesirable side-effects.
-
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Suggested-by: Takashi Iwai <tiwai@suse.de>
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Co-developed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/intel/apl.c        |  1 +
- sound/soc/sof/intel/cnl.c        |  1 +
- sound/soc/sof/intel/hda-pcm.c    | 41 ++++++++++++++++++++++++++++++--
- sound/soc/sof/intel/hda-stream.c |  2 ++
- sound/soc/sof/intel/hda.h        |  1 +
- sound/soc/sof/intel/icl.c        |  1 +
- sound/soc/sof/intel/tgl.c        |  1 +
- 7 files changed, 46 insertions(+), 2 deletions(-)
+ include/uapi/sound/asound.h |  2 +-
+ sound/core/pcm_lib.c        | 14 ++++++++++++++
+ 2 files changed, 15 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/intel/apl.c b/sound/soc/sof/intel/apl.c
-index 917f78cf6daf..689679014ade 100644
---- a/sound/soc/sof/intel/apl.c
-+++ b/sound/soc/sof/intel/apl.c
-@@ -78,6 +78,7 @@ const struct snd_sof_dsp_ops sof_apl_ops = {
- 	.pcm_hw_free	= hda_dsp_stream_hw_free,
- 	.pcm_trigger	= hda_dsp_pcm_trigger,
- 	.pcm_pointer	= hda_dsp_pcm_pointer,
-+	.pcm_ack	= hda_dsp_pcm_ack,
+diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+index 5fbb79e30819..ff7e638221c5 100644
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
+@@ -300,7 +300,7 @@ typedef int __bitwise snd_pcm_subformat_t;
+ #define SNDRV_PCM_INFO_HAS_LINK_ESTIMATED_ATIME    0x04000000  /* report estimated link audio time */
+ #define SNDRV_PCM_INFO_HAS_LINK_SYNCHRONIZED_ATIME 0x08000000  /* report synchronized audio/system time */
+ #define SNDRV_PCM_INFO_EXPLICIT_SYNC	0x10000000	/* needs explicit sync of pointers and data */
+-
++#define SNDRV_PCM_INFO_NO_REWINDS	0x20000000	/* hardware can only support monotonic changes of appl_ptr */
+ #define SNDRV_PCM_INFO_DRAIN_TRIGGER	0x40000000		/* internal kernel flag - trigger in drain */
+ #define SNDRV_PCM_INFO_FIFO_IN_FRAMES	0x80000000	/* internal kernel flag - FIFO size is in frames */
  
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_PROBES)
- 	/* probe callbacks */
-diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
-index 3957e2b3db32..d128c08ba726 100644
---- a/sound/soc/sof/intel/cnl.c
-+++ b/sound/soc/sof/intel/cnl.c
-@@ -283,6 +283,7 @@ const struct snd_sof_dsp_ops sof_cnl_ops = {
- 	.pcm_hw_free	= hda_dsp_stream_hw_free,
- 	.pcm_trigger	= hda_dsp_pcm_trigger,
- 	.pcm_pointer	= hda_dsp_pcm_pointer,
-+	.pcm_ack	= hda_dsp_pcm_ack,
- 
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_PROBES)
- 	/* probe callbacks */
-diff --git a/sound/soc/sof/intel/hda-pcm.c b/sound/soc/sof/intel/hda-pcm.c
-index cc8ddef37f37..974383cd0440 100644
---- a/sound/soc/sof/intel/hda-pcm.c
-+++ b/sound/soc/sof/intel/hda-pcm.c
-@@ -32,6 +32,10 @@ static bool hda_always_enable_dmi_l1;
- module_param_named(always_enable_dmi_l1, hda_always_enable_dmi_l1, bool, 0444);
- MODULE_PARM_DESC(always_enable_dmi_l1, "SOF HDA always enable DMI l1");
- 
-+static bool hda_disable_rewinds = IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_DISABLE_REWINDS);
-+module_param_named(disable_rewinds, hda_disable_rewinds, bool, 0444);
-+MODULE_PARM_DESC(disable_rewinds, "SOF HDA disable rewinds");
-+
- u32 hda_dsp_get_mult_div(struct snd_sof_dev *sdev, int rate)
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index fdd992772b20..f2090025236b 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -2128,6 +2128,7 @@ int pcm_lib_apply_appl_ptr(struct snd_pcm_substream *substream,
  {
- 	switch (rate) {
-@@ -120,8 +124,11 @@ int hda_dsp_pcm_hw_params(struct snd_sof_dev *sdev,
- 		return ret;
- 	}
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	snd_pcm_uframes_t old_appl_ptr = runtime->control->appl_ptr;
++	snd_pcm_sframes_t diff;
+ 	int ret;
  
--	/* disable SPIB, to enable buffer wrap for stream */
--	hda_dsp_stream_spib_config(sdev, stream, HDA_DSP_SPIB_DISABLE, 0);
-+	/* enable SPIB when rewinds are disabled */
-+	if (hda_disable_rewinds)
-+		hda_dsp_stream_spib_config(sdev, stream, HDA_DSP_SPIB_ENABLE, 0);
-+	else
-+		hda_dsp_stream_spib_config(sdev, stream, HDA_DSP_SPIB_DISABLE, 0);
+ 	if (old_appl_ptr == appl_ptr)
+@@ -2135,6 +2136,19 @@ int pcm_lib_apply_appl_ptr(struct snd_pcm_substream *substream,
  
- 	/* update no_stream_position flag for ipc params */
- 	if (hda && hda->no_ipc_position) {
-@@ -140,6 +147,29 @@ int hda_dsp_pcm_hw_params(struct snd_sof_dev *sdev,
- 	return 0;
- }
- 
-+/* update SPIB register with appl position */
-+int hda_dsp_pcm_ack(struct snd_sof_dev *sdev, struct snd_pcm_substream *substream)
-+{
-+	struct hdac_stream *hstream = substream->runtime->private_data;
-+	struct hdac_ext_stream *hext_stream = stream_to_hdac_ext_stream(hstream);
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	ssize_t appl_pos, buf_size;
-+	u32 spib;
-+
-+	appl_pos = frames_to_bytes(runtime, runtime->control->appl_ptr);
-+	buf_size = frames_to_bytes(runtime, runtime->buffer_size);
-+
-+	spib = appl_pos % buf_size;
-+
-+	/* Allowable value for SPIB is 1 byte to max buffer size */
-+	if (!spib)
-+		spib = buf_size;
-+
-+	sof_io_write(sdev, hext_stream->spib_addr, spib);
-+
-+	return 0;
-+}
-+
- int hda_dsp_pcm_trigger(struct snd_sof_dev *sdev,
- 			struct snd_pcm_substream *substream, int cmd)
- {
-@@ -234,6 +264,13 @@ int hda_dsp_pcm_open(struct snd_sof_dev *sdev,
+ 	if (appl_ptr >= runtime->boundary)
  		return -EINVAL;
- 	}
- 
 +	/*
-+	 * if we want the .ack to work, we need to prevent the control from being mapped.
-+	 * The status can still be mapped.
++	 * check if a rewind is requested by the application
 +	 */
-+	if (hda_disable_rewinds)
-+		runtime->hw.info |= SNDRV_PCM_INFO_NO_REWINDS | SNDRV_PCM_INFO_SYNC_APPLPTR;
-+
- 	/*
- 	 * All playback streams are DMI L1 capable, capture streams need
- 	 * pause push/release to be disabled
-diff --git a/sound/soc/sof/intel/hda-stream.c b/sound/soc/sof/intel/hda-stream.c
-index 1d845c2cbc33..b6f037815344 100644
---- a/sound/soc/sof/intel/hda-stream.c
-+++ b/sound/soc/sof/intel/hda-stream.c
-@@ -655,6 +655,8 @@ int hda_dsp_stream_hw_free(struct snd_sof_dev *sdev,
- 					SOF_HDA_REG_PP_PPCTL, mask, 0);
- 	spin_unlock_irq(&bus->reg_lock);
++	if (substream->runtime->info & SNDRV_PCM_INFO_NO_REWINDS) {
++		diff = appl_ptr - old_appl_ptr;
++		if (diff >= 0) {
++			if (diff > runtime->buffer_size)
++				return -EINVAL;
++		} else {
++			if (runtime->boundary + diff > runtime->buffer_size)
++				return -EINVAL;
++		}
++	}
  
-+	hda_dsp_stream_spib_config(sdev, link_dev, HDA_DSP_SPIB_DISABLE, 0);
-+
- 	stream->substream = NULL;
- 
- 	return 0;
-diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index 1195018a1f4f..6829d36fbfe9 100644
---- a/sound/soc/sof/intel/hda.h
-+++ b/sound/soc/sof/intel/hda.h
-@@ -533,6 +533,7 @@ int hda_dsp_pcm_trigger(struct snd_sof_dev *sdev,
- 			struct snd_pcm_substream *substream, int cmd);
- snd_pcm_uframes_t hda_dsp_pcm_pointer(struct snd_sof_dev *sdev,
- 				      struct snd_pcm_substream *substream);
-+int hda_dsp_pcm_ack(struct snd_sof_dev *sdev, struct snd_pcm_substream *substream);
- 
- /*
-  * DSP Stream Operations.
-diff --git a/sound/soc/sof/intel/icl.c b/sound/soc/sof/intel/icl.c
-index 0b2cc331d55b..1e3bc555b807 100644
---- a/sound/soc/sof/intel/icl.c
-+++ b/sound/soc/sof/intel/icl.c
-@@ -77,6 +77,7 @@ const struct snd_sof_dsp_ops sof_icl_ops = {
- 	.pcm_hw_free	= hda_dsp_stream_hw_free,
- 	.pcm_trigger	= hda_dsp_pcm_trigger,
- 	.pcm_pointer	= hda_dsp_pcm_pointer,
-+	.pcm_ack	= hda_dsp_pcm_ack,
- 
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_PROBES)
- 	/* probe callbacks */
-diff --git a/sound/soc/sof/intel/tgl.c b/sound/soc/sof/intel/tgl.c
-index 48da8e7a67bc..2a29058e0c20 100644
---- a/sound/soc/sof/intel/tgl.c
-+++ b/sound/soc/sof/intel/tgl.c
-@@ -73,6 +73,7 @@ const struct snd_sof_dsp_ops sof_tgl_ops = {
- 	.pcm_hw_free	= hda_dsp_stream_hw_free,
- 	.pcm_trigger	= hda_dsp_pcm_trigger,
- 	.pcm_pointer	= hda_dsp_pcm_pointer,
-+	.pcm_ack	= hda_dsp_pcm_ack,
- 
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_PROBES)
- 	/* probe callbacks */
+ 	runtime->control->appl_ptr = appl_ptr;
+ 	if (substream->ops->ack) {
 -- 
 2.25.1
 
