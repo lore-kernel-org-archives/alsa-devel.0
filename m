@@ -4,85 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC8F8C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Nov 2021 07:02:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ACB0DC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Nov 2021 07:03:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B80441687;
-	Mon, 22 Nov 2021 08:01:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B80441687
+	by alsa0.perex.cz (Postfix) with ESMTPS id 79E3A1697;
+	Mon, 22 Nov 2021 08:02:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 79E3A1697
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637564561;
-	bh=EfUXEEINLQszA870ynwuSZ2Lf08STwo891yLHWgYUFU=;
-	h=Date:To:From:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1637564610;
+	bh=oBj7QbVGHlYfnfMUOtd1HZT668Gjf5aMJe4be82ORbo=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=FCPEChN5YmRdba98X41QO8AqjCwPzbX2093JOf4DbXrnOVfonTB7NbIEXk013pL7s
-	 3Q/N0FHeROrMfs39jRrC832ZL1QR6BkvHEWKYzdqbcv6BBSZ96Fc6+vDS+K0p9L8ot
-	 muTlUOO3r8uOr2NK3EALXQC5+D0lEDBOQypUsB1c=
+	b=D4f4RIKMlE0y68EfjvdQojKGhemnIFMx+gPkIUQ2We5AWIT+D1ETJR5XJej1bcYk/
+	 QZ/mYgxnyciEhY5tc7p6i9rODVymHEsZeGs5Tn1cW0GETSV3yuUs7zojemINpWRlfB
+	 4ftDO5SZKEqcu65zto6r0yXVRRcLXaTb9LCsUbGM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F01E5F801F7;
-	Mon, 22 Nov 2021 08:01:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4EE93F80302;
+	Mon, 22 Nov 2021 08:01:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C5DEEF80272; Thu, 18 Nov 2021 21:33:44 +0100 (CET)
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com
- [IPv6:2a00:1450:4864:20::435])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id B9F27F80217; Fri, 19 Nov 2021 16:34:05 +0100 (CET)
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk
+ [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E3C6DF8010B
- for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2021 21:33:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3C6DF8010B
+ by alsa1.perex.cz (Postfix) with ESMTPS id EDF0FF800FA
+ for <alsa-devel@alsa-project.org>; Fri, 19 Nov 2021 16:34:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EDF0FF800FA
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="ZLNhm57p"
-Received: by mail-wr1-x435.google.com with SMTP id d24so14000479wra.0
- for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2021 12:33:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=message-id:date:mime-version:user-agent:content-language:to:cc:from
- :subject:content-transfer-encoding;
- bh=EfUXEEINLQszA870ynwuSZ2Lf08STwo891yLHWgYUFU=;
- b=ZLNhm57pDYSN7nVaLatlLr2zlOUpHpXpfKGPhdjPkkzON7XqldHyxk+N5KmsfbJEqZ
- SGhXVXn5maQFYFQwNk+A0c5r3jh10fvLtq9k91rIhBQAvKUKd0TXb/MwlTZLlVSs5UF/
- rDqOqIVlmrkiKxj+910yklIJtBmd/mG//3xVGDv6CtnSWyg/gqbdrRSxnN+Izq9Z2v3b
- SXrf3aizAvESZGW2n1P8+RZ7TVFTdWU4Zg+6nU/ZEBlf/qfrt9fQ8R3FkYwe1HjhW3Fq
- wtVYlAtA4nS45/6nz1S7z3lczlqVqWqtzTu1/RozFlYWlgPFYpSU0kvVmxq3qJIe9wWD
- vKOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent
- :content-language:to:cc:from:subject:content-transfer-encoding;
- bh=EfUXEEINLQszA870ynwuSZ2Lf08STwo891yLHWgYUFU=;
- b=UBLjQHPYnDDqI8ffN30UHYX/wElbSkj3YUBk6wgGLDN7BWtjGooOwc+MC7Q4URh3d0
- nI6DB/z0noLJM3kZqm4P2CFQQDyN07Ho5LjzSpDF40ZQ8OERMZTTfCkTApiJxqonz0Hw
- rJBjUT3qw0i+aDdVB4SZbCFyjThaf9TZ3H8eDJxhoVfdhePa/JmNmZt7xy7nowrf9w1A
- GBLtrc8Nb8yI8k3xYx8rTU3H9WQWkyfwARFPAhB+XORzgQKK5R6O5eKLHOEcl7+0u27H
- R6g7Kv2bGGB66GfFH3YVoJOB+Y9iKabDE19RiaLtRRbRgIZO94iB7Eq+b1K0fBM6slGC
- TfdQ==
-X-Gm-Message-State: AOAM5332K+kuH+XjYwEXixdcNjVnC+N78nifL8VSqIUjouYHk+Pd8WRF
- Nb5yc/ccO/VTcLwRcZM2nR9L0Hf+K0Q=
-X-Google-Smtp-Source: ABdhPJx1RGAefCdS9K6lVb3q1I66YXizjFffTzMiRHrhdzWFAr+JOb+sV3Bz6gJSA5IU0+MMTrI9OA==
-X-Received: by 2002:adf:ce08:: with SMTP id p8mr390887wrn.154.1637267620349;
- Thu, 18 Nov 2021 12:33:40 -0800 (PST)
-Received: from ?IPV6:2003:ea:8f1a:f00:fc8d:4de8:c1d1:9213?
- (p200300ea8f1a0f00fc8d4de8c1d19213.dip0.t-ipconnect.de.
- [2003:ea:8f1a:f00:fc8d:4de8:c1d1:9213])
- by smtp.googlemail.com with ESMTPSA id o12sm858270wmq.12.2021.11.18.12.33.39
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 18 Nov 2021 12:33:39 -0800 (PST)
-Message-ID: <d9d76980-966a-e031-70d1-3254ba5be5eb@gmail.com>
-Date: Thu, 18 Nov 2021 21:33:34 +0100
+ dkim=fail reason="signature verification failed" (2048-bit key)
+ header.d=collabora.com header.i=@collabora.com header.b="LU1D/2zn"
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+ (Authenticated sender: adalessandro) with ESMTPSA id 239861F47554
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
+ t=1637336040; bh=oBj7QbVGHlYfnfMUOtd1HZT668Gjf5aMJe4be82ORbo=;
+ h=From:To:Cc:Subject:Date:From;
+ b=LU1D/2znRnmWQq9S9C99bWFA/kPVCKSRmdq6IEpjNr/rKOJ4bFAO3EQ2mLbFD0TP/
+ PlOdn37gYW6Uquu+IGHXIg04zDysKrMQgoR8P+UJ8FGWNAxgKbd00zRG2r7hqQZtsa
+ 0TtEArzfJ6/8/a0yJ5y1xg8qI0QcAcyK8h1+A+FYGLxkLFT/Tt/ayZIlJOLDEjEC2v
+ 5v/EY0JnOPiVMeR5EavyjjUDwy8Sw3Q9IV2zfUDPaYUJtQJvzuV0b29l0ZlpDKaimj
+ lAUIfOpTh2FmOrTcVSToFOwkzS3NbFST9BvuKJdoirPFTV0ExeGt2bt7Ps+ZIYZlRh
+ jJR0rwu89STRQ==
+From: Ariel D'Alessandro <ariel.dalessandro@collabora.com>
+To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org
+Subject: [RFC patch 0/5] Support BCLK input clock in tlv320aic31xx
+Date: Fri, 19 Nov 2021 12:32:43 -0300
+Message-Id: <20211119153248.419802-1-ariel.dalessandro@collabora.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Content-Language: en-US
-To: Takashi Iwai <tiwai@suse.de>
-From: Heiner Kallweit <hkallweit1@gmail.com>
-Subject: Warning due to "ALSA: hda: intel: More comprehensive PM runtime setup
- for controller driver"
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Mailman-Approved-At: Mon, 22 Nov 2021 08:01:48 +0100
-Cc: alsa-devel@alsa-project.org, Linux PM <linux-pm@vger.kernel.org>
+Cc: bkylerussell@gmail.com, ariel.dalessandro@collabora.com,
+ kuninori.morimoto.gx@renesas.com, Xiubo.Lee@gmail.com, shengjiu.wang@gmail.com,
+ tiwai@suse.com, lgirdwood@gmail.com, nicoleotsuka@gmail.com,
+ broonie@kernel.org, michael@amarulasolutions.com, festevam@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,17 +75,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-I get the following warning caused by 4f66a9ef37d3 ("ALSA: hda: intel: More
-comprehensive PM runtime setup for controller driver"):
+The tlv320aic31xx codec allows using BCLK as the input clock for PLL,
+deriving all the frequencies through a set of divisors.
 
-snd_hda_intel 0000:00:1f.3: Unbalanced pm_runtime_enable!
+In this case, codec sysclk is determined by the hwparams sample
+rate/format. So its frequency must be updated from the codec itself when
+these are changed.
 
-Not sure how this patch was tested because the warning is obvious.
-The patch doesn't consider what the PCI sub-system does with regard to
-RPM. Have a look at pci_pm_init().
+This patchset modifies the tlv320aic31xx driver to update its sysclk if
+BCLK is used as the input clock. This allows to be used by the generic
+fsl-asoc-card, without having to add a specific driver.
 
-I'd understand to add the call to pm_runtime_dont_use_autosuspend(),
-but for all other added calls I see no justification.
+Ariel D'Alessandro (5):
+  ASoC: tlv320aic31xx: Fix typo in BCLK clock name
+  ASoC: tlv320aic31xx: Add support for pll_r coefficient
+  ASoC: tlv320aic31xx: Add divs for bclk as clk_in
+  ASoC: tlv320aic31xx: Handle BCLK set as PLL input configuration
+  ASoC: fsl-asoc-card: Support fsl,imx-audio-tlv320aic31xx codec
 
-If being unsure about when to use which RPM call best involve
-linux-pm@vger.kernel.org.
+ sound/soc/codecs/tlv320aic31xx.c | 105 ++++++++++++++++++++-----------
+ sound/soc/codecs/tlv320aic31xx.h |   2 +-
+ sound/soc/fsl/fsl-asoc-card.c    |  12 ++++
+ 3 files changed, 83 insertions(+), 36 deletions(-)
+
+-- 
+2.30.2
+
