@@ -2,57 +2,57 @@ Return-Path: <SRS0=cfk+=QG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EEEF7C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Nov 2021 19:36:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C3BE7C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Nov 2021 19:36:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 77BF161221
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Nov 2021 19:36:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 77BF161221
+	by mail.kernel.org (Postfix) with ESMTPS id 4D61F61221
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Nov 2021 19:36:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4D61F61221
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D4C2B1799;
-	Fri, 19 Nov 2021 20:35:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D4C2B1799
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9CDDB1790;
+	Fri, 19 Nov 2021 20:36:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CDDB1790
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637350593;
-	bh=OQ8EwPIaliQT0uigWI0tHCO6c/48brU3Hl4tKnXyq9s=;
+	s=default; t=1637350612;
+	bh=v03QF3HlbuCfhE+eaPC9/FuV7O0Qu4/CgV1tybo/5xk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TeGT1wd5+stlNpauWiQugOTDAYbvZGWiqwEEuvVu6w8wYW5qz8yKfwD8iNmE4+KGW
-	 gEdsmYuR+MhLQxSMcCgI33X0cQshwEgDvvnx0z3bd/XWzW6eS8bfK2NEBGKNRcLWX8
-	 pUNsjCTpQU9vPXHdBDcfZZ9ZDA6XdKH53HQNZtYo=
+	b=FXgOlbkeMs7eo69COINKKj7XDDvZ1wlLRbS2O7/tEg0dmiyB5+76A5SHGdKkwaFpG
+	 YqmpWNdVKAQykBOgzgQZAMIMu5jVQG9xR0pJLrMIFxGS7yR9U0uvggoPifKmQm9iq0
+	 K+Uy7t5vBlZ8+XcQGSeJYrvosIBPJ/+eb6TLDvhw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 52321F804DF;
-	Fri, 19 Nov 2021 20:34:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3C4C3F80506;
+	Fri, 19 Nov 2021 20:34:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1D17CF80217; Fri, 19 Nov 2021 20:34:23 +0100 (CET)
+ id DBB1AF80217; Fri, 19 Nov 2021 20:34:24 +0100 (CET)
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2F6A4F80115
- for <alsa-devel@alsa-project.org>; Fri, 19 Nov 2021 20:34:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F6A4F80115
-X-IronPort-AV: E=McAfee;i="6200,9189,10173"; a="215192492"
-X-IronPort-AV: E=Sophos;i="5.87,248,1631602800"; d="scan'208";a="215192492"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 06FF1F8012E
+ for <alsa-devel@alsa-project.org>; Fri, 19 Nov 2021 20:34:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06FF1F8012E
+X-IronPort-AV: E=McAfee;i="6200,9189,10173"; a="215192460"
+X-IronPort-AV: E=Sophos;i="5.87,248,1631602800"; d="scan'208";a="215192460"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Nov 2021 11:34:17 -0800
+ 19 Nov 2021 11:34:09 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,248,1631602800"; d="scan'208";a="473651218"
+X-IronPort-AV: E=Sophos;i="5.87,248,1631602800"; d="scan'208";a="473651136"
 Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by orsmga002.jf.intel.com with ESMTP; 19 Nov 2021 11:34:14 -0800
+ by orsmga002.jf.intel.com with ESMTP; 19 Nov 2021 11:34:06 -0800
 From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH 05/10] ASoC: SOF: Intel: CNL/ICL/APL: set core_get/core_put ops
-Date: Fri, 19 Nov 2021 21:26:16 +0200
-Message-Id: <20211119192621.4096077-6-kai.vehmanen@linux.intel.com>
+Subject: [PATCH 02/10] ASoC: SOF: Introduce num_cores and ref count per core
+Date: Fri, 19 Nov 2021 21:26:13 +0200
+Message-Id: <20211119192621.4096077-3-kai.vehmanen@linux.intel.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211119192621.4096077-1-kai.vehmanen@linux.intel.com>
 References: <20211119192621.4096077-1-kai.vehmanen@linux.intel.com>
@@ -79,123 +79,166 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
-Set core_get/put ops for CNL/ICL platforms. These platforms
-do not support enabling/disabling secondary cores
-dynamically. So skip sending the IPC to power off the
-cores in the core_put op.
+Add two fields num_cores and dsp_cores_ref_count to
+struct snd_sof_dev. These will be used to maintain the
+ref count for each core to determine when it should be
+powered up or down.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- sound/soc/sof/intel/apl.c     |  1 +
- sound/soc/sof/intel/cnl.c     |  1 +
- sound/soc/sof/intel/hda-dsp.c | 44 +++++++++++++++++++++++++++++++++++
- sound/soc/sof/intel/hda.h     |  1 +
- sound/soc/sof/intel/icl.c     |  1 +
- 5 files changed, 48 insertions(+)
+ sound/soc/sof/imx/imx8.c      |  1 +
+ sound/soc/sof/imx/imx8m.c     |  1 +
+ sound/soc/sof/intel/bdw.c     |  9 +++++++++
+ sound/soc/sof/intel/byt.c     |  9 +++++++++
+ sound/soc/sof/intel/hda.c     |  2 ++
+ sound/soc/sof/intel/pci-tng.c |  9 +++++++++
+ sound/soc/sof/sof-priv.h      | 15 +++++++++++++++
+ 7 files changed, 46 insertions(+)
 
-diff --git a/sound/soc/sof/intel/apl.c b/sound/soc/sof/intel/apl.c
-index 917f78cf6daf..569668b2186f 100644
---- a/sound/soc/sof/intel/apl.c
-+++ b/sound/soc/sof/intel/apl.c
-@@ -104,6 +104,7 @@ const struct snd_sof_dsp_ops sof_apl_ops = {
- 	/* dsp core power up/down */
- 	.core_power_up = hda_dsp_enable_core,
- 	.core_power_down = hda_dsp_core_reset_power_down,
-+	.core_get = hda_dsp_core_get,
+diff --git a/sound/soc/sof/imx/imx8.c b/sound/soc/sof/imx/imx8.c
+index 0aeb44d0acc7..2d0448b3c8c3 100644
+--- a/sound/soc/sof/imx/imx8.c
++++ b/sound/soc/sof/imx/imx8.c
+@@ -188,6 +188,7 @@ static int imx8_probe(struct snd_sof_dev *sdev)
+ 	if (!priv)
+ 		return -ENOMEM;
  
- 	/* trace callback */
- 	.trace_init = hda_dsp_trace_init,
-diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
-index 3957e2b3db32..be6b6500b907 100644
---- a/sound/soc/sof/intel/cnl.c
-+++ b/sound/soc/sof/intel/cnl.c
-@@ -306,6 +306,7 @@ const struct snd_sof_dsp_ops sof_cnl_ops = {
- 	/* dsp core power up/down */
- 	.core_power_up = hda_dsp_enable_core,
- 	.core_power_down = hda_dsp_core_reset_power_down,
-+	.core_get = hda_dsp_core_get,
++	sdev->num_cores = 1;
+ 	sdev->pdata->hw_pdata = priv;
+ 	priv->dev = sdev->dev;
+ 	priv->sdev = sdev;
+diff --git a/sound/soc/sof/imx/imx8m.c b/sound/soc/sof/imx/imx8m.c
+index f454a5d0a87e..c94422323d67 100644
+--- a/sound/soc/sof/imx/imx8m.c
++++ b/sound/soc/sof/imx/imx8m.c
+@@ -108,6 +108,7 @@ static int imx8m_probe(struct snd_sof_dev *sdev)
+ 	if (!priv)
+ 		return -ENOMEM;
  
- 	/* firmware run */
- 	.run = hda_dsp_cl_boot_firmware,
-diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
-index 287dc0eb6686..b2f6dcd1c23d 100644
---- a/sound/soc/sof/intel/hda-dsp.c
-+++ b/sound/soc/sof/intel/hda-dsp.c
-@@ -962,3 +962,47 @@ void hda_dsp_d0i3_work(struct work_struct *work)
- 				    "error: failed to set DSP state %d substate %d\n",
- 				    target_state.state, target_state.substate);
- }
-+
-+int hda_dsp_core_get(struct snd_sof_dev *sdev, int core)
-+{
-+	struct sof_ipc_pm_core_config pm_core_config = {
-+		.hdr = {
-+			.cmd = SOF_IPC_GLB_PM_MSG | SOF_IPC_PM_CORE_ENABLE,
-+			.size = sizeof(pm_core_config),
-+		},
-+		.enable_mask = sdev->enabled_cores_mask | BIT(core),
-+	};
-+	int ret, ret1;
-+
-+	/* power up core */
-+	ret = hda_dsp_enable_core(sdev, BIT(core));
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "failed to power up core %d with err: %d\n",
-+			core, ret);
-+		return ret;
++	sdev->num_cores = 1;
+ 	sdev->pdata->hw_pdata = priv;
+ 	priv->dev = sdev->dev;
+ 	priv->sdev = sdev;
+diff --git a/sound/soc/sof/intel/bdw.c b/sound/soc/sof/intel/bdw.c
+index 156006bed017..1a8a39a878fd 100644
+--- a/sound/soc/sof/intel/bdw.c
++++ b/sound/soc/sof/intel/bdw.c
+@@ -412,10 +412,19 @@ static int bdw_probe(struct snd_sof_dev *sdev)
+ 	const struct sof_dev_desc *desc = pdata->desc;
+ 	struct platform_device *pdev =
+ 		container_of(sdev->dev, struct platform_device, dev);
++	const struct sof_intel_dsp_desc *chip;
+ 	struct resource *mmio;
+ 	u32 base, size;
+ 	int ret;
+ 
++	chip = get_chip_info(sdev->pdata);
++	if (!chip) {
++		dev_err(sdev->dev, "error: no such device supported\n");
++		return -EIO;
 +	}
 +
-+	/* No need to send IPC for primary core or if FW boot is not complete */
-+	if (sdev->fw_state != SOF_FW_BOOT_COMPLETE || core == SOF_DSP_PRIMARY_CORE)
-+		return 0;
++	sdev->num_cores = chip->cores_num;
 +
-+	/* Now notify DSP for secondary cores */
-+	ret = sof_ipc_tx_message(sdev->ipc, pm_core_config.hdr.cmd,
-+				 &pm_core_config, sizeof(pm_core_config),
-+				 &pm_core_config, sizeof(pm_core_config));
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "failed to enable secondary core '%d' failed with %d\n",
-+			core, ret);
-+		goto power_down;
+ 	/* LPE base */
+ 	mmio = platform_get_resource(pdev, IORESOURCE_MEM,
+ 				     desc->resindex_lpe_base);
+diff --git a/sound/soc/sof/intel/byt.c b/sound/soc/sof/intel/byt.c
+index e2fa08f1ae74..dcfeaedb8fd5 100644
+--- a/sound/soc/sof/intel/byt.c
++++ b/sound/soc/sof/intel/byt.c
+@@ -113,10 +113,19 @@ static int byt_acpi_probe(struct snd_sof_dev *sdev)
+ 	const struct sof_dev_desc *desc = pdata->desc;
+ 	struct platform_device *pdev =
+ 		container_of(sdev->dev, struct platform_device, dev);
++	const struct sof_intel_dsp_desc *chip;
+ 	struct resource *mmio;
+ 	u32 base, size;
+ 	int ret;
+ 
++	chip = get_chip_info(sdev->pdata);
++	if (!chip) {
++		dev_err(sdev->dev, "error: no such device supported\n");
++		return -EIO;
 +	}
 +
-+	return ret;
++	sdev->num_cores = chip->cores_num;
 +
-+power_down:
-+	/* power down core if it is host managed and return the original error if this fails too */
-+	ret1 = hda_dsp_core_reset_power_down(sdev, BIT(core));
-+	if (ret1 < 0)
-+		dev_err(sdev->dev, "failed to power down core: %d with err: %d\n", core, ret1);
+ 	/* DSP DMA can only access low 31 bits of host memory */
+ 	ret = dma_coerce_mask_and_coherent(sdev->dev, DMA_BIT_MASK(31));
+ 	if (ret < 0) {
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index 1ebf8db488b8..3c69e8fcd43b 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -897,6 +897,8 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
+ 		goto err;
+ 	}
+ 
++	sdev->num_cores = chip->cores_num;
 +
-+	return ret;
-+}
-diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index 1195018a1f4f..646f5d4dc882 100644
---- a/sound/soc/sof/intel/hda.h
-+++ b/sound/soc/sof/intel/hda.h
-@@ -496,6 +496,7 @@ int hda_dsp_core_run(struct snd_sof_dev *sdev, unsigned int core_mask);
- int hda_dsp_enable_core(struct snd_sof_dev *sdev, unsigned int core_mask);
- int hda_dsp_core_reset_power_down(struct snd_sof_dev *sdev,
- 				  unsigned int core_mask);
-+int hda_dsp_core_get(struct snd_sof_dev *sdev, int core);
- void hda_dsp_ipc_int_enable(struct snd_sof_dev *sdev);
- void hda_dsp_ipc_int_disable(struct snd_sof_dev *sdev);
+ 	hdev = devm_kzalloc(sdev->dev, sizeof(*hdev), GFP_KERNEL);
+ 	if (!hdev)
+ 		return -ENOMEM;
+diff --git a/sound/soc/sof/intel/pci-tng.c b/sound/soc/sof/intel/pci-tng.c
+index 18eb41b8a8f4..f8c841caa362 100644
+--- a/sound/soc/sof/intel/pci-tng.c
++++ b/sound/soc/sof/intel/pci-tng.c
+@@ -55,9 +55,18 @@ static int tangier_pci_probe(struct snd_sof_dev *sdev)
+ 	struct snd_sof_pdata *pdata = sdev->pdata;
+ 	const struct sof_dev_desc *desc = pdata->desc;
+ 	struct pci_dev *pci = to_pci_dev(sdev->dev);
++	const struct sof_intel_dsp_desc *chip;
+ 	u32 base, size;
+ 	int ret;
  
-diff --git a/sound/soc/sof/intel/icl.c b/sound/soc/sof/intel/icl.c
-index 0b2cc331d55b..e3472868f49a 100644
---- a/sound/soc/sof/intel/icl.c
-+++ b/sound/soc/sof/intel/icl.c
-@@ -100,6 +100,7 @@ const struct snd_sof_dsp_ops sof_icl_ops = {
- 	/* dsp core power up/down */
- 	.core_power_up = hda_dsp_enable_core,
- 	.core_power_down = hda_dsp_core_reset_power_down,
-+	.core_get = hda_dsp_core_get,
++	chip = get_chip_info(sdev->pdata);
++	if (!chip) {
++		dev_err(sdev->dev, "error: no such device supported\n");
++		return -EIO;
++	}
++
++	sdev->num_cores = chip->cores_num;
++
+ 	/* DSP DMA can only access low 31 bits of host memory */
+ 	ret = dma_coerce_mask_and_coherent(&pci->dev, DMA_BIT_MASK(31));
+ 	if (ret < 0) {
+diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
+index 9a8af76b2f8b..a56f3c8b483f 100644
+--- a/sound/soc/sof/sof-priv.h
++++ b/sound/soc/sof/sof-priv.h
+@@ -71,6 +71,9 @@ extern int sof_core_debug;
+ /* So far the primary core on all DSPs has ID 0 */
+ #define SOF_DSP_PRIMARY_CORE 0
  
- 	/* firmware run */
- 	.run = hda_dsp_cl_boot_firmware_iccmax,
++/* max number of DSP cores */
++#define SOF_MAX_DSP_NUM_CORES 8
++
+ /* DSP power state */
+ enum sof_dsp_power_states {
+ 	SOF_DSP_PM_D0,
+@@ -477,6 +480,18 @@ struct snd_sof_dev {
+ 
+ 	bool msi_enabled;
+ 
++	/* DSP core context */
++	u32 num_cores;
++
++	/*
++	 * ref count per core that will be modified during system suspend/resume and during pcm
++	 * hw_params/hw_free. This doesn't need to be protected with a mutex because pcm
++	 * hw_params/hw_free are already protected by the PCM mutex in the ALSA framework in
++	 * sound/core/ when streams are active and during system suspend/resume, streams are
++	 * already suspended.
++	 */
++	int dsp_core_ref_count[SOF_MAX_DSP_NUM_CORES];
++
+ 	void *private;			/* core does not touch this */
+ };
+ 
 -- 
 2.33.0
 
