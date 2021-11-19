@@ -1,68 +1,58 @@
-Return-Path: <SRS0=cfk+=QG=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <alsa-devel-bounces@alsa-project.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F3BBFC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Nov 2021 19:38:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 83064610D2
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Nov 2021 19:38:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 83064610D2
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-project.org
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32B7AC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Nov 2021 23:10:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EB4481798;
-	Fri, 19 Nov 2021 20:38:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB4481798
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3548A174E;
+	Sat, 20 Nov 2021 00:09:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3548A174E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637350733;
-	bh=Onfs5Icmck1MBjj5S/AGV7W+A1rvgoSqA0vXDhlWNP8=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=BgJWFCdJHfQZl7fMJN/6iTVLSOgYPa8Y7Uu+o+LGs5p2CloOy36K53JSwYtX3W4V1
-	 czuQ90PL4FgQzSMizePrM0PXxOOXEPrEMT3Kb/CKuGBXzwOBwXKVnPCF8dNi4TaIHr
-	 FseFcJoqKy815FpQIrw9HA8IJ+54KYA+t5Z4il8c=
+	s=default; t=1637363422;
+	bh=0Nl0KZDkMEGydA0HAZUZQ/YVmzyBvM1+9xCHxdOvIn0=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=LEyAFmQBYJWeey8KnVG7OdMprY/VsIIDa0hZe5nzssQbzsL5F7B25fzJ5jB+ePFB2
+	 xuisK8Zvgj/WGIRtdLAS2zwSKfqGAWNkTThzlAZj/1h6C6NTBNPOfyfyv9WjU6Vqch
+	 aGwZEYLuyDMLGO3vgeH2LC+7FJDFRAy1xxTGp8MM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D7B11F80537;
-	Fri, 19 Nov 2021 20:34:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 75FE9F80272;
+	Sat, 20 Nov 2021 00:09:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 80F97F80533; Fri, 19 Nov 2021 20:34:52 +0100 (CET)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ id 92E9DF800FA; Sat, 20 Nov 2021 00:09:24 +0100 (CET)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BA3C9F80519
- for <alsa-devel@alsa-project.org>; Fri, 19 Nov 2021 20:34:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA3C9F80519
-X-IronPort-AV: E=McAfee;i="6200,9189,10173"; a="221697780"
-X-IronPort-AV: E=Sophos;i="5.87,248,1631602800"; d="scan'208";a="221697780"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Nov 2021 11:34:35 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,248,1631602800"; d="scan'208";a="473651277"
-Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by orsmga002.jf.intel.com with ESMTP; 19 Nov 2021 11:34:25 -0800
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	broonie@kernel.org
-Subject: [PATCH 08/10] ASoC: SOF: hda: don't use the core op for power
- up/power down
-Date: Fri, 19 Nov 2021 21:26:19 +0200
-Message-Id: <20211119192621.4096077-9-kai.vehmanen@linux.intel.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211119192621.4096077-1-kai.vehmanen@linux.intel.com>
-References: <20211119192621.4096077-1-kai.vehmanen@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 41028F800FA
+ for <alsa-devel@alsa-project.org>; Sat, 20 Nov 2021 00:09:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41028F800FA
+X-IronPort-AV: E=McAfee;i="6200,9189,10173"; a="234456136"
+X-IronPort-AV: E=Sophos;i="5.87,248,1631602800"; d="scan'208";a="234456136"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+ by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Nov 2021 15:09:15 -0800
+X-IronPort-AV: E=Sophos;i="5.87,248,1631602800"; d="scan'208";a="496075703"
+Received: from mredenti-mobl.amr.corp.intel.com (HELO
+ pbossart-mobl3.intel.com) ([10.212.30.252])
+ by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Nov 2021 15:09:15 -0800
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH v4 0/4] ASoC: SOF: Intel: power optimizations with HDaudio
+ SPIB register
+Date: Fri, 19 Nov 2021 17:08:48 -0600
+Message-Id: <20211119230852.206310-1-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- kai.vehmanen@linux.intel.com, yung-chuan.liao@linux.intel.com,
- lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com,
- ranjani.sridharan@linux.intel.com, daniel.baluta@nxp.com
+Cc: tiwai@suse.de, broonie@kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,153 +68,77 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+This patchset was initially provided in a larger series that was split
+in two [1]. This part only provides support for the SPIB register
+support, added on Intel platforms since Skylake (2015).
 
-The core_power_up/down() ops will be deprecated. Use the
-HDA platform-specific functions for powering up/down
-the cores during probe/suspend/remove. The enabled_cores_mask
-and the core ref_count's are manually updated in each of
-these functions.
+The use of the SPIB register helps reduce power consumption - though
+to a smaller degree than DMI_L1. This hardware capability is however
+incompatible with userspace-initiated rewinds typically used by
+PulseAudio.
 
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
----
- sound/soc/sof/intel/hda-dsp.c    |  8 ++++++--
- sound/soc/sof/intel/hda-loader.c | 24 +++++++++++++++++-------
- sound/soc/sof/intel/hda.c        |  4 ++--
- 3 files changed, 25 insertions(+), 11 deletions(-)
+In the past (2015..2017) Intel suggested an API extension to let
+applications disable rewinds. At the time the feedback was that such a
+capability was too Intel-specific and SPIB remained unused except for
+loading DSP code. We now see devices with smaller batteries being
+released, and it's time to revisit Linux support for SPIB to extend
+battery life.
 
-diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
-index b2f6dcd1c23d..916a257ea96b 100644
---- a/sound/soc/sof/intel/hda-dsp.c
-+++ b/sound/soc/sof/intel/hda-dsp.c
-@@ -614,7 +614,7 @@ static int hda_suspend(struct snd_sof_dev *sdev, bool runtime_suspend)
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
- 	struct hdac_bus *bus = sof_to_bus(sdev);
- #endif
--	int ret;
-+	int ret, j;
- 
- 	hda_sdw_int_enable(sdev, false);
- 
-@@ -629,13 +629,17 @@ static int hda_suspend(struct snd_sof_dev *sdev, bool runtime_suspend)
- #endif
- 
- 	/* power down DSP */
--	ret = snd_sof_dsp_core_power_down(sdev, chip->host_managed_cores_mask);
-+	ret = hda_dsp_core_reset_power_down(sdev, chip->host_managed_cores_mask);
- 	if (ret < 0) {
- 		dev_err(sdev->dev,
- 			"error: failed to power down core during suspend\n");
- 		return ret;
- 	}
- 
-+	/* reset ref counts for all cores */
-+	for (j = 0; j < chip->cores_num; j++)
-+		sdev->dsp_core_ref_count[j] = 0;
-+
- 	/* disable ppcap interrupt */
- 	hda_dsp_ctrl_ppcap_enable(sdev, false);
- 	hda_dsp_ctrl_ppcap_int_enable(sdev, false);
-diff --git a/sound/soc/sof/intel/hda-loader.c b/sound/soc/sof/intel/hda-loader.c
-index abad6d0ceb83..40201e5ac201 100644
---- a/sound/soc/sof/intel/hda-loader.c
-+++ b/sound/soc/sof/intel/hda-loader.c
-@@ -88,12 +88,13 @@ static int cl_dsp_init(struct snd_sof_dev *sdev, int stream_tag)
- 	struct sof_intel_hda_dev *hda = sdev->pdata->hw_pdata;
- 	const struct sof_intel_dsp_desc *chip = hda->desc;
- 	unsigned int status;
--	u32 flags;
-+	unsigned long mask;
-+	u32 flags, j;
- 	int ret;
- 	int i;
- 
- 	/* step 1: power up corex */
--	ret = snd_sof_dsp_core_power_up(sdev, chip->host_managed_cores_mask);
-+	ret = hda_dsp_enable_core(sdev, chip->host_managed_cores_mask);
- 	if (ret < 0) {
- 		if (hda->boot_iteration == HDA_FW_BOOT_ATTEMPTS)
- 			dev_err(sdev->dev, "error: dsp core 0/1 power up failed\n");
-@@ -148,8 +149,8 @@ static int cl_dsp_init(struct snd_sof_dev *sdev, int stream_tag)
- 				       chip->ipc_ack_mask);
- 
- 	/* step 5: power down cores that are no longer needed */
--	ret = snd_sof_dsp_core_power_down(sdev, chip->host_managed_cores_mask &
--					  ~(chip->init_core_mask));
-+	ret = hda_dsp_core_reset_power_down(sdev, chip->host_managed_cores_mask &
-+					   ~(chip->init_core_mask));
- 	if (ret < 0) {
- 		if (hda->boot_iteration == HDA_FW_BOOT_ATTEMPTS)
- 			dev_err(sdev->dev,
-@@ -168,8 +169,14 @@ static int cl_dsp_init(struct snd_sof_dev *sdev, int stream_tag)
- 					HDA_DSP_REG_POLL_INTERVAL_US,
- 					chip->rom_init_timeout *
- 					USEC_PER_MSEC);
--	if (!ret)
-+	if (!ret) {
-+		/* set enabled cores mask and increment ref count for cores in init_core_mask */
-+		sdev->enabled_cores_mask |= chip->init_core_mask;
-+		mask = sdev->enabled_cores_mask;
-+		for_each_set_bit(j, &mask, SOF_MAX_DSP_NUM_CORES)
-+			sdev->dsp_core_ref_count[j]++;
- 		return 0;
-+	}
- 
- 	if (hda->boot_iteration == HDA_FW_BOOT_ATTEMPTS)
- 		dev_err(sdev->dev,
-@@ -184,7 +191,7 @@ static int cl_dsp_init(struct snd_sof_dev *sdev, int stream_tag)
- 		flags &= ~SOF_DBG_DUMP_OPTIONAL;
- 
- 	snd_sof_dsp_dbg_dump(sdev, flags);
--	snd_sof_dsp_core_power_down(sdev, chip->host_managed_cores_mask);
-+	hda_dsp_core_reset_power_down(sdev, chip->host_managed_cores_mask);
- 
- 	return ret;
- }
-@@ -501,12 +508,15 @@ int hda_dsp_post_fw_run_icl(struct snd_sof_dev *sdev)
- 	 * the host whereas on TGL it is handled by the firmware.
- 	 */
- 	if (!hda->clk_config_lpro) {
--		ret = snd_sof_dsp_core_power_up(sdev, BIT(3));
-+		ret = hda_dsp_enable_core(sdev, BIT(3));
- 		if (ret < 0) {
- 			dev_err(sdev->dev, "error: dsp core power up failed on core 3\n");
- 			return ret;
- 		}
- 
-+		sdev->enabled_cores_mask |= BIT(3);
-+		sdev->dsp_core_ref_count[3]++;
-+
- 		snd_sof_dsp_stall(sdev, BIT(3));
- 	}
- 
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 3c69e8fcd43b..1e1e9659ea86 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -1034,9 +1034,9 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
- int hda_dsp_remove(struct snd_sof_dev *sdev)
- {
- 	struct sof_intel_hda_dev *hda = sdev->pdata->hw_pdata;
-+	const struct sof_intel_dsp_desc *chip = hda->desc;
- 	struct hdac_bus *bus = sof_to_bus(sdev);
- 	struct pci_dev *pci = to_pci_dev(sdev->dev);
--	const struct sof_intel_dsp_desc *chip = hda->desc;
- 
- 	/* cancel any attempt for DSP D0I3 */
- 	cancel_delayed_work_sync(&hda->d0i3_work);
-@@ -1061,7 +1061,7 @@ int hda_dsp_remove(struct snd_sof_dev *sdev)
- 
- 	/* disable cores */
- 	if (chip)
--		snd_sof_dsp_core_power_down(sdev, chip->host_managed_cores_mask);
-+		hda_dsp_core_reset_power_down(sdev, chip->host_managed_cores_mask);
- 
- 	/* disable DSP */
- 	snd_sof_dsp_update_bits(sdev, HDA_DSP_PP_BAR, SOF_HDA_REG_PP_PPCTL,
+In this update the rewinds are disabled via an opt-in kernel
+parameter. In the previous reviews, there was consensus that a Kconfig
+option was too complicated for distributions to set, and we are
+missing a TBD API to expose such capabilities to user-space.
+
+The debate on whether or not to use rewinds, and the impact of
+disabling rewinds, will likely be closed when Intel releases the
+'deep-buffer' support, currently under development [2][3]. With this
+solution, rewinds will not be needed, ever. When an application deals
+with content that is not latency-sensitive (e.g. music playback), it
+will be able to reduce power consumption by selecting a different PCM
+device with increased buffering capabilities.  Low-latency streams
+will be handled by the 'regular' path. In other words, the impossible
+compromise between power and latency will be handled with different
+PCM devices/profiles for the same endpoint, and we can push the design
+of capability negotiation to a later time when all the building blocks
+(firmware topology, kernel, userspace) are ready - we still have
+firmware xruns, DPCM race conditions to solve, and a need to describe
+these alternate PCM devices with UCM using 'modifiers'.
+
+[1] https://lore.kernel.org/alsa-devel/20210610205326.1176400-1-pierre-louis.bossart@linux.intel.com/
+[2] https://github.com/thesofproject/linux/pull/3146
+[3] https://github.com/thesofproject/sof/pull/4611
+
+Changes since v3:
+Added Takashi's Reviewed-by tags on patches 1 and 2
+Used SYNC_APPLPTR instead of EXPLICIT_SYNC as suggested by Takashi
+Added a missing .ack callback for IceLake
+
+Changes since v2:
+Added check on appl_ptr (Takashi)
+Moved rewind detection to deal with SYNC_PTR (Takashi)
+
+Pierre-Louis Bossart (2):
+  ALSA: pcm: unconditionally check if appl_ptr is in 0..boundary range
+  ALSA: pcm: introduce INFO_NO_REWINDS flag
+
+Ranjani Sridharan (2):
+  ASoC: SOF: pcm: add .ack callback support
+  ASoC: SOF: Intel: add .ack support for HDaudio platforms
+
+ include/uapi/sound/asound.h      |  2 +-
+ sound/core/pcm_lib.c             | 17 +++++++++++++
+ sound/soc/sof/intel/apl.c        |  1 +
+ sound/soc/sof/intel/cnl.c        |  1 +
+ sound/soc/sof/intel/hda-pcm.c    | 41 ++++++++++++++++++++++++++++++--
+ sound/soc/sof/intel/hda-stream.c |  2 ++
+ sound/soc/sof/intel/hda.h        |  1 +
+ sound/soc/sof/intel/icl.c        |  1 +
+ sound/soc/sof/intel/tgl.c        |  1 +
+ sound/soc/sof/ops.h              | 10 ++++++++
+ sound/soc/sof/pcm.c              |  9 +++++++
+ sound/soc/sof/sof-priv.h         |  3 +++
+ 12 files changed, 86 insertions(+), 3 deletions(-)
+
 -- 
-2.33.0
+2.25.1
 
