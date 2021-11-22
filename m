@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B34CC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Nov 2021 08:25:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6D6FC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Nov 2021 08:26:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 70584167D;
-	Tue, 23 Nov 2021 09:25:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70584167D
+	by alsa0.perex.cz (Postfix) with ESMTPS id ECCE716A5;
+	Tue, 23 Nov 2021 09:25:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ECCE716A5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637655956;
-	bh=WrWvbeu+wZt6BqyzEQhBqRjdWkz4lDVa/WxuJGi7Jzo=;
+	s=default; t=1637656002;
+	bh=K4pn+ecUlPbwC+0eZ8bW0QuKp7UL7rfs+YH/nRcsgQ0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qsNeNi7gNMikvlCmGCDHd5PAhJeXfloZmtc0gzjmppBfvnq0gqBbIYqvZdcsXzUK1
-	 pAOvD7PpFs1gnFGHHAwENqQ1CuDDzoYDIi07U5yqp9+yuX5WGrW2l1pZcZGyp49d1V
-	 ukpw91H/8Rta69TKjJQO6+rgeE56xRftO15hj/as=
+	b=lQLsiBSfzbHp2LzcgX2Wp1uAJ7KauzIwDjv3MRONTTmmDhoS5eVWGcCzDoQ8uKuea
+	 C+E6fhHPzZe1DmEi/Lpp0G3prLfWG4mk6UW2eQnZB7kJ6R7QCU1APJjr4RITizPCQh
+	 Lf0F3GJ2uvQwppSomZIHRYOKZSrpcBuIVtAui8qI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 79853F80534;
-	Tue, 23 Nov 2021 09:21:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 56389F80559;
+	Tue, 23 Nov 2021 09:21:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4F094F80141; Mon, 22 Nov 2021 16:56:29 +0100 (CET)
-Received: from albert.telenet-ops.be (albert.telenet-ops.be
- [IPv6:2a02:1800:110:4::f00:1a])
+ id 57BADF80245; Mon, 22 Nov 2021 16:57:09 +0100 (CET)
+Received: from andre.telenet-ops.be (andre.telenet-ops.be
+ [IPv6:2a02:1800:120:4::f00:15])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5F596F80141
- for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2021 16:56:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F596F80141
+ by alsa1.perex.cz (Postfix) with ESMTPS id C5D38F801F7
+ for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2021 16:57:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5D38F801F7
 Received: from ramsan.of.borg ([84.195.186.194])
- by albert.telenet-ops.be with bizsmtp
- id MTvi260024C55Sk06Tvi8X; Mon, 22 Nov 2021 16:56:23 +0100
+ by andre.telenet-ops.be with bizsmtp
+ id MTwG260014C55Sk01TwGyl; Mon, 22 Nov 2021 16:56:58 +0100
 Received: from rox.of.borg ([192.168.97.57])
  by ramsan.of.borg with esmtps (TLS1.3) tls
  TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.93)
  (envelope-from <geert@linux-m68k.org>)
- id 1mpBe6-00EL3e-B4; Mon, 22 Nov 2021 16:54:18 +0100
+ id 1mpBe6-00EL3P-62; Mon, 22 Nov 2021 16:54:18 +0100
 Received: from geert by rox.of.borg with local (Exim 4.93)
  (envelope-from <geert@linux-m68k.org>)
- id 1mpBe5-00HGyu-LZ; Mon, 22 Nov 2021 16:54:17 +0100
+ id 1mpBe5-00HGyZ-Hn; Mon, 22 Nov 2021 16:54:17 +0100
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 To: Tony Lindgren <tony@atomide.com>, Russell King <linux@armlinux.org.uk>,
  Rajendra Nayak <rnayak@codeaurora.org>, Paul Walmsley <paul@pwsan.com>,
@@ -68,9 +68,9 @@ To: Tony Lindgren <tony@atomide.com>, Russell King <linux@armlinux.org.uk>,
  Daniel Lezcano <daniel.lezcano@linaro.org>,
  Amit Kucheria <amitk@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH/RFC 08/17] iio: humidity: hts221: Use bitfield helpers
-Date: Mon, 22 Nov 2021 16:54:01 +0100
-Message-Id: <c906f7449c0210cefba53eab2c2d87105d5c8599.1637592133.git.geert+renesas@glider.be>
+Subject: [PATCH/RFC 05/17] bus: omap_l3_noc: Use bitfield helpers
+Date: Mon, 22 Nov 2021 16:53:58 +0100
+Message-Id: <8f5ac0ff643fcfe29ba671b434c57d88524f0450.1637592133.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1637592133.git.geert+renesas@glider.be>
 References: <cover.1637592133.git.geert+renesas@glider.be>
@@ -100,7 +100,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Use the field_prep() helper, instead of open-coding the same operation.
+Use the field_get() bitfield helper, instead of open-coding the same
+operation.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
@@ -108,42 +109,31 @@ Compile-tested only.
 Marked RFC, as this depends on [PATCH 01/17], but follows a different
 path to upstream.
 ---
- drivers/iio/humidity/hts221_core.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/bus/omap_l3_noc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/iio/humidity/hts221_core.c b/drivers/iio/humidity/hts221_core.c
-index 6a39615b696114cd..749aedc469ede5c1 100644
---- a/drivers/iio/humidity/hts221_core.c
-+++ b/drivers/iio/humidity/hts221_core.c
-@@ -7,6 +7,7 @@
-  * Lorenzo Bianconi <lorenzo.bianconi@st.com>
+diff --git a/drivers/bus/omap_l3_noc.c b/drivers/bus/omap_l3_noc.c
+index dcfb32ee5cb60239..1a692c86d085f43e 100644
+--- a/drivers/bus/omap_l3_noc.c
++++ b/drivers/bus/omap_l3_noc.c
+@@ -14,6 +14,7 @@
+  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  * GNU General Public License for more details.
   */
- 
 +#include <linux/bitfield.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/device.h>
-@@ -171,7 +172,7 @@ static int hts221_update_avg(struct hts221_hw *hw,
- 			     u16 val)
- {
- 	const struct hts221_avg *avg = &hts221_avg_list[type];
--	int i, err, data;
-+	int i, err;
+ #include <linux/init.h>
+ #include <linux/interrupt.h>
+ #include <linux/io.h>
+@@ -118,8 +119,7 @@ static int l3_handle_target(struct omap_l3 *l3, void __iomem *base,
+ 	}
  
- 	for (i = 0; i < HTS221_AVG_DEPTH; i++)
- 		if (avg->avg_avl[i] == val)
-@@ -180,9 +181,8 @@ static int hts221_update_avg(struct hts221_hw *hw,
- 	if (i == HTS221_AVG_DEPTH)
- 		return -EINVAL;
+ 	/* STDERRLOG_MSTADDR Stores the NTTP master address. */
+-	masterid = (readl_relaxed(l3_targ_mstaddr) &
+-		    l3->mst_addr_mask) >> __ffs(l3->mst_addr_mask);
++	masterid = field_get(l3->mst_addr_mask, readl_relaxed(l3_targ_mstaddr));
  
--	data = ((i << __ffs(avg->mask)) & avg->mask);
--	err = regmap_update_bits(hw->regmap, avg->addr,
--				 avg->mask, data);
-+	err = regmap_update_bits(hw->regmap, avg->addr, avg->mask,
-+				 field_prep(avg->mask, i));
- 	if (err < 0)
- 		return err;
- 
+ 	for (k = 0, master = l3->l3_masters; k < l3->num_masters;
+ 	     k++, master++) {
 -- 
 2.25.1
 
