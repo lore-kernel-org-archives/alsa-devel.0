@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2E86C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Nov 2021 08:24:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1BD00C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Nov 2021 08:24:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EEAD61669;
-	Tue, 23 Nov 2021 09:23:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EEAD61669
+	by alsa0.perex.cz (Postfix) with ESMTPS id 339971670;
+	Tue, 23 Nov 2021 09:23:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 339971670
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637655840;
-	bh=RmX/W8x5vIlCgEQDQRY+SZ9WVGykVsxo/1ePY9tp/aw=;
+	s=default; t=1637655864;
+	bh=QFuTurFxcCI/25z3m4lqdRPNDBHth3Sq7Xt7rLTIqEY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TPv8z2i9bidiM18nTQz4yZHzbpV5j+15zufawZQ8Ju1tALDnxoYxkoK1Ctz7GQKJq
-	 Vix9c2ZUXhSS+1rmLVVQtySeYMNDUmVF1QPxBCoaW9h9rKc/lSztqHYP7am5J3bDwn
-	 Y/gj73JJv8l1ms7v/Y77cqtbI4dXfLQGtCXbru+I=
+	b=UV6lx6IebegZ6G4LeLDeTpMkHJW9JMnSwCbFqvUVMbaPv+BjexWeZK90KwgQZXb1R
+	 kEjBG5M1iA82yJveI/hW1wxZF0/2LKi6Ca2l9lMf4JtLqiZ8g5LE6IZPpBqDK5lXeI
+	 tYvsWLL/aZ4gWCotXuRkNmtRRnpxB6SAd/OuERpM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CAB21F80516;
-	Tue, 23 Nov 2021 09:21:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2CA8BF8051A;
+	Tue, 23 Nov 2021 09:21:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AFB18F80302; Mon, 22 Nov 2021 16:55:51 +0100 (CET)
+ id BCAAAF80154; Mon, 22 Nov 2021 16:55:51 +0100 (CET)
 Received: from laurent.telenet-ops.be (laurent.telenet-ops.be
  [IPv6:2a02:1800:110:4::f00:19])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5D4A1F80245
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4F557F80212
  for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2021 16:55:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D4A1F80245
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F557F80212
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:e4da:38c:79e9:48bf])
  by laurent.telenet-ops.be with bizsmtp
- id MTux2600m4yPVd601TuykH; Mon, 22 Nov 2021 16:55:39 +0100
+ id MTux2600a4yPVd601TuxkE; Mon, 22 Nov 2021 16:55:38 +0100
 Received: from rox.of.borg ([192.168.97.57])
  by ramsan.of.borg with esmtps (TLS1.3) tls
  TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.93)
  (envelope-from <geert@linux-m68k.org>)
- id 1mpBe5-00EL3L-Rf; Mon, 22 Nov 2021 16:54:17 +0100
+ id 1mpBe6-00EL3d-8y; Mon, 22 Nov 2021 16:54:18 +0100
 Received: from geert by rox.of.borg with local (Exim 4.93)
  (envelope-from <geert@linux-m68k.org>)
- id 1mpBe5-00HGy7-BC; Mon, 22 Nov 2021 16:54:17 +0100
+ id 1mpBe5-00HGyn-Kc; Mon, 22 Nov 2021 16:54:17 +0100
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 To: Tony Lindgren <tony@atomide.com>, Russell King <linux@armlinux.org.uk>,
  Rajendra Nayak <rnayak@codeaurora.org>, Paul Walmsley <paul@pwsan.com>,
@@ -68,9 +68,9 @@ To: Tony Lindgren <tony@atomide.com>, Russell King <linux@armlinux.org.uk>,
  Daniel Lezcano <daniel.lezcano@linaro.org>,
  Amit Kucheria <amitk@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 01/17] bitfield: Add non-constant field_{prep,get}() helpers
-Date: Mon, 22 Nov 2021 16:53:54 +0100
-Message-Id: <3a54a6703879d10f08cf0275a2a69297ebd2b1d4.1637592133.git.geert+renesas@glider.be>
+Subject: [PATCH/RFC 07/17] iio: st_sensors: Use bitfield helpers
+Date: Mon, 22 Nov 2021 16:54:00 +0100
+Message-Id: <afb895b597037a635acc4a1dc44b88598268a19b.1637592133.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1637592133.git.geert+renesas@glider.be>
 References: <cover.1637592133.git.geert+renesas@glider.be>
@@ -100,93 +100,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The existing FIELD_{GET,PREP}() macros are limited to compile-time
-constants.  However, it is very common to prepare or extract bitfield
-elements where the bitfield mask is not a compile-time constant.
-
-To avoid this limitation, the AT91 clock driver already has its own
-field_{prep,get}() macros.  Make them available for general use by
-moving them to <linux/bitfield.h>, and improve them slightly:
-  1. Avoid evaluating macro parameters more than once,
-  2. Replace "ffs() - 1" by "__ffs()", as the latter operates on
-     "unsigned long", just like BIT() and GENMASK().
+Use the field_prep() helper, instead of open-coding the same operation.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
-Using __ffs() actually reduces code size (16 bytes for each of
-drivers/clk/at91/clk-{generated,peripheral}.o), as __ffs() doesn't
-need to verify that the value passed is non-zero.
+Compile-tested only.
+Marked RFC, as this depends on [PATCH 01/17], but follows a different
+path to upstream.
 ---
- drivers/clk/at91/clk-peripheral.c |  1 +
- drivers/clk/at91/pmc.h            |  3 ---
- include/linux/bitfield.h          | 30 ++++++++++++++++++++++++++++++
- 3 files changed, 31 insertions(+), 3 deletions(-)
+ drivers/iio/common/st_sensors/st_sensors_core.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/clk/at91/clk-peripheral.c b/drivers/clk/at91/clk-peripheral.c
-index e14fa5ac734cead7..e2f33498139a1b8c 100644
---- a/drivers/clk/at91/clk-peripheral.c
-+++ b/drivers/clk/at91/clk-peripheral.c
-@@ -3,6 +3,7 @@
-  *  Copyright (C) 2013 Boris BREZILLON <b.brezillon@overkiz.com>
+diff --git a/drivers/iio/common/st_sensors/st_sensors_core.c b/drivers/iio/common/st_sensors/st_sensors_core.c
+index 1de395bda03eb6d3..b11c3f474d299b96 100644
+--- a/drivers/iio/common/st_sensors/st_sensors_core.c
++++ b/drivers/iio/common/st_sensors/st_sensors_core.c
+@@ -7,6 +7,7 @@
+  * Denis Ciocca <denis.ciocca@st.com>
   */
  
 +#include <linux/bitfield.h>
- #include <linux/bitops.h>
- #include <linux/clk-provider.h>
- #include <linux/clkdev.h>
-diff --git a/drivers/clk/at91/pmc.h b/drivers/clk/at91/pmc.h
-index 3a1bf6194c287d09..1256e1ab91526a25 100644
---- a/drivers/clk/at91/pmc.h
-+++ b/drivers/clk/at91/pmc.h
-@@ -114,9 +114,6 @@ struct at91_clk_pms {
- 	unsigned int parent;
- };
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/slab.h>
+@@ -26,8 +27,8 @@ int st_sensors_write_data_with_mask(struct iio_dev *indio_dev,
+ {
+ 	struct st_sensor_data *sdata = iio_priv(indio_dev);
  
--#define field_get(_mask, _reg) (((_reg) & (_mask)) >> (ffs(_mask) - 1))
--#define field_prep(_mask, _val) (((_val) << (ffs(_mask) - 1)) & (_mask))
--
- #define ndck(a, s) (a[s - 1].id + 1)
- #define nck(a) (a[ARRAY_SIZE(a) - 1].id + 1)
- struct pmc_data *pmc_data_allocate(unsigned int ncore, unsigned int nsystem,
-diff --git a/include/linux/bitfield.h b/include/linux/bitfield.h
-index 4e035aca6f7e6000..f03b0712e4babec1 100644
---- a/include/linux/bitfield.h
-+++ b/include/linux/bitfield.h
-@@ -156,4 +156,34 @@ __MAKE_OP(64)
- #undef __MAKE_OP
- #undef ____MAKE_OP
+-	return regmap_update_bits(sdata->regmap,
+-				  reg_addr, mask, data << __ffs(mask));
++	return regmap_update_bits(sdata->regmap, reg_addr, mask,
++				  field_prep(mask, data));
+ }
  
-+/**
-+ * field_prep() - prepare a bitfield element
-+ * @_mask: shifted mask defining the field's length and position
-+ * @_val:  value to put in the field
-+ *
-+ * field_prep() masks and shifts up the value.  The result should be
-+ * combined with other fields of the bitfield using logical OR.
-+ * Unlike FIELD_PREP(), @_mask is not limited to a compile-time constant.
-+ */
-+#define field_prep(_mask, _val)						\
-+	({								\
-+		typeof(_mask) ___mask = (_mask);			\
-+		(((_val) << __ffs(___mask)) & (___mask));		\
-+	})
-+
-+/**
-+ * field_get() - extract a bitfield element
-+ * @_mask: shifted mask defining the field's length and position
-+ * @_reg:  value of entire bitfield
-+ *
-+ * field_get() extracts the field specified by @_mask from the
-+ * bitfield passed in as @_reg by masking and shifting it down.
-+ * Unlike FIELD_GET(), @_mask is not limited to a compile-time constant.
-+ */
-+#define field_get(_mask, _reg)						\
-+	({								\
-+		typeof(_mask) ___mask = _mask;				\
-+		(((_reg) & (___mask)) >> __ffs(___mask));		\
-+	})
-+
- #endif
+ int st_sensors_debugfs_reg_access(struct iio_dev *indio_dev,
 -- 
 2.25.1
 
