@@ -4,54 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B397C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Nov 2021 08:31:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 666C1C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Nov 2021 08:31:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9131216A0;
-	Tue, 23 Nov 2021 09:30:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9131216A0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7ED4A16D2;
+	Tue, 23 Nov 2021 09:30:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7ED4A16D2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637656270;
-	bh=DMxz9rkJwWZ5AqTdDggA8BLDb3DTgP5Oz0VUo2zj6B4=;
+	s=default; t=1637656289;
+	bh=efjqB8lclC/CTZtvxidalnRW6k3GNlgXbza8zFiCoZM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iOr1ZtjtyyfabUc3V9kQSqFcUWyGTUwiuvn0lYGcQCHS8MIpgYEJ3IBfmZVcMZDgo
-	 yoDxGxOfDgcJOrQinLgkYrqGa3zpamPQ1Lr3XR3rgb1AEhhQz/pGJQyW1SRAjqUFeg
-	 KxUWUt7yhjwgjr1aIJJ0QmP0eYPC/zNay4zX4gXo=
+	b=f0B8ai/zTCajTNFyYt+pqkccKKbqzOW6e9T7Y33RbBjeNMeWEq4ggeg5I8Gr4bWiF
+	 EqqsQRbqU1Y08WrE4AMXErDA+QFyBHphk4Wn0KNY6iIMe5OvmOfS3I3ti5CAJCjWY+
+	 FC6FBSZzvF1TohXgiKCrWPgsehF1K9PLgCzWJHU0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D85CFF805CA;
-	Tue, 23 Nov 2021 09:22:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 919E4F805D9;
+	Tue, 23 Nov 2021 09:22:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2A61DF80212; Mon, 22 Nov 2021 23:23:41 +0100 (CET)
+ id 74AEEF80212; Mon, 22 Nov 2021 23:23:45 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 023C1F801F7
- for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2021 23:23:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 023C1F801F7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 26A37F80141
+ for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2021 23:23:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26A37F80141
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="D2LWKDba"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E0A061053;
- Mon, 22 Nov 2021 22:23:24 +0000 (UTC)
+ header.b="U8NP1Zc1"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8354861078;
+ Mon, 22 Nov 2021 22:23:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1637619811;
- bh=DMxz9rkJwWZ5AqTdDggA8BLDb3DTgP5Oz0VUo2zj6B4=;
+ s=k20201202; t=1637619817;
+ bh=efjqB8lclC/CTZtvxidalnRW6k3GNlgXbza8zFiCoZM=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=D2LWKDbatUWolgPnSkaWF6uAmXJr7TRUsffIAYil8ieu9gP8qTxDGTlSSeFslk+FX
- lfasUT+qjAZz4FqvxeQbdvqY7gm+Szg9KN11yNlzJ9GOQaUe2v85AHYKYosrXAMyrE
- 83Qo7Vahw/aCxC+KQwYxEhvp5nYKM2xiNPHzZz3mpotZj10zImrNUftev0qcZA03Zn
- NQLipAZpiDTgThm7UHwH21MkyStuMHBgZkt8Z6fmCqVtjxInuWYT3q2YF1Ajj0kiB1
- UMwMelZbEWO8BXX6fob9irbYUtNypouPZRN0P8c65LiXoihCRpce5QwQAS3j6Vkxsv
- uUuI47S8VCEng==
+ b=U8NP1Zc1gLJF725LnCrWHgavWOnwK2Ly1UnDTKcbTcdYbgu+miYfDh7Q5MZ9ByoyK
+ GvjVX6mKNAxeCgehUkVbusSV4QnRfJUYbwPUXViEyL36MN8wB2u6OmqubcsatL9+Mq
+ yeV+rIZkvLJeCdnf9o9aNwg+uxPfN+v8kmtNfC7MLTzE2itRKsloRWob2HCygsanXX
+ VTKTLI7mi+52T1tblQaF6Ba0ZDdU3kkLWFXoKX2E3e7ejJJSpfWQ0xjrJeJKfQB24g
+ xd90ghdcOKTXQirzhVKhiK98fux08E5EopBbXH5f2PC+N20hBxkQSuiFisX18MW7Gu
+ qmf6Z6dWyCwbA==
 From: Arnd Bergmann <arnd@kernel.org>
 To: Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH v2 09/11] dmaengine: xilinx_dpdma: stop using slave_id field
-Date: Mon, 22 Nov 2021 23:22:01 +0100
-Message-Id: <20211122222203.4103644-10-arnd@kernel.org>
+Subject: [PATCH v2 10/11] dmaengine: tegra20-apb: stop checking
+ config->slave_id
+Date: Mon, 22 Nov 2021 23:22:02 +0100
+Message-Id: <20211122222203.4103644-11-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20211122222203.4103644-1-arnd@kernel.org>
 References: <20211122222203.4103644-1-arnd@kernel.org>
@@ -94,122 +95,31 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The display driver wants to pass a custom flag to the DMA engine driver,
-which it started doing by using the slave_id field that was traditionally
-used for a different purpose.
+Nothing sets the slave_id field any more, so stop accessing
+it to allow the removal of this field.
 
-As there is no longer a correct use for the slave_id field, it should
-really be removed, and the remaining users changed over to something
-different.
-
-The new mechanism for passing nonstandard settings is using the
-.peripheral_config field, so use that to pass a newly defined structure
-here, making it clear that this will not work in portable drivers.
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/dma/xilinx/xilinx_dpdma.c  | 17 +++++++++++------
- drivers/gpu/drm/xlnx/zynqmp_disp.c |  9 +++++++--
- include/linux/dma/xilinx_dpdma.h   | 11 +++++++++++
- 3 files changed, 29 insertions(+), 8 deletions(-)
- create mode 100644 include/linux/dma/xilinx_dpdma.h
+ drivers/dma/tegra20-apb-dma.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/drivers/dma/xilinx/xilinx_dpdma.c b/drivers/dma/xilinx/xilinx_dpdma.c
-index ce5c66e6897d..b0f4948b00a5 100644
---- a/drivers/dma/xilinx/xilinx_dpdma.c
-+++ b/drivers/dma/xilinx/xilinx_dpdma.c
-@@ -12,6 +12,7 @@
- #include <linux/clk.h>
- #include <linux/debugfs.h>
- #include <linux/delay.h>
-+#include <linux/dma/xilinx_dpdma.h>
- #include <linux/dmaengine.h>
- #include <linux/dmapool.h>
- #include <linux/interrupt.h>
-@@ -1273,6 +1274,7 @@ static int xilinx_dpdma_config(struct dma_chan *dchan,
- 			       struct dma_slave_config *config)
- {
- 	struct xilinx_dpdma_chan *chan = to_xilinx_chan(dchan);
-+	struct xilinx_dpdma_peripheral_config *pconfig;
- 	unsigned long flags;
+diff --git a/drivers/dma/tegra20-apb-dma.c b/drivers/dma/tegra20-apb-dma.c
+index b7260749e8ee..eaafcbe4ca94 100644
+--- a/drivers/dma/tegra20-apb-dma.c
++++ b/drivers/dma/tegra20-apb-dma.c
+@@ -343,12 +343,6 @@ static int tegra_dma_slave_config(struct dma_chan *dc,
+ 	}
  
- 	/*
-@@ -1282,15 +1284,18 @@ static int xilinx_dpdma_config(struct dma_chan *dchan,
- 	 * fixed both on the DPDMA side and on the DP controller side.
- 	 */
- 
--	spin_lock_irqsave(&chan->lock, flags);
--
- 	/*
--	 * Abuse the slave_id to indicate that the channel is part of a video
--	 * group.
-+	 * Use the peripheral_config to indicate that the channel is part
-+	 * of a video group. This requires matching use of the custom
-+	 * structure in each driver.
- 	 */
--	if (chan->id <= ZYNQMP_DPDMA_VIDEO2)
--		chan->video_group = config->slave_id != 0;
-+	pconfig = config->peripheral_config;
-+	if (WARN_ON(pconfig && config->peripheral_size != sizeof(*pconfig)))
-+		return -EINVAL;
- 
-+	spin_lock_irqsave(&chan->lock, flags);
-+	if (chan->id <= ZYNQMP_DPDMA_VIDEO2 && pconfig)
-+		chan->video_group = pconfig->video_group;
- 	spin_unlock_irqrestore(&chan->lock, flags);
+ 	memcpy(&tdc->dma_sconfig, sconfig, sizeof(*sconfig));
+-	if (tdc->slave_id == TEGRA_APBDMA_SLAVE_ID_INVALID &&
+-	    sconfig->device_fc) {
+-		if (sconfig->slave_id > TEGRA_APBDMA_CSR_REQ_SEL_MASK)
+-			return -EINVAL;
+-		tdc->slave_id = sconfig->slave_id;
+-	}
+ 	tdc->config_init = true;
  
  	return 0;
-diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.c b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-index ff2b308d8651..11c409cbc88e 100644
---- a/drivers/gpu/drm/xlnx/zynqmp_disp.c
-+++ b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-@@ -24,6 +24,7 @@
- 
- #include <linux/clk.h>
- #include <linux/delay.h>
-+#include <linux/dma/xilinx_dpdma.h>
- #include <linux/dma-mapping.h>
- #include <linux/dmaengine.h>
- #include <linux/module.h>
-@@ -1058,14 +1059,18 @@ static void zynqmp_disp_layer_set_format(struct zynqmp_disp_layer *layer,
- 	zynqmp_disp_avbuf_set_format(layer->disp, layer, layer->disp_fmt);
- 
- 	/*
--	 * Set slave_id for each DMA channel to indicate they're part of a
-+	 * Set pconfig for each DMA channel to indicate they're part of a
- 	 * video group.
- 	 */
- 	for (i = 0; i < info->num_planes; i++) {
- 		struct zynqmp_disp_layer_dma *dma = &layer->dmas[i];
-+		struct xilinx_dpdma_peripheral_config pconfig = {
-+			.video_group = true,
-+		};
- 		struct dma_slave_config config = {
- 			.direction = DMA_MEM_TO_DEV,
--			.slave_id = 1,
-+			.peripheral_config = &pconfig,
-+			.peripheral_size = sizeof(pconfig),
- 		};
- 
- 		dmaengine_slave_config(dma->chan, &config);
-diff --git a/include/linux/dma/xilinx_dpdma.h b/include/linux/dma/xilinx_dpdma.h
-new file mode 100644
-index 000000000000..83a1377f03f8
---- /dev/null
-+++ b/include/linux/dma/xilinx_dpdma.h
-@@ -0,0 +1,11 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#ifndef __LINUX_DMA_XILINX_DPDMA_H
-+#define __LINUX_DMA_XILINX_DPDMA_H
-+
-+#include <linux/types.h>
-+
-+struct xilinx_dpdma_peripheral_config {
-+	bool video_group;
-+};
-+
-+#endif /* __LINUX_DMA_XILINX_DPDMA_H */
 -- 
 2.29.2
 
