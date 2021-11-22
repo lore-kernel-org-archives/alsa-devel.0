@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 436E7C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Nov 2021 08:32:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D4CAC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Nov 2021 08:32:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 642DC1654;
-	Tue, 23 Nov 2021 09:31:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 642DC1654
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8E41116DF;
+	Tue, 23 Nov 2021 09:31:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E41116DF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637656328;
-	bh=MlucnWA591AMyZeeTeyE/9PORMb1PoJ4pELrZC2QG1I=;
+	s=default; t=1637656347;
+	bh=d5pWWVpz/fA93ZWwjk87aewZmzShqL5ZIE0KMO9Q2Sk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=q8cH3nXepotz+b7u357ZcGInmfvMEbh6mfazBzl5zMPhZAGDixQ251I92gbUdgHeW
-	 jIPSQZg/y59GPevHitjshYnYzHxQ7gCznatrWlNq6i73vMVtD+mRER4wM00FEhSlFX
-	 tdtysQmut9UUNZ2QAfpO3C/bCYe2YJ3uEgeKGjww=
+	b=iXYSZeb6VclUJH+YfeBj5yFGAGseFiLyIHEvCp6U9/HCDUlyaWkHMhrzHjN0NfxXL
+	 YsZATOiAqYQ+H+jZkt0dboX0tYBkvw8DmvuX+ZrvaIrwF8nXOSBBGfMRtSguuogLsL
+	 9cw+OAKnU07S/NOs0UkTwzy1fRLV4hN3GSXHLwLs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 537BAF805E7;
-	Tue, 23 Nov 2021 09:22:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5A7C1F805EB;
+	Tue, 23 Nov 2021 09:22:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 224A0F80212; Mon, 22 Nov 2021 16:56:30 +0100 (CET)
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be
- [IPv6:2a02:1800:110:4::f00:19])
+ id A3F85F80212; Mon, 22 Nov 2021 16:57:01 +0100 (CET)
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be
+ [IPv6:2a02:1800:120:4::f00:13])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 066CFF801F7
- for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2021 16:56:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 066CFF801F7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2E01BF80154
+ for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2021 16:56:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E01BF80154
 Received: from ramsan.of.borg ([84.195.186.194])
- by laurent.telenet-ops.be with bizsmtp
- id MTvi2600Z4C55Sk01TviwZ; Mon, 22 Nov 2021 16:56:23 +0100
+ by baptiste.telenet-ops.be with bizsmtp
+ id MTwG2600F4C55Sk01TwGVb; Mon, 22 Nov 2021 16:56:57 +0100
 Received: from rox.of.borg ([192.168.97.57])
  by ramsan.of.borg with esmtps (TLS1.3) tls
  TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.93)
  (envelope-from <geert@linux-m68k.org>)
- id 1mpBe6-00EL3i-LK; Mon, 22 Nov 2021 16:54:18 +0100
+ id 1mpBe6-00EL3m-Lm; Mon, 22 Nov 2021 16:54:18 +0100
 Received: from geert by rox.of.borg with local (Exim 4.93)
  (envelope-from <geert@linux-m68k.org>)
- id 1mpBe5-00HGzM-PZ; Mon, 22 Nov 2021 16:54:17 +0100
+ id 1mpBe5-00HH1L-TK; Mon, 22 Nov 2021 16:54:17 +0100
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 To: Tony Lindgren <tony@atomide.com>, Russell King <linux@armlinux.org.uk>,
  Rajendra Nayak <rnayak@codeaurora.org>, Paul Walmsley <paul@pwsan.com>,
@@ -68,9 +68,9 @@ To: Tony Lindgren <tony@atomide.com>, Russell King <linux@armlinux.org.uk>,
  Daniel Lezcano <daniel.lezcano@linaro.org>,
  Amit Kucheria <amitk@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH/RFC 12/17] pinctrl: aspeed: Use bitfield helpers
-Date: Mon, 22 Nov 2021 16:54:05 +0100
-Message-Id: <15158715ad2278191e310ac5a8d3dba7cc4fb9cc.1637592133.git.geert+renesas@glider.be>
+Subject: [PATCH/RFC 15/17] thermal/ti-soc-thermal: Use bitfield helpers
+Date: Mon, 22 Nov 2021 16:54:08 +0100
+Message-Id: <37efc6013a24653e316215424b160d613f42dcd5.1637592133.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1637592133.git.geert+renesas@glider.be>
 References: <cover.1637592133.git.geert+renesas@glider.be>
@@ -109,136 +109,54 @@ Compile-tested only.
 Marked RFC, as this depends on [PATCH 01/17], but follows a different
 path to upstream.
 ---
- drivers/pinctrl/aspeed/pinctrl-aspeed-g4.c | 3 ++-
- drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c | 3 ++-
- drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c | 3 ++-
- drivers/pinctrl/aspeed/pinctrl-aspeed.c    | 5 +++--
- drivers/pinctrl/aspeed/pinmux-aspeed.c     | 6 ++++--
- 5 files changed, 13 insertions(+), 7 deletions(-)
+ drivers/thermal/ti-soc-thermal/ti-bandgap.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/pinctrl/aspeed/pinctrl-aspeed-g4.c b/drivers/pinctrl/aspeed/pinctrl-aspeed-g4.c
-index bfed0e2746437b4a..bfb2a7b229915a68 100644
---- a/drivers/pinctrl/aspeed/pinctrl-aspeed-g4.c
-+++ b/drivers/pinctrl/aspeed/pinctrl-aspeed-g4.c
-@@ -2,6 +2,7 @@
- /*
-  * Copyright (C) 2016 IBM Corp.
-  */
-+#include <linux/bitfield.h>
- #include <linux/bitops.h>
- #include <linux/init.h>
- #include <linux/io.h>
-@@ -2551,7 +2552,7 @@ static int aspeed_g4_sig_expr_set(struct aspeed_pinmux_data *ctx,
- 	for (i = 0; i < expr->ndescs; i++) {
- 		const struct aspeed_sig_desc *desc = &expr->descs[i];
- 		u32 pattern = enable ? desc->enable : desc->disable;
--		u32 val = (pattern << __ffs(desc->mask));
-+		u32 val = field_prep(desc->mask, pattern);
- 
- 		if (!ctx->maps[desc->ip])
- 			return -ENODEV;
-diff --git a/drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c b/drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c
-index 4c0d26606b6cc7d6..8cc6d9c1f1c78296 100644
---- a/drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c
-+++ b/drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c
-@@ -2,6 +2,7 @@
- /*
-  * Copyright (C) 2016 IBM Corp.
-  */
-+#include <linux/bitfield.h>
- #include <linux/bitops.h>
- #include <linux/init.h>
- #include <linux/io.h>
-@@ -2724,7 +2725,7 @@ static int aspeed_g5_sig_expr_set(struct aspeed_pinmux_data *ctx,
- 	for (i = 0; i < expr->ndescs; i++) {
- 		const struct aspeed_sig_desc *desc = &expr->descs[i];
- 		u32 pattern = enable ? desc->enable : desc->disable;
--		u32 val = (pattern << __ffs(desc->mask));
-+		u32 val = field_prep(desc->mask, pattern);
- 		struct regmap *map;
- 
- 		map = aspeed_g5_acquire_regmap(ctx, desc->ip);
-diff --git a/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c b/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
-index a3fa03bcd9a30577..00f7b69a74e9e743 100644
---- a/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
-+++ b/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
- /* Copyright (C) 2019 IBM Corp. */
-+#include <linux/bitfield.h>
- #include <linux/bitops.h>
- #include <linux/init.h>
- #include <linux/io.h>
-@@ -2649,7 +2650,7 @@ static int aspeed_g6_sig_expr_set(struct aspeed_pinmux_data *ctx,
- 	for (i = 0; i < expr->ndescs; i++) {
- 		const struct aspeed_sig_desc *desc = &expr->descs[i];
- 		u32 pattern = enable ? desc->enable : desc->disable;
--		u32 val = (pattern << __ffs(desc->mask));
-+		u32 val = field_prep(desc->mask, pattern);
- 		bool is_strap;
- 
- 		if (!ctx->maps[desc->ip])
-diff --git a/drivers/pinctrl/aspeed/pinctrl-aspeed.c b/drivers/pinctrl/aspeed/pinctrl-aspeed.c
-index c94e24aadf922d2a..839ac48f75836352 100644
---- a/drivers/pinctrl/aspeed/pinctrl-aspeed.c
-+++ b/drivers/pinctrl/aspeed/pinctrl-aspeed.c
-@@ -3,6 +3,7 @@
-  * Copyright (C) 2016 IBM Corp.
+diff --git a/drivers/thermal/ti-soc-thermal/ti-bandgap.c b/drivers/thermal/ti-soc-thermal/ti-bandgap.c
+index ea0603b59309f5f0..83a34d698414b177 100644
+--- a/drivers/thermal/ti-soc-thermal/ti-bandgap.c
++++ b/drivers/thermal/ti-soc-thermal/ti-bandgap.c
+@@ -9,6 +9,7 @@
+  *   Eduardo Valentin <eduardo.valentin@ti.com>
   */
  
 +#include <linux/bitfield.h>
- #include <linux/mfd/syscon.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
-@@ -547,7 +548,7 @@ int aspeed_pin_config_get(struct pinctrl_dev *pctldev, unsigned int offset,
- 		return rc;
+ #include <linux/clk.h>
+ #include <linux/cpu_pm.h>
+ #include <linux/device.h>
+@@ -80,10 +81,10 @@ do {								\
+ 	struct temp_sensor_registers *t;			\
+ 	u32 r;							\
+ 								\
+-	t = bgp->conf->sensors[(id)].registers;		\
++	t = bgp->conf->sensors[(id)].registers;			\
+ 	r = ti_bandgap_readl(bgp, t->reg);			\
+ 	r &= ~t->mask;						\
+-	r |= (val) << __ffs(t->mask);				\
++	r |= field_prep(t->mask, val);				\
+ 	ti_bandgap_writel(bgp, r, t->reg);			\
+ } while (0)
  
- 	pmap = find_pinconf_map(pdata, param, MAP_TYPE_VAL,
--			(val & pconf->mask) >> __ffs(pconf->mask));
-+				field_get(pconf->mask, val));
+@@ -342,8 +343,7 @@ static void ti_bandgap_read_counter(struct ti_bandgap *bgp, int id,
  
- 	if (!pmap)
- 		return -EINVAL;
-@@ -595,7 +596,7 @@ int aspeed_pin_config_set(struct pinctrl_dev *pctldev, unsigned int offset,
- 		if (WARN_ON(!pmap))
- 			return -EINVAL;
- 
--		val = pmap->val << __ffs(pconf->mask);
-+		val = field_prep(pconf->mask, pmap->val);
- 
- 		rc = regmap_update_bits(pdata->scu, pconf->reg,
- 					pconf->mask, val);
-diff --git a/drivers/pinctrl/aspeed/pinmux-aspeed.c b/drivers/pinctrl/aspeed/pinmux-aspeed.c
-index 4aa46383c2c533f0..61ddd550439325ee 100644
---- a/drivers/pinctrl/aspeed/pinmux-aspeed.c
-+++ b/drivers/pinctrl/aspeed/pinmux-aspeed.c
-@@ -3,6 +3,8 @@
- 
- /* Pieces to enable drivers to implement the .set callback */
- 
-+#include <linux/bitfield.h>
-+
- #include "pinmux-aspeed.h"
- 
- static const char *const aspeed_pinmux_ips[] = {
-@@ -17,7 +19,7 @@ static inline void aspeed_sig_desc_print_val(
- 	pr_debug("Want %s%X[0x%08X]=0x%X, got 0x%X from 0x%08X\n",
- 			aspeed_pinmux_ips[desc->ip], desc->reg,
- 			desc->mask, enable ? desc->enable : desc->disable,
--			(rv & desc->mask) >> __ffs(desc->mask), rv);
-+			field_get(desc->mask, rv), rv);
+ 	tsr = bgp->conf->sensors[id].registers;
+ 	time = ti_bandgap_readl(bgp, tsr->bgap_counter);
+-	time = (time & tsr->counter_mask) >>
+-					__ffs(tsr->counter_mask);
++	time = field_get(tsr->counter_mask, time);
+ 	time = time * 1000 / bgp->clk_rate;
+ 	*interval = time;
  }
+@@ -363,8 +363,7 @@ static void ti_bandgap_read_counter_delay(struct ti_bandgap *bgp, int id,
+ 	tsr = bgp->conf->sensors[id].registers;
  
- /**
-@@ -55,7 +57,7 @@ int aspeed_sig_desc_eval(const struct aspeed_sig_desc *desc,
- 	aspeed_sig_desc_print_val(desc, enabled, raw);
- 	want = enabled ? desc->enable : desc->disable;
- 
--	return ((raw & desc->mask) >> __ffs(desc->mask)) == want;
-+	return field_get(desc->mask, raw) == want;
- }
- 
- /**
+ 	reg_val = ti_bandgap_readl(bgp, tsr->bgap_mask_ctrl);
+-	reg_val = (reg_val & tsr->mask_counter_delay_mask) >>
+-				__ffs(tsr->mask_counter_delay_mask);
++	reg_val = field_get(tsr->mask_counter_delay_mask, reg_val);
+ 	switch (reg_val) {
+ 	case 0:
+ 		*interval = 0;
 -- 
 2.25.1
 
