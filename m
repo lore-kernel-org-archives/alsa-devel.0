@@ -4,82 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 912EDC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Nov 2021 11:50:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05980C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Nov 2021 12:53:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AB1011693;
-	Mon, 22 Nov 2021 12:49:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB1011693
+	by alsa0.perex.cz (Postfix) with ESMTPS id 34D521680;
+	Mon, 22 Nov 2021 13:52:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 34D521680
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637581807;
-	bh=i8nQqvHrbnhQsdj1RPF+5MYXOOUlAmfjetkmvFQrN0E=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=uPyTseOIKV+9wovT03g8UdM8kMti5WnznQ9afwA/C5JLB+FwgMTeXPiUt/v81OQqN
-	 rMSJ7ZSEYCodqv4P979QPe3Ls11yZaa7GX2MpPbYLvim+Vkd+kehDFzlVqtHXGFh+e
-	 tEM1PwcVlBowpJ4XsgekQPe6YxSgwy1CWinNvQzg=
+	s=default; t=1637585625;
+	bh=2q/4MyLBOi9RaSOCoTjo0gGkPGSIGSRWiVVwMXIuzTc=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=kMQZL/RjUw5JEDVchEmC6v/kAyVbIE0rz3LkybE5t2W8cLAEJVQZnyphp5v4tc6Xc
+	 qAPvANx1JXeV2zAk9goQ0cMJnRuYDvJi/VjLrZJxbglLZ4tL2y6RBGC5uTfQnpp6Vq
+	 kNbg8Wn+7x3gM+aSXgg5pN/FEqgd8mWHciaSvwBw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 01070F80510;
-	Mon, 22 Nov 2021 12:47:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BE128F80141;
+	Mon, 22 Nov 2021 13:52:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7E0F2F80507; Mon, 22 Nov 2021 12:47:27 +0100 (CET)
-Received: from m43-7.mailgun.net (m43-7.mailgun.net [69.72.43.7])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 692C7F80212; Mon, 22 Nov 2021 13:52:53 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EDB7DF804F2
- for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2021 12:47:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EDB7DF804F2
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=mg.codeaurora.org
- header.i=@mg.codeaurora.org header.b="OCRRvqoN"
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
- q=dns/txt; 
- s=smtp; t=1637581643; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=3bRiAlqOxAroLmQSTm0nepylnKU59H1UVGCiGin5ux4=;
- b=OCRRvqoNm8+cbM0OEud+2lH8dD8iHwdKV0WmCIBvf1pBDx25fUVY8nH24pZOr5HYXU3YQDG9
- 03YHJHOmFGEmJsAxkiLyMwf8e9m/C5WY/qIjfJwCO6w6dFSOYqVRQxBGWoe/GgtEzAOBy4cD
- SV2X4FVRT87cl8FQJw60eDfCAJU=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 619b834bbebfa3d4d5ac4184 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 22 Nov 2021 11:47:23
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id EC9D5C43150; Mon, 22 Nov 2021 11:47:22 +0000 (UTC)
-Received: from hu-srivasam-hyd.qualcomm.com (unknown [202.46.22.19])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: srivasam)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id 0347AC4361A;
- Mon, 22 Nov 2021 11:47:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 0347AC4361A
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- spf=fail smtp.mailfrom=codeaurora.org
-From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To: agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
- broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
- bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
- srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
- linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- swboyd@chromium.org, judyhsiao@chromium.org
-Subject: [PATCH v5 09/10] ASoC: qcom: lpass-sc7280: Add platform driver for
- lpass audio
-Date: Mon, 22 Nov 2021 17:16:38 +0530
-Message-Id: <1637581599-24120-5-git-send-email-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1637581599-24120-1-git-send-email-srivasam@codeaurora.org>
-References: <1637581599-24120-1-git-send-email-srivasam@codeaurora.org>
-Cc: Venkata Prasad Potturu <potturu@codeaurora.org>,
- Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id B19C3F80141
+ for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2021 13:52:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B19C3F80141
+X-IronPort-AV: E=McAfee;i="6200,9189,10175"; a="235012820"
+X-IronPort-AV: E=Sophos;i="5.87,254,1631602800"; d="scan'208";a="235012820"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 22 Nov 2021 04:52:39 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,254,1631602800"; d="scan'208";a="456627390"
+Received: from macchian-builder.itwn.intel.com ([10.5.253.188])
+ by orsmga006.jf.intel.com with ESMTP; 22 Nov 2021 04:52:37 -0800
+From: Mac Chiang <mac.chiang@intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [RESEND,v3] ASoC: Intel: boards: add max98390 2/4 speakers support
+Date: Mon, 22 Nov 2021 07:50:02 -0500
+Message-Id: <20211122125002.3206-1-mac.chiang@intel.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: kai.vehmanen@linux.intel.com, yang.jie@linux.intel.com,
+ pierre-louis.bossart@linux.intel.com, liam.r.girdwood@linux.intel.com,
+ mac.chiang@intel.com, broonie@kernel.org, bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,441 +66,472 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add platform driver for configuring sc7280 lpass core I2S and
-DMA configuration to support playback & capture to external codecs
-connected over secondary MI2S interface and soundwire interface.
+support 2 hw boards.
+1. SSP2 connects max98390, 2 speakers.
+2. SSP1 connects max98390, 2/4 speakers.
 
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Co-developed-by: Venkata Prasad Potturu <potturu@codeaurora.org>
-Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
+2 or 4 speakers playback
+add echo reference capture
+add bt offload support
+add DMI_OEM_STRING for board variants
+add ALC5682I-VS support
+
+Signed-off-by: Mark Hsieh <mark_hsieh@wistron.corp-partner.google.com>
+Signed-off-by: Mac Chiang <mac.chiang@intel.com>
+Signed-off-by: Kieth Tzeng <keith.tzeng@quantatw.com>
+Signed-off-by: Brent Lu <brent.lu@intel.com>
 ---
- sound/soc/qcom/lpass-sc7280.c | 416 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 416 insertions(+)
- create mode 100644 sound/soc/qcom/lpass-sc7280.c
+changes in resend v3:
+  - use .comp_ids to scan acpi support ALC5682I-VD or ALC5682I-VS
+---
+ sound/soc/intel/boards/Kconfig                |   1 +
+ sound/soc/intel/boards/sof_maxim_common.c     | 180 ++++++++++++++++++
+ sound/soc/intel/boards/sof_maxim_common.h     |  16 ++
+ sound/soc/intel/boards/sof_rt5682.c           |  84 ++++++++
+ .../intel/common/soc-acpi-intel-adl-match.c   |  21 ++
+ sound/soc/sof/sof-pci-dev.c                   |   9 +
+ 6 files changed, 311 insertions(+)
 
-diff --git a/sound/soc/qcom/lpass-sc7280.c b/sound/soc/qcom/lpass-sc7280.c
-new file mode 100644
-index 0000000..20ad3ee
---- /dev/null
-+++ b/sound/soc/qcom/lpass-sc7280.c
-@@ -0,0 +1,416 @@
-+// SPDX-License-Identifier: GPL-2.0-only
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index 849445fcc05d..34ccefcc30c7 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -467,6 +467,7 @@ config SND_SOC_INTEL_SOF_RT5682_MACH
+ 		    (MFD_INTEL_LPSS || COMPILE_TEST)) ||\
+ 		   (SND_SOC_SOF_BAYTRAIL && (X86_INTEL_LPSS || COMPILE_TEST))
+ 	select SND_SOC_MAX98373_I2C
++	select SND_SOC_MAX98390
+ 	select SND_SOC_RT1011
+ 	select SND_SOC_RT1015
+ 	select SND_SOC_RT1015P
+diff --git a/sound/soc/intel/boards/sof_maxim_common.c b/sound/soc/intel/boards/sof_maxim_common.c
+index e66dfe666915..9171d9cd179e 100644
+--- a/sound/soc/intel/boards/sof_maxim_common.c
++++ b/sound/soc/intel/boards/sof_maxim_common.c
+@@ -5,6 +5,7 @@
+ #include <linux/string.h>
+ #include <sound/pcm.h>
+ #include <sound/soc.h>
++#include <sound/soc-acpi.h>
+ #include <sound/soc-dai.h>
+ #include <sound/soc-dapm.h>
+ #include <uapi/sound/asound.h>
+@@ -133,6 +134,185 @@ void max_98373_set_codec_conf(struct snd_soc_card *card)
+ }
+ EXPORT_SYMBOL_NS(max_98373_set_codec_conf, SND_SOC_INTEL_SOF_MAXIM_COMMON);
+ 
 +/*
-+ * Copyright (c) 2020-2021, The Linux Foundation. All rights reserved.
-+ *
-+ * lpass-sc7180.c -- ALSA SoC platform-machine driver for QTi LPASS
++ * Maxim MAX98390
 + */
++const struct snd_soc_dapm_route max_98390_dapm_routes[] = {
++	/* speaker */
++	{ "Left Spk", NULL, "Left BE_OUT" },
++	{ "Right Spk", NULL, "Right BE_OUT" },
++};
 +
-+#include <linux/module.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+#include <linux/pm_domain.h>
-+#include <linux/pm_runtime.h>
++static const struct snd_kcontrol_new max_98390_tt_kcontrols[] = {
++	SOC_DAPM_PIN_SWITCH("TL Spk"),
++	SOC_DAPM_PIN_SWITCH("TR Spk"),
++};
 +
-+#include <dt-bindings/sound/sc7180-lpass.h>
++static const struct snd_soc_dapm_widget max_98390_tt_dapm_widgets[] = {
++	SND_SOC_DAPM_SPK("TL Spk", NULL),
++	SND_SOC_DAPM_SPK("TR Spk", NULL),
++};
 +
-+#include "lpass-lpaif-reg.h"
-+#include "lpass.h"
++const struct snd_soc_dapm_route max_98390_tt_dapm_routes[] = {
++	/* Tweeter speaker */
++	{ "TL Spk", NULL, "Tweeter Left BE_OUT" },
++	{ "TR Spk", NULL, "Tweeter Right BE_OUT" },
++};
 +
-+static struct snd_soc_dai_driver sc7280_lpass_cpu_dai_driver[] = {
++static struct snd_soc_codec_conf max_98390_codec_conf[] = {
 +	{
-+		.id = LPASS_CDC_DMA_RX0,
-+		.name = "CDC DMA RX",
-+		.playback = {
-+			.stream_name = "WCD Playback",
-+			.formats		= SNDRV_PCM_FMTBIT_S16,
-+			.rates = SNDRV_PCM_RATE_48000,
-+			.rate_min		= 48000,
-+			.rate_max		= 48000,
-+			.channels_min	= 2,
-+			.channels_max	= 2,
-+		},
-+		.ops	= &asoc_qcom_lpass_wcd_dai_ops,
++		.dlc = COMP_CODEC_CONF(MAX_98390_DEV0_NAME),
++		.name_prefix = "Right",
 +	},
 +	{
-+		.id = LPASS_CDC_DMA_TX3,
-+		.name = "CDC DMA TX",
-+		.capture = {
-+			.stream_name = "WCD Capture",
-+			.formats = SNDRV_PCM_FMTBIT_S16,
-+			.rates = SNDRV_PCM_RATE_48000,
-+			.rate_min		= 48000,
-+			.rate_max		= 48000,
-+			.channels_min	= 1,
-+			.channels_max	= 2,
-+		},
-+		.ops	= &asoc_qcom_lpass_wcd_dai_ops,
-+	},
-+
-+	{
-+		.id = MI2S_SECONDARY,
-+		.name = "Secondary MI2S",
-+		.playback = {
-+			.stream_name = "Secondary MI2S Playback",
-+			.formats		= SNDRV_PCM_FMTBIT_S16,
-+			.rates = SNDRV_PCM_RATE_48000,
-+			.rate_min		= 48000,
-+			.rate_max		= 48000,
-+			.channels_min	= 2,
-+			.channels_max	= 2,
-+		},
-+		.probe	= &asoc_qcom_lpass_cpu_dai_probe,
-+		.ops	= &asoc_qcom_lpass_cpu_dai_ops,
-+	},
-+	{
-+		.id = LPASS_DP_RX,
-+		.name = "Hdmi",
-+		.playback = {
-+			.stream_name = "DP Playback",
-+			.formats		= SNDRV_PCM_FMTBIT_S24,
-+			.rates = SNDRV_PCM_RATE_48000,
-+			.rate_min		= 48000,
-+			.rate_max		= 48000,
-+			.channels_min	= 2,
-+			.channels_max	= 2,
-+		},
-+		.ops	= &asoc_qcom_lpass_hdmi_dai_ops,
-+	},
-+	{
-+		.id = LPASS_CDC_DMA_VA_TX0,
-+		.name = "CDC DMA VA",
-+		.capture = {
-+			.stream_name = "DMIC Capture",
-+			.formats = SNDRV_PCM_FMTBIT_S16,
-+			.rates = SNDRV_PCM_RATE_48000,
-+			.rate_min	= 48000,
-+			.rate_max	= 48000,
-+			.channels_min	= 2,
-+			.channels_max	= 4,
-+		},
-+		.ops	= &asoc_qcom_lpass_wcd_dai_ops,
++		.dlc = COMP_CODEC_CONF(MAX_98390_DEV1_NAME),
++		.name_prefix = "Left",
 +	},
 +};
 +
-+static int sc7280_lpass_alloc_dma_channel(struct lpass_data *drvdata,
-+				int direction, unsigned int dai_id)
++static struct snd_soc_codec_conf max_98390_4spk_codec_conf[] = {
++	{
++		.dlc = COMP_CODEC_CONF(MAX_98390_DEV0_NAME),
++		.name_prefix = "Right",
++	},
++	{
++		.dlc = COMP_CODEC_CONF(MAX_98390_DEV1_NAME),
++		.name_prefix = "Left",
++	},
++	{
++		.dlc = COMP_CODEC_CONF(MAX_98390_DEV2_NAME),
++		.name_prefix = "Tweeter Right",
++	},
++	{
++		.dlc = COMP_CODEC_CONF(MAX_98390_DEV3_NAME),
++		.name_prefix = "Tweeter Left",
++	},
++};
++
++struct snd_soc_dai_link_component max_98390_components[] = {
++	{
++		.name = MAX_98390_DEV0_NAME,
++		.dai_name = MAX_98390_CODEC_DAI,
++	},
++	{
++		.name = MAX_98390_DEV1_NAME,
++		.dai_name = MAX_98390_CODEC_DAI,
++	},
++};
++EXPORT_SYMBOL_NS(max_98390_components, SND_SOC_INTEL_SOF_MAXIM_COMMON);
++
++struct snd_soc_dai_link_component max_98390_4spk_components[] = {
++	{
++		.name = MAX_98390_DEV0_NAME,
++		.dai_name = MAX_98390_CODEC_DAI,
++	},
++	{
++		.name = MAX_98390_DEV1_NAME,
++		.dai_name = MAX_98390_CODEC_DAI,
++	},
++	{
++		.name = MAX_98390_DEV2_NAME,
++		.dai_name = MAX_98390_CODEC_DAI,
++	},
++	{
++		.name = MAX_98390_DEV3_NAME,
++		.dai_name = MAX_98390_CODEC_DAI,
++	},
++};
++EXPORT_SYMBOL_NS(max_98390_4spk_components, SND_SOC_INTEL_SOF_MAXIM_COMMON);
++
++static int max_98390_hw_params(struct snd_pcm_substream *substream,
++			       struct snd_pcm_hw_params *params)
 +{
-+	struct lpass_variant *v = drvdata->variant;
-+	int chan = 0;
++	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
++	struct snd_soc_dai *codec_dai;
++	int i;
 +
-+	if (dai_id == LPASS_CDC_DMA_RX0 ||
-+	dai_id == LPASS_CDC_DMA_TX3) {
-+		if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
-+			chan = find_first_zero_bit(&drvdata->rxtx_dma_ch_bit_map,
-+									v->rxtx_rdma_channels);
-+
-+			if (chan >= v->rxtx_rdma_channels)
-+				return -EBUSY;
-+		} else {
-+			chan = find_next_zero_bit(&drvdata->rxtx_dma_ch_bit_map,
-+							v->rxtx_wrdma_channel_start +
-+							v->rxtx_wrdma_channels,
-+							v->rxtx_wrdma_channel_start);
-+
-+			if (chan >=	 v->rxtx_wrdma_channel_start + v->rxtx_wrdma_channels)
-+				return -EBUSY;
++	for_each_rtd_codec_dais(rtd, i, codec_dai) {
++		if (i >= ARRAY_SIZE(max_98390_4spk_components)) {
++			dev_err(codec_dai->dev, "invalid codec index %d\n", i);
++			return -ENODEV;
 +		}
 +
-+		set_bit(chan, &drvdata->rxtx_dma_ch_bit_map);
-+	} else if (dai_id == LPASS_CDC_DMA_VA_TX0) {
-+		if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
-+			chan = find_first_zero_bit(&drvdata->va_dma_ch_bit_map,
-+									v->va_rdma_channels);
-+
-+			if (chan >= v->va_rdma_channels)
-+				return -EBUSY;
-+		} else {
-+			chan = find_next_zero_bit(&drvdata->va_dma_ch_bit_map,
-+							v->va_wrdma_channel_start +
-+							v->va_wrdma_channels,
-+							v->va_wrdma_channel_start);
-+
-+			if (chan >=	 v->va_wrdma_channel_start + v->va_wrdma_channels)
-+				return -EBUSY;
++		if (!strcmp(codec_dai->component->name, MAX_98390_DEV0_NAME)) {
++			/* DEV0 tdm slot configuration Right */
++			snd_soc_dai_set_tdm_slot(codec_dai, 0x01, 3, 4, 32);
++		}
++		if (!strcmp(codec_dai->component->name, MAX_98390_DEV1_NAME)) {
++			/* DEV1 tdm slot configuration Left */
++			snd_soc_dai_set_tdm_slot(codec_dai, 0x02, 3, 4, 32);
 +		}
 +
-+		set_bit(chan, &drvdata->va_dma_ch_bit_map);
-+	} else if (dai_id == LPASS_DP_RX) {
-+		if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
-+			chan = find_first_zero_bit(&drvdata->hdmi_dma_ch_bit_map,
-+									v->hdmi_rdma_channels);
-+
-+			if (chan >= v->hdmi_rdma_channels)
-+				return -EBUSY;
++		if (!strcmp(codec_dai->component->name, MAX_98390_DEV2_NAME)) {
++			/* DEVi2 tdm slot configuration Tweeter Right */
++			snd_soc_dai_set_tdm_slot(codec_dai, 0x04, 3, 4, 32);
 +		}
-+		set_bit(chan, &drvdata->hdmi_dma_ch_bit_map);
-+	} else {
-+		if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
-+			chan = find_first_zero_bit(&drvdata->dma_ch_bit_map,
-+									v->rdma_channels);
-+
-+			if (chan >= v->rdma_channels)
-+				return -EBUSY;
-+		} else {
-+			chan = find_next_zero_bit(&drvdata->dma_ch_bit_map,
-+							v->wrdma_channel_start +
-+							v->wrdma_channels,
-+							v->wrdma_channel_start);
-+
-+			if (chan >=	 v->wrdma_channel_start + v->wrdma_channels)
-+				return -EBUSY;
++		if (!strcmp(codec_dai->component->name, MAX_98390_DEV3_NAME)) {
++			/* DEV3 tdm slot configuration Tweeter Left */
++			snd_soc_dai_set_tdm_slot(codec_dai, 0x08, 3, 4, 32);
 +		}
-+		set_bit(chan, &drvdata->dma_ch_bit_map);
 +	}
-+	return chan;
-+}
-+
-+static int sc7280_lpass_free_dma_channel(struct lpass_data *drvdata, int chan, unsigned int dai_id)
-+{
-+	if (dai_id == LPASS_CDC_DMA_RX0 ||
-+		dai_id == LPASS_CDC_DMA_TX3)
-+		clear_bit(chan, &drvdata->rxtx_dma_ch_bit_map);
-+	else if (dai_id == LPASS_CDC_DMA_VA_TX0)
-+		clear_bit(chan, &drvdata->va_dma_ch_bit_map);
-+	else if (dai_id == LPASS_DP_RX)
-+		clear_bit(chan, &drvdata->hdmi_dma_ch_bit_map);
-+	else
-+		clear_bit(chan, &drvdata->dma_ch_bit_map);
-+
 +	return 0;
 +}
 +
-+static int sc7280_lpass_init(struct platform_device *pdev)
++int max_98390_spk_codec_init(struct snd_soc_pcm_runtime *rtd)
 +{
-+	struct lpass_data *drvdata = platform_get_drvdata(pdev);
-+	struct lpass_variant *variant = drvdata->variant;
-+	struct device *dev = &pdev->dev;
++	struct snd_soc_card *card = rtd->card;
++	int ret;
 +
-+	drvdata->clks = devm_kcalloc(dev, variant->num_clks,
-+					sizeof(*drvdata->clks), GFP_KERNEL);
-+	drvdata->num_clks = variant->num_clks;
++	/* add regular speakers dapm route */
++	ret = snd_soc_dapm_add_routes(&card->dapm, max_98390_dapm_routes,
++				      ARRAY_SIZE(max_98390_dapm_routes));
++	if (ret) {
++		dev_err(rtd->dev, "unable to add Left/Right Speaker dapm, ret %d\n", ret);
++		return ret;
++	}
 +
-+	drvdata->aon_cc_audio_hm_h = devm_clk_get(dev, "lpass_aon_cc_audio_hm_h_clk");
-+	if (IS_ERR(drvdata->aon_cc_audio_hm_h))
-+		return PTR_ERR(drvdata->aon_cc_audio_hm_h);
-+	drvdata->core_cc_sysnoc_mport_core = devm_clk_get(dev,
-+					"lpass_core_cc_sysnoc_mport_core_clk");
-+	if (IS_ERR(drvdata->core_cc_sysnoc_mport_core))
-+		return PTR_ERR(drvdata->core_cc_sysnoc_mport_core);
++	/* add widgets/controls/dapm for tweeter speakers */
++	if (acpi_dev_present("MX98390", "3", -1)) {
++		ret = snd_soc_dapm_new_controls(&card->dapm, max_98390_tt_dapm_widgets,
++						ARRAY_SIZE(max_98390_tt_dapm_widgets));
 +
-+	clk_prepare_enable(drvdata->aon_cc_audio_hm_h);
-+	clk_prepare_enable(drvdata->core_cc_sysnoc_mport_core);
-+	return 0;
++		if (ret) {
++			dev_err(rtd->dev, "unable to add tweeter dapm controls, ret %d\n", ret);
++			/* Don't need to add routes if widget addition failed */
++			return ret;
++		}
++
++		ret = snd_soc_add_card_controls(card, max_98390_tt_kcontrols,
++						ARRAY_SIZE(max_98390_tt_kcontrols));
++		if (ret) {
++			dev_err(rtd->dev, "unable to add tweeter card controls, ret %d\n", ret);
++			return ret;
++		}
++
++		ret = snd_soc_dapm_add_routes(&card->dapm, max_98390_tt_dapm_routes,
++					      ARRAY_SIZE(max_98390_tt_dapm_routes));
++		if (ret)
++			dev_err(rtd->dev,
++				"unable to add Tweeter Left/Right Speaker dapm, ret %d\n", ret);
++	}
++	return ret;
 +}
++EXPORT_SYMBOL_NS(max_98390_spk_codec_init, SND_SOC_INTEL_SOF_MAXIM_COMMON);
 +
-+static int sc7280_lpass_exit(struct platform_device *pdev)
-+{
-+	struct lpass_data *drvdata = platform_get_drvdata(pdev);
-+
-+	clk_disable_unprepare(drvdata->core_cc_sysnoc_mport_core);
-+	clk_disable_unprepare(drvdata->aon_cc_audio_hm_h);
-+
-+	return 0;
-+}
-+
-+static struct lpass_variant sc7280_data = {
-+	.i2sctrl_reg_base		= 0x1000,
-+	.i2sctrl_reg_stride		= 0x1000,
-+	.i2s_ports			= 3,
-+	.irq_reg_base			= 0x9000,
-+	.irq_reg_stride			= 0x1000,
-+	.irq_ports			= 3,
-+	.rdma_reg_base			= 0xC000,
-+	.rdma_reg_stride		= 0x1000,
-+	.rdma_channels			= 5,
-+	.rxtx_rdma_reg_base		= 0xC000,
-+	.rxtx_rdma_reg_stride		= 0x1000,
-+	.rxtx_rdma_channels		= 8,
-+	.hdmi_rdma_reg_base		= 0x64000,
-+	.hdmi_rdma_reg_stride		= 0x1000,
-+	.hdmi_rdma_channels		= 4,
-+	.dmactl_audif_start		= 1,
-+	.wrdma_reg_base			= 0x18000,
-+	.wrdma_reg_stride		= 0x1000,
-+	.wrdma_channel_start		= 5,
-+	.wrdma_channels			= 4,
-+	.rxtx_irq_reg_base		= 0x9000,
-+	.rxtx_irq_reg_stride		= 0x1000,
-+	.rxtx_irq_ports			= 3,
-+	.rxtx_wrdma_reg_base		= 0x18000,
-+	.rxtx_wrdma_reg_stride		= 0x1000,
-+	.rxtx_wrdma_channel_start	= 5,
-+	.rxtx_wrdma_channels		= 6,
-+	.va_wrdma_reg_base		= 0x18000,
-+	.va_wrdma_reg_stride		= 0x1000,
-+	.va_wrdma_channel_start		= 5,
-+	.va_wrdma_channels		= 3,
-+	.va_irq_reg_base		= 0x9000,
-+	.va_irq_reg_stride		= 0x1000,
-+	.va_irq_ports			= 3,
-+
-+	.loopback			= REG_FIELD_ID(0x1000, 17, 17, 3, 0x1000),
-+	.spken				= REG_FIELD_ID(0x1000, 16, 16, 3, 0x1000),
-+	.spkmode			= REG_FIELD_ID(0x1000, 11, 15, 3, 0x1000),
-+	.spkmono			= REG_FIELD_ID(0x1000, 10, 10, 3, 0x1000),
-+	.micen				= REG_FIELD_ID(0x1000, 9, 9, 3, 0x1000),
-+	.micmode			= REG_FIELD_ID(0x1000, 4, 8, 3, 0x1000),
-+	.micmono			= REG_FIELD_ID(0x1000, 3, 3, 3, 0x1000),
-+	.wssrc				= REG_FIELD_ID(0x1000, 2, 2, 3, 0x1000),
-+	.bitwidth			= REG_FIELD_ID(0x1000, 0, 1, 3, 0x1000),
-+
-+	.rdma_dyncclk			= REG_FIELD_ID(0xC000, 21, 21, 5, 0x1000),
-+	.rdma_bursten			= REG_FIELD_ID(0xC000, 20, 20, 5, 0x1000),
-+	.rdma_wpscnt			= REG_FIELD_ID(0xC000, 16, 19, 5, 0x1000),
-+	.rdma_intf			= REG_FIELD_ID(0xC000, 12, 15, 5, 0x1000),
-+	.rdma_fifowm			= REG_FIELD_ID(0xC000, 1, 5, 5, 0x1000),
-+	.rdma_enable			= REG_FIELD_ID(0xC000, 0, 0, 5, 0x1000),
-+
-+	.rxtx_rdma_enable		= REG_FIELD_ID(0xC000, 0, 0, 7, 0x1000),
-+	.rxtx_rdma_fifowm		= REG_FIELD_ID(0xC000, 1, 11, 7, 0x1000),
-+	.rxtx_rdma_intf			= REG_FIELD_ID(0xC000, 12, 15, 7, 0x1000),
-+	.rxtx_rdma_wpscnt		= REG_FIELD_ID(0xC000, 16, 19, 7, 0x1000),
-+	.rxtx_rdma_bursten		= REG_FIELD_ID(0xC000, 20, 20, 7, 0x1000),
-+	.rxtx_rdma_dyncclk		= REG_FIELD_ID(0xC000, 21, 21, 7, 0x1000),
-+
-+	.rxtx_rdma_codec_ch		= REG_FIELD_ID(0xC050, 0, 7, 7, 0x1000),
-+	.rxtx_rdma_codec_intf		= REG_FIELD_ID(0xC050, 16, 19, 7, 0x1000),
-+	.rxtx_rdma_codec_fs_delay	= REG_FIELD_ID(0xC050, 21, 24, 7, 0x1000),
-+	.rxtx_rdma_codec_fs_sel		= REG_FIELD_ID(0xC050, 25, 27, 7, 0x1000),
-+	.rxtx_rdma_codec_pack		= REG_FIELD_ID(0xC050, 29, 29, 5, 0x1000),
-+	.rxtx_rdma_codec_enable		= REG_FIELD_ID(0xC050, 30, 30, 7, 0x1000),
-+
-+	.rxtx_wrdma_enable		= REG_FIELD_ID(0x18000, 0, 0, 5, 0x1000),
-+	.rxtx_wrdma_fifowm		= REG_FIELD_ID(0x18000, 1, 11, 5, 0x1000),
-+	.rxtx_wrdma_intf		= REG_FIELD_ID(0x18000, 12, 16, 5, 0x1000),
-+	.rxtx_wrdma_wpscnt		= REG_FIELD_ID(0x18000, 17, 20, 5, 0x1000),
-+	.rxtx_wrdma_bursten		= REG_FIELD_ID(0x18000, 21, 21, 5, 0x1000),
-+	.rxtx_wrdma_dyncclk		= REG_FIELD_ID(0x18000, 22, 22, 5, 0x1000),
-+
-+	.rxtx_wrdma_codec_ch		= REG_FIELD_ID(0x18050, 0, 7, 5, 0x1000),
-+	.rxtx_wrdma_codec_intf		= REG_FIELD_ID(0x18050, 16, 19, 5, 0x1000),
-+	.rxtx_wrdma_codec_fs_delay	= REG_FIELD_ID(0x18050, 21, 24, 5, 0x1000),
-+	.rxtx_wrdma_codec_fs_sel	= REG_FIELD_ID(0x18050, 25, 27, 5, 0x1000),
-+	.rxtx_wrdma_codec_pack		= REG_FIELD_ID(0x18050, 29, 29, 5, 0x1000),
-+	.rxtx_wrdma_codec_enable	= REG_FIELD_ID(0x18050, 30, 30, 5, 0x1000),
-+
-+	.va_wrdma_enable		= REG_FIELD_ID(0x18000, 0, 0, 5, 0x1000),
-+	.va_wrdma_fifowm		= REG_FIELD_ID(0x18000, 1, 11, 5, 0x1000),
-+	.va_wrdma_intf			= REG_FIELD_ID(0x18000, 12, 16, 5, 0x1000),
-+	.va_wrdma_wpscnt		= REG_FIELD_ID(0x18000, 17, 20, 5, 0x1000),
-+	.va_wrdma_bursten		= REG_FIELD_ID(0x18000, 21, 21, 5, 0x1000),
-+	.va_wrdma_dyncclk		= REG_FIELD_ID(0x18000, 22, 22, 5, 0x1000),
-+
-+	.va_wrdma_codec_ch		= REG_FIELD_ID(0x18050, 0, 7, 5, 0x1000),
-+	.va_wrdma_codec_intf		= REG_FIELD_ID(0x18050, 16, 19, 5, 0x1000),
-+	.va_wrdma_codec_fs_delay	= REG_FIELD_ID(0x18050, 21, 24, 5, 0x1000),
-+	.va_wrdma_codec_fs_sel		= REG_FIELD_ID(0x18050, 25, 27, 5, 0x1000),
-+	.va_wrdma_codec_pack		= REG_FIELD_ID(0x18050, 29, 29, 5, 0x1000),
-+	.va_wrdma_codec_enable		= REG_FIELD_ID(0x18050, 30, 30, 5, 0x1000),
-+
-+	.hdmi_tx_ctl_addr		= 0x1000,
-+	.hdmi_legacy_addr		= 0x1008,
-+	.hdmi_vbit_addr			= 0x610c0,
-+	.hdmi_ch_lsb_addr		= 0x61048,
-+	.hdmi_ch_msb_addr		= 0x6104c,
-+	.ch_stride			= 0x8,
-+	.hdmi_parity_addr		= 0x61034,
-+	.hdmi_dmactl_addr		= 0x61038,
-+	.hdmi_dma_stride		= 0x4,
-+	.hdmi_DP_addr			= 0x610c8,
-+	.hdmi_sstream_addr		= 0x6101c,
-+	.hdmi_irq_reg_base		= 0x63000,
-+	.hdmi_irq_ports			= 1,
-+
-+	.hdmi_rdma_dyncclk		= REG_FIELD_ID(0x64000, 14, 14, 4, 0x1000),
-+	.hdmi_rdma_bursten		= REG_FIELD_ID(0x64000, 13, 13, 4, 0x1000),
-+	.hdmi_rdma_burst8		= REG_FIELD_ID(0x64000, 15, 15, 4, 0x1000),
-+	.hdmi_rdma_burst16		= REG_FIELD_ID(0x64000, 16, 16, 4, 0x1000),
-+	.hdmi_rdma_dynburst		= REG_FIELD_ID(0x64000, 18, 18, 4, 0x1000),
-+	.hdmi_rdma_wpscnt		= REG_FIELD_ID(0x64000, 10, 12, 4, 0x1000),
-+	.hdmi_rdma_fifowm		= REG_FIELD_ID(0x64000, 1, 5, 4, 0x1000),
-+	.hdmi_rdma_enable		= REG_FIELD_ID(0x64000, 0, 0, 4, 0x1000),
-+
-+	.sstream_en			= REG_FIELD(0x6101c, 0, 0),
-+	.dma_sel			= REG_FIELD(0x6101c, 1, 2),
-+	.auto_bbit_en			= REG_FIELD(0x6101c, 3, 3),
-+	.layout				= REG_FIELD(0x6101c, 4, 4),
-+	.layout_sp			= REG_FIELD(0x6101c, 5, 8),
-+	.set_sp_on_en			= REG_FIELD(0x6101c, 10, 10),
-+	.dp_audio			= REG_FIELD(0x6101c, 11, 11),
-+	.dp_staffing_en			= REG_FIELD(0x6101c, 12, 12),
-+	.dp_sp_b_hw_en			= REG_FIELD(0x6101c, 13, 13),
-+
-+	.mute				= REG_FIELD(0x610c8, 0, 0),
-+	.as_sdp_cc			= REG_FIELD(0x610c8, 1, 3),
-+	.as_sdp_ct			= REG_FIELD(0x610c8, 4, 7),
-+	.aif_db4			= REG_FIELD(0x610c8, 8, 15),
-+	.frequency			= REG_FIELD(0x610c8, 16, 21),
-+	.mst_index			= REG_FIELD(0x610c8, 28, 29),
-+	.dptx_index			= REG_FIELD(0x610c8, 30, 31),
-+
-+	.soft_reset			= REG_FIELD(0x1000, 31, 31),
-+	.force_reset			= REG_FIELD(0x1000, 30, 30),
-+
-+	.use_hw_chs			= REG_FIELD(0x61038, 0, 0),
-+	.use_hw_usr			= REG_FIELD(0x61038, 1, 1),
-+	.hw_chs_sel			= REG_FIELD(0x61038, 2, 4),
-+	.hw_usr_sel			= REG_FIELD(0x61038, 5, 6),
-+
-+	.replace_vbit			= REG_FIELD(0x610c0, 0, 0),
-+	.vbit_stream			= REG_FIELD(0x610c0, 1, 1),
-+
-+	.legacy_en			=  REG_FIELD(0x1008, 0, 0),
-+	.calc_en			=  REG_FIELD(0x61034, 0, 0),
-+	.lsb_bits			=  REG_FIELD(0x61048, 0, 31),
-+	.msb_bits			=  REG_FIELD(0x6104c, 0, 31),
-+
-+
-+	.clk_name			= (const char*[]) {
-+							"lpass_aon_cc_audio_hm_h_clk",
-+							"lpass_core_cc_sysnoc_mport_core_clk"
-+						},
-+	.num_clks				= 2,
-+	.cdc_dma_clk_names		= (const char*[]) {
-+								"lpass_audio_cc_codec_mem0_clk",
-+								"lpass_audio_cc_codec_mem1_clk",
-+								"lpass_audio_cc_codec_mem2_clk",
-+								"lpass_aon_cc_va_mem0_clk"
-+							},
-+	.cdc_dma_num_clks				= 4,
-+	.dai_driver				= sc7280_lpass_cpu_dai_driver,
-+	.num_dai				= ARRAY_SIZE(sc7280_lpass_cpu_dai_driver),
-+	.dai_osr_clk_names		= (const char *[]) {
-+							   "null",
-+							   "null"
-+							},
-+	.dai_bit_clk_names		= (const char *[]) {
-+								"null",
-+								"lpass_core_cc_ext_if0_ibit_clk",
-+								"lpass_core_cc_ext_if1_ibit_clk"
-+							},
-+	.init					= sc7280_lpass_init,
-+	.exit					= sc7280_lpass_exit,
-+	.alloc_dma_channel		= sc7280_lpass_alloc_dma_channel,
-+	.free_dma_channel		= sc7280_lpass_free_dma_channel,
++const struct snd_soc_ops max_98390_ops = {
++	.hw_params = max_98390_hw_params,
 +};
++EXPORT_SYMBOL_NS(max_98390_ops, SND_SOC_INTEL_SOF_MAXIM_COMMON);
 +
-+static const struct of_device_id sc7280_lpass_cpu_device_id[] = {
-+	{.compatible = "qcom,sc7280-lpass-cpu", .data = &sc7280_data},
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, sc7280_lpass_cpu_device_id);
++void max_98390_set_codec_conf(struct snd_soc_card *card, int ch)
++{
++	if (ch == ARRAY_SIZE(max_98390_4spk_codec_conf)) {
++		card->codec_conf = max_98390_4spk_codec_conf;
++		card->num_configs = ARRAY_SIZE(max_98390_4spk_codec_conf);
++	} else {
++		card->codec_conf = max_98390_codec_conf;
++		card->num_configs = ARRAY_SIZE(max_98390_codec_conf);
++	}
++}
++EXPORT_SYMBOL_NS(max_98390_set_codec_conf, SND_SOC_INTEL_SOF_MAXIM_COMMON);
 +
-+static struct platform_driver sc7280_lpass_cpu_platform_driver = {
-+	.driver = {
-+		.name = "sc7280-lpass-cpu",
-+		.of_match_table = of_match_ptr(sc7280_lpass_cpu_device_id),
+ /*
+  * Maxim MAX98357A/MAX98360A
+  */
+diff --git a/sound/soc/intel/boards/sof_maxim_common.h b/sound/soc/intel/boards/sof_maxim_common.h
+index 3ff5e8fec4de..7a8c53049e4d 100644
+--- a/sound/soc/intel/boards/sof_maxim_common.h
++++ b/sound/soc/intel/boards/sof_maxim_common.h
+@@ -24,6 +24,22 @@ int max_98373_spk_codec_init(struct snd_soc_pcm_runtime *rtd);
+ void max_98373_set_codec_conf(struct snd_soc_card *card);
+ int max_98373_trigger(struct snd_pcm_substream *substream, int cmd);
+ 
++/*
++ * Maxim MAX98390
++ */
++#define MAX_98390_CODEC_DAI     "max98390-aif1"
++#define MAX_98390_DEV0_NAME     "i2c-MX98390:00"
++#define MAX_98390_DEV1_NAME     "i2c-MX98390:01"
++#define MAX_98390_DEV2_NAME     "i2c-MX98390:02"
++#define MAX_98390_DEV3_NAME     "i2c-MX98390:03"
++
++extern struct snd_soc_dai_link_component max_98390_components[2];
++extern struct snd_soc_dai_link_component max_98390_4spk_components[4];
++extern const struct snd_soc_ops max_98390_ops;
++
++void max_98390_set_codec_conf(struct snd_soc_card *card, int ch);
++int max_98390_spk_codec_init(struct snd_soc_pcm_runtime *rtd);
++
+ /*
+  * Maxim MAX98357A/MAX98360A
+  */
+diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
+index c41f386b4138..3869b38274b9 100644
+--- a/sound/soc/intel/boards/sof_rt5682.c
++++ b/sound/soc/intel/boards/sof_rt5682.c
+@@ -59,6 +59,9 @@
+ 	(((quirk) << SOF_BT_OFFLOAD_SSP_SHIFT) & SOF_BT_OFFLOAD_SSP_MASK)
+ #define SOF_SSP_BT_OFFLOAD_PRESENT		BIT(22)
+ #define SOF_RT5682S_HEADPHONE_CODEC_PRESENT	BIT(23)
++#define SOF_MAX98390_SPEAKER_AMP_PRESENT	BIT(24)
++#define SOF_MAX98390_TWEETER_SPEAKER_PRESENT	BIT(25)
++
+ 
+ /* Default: MCLK on, MCLK 19.2M, SSP0  */
+ static unsigned long sof_rt5682_quirk = SOF_RT5682_MCLK_EN |
+@@ -179,6 +182,36 @@ static const struct dmi_system_id sof_rt5682_quirk_table[] = {
+ 					SOF_RT5682_SSP_AMP(2) |
+ 					SOF_RT5682_NUM_HDMIDEV(4)),
+ 	},
++	{
++		.callback = sof_rt5682_quirk_cb,
++		.matches = {
++			DMI_MATCH(DMI_PRODUCT_FAMILY, "Google_Brya"),
++			DMI_MATCH(DMI_OEM_STRING, "AUDIO-MAX98390_ALC5682I_I2S"),
++		},
++		.driver_data = (void *)(SOF_RT5682_MCLK_EN |
++					SOF_RT5682_SSP_CODEC(0) |
++					SOF_SPEAKER_AMP_PRESENT |
++					SOF_MAX98390_SPEAKER_AMP_PRESENT |
++					SOF_RT5682_SSP_AMP(2) |
++					SOF_RT5682_NUM_HDMIDEV(4)),
 +	},
-+	.probe = asoc_qcom_lpass_cpu_platform_probe,
-+	.remove = asoc_qcom_lpass_cpu_platform_remove,
-+	.shutdown = asoc_qcom_lpass_cpu_platform_shutdown,
++	{
++		.callback = sof_rt5682_quirk_cb,
++		.matches = {
++			DMI_MATCH(DMI_PRODUCT_FAMILY, "Google_Brya"),
++			DMI_MATCH(DMI_OEM_STRING, "AUDIO-MAX98390_ALC5682I_I2S_4SPK"),
++		},
++		.driver_data = (void *)(SOF_RT5682_MCLK_EN |
++					SOF_RT5682_SSP_CODEC(0) |
++					SOF_SPEAKER_AMP_PRESENT |
++					SOF_MAX98390_SPEAKER_AMP_PRESENT |
++					SOF_MAX98390_TWEETER_SPEAKER_PRESENT |
++					SOF_RT5682_SSP_AMP(1) |
++					SOF_RT5682_NUM_HDMIDEV(4) |
++					SOF_BT_OFFLOAD_SSP(2) |
++					SOF_SSP_BT_OFFLOAD_PRESENT),
++
++	},
+ 	{}
+ };
+ 
+@@ -486,6 +519,7 @@ static int sof_card_late_probe(struct snd_soc_card *card)
+ 		if (err < 0)
+ 			return err;
+ 	}
++
+ 	return hdac_hdmi_jack_port_init(component, &card->dapm);
+ }
+ 
+@@ -784,6 +818,20 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
+ 		} else if (sof_rt5682_quirk &
+ 				SOF_RT1011_SPEAKER_AMP_PRESENT) {
+ 			sof_rt1011_dai_link(&links[id]);
++		} else if (sof_rt5682_quirk &
++				SOF_MAX98390_SPEAKER_AMP_PRESENT) {
++			if (sof_rt5682_quirk &
++				SOF_MAX98390_TWEETER_SPEAKER_PRESENT) {
++				links[id].codecs = max_98390_4spk_components;
++				links[id].num_codecs = ARRAY_SIZE(max_98390_4spk_components);
++			} else {
++				links[id].codecs = max_98390_components;
++				links[id].num_codecs = ARRAY_SIZE(max_98390_components);
++			}
++			links[id].init = max_98390_spk_codec_init;
++			links[id].ops = &max_98390_ops;
++			links[id].dpcm_capture = 1;
++
+ 		} else {
+ 			max_98357a_dai_link(&links[id]);
+ 		}
+@@ -868,6 +916,10 @@ static int sof_audio_probe(struct platform_device *pdev)
+ 	if (acpi_dev_present("RTL5682", NULL, -1))
+ 		sof_rt5682_quirk |= SOF_RT5682S_HEADPHONE_CODEC_PRESENT;
+ 
++	/* Detect the headset codec variant to support machines in DMI quirk */
++	if (acpi_dev_present("RTL5682", NULL, -1))
++		sof_rt5682_quirk |= SOF_RT5682S_HEADPHONE_CODEC_PRESENT;
++
+ 	if (soc_intel_is_byt() || soc_intel_is_cht()) {
+ 		is_legacy_cpu = 1;
+ 		dmic_be_num = 0;
+@@ -924,6 +976,14 @@ static int sof_audio_probe(struct platform_device *pdev)
+ 		sof_rt1011_codec_conf(&sof_audio_card_rt5682);
+ 	else if (sof_rt5682_quirk & SOF_RT1015P_SPEAKER_AMP_PRESENT)
+ 		sof_rt1015p_codec_conf(&sof_audio_card_rt5682);
++	else if (sof_rt5682_quirk & SOF_MAX98390_SPEAKER_AMP_PRESENT) {
++		if (sof_rt5682_quirk & SOF_MAX98390_TWEETER_SPEAKER_PRESENT)
++			max_98390_set_codec_conf(&sof_audio_card_rt5682,
++						 ARRAY_SIZE(max_98390_4spk_components));
++		else
++			max_98390_set_codec_conf(&sof_audio_card_rt5682,
++						 ARRAY_SIZE(max_98390_components));
++	}
+ 
+ 	if (sof_rt5682_quirk & SOF_SSP_BT_OFFLOAD_PRESENT)
+ 		sof_audio_card_rt5682.num_links++;
+@@ -1050,6 +1110,29 @@ static const struct platform_device_id board_ids[] = {
+ 					SOF_RT5682_SSP_AMP(2) |
+ 					SOF_RT5682_NUM_HDMIDEV(4)),
+ 	},
++	{
++		.name = "adl_max98390_rt5682",
++		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
++					SOF_RT5682_SSP_CODEC(0) |
++					SOF_SPEAKER_AMP_PRESENT |
++					SOF_MAX98390_SPEAKER_AMP_PRESENT |
++					SOF_RT5682_SSP_AMP(1) |
++					SOF_RT5682_NUM_HDMIDEV(4) |
++					SOF_BT_OFFLOAD_SSP(2) |
++					SOF_SSP_BT_OFFLOAD_PRESENT),
++	},
++	{
++		.name = "adl_mx98390_rt5682s",
++		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
++					SOF_RT5682_SSP_CODEC(0) |
++					SOF_RT5682S_HEADPHONE_CODEC_PRESENT |
++					SOF_SPEAKER_AMP_PRESENT |
++					SOF_MAX98390_SPEAKER_AMP_PRESENT |
++					SOF_RT5682_SSP_AMP(1) |
++					SOF_RT5682_NUM_HDMIDEV(4) |
++					SOF_BT_OFFLOAD_SSP(2) |
++					SOF_SSP_BT_OFFLOAD_PRESENT),
++	},
+ 	{
+ 		.name = "adl_mx98360_rt5682",
+ 		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
+@@ -1080,6 +1163,7 @@ MODULE_DESCRIPTION("SOF Audio Machine driver");
+ MODULE_AUTHOR("Bard Liao <bard.liao@intel.com>");
+ MODULE_AUTHOR("Sathya Prakash M R <sathya.prakash.m.r@intel.com>");
+ MODULE_AUTHOR("Brent Lu <brent.lu@intel.com>");
++MODULE_AUTHOR("Mac Chiang <mac.chiang@intel.com>");
+ MODULE_LICENSE("GPL v2");
+ MODULE_IMPORT_NS(SND_SOC_INTEL_HDA_DSP_COMMON);
+ MODULE_IMPORT_NS(SND_SOC_INTEL_SOF_MAXIM_COMMON);
+diff --git a/sound/soc/intel/common/soc-acpi-intel-adl-match.c b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
+index fde310e5724b..0d04166b9d64 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-adl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
+@@ -379,6 +379,11 @@ static const struct snd_soc_acpi_codecs adl_rt1019p_amp = {
+ 	.codecs = {"RTL1019"}
+ };
+ 
++static const struct snd_soc_acpi_codecs adl_max98390_amp = {
++	.num_codecs = 1,
++	.codecs = {"MX98390"}
 +};
 +
-+module_platform_driver(sc7280_lpass_cpu_platform_driver);
+ struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[] = {
+ 	{
+ 		.comp_ids = &adl_rt5682_rt5682s_hp,
+@@ -434,6 +439,22 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[] = {
+ 		.sof_fw_filename = "sof-adl.ri",
+ 		.sof_tplg_filename = "sof-adl-nau8825.tplg",
+ 	},
++	{
++		.comp_ids = &adl_rt5682_rt5682s_hp,
++		.drv_name = "adl_max98390_rt5682",
++		.machine_quirk = snd_soc_acpi_codec_list,
++		.quirk_data = &adl_max98390_amp,
++		.sof_fw_filename = "sof-adl.ri",
++		.sof_tplg_filename = "sof-adl-max98390-rt5682.tplg",
++	},
++	{
++		.comp_ids = &adl_rt5682_rt5682s_hp,
++		.drv_name = "adl_mx98390_rt5682s",
++		.machine_quirk = snd_soc_acpi_codec_list,
++		.quirk_data = &adl_max98390_amp,
++		.sof_fw_filename = "sof-adl.ri",
++		.sof_tplg_filename = "sof-adl-max98390-rt5682.tplg",
++	},
+ 	{},
+ };
+ EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_adl_machines);
+diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
+index bc9e70765678..be90a5f79766 100644
+--- a/sound/soc/sof/sof-pci-dev.c
++++ b/sound/soc/sof/sof-pci-dev.c
+@@ -59,6 +59,15 @@ static const struct dmi_system_id sof_tplg_table[] = {
+ 		},
+ 		.driver_data = "sof-adl-rt5682-ssp0-max98373-ssp2.tplg",
+ 	},
++	{
++		.callback = sof_tplg_cb,
++		.matches = {
++			DMI_MATCH(DMI_PRODUCT_FAMILY, "Google_Brya"),
++			DMI_MATCH(DMI_OEM_STRING, "AUDIO-MAX98390_ALC5682I_I2S"),
++		},
++		.driver_data = "sof-adl-max98390-ssp2-rt5682-ssp0.tplg",
++	},
 +
-+MODULE_DESCRIPTION("SC7280 LPASS CPU DRIVER");
-+MODULE_LICENSE("GPL v2");
+ 	{}
+ };
+ 
 -- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+2.20.1
 
