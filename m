@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6D6FC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Nov 2021 08:26:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9675C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Nov 2021 08:27:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ECCE716A5;
-	Tue, 23 Nov 2021 09:25:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ECCE716A5
+	by alsa0.perex.cz (Postfix) with ESMTPS id E29F71671;
+	Tue, 23 Nov 2021 09:26:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E29F71671
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637656002;
-	bh=K4pn+ecUlPbwC+0eZ8bW0QuKp7UL7rfs+YH/nRcsgQ0=;
+	s=default; t=1637656019;
+	bh=W8uvei3PDR0nhPMQTqtFnCU6QHh/IK6nbuq42eksigQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lQLsiBSfzbHp2LzcgX2Wp1uAJ7KauzIwDjv3MRONTTmmDhoS5eVWGcCzDoQ8uKuea
-	 C+E6fhHPzZe1DmEi/Lpp0G3prLfWG4mk6UW2eQnZB7kJ6R7QCU1APJjr4RITizPCQh
-	 Lf0F3GJ2uvQwppSomZIHRYOKZSrpcBuIVtAui8qI=
+	b=qm86WdQY90BTz2neIrayGVrnJV4UcsALybF1cFEa6TdUsAyC1NWCA+SstJpXDQeYy
+	 3KUONutb5HucZaAq9Lgi48kmTQA+3VRjCTTYc2rwcHVuP5XN6H2k3LIy2BcYbUqe+T
+	 EsPwBeaxQdht/L/u1w2Dz/jfxyEkr0Rdt1r5JyxA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 56389F80559;
+	by alsa1.perex.cz (Postfix) with ESMTP id EAA41F80566;
 	Tue, 23 Nov 2021 09:21:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 57BADF80245; Mon, 22 Nov 2021 16:57:09 +0100 (CET)
+ id E960BF801F7; Mon, 22 Nov 2021 16:57:12 +0100 (CET)
 Received: from andre.telenet-ops.be (andre.telenet-ops.be
  [IPv6:2a02:1800:120:4::f00:15])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C5D38F801F7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1B564F80154
  for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2021 16:57:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5D38F801F7
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B564F80154
 Received: from ramsan.of.borg ([84.195.186.194])
  by andre.telenet-ops.be with bizsmtp
- id MTwG260014C55Sk01TwGyl; Mon, 22 Nov 2021 16:56:58 +0100
+ id MTwG2600C4C55Sk01TwGyn; Mon, 22 Nov 2021 16:56:58 +0100
 Received: from rox.of.borg ([192.168.97.57])
  by ramsan.of.borg with esmtps (TLS1.3) tls
  TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.93)
  (envelope-from <geert@linux-m68k.org>)
- id 1mpBe6-00EL3P-62; Mon, 22 Nov 2021 16:54:18 +0100
+ id 1mpBe5-00EL3M-Q1; Mon, 22 Nov 2021 16:54:17 +0100
 Received: from geert by rox.of.borg with local (Exim 4.93)
  (envelope-from <geert@linux-m68k.org>)
- id 1mpBe5-00HGyZ-Hn; Mon, 22 Nov 2021 16:54:17 +0100
+ id 1mpBe5-00HGyE-C8; Mon, 22 Nov 2021 16:54:17 +0100
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 To: Tony Lindgren <tony@atomide.com>, Russell King <linux@armlinux.org.uk>,
  Rajendra Nayak <rnayak@codeaurora.org>, Paul Walmsley <paul@pwsan.com>,
@@ -68,9 +68,9 @@ To: Tony Lindgren <tony@atomide.com>, Russell King <linux@armlinux.org.uk>,
  Daniel Lezcano <daniel.lezcano@linaro.org>,
  Amit Kucheria <amitk@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH/RFC 05/17] bus: omap_l3_noc: Use bitfield helpers
-Date: Mon, 22 Nov 2021 16:53:58 +0100
-Message-Id: <8f5ac0ff643fcfe29ba671b434c57d88524f0450.1637592133.git.geert+renesas@glider.be>
+Subject: [PATCH 02/17] clk: renesas: Use bitfield helpers
+Date: Mon, 22 Nov 2021 16:53:55 +0100
+Message-Id: <c6e4bfbf798a8fcb4d8c02861a0c1b029f2f5cb1.1637592133.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1637592133.git.geert+renesas@glider.be>
 References: <cover.1637592133.git.geert+renesas@glider.be>
@@ -100,40 +100,123 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Use the field_get() bitfield helper, instead of open-coding the same
-operation.
+Use the FIELD_{GET,PREP}() and field_{get,prep}() helpers for const
+respective non-const bitfields, instead of open-coding the same
+operations.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
-Compile-tested only.
-Marked RFC, as this depends on [PATCH 01/17], but follows a different
-path to upstream.
----
- drivers/bus/omap_l3_noc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/clk/renesas/clk-div6.c          |  6 +++---
+ drivers/clk/renesas/r8a779a0-cpg-mssr.c |  9 +++------
+ drivers/clk/renesas/rcar-gen3-cpg.c     | 15 +++++----------
+ 3 files changed, 11 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/bus/omap_l3_noc.c b/drivers/bus/omap_l3_noc.c
-index dcfb32ee5cb60239..1a692c86d085f43e 100644
---- a/drivers/bus/omap_l3_noc.c
-+++ b/drivers/bus/omap_l3_noc.c
-@@ -14,6 +14,7 @@
-  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  * GNU General Public License for more details.
+diff --git a/drivers/clk/renesas/clk-div6.c b/drivers/clk/renesas/clk-div6.c
+index 3abd6e5400aded6a..f7b827b5e9b2dd32 100644
+--- a/drivers/clk/renesas/clk-div6.c
++++ b/drivers/clk/renesas/clk-div6.c
+@@ -7,6 +7,7 @@
+  * Contact: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
   */
+ 
 +#include <linux/bitfield.h>
+ #include <linux/clk-provider.h>
  #include <linux/init.h>
- #include <linux/interrupt.h>
  #include <linux/io.h>
-@@ -118,8 +119,7 @@ static int l3_handle_target(struct omap_l3 *l3, void __iomem *base,
- 	}
+@@ -171,8 +172,7 @@ static u8 cpg_div6_clock_get_parent(struct clk_hw *hw)
+ 	if (clock->src_mask == 0)
+ 		return 0;
  
- 	/* STDERRLOG_MSTADDR Stores the NTTP master address. */
--	masterid = (readl_relaxed(l3_targ_mstaddr) &
--		    l3->mst_addr_mask) >> __ffs(l3->mst_addr_mask);
-+	masterid = field_get(l3->mst_addr_mask, readl_relaxed(l3_targ_mstaddr));
+-	hw_index = (readl(clock->reg) & clock->src_mask) >>
+-		   __ffs(clock->src_mask);
++	hw_index = field_get(clock->src_mask, readl(clock->reg));
+ 	for (i = 0; i < clk_hw_get_num_parents(hw); i++) {
+ 		if (clock->parents[i] == hw_index)
+ 			return i;
+@@ -191,7 +191,7 @@ static int cpg_div6_clock_set_parent(struct clk_hw *hw, u8 index)
+ 	if (index >= clk_hw_get_num_parents(hw))
+ 		return -EINVAL;
  
- 	for (k = 0, master = l3->l3_masters; k < l3->num_masters;
- 	     k++, master++) {
+-	src = clock->parents[index] << __ffs(clock->src_mask);
++	src = field_prep(clock->src_mask, clock->parents[index]);
+ 	writel((readl(clock->reg) & ~clock->src_mask) | src, clock->reg);
+ 	return 0;
+ }
+diff --git a/drivers/clk/renesas/r8a779a0-cpg-mssr.c b/drivers/clk/renesas/r8a779a0-cpg-mssr.c
+index 7df86743c5491292..f716e739d138b722 100644
+--- a/drivers/clk/renesas/r8a779a0-cpg-mssr.c
++++ b/drivers/clk/renesas/r8a779a0-cpg-mssr.c
+@@ -302,11 +302,7 @@ static unsigned long cpg_z_clk_recalc_rate(struct clk_hw *hw,
+ 					   unsigned long parent_rate)
+ {
+ 	struct cpg_z_clk *zclk = to_z_clk(hw);
+-	unsigned int mult;
+-	u32 val;
+-
+-	val = readl(zclk->reg) & zclk->mask;
+-	mult = 32 - (val >> __ffs(zclk->mask));
++	unsigned int mult = 32 - field_get(zclk->mask, readl(zclk->reg));
+ 
+ 	return DIV_ROUND_CLOSEST_ULL((u64)parent_rate * mult,
+ 				     32 * zclk->fixed_div);
+@@ -357,7 +353,8 @@ static int cpg_z_clk_set_rate(struct clk_hw *hw, unsigned long rate,
+ 	if (readl(zclk->kick_reg) & CPG_FRQCRB_KICK)
+ 		return -EBUSY;
+ 
+-	cpg_reg_modify(zclk->reg, zclk->mask, (32 - mult) << __ffs(zclk->mask));
++	cpg_reg_modify(zclk->reg, zclk->mask,
++		       field_prep(zclk->mask, 32 - mult));
+ 
+ 	/*
+ 	 * Set KICK bit in FRQCRB to update hardware setting and wait for
+diff --git a/drivers/clk/renesas/rcar-gen3-cpg.c b/drivers/clk/renesas/rcar-gen3-cpg.c
+index a9816b1beabb2582..30bbe8418e018153 100644
+--- a/drivers/clk/renesas/rcar-gen3-cpg.c
++++ b/drivers/clk/renesas/rcar-gen3-cpg.c
+@@ -54,10 +54,8 @@ static unsigned long cpg_pll_clk_recalc_rate(struct clk_hw *hw,
+ {
+ 	struct cpg_pll_clk *pll_clk = to_pll_clk(hw);
+ 	unsigned int mult;
+-	u32 val;
+ 
+-	val = readl(pll_clk->pllcr_reg) & CPG_PLLnCR_STC_MASK;
+-	mult = (val >> __ffs(CPG_PLLnCR_STC_MASK)) + 1;
++	mult = FIELD_GET(CPG_PLLnCR_STC_MASK, readl(pll_clk->pllcr_reg)) + 1;
+ 
+ 	return parent_rate * mult * pll_clk->fixed_mult;
+ }
+@@ -94,7 +92,7 @@ static int cpg_pll_clk_set_rate(struct clk_hw *hw, unsigned long rate,
+ 
+ 	val = readl(pll_clk->pllcr_reg);
+ 	val &= ~CPG_PLLnCR_STC_MASK;
+-	val |= (mult - 1) << __ffs(CPG_PLLnCR_STC_MASK);
++	val |= FIELD_PREP(CPG_PLLnCR_STC_MASK, mult - 1);
+ 	writel(val, pll_clk->pllcr_reg);
+ 
+ 	for (i = 1000; i; i--) {
+@@ -176,11 +174,7 @@ static unsigned long cpg_z_clk_recalc_rate(struct clk_hw *hw,
+ 					   unsigned long parent_rate)
+ {
+ 	struct cpg_z_clk *zclk = to_z_clk(hw);
+-	unsigned int mult;
+-	u32 val;
+-
+-	val = readl(zclk->reg) & zclk->mask;
+-	mult = 32 - (val >> __ffs(zclk->mask));
++	unsigned int mult = 32 - field_get(zclk->mask, readl(zclk->reg));
+ 
+ 	return DIV_ROUND_CLOSEST_ULL((u64)parent_rate * mult,
+ 				     32 * zclk->fixed_div);
+@@ -231,7 +225,8 @@ static int cpg_z_clk_set_rate(struct clk_hw *hw, unsigned long rate,
+ 	if (readl(zclk->kick_reg) & CPG_FRQCRB_KICK)
+ 		return -EBUSY;
+ 
+-	cpg_reg_modify(zclk->reg, zclk->mask, (32 - mult) << __ffs(zclk->mask));
++	cpg_reg_modify(zclk->reg, zclk->mask,
++		       field_prep(zclk->mask, 32 - mult));
+ 
+ 	/*
+ 	 * Set KICK bit in FRQCRB to update hardware setting and wait for
 -- 
 2.25.1
 
