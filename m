@@ -4,79 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61B52C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Nov 2021 08:31:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 436E7C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Nov 2021 08:32:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 74DE216B0;
-	Tue, 23 Nov 2021 09:30:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 74DE216B0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 642DC1654;
+	Tue, 23 Nov 2021 09:31:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 642DC1654
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637656309;
-	bh=kK/0hn3Tn2Fi1LQ6SeIagL/0lsO2CrpknZyQZAqq6H8=;
+	s=default; t=1637656328;
+	bh=MlucnWA591AMyZeeTeyE/9PORMb1PoJ4pELrZC2QG1I=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ShhXTkSCMK5Qa3yycempZ5fh5xoyqii+et0KDe7OP1dja87n1Gzen9CB0YciC7Ryo
-	 A8sAhWvAHKXvwDp0I/PUk2y9sVLP2hco61SJ7oJT387kzprpsGSS2jJP6g+wqAOc/f
-	 2xBQKnAgNn7AAd7upxws+IZ2J5YtQI/+2Q6lxCeY=
+	b=q8cH3nXepotz+b7u357ZcGInmfvMEbh6mfazBzl5zMPhZAGDixQ251I92gbUdgHeW
+	 jIPSQZg/y59GPevHitjshYnYzHxQ7gCznatrWlNq6i73vMVtD+mRER4wM00FEhSlFX
+	 tdtysQmut9UUNZ2QAfpO3C/bCYe2YJ3uEgeKGjww=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E6279F805E3;
-	Tue, 23 Nov 2021 09:22:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 537BAF805E7;
+	Tue, 23 Nov 2021 09:22:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D95A4F80212; Mon, 22 Nov 2021 23:23:50 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 224A0F80212; Mon, 22 Nov 2021 16:56:30 +0100 (CET)
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be
+ [IPv6:2a02:1800:110:4::f00:19])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 49724F80154
- for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2021 23:23:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49724F80154
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="D2/yNDzB"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 064F96103C;
- Mon, 22 Nov 2021 22:23:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1637619824;
- bh=kK/0hn3Tn2Fi1LQ6SeIagL/0lsO2CrpknZyQZAqq6H8=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=D2/yNDzBENZCV3sSIl45F//FfTAukYJn/aB/UGh8I2KaOy7hp22Bp+4Hk7x39Hi7u
- 6e+dm5/YqhRogLXgrZ4AGc43mg64vHlOq1gIn5GVeiq9ATMgMjPD8mxPFDFaQ3aa+j
- MQv7bncgFO5dExmwoX3s7KxgzNmRdjAvJ8L8yiSvS5qic4CJs5WDTicWXy2EK3Rvgg
- cAaYtYpjbFTPUW/LIgaSPH1XVukM1CNyFl/il1Z3hpw7wYnUGTRu2xxQu7y1304Q4O
- DqXPeJwj0DSwecC7x7qSXRZYQTTmspHVwU6Jw3E235yowtMHJ5mtFd1BPBQlG3mqm6
- Syi2DD+et8CSw==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH v2 11/11] dmaengine: remove slave_id config field
-Date: Mon, 22 Nov 2021 23:22:03 +0100
-Message-Id: <20211122222203.4103644-12-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20211122222203.4103644-1-arnd@kernel.org>
-References: <20211122222203.4103644-1-arnd@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 066CFF801F7
+ for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2021 16:56:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 066CFF801F7
+Received: from ramsan.of.borg ([84.195.186.194])
+ by laurent.telenet-ops.be with bizsmtp
+ id MTvi2600Z4C55Sk01TviwZ; Mon, 22 Nov 2021 16:56:23 +0100
+Received: from rox.of.borg ([192.168.97.57])
+ by ramsan.of.borg with esmtps (TLS1.3) tls
+ TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.93)
+ (envelope-from <geert@linux-m68k.org>)
+ id 1mpBe6-00EL3i-LK; Mon, 22 Nov 2021 16:54:18 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+ (envelope-from <geert@linux-m68k.org>)
+ id 1mpBe5-00HGzM-PZ; Mon, 22 Nov 2021 16:54:17 +0100
+From: Geert Uytterhoeven <geert+renesas@glider.be>
+To: Tony Lindgren <tony@atomide.com>, Russell King <linux@armlinux.org.uk>,
+ Rajendra Nayak <rnayak@codeaurora.org>, Paul Walmsley <paul@pwsan.com>,
+ Michael Turquette <mturquette@baylibre.com>,
+ Stephen Boyd <sboyd@kernel.org>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Ludovic Desroches <ludovic.desroches@microchip.com>,
+ Tero Kristo <kristo@kernel.org>, Jonathan Cameron <jic23@kernel.org>,
+ Lars-Peter Clausen <lars@metafoo.de>,
+ Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
+ Benoit Parrot <bparrot@ti.com>, Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Adrian Hunter <adrian.hunter@intel.com>, Andrew Jeffery <andrew@aj.id.au>,
+ Ulf Hansson <ulf.hansson@linaro.org>, Joel Stanley <joel@jms.id.au>,
+ Ping-Ke Shih <pkshih@realtek.com>, Kalle Valo <kvalo@codeaurora.org>,
+ "David S . Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Magnus Damm <magnus.damm@gmail.com>,
+ Eduardo Valentin <edubezval@gmail.com>, Keerthy <j-keerthy@ti.com>,
+ "Rafael J . Wysocki" <rafael@kernel.org>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Amit Kucheria <amitk@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH/RFC 12/17] pinctrl: aspeed: Use bitfield helpers
+Date: Mon, 22 Nov 2021 16:54:05 +0100
+Message-Id: <15158715ad2278191e310ac5a8d3dba7cc4fb9cc.1637592133.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1637592133.git.geert+renesas@glider.be>
+References: <cover.1637592133.git.geert+renesas@glider.be>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Mailman-Approved-At: Tue, 23 Nov 2021 09:20:57 +0100
-Cc: alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org,
- Bjorn Andersson <bjorn.andersson@linaro.org>, linux-tegra@vger.kernel.org,
- Thierry Reding <thierry.reding@gmail.com>, linux-mtd@lists.infradead.org,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- linux-spi@vger.kernel.org, Robert Jarzmik <robert.jarzmik@free.fr>,
- Lars-Peter Clausen <lars@metafoo.de>, Chunyan Zhang <zhang.lyra@gmail.com>,
- linux-staging@lists.linux.dev, Michal Simek <michal.simek@xilinx.com>,
- Jon Hunter <jonathanh@nvidia.com>, Andy Gross <agross@kernel.org>,
- bcm-kernel-feedback-list@broadcom.com, linux-serial@vger.kernel.org,
- Orson Zhai <orsonzhai@gmail.com>, Nicolas Saenz Julienne <nsaenz@kernel.org>,
- Arnd Bergmann <arnd@arndb.de>, Manivannan Sadhasivam <mani@kernel.org>,
- linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org,
- Mark Brown <broonie@kernel.org>, linux-rpi-kernel@lists.infradead.org,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- linux-arm-kernel@lists.infradead.org, Scott Branden <sbranden@broadcom.com>,
- Hyun Kwon <hyun.kwon@xilinx.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-mmc@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
- Laxman Dewangan <ldewangan@nvidia.com>, Baolin Wang <baolin.wang7@gmail.com>
+Cc: alsa-devel@alsa-project.org, Geert Uytterhoeven <geert+renesas@glider.be>,
+ linux-aspeed@lists.ozlabs.org, linux-pm@vger.kernel.org,
+ linux-iio@vger.kernel.org, linux-wireless@vger.kernel.org,
+ openbmc@lists.ozlabs.org, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-gpio@vger.kernel.org, netdev@vger.kernel.org, linux-omap@vger.kernel.org,
+ linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-media@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,47 +100,145 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Arnd Bergmann <arnd@arndb.de>
+Use the field_{get,prep}() helpers, instead of open-coding the same
+operations.
 
-All references to the slave_id field have been removed, so remove the
-field as well to prevent new references from creeping in again.
-
-Originally this allowed slave DMA drivers to configure which device
-is accessed with the dmaengine_slave_config() call, but this was
-inconsistent, as the same information is also passed while requesting
-a channel, and never changes in practice.
-
-In modern kernels, the device is always selected when requesting
-the channel, so the .slave_id field is no longer useful.
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
- include/linux/dmaengine.h | 4 ----
- 1 file changed, 4 deletions(-)
+Compile-tested only.
+Marked RFC, as this depends on [PATCH 01/17], but follows a different
+path to upstream.
+---
+ drivers/pinctrl/aspeed/pinctrl-aspeed-g4.c | 3 ++-
+ drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c | 3 ++-
+ drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c | 3 ++-
+ drivers/pinctrl/aspeed/pinctrl-aspeed.c    | 5 +++--
+ drivers/pinctrl/aspeed/pinmux-aspeed.c     | 6 ++++--
+ 5 files changed, 13 insertions(+), 7 deletions(-)
 
-diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
-index 9000f3ffce8b..0349b35235e6 100644
---- a/include/linux/dmaengine.h
-+++ b/include/linux/dmaengine.h
-@@ -418,9 +418,6 @@ enum dma_slave_buswidth {
-  * @device_fc: Flow Controller Settings. Only valid for slave channels. Fill
-  * with 'true' if peripheral should be flow controller. Direction will be
-  * selected at Runtime.
-- * @slave_id: Slave requester id. Only valid for slave channels. The dma
-- * slave peripheral will have unique id as dma requester which need to be
-- * pass as slave config.
-  * @peripheral_config: peripheral configuration for programming peripheral
-  * for dmaengine transfer
-  * @peripheral_size: peripheral configuration buffer size
-@@ -448,7 +445,6 @@ struct dma_slave_config {
- 	u32 src_port_window_size;
- 	u32 dst_port_window_size;
- 	bool device_fc;
--	unsigned int slave_id;
- 	void *peripheral_config;
- 	size_t peripheral_size;
- };
+diff --git a/drivers/pinctrl/aspeed/pinctrl-aspeed-g4.c b/drivers/pinctrl/aspeed/pinctrl-aspeed-g4.c
+index bfed0e2746437b4a..bfb2a7b229915a68 100644
+--- a/drivers/pinctrl/aspeed/pinctrl-aspeed-g4.c
++++ b/drivers/pinctrl/aspeed/pinctrl-aspeed-g4.c
+@@ -2,6 +2,7 @@
+ /*
+  * Copyright (C) 2016 IBM Corp.
+  */
++#include <linux/bitfield.h>
+ #include <linux/bitops.h>
+ #include <linux/init.h>
+ #include <linux/io.h>
+@@ -2551,7 +2552,7 @@ static int aspeed_g4_sig_expr_set(struct aspeed_pinmux_data *ctx,
+ 	for (i = 0; i < expr->ndescs; i++) {
+ 		const struct aspeed_sig_desc *desc = &expr->descs[i];
+ 		u32 pattern = enable ? desc->enable : desc->disable;
+-		u32 val = (pattern << __ffs(desc->mask));
++		u32 val = field_prep(desc->mask, pattern);
+ 
+ 		if (!ctx->maps[desc->ip])
+ 			return -ENODEV;
+diff --git a/drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c b/drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c
+index 4c0d26606b6cc7d6..8cc6d9c1f1c78296 100644
+--- a/drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c
++++ b/drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c
+@@ -2,6 +2,7 @@
+ /*
+  * Copyright (C) 2016 IBM Corp.
+  */
++#include <linux/bitfield.h>
+ #include <linux/bitops.h>
+ #include <linux/init.h>
+ #include <linux/io.h>
+@@ -2724,7 +2725,7 @@ static int aspeed_g5_sig_expr_set(struct aspeed_pinmux_data *ctx,
+ 	for (i = 0; i < expr->ndescs; i++) {
+ 		const struct aspeed_sig_desc *desc = &expr->descs[i];
+ 		u32 pattern = enable ? desc->enable : desc->disable;
+-		u32 val = (pattern << __ffs(desc->mask));
++		u32 val = field_prep(desc->mask, pattern);
+ 		struct regmap *map;
+ 
+ 		map = aspeed_g5_acquire_regmap(ctx, desc->ip);
+diff --git a/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c b/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
+index a3fa03bcd9a30577..00f7b69a74e9e743 100644
+--- a/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
++++ b/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
+@@ -1,5 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /* Copyright (C) 2019 IBM Corp. */
++#include <linux/bitfield.h>
+ #include <linux/bitops.h>
+ #include <linux/init.h>
+ #include <linux/io.h>
+@@ -2649,7 +2650,7 @@ static int aspeed_g6_sig_expr_set(struct aspeed_pinmux_data *ctx,
+ 	for (i = 0; i < expr->ndescs; i++) {
+ 		const struct aspeed_sig_desc *desc = &expr->descs[i];
+ 		u32 pattern = enable ? desc->enable : desc->disable;
+-		u32 val = (pattern << __ffs(desc->mask));
++		u32 val = field_prep(desc->mask, pattern);
+ 		bool is_strap;
+ 
+ 		if (!ctx->maps[desc->ip])
+diff --git a/drivers/pinctrl/aspeed/pinctrl-aspeed.c b/drivers/pinctrl/aspeed/pinctrl-aspeed.c
+index c94e24aadf922d2a..839ac48f75836352 100644
+--- a/drivers/pinctrl/aspeed/pinctrl-aspeed.c
++++ b/drivers/pinctrl/aspeed/pinctrl-aspeed.c
+@@ -3,6 +3,7 @@
+  * Copyright (C) 2016 IBM Corp.
+  */
+ 
++#include <linux/bitfield.h>
+ #include <linux/mfd/syscon.h>
+ #include <linux/platform_device.h>
+ #include <linux/slab.h>
+@@ -547,7 +548,7 @@ int aspeed_pin_config_get(struct pinctrl_dev *pctldev, unsigned int offset,
+ 		return rc;
+ 
+ 	pmap = find_pinconf_map(pdata, param, MAP_TYPE_VAL,
+-			(val & pconf->mask) >> __ffs(pconf->mask));
++				field_get(pconf->mask, val));
+ 
+ 	if (!pmap)
+ 		return -EINVAL;
+@@ -595,7 +596,7 @@ int aspeed_pin_config_set(struct pinctrl_dev *pctldev, unsigned int offset,
+ 		if (WARN_ON(!pmap))
+ 			return -EINVAL;
+ 
+-		val = pmap->val << __ffs(pconf->mask);
++		val = field_prep(pconf->mask, pmap->val);
+ 
+ 		rc = regmap_update_bits(pdata->scu, pconf->reg,
+ 					pconf->mask, val);
+diff --git a/drivers/pinctrl/aspeed/pinmux-aspeed.c b/drivers/pinctrl/aspeed/pinmux-aspeed.c
+index 4aa46383c2c533f0..61ddd550439325ee 100644
+--- a/drivers/pinctrl/aspeed/pinmux-aspeed.c
++++ b/drivers/pinctrl/aspeed/pinmux-aspeed.c
+@@ -3,6 +3,8 @@
+ 
+ /* Pieces to enable drivers to implement the .set callback */
+ 
++#include <linux/bitfield.h>
++
+ #include "pinmux-aspeed.h"
+ 
+ static const char *const aspeed_pinmux_ips[] = {
+@@ -17,7 +19,7 @@ static inline void aspeed_sig_desc_print_val(
+ 	pr_debug("Want %s%X[0x%08X]=0x%X, got 0x%X from 0x%08X\n",
+ 			aspeed_pinmux_ips[desc->ip], desc->reg,
+ 			desc->mask, enable ? desc->enable : desc->disable,
+-			(rv & desc->mask) >> __ffs(desc->mask), rv);
++			field_get(desc->mask, rv), rv);
+ }
+ 
+ /**
+@@ -55,7 +57,7 @@ int aspeed_sig_desc_eval(const struct aspeed_sig_desc *desc,
+ 	aspeed_sig_desc_print_val(desc, enabled, raw);
+ 	want = enabled ? desc->enable : desc->disable;
+ 
+-	return ((raw & desc->mask) >> __ffs(desc->mask)) == want;
++	return field_get(desc->mask, raw) == want;
+ }
+ 
+ /**
 -- 
-2.29.2
+2.25.1
 
