@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE3E2C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Nov 2021 08:24:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BEFF8C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Nov 2021 08:25:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F2B3C166B;
-	Tue, 23 Nov 2021 09:23:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F2B3C166B
+	by alsa0.perex.cz (Postfix) with ESMTPS id E07B71675;
+	Tue, 23 Nov 2021 09:24:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E07B71675
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637655875;
-	bh=sczG2b2eb4PgIPT2N3pJ8+ot21MjTdKLTZqqWN1FAzk=;
+	s=default; t=1637655900;
+	bh=zDG1AadlyslqqjXYVepcnhLX7ZoL7q5+XpE3xXX02Cw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VloXWgUK4lePBRk+eYBOcL5ldRnr52v9/9sqUX033MGane74AqIf6WC68wHJtVAkP
-	 HRmv3TBzLw2XDjylWoMQaM57TCijPeDZ33Lq7zyEILrs2Zq1s71rK5uS9XaJMtOcRB
-	 Q9d2h5HLYPVszKtObubc7X/It4JPOVLhGKbRp/Xk=
+	b=Rbq3ccB6RJJydtgw5cpYEAmc645Ithus9488VqFVpQ7tJxhCbZBzbmt7fJT8p515d
+	 zCA6jYnKTALQM5q9GfmJ1lRwLrEO5r9mCjWXF63+ZNeHzuZWC4wDyKLeC1p444Pteo
+	 6PqBqCSj91/6z0w86VxKWTBvinT6FzMqX2tQ1gYY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 67A05F8051D;
-	Tue, 23 Nov 2021 09:21:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 00A57F80519;
+	Tue, 23 Nov 2021 09:21:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4C789F80212; Mon, 22 Nov 2021 16:55:52 +0100 (CET)
-Received: from michel.telenet-ops.be (michel.telenet-ops.be
- [IPv6:2a02:1800:110:4::f00:18])
+ id 07F5DF801F7; Mon, 22 Nov 2021 16:55:53 +0100 (CET)
+Received: from albert.telenet-ops.be (albert.telenet-ops.be
+ [IPv6:2a02:1800:110:4::f00:1a])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 69ADBF80141
- for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2021 16:55:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69ADBF80141
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4D348F8032D
+ for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2021 16:55:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4D348F8032D
 Received: from ramsan.of.borg ([84.195.186.194])
- by michel.telenet-ops.be with bizsmtp
- id MTuz260074C55Sk06TuzF0; Mon, 22 Nov 2021 16:55:40 +0100
+ by albert.telenet-ops.be with bizsmtp
+ id MTuz260014C55Sk06Tuzyl; Mon, 22 Nov 2021 16:55:40 +0100
 Received: from rox.of.borg ([192.168.97.57])
  by ramsan.of.borg with esmtps (TLS1.3) tls
  TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.93)
  (envelope-from <geert@linux-m68k.org>)
- id 1mpBe6-00EL3h-Gu; Mon, 22 Nov 2021 16:54:18 +0100
+ id 1mpBe6-00EL3g-9G; Mon, 22 Nov 2021 16:54:18 +0100
 Received: from geert by rox.of.borg with local (Exim 4.93)
  (envelope-from <geert@linux-m68k.org>)
- id 1mpBe5-00HGzF-Od; Mon, 22 Nov 2021 16:54:17 +0100
+ id 1mpBe5-00HGz8-Ni; Mon, 22 Nov 2021 16:54:17 +0100
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 To: Tony Lindgren <tony@atomide.com>, Russell King <linux@armlinux.org.uk>,
  Rajendra Nayak <rnayak@codeaurora.org>, Paul Walmsley <paul@pwsan.com>,
@@ -68,9 +68,9 @@ To: Tony Lindgren <tony@atomide.com>, Russell King <linux@armlinux.org.uk>,
  Daniel Lezcano <daniel.lezcano@linaro.org>,
  Amit Kucheria <amitk@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH/RFC 11/17] mmc: sdhci-of-aspeed: Use bitfield helpers
-Date: Mon, 22 Nov 2021 16:54:04 +0100
-Message-Id: <9e5d21f088c3b571d6a6bdeb8899726f51d5bc47.1637592133.git.geert+renesas@glider.be>
+Subject: [PATCH/RFC 10/17] media: ti-vpe: cal: Use bitfield helpers
+Date: Mon, 22 Nov 2021 16:54:03 +0100
+Message-Id: <d0ec5ecf5681cc36e0b86f8b35dde5d4a79dd5e8.1637592133.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1637592133.git.geert+renesas@glider.be>
 References: <cover.1637592133.git.geert+renesas@glider.be>
@@ -100,7 +100,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Use the field_prep() helper, instead open-coding the same operation.
+Use the field_prep() helper, instead of open-coding the same operation.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
@@ -108,32 +108,31 @@ Compile-tested only.
 Marked RFC, as this depends on [PATCH 01/17], but follows a different
 path to upstream.
 ---
- drivers/mmc/host/sdhci-of-aspeed.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/media/platform/ti-vpe/cal.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mmc/host/sdhci-of-aspeed.c b/drivers/mmc/host/sdhci-of-aspeed.c
-index 6e4e132903a6346b..26ac73aafb2ed55d 100644
---- a/drivers/mmc/host/sdhci-of-aspeed.c
-+++ b/drivers/mmc/host/sdhci-of-aspeed.c
-@@ -2,6 +2,7 @@
- /* Copyright (C) 2019 ASPEED Technology Inc. */
- /* Copyright (C) 2019 IBM Corp. */
+diff --git a/drivers/media/platform/ti-vpe/cal.h b/drivers/media/platform/ti-vpe/cal.h
+index 527e22d022f300b7..5fcf1b55ff2879ac 100644
+--- a/drivers/media/platform/ti-vpe/cal.h
++++ b/drivers/media/platform/ti-vpe/cal.h
+@@ -303,7 +303,7 @@ static inline void cal_write_field(struct cal_dev *cal, u32 offset, u32 value,
+ 	u32 val = cal_read(cal, offset);
  
-+#include <linux/bitfield.h>
- #include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/device.h>
-@@ -131,8 +132,8 @@ aspeed_sdc_set_phase_tap(const struct aspeed_sdhci_tap_desc *desc,
- {
- 	reg &= ~(desc->enable_mask | desc->tap_mask);
- 	if (enable) {
--		reg |= tap << __ffs(desc->tap_mask);
--		reg |= desc->enable_value << __ffs(desc->enable_mask);
-+		reg |= field_prep(desc->tap_mask, tap);
-+		reg |= field_prep(desc->enable_mask, desc->enable_value);
- 	}
+ 	val &= ~mask;
+-	val |= (value << __ffs(mask)) & mask;
++	val |= field_prep(mask, value);
+ 	cal_write(cal, offset, val);
+ }
  
- 	return reg;
+@@ -312,7 +312,7 @@ static inline void cal_set_field(u32 *valp, u32 field, u32 mask)
+ 	u32 val = *valp;
+ 
+ 	val &= ~mask;
+-	val |= (field << __ffs(mask)) & mask;
++	val |= field_prep(mask, field);
+ 	*valp = val;
+ }
+ 
 -- 
 2.25.1
 
