@@ -4,117 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6428EC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Nov 2021 08:33:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AEDC1C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Nov 2021 08:33:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7739816EC;
-	Tue, 23 Nov 2021 09:32:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7739816EC
+	by alsa0.perex.cz (Postfix) with ESMTPS id D1AC516DA;
+	Tue, 23 Nov 2021 09:32:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D1AC516DA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637656407;
-	bh=ztIIYU3zzXT+BNVkVntbs7tP28S0TalcmnSmCNdo0gU=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1637656425;
+	bh=5HPGeejKcq0/skHJyiqCEkuW5nT9h90VXdWH7CYPbFE=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oMdzrfgQ0eiPSIpfmskhjktLx5Tt+XbXLyZREuJ44GYR3rEGOBOS7rgQCkg1aGD5r
-	 CN5CMrFF+KUq/TqkptJadcdreEDNjYQfV3mFsdWutFRwC7vnIYI9Q+F3BkDhHw3hwJ
-	 51WiXKX++P6e2SXFU5d5heOiNbuRqTZKwZHC54bM=
+	b=sFgN4OqZ+5XiZA9JXoVaCy4Ia68zDE3YwQPclgD53M1FjpSpfUzjhW1PKIiH33aof
+	 /YPvK+XH3zngjeyic7RBmivMCu8qXbPSN1zgvYipCiNjgho0hYmoZ8MiOtuPJ5g/cS
+	 OKZPaUTS+g2zLuqLXHcH+8qdvcxOAA0j1eGe9nIw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1D717F805F5;
-	Tue, 23 Nov 2021 09:22:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0B3A6F805D8;
+	Tue, 23 Nov 2021 09:22:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A04D6F80212; Mon, 22 Nov 2021 19:38:58 +0100 (CET)
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com
- [IPv6:2607:f8b0:4864:20::32c])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id C2156F80212; Tue, 23 Nov 2021 00:01:50 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 366C1F800E7
- for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2021 19:38:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 366C1F800E7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 02885F800E7
+ for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2021 00:01:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02885F800E7
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="iF32sjGr"
-Received: by mail-ot1-x32c.google.com with SMTP id
- x43-20020a056830246b00b00570d09d34ebso30164557otr.2
- for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2021 10:38:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=sender:message-id:date:mime-version:user-agent:subject
- :content-language:to:cc:references:from:in-reply-to
- :content-transfer-encoding;
- bh=UHFB4okDolhXrN2KtXNKGXY4xx9A6ENlJZJpcpYJSa4=;
- b=iF32sjGrzSvaDDiDrzm4Jn8+gNbGxPrbBxZFxi4uCknK7CkuUHGcqoOD65h4RyWxyF
- y+wOmbGDPKkCG8jIqPGxKaFK0D3GvGCi7E7vj/rSSTElZKQ4I+sO6sAsXlhvWm4LJdnp
- 2KvDVCusXICAOU/8p8E70quXduhRoLziMS5wtCLJdF0xE54KuxD1Hx/LXZJoPAM3DNL1
- BkvRF4pmS6od3lYRUbwlZMx97PcjFnI9HdmkEczPsl3ta8bzsAye+LybTN6gfUn7gNW8
- MLS92ARh+GguAjdL9uq+LetI8B96GaD9Vc3Ip4BN7Uy3BSXQIu3jgX7O1p5U0Obaav48
- V51g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:sender:message-id:date:mime-version:user-agent
- :subject:content-language:to:cc:references:from:in-reply-to
- :content-transfer-encoding;
- bh=UHFB4okDolhXrN2KtXNKGXY4xx9A6ENlJZJpcpYJSa4=;
- b=rYnXS9h8VqbgGGHTY3LpaZKUm/yvooEdx2ac90ZZSosOG82XdnilVST/ypieWFotxa
- dahYPqWtkyf4vjtPfcJylv43SLkbUTnIaa7ZbXWvo++xaCsAs9w3zHY/nXSkf/Bz4yLY
- vsGi24Ge2w070uZY6pf0Cz98cBMZV7MrxfYFpGRCXU/2wKoe7NLPB392/m/XqCY03MYI
- JzPq/JUWfRtK9KesPCD9VNcR5/YuJ91izIIevJhjfxF9uMKVRFgY4DGELFeci+94E4/+
- 8gMz33cg7MCGSjvorkKjcoK7sdWAJo9BAArsiVVL3LbYGn2SYMfIvOEMedUS2VYcHf8P
- pVWw==
-X-Gm-Message-State: AOAM531FIXq1sKNWH4Z5uKiaeXhilaVdzrYYnbyoQLt9INPId9QzpLqN
- xPFlqqnQDfsqB+8SYkM9SpM=
-X-Google-Smtp-Source: ABdhPJwfr5gWpFAYZtUOP0l+WeTUOCLuMHjoxvBl19lgRYsYRNjGQbRkBWj0P0bUDebnG/bzTCmu0Q==
-X-Received: by 2002:a9d:5190:: with SMTP id y16mr27309322otg.364.1637606329228; 
- Mon, 22 Nov 2021 10:38:49 -0800 (PST)
-Received: from [10.62.118.101] (cpe-24-31-246-181.kc.res.rr.com.
- [24.31.246.181])
- by smtp.gmail.com with ESMTPSA id f18sm1729016otl.28.2021.11.22.10.38.43
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 22 Nov 2021 10:38:48 -0800 (PST)
-Message-ID: <a18f44bf-e590-0ebe-00c0-5658f3a51d86@lwfinger.net>
-Date: Mon, 22 Nov 2021 12:38:41 -0600
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="nEdiJ23l"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DBA960FED;
+ Mon, 22 Nov 2021 23:01:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1637622097;
+ bh=5HPGeejKcq0/skHJyiqCEkuW5nT9h90VXdWH7CYPbFE=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=nEdiJ23lulIvuZIRcBfsS+qhZQdy45DABTeQ/9eMEUl1h55xvksxls/uuZO4VBeI8
+ VaCo7TKNLJwRLa3QYvdv6RNwEp2FVuh3jDzzlTQaQEP63m8H/MG3PA9JAEloDYolQp
+ c9/rmjY39HvZyawWUPIV3NjC+iYFEvh7eF6njpejVduCoCGuYmDwm0WoROg8MZpuON
+ SIl6D9XkBqQ40owCHtFzbFPFXQsgb6+Hp4V/BoNJJJnMHVdW/zgOyJBpirCAwPOfIz
+ HcfB+kkGUqemGZoka/SinHrWStHXFAUQPzrIQFgTm1oadehKRNNCm1qA6BWKPpcaq0
+ 1TgibwoU5fvdw==
+Date: Mon, 22 Nov 2021 23:01:28 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Arnd Bergmann <arnd@kernel.org>
+Subject: Re: [PATCH v2 00/11] dmaengine: kill off dma_slave_config->slave_id
+Message-ID: <YZwhSPkhAqZy3bqY@sirena.org.uk>
+References: <20211122222203.4103644-1-arnd@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH/RFC 17/17] rtw89: Use bitfield helpers
-Content-Language: en-US
-To: Geert Uytterhoeven <geert+renesas@glider.be>,
- Tony Lindgren <tony@atomide.com>, Russell King <linux@armlinux.org.uk>,
- Rajendra Nayak <rnayak@codeaurora.org>, Paul Walmsley <paul@pwsan.com>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Nicolas Ferre <nicolas.ferre@microchip.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Ludovic Desroches <ludovic.desroches@microchip.com>,
- Tero Kristo <kristo@kernel.org>, Jonathan Cameron <jic23@kernel.org>,
- Lars-Peter Clausen <lars@metafoo.de>,
- Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
- Benoit Parrot <bparrot@ti.com>, Mauro Carvalho Chehab <mchehab@kernel.org>,
- Adrian Hunter <adrian.hunter@intel.com>, Andrew Jeffery <andrew@aj.id.au>,
- Ulf Hansson <ulf.hansson@linaro.org>, Joel Stanley <joel@jms.id.au>,
- Ping-Ke Shih <pkshih@realtek.com>, Kalle Valo <kvalo@codeaurora.org>,
- "David S . Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Linus Walleij <linus.walleij@linaro.org>, Liam Girdwood
- <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Magnus Damm <magnus.damm@gmail.com>, Eduardo Valentin <edubezval@gmail.com>,
- Keerthy <j-keerthy@ti.com>, "Rafael J . Wysocki" <rafael@kernel.org>,
- Daniel Lezcano <daniel.lezcano@linaro.org>, Amit Kucheria
- <amitk@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-References: <cover.1637592133.git.geert+renesas@glider.be>
- <f7b81122f7596fa004188bfae68f25a68c2d2392.1637592133.git.geert+renesas@glider.be>
-From: Larry Finger <Larry.Finger@lwfinger.net>
-In-Reply-To: <f7b81122f7596fa004188bfae68f25a68c2d2392.1637592133.git.geert+renesas@glider.be>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Mailman-Approved-At: Tue, 23 Nov 2021 09:20:58 +0100
-Cc: alsa-devel@alsa-project.org, linux-aspeed@lists.ozlabs.org,
- linux-pm@vger.kernel.org, linux-iio@vger.kernel.org,
- linux-wireless@vger.kernel.org, openbmc@lists.ozlabs.org,
- linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-renesas-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
- netdev@vger.kernel.org, linux-omap@vger.kernel.org, linux-clk@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="71Si6a9AhnlReqww"
+Content-Disposition: inline
+In-Reply-To: <20211122222203.4103644-1-arnd@kernel.org>
+X-Cookie: Lake Erie died for your sins.
+X-Mailman-Approved-At: Tue, 23 Nov 2021 09:20:57 +0100
+Cc: alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org,
+ Bjorn Andersson <bjorn.andersson@linaro.org>, linux-tegra@vger.kernel.org,
+ Thierry Reding <thierry.reding@gmail.com>, linux-mtd@lists.infradead.org,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ linux-spi@vger.kernel.org, Robert Jarzmik <robert.jarzmik@free.fr>,
+ Lars-Peter Clausen <lars@metafoo.de>, Chunyan Zhang <zhang.lyra@gmail.com>,
+ linux-staging@lists.linux.dev, Michal Simek <michal.simek@xilinx.com>,
+ Jon Hunter <jonathanh@nvidia.com>, Andy Gross <agross@kernel.org>,
+ bcm-kernel-feedback-list@broadcom.com, linux-serial@vger.kernel.org,
+ Orson Zhai <orsonzhai@gmail.com>, Nicolas Saenz Julienne <nsaenz@kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>, Manivannan Sadhasivam <mani@kernel.org>,
+ linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org,
+ linux-rpi-kernel@lists.infradead.org,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ linux-arm-kernel@lists.infradead.org, Scott Branden <sbranden@broadcom.com>,
+ Hyun Kwon <hyun.kwon@xilinx.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-mmc@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+ Vinod Koul <vkoul@kernel.org>, Laxman Dewangan <ldewangan@nvidia.com>,
+ Baolin Wang <baolin.wang7@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -130,115 +95,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 11/22/21 09:54, Geert Uytterhoeven wrote:
-> Use the field_{get,prep}() helpers, instead of open-coding the same
-> operations.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
-> Compile-tested only.
-> Marked RFC, as this depends on [PATCH 01/17], but follows a different
-> path to upstream.
-> ---
->   drivers/net/wireless/realtek/rtw89/core.h | 38 ++++-------------------
->   1 file changed, 6 insertions(+), 32 deletions(-)
 
-Tested-by: Larry Finger <Larry,Finger@lwfinger.net>
+--71Si6a9AhnlReqww
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Larry
+On Mon, Nov 22, 2021 at 11:21:52PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>=20
+> I recently came across some new uses of the 'slave_id' field that
+> I had (almost) removed a few years ago. There are no legitimate
+> uses of this field in the kernel, only a few stale references and
+> two drivers that abuse the field as a side-channel between the
+> dmaengine driver and its client.
 
-> 
-> diff --git a/drivers/net/wireless/realtek/rtw89/core.h b/drivers/net/wireless/realtek/rtw89/core.h
-> index c2885e4dd882f045..f9c0300ec373aaf2 100644
-> --- a/drivers/net/wireless/realtek/rtw89/core.h
-> +++ b/drivers/net/wireless/realtek/rtw89/core.h
-> @@ -2994,81 +2994,55 @@ rtw89_write32_clr(struct rtw89_dev *rtwdev, u32 addr, u32 bit)
->   static inline u32
->   rtw89_read32_mask(struct rtw89_dev *rtwdev, u32 addr, u32 mask)
->   {
-> -	u32 shift = __ffs(mask);
-> -	u32 orig;
-> -	u32 ret;
-> -
-> -	orig = rtw89_read32(rtwdev, addr);
-> -	ret = (orig & mask) >> shift;
-> -
-> -	return ret;
-> +	return field_get(mask, rtw89_read32(rtwdev, addr));
->   }
->   
->   static inline u16
->   rtw89_read16_mask(struct rtw89_dev *rtwdev, u32 addr, u32 mask)
->   {
-> -	u32 shift = __ffs(mask);
-> -	u32 orig;
-> -	u32 ret;
-> -
-> -	orig = rtw89_read16(rtwdev, addr);
-> -	ret = (orig & mask) >> shift;
-> -
-> -	return ret;
-> +	return field_get(mask, rtw89_read16(rtwdev, addr));
->   }
->   
->   static inline u8
->   rtw89_read8_mask(struct rtw89_dev *rtwdev, u32 addr, u32 mask)
->   {
-> -	u32 shift = __ffs(mask);
-> -	u32 orig;
-> -	u32 ret;
-> -
-> -	orig = rtw89_read8(rtwdev, addr);
-> -	ret = (orig & mask) >> shift;
-> -
-> -	return ret;
-> +	return field_get(mask, rtw89_read8(rtwdev, addr));
->   }
->   
->   static inline void
->   rtw89_write32_mask(struct rtw89_dev *rtwdev, u32 addr, u32 mask, u32 data)
->   {
-> -	u32 shift = __ffs(mask);
->   	u32 orig;
->   	u32 set;
->   
->   	WARN(addr & 0x3, "should be 4-byte aligned, addr = 0x%08x\n", addr);
->   
->   	orig = rtw89_read32(rtwdev, addr);
-> -	set = (orig & ~mask) | ((data << shift) & mask);
-> +	set = (orig & ~mask) | field_prep(mask, data);
->   	rtw89_write32(rtwdev, addr, set);
->   }
->   
->   static inline void
->   rtw89_write16_mask(struct rtw89_dev *rtwdev, u32 addr, u32 mask, u16 data)
->   {
-> -	u32 shift;
->   	u16 orig, set;
->   
->   	mask &= 0xffff;
-> -	shift = __ffs(mask);
->   
->   	orig = rtw89_read16(rtwdev, addr);
-> -	set = (orig & ~mask) | ((data << shift) & mask);
-> +	set = (orig & ~mask) | field_prep(mask, data);
->   	rtw89_write16(rtwdev, addr, set);
->   }
->   
->   static inline void
->   rtw89_write8_mask(struct rtw89_dev *rtwdev, u32 addr, u32 mask, u8 data)
->   {
-> -	u32 shift;
->   	u8 orig, set;
->   
->   	mask &= 0xff;
-> -	shift = __ffs(mask);
->   
->   	orig = rtw89_read8(rtwdev, addr);
-> -	set = (orig & ~mask) | ((data << shift) & mask);
-> +	set = (orig & ~mask) | field_prep(mask, data);
->   	rtw89_write8(rtwdev, addr, set);
->   }
->   
-> 
+Acked-by: Mark Brown <broonie@kernel.org>
 
+--71Si6a9AhnlReqww
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGcIUcACgkQJNaLcl1U
+h9B/hgf6AiPwJAMMKcdb/6uCfAJACPZtqMFn2hE6HQgrw8mlTsR3sGqhQj3c3NWF
+vkLYtSZ20L2tPvS1uyAxjIRzIm91rqriu6pNurmupB6D+347UfSMpYhtbEKXvbBw
+1UF5ftPw1t5IGduAX6HKBfaN1Iab53577DJb/uJwR3Mb/WBh9aFpuyRwuZgjBOwE
+MvpTaAK2GHY4loDjJChSAK+zlCQMFbc4I2mZuahtf4wvBts/eZn7bAqAruzPMnTL
+e3crlktLeH7C0DMKJpmrxvTvS0CDsEUUOJ+tM7aNmtsdyYTAZEG35vzJgVly61jc
+7e5I5GHB1Jxsid3oM7WeznOhbimQEw==
+=AKUT
+-----END PGP SIGNATURE-----
+
+--71Si6a9AhnlReqww--
