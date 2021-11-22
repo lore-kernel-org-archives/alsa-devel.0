@@ -4,75 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9C0AC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Nov 2021 08:27:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38C42C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Nov 2021 08:28:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1080E1689;
-	Tue, 23 Nov 2021 09:27:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1080E1689
+	by alsa0.perex.cz (Postfix) with ESMTPS id 517091681;
+	Tue, 23 Nov 2021 09:27:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 517091681
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637656073;
-	bh=Lq9M15s4GfRFwLb/SvxaPzpI/R3BYNJ6QW8NIrC7m6A=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Onpvfk2ERYSYnxn8uFN1x0W/FRGU+DfFHRO2JP/wrxO4f/zNCjqP0my/MRg6+wARF
-	 A8/VTPhORCZ1yZnufVcXFTsIKGrFncnHxtQIUPUU1d6DOCGgU1G4o7WlKgePFQ4Zhx
-	 oIN5lyAhxo9ZNhIQEpvLNctvlsxZ3vI+vFlAdavY=
+	s=default; t=1637656099;
+	bh=a7SGmbp4mEcF+/rXpw1vFw4ipurQPrcKJnXyHa0ukDM=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=pbzzW3RYTDbHYCQh4EZVKLskczp68Oqcv99zXHeg4w1iPqVKBBAW+wMRFEM8FxNNn
+	 SSZJZRpnqk9YVIeCbXMR2HK5dy7BmJZlukis12VSCKHyqESQ4JHPewItCUGJUlO2cl
+	 pznZb+EvqM2ZWL/bUj55duYx6Eb8vlx+yAujKRCY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EB59CF80587;
-	Tue, 23 Nov 2021 09:21:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AA330F80589;
+	Tue, 23 Nov 2021 09:21:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7B9CAF80212; Mon, 22 Nov 2021 18:52:51 +0100 (CET)
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net
- [217.70.183.194])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id CE3A9F80245; Mon, 22 Nov 2021 23:22:48 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 85923F80141
- for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2021 18:52:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85923F80141
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
- by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 2884840004;
- Mon, 22 Nov 2021 17:52:36 +0000 (UTC)
-Date: Mon, 22 Nov 2021 18:52:35 +0100
-From: Alexandre Belloni <alexandre.belloni@bootlin.com>
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: Re: [PATCH/RFC 13/17] pinctl: ti: iodelay: Use bitfield helpers
-Message-ID: <YZvY4/FCgYMBMeDJ@piout.net>
-References: <cover.1637592133.git.geert+renesas@glider.be>
- <60257a3c5b567fb5b14d6f9adb770899bce88f7a.1637592133.git.geert+renesas@glider.be>
+ by alsa1.perex.cz (Postfix) with ESMTPS id E4DDBF80141
+ for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2021 23:22:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4DDBF80141
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="Y67FYaIG"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A713E60FE6;
+ Mon, 22 Nov 2021 22:22:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1637619752;
+ bh=a7SGmbp4mEcF+/rXpw1vFw4ipurQPrcKJnXyHa0ukDM=;
+ h=From:To:Cc:Subject:Date:From;
+ b=Y67FYaIGdT2PZzTNUoTVEiI4EIJPVahTTQcFkaMGkwj/kK6uvHtBIMmdnqBLhf7HT
+ hBItQMZWP+6NOepRrZvm3Ew9ZZ8/FZ3O0KYYGjwKHK5rlPz4VxNp0GiabJQN8Y/GAu
+ cpYxFgQ1c0u7D2HYV2H6tcPpfPDjp0wzO7HYKAfO+trFUsv2MhTcWOSKf3o8dyelB4
+ DrmZQlB9Ek6HLLgk3MWFfNjOVttzg9ihxIXogQBkQ99M72KwZFnb0oN9Lw8EEWgIo9
+ HeySd0yRe7BQd7PNPcJ0oegk/rngezgRJBGsN7YW07wkfLzE47GG8mpWgwpy/vxG8C
+ +w2C+aEIfRe5A==
+From: Arnd Bergmann <arnd@kernel.org>
+To: Vinod Koul <vkoul@kernel.org>
+Subject: [PATCH v2 00/11] dmaengine: kill off dma_slave_config->slave_id
+Date: Mon, 22 Nov 2021 23:21:52 +0100
+Message-Id: <20211122222203.4103644-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <60257a3c5b567fb5b14d6f9adb770899bce88f7a.1637592133.git.geert+renesas@glider.be>
+Content-Transfer-Encoding: 8bit
 X-Mailman-Approved-At: Tue, 23 Nov 2021 09:20:57 +0100
-Cc: Ulf Hansson <ulf.hansson@linaro.org>,
- Daniel Lezcano <daniel.lezcano@linaro.org>, linux-aspeed@lists.ozlabs.org,
- Liam Girdwood <lgirdwood@gmail.com>, Tony Lindgren <tony@atomide.com>,
- linux-wireless@vger.kernel.org, Michael Turquette <mturquette@baylibre.com>,
- Amit Kucheria <amitk@kernel.org>, alsa-devel@alsa-project.org,
- Adrian Hunter <adrian.hunter@intel.com>, linux-clk@vger.kernel.org,
- Ping-Ke Shih <pkshih@realtek.com>, Lars-Peter Clausen <lars@metafoo.de>,
- openbmc@lists.ozlabs.org, "Rafael J . Wysocki" <rafael@kernel.org>,
- Magnus Damm <magnus.damm@gmail.com>, Russell King <linux@armlinux.org.uk>,
- linux-iio@vger.kernel.org, Ludovic Desroches <ludovic.desroches@microchip.com>,
- Joel Stanley <joel@jms.id.au>, Jakub Kicinski <kuba@kernel.org>,
- Zhang Rui <rui.zhang@intel.com>, Linus Walleij <linus.walleij@linaro.org>,
- linux-media@vger.kernel.org, linux-omap@vger.kernel.org,
- Benoit Parrot <bparrot@ti.com>, linux-gpio@vger.kernel.org,
- Mark Brown <broonie@kernel.org>,
- Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>, Kalle Valo <kvalo@codeaurora.org>,
- linux-arm-kernel@lists.infradead.org, Eduardo Valentin <edubezval@gmail.com>,
- Paul Walmsley <paul@pwsan.com>, Rajendra Nayak <rnayak@codeaurora.org>,
- Tero Kristo <kristo@kernel.org>, Andrew Jeffery <andrew@aj.id.au>,
- Keerthy <j-keerthy@ti.com>, linux-pm@vger.kernel.org,
- linux-mmc@vger.kernel.org, Nicolas Ferre <nicolas.ferre@microchip.com>,
- linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- Stephen Boyd <sboyd@kernel.org>, netdev@vger.kernel.org,
- "David S . Miller" <davem@davemloft.net>, Jonathan Cameron <jic23@kernel.org>
+Cc: alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org,
+ Bjorn Andersson <bjorn.andersson@linaro.org>, linux-tegra@vger.kernel.org,
+ Thierry Reding <thierry.reding@gmail.com>, linux-mtd@lists.infradead.org,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ linux-spi@vger.kernel.org, Robert Jarzmik <robert.jarzmik@free.fr>,
+ Lars-Peter Clausen <lars@metafoo.de>, Chunyan Zhang <zhang.lyra@gmail.com>,
+ linux-staging@lists.linux.dev, Michal Simek <michal.simek@xilinx.com>,
+ Jon Hunter <jonathanh@nvidia.com>, Andy Gross <agross@kernel.org>,
+ bcm-kernel-feedback-list@broadcom.com, linux-serial@vger.kernel.org,
+ Orson Zhai <orsonzhai@gmail.com>, Nicolas Saenz Julienne <nsaenz@kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>, Manivannan Sadhasivam <mani@kernel.org>,
+ linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>, linux-rpi-kernel@lists.infradead.org,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ linux-arm-kernel@lists.infradead.org, Scott Branden <sbranden@broadcom.com>,
+ Hyun Kwon <hyun.kwon@xilinx.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-mmc@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+ Laxman Dewangan <ldewangan@nvidia.com>, Baolin Wang <baolin.wang7@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,123 +89,106 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Geert,
+From: Arnd Bergmann <arnd@arndb.de>
 
-There is a typo in pinctrl in the subject
+I recently came across some new uses of the 'slave_id' field that
+I had (almost) removed a few years ago. There are no legitimate
+uses of this field in the kernel, only a few stale references and
+two drivers that abuse the field as a side-channel between the
+dmaengine driver and its client.
 
-On 22/11/2021 16:54:06+0100, Geert Uytterhoeven wrote:
-> Use the field_{get,prep}() helpers, instead of defining a custom
-> function, or open-coding the same operations.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
-> Compile-tested only.
-> Marked RFC, as this depends on [PATCH 01/17], but follows a different
-> path to upstream.
-> ---
->  drivers/pinctrl/ti/pinctrl-ti-iodelay.c | 35 +++++++------------------
->  1 file changed, 10 insertions(+), 25 deletions(-)
-> 
-> diff --git a/drivers/pinctrl/ti/pinctrl-ti-iodelay.c b/drivers/pinctrl/ti/pinctrl-ti-iodelay.c
-> index 4e2382778d38f557..b220dcd9215520db 100644
-> --- a/drivers/pinctrl/ti/pinctrl-ti-iodelay.c
-> +++ b/drivers/pinctrl/ti/pinctrl-ti-iodelay.c
-> @@ -9,6 +9,7 @@
->   * warranty of any kind, whether express or implied.
->   */
->  
-> +#include <linux/bitfield.h>
->  #include <linux/err.h>
->  #include <linux/init.h>
->  #include <linux/io.h>
-> @@ -155,18 +156,6 @@ struct ti_iodelay_device {
->  	struct ti_iodelay_reg_values reg_init_conf_values;
->  };
->  
-> -/**
-> - * ti_iodelay_extract() - extract bits for a field
-> - * @val: Register value
-> - * @mask: Mask
-> - *
-> - * Return: extracted value which is appropriately shifted
-> - */
-> -static inline u32 ti_iodelay_extract(u32 val, u32 mask)
-> -{
-> -	return (val & mask) >> __ffs(mask);
-> -}
-> -
->  /**
->   * ti_iodelay_compute_dpe() - Compute equation for delay parameter
->   * @period: Period to use
-> @@ -233,10 +222,10 @@ static int ti_iodelay_pinconf_set(struct ti_iodelay_device *iod,
->  	}
->  
->  	reg_mask = reg->signature_mask;
-> -	reg_val = reg->signature_value << __ffs(reg->signature_mask);
-> +	reg_val = field_prep(reg->signature_mask, reg->signature_value);
->  
->  	reg_mask |= reg->binary_data_coarse_mask;
-> -	tmp_val = c_elements << __ffs(reg->binary_data_coarse_mask);
-> +	tmp_val = field_prep(reg->binary_data_coarse_mask, c_elements);
->  	if (tmp_val & ~reg->binary_data_coarse_mask) {
->  		dev_err(dev, "Masking overflow of coarse elements %08x\n",
->  			tmp_val);
-> @@ -245,7 +234,7 @@ static int ti_iodelay_pinconf_set(struct ti_iodelay_device *iod,
->  	reg_val |= tmp_val;
->  
->  	reg_mask |= reg->binary_data_fine_mask;
-> -	tmp_val = f_elements << __ffs(reg->binary_data_fine_mask);
-> +	tmp_val = field_prep(reg->binary_data_fine_mask, f_elements);
->  	if (tmp_val & ~reg->binary_data_fine_mask) {
->  		dev_err(dev, "Masking overflow of fine elements %08x\n",
->  			tmp_val);
-> @@ -260,7 +249,7 @@ static int ti_iodelay_pinconf_set(struct ti_iodelay_device *iod,
->  	 * impacting iodelay configuration. Use with care!
->  	 */
->  	reg_mask |= reg->lock_mask;
-> -	reg_val |= reg->unlock_val << __ffs(reg->lock_mask);
-> +	reg_val |= field_prep(reg->lock_mask, reg->unlock_val);
->  	r = regmap_update_bits(iod->regmap, cfg->offset, reg_mask, reg_val);
->  
->  	dev_dbg(dev, "Set reg 0x%x Delay(a: %d g: %d), Elements(C=%d F=%d)0x%x\n",
-> @@ -296,16 +285,14 @@ static int ti_iodelay_pinconf_init_dev(struct ti_iodelay_device *iod)
->  	r = regmap_read(iod->regmap, reg->reg_refclk_offset, &val);
->  	if (r)
->  		return r;
-> -	ival->ref_clk_period = ti_iodelay_extract(val, reg->refclk_period_mask);
-> +	ival->ref_clk_period = field_get(reg->refclk_period_mask, val);
->  	dev_dbg(dev, "refclk_period=0x%04x\n", ival->ref_clk_period);
->  
->  	r = regmap_read(iod->regmap, reg->reg_coarse_offset, &val);
->  	if (r)
->  		return r;
-> -	ival->coarse_ref_count =
-> -	    ti_iodelay_extract(val, reg->coarse_ref_count_mask);
-> -	ival->coarse_delay_count =
-> -	    ti_iodelay_extract(val, reg->coarse_delay_count_mask);
-> +	ival->coarse_ref_count = field_get(reg->coarse_ref_count_mask, val);
-> +	ival->coarse_delay_count = field_get(reg->coarse_delay_count_mask, val);
->  	if (!ival->coarse_delay_count) {
->  		dev_err(dev, "Invalid Coarse delay count (0) (reg=0x%08x)\n",
->  			val);
-> @@ -326,10 +313,8 @@ static int ti_iodelay_pinconf_init_dev(struct ti_iodelay_device *iod)
->  	r = regmap_read(iod->regmap, reg->reg_fine_offset, &val);
->  	if (r)
->  		return r;
-> -	ival->fine_ref_count =
-> -	    ti_iodelay_extract(val, reg->fine_ref_count_mask);
-> -	ival->fine_delay_count =
-> -	    ti_iodelay_extract(val, reg->fine_delay_count_mask);
-> +	ival->fine_ref_count = field_get(reg->fine_ref_count_mask, val);
-> +	ival->fine_delay_count = field_get(reg->fine_delay_count_mask, val);
->  	if (!ival->fine_delay_count) {
->  		dev_err(dev, "Invalid Fine delay count (0) (reg=0x%08x)\n",
->  			val);
-> -- 
-> 2.25.1
-> 
+Let's change the xilinx and qualcomm drivers to use the documented
+side-channel (peripheral_data) instead, and remove the remnants of
+it to prevent new users from coming in.
+
+I think I got all the necessary Acks on v1 already, so if there are
+no further concerns, please merge this through the dmaengine tree
+for v5.17, or pull from
+
+git://git.kernel.org/pub/scm/linux/kernel/git/arnd/asm-generic.git tags/dma-slave-id-removal
+
+       Arnd
+
+Arnd Bergmann (13):
+  ASoC: tegra20-spdif: stop setting slave_id
+  ASoC: dai_dma: remove slave_id field
+  spi: pic32: stop setting dma_config->slave_id
+  mmc: bcm2835: stop setting chan_config->slave_id
+  dmaengine: shdma: remove legacy slave_id parsing
+  dmaengine: pxa/mmp: stop referencing config->slave_id
+  dmaengine: sprd: stop referencing config->slave_id
+  dmaengine: qcom-adm: stop abusing slave_id config
+  dmaengine: xilinx_dpdma: stop using slave_id field
+  dmaengine: tegra20-apb: stop checking config->slave_id
+  dmaengine: remove slave_id config field
+
+---
+Changes in v2:
+
+ - drop obsolete drivers/staging/patch
+ - split tegra change into a separate patch
+ - improve some patch descriptions.
+
+ drivers/dma/mmp_pdma.c                 |  6 ---
+ drivers/dma/pxa_dma.c                  |  7 ----
+ drivers/dma/qcom/qcom_adm.c            | 56 ++++++++++++++++++++++----
+ drivers/dma/sh/shdma-base.c            |  8 ----
+ drivers/dma/sprd-dma.c                 |  3 --
+ drivers/dma/tegra20-apb-dma.c          |  6 ---
+ drivers/dma/xilinx/xilinx_dpdma.c      | 17 +++++---
+ drivers/gpu/drm/xlnx/zynqmp_disp.c     |  9 ++++-
+ drivers/mmc/host/bcm2835.c             |  2 -
+ drivers/mtd/nand/raw/qcom_nandc.c      | 14 ++++++-
+ drivers/spi/spi-pic32.c                |  2 -
+ drivers/tty/serial/msm_serial.c        | 15 ++++++-
+ include/linux/dma/qcom_adm.h           | 12 ++++++
+ include/linux/dma/xilinx_dpdma.h       | 11 +++++
+ include/linux/dmaengine.h              |  4 --
+ include/linux/platform_data/asoc-s3c.h |  6 ---
+ include/sound/dmaengine_pcm.h          |  4 --
+ sound/core/pcm_dmaengine.c             | 26 +-----------
+ sound/soc/tegra/tegra20_spdif.c        |  1 -
+ 27 files changed, 134 insertions(+), 146 deletions(-)
+ create mode 100644 include/linux/dma/qcom_adm.h
+ create mode 100644 include/linux/dma/xilinx_dpdma.h
 
 -- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.29.2
+
+Cc: Andy Gross <agross@kernel.org>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Baolin Wang <baolin.wang7@gmail.com>
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: Chunyan Zhang <zhang.lyra@gmail.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Hyun Kwon <hyun.kwon@xilinx.com>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Jon Hunter <jonathanh@nvidia.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: Laxman Dewangan <ldewangan@nvidia.com>
+Cc: Manivannan Sadhasivam <mani@kernel.org>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Michal Simek <michal.simek@xilinx.com>
+Cc: Nicolas Saenz Julienne <nsaenz@kernel.org>
+Cc: Orson Zhai <orsonzhai@gmail.com>
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Scott Branden <sbranden@broadcom.com>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: Thierry Reding <thierry.reding@gmail.com>
+Cc: Vinod Koul <vkoul@kernel.org>
+Cc: alsa-devel@alsa-project.org
+Cc: bcm-kernel-feedback-list@broadcom.com
+Cc: dmaengine@vger.kernel.org
+Cc: dri-devel@lists.freedesktop.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-arm-msm@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-mmc@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org
+Cc: linux-rpi-kernel@lists.infradead.org
+Cc: linux-serial@vger.kernel.org
+Cc: linux-spi@vger.kernel.org
+Cc: linux-staging@lists.linux.dev
+Cc: linux-tegra@vger.kernel.org
