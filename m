@@ -4,74 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05283C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Nov 2021 08:20:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95983C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Nov 2021 08:21:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1637F15E5;
-	Tue, 23 Nov 2021 09:20:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1637F15E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6E742166E;
+	Tue, 23 Nov 2021 09:21:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E742166E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637655656;
-	bh=1wPJuK/MRhvQFxtw44MDEir2V+UqnSCduBIwoSNnGHA=;
+	s=default; t=1637655713;
+	bh=Q9jbHtQOHuRy4iXcAh02Wk5LOeeDSk/nA1BhumgcJrk=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=Ht6/LSwIcffSayzVfOeZ/7OJEOGETI+RrnVKznFcnbcERRB3YqKpVrVFiUfFE+nXV
-	 jcotS02LyBbgWqBKNWmGFHvbig8LB08/jbyETa/kbvb/WyM4XsQPPhwLNiB0losQGP
-	 4XX9vJvY57bGoNrbjnb3NDO9QDyinxaZ9As4/BzI=
+	b=uBREaj2bg0QADGybXo+JAX7yKCANX09cLehQEAaGydxdHA2JLA/vUFTTA4sQ0P0P0
+	 mqsCRuBt6V2yqdiZ0enrin88c5FZpjPnB0SXbcBdLcqMC35ikub2GUIeN0/q77F1A6
+	 j3uuP9LcZRVm8vUIFO2NHd5kXK/1ZMF5EKo0ilrc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 98445F80430;
-	Tue, 23 Nov 2021 09:20:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 189ECF80430;
+	Tue, 23 Nov 2021 09:21:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4F6ECF8049E; Tue, 23 Nov 2021 09:20:02 +0100 (CET)
-Received: from out203-205-221-240.mail.qq.com (out203-205-221-240.mail.qq.com
- [203.205.221.240])
+ id 0AC75F80212; Mon, 22 Nov 2021 10:15:36 +0100 (CET)
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8FECEF80154
- for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2021 09:19:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8FECEF80154
+ by alsa1.perex.cz (Postfix) with ESMTPS id E1A8DF80154
+ for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2021 10:15:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1A8DF80154
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com
- header.b="YwmyT7NC"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
- s=s201512; t=1637655590;
- bh=qDkdMkuGmnqM0WTZI7gs3hWemJNyPIZq32ImyXmJdVs=;
- h=From:To:Cc:Subject:Date;
- b=YwmyT7NCXIBpgaPmjNRhgtpbGoZAzuM/6j99tZSTLq9utm9oAD06EyGgFlFkTuh74
- Yt4RVM0IYaY/rSYJ7X9eVCjK/muW9ww3yhLiNBTFHHAkC0g0ymavz5k3MLiPYE3+1N
- oBJZ0JY/Yo0LzLbsvSOauYOe5uhVHfMyB/l4F7Do=
-Received: from localhost.localdomain ([106.37.198.34])
- by newxmesmtplogicsvrsza28.qq.com (NewEsmtp) with SMTP
- id 4E7B4A0C; Tue, 23 Nov 2021 16:19:39 +0800
-X-QQ-mid: xmsmtpt1637655579t9yevkson
-Message-ID: <tencent_E3D552E08140479185E91F9803CE3C6AFC09@qq.com>
-X-QQ-XMAILINFO: MFViGQwD1A+rYjvabUgI3r5adOyL5YOIDx2TcPsGbPpmMFsC/5hRiq4uNPV0sW
- tQwCaRzAv+GAjgWh41P1Fk6yEYxEl6PsphIilnz36Dn3t25xspZADZt61YNPGNeUJvqPxyumAyo8
- Wu0a3CmtYjyFu7Y8afEiUIHUTA5BTvO+Slj0tEYUdpfegPv+DK1mJwmZvFV2lf5ew9AJKqAEdCQF
- 6KzxFcRo6PJFfX+9IZ6XF2rEmKh+tbQZKb8q4op1jPD/CRMvCWgN04fWU82HrxcfI1A1WMOc4zWV
- 7jyJSlJ+6hDaxIm/bcEyMWdpo2WDjG4DfSVs3yN59/fRdlhHLKq5MqXv28vxzyYh4QGOLZnowbeT
- R6So1sdwnUSuUCADznaeNihU1OCSGVI65UY5BbmErBhfqLTrUcGWJShqjuTGUCgaUWuI76WOosEf
- SZzUHngbypf+cXEliyR+B0vhHR+YLlNsCoGrN2Iv/sDqWPrrr0YoO7pAGnk0GFKOK6mzcA9zFu3S
- 2sns2FK4eZPuI31RxF7Q92E1mv/V7+KDTO4ugq3PJQIui50iox/Jd6AMxO2KmI+3fmEzDbKW4mtr
- 4WoSNosqta+cYsKGPYqtU3oxlvouWCtx/3kJk2FR4UlE6cIY6HHZgjlWCOcs1hM4P7S0w06Gkg8r
- RI5UXUzVS0PVe8kxWgEj7r3ZfgnCp8bJRK4P/74mT+ql2gHDsnnZavkXPBJqVvbS4pOcK0aegue8
- ufyS4LhT3WT719d6V34+1g7L1kTTFFeWhfXCOxLRrdSGCm2FeYKrQoax689fkH5QLAD9pxcN/oEJ
- eyrNgzrEiornnYsOqLQEom9ZtkNK7+5ik/XrMmkMSvZvt5c4IynRSfMqRkOG+jFukTEJpCWu9csV
- ninyY1UsjkYMDbj56yG0xFUuRXXq/1IQ==
-From: tianyucode <tianyucode@foxmail.com>
-To: perex@perex.cz,
-	tiwai@suse.com,
-	alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: hda/via - fix occasionally no sound with VT1802
-Date: Tue, 23 Nov 2021 16:18:57 +0800
-X-OQ-MSGID: <20211123081857.414213-1-tianyucode@foxmail.com>
-X-Mailer: git-send-email 2.25.1
+ dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="givdP6Dm"
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AM9FQx3015496;
+ Mon, 22 Nov 2021 03:15:26 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1637572526;
+ bh=w6bI98aJlLZh4Jv2PuTgPXkfvTVLpF8g8Stm+HPHMhQ=;
+ h=From:To:CC:Subject:Date;
+ b=givdP6Dmy8QJeLHdsW/UEia23rHKNPFPlLKVzm1Ijl2dzG64KmrahvGbUsBrBaq+S
+ WLdaEgCZQejOO3jsbybkxjHycKvWWJfMWjGuGsTwMASqdBROagQy5lHwReUePC01Oh
+ Zqeh4Bml3Mu2ljCkgK7ZFKqodQhq2v2+zceNWZtA=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AM9FQ48026471
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Mon, 22 Nov 2021 03:15:26 -0600
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 22
+ Nov 2021 03:15:26 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Mon, 22 Nov 2021 03:15:26 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AM9FPPe114115;
+ Mon, 22 Nov 2021 03:15:26 -0600
+From: Jayesh Choudhary <j-choudhary@ti.com>
+To: <devicetree@vger.kernel.org>
+Subject: [PATCH] ASoC: dt-bindings: davinci-mcasp: convert McASP bindings to
+ yaml schema
+Date: Mon, 22 Nov 2021 14:45:25 +0530
+Message-ID: <20211122091525.2290-1-j-choudhary@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: tianyu <tianyu@kylinos.cn>
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Mailman-Approved-At: Tue, 23 Nov 2021 09:20:57 +0100
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ j-choudhary@ti.com, robh+dt@kernel.org, lgirdwood@gmail.com,
+ broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,189 +87,283 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: tianyu <tianyu@kylinos.cn>
+Convert the bindings for McASP controllers for TI SOCs
+from txt to YAML schema.
 
-Hi guys, I'm a new guy for audio driver.
+Adds additional properties 'clocks', 'clock-names', 'power-domains'
+and '#sound-dai-cells' which were not there in txt file.
+Adds 'dmas' and 'dma-names' in the example which were not there in
+txt file.
+Changes 'interrupts' and 'interrupt-names' from optional to
+required properties.
 
-I have encountered a problem. When using the VT1802 codec,
-there will be no sound occasionally. After checking the initialization process,
-I found that the cause of the problem is that the power state does not have
-hda_set_power_state(codec, AC_PWRST_D0).
-
-1. The power state is set to AC_PWRST_D0 during the first initialization：
-
-azx_probe_continue
-	azx_probe_codecs
-		snd_hda_codec_new
-			snd_hda_codec_device_new
-				hda_set_power_state(codec, AC_PWRST_D0);
-
-2. Then, the power state is set to AC_PWRST_D3 in VT1802, but not set in realtek (ALC269).
-
-azx_probe_continue
-	azx_codec_configure
-		…
-		patch_vt2002
-			via_parse_auto_config
-				snd_hda_gen_parse_auto_config
-					add_all_pin_power_ctls
-						add_pin_power_ctls
-							set_path_power
-
-static void add_all_pin_power_ctls(struct hda_codec *codec, bool on)
-{
-	/**/
-	if (!codec->power_save_node)
-		return;
-
-	add_pin_power_ctls(codec, cfg->line_outs, cfg->line_out_pins, on);
-	/**/
-}
-
-The power_save_node is set to 0 in patch_alc269 and it returns here,
-but it is set to 1 in VT1802.
-
-patch_vt2002P
-	via_new_spec
-		codec->power_save_node = 1;
-	via_parse_auto_config
-		snd_hda_gen_parse_auto_config
-		codec->power_save_node = 0;//it set to 0 here,but add_all_pin_power_ctls has been done
-
-patch_alc269
-	codec->power_save_node = 0;
-
-3. Next there is a suspend and resume process, the resume process will also set the
-power state to AC_PWRST_D0, but I think there is a problem with this process.
-
-(1)suspend:
-
-azx_probe_continue
-	snd_card_register
-		..
-		snd_hda_codec_dev_register
-			snd_hda_codec_register
-				snd_hda_power_down
-					pm_runtime_put_autosuspend
-					__pm_runtime_suspend(dev, RPM_GET_PUT | RPM_ASYNC | RPM_AUTO);
-						rpm_suspend
-
-static int rpm_suspend(struct device *dev, int rpmflags)
-{
-	/**/
-	if (rpmflags & RPM_ASYNC) {
-		dev->power.request = (rpmflags & RPM_AUTO) ?
-		    RPM_REQ_AUTOSUSPEND : RPM_REQ_SUSPEND;
-		if (!dev->power.request_pending) {
-			dev->power.request_pending = true;
-			queue_work(pm_wq, &dev->power.work);
-		}
-		goto out;
-	}
-
-	__update_runtime_status(dev, RPM_SUSPENDING);
-
-	/**/
-	retval = rpm_callback(callback, dev);
-	__update_runtime_status(dev, RPM_SUSPENDED);
-	/**/
-}
-
-The first call to rpm_suspend has the RPM_ASYNC flag, so queue_work is called,
-and the work queue is used to enter rpm_suspend
-
-pm_runtime_init
-	INIT_WORK(&dev->power.work, pm_runtime_work);
-
-(2)resume:
-
-azx_probe_continue
-	set_default_power_save
-		snd_hda_set_power_save(&chip->bus, val * 1000);
-			codec_set_power_save(c, delay);
-
-int val = power_save;
-static int power_save = CONFIG_SND_HDA_POWER_SAVE_DEFAULT;//It is 0 in my .config
-
-static void codec_set_power_save(struct hda_codec *codec, int delay)
-{
-	struct device *dev = hda_codec_dev(codec);
-	if (delay == 0 && codec->auto_runtime_pm)
-		delay = 3000;
-
-	if (delay > 0) {
-		pm_runtime_set_autosuspend_delay(dev, delay);
-		pm_runtime_use_autosuspend(dev);
-		pm_runtime_allow(dev);
-		if (!pm_runtime_suspended(dev))
-			pm_runtime_mark_last_busy(dev);
-	} else {
-		pm_runtime_dont_use_autosuspend(dev);
-		pm_runtime_forbid(dev);
-	}
-}
-
-pm_runtime_forbid
-	rpm_resume(dev, 0);
-
-static int rpm_resume(struct device *dev, int rpmflags)
-{
-	/**/
-	if (dev->power.runtime_status == RPM_ACTIVE) {
-		retval = 1;
-		goto out;
-	}
-
-	/**/
-	_update_runtime_status(dev, RPM_RESUMING);
-	retval = rpm_callback(callback, dev);
-	/**/
-	__update_runtime_status(dev, RPM_ACTIVE);
-	/**/
-}
-
-The callback functions of suspend and resume are as follows, which set the power state:
-
-hda_call_codec_suspend
-	state = hda_set_power_state(codec, AC_PWRST_D3);
-
-hda_call_codec_resume
-	hda_set_power_state(codec, AC_PWRST_D0);
-
-You can see that the resume function relies on dev->power.runtime_status,
-and the status is set in rpm_suspend. The operation of rpm_suspend depends
-on the scheduling of the work queue. I added print debugging on my machine,
-and occasionally there will be pm_runtime_work in Run after rpm_resume.
-At this time, the suspend and resume processes are not performed correctly.
-In VT1802, the power_state is still D3, and the machine has no sound.
-
-4. I searched the Internet and did not find the relevant modification,
-but found the commit 317d9313925c (ALSA: hda/realtek-Set default power save node to 0).
-
-Does VIA need to be modified like this?
-
-Since I am not familiar with ALSA and runtime pm, so come here to consult.
-
+Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
 ---
- sound/pci/hda/patch_via.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ .../bindings/sound/davinci-mcasp-audio.txt    |  86 ----------
+ .../bindings/sound/davinci-mcasp-audio.yaml   | 161 ++++++++++++++++++
+ 2 files changed, 161 insertions(+), 86 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/davinci-mcasp-audio.yaml
 
-diff --git a/sound/pci/hda/patch_via.c b/sound/pci/hda/patch_via.c
-index a29d7e989fe6..d01ea582cf25 100644
---- a/sound/pci/hda/patch_via.c
-+++ b/sound/pci/hda/patch_via.c
-@@ -1073,8 +1073,10 @@ static int patch_vt2002P(struct hda_codec *codec)
- 	snd_hda_pick_fixup(codec, NULL, vt2002p_fixups, via_fixups);
- 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
- 
--	if (spec->codec_type == VT1802)
-+	if (spec->codec_type == VT1802) {
-+		codec->power_save_node = 0;
- 		err = snd_hda_add_verbs(codec, vt1802_init_verbs);
-+	}
- 	else
- 		err = snd_hda_add_verbs(codec, vt2002P_init_verbs);
- 	if (err < 0)
+diff --git a/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt b/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
+deleted file mode 100644
+index bd863bd69501..000000000000
+--- a/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
++++ /dev/null
+@@ -1,86 +0,0 @@
+-Texas Instruments McASP controller
+-
+-Required properties:
+-- compatible :
+-	"ti,dm646x-mcasp-audio"	: for DM646x platforms
+-	"ti,da830-mcasp-audio"	: for both DA830 & DA850 platforms
+-	"ti,am33xx-mcasp-audio"	: for AM33xx platforms (AM33xx, AM43xx, TI81xx)
+-	"ti,dra7-mcasp-audio"	: for DRA7xx platforms
+-	"ti,omap4-mcasp-audio"	: for OMAP4
+-
+-- reg : Should contain reg specifiers for the entries in the reg-names property.
+-- reg-names : Should contain:
+-         * "mpu" for the main registers (required). For compatibility with
+-           existing software, it is recommended this is the first entry.
+-         * "dat" for separate data port register access (optional).
+-- op-mode : I2S/DIT ops mode. 0 for I2S mode. 1 for DIT mode used for S/PDIF,
+-  	    IEC60958-1, and AES-3 formats.
+-- tdm-slots : Slots for TDM operation. Indicates number of channels transmitted
+-  	      or received over one serializer.
+-- serial-dir : A list of serializer configuration. Each entry is a number
+-               indication for serializer pin direction.
+-               (0 - INACTIVE, 1 - TX, 2 - RX)
+-- dmas: two element list of DMA controller phandles and DMA request line
+-        ordered pairs.
+-- dma-names: identifier string for each DMA request line in the dmas property.
+-	     These strings correspond 1:1 with the ordered pairs in dmas. The dma
+-	     identifiers must be "rx" and "tx".
+-
+-Optional properties:
+-
+-- ti,hwmods : Must be "mcasp<n>", n is controller instance starting 0
+-- tx-num-evt : FIFO levels.
+-- rx-num-evt : FIFO levels.
+-- dismod : Specify the drive on TX pin during inactive slots
+-	0 : 3-state
+-	2 : logic low
+-	3 : logic high
+-	Defaults to 'logic low' when the property is not present
+-- sram-size-playback : size of sram to be allocated during playback
+-- sram-size-capture  : size of sram to be allocated during capture
+-- interrupts : Interrupt numbers for McASP
+-- interrupt-names : Known interrupt names are "tx" and "rx"
+-- pinctrl-0: Should specify pin control group used for this controller.
+-- pinctrl-names: Should contain only one value - "default", for more details
+-  		 please refer to pinctrl-bindings.txt
+-- fck_parent : Should contain a valid clock name which will be used as parent
+-	       for the McASP fck
+-- auxclk-fs-ratio: When McASP is bus master indicates the ratio between AUCLK
+-		   and FS rate if applicable:
+-		   AUCLK rate = auxclk-fs-ratio * FS rate
+-
+-Optional GPIO support:
+-If any McASP pin need to be used as GPIO then the McASP node must have:
+-...
+-  gpio-controller
+-  #gpio-cells = <2>;
+-...
+-
+-When requesting a GPIO, the first parameter is the PIN index in McASP_P*
+-registers.
+-For example to request the AXR2 pin of mcasp8:
+-function-gpios = <&mcasp8 2 0>;
+-
+-Or to request the ACLKR pin of mcasp8:
+-function-gpios = <&mcasp8 29 0>;
+-
+-For generic gpio information, please refer to bindings/gpio/gpio.txt
+-
+-Example:
+-
+-mcasp0: mcasp0@1d00000 {
+-	compatible = "ti,da830-mcasp-audio";
+-	reg = <0x100000 0x3000>;
+-	reg-names "mpu";
+-	interrupts = <82>, <83>;
+-	interrupt-names = "tx", "rx";
+-	op-mode = <0>;		/* MCASP_IIS_MODE */
+-	tdm-slots = <2>;
+-	serial-dir = <
+-			0 0 0 0	/* 0: INACTIVE, 1: TX, 2: RX */
+-			0 0 0 0
+-			0 0 0 1
+-			2 0 0 0 >;
+-	tx-num-evt = <1>;
+-	rx-num-evt = <1>;
+-};
+diff --git a/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.yaml b/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.yaml
+new file mode 100644
+index 000000000000..ce1bd02decd3
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.yaml
+@@ -0,0 +1,161 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/davinci-mcasp-audio.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: McASP Controller for TI SoCs
++
++maintainers:
++  - Jayesh Choudhary <j-choudhary@ti.com>
++
++properties:
++  compatible:
++    enum:
++      - ti,dm646x-mcasp-audio
++      - ti,da830-mcasp-audio
++      - ti,am33xx-mcasp-audio
++      - ti,dra7-mcasp-audio
++      - ti,omap4-mcasp-audio
++
++  reg:
++    minItems: 1
++    items:
++      - description: main registers
++      - description: data port register
++
++  reg-names:
++    minItems: 1
++    items:
++      - const: mpu
++      - const: dat
++
++  op-mode:
++    description: I2S - 0 or DIT - 1 mode
++    enum:
++      - 0
++      - 1
++
++  tdm-slots:
++    maxItems: 1
++
++  serial-dir:
++    description:
++      A list of serializer configuration
++      Entry is indication for serializer pin direction
++      0 - Inactive, 1 - TX, 2 - RX
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++    minItems: 1
++    maxItems: 16
++    items:
++      minimum: 0
++      maximum: 2
++      default: 0
++
++  dmas:
++    items:
++      - description: transmission DMA channel
++      - description: reception DMA channel
++
++  dma-names:
++    items:
++      - const: tx
++      - const: rx
++
++  ti,hwmods:
++    $ref: /schemas/types.yaml#/definitions/string
++    description: Name of hwmod associated with McASP
++    maxItems: 1
++    deprecated: true
++
++  tx-num-evt:
++    maxItems: 1
++
++  rx-num-evt:
++    maxItems: 1
++
++  dismod:
++    enum:
++      - 0
++      - 2
++      - 3
++    default: 2
++
++  sram-size-playback:
++    maxItems: 1
++
++  sram-size-capture:
++    maxItems: 1
++
++  interrupts:
++    items:
++      - description: TX FIFO interrupt
++      - description: RX FIFO interrupt
++
++  interrupt-names:
++    items:
++      - const: tx
++      - const: rx
++
++  fck_parent:
++    description: parent clock for McASP fck
++    maxItems: 1
++
++  auxclk-fs-ratio:
++    description: ratio of AUCLK and FS if applicable
++    maxItems: 1
++
++  gpio-controller: true
++
++  "#gpio-cells":
++    const: 2
++
++  function-gpios:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    const: fck
++
++  power-domains:
++    maxItems: 1
++
++  "#sound-dai-cells":
++    const: 0
++
++required:
++  - compatible
++  - reg
++  - reg-names
++  - dmas
++  - dma-names
++  - interrupts
++  - interrupt-names
++  - serial-dir
++  - op-mode
++  - tdm-slots
++
++additionalProperties: false
++
++examples:
++  - |
++    mcasp0: mcasp0@1d00000 {
++      compatible = "ti,da830-mcasp-audio";
++      reg = <0x100000 0x3000>;
++      reg-names = "mpu";
++      interrupts = <82>, <83>;
++      interrupt-names = "tx", "rx";
++      op-mode = <0>;		/* MCASP_IIS_MODE */
++      tdm-slots = <2>;
++      dmas = <&main_udmap 0xc400>, <&main_udmap 0x4400>;
++      dma-names = "tx", "rx";
++      serial-dir = <
++          0 0 0 0	/* 0: INACTIVE, 1: TX, 2: RX */
++          0 0 0 0
++          0 0 0 1
++          2 0 0 0 >;
++      tx-num-evt = <1>;
++      rx-num-evt = <1>;
++    };
 -- 
-2.25.1
+2.17.1
 
