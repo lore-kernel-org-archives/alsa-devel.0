@@ -4,76 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41910C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Nov 2021 07:17:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5523C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Nov 2021 07:17:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6924617C8;
-	Wed, 24 Nov 2021 08:16:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6924617C8
+	by alsa0.perex.cz (Postfix) with ESMTPS id F31BB17B3;
+	Wed, 24 Nov 2021 08:16:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F31BB17B3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637738226;
-	bh=Fmou/wuLUJUD4zJclGcPIdJu1KVjJ7yuzM0jDRLa/jU=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1637738245;
+	bh=3fGS3fJVzIqWTvzYXNuJF3rN5i5Y0f3ysPLe2vPfhDI=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MdWiEQwJMjZ1x5yA8Y+RWAFuKAb1dq15DXGWqMLGekvz5d5cu21r9AnsA53gtL4VA
-	 qXtWCp+cZR5yPb8vDcbYE31pM2yqo6ACUR74ufxRWYKgwuJ8kouJM79Fc+4iptzFLr
-	 aMaz1NXvBGehiJPAiUrLFndFLJUicJrRBoxovQQs=
+	b=CJxcTEy/a1+5L2CWiwLbLjqsnlCtMfuYPcQB5FjgtJT592FACnfE68X8K9CJY7tdJ
+	 e8PderAKjzXltnxlaeqQhKBKiNvk/MpT+tWS0abH89SXzFemAWBp16ArME8uTEj7RZ
+	 z9XOllX92wq0JJrfUOtUzCVEHTAv68qVPCVKZqUs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 62487F805EE;
-	Wed, 24 Nov 2021 08:06:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 45474F805F2;
+	Wed, 24 Nov 2021 08:06:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 86162F8049E; Wed, 24 Nov 2021 00:35:44 +0100 (CET)
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com
- [IPv6:2607:f8b0:4864:20::32f])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 0229DF8049E; Wed, 24 Nov 2021 00:39:43 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3C155F800E7
- for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2021 00:35:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3C155F800E7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 496A0F800E7
+ for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2021 00:39:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 496A0F800E7
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="M1kOjxYt"
-Received: by mail-ot1-x32f.google.com with SMTP id
- x19-20020a9d7053000000b0055c8b39420bso1361138otj.1
- for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2021 15:35:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=Fmou/wuLUJUD4zJclGcPIdJu1KVjJ7yuzM0jDRLa/jU=;
- b=M1kOjxYtgXgq09yG/Tpxoql00WqAEf+/obBrTLesDBofwRUa7GWFazzYfDKZsB30ME
- LP42xJGdAe5cnwer5SKD8Etmug0Nt6ulXzhr/sIoE9xx2sYU5ALDWZXfWHpEvjhc83X4
- /EddGPPSnA96tKQr0ixoO9Iif78PSZQtfyiC4pLlvI90GT05IGmxb/4bv7ckDscOFVa0
- j8mh7s4sgr6HP2CGrSy/5EINAIynCtUbqRAKwELOEpj3OmmDipt7FyRZkcV3y0yyaOqi
- RMMwVrDE6PwHAX73yXnvFMVjk1xx32TWcnMG5ytYScelO405R1gRZUvoyiVzX+mFaqbl
- +gIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=Fmou/wuLUJUD4zJclGcPIdJu1KVjJ7yuzM0jDRLa/jU=;
- b=n55L0IGTxyd8m5xkOizAlPXvEibHcVaukrSd5ybIiXpwMJrQy3i/snBotG3J2zbb+I
- mD0n2Ho8bOejYU1M7PB8/V/f906FKwsjS40WDzl1BoAEchveUAq0zW2GzUCJ8LN8gbrQ
- yRBo8R5yI51l95jg2MwAtHLZ73j9aSTQEeKcf1rvXHkK6qerb1WkNQCzTXlFgi40O9fq
- s/GRwjAz38trkWWgwoMWMfINLLpy91Jw+9/bfASCF/+Xp24hv6w+FCZJ42830jwsvMvM
- GBPxUI4YXmlclwhfe+mYYzxXA5Y/v+sx2L/MChapXeNX2etrioLyzka3pp4nrtswxVCk
- oXnw==
-X-Gm-Message-State: AOAM533nAfjewPJrqsZSZ/6esvHGGSuE9RFPd0QgkUuoMT0lr85/J3TV
- A9jXjoHOQGQZtfwTtvDE8v+TJMfojBSjfuHsGmgSlw==
-X-Google-Smtp-Source: ABdhPJzM/xqGhHncEHhl2AIgExbTLI27yZdnho4Z+I5VLuYNi5uSlNeNxRyIKiu1OCuHPC8HqiuPUo4+VogT8mYjGlE=
-X-Received: by 2002:a9d:74d0:: with SMTP id a16mr8027979otl.237.1637710535722; 
- Tue, 23 Nov 2021 15:35:35 -0800 (PST)
-MIME-Version: 1.0
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="WXVdiIxP"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 84B6760E73;
+ Tue, 23 Nov 2021 23:39:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1637710776;
+ bh=3fGS3fJVzIqWTvzYXNuJF3rN5i5Y0f3ysPLe2vPfhDI=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+ b=WXVdiIxPBgUOypvzOaF0fBxWKSEXocAxCezwcicOtDwk6Pl/fTaXOGMFHCv42qdgk
+ 06PQeQEcbXng65bGDATF0+nVmsTSMp8BBCz7A4wYgaytXG8ZHo0+iS0f7S69OsoeiT
+ CVRnwU5b+gsiMMuCAoV/aJWp3H0X7Q+OEyW5V7OUfvjT4gFRHHk/0rx+Xw5MYP55kO
+ wyExxdl4kXS5c/b+SJEjSmNNUVpkE8gJvF6MazigKp2hDmdacWiySDISmLItkvjDR0
+ FRuVxD3h5Kk8WmmbDcNI0FAvOAtmm4e2xtxxdhiZX+UDhKAmiOT3wbvmk/YCskjguj
+ L+N8zubU/ANCg==
+Date: Tue, 23 Nov 2021 15:39:33 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 01/17] bitfield: Add non-constant field_{prep,get}()
+ helpers
+Message-ID: <20211123153933.49ff8b72@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <CAMuHMdWAAGrQUZN18cnDTDUUhuPNTZTFkRMe2Sbf+s7CedPSxA@mail.gmail.com>
 References: <cover.1637592133.git.geert+renesas@glider.be>
- <afb895b597037a635acc4a1dc44b88598268a19b.1637592133.git.geert+renesas@glider.be>
-In-Reply-To: <afb895b597037a635acc4a1dc44b88598268a19b.1637592133.git.geert+renesas@glider.be>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 24 Nov 2021 00:35:23 +0100
-Message-ID: <CACRpkdZAA_XZQ7KXOsod8r5EZ0F9f1qaz3+FLsuyPfeD_mO5Dw@mail.gmail.com>
-Subject: Re: [PATCH/RFC 07/17] iio: st_sensors: Use bitfield helpers
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Content-Type: text/plain; charset="UTF-8"
+ <3a54a6703879d10f08cf0275a2a69297ebd2b1d4.1637592133.git.geert+renesas@glider.be>
+ <01b44b38c087c151171f8d45a2090474c2559306.camel@sipsolutions.net>
+ <20211122171739.03848154@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAMuHMdWAAGrQUZN18cnDTDUUhuPNTZTFkRMe2Sbf+s7CedPSxA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Mailman-Approved-At: Wed, 24 Nov 2021 08:05:53 +0100
 Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
  Daniel Lezcano <daniel.lezcano@linaro.org>, linux-aspeed@lists.ozlabs.org,
@@ -85,8 +73,8 @@ Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
  openbmc@lists.ozlabs.org, "Rafael J . Wysocki" <rafael@kernel.org>,
  Magnus Damm <magnus.damm@gmail.com>, Russell King <linux@armlinux.org.uk>,
  linux-iio@vger.kernel.org, Ludovic Desroches <ludovic.desroches@microchip.com>,
- Joel Stanley <joel@jms.id.au>, Jakub Kicinski <kuba@kernel.org>,
- Zhang Rui <rui.zhang@intel.com>, linux-media@vger.kernel.org,
+ Joel Stanley <joel@jms.id.au>, Zhang Rui <rui.zhang@intel.com>,
+ Linus Walleij <linus.walleij@linaro.org>, linux-media@vger.kernel.org,
  alsa-devel@alsa-project.org, linux-omap@vger.kernel.org,
  Benoit Parrot <bparrot@ti.com>, linux-gpio@vger.kernel.org,
  Mark Brown <broonie@kernel.org>,
@@ -99,6 +87,7 @@ Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
  linux-mmc@vger.kernel.org, Nicolas Ferre <nicolas.ferre@microchip.com>,
  linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
  Stephen Boyd <sboyd@kernel.org>, netdev@vger.kernel.org,
+ Johannes Berg <johannes@sipsolutions.net>,
  "David S . Miller" <davem@davemloft.net>, Jonathan Cameron <jic23@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -115,15 +104,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Nov 22, 2021 at 4:55 PM Geert Uytterhoeven
-<geert+renesas@glider.be> wrote:
+On Tue, 23 Nov 2021 09:36:22 +0100 Geert Uytterhoeven wrote:
+> > > Also, you're using __ffs(), which doesn't work for 64-bit on 32-bit
+> > > architectures (afaict), so that seems a bit awkward.
+> > >
+> > > Maybe we can make {u32,...}_get_bits() be doing compile-time only checks
+> > > if it is indeed a constant? The __field_overflow() usage is already only
+> > > done if __builtin_constant_p(v), so I guess we can do the same with
+> > > __bad_mask()?  
+> >
+> > Either that or add decomposition macros. Are compilers still really bad
+> > at passing small structs by value?  
+> 
+> Sorry, I don't get what you mean by adding decomposition macros.
+> Can you please elaborate?
 
-> Use the field_prep() helper, instead of open-coding the same operation.
->
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+#define DECOMPOSE(_mask) \
+  (struct bf){ .mask = _mask, .shf = __bf_shf(_mask), }
 
-Clever!
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-
-Yours,
-Linus Walleij
+Then drivers can save or pass around the mask and shift params 
+broken apart as a small struct.
