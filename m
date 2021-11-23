@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E309C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Nov 2021 07:08:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 173EAC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Nov 2021 07:08:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 978C5168D;
-	Wed, 24 Nov 2021 08:07:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 978C5168D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 275AE169B;
+	Wed, 24 Nov 2021 08:07:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 275AE169B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637737686;
-	bh=UCgKHC2tZnYuYDC6Ipdwr8BV7XMvnDZm9aoIDEwScgE=;
+	s=default; t=1637737708;
+	bh=dtcDvyFuXQJvFtaFs0deLwLE5oQzchv7LsdktZl3sFk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HAjPvIMUVyB1uAoyAUytVvq7yEZopZQsuaq5slkMvio1c15d9LOLVdywNoXUPPjFr
-	 KRsFpVxJ1cDPFSCWyqTJURTKjPzaMFX5Csl34/l9pg5wWj+zcpvfwGcvwEbcC/AVI9
-	 QLaS/mbsMPCa56JTrI2BqR4YsoYukp33VmA5CuS0=
+	b=FA7j16AG5kMYTdZ2pyXOMhqmMuFQOzw/DNfwbVf3rmlGqlcArX+gwzOR3PbCzT7m3
+	 20P8tVDmCd9wJaBZaRtV4nfOVdAk8+JIvUhhDV4Wb8JO7TqvPT3zgeHsWyJTFOyslj
+	 qbk/9GNmP6h2ebBdsGzJhvFpYlvns586loS4gFOY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 473F5F804EB;
-	Wed, 24 Nov 2021 08:05:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0C526F804F3;
+	Wed, 24 Nov 2021 08:05:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 59EF5F804FD; Tue, 23 Nov 2021 17:32:05 +0100 (CET)
+ id 35DC5F804FC; Tue, 23 Nov 2021 17:32:07 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 03859F804E4
- for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2021 17:31:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03859F804E4
+ by alsa1.perex.cz (Postfix) with ESMTPS id 29667F804E7
+ for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2021 17:31:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 29667F804E7
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="QrHPpT7Y"
+ header.b="A6KSaU3K"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1ANCeXB8012277;
- Tue, 23 Nov 2021 10:31:55 -0600
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1ANCeXB7012277;
+ Tue, 23 Nov 2021 10:31:54 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=Z4waY4CUfZqZb4PuHTMV15Sbyi91pjjmEvXyAxHUB7A=;
- b=QrHPpT7Ym5aDKWrW/3I7oodI+By3k5CQTAhWVXJDwq1AvKddySP+ULwbGEzf/PA99ZX6
- DthhlpNJjgZ+l5f8RI7zqttSmVQPAgWjSWqRc8bqexXHYk+9/22F2zKhl8VTUT5G/gR7
- wlYCSyhYVMMz3pu53i5UBb5/MK1As7hp9RI4SbiCcLsbM0yYyC4G/RV0W6STWVtp4tEJ
- uu1Byyz9YGLHsC65IsGoEhFdBdTo0zbqzNJHqPjkUSWu/TmrR8U1RX965QDi9h06SEkJ
- pnWeXN61CWf6WAUEqG24q2VNL9fAZNFsjZWxM81+iQ+//SNW8UUiaI/Nb41h5GO2YonH qg== 
+ bh=13QOOMOHEfJf3x3dxB3ukuVPcu2n/luurIuTBvsCw3o=;
+ b=A6KSaU3KIqHgMpy/30fzbI/Ds9gduNhPRjKtULO8zbWxVzsCA5TNSN7wSeQikMmfL1J8
+ 6SXHWCGwyVEZ+YH6J+nDQRgu6aSMPbLWQ71zvEPjmzK4K+GU8VMTBe8Mcq015TfSKnP7
+ TEYhHwk17XDXr7jBM7GJe+jhmxm2XPi1p74c3/OzfIpxgpMRR6OvkVJBtE7SUgVxGVFP
+ UeHBfdE3rHHndMxjgvVy6qbkSp6XKuXu45vLPblg/xsu79MHKk3cVpuTcv5H/3tdmPrw
+ tvJaHEdZEV2HU6tLvrWhTjbUeWY2KfFJikQOHAuVWAER9lOyKUhTC3JN9AjeMYhCppTG jA== 
 Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3cg5ms21ng-3
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3cg5ms21ng-2
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Tue, 23 Nov 2021 10:31:55 -0600
+ Tue, 23 Nov 2021 10:31:54 -0600
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Tue, 23 Nov
- 2021 16:31:54 +0000
+ 2021 16:31:52 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.17 via
- Frontend Transport; Tue, 23 Nov 2021 16:31:54 +0000
+ Frontend Transport; Tue, 23 Nov 2021 16:31:52 +0000
 Received: from aryzen.ad.cirrus.com (unknown [198.61.65.11])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id ACB6B2A1;
- Tue, 23 Nov 2021 16:31:53 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 8D1FA2A3;
+ Tue, 23 Nov 2021 16:31:51 +0000 (UTC)
 From: Lucas Tanure <tanureal@opensource.cirrus.com>
 To: "Rafael J . Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
  Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>,
@@ -72,18 +72,18 @@ To: "Rafael J . Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
  Shuming Fan <shumingf@realtek.com>, "Pierre-Louis
  Bossart" <pierre-louis.bossart@linux.intel.com>, David Rhodes
  <david.rhodes@cirrus.com>, Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-Subject: [PATCH 04/11] ASoC: cs35l41: Create function for init array of
- Supplies
-Date: Tue, 23 Nov 2021 16:31:42 +0000
-Message-ID: <20211123163149.1530535-5-tanureal@opensource.cirrus.com>
+Subject: [PATCH 01/11] ASoC: cs35l41: Set the max SPI speed for the whole
+ device
+Date: Tue, 23 Nov 2021 16:31:39 +0000
+Message-ID: <20211123163149.1530535-2-tanureal@opensource.cirrus.com>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211123163149.1530535-1-tanureal@opensource.cirrus.com>
 References: <20211123163149.1530535-1-tanureal@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: N3BFwnZQAho2AC0-k3McSh0EgDUUl1dq
-X-Proofpoint-ORIG-GUID: N3BFwnZQAho2AC0-k3McSh0EgDUUl1dq
+X-Proofpoint-GUID: f9adWZFewEyfyy02AW3fk9vscyXMtFyX
+X-Proofpoint-ORIG-GUID: f9adWZFewEyfyy02AW3fk9vscyXMtFyX
 X-Proofpoint-Spam-Reason: safe
 X-Mailman-Approved-At: Wed, 24 Nov 2021 08:05:53 +0100
 Cc: Chris Chiu <chris.chiu@canonical.com>, Alexandre
@@ -111,144 +111,136 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Both ASoC and HDA system have to initialize the arrays of supplies
-in the same way, so create a function for that in shared code
+Higher speeds are only supported when PLL is enabled, but
+the current driver doesn't enable PLL outside of stream
+use cases, so better to set the lowest SPI speed accepted
+by the entire device.
+
+Move the current frequency set to the spi sub-driver so
+the whole device can benefit from that speed.
+
+spi-max-frequency property could be used, but ACPI systems don't
+support it, so by setting it in the spi sub-driver probe
+both Device Trees and ACPI systems are supported.
 
 Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
 ---
- include/sound/cs35l41.h        |  5 ++++-
- sound/soc/codecs/cs35l41-lib.c | 29 +++++++++++++++++++++++++++++
- sound/soc/codecs/cs35l41.c     | 23 +++--------------------
- 3 files changed, 36 insertions(+), 21 deletions(-)
+ sound/soc/codecs/cs35l41-spi.c | 32 +++-----------------------------
+ sound/soc/codecs/cs35l41.c     |  7 -------
+ sound/soc/codecs/cs35l41.h     |  4 +---
+ 3 files changed, 4 insertions(+), 39 deletions(-)
 
-diff --git a/include/sound/cs35l41.h b/include/sound/cs35l41.h
-index ced80ede1def..5039e876bad1 100644
---- a/include/sound/cs35l41.h
-+++ b/include/sound/cs35l41.h
-@@ -536,7 +536,6 @@
- #define CS35L41_NUM_OTP_MAPS		5
+diff --git a/sound/soc/codecs/cs35l41-spi.c b/sound/soc/codecs/cs35l41-spi.c
+index 90a921f726c3..3fa99741779a 100644
+--- a/sound/soc/codecs/cs35l41-spi.c
++++ b/sound/soc/codecs/cs35l41-spi.c
+@@ -42,34 +42,6 @@ static const struct spi_device_id cs35l41_id_spi[] = {
  
- #define CS35L41_VALID_PDATA		0x80000000
--#define CS35L41_NUM_SUPPLIES            2
+ MODULE_DEVICE_TABLE(spi, cs35l41_id_spi);
  
- #define CS35L41_SCLK_MSTR_MASK		0x10
- #define CS35L41_SCLK_MSTR_SHIFT		4
-@@ -724,6 +723,8 @@
- #define CS35L41_SPI_MAX_FREQ		4000000
- #define CS35L41_REGSTRIDE		4
+-static void cs35l41_spi_otp_setup(struct cs35l41_private *cs35l41,
+-				  bool is_pre_setup, unsigned int *freq)
+-{
+-	struct spi_device *spi;
+-	u32 orig_spi_freq;
+-
+-	spi = to_spi_device(cs35l41->dev);
+-
+-	if (!spi) {
+-		dev_err(cs35l41->dev, "%s: No SPI device\n", __func__);
+-		return;
+-	}
+-
+-	if (is_pre_setup) {
+-		orig_spi_freq = spi->max_speed_hz;
+-		if (orig_spi_freq > CS35L41_SPI_MAX_FREQ_OTP) {
+-			spi->max_speed_hz = CS35L41_SPI_MAX_FREQ_OTP;
+-			spi_setup(spi);
+-		}
+-		*freq = orig_spi_freq;
+-	} else {
+-		if (spi->max_speed_hz != *freq) {
+-			spi->max_speed_hz = *freq;
+-			spi_setup(spi);
+-		}
+-	}
+-}
+-
+ static int cs35l41_spi_probe(struct spi_device *spi)
+ {
+ 	const struct regmap_config *regmap_config = &cs35l41_regmap_spi;
+@@ -81,6 +53,9 @@ static int cs35l41_spi_probe(struct spi_device *spi)
+ 	if (!cs35l41)
+ 		return -ENOMEM;
  
-+#define CS35L41_NUM_SUPPLIES		2
++	spi->max_speed_hz = CS35L41_SPI_MAX_FREQ;
++	spi_setup(spi);
 +
- enum cs35l41_clk_ids {
- 	CS35L41_CLKID_SCLK = 0,
- 	CS35L41_CLKID_LRCLK = 1,
-@@ -762,4 +763,6 @@ struct cs35l41_otp_map_element_t {
- extern struct regmap_config cs35l41_regmap_i2c;
- extern struct regmap_config cs35l41_regmap_spi;
+ 	spi_set_drvdata(spi, cs35l41);
+ 	cs35l41->regmap = devm_regmap_init_spi(spi, regmap_config);
+ 	if (IS_ERR(cs35l41->regmap)) {
+@@ -91,7 +66,6 @@ static int cs35l41_spi_probe(struct spi_device *spi)
  
-+int cs35l41_init_supplies(struct device *dev, struct regulator_bulk_data *supplies);
-+
- #endif /* __CS35L41_H */
-diff --git a/sound/soc/codecs/cs35l41-lib.c b/sound/soc/codecs/cs35l41-lib.c
-index 04f59cda5126..4aba0f90b876 100644
---- a/sound/soc/codecs/cs35l41-lib.c
-+++ b/sound/soc/codecs/cs35l41-lib.c
-@@ -7,6 +7,7 @@
- // Author: David Rhodes <david.rhodes@cirrus.com>
- // Author: Lucas Tanure <lucas.tanure@cirrus.com>
+ 	cs35l41->dev = &spi->dev;
+ 	cs35l41->irq = spi->irq;
+-	cs35l41->otp_setup = cs35l41_spi_otp_setup;
  
-+#include <linux/regulator/consumer.h>
- #include <sound/cs35l41.h>
- 
- const struct reg_default cs35l41_reg[] = {
-@@ -690,6 +691,11 @@ const struct cs35l41_otp_map_element_t cs35l41_otp_map_map[CS35L41_NUM_OTP_MAPS]
- 	},
- };
- 
-+static const char * const cs35l41_supplies[CS35L41_NUM_SUPPLIES] = {
-+	"VA",
-+	"VP",
-+};
-+
- struct regmap_config cs35l41_regmap_i2c = {
- 	.reg_bits = 32,
- 	.val_bits = 32,
-@@ -720,3 +726,26 @@ struct regmap_config cs35l41_regmap_spi = {
- 	.precious_reg = cs35l41_precious_reg,
- 	.cache_type = REGCACHE_RBTREE,
- };
-+
-+int cs35l41_init_supplies(struct device *dev, struct regulator_bulk_data *supplies)
-+{
-+	int i, ret;
-+
-+	for (i = 0; i < CS35L41_NUM_SUPPLIES; i++)
-+		supplies[i].supply = cs35l41_supplies[i];
-+
-+	ret = devm_regulator_bulk_get(dev, CS35L41_NUM_SUPPLIES, supplies);
-+	if (ret != 0) {
-+		dev_err(dev, "Failed to request core supplies: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = regulator_bulk_enable(CS35L41_NUM_SUPPLIES, supplies);
-+	if (ret != 0) {
-+		dev_err(dev, "Failed to enable core supplies: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
+ 	return cs35l41_probe(cs35l41, pdata);
+ }
 diff --git a/sound/soc/codecs/cs35l41.c b/sound/soc/codecs/cs35l41.c
-index e8e997efaa8b..c8709de41aaf 100644
+index afb07d2991ba..e8e997efaa8b 100644
 --- a/sound/soc/codecs/cs35l41.c
 +++ b/sound/soc/codecs/cs35l41.c
-@@ -24,11 +24,6 @@
- 
- #include "cs35l41.h"
- 
--static const char * const cs35l41_supplies[CS35L41_NUM_SUPPLIES] = {
--	"VA",
--	"VP",
--};
--
- struct cs35l41_pll_sysclk_config {
- 	int freq;
- 	int clk_cfg;
-@@ -1526,7 +1521,7 @@ static int cs35l41_dsp_init(struct cs35l41_private *cs35l41)
- int cs35l41_probe(struct cs35l41_private *cs35l41,
- 		  struct cs35l41_platform_data *pdata)
- {
--	u32 regid, reg_revid, i, mtl_revid, int_status, chipid_match;
-+	u32 regid, reg_revid, mtl_revid, int_status, chipid_match;
- 	int irq_pol = 0;
- 	int ret;
- 
-@@ -1538,21 +1533,9 @@ int cs35l41_probe(struct cs35l41_private *cs35l41,
- 			return ret;
+@@ -438,7 +438,6 @@ static int cs35l41_otp_unpack(void *data)
+ 	const struct cs35l41_otp_packed_element_t *otp_map;
+ 	struct cs35l41_private *cs35l41 = data;
+ 	int bit_offset, word_offset, ret, i;
+-	unsigned int orig_spi_freq;
+ 	unsigned int bit_sum = 8;
+ 	u32 otp_val, otp_id_reg;
+ 	u32 *otp_mem;
+@@ -462,9 +461,6 @@ static int cs35l41_otp_unpack(void *data)
+ 		goto err_otp_unpack;
  	}
  
--	for (i = 0; i < CS35L41_NUM_SUPPLIES; i++)
--		cs35l41->supplies[i].supply = cs35l41_supplies[i];
+-	if (cs35l41->otp_setup)
+-		cs35l41->otp_setup(cs35l41, true, &orig_spi_freq);
 -
--	ret = devm_regulator_bulk_get(cs35l41->dev, CS35L41_NUM_SUPPLIES,
--				      cs35l41->supplies);
--	if (ret != 0) {
--		dev_err(cs35l41->dev, "Failed to request core supplies: %d\n", ret);
-+	ret = cs35l41_init_supplies(cs35l41->dev, cs35l41->supplies);
-+	if (ret)
- 		return ret;
--	}
--
--	ret = regulator_bulk_enable(CS35L41_NUM_SUPPLIES, cs35l41->supplies);
--	if (ret != 0) {
--		dev_err(cs35l41->dev, "Failed to enable core supplies: %d\n", ret);
--		return ret;
--	}
+ 	ret = regmap_bulk_read(cs35l41->regmap, CS35L41_OTP_MEM0, otp_mem,
+ 			       CS35L41_OTP_SIZE_WORDS);
+ 	if (ret < 0) {
+@@ -472,9 +468,6 @@ static int cs35l41_otp_unpack(void *data)
+ 		goto err_otp_unpack;
+ 	}
  
- 	/* returning NULL can be an option if in stereo mode */
- 	cs35l41->reset_gpio = devm_gpiod_get_optional(cs35l41->dev, "reset",
+-	if (cs35l41->otp_setup)
+-		cs35l41->otp_setup(cs35l41, false, &orig_spi_freq);
+-
+ 	otp_map = otp_map_match->map;
+ 
+ 	bit_offset = otp_map_match->bit_offset;
+diff --git a/sound/soc/codecs/cs35l41.h b/sound/soc/codecs/cs35l41.h
+index eea3b14acb0b..a23eabff074f 100644
+--- a/sound/soc/codecs/cs35l41.h
++++ b/sound/soc/codecs/cs35l41.h
+@@ -729,7 +729,7 @@
+ #define CS35L41_FS2_WINDOW_MASK		0x00FFF800
+ #define CS35L41_FS2_WINDOW_SHIFT	12
+ 
+-#define CS35L41_SPI_MAX_FREQ_OTP	4000000
++#define CS35L41_SPI_MAX_FREQ		4000000
+ 
+ #define CS35L41_RX_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE)
+ #define CS35L41_TX_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE)
+@@ -784,8 +784,6 @@ struct cs35l41_private {
+ 	int irq;
+ 	/* GPIO for /RST */
+ 	struct gpio_desc *reset_gpio;
+-	void (*otp_setup)(struct cs35l41_private *cs35l41, bool is_pre_setup,
+-			  unsigned int *freq);
+ };
+ 
+ int cs35l41_probe(struct cs35l41_private *cs35l41,
 -- 
 2.34.0
 
