@@ -4,64 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40057C433FE
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Nov 2021 07:07:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E309C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Nov 2021 07:08:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2237E167C;
-	Wed, 24 Nov 2021 08:06:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2237E167C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 978C5168D;
+	Wed, 24 Nov 2021 08:07:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 978C5168D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637737659;
-	bh=catN777902tt1rL1/ptzyKoSkbEfm3notS8gDCy755I=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=M3YPi0pdKLleYqXKuh53/XrAKjh7Bxlt0uh+5/3heCajzLjgted1yyeXlZmxiP2++
-	 XH8J4X7NLHKQLafrbHranCbFz2JEt2SFU7l4cMmLqGe3K4l5pXd86qjJibaw1Zy5m+
-	 BgdngMQhwGpmGvjQH5LI2NtS3Cm1GDSWhG3D9Cxw=
+	s=default; t=1637737686;
+	bh=UCgKHC2tZnYuYDC6Ipdwr8BV7XMvnDZm9aoIDEwScgE=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=HAjPvIMUVyB1uAoyAUytVvq7yEZopZQsuaq5slkMvio1c15d9LOLVdywNoXUPPjFr
+	 KRsFpVxJ1cDPFSCWyqTJURTKjPzaMFX5Csl34/l9pg5wWj+zcpvfwGcvwEbcC/AVI9
+	 QLaS/mbsMPCa56JTrI2BqR4YsoYukp33VmA5CuS0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7C6F7F804E6;
-	Wed, 24 Nov 2021 08:05:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 473F5F804EB;
+	Wed, 24 Nov 2021 08:05:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6C343F804F1; Tue, 23 Nov 2021 17:32:01 +0100 (CET)
+ id 59EF5F804FD; Tue, 23 Nov 2021 17:32:05 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 05F7BF804E6
- for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2021 17:31:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05F7BF804E6
+ by alsa1.perex.cz (Postfix) with ESMTPS id 03859F804E4
+ for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2021 17:31:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03859F804E4
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="cdqmwtw0"
+ header.b="QrHPpT7Y"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1ANCeXB6012277;
- Tue, 23 Nov 2021 10:31:54 -0600
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1ANCeXB8012277;
+ Tue, 23 Nov 2021 10:31:55 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=ucjt4u4uTbS/qnZq4hfiNfHKaM+njkEGxLdhXZteZWk=;
- b=cdqmwtw0ikxL8X54apKCvV2OhpmAGPO0XC639K5H7qExV0JE4uhL+ctpJDFFefLFBx2X
- krs7Xb3kQWq+JxZ/TsAHJwbwo8PY7HkGmAc+mGGBgP8SgSyTDHHwho56DsBxGysswYR4
- ae22w+hX2o0Qq26iZZ10AVZgDD3/3oRi0rs3fVNTz24hErlLooARRsmyVptdx2PNxzmt
- Y+eBWUlKgjx/SmkotdmTLnun7OIJSJHSQfKsc/JDHVKdhvqb4DQtWp4ZEHaCdnCrX0tQ
- f2uEKec9z6OyY55hc5GrpVQAf2leLCsp961NGFWCO/K4lmmktCGTpUnWL+HKLIduB2wS ow== 
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=Z4waY4CUfZqZb4PuHTMV15Sbyi91pjjmEvXyAxHUB7A=;
+ b=QrHPpT7Ym5aDKWrW/3I7oodI+By3k5CQTAhWVXJDwq1AvKddySP+ULwbGEzf/PA99ZX6
+ DthhlpNJjgZ+l5f8RI7zqttSmVQPAgWjSWqRc8bqexXHYk+9/22F2zKhl8VTUT5G/gR7
+ wlYCSyhYVMMz3pu53i5UBb5/MK1As7hp9RI4SbiCcLsbM0yYyC4G/RV0W6STWVtp4tEJ
+ uu1Byyz9YGLHsC65IsGoEhFdBdTo0zbqzNJHqPjkUSWu/TmrR8U1RX965QDi9h06SEkJ
+ pnWeXN61CWf6WAUEqG24q2VNL9fAZNFsjZWxM81+iQ+//SNW8UUiaI/Nb41h5GO2YonH qg== 
 Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3cg5ms21ng-1
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3cg5ms21ng-3
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Tue, 23 Nov 2021 10:31:53 -0600
+ Tue, 23 Nov 2021 10:31:55 -0600
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Tue, 23 Nov
- 2021 16:31:51 +0000
+ 2021 16:31:54 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.17 via
- Frontend Transport; Tue, 23 Nov 2021 16:31:51 +0000
+ Frontend Transport; Tue, 23 Nov 2021 16:31:54 +0000
 Received: from aryzen.ad.cirrus.com (unknown [198.61.65.11])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4C3562A1;
- Tue, 23 Nov 2021 16:31:50 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id ACB6B2A1;
+ Tue, 23 Nov 2021 16:31:53 +0000 (UTC)
 From: Lucas Tanure <tanureal@opensource.cirrus.com>
 To: "Rafael J . Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
  Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>,
@@ -71,15 +72,18 @@ To: "Rafael J . Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
  Shuming Fan <shumingf@realtek.com>, "Pierre-Louis
  Bossart" <pierre-louis.bossart@linux.intel.com>, David Rhodes
  <david.rhodes@cirrus.com>, Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-Subject: [PATCH v3 00/11] Add support for Legion 7 16ACHg6 laptop
-Date: Tue, 23 Nov 2021 16:31:38 +0000
-Message-ID: <20211123163149.1530535-1-tanureal@opensource.cirrus.com>
+Subject: [PATCH 04/11] ASoC: cs35l41: Create function for init array of
+ Supplies
+Date: Tue, 23 Nov 2021 16:31:42 +0000
+Message-ID: <20211123163149.1530535-5-tanureal@opensource.cirrus.com>
 X-Mailer: git-send-email 2.34.0
+In-Reply-To: <20211123163149.1530535-1-tanureal@opensource.cirrus.com>
+References: <20211123163149.1530535-1-tanureal@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: ic3OlGLxT8IDaeMWD-aoYxFb4fz33N4k
-X-Proofpoint-ORIG-GUID: ic3OlGLxT8IDaeMWD-aoYxFb4fz33N4k
+X-Proofpoint-GUID: N3BFwnZQAho2AC0-k3McSh0EgDUUl1dq
+X-Proofpoint-ORIG-GUID: N3BFwnZQAho2AC0-k3McSh0EgDUUl1dq
 X-Proofpoint-Spam-Reason: safe
 X-Mailman-Approved-At: Wed, 24 Nov 2021 08:05:53 +0100
 Cc: Chris Chiu <chris.chiu@canonical.com>, Alexandre
@@ -107,66 +111,144 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add support for laptops that have CS35L41 connected to an
-HDA codec by I2S and direct I2C/SPI connection to the CPU
+Both ASoC and HDA system have to initialize the arrays of supplies
+in the same way, so create a function for that in shared code
 
-Hardware:
- - The 16ACHg6 laptop has two CS35L41 amplifiers, connected
-to Realtek ALC287 by an I2S bus and by and direct I2C to the CPU.
- - The ALC287 codec is connected to the CPU by an HDA bus.
- - The CS35L41 has a DSP which will require firmware to be loaded.
+Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
+---
+ include/sound/cs35l41.h        |  5 ++++-
+ sound/soc/codecs/cs35l41-lib.c | 29 +++++++++++++++++++++++++++++
+ sound/soc/codecs/cs35l41.c     | 23 +++--------------------
+ 3 files changed, 36 insertions(+), 21 deletions(-)
 
-Architecture:
- - Creation of a library of shared functions for CS35L41 ASoC and HDA
- - HDA codec driver (RealTek) and CS35L41 HDA driver are combined
- by using component binding, where it uses device names to find the
- components and bind to the master
- - The HDA CS35L41 driver applies pre-defined registers sequences
- for each action in playback for HDA Sound card
-
-Changes from V2:
- - Not an RFC
- - Create a new HDA driver for CS35L41 instead of using the ASoC one
- - Use component binding and device names to find the CS35L41 driver
- - Create a shared library for ASoC and HDA CS35L41 drivers
-
-Lucas Tanure (11):
-  ASoC: cs35l41: Set the max SPI speed for the whole device
-  ASoC: cs35l41: Convert tables to shared source code
-  ASoC: cs35l41: Move regmap config struct to shared code
-  ASoC: cs35l41: Create function for init array of Supplies
-  ASoC: cs35l41: Move cs35l41_otp_unpack to shared code
-  ASoC: cs35l41: Move power initializations to reg_sequence
-  ASoC: cs35l41: Create shared function for errata patches
-  ASoC: cs35l41: Create shared function for setting channels
-  ASoC: cs35l41: Create shared function for boost configuration
-  hda: cs35l41: Add support for CS35L41 in HDA systems
-  ACPI / scan: Create platform device for CLSA0100 ACPI nodes
-
- MAINTAINERS                                   |   2 +
- drivers/acpi/scan.c                           |   1 +
- drivers/platform/x86/i2c-multi-instantiate.c  |   7 +
- include/sound/cs35l41.h                       | 741 ++++++++++++++++++
- sound/pci/hda/Kconfig                         |  10 +
- sound/pci/hda/Makefile                        |  28 +-
- sound/pci/hda/cs35l41_hda.c                   | 522 ++++++++++++
- sound/pci/hda/cs35l41_hda.h                   |  69 ++
- sound/pci/hda/cs35l41_hda_i2c.c               |  61 ++
- sound/pci/hda/hda_component.h                 |  20 +
- sound/pci/hda/patch_realtek.c                 | 103 +++
- sound/soc/codecs/Makefile                     |   4 +-
- sound/soc/codecs/cs35l41-i2c.c                |  16 -
- .../{cs35l41-tables.c => cs35l41-lib.c}       | 400 +++++++++-
- sound/soc/codecs/cs35l41-spi.c                |  49 +-
- sound/soc/codecs/cs35l41.c                    | 390 +--------
- sound/soc/codecs/cs35l41.h                    | 739 -----------------
- 17 files changed, 1964 insertions(+), 1198 deletions(-)
- create mode 100644 sound/pci/hda/cs35l41_hda.c
- create mode 100644 sound/pci/hda/cs35l41_hda.h
- create mode 100644 sound/pci/hda/cs35l41_hda_i2c.c
- create mode 100644 sound/pci/hda/hda_component.h
- rename sound/soc/codecs/{cs35l41-tables.c => cs35l41-lib.c} (68%)
-
+diff --git a/include/sound/cs35l41.h b/include/sound/cs35l41.h
+index ced80ede1def..5039e876bad1 100644
+--- a/include/sound/cs35l41.h
++++ b/include/sound/cs35l41.h
+@@ -536,7 +536,6 @@
+ #define CS35L41_NUM_OTP_MAPS		5
+ 
+ #define CS35L41_VALID_PDATA		0x80000000
+-#define CS35L41_NUM_SUPPLIES            2
+ 
+ #define CS35L41_SCLK_MSTR_MASK		0x10
+ #define CS35L41_SCLK_MSTR_SHIFT		4
+@@ -724,6 +723,8 @@
+ #define CS35L41_SPI_MAX_FREQ		4000000
+ #define CS35L41_REGSTRIDE		4
+ 
++#define CS35L41_NUM_SUPPLIES		2
++
+ enum cs35l41_clk_ids {
+ 	CS35L41_CLKID_SCLK = 0,
+ 	CS35L41_CLKID_LRCLK = 1,
+@@ -762,4 +763,6 @@ struct cs35l41_otp_map_element_t {
+ extern struct regmap_config cs35l41_regmap_i2c;
+ extern struct regmap_config cs35l41_regmap_spi;
+ 
++int cs35l41_init_supplies(struct device *dev, struct regulator_bulk_data *supplies);
++
+ #endif /* __CS35L41_H */
+diff --git a/sound/soc/codecs/cs35l41-lib.c b/sound/soc/codecs/cs35l41-lib.c
+index 04f59cda5126..4aba0f90b876 100644
+--- a/sound/soc/codecs/cs35l41-lib.c
++++ b/sound/soc/codecs/cs35l41-lib.c
+@@ -7,6 +7,7 @@
+ // Author: David Rhodes <david.rhodes@cirrus.com>
+ // Author: Lucas Tanure <lucas.tanure@cirrus.com>
+ 
++#include <linux/regulator/consumer.h>
+ #include <sound/cs35l41.h>
+ 
+ const struct reg_default cs35l41_reg[] = {
+@@ -690,6 +691,11 @@ const struct cs35l41_otp_map_element_t cs35l41_otp_map_map[CS35L41_NUM_OTP_MAPS]
+ 	},
+ };
+ 
++static const char * const cs35l41_supplies[CS35L41_NUM_SUPPLIES] = {
++	"VA",
++	"VP",
++};
++
+ struct regmap_config cs35l41_regmap_i2c = {
+ 	.reg_bits = 32,
+ 	.val_bits = 32,
+@@ -720,3 +726,26 @@ struct regmap_config cs35l41_regmap_spi = {
+ 	.precious_reg = cs35l41_precious_reg,
+ 	.cache_type = REGCACHE_RBTREE,
+ };
++
++int cs35l41_init_supplies(struct device *dev, struct regulator_bulk_data *supplies)
++{
++	int i, ret;
++
++	for (i = 0; i < CS35L41_NUM_SUPPLIES; i++)
++		supplies[i].supply = cs35l41_supplies[i];
++
++	ret = devm_regulator_bulk_get(dev, CS35L41_NUM_SUPPLIES, supplies);
++	if (ret != 0) {
++		dev_err(dev, "Failed to request core supplies: %d\n", ret);
++		return ret;
++	}
++
++	ret = regulator_bulk_enable(CS35L41_NUM_SUPPLIES, supplies);
++	if (ret != 0) {
++		dev_err(dev, "Failed to enable core supplies: %d\n", ret);
++		return ret;
++	}
++
++	return 0;
++}
++
+diff --git a/sound/soc/codecs/cs35l41.c b/sound/soc/codecs/cs35l41.c
+index e8e997efaa8b..c8709de41aaf 100644
+--- a/sound/soc/codecs/cs35l41.c
++++ b/sound/soc/codecs/cs35l41.c
+@@ -24,11 +24,6 @@
+ 
+ #include "cs35l41.h"
+ 
+-static const char * const cs35l41_supplies[CS35L41_NUM_SUPPLIES] = {
+-	"VA",
+-	"VP",
+-};
+-
+ struct cs35l41_pll_sysclk_config {
+ 	int freq;
+ 	int clk_cfg;
+@@ -1526,7 +1521,7 @@ static int cs35l41_dsp_init(struct cs35l41_private *cs35l41)
+ int cs35l41_probe(struct cs35l41_private *cs35l41,
+ 		  struct cs35l41_platform_data *pdata)
+ {
+-	u32 regid, reg_revid, i, mtl_revid, int_status, chipid_match;
++	u32 regid, reg_revid, mtl_revid, int_status, chipid_match;
+ 	int irq_pol = 0;
+ 	int ret;
+ 
+@@ -1538,21 +1533,9 @@ int cs35l41_probe(struct cs35l41_private *cs35l41,
+ 			return ret;
+ 	}
+ 
+-	for (i = 0; i < CS35L41_NUM_SUPPLIES; i++)
+-		cs35l41->supplies[i].supply = cs35l41_supplies[i];
+-
+-	ret = devm_regulator_bulk_get(cs35l41->dev, CS35L41_NUM_SUPPLIES,
+-				      cs35l41->supplies);
+-	if (ret != 0) {
+-		dev_err(cs35l41->dev, "Failed to request core supplies: %d\n", ret);
++	ret = cs35l41_init_supplies(cs35l41->dev, cs35l41->supplies);
++	if (ret)
+ 		return ret;
+-	}
+-
+-	ret = regulator_bulk_enable(CS35L41_NUM_SUPPLIES, cs35l41->supplies);
+-	if (ret != 0) {
+-		dev_err(cs35l41->dev, "Failed to enable core supplies: %d\n", ret);
+-		return ret;
+-	}
+ 
+ 	/* returning NULL can be an option if in stereo mode */
+ 	cs35l41->reset_gpio = devm_gpiod_get_optional(cs35l41->dev, "reset",
 -- 
 2.34.0
 
