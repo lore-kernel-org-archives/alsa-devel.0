@@ -4,58 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CBE6C433FE
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Nov 2021 17:26:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 376F7C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Nov 2021 18:09:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3B1FD1686;
-	Tue, 23 Nov 2021 18:25:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B1FD1686
+	by alsa0.perex.cz (Postfix) with ESMTPS id D6FFA166E;
+	Tue, 23 Nov 2021 19:08:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D6FFA166E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637688396;
-	bh=ydmyOSY+GXUqazGz9WAEMpgIRlstTgKKYqtU0hJl3y0=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1637690970;
+	bh=lgJrC8hxLXfGZ3Q/W/S+te9K5lGoU4XaUFoj+nHSu2g=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=s8nlZFw4UC9FOKi+e44f0PJZtRkp9qEIOy6SunuT6fh7Dvg5QN+a5a5lPqA070X/F
-	 H52yPJCyc0FCp/CxTHX3QQPyITPOHcaiBFpWURlwPONwxyTH0hB/oDlEgAIrnCUH56
-	 sSDcvFILRck/dTXJwqzBSQBeblnnhbnAK/o0ep8A=
+	b=cgUm2Sotv3NeBZFtkhjabmtjVQuraOGT3gGfxjrnEmK58zMC9wX1ngVLg/C/3clJg
+	 Yg7Q2H5XPNd3oDChl+Lwp4/bEvGggbexIff3ZdWw02MKXl3fTFfpg6Ww8FFHFcnu8Z
+	 RmkP2CKtpJCodl4dEO0b2BUCT9H4rv8YZk/SMEeM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 86730F804E4;
-	Tue, 23 Nov 2021 18:25:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 62A8DF80430;
+	Tue, 23 Nov 2021 19:08:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 12592F804E6; Tue, 23 Nov 2021 18:24:58 +0100 (CET)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id E951CF8049E; Tue, 23 Nov 2021 19:08:38 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 00DD5F804AC
- for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2021 18:24:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00DD5F804AC
-X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="215780405"
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; d="scan'208";a="215780405"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Nov 2021 09:23:45 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; d="scan'208";a="509490827"
-Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by orsmga008.jf.intel.com with ESMTP; 23 Nov 2021 09:23:42 -0800
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	broonie@kernel.org
-Subject: [PATCH v2 3/3] ASoC: SOF: handle paused streams during system suspend
-Date: Tue, 23 Nov 2021 19:16:06 +0200
-Message-Id: <20211123171606.129350-3-kai.vehmanen@linux.intel.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211123171606.129350-1-kai.vehmanen@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7A3B5F80154
+ for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2021 19:08:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A3B5F80154
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="V4YYDj1w"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F46060F9D;
+ Tue, 23 Nov 2021 18:08:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1637690908;
+ bh=lgJrC8hxLXfGZ3Q/W/S+te9K5lGoU4XaUFoj+nHSu2g=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=V4YYDj1w5ADBdq4zzsQPKQffdM9AfwERHuSB9wRYlO/RvJNjU2rkQBK9tPfolB1De
+ KzCmknULPsYxM60Oj5BwYDGUohZOVkquRGBHYdA3Nnv7cmVBgdK8gz9tmjmcyXKp3N
+ xp7Bx0BTUNiT3FNtOZ584pmj6YXQDw1KkBvz7g0ZbPNGRykPN5RxYZ1CxYSf/ggK7b
+ xi4gHBJRqiCLRp+0gbDMLSkogC0/bL//2n+uoXq4XfBtpbEZXaLHXWR3GLCA9f4K8F
+ ZXhJ+v3ibw62DXuNZjSbNlVndFRLJPf+/sCEQ7rvRS2f/vJfjJWG6/Zd2ic+dOaBb0
+ H1d4ZD1qMAqYw==
+Date: Tue, 23 Nov 2021 18:08:23 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH v2 2/3] ASoC: SOF: topology: don't use
+ list_for_each_entry_reverse()
+Message-ID: <YZ0uF3t9GJXIEO4L@sirena.org.uk>
 References: <20211123171606.129350-1-kai.vehmanen@linux.intel.com>
+ <20211123171606.129350-2-kai.vehmanen@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: kai.vehmanen@linux.intel.com, yung-chuan.liao@linux.intel.com,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="Qw3ugjQwRXOrgdtY"
+Content-Disposition: inline
+In-Reply-To: <20211123171606.129350-2-kai.vehmanen@linux.intel.com>
+X-Cookie: A closed mouth gathers no foot.
+Cc: alsa-devel@alsa-project.org, yung-chuan.liao@linux.intel.com,
  lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com,
- ranjani.sridharan@linux.intel.com, Paul Olaru <paul.olaru@oss.nxp.com>,
- daniel.baluta@nxp.com, Bard Liao <bard.liao@intel.com>
+ ranjani.sridharan@linux.intel.com, daniel.baluta@nxp.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -71,158 +79,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
-During system suspend, paused streams do not get suspended.
-Therefore, we need to explicitly free these PCMs in the DSP
-and free the associated DAPM widgets so that they can be set
-up again during resume.
+--Qw3ugjQwRXOrgdtY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: 5fcdbb2d45df ("ASoC: SOF: Add support for dynamic pipelines")
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Paul Olaru <paul.olaru@oss.nxp.com>
-Reviewed-by: Bard Liao <bard.liao@intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
----
- sound/soc/sof/pcm.c       |  5 ++-
- sound/soc/sof/sof-audio.c | 74 +++++++++++++++++++++++++++++++++++++--
- sound/soc/sof/sof-audio.h |  2 ++
- 3 files changed, 76 insertions(+), 5 deletions(-)
+On Tue, Nov 23, 2021 at 07:16:05PM +0200, Kai Vehmanen wrote:
+> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>=20
+> It's not clear why we would walk the list backwards. That makes no
+> difference.
 
-diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
-index 31dd79b794f1..0ceb1a9cbf73 100644
---- a/sound/soc/sof/pcm.c
-+++ b/sound/soc/sof/pcm.c
-@@ -100,9 +100,8 @@ void snd_sof_pcm_period_elapsed(struct snd_pcm_substream *substream)
- }
- EXPORT_SYMBOL(snd_sof_pcm_period_elapsed);
- 
--static int sof_pcm_dsp_pcm_free(struct snd_pcm_substream *substream,
--				struct snd_sof_dev *sdev,
--				struct snd_sof_pcm *spcm)
-+int sof_pcm_dsp_pcm_free(struct snd_pcm_substream *substream, struct snd_sof_dev *sdev,
-+			 struct snd_sof_pcm *spcm)
- {
- 	struct sof_ipc_stream stream;
- 	struct sof_ipc_reply reply;
-diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
-index f4e142ec0fbd..e00ce275052f 100644
---- a/sound/soc/sof/sof-audio.c
-+++ b/sound/soc/sof/sof-audio.c
-@@ -129,6 +129,14 @@ int sof_widget_free(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget)
- 	case snd_soc_dapm_buffer:
- 		ipc_free.hdr.cmd |= SOF_IPC_TPLG_BUFFER_FREE;
- 		break;
-+	case snd_soc_dapm_dai_in:
-+	case snd_soc_dapm_dai_out:
-+	{
-+		struct snd_sof_dai *dai = swidget->private;
-+
-+		dai->configured = false;
-+		fallthrough;
-+	}
- 	default:
- 		ipc_free.hdr.cmd |= SOF_IPC_TPLG_COMP_FREE;
- 		break;
-@@ -720,6 +728,55 @@ int sof_set_up_pipelines(struct snd_sof_dev *sdev, bool verify)
- 	return 0;
- }
- 
-+/*
-+ * Free the PCM, its associated widgets and set the prepared flag to false for all PCMs that
-+ * did not get suspended(ex: paused streams) so the widgets can be set up again during resume.
-+ */
-+static int sof_tear_down_left_over_pipelines(struct snd_sof_dev *sdev)
-+{
-+	struct snd_sof_widget *swidget;
-+	struct snd_sof_pcm *spcm;
-+	int dir, ret;
-+
-+	/*
-+	 * free all PCMs and their associated DAPM widgets if their connected DAPM widget
-+	 * list is not NULL. This should only be true for paused streams at this point.
-+	 * This is equivalent to the handling of FE DAI suspend trigger for running streams.
-+	 */
-+	list_for_each_entry(spcm, &sdev->pcm_list, list)
-+		for_each_pcm_streams(dir) {
-+			struct snd_pcm_substream *substream = spcm->stream[dir].substream;
-+
-+			if (!substream || !substream->runtime)
-+				continue;
-+
-+			if (spcm->stream[dir].list) {
-+				ret = sof_pcm_dsp_pcm_free(substream, sdev, spcm);
-+				if (ret < 0)
-+					return ret;
-+
-+				ret = sof_widget_list_free(sdev, spcm, dir);
-+				if (ret < 0) {
-+					dev_err(sdev->dev, "failed to free widgets during suspend\n");
-+					return ret;
-+				}
-+			}
-+		}
-+
-+	/*
-+	 * free any left over DAI widgets. This is equivalent to the handling of suspend trigger
-+	 * for the BE DAI for running streams.
-+	 */
-+	list_for_each_entry(swidget, &sdev->widget_list, list)
-+		if (WIDGET_IS_DAI(swidget->id) && swidget->use_count == 1) {
-+			ret = sof_widget_free(sdev, swidget);
-+			if (ret < 0)
-+				return ret;
-+		}
-+
-+	return 0;
-+}
-+
- /*
-  * For older firmware, this function doesn't free widgets for static pipelines during suspend.
-  * It only resets use_count for all widgets.
-@@ -734,8 +791,8 @@ int sof_tear_down_pipelines(struct snd_sof_dev *sdev, bool verify)
- 	/*
- 	 * This function is called during suspend and for one-time topology verification during
- 	 * first boot. In both cases, there is no need to protect swidget->use_count and
--	 * sroute->setup because during suspend all streams are suspended and during topology
--	 * loading the sound card unavailable to open PCMs.
-+	 * sroute->setup because during suspend all running streams are suspended and during
-+	 * topology loading the sound card unavailable to open PCMs.
- 	 */
- 	list_for_each_entry(swidget, &sdev->widget_list, list) {
- 		if (swidget->dynamic_pipeline_widget)
-@@ -754,6 +811,19 @@ int sof_tear_down_pipelines(struct snd_sof_dev *sdev, bool verify)
- 			return ret;
- 	}
- 
-+	/*
-+	 * Tear down all pipelines associated with PCMs that did not get suspended
-+	 * and unset the prepare flag so that they can be set up again during resume.
-+	 * Skip this step for older firmware.
-+	 */
-+	if (!verify && v->abi_version >= SOF_ABI_VER(3, 19, 0)) {
-+		ret = sof_tear_down_left_over_pipelines(sdev);
-+		if (ret < 0) {
-+			dev_err(sdev->dev, "failed to tear down paused pipelines\n");
-+			return ret;
-+		}
-+	}
-+
- 	list_for_each_entry(sroute, &sdev->route_list, list)
- 		sroute->setup = false;
- 
-diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
-index 389d56ac3aba..1c4f59d34717 100644
---- a/sound/soc/sof/sof-audio.h
-+++ b/sound/soc/sof/sof-audio.h
-@@ -265,4 +265,6 @@ int sof_widget_free(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget);
- /* PCM */
- int sof_widget_list_setup(struct snd_sof_dev *sdev, struct snd_sof_pcm *spcm, int dir);
- int sof_widget_list_free(struct snd_sof_dev *sdev, struct snd_sof_pcm *spcm, int dir);
-+int sof_pcm_dsp_pcm_free(struct snd_pcm_substream *substream, struct snd_sof_dev *sdev,
-+			 struct snd_sof_pcm *spcm);
- #endif
--- 
-2.33.0
+Cleanup patches like this should come after fixes rather than in the
+middle of them to ensure that the fixes can be applied as such.
 
+--Qw3ugjQwRXOrgdtY
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGdLhYACgkQJNaLcl1U
+h9A2uAf/UuWPpXeA1EhUOMgu2sXLZJ9d0Op/TL57ZXMDLyG980OuJ8ZumaKV6wYI
+ZQDMrI/654ZdZtY7mNjr6SbX2yIeCJUPhkNJTBhG1cx+bq1fHCCsa1HumY09RoVT
+sjHbhJpXX5wpb+9glJZiRYq+mkH8VZZqz4qVE9OSVdqAN3mp26Asm43jzevlX2yj
+UGldNCAQK2cCHRVQHQykQJEgHZ/Sllv88dcyxdK+1dirK3NtLPDW/WTJ8BYsaZ5s
+0SGslhS0Co5i2DYwuTbCKlk/+GPhCrB3rljIcgnOqZJtag0kY7i568Ql0pnuq+8Y
+SdYqbj+U51IQ6yS1qTNUcGFJg7Lf+w==
+=XXhX
+-----END PGP SIGNATURE-----
+
+--Qw3ugjQwRXOrgdtY--
