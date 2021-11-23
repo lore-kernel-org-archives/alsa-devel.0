@@ -4,62 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F52AC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Nov 2021 00:02:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A030FC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Nov 2021 00:02:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8A1B984A;
-	Tue, 23 Nov 2021 01:01:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A1B984A
+	by alsa0.perex.cz (Postfix) with ESMTPS id CFAFF1663;
+	Tue, 23 Nov 2021 01:02:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CFAFF1663
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637625757;
-	bh=+/8tGuihtwZs7BaBjZSeqkgIiZQe+9d5nEnft6ZuQuA=;
+	s=default; t=1637625775;
+	bh=OYnq4wrpACbNs7esyB7jfrW82zCFu1z13PhYloNHXac=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VVIrlMhoBLJJpoFultUADKKswik+8/AvxuGPQYsMQJlGILmRqe8BGmnjzqN6ZVh+B
-	 9tvk3D5NuTGIVu8sx15hjTEnsdRG8g8tU+pZtY7x0bevjFV0PZL5/0F6Q/g2m8xDns
-	 RucQQ6lnzIPPdsgO2t3Istogmtm8aZxlQMj65Vb4=
+	b=SmzQUyFhiwIPTjSkNfA/3n3OJ57oZb/00kkBTYjHJF9XxBy7Mq/U7Cr4tCME8xlVs
+	 SYUiawuSw/Xj4hjaBJe8eRzSeEewBBwxPANmsHB27j+sTX2hr3l0UsuwG39xPP3x6u
+	 TK/tUjx339mLvOvLOU0w5ogxJvYRSXkdXUtO8koo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A5961F80508;
-	Tue, 23 Nov 2021 01:00:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BCA96F80510;
+	Tue, 23 Nov 2021 01:00:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 976EEF804F3; Tue, 23 Nov 2021 01:00:14 +0100 (CET)
+ id E858DF804FB; Tue, 23 Nov 2021 01:00:16 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3C869F804ED
- for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2021 01:00:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3C869F804ED
+ by alsa1.perex.cz (Postfix) with ESMTPS id 45BD3F804FC
+ for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2021 01:00:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45BD3F804FC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ALAqmcn1"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 680B661004;
- Tue, 23 Nov 2021 00:00:04 +0000 (UTC)
+ header.b="JrjNEwl1"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CC0A61002;
+ Tue, 23 Nov 2021 00:00:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1637625606;
- bh=+/8tGuihtwZs7BaBjZSeqkgIiZQe+9d5nEnft6ZuQuA=;
+ s=k20201202; t=1637625612;
+ bh=OYnq4wrpACbNs7esyB7jfrW82zCFu1z13PhYloNHXac=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=ALAqmcn1/bnAKFE5uypJTtNY4R7eabaPO1BdzpHIaoXN2keRxkc0xOxueP3zow4qn
- cFzZBQ7d34jH/PlIE1GzzIlLV2XfTXdRRL0cxzgDlFMdDfdxnh4+vJ5+s6gkxIfMmI
- NLzF/mt5zHamnSyXjhNz2WUn6tqYhQOfH/OH9YQ/6k5MaL7DEiP7xABYX9xrfZIvrF
- HtTJsFzoPj0t3QLWowKsHcPHLpi+GLJ0RdBUyXEja+DxG3eAa/kpfA+1viRwcQoRHQ
- 6SfttHUb9nkDr5T8DDKSHim6IqtD80Mi5XRDFlSwL71Xg9oLS7yogWitQuEOMalKxW
- mCSq1ndrAZblg==
+ b=JrjNEwl1LFCJDouVJWi/9E8aYBoMOy4OEIgefhQYYWtIQ2W6bc9aGVH8UoumkaDAp
+ TyAEZ5K4iHetNaFOZDgAZl74vOYri4HA6lZFyvHqz4BzIaYKF/3Wunf0K5c+MhMwaZ
+ 7YxJq/prnq1ouOmbojfbwlu0Hi+clgdWyucBKBSFtNtr1OV2uGiYfdSiSTUEcAarDu
+ 6RV50PgabC8Lav8vzN4Nxkmc9LgkzzucpsgU5A/8OkMjWKaWzJ0o/7f/1serncIRl8
+ EEpoNkYZx85uUagifg3Up7b+mJZtDI2diXWoxDrprZcVIDWn9gAs4Yg3vLUkrxWDZ9
+ 5POHuGg1O88VQ==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, Daniel Baluta <daniel.baluta@oss.nxp.com>
-In-Reply-To: <20211119094319.81674-1-daniel.baluta@oss.nxp.com>
-References: <20211119094319.81674-1-daniel.baluta@oss.nxp.com>
-Subject: Re: [PATCH v2 0/5] ASoC: SOF: Add PM support for i.MX8/i.MX8X/i.MX8M
-Message-Id: <163762560411.2471742.17777975323343821279.b4-ty@kernel.org>
-Date: Tue, 23 Nov 2021 00:00:04 +0000
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+In-Reply-To: <20211119124854.58939-1-rf@opensource.cirrus.com>
+References: <20211119124854.58939-1-rf@opensource.cirrus.com>
+Subject: Re: [PATCH] ASoC: cs42l42: Report initial jack state
+Message-Id: <163762561074.2471742.11078502974656470664.b4-ty@kernel.org>
+Date: Tue, 23 Nov 2021 00:00:10 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: pierre-louis.bossart@linux.intel.com, daniel.baluta@gmail.com,
- linux-kernel@vger.kernel.org, lgirdwood@gmail.com, linux-imx@nxp.com,
- daniel.baluta@nxp.com
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,15 +74,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 19 Nov 2021 11:43:14 +0200, Daniel Baluta wrote:
-> From: Daniel Baluta <daniel.baluta@nxp.com>
+On Fri, 19 Nov 2021 12:48:54 +0000, Richard Fitzgerald wrote:
+> When a jack handler is registered in cs42l42_set_jack() the
+> initial state should be reported if an attached headphone/headset
+> has already been detected.
 > 
-> This patch series adds support for System PM and Runtime PM with SOF for
-> i.MX8 platforms.
-> 
-> First patch adds common code to manage clocks, patch 2/3 adds the actual
-> PM support, patch 4/5 implement the DSP start / reset callbacks for
-> i.mx8m.
+> The jack detect sequence takes around 1 second: typically long
+> enough for the machine driver to probe and register the jack handler
+> in time to receive the first report from the interrupt handler. So
+> it is possible on some systems that the correct initial state was seen
+> simply because of lucky timing. Modular builds were more likely to
+> miss the reporting of the initial state.
 > 
 > [...]
 
@@ -93,16 +94,8 @@ Applied to
 
 Thanks!
 
-[1/5] ASoC: SOF: imx: Add code to manage DSP related clocks
-      commit: 8253aa4700b37cef1ca3bbda0d986349357608d3
-[2/5] ASoC: SOF: imx8: Add runtime PM / System PM support
-      commit: 6fc8515806dfd5b7d3198c189b51e7624aadafdc
-[3/5] ASoC: SOF: imx8m: Add runtime PM / System PM support
-      commit: a73b493d8e1b37acad686c15321d2eaab45567ce
-[4/5] ASoC: SOF: imx8m: Implement DSP start
-      commit: 9ba23717b2927071ddb49f3d6719244e3fe8f4c9
-[5/5] ASoC: SOF: imx8m: Implement reset callback
-      commit: 3bf4cd8b747a222f0f454f3220199c99f1c03da6
+[1/1] ASoC: cs42l42: Report initial jack state
+      commit: fdd535283779ec9f9c35fda352585c629121214f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
