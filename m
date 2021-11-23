@@ -4,50 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71634C4332F
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Nov 2021 17:25:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E68DC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Nov 2021 17:26:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 760291670;
-	Tue, 23 Nov 2021 18:24:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 760291670
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1430B1663;
+	Tue, 23 Nov 2021 18:25:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1430B1663
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637688344;
-	bh=NamqoL0ziGoHHfmGaDmjD0O8vP7TIxlTDDVApCA+4Us=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=s5ozzWHIwV5mRdzJMTgEu9+LVCWw0CNqQWEFhakatVcFYOSzBttbipTQPOIitsyJT
-	 dbb9ZpvABGTRMcy+VwDDTbpwJK86lU5LKEjM/QtOhY/4S8lyBxnEhkyKZpcrHvll20
-	 l4DIyOTD706e4iBe9R99jSY/Qx/GjgEEonxN/wG4=
+	s=default; t=1637688394;
+	bh=vjE6wtLmNoabpBSy+lmpz9EiqDIKLRrG/NUzkArgmZ8=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=vFJe4HvdFkiDorX43rXsBRH+wuPo4c93vhJOOKF2YCzuI/3T9IcDN22cwnARKrq8r
+	 5W5MhYyFc/mKdeecuh6uaXB3OPAR6k4E2/Tm75AY28s1Z50IWGyLJ6MpFXsq958On/
+	 VAioCkTjAEf2pvfXNsPhjdc2AWu8ttjnfQjMiy44=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EC9F6F8049E;
-	Tue, 23 Nov 2021 18:24:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E091FF804AB;
+	Tue, 23 Nov 2021 18:24:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 93B1DF80087; Tue, 23 Nov 2021 18:24:52 +0100 (CET)
+ id 5F39DF804AB; Tue, 23 Nov 2021 18:24:54 +0100 (CET)
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 86F0CF80087
- for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2021 18:24:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86F0CF80087
-X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="215780391"
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; d="scan'208";a="215780391"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6D590F80430
+ for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2021 18:24:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D590F80430
+X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="215780398"
+X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; d="scan'208";a="215780398"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Nov 2021 09:23:38 -0800
+ 23 Nov 2021 09:23:41 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; d="scan'208";a="509490781"
+X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; d="scan'208";a="509490800"
 Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by orsmga008.jf.intel.com with ESMTP; 23 Nov 2021 09:23:36 -0800
+ by orsmga008.jf.intel.com with ESMTP; 23 Nov 2021 09:23:39 -0800
 From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH v2 1/3] ASoC: SOF: sof-audio: setup sched widgets during
- pipeline complete step
-Date: Tue, 23 Nov 2021 19:16:04 +0200
-Message-Id: <20211123171606.129350-1-kai.vehmanen@linux.intel.com>
+Subject: [PATCH v2 2/3] ASoC: SOF: topology: don't use
+ list_for_each_entry_reverse()
+Date: Tue, 23 Nov 2021 19:16:05 +0200
+Message-Id: <20211123171606.129350-2-kai.vehmanen@linux.intel.com>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20211123171606.129350-1-kai.vehmanen@linux.intel.com>
+References: <20211123171606.129350-1-kai.vehmanen@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: kai.vehmanen@linux.intel.com, yung-chuan.liao@linux.intel.com,
@@ -70,76 +73,29 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Older firmware prior to ABI 3.19 has a dependency where the scheduler
-widgets need to be setup last. Moving the call to sof_widget_setup()
-before the pipeline_complete() call also helps remove the need for the
-'reverse' direction when walking through the widget list - this was
-only working because of the topology macros but the topology does not
-require any order.
+It's not clear why we would walk the list backwards. That makes no
+difference.
 
-Fixes: 5fcdbb2d45df ("ASoC: SOF: Add support for dynamic pipelines")
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- sound/soc/sof/sof-audio.c | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
+ sound/soc/sof/topology.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
-index 0f2566f7c094..f4e142ec0fbd 100644
---- a/sound/soc/sof/sof-audio.c
-+++ b/sound/soc/sof/sof-audio.c
-@@ -637,16 +637,25 @@ const struct sof_ipc_pipe_new *snd_sof_pipeline_find(struct snd_sof_dev *sdev,
- 
- int sof_set_up_pipelines(struct snd_sof_dev *sdev, bool verify)
- {
-+	struct sof_ipc_fw_version *v = &sdev->fw_ready.version;
- 	struct snd_sof_widget *swidget;
- 	struct snd_sof_route *sroute;
- 	int ret;
- 
- 	/* restore pipeline components */
--	list_for_each_entry_reverse(swidget, &sdev->widget_list, list) {
-+	list_for_each_entry(swidget, &sdev->widget_list, list) {
- 		/* only set up the widgets belonging to static pipelines */
- 		if (!verify && swidget->dynamic_pipeline_widget)
- 			continue;
- 
-+		/*
-+		 * For older firmware, skip scheduler widgets in this loop,
-+		 * sof_widget_setup() will be called in the 'complete pipeline' loop
-+		 */
-+		if (v->abi_version < SOF_ABI_VER(3, 19, 0) &&
-+		    swidget->id == snd_soc_dapm_scheduler)
-+			continue;
-+
- 		/* update DAI config. The IPC will be sent in sof_widget_setup() */
- 		if (WIDGET_IS_DAI(swidget->id)) {
- 			struct snd_sof_dai *dai = swidget->private;
-@@ -694,6 +703,12 @@ int sof_set_up_pipelines(struct snd_sof_dev *sdev, bool verify)
- 			if (!verify && swidget->dynamic_pipeline_widget)
- 				continue;
- 
-+			if (v->abi_version < SOF_ABI_VER(3, 19, 0)) {
-+				ret = sof_widget_setup(sdev, swidget);
-+				if (ret < 0)
-+					return ret;
-+			}
-+
- 			swidget->complete =
- 				snd_sof_complete_pipeline(sdev, swidget);
- 			break;
-@@ -722,7 +737,7 @@ int sof_tear_down_pipelines(struct snd_sof_dev *sdev, bool verify)
- 	 * sroute->setup because during suspend all streams are suspended and during topology
- 	 * loading the sound card unavailable to open PCMs.
- 	 */
--	list_for_each_entry_reverse(swidget, &sdev->widget_list, list) {
-+	list_for_each_entry(swidget, &sdev->widget_list, list) {
- 		if (swidget->dynamic_pipeline_widget)
- 			continue;
- 
-
-base-commit: 65c16dd2942f4476a3f96a2625b1475c6137c09a
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index 63948bb30710..b3ad3a604918 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -3529,7 +3529,7 @@ static int sof_complete(struct snd_soc_component *scomp)
+ 			 * Apply the dynamic_pipeline_widget flag and set the pipe_widget field
+ 			 * for all widgets that have the same pipeline ID as the scheduler widget
+ 			 */
+-			list_for_each_entry_reverse(comp_swidget, &sdev->widget_list, list)
++			list_for_each_entry(comp_swidget, &sdev->widget_list, list)
+ 				if (comp_swidget->pipeline_id == swidget->pipeline_id) {
+ 					ret = sof_set_pipe_widget(sdev, swidget, comp_swidget);
+ 					if (ret < 0)
 -- 
 2.33.0
 
