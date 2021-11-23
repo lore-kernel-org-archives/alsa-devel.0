@@ -4,55 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65CCBC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Nov 2021 16:32:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BCCFBC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Nov 2021 16:36:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 557051671;
-	Tue, 23 Nov 2021 17:31:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 557051671
+	by alsa0.perex.cz (Postfix) with ESMTPS id CE3611671;
+	Tue, 23 Nov 2021 17:35:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE3611671
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637685154;
-	bh=KcmY8aUKRXEUEgZWIOD+OJQDfzv3cQ7OdDebNRS6PMk=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=VkDpf9ROXel6PxgQetKCmOH7cdpDDABqdoyPUC9Yj+iOIRIPXSKxVdtdhVgqlh8et
-	 fdAuiSvUOKzFDbLQys86DlwEpnec6r3svej+XCZyqW7pBsc7bfx8U0uqZyHKoTj21G
-	 FMkkJ1+NGKcib6jrO5nr5UY9yIEbW/a+F1O2BQp0=
+	s=default; t=1637685365;
+	bh=wP/u1iYZMIW4ulPgDWsPH/1Amfu5s4H5dcv6zX0/cj4=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=DNJswhRfGPTJDy9Vj1i6pCfYAnHFsjDgX/PFTP2n3wKVOiPFEeLI5/e7M0zgYOkM2
+	 54/y5SyEzZgwJJDxzdQEN+sxMw9fzGn3vCTdXBSoul9KO5LQVsWWQNE3D9cGpUtZb5
+	 IagDmkm7rCBR4+PBiWNrnxSUJZupv1s6ljayn75Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C47B5F80430;
-	Tue, 23 Nov 2021 17:31:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 629EDF80430;
+	Tue, 23 Nov 2021 17:35:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E9BABF8049E; Tue, 23 Nov 2021 17:31:41 +0100 (CET)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 744C1F8049E; Tue, 23 Nov 2021 17:35:14 +0100 (CET)
+Received: from mail-io1-f49.google.com (mail-io1-f49.google.com
+ [209.85.166.49])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 215C9F80154
- for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2021 17:31:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 215C9F80154
-X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="298466261"
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; d="scan'208";a="298466261"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Nov 2021 08:31:25 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; d="scan'208";a="553481480"
-Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by fmsmga008.fm.intel.com with ESMTP; 23 Nov 2021 08:31:22 -0800
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	broonie@kernel.org
-Subject: [PATCH] ASoC: SOF: handle paused streams during system suspend
-Date: Tue, 23 Nov 2021 18:23:47 +0200
-Message-Id: <20211123162347.120336-1-kai.vehmanen@linux.intel.com>
-X-Mailer: git-send-email 2.33.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: kai.vehmanen@linux.intel.com, yung-chuan.liao@linux.intel.com,
- lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com,
- ranjani.sridharan@linux.intel.com, Paul Olaru <paul.olaru@oss.nxp.com>,
- daniel.baluta@nxp.com, Bard Liao <bard.liao@intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 04B55F80087
+ for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2021 17:35:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04B55F80087
+Received: by mail-io1-f49.google.com with SMTP id e144so28674972iof.3
+ for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2021 08:35:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+ :message-id;
+ bh=bgBtIYtL7cZLwHi0L+w9re6YrEvFyB7ccly3PyNrDyU=;
+ b=u6CZE7/CAHnjcVivLBuiiJW+Rz3nYOTPPFyDCVYYM8HmrwOUlfM8apTsgZybn89AFE
+ Nu30YNUrW0Lsod730EX/5cO3LWiLWj2CqyWl/yF74f6XZ+kt9zqPgG6mqKt+8n5r0xyJ
+ 1c+ju/ZxcyNv8fYWHGLehjdf3mT5n2vBUqTGrOjOULitaQNWwHrzjrEh9B0JyY0Nal9E
+ fTNknmhiXWu++DX+Rs3x/vSvLo9f+Aj2/TcYSoor5Ibyuzhmri7CK5zQvPQ+6pkT73/f
+ WK7v0HAOizQ9Zm6+Q8qQS0VfabDmC1OGkhObMS69y63eNuHVxrz7qwXRRH2noilFf73q
+ ruzA==
+X-Gm-Message-State: AOAM533066m2qGwaI0t+viibEAkoJNvYOwgPWHgnjYDMTd8jPlj8HsKB
+ UrFttc91BwpzDcpWkVuAgQ==
+X-Google-Smtp-Source: ABdhPJyP64Phebi0pVUPZ/k/nTCv7LmrCcljL5544fGi89PXitfCOjUCM83X7GDD0NIiKnJEGGvAxQ==
+X-Received: by 2002:a05:6638:25c8:: with SMTP id
+ u8mr8081813jat.23.1637685306186; 
+ Tue, 23 Nov 2021 08:35:06 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.248])
+ by smtp.gmail.com with ESMTPSA id n12sm9272035ilk.80.2021.11.23.08.35.03
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 23 Nov 2021 08:35:05 -0800 (PST)
+Received: (nullmailer pid 3442906 invoked by uid 1000);
+ Tue, 23 Nov 2021 16:34:29 -0000
+From: Rob Herring <robh@kernel.org>
+To: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+In-Reply-To: <1637581599-24120-4-git-send-email-srivasam@codeaurora.org>
+References: <1637581599-24120-1-git-send-email-srivasam@codeaurora.org>
+ <1637581599-24120-4-git-send-email-srivasam@codeaurora.org>
+Subject: Re: [PATCH v5 08/10] ASoC: dt-bindings: Add SC7280 sound card bindings
+Date: Tue, 23 Nov 2021 09:34:29 -0700
+Message-Id: <1637685269.630368.3442905.nullmailer@robh.at.kernel.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ bgoswami@codeaurora.org, Venkata Prasad Potturu <potturu@codeaurora.org>,
+ linux-arm-msm@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com,
+ linux-kernel@vger.kernel.org, swboyd@chromium.org, lgirdwood@gmail.com,
+ robh+dt@kernel.org, agross@kernel.org, rohitkr@codeaurora.org,
+ broonie@kernel.org, bjorn.andersson@linaro.org, judyhsiao@chromium.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,160 +87,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+On Mon, 22 Nov 2021 17:16:37 +0530, Srinivasa Rao Mandadapu wrote:
+> Add bindings for lpass sc7280 based soundcards which supports
+> audio over i2s based speaker, soundwire based headset, msm dmics
+> and HDMI Port.
+> 
+> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> Co-developed-by: Venkata Prasad Potturu <potturu@codeaurora.org>
+> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
+> ---
+>  .../devicetree/bindings/sound/qcom,lpass-cpu.yaml  | 69 +++++++++++++++++++---
+>  1 file changed, 61 insertions(+), 8 deletions(-)
+> 
 
-During system suspend, paused streams do not get suspended.
-Therefore, we need to explicitly free these PCMs in the DSP
-and free the associated DAPM widgets so that they can be set
-up again during resume.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Fixes: 5fcdbb2d45df ("ASoC: SOF: Add support for dynamic pipelines")
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Paul Olaru <paul.olaru@oss.nxp.com>
-Reviewed-by: Bard Liao <bard.liao@intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
----
- sound/soc/sof/pcm.c       |  5 ++-
- sound/soc/sof/sof-audio.c | 74 +++++++++++++++++++++++++++++++++++++--
- sound/soc/sof/sof-audio.h |  2 ++
- 3 files changed, 76 insertions(+), 5 deletions(-)
+yamllint warnings/errors:
 
-diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
-index 31dd79b794f1..0ceb1a9cbf73 100644
---- a/sound/soc/sof/pcm.c
-+++ b/sound/soc/sof/pcm.c
-@@ -100,9 +100,8 @@ void snd_sof_pcm_period_elapsed(struct snd_pcm_substream *substream)
- }
- EXPORT_SYMBOL(snd_sof_pcm_period_elapsed);
- 
--static int sof_pcm_dsp_pcm_free(struct snd_pcm_substream *substream,
--				struct snd_sof_dev *sdev,
--				struct snd_sof_pcm *spcm)
-+int sof_pcm_dsp_pcm_free(struct snd_pcm_substream *substream, struct snd_sof_dev *sdev,
-+			 struct snd_sof_pcm *spcm)
- {
- 	struct sof_ipc_stream stream;
- 	struct sof_ipc_reply reply;
-diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
-index 0f2566f7c094..038cdb4a9aa2 100644
---- a/sound/soc/sof/sof-audio.c
-+++ b/sound/soc/sof/sof-audio.c
-@@ -129,6 +129,14 @@ int sof_widget_free(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget)
- 	case snd_soc_dapm_buffer:
- 		ipc_free.hdr.cmd |= SOF_IPC_TPLG_BUFFER_FREE;
- 		break;
-+	case snd_soc_dapm_dai_in:
-+	case snd_soc_dapm_dai_out:
-+	{
-+		struct snd_sof_dai *dai = swidget->private;
-+
-+		dai->configured = false;
-+		fallthrough;
-+	}
- 	default:
- 		ipc_free.hdr.cmd |= SOF_IPC_TPLG_COMP_FREE;
- 		break;
-@@ -705,6 +713,55 @@ int sof_set_up_pipelines(struct snd_sof_dev *sdev, bool verify)
- 	return 0;
- }
- 
-+/*
-+ * Free the PCM, its associated widgets and set the prepared flag to false for all PCMs that
-+ * did not get suspended(ex: paused streams) so the widgets can be set up again during resume.
-+ */
-+static int sof_tear_down_left_over_pipelines(struct snd_sof_dev *sdev)
-+{
-+	struct snd_sof_widget *swidget;
-+	struct snd_sof_pcm *spcm;
-+	int dir, ret;
-+
-+	/*
-+	 * free all PCMs and their associated DAPM widgets if their connected DAPM widget
-+	 * list is not NULL. This should only be true for paused streams at this point.
-+	 * This is equivalent to the handling of FE DAI suspend trigger for running streams.
-+	 */
-+	list_for_each_entry(spcm, &sdev->pcm_list, list)
-+		for_each_pcm_streams(dir) {
-+			struct snd_pcm_substream *substream = spcm->stream[dir].substream;
-+
-+			if (!substream || !substream->runtime)
-+				continue;
-+
-+			if (spcm->stream[dir].list) {
-+				ret = sof_pcm_dsp_pcm_free(substream, sdev, spcm);
-+				if (ret < 0)
-+					return ret;
-+
-+				ret = sof_widget_list_free(sdev, spcm, dir);
-+				if (ret < 0) {
-+					dev_err(sdev->dev, "failed to free widgets during suspend\n");
-+					return ret;
-+				}
-+			}
-+		}
-+
-+	/*
-+	 * free any left over DAI widgets. This is equivalent to the handling of suspend trigger
-+	 * for the BE DAI for running streams.
-+	 */
-+	list_for_each_entry(swidget, &sdev->widget_list, list)
-+		if (WIDGET_IS_DAI(swidget->id) && swidget->use_count == 1) {
-+			ret = sof_widget_free(sdev, swidget);
-+			if (ret < 0)
-+				return ret;
-+		}
-+
-+	return 0;
-+}
-+
- /*
-  * For older firmware, this function doesn't free widgets for static pipelines during suspend.
-  * It only resets use_count for all widgets.
-@@ -719,8 +776,8 @@ int sof_tear_down_pipelines(struct snd_sof_dev *sdev, bool verify)
- 	/*
- 	 * This function is called during suspend and for one-time topology verification during
- 	 * first boot. In both cases, there is no need to protect swidget->use_count and
--	 * sroute->setup because during suspend all streams are suspended and during topology
--	 * loading the sound card unavailable to open PCMs.
-+	 * sroute->setup because during suspend all running streams are suspended and during
-+	 * topology loading the sound card unavailable to open PCMs.
- 	 */
- 	list_for_each_entry_reverse(swidget, &sdev->widget_list, list) {
- 		if (swidget->dynamic_pipeline_widget)
-@@ -739,6 +796,19 @@ int sof_tear_down_pipelines(struct snd_sof_dev *sdev, bool verify)
- 			return ret;
- 	}
- 
-+	/*
-+	 * Tear down all pipelines associated with PCMs that did not get suspended
-+	 * and unset the prepare flag so that they can be set up again during resume.
-+	 * Skip this step for older firmware.
-+	 */
-+	if (!verify && v->abi_version >= SOF_ABI_VER(3, 19, 0)) {
-+		ret = sof_tear_down_left_over_pipelines(sdev);
-+		if (ret < 0) {
-+			dev_err(sdev->dev, "failed to tear down paused pipelines\n");
-+			return ret;
-+		}
-+	}
-+
- 	list_for_each_entry(sroute, &sdev->route_list, list)
- 		sroute->setup = false;
- 
-diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
-index 389d56ac3aba..1c4f59d34717 100644
---- a/sound/soc/sof/sof-audio.h
-+++ b/sound/soc/sof/sof-audio.h
-@@ -265,4 +265,6 @@ int sof_widget_free(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget);
- /* PCM */
- int sof_widget_list_setup(struct snd_sof_dev *sdev, struct snd_sof_pcm *spcm, int dir);
- int sof_widget_list_free(struct snd_sof_dev *sdev, struct snd_sof_pcm *spcm, int dir);
-+int sof_pcm_dsp_pcm_free(struct snd_pcm_substream *substream, struct snd_sof_dev *sdev,
-+			 struct snd_sof_pcm *spcm);
- #endif
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.example.dt.yaml: lpass@62d80000: reg: [[0, 1658351616, 0, 425984], [0, 1659895808, 0, 167936]] is too short
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.example.dt.yaml: lpass@62d80000: reg-names: ['lpass-hdmiif', 'lpass-lpaif'] is too short
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.example.dt.yaml: lpass@62d80000: interrupts: [[0, 160, 1], [0, 268, 1]] is too short
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.example.dt.yaml: lpass@62d80000: interrupt-names: ['lpass-irq-lpaif', 'lpass-irq-hdmi'] is too short
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.example.dt.yaml: lpass@62d80000: iommus: [[4294967295, 4128, 0], [4294967295, 4146, 0]] is too short
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
 
-base-commit: 65c16dd2942f4476a3f96a2625b1475c6137c09a
--- 
-2.33.0
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/patch/1558044
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
