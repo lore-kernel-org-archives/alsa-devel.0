@@ -4,65 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8BE4DC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Nov 2021 10:31:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69825C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Nov 2021 11:18:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D725A1673;
-	Tue, 23 Nov 2021 11:30:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D725A1673
+	by alsa0.perex.cz (Postfix) with ESMTPS id D8FF01654;
+	Tue, 23 Nov 2021 12:17:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8FF01654
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637663489;
-	bh=GXDTUFTTFHaD3vPYcwv5FAdMlvWKE3D+Aj3NdfhVDJs=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Vsb/VtWSCcGalhi9g/4r0s5IMTMNs1BePuvyiHid4Hb7W5PCv0Ub+Gczd2UDjUdMy
-	 zRYbKGCD4gmGhqiPkOG0SbIERyIFoooCg5xui/C/JTFJMHrMkHpTBytvbGM6qKNQGE
-	 uKzcDzectwjf7UdzbuBTHCZ7HzOQKg08l0QpCzWw=
+	s=default; t=1637666317;
+	bh=QxYCZAbgMwLXECF0bLGBf0vyZ1zfRIbCiIXqUHIPujA=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=CLKnIPRG4Rq54Tru4J7PO8rvTa/t+DkGuTqJuqx+rXzlyH+tKtTjkCsugaaBqiNFO
+	 B413rLXdYtC+/YpdMNk/gObWSGKTk1lQjoBKNWPRVCFjOrf0tkzywZ0bYw6qgA6cjM
+	 f1k2vQiYWhDIQQLtsGJGRPv7UkcOXbPnQPXZqSTY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 71B96F80430;
-	Tue, 23 Nov 2021 11:30:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6B87AF80430;
+	Tue, 23 Nov 2021 12:17:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E04CCF804AB; Tue, 23 Nov 2021 11:30:33 +0100 (CET)
-Received: from albert.telenet-ops.be (albert.telenet-ops.be
- [IPv6:2a02:1800:110:4::f00:1a])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 64511F8049E; Tue, 23 Nov 2021 12:17:33 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C16DAF80154
- for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2021 11:30:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C16DAF80154
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:e4da:38c:79e9:48bf])
- by albert.telenet-ops.be with bizsmtp
- id MmWE260014yPVd606mWEn0; Tue, 23 Nov 2021 11:30:21 +0100
-Received: from rox.of.borg ([192.168.97.57])
- by ramsan.of.borg with esmtps (TLS1.3) tls
- TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.93)
- (envelope-from <geert@linux-m68k.org>)
- id 1mpT41-00EUu8-OA; Tue, 23 Nov 2021 11:30:13 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
- (envelope-from <geert@linux-m68k.org>)
- id 1mpT41-000JAa-B5; Tue, 23 Nov 2021 11:30:13 +0100
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: YC Hung <yc.hung@mediatek.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Daniel Baluta <daniel.baluta@nxp.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Matthias Brugger <matthias.bgg@gmail.com>
-Subject: [PATCH] ASoC: SOF: mediatek: Use %pR/%pa to print resources/physical
- addresses
-Date: Tue, 23 Nov 2021 11:30:13 +0100
-Message-Id: <20211123103013.73645-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id A195BF80154
+ for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2021 12:17:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A195BF80154
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="goXXfyqz"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 99B9861075;
+ Tue, 23 Nov 2021 11:17:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1637666240;
+ bh=QxYCZAbgMwLXECF0bLGBf0vyZ1zfRIbCiIXqUHIPujA=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=goXXfyqzXqVD74bQVU8SQxMDBuOolsSvUA3yro3cbI6jRoJ1E/dxlW4AmNSfVQjml
+ y/p5Eq53bb3kmZ79EC7WqGmMq3MFOxsPP6YMQbbXOl8brYtAJfjX+/8EkTZ7Hwk7fO
+ iowdPs7EH1OQpCbYluhkbe8DNeltE013IBqtC5JLMjtqrm+XVcdyXssUQ1GJ4KdZeh
+ xW1hQoSB4ogwBnOHikD+hadly5pIpq4aK9KZAbuBVCrp88zI12pbFeyOahqIzZbi3w
+ LbjFBc92eSn2RUUejusmYKJUpXO56RlAs6/EWIi9pQ9boUGO14LcChhBPqnvDi9Rhj
+ YEgoV3dbAKC7w==
+Date: Tue, 23 Nov 2021 16:47:15 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH] soundwire: qcom: remove redundant version number read
+Message-ID: <YZzNuyDUxE+UXAG2@matsya>
+References: <20211116105017.12010-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Geert Uytterhoeven <geert@linux-m68k.org>, linux-mediatek@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, sound-open-firmware@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211116105017.12010-1-srinivas.kandagatla@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+ yung-chuan.liao@linux.intel.com, pierre-louis.bossart@linux.intel.com,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,67 +75,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 32-bit with CONFIG_ARCH_DMA_ADDR_T_64BIT=n:
+On 16-11-21, 10:50, Srinivas Kandagatla wrote:
+> Controller version is already available in struct qcom_swrm_ctrl, Just make use
+> of it instead of reading this again.
 
-    sound/soc/sof/mediatek/mt8195/mt8195.c: In function ‘platform_parse_resource’:
-    sound/soc/sof/mediatek/mt8195/mt8195.c:51:15: error: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 4 has type ‘unsigned int’ [-Werror=format=]
-       51 |  dev_dbg(dev, "DMA pbase=0x%llx, size=0x%llx\n",
-	  |               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Applied, thanks
 
-    sound/soc/sof/mediatek/mt8195/mt8195.c: In function ‘adsp_memory_remap_init’:
-    sound/soc/sof/mediatek/mt8195/mt8195.c:167:15: error: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 4 has type ‘phys_addr_t’ {aka ‘unsigned int’} [-Werror=format=]
-      167 |  dev_dbg(dev, "adsp->pa_dram %llx, offset %#x\n", adsp->pa_dram, offset);
-	  |               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    sound/soc/sof/mediatek/mt8195/mt8195.c: In function ‘adsp_shared_base_ioremap’:
-    sound/soc/sof/mediatek/mt8195/mt8195.c:196:15: error: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 5 has type ‘phys_addr_t’ {aka ‘unsigned int’} [-Werror=format=]
-      196 |  dev_dbg(dev, "shared-dram vbase=%p, phy addr :%llx,  size=%#x\n",
-	  |               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Fix the first cases by printing the full resource using %pR.
-Fix the other cases by printing the physical addresses using %pa.
-
-Reported-by: noreply@ellerman.id.au
-Fixes: 32d7e03d26fd9318 ("ASoC: SOF: mediatek: Add mt8195 hardware support")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- sound/soc/sof/mediatek/mt8195/mt8195.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
-
-diff --git a/sound/soc/sof/mediatek/mt8195/mt8195.c b/sound/soc/sof/mediatek/mt8195/mt8195.c
-index 40e5a25875a6a93c..b1580b6ac8e19e61 100644
---- a/sound/soc/sof/mediatek/mt8195/mt8195.c
-+++ b/sound/soc/sof/mediatek/mt8195/mt8195.c
-@@ -48,8 +48,7 @@ static int platform_parse_resource(struct platform_device *pdev, void *data)
- 		return ret;
- 	}
- 
--	dev_dbg(dev, "DMA pbase=0x%llx, size=0x%llx\n",
--		(phys_addr_t)res.start, resource_size(&res));
-+	dev_dbg(dev, "DMA %pR\n", &res);
- 
- 	ret = of_reserved_mem_device_init(dev);
- 	if (ret) {
-@@ -164,7 +163,7 @@ static int adsp_memory_remap_init(struct device *dev, struct mtk_adsp_chip_info
- 	offset = adsp->pa_dram - DRAM_PHYS_BASE_FROM_DSP_VIEW;
- 	adsp->dram_offset = offset;
- 	offset >>= DRAM_REMAP_SHIFT;
--	dev_dbg(dev, "adsp->pa_dram %llx, offset %#x\n", adsp->pa_dram, offset);
-+	dev_dbg(dev, "adsp->pa_dram %pa, offset %#x\n", &adsp->pa_dram, offset);
- 	writel(offset, vaddr_emi_map);
- 	if (offset != readl(vaddr_emi_map)) {
- 		dev_err(dev, "write emi map fail : %#x\n", readl(vaddr_emi_map));
-@@ -193,8 +192,8 @@ static int adsp_shared_base_ioremap(struct platform_device *pdev, void *data)
- 			return -ENOMEM;
- 		}
- 	}
--	dev_dbg(dev, "shared-dram vbase=%p, phy addr :%llx,  size=%#x\n",
--		adsp->shared_dram, adsp->pa_shared_dram, shared_size);
-+	dev_dbg(dev, "shared-dram vbase=%p, phy addr :%pa,  size=%#x\n",
-+		adsp->shared_dram, &adsp->pa_shared_dram, shared_size);
- 
- 	return 0;
- }
 -- 
-2.25.1
-
+~Vinod
