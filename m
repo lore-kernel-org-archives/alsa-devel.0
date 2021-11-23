@@ -4,62 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69825C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Nov 2021 11:18:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C3CFC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Nov 2021 11:26:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D8FF01654;
-	Tue, 23 Nov 2021 12:17:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8FF01654
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3B2A51671;
+	Tue, 23 Nov 2021 12:26:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B2A51671
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637666317;
-	bh=QxYCZAbgMwLXECF0bLGBf0vyZ1zfRIbCiIXqUHIPujA=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1637666810;
+	bh=q6J6orLIRAarOhQrcA4NW9YR1SrkQ8oo3gpfsx+gE1E=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CLKnIPRG4Rq54Tru4J7PO8rvTa/t+DkGuTqJuqx+rXzlyH+tKtTjkCsugaaBqiNFO
-	 B413rLXdYtC+/YpdMNk/gObWSGKTk1lQjoBKNWPRVCFjOrf0tkzywZ0bYw6qgA6cjM
-	 f1k2vQiYWhDIQQLtsGJGRPv7UkcOXbPnQPXZqSTY=
+	b=K7F3aS5ofxp12dCcpIjAwRfiNshh2BlmeUBwRP7XclI48Y6PwlNcdWyP3dkFenYEt
+	 7I+bMA+eFdbziNZ+HL20dw7z4+tpccYwqY9CGAIbmkeVNhhbjsLhfNdCmONOfnKDo0
+	 J8Affs7etvefp4hkgV7fq8ie/xT7Nrlbhav2PdKM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6B87AF80430;
-	Tue, 23 Nov 2021 12:17:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 75B00F80430;
+	Tue, 23 Nov 2021 12:25:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 64511F8049E; Tue, 23 Nov 2021 12:17:33 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id B81CDF804DF; Tue, 23 Nov 2021 09:30:46 +0100 (CET)
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com
+ [209.85.215.181])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A195BF80154
- for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2021 12:17:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A195BF80154
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="goXXfyqz"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 99B9861075;
- Tue, 23 Nov 2021 11:17:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1637666240;
- bh=QxYCZAbgMwLXECF0bLGBf0vyZ1zfRIbCiIXqUHIPujA=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=goXXfyqzXqVD74bQVU8SQxMDBuOolsSvUA3yro3cbI6jRoJ1E/dxlW4AmNSfVQjml
- y/p5Eq53bb3kmZ79EC7WqGmMq3MFOxsPP6YMQbbXOl8brYtAJfjX+/8EkTZ7Hwk7fO
- iowdPs7EH1OQpCbYluhkbe8DNeltE013IBqtC5JLMjtqrm+XVcdyXssUQ1GJ4KdZeh
- xW1hQoSB4ogwBnOHikD+hadly5pIpq4aK9KZAbuBVCrp88zI12pbFeyOahqIzZbi3w
- LbjFBc92eSn2RUUejusmYKJUpXO56RlAs6/EWIi9pQ9boUGO14LcChhBPqnvDi9Rhj
- YEgoV3dbAKC7w==
-Date: Tue, 23 Nov 2021 16:47:15 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH] soundwire: qcom: remove redundant version number read
-Message-ID: <YZzNuyDUxE+UXAG2@matsya>
-References: <20211116105017.12010-1-srinivas.kandagatla@linaro.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4E4B0F804AC
+ for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2021 09:30:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E4B0F804AC
+Received: by mail-pg1-f181.google.com with SMTP id g28so17680600pgg.3
+ for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2021 00:30:38 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=tcMJT0SWmBGQBJ3SmOjoPLUb8FZNAvYeGhtoSVPIc5Y=;
+ b=Ed9usoDpV9KOUKkf8glnVneJqOifGMgrmZJmpipD0GnQ446YJyGmf7S54ivqa0xmq+
+ +DiW2I1DRBzmFI3X3qZOlh/U4o4b/5mxGUAAjrV98W80b7Ihy4S4qlhxmaiUHp8HI4J+
+ BwP0J3DhV7EwlUrVntGiScdRw43QxQ17S7KR1+qf/5SoxhOSgcUA4E2MPmPJu6mJK5LS
+ bqaVR6IH0c3NluXcwV4Px8As84O4IDFMTfH8pPcxzw+ulJWMQ7UVhywjEP9uDJXekhMD
+ bdlOPtI3e/S4u7u91E8dzSiubcKBRX5SMRDogmK2WTeAMnXEhyYDiFcjuXb5VFDT6wPj
+ SSig==
+X-Gm-Message-State: AOAM5316DXmohtXS0KwoT9erNXhWTkqL34VH4LA1h3bGyJ3KBIzNPYCm
+ CkLPXXfgLPQVjhRJdzinU/ZdmzjdZx9cZw==
+X-Google-Smtp-Source: ABdhPJxCBRXMRQBYiemIzI/R16KhYfEcwgHwxezjPg94iLDna4d9iTuQni8bsjtAmwiLb7it74190w==
+X-Received: by 2002:a63:a50a:: with SMTP id n10mr2514679pgf.310.1637656236988; 
+ Tue, 23 Nov 2021 00:30:36 -0800 (PST)
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com.
+ [209.85.210.174])
+ by smtp.gmail.com with ESMTPSA id na15sm577748pjb.31.2021.11.23.00.30.36
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 23 Nov 2021 00:30:36 -0800 (PST)
+Received: by mail-pf1-f174.google.com with SMTP id 8so18737945pfo.4
+ for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2021 00:30:36 -0800 (PST)
+X-Received: by 2002:a67:af0a:: with SMTP id v10mr5521182vsl.35.1637656225413; 
+ Tue, 23 Nov 2021 00:30:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211116105017.12010-1-srinivas.kandagatla@linaro.org>
-Cc: linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
- yung-chuan.liao@linux.intel.com, pierre-louis.bossart@linux.intel.com,
- linux-kernel@vger.kernel.org
+References: <cover.1637592133.git.geert+renesas@glider.be>
+ <3a54a6703879d10f08cf0275a2a69297ebd2b1d4.1637592133.git.geert+renesas@glider.be>
+ <01b44b38c087c151171f8d45a2090474c2559306.camel@sipsolutions.net>
+In-Reply-To: <01b44b38c087c151171f8d45a2090474c2559306.camel@sipsolutions.net>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 23 Nov 2021 09:30:14 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUnBgFpqhgjf5AA0LH9MZOFALeC=YinZ4Tv_V+Y9hkRSg@mail.gmail.com>
+Message-ID: <CAMuHMdUnBgFpqhgjf5AA0LH9MZOFALeC=YinZ4Tv_V+Y9hkRSg@mail.gmail.com>
+Subject: Re: [PATCH 01/17] bitfield: Add non-constant field_{prep,
+ get}() helpers
+To: Johannes Berg <johannes@sipsolutions.net>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailman-Approved-At: Tue, 23 Nov 2021 12:25:57 +0100
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>, linux-aspeed@lists.ozlabs.org,
+ Liam Girdwood <lgirdwood@gmail.com>, Tony Lindgren <tony@atomide.com>,
+ linux-wireless@vger.kernel.org, Michael Turquette <mturquette@baylibre.com>,
+ Amit Kucheria <amitk@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Adrian Hunter <adrian.hunter@intel.com>, linux-clk@vger.kernel.org,
+ Ping-Ke Shih <pkshih@realtek.com>, Lars-Peter Clausen <lars@metafoo.de>,
+ openbmc@lists.ozlabs.org, "Rafael J . Wysocki" <rafael@kernel.org>,
+ Magnus Damm <magnus.damm@gmail.com>, Russell King <linux@armlinux.org.uk>,
+ linux-iio@vger.kernel.org, Ludovic Desroches <ludovic.desroches@microchip.com>,
+ Joel Stanley <joel@jms.id.au>, Jakub Kicinski <kuba@kernel.org>,
+ Zhang Rui <rui.zhang@intel.com>, Linus Walleij <linus.walleij@linaro.org>,
+ linux-media@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-omap@vger.kernel.org, Benoit Parrot <bparrot@ti.com>,
+ linux-gpio@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>, Kalle Valo <kvalo@codeaurora.org>,
+ linux-arm-kernel@lists.infradead.org, Eduardo Valentin <edubezval@gmail.com>,
+ Paul Walmsley <paul@pwsan.com>, Rajendra Nayak <rnayak@codeaurora.org>,
+ Tero Kristo <kristo@kernel.org>, Andrew Jeffery <andrew@aj.id.au>,
+ Keerthy <j-keerthy@ti.com>, linux-pm@vger.kernel.org,
+ linux-mmc@vger.kernel.org, Nicolas Ferre <nicolas.ferre@microchip.com>,
+ linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ Stephen Boyd <sboyd@kernel.org>, netdev@vger.kernel.org,
+ "David S . Miller" <davem@davemloft.net>, Jonathan Cameron <jic23@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,11 +115,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 16-11-21, 10:50, Srinivas Kandagatla wrote:
-> Controller version is already available in struct qcom_swrm_ctrl, Just make use
-> of it instead of reading this again.
+Hi Johannes,
 
-Applied, thanks
+On Mon, Nov 22, 2021 at 5:33 PM Johannes Berg <johannes@sipsolutions.net> wrote:
+> On Mon, 2021-11-22 at 16:53 +0100, Geert Uytterhoeven wrote:
+> > The existing FIELD_{GET,PREP}() macros are limited to compile-time
+> > constants.  However, it is very common to prepare or extract bitfield
+> > elements where the bitfield mask is not a compile-time constant.
+> >
+>
+> I'm not sure it's really a good idea to add a third API here?
+>
+> We have the upper-case (constant) versions, and already
+> {u32,...}_get_bits()/etc.
 
--- 
-~Vinod
+These don't work for non-const masks.
+
+> Also, you're using __ffs(), which doesn't work for 64-bit on 32-bit
+> architectures (afaict), so that seems a bit awkward.
+
+That's a valid comment. Can be fixed by using a wrapper macro
+that checks if typeof(mask) == u64, and uses an __ffs64() version when
+needed.
+
+> Maybe we can make {u32,...}_get_bits() be doing compile-time only checks
+> if it is indeed a constant? The __field_overflow() usage is already only
+> done if __builtin_constant_p(v), so I guess we can do the same with
+> __bad_mask()?
+
+Are all compilers smart enough to replace the division by
+field_multiplier(field) by a shift?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
