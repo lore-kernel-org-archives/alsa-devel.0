@@ -4,100 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7FBEC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Nov 2021 07:15:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB446C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Nov 2021 07:15:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F23651792;
-	Wed, 24 Nov 2021 08:14:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F23651792
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0279A1796;
+	Wed, 24 Nov 2021 08:15:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0279A1796
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637738129;
-	bh=e8grRUOSUWKvNjuBHzARZ87RFk6eyhxdZUIPm5pWe9g=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1637738151;
+	bh=7Rw1ffYahKkJZDwt3NjmEQk7ocr4eLU6cKtBwpnrErQ=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hd7sofpdnZqqJ12CLJxjM5fvZ5wAMtiwaK3Y3Pyi5YhbIXwSFj6G/rGxPdV0tc/tY
-	 GH5umnNWC1bStjyOhepgVtO7XlBpE4GirEU2Z5F4kvlQwAUW6OGBFu6PUoOrrntQWe
-	 XVrZzZPnoPNsoXKRvp26sDB5UM8DDCNohSQuK4dY=
+	b=RVKNd4jJDAPW10iW7Tww82JKAlNVTdgTgyDifoKTs/hQPyppphJXeiAh2iDL6FNL1
+	 +f4ziOKB3zgO8w6l85D+xrSS4A6kSCqzVhXbps8r4wY+ZMD+oTiWZaBqK8BHA+4dc7
+	 w0/IE6QBkMUu4xHlmibvOWefHraPxMSl2gLfR4cg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0B66FF805D6;
+	by alsa1.perex.cz (Postfix) with ESMTP id ADDFFF805D7;
 	Wed, 24 Nov 2021 08:06:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7FF34F8049E; Tue, 23 Nov 2021 19:03:11 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id A8807F80508; Tue, 23 Nov 2021 17:32:18 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A4471F800E7
- for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2021 19:02:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4471F800E7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8B032F804F2
+ for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2021 17:32:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B032F804F2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="fYhyJHYC"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AN7jAQ0031806;
- Tue, 23 Nov 2021 12:02:56 -0600
+ header.b="VjpG9+6D"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AN7k0BE013868;
+ Tue, 23 Nov 2021 10:32:04 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=Jx26KMJht9GZbSLMdhodk+RkXN+RoA34x0E33gX19jI=;
- b=fYhyJHYCK+IhoR9CnzIHTqLvCAi8bbkafekt9sFaGkiO/k4iOIAp0p8Js9WuDef+wEGB
- ACy8eUGbKvRd7opzFtaC/7Y/gwk01lniSVfRHpQqhIRlebZFHHBGkA3RFLU1D194w2Yt
- dh97KVFOonclatmBG/7osKfHmLaq9Cwbcr/BYlc2DRp41ZDCGVcpl0CTj6t3mnya5nbU
- feqbmaOdaZdz/ERG40qw6/psuds9GeUmy02sQ3qksU3Rqn4tRYmX/jkiYF6bcULd3wpw
- g0Hkm4/oAynx/D5TC7TINfCVGxXEX8bIXwUKtovcaMxAYiZglI2ySDSYhVNEQVQORenZ mw== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3cg5ms25bt-1
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=zTvX3xmW1j7PMsCMC/sWgFDFnNOPnSVkuP7cBcpOjiA=;
+ b=VjpG9+6Donsn5jZ0iAdMdWwXGRhpRwqD95zWZpcAJQOefokuqFed94Nd14tNOdNc6dTX
+ jJ8KABmsCJAbivc0jo4K0I/lN38GTOBoGyVUYVTWU1541/mbnp+xcuujJP9utOQ/lBh+
+ Fdj0tcpI/vMTDP02B7qlrjvySwggPGRm6vdz8VTuFOjbSFZtLs/0182kwkS3WaV/fr9I
+ 9vKjFRnAZsWX8lKA0Hh5bnWFSeVa+o7rL0v4UXuow0VvGWJGXz2YD5DPmziptHHty0/s
+ VPXPcYRlwqyD7OygYn9eo7Y4TSLDdR9bbQgJHrHKQRAykgi71QACynffLxwz1ZEteIMv CA== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3cg3v7a220-3
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Tue, 23 Nov 2021 12:02:56 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ Tue, 23 Nov 2021 10:32:04 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Tue, 23 Nov
- 2021 18:02:53 +0000
+ 2021 16:31:59 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.17 via
- Frontend Transport; Tue, 23 Nov 2021 18:02:53 +0000
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A4B49B06;
- Tue, 23 Nov 2021 18:02:53 +0000 (UTC)
-Date: Tue, 23 Nov 2021 18:02:53 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Lucas Tanure <tanureal@opensource.cirrus.com>
-Subject: Re: [PATCH 01/11] ASoC: cs35l41: Set the max SPI speed for the whole
- device
-Message-ID: <20211123180253.GF18506@ediswmail.ad.cirrus.com>
+ Frontend Transport; Tue, 23 Nov 2021 16:31:59 +0000
+Received: from aryzen.ad.cirrus.com (unknown [198.61.65.11])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 8F3B92A3;
+ Tue, 23 Nov 2021 16:31:58 +0000 (UTC)
+From: Lucas Tanure <tanureal@opensource.cirrus.com>
+To: "Rafael J . Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
+ Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>,
+ "Liam Girdwood" <lgirdwood@gmail.com>,
+ Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, Kailang Yang <kailang@realtek.com>,
+ Shuming Fan <shumingf@realtek.com>, "Pierre-Louis
+ Bossart" <pierre-louis.bossart@linux.intel.com>, David Rhodes
+ <david.rhodes@cirrus.com>, Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+Subject: [PATCH 11/11] ACPI / scan: Create platform device for CLSA0100 ACPI
+ nodes
+Date: Tue, 23 Nov 2021 16:31:49 +0000
+Message-ID: <20211123163149.1530535-12-tanureal@opensource.cirrus.com>
+X-Mailer: git-send-email 2.34.0
+In-Reply-To: <20211123163149.1530535-1-tanureal@opensource.cirrus.com>
 References: <20211123163149.1530535-1-tanureal@opensource.cirrus.com>
- <20211123163149.1530535-2-tanureal@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20211123163149.1530535-2-tanureal@opensource.cirrus.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: QxsPUmA4dig9wQgfRRekjSQno3if7DLV
-X-Proofpoint-ORIG-GUID: QxsPUmA4dig9wQgfRRekjSQno3if7DLV
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: SYKjTyKFonnmZRNs79UK8MH84V-Bv9wr
+X-Proofpoint-ORIG-GUID: SYKjTyKFonnmZRNs79UK8MH84V-Bv9wr
 X-Proofpoint-Spam-Reason: safe
 X-Mailman-Approved-At: Wed, 24 Nov 2021 08:05:53 +0100
-Cc: Alexandre
- Belloni <alexandre.belloni@bootlin.com>, Elia Devito <eliadevito@gmail.com>,
- "Rafael J . Wysocki" <rafael@kernel.org>, alsa-devel@alsa-project.org,
- Werner Sembach <wse@tuxedocomputers.com>, Liam
- Girdwood <lgirdwood@gmail.com>, Shuming Fan <shumingf@realtek.com>,
- Lars-Peter Clausen <lars@metafoo.de>,
- Vitaly Rodionov <vitalyr@opensource.cirrus.com>,
- Jeremy Szu <jeremy.szu@canonical.com>, Pierre-Louis
- Bossart <pierre-louis.bossart@linux.intel.com>,
- Hui Wang <hui.wang@canonical.com>, linux-acpi@vger.kernel.org,
- Sami Loone <sami@loone.fi>, Len Brown <lenb@kernel.org>,
- platform-driver-x86@vger.kernel.org, Chris Chiu <chris.chiu@canonical.com>,
- Arnd Bergmann <arnd@arndb.de>, Mark Gross <markgross@kernel.org>,
- Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>,
- Cameron Berkenpas <cam@neo-zeon.de>, Jack Yu <jack.yu@realtek.com>,
- Kailang Yang <kailang@realtek.com>, patches@opensource.cirrus.com,
- Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
- David Rhodes <david.rhodes@cirrus.com>
+Cc: Chris Chiu <chris.chiu@canonical.com>, Alexandre
+ Belloni <alexandre.belloni@bootlin.com>, Jack Yu <jack.yu@realtek.com>, Lucas
+ Tanure <tanureal@opensource.cirrus.com>, Arnd
+ Bergmann <arnd@arndb.de>, Jeremy Szu <jeremy.szu@canonical.com>,
+ patches@opensource.cirrus.com, Elia Devito <eliadevito@gmail.com>,
+ alsa-devel@alsa-project.org, Werner Sembach <wse@tuxedocomputers.com>,
+ platform-driver-x86@vger.kernel.org, Hui Wang <hui.wang@canonical.com>,
+ linux-acpi@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+ Sami Loone <sami@loone.fi>, Cameron Berkenpas <cam@neo-zeon.de>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -113,23 +111,55 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Nov 23, 2021 at 04:31:39PM +0000, Lucas Tanure wrote:
-> Higher speeds are only supported when PLL is enabled, but
-> the current driver doesn't enable PLL outside of stream
-> use cases, so better to set the lowest SPI speed accepted
-> by the entire device.
-> 
-> Move the current frequency set to the spi sub-driver so
-> the whole device can benefit from that speed.
-> 
-> spi-max-frequency property could be used, but ACPI systems don't
-> support it, so by setting it in the spi sub-driver probe
-> both Device Trees and ACPI systems are supported.
-> 
-> Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
-> ---
+The ACPI device with CLSA0100 is a sound card with multiple
+instances of CS35L41.
 
-Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+We add an ID to the I2C multi instantiate list to enumerate
+all I2C slaves correctly.
 
-Thanks,
-Charles
+Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
+---
+ drivers/acpi/scan.c                          | 1 +
+ drivers/platform/x86/i2c-multi-instantiate.c | 7 +++++++
+ 2 files changed, 8 insertions(+)
+
+diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+index 2c80765670bc..16827a33e93b 100644
+--- a/drivers/acpi/scan.c
++++ b/drivers/acpi/scan.c
+@@ -1708,6 +1708,7 @@ static bool acpi_device_enumeration_by_parent(struct acpi_device *device)
+ 		{"BSG2150", },
+ 		{"INT33FE", },
+ 		{"INT3515", },
++		{"CLSA0100", },
+ 		{}
+ 	};
+ 
+diff --git a/drivers/platform/x86/i2c-multi-instantiate.c b/drivers/platform/x86/i2c-multi-instantiate.c
+index 4956a1df5b90..ed25a0adc656 100644
+--- a/drivers/platform/x86/i2c-multi-instantiate.c
++++ b/drivers/platform/x86/i2c-multi-instantiate.c
+@@ -147,6 +147,12 @@ static const struct i2c_inst_data int3515_data[]  = {
+ 	{}
+ };
+ 
++static const struct i2c_inst_data clsa0100_data[]  = {
++	{ "cs35l41-hda", IRQ_RESOURCE_GPIO, 0 },
++	{ "cs35l41-hda", IRQ_RESOURCE_GPIO, 0 },
++	{}
++};
++
+ /*
+  * Note new device-ids must also be added to i2c_multi_instantiate_ids in
+  * drivers/acpi/scan.c: acpi_device_enumeration_by_parent().
+@@ -155,6 +161,7 @@ static const struct acpi_device_id i2c_multi_inst_acpi_ids[] = {
+ 	{ "BSG1160", (unsigned long)bsg1160_data },
+ 	{ "BSG2150", (unsigned long)bsg2150_data },
+ 	{ "INT3515", (unsigned long)int3515_data },
++	{ "CLSA0100", (unsigned long)clsa0100_data },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(acpi, i2c_multi_inst_acpi_ids);
+-- 
+2.34.0
+
