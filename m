@@ -4,81 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE442C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Nov 2021 22:14:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B374CC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Nov 2021 22:14:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D20E617E7;
-	Wed, 24 Nov 2021 23:13:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D20E617E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id D28181872;
+	Wed, 24 Nov 2021 23:13:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D28181872
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637792044;
-	bh=LzzPOO+RM6FEOiFNwxVrD5niwYNDvz2u+GaEY3CfkBM=;
+	s=default; t=1637792059;
+	bh=z9uhrtoxOlBMx2zkXRL55J5C7qwhtRXL2We9PM4uCGI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sLcIgvo6q3lz0TI3Dc6bdHnycyWYmSS0laj/VhtlyQlPkhJTJqx0fVeM4rlgmo18f
-	 cxix9F4VQPPWU01gcGPWkwnTipsFk8drHhOTMMnd3crgwXKw2ni1yHERVLr/kJ76kL
-	 TJpIguEHMK1pyc0GFOlMv6q7v5HJKQ0KYzB5lex0=
+	b=Z9rop0v5FDW3KPz5E4wSQVwIEVp8HubhIaausG8er6pieUdNPB0bpMdhOt3F8ShqI
+	 0RaFQCqBP5O9hdRdf+fZB+9/BOiOyXCJY4CBu2kmc8DbDit3fCliLazpeaMcAVaph/
+	 BD9Ufw2//Mdh9Xfgz4kwSsFCbzRcKeJDT3c8w8pM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6FDD6F80212;
-	Wed, 24 Nov 2021 23:07:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1BDB3F80302;
+	Wed, 24 Nov 2021 23:07:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 458FCF8058C; Wed, 24 Nov 2021 23:07:36 +0100 (CET)
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com
- [IPv6:2a00:1450:4864:20::12e])
+ id 490A8F8014D; Wed, 24 Nov 2021 23:07:36 +0100 (CET)
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com
+ [IPv6:2a00:1450:4864:20::12b])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 394C8F801F7
- for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2021 23:06:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 394C8F801F7
+ by alsa1.perex.cz (Postfix) with ESMTPS id AAD79F80212
+ for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2021 23:06:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AAD79F80212
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="ARwTAJfT"
-Received: by mail-lf1-x12e.google.com with SMTP id bi37so10957617lfb.5
- for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2021 14:06:35 -0800 (PST)
+ header.b="J+ph0bGf"
+Received: by mail-lf1-x12b.google.com with SMTP id k37so10993994lfv.3
+ for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2021 14:06:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=jZtmNInV251GqgFq3K9ZRWdCyBV26EPK8i39JKkeuGY=;
- b=ARwTAJfTqtelTIPULCHTr4G1ZuHUenvIBkuGFZhD92TpJknc06Pw4cc8Q0R4MkYvx6
- ZrGOgymmMNeLJVRsE9/cc5Ab3/Isn6TJ/W0hPgcZwOEfa3j2FDIf0rCGr7KuMPBV59Si
- SJWeTuh6I7v7M09Q623XB87OkuNd+AwC4UztBJOpDnXF5/CBuHKP3gHgvGh5xNJ2QBbX
- 9lOkMvN8rkLKzWw1To+uJiANLdC1wZCXreMAsaQUt4OfMwVpVCDk7gxkrKflx3D4zStc
- heknKMF8Gd2Lhn0RUV5qxHSS/hp6xVdYYKOqg1/ycE7I2303I3dBEl5MG0m2eWG+ITKX
- nlug==
+ bh=c5Fktc8z3pKDnGBiR9xJxzlv3HvufbR7qsaFtUM4qP0=;
+ b=J+ph0bGfDz+0f3SGqVBhKJcKJtE145w0Qd6X3dDnesGFzTRO3D1oKZZSXP/i31IGrL
+ p1luco5cjM6V7Cg8Ikv1d/qcpY5z9yIUKJG+CTO0D7xvFfh5tPLkhUIV92H0l1HkZ7pB
+ vEZkYlEuWq5wqgJtgjc4Sfx61LwcS3Yf0NrKKwdJicwDHo0atAO2jNPn1mctE6+eQID5
+ 38nBlkG/XgtkZR+0ETbCCuqvYOykfTMwvVp8lRlO5cjYyCElqzRbF0YQUHnhAIgdM8lo
+ qzgD5yJd/FI6D/F7JpmnzqTjwHkYOgiZamAhCDdQz+r20/xvJwhCv96wID4QmvMihIKs
+ FD6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=jZtmNInV251GqgFq3K9ZRWdCyBV26EPK8i39JKkeuGY=;
- b=tl3QHxjeXP8tIw5R/xRBD5f4iGcny949vz3ysZIp3JyNsQAUTRYCkS2QaH+WHx87pr
- z+cnTHA4BH7Kev6eL79aJpR5V7LQy+2cTOlbd7eOa7lPDAONAQ2MDbUTHlMpmmISNo5W
- 2yT9WWys5U4xQdTkCkTB9FQLb3yDWfqBKR3DIojbTTims+GWWzMJIJfhnRmGKxia8BAg
- MJa7ya/MQHt1EASXKg4TEfeXK5QWIVctyrmjJcVqqbNUfkZaJLtHnqBI/WwTucamEVN3
- SPvVOXW/7U5ki1Vqx8ZSV34An0RPoFEpte5uW4K3vUZx1jVucX3Otc1CMze/P2LtMc8/
- QQPg==
-X-Gm-Message-State: AOAM530aZqrZQ33SfMBT/gTIGUWuFCXw4jVOkQV0RdBWIUfqol++tzML
- bI8Sp8hmMda0MhR6p4iQCYM=
-X-Google-Smtp-Source: ABdhPJzhi7UNU46047RRxIFY+qitxZ5+V78jiCA3Ag2Za0QxQcgCp2Ay3wCtMWWTnZuxJO6SBU4FjQ==
-X-Received: by 2002:a19:c308:: with SMTP id t8mr18436846lff.621.1637791593535; 
- Wed, 24 Nov 2021 14:06:33 -0800 (PST)
+ bh=c5Fktc8z3pKDnGBiR9xJxzlv3HvufbR7qsaFtUM4qP0=;
+ b=GF8IJA4qvuAkYbcwKCcz1O/SxSb+/XPo0hlO/ACG9zCkJ7HLPmdCcGT8/q9clqIIpF
+ 6DQiv6sGSXihdDDmAFcvZ5NL7THLukfrQAzT2HIUNuUmhq6invCdHD14HrNbCmVcqWz0
+ XgqhFi/8GoJWYxIDggL6GYHtv8kkU4IV8IaLVY8w/oLYjVhCd3B4lfX2bdQmV4JjYHJA
+ kGZWHsVh0xzgk+Hf2usIsgSS3wbeqYczrlD4wWQAF0XZn3rfUbHTsXZgP7rD9ex5DAvE
+ dRvu1JwqQ57rAYgJbeuoI1AAQaNB951Te19F0iMcnwXGE/wup5SP16NQpAWZ0G/QQNQR
+ 7EbQ==
+X-Gm-Message-State: AOAM531FSp4w+lTBNUnvvZmjET9ofjFoGivti9dvzG9KHdQkp9rVnEKC
+ 9BoeZVutHslDYoz8XXrnu+I=
+X-Google-Smtp-Source: ABdhPJwux3qwntifRbiT4YwO9EgIoEEHEAiuyxDM9ZVeZbtEWZwxZ2RjX4+Z+AMZAYBRz8ID00EvdQ==
+X-Received: by 2002:a05:6512:3ba6:: with SMTP id
+ g38mr18521398lfv.330.1637791596481; 
+ Wed, 24 Nov 2021 14:06:36 -0800 (PST)
 Received: from localhost.localdomain (94-29-48-99.dynamic.spd-mgts.ru.
  [94.29.48.99])
- by smtp.gmail.com with ESMTPSA id w17sm93266ljh.15.2021.11.24.14.06.32
+ by smtp.gmail.com with ESMTPSA id w17sm93266ljh.15.2021.11.24.14.06.35
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 24 Nov 2021 14:06:33 -0800 (PST)
+ Wed, 24 Nov 2021 14:06:36 -0800 (PST)
 From: Dmitry Osipenko <digetx@gmail.com>
 To: Thierry Reding <thierry.reding@gmail.com>,
  Jonathan Hunter <jonathanh@nvidia.com>, Mark Brown <broonie@kernel.org>,
  Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
  Liam Girdwood <lgirdwood@gmail.com>, Agneli <poczt@protonmail.ch>,
  Rob Herring <robh+dt@kernel.org>
-Subject: [PATCH v1 04/20] dt-bindings: host1x: Document optional HDMI
- sound-dai-cells
-Date: Thu, 25 Nov 2021 01:00:41 +0300
-Message-Id: <20211124220057.15763-5-digetx@gmail.com>
+Subject: [PATCH v1 07/20] ASoC: tegra20: spdif: Set FIFO trigger level
+Date: Thu, 25 Nov 2021 01:00:44 +0300
+Message-Id: <20211124220057.15763-8-digetx@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211124220057.15763-1-digetx@gmail.com>
 References: <20211124220057.15763-1-digetx@gmail.com>
@@ -102,26 +102,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Document new optional sound-dai-cells property of HDMI node. This node will
-be used as endpoint of HDMI sound DAI graph.
+Program FIFO trigger level properly to fix x4 accelerated playback.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- .../devicetree/bindings/display/tegra/nvidia,tegra20-host1x.txt  | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/tegra/tegra20_spdif.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/display/tegra/nvidia,tegra20-host1x.txt b/Documentation/devicetree/bindings/display/tegra/nvidia,tegra20-host1x.txt
-index e61999ce54e9..27b746f28f31 100644
---- a/Documentation/devicetree/bindings/display/tegra/nvidia,tegra20-host1x.txt
-+++ b/Documentation/devicetree/bindings/display/tegra/nvidia,tegra20-host1x.txt
-@@ -297,6 +297,7 @@ of the following host1x client modules:
-   - nvidia,edid: supplies a binary EDID blob
-   - nvidia,panel: phandle of a display panel
-   - operating-points-v2: See ../bindings/opp/opp.txt for details.
-+  - #sound-dai-cells: Should be 0.
+diff --git a/sound/soc/tegra/tegra20_spdif.c b/sound/soc/tegra/tegra20_spdif.c
+index bd81df5378d1..6650875d2555 100644
+--- a/sound/soc/tegra/tegra20_spdif.c
++++ b/sound/soc/tegra/tegra20_spdif.c
+@@ -70,6 +70,14 @@ static int tegra20_spdif_hw_params(struct snd_pcm_substream *substream,
  
- - tvo: TV encoder output
+ 	regmap_update_bits(spdif->regmap, TEGRA20_SPDIF_CTRL, mask, val);
  
++	/*
++	 * FIFO trigger level must be bigger than DMA burst or equal to it,
++	 * otherwise data is discarded on overflow.
++	 */
++	regmap_update_bits(spdif->regmap, TEGRA20_SPDIF_DATA_FIFO_CSR,
++			   TEGRA20_SPDIF_DATA_FIFO_CSR_TX_ATN_LVL_MASK,
++			   TEGRA20_SPDIF_DATA_FIFO_CSR_TX_ATN_LVL_TU4_WORD_FULL);
++
+ 	switch (params_rate(params)) {
+ 	case 32000:
+ 		spdifclock = 4096000;
 -- 
 2.33.1
 
