@@ -4,54 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B4D8C433FE
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Nov 2021 12:44:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3747BC433FE
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Nov 2021 12:47:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9AF981790;
-	Wed, 24 Nov 2021 13:43:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9AF981790
+	by alsa0.perex.cz (Postfix) with ESMTPS id A2A5C178F;
+	Wed, 24 Nov 2021 13:46:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A2A5C178F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637757838;
-	bh=aOK/IR1dpDc8S/kfx4aITc/e7OlsxFe9NaHm55Gg33M=;
+	s=default; t=1637758060;
+	bh=bZYwmws7ttw+7pmQhuTuxLgNOJ+/Q2vHTKQPCg9K4Ws=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mn7ETvea0ZI9B5Xe7HTQOuFusBLygL/7xKzB4785S3KS475U0/CRWVX9EN2feoO7m
-	 ES4aGXyOhi7xAj/j3ztXFQ2qP7fSLes614conbniIgk0W0Z7F70/v4KunzOdi7iP37
-	 oc1jHRVAwjkzVs+joH2F4tzyLSoPLLCnhoX9Yhl4=
+	b=e0BvoGRvupT8xVQWbP9ghpSPyQOv3nuc9n2fxDp2W1Gc+HXIoCR4DgtsgzjpMEKsf
+	 x2u1KlKsoStvjvTDy+5/OtVWpQNN3qAjM6mxJY+y5XP9cOpSFfXPltuFztyEgFWktR
+	 DAUbG4GOaT1khcJ32PZPnVfAKwwimSSzEAl4S/vQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0B888F8014D;
-	Wed, 24 Nov 2021 13:43:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3D814F8013A;
+	Wed, 24 Nov 2021 13:46:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A9CEFF801F7; Wed, 24 Nov 2021 13:43:04 +0100 (CET)
+ id DC260F80087; Wed, 24 Nov 2021 13:46:42 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 88589F8013A
- for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2021 13:42:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88589F8013A
+ by alsa1.perex.cz (Postfix) with ESMTPS id E5A05F80087
+ for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2021 13:46:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5A05F80087
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=linuxfoundation.org
- header.i=@linuxfoundation.org header.b="rtJ9/dQ+"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC8A061A8B;
- Wed, 24 Nov 2021 12:42:48 +0000 (UTC)
+ header.i=@linuxfoundation.org header.b="q17HaNG/"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BBDAA61AFB;
+ Wed, 24 Nov 2021 12:46:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1637757769;
- bh=aOK/IR1dpDc8S/kfx4aITc/e7OlsxFe9NaHm55Gg33M=;
+ s=korg; t=1637757994;
+ bh=bZYwmws7ttw+7pmQhuTuxLgNOJ+/Q2vHTKQPCg9K4Ws=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=rtJ9/dQ+zkT5o9M8LrE0Oonw4ohPrXjDdDmnfQAbmCDg/rEpagM0K1LJlj1rGGpO1
- pgrC9ft2QBIc7JlErQg6UaClIQ5uTYzC+oObbKY0vFIj9OwauRt7LhZ1dzZYfLqXa/
- vQJJ+fdbU16sXXwh+wpIrhPCGq6dh5iUXNDJpMA0=
+ b=q17HaNG/kSaHP1B+u1WcYyCdwPJKbIMjWGeCnSwSqvCM91M6jchrZ+O+aoBZGJZYM
+ 0xbHvBtQp2HKcnz0OIvPMaF+z2kVkQWGi3/AAIuePgK6bXbR7YbrRSeu2uLf0XkaLK
+ E+6Bl+fpOwkXQiaPuXmNT0kF+mm0e386kWAhZKuw=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 4.19 271/323] ALSA: ISA: not for M68K
-Date: Wed, 24 Nov 2021 12:57:41 +0100
-Message-Id: <20211124115728.022427637@linuxfoundation.org>
+Subject: [PATCH 5.4 021/100] ALSA: ISA: not for M68K
+Date: Wed, 24 Nov 2021 12:57:37 +0100
+Message-Id: <20211124115655.548755545@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
+References: <20211124115654.849735859@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -132,10 +132,10 @@ index ee4a4a6b99ba7..d123587c0fd8f 100644
  snd-$(CONFIG_SND_VMASTER) += vmaster.o
  snd-$(CONFIG_SND_JACK)	  += ctljack.o jack.o
 diff --git a/sound/isa/Kconfig b/sound/isa/Kconfig
-index d7db1eeebc844..f8f3433925bb4 100644
+index b690ed937cbe8..df2e45c8814e9 100644
 --- a/sound/isa/Kconfig
 +++ b/sound/isa/Kconfig
-@@ -21,7 +21,7 @@ config SND_SB16_DSP
+@@ -22,7 +22,7 @@ config SND_SB16_DSP
  menuconfig SND_ISA
  	bool "ISA sound devices"
  	depends on ISA || COMPILE_TEST
@@ -145,10 +145,10 @@ index d7db1eeebc844..f8f3433925bb4 100644
  	help
  	  Support for sound devices connected via the ISA bus.
 diff --git a/sound/pci/Kconfig b/sound/pci/Kconfig
-index 4105d9f653d90..bbaf46dc3f804 100644
+index 7630f808d087c..6edde2f145025 100644
 --- a/sound/pci/Kconfig
 +++ b/sound/pci/Kconfig
-@@ -278,6 +278,7 @@ config SND_CS46XX_NEW_DSP
+@@ -279,6 +279,7 @@ config SND_CS46XX_NEW_DSP
  config SND_CS5530
  	tristate "CS5530 Audio"
  	depends on ISA_DMA_API && (X86_32 || COMPILE_TEST)
