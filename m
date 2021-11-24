@@ -4,62 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A716C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Nov 2021 17:37:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32305C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Nov 2021 17:38:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9CE29178D;
-	Wed, 24 Nov 2021 18:36:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CE29178D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0BD2A1794;
+	Wed, 24 Nov 2021 18:37:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0BD2A1794
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637775448;
-	bh=TMAm6b8loxMSExOSOmxeqBHfwH191qPg5um06p82e84=;
+	s=default; t=1637775498;
+	bh=JEeUexWEgyab1NljGHQNaWIyFZQlnmSROasR1Re9FXg=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UBlYbM1TFQBYGI7R+50D+TVrldgK1cMK6E3Kp71/ccrsOGyGqMRghCZJfO1X6VeHu
-	 f3sYEM5WXJo1C4xnrtmGiN1GfsH5jm/2StQs9OIZ54ZKnF+5CV8ila7s5iirXC+15Z
-	 USX+vXxnGk1udKOhk9/l4buCVtbEpAF7v+xm47aU=
+	b=MSdYwmrL/lun0aDZud6V5goLc9TVaeNjDbU4Qh0S8pZnF3OCu6IU05N0sYdHMaPwa
+	 Qn95vCK+hBbTMs6BkH226VYUYBgqVq5V2MHMNMp/6WeVAdSOOqkzCZN93U2k/sMpg9
+	 j/QDE/rSY/TJdefGiVbVGhi3uIJpDRM2ZfyTBUk4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 25E3EF801F7;
-	Wed, 24 Nov 2021 18:36:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 481A1F80245;
+	Wed, 24 Nov 2021 18:36:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6ABB2F80212; Wed, 24 Nov 2021 18:36:36 +0100 (CET)
+ id 3E3DFF80087; Wed, 24 Nov 2021 18:36:39 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5AF11F8011F
- for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2021 18:36:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5AF11F8011F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 106F8F80087
+ for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2021 18:36:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 106F8F80087
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="LjohZlfe"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6168060F5B;
- Wed, 24 Nov 2021 17:36:27 +0000 (UTC)
+ header.b="qoI3EN2i"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C50AB60E0B;
+ Wed, 24 Nov 2021 17:36:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1637775388;
- bh=TMAm6b8loxMSExOSOmxeqBHfwH191qPg5um06p82e84=;
+ s=k20201202; t=1637775390;
+ bh=JEeUexWEgyab1NljGHQNaWIyFZQlnmSROasR1Re9FXg=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=LjohZlfe1jb/TzsPf/XzWOslETjJZUMsgcuWgqYksdvmdRnnNhBp92Td/xX43sitX
- y/ZG5DsvyCyB9hhEJQpXZ+c0E8oLdqa7uyT1mo7IuB+NleaWSB0BDesge/+3XhN4CC
- LXx04OOC1GJ43TZyb66S/SNvsmU1RHDNoKPhZudsASjWhAD67FswkzW05DCbec77z7
- orV6c75xFxwp3lkT05Jl0ARrH6+1XNVon7sFlNkkA75/OYPXiNZjigdUkz48aSnYLq
- BTy1AX0sBGAcnZk46KDiLgpYaXKjgvUaDmu8BQ4uhVB3zS4lHVoqaaWzBhLqsxA302
- EWpio1u0QDZFw==
+ b=qoI3EN2icsuEq+84/28slFKggX1HwQzUrFf0aTEv0Opcm60iGe2C59rv27kXFoshe
+ rgENMjtj3bhiZ6dhLvKrdR4yPhpx21s6PBqJCMrw7y5fsrVUILoOPrvIInbkO3zYNz
+ SDt+VpdO4WAwP4Xl2WmbiwNkZzshLejdd8Y2Sk1tGsb3GQVYt3WyZotXMSj1pcV6vK
+ /+Zwi5yenTjJCMCPO3DKPzd6CUY5jAJTibw03Zs9niI22nOHn/z0kd4Ux3rBOqOKOO
+ Oh+2Nk30e5zOKcK3tXbhbGKBPPALAOHUimIZz06+p2ifsyvwcvkZ0Q8xXJU/HfBTf+
+ Y0zhV+oxLFE9w==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20211122232356.23505-1-pierre-louis.bossart@linux.intel.com>
-References: <20211122232356.23505-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: soc-acpi: add entry for ESSX8336 on CML
-Message-Id: <163777538711.2712035.5582870807573071685.b4-ty@kernel.org>
-Date: Wed, 24 Nov 2021 17:36:27 +0000
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>, alsa-devel@alsa-project.org
+In-Reply-To: <20211123165759.127884-1-kai.vehmanen@linux.intel.com>
+References: <20211123165759.127884-1-kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH] ASoC: SOF: hda: reset DAI widget before reconfiguring it
+Message-Id: <163777538854.2712035.15609353888586493899.b4-ty@kernel.org>
+Date: Wed, 24 Nov 2021 17:36:28 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, Huajun Li <huajun.li@intel.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: lgirdwood@gmail.com, yung-chuan.liao@linux.intel.com,
+ pierre-louis.bossart@linux.intel.com, ranjani.sridharan@linux.intel.com,
+ Paul Olaru <paul.olaru@oss.nxp.com>, daniel.baluta@nxp.com,
+ Bard Liao <bard.liao@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,11 +76,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 22 Nov 2021 17:23:56 -0600, Pierre-Louis Bossart wrote:
-> We have configurations for this codec on APL, GLK, JSL and TGL, somehow the
-> information that some designs rely on CometLake was not shared.
+On Tue, 23 Nov 2021 18:57:59 +0200, Kai Vehmanen wrote:
+> From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> 
+> It is not unusual for ALSA/ASoC hw_params callbacks to be invoked
+> multiple times. Reset and free the DAI widget before reconfiguring
+> it to keep the DAI widget use_count balanced.
 > 
 > 
+> [...]
 
 Applied to
 
@@ -87,8 +92,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Intel: soc-acpi: add entry for ESSX8336 on CML
-      commit: 8a6cc0ded6d942e4a506c421c4d87a634bda6e75
+[1/1] ASoC: SOF: hda: reset DAI widget before reconfiguring it
+      commit: 86f74ba3fef56dd1cee19b7a15ae27fc0da5bb61
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
