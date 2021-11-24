@@ -4,91 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B11B9C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Nov 2021 07:17:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88385C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Nov 2021 08:46:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DBD1917D6;
-	Wed, 24 Nov 2021 08:16:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DBD1917D6
+	by alsa0.perex.cz (Postfix) with ESMTPS id D7D57178A;
+	Wed, 24 Nov 2021 09:46:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D7D57178A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637738264;
-	bh=IW4qN8u05oVacusnPMH1cuKnY7vyge2dygNZ0jyMnfs=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1637743613;
+	bh=FnYpV8tPOoFXnNhuIiKI1PHZjjRiNPJXN04orjMGJb0=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BwKhvJHkK+OSkUVnCi002NcyvsCyXye99nfdLAXvmrJDxVf4vVyqUnV+1a2sUrquD
-	 L/V4m48DBfhUTxlBjs/NL1udJeJZ34WgAHWGwC2ot+g9wcqq+YHp54LRj50ktguRkp
-	 saAX6Eu6dtGBlH/Q/Zz1qKdUJT2khKisHzh4L5AE=
+	b=S8BNzoilzMXIZ5TBUKx3xpPqo2GrVY4hl6el0zvxSedL6/lTEv5Lrmrbgy3x5YOL2
+	 eRsAxTiaZQBfCLwR4fE8ZLwTPWOMc3FjzbAz14f0x2r9LGoUng1I8tPhmklY2Kv84f
+	 fOqULxXHvUAfV7sa8iwJTW4fdydynP1hdOSMC0M0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 06766F805F6;
-	Wed, 24 Nov 2021 08:06:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DC971F80212;
+	Wed, 24 Nov 2021 09:46:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 873F5F800E7; Wed, 24 Nov 2021 00:49:31 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 82CCAF80302; Wed, 24 Nov 2021 09:45:59 +0100 (CET)
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1B846F800E7
- for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2021 00:49:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B846F800E7
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="bMkLLetQ"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EBAD760F41;
- Tue, 23 Nov 2021 23:49:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1637711364;
- bh=IW4qN8u05oVacusnPMH1cuKnY7vyge2dygNZ0jyMnfs=;
- h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=bMkLLetQudL1AnjDLBkGz2KJV65XFDNAI+qMERM3p2htB/mPltEFDc0SoR5SG7cTn
- yUvjgLX4fj3iycoMCeZbceNqv8VJp4xXmhJ5j4daJdQUx70dPPE1ZSDF3I8EJ3CrBl
- FL9EHxBPJYKnvkt5L2363w5f8MTJ/hI+N0EksRg4Tqq2ECyAP9r+yfiU6OtA4c1HNW
- sJDJxZC66+IkfqVqHU0aoaIJ7PQLiQE76d+ztRn4+dA/AYxJtUD+/ZrA56NgYcGb99
- 3NhcCdyp7MdhPQ2MlzMSxitFt7xyg2kF02pUQFCNG1ojXEWE+DZkeLhKg7BQKKAgjZ
- pglhaeH4khWUA==
-Date: Tue, 23 Nov 2021 15:49:22 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Johannes Berg <johannes@sipsolutions.net>
-Subject: Re: [PATCH 01/17] bitfield: Add non-constant field_{prep,get}()
- helpers
-Message-ID: <20211123154922.600fd3b5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <637a4183861a1f2cdab52b7652bfa7ed33fbcdd2.camel@sipsolutions.net>
-References: <cover.1637592133.git.geert+renesas@glider.be>
- <3a54a6703879d10f08cf0275a2a69297ebd2b1d4.1637592133.git.geert+renesas@glider.be>
- <01b44b38c087c151171f8d45a2090474c2559306.camel@sipsolutions.net>
- <20211122171739.03848154@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAMuHMdWAAGrQUZN18cnDTDUUhuPNTZTFkRMe2Sbf+s7CedPSxA@mail.gmail.com>
- <637a4183861a1f2cdab52b7652bfa7ed33fbcdd2.camel@sipsolutions.net>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2E96CF80087;
+ Wed, 24 Nov 2021 09:45:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E96CF80087
+X-UUID: 40d914922147410394812a902ed1affb-20211124
+X-UUID: 40d914922147410394812a902ed1affb-20211124
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+ (envelope-from <allen-kh.cheng@mediatek.com>)
+ (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+ with ESMTP id 153201819; Wed, 24 Nov 2021 16:45:41 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 24 Nov 2021 16:45:40 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via
+ Frontend Transport; Wed, 24 Nov 2021 16:45:40 +0800
+From: allen-kh.cheng <allen-kh.cheng@mediatek.com>
+To: Jassi Brar <jassisinghbrar@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>
+Subject: [PATCH v3 1/3] dt-bindings: mediatek: add adsp-mbox document
+Date: Wed, 24 Nov 2021 16:45:12 +0800
+Message-ID: <20211124084514.28002-2-allen-kh.cheng@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20211124084514.28002-1-allen-kh.cheng@mediatek.com>
+References: <20211124084514.28002-1-allen-kh.cheng@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Mailman-Approved-At: Wed, 24 Nov 2021 08:05:53 +0100
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Daniel Lezcano <daniel.lezcano@linaro.org>, linux-aspeed@lists.ozlabs.org,
- Liam Girdwood <lgirdwood@gmail.com>, Tony Lindgren <tony@atomide.com>,
- linux-wireless@vger.kernel.org, Michael Turquette <mturquette@baylibre.com>,
- Amit Kucheria <amitk@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>,
- Nicolas Ferre <nicolas.ferre@microchip.com>, linux-clk@vger.kernel.org,
- Ping-Ke Shih <pkshih@realtek.com>, Lars-Peter Clausen <lars@metafoo.de>,
- openbmc@lists.ozlabs.org, "Rafael J . Wysocki" <rafael@kernel.org>,
- Magnus Damm <magnus.damm@gmail.com>, Russell King <linux@armlinux.org.uk>,
- linux-iio@vger.kernel.org, Ludovic Desroches <ludovic.desroches@microchip.com>,
- Geert Uytterhoeven <geert@linux-m68k.org>, Joel Stanley <joel@jms.id.au>,
- Zhang Rui <rui.zhang@intel.com>, Linus Walleij <linus.walleij@linaro.org>,
- linux-media@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-omap@vger.kernel.org, Benoit Parrot <bparrot@ti.com>,
- linux-gpio@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>, Kalle Valo <kvalo@codeaurora.org>,
- linux-arm-kernel@lists.infradead.org, Eduardo Valentin <edubezval@gmail.com>,
- Paul Walmsley <paul@pwsan.com>, Rajendra Nayak <rnayak@codeaurora.org>,
- Tero Kristo <kristo@kernel.org>, Andrew Jeffery <andrew@aj.id.au>,
- Keerthy <j-keerthy@ti.com>, linux-pm@vger.kernel.org,
- linux-mmc@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
- linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- Stephen Boyd <sboyd@kernel.org>, netdev@vger.kernel.org,
- "David S . Miller" <davem@davemloft.net>, Jonathan Cameron <jic23@kernel.org>
+Content-Type: text/plain
+X-MTK: N
+Cc: devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>,
+ Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, cujomalainey@google.com,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Project_Global_Chrome_Upstream_Group@mediatek.com, tzungbi@google.com,
+ Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org,
+ Daniel Baluta <daniel.baluta@nxp.com>, linux-arm-kernel@lists.infradead.org,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -104,19 +82,75 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 23 Nov 2021 17:24:15 +0100 Johannes Berg wrote:
-> > (*_replace_bits() seems to be useful, though)  
-> 
-> Indeed.
-> 
-> Also as I said in my other mail, the le32/be32/... variants are
-> tremendously useful, and they fundamentally cannot be expressed with the
-> FIELD_GET() or field_get() macros. IMHO this is a clear advantage to the
+From: Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
 
-Can you elaborate?
+This patch adds document for mediatek adsp mbox
 
-> typed versions, and if you ask me we should get rid of the FIELD_GETand
-> FIELD_PREP entirely - difficult now, but at least let's not propagate
-> that?
+Signed-off-by: Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
+---
+ .../bindings/mailbox/mtk,adsp-mbox.yaml       | 53 +++++++++++++++++++
+ 1 file changed, 53 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mailbox/mtk,adsp-mbox.yaml
 
-I don't see why.
+diff --git a/Documentation/devicetree/bindings/mailbox/mtk,adsp-mbox.yaml b/Documentation/devicetree/bindings/mailbox/mtk,adsp-mbox.yaml
+new file mode 100644
+index 000000000000..f365182fa598
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mailbox/mtk,adsp-mbox.yaml
+@@ -0,0 +1,53 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mailbox/mtk,adsp-mbox.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Mediatek ADSP mailbox
++
++maintainers:
++  - Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
++
++description: |
++  The MTK ADSP mailbox Inter-Processor Communication (IPC) enables the SoC
++  to ommunicate with ADSP by passing messages through two mailbox channels.
++  The MTK ADSP mailbox IPC also provides the ability for one processor to
++  signal the other processor using interrupts.
++
++properties:
++  compatible:
++    items:
++      - const: mediatek,mt8195-adsp-mbox
++
++  "#mbox-cells":
++    const: 0
++
++  reg:
++    description:
++      Physical address base for dsp mbox base registers.
++
++  interrupts:
++    description:
++      adsp mbox interrupt
++
++required:
++  - compatible
++  - "#mbox-cells"
++  - reg
++  - interrupts
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    adsp_mailbox0:adsp_mailbox0@10816000 {
++        compatible = "mediatek,mt8195-adsp-mbox";
++        #mbox-cells = <0>;
++        reg = <0x10816000 0x1000>;
++        interrupts = <GIC_SPI 702 IRQ_TYPE_LEVEL_HIGH 0>;
++    };
++
+-- 
+2.18.0
+
