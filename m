@@ -4,81 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9FEAC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Nov 2021 22:08:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08C11C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Nov 2021 22:08:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CBFA517E9;
-	Wed, 24 Nov 2021 23:07:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CBFA517E9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 31FEE17EF;
+	Wed, 24 Nov 2021 23:08:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31FEE17EF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637791705;
-	bh=td0njL2uwjmAptBu0ZgKHxOVs6E4oG9LfFnqfq9pW4c=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=R87ceg4IKuAuVrw1te4jsWrUnYJWUVRdaa366NEpvYibyEDKXR6N7b5ab36MwqRwu
-	 v+g69vF8yd0vN84keaVC/Pc+sOSP6pSGfUYsc4NTvz1b0H+imL1aAXQ55/JbwK6GGJ
-	 4Ew2kYVzR0gcI78mqGeSXzuUsuIwj85J4v0KbZtw=
+	s=default; t=1637791734;
+	bh=8Jq3Q1/m+dsROHk9hVl8I3G5iOiKajzkzheVO2tqvI0=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=ebv+yi+mvybaJzOJ6IOiBVITmikYKKc4sk+HMavb7mc4OpasVoGHfeyVbWmTs0atl
+	 bQvhH+aYD6xc8IBox8GoUIOO6U43rT2wmEZIh25kAP2HpKpkUa8r9jhyAtZhJRb/Ru
+	 bN6w7FbeIfOQvspwuYNU2r9yQD6CRI2WlOt/Jv0Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9A599F804FC;
-	Wed, 24 Nov 2021 23:06:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5FF97F80507;
+	Wed, 24 Nov 2021 23:06:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E0168F8032D; Wed, 24 Nov 2021 23:06:41 +0100 (CET)
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com
- [IPv6:2a00:1450:4864:20::22b])
+ id EAFCAF804E7; Wed, 24 Nov 2021 23:06:43 +0100 (CET)
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com
+ [IPv6:2a00:1450:4864:20::12d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AA591F8011F
- for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2021 23:06:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA591F8011F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 40397F8013A
+ for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2021 23:06:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40397F8013A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="XryKTXvF"
-Received: by mail-lj1-x22b.google.com with SMTP id v15so8514716ljc.0
- for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2021 14:06:31 -0800 (PST)
+ header.b="a+huXng7"
+Received: by mail-lf1-x12d.google.com with SMTP id c32so10998200lfv.4
+ for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2021 14:06:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=2tZCZ8hYBjx1z5k7GS9qihmESy7aILKKvmRrarvGMnI=;
- b=XryKTXvFV87q72rf3hm3QdHNu7FS+1jkHbklorly1VtO9TQb77XtjiIeeZpGZD/4AJ
- 1BhEc+J9mTr+wc4z4qJydjFKXv7eC8SEVKYu9cOvdvwBuwo+C7VPZArXlMddJ0Io3t41
- OtAavAUsNMpbWqZUuHEs0CVyXLVCiF2v7jfCrR3dLLIELJ7c1rkZtYMRulElbb6N7Sk+
- D81mULUm5w5vxxgipObNvWeAQmVhlVaGZpPeHSpmUrrQf7yFLjaV7l3V0VYGalJva5SD
- g3BSL2oZMkvhK65cmcCKuvPHQexL1sQbY9Ui5amyHrm4md7HNqvulXcXJpIdapBQhxC0
- fg9g==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=Qt8PrFF5rWy8Gj1ABxOEOakxJdpJR0LJrG627NKAlx8=;
+ b=a+huXng7esgCNPuV7SwhtEtqPyIZia6XzlCsNh38W/pcBzm5vLO/WtN0fKU7aKh+8/
+ CIBprKjVIMWJngggQJIAhh/K3cv8cU0v6tqMBF+c4FbvO28PeEdAa7QgEYvw7BqBHKuF
+ tbtWmxtm5J7+z1rOoruqJlG7facc+QjOwA4UuOGVlenQ4F7M+ID+9zWzw3FQMMhO6rag
+ cOLQBiIHP+86c68dSSg8C+MoJCet4S7Yl7gAKa9BMrwcpui/lo/YDygOk8KX5bE/6q2j
+ Q0lKYbq6e9JUkorNC7H3DeIcG+HFS86rpuvXxAR6xJLhoAbYH9oeT9qlhqjFTJCdiBbL
+ Ir9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=2tZCZ8hYBjx1z5k7GS9qihmESy7aILKKvmRrarvGMnI=;
- b=6bjBO5bKil73QS7f/u/IZtKl2UOLsurNf54okmgIGUe6MkDj06hunsu0b8EKoN3Ihr
- 6Jz6d7OjiANZ5vb9SX+JXscIL4VZPsb1IkkHfwzViFZQ/jfmW8d6haQ6hox6VWHKLb6C
- FIsZzgDr2GR0uw852LAyw2CxDylkznDjsqtP1vWldlcCWKHOi4eUd/NgH5dQ9pwGJefb
- YmCA35VtdmhLqauLb+cuMLe5f78jrsMWmWf2bY8bQ7UzFY6zzWUKs+q4WAWjF3ibfonM
- bQRDLyA7HV+hf9GDWx0QN+rNzNbD0Hd6iiYb0h+fE3m27cMbLl6pvzUWlnu3xy4Jc5fE
- qO/Q==
-X-Gm-Message-State: AOAM530qbB5QTejEjvx1aocm8isMvOnQ/dyhodxorRefPoD977PCS42u
- CwVgS+zPayOwCeR09Eo2g78=
-X-Google-Smtp-Source: ABdhPJxN5Z/cMHtigSK2VlRsjGDJK8VknY+zJ8jUCWKgcxOZAbifzK5En0RtTvmWKAf5DfEP86zX8g==
-X-Received: by 2002:a05:651c:158b:: with SMTP id
- h11mr19639328ljq.137.1637791590041; 
- Wed, 24 Nov 2021 14:06:30 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=Qt8PrFF5rWy8Gj1ABxOEOakxJdpJR0LJrG627NKAlx8=;
+ b=GvTquLBVkbLGw6D5GFn0ExuZca16bp6y/mlZpJ6Lbt8/n0+z0QZamYLR1ypI+/paYw
+ uuWJ6EsdmsrSW11V5UsdRXEG8yRnV5RDOdr89LbYhvyu3yrGEwMuApOV7esjYik7xATZ
+ Sa5AJxJus7vfMfFgiEHZsbOEc6hRLtO+CGJr/BenS7zlftb6nAyo5+DkrhtcZGM/lJAo
+ BoVzv93sgK9OntD/aLouaHFXP0M36rsjsb8fgshwlYdEwsOIuT7IWmw2Mp3UJ/qoHi9i
+ A9TMMXfeYyR/Xl69bFajsvYwOrNPHFeIx5I8i1laH4pRZrhpSxBzwbnU3fzjYkhERHUD
+ Zkyg==
+X-Gm-Message-State: AOAM531RZw1sGjgqhGh8r6MjKJ2Y7sndnpAPEkBZvOx5ygzVVodpYiwS
+ dRzwubfbZ8X9Plb00Qz45DI=
+X-Google-Smtp-Source: ABdhPJxCMiI0o3HkziLhuPY402vnYenV2NdTnAA2rDvSVmJpZ2nJ1F/bnaflrwME9Hek/dqCHJ/c4w==
+X-Received: by 2002:a05:6512:3095:: with SMTP id
+ z21mr18114135lfd.423.1637791598355; 
+ Wed, 24 Nov 2021 14:06:38 -0800 (PST)
 Received: from localhost.localdomain (94-29-48-99.dynamic.spd-mgts.ru.
  [94.29.48.99])
- by smtp.gmail.com with ESMTPSA id w17sm93266ljh.15.2021.11.24.14.06.29
+ by smtp.gmail.com with ESMTPSA id w17sm93266ljh.15.2021.11.24.14.06.37
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 24 Nov 2021 14:06:29 -0800 (PST)
+ Wed, 24 Nov 2021 14:06:38 -0800 (PST)
 From: Dmitry Osipenko <digetx@gmail.com>
 To: Thierry Reding <thierry.reding@gmail.com>,
  Jonathan Hunter <jonathanh@nvidia.com>, Mark Brown <broonie@kernel.org>,
  Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
  Liam Girdwood <lgirdwood@gmail.com>, Agneli <poczt@protonmail.ch>,
  Rob Herring <robh+dt@kernel.org>
-Subject: [PATCH v1 00/20] Support HDMI audio on NVIDIA Tegra20
-Date: Thu, 25 Nov 2021 01:00:37 +0300
-Message-Id: <20211124220057.15763-1-digetx@gmail.com>
+Subject: [PATCH v1 09/20] ASoC: tegra20: spdif: Use more resource-managed
+ helpers
+Date: Thu, 25 Nov 2021 01:00:46 +0300
+Message-Id: <20211124220057.15763-10-digetx@gmail.com>
 X-Mailer: git-send-email 2.33.1
+In-Reply-To: <20211124220057.15763-1-digetx@gmail.com>
+References: <20211124220057.15763-1-digetx@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
@@ -99,64 +103,105 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This series revives Tegra20 S/PDIF driver which was upstreamed long time
-ago, but never was used. It also turns Tegra DRM HDMI driver into HDMI
-audio CODEC provider. Finally, HDMI audio is enabled in device-trees.
-For now the audio is enable only for Acer A500 tablet and Toshiba AC100
-netbook because they're already supported by upstream, later on ASUS TF101
-tablet will join them.
+Use resource-managed helpers to make code cleaner. Driver's remove callback
+isn't needed anymore since driver is completely resource-managed now.
 
-I based S/PDIF patches on Arnd's Bergmann patch from a separate series [1]
-that removes obsolete slave_id. This eases merging of the patches by
-removing the merge conflict.
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ sound/soc/tegra/tegra20_spdif.c | 33 +++++++++------------------------
+ sound/soc/tegra/tegra_pcm.c     |  6 ++++++
+ sound/soc/tegra/tegra_pcm.h     |  1 +
+ 3 files changed, 16 insertions(+), 24 deletions(-)
 
-[1] https://patchwork.ozlabs.org/project/linux-tegra/list/?submitter=80402
-
-Arnd Bergmann (1):
-  ASoC: tegra20-spdif: stop setting slave_id
-
-Dmitry Osipenko (19):
-  ASoC: dt-bindings: Add binding for Tegra20 S/PDIF
-  ASoC: dt-bindings: tegra20-i2s: Convert to schema
-  ASoC: dt-bindings: tegra20-i2s: Document new nvidia,fixed-parent-rate
-    property
-  dt-bindings: host1x: Document optional HDMI sound-dai-cells
-  ASoC: tegra20: spdif: Support device-tree
-  ASoC: tegra20: spdif: Set FIFO trigger level
-  ASoC: tegra20: spdif: Improve driver's code
-  ASoC: tegra20: spdif: Use more resource-managed helpers
-  ASoC: tegra20: spdif: Reset hardware
-  ASoC: tegra20: spdif: Support system suspend
-  ASoC: tegra20: spdif: Filter out unsupported rates
-  ASoC: tegra20: i2s: Filter out unsupported rates
-  drm/tegra: hdmi: Unwind tegra_hdmi_init() errors
-  drm/tegra: hdmi: Register audio CODEC on Tegra20
-  ARM: tegra_defconfig: Enable S/PDIF driver
-  ARM: tegra: Add S/PDIF node to Tegra20 device-tree
-  ARM: tegra: Add HDMI audio graph to Tegra20 device-tree
-  ARM: tegra: acer-a500: Enable S/PDIF and HDMI audio
-  ARM: tegra: paz00: Enable S/PDIF and HDMI audio
-
- .../display/tegra/nvidia,tegra20-host1x.txt   |   1 +
- .../bindings/sound/nvidia,tegra20-i2s.txt     |  30 ---
- .../bindings/sound/nvidia,tegra20-i2s.yaml    |  78 +++++++
- .../bindings/sound/nvidia,tegra20-spdif.yaml  |  88 ++++++++
- .../boot/dts/tegra20-acer-a500-picasso.dts    |   8 +
- arch/arm/boot/dts/tegra20-paz00.dts           |   8 +
- arch/arm/boot/dts/tegra20.dtsi                |  40 +++-
- arch/arm/configs/tegra_defconfig              |   1 +
- drivers/gpu/drm/tegra/Kconfig                 |   3 +
- drivers/gpu/drm/tegra/hdmi.c                  | 168 +++++++++++++--
- sound/soc/tegra/tegra20_i2s.c                 |  49 +++++
- sound/soc/tegra/tegra20_spdif.c               | 195 +++++++++++++-----
- sound/soc/tegra/tegra20_spdif.h               |   1 +
- sound/soc/tegra/tegra_pcm.c                   |   6 +
- sound/soc/tegra/tegra_pcm.h                   |   1 +
- 15 files changed, 575 insertions(+), 102 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.txt
- create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.yaml
- create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra20-spdif.yaml
-
+diff --git a/sound/soc/tegra/tegra20_spdif.c b/sound/soc/tegra/tegra20_spdif.c
+index 9383683aa4e9..6ca48bc322ae 100644
+--- a/sound/soc/tegra/tegra20_spdif.c
++++ b/sound/soc/tegra/tegra20_spdif.c
+@@ -289,38 +289,24 @@ static int tegra20_spdif_platform_probe(struct platform_device *pdev)
+ 	spdif->playback_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+ 	spdif->playback_dma_data.maxburst = 4;
+ 
+-	pm_runtime_enable(&pdev->dev);
++	ret = devm_pm_runtime_enable(&pdev->dev);
++	if (ret)
++		return ret;
+ 
+-	ret = snd_soc_register_component(&pdev->dev, &tegra20_spdif_component,
+-					 &tegra20_spdif_dai, 1);
++	ret = devm_snd_soc_register_component(&pdev->dev,
++					      &tegra20_spdif_component,
++					      &tegra20_spdif_dai, 1);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Could not register DAI: %d\n", ret);
+-		goto err_pm_disable;
++		return ret;
+ 	}
+ 
+-	ret = tegra_pcm_platform_register(&pdev->dev);
++	ret = devm_tegra_pcm_platform_register(&pdev->dev);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Could not register PCM: %d\n", ret);
+-		goto err_unregister_component;
++		return ret;
+ 	}
+ 
+-	return 0;
+-
+-err_unregister_component:
+-	snd_soc_unregister_component(&pdev->dev);
+-err_pm_disable:
+-	pm_runtime_disable(&pdev->dev);
+-
+-	return ret;
+-}
+-
+-static int tegra20_spdif_platform_remove(struct platform_device *pdev)
+-{
+-	tegra_pcm_platform_unregister(&pdev->dev);
+-	snd_soc_unregister_component(&pdev->dev);
+-
+-	pm_runtime_disable(&pdev->dev);
+-
+ 	return 0;
+ }
+ 
+@@ -342,7 +328,6 @@ static struct platform_driver tegra20_spdif_driver = {
+ 		.of_match_table = tegra20_spdif_of_match,
+ 	},
+ 	.probe = tegra20_spdif_platform_probe,
+-	.remove = tegra20_spdif_platform_remove,
+ };
+ module_platform_driver(tegra20_spdif_driver);
+ 
+diff --git a/sound/soc/tegra/tegra_pcm.c b/sound/soc/tegra/tegra_pcm.c
+index ef1e74d95236..468c8e77de21 100644
+--- a/sound/soc/tegra/tegra_pcm.c
++++ b/sound/soc/tegra/tegra_pcm.c
+@@ -48,6 +48,12 @@ int tegra_pcm_platform_register(struct device *dev)
+ }
+ EXPORT_SYMBOL_GPL(tegra_pcm_platform_register);
+ 
++int devm_tegra_pcm_platform_register(struct device *dev)
++{
++	return devm_snd_dmaengine_pcm_register(dev, &tegra_dmaengine_pcm_config, 0);
++}
++EXPORT_SYMBOL_GPL(devm_tegra_pcm_platform_register);
++
+ int tegra_pcm_platform_register_with_chan_names(struct device *dev,
+ 				struct snd_dmaengine_pcm_config *config,
+ 				char *txdmachan, char *rxdmachan)
+diff --git a/sound/soc/tegra/tegra_pcm.h b/sound/soc/tegra/tegra_pcm.h
+index d602126c65b7..2a36eea1740d 100644
+--- a/sound/soc/tegra/tegra_pcm.h
++++ b/sound/soc/tegra/tegra_pcm.h
+@@ -32,6 +32,7 @@ int tegra_pcm_hw_params(struct snd_soc_component *component,
+ snd_pcm_uframes_t tegra_pcm_pointer(struct snd_soc_component *component,
+ 				    struct snd_pcm_substream *substream);
+ int tegra_pcm_platform_register(struct device *dev);
++int devm_tegra_pcm_platform_register(struct device *dev);
+ int tegra_pcm_platform_register_with_chan_names(struct device *dev,
+ 				struct snd_dmaengine_pcm_config *config,
+ 				char *txdmachan, char *rxdmachan);
 -- 
 2.33.1
 
