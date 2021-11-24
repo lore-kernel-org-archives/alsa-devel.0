@@ -4,84 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D594C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Nov 2021 21:23:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2AB16C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Nov 2021 22:07:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7941D17D3;
-	Wed, 24 Nov 2021 22:22:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7941D17D3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 94FB017BF;
+	Wed, 24 Nov 2021 23:06:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94FB017BF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637788997;
-	bh=IeOouXmt/DKxcupQo9/iF6lhErUZ9GLlil7D/P+GD/M=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=P5QBrCiSpOB2ucrLRtpYW3zl2YXKub9NT6tFH83onM/NLxAbLH+06TBasDCZbEuH0
-	 P577FSpZViBLx7Fj7kHBxvZ0UV0vXgJ4U1lPJe6qpP+uPrLzftXEQ70I/318IMEW7e
-	 x3BaIDFkyDzCla/dT7gR0Gqx5TdhO9K90pC9S660=
+	s=default; t=1637791653;
+	bh=UJPX5om0NpE0shZXifG9hhxCjt1/wWfpUvTiID01OUM=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=D9F7KUwIF/GJwVXKe/UYWk7+usKWj9yDkxeYsHW1xoAyJIG6YgNNjwsnYheyaxM7d
+	 oQtRHMw/SUdh/BxDyrn8MzGh1wmjc52kTwbXKjmF/m0lXoDeuR919uuUIMYzU/N80x
+	 NyVwYDrZhbQybsoppLwaH5StHTtvCnl3kzuup95A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 027CBF8014D;
-	Wed, 24 Nov 2021 22:22:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 21B30F8032D;
+	Wed, 24 Nov 2021 23:06:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6273CF801F7; Wed, 24 Nov 2021 22:22:23 +0100 (CET)
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com
- [IPv6:2a00:1450:4864:20::42e])
+ id 4D4AEF804AD; Wed, 24 Nov 2021 23:06:40 +0100 (CET)
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com
+ [IPv6:2a00:1450:4864:20::130])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 834D7F8013A
- for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2021 22:22:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 834D7F8013A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 369AFF8013A
+ for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2021 23:06:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 369AFF8013A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="a/+Hbgjf"
-Received: by mail-wr1-x42e.google.com with SMTP id o13so6793493wrs.12
- for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2021 13:22:18 -0800 (PST)
+ header.b="HhIn/DTx"
+Received: by mail-lf1-x130.google.com with SMTP id bu18so11106781lfb.0
+ for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2021 14:06:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=KkTsSIQTgl65Jkq2RbrjmIOlxesXSk6YN9h1ULIzGuo=;
- b=a/+HbgjfC0Xviq8bITaokRT5m8AxPOk5YRgGPtIjhTqCyV0mHnnXD9x5o8QdAPmhvL
- GkmtbZBDsGAeG1eDD/p8IhF7pjGBZdplptRLcaPnLNviqmYG2eWo6W4sHJAHLtoCZzT4
- Z4xc8vtYf9/u9HzTxFPVhGzmnRSkKqvaDqzIDlKsKY3LXOvhssL1RCOEkkY45Dnx/38Q
- POHoc1xVEK/L1Acs4Gn53bN+0uAXcc9iXn0PsSy8rPmh3zdE6cfER8rhl5I+GPmMnvi+
- iLDd6MDNMRkl8CUP9UbeirSLARr/CJmhWGOxeGLfptDnAIrQklRNqtn82Gbs4Ty9MEEr
- DEPw==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=MICB7mqmtHJVlNvBv+SpnWZStTf75CqEHyV3SkIQNcM=;
+ b=HhIn/DTxG+D4VfSf2OQYzEE48im3KVlsU7kOnmsyyR9CmnJXYni1HO1NFe5pqJ4PTN
+ OGXFX5iISFdbDHGQVbUJbgW4fGwJKApNGMWY5gPBxNJGZQS6JYzJ6x2l6+BuKBtv9qs6
+ kpWqN+BWZVOk94Cp31E2S/bI4cENe70RshvOHmyGWCMKT8BKM1g6CUYGRQAzJuzZjCP6
+ apIMCILOeJ1p+mReMRFK9M0GxBY2CI4pdDrdErVBmx4HGFUwvNYT8Wg6ECFz/SJU+91T
+ QrV6I7hbKK8nHcstU0o86z9ffx8tvcOLhqlMk7aAphpdoExJ3exK+FQwizJyRGk5HCjS
+ 5EzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=KkTsSIQTgl65Jkq2RbrjmIOlxesXSk6YN9h1ULIzGuo=;
- b=CV+87cVZ/w24c1pQ0DUS7x3TUTkpalqm1Wy5RQN1Kxz3HxwkSfH5tFJ4+rZaWazY/a
- gF1zVQLbwd6x8aDGWhPExuO2Q2+DwVEMi7Sj96k/puoEmF2VSHwOqFz0aO9vkSKhZOQW
- j2nzrb1Ht3/QeOTXVDzs+7fqs8gY61QQBTHpoqyAsBwa9qoTxDhNJ7MrC5OqUDXIJvUD
- gIa8OFVui6AN43nNMeLL38N1PFYB2TRSJX3WlD7DsswRID81EJA8/Pujjb41unJK0djE
- ZFD1AZCZE8JRcjB2I/VNGH/UQAWo2TmsgZMz2gNVvrXzNnsWYIziovxc4CI1xURjN7So
- LSPg==
-X-Gm-Message-State: AOAM5311HxBjcgCxHKf5OffaX9Ty7kuEg0mzum72VauzigJGpAL7B455
- QXVzDLPbaMsm4J+D7QbVzUM=
-X-Google-Smtp-Source: ABdhPJzn4Yi5qwkymBP+9Ssw2nDNuFw2wS/hm5XhbyRb6XKDIQioqPM2bbYzaRaRf/fZCDudlHLcgg==
-X-Received: by 2002:adf:a193:: with SMTP id u19mr50196wru.563.1637788936819;
- Wed, 24 Nov 2021 13:22:16 -0800 (PST)
-Received: from localhost.localdomain (84-72-105-84.dclient.hispeed.ch.
- [84.72.105.84])
- by smtp.gmail.com with ESMTPSA id o12sm1466875wrc.85.2021.11.24.13.22.15
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=MICB7mqmtHJVlNvBv+SpnWZStTf75CqEHyV3SkIQNcM=;
+ b=iIvOl2qywIo+Lr1e2HyiIqBISByZp+YDgL7fa8olQsvAYcwH8eWVcyHqghSX30HvXZ
+ nz8MM4ep2/M2KMP6gFzrljjgNJ/EEjgDfJSb449BozNQ4lYjTgufEZLE5tDyEWtVcWoH
+ dgO/Dxb239HQ6V7EOA50FHap6LlnOsZZ32MZYmoJBO/UWTzXfduN5NwSoJQiIDZ+XuN5
+ RZyeFAQH5CjgXsjl5KxxLYVEkFebVJhk54B8LWQi4yIUJfQ2r33tjdwFf37gmq+opA2R
+ 7fVc09wLH4UqJ9y2JDHhXEAIWPcWM0igDhUuJDMOPC7s7M3bF7t2meITRy3ZCl+wkkng
+ CatA==
+X-Gm-Message-State: AOAM532aGVUC143NeiPW0WDA7jZwCP+UgIsayePZT8quNIMHVEn4unf0
+ dvdCumIMniSPIP3rH5abUOI=
+X-Google-Smtp-Source: ABdhPJwRcOg8FSHfX1XMSp6JKcqGsETM9PJXhUfm1mZ0N3DupGcSvfd54SIFkK8zcPH7ShULyXhhSw==
+X-Received: by 2002:a05:6512:2341:: with SMTP id
+ p1mr18799257lfu.204.1637791591580; 
+ Wed, 24 Nov 2021 14:06:31 -0800 (PST)
+Received: from localhost.localdomain (94-29-48-99.dynamic.spd-mgts.ru.
+ [94.29.48.99])
+ by smtp.gmail.com with ESMTPSA id w17sm93266ljh.15.2021.11.24.14.06.30
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 24 Nov 2021 13:22:16 -0800 (PST)
-From: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
-To: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Heiko Stuebner <heiko@sntech.de>
-Subject: [PATCH v2] ASoC: rockchip: i2s_tdm: Dup static DAI template
-Date: Wed, 24 Nov 2021 22:21:45 +0100
-Message-Id: <20211124212146.289133-1-frattaroli.nicolas@gmail.com>
-X-Mailer: git-send-email 2.34.0
+ Wed, 24 Nov 2021 14:06:31 -0800 (PST)
+From: Dmitry Osipenko <digetx@gmail.com>
+To: Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>, Mark Brown <broonie@kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
+ Liam Girdwood <lgirdwood@gmail.com>, Agneli <poczt@protonmail.ch>,
+ Rob Herring <robh+dt@kernel.org>
+Subject: [PATCH v1 02/20] ASoC: dt-bindings: tegra20-i2s: Convert to schema
+Date: Thu, 25 Nov 2021 01:00:39 +0300
+Message-Id: <20211124220057.15763-3-digetx@gmail.com>
+X-Mailer: git-send-email 2.33.1
+In-Reply-To: <20211124220057.15763-1-digetx@gmail.com>
+References: <20211124220057.15763-1-digetx@gmail.com>
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
-Cc: linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc: linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Arnd Bergmann <arnd@arndb.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,91 +102,129 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Previously, the DAI template was used directly, which lead to
-fun bugs such as "why is my channels_max changing?" when one
-instantiated more than one i2s_tdm IP block in a device tree.
+Convert NVIDIA Tegra20 I2S binding to schema.
 
-This change makes it so that we instead duplicate the template
-struct, and then use that.
-
-Fixes: 081068fd6414 ("ASoC: rockchip: add support for i2s-tdm controller")
-Signed-off-by: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- sound/soc/rockchip/rockchip_i2s_tdm.c | 38 ++++++++++++++++-----------
- 1 file changed, 22 insertions(+), 16 deletions(-)
+ .../bindings/sound/nvidia,tegra20-i2s.txt     | 30 --------
+ .../bindings/sound/nvidia,tegra20-i2s.yaml    | 71 +++++++++++++++++++
+ 2 files changed, 71 insertions(+), 30 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.yaml
 
-diff --git a/sound/soc/rockchip/rockchip_i2s_tdm.c b/sound/soc/rockchip/rockchip_i2s_tdm.c
-index 17b9b287853a..4328c10ea830 100644
---- a/sound/soc/rockchip/rockchip_i2s_tdm.c
-+++ b/sound/soc/rockchip/rockchip_i2s_tdm.c
-@@ -1312,17 +1312,12 @@ static const struct of_device_id rockchip_i2s_tdm_match[] = {
- 
- static struct snd_soc_dai_driver i2s_tdm_dai = {
- 	.probe = rockchip_i2s_tdm_dai_probe,
--	.playback = {
--		.stream_name  = "Playback",
--	},
--	.capture = {
--		.stream_name  = "Capture",
--	},
- 	.ops = &rockchip_i2s_tdm_dai_ops,
- };
- 
--static void rockchip_i2s_tdm_init_dai(struct rk_i2s_tdm_dev *i2s_tdm)
-+static int rockchip_i2s_tdm_init_dai(struct rk_i2s_tdm_dev *i2s_tdm)
- {
-+	struct snd_soc_dai_driver *dai;
- 	struct property *dma_names;
- 	const char *dma_name;
- 	u64 formats = (SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE |
-@@ -1337,19 +1332,28 @@ static void rockchip_i2s_tdm_init_dai(struct rk_i2s_tdm_dev *i2s_tdm)
- 			i2s_tdm->has_capture = true;
- 	}
- 
-+	dai = devm_kmemdup(i2s_tdm->dev, &i2s_tdm_dai,
-+			   sizeof(*dai), GFP_KERNEL);
-+	if (!dai)
-+		return -ENOMEM;
+diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.txt b/Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.txt
+deleted file mode 100644
+index dc30c6bfbe95..000000000000
+--- a/Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.txt
++++ /dev/null
+@@ -1,30 +0,0 @@
+-NVIDIA Tegra 20 I2S controller
+-
+-Required properties:
+-- compatible : "nvidia,tegra20-i2s"
+-- reg : Should contain I2S registers location and length
+-- interrupts : Should contain I2S interrupt
+-- resets : Must contain an entry for each entry in reset-names.
+-  See ../reset/reset.txt for details.
+-- reset-names : Must include the following entries:
+-  - i2s
+-- dmas : Must contain an entry for each entry in clock-names.
+-  See ../dma/dma.txt for details.
+-- dma-names : Must include the following entries:
+-  - rx
+-  - tx
+-- clocks : Must contain one entry, for the module clock.
+-  See ../clocks/clock-bindings.txt for details.
+-
+-Example:
+-
+-i2s@70002800 {
+-	compatible = "nvidia,tegra20-i2s";
+-	reg = <0x70002800 0x200>;
+-	interrupts = < 45 >;
+-	clocks = <&tegra_car 11>;
+-	resets = <&tegra_car 11>;
+-	reset-names = "i2s";
+-	dmas = <&apbdma 21>, <&apbdma 21>;
+-	dma-names = "rx", "tx";
+-};
+diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.yaml
+new file mode 100644
+index 000000000000..cd87eb4ef995
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.yaml
+@@ -0,0 +1,71 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/nvidia,tegra20-i2s.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- 	if (i2s_tdm->has_playback) {
--		i2s_tdm_dai.playback.channels_min = 2;
--		i2s_tdm_dai.playback.channels_max = 8;
--		i2s_tdm_dai.playback.rates = SNDRV_PCM_RATE_8000_192000;
--		i2s_tdm_dai.playback.formats = formats;
-+		dai->playback.stream_name  = "Playback";
-+		dai->playback.channels_min = 2;
-+		dai->playback.channels_max = 8;
-+		dai->playback.rates = SNDRV_PCM_RATE_8000_192000;
-+		dai->playback.formats = formats;
- 	}
- 
- 	if (i2s_tdm->has_capture) {
--		i2s_tdm_dai.capture.channels_min = 2;
--		i2s_tdm_dai.capture.channels_max = 8;
--		i2s_tdm_dai.capture.rates = SNDRV_PCM_RATE_8000_192000;
--		i2s_tdm_dai.capture.formats = formats;
-+		dai->capture.stream_name  = "Capture";
-+		dai->capture.channels_min = 2;
-+		dai->capture.channels_max = 8;
-+		dai->capture.rates = SNDRV_PCM_RATE_8000_192000;
-+		dai->capture.formats = formats;
- 	}
++title: NVIDIA Tegra20 I2S Controller
 +
-+	return 0;
- }
- 
- static int rockchip_i2s_tdm_path_check(struct rk_i2s_tdm_dev *i2s_tdm,
-@@ -1541,7 +1545,9 @@ static int rockchip_i2s_tdm_probe(struct platform_device *pdev)
- 	spin_lock_init(&i2s_tdm->lock);
- 	i2s_tdm->soc_data = (struct rk_i2s_soc_data *)of_id->data;
- 
--	rockchip_i2s_tdm_init_dai(i2s_tdm);
-+	ret = rockchip_i2s_tdm_init_dai(i2s_tdm);
-+	if (ret)
-+		return ret;
- 
- 	i2s_tdm->frame_width = 64;
- 
++description: |
++  The I2S Controller streams synchronous serial audio data between system
++  memory and an external audio device. The controller supports the I2S Left
++  Justified Mode, Right Justified Mode, and DSP mode formats.
++
++maintainers:
++  - Thierry Reding <treding@nvidia.com>
++  - Jon Hunter <jonathanh@nvidia.com>
++
++properties:
++  compatible:
++    const: nvidia,tegra20-i2s
++
++  reg:
++    maxItems: 1
++
++  resets:
++    maxItems: 1
++
++  reset-names:
++    const: i2s
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    minItems: 1
++
++  dmas:
++    minItems: 2
++
++  dma-names:
++    items:
++      - const: rx
++      - const: tx
++
++required:
++  - compatible
++  - reg
++  - resets
++  - reset-names
++  - interrupts
++  - clocks
++  - clock-names
++  - dmas
++  - dma-names
++
++additionalProperties: false
++
++examples:
++  - |
++    i2s@70002800 {
++        compatible = "nvidia,tegra20-i2s";
++        reg = <0x70002800 0x200>;
++        interrupts = <45>;
++        clocks = <&tegra_car 11>;
++        resets = <&tegra_car 11>;
++        reset-names = "i2s";
++        dmas = <&apbdma 21>, <&apbdma 21>;
++        dma-names = "rx", "tx";
++    };
++
++...
 -- 
-2.34.0
+2.33.1
 
