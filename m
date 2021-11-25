@@ -4,63 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 032B3C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Nov 2021 13:38:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E90FAC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Nov 2021 13:38:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 88C7118BB;
-	Thu, 25 Nov 2021 14:37:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 88C7118BB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2035218C3;
+	Thu, 25 Nov 2021 14:37:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2035218C3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637847479;
-	bh=poHrEhGl7zsnU+4kye3vp0N+i8nAWYUhb+e4JL8EpdM=;
+	s=default; t=1637847508;
+	bh=amtopp9RHl/TvQxvYXr20cIuv/ZoExLoTxclzPSkcBA=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AnsSb+qBJtUDyfh5eViYGUIzz1zpQjCounTWcJiBbqcN9ya6whQgz96AUKF59qKv7
-	 Y9qwE2tSoUVDn10ul247lVnMDH1drT//LCvmQGaLtzbn3Syi0OYBnyLbMlsNvqcqDH
-	 /RbgJMTHWAfKYx0YiiJjPlMKe7yG2eR53t+UZgUU=
+	b=Di9LeDuQ3ri4/DJ/6l7vR/1p6eW4yDlLNWFT1t725lIHPT9LKPnPvUPkCyfr0GkeE
+	 94u82BWOUloLakgNnD2Wb9TvaoqMrrE2z3ffUOjeEN1m1yeYAlQXUtEg/G6MTeRBg0
+	 5r6H4LfY46mDmvwgX/Nw10PLbGMIvO+YiCttngjo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A2E1BF804DF;
-	Thu, 25 Nov 2021 14:37:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DAB8BF8049E;
+	Thu, 25 Nov 2021 14:37:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7F2B7F804E7; Thu, 25 Nov 2021 14:37:07 +0100 (CET)
+ id 991A8F804EB; Thu, 25 Nov 2021 14:37:10 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6F068F80087
- for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2021 14:37:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F068F80087
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7895FF804BC;
+ Thu, 25 Nov 2021 14:37:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7895FF804BC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="EVO9OdG4"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 745AA61038;
- Thu, 25 Nov 2021 13:36:57 +0000 (UTC)
+ header.b="lry3K083"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B206861074;
+ Thu, 25 Nov 2021 13:36:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1637847419;
- bh=poHrEhGl7zsnU+4kye3vp0N+i8nAWYUhb+e4JL8EpdM=;
+ s=k20201202; t=1637847421;
+ bh=amtopp9RHl/TvQxvYXr20cIuv/ZoExLoTxclzPSkcBA=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=EVO9OdG4FKFDpI7BoUEpdNOuu0QNqZbVQ0C7H1GcL0GLbEb8rRpOlcoZIOIx35HvI
- wwt57W5cjwVuaJzHlJu7jz2fGbXB0P445cvC/mUO0E3NEbQ7hR8F676OuL0kzdZOBI
- 7Obq4dCYqRrXIwYJLh6iisDfuIz41Lvyu3ug5Sk7h1Dg2W/6cJ93ephTJPYVsQl39k
- lzL9ulwAGt6GBETVKEbfQWFKDLRGucniK5GQXWfK/+xQuq1AnDafEIvAr/aM5kenGU
- zhL69/OkhcfTh1GBI8SlKjOsnl60D71S6bkhFKJkaZgw707Fg+sXsgz4aQcyhAAeaL
- A5iTTSXFLyZew==
+ b=lry3K083Ck3VPN/+LLXeWeHs2U+6WlSBURFxscS5dAQiy0xcwcFsvBKrxoSAAtTsf
+ TIDPXhj8KZ5TzwwoSXHyolDqZY8H62XgSCGyuWLhkmNgYY/c1UMbC/CJUww31ZdpWP
+ s0drXYg0jUIqsHk74MHC3f9i2xehyXP+PSDLsfTwq65PfUSfVF2tQS2i+44OZE4G2b
+ xueUahted9G0xy3dYpCqa5Y5skyWfO/0LVuNx7mCuMhu1iX419TL7CODcj7ZlA20n8
+ Wn1Piw8/UjguGL+ngDkhz9Ed2ec/tGKjLxkKoq/ug0ndWRoX04XEFDLN8ySdqhEhnb
+ NQeboRWUHoHcA==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, Oder Chiou <oder_chiou@realtek.com>
-In-Reply-To: <20211125055812.8911-1-oder_chiou@realtek.com>
-References: <20211125055812.8911-1-oder_chiou@realtek.com>
-Subject: Re: [PATCH 1/2] ASoC: rt5640: Add the binding include file for the
- HDA header support
-Message-Id: <163784741721.3101847.7862601501455287189.b4-ty@kernel.org>
-Date: Thu, 25 Nov 2021 13:36:57 +0000
+To: sound-open-firmware@alsa-project.org, linux-kernel@vger.kernel.org,
+ Yang Yingliang <yangyingliang@huawei.com>,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ alsa-devel@alsa-project.org
+In-Reply-To: <20211125071608.3056715-1-yangyingliang@huawei.com>
+References: <20211125071608.3056715-1-yangyingliang@huawei.com>
+Subject: Re: [PATCH -next] ASoC: SOF: mediatek: Add missing of_node_put() in
+ platform_parse_resource()
+Message-Id: <163784741946.3101847.9704540045126980062.b4-ty@kernel.org>
+Date: Thu, 25 Nov 2021 13:36:59 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, jacal_tseng@realtek.com,
- spujar@nvidia.com, albertchen@realtek.com, derek.fang@realtek.com,
- shumingf@realtek.com, flove@realtek.com
+Cc: daniel.baluta@nxp.com, yc.hung@mediatek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,8 +77,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 25 Nov 2021 13:58:11 +0800, Oder Chiou wrote:
-> The patch adds the binding include file for the HDA header support.
+On Thu, 25 Nov 2021 15:16:08 +0800, Yang Yingliang wrote:
+> The node pointer is returned by of_parse_phandle() with
+> refcount incremented in platform_parse_resource(). Calling
+> of_node_put() to aovid the refcount leak.
 > 
 > 
 
@@ -87,10 +90,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: rt5640: Add the binding include file for the HDA header support
-      commit: 083a7fba38885a8ffa03a2857e383421cefd36e6
-[2/2] ASoC: rt5640: Add the HDA header support
-      commit: 2b9c8d2b3c89708d53b6124dc49c212dc5341840
+[1/1] ASoC: SOF: mediatek: Add missing of_node_put() in platform_parse_resource()
+      commit: fc6c62cf1cbf24c81ccb1d248120311336d5f3cc
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
