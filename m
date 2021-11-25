@@ -4,80 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D3EBC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Nov 2021 14:36:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5D6DC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Nov 2021 14:45:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2462018B1;
-	Thu, 25 Nov 2021 15:35:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2462018B1
+	by alsa0.perex.cz (Postfix) with ESMTPS id AAD1418C2;
+	Thu, 25 Nov 2021 15:44:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AAD1418C2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637850972;
-	bh=S6v/BfVLINkcRx0jvJX0wFoyiqRUDSC2Lhk9WgL7HGA=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=UiqtqewRBaXcCfYzNBD9IgyhclLhya/pstfkAxmUcV9MosXijw4rA1vYu5umWrBiS
-	 vnO1iC4eEv16Rbnh9Myzy+2FsgGpaRupVMgnSGI67M6MPtoomEdE6iqeJKjcRA2aC2
-	 QVxYR8YSE48mXkLeAQgse3bvUaByrK7z8Ugzsizs=
+	s=default; t=1637851523;
+	bh=GK9IL23Ev1mrNAzg56N2+fzr4ZVq4UCWBR/nkfGKdXE=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=QfmO3ZohTeyLjfTl+5f5U5F2DCxE3NKAeasjaS1JO8qL+5mtwr9SWdHT1n+8zTPjn
+	 T2M7Z8os/J+cDzqlx9lBxqqV3ezAY9pOKF332+TJ0IDiOHDWaLlhy1Fuxx44bKQf9L
+	 kt+kDKN9jkZP5KfN7ljNexbiCyfVchoW+M4fE/o4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 917EDF80430;
-	Thu, 25 Nov 2021 15:35:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3965EF80302;
+	Thu, 25 Nov 2021 15:44:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DDBC4F8049E; Thu, 25 Nov 2021 15:35:14 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id A59C2F804B1; Thu, 25 Nov 2021 15:44:31 +0100 (CET)
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [185.132.182.106])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4E797F80302
- for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2021 15:35:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E797F80302
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2EA64F80087
+ for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2021 15:44:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2EA64F80087
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="MoMyh5UJ"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1APBqCmJ025807;
- Thu, 25 Nov 2021 08:35:05 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com
+ header.b="5xYyGq4B"
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+ by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AP9GKsm002630;
+ Thu, 25 Nov 2021 15:44:24 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
  h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=z3BncN1/AnEiaG2CTk4wXWUCkATXrlhRVwwvy7lY31E=;
- b=MoMyh5UJXwdQ2ih8kq2054d+gyFkxXq0/T2qs3S/bKEeOTVlovCBRUToyrLrbo1YtcLw
- /ug2/F2ZMmarWqQkSCql6sh+a+oxz8SuR1bgs29AX1ZWqn4lKS72e3TbyPjHiOJb81Bq
- LtqCRGXdwNfV2M3YfEAwBQrVM9zgoq7vMf0QRmhuWzJO2H0JnMiTZO22ZmJRJz2GCSHn
- 5SCzyFXHzQxfe9bLOGGCW5+dOUdC1eHk9s1BV0A9MKCiqE4ftPoPSb20N9dmsGlWMr2s
- baYaxSkw4z8uQUt3qnr3nC494Lgn6//mVQnbs3h3V9YrCClJMAX5HfWRAqQbd/LCGiNF 8w== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3chb8whx2c-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 25 Nov 2021 08:35:04 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Thu, 25 Nov
- 2021 14:35:03 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.17 via
- Frontend Transport; Thu, 25 Nov 2021 14:35:03 +0000
-Received: from aryzen.ad.cirrus.com (unknown [198.61.65.11])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 7F8DC2A1;
- Thu, 25 Nov 2021 14:35:02 +0000 (UTC)
-From: Lucas Tanure <tanureal@opensource.cirrus.com>
-To: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
- David Rhodes <david.rhodes@cirrus.com>
-Subject: [PATCH] ASoC: cs35l41: Fix link problem
-Date: Thu, 25 Nov 2021 14:35:01 +0000
-Message-ID: <20211125143501.7720-1-tanureal@opensource.cirrus.com>
-X-Mailer: git-send-email 2.34.0
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=selector1;
+ bh=m7uWqW34ebKJsCiE75+OnmMwbr1EosFegGv/Ik9D7jY=;
+ b=5xYyGq4B/xztIvQqdrQ3sLWmyg0UdaMjQF7+K9YbSdC2Ev8wANUuRTWqJ6teVF8IPqjy
+ Xk3FBwoVhCV1pqaOZ+b4LRPABOXk9j4LWENukOsCXLRsZS9Etd4OpN3gyJ9JqiCbzd1s
+ wNqsrloCmaN/38EnpZ58Wi2G888xIO6aUoFAGczP92Sv7G7JHwVcxHhifut7SnJ2fg6g
+ TqHEThKaoQhuDk34W6BYg3kZHIB5XSIIYhSSuma1NY/Dtrnd7w2s0wfu3IxEF3o8lVgz
+ 4oX5z8Bvmuo8oMDzaKISM3VTqlncqRlDLs4s7lSqid6BkP/f03u8fwVroBSgBpa9bGFa iQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+ by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3cj3cykuw0-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 25 Nov 2021 15:44:24 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+ by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id EBE04100034;
+ Thu, 25 Nov 2021 15:44:23 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+ by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E1030237D97;
+ Thu, 25 Nov 2021 15:44:23 +0100 (CET)
+Received: from localhost (10.75.127.51) by SFHDAG2NODE2.st.com (10.75.127.5)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.26; Thu, 25 Nov 2021 15:44:23
+ +0100
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+To: Alexandre Torgue <alexandre.torgue@foss.st.com>, Liam Girdwood
+ <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Maxime Coquelin
+ <mcoquelin.stm32@gmail.com>, Olivier Moysan <olivier.moysan@st.com>, "Rob
+ Herring" <robh+dt@kernel.org>, <arnaud.pouliquen@foss.st.com>,
+ <amelie.delaunay@foss.st.com>, <alain.volmat@foss.st.com>
+Subject: [PATCH v2 4/4] ARM: dts: stm32: merge spi and i2s nodes
+Date: Thu, 25 Nov 2021 15:40:53 +0100
+Message-ID: <20211125144053.774-5-olivier.moysan@foss.st.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20211125144053.774-1-olivier.moysan@foss.st.com>
+References: <20211125144053.774-1-olivier.moysan@foss.st.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: BF1YdR_Uk6Xtr5PExd2__xeBEJq-y0kH
-X-Proofpoint-ORIG-GUID: BF1YdR_Uk6Xtr5PExd2__xeBEJq-y0kH
-X-Proofpoint-Spam-Reason: safe
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Lucas Tanure <tanureal@opensource.cirrus.com>
+X-Originating-IP: [10.75.127.51]
+X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-25_06,2021-11-25_01,2020-04-07_01
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, fabrice.gasnier@foss.st.com,
+ Olivier Moysan <olivier.moysan@foss.st.com>,
+ linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,253 +101,177 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Can't link I2C and SPI to the same binary, better
-to move CS35L41 to 3 modules approach.
-And instead of exposing cs35l41_reg, volatile_reg,
-readable_reg and precious_reg arrays, move
-cs35l41_regmap_i2c/spi to new module and expose it.
+When a SPI instance offers I2S feature, two nodes are defined
+in SoC device tree to support both SPI and I2S.
+Merge SPI node and I2S nodes into a single node, to avoid
+hardware description duplication and compilation warnings.
+spi2sx label is used to identify the SPI instances which
+are supporting I2S feature.
 
-Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
+Rename nodes, to match new labels of SPI/I2S nodes in the
+SoC device tree on following boards:
+- STMP32MP15xx-DKx
+- STMP32MP157C-EV1
+- STMP32MP15xx-dhcor-avenger96
+- STMP32MP15xx-dhcom-drc02
+
+In DT check utility, the spi2s2 node is identified as an spi node.
+The check_spi_bus_reg() function issues a warning "missing or empty
+reg property" if reg property is not defined in child nodes.
+Add reg property to STM32 I2S port node on STM32MP15XX-DK board
+to match this requirement and add related unit-address in node name.
+
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
 ---
- sound/soc/codecs/Kconfig          |  5 ++++
- sound/soc/codecs/Makefile         |  6 +++--
- sound/soc/codecs/cs35l41-i2c.c    | 15 -----------
- sound/soc/codecs/cs35l41-spi.c    | 16 ------------
- sound/soc/codecs/cs35l41-tables.c | 41 ++++++++++++++++++++++++++++---
- sound/soc/codecs/cs35l41.c        |  2 ++
- sound/soc/codecs/cs35l41.h        |  7 ++----
- 7 files changed, 50 insertions(+), 42 deletions(-)
+ arch/arm/boot/dts/stm32mp151.dtsi             | 39 ++-----------------
+ arch/arm/boot/dts/stm32mp157c-ev1.dts         |  2 +-
+ .../arm/boot/dts/stm32mp15xx-dhcom-drc02.dtsi |  2 +-
+ .../boot/dts/stm32mp15xx-dhcor-avenger96.dtsi |  2 +-
+ arch/arm/boot/dts/stm32mp15xx-dkx.dtsi        |  7 +++-
+ 5 files changed, 11 insertions(+), 41 deletions(-)
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 3fe62df32238..6ca1edf0d066 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -613,14 +613,19 @@ config SND_SOC_CS35L36
- 	tristate "Cirrus Logic CS35L36 CODEC"
- 	depends on I2C
+diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
+index f693a7d24247..61226821ff8c 100644
+--- a/arch/arm/boot/dts/stm32mp151.dtsi
++++ b/arch/arm/boot/dts/stm32mp151.dtsi
+@@ -386,7 +386,7 @@
+ 			};
+ 		};
  
-+config SND_SOC_CS35L41
-+	tristate
-+
- config SND_SOC_CS35L41_SPI
- 	tristate "Cirrus Logic CS35L41 CODEC (SPI)"
- 	depends on SPI_MASTER
-+	select SND_SOC_CS35L41
- 	select REGMAP_SPI
+-		spi2: spi@4000b000 {
++		spi2s2: spi@4000b000 {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 			compatible = "st,stm32h7-spi";
+@@ -400,18 +400,7 @@
+ 			status = "disabled";
+ 		};
  
- config SND_SOC_CS35L41_I2C
- 	tristate "Cirrus Logic CS35L41 CODEC (I2C)"
- 	depends on I2C
-+	select SND_SOC_CS35L41
- 	select REGMAP_I2C
- 
- config SND_SOC_CS42L42
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 9acfbcbfc46d..485eee75502b 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -54,8 +54,9 @@ snd-soc-cs35l33-objs := cs35l33.o
- snd-soc-cs35l34-objs := cs35l34.o
- snd-soc-cs35l35-objs := cs35l35.o
- snd-soc-cs35l36-objs := cs35l36.o
--snd-soc-cs35l41-spi-objs := cs35l41-spi.o cs35l41.o cs35l41-tables.o
--snd-soc-cs35l41-i2c-objs := cs35l41-i2c.o cs35l41.o cs35l41-tables.o
-+snd-soc-cs35l41-objs := cs35l41.o cs35l41-tables.o
-+snd-soc-cs35l41-spi-objs := cs35l41-spi.o
-+snd-soc-cs35l41-i2c-objs := cs35l41-i2c.o
- snd-soc-cs42l42-objs := cs42l42.o
- snd-soc-cs42l51-objs := cs42l51.o
- snd-soc-cs42l51-i2c-objs := cs42l51-i2c.o
-@@ -391,6 +392,7 @@ obj-$(CONFIG_SND_SOC_CS35L33)	+= snd-soc-cs35l33.o
- obj-$(CONFIG_SND_SOC_CS35L34)	+= snd-soc-cs35l34.o
- obj-$(CONFIG_SND_SOC_CS35L35)	+= snd-soc-cs35l35.o
- obj-$(CONFIG_SND_SOC_CS35L36)	+= snd-soc-cs35l36.o
-+obj-$(CONFIG_SND_SOC_CS35L41)	+= snd-soc-cs35l41.o
- obj-$(CONFIG_SND_SOC_CS35L41_SPI)	+= snd-soc-cs35l41-spi.o
- obj-$(CONFIG_SND_SOC_CS35L41_I2C)	+= snd-soc-cs35l41-i2c.o
- obj-$(CONFIG_SND_SOC_CS42L42)	+= snd-soc-cs42l42.o
-diff --git a/sound/soc/codecs/cs35l41-i2c.c b/sound/soc/codecs/cs35l41-i2c.c
-index d5fa8d2c4a70..c9b604af6b71 100644
---- a/sound/soc/codecs/cs35l41-i2c.c
-+++ b/sound/soc/codecs/cs35l41-i2c.c
-@@ -20,21 +20,6 @@
- #include <sound/cs35l41.h>
- #include "cs35l41.h"
- 
--static struct regmap_config cs35l41_regmap_i2c = {
--	.reg_bits = 32,
--	.val_bits = 32,
--	.reg_stride = CS35L41_REGSTRIDE,
--	.reg_format_endian = REGMAP_ENDIAN_BIG,
--	.val_format_endian = REGMAP_ENDIAN_BIG,
--	.max_register = CS35L41_LASTREG,
--	.reg_defaults = cs35l41_reg,
--	.num_reg_defaults = ARRAY_SIZE(cs35l41_reg),
--	.volatile_reg = cs35l41_volatile_reg,
--	.readable_reg = cs35l41_readable_reg,
--	.precious_reg = cs35l41_precious_reg,
--	.cache_type = REGCACHE_RBTREE,
--};
+-		i2s2: audio-controller@4000b000 {
+-			compatible = "st,stm32h7-i2s";
+-			#sound-dai-cells = <0>;
+-			reg = <0x4000b000 0x400>;
+-			interrupts = <GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>;
+-			dmas = <&dmamux1 39 0x400 0x01>,
+-			       <&dmamux1 40 0x400 0x01>;
+-			dma-names = "rx", "tx";
+-			status = "disabled";
+-		};
 -
- static const struct i2c_device_id cs35l41_id_i2c[] = {
- 	{ "cs35l40", 0 },
- 	{ "cs35l41", 0 },
-diff --git a/sound/soc/codecs/cs35l41-spi.c b/sound/soc/codecs/cs35l41-spi.c
-index 3fa99741779a..c202d9df70ee 100644
---- a/sound/soc/codecs/cs35l41-spi.c
-+++ b/sound/soc/codecs/cs35l41-spi.c
-@@ -18,22 +18,6 @@
- #include <sound/cs35l41.h>
- #include "cs35l41.h"
+-		spi3: spi@4000c000 {
++		spi2s3: spi@4000c000 {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 			compatible = "st,stm32h7-spi";
+@@ -425,17 +414,6 @@
+ 			status = "disabled";
+ 		};
  
--static struct regmap_config cs35l41_regmap_spi = {
--	.reg_bits = 32,
--	.val_bits = 32,
--	.pad_bits = 16,
--	.reg_stride = CS35L41_REGSTRIDE,
--	.reg_format_endian = REGMAP_ENDIAN_BIG,
--	.val_format_endian = REGMAP_ENDIAN_BIG,
--	.max_register = CS35L41_LASTREG,
--	.reg_defaults = cs35l41_reg,
--	.num_reg_defaults = ARRAY_SIZE(cs35l41_reg),
--	.volatile_reg = cs35l41_volatile_reg,
--	.readable_reg = cs35l41_readable_reg,
--	.precious_reg = cs35l41_precious_reg,
--	.cache_type = REGCACHE_RBTREE,
--};
+-		i2s3: audio-controller@4000c000 {
+-			compatible = "st,stm32h7-i2s";
+-			#sound-dai-cells = <0>;
+-			reg = <0x4000c000 0x400>;
+-			interrupts = <GIC_SPI 51 IRQ_TYPE_LEVEL_HIGH>;
+-			dmas = <&dmamux1 61 0x400 0x01>,
+-			       <&dmamux1 62 0x400 0x01>;
+-			dma-names = "rx", "tx";
+-			status = "disabled";
+-		};
 -
- static const struct spi_device_id cs35l41_id_spi[] = {
- 	{ "cs35l40", 0 },
- 	{ "cs35l41", 0 },
-diff --git a/sound/soc/codecs/cs35l41-tables.c b/sound/soc/codecs/cs35l41-tables.c
-index 9d1a7d7dd24d..3eb18b17a7b0 100644
---- a/sound/soc/codecs/cs35l41-tables.c
-+++ b/sound/soc/codecs/cs35l41-tables.c
-@@ -8,7 +8,7 @@
+ 		spdifrx: audio-controller@4000d000 {
+ 			compatible = "st,stm32h7-spdifrx";
+ 			#sound-dai-cells = <0>;
+@@ -681,7 +659,7 @@
+ 			status = "disabled";
+ 		};
  
- #include "cs35l41.h"
+-		spi1: spi@44004000 {
++		spi2s1: spi@44004000 {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 			compatible = "st,stm32h7-spi";
+@@ -695,17 +673,6 @@
+ 			status = "disabled";
+ 		};
  
--const struct reg_default cs35l41_reg[CS35L41_MAX_CACHE_REG] = {
-+static const struct reg_default cs35l41_reg[] = {
- 	{ CS35L41_PWR_CTRL1,			0x00000000 },
- 	{ CS35L41_PWR_CTRL3,			0x01000010 },
- 	{ CS35L41_GPIO_PAD_CONTROL,		0x00000000 },
-@@ -47,7 +47,7 @@ const struct reg_default cs35l41_reg[CS35L41_MAX_CACHE_REG] = {
- 	{ CS35L41_MIXER_NGATE_CH2_CFG,		0x00000303 },
+-		i2s1: audio-controller@44004000 {
+-			compatible = "st,stm32h7-i2s";
+-			#sound-dai-cells = <0>;
+-			reg = <0x44004000 0x400>;
+-			interrupts = <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
+-			dmas = <&dmamux1 37 0x400 0x01>,
+-			       <&dmamux1 38 0x400 0x01>;
+-			dma-names = "rx", "tx";
+-			status = "disabled";
+-		};
+-
+ 		spi4: spi@44005000 {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+diff --git a/arch/arm/boot/dts/stm32mp157c-ev1.dts b/arch/arm/boot/dts/stm32mp157c-ev1.dts
+index 5c5b1ddf7bfd..c836b4a1dbe2 100644
+--- a/arch/arm/boot/dts/stm32mp157c-ev1.dts
++++ b/arch/arm/boot/dts/stm32mp157c-ev1.dts
+@@ -293,7 +293,7 @@
+ 	status = "disabled";
  };
  
--bool cs35l41_readable_reg(struct device *dev, unsigned int reg)
-+static bool cs35l41_readable_reg(struct device *dev, unsigned int reg)
- {
- 	switch (reg) {
- 	case CS35L41_DEVID:
-@@ -331,7 +331,7 @@ bool cs35l41_readable_reg(struct device *dev, unsigned int reg)
- 	}
- }
- 
--bool cs35l41_precious_reg(struct device *dev, unsigned int reg)
-+static bool cs35l41_precious_reg(struct device *dev, unsigned int reg)
- {
- 	switch (reg) {
- 	case CS35L41_OTP_MEM0 ... CS35L41_OTP_MEM31:
-@@ -344,7 +344,7 @@ bool cs35l41_precious_reg(struct device *dev, unsigned int reg)
- 	}
- }
- 
--bool cs35l41_volatile_reg(struct device *dev, unsigned int reg)
-+static bool cs35l41_volatile_reg(struct device *dev, unsigned int reg)
- {
- 	switch (reg) {
- 	case CS35L41_DEVID:
-@@ -688,3 +688,36 @@ const struct cs35l41_otp_map_element_t cs35l41_otp_map_map[CS35L41_NUM_OTP_MAPS]
- 		.word_offset = 2,
- 	},
- };
-+
-+struct regmap_config cs35l41_regmap_i2c = {
-+	.reg_bits = 32,
-+	.val_bits = 32,
-+	.reg_stride = CS35L41_REGSTRIDE,
-+	.reg_format_endian = REGMAP_ENDIAN_BIG,
-+	.val_format_endian = REGMAP_ENDIAN_BIG,
-+	.max_register = CS35L41_LASTREG,
-+	.reg_defaults = cs35l41_reg,
-+	.num_reg_defaults = ARRAY_SIZE(cs35l41_reg),
-+	.volatile_reg = cs35l41_volatile_reg,
-+	.readable_reg = cs35l41_readable_reg,
-+	.precious_reg = cs35l41_precious_reg,
-+	.cache_type = REGCACHE_RBTREE,
-+};
-+EXPORT_SYMBOL_GPL(cs35l41_regmap_i2c);
-+
-+struct regmap_config cs35l41_regmap_spi = {
-+	.reg_bits = 32,
-+	.val_bits = 32,
-+	.pad_bits = 16,
-+	.reg_stride = CS35L41_REGSTRIDE,
-+	.reg_format_endian = REGMAP_ENDIAN_BIG,
-+	.val_format_endian = REGMAP_ENDIAN_BIG,
-+	.max_register = CS35L41_LASTREG,
-+	.reg_defaults = cs35l41_reg,
-+	.num_reg_defaults = ARRAY_SIZE(cs35l41_reg),
-+	.volatile_reg = cs35l41_volatile_reg,
-+	.readable_reg = cs35l41_readable_reg,
-+	.precious_reg = cs35l41_precious_reg,
-+	.cache_type = REGCACHE_RBTREE,
-+};
-+EXPORT_SYMBOL_GPL(cs35l41_regmap_spi);
-diff --git a/sound/soc/codecs/cs35l41.c b/sound/soc/codecs/cs35l41.c
-index e8e997efaa8b..60332eae1162 100644
---- a/sound/soc/codecs/cs35l41.c
-+++ b/sound/soc/codecs/cs35l41.c
-@@ -1724,6 +1724,7 @@ int cs35l41_probe(struct cs35l41_private *cs35l41,
- 
- 	return ret;
- }
-+EXPORT_SYMBOL_GPL(cs35l41_probe);
- 
- void cs35l41_remove(struct cs35l41_private *cs35l41)
- {
-@@ -1732,6 +1733,7 @@ void cs35l41_remove(struct cs35l41_private *cs35l41)
- 	regulator_bulk_disable(CS35L41_NUM_SUPPLIES, cs35l41->supplies);
- 	gpiod_set_value_cansleep(cs35l41->reset_gpio, 0);
- }
-+EXPORT_SYMBOL_GPL(cs35l41_remove);
- 
- MODULE_DESCRIPTION("ASoC CS35L41 driver");
- MODULE_AUTHOR("David Rhodes, Cirrus Logic Inc, <david.rhodes@cirrus.com>");
-diff --git a/sound/soc/codecs/cs35l41.h b/sound/soc/codecs/cs35l41.h
-index a23eabff074f..c7c45f19754b 100644
---- a/sound/soc/codecs/cs35l41.h
-+++ b/sound/soc/codecs/cs35l41.h
-@@ -538,7 +538,6 @@
- #define CS35L41_OTP_TRIM_35		0x0000400C
- #define CS35L41_OTP_TRIM_36		0x00002030
- 
--#define CS35L41_MAX_CACHE_REG		36
- #define CS35L41_OTP_SIZE_WORDS		32
- #define CS35L41_NUM_OTP_ELEM		100
- #define CS35L41_NUM_OTP_MAPS		5
-@@ -734,9 +733,8 @@
- #define CS35L41_RX_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE)
- #define CS35L41_TX_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE)
- 
--bool cs35l41_readable_reg(struct device *dev, unsigned int reg);
--bool cs35l41_precious_reg(struct device *dev, unsigned int reg);
--bool cs35l41_volatile_reg(struct device *dev, unsigned int reg);
-+extern struct regmap_config cs35l41_regmap_i2c;
-+extern struct regmap_config cs35l41_regmap_spi;
- 
- struct cs35l41_otp_packed_element_t {
- 	u32 reg;
-@@ -752,7 +750,6 @@ struct cs35l41_otp_map_element_t {
- 	u32 word_offset;
+-&spi1 {
++&spi2s1 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&spi1_pins_a>;
+ 	status = "disabled";
+diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcom-drc02.dtsi b/arch/arm/boot/dts/stm32mp15xx-dhcom-drc02.dtsi
+index 4b10b013ffd5..29f18382d962 100644
+--- a/arch/arm/boot/dts/stm32mp15xx-dhcom-drc02.dtsi
++++ b/arch/arm/boot/dts/stm32mp15xx-dhcom-drc02.dtsi
+@@ -114,7 +114,7 @@
+ 	disable-wp;
  };
  
--extern const struct reg_default cs35l41_reg[CS35L41_MAX_CACHE_REG];
- extern const struct cs35l41_otp_map_element_t
- 				cs35l41_otp_map_map[CS35L41_NUM_OTP_MAPS];
+-&spi1 {
++&spi2s1 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&spi1_pins_a>;
+ 	cs-gpios = <&gpioz 3 0>;
+diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi b/arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi
+index 6885948f3024..0dce9b118318 100644
+--- a/arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi
++++ b/arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi
+@@ -362,7 +362,7 @@
+ 	};
+ };
  
+-&spi2 {
++&spi2s2 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&spi2_pins_a>;
+ 	cs-gpios = <&gpioi 0 0>;
+diff --git a/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi b/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
+index 48beed0f1f30..4c362af95736 100644
+--- a/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
++++ b/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
+@@ -427,7 +427,9 @@
+ 	status = "disabled";
+ };
+ 
+-&i2s2 {
++&spi2s2 {
++	compatible = "st,stm32h7-i2s";
++	#sound-dai-cells = <0>;
+ 	clocks = <&rcc SPI2>, <&rcc SPI2_K>, <&rcc PLL3_Q>, <&rcc PLL3_R>;
+ 	clock-names = "pclk", "i2sclk", "x8k", "x11k";
+ 	pinctrl-names = "default", "sleep";
+@@ -435,7 +437,8 @@
+ 	pinctrl-1 = <&i2s2_sleep_pins_a>;
+ 	status = "okay";
+ 
+-	i2s2_port: port {
++	i2s2_port: port@0 {
++		reg = <0>;
+ 		i2s2_endpoint: endpoint {
+ 			remote-endpoint = <&sii9022_tx_endpoint>;
+ 			format = "i2s";
 -- 
-2.34.0
+2.17.1
 
