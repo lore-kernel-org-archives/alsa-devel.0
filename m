@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89E4DC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Nov 2021 12:29:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B887EC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Nov 2021 12:30:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7FA7517E5;
-	Thu, 25 Nov 2021 13:28:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7FA7517E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id DFF601899;
+	Thu, 25 Nov 2021 13:30:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DFF601899
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637843370;
-	bh=u7wd6cZ5BU5UDz9AwuipntBqps4d7LfwvFZarA34cEs=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1637843458;
+	bh=39pSRj66pjOCZNAOcOBl8nt6xNfrkBCBzIldm7CGbeU=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qA1NGvOLneeUOJeEa9APoBoPJR5IMCFyGSJ1Sg1m+Dbht29+rhBNHzH8OmcWTUI7N
-	 xwBLFTeVw5ILGBD9W27QYKcPQAjWlcTt/4gYxK8L80xumBiDWAeloBj3EL/nOtCPmf
-	 J9CkwYNDWaG+eNjYlP2mr46WemhDlMZz0vLCpZe8=
+	b=WzpW47HLpSHfFwJ5W4bNYGcEH8go09givtikPWEi95x+yeqXTPHlX2/fziig2kCsY
+	 mumXyV1SZwAuieumMiWVL8lSbNkTqen/cuIE0cDjc8ODOdWakuGNCfMOgEwDNO+IrJ
+	 cbWSkPjSGnREQOFSMvDE1XB0ZSs14dWsQiQsCUa0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EBCECF8049E;
-	Thu, 25 Nov 2021 13:28:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 09E5AF8049E;
+	Thu, 25 Nov 2021 13:30:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C46F1F8049E; Thu, 25 Nov 2021 13:28:38 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 1036EF804B1; Thu, 25 Nov 2021 13:30:05 +0100 (CET)
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5CA2FF80302
- for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2021 13:28:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5CA2FF80302
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="quk/3Oc2"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C5B65610A7;
- Thu, 25 Nov 2021 12:28:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1637843307;
- bh=u7wd6cZ5BU5UDz9AwuipntBqps4d7LfwvFZarA34cEs=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=quk/3Oc2Gm7g0B/lK7g7JyX7XKIAAvgXetbV1/g7GP5zMM1B6yVZ1XgRSlRzSKHby
- L/EdkgPxUL98AsU1G/57wlcEGmWEMJrQYcxNP1z5cdN6kkGY5rlosPu6R6j9QhYWZC
- F14HqUY7h0LYt/WM/lWDIqlzcpysZiBxu6qmMXqq2W9JfGvvSe7KHdMiMUP/O+M9zJ
- 49eGI2D1iL3nSunLWZXi4fUqUL9BbdEP731Vltf79sxRNyyqnvLbeqXPvzzqtCoZUO
- PEPLd9DHu4vx3aryYT9kbEJsQnJXvBdIiLmRQNzAwrDLAursr2tiGzYxGt+ofpj+sx
- ktLWZ5TG47htA==
-Date: Thu, 25 Nov 2021 12:28:21 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Dmitry Osipenko <digetx@gmail.com>
-Subject: Re: [PATCH v1 07/20] ASoC: tegra20: spdif: Set FIFO trigger level
-Message-ID: <YZ+BZRB0sUC08lCs@sirena.org.uk>
-References: <20211124220057.15763-1-digetx@gmail.com>
- <20211124220057.15763-8-digetx@gmail.com>
- <YZ97Qo500CrSmhXu@sirena.org.uk>
- <5670741a-1517-fc64-e390-b01c53947f25@gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id F317AF80302;
+ Thu, 25 Nov 2021 13:29:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F317AF80302
+X-UUID: 99a4077b03ed492ba9a9dfaf82f9ae68-20211125
+X-UUID: 99a4077b03ed492ba9a9dfaf82f9ae68-20211125
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by
+ mailgw02.mediatek.com (envelope-from <allen-kh.cheng@mediatek.com>)
+ (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+ with ESMTP id 200929067; Thu, 25 Nov 2021 20:29:46 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.792.15; Thu, 25 Nov 2021 20:29:45 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via
+ Frontend Transport; Thu, 25 Nov 2021 20:29:44 +0800
+From: allen-kh.cheng <allen-kh.cheng@mediatek.com>
+To: Jassi Brar <jassisinghbrar@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>
+Subject: [PATCH v4 1/3] dt-bindings: mediatek: add adsp-mbox document
+Date: Thu, 25 Nov 2021 20:29:23 +0800
+Message-ID: <20211125122925.1303-2-allen-kh.cheng@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20211125122925.1303-1-allen-kh.cheng@mediatek.com>
+References: <20211125122925.1303-1-allen-kh.cheng@mediatek.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="PdAaWwVcI9TPi3M0"
-Content-Disposition: inline
-In-Reply-To: <5670741a-1517-fc64-e390-b01c53947f25@gmail.com>
-X-Cookie: This bag is recyclable.
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Rob Herring <robh+dt@kernel.org>, Thierry Reding <thierry.reding@gmail.com>,
- Agneli <poczt@protonmail.ch>, linux-tegra@vger.kernel.org,
- Jonathan Hunter <jonathanh@nvidia.com>
+Content-Type: text/plain
+X-MTK: N
+Cc: devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>,
+ Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, cujomalainey@google.com,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Project_Global_Chrome_Upstream_Group@mediatek.com, tzungbi@google.com, Mark
+ Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org,
+ Daniel Baluta <daniel.baluta@nxp.com>, linux-arm-kernel@lists.infradead.org,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,42 +83,74 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
 
---PdAaWwVcI9TPi3M0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This patch adds document for mediatek adsp mbox
 
-On Thu, Nov 25, 2021 at 03:04:35PM +0300, Dmitry Osipenko wrote:
-> 25.11.2021 15:02, Mark Brown =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > On Thu, Nov 25, 2021 at 01:00:44AM +0300, Dmitry Osipenko wrote:
-> >> Program FIFO trigger level properly to fix x4 accelerated playback.
+Signed-off-by: Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
+---
+ .../bindings/mailbox/mtk,adsp-mbox.yaml       | 52 +++++++++++++++++++
+ 1 file changed, 52 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mailbox/mtk,adsp-mbox.yaml
 
-> > Fixes like this should really go before any new stuff so they can be
-> > sent as fixes and backported.
+diff --git a/Documentation/devicetree/bindings/mailbox/mtk,adsp-mbox.yaml b/Documentation/devicetree/bindings/mailbox/mtk,adsp-mbox.yaml
+new file mode 100644
+index 000000000000..a0149566ae56
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mailbox/mtk,adsp-mbox.yaml
+@@ -0,0 +1,52 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mailbox/mtk,adsp-mbox.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Mediatek ADSP mailbox
++
++maintainers:
++  - Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
++
++description: |
++  The MTK ADSP mailbox Inter-Processor Communication (IPC) enables the SoC
++  to ommunicate with ADSP by passing messages through two mailbox channels.
++  The MTK ADSP mailbox IPC also provides the ability for one processor to
++  signal the other processor using interrupts.
++
++properties:
++  compatible:
++    items:
++      - const: mediatek,mt8195-adsp-mbox
++
++  "#mbox-cells":
++    const: 0
++
++  reg:
++    description:
++      Physical address base for dsp mbox base registers.
++
++  interrupts:
++    description:
++      adsp mbox interrupt
++
++required:
++  - compatible
++  - "#mbox-cells"
++  - reg
++  - interrupts
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    adsp_mailbox0:adsp_mailbox0@10816000 {
++        compatible = "mediatek,mt8195-adsp-mbox";
++        #mbox-cells = <0>;
++        reg = <0x10816000 0x1000>;
++        interrupts = <GIC_SPI 702 IRQ_TYPE_LEVEL_HIGH 0>;
++    };
+-- 
+2.18.0
 
-> This driver never worked before this patchset, hence there is nothing to
-> backport, this is explained in the cover letter. But in general you're
-> correct.
-
-That's not going to stop the stable people backporting things, and I'd
-guess it might've worked at some point on some systems - I'm not seeing
-anything that jumps out as making the driver completely unworkable in
-your patches.
-
---PdAaWwVcI9TPi3M0
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGfgWQACgkQJNaLcl1U
-h9C1FQf7BiHdMJId6Nyk58krgd7Aqzia9D0StBtbH6BZowb/5L9+OOyeWAuRaTGV
-S5sF9XpfA67YuvZG9gKRvjUJR4dPeMfdau6zK/I0hrh4YKINnwwA7wV3EnjlPsnl
-k8q4HNiynmcqW4/P4qe7tG4q5GzlNvl+jArcaNZ2VdDft3zh+oGkb9P6i6pvYrDt
-AWjc2yClreO3lBC5VIa9H9Cu5m0E9y/pM6NJLvfexSnPPZZFxDQ6aQACrqNfbsTD
-dRVh7TZzDXy2v8vDYgrNWfVSh7TIl9SYNzeh8KlMCE/3NLUFPQvqMFl7S3cyrr5a
-mkLgh0QEBzrN+0BU2OdvQZwpIdOhvA==
-=JNh3
------END PGP SIGNATURE-----
-
---PdAaWwVcI9TPi3M0--
