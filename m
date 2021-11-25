@@ -4,72 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17244C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Nov 2021 21:28:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5DDFC4332F
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Nov 2021 21:28:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 13A3B18E6;
-	Thu, 25 Nov 2021 22:27:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 13A3B18E6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 15D3418EF;
+	Thu, 25 Nov 2021 22:27:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 15D3418EF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637875683;
-	bh=tOSdBjUx5TQniFhRkXb3LhxEkjCzX4K3hkghT5YEuqk=;
+	s=default; t=1637875686;
+	bh=75S+hBrFEX3VzSy/0739q0wIlGlNXGImZl2tfL9tNzo=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UjnqhJkBUW5yQCbfoHATz4izdzdxZlfBreffrWDXp3eh2LbA03M4WJQoVm2H/lv4s
-	 lcNMlf5W13BHW/qWT/Zu4X6ZiiSfMIYBC/SN7aX3QCfaSGdYyQ0lED11MldfUW2m+R
-	 fysF7KgA0qBqGsV03E/uw+lPWEVfuVOZJ4X/44UI=
+	b=mL3ueuAE+C7vFvzAOgleXPXfowRxiIWUbH29KyXRxWgOZJsH2sLW2RgKF+5znC9jo
+	 9ofKxFFLz7kQ9+ZD1U/YjQc413VjqIRjsSIbF0QhWFDCE3oRbHslEPZrm+tou6BGw/
+	 8fhozOs1mn4soxEH2/AevotLkzcwYTBvS3yTFCCY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2136CF804AC;
-	Thu, 25 Nov 2021 22:26:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DB93AF804BC;
+	Thu, 25 Nov 2021 22:26:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E998BF804BC; Thu, 25 Nov 2021 22:26:35 +0100 (CET)
-Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com
- [209.85.210.53])
+ id 10745F804B1; Thu, 25 Nov 2021 22:26:36 +0100 (CET)
+Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com
+ [209.85.167.171])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 89BD3F80087
- for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2021 22:26:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89BD3F80087
-Received: by mail-ot1-f53.google.com with SMTP id
- a23-20020a9d4717000000b0056c15d6d0caso11133730otf.12
- for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2021 13:26:31 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 06674F804AB
+ for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2021 22:26:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06674F804AB
+Received: by mail-oi1-f171.google.com with SMTP id o4so14895684oia.10
+ for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2021 13:26:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
  :message-id;
- bh=enKrWb01zIUlLDcWec9IsDV9nL4gjphxHjIfLcnFxNM=;
- b=g99dlkcqhdWmAaBOIxr34mDq5govJW83v1wAWZmkXXKu1Sd/RBRUdfhdm+dN5GAvZj
- ga8vH6nsqN1kC4ttQhGBBHQroGCuB9u1c1ddd3zh00xAXD5FaoXwqQkWCYFN65k6jCYz
- 69Engvyn9ckKbQ+2zJl9QcHVrPLbFsst793qjzRAAsuYLXqyfOUhXwwoGHxQTRzEkCBh
- KaAM2lID5wk8dqVmmaILxPsK6MFYwFOU3iwlKhCvKTroFISj4uxFi2OaoQ3UoTSTMv9v
- BxLkvsGofmxcaWT+dJjdvJUFlcCYphgB7sCsVcyVWSGYRT4kTIcPTdP9fsiSFmpFVnt2
- cLQA==
-X-Gm-Message-State: AOAM533u2HXdU5vsGEmDYFrK/IHuXmaJ12mA0+X4c9p1nirraNd6qPUj
- 2yTHzgY3V4mpFl9w56Jppg==
-X-Google-Smtp-Source: ABdhPJzC8WF3V4q4Zkszhtmy5n3Ib8vaC3VBok3QPb6dv92gkCyEe7pE4+MBOF2mLf3L8Jo3yfdidQ==
-X-Received: by 2002:a05:6830:25d6:: with SMTP id
- d22mr24856709otu.87.1637875589845; 
- Thu, 25 Nov 2021 13:26:29 -0800 (PST)
+ bh=Irmkz+2IkREM42YOJmVlq/heQU408FIz6tCFuZLCU8s=;
+ b=Jmc5nw4oT9YlapX9bA0RjAgLmIAVh790tq52U111UTAwJLf8SU4KlZ2Ap/ZQBD+UWp
+ axk12wTO5z3YkzmdVuYrc0luJyZeLpkT44mHWoL/TiZ6N2Zb4dpZY2voC6zs0/T93Ftl
+ sADhvq9xIuC10gT3yVVTddK/KfgBj78hN9xkvo4pt8G52OI7S60xpiJ4IChzEPW4OccW
+ Hm6/+EUIJ9zo6rRSLoXyrVD8zpkQKMf+bl8Al5kEIM739mXtj1BM2LidSqybtheia/tq
+ oiHHCFuh0Mc11V+LyTF6Mmjyt85xM6dkntPvv5etnSu8dIPDYmVog/s85GIXMrQAb1Ys
+ wVbQ==
+X-Gm-Message-State: AOAM530spcRJrPNXqxtv9gUFlAbXituoPYQrptQqa6t5npLahIw9t4v6
+ D2faIy5kR8dtCUcTwHxauQ==
+X-Google-Smtp-Source: ABdhPJyEIeYGx4xMc1J7Gwjxw4a3IIrOE4Xx6LFo3WAtPewKP4oi94Bvlm37BYHDgo8Y45xaFqR2Wg==
+X-Received: by 2002:a05:6808:3d2:: with SMTP id
+ o18mr18848517oie.14.1637875586898; 
+ Thu, 25 Nov 2021 13:26:26 -0800 (PST)
 Received: from robh.at.kernel.org ([64.188.179.248])
- by smtp.gmail.com with ESMTPSA id z8sm654248oot.7.2021.11.25.13.26.28
+ by smtp.gmail.com with ESMTPSA id p14sm670414oov.0.2021.11.25.13.26.24
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 25 Nov 2021 13:26:29 -0800 (PST)
-Received: (nullmailer pid 2858315 invoked by uid 1000);
+ Thu, 25 Nov 2021 13:26:26 -0800 (PST)
+Received: (nullmailer pid 2858319 invoked by uid 1000);
  Thu, 25 Nov 2021 21:26:02 -0000
 From: Rob Herring <robh@kernel.org>
-To: Jayesh Choudhary <j-choudhary@ti.com>
-In-Reply-To: <20211125121521.31554-1-j-choudhary@ti.com>
-References: <20211125121521.31554-1-j-choudhary@ti.com>
-Subject: Re: [PATCH v2] ASoC: dt-bindings: davinci-mcasp: convert McASP
- bindings to yaml schema
+To: Olivier Moysan <olivier.moysan@foss.st.com>
+In-Reply-To: <20211125144053.774-2-olivier.moysan@foss.st.com>
+References: <20211125144053.774-1-olivier.moysan@foss.st.com>
+ <20211125144053.774-2-olivier.moysan@foss.st.com>
+Subject: Re: [PATCH v2 1/4] ASoC: dt-bindings: stm32: i2s: add
+ audio-graph-card port
 Date: Thu, 25 Nov 2021 14:26:02 -0700
-Message-Id: <1637875562.316639.2858314.nullmailer@robh.at.kernel.org>
+Message-Id: <1637875562.357461.2858318.nullmailer@robh.at.kernel.org>
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- lgirdwood@gmail.com, robh+dt@kernel.org, linux-kernel@vger.kernel.org,
- broonie@kernel.org
+ Olivier Moysan <olivier.moysan@st.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+ Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ amelie.delaunay@foss.st.com, fabrice.gasnier@foss.st.com,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>, alain.volmat@foss.st.com,
+ arnaud.pouliquen@foss.st.com, linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,60 +91,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 25 Nov 2021 17:45:21 +0530, Jayesh Choudhary wrote:
-> Convert the bindings for McASP controllers for TI SOCs
-> from txt to YAML schema.
+On Thu, 25 Nov 2021 15:40:50 +0100, Olivier Moysan wrote:
+> The STM2 I2S DAI can be connected via the audio-graph-card.
+> Add port entry into the bindings.
 > 
-> Adds additional properties 'clocks', 'clock-names', 'power-domains'
-> '#sound-dai-cells', 'num-serializer' and 'port' which were not there
-> in the txt file.
-> Adds 'dmas' and 'dma-names' in the example which were not there in
-> the txt file.
-> Changes 'interrupts' and 'interrupt-names' from optional to
-> required properties.
-> 
-> Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
+> Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
 > ---
-> Changelog:
-> v2:
-> - changes the commit message
-> - modifies the properties 'clocks', 'clock-names', 'dma-names',
->   'dmas', 'interrupts' and 'interrupt-names' according to the
->   arm SOCs
-> - adds 'port' and 'num-serializer' as node properties.
-> 
->  .../bindings/sound/davinci-mcasp-audio.txt    |  86 ---------
->  .../bindings/sound/davinci-mcasp-audio.yaml   | 179 ++++++++++++++++++
->  2 files changed, 179 insertions(+), 86 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
->  create mode 100644 Documentation/devicetree/bindings/sound/davinci-mcasp-audio.yaml
+>  Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Running 'make dtbs_check' with the schema in this patch gives the
+following warnings. Consider if they are expected or the schema is
+incorrect. These may not be new warnings.
 
-yamllint warnings/errors:
+Note that it is not yet a requirement to have 0 warnings for dtbs_check.
+This will change in the future.
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.yaml: properties:clock-names: {'minItems': 1, 'maxItems': 3, 'items': [{'const': 'fck'}, {'const': 'ahclkx'}, {'const': 'ahclkr'}]} should not be valid under {'required': ['maxItems']}
-	hint: "maxItems" is not needed with an "items" list
-	from schema $id: http://devicetree.org/meta-schemas/items.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.yaml: ignoring, error in schema: properties: clock-names
-warning: no schema found in file: ./Documentation/devicetree/bindings/sound/davinci-mcasp-audio.yaml
-Documentation/devicetree/bindings/sound/davinci-mcasp-audio.example.dt.yaml:0:0: /example-0/mcasp0@1d00000: failed to match any schema with compatible: ['ti,da830-mcasp-audio']
+Full log is available here: https://patchwork.ozlabs.org/patch/1559750
 
-doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1559662
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
+audio-controller@4000b000: 'port' does not match any of the regexes: '^port@[0-9]', 'pinctrl-[0-9]+'
+	arch/arm/boot/dts/stm32mp157a-dk1.dt.yaml
+	arch/arm/boot/dts/stm32mp157c-dk2.dt.yaml
 
