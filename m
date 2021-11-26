@@ -4,84 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EF23C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Nov 2021 16:20:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A8B3C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Nov 2021 16:21:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A6312193A;
-	Fri, 26 Nov 2021 17:19:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6312193A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 712E6194A;
+	Fri, 26 Nov 2021 17:20:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 712E6194A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637943639;
-	bh=FLrKch/eqhfmgzFiobhXVEUwGyzbrglWHnYYBbHB9ew=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=mLSbtpQLCAOgXxZ17JDJl1JdZ4vchlMFpCquOJqNBHkQRa5csQmmXN8EENXIlhiET
-	 LkgZIWrO+c8xCnDUuhGfvqeykipp125/Y+Hi5lL94YyYEnJagNFS0suNvJCg2yMgt6
-	 kTORebCvjM8kkJhsQCnozRfNFWdJHdsHaVVf0Pps=
+	s=default; t=1637943688;
+	bh=mUH42t66C1pEv464SbMa1hDjN6Lw5V6um0wJQNVLwyA=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=oPtQu1NH/vlNfT2irhkxCtHKEWToXT1CWJIOG2rnCF2iBRptkl9KP/I0c+8xmhnTW
+	 BphBvxhljZ/cq38u7xkaoqycqajMQl1AdQG2/ASmHH/JrbG9itR2+QxOJHQl08cait
+	 hxbAeL0EY0UjDhEAod/vLuPG56YHwVM8Rz8e1CSU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EDE57F80087;
-	Fri, 26 Nov 2021 17:19:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BD0BAF804E6;
+	Fri, 26 Nov 2021 17:19:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 99F03F80302; Fri, 26 Nov 2021 17:19:47 +0100 (CET)
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com
- [IPv6:2a00:1450:4864:20::12a])
+ id 63FDEF80302; Fri, 26 Nov 2021 17:19:48 +0100 (CET)
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com
+ [IPv6:2a00:1450:4864:20::135])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B073DF80132
- for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2021 17:19:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B073DF80132
+ by alsa1.perex.cz (Postfix) with ESMTPS id 32EBEF80087
+ for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2021 17:19:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32EBEF80087
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="gf9VIf7I"
-Received: by mail-lf1-x12a.google.com with SMTP id b40so25471882lfv.10
- for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2021 08:19:41 -0800 (PST)
+ header.b="OYSb5CZ4"
+Received: by mail-lf1-x135.google.com with SMTP id bu18so25628381lfb.0
+ for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2021 08:19:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=8AhGRJaoVn1IrWGJ+5EHhVIJuQTwIW4TlUfHNDbUYl0=;
- b=gf9VIf7ILO+koaNF6veBCGsOnIjFAHjV9jZKRTPqVVFyH6j8CESRZEpANBWMaZG2TR
- xpjJL7NtJrqw1ZjlYAmAnUFl8ek+P2efkdt1B/Or7kcu3iJ8NWuJgMl91GgcQhjknouk
- XIjVLx5HoE1uWBKucb5mSE9EX7D1E7Fci4NahzhvyuxIbY4ldY5SPjjKmVSof3zwLRs2
- er7kihMp7qqh5ZndfenJSGIkc3p2SRq5sV1h6JMTfR50hrEs9XT0YJASKFQ+YtbwpWxK
- jp3+NY0VAiHPNHZ9Bi1XrkgF8+o1XA6u2l4+pH2/q5vTshzi2FO/CDxQ4UvhfkR9UHZ1
- Z+DA==
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=EGYE2SKnVy6XUO3gt4QOJrl2h2mMOuvQupKJEmx7wLw=;
+ b=OYSb5CZ4d1koa2NEof02FCy0m/8Pzku84dP7KlxAAaL1z9g0oj2oIe1VfZiNN1hjTF
+ OqluiqoStReFLEqyvoExriqN4FH3ufQdWygygGL7iWOeiiRz8hoymkowjD0dd9Wjoz3I
+ E/uiTDUNCR0o81UOvHeUJpVBQ1BuHmhpA8+ey+6cYP+iVDHago8k20TqSI7q9cV7obnT
+ Lipxb9hreF6XSJz3g5CPqoMM4WVlDn3BDdyYtOQ6j0nRa2ne6oXNI+6ThC4KsLcjY3jC
+ HXxTIySKUmSSnk3TEtABsKSPVHFJakJXmxVOatvKGb0Mk6StCf8vE9Yv/CZxDtY/g80K
+ Q/zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=8AhGRJaoVn1IrWGJ+5EHhVIJuQTwIW4TlUfHNDbUYl0=;
- b=QHdvuKIbCRJFfxFiazShC//R0D5ocha5jZjZXzocg1zbfcdbgBJL2kaGrFu923BJ9M
- Z9gd31ZDSZrM/E8HyT30M6hylipW3V4mv4imR1WkLYKdEUHq6z4HqfmiZTBrwbj9O7Ak
- YnVwgYf5EO2ifnyBkecm7cbehI+UeHCeAeA1xY8p+Ti0WqZWaXC/t76l7eQyT2JBJrnN
- XT879CQ2u65i8CwduthL2hJ+KNpi58aKp0BHSOn7y1pH8bxAvR7E3NPxEm6dMRnJ36LM
- NVWTJlT+rh8N7vruRMZR5y+57KAojYMt+hkbyVIeS3EeIWw7mYYEQevbSMIrZZV0Vvzs
- iVow==
-X-Gm-Message-State: AOAM5338c/CdYSjpVyi9qXrJgIPfMJo9ikMSf31Vrub0IFjEFX6jiBt8
- ifQXROElpBVE1evH/eCW41I=
-X-Google-Smtp-Source: ABdhPJxaUvItDXQX2K+4aMi2wXJ6fVnLZSJi/ilFd4JYO1HwMEBAxC35yJ3/i3javAwM6xF3n5Y60A==
-X-Received: by 2002:a05:6512:1051:: with SMTP id
- c17mr31584295lfb.35.1637943580427; 
- Fri, 26 Nov 2021 08:19:40 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=EGYE2SKnVy6XUO3gt4QOJrl2h2mMOuvQupKJEmx7wLw=;
+ b=2WVtI9jBvR3/CoG7y15VwAcWP28PFd61kgtH/scrNJDWpIDXn8/8uOCa0aWM++EK9D
+ b6KKtzbjUJLzHiFqu5aVc/4yHRw4YUdOKId2d7Vm4mE1es0iGqwU6RCZKn4UBkLj+Qn2
+ PgU46reBakEuroO5cnh8I5HuUQzslk14ntFVUO0X30t6HwRMNshHUh1x5txC0xZTkbCI
+ kJDxs6dyvbXBz3WkSKKH94rKPjeT4PJgV2CTErGlhOYDPmUY9iCiE7XdTJaY/1R7M3/p
+ cD3tT1FHGf6pn0oCMQdpIxSkuO56UQMHoMUCUJA8xUAClewAPmc+P3dPzMUTEwZaGrdC
+ sQyA==
+X-Gm-Message-State: AOAM531FfewRHgy6EUqqV8T/qOxutN/rP28XJXSk9nj+BW+AbA9seFfQ
+ /TJINOTFB5TqHYEHYthuadI=
+X-Google-Smtp-Source: ABdhPJz7sHkXXKiLMg6G6JYpkIDopsTF9YR51ddFr0iMm6PJXFjDhx6d8/yGFAbyVwklgAtFwtUs0A==
+X-Received: by 2002:a05:6512:c0c:: with SMTP id
+ z12mr12452241lfu.591.1637943578165; 
+ Fri, 26 Nov 2021 08:19:38 -0800 (PST)
 Received: from localhost.localdomain (94-29-48-99.dynamic.spd-mgts.ru.
  [94.29.48.99])
- by smtp.gmail.com with ESMTPSA id t7sm613381lfl.260.2021.11.26.08.19.39
+ by smtp.gmail.com with ESMTPSA id t7sm613381lfl.260.2021.11.26.08.19.36
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 26 Nov 2021 08:19:40 -0800 (PST)
+ Fri, 26 Nov 2021 08:19:37 -0800 (PST)
 From: Dmitry Osipenko <digetx@gmail.com>
 To: Thierry Reding <thierry.reding@gmail.com>,
  Jonathan Hunter <jonathanh@nvidia.com>, Mark Brown <broonie@kernel.org>,
  Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
  Liam Girdwood <lgirdwood@gmail.com>, Agneli <poczt@protonmail.ch>,
  Rob Herring <robh+dt@kernel.org>
-Subject: [PATCH v2 02/20] ASoC: dt-bindings: tegra20-i2s: Convert to schema
-Date: Fri, 26 Nov 2021 19:17:49 +0300
-Message-Id: <20211126161807.15776-3-digetx@gmail.com>
+Subject: [PATCH v2 00/20] Support HDMI audio on NVIDIA Tegra20
+Date: Fri, 26 Nov 2021 19:17:47 +0300
+Message-Id: <20211126161807.15776-1-digetx@gmail.com>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211126161807.15776-1-digetx@gmail.com>
-References: <20211126161807.15776-1-digetx@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
@@ -102,128 +99,78 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Convert NVIDIA Tegra20 I2S binding to schema.
+This series revives Tegra20 S/PDIF driver which was upstreamed long time
+ago, but never was used. It also turns Tegra DRM HDMI driver into HDMI
+audio CODEC provider. Finally, HDMI audio is enabled in device-trees.
+For now the audio is enable only for Acer A500 tablet and Toshiba AC100
+netbook because they're already supported by upstream, later on ASUS TF101
+tablet will join them.
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- .../bindings/sound/nvidia,tegra20-i2s.txt     | 30 --------
- .../bindings/sound/nvidia,tegra20-i2s.yaml    | 70 +++++++++++++++++++
- 2 files changed, 70 insertions(+), 30 deletions(-)
+I based S/PDIF patches on Arnd's Bergmann patch from a separate series [1]
+that removes obsolete slave_id. This eases merging of the patches by
+removing the merge conflict.
+
+[1] https://patchwork.ozlabs.org/project/linux-tegra/list/?submitter=80402
+
+Changelog:
+
+v1: - Corrected I2S yaml problem that was reported by the DT bot for v1
+      by removing the non-existent required clock-names property.
+
+    - Removed assigned-clocks property from S/PDIF yaml since this property
+      is now inherited from the clocks property.
+
+    - Reordered the "tegra20: spdif: Set FIFO trigger level" patch, making
+      it the first sound/soc patch in the series, like it was suggested by
+      Mark Brown in the comment to v1. Also reworded commit message of this
+      patch to *not* make it looks like it should be backported to stable
+      kernels.
+
+Arnd Bergmann (1):
+  ASoC: tegra20-spdif: stop setting slave_id
+
+Dmitry Osipenko (19):
+  ASoC: dt-bindings: Add binding for Tegra20 S/PDIF
+  ASoC: dt-bindings: tegra20-i2s: Convert to schema
+  ASoC: dt-bindings: tegra20-i2s: Document new nvidia,fixed-parent-rate
+    property
+  dt-bindings: host1x: Document optional HDMI sound-dai-cells
+  ASoC: tegra20: spdif: Set FIFO trigger level
+  ASoC: tegra20: spdif: Support device-tree
+  ASoC: tegra20: spdif: Improve driver's code
+  ASoC: tegra20: spdif: Use more resource-managed helpers
+  ASoC: tegra20: spdif: Reset hardware
+  ASoC: tegra20: spdif: Support system suspend
+  ASoC: tegra20: spdif: Filter out unsupported rates
+  ASoC: tegra20: i2s: Filter out unsupported rates
+  drm/tegra: hdmi: Unwind tegra_hdmi_init() errors
+  drm/tegra: hdmi: Register audio CODEC on Tegra20
+  ARM: tegra_defconfig: Enable S/PDIF driver
+  ARM: tegra: Add S/PDIF node to Tegra20 device-tree
+  ARM: tegra: Add HDMI audio graph to Tegra20 device-tree
+  ARM: tegra: acer-a500: Enable S/PDIF and HDMI audio
+  ARM: tegra: paz00: Enable S/PDIF and HDMI audio
+
+ .../display/tegra/nvidia,tegra20-host1x.txt   |   1 +
+ .../bindings/sound/nvidia,tegra20-i2s.txt     |  30 ---
+ .../bindings/sound/nvidia,tegra20-i2s.yaml    |  77 +++++++
+ .../bindings/sound/nvidia,tegra20-spdif.yaml  |  85 ++++++++
+ .../boot/dts/tegra20-acer-a500-picasso.dts    |   8 +
+ arch/arm/boot/dts/tegra20-paz00.dts           |   8 +
+ arch/arm/boot/dts/tegra20.dtsi                |  40 +++-
+ arch/arm/configs/tegra_defconfig              |   1 +
+ drivers/gpu/drm/tegra/Kconfig                 |   3 +
+ drivers/gpu/drm/tegra/hdmi.c                  | 168 +++++++++++++--
+ sound/soc/tegra/tegra20_i2s.c                 |  49 +++++
+ sound/soc/tegra/tegra20_spdif.c               | 195 +++++++++++++-----
+ sound/soc/tegra/tegra20_spdif.h               |   1 +
+ sound/soc/tegra/tegra_pcm.c                   |   6 +
+ sound/soc/tegra/tegra_pcm.h                   |   1 +
+ 15 files changed, 571 insertions(+), 102 deletions(-)
  delete mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.txt
  create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra20-spdif.yaml
 
-diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.txt b/Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.txt
-deleted file mode 100644
-index dc30c6bfbe95..000000000000
---- a/Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.txt
-+++ /dev/null
-@@ -1,30 +0,0 @@
--NVIDIA Tegra 20 I2S controller
--
--Required properties:
--- compatible : "nvidia,tegra20-i2s"
--- reg : Should contain I2S registers location and length
--- interrupts : Should contain I2S interrupt
--- resets : Must contain an entry for each entry in reset-names.
--  See ../reset/reset.txt for details.
--- reset-names : Must include the following entries:
--  - i2s
--- dmas : Must contain an entry for each entry in clock-names.
--  See ../dma/dma.txt for details.
--- dma-names : Must include the following entries:
--  - rx
--  - tx
--- clocks : Must contain one entry, for the module clock.
--  See ../clocks/clock-bindings.txt for details.
--
--Example:
--
--i2s@70002800 {
--	compatible = "nvidia,tegra20-i2s";
--	reg = <0x70002800 0x200>;
--	interrupts = < 45 >;
--	clocks = <&tegra_car 11>;
--	resets = <&tegra_car 11>;
--	reset-names = "i2s";
--	dmas = <&apbdma 21>, <&apbdma 21>;
--	dma-names = "rx", "tx";
--};
-diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.yaml
-new file mode 100644
-index 000000000000..ad43b237d9af
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.yaml
-@@ -0,0 +1,70 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/nvidia,tegra20-i2s.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: NVIDIA Tegra20 I2S Controller
-+
-+description: |
-+  The I2S Controller streams synchronous serial audio data between system
-+  memory and an external audio device. The controller supports the I2S Left
-+  Justified Mode, Right Justified Mode, and DSP mode formats.
-+
-+maintainers:
-+  - Thierry Reding <treding@nvidia.com>
-+  - Jon Hunter <jonathanh@nvidia.com>
-+
-+properties:
-+  compatible:
-+    const: nvidia,tegra20-i2s
-+
-+  reg:
-+    maxItems: 1
-+
-+  resets:
-+    maxItems: 1
-+
-+  reset-names:
-+    const: i2s
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    minItems: 1
-+
-+  dmas:
-+    minItems: 2
-+
-+  dma-names:
-+    items:
-+      - const: rx
-+      - const: tx
-+
-+required:
-+  - compatible
-+  - reg
-+  - resets
-+  - reset-names
-+  - interrupts
-+  - clocks
-+  - dmas
-+  - dma-names
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2s@70002800 {
-+        compatible = "nvidia,tegra20-i2s";
-+        reg = <0x70002800 0x200>;
-+        interrupts = <45>;
-+        clocks = <&tegra_car 11>;
-+        resets = <&tegra_car 11>;
-+        reset-names = "i2s";
-+        dmas = <&apbdma 21>, <&apbdma 21>;
-+        dma-names = "rx", "tx";
-+    };
-+
-+...
 -- 
 2.33.1
 
