@@ -4,54 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D828CC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Nov 2021 14:02:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E0A8C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Nov 2021 14:03:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6F0A81913;
-	Fri, 26 Nov 2021 15:01:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F0A81913
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2DFB2193A;
+	Fri, 26 Nov 2021 15:02:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2DFB2193A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637935362;
-	bh=ZwP6Rw6gCqs8xqVd1a+1etNp3eh1MFrp6YMFM+oaJKo=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Y7E2lmtO61n/gJNN7GZyXal9b3thcKhr/Z9kF2RXL4Y93kkiYQYkX1zqIzMPNP2ua
-	 g93HEY5terhHcm6lSgG+8QpziUccKuQKjV0zh/2vKqokpkXQ1QfIBvqxPtvUhm5R8w
-	 3l2pQTw2G1pkazb7im1wBEfEYQ1Z3CX6J30K1vRY=
+	s=default; t=1637935411;
+	bh=pXM+SAxXWQPPmlt1+JNZrcuh809fdlr3w7F7xI1ls9s=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=cL5x8tBnYbRRWGq+DTuZBg9OMS7XCQ1qeayn3yU9xdHqYF/5u3EIBjBrteV/D0bOZ
+	 x1MousEpzltGCVcEE9EPALoao8faiEQWx3GUc3Xpm2wxsnExL4WoyMrq7TD8nf3rRe
+	 BdjChH6QJ1sfxphhjP/qRAehx7/7ZPYnMPeMzV1o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9BC74F80212;
-	Fri, 26 Nov 2021 15:01:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EC752F8032D;
+	Fri, 26 Nov 2021 15:01:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 894FBF80212; Fri, 26 Nov 2021 15:01:42 +0100 (CET)
+ id 1DADFF8032D; Fri, 26 Nov 2021 15:01:51 +0100 (CET)
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 019C4F80166
- for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2021 15:01:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 019C4F80166
-X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="222539401"
-X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; d="scan'208";a="222539401"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9013BF80132
+ for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2021 15:01:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9013BF80132
+X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="222539431"
+X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; d="scan'208";a="222539431"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Nov 2021 06:01:28 -0800
+ 26 Nov 2021 06:01:32 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; d="scan'208";a="510649364"
+X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; d="scan'208";a="510649420"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by orsmga008.jf.intel.com with ESMTP; 26 Nov 2021 06:01:26 -0800
+ by orsmga008.jf.intel.com with ESMTP; 26 Nov 2021 06:01:30 -0800
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v5 0/3] ALSA: hda: New NHLT functions and cleanup
-Date: Fri, 26 Nov 2021 15:03:52 +0100
-Message-Id: <20211126140355.1042684-1-cezary.rojewski@intel.com>
+Subject: [PATCH v5 2/3] ALSA: hda: Simplify DMIC-in-NHLT check
+Date: Fri, 26 Nov 2021 15:03:54 +0100
+Message-Id: <20211126140355.1042684-3-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211126140355.1042684-1-cezary.rojewski@intel.com>
+References: <20211126140355.1042684-1-cezary.rojewski@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Cc: pierre-louis.bossart@linux.intel.com,
  Cezary Rojewski <cezary.rojewski@intel.com>, tiwai@suse.com,
- hdegoede@redhat.com, broonie@kernel.org
+ hdegoede@redhat.com, broonie@kernel.org,
+ =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -67,52 +72,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Changes add two crucial functions: endpoint presence-check and
-retrieval of endpoint's BLOB (hardware configuration) to NHLT API.
+From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 
-Outside of that, "is DMIC in NHLT?" check is being re-visited. No need
-to check for channel count or anything DMIC-configuration related, just
-straight up verify link_type presence.
+Only DMIC endpoint presence is relevant, not its configuration.
 
-Changes in v5:
-- no code changes
-- actually removed the tags mentioned in v3
+Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+---
+ sound/hda/intel-dsp-config.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Changes in v4:
-- patch renaming nhlt_acpi_table struct to acpi_nhlt_table has been
-  dropped due to naming conflicts with other parts of the kernel
-- revoked previously appended tags from Mark and Pierre as every patch
-  required an update due to above
-
-Changes in v3:
-- no code changes
-- appended Mark's Acked-by tag for patch 4/4
-- appended Pierre's Reviewed-by tag for all patches
-
-Changes in v2:
-- patch "ALSA hda: Drop device-argument in NHLT functions" has been
-  dropped
-- updated newly added declarations in intel-nhlt.h so warning:
-  "no-previous-prototype-for-function" and error:
-  "use-of-undeclared-identifier" are no longer observed when
-  CONFIG_SND_INTEL_NHLT is not enabled
-- added Mark's tag to the last patch of the series
-
-Amadeusz Sławiński (3):
-  ALSA: hda: Fill gaps in NHLT endpoint-interface
-  ALSA: hda: Simplify DMIC-in-NHLT check
-  ASoC: Intel: Skylake: Use NHLT API to search for blob
-
- include/sound/intel-nhlt.h             |  37 +++++++--
- sound/hda/intel-dsp-config.c           |   2 +-
- sound/hda/intel-nhlt.c                 | 102 +++++++++++++++++++++++++
- sound/soc/intel/skylake/skl-nhlt.c     | 102 -------------------------
- sound/soc/intel/skylake/skl-pcm.c      |   3 +
- sound/soc/intel/skylake/skl-topology.c |  29 ++++---
- sound/soc/intel/skylake/skl-topology.h |   1 +
- sound/soc/intel/skylake/skl.h          |   4 -
- 8 files changed, 153 insertions(+), 127 deletions(-)
-
+diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
+index b9ac9e9e45a4..26f8665da689 100644
+--- a/sound/hda/intel-dsp-config.c
++++ b/sound/hda/intel-dsp-config.c
+@@ -384,7 +384,7 @@ static int snd_intel_dsp_check_dmic(struct pci_dev *pci)
+ 
+ 	nhlt = intel_nhlt_init(&pci->dev);
+ 	if (nhlt) {
+-		if (intel_nhlt_get_dmic_geo(&pci->dev, nhlt))
++		if (intel_nhlt_has_endpoint_type(nhlt, NHLT_LINK_DMIC))
+ 			ret = 1;
+ 		intel_nhlt_free(nhlt);
+ 	}
 -- 
 2.25.1
 
