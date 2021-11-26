@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BFC4C433FE
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Nov 2021 14:03:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E6A1C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Nov 2021 14:04:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E7563193F;
-	Fri, 26 Nov 2021 15:02:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E7563193F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 724811616;
+	Fri, 26 Nov 2021 15:03:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 724811616
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637935414;
-	bh=lPHLfSJlnMzCVNMy8l5p2PvjT5OmYJeOEgCe1W5L7KE=;
+	s=default; t=1637935441;
+	bh=UIueY/7SqtLiqrX8lOaLVBjW5vpomLoC/jnUN6z583o=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SK0wnxIxSUxrTKTWlsbzRphx1e9PuY7I0UV0JQ30Q3yN6lwAC33MhB0gtwiAEUDYj
-	 cKExq7r1kbZK2kJZmu7MmfKeNJWdD0MWE+lmmwaU0LIQY97886s/ktQFpuToEepiuV
-	 UMlgBLoJ320/HCX1kT+KwCsSuyhW4MdKie7ZqjbI=
+	b=TS3syDae/7SPSLHzThPEFHC8f1wBT4/qMyQXVwAB7T0CanoLq750qlU/67jYBLxXV
+	 Ia2T854Hd9crLVftfBYKswwq2jj3vePys6nJB9t2FmvK6x1aK3qjuweNvAMmvAllfc
+	 VSoOW07t3D6Xc/537s8UhaDuWELohT/cP/Z3PKas=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9B318F804E6;
-	Fri, 26 Nov 2021 15:01:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5F02CF804EC;
+	Fri, 26 Nov 2021 15:01:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 85B78F804E7; Fri, 26 Nov 2021 15:01:54 +0100 (CET)
+ id 97E9CF804ED; Fri, 26 Nov 2021 15:01:56 +0100 (CET)
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 946D4F80245
- for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2021 15:01:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 946D4F80245
-X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="222539413"
-X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; d="scan'208";a="222539413"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 70287F801F7
+ for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2021 15:01:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70287F801F7
+X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="222539448"
+X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; d="scan'208";a="222539448"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Nov 2021 06:01:30 -0800
+ 26 Nov 2021 06:01:35 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; d="scan'208";a="510649387"
+X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; d="scan'208";a="510649454"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by orsmga008.jf.intel.com with ESMTP; 26 Nov 2021 06:01:28 -0800
+ by orsmga008.jf.intel.com with ESMTP; 26 Nov 2021 06:01:32 -0800
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v5 1/3] ALSA: hda: Fill gaps in NHLT endpoint-interface
-Date: Fri, 26 Nov 2021 15:03:53 +0100
-Message-Id: <20211126140355.1042684-2-cezary.rojewski@intel.com>
+Subject: [PATCH v5 3/3] ASoC: Intel: Skylake: Use NHLT API to search for blob
+Date: Fri, 26 Nov 2021 15:03:55 +0100
+Message-Id: <20211126140355.1042684-4-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211126140355.1042684-1-cezary.rojewski@intel.com>
 References: <20211126140355.1042684-1-cezary.rojewski@intel.com>
@@ -74,196 +74,266 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 
-Two key operations missings are: endpoint presence-check and retrieval
-of matching endpoint hardware configuration (blob). Add operations for
-both use cases.
+With NHLT enriched with new search functions, remove local code in
+favour of them. This also fixes broken behaviour: search should be based
+on significant bits count rather than container size.
 
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- include/sound/intel-nhlt.h |  37 +++++++++++---
- sound/hda/intel-nhlt.c     | 102 +++++++++++++++++++++++++++++++++++++
- 2 files changed, 131 insertions(+), 8 deletions(-)
+ sound/soc/intel/skylake/skl-nhlt.c     | 102 -------------------------
+ sound/soc/intel/skylake/skl-pcm.c      |   3 +
+ sound/soc/intel/skylake/skl-topology.c |  29 ++++---
+ sound/soc/intel/skylake/skl-topology.h |   1 +
+ sound/soc/intel/skylake/skl.h          |   4 -
+ 5 files changed, 21 insertions(+), 118 deletions(-)
 
-diff --git a/include/sound/intel-nhlt.h b/include/sound/intel-nhlt.h
-index d0574805865f..089a760d36eb 100644
---- a/include/sound/intel-nhlt.h
-+++ b/include/sound/intel-nhlt.h
-@@ -10,6 +10,14 @@
+diff --git a/sound/soc/intel/skylake/skl-nhlt.c b/sound/soc/intel/skylake/skl-nhlt.c
+index 64226072f0ee..2439a574ac2f 100644
+--- a/sound/soc/intel/skylake/skl-nhlt.c
++++ b/sound/soc/intel/skylake/skl-nhlt.c
+@@ -13,108 +13,6 @@
+ #include "skl.h"
+ #include "skl-i2s.h"
  
- #include <linux/acpi.h>
- 
-+enum nhlt_link_type {
-+	NHLT_LINK_HDA = 0,
-+	NHLT_LINK_DSP = 1,
-+	NHLT_LINK_DMIC = 2,
-+	NHLT_LINK_SSP = 3,
-+	NHLT_LINK_INVALID
-+};
-+
- #if IS_ENABLED(CONFIG_ACPI) && IS_ENABLED(CONFIG_SND_INTEL_NHLT)
- 
- struct wav_fmt {
-@@ -33,14 +41,6 @@ struct wav_fmt_ext {
- 	u8 sub_fmt[16];
- } __packed;
- 
--enum nhlt_link_type {
--	NHLT_LINK_HDA = 0,
--	NHLT_LINK_DSP = 1,
--	NHLT_LINK_DMIC = 2,
--	NHLT_LINK_SSP = 3,
--	NHLT_LINK_INVALID
--};
+-static struct nhlt_specific_cfg *skl_get_specific_cfg(
+-		struct device *dev, struct nhlt_fmt *fmt,
+-		u8 no_ch, u32 rate, u16 bps, u8 linktype)
+-{
+-	struct nhlt_specific_cfg *sp_config;
+-	struct wav_fmt *wfmt;
+-	struct nhlt_fmt_cfg *fmt_config = fmt->fmt_config;
+-	int i;
 -
- enum nhlt_device_type {
- 	NHLT_DEVICE_BT = 0,
- 	NHLT_DEVICE_DMIC = 1,
-@@ -132,6 +132,12 @@ void intel_nhlt_free(struct nhlt_acpi_table *addr);
- 
- int intel_nhlt_get_dmic_geo(struct device *dev, struct nhlt_acpi_table *nhlt);
- 
-+bool intel_nhlt_has_endpoint_type(struct nhlt_acpi_table *nhlt, u8 link_type);
-+struct nhlt_specific_cfg *
-+intel_nhlt_get_endpoint_blob(struct device *dev, struct nhlt_acpi_table *nhlt,
-+			     u32 bus_id, u8 link_type, u8 vbps, u8 bps,
-+			     u8 num_ch, u32 rate, u8 dir, u8 dev_type);
-+
- #else
- 
- struct nhlt_acpi_table;
-@@ -150,6 +156,21 @@ static inline int intel_nhlt_get_dmic_geo(struct device *dev,
+-	dev_dbg(dev, "Format count =%d\n", fmt->fmt_count);
+-
+-	for (i = 0; i < fmt->fmt_count; i++) {
+-		wfmt = &fmt_config->fmt_ext.fmt;
+-		dev_dbg(dev, "ch=%d fmt=%d s_rate=%d\n", wfmt->channels,
+-			 wfmt->bits_per_sample, wfmt->samples_per_sec);
+-		if (wfmt->channels == no_ch && wfmt->bits_per_sample == bps) {
+-			/*
+-			 * if link type is dmic ignore rate check as the blob is
+-			 * generic for all rates
+-			 */
+-			sp_config = &fmt_config->config;
+-			if (linktype == NHLT_LINK_DMIC)
+-				return sp_config;
+-
+-			if (wfmt->samples_per_sec == rate)
+-				return sp_config;
+-		}
+-
+-		fmt_config = (struct nhlt_fmt_cfg *)(fmt_config->config.caps +
+-						fmt_config->config.size);
+-	}
+-
+-	return NULL;
+-}
+-
+-static void dump_config(struct device *dev, u32 instance_id, u8 linktype,
+-		u8 s_fmt, u8 num_channels, u32 s_rate, u8 dirn, u16 bps)
+-{
+-	dev_dbg(dev, "Input configuration\n");
+-	dev_dbg(dev, "ch=%d fmt=%d s_rate=%d\n", num_channels, s_fmt, s_rate);
+-	dev_dbg(dev, "vbus_id=%d link_type=%d\n", instance_id, linktype);
+-	dev_dbg(dev, "bits_per_sample=%d\n", bps);
+-}
+-
+-static bool skl_check_ep_match(struct device *dev, struct nhlt_endpoint *epnt,
+-		u32 instance_id, u8 link_type, u8 dirn, u8 dev_type)
+-{
+-	dev_dbg(dev, "vbus_id=%d link_type=%d dir=%d dev_type = %d\n",
+-			epnt->virtual_bus_id, epnt->linktype,
+-			epnt->direction, epnt->device_type);
+-
+-	if ((epnt->virtual_bus_id == instance_id) &&
+-			(epnt->linktype == link_type) &&
+-			(epnt->direction == dirn)) {
+-		/* do not check dev_type for DMIC link type */
+-		if (epnt->linktype == NHLT_LINK_DMIC)
+-			return true;
+-
+-		if (epnt->device_type == dev_type)
+-			return true;
+-	}
+-
+-	return false;
+-}
+-
+-struct nhlt_specific_cfg
+-*skl_get_ep_blob(struct skl_dev *skl, u32 instance, u8 link_type,
+-			u8 s_fmt, u8 num_ch, u32 s_rate,
+-			u8 dirn, u8 dev_type)
+-{
+-	struct nhlt_fmt *fmt;
+-	struct nhlt_endpoint *epnt;
+-	struct hdac_bus *bus = skl_to_bus(skl);
+-	struct device *dev = bus->dev;
+-	struct nhlt_specific_cfg *sp_config;
+-	struct nhlt_acpi_table *nhlt = skl->nhlt;
+-	u16 bps = (s_fmt == 16) ? 16 : 32;
+-	u8 j;
+-
+-	dump_config(dev, instance, link_type, s_fmt, num_ch, s_rate, dirn, bps);
+-
+-	epnt = (struct nhlt_endpoint *)nhlt->desc;
+-
+-	dev_dbg(dev, "endpoint count =%d\n", nhlt->endpoint_count);
+-
+-	for (j = 0; j < nhlt->endpoint_count; j++) {
+-		if (skl_check_ep_match(dev, epnt, instance, link_type,
+-						dirn, dev_type)) {
+-			fmt = (struct nhlt_fmt *)(epnt->config.caps +
+-						 epnt->config.size);
+-			sp_config = skl_get_specific_cfg(dev, fmt, num_ch,
+-							s_rate, bps, link_type);
+-			if (sp_config)
+-				return sp_config;
+-		}
+-
+-		epnt = (struct nhlt_endpoint *)((u8 *)epnt + epnt->length);
+-	}
+-
+-	return NULL;
+-}
+-
+ static void skl_nhlt_trim_space(char *trim)
  {
- 	return 0;
- }
-+
-+static inline bool intel_nhlt_has_endpoint_type(struct nhlt_acpi_table *nhlt,
-+						u8 link_type)
-+{
-+	return false;
-+}
-+
-+static inline struct nhlt_specific_cfg *
-+intel_nhlt_get_endpoint_blob(struct device *dev, struct nhlt_acpi_table *nhlt,
-+			     u32 bus_id, u8 link_type, u8 vbps, u8 bps,
-+			     u8 num_ch, u32 rate, u8 dir, u8 dev_type)
-+{
-+	return NULL;
-+}
-+
- #endif
+ 	char *s = trim;
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 9ecaf6a1e847..34908af50046 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -317,6 +317,7 @@ static int skl_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	dev_dbg(dai->dev, "dma_id=%d\n", dma_id);
  
- #endif
-diff --git a/sound/hda/intel-nhlt.c b/sound/hda/intel-nhlt.c
-index e2237239d922..128476aa7c61 100644
---- a/sound/hda/intel-nhlt.c
-+++ b/sound/hda/intel-nhlt.c
-@@ -110,3 +110,105 @@ int intel_nhlt_get_dmic_geo(struct device *dev, struct nhlt_acpi_table *nhlt)
- 	return dmic_geo;
- }
- EXPORT_SYMBOL_GPL(intel_nhlt_get_dmic_geo);
-+
-+bool intel_nhlt_has_endpoint_type(struct nhlt_acpi_table *nhlt, u8 link_type)
-+{
-+	struct nhlt_endpoint *epnt;
-+	int i;
-+
-+	if (!nhlt)
-+		return false;
-+
-+	epnt = (struct nhlt_endpoint *)nhlt->desc;
-+	for (i = 0; i < nhlt->endpoint_count; i++) {
-+		if (epnt->linktype == link_type)
-+			return true;
-+
-+		epnt = (struct nhlt_endpoint *)((u8 *)epnt + epnt->length);
-+	}
-+	return false;
-+}
-+EXPORT_SYMBOL(intel_nhlt_has_endpoint_type);
-+
-+static struct nhlt_specific_cfg *
-+nhlt_get_specific_cfg(struct device *dev, struct nhlt_fmt *fmt, u8 num_ch,
-+		      u32 rate, u8 vbps, u8 bps)
-+{
-+	struct nhlt_fmt_cfg *cfg = fmt->fmt_config;
-+	struct wav_fmt *wfmt;
-+	u16 _bps, _vbps;
-+	int i;
-+
-+	dev_dbg(dev, "Endpoint format count=%d\n", fmt->fmt_count);
-+
-+	for (i = 0; i < fmt->fmt_count; i++) {
-+		wfmt = &cfg->fmt_ext.fmt;
-+		_bps = wfmt->bits_per_sample;
-+		_vbps = cfg->fmt_ext.sample.valid_bits_per_sample;
-+
-+		dev_dbg(dev, "Endpoint format: ch=%d fmt=%d/%d rate=%d\n",
-+			wfmt->channels, _vbps, _bps, wfmt->samples_per_sec);
-+
-+		if (wfmt->channels == num_ch && wfmt->samples_per_sec == rate &&
-+		    vbps == _vbps && bps == _bps)
-+			return &cfg->config;
-+
-+		cfg = (struct nhlt_fmt_cfg *)(cfg->config.caps + cfg->config.size);
-+	}
-+
-+	return NULL;
-+}
-+
-+static bool nhlt_check_ep_match(struct device *dev, struct nhlt_endpoint *epnt,
-+				u32 bus_id, u8 link_type, u8 dir, u8 dev_type)
-+{
-+	dev_dbg(dev, "Endpoint: vbus_id=%d link_type=%d dir=%d dev_type = %d\n",
-+		epnt->virtual_bus_id, epnt->linktype,
-+		epnt->direction, epnt->device_type);
-+
-+	if ((epnt->virtual_bus_id != bus_id) ||
-+	    (epnt->linktype != link_type) ||
-+	    (epnt->direction != dir))
-+		return false;
-+
-+	/* link of type DMIC bypasses device_type check */
-+	return epnt->linktype == NHLT_LINK_DMIC ||
-+	       epnt->device_type == dev_type;
-+}
-+
-+struct nhlt_specific_cfg *
-+intel_nhlt_get_endpoint_blob(struct device *dev, struct nhlt_acpi_table *nhlt,
-+			     u32 bus_id, u8 link_type, u8 vbps, u8 bps,
-+			     u8 num_ch, u32 rate, u8 dir, u8 dev_type)
-+{
-+	struct nhlt_specific_cfg *cfg;
-+	struct nhlt_endpoint *epnt;
-+	struct nhlt_fmt *fmt;
-+	int i;
-+
-+	if (!nhlt)
-+		return NULL;
-+
-+	dev_dbg(dev, "Looking for configuration:\n");
-+	dev_dbg(dev, "  vbus_id=%d link_type=%d dir=%d, dev_type=%d\n",
-+		bus_id, link_type, dir, dev_type);
-+	dev_dbg(dev, "  ch=%d fmt=%d/%d rate=%d\n", num_ch, vbps, bps, rate);
-+	dev_dbg(dev, "Endpoint count=%d\n", nhlt->endpoint_count);
-+
-+	epnt = (struct nhlt_endpoint *)nhlt->desc;
-+
-+	for (i = 0; i < nhlt->endpoint_count; i++) {
-+		if (nhlt_check_ep_match(dev, epnt, bus_id, link_type, dir, dev_type)) {
-+			fmt = (struct nhlt_fmt *)(epnt->config.caps + epnt->config.size);
-+
-+			cfg = nhlt_get_specific_cfg(dev, fmt, num_ch, rate, vbps, bps);
-+			if (cfg)
-+				return cfg;
-+		}
-+
-+		epnt = (struct nhlt_endpoint *)((u8 *)epnt + epnt->length);
-+	}
-+
-+	return NULL;
-+}
-+EXPORT_SYMBOL(intel_nhlt_get_endpoint_blob);
+ 	p_params.s_fmt = snd_pcm_format_width(params_format(params));
++	p_params.s_cont = snd_pcm_format_physical_width(params_format(params));
+ 	p_params.ch = params_channels(params);
+ 	p_params.s_freq = params_rate(params);
+ 	p_params.host_dma_id = dma_id;
+@@ -405,6 +406,7 @@ static int skl_be_hw_params(struct snd_pcm_substream *substream,
+ 	struct skl_pipe_params p_params = {0};
+ 
+ 	p_params.s_fmt = snd_pcm_format_width(params_format(params));
++	p_params.s_cont = snd_pcm_format_physical_width(params_format(params));
+ 	p_params.ch = params_channels(params);
+ 	p_params.s_freq = params_rate(params);
+ 	p_params.stream = substream->stream;
+@@ -569,6 +571,7 @@ static int skl_link_hw_params(struct snd_pcm_substream *substream,
+ 		snd_soc_dai_set_tdm_slot(codec_dai, 0, stream_tag, 0, 0);
+ 
+ 	p_params.s_fmt = snd_pcm_format_width(params_format(params));
++	p_params.s_cont = snd_pcm_format_physical_width(params_format(params));
+ 	p_params.ch = params_channels(params);
+ 	p_params.s_freq = params_rate(params);
+ 	p_params.stream = substream->stream;
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 89e4231304dd..9bdf020a2b64 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -285,7 +285,7 @@ static int skl_tplg_update_be_blob(struct snd_soc_dapm_widget *w,
+ {
+ 	struct skl_module_cfg *m_cfg = w->priv;
+ 	int link_type, dir;
+-	u32 ch, s_freq, s_fmt;
++	u32 ch, s_freq, s_fmt, s_cont;
+ 	struct nhlt_specific_cfg *cfg;
+ 	u8 dev_type = skl_tplg_be_dev_type(m_cfg->dev_type);
+ 	int fmt_idx = m_cfg->fmt_idx;
+@@ -301,7 +301,8 @@ static int skl_tplg_update_be_blob(struct snd_soc_dapm_widget *w,
+ 		link_type = NHLT_LINK_DMIC;
+ 		dir = SNDRV_PCM_STREAM_CAPTURE;
+ 		s_freq = m_iface->inputs[0].fmt.s_freq;
+-		s_fmt = m_iface->inputs[0].fmt.bit_depth;
++		s_fmt = m_iface->inputs[0].fmt.valid_bit_depth;
++		s_cont = m_iface->inputs[0].fmt.bit_depth;
+ 		ch = m_iface->inputs[0].fmt.channels;
+ 		break;
+ 
+@@ -310,12 +311,14 @@ static int skl_tplg_update_be_blob(struct snd_soc_dapm_widget *w,
+ 		if (m_cfg->hw_conn_type == SKL_CONN_SOURCE) {
+ 			dir = SNDRV_PCM_STREAM_PLAYBACK;
+ 			s_freq = m_iface->outputs[0].fmt.s_freq;
+-			s_fmt = m_iface->outputs[0].fmt.bit_depth;
++			s_fmt = m_iface->outputs[0].fmt.valid_bit_depth;
++			s_cont = m_iface->outputs[0].fmt.bit_depth;
+ 			ch = m_iface->outputs[0].fmt.channels;
+ 		} else {
+ 			dir = SNDRV_PCM_STREAM_CAPTURE;
+ 			s_freq = m_iface->inputs[0].fmt.s_freq;
+-			s_fmt = m_iface->inputs[0].fmt.bit_depth;
++			s_fmt = m_iface->inputs[0].fmt.valid_bit_depth;
++			s_cont = m_iface->inputs[0].fmt.bit_depth;
+ 			ch = m_iface->inputs[0].fmt.channels;
+ 		}
+ 		break;
+@@ -325,16 +328,17 @@ static int skl_tplg_update_be_blob(struct snd_soc_dapm_widget *w,
+ 	}
+ 
+ 	/* update the blob based on virtual bus_id and default params */
+-	cfg = skl_get_ep_blob(skl, m_cfg->vbus_id, link_type,
+-					s_fmt, ch, s_freq, dir, dev_type);
++	cfg = intel_nhlt_get_endpoint_blob(skl->dev, skl->nhlt, m_cfg->vbus_id,
++					   link_type, s_fmt, s_cont, ch,
++					   s_freq, dir, dev_type);
+ 	if (cfg) {
+ 		m_cfg->formats_config[SKL_PARAM_INIT].caps_size = cfg->size;
+ 		m_cfg->formats_config[SKL_PARAM_INIT].caps = (u32 *)&cfg->caps;
+ 	} else {
+ 		dev_err(skl->dev, "Blob NULL for id %x type %d dirn %d\n",
+ 					m_cfg->vbus_id, link_type, dir);
+-		dev_err(skl->dev, "PCM: ch %d, freq %d, fmt %d\n",
+-					ch, s_freq, s_fmt);
++		dev_err(skl->dev, "PCM: ch %d, freq %d, fmt %d/%d\n",
++					ch, s_freq, s_fmt, s_cont);
+ 		return -EIO;
+ 	}
+ 
+@@ -1849,10 +1853,11 @@ static int skl_tplg_be_fill_pipe_params(struct snd_soc_dai *dai,
+ 		pipe_fmt = &pipe->configs[pipe->pipe_config_idx].in_fmt;
+ 
+ 	/* update the blob based on virtual bus_id*/
+-	cfg = skl_get_ep_blob(skl, mconfig->vbus_id, link_type,
+-					pipe_fmt->bps, pipe_fmt->channels,
+-					pipe_fmt->freq, pipe->direction,
+-					dev_type);
++	cfg = intel_nhlt_get_endpoint_blob(dai->dev, skl->nhlt,
++					mconfig->vbus_id, link_type,
++					pipe_fmt->bps, params->s_cont,
++					pipe_fmt->channels, pipe_fmt->freq,
++					pipe->direction, dev_type);
+ 	if (cfg) {
+ 		mconfig->formats_config[SKL_PARAM_INIT].caps_size = cfg->size;
+ 		mconfig->formats_config[SKL_PARAM_INIT].caps = (u32 *)&cfg->caps;
+diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
+index f0695b2ac5dd..22963634fbea 100644
+--- a/sound/soc/intel/skylake/skl-topology.h
++++ b/sound/soc/intel/skylake/skl-topology.h
+@@ -284,6 +284,7 @@ struct skl_pipe_params {
+ 	u32 ch;
+ 	u32 s_freq;
+ 	u32 s_fmt;
++	u32 s_cont;
+ 	u8 linktype;
+ 	snd_pcm_format_t format;
+ 	int link_index;
+diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
+index 33ed274fc0cb..f55f8b3dbdc3 100644
+--- a/sound/soc/intel/skylake/skl.h
++++ b/sound/soc/intel/skylake/skl.h
+@@ -165,10 +165,6 @@ struct skl_dsp_ops {
+ int skl_platform_unregister(struct device *dev);
+ int skl_platform_register(struct device *dev);
+ 
+-struct nhlt_specific_cfg *skl_get_ep_blob(struct skl_dev *skl, u32 instance,
+-					u8 link_type, u8 s_fmt, u8 num_ch,
+-					u32 s_rate, u8 dirn, u8 dev_type);
+-
+ int skl_nhlt_update_topology_bin(struct skl_dev *skl);
+ int skl_init_dsp(struct skl_dev *skl);
+ int skl_free_dsp(struct skl_dev *skl);
 -- 
 2.25.1
 
