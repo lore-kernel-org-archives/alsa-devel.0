@@ -4,80 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 654E5C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Nov 2021 16:23:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E808C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Nov 2021 16:24:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9C8411AAB;
-	Fri, 26 Nov 2021 17:22:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C8411AAB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 70C901AA5;
+	Fri, 26 Nov 2021 17:23:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70C901AA5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637943821;
-	bh=tAN41LYEO4Im+uxTfYf9YsqL8/qCZeUu4zYtpncCODc=;
+	s=default; t=1637943843;
+	bh=0Y0EQKphoKVU8LA+mSh/t0dDqSxkfRn2A9TEReYxdBs=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LBRAeMtlShloALEW2Jr7RIuLCsiLRKLyC64wilGEAFWgh85Jw6g9/nlAPFJ+vE64k
-	 HaAcdZiOPvkJbQo6Cd/nJ5+3qeQn7WjRdQ+PfDXlI+HND5t/sWpDa0TYjdhllVfHJ0
-	 GwxyyWsh4d5RZUNzvn5pBWtaITx8KIO/K0m/sSIc=
+	b=k7OXd5sOJ0AF33GO98zKff9Dqetfv/5UKGCsSAr9inPs2ourKWhS5pF5CtUQnXZFc
+	 nPIJ16hw3oiA6okFQvdE6Z+TpcYQLIcJ0gBWpGT99yd+bCGofXA0vt6Ir0eb8Ti8eA
+	 dIb+nkhcOj9cOJKXFB+oDJSMO7O9HbVT/Nj4mPqA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 81BDBF80524;
-	Fri, 26 Nov 2021 17:20:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id ED788F80528;
+	Fri, 26 Nov 2021 17:20:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D9D6FF80508; Fri, 26 Nov 2021 17:19:59 +0100 (CET)
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com
- [IPv6:2a00:1450:4864:20::129])
+ id 7BA46F804F1; Fri, 26 Nov 2021 17:19:56 +0100 (CET)
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com
+ [IPv6:2a00:1450:4864:20::132])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8797AF804EC
- for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2021 17:19:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8797AF804EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3BA60F80245
+ for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2021 17:19:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3BA60F80245
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="BvKSZeYo"
-Received: by mail-lf1-x129.google.com with SMTP id l22so25476929lfg.7
- for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2021 08:19:45 -0800 (PST)
+ header.b="SbQVrq7M"
+Received: by mail-lf1-x132.google.com with SMTP id l22so25477496lfg.7
+ for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2021 08:19:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=wwvCc+bauYKKq4pTyZaKz2pCnGZty8ijk6MykhM6LJk=;
- b=BvKSZeYoEu1pJJt+n6o+vj50x1ldkP551fdVZxAJJQLdVUFGwPBzAIrF5H+7esXwHx
- n8own3qM05XoxI0sjPD064mGbDJYgQsXfUbZ5MIO05z8iIYjmtRdkKT5j0qD5Z2az0Jk
- UgsVHrgG2+MvETMaNKhRvVnkXunohyLJVeytrxOcNVoFj9pd8wQ3SQv8v/ibUtmgacPy
- ks0GJc1FIuDh3ZKQoL4cs4vQxpaDcGcq87T6G6fqBvQzUszhXwvpYZXNRvM4dS7oRSp1
- a4rK+JOdqWuQE1Dhk/XVLpE7/zREWJ2zqRHV9yeoavSk6IclxwhKhMj46sTIj3eb5Cbc
- PU/g==
+ bh=tbG85K+O8+Dl5om1+PZ6lAYg/7hr7N71/G0INRgPxNw=;
+ b=SbQVrq7MGFxE62ut5dReO76clPquqYcsD5seMI2r5Ekfjjt57czFCxJNrK6toz4fjX
+ gK/+H/RbcjerAOl2Q+IZnFcr91n/AP4jmXVIUVSKgSFI47xRJr8NDsB9zC7QOxZbqW66
+ M3BlaMTKXFOUNW88+Mm9SN1WmrZg+4Rnk+djZujQKMFdF67VQ5FjHE4vaTQTyZ7acQGr
+ 09nr18Rt/7sGh6+HhfCJYhisArNj4RqK7pLyP+Ppu/Ti+a6HPDSHpxS47gdyECNAEWJ9
+ obeZPolP6lQ0yjztIPPRIVjBQ27mOMuk1MjQw6QLtCvSYDplDU2GupVO6W3Jyhnkw2Bi
+ +GVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=wwvCc+bauYKKq4pTyZaKz2pCnGZty8ijk6MykhM6LJk=;
- b=pfiZ32TcrTUiN2BzRDu3ZpFxd/Gx1UrVliLso/+LzwNGGSiDKsET9CWRNTaPdIac3C
- IP/SBcPge/zHjcTop5RpvAdSaXgP+q9C2m9rpgjGB7l3Oljftx66PUpXWkPFuTBWUHD6
- aVD5NucMgkHkwxftxo4bxVaj/8ECp9hMUcG78UUmi2WywOQQSPtYIoVlQFQKD5sLAX2p
- Lpe1tSopZZCoSinTRq0YSKTl2MmPQeclKW46c4Jqmcn3cfCXJK3C0A9E6wLk4HgZ/QUK
- xOU4jeuLeLM0vaNFyW2dgySEkptwqfYjo306csjxCoU6qUH2q+kIJjJsk1gRNcN2Mah8
- pzUg==
-X-Gm-Message-State: AOAM533ezbTkt5oWDvE5AZH3gMFs4Yhqspiw9FFaJol6rOGTO7yqlk9+
- cenBFINH+p0TkQ3MrYpua+E=
-X-Google-Smtp-Source: ABdhPJw+O1sqA1AEApn4w0e8LsIJFSmfr+1YbfviViPwQQyCT2nco+0hcMYFnmfPveS50cbky2WMkg==
-X-Received: by 2002:a19:4312:: with SMTP id q18mr30933828lfa.299.1637943583577; 
- Fri, 26 Nov 2021 08:19:43 -0800 (PST)
+ bh=tbG85K+O8+Dl5om1+PZ6lAYg/7hr7N71/G0INRgPxNw=;
+ b=8GVsPCsqALfHMwE8oKQDTMx8OvNAEmnuTb4m0w6oNTv8gqbd/mmJ+2CS9apE4Ote0A
+ 8bqeWvo7ysKyLP+ElYSFeRWrbGU7wPJxQ7bZGA+L5xtre8C0IobwlvSzeEL3CLpMQyII
+ /cRVdUw/PSQ6xiKsmdVpaOMqVpx9m7hKUlscQTMZcH3waSJA0phIekREDbJz7ISG05ta
+ mInhWHPKVTWjuH4dWxYtS+Li4QVzn6tx4VoujsheKawdeEuWC8zDsp/txucDCCNTgC8o
+ FX//NXVWJx83c/+XIMFEu+M2Vyr+nBd5IjiLNPQW0730+ZqoYkB3PpFsJa78UWQxch01
+ yZfQ==
+X-Gm-Message-State: AOAM532UY5wuecgePkdQz5kEbsa76xlcnlXcSo32DHmUYRBCfi9qKLRd
+ UhaoKKAXjTmlupvAMaTZ7ABDwl+AAkQ=
+X-Google-Smtp-Source: ABdhPJwDWO1Vlta1tP9gZbVb8KmrLyN84n3kqDO9aJna1XKbuzUtfmj5/ve/FnkPuT1etUb+1fdSDg==
+X-Received: by 2002:a05:6512:2eb:: with SMTP id
+ m11mr29264894lfq.326.1637943589496; 
+ Fri, 26 Nov 2021 08:19:49 -0800 (PST)
 Received: from localhost.localdomain (94-29-48-99.dynamic.spd-mgts.ru.
  [94.29.48.99])
- by smtp.gmail.com with ESMTPSA id t7sm613381lfl.260.2021.11.26.08.19.42
+ by smtp.gmail.com with ESMTPSA id t7sm613381lfl.260.2021.11.26.08.19.48
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 26 Nov 2021 08:19:43 -0800 (PST)
+ Fri, 26 Nov 2021 08:19:49 -0800 (PST)
 From: Dmitry Osipenko <digetx@gmail.com>
 To: Thierry Reding <thierry.reding@gmail.com>,
  Jonathan Hunter <jonathanh@nvidia.com>, Mark Brown <broonie@kernel.org>,
  Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
  Liam Girdwood <lgirdwood@gmail.com>, Agneli <poczt@protonmail.ch>,
  Rob Herring <robh+dt@kernel.org>
-Subject: [PATCH v2 05/20] ASoC: tegra20: spdif: Set FIFO trigger level
-Date: Fri, 26 Nov 2021 19:17:52 +0300
-Message-Id: <20211126161807.15776-6-digetx@gmail.com>
+Subject: [PATCH v2 10/20] ASoC: tegra20: spdif: Reset hardware
+Date: Fri, 26 Nov 2021 19:17:57 +0300
+Message-Id: <20211126161807.15776-11-digetx@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211126161807.15776-1-digetx@gmail.com>
 References: <20211126161807.15776-1-digetx@gmail.com>
@@ -101,34 +102,105 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-FIFO trigger level must be not less than the size of DMA burst, otherwise
-audio will be played x4 faster that it should be because part of the DMA
-data will be dropped on FIFO input buffer overflow.
+Reset S/PDIF controller on runtime PM suspend/resume to ensure that we
+always have a consistent hardware state.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- sound/soc/tegra/tegra20_spdif.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/tegra/tegra20_spdif.c | 32 ++++++++++++++++++++++++++++++++
+ sound/soc/tegra/tegra20_spdif.h |  1 +
+ 2 files changed, 33 insertions(+)
 
 diff --git a/sound/soc/tegra/tegra20_spdif.c b/sound/soc/tegra/tegra20_spdif.c
-index 7751575cd6d6..6f0570cde964 100644
+index 6ca48bc322ae..8b9bac30d5cd 100644
 --- a/sound/soc/tegra/tegra20_spdif.c
 +++ b/sound/soc/tegra/tegra20_spdif.c
-@@ -69,6 +69,14 @@ static int tegra20_spdif_hw_params(struct snd_pcm_substream *substream,
+@@ -7,6 +7,7 @@
+  */
  
- 	regmap_update_bits(spdif->regmap, TEGRA20_SPDIF_CTRL, mask, val);
+ #include <linux/clk.h>
++#include <linux/delay.h>
+ #include <linux/device.h>
+ #include <linux/io.h>
+ #include <linux/module.h>
+@@ -14,6 +15,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/regmap.h>
++#include <linux/reset.h>
+ #include <linux/slab.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+@@ -27,6 +29,8 @@ static __maybe_unused int tegra20_spdif_runtime_suspend(struct device *dev)
+ {
+ 	struct tegra20_spdif *spdif = dev_get_drvdata(dev);
  
-+	/*
-+	 * FIFO trigger level must be bigger than DMA burst or equal to it,
-+	 * otherwise data is discarded on overflow.
-+	 */
-+	regmap_update_bits(spdif->regmap, TEGRA20_SPDIF_DATA_FIFO_CSR,
-+			   TEGRA20_SPDIF_DATA_FIFO_CSR_TX_ATN_LVL_MASK,
-+			   TEGRA20_SPDIF_DATA_FIFO_CSR_TX_ATN_LVL_TU4_WORD_FULL);
++	regcache_cache_only(spdif->regmap, true);
 +
- 	switch (params_rate(params)) {
- 	case 32000:
- 		spdifclock = 4096000;
+ 	clk_disable_unprepare(spdif->clk_spdif_out);
+ 
+ 	return 0;
+@@ -37,13 +41,35 @@ static __maybe_unused int tegra20_spdif_runtime_resume(struct device *dev)
+ 	struct tegra20_spdif *spdif = dev_get_drvdata(dev);
+ 	int ret;
+ 
++	ret = reset_control_assert(spdif->reset);
++	if (ret)
++		return ret;
++
+ 	ret = clk_prepare_enable(spdif->clk_spdif_out);
+ 	if (ret) {
+ 		dev_err(dev, "clk_enable failed: %d\n", ret);
+ 		return ret;
+ 	}
+ 
++	usleep_range(10, 100);
++
++	ret = reset_control_deassert(spdif->reset);
++	if (ret)
++		goto disable_clocks;
++
++	regcache_cache_only(spdif->regmap, false);
++	regcache_mark_dirty(spdif->regmap);
++
++	ret = regcache_sync(spdif->regmap);
++	if (ret)
++		goto disable_clocks;
++
+ 	return 0;
++
++disable_clocks:
++	clk_disable_unprepare(spdif->clk_spdif_out);
++
++	return ret;
+ }
+ 
+ static int tegra20_spdif_hw_params(struct snd_pcm_substream *substream,
+@@ -268,6 +294,12 @@ static int tegra20_spdif_platform_probe(struct platform_device *pdev)
+ 
+ 	dev_set_drvdata(&pdev->dev, spdif);
+ 
++	spdif->reset = devm_reset_control_get_exclusive(&pdev->dev, NULL);
++	if (IS_ERR(spdif->reset)) {
++		dev_err(&pdev->dev, "Can't retrieve spdif reset\n");
++		return PTR_ERR(spdif->reset);
++	}
++
+ 	spdif->clk_spdif_out = devm_clk_get(&pdev->dev, "spdif_out");
+ 	if (IS_ERR(spdif->clk_spdif_out)) {
+ 		dev_err(&pdev->dev, "Could not retrieve spdif clock\n");
+diff --git a/sound/soc/tegra/tegra20_spdif.h b/sound/soc/tegra/tegra20_spdif.h
+index 1973ffc2d5c7..ff4b79e2052f 100644
+--- a/sound/soc/tegra/tegra20_spdif.h
++++ b/sound/soc/tegra/tegra20_spdif.h
+@@ -451,6 +451,7 @@ struct tegra20_spdif {
+ 	struct snd_dmaengine_dai_dma_data capture_dma_data;
+ 	struct snd_dmaengine_dai_dma_data playback_dma_data;
+ 	struct regmap *regmap;
++	struct reset_control *reset;
+ };
+ 
+ #endif
 -- 
 2.33.1
 
