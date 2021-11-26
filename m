@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B03B4C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Nov 2021 12:11:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E5E3C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Nov 2021 12:11:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AA7411936;
-	Fri, 26 Nov 2021 13:10:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA7411936
+	by alsa0.perex.cz (Postfix) with ESMTPS id 942B21925;
+	Fri, 26 Nov 2021 13:10:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 942B21925
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637928685;
-	bh=738bSYdyIdigXLlMxFXudb2N3jgQ0UIt9fKrjECy69U=;
+	s=default; t=1637928701;
+	bh=v+BYVL5p6hBu0vpWEhpJhjhC0arCV+byXn8Hl1HQSlw=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qRZr7rjKXvPKJ6IrscQ7O4kN1RbnSIOagVYzpSe5Pf6W94TlSR3M9JkFeNvshN0eL
-	 1rZhfcC5ZldCOGbvVCwwYykzNAibi9UdzSTPxQbZ1/6HXc+X7u0XvQ+YMsWiV2WIOR
-	 FNau5y2HyRHbefJ54DxKSFowA/NUxRp7u+vXc36U=
+	b=YwOXThUMDO0JQdD7Ns8Cf0hWHbO9THYrgdhCN+EPyUHOxLc3k1aWiY89P/66iaxXP
+	 l2mZqHKWIKNrRVdphxv8tiHUQNLB8wOlGlyvb81GCvdozLRmVxhFlsuLkbhHSvYER+
+	 JLDNznx7wJMEmMozVmdJpRFKlygMBjA3O9l/wl1M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A98F6F80563;
-	Fri, 26 Nov 2021 13:06:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 59798F804F1;
+	Fri, 26 Nov 2021 13:06:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 08B56F8055A; Fri, 26 Nov 2021 13:06:19 +0100 (CET)
+ id B7554F804EC; Fri, 26 Nov 2021 13:06:34 +0100 (CET)
 Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
  bits)) (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 13D69F80542
- for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2021 13:06:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13D69F80542
+ by alsa1.perex.cz (Postfix) with ESMTPS id 53CF6F8056F
+ for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2021 13:06:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53CF6F8056F
 Authentication-Results: alsa1.perex.cz;
  dkim=fail reason="signature verification failed" (2048-bit key)
- header.d=collabora.com header.i=@collabora.com header.b="FU8lv0z9"
+ header.d=collabora.com header.i=@collabora.com header.b="BY0Uvo4b"
 Received: from [127.0.0.1] (localhost [127.0.0.1])
- (Authenticated sender: kholk11) with ESMTPSA id 36BA91F46847
+ (Authenticated sender: kholk11) with ESMTPSA id DD0601F46857
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
- t=1637928371; bh=738bSYdyIdigXLlMxFXudb2N3jgQ0UIt9fKrjECy69U=;
+ t=1637928387; bh=v+BYVL5p6hBu0vpWEhpJhjhC0arCV+byXn8Hl1HQSlw=;
  h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
- b=FU8lv0z9NGgwj9+kpWcIN3FKFFwt7cjEI+yXFe7Tge/Rd3PwlcGxwzJd+A9UQ4ON6
- dox+v3LpD+H7Ab229W0BnXpnucW635tPD+8I5y1iwX6b12fyVBw4BZew6JWAJFSWN1
- AWmKBUQ2NXUWA64gDGqOLYPPdan1qsnXdg8bcFabRI3L4NDVaqnN12fJiS6ldU2BA7
- DrgHmjVZzRpNEc49WqtzMbSWGZy9N2uk/lUORzO/GjdfGgneZRjlehPPiMz/UE2wXd
- HlF9cGu2NGcQdDTtHCF7zuWIV699vcPPp8146snJr1Wt++F64cU2SNWvPrHGdCeCGS
- cQDD9V1uFr7xA==
-Subject: Re: [PATCH v2 1/8] ASoC: SOF: mediatek: Add mt8195 hardware support
+ b=BY0Uvo4bUQPw/HyfM8hQ6ZLJSlRSZNXOd+SwpCFTVq6IAzHnUBgf4NJKWzt0r3vMI
+ NARz/YbFWAWxtrDFAk41jV6bC8E6Rv4nOBmWbNgmYGNK/8AliEZ2EPoVnj+jX9+jv9
+ gtx/VRyMM8GVW+JzLbpFS0LOjiLK/irJPcWi8fLEIo5F5BxHhIjjERmmxTM6ololrf
+ jF+fyVK9DxODCm3vo9B/4QUEMg3Z9OPRl0tNDMjSaWeRcX6pJSLSoc904AXuEH7+TB
+ VOhfrmrq2aXJmpDZjawbZKTI7PsHlIP1ZB/nxHuqVKWIM/ll5hMx68qOq5ZB7Wudw3
+ 4Vg766Ky+3BaA==
+Subject: Re: [PATCH v2 5/8] ASoC: SOF: Add mt8195 device descriptor
 To: Daniel Baluta <daniel.baluta@oss.nxp.com>, broonie@kernel.org,
  alsa-devel@alsa-project.org
 References: <20211118100749.54628-1-daniel.baluta@oss.nxp.com>
- <20211118100749.54628-2-daniel.baluta@oss.nxp.com>
+ <20211118100749.54628-6-daniel.baluta@oss.nxp.com>
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Message-ID: <5e4e1153-a503-5889-efdf-242766554967@collabora.com>
-Date: Fri, 26 Nov 2021 13:06:07 +0100
+Message-ID: <ab4a8361-1686-7226-bf54-78872cdf6a0d@collabora.com>
+Date: Fri, 26 Nov 2021 13:06:24 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20211118100749.54628-2-daniel.baluta@oss.nxp.com>
+In-Reply-To: <20211118100749.54628-6-daniel.baluta@oss.nxp.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -87,10 +87,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 Il 18/11/21 11:07, Daniel Baluta ha scritto:
 > From: YC Hung <yc.hung@mediatek.com>
 > 
-> This patch initialize to support SOF on Mediatek mt8195 platform.
-> MT8195 has four Cortex A78 cores paired with four Cortex A55 cores.
-> It also has Cadence HiFi-4 DSP single core. There are shared DRAM and
-> mailbox interrupt between AP and DSP to use for IPC communication.
+> Add SOF device and DT descriptor for Mediatek mt8195 platform.
 > 
 > Signed-off-by: YC Hung <yc.hung@mediatek.com>
 > Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
