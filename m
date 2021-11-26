@@ -4,81 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00A70C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Nov 2021 12:09:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80B2AC433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Nov 2021 12:09:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 25025190E;
-	Fri, 26 Nov 2021 13:08:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 25025190E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7DB371930;
+	Fri, 26 Nov 2021 13:08:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7DB371930
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637928565;
-	bh=1SnfqFBoI/hm5Prl/nzqRuFDUJPWSf0HfFMWd25WKos=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1637928576;
+	bh=9EQmaihFqroyudxA2nA0/OcsptHnfOtG3O895b09Y2g=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cllQ6lMmMKwuYk8Sp7AUoiB1Nf6JCloeo4qPnIt/2zMmOI1pBgEgHqk9f7GIGS85C
-	 0An3zQBsoUxpMHPLTZ8dYQvNP4l55MBt5z9AjxMoUVy60kHq9sjQ6qp9t1jFJS1IKS
-	 bWzPdEaCM2sg+vI60jcdzBS7pOZfjJ5X4gk7EqwA=
+	b=HzzrsV+tK5JYjI+S7jed217Dck4cq5E7Hcy4gygkeE0pEJ2xg2k/CcjinAT7iAsuy
+	 YhNp1TMENYfDfr25Pt+FB1Jc5lZQZgie0MsGcf3wwQJCBFJ9CsKMsIaPX5H6r7K5VO
+	 jMe0mNUZrH4Hb/vw3ls4QEk3fNa9gGtZWBU+yw2A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 04BC6F8052D;
-	Fri, 26 Nov 2021 13:05:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A15BDF80212;
+	Fri, 26 Nov 2021 13:06:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EF009F80536; Fri, 26 Nov 2021 13:05:56 +0100 (CET)
-Received: from m43-7.mailgun.net (m43-7.mailgun.net [69.72.43.7])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 68D02F8053A; Fri, 26 Nov 2021 13:06:05 +0100 (CET)
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk
+ [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BE11DF8052D
- for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2021 13:05:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE11DF8052D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5ABFEF80245
+ for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2021 13:05:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5ABFEF80245
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=mg.codeaurora.org
- header.i=@mg.codeaurora.org header.b="o3OOcYIw"
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
- q=dns/txt; 
- s=smtp; t=1637928350; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=sa9nKK1o3AOfu1ra5WKHvMKH3KsFIk4GkxSk6F/SGng=;
- b=o3OOcYIwbchdsouvERHankMYVSd0ac4VczlcBIOTYQtHGryGIDiV055/cFp/sGu9H3nt8Bfs
- kiFVOsEFxTkKVjWZmo8btqadtZph8kdUaivByw80tiebTvjTrjVuYP4Nx0Fiif8HEKdcOlzD
- 7Fq96V0QT/uslqww42wru7ladRU=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 61a0cd9e5daaeec79730747d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 26 Nov 2021 12:05:50
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id 57552C43618; Fri, 26 Nov 2021 12:05:50 +0000 (UTC)
-Received: from hu-srivasam-hyd.qualcomm.com (unknown [202.46.22.19])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: srivasam)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id B5B2DC4360D;
- Fri, 26 Nov 2021 12:05:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org B5B2DC4360D
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- spf=fail smtp.mailfrom=codeaurora.org
-From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To: agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
- broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
- bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
- srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
- linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- swboyd@chromium.org, judyhsiao@chromium.org
-Subject: [PATCH v6 08/10] ASoC: dt-bindings: Add SC7280 lpass cpu bindings
-Date: Fri, 26 Nov 2021 17:34:40 +0530
-Message-Id: <1637928282-2819-9-git-send-email-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1637928282-2819-1-git-send-email-srivasam@codeaurora.org>
-References: <1637928282-2819-1-git-send-email-srivasam@codeaurora.org>
-Cc: Venkata Prasad Potturu <potturu@codeaurora.org>,
- Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+ dkim=fail reason="signature verification failed" (2048-bit key)
+ header.d=collabora.com header.i=@collabora.com header.b="K+tqyBcS"
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+ (Authenticated sender: kholk11) with ESMTPSA id 60C4C1F46847
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
+ t=1637928355; bh=9EQmaihFqroyudxA2nA0/OcsptHnfOtG3O895b09Y2g=;
+ h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+ b=K+tqyBcSzgn/XvTEwoARRUXVoMuW3VR0M9EJZTrKV9TMaA4ZotGcziOvZbCNrw41p
+ pHq4wvsIvn8Q5xf9YZdYQ1uiP5mc80hNRnx2/L0yihFqoteGv4FLcufgZWWvU2C4fY
+ NCsXfU0pXXYcjLceWyeUw5nTPz9U5WnL1F71zb/cZPUtqSbfFUIsEpu4fd7AJnVAB5
+ JyceM4BHVE6oINAM2tfDRm0WPMyWCN93FMT38lrYdAt9Cf+a2U54bzWHfrZS7p4RtG
+ RyoDhRVdHRLraYo2Iy+54YEBZ5o8LJnicgOrfOg/+IJKu5QplQbUIutlZ4jEruBHQo
+ H0kZmjJQ2Da4Q==
+Subject: Re: [PATCH v2 4/8] ASoC: SOF: mediatek: Add fw loader and mt8195 dsp
+ ops to load firmware
+To: Daniel Baluta <daniel.baluta@oss.nxp.com>, broonie@kernel.org,
+ alsa-devel@alsa-project.org
+References: <20211118100749.54628-1-daniel.baluta@oss.nxp.com>
+ <20211118100749.54628-5-daniel.baluta@oss.nxp.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Message-ID: <9521a830-bf02-8232-368e-1afb4b978bf4@collabora.com>
+Date: Fri, 26 Nov 2021 13:05:51 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <20211118100749.54628-5-daniel.baluta@oss.nxp.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ daniel.baluta@gmail.com, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ lgirdwood@gmail.com,
+ =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+ linux-kernel@vger.kernel.org, pierre-louis.bossart@linux.intel.com,
+ linux-mediatek@lists.infradead.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, yc.hung@mediatek.com,
+ daniel.baluta@nxp.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,134 +86,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add bindings for sc7280 lpass cpu driver which supports
-audio over i2s based speaker, soundwire based headset, msm dmics
-and HDMI Port.
+Il 18/11/21 11:07, Daniel Baluta ha scritto:
+> From: YC Hung <yc.hung@mediatek.com>
+> 
+> Add mt8195-loader module with ops callback to load and run firmware
+> on mt8195 platform.
+> 
+> Signed-off-by: YC Hung <yc.hung@mediatek.com>
+> Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+> Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+> Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
+> Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
 
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Co-developed-by: Venkata Prasad Potturu <potturu@codeaurora.org>
-Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
----
- .../devicetree/bindings/sound/qcom,lpass-cpu.yaml  | 69 +++++++++++++++++++---
- 1 file changed, 61 insertions(+), 8 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
-index 1e23c0e..0f5a57c 100644
---- a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
-+++ b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
-@@ -22,35 +22,36 @@ properties:
-       - qcom,lpass-cpu
-       - qcom,apq8016-lpass-cpu
-       - qcom,sc7180-lpass-cpu
-+      - qcom,sc7280-lpass-cpu
- 
-   reg:
--    maxItems: 2
-+    maxItems: 5
-     description: LPAIF core registers
- 
-   reg-names:
--    maxItems: 2
-+    maxItems: 5
- 
-   clocks:
-     minItems: 3
--    maxItems: 6
-+    maxItems: 7
- 
-   clock-names:
-     minItems: 3
--    maxItems: 6
-+    maxItems: 7
- 
-   interrupts:
--    maxItems: 2
-+    maxItems: 4
-     description: LPAIF DMA buffer interrupt
- 
-   interrupt-names:
--    maxItems: 2
-+    maxItems: 4
- 
-   qcom,adsp:
-     $ref: /schemas/types.yaml#/definitions/phandle
-     description: Phandle for the audio DSP node
- 
-   iommus:
--    maxItems: 2
-+    maxItems: 3
-     description: Phandle to apps_smmu node with sid mask
- 
-   power-domains:
-@@ -69,7 +70,7 @@ patternProperties:
-   "^dai-link@[0-9a-f]$":
-     type: object
-     description: |
--      LPASS CPU dai node for each I2S device. Bindings of each node
-+      LPASS CPU dai node for each I2S device or Soundwire device. Bindings of each node
-       depends on the specific driver providing the functionality and
-       properties.
-     properties:
-@@ -174,6 +175,58 @@ allOf:
-         - iommus
-         - power-domains
- 
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: qcom,sc7280-lpass-cpu
-+
-+    then:
-+      properties:
-+        clock-names:
-+          oneOf:
-+            - items:   #for I2S
-+                - const: lpass_aon_cc_audio_hm_h_clk
-+                - const: lpass_core_cc_sysnoc_mport_core_clk
-+                - const: lpass_core_cc_ext_if1_ibit_clk
-+            - items:   #for Soundwire
-+                - const: lpass_aon_cc_audio_hm_h_clk
-+                - const: lpass_audio_cc_codec_mem0_clk
-+                - const: lpass_audio_cc_codec_mem1_clk
-+                - const: lpass_audio_cc_codec_mem2_clk
-+            - items:   #for HDMI
-+                - const: lpass_aon_cc_audio_hm_h_clk
-+
-+        reg-names:
-+          anyOf:
-+            - items:   #for I2S
-+                - const: lpass-lpaif
-+            - items:   #for I2S and HDMI
-+                - const: lpass-hdmiif
-+                - const: lpass-lpaif
-+            - items:   #for I2S, soundwire and HDMI
-+                - const: lpass-cdc-lpm
-+                - const: lpass-rxtx-lpaif
-+                - const: lpass-va-lpaif
-+                - const: lpass-hdmiif
-+                - const: lpass-lpaif
-+        interrupt-names:
-+          anyOf:
-+            - items:   #for I2S
-+                - const: lpass-irq-lpaif
-+            - items:   #for I2S and HDMI
-+                - const: lpass-irq-lpaif
-+                - const: lpass-irq-hdmi
-+            - items:   #for I2S, soundwire and HDMI
-+                - const: lpass-irq-lpaif
-+                - const: lpass-irq-vaif
-+                - const: lpass-irq-rxtxif
-+                - const: lpass-irq-hdmi
-+
-+      required:
-+        - iommus
-+        - power-domains
-+
- examples:
-   - |
-     #include <dt-bindings/sound/sc7180-lpass.h>
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-
+Acked-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
