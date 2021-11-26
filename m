@@ -4,71 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E473C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Nov 2021 14:12:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EF23C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Nov 2021 16:20:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 30D8E189F;
-	Fri, 26 Nov 2021 15:11:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 30D8E189F
+	by alsa0.perex.cz (Postfix) with ESMTPS id A6312193A;
+	Fri, 26 Nov 2021 17:19:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6312193A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637935918;
-	bh=nkFAIxeULxrats2gaz7/1idop7mscGD/FIM112d6pfA=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1637943639;
+	bh=FLrKch/eqhfmgzFiobhXVEUwGyzbrglWHnYYBbHB9ew=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gCEW1aoYbt30PBfb11qPDEby+b1xzqE+z5a+a/pI4HoEvB5vaYNuxMYkTTQDIJ4tF
-	 r+m1nXJY6KTyeWrQsL0VaSsDQDHAbKp72qv+bXVAzs11SQMP+d5N01wPx4YCRppQ64
-	 ewY77RJtvBfpwT/pAcNYOCSTcbs93POLzTH5e61I=
+	b=mLSbtpQLCAOgXxZ17JDJl1JdZ4vchlMFpCquOJqNBHkQRa5csQmmXN8EENXIlhiET
+	 LkgZIWrO+c8xCnDUuhGfvqeykipp125/Y+Hi5lL94YyYEnJagNFS0suNvJCg2yMgt6
+	 kTORebCvjM8kkJhsQCnozRfNFWdJHdsHaVVf0Pps=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CD7BFF801F7;
-	Fri, 26 Nov 2021 15:11:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EDE57F80087;
+	Fri, 26 Nov 2021 17:19:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2FE65F801F7; Fri, 26 Nov 2021 15:11:06 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 99F03F80302; Fri, 26 Nov 2021 17:19:47 +0100 (CET)
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com
+ [IPv6:2a00:1450:4864:20::12a])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ABE98F80087
- for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2021 15:10:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ABE98F80087
+ by alsa1.perex.cz (Postfix) with ESMTPS id B073DF80132
+ for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2021 17:19:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B073DF80132
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="jvMrld3r"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 5B0F2B827E6;
- Fri, 26 Nov 2021 14:10:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 700EDC9305F;
- Fri, 26 Nov 2021 14:10:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1637935857;
- bh=nkFAIxeULxrats2gaz7/1idop7mscGD/FIM112d6pfA=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=jvMrld3r86pnkmmsUpxYNCMv309pbCFFffGyJSEAHjHzkCfcdNMYGWBW3HZKPlNoG
- qqJ0tpOGGfVCQRTBUqYCDqn63NkOA4CpltUjCZNDmmoCvNSKCq3X6+OuLLByA90cvd
- pRTpzZWb3704Pac3JzvJ0ce8JOOK+pv0I1dq4pFboK5WwpkEieoXwjZ80ERIQkN6Ku
- zXHur6vtF6esxhf1R5wnsbvE6DwFhuaeS/ee0oSoh0ztU69gd5l9KkhHe3gLp0kdp8
- +6+ucaHpEJgIARWa6cveMjZaAxit1l+ylrsiR4bCS+t7TL3AUFQpajkz9nDU+iP76z
- yusRo7aqJzwhA==
-Date: Fri, 26 Nov 2021 14:10:52 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [PATCH v5 3/3] ASoC: Intel: Skylake: Use NHLT API to search for
- blob
-Message-ID: <YaDq7L1Mu++3UBL7@sirena.org.uk>
-References: <20211126140355.1042684-1-cezary.rojewski@intel.com>
- <20211126140355.1042684-4-cezary.rojewski@intel.com>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="gf9VIf7I"
+Received: by mail-lf1-x12a.google.com with SMTP id b40so25471882lfv.10
+ for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2021 08:19:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=8AhGRJaoVn1IrWGJ+5EHhVIJuQTwIW4TlUfHNDbUYl0=;
+ b=gf9VIf7ILO+koaNF6veBCGsOnIjFAHjV9jZKRTPqVVFyH6j8CESRZEpANBWMaZG2TR
+ xpjJL7NtJrqw1ZjlYAmAnUFl8ek+P2efkdt1B/Or7kcu3iJ8NWuJgMl91GgcQhjknouk
+ XIjVLx5HoE1uWBKucb5mSE9EX7D1E7Fci4NahzhvyuxIbY4ldY5SPjjKmVSof3zwLRs2
+ er7kihMp7qqh5ZndfenJSGIkc3p2SRq5sV1h6JMTfR50hrEs9XT0YJASKFQ+YtbwpWxK
+ jp3+NY0VAiHPNHZ9Bi1XrkgF8+o1XA6u2l4+pH2/q5vTshzi2FO/CDxQ4UvhfkR9UHZ1
+ Z+DA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=8AhGRJaoVn1IrWGJ+5EHhVIJuQTwIW4TlUfHNDbUYl0=;
+ b=QHdvuKIbCRJFfxFiazShC//R0D5ocha5jZjZXzocg1zbfcdbgBJL2kaGrFu923BJ9M
+ Z9gd31ZDSZrM/E8HyT30M6hylipW3V4mv4imR1WkLYKdEUHq6z4HqfmiZTBrwbj9O7Ak
+ YnVwgYf5EO2ifnyBkecm7cbehI+UeHCeAeA1xY8p+Ti0WqZWaXC/t76l7eQyT2JBJrnN
+ XT879CQ2u65i8CwduthL2hJ+KNpi58aKp0BHSOn7y1pH8bxAvR7E3NPxEm6dMRnJ36LM
+ NVWTJlT+rh8N7vruRMZR5y+57KAojYMt+hkbyVIeS3EeIWw7mYYEQevbSMIrZZV0Vvzs
+ iVow==
+X-Gm-Message-State: AOAM5338c/CdYSjpVyi9qXrJgIPfMJo9ikMSf31Vrub0IFjEFX6jiBt8
+ ifQXROElpBVE1evH/eCW41I=
+X-Google-Smtp-Source: ABdhPJxaUvItDXQX2K+4aMi2wXJ6fVnLZSJi/ilFd4JYO1HwMEBAxC35yJ3/i3javAwM6xF3n5Y60A==
+X-Received: by 2002:a05:6512:1051:: with SMTP id
+ c17mr31584295lfb.35.1637943580427; 
+ Fri, 26 Nov 2021 08:19:40 -0800 (PST)
+Received: from localhost.localdomain (94-29-48-99.dynamic.spd-mgts.ru.
+ [94.29.48.99])
+ by smtp.gmail.com with ESMTPSA id t7sm613381lfl.260.2021.11.26.08.19.39
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 26 Nov 2021 08:19:40 -0800 (PST)
+From: Dmitry Osipenko <digetx@gmail.com>
+To: Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>, Mark Brown <broonie@kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
+ Liam Girdwood <lgirdwood@gmail.com>, Agneli <poczt@protonmail.ch>,
+ Rob Herring <robh+dt@kernel.org>
+Subject: [PATCH v2 02/20] ASoC: dt-bindings: tegra20-i2s: Convert to schema
+Date: Fri, 26 Nov 2021 19:17:49 +0300
+Message-Id: <20211126161807.15776-3-digetx@gmail.com>
+X-Mailer: git-send-email 2.33.1
+In-Reply-To: <20211126161807.15776-1-digetx@gmail.com>
+References: <20211126161807.15776-1-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="KkvRHr5mrZ8BDmsl"
-Content-Disposition: inline
-In-Reply-To: <20211126140355.1042684-4-cezary.rojewski@intel.com>
-X-Cookie: You fill a much-needed gap.
-Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
- tiwai@suse.com, hdegoede@redhat.com,
- Amadeusz =?utf-8?B?U8WCYXdpxYRza2k=?= <amadeuszx.slawinski@linux.intel.com>
+Content-Transfer-Encoding: 8bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,34 +102,128 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Convert NVIDIA Tegra20 I2S binding to schema.
 
---KkvRHr5mrZ8BDmsl
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ .../bindings/sound/nvidia,tegra20-i2s.txt     | 30 --------
+ .../bindings/sound/nvidia,tegra20-i2s.yaml    | 70 +++++++++++++++++++
+ 2 files changed, 70 insertions(+), 30 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.yaml
 
-On Fri, Nov 26, 2021 at 03:03:55PM +0100, Cezary Rojewski wrote:
-> From: Amadeusz S=C5=82awi=C5=84ski <amadeuszx.slawinski@linux.intel.com>
->=20
-> With NHLT enriched with new search functions, remove local code in
-> favour of them. This also fixes broken behaviour: search should be based
-> on significant bits count rather than container size.
+diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.txt b/Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.txt
+deleted file mode 100644
+index dc30c6bfbe95..000000000000
+--- a/Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.txt
++++ /dev/null
+@@ -1,30 +0,0 @@
+-NVIDIA Tegra 20 I2S controller
+-
+-Required properties:
+-- compatible : "nvidia,tegra20-i2s"
+-- reg : Should contain I2S registers location and length
+-- interrupts : Should contain I2S interrupt
+-- resets : Must contain an entry for each entry in reset-names.
+-  See ../reset/reset.txt for details.
+-- reset-names : Must include the following entries:
+-  - i2s
+-- dmas : Must contain an entry for each entry in clock-names.
+-  See ../dma/dma.txt for details.
+-- dma-names : Must include the following entries:
+-  - rx
+-  - tx
+-- clocks : Must contain one entry, for the module clock.
+-  See ../clocks/clock-bindings.txt for details.
+-
+-Example:
+-
+-i2s@70002800 {
+-	compatible = "nvidia,tegra20-i2s";
+-	reg = <0x70002800 0x200>;
+-	interrupts = < 45 >;
+-	clocks = <&tegra_car 11>;
+-	resets = <&tegra_car 11>;
+-	reset-names = "i2s";
+-	dmas = <&apbdma 21>, <&apbdma 21>;
+-	dma-names = "rx", "tx";
+-};
+diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.yaml
+new file mode 100644
+index 000000000000..ad43b237d9af
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.yaml
+@@ -0,0 +1,70 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/nvidia,tegra20-i2s.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: NVIDIA Tegra20 I2S Controller
++
++description: |
++  The I2S Controller streams synchronous serial audio data between system
++  memory and an external audio device. The controller supports the I2S Left
++  Justified Mode, Right Justified Mode, and DSP mode formats.
++
++maintainers:
++  - Thierry Reding <treding@nvidia.com>
++  - Jon Hunter <jonathanh@nvidia.com>
++
++properties:
++  compatible:
++    const: nvidia,tegra20-i2s
++
++  reg:
++    maxItems: 1
++
++  resets:
++    maxItems: 1
++
++  reset-names:
++    const: i2s
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    minItems: 1
++
++  dmas:
++    minItems: 2
++
++  dma-names:
++    items:
++      - const: rx
++      - const: tx
++
++required:
++  - compatible
++  - reg
++  - resets
++  - reset-names
++  - interrupts
++  - clocks
++  - dmas
++  - dma-names
++
++additionalProperties: false
++
++examples:
++  - |
++    i2s@70002800 {
++        compatible = "nvidia,tegra20-i2s";
++        reg = <0x70002800 0x200>;
++        interrupts = <45>;
++        clocks = <&tegra_car 11>;
++        resets = <&tegra_car 11>;
++        reset-names = "i2s";
++        dmas = <&apbdma 21>, <&apbdma 21>;
++        dma-names = "rx", "tx";
++    };
++
++...
+-- 
+2.33.1
 
-Acked-by: Mark Brown <broonie@kernel.org>
-
---KkvRHr5mrZ8BDmsl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGg6usACgkQJNaLcl1U
-h9ATRgf/dWzJNXV9Ai58nKADpt+C6mv3WPUd9QDMuuIszrPOIAafVUaUcnZb1Cfz
-OzGTFEcAK/euZUtB6QTY4DMM+6cJOKywpKWHziL4e3Q2ZKiz3jlTVPVWBjUNEYdI
-e+3wVn0/XlkV4oEyvs7oUDWo3xCC46+8Zhz5jucsfv5uHq12HZWPRi+b3GACiLhh
-ckdv0ZNyDXSP2SnGKBaAEuc/uf5lyKtX6K6/kECqV7XH68APL0zZDKYDoGXa9+EJ
-VyzPrQMmEU/Iy9gXpgSEu77nskKy9T+aXPBZK3+sMfD9Gb1Qo1lnBKnmCvJMgpuW
-37zT5lnunHM3aKISRbq/Sm5xg+clDQ==
-=TVPY
------END PGP SIGNATURE-----
-
---KkvRHr5mrZ8BDmsl--
