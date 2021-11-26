@@ -4,71 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E13BEC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Nov 2021 09:32:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5E7BC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Nov 2021 10:10:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C888E18EF;
-	Fri, 26 Nov 2021 10:31:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C888E18EF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1C57D18EF;
+	Fri, 26 Nov 2021 11:09:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C57D18EF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1637919168;
-	bh=39pSRj66pjOCZNAOcOBl8nt6xNfrkBCBzIldm7CGbeU=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1637921412;
+	bh=RBh1m9Iv9ako7axP5H+hwKAtAUmpp6poVdly3oinc9w=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=It8GX++9wCiI1z1bI+j5DNwQ1CW5USRTusEirxvWPIJEJaNKvNitxnAkvU/4YnQ+b
-	 ULHug5yGV44HUe9GZJjMGeaTmJaiGCNLBi9NZiTs2JfAJ53Y0MQyiyKqNNo7PEcZcj
-	 G6OdUm57lxlpKSUkGB7KHoNjKNXuwA056xurUPZU=
+	b=fGRVJrEtPYEepCT+7kxS4goY1CpDvcA/CCCttwb/WA5RRpNkn/sbHAla3wJyUd7NN
+	 0nhtJwxnAZu0aLDVqYAq963FxC5P/+XJfrhfyoVLEqrhEiZgRGDKi1E0rC35wkLYxs
+	 MEUL8Dxu8rZHjpXs84H7G28FfIcw6fxu2SGSJaY8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 44507F804FC;
-	Fri, 26 Nov 2021 10:31:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 18F32F801F7;
+	Fri, 26 Nov 2021 11:09:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1EB23F804FD; Fri, 26 Nov 2021 10:31:17 +0100 (CET)
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 4260DF80259; Fri, 26 Nov 2021 11:09:18 +0100 (CET)
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com
+ [IPv6:2607:f8b0:4864:20::42f])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 99407F801F7;
- Fri, 26 Nov 2021 10:30:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99407F801F7
-X-UUID: ac8153876a3c435ebfcb67888e869739-20211126
-X-UUID: ac8153876a3c435ebfcb67888e869739-20211126
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by
- mailgw01.mediatek.com (envelope-from <allen-kh.cheng@mediatek.com>)
- (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
- with ESMTP id 1910090612; Fri, 26 Nov 2021 17:30:26 +0800
-Received: from mtkexhb01.mediatek.inc (172.21.101.102) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 26 Nov 2021 17:30:24 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by mtkexhb01.mediatek.inc
- (172.21.101.102) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
- Fri, 26 Nov 2021 17:30:24 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via
- Frontend Transport; Fri, 26 Nov 2021 17:30:24 +0800
-From: allen-kh.cheng <allen-kh.cheng@mediatek.com>
-To: Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Matthias Brugger <matthias.bgg@gmail.com>, Jassi Brar
- <jassisinghbrar@gmail.com>
-Subject: [PATCH v6 1/3] dt-bindings: mediatek: add adsp-mbox document
-Date: Fri, 26 Nov 2021 17:30:19 +0800
-Message-ID: <20211126093021.25462-2-allen-kh.cheng@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20211126093021.25462-1-allen-kh.cheng@mediatek.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id E1860F801F7
+ for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2021 11:09:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1860F801F7
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
+ header.b="IPkErYmm"
+Received: by mail-pf1-x42f.google.com with SMTP id p13so805829pfw.2
+ for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2021 02:09:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to;
+ bh=4W2I5kuwpM2lqQ0SftJKxJYAD53bRmdrJ6iZIfgDzkg=;
+ b=IPkErYmmP/MP79xguXU0HZSMDDIrG2wd7US1TxW/lxQfYNasxnfDdJc1Fqr8E9aXxS
+ vszY6dfUJQzI0hMkvNQpjC4t/XTiL7rEQ1JWt8ontYmbu+VFFU0dqE2uCBFL0zRXjsU2
+ rG5AsTcwffVpz2uKA55Ef79HwxOOeQnMuQC0jyaY2tbHSZ2w9NN0133sDpmaDdv2+kXC
+ OGjnyPpGKdF6gl6JZVoaijU5R6+Dt+laQixKm9HgeAwTd6mQ2XXp2GpTSGXaC9CI9dtE
+ 9GEFFGI9Y6P498ovhEiNrHBGxLZ8P+pXgGG9wWOsDtlPdUBnTQovSuLGpW1SUzq3KHDj
+ lV5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=4W2I5kuwpM2lqQ0SftJKxJYAD53bRmdrJ6iZIfgDzkg=;
+ b=LpF7DyOP7Q8yUVa+jhJKWYpBLCoECH5z0bCYl0i/5HwUBe9gNk5+kzBCCg+anzGK7D
+ /O765RngodM4+Tm3gq/dYrnelHEKDZi/L/h/76iZNP932SzezG1UQQcQXyOV7dpzP2fv
+ VYEsIAuWoOTozxH+flES2gikgn1YDLik3fX7mSUTjQdroCjOQkr9aOrKM+m7N/pHf2BP
+ nBAQHzXhGYJjQkKr+Zf9DfbbHOFu19HoX3/4za2TiBI3vZGiKt/RNHDdGwxAxpXqmmXi
+ mDMbun7OMgHRVQAFNqtWKDEKfKjHGm2s/Oq1xOf/wo+uLAdaFyOaVL8h6S7hRWKyngyO
+ h3Bw==
+X-Gm-Message-State: AOAM5305mnRrMhACT05xyVbL0Ho5toaJQNXqbLfmXa9K2WwOeSN4QedL
+ oDG98IctAm7u6/4s8l8VD1MiIw==
+X-Google-Smtp-Source: ABdhPJxVejTdV/NyrWHwGiaTysIUv3zOhCVavwvpUaitec33azBmmuhOyA8uIgkTF6FDl0OeFLILPw==
+X-Received: by 2002:a05:6a00:2349:b0:49f:db1d:c378 with SMTP id
+ j9-20020a056a00234900b0049fdb1dc378mr19747281pfj.53.1637921344428; 
+ Fri, 26 Nov 2021 02:09:04 -0800 (PST)
+Received: from google.com ([2401:fa00:1:10:5eda:d984:1426:91ca])
+ by smtp.gmail.com with ESMTPSA id lj15sm5238017pjb.12.2021.11.26.02.09.01
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 26 Nov 2021 02:09:04 -0800 (PST)
+Date: Fri, 26 Nov 2021 18:08:59 +0800
+From: Tzung-Bi Shih <tzungbi@google.com>
+To: "allen-kh.cheng" <allen-kh.cheng@mediatek.com>
+Subject: Re: [PATCH v6 2/3] firmware: mediatek: add adsp ipc protocol interface
+Message-ID: <YaCyO9kKWJ8oog/h@google.com>
 References: <20211126093021.25462-1-allen-kh.cheng@mediatek.com>
+ <20211126093021.25462-3-allen-kh.cheng@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK: N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211126093021.25462-3-allen-kh.cheng@mediatek.com>
 Cc: devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>,
- Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>, cujomalainey@google.com,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, cujomalainey@google.com,
+ Daniel Baluta <daniel.baluta@nxp.com>, Jassi Brar <jassisinghbrar@gmail.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ linux-kernel@vger.kernel.org,
+ Project_Global_Chrome_Upstream_Group@mediatek.com,
+ Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>, Takashi Iwai <tiwai@suse.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Project_Global_Chrome_Upstream_Group@mediatek.com, tzungbi@google.com,
- linux-mediatek@lists.infradead.org, Daniel Baluta <daniel.baluta@nxp.com>,
  linux-arm-kernel@lists.infradead.org, sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -85,74 +106,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
+On Fri, Nov 26, 2021 at 05:30:20PM +0800, allen-kh.cheng wrote:
+> Signed-off-by: Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
 
-This patch adds document for mediatek adsp mbox
+Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
 
-Signed-off-by: Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
----
- .../bindings/mailbox/mtk,adsp-mbox.yaml       | 52 +++++++++++++++++++
- 1 file changed, 52 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mailbox/mtk,adsp-mbox.yaml
-
-diff --git a/Documentation/devicetree/bindings/mailbox/mtk,adsp-mbox.yaml b/Documentation/devicetree/bindings/mailbox/mtk,adsp-mbox.yaml
-new file mode 100644
-index 000000000000..a0149566ae56
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mailbox/mtk,adsp-mbox.yaml
-@@ -0,0 +1,52 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mailbox/mtk,adsp-mbox.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Mediatek ADSP mailbox
-+
-+maintainers:
-+  - Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
-+
-+description: |
-+  The MTK ADSP mailbox Inter-Processor Communication (IPC) enables the SoC
-+  to ommunicate with ADSP by passing messages through two mailbox channels.
-+  The MTK ADSP mailbox IPC also provides the ability for one processor to
-+  signal the other processor using interrupts.
-+
-+properties:
-+  compatible:
-+    items:
-+      - const: mediatek,mt8195-adsp-mbox
-+
-+  "#mbox-cells":
-+    const: 0
-+
-+  reg:
-+    description:
-+      Physical address base for dsp mbox base registers.
-+
-+  interrupts:
-+    description:
-+      adsp mbox interrupt
-+
-+required:
-+  - compatible
-+  - "#mbox-cells"
-+  - reg
-+  - interrupts
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    adsp_mailbox0:adsp_mailbox0@10816000 {
-+        compatible = "mediatek,mt8195-adsp-mbox";
-+        #mbox-cells = <0>;
-+        reg = <0x10816000 0x1000>;
-+        interrupts = <GIC_SPI 702 IRQ_TYPE_LEVEL_HIGH 0>;
-+    };
--- 
-2.18.0
-
+I have provided the tag in v5.  If your have no major updates for the newer patches, you should carry the tags in the commit message.
