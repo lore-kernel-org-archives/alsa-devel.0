@@ -4,67 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 605B1C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 29 Nov 2021 16:47:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 591B5C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 29 Nov 2021 16:47:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 97FF71F31;
-	Mon, 29 Nov 2021 17:46:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 97FF71F31
+	by alsa0.perex.cz (Postfix) with ESMTPS id 879201F3E;
+	Mon, 29 Nov 2021 17:46:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 879201F3E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638204433;
-	bh=N4ZsljVphFQ5StDB/sEhAMzkAq4w3lBf222fINgc9tE=;
+	s=default; t=1638204448;
+	bh=zE2eO9hN6S5kiKpgpPcHP10hKnIhl4wII/NNdCyTefM=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ou1JTQhlGzyFjZLKPDmigZme6xI1PjbmOM8lMGVW8LNEcD5QR5MftBRtytIOv8tqu
-	 Sc4RsYqLi/nJMbUOwKPDPRfJYRHe2QfUtTFSWbbOs8MzyLYVsgV4M4fcjzCI/9b+oC
-	 QYKpgOltqxfxwECOVbRa3pEhnnMVNkp+MOiTsrVA=
+	b=qltJ2gKcXoJFCA4K6R8TU+IxdRGHDmKkMoScPLilmwCGUxjUFLrOGKDu8y28vJphB
+	 lee6NjIB6oJO1imG2whFuq4kqS7OYQ/I15K57XHXPAKvMOtnTfPBAZjPT9siXtCixJ
+	 h5dcNgJeL8bIigZFsD8nPFM5lSGkkjNoFcyI2oXk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B24EDF804FC;
-	Mon, 29 Nov 2021 17:45:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 762CFF80240;
+	Mon, 29 Nov 2021 17:45:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9C53EF804FD; Mon, 29 Nov 2021 17:45:44 +0100 (CET)
+ id 95C4BF80256; Mon, 29 Nov 2021 17:45:51 +0100 (CET)
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 44286F804F2
- for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2021 17:45:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44286F804F2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 30695F80217
+ for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2021 17:45:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30695F80217
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="XMiY1W5y"
+ header.b="daLB3ZKw"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 0F246B80E60;
- Mon, 29 Nov 2021 16:45:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59C47C53FAD;
- Mon, 29 Nov 2021 16:45:38 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id C10A4B81217;
+ Mon, 29 Nov 2021 16:45:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA606C53FCF;
+ Mon, 29 Nov 2021 16:45:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1638204339;
- bh=N4ZsljVphFQ5StDB/sEhAMzkAq4w3lBf222fINgc9tE=;
+ s=k20201202; t=1638204346;
+ bh=zE2eO9hN6S5kiKpgpPcHP10hKnIhl4wII/NNdCyTefM=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=XMiY1W5y76QmZfECOYoQ8nyKVg/eBDxnhSwgmYRf5bqpvItsCFYwEq+c/uOY8xMXq
- dPcRYqVi6MogqXQuHGnCwZsUqoDd+rgYmv98wT0wftZEXPqf52+40CICYcJA69JLLV
- FkaSKJ6UgS/FEmXUg5y2nE/xQBGdE6ib9OBBzuD+mdKCRE7cnzOf78PK5hm+GPNQxV
- bxe4nLFv/oKzAOQC1G1bbTXKxzz8EvlOUDLGvaT9N0b2NVEzt1cHmxQkLcmXJYuHru
- ySg0jheIiMe8r9TyGrd7lFS+X5qLXo8cGNH1Id8CItdHPnIkdybFxKy/MA1UhL6S0X
- feot23CSRpXFw==
+ b=daLB3ZKw28zH7ZfbXP0vdHGa7dW6Dk+YhvLOUhPDDFZ/j1+eIHJIibFfk34kDTq9v
+ XHwIvueuS1fZNxk/d+NLfy8xUL/6vKMtMXjhjqcqLBS0sup1WW7TU/OmGcsc2NY9Ck
+ giLA//6Umyds2onOsvWKdAaQWqhPPyUb20LbegKqqwlB7rlD3+b0PdVjIIjWUqOD4v
+ 5BJkGkOy7XEcJRfAK53Nf5TxnQ309P2hP02Nf59+KyhmzkJjLARZqAquyzyNn2cv0F
+ +sNuEz7iRz61SGYFVUUzX1GLiclwl/DNpn6cW0iVVWEnblD2DbfXvvXtIE2YOMcUQr
+ BPSnO1du8Rb2w==
 From: Mark Brown <broonie@kernel.org>
-To: lvzhaoxiong <lvzhaoxiong@huaqin.corp-partner.google.com>,
- lgirdwood@gmail.com
-In-Reply-To: <20211123024329.21998-1-lvzhaoxiong@huaqin.corp-partner.google.com>
-References: <20211123024329.21998-1-lvzhaoxiong@huaqin.corp-partner.google.com>
-Subject: Re: [PATCH] ASoC: qcom: Add support for ALC5682I-VS codec
-Message-Id: <163820433805.1716750.13484199254785400045.b4-ty@kernel.org>
-Date: Mon, 29 Nov 2021 16:45:38 +0000
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <877dd8y26l.wl-kuninori.morimoto.gx@renesas.com>
+References: <877dd8y26l.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 0/5] ASoC: soc-pcm: tidyup soc_pcm_pointer()'s delay
+ update method
+Message-Id: <163820434447.1716750.13320796159497643171.b4-ty@kernel.org>
+Date: Mon, 29 Nov 2021 16:45:44 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: judyhsiao@google.com, albertchen@realtek.com, alsa-devel@alsa-project.org,
- derek.fang@realtek.com, linux-kernel@vger.kernel.org
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Jie Yang <yang.jie@linux.intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>, Takashi Iwai <tiwai@suse.com>,
+ Hans de Goede <hdegoede@redhat.com>, Gu Shengxian <gushengxian@yulong.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,12 +83,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 23 Nov 2021 10:43:29 +0800, lvzhaoxiong wrote:
-> Qcom machine driver adds rt5682s support in this patch.
-> Card name can be specified from dts by model property, and driver makes
-> use of the name to distinguish which headset codec is on the board.
+On 16 Nov 2021 16:44:50 +0900, Kuninori Morimoto wrote:
+> Current soc_pcm_pointer() is checking runtime->delay,
+> but it might be updated silently by component's .point callback.
+> It is strange and difficult to find/know the issue.
 > 
+> This patch adds .delay callback for component, and solve the issue.
 > 
+> Kuninori Morimoto (5):
+>   ASoC: soc-dai: update snd_soc_dai_delay() to snd_soc_pcm_dai_delay()
+>   ASoC: soc-component: add snd_soc_pcm_component_delay()
+>   ASoC: amd: acp-pcm-dma: add .delay support
+>   ASoC: intel: sst-mfld-platform-pcm: add .delay support
+>   ASoC: soc-pcm: tidyup soc_pcm_pointer()'s delay update method
+> 
+> [...]
 
 Applied to
 
@@ -93,8 +105,16 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: qcom: Add support for ALC5682I-VS codec
-      commit: 425c5fce8a03c9da70a4c763cd7db22fbb422dcf
+[1/5] ASoC: soc-dai: update snd_soc_dai_delay() to snd_soc_pcm_dai_delay()
+      commit: 8544f08c816292c2219f28c6eaa69236b978bfb9
+[2/5] ASoC: soc-component: add snd_soc_pcm_component_delay()
+      commit: 403f830e7a0be5a9e33c7a9d208574f79887ec57
+[3/5] ASoC: amd: acp-pcm-dma: add .delay support
+      commit: feea640aaf1a5ae9dff6e33931e680542432e8dd
+[4/5] ASoC: intel: sst-mfld-platform-pcm: add .delay support
+      commit: 796b64a72db0b416f0aa1815e87aa28388b4715d
+[5/5] ASoC: soc-pcm: tidyup soc_pcm_pointer()'s delay update method
+      commit: 7be10cef0fbe91f83c55faea7e8b70c0529dde5f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
