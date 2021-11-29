@@ -4,84 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4D5FC433FE
-	for <alsa-devel@archiver.kernel.org>; Mon, 29 Nov 2021 16:46:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 605B1C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 29 Nov 2021 16:47:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1D72E1F17;
-	Mon, 29 Nov 2021 17:45:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D72E1F17
+	by alsa0.perex.cz (Postfix) with ESMTPS id 97FF71F31;
+	Mon, 29 Nov 2021 17:46:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 97FF71F31
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638204398;
-	bh=yO1u/PRU9OVYfASovannxYd+Z1v+fw1Cxg2rsPPqkxY=;
-	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=eaE5YPlUufZQay6h7ozkI9z1SpHa77+v3uSc6Yzivc1HtoAjCjwKBiUtcZKQZMtXD
-	 LlyTwjGVMwbMu41kME/fsf3G2LGvOmHrT4HwIp5xF4on0Jc3Vl9WUzWmF7rfi+uZzW
-	 c9JusEapozDOGNhZ/X+RC8ZbtsqqDQFlOKfOmVfQ=
+	s=default; t=1638204433;
+	bh=N4ZsljVphFQ5StDB/sEhAMzkAq4w3lBf222fINgc9tE=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=ou1JTQhlGzyFjZLKPDmigZme6xI1PjbmOM8lMGVW8LNEcD5QR5MftBRtytIOv8tqu
+	 Sc4RsYqLi/nJMbUOwKPDPRfJYRHe2QfUtTFSWbbOs8MzyLYVsgV4M4fcjzCI/9b+oC
+	 QYKpgOltqxfxwECOVbRa3pEhnnMVNkp+MOiTsrVA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 685AAF804E7;
-	Mon, 29 Nov 2021 17:44:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B24EDF804FC;
+	Mon, 29 Nov 2021 17:45:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 99FF7F8028D; Sun, 28 Nov 2021 15:32:03 +0100 (CET)
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com
- [IPv6:2a00:1450:4864:20::330])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 9C53EF804FD; Mon, 29 Nov 2021 17:45:44 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 11E97F80149
- for <alsa-devel@alsa-project.org>; Sun, 28 Nov 2021 15:31:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11E97F80149
+ by alsa1.perex.cz (Postfix) with ESMTPS id 44286F804F2
+ for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2021 17:45:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44286F804F2
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=chrisdown.name header.i=@chrisdown.name
- header.b="QPA0L+9n"
-Received: by mail-wm1-x330.google.com with SMTP id
- p3-20020a05600c1d8300b003334fab53afso14708440wms.3
- for <alsa-devel@alsa-project.org>; Sun, 28 Nov 2021 06:31:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=chrisdown.name; s=google;
- h=date:from:to:cc:subject:message-id:mime-version:content-disposition
- :user-agent; bh=ItTd/4w+dybTRXGG7gej3HA5Fv4/5+j9oxFEaLUf0MU=;
- b=QPA0L+9nGKCnrPxnK6Ml62LUNwSpbInWGuj56wwxNoY4wg1qI3LCeEVYz1zBizJV9g
- BgIfzKDJazbNFOuv2agk2jN73wBJ1owwxyu8N6XnE3pqRb77eJr9LVvFuNaE6kz97DND
- wn2xrNmlMBaCSROaVgFGPxmJvY57UvsVkOGiA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
- :content-disposition:user-agent;
- bh=ItTd/4w+dybTRXGG7gej3HA5Fv4/5+j9oxFEaLUf0MU=;
- b=qvIjZpwRefKyperqCESpDmlvNzOHr9Bswb6m1b8hZ9Yfc5bHcf1DSjDQTKjMCyZ5XJ
- XZskkIEkIMjMFhX4nnAr7ePR+iU5TNqo12Jgo5TGqeLELv7Tfes7gEVmT0+V4o7WKDt1
- Ho0UCQ4BCK7EFAZnFj7IpBrLoja3XaHxsU57HSDw0Q0r5DY+PCaMRbiC/I7NaOVS772P
- Rb/tx/s1I6FFfrQnbgqqvBOiIeiSLNbS4lPAh4p51iuLfzendT8mZ7YMYhoalgD1qjFm
- sraTZoN8xVC3HlIDWw2j0FCpijho3/zGyyXAdlDu3Hip1xQwvJUl3Zd+c6SFBRER7EZ3
- nivQ==
-X-Gm-Message-State: AOAM5304STeaVKdLvH6n9UmfVMdLhcKQQ0lebYn/7tnboXGSNlUF40sM
- wrssIjPqjXStbqOSNmdb0750ax7BurNxMsEjlnI=
-X-Google-Smtp-Source: ABdhPJz/0jrGatDLnn0anKT7I/wUu4Fvf0MXRczf4mDLScmDq+lNsP1bLh6EP7kkZo2RmaNsPU3tkA==
-X-Received: by 2002:a05:600c:154f:: with SMTP id
- f15mr29305671wmg.86.1638109907835; 
- Sun, 28 Nov 2021 06:31:47 -0800 (PST)
-Received: from localhost ([2a01:4b00:8432:8a00:5ee4:2aff:fe50:f48d])
- by smtp.gmail.com with ESMTPSA id b13sm7523154wrh.32.2021.11.28.06.31.47
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 28 Nov 2021 06:31:47 -0800 (PST)
-Date: Sun, 28 Nov 2021 14:31:46 +0000
-From: Chris Down <chris@chrisdown.name>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: Intel: hda_dsp_common: don't multiline PCM topology
- warning
-Message-ID: <YaOS0sBueAfApwOx@chrisdown.name>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="XMiY1W5y"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 0F246B80E60;
+ Mon, 29 Nov 2021 16:45:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59C47C53FAD;
+ Mon, 29 Nov 2021 16:45:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1638204339;
+ bh=N4ZsljVphFQ5StDB/sEhAMzkAq4w3lBf222fINgc9tE=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=XMiY1W5y76QmZfECOYoQ8nyKVg/eBDxnhSwgmYRf5bqpvItsCFYwEq+c/uOY8xMXq
+ dPcRYqVi6MogqXQuHGnCwZsUqoDd+rgYmv98wT0wftZEXPqf52+40CICYcJA69JLLV
+ FkaSKJ6UgS/FEmXUg5y2nE/xQBGdE6ib9OBBzuD+mdKCRE7cnzOf78PK5hm+GPNQxV
+ bxe4nLFv/oKzAOQC1G1bbTXKxzz8EvlOUDLGvaT9N0b2NVEzt1cHmxQkLcmXJYuHru
+ ySg0jheIiMe8r9TyGrd7lFS+X5qLXo8cGNH1Id8CItdHPnIkdybFxKy/MA1UhL6S0X
+ feot23CSRpXFw==
+From: Mark Brown <broonie@kernel.org>
+To: lvzhaoxiong <lvzhaoxiong@huaqin.corp-partner.google.com>,
+ lgirdwood@gmail.com
+In-Reply-To: <20211123024329.21998-1-lvzhaoxiong@huaqin.corp-partner.google.com>
+References: <20211123024329.21998-1-lvzhaoxiong@huaqin.corp-partner.google.com>
+Subject: Re: [PATCH] ASoC: qcom: Add support for ALC5682I-VS codec
+Message-Id: <163820433805.1716750.13484199254785400045.b4-ty@kernel.org>
+Date: Mon, 29 Nov 2021 16:45:38 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/2.1.3 (987dde4c) (2021-09-10)
-X-Mailman-Approved-At: Mon, 29 Nov 2021 17:44:54 +0100
-Cc: tiwai@suse.de,
- Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: judyhsiao@google.com, albertchen@realtek.com, alsa-devel@alsa-project.org,
+ derek.fang@realtek.com, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,36 +80,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On my T14s Gen2 I saw the following:
+On Tue, 23 Nov 2021 10:43:29 +0800, lvzhaoxiong wrote:
+> Qcom machine driver adds rt5682s support in this patch.
+> Card name can be specified from dts by model property, and driver makes
+> use of the name to distinguish which headset codec is on the board.
+> 
+> 
 
-    [   16.057258] skl_hda_dsp_generic skl_hda_dsp_generic: hda_dsp_hdmi_build_controls: no PCM in topology for HDMI converter 3
+Applied to
 
-    [   16.057261] skl_hda_dsp_generic skl_hda_dsp_generic: hda_dsp_hdmi_build_controls: no PCM in topology for HDMI converter 4
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-    [   16.057263] skl_hda_dsp_generic skl_hda_dsp_generic: hda_dsp_hdmi_build_controls: no PCM in topology for HDMI converter 5
+Thanks!
 
-    [...and so on.]
+[1/1] ASoC: qcom: Add support for ALC5682I-VS codec
+      commit: 425c5fce8a03c9da70a4c763cd7db22fbb422dcf
 
-It looks like the double newline is a mistake, so remove one.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-Signed-off-by: Chris Down <chris@chrisdown.name>
----
- sound/soc/intel/boards/hda_dsp_common.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-diff --git a/sound/soc/intel/boards/hda_dsp_common.c b/sound/soc/intel/boards/hda_dsp_common.c
-index efdc4bc4bb1f..5c31ddc0884a 100644
---- a/sound/soc/intel/boards/hda_dsp_common.c
-+++ b/sound/soc/intel/boards/hda_dsp_common.c
-@@ -68,7 +68,7 @@ int hda_dsp_hdmi_build_controls(struct snd_soc_card *card,
- 			hpcm->pcm = NULL;
- 			hpcm->device = SNDRV_PCM_INVALID_DEVICE;
- 			dev_warn(card->dev,
--				 "%s: no PCM in topology for HDMI converter %d\n\n",
-+				 "%s: no PCM in topology for HDMI converter %d\n",
- 				 __func__, i);
- 		}
- 		i++;
--- 
-2.34.1
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
