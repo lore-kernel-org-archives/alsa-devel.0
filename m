@@ -4,79 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E53EC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 29 Nov 2021 15:32:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E763C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 29 Nov 2021 16:33:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7A8371AB4;
-	Mon, 29 Nov 2021 16:31:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A8371AB4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8F930192D;
+	Mon, 29 Nov 2021 17:32:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F930192D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638199949;
-	bh=mgFhtybKfrfduJTdE55A8sNxla/AXnVdvUTZX1RKHRw=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1638203619;
+	bh=q5aBe0Jvp1sWsQ8PvUlZgsZZjnzwEdxUlLIAp54EnPE=;
+	h=From:Subject:To:References:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KcAVFAjpDWb25ocB3DEYeu3e1cCDQWNq29QTFBPMwoh4pWBs33s1c9FeF+pikW7Xr
-	 R0nVriFvpmgW6XKMQIy4Us5vKgkgmuL93Euj7UstGuWufj7JX2I1D7k4yAb2AwnstS
-	 pD9OvU2bpqvH8xk9/35xXqeqWyVB1hQgy7tqxJhE=
+	b=ELgxGT+6vHDV0PULAOSoyK/9ZRnQGEqekRMQpGtJzJ5+l9BQQXPUtyTv2L3ln8tXD
+	 4Yg8b0jrs1HdaeI2iOV/UcTe2MIQmWcKDxTk45F0bW+aJesh/K/65xfUlDL1vOpmQA
+	 PYJCr8jZeDTBF+rvpoEsXRDXaSoZqaOLtCx7ERBQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5D8E4F80249;
-	Mon, 29 Nov 2021 16:30:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F3078F800EE;
+	Mon, 29 Nov 2021 17:32:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 07691F80249; Mon, 29 Nov 2021 16:30:50 +0100 (CET)
-Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com
- [209.85.210.50])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id E40E0F800EE; Mon, 29 Nov 2021 17:32:42 +0100 (CET)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 999A1F8020D
- for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2021 16:30:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 999A1F8020D
-Received: by mail-ot1-f50.google.com with SMTP id
- 47-20020a9d0332000000b005798ac20d72so25974665otv.9
- for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2021 07:30:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
- :message-id;
- bh=o9/xltpZS8/e+Fx8LAzHE+t3v33y8dbhp5g24ocDpeA=;
- b=Y5FpJXzIO8wwfAClFx25fcMG3Vl4+8bb7RSbZI7n/z0iQ8IBVlWJA6xBw2OwmrkqFf
- 1E37ir2EjLshfnUVt2CisGUO7Z8m9ZXkSyV7QRI2keo6Kj5YxDhCjwu4kQa3zv+YOqMg
- VuroPruz0jb1mjn8X4LYVqiOiiYPQkhC/I4IQw69uX6qv/B9il77g4EEJTBokQ356evj
- oYE/l5fK0uww1q6KcCcCGSWzctkbc2tYrdrwUuDTWio1/YsD2w6MkRnOzsN/+af2Bwn6
- iXPYRKqR0Hx56y7wBatvBhEUViWAg2WfoDBaZXfRcMap1nBGBdcGhyzNbCyBTS3A8YWQ
- Q9ZQ==
-X-Gm-Message-State: AOAM530ceg4uZEXkb0IJd8ZvwkCH9v/a8SkjEHnK7+FtCylvn7PSdmi7
- wKgiAW+MKdR2+WWiKUhpMEeYV2VZMg==
-X-Google-Smtp-Source: ABdhPJzmfe6xuhnb21hy8AM/h3XzDFm6oGuf3rxxPOA0K4txwqSNxF0l8aXDu8NZZ8L0OV75xjneug==
-X-Received: by 2002:a05:6830:1204:: with SMTP id
- r4mr45833918otp.34.1638199837059; 
- Mon, 29 Nov 2021 07:30:37 -0800 (PST)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net.
- [66.90.148.213])
- by smtp.gmail.com with ESMTPSA id m5sm3007643oim.45.2021.11.29.07.30.35
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 29 Nov 2021 07:30:36 -0800 (PST)
-Received: (nullmailer pid 123615 invoked by uid 1000);
- Mon, 29 Nov 2021 15:30:31 -0000
-From: Rob Herring <robh@kernel.org>
-To: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-In-Reply-To: <1638179932-3353-2-git-send-email-srivasam@codeaurora.org>
-References: <1638179932-3353-1-git-send-email-srivasam@codeaurora.org>
- <1638179932-3353-2-git-send-email-srivasam@codeaurora.org>
-Subject: Re: [PATCH v3 1/5] dt-bindings: pinctrl: qcom: Update lpass lpi file
- name to SoC specific
-Date: Mon, 29 Nov 2021 09:30:31 -0600
-Message-Id: <1638199831.124829.123614.nullmailer@robh.at.kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- bgoswami@codeaurora.org, lgirdwood@gmail.com,
- Venkata Prasad Potturu <potturu@codeaurora.org>, linux-arm-msm@vger.kernel.org,
- Linus Walleij <linus.walleij@linaro.org>, tiwai@suse.com,
- linux-kernel@vger.kernel.org, robh+dt@kernel.org, linux-gpio@vger.kernel.org,
- agross@kernel.org, bjorn.andersson@linaro.org, broonie@kernel.org,
- rohitkr@codeaurora.org, swboyd@chromium.org, judyhsiao@chromium.org,
- plai@codeaurora.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 92AAAF800EE
+ for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2021 17:32:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92AAAF800EE
+X-IronPort-AV: E=McAfee;i="6200,9189,10183"; a="322241095"
+X-IronPort-AV: E=Sophos;i="5.87,273,1631602800"; d="scan'208";a="322241095"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 29 Nov 2021 08:32:05 -0800
+X-IronPort-AV: E=Sophos;i="5.87,273,1631602800"; d="scan'208";a="676418419"
+Received: from ticela-nm-11.amr.corp.intel.com (HELO [10.212.98.225])
+ ([10.212.98.225])
+ by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 29 Nov 2021 08:32:03 -0800
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 1/5] ASoC: soc-dai: update snd_soc_dai_delay() to
+ snd_soc_pcm_dai_delay()
+To: Mark Brown <broonie@kernel.org>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+References: <877dd8y26l.wl-kuninori.morimoto.gx@renesas.com>
+ <875yssy25z.wl-kuninori.morimoto.gx@renesas.com>
+ <2cc78158-e288-e949-594f-0ab939a35942@linux.intel.com>
+ <YZ+8WbwDA9oQoRSk@sirena.org.uk>
+ <TYCPR01MB5581F87D324E2499303E36EAD4629@TYCPR01MB5581.jpnprd01.prod.outlook.com>
+ <YaDqo6MC8/zjhpoh@sirena.org.uk>
+Message-ID: <2cd48411-4be6-196f-025d-74fd3a5266dc@linux.intel.com>
+Date: Mon, 29 Nov 2021 09:42:34 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <YaDqo6MC8/zjhpoh@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Linux-ALSA <alsa-devel@alsa-project.org>, Jie Yang <yang.jie@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ Hans de Goede <hdegoede@redhat.com>, Gu Shengxian <gushengxian@yulong.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,42 +81,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 29 Nov 2021 15:28:48 +0530, Srinivasa Rao Mandadapu wrote:
-> Change generic lpass lpi pincotrol bindings file to SoC specific file,
-> to distinguish and accomadate other SoC specific dt bindings.
+
+
+On 11/26/21 8:09 AM, Mark Brown wrote:
+> On Thu, Nov 25, 2021 at 11:41:38PM +0000, Kuninori Morimoto wrote:
 > 
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-> Co-developed-by: Venkata Prasad Potturu <potturu@codeaurora.org>
-> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
-> ---
->  .../bindings/pinctrl/qcom,lpass-lpi-pinctrl.yaml   | 130 ---------------------
->  .../pinctrl/qcom,sm8250-lpass-lpi-pinctrl.yaml     | 130 +++++++++++++++++++++
->  2 files changed, 130 insertions(+), 130 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,lpass-lpi-pinctrl.yaml
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sm8250-lpass-lpi-pinctrl.yaml
+>> Sorry for my late response.
+>> (It was PC replace week)
 > 
+> No worries, hope the new PC is working well!
+> 
+>>>> I would think it's more accurate to update the delay information while 
+>>>> dealing with the hw_ptr update, no?
+> 
+>>> Morimoto-san?
+> 
+>> I think your opinion is very correct.
+>> But this patch-set is for "cleanup/refactoring",
+>> and your opinion is for "add new feature", I think.
+> 
+> Hrm, right - this isn't making anything better or worse in terms of the
+> accuracy, it's just moving things around so Pierre's suggestion is a
+> separate thing.
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-./Documentation/devicetree/bindings/pinctrl/qcom,sm8250-lpass-lpi-pinctrl.yaml: $id: relative path/filename doesn't match actual path or filename
-	expected: http://devicetree.org/schemas/pinctrl/qcom,sm8250-lpass-lpi-pinctrl.yaml#
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/patch/1561071
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+Indeed, I misunderstood the series are removing the update of the
+runtime->delay field while updating the hw_ptr, but this is only
+shuffling code around. This is still updating both avail/delay in the
+same manner so no objections. Sorry for the noise.
