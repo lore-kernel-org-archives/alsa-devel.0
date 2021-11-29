@@ -4,64 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF9CFC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 29 Nov 2021 14:14:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 136D0C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 29 Nov 2021 15:31:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B6F471A9E;
-	Mon, 29 Nov 2021 15:13:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B6F471A9E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5B5E71AA1;
+	Mon, 29 Nov 2021 16:30:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5B5E71AA1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638195236;
-	bh=u9cX9/136U4kNUEDzgVPciVF6mUyOos2r/ZsS+Di2Cg=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1638199903;
+	bh=nnQF+mGalxDaRTF5BHBjXRzRIbEe6hkdehe0vL+cj4c=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KjwhuZ1IQ4yb98RluSlu5prmWz4SbEys6wHRoTcSwACt7wSEHt2nvi4M5aw3X3sW9
-	 k9rTzy1xe5SfqiP/vq+gXk7cROUIMRXfXI0wWlvkpqELLM0ylKYnuJk/eOm9ZyPAA2
-	 qCu31Y2oz6g4c19XIKwGO4ksR0BcnoitsnSl2AXc=
+	b=qLrAtSETfi3Ya+p1O67lB38sRvesXfoSA9v8wmeS/KxsMNW/H1vjmbuW/pWGtINCb
+	 U/2bib55T3Ytny9hUciJE357bST9NwcfH60lYFL4Y8T3CQEdpTXzzddDCbLO18YVrw
+	 VXw4c8dRPERRlPrVLaiXW80pNl75737iUzgy6UWE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9EAF6F804FA;
-	Mon, 29 Nov 2021 15:11:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A7480F80217;
+	Mon, 29 Nov 2021 16:30:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D959AF80246; Mon, 29 Nov 2021 15:11:27 +0100 (CET)
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 211D8F800EE; Mon, 29 Nov 2021 16:30:50 +0100 (CET)
+Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com
+ [209.85.167.174])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2B6F2F80217
- for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2021 15:11:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B6F2F80217
-X-UUID: a4e2fe1d179d46e094b23befe89991e2-20211129
-X-UUID: a4e2fe1d179d46e094b23befe89991e2-20211129
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by
- mailgw02.mediatek.com (envelope-from <trevor.wu@mediatek.com>)
- (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
- with ESMTP id 1770213480; Mon, 29 Nov 2021 22:11:06 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 29 Nov 2021 22:11:05 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via
- Frontend Transport; Mon, 29 Nov 2021 22:11:05 +0800
-From: Trevor Wu <trevor.wu@mediatek.com>
-To: <broonie@kernel.org>, <tiwai@suse.com>, <robh+dt@kernel.org>,
- <matthias.bgg@gmail.com>
-Subject: [PATCH v2 1/4] ASoC: mediatek: mt8195: add headset codec rt5682s
- support
-Date: Mon, 29 Nov 2021 22:10:54 +0800
-Message-ID: <20211129141057.12422-2-trevor.wu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20211129141057.12422-1-trevor.wu@mediatek.com>
-References: <20211129141057.12422-1-trevor.wu@mediatek.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK: N
+ by alsa1.perex.cz (Postfix) with ESMTPS id BACF0F800EE
+ for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2021 16:30:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BACF0F800EE
+Received: by mail-oi1-f174.google.com with SMTP id m6so35321716oim.2
+ for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2021 07:30:40 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+ :message-id;
+ bh=6THXcIGoLp6QwGKfw0cyj8oia8wwhQE6ljHde1y7tgU=;
+ b=rmheOTpxLLXx5qUdFS9WdZFjPxGaxhZ/4/wDfG9gB2zNAfN1odp3VTvSJaZFgk7yN1
+ 5eEJkmL9aWEzcH/X2doHdLJg01a7pK+IIMEDfIJnNVu3DEnFYZllLuO7u4K4IvLcQ0dW
+ njXo/Rl+ubannyi33/jbikIzUOy2LLEi4Sdbc0M40ZppMWgvyQ2nq/vL6x3y/1d5qnnM
+ XKYfmmjpS4EjXqeW3CYR1gpNwspY2OPGpvILfN7A9/1LStgazhde8D9VOhprBr6ueDPD
+ 2968KX+kh4nkSZSMU5Xak2MlnMuUDqCjpgJS3Ka8EUXCYIXd1bzQ9bP+uE6X9qcmoC9I
+ xeaw==
+X-Gm-Message-State: AOAM5308YIlETVMZD4DrlL2zqaQIx0ktwIUneggHaUkGrO2ShWH12Z1A
+ CDn78jvwu8znIjnCJtwtog==
+X-Google-Smtp-Source: ABdhPJzSL0gcqzaakshHOOyWn+i3lg8/UoCkqqvEtyH87CsQRjyrYnvjJR22ShYlDpIIpvfFrqxLDw==
+X-Received: by 2002:a05:6808:1185:: with SMTP id
+ j5mr41185468oil.16.1638199839402; 
+ Mon, 29 Nov 2021 07:30:39 -0800 (PST)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net.
+ [66.90.148.213])
+ by smtp.gmail.com with ESMTPSA id ay40sm3107794oib.1.2021.11.29.07.30.37
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 29 Nov 2021 07:30:38 -0800 (PST)
+Received: (nullmailer pid 123617 invoked by uid 1000);
+ Mon, 29 Nov 2021 15:30:31 -0000
+From: Rob Herring <robh@kernel.org>
+To: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+In-Reply-To: <1638179932-3353-3-git-send-email-srivasam@codeaurora.org>
+References: <1638179932-3353-1-git-send-email-srivasam@codeaurora.org>
+ <1638179932-3353-3-git-send-email-srivasam@codeaurora.org>
+Subject: Re: [PATCH v3 2/5] dt-bindings: pinctrl: qcom: Add sc7280 lpass lpi
+ pinctrl bindings
+Date: Mon, 29 Nov 2021 09:30:31 -0600
+Message-Id: <1638199831.132589.123616.nullmailer@robh.at.kernel.org>
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, pierre-louis.bossart@linux.intel.com,
- linux-mediatek@lists.infradead.org, trevor.wu@mediatek.com,
- yc.hung@mediatek.com, daniel.baluta@nxp.com,
- linux-arm-kernel@lists.infradead.org
+ bgoswami@codeaurora.org, Venkata Prasad Potturu <potturu@codeaurora.org>,
+ linux-arm-msm@vger.kernel.org, swboyd@chromium.org, tiwai@suse.com,
+ lgirdwood@gmail.com, robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+ linux-gpio@vger.kernel.org, agross@kernel.org, broonie@kernel.org,
+ plai@codeaurora.org, rohitkr@codeaurora.org, bjorn.andersson@linaro.org,
+ judyhsiao@chromium.org, Linus Walleij <linus.walleij@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,189 +90,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-mt8195 machine driver adds rt5682s support in this patch.
-Card name can be specified from dts by model property, and driver makes
-use of the name to distinguish which headset codec is on the board.
+On Mon, 29 Nov 2021 15:28:49 +0530, Srinivasa Rao Mandadapu wrote:
+> Add device tree binding Documentation details for Qualcomm SC7280
+> LPASS LPI pinctrl driver.
+> 
+> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> Co-developed-by: Venkata Prasad Potturu <potturu@codeaurora.org>
+> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
+> ---
+>  .../pinctrl/qcom,sc7280-lpass-lpi-pinctrl.yaml     | 115 +++++++++++++++++++++
+>  1 file changed, 115 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sc7280-lpass-lpi-pinctrl.yaml
+> 
 
-Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
----
- sound/soc/mediatek/Kconfig                    |  2 ++
- .../mt8195/mt8195-mt6359-rt1011-rt5682.c      | 29 +++++++++++++-----
- .../mt8195/mt8195-mt6359-rt1019-rt5682.c      | 30 ++++++++++++++-----
- 3 files changed, 47 insertions(+), 14 deletions(-)
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
-index 3b1ddea26a9e..9306b7ca2644 100644
---- a/sound/soc/mediatek/Kconfig
-+++ b/sound/soc/mediatek/Kconfig
-@@ -205,6 +205,7 @@ config SND_SOC_MT8195_MT6359_RT1019_RT5682
- 	select SND_SOC_MT6359
- 	select SND_SOC_RT1015P
- 	select SND_SOC_RT5682_I2C
-+	select SND_SOC_RT5682S
- 	select SND_SOC_DMIC
- 	select SND_SOC_HDMI_CODEC
- 	help
-@@ -220,6 +221,7 @@ config SND_SOC_MT8195_MT6359_RT1011_RT5682
- 	select SND_SOC_MT6359
- 	select SND_SOC_RT1011
- 	select SND_SOC_RT5682_I2C
-+	select SND_SOC_RT5682S
- 	select SND_SOC_DMIC
- 	select SND_SOC_HDMI_CODEC
- 	help
-diff --git a/sound/soc/mediatek/mt8195/mt8195-mt6359-rt1011-rt5682.c b/sound/soc/mediatek/mt8195/mt8195-mt6359-rt1011-rt5682.c
-index e103102d7ef6..797f155c882b 100644
---- a/sound/soc/mediatek/mt8195/mt8195-mt6359-rt1011-rt5682.c
-+++ b/sound/soc/mediatek/mt8195/mt8195-mt6359-rt1011-rt5682.c
-@@ -27,6 +27,9 @@
- #define RT5682_CODEC_DAI	"rt5682-aif1"
- #define RT5682_DEV0_NAME	"rt5682.2-001a"
- 
-+#define RT5682S_CODEC_DAI	"rt5682s-aif1"
-+#define RT5682S_DEV0_NAME	"rt5682s.2-001a"
-+
- struct mt8195_mt6359_rt1011_rt5682_priv {
- 	struct device_node *platform_node;
- 	struct device_node *hdmi_node;
-@@ -691,14 +694,12 @@ SND_SOC_DAILINK_DEFS(ETDM1_IN_BE,
- 
- SND_SOC_DAILINK_DEFS(ETDM2_IN_BE,
- 		     DAILINK_COMP_ARRAY(COMP_CPU("ETDM2_IN")),
--		     DAILINK_COMP_ARRAY(COMP_CODEC(RT5682_DEV0_NAME,
--						   RT5682_CODEC_DAI)),
-+		     DAILINK_COMP_ARRAY(COMP_DUMMY()),
- 		     DAILINK_COMP_ARRAY(COMP_EMPTY()));
- 
- SND_SOC_DAILINK_DEFS(ETDM1_OUT_BE,
- 		     DAILINK_COMP_ARRAY(COMP_CPU("ETDM1_OUT")),
--		     DAILINK_COMP_ARRAY(COMP_CODEC(RT5682_DEV0_NAME,
--						   RT5682_CODEC_DAI)),
-+		     DAILINK_COMP_ARRAY(COMP_DUMMY()),
- 		     DAILINK_COMP_ARRAY(COMP_EMPTY()));
- 
- SND_SOC_DAILINK_DEFS(ETDM2_OUT_BE,
-@@ -1046,9 +1047,19 @@ static int mt8195_mt6359_rt1011_rt5682_dev_probe(struct platform_device *pdev)
- 	struct snd_soc_card *card = &mt8195_mt6359_rt1011_rt5682_soc_card;
- 	struct snd_soc_dai_link *dai_link;
- 	struct mt8195_mt6359_rt1011_rt5682_priv *priv;
-+	int is5682s = 0;
- 	int ret, i;
- 
- 	card->dev = &pdev->dev;
-+	ret = snd_soc_of_parse_card_name(card, "model");
-+	if (ret) {
-+		dev_err(&pdev->dev, "%s new card name parsing error %d\n",
-+			__func__, ret);
-+		return ret;
-+	}
-+
-+	if (strstr(card->name, "_5682s"))
-+		is5682s = 1;
- 
- 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
- 	if (!priv)
-@@ -1078,9 +1089,7 @@ static int mt8195_mt6359_rt1011_rt5682_dev_probe(struct platform_device *pdev)
- 				dai_link->codecs->dai_name = "i2s-hifi";
- 				dai_link->init = mt8195_dptx_codec_init;
- 			}
--		}
--
--		if (strcmp(dai_link->name, "ETDM3_OUT_BE") == 0) {
-+		} else if (strcmp(dai_link->name, "ETDM3_OUT_BE") == 0) {
- 			priv->hdmi_node =
- 				of_parse_phandle(pdev->dev.of_node,
- 						 "mediatek,hdmi-codec", 0);
-@@ -1092,6 +1101,12 @@ static int mt8195_mt6359_rt1011_rt5682_dev_probe(struct platform_device *pdev)
- 				dai_link->codecs->dai_name = "i2s-hifi";
- 				dai_link->init = mt8195_hdmi_codec_init;
- 			}
-+		} else if (strcmp(dai_link->name, "ETDM1_OUT_BE") == 0 ||
-+			   strcmp(dai_link->name, "ETDM2_IN_BE") == 0) {
-+			dai_link->codecs->name =
-+				is5682s ? RT5682S_DEV0_NAME : RT5682_DEV0_NAME;
-+			dai_link->codecs->dai_name =
-+				is5682s ? RT5682S_CODEC_DAI : RT5682_CODEC_DAI;
- 		}
- 	}
- 
-diff --git a/sound/soc/mediatek/mt8195/mt8195-mt6359-rt1019-rt5682.c b/sound/soc/mediatek/mt8195/mt8195-mt6359-rt1019-rt5682.c
-index 95abaadcd842..7209c70acf6e 100644
---- a/sound/soc/mediatek/mt8195/mt8195-mt6359-rt1019-rt5682.c
-+++ b/sound/soc/mediatek/mt8195/mt8195-mt6359-rt1019-rt5682.c
-@@ -25,6 +25,9 @@
- #define RT5682_CODEC_DAI	"rt5682-aif1"
- #define RT5682_DEV0_NAME	"rt5682.2-001a"
- 
-+#define RT5682S_CODEC_DAI	"rt5682s-aif1"
-+#define RT5682S_DEV0_NAME	"rt5682s.2-001a"
-+
- struct mt8195_mt6359_rt1019_rt5682_priv {
- 	struct device_node *platform_node;
- 	struct device_node *hdmi_node;
-@@ -661,14 +664,12 @@ SND_SOC_DAILINK_DEFS(ETDM1_IN_BE,
- 
- SND_SOC_DAILINK_DEFS(ETDM2_IN_BE,
- 		     DAILINK_COMP_ARRAY(COMP_CPU("ETDM2_IN")),
--		     DAILINK_COMP_ARRAY(COMP_CODEC(RT5682_DEV0_NAME,
--						   RT5682_CODEC_DAI)),
-+		     DAILINK_COMP_ARRAY(COMP_DUMMY()),
- 		     DAILINK_COMP_ARRAY(COMP_EMPTY()));
- 
- SND_SOC_DAILINK_DEFS(ETDM1_OUT_BE,
- 		     DAILINK_COMP_ARRAY(COMP_CPU("ETDM1_OUT")),
--		     DAILINK_COMP_ARRAY(COMP_CODEC(RT5682_DEV0_NAME,
--						   RT5682_CODEC_DAI)),
-+		     DAILINK_COMP_ARRAY(COMP_DUMMY()),
- 		     DAILINK_COMP_ARRAY(COMP_EMPTY()));
- 
- SND_SOC_DAILINK_DEFS(ETDM2_OUT_BE,
-@@ -999,10 +1000,21 @@ static int mt8195_mt6359_rt1019_rt5682_dev_probe(struct platform_device *pdev)
- 	struct snd_soc_card *card = &mt8195_mt6359_rt1019_rt5682_soc_card;
- 	struct snd_soc_dai_link *dai_link;
- 	struct mt8195_mt6359_rt1019_rt5682_priv *priv;
-+	int is5682s = 0;
- 	int ret, i;
- 
- 	card->dev = &pdev->dev;
- 
-+	ret = snd_soc_of_parse_card_name(card, "model");
-+	if (ret) {
-+		dev_err(&pdev->dev, "%s new card name parsing error %d\n",
-+			__func__, ret);
-+		return ret;
-+	}
-+
-+	if (strstr(card->name, "_5682s"))
-+		is5682s = 1;
-+
- 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
- 	if (!priv)
- 		return -ENOMEM;
-@@ -1031,9 +1043,7 @@ static int mt8195_mt6359_rt1019_rt5682_dev_probe(struct platform_device *pdev)
- 				dai_link->codecs->dai_name = "i2s-hifi";
- 				dai_link->init = mt8195_dptx_codec_init;
- 			}
--		}
--
--		if (strcmp(dai_link->name, "ETDM3_OUT_BE") == 0) {
-+		} else if (strcmp(dai_link->name, "ETDM3_OUT_BE") == 0) {
- 			priv->hdmi_node =
- 				of_parse_phandle(pdev->dev.of_node,
- 						 "mediatek,hdmi-codec", 0);
-@@ -1045,6 +1055,12 @@ static int mt8195_mt6359_rt1019_rt5682_dev_probe(struct platform_device *pdev)
- 				dai_link->codecs->dai_name = "i2s-hifi";
- 				dai_link->init = mt8195_hdmi_codec_init;
- 			}
-+		} else if (strcmp(dai_link->name, "ETDM1_OUT_BE") == 0 ||
-+			   strcmp(dai_link->name, "ETDM2_IN_BE") == 0) {
-+			dai_link->codecs->name =
-+				is5682s ? RT5682S_DEV0_NAME : RT5682_DEV0_NAME;
-+			dai_link->codecs->dai_name =
-+				is5682s ? RT5682S_CODEC_DAI : RT5682_CODEC_DAI;
- 		}
- 	}
- 
--- 
-2.18.0
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+./Documentation/devicetree/bindings/pinctrl/qcom,sc7280-lpass-lpi-pinctrl.yaml: $id: relative path/filename doesn't match actual path or filename
+	expected: http://devicetree.org/schemas/pinctrl/qcom,sc7280-lpass-lpi-pinctrl.yaml#
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pinctrl/qcom,sc7280-lpass-lpi-pinctrl.yaml: duplicate '$id' value 'http://devicetree.org/schemas/pinctrl/qcom,lpass-lpi-pinctrl.yaml#'
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/patch/1561073
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
