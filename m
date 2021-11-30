@@ -4,61 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69A75C433FE
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Nov 2021 14:49:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72E4FC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Nov 2021 14:50:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7B2B42057;
-	Tue, 30 Nov 2021 15:48:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B2B42057
+	by alsa0.perex.cz (Postfix) with ESMTPS id 56C9E2068;
+	Tue, 30 Nov 2021 15:49:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 56C9E2068
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638283779;
-	bh=XZa1tmF5GY7PAX/6/UQfvaXTAWC+309CS1FqiBJscbs=;
+	s=default; t=1638283802;
+	bh=4W5llaRX90jb34UHqiO6+pxJ+Y4yt0yNWYl2BYlawFs=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rlAvTFur5L0GUQ1DkqLHnC6FX56qGoxB1+dg/ImLB0v7rXs3y6hiuswwNbzGbGGtP
-	 ViQ0J0IrNsUB5THO7AY7xbrxWuNNwUatiEKwMWGbpA8tCzZznjyvN0aCbU/3c2A4Sl
-	 ZmRmfcgi7tNq3naA36dMjTAtOA/KRY3/ryrwnP64=
+	b=OIoF1sh/vQU68vp19Dw7m8kAR/qHuKRSjRTqO1ZRalGGYjYezxbEaxnP/6AwOkmf1
+	 UWrY5UgYmpoMEymrjoMnCRTlhII/P4yxD+xsNIpm01qVyvTGkB5fSWXs+cXs8ZjHR1
+	 m0H/FcxfbslKoZijNe0g2Y1jQAQyb+NUUYCYYWL0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3ECDFF804ED;
-	Tue, 30 Nov 2021 15:47:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C72BFF804F1;
+	Tue, 30 Nov 2021 15:47:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D1FD2F80301; Tue, 30 Nov 2021 15:47:32 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 9DAEBF804E7; Tue, 30 Nov 2021 15:47:34 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 35089F80113
- for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2021 15:47:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35089F80113
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1A836F8020D
+ for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2021 15:47:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A836F8020D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="UH6SoC9H"
+ header.b="cQH+z43e"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 0C005B819E7;
+ by sin.source.kernel.org (Postfix) with ESMTPS id 398BCCE19FD;
+ Tue, 30 Nov 2021 14:47:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77F11C53FCD;
  Tue, 30 Nov 2021 14:47:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14A0BC53FD1;
- Tue, 30 Nov 2021 14:47:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1638283643;
- bh=XZa1tmF5GY7PAX/6/UQfvaXTAWC+309CS1FqiBJscbs=;
+ s=k20201202; t=1638283647;
+ bh=4W5llaRX90jb34UHqiO6+pxJ+Y4yt0yNWYl2BYlawFs=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=UH6SoC9HiKITRfjtcrBvO0WXmbl/qb5xngc37korEoY2eL3vH8+SlR0jicxGmZ51F
- YSia/un16QxYkVdp7nkIRdcIqsAC8r5MV2Z/KchlSfwX7dkfIq6AYiIXdm5tBAvnp2
- BkHHiX21/2QEqkfA0mJiOHNKVctKJdtzixSSINNPS244tVzCuCRWcovz5x6wRi7rEI
- EktYBVV/Yx66dJjcfnqOxUpFFFAqFyqb/MNTMc1vberRwFTKvQD+IEKWIOWHc0ZjHi
- DHOfvv9HPkcFjAGLFiJ/30JygTlDLXCHCnYnkvWrA/UzWQP3tHHxfWQbSKCyaymY4/
- 3iXaTqhftaNyQ==
+ b=cQH+z43eEL9QxI1Fq4fvHjfge6Y6E/hRoWTKl5MHXtFZ2O6xBVj05PGaHvlKUWezE
+ yKa+Jeuk+IIRHqwXwa+24jEgf/BsslpptUxIHtoFSvfy4a5xVmI4Mwg0CHTOWGbimN
+ bON33cNQDfxgUIhVSjIDSlqZHaRQsDH4uR06rVHfa3QNP6jhVE5Bds6M+PiQFy7+ji
+ Nt+3WtEyeF9/Ry997P5rkEnYk15PJaqCFNCWLtMyUQma9ewgGsqnrASQbNY2D9sY7v
+ gmY7tDv6H1vGpGol09epBZ2anZ87fGYTQ45NVFJh6EnSYCo4xMTn4BujMNq2L1PjKy
+ 08/DdMbyLzAVw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 04/68] ASoC: Intel: sof_sdw: Add support for SKU
- 0B00 and 0B01 products
-Date: Tue, 30 Nov 2021 09:46:00 -0500
-Message-Id: <20211130144707.944580-4-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 05/68] ASoC: Intel: sof_sdw: Add support for SKU
+ 0B11 product
+Date: Tue, 30 Nov 2021 09:46:01 -0500
+Message-Id: <20211130144707.944580-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211130144707.944580-1-sashal@kernel.org>
 References: <20211130144707.944580-1-sashal@kernel.org>
@@ -92,45 +93,35 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Gongjun Song <gongjun.song@intel.com>
 
-[ Upstream commit cf304329e4afb97ffabce232eadaba94f025641d ]
+[ Upstream commit 6fef4c2f458680399b7c512cb810c1e1784d7444 ]
 
-Both products support a SoundWire headset codec, SoundWire
+This product supports a SoundWire headset codec, SoundWire
 capture from local microphones and two SoundWire amplifiers.
 
 Signed-off-by: Gongjun Song <gongjun.song@intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Link: https://lore.kernel.org/r/20211105022646.26305-4-yung-chuan.liao@linux.intel.com
+Link: https://lore.kernel.org/r/20211105022646.26305-5-yung-chuan.liao@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/sof_sdw.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ sound/soc/intel/boards/sof_sdw.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
 diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index 584f9f2db2076..55c3e5935585c 100644
+index 55c3e5935585c..d0bea028b9b76 100644
 --- a/sound/soc/intel/boards/sof_sdw.c
 +++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -258,6 +258,26 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
- 		.driver_data = (void *)(SOF_SDW_TGL_HDMI |
+@@ -278,6 +278,16 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
+ 					RT711_JD2 |
  					SOF_SDW_FOUR_SPK),
  	},
 +	{
 +		.callback = sof_sdw_quirk_cb,
 +		.matches = {
 +			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc"),
-+			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "0B00")
-+		},
-+		.driver_data = (void *)(SOF_SDW_TGL_HDMI |
-+					RT711_JD2 |
-+					SOF_SDW_FOUR_SPK),
-+	},
-+	{
-+		.callback = sof_sdw_quirk_cb,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc"),
-+			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "0B01")
++			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "0B11")
 +		},
 +		.driver_data = (void *)(SOF_SDW_TGL_HDMI |
 +					RT711_JD2 |
