@@ -4,72 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19E30C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Nov 2021 14:59:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7FB6CC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Nov 2021 14:59:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 445D42246;
-	Tue, 30 Nov 2021 15:58:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 445D42246
+	by alsa0.perex.cz (Postfix) with ESMTPS id A7DEC2249;
+	Tue, 30 Nov 2021 15:59:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A7DEC2249
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638284376;
-	bh=eHm3/0AdxWr5tIKBQI2fRkronTffXkuGvZxWgCOEYl4=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=MDuGvLdb34IZLQGATlsHO9v1u+ZPoPHW09w0dflRptbVsaLbS5z7Oh7LUcoURIIIo
-	 TP0B+ATClm24agJJC2wmsqAzozXpIElF1U6r/y33HBmnggq3ykX4OopavBkq2gZJPz
-	 MbqEJRrXvaw3h3cE4wDpkxKuN7JzXgTDtt4Ngink=
+	s=default; t=1638284394;
+	bh=0+3Ym9+8lvkQFX27bQsSayMoZxPuQ4FYLs8LPgF5CZs=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=IpL+tvGonbcTpVbKb+OZ0Vjv/9jTfvt4jC/ajT2oYrRr7XFYxzH/wrfRCExX9yDpQ
+	 Aozru6OVQrI8Qb4Oup49CyPqDAORcb6FazR4z1cfPb6jaaffkfy00+8J8DCmNwYBXj
+	 k1upEU885co/H2qb0kgvAW8SXE3xod6OS4jvzqUk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 57FA9F8059F;
-	Tue, 30 Nov 2021 15:53:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 74890F8054A;
+	Tue, 30 Nov 2021 15:53:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E1142F80544; Tue, 30 Nov 2021 15:53:02 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+ id 26BE4F8054A; Tue, 30 Nov 2021 15:53:30 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F3DFAF8020D
- for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2021 15:52:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3DFAF8020D
+ by alsa1.perex.cz (Postfix) with ESMTPS id DD988F8032D
+ for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2021 15:53:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD988F8032D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="jV55h4hb"
+ header.b="OvymiwdN"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id 2375BCE1A50;
- Tue, 30 Nov 2021 14:52:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AF31C53FC7;
- Tue, 30 Nov 2021 14:52:50 +0000 (UTC)
+ by sin.source.kernel.org (Postfix) with ESMTPS id 1B1E3CE1A7F;
+ Tue, 30 Nov 2021 14:53:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAE72C53FC7;
+ Tue, 30 Nov 2021 14:53:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1638283971;
- bh=eHm3/0AdxWr5tIKBQI2fRkronTffXkuGvZxWgCOEYl4=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=jV55h4hbTlFCzPHcgVgkAM35yyI3qukNkl2LqRIn0/JWJ2fjqPSrIw2tnVepOt/jt
- vXcFobEk5aHDpitVxR9iHpS9Er2DiWp1bSPFrE2JUa6UITk5ujjKviGMcyhCjtIiTj
- XCUv6W/AzdIp/6TOqraS+v+tbTskzzLdwPk0iLkt82hPrPk8VymIOYKV7wajWEEgzv
- OhxNVbmJGTThi9ivbpbLKzE2eqpvhivz+aVvj/KIyD7nlqNXP247myQUVBTwR5TuH2
- UaWpe7kvzQWCn7e7RjQNd413mKPDNBFLP8aMKUK0PrfMrPI83nlFgU6bLE3m2j6Uop
- 0O6nKvhVj/mPA==
+ s=k20201202; t=1638284000;
+ bh=0+3Ym9+8lvkQFX27bQsSayMoZxPuQ4FYLs8LPgF5CZs=;
+ h=From:To:Cc:Subject:Date:From;
+ b=OvymiwdNah2sXlGx3Jzbt92R66+AuEvF0mRGHk7cJp8DEjG4dRjDZCpgKecEfO9lw
+ LDP85vkqlymQ53JYUKn1Jn6Kpcy2eTsZ2206Q7dLV+sMw+hpdV/9UXktcojTdtw/dT
+ NnnBhoHER1zNWuFtqGB48I5DWtCN1Ct+r1DARI0/IjOpXqC66y/SjBj8oG1P56kRrf
+ pthqnRUXxjRQN7qtRhoWzj67j1OUPEuS0SbbZHj9HWcE9UA9n4woMgMuw1h9Ds1SgV
+ WGJNk6gug11S2sfCf460scszlvf9YvDXoTe1yDIn5CD3WHi0M5zuvYIdIXLR4KHYwS
+ yp9Y/fyfrI30w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 03/17] ASoC: qdsp6: q6routing: validate port id
- before setting up route
-Date: Tue, 30 Nov 2021 09:52:27 -0500
-Message-Id: <20211130145243.946407-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 01/14] ASoC: mediatek: mt8173-rt5650: Rename
+ Speaker control to Ext Spk
+Date: Tue, 30 Nov 2021 09:53:02 -0500
+Message-Id: <20211130145317.946676-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211130145243.946407-1-sashal@kernel.org>
-References: <20211130145243.946407-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- bgoswami@codeaurora.org, stephan@gerhold.net, tiwai@suse.com,
- lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>, ultracoolguy@disroot.org
+ lgirdwood@gmail.com, tiwai@suse.com, Mark Brown <broonie@kernel.org>,
+ linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
+ linux-arm-kernel@lists.infradead.org,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,38 +83,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-[ Upstream commit 6712c2e18c06b0976559fd4bd47774b243038e9c ]
+[ Upstream commit 0a8facac0d1e38dc8b86ade6d3f0d8b33dae7c58 ]
 
-Validate port id before it starts sending commands to dsp this would
-make error handling simpler.
+Some RT5645 and RT5650 powered platforms are using "Ext Spk"
+instead of "Speaker", and this is also reflected in alsa-lib
+configurations for the generic RT5645 usecase manager configs.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20211116114721.12517-6-srinivas.kandagatla@linaro.org
+Rename the "Speaker" control to "Ext Spk" in order to be able
+to make the userspace reuse/inherit the same configurations also
+for this machine, along with the others.
+
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Link: https://lore.kernel.org/r/20211105152013.75252-1-angelogioacchino.delregno@collabora.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/qcom/qdsp6/q6routing.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/soc/mediatek/mt8173/mt8173-rt5650.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/qcom/qdsp6/q6routing.c b/sound/soc/qcom/qdsp6/q6routing.c
-index 44eee18c658ae..a5bc7a60d119e 100644
---- a/sound/soc/qcom/qdsp6/q6routing.c
-+++ b/sound/soc/qcom/qdsp6/q6routing.c
-@@ -320,6 +320,12 @@ int q6routing_stream_open(int fedai_id, int perf_mode,
- 	}
+diff --git a/sound/soc/mediatek/mt8173/mt8173-rt5650.c b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
+index e69c141d8ed4c..60a6a83aa772c 100644
+--- a/sound/soc/mediatek/mt8173/mt8173-rt5650.c
++++ b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
+@@ -38,15 +38,15 @@ static struct mt8173_rt5650_platform_data mt8173_rt5650_priv = {
+ };
  
- 	session = &routing_data->sessions[stream_id - 1];
-+	if (session->port_id < 0) {
-+		dev_err(routing_data->dev, "Routing not setup for MultiMedia%d Session\n",
-+			session->fedai_id);
-+		return -EINVAL;
-+	}
-+
- 	pdata = &routing_data->port_data[session->port_id];
+ static const struct snd_soc_dapm_widget mt8173_rt5650_widgets[] = {
+-	SND_SOC_DAPM_SPK("Speaker", NULL),
++	SND_SOC_DAPM_SPK("Ext Spk", NULL),
+ 	SND_SOC_DAPM_MIC("Int Mic", NULL),
+ 	SND_SOC_DAPM_HP("Headphone", NULL),
+ 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
+ };
  
- 	mutex_lock(&routing_data->lock);
+ static const struct snd_soc_dapm_route mt8173_rt5650_routes[] = {
+-	{"Speaker", NULL, "SPOL"},
+-	{"Speaker", NULL, "SPOR"},
++	{"Ext Spk", NULL, "SPOL"},
++	{"Ext Spk", NULL, "SPOR"},
+ 	{"DMIC L1", NULL, "Int Mic"},
+ 	{"DMIC R1", NULL, "Int Mic"},
+ 	{"Headphone", NULL, "HPOL"},
+@@ -58,7 +58,7 @@ static const struct snd_soc_dapm_route mt8173_rt5650_routes[] = {
+ };
+ 
+ static const struct snd_kcontrol_new mt8173_rt5650_controls[] = {
+-	SOC_DAPM_PIN_SWITCH("Speaker"),
++	SOC_DAPM_PIN_SWITCH("Ext Spk"),
+ 	SOC_DAPM_PIN_SWITCH("Int Mic"),
+ 	SOC_DAPM_PIN_SWITCH("Headphone"),
+ 	SOC_DAPM_PIN_SWITCH("Headset Mic"),
 -- 
 2.33.0
 
