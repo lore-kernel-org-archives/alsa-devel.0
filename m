@@ -4,73 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A68CC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Nov 2021 15:17:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F569C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Nov 2021 15:52:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C9B442276;
-	Tue, 30 Nov 2021 16:16:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C9B442276
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3E9E82267;
+	Tue, 30 Nov 2021 16:51:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E9E82267
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638285452;
-	bh=CsuglpE/divFk/5CQWjHUMB7KiYZRmVgd/wkp2Q8Q44=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1638287557;
+	bh=Xri4sD0zGoRFC0AjWkxzPMyRno58AM3FyUAjUxxLjtI=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dTYxIh1HqvUgru7VDCPpauDEk5le9uDb7xGfxellwwfxb0poWBOl8SsoEm6Z25SKW
-	 I6pdV05pa2X+1KghWDyA5qlHjVuMUP1hSHCIf+S7nfYj54ihO7LOBPyVvl44Cde2wm
-	 SXaAsacTAnm17+gBsqTpiX+6TZ25Ci8ounn/POeY=
+	b=g3nHQ/W16N4pPh8KVR0MaVkx1Hy82OqA722j876zjtYJG7oI9iLoLndmfa9sROthH
+	 pDCoEspdChrzEdV3sbFKoOv+zzgE4vAV/gJHFSyyRf8e1sPaCWWsycmvDrWxDU9geq
+	 2ypEclICJkZsLrwmN1thhLc8bYBoDdtl3YIauV8g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 51E84F8028D;
-	Tue, 30 Nov 2021 16:16:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A1189F8028D;
+	Tue, 30 Nov 2021 16:51:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 99587F80290; Tue, 30 Nov 2021 16:16:40 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 18A30F80290; Tue, 30 Nov 2021 16:51:43 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 79493F8020D
- for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2021 16:16:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79493F8020D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 01368F8020D
+ for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2021 16:51:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01368F8020D
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Hl8pDsVk"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id E1CE7B81A1A;
- Tue, 30 Nov 2021 15:16:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4884CC53FC1;
- Tue, 30 Nov 2021 15:16:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1638285390;
- bh=CsuglpE/divFk/5CQWjHUMB7KiYZRmVgd/wkp2Q8Q44=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=Hl8pDsVkBR89t8Weo7V3jLHabABj06Xa+cUu0TUExCcDe6bkpcmHo71IF77u8mp9O
- LrSanYUkqr4rsCO/qakHXAKyhJ8xppn2MNZDTtdmD3Fca0S28aw2g52TwYTWfQsKSS
- b23452oHk8nMshc8Spg3e7l5KCuiI1DYMSZ7YF9azPK6Oswgl0NhAc1XZqqDlFjF/l
- rEuJAJsy8r9PXXWNjk/Nsz4ukHkzSaprOf4puA+DnZ1sXjbmH6TpL6ZqA2/4sIx/8H
- jWjX3kaf4jDBSkxzRDZQdMIbQh/904d5UMNph8YvQgDmo6xVW/YnwpazGBjMkQAbjB
- fu3sZ5oT3afoA==
-Date: Tue, 30 Nov 2021 15:16:24 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH AUTOSEL 5.15 01/68] ASoC: mediatek: mt8173-rt5650: Rename
- Speaker control to Ext Spk
-Message-ID: <YaZASLLyOC9EwnMs@sirena.org.uk>
-References: <20211130144707.944580-1-sashal@kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="EpYEx7V8UqnZBosf"
-Content-Disposition: inline
-In-Reply-To: <20211130144707.944580-1-sashal@kernel.org>
-X-Cookie: Check your local listings.
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- lgirdwood@gmail.com, stable@vger.kernel.org, tiwai@suse.com,
- linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
- linux-arm-kernel@lists.infradead.org,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="laRFuBBx"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="HkBnpKVH"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 435E81FD59;
+ Tue, 30 Nov 2021 15:51:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1638287492; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=Dp1Ph5dH8dTrcXZD9RhLEoABTV9d4TRE0DQuNvjirbE=;
+ b=laRFuBBxVMcx2CpyTu/HRqo5Qy04uDHBylcnjACxPa9htJokBKA2b5FEUWVVMcYgcTpub3
+ up0gDZ+umyIjgdHkxYFzcLcytPqD6k6iIkaqP7FaOMJAWI7V46gPUpXoDkHZZ8i6xtfTiU
+ 5BA/DyO58sBjoTeOw7SK2BwsvINEpb4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1638287492;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=Dp1Ph5dH8dTrcXZD9RhLEoABTV9d4TRE0DQuNvjirbE=;
+ b=HkBnpKVH5GEEQLP4smqiAcoWA0t5om43o9spe0sRG0sUtbqwvzBePyHjD/eT3siS9A68JQ
+ uPqsymqIYlySmPAw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 257EBA3B83;
+ Tue, 30 Nov 2021 15:51:31 +0000 (UTC)
+Date: Tue, 30 Nov 2021 16:51:31 +0100
+Message-ID: <s5hh7bt1w1o.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: Re: [PATCH v5 0/3] ALSA: hda: New NHLT functions and cleanup
+In-Reply-To: <20211126140355.1042684-1-cezary.rojewski@intel.com>
+References: <20211126140355.1042684-1-cezary.rojewski@intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
+ tiwai@suse.com, hdegoede@redhat.com, broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,43 +91,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Fri, 26 Nov 2021 15:03:52 +0100,
+Cezary Rojewski wrote:
+> 
+> Changes add two crucial functions: endpoint presence-check and
+> retrieval of endpoint's BLOB (hardware configuration) to NHLT API.
+> 
+> Outside of that, "is DMIC in NHLT?" check is being re-visited. No need
+> to check for channel count or anything DMIC-configuration related, just
+> straight up verify link_type presence.
+> 
+> Changes in v5:
+> - no code changes
+> - actually removed the tags mentioned in v3
+> 
+> Changes in v4:
+> - patch renaming nhlt_acpi_table struct to acpi_nhlt_table has been
+>   dropped due to naming conflicts with other parts of the kernel
+> - revoked previously appended tags from Mark and Pierre as every patch
+>   required an update due to above
+> 
+> Changes in v3:
+> - no code changes
+> - appended Mark's Acked-by tag for patch 4/4
+> - appended Pierre's Reviewed-by tag for all patches
+> 
+> Changes in v2:
+> - patch "ALSA hda: Drop device-argument in NHLT functions" has been
+>   dropped
+> - updated newly added declarations in intel-nhlt.h so warning:
+>   "no-previous-prototype-for-function" and error:
+>   "use-of-undeclared-identifier" are no longer observed when
+>   CONFIG_SND_INTEL_NHLT is not enabled
+> - added Mark's tag to the last patch of the series
+> 
+> Amadeusz Sławiński (3):
+>   ALSA: hda: Fill gaps in NHLT endpoint-interface
+>   ALSA: hda: Simplify DMIC-in-NHLT check
+>   ASoC: Intel: Skylake: Use NHLT API to search for blob
 
---EpYEx7V8UqnZBosf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied all three patches now to for-next branch.
 
-On Tue, Nov 30, 2021 at 09:45:57AM -0500, Sasha Levin wrote:
-> From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
->=20
-> [ Upstream commit 0a8facac0d1e38dc8b86ade6d3f0d8b33dae7c58 ]
->=20
-> Some RT5645 and RT5650 powered platforms are using "Ext Spk"
-> instead of "Speaker", and this is also reflected in alsa-lib
-> configurations for the generic RT5645 usecase manager configs.
->=20
-> Rename the "Speaker" control to "Ext Spk" in order to be able
-> to make the userspace reuse/inherit the same configurations also
-> for this machine, along with the others.
 
-This might cause people's userspace configurations relying on the old
-name to break.  Obviously we're hoping nobody was doing that since
-that's also true for kernel upgrades but it seems kind of aggressive for
-stable...
+thanks,
 
---EpYEx7V8UqnZBosf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGmQEgACgkQJNaLcl1U
-h9C12Af7BOB8qKYgh1ta/a6KlxNqPdnCcPfgt75Zppjx5a+wS5BhWIW8uhF0Bs67
-UjGiaO1WRqrfwtcFWXadhQxa1BrpskWt3afgg0KFYtcjf3KFXCFcdVFhdzRMcCe3
-SY9eGKabGIsXJdQ18qKRBEPnQ+gXSQbCatqs2cgCgdS07R4nwfFb008U5P3zFysq
-PmN9hWOfC5A0cX1EUWPR/zy7qNdFcCEDQu4n5kJTVdpEjKE7lqEA6wy2zw3pQXyZ
-dIb4IGxWKyuZ5yt5D0WPX0IlasJvU6QxPxtDgoVYFLhqi9KPivLJJZ82FO2e0Aw0
-oZ3H5YPHbUl9/DueY8z+0kk6ZATmCQ==
-=q/3k
------END PGP SIGNATURE-----
-
---EpYEx7V8UqnZBosf--
+Takashi
