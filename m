@@ -4,169 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C59E9C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Nov 2021 12:57:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D225C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Nov 2021 13:25:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BE98A1FFE;
-	Tue, 30 Nov 2021 13:56:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE98A1FFE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 78B271F75;
+	Tue, 30 Nov 2021 14:24:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 78B271F75
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638277068;
-	bh=SC74+cOXaNrGuL8JUwOK7GWoaFJ5En6why6S6Ma26Eo=;
-	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1638278703;
+	bh=T1Uiz55ZvAGKYFjSNbC9Rgw0S3b/zXGquWjDA5lbMJE=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=Pj4MmoCiqfOPDP4cJ1auFVaoT/AVLCGej+J31jooB9BOoRa2eTRFIrZZzVpzCUqiW
-	 s1IdjM05UHP18jL5+1bXXNuMo6AoBaijdG7n8ffwG+knWQU748XgmhhT+iCn62mfeR
-	 WDhaEtajevwBb9+Y8O/GrHt/c8iuKE2QqsnONeHM=
+	b=glZxYrVoV18Ur8xDGrQxQuSdCq/M2wBTjvxTEId1eGz4VKJTEOjWKo6ANBCgplxYr
+	 lwZPeaw24svChSlPh/p2mOqHbEOVNPPRfs/nFzSzM+WY31hLtIcJcUzoyw4ZHsdAae
+	 K2HHIDUvZhWi9fR1zw5vT5Flg665+sqIrTllQeVs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 65504F80301;
-	Tue, 30 Nov 2021 13:56:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 11A03F8028D;
+	Tue, 30 Nov 2021 14:24:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AD1E4F804AD; Tue, 30 Nov 2021 13:56:55 +0100 (CET)
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com
- [205.220.165.32])
+ id 641C0F80290; Tue, 30 Nov 2021 14:24:08 +0100 (CET)
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com
+ (mail-dm6nam11on2050.outbound.protection.outlook.com [40.107.223.50])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EE1E2F802A0
- for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2021 13:56:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EE1E2F802A0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0CF29F8020D
+ for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2021 14:23:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0CF29F8020D
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com
- header.b="gokH32I9"; 
- dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com
- header.i=@oracle.onmicrosoft.com header.b="ZjzOOuz1"
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
- by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AUC45w6021038; 
- Tue, 30 Nov 2021 12:56:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
- h=date : from : to : cc
- : subject : message-id : content-type : mime-version; s=corp-2021-07-09;
- bh=cGQMWal/rkHk/4RDfDTpNDfhrlEoQUwycjD+FoufjoA=;
- b=gokH32I9JCbc/o5SmjSqzPN74vZ8N66UePsArMoxWegU6V5+BXXwslnfdfxVR91vAF4o
- 0wVw643mzeTF0e2Df0pV1OjTX0K/LTISa1FvSklNUKvRZwLXl5xHErmJpQHVmpA3CJOW
- Y6SjtSJPMQ4i3jHrU9B3EoKcwcysapOb6cpiYeT1JiK3lEMzmqHYv9FH1GJhI8h4DrFi
- tcLgImg6q8DfqRPN5aGOtqYXzTYHQsAb9qUN8SZRYAlLp7LUmwRjScQr15SXV3kuBI2E
- pJPyFxRYcr+IAZq7G4FiRnWa2DtfJHYdlbmihE3Ts7+h074k0xXQicsm+zgWio1PZUOS Vw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
- by mx0b-00069f02.pphosted.com with ESMTP id 3cmvmwrynx-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Tue, 30 Nov 2021 12:56:49 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
- by userp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1AUCqMtm068487;
- Tue, 30 Nov 2021 12:56:47 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com
- (mail-dm6nam12lp2169.outbound.protection.outlook.com [104.47.59.169])
- by userp3020.oracle.com with ESMTP id 3cke4pgmvh-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Tue, 30 Nov 2021 12:56:47 +0000
+ dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com
+ header.b="HBaV3El9"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Zzz36gt6O2FCzj9zn6D74o8n/s3A0yJDdxWsIzbKRKzZf5XyxYKh09UzwknPY6Ok6Y27ZmvDycsPVZmSHikhLRJISFFmrhLlbEAK07VH/mW4I0POOBv9pF8d/Mzfeu+xvLeL5AJE3Ke7Nz17d2/CXMtKI6SfLXOqa5jf5CuHSogop1NgNTHkGa+1Niy37USW9jeGFlfWnhPnffPeaRs3JVWUOQM4IZt6z9Ia7vWKj4UzgVv3nTUS1oU3TpgQ/JM26QN2QTDgt6vNNk4SxFs/bdv1lp4BxeDvobjCr/leuSbuTl68uag27+cgn6djOfCMnUEqJPZ0tB7Gn/WP7JSbiQ==
+ b=Dkos9g/bxzBwFoBZuZ5Lva4oZRS8qvc4NGSO9fL3VNjyQf8QPzMiasuSEl98Om9AA5JNwt5m9u+ei0eGbYAGdUAbzHwFxFcCZCOX6t2ct2ZuuJnriIFE4WUU3uoNbmYBDYyMU8Yw8V23jgZN3mS6q4vw2m2q2e6v1m3p7NzHcC3w5FOXaJel6NqUmbYQqvP405FEN1jCcxW/K9GqOFCjCcHKLNbjcqW0W09xWWd4VdxWpK8yKSkyhYsaI3FsUs9UxjPCMT0H2dpeAOs5A5jPgo5GlsA/eGWguyXzzVkVoYpjRLgRWJNk513oD5Kwea04y5/zuiHjUVhRkbw0trsU6Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cGQMWal/rkHk/4RDfDTpNDfhrlEoQUwycjD+FoufjoA=;
- b=cFfoCmCI5VNDY9Oe9gxT0wf/ADS/jBwfUbbKbTdOUYEWpfdvUUf3POUVw+iegihOOC8yK5EmgrA6OyVJJH+IKP2j8xAjN9Jd/JG4jGcAeaszk9t3YoRNCxED3ebulDa8zJJC+LomV1Vv4MsSHgfd74EWagol15mYkAduUCUrXSbNKtkBwpa0jQF1pBqAschfE2HxtI07zOqmz4ZkA1CGlUA71UlNDJ90O9pejcteIme8oMwYkuSfWtIw5gqBXqbiwGsQTWa1E6LTppwlROHSiaowewx0uL7ooK8sX49Y867EpCMNjBm+W17Sr3ytfj5JHSdn5WirD44q1Tq/lZtTiQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ bh=3A3J/kGpdFYtwODkZ5cIeaynZWfni2c8cyLBVJsR9Tw=;
+ b=aX2wUmRJWfowsYH+fbG+TJBypeqvtovUbuzn49HqCrbDgGkYYYQqKL7cBb6YKtwrqPNzoQrY5qmqbobKlY1QEMeFDyOGkqVGN3mZSaLe3kuGNwHg7EjgDQTj5Jc9kJXF2U1Rwf4Yj1i0Ka8jEgz2O19yxt+NhodCle1PjRU9CXGWTkJvTmD2Uwql6U3cWn/Qb3e5UylctJN9WgT59l4NnTWZHRGpevRXLFOmM9/pI8a+oqwM2q7kGw88ta2ubK3xKc03Qh0NEgIJHOmRu37tzkKcX2IOaiMGGLS+VYhgke4R890twpjwRQ23hJma7Qhg5E/cc4Ylp3EuBC9n3MGvUQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=alsa-project.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=nvidia.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cGQMWal/rkHk/4RDfDTpNDfhrlEoQUwycjD+FoufjoA=;
- b=ZjzOOuz1QK5MteRFUwz20KAwYbe/mIwe4NATJ6coVJt+W/VxDwKk/XeDfyQjR+9vRiFiXkBovMudeqEaB8nidvkdXeeUO+xcmaKKvnYHyn+1uwv82xQIqbUXcJJcFVVgV/Pjyqmpo36yyX4/gmphjg1D9Lg+gaJi4l2CNHfZmz0=
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by MW4PR10MB5677.namprd10.prod.outlook.com
- (2603:10b6:303:18b::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4755.11; Tue, 30 Nov
- 2021 12:56:45 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::7194:c377:36cc:d9f0]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::7194:c377:36cc:d9f0%6]) with mapi id 15.20.4734.024; Tue, 30 Nov 2021
- 12:56:45 +0000
-Date: Tue, 30 Nov 2021 15:56:33 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: Liam Girdwood <lgirdwood@gmail.com>,
- Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Subject: [PATCH] ASoC: amd: fix uninitialized variable in snd_acp6x_probe()
-Message-ID: <20211130125633.GA24941@kili>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-ClientProxiedBy: ZR0P278CA0141.CHEP278.PROD.OUTLOOK.COM
- (2603:10a6:910:40::20) To MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28)
+ bh=3A3J/kGpdFYtwODkZ5cIeaynZWfni2c8cyLBVJsR9Tw=;
+ b=HBaV3El9jkk7lG7lA4+9qwPBZtE5VPjbWGXwNSPHj1iQTEwNhQoevkOaa9emM4w0pBCtwnhmH8jEAI5BtpnJKxMAB5siQ9o0mj8RMAem19MQRTiKHGcmaPGasnNeBWnSYr+aYSNHp+xiK3QY2adzJRp7W+MRrQlcYmuYfQRx3WiHrZuSzPdOSZlkU1yLJr8BBPk5YG2+2wQxV+u+gA9rSAur+Az95seI0xZX214QDCbPUbAA1lGWu1b3prE897+ixh8XGWK7hC44ngBD99jVQDQVHmXXCmHx60KYXEXhBWXvxn+oCNR/VhEgaVrVLgZryFBYhdQpxyn2GkFrooax+Q==
+Received: from MWHPR08CA0038.namprd08.prod.outlook.com (2603:10b6:300:c0::12)
+ by DM5PR12MB1306.namprd12.prod.outlook.com (2603:10b6:3:6c::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.23; Tue, 30 Nov
+ 2021 13:23:54 +0000
+Received: from CO1NAM11FT050.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:300:c0:cafe::51) by MWHPR08CA0038.outlook.office365.com
+ (2603:10b6:300:c0::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.23 via Frontend
+ Transport; Tue, 30 Nov 2021 13:23:54 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ CO1NAM11FT050.mail.protection.outlook.com (10.13.174.79) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4734.22 via Frontend Transport; Tue, 30 Nov 2021 13:23:53 +0000
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 30 Nov
+ 2021 13:23:53 +0000
+Received: from audio.nvidia.com (172.20.187.5) by mail.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
+ Transport; Tue, 30 Nov 2021 13:23:50 +0000
+From: Sameer Pujar <spujar@nvidia.com>
+To: <broonie@kernel.org>, <lgirdwood@gmail.com>, <perex@perex.cz>,
+ <tiwai@suse.com>
+Subject: [PATCH v2] ASoC: tegra: Add master volume/mute control support
+Date: Tue, 30 Nov 2021 18:53:25 +0530
+Message-ID: <1638278605-28225-1-git-send-email-spujar@nvidia.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Received: from kili (102.222.70.114) by ZR0P278CA0141.CHEP278.PROD.OUTLOOK.COM
- (2603:10a6:910:40::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.22 via Frontend
- Transport; Tue, 30 Nov 2021 12:56:41 +0000
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1bfba7b0-a723-4225-82cf-08d9b400dcfa
-X-MS-TrafficTypeDiagnostic: MW4PR10MB5677:
-X-Microsoft-Antispam-PRVS: <MW4PR10MB5677F2F92B69E6ECE1BE1B218E679@MW4PR10MB5677.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3383;
+X-MS-Office365-Filtering-Correlation-Id: 2d8cde61-6487-4377-9d1b-08d9b404a7e0
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1306:
+X-Microsoft-Antispam-PRVS: <DM5PR12MB1306B30FB55D50D5EE24C895A7679@DM5PR12MB1306.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: WIm5zWBxl1ZvQurXKa8IvW8PC/ur+R7NpUN3J7VkuW2I85NvTpnQk4vhYnjIZMI4xLjRT73/jnZZMGa9D7WUsD2IQFMiuGNhjhD5+pv+LAQxbezXoJyGeyhw3OK3ce5zznBDsotugccTsV0BtDOGyjikgcsn4p2oz/SddK+7ztGOaoTVW8WdUwDPj1pXsiIkSHcZnlqL7Ee0HBwVEYkyc7RN9ACCz+aMX+GPyHAbD2X+FFp0Q/BSw1AsvqHIcMeyzHl0gBvlg02gxEYHFEN7du5GQcQlMrWJCHUh7Hh6dBw6Mzy28a8iK5PNBvkBo88+ApzDEbz3I3A+EYrmqHaJpfdWeT4XbKlhdCK+A3Zu29eVEmh3wnMZTtxESduPwavbHAXApgTy92M+JqKRdB4baX0MLn2N+vZuvavUoe/msdU6sBddv74OUoT8URRvu0RgYjWyuV+bpYM2Zsa2yHI75fC1/gz11nrUQrDdW3nLPCRm4j99dB3+ZKPALT2UhgGOBQ8ju3tvYXbRFDzHWHh/OvBDwf2rim0Q6S/4d7hU8PD643He/NpL7FbHnUamLRPl/gCsYLxgTKaqJ1F6Wmk0X4oNTQ8TAySqCH54Y81Z4f88lOwXsAzp/UmnL+wX6dooRDKakB3yMCpDp8fxeow5hQOd8CYckjrhB+/VjthEqaeuvzvb6foXg8MyXE4KV1n830Ct0WxrxYiUOA9ebpSC+w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:MWHPR1001MB2365.namprd10.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(366004)(5660300002)(33716001)(44832011)(38350700002)(38100700002)(956004)(316002)(54906003)(110136005)(52116002)(26005)(186003)(33656002)(2906002)(6496006)(55016003)(1076003)(508600001)(4744005)(86362001)(9686003)(8936002)(66946007)(6666004)(66476007)(8676002)(66556008)(4326008)(9576002)(83380400001);
+X-Microsoft-Antispam-Message-Info: 7hznnfY/l8Bp6OfXP/6wrJcvQbMpqOVG1AR1/0cxY9WGOAroQ0u9WBdw1tgSVcBYh43qfNxx4IEoJoJZvwPUrEVFTr5FmImWGdRpC07/t1bcw+dd/6aIiERMYNYA7ln66G4Q2Omeo//Vy5F0lNWJfoczFUFYArxODC2QStB2ZIMn+wkMBpJeBy1t0jKft3LSqGRP9Pp1hJ//VXmw2mktd2LkrH80Bsmw62rBVJmZZFgG8WtWqiQrCzV8N9av18BFODe8UNeQ5zkAGfxPq7kLNVOMqtIOVLe7i4zPNkHwsp3PX3VPGJJYAx6Xd92oADe+00v6HkN3p1gMDBoIz/pCGHtamwogfXDT9Hvrb6b/YNjbegjDcFGhh3+SrLYGYuixGJ29GbdfNxWbg476GA12N0k1HejsDn4IH9VeaePkuCG7mMwN4OVJDivQytQ38s8RKVuvAkJ9NHtxlhI7Jvg0QOybZQAzNBT4j/z1nCF/0Sxi9vxb1W7DFQyoKn8DuzRPjZOqVlPSWTBQKLAXpgN24CTtbk6kpfLzqx0rWuKYbIdg5bBsGN+8kEGShizgMEWCw6xGo2akTuilXq37kjnQ8c/UR0hTlH0pRep6gA6cXIlHFZAnf2e5PqdHjFMK7oaTIRCqtfMdBr1S9VIZ3FUPv+ri7OLKvp6XbOQVc01DC5X+xMq2eByLXobNXEBsLTFpfgN8tJnFnqo1erIMeoKiBL2b2HMXkNInFK363QWD41dJeWFA1HnDlxuUAF8EwYBaE7hwsmqIWQFR3hMUn8ifMYpPusSg0gamUQOto6jG0P4XgJbvltflEc0cIXkEn+G2BhhtJY28t5RCddiASRwa3cEA3SRMZjKE9GvqNUzq2W0=
+X-Forefront-Antispam-Report: CIP:216.228.112.34; CTRY:US; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:mail.nvidia.com; PTR:schybrid03.nvidia.com; CAT:NONE;
+ SFS:(4636009)(46966006)(36840700001)(40470700001)(4326008)(5660300002)(7636003)(110136005)(2616005)(426003)(40460700001)(30864003)(316002)(107886003)(82310400004)(8936002)(54906003)(86362001)(70206006)(70586007)(336012)(83380400001)(6666004)(7696005)(186003)(8676002)(966005)(2906002)(36860700001)(508600001)(47076005)(26005)(36756003)(356005);
  DIR:OUT; SFP:1101; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?kN0VadTT+oTGX6f52Xe5PtX0POpIxSWXFcxHK4PWjIcGaTiu8GByuYa2XtCi?=
- =?us-ascii?Q?eel3JYJwRoLBUOpGgVUDV52VgOpfcWpXzeh4eDmeyG7Sa8qIQQvCs6vxvvki?=
- =?us-ascii?Q?EBzQjRm/WOgqPbmZRZwWSiHv1gCv83UfM7XG4sgcd8o7NULTlHQg46bs2jg1?=
- =?us-ascii?Q?ADVmLJJ/hB2q6xFuK8Gm3LNaqyTHGKT7BzqlwOi16Csfy0BPmsmPxNhsSMvE?=
- =?us-ascii?Q?brKFb1SnoggW3Hgi70jUunWyS1LlFd7BuN/Kp0sDAbbJRj+SdCiiS807iqIn?=
- =?us-ascii?Q?z29zBUBKHdJmRvU2oNCuhDMNp7PwxwOc8ccoe/FPCAGjRSPh6HCCGw5H0wmk?=
- =?us-ascii?Q?hmH76ALWO4tHgBkeOLNmHuP+EAYSc6vrDMcR0FKdt9Hflqby2EPa0ecVDP9j?=
- =?us-ascii?Q?N4wxvhLODNo3qWlZzjUuIV0yP/h4PH2E8sGhla5/cyAYU50brPgFU47PKynv?=
- =?us-ascii?Q?tIZz2hxFl7yoFsAz3vtgJg3kSrmvqzxYbEQkqmTULBogwXjG2xEiAPZImjfB?=
- =?us-ascii?Q?1lD7DlaKv2eR5FvhcaS90JjasHfCEXSWEAJnOkUr4nqEJBhBKoYXyJfn5exp?=
- =?us-ascii?Q?W3DMm08Ht1133KDIAS/LfFv5G1Ur00QNiNss7ALsCh+2eBnNsi7KjZq7EyOs?=
- =?us-ascii?Q?iTzeezYdvgGTxr3PWIynYj7Wr9AslXIXjdssNlM8dqAri4qU5er8qokv9fuG?=
- =?us-ascii?Q?cMnjC5Ru8BJYy2Jub9akScIda/JsIYf9JkMLHn8Fu9syRsU678dtIrwUL0H1?=
- =?us-ascii?Q?OjHNaLn5rfo+HRJ16Mp6VcBcBtNBgjAij6YdCCRt/BxKiirIocFChYWa+ywY?=
- =?us-ascii?Q?60JBT0TzBnFeVRKgs6uB086AYeLpbjjgZlyjyJhDPlv3hlkGrcPzydzufgAa?=
- =?us-ascii?Q?Z97Igv0+4tuHxLRfZGVlGdUvMVb3ABv8KPa8n8i+0PwqiHoBirFn8X8GvtXg?=
- =?us-ascii?Q?GDiVFD83hE/5GhAtW7c2DoCyeTqg5Y1DTLM8ShiebIGAZF3tszbbMO2BjRvX?=
- =?us-ascii?Q?apXnX6JmvPNsE5e6DwI2i9tuqOrlEcnUHmtyXaANID466qj6kBoeOA8+DM7Q?=
- =?us-ascii?Q?3/zEFh78NMfcdKIuSxCXhYuaT+dlvy42KBH6RVbx/bi8sl4P4mgAvc9asaOa?=
- =?us-ascii?Q?jb2wqXa7E2MmlSAZXx+kR8jM5SEVxnG/SKmlsyqMIDFrwbMCj43VA9hKMCmu?=
- =?us-ascii?Q?fwM/lI5oIDrDPEKgRx/NLimYQUU714afhMOMAIC80O7PyOXANUW4BdFG+Zic?=
- =?us-ascii?Q?BxqQTUdXwC65aogwJYZZJhGgpHyf2mIoaocy4veaMOatZWVlxDwSATOMV0tU?=
- =?us-ascii?Q?y8GIhODQVtAxhnjdHHPR8JXiwdmTBC0a7EsuvW9fGSJXzbfN/0CqeHIlKzJV?=
- =?us-ascii?Q?Bj72U7EGeMFVBba/78HDN0ym+BqMDbOdvFAoYjzQpp6vHFHvViHw/KxU/QBl?=
- =?us-ascii?Q?rl+Bqh2mPq2YI3uT0zPflC747BIwWb/wroentzfroxBXmKA+Nsy4iSMwf75M?=
- =?us-ascii?Q?7PdnITBgrOytQsg33SEDpXCSoeUX7Qj7PyqWgYcdqG3F7BGLtUYnP5SJEy9a?=
- =?us-ascii?Q?gKWuhR/Qo0pc7LBf7NrkGd/9idnhr+JA9vjg1KAfylmI6ryn1q73Shm/y3oT?=
- =?us-ascii?Q?+2hRVtdjLGapseX6AoOj267gmED+9MXr+MymDFaL+tY25tLpge3zV5vY/zmK?=
- =?us-ascii?Q?SxJzFqwGv4BbS0TGP60nu3258eQ=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1bfba7b0-a723-4225-82cf-08d9b400dcfa
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Nov 2021 12:56:45.2778 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: A83JWbmXlP/hSug1X7KR+kqRD2zfPVaI1L9/TLnfcj9B3Yr19NqSk+UT1NY1l7+H0YkXlz5pc9H86PbcYTfj71oQIku3HkKHo14M+dNO1QA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR10MB5677
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10183
- signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0
- mlxlogscore=999
- phishscore=0 suspectscore=0 spamscore=0 adultscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111300074
-X-Proofpoint-ORIG-GUID: a8t7nH40xNCz4lD3H5Zv-NdJZ4CWC0dU
-X-Proofpoint-GUID: a8t7nH40xNCz4lD3H5Zv-NdJZ4CWC0dU
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Nov 2021 13:23:53.7612 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2d8cde61-6487-4377-9d1b-08d9b404a7e0
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a; Ip=[216.228.112.34];
+ Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT050.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1306
+Cc: alsa-devel@alsa-project.org, Sameer Pujar <spujar@nvidia.com>,
+ linux-kernel@vger.kernel.org, jonathanh@nvidia.com, thierry.reding@gmail.com,
+ linux-tegra@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -182,32 +128,365 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The "index" is potentially used without being initialized on the error
-path.
+The MVC module has a per channel control bit, based on which it decides
+to apply channel specific volume/mute settings. When per channel control
+bit is enabled (which is the default HW configuration), all MVC channel
+volume/mute can be independently controlled. If the control is disabled,
+channel-0 volume/mute setting is applied by HW to all remaining channels.
+Thus add support to leverage this HW feature by exposing master controls
+for volume/mute.
 
-Fixes: fc329c1de498 ("ASoC: amd: add platform devices for acp6x pdm driver and dmic driver")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+With this, now there are per channel and master volume/mute controls.
+Users need to just use controls which are suitable for their applications.
+The per channel control enable/disable is mananged in driver and hidden
+from users, so that they need to just worry about respective volume/mute
+controls.
+
+Signed-off-by: Sameer Pujar <spujar@nvidia.com>
 ---
- sound/soc/amd/yc/pci-acp6x.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ changes in v2:
+   * Kcontrol put() related comments, received during v1, are addressed
+     in another series [0].
+   * Thus v2 is rebased on top of recent changes.
+   * In doing so, this patch also addresses optimization comment received
+     on [0] which suggested usage of regmap_update_bits_check() in the MVC
+     driver.
 
-diff --git a/sound/soc/amd/yc/pci-acp6x.c b/sound/soc/amd/yc/pci-acp6x.c
-index 957eeb6fb8e3..7e9a9a9d8ddd 100644
---- a/sound/soc/amd/yc/pci-acp6x.c
-+++ b/sound/soc/amd/yc/pci-acp6x.c
-@@ -146,10 +146,11 @@ static int snd_acp6x_probe(struct pci_dev *pci,
- {
- 	struct acp6x_dev_data *adata;
- 	struct platform_device_info pdevinfo[ACP6x_DEVS];
--	int ret, index;
-+	int index = 0;
- 	int val = 0x00;
- 	u32 addr;
- 	unsigned int irqflags;
-+	int ret;
+   [0] https://lkml.org/lkml/2021/11/18/930
+
+ sound/soc/tegra/tegra210_mvc.c | 209 ++++++++++++++++++++++++++++++++---------
+ sound/soc/tegra/tegra210_mvc.h |   5 +
+ 2 files changed, 169 insertions(+), 45 deletions(-)
+
+diff --git a/sound/soc/tegra/tegra210_mvc.c b/sound/soc/tegra/tegra210_mvc.c
+index 93cbeb6..2d79138 100644
+--- a/sound/soc/tegra/tegra210_mvc.c
++++ b/sound/soc/tegra/tegra210_mvc.c
+@@ -108,67 +108,152 @@ static void tegra210_mvc_conv_vol(struct tegra210_mvc *mvc, u8 chan, s32 val)
+ 	}
+ }
  
- 	irqflags = IRQF_SHARED;
- 	/* Yellow Carp device check */
+-static int tegra210_mvc_get_mute(struct snd_kcontrol *kcontrol,
+-				 struct snd_ctl_elem_value *ucontrol)
++static u32 tegra210_mvc_get_ctrl_reg(struct snd_kcontrol *kcontrol)
+ {
+ 	struct snd_soc_component *cmpnt = snd_soc_kcontrol_component(kcontrol);
+ 	struct tegra210_mvc *mvc = snd_soc_component_get_drvdata(cmpnt);
+-	u8 mute_mask;
+ 	u32 val;
+ 
+ 	pm_runtime_get_sync(cmpnt->dev);
+ 	regmap_read(mvc->regmap, TEGRA210_MVC_CTRL, &val);
+ 	pm_runtime_put(cmpnt->dev);
+ 
+-	mute_mask = (val >>  TEGRA210_MVC_MUTE_SHIFT) &
+-		TEGRA210_MUTE_MASK_EN;
++	return val;
++}
++
++static int tegra210_mvc_get_mute(struct snd_kcontrol *kcontrol,
++				 struct snd_ctl_elem_value *ucontrol)
++{
++	u32 val = tegra210_mvc_get_ctrl_reg(kcontrol);
++	u8 mute_mask = TEGRA210_GET_MUTE_VAL(val);
+ 
+-	ucontrol->value.integer.value[0] = mute_mask;
++	/*
++	 * If per channel control is enabled, then return
++	 * exact mute/unmute setting of all channels.
++	 *
++	 * Else report setting based on CH0 bit to reflect
++	 * the correct HW state.
++	 */
++	if (val & TEGRA210_MVC_PER_CHAN_CTRL_EN) {
++		ucontrol->value.integer.value[0] = mute_mask;
++	} else {
++		if (mute_mask & TEGRA210_MVC_CH0_MUTE_EN)
++			ucontrol->value.integer.value[0] =
++				TEGRA210_MUTE_MASK_EN;
++		else
++			ucontrol->value.integer.value[0] = 0;
++	}
+ 
+ 	return 0;
+ }
+ 
+-static int tegra210_mvc_put_mute(struct snd_kcontrol *kcontrol,
+-				 struct snd_ctl_elem_value *ucontrol)
++static int tegra210_mvc_get_master_mute(struct snd_kcontrol *kcontrol,
++					struct snd_ctl_elem_value *ucontrol)
++{
++	u32 val = tegra210_mvc_get_ctrl_reg(kcontrol);
++	u8 mute_mask = TEGRA210_GET_MUTE_VAL(val);
++
++	/*
++	 * If per channel control is disabled, then return
++	 * master mute/unmute setting based on CH0 bit.
++	 *
++	 * Else report settings based on state of all
++	 * channels.
++	 */
++	if (!(val & TEGRA210_MVC_PER_CHAN_CTRL_EN)) {
++		ucontrol->value.integer.value[0] =
++			mute_mask & TEGRA210_MVC_CH0_MUTE_EN;
++	} else {
++		if (mute_mask == TEGRA210_MUTE_MASK_EN)
++			ucontrol->value.integer.value[0] =
++				TEGRA210_MVC_CH0_MUTE_EN;
++		else
++			ucontrol->value.integer.value[0] = 0;
++	}
++
++	return 0;
++}
++
++static int tegra210_mvc_volume_switch_timeout(struct snd_soc_component *cmpnt)
+ {
+-	struct soc_mixer_control *mc =
+-		(struct soc_mixer_control *)kcontrol->private_value;
+-	struct snd_soc_component *cmpnt = snd_soc_kcontrol_component(kcontrol);
+ 	struct tegra210_mvc *mvc = snd_soc_component_get_drvdata(cmpnt);
+-	unsigned int value;
+-	u8 new_mask, old_mask;
++	u32 value;
+ 	int err;
+ 
+-	pm_runtime_get_sync(cmpnt->dev);
+-
+-	/* Check if VOLUME_SWITCH is triggered */
+ 	err = regmap_read_poll_timeout(mvc->regmap, TEGRA210_MVC_SWITCH,
+ 			value, !(value & TEGRA210_MVC_VOLUME_SWITCH_MASK),
+ 			10, 10000);
+ 	if (err < 0)
+-		goto end;
++		dev_err(cmpnt->dev,
++			"Volume switch trigger is still active, err = %d\n",
++			err);
+ 
+-	regmap_read(mvc->regmap, TEGRA210_MVC_CTRL, &value);
++	return err;
++}
+ 
+-	old_mask = (value >> TEGRA210_MVC_MUTE_SHIFT) & TEGRA210_MUTE_MASK_EN;
+-	new_mask = ucontrol->value.integer.value[0];
++static int tegra210_mvc_update_mute(struct snd_kcontrol *kcontrol,
++				    struct snd_ctl_elem_value *ucontrol,
++				    bool per_chan_ctrl)
++{
++	struct snd_soc_component *cmpnt = snd_soc_kcontrol_component(kcontrol);
++	struct tegra210_mvc *mvc = snd_soc_component_get_drvdata(cmpnt);
++	u32 mute_val = ucontrol->value.integer.value[0];
++	u32 per_ch_ctrl_val;
++	bool change = false;
++	int err;
+ 
+-	if (new_mask == old_mask) {
+-		err = 0;
++	pm_runtime_get_sync(cmpnt->dev);
++
++	err = tegra210_mvc_volume_switch_timeout(cmpnt);
++	if (err < 0)
+ 		goto end;
++
++	if (per_chan_ctrl) {
++		per_ch_ctrl_val = TEGRA210_MVC_PER_CHAN_CTRL_EN;
++	} else {
++		per_ch_ctrl_val = 0;
++
++		if (mute_val)
++			mute_val = TEGRA210_MUTE_MASK_EN;
+ 	}
+ 
+-	err = regmap_update_bits(mvc->regmap, mc->reg,
++	regmap_update_bits_check(mvc->regmap, TEGRA210_MVC_CTRL,
+ 				 TEGRA210_MVC_MUTE_MASK,
+-				 new_mask << TEGRA210_MVC_MUTE_SHIFT);
+-	if (err < 0)
+-		goto end;
++				 mute_val << TEGRA210_MVC_MUTE_SHIFT,
++				 &change);
+ 
+-	err = 1;
++	if (change) {
++		regmap_update_bits(mvc->regmap, TEGRA210_MVC_CTRL,
++				   TEGRA210_MVC_PER_CHAN_CTRL_EN_MASK,
++				   per_ch_ctrl_val);
++
++		regmap_update_bits(mvc->regmap, TEGRA210_MVC_SWITCH,
++				   TEGRA210_MVC_VOLUME_SWITCH_MASK,
++				   TEGRA210_MVC_VOLUME_SWITCH_TRIGGER);
++	}
+ 
+ end:
+ 	pm_runtime_put(cmpnt->dev);
+-	return err;
++
++	if (err < 0)
++		return err;
++
++	if (change)
++		return 1;
++
++	return 0;
++}
++
++static int tegra210_mvc_put_mute(struct snd_kcontrol *kcontrol,
++				 struct snd_ctl_elem_value *ucontrol)
++{
++	return tegra210_mvc_update_mute(kcontrol, ucontrol, true);
++}
++
++static int tegra210_mvc_put_master_mute(struct snd_kcontrol *kcontrol,
++					struct snd_ctl_elem_value *ucontrol)
++{
++	return tegra210_mvc_update_mute(kcontrol, ucontrol, false);
+ }
+ 
+ static int tegra210_mvc_get_vol(struct snd_kcontrol *kcontrol,
+@@ -178,7 +263,7 @@ static int tegra210_mvc_get_vol(struct snd_kcontrol *kcontrol,
+ 		(struct soc_mixer_control *)kcontrol->private_value;
+ 	struct snd_soc_component *cmpnt = snd_soc_kcontrol_component(kcontrol);
+ 	struct tegra210_mvc *mvc = snd_soc_component_get_drvdata(cmpnt);
+-	u8 chan = (mc->reg - TEGRA210_MVC_TARGET_VOL) / REG_SIZE;
++	u8 chan = TEGRA210_MVC_GET_CHAN(mc->reg, TEGRA210_MVC_TARGET_VOL);
+ 	s32 val = mvc->volume[chan];
+ 
+ 	if (mvc->curve_type == CURVE_POLY) {
+@@ -193,44 +278,55 @@ static int tegra210_mvc_get_vol(struct snd_kcontrol *kcontrol,
+ 	return 0;
+ }
+ 
+-static int tegra210_mvc_put_vol(struct snd_kcontrol *kcontrol,
+-				struct snd_ctl_elem_value *ucontrol)
++static int tegra210_mvc_get_master_vol(struct snd_kcontrol *kcontrol,
++				       struct snd_ctl_elem_value *ucontrol)
++{
++	return tegra210_mvc_get_vol(kcontrol, ucontrol);
++}
++
++static int tegra210_mvc_update_vol(struct snd_kcontrol *kcontrol,
++				   struct snd_ctl_elem_value *ucontrol,
++				   bool per_ch_enable)
+ {
+ 	struct soc_mixer_control *mc =
+ 		(struct soc_mixer_control *)kcontrol->private_value;
+ 	struct snd_soc_component *cmpnt = snd_soc_kcontrol_component(kcontrol);
+ 	struct tegra210_mvc *mvc = snd_soc_component_get_drvdata(cmpnt);
+-	unsigned int reg = mc->reg;
+-	unsigned int value;
+-	u8 chan;
+-	int err, old_volume;
++	u8 chan = TEGRA210_MVC_GET_CHAN(mc->reg, TEGRA210_MVC_TARGET_VOL);
++	int old_volume = mvc->volume[chan];
++	int err, i;
+ 
+ 	pm_runtime_get_sync(cmpnt->dev);
+ 
+-	/* Check if VOLUME_SWITCH is triggered */
+-	err = regmap_read_poll_timeout(mvc->regmap, TEGRA210_MVC_SWITCH,
+-			value, !(value & TEGRA210_MVC_VOLUME_SWITCH_MASK),
+-			10, 10000);
++	err = tegra210_mvc_volume_switch_timeout(cmpnt);
+ 	if (err < 0)
+ 		goto end;
+ 
+-	chan = (reg - TEGRA210_MVC_TARGET_VOL) / REG_SIZE;
+-	old_volume = mvc->volume[chan];
+-
+-	tegra210_mvc_conv_vol(mvc, chan,
+-			      ucontrol->value.integer.value[0]);
++	tegra210_mvc_conv_vol(mvc, chan, ucontrol->value.integer.value[0]);
+ 
+ 	if (mvc->volume[chan] == old_volume) {
+ 		err = 0;
+ 		goto end;
+ 	}
+ 
++	if (per_ch_enable) {
++		regmap_update_bits(mvc->regmap, TEGRA210_MVC_CTRL,
++				   TEGRA210_MVC_PER_CHAN_CTRL_EN_MASK,
++				   TEGRA210_MVC_PER_CHAN_CTRL_EN);
++	} else {
++		regmap_update_bits(mvc->regmap, TEGRA210_MVC_CTRL,
++				   TEGRA210_MVC_PER_CHAN_CTRL_EN_MASK, 0);
++
++		for (i = 1; i < TEGRA210_MVC_MAX_CHAN_COUNT; i++)
++			mvc->volume[i] = mvc->volume[chan];
++	}
++
+ 	/* Configure init volume same as target volume */
+ 	regmap_write(mvc->regmap,
+ 		TEGRA210_MVC_REG_OFFSET(TEGRA210_MVC_INIT_VOL, chan),
+ 		mvc->volume[chan]);
+ 
+-	regmap_write(mvc->regmap, reg, mvc->volume[chan]);
++	regmap_write(mvc->regmap, mc->reg, mvc->volume[chan]);
+ 
+ 	regmap_update_bits(mvc->regmap, TEGRA210_MVC_SWITCH,
+ 			   TEGRA210_MVC_VOLUME_SWITCH_MASK,
+@@ -240,9 +336,22 @@ static int tegra210_mvc_put_vol(struct snd_kcontrol *kcontrol,
+ 
+ end:
+ 	pm_runtime_put(cmpnt->dev);
++
+ 	return err;
+ }
+ 
++static int tegra210_mvc_put_vol(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	return tegra210_mvc_update_vol(kcontrol, ucontrol, true);
++}
++
++static int tegra210_mvc_put_master_vol(struct snd_kcontrol *kcontrol,
++				       struct snd_ctl_elem_value *ucontrol)
++{
++	return tegra210_mvc_update_vol(kcontrol, ucontrol, false);
++}
++
+ static void tegra210_mvc_reset_vol_settings(struct tegra210_mvc *mvc,
+ 					    struct device *dev)
+ {
+@@ -438,6 +547,16 @@ static const struct snd_kcontrol_new tegra210_mvc_vol_ctrl[] = {
+ 		       TEGRA210_MVC_CTRL, 0, TEGRA210_MUTE_MASK_EN, 0,
+ 		       tegra210_mvc_get_mute, tegra210_mvc_put_mute),
+ 
++	/* Master volume */
++	SOC_SINGLE_EXT("Volume", TEGRA210_MVC_TARGET_VOL, 0, 16000, 0,
++		       tegra210_mvc_get_master_vol,
++		       tegra210_mvc_put_master_vol),
++
++	/* Master mute */
++	SOC_SINGLE_EXT("Mute", TEGRA210_MVC_CTRL, 0, 1, 0,
++		       tegra210_mvc_get_master_mute,
++		       tegra210_mvc_put_master_mute),
++
+ 	SOC_ENUM_EXT("Curve Type", tegra210_mvc_curve_type_ctrl,
+ 		     tegra210_mvc_get_curve_type, tegra210_mvc_put_curve_type),
+ };
+diff --git a/sound/soc/tegra/tegra210_mvc.h b/sound/soc/tegra/tegra210_mvc.h
+index def29c4..d775335 100644
+--- a/sound/soc/tegra/tegra210_mvc.h
++++ b/sound/soc/tegra/tegra210_mvc.h
+@@ -59,6 +59,7 @@
+ #define TEGRA210_MUTE_MASK_EN			0xff
+ #define TEGRA210_MVC_MUTE_MASK			(TEGRA210_MUTE_MASK_EN << TEGRA210_MVC_MUTE_SHIFT)
+ #define TEGRA210_MVC_MUTE_EN			(TEGRA210_MUTE_MASK_EN << TEGRA210_MVC_MUTE_SHIFT)
++#define TEGRA210_MVC_CH0_MUTE_EN		1
+ 
+ #define TEGRA210_MVC_PER_CHAN_CTRL_EN_SHIFT	30
+ #define TEGRA210_MVC_PER_CHAN_CTRL_EN_MASK	(1 << TEGRA210_MVC_PER_CHAN_CTRL_EN_SHIFT)
+@@ -92,6 +93,10 @@
+ #define TEGRA210_MVC_MAX_CHAN_COUNT 8
+ #define TEGRA210_MVC_REG_OFFSET(reg, i) (reg + (REG_SIZE * i))
+ 
++#define TEGRA210_MVC_GET_CHAN(reg, base) (((reg) - (base)) / REG_SIZE)
++
++#define TEGRA210_GET_MUTE_VAL(val) (((val) >> TEGRA210_MVC_MUTE_SHIFT) & TEGRA210_MUTE_MASK_EN)
++
+ #define NUM_GAIN_POLY_COEFFS 9
+ 
+ enum {
 -- 
-2.20.1
+2.7.4
 
