@@ -4,71 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85E7CC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Nov 2021 14:54:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4C21C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Nov 2021 14:54:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 801A1213C;
-	Tue, 30 Nov 2021 15:53:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 801A1213C
+	by alsa0.perex.cz (Postfix) with ESMTPS id DCF3D214D;
+	Tue, 30 Nov 2021 15:53:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DCF3D214D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638284065;
-	bh=o8MeOq2N49p/FP/LqG1XAuTyIVVzI/eO1y3ZWHzfHpk=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=GEhlzuEiaS314yKWW2s20iMGJiA+wNkPyk6xkrQM4QtnUMkyZqFkOeoovommseahJ
-	 jO4c95Q5oUO7roRJyrr6mDNWe0gJSXeuwSKpieP6uRPHmAuYuuMt+qW2I+NB/SvNUn
-	 FzLY9eJN/+O1SC0NN3jZpaGMtN8Js2IatVC2P/wc=
+	s=default; t=1638284081;
+	bh=UF4YSgyj6cargNxm1BJt3Ur+WQOJZipD5pD1UdTv/+s=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=TBDfSr++81i/l9zfMbpR14OUlhj0D3/zsvOoM2rni6KPDOBWjU5Jn4z065bJEahN0
+	 G6UlZIQny6h2AnpirFeqCK9CZXVBVEKi3pgQafJimRYQJ4nQFrKo15FuR/zi6odTVA
+	 c2qkJoaB/kNfNZPDiLyKyireA5tRZKtlcqlvxGiA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DCE40F80301;
-	Tue, 30 Nov 2021 15:50:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DF7A7F804F2;
+	Tue, 30 Nov 2021 15:50:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 93885F804F1; Tue, 30 Nov 2021 15:50:41 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+ id 37338F804EC; Tue, 30 Nov 2021 15:50:42 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 72C89F80301
- for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2021 15:50:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72C89F80301
+ by alsa1.perex.cz (Postfix) with ESMTPS id DB358F802C4
+ for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2021 15:50:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DB358F802C4
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="dN44Nwgc"
+ header.b="VA6NpYjE"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id D31D0CE1A61;
- Tue, 30 Nov 2021 14:50:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDA4FC53FC7;
- Tue, 30 Nov 2021 14:50:23 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 4F920B81A21;
+ Tue, 30 Nov 2021 14:50:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A7ABC53FCD;
+ Tue, 30 Nov 2021 14:50:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1638283825;
- bh=o8MeOq2N49p/FP/LqG1XAuTyIVVzI/eO1y3ZWHzfHpk=;
- h=From:To:Cc:Subject:Date:From;
- b=dN44Nwgc8fUTHcq4zZ8z+algYTkMZd+neMowjNHG/s18nNtfsniAJ9Hroh45Op/BE
- gjybt2PMUwPXB2N+2Z0vThSdfBoGa1yIDcTuCMv1VjlHove6ehmJJmwg9EEtZ2y6Mo
- yNOZnnWiPeGgdOaaBIYUgzrcQQvqMIGZ1mpa+sdveHn1xIYhWudFgecH6UhnTge1BN
- s32sv4pMdPmM6mhmqEIVDt71b+igGIvBir4js6OIWFpHyksIoAKa9wXsVTV9OV+OHh
- pt517j23yibTMWv8RbBXhIMETSRkMHkEw1ToPw/xwLaNDgAOeWIrqSFFaYiveXLX1Q
- BKBocIgvO1YTQ==
+ s=k20201202; t=1638283832;
+ bh=UF4YSgyj6cargNxm1BJt3Ur+WQOJZipD5pD1UdTv/+s=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=VA6NpYjEuhnqLg+c76CKak8f2gVmZtRLTQeyqrTJv4Zho0ZxZ5+DXuQwnCRcZWTDF
+ TLtVrfvIj5adCWWwDqVPQrYvmDOsAa7a6msHB7EXJyeyBJFNv1X71AATFjayvi6WAB
+ TcEywdD0Yzu4ZyGt6GtX4OJGEiQE7X0LA10WdJOnRVVZ7f3IVdPjNkiVsnkzdZpLTH
+ nYl649ZyKKAm/cTRN2f9UuxhvdZMmjkjKFv/hKOE52Fq0834x3DLDluFoyF6dyOukn
+ KKKN0ZUaXbtvOVL9UdNYQvThx2+I1u+fxUFMnwW5NSHbL3+oR1ajbUBBvQ3ZgrdzmL
+ UQxbXBWjqCtnA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 01/43] ASoC: mediatek: mt8173-rt5650: Rename
- Speaker control to Ext Spk
-Date: Tue, 30 Nov 2021 09:49:38 -0500
-Message-Id: <20211130145022.945517-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 03/43] ASoC: Intel: sof_sdw: Add support for SKU
+ 0B00 and 0B01 products
+Date: Tue, 30 Nov 2021 09:49:40 -0500
+Message-Id: <20211130145022.945517-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20211130145022.945517-1-sashal@kernel.org>
+References: <20211130145022.945517-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- lgirdwood@gmail.com, tiwai@suse.com, Mark Brown <broonie@kernel.org>,
- linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
- linux-arm-kernel@lists.infradead.org,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: Sasha Levin <sashal@kernel.org>, libin.yang@intel.com,
+ cezary.rojewski@intel.com, kai.vehmanen@linux.intel.com,
+ Gongjun Song <gongjun.song@intel.com>, tiwai@suse.com,
+ yang.jie@linux.intel.com,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Rander Wang <rander.wang@intel.com>, liam.r.girdwood@linux.intel.com,
+ alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>, vamshi.krishna.gopal@intel.com,
+ yong.zhi@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,58 +91,55 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+From: Gongjun Song <gongjun.song@intel.com>
 
-[ Upstream commit 0a8facac0d1e38dc8b86ade6d3f0d8b33dae7c58 ]
+[ Upstream commit cf304329e4afb97ffabce232eadaba94f025641d ]
 
-Some RT5645 and RT5650 powered platforms are using "Ext Spk"
-instead of "Speaker", and this is also reflected in alsa-lib
-configurations for the generic RT5645 usecase manager configs.
+Both products support a SoundWire headset codec, SoundWire
+capture from local microphones and two SoundWire amplifiers.
 
-Rename the "Speaker" control to "Ext Spk" in order to be able
-to make the userspace reuse/inherit the same configurations also
-for this machine, along with the others.
-
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Link: https://lore.kernel.org/r/20211105152013.75252-1-angelogioacchino.delregno@collabora.com
+Signed-off-by: Gongjun Song <gongjun.song@intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Link: https://lore.kernel.org/r/20211105022646.26305-4-yung-chuan.liao@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/mediatek/mt8173/mt8173-rt5650.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/intel/boards/sof_sdw.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/sound/soc/mediatek/mt8173/mt8173-rt5650.c b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
-index c28ebf891cb05..2cbf679f5c74b 100644
---- a/sound/soc/mediatek/mt8173/mt8173-rt5650.c
-+++ b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
-@@ -30,15 +30,15 @@ static struct mt8173_rt5650_platform_data mt8173_rt5650_priv = {
+diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
+index 05fe300b796c8..5738aff4937fc 100644
+--- a/sound/soc/intel/boards/sof_sdw.c
++++ b/sound/soc/intel/boards/sof_sdw.c
+@@ -209,6 +209,26 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
+ 		.driver_data = (void *)(SOF_SDW_TGL_HDMI |
+ 					SOF_SDW_FOUR_SPK),
+ 	},
++	{
++		.callback = sof_sdw_quirk_cb,
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "0B00")
++		},
++		.driver_data = (void *)(SOF_SDW_TGL_HDMI |
++					RT711_JD2 |
++					SOF_SDW_FOUR_SPK),
++	},
++	{
++		.callback = sof_sdw_quirk_cb,
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "0B01")
++		},
++		.driver_data = (void *)(SOF_SDW_TGL_HDMI |
++					RT711_JD2 |
++					SOF_SDW_FOUR_SPK),
++	},
+ 	{}
  };
  
- static const struct snd_soc_dapm_widget mt8173_rt5650_widgets[] = {
--	SND_SOC_DAPM_SPK("Speaker", NULL),
-+	SND_SOC_DAPM_SPK("Ext Spk", NULL),
- 	SND_SOC_DAPM_MIC("Int Mic", NULL),
- 	SND_SOC_DAPM_HP("Headphone", NULL),
- 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
- };
- 
- static const struct snd_soc_dapm_route mt8173_rt5650_routes[] = {
--	{"Speaker", NULL, "SPOL"},
--	{"Speaker", NULL, "SPOR"},
-+	{"Ext Spk", NULL, "SPOL"},
-+	{"Ext Spk", NULL, "SPOR"},
- 	{"DMIC L1", NULL, "Int Mic"},
- 	{"DMIC R1", NULL, "Int Mic"},
- 	{"Headphone", NULL, "HPOL"},
-@@ -48,7 +48,7 @@ static const struct snd_soc_dapm_route mt8173_rt5650_routes[] = {
- };
- 
- static const struct snd_kcontrol_new mt8173_rt5650_controls[] = {
--	SOC_DAPM_PIN_SWITCH("Speaker"),
-+	SOC_DAPM_PIN_SWITCH("Ext Spk"),
- 	SOC_DAPM_PIN_SWITCH("Int Mic"),
- 	SOC_DAPM_PIN_SWITCH("Headphone"),
- 	SOC_DAPM_PIN_SWITCH("Headset Mic"),
 -- 
 2.33.0
 
