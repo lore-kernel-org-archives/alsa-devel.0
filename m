@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4EB01C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Nov 2021 14:53:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32628C433FE
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Nov 2021 14:53:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 72BE1210C;
-	Tue, 30 Nov 2021 15:52:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 72BE1210C
+	by alsa0.perex.cz (Postfix) with ESMTPS id B63DA2119;
+	Tue, 30 Nov 2021 15:52:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B63DA2119
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638283988;
-	bh=y8cz4/DIakiLjkY7BXYyXZxQsEHrnuVnY9Qv+AzozWc=;
+	s=default; t=1638284002;
+	bh=1pNQ+60EcBJZgMSHUy+cmbnowyPvPxR5LTtFNKojRWM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qGqS9CTXeLyQqV4U0Cq2QbMND23/iKilPYzy0r1g5xjBTTBTjbGVLjUjC8sCeo12b
-	 lkY0XKkLjKYQBlM1FgPmki4PyJhXDOrqXFsyCJ1XZbqZB0m22Lh6jp9OwDVNYQAdyv
-	 UxDDAzl0xg05qj9d7xiG/JJmtPizRaeMy+2TH4bI=
+	b=RGzFdGIrMjVHh+hYvLeiTWFvZI6SAOy9pNImg+LPNRrSOAZucQg4BKC3CyolrBaW3
+	 848JNDbMFauOKKJRoSzCYn1fZHay7oM051ZhASBr2/GDACXQNUrUsTuH++sIXBteLT
+	 C/82EhnEbKiWT1rNFMb1mEEjWgj+42h6HumWPJPY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 19F49F80548;
+	by alsa1.perex.cz (Postfix) with ESMTP id B4016F80553;
 	Tue, 30 Nov 2021 15:48:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0D798F80551; Tue, 30 Nov 2021 15:48:07 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+ id C5686F8054A; Tue, 30 Nov 2021 15:48:07 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 55C9FF80535
- for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2021 15:48:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55C9FF80535
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4C7D4F80537
+ for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2021 15:48:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C7D4F80537
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="BwUiw8hC"
+ header.b="USG8OCWZ"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id AC7A6CE19D8;
+ by sin.source.kernel.org (Postfix) with ESMTPS id 3C3FDCE1A31;
+ Tue, 30 Nov 2021 14:47:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB38CC53FCF;
  Tue, 30 Nov 2021 14:47:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E83E2C53FD0;
- Tue, 30 Nov 2021 14:47:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1638283675;
- bh=y8cz4/DIakiLjkY7BXYyXZxQsEHrnuVnY9Qv+AzozWc=;
+ s=k20201202; t=1638283678;
+ bh=1pNQ+60EcBJZgMSHUy+cmbnowyPvPxR5LTtFNKojRWM=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=BwUiw8hC8hvmmtkwAuM2H7jyx4+cnIM9CMyUgUdmkF7HBD/QC5mW5f3jY4YJGsjpp
- 4I4pnm7FVa89t58vZPpyF0QOGzPb7eY0e+ZzIXZxbI5AEJTXXP0RsQJUZ8dtPSOKpG
- G9H4uFfcrJM4Auoxu9/PumEYCuuGNvcT6Ofo9QW9UlsZZrBHYs85f5OIF0XtUguQqj
- Dkx9WvCE6wyDrzqTJrF/THXn7pRrsmSyBOZOxOaLMJx5xvbLd0S93qcSgtzvEWUSfm
- RSzTl0IVk7Aa0/A4Vy8QPp6VnuZuEksTte0wC9IiKxxdvjja25FQH2mkGkXfjc8qEX
- 3pByb29frzqcQ==
+ b=USG8OCWZArILxPfYyNYpPFPIAV9f9JcHFmnxSeJhFn0CfANYvs1H3PLIIecaA/YCG
+ rNwX3yeRPhp+m/uQr22roXjsyb8MAvqOeUmjGcBeTrIj4qjbpN99u4w087clmDPx5W
+ +JjtjKkF4bL8Ac2+CKjLJ8yIJqhWoMLELv4rw6fTXWkDi4kvJiW/eWU8hZCfMFK3Xg
+ /lFCDSVaqBGiXQBzmXsV1niacnkokB8IHX+EXZGqHOYp5gWQFuvYewv1COSXBWfgph
+ HUhN9OYtNdW0SFhhWrOsrUmTn2xNz04IPN+LE8gzVX9CLEvh/Y36OAxyTb+B0JGVKA
+ BHlrQkdXp5u4w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 14/68] ASoC: qdsp6: q6adm: improve error reporting
-Date: Tue, 30 Nov 2021 09:46:10 -0500
-Message-Id: <20211130144707.944580-14-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 15/68] ASoC: qdsp6: q6routing: validate port id
+ before setting up route
+Date: Tue, 30 Nov 2021 09:46:11 -0500
+Message-Id: <20211130144707.944580-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211130144707.944580-1-sashal@kernel.org>
 References: <20211130144707.944580-1-sashal@kernel.org>
@@ -67,8 +67,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- bgoswami@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com,
- Mark Brown <broonie@kernel.org>
+ bgoswami@codeaurora.org, stephan@gerhold.net, tiwai@suse.com,
+ lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>, ultracoolguy@disroot.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,41 +86,36 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-[ Upstream commit 0a270471d68533f59c5cfd631a3fce31a3b17144 ]
+[ Upstream commit 6712c2e18c06b0976559fd4bd47774b243038e9c ]
 
-reset value for port is -1 so printing an hex would not give us very
-useful debug information, so use %d instead.
+Validate port id before it starts sending commands to dsp this would
+make error handling simpler.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20211116114721.12517-5-srinivas.kandagatla@linaro.org
+Link: https://lore.kernel.org/r/20211116114721.12517-6-srinivas.kandagatla@linaro.org
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/qcom/qdsp6/q6adm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/qcom/qdsp6/q6routing.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/soc/qcom/qdsp6/q6adm.c b/sound/soc/qcom/qdsp6/q6adm.c
-index 3d831b635524f..72c5719f1d253 100644
---- a/sound/soc/qcom/qdsp6/q6adm.c
-+++ b/sound/soc/qcom/qdsp6/q6adm.c
-@@ -390,7 +390,7 @@ struct q6copp *q6adm_open(struct device *dev, int port_id, int path, int rate,
- 	int ret = 0;
- 
- 	if (port_id < 0) {
--		dev_err(dev, "Invalid port_id 0x%x\n", port_id);
-+		dev_err(dev, "Invalid port_id %d\n", port_id);
- 		return ERR_PTR(-EINVAL);
+diff --git a/sound/soc/qcom/qdsp6/q6routing.c b/sound/soc/qcom/qdsp6/q6routing.c
+index 3390ebef9549d..ff81553b13362 100644
+--- a/sound/soc/qcom/qdsp6/q6routing.c
++++ b/sound/soc/qcom/qdsp6/q6routing.c
+@@ -372,6 +372,12 @@ int q6routing_stream_open(int fedai_id, int perf_mode,
  	}
  
-@@ -508,7 +508,7 @@ int q6adm_matrix_map(struct device *dev, int path,
- 		int port_idx = payload_map.port_id[i];
+ 	session = &routing_data->sessions[stream_id - 1];
++	if (session->port_id < 0) {
++		dev_err(routing_data->dev, "Routing not setup for MultiMedia%d Session\n",
++			session->fedai_id);
++		return -EINVAL;
++	}
++
+ 	pdata = &routing_data->port_data[session->port_id];
  
- 		if (port_idx < 0) {
--			dev_err(dev, "Invalid port_id 0x%x\n",
-+			dev_err(dev, "Invalid port_id %d\n",
- 				payload_map.port_id[i]);
- 			kfree(pkt);
- 			return -EINVAL;
+ 	mutex_lock(&routing_data->lock);
 -- 
 2.33.0
 
