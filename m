@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32628C433FE
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Nov 2021 14:53:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B35C3C4332F
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Nov 2021 14:53:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B63DA2119;
-	Tue, 30 Nov 2021 15:52:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B63DA2119
+	by alsa0.perex.cz (Postfix) with ESMTPS id D730D212B;
+	Tue, 30 Nov 2021 15:52:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D730D212B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638284002;
-	bh=1pNQ+60EcBJZgMSHUy+cmbnowyPvPxR5LTtFNKojRWM=;
+	s=default; t=1638284025;
+	bh=3xYbkZoidA/SdAusJW58QQS+flHpRnGXxkykZr45L/I=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RGzFdGIrMjVHh+hYvLeiTWFvZI6SAOy9pNImg+LPNRrSOAZucQg4BKC3CyolrBaW3
-	 848JNDbMFauOKKJRoSzCYn1fZHay7oM051ZhASBr2/GDACXQNUrUsTuH++sIXBteLT
-	 C/82EhnEbKiWT1rNFMb1mEEjWgj+42h6HumWPJPY=
+	b=CEv6IIdwxzPeMAwQmkH+sw3Bf6GRf62iXHpv558BDv1nXLOnjpy/OOqlZi+VyHuRX
+	 LnqLLxtDtjLUp8Vrc8OQiUDnnH0+zP1eWT+eFB4QLki0uM2KgRH99WffYkS2afK72L
+	 hB4temwqmeRohIk3hW/zAE71+ThvD9iYHZX4+byc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B4016F80553;
-	Tue, 30 Nov 2021 15:48:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6FAA1F8028D;
+	Tue, 30 Nov 2021 15:49:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C5686F8054A; Tue, 30 Nov 2021 15:48:07 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+ id 0DDD7F80290; Tue, 30 Nov 2021 15:49:25 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4C7D4F80537
- for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2021 15:48:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C7D4F80537
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5AF62F8020D
+ for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2021 15:49:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5AF62F8020D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="USG8OCWZ"
+ header.b="hHLIkpgD"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id 3C3FDCE1A31;
- Tue, 30 Nov 2021 14:47:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB38CC53FCF;
- Tue, 30 Nov 2021 14:47:57 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 01FC1B81A21;
+ Tue, 30 Nov 2021 14:49:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC208C53FD3;
+ Tue, 30 Nov 2021 14:49:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1638283678;
- bh=1pNQ+60EcBJZgMSHUy+cmbnowyPvPxR5LTtFNKojRWM=;
+ s=k20201202; t=1638283757;
+ bh=3xYbkZoidA/SdAusJW58QQS+flHpRnGXxkykZr45L/I=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=USG8OCWZArILxPfYyNYpPFPIAV9f9JcHFmnxSeJhFn0CfANYvs1H3PLIIecaA/YCG
- rNwX3yeRPhp+m/uQr22roXjsyb8MAvqOeUmjGcBeTrIj4qjbpN99u4w087clmDPx5W
- +JjtjKkF4bL8Ac2+CKjLJ8yIJqhWoMLELv4rw6fTXWkDi4kvJiW/eWU8hZCfMFK3Xg
- /lFCDSVaqBGiXQBzmXsV1niacnkokB8IHX+EXZGqHOYp5gWQFuvYewv1COSXBWfgph
- HUhN9OYtNdW0SFhhWrOsrUmTn2xNz04IPN+LE8gzVX9CLEvh/Y36OAxyTb+B0JGVKA
- BHlrQkdXp5u4w==
+ b=hHLIkpgDpbuCtmAfYqY+aJw2qvSEFto0IZY/Mon9MWpn7MR8HxgzeXPlkwdx7F1lw
+ 6FVG+XEFodUL46L0hPX4IbXI5O8vRg8mSS7OJ1qQGIWySh8XKIw9XDdXFgMiuijcFA
+ 5ujEam71zNV4ZLLsdRMhueRbr7ZEbOBYd3pEwg0uG48AAY9LhHsZ3n1WERQQPsh1gD
+ jIUoq7i1WNbYQ3NhfoVbJpwiW2dOUMc1kIX9NkL9sBRiDM7kmxdKIQM/iqzChoVCqV
+ izot/lqCXrgDzDff9Ql9/TkBCFQ2WUTKAWR8MqOinu5ESEhU+V02ZmO3MOKo61Xzbl
+ fGJM2N153djKg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 15/68] ASoC: qdsp6: q6routing: validate port id
- before setting up route
-Date: Tue, 30 Nov 2021 09:46:11 -0500
-Message-Id: <20211130144707.944580-15-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 52/68] xen: flag xen_snd_front to be not
+ essential for system boot
+Date: Tue, 30 Nov 2021 09:46:48 -0500
+Message-Id: <20211130144707.944580-52-sashal@kernel.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211130144707.944580-1-sashal@kernel.org>
 References: <20211130144707.944580-1-sashal@kernel.org>
@@ -66,9 +66,10 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- bgoswami@codeaurora.org, stephan@gerhold.net, tiwai@suse.com,
- lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>, ultracoolguy@disroot.org
+Cc: Juergen Gross <jgross@suse.com>, Sasha Levin <sashal@kernel.org>,
+ alsa-devel@alsa-project.org,
+ Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>, tiwai@suse.com,
+ xen-devel@lists.xenproject.org, Boris Ostrovsky <boris.ostrovsky@oracle.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,38 +85,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Juergen Gross <jgross@suse.com>
 
-[ Upstream commit 6712c2e18c06b0976559fd4bd47774b243038e9c ]
+[ Upstream commit de6da33e6cb79abd4a5721b65b9a7dbed24378f8 ]
 
-Validate port id before it starts sending commands to dsp this would
-make error handling simpler.
+The Xen pv sound driver is not essential for booting. Set the respective
+flag.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20211116114721.12517-6-srinivas.kandagatla@linaro.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
+[boris: replace semicolon with comma]
+
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Reviewed-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Link: https://lore.kernel.org/r/20211022064800.14978-6-jgross@suse.com
+Signed-off-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/qcom/qdsp6/q6routing.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/xen/xen_snd_front.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/qcom/qdsp6/q6routing.c b/sound/soc/qcom/qdsp6/q6routing.c
-index 3390ebef9549d..ff81553b13362 100644
---- a/sound/soc/qcom/qdsp6/q6routing.c
-+++ b/sound/soc/qcom/qdsp6/q6routing.c
-@@ -372,6 +372,12 @@ int q6routing_stream_open(int fedai_id, int perf_mode,
- 	}
+diff --git a/sound/xen/xen_snd_front.c b/sound/xen/xen_snd_front.c
+index 2cb0a19be2b85..4041748c12e51 100644
+--- a/sound/xen/xen_snd_front.c
++++ b/sound/xen/xen_snd_front.c
+@@ -358,6 +358,7 @@ static struct xenbus_driver xen_driver = {
+ 	.probe = xen_drv_probe,
+ 	.remove = xen_drv_remove,
+ 	.otherend_changed = sndback_changed,
++	.not_essential = true,
+ };
  
- 	session = &routing_data->sessions[stream_id - 1];
-+	if (session->port_id < 0) {
-+		dev_err(routing_data->dev, "Routing not setup for MultiMedia%d Session\n",
-+			session->fedai_id);
-+		return -EINVAL;
-+	}
-+
- 	pdata = &routing_data->port_data[session->port_id];
- 
- 	mutex_lock(&routing_data->lock);
+ static int __init xen_drv_init(void)
 -- 
 2.33.0
 
