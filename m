@@ -4,61 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2073C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Nov 2021 14:52:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB076C4332F
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Nov 2021 14:52:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EE7DC20AE;
-	Tue, 30 Nov 2021 15:51:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE7DC20AE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0A04220DF;
+	Tue, 30 Nov 2021 15:51:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A04220DF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638283924;
-	bh=0Krd4E4woD+Cc38qkD/E7iviZwZsDMe3h4W69+poasw=;
+	s=default; t=1638283942;
+	bh=95gX2SyCyY5pvD3w7SSW5i5iMBXXLJvId/2p6erOAQw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=R8EAvDe/mut+vIDOEw7h2oMMS2gNNEuEjqJE5hvLP0qRsakOVkAq+2zng4oBpSAtH
-	 5vC9k/oh5CPJkiP2LQV1ncbZWml0DeWc+HjI6Wy0uPqa8eOiR6LMdI9rAodi1FbVZw
-	 ZEoaig5slBWLwshpPpTjO3+plXCygTdm9pPCrVA4=
+	b=cUywPaQ8wTx3o4ZneysxHJok30eDo6Og5+CzUMDeRqcvtCWLrw6HpbGLIUq0p0LYm
+	 506uZFP5Oe7asrJnVPkuRh9p26ccbjQt1mx1iyoEuFGGtMt2L35vJuuZ8Q0AY5fMbm
+	 sDbgKuWwliaMK1hihdSaMlpJ/h4xep8Pjx4JvW44=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 09763F8052D;
-	Tue, 30 Nov 2021 15:48:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D3F75F80536;
+	Tue, 30 Nov 2021 15:48:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1B441F80534; Tue, 30 Nov 2021 15:47:58 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id C0AC2F80533; Tue, 30 Nov 2021 15:47:59 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1FC1FF8051C
- for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2021 15:47:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1FC1FF8051C
+ by alsa1.perex.cz (Postfix) with ESMTPS id ABA9BF8051B
+ for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2021 15:47:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ABA9BF8051B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="fOVdSDAj"
+ header.b="kxTAjDHU"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id A985CB81A22;
+ by ams.source.kernel.org (Postfix) with ESMTPS id 4B5B3B81A29;
+ Tue, 30 Nov 2021 14:47:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB151C53FC1;
  Tue, 30 Nov 2021 14:47:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55990C53FD1;
- Tue, 30 Nov 2021 14:47:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1638283668;
- bh=0Krd4E4woD+Cc38qkD/E7iviZwZsDMe3h4W69+poasw=;
+ s=k20201202; t=1638283670;
+ bh=95gX2SyCyY5pvD3w7SSW5i5iMBXXLJvId/2p6erOAQw=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=fOVdSDAjEQRoLFIzdPjbZiw13NX+1jVz9wjh8GAAVW1ZJpDaTOW2LslJ9cPoO4RnO
- BQFcOehc6PB01I6TACPi8rvrKGREGXHqZQvu5WSXGW5Xib6EQmM4anU+wMizauIInX
- Ylj+4jpJXoSUfL0lgahgQOgYQkN7QIcTXHHfT6tYkp5gI0XEMih5CFO3MVwzQ/zz1i
- uAEUtpTaZjVm6JYayymAYRKeseuLtPxeO5ATEU+aK++p3YuIX2wCGVqfX7350QnJCB
- j8IUx70sXEO3LCESfProQ5Nx2SzwDL+uPraOWrCb2ZY8ChqdLs/HbmS8MAsm0ebdNO
- rqEtwj35zCz/Q==
+ b=kxTAjDHUD15XfL5m9QoOQ8sJ5jHSfEXqMYIRRX1Wv//rMESH3sBdS7GGLvLgPbaMe
+ WTtDlpY0Or2fJnQWSBUpfYT8rBzguurdx/ekDct8YXXkK+p9FlupRpjN2HM5fdsWTB
+ CrLNDljfwLb9E0aFHkRc/ooRMpjtPyvNkqvGeX3P3ZANYPsImCnDz0piw6O5ePTCIv
+ X/cOwGTD8scyg/CZ2EDohqQQY5896XXkW5qCUlMYSQgbNibeO34P4xGK5/vaQBEXj8
+ 9Lt68Fjb8MOXCYPL1NhhI7XEQizcf+R6n4FnEz5ta0Js8cEKsACdFNZ7TcWL/Ln/Y6
+ 1+fHdvgFGdJrw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 11/68] ASoC: rt5682: Avoid the unexpected IRQ
- event during going to suspend
-Date: Tue, 30 Nov 2021 09:46:07 -0500
-Message-Id: <20211130144707.944580-11-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 12/68] ASoC: rt5682: Re-detect the combo jack
+ after resuming
+Date: Tue, 30 Nov 2021 09:46:08 -0500
+Message-Id: <20211130144707.944580-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211130144707.944580-1-sashal@kernel.org>
 References: <20211130144707.944580-1-sashal@kernel.org>
@@ -86,62 +87,153 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Derek Fang <derek.fang@realtek.com>
 
-[ Upstream commit a3774a2a6544a7a4a85186e768afc07044aa507f ]
+[ Upstream commit 2cd9b0ef82d936623d789bb3fbb6fcf52c500367 ]
 
-When the system suspends, the codec driver will set SAR to
-power saving mode if a headset is plugged in.
-There is a chance to generate an unexpected IRQ, and leads to
-issues after resuming such as noise from OMTP type headsets.
+Sometimes, end-users change the jack type under suspending,
+so it needs to re-detect the combo jack type after resuming to
+avoid any unexpected behaviors.
 
 Signed-off-by: Derek Fang <derek.fang@realtek.com>
-Link: https://lore.kernel.org/r/20211109095450.12950-1-derek.fang@realtek.com
+Link: https://lore.kernel.org/r/20211109095450.12950-2-derek.fang@realtek.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt5682.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+ sound/soc/codecs/rt5682-i2c.c |  1 +
+ sound/soc/codecs/rt5682.c     | 23 ++++++++++++++++++++---
+ sound/soc/codecs/rt5682.h     |  1 +
+ 3 files changed, 22 insertions(+), 3 deletions(-)
 
+diff --git a/sound/soc/codecs/rt5682-i2c.c b/sound/soc/codecs/rt5682-i2c.c
+index b9d5d7a0975b3..b17c14b8b36e3 100644
+--- a/sound/soc/codecs/rt5682-i2c.c
++++ b/sound/soc/codecs/rt5682-i2c.c
+@@ -196,6 +196,7 @@ static int rt5682_i2c_probe(struct i2c_client *i2c,
+ 	}
+ 
+ 	mutex_init(&rt5682->calibrate_mutex);
++	mutex_init(&rt5682->jdet_mutex);
+ 	rt5682_calibrate(rt5682);
+ 
+ 	rt5682_apply_patch_list(rt5682, &i2c->dev);
 diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
-index d550c0705c28b..cfa284855c84e 100644
+index cfa284855c84e..b57552a8310c0 100644
 --- a/sound/soc/codecs/rt5682.c
 +++ b/sound/soc/codecs/rt5682.c
-@@ -48,6 +48,7 @@ static const struct reg_sequence patch_list[] = {
- 	{RT5682_SAR_IL_CMD_6, 0x0110},
+@@ -49,6 +49,7 @@ static const struct reg_sequence patch_list[] = {
  	{RT5682_CHARGE_PUMP_1, 0x0210},
  	{RT5682_HP_LOGIC_CTRL_2, 0x0007},
-+	{RT5682_SAR_IL_CMD_2, 0xac00},
+ 	{RT5682_SAR_IL_CMD_2, 0xac00},
++	{RT5682_CBJ_CTRL_7, 0x0104},
  };
  
  void rt5682_apply_patch_list(struct rt5682_priv *rt5682, struct device *dev)
-@@ -2961,9 +2962,6 @@ static int rt5682_suspend(struct snd_soc_component *component)
+@@ -941,6 +942,10 @@ int rt5682_headset_detect(struct snd_soc_component *component, int jack_insert)
+ 		snd_soc_component_update_bits(component,
+ 			RT5682_HP_CHARGE_PUMP_1,
+ 			RT5682_OSW_L_MASK | RT5682_OSW_R_MASK, 0);
++		rt5682_enable_push_button_irq(component, false);
++		snd_soc_component_update_bits(component, RT5682_CBJ_CTRL_1,
++			RT5682_TRIG_JD_MASK, RT5682_TRIG_JD_LOW);
++		usleep_range(55000, 60000);
+ 		snd_soc_component_update_bits(component, RT5682_CBJ_CTRL_1,
+ 			RT5682_TRIG_JD_MASK, RT5682_TRIG_JD_HIGH);
+ 
+@@ -1093,6 +1098,7 @@ void rt5682_jack_detect_handler(struct work_struct *work)
+ 	while (!rt5682->component->card->instantiated)
+ 		usleep_range(10000, 15000);
+ 
++	mutex_lock(&rt5682->jdet_mutex);
+ 	mutex_lock(&rt5682->calibrate_mutex);
+ 
+ 	val = snd_soc_component_read(rt5682->component, RT5682_AJD1_CTRL)
+@@ -1166,6 +1172,7 @@ void rt5682_jack_detect_handler(struct work_struct *work)
+ 	}
+ 
+ 	mutex_unlock(&rt5682->calibrate_mutex);
++	mutex_unlock(&rt5682->jdet_mutex);
+ }
+ EXPORT_SYMBOL_GPL(rt5682_jack_detect_handler);
+ 
+@@ -1515,6 +1522,7 @@ static int rt5682_hp_event(struct snd_soc_dapm_widget *w,
+ {
+ 	struct snd_soc_component *component =
+ 		snd_soc_dapm_to_component(w->dapm);
++	struct rt5682_priv *rt5682 = snd_soc_component_get_drvdata(component);
+ 
+ 	switch (event) {
+ 	case SND_SOC_DAPM_PRE_PMU:
+@@ -1526,12 +1534,17 @@ static int rt5682_hp_event(struct snd_soc_dapm_widget *w,
+ 			RT5682_DEPOP_1, 0x60, 0x60);
+ 		snd_soc_component_update_bits(component,
+ 			RT5682_DAC_ADC_DIG_VOL1, 0x00c0, 0x0080);
++
++		mutex_lock(&rt5682->jdet_mutex);
++
+ 		snd_soc_component_update_bits(component, RT5682_HP_CTRL_2,
+ 			RT5682_HP_C2_DAC_L_EN | RT5682_HP_C2_DAC_R_EN,
+ 			RT5682_HP_C2_DAC_L_EN | RT5682_HP_C2_DAC_R_EN);
+ 		usleep_range(5000, 10000);
+ 		snd_soc_component_update_bits(component, RT5682_CHARGE_PUMP_1,
+ 			RT5682_CP_SW_SIZE_MASK, RT5682_CP_SW_SIZE_L);
++
++		mutex_unlock(&rt5682->jdet_mutex);
+ 		break;
+ 
+ 	case SND_SOC_DAPM_POST_PMD:
+@@ -2961,7 +2974,7 @@ static int rt5682_suspend(struct snd_soc_component *component)
+ 
  	cancel_delayed_work_sync(&rt5682->jack_detect_work);
  	cancel_delayed_work_sync(&rt5682->jd_check_work);
- 	if (rt5682->hs_jack && rt5682->jack_type == SND_JACK_HEADSET) {
--		snd_soc_component_update_bits(component, RT5682_CBJ_CTRL_1,
--			RT5682_MB1_PATH_MASK | RT5682_MB2_PATH_MASK,
--			RT5682_CTRL_MB1_REG | RT5682_CTRL_MB2_REG);
+-	if (rt5682->hs_jack && rt5682->jack_type == SND_JACK_HEADSET) {
++	if (rt5682->hs_jack && (rt5682->jack_type & SND_JACK_HEADSET) == SND_JACK_HEADSET) {
  		val = snd_soc_component_read(component,
  				RT5682_CBJ_CTRL_2) & RT5682_JACK_TYPE_MASK;
  
-@@ -2985,10 +2983,15 @@ static int rt5682_suspend(struct snd_soc_component *component)
- 		/* enter SAR ADC power saving mode */
+@@ -2992,6 +3005,8 @@ static int rt5682_suspend(struct snd_soc_component *component)
  		snd_soc_component_update_bits(component, RT5682_SAR_IL_CMD_1,
- 			RT5682_SAR_BUTT_DET_MASK | RT5682_SAR_BUTDET_MODE_MASK |
--			RT5682_SAR_BUTDET_RST_MASK | RT5682_SAR_SEL_MB1_MB2_MASK, 0);
-+			RT5682_SAR_SEL_MB1_MB2_MASK, 0);
-+		usleep_range(5000, 6000);
-+		snd_soc_component_update_bits(component, RT5682_CBJ_CTRL_1,
-+			RT5682_MB1_PATH_MASK | RT5682_MB2_PATH_MASK,
-+			RT5682_CTRL_MB1_REG | RT5682_CTRL_MB2_REG);
-+		usleep_range(10000, 12000);
- 		snd_soc_component_update_bits(component, RT5682_SAR_IL_CMD_1,
--			RT5682_SAR_BUTT_DET_MASK | RT5682_SAR_BUTDET_MODE_MASK | RT5682_SAR_BUTDET_RST_MASK,
--			RT5682_SAR_BUTT_DET_EN | RT5682_SAR_BUTDET_POW_SAV | RT5682_SAR_BUTDET_RST_NORMAL);
-+			RT5682_SAR_BUTT_DET_MASK | RT5682_SAR_BUTDET_MODE_MASK,
-+			RT5682_SAR_BUTT_DET_EN | RT5682_SAR_BUTDET_POW_SAV);
+ 			RT5682_SAR_BUTT_DET_MASK | RT5682_SAR_BUTDET_MODE_MASK,
+ 			RT5682_SAR_BUTT_DET_EN | RT5682_SAR_BUTDET_POW_SAV);
++		snd_soc_component_update_bits(component, RT5682_HP_CHARGE_PUMP_1,
++			RT5682_OSW_L_MASK | RT5682_OSW_R_MASK, 0);
  	}
  
  	regcache_cache_only(rt5682->regmap, true);
+@@ -3009,10 +3024,11 @@ static int rt5682_resume(struct snd_soc_component *component)
+ 	regcache_cache_only(rt5682->regmap, false);
+ 	regcache_sync(rt5682->regmap);
+ 
+-	if (rt5682->hs_jack && rt5682->jack_type == SND_JACK_HEADSET) {
++	if (rt5682->hs_jack && (rt5682->jack_type & SND_JACK_HEADSET) == SND_JACK_HEADSET) {
+ 		snd_soc_component_update_bits(component, RT5682_SAR_IL_CMD_1,
+ 			RT5682_SAR_BUTDET_MODE_MASK | RT5682_SAR_SEL_MB1_MB2_MASK,
+ 			RT5682_SAR_BUTDET_POW_NORM | RT5682_SAR_SEL_MB1_MB2_AUTO);
++		usleep_range(5000, 6000);
+ 		snd_soc_component_update_bits(component, RT5682_CBJ_CTRL_1,
+ 			RT5682_MB1_PATH_MASK | RT5682_MB2_PATH_MASK,
+ 			RT5682_CTRL_MB1_FSM | RT5682_CTRL_MB2_FSM);
+@@ -3020,8 +3036,9 @@ static int rt5682_resume(struct snd_soc_component *component)
+ 			RT5682_PWR_CBJ, RT5682_PWR_CBJ);
+ 	}
+ 
++	rt5682->jack_type = 0;
+ 	mod_delayed_work(system_power_efficient_wq,
+-		&rt5682->jack_detect_work, msecs_to_jiffies(250));
++		&rt5682->jack_detect_work, msecs_to_jiffies(0));
+ 
+ 	return 0;
+ }
+diff --git a/sound/soc/codecs/rt5682.h b/sound/soc/codecs/rt5682.h
+index 8e3244a62c160..f866d207d1bd6 100644
+--- a/sound/soc/codecs/rt5682.h
++++ b/sound/soc/codecs/rt5682.h
+@@ -1462,6 +1462,7 @@ struct rt5682_priv {
+ 
+ 	int jack_type;
+ 	int irq_work_delay_time;
++	struct mutex jdet_mutex;
+ };
+ 
+ extern const char *rt5682_supply_names[RT5682_NUM_SUPPLIES];
 -- 
 2.33.0
 
