@@ -4,49 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C32D8C433FE
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Nov 2021 13:34:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6AB52C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Nov 2021 14:06:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 82C57201D;
-	Tue, 30 Nov 2021 14:34:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 82C57201D
+	by alsa0.perex.cz (Postfix) with ESMTPS id DA0BE1F3B;
+	Tue, 30 Nov 2021 15:05:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA0BE1F3B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638279293;
-	bh=coct70ajcV2zi0dztvNHFowQOMJGePRsCH+DvdQQJZM=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=DW5NkwGU/VG4oNKYjgYTbBq2tKD715x+z4DfmZjHZi4lbOt7K0V0z7CX6XN59BagZ
-	 yphGBAOHrJKM0447cFYX3Z2eXosbt2w8zJ2mR9rykgx5oicF7tAcUeU7IYWffnw8E6
-	 4psgxT6+01YL3n8lPERbC6NAejNVKsTGt15FKh4s=
+	s=default; t=1638281195;
+	bh=NAwPQCUy1BGxOlnNotTwi+KrfApK4PHgcNvIsd1x+BU=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=VMMRdB0lIfwDcB8hy09leA+9siFtbZUDg7Y0k7VDuOJBiJQ9Y1VsBVyn5VHZ6lKKv
+	 dITMcjfrYuoRZTlMR6SAXcjJ66FfPhAyk22zFzp3OqdzRSxeEB8ProP3Fej1I8tf3H
+	 UTydK0Ql0r1/jUXSsZdgL5ksAtYBc+wfjeLDvuLw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6CF89F802E0;
-	Tue, 30 Nov 2021 14:33:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 61B98F8020D;
+	Tue, 30 Nov 2021 15:05:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 16AF6F80290; Tue, 30 Nov 2021 12:17:27 +0100 (CET)
-Received: from out30-54.freemail.mail.aliyun.com
- (out30-54.freemail.mail.aliyun.com [115.124.30.54])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 74FF4F8028D; Tue, 30 Nov 2021 15:05:43 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4416BF8020D
- for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2021 12:17:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4416BF8020D
-X-Alimail-AntiSpam: AC=PASS; BC=-1|-1; BR=01201311R371e4; CH=green; DM=||false|;
- DS=||; FP=0|-1|-1|-1|0|-1|-1|-1; HT=e01e04426; MF=cuibixuan@linux.alibaba.com;
- NM=1; PH=DS; RN=5; SR=0; TI=SMTPD_---0UyrsuvV_1638270978; 
-Received: from VM20210331-25.tbsite.net(mailfrom:cuibixuan@linux.alibaba.com
- fp:SMTPD_---0UyrsuvV_1638270978) by smtp.aliyun-inc.com(127.0.0.1);
- Tue, 30 Nov 2021 19:16:23 +0800
-From: Bixuan Cui <cuibixuan@linux.alibaba.com>
-To: alsa-devel@alsa-project.org,
-	inux-kernel@vger.kernel.org
-Subject: [PATCH -next] ALSA: Fix oversized kvmalloc() calls
-Date: Tue, 30 Nov 2021 19:16:18 +0800
-Message-Id: <1638270978-42412-1-git-send-email-cuibixuan@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-X-Mailman-Approved-At: Tue, 30 Nov 2021 14:33:13 +0100
-Cc: cuibixuan@linux.alibaba.com, tiwai@suse.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id F3DABF800EE
+ for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2021 15:05:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3DABF800EE
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="CaporChH"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="uexdbrWa"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 806AF1FD58;
+ Tue, 30 Nov 2021 14:05:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1638281137; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=NHXBrR7i1OGu523xcIotySpqaWXASrqHn5kSuGL1M5c=;
+ b=CaporChHvYIBIHGiKPHJmNkdf0iEFo1BKHEQ8y6rM9S32WdjsCLRj1CxsYFqFFh2/QNleL
+ Y9+SGIwvxohaWz8cCdkmIXAbxpYA3dVj85LH1FvRmMlFY2QEhmSSM3kFM0zCnw+Jx+2UXC
+ oh+Sx0x4Q+feBHKq4jiHUquTZpiCuIw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1638281137;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=NHXBrR7i1OGu523xcIotySpqaWXASrqHn5kSuGL1M5c=;
+ b=uexdbrWarlULPJF8wPXtaOlViO29PdrK+FEK6J8rcwMUXSc8n5Viblf7J+FW4ogw/etKhH
+ n9l6BjtM0ICIimCA==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 7060BA3B88;
+ Tue, 30 Nov 2021 14:05:37 +0000 (UTC)
+Date: Tue, 30 Nov 2021 15:05:37 +0100
+Message-ID: <s5htuft20y6.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Bixuan Cui <cuibixuan@linux.alibaba.com>
+Subject: Re: [PATCH -next] ALSA: Fix oversized kvmalloc() calls
+In-Reply-To: <s5h1r2x50uo.wl-tiwai@suse.de>
+References: <1638270978-42412-1-git-send-email-cuibixuan@linux.alibaba.com>
+ <s5h1r2x50uo.wl-tiwai@suse.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com, inux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -62,30 +88,117 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The commit 7661809d493b ("mm: don't allow oversized kvmalloc()
-calls") limits the max allocatable memory via kvzalloc() to MAX_INT.
+On Tue, 30 Nov 2021 12:39:27 +0100,
+Takashi Iwai wrote:
+> 
+> On Tue, 30 Nov 2021 12:16:18 +0100,
+> Bixuan Cui wrote:
+> > 
+> > The commit 7661809d493b ("mm: don't allow oversized kvmalloc()
+> > calls") limits the max allocatable memory via kvzalloc() to MAX_INT.
+> > 
+> > Reported-by: syzbot+bb348e9f9a954d42746f@syzkaller.appspotmail.com
+> > Signed-off-by: Bixuan Cui <cuibixuan@linux.alibaba.com>
+> 
+> We should check the allocation size a lot earlier than here.
+> IOW, such a big size shouldn't have been passed to this function but
+> it should have been handled as an error in the caller side
+> (snd_pcm_oss_change_params*()).
+> 
+> Could you give the reproducer?
 
-Reported-by: syzbot+bb348e9f9a954d42746f@syzkaller.appspotmail.com
-Signed-off-by: Bixuan Cui <cuibixuan@linux.alibaba.com>
+I'm asking it because the patch like below might cover the case.
+
+
+Takashi
+
+-- 8< --
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: pcm: oss: Fix negative period/buffer sizes
+
+The period size calculation in OSS layer may receive a negative value
+as an error, but the code there assumes only the positive values and
+handle them with size_t.  Due to that, a too big value may be passed
+to the lower layers.
+
+This patch changes the code to handle with ssize_t and adds the proper
+error checks appropriately.
+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/oss/pcm_plugin.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/core/oss/pcm_oss.c | 24 +++++++++++++++---------
+ 1 file changed, 15 insertions(+), 9 deletions(-)
 
-diff --git a/sound/core/oss/pcm_plugin.c b/sound/core/oss/pcm_plugin.c
-index 061ba06..61fccb5 100644
---- a/sound/core/oss/pcm_plugin.c
-+++ b/sound/core/oss/pcm_plugin.c
-@@ -68,6 +68,10 @@ static int snd_pcm_plugin_alloc(struct snd_pcm_plugin *plugin, snd_pcm_uframes_t
- 	size /= 8;
- 	if (plugin->buf_frames < frames) {
- 		kvfree(plugin->buf);
-+
-+		if (size > INT_MAX)
-+			return -ENOMEM;
-+
- 		plugin->buf = kvzalloc(size, GFP_KERNEL);
- 		plugin->buf_frames = frames;
- 	}
+diff --git a/sound/core/oss/pcm_oss.c b/sound/core/oss/pcm_oss.c
+index 82a818734a5f..bec7590bc84b 100644
+--- a/sound/core/oss/pcm_oss.c
++++ b/sound/core/oss/pcm_oss.c
+@@ -147,7 +147,7 @@ snd_pcm_hw_param_value_min(const struct snd_pcm_hw_params *params,
+  *
+  * Return the maximum value for field PAR.
+  */
+-static unsigned int
++static int
+ snd_pcm_hw_param_value_max(const struct snd_pcm_hw_params *params,
+ 			   snd_pcm_hw_param_t var, int *dir)
+ {
+@@ -682,18 +682,24 @@ static int snd_pcm_oss_period_size(struct snd_pcm_substream *substream,
+ 				   struct snd_pcm_hw_params *oss_params,
+ 				   struct snd_pcm_hw_params *slave_params)
+ {
+-	size_t s;
+-	size_t oss_buffer_size, oss_period_size, oss_periods;
+-	size_t min_period_size, max_period_size;
++	ssize_t s;
++	ssize_t oss_buffer_size;
++	ssize_t oss_period_size, oss_periods;
++	ssize_t min_period_size, max_period_size;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	size_t oss_frame_size;
+ 
+ 	oss_frame_size = snd_pcm_format_physical_width(params_format(oss_params)) *
+ 			 params_channels(oss_params) / 8;
+ 
++	oss_buffer_size = snd_pcm_hw_param_value_max(slave_params,
++						     SNDRV_PCM_HW_PARAM_BUFFER_SIZE,
++						     NULL);
++	if (oss_buffer_size <= 0)
++		return -EINVAL;
+ 	oss_buffer_size = snd_pcm_plug_client_size(substream,
+-						   snd_pcm_hw_param_value_max(slave_params, SNDRV_PCM_HW_PARAM_BUFFER_SIZE, NULL)) * oss_frame_size;
+-	if (!oss_buffer_size)
++						   oss_buffer_size * oss_frame_size);
++	if (oss_buffer_size <= 0)
+ 		return -EINVAL;
+ 	oss_buffer_size = rounddown_pow_of_two(oss_buffer_size);
+ 	if (atomic_read(&substream->mmap_count)) {
+@@ -730,7 +736,7 @@ static int snd_pcm_oss_period_size(struct snd_pcm_substream *substream,
+ 
+ 	min_period_size = snd_pcm_plug_client_size(substream,
+ 						   snd_pcm_hw_param_value_min(slave_params, SNDRV_PCM_HW_PARAM_PERIOD_SIZE, NULL));
+-	if (min_period_size) {
++	if (min_period_size > 0) {
+ 		min_period_size *= oss_frame_size;
+ 		min_period_size = roundup_pow_of_two(min_period_size);
+ 		if (oss_period_size < min_period_size)
+@@ -739,7 +745,7 @@ static int snd_pcm_oss_period_size(struct snd_pcm_substream *substream,
+ 
+ 	max_period_size = snd_pcm_plug_client_size(substream,
+ 						   snd_pcm_hw_param_value_max(slave_params, SNDRV_PCM_HW_PARAM_PERIOD_SIZE, NULL));
+-	if (max_period_size) {
++	if (max_period_size > 0) {
+ 		max_period_size *= oss_frame_size;
+ 		max_period_size = rounddown_pow_of_two(max_period_size);
+ 		if (oss_period_size > max_period_size)
+@@ -752,7 +758,7 @@ static int snd_pcm_oss_period_size(struct snd_pcm_substream *substream,
+ 		oss_periods = substream->oss.setup.periods;
+ 
+ 	s = snd_pcm_hw_param_value_max(slave_params, SNDRV_PCM_HW_PARAM_PERIODS, NULL);
+-	if (runtime->oss.maxfrags && s > runtime->oss.maxfrags)
++	if (s > 0 && runtime->oss.maxfrags && s > runtime->oss.maxfrags)
+ 		s = runtime->oss.maxfrags;
+ 	if (oss_periods > s)
+ 		oss_periods = s;
 -- 
-1.8.3.1
+2.31.1
 
