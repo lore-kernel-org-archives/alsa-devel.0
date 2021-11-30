@@ -4,82 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3E91C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Nov 2021 16:07:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 111ABC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Nov 2021 16:18:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D4A4922E1;
-	Tue, 30 Nov 2021 17:06:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D4A4922E1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 942F222F5;
+	Tue, 30 Nov 2021 17:17:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 942F222F5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638288450;
-	bh=6Nui04VC+EclPqKvAyULiIiD/RZKglvh6skgELwCiHY=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1638289125;
+	bh=MZnl0m0UlSGNeDrL9sapE0g2YD1NMkMtPnbDj8SAK+0=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CK9MDHUoxu+CHrfAmusMtE8W54i18nI+fTvsy0FoRU8SwNocydz7latBsXpQoYLhj
-	 hrvWeEX+9AR+Wa7zqpzoRjrE5vneginIhZELaabkJwVbS30vYnePLcpSD4BGpBurdZ
-	 LyxvBEOE7aj0hF9YWLoQn45NZq/WOWCKFM5NIdt4=
+	b=bKyS/cA0oQR7KuQIwMUYsPe4OLj/jZ+ntWrlLOlOPTxB03c1p8k2i5tgY6V5PirUH
+	 sGoRx2y8wXwHy8GufMrKb0560Q2t/pxg3hbAgZY3cUZmAVcZIW1C+S/SxIwRF6VxkP
+	 pSOaN7Tp6LP9SrWkMoElVxbzjqiRj1Ec/Hua6a9g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 77314F80506;
-	Tue, 30 Nov 2021 17:05:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 00DE0F8020D;
+	Tue, 30 Nov 2021 17:17:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C28EFF8032D; Tue, 30 Nov 2021 17:05:31 +0100 (CET)
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
- [IPv6:2a00:1450:4864:20::336])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id F2FA3F80290; Tue, 30 Nov 2021 17:17:52 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AB794F802C4
- for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2021 17:05:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB794F802C4
+ by alsa1.perex.cz (Postfix) with ESMTPS id 72F19F8020D
+ for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2021 17:17:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72F19F8020D
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="r5D0WzBw"
-Received: by mail-wm1-x336.google.com with SMTP id
- k37-20020a05600c1ca500b00330cb84834fso19947436wms.2
- for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2021 08:05:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=OIAtVnx0ZzlGmfdsJR+Ltr1BjxuMXS7lSNZkDDd+8oo=;
- b=r5D0WzBwgwvEJ6qvAb7BParzqYivB9ouS4MM1hgX9ewjK+4Qt+7UHp/G2VN98fimd/
- ez3cnnPWNlFk1GS8ee2zvMSGNp72n9smLAo1lQB/YHHfmgHaN7VYM7oSPSF6o2HQZ/Vw
- uI7soY74pafLImmmT5SEw230VCq9hixIKgWWbIGz0gNo3GBowQhK3C6X26RhLRBJ11a8
- n2WipiZs4aYPgvG25D77SToLUsPTgOBFPcnSjejmOHHhHCErnQ999MGSHmH5HsWxq6pe
- dm9mafM038ERfza6Mo9kr5xW5F13r9R9kyfu6HwzH8CAB6QyUPloaeFIKBGVbFdrkEO3
- mnlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=OIAtVnx0ZzlGmfdsJR+Ltr1BjxuMXS7lSNZkDDd+8oo=;
- b=yYZs6eYaUIvKrntiNbU38f9Q5AzXj8mflaJgzZl4750DucCxj6DxfL6AG2tMYfIpLT
- Dj6xs+PzGIUTFkppzIJVVbdte9wz4nUkmWl6j7quAluEPjGfgngZ3iA4gOYZTNLhQCh5
- zxxXjLQYfycqwmEDmWrOGwWWDufhzFEWVsXp4t+oDeGSri5eYK+FAh3nHxyPxhzdEzxQ
- 5xHZZq/t1xWk7Lnp9Rrb0Sdre/Gz4uPEijkH++ctdJYkRkdfuEHXFa/eDar/T2Xgb1W1
- ljyKcGqVOAGFhHPQ7CjX7NtPvy5jrzZu7HPEf0u71h27P00eoFFxMfYwUZWoT0YPn7hw
- Q9SA==
-X-Gm-Message-State: AOAM5327mTc030OLtSSJv2c1uMkXwaEScCmNi4lbSZURXhVEPXcCJJ1W
- lwkTKTCaY9VvcISgJE2zKLzTnQ==
-X-Google-Smtp-Source: ABdhPJwReuuxUsxNupkQZHuNCtvWOALK8zItA8DvAQk1ne0jY1pHEqrMNHn0ZRnUx0d1pg514SymPA==
-X-Received: by 2002:a1c:9a89:: with SMTP id c131mr394569wme.80.1638288318600; 
- Tue, 30 Nov 2021 08:05:18 -0800 (PST)
-Received: from srini-hackbox.lan
- (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
- by smtp.gmail.com with ESMTPSA id g18sm16719409wrv.42.2021.11.30.08.05.17
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 30 Nov 2021 08:05:18 -0800 (PST)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: broonie@kernel.org
-Subject: [PATCH 3/4] ASoC: codecs: wcd934x: return correct value from mixer put
-Date: Tue, 30 Nov 2021 16:05:06 +0000
-Message-Id: <20211130160507.22180-4-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20211130160507.22180-1-srinivas.kandagatla@linaro.org>
-References: <20211130160507.22180-1-srinivas.kandagatla@linaro.org>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="gg3STzay"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by sin.source.kernel.org (Postfix) with ESMTPS id 82E0CCE1A2E;
+ Tue, 30 Nov 2021 16:17:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40918C53FC7;
+ Tue, 30 Nov 2021 16:17:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1638289057;
+ bh=MZnl0m0UlSGNeDrL9sapE0g2YD1NMkMtPnbDj8SAK+0=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=gg3STzay0QZRm3E9SW2UXSNlJlPrWOia6C2DHwbH1gviANhFaHenZJqyzTQYr1+Vz
+ AejGr4duQzTULR+N9JM1fw3I3ymCYe0u6flainBkcRjTfvx7y22R+se3M9eODLib9l
+ rwlp+udvw6zUlE9MnUY2JRgCxQhEtXPkJv3CS/nY9/OU2g8YoRlI5+nGsZjr5AU072
+ 5B7xQbXWt51P5fvjmRt/dZ8QE83Y2cOyMO5d27dlgsrZ1jGFDciQsV32pboynjoQuD
+ eoxJuNN9GFXLU6/A3Sbv0v65I6T6Lm6H24uJxMLd9JUkEC/vHpKjCK3r77fMjQ0nwD
+ LbE0nOayjqZFQ==
+Date: Tue, 30 Nov 2021 16:17:32 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH] ASoC: qdsp6: q6routing: Fix return value from
+ msm_routing_put_audio_mixer
+Message-ID: <YaZOnJIrl2bO98mL@sirena.org.uk>
+References: <20211130160414.21616-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="reGMIgm/lItL/shk"
+Content-Disposition: inline
+In-Reply-To: <20211130160414.21616-1-srinivas.kandagatla@linaro.org>
+X-Cookie: Check your local listings.
 Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
  linux-kernel@vger.kernel.org, pierre-louis.bossart@linux.intel.com,
  tiwai@suse.com
@@ -98,42 +83,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-wcd934x_compander_set() currently returns zero eventhough it changes the value.
-Fix this, so that change notifications are sent correctly.
 
-Fixes: 1cde8b822332 ("ASoC: wcd934x: add basic controls")
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- sound/soc/codecs/wcd934x.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+--reGMIgm/lItL/shk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/wcd934x.c b/sound/soc/codecs/wcd934x.c
-index 3294c685d4d8..6c468527fec6 100644
---- a/sound/soc/codecs/wcd934x.c
-+++ b/sound/soc/codecs/wcd934x.c
-@@ -3256,6 +3256,9 @@ static int wcd934x_compander_set(struct snd_kcontrol *kc,
- 	int value = ucontrol->value.integer.value[0];
- 	int sel;
- 
-+	if (wcd->comp_enabled[comp] == value)
-+		return 0;
-+
- 	wcd->comp_enabled[comp] = value;
- 	sel = value ? WCD934X_HPH_GAIN_SRC_SEL_COMPANDER :
- 		WCD934X_HPH_GAIN_SRC_SEL_REGISTER;
-@@ -3279,10 +3282,10 @@ static int wcd934x_compander_set(struct snd_kcontrol *kc,
- 	case COMPANDER_8:
- 		break;
- 	default:
--		break;
-+		return 0;
- 	}
- 
--	return 0;
-+	return 1;
- }
- 
- static int wcd934x_rx_hph_mode_get(struct snd_kcontrol *kc,
--- 
-2.21.0
+On Tue, Nov 30, 2021 at 04:04:14PM +0000, Srinivas Kandagatla wrote:
+> msm_routing_put_audio_mixer() can return incorrect value in various scenarios.
+> Fix this, so that change notifications are sent correctly.
 
+This really isn't a good commit message - I can't tell what the change
+is supposed to fix or how it fixes it.  Which values in which scenarios
+are incorrect in what way?
+
+--reGMIgm/lItL/shk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGmTpwACgkQJNaLcl1U
+h9DZWQgAhJmvaqN0eGrzB9U7ieeGabIcljlgUyilqA/VqDFY67InjYGqepeftVTD
+Ku5SexhDIBYUC4VyY3aLpdmezxPMV5K7FOpnQoqrHMmyB9HT0EOWariE5DML5Dyj
+C5vnHJklRawGk8pTUQWVRi0PW9thM4Bh1XyFqaP4JTutrpQbjv4cP5s+KNwlVKnO
+o7zc+f3aD8QhgidTIHSgN3DRaD7/w8VcxhpoKINuHyTcPz8bjA+qeTiGCmqSbuqe
+3uVpANXD1JboUIKXfgErBeQJWKCRBOHxYI3FZaeTdO1XlwLK+VpTfXM7TZv6g7uP
+ZjntZxXtF6ytmDCYvP1rytMj5KLzfA==
+=2i4Y
+-----END PGP SIGNATURE-----
+
+--reGMIgm/lItL/shk--
