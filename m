@@ -4,76 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 224A9C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 29 Nov 2021 19:09:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9CB3C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Nov 2021 05:40:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0EC611F74;
-	Mon, 29 Nov 2021 20:08:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0EC611F74
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0C1411EDF;
+	Tue, 30 Nov 2021 06:39:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C1411EDF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638212958;
-	bh=lsOyYHMBrlpxe+yOqHBUunxp2HVJbc4SCbYxlMO2eHU=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1638250817;
+	bh=g9OrTnmkUYFEpxrSMyNcX6tQIHokUKowaRfyncE21ww=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=os5Gv+xPTrwLj/r6lt/aAInANpLKXciZWZTVpP2bF1EuBjAD1hAwjGb1l2LJ9Lu7X
-	 MDkkIqoAiY4oGIzzsCIQU5TM4/7rywr601/VNrZeDq7T5jFeE3oWRDHZSkY/32ghTT
-	 5OiInlh86QPUOqRafcjSBZCZoUEWxa6vaJdA7t54=
+	b=K6cgCOPLhlGdaPxtWBlhDWz/e6RmeARHbHPoTP5b3SZFwfs4utyZcUtfh3c3mrzaB
+	 NKYpmbfboTIJ/fonUWHEalCv2rhRbF6GRModEHqNJd8CPL7G9rhGv2nhWr3M+c9344
+	 hetgodCAcRC6gcDVd3BB2hBqvS7qCyj7rkO8e/+w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9568CF80217;
-	Mon, 29 Nov 2021 20:08:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6FDCDF800EE;
+	Tue, 30 Nov 2021 06:39:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BBCACF80240; Mon, 29 Nov 2021 20:08:25 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 46070F8020D
- for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2021 20:08:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46070F8020D
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="b45EzunK"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 991F7F802C4; Tue, 30 Nov 2021 06:39:23 +0100 (CET)
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 6E922B815B1;
- Mon, 29 Nov 2021 19:08:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F290BC53FC7;
- Mon, 29 Nov 2021 19:08:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1638212899;
- bh=lsOyYHMBrlpxe+yOqHBUunxp2HVJbc4SCbYxlMO2eHU=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=b45EzunK8FRmC/e8IW9/UuunZW4l4v6DmdUJ3tqnKAn4QN+RTMeEc416NtcEInCQJ
- VSEkfb+oNx2Pia/CPod2G7cgE8GDcVMKOF13UjQVZ4oKDxHZL7X2pXDF5fg11cAGnG
- j14qOq8GUWQ/t7CqKE4yZfrrNwjIxabvwwkgoLk0zNyQa3Fyx+PpafRChxt91cj4vc
- 4ScKGk1lHCM028Zs6qVhJ/JCt0SSHPMCR09UavqAZN93FaK4ft71XJeNVB1NCl+QU3
- /Kj1f24qbLtDmkUCvE7nzyuhtQU1dCCv71Glr3FV6U78fK25B8Hd9dHGcxdnSZxjAv
- KfivHQSCVXUnQ==
-Date: Mon, 29 Nov 2021 19:08:13 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: atom: Remove redundant check to simplify
- the code
-Message-ID: <YaUlHRHu4G0EMHE5@sirena.org.uk>
-References: <20211125075028.8500-1-tangbin@cmss.chinamobile.com>
- <3ca07ce3-6d5c-20cc-8992-4700490ea472@linux.intel.com>
- <YaUJ2EfU6kYFfjWn@sirena.org.uk>
- <YaUjfFNA6IScPCY9@smile.fi.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5C97EF800EE
+ for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2021 06:39:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C97EF800EE
+X-UUID: 76bce234140b4bf4bc153a7cae776ed7-20211130
+X-UUID: 76bce234140b4bf4bc153a7cae776ed7-20211130
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by
+ mailgw02.mediatek.com (envelope-from <trevor.wu@mediatek.com>)
+ (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+ with ESMTP id 1269906672; Tue, 30 Nov 2021 13:39:09 +0800
+Received: from mtkexhb01.mediatek.inc (172.21.101.102) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.792.15; Tue, 30 Nov 2021 13:39:08 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by mtkexhb01.mediatek.inc
+ (172.21.101.102) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+ Tue, 30 Nov 2021 13:39:08 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via
+ Frontend Transport; Tue, 30 Nov 2021 13:39:08 +0800
+From: Trevor Wu <trevor.wu@mediatek.com>
+To: <broonie@kernel.org>, <tiwai@suse.com>, <robh+dt@kernel.org>,
+ <matthias.bgg@gmail.com>
+Subject: [PATCH 2/2] dt-bindings: mediatek: mt8195: add memory-region property
+Date: Tue, 30 Nov 2021 13:39:05 +0800
+Message-ID: <20211130053905.28470-3-trevor.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20211130053905.28470-1-trevor.wu@mediatek.com>
+References: <20211130053905.28470-1-trevor.wu@mediatek.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="k8dI/ervwTv43JI3"
-Content-Disposition: inline
-In-Reply-To: <YaUjfFNA6IScPCY9@smile.fi.intel.com>
-X-Cookie: Thank god!! ... It's HENNY YOUNGMAN!!
-Cc: cezary.rojewski@intel.com, alsa-devel@alsa-project.org,
- Tang Bin <tangbin@cmss.chinamobile.com>, linux-kernel@vger.kernel.org,
- tiwai@suse.com, yang.jie@linux.intel.com,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- liam.r.girdwood@linux.intel.com
+Content-Type: text/plain
+X-MTK: N
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+ trevor.wu@mediatek.com, yc.hung@mediatek.com,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,42 +79,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Add a required property "memory-region", which is used to specify memory
+for DMA usage.
 
---k8dI/ervwTv43JI3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
+---
+ .../devicetree/bindings/sound/mt8195-afe-pcm.yaml         | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-On Mon, Nov 29, 2021 at 09:01:16PM +0200, Andy Shevchenko wrote:
-> On Mon, Nov 29, 2021 at 05:11:52PM +0000, Mark Brown wrote:
+diff --git a/Documentation/devicetree/bindings/sound/mt8195-afe-pcm.yaml b/Documentation/devicetree/bindings/sound/mt8195-afe-pcm.yaml
+index dcf790b053d2..6d0975b33d15 100644
+--- a/Documentation/devicetree/bindings/sound/mt8195-afe-pcm.yaml
++++ b/Documentation/devicetree/bindings/sound/mt8195-afe-pcm.yaml
+@@ -19,6 +19,12 @@ properties:
+   interrupts:
+     maxItems: 1
+ 
++  memory-region:
++    maxItems: 1
++    description: |
++      Shared memory region for AFE memif.  A "shared-dma-pool".
++      See ../reserved-memory/reserved-memory.txt for details.
++
+   mediatek,topckgen:
+     $ref: "/schemas/types.yaml#/definitions/phandle"
+     description: The phandle of the mediatek topckgen controller
+@@ -125,6 +131,7 @@ required:
+   - power-domains
+   - clocks
+   - clock-names
++  - memory-region
+ 
+ additionalProperties: false
+ 
+@@ -139,6 +146,7 @@ examples:
+         interrupts = <GIC_SPI 822 IRQ_TYPE_LEVEL_HIGH 0>;
+         mediatek,topckgen = <&topckgen>;
+         power-domains = <&spm 7>; //MT8195_POWER_DOMAIN_AUDIO
++        memory-region = <&snd_dma_mem_reserved>;
+         clocks = <&clk26m>,
+                  <&topckgen 163>, //CLK_TOP_APLL1
+                  <&topckgen 166>, //CLK_TOP_APLL2
+-- 
+2.18.0
 
-> > Zero is (or was, people were working on changing it partly due to
-> > confusion and partly due to moving to newer infrastructure which
-> > doesn't use it) a valid IRQ on some architectures.  x86 wasn't one of
-> > those though, at least AFAIR.
-
-> I guess it's about x86, but the API returns Linux virtual IRQ and 0 shouldn't
-> be among them (hardware IRQ != Linux virtual IRQ). Legacy x86 used 1:1 mapping
-> for ISA IRQs (lower 16) among which the Timer IRQ is 0. I believe that timer
-> code does not use any of those APIs (it most likely and IIRC has it hardcoded).
-
-Right, the virtual IRQs are the newer stuff.  32 bit arm was another
-platform that had 0 as a valid IRQ for similar reasons, I don't know if
-any of the platforms are still affected though and I'm going to go out
-on a limb and say they're not using platform_irq_get_optional().
-
---k8dI/ervwTv43JI3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGlJR0ACgkQJNaLcl1U
-h9B2PQf/WYlsV4CNaOQAoyzsD41CNi8U8xmJLZ8eWTAX5tT8wDWiaeekfJbSNMX+
-Ebrezn/oQWkJWO72I8cU1ukfBoe5dZh7/UhWzWZwB4zqVdzAqEjjbluAeT3kQw1t
-EoNAmG0r+yqlglNOsW6I//4X2XV5hwrxxcFNOTt1LEefeHia1sdPUtXcx5qr8j/w
-PKO0jJ385qQb5MzZTemGWFPw/VXSOeA/7fPIetF6MH/nyqodaAg2XJDg/maN9drb
-NNms/8YRZzWQsREsDCMLI+kBy3gMwWfMot6aAbEuf37hK1rPWTsMfkxf7OVXoreg
-HRMZ/9WKuV4NM/Owm3Lbl3CDj+FqrA==
-=1J2J
------END PGP SIGNATURE-----
-
---k8dI/ervwTv43JI3--
