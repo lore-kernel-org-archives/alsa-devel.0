@@ -4,59 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9CB3C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Nov 2021 05:40:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0FC08C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Nov 2021 05:41:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0C1411EDF;
-	Tue, 30 Nov 2021 06:39:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C1411EDF
+	by alsa0.perex.cz (Postfix) with ESMTPS id EE98B1EF6;
+	Tue, 30 Nov 2021 06:40:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE98B1EF6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638250817;
-	bh=g9OrTnmkUYFEpxrSMyNcX6tQIHokUKowaRfyncE21ww=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=K6cgCOPLhlGdaPxtWBlhDWz/e6RmeARHbHPoTP5b3SZFwfs4utyZcUtfh3c3mrzaB
-	 NKYpmbfboTIJ/fonUWHEalCv2rhRbF6GRModEHqNJd8CPL7G9rhGv2nhWr3M+c9344
-	 hetgodCAcRC6gcDVd3BB2hBqvS7qCyj7rkO8e/+w=
+	s=default; t=1638250868;
+	bh=qv0QKWe1t1U2n+bd7b9coUdL/q7VdFMZYW7J9AHCxhs=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Wmu3oGeK6XSfVT6ZtRKvy21V5d34ZyrfTJLplWgMCCWljYVNSakeDxfg5rR9fWvOZ
+	 HanF2JJd5DQWd0dz8cjEwG+uoRs2M5o20CBmuO7TgRp09/dU/0g7bbMZsbEZjVtjEr
+	 I7LNZsKUq5o8q6vPEM/a64SZzH0wT76R7mInS6D4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6FDCDF800EE;
-	Tue, 30 Nov 2021 06:39:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2764BF804EC;
+	Tue, 30 Nov 2021 06:39:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 991F7F802C4; Tue, 30 Nov 2021 06:39:23 +0100 (CET)
+ id 7A5EFF802E0; Tue, 30 Nov 2021 06:39:26 +0100 (CET)
 Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5C97EF800EE
- for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2021 06:39:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C97EF800EE
-X-UUID: 76bce234140b4bf4bc153a7cae776ed7-20211130
-X-UUID: 76bce234140b4bf4bc153a7cae776ed7-20211130
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by
+ by alsa1.perex.cz (Postfix) with ESMTPS id 79047F8028D
+ for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2021 06:39:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79047F8028D
+X-UUID: 1f360361fbe74e1d9620dd415c113adc-20211130
+X-UUID: 1f360361fbe74e1d9620dd415c113adc-20211130
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by
  mailgw02.mediatek.com (envelope-from <trevor.wu@mediatek.com>)
- (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
- with ESMTP id 1269906672; Tue, 30 Nov 2021 13:39:09 +0800
-Received: from mtkexhb01.mediatek.inc (172.21.101.102) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.792.15; Tue, 30 Nov 2021 13:39:08 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by mtkexhb01.mediatek.inc
- (172.21.101.102) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
- Tue, 30 Nov 2021 13:39:08 +0800
+ (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+ with ESMTP id 868584682; Tue, 30 Nov 2021 13:39:09 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 30 Nov 2021 13:39:07 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via
- Frontend Transport; Tue, 30 Nov 2021 13:39:08 +0800
+ Frontend Transport; Tue, 30 Nov 2021 13:39:07 +0800
 From: Trevor Wu <trevor.wu@mediatek.com>
 To: <broonie@kernel.org>, <tiwai@suse.com>, <robh+dt@kernel.org>,
  <matthias.bgg@gmail.com>
-Subject: [PATCH 2/2] dt-bindings: mediatek: mt8195: add memory-region property
-Date: Tue, 30 Nov 2021 13:39:05 +0800
-Message-ID: <20211130053905.28470-3-trevor.wu@mediatek.com>
+Subject: [PATCH 0/2] ASoC: mediatek: support memory-region assignment
+Date: Tue, 30 Nov 2021 13:39:03 +0800
+Message-ID: <20211130053905.28470-1-trevor.wu@mediatek.com>
 X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20211130053905.28470-1-trevor.wu@mediatek.com>
-References: <20211130053905.28470-1-trevor.wu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-MTK: N
@@ -79,47 +72,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add a required property "memory-region", which is used to specify memory
-for DMA usage.
+This series of patches adds support for memory-region assignment, so the 
+access region of DMA engine could be restricted.
+Patches are based on broonie tree "for-next" branch.
 
-Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
----
+Trevor Wu (2):
+  ASoC: mediatek: mt8195: support reserved memory assignment
+  dt-bindings: mediatek: mt8195: add memory-region property
+
  .../devicetree/bindings/sound/mt8195-afe-pcm.yaml         | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/mediatek/mt8195/mt8195-afe-pcm.c                | 7 +++++++
+ 2 files changed, 15 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/mt8195-afe-pcm.yaml b/Documentation/devicetree/bindings/sound/mt8195-afe-pcm.yaml
-index dcf790b053d2..6d0975b33d15 100644
---- a/Documentation/devicetree/bindings/sound/mt8195-afe-pcm.yaml
-+++ b/Documentation/devicetree/bindings/sound/mt8195-afe-pcm.yaml
-@@ -19,6 +19,12 @@ properties:
-   interrupts:
-     maxItems: 1
- 
-+  memory-region:
-+    maxItems: 1
-+    description: |
-+      Shared memory region for AFE memif.  A "shared-dma-pool".
-+      See ../reserved-memory/reserved-memory.txt for details.
-+
-   mediatek,topckgen:
-     $ref: "/schemas/types.yaml#/definitions/phandle"
-     description: The phandle of the mediatek topckgen controller
-@@ -125,6 +131,7 @@ required:
-   - power-domains
-   - clocks
-   - clock-names
-+  - memory-region
- 
- additionalProperties: false
- 
-@@ -139,6 +146,7 @@ examples:
-         interrupts = <GIC_SPI 822 IRQ_TYPE_LEVEL_HIGH 0>;
-         mediatek,topckgen = <&topckgen>;
-         power-domains = <&spm 7>; //MT8195_POWER_DOMAIN_AUDIO
-+        memory-region = <&snd_dma_mem_reserved>;
-         clocks = <&clk26m>,
-                  <&topckgen 163>, //CLK_TOP_APLL1
-                  <&topckgen 166>, //CLK_TOP_APLL2
 -- 
 2.18.0
 
