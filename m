@@ -4,59 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 043DFC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Nov 2021 15:54:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04521C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Nov 2021 15:57:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 084FE2291;
-	Tue, 30 Nov 2021 16:53:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 084FE2291
+	by alsa0.perex.cz (Postfix) with ESMTPS id F217322A1;
+	Tue, 30 Nov 2021 16:56:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F217322A1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638287661;
-	bh=4BYbS6lQsqUz2uu63Jy2ok0U2+qP+aw+rFsNaLUBRGY=;
-	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
+	s=default; t=1638287859;
+	bh=2MTktfBhZN86VgZC7uKn9p90tF2YYUkH5prjKRTjljE=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MJBjIvfRUckGxWEDrmKtnWEDZzXkHUTGQiEaZImGBdRVETUbYWIEyepCH+E+OryW2
-	 Z7w1Eu1DbUvfn61FEND+KduYhBUXoO91Qj2pIbdJUU7t25Hh9EAHH4JHRpNlhqIVUO
-	 Guwlst/g1XrXlB3H1GwABcAqUZbIW34oZZrr4jSE=
+	b=apZjnOSLXVSRqaKhPqq6SjcvcQDJvdQ8PfyiAVbwd+s3SniyWSmyQjoDSy+F8CgJs
+	 l2zU6Xaz2Jrf0Qia7tjyxOKVIqHX+euR3uXpiHDof4jvtE46J4Zr7iVSxOUCtZty5W
+	 ifB+Fd8kaOmxRWF8Erq6vgGvmy2eOlwM2yCzWVf4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9ECE9F8020D;
-	Tue, 30 Nov 2021 16:53:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8E45AF8028D;
+	Tue, 30 Nov 2021 16:56:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7209CF80290; Tue, 30 Nov 2021 16:53:25 +0100 (CET)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 522C1F80290; Tue, 30 Nov 2021 16:56:47 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A0711F8020D
- for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2021 16:53:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0711F8020D
-X-IronPort-AV: E=McAfee;i="6200,9189,10183"; a="236186087"
-X-IronPort-AV: E=Sophos;i="5.87,276,1631602800"; d="scan'208";a="236186087"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Nov 2021 07:53:15 -0800
-X-IronPort-AV: E=Sophos;i="5.87,276,1631602800"; d="scan'208";a="601551502"
-Received: from vschult-mobl1.amr.corp.intel.com (HELO [10.212.122.173])
- ([10.212.122.173])
- by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Nov 2021 07:53:14 -0800
-Subject: Re: Dual simulatenous output on single card not recognized
-To: Eldred HABERT <stuff@eldred.fr>, alsa-devel@alsa-project.org
-References: <8b18294d-d082-2be4-18ba-39b4ec4b9e91@eldred.fr>
- <cdafcbb1-9eeb-6337-ee2b-d6a168996153@linux.intel.com>
- <a006b912-71e1-548a-22ef-8f315e3be281@eldred.fr>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <8dc22d20-9d16-6114-03d1-da22f72ac81c@linux.intel.com>
-Date: Tue, 30 Nov 2021 08:40:25 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <a006b912-71e1-548a-22ef-8f315e3be281@eldred.fr>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2B7F6F800EE
+ for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2021 16:56:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B7F6F800EE
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="v2QtO0Po"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="fy09nkPA"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 9A6661FD58;
+ Tue, 30 Nov 2021 15:56:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1638287800; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=DphMjM75JgPLeDDEy5kEzMUrrLraQMkD+tXh+LN998Q=;
+ b=v2QtO0PoH0kIaXKzSWYFGTC/wyMSigQyNIzg1vowl2ti+JHrOFI+gQ052O4/Y/FVEYyY/V
+ Rg3/91aNQ6wqE0E1J0TV+/VV47X+tHa7b5QuDnX9hEdT+NZCHwWiIJtrBV+z8uU5J8AmWD
+ UUEcJn5wsf1/v2NTwAVobArAaWORCHY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1638287800;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=DphMjM75JgPLeDDEy5kEzMUrrLraQMkD+tXh+LN998Q=;
+ b=fy09nkPAdiNbxlY2UCSrQFHAr4bF2Ea5TujAGeps+ZnewgYEDA/6LA1TJGTn2Iq13ZMKqz
+ xZO3/32+FQn7v0Dg==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 92C39A3B84;
+ Tue, 30 Nov 2021 15:56:40 +0000 (UTC)
+Date: Tue, 30 Nov 2021 16:56:40 +0100
+Message-ID: <s5hfsrd1vt3.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Hans de Goede <hdegoede@redhat.com>
+Subject: Re: Logitech Z10 USB speakers need a volume change before audio works
+In-Reply-To: <7f36906e-fd4b-c14e-4189-0d8b7de271ac@redhat.com>
+References: <cf7dd2f0-512c-1b8c-efb1-53f79ddfb41e@redhat.com>
+ <s5ho8689zl3.wl-tiwai@suse.de>
+ <c1deb0b9-b0f1-3ea5-43ea-ac96b29e93f5@redhat.com>
+ <7f36906e-fd4b-c14e-4189-0d8b7de271ac@redhat.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,32 +90,146 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-On 11/30/21 1:44 AM, Eldred HABERT wrote:
+On Tue, 30 Nov 2021 15:33:35 +0100,
+Hans de Goede wrote:
 > 
-> On 29/11/2021 19:18, Pierre-Louis Bossart wrote:
->> You may want to run 'alsa-info' and provide a link to the uploaded
->> results. It's hard to comment without any information on 'hardware
->> configurations like mine'.
->> Thanks.
-> Sorry, I thought the output of `aplay -l` would be enough. The results
-> are here;
-> http://alsa-project.org/db/?f=bc64421df5181d1ba3bdf157c40d06dd52a7224b
+> Hi,
+> 
+> On 11/30/21 12:07, Hans de Goede wrote:
+> > Hi,
+> > 
+> > On 11/25/21 13:42, Takashi Iwai wrote:
+> >> On Thu, 25 Nov 2021 12:04:41 +0100,
+> >> Hans de Goede wrote:
+> >>>
+> >>> Hi,
+> >>>
+> >>> I've a set of Logitech Z10 USB speakers, which act as a USB soundcard.
+> >>>
+> >>> They have this weird glitch where after turning off my PC (and their
+> >>> power-supply as well) and then turning things back on, they are silent
+> >>> until I change the PCM volume control for the speakers inside
+> >>> alsa-mixer.
+> >>>
+> >>> It seems like they need some "set-volume" command to be send over the
+> >>> USB bus to unmute them when initially powered-up / turned on.
+> >>>
+> >>> Is their some existing usb-audio quirk which I can try to work around this?
+> >>
+> >> No such quirk is present for now.
+> >>
+> >> Was it tested with 5.16-rc?  There was a change in USB-audio driver
+> >> initialization (commit b96681bd5827) and it might have some effect in
+> >> your case.
+> > 
+> > Yes I'm at 5.16-rc3 atm but I've been seeing this for quite some time.
+> > I just never got around to reporting it. Mainly because I also never
+> > got around to getting a bit clearer picture of the problem.
+> > 
+> > I've spend some time this morning to get that clearer picture,
+> > which was insightful.
+> > 
+> >> Also, it's interesting to know whether it happens also once after
+> >> suspend-resume, too.
+> > 
+> > suspend-resume makes no difference, not even rebooting or
+> > powering off the machine makes a difference.
+> > 
+> > Once the speakers are in working order they stay in working order
+> > until I turn off my machine; and then flick the power-switch on
+> > the 240V AC power-bar which I use to power my laptop + dock +
+> > monitors + the speakers and turn things back on the next morning.
+> > 
+> > To be clear these speakers get their audio-data over USB
+> > (as an usb-audio device) but they have their own power-supply
+> > they are not USB powered. They also have a "soft" on/off button
+> > which turns on/off the amplifier and LCD screen parts but leaves
+> > the USB audio interface active.
+> > 
+> > So I've been experimenting with reproducing the issue and I
+> > need to do the following minimal steps to reproduce:
+> > 
+> >  1. Unplug USB
+> >  2. Unplug power
+> >  3. Re-plug power
+> >  4. Re-plug USB
+> >  5. speaker-test -Dfront:CARD=Speaker,DEV=0 -S1
+> >  6. Turn speakers on (with the on/off button on the speakers), no audio
+> > 
+> >  5 and 6 may be swapped, same result
+> > 
+> > And now that I have a reliable reproducer I've also been
+> > playing with a reliable workaround which looks like this:
+> > 
+> > 1. Start playing audio to the speakers
+> > 2. Turn speakers on (with the on/off button on the speakers)
+> > 3. Make a change to the 'PCM Playback Volume' ctrl
+> > 
+> > Where 1. and 2. may be swapped. But the
+> > 'PCM Playback Volume' ctrl change must be made while the
+> > speakers are on and playing audio !
+> > 
+> > Although I have found that this also works:
+> > 
+> > 1. Start playing audio to the speakers
+> > 2. Turn speakers on (with the on/off button on the speakers)
+> > 3. Stop playing audio
+> > 4. Make a change to the 'PCM Playback Volume' ctrl
+> > 5. Start playing audio to the speakers again
+> > 
+> > I then even here a brief "power-up buzz" coming from the
+> > speakers at 4.
+> > 
+> > And this sequence also works:
+> > 
+> > 1. Start playing audio to the speakers
+> > 2. Stop playing audio
+> > 3. Turn speakers on (with the on/off button on the speakers)
+> > 4. Make a change to the 'PCM Playback Volume' ctrl
+> > 5. Start playing audio to the speakers again
+> > 
+> > So it seems that to work (after having been unplugged
+> > form the mains) these speakers need to:
+> > 
+> > 1. Have had some audio send to them at least once
+> > 2. After this have their 'PCM Playback Volume' ctrl poked
+> >    at once while they are on (and if they are on cannot
+> >    be seen from the PC side AFAICT).
+> > 
+> > Note instead of changing the 'PCM Playback Volume' ctrl
+> > toggling the associated mute ctrl works too.
+> > 
+> > TL;DR: Since getting the speakers to work involves
+> > setting a ctrl while they are on, which is something
+> > which we cannot tell from the kernel side I don't believe
+> > that there is anything we can do about this from within
+> > the kernel.
+> 
+> So thinking more about this I guess we could do something
+> where we resend the last PCM volume to the device every
+> 5 seconds *when the device is playing audio*, assuming that
+> the resending of the same PCM volume is sufficient to fix
+> things.
+> 
+> These are pretty nice speakers so getting them to work without
+> this glitch would be nice. But it would require a significant
+> bit of (quirk enabled) code just for this 1 model speakers.
+> 
+> Takashi, what do you think. Should I give the resend volume
+> once every 5 seconds idea a try, or is it likely going to
+> end up being too ugly to merge ?
 
-ok, so you have a CNL-H chipset and no digital mics, so the legacy
-HDaudio driver is used (not SOF w/ the DSP enabled).
+It sounds too hackish and fragile to me...  Do we need to repeat each
+5 seconds?  Wouldn't it suffice to touch only once at setting up the
+stream (or need before or after the stream start), instead?
 
-There's nothing at the driver level that would prevent the use of
-independent outputs, such as built-in speakers and HDMI concurrently.
-You can verify this assertion by opening different terminals and trying
+If it's enough to be once in the stream setup, we may add something in
+snd_usb_set_format_quirk() that is specific to your device to set the
+current mixer value again.
 
-speaker-test -Dhw:0,0 -c2 -r48000
+In anyway, alsa-info.sh output would be helpful.
 
-speaker-test -Dhw:0,3 -c2 -r48000 (use 0,7 8 9 10 as needed, depending
-on which device is tagged as connected to a valid HDMI output in the
-mixer 'Jack' status)
 
-I am not sure though how the Gnome settings would let you do this. This
-seems like a user-space problem to me?
+thanks,
 
+Takashi
