@@ -4,48 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1E23C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Dec 2021 09:04:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82EC8C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Dec 2021 09:34:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D43F024AD;
-	Wed,  1 Dec 2021 10:03:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D43F024AD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 90D8F255B;
+	Wed,  1 Dec 2021 10:33:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 90D8F255B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638349438;
-	bh=Ex671u7n4fbHtops0mrAupVFZc5JYZdYYYMQgVDj2sc=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=R+kPMOiEnTPD3QCXTDD2YR6CAs/teCr1Z9QcoTk+EzAJ/+m4+QuepnXKF75hBT914
-	 LNLMLK6lh+a5xS+HDNMk3xQDjQbBGgOt2UruGqGMbUWcW6r46tlZmZ1QCiBLGZqQwr
-	 9xqm85OJwHbLcGSsLrKvDekX+L6RAU+NfBHUbp6w=
+	s=default; t=1638351248;
+	bh=Jvxfnt8rs8XMfNbrsmaFmSwZC8SskicDyYeVKAXc15w=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=tcOBg31uXQJjFH9vJgm+02YUKLOwHP82byogZY4dphgwK17jdMSesHbO4iUNq7GyR
+	 7xben7f2W/VX6RsF+WIa/+XFbOTkOgtFb7lxgv/mcECE/XNCUEaoqkukqGxm6vdTZf
+	 98lgXpg3/gidpEKgKbOG8XQdd3z5Hko0W4UYbwhM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5D21CF80240;
-	Wed,  1 Dec 2021 10:03:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1C167F80121;
+	Wed,  1 Dec 2021 10:33:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D7D1FF80246; Wed,  1 Dec 2021 10:01:57 +0100 (CET)
-Received: from out30-57.freemail.mail.aliyun.com
- (out30-57.freemail.mail.aliyun.com [115.124.30.57])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 36976F80246; Wed,  1 Dec 2021 10:33:04 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 63F31F80217
- for <alsa-devel@alsa-project.org>; Wed,  1 Dec 2021 09:59:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63F31F80217
-X-Alimail-AntiSpam: AC=PASS; BC=-1|-1; BR=01201311R511e4; CH=green; DM=||false|;
- DS=||; FP=0|-1|-1|-1|0|-1|-1|-1; HT=e01e01424; MF=cuibixuan@linux.alibaba.com;
- NM=1; PH=DS; RN=5; SR=0; TI=SMTPD_---0Uz-4zV2_1638349134; 
-Received: from VM20210331-25.tbsite.net(mailfrom:cuibixuan@linux.alibaba.com
- fp:SMTPD_---0Uz-4zV2_1638349134) by smtp.aliyun-inc.com(127.0.0.1);
- Wed, 01 Dec 2021 16:58:58 +0800
-From: Bixuan Cui <cuibixuan@linux.alibaba.com>
-To: alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH -next] ALSA: oss: fix compile error when OSS_DEBUG is enabled
-Date: Wed,  1 Dec 2021 16:58:54 +0800
-Message-Id: <1638349134-110369-1-git-send-email-cuibixuan@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-Cc: cuibixuan@linux.alibaba.com, tiwai@suse.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id 34E3BF80121
+ for <alsa-devel@alsa-project.org>; Wed,  1 Dec 2021 10:33:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34E3BF80121
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="JoNv4XUw"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="wTXH/AX7"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 0E2CD212C6;
+ Wed,  1 Dec 2021 09:32:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1638351179; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=FfoZZlhm62xgq22VwE8vzMHKJoholHu0tZx7i/QBv6k=;
+ b=JoNv4XUwRSLUgLJBVMWOWuncHBQLWHyMAwQephDN0dDtsyiAOrjsiBcozy23aTDYgvMcBt
+ MFy9S5kL63T8VVaN2J+E1udsaWrXOcZROvVa4LoPJwIolTMXSWTs5yTImkZSLLEPCOLMzF
+ hhvbdIWrBFyV+8M2hxC50IOp6YQGUu4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1638351179;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=FfoZZlhm62xgq22VwE8vzMHKJoholHu0tZx7i/QBv6k=;
+ b=wTXH/AX7DMfnLDs7tEg/q1y1r+3xYseXHwuwwHU9ezbis6cv2g+oHPoqWdI/mwmYENZD/1
+ NLOYpumXfzhPNyAw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id E7540A3B85;
+ Wed,  1 Dec 2021 09:32:58 +0000 (UTC)
+Date: Wed, 01 Dec 2021 10:32:58 +0100
+Message-ID: <s5h1r2wzn3p.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Bixuan Cui <cuibixuan@linux.alibaba.com>
+Subject: Re: [PATCH -next] ALSA: oss: fix compile error when OSS_DEBUG is
+ enabled
+In-Reply-To: <1638349134-110369-1-git-send-email-cuibixuan@linux.alibaba.com>
+References: <1638349134-110369-1-git-send-email-cuibixuan@linux.alibaba.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -61,32 +88,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Fix compile error when OSS_DEBUG is enabled:
-    sound/core/oss/pcm_oss.c: In function 'snd_pcm_oss_set_trigger':
-    sound/core/oss/pcm_oss.c:2055:10: error: 'substream' undeclared (first
-    use in this function); did you mean 'csubstream'?
-      pcm_dbg(substream->pcm, "pcm_oss: trigger = 0x%x\n", trigger);
-              ^
+On Wed, 01 Dec 2021 09:58:54 +0100,
+Bixuan Cui wrote:
+> 
+> Fix compile error when OSS_DEBUG is enabled:
+>     sound/core/oss/pcm_oss.c: In function 'snd_pcm_oss_set_trigger':
+>     sound/core/oss/pcm_oss.c:2055:10: error: 'substream' undeclared (first
+>     use in this function); did you mean 'csubstream'?
+>       pcm_dbg(substream->pcm, "pcm_oss: trigger = 0x%x\n", trigger);
+>               ^
+> 
+> Fixes: 61efcee8608c ("ALSA: oss: Use standard printk helpers")
+> Signed-off-by: Bixuan Cui <cuibixuan@linux.alibaba.com>
 
-Fixes: 61efcee8608c ("ALSA: oss: Use standard printk helpers")
-Signed-off-by: Bixuan Cui <cuibixuan@linux.alibaba.com>
----
- sound/core/oss/pcm_oss.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks, applied.
 
-diff --git a/sound/core/oss/pcm_oss.c b/sound/core/oss/pcm_oss.c
-index 82a8187..bb37665 100644
---- a/sound/core/oss/pcm_oss.c
-+++ b/sound/core/oss/pcm_oss.c
-@@ -2052,7 +2052,7 @@ static int snd_pcm_oss_set_trigger(struct snd_pcm_oss_file *pcm_oss_file, int tr
- 	int err, cmd;
- 
- #ifdef OSS_DEBUG
--	pcm_dbg(substream->pcm, "pcm_oss: trigger = 0x%x\n", trigger);
-+	pr_debug("pcm_oss: trigger = 0x%x\n", trigger);
- #endif
- 	
- 	psubstream = pcm_oss_file->streams[SNDRV_PCM_STREAM_PLAYBACK];
--- 
-1.8.3.1
 
+Takashi
