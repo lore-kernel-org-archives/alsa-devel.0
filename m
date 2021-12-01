@@ -4,70 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC4B0C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Dec 2021 17:50:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D56A5C433FE
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Dec 2021 18:01:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DDAE62600;
-	Wed,  1 Dec 2021 18:49:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DDAE62600
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6AA112624;
+	Wed,  1 Dec 2021 19:00:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6AA112624
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638381021;
-	bh=Brk69ITNANm8GtoKP5Z3rUd/O8O8TMXLqjraNs7vWXk=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1638381671;
+	bh=r5ZH+LiPCW885wZA/w7dlTgQyluJjIGjz70wgx05EnU=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tcN04OKloqJS6mtyh2WfaSLProIGhNRBNMUHxsb7FcM648gCcWb+YfpyS1alIz93O
-	 tCigTQAlUpzd7XNSocNr9W9BU83ZgvtDTZa6f3yrdIHRgf8ADM2Pr4IYtsqLEBFw6I
-	 GP9BbZF/O9nKRtX4nP8u9RseMb5YODpPPQYVWWdE=
+	b=NptKySh+RkKzf/Q07f48j3VHOBhTabOw5hNT9IhpVmGhjRCGUkhD0TMma7E8pi65R
+	 T2PNuwUSScdmz9t378IjbEO7PJazaGpWcCk1xfKs8wcJcZoFIMVUYUwpR986UKn52c
+	 /RsZQuPNigjAFrfrqaL45KtO7BjsXun+W5whhAXk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7CD6EF80240;
-	Wed,  1 Dec 2021 18:49:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F1480F80217;
+	Wed,  1 Dec 2021 19:00:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AA892F80246; Wed,  1 Dec 2021 18:49:28 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EE409F800EE
- for <alsa-devel@alsa-project.org>; Wed,  1 Dec 2021 18:49:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EE409F800EE
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="b01bWCud"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id C5E43F80217; Wed,  1 Dec 2021 19:00:19 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id 7730ACE2003;
- Wed,  1 Dec 2021 17:49:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF970C53FCC;
- Wed,  1 Dec 2021 17:49:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1638380957;
- bh=Brk69ITNANm8GtoKP5Z3rUd/O8O8TMXLqjraNs7vWXk=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=b01bWCud5jDr259w60dEanzC7vuitJxiazlBIf4djq4Qj1kMUl6dCmS/XMhONnSXw
- 2s1ywsPWkvXhaXI+bws6DttM4XoYscBGvC3iGLbAKv57kCp70Y/F31hEXwfyUsWt7m
- H15HEZf0MkMo2hur8s12IKc0U+3hpOpx1g4vnr5zPvxVgSANHKRxk6huwF2WDPdRkn
- mKS/RFZHLbs33oe7c8/We4cYd2U+CoFw7eupfyFg8VlYEh4qLI+kc+Vvkp6uKQZYnb
- DoDZK4ILq2kRTpXpWbmHBiI6jbxFXu2FKxjUBmBdJghF1wJeLwK5QFzbwuNsx6JjUl
- SsL+o1Z3qBLuQ==
-Date: Wed, 1 Dec 2021 17:49:12 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Lucas Tanure <tanureal@opensource.cirrus.com>
-Subject: Re: [PATCH 1/2] ASoC: amd: Fix dependency for SPI master
-Message-ID: <Yae1mPxvy82OfORz@sirena.org.uk>
-References: <20211201174307.1399625-1-tanureal@opensource.cirrus.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8916BF80217
+ for <alsa-devel@alsa-project.org>; Wed,  1 Dec 2021 19:00:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8916BF80217
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="nuXJm8oe"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1B19Mp5U027293;
+ Wed, 1 Dec 2021 12:00:08 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=eMCFmkQjX/ILps9PWRRmzwjXAbHNQbPiwPbQV6ydNDw=;
+ b=nuXJm8oejWaaTHL7WHPFd+vhKn7cWSGze0JeNDGqEPbcQzIKykc7AaxCfIQKlNqJ2apV
+ iDTOGjnwVmB7tXxfbHegClSHGEDleX7TTF28Nzz48r/0lyOztGq/hrh02dCkq49vJpEp
+ 3RZjnQhXPvpFEM6np3WkNyxPIeY4ztR/KlMvmqu/1EtNY6GEkgB3nFGThwQzSrIxLlgC
+ oAMfH8HLinwLgfQYzxQEeLBcYtBm2HefJxCxY+2ZNVWcsMhxlKuz6dW90oHdGECAW5+I
+ m2Yt9wFMRRprDMGZDn2rmK80GmiskgSKPjEHfwmtO0xlLoVKC+AyhrxOmr8Jkxh/LmLa wQ== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3cp6c88kpu-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Wed, 01 Dec 2021 12:00:08 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Wed, 1 Dec
+ 2021 18:00:06 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.17 via
+ Frontend Transport; Wed, 1 Dec 2021 18:00:06 +0000
+Received: from aryzen.ad.cirrus.com (unknown [198.61.64.238])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 784B7B10;
+ Wed,  1 Dec 2021 18:00:06 +0000 (UTC)
+From: Lucas Tanure <tanureal@opensource.cirrus.com>
+To: Len Brown <lenb@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood
+ <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown
+ <broonie@kernel.org>
+Subject: [PATCH v2 2/2] ASoC: cs35l41: Fix undefined reference to core
+ functions
+Date: Wed, 1 Dec 2021 18:00:04 +0000
+Message-ID: <20211201180004.1402156-2-tanureal@opensource.cirrus.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20211201180004.1402156-1-tanureal@opensource.cirrus.com>
+References: <20211201180004.1402156-1-tanureal@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="Rl5rCMjYGRvwkRHy"
-Content-Disposition: inline
-In-Reply-To: <20211201174307.1399625-1-tanureal@opensource.cirrus.com>
-X-Cookie: All true wisdom is found on T-shirts.
-Cc: alsa-devel@alsa-project.org, kernel test robot <lkp@intel.com>,
- patches@opensource.cirrus.com, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
- Len Brown <lenb@kernel.org>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: h7bfjpBZCzYeFAjTd4uWDXJ7S1fGyff5
+X-Proofpoint-GUID: h7bfjpBZCzYeFAjTd4uWDXJ7S1fGyff5
+X-Proofpoint-Spam-Reason: safe
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Lucas Tanure <tanureal@opensource.cirrus.com>,
+ kernel test robot <lkp@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,33 +98,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Auto select core driver if i2c or spi bus drivers are
+selected
 
---Rl5rCMjYGRvwkRHy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Fixes: a5e0091d62ab ("ASoC: cs35l41: Fix link problem")
 
-On Wed, Dec 01, 2021 at 05:43:06PM +0000, Lucas Tanure wrote:
-> Select SPI_MASTER as is using CS35L41 SPI driver
+Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
+Reported-by: kernel test robot <lkp@intel.com>
+---
+v2 -> none
 
-> -	depends on SND_SOC_AMD_ACP5x && I2C
-> +	depends on SND_SOC_AMD_ACP5x && I2C && SPI_MASTER
+ sound/soc/codecs/Kconfig | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-This is a depends not a select (which is good, a select wouldn't be
-appropriate here).
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index b4f70e27342c..c033ee7d82e4 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -614,17 +614,19 @@ config SND_SOC_CS35L36
+ 
+ config SND_SOC_CS35L41
+ 	tristate
++	default y if SND_SOC_CS35L41_SPI=y
++	default y if SND_SOC_CS35L41_I2C=y
++	default m if SND_SOC_CS35L41_SPI=m
++	default m if SND_SOC_CS35L41_I2C=m
+ 
+ config SND_SOC_CS35L41_SPI
+ 	tristate "Cirrus Logic CS35L41 CODEC (SPI)"
+ 	depends on SPI_MASTER
+-	select SND_SOC_CS35L41
+ 	select REGMAP_SPI
+ 
+ config SND_SOC_CS35L41_I2C
+ 	tristate "Cirrus Logic CS35L41 CODEC (I2C)"
+ 	depends on I2C
+-	select SND_SOC_CS35L41
+ 	select REGMAP_I2C
+ 
+ config SND_SOC_CS42L42
+-- 
+2.34.1
 
---Rl5rCMjYGRvwkRHy
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGntZcACgkQJNaLcl1U
-h9BPaAf/eSG+AALgRUVHBsCL7mBTlkMMB+SpF0gPhWHYYZb/3RY7ehJmKagYeR1N
-79PiIcGmuIRJrgQESqdBva18ZRUKNYCU0pV/QgeUBqYLgoEOUMFLu7C/PN0QTLRO
-DxldjkK9419RHw+4MIrUA+JuHCCi9MrsmPl+KhCWShSwNJRVU2HczFxy3nUS2jJB
-WApP7Cx5zQDNjQGvKRIRgOO+rrm40h0QRgAjiM2X4RSpwPQyilDFWJPO6snxls3A
-rwi/GrKuj/GYz7pQvYaebqwczJYnhdH/v1iNioqHVhLDvzJL/VQ4rdaiFGthAVDa
-GOHrisWoarI53pzxugUG7AzBcVWOBQ==
-=fKwA
------END PGP SIGNATURE-----
-
---Rl5rCMjYGRvwkRHy--
