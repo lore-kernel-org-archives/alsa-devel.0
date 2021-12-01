@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E81E7C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Dec 2021 18:33:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F26EBC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Dec 2021 18:33:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 45129246F;
-	Wed,  1 Dec 2021 19:32:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45129246F
+	by alsa0.perex.cz (Postfix) with ESMTPS id D51322648;
+	Wed,  1 Dec 2021 19:33:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D51322648
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638383580;
-	bh=7qhygDHX4J1BeJlKqGRQ1ZZF1wSu4J7V9n4jarp8HOI=;
+	s=default; t=1638383635;
+	bh=0ErMPp+nSpqns+RPcMscWpoz3VnyGlsjo34kCcsaDN8=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=W2bIrcV2j4YXbdS1Y9qPQCVs7fA74XPIXpD3o7krQpdobGSgALS94obe/Q50Zg6rt
-	 9PFxajX/VSKD+aXz8puVrfODjB301/XAKhGZ0piAn6nVeLX9DQrBT8XXnvbuFtVb9x
-	 t6fne4bq0168c7Z2C24N7urGZJN/CyFT3x6un1Y0=
+	b=rYsIq2xKVautZ2nrziYEVjnnKMkD++g4l5xUWmSihvXC0JwDpeBzd/scjKiATbaoH
+	 TVz1lSMd6IpB/eKOjL7m0uMT4KfKfxEGXR7xYsWoBZKcQND3XPDYurwd9u/qiWnfit
+	 LkfiJ1NQdrMMxNdyp+jtDCD951P5xRyxwsLJnBWg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 93FDBF80249;
-	Wed,  1 Dec 2021 19:32:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 475C3F80240;
+	Wed,  1 Dec 2021 19:32:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B21C0F80246; Wed,  1 Dec 2021 19:32:06 +0100 (CET)
+ id 38B8CF804FE; Wed,  1 Dec 2021 19:32:14 +0100 (CET)
 Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 59D1FF80217
- for <alsa-devel@alsa-project.org>; Wed,  1 Dec 2021 19:32:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59D1FF80217
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0A378F80240
+ for <alsa-devel@alsa-project.org>; Wed,  1 Dec 2021 19:32:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A378F80240
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="fA3Rscm+"
+ header.b="hObqE1g/"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id BEAA7CE1DE5;
- Wed,  1 Dec 2021 18:31:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 312DFC53FAD;
- Wed,  1 Dec 2021 18:31:55 +0000 (UTC)
+ by sin.source.kernel.org (Postfix) with ESMTPS id 00722CE1DEB;
+ Wed,  1 Dec 2021 18:32:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69631C53FCC;
+ Wed,  1 Dec 2021 18:31:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1638383517;
- bh=7qhygDHX4J1BeJlKqGRQ1ZZF1wSu4J7V9n4jarp8HOI=;
+ s=k20201202; t=1638383519;
+ bh=0ErMPp+nSpqns+RPcMscWpoz3VnyGlsjo34kCcsaDN8=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=fA3Rscm+Zo8Tu5O8KbUZDiMyF/Na5hEy0DoyxyYkFXD50PkuN86AfvwqMj3wJetCk
- bO141OVMndGgrGBAur5hfdUOYhr7T9CZKzp2UzrRP+v2JiQe4Qsw9L2ooekc922YiC
- RcgM4FnUqQaZnELYB0/3DhpS/qOdTzFyQoSlzVQpZ1SaYSPwLBp0RE4OdDcX1wGTdl
- 7luZNt1Ts3YL6Q3MBxMhPzdwHvofLGmOc9qlyYvHMRG5MJKOs9j2lDL4OqttjdfEvu
- AU2NIlv5XlriBbBC5swsofXtQk1QkQCxvN8LK+iHJhaKFvBzK9hwNsV0m6KgG+1A7I
- qQ6IiU0QIoB4A==
+ b=hObqE1g/hGibCRCZBqE4Cpq2ldXrizQ0oBDzuCHBLSZ2X1aSSd7c1b11ci7GZCQB4
+ 3EuwjuDDcl7Zs4ut4jKP03BE2e3ODlv09Mrx4IVVPzI76NrGnuiQx7zzdhlz8/huJi
+ ICQut3T7vrGA0hfS4GqgOkW397ohuG7OC1WG3GxCR+pvHzECjhN3Dgib4hQ9y76eit
+ WJSc4PFZSXlLOSJIfCuDDt/dHxn6NFlMwxLgfZn5MtqEUTYvdUGK7R+PVM6sQSTG+Q
+ 1KzhjlhCVK4E2q6NSFwJ9SjSmaz0ttawVNU/UX45p5jruSLoyieEu9d/l9+dDhHV+T
+ ReNhwJ9UsE+xQ==
 From: Mark Brown <broonie@kernel.org>
 To: Heiko Stuebner <heiko@sntech.de>, Takashi Iwai <tiwai@suse.com>,
  Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
  Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <20211124210655.288108-1-frattaroli.nicolas@gmail.com>
-References: <20211124210655.288108-1-frattaroli.nicolas@gmail.com>
-Subject: Re: [PATCH] ASoC: rockchip: i2s_tdm: Dup static DAI template
-Message-Id: <163838351490.2179725.16335234667243038624.b4-ty@kernel.org>
-Date: Wed, 01 Dec 2021 18:31:54 +0000
+In-Reply-To: <20211125084900.417102-1-frattaroli.nicolas@gmail.com>
+References: <20211125084900.417102-1-frattaroli.nicolas@gmail.com>
+Subject: Re: [PATCH v3] ASoC: rockchip: i2s_tdm: Dup static DAI template
+Message-Id: <163838351714.2179725.14811298107185892550.b4-ty@kernel.org>
+Date: Wed, 01 Dec 2021 18:31:57 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -81,7 +81,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 24 Nov 2021 22:06:55 +0100, Nicolas Frattaroli wrote:
+On Thu, 25 Nov 2021 09:48:59 +0100, Nicolas Frattaroli wrote:
 > Previously, the DAI template was used directly, which lead to
 > fun bugs such as "why is my channels_max changing?" when one
 > instantiated more than one i2s_tdm IP block in a device tree.
