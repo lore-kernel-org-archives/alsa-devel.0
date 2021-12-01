@@ -4,68 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 283FBC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Dec 2021 18:34:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA95EC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Dec 2021 18:34:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 50FBC2664;
-	Wed,  1 Dec 2021 19:33:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50FBC2664
+	by alsa0.perex.cz (Postfix) with ESMTPS id AF3952677;
+	Wed,  1 Dec 2021 19:33:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF3952677
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638383661;
-	bh=p+gM64NP+iunNzUXn4I/RtPaQ0kGiLpth9TxehEubfU=;
+	s=default; t=1638383682;
+	bh=dsGSvVwsFDlsp1QgsF8UIKkiq2nz3XnghIlxao0zEmI=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nQKCjBYZGj1umhzAeEiTmh6ndBbUxFAL1BYYTUnlAaQ8LGmhHbIZODCBLU1njujX8
-	 r/tn8OAUm1BZrtN2QYEnj0IFJdAfiY0hb+jolp0d2TXEbmClEFlQbVnJoJ4S7RW+Uo
-	 dgT4Rct+jw+cql8R6IdqQeayPFgMCXQmDuTdPMMY=
+	b=TdiUclGom0HHGdRvpDfWBLFl9dW//GBNi6rEzRciUtyloiPSShnS0qNRI1pM80LyJ
+	 WlTJfcE5BWgB+OTeupQ8VfQOv/7tnlDGg2P9RQllfjL5/i35mpyrTlF/YCMehxBBeA
+	 EGkblu/6ffWHZk5NXkOrpwPc97YypJDD1Pt7uWpQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EF0D5F8028D;
-	Wed,  1 Dec 2021 19:32:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8D84EF80508;
+	Wed,  1 Dec 2021 19:32:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 91619F804FD; Wed,  1 Dec 2021 19:32:14 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+ id 44CB7F804FE; Wed,  1 Dec 2021 19:32:15 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6DD53F804ED
- for <alsa-devel@alsa-project.org>; Wed,  1 Dec 2021 19:32:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DD53F804ED
+ by alsa1.perex.cz (Postfix) with ESMTPS id 91701F8028D
+ for <alsa-devel@alsa-project.org>; Wed,  1 Dec 2021 19:32:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91701F8028D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="mE1MsPlf"
+ header.b="lr9RZlOW"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id EADB0CE207D;
- Wed,  1 Dec 2021 18:32:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA9EFC53FAD;
- Wed,  1 Dec 2021 18:32:03 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 737E5B820FF;
+ Wed,  1 Dec 2021 18:32:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBEE9C53FCD;
+ Wed,  1 Dec 2021 18:32:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1638383525;
- bh=p+gM64NP+iunNzUXn4I/RtPaQ0kGiLpth9TxehEubfU=;
+ s=k20201202; t=1638383523;
+ bh=dsGSvVwsFDlsp1QgsF8UIKkiq2nz3XnghIlxao0zEmI=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=mE1MsPlf+7tnToA7MTm76YtwYt3RtcQbGfqmYIJW0kXuXpWjy6cLFI5BGVZjTt0B9
- xqBcXAf5dGNCj3ZiMBuHYIO4tCZ1R77hpfUeIS/K2vlPYeKpSlShJoRH+wvWWqumwV
- 25ibl2r0RaZkyhY7uEMXiLNxklrsy3G9L5J/eNY9nqEH/W4AhIZWc0djf2dWwqxURf
- 4drtUYbDMXghIy/BJyOrpsfSlxWcP9vmzeOqa8t04b+OT/xTgf109e5Z7XxDSwjBiU
- aoeBylv0+6rOvikIwlLTVkGSLjt/DUbDJ5v4TjvW1pV9OU41ETpKiHhtLU0wwxajeE
- MWYvvQfRSQJBQ==
+ b=lr9RZlOWtzaOZ9pJ+CYQabzYms2JfTPwdZmqzs9GxOMmGj1Tto1bDdtPrBpP5IZLV
+ prRPAJxqExT6wM9/mQ4U2wMv9TMFKMG2HXCqHQe4G1Bj726wXg0ea6CeaIvTKiUmUO
+ Hqyy2Rh94N3O8leUPVWkmQ489qYWl8FicfqC91NsFGj49oZrM/kqlLWgc/PlHpIbIH
+ +x6rs2E8es+sO3lk21RReT8dLa8vwZjbGlV6ER/nhT+c99WuifXxYSviZadWj+1w0/
+ 7Fj5zobMTF0f4QOYhhDfU0VAIj0nhf/IzirV43gltTqny86gPVcGwLmbKD0U/hSK0w
+ ksuPhbmLOgyuQ==
 From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <20211130160507.22180-1-srinivas.kandagatla@linaro.org>
-References: <20211130160507.22180-1-srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH 0/4] ASoC: codecs: Qualcomm codecs fix kcontrol put return
- values
-Message-Id: <163838352348.2179725.18246298333579842383.b4-ty@kernel.org>
-Date: Wed, 01 Dec 2021 18:32:03 +0000
+To: Dan Carpenter <dan.carpenter@oracle.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+In-Reply-To: <20211130125633.GA24941@kili>
+References: <20211130125633.GA24941@kili>
+Subject: Re: [PATCH] ASoC: amd: fix uninitialized variable in snd_acp6x_probe()
+Message-Id: <163838352162.2179725.6088119262152318727.b4-ty@kernel.org>
+Date: Wed, 01 Dec 2021 18:32:01 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, lgirdwood@gmail.com, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,15 +82,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 30 Nov 2021 16:05:03 +0000, Srinivas Kandagatla wrote:
-> Some recent testing found few issues with wcd934x and wsa881x codec drivers that
-> are not handling kcontrol put correctly. This patchset fixes those instances.
-> Along with this there is also a bug fix for the way channel list was updated for
-> wcd934x dais.
+On Tue, 30 Nov 2021 15:56:33 +0300, Dan Carpenter wrote:
+> The "index" is potentially used without being initialized on the error
+> path.
 > 
-> --srini
 > 
-> [...]
 
 Applied to
 
@@ -97,14 +94,8 @@ Applied to
 
 Thanks!
 
-[1/4] ASoC: codecs: wcd934x: handle channel mappping list correctly
-      commit: 23ba28616d3063bd4c4953598ed5e439ca891101
-[2/4] ASoC: codecs: wcd934x: remove redundant ret variable
-      (no commit info)
-[3/4] ASoC: codecs: wcd934x: return correct value from mixer put
-      commit: d9be0ff4796d1b6f5ee391c1b7e3653a43cedfab
-[4/4] ASoC: codecs: wsa881x: fix return values from kcontrol put
-      commit: 3fc27e9a1f619b50700f020e6cd270c1b74755f0
+[1/1] ASoC: amd: fix uninitialized variable in snd_acp6x_probe()
+      commit: d5c137f41352e8dd864522c417b45d8d1aebca68
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
