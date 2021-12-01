@@ -4,64 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E337C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Dec 2021 07:37:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 409AFC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Dec 2021 07:38:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9CE7F23D4;
-	Wed,  1 Dec 2021 08:36:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CE7F23D4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2A8172514;
+	Wed,  1 Dec 2021 08:37:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A8172514
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638344226;
-	bh=8/myr05LK2LoOXphs3EKhcofTN3rSjeTREGp+mG5tuY=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=DUO+CymbFZE8fanDuXZtQReiucdZ9fVV4zWXM3pTUnBRZ5T2Wu9n8+lB6j4bApRKR
-	 I9WWACOSiQ63ed8t+BLtATgcliSdNplu6lSyxInixKy4Jsc2rBzkrMtw/zNejsJ48p
-	 bfwbKYF4ZcDdyXX8zAUDoK2VeXulN3tRXhsueclA=
+	s=default; t=1638344274;
+	bh=oIs00SwtjDgEgvFTIi0M1vzGmiXcNJMPDvHLXrAfCxs=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=cExruVU7BG7a3uiZLAuOKKetZJhcMI/11erNvrDZcYKkdR/uPdMBQbtqx2K29iuUH
+	 81ASLfop35nTvldJHY6+S5o3dwz+72WnqSaHE3Kbya47B4fGZ1MFnnlochuOHZIF6d
+	 RA9kg4QAwtZ0wWnZPivAxrL4ZAKR9HJj+pwfxF3U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 17C44F80121;
-	Wed,  1 Dec 2021 08:36:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 014B2F80217;
+	Wed,  1 Dec 2021 08:36:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A6247F80121; Wed,  1 Dec 2021 08:36:13 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id 9B073F804EB; Wed,  1 Dec 2021 08:36:17 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 624FBF80121
- for <alsa-devel@alsa-project.org>; Wed,  1 Dec 2021 08:36:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 624FBF80121
+ by alsa1.perex.cz (Postfix) with ESMTPS id 32D5AF80246
+ for <alsa-devel@alsa-project.org>; Wed,  1 Dec 2021 08:36:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32D5AF80246
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="jawUE7Yi"; 
+ header.b="ek9plvr6"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="TQOFqEuQ"
+ header.b="ggYeczKi"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 33D391FD5B;
+ by smtp-out1.suse.de (Postfix) with ESMTP id 538A221763;
  Wed,  1 Dec 2021 07:36:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1638344169; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=20LA+sdJJV19G4/U8oidDyffbMr+SD5DGP5jCxVb8Zk=;
- b=jawUE7YicucNoWlD0/xyM7LLYUxUPT+1V3FO90sUNkT5NX0+uVBObYa2Rdv6Hs0IgsOYfc
- m0CMQPxQDRVCbVcBDTK2pbeSk+Ds7I3pj/Spvhz/J/2/Gq14kLoe3lhfckHpD+XSJWvdEr
- NmNxdBG/f6cCXYT8U9ltDK2lsYrS8T8=
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=Th4mYGEB7rIqidX1COlzDHDuW/cuoC+ZjD8Yfc6FREU=;
+ b=ek9plvr6eXjooU071h9EyK6OK2FTmIo1enjVxvl26+gObO+bp7yC9hbLNY4kngP7ROagjv
+ 5j4ogEDxoBf864aL6f9LwDp3VGWyVQmkDf13+cy41fuV/6O1K3D9U9wKptUwdnKmaUyrdp
+ zYBjJ4Y03Rh6J0m49F9jdB2m13SOtxI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1638344169;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=20LA+sdJJV19G4/U8oidDyffbMr+SD5DGP5jCxVb8Zk=;
- b=TQOFqEuQNRaYsPUFTqAfna3DkjKOL4NJ6U1k2SLlfjScYDVU2yYrzd02YPLEGEczcrHGO/
- Vq1iESb1RkWegRBg==
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=Th4mYGEB7rIqidX1COlzDHDuW/cuoC+ZjD8Yfc6FREU=;
+ b=ggYeczKiUliNi92lvqrBjVf1hEDCXnluJf0jkqpRgTd7fKXcAZfPaSTQ4AJElfDMmjp6cK
+ SytdC68/whtogYDg==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id F186BA3E4B;
- Wed,  1 Dec 2021 07:36:08 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id 44123A3C04;
+ Wed,  1 Dec 2021 07:36:09 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 0/3] ALSA: pcm: oss: various fixes
-Date: Wed,  1 Dec 2021 08:36:03 +0100
-Message-Id: <20211201073606.11660-1-tiwai@suse.de>
+Subject: [PATCH 3/3] ALSA: pcm: oss: Handle missing errors in
+ snd_pcm_oss_change_params*()
+Date: Wed,  1 Dec 2021 08:36:06 +0100
+Message-Id: <20211201073606.11660-4-tiwai@suse.de>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20211201073606.11660-1-tiwai@suse.de>
+References: <20211201073606.11660-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: Bixuan Cui <cuibixuan@linux.alibaba.com>
@@ -80,25 +88,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+A couple of calls in snd_pcm_oss_change_params_locked() ignore the
+possible errors.  Catch those errors and abort the operation for
+avoiding further problems.
 
-here is a patch set to cover several corner-cases that are found
-in PCM OSS layer.  Mostly for addressing the missing error handlings,
-but also limit the period size to a reasonable value.
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/oss/pcm_oss.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-
-Takashi
-
-===
-
-Takashi Iwai (3):
-  ALSA: pcm: oss: Fix negative period/buffer sizes
-  ALSA: pcm: oss: Limit the period size to 16MB
-  ALSA: pcm: oss: Handle missing errors in snd_pcm_oss_change_params*()
-
- sound/core/oss/pcm_oss.c | 37 +++++++++++++++++++++++++------------
- 1 file changed, 25 insertions(+), 12 deletions(-)
-
+diff --git a/sound/core/oss/pcm_oss.c b/sound/core/oss/pcm_oss.c
+index 89c4910daf02..20a0a4771b9a 100644
+--- a/sound/core/oss/pcm_oss.c
++++ b/sound/core/oss/pcm_oss.c
+@@ -884,8 +884,15 @@ static int snd_pcm_oss_change_params_locked(struct snd_pcm_substream *substream)
+ 		err = -EINVAL;
+ 		goto failure;
+ 	}
+-	choose_rate(substream, sparams, runtime->oss.rate);
+-	snd_pcm_hw_param_near(substream, sparams, SNDRV_PCM_HW_PARAM_CHANNELS, runtime->oss.channels, NULL);
++
++	err = choose_rate(substream, sparams, runtime->oss.rate);
++	if (err < 0)
++		goto failure;
++	err = snd_pcm_hw_param_near(substream, sparams,
++				    SNDRV_PCM_HW_PARAM_CHANNELS,
++				    runtime->oss.channels, NULL);
++	if (err < 0)
++		goto failure;
+ 
+ 	format = snd_pcm_oss_format_from(runtime->oss.format);
+ 
 -- 
 2.31.1
 
