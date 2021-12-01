@@ -4,81 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B206C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Dec 2021 18:02:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9CF07C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Dec 2021 18:05:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7B22D262E;
-	Wed,  1 Dec 2021 19:01:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B22D262E
+	by alsa0.perex.cz (Postfix) with ESMTPS id B8088261C;
+	Wed,  1 Dec 2021 19:04:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B8088261C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638381720;
-	bh=mskSgyAJDQ8WEoHrGfm+8+QCDWx1Yf7zW0xDLbn3D9Q=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=kjNjmb0wPEFHgOIr3FYh86aQJtIVDFV/YuwwJAEioDaDkotoLKVFs75s9IpRTVTFc
-	 RuPEEyLpYWgmFay00w3Ccg2Fiwq8Dxr0NFawMfAb6b0neRqmnYCuO5tXJvri6j5LDg
-	 slKvBTotlVJlehToAbf/cRRmDvLO1mm1+giI7LQY=
+	s=default; t=1638381907;
+	bh=jZP/uGFGeTWyFYwi736sffqI1AIeXYj12+7qaNWbYbU=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=HktAj/q9wxr4S4V3gRf3PZDVDvCkznVaHT2OgQcrMzM4dM1Zybv3fcZZJVvObnNja
+	 qEtsrMZ6UvcSfvcb34QibnWmYCQ8LCeicjCpaO25qC5rUnIraydXAMhQowEyHwSjht
+	 u2xq50psj64y3en+8BrIq5QrSWKuN8z64S8PEMVY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0E502F8025C;
-	Wed,  1 Dec 2021 19:00:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4DDC8F80240;
+	Wed,  1 Dec 2021 19:04:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DFD38F8028D; Wed,  1 Dec 2021 19:00:22 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id 73AE9F80246; Wed,  1 Dec 2021 19:04:14 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E8D4EF80240
- for <alsa-devel@alsa-project.org>; Wed,  1 Dec 2021 19:00:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8D4EF80240
+ by alsa1.perex.cz (Postfix) with ESMTPS id 45FCEF800EE
+ for <alsa-devel@alsa-project.org>; Wed,  1 Dec 2021 19:04:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45FCEF800EE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="Ejv2gTYd"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1B150FOq020440;
- Wed, 1 Dec 2021 12:00:08 -0600
+ header.b="RsFsRk0q"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1B19NQ9r027499;
+ Wed, 1 Dec 2021 12:04:03 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=zvuDB81jMVYurNmZDyITgoCw52lNavBJMeVaz+gA898=;
- b=Ejv2gTYdRmu5lhj5yJisIj2rkHWMpnFqoIdTE4lSQc6vwPALdJc0/6md1cqZifAIOQet
- c1q9bJz6k7jBnlUde/oHrgv3HpoiZ+AmtaX9byDO6JtlpA35kG1OTz0M+s2tZNkHhVlf
- l6GDXSIxZoTvo82HGHdctZWfBn6HzPI5RN+r3lVEk7v9jAVZRO/FM/FzlgTmxcTYFyjn
- upcVenYm/Sig69HqF/Q4Fr8XWT0rdQqYvMRXfFNjumnbTdwV77C/ks5J0b0uSC8/ZBof
- wLvTleyPm7cePy6/6BRPweMK68Te22sB3SuEfuD8npV5nbiRAlxv6S8C3ssGE6weRYS+ iw== 
+ h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=PODMain02222019;
+ bh=pyp1TAbxa7YUdNkiOpOcVtxFm2XnRURzLJBvohFGoxk=;
+ b=RsFsRk0qU/Tu5etsNutV5xMOylDY+gxDuywgfncsTdmNJXrHlU04WjenmDorQYqkthT/
+ xE7ba0/617qGDM9AR9j4UXK72ZzFcv2CYdn8x/aVC+YReTxfJK1PyirRVRD1BSaSG5Ef
+ q1+lALHX+m0Bw9fPfbbhorsjaQXrNHq9lwr86dbcosN/8K1d2Pjx7OfI5v1O0Qd1BRHI
+ wh2OPXqGniAYWMY/UcSrnAzDLQFfc53lS96rOUU+6mnneszn9WWm2c4gRCGuUwTbRtce
+ Pg/9bDsJA51uEFmeaY18dxIzutuMeZNTXH9GPXQOys7/meUCJlz4MhygXAxL16f12G34 2A== 
 Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3cp1x10txm-1
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3cp6c88m0b-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Wed, 01 Dec 2021 12:00:08 -0600
+ Wed, 01 Dec 2021 12:04:03 -0600
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Wed, 1 Dec
- 2021 18:00:06 +0000
+ 2021 18:04:01 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.17 via
- Frontend Transport; Wed, 1 Dec 2021 18:00:06 +0000
-Received: from aryzen.ad.cirrus.com (unknown [198.61.64.238])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2831A2A9;
- Wed,  1 Dec 2021 18:00:06 +0000 (UTC)
-From: Lucas Tanure <tanureal@opensource.cirrus.com>
-To: Len Brown <lenb@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood
- <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown
- <broonie@kernel.org>
-Subject: [PATCH v2 1/2] ASoC: amd: Fix dependency for SPI master
-Date: Wed, 1 Dec 2021 18:00:03 +0000
-Message-ID: <20211201180004.1402156-1-tanureal@opensource.cirrus.com>
-X-Mailer: git-send-email 2.34.1
+ Frontend Transport; Wed, 1 Dec 2021 18:04:01 +0000
+Received: from [10.0.2.15] (AUSNPC0LSNW1.ad.cirrus.com [198.61.65.14])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id C68222A9;
+ Wed,  1 Dec 2021 18:04:00 +0000 (UTC)
+Subject: Re: [PATCH] ASoC: cs42l42: Implement system suspend
+To: Mark Brown <broonie@kernel.org>
+References: <20211201153648.17259-1-rf@opensource.cirrus.com>
+ <YaejghraYE6lD7FD@sirena.org.uk>
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+Message-ID: <87930df9-6220-807e-a655-1c7d7ec020ab@opensource.cirrus.com>
+Date: Wed, 1 Dec 2021 18:04:00 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: OpJqvcrtiV-HFQpB1iRBmDess_psbXKa
-X-Proofpoint-ORIG-GUID: OpJqvcrtiV-HFQpB1iRBmDess_psbXKa
+In-Reply-To: <YaejghraYE6lD7FD@sirena.org.uk>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-ORIG-GUID: l6NUKJMfHVc9esOqDhTuWtwLtDP8WAL0
+X-Proofpoint-GUID: l6NUKJMfHVc9esOqDhTuWtwLtDP8WAL0
 X-Proofpoint-Spam-Reason: safe
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Lucas Tanure <tanureal@opensource.cirrus.com>,
- kernel test robot <lkp@intel.com>
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,31 +97,121 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Set SPI_MASTER as dependency as is using CS35L41 SPI driver
+On 01/12/2021 16:32, Mark Brown wrote:
+> On Wed, Dec 01, 2021 at 03:36:48PM +0000, Richard Fitzgerald wrote:
+>> Add system suspend functions to handle clean power-down on suspend and
+>> restoring state on resume.
+>>
+>> The jack state could change during suspend. Plug->unplug and unplug->plug
+>> are straightforward because this looks no different from any other plug
+>> state change. However, the jack could be unplugged and a different type
+> 
+> This fiddling about with the jack detect feels like it should be at
+> least one separate change, possibly multiple changes - the reporting of
+> button states feels like it should be a good cleanup/fix separately for
+> example.
 
-Fixes: 96792fdd77cd1 ("ASoC: amd: enable vangogh platform machine driver build")
+I'll split them out.
 
-Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
-Reported-by: kernel test robot <lkp@intel.com>
----
-v2 -> Fix patch description
+> 
+>> of jack plugged, and on resume the plug state would not have changed.
+>> Some code changes are needed to the jack handling so that on resume a
+>> plugged state will be re-evaluated instead of filtered out. In this case
+> 
+> It would be helpful to elaborate on what these code changes might be.
+> 
+>> +	/*
+>> +	 * PWR_CTL2 must be volatile so it can be used as a canary bit to
+>> +	 * detect a reset during system suspend.
+>> +	 */
+>> +	case CS42L42_PWR_CTL2:
+> 
+> This feels a bit hackish
 
- sound/soc/amd/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I can't think of a better way of detecting whether the chip reset. If
+we don't have control of the reset GPIO we can't force a reset. So it
+depends whether power turned off (also whether it dropped below the
+Vmin voltage at which a reset is triggered). The regulator framework
+can't tell us if it really turned off power and on ACPI systems the
+power is all controlled magically.
 
-diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
-index 092966ff5ea7..8961b8fd23eb 100644
---- a/sound/soc/amd/Kconfig
-+++ b/sound/soc/amd/Kconfig
-@@ -68,7 +68,7 @@ config SND_SOC_AMD_VANGOGH_MACH
- 	tristate "AMD Vangogh support for NAU8821 CS35L41"
- 	select SND_SOC_NAU8821
- 	select SND_SOC_CS35L41_SPI
--	depends on SND_SOC_AMD_ACP5x && I2C
-+	depends on SND_SOC_AMD_ACP5x && I2C && SPI_MASTER
- 	help
- 	  This option enables machine driver for Vangogh platform
- 	  using NAU8821 and CS35L41 codecs.
--- 
-2.34.1
+ >     - is the cost of doing the cache sync really so> expensive that 
+it's worth the effort of trying to skip it?
+> 
 
+It's not cost, it's about getting the correct values in the registers.
+If we call regcache_mark_dirty() it tells regmap that all the hardware
+registers have reset to default. Then regcache_sync() will skip writing
+cache values that are the register default value, assuming that the
+register already has this value. If the chip didn't reset, the registers
+could retain non-default values while the cache contains a dirty
+default value, in that case the register needs updating to match the
+cache.
+
+I tried to persuade myself that a cache value couldn't possibly change
+at any time from suspend() being called to resume disabling cache-only
+so I could safely accept default values being skipped. But that
+assumption made me very uncomfortable - I don't like leaving potential
+bugs in when its simple enough to prevent them.
+
+>> +	if (cs42l42->suspended) {
+>> +		mutex_unlock(&cs42l42->irq_lock);
+>> +		return IRQ_NONE;
+>> +	}
+> 
+> Given that you're using disable_irq() to force the interrupt off (which
+> is a bit rude but often the best one can do) how might we be getting an
+> interrupt while suspended?  This seems to indicate an error condition.
+> 
+
+I may have misunderstood here, but the documentation says that
+enables/disables are nested. The interrupt starts out enabled right
+after calling request_threaded_irq(), so I expected that all users of
+the shared interrupt would have to call disable_irq() for it to actually
+get disabled (I put the call in on that basis that it does no harm). If
+disable_irq() forces the irq off even if it's shared then I'll remove it
+because as you say that would be rude.
+
+>>   			case CS42L42_PLUG_OMTP:
+>>   				snd_soc_jack_report(cs42l42->jack, SND_JACK_HEADSET,
+>> -						    SND_JACK_HEADSET);
+>> +						    SND_JACK_HEADSET |
+>> +						    SND_JACK_BTN_0 | SND_JACK_BTN_1 |
+>> +						    SND_JACK_BTN_2 | SND_JACK_BTN_3);
+>>   				break;
+>>   			case CS42L42_PLUG_HEADPHONE:
+>>   				snd_soc_jack_report(cs42l42->jack, SND_JACK_HEADPHONE,
+>> -						    SND_JACK_HEADPHONE);
+>> +						    SND_JACK_HEADSET |
+>> +						    SND_JACK_BTN_0 | SND_JACK_BTN_1 |
+>> +						    SND_JACK_BTN_2 | SND_JACK_BTN_3);
+> 
+> This unconditionally clears the button status - will something notice if
+> the buttons are pressed?
+> 
+>> +	} else {
+>> +		/*
+>> +		 * Only call regcache_mark_dirty() if cs42l42 reset, so
+>> +		 * regcache_sync() writes all non-default cached values.
+>> +		 * If it didn't reset we don't want to filter out syncing
+>> +		 * dirty cache entries that have default value.
+>> +		 * DISCHARGE_FILT==1 after suspend. If the cs42l42 reset
+>> +		 * it will now be 0.
+>> +		 */
+> 
+> Something needs to tell regmap that the cache is dirty otherwise it
+
+Regmap knows if it has dirty values that it hasn't written out to the
+hardware.
+
+> won't sync anything, including the non-default register values?  There's
+
+That's fine. If the registers have not been reset they still have the
+value of every clean cache entry. Every dirty cache entry will be
+written out by regcache_sync().
+
+> currently an assumption coded in there that the cache is dirty because
+> the device was reset and everything has default values.
+> 
+
+Regmap only assumes that if regcache_mark_dirty() is called.
