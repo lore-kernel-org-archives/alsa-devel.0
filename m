@@ -4,84 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4EC1C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Dec 2021 16:28:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BEDFFC433FE
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Dec 2021 16:28:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DFE8C28AF;
-	Thu,  2 Dec 2021 17:27:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DFE8C28AF
+	by alsa0.perex.cz (Postfix) with ESMTPS id A516828C1;
+	Thu,  2 Dec 2021 17:27:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A516828C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638462481;
-	bh=+yFzHirHX3Xclw/SmIm5qWAgpVbPdV5afTLP2mMhsRk=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=cDd9oYC7LeJSEL5CHlvViK3ErpBuljShzQ2FmSUqBWJAm/sZeTWCWSQSJ8vWv04Uo
-	 6124l5fVJq7rcvtgTAAKSpwwtlRavU4In+A4J/EDbAj5ZqKAQ3WqbLeRDovBo4w+1J
-	 F6HWelUnPETAbPFtxIK0Jtu3GI3xcdS9T0H7qTh4=
+	s=default; t=1638462497;
+	bh=y8JQY0BlPCg3IIiDC8wKVOLgpr5ihlRYTddeGWClzOA=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=bGqYGZYu2NFYNDgAkE168/ZC70tBVD4erpA5JDvSRKjeUt4c8DBFl6+nmrvc9i+Yy
+	 PLztve8hsWC+u/LAgvhDJO3qIGDqURTE1gEytMRNdEkMcHu/TrZEnXKNe7EVytBMaz
+	 +ACY4Y5WORUIePsmO2NtK83xCzgF7BFlA5F5VhQI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C59D5F80507;
-	Thu,  2 Dec 2021 17:25:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5769EF80516;
+	Thu,  2 Dec 2021 17:25:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DB91BF804FE; Thu,  2 Dec 2021 17:25:32 +0100 (CET)
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com
- [IPv6:2a00:1450:4864:20::229])
+ id A2AA2F8050F; Thu,  2 Dec 2021 17:25:34 +0100 (CET)
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com
+ [IPv6:2a00:1450:4864:20::12f])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 532EBF802E0
- for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2021 17:25:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 532EBF802E0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4F0AAF800EE
+ for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2021 17:25:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F0AAF800EE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="BQwLoD5G"
-Received: by mail-lj1-x229.google.com with SMTP id k23so784300lje.1
- for <alsa-devel@alsa-project.org>; Thu, 02 Dec 2021 08:25:20 -0800 (PST)
+ header.b="CvoWguys"
+Received: by mail-lf1-x12f.google.com with SMTP id b1so72609831lfs.13
+ for <alsa-devel@alsa-project.org>; Thu, 02 Dec 2021 08:25:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=TqYniy4pFRsXD92ySrc+ZxB/2v4IriL3y3/YUqS2PUE=;
- b=BQwLoD5GsKuHwGcm9CCRNNoWfhuNnvmOM/2ZfVxwRSvlj+i9mrX6Mzj+ppnnqAI2rq
- E4tEwLGLm2ZnzLcmo7YCVVDjFY/vifIM4jmBBPiT9ZNPUUc6jzq+1MFNWnx+tx+iOPx1
- iCqsC/b3kAPfUNlk7ZZvnIGQb82xDqikIR2SFjicK1Bq8gRWRMpOORG1GxFsWkYuCL+4
- HshbFPgGDw1cizhpzuODlQc4P6wY2GQ3HLYY8tmbpgbAXrmgv4ynsB2RGnML4RhD0PEA
- hOOHxPmFfl9yyVqq1ELu6U0RJDWBjL6/FD8csHQz7n6CUkw0CaSpULEtIoeWnNSCiXy+
- A+Jg==
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=imLf4C09RyVy+Ea5NbMda4qEdBwYu+Q8gzSH5LvY08M=;
+ b=CvoWguysiszg7EIo/KVTylyyzVddJnXGME2sUkSxXPE9QI/M3G8WW2gcb4Ek7CLTkI
+ 3OJJMgnRPQJXKbujpC7ujQ9wYAxJoCVX65idvYa3GvigcBfm/gUYtCJJvZ2uP9UjMtPK
+ HRMs7PTCX+5RlqbV1bUccYeBpf7CUglk+Zkys9HnjNqGPGy7z6A8TixZaxXBfYQIt6DZ
+ zPCDUvOWZQ5RSqndRin4+7Mb8/+sii0fHswcT6k1I0e8l4ixYoJmlgslf65hRDKC/SUF
+ H8qushryTjmB197mMux8vD/lE1VXc04JApMYeZ3NaNY+32Snz0LSbaD6jb2QkYMFSwlz
+ WacQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=TqYniy4pFRsXD92ySrc+ZxB/2v4IriL3y3/YUqS2PUE=;
- b=5Q4DaBlI0KP3RWfrHv/VITdvRnYM/iLtdLNyFYjs1fliZJ9LgLYuCqgK/FXBYX+m1a
- hf/62N6njy02GoP1B7R418fNy6yn3jNFqnPaspiBA+4l4uob5J8shY1f8vIaVt23NciD
- xIMUlzEqZ0YwcF1K5CcBG5qHUI4sK9VawBM7Ihxpi9Z/fq3J67TR959Xfj8O6e4e7bya
- 9xH/k9cBkBfulQTRnYrrap9ZUS6Dtt8+sdKwxYJguXLKehRh+FMJEO9GxTeWtxJnD+X+
- xkIlfrrqe/6GgLRwEzloXftnBtBTgNTvcPTRX0kynGlgrxe7jo02TDcHFWViJwmu1cHJ
- 8jYQ==
-X-Gm-Message-State: AOAM530J1Xx+42Jgq48ALUmxDNpsUbPLInOfzRD5XeUezhRyDfYlAPAS
- i0Z5QPbg1GXS25ijSPshOrY=
-X-Google-Smtp-Source: ABdhPJySugSp1rA4YrKTD7/t4BqlpGfdBZL4TlGHm+Feas4m0Bqsz3MGvtiX9EqaRmuZilIyrhztTA==
-X-Received: by 2002:a2e:948:: with SMTP id 69mr12422486ljj.82.1638462318795;
- Thu, 02 Dec 2021 08:25:18 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=imLf4C09RyVy+Ea5NbMda4qEdBwYu+Q8gzSH5LvY08M=;
+ b=RQWwRzrzC8+t32C8ZzSjpy1VL3PtzpoICPRCDFbT6J/d/oKhwjHXGRwJcACHDN/SXn
+ 83N6zxLaTnBlN2PsuMO62eIq//KWbDfcQX3PZKKT/F98j2POkBhtnJeN3LtqvtKKetni
+ dPx3AQCMbYWc92YBZFEW0W5fhwb30LLaU8o/16UCmNTwlVaTFzp1ZZP5bTaRfBYrnnJ6
+ L+rOVQSafCI01tCEe1TYTozbybLwiYw2Lvmmb4+t6cWjqTk1j8AK8p1k0dS6iySv6Vyk
+ Ea9LNPMGmHy+AlnG+tCD6fC7td0btJGmUVOIXe+g/AOHsPYEUXKraFJAZwKL3YdH2xEX
+ ZIKw==
+X-Gm-Message-State: AOAM532oTr8upefb0fs/delP9wi/cF4kxZGDtAlF35+TPitDAdTNjOel
+ vy/bYNoTU3ADI4R3BLzldFw=
+X-Google-Smtp-Source: ABdhPJxBOZ/Rf8efL1/chi4Rtn8qA9mSShnKA0016dzHrdbF1opdrOowLz1/fQq8mfpdVWPuKJuYOg==
+X-Received: by 2002:ac2:454b:: with SMTP id j11mr12665406lfm.41.1638462316009; 
+ Thu, 02 Dec 2021 08:25:16 -0800 (PST)
 Received: from localhost.localdomain (94-29-46-111.dynamic.spd-mgts.ru.
  [94.29.46.111])
- by smtp.gmail.com with ESMTPSA id d18sm36806lfl.30.2021.12.02.08.25.17
+ by smtp.gmail.com with ESMTPSA id d18sm36806lfl.30.2021.12.02.08.25.14
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 02 Dec 2021 08:25:18 -0800 (PST)
+ Thu, 02 Dec 2021 08:25:15 -0800 (PST)
 From: Dmitry Osipenko <digetx@gmail.com>
 To: Thierry Reding <thierry.reding@gmail.com>,
  Jonathan Hunter <jonathanh@nvidia.com>, Mark Brown <broonie@kernel.org>,
  Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
  Liam Girdwood <lgirdwood@gmail.com>, Agneli <poczt@protonmail.ch>,
  Rob Herring <robh+dt@kernel.org>
-Subject: [PATCH v3 03/20] ASoC: dt-bindings: tegra20-i2s: Document new nvidia,
- fixed-parent-rate property
-Date: Thu,  2 Dec 2021 19:23:24 +0300
-Message-Id: <20211202162341.1791-4-digetx@gmail.com>
+Subject: [PATCH v3 00/20] Support HDMI audio on NVIDIA Tegra20
+Date: Thu,  2 Dec 2021 19:23:21 +0300
+Message-Id: <20211202162341.1791-1-digetx@gmail.com>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211202162341.1791-1-digetx@gmail.com>
-References: <20211202162341.1791-1-digetx@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
@@ -102,37 +98,87 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Document new nvidia,fixed-parent-rate property which instructs that this
-board wants parent clock to stay at a fixed rate. It allows to prevent
-conflicts between audio components that share same parent PLL. For
-instance, this property allows to have HDMI audio, speaker and headphones
-in the system playing audio simultaneously, which is a common pattern for
-consumer devices.
+This series revives Tegra20 S/PDIF driver which was upstreamed long time
+ago, but never was used. It also turns Tegra DRM HDMI driver into HDMI
+audio CODEC provider. Finally, HDMI audio is enabled in device-trees.
+For now the audio is enable only for Acer A500 tablet and Toshiba AC100
+netbook because they're already supported by upstream, later on ASUS TF101
+tablet will join them.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- .../devicetree/bindings/sound/nvidia,tegra20-i2s.yaml      | 7 +++++++
- 1 file changed, 7 insertions(+)
+I based S/PDIF patches on Arnd's Bergmann patch from a separate series [1]
+that removes obsolete slave_id. This eases merging of the patches by
+removing the merge conflict. This is a note for Mark Brown.
 
-diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.yaml
-index ad43b237d9af..68ae124eaf80 100644
---- a/Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.yaml
-+++ b/Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.yaml
-@@ -42,6 +42,13 @@ properties:
-       - const: rx
-       - const: tx
- 
-+  nvidia,fixed-parent-rate:
-+    description: |
-+      Specifies whether board prefers parent clock to stay at a fixed rate.
-+      This allows multiple Tegra20 audio components work simultaneously by
-+      limiting number of supportable audio rates.
-+    type: boolean
-+
- required:
-   - compatible
-   - reg
+I also based this series on top of power management series [2]. I.e. [2]
+should be applied first, otherwise "Add S/PDIF node to Tegra20 device-tree"
+patch should have merge conflict. This is a note for Thierry.
+
+[1] https://patchwork.ozlabs.org/project/linux-tegra/list/?series=273312
+[2] https://patchwork.ozlabs.org/project/linux-tegra/list/?series=274534
+
+Changelog:
+
+v3: - Renamed S/PDIF device-tree clocks as was suggested by Rob Herring.
+
+    - Added r-bs and acks that were given by Rob Herring to v2.
+
+v2: - Corrected I2S yaml problem that was reported by the DT bot for v1
+      by removing the non-existent required clock-names property.
+
+    - Removed assigned-clocks property from S/PDIF yaml since this property
+      is now inherited from the clocks property.
+
+    - Reordered the "tegra20: spdif: Set FIFO trigger level" patch, making
+      it the first sound/soc patch in the series, like it was suggested by
+      Mark Brown in the comment to v1. Also reworded commit message of this
+      patch to *not* make it looks like it should be backported to stable
+      kernels.
+
+Arnd Bergmann (1):
+  ASoC: tegra20-spdif: stop setting slave_id
+
+Dmitry Osipenko (19):
+  ASoC: dt-bindings: Add binding for Tegra20 S/PDIF
+  ASoC: dt-bindings: tegra20-i2s: Convert to schema
+  ASoC: dt-bindings: tegra20-i2s: Document new nvidia,fixed-parent-rate
+    property
+  dt-bindings: host1x: Document optional HDMI sound-dai-cells
+  ASoC: tegra20: spdif: Set FIFO trigger level
+  ASoC: tegra20: spdif: Support device-tree
+  ASoC: tegra20: spdif: Improve driver's code
+  ASoC: tegra20: spdif: Use more resource-managed helpers
+  ASoC: tegra20: spdif: Reset hardware
+  ASoC: tegra20: spdif: Support system suspend
+  ASoC: tegra20: spdif: Filter out unsupported rates
+  ASoC: tegra20: i2s: Filter out unsupported rates
+  drm/tegra: hdmi: Unwind tegra_hdmi_init() errors
+  drm/tegra: hdmi: Register audio CODEC on Tegra20
+  ARM: tegra_defconfig: Enable S/PDIF driver
+  ARM: tegra: Add S/PDIF node to Tegra20 device-tree
+  ARM: tegra: Add HDMI audio graph to Tegra20 device-tree
+  ARM: tegra: acer-a500: Enable S/PDIF and HDMI audio
+  ARM: tegra: paz00: Enable S/PDIF and HDMI audio
+
+ .../display/tegra/nvidia,tegra20-host1x.txt   |   1 +
+ .../bindings/sound/nvidia,tegra20-i2s.txt     |  30 ---
+ .../bindings/sound/nvidia,tegra20-i2s.yaml    |  77 +++++++
+ .../bindings/sound/nvidia,tegra20-spdif.yaml  |  85 ++++++++
+ .../boot/dts/tegra20-acer-a500-picasso.dts    |   8 +
+ arch/arm/boot/dts/tegra20-paz00.dts           |   8 +
+ arch/arm/boot/dts/tegra20.dtsi                |  40 +++-
+ arch/arm/configs/tegra_defconfig              |   1 +
+ drivers/gpu/drm/tegra/Kconfig                 |   3 +
+ drivers/gpu/drm/tegra/hdmi.c                  | 168 +++++++++++++--
+ sound/soc/tegra/tegra20_i2s.c                 |  49 +++++
+ sound/soc/tegra/tegra20_spdif.c               | 197 ++++++++++++------
+ sound/soc/tegra/tegra20_spdif.h               |   1 +
+ sound/soc/tegra/tegra_pcm.c                   |   6 +
+ sound/soc/tegra/tegra_pcm.h                   |   1 +
+ 15 files changed, 572 insertions(+), 103 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra20-spdif.yaml
+
 -- 
 2.33.1
 
