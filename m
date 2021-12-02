@@ -4,73 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB022C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Dec 2021 12:50:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF1AEC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Dec 2021 13:41:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 306C223B6;
-	Thu,  2 Dec 2021 13:49:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 306C223B6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 114602642;
+	Thu,  2 Dec 2021 14:40:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 114602642
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638449411;
-	bh=OYZ5slALRb6YEEz0iSMCUsRQKUEEfwmgzxSeCbV3Ly0=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1638452502;
+	bh=vx6hdCe/4wgrzwpQ2Hj0Hewq51BjCl83piJc+BwakoQ=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FRQnFhmdXpBQZG106wgckoUfreARIepptapZAHFc0Lld7evJRJfP0SW7fuYoM6+cx
-	 Z1IZXfnhUEG9F9QwdoLmocRsFdF16q9r/woaYkb1huudNi4w8ynlAkcgMMlFNiKiMW
-	 ruglrli+hcSy3axwkvqVDAQ2LxdWp1RJ9UloXy/c=
+	b=R1ukWOvgLv6rVK704/UtBvmRj1oD0//jf9bsOEGnXFmWtNo9uIkNvEq8hbwaYOqYH
+	 jJKfFqkubCYzGw69K8RaKsO7kzbP3DR/hMhRylQlMuI+zNle9Xl0M06Xej5//BGPRA
+	 1Rxalj8+hOvMyoPuzoZDYQfTyIFIVFXtBNWtnHc0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A866AF80290;
-	Thu,  2 Dec 2021 13:49:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 92802F802A0;
+	Thu,  2 Dec 2021 14:40:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 98406F802A0; Thu,  2 Dec 2021 13:49:17 +0100 (CET)
+ id 7B0F5F802E0; Thu,  2 Dec 2021 14:40:46 +0100 (CET)
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6166EF800BE
- for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2021 13:49:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6166EF800BE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 06F26F800EE
+ for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2021 14:40:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06F26F800EE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="OgwbO/pK"
+ header.b="b5+cz057"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id DBAB0B82341;
- Thu,  2 Dec 2021 12:49:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63F72C00446;
- Thu,  2 Dec 2021 12:49:09 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 65F7DB823A7;
+ Thu,  2 Dec 2021 13:40:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CE84C53FCC;
+ Thu,  2 Dec 2021 13:40:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1638449350;
- bh=OYZ5slALRb6YEEz0iSMCUsRQKUEEfwmgzxSeCbV3Ly0=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=OgwbO/pKpgHLYNo6JCXBabVCaL8HmrhG88Ot8MQyNV8YzXpPJOo1tImriUg7mTDvi
- zlFGrCcr+7NAE5MLXYYjBRCnly3hujJUDaF1GSH/uAy7D1mGal2GaB33D62hQ72a67
- XMrH4DrmhyA0CZolOBI8pvCMEr3Fi25NLupT4qk61E+nizj0Yrg6Q3Eelu70tKXwy+
- VVe4MoxPIsBo3D2pHKcDdGKpOk3RnmNQtWHfORvBrm3aXByUgQcqUGCERi1x4V6hRx
- 7bbI6U9N0V+VkxsTDlzVV4mHyPIosds2XGABPs3FpgCj7DQqJAc9XOZVq3IgZyRQWX
- kyQp2w7iKDdww==
-Date: Thu, 2 Dec 2021 12:49:06 +0000
+ s=k20201202; t=1638452441;
+ bh=vx6hdCe/4wgrzwpQ2Hj0Hewq51BjCl83piJc+BwakoQ=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=b5+cz0573r0c4WYX1NbIPuE1ylkNQjKQ/EktPk6gNaTKhD2EWhmmgukeLOGcnLZ4J
+ U7GLekVVQokWU+uHNd+9PgnMHcZDuWk/2XDdNr44RxuZuizNaJkkWFaJTNid57OIro
+ g7o75m4gUMyMcEqhOU6QMwKh3uHZ8RxvcJtLbf6JTxvrwQz8wYLON8lxK0QEs75nSz
+ lBM5eOKMVyWbpW2cZdSO2hkZ5gzKf5dxo1bZR+ixOvIXlrQQbjC3ckyG8BLvDs/Q0L
+ fszl/guAvzVzu4p2XSASfl0JpmMk/L5NfDpimFnmHCAf7PS+4FnaGm4Zbw1PdsBOZv
+ 1F+05/LryH7mQ==
 From: Mark Brown <broonie@kernel.org>
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH] ASoC: cs42l42: Implement system suspend
-Message-ID: <YajAwvruDCzaR5wS@sirena.org.uk>
-References: <20211201153648.17259-1-rf@opensource.cirrus.com>
- <YaejghraYE6lD7FD@sirena.org.uk>
- <87930df9-6220-807e-a655-1c7d7ec020ab@opensource.cirrus.com>
- <YafyWnVA1J1rgCf1@sirena.org.uk>
- <20211202095333.GK18506@ediswmail.ad.cirrus.com>
+To: Lucas Tanure <tanureal@opensource.cirrus.com>,
+ Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
+ Len Brown <lenb@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+In-Reply-To: <20211201180004.1402156-1-tanureal@opensource.cirrus.com>
+References: <20211201180004.1402156-1-tanureal@opensource.cirrus.com>
+Subject: Re: [PATCH v2 1/2] ASoC: amd: Fix dependency for SPI master
+Message-Id: <163845243916.1057742.7617064791622054401.b4-ty@kernel.org>
+Date: Thu, 02 Dec 2021 13:40:39 +0000
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="nCM9gNUjdUpogTrV"
-Content-Disposition: inline
-In-Reply-To: <20211202095333.GK18506@ediswmail.ad.cirrus.com>
-X-Cookie: Put no trust in cryptic comments.
-Cc: patches@opensource.cirrus.com,
- Richard Fitzgerald <rf@opensource.cirrus.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ kernel test robot <lkp@intel.com>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,66 +81,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Wed, 1 Dec 2021 18:00:03 +0000, Lucas Tanure wrote:
+> Set SPI_MASTER as dependency as is using CS35L41 SPI driver
+> 
+> Fixes: 96792fdd77cd1 ("ASoC: amd: enable vangogh platform machine driver build")
+> 
+> 
 
---nCM9gNUjdUpogTrV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Applied to
 
-On Thu, Dec 02, 2021 at 09:53:33AM +0000, Charles Keepax wrote:
-> On Wed, Dec 01, 2021 at 10:08:26PM +0000, Mark Brown wrote:
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-> > ...that's based on the assumption that this is all about the magic write
-> > sequences you're using for shutdown potentially conflicting with default
-> > values you've got in the cache?  If it's not those then the assumption
-> > is that either the device was reset in which case it has reset values or
-> > the device was not reset and held it's previous value, in which case the
-> > cache sync is redundant.
+Thanks!
 
-> This isn't quite accurate though, as whilst the device was
-> suspended the user may have touched ALSA controls which will have
+[1/2] ASoC: amd: Fix dependency for SPI master
+      commit: 19a628d8f1a6c16263d8037a918427207c8a95a0
+[2/2] ASoC: cs35l41: Fix undefined reference to core functions
+      commit: 0695ad92fe1a0bb7697eb92c6a145a73c5ab0e24
 
-> updated the state of the cache. Thus the cache requires a sync
-> regardless of if the hardware turned off.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-Right, an actual description of an actual issue.  Though how would they
-have touched the ALSA controls during system suspend?  Userspace should
-halted before we start suspending devices so there shouldn't be anything
-new coming in from the application layer while the device is in cache
-only mode.  The sound card as a whole should've been suspended first so
-nothing should be coming in from there either.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> I suspect we do need to have a think about the write sequences,
-> but there is also a more general issue here. The sequence looks
-> like this:
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> 1) Device enters cache only mode.
-> 2) User writes an ALSA control causing a register to return to
-> its default value.
-> 3) Device exits cache only and does a cache sync.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-This is a thing that happens for runtime suspend but for runtime suspend
-we have good tracking of if the device lost power so we shouldn't just
-be marking the cache as dirty unconditionally.  For system suspend there
-shouldn't be a need to worry about userspace changing anything, and
-anything coming in from the rest of the kernel should be very limited.
-
-In any case this isn't something that should be hacked around in an
-individual driver, like I say whatever the driver is trying to do needs
-to be written in a clear and obvious fashion.
-
---nCM9gNUjdUpogTrV
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGowMEACgkQJNaLcl1U
-h9DBhQf/TTyORcnTZkHZB+p/0txthGanm/yQPncXofYRB8q3HBkAVmWZIrmPk7Wf
-836TS2fc6cXWOdXCOg91On1weoFiimW3Tf+mr4uac6H3PT3seXnv/7T69kpYN735
-EIVcqQdJDRrKFHw9wWUDIzq5i2Si31QiUNuud+L7HizkMsbUlZrjoeP9bREuJaYu
-FgDOn2mddi4TE+Qib//o9cFik48P0vFZ7STVNoRad1PDsbnIJUhp0m7aNA3nUSNf
-cVphB6f6cWKxhh6CS8TK/faraauQ69jv/yo00BWqmVxnJF/jU2D7o4fj5HqgGETS
-aQzn3pUOWBxtCdzpd/7f0wd7fOXmFQ==
-=Y5jC
------END PGP SIGNATURE-----
-
---nCM9gNUjdUpogTrV--
+Thanks,
+Mark
