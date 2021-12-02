@@ -4,63 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF181C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Dec 2021 14:59:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6323FC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Dec 2021 15:00:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0613F2740;
-	Thu,  2 Dec 2021 15:58:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0613F2740
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7CA5A275C;
+	Thu,  2 Dec 2021 15:59:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CA5A275C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638457185;
-	bh=H9XlzF1IJnqkUMJLExyxPQ1YqMhff1fm3Q3AOSTQuJc=;
+	s=default; t=1638457211;
+	bh=Lid5Zr2Af92Z99XtwJpV1ecxQ+I+6PSg+oS8hwAVMcU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eE5p9HsG+UNpOII4vjv4HnxwUuG+iDzG45ipS3lNdjunx1kAqapMKNol0GyNzJF+K
-	 /Po8Y/Bc64+PXCYxwav0dCN+h5vK44hRN5UJ+P0U8IwxevXhPInmbhFTfT0E1NMh/E
-	 e02rHIgtFNy4u6YShuu8zJNTZzSsoGVttD7HvgyA=
+	b=lqSl6HDkRCDsRm3SmG9PuEPmTp58N0zJc+owUl2vPzrSJz2KoWSLeqEXfAy+/qLUT
+	 Uy/PKYkz/r+cqMAbSUFxaHn3/4RH3WYdJMbJqd6jSzpD7PBw9zS6CtxHasO5T14e/s
+	 JL8qbHmDJB63DusGDhSWapoQnWc1Qoxva4rDgyCs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EC3A9F804FD;
-	Thu,  2 Dec 2021 15:57:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 17FD0F8050F;
+	Thu,  2 Dec 2021 15:57:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 05AC7F804ED; Thu,  2 Dec 2021 15:57:18 +0100 (CET)
+ id D6DE5F80510; Thu,  2 Dec 2021 15:57:20 +0100 (CET)
 Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de
- [85.215.255.82])
+ [81.169.146.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5558BF800CE
- for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2021 15:57:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5558BF800CE
+ by alsa1.perex.cz (Postfix) with ESMTPS id D292EF802E0
+ for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2021 15:57:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D292EF802E0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net
- header.b="XEuEI+T7"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1638457028;
+ header.b="EaAZlmJP"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1638457027;
  s=strato-dkim-0002; d=gerhold.net;
  h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
  From:Subject:Sender;
- bh=ISZlpR6q5TTOU01pzGOmn4MD3nIWfwVyycowlhQUl7s=;
- b=XEuEI+T7A7+0dbRXcG7rSBPaP/7UsnZVmazgO2Do8eMu1d2aNoydi5SZZDMKHk+0Ui
- ufypw2b/ooYUeP3zBZYhbvIpus+jlnLtXZLWs5E/eC0EMEPfeObjTwTaQkmswL26fKZp
- V+/uVIp2eeIxIijn5OGGaeBcmI8CKK8+tmOTJ6vl5Hfb+QT2Xiw9zKasLL0iOiQzEZT3
- /TxVYFpy1xC79JkYbzxCB5nU7e8hB1enq53OaN9QaB7JuZ8i1vhRQD/9YIycQNSB+vSX
- fTPm1IiBNypYZpGdESx//2JqLfrclL78VN7wJMUv7zoI7KR6S5OwXfASWvW6mkSrIXQ7
- QLXA==
+ bh=69VoTyRpLpO98sh4C/ClvwoFOzZ+d0nmfaiGQQ9Sibo=;
+ b=EaAZlmJPYhudVE2y+Py5PqORCJot2A2dYFSqIx0xSOPDwntGG7owYNNGVZL/249u8t
+ zFwBQn3uH7phEnWIvbmT5ZP/MT2d+nEVaU1AGMzewqLmKKl6NjiZV0sSJC54siaukhQk
+ k+1RFLkLxQ7FCm7tTSVV9/Bs3ALH/hVX1vjZNG4lv3D3WhwGHi0X6Z/LtxlPHuddFUjl
+ LJGjya29oxL8IuhxN6ZQveFw1fpaZzFu5vDViNcqHO7J/HiLc3EaPNspRmCf7/WHYbqy
+ WrWa2EYV1Dyv+446EBPT+DsysTYh4UnltU7wRopqlqh++ID1HckBG7woa1rvbY1Ri8Da
+ ZHHw==
 Authentication-Results: strato.com;
     dkim=none
 X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVORvLd4SsytBXQ7UOGqRde+a0fyLyu9s="
 X-RZG-CLASS-ID: mo00
 Received: from droid.. by smtp.strato.de (RZmta 47.34.10 AUTH)
- with ESMTPSA id j03bcbxB2Ev8py0
+ with ESMTPSA id j03bcbxB2Ev6pxy
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
  (Client did not present a certificate);
- Thu, 2 Dec 2021 15:57:08 +0100 (CET)
+ Thu, 2 Dec 2021 15:57:06 +0100 (CET)
 From: Stephan Gerhold <stephan@gerhold.net>
 To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5/5] ASoC: qcom: apq8016_sbc: Allow routing audio through QDSP6
-Date: Thu,  2 Dec 2021 15:55:05 +0100
-Message-Id: <20211202145505.58852-6-stephan@gerhold.net>
+Subject: [PATCH 3/5] ASoC: dt-bindings: qcom: apq8016-sbc: Move to qcom,
+ sm8250 DT schema
+Date: Thu,  2 Dec 2021 15:55:03 +0100
+Message-Id: <20211202145505.58852-4-stephan@gerhold.net>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20211202145505.58852-1-stephan@gerhold.net>
 References: <20211202145505.58852-1-stephan@gerhold.net>
@@ -87,229 +88,254 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The apq8016-sbc-sndcard is designed to be used with the LPASS drivers
-(bypassing the combined audio/modem DSP in MSM8916/APQ8016).
-Make it possible to use QDSP6 audio instead for the msm8916-qdsp6-sndcard.
+All the Qualcomm sound card drivers use the same common device tree
+parsing code, so the allowed device tree nodes are almost the same
+for all of them. Convert the qcom,apq8016-sbc-sndcard documentation
+to a DT schema by adding it to the existing qcom,sm8250 schema.
 
-This only requires adding some additional hooks that set up the DPCM
-backends correctly. Similar code is already used in drivers for newer
-SoCs such as apq8096.c, sdm845.c and sm8250.c.
-
-A slightly different initialization sequence is used for the apq8016-sbc
-and msm8916-qdsp6 sound card by defining the apq8016_sbc_add_ops()
-function as device match data.
+The only speciality of qcom,apq8016-sbc-sndcard is that it has memory
+resources for setting up an I/O mux. This can be handled using
+a conditional if statement that only requires it for the apq8016-sbc
+compatible.
 
 Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
 ---
- sound/soc/qcom/apq8016_sbc.c | 134 +++++++++++++++++++++++++++++++++--
- 1 file changed, 129 insertions(+), 5 deletions(-)
+Note: There will be a dtbs_check warning caused by this, because the
+recommended naming for nodes is different in this DT schema (-dai-link
+suffix). I will address this in a separate patch if this series is
+accepted, simply by changing apq8016-sbc.dts to the example added
+in this patch. The driver itself accepts any naming for those nodes.
+---
+ .../bindings/sound/qcom,apq8016-sbc.txt       | 96 -------------------
+ .../bindings/sound/qcom,sm8250.yaml           | 83 +++++++++++++++-
+ 2 files changed, 81 insertions(+), 98 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt
 
-diff --git a/sound/soc/qcom/apq8016_sbc.c b/sound/soc/qcom/apq8016_sbc.c
-index ba2a98268ee4..f9d69375320e 100644
---- a/sound/soc/qcom/apq8016_sbc.c
-+++ b/sound/soc/qcom/apq8016_sbc.c
-@@ -17,6 +17,9 @@
- #include <uapi/linux/input-event-codes.h>
- #include <dt-bindings/sound/apq8016-lpass.h>
- #include "common.h"
-+#include "qdsp6/q6afe.h"
-+
-+#define MI2S_COUNT  (MI2S_QUATERNARY + 1)
+diff --git a/Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt b/Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt
+deleted file mode 100644
+index 23998262a0a7..000000000000
+--- a/Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt
++++ /dev/null
+@@ -1,96 +0,0 @@
+-* Qualcomm Technologies APQ8016 SBC ASoC machine driver
+-
+-This node models the Qualcomm Technologies APQ8016 SBC ASoC machine driver
+-
+-Required properties:
+-
+-- compatible		: "qcom,apq8016-sbc-sndcard"
+-
+-- pinctrl-N		: One property must exist for each entry in
+-			  pinctrl-names.  See ../pinctrl/pinctrl-bindings.txt
+-			  for details of the property values.
+-- pinctrl-names		: Must contain a "default" entry.
+-- reg			: Must contain an address for each entry in reg-names.
+-- reg-names		: A list which must include the following entries:
+-				* "mic-iomux"
+-				* "spkr-iomux"
+-- qcom,model		: Name of the sound card.
+-
+-- qcom,audio-routing	: A list of the connections between audio components.
+-			  Each entry is a pair of strings, the first being the
+-			  connection's sink, the second being the connection's
+-			  source. Valid names could be power supplies, MicBias
+-			  of msm8x16_wcd codec and the jacks on the board:
+-
+-			  Power supplies:
+-			  * MIC BIAS External1
+-			  * MIC BIAS External2
+-			  * MIC BIAS Internal1
+-			  * MIC BIAS Internal2
+-
+-			  Board connectors:
+-			  * Headset Mic
+-			  * Secondary Mic
+-			  * DMIC
+-			  * Ext Spk
+-
+-Optional properties:
+-
+-- aux-devs		: A list of phandles for auxiliary devices (e.g. analog
+-			  amplifiers) that do not appear directly within the DAI
+-			  links. Should be connected to another audio component
+-			  using "qcom,audio-routing".
+-
+-Dai-link subnode properties and subnodes:
+-
+-Required dai-link subnodes:
+-
+-- cpu					: CPU   sub-node
+-- codec					: CODEC sub-node
+-
+-Required CPU/CODEC subnodes properties:
+-
+--link-name		: Name of the dai link.
+--sound-dai		: phandle/s and port of CPU/CODEC
+-
+-Example:
+-
+-sound: sound {
+-	compatible = "qcom,apq8016-sbc-sndcard";
+-	reg = <0x07702000 0x4>, <0x07702004 0x4>;
+-	reg-names = "mic-iomux", "spkr-iomux";
+-	qcom,model = "DB410c";
+-
+-	qcom,audio-routing =
+-		"MIC BIAS External1", "Handset Mic",
+-		"MIC BIAS Internal2", "Headset Mic",
+-		"MIC BIAS External1", "Secondary Mic",
+-		"AMIC1", "MIC BIAS External1",
+-		"AMIC2", "MIC BIAS Internal2",
+-		"AMIC3", "MIC BIAS External1",
+-		"DMIC1", "MIC BIAS Internal1",
+-		"MIC BIAS Internal1", "Digital Mic1",
+-		"DMIC2", "MIC BIAS Internal1",
+-		"MIC BIAS Internal1", "Digital Mic2";
+-
+-	/* I2S - Internal codec */
+-	internal-dai-link@0 {
+-		cpu { /* PRIMARY */
+-			sound-dai = <&lpass MI2S_PRIMARY>;
+-		};
+-		codec {
+-			sound-dai = <&lpass_codec 0>, <&wcd_codec 0>;
+-		};
+-	};
+-
+-	/* External Primary or External Secondary -ADV7533 HDMI */
+-	external-dai-link@0 {
+-		link-name = "ADV7533";
+-		cpu { /* QUAT */
+-			sound-dai = <&lpass MI2S_QUATERNARY>;
+-		};
+-		codec {
+-			sound-dai = <&adv_bridge 0>;
+-		};
+-	};
+-};
+diff --git a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
+index 3123382297b8..97f13a0a71a9 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
++++ b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
+@@ -4,18 +4,19 @@
+ $id: http://devicetree.org/schemas/sound/qcom,sm8250.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
  
- struct apq8016_sbc_data {
- 	struct snd_soc_card card;
-@@ -24,6 +27,7 @@ struct apq8016_sbc_data {
- 	void __iomem *spkr_iomux;
- 	struct snd_soc_jack jack;
- 	bool jack_setup;
-+	int mi2s_clk_count[MI2S_COUNT];
- };
+-title: Qualcomm Technologies Inc. SM8250 ASoC sound card driver
++title: Qualcomm Technologies Inc. ASoC sound card drivers
  
- #define MIC_CTRL_TER_WS_SLAVE_SEL	BIT(21)
-@@ -38,10 +42,10 @@ struct apq8016_sbc_data {
- #define SPKR_CTL_TLMM_WS_EN_SEL_MASK	GENMASK(19, 18)
- #define SPKR_CTL_TLMM_WS_EN_SEL_SEC	BIT(18)
- #define DEFAULT_MCLK_RATE		9600000
-+#define MI2S_BCLK_RATE			1536000
+ maintainers:
+   - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
  
--static int apq8016_sbc_dai_init(struct snd_soc_pcm_runtime *rtd)
-+static int apq8016_dai_init(struct snd_soc_pcm_runtime *rtd, int mi2s)
- {
--	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
- 	struct snd_soc_dai *codec_dai;
- 	struct snd_soc_component *component;
- 	struct snd_soc_card *card = rtd->card;
-@@ -49,7 +53,7 @@ static int apq8016_sbc_dai_init(struct snd_soc_pcm_runtime *rtd)
- 	int i, rval;
- 	u32 value;
+ description:
+-  This bindings describes SC8250 SoC based sound cards
++  This bindings describes Qualcomm SoC based sound cards
+   which uses LPASS internal codec for audio.
  
--	switch (cpu_dai->id) {
-+	switch (mi2s) {
- 	case MI2S_PRIMARY:
- 		writel(readl(pdata->spkr_iomux) | SPKR_CTL_PRI_WS_SLAVE_SEL_11,
- 			pdata->spkr_iomux);
-@@ -128,6 +132,13 @@ static int apq8016_sbc_dai_init(struct snd_soc_pcm_runtime *rtd)
- 	return 0;
- }
+ properties:
+   compatible:
+     enum:
++      - qcom,apq8016-sbc-sndcard
+       - qcom,sm8250-sndcard
+       - qcom,qrb5165-rb5-sndcard
  
-+static int apq8016_sbc_dai_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-+
-+	return apq8016_dai_init(rtd, cpu_dai->id);
-+}
-+
- static void apq8016_sbc_add_ops(struct snd_soc_card *card)
- {
- 	struct snd_soc_dai_link *link;
-@@ -137,6 +148,113 @@ static void apq8016_sbc_add_ops(struct snd_soc_card *card)
- 		link->init = apq8016_sbc_dai_init;
- }
+@@ -37,6 +38,10 @@ properties:
+     $ref: /schemas/types.yaml#/definitions/string
+     description: User visible long sound card name
  
-+static int qdsp6_dai_get_lpass_id(struct snd_soc_dai *cpu_dai)
-+{
-+	switch (cpu_dai->id) {
-+	case PRIMARY_MI2S_RX:
-+	case PRIMARY_MI2S_TX:
-+		return MI2S_PRIMARY;
-+	case SECONDARY_MI2S_RX:
-+	case SECONDARY_MI2S_TX:
-+		return MI2S_SECONDARY;
-+	case TERTIARY_MI2S_RX:
-+	case TERTIARY_MI2S_TX:
-+		return MI2S_TERTIARY;
-+	case QUATERNARY_MI2S_RX:
-+	case QUATERNARY_MI2S_TX:
-+		return MI2S_QUATERNARY;
-+	default:
-+		return -EINVAL;
-+	}
-+}
++  # Only valid for some compatibles (see allOf if below)
++  reg: true
++  reg-names: true
 +
-+static int msm8916_qdsp6_dai_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-+
-+	snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_CBS_CFS);
-+	return apq8016_dai_init(rtd, qdsp6_dai_get_lpass_id(cpu_dai));
-+}
-+
-+static int msm8916_qdsp6_startup(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_card *card = rtd->card;
-+	struct apq8016_sbc_data *data = snd_soc_card_get_drvdata(card);
-+	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-+	int mi2s, ret;
-+
-+	mi2s = qdsp6_dai_get_lpass_id(cpu_dai);
-+	if (mi2s < 0)
-+		return mi2s;
-+
-+	if (++data->mi2s_clk_count[mi2s] > 1)
-+		return 0;
-+
-+	ret = snd_soc_dai_set_sysclk(cpu_dai, LPAIF_BIT_CLK, MI2S_BCLK_RATE, 0);
-+	if (ret)
-+		dev_err(card->dev, "Failed to enable LPAIF bit clk: %d\n", ret);
-+	return ret;
-+}
-+
-+static void msm8916_qdsp6_shutdown(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_card *card = rtd->card;
-+	struct apq8016_sbc_data *data = snd_soc_card_get_drvdata(card);
-+	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-+	int mi2s, ret;
-+
-+	mi2s = qdsp6_dai_get_lpass_id(cpu_dai);
-+	if (mi2s < 0)
-+		return;
-+
-+	if (--data->mi2s_clk_count[mi2s] > 0)
-+		return;
-+
-+	ret = snd_soc_dai_set_sysclk(cpu_dai, LPAIF_BIT_CLK, 0, 0);
-+	if (ret)
-+		dev_err(card->dev, "Failed to disable LPAIF bit clk: %d\n", ret);
-+}
-+
-+static const struct snd_soc_ops msm8916_qdsp6_be_ops = {
-+	.startup = msm8916_qdsp6_startup,
-+	.shutdown = msm8916_qdsp6_shutdown,
-+};
-+
-+static int msm8916_qdsp6_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
-+					    struct snd_pcm_hw_params *params)
-+{
-+	struct snd_interval *rate = hw_param_interval(params,
-+					SNDRV_PCM_HW_PARAM_RATE);
-+	struct snd_interval *channels = hw_param_interval(params,
-+					SNDRV_PCM_HW_PARAM_CHANNELS);
-+	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
-+
-+	rate->min = rate->max = 48000;
-+	channels->min = channels->max = 2;
-+	snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S16_LE);
-+
-+	return 0;
-+}
-+
-+static void msm8916_qdsp6_add_ops(struct snd_soc_card *card)
-+{
-+	struct snd_soc_dai_link *link;
-+	int i;
-+
-+	/* Make it obvious to userspace that QDSP6 is used */
-+	card->components = "qdsp6";
-+
-+	for_each_card_prelinks(card, i, link) {
-+		if (link->no_pcm) {
-+			link->init = msm8916_qdsp6_dai_init;
-+			link->ops = &msm8916_qdsp6_be_ops;
-+			link->be_hw_params_fixup = msm8916_qdsp6_be_hw_params_fixup;
-+		}
-+	}
-+}
-+
- static const struct snd_soc_dapm_widget apq8016_sbc_dapm_widgets[] = {
+ patternProperties:
+   ".*-dai-link$":
+     description:
+@@ -79,6 +84,33 @@ required:
+   - compatible
+   - model
  
- 	SND_SOC_DAPM_MIC("Handset Mic", NULL),
-@@ -148,11 +266,16 @@ static const struct snd_soc_dapm_widget apq8016_sbc_dapm_widgets[] = {
- 
- static int apq8016_sbc_platform_probe(struct platform_device *pdev)
- {
-+	void (*add_ops)(struct snd_soc_card *card);
- 	struct device *dev = &pdev->dev;
- 	struct snd_soc_card *card;
- 	struct apq8016_sbc_data *data;
- 	int ret;
- 
-+	add_ops = device_get_match_data(&pdev->dev);
-+	if (!add_ops)
-+		return -EINVAL;
++allOf:
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - qcom,apq8016-sbc-sndcard
++    then:
++      properties:
++        reg:
++          items:
++            - description: Microphone I/O mux register address
++            - description: Speaker I/O mux register address
++        reg-names:
++          items:
++            - const: mic-iomux
++            - const: spkr-iomux
++      required:
++        - compatible
++        - model
++        - reg
++        - reg-names
++    else:
++      properties:
++        reg: false
++        reg-names: false
 +
- 	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
- 	if (!data)
- 		return -ENOMEM;
-@@ -177,12 +300,13 @@ static int apq8016_sbc_platform_probe(struct platform_device *pdev)
+ additionalProperties: false
  
- 	snd_soc_card_set_drvdata(card, data);
- 
--	apq8016_sbc_add_ops(card);
-+	add_ops(card);
- 	return devm_snd_soc_register_card(&pdev->dev, card);
- }
- 
- static const struct of_device_id apq8016_sbc_device_id[] __maybe_unused = {
--	{ .compatible = "qcom,apq8016-sbc-sndcard" },
-+	{ .compatible = "qcom,apq8016-sbc-sndcard", .data = apq8016_sbc_add_ops },
-+	{ .compatible = "qcom,msm8916-qdsp6-sndcard", .data = msm8916_qdsp6_add_ops },
- 	{},
- };
- MODULE_DEVICE_TABLE(of, apq8016_sbc_device_id);
+ examples:
+@@ -160,3 +192,50 @@ examples:
+             };
+         };
+     };
++
++  - |
++    #include <dt-bindings/sound/qcom,lpass.h>
++    sound@7702000 {
++        compatible = "qcom,apq8016-sbc-sndcard";
++        reg = <0x07702000 0x4>, <0x07702004 0x4>;
++        reg-names = "mic-iomux", "spkr-iomux";
++
++        model = "DB410c";
++        audio-routing =
++            "AMIC2", "MIC BIAS Internal2",
++            "AMIC3", "MIC BIAS External1";
++
++        pinctrl-0 = <&cdc_pdm_lines_act &ext_sec_tlmm_lines_act &ext_mclk_tlmm_lines_act>;
++        pinctrl-1 = <&cdc_pdm_lines_sus &ext_sec_tlmm_lines_sus &ext_mclk_tlmm_lines_sus>;
++        pinctrl-names = "default", "sleep";
++
++        quaternary-dai-link {
++            link-name = "ADV7533";
++            cpu {
++                sound-dai = <&lpass MI2S_QUATERNARY>;
++            };
++            codec {
++                sound-dai = <&adv_bridge 0>;
++            };
++        };
++
++        primary-dai-link {
++            link-name = "WCD";
++            cpu {
++                sound-dai = <&lpass MI2S_PRIMARY>;
++            };
++            codec {
++                sound-dai = <&lpass_codec 0>, <&wcd_codec 0>;
++            };
++        };
++
++        tertiary-dai-link {
++            link-name = "WCD-Capture";
++            cpu {
++                sound-dai = <&lpass MI2S_TERTIARY>;
++            };
++            codec {
++                sound-dai = <&lpass_codec 1>, <&wcd_codec 1>;
++            };
++        };
++    };
 -- 
 2.34.1
 
