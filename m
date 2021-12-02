@@ -4,81 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E32ACC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Dec 2021 08:29:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A3B3C4332F
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Dec 2021 08:39:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F40C02500;
-	Thu,  2 Dec 2021 09:28:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F40C02500
+	by alsa0.perex.cz (Postfix) with ESMTPS id D4C7F2528;
+	Thu,  2 Dec 2021 09:38:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D4C7F2528
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638433743;
-	bh=9VDMFTD9yzbdFm5FdKBDJLLecAuW2SmhgEg2bik73Qw=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=FjFHTrBlXPKVdNgOaLZmb3TWLBsEiMEDNml6P0wXgyN5eanERSial4q7NQlMaHZlO
-	 959Ae9Xj/aOarU2zGu4njx+jjjiyygR7qxiLvjwmAUTctPZjMxd/HgUKsM5y5awY6u
-	 UgZh3PGAMA+1k5Q4WQXcNUE+EpzLuYrctC2tQj8Y=
+	s=default; t=1638434375;
+	bh=vtu9qPlQxm9G7clp6AEqeW0Hmr/2A4PKsYMTTrNKil4=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=KLUkug8/DiGgajkEYc2yJAjRFxKvMPnHz3Ia7Oz9vRf+vOFF+PnTCzSYmf7hxQVpY
+	 Y8cyZVwA5KFET4AOW7hWFSRsHw/pdBhzmgMyElmMSofB1NN7Jg7LO80Q/xRPqCzUpS
+	 bDZNmdm6Nv8UlZbhC2nPAwEfk/bLd5cw6QMuSIV0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7CB61F80290;
-	Thu,  2 Dec 2021 09:28:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 76A1BF80290;
+	Thu,  2 Dec 2021 09:38:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 07B52F802A0; Thu,  2 Dec 2021 09:28:08 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id 99DC1F802A0; Thu,  2 Dec 2021 09:38:43 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F032DF800EE
- for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2021 09:28:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F032DF800EE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 89990F800BE
+ for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2021 09:38:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89990F800BE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="hHGfouOe"; 
+ header.b="WMoD7mR/"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="vZsKqVbr"
+ header.b="pRVEgCoE"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id CAAE01FDFB;
- Thu,  2 Dec 2021 08:27:59 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 6F5E9218A4
+ for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2021 08:38:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1638433679; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=iDV5vQMBmxyQ2OBH5tskQu/eRMvhadIMzgWPWuOQ00s=;
- b=hHGfouOe+pN7xFj+PwCTlXXU/i7MiDK8DRsgnuk7q9INKADn4ErjkzTVaDZS0cE76hC3qm
- pAiPLv2GbROVdtgFQrlZvcnHZFSCGLPuHQwOgPNopmnRcExRPz4plgcMUol3IhJALHkABy
- ZBKmiXfDk0kpyay+Qj8FEUeOeeS7+Yw=
+ t=1638434314; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=5LLzmOgeFfpIqmG8KzFwj3YKtsnTYu13ADrB1GPuqvI=;
+ b=WMoD7mR/AeNIIOxQCQr2qqaxGRwLgNzNggk4sJ//bKg06NZ3rwfYMWNB3HTNvdoIcDX1E4
+ 66+vxB3zlEQMLpr1Ka5Wvhg2VM/+CEcyDXS0UtjriS0iPr1dRiEgWlWxmlnbHFHFwB3UzM
+ /oD1MWOrmfO61KRBOIWQ6U11U8AhS/o=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1638433679;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=iDV5vQMBmxyQ2OBH5tskQu/eRMvhadIMzgWPWuOQ00s=;
- b=vZsKqVbrpvesOixC8GRwPRPZGXEZ2itBjzoLOkOQdBveNOgOcvoNvc+CVcQBtnIH6fNqca
- K3dQCDFAEgLxmIBw==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id BA732A3DA8;
- Thu,  2 Dec 2021 08:27:59 +0000 (UTC)
-Date: Thu, 02 Dec 2021 09:27:59 +0100
-Message-ID: <s5h4k7rwgvk.wl-tiwai@suse.de>
+ s=susede2_ed25519; t=1638434314;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=5LLzmOgeFfpIqmG8KzFwj3YKtsnTYu13ADrB1GPuqvI=;
+ b=pRVEgCoEG7ae/bR/oLozY2LH3yP0GiTm6k2kCuDX/o/YWc6qRpYRyBacbhaMKYdgaeWvwz
+ GSiAsgIm1TYgeLDg==
+Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 599A9A3D0B;
+ Thu,  2 Dec 2021 08:38:34 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
-To: "Lu, Brent" <brent.lu@intel.com>
-Subject: Re: [PATCH] ALSA: hda: intel-dsp-config: add JasperLake support
-In-Reply-To: <SA2PR11MB489124ED42353956827A2EC597699@SA2PR11MB4891.namprd11.prod.outlook.com>
-References: <20211201004628.1153763-1-brent.lu@intel.com>
- <4e0ec119-2b15-644d-9cab-b2e19b5c0e48@linux.intel.com>
- <s5hsfvczuwq.wl-tiwai@suse.de>
- <SA2PR11MB489124ED42353956827A2EC597699@SA2PR11MB4891.namprd11.prod.outlook.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Hans de Goede <hdegoede@redhat.com>, "Liao, Bard" <bard.liao@intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: usb-audio: Drop superfluous '0' in Presonus Studio
+ 1810c's ID
+Date: Thu,  2 Dec 2021 09:38:33 +0100
+Message-Id: <20211202083833.17784-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,52 +80,56 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 02 Dec 2021 09:15:37 +0100,
-Lu, Brent wrote:
-> 
-> > >
-> > > Thanks Brent, yes this is an oversight, we should have added this a
-> > > long time ago.
-> > >
-> > > I don't think however that this will apply on Takashi's for-next
-> > > branch, it'll conflict with the ALSA: intel-dsp-config: add quirk for
-> > > JSL devices based on ES8336 codec
-> > 
-> > Actually it's for-linus branch, destined to 5.16-rc4.
-> > 
-> > > +/* JasperLake */
-> > > +#if IS_ENABLED(CONFIG_SND_SOC_SOF_JASPERLAKE)
-> > > +	{
-> > > +		.flags = FLAG_SOF,
-> > > +		.device = 0x4dc8,
-> > > +		.codec_hid = "ESSX8336",
-> > > +	},
-> > > +#endif
-> > >
-> > > Do you mind rebasing and resending the update? Let's keep the ESS
-> > > stuff last as done in other platforms, and add your changes on top of this.
-> > 
-> > Yes, please resubmit.  I can merge and resolve the conflict in my side, but it's
-> > better to get a cleaner patch from the beginning.
-> > 
-> Hi gentlement,
-> 
-> I found following two patches in sof github do not exist in both broonie:for-next
-> and broonie:for-linus. Maybe it would be easier if I resubmit my patch to sof
-> github instead of alsa-dev?
-> 
-> sof: topic/sof-dev
-> 986f58741d0d ALSA: intel-dsp-config: add quirk for CML devices based on ES8336 codec
-> 2cccdf5b4414 ALSA: intel-dsp-config: add quirk for JSL devices based on ES8336 codec
+The vendor ID of Presonus Studio 1810c had a superfluous '0' in its
+USB ID.  Drop it.
 
-You'll need to rebase to the target tree, i.e. my sound.git tree in
-this case, as it's not directly about ASoC.
+Fixes: 8dc5efe3d17c ("ALSA: usb-audio: Add support for Presonus Studio 1810c")
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/usb/format.c       | 2 +-
+ sound/usb/mixer_quirks.c | 2 +-
+ sound/usb/quirks.c       | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-Mark will need to sync his tree eventually later, but for this
-particular patch, just use my tree (for-linus branch) as the base or
-use linux-next tree.
+diff --git a/sound/usb/format.c b/sound/usb/format.c
+index f5e676a51b30..405dc0bf6678 100644
+--- a/sound/usb/format.c
++++ b/sound/usb/format.c
+@@ -375,7 +375,7 @@ static int parse_uac2_sample_rate_range(struct snd_usb_audio *chip,
+ 		for (rate = min; rate <= max; rate += res) {
+ 
+ 			/* Filter out invalid rates on Presonus Studio 1810c */
+-			if (chip->usb_id == USB_ID(0x0194f, 0x010c) &&
++			if (chip->usb_id == USB_ID(0x194f, 0x010c) &&
+ 			    !s1810c_valid_sample_rate(fp, rate))
+ 				goto skip_rate;
+ 
+diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
+index d489c1de3bae..db194ad168d0 100644
+--- a/sound/usb/mixer_quirks.c
++++ b/sound/usb/mixer_quirks.c
+@@ -3254,7 +3254,7 @@ int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)
+ 		err = snd_rme_controls_create(mixer);
+ 		break;
+ 
+-	case USB_ID(0x0194f, 0x010c): /* Presonus Studio 1810c */
++	case USB_ID(0x194f, 0x010c): /* Presonus Studio 1810c */
+ 		err = snd_sc1810_init_mixer(mixer);
+ 		break;
+ 	case USB_ID(0x2a39, 0x3fb0): /* RME Babyface Pro FS */
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 64e1c20311ed..ab9f3da49941 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1290,7 +1290,7 @@ int snd_usb_apply_interface_quirk(struct snd_usb_audio *chip,
+ 	if (chip->usb_id == USB_ID(0x0763, 0x2012))
+ 		return fasttrackpro_skip_setting_quirk(chip, iface, altno);
+ 	/* presonus studio 1810c: skip altsets incompatible with device_setup */
+-	if (chip->usb_id == USB_ID(0x0194f, 0x010c))
++	if (chip->usb_id == USB_ID(0x194f, 0x010c))
+ 		return s1810c_skip_setting_quirk(chip, iface, altno);
+ 
+ 
+-- 
+2.31.1
 
-
-thanks,
-
-Takashi
