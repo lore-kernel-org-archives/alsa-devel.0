@@ -4,80 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61C6DC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Dec 2021 16:29:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6EF2C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Dec 2021 16:29:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 902B228EA;
-	Thu,  2 Dec 2021 17:28:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 902B228EA
+	by alsa0.perex.cz (Postfix) with ESMTPS id AF1A3225E;
+	Thu,  2 Dec 2021 17:28:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF1A3225E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638462541;
-	bh=ACkdWqC6D779TpZGJCMuiAc3Foc+2flTDFwqleLj7V0=;
+	s=default; t=1638462562;
+	bh=ey2RRYVXUx0wilOx68X9d3JZZ/Jh56kbfhBqK93ArY0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fSrggAaS05liyMC8MM0P2mbYrXWuo/vhdhlpFPoL5Q0hK638afX3263pje8exfoYu
-	 JFsXgq9cWRfh+ftc5lvaizKWjfre1RyTfEXg347FMI31JfKuFhfNWs8mOKltt5ywYi
-	 AwylikHC5qNCkdmgdr1/ksKQWJ/UNNfUx7Nat3hs=
+	b=dvuehWEU/8Y3bNQRIz0Xu3KtoymUGYfKoq+G/2zJm57CnQ0Ha+Wm/MUSp52hJWk7i
+	 5jW+U5Bk4zpra5exQha+7pKEB5Jo9Jxgy/Trtv/rfzJIRcsDmzriPcE+4ZU+JIIyHj
+	 sJj0AwbbR7CpqPrZ2WqT3nxWA/3plH+nctSlMVqo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0C24EF80524;
+	by alsa1.perex.cz (Postfix) with ESMTP id 889FBF8052D;
 	Thu,  2 Dec 2021 17:25:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8F20CF80516; Thu,  2 Dec 2021 17:25:36 +0100 (CET)
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com
- [IPv6:2a00:1450:4864:20::12b])
+ id A3036F804F2; Thu,  2 Dec 2021 17:25:36 +0100 (CET)
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com
+ [IPv6:2a00:1450:4864:20::12a])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F2AB9F804ED
- for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2021 17:25:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2AB9F804ED
+ by alsa1.perex.cz (Postfix) with ESMTPS id E9116F804F2
+ for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2021 17:25:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9116F804F2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="q69PrNnn"
-Received: by mail-lf1-x12b.google.com with SMTP id bi37so72772444lfb.5
- for <alsa-devel@alsa-project.org>; Thu, 02 Dec 2021 08:25:28 -0800 (PST)
+ header.b="BY2hui+y"
+Received: by mail-lf1-x12a.google.com with SMTP id b40so72785321lfv.10
+ for <alsa-devel@alsa-project.org>; Thu, 02 Dec 2021 08:25:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=I4TNl0maOw+qQ0xQdJvO/oCdL3KHkM/Dk/mjk1tn/kI=;
- b=q69PrNnnB342xHj0Cmqq2IVpuiQ2yIr1SiDnwh853ktdMDtdg2yLC7IW7gqRU4i6/U
- 5nKC8Jp00I0jT4jKqq+MuCr4Z4iDPu+tBACGO5C7TYYhrCPaNBaxyj4V10DohzUP9wD/
- 5OXCvt9fdCHB0NcTEHQf58Qiaj6Qs0YNyJ3mawa5+QnakKhRkEZO/+6AJoHjpf3C6gG1
- 5ER80osacA2YezjNOQZ8SmyD85KO87uHQL7SPIpDejg6m3uyLioFtPKYKnRrNDk2z/si
- ymaCyxjh9lLmGm1XlzjUWX1olcNo964QNqvZTbdt6kcNceEvlsWzqTK9/qJRnRE89zN1
- WsCg==
+ bh=yiWw98T7doYf6/KdnKDQ+eJuYvZvxnbIRrcyi8dmlBQ=;
+ b=BY2hui+ymqBNubr2RLJFdndE5KlDZZN7HF+na2hdS98ySqrDKPcpwwjXNFc6ZGBD3p
+ dzHmb8tr3soF7wkqbmRKqZ/eGziCAnwNHww0pmHXIGGBSH4lNnPuMYyJKgoHQwNPg9Nx
+ E+Qpq5QIaTxq8j4iuGS9CyDCprqmpQmrfW2kUsLLpM3pi6lmEV5m7hzmZuK58JWmHxrd
+ O2WLUI6c5vv95pr2ySCDgSw0S9Q1Ujojkodl1hWLZTlUNc3dwWjWiUfZddziCYzitGdD
+ Namx4zV8t7BU8enWv9HiIl/whx4n8COQqNMjz+uVT+zp9+9765mTyf0ePLLFSce8veaE
+ lxBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=I4TNl0maOw+qQ0xQdJvO/oCdL3KHkM/Dk/mjk1tn/kI=;
- b=zwWWjcJWGxJ0x87KYCdEMCE35i3AN9YDQUaMK0EwX7QPnXq2S2tdtl/f8fens9EZZ4
- G7Izx1qvkg+WN5NCZcGEnIOijhgS27Lo5pBo1k3PJKled4AU4VVmoqcixeh/NOFkkyrb
- pA7yFlcUwuCTCSgew0MciiIXCaZayW5xKLiw7ybQbSegmxRzT/OcACP38VPIFQ5bxXzj
- ZvFsYz4YkOB2/bgxjDWX/eGaoFpXqzlk/2sYYS0w14ghUBIfax5yDkC7swSl5/0npOcF
- YheRstI0Clvl8/9OKJGh5nt2GiCUK9+pL1eUWu6aZdxynTLOS63SaDoMWmes69/QvMet
- wKqA==
-X-Gm-Message-State: AOAM530d7+n5dbzeYpLNEe5ROkKx2vFaDGPzePARO+cA+q4cVqon1XB3
- 6D+UZ4bCNK1AZo4NIv5Ma50=
-X-Google-Smtp-Source: ABdhPJwz0qeqhDbbsnUNCtz+fTMa7GcVlIXkWFGDQHWdI9fpFBeUVePGAgCtQXEjmzk6lOE1dH7qyw==
-X-Received: by 2002:a19:6b08:: with SMTP id d8mr12695068lfa.39.1638462326465; 
- Thu, 02 Dec 2021 08:25:26 -0800 (PST)
+ bh=yiWw98T7doYf6/KdnKDQ+eJuYvZvxnbIRrcyi8dmlBQ=;
+ b=eg72Psc+lILrBgeculoqARXB2cXNBTSOcnKBfy/db3eY//cglwvsyo1E9lbshfyaOe
+ 8GiBwTDQy7akKnZxQGK9S2K9AI91y8XsURc7hAYzT+bx7sffnpoFLupu8aj0md8ATS/4
+ UyN08FL38LA3ydZfepqMisbg6lGAMDOoke63TCz8TMZV/XnEf1BevPX/A5ZaZeVlbMdd
+ kRYrg+QOpgWKIQs/crlUI/ylaDwsWBfyS3WrUkeBaFK4fDtqkFXINPXESRMxeLf0Y1bP
+ ZiITW1gGWbV4SHcRgbgJhm6la1LXGiwVuBxab0eHywLV9O9Lz2uY5g8E7iQY0KFMtu5F
+ TeUQ==
+X-Gm-Message-State: AOAM531+w+9uSP0GuWamz0vz4p63XMzcL7N74OINUvwk3AaAqUAOzd/H
+ CTbpo4NbHCHCpSyKX80d/HM=
+X-Google-Smtp-Source: ABdhPJxWPDVin2e4MAwyj16QBHnjKXZD4uyzquss4/NhUWLBMyMEfOIXblXMBEBUPvWoSC5fLfMTeg==
+X-Received: by 2002:ac2:5dcd:: with SMTP id x13mr12550709lfq.602.1638462324651; 
+ Thu, 02 Dec 2021 08:25:24 -0800 (PST)
 Received: from localhost.localdomain (94-29-46-111.dynamic.spd-mgts.ru.
  [94.29.46.111])
- by smtp.gmail.com with ESMTPSA id d18sm36806lfl.30.2021.12.02.08.25.25
+ by smtp.gmail.com with ESMTPSA id d18sm36806lfl.30.2021.12.02.08.25.23
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 02 Dec 2021 08:25:26 -0800 (PST)
+ Thu, 02 Dec 2021 08:25:24 -0800 (PST)
 From: Dmitry Osipenko <digetx@gmail.com>
 To: Thierry Reding <thierry.reding@gmail.com>,
  Jonathan Hunter <jonathanh@nvidia.com>, Mark Brown <broonie@kernel.org>,
  Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
  Liam Girdwood <lgirdwood@gmail.com>, Agneli <poczt@protonmail.ch>,
  Rob Herring <robh+dt@kernel.org>
-Subject: [PATCH v3 11/20] ASoC: tegra20: spdif: Support system suspend
-Date: Thu,  2 Dec 2021 19:23:32 +0300
-Message-Id: <20211202162341.1791-12-digetx@gmail.com>
+Subject: [PATCH v3 09/20] ASoC: tegra20: spdif: Use more resource-managed
+ helpers
+Date: Thu,  2 Dec 2021 19:23:30 +0300
+Message-Id: <20211202162341.1791-10-digetx@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211202162341.1791-1-digetx@gmail.com>
 References: <20211202162341.1791-1-digetx@gmail.com>
@@ -101,28 +102,105 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Support system suspend by enforcing runtime PM suspend/resume.
-Now there is no doubt that h/w is indeed stopped during suspend
-and that h/w state will be properly restored after resume.
+Use resource-managed helpers to make code cleaner. Driver's remove callback
+isn't needed anymore since driver is completely resource-managed now.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- sound/soc/tegra/tegra20_spdif.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/tegra/tegra20_spdif.c | 33 +++++++++------------------------
+ sound/soc/tegra/tegra_pcm.c     |  6 ++++++
+ sound/soc/tegra/tegra_pcm.h     |  1 +
+ 3 files changed, 16 insertions(+), 24 deletions(-)
 
 diff --git a/sound/soc/tegra/tegra20_spdif.c b/sound/soc/tegra/tegra20_spdif.c
-index bc45a0a8afab..a4aa5614aef4 100644
+index d5c618611dbb..7dd263721c2c 100644
 --- a/sound/soc/tegra/tegra20_spdif.c
 +++ b/sound/soc/tegra/tegra20_spdif.c
-@@ -345,6 +345,8 @@ static int tegra20_spdif_platform_probe(struct platform_device *pdev)
- static const struct dev_pm_ops tegra20_spdif_pm_ops = {
- 	SET_RUNTIME_PM_OPS(tegra20_spdif_runtime_suspend,
- 			   tegra20_spdif_runtime_resume, NULL)
-+	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
-+				pm_runtime_force_resume)
- };
+@@ -289,38 +289,24 @@ static int tegra20_spdif_platform_probe(struct platform_device *pdev)
+ 	spdif->playback_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+ 	spdif->playback_dma_data.maxburst = 4;
  
- static const struct of_device_id tegra20_spdif_of_match[] = {
+-	pm_runtime_enable(&pdev->dev);
++	ret = devm_pm_runtime_enable(&pdev->dev);
++	if (ret)
++		return ret;
+ 
+-	ret = snd_soc_register_component(&pdev->dev, &tegra20_spdif_component,
+-					 &tegra20_spdif_dai, 1);
++	ret = devm_snd_soc_register_component(&pdev->dev,
++					      &tegra20_spdif_component,
++					      &tegra20_spdif_dai, 1);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Could not register DAI: %d\n", ret);
+-		goto err_pm_disable;
++		return ret;
+ 	}
+ 
+-	ret = tegra_pcm_platform_register(&pdev->dev);
++	ret = devm_tegra_pcm_platform_register(&pdev->dev);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Could not register PCM: %d\n", ret);
+-		goto err_unregister_component;
++		return ret;
+ 	}
+ 
+-	return 0;
+-
+-err_unregister_component:
+-	snd_soc_unregister_component(&pdev->dev);
+-err_pm_disable:
+-	pm_runtime_disable(&pdev->dev);
+-
+-	return ret;
+-}
+-
+-static int tegra20_spdif_platform_remove(struct platform_device *pdev)
+-{
+-	tegra_pcm_platform_unregister(&pdev->dev);
+-	snd_soc_unregister_component(&pdev->dev);
+-
+-	pm_runtime_disable(&pdev->dev);
+-
+ 	return 0;
+ }
+ 
+@@ -342,7 +328,6 @@ static struct platform_driver tegra20_spdif_driver = {
+ 		.of_match_table = tegra20_spdif_of_match,
+ 	},
+ 	.probe = tegra20_spdif_platform_probe,
+-	.remove = tegra20_spdif_platform_remove,
+ };
+ module_platform_driver(tegra20_spdif_driver);
+ 
+diff --git a/sound/soc/tegra/tegra_pcm.c b/sound/soc/tegra/tegra_pcm.c
+index ef1e74d95236..468c8e77de21 100644
+--- a/sound/soc/tegra/tegra_pcm.c
++++ b/sound/soc/tegra/tegra_pcm.c
+@@ -48,6 +48,12 @@ int tegra_pcm_platform_register(struct device *dev)
+ }
+ EXPORT_SYMBOL_GPL(tegra_pcm_platform_register);
+ 
++int devm_tegra_pcm_platform_register(struct device *dev)
++{
++	return devm_snd_dmaengine_pcm_register(dev, &tegra_dmaengine_pcm_config, 0);
++}
++EXPORT_SYMBOL_GPL(devm_tegra_pcm_platform_register);
++
+ int tegra_pcm_platform_register_with_chan_names(struct device *dev,
+ 				struct snd_dmaengine_pcm_config *config,
+ 				char *txdmachan, char *rxdmachan)
+diff --git a/sound/soc/tegra/tegra_pcm.h b/sound/soc/tegra/tegra_pcm.h
+index d602126c65b7..2a36eea1740d 100644
+--- a/sound/soc/tegra/tegra_pcm.h
++++ b/sound/soc/tegra/tegra_pcm.h
+@@ -32,6 +32,7 @@ int tegra_pcm_hw_params(struct snd_soc_component *component,
+ snd_pcm_uframes_t tegra_pcm_pointer(struct snd_soc_component *component,
+ 				    struct snd_pcm_substream *substream);
+ int tegra_pcm_platform_register(struct device *dev);
++int devm_tegra_pcm_platform_register(struct device *dev);
+ int tegra_pcm_platform_register_with_chan_names(struct device *dev,
+ 				struct snd_dmaengine_pcm_config *config,
+ 				char *txdmachan, char *rxdmachan);
 -- 
 2.33.1
 
