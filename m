@@ -4,69 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4B81C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Dec 2021 13:42:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B398C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Dec 2021 13:42:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8CB6C26A4;
-	Thu,  2 Dec 2021 14:41:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8CB6C26A4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3EC8626E2;
+	Thu,  2 Dec 2021 14:41:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3EC8626E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638452549;
-	bh=pH97v051HvG4h6WMvqgYLd5t3vBlmZgGJRunP35hJzM=;
+	s=default; t=1638452554;
+	bh=PlPFJ8yiFNiELG6ZKJrv244m16FQdttBYXV4NOdMySc=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=R533gJnOUo1Yqbp4aCj94CXP5CVx0KU7vle61zrsi517TD72EGgMlY8ZnwBlzodUG
-	 WaVi93VKB1kbX3lWJU45Fi3LkX54SGQvKQwjRi/zAyLTdmrKSdEsYJ2Iz/KXijL0Hv
-	 j0Ndt1msPReMfUtvqeK/1vO76oB9z/tRzTRxM8p8=
+	b=sdgyog/8Y2JKbMaHTjKH58zo4ku5fuAQl0c02IFLDw8BtIiHkoG9cv8XZCeIqXuLB
+	 flLyObdpboTo7swiKxf9VOEPunA7s2QtYLEtoKsCjlm3bVRYvl00RC+nt5caMiN8zp
+	 nJ41DBE6SGQmfWCSjr8fHXlie8/PI5pmxLx8jAuQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4553AF8032D;
+	by alsa1.perex.cz (Postfix) with ESMTP id F2B0DF804E2;
 	Thu,  2 Dec 2021 14:40:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 19FEEF802E0; Thu,  2 Dec 2021 14:40:49 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+ id 8E91DF800CE; Thu,  2 Dec 2021 14:40:47 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 74F3DF800EE
- for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2021 14:40:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74F3DF800EE
+ by alsa1.perex.cz (Postfix) with ESMTPS id EBA0EF800CE
+ for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2021 14:40:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EBA0EF800CE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="L2RvWu7B"
+ header.b="U9ixmgjU"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id C274ACE2199;
- Thu,  2 Dec 2021 13:40:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30603C00446;
- Thu,  2 Dec 2021 13:40:37 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 18C10B823AC;
+ Thu,  2 Dec 2021 13:40:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A32FBC53FCF;
+ Thu,  2 Dec 2021 13:40:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1638452439;
- bh=pH97v051HvG4h6WMvqgYLd5t3vBlmZgGJRunP35hJzM=;
+ s=k20201202; t=1638452443;
+ bh=PlPFJ8yiFNiELG6ZKJrv244m16FQdttBYXV4NOdMySc=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=L2RvWu7B0nCxt6PntpOYr06NKE0+WNt/+u75bs3J9GGWHHI5c4ivGCbhd+uHI1xoh
- mYjm26Khz/PspJ+Bke9ARshu3DLAyHwGtZk62dRNLhVBc4h2Qe0LbpT2wTfig0hfhK
- KRKExuWQc2q/rlvDD8l6PiBwyuUWiolLIPEu2K7Qdvvn+QU+ED0Anr2T+A7ew4SZTt
- 3YpN2xkWcAvMDIeVS2Y679/DnTlfS8++NJFJic7NgS4VxbZQVo2GLmZBZfisho389A
- kYUq/fYwADtycCRXjhmsGIMoTzXp8YyvSuCMDHip0Qro044ard/Awbcez8wCYFbut3
- bsmJOBLsmHnMA==
+ b=U9ixmgjUB/x4jPNJKujvw+QF8lOoMn2+J+yWCCCA4yHsKH70yKigsZKZCYeiNP+St
+ 3pBKhgbb7YTs2FqYFJVDfezGRLetnmylcluIEE31IHcHWU+5spfa0XPKbabhpOVpWo
+ tlFeaSCTMFtysvSmONLGYAiEfaC+P7WpCA0P7+l4JOEpQLMi3foxxemqBC38NDvhq0
+ pfRcScgSYIc8JPcPYcVX+8YGLHU/JTnxcAXO9dIkPiB7SLOdG0EankQLOWg7NRWqVz
+ 2+NzFFVL4l0qj/gjO3Xkr9d2AbbBrVmy5xn4Zrq3LtEc/lwwI05eGjd0u68MKpQH8r
+ CDsCaCL1eeK7A==
 From: Mark Brown <broonie@kernel.org>
-To: Lucas Tanure <tanureal@opensource.cirrus.com>,
- Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
- Len Brown <lenb@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-In-Reply-To: <20211201174307.1399625-1-tanureal@opensource.cirrus.com>
-References: <20211201174307.1399625-1-tanureal@opensource.cirrus.com>
-Subject: Re: [PATCH 1/2] ASoC: amd: Fix dependency for SPI master
-Message-Id: <163845243689.1057742.11633823789626663814.b4-ty@kernel.org>
-Date: Thu, 02 Dec 2021 13:40:36 +0000
+To: lgirdwood@gmail.com, Oder Chiou <oder_chiou@realtek.com>
+In-Reply-To: <20211201095629.21818-1-oder_chiou@realtek.com>
+References: <20211201095629.21818-1-oder_chiou@realtek.com>
+Subject: Re: [PATCH] ASoC: rt5640: Fix the wrong state of the JD in the HDA
+ header
+Message-Id: <163845244138.1057742.16653206454807354643.b4-ty@kernel.org>
+Date: Thu, 02 Dec 2021 13:40:41 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
+Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, jacal_tseng@realtek.com,
+ danielz@nvidia.com, spujar@nvidia.com, albertchen@realtek.com,
+ derek.fang@realtek.com, shumingf@realtek.com, flove@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,10 +81,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 1 Dec 2021 17:43:06 +0000, Lucas Tanure wrote:
-> Select SPI_MASTER as is using CS35L41 SPI driver
-> 
-> Fixes: 96792fdd77cd1 ("ASoC: amd: enable vangogh platform machine driver build")
+On Wed, 1 Dec 2021 17:56:29 +0800, Oder Chiou wrote:
+> The patch fixes the wrong state of the JD with 1M pull up resistor in the
+> HDA header.
 > 
 > 
 
@@ -95,10 +93,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: amd: Fix dependency for SPI master
-      commit: 19a628d8f1a6c16263d8037a918427207c8a95a0
-[2/2] ASoC: cs35l41: Fix undefined reference to core functions
-      commit: 0695ad92fe1a0bb7697eb92c6a145a73c5ab0e24
+[1/1] ASoC: rt5640: Fix the wrong state of the JD in the HDA header
+      commit: e3dd4424c2f40aae9080667c4da42b0d7f9be711
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
