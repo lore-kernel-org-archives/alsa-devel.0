@@ -4,75 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51037C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Dec 2021 15:40:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE23CC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Dec 2021 15:47:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7F19225EE;
-	Thu,  2 Dec 2021 16:39:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F19225EE
+	by alsa0.perex.cz (Postfix) with ESMTPS id DE0BF2782;
+	Thu,  2 Dec 2021 16:46:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE0BF2782
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638459611;
-	bh=ajek5F/ptCjuuj1nImeOClx55qAIpjuvTcFC8lEGaNs=;
+	s=default; t=1638460040;
+	bh=EUeJI6dMwRnClkBvMiAzWK99HUkrl05V3r0TX/jpRAE=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=E7fYIkT7rL5aYauh4mM9khSPnc+l1p6sUnNhP+WaZLeCYYxHCA4Z3y5BI5IdQPr1M
-	 nGfENcffp4Y09HOxp4lrI76YRKmJl27R0Z3H+PdHfbz2Lm+FoZs1l30IPwYt1zsFp8
-	 YRIxgN4VuAKa6V45d8CJ6ZwZSfT05qgUE0d+DxEA=
+	b=O1kUmNIMJf4Nbod5Bh0FiOxKqHfWi+OYlG7WXiFTpFuSBGONsE9jHdIkD+Iur1yuC
+	 uNuiJMzcY/9tbEkHK5UATv7FMdtek7dxFapsQiLGjZNSsJ/r8ebPLs9fOoIvj8o8nO
+	 ZVDlQh4la1sTI31Yxy9r2NUTcp0YOl5ln8g43C2E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4FBD3F80290;
-	Thu,  2 Dec 2021 16:39:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8554CF80290;
+	Thu,  2 Dec 2021 16:46:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3DDC3F802A0; Thu,  2 Dec 2021 16:39:18 +0100 (CET)
+ id 31838F802A0; Thu,  2 Dec 2021 16:46:28 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 00A04F800EE
- for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2021 16:39:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00A04F800EE
+ by alsa1.perex.cz (Postfix) with ESMTPS id AAA67F800CE
+ for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2021 16:46:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AAA67F800CE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="KQOrHpue"; 
+ header.b="gytHnQHr"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="JO0TNKZ2"
+ header.b="hTU7K0Im"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 1D0B81FD39;
- Thu,  2 Dec 2021 15:39:13 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id F28B31FD39;
+ Thu,  2 Dec 2021 15:46:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1638459553; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1638459975; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=PqriVwlxl0/gBzqmRZ+q2vvUO8ThOH0XH1qb2rFeHyY=;
- b=KQOrHpuewT7MmWAb4k3jGc3hakWJJHkPv/nIfWiFtQragtMA6PrNR/p+Vb9VmPWRVlXYYp
- NuORAX6YmcV/Jp9za1vcMS7PNeI5a3CtB3dxbYhwM6qUwA4Ucj9jM2KvN9G0v17ro40V7z
- IbAkG1fyoMG5MMZN5pq/CrrM2JfvRe0=
+ bh=bKhfppyvh/LcJ4q+Pty4DHkRYHKMaMrbzx0RY/Bb/Xw=;
+ b=gytHnQHrEq+XxOueghJvvekK6D61ZyFQKdh9VoT+/PRhBPrnIFBm8dRom3HT7rWyojHtQl
+ co3TZ0n2Ow6GnWltJpFAiCc3gotSs2Do0SYnzBUelQfKseDoN6vZY7eN2AWX3fBD1/lyR/
+ xT/TCE6QJTk6E8JPzZ4e9v9J8Nn+Yfs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1638459553;
+ s=susede2_ed25519; t=1638459975;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=PqriVwlxl0/gBzqmRZ+q2vvUO8ThOH0XH1qb2rFeHyY=;
- b=JO0TNKZ2zbO9lFdx+QIsP62Xp11bIsxUApgZmRLKdRDoYfGtpFrVccuF5dmGAl5JZHKXUF
- aXtkbeEm6sr+bsAg==
+ bh=bKhfppyvh/LcJ4q+Pty4DHkRYHKMaMrbzx0RY/Bb/Xw=;
+ b=hTU7K0ImPcIVuGcbN8UT7Ls3krDkuwV95kyNP43qST9fAIBl44vk/CvwevBRLUZSSM973m
+ g5PtTG8mH7LMtOBg==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 102B5A3B89;
- Thu,  2 Dec 2021 15:39:13 +0000 (UTC)
-Date: Thu, 02 Dec 2021 16:39:13 +0100
-Message-ID: <s5hlf13t3ry.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id E8DD6A3B8D;
+ Thu,  2 Dec 2021 15:46:15 +0000 (UTC)
+Date: Thu, 02 Dec 2021 16:46:15 +0100
+Message-ID: <s5hh7brt3g8.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Werner Sembach <wse@tuxedocomputers.com>
-Subject: Re: [PATCH] ALSA: hda/realtek: Fix quirk for TongFang PHxTxX1
-In-Reply-To: <e49f141f-3d00-7e11-908e-4227feb9cf5b@tuxedocomputers.com>
-References: <20211202152843.818617-1-wse@tuxedocomputers.com>
- <e49f141f-3d00-7e11-908e-4227feb9cf5b@tuxedocomputers.com>
+To: Alan Young <consult.awy@gmail.com>
+Subject: Re: [PATCH] ALSA: ctl: Fix copy of updated id with element read/write
+In-Reply-To: <20211202150607.543389-1-consult.awy@gmail.com>
+References: <20211202150607.543389-1-consult.awy@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,20 +87,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 02 Dec 2021 16:35:23 +0100,
-Werner Sembach wrote:
+On Thu, 02 Dec 2021 16:06:07 +0100,
+Alan Young wrote:
 > 
-> Am 02.12.21 um 16:28 schrieb Werner Sembach:
-> > This fixes the SND_PCI_QUIRK(...) of the TongFang PHxTxX1 barebone. This
-> > fixes the issue of sound not working after s3 suspend.
-> >
-> > When waking up from s3 suspend the Coef 0x10 is set to 0x0220 instead of
-> > 0x0020. Setting the value manually makes the sound work again. This patch
-> > does this automatically.
-> An educational question: Is there any, at least partial, documentation available on what these Coef values actually do
-> besides https://www.kernel.org/doc/html/v5.15/sound/hd-audio/realtek-pc-beep.html ?
+> When control_compat.c:copy_ctl_value_to_user() is used, by
+> ctl_elem_read_user() & ctl_elem_write_user(), it must also copy back the
+> snd_ctl_elem_id value that may have been updated (filled in) by the call
+> to snd_ctl_elem_read/snd_ctl_elem_write().
+> 
+> This matches the functionality provided by snd_ctl_elem_read_user() and
+> snd_ctl_elem_write_user(), via snd_ctl_build_ioff().
+> 
+> Without this, and without making additional calls to snd_ctl_info()
+> which are unnecessary when using the non-compat calls, a userspace
+> application will not know the numid value for the element and
+> consequently will not be able to use the poll/read interface on the
+> control file to determine which elements have updates.
+> 
+> Signed-off-by: Alan Young <consult.awy@gmail.com>
 
-Unfortunately, no.  It's a completely vendor-specific black magic.
+Thanks, applied (with Cc to stable).
 
 
 Takashi
