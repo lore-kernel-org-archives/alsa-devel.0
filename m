@@ -4,75 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6323FC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Dec 2021 15:00:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47592C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Dec 2021 15:07:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7CA5A275C;
-	Thu,  2 Dec 2021 15:59:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CA5A275C
+	by alsa0.perex.cz (Postfix) with ESMTPS id C655E272A;
+	Thu,  2 Dec 2021 16:06:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C655E272A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638457211;
-	bh=Lid5Zr2Af92Z99XtwJpV1ecxQ+I+6PSg+oS8hwAVMcU=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=lqSl6HDkRCDsRm3SmG9PuEPmTp58N0zJc+owUl2vPzrSJz2KoWSLeqEXfAy+/qLUT
-	 Uy/PKYkz/r+cqMAbSUFxaHn3/4RH3WYdJMbJqd6jSzpD7PBw9zS6CtxHasO5T14e/s
-	 JL8qbHmDJB63DusGDhSWapoQnWc1Qoxva4rDgyCs=
+	s=default; t=1638457633;
+	bh=o96JU2xD49xNNk12p5HlnfetIUlSH3xA1CmZRVBso/c=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=SLRz4E7n8GSUC5IqjXGt+FOI7Ly91llpKrxSQaltknNJu/f61C9snAtoMz5zaX3tk
+	 xXRGlGmNqtk9I/YbufjDjmRWLdbxw+8DbNV3233nQYn8Jp93pD1MjBKjQU15umUqCz
+	 ISgsHCNiWzmVOG2tWrPgjGlxcCVumYHueNnh/X1o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 17FD0F8050F;
-	Thu,  2 Dec 2021 15:57:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5A0AEF80290;
+	Thu,  2 Dec 2021 16:06:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D6DE5F80510; Thu,  2 Dec 2021 15:57:20 +0100 (CET)
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de
- [81.169.146.168])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id C1F5FF802A0; Thu,  2 Dec 2021 16:06:21 +0100 (CET)
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
+ [IPv6:2a00:1450:4864:20::336])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D292EF802E0
- for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2021 15:57:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D292EF802E0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7D6F1F800CE
+ for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2021 16:06:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D6F1F800CE
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net
- header.b="EaAZlmJP"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1638457027;
- s=strato-dkim-0002; d=gerhold.net;
- h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
- From:Subject:Sender;
- bh=69VoTyRpLpO98sh4C/ClvwoFOzZ+d0nmfaiGQQ9Sibo=;
- b=EaAZlmJPYhudVE2y+Py5PqORCJot2A2dYFSqIx0xSOPDwntGG7owYNNGVZL/249u8t
- zFwBQn3uH7phEnWIvbmT5ZP/MT2d+nEVaU1AGMzewqLmKKl6NjiZV0sSJC54siaukhQk
- k+1RFLkLxQ7FCm7tTSVV9/Bs3ALH/hVX1vjZNG4lv3D3WhwGHi0X6Z/LtxlPHuddFUjl
- LJGjya29oxL8IuhxN6ZQveFw1fpaZzFu5vDViNcqHO7J/HiLc3EaPNspRmCf7/WHYbqy
- WrWa2EYV1Dyv+446EBPT+DsysTYh4UnltU7wRopqlqh++ID1HckBG7woa1rvbY1Ri8Da
- ZHHw==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVORvLd4SsytBXQ7UOGqRde+a0fyLyu9s="
-X-RZG-CLASS-ID: mo00
-Received: from droid.. by smtp.strato.de (RZmta 47.34.10 AUTH)
- with ESMTPSA id j03bcbxB2Ev6pxy
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
- (Client did not present a certificate);
- Thu, 2 Dec 2021 15:57:06 +0100 (CET)
-From: Stephan Gerhold <stephan@gerhold.net>
-To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 3/5] ASoC: dt-bindings: qcom: apq8016-sbc: Move to qcom,
- sm8250 DT schema
-Date: Thu,  2 Dec 2021 15:55:03 +0100
-Message-Id: <20211202145505.58852-4-stephan@gerhold.net>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20211202145505.58852-1-stephan@gerhold.net>
-References: <20211202145505.58852-1-stephan@gerhold.net>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="H8qKlZU0"
+Received: by mail-wm1-x336.google.com with SMTP id
+ c6-20020a05600c0ac600b0033c3aedd30aso3806657wmr.5
+ for <alsa-devel@alsa-project.org>; Thu, 02 Dec 2021 07:06:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=gZu97vvC5xaJ6DkIaEKN2wZkE8+yzRqEWP7R1TpBPwY=;
+ b=H8qKlZU0j1h1jY14yXNWw9om5EsqMYESOWckAohDTVWfED2dYx4ihn9zGDd4iSckWr
+ lhcfQCAYu4jlaefVEBPLf7q3rOVwOB4jeC9MOQ0Mo/7goNgNLqoDghOjF+2BlPhW2EmW
+ 6OK/gtUD+QmwOOAaWbQTUfbaCmhf0z5QBTqNqVobmHsG2qsPm81cavsdWJH6dLVLuElg
+ sSBVeYwnUJmeE/4jkZf6t207HO4MAFr15pLJMCTlEtSy0rmXNbJGeRhTQg6KrKGYTZgy
+ XtjAb0uJ9xzwiveI043OxwTHIQmidW2xmbNKYF4mCflaNSYkuuvpD2UsFQ5K0OSavnr/
+ VaAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=gZu97vvC5xaJ6DkIaEKN2wZkE8+yzRqEWP7R1TpBPwY=;
+ b=P3BV2i903kI9NPY61ZCCr6N3gYOIgJ1AEeNRt6bdvR4bvltR39Hij5H+8T4NpayRZs
+ uXKykqsoZWHpF4fOAZS4HSADwNg7dZitfpR+DwWl59BQm5s+7mRfsZejj3aX4yH7FuJf
+ AOpJXGTPtGNA2E6u+MHLXx4Db9Li1/g6ZjXCussPoisQRcEN9UKiGiHlftd46tHawa6I
+ P3DZ/R8VY6WC8z3J6F6mi5qwklfSx24wXxxqpuC7nDKNpOpkrc6uvyajslpInNrtnTov
+ ZB6q3OKS7ZlY3NrWMc53mlVUs6AHzBhQwMjjMYqYiFOHv9raGKilfcE7Q8fojQ5azNE9
+ hIbw==
+X-Gm-Message-State: AOAM532WTFHFMscjFjAsGfP2GKclAgtAOFAEmTzYdGElw2Wg8KmyvlGP
+ xhbBhKG79MN8TFGpYnBxvhSbA9mRNm3uMw==
+X-Google-Smtp-Source: ABdhPJwYQVWLdmuErNSqb8xKa06ItjTaMrDUQawG+DgF1p/bRYoT06cGecYn8wc3SrBqku2dsSNZ8w==
+X-Received: by 2002:a05:600c:2195:: with SMTP id
+ e21mr7236908wme.187.1638457575304; 
+ Thu, 02 Dec 2021 07:06:15 -0800 (PST)
+Received: from localhost.localdomain (37.194.143.150.dyn.plus.net.
+ [150.143.194.37])
+ by smtp.gmail.com with ESMTPSA id r62sm2286786wmr.35.2021.12.02.07.06.14
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 02 Dec 2021 07:06:14 -0800 (PST)
+From: Alan Young <consult.awy@gmail.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: ctl: Fix copy of updated id with element read/write
+Date: Thu,  2 Dec 2021 15:06:07 +0000
+Message-Id: <20211202150607.543389-1-consult.awy@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Banajit Goswami <bgoswami@codeaurora.org>,
- Stephan Gerhold <stephan@gerhold.net>, linux-arm-msm@vger.kernel.org,
- Liam Girdwood <lgirdwood@gmail.com>,
- Bjorn Andersson <bjorn.andersson@linaro.org>, Rob Herring <robh+dt@kernel.org>,
- ~postmarketos/upstreaming@lists.sr.ht
+Cc: tiwai@suse.de, Alan Young <consult.awy@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,254 +94,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-All the Qualcomm sound card drivers use the same common device tree
-parsing code, so the allowed device tree nodes are almost the same
-for all of them. Convert the qcom,apq8016-sbc-sndcard documentation
-to a DT schema by adding it to the existing qcom,sm8250 schema.
+When control_compat.c:copy_ctl_value_to_user() is used, by
+ctl_elem_read_user() & ctl_elem_write_user(), it must also copy back the
+snd_ctl_elem_id value that may have been updated (filled in) by the call
+to snd_ctl_elem_read/snd_ctl_elem_write().
 
-The only speciality of qcom,apq8016-sbc-sndcard is that it has memory
-resources for setting up an I/O mux. This can be handled using
-a conditional if statement that only requires it for the apq8016-sbc
-compatible.
+This matches the functionality provided by snd_ctl_elem_read_user() and
+snd_ctl_elem_write_user(), via snd_ctl_build_ioff().
 
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+Without this, and without making additional calls to snd_ctl_info()
+which are unnecessary when using the non-compat calls, a userspace
+application will not know the numid value for the element and
+consequently will not be able to use the poll/read interface on the
+control file to determine which elements have updates.
+
+Signed-off-by: Alan Young <consult.awy@gmail.com>
 ---
-Note: There will be a dtbs_check warning caused by this, because the
-recommended naming for nodes is different in this DT schema (-dai-link
-suffix). I will address this in a separate patch if this series is
-accepted, simply by changing apq8016-sbc.dts to the example added
-in this patch. The driver itself accepts any naming for those nodes.
----
- .../bindings/sound/qcom,apq8016-sbc.txt       | 96 -------------------
- .../bindings/sound/qcom,sm8250.yaml           | 83 +++++++++++++++-
- 2 files changed, 81 insertions(+), 98 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt
+ sound/core/control_compat.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt b/Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt
-deleted file mode 100644
-index 23998262a0a7..000000000000
---- a/Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt
-+++ /dev/null
-@@ -1,96 +0,0 @@
--* Qualcomm Technologies APQ8016 SBC ASoC machine driver
--
--This node models the Qualcomm Technologies APQ8016 SBC ASoC machine driver
--
--Required properties:
--
--- compatible		: "qcom,apq8016-sbc-sndcard"
--
--- pinctrl-N		: One property must exist for each entry in
--			  pinctrl-names.  See ../pinctrl/pinctrl-bindings.txt
--			  for details of the property values.
--- pinctrl-names		: Must contain a "default" entry.
--- reg			: Must contain an address for each entry in reg-names.
--- reg-names		: A list which must include the following entries:
--				* "mic-iomux"
--				* "spkr-iomux"
--- qcom,model		: Name of the sound card.
--
--- qcom,audio-routing	: A list of the connections between audio components.
--			  Each entry is a pair of strings, the first being the
--			  connection's sink, the second being the connection's
--			  source. Valid names could be power supplies, MicBias
--			  of msm8x16_wcd codec and the jacks on the board:
--
--			  Power supplies:
--			  * MIC BIAS External1
--			  * MIC BIAS External2
--			  * MIC BIAS Internal1
--			  * MIC BIAS Internal2
--
--			  Board connectors:
--			  * Headset Mic
--			  * Secondary Mic
--			  * DMIC
--			  * Ext Spk
--
--Optional properties:
--
--- aux-devs		: A list of phandles for auxiliary devices (e.g. analog
--			  amplifiers) that do not appear directly within the DAI
--			  links. Should be connected to another audio component
--			  using "qcom,audio-routing".
--
--Dai-link subnode properties and subnodes:
--
--Required dai-link subnodes:
--
--- cpu					: CPU   sub-node
--- codec					: CODEC sub-node
--
--Required CPU/CODEC subnodes properties:
--
---link-name		: Name of the dai link.
---sound-dai		: phandle/s and port of CPU/CODEC
--
--Example:
--
--sound: sound {
--	compatible = "qcom,apq8016-sbc-sndcard";
--	reg = <0x07702000 0x4>, <0x07702004 0x4>;
--	reg-names = "mic-iomux", "spkr-iomux";
--	qcom,model = "DB410c";
--
--	qcom,audio-routing =
--		"MIC BIAS External1", "Handset Mic",
--		"MIC BIAS Internal2", "Headset Mic",
--		"MIC BIAS External1", "Secondary Mic",
--		"AMIC1", "MIC BIAS External1",
--		"AMIC2", "MIC BIAS Internal2",
--		"AMIC3", "MIC BIAS External1",
--		"DMIC1", "MIC BIAS Internal1",
--		"MIC BIAS Internal1", "Digital Mic1",
--		"DMIC2", "MIC BIAS Internal1",
--		"MIC BIAS Internal1", "Digital Mic2";
--
--	/* I2S - Internal codec */
--	internal-dai-link@0 {
--		cpu { /* PRIMARY */
--			sound-dai = <&lpass MI2S_PRIMARY>;
--		};
--		codec {
--			sound-dai = <&lpass_codec 0>, <&wcd_codec 0>;
--		};
--	};
--
--	/* External Primary or External Secondary -ADV7533 HDMI */
--	external-dai-link@0 {
--		link-name = "ADV7533";
--		cpu { /* QUAT */
--			sound-dai = <&lpass MI2S_QUATERNARY>;
--		};
--		codec {
--			sound-dai = <&adv_bridge 0>;
--		};
--	};
--};
-diff --git a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
-index 3123382297b8..97f13a0a71a9 100644
---- a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
-+++ b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
-@@ -4,18 +4,19 @@
- $id: http://devicetree.org/schemas/sound/qcom,sm8250.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/sound/core/control_compat.c b/sound/core/control_compat.c
+index 470dabc60aa0..edff063e088d 100644
+--- a/sound/core/control_compat.c
++++ b/sound/core/control_compat.c
+@@ -264,6 +264,7 @@ static int copy_ctl_value_to_user(void __user *userdata,
+ 				  struct snd_ctl_elem_value *data,
+ 				  int type, int count)
+ {
++	struct snd_ctl_elem_value32 __user *data32 = userdata;
+ 	int i, size;
  
--title: Qualcomm Technologies Inc. SM8250 ASoC sound card driver
-+title: Qualcomm Technologies Inc. ASoC sound card drivers
+ 	if (type == SNDRV_CTL_ELEM_TYPE_BOOLEAN ||
+@@ -280,6 +281,8 @@ static int copy_ctl_value_to_user(void __user *userdata,
+ 		if (copy_to_user(valuep, data->value.bytes.data, size))
+ 			return -EFAULT;
+ 	}
++	if (copy_to_user(&data32->id, &data->id, sizeof(data32->id)))
++		return -EFAULT;
+ 	return 0;
+ }
  
- maintainers:
-   - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
- 
- description:
--  This bindings describes SC8250 SoC based sound cards
-+  This bindings describes Qualcomm SoC based sound cards
-   which uses LPASS internal codec for audio.
- 
- properties:
-   compatible:
-     enum:
-+      - qcom,apq8016-sbc-sndcard
-       - qcom,sm8250-sndcard
-       - qcom,qrb5165-rb5-sndcard
- 
-@@ -37,6 +38,10 @@ properties:
-     $ref: /schemas/types.yaml#/definitions/string
-     description: User visible long sound card name
- 
-+  # Only valid for some compatibles (see allOf if below)
-+  reg: true
-+  reg-names: true
-+
- patternProperties:
-   ".*-dai-link$":
-     description:
-@@ -79,6 +84,33 @@ required:
-   - compatible
-   - model
- 
-+allOf:
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - qcom,apq8016-sbc-sndcard
-+    then:
-+      properties:
-+        reg:
-+          items:
-+            - description: Microphone I/O mux register address
-+            - description: Speaker I/O mux register address
-+        reg-names:
-+          items:
-+            - const: mic-iomux
-+            - const: spkr-iomux
-+      required:
-+        - compatible
-+        - model
-+        - reg
-+        - reg-names
-+    else:
-+      properties:
-+        reg: false
-+        reg-names: false
-+
- additionalProperties: false
- 
- examples:
-@@ -160,3 +192,50 @@ examples:
-             };
-         };
-     };
-+
-+  - |
-+    #include <dt-bindings/sound/qcom,lpass.h>
-+    sound@7702000 {
-+        compatible = "qcom,apq8016-sbc-sndcard";
-+        reg = <0x07702000 0x4>, <0x07702004 0x4>;
-+        reg-names = "mic-iomux", "spkr-iomux";
-+
-+        model = "DB410c";
-+        audio-routing =
-+            "AMIC2", "MIC BIAS Internal2",
-+            "AMIC3", "MIC BIAS External1";
-+
-+        pinctrl-0 = <&cdc_pdm_lines_act &ext_sec_tlmm_lines_act &ext_mclk_tlmm_lines_act>;
-+        pinctrl-1 = <&cdc_pdm_lines_sus &ext_sec_tlmm_lines_sus &ext_mclk_tlmm_lines_sus>;
-+        pinctrl-names = "default", "sleep";
-+
-+        quaternary-dai-link {
-+            link-name = "ADV7533";
-+            cpu {
-+                sound-dai = <&lpass MI2S_QUATERNARY>;
-+            };
-+            codec {
-+                sound-dai = <&adv_bridge 0>;
-+            };
-+        };
-+
-+        primary-dai-link {
-+            link-name = "WCD";
-+            cpu {
-+                sound-dai = <&lpass MI2S_PRIMARY>;
-+            };
-+            codec {
-+                sound-dai = <&lpass_codec 0>, <&wcd_codec 0>;
-+            };
-+        };
-+
-+        tertiary-dai-link {
-+            link-name = "WCD-Capture";
-+            cpu {
-+                sound-dai = <&lpass MI2S_TERTIARY>;
-+            };
-+            codec {
-+                sound-dai = <&lpass_codec 1>, <&wcd_codec 1>;
-+            };
-+        };
-+    };
 -- 
-2.34.1
+2.25.1
+
 
