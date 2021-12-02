@@ -4,81 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91D30C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Dec 2021 16:30:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C10DC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Dec 2021 16:30:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BCA02291B;
-	Thu,  2 Dec 2021 17:29:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BCA02291B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 93D76292B;
+	Thu,  2 Dec 2021 17:29:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93D76292B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638462625;
-	bh=MwCv8nT8asEA5n7p2B6n4GAFbB9Zh46uYVRS9PsR/+A=;
+	s=default; t=1638462641;
+	bh=J9f/dCqvxzNLtC4ITMqx0G40QPSZDaHRk+DovXcnCqk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WbH9lh3XPCVfZ2TAx2OfHWpGfWa88LspjGugc9OjrLo8WFA1OBE4P9BFW87u9cU3N
-	 aRRQZh1vO2npndP4HWBYrJsO0bp1eELN3DAqrrrpnUvbeFEgJQVl1ZPsBEUGkXgNGe
-	 ZpIhMczIAuJ7Sy+RkREakt3a6tBaT837u2Sp/aFE=
+	b=hXgy9r6fiWlch8vcFXONT0D9oetUgnlmIZAKI1KjrgI4uiGnQUgiuEWO/uo4cY/iP
+	 10rNkIcIgEYZKZ00E9ni+QR38qNdKx8d9gqIc7YmkkORprLkOtehkTA6hVsXWnpI2s
+	 dpgNwD89Ue3dUxmwygh7NPdjZrOEQ3BYvyMm45lM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3FDF7F8053D;
+	by alsa1.perex.cz (Postfix) with ESMTP id C2A0BF80544;
 	Thu,  2 Dec 2021 17:25:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E9940F80510; Thu,  2 Dec 2021 17:25:39 +0100 (CET)
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com
- [IPv6:2a00:1450:4864:20::129])
+ id 95690F80511; Thu,  2 Dec 2021 17:25:40 +0100 (CET)
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com
+ [IPv6:2a00:1450:4864:20::229])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 76A9AF804FD
- for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2021 17:25:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76A9AF804FD
+ by alsa1.perex.cz (Postfix) with ESMTPS id A5ADFF80506
+ for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2021 17:25:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5ADFF80506
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="iUIrAIRl"
-Received: by mail-lf1-x129.google.com with SMTP id k37so72850724lfv.3
- for <alsa-devel@alsa-project.org>; Thu, 02 Dec 2021 08:25:27 -0800 (PST)
+ header.b="G7c0XoHf"
+Received: by mail-lj1-x229.google.com with SMTP id l7so776204lja.2
+ for <alsa-devel@alsa-project.org>; Thu, 02 Dec 2021 08:25:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=PSjFB49gbB2f+fQJJWWmO/v+TRpxSfz0h1BJe46+OzM=;
- b=iUIrAIRlFAG150Q/UP7IOsrYF3Hvm77kJBYW5b5gcnxY2QK0R044N9kEY5OGO/qBNM
- f7Fyn/tHOBjU5G8Ni2wr53F5rJ4HP4knC34nPt0lgcXyb8HHsk+P021hVNDBAcnNGpLZ
- bs8rreLAsEPaH/J4eR4D76bKBptyticpAiD5VKI6fGL92evymsbAJKE5lSVqL5Ji9Yua
- 5a4q1dvDdVh0ISwiPHpHmQ7AEKaIkAGtG6Laq0c/nQSOCwcl5pz6Qs/4h/Sg02LutG3L
- TxIS3rXTTXJk+jH4vW8kru9FcxRAWHzQR5eKNKakgftBKoPZYIUN560cdGqZF8WxBihp
- ksZA==
+ bh=KhBo+jV3YB73Mp9ZeA7lb5QO9nWQOxbQBa92iKZ/6e0=;
+ b=G7c0XoHf5gU245Jw5MvatV3xgDA1KCQlndpP8LEJPF8WBT4Q7jEdeoD8CpozdUTXSl
+ MhMVFXvLZpk/mPFRvAzIKJiqH6FvB/pam6FEwvaWr8mSWkqUdJBCuHOGRmByDGBz7myB
+ jDODImY2wDlyS2Dcw/DfUPT90X0wKLTwxaE3nWSZAaY3wN+GNZxzbV9l1W/DC/BGhkBU
+ 3m4HigtLbESXEXK9hinq0+juRCGfdLVdcc/XMe4e71gaorfABU72Q1joNCFh7SCnv9gL
+ ZhAPqGygOi4eRWysJZ+wJpXI29lXdhgczrO1OtyGFRyHvP2gloh3hMVxac64bek4a9SA
+ 1Nlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=PSjFB49gbB2f+fQJJWWmO/v+TRpxSfz0h1BJe46+OzM=;
- b=UFXNIOJ2P39qlH3WwN4TKWGc8rjgCIKsZGJlMoHAtEJAI9Dc9/Affnoi5HknDrAcTZ
- td7Q4cVStahX3SIczCA3qHVB6Eldqf3Lie/+fqZ9jkNv3fLeI4flkHqeqbWwG+BT7jwH
- jiI/58WZ+TejkTEGZLWcHINI8hgVIiGRmuWLQwCjOs/qdEvvUbgCME5d0k2CtCqek3Fy
- O6hOEBpSaWXWBJoSa87TxiRedetRBmT2QvKc+B8SvrD7sMgE87anqXT4J3tEzQNFDL/G
- j+E4p05NfDU49PskCt7ZKRM8dVJ/hfrgmWbJiRvNLj2wRIILOaDSMVK68/VrtD/T3jp+
- QQYQ==
-X-Gm-Message-State: AOAM531RoFyJ3kkYPz1wX65ByZyvISlb7ux45zpihUv24Mmr379yeHMI
- tyOdzauUxafhQWlgw38JSISTf2z1+cw=
-X-Google-Smtp-Source: ABdhPJzT1tt2KTShQ8SFdd7DzsRVqXKGwUWhkOIQyvqONwMZLZ+K/6Vd7NUHgtAYeU26922aSAyOSQ==
-X-Received: by 2002:a05:6512:3192:: with SMTP id
- i18mr12911148lfe.205.1638462325636; 
- Thu, 02 Dec 2021 08:25:25 -0800 (PST)
+ bh=KhBo+jV3YB73Mp9ZeA7lb5QO9nWQOxbQBa92iKZ/6e0=;
+ b=M/4HhCkR2+AU0r08wmjfPAHIn+yPTzu+VdttpproIV6pTuz7Brr5S2+YeUWQ+LzejA
+ slFrHkmOZFmQbyekbdsGgjnW64/Qsx9T2fmv+RIJGpu/daYbh9NqxZmuKifRrBYWBtOO
+ /061IeY2LCi1ebvH28qPUbhXZVCdY6tD1oPA/U1/+v/dkoCxdTGjtQ6liePIg3vg1zXD
+ jIkNRSWuno7Go2vfr+vEA0TBR4yXzQKeTiXsC0ScbzM9+zZWxrXvdJ+hwIt8wAU23beT
+ d4hlbeN9xYLeqNnMsM2DMlcAHNJnDz/3G6XCDQ7ELIpmTHlT1fQAmZmyxj58n13fqDdW
+ n5vg==
+X-Gm-Message-State: AOAM533oWgpxLmdWEk3S1Yr4ajNfTVW/4rC4C41m+JyquPC3X8z9NNls
+ R8edO68wAvzn5z+z+7+y9jc=
+X-Google-Smtp-Source: ABdhPJym7SDKvOvwZ3mF7bphO7cMvut+5WIv5IPHwj8yQJRV7hmnsRueeasXCZ/vjgqliZwQSkNnEg==
+X-Received: by 2002:a05:651c:1503:: with SMTP id
+ e3mr12869054ljf.182.1638462328149; 
+ Thu, 02 Dec 2021 08:25:28 -0800 (PST)
 Received: from localhost.localdomain (94-29-46-111.dynamic.spd-mgts.ru.
  [94.29.46.111])
- by smtp.gmail.com with ESMTPSA id d18sm36806lfl.30.2021.12.02.08.25.24
+ by smtp.gmail.com with ESMTPSA id d18sm36806lfl.30.2021.12.02.08.25.27
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 02 Dec 2021 08:25:25 -0800 (PST)
+ Thu, 02 Dec 2021 08:25:27 -0800 (PST)
 From: Dmitry Osipenko <digetx@gmail.com>
 To: Thierry Reding <thierry.reding@gmail.com>,
  Jonathan Hunter <jonathanh@nvidia.com>, Mark Brown <broonie@kernel.org>,
  Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
  Liam Girdwood <lgirdwood@gmail.com>, Agneli <poczt@protonmail.ch>,
  Rob Herring <robh+dt@kernel.org>
-Subject: [PATCH v3 10/20] ASoC: tegra20: spdif: Reset hardware
-Date: Thu,  2 Dec 2021 19:23:31 +0300
-Message-Id: <20211202162341.1791-11-digetx@gmail.com>
+Subject: [PATCH v3 13/20] ASoC: tegra20: i2s: Filter out unsupported rates
+Date: Thu,  2 Dec 2021 19:23:34 +0300
+Message-Id: <20211202162341.1791-14-digetx@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211202162341.1791-1-digetx@gmail.com>
 References: <20211202162341.1791-1-digetx@gmail.com>
@@ -102,105 +102,83 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Reset S/PDIF controller on runtime PM suspend/resume to ensure that we
-always have a consistent hardware state.
+Support new nvidia,fixed-parent-rate device-tree property which instructs
+I2S that board wants parent clock rate to stay at a fixed rate. This allows
+to play audio over S/PDIF and I2S simultaneously. The root of the problem
+is that audio components on Tegra share the same audio PLL, and thus, only
+a subset of rates can be supported if we want to play audio simultaneously.
+Filter out audio rates that don't match parent clock rate if device-tree
+has the nvidia,fixed-parent-rate property.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- sound/soc/tegra/tegra20_spdif.c | 32 ++++++++++++++++++++++++++++++++
- sound/soc/tegra/tegra20_spdif.h |  1 +
- 2 files changed, 33 insertions(+)
+ sound/soc/tegra/tegra20_i2s.c | 49 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
 
-diff --git a/sound/soc/tegra/tegra20_spdif.c b/sound/soc/tegra/tegra20_spdif.c
-index 7dd263721c2c..bc45a0a8afab 100644
---- a/sound/soc/tegra/tegra20_spdif.c
-+++ b/sound/soc/tegra/tegra20_spdif.c
-@@ -7,6 +7,7 @@
-  */
- 
- #include <linux/clk.h>
-+#include <linux/delay.h>
- #include <linux/device.h>
- #include <linux/io.h>
- #include <linux/module.h>
-@@ -14,6 +15,7 @@
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/regmap.h>
-+#include <linux/reset.h>
- #include <linux/slab.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
-@@ -27,6 +29,8 @@ static __maybe_unused int tegra20_spdif_runtime_suspend(struct device *dev)
- {
- 	struct tegra20_spdif *spdif = dev_get_drvdata(dev);
- 
-+	regcache_cache_only(spdif->regmap, true);
-+
- 	clk_disable_unprepare(spdif->clk_spdif_out);
- 
+diff --git a/sound/soc/tegra/tegra20_i2s.c b/sound/soc/tegra/tegra20_i2s.c
+index 266d2cab9f49..27365a877e47 100644
+--- a/sound/soc/tegra/tegra20_i2s.c
++++ b/sound/soc/tegra/tegra20_i2s.c
+@@ -262,10 +262,59 @@ static int tegra20_i2s_probe(struct snd_soc_dai *dai)
  	return 0;
-@@ -37,13 +41,35 @@ static __maybe_unused int tegra20_spdif_runtime_resume(struct device *dev)
- 	struct tegra20_spdif *spdif = dev_get_drvdata(dev);
- 	int ret;
- 
-+	ret = reset_control_assert(spdif->reset);
-+	if (ret)
-+		return ret;
-+
- 	ret = clk_prepare_enable(spdif->clk_spdif_out);
- 	if (ret) {
- 		dev_err(dev, "clk_enable failed: %d\n", ret);
- 		return ret;
- 	}
- 
-+	usleep_range(10, 100);
-+
-+	ret = reset_control_deassert(spdif->reset);
-+	if (ret)
-+		goto disable_clocks;
-+
-+	regcache_cache_only(spdif->regmap, false);
-+	regcache_mark_dirty(spdif->regmap);
-+
-+	ret = regcache_sync(spdif->regmap);
-+	if (ret)
-+		goto disable_clocks;
-+
- 	return 0;
-+
-+disable_clocks:
-+	clk_disable_unprepare(spdif->clk_spdif_out);
-+
-+	return ret;
  }
  
- static int tegra20_spdif_hw_params(struct snd_pcm_substream *substream,
-@@ -268,6 +294,12 @@ static int tegra20_spdif_platform_probe(struct platform_device *pdev)
- 
- 	dev_set_drvdata(&pdev->dev, spdif);
- 
-+	spdif->reset = devm_reset_control_get_exclusive(&pdev->dev, NULL);
-+	if (IS_ERR(spdif->reset)) {
-+		dev_err(&pdev->dev, "Can't retrieve spdif reset\n");
-+		return PTR_ERR(spdif->reset);
++static const unsigned int tegra20_i2s_rates[] = {
++	8000, 11025, 16000, 22050, 32000, 44100, 48000, 64000, 88200, 96000
++};
++
++static int tegra20_i2s_filter_rates(struct snd_pcm_hw_params *params,
++				    struct snd_pcm_hw_rule *rule)
++{
++	struct snd_interval *r = hw_param_interval(params, rule->var);
++	struct snd_soc_dai *dai = rule->private;
++	struct tegra20_i2s *i2s = dev_get_drvdata(dai->dev);
++	struct clk *parent = clk_get_parent(i2s->clk_i2s);
++	long i, parent_rate, valid_rates = 0;
++
++	parent_rate = clk_get_rate(parent);
++	if (parent_rate <= 0) {
++		dev_err(dai->dev, "Can't get parent clock rate: %ld\n",
++			parent_rate);
++		return parent_rate ?: -EINVAL;
 +	}
 +
- 	spdif->clk_spdif_out = devm_clk_get(&pdev->dev, "out");
- 	if (IS_ERR(spdif->clk_spdif_out)) {
- 		dev_err(&pdev->dev, "Could not retrieve spdif clock\n");
-diff --git a/sound/soc/tegra/tegra20_spdif.h b/sound/soc/tegra/tegra20_spdif.h
-index 1973ffc2d5c7..ff4b79e2052f 100644
---- a/sound/soc/tegra/tegra20_spdif.h
-+++ b/sound/soc/tegra/tegra20_spdif.h
-@@ -451,6 +451,7 @@ struct tegra20_spdif {
- 	struct snd_dmaengine_dai_dma_data capture_dma_data;
- 	struct snd_dmaengine_dai_dma_data playback_dma_data;
- 	struct regmap *regmap;
-+	struct reset_control *reset;
++	for (i = 0; i < ARRAY_SIZE(tegra20_i2s_rates); i++) {
++		if (parent_rate % (tegra20_i2s_rates[i] * 128) == 0)
++			valid_rates |= BIT(i);
++	}
++
++	/*
++	 * At least one rate must be valid, otherwise the parent clock isn't
++	 * audio PLL. Nothing should be filtered in this case.
++	 */
++	if (!valid_rates)
++		valid_rates = BIT(ARRAY_SIZE(tegra20_i2s_rates)) - 1;
++
++	return snd_interval_list(r, ARRAY_SIZE(tegra20_i2s_rates),
++				 tegra20_i2s_rates, valid_rates);
++}
++
++static int tegra20_i2s_startup(struct snd_pcm_substream *substream,
++			       struct snd_soc_dai *dai)
++{
++	if (!device_property_read_bool(dai->dev, "nvidia,fixed-parent-rate"))
++		return 0;
++
++	return snd_pcm_hw_rule_add(substream->runtime, 0,
++				   SNDRV_PCM_HW_PARAM_RATE,
++				   tegra20_i2s_filter_rates, dai,
++				   SNDRV_PCM_HW_PARAM_RATE, -1);
++}
++
+ static const struct snd_soc_dai_ops tegra20_i2s_dai_ops = {
+ 	.set_fmt	= tegra20_i2s_set_fmt,
+ 	.hw_params	= tegra20_i2s_hw_params,
+ 	.trigger	= tegra20_i2s_trigger,
++	.startup	= tegra20_i2s_startup,
  };
  
- #endif
+ static const struct snd_soc_dai_driver tegra20_i2s_dai_template = {
 -- 
 2.33.1
 
