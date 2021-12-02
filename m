@@ -4,80 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CCEC2C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Dec 2021 23:51:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87F3BC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Dec 2021 04:43:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C64E92692;
-	Thu,  2 Dec 2021 00:51:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C64E92692
+	by alsa0.perex.cz (Postfix) with ESMTPS id A7C9E2540;
+	Thu,  2 Dec 2021 05:42:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A7C9E2540
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638402717;
-	bh=qxwCwbfSgPiOiKCjokJ9EtUPK3eLmrFK413TIwRInDw=;
+	s=default; t=1638420228;
+	bh=Q/XmdYzmWlBC/voF+84Cd3udQjdonRFCNCIqCUmDhDk=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ehzCfZ35HaR7ZZHk+TuhTVDCcpm7cLbtJbts0GvGI3LubSi+1HEp8RjqtBM0a2pjb
-	 FjVDTWcLiM9vgyG+er6Q3orh9UCFqgdviCnWyqKkQ9CoTNw5FBtwQ/jgAroNCnenxB
-	 NXqzzTImSskevfRAytRzw6a63nVLbC8VlsFzIjig=
+	b=WbV74Akbu8gproD3ocNEYmzGJQ6xq8VL1QXiF1srmn3LfM7VTTTNT5wZUrhVAJKVi
+	 PfFRAcMYpsnjWOEAbsQnbwpP3nSDIJUF0pd5rijztL4SCmslQP8s8eu8QSPvg0RxPr
+	 xFmDIPujkemKs4DAr8i1J8M2QNs61aqWKWGpyjBM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0AEF0F804D9;
-	Thu,  2 Dec 2021 00:51:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 42DC1F800BE;
+	Thu,  2 Dec 2021 05:42:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7424CF804EB; Thu,  2 Dec 2021 00:51:02 +0100 (CET)
-Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com
- [209.85.210.43])
+ id DE6EEF804E2; Thu,  2 Dec 2021 05:42:54 +0100 (CET)
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com
+ [IPv6:2607:f8b0:4864:20::62a])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 02CEEF80121
- for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2021 00:50:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02CEEF80121
-Received: by mail-ot1-f43.google.com with SMTP id
- v15-20020a9d604f000000b0056cdb373b82so37588739otj.7
- for <alsa-devel@alsa-project.org>; Wed, 01 Dec 2021 15:50:59 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 66DDCF800BE
+ for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2021 05:42:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66DDCF800BE
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
+ header.b="NNI4lbBL"
+Received: by mail-pl1-x62a.google.com with SMTP id y7so19386603plp.0
+ for <alsa-devel@alsa-project.org>; Wed, 01 Dec 2021 20:42:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to;
+ bh=Q/XmdYzmWlBC/voF+84Cd3udQjdonRFCNCIqCUmDhDk=;
+ b=NNI4lbBLOzUh6enNA2zXDD6i/1bbGmC+FP6nollo+ZHi511xLiHCuXuklfoEatdbSW
+ c/K2UDB3imN6OpU5wZVX9y/cgHytjg748J8xZWdpWc5c2s/mjPDhWwgVMqKKaZGX/KR8
+ N5KEWOuSX6ObkcWzGMI0QUSJfrREjzwt0FlH38L7xhCnOUlCDKqwF76FdcUJMuPKFyyf
+ NcPOfpJLQ3fdoJX6usozrWel3ddfQu+4oIgNFru6sBQG3JAIVq+ToAIk0jcJUNombClm
+ 98B1D6VwKpA9QpeCwgFuO6oyX8A9MSk+vYb9i38GLAnPQQTpxaDTVACDW5OSlJ7IfZLR
+ NVnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to;
- bh=janDAtSPhWlePGFNQ++EVF7JDjqdKemONodqemusei8=;
- b=YqXNnPmJQMeeh8QkH/d/2e3PFGfLjbFGQwLrl31hSRRHSMxqhTmnC/JKIJIoWxrfTK
- nWnZDxzzxqDV7TRaTy6EV5xG1b+Q8Z7nThXblmvbgjX1joy9quZqZIsuE2ZXXdQBMviN
- 9FnbSi8UtbZHx0X6aLDuVjnODZe6TCLrIsCxkTgTrJ5XGnI4XmpKOroY7gy/+HFYl6Kl
- rwCROLO+pDnPbj3lyCIcUMnYFwm9gYMX4D71+tSJMWSpS0kkgzkB1M6ZU4YFdCAqYt9g
- sgsEf5orRAi8UO7xXXTb8a1fwnQF6PVYsDcAixS2hADVbA0t6UHYTsPGwcYwOJbYQYh2
- Oqjw==
-X-Gm-Message-State: AOAM532E9QD9BEa807FhNa1QhucSogEPYoUbZTdRlGrMbmw9nNNp4fql
- qLrsZQ+36xTEkgrFex6cog==
-X-Google-Smtp-Source: ABdhPJx5TFH68EuJ9T0gpn/g1grXRTeXYFnflCit2PV7CCMx8U7wAVQns9O50JdQkJLNhGx8FpK1Rg==
-X-Received: by 2002:a9d:868:: with SMTP id 95mr8732322oty.211.1638402658107;
- Wed, 01 Dec 2021 15:50:58 -0800 (PST)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net.
- [66.90.148.213])
- by smtp.gmail.com with ESMTPSA id e28sm624819oiy.10.2021.12.01.15.50.57
+ bh=Q/XmdYzmWlBC/voF+84Cd3udQjdonRFCNCIqCUmDhDk=;
+ b=KwLnKoZh6AlsDzxxapVNngdVl7YEXOalHzvkfDrCrpkzJOWbthqIjQB4OtZYwZf/L+
+ KQD60ylFv7pmkLJ6lAhEoSmHV88EFEz5HNiOvm6P1jiaShuKWm/f9HZ7QFfuAOOyIKyV
+ 6k14TF8ZQ2EIKewr1vlt7E7zQbBHBnEKigcsxMb4PRk43OVkbm2lxikXC9AY+OM7h5SZ
+ vOax5yv+zx4eiz6ypVBjxeG7xEPIFEzYsFIo9V+TAtVZgQZArWTATR+iD0T5+V0sJi1V
+ EwIzKiIC4GvC9LYBzEsnQ3cfBzX+wlmnePQhWsIEBZEGHJ+CEPqvURrh5xLs0wcL+Czr
+ GSsw==
+X-Gm-Message-State: AOAM533hymA1G5TYVeFg6dinYKU/GXBO1NUvRytFKJIo7rcQwozmmpJX
+ gKnPo1ep1z33fyZRLgCRiVlOIF+OZxbB4g==
+X-Google-Smtp-Source: ABdhPJwd7LFTasLsCKCBBJSOBzXW1hcUhBvCVvh8QO8kQ/q9LWJdPJFWFfi3xByxw9fLIekXcskJdw==
+X-Received: by 2002:a17:903:1208:b0:143:e4e9:4ce3 with SMTP id
+ l8-20020a170903120800b00143e4e94ce3mr12739440plh.21.1638420159291; 
+ Wed, 01 Dec 2021 20:42:39 -0800 (PST)
+Received: from google.com ([2401:fa00:1:10:ce4d:ddd8:41f4:d987])
+ by smtp.gmail.com with ESMTPSA id p19sm1545646pfo.92.2021.12.01.20.42.36
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 01 Dec 2021 15:50:57 -0800 (PST)
-Received: (nullmailer pid 3243259 invoked by uid 1000);
- Wed, 01 Dec 2021 23:50:56 -0000
-Date: Wed, 1 Dec 2021 17:50:56 -0600
-From: Rob Herring <robh@kernel.org>
-To: Dmitry Osipenko <digetx@gmail.com>
-Subject: Re: [PATCH v2 04/20] dt-bindings: host1x: Document optional HDMI
- sound-dai-cells
-Message-ID: <YagKYCbHw5BHAcdI@robh.at.kernel.org>
-References: <20211126161807.15776-1-digetx@gmail.com>
- <20211126161807.15776-5-digetx@gmail.com>
+ Wed, 01 Dec 2021 20:42:39 -0800 (PST)
+Date: Thu, 2 Dec 2021 12:42:34 +0800
+From: Tzung-Bi Shih <tzungbi@google.com>
+To: "allen-kh.cheng" <allen-kh.cheng@mediatek.com>
+Subject: Re: [PATCH v9 2/3] firmware: mediatek: add adsp ipc protocol interface
+Message-ID: <YahOuiIZ/wGR/TpD@google.com>
+References: <20211201075604.27864-1-allen-kh.cheng@mediatek.com>
+ <20211201075604.27864-3-allen-kh.cheng@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211126161807.15776-5-digetx@gmail.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Arnd Bergmann <arnd@arndb.de>, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- Takashi Iwai <tiwai@suse.com>, dri-devel@lists.freedesktop.org,
- Jonathan Hunter <jonathanh@nvidia.com>, Rob Herring <robh+dt@kernel.org>,
- Thierry Reding <thierry.reding@gmail.com>, Agneli <poczt@protonmail.ch>,
- linux-tegra@vger.kernel.org
+In-Reply-To: <20211201075604.27864-3-allen-kh.cheng@mediatek.com>
+Cc: devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, cujomalainey@google.com,
+ linux-kernel@vger.kernel.org, Jassi Brar <jassisinghbrar@gmail.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Project_Global_Chrome_Upstream_Group@mediatek.com,
+ Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ Daniel Baluta <daniel.baluta@nxp.com>, linux-arm-kernel@lists.infradead.org,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,14 +106,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 26 Nov 2021 19:17:51 +0300, Dmitry Osipenko wrote:
-> Document new optional sound-dai-cells property of HDMI node. This node will
-> be used as endpoint of HDMI sound DAI graph.
-> 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  .../devicetree/bindings/display/tegra/nvidia,tegra20-host1x.txt  | 1 +
->  1 file changed, 1 insertion(+)
-> 
+On Wed, Dec 01, 2021 at 03:56:03PM +0800, allen-kh.cheng wrote:
+> Signed-off-by: Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
 
-Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
