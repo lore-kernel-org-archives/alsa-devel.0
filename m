@@ -4,69 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2479BC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Dec 2021 11:45:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB022C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Dec 2021 12:50:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3016F26CA;
-	Thu,  2 Dec 2021 12:44:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3016F26CA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 306C223B6;
+	Thu,  2 Dec 2021 13:49:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 306C223B6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638445522;
-	bh=HPKmfZTEqi7g/4O8fYdF0/J3SkXKL2Z64mL4+WS80l0=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1638449411;
+	bh=OYZ5slALRb6YEEz0iSMCUsRQKUEEfwmgzxSeCbV3Ly0=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qTpPMfdyy2+RYMcntRPwscl6v6/uyNJX0pSOuoPzxCpJdF7YXiorCCCvSb+82l5Tl
-	 xyib9VeADcCseFyJWQIsdEtTXBppF7aSHCDEXpynsW55I+PjLrnynWpjSeg1mHcgA3
-	 ok1Dr/OF/cbu8tLJLfPCc1cEkEdCf02vIZt2mZRc=
+	b=FRQnFhmdXpBQZG106wgckoUfreARIepptapZAHFc0Lld7evJRJfP0SW7fuYoM6+cx
+	 Z1IZXfnhUEG9F9QwdoLmocRsFdF16q9r/woaYkb1huudNi4w8ynlAkcgMMlFNiKiMW
+	 ruglrli+hcSy3axwkvqVDAQ2LxdWp1RJ9UloXy/c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9792AF802E0;
-	Thu,  2 Dec 2021 12:44:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A866AF80290;
+	Thu,  2 Dec 2021 13:49:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 50D9CF80301; Thu,  2 Dec 2021 12:44:25 +0100 (CET)
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+ id 98406F802A0; Thu,  2 Dec 2021 13:49:17 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6166EF800BE
+ for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2021 13:49:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6166EF800BE
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="OgwbO/pK"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9733FF802E0;
- Thu,  2 Dec 2021 12:42:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9733FF802E0
-X-UUID: 6d4a5c4ff46442c281209aaa145362b9-20211202
-X-UUID: 6d4a5c4ff46442c281209aaa145362b9-20211202
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by
- mailgw01.mediatek.com (envelope-from <allen-kh.cheng@mediatek.com>)
- (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
- with ESMTP id 1409248428; Thu, 02 Dec 2021 19:42:43 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 2 Dec 2021 19:42:43 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via
- Frontend Transport; Thu, 2 Dec 2021 19:42:43 +0800
-From: allen-kh.cheng <allen-kh.cheng@mediatek.com>
-To: Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Matthias Brugger <matthias.bgg@gmail.com>, Jassi Brar
- <jassisinghbrar@gmail.com>
-Subject: [PATCH v10 1/3] dt-bindings: mediatek: add adsp-mbox document
-Date: Thu, 2 Dec 2021 19:42:38 +0800
-Message-ID: <20211202114240.26976-2-allen-kh.cheng@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20211202114240.26976-1-allen-kh.cheng@mediatek.com>
-References: <20211202114240.26976-1-allen-kh.cheng@mediatek.com>
+ by ams.source.kernel.org (Postfix) with ESMTPS id DBAB0B82341;
+ Thu,  2 Dec 2021 12:49:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63F72C00446;
+ Thu,  2 Dec 2021 12:49:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1638449350;
+ bh=OYZ5slALRb6YEEz0iSMCUsRQKUEEfwmgzxSeCbV3Ly0=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=OgwbO/pKpgHLYNo6JCXBabVCaL8HmrhG88Ot8MQyNV8YzXpPJOo1tImriUg7mTDvi
+ zlFGrCcr+7NAE5MLXYYjBRCnly3hujJUDaF1GSH/uAy7D1mGal2GaB33D62hQ72a67
+ XMrH4DrmhyA0CZolOBI8pvCMEr3Fi25NLupT4qk61E+nizj0Yrg6Q3Eelu70tKXwy+
+ VVe4MoxPIsBo3D2pHKcDdGKpOk3RnmNQtWHfORvBrm3aXByUgQcqUGCERi1x4V6hRx
+ 7bbI6U9N0V+VkxsTDlzVV4mHyPIosds2XGABPs3FpgCj7DQqJAc9XOZVq3IgZyRQWX
+ kyQp2w7iKDdww==
+Date: Thu, 2 Dec 2021 12:49:06 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH] ASoC: cs42l42: Implement system suspend
+Message-ID: <YajAwvruDCzaR5wS@sirena.org.uk>
+References: <20211201153648.17259-1-rf@opensource.cirrus.com>
+ <YaejghraYE6lD7FD@sirena.org.uk>
+ <87930df9-6220-807e-a655-1c7d7ec020ab@opensource.cirrus.com>
+ <YafyWnVA1J1rgCf1@sirena.org.uk>
+ <20211202095333.GK18506@ediswmail.ad.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK: N
-Cc: devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>,
- Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>, cujomalainey@google.com,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Project_Global_Chrome_Upstream_Group@mediatek.com, tzungbi@google.com,
- linux-mediatek@lists.infradead.org, Daniel Baluta <daniel.baluta@nxp.com>,
- linux-arm-kernel@lists.infradead.org, sound-open-firmware@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="nCM9gNUjdUpogTrV"
+Content-Disposition: inline
+In-Reply-To: <20211202095333.GK18506@ediswmail.ad.cirrus.com>
+X-Cookie: Put no trust in cryptic comments.
+Cc: patches@opensource.cirrus.com,
+ Richard Fitzgerald <rf@opensource.cirrus.com>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,74 +86,66 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
 
-This patch adds document for mediatek adsp mbox
+--nCM9gNUjdUpogTrV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
----
- .../bindings/mailbox/mtk,adsp-mbox.yaml       | 52 +++++++++++++++++++
- 1 file changed, 52 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mailbox/mtk,adsp-mbox.yaml
+On Thu, Dec 02, 2021 at 09:53:33AM +0000, Charles Keepax wrote:
+> On Wed, Dec 01, 2021 at 10:08:26PM +0000, Mark Brown wrote:
 
-diff --git a/Documentation/devicetree/bindings/mailbox/mtk,adsp-mbox.yaml b/Documentation/devicetree/bindings/mailbox/mtk,adsp-mbox.yaml
-new file mode 100644
-index 000000000000..25756837797f
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mailbox/mtk,adsp-mbox.yaml
-@@ -0,0 +1,52 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mailbox/mtk,adsp-mbox.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Mediatek ADSP mailbox
-+
-+maintainers:
-+  - Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
-+
-+description: |
-+  The MTK ADSP mailbox Inter-Processor Communication (IPC) enables the SoC
-+  to ommunicate with ADSP by passing messages through two mailbox channels.
-+  The MTK ADSP mailbox IPC also provides the ability for one processor to
-+  signal the other processor using interrupts.
-+
-+properties:
-+  compatible:
-+    items:
-+      - const: mediatek,mt8195-adsp-mbox
-+
-+  "#mbox-cells":
-+    const: 0
-+
-+  reg:
-+    description:
-+      Physical address base for dsp mbox registers.
-+
-+  interrupts:
-+    description:
-+      adsp mbox interrupt
-+
-+required:
-+  - compatible
-+  - "#mbox-cells"
-+  - reg
-+  - interrupts
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    adsp_mailbox0:mailbox@10816000 {
-+        compatible = "mediatek,mt8195-adsp-mbox";
-+        #mbox-cells = <0>;
-+        reg = <0x10816000 0x1000>;
-+        interrupts = <GIC_SPI 702 IRQ_TYPE_LEVEL_HIGH 0>;
-+    };
--- 
-2.18.0
+> > ...that's based on the assumption that this is all about the magic write
+> > sequences you're using for shutdown potentially conflicting with default
+> > values you've got in the cache?  If it's not those then the assumption
+> > is that either the device was reset in which case it has reset values or
+> > the device was not reset and held it's previous value, in which case the
+> > cache sync is redundant.
 
+> This isn't quite accurate though, as whilst the device was
+> suspended the user may have touched ALSA controls which will have
+
+> updated the state of the cache. Thus the cache requires a sync
+> regardless of if the hardware turned off.
+
+Right, an actual description of an actual issue.  Though how would they
+have touched the ALSA controls during system suspend?  Userspace should
+halted before we start suspending devices so there shouldn't be anything
+new coming in from the application layer while the device is in cache
+only mode.  The sound card as a whole should've been suspended first so
+nothing should be coming in from there either.
+
+> I suspect we do need to have a think about the write sequences,
+> but there is also a more general issue here. The sequence looks
+> like this:
+
+> 1) Device enters cache only mode.
+> 2) User writes an ALSA control causing a register to return to
+> its default value.
+> 3) Device exits cache only and does a cache sync.
+
+This is a thing that happens for runtime suspend but for runtime suspend
+we have good tracking of if the device lost power so we shouldn't just
+be marking the cache as dirty unconditionally.  For system suspend there
+shouldn't be a need to worry about userspace changing anything, and
+anything coming in from the rest of the kernel should be very limited.
+
+In any case this isn't something that should be hacked around in an
+individual driver, like I say whatever the driver is trying to do needs
+to be written in a clear and obvious fashion.
+
+--nCM9gNUjdUpogTrV
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGowMEACgkQJNaLcl1U
+h9DBhQf/TTyORcnTZkHZB+p/0txthGanm/yQPncXofYRB8q3HBkAVmWZIrmPk7Wf
+836TS2fc6cXWOdXCOg91On1weoFiimW3Tf+mr4uac6H3PT3seXnv/7T69kpYN735
+EIVcqQdJDRrKFHw9wWUDIzq5i2Si31QiUNuud+L7HizkMsbUlZrjoeP9bREuJaYu
+FgDOn2mddi4TE+Qib//o9cFik48P0vFZ7STVNoRad1PDsbnIJUhp0m7aNA3nUSNf
+cVphB6f6cWKxhh6CS8TK/faraauQ69jv/yo00BWqmVxnJF/jU2D7o4fj5HqgGETS
+aQzn3pUOWBxtCdzpd/7f0wd7fOXmFQ==
+=Y5jC
+-----END PGP SIGNATURE-----
+
+--nCM9gNUjdUpogTrV--
