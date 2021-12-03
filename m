@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83F39C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Dec 2021 06:27:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85018C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Dec 2021 06:27:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D03B02213;
-	Fri,  3 Dec 2021 07:26:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D03B02213
+	by alsa0.perex.cz (Postfix) with ESMTPS id 70C232240;
+	Fri,  3 Dec 2021 07:26:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70C232240
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638512818;
-	bh=nx4Rfh8aIWeZ0IdbVM3Sa3tJKLUCSnfTHWvXcs/FmFc=;
+	s=default; t=1638512867;
+	bh=2Z2vlLzF+DMH7Qmvw1Sxnr2gulfR2MYI3WreNqNQHcI=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tUj2Ut8uoqgg02nYhkVa4hmMJbmWpNLnY1HR44zStPfnJdYGIFzocUCWRlW8vljmh
-	 mVv3m5MIBcpeMwxRUGlbxkaSYXxjaxS/fT8Ri/nlJQOxvJbEHcqNnp2ODSLw0vAIGd
-	 smqT33Nau6AvEg6XZaGbvDLE/27tbPBgXlDDYz5Q=
+	b=l7YcW3NbKtt6AKBb3Kd7l338RQ6zKpsCthkzXNtnjKzyAiMo8SwBzeKPHcrvhL53G
+	 eqfXQNH2WSAmrXTnq64lduM4+WqPJ6Xm5CnO1YPsCFQ+P7VF+jIrz6mlFQBLhdQQ3x
+	 LtHo14n5zybbjhUzoe3sunHtSDygcLQkCauBh+jk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 36442F8015B;
-	Fri,  3 Dec 2021 07:26:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 85C00F80246;
+	Fri,  3 Dec 2021 07:26:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8346EF80085; Fri,  3 Dec 2021 07:26:05 +0100 (CET)
+ id 0CDD0F8025C; Fri,  3 Dec 2021 07:26:29 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 6F024F80085
- for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2021 07:25:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F024F80085
+ by alsa1.perex.cz (Postfix) with ESMTP id 14EF1F80246
+ for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2021 07:26:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14EF1F80246
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1638512753923007011-webhooks-bot@alsa-project.org>
-References: <1638512753923007011-webhooks-bot@alsa-project.org>
+In-Reply-To: <1638512782003710032-webhooks-bot@alsa-project.org>
+References: <1638512782003710032-webhooks-bot@alsa-project.org>
 Subject: init procedure is executed during a store and restore process when
  the final snd_ctl_elem is not readable
-Message-Id: <20211203062605.8346EF80085@alsa1.perex.cz>
-Date: Fri,  3 Dec 2021 07:26:05 +0100 (CET)
+Message-Id: <20211203062629.0CDD0F8025C@alsa1.perex.cz>
+Date: Fri,  3 Dec 2021 07:26:29 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -56,12 +56,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-utils issue #122 was opened from yixingwang0517:
+alsa-project/alsa-utils issue #122 was edited from yixingwang0517:
 
 When i execute the following commands sequencitally,
 
-    alsa store -f 1.txt
-    alsa restore -f 1.txt
+    alsactl store -f 1.txt
+    alsactl restore -f 1.txt
 
 my playing volume was initialized.
 
