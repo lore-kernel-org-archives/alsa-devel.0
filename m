@@ -4,72 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3DEFC433F5
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Dec 2021 23:37:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0483BC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Dec 2021 23:39:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 07A9B253B;
-	Sat,  4 Dec 2021 00:36:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 07A9B253B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3FDA22244;
+	Sat,  4 Dec 2021 00:38:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3FDA22244
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638574626;
-	bh=0dHj4n5AvvSs6deeTAdsmALBRYJT3t7ILevipSepM7E=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1638574762;
+	bh=ugjl0H7vwIDAKErgbbl0nHdANyCUHl1G37yscnbU5YY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=unva1GKfAyRl0X19zSj6RzIJk1pAh+WCmK8OPmetgruw1LtA6Kw0y/jw0X46I6/0r
-	 so8l6RFolC8NmiaGUc3SpJpDRc4lt8EFgnv/hMN9rz4FAte9PSzMuZmwyAbMJqSkd3
-	 Iogu4DMWnM07v1wLCILQ4S7JpM17VaAEpjtc4V3I=
+	b=n4BByeP1glzzrVegVFu34hfjtSO7dUH8KsWA4wz5MM9Snl0GHe7gQctL8J/tBgD4u
+	 HfVxJMaTQBozXfEIZvx71ZIxr1y8ODzxYA23dMsXd4mcJd0vgAbKkSsaUwrpkdWvjT
+	 TmYcgdVYnQS3XT7IbxmMXwBawM64E2eT5qkzHVMY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EE355F804FF;
-	Sat,  4 Dec 2021 00:34:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BDA6FF8015B;
+	Sat,  4 Dec 2021 00:38:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CA3C7F80506; Sat,  4 Dec 2021 00:34:39 +0100 (CET)
-Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com
- [209.85.167.172])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 62BB7F80246; Sat,  4 Dec 2021 00:38:30 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BBC8EF800A7
- for <alsa-devel@alsa-project.org>; Sat,  4 Dec 2021 00:34:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BBC8EF800A7
-Received: by mail-oi1-f172.google.com with SMTP id bf8so8817813oib.6
- for <alsa-devel@alsa-project.org>; Fri, 03 Dec 2021 15:34:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
- :message-id;
- bh=eoZz1/dE2uVxxnzNEe6cyt2XRJa+hiTl6N5jptXjP3M=;
- b=fkIA+9sp3nRqMp6I3mZdk2zrGd8azkFNyM7Htf8pPouuvp6Jp57fBecIpQtWQeJ5op
- iiDbNnIdCh8KY684uvjRtEf97KhXVKnYBzSNkjoDDqpayLKfidDDBN6kk036tBy5uqfm
- Ujy3kCraff4tyfIfnZ3ouwWgZdidmzjW4fRVhV0LzdMJgbez3CrDtcT8sGyuOYmiUuwb
- Bp0SRpQFofEmqhU6kteQKh49iMzk2UjjGBO1wBHTKB0zMVL+zrQU1LOBmNM/1Ybyo1Bs
- dw0yp7Ime/IahgD4i8PIcXDGDL7wy99cAAJjnRpOXh4pvZ3d2hKm3TT6mdlA3O/X9nGQ
- L6Pg==
-X-Gm-Message-State: AOAM531mj2sGel3a11m09J5GHgq+zcb9wJlO6qrKwXfg+tVTVbfypZq1
- WJdqx/6J3AxvCMRzksttEA==
-X-Google-Smtp-Source: ABdhPJwDbeAXVAQZ2vLphcIxOo4mkEU5tjYPEpZZO3smEEfXMEv5SE51yep6JOTtmec1IaaZujuNXA==
-X-Received: by 2002:a05:6808:23cb:: with SMTP id
- bq11mr12281951oib.2.1638574471549; 
- Fri, 03 Dec 2021 15:34:31 -0800 (PST)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net.
- [66.90.148.213])
- by smtp.gmail.com with ESMTPSA id k16sm877919otp.21.2021.12.03.15.34.30
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 03 Dec 2021 15:34:31 -0800 (PST)
-Received: (nullmailer pid 1043015 invoked by uid 1000);
- Fri, 03 Dec 2021 23:34:15 -0000
-From: Rob Herring <robh@kernel.org>
-To: Jayesh Choudhary <j-choudhary@ti.com>
-In-Reply-To: <20211203120243.24173-1-j-choudhary@ti.com>
-References: <20211203120243.24173-1-j-choudhary@ti.com>
-Subject: Re: [PATCH v4] ASoC: dt-bindings: davinci-mcasp: convert McASP
- bindings to yaml schema
-Date: Fri, 03 Dec 2021 17:34:15 -0600
-Message-Id: <1638574455.292522.1043014.nullmailer@robh.at.kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4AF86F80085
+ for <alsa-devel@alsa-project.org>; Sat,  4 Dec 2021 00:38:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4AF86F80085
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="X6r9KGXE"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 289B562D3F
+ for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2021 23:38:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D878C56748
+ for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2021 23:38:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1638574700;
+ bh=ugjl0H7vwIDAKErgbbl0nHdANyCUHl1G37yscnbU5YY=;
+ h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+ b=X6r9KGXEbceJ0Up6Zpwiczm/NBz1vJdPLKlKmw7rcXBkFMqH0o7YkVaWlccMMdQ6a
+ EA8EmX77KnwxPXtzbIqgWoZj9quNOcjXGXGkKawHekDwCarjZmrDto8iz15Vuk/ESB
+ +0bS/DWq/epaBlE7NepAatAGNylv/vUrXvDtY2WnWyooZFavy8tXg1I0JwUme/LGTo
+ 5oPyOKv0ofbANpwqtgiy6E0RoGRdwj93fPnoWHO4nhDibSU6YOhsWctZ4fr1bdsd6m
+ 1WsA5bnbHOF0TmZueQ6N9q9j1CGZTi9i7OjCJkn2mLcoX87yjzh9xCbyUVE2W4RW1t
+ AaymrUsj6eDIA==
+Received: by mail-ed1-f45.google.com with SMTP id l25so17619809eda.11
+ for <alsa-devel@alsa-project.org>; Fri, 03 Dec 2021 15:38:20 -0800 (PST)
+X-Gm-Message-State: AOAM530Y9tkR2prcjeqlwgzJ7BOTZA0edXvi/brUxydQg8TpEtRi3evC
+ cz3Hm0fQRQebNlhveRDfrareaJbycOPzoDI8pg==
+X-Google-Smtp-Source: ABdhPJw+XO3cjO5SrZ8n1uXXjNbXhXGWsrFPtegxV4Y0/WHLg25PF4V8x+BXMIt5VKVNdrF0HCq7JUvus1wH1rof8RI=
+X-Received: by 2002:a17:907:16ac:: with SMTP id
+ hc44mr26234009ejc.363.1638574698507; 
+ Fri, 03 Dec 2021 15:38:18 -0800 (PST)
+MIME-Version: 1.0
+References: <1638547658-22032-1-git-send-email-srivasam@codeaurora.com>
+ <1638547658-22032-10-git-send-email-srivasam@codeaurora.com>
+ <1638574455.248037.1043006.nullmailer@robh.at.kernel.org>
+In-Reply-To: <1638574455.248037.1043006.nullmailer@robh.at.kernel.org>
+From: Rob Herring <robh+dt@kernel.org>
+Date: Fri, 3 Dec 2021 17:38:07 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKf4Y84+_PQqhwMEEiJNrR92urMUYSqYTEU0_c7fYnyhQ@mail.gmail.com>
+Message-ID: <CAL_JsqKf4Y84+_PQqhwMEEiJNrR92urMUYSqYTEU0_c7fYnyhQ@mail.gmail.com>
+Subject: Re: [PATCH v8 09/10] ASoC: dt-bindings: Add SC7280 lpass cpu bindings
+To: Srinivasa Rao Mandadapu <srivasam@codeaurora.com>, 
+ Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- lgirdwood@gmail.com, robh+dt@kernel.org, linux-kernel@vger.kernel.org,
- broonie@kernel.org, peter.ujfalusi@gmail.com
+ bgoswami@codeaurora.org, lgirdwood@gmail.com,
+ Venkata Prasad Potturu <potturu@codeaurora.org>, linux-arm-msm@vger.kernel.org,
+ plai@codeaurora.org, linux-kernel@vger.kernel.org, swboyd@chromium.org,
+ tiwai@suse.com, agross@kernel.org, rohitkr@codeaurora.org, broonie@kernel.org,
+ bjorn.andersson@linaro.org, judyhsiao@chromium.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,70 +95,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 03 Dec 2021 17:32:43 +0530, Jayesh Choudhary wrote:
-> Convert the bindings for McASP controllers for TI SOCs from txt
-> to YAML schema.
-> 
-> Adds additional properties 'clocks', 'clock-names', 'power-domains',
-> '#sound-dai-cells' and 'port' which were missing from txt file.
-> Removes properties 'sram-size-playback' and 'sram-size-capture'
-> since they are not used.
-> Adds 'dmas' and 'dma-names' in the example which were missing from
-> the txt file.
-> Changes 'interrupts' and 'interrupt-names' from optional to
-> required properties.
-> Changes 'op-mode', 'serial-dir' and 'tdm-slots' to optional properties
-> as they are not needed if the McASP is used only as GPIO.
-> 
-> Adds the yaml file in the 'MAINTAINERS' under the heading 'TEXAS
-> INSTRUMENTS ASoC DRIVERS'
-> 
-> Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
-> ---
-> Changelog:
-> v4:
-> - changes the commit message
-> - adds type and description to relevant properties
-> - changes maxItems for 'serial-dir'
-> - removes properties 'sram-size-playback' and 'sram-size-capture'
->   as they are not used
-> - removes 'function-gpios'
-> - removes 'num-serializer'
-> - marks 'tdm-slots', 'serial-dir' and 'op-mode' as optional properties
-> - adds the yaml file in MAINTAINERS
-> 
-> v3:
-> - removes maxItems from 'clock-names'
-> 
-> v2:
-> - changes the commit message
-> - modifies the properties 'clocks', 'clock-names', 'dma-names',
->   'dmas', 'interrupts' and 'interrupt-names' according to the
->   arm SOCs
-> - adds 'ports' and 'num-serializer' as node properties
-> 
->  .../bindings/sound/davinci-mcasp-audio.txt    |  86 --------
->  .../bindings/sound/davinci-mcasp-audio.yaml   | 185 ++++++++++++++++++
->  MAINTAINERS                                   |   1 +
->  3 files changed, 186 insertions(+), 86 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
->  create mode 100644 Documentation/devicetree/bindings/sound/davinci-mcasp-audio.yaml
-> 
+On Fri, Dec 3, 2021 at 5:34 PM Rob Herring <robh@kernel.org> wrote:
+>
+> On Fri, 03 Dec 2021 21:37:37 +0530, Srinivasa Rao Mandadapu wrote:
+> > From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> >
+> > Add bindings for sc7280 lpass cpu driver which supports
+> > audio over i2s based speaker, soundwire based headset, msm dmics
+> > and HDMI Port.
+> >
+> > Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> > Co-developed-by: Venkata Prasad Potturu <potturu@codeaurora.org>
+> > Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
+> > ---
+> >  .../devicetree/bindings/sound/qcom,lpass-cpu.yaml  | 70 +++++++++++++++++++---
+> >  1 file changed, 62 insertions(+), 8 deletions(-)
+> >
+>
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+>
+> yamllint warnings/errors:
+>
+> dtschema/dtc warnings/errors:
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.example.dt.yaml: lpass@62d80000: reg: [[0, 1658351616, 0, 425984], [0, 1659895808, 0, 167936]] is too short
+>         From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
 
-Running 'make dtbs_check' with the schema in this patch gives the
-following warnings. Consider if they are expected or the schema is
-incorrect. These may not be new warnings.
+Are you running the checks before you send out your patches. Because
+it seems like you keep sending things with the same errors.
 
-Note that it is not yet a requirement to have 0 warnings for dtbs_check.
-This will change in the future.
+If there's errors, I'm not going to review this. If you need help
+getting it to work, then ask.
 
-Full log is available here: https://patchwork.ozlabs.org/patch/1563206
+And what's with your email setup? codeaurora.com bounces.
 
-
-mcasp@0: 'num-serializer' does not match any of the regexes: 'pinctrl-[0-9]+'
-	arch/arm/boot/dts/am335x-cm-t335.dt.yaml
-	arch/arm/boot/dts/am335x-sbc-t335.dt.yaml
-
-mcasp@0: 'rt-num-evt' does not match any of the regexes: 'pinctrl-[0-9]+'
-	arch/arm/boot/dts/am335x-wega-rdk.dt.yaml
-
+Rob
