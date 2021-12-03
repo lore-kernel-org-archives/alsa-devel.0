@@ -4,86 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBB49C433FE
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Dec 2021 14:46:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4DA8BC4332F
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Dec 2021 14:46:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C7A5C2181;
-	Fri,  3 Dec 2021 15:45:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C7A5C2181
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7AC4222D5;
+	Fri,  3 Dec 2021 15:46:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7AC4222D5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638542764;
-	bh=bX8Vfz6ADmVrRbqPqFvxhNjM5ked0Ex9KxYrlzf87UI=;
-	h=Date:To:References:From:Subject:In-Reply-To:Cc:List-Id:
+	s=default; t=1638542816;
+	bh=7ydraca8lYoFiXgumJE6RxyE/SYwl8HxwGn32l/jJdI=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=obnTmUzP3cjLRjqCKKQ8pHtb3ttquTlnAgr59Xc82jNjFJprHbth3xydu/VcfdtD1
-	 TVaCvCdgGPbHDkIb7BrOP8nWDFzJQl9eyh+7vBzt+l8EucWSUtx+akntdxCz2r7MJh
-	 TZbVMdX9IZodg1B+b1rIIuIpG7FzJC6uRcjCwqf8=
+	b=WD+UEmd/wLWSj5vuFW9ArSwtVXWchWMDRi9i7wWyTGtSz0peWxGHaYJiOQc2cgSR/
+	 jFBb3LTTdn4LVji65k5/Vu2an99JTQoBf61hOFTSgoiRG4PVjC5+4t/sqGhZplbQ7k
+	 214STx+y3W5wnUsL8e9QewGOK/vEc0oNTx5mZeTs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6863FF8015B;
-	Fri,  3 Dec 2021 15:45:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1A29EF800D3;
+	Fri,  3 Dec 2021 15:46:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 602DDF80246; Fri,  3 Dec 2021 15:45:13 +0100 (CET)
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com
- [IPv6:2a00:1450:4864:20::132])
+ id E2473F8028D; Fri,  3 Dec 2021 15:46:03 +0100 (CET)
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com
+ [IPv6:2a00:1450:4864:20::233])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3423EF800A7
- for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2021 15:45:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3423EF800A7
+ by alsa1.perex.cz (Postfix) with ESMTPS id CB846F80249
+ for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2021 15:45:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB846F80249
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="QRVw533s"
-Received: by mail-lf1-x132.google.com with SMTP id bu18so7212944lfb.0
- for <alsa-devel@alsa-project.org>; Fri, 03 Dec 2021 06:45:05 -0800 (PST)
+ header.b="Pl4pmwVC"
+Received: by mail-lj1-x233.google.com with SMTP id k23so6669655lje.1
+ for <alsa-devel@alsa-project.org>; Fri, 03 Dec 2021 06:45:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=message-id:date:mime-version:user-agent:content-language:to:cc
- :references:from:subject:in-reply-to:content-transfer-encoding;
- bh=scZUqwoe/cvKGUS4d3voXFgyPguXwcuU4NvbWZlBd6k=;
- b=QRVw533su6nuyf2yzzNStUibspi0/SQyKG11/j8oyomM7ghfnl7s0ejroE0OL33L+0
- OyTxMd3Z9AXXUY4LeT/eUjMi1wjsS6leS6vEVAdgcgMLwT2YfGVGhNMnN18/0nvo1MkY
- EhmHBsuxQG0NoF9zb+GHNGzC7YhYj/DyvV+U53kIYxkLK+xIv8V3996aNbuLLsdPHkMq
- JS2WqjKHVs1Yw2JE0xTbbL2QxRhY/C2A79oz6hAF49bl9x/JTwqWDhH8vTWqL1lk5JH5
- MkPJR9C+tohlmjA2SnkVB20atly/sLRPRRRBGt+G5exGeq2epNbdq8rDPVeoOc/6J4Ee
- vl7w==
+ h=message-id:date:mime-version:user-agent:subject:content-language:to
+ :cc:references:from:in-reply-to:content-transfer-encoding;
+ bh=isVI3i0OnnF9HKk7LL+6nbdR6JnxGxIvGGvKoeFOlMs=;
+ b=Pl4pmwVCPUPIF2AYBaEOUFoTbHtAE2VsxM7VpuSv/RBCkSZGX34k/NBdso9Tv0jLLp
+ KEfLlxmt8wVHVSFloSOH3k4EUquj0I8STkq0WMMwVzKsMeju+DMyC5TA7JQnRrdqSl2N
+ 9mW9VNLaXAvL/hM/n7WVI5UdfY0ud0ZMFDeiKFuEgJDC3kiKR88r6DwHc0dB+rj+cLeo
+ JQLU8JWgkQt7zRrFf8RKkLnTtanGE4fnIBJVJMKz4L42PwfhxNWGItUFBwNus9X0aw7s
+ a5CjbPL1yMkybeauqRsYBInMN8tharIrL9coPnjWKcjZe6uRg86edJannynkQwJ8a1+/
+ +fJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent
- :content-language:to:cc:references:from:subject:in-reply-to
+ h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+ :content-language:to:cc:references:from:in-reply-to
  :content-transfer-encoding;
- bh=scZUqwoe/cvKGUS4d3voXFgyPguXwcuU4NvbWZlBd6k=;
- b=vE/TnQZygu8ge2n99ayY7J21EZ16N2QnmN/Pbb+JuSSkc4XBUXHe+gMnU8n0k5ouAJ
- Xayo1xAuzG3F9zXYqxGBUcIvjEczbRC8nXNWsVgmJ2iZMhmIzF70TniMc6XJZw0aCJNV
- FyIJQBlMCaLs4Z3JilpGNRpfvqp8IO844IfXkGBAMkjd7lRJryeoQ1sv8n7eYwokch/T
- vCb4gIp8i4iiAjmZGNCavdVa3n609iur8xQUTtNizGv6W82Cm4aLNrE2oGTwDsP/3wBc
- kwJHlsn0hdB4ZLtHs7hY2Qnk8GyO61fMMwNu+tWncKCmygtohnYLBanFShC6luItX2kK
- lG6w==
-X-Gm-Message-State: AOAM533rr8gs359yGAqdKyXwjQCzpzVQ0krMb4pAv36gRHRpKu2dWcsd
- ii/yiOOmma0y5jijWlGLCxc=
-X-Google-Smtp-Source: ABdhPJxM5aAacDM0IWLjqUmhPGQbSAnERAMKy9fh66EWM/b4VlrQzk+6+hv6dA3YgRNZJFp1LpZBow==
-X-Received: by 2002:a19:fc08:: with SMTP id a8mr18563847lfi.645.1638542704780; 
- Fri, 03 Dec 2021 06:45:04 -0800 (PST)
+ bh=isVI3i0OnnF9HKk7LL+6nbdR6JnxGxIvGGvKoeFOlMs=;
+ b=Fo6k+KpXESbWhzus/1zEu2n02ESZxfXPxVcs+k49PBjo+eGejzxpY6DN0Qkfea+6Cs
+ mYhhERLFZ7NwHy9+9w9cmglDsUTFvAcOEJSidN1MpLXRN9+vhjWqYBoFsFazHmZNbcmu
+ RyEkrdar1SC7db0v4pDcFFtIhpxK4D0JW1c+BdgH1hzGm+ECPg5nRs/+uMis5d4D6KJh
+ FIlaU4mVTn+THwNUvpUggECbyq54yUT4H/Z7it3zl42DRuHlNyadvnEqG6sgIlAqOTZU
+ YKZYZLcIrqIStYUOS1J9NwnC2ovdqT8zo1v9XO0ncorxclw28Tb3sh3vJAJbkqvtDcT4
+ 6yTw==
+X-Gm-Message-State: AOAM531TWWiI7sHEIoQdVWVfJUmE9C65dgbvYbg1DXBVnAgLzH7+5TWW
+ VKZNFHD49TyZp/IKfc9XW60=
+X-Google-Smtp-Source: ABdhPJx3zBP2dIEW33Re8Np8HCSdfQ1NKxZT30mOLTPKIvqlbRVrKtuhDhGOeEjnvH9cBWodlZRg0w==
+X-Received: by 2002:a2e:a7c8:: with SMTP id x8mr18583832ljp.524.1638542753575; 
+ Fri, 03 Dec 2021 06:45:53 -0800 (PST)
 Received: from [10.0.0.115] (91-153-170-164.elisa-laajakaista.fi.
  [91.153.170.164])
- by smtp.gmail.com with ESMTPSA id u2sm395546lfi.108.2021.12.03.06.45.03
+ by smtp.gmail.com with ESMTPSA id t69sm434642lff.110.2021.12.03.06.45.52
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 03 Dec 2021 06:45:04 -0800 (PST)
-Message-ID: <1a2831d2-49bb-f1fc-14e8-d6a0d53664cf@gmail.com>
-Date: Fri, 3 Dec 2021 16:45:31 +0200
+ Fri, 03 Dec 2021 06:45:53 -0800 (PST)
+Message-ID: <7dbddf9f-f8fc-f223-7f94-1e1f6382bc7e@gmail.com>
+Date: Fri, 3 Dec 2021 16:46:20 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.3.2
+Subject: Re: [PATCH v1 2/2] ASoC: ti: davinci-mcasp: Remove unnecessary
+ conditional
 Content-Language: en-US
 To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
  Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org
 References: <20211202205612.76216-1-andriy.shevchenko@linux.intel.com>
+ <20211202205612.76216-2-andriy.shevchenko@linux.intel.com>
 From: =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
-Subject: Re: [PATCH v1 1/2] ASoC: ti: davinci-mcasp: Get rid of duplicate
- of_node assignment
-In-Reply-To: <20211202205612.76216-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20211202205612.76216-2-andriy.shevchenko@linux.intel.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Cc: Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
@@ -106,36 +107,40 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 On 02/12/2021 22:56, Andy Shevchenko wrote:
-> GPIO library does copy the of_node from the parent device of
-> the GPIO chip, there is no need to repeat this in the individual
-> drivers. Remove assignment here.
+> Instead of double validating of_node, return value of
+> the boolean property directly.
 
-Thanks, looks good,
+Nice cleanup, thanks,
 Acked-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
 
-> For the details one may look into the of_gpio_dev_init() implementation.
-
-Which works after commit 1df62542e0161.
-
+> We can't remove ifdeffery, because in OF_GPIO=n cases
+> it might bring unwanted surprises.
+> 
 > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > ---
->  sound/soc/ti/davinci-mcasp.c | 3 ---
->  1 file changed, 3 deletions(-)
+>  sound/soc/ti/davinci-mcasp.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
 > 
 > diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
-> index 56a19eeec5c7..81c1ccec5904 100644
+> index 81c1ccec5904..3e105caac95e 100644
 > --- a/sound/soc/ti/davinci-mcasp.c
 > +++ b/sound/soc/ti/davinci-mcasp.c
-> @@ -2230,9 +2230,6 @@ static int davinci_mcasp_init_gpiochip(struct davinci_mcasp *mcasp)
->  	mcasp->gpio_chip = davinci_mcasp_template_chip;
->  	mcasp->gpio_chip.label = dev_name(mcasp->dev);
->  	mcasp->gpio_chip.parent = mcasp->dev;
-> -#ifdef CONFIG_OF_GPIO
-> -	mcasp->gpio_chip.of_node = mcasp->dev->of_node;
+> @@ -1870,12 +1870,10 @@ static int mcasp_reparent_fck(struct platform_device *pdev)
+>  static bool davinci_mcasp_have_gpiochip(struct davinci_mcasp *mcasp)
+>  {
+>  #ifdef CONFIG_OF_GPIO
+> -	if (mcasp->dev->of_node &&
+> -	    of_property_read_bool(mcasp->dev->of_node, "gpio-controller"))
+> -		return true;
 > -#endif
->  
->  	return devm_gpiochip_add_data(mcasp->dev, &mcasp->gpio_chip, mcasp);
+> -
+> +	return of_property_read_bool(mcasp->dev->of_node, "gpio-controller");
+> +#else
+>  	return false;
+> +#endif
 >  }
+>  
+>  static int davinci_mcasp_get_config(struct davinci_mcasp *mcasp,
 > 
 
 -- 
