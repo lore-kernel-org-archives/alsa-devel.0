@@ -4,81 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 219AAC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Dec 2021 17:11:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1F0FC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Dec 2021 17:24:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4AA8D2385;
-	Fri,  3 Dec 2021 18:10:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4AA8D2385
+	by alsa0.perex.cz (Postfix) with ESMTPS id DBC8220B8;
+	Fri,  3 Dec 2021 18:23:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DBC8220B8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638551509;
-	bh=7UtGC0ZT//eOT+9IlC4CxqitphU58YW2uTJ/EuIHQWg=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=BRgNTa9gG+qWaR8j+r1fO1Jxvlx7PSaBAdbt4oBAXR9vlDBnV95WA+frO6kORO1n1
-	 GzNoXYPXZmWII5j9febvEO5lTvs/27/2FBdOFguQTEo5Ik1ydLu+LZIDqFyLe6MHi3
-	 OY0dJldYLxfPBj2E2Jhi3invWVVyep0wBgebJ+gg=
+	s=default; t=1638552270;
+	bh=aS0lNqioKeFdqy58GL3kZG+7dWoFjoKQNzygrLn9qWs=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=VG/CB/MZ6gP8u/svpkg4zANlRMRW16xYDRbVxhWP8z9B6Z6N+6upshdaKME3/sW/0
+	 LtLCa2yEBPzan2KLdmIamBGCWl04cRgU+WaFqB6wS5kbQbHM/3adamzkhPM3GRtMwp
+	 8vB/9e4G4nNsXWU07x5uf5HJ8qVLEwAjZvCk/nl8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 427BDF804E3;
-	Fri,  3 Dec 2021 18:10:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 740C5F80246;
+	Fri,  3 Dec 2021 18:23:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 75EEBF804ED; Fri,  3 Dec 2021 18:10:06 +0100 (CET)
-Received: from so254-9.mailgun.net (so254-9.mailgun.net [198.61.254.9])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id C3CEDF800D3; Fri,  3 Dec 2021 18:23:38 +0100 (CET)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B679BF804E3
- for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2021 18:09:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B679BF804E3
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=mg.codeaurora.org
- header.i=@mg.codeaurora.org header.b="ShigLeqh"
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
- q=dns/txt; 
- s=smtp; t=1638551396; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=/meUHwDDOk5e61F+LhfGyKm+hqdzZdVug3eHuXfSWa8=;
- b=ShigLeqhW8Bf4oWJNVjFLdIqzQ5PBO6KjH5EuRLUomncrURS97zrp8goxM7Utr7YemIqM6yJ
- 7pouMntE/Z/vb50a3dGYmVGAe0B4lY5HotvhbA4T0ISt16hv5cyCo87d2t138vbmQgKp1Liq
- 1UMy4oY1hlKmNvfxnF1Wux240js=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
- 61aa4f59e7d68470aff47be6 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 03 Dec 2021 17:09:45
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id 7A419C4361C; Fri,  3 Dec 2021 17:09:44 +0000 (UTC)
-Received: from hu-srivasam-hyd.qualcomm.com (unknown [202.46.22.19])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: srivasam)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id A156AC43617;
- Fri,  3 Dec 2021 17:09:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org A156AC43617
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- dmarc=none (p=none dis=none) header.from=codeaurora.com
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- spf=fail smtp.mailfrom=codeaurora.com
-From: Srinivasa Rao Mandadapu <srivasam@codeaurora.com>
-To: agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
- broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
- bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
- srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
- linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- swboyd@chromium.org, judyhsiao@chromium.org
-Subject: [PATCH v8 2/3] ASoC: qcom: Add macro for lpass DAI id's max limit
-Date: Fri,  3 Dec 2021 22:39:04 +0530
-Message-Id: <1638551345-24979-3-git-send-email-srivasam@codeaurora.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1638551345-24979-1-git-send-email-srivasam@codeaurora.com>
-References: <1638551345-24979-1-git-send-email-srivasam@codeaurora.com>
-Cc: Venkata Prasad Potturu <potturu@codeaurora.org>,
- Srinivasa Rao Mandadapu <srivasam@codeaurora.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 05572F800D3
+ for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2021 18:23:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05572F800D3
+X-IronPort-AV: E=McAfee;i="6200,9189,10187"; a="217036492"
+X-IronPort-AV: E=Sophos;i="5.87,284,1631602800"; d="scan'208";a="217036492"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 03 Dec 2021 09:23:27 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,284,1631602800"; d="scan'208";a="561783289"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+ by fmsmga008.fm.intel.com with ESMTP; 03 Dec 2021 09:23:25 -0800
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+To: alsa-devel@alsa-project.org,
+	broonie@kernel.org
+Subject: [PATCH 1/2] ASoC: SOF: Intel: pci-tgl: add ADL-N support
+Date: Fri,  3 Dec 2021 19:15:41 +0200
+Message-Id: <20211203171542.1021399-1-kai.vehmanen@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: kai.vehmanen@linux.intel.com, yung-chuan.liao@linux.intel.com,
+ lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com,
+ ranjani.sridharan@linux.intel.com, daniel.baluta@nxp.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,29 +67,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add macro for lpass DAI id's max limit to create static arrays
-and for array boundary checks.
+Add PCI DID for Intel AlderLake-N.
 
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.com>
-Co-developed-by: Venkata Prasad Potturu <potturu@codeaurora.org>
-Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/qcom/lpass.h | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/sof/intel/pci-tgl.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
-index 67ef497..c0f0247 100644
---- a/sound/soc/qcom/lpass.h
-+++ b/sound/soc/qcom/lpass.h
-@@ -16,6 +16,7 @@
- #include "lpass-hdmi.h"
- 
- #define LPASS_AHBIX_CLOCK_FREQUENCY		131072000
-+#define LPASS_MAX_PORTS			(LPASS_CDC_DMA_VA_TX8 + 1)
- #define LPASS_MAX_MI2S_PORTS			(8)
- #define LPASS_MAX_DMA_CHANNELS			(8)
- #define LPASS_MAX_HDMI_DMA_CHANNELS		(4)
+diff --git a/sound/soc/sof/intel/pci-tgl.c b/sound/soc/sof/intel/pci-tgl.c
+index f2ea34df9741..302068fd0b81 100644
+--- a/sound/soc/sof/intel/pci-tgl.c
++++ b/sound/soc/sof/intel/pci-tgl.c
+@@ -114,6 +114,8 @@ static const struct pci_device_id sof_pci_ids[] = {
+ 		.driver_data = (unsigned long)&adl_desc},
+ 	{ PCI_DEVICE(0x8086, 0x51cc), /* ADL-M */
+ 		.driver_data = (unsigned long)&adl_desc},
++	{ PCI_DEVICE(0x8086, 0x54c8), /* ADL-N */
++		.driver_data = (unsigned long)&adl_desc},
+ 	{ 0, }
+ };
+ MODULE_DEVICE_TABLE(pci, sof_pci_ids);
+
+base-commit: 0695ad92fe1a0bb7697eb92c6a145a73c5ab0e24
 -- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+2.34.1
 
