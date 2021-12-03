@@ -4,61 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DFA8DC433F5
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Dec 2021 18:41:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8858FC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Dec 2021 18:44:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 53B4223C5;
-	Fri,  3 Dec 2021 19:40:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 53B4223C5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2831D24E6;
+	Fri,  3 Dec 2021 19:43:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2831D24E6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638556909;
-	bh=XM1+/Jzfzb7gqO43NKHDi78c3yiKqmC4Xqja123FQvw=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1638557042;
+	bh=/2Mbnq6vGmH9P5g4eZuYQ0dNWjt5+nF1xogtBejsGi4=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GLK8TskpEo2tXkIJ0PFOkiPgav49wjy6BSBFTolJGMdmzuYKggNtUef9+rxk+vDED
-	 RRNp653gaYjwYnMeuPOoqGvR1un/uMFanDVvjKuaeeaPWlLsfK2sUoHNQtxSlSewJJ
-	 Lws1elplIPCT8+xtIC9uBWfR0Ji+Afj+bJdXGcOE=
+	b=nC5+R+x8sC3uPz3dS02nxrEQkgfs98DgBhIzPIOCvUZDubrAM2ghjvZUxIWHVaP7s
+	 58GBl1i/rxFUwqEVuSbVSVhjb65FuqPt6Pr3Xbh8d1500kX+RbxpFXbYGAWM6kLQaZ
+	 YlpfLEn3swfwCwu3aPWl8/pcIifIfMt9QXCsyZxs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CEC75F8015B;
-	Fri,  3 Dec 2021 19:40:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C598DF8015B;
+	Fri,  3 Dec 2021 19:43:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7780DF80246; Fri,  3 Dec 2021 19:40:57 +0100 (CET)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ id 772AEF80246; Fri,  3 Dec 2021 19:43:10 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0F2E0F800A7
+ for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2021 19:43:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F2E0F800A7
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="qrUOXQJY"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BD83CF800D3
- for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2021 19:40:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BD83CF800D3
-X-IronPort-AV: E=McAfee;i="6200,9189,10187"; a="217722775"
-X-IronPort-AV: E=Sophos;i="5.87,284,1631602800"; d="scan'208";a="217722775"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Dec 2021 10:40:49 -0800
-X-IronPort-AV: E=Sophos;i="5.87,284,1631602800"; d="scan'208";a="678189148"
-Received: from hkagda-mobl2.amr.corp.intel.com (HELO [10.212.71.79])
- ([10.212.71.79])
- by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Dec 2021 10:40:48 -0800
+ by ams.source.kernel.org (Postfix) with ESMTPS id D1946B826AB;
+ Fri,  3 Dec 2021 18:43:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09755C53FCD;
+ Fri,  3 Dec 2021 18:43:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1638556982;
+ bh=/2Mbnq6vGmH9P5g4eZuYQ0dNWjt5+nF1xogtBejsGi4=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=qrUOXQJYCynKCreXj87IGzVFsY/onj5hEXGVdJUbUmeeNqL/Y3Wf9Nl17LfoGS11g
+ JWyjFakJnxzfLEON45XGR8raa56Te+gds9xL3Fa34DQ6+mIxE1cSMzDU1BP/Ux2awr
+ x7m9tFHRnPZQO6FLeX0GCsyaUhZjoy9ObmpqZM1GHrQ++A86IcmKohKlgC+0HJb+g9
+ PoxLOdvj8/cVWa4A30wjobRboM/lLy/BtLf3CcvH7hL45FsgqIV9rIOtaCmhIrR7tQ
+ T+lyqbdY2EPpojJoPqMTJPfhLTBWd189hsuZIBVSv6DuXJq7agNO9dwzQu85gvqJID
+ 0rE+HPiEUie2w==
+Date: Fri, 3 Dec 2021 18:42:57 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Subject: Re: [bug report] ASoC: Intel: mrfld - create separate module for pci
  part
-To: Dan Carpenter <dan.carpenter@oracle.com>, vkoul@kernel.org,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Message-ID: <YaplMVVr4cbPx8bW@sirena.org.uk>
 References: <20211202151322.GA21325@kili>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <19647b98-83fd-b493-0fed-3c4e43cbeba8@linux.intel.com>
-Date: Fri, 3 Dec 2021 07:46:04 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.14.0
+ <19647b98-83fd-b493-0fed-3c4e43cbeba8@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20211202151322.GA21325@kili>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: Takashi Iwai <tiwai@suse.de>, Hans de Goede <hdegoede@redhat.com>,
- alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="JwFhH7dH9HfbDsHv"
+Content-Disposition: inline
+In-Reply-To: <19647b98-83fd-b493-0fed-3c4e43cbeba8@linux.intel.com>
+X-Cookie: Don't get mad, get interest.
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>,
+ Hans de Goede <hdegoede@redhat.com>, vkoul@kernel.org,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Dan Carpenter <dan.carpenter@oracle.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,123 +86,33 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+--JwFhH7dH9HfbDsHv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 12/3/21 4:13 AM, Dan Carpenter wrote:
-> Hello Vinod Koul,
-> 
-> The patch f533a035e4da: "ASoC: Intel: mrfld - create separate module
-> for pci part" from Nov 4, 2014, leads to the following Smatch static
-> checker warning:
-> 
-> 	sound/soc/intel/atom/sst/sst_pci.c:102 sst_platform_get_resources()
-> 	warn: resource freed on success: 'ctx->pci'
-> 
-> sound/soc/intel/atom/sst/sst_pci.c
->     25 static int sst_platform_get_resources(struct intel_sst_drv *ctx)
->     26 {
->     27         int ddr_base, ret = 0;
->     28         struct pci_dev *pci = ctx->pci;
->     29 
->     30         ret = pci_request_regions(pci, SST_DRV_NAME);
->     31         if (ret)
->     32                 return ret;
->     33 
->     34         /* map registers */
->     35         /* DDR base */
->     36         if (ctx->dev_id == SST_MRFLD_PCI_ID) {
->     37                 ctx->ddr_base = pci_resource_start(pci, 0);
->     38                 /* check that the relocated IMR base matches with FW Binary */
->     39                 ddr_base = relocate_imr_addr_mrfld(ctx->ddr_base);
->     40                 if (!ctx->pdata->lib_info) {
->     41                         dev_err(ctx->dev, "lib_info pointer NULL\n");
->     42                         ret = -EINVAL;
->     43                         goto do_release_regions;
->     44                 }
->     45                 if (ddr_base != ctx->pdata->lib_info->mod_base) {
->     46                         dev_err(ctx->dev,
->     47                                         "FW LSP DDR BASE does not match with IFWI\n");
->     48                         ret = -EINVAL;
->     49                         goto do_release_regions;
->     50                 }
->     51                 ctx->ddr_end = pci_resource_end(pci, 0);
->     52 
->     53                 ctx->ddr = pcim_iomap(pci, 0,
->     54                                         pci_resource_len(pci, 0));
->     55                 if (!ctx->ddr) {
->     56                         ret = -EINVAL;
->     57                         goto do_release_regions;
->     58                 }
->     59                 dev_dbg(ctx->dev, "sst: DDR Ptr %p\n", ctx->ddr);
->     60         } else {
->     61                 ctx->ddr = NULL;
->     62         }
->     63         /* SHIM */
->     64         ctx->shim_phy_add = pci_resource_start(pci, 1);
->     65         ctx->shim = pcim_iomap(pci, 1, pci_resource_len(pci, 1));
->     66         if (!ctx->shim) {
->     67                 ret = -EINVAL;
->     68                 goto do_release_regions;
->     69         }
->     70         dev_dbg(ctx->dev, "SST Shim Ptr %p\n", ctx->shim);
->     71 
->     72         /* Shared SRAM */
->     73         ctx->mailbox_add = pci_resource_start(pci, 2);
->     74         ctx->mailbox = pcim_iomap(pci, 2, pci_resource_len(pci, 2));
->     75         if (!ctx->mailbox) {
->     76                 ret = -EINVAL;
->     77                 goto do_release_regions;
->     78         }
->     79         dev_dbg(ctx->dev, "SRAM Ptr %p\n", ctx->mailbox);
->     80 
->     81         /* IRAM */
->     82         ctx->iram_end = pci_resource_end(pci, 3);
->     83         ctx->iram_base = pci_resource_start(pci, 3);
->     84         ctx->iram = pcim_iomap(pci, 3, pci_resource_len(pci, 3));
->     85         if (!ctx->iram) {
->     86                 ret = -EINVAL;
->     87                 goto do_release_regions;
->     88         }
->     89         dev_dbg(ctx->dev, "IRAM Ptr %p\n", ctx->iram);
->     90 
->     91         /* DRAM */
->     92         ctx->dram_end = pci_resource_end(pci, 4);
->     93         ctx->dram_base = pci_resource_start(pci, 4);
->     94         ctx->dram = pcim_iomap(pci, 4, pci_resource_len(pci, 4));
->     95         if (!ctx->dram) {
->     96                 ret = -EINVAL;
->     97                 goto do_release_regions;
->     98         }
->     99         dev_dbg(ctx->dev, "DRAM Ptr %p\n", ctx->dram);
->     100 do_release_regions:
->     101         pci_release_regions(pci);
-> --> 102         return ret;
->     103 }
-> 
-> Surely there should be a "return 0;" before the do_release_regions:
-> label?  How does this code work?
+On Fri, Dec 03, 2021 at 07:46:04AM -0600, Pierre-Louis Bossart wrote:
 
-Thanks for reporting this Dan. Yes this doesn't look good at all.
+> I would guess that indeed a return 0; is missing, but maybe it's time to
+> remove this PCI code completely. I can't think of any user of the PCI
+> parts of this driver.
 
-This PCI part is only used on Merrifield/Tangier, and I am not sure if
-anyone ever managed to make audio work with the upstream version of this
-driver. It's my understanding that this platform is no longer maintained
-by Intel, and the Edison Yocto code uses the SOF driver.
+> Andy, Hans, Mark, Takashi, what do you think?
 
-The Kconfig updated in 2018 hints at those limitations:
+I'm fine with removing it.
 
-config SND_SST_ATOM_HIFI2_PLATFORM_PCI
-	tristate "PCI HiFi2 (Merrifield) Platforms"
-	depends on X86 && PCI
-	select SND_SST_ATOM_HIFI2_PLATFORM
-	help
-	  If you have a Intel Merrifield/Edison platform, then
-	  enable this option by saying Y or m. Distros will typically not
-	  enable this option: while Merrifield/Edison can run a mainline
-	  kernel with limited functionality it will require a firmware file
-	  which is not in the standard firmware tree
+--JwFhH7dH9HfbDsHv
+Content-Type: application/pgp-signature; name="signature.asc"
 
-I would guess that indeed a return 0; is missing, but maybe it's time to
-remove this PCI code completely. I can't think of any user of the PCI
-parts of this driver.
+-----BEGIN PGP SIGNATURE-----
 
-Andy, Hans, Mark, Takashi, what do you think?
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGqZTEACgkQJNaLcl1U
+h9B3dgf/TfgVop+CgtOEA1u4587Dw+ojz+RxYPx5o+lZDBOzHXq9mc/am8wyQNO8
+EkRsepnzv1aPh/VkPyRA3hAtXHlQvVpW0YuUIfLugyzdwg5BP186iufdq7ICSI3v
+scV9lMKn5v8jz26QUpZv+S7DgTY7+1ytg2E/jmUM68p5KkVbR93d7uku50xrzaTR
+UA8UkZlb6a0bn/uPvc2mBpClwaXOpehfsTETe1+Z8EAvsSLDXdkaq3+6nRi5u0dH
+DZP6uuRku0DVAuuzxgWFHBAi7wRCHFmflrru+fC86atXQASCLhJqMB3Fb+CLEM3A
+TiX/zuypJVkuWNXWkDdPxWdjctKZ1Q==
+=L0y/
+-----END PGP SIGNATURE-----
+
+--JwFhH7dH9HfbDsHv--
