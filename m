@@ -4,79 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A954C433EF
-	for <alsa-devel@archiver.kernel.org>; Sat,  4 Dec 2021 14:41:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AEC2DC433EF
+	for <alsa-devel@archiver.kernel.org>; Sat,  4 Dec 2021 14:41:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 98E2B2354;
-	Sat,  4 Dec 2021 15:40:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 98E2B2354
+	by alsa0.perex.cz (Postfix) with ESMTPS id CB73423A6;
+	Sat,  4 Dec 2021 15:40:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB73423A6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638628871;
-	bh=0MP+PZGNBknj1hujieRlMG1tYoG+ZyNynY16LCfKHio=;
+	s=default; t=1638628904;
+	bh=ey2RRYVXUx0wilOx68X9d3JZZ/Jh56kbfhBqK93ArY0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=p/aAglwHviCi35/XOE383qfxTh1T2y2eocmwhZz8XopKHge/KI3dSqwSs37fX1ERV
-	 WTBfP1psmuXbSsXArY0pVN3L12TAIQgDQaudtdwdgdNa3HfZu1J/nFLZsTWeCHZBtW
-	 DM7bW/UCcCbm5ZNrk1SYpxJT0pFqIQQDQk7tvOlk=
+	b=COoW1Ghlp+rK+mir8L2OfGSUIEC3zdOCOtFeRdapwTsTM1Yy0qJiquosiVxjsPhTp
+	 XbqSaPO5J74zbEHJ45c1mEO14+a3qHyorT1bJJKDJQRhA5Gp7AIWRSclWVutbgJrXQ
+	 itJS3V0Z7BwpIcs/8XdnqkRIbB+BpC1aG94Uw00c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0B8DCF804E4;
-	Sat,  4 Dec 2021 15:37:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D9D16F80535;
+	Sat,  4 Dec 2021 15:38:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C5DF1F804FD; Sat,  4 Dec 2021 15:37:47 +0100 (CET)
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com
- [IPv6:2a00:1450:4864:20::234])
+ id 3E8DFF80507; Sat,  4 Dec 2021 15:37:49 +0100 (CET)
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com
+ [IPv6:2a00:1450:4864:20::130])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B1E5EF80482
- for <alsa-devel@alsa-project.org>; Sat,  4 Dec 2021 15:37:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1E5EF80482
+ by alsa1.perex.cz (Postfix) with ESMTPS id 392E6F80240
+ for <alsa-devel@alsa-project.org>; Sat,  4 Dec 2021 15:37:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 392E6F80240
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="JQs79NdQ"
-Received: by mail-lj1-x234.google.com with SMTP id e11so11854316ljo.13
- for <alsa-devel@alsa-project.org>; Sat, 04 Dec 2021 06:37:38 -0800 (PST)
+ header.b="CvIzdumJ"
+Received: by mail-lf1-x130.google.com with SMTP id c32so13806551lfv.4
+ for <alsa-devel@alsa-project.org>; Sat, 04 Dec 2021 06:37:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=vxGUSMvrOv7nlYjHA3TMjrIWjar7r9+1jQfmAuKVGRM=;
- b=JQs79NdQE/jgin55cuJTRlAzgXKoL2Rzo1eZGFcOAJ9GNWYR4mgSHfzWkebUPDlbU5
- gHPIoHbjwwqhPgXYaOsMndinfAtk7NgNptIAPiBWBgtUtw6r3ktFruT1l4T98KqZggmE
- Zuj0kD78lJl73voZWokKVN18wsZl3kbOIy/qHzuCjvYqmdfQOIWFdoJzyFdOnS3RU+5I
- mxp09MHuLMdXN+90tFxc7rOgMmxU5wXXV356apb0CSse9m2rCGnUYlGUAie0+8EFy5i/
- sofAwgg8TuXMyq8pJyg0pqcgg1xA0zPeN/HtuxVHMP+D1BNlVoXInOPQYzO1vnbe3ZVf
- /WGQ==
+ bh=yiWw98T7doYf6/KdnKDQ+eJuYvZvxnbIRrcyi8dmlBQ=;
+ b=CvIzdumJO57P7zWKTttzFuuWukezUtQ7SVqlCIDYJOCL+DDGJxa5NRlTzP5ufVTyJ3
+ WdBnoPEWjyt/yA9/2yfp5uKl97UlOmh+2/vbgRGtRKHmGAzisdMgBlLyKdImPkUtofUz
+ q9BHiVvU3wDb+5i1gQYwAeev/0armeUk1a/euDZjUbwA+gB18AP7AOuRBLxcIZpWo4yY
+ gdrBt4VM0+pFbydfe7BjRCAckyhxJp2/NNOMC77qDxxxrT2nUvwqnd7zOcVAdIFgFErp
+ YiV3VT6GsX1JEh9CqKnVF0BwtNheR9RH33TRbulARC2YxWbmmzy2zZ36Urf0WDOLiKAr
+ r+rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=vxGUSMvrOv7nlYjHA3TMjrIWjar7r9+1jQfmAuKVGRM=;
- b=6gNZPwfAubtWE3mI7CVP3UKG57oy0X0yhs6td+46nB/PI8CgQz3lSOQId98yHoADST
- e8tIJixJfK80kKJpEbU76pL7E52vxYJWD9XnVvWRhzifl29u3Wzp+tHsuNa7tpJZVV3+
- sz+G5RmFEGfjLoWQ04uNaMWmuUuFDLuGtyRAhATepZyVbywJLC0hAQmTHTtO/2VeflrK
- oXJl+x8Dmk8UlWiWEo3j+cBffxwVuPdLZxRo1XpBFnAy4PEAI0+LyqNoUBBnWVfX3zv6
- qTf0Ww9Vb2CEVnI34gH0Gg4GZOiDueD8RArFyI5oE5QFQHjo/KYmsDbRX8O/684OdVAH
- 2Suw==
-X-Gm-Message-State: AOAM531JpkJbx+tW+zwYb7Iq9ZeeX/tf3l5kgiVTWiM8rjFoEHy85JRU
- GgOsWwPO7SjSZ4nF6l37chM=
-X-Google-Smtp-Source: ABdhPJwFKSY6gXiGJCMXPDEpLLxkCIqqB4WLBSM5beC7Ci2xUaQbEQqWA290kHeRtDe6PC0JM0YUDw==
-X-Received: by 2002:a2e:93c4:: with SMTP id p4mr25085599ljh.367.1638628652818; 
- Sat, 04 Dec 2021 06:37:32 -0800 (PST)
+ bh=yiWw98T7doYf6/KdnKDQ+eJuYvZvxnbIRrcyi8dmlBQ=;
+ b=ZM/YN5AHWMduT0zYQ5B+zvdabeIXNQLRwT2UIQfawmsESW7H3px7E4kBjfm6MtCaIY
+ 72u0U2JsSd31vEuWlErGz4ems7JOpV5/lly3x7mLb0Roymul0SNtichVLxriQGTKgPoX
+ Vy9fobGl9AuTUtwbbM0VoBind5Mf6nMKoxBxT8KqjdtTdfW5V37ZEsEpNU3jOcD6lBBZ
+ mfspzMXmyLEFLPATpVFZuzK1XIoUiYmMfP5ihJrUqUNPgQ+14qjEZYFbYnVnCQcQ8mno
+ 2kEMjkCuk9fiiHxXZ88EObjXDQ5kPZJ/r6vxVG3wAf+ZRvbA0Vnnji76glCWxkbPB1/o
+ YdXA==
+X-Gm-Message-State: AOAM530CLuo/jzedeZ7t52usXJiCRVziYIS0KbRytzHtD2HAE8FvhgeX
+ /02caXQr15toAodGALszM1c=
+X-Google-Smtp-Source: ABdhPJwGxqR5dlehJ7vaPbP5WBGS9cfxwU4MhdypIIFth3sVfScXSDCGAKQzEHWJmayVj6NGoxgE2w==
+X-Received: by 2002:a05:6512:1090:: with SMTP id
+ j16mr23911147lfg.568.1638628658719; 
+ Sat, 04 Dec 2021 06:37:38 -0800 (PST)
 Received: from localhost.localdomain (94-29-46-111.dynamic.spd-mgts.ru.
  [94.29.46.111])
- by smtp.gmail.com with ESMTPSA id g36sm782934lfv.16.2021.12.04.06.37.32
+ by smtp.gmail.com with ESMTPSA id g36sm782934lfv.16.2021.12.04.06.37.37
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 04 Dec 2021 06:37:32 -0800 (PST)
+ Sat, 04 Dec 2021 06:37:38 -0800 (PST)
 From: Dmitry Osipenko <digetx@gmail.com>
 To: Thierry Reding <thierry.reding@gmail.com>,
  Jonathan Hunter <jonathanh@nvidia.com>, Mark Brown <broonie@kernel.org>,
  Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
  Liam Girdwood <lgirdwood@gmail.com>, Agneli <poczt@protonmail.ch>
-Subject: [PATCH v4 02/22] ASoC: dt-bindings: tegra20-i2s: Convert to schema
-Date: Sat,  4 Dec 2021 17:37:05 +0300
-Message-Id: <20211204143725.31646-3-digetx@gmail.com>
+Subject: [PATCH v4 09/22] ASoC: tegra20: spdif: Use more resource-managed
+ helpers
+Date: Sat,  4 Dec 2021 17:37:12 +0300
+Message-Id: <20211204143725.31646-10-digetx@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211204143725.31646-1-digetx@gmail.com>
 References: <20211204143725.31646-1-digetx@gmail.com>
@@ -101,129 +103,105 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Convert NVIDIA Tegra20 I2S binding to schema.
+Use resource-managed helpers to make code cleaner. Driver's remove callback
+isn't needed anymore since driver is completely resource-managed now.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- .../bindings/sound/nvidia,tegra20-i2s.txt     | 30 --------
- .../bindings/sound/nvidia,tegra20-i2s.yaml    | 70 +++++++++++++++++++
- 2 files changed, 70 insertions(+), 30 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.txt
- create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.yaml
+ sound/soc/tegra/tegra20_spdif.c | 33 +++++++++------------------------
+ sound/soc/tegra/tegra_pcm.c     |  6 ++++++
+ sound/soc/tegra/tegra_pcm.h     |  1 +
+ 3 files changed, 16 insertions(+), 24 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.txt b/Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.txt
-deleted file mode 100644
-index dc30c6bfbe95..000000000000
---- a/Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.txt
-+++ /dev/null
-@@ -1,30 +0,0 @@
--NVIDIA Tegra 20 I2S controller
+diff --git a/sound/soc/tegra/tegra20_spdif.c b/sound/soc/tegra/tegra20_spdif.c
+index d5c618611dbb..7dd263721c2c 100644
+--- a/sound/soc/tegra/tegra20_spdif.c
++++ b/sound/soc/tegra/tegra20_spdif.c
+@@ -289,38 +289,24 @@ static int tegra20_spdif_platform_probe(struct platform_device *pdev)
+ 	spdif->playback_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+ 	spdif->playback_dma_data.maxburst = 4;
+ 
+-	pm_runtime_enable(&pdev->dev);
++	ret = devm_pm_runtime_enable(&pdev->dev);
++	if (ret)
++		return ret;
+ 
+-	ret = snd_soc_register_component(&pdev->dev, &tegra20_spdif_component,
+-					 &tegra20_spdif_dai, 1);
++	ret = devm_snd_soc_register_component(&pdev->dev,
++					      &tegra20_spdif_component,
++					      &tegra20_spdif_dai, 1);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Could not register DAI: %d\n", ret);
+-		goto err_pm_disable;
++		return ret;
+ 	}
+ 
+-	ret = tegra_pcm_platform_register(&pdev->dev);
++	ret = devm_tegra_pcm_platform_register(&pdev->dev);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Could not register PCM: %d\n", ret);
+-		goto err_unregister_component;
++		return ret;
+ 	}
+ 
+-	return 0;
 -
--Required properties:
--- compatible : "nvidia,tegra20-i2s"
--- reg : Should contain I2S registers location and length
--- interrupts : Should contain I2S interrupt
--- resets : Must contain an entry for each entry in reset-names.
--  See ../reset/reset.txt for details.
--- reset-names : Must include the following entries:
--  - i2s
--- dmas : Must contain an entry for each entry in clock-names.
--  See ../dma/dma.txt for details.
--- dma-names : Must include the following entries:
--  - rx
--  - tx
--- clocks : Must contain one entry, for the module clock.
--  See ../clocks/clock-bindings.txt for details.
+-err_unregister_component:
+-	snd_soc_unregister_component(&pdev->dev);
+-err_pm_disable:
+-	pm_runtime_disable(&pdev->dev);
 -
--Example:
+-	return ret;
+-}
 -
--i2s@70002800 {
--	compatible = "nvidia,tegra20-i2s";
--	reg = <0x70002800 0x200>;
--	interrupts = < 45 >;
--	clocks = <&tegra_car 11>;
--	resets = <&tegra_car 11>;
--	reset-names = "i2s";
--	dmas = <&apbdma 21>, <&apbdma 21>;
--	dma-names = "rx", "tx";
--};
-diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.yaml
-new file mode 100644
-index 000000000000..ad43b237d9af
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.yaml
-@@ -0,0 +1,70 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/nvidia,tegra20-i2s.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+-static int tegra20_spdif_platform_remove(struct platform_device *pdev)
+-{
+-	tegra_pcm_platform_unregister(&pdev->dev);
+-	snd_soc_unregister_component(&pdev->dev);
+-
+-	pm_runtime_disable(&pdev->dev);
+-
+ 	return 0;
+ }
+ 
+@@ -342,7 +328,6 @@ static struct platform_driver tegra20_spdif_driver = {
+ 		.of_match_table = tegra20_spdif_of_match,
+ 	},
+ 	.probe = tegra20_spdif_platform_probe,
+-	.remove = tegra20_spdif_platform_remove,
+ };
+ module_platform_driver(tegra20_spdif_driver);
+ 
+diff --git a/sound/soc/tegra/tegra_pcm.c b/sound/soc/tegra/tegra_pcm.c
+index ef1e74d95236..468c8e77de21 100644
+--- a/sound/soc/tegra/tegra_pcm.c
++++ b/sound/soc/tegra/tegra_pcm.c
+@@ -48,6 +48,12 @@ int tegra_pcm_platform_register(struct device *dev)
+ }
+ EXPORT_SYMBOL_GPL(tegra_pcm_platform_register);
+ 
++int devm_tegra_pcm_platform_register(struct device *dev)
++{
++	return devm_snd_dmaengine_pcm_register(dev, &tegra_dmaengine_pcm_config, 0);
++}
++EXPORT_SYMBOL_GPL(devm_tegra_pcm_platform_register);
 +
-+title: NVIDIA Tegra20 I2S Controller
-+
-+description: |
-+  The I2S Controller streams synchronous serial audio data between system
-+  memory and an external audio device. The controller supports the I2S Left
-+  Justified Mode, Right Justified Mode, and DSP mode formats.
-+
-+maintainers:
-+  - Thierry Reding <treding@nvidia.com>
-+  - Jon Hunter <jonathanh@nvidia.com>
-+
-+properties:
-+  compatible:
-+    const: nvidia,tegra20-i2s
-+
-+  reg:
-+    maxItems: 1
-+
-+  resets:
-+    maxItems: 1
-+
-+  reset-names:
-+    const: i2s
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    minItems: 1
-+
-+  dmas:
-+    minItems: 2
-+
-+  dma-names:
-+    items:
-+      - const: rx
-+      - const: tx
-+
-+required:
-+  - compatible
-+  - reg
-+  - resets
-+  - reset-names
-+  - interrupts
-+  - clocks
-+  - dmas
-+  - dma-names
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2s@70002800 {
-+        compatible = "nvidia,tegra20-i2s";
-+        reg = <0x70002800 0x200>;
-+        interrupts = <45>;
-+        clocks = <&tegra_car 11>;
-+        resets = <&tegra_car 11>;
-+        reset-names = "i2s";
-+        dmas = <&apbdma 21>, <&apbdma 21>;
-+        dma-names = "rx", "tx";
-+    };
-+
-+...
+ int tegra_pcm_platform_register_with_chan_names(struct device *dev,
+ 				struct snd_dmaengine_pcm_config *config,
+ 				char *txdmachan, char *rxdmachan)
+diff --git a/sound/soc/tegra/tegra_pcm.h b/sound/soc/tegra/tegra_pcm.h
+index d602126c65b7..2a36eea1740d 100644
+--- a/sound/soc/tegra/tegra_pcm.h
++++ b/sound/soc/tegra/tegra_pcm.h
+@@ -32,6 +32,7 @@ int tegra_pcm_hw_params(struct snd_soc_component *component,
+ snd_pcm_uframes_t tegra_pcm_pointer(struct snd_soc_component *component,
+ 				    struct snd_pcm_substream *substream);
+ int tegra_pcm_platform_register(struct device *dev);
++int devm_tegra_pcm_platform_register(struct device *dev);
+ int tegra_pcm_platform_register_with_chan_names(struct device *dev,
+ 				struct snd_dmaengine_pcm_config *config,
+ 				char *txdmachan, char *rxdmachan);
 -- 
 2.33.1
 
