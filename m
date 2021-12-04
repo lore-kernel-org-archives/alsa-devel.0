@@ -4,80 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06D92C433F5
-	for <alsa-devel@archiver.kernel.org>; Sat,  4 Dec 2021 14:40:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3449BC433EF
+	for <alsa-devel@archiver.kernel.org>; Sat,  4 Dec 2021 14:40:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 21B812264;
-	Sat,  4 Dec 2021 15:39:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 21B812264
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2499922B6;
+	Sat,  4 Dec 2021 15:39:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2499922B6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638628801;
-	bh=UORYBz1eeo61x50Z3tys3rviKpDlzvxFjX1T9Mjtuqw=;
+	s=default; t=1638628817;
+	bh=+yFzHirHX3Xclw/SmIm5qWAgpVbPdV5afTLP2mMhsRk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ChB2OfaJ5z5GUuoGZEhBMRqvA8JqG3+UXx77DJvD/rpgWjSHJmMiM+CbTFTZCSXVm
-	 pgy8/Wp7NmWS64onUx1nfW+0FU08z0IZcsG0FrEQUqFtfiqIRsu4zvuZShf4wDAdXy
-	 mkoF+7Wa8dfuWxLWgXeR/5ACmV/C+OVSx7aHEEIg=
+	b=NlIxWcYQaM5CPTgfM3Cob8tve1V5HOt6yYvv/utSovN2UEWiD/c5TesSAvhyl7Kci
+	 F/sROZw0jZNaF7Q3neAWPNrSKcY+vOPYoP/7R/ezyVG3f+FyIssEIJf7J6SBMqCqlI
+	 QarURlqpIC+Yn3KrPiSHy7W0SUShWobGa+osWhbg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 75279F80510;
-	Sat,  4 Dec 2021 15:37:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0B39AF80517;
+	Sat,  4 Dec 2021 15:37:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D1949F80134; Sat,  4 Dec 2021 15:37:43 +0100 (CET)
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com
- [IPv6:2a00:1450:4864:20::231])
+ id A38D2F804F1; Sat,  4 Dec 2021 15:37:45 +0100 (CET)
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com
+ [IPv6:2a00:1450:4864:20::129])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7CEFEF8023A
- for <alsa-devel@alsa-project.org>; Sat,  4 Dec 2021 15:37:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7CEFEF8023A
+ by alsa1.perex.cz (Postfix) with ESMTPS id C9048F804A9
+ for <alsa-devel@alsa-project.org>; Sat,  4 Dec 2021 15:37:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9048F804A9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="o1KGgDtQ"
-Received: by mail-lj1-x231.google.com with SMTP id l7so11976122lja.2
- for <alsa-devel@alsa-project.org>; Sat, 04 Dec 2021 06:37:36 -0800 (PST)
+ header.b="RNaLxgDC"
+Received: by mail-lf1-x129.google.com with SMTP id f18so13795800lfv.6
+ for <alsa-devel@alsa-project.org>; Sat, 04 Dec 2021 06:37:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=AAin265JOVL+o94pQxCU+sQvf2Xm5+tMWz8fFEKib7U=;
- b=o1KGgDtQWGDqmjiOgI5S/+RbDDAWjn7RwxNM6FRu5jsCI6H19PFswt6Opnx+0ODTPy
- hPRduERJtyDeRBrnfWfBGmrnXVCtAETHK85vi8EOrBil26r9K1uYi0YEDaG9Yx7axBQg
- XdmehnDB9warwOcBZ5lCnQessgtSijHJA/3I3NnRp0EOuwd1+hAqOkdWnHjNO3yeqXmO
- njnY06XzGevMbhitj2YiGsUwJwnk6d8R7aQYDcc25dvLI8cmunCmpfI1Ad+8sSHjbyLx
- LP5dGS94RECbctBvsfo86RRnIGvpGGX+7TbM91wof82ITDXGsq1vcVVEbxP5/cwGJJ4U
- JBfQ==
+ bh=TqYniy4pFRsXD92ySrc+ZxB/2v4IriL3y3/YUqS2PUE=;
+ b=RNaLxgDCs6qXg/TwLlIXZzcLh4LJees5fE8xDEIukdb/OT7zBkOn507I9wRfW4w4xa
+ niemSTpkq4n0nexvCghsEPDaa2xSzvEpS/WsEmx4EV03PZVyKUZtZlS7Cti2Kn+4gMYF
+ J708JdarR4uxOSBnidMRRSiy2W6zsI1gXcaV3YFCIDJElDuSQASMDSwzTEERDBY6z/GJ
+ Tu5cJSkY8ZKkzpgGoDlyMSgeZiQ9HNZLslB40hhiwbDCqsRMTPi2uMzO0H3DlBuUQz5i
+ izOVMOtEV1I3PCwg+dtNL+UPSlH1eXaeVBZ7mKfa2tjeCrhdqFWl6mFiJFpGYAtZigR4
+ SdmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=AAin265JOVL+o94pQxCU+sQvf2Xm5+tMWz8fFEKib7U=;
- b=x1UbxqEdJLcwZJ0mUygTE/nAxmsIdK2f/1V0hnf3DnyCS84aJBgLvj0M72vxKxLUhJ
- 05uBxYT6GSx0iG38zqqJEs/3Ny+atQ3Cek/Wt57Nex5ef33/U/b7gj5R+JJdUk4izeNv
- Wgg5slsHRojVvrODwwYEtiVtcJa8Pz3B6NYrQtYtL88glg6g1+86dAb0UNoyCluZQHQU
- 7JS4BHLSChRceiuxPcP9zDa+BUHjnCuIt0UNOq3BE0kxOHefljbZmsPtM8n0TxLu+Jc4
- pZQnw9vedB7eNGRmZ9y0ajGNGoJizAsN6ICMln/ThrHNI9xrJKeEnQkRyAH6FOICeB5t
- h8qA==
-X-Gm-Message-State: AOAM533J4SS8Q/HritGLj96fZY1mFEhUvUtCFsZHpclO6FS29Xf3bpt6
- J5wLNIyZlFDa6MKo5I3RI/s=
-X-Google-Smtp-Source: ABdhPJzCs7dQD/cZfTQiFvEEynpqpF6ANm/y7mYxAAce2J3VdDbfVr77o//xAPFMjDRP96a9qUFy5w==
-X-Received: by 2002:a05:651c:1ab:: with SMTP id
- c11mr24347618ljn.378.1638628656252; 
- Sat, 04 Dec 2021 06:37:36 -0800 (PST)
+ bh=TqYniy4pFRsXD92ySrc+ZxB/2v4IriL3y3/YUqS2PUE=;
+ b=NmRZJpU3W2k7uHqvAayPs2l3Sg3MBQdgoehU0uWT0IA8BS6RieWelrL410EbfGafpY
+ 3nnmyoODAE6gMIq06h61R+/soiXqUp7R9G8qA94zcvt6SHyjzAqZn+k8WaUM4GyVp7gh
+ gv4uWuVo1My0YbrKloxMpAi5XA3madU6KtuqIsdynMPMFWV0y1b4+jP+yGfwMcCzZmIN
+ +W1QPMvAj9SF8IRpx07GugBaNQ3Z81E2Hg6yK6WCCvze/T1UCX8Fg3pvk33CCY38ONAr
+ 98AYUvf7Fm/Hx7Ui7kSq52hBreCeGEjZULO9Q8VrUuiPkIU3s9fviuNVtTnmS06Ack3J
+ y1gg==
+X-Gm-Message-State: AOAM53014E/jUBfp6nY5bAVwdDeTBxaFh27R0pLnM48CH+lE1TGhdgsT
+ mziNhYmfim+ydqPy1RIeAU0=
+X-Google-Smtp-Source: ABdhPJxlNR6C8CFHLRo5rqVDCMsVLSUpmIzAdsrAsZFFI4Y2oRrvmEXZzQFyeVHAejMo+rAPaIrc5w==
+X-Received: by 2002:ac2:518b:: with SMTP id u11mr24097394lfi.498.1638628653644; 
+ Sat, 04 Dec 2021 06:37:33 -0800 (PST)
 Received: from localhost.localdomain (94-29-46-111.dynamic.spd-mgts.ru.
  [94.29.46.111])
- by smtp.gmail.com with ESMTPSA id g36sm782934lfv.16.2021.12.04.06.37.35
+ by smtp.gmail.com with ESMTPSA id g36sm782934lfv.16.2021.12.04.06.37.32
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 04 Dec 2021 06:37:35 -0800 (PST)
+ Sat, 04 Dec 2021 06:37:33 -0800 (PST)
 From: Dmitry Osipenko <digetx@gmail.com>
 To: Thierry Reding <thierry.reding@gmail.com>,
  Jonathan Hunter <jonathanh@nvidia.com>, Mark Brown <broonie@kernel.org>,
  Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
  Liam Girdwood <lgirdwood@gmail.com>, Agneli <poczt@protonmail.ch>
-Subject: [PATCH v4 06/22] ASoC: tegra20-spdif: stop setting slave_id
-Date: Sat,  4 Dec 2021 17:37:09 +0300
-Message-Id: <20211204143725.31646-7-digetx@gmail.com>
+Subject: [PATCH v4 03/22] ASoC: dt-bindings: tegra20-i2s: Document new nvidia,
+ fixed-parent-rate property
+Date: Sat,  4 Dec 2021 17:37:06 +0300
+Message-Id: <20211204143725.31646-4-digetx@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211204143725.31646-1-digetx@gmail.com>
 References: <20211204143725.31646-1-digetx@gmail.com>
@@ -102,37 +102,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Arnd Bergmann <arnd@arndb.de>
+Document new nvidia,fixed-parent-rate property which instructs that this
+board wants parent clock to stay at a fixed rate. It allows to prevent
+conflicts between audio components that share same parent PLL. For
+instance, this property allows to have HDMI audio, speaker and headphones
+in the system playing audio simultaneously, which is a common pattern for
+consumer devices.
 
-The DMA resource is never set up anywhere, and passing this as slave_id
-has not been the proper procedure in a long time.
-
-As a preparation for removing all slave_id references from the ALSA code,
-remove this one.
-
-According to Dmitry Osipenko, this driver has never been used and
-the mechanism for configuring DMA would not work as it is implemented,
-so this part will get rewritten when the driver gets put into use
-again in the future.
-
-Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- sound/soc/tegra/tegra20_spdif.c | 1 -
- 1 file changed, 1 deletion(-)
+ .../devicetree/bindings/sound/nvidia,tegra20-i2s.yaml      | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/sound/soc/tegra/tegra20_spdif.c b/sound/soc/tegra/tegra20_spdif.c
-index 6f0570cde964..e45e371edc42 100644
---- a/sound/soc/tegra/tegra20_spdif.c
-+++ b/sound/soc/tegra/tegra20_spdif.c
-@@ -298,7 +298,6 @@ static int tegra20_spdif_platform_probe(struct platform_device *pdev)
- 	spdif->playback_dma_data.addr = mem->start + TEGRA20_SPDIF_DATA_OUT;
- 	spdif->playback_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
- 	spdif->playback_dma_data.maxburst = 4;
--	spdif->playback_dma_data.slave_id = dmareq->start;
+diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.yaml
+index ad43b237d9af..68ae124eaf80 100644
+--- a/Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.yaml
++++ b/Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.yaml
+@@ -42,6 +42,13 @@ properties:
+       - const: rx
+       - const: tx
  
- 	pm_runtime_enable(&pdev->dev);
- 
++  nvidia,fixed-parent-rate:
++    description: |
++      Specifies whether board prefers parent clock to stay at a fixed rate.
++      This allows multiple Tegra20 audio components work simultaneously by
++      limiting number of supportable audio rates.
++    type: boolean
++
+ required:
+   - compatible
+   - reg
 -- 
 2.33.1
 
