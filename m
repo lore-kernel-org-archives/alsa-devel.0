@@ -4,80 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75134C433F5
-	for <alsa-devel@archiver.kernel.org>; Sat,  4 Dec 2021 14:45:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D24C3C433EF
+	for <alsa-devel@archiver.kernel.org>; Sat,  4 Dec 2021 14:46:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7E42025DC;
-	Sat,  4 Dec 2021 15:44:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E42025DC
+	by alsa0.perex.cz (Postfix) with ESMTPS id DAE3025F1;
+	Sat,  4 Dec 2021 15:45:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DAE3025F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638629143;
-	bh=In3mLWtGDD+dbq28/TAIw2GWqp3plC4mvHCKuvHKlMU=;
+	s=default; t=1638629162;
+	bh=mRS8aV5IWtbtBLJOU3EeXC2uhglOS2TsLp4NRs1Vu1Q=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pPt1LeNL0oA0mlwOdCZ3avynn6Sunn/UWUjkmCCykIw8UxwgjiDXoc2fUvhfrAOjp
-	 cNh7IrVZOHy3X7T214TFhn9K84vRDHC9DGjw4qF6MwRyQkNvxElolcweynl/m3bq7A
-	 QrLefu/pdPuV3nbIypHZlT2bvsDdIzME/PvwL70o=
+	b=GuedoiNDfP8yKznuIr+CBboBzc6O1J8LI/80DHcJcbVIYO6NUfWkgJ8Tp6+3wxabR
+	 3iGtaQeeKuyJN+R25tgzuMU9Soo8CDAkcPXEKE1yOqN+DdoPkFekc4dVQzoINDn/84
+	 XqBcJcNCx7FWdVT3Ml6Mm3/05F1hLpm7LydylBss=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0EA4AF805A9;
+	by alsa1.perex.cz (Postfix) with ESMTP id 916B8F805AD;
 	Sat,  4 Dec 2021 15:38:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EDEBEF8054A; Sat,  4 Dec 2021 15:38:06 +0100 (CET)
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com
- [IPv6:2a00:1450:4864:20::12f])
+ id 1E0E5F80548; Sat,  4 Dec 2021 15:38:07 +0100 (CET)
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com
+ [IPv6:2a00:1450:4864:20::234])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F0A1AF8051E
- for <alsa-devel@alsa-project.org>; Sat,  4 Dec 2021 15:37:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0A1AF8051E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 41F89F8051A
+ for <alsa-devel@alsa-project.org>; Sat,  4 Dec 2021 15:37:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41F89F8051A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="UacBb1E5"
-Received: by mail-lf1-x12f.google.com with SMTP id b1so13693673lfs.13
- for <alsa-devel@alsa-project.org>; Sat, 04 Dec 2021 06:37:48 -0800 (PST)
+ header.b="lKpMV9rv"
+Received: by mail-lj1-x234.google.com with SMTP id p8so11981784ljo.5
+ for <alsa-devel@alsa-project.org>; Sat, 04 Dec 2021 06:37:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=FxP5tB2iw5BzQOiwdyEyNre1QfPs8oOiaNDQeHGYp/A=;
- b=UacBb1E5+o5jnYkAbQY/LstAz1dq1wXZlTJ9nXprj0kabeLY0GpeOaoFNI4Ko8bUbb
- I5ijch3w9RajEmDpe38OcdNA0pc89lro9SOPsUnu6kOfQdryIogs1wXkcezKIKRv0lOZ
- n9B7Db5+P+S1m6YptZd1BtdlzEStuOg1aODg0eJRFMTD+zngUlO+EorP9Cj3ohgQUwFi
- 6VynchlLIfLkAnoLp+6lh6hwIesEVooX5rBWaNF80T+ryJVaSR7nHVtrnCVcIT9FieEF
- kSmj1ghUOiST/oEcvCBL2XqCkiq89IFYWBapaXu+ZUvPdjsx3vuD/jFZv/VUaHADS77x
- JOjA==
+ bh=fyTBAmupt7gDEygKBlHM3btaCL0Q7p9LZZKGom+gcjE=;
+ b=lKpMV9rv2g3EC6HIcv5fYnov50gxSxh9imCWDiny5m3gD788KV9hmRAT7m0jzezDaV
+ zGAJtT1bqJ76/4qNyF8crgnEtSCKQ6/ytPHtWzEvWbBJGGPDAA3lmdzu3lSSvh1ap73D
+ 5UBQT1IQD0XnAmiXkCUAWqGbomTKBfimNu70t2mJxsKj5Mtqu/V8wlr/SPAKDAB+RhEo
+ yXbtJNOSwfapBiZVy0N4/l+Jyeuevj1A95gP265vd9oKqW/xW2PXsd0c++LhKARYyv+t
+ kB0Le+13MSpFJQLzhBaAqhDVErhR440Dm2vqBslNrH/wmTxUUGoM5Gh8bTDrAeRHstIV
+ f+QA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=FxP5tB2iw5BzQOiwdyEyNre1QfPs8oOiaNDQeHGYp/A=;
- b=D5aXdSwHwxkDb9yhf1k0iOh3NQ9Ihb7Xb0NJFtl6v08XQENiu8BFQjoEBbxbHrb6YS
- qpcbUIS7ZbB02Nbx5FRDmQBX8xs0eJFlnTuN2qZhwDD4FIKpEkR6ZLb7Hc6p14lhs6l0
- +lcNIBBDieUAFK+hzkorx+2hbev/IODXqRYQy1lbgSDC2CHnmjCRd2zSk3Sbx0ijubzt
- wbkAeH92zz1gBZ11h/ea+IA8a52HT/2ysQApgdiAdy1gPb0KmnKEdPl7nEFDxpxxiG/+
- /+79TweJUy7eJqhd7f8qqRY0tNMn71wqn8qz8PjKla4UmYgMkGlD7oiSHTsCIhECtMM2
- v+4Q==
-X-Gm-Message-State: AOAM533msEjM5muvRpzBPFVkpXBj7D88bfDkyIBCkidUunZFAWcq9P6T
- y2E/ZRAzlIvvKNyGvvqfpi/hJuyKbFQ=
-X-Google-Smtp-Source: ABdhPJwNw7tkzPZmngP9ATpz6Aqmnw4XwSr8wqcSLqr4AoEI0Q+9EtWOQ5FopwgNaf1mdEz7Fn1MUA==
-X-Received: by 2002:a05:6512:b8f:: with SMTP id
- b15mr24260516lfv.443.1638628668340; 
- Sat, 04 Dec 2021 06:37:48 -0800 (PST)
+ bh=fyTBAmupt7gDEygKBlHM3btaCL0Q7p9LZZKGom+gcjE=;
+ b=Re9lpCLAsIjcYYKI1y4gY8UGk+7vsLhHhC+MFMgvTh5DqVB+BNQnlO4SlFk1YI0VnH
+ 6h5sVK/+hpQ5rr/QjOYBbHzZ1Zl5AQ+iOVwFQrkyAy4/1MjQKpnLIGEMckcfTzbJE47X
+ SOwapHZ+GTMz2+ar53RM9A72VPagvrwVL7BockpVLreqpq8E2HvCWaDixnF12NzrC2Db
+ bC0Db0w0rT9PpCn739wsAaCg5eR/UET5qWQXLVnh9L52e+BjKs+5pD9PPUyU9AWljx4p
+ ObnmRO7TGc9Hu6vAYSmDZEpLRY0f62C6C1w10Tukq4xPcQxWwhGIbcfa++0Rd5Rk9Y3b
+ rvWA==
+X-Gm-Message-State: AOAM532gaw9Rc27eMxqdZwBdjfhTCgG9krAHWX/1TU6uIAyhj0ZMxuS4
+ tEQN0CWKObybM+vNq4SVMo8=
+X-Google-Smtp-Source: ABdhPJyKh7iPIkPR9sjuIJZzBhU8EUxsIHQvcnSOmjYFxxbKxUNmulYsBjbeG4ukJlImYa+sGVr+EA==
+X-Received: by 2002:a2e:858e:: with SMTP id b14mr23909495lji.338.1638628663700; 
+ Sat, 04 Dec 2021 06:37:43 -0800 (PST)
 Received: from localhost.localdomain (94-29-46-111.dynamic.spd-mgts.ru.
  [94.29.46.111])
- by smtp.gmail.com with ESMTPSA id g36sm782934lfv.16.2021.12.04.06.37.47
+ by smtp.gmail.com with ESMTPSA id g36sm782934lfv.16.2021.12.04.06.37.42
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 04 Dec 2021 06:37:48 -0800 (PST)
+ Sat, 04 Dec 2021 06:37:43 -0800 (PST)
 From: Dmitry Osipenko <digetx@gmail.com>
 To: Thierry Reding <thierry.reding@gmail.com>,
  Jonathan Hunter <jonathanh@nvidia.com>, Mark Brown <broonie@kernel.org>,
  Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
  Liam Girdwood <lgirdwood@gmail.com>, Agneli <poczt@protonmail.ch>
-Subject: [PATCH v4 21/22] ARM: tegra: acer-a500: Enable S/PDIF and HDMI audio
-Date: Sat,  4 Dec 2021 17:37:24 +0300
-Message-Id: <20211204143725.31646-22-digetx@gmail.com>
+Subject: [PATCH v4 15/22] drm/tegra: hdmi: Register audio CODEC on Tegra20
+Date: Sat,  4 Dec 2021 17:37:18 +0300
+Message-Id: <20211204143725.31646-16-digetx@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211204143725.31646-1-digetx@gmail.com>
 References: <20211204143725.31646-1-digetx@gmail.com>
@@ -102,36 +101,286 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Enable S/PDIF controller to enable HDMI audio support on Acer A500.
-Use nvidia,fixed-parent-rate property that prevents audio rate conflict
-between S/PDIF and I2S.
+Tegra20 SoC supports only S/PDIF source for HDMI audio. Register ASoC HDMI
+S/PDIF CODEC for Tegra20, it will be linked with the S/PDIF CPU DAI.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- arch/arm/boot/dts/tegra20-acer-a500-picasso.dts | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/gpu/drm/tegra/Kconfig |   3 +
+ drivers/gpu/drm/tegra/hdmi.c  | 153 +++++++++++++++++++++++++++++++---
+ 2 files changed, 145 insertions(+), 11 deletions(-)
 
-diff --git a/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts b/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
-index db388ddd062f..f47b946627c3 100644
---- a/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
-+++ b/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
-@@ -376,8 +376,16 @@ pta {
- 		};
- 	};
+diff --git a/drivers/gpu/drm/tegra/Kconfig b/drivers/gpu/drm/tegra/Kconfig
+index 32fe64553d2e..40f0d14cb240 100644
+--- a/drivers/gpu/drm/tegra/Kconfig
++++ b/drivers/gpu/drm/tegra/Kconfig
+@@ -13,6 +13,9 @@ config DRM_TEGRA_ORIG
+ 	select INTERCONNECT
+ 	select IOMMU_IOVA
+ 	select CEC_CORE if CEC_NOTIFIER
++	select SND_SIMPLE_CARD if SND_SOC_TEGRA20_SPDIF
++	select SND_SOC_HDMI_CODEC if SND_SOC_TEGRA20_SPDIF
++	select SND_AUDIO_GRAPH_CARD if SND_SOC_TEGRA20_SPDIF
+ 	help
+ 	  Choose this option if you have an NVIDIA Tegra SoC.
  
-+	tegra_spdif: spdif@70002400 {
-+		status = "okay";
-+
-+		nvidia,fixed-parent-rate;
-+	};
-+
- 	tegra_i2s1: i2s@70002800 {
- 		status = "okay";
-+
-+		nvidia,fixed-parent-rate;
- 	};
+diff --git a/drivers/gpu/drm/tegra/hdmi.c b/drivers/gpu/drm/tegra/hdmi.c
+index cc42476fd023..5353f83cbee8 100644
+--- a/drivers/gpu/drm/tegra/hdmi.c
++++ b/drivers/gpu/drm/tegra/hdmi.c
+@@ -18,6 +18,8 @@
  
- 	uartb: serial@70006040 {
+ #include <soc/tegra/common.h>
+ 
++#include <sound/hdmi-codec.h>
++
+ #include <drm/drm_atomic_helper.h>
+ #include <drm/drm_crtc.h>
+ #include <drm/drm_debugfs.h>
+@@ -81,6 +83,9 @@ struct tegra_hdmi {
+ 	bool dvi;
+ 
+ 	struct drm_info_list *debugfs_files;
++
++	struct platform_device *audio_pdev;
++	struct mutex audio_lock;
+ };
+ 
+ static inline struct tegra_hdmi *
+@@ -363,6 +368,18 @@ static const struct tmds_config tegra124_tmds_config[] = {
+ 	},
+ };
+ 
++static void tegra_hdmi_audio_lock(struct tegra_hdmi *hdmi)
++{
++	mutex_lock(&hdmi->audio_lock);
++	disable_irq(hdmi->irq);
++}
++
++static void tegra_hdmi_audio_unlock(struct tegra_hdmi *hdmi)
++{
++	enable_irq(hdmi->irq);
++	mutex_unlock(&hdmi->audio_lock);
++}
++
+ static int
+ tegra_hdmi_get_audio_config(unsigned int audio_freq, unsigned int pix_clock,
+ 			    struct tegra_hdmi_audio_config *config)
+@@ -832,6 +849,23 @@ static void tegra_hdmi_setup_tmds(struct tegra_hdmi *hdmi,
+ 				  HDMI_NV_PDISP_SOR_IO_PEAK_CURRENT);
+ }
+ 
++static int tegra_hdmi_reconfigure_audio(struct tegra_hdmi *hdmi)
++{
++	int err;
++
++	err = tegra_hdmi_setup_audio(hdmi);
++	if (err < 0) {
++		tegra_hdmi_disable_audio_infoframe(hdmi);
++		tegra_hdmi_disable_audio(hdmi);
++	} else {
++		tegra_hdmi_setup_audio_infoframe(hdmi);
++		tegra_hdmi_enable_audio_infoframe(hdmi);
++		tegra_hdmi_enable_audio(hdmi);
++	}
++
++	return err;
++}
++
+ static bool tegra_output_is_hdmi(struct tegra_output *output)
+ {
+ 	struct edid *edid;
+@@ -1138,6 +1172,8 @@ static void tegra_hdmi_encoder_disable(struct drm_encoder *encoder)
+ 	u32 value;
+ 	int err;
+ 
++	tegra_hdmi_audio_lock(hdmi);
++
+ 	/*
+ 	 * The following accesses registers of the display controller, so make
+ 	 * sure it's only executed when the output is attached to one.
+@@ -1162,6 +1198,10 @@ static void tegra_hdmi_encoder_disable(struct drm_encoder *encoder)
+ 	tegra_hdmi_writel(hdmi, 0, HDMI_NV_PDISP_INT_ENABLE);
+ 	tegra_hdmi_writel(hdmi, 0, HDMI_NV_PDISP_INT_MASK);
+ 
++	hdmi->pixel_clock = 0;
++
++	tegra_hdmi_audio_unlock(hdmi);
++
+ 	err = host1x_client_suspend(&hdmi->client);
+ 	if (err < 0)
+ 		dev_err(hdmi->dev, "failed to suspend: %d\n", err);
+@@ -1185,6 +1225,8 @@ static void tegra_hdmi_encoder_enable(struct drm_encoder *encoder)
+ 		return;
+ 	}
+ 
++	tegra_hdmi_audio_lock(hdmi);
++
+ 	/*
+ 	 * Enable and unmask the HDA codec SCRATCH0 register interrupt. This
+ 	 * is used for interoperability between the HDA codec driver and the
+@@ -1390,6 +1432,8 @@ static void tegra_hdmi_encoder_enable(struct drm_encoder *encoder)
+ 	}
+ 
+ 	/* TODO: add HDCP support */
++
++	tegra_hdmi_audio_unlock(hdmi);
+ }
+ 
+ static int
+@@ -1419,6 +1463,91 @@ static const struct drm_encoder_helper_funcs tegra_hdmi_encoder_helper_funcs = {
+ 	.atomic_check = tegra_hdmi_encoder_atomic_check,
+ };
+ 
++static int tegra_hdmi_hw_params(struct device *dev, void *data,
++				struct hdmi_codec_daifmt *fmt,
++				struct hdmi_codec_params *hparms)
++{
++	struct tegra_hdmi *hdmi = data;
++	int ret = 0;
++
++	tegra_hdmi_audio_lock(hdmi);
++
++	hdmi->format.sample_rate = hparms->sample_rate;
++	hdmi->format.channels = hparms->channels;
++
++	if (hdmi->pixel_clock && !hdmi->dvi)
++		ret = tegra_hdmi_reconfigure_audio(hdmi);
++
++	tegra_hdmi_audio_unlock(hdmi);
++
++	return ret;
++}
++
++static int tegra_hdmi_audio_startup(struct device *dev, void *data)
++{
++	struct tegra_hdmi *hdmi = data;
++	int ret;
++
++	ret = host1x_client_resume(&hdmi->client);
++	if (ret < 0)
++		dev_err(hdmi->dev, "failed to resume: %d\n", ret);
++
++	return ret;
++}
++
++static void tegra_hdmi_audio_shutdown(struct device *dev, void *data)
++{
++	struct tegra_hdmi *hdmi = data;
++	int ret;
++
++	tegra_hdmi_audio_lock(hdmi);
++
++	hdmi->format.sample_rate = 0;
++	hdmi->format.channels = 0;
++
++	tegra_hdmi_audio_unlock(hdmi);
++
++	ret = host1x_client_suspend(&hdmi->client);
++	if (ret < 0)
++		dev_err(hdmi->dev, "failed to suspend: %d\n", ret);
++}
++
++static const struct hdmi_codec_ops tegra_hdmi_codec_ops = {
++	.hw_params = tegra_hdmi_hw_params,
++	.audio_startup = tegra_hdmi_audio_startup,
++	.audio_shutdown = tegra_hdmi_audio_shutdown,
++};
++
++static int tegra_hdmi_codec_register(struct tegra_hdmi *hdmi)
++{
++	struct hdmi_codec_pdata codec_data = {};
++
++	if (hdmi->config->has_hda)
++		return 0;
++
++	codec_data.ops = &tegra_hdmi_codec_ops;
++	codec_data.data = hdmi;
++	codec_data.spdif = 1;
++
++	hdmi->audio_pdev = platform_device_register_data(hdmi->dev,
++							 HDMI_CODEC_DRV_NAME,
++							 PLATFORM_DEVID_AUTO,
++							 &codec_data,
++							 sizeof(codec_data));
++	if (IS_ERR(hdmi->audio_pdev))
++		return PTR_ERR(hdmi->audio_pdev);
++
++	hdmi->format.channels = 2;
++
++	return 0;
++}
++
++static void tegra_hdmi_codec_unregister(struct tegra_hdmi *hdmi)
++{
++	if (hdmi->audio_pdev)
++		platform_device_unregister(hdmi->audio_pdev);
++}
++
+ static int tegra_hdmi_init(struct host1x_client *client)
+ {
+ 	struct tegra_hdmi *hdmi = host1x_client_to_hdmi(client);
+@@ -1471,8 +1600,16 @@ static int tegra_hdmi_init(struct host1x_client *client)
+ 		goto disable_pll;
+ 	}
+ 
++	err = tegra_hdmi_codec_register(hdmi);
++	if (err < 0) {
++		dev_err(hdmi->dev, "failed to register audio codec: %d\n", err);
++		goto disable_vdd;
++	}
++
+ 	return 0;
+ 
++disable_vdd:
++	regulator_disable(hdmi->vdd);
+ disable_pll:
+ 	regulator_disable(hdmi->pll);
+ disable_hdmi:
+@@ -1487,6 +1624,8 @@ static int tegra_hdmi_exit(struct host1x_client *client)
+ {
+ 	struct tegra_hdmi *hdmi = host1x_client_to_hdmi(client);
+ 
++	tegra_hdmi_codec_unregister(hdmi);
++
+ 	tegra_output_exit(&hdmi->output);
+ 
+ 	regulator_disable(hdmi->vdd);
+@@ -1611,7 +1750,6 @@ static irqreturn_t tegra_hdmi_irq(int irq, void *data)
+ {
+ 	struct tegra_hdmi *hdmi = data;
+ 	u32 value;
+-	int err;
+ 
+ 	value = tegra_hdmi_readl(hdmi, HDMI_NV_PDISP_INT_STATUS);
+ 	tegra_hdmi_writel(hdmi, value, HDMI_NV_PDISP_INT_STATUS);
+@@ -1626,16 +1764,7 @@ static irqreturn_t tegra_hdmi_irq(int irq, void *data)
+ 			format = value & SOR_AUDIO_HDA_CODEC_SCRATCH0_FMT_MASK;
+ 
+ 			tegra_hda_parse_format(format, &hdmi->format);
+-
+-			err = tegra_hdmi_setup_audio(hdmi);
+-			if (err < 0) {
+-				tegra_hdmi_disable_audio_infoframe(hdmi);
+-				tegra_hdmi_disable_audio(hdmi);
+-			} else {
+-				tegra_hdmi_setup_audio_infoframe(hdmi);
+-				tegra_hdmi_enable_audio_infoframe(hdmi);
+-				tegra_hdmi_enable_audio(hdmi);
+-			}
++			tegra_hdmi_reconfigure_audio(hdmi);
+ 		} else {
+ 			tegra_hdmi_disable_audio_infoframe(hdmi);
+ 			tegra_hdmi_disable_audio(hdmi);
+@@ -1662,6 +1791,8 @@ static int tegra_hdmi_probe(struct platform_device *pdev)
+ 	hdmi->stereo = false;
+ 	hdmi->dvi = false;
+ 
++	mutex_init(&hdmi->audio_lock);
++
+ 	hdmi->clk = devm_clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(hdmi->clk)) {
+ 		dev_err(&pdev->dev, "failed to get clock\n");
 -- 
 2.33.1
 
