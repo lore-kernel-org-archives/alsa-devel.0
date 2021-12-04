@@ -4,80 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53501C433F5
-	for <alsa-devel@archiver.kernel.org>; Sat,  4 Dec 2021 14:43:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BED33C433EF
+	for <alsa-devel@archiver.kernel.org>; Sat,  4 Dec 2021 14:43:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6890E23DB;
-	Sat,  4 Dec 2021 15:42:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6890E23DB
+	by alsa0.perex.cz (Postfix) with ESMTPS id EE78824FD;
+	Sat,  4 Dec 2021 15:43:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE78824FD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638629001;
-	bh=J9f/dCqvxzNLtC4ITMqx0G40QPSZDaHRk+DovXcnCqk=;
+	s=default; t=1638629032;
+	bh=F/TcpBb46EwAcwdC7OJY0wG1teOmVGW+DZQ2tTRLynA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=a/oEqcegJbiM8Ea3SN5xk/57uCxc0uTOjNKSXViWWqENjkccjK2WnIBLBSzFtLcks
-	 QCCS8HwrQbd8E4CUs6KJCe3m20AbzqLjfMNKzV90VcGYSgG7XL+6gHX8TcvvjppQNj
-	 kCJbJvBvukBs+6ggQB+flol/tHO+cZjpDYVZetDU=
+	b=Sc6EtxFTATYfhr8BTyELP05t+Oz/kUEYeWVasydr5lKJbkVQn1S9GlsNLlpE71KWG
+	 8iC/E22kcLHsSs9M76ERifKnRFivlCL2thJ1BYPdWwxAGuF1qpS6GT0ShLb79pQUjj
+	 HmJw/ZEakuggUsPWBFuCuiThHPBWGXYglJ07+VBc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C10B5F8051A;
-	Sat,  4 Dec 2021 15:38:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DBF4DF8055C;
+	Sat,  4 Dec 2021 15:38:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EE5BAF80528; Sat,  4 Dec 2021 15:37:56 +0100 (CET)
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com
- [IPv6:2a00:1450:4864:20::131])
+ id 5C154F80529; Sat,  4 Dec 2021 15:37:58 +0100 (CET)
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com
+ [IPv6:2a00:1450:4864:20::12c])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B395AF8024C
- for <alsa-devel@alsa-project.org>; Sat,  4 Dec 2021 15:37:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B395AF8024C
+ by alsa1.perex.cz (Postfix) with ESMTPS id B44F1F804FB
+ for <alsa-devel@alsa-project.org>; Sat,  4 Dec 2021 15:37:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B44F1F804FB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="BwPe+Ozb"
-Received: by mail-lf1-x131.google.com with SMTP id b1so13693054lfs.13
- for <alsa-devel@alsa-project.org>; Sat, 04 Dec 2021 06:37:43 -0800 (PST)
+ header.b="L03nVmUk"
+Received: by mail-lf1-x12c.google.com with SMTP id bi37so13836646lfb.5
+ for <alsa-devel@alsa-project.org>; Sat, 04 Dec 2021 06:37:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=KhBo+jV3YB73Mp9ZeA7lb5QO9nWQOxbQBa92iKZ/6e0=;
- b=BwPe+OzbZ7dKOFfTTuxevloKnOCl80pz/i++V8VBwFuBWCRqpSnyv2QKvx5Z3RedN4
- B1pKoHi4+qEFCIOXzzCpbeDfrz4Y01dLQPp/LjknHjdwnLBZh6Sn865gAaR4ODf6FgFt
- t0ICnuHAfzRAlyecG9TiM1H/f2X6IAsD1aQ1R5+Ry623OYzljOvVF27dAPc8/zo+vPzp
- fph6C28FBnkygWMrcujCDEsNJ/rPIOLpVlKvzTPlMjPfOATNYKt/fYxverdaXmC9AImI
- c7Lod184D8TZOLA1/gnIBzKMX0NYh9T6g8IEFfOckK5SNQafK02r+X8MI6Is6Oa4CC72
- leVQ==
+ bh=EtOyhR+C1wJvZU8wiedXGMGVSqNvvqifEMJLMiQgAVc=;
+ b=L03nVmUkPndyUU9tH/MALMgelYXGq/p3zt1TwG85FzYAseUNRDA3Wt++ILbpd77ILA
+ 4h/eaUBsM7RuKPKX9HRitoYOaG972G3Tj0QD2x5GrL29nvVfiWDYaTbtjc6wPKEBt5OZ
+ bs2vBX9my84twKztxReOEw9wZGY2Q0Wdl+DEtX3IrPr0S1+OuH84nzq6RCzVPfM2s9H4
+ ImfwLYJ5UgbqMWS182Xz8bbwmTpCQqfQOFgEMnMm4tgMJQixPDHPkUsOgqTgLSrsumHs
+ uIF/MuN0yVQ9trti88zo6x1k+eHN3ASLkkZXAlpdAbUhKhED2EZ49hlAQTbnJmuzMB5x
+ b0iQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=KhBo+jV3YB73Mp9ZeA7lb5QO9nWQOxbQBa92iKZ/6e0=;
- b=NIQlrUFHcECD/JPVe1/EYkZ9oGuw7NkZ+q81yhswBCgV1120D2mh26Z1irsNMXxddO
- XuMHerpkFhPLZMPGffwZqQV9gIj7DhEK8Fmx0vppBdGFNOVZG/90suYcymiBWxwejPwQ
- TcJW2AsEP/NZlb17Azht/JueoKuuZs2RvPu/lfdYmP6seBKiUT5RH0T3jxFgwI0PxFeP
- L+1gu2GXX5aCE3wmfv3+LAT4rtDaB0oPsu596vKs4ONNC5YNJADa/POLzZQv125HXW3f
- YEcHfMMLKcxFSOkY8JTGY04eEjto81u9gVVzqmnbInpqIGvmMkpnxei1B8ZJ+Jro5WsZ
- AHlw==
-X-Gm-Message-State: AOAM533X+bpN84xTXcwc1q7uK/MHSviNFwKy0hz0lmzseGhqzKiEbZ5K
- 70SKQM/e2wNFi732hYuTz0c=
-X-Google-Smtp-Source: ABdhPJwizx5Ul3rqMpA2j4Ys8rZ5a7zgSSSMMSbgmPYAx67fXP338eoBM6QMf29auJAafvmss6WUcw==
-X-Received: by 2002:a05:6512:3b11:: with SMTP id
- f17mr24302743lfv.374.1638628662113; 
- Sat, 04 Dec 2021 06:37:42 -0800 (PST)
+ bh=EtOyhR+C1wJvZU8wiedXGMGVSqNvvqifEMJLMiQgAVc=;
+ b=b5E7uDpXFP5o6W0mpCtWZJkqGukZJwn4nGCN0j6VSGwnx0utYuwetzveioab6QHlx3
+ na0T7norEJdhE7Uk8WnM455NqD93KitsdwJjrAvRuDsfdmLRlCUNqcwqojdNyQb0tJOv
+ Jxc+LXBsVpfDNCNQO5UlLxFdMJdLnV4168HwQcr1l7H7XIqVZRglIG/yqY4MlMjVGjXg
+ WuhOW7WBQEOWjtNG80lV4U+RAR9gBQu4UCq+ObxwIcyz12ESOysC7Xmmd8kRE8PP7ICM
+ iJQdgZ5CPv72swgzuNMj4HBBTLsvq/f4Wxxe96D9r3X0ohjMl+cnhXVldxg54Fw58Ygq
+ UC0Q==
+X-Gm-Message-State: AOAM532u8L/cqGrwIOnbRtHC6TOsPVQJrT0m/SjAz7hhOCzldbjWe292
+ CweXnkfAr5VYfBdCwhSi20E=
+X-Google-Smtp-Source: ABdhPJy3QZudcRw4+yAZsC2/f4x/IcXmNDw0MftkOoWSdyIFIT0Dxo2x+Q+GsNwZwzdapu8R11Xzpw==
+X-Received: by 2002:a05:6512:b8e:: with SMTP id
+ b14mr24281414lfv.654.1638628664460; 
+ Sat, 04 Dec 2021 06:37:44 -0800 (PST)
 Received: from localhost.localdomain (94-29-46-111.dynamic.spd-mgts.ru.
  [94.29.46.111])
- by smtp.gmail.com with ESMTPSA id g36sm782934lfv.16.2021.12.04.06.37.41
+ by smtp.gmail.com with ESMTPSA id g36sm782934lfv.16.2021.12.04.06.37.43
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 04 Dec 2021 06:37:41 -0800 (PST)
+ Sat, 04 Dec 2021 06:37:44 -0800 (PST)
 From: Dmitry Osipenko <digetx@gmail.com>
 To: Thierry Reding <thierry.reding@gmail.com>,
  Jonathan Hunter <jonathanh@nvidia.com>, Mark Brown <broonie@kernel.org>,
  Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
  Liam Girdwood <lgirdwood@gmail.com>, Agneli <poczt@protonmail.ch>
-Subject: [PATCH v4 13/22] ASoC: tegra20: i2s: Filter out unsupported rates
-Date: Sat,  4 Dec 2021 17:37:16 +0300
-Message-Id: <20211204143725.31646-14-digetx@gmail.com>
+Subject: [PATCH v4 16/22] ARM: tegra_defconfig: Enable S/PDIF driver
+Date: Sat,  4 Dec 2021 17:37:19 +0300
+Message-Id: <20211204143725.31646-17-digetx@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211204143725.31646-1-digetx@gmail.com>
 References: <20211204143725.31646-1-digetx@gmail.com>
@@ -102,83 +102,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Support new nvidia,fixed-parent-rate device-tree property which instructs
-I2S that board wants parent clock rate to stay at a fixed rate. This allows
-to play audio over S/PDIF and I2S simultaneously. The root of the problem
-is that audio components on Tegra share the same audio PLL, and thus, only
-a subset of rates can be supported if we want to play audio simultaneously.
-Filter out audio rates that don't match parent clock rate if device-tree
-has the nvidia,fixed-parent-rate property.
+Enable Tegra20 S/PDIF driver. It's a part of HDMI audio subsystem on
+Tegra.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- sound/soc/tegra/tegra20_i2s.c | 49 +++++++++++++++++++++++++++++++++++
- 1 file changed, 49 insertions(+)
+ arch/arm/configs/tegra_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/tegra/tegra20_i2s.c b/sound/soc/tegra/tegra20_i2s.c
-index 266d2cab9f49..27365a877e47 100644
---- a/sound/soc/tegra/tegra20_i2s.c
-+++ b/sound/soc/tegra/tegra20_i2s.c
-@@ -262,10 +262,59 @@ static int tegra20_i2s_probe(struct snd_soc_dai *dai)
- 	return 0;
- }
- 
-+static const unsigned int tegra20_i2s_rates[] = {
-+	8000, 11025, 16000, 22050, 32000, 44100, 48000, 64000, 88200, 96000
-+};
-+
-+static int tegra20_i2s_filter_rates(struct snd_pcm_hw_params *params,
-+				    struct snd_pcm_hw_rule *rule)
-+{
-+	struct snd_interval *r = hw_param_interval(params, rule->var);
-+	struct snd_soc_dai *dai = rule->private;
-+	struct tegra20_i2s *i2s = dev_get_drvdata(dai->dev);
-+	struct clk *parent = clk_get_parent(i2s->clk_i2s);
-+	long i, parent_rate, valid_rates = 0;
-+
-+	parent_rate = clk_get_rate(parent);
-+	if (parent_rate <= 0) {
-+		dev_err(dai->dev, "Can't get parent clock rate: %ld\n",
-+			parent_rate);
-+		return parent_rate ?: -EINVAL;
-+	}
-+
-+	for (i = 0; i < ARRAY_SIZE(tegra20_i2s_rates); i++) {
-+		if (parent_rate % (tegra20_i2s_rates[i] * 128) == 0)
-+			valid_rates |= BIT(i);
-+	}
-+
-+	/*
-+	 * At least one rate must be valid, otherwise the parent clock isn't
-+	 * audio PLL. Nothing should be filtered in this case.
-+	 */
-+	if (!valid_rates)
-+		valid_rates = BIT(ARRAY_SIZE(tegra20_i2s_rates)) - 1;
-+
-+	return snd_interval_list(r, ARRAY_SIZE(tegra20_i2s_rates),
-+				 tegra20_i2s_rates, valid_rates);
-+}
-+
-+static int tegra20_i2s_startup(struct snd_pcm_substream *substream,
-+			       struct snd_soc_dai *dai)
-+{
-+	if (!device_property_read_bool(dai->dev, "nvidia,fixed-parent-rate"))
-+		return 0;
-+
-+	return snd_pcm_hw_rule_add(substream->runtime, 0,
-+				   SNDRV_PCM_HW_PARAM_RATE,
-+				   tegra20_i2s_filter_rates, dai,
-+				   SNDRV_PCM_HW_PARAM_RATE, -1);
-+}
-+
- static const struct snd_soc_dai_ops tegra20_i2s_dai_ops = {
- 	.set_fmt	= tegra20_i2s_set_fmt,
- 	.hw_params	= tegra20_i2s_hw_params,
- 	.trigger	= tegra20_i2s_trigger,
-+	.startup	= tegra20_i2s_startup,
- };
- 
- static const struct snd_soc_dai_driver tegra20_i2s_dai_template = {
+diff --git a/arch/arm/configs/tegra_defconfig b/arch/arm/configs/tegra_defconfig
+index 736a0d25900b..f8b40cfdfb3e 100644
+--- a/arch/arm/configs/tegra_defconfig
++++ b/arch/arm/configs/tegra_defconfig
+@@ -239,6 +239,7 @@ CONFIG_SND_HDA_CODEC_HDMI=y
+ CONFIG_SND_SOC=y
+ CONFIG_SND_SOC_TEGRA=y
+ CONFIG_SND_SOC_TEGRA20_I2S=y
++CONFIG_SND_SOC_TEGRA20_SPDIF=y
+ CONFIG_SND_SOC_TEGRA30_I2S=y
+ CONFIG_SND_SOC_TEGRA_RT5640=y
+ CONFIG_SND_SOC_TEGRA_WM8753=y
 -- 
 2.33.1
 
