@@ -4,70 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32A9EC433F5
-	for <alsa-devel@archiver.kernel.org>; Sat,  4 Dec 2021 17:46:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7FC3BC433EF
+	for <alsa-devel@archiver.kernel.org>; Sat,  4 Dec 2021 17:51:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8CE0D24BD;
-	Sat,  4 Dec 2021 18:45:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8CE0D24BD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3A2D52518;
+	Sat,  4 Dec 2021 18:50:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A2D52518
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638640001;
-	bh=SKTOiEnCRSF1blw0CzZe+GV1RIbwCYCpvBVjjm5D05I=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=uyxH3c/Q9p+tB1jp/M0DqKa5110NC1km3MhtmB8oglYS+odXMucQI/PO//u8ApAJq
-	 jnTIV2Zkx7pcfXeJQx1tHZCyUkfVCTPaL+ZTZgUiDb5BNsSFGgeAkBp3PdaavWLP3t
-	 dpwcBVaBCU09lzJaIIrG+e7LOdJj15f45yGYbBGw=
+	s=default; t=1638640299;
+	bh=s+ik63dAmfrjlC/j0Y0a0PtyupdfmbhVwiYFKIQBD8w=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=MynoGbI73nhxGl9NSTYkh3wmDQrvtSnx9EJ4ylGkLORntXc+gCksQKAEQKfwQFIum
+	 PdIdjSU3Vy+/FQCrFNZrAuEu6JACn+X3L8V5ygKASY5KFSGUCjU/Z647o8lAgaJ9UJ
+	 s7EDnZ0MjYZHXbPzvl90kh5d+nGpbizn9LaVnA1Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C5E4FF8024C;
-	Sat,  4 Dec 2021 18:45:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C7809F80085;
+	Sat,  4 Dec 2021 18:50:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5D78BF80134; Sat,  4 Dec 2021 18:45:47 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 9D1E9F8023B; Sat,  4 Dec 2021 18:50:47 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 13A89F80134;
- Sat,  4 Dec 2021 18:45:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13A89F80134
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9BF82F80085
+ for <alsa-devel@alsa-project.org>; Sat,  4 Dec 2021 18:50:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9BF82F80085
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="m0MsmUYr"
+ header.b="hfAWqiz4"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id AD69460EAB;
- Sat,  4 Dec 2021 17:45:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1CC5C341C0;
- Sat,  4 Dec 2021 17:45:31 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id CCB8560E84
+ for <alsa-devel@alsa-project.org>; Sat,  4 Dec 2021 17:50:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43C01C341C7
+ for <alsa-devel@alsa-project.org>; Sat,  4 Dec 2021 17:50:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1638639935;
- bh=SKTOiEnCRSF1blw0CzZe+GV1RIbwCYCpvBVjjm5D05I=;
- h=From:To:Cc:Subject:Date:From;
- b=m0MsmUYrwuVUwKl6MZElcwxrLizu/pvR3AR8zk2PHOHYKVJxiWKhKJHu6p271XZaf
- gNYpo6z4q2n5vFU7JbZ24L6EhTEl+SGo78rEKizqJvj2z18XyZ43sVMlajy28z8T3M
- aLWaL07Bbrekg9klx6pKn5wvOuPj43pJMAYGReJnnQdTxfCsGn7vKFwtmnUT8BbypD
- 2j2WABgRJUFkfYYGbU7iwInvTSEffsHgCqNDyZ8sY17MTG4ZiH2jPzqYvNGXslHJa2
- zU/JEuwUxtdf6ixCzLw6wlaxAioKp10v0jUHTbzxIXUy1I5uJeoOqs6jaFHjhMzS1i
- s71zdUjirwvug==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Daniel Baluta <daniel.baluta@nxp.com>
-Subject: [PATCH] ASoC: SOF: Intel: move CODEC_PROBE_RETRIES definition
-Date: Sat,  4 Dec 2021 18:44:47 +0100
-Message-Id: <20211204174529.1122697-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+ s=k20201202; t=1638640238;
+ bh=s+ik63dAmfrjlC/j0Y0a0PtyupdfmbhVwiYFKIQBD8w=;
+ h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+ b=hfAWqiz4EzBFWN0BCXcDb6gYiXLNKL6IoYeJW/pX7OYRu9scMuiJJdoSO/yXl089O
+ D1KgvFK+oif16qtUR0rWiihTWEFta3UpKaQSv3i5VUrMjLvE5k+gO2cQpzh74tGDCg
+ w29B85Qyeph7glRa6S/indeJ5SrcjSDxb5LoidwzhUDWV1DId9ZpAT0U06GbRdht7/
+ 8I1FU6rVFawMj3jeVueDI3OsjNbXr6XF6nDwRPGbYBV9US4JzAgFAZGRloE3+zM3OR
+ tOE9JohJij1HwkkC21IRGqHBQjpXh8Gqkb9jgOW+KRGaRPXNqDhGLz/NU4SETNuRBo
+ s/CVjr1pi4eCw==
+Received: by mail-ed1-f54.google.com with SMTP id e3so25060846edu.4
+ for <alsa-devel@alsa-project.org>; Sat, 04 Dec 2021 09:50:38 -0800 (PST)
+X-Gm-Message-State: AOAM533qHNQZcodlzfYEQXtF0eRGRncDDyxmWPLRX843yfFX0jC95Yd3
+ DpfaQNPyOfH7IkdwThBMG6tSl/0xv8jAmC+/Kg==
+X-Google-Smtp-Source: ABdhPJyG/uUnEPaVHkUuCxpNDT8h30alMo2zah2d3OzMYnPU6Qi4lwNW4/braAAARZrtS3ljjIUbVvgWJoy1uXJAO0E=
+X-Received: by 2002:a05:6402:35ce:: with SMTP id
+ z14mr36838701edc.197.1638640236433; 
+ Sat, 04 Dec 2021 09:50:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>,
- linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Hui Wang <hui.wang@canonical.com>,
- Kai-Heng Feng <kai.heng.feng@canonical.com>, Bard Liao <bard.liao@intel.com>,
- sound-open-firmware@alsa-project.org
+References: <1638547658-22032-1-git-send-email-srivasam@codeaurora.com>
+ <1638547658-22032-10-git-send-email-srivasam@codeaurora.com>
+ <1638574455.248037.1043006.nullmailer@robh.at.kernel.org>
+ <CAL_JsqKf4Y84+_PQqhwMEEiJNrR92urMUYSqYTEU0_c7fYnyhQ@mail.gmail.com>
+ <07f5a5f2-cdf5-75de-9635-0edcd5e5c905@codeaurora.org>
+In-Reply-To: <07f5a5f2-cdf5-75de-9635-0edcd5e5c905@codeaurora.org>
+From: Rob Herring <robh+dt@kernel.org>
+Date: Sat, 4 Dec 2021 11:50:25 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJgjdeYmwZUcNFQniYn2TR0frSUEVGfpXs00NvOBcBsfw@mail.gmail.com>
+Message-ID: <CAL_JsqJgjdeYmwZUcNFQniYn2TR0frSUEVGfpXs00NvOBcBsfw@mail.gmail.com>
+Subject: Re: [PATCH v8 09/10] ASoC: dt-bindings: Add SC7280 lpass cpu bindings
+To: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ bgoswami@codeaurora.org, lgirdwood@gmail.com,
+ Venkata Prasad Potturu <potturu@codeaurora.org>, linux-arm-msm@vger.kernel.org,
+ plai@codeaurora.org, linux-kernel@vger.kernel.org, swboyd@chromium.org,
+ tiwai@suse.com, agross@kernel.org, rohitkr@codeaurora.org, broonie@kernel.org,
+ bjorn.andersson@linaro.org, judyhsiao@chromium.org,
+ Srinivasa Rao Mandadapu <srivasam@codeaurora.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,39 +97,55 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Sat, Dec 4, 2021 at 1:59 AM Srinivasa Rao Mandadapu
+<srivasam@codeaurora.org> wrote:
+>
+>
+> On 12/4/2021 5:08 AM, Rob Herring wrote:
+> Thanks for your time and notifying the issue!!!
+> > On Fri, Dec 3, 2021 at 5:34 PM Rob Herring <robh@kernel.org> wrote:
+> >> On Fri, 03 Dec 2021 21:37:37 +0530, Srinivasa Rao Mandadapu wrote:
+> >>> From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> >>>
+> >>> Add bindings for sc7280 lpass cpu driver which supports
+> >>> audio over i2s based speaker, soundwire based headset, msm dmics
+> >>> and HDMI Port.
+> >>>
+> >>> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> >>> Co-developed-by: Venkata Prasad Potturu <potturu@codeaurora.org>
+> >>> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
+> >>> ---
+> >>>   .../devicetree/bindings/sound/qcom,lpass-cpu.yaml  | 70 +++++++++++++++++++---
+> >>>   1 file changed, 62 insertions(+), 8 deletions(-)
+> >>>
+> >> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> >> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> >>
+> >> yamllint warnings/errors:
+> >>
+> >> dtschema/dtc warnings/errors:
+> >> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.example.dt.yaml: lpass@62d80000: reg: [[0, 1658351616, 0, 425984], [0, 1659895808, 0, 167936]] is too short
+> >>          From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
+> > Are you running the checks before you send out your patches. Because
+> > it seems like you keep sending things with the same errors.
+> >
+> > If there's errors, I'm not going to review this. If you need help
+> > getting it to work, then ask.
+> Actually, the too short name errors are coming for the existing names
+> also. could you please suggest on how to go ahead?
 
-The macro is defined in an #ifdef but used outside:
+Go read Documentation/devicetree/bindings/example-schema.yaml and the
+part about default address sizes.
 
-sound/soc/sof/intel/hda-codec.c: In function 'hda_codec_probe':
-sound/soc/sof/intel/hda-codec.c:132:42: error: 'CODEC_PROBE_RETRIES' undeclared (first use in this function)
-  132 |         } while (resp == -1 && retry++ < CODEC_PROBE_RETRIES);
-      |                                          ^~~~~~~~~~~~~~~~~~~
+> >
+> > And what's with your email setup? codeaurora.com bounces.
+>
+>  From December 3 Qualcomm mail domain got changed to quicinc.com from
+> codeaurora.org.
+>
+> May be that's the reason for bouncing.
 
-Move it to a place where it can be seen unconditionally.
+No idea. Just fix it please. I don't think I've seen this problem from
+anyone else.
 
-Fixes: 046aede2f847 ("ASoC: SOF: Intel: Retry codec probing if it fails")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- sound/soc/sof/intel/hda-codec.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
-index 13cd96e6724a..4324178b3ca6 100644
---- a/sound/soc/sof/intel/hda-codec.c
-+++ b/sound/soc/sof/intel/hda-codec.c
-@@ -20,9 +20,10 @@
- #include "../../codecs/hdac_hda.h"
- #endif /* CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC */
- 
-+#define CODEC_PROBE_RETRIES 3
-+
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC)
- #define IDISP_VID_INTEL	0x80860000
--#define CODEC_PROBE_RETRIES 3
- 
- /* load the legacy HDA codec driver */
- static int request_codec_module(struct hda_codec *codec)
--- 
-2.29.2
-
+Rob
