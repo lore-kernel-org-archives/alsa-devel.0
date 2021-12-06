@@ -4,69 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7CCD2C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Dec 2021 18:02:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B03B3C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Dec 2021 18:03:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BBF9B22F6;
-	Mon,  6 Dec 2021 19:01:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BBF9B22F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 95404230D;
+	Mon,  6 Dec 2021 19:02:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95404230D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638813764;
-	bh=rm4lpoorN4GW0idvvHmReqqBpZmjcTOc1YuUVO0Ac2g=;
+	s=default; t=1638813788;
+	bh=AiU1xc1Jnt2ICB58kMPE7QKt3CB5Vizbk3iw6XtQqK0=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ffeQPoD8MT1gwmqZia820HisDp1XleM8pPUVH9g22QkrhoAtMWaSsMK52f8xoDB7b
-	 dPQxHdFeR11+XLl40ckkaYSY6OZQr25jsQEw/TV+L3+lVMVLvlea3v9YmilyOOomRA
-	 nn4mqp3t1eb7xdU7GiOEVHb99xzdi+gGEDrdW664=
+	b=kPiVDh0dW1Ikhwhbn1tVovubTx55mhf3P2tMOoTHJxynYJEAweNmc2xZ/kPgBiGv0
+	 XA7NbB5nrMcGvY5RLzYXZClgglq7OOH+/UoempmMa8YklKfectuD1MtQ3pVvKE5rbn
+	 RRhoXAc8++7eOfcfFc+Rf5lnsSfDYNUWiE0dSW3U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0266EF80506;
+	by alsa1.perex.cz (Postfix) with ESMTP id C6876F80508;
 	Mon,  6 Dec 2021 19:00:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 07568F804FE; Mon,  6 Dec 2021 19:00:43 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+ id E0111F80506; Mon,  6 Dec 2021 19:00:43 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D7251F804F3
- for <alsa-devel@alsa-project.org>; Mon,  6 Dec 2021 19:00:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7251F804F3
+ by alsa1.perex.cz (Postfix) with ESMTPS id CC5B3F804FE
+ for <alsa-devel@alsa-project.org>; Mon,  6 Dec 2021 19:00:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC5B3F804FE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="jjRc2MYZ"
+ header.b="mciFNq34"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id 7F565CE16E1;
- Mon,  6 Dec 2021 18:00:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2940AC341C6;
- Mon,  6 Dec 2021 18:00:28 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id DFD1FB811EA;
+ Mon,  6 Dec 2021 18:00:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E49EFC341C5;
+ Mon,  6 Dec 2021 18:00:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1638813631;
- bh=rm4lpoorN4GW0idvvHmReqqBpZmjcTOc1YuUVO0Ac2g=;
+ s=k20201202; t=1638813636;
+ bh=AiU1xc1Jnt2ICB58kMPE7QKt3CB5Vizbk3iw6XtQqK0=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=jjRc2MYZzQIjUrOw+DzK8UGJnqGKL0Ip5yQ3sGBlCfirVCbHtuH2LDwOooZQOO/u8
- GwYLoxXv33XLoRjiDt7tGJuoFH7JLJOjFT+q7SAbN5EN79RK6lIlN6SmI2jY5MGi/f
- Qz5WKSO+j3PTvt7rYLfEqGD2cBVau4VGy3IxObW7ZKs5naIGxpXb6NGHSrmsKr35zA
- phvlGHIzdQl9LGUXf/sAUQsGpwdzkjpJn8o5IwXJ8CdD0R1WiYK0z2ZHkD9tClBVZn
- Ob2piYABpjZbSjuUNNaByxEtaXgO4cazAIEAfShSH7rjPpkbIgstdMVLKr1JHcPGx/
- Y8BhLRBOd3IMg==
+ b=mciFNq34peMArE3urpNFdCWCDAh3GA2RtbopuFzoJI381ImLflVp3/sRmyQ8N8AKY
+ lsvSmqFCQVnA5lg0wbHGGC0xVvPQgzTI2HlV9taN6Jnb+jN9k5ocZCJ0DiY4TjSKVo
+ 42w4slGBBURvfyjvXZ8xmkc5jwAxwXRx8a3R8dVJ4tW8NiaBcMA6+3Sm004OpAthWI
+ Q/hhxHZhId6sHYlDymMjFP3/KxsNr6khJgZIlEsCeYtjd5hPNm8Pu88ygoBdVKCxfI
+ ockfAzoleyIi0iro5iLPrqg+2YN0vDu4vwEj4OP5z/z7U6+TxUuHtdF2itkBd8Sjak
+ u/u9kGzzlMbwg==
 From: Mark Brown <broonie@kernel.org>
-To: robh+dt@kernel.org, matthias.bgg@gmail.com, tiwai@suse.com,
- Trevor Wu <trevor.wu@mediatek.com>
-In-Reply-To: <20211130053905.28470-1-trevor.wu@mediatek.com>
-References: <20211130053905.28470-1-trevor.wu@mediatek.com>
-Subject: Re: [PATCH 0/2] ASoC: mediatek: support memory-region assignment
-Message-Id: <163881362873.2769299.4647182629013116105.b4-ty@kernel.org>
-Date: Mon, 06 Dec 2021 18:00:28 +0000
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20211202204838.75287-1-andriy.shevchenko@linux.intel.com>
+References: <20211202204838.75287-1-andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v1 1/1] ASoC: zl38060: Setup parent device and get rid of
+ unnecessary of_node assignment
+Message-Id: <163881363460.2769299.5427691491147846285.b4-ty@kernel.org>
+Date: Mon, 06 Dec 2021 18:00:34 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
- yc.hung@mediatek.com, linux-arm-kernel@lists.infradead.org
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,14 +80,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 30 Nov 2021 13:39:03 +0800, Trevor Wu wrote:
-> This series of patches adds support for memory-region assignment, so the
-> access region of DMA engine could be restricted.
-> Patches are based on broonie tree "for-next" branch.
+On Thu, 2 Dec 2021 22:48:38 +0200, Andy Shevchenko wrote:
+> Some of the drivers do not set parent device. This may lead to obstacles
+> during debugging or understanding the device relations from the Linux
+> point of view. Assign parent device for GPIO chips created by these
+> drivers.
 > 
-> Trevor Wu (2):
->   ASoC: mediatek: mt8195: support reserved memory assignment
->   dt-bindings: mediatek: mt8195: add memory-region property
+> While at it, let GPIO library to assign of_node from the parent device.
 > 
 > [...]
 
@@ -99,10 +96,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: mediatek: mt8195: support reserved memory assignment
-      commit: 4d408ea0282c374a304ce402866cb7b8a56c6b05
-[2/2] dt-bindings: mediatek: mt8195: add memory-region property
-      commit: 2da636247bb6f4fc3a9842ade04757790753fd2c
+[1/1] ASoC: zl38060: Setup parent device and get rid of unnecessary of_node assignment
+      commit: 766cc7f12078fe80dd88469e3dfe045e49bdf2bb
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
