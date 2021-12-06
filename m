@@ -4,81 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41498C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Dec 2021 17:29:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF712C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Dec 2021 18:01:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A7BAF22B1;
-	Mon,  6 Dec 2021 18:28:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A7BAF22B1
+	by alsa0.perex.cz (Postfix) with ESMTPS id A29E22279;
+	Mon,  6 Dec 2021 19:00:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A29E22279
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638811783;
-	bh=4ju5o7FsoS2jpvAz5xVo8OtrCFZ1DUARdeX5FK9UzfE=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1638813686;
+	bh=zHUTDXXfzWnxTHaFvSpW2L0XNbOVdHY/sxh/MV0nomI=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=meDL4ZYAoIqQIwHGbbJe6eJ/ToOlgenBeg+DDoqkj0K8yHEcUJSwhjhO+N6T+IuHg
-	 IK3xj2/ZnYTBg+mq9U0AXbFR1tsmNhdKCvsIXir1RGVzxoQyRk7C5wuj0qOrCKOC61
-	 P5Fr+G8Kv9Y5t+73IEBeVoBqzXye3bylUIVdvO7Q=
+	b=MBREn5qDkqfwGaNRIaS5k9FYegAVh+0wpBbKEXcgg/aXXdU0KN9Cdrz7dZe4utr+Q
+	 yPnKYgXojRUaqBn/rDZG3HBhMidnaseocAKcPhfYHWgDuvob3vGdosw2FO8zl6nJ+r
+	 k0Ou1OXbQY3B3urVBK9TNRIAHuYLjFwxmbu4czac=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 305D2F804E4;
-	Mon,  6 Dec 2021 18:28:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2853DF804AE;
+	Mon,  6 Dec 2021 19:00:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 065FBF804EC; Mon,  6 Dec 2021 18:28:52 +0100 (CET)
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com
- [IPv6:2a00:1450:4864:20::532])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 9454DF804EC; Mon,  6 Dec 2021 19:00:34 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 24C68F804E4
- for <alsa-devel@alsa-project.org>; Mon,  6 Dec 2021 18:28:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24C68F804E4
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2DF6EF804E4
+ for <alsa-devel@alsa-project.org>; Mon,  6 Dec 2021 19:00:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2DF6EF804E4
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com
- header.b="Sd+DbBx5"
-Received: by mail-ed1-x532.google.com with SMTP id o20so46128182eds.10
- for <alsa-devel@alsa-project.org>; Mon, 06 Dec 2021 09:28:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=googlemail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=/Iwam9ntoKrXXFMW9GBBg/CP2/SJeMa2eol8Tt6Y/4w=;
- b=Sd+DbBx50iRRQDCEahfK/6JoYwkIW3PdLQoaN+VzpC2SB0+lVKLqv+7X5TPeOQDjX4
- xXZb28UYQhfHSN1ztNpmV+MKnyjh5R5gaRAfaWnuTWUUwOaH0h3dkVzroeVXtlgTmXgs
- pxcCogtoYtZgkBfFk4k7L2Y4Kh5AuakypT5UR4DQEzhlp/fTVxC9wKdgffqhEYiKY/GQ
- gYQWTcrf7tski3w4QdbRc3hPIb81CxU41+byZ2jHxSCfVgT6G/jOa7Aw+v5+pKwGOfGl
- ZiOr0pnqHwXYQRVtOv1X20hbypEhzSgiFXoQw6+zwh91goEhayT+AW/fu57OBK4XSXby
- R7nQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=/Iwam9ntoKrXXFMW9GBBg/CP2/SJeMa2eol8Tt6Y/4w=;
- b=anJ7BOt4H63t0t5fLA+/cYmatmCgls5hb2oXYd91xvk6IEhF6LZgbcJC0uNZOIAkcI
- F0eoukcat76hDFoA0JhQVeHD3nLKOAg/ef5FZllY0SdgSDWU3IWV8laMoPEnRpwCX2MI
- w1KN7W1UHQYTTi0Zr2aGKUALmUe16gsoDZ0l6ImlZKAIPh1/GwMV3OuSpFcBf2mQqRXr
- z3QhGMyOMcjpZ69/yjkZkVWPLxKhpSfpB7o5jvZe+eUEq+r7A46Bm0b6/W6tOjKS6cdn
- 3R2o0ZSdTCpQzSBRIcStB/uZKjcm64rcto2vecc4RAIOzMteZBVncBjxtGCmZEglLR68
- waMw==
-X-Gm-Message-State: AOAM5323Orj5Bjkh8wmZjR3CfDpAnOD7IHHFQCnUW3ALF1v+l2PjFZ9b
- ZTytydd4QFPTbAKPJfUOZGCdPWLtNN19Mwn4+JQ=
-X-Google-Smtp-Source: ABdhPJx9/dmmMIp0k2nEWYLkPyQHjbt6A++ofLwsYD9nTGyKv6qQM4UpeYPChbhnOnPF9AqF77qtzNTlFRyRQ7ZtUy4=
-X-Received: by 2002:aa7:c5c4:: with SMTP id h4mr602667eds.386.1638811723308;
- Mon, 06 Dec 2021 09:28:43 -0800 (PST)
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="Tnx+LyrF"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id B40B1B811C9;
+ Mon,  6 Dec 2021 18:00:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1AEBC341C1;
+ Mon,  6 Dec 2021 18:00:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1638813628;
+ bh=zHUTDXXfzWnxTHaFvSpW2L0XNbOVdHY/sxh/MV0nomI=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=Tnx+LyrFNU/9Vvi5FBG2FmEFVQZunIyrA7BceY33+nYpWIxa+o6MqazpOp3xQY6ut
+ +4LDzpPx2FXoJG3xN8c3svkItB7ogm2e/JvrN4IIs4dIm8/O+t856zmk4xGYS2Ajl5
+ inhSKEjGfld+8p01/pQ9Zpk9nLonB3CwuVresSTw5WocLmlEJchvnNxAJyYtCF2KN1
+ xYC5BOiJ3fFSKHKgC8ywjQzOf3vszFM+MfbIQPTf8ADLiwkDhdp8dqotCDNn33B6OZ
+ Zfg/nfW9If9WjmVnGwlrLHTxk9W5CcI6Iy8qYl8g5PfWEGIosqozSWo6HUTRlRFDju
+ xpLjmq68/rEiA==
+From: Mark Brown <broonie@kernel.org>
+To: robh+dt@kernel.org, matthias.bgg@gmail.com, tiwai@suse.com,
+ Trevor Wu <trevor.wu@mediatek.com>
+In-Reply-To: <20211129141057.12422-1-trevor.wu@mediatek.com>
+References: <20211129141057.12422-1-trevor.wu@mediatek.com>
+Subject: Re: [PATCH v2 0/4] ASoC: mediatek: Update MT8195 machine driver
+Message-Id: <163881362422.2769299.13576953689584169746.b4-ty@kernel.org>
+Date: Mon, 06 Dec 2021 18:00:24 +0000
 MIME-Version: 1.0
-References: <20211205180816.2083864-1-martin.blumenstingl@googlemail.com>
- <20211205180816.2083864-3-martin.blumenstingl@googlemail.com>
- <1jfsr659v1.fsf@starbuckisacylon.baylibre.com>
-In-Reply-To: <1jfsr659v1.fsf@starbuckisacylon.baylibre.com>
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date: Mon, 6 Dec 2021 18:28:32 +0100
-Message-ID: <CAFBinCAceRkO86bXfUYnDwup3At9MaN-PnOiLxa-1fYO5SwOQA@mail.gmail.com>
-Subject: Re: [PATCH RFC v1 2/2] ASoC: meson: aiu: Move AIU_I2S_MISC hold
- setting to aiu-fifo-i2s
-To: Jerome Brunet <jbrunet@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
-Cc: alsa-devel@alsa-project.org, Christian Hewitt <christianshewitt@gmail.com>,
- linux-kernel@vger.kernel.org, Geraldo Nascimento <geraldogabriel@gmail.com>,
- linux-amlogic@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, pierre-louis.bossart@linux.intel.com,
+ linux-mediatek@lists.infradead.org, yc.hung@mediatek.com,
+ daniel.baluta@nxp.com, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,72 +82,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Jerome,
+On Mon, 29 Nov 2021 22:10:53 +0800, Trevor Wu wrote:
+> This series of patches adds support for RT5682s headset codec in mt8195
+> machine drivers, and SOF support on card mt8195-mt6359-rt1019-rt5682 is
+> also included.
+> Patches are based on broonie tree "for-next" branch.
+> 
+> Changes since v1:
+>   - remove patch3 and patch4 in v1
+>   - add SOF support on card mt8195-mt6359-rt1012-rt5682
+>   - add new propertes to dt-bindings for mt8195-mt6359-rt1019-rt5682
+> 
+> [...]
 
-On Mon, Dec 6, 2021 at 11:02 AM Jerome Brunet <jbrunet@baylibre.com> wrote:
->
->
-> On Sun 05 Dec 2021 at 19:08, Martin Blumenstingl <martin.blumenstingl@googlemail.com> wrote:
->
-> > The out-of-tree vendor driver uses the following approach to set the
-> > AIU_I2S_MISC register:
-> > 1) write AIU_MEM_I2S_START_PTR and AIU_MEM_I2S_RD_PTR
-> > 2) configure AIU_I2S_MUTE_SWAP[15:0]
-> > 3) write AIU_MEM_I2S_END_PTR
-> > 4) set AIU_I2S_MISC[2] to 1 (documented as: "put I2S interface in hold
-> >    mode")
-> > 5) set AIU_I2S_MISC[4] to 1 (depending on the driver revision it always
-> >    stays at 1 while for older drivers this bit is unset in step 4)
-> > 6) set AIU_I2S_MISC[2] to 0
-> > 7) write AIU_MEM_I2S_MASKS
-> > 8) toggle AIU_MEM_I2S_CONTROL[0]
-> > 9) toggle AIU_MEM_I2S_BUF_CNTL[0]
-> >
-> > Additional testing shows that when AIU_I2S_MISC[2] is set to 1 then no
-> > interrupts are generated anymore. The way this bit is managed by the
-> > vendor driver as well as not getting any interrupts can mean that it's
-> > related to the FIFO and not the encoder.
->
-> Not necessarily. If the encoder stops pulling data, the FIFO will going
-> over the DDR. Since it generates an IRQ after reading N bytes, IRQ would
-> stop too. AFAIK, if the pipeline is stalled, the IRQ stops anyway
-ah, right. so I think you're right: it can be either way
+Applied to
 
-> ... but this is not really important
-I'll remove that section from the description in v2
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-> >
-> > Move setting the AIU_I2S_MISC[2] bit to aiu_fifo_i2s_hw_params() so it
-> > closer resembles the flow in the vendor kernel. While here also
-> > configure AIU_I2S_MISC[4] (documented as: "force each audio data to
-> > left or right according to the bit attached with the audio data")
-> > similar to how the vendor driver does this.
->
-> I understand the part of HOLD, not about FORCE_LR.
-> Is it necessary to fix the problem ? Have you tested without this change
-> ?
-On my Le Potato board (GXL / S905X) FORCE_LR is either enabled by the
-bootloader or being enabled is the default value.
-All versions of the vendor driver are also setting it in some way,
-including the latest one that I have access to [0].
-I prefer to keep this explicit write in for two reasons:
-- we're not hit by surprise if some SoC/bootloaders don't set this bit
-by default
-- the code in the mainline does not skip anything that the vendor driver does
+Thanks!
 
-To specifically answer your question: I have not tried whether this
-bit needs to be set and if unsetting it manually breaks anything.
+[1/4] ASoC: mediatek: mt8195: add headset codec rt5682s support
+      commit: c9d57a25de53800e54969f4bf2b672b3a58cdaf5
+[2/4] dt-bindings: mediatek: mt8195: add model property
+      commit: 629e442761bae0c62b2fb14061d66bbd08b4155e
+[3/4] ASoC: mediatek: mt8195: add sof support on mt8195-mt6359-rt1019-rt5682
+      commit: 3d00d2c07f04f47aa4228700b440ac47abf13853
+[4/4] dt-bindings: mediatek: mt8195: add adsp and dai-link property
+      commit: 6182ec4616d6ffc046bea798c683a0dee11ded67
 
-> > This fixes the infamous and
-> > long-standing "machine gun noise" issue (a buffer underrun issue).
->
-> Well done ! It took us a while to nail it, Thanks a lot !!
-Thanks - this took a while to figure out but it's great to finally
-have it solved!
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Best regards,
-Martin
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-[0] https://github.com/khadas/linux/blob/khadas-vims-4.9.y/sound/soc/amlogic/meson/audio_hw.c#L194:L202
+Thanks,
+Mark
