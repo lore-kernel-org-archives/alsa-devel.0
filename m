@@ -4,69 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1044FC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Dec 2021 16:40:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1249DC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Dec 2021 17:03:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2B87220BF;
-	Mon,  6 Dec 2021 17:39:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2B87220BF
+	by alsa0.perex.cz (Postfix) with ESMTPS id AE13D20D2;
+	Mon,  6 Dec 2021 18:02:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE13D20D2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638808825;
-	bh=LCXcChvr0AeOJPtSkeNtOPUaD6QgKLC0oPv7MRncYFw=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1638810199;
+	bh=CruF0XwkjUihaS83rBxrZFreo0S5fgSA6XpLfr2goEI=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lihqhs1GfWXAwSAhx3KV4SwBc+iDtXI902UJ8UjznDhtexcUApRQaLPOdx5z1siTa
-	 oP7ODvyQsXhF2Yhj5E8U/hUSnigYWynWhy5F7pbxBnQHFLkJw9KE/sBdyDfNtTB1AD
-	 jrNrBNoCrS0utnIhW2xEwcXFlidgiIYEtf5d/wq4=
+	b=LAPYo2pzyQ/lziL2TeOnoh5k5TZ9kdUJO0szLFizKM3O1iXQuPrzQ07efy23qJu5W
+	 rxSSDFifQW7ohIheHdiZWTSv7aNAViRjRnWM3zBjaxFACq74enkMazKgyaxv/NAhQo
+	 nIVrz+T/xPQ5hPcBTcOLiKSMi7TfppD7L2D+XQG0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B796CF804E5;
-	Mon,  6 Dec 2021 17:39:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4A601F804E5;
+	Mon,  6 Dec 2021 18:02:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EE912F804EC; Mon,  6 Dec 2021 17:39:32 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7FD15F804AE
- for <alsa-devel@alsa-project.org>; Mon,  6 Dec 2021 17:39:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7FD15F804AE
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="lpqYkzQv"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 50B1FF804EC; Mon,  6 Dec 2021 18:02:27 +0100 (CET)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id F07C0B81177;
- Mon,  6 Dec 2021 16:39:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35D7DC341C2;
- Mon,  6 Dec 2021 16:39:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1638808767;
- bh=LCXcChvr0AeOJPtSkeNtOPUaD6QgKLC0oPv7MRncYFw=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=lpqYkzQvcKjkGRub0G5/DUHQncJMLVxJlwTebmZIRMf3mtOWGnAQXdNjnBpaWdFnq
- +2N9Mm1unnenob8Lu2uXJuL/gFKfqFrdXcFk0vBQahfLB/CpyxAYASfSRaIHtTkyQN
- /oFsSXFX6ZmQQg++U2zbc6wRJOrnqP2DgDyzkL44Q+thNuZZFoFVOmGKwgVBbfxL7t
- wpptJvEfLvqli21w1foY1qJTdX8fj/FqOzj1qZF3tYWdb9Vcve5Ff31CdKMAIjckhG
- f4q9Ps5kNlHnhdM18ENMsfwCWFxcPLzKJbI8JZzPV1WXZScqIGI54u9bTSLWkmZNii
- CE0vK8q55XD2Q==
-Date: Mon, 6 Dec 2021 16:39:23 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1B7F2F80118
+ for <alsa-devel@alsa-project.org>; Mon,  6 Dec 2021 18:02:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B7F2F80118
+X-IronPort-AV: E=McAfee;i="6200,9189,10190"; a="323612239"
+X-IronPort-AV: E=Sophos;i="5.87,292,1631602800"; d="scan'208";a="323612239"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 06 Dec 2021 09:01:29 -0800
+X-IronPort-AV: E=Sophos;i="5.87,292,1631602800"; d="scan'208";a="460898846"
+Received: from jcsee-mobl2.ccr.corp.intel.com (HELO [10.209.128.127])
+ ([10.209.128.127])
+ by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 06 Dec 2021 09:01:28 -0800
 Subject: Re: [PATCH v2] kselftest: alsa: Add simplistic test for ALSA mixer
  controls kselftest
-Message-ID: <Ya48u+Wx+ZZyfYIO@sirena.org.uk>
+To: Mark Brown <broonie@kernel.org>
 References: <20211206160305.194011-1-broonie@kernel.org>
  <33692870-fccc-6d63-2c95-056a21fff791@linux.intel.com>
+ <Ya48u+Wx+ZZyfYIO@sirena.org.uk>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <b2972e61-e6c2-9f60-6242-3762c88efe0a@linux.intel.com>
+Date: Mon, 6 Dec 2021 11:01:25 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="cc7zcVw8/hFRex4a"
-Content-Disposition: inline
-In-Reply-To: <33692870-fccc-6d63-2c95-056a21fff791@linux.intel.com>
-X-Cookie: You will soon forget this.
+In-Reply-To: <Ya48u+Wx+ZZyfYIO@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
  Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
@@ -85,75 +76,19 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---cc7zcVw8/hFRex4a
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+>>> +// This test will iterate over all cards detected in the system, exercising
+> 
+>> would it make sense to test only specific cards? People doing automated
+>> tests might have a USB device for capture of analog loopbacks, or
+>> injection of specific streams for capture, and usually care about
+>> testing such devices - which do need manual setups and wiring btw.
+> 
+> It's not really idiomatic for kselftest to require any per system
+> configuration by default - half the thing is that you can just run it
+> and it should do as much as it can sensibly on the system.  You could
+> definitely add some command line options for development or manual usage
+> though.
 
-On Mon, Dec 06, 2021 at 10:27:26AM -0600, Pierre-Louis Bossart wrote:
-
-> > This is added as a kselftest since unlike other ALSA test programs it d=
-oes
-> > not require either physical setup of the device or interactive monitori=
-ng
-
-> what did you mean by 'not require physical setup of the device'?
-
-You don't need for example a loopback cable plugging in.
-
-> > +// This test will iterate over all cards detected in the system, exerc=
-ising
-
-> would it make sense to test only specific cards? People doing automated
-> tests might have a USB device for capture of analog loopbacks, or
-> injection of specific streams for capture, and usually care about
-> testing such devices - which do need manual setups and wiring btw.
-
-It's not really idiomatic for kselftest to require any per system
-configuration by default - half the thing is that you can just run it
-and it should do as much as it can sensibly on the system.  You could
-definitely add some command line options for development or manual usage
-though.
-
-> > +		    snd_ctl_elem_info_get_step64(ctl->info)) {
-> > +			ksft_print_msg("%s value %lld invalid for step %lld minimum %lld\n",
-> > +				       ctl->name, int64_val,
-> > +				       snd_ctl_elem_info_get_step64(ctl->info),
-> > +				       snd_ctl_elem_info_get_min64(ctl->info));
-> > +			err =3D -1;
-> > +		}
-> > +		break;
-> > +
-> > +	default:
-> > +		/* No tests for other types */
-
-> these types include ENUMERATED, BYTES and IEC958, but see below for
-> ENUMERATED...
-
-These are tests that the information returned when we query the card
-status is coherent, we're not doing any validation at present that the
-enumeration's return value was sensible.
-
-> > +	case SND_CTL_ELEM_TYPE_ENUMERATED:
->=20
-> ... here you are handling ENUMERATED types?
->=20
-
-This is a different test, that we can write all valid values.=20
-
---cc7zcVw8/hFRex4a
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGuPLoACgkQJNaLcl1U
-h9ChFgf+OqiL9LUTGCZicKoiCRADcu9TRdfoxPCcW2xJrlkzYKyZh4uXW/elrQ2N
-W+sQIwZfOhACSDLagAp+bmg3RGe0i1nSpd69dXIec2xVdzvktLnvZt8TRMYVtuFQ
-fTp6GPBv+ANsUjFPU70UFXX3ri6T3GwmmDm7i0r4ACWzj4z0knPrhXVNI6sE7gC3
-02KRgFGUVW5HC8M9fl79w6GXRQjDnlUHciMcRAqyo1Fei8RFCacGtza961sUwgqi
-Vib5+nvG4NeJ6+mpMWMofJPfKY/5NB+I+9fekb8kUX3DAxRHXlVzDZUnsDXxow66
-UFNGGkNiPZO7iJM6xyKvBW9GDcWetg==
-=RkwC
------END PGP SIGNATURE-----
-
---cc7zcVw8/hFRex4a--
+I was thinking of adding this test to our CI, it's a bit orthogonal to
+self-tests indeed. IIRC we check that we can modify all the PGA settings
+for volume control but this test is a lot more generic.
