@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8CAE3C4332F
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Dec 2021 17:04:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27E5BC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Dec 2021 17:05:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9837320E4;
-	Mon,  6 Dec 2021 18:04:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9837320E4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 52B561F2E;
+	Mon,  6 Dec 2021 18:04:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 52B561F2E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638810296;
-	bh=3vdetNSjQ3RY+HvY3EyPrpeJKUBe0iiwi63HgFIC14s=;
+	s=default; t=1638810313;
+	bh=uy3kd5buO6Qd335EgwcuOYe/wo9odZXDIQWpZVzDKz0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lDu02tX229FWrgGJT96Cf4N8dvSjG+lCCOY2NUpSGnJcYwAE01RyODszG9tAbUAl1
-	 OAzMwpWrntrcACKxJEJ7cexE3gYfxwND8dp3sQgXtTcQOl1I6ngN9LLX8GIpvgjzEu
-	 e/qqdFinIGMxGXHK3ITRForjmecybfBxT7AcPHsE=
+	b=lfpGRXvJ0CasmJzsFu2+/jI2Hx6VHjcoUd5Tu+hZ4jAXUhP18jSoubvxpFAcXdqoQ
+	 bTOTOd1JPWaWvzjjm01NJam+xANCW70K5U/EwrMBzunTkiO3NtG0g7O4pGeyVgcC16
+	 ugkd21pKCo2y3kYwkrdA+ZQz/ZPYSAEOYJrYBP8Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0E573F804FB;
+	by alsa1.perex.cz (Postfix) with ESMTP id A3FC0F804FD;
 	Mon,  6 Dec 2021 18:03:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B9D99F804F1; Mon,  6 Dec 2021 14:11:45 +0100 (CET)
+ id 089F8F804EC; Mon,  6 Dec 2021 14:11:50 +0100 (CET)
 Received: from alexa-out-sd-01.qualcomm.com (alexa-out-sd-01.qualcomm.com
  [199.106.114.38])
  (using TLSv1.2 with cipher AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 41DDFF804E4
- for <alsa-devel@alsa-project.org>; Mon,  6 Dec 2021 14:11:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41DDFF804E4
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8AA77F804E5
+ for <alsa-devel@alsa-project.org>; Mon,  6 Dec 2021 14:11:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8AA77F804E5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=quicinc.com header.i=@quicinc.com
- header.b="RJ6RS7dn"
+ header.b="izMSx4iK"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
- t=1638796300; x=1670332300;
+ t=1638796304; x=1670332304;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version;
- bh=55r7vcOOWbj/oXy8k3YYhpmLfRt+lwKbKv2++d6u+g8=;
- b=RJ6RS7dnpmkEBGmEhjN62QB8udKz39o/wRkotwSUAIqMG3sKca0YtTy4
- myHPe+appC26f3b0YzVQMxsoZDGRAzcNGMTPYpyDMLvP9pPfosdD/INxP
- VstOr+G4IZO0NpQhduVBozjbU86E/pGqaeqcE1dZm5i4GwtHkW7mdpDSn 0=;
+ bh=FFkY61nZpsiSvjL5f/R7EFLkcN0P29ZxCH0NiD7iQfk=;
+ b=izMSx4iKDSWOik/FEvLBIFtH4IMUskMY1ptiBz/ZbSM9nSRCf1AhqenJ
+ pKJXYdcZ0ficHeyNHzGso4vm6p8F9A5qj4KIKGAReTBCOBipOZTnLF5e3
+ sO9ImzSx9bG1ep/dxiXHDO1JfV2caJwyXz3ZFb3AA5sH2DmkB6wsICKoS s=;
 Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
- by alexa-out-sd-01.qualcomm.com with ESMTP; 06 Dec 2021 05:11:31 -0800
+ by alexa-out-sd-01.qualcomm.com with ESMTP; 06 Dec 2021 05:11:43 -0800
 X-QCInternal: smtphost
 Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
  by ironmsg-SD-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Dec 2021 05:11:31 -0800
+ 06 Dec 2021 05:11:42 -0800
 Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
  nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Mon, 6 Dec 2021 05:11:30 -0800
+ 15.2.922.19; Mon, 6 Dec 2021 05:11:42 -0800
 Received: from hu-srivasam-hyd.qualcomm.com (10.80.80.8) by
  nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Mon, 6 Dec 2021 05:11:24 -0800
+ 15.2.922.19; Mon, 6 Dec 2021 05:11:36 -0800
 From: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
 To: <agross@kernel.org>, <bjorn.andersson@linaro.org>, <lgirdwood@gmail.com>, 
  <broonie@kernel.org>, <robh+dt@kernel.org>, <plai@codeaurora.org>,
@@ -67,10 +67,10 @@ To: <agross@kernel.org>, <bjorn.andersson@linaro.org>, <lgirdwood@gmail.com>,
  <linux-arm-msm@vger.kernel.org>, <alsa-devel@alsa-project.org>,
  <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
  <swboyd@chromium.org>, <judyhsiao@chromium.org>
-Subject: [PATCH v9 02/10] ASoC: qcom: Move lpass_pcm_data structure to lpass
- header
-Date: Mon, 6 Dec 2021 18:40:51 +0530
-Message-ID: <1638796259-24813-3-git-send-email-quic_srivasam@quicinc.com>
+Subject: [PATCH v9 04/10] ASoC: qcom: Add helper function to get dma control
+ and lpaif handle
+Date: Mon, 6 Dec 2021 18:40:53 +0530
+Message-ID: <1638796259-24813-5-git-send-email-quic_srivasam@quicinc.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1638796259-24813-1-git-send-email-quic_srivasam@quicinc.com>
 References: <1638796259-24813-1-git-send-email-quic_srivasam@quicinc.com>
@@ -97,50 +97,187 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Declare lpass_pcm_data structure in lpass header file instead of
-platform source file to make common use of it by other drivers
+Add support function to get dma control and lpaif handle to avoid
+repeated code in platform driver
 
 Signed-off-by: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
 Co-developed-by: Venkata Prasad Potturu <quic_potturu@quicinc.com>
 Signed-off-by: Venkata Prasad Potturu <quic_potturu@quicinc.com>
 Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/lpass-platform.c | 5 -----
- sound/soc/qcom/lpass.h          | 5 +++++
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/qcom/lpass-platform.c | 113 +++++++++++++++++++++++-----------------
+ 1 file changed, 66 insertions(+), 47 deletions(-)
 
 diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
-index a59e9d2..a44162c 100644
+index a44162c..5d77240 100644
 --- a/sound/soc/qcom/lpass-platform.c
 +++ b/sound/soc/qcom/lpass-platform.c
-@@ -18,11 +18,6 @@
+@@ -177,6 +177,49 @@ static int lpass_platform_pcmops_close(struct snd_soc_component *component,
+ 	return 0;
+ }
  
- #define DRV_NAME "lpass-platform"
- 
--struct lpass_pcm_data {
--	int dma_ch;
--	int i2s_port;
--};
--
- #define LPASS_PLATFORM_BUFFER_SIZE	(24 *  2 * 1024)
- #define LPASS_PLATFORM_PERIODS		2
- 
-diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
-index c0f0247..f0d21cd 100644
---- a/sound/soc/qcom/lpass.h
-+++ b/sound/soc/qcom/lpass.h
-@@ -257,6 +257,11 @@ struct lpass_variant {
- 	int num_clks;
- };
- 
-+struct lpass_pcm_data {
-+	int dma_ch;
-+	int i2s_port;
-+};
++static void __lpass_get_lpaif_handle(struct snd_pcm_substream *substream,
++				     struct snd_soc_component *component,
++				     struct lpaif_dmactl **dmactl, int *id, struct regmap **map)
++{
++	struct snd_soc_pcm_runtime *soc_runtime = asoc_substream_to_rtd(substream);
++	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(soc_runtime, 0);
++	struct lpass_data *drvdata = snd_soc_component_get_drvdata(component);
++	struct snd_pcm_runtime *rt = substream->runtime;
++	struct lpass_pcm_data *pcm_data = rt->private_data;
++	struct lpass_variant *v = drvdata->variant;
++	int dir = substream->stream;
++	unsigned int dai_id = cpu_dai->driver->id;
++	struct lpaif_dmactl *l_dmactl = NULL;
++	struct regmap *l_map = NULL;
++	int l_id = 0;
 +
- /* register the platform driver from the CPU DAI driver */
- int asoc_qcom_lpass_platform_register(struct platform_device *);
- int asoc_qcom_lpass_cpu_platform_remove(struct platform_device *pdev);
++	switch (dai_id) {
++	case MI2S_PRIMARY ... MI2S_QUINARY:
++		if (dir == SNDRV_PCM_STREAM_PLAYBACK) {
++			l_id = pcm_data->dma_ch;
++			l_dmactl = drvdata->rd_dmactl;
++		} else {
++			l_dmactl = drvdata->wr_dmactl;
++			l_id = pcm_data->dma_ch - v->wrdma_channel_start;
++		}
++		l_map = drvdata->lpaif_map;
++		break;
++	case LPASS_DP_RX:
++		l_id = pcm_data->dma_ch;
++		l_dmactl = drvdata->hdmi_rd_dmactl;
++		l_map = drvdata->hdmiif_map;
++		break;
++	default:
++		break;
++	}
++	if (dmactl)
++		*dmactl = l_dmactl;
++	if (id)
++		*id = l_id;
++	if (map)
++		*map = l_map;
++}
++
+ static int lpass_platform_pcmops_hw_params(struct snd_soc_component *component,
+ 					   struct snd_pcm_substream *substream,
+ 					   struct snd_pcm_hw_params *params)
+@@ -191,21 +234,15 @@ static int lpass_platform_pcmops_hw_params(struct snd_soc_component *component,
+ 	unsigned int channels = params_channels(params);
+ 	unsigned int regval;
+ 	struct lpaif_dmactl *dmactl;
+-	int id, dir = substream->stream;
++	int id;
+ 	int bitwidth;
+ 	int ret, dma_port = pcm_data->i2s_port + v->dmactl_audif_start;
+ 	unsigned int dai_id = cpu_dai->driver->id;
+ 
+-	if (dir ==  SNDRV_PCM_STREAM_PLAYBACK) {
+-		id = pcm_data->dma_ch;
+-		if (dai_id == LPASS_DP_RX)
+-			dmactl = drvdata->hdmi_rd_dmactl;
+-		else
+-			dmactl = drvdata->rd_dmactl;
+-
+-	} else {
+-		dmactl = drvdata->wr_dmactl;
+-		id = pcm_data->dma_ch - v->wrdma_channel_start;
++	__lpass_get_lpaif_handle(substream, component, &dmactl, &id, NULL);
++	if (!dmactl) {
++		dev_err(soc_runtime->dev, "failed to get dmactl handle\n");
++		return -EINVAL;
+ 	}
+ 
+ 	bitwidth = snd_pcm_format_width(format);
+@@ -350,10 +387,11 @@ static int lpass_platform_pcmops_hw_free(struct snd_soc_component *component,
+ 	struct regmap *map;
+ 	unsigned int dai_id = cpu_dai->driver->id;
+ 
+-	if (dai_id == LPASS_DP_RX)
+-		map = drvdata->hdmiif_map;
+-	else
+-		map = drvdata->lpaif_map;
++	__lpass_get_lpaif_handle(substream, component, NULL, NULL, &map);
++	if (!map) {
++		dev_err(soc_runtime->dev, "failed to get dmactl handle\n");
++		return -EINVAL;
++	}
+ 
+ 	reg = LPAIF_DMACTL_REG(v, pcm_data->dma_ch, substream->stream, dai_id);
+ 	ret = regmap_write(map, reg, 0);
+@@ -379,22 +417,12 @@ static int lpass_platform_pcmops_prepare(struct snd_soc_component *component,
+ 	int ret, id, ch, dir = substream->stream;
+ 	unsigned int dai_id = cpu_dai->driver->id;
+ 
+-
+ 	ch = pcm_data->dma_ch;
+-	if (dir ==  SNDRV_PCM_STREAM_PLAYBACK) {
+-		if (dai_id == LPASS_DP_RX) {
+-			dmactl = drvdata->hdmi_rd_dmactl;
+-			map = drvdata->hdmiif_map;
+-		} else {
+-			dmactl = drvdata->rd_dmactl;
+-			map = drvdata->lpaif_map;
+-		}
+ 
+-		id = pcm_data->dma_ch;
+-	} else {
+-		dmactl = drvdata->wr_dmactl;
+-		id = pcm_data->dma_ch - v->wrdma_channel_start;
+-		map = drvdata->lpaif_map;
++	__lpass_get_lpaif_handle(substream, component, &dmactl, &id, &map);
++	if (!dmactl) {
++		dev_err(soc_runtime->dev, "failed to get dmactl handle\n");
++		return -EINVAL;
+ 	}
+ 
+ 	ret = regmap_write(map, LPAIF_DMABASE_REG(v, ch, dir, dai_id),
+@@ -444,25 +472,15 @@ static int lpass_platform_pcmops_trigger(struct snd_soc_component *component,
+ 	struct lpaif_dmactl *dmactl;
+ 	struct regmap *map;
+ 	int ret, ch, id;
+-	int dir = substream->stream;
+ 	unsigned int reg_irqclr = 0, val_irqclr = 0;
+ 	unsigned int  reg_irqen = 0, val_irqen = 0, val_mask = 0;
+ 	unsigned int dai_id = cpu_dai->driver->id;
+ 
+ 	ch = pcm_data->dma_ch;
+-	if (dir ==  SNDRV_PCM_STREAM_PLAYBACK) {
+-		id = pcm_data->dma_ch;
+-		if (dai_id == LPASS_DP_RX) {
+-			dmactl = drvdata->hdmi_rd_dmactl;
+-			map = drvdata->hdmiif_map;
+-		} else {
+-			dmactl = drvdata->rd_dmactl;
+-			map = drvdata->lpaif_map;
+-		}
+-	} else {
+-		dmactl = drvdata->wr_dmactl;
+-		id = pcm_data->dma_ch - v->wrdma_channel_start;
+-		map = drvdata->lpaif_map;
++	__lpass_get_lpaif_handle(substream, component, &dmactl, &id, &map);
++	if (!dmactl) {
++		dev_err(soc_runtime->dev, "failed to get dmactl handle\n");
++		return -EINVAL;
+ 	}
+ 
+ 	switch (cmd) {
+@@ -597,10 +615,11 @@ static snd_pcm_uframes_t lpass_platform_pcmops_pointer(
+ 	struct regmap *map;
+ 	unsigned int dai_id = cpu_dai->driver->id;
+ 
+-	if (dai_id == LPASS_DP_RX)
+-		map = drvdata->hdmiif_map;
+-	else
+-		map = drvdata->lpaif_map;
++	__lpass_get_lpaif_handle(substream, component, NULL, NULL, &map);
++	if (!map) {
++		dev_err(soc_runtime->dev, "failed to get dmactl handle\n");
++		return -EINVAL;
++	}
+ 
+ 	ch = pcm_data->dma_ch;
+ 
 -- 
 2.7.4
 
