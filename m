@@ -4,85 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F3B2C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Dec 2021 09:30:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 093ACC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Dec 2021 10:00:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9EC56201D;
-	Mon,  6 Dec 2021 10:29:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9EC56201D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 25E2E202A;
+	Mon,  6 Dec 2021 10:59:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 25E2E202A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638783041;
-	bh=7QlPAl7LvmToEx84U/O4cvCN8juk9NjC0krOueA/3lc=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=otZbcXHlHE7Q8PPE+yca51CGRyu8d+PH8WvjiLMCStFnhJD5xUFh2XDIoDxEXyx/H
-	 ASSnBOoxnNykpDdzus+7jTx48rE4sCLporQULzCMN7m/kNmoAcI6A1d5Dl9mhsvxmQ
-	 aVEeZmFgegCdLf1OcHgUeEPz9uWkPv1sALfTeons=
+	s=default; t=1638784821;
+	bh=CIntIpBUIbzQw6LZwrF6mXoI//YSlzn93Rhjac1ZEwg=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Dwzi7SXE+R5f/NoD2bMin4np9OgfouaEat5eWUE3O8lH7VfXpxjfLRJNJeKKDODIM
+	 3m26Aflp6nDUGR1uzyJQu2DZaJsWsBGZTtnoy6vyd3BfKZEMP4T+hp4LSEPY5V8JYg
+	 rvN7rrOcahGKIxcNP+era899lSCSqUxLtT2Px7ZE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2C817F8020B;
-	Mon,  6 Dec 2021 10:29:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 77815F8020B;
+	Mon,  6 Dec 2021 10:59:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B7565F8026C; Mon,  6 Dec 2021 10:29:49 +0100 (CET)
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com
- [IPv6:2a00:1450:4864:20::433])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 203C5F8026C; Mon,  6 Dec 2021 10:59:29 +0100 (CET)
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net
+ [217.70.183.199])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C306BF80147
- for <alsa-devel@alsa-project.org>; Mon,  6 Dec 2021 10:29:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C306BF80147
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="aLvp8qb0"
-Received: by mail-wr1-x433.google.com with SMTP id j3so21106676wrp.1
- for <alsa-devel@alsa-project.org>; Mon, 06 Dec 2021 01:29:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to;
- bh=Ct+p7VlKlUoKTbIoDDaK1/3A+2HLH4PhtmZuaPsHx1E=;
- b=aLvp8qb0/Ykf4uLdQfwoWQePkl7ChOoNElne/Q+3z6yewHPiRiaLrfJM5bXBQbFKov
- d/QCnT2ZZY38BNu78g1DjZWGnGTiZBTqV1cUYhfL/cuOQimFQcZ4Dwbpwo8fo9Y03sN9
- XqriaxaaXnhClU47iELaKykYTY3HefQQ6e5KK1c/ssvLh7yveLi3pJYuDMST+sLYgzet
- G7Sw+jDdYHffvTDU6lMNCO8k4ZJsIwRpvayT2Y7b1s8cyLX2jBCCoiJ2Afw0t/FIiLM0
- sa0IgapBTa5dNzDvBRBAw/91qSLHdMtFLw7LY1oB3NR6kTjWm76SxWeIw1dDVQqfh7tA
- MsqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=Ct+p7VlKlUoKTbIoDDaK1/3A+2HLH4PhtmZuaPsHx1E=;
- b=Y7vrP6wTZPZnElT2x416x0oM4JGPpysrg4Zck3sMSxz0QVuJD7E/DbTs4BM4953DO6
- m0+xtaZ4kpoHUdzCaKV0JqGubnvoAvTVV3MQwxeQX/SHlihRThTklz+KWL1wAEbJarhX
- 8TJpiLjjuBtei4YmQUrBnKHx00VsyKvOJbDlK9TCIANLsDVFTkso5wPETdcHH8U4JgTb
- h7y4l7vw6ugkY994jFysEyQfdlSvfuBEgK00qNOMbvf1/lyE3fqexUlDHY0yWNvh1okU
- 8/JX904KWK2TDa46ECZ5Azsb803N45vuOniEjLN5Cuq1tnZDhEOadZK2VffxfI3Hxj1u
- pTOQ==
-X-Gm-Message-State: AOAM533Op1TEqDNIslfwPpzXdGXw7DZcEzm4TVZjaeHwj7alvkRnvwJV
- BYjaO5kWxc67Hk5ZmP4zUkc=
-X-Google-Smtp-Source: ABdhPJzk0o6XFyoPZi+U2EZCLv55RRVdp+0CpsDkL5sD67loqkWDMtYHz9jBuTZxn/Tl/opi7e06Bw==
-X-Received: by 2002:a5d:6d01:: with SMTP id e1mr42061164wrq.157.1638782982192; 
- Mon, 06 Dec 2021 01:29:42 -0800 (PST)
-Received: from hamza-OptiPlex-7040 ([39.48.147.147])
- by smtp.gmail.com with ESMTPSA id j18sm16118678wmq.44.2021.12.06.01.29.40
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 06 Dec 2021 01:29:41 -0800 (PST)
-Date: Mon, 6 Dec 2021 14:29:37 +0500
-From: Ameer Hamza <amhamza.mgc@gmail.com>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH] ASoC: test-component: fix null pointer dereference.
-Message-ID: <20211206092937.GA5609@hamza-OptiPlex-7040>
-References: <20211205204200.7852-1-amhamza.mgc@gmail.com>
- <TYCPR01MB55813B26BB2B3BB6D1E072F2D46C9@TYCPR01MB5581.jpnprd01.prod.outlook.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id A9D04F80147
+ for <alsa-devel@alsa-project.org>; Mon,  6 Dec 2021 10:59:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9D04F80147
+Received: (Authenticated sender: kory.maincent@bootlin.com)
+ by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 9E527FF812;
+ Mon,  6 Dec 2021 09:59:20 +0000 (UTC)
+From: Kory Maincent <kory.maincent@bootlin.com>
+To: alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: soc-core: add the driver component name to the
+ component struc
+Date: Mon,  6 Dec 2021 10:59:20 +0100
+Message-Id: <20211206095920.40552-1-kory.maincent@bootlin.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <TYCPR01MB55813B26BB2B3BB6D1E072F2D46C9@TYCPR01MB5581.jpnprd01.prod.outlook.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "tiwai@suse.com" <tiwai@suse.com>, "broonie@kernel.org" <broonie@kernel.org>
+Content-Transfer-Encoding: 8bit
+Cc: alexandre.belloni@bootlin.com, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ thomas.petazzoni@bootlin.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,41 +63,74 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, Dec 05, 2021 at 10:40:27PM +0000, Kuninori Morimoto wrote:
-> 
-> Hi Ameer
-> 
-> Thank you for your patch.
-> 
-> > Dereferncing of_id pointer will result in exception in current
-> > implementation since of_match_device() will assign it to NULL.
-> > Adding NULL check for protection.
-> (snip)
-> > @@ -532,13 +532,16 @@ static int test_driver_probe(struct platform_device *pdev)
-> >  	struct device_node *node = dev->of_node;
-> >  	struct device_node *ep;
-> >  	const struct of_device_id *of_id = of_match_device(test_of_match, &pdev->dev);
-> > -	const struct test_adata *adata = of_id->data;
-> > +	const struct test_adata *adata;
-> >  	struct snd_soc_component_driver *cdriv;
-> >  	struct snd_soc_dai_driver *ddriv;
-> >  	struct test_dai_name *dname;
-> >  	struct test_priv *priv;
-> >  	int num, ret, i;
-> >  
-> > +	if (!of_id)
-> > +		return -EINVAL;
-> > +	adata = of_id->data;
-> 
-> But hmm...
-> Probing this driver without adata is strange for me.
-> How did probe this driver ??
-Thank you for your response. Unfortunately, I am not aware of
-implementation details of this component. Coverity suggested that there
-can be a potential NULL pointer access which seems logical to me. Do you
-agree with coverity here?
+The function fmt_single_name is using to sanitize namings, and it return
+the name set to component->name.
+This function is returning either the "device_name" or the
+"device_name.driver_name" for i2c devices. There is no use of the component
+driver name.
+If a non i2c driver register two components the function will return the
+same "device_name" for both components. This could cause unexpected issue,
+in my case it is a debugfs error which tries to create two directory with
+the same component name.
 
-> 
-> Best regards
-> ---
-> Kuninori Morimoto
+I have fixed it by prefixing the component name with the driver component
+name.
+
+Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+---
+ sound/soc/soc-core.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index dcf6be4c4aaa..21ff77b231b8 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2342,10 +2342,10 @@ EXPORT_SYMBOL_GPL(snd_soc_unregister_card);
+  * Simplify DAI link configuration by removing ".-1" from device names
+  * and sanitizing names.
+  */
+-static char *fmt_single_name(struct device *dev, int *id)
++static char *fmt_single_name(struct device *dev, const char *snd_drv_name, int *id)
+ {
+ 	const char *devname = dev_name(dev);
+-	char *found, *name;
++	char *found, *name, *tmp;
+ 	unsigned int id1, id2;
+ 
+ 	if (devname == NULL)
+@@ -2380,6 +2380,14 @@ static char *fmt_single_name(struct device *dev, int *id)
+ 		*id = 0;
+ 	}
+ 
++	if (snd_drv_name != NULL) {
++		/* Add driver component name if present */
++		tmp = devm_kasprintf(dev, GFP_KERNEL, "%s.%s", snd_drv_name, name);
++		devm_kfree(dev, name);
++		name = devm_kstrdup(dev, tmp, GFP_KERNEL);
++		devm_kfree(dev, tmp);
++	}
++
+ 	return name;
+ }
+ 
+@@ -2444,7 +2452,7 @@ struct snd_soc_dai *snd_soc_register_dai(struct snd_soc_component *component,
+ 	 */
+ 	if (legacy_dai_naming &&
+ 	    (dai_drv->id == 0 || dai_drv->name == NULL)) {
+-		dai->name = fmt_single_name(dev, &dai->id);
++		dai->name = fmt_single_name(dev, dai_drv->name, &dai->id);
+ 	} else {
+ 		dai->name = fmt_multiple_name(dev, dai_drv);
+ 		if (dai_drv->id)
+@@ -2578,7 +2586,7 @@ int snd_soc_component_initialize(struct snd_soc_component *component,
+ 	INIT_LIST_HEAD(&component->list);
+ 	mutex_init(&component->io_mutex);
+ 
+-	component->name = fmt_single_name(dev, &component->id);
++	component->name = fmt_single_name(dev, driver->name, &component->id);
+ 	if (!component->name) {
+ 		dev_err(dev, "ASoC: Failed to allocate name\n");
+ 		return -ENOMEM;
+-- 
+2.25.1
+
