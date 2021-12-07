@@ -4,75 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC92DC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Dec 2021 08:01:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90274C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Dec 2021 08:05:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9FD27235A;
-	Tue,  7 Dec 2021 09:01:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9FD27235A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9599D2367;
+	Tue,  7 Dec 2021 09:05:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9599D2367
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638864110;
-	bh=unNiXjN6/3qhxhfzDXSIhGRPKgn8+VAYsSfJVfnlbaU=;
+	s=default; t=1638864353;
+	bh=ht2VUhSciiR4Cgsmp90zbf9Xbn178bELqUQTUbafG0A=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Lg+r/RlAx57nLfljxSHCTP49VVJB78h5YUJuVKbmLIOocOu8jk16buRgzrK71ZY2o
-	 9I6gEA2E4KDknMRYbOJIWetMuO3nSJL9s8QfR0vRe6/h0+62xeCeDoxg44jxEh1aiv
-	 zFyX1vFfWnBs4vPPS2xxcYEE7vqiiZaLoVnfkGYk=
+	b=Z/bWEflrf0XvFKqvsap9R5Ck82QVt+wz+4wIUjx6VJlRsmtcqJM8wKHcFKvHOjMD1
+	 946vZK4PaK83V3mTK3L9ZEOpbkKj9JvRNq/nhvc/1ys8PC8FhTecUqipotO0pX9sa+
+	 Alhwx15riulTCYbvKVBUWjwGurhT0od9InQIrJUU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 40293F80259;
-	Tue,  7 Dec 2021 09:01:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 35351F80217;
+	Tue,  7 Dec 2021 09:05:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0540BF8028D; Tue,  7 Dec 2021 09:00:59 +0100 (CET)
+ id 682A6F8028D; Tue,  7 Dec 2021 09:05:02 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 20E1AF80253
- for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2021 09:00:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 20E1AF80253
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4F13EF80217
+ for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2021 09:04:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F13EF80217
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="t3tHG/Ho"; 
+ header.b="F/gMsgU4"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="wMjgm9fE"
+ header.b="8lrGCggm"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 5FA5E1FD2F;
- Tue,  7 Dec 2021 08:00:54 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 2AACE1FD2F;
+ Tue,  7 Dec 2021 08:04:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1638864054; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1638864294; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=WunL9IcKom/g+o4e32dvibfGKSiyLe40+462fTACWsg=;
- b=t3tHG/HoiLkECGDJLM3HxfPNdiujFEaWRR03HAESaWzxmQ2K3mnDTXv4lqoafzWwRukfbC
- jngbEbjsnrQVLRA2/R6E7dcM8434jDSaF77jIVaJnxzvwqimUtKxUzaox3om5NRMEswtZo
- auAFpC3bwx4s53pZd81Q/PgLw2edJGA=
+ bh=UqPhgHSE9MgwMn7Ma+99O/Ry7xOln778EEbdlbH3hcw=;
+ b=F/gMsgU4rNyxG+bLUwJ2cJdYCw7zUpJB5D0Cn/SD/bu+QmM/taCQRIbFcwBGNlRGz0tJoU
+ TN5Eabe9T4eqfVcJhyKeFlR6g+L6N6Oylycc9GsW1CrOZ7WMVKPgcZCh6cPDUi0PGYRAkX
+ gKKszWEyCDLNsLbVmOt60tVheEcWkeE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1638864054;
+ s=susede2_ed25519; t=1638864294;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=WunL9IcKom/g+o4e32dvibfGKSiyLe40+462fTACWsg=;
- b=wMjgm9fEeBB6NJnAYeotB2CiqLCX5ZgF8f3A+zXSJ+Ql8mDUNrRbuXodmS9mx6ulXGoDYB
- Q2UllJTop6ILVMAg==
+ bh=UqPhgHSE9MgwMn7Ma+99O/Ry7xOln778EEbdlbH3hcw=;
+ b=8lrGCggmUEXxYyoeZFvz/IjAkJigHKJ24XxulspRfJMLBmH4b+cfC5ybj4jbGN4t+7ymFw
+ +BFm7MVaxKWq9wDQ==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 548E4A3B87;
- Tue,  7 Dec 2021 08:00:54 +0000 (UTC)
-Date: Tue, 07 Dec 2021 09:00:54 +0100
-Message-ID: <s5hzgpcond5.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id 12E12A3B81;
+ Tue,  7 Dec 2021 08:04:54 +0000 (UTC)
+Date: Tue, 07 Dec 2021 09:04:54 +0100
+Message-ID: <s5hy24won6h.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH] ALSA: mixart: Reduce size of mixart_timer_notify
-In-Reply-To: <20211207062941.2413679-1-keescook@chromium.org>
-References: <20211207062941.2413679-1-keescook@chromium.org>
+To: Sameer Pujar <spujar@nvidia.com>
+Subject: Re: [PATCH 0/3] Fix Tegra194 HDA regression
+In-Reply-To: <1638858770-22594-1-git-send-email-spujar@nvidia.com>
+References: <1638858770-22594-1-git-send-email-spujar@nvidia.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-hardening@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ lgirdwood@gmail.com, linux-kernel@vger.kernel.org, tiwai@suse.com,
+ robh+dt@kernel.org, broonie@kernel.org, thierry.reding@gmail.com,
+ linux-tegra@vger.kernel.org, digetx@gmail.com, jonathanh@nvidia.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,37 +90,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 07 Dec 2021 07:29:41 +0100,
-Kees Cook wrote:
+On Tue, 07 Dec 2021 07:32:47 +0100,
+Sameer Pujar wrote:
 > 
-> The mixart_timer_notify structure was larger than could be represented
-> by the mixart_msg_data array storage. Adjust the size to as large as
-> possible to fix the warning seen with -Warray-bounds builds:
+> HDA probe failure is observed on Tegra194 based platforms and this
+> happens due to a reset failure. The series fixes this problem by
+> avoiding explicit resets on BPMP based devices.
 > 
-> sound/pci/mixart/mixart_core.c: In function 'snd_mixart_threaded_irq':
-> sound/pci/mixart/mixart_core.c:447:50: error: array subscript 'struct mixart_timer_notify[0]' is partly outside array bounds of 'u32[128]' {aka 'unsigned int[128]'} [-Werror=array-bounds]
->   447 |                                 for(i=0; i<notify->stream_count; i++) {
->       |                                                  ^~
-> sound/pci/mixart/mixart_core.c:328:12: note: while referencing 'mixart_msg_data'
->   328 | static u32 mixart_msg_data[MSG_DEFAULT_SIZE / 4];
->       |            ^~~~~~~~~~~~~~~
-> 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+> Sameer Pujar (3):
+>   ALSA: hda/tegra: Skip reset on BPMP devices
+>   dt-bindings: sound: tegra: Update HDA resets
+>   arm64: tegra: Remove non existent Tegra194 reset
 
-Thanks, applied now.
+The change in HDA drier looks fine, and the question how to take those
+patches.  If other people can give acks, I can take those to sound.git
+tree destined for 5.16.
 
-> @@ -444,6 +442,7 @@ irqreturn_t snd_mixart_threaded_irq(int irq, void *dev_id)
->  				struct mixart_timer_notify *notify;
->  				notify = (struct mixart_timer_notify *)mixart_msg_data;
->  
-> +				BUILD_BUG_ON(sizeof(notify) > sizeof(mixart_msg_data));
->  				for(i=0; i<notify->stream_count; i++) {
->  
->  					u32 buffer_id = notify->streams[i].buffer_id;
+Or, if anyone else prefers taking those, feel free to do: for the
+first patch,
 
-I guess we should add the array boundary check of
-notify->stream_count, instead of fully relying on the hardware reply,
-too.  Will submit the additional check.
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
 
+
+thanks,
 
 Takashi
