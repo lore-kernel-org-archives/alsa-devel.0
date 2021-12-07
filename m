@@ -4,55 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1BE1CC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Dec 2021 18:12:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6BFCC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Dec 2021 18:12:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5BD1C24D1;
-	Tue,  7 Dec 2021 19:11:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5BD1C24D1
+	by alsa0.perex.cz (Postfix) with ESMTPS id D032424ED;
+	Tue,  7 Dec 2021 19:12:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D032424ED
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638900749;
-	bh=zccoh+xp9tGqXMaREIUWOkKkx+Dql1bJQUq0nUGNycc=;
+	s=default; t=1638900771;
+	bh=vuU4xhMc9PmfEeLzbYdKz4VHKtj2ce4NsG7tddLYYzE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=acsNtGwd2PtZI1RIlzmRs26LVKc15fi0DxMKtWw0gosRSfQuypi1RmeoVr4rAHJUe
-	 z+g2UNX5yy0mo4bnFoIwYnXOnrmwC6UtUmfmPiw6bndr5hWejtUuZzA4ELY3+eOlAz
-	 xdS2X0bBNsIxJqY0uk/nFG5pqG+4VMJB7JeeioRQ=
+	b=KL02giF+TyuWxQ4+HcYXH727QqZWkCSaT7bNmquNPaNNGNu/4CwQYnBT0tiC8bm5i
+	 quHH0YgdRZN7Z+Sij2ijXc9hmIOW+zvO+IYTfzcflzgvfusztzBdHjkfcn6RpKjCB4
+	 fDquP1ESzuFFApa93c59rnlViYZSq2n6Mo9OQXmg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 55E71F8051D;
-	Tue,  7 Dec 2021 19:09:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CFDD6F8051C;
+	Tue,  7 Dec 2021 19:09:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7F25EF80510; Tue,  7 Dec 2021 19:09:53 +0100 (CET)
+ id 79839F8028D; Tue,  7 Dec 2021 19:09:51 +0100 (CET)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D446EF80217
- for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2021 19:09:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D446EF80217
-X-IronPort-AV: E=McAfee;i="6200,9189,10190"; a="237873627"
-X-IronPort-AV: E=Sophos;i="5.87,295,1631602800"; d="scan'208";a="237873627"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 45D2CF8028D
+ for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2021 19:09:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45D2CF8028D
+X-IronPort-AV: E=McAfee;i="6200,9189,10190"; a="237873586"
+X-IronPort-AV: E=Sophos;i="5.87,295,1631602800"; d="scan'208";a="237873586"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Dec 2021 09:38:17 -0800
-X-IronPort-AV: E=Sophos;i="5.87,293,1631602800"; d="scan'208";a="751385258"
+ 07 Dec 2021 09:38:09 -0800
+X-IronPort-AV: E=Sophos;i="5.87,293,1631602800"; d="scan'208";a="751385219"
 Received: from charriso-mobl2.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.98.250])
  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Dec 2021 09:38:16 -0800
+ 07 Dec 2021 09:38:08 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 6/6] ASoC: soc-pcm: fix BE handling of PAUSE_RELEASE
-Date: Tue,  7 Dec 2021 11:37:45 -0600
-Message-Id: <20211207173745.15850-7-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 1/6] ASoC: soc-pcm: use GFP_ATOMIC for dpcm structure
+Date: Tue,  7 Dec 2021 11:37:40 -0600
+Message-Id: <20211207173745.15850-2-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211207173745.15850-1-pierre-louis.bossart@linux.intel.com>
 References: <20211207173745.15850-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
  Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
  Liam Girdwood <lgirdwood@gmail.com>, tiwai@suse.de,
  Bard Liao <yung-chuan.liao@linux.intel.com>, Sameer Pujar <spujar@nvidia.com>,
@@ -60,8 +61,7 @@ Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, vkoul@kernel.org,
  broonie@kernel.org, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
  Gyeongtaek Lee <gt82.lee@samsung.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Bard Liao <bard.liao@intel.com>
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,69 +77,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-A BE connected to more than one FE, e.g. in a mixer case, can go
-through the following transitions.
+We allocate a structure in dpcm_be_connect(), which may be called in
+atomic context. Using GFP_KERNEL is not quite right, we have to use
+GFP_ATOMIC to prevent the allocator from sleeping.
 
-play FE1    -> BE state is START
-pause FE1   -> BE state is PAUSED
-play FE2    -> BE state is START
-stop FE2    -> BE state is STOP (see note [1] below)
-release FE1 -> BE state is START
-stop FE1    -> BE state is STOP
-
-play FE1    -> BE state is START
-pause FE1   -> BE state is PAUSED
-play FE2    -> BE state is START
-release FE1 -> BE state is START
-stop FE2    -> BE state is START
-stop FE1    -> BE state is STOP
-
-play FE1    -> BE state is START
-play FE2    -> BE state is START (no change)
-pause FE1   -> BE state is START (no change)
-pause FE2   -> BE state is PAUSED
-release FE1 -> BE state is START
-release FE2 -> BE state is START (no change)
-stop FE1    -> BE state is START (no change)
-stop FE2    -> BE state is STOP
-
-The existing code for PAUSE_RELEASE only allows for the case where the
-BE is paused, which clearly would not work in the sequences above.
-
-Extend the allowed states to restart the BE when PAUSE_RELEASE is
-received, and increase the refcount if the BE is already in START.
-
-[1] the existing logic does not move the BE state back to PAUSED when
-the FE2 is stopped. This patch does not change the logic; it would be
-painful to keep a history of changes on the FE side, the state machine
-is already rather complicated with transitions based on the last BE
-state and the trigger type.
-
-Reported-by: Bard Liao <bard.liao@intel.com>
+Suggested-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/soc-pcm.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ sound/soc/soc-pcm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 05a0f52eb11b..7abfc48b26ca 100644
+index 3b4412183344..f66808dfb508 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -2140,7 +2140,10 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
- 			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
- 			break;
- 		case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
--			if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
-+			if (!be->dpcm[stream].be_start &&
-+			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_START) &&
-+			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_STOP) &&
-+			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
- 				goto next;
+@@ -1113,7 +1113,7 @@ static int dpcm_be_connect(struct snd_soc_pcm_runtime *fe,
+ 			return 0;
+ 	}
  
- 			be->dpcm[stream].be_start++;
+-	dpcm = kzalloc(sizeof(struct snd_soc_dpcm), GFP_KERNEL);
++	dpcm = kzalloc(sizeof(struct snd_soc_dpcm), GFP_ATOMIC);
+ 	if (!dpcm)
+ 		return -ENOMEM;
+ 
 -- 
 2.25.1
 
