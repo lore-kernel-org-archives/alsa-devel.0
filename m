@@ -4,100 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 063BFC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Dec 2021 18:03:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E33DFC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Dec 2021 18:10:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 676E2218C;
-	Tue,  7 Dec 2021 19:02:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 676E2218C
+	by alsa0.perex.cz (Postfix) with ESMTPS id AD47023C2;
+	Tue,  7 Dec 2021 19:09:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD47023C2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638900199;
-	bh=qQwzi5Z/Ei+zT/rivJx2fVOJ13H3RDHIhPNgsuWEGAc=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Zl0UArawoe7srVahlWsT3vRZT76kc7f523Kg7Tp3O0Qco6YIvcnhX2RWGKDXCr4hU
-	 2J0TauVj5GDHPTScXUzRON92ra+wkOiOdhuXy3GNKzaOy86RDtNLC1B9FAY7lDI8uR
-	 GEO6zWI0iUTEB8PHZ3Eb/1gYjEJ+Q7fDnDhiTaJM=
+	s=default; t=1638900632;
+	bh=NGJqc3MmSm97Oh0IZWB9GRhkNIUdvwsBbFQbW8v6P8I=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=thRPdKe9axwuqlAWQmT61TO8rR/7y9wzWqxu/6E9dPMg9j9IO/2ji4k9FlfSsMRGD
+	 7dlgP6Z00WAxwlJQr7lJKtMn2fevWU6Wn1FG1Pe81hk52iDDP50xm+ucUfXvTMYAvk
+	 r3vx9d8g8NucEdLFPYpzuC2cgOp5pvb+KiLawQrA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DBBE9F80259;
-	Tue,  7 Dec 2021 19:02:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2D1ECF80253;
+	Tue,  7 Dec 2021 19:09:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 933B2F8028D; Tue,  7 Dec 2021 19:02:27 +0100 (CET)
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com
- [IPv6:2a00:1450:4864:20::236])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id A1D0AF80253; Tue,  7 Dec 2021 19:09:40 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2E084F80253
- for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2021 19:02:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E084F80253
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="bJFHJd4u"
-Received: by mail-lj1-x236.google.com with SMTP id e11so28813749ljo.13
- for <alsa-devel@alsa-project.org>; Tue, 07 Dec 2021 10:02:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=sqoUoMtUBmHodK2PJJEDxB6ED3784jkw/8tgiFLOL6Q=;
- b=bJFHJd4uXpwYV7ifbUZrGZDtcpLtYf10riM503HihUISrQRgoFT3Q9hZ8ef4bsmQNB
- JG6n7TshIzNt7J2EffIDjCz7U8FaB4o9C2CYEUwj8QIA3354fg6W4CuYn+S1Uj3VtCCr
- 5+Rkz/oQGUyLYOxDStDiJHfnfR3zu5qp+x5QP30V9M9T3ZfUyJj9X1Fd0YzssvBI6jvl
- 2clFJhgknW4Uhm6nkL9YJMWXt5ReOdPfJo36ECq7dfIF3EWCLt9cmGmLwB2P0i228HGn
- 8Uy/0jbUJwj74alicGPV+cSZuof3GjVsF7CKAihZLYAAl7ms/zAs2Ba8kfpQ13ojJjPA
- /1cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=sqoUoMtUBmHodK2PJJEDxB6ED3784jkw/8tgiFLOL6Q=;
- b=ieehF5D6a7gQYGMXoZMQu0PbOWkjgOfHtU9u+U6PIgpK+EmUZIcdUyY/vhgaXY0j5g
- haz0j8Vr/LxBWgly4oHv7IWug3nUnVRbler/m7D9D2BZmS1cfZ6/r2jxurSeqL7/yIP/
- QX9jUZ/dLwail/VIfHJwxnlKdK2nRvQl9sa2Q7ql672RscBhoDBBMPKrJWR6mJL4HKe5
- IkT+Fm167Bj4wSMQnsMzTPjp1OlrrHgfuLN4bQrra1q/xXvj2IJeHweHprOrf2f5Ja06
- izdeeGtzog24maeCTcXZ8PCPHDE7G82GU4QEh+lb4EcJI4uSbNeJOQUoYjJ97jRdNUjA
- MU+w==
-X-Gm-Message-State: AOAM530MLUrWOMxjElNq7BgXYH1uphwKhMTyaLbSdY/nXC0lic++rBQc
- a3GPbS4umaSfoFfBmNMUKNDddoRgmGM=
-X-Google-Smtp-Source: ABdhPJwCj8oArFSu/8QVwop2LAW+6QUY+qwLMixQnx5V8GYd+tftm6uJDuFh4bo53x4nRWt0VVtYBA==
-X-Received: by 2002:a05:651c:503:: with SMTP id
- o3mr44082043ljp.353.1638900137688; 
- Tue, 07 Dec 2021 10:02:17 -0800 (PST)
-Received: from [192.168.2.145] (94-29-46-111.dynamic.spd-mgts.ru.
- [94.29.46.111])
- by smtp.googlemail.com with ESMTPSA id n6sm29541lfh.28.2021.12.07.10.02.15
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 07 Dec 2021 10:02:16 -0800 (PST)
-Subject: Re: [PATCH 1/3] ALSA: hda/tegra: Skip reset on BPMP devices
-To: Sameer Pujar <spujar@nvidia.com>, tiwai@suse.com, broonie@kernel.org,
- lgirdwood@gmail.com, thierry.reding@gmail.com, perex@perex.cz
-References: <1638858770-22594-1-git-send-email-spujar@nvidia.com>
- <1638858770-22594-2-git-send-email-spujar@nvidia.com>
- <7742adae-cdbe-a9ea-2cef-f63363298d73@gmail.com>
- <8fd704d9-43ce-e34a-a3c0-b48381ef0cd8@nvidia.com>
- <56bb43b6-8d72-b1de-4402-a2cb31707bd9@gmail.com>
- <4855e9c4-e4c2-528b-c9ad-2be7209dc62a@nvidia.com>
- <5d441571-c1c2-5433-729f-86d6396c2853@gmail.com>
- <f32cde65-63dc-67f8-ded8-b58ea5e89f4e@nvidia.com>
- <95cc7efa-251c-690b-9afa-53ee9e052c34@gmail.com>
- <148fba18-5d14-d342-0eb9-4ff224cc58ad@nvidia.com>
-From: Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <3b0de739-7866-3886-be9c-a853c746f8b7@gmail.com>
-Date: Tue, 7 Dec 2021 21:02:14 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5D19BF80253
+ for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2021 19:09:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D19BF80253
+X-IronPort-AV: E=McAfee;i="6200,9189,10190"; a="237873569"
+X-IronPort-AV: E=Sophos;i="5.87,295,1631602800"; d="scan'208";a="237873569"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Dec 2021 09:38:08 -0800
+X-IronPort-AV: E=Sophos;i="5.87,293,1631602800"; d="scan'208";a="751385217"
+Received: from charriso-mobl2.amr.corp.intel.com (HELO
+ pbossart-mobl3.intel.com) ([10.212.98.250])
+ by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Dec 2021 09:38:07 -0800
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 0/6] ASoC : soc-pcm: fix trigger race conditions with shared BE
+Date: Tue,  7 Dec 2021 11:37:39 -0600
+Message-Id: <20211207173745.15850-1-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <148fba18-5d14-d342-0eb9-4ff224cc58ad@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org, jonathanh@nvidia.com,
- robh+dt@kernel.org, linux-tegra@vger.kernel.org,
- Mohan Kumar <mkumard@nvidia.com>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, tiwai@suse.de,
+ Sameer Pujar <spujar@nvidia.com>, linux-kernel@vger.kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, vkoul@kernel.org,
+ broonie@kernel.org, Gyeongtaek Lee <gt82.lee@samsung.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -113,17 +69,114 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-07.12.2021 20:37, Sameer Pujar пишет:
-..
->> HDA won't be reset while display is active on T186+.
-> 
-> No. HDA reset is applied whenever power-domain is ungated. It can happen
-> when either HDA or display device becomes active.
+We've been adding a 'deep buffer' PCM device to several SOF topologies
+in order to reduce power consumption. The typical use-case would be
+music playback over a headset: this additional PCM device provides
+more buffering and longer latencies, leaving the rest of the system
+sleep for longer periods. Notifications and 'regular' low-latency
+audio playback would still use the 'normal' PCM device and be mixed
+with the 'deep buffer' before rendering on the headphone endpoint. The
+tentative direction would be to expose this alternate device to
+PulseAudio/PipeWire/CRAS via the UCM SectionModifier definitions.
 
-I said "display is active", where do you see "becomes active"?
+That seemed a straightforward topology change until our automated
+validation stress tests started reporting issues on SoundWire
+platforms, when e.g. two START triggers might be send and conversely
+the STOP trigger is never sent. The SoundWire stream state management
+flagged inconsistent states when the two 'normal' and 'deep buffer'
+devices are used concurrently with rapid play/stop/pause monkey
+testing.
 
-> So I don't think that
-> it is inconsistent.
+Looking at the soc-pcm.c code, it seems that the BE state
+management needs a lot of love.
 
-If display is already active, then shared power domain is already
-ungated. It won't be ungated second time in a row, HDA won't get the reset.
+a) there is no consistent protection for the BE state. In some parts
+of the code, the state updates are protected by a spinlock but in the
+trigger they are not. When we open/play/close the two PCM devices in
+stress tests, we end-up testing a state that is being modified. That
+can't be good.
+
+b) there is a conceptual deadlock: on stop we check the FE states to
+see if a shared BE can be stopped, but since we trigger the BE first
+the FE states have not been modified yet, so the TRIGGER_STOP is never
+sent.
+
+This patchset suggests the removal of the dedicated 'dpcm_lock' and
+follows the design suggested by Takashi Iwai.  By default the
+protection relies on the 'pcm_mutex', except for the FE and BE
+triggers where the mutex cannot be used.  In this case, the FE PCM
+lock is used instead. In the cases where a BE is added/removed, the
+pcm_mutex and FE PCM lock are both taken.  In addition, the BE PCM
+lock is used to serialize access to a shared BE.
+
+With these patches I am able to run our entire validation suite
+without any issues with this new 'deep buffer' topology, and no
+regressions on existing solutions [1]. The tests were reproduced by
+Bard Liao for SoundWire devices.
+
+One might ask 'how come we didn't see this earlier'? The answer is
+probably that the .trigger callbacks in most implementations seems to
+perform DAPM operations, and sending the triggers multiple times is
+not an issue. In the case of SoundWire, we do use the .trigger
+callback to reconfigure the bus using the 'bank switch' mechanism. It
+could be acceptable to tolerate a trigger multiple times, but the
+deadlock on stop cannot be fixed at the SoundWire level alone.
+
+Opens:
+
+1) The issues reported by Nvidia on the RFCv3 may or may not be
+present. We'd need test results to make sure the locking update does
+not introduce a regression on Tegra.
+
+2) There are other reports of kernel oopses [2] that seem related to
+the lack of protection. I'd be good to confirm if this patchset solve
+these problems as well.
+
+[1] https://github.com/thesofproject/linux/pull/3146
+[2] https://lore.kernel.org/alsa-devel/002f01d7b4f5$c030f4a0$4092dde0$@samsung.com/
+
+changes since RFCv3:
+Used two patches from Takashi. We now use the pcm_mutex, the FE stream
+lock when adding and deleting a BE, and the BE stream lock to handle
+concurrency between streams using the same BE.
+Added a patch to use GFP_ATOMIC for the DPCM structure.
+Fixed PAUSE_RELEASE transition (GitHub comment from Kai Vehmanen)
+
+changes since RFCv2:
+Removal of dpcm_lock to use FE PCM locks (credits to Takashi Iwai for
+the suggestion). The FE PCM lock is now used before each use of
+for_each_dpcm_be() - with the exception of the trigger where the lock
+is already taken. This change is also applied in drivers which make
+use of this loop (compress, SH, FSL).
+Addition of BE PCM lock to deal with mutual exclusion between triggers
+for the same BE.
+Alignment of the BE atomicity on the FE on connections, this is
+required to avoid sleeping in atomic context.
+Additional cleanups (indentation, static functions)
+
+changes since RFC v1:
+Removed unused function
+Removed exported symbols only used in soc-pcm.c, used static instead
+Use a mutex instead of a spinlock
+Protect all for_each_dpcm_be() loops
+Fix bugs introduced in the refcount
+
+Pierre-Louis Bossart (4):
+  ASoC: soc-pcm: use GFP_ATOMIC for dpcm structure
+  ASoC: soc-pcm: align BE 'atomicity' with that of the FE
+  ASoC: soc-pcm: test refcount before triggering
+  ASoC: soc-pcm: fix BE handling of PAUSE_RELEASE
+
+Takashi Iwai (2):
+  ASoC: soc-pcm: Fix and cleanup DPCM locking
+  ASoC: soc-pcm: serialize BE triggers
+
+ include/sound/soc-dpcm.h |   2 +
+ include/sound/soc.h      |   2 -
+ sound/soc/soc-core.c     |   1 -
+ sound/soc/soc-pcm.c      | 351 +++++++++++++++++++++++++++------------
+ 4 files changed, 246 insertions(+), 110 deletions(-)
+
+-- 
+2.25.1
+
