@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2560C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Dec 2021 18:11:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0DAEC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Dec 2021 18:12:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1E480249B;
-	Tue,  7 Dec 2021 19:11:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E480249B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0020424AA;
+	Tue,  7 Dec 2021 19:11:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0020424AA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638900712;
-	bh=cJlIOT0dYZwwDPuhs+MI3a7MBQGJOAal/S6WWQ3P8O0=;
+	s=default; t=1638900734;
+	bh=BqaWfDO5dz8lFmj8hw51iY+RIUjwrKPn1nOt9DRC83g=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sa7IqZvwIoUUZSIyPb2lw7gMUa+INbDvllnu/UDwTFyw7Y6UGc/3EupZov+2vLuRh
-	 e35QYMj0Y0x/5fmbAGEv+LSjgtPYrNDm0GZyaQXX070gjqdu5M4tgo7qOjbcr2UDnS
-	 w+LyfYSvu6FrnOTsTkm0rki+qhSVBy7Mh/70/hJQ=
+	b=NoWzNCtUkz0ooq5OfJ1RX5aW/nbj7/mV9LPZEZEaPUiPP7tOjXYzRZz1eCjlvwK3C
+	 uehs/iaF/n0dKDzDH7b7P2dpH0U4Beb6eOKQeIKy3OJQf4Nb3103u2v/yV7tu9I5Xb
+	 yATielM6vO7ZsOsJhLILYCMjaTRfw8D6fMWMqJFw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 45365F80515;
+	by alsa1.perex.cz (Postfix) with ESMTP id D2446F80517;
 	Tue,  7 Dec 2021 19:09:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6E194F80516; Tue,  7 Dec 2021 19:09:51 +0100 (CET)
+ id 99D28F80511; Tue,  7 Dec 2021 19:09:51 +0100 (CET)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9F473F804E4
- for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2021 19:09:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F473F804E4
-X-IronPort-AV: E=McAfee;i="6200,9189,10190"; a="237873623"
-X-IronPort-AV: E=Sophos;i="5.87,295,1631602800"; d="scan'208";a="237873623"
+ by alsa1.perex.cz (Postfix) with ESMTPS id CCB5AF804CF
+ for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2021 19:09:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CCB5AF804CF
+X-IronPort-AV: E=McAfee;i="6200,9189,10190"; a="237873615"
+X-IronPort-AV: E=Sophos;i="5.87,295,1631602800"; d="scan'208";a="237873615"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Dec 2021 09:38:16 -0800
-X-IronPort-AV: E=Sophos;i="5.87,293,1631602800"; d="scan'208";a="751385252"
+ 07 Dec 2021 09:38:14 -0800
+X-IronPort-AV: E=Sophos;i="5.87,293,1631602800"; d="scan'208";a="751385248"
 Received: from charriso-mobl2.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.98.250])
  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Dec 2021 09:38:15 -0800
+ 07 Dec 2021 09:38:13 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 5/6] ASoC: soc-pcm: test refcount before triggering
-Date: Tue,  7 Dec 2021 11:37:44 -0600
-Message-Id: <20211207173745.15850-6-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 4/6] ASoC: soc-pcm: serialize BE triggers
+Date: Tue,  7 Dec 2021 11:37:43 -0600
+Message-Id: <20211207173745.15850-5-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211207173745.15850-1-pierre-louis.bossart@linux.intel.com>
 References: <20211207173745.15850-1-pierre-louis.bossart@linux.intel.com>
@@ -76,172 +76,169 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On start/pause_release/resume, when more than one FE is connected to
-the same BE, it's possible that the trigger is sent more than
-once. This is not desirable, we only want to trigger a BE once, which
-is straightforward to implement with a refcount.
+From: Takashi Iwai <tiwai@suse.de>
 
-For stop/pause/suspend, the problem is more complicated: the check
-implemented in snd_soc_dpcm_can_be_free_stop() may fail due to a
-conceptual deadlock when we trigger the BE before the FE. In this
-case, the FE states have not yet changed, so there are corner cases
-where the TRIGGER_STOP is never sent - the dual case of start where
-multiple triggers might be sent.
+When more than one FE is connected to a BE, e.g. in a mixing use case,
+the BE can be triggered multiple times when the FE are opened/started
+concurrently. This race condition is problematic in the case of
+SoundWire BE dailinks, and this is not desirable in a general
+case.
 
-This patch suggests an unconditional trigger in all cases, without
-checking the FE states, using a refcount protected by the BE PCM
-stream lock.
+This patch relies on the existing BE PCM lock, which takes atomicity into
+account. The locking model assumes that all interactions start with
+the FE, so that there is no deadlock between FE and BE locks.
 
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+[test, checkpatch fix and clarification of commit message by plbossart]
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- include/sound/soc-dpcm.h |  2 ++
- sound/soc/soc-pcm.c      | 53 +++++++++++++++++++++++++++++++---------
- 2 files changed, 44 insertions(+), 11 deletions(-)
+ sound/soc/soc-pcm.c | 46 ++++++++++++++++++++++++++++-----------------
+ 1 file changed, 29 insertions(+), 17 deletions(-)
 
-diff --git a/include/sound/soc-dpcm.h b/include/sound/soc-dpcm.h
-index bc7af90099a8..75b92d883976 100644
---- a/include/sound/soc-dpcm.h
-+++ b/include/sound/soc-dpcm.h
-@@ -101,6 +101,8 @@ struct snd_soc_dpcm_runtime {
- 	enum snd_soc_dpcm_state state;
- 
- 	int trigger_pending; /* trigger cmd + 1 if pending, 0 if not */
-+
-+	int be_start; /* refcount protected by BE stream pcm lock */
- };
- 
- #define for_each_dpcm_fe(be, stream, _dpcm)				\
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 7043857e30b1..05a0f52eb11b 100644
+index 2e282c42bac2..7043857e30b1 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -1619,7 +1619,7 @@ int dpcm_be_dai_startup(struct snd_soc_pcm_runtime *fe, int stream)
- 			be->dpcm[stream].state = SND_SOC_DPCM_STATE_CLOSE;
- 			goto unwind;
- 		}
--
-+		be->dpcm[stream].be_start = 0;
- 		be->dpcm[stream].state = SND_SOC_DPCM_STATE_OPEN;
- 		count++;
- 	}
-@@ -2105,14 +2105,21 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+@@ -46,12 +46,18 @@ static inline void snd_soc_dpcm_stream_lock_irq(struct snd_soc_pcm_runtime *rtd,
+ 	snd_pcm_stream_lock_irq(snd_soc_dpcm_get_substream(rtd, stream));
+ }
  
- 		switch (cmd) {
- 		case SNDRV_PCM_TRIGGER_START:
--			if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_PREPARE) &&
-+			if (!be->dpcm[stream].be_start &&
-+			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PREPARE) &&
++#define snd_soc_dpcm_stream_lock_irqsave(rtd, stream, flags) \
++	snd_pcm_stream_lock_irqsave(snd_soc_dpcm_get_substream(rtd, stream), flags)
++
+ static inline void snd_soc_dpcm_stream_unlock_irq(struct snd_soc_pcm_runtime *rtd,
+ 						  int stream)
+ {
+ 	snd_pcm_stream_unlock_irq(snd_soc_dpcm_get_substream(rtd, stream));
+ }
+ 
++#define snd_soc_dpcm_stream_unlock_irqrestore(rtd, stream, flags) \
++	snd_pcm_stream_unlock_irqrestore(snd_soc_dpcm_get_substream(rtd, stream), flags)
++
+ #define DPCM_MAX_BE_USERS	8
+ 
+ static inline const char *soc_cpu_dai_name(struct snd_soc_pcm_runtime *rtd)
+@@ -2079,6 +2085,7 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ {
+ 	struct snd_soc_pcm_runtime *be;
+ 	struct snd_soc_dpcm *dpcm;
++	unsigned long flags;
+ 	int ret = 0;
+ 
+ 	for_each_dpcm_be(fe, stream, dpcm) {
+@@ -2087,9 +2094,11 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 		be = dpcm->be;
+ 		be_substream = snd_soc_dpcm_get_substream(be, stream);
+ 
++		snd_soc_dpcm_stream_lock_irqsave(be, stream, flags);
++
+ 		/* is this op for this BE ? */
+ 		if (!snd_soc_dpcm_be_can_update(fe, be, stream))
+-			continue;
++			goto next;
+ 
+ 		dev_dbg(be->dev, "ASoC: trigger BE %s cmd %d\n",
+ 			be->dai_link->name, cmd);
+@@ -2099,77 +2108,80 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 			if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_PREPARE) &&
  			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_STOP) &&
  			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
- 				goto next;
- 
-+			be->dpcm[stream].be_start++;
-+			if (be->dpcm[stream].be_start != 1)
+-				continue;
 +				goto next;
-+
+ 
  			ret = soc_pcm_trigger(be_substream, cmd);
--			if (ret)
-+			if (ret) {
-+				be->dpcm[stream].be_start--;
- 				goto next;
-+			}
+ 			if (ret)
+-				goto end;
++				goto next;
  
  			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
  			break;
-@@ -2120,9 +2127,15 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 		case SNDRV_PCM_TRIGGER_RESUME:
  			if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_SUSPEND))
- 				goto next;
- 
-+			be->dpcm[stream].be_start++;
-+			if (be->dpcm[stream].be_start != 1)
+-				continue;
 +				goto next;
-+
+ 
  			ret = soc_pcm_trigger(be_substream, cmd);
--			if (ret)
-+			if (ret) {
-+				be->dpcm[stream].be_start--;
- 				goto next;
-+			}
+ 			if (ret)
+-				goto end;
++				goto next;
  
  			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
  			break;
-@@ -2130,9 +2143,15 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 		case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
  			if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
- 				goto next;
- 
-+			be->dpcm[stream].be_start++;
-+			if (be->dpcm[stream].be_start != 1)
+-				continue;
 +				goto next;
-+
+ 
  			ret = soc_pcm_trigger(be_substream, cmd);
--			if (ret)
-+			if (ret) {
-+				be->dpcm[stream].be_start--;
- 				goto next;
-+			}
+ 			if (ret)
+-				goto end;
++				goto next;
  
  			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
  			break;
-@@ -2141,12 +2160,18 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 		case SNDRV_PCM_TRIGGER_STOP:
+ 			if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_START) &&
  			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
- 				goto next;
+-				continue;
++				goto next;
  
--			if (!snd_soc_dpcm_can_be_free_stop(fe, be, stream))
-+			if (be->dpcm[stream].state == SND_SOC_DPCM_STATE_START)
-+				be->dpcm[stream].be_start--;
-+
-+			if (be->dpcm[stream].be_start != 0)
- 				goto next;
+ 			if (!snd_soc_dpcm_can_be_free_stop(fe, be, stream))
+-				continue;
++				goto next;
  
  			ret = soc_pcm_trigger(be_substream, cmd);
--			if (ret)
-+			if (ret) {
-+				if (be->dpcm[stream].state == SND_SOC_DPCM_STATE_START)
-+					be->dpcm[stream].be_start++;
- 				goto next;
-+			}
+ 			if (ret)
+-				goto end;
++				goto next;
  
  			be->dpcm[stream].state = SND_SOC_DPCM_STATE_STOP;
  			break;
-@@ -2154,12 +2179,15 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 		case SNDRV_PCM_TRIGGER_SUSPEND:
  			if (be->dpcm[stream].state != SND_SOC_DPCM_STATE_START)
- 				goto next;
+-				continue;
++				goto next;
  
--			if (!snd_soc_dpcm_can_be_free_stop(fe, be, stream))
-+			be->dpcm[stream].be_start--;
-+			if (be->dpcm[stream].be_start != 0)
- 				goto next;
+ 			if (!snd_soc_dpcm_can_be_free_stop(fe, be, stream))
+-				continue;
++				goto next;
  
  			ret = soc_pcm_trigger(be_substream, cmd);
--			if (ret)
-+			if (ret) {
-+				be->dpcm[stream].be_start++;
- 				goto next;
-+			}
+ 			if (ret)
+-				goto end;
++				goto next;
  
  			be->dpcm[stream].state = SND_SOC_DPCM_STATE_SUSPEND;
  			break;
-@@ -2167,12 +2195,15 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 		case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
  			if (be->dpcm[stream].state != SND_SOC_DPCM_STATE_START)
- 				goto next;
+-				continue;
++				goto next;
  
--			if (!snd_soc_dpcm_can_be_free_stop(fe, be, stream))
-+			be->dpcm[stream].be_start--;
-+			if (be->dpcm[stream].be_start != 0)
- 				goto next;
+ 			if (!snd_soc_dpcm_can_be_free_stop(fe, be, stream))
+-				continue;
++				goto next;
  
  			ret = soc_pcm_trigger(be_substream, cmd);
--			if (ret)
-+			if (ret) {
-+				be->dpcm[stream].be_start++;
- 				goto next;
-+			}
+ 			if (ret)
+-				goto end;
++				goto next;
  
  			be->dpcm[stream].state = SND_SOC_DPCM_STATE_PAUSED;
  			break;
+ 		}
++next:
++		snd_soc_dpcm_stream_unlock_irqrestore(be, stream, flags);
++		if (ret)
++			break;
+ 	}
+-end:
+ 	if (ret < 0)
+ 		dev_err(fe->dev, "ASoC: %s() failed at %s (%d)\n",
+ 			__func__, be->dai_link->name, ret);
 -- 
 2.25.1
 
