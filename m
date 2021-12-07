@@ -4,58 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 208F8C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Dec 2021 19:42:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F514C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Dec 2021 19:42:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4D335253B;
-	Tue,  7 Dec 2021 20:41:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4D335253B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 587D02530;
+	Tue,  7 Dec 2021 20:41:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 587D02530
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638906140;
-	bh=x7zfsLrySyg//uyAkYTRYyumsVOPIZlc/LubwBIqN3o=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1638906169;
+	bh=X0NNZIdtWt9vuT7FK13b72MjUmfctgv3ep9Z1JtQ5bQ=;
+	h=Date:To:References:From:Subject:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=p0V21qpDd4FVfh2zcl7PpuhiQuKnlNySaA5sazj5DSzkW2U3evqAwolHhVfYKcb0d
-	 lzm+y5wy74wNW1jWpZAqQ9BvMj+cUWElOSi1xrDTplQr0rV9wLeKYn0aZqEQ1q8VnC
-	 1EiIJ/VGpsiBgiuGPkpXjzmjbitM0hfj2KS6YTPY=
+	b=YSBnKiXFCpLbgLi6FNdJD3z2QuQLeX3R5EqwU42RmrolYNcP50xbbMl5ET658kZBJ
+	 e2/XowAH/pcxw5AQsKpXd0a0sLigdaDO1v4YFjIsAKbo8ZmQpoLvv1Y9wI4CMl+hR5
+	 WFv9ClzGyGlgTyWSOc1IUWXdfdIXX+IVLZgmEFko=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D4C0AF80507;
-	Tue,  7 Dec 2021 20:40:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DFCC4F80508;
+	Tue,  7 Dec 2021 20:40:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BD241F80507; Tue,  7 Dec 2021 20:40:27 +0100 (CET)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id E8111F80506; Tue,  7 Dec 2021 20:40:29 +0100 (CET)
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com
+ [IPv6:2a00:1450:4864:20::131])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 36E51F80431
- for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2021 20:40:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36E51F80431
-X-IronPort-AV: E=McAfee;i="6200,9189,10191"; a="236407804"
-X-IronPort-AV: E=Sophos;i="5.87,295,1631602800"; d="scan'208";a="236407804"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Dec 2021 11:40:08 -0800
-X-IronPort-AV: E=Sophos;i="5.87,295,1631602800"; d="scan'208";a="479641152"
-Received: from nthiag2-mobl2.amr.corp.intel.com (HELO
- pbossart-mobl3.intel.com) ([10.212.74.17])
- by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Dec 2021 11:40:07 -0800
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/7] ASoC: SOF: Intel: ICL: move ICL-specific ops to icl.c
-Date: Tue,  7 Dec 2021 13:39:41 -0600
-Message-Id: <20211207193947.71080-2-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211207193947.71080-1-pierre-louis.bossart@linux.intel.com>
-References: <20211207193947.71080-1-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 82582F80259
+ for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2021 20:40:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 82582F80259
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="N6dpjqjS"
+Received: by mail-lf1-x131.google.com with SMTP id bi37so772900lfb.5
+ for <alsa-devel@alsa-project.org>; Tue, 07 Dec 2021 11:40:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=message-id:date:mime-version:user-agent:content-language:to:cc
+ :references:from:subject:in-reply-to:content-transfer-encoding;
+ bh=lJUPRmvzGBYlX226TjBuiYmtUf9jUn5G93+KA16LjAg=;
+ b=N6dpjqjSGXJte521IlFBV3JwwBDYSI3jUNgG7vtsLv2egTWEUMbr6ffb6gexw+xZgO
+ MJw07re/mwKoJsjygSKKeTnXfWMN1H0c4Ywt1Ums0+LkmTRdvqoqWsnpAADjZyQ4jf66
+ omAWJ3HlFasrghRBVxCq33dqszE2xRUfWFXzmTGXlrE6jiI8Rv9qt5GeR2vLr/Y4CgCm
+ C1Uk36jREfGSnQAO1Ua+bJ2wztS8eJ/wr0ezCvK82B8V+rmwc2cAJd6fEgFt999UYXPh
+ Ujz4ngGsWTEsoI635i1clIuyfdidjm2dilIIplYQZsrApMn1FdTDQGMoiCRwRTWW5rqR
+ oZBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:message-id:date:mime-version:user-agent
+ :content-language:to:cc:references:from:subject:in-reply-to
+ :content-transfer-encoding;
+ bh=lJUPRmvzGBYlX226TjBuiYmtUf9jUn5G93+KA16LjAg=;
+ b=IA4R2DsQLWWzbgOC8cdcJFp4pL6trE/lI53pHBMJDvU4KFocbItkPRQtqBG550qMEX
+ qPPALQpWpUxw/kq+8Fyq0LuC0/hZt0yWPuCVkQH+ZEE7o8mFbqRIJI64C4CycRxfNqJg
+ Yau++xQ60DYBbq5gPIwDxE2X4t8a7b9BlZIb7RbFOA9/JIJJpQW1YKD6gO4bfeVU0q2d
+ oO59dWUoFrPnW1OGNzqYfmCr9fq3UElaUoysUw6VvfxmVdJCvUghv8MlNXMEkZT+5C++
+ dFX8qBkR/eoVgpxINLfSXP7safpXHbN7V6+oBoSI3B+EXof7Q3ldD/RR6bfxuiVFBbQc
+ rb5w==
+X-Gm-Message-State: AOAM531eXkmRSEG3F1r3QYtiS1mDKRYv3dlgU+zuCHTho/rcI3GsXBWT
+ SwE7Qqw4Oj8RK74+gW8onu9Kkd6WcIDHKHfV
+X-Google-Smtp-Source: ABdhPJyr4zizRPTfcscSDF65TlfDwku/yypVsSmIKZoDc7b4l/BC9epnqQcHVd81tlPlhrwQ26x3pg==
+X-Received: by 2002:a05:6512:ac5:: with SMTP id
+ n5mr41852984lfu.246.1638906020361; 
+ Tue, 07 Dec 2021 11:40:20 -0800 (PST)
+Received: from [10.0.0.42] (91-153-170-164.elisa-laajakaista.fi.
+ [91.153.170.164])
+ by smtp.gmail.com with ESMTPSA id p10sm51919lja.0.2021.12.07.11.40.19
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 07 Dec 2021 11:40:19 -0800 (PST)
+Message-ID: <b6af56f1-7e6b-81ca-7bae-8f2a2dfaf0eb@gmail.com>
+Date: Tue, 7 Dec 2021 21:44:48 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.2
+Content-Language: en-US
+To: Jayesh Choudhary <j-choudhary@ti.com>, robh+dt@kernel.org
+References: <20211203120243.24173-1-j-choudhary@ti.com>
+ <ed6c9be9-32d3-719a-ee0d-608b228f36b3@gmail.com>
+ <20449d7b-0524-a8df-7852-a4c495157682@ti.com>
+From: =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
+Subject: Re: [PATCH v4] ASoC: dt-bindings: davinci-mcasp: convert McASP
+ bindings to yaml schema
+In-Reply-To: <20449d7b-0524-a8df-7852-a4c495157682@ti.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>, tiwai@suse.de,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- broonie@kernel.org, Bard Liao <bard.liao@intel.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, broonie@kernel.org,
+ lgirdwood@gmail.com, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -71,212 +104,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Hi,
 
-Move the ICL specific ops to icl.c. Also introduce a
-macro ICL_DSP_HPRO_CORE_ID to define the core that
-should be powered up when HPRO is enabled.
+On 12/7/21 07:03, Jayesh Choudhary wrote:
+>>> +  tdm-slots:
+>>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>>> +    description: number of channels over one serializer
+>>> +    maxItems: 1
+>>
+>> and it has to be between 2 and 32, ignored in DIT mode (384 slots)
+>>
+> 
+> Will add minimum and maximum. Should this be added as a conditional
+> property when op-mode is 0 (I2S mode) and mark it as required?
 
-Reviewed-by: Bard Liao <bard.liao@intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/sof/intel/hda-loader.c | 64 ------------------------------
- sound/soc/sof/intel/hda.h        |  2 -
- sound/soc/sof/intel/icl.c        | 67 +++++++++++++++++++++++++++++++-
- 3 files changed, 65 insertions(+), 68 deletions(-)
+That would make it much nicer, yes, thank you!
 
-diff --git a/sound/soc/sof/intel/hda-loader.c b/sound/soc/sof/intel/hda-loader.c
-index 40201e5ac201..bfb0e374ebab 100644
---- a/sound/soc/sof/intel/hda-loader.c
-+++ b/sound/soc/sof/intel/hda-loader.c
-@@ -481,49 +481,6 @@ int hda_dsp_post_fw_run(struct snd_sof_dev *sdev)
- 	return hda_dsp_ctrl_clock_power_gating(sdev, true);
- }
- 
--/*
-- * post fw run operations for ICL,
-- * Core 3 will be powered up and in stall when HPRO is enabled
-- */
--int hda_dsp_post_fw_run_icl(struct snd_sof_dev *sdev)
--{
--	struct sof_intel_hda_dev *hda = sdev->pdata->hw_pdata;
--	int ret;
--
--	if (sdev->first_boot) {
--		ret = hda_sdw_startup(sdev);
--		if (ret < 0) {
--			dev_err(sdev->dev,
--				"error: could not startup SoundWire links\n");
--			return ret;
--		}
--	}
--
--	hda_sdw_int_enable(sdev, true);
--
--	/*
--	 * The recommended HW programming sequence for ICL is to
--	 * power up core 3 and keep it in stall if HPRO is enabled.
--	 * Major difference between ICL and TGL, on ICL core 3 is managed by
--	 * the host whereas on TGL it is handled by the firmware.
--	 */
--	if (!hda->clk_config_lpro) {
--		ret = hda_dsp_enable_core(sdev, BIT(3));
--		if (ret < 0) {
--			dev_err(sdev->dev, "error: dsp core power up failed on core 3\n");
--			return ret;
--		}
--
--		sdev->enabled_cores_mask |= BIT(3);
--		sdev->dsp_core_ref_count[3]++;
--
--		snd_sof_dsp_stall(sdev, BIT(3));
--	}
--
--	/* re-enable clock gating and power gating */
--	return hda_dsp_ctrl_clock_power_gating(sdev, true);
--}
--
- int hda_dsp_ext_man_get_cavs_config_data(struct snd_sof_dev *sdev,
- 					 const struct sof_ext_man_elem_header *hdr)
- {
-@@ -561,24 +518,3 @@ int hda_dsp_ext_man_get_cavs_config_data(struct snd_sof_dev *sdev,
- 
- 	return 0;
- }
--
--int hda_dsp_core_stall_icl(struct snd_sof_dev *sdev, unsigned int core_mask)
--{
--	struct sof_intel_hda_dev *hda = sdev->pdata->hw_pdata;
--	const struct sof_intel_dsp_desc *chip = hda->desc;
--
--	/* make sure core_mask in host managed cores */
--	core_mask &= chip->host_managed_cores_mask;
--	if (!core_mask) {
--		dev_err(sdev->dev, "error: core_mask is not in host managed cores\n");
--		return -EINVAL;
--	}
--
--	/* stall core */
--	snd_sof_dsp_update_bits_unlocked(sdev, HDA_DSP_BAR,
--					 HDA_DSP_REG_ADSPCS,
--					 HDA_DSP_ADSPCS_CSTALL_MASK(core_mask),
--					 HDA_DSP_ADSPCS_CSTALL_MASK(core_mask));
--
--	return 0;
--}
-diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index 72e78c449aa8..e2055b6c8139 100644
---- a/sound/soc/sof/intel/hda.h
-+++ b/sound/soc/sof/intel/hda.h
-@@ -618,8 +618,6 @@ int hda_dsp_cl_boot_firmware_iccmax(struct snd_sof_dev *sdev);
- /* pre and post fw run ops */
- int hda_dsp_pre_fw_run(struct snd_sof_dev *sdev);
- int hda_dsp_post_fw_run(struct snd_sof_dev *sdev);
--int hda_dsp_post_fw_run_icl(struct snd_sof_dev *sdev);
--int hda_dsp_core_stall_icl(struct snd_sof_dev *sdev, unsigned int core_mask);
- 
- /* parse platform specific ext manifest ops */
- int hda_dsp_ext_man_get_cavs_config_data(struct snd_sof_dev *sdev,
-diff --git a/sound/soc/sof/intel/icl.c b/sound/soc/sof/intel/icl.c
-index 343c1af7c453..f75e3983969f 100644
---- a/sound/soc/sof/intel/icl.c
-+++ b/sound/soc/sof/intel/icl.c
-@@ -18,12 +18,75 @@
- #include "hda-ipc.h"
- #include "../sof-audio.h"
- 
-+#define ICL_DSP_HPRO_CORE_ID 3
-+
- static const struct snd_sof_debugfs_map icl_dsp_debugfs[] = {
- 	{"hda", HDA_DSP_HDA_BAR, 0, 0x4000, SOF_DEBUGFS_ACCESS_ALWAYS},
- 	{"pp", HDA_DSP_PP_BAR,  0, 0x1000, SOF_DEBUGFS_ACCESS_ALWAYS},
- 	{"dsp", HDA_DSP_BAR,  0, 0x10000, SOF_DEBUGFS_ACCESS_ALWAYS},
- };
- 
-+static int icl_dsp_core_stall(struct snd_sof_dev *sdev, unsigned int core_mask)
-+{
-+	struct sof_intel_hda_dev *hda = sdev->pdata->hw_pdata;
-+	const struct sof_intel_dsp_desc *chip = hda->desc;
-+
-+	/* make sure core_mask in host managed cores */
-+	core_mask &= chip->host_managed_cores_mask;
-+	if (!core_mask) {
-+		dev_err(sdev->dev, "error: core_mask is not in host managed cores\n");
-+		return -EINVAL;
-+	}
-+
-+	/* stall core */
-+	snd_sof_dsp_update_bits_unlocked(sdev, HDA_DSP_BAR, HDA_DSP_REG_ADSPCS,
-+					 HDA_DSP_ADSPCS_CSTALL_MASK(core_mask),
-+					 HDA_DSP_ADSPCS_CSTALL_MASK(core_mask));
-+
-+	return 0;
-+}
-+
-+/*
-+ * post fw run operation for ICL.
-+ * Core 3 will be powered up and in stall when HPRO is enabled
-+ */
-+static int icl_dsp_post_fw_run(struct snd_sof_dev *sdev)
-+{
-+	struct sof_intel_hda_dev *hda = sdev->pdata->hw_pdata;
-+	int ret;
-+
-+	if (sdev->first_boot) {
-+		ret = hda_sdw_startup(sdev);
-+		if (ret < 0) {
-+			dev_err(sdev->dev, "error: could not startup SoundWire links\n");
-+			return ret;
-+		}
-+	}
-+
-+	hda_sdw_int_enable(sdev, true);
-+
-+	/*
-+	 * The recommended HW programming sequence for ICL is to
-+	 * power up core 3 and keep it in stall if HPRO is enabled.
-+	 */
-+	if (!hda->clk_config_lpro) {
-+		ret = hda_dsp_enable_core(sdev, BIT(ICL_DSP_HPRO_CORE_ID));
-+		if (ret < 0) {
-+			dev_err(sdev->dev, "error: dsp core power up failed on core %d\n",
-+				ICL_DSP_HPRO_CORE_ID);
-+			return ret;
-+		}
-+
-+		sdev->enabled_cores_mask |= BIT(ICL_DSP_HPRO_CORE_ID);
-+		sdev->dsp_core_ref_count[ICL_DSP_HPRO_CORE_ID]++;
-+
-+		snd_sof_dsp_stall(sdev, BIT(ICL_DSP_HPRO_CORE_ID));
-+	}
-+
-+	/* re-enable clock gating and power gating */
-+	return hda_dsp_ctrl_clock_power_gating(sdev, true);
-+}
-+
- /* Icelake ops */
- const struct snd_sof_dsp_ops sof_icl_ops = {
- 	/* probe/remove/shutdown */
-@@ -93,7 +156,7 @@ const struct snd_sof_dsp_ops sof_icl_ops = {
- 
- 	/* pre/post fw run */
- 	.pre_fw_run = hda_dsp_pre_fw_run,
--	.post_fw_run = hda_dsp_post_fw_run_icl,
-+	.post_fw_run = icl_dsp_post_fw_run,
- 
- 	/* parse platform specific extended manifest */
- 	.parse_platform_ext_manifest = hda_dsp_ext_man_get_cavs_config_data,
-@@ -103,7 +166,7 @@ const struct snd_sof_dsp_ops sof_icl_ops = {
- 
- 	/* firmware run */
- 	.run = hda_dsp_cl_boot_firmware_iccmax,
--	.stall = hda_dsp_core_stall_icl,
-+	.stall = icl_dsp_core_stall,
- 
- 	/* trace callback */
- 	.trace_init = hda_dsp_trace_init,
+>>> +  port:
+>>> +    description: connection for when McASP is used via graph card
+>>> +    type: object
+>>
+>> I understand that it can be present under the mcasp node as it is part
+>> of the graph card binding (or a card binding using graph).
+>> I mean if a new card binding comes around then we need to document it
+>> here as well?
+>>
+> 
+> Specific properties are not marked for the port. So it should not be an
+> issue. Other alternative is to mark the additional properties as true
+> but that is not preferred.
+
+If the McASP is used with simple-sound-card (as it is the case most of
+the time) then the port is not present under the node for this device as
+the card is not using graph.
+I consider the port (and the #sound-dai-cells if we are here) not part
+of the McASP hardware description as they are part of the graph or
+simple-card binding.
+
+I'm fine if the port remains here
+
+> Peter,
+> Any other changes I should make?
+
+Not much, this already looking good.
+I would fix the dts files which generates warning/error with this yaml
+as they are incorrect.
+
 -- 
-2.25.1
-
+Péter
