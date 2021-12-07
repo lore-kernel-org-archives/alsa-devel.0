@@ -4,55 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E33DFC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Dec 2021 18:10:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBD97C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Dec 2021 18:11:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AD47023C2;
-	Tue,  7 Dec 2021 19:09:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD47023C2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0ED8623FD;
+	Tue,  7 Dec 2021 19:10:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0ED8623FD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638900632;
-	bh=NGJqc3MmSm97Oh0IZWB9GRhkNIUdvwsBbFQbW8v6P8I=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=thRPdKe9axwuqlAWQmT61TO8rR/7y9wzWqxu/6E9dPMg9j9IO/2ji4k9FlfSsMRGD
-	 7dlgP6Z00WAxwlJQr7lJKtMn2fevWU6Wn1FG1Pe81hk52iDDP50xm+ucUfXvTMYAvk
-	 r3vx9d8g8NucEdLFPYpzuC2cgOp5pvb+KiLawQrA=
+	s=default; t=1638900672;
+	bh=QPVrkRfWPIXZraQgKLDn1E+HxPYaLEUWYVCVPjPuURg=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=LzvKGGfOB+TvFyrjHSKxmB1hr9FbNvklQ543Ci66Lgt5jnjr4baphiqu7xCY1sO25
+	 wFi88L8iEipNHde5zg2y2BIY0xK1ySCBlP5/qZU4WU3G+ZKLnS52Kw5kxl+YpYwNuX
+	 /xPgxErEWd9yiOCyJKl7YCfERCBp2reUspjdbn+U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2D1ECF80253;
-	Tue,  7 Dec 2021 19:09:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E126DF80431;
+	Tue,  7 Dec 2021 19:09:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A1D0AF80253; Tue,  7 Dec 2021 19:09:40 +0100 (CET)
+ id CD88BF804FC; Tue,  7 Dec 2021 19:09:44 +0100 (CET)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5D19BF80253
- for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2021 19:09:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D19BF80253
-X-IronPort-AV: E=McAfee;i="6200,9189,10190"; a="237873569"
-X-IronPort-AV: E=Sophos;i="5.87,295,1631602800"; d="scan'208";a="237873569"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7C7B8F80217
+ for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2021 19:09:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C7B8F80217
+X-IronPort-AV: E=McAfee;i="6200,9189,10190"; a="237873600"
+X-IronPort-AV: E=Sophos;i="5.87,295,1631602800"; d="scan'208";a="237873600"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Dec 2021 09:38:08 -0800
-X-IronPort-AV: E=Sophos;i="5.87,293,1631602800"; d="scan'208";a="751385217"
+ 07 Dec 2021 09:38:11 -0800
+X-IronPort-AV: E=Sophos;i="5.87,293,1631602800"; d="scan'208";a="751385228"
 Received: from charriso-mobl2.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.98.250])
  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Dec 2021 09:38:07 -0800
+ 07 Dec 2021 09:38:10 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 0/6] ASoC : soc-pcm: fix trigger race conditions with shared BE
-Date: Tue,  7 Dec 2021 11:37:39 -0600
-Message-Id: <20211207173745.15850-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 2/6] ASoC: soc-pcm: align BE 'atomicity' with that of the FE
+Date: Tue,  7 Dec 2021 11:37:41 -0600
+Message-Id: <20211207173745.15850-3-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211207173745.15850-1-pierre-louis.bossart@linux.intel.com>
+References: <20211207173745.15850-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, tiwai@suse.de,
- Sameer Pujar <spujar@nvidia.com>, linux-kernel@vger.kernel.org,
+Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, tiwai@suse.de,
+ Bard Liao <yung-chuan.liao@linux.intel.com>, Sameer Pujar <spujar@nvidia.com>,
+ Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, vkoul@kernel.org,
- broonie@kernel.org, Gyeongtaek Lee <gt82.lee@samsung.com>,
+ broonie@kernel.org, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Gyeongtaek Lee <gt82.lee@samsung.com>,
  Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -69,114 +76,62 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We've been adding a 'deep buffer' PCM device to several SOF topologies
-in order to reduce power consumption. The typical use-case would be
-music playback over a headset: this additional PCM device provides
-more buffering and longer latencies, leaving the rest of the system
-sleep for longer periods. Notifications and 'regular' low-latency
-audio playback would still use the 'normal' PCM device and be mixed
-with the 'deep buffer' before rendering on the headphone endpoint. The
-tentative direction would be to expose this alternate device to
-PulseAudio/PipeWire/CRAS via the UCM SectionModifier definitions.
+Since the flow for DPCM is based on taking a lock for the FE first, we
+need to make sure during the connection between a BE and an FE that
+they both use the same 'atomicity', otherwise we may sleep in atomic
+context.
 
-That seemed a straightforward topology change until our automated
-validation stress tests started reporting issues on SoundWire
-platforms, when e.g. two START triggers might be send and conversely
-the STOP trigger is never sent. The SoundWire stream state management
-flagged inconsistent states when the two 'normal' and 'deep buffer'
-devices are used concurrently with rapid play/stop/pause monkey
-testing.
+If the FE is nonatomic, this patch forces the BE to be nonatomic as
+well. That should have no negative impact since the BE 'inherits' the
+FE properties.
 
-Looking at the soc-pcm.c code, it seems that the BE state
-management needs a lot of love.
+However, if the FE is atomic and the BE is not, then the configuration
+is flagged as invalid.
 
-a) there is no consistent protection for the BE state. In some parts
-of the code, the state updates are protected by a spinlock but in the
-trigger they are not. When we open/play/close the two PCM devices in
-stress tests, we end-up testing a state that is being modified. That
-can't be good.
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+[ removed FE stream lock by tiwai ]
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+---
+ sound/soc/soc-pcm.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-b) there is a conceptual deadlock: on stop we check the FE states to
-see if a shared BE can be stopped, but since we trigger the BE first
-the FE states have not been modified yet, so the TRIGGER_STOP is never
-sent.
-
-This patchset suggests the removal of the dedicated 'dpcm_lock' and
-follows the design suggested by Takashi Iwai.  By default the
-protection relies on the 'pcm_mutex', except for the FE and BE
-triggers where the mutex cannot be used.  In this case, the FE PCM
-lock is used instead. In the cases where a BE is added/removed, the
-pcm_mutex and FE PCM lock are both taken.  In addition, the BE PCM
-lock is used to serialize access to a shared BE.
-
-With these patches I am able to run our entire validation suite
-without any issues with this new 'deep buffer' topology, and no
-regressions on existing solutions [1]. The tests were reproduced by
-Bard Liao for SoundWire devices.
-
-One might ask 'how come we didn't see this earlier'? The answer is
-probably that the .trigger callbacks in most implementations seems to
-perform DAPM operations, and sending the triggers multiple times is
-not an issue. In the case of SoundWire, we do use the .trigger
-callback to reconfigure the bus using the 'bank switch' mechanism. It
-could be acceptable to tolerate a trigger multiple times, but the
-deadlock on stop cannot be fixed at the SoundWire level alone.
-
-Opens:
-
-1) The issues reported by Nvidia on the RFCv3 may or may not be
-present. We'd need test results to make sure the locking update does
-not introduce a regression on Tegra.
-
-2) There are other reports of kernel oopses [2] that seem related to
-the lack of protection. I'd be good to confirm if this patchset solve
-these problems as well.
-
-[1] https://github.com/thesofproject/linux/pull/3146
-[2] https://lore.kernel.org/alsa-devel/002f01d7b4f5$c030f4a0$4092dde0$@samsung.com/
-
-changes since RFCv3:
-Used two patches from Takashi. We now use the pcm_mutex, the FE stream
-lock when adding and deleting a BE, and the BE stream lock to handle
-concurrency between streams using the same BE.
-Added a patch to use GFP_ATOMIC for the DPCM structure.
-Fixed PAUSE_RELEASE transition (GitHub comment from Kai Vehmanen)
-
-changes since RFCv2:
-Removal of dpcm_lock to use FE PCM locks (credits to Takashi Iwai for
-the suggestion). The FE PCM lock is now used before each use of
-for_each_dpcm_be() - with the exception of the trigger where the lock
-is already taken. This change is also applied in drivers which make
-use of this loop (compress, SH, FSL).
-Addition of BE PCM lock to deal with mutual exclusion between triggers
-for the same BE.
-Alignment of the BE atomicity on the FE on connections, this is
-required to avoid sleeping in atomic context.
-Additional cleanups (indentation, static functions)
-
-changes since RFC v1:
-Removed unused function
-Removed exported symbols only used in soc-pcm.c, used static instead
-Use a mutex instead of a spinlock
-Protect all for_each_dpcm_be() loops
-Fix bugs introduced in the refcount
-
-Pierre-Louis Bossart (4):
-  ASoC: soc-pcm: use GFP_ATOMIC for dpcm structure
-  ASoC: soc-pcm: align BE 'atomicity' with that of the FE
-  ASoC: soc-pcm: test refcount before triggering
-  ASoC: soc-pcm: fix BE handling of PAUSE_RELEASE
-
-Takashi Iwai (2):
-  ASoC: soc-pcm: Fix and cleanup DPCM locking
-  ASoC: soc-pcm: serialize BE triggers
-
- include/sound/soc-dpcm.h |   2 +
- include/sound/soc.h      |   2 -
- sound/soc/soc-core.c     |   1 -
- sound/soc/soc-pcm.c      | 351 +++++++++++++++++++++++++++------------
- 4 files changed, 246 insertions(+), 110 deletions(-)
-
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index f66808dfb508..3a34b71fd3c1 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1104,6 +1104,8 @@ static snd_pcm_uframes_t soc_pcm_pointer(struct snd_pcm_substream *substream)
+ static int dpcm_be_connect(struct snd_soc_pcm_runtime *fe,
+ 		struct snd_soc_pcm_runtime *be, int stream)
+ {
++	struct snd_pcm_substream *fe_substream;
++	struct snd_pcm_substream *be_substream;
+ 	struct snd_soc_dpcm *dpcm;
+ 	unsigned long flags;
+ 
+@@ -1113,6 +1115,20 @@ static int dpcm_be_connect(struct snd_soc_pcm_runtime *fe,
+ 			return 0;
+ 	}
+ 
++	fe_substream = snd_soc_dpcm_get_substream(fe, stream);
++	be_substream = snd_soc_dpcm_get_substream(be, stream);
++
++	if (!fe_substream->pcm->nonatomic && be_substream->pcm->nonatomic) {
++		dev_err(be->dev, "%s: FE is atomic but BE is nonatomic, invalid configuration\n",
++			__func__);
++		return -EINVAL;
++	}
++	if (fe_substream->pcm->nonatomic && !be_substream->pcm->nonatomic) {
++		dev_warn(be->dev, "%s: FE is nonatomic but BE is not, forcing BE as nonatomic\n",
++			 __func__);
++		be_substream->pcm->nonatomic = 1;
++	}
++
+ 	dpcm = kzalloc(sizeof(struct snd_soc_dpcm), GFP_ATOMIC);
+ 	if (!dpcm)
+ 		return -ENOMEM;
 -- 
 2.25.1
 
