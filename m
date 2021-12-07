@@ -4,78 +4,159 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1D83C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Dec 2021 17:36:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31E3FC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Dec 2021 17:39:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5767E2159;
-	Tue,  7 Dec 2021 18:35:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5767E2159
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3C21F21DB;
+	Tue,  7 Dec 2021 18:38:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C21F21DB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638898585;
-	bh=jG9+W1+/mUzMKNjWl7vpWwy1RwH3sDXijoTioedZbJk=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1638898747;
+	bh=cII+Ei9EGTdiHNf99BQTQdg/9Ke9WfsWKBp1GWZ3mbA=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CgNfy88xNtvyuAYtnoq0j5SFtsYegWCPbk9JBPCsv+J/Bn+kR3NQQUE+gzC/+wilL
-	 4r+1yRI7UVpW1+X4Qv9UYGw32lS4jrA5a0JX6uMV7ACDXtvQneHd+Vwh0mOHqHpN6Y
-	 WJxoeAnS1iNQMt5bJ1KZxvL+tV5gElAPtsx/ph4E=
+	b=mgs4r6dC4L0mnxaLC/urkYboincMPCR2ngd/6KRN/a4qUSVHsxCxBsUFEKLMgqYw1
+	 ZD02Ixe5A48yXrPW8PKnP8akNpVAKuZldbFmBipaLGte0Lw0VtnmUsRSLeV35rAaOu
+	 4LeAjUJoEBIvXSzA6f5oKg51IdsnxAMF69lQ4uEs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DD637F80259;
-	Tue,  7 Dec 2021 18:35:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D510FF80259;
+	Tue,  7 Dec 2021 18:38:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 12D67F8028D; Tue,  7 Dec 2021 18:35:34 +0100 (CET)
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com
- [209.85.210.54])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 27253F80253; Tue,  7 Dec 2021 18:38:16 +0100 (CET)
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com
+ (mail-bn8nam11on2065.outbound.protection.outlook.com [40.107.236.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9375FF80253
- for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2021 18:35:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9375FF80253
-Received: by mail-ot1-f54.google.com with SMTP id
- 35-20020a9d08a6000000b00579cd5e605eso19104742otf.0
- for <alsa-devel@alsa-project.org>; Tue, 07 Dec 2021 09:35:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:content-transfer-encoding
- :in-reply-to;
- bh=evQCwdaP2y5SAVzbZM5yHp44AqB58AFRWcJm7u9Fgns=;
- b=j9KZhSqgCaWWRGA5S1EPL5KFzE9NpRsNGcZzbU6m/QD4Dj8fnlqnoUcaLX6YPp6rpC
- RqpWKY9j5EQBTwTkvKrH94DOv7NVi0+SdHnW1aQiQbQjBYJwCD/I7zCtA4WNdFfoobEU
- 6jyV4dwjU0Ufqmdpt0AFuv957KoLddD6ZdQzdeYjP4nvAyblZi/xu0miNYZMa9fyI3GC
- 7VH+EdnHDR/m6WTMgp/cqtYeWv8HNhTHf3GiLHH5YQSxXeajSVwkQMnDrhXcqptsQB/m
- Um34tqJxOZu/a/JAexva0wmHXz3NI9UKCjk+/udyTKkyI3YdXt247XqtdhTF6gR4cNOH
- ar0g==
-X-Gm-Message-State: AOAM531DH1fhe7E9wlEFUtKbVS3X+S0FKPCkgbesdjUeXfmIAWitA+Q2
- zzIZ40ONkRGEEMLP8EOaDw==
-X-Google-Smtp-Source: ABdhPJz7gUdeAkJ3KsOMCfUi8L5o+QdYvS5nCcBJk2mDneUo7vRG73k9G/g68+96JlYwvI/dKfu2Eg==
-X-Received: by 2002:a05:6830:148c:: with SMTP id
- s12mr36188760otq.105.1638898525717; 
- Tue, 07 Dec 2021 09:35:25 -0800 (PST)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net.
- [66.90.148.213])
- by smtp.gmail.com with ESMTPSA id a3sm37157oti.29.2021.12.07.09.35.24
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 07 Dec 2021 09:35:25 -0800 (PST)
-Received: (nullmailer pid 519632 invoked by uid 1000);
- Tue, 07 Dec 2021 17:35:23 -0000
-Date: Tue, 7 Dec 2021 11:35:23 -0600
-From: Rob Herring <robh@kernel.org>
-To: Ricard Wanderlof <ricardw@axis.com>
-Subject: Re: [RESEND, PATCH v6 1/2] dt-bindings: sound: tlv320adc3xxx: New
- codec driver
-Message-ID: <Ya+bW3zVcac99FbZ@robh.at.kernel.org>
-References: <alpine.DEB.2.21.2112011603080.30606@lnxricardw1.se.axis.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5E1EEF80217
+ for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2021 18:38:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5E1EEF80217
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com
+ header.b="kHB5LZ2j"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XB2QwAGFFbcZM16t3hfMBBDH7oMqOJw9s/B5U+phnHnc6p2/FQdKTMx8epV37vUnkh43MOty39V+5cG1oQJDgV3hWaK7ubgvV1QHvcyiZpanYPPPYW/wwC84DAEL0XgiyzAUvoNCTSMTR8HvgQ8667GNG/hPAxCTTsmDbDNj12ViY6AmkVvzWKCZoibG22V7k1ASzvQljDNyYuemLlL+eUfSzPgE8USLRped7Y959FzsilRZo1N5nk8Kbk8n0ueLZNfF3VknwwK7nCb6zPjWxLuLhKmD7V+TBOdeHAyHZIh07fES6ecAQBWrx05khSAjXD78FnKImwJejkkUxKaVLA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=EtIhKTuKWdYcH/nUGdVVBUU2ch1PweIlk6gios2vq5s=;
+ b=bzFOqiqpZaRQtKHyPvH1nveDE1vys2aNE8hiULJu6yWhJVvqZt+aASztTUMmm2vjgC/d1d5KtqmGYEkBS+fMX7Vfl8qSAYMsekXciJjiKVsSxiTdWt2qO403NL0kRs1RVaXPYykJLeLsoG6vHxPdQ/RvQh06FBAUJwrYUfuxNPjr01qIC/8J8DlZ83EmTamZQEDFebRM5Sv13T8jLCbyM/ZLWlAunZ4tu7MBYDnCAlqrRVq09PInaccVctM0kOLwJNZiJOTyYujXQtiuFoLCk1IGKmq+doCfPYQN9Rtm8S+WKVpK5bGJXnxWnsuj4G/vU20UM0kGqlqEK6Ga6E3l1A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EtIhKTuKWdYcH/nUGdVVBUU2ch1PweIlk6gios2vq5s=;
+ b=kHB5LZ2j/Ft+Fk6RBTm0W9HuB+eNLbuxftGz4F4jbc/FN5RTZXsR0KcrBFnOHndfMIC68mIYs/1JC4chrkKye24IRZOQ/iMDPIOZILijbNpT172MPDmBkhqKbye6O32QJwkcykJRnt17SOC23KSPGWYDqX4TMqTVcnrCYjHxUNSUKhT7qFao3dCzZIQp+qCQgG6fJM3RsScpeoXzd9GhlCpiataq8XKvgFsbDSd0dQIjbVNk+VQc64KSNLly27JyPH6WZmVPsJq+Zq7LDWywzE9yyatKfz6Bs6RJb7Z3EtYjUNAOe8/3UQNFAq40rFNr7k/JjzDLBZVJlEaSIlerjA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from CY4PR12MB1576.namprd12.prod.outlook.com (2603:10b6:910:10::9)
+ by CY4PR1201MB0007.namprd12.prod.outlook.com (2603:10b6:903:d4::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4755.16; Tue, 7 Dec
+ 2021 17:38:05 +0000
+Received: from CY4PR12MB1576.namprd12.prod.outlook.com
+ ([fe80::24b0:46e7:d3c0:a77b]) by CY4PR12MB1576.namprd12.prod.outlook.com
+ ([fe80::24b0:46e7:d3c0:a77b%7]) with mapi id 15.20.4755.022; Tue, 7 Dec 2021
+ 17:38:05 +0000
+Subject: Re: [PATCH 1/3] ALSA: hda/tegra: Skip reset on BPMP devices
+To: Dmitry Osipenko <digetx@gmail.com>, tiwai@suse.com, broonie@kernel.org,
+ lgirdwood@gmail.com, thierry.reding@gmail.com, perex@perex.cz
+References: <1638858770-22594-1-git-send-email-spujar@nvidia.com>
+ <1638858770-22594-2-git-send-email-spujar@nvidia.com>
+ <7742adae-cdbe-a9ea-2cef-f63363298d73@gmail.com>
+ <8fd704d9-43ce-e34a-a3c0-b48381ef0cd8@nvidia.com>
+ <56bb43b6-8d72-b1de-4402-a2cb31707bd9@gmail.com>
+ <4855e9c4-e4c2-528b-c9ad-2be7209dc62a@nvidia.com>
+ <5d441571-c1c2-5433-729f-86d6396c2853@gmail.com>
+ <f32cde65-63dc-67f8-ded8-b58ea5e89f4e@nvidia.com>
+ <95cc7efa-251c-690b-9afa-53ee9e052c34@gmail.com>
+From: Sameer Pujar <spujar@nvidia.com>
+Message-ID: <148fba18-5d14-d342-0eb9-4ff224cc58ad@nvidia.com>
+Date: Tue, 7 Dec 2021 23:07:51 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
+In-Reply-To: <95cc7efa-251c-690b-9afa-53ee9e052c34@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <alpine.DEB.2.21.2112011603080.30606@lnxricardw1.se.axis.com>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>
+Content-Language: en-GB
+X-ClientProxiedBy: MA1PR0101CA0072.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:a00:20::34) To CY4PR12MB1576.namprd12.prod.outlook.com
+ (2603:10b6:910:10::9)
+MIME-Version: 1.0
+Received: from [10.25.102.117] (202.164.25.5) by
+ MA1PR0101CA0072.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:20::34) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4755.16 via Frontend
+ Transport; Tue, 7 Dec 2021 17:38:00 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0b3bd43a-b12f-4b18-ad31-08d9b9a85361
+X-MS-TrafficTypeDiagnostic: CY4PR1201MB0007:EE_
+X-Microsoft-Antispam-PRVS: <CY4PR1201MB0007722212ACD47BF5D00DB0A76E9@CY4PR1201MB0007.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: DgyuEOyoVMPwdyLoNxrMAbj0xiMflKRq0dC19MTHdXTWWEDYXEMDeVoES7KvuN2s/xxd7K9OfVYW8QEm1xGW9i2OXOLBhAIck50Y0W9Jrc1WXaoTXsNP98hFDM6XcJk/ZY60dI5rymTJLOi3IxRoeO1JFOzYQ1+TXUJSE4oV0CQqexWFZ7fO16bojkZneRhZ6R7GOXg8oZigetpv0QA6DtJ9lprDZkzSZQ+HWlsHQdP6ElIso+5O0cAFXh4wYAKB7c+quzaiGsnX7DA/tLpxR4N9MF1XsKXD0V5yGb8BGR/8gK5EnaLDNOSszPJUt/9OnRnWFGzCaN7Z5rkllKOOX+SOdFMfrc4L2LNWocIPerM5uBq8yamzAqbjEX9nS0c+U3MEs3EG0NK9uzBRhdBbu/BqURRH9mnd1+4nSiqjq0UdlpTV7kPesPgjIBQRk2Z7YOiiIdzTrVU/YbzCBfvzelb36W/xm1JnvoBiB+Tb9LqLTvIXyrseSf/u6buveMP+8zw7B8dixCFj4SUUCNRnNP2DEG0X3g7LBFQeccfaRz/gvzVrmb16oiIv97DJ+JKwsn3N7xsyWHbeYgnkKGVKqPAAT69QjvF51XWDtRl1Wbgg6exv6NYIFsKRPEfrVEK3Z5T3D+Zyvgv2evC/5ZQquh0agqs7AQlh6tfCRKr2L3JsehoA46r4ee5lnmVLnaMb/edP+46V+xn5s0Hqoqgmb40GuvZTm7h7dErJrn5+lbM=
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:CY4PR12MB1576.namprd12.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(4636009)(366004)(2616005)(316002)(508600001)(86362001)(53546011)(38100700002)(31696002)(8936002)(26005)(4326008)(7416002)(6486002)(83380400001)(16576012)(6666004)(5660300002)(36756003)(186003)(66946007)(2906002)(8676002)(66476007)(956004)(66556008)(31686004)(43740500002)(45980500001);
+ DIR:OUT; SFP:1101; 
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZnJzVWZ1QU9OWTVzUnZ4WHFvbGoxbVZWVzQ1RkthTXFsTUduelVKNjBvV3hF?=
+ =?utf-8?B?bHhibjQ4eXZ1ckVUUFdVdHBHeVEvWVA1QXkzWGtXdWRiaUowc01Oa1hGdGZO?=
+ =?utf-8?B?TnJlU25Dbkl5Q0NvMDgrZ2Jmdk16UU1Rajk1TkVtTUtjek5tdUJUVkhRKy9J?=
+ =?utf-8?B?cFM4OTNVTTdONjRXem5iSEZ2a1d4NGpaZW4xdW5oQlcyRHpjSHc2eDZBNGtN?=
+ =?utf-8?B?a3o0UXRKUTBZMTlBalRFNU9PUW54ajhjWkdZZ2NZZllUY3JRZm5PQTZYQ05C?=
+ =?utf-8?B?RDN3MUxJWmhFNUhUWkp0eFZWb0ZvdzVzTk1hS3dpMElYc0U0T3VnVi9kRFRB?=
+ =?utf-8?B?UE0raGdOUzJOSUJ0SDJHME90bHMwdWw4cnV5L3ZQaHNKUGZ4a21rcm5yaFFw?=
+ =?utf-8?B?VyttV2lnREFwdnBXVFFZK2hWb2RremN2ZGVMTWtMQTE4Mmgzd2FHVmpLcXlZ?=
+ =?utf-8?B?TWF6VnhNbjMvMTF1cW1DMGdqTnRza2ZuMWJxTzdBMTVDQ1UrV3NNV3Z6Qmlm?=
+ =?utf-8?B?NjVzdWhDTVgySC9DKytVd3ZyUk9LVnNJL0dpMFRJTWpQSXJzOERGaHRkMTJT?=
+ =?utf-8?B?d2pPK01HcUMrT2FVN2NPSDNVMnV0WEJ0TDgxYUtsbW5XaEdyZ2o4bVhITHg4?=
+ =?utf-8?B?UnB5TzdOVm4vSXl4R2h2ZEZXVkE4M1J4Nnk2UEd1ZHdjV24wcDRIUnJiaEx0?=
+ =?utf-8?B?cEF1SDJTdFdvMmQ0YzJyQzFmNVZ6elJwQmZ0dDZXaERhVDMvK0RkY09GWGth?=
+ =?utf-8?B?UHZTMmxpTWxwV0UwMnNJeDB5RE5oTjBNY1lUYXVtR2EwLzhQZ2RCTFBBSndT?=
+ =?utf-8?B?WnRNVlk3YUZUM0M1em9yaFNSS09jUUZ1RXB5U1k3WkVOdWh1dVM2Qk8vQUdX?=
+ =?utf-8?B?Njd0OFdCMEJEQXhtU05sOFp5akV4dWF3UG9OSkVCZU5oZ2x3ZXQ1elZPTk5K?=
+ =?utf-8?B?LzdFUzlJN09kazdPalAwK09VN3o0MXZCbEg2WURiM041UVVVK2ZQM01BWmdu?=
+ =?utf-8?B?VFgwS1F4N2JuSUIxVFYzeEZNbjBJTTZDbVhVYWVLWDlDZmYyeHBZTndPeWl0?=
+ =?utf-8?B?QytPenlyYzhVLytVWHMvZ2hoUXJEQm9SUlNjQTJXRWZFbEN0R0RtSU12NVVs?=
+ =?utf-8?B?c3NuU1g0ZTFrVDNIRmd1NFlML3MybDRRQXRSUHE4R3NCV01ydlVqcU9zbGVw?=
+ =?utf-8?B?RHErM3JUNmt5U1hsYk9zQnh3MWFEb0phcWZWL2UvRVo0L2ZQSDl3T2RJMTg3?=
+ =?utf-8?B?V3N4aXZDUkp4bXBCazhTNFdUS1BUcUdwVTBaKzZlRGNuU2NWNW9mWmltVUoy?=
+ =?utf-8?B?dWpweEFmY1d1VjQwcW42REl3Q3E1dU1yZGhrVkFHQktPaVlVcjdndmU3TGNl?=
+ =?utf-8?B?MU52NkFiT2g5RXNSQ3I4SHRtWDc5eUp6VFliUTJuVmZMMFZSZUxmc0ROUmpW?=
+ =?utf-8?B?S0JsRk84OGc4QkkweTE5blp3NVZwTWx2YVNCUkRUSFFMRzY3dWpjSVk1L1N2?=
+ =?utf-8?B?dDBXbU16S3F0UHBFREJ0eVBydTVnUGIyV1dXdG4xU1doZGhXWkZFdTc5SHpJ?=
+ =?utf-8?B?Q1RaN0E3MDdaeURIWnpjdmRZZU12cUhpTXo5aGJ3aitIZTBGRHdRUnFJWW10?=
+ =?utf-8?B?Rk40TU8rajR5Q0JSeDRRdXNxamJXUXZMMVVWSEp4ck9GZVZOOFJUdkl5MkU1?=
+ =?utf-8?B?UERId2VMM1RJUEYvL29USW5ja3ZOMklUK1BmM3NDamVwWE80c2xmRHRKL3Vr?=
+ =?utf-8?B?cGRDczlIU1RCRWVLZG5nR0cyUHJMRXBUWmd2KzBvdmlDcVF5T2ROTWJ5bmNt?=
+ =?utf-8?B?WmxUQlJqVjFSdXhVNzl2dS9Za0ZPMjBkY2tobDFxUUExNG4vbzYxK3dseXNS?=
+ =?utf-8?B?dVdhK0hCcWlFbFlMbEFJU3FEZTZFd1AvL1pENkFTdDZkUUZYOHdERkNxOVV6?=
+ =?utf-8?B?amRRYUdKbFhseXBnZ2phdzRxbnpmY283N0cybTZMTklrQ3YwK1pUTE14WHA4?=
+ =?utf-8?B?TkZBeG9DajF6WGc1UUljcit2S2xHR1ltM1RSQTJpeDVWdmh6YTlWL1EweEdp?=
+ =?utf-8?B?WmN6bEo4M0RaSFBaQkphdTVGTGRkRk53N3NFVUlDdWRDdnVPanJONnhUelI4?=
+ =?utf-8?B?WG9PLy9PMFNqMmF3aVZmTVZvc3lqNXRBeWZmTDdldmFhNC95Qy9sallWZytX?=
+ =?utf-8?Q?ynKRGSE4gDd/42xxTf3r8iw=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0b3bd43a-b12f-4b18-ad31-08d9b9a85361
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR12MB1576.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Dec 2021 17:38:05.5809 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Ax1ysECkNaA3q2LvRyhepN8CzjdNJmrunY0AOLEA6OToGF2c2EGY3m4H4NcsC25NVsRwPlVwqtC3I1Dwx8CkKg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1201MB0007
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org, jonathanh@nvidia.com,
+ robh+dt@kernel.org, linux-tegra@vger.kernel.org,
+ Mohan Kumar <mkumard@nvidia.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,226 +172,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Dec 01, 2021 at 04:09:17PM +0100, Ricard Wanderlof wrote:
-> 
-> DT bindings for tlv320adc3xxx driver, currently supporting
 
-Bindings are not for a driver, but h/w components.
 
-> Texas Instruments TLV320ADC3001 and TLV320ADC3101 audio ADCs.
-> 
-> Signed-off-by: Ricard Wanderlof <ricardw@axis.com>
-> ---
->  .../bindings/sound/ti,tlv320adc3xxx.yaml      | 137 ++++++++++++++++++
->  include/dt-bindings/sound/tlv320adc3xxx.h     |  28 ++++
->  2 files changed, 165 insertions(+)
->  create mode 100644
-> Documentation/devicetree/bindings/sound/ti,tlv320adc3xxx.yaml
->  create mode 100644 include/dt-bindings/sound/tlv320adc3xxx.h
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/ti,tlv320adc3xxx.yaml
-> b/Documentation/devicetree/bindings/sound/ti,tlv320adc3xxx.yaml
-> new file mode 100644
-> index 000000000000..c4fed6335230
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/ti,tlv320adc3xxx.yaml
-> @@ -0,0 +1,137 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/sound/ti,tlv320adc3xxx.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Texas Instruments TLV320ADC3001/TLV320ADC3101 Stereo ADC
-> +
-> +maintainers:
-> +  - Ricard Wanderlof <ricardw@axis.com>
-> +
-> +description: |
-> +  Texas Instruments TLV320ADC3001 and TLV320ADC3101 Stereo ADC
-> +  https://www.ti.com/product/TLV320ADC3001
-> +  https://www.ti.com/product/TLV320ADC3101
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - ti,tlv320adc3001
-> +      - ti,tlv320adc3101
-> +
-> +  reg:
-> +    maxItems: 1
-> +    description: I2C address
-> +
-> +  '#sound-dai-cells':
-> +    const: 0
-> +
-> +  '#gpio-cells':
-> +    const: 2
-> +
-> +  gpio-controller: true
-> +
-> +  reset-gpios:
-> +    maxItems: 1
-> +    description: GPIO pin used for codec reset (RESET pin)
-> +
-> +  clocks:
-> +    maxItems: 1
-> +    description: Master clock (MCLK)
-> +
-> +  ti,dmdin-gpio1:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum:
-> +      - 0 # ADC3XXX_GPIO_DISABLED       - I/O buffers powered down and not
-> used
+On 12/7/2021 9:05 PM, Dmitry Osipenko wrote:
+> External email: Use caution opening links or attachments
+>
+>
+> 07.12.2021 17:49, Sameer Pujar Ð¿Ð¸ÑˆÐµÑ‚:
+> ...
+>>>> How the reload case would be different? Can you please specify more
+>>>> details if you are referring to a particular scenario?
+>>> You have a shared power domain. Since power domain can be turned off
+>>> only when nobody keeps domain turned on, you now making reset of HDA
+>>> controller dependent on the state of display driver.
+>> I don't think that the state of display driver would affect. The HDA
+>> driver itself can issue unpowergate calls which in turn ensures h/w
+>> reset. If display driver is already runtime active, HDA driver runtime
+>> resume after this would be still fine since h/w reset is already applied
+>> during display runtime resume. Note that both HDA and display resets are
+>> connected to this power-domain and BPMP applies these resets during
+>> unpowergate.
+> HDA won't be reset while display is active on T186+.
 
-Your patch is corrupted because your mailer wrapped lines.
-
-> +      - 1 # ADC3XXX_GPIO_INPUT          - Various non-GPIO input functions
-> +      - 2 # ADC3XXX_GPIO_GPI            - General purpose input
-> +      - 3 # ADC3XXX_GPIO_GPO            - General purpose output
-> +      - 4 # ADC3XXX_GPIO_CLKOUT         - Clock source set in CLKOUT_MUX
-> reg
-> +      - 5 # ADC3XXX_GPIO_INT1           - INT1 output
-> +      - 6 # ADC3XXX_GPIO_SECONDARY_BCLK - Codec interface secondary BCLK
-> +      - 7 # ADC3XXX_GPIO_SECONDARY_WCLK - Codec interface secondary WCLK
-> +    default: 0
-> +    description: |
-> +      Configuration for DMDIN/GPIO1 pin.
-> +
-> +      When ADC3XXX_GPIO_GPO is configured, this causes corresponding the
-> +      ALSA control "GPIOx Output" to appear, as a switch control.
-> +
-> +  ti,dmclk-gpio2:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum:
-> +      - 0 # ADC3XXX_GPIO_DISABLED       - I/O buffers powered down and not
-> used
-> +      - 1 # ADC3XXX_GPIO_INPUT          - Various non-GPIO input functions
-> +      - 2 # ADC3XXX_GPIO_GPI            - General purpose input
-> +      - 3 # ADC3XXX_GPIO_GPO            - General purpose output
-> +      - 4 # ADC3XXX_GPIO_CLKOUT         - Clock source set in CLKOUT_MUX
-> reg
-> +      - 5 # ADC3XXX_GPIO_INT1           - INT1 output
-> +      - 6 # ADC3XXX_GPIO_SECONDARY_BCLK - Codec interface secondary BCLK
-> +      - 7 # ADC3XXX_GPIO_SECONDARY_WCLK - Codec interface secondary WCLK
-> +    default: 0
-> +    description: |
-> +      Configuration for DMCLK/GPIO2 pin.
-> +
-> +      When ADC3XXX_GPIO_GPO is configured, this causes corresponding the
-> +      ALSA control "GPIOx Output" to appear, as a switch control.
-> +
-> +      Note that there is currently no support for reading the GPIO pins as
-> +      inputs.
-> +
-> +  ti,micbias1-vg:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum:
-> +      - 0 # ADC3XXX_MICBIAS_OFF                - Mic bias is powered down
-> +      - 1 # ADC3XXX_MICBIAS_2_0V       - Mic bias is set to 2.0V
-> +      - 2 # ADC3XXX_MICBIAS_2_5V       - Mic bias is set to 2.5V
-> +      - 3 # ADC3XXX_MICBIAS_AVDD       - Mic bias is same as AVDD supply
-> +    default: 0
-> +    description: |
-> +      Mic bias voltage output on MICBIAS1 pin
-> +
-> +  ti,micbias2-vg:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum:
-> +      - 0 # ADC3XXX_MICBIAS_OFF                - Mic bias is powered down
-> +      - 1 # ADC3XXX_MICBIAS_2_0V       - Mic bias is set to 2.0V
-> +      - 2 # ADC3XXX_MICBIAS_2_5V       - Mic bias is set to 2.5V
-> +      - 3 # ADC3XXX_MICBIAS_AVDD       - Mic bias is same as AVDD supply
-> +    default: 0
-> +    description: |
-> +      Mic bias voltage output on MICBIAS2 pin
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +
-> +    #include <dt-bindings/gpio/gpio.h>
-> +    #include <dt-bindings/sound/tlv320adc3xxx.h>
-> +
-> +    i2c {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +        tlv320adc3101: tlv320adc3101@18 {
-
-audio-codec@18
-
-> +            compatible = "ti,tlv320adc3101";
-> +            reg = <0x18>;
-> +            reset-gpios = <&gpio_pc 3 GPIO_ACTIVE_LOW>;
-> +            clocks = <&audio_mclk>;
-> +            gpio-controller;
-> +            #gpio-cells = <2>;
-> +            ti,dmdin-gpio1 = <ADC3XXX_GPIO_GPO>;
-> +            ti,micbias1-vg = <ADC3XXX_MICBIAS_AVDD>;
-> +        };
-> +    };
-> +
-> +    audio_mclk: clock {
-> +        compatible = "fixed-clock";
-> +        #clock-cells = <0>;
-> +        clock-frequency = <24576000>;
-> +    };
-> +...
-> diff --git a/include/dt-bindings/sound/tlv320adc3xxx.h
-> b/include/dt-bindings/sound/tlv320adc3xxx.h
-> new file mode 100644
-> index 000000000000..3b3fa43fa961
-> --- /dev/null
-> +++ b/include/dt-bindings/sound/tlv320adc3xxx.h
-> @@ -0,0 +1,28 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-
-Dual license please.
-
-> +/*
-> + * Devicetree bindings definitions for tlv320adc3xxx driver.
-> + *
-> + * Copyright (C) 2021 Axis Communications AB
-> + */
-> +#ifndef __DT_TLV320ADC3XXX_H
-> +#define __DT_TLV320ADC3XXX_H
-> +
-> +#define ADC3XXX_GPIO_DISABLED          0 /* I/O buffers powered down */
-> +#define ADC3XXX_GPIO_INPUT             1 /* Various non-GPIO inputs */
-> +#define ADC3XXX_GPIO_GPI               2 /* General purpose input */
-> +#define ADC3XXX_GPIO_GPO               3 /* General purpose output */
-> +#define ADC3XXX_GPIO_CLKOUT            4 /* Source set in reg. CLKOUT_MUX
-> */
-> +#define ADC3XXX_GPIO_INT1              5 /* INT1 output */
-> +#define ADC3XXX_GPIO_INT2              6 /* INT2 output */
-> +/* value 7 is reserved */
-> +#define ADC3XXX_GPIO_SECONDARY_BCLK    8 /* Codec interface secondary BCLK
-> */
-> +#define ADC3XXX_GPIO_SECONDARY_WCLK    9 /* Codec interface secondary WCLK
-> */
-> +#define ADC3XXX_GPIO_ADC_MOD_CLK       10 /* Clock output for digital mics
-> */
-> +/* values 11-15 reserved */
-> +
-> +#define ADC3XXX_MICBIAS_OFF            0 /* Micbias pin powered off */
-> +#define ADC3XXX_MICBIAS_2_0V           1 /* Micbias pin set to 2.0V */
-> +#define ADC3XXX_MICBIAS_2_5V           2 /* Micbias pin set to 2.5V */
-> +#define ADC3XXX_MICBIAS_AVDD           3 /* Use AVDD voltage for micbias
-> pin */
-> +
-> +#endif /* __DT_TLV320ADC3XXX_H */
-> --
-> 2.20.1
-> 
-> --
-> Ricard Wolf Wanderlof                           ricardw(at)axis.com
-> Axis Communications AB, Lund, Sweden            www.axis.com
-> Phone +46 46 272 2016                           Fax +46 46 13 61 30
-> 
-> 
+No. HDA reset is applied whenever power-domain is ungated. It can happen 
+when either HDA or display device becomes active. So I don't think that 
+it is inconsistent.
