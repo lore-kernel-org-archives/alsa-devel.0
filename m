@@ -4,97 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 051BEC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Dec 2021 15:36:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 515BFC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Dec 2021 15:37:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2062F2440;
-	Tue,  7 Dec 2021 16:35:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2062F2440
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0445024D0;
+	Tue,  7 Dec 2021 16:36:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0445024D0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638891382;
-	bh=9tIAWEbejgbi4g4ZGOXPQB6OLU3q2y6qHbN58tCPbl0=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=GHvPVzPZ+fUNkhUYqwuCmIkrt/BTvtTl2YQuXWRoScR9H7uYlcs2jh0R9Z1lPejrL
-	 iiz8ISwvOh5sW8BuU8KOMiKy20lsK3czayDjFgrkiI5O7PCvl//zEqX+fLzWt0LhDZ
-	 FqXLkq8RXPuZ0Kc3NZw+xE0ZhpMIIij8DDB/URZw=
+	s=default; t=1638891427;
+	bh=9skDAOu7VAyeOakpTS8RIQbUT0izGhefGm/5Fbm6hkw=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=MPlmQke1Oz5mcR1ksMWJRrzQoaZ5S8TtEwIWbSU5eO1U+GiG+SAJJmZ4mTmnseCzP
+	 a/Hf/dwObQ731Q1grH39dM8mXC9IuJkszSLdSc59xpKk2fmnKrrBFm06pXxG3hVvWV
+	 +7n1JTSlqkS2pMG05GkGDlAqc9UV94g1ZtK9SL9w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C3536F80103;
-	Tue,  7 Dec 2021 16:35:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 555C6F80253;
+	Tue,  7 Dec 2021 16:36:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BCA81F8028D; Tue,  7 Dec 2021 16:35:30 +0100 (CET)
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com
- [IPv6:2a00:1450:4864:20::235])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 9DBD0F804AE; Tue,  7 Dec 2021 16:36:13 +0100 (CET)
+Received: from alexa-out-sd-01.qualcomm.com (alexa-out-sd-01.qualcomm.com
+ [199.106.114.38])
+ (using TLSv1.2 with cipher AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6EA28F80103
- for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2021 16:35:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6EA28F80103
+ by alsa1.perex.cz (Postfix) with ESMTPS id 16F63F80253
+ for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2021 16:36:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16F63F80253
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="gjMvzabe"
-Received: by mail-lj1-x235.google.com with SMTP id k2so28161802lji.4
- for <alsa-devel@alsa-project.org>; Tue, 07 Dec 2021 07:35:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=6QJHwvAIj7j6f9tXcv3t1jDYcyJk0MG+odriPhUknmc=;
- b=gjMvzabeYrtiD2l4Ppofk0NmbF2NeHkBy3RKVQY6q5lwJxyQj6t6Hb/1Lqt667WBl7
- nBEHCeGtXXXoqIcawTvzlZrmK34PF4DDZ6durwpMs9n8YJQmsBhzLkP2kx+OKYGvJIhi
- n/c5L3ynfKirxqvexlPKBa9ie4H59UI60l9TswOhBzcFPVysh54UKdf2n01/UZmD75Nx
- 2sPDu8zABxfYiKrueVw8j6NQVVkhPqvCZ6RZZ3C7BJ7QvJe3TG2D3Z98KF4c/6lRuuxx
- SOOgHpATXEFThcn433wYrvqvWjItjYepmDIrGN0l+K2T0yh1Fx139BK3veAjkcuQcFlk
- zjxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=6QJHwvAIj7j6f9tXcv3t1jDYcyJk0MG+odriPhUknmc=;
- b=wcDqMFJaMWr07XOYUqSsLV1AnE8PJoh0Xi0lPu/ZN+IUoYPnmxLlgzPzbD441YKc+Z
- wKgt7nDmDfKN8BYLM9Axd9A9Vhux4nAn0I0ys5PydxWBRKCyV6Ci2qh6Ymm6UcEuqNRU
- vpqTajoa6Nhd1zHY9rU1Brj5f7lNhaI5xe8n7OTpfrAWIODg0C0e0bsjSxmep1kTwMPZ
- bGzPmnUfUvdhLBM37T7KbKQjNh0CWmk3eBfJEUkN/dOALIi3Mf8/PABTwqc5n+CF3m6I
- XeGSN4DwFtsscDleF5MLqw1Kc+SbuC1V1b6PAqRz7ynignKm9IERn10NvV4yf2wqzhT0
- 2MRg==
-X-Gm-Message-State: AOAM530sZPT5S7ykl8AlWYsyqBZYGMfz7Sd193sUyyh8GK4g6uMpxSWm
- yMRfKGQ9ZpqeCIaQEptEfOCGObZ5QSQ=
-X-Google-Smtp-Source: ABdhPJxHGZ+65r90qy522XHUaM4sCGrdC5fWeHGrHG5KsxuLtJvqNuqbIoCPKboT5L1H87xO47QUSw==
-X-Received: by 2002:a2e:9702:: with SMTP id r2mr43684071lji.482.1638891323459; 
- Tue, 07 Dec 2021 07:35:23 -0800 (PST)
-Received: from [192.168.2.145] (94-29-46-111.dynamic.spd-mgts.ru.
- [94.29.46.111])
- by smtp.googlemail.com with ESMTPSA id n15sm454740lfu.228.2021.12.07.07.35.21
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 07 Dec 2021 07:35:22 -0800 (PST)
-Subject: Re: [PATCH 1/3] ALSA: hda/tegra: Skip reset on BPMP devices
-To: Sameer Pujar <spujar@nvidia.com>, tiwai@suse.com, broonie@kernel.org,
- lgirdwood@gmail.com, thierry.reding@gmail.com, perex@perex.cz
-References: <1638858770-22594-1-git-send-email-spujar@nvidia.com>
- <1638858770-22594-2-git-send-email-spujar@nvidia.com>
- <7742adae-cdbe-a9ea-2cef-f63363298d73@gmail.com>
- <8fd704d9-43ce-e34a-a3c0-b48381ef0cd8@nvidia.com>
- <56bb43b6-8d72-b1de-4402-a2cb31707bd9@gmail.com>
- <4855e9c4-e4c2-528b-c9ad-2be7209dc62a@nvidia.com>
- <5d441571-c1c2-5433-729f-86d6396c2853@gmail.com>
- <f32cde65-63dc-67f8-ded8-b58ea5e89f4e@nvidia.com>
-From: Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <95cc7efa-251c-690b-9afa-53ee9e052c34@gmail.com>
-Date: Tue, 7 Dec 2021 18:35:21 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+ dkim=pass (1024-bit key) header.d=quicinc.com header.i=@quicinc.com
+ header.b="yf1jDpPE"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+ t=1638891370; x=1670427370;
+ h=from:to:cc:subject:date:message-id:mime-version;
+ bh=+JtkatBp8v6ZMxtHE7u09m24+2lvT2HIopks0TpRuaE=;
+ b=yf1jDpPEIkw662M7WlmWnHNYL7tPJiOkudRCS9R63y+WW2EXIdFXH9l6
+ QacuX1ceTg6ZaWScJxQS2VfYz4ksDI5D2uHEViMvbCI8cfDhGBtvr9Uax
+ 5OIlBIfSJDtG/3qnkHI38Ob09GknAiEW8khq5EJGT6I/3MCul2UR2pk6O o=;
+Received: from unknown (HELO ironmsg03-sd.qualcomm.com) ([10.53.140.143])
+ by alexa-out-sd-01.qualcomm.com with ESMTP; 07 Dec 2021 07:36:03 -0800
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+ by ironmsg03-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Dec 2021 07:36:02 -0800
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.922.19; Tue, 7 Dec 2021 07:36:02 -0800
+Received: from hu-srivasam-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.922.19; Tue, 7 Dec 2021 07:35:55 -0800
+From: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+To: <agross@kernel.org>, <bjorn.andersson@linaro.org>, <lgirdwood@gmail.com>, 
+ <broonie@kernel.org>, <robh+dt@kernel.org>, <plai@codeaurora.org>,
+ <bgoswami@codeaurora.org>, <perex@perex.cz>, <tiwai@suse.com>,
+ <srinivas.kandagatla@linaro.org>, <rohitkr@codeaurora.org>,
+ <linux-arm-msm@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <swboyd@chromium.org>, <judyhsiao@chromium.org>, Linus Walleij
+ <linus.walleij@linaro.org>, <linux-gpio@vger.kernel.org>
+Subject: [PATCH v5 0/5] Add pin control support for lpass sc7280
+Date: Tue, 7 Dec 2021 21:05:34 +0530
+Message-ID: <1638891339-21806-1-git-send-email-quic_srivasam@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <f32cde65-63dc-67f8-ded8-b58ea5e89f4e@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org, jonathanh@nvidia.com,
- robh+dt@kernel.org, linux-tegra@vger.kernel.org,
- Mohan Kumar <mkumard@nvidia.com>
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+Cc: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -110,24 +91,57 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-07.12.2021 17:49, Sameer Pujar пишет:
-...
->>> How the reload case would be different? Can you please specify more
->>> details if you are referring to a particular scenario?
->> You have a shared power domain. Since power domain can be turned off
->> only when nobody keeps domain turned on, you now making reset of HDA
->> controller dependent on the state of display driver.
-> 
-> I don't think that the state of display driver would affect. The HDA
-> driver itself can issue unpowergate calls which in turn ensures h/w
-> reset. If display driver is already runtime active, HDA driver runtime
-> resume after this would be still fine since h/w reset is already applied
-> during display runtime resume. Note that both HDA and display resets are
-> connected to this power-domain and BPMP applies these resets during
-> unpowergate.
+This patch series is to split lpass variant common pin control
+functions and SoC specific functions and to add lpass sc7280 pincontrol support.
+It also Adds dt-bindings for lpass sc7280 lpass lpi pincontrol.
 
-HDA won't be reset while display is active on T186+.
-HDA will be reset while is display is inactive on T186+.
-HDA will be reset regardless of display state on pre-T186.
+Changes Since V4:
+    -- Update commit message and description of the chip specific extraction patch.
+    -- Sort macros in kconfig and makefile.
+    -- Update optional clock voting to conditional clock voting.
+    -- Fix typo errors.
+    -- Move to quicinc domain email id's.
+Changes Since V3:
+    -- Update separate Kconfig fields for sm8250 and sc7280.
+    -- Update module license and description.
+    -- Move static variables to corresponding .c files from header file.
 
-This is a pure inconsistency of the reset behaviour. Please don't do it.
+Changes Since V2:
+    -- Add new dt-bindings for sc7280 lpi driver.
+    -- Make clock voting change as separate patch.
+    -- Split existing pincontrol driver and make common functions 
+       as part of separate file.
+    -- Rename lpass pincontrol lpi dt-bindings to sm8250 specific dt-bindings
+		
+Changes Since V1:
+    -- Make lpi pinctrl variant data structure as constant
+    -- Add appropriate commit message
+    -- Change signedoff by sequence.
+
+Srinivasa Rao Mandadapu (5):
+  dt-bindings: pinctrl: qcom: Update lpass lpi file name to SoC specific
+  dt-bindings: pinctrl: qcom: Add sc7280 lpass lpi pinctrl bindings
+  pinctrl: qcom: Extract chip specific LPASS LPI code
+  pinctrl: qcom: Add SC7280 lpass pin configuration
+  pinctrl: qcom: Update clock voting as optional
+
+ .../bindings/pinctrl/qcom,lpass-lpi-pinctrl.yaml   | 130 -----------
+ .../pinctrl/qcom,sc7280-lpass-lpi-pinctrl.yaml     | 115 ++++++++++
+ .../pinctrl/qcom,sm8250-lpass-lpi-pinctrl.yaml     | 130 +++++++++++
+ drivers/pinctrl/qcom/Kconfig                       |  16 ++
+ drivers/pinctrl/qcom/Makefile                      |   2 +
+ drivers/pinctrl/qcom/pinctrl-lpass-lpi.c           | 249 ++-------------------
+ drivers/pinctrl/qcom/pinctrl-lpass-lpi.h           |  85 +++++++
+ drivers/pinctrl/qcom/pinctrl-sc7280-lpass-lpi.c    | 170 ++++++++++++++
+ drivers/pinctrl/qcom/pinctrl-sm8250-lpass-lpi.c    | 165 ++++++++++++++
+ 9 files changed, 697 insertions(+), 365 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,lpass-lpi-pinctrl.yaml
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sc7280-lpass-lpi-pinctrl.yaml
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sm8250-lpass-lpi-pinctrl.yaml
+ create mode 100644 drivers/pinctrl/qcom/pinctrl-lpass-lpi.h
+ create mode 100644 drivers/pinctrl/qcom/pinctrl-sc7280-lpass-lpi.c
+ create mode 100644 drivers/pinctrl/qcom/pinctrl-sm8250-lpass-lpi.c
+
+-- 
+2.7.4
+
