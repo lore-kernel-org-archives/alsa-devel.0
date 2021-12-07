@@ -4,59 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 515BFC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Dec 2021 15:37:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 437CEC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Dec 2021 15:37:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0445024D0;
-	Tue,  7 Dec 2021 16:36:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0445024D0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4A59324DA;
+	Tue,  7 Dec 2021 16:36:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A59324DA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638891427;
-	bh=9skDAOu7VAyeOakpTS8RIQbUT0izGhefGm/5Fbm6hkw=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=MPlmQke1Oz5mcR1ksMWJRrzQoaZ5S8TtEwIWbSU5eO1U+GiG+SAJJmZ4mTmnseCzP
-	 a/Hf/dwObQ731Q1grH39dM8mXC9IuJkszSLdSc59xpKk2fmnKrrBFm06pXxG3hVvWV
-	 +7n1JTSlqkS2pMG05GkGDlAqc9UV94g1ZtK9SL9w=
+	s=default; t=1638891443;
+	bh=/8dpr7ci9lcdmEIUdvh1CV4tjLfMu5Lxi5RsDE5Dl4w=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=BijAJjkBTP9GyjtkN1ii51Ho/HHmpurovjJvCwfqJp+4+yF5aqpBQms7SlBtUXzYQ
+	 LdiVc1SHMGe99GpQ7Wwh3hdZM0DVZ26OBY+UdUJETPSsQEBkVG4enMR8gpd7P+taQj
+	 5QFhcctWaqxuj9fklb9A9sz4XzXzzN+5zbhJkLrY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 555C6F80253;
-	Tue,  7 Dec 2021 16:36:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DE4FFF804FB;
+	Tue,  7 Dec 2021 16:36:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9DBD0F804AE; Tue,  7 Dec 2021 16:36:13 +0100 (CET)
-Received: from alexa-out-sd-01.qualcomm.com (alexa-out-sd-01.qualcomm.com
- [199.106.114.38])
+ id 87270F804FB; Tue,  7 Dec 2021 16:36:31 +0100 (CET)
+Received: from alexa-out-sd-02.qualcomm.com (alexa-out-sd-02.qualcomm.com
+ [199.106.114.39])
  (using TLSv1.2 with cipher AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 16F63F80253
- for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2021 16:36:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16F63F80253
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6F1A3F80217
+ for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2021 16:36:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F1A3F80217
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=quicinc.com header.i=@quicinc.com
- header.b="yf1jDpPE"
+ header.b="LzPal6Nt"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
- t=1638891370; x=1670427370;
- h=from:to:cc:subject:date:message-id:mime-version;
- bh=+JtkatBp8v6ZMxtHE7u09m24+2lvT2HIopks0TpRuaE=;
- b=yf1jDpPEIkw662M7WlmWnHNYL7tPJiOkudRCS9R63y+WW2EXIdFXH9l6
- QacuX1ceTg6ZaWScJxQS2VfYz4ksDI5D2uHEViMvbCI8cfDhGBtvr9Uax
- 5OIlBIfSJDtG/3qnkHI38Ob09GknAiEW8khq5EJGT6I/3MCul2UR2pk6O o=;
-Received: from unknown (HELO ironmsg03-sd.qualcomm.com) ([10.53.140.143])
- by alexa-out-sd-01.qualcomm.com with ESMTP; 07 Dec 2021 07:36:03 -0800
+ t=1638891386; x=1670427386;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version;
+ bh=BkP7CjKBK7ucutsls79p+kOYp/O4m626T5cRBotHyGA=;
+ b=LzPal6NtrOcNWQEQCVZCAyaHgWEbriDjC+3Y0zFdIMVARqVwqsSg5mSg
+ oP19/70QIWGaEikAKy7j2e2bvumlmpse05xSgEJ81j02ut9qaNQ/pGsQN
+ Bynuyxdior1YdsTkYM91/B9ewffK8h7amtQEU9fneEbR7HgtwZ2k7xCMP Y=;
+Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
+ by alexa-out-sd-02.qualcomm.com with ESMTP; 07 Dec 2021 07:36:20 -0800
 X-QCInternal: smtphost
 Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
- by ironmsg03-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Dec 2021 07:36:02 -0800
+ by ironmsg01-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Dec 2021 07:36:16 -0800
 Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
  nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Tue, 7 Dec 2021 07:36:02 -0800
+ 15.2.922.19; Tue, 7 Dec 2021 07:36:14 -0800
 Received: from hu-srivasam-hyd.qualcomm.com (10.80.80.8) by
  nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Tue, 7 Dec 2021 07:35:55 -0800
+ 15.2.922.19; Tue, 7 Dec 2021 07:36:08 -0800
 From: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
 To: <agross@kernel.org>, <bjorn.andersson@linaro.org>, <lgirdwood@gmail.com>, 
  <broonie@kernel.org>, <robh+dt@kernel.org>, <plai@codeaurora.org>,
@@ -66,16 +68,20 @@ To: <agross@kernel.org>, <bjorn.andersson@linaro.org>, <lgirdwood@gmail.com>,
  <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
  <swboyd@chromium.org>, <judyhsiao@chromium.org>, Linus Walleij
  <linus.walleij@linaro.org>, <linux-gpio@vger.kernel.org>
-Subject: [PATCH v5 0/5] Add pin control support for lpass sc7280
-Date: Tue, 7 Dec 2021 21:05:34 +0530
-Message-ID: <1638891339-21806-1-git-send-email-quic_srivasam@quicinc.com>
+Subject: [PATCH v5 2/5] dt-bindings: pinctrl: qcom: Add sc7280 lpass lpi
+ pinctrl bindings
+Date: Tue, 7 Dec 2021 21:05:36 +0530
+Message-ID: <1638891339-21806-3-git-send-email-quic_srivasam@quicinc.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1638891339-21806-1-git-send-email-quic_srivasam@quicinc.com>
+References: <1638891339-21806-1-git-send-email-quic_srivasam@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.80.80.8]
 X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nalasex01a.na.qualcomm.com (10.47.209.196)
-Cc: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+Cc: Venkata Prasad Potturu <quic_potturu@quicinc.com>,
+ Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,57 +97,138 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch series is to split lpass variant common pin control
-functions and SoC specific functions and to add lpass sc7280 pincontrol support.
-It also Adds dt-bindings for lpass sc7280 lpass lpi pincontrol.
+Add device tree binding Documentation details for Qualcomm SC7280
+LPASS LPI pinctrl driver.
 
-Changes Since V4:
-    -- Update commit message and description of the chip specific extraction patch.
-    -- Sort macros in kconfig and makefile.
-    -- Update optional clock voting to conditional clock voting.
-    -- Fix typo errors.
-    -- Move to quicinc domain email id's.
-Changes Since V3:
-    -- Update separate Kconfig fields for sm8250 and sc7280.
-    -- Update module license and description.
-    -- Move static variables to corresponding .c files from header file.
-
-Changes Since V2:
-    -- Add new dt-bindings for sc7280 lpi driver.
-    -- Make clock voting change as separate patch.
-    -- Split existing pincontrol driver and make common functions 
-       as part of separate file.
-    -- Rename lpass pincontrol lpi dt-bindings to sm8250 specific dt-bindings
-		
-Changes Since V1:
-    -- Make lpi pinctrl variant data structure as constant
-    -- Add appropriate commit message
-    -- Change signedoff by sequence.
-
-Srinivasa Rao Mandadapu (5):
-  dt-bindings: pinctrl: qcom: Update lpass lpi file name to SoC specific
-  dt-bindings: pinctrl: qcom: Add sc7280 lpass lpi pinctrl bindings
-  pinctrl: qcom: Extract chip specific LPASS LPI code
-  pinctrl: qcom: Add SC7280 lpass pin configuration
-  pinctrl: qcom: Update clock voting as optional
-
- .../bindings/pinctrl/qcom,lpass-lpi-pinctrl.yaml   | 130 -----------
- .../pinctrl/qcom,sc7280-lpass-lpi-pinctrl.yaml     | 115 ++++++++++
- .../pinctrl/qcom,sm8250-lpass-lpi-pinctrl.yaml     | 130 +++++++++++
- drivers/pinctrl/qcom/Kconfig                       |  16 ++
- drivers/pinctrl/qcom/Makefile                      |   2 +
- drivers/pinctrl/qcom/pinctrl-lpass-lpi.c           | 249 ++-------------------
- drivers/pinctrl/qcom/pinctrl-lpass-lpi.h           |  85 +++++++
- drivers/pinctrl/qcom/pinctrl-sc7280-lpass-lpi.c    | 170 ++++++++++++++
- drivers/pinctrl/qcom/pinctrl-sm8250-lpass-lpi.c    | 165 ++++++++++++++
- 9 files changed, 697 insertions(+), 365 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,lpass-lpi-pinctrl.yaml
+Signed-off-by: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+Co-developed-by: Venkata Prasad Potturu <quic_potturu@quicinc.com>
+Signed-off-by: Venkata Prasad Potturu <quic_potturu@quicinc.com>
+---
+ .../pinctrl/qcom,sc7280-lpass-lpi-pinctrl.yaml     | 115 +++++++++++++++++++++
+ 1 file changed, 115 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sc7280-lpass-lpi-pinctrl.yaml
- create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sm8250-lpass-lpi-pinctrl.yaml
- create mode 100644 drivers/pinctrl/qcom/pinctrl-lpass-lpi.h
- create mode 100644 drivers/pinctrl/qcom/pinctrl-sc7280-lpass-lpi.c
- create mode 100644 drivers/pinctrl/qcom/pinctrl-sm8250-lpass-lpi.c
 
+diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,sc7280-lpass-lpi-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,sc7280-lpass-lpi-pinctrl.yaml
+new file mode 100644
+index 0000000..d32ee32
+--- /dev/null
++++ b/Documentation/devicetree/bindings/pinctrl/qcom,sc7280-lpass-lpi-pinctrl.yaml
+@@ -0,0 +1,115 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/pinctrl/qcom,sc7280-lpass-lpi-pinctrl.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Qualcomm Technologies, Inc. Low Power Audio SubSystem (LPASS)
++  Low Power Island (LPI) TLMM block
++
++maintainers:
++  - Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
++  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
++
++description: |
++  This binding describes the Top Level Mode Multiplexer block found in the
++  LPASS LPI IP on most Qualcomm SoCs
++
++properties:
++  compatible:
++    const: qcom,sc7280-lpass-lpi-pinctrl
++
++  reg:
++    minItems: 2
++    maxItems: 2
++
++  gpio-controller: true
++
++  '#gpio-cells':
++    description: Specifying the pin number and flags, as defined in
++      include/dt-bindings/gpio/gpio.h
++    const: 2
++
++  gpio-ranges:
++    maxItems: 1
++
++#PIN CONFIGURATION NODES
++patternProperties:
++  '-pins$':
++    type: object
++    description:
++      Pinctrl node's client devices use subnodes for desired pin configuration.
++      Client device subnodes use below standard properties.
++    $ref: "/schemas/pinctrl/pincfg-node.yaml"
++
++    properties:
++      pins:
++        description:
++          List of gpio pins affected by the properties specified in this
++          subnode.
++        items:
++          oneOf:
++            - pattern: "^gpio([0-9]|[1-9][0-9])$"
++        minItems: 1
++        maxItems: 15
++
++      function:
++        enum: [ gpio, swr_tx_clk, qua_mi2s_sclk, swr_tx_data, qua_mi2s_ws,
++                qua_mi2s_data, swr_rx_clk, swr_rx_data, dmic1_clk, i2s1_clk,
++                dmic1_data, i2s1_ws, dmic2_clk, dmic2_data, i2s1_data,
++                i2s2_clk, wsa_swr_clk, i2s2_ws, wsa_swr_data, dmic3_clk,
++                dmic3_data, i2s2_data ]
++        description:
++          Specify the alternative function to be configured for the specified
++          pins.
++
++      drive-strength:
++        enum: [2, 4, 6, 8, 10, 12, 14, 16]
++        default: 2
++        description:
++          Selects the drive strength for the specified pins, in mA.
++
++      slew-rate:
++        enum: [0, 1, 2, 3]
++        default: 0
++        description: |
++            0: No adjustments
++            1: Higher Slew rate (faster edges)
++            2: Lower Slew rate (slower edges)
++            3: Reserved (No adjustments)
++
++      bias-pull-down: true
++
++      bias-pull-up: true
++
++      bias-disable: true
++
++      output-high: true
++
++      output-low: true
++
++    required:
++      - pins
++      - function
++
++    additionalProperties: false
++
++required:
++  - compatible
++  - reg
++  - gpio-controller
++  - '#gpio-cells'
++  - gpio-ranges
++
++additionalProperties: false
++
++examples:
++  - |
++    lpass_tlmm: pinctrl@33c0000 {
++        compatible = "qcom,sc7280-lpass-lpi-pinctrl";
++        reg = <0x33c0000 0x20000>,
++              <0x3550000 0x10000>;
++        gpio-controller;
++        #gpio-cells = <2>;
++        gpio-ranges = <&lpass_tlmm 0 0 15>;
++    };
 -- 
 2.7.4
 
