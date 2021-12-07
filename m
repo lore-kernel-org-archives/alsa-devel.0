@@ -4,64 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6BFCC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Dec 2021 18:12:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04093C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Dec 2021 19:24:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D032424ED;
-	Tue,  7 Dec 2021 19:12:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D032424ED
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3E544236E;
+	Tue,  7 Dec 2021 20:23:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E544236E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638900771;
-	bh=vuU4xhMc9PmfEeLzbYdKz4VHKtj2ce4NsG7tddLYYzE=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=KL02giF+TyuWxQ4+HcYXH727QqZWkCSaT7bNmquNPaNNGNu/4CwQYnBT0tiC8bm5i
-	 quHH0YgdRZN7Z+Sij2ijXc9hmIOW+zvO+IYTfzcflzgvfusztzBdHjkfcn6RpKjCB4
-	 fDquP1ESzuFFApa93c59rnlViYZSq2n6Mo9OQXmg=
+	s=default; t=1638905074;
+	bh=Rmp88aXSrCFqpK9cVmOwX1k8uKU5naXuEGcZ2zcGcNA=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=CALdHW8TAZ33KsbNscyZIkKiqsqjJf6JSbwvOL4NEzGw/HPGtZmXlw4BWX1v7z9mB
+	 UZQ0wdrhxRQEXltYBHqPjZdY8t3mmoEbixv3oUc+b4ZMId/OzAvJlYnrAeRlC4BOE1
+	 K6vMyUpd4Kc+5x53B2HlnVZXCHudhmGb92fhZmLY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CFDD6F8051C;
-	Tue,  7 Dec 2021 19:09:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C054BF80253;
+	Tue,  7 Dec 2021 20:23:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 79839F8028D; Tue,  7 Dec 2021 19:09:51 +0100 (CET)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ id 2A7FFF8028D; Tue,  7 Dec 2021 20:23:41 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 45D2CF8028D
- for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2021 19:09:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45D2CF8028D
-X-IronPort-AV: E=McAfee;i="6200,9189,10190"; a="237873586"
-X-IronPort-AV: E=Sophos;i="5.87,295,1631602800"; d="scan'208";a="237873586"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Dec 2021 09:38:09 -0800
-X-IronPort-AV: E=Sophos;i="5.87,293,1631602800"; d="scan'208";a="751385219"
-Received: from charriso-mobl2.amr.corp.intel.com (HELO
- pbossart-mobl3.intel.com) ([10.212.98.250])
- by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Dec 2021 09:38:08 -0800
+ by alsa1.perex.cz (Postfix) with ESMTPS id 97B3AF80253
+ for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2021 20:23:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97B3AF80253
+X-IronPort-AV: E=McAfee;i="6200,9189,10190"; a="235180201"
+X-IronPort-AV: E=Sophos;i="5.87,295,1631602800"; d="scan'208";a="235180201"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+ by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Dec 2021 11:23:28 -0800
+X-IronPort-AV: E=Sophos;i="5.87,295,1631602800"; d="scan'208";a="611800049"
+Received: from nthiag2-mobl2.amr.corp.intel.com (HELO
+ pbossart-mobl3.intel.com) ([10.212.74.17])
+ by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Dec 2021 11:23:27 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/6] ASoC: soc-pcm: use GFP_ATOMIC for dpcm structure
-Date: Tue,  7 Dec 2021 11:37:40 -0600
-Message-Id: <20211207173745.15850-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH] ASoC: AMD: acp-config: fix missing dependency on SND_SOC_ACPI
+Date: Tue,  7 Dec 2021 13:23:09 -0600
+Message-Id: <20211207192309.43883-1-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211207173745.15850-1-pierre-louis.bossart@linux.intel.com>
-References: <20211207173745.15850-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Liam Girdwood <lgirdwood@gmail.com>, tiwai@suse.de,
- Bard Liao <yung-chuan.liao@linux.intel.com>, Sameer Pujar <spujar@nvidia.com>,
- Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, vkoul@kernel.org,
- broonie@kernel.org, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Gyeongtaek Lee <gt82.lee@samsung.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Cc: tiwai@suse.de, broonie@kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, kernel test robot <lkp@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,32 +67,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We allocate a structure in dpcm_be_connect(), which may be called in
-atomic context. Using GFP_KERNEL is not quite right, we have to use
-GFP_ATOMIC to prevent the allocator from sleeping.
+With a custom .config, the following error is thrown:
 
-Suggested-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+ERROR: modpost: "snd_soc_acpi_codec_list"
+[sound/soc/amd/snd-acp-config.ko] undefined!
+
+Fix by adding a clear dependency on SND_SOC_ACPI
+
+Reported-by: kernel test robot <lkp@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/soc-pcm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/amd/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 3b4412183344..f66808dfb508 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -1113,7 +1113,7 @@ static int dpcm_be_connect(struct snd_soc_pcm_runtime *fe,
- 			return 0;
- 	}
+diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
+index 8961b8fd23eb..bcfeb3fc2592 100644
+--- a/sound/soc/amd/Kconfig
++++ b/sound/soc/amd/Kconfig
+@@ -98,6 +98,7 @@ config SND_SOC_AMD_YC_MACH
  
--	dpcm = kzalloc(sizeof(struct snd_soc_dpcm), GFP_KERNEL);
-+	dpcm = kzalloc(sizeof(struct snd_soc_dpcm), GFP_ATOMIC);
- 	if (!dpcm)
- 		return -ENOMEM;
- 
+ config SND_AMD_ACP_CONFIG
+ 	tristate "AMD ACP configuration selection"
++	depends on SND_SOC_ACPI
+ 	help
+ 	 This option adds an auto detection to determine which ACP
+ 	 driver modules to use
 -- 
 2.25.1
 
