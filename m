@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABDF0C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Dec 2021 11:14:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38E13C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Dec 2021 11:14:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E3DAE2100;
-	Wed,  8 Dec 2021 12:13:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3DAE2100
+	by alsa0.perex.cz (Postfix) with ESMTPS id 814FF240E;
+	Wed,  8 Dec 2021 12:14:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 814FF240E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638962066;
-	bh=4DmH5iX/a0CXWf4nOKFJU9XrvRAL8V/DRf244llffdo=;
+	s=default; t=1638962094;
+	bh=v7+wW+jNPaxRV6F8vlQUE4G/w1VKwl4tS1grrGIk5No=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qvA7txC2sUT5ecz+GD2NmTwWCkkCPm2wHHoUC6Y4tGVbVgtHHp8chS0EOntzx/AKY
-	 rvf3ZPyMNrn7+LWf9GVMzWlgeaS79+4KFb/NDfLrteuwErNbqapsazGKWT3Jt1QRFJ
-	 gCBOuTMKNOznSnlDLbaO8bhZdqA9cFZx76Q0QsGo=
+	b=e6JJGWEQeWWJtRMxX7F1weDgJd/H0H1TuV6mB/2VIsrT7BQLOo7w1JmYlTXWq0gV+
+	 Un0Kll9B0bqzgowdKuEHOAsZcPoCItWSFYig2Zw9DhkUmDRaYeGsoD9vI29zD0AgAi
+	 lXGYEZ13pQzfxTK9VIrkj6R6J0NE0BIWr+dlOctI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D67AEF80527;
-	Wed,  8 Dec 2021 12:11:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 12717F80539;
+	Wed,  8 Dec 2021 12:11:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C6ABCF80528; Wed,  8 Dec 2021 12:11:23 +0100 (CET)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ id CE919F8053B; Wed,  8 Dec 2021 12:11:31 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DFA90F8051D
- for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2021 12:11:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DFA90F8051D
-X-IronPort-AV: E=McAfee;i="6200,9189,10191"; a="301192835"
-X-IronPort-AV: E=Sophos;i="5.87,297,1631602800"; d="scan'208";a="301192835"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0A42BF80537
+ for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2021 12:11:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A42BF80537
+X-IronPort-AV: E=McAfee;i="6200,9189,10191"; a="238036304"
+X-IronPort-AV: E=Sophos;i="5.87,297,1631602800"; d="scan'208";a="238036304"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Dec 2021 03:11:16 -0800
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 08 Dec 2021 03:11:19 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,297,1631602800"; d="scan'208";a="600600110"
+X-IronPort-AV: E=Sophos;i="5.87,297,1631602800"; d="scan'208";a="600600142"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by FMSMGA003.fm.intel.com with ESMTP; 08 Dec 2021 03:11:09 -0800
+ by FMSMGA003.fm.intel.com with ESMTP; 08 Dec 2021 03:11:16 -0800
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [RFC 07/37] ASoC: Intel: Introduce AVS driver
-Date: Wed,  8 Dec 2021 12:12:31 +0100
-Message-Id: <20211208111301.1817725-8-cezary.rojewski@intel.com>
+Subject: [RFC 09/37] ASoC: Intel: avs: Add code loading requests
+Date: Wed,  8 Dec 2021 12:12:33 +0100
+Message-Id: <20211208111301.1817725-10-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211208111301.1817725-1-cezary.rojewski@intel.com>
 References: <20211208111301.1817725-1-cezary.rojewski@intel.com>
@@ -73,149 +73,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Declare base structures and core DSP operations for the avs solution.
-The base structures describe PCI HDAudio bus device and platform-type
-differentiations. First set of operations added controls the lifecycle
-of any Audio DSP core: (un)powering, (un)resetting and (un)stalling.
+Before firmware and its modules can be used, they have to be loaded.
+Code loading process is complex and is a combination of DMA and IPC
+operations. Here, IPC part is being added and accounts for CLDMA and HDA
+mechanisms both.
 
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/Kconfig         |  14 +++++
- sound/soc/intel/Makefile        |   1 +
- sound/soc/intel/avs/Makefile    |   5 ++
- sound/soc/intel/avs/avs.h       |  64 +++++++++++++++++++
- sound/soc/intel/avs/dsp.c       | 107 ++++++++++++++++++++++++++++++++
- sound/soc/intel/avs/registers.h |  22 +++++++
- 6 files changed, 213 insertions(+)
- create mode 100644 sound/soc/intel/avs/Makefile
- create mode 100644 sound/soc/intel/avs/avs.h
- create mode 100644 sound/soc/intel/avs/dsp.c
- create mode 100644 sound/soc/intel/avs/registers.h
+ sound/soc/intel/avs/Makefile   |  2 +-
+ sound/soc/intel/avs/messages.c | 65 ++++++++++++++++++++++++++++++++++
+ sound/soc/intel/avs/messages.h | 22 ++++++++++++
+ 3 files changed, 88 insertions(+), 1 deletion(-)
+ create mode 100644 sound/soc/intel/avs/messages.c
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index f3a4a907b29d..5b4941d88101 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -209,5 +209,19 @@ config SND_SOC_INTEL_KEEMBAY
- 	  If you have a Intel Keembay platform then enable this option
- 	  by saying Y or m.
- 
-+config SND_SOC_INTEL_AVS
-+	tristate "Intel AVS driver"
-+	depends on PCI && ACPI
-+	depends on COMMON_CLK
-+	depends on SND_SOC_INTEL_SKYLAKE_FAMILY=n
-+	default n
-+	select SND_SOC_ACPI
-+	select SND_HDA_EXT_CORE
-+	help
-+	  Enable support for Intel(R) cAVS 1.5 platforms with DSP
-+	  capabilities. This includes Skylake, Kabylake, Amberlake and
-+	  Apollolake. This option is mutually exclusive with SKYLAKE
-+	  driver.
-+
- # ASoC codec drivers
- source "sound/soc/intel/boards/Kconfig"
-diff --git a/sound/soc/intel/Makefile b/sound/soc/intel/Makefile
-index 7c5038803be7..d44b2652c707 100644
---- a/sound/soc/intel/Makefile
-+++ b/sound/soc/intel/Makefile
-@@ -7,6 +7,7 @@ obj-$(CONFIG_SND_SST_ATOM_HIFI2_PLATFORM) += atom/
- obj-$(CONFIG_SND_SOC_INTEL_CATPT) += catpt/
- obj-$(CONFIG_SND_SOC_INTEL_SKYLAKE_COMMON) += skylake/
- obj-$(CONFIG_SND_SOC_INTEL_KEEMBAY) += keembay/
-+obj-$(CONFIG_SND_SOC_INTEL_AVS) += avs/
- 
- # Machine support
- obj-$(CONFIG_SND_SOC) += boards/
 diff --git a/sound/soc/intel/avs/Makefile b/sound/soc/intel/avs/Makefile
-new file mode 100644
-index 000000000000..5f7976a95fe2
---- /dev/null
+index e243806dd38a..c0824f30fd3b 100644
+--- a/sound/soc/intel/avs/Makefile
 +++ b/sound/soc/intel/avs/Makefile
-@@ -0,0 +1,5 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+
-+snd-soc-avs-objs := dsp.o
-+
-+obj-$(CONFIG_SND_SOC_INTEL_AVS) += snd-soc-avs.o
-diff --git a/sound/soc/intel/avs/avs.h b/sound/soc/intel/avs/avs.h
+@@ -1,5 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ 
+-snd-soc-avs-objs := dsp.o ipc.o
++snd-soc-avs-objs := dsp.o ipc.o messages.o
+ 
+ obj-$(CONFIG_SND_SOC_INTEL_AVS) += snd-soc-avs.o
+diff --git a/sound/soc/intel/avs/messages.c b/sound/soc/intel/avs/messages.c
 new file mode 100644
-index 000000000000..7ece210b0777
+index 000000000000..8dac946dd8dd
 --- /dev/null
-+++ b/sound/soc/intel/avs/avs.h
-@@ -0,0 +1,64 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright(c) 2021 Intel Corporation. All rights reserved.
-+ *
-+ * Authors: Cezary Rojewski <cezary.rojewski@intel.com>
-+ *          Amadeusz Slawinski <amadeuszx.slawinski@linux.intel.com>
-+ */
-+
-+#ifndef __SOUND_SOC_INTEL_AVS_H
-+#define __SOUND_SOC_INTEL_AVS_H
-+
-+#include <linux/device.h>
-+#include <sound/hda_codec.h>
-+
-+struct avs_dev;
-+
-+struct avs_dsp_ops {
-+	int (* const power)(struct avs_dev *, u32, bool);
-+	int (* const reset)(struct avs_dev *, u32, bool);
-+	int (* const stall)(struct avs_dev *, u32, bool);
-+};
-+
-+#define avs_dsp_op(adev, op, ...) \
-+	((adev)->spec->dops->op(adev, ## __VA_ARGS__))
-+
-+#define avs_platattr_test(adev, attr) \
-+	((adev)->spec->attributes & AVS_PLATATTR_##attr)
-+
-+/* Platform specific descriptor */
-+struct avs_spec {
-+	const char *name;
-+
-+	const struct avs_dsp_ops *const dops;
-+
-+	const u32 core_init_mask;	/* used during DSP boot */
-+	const u64 attributes;		/* bitmask of AVS_PLATATTR_* */
-+};
-+
-+struct avs_dev {
-+	struct hda_bus base;
-+	struct device *dev;
-+
-+	void __iomem *adsp_ba;
-+	const struct avs_spec *spec;
-+};
-+
-+/* from hda_bus to avs_dev */
-+#define hda_to_avs(hda) container_of(hda, struct avs_dev, base)
-+/* from hdac_bus to avs_dev */
-+#define hdac_to_avs(hdac) hda_to_avs(to_hda_bus(hdac))
-+/* from device to avs_dev */
-+#define to_avs_dev(dev) \
-+({ \
-+	struct hdac_bus *__bus = dev_get_drvdata(dev); \
-+	hdac_to_avs(__bus); \
-+})
-+
-+int avs_dsp_core_power(struct avs_dev *adev, u32 core_mask, bool active);
-+int avs_dsp_core_reset(struct avs_dev *adev, u32 core_mask, bool reset);
-+int avs_dsp_core_stall(struct avs_dev *adev, u32 core_mask, bool stall);
-+int avs_dsp_core_enable(struct avs_dev *adev, u32 core_mask);
-+int avs_dsp_core_disable(struct avs_dev *adev, u32 core_mask);
-+
-+#endif /* __SOUND_SOC_INTEL_AVS_H */
-diff --git a/sound/soc/intel/avs/dsp.c b/sound/soc/intel/avs/dsp.c
-new file mode 100644
-index 000000000000..258544277bbb
---- /dev/null
-+++ b/sound/soc/intel/avs/dsp.c
-@@ -0,0 +1,107 @@
++++ b/sound/soc/intel/avs/messages.c
+@@ -0,0 +1,65 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +//
 +// Copyright(c) 2021 Intel Corporation. All rights reserved.
@@ -224,133 +112,115 @@ index 000000000000..258544277bbb
 +//          Amadeusz Slawinski <amadeuszx.slawinski@linux.intel.com>
 +//
 +
-+#include <linux/module.h>
-+#include <sound/hdaudio_ext.h>
 +#include "avs.h"
-+#include "registers.h"
++#include "messages.h"
 +
-+#define AVS_ADSPCS_INTERVAL_US		500
-+#define AVS_ADSPCS_TIMEOUT_US		10000
++#define AVS_CL_TIMEOUT_MS	5000
 +
-+int avs_dsp_core_power(struct avs_dev *adev, u32 core_mask, bool active)
++int avs_ipc_load_modules(struct avs_dev *adev, u16 *mod_ids, u32 num_mod_ids)
 +{
-+	u32 value, mask, reg;
++	union avs_global_msg msg = AVS_GLOBAL_REQUEST(LOAD_MULTIPLE_MODULES);
++	struct avs_ipc_msg request;
 +	int ret;
 +
-+	mask = AVS_ADSPCS_SPA_MASK(core_mask);
-+	value = active ? mask : 0;
++	msg.load_multi_mods.mod_cnt = num_mod_ids;
++	request.header = msg.val;
++	request.data = mod_ids;
++	request.size = sizeof(*mod_ids) * num_mod_ids;
 +
-+	snd_hdac_adsp_updatel(adev, AVS_ADSP_REG_ADSPCS, mask, value);
-+
-+	mask = AVS_ADSPCS_CPA_MASK(core_mask);
-+	value = active ? mask : 0;
-+
-+	ret = snd_hdac_adsp_readl_poll(adev, AVS_ADSP_REG_ADSPCS,
-+				       reg, (reg & mask) == value,
-+				       AVS_ADSPCS_INTERVAL_US,
-+				       AVS_ADSPCS_TIMEOUT_US);
++	ret = avs_dsp_send_msg_timeout(adev, &request, NULL, AVS_CL_TIMEOUT_MS);
 +	if (ret)
-+		dev_err(adev->dev, "core_mask %d %spower failed: %d\n",
-+			core_mask, active ? "" : "un", ret);
++		avs_ipc_err(adev, &request, "load multiple modules", ret);
 +
 +	return ret;
 +}
 +
-+int avs_dsp_core_reset(struct avs_dev *adev, u32 core_mask, bool reset)
++int avs_ipc_unload_modules(struct avs_dev *adev, u16 *mod_ids, u32 num_mod_ids)
 +{
-+	u32 value, mask, reg;
++	union avs_global_msg msg = AVS_GLOBAL_REQUEST(UNLOAD_MULTIPLE_MODULES);
++	struct avs_ipc_msg request;
 +	int ret;
 +
-+	mask = AVS_ADSPCS_CRST_MASK(core_mask);
-+	value = reset ? mask : 0;
++	msg.load_multi_mods.mod_cnt = num_mod_ids;
++	request.header = msg.val;
++	request.data = mod_ids;
++	request.size = sizeof(*mod_ids) * num_mod_ids;
 +
-+	snd_hdac_adsp_updatel(adev, AVS_ADSP_REG_ADSPCS, mask, value);
-+
-+	ret = snd_hdac_adsp_readl_poll(adev, AVS_ADSP_REG_ADSPCS,
-+				       reg, (reg & mask) == value,
-+				       AVS_ADSPCS_INTERVAL_US,
-+				       AVS_ADSPCS_TIMEOUT_US);
++	ret = avs_dsp_send_msg_timeout(adev, &request, NULL, AVS_CL_TIMEOUT_MS);
 +	if (ret)
-+		dev_err(adev->dev, "core_mask %d %sreset failed: %d\n",
-+			core_mask, reset ? "" : "un", ret);
++		avs_ipc_err(adev, &request, "unload multiple modules", ret);
 +
 +	return ret;
 +}
 +
-+int avs_dsp_core_stall(struct avs_dev *adev, u32 core_mask, bool stall)
++int avs_ipc_load_library(struct avs_dev *adev, u32 dma_id, u32 lib_id)
 +{
-+	u32 value, mask, reg;
++	union avs_global_msg msg = AVS_GLOBAL_REQUEST(LOAD_LIBRARY);
++	struct avs_ipc_msg request = {0};
 +	int ret;
 +
-+	mask = AVS_ADSPCS_CSTALL_MASK(core_mask);
-+	value = stall ? mask : 0;
++	msg.load_lib.dma_id = dma_id;
++	msg.load_lib.lib_id = lib_id;
++	request.header = msg.val;
 +
-+	snd_hdac_adsp_updatel(adev, AVS_ADSP_REG_ADSPCS, mask, value);
-+
-+	ret = snd_hdac_adsp_readl_poll(adev, AVS_ADSP_REG_ADSPCS,
-+				       reg, (reg & mask) == value,
-+				       AVS_ADSPCS_INTERVAL_US,
-+				       AVS_ADSPCS_TIMEOUT_US);
++	ret = avs_dsp_send_msg_timeout(adev, &request, NULL, AVS_CL_TIMEOUT_MS);
 +	if (ret)
-+		dev_err(adev->dev, "core_mask %d %sstall failed: %d\n",
-+			core_mask, stall ? "" : "un", ret);
++		avs_ipc_err(adev, &request, "load library", ret);
 +
 +	return ret;
 +}
+diff --git a/sound/soc/intel/avs/messages.h b/sound/soc/intel/avs/messages.h
+index 003e634f5547..b9ec1c64179b 100644
+--- a/sound/soc/intel/avs/messages.h
++++ b/sound/soc/intel/avs/messages.h
+@@ -24,6 +24,9 @@ enum avs_msg_direction {
+ };
+ 
+ enum avs_global_msg_type {
++	AVS_GLB_LOAD_MULTIPLE_MODULES = 15,
++	AVS_GLB_UNLOAD_MULTIPLE_MODULES = 16,
++	AVS_GLB_LOAD_LIBRARY = 24,
+ 	AVS_GLB_NOTIFICATION = 27,
+ };
+ 
+@@ -38,6 +41,16 @@ union avs_global_msg {
+ 				u32 msg_direction:1;
+ 				u32 msg_target:1;
+ 			};
++			/* module loading */
++			struct {
++				u32 mod_cnt:8;
++			} load_multi_mods;
++			/* library loading */
++			struct {
++				u32 dma_id:5;
++				u32 rsvd:11;
++				u32 lib_id:4;
++			} load_lib;
+ 		};
+ 		union {
+ 			u32 val;
+@@ -84,6 +97,10 @@ union avs_reply_msg {
+ 		};
+ 		union {
+ 			u32 val;
++			/* module loading */
++			struct {
++				u32 err_mod_id:16;
++			} load_multi_mods;
+ 		} ext;
+ 	};
+ } __packed;
+@@ -167,4 +184,9 @@ struct avs_notify_mod_data {
+ 	u32 data[];
+ } __packed;
+ 
++/* Code loading messages */
++int avs_ipc_load_modules(struct avs_dev *adev, u16 *mod_ids, u32 num_mod_ids);
++int avs_ipc_unload_modules(struct avs_dev *adev, u16 *mod_ids, u32 num_mod_ids);
++int avs_ipc_load_library(struct avs_dev *adev, u32 dma_id, u32 lib_id);
 +
-+int avs_dsp_core_enable(struct avs_dev *adev, u32 core_mask)
-+{
-+	int ret;
-+
-+	ret = avs_dsp_op(adev, power, core_mask, true);
-+	if (ret)
-+		return ret;
-+
-+	ret = avs_dsp_op(adev, reset, core_mask, false);
-+	if (ret)
-+		return ret;
-+
-+	return avs_dsp_op(adev, stall, core_mask, false);
-+}
-+
-+int avs_dsp_core_disable(struct avs_dev *adev, u32 core_mask)
-+{
-+	/* Be permissive to allow for full DSP shutdown in disable path. */
-+	avs_dsp_op(adev, stall, core_mask, true);
-+	avs_dsp_op(adev, reset, core_mask, true);
-+
-+	return avs_dsp_op(adev, power, core_mask, false);
-+}
-+
-+MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/intel/avs/registers.h b/sound/soc/intel/avs/registers.h
-new file mode 100644
-index 000000000000..e0b6c8ffe633
---- /dev/null
-+++ b/sound/soc/intel/avs/registers.h
-@@ -0,0 +1,22 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright(c) 2021 Intel Corporation. All rights reserved.
-+ *
-+ * Authors: Cezary Rojewski <cezary.rojewski@intel.com>
-+ *          Amadeusz Slawinski <amadeuszx.slawinski@linux.intel.com>
-+ */
-+
-+#ifndef __SOUND_SOC_INTEL_AVS_REGS_H
-+#define __SOUND_SOC_INTEL_AVS_REGS_H
-+
-+/* Intel HD Audio General DSP Registers */
-+#define AVS_ADSP_GEN_BASE		0x0
-+#define AVS_ADSP_REG_ADSPCS		(AVS_ADSP_GEN_BASE + 0x04)
-+
-+#define AVS_ADSPCS_CRST_MASK(cm)	(cm)
-+#define AVS_ADSPCS_CSTALL_MASK(cm)	((cm) << 8)
-+#define AVS_ADSPCS_SPA_MASK(cm)		((cm) << 16)
-+#define AVS_ADSPCS_CPA_MASK(cm)		((cm) << 24)
-+#define AVS_MAIN_CORE_MASK		BIT(0)
-+
-+#endif /* __SOUND_SOC_INTEL_AVS_REGS_H */
+ #endif /* __SOUND_SOC_INTEL_AVS_MSGS_H */
 -- 
 2.25.1
 
