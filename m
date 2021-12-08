@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8D7BC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Dec 2021 11:16:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B2FBC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Dec 2021 11:17:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 15331257E;
-	Wed,  8 Dec 2021 12:16:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 15331257E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 21637258F;
+	Wed,  8 Dec 2021 12:16:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 21637258F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638962211;
-	bh=HcpHWn5Hq4iwDwMmOebdPGfdHQXCnrT5YnpgCdVSJJk=;
+	s=default; t=1638962241;
+	bh=ea8fkT/A23gtildJPPFS+EEmX/oUakhW/V9g5BG9ibc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TfPlkjPH9K5nyRcRziI8PERCURW4hZVH8FTwN82LW/sp81H3pfQ61Sk+fiBTCiyRE
-	 y+tsHADX83t1A0p6XDiKv/vxI7mX3Peb1Fizf1SiAQeeY0BwhMpsYxkv+WDR+8lwkA
-	 Y3C7GwPVP5nLDeibbX/tro/02RxVC9Ruq/L1lOn8=
+	b=T0mRohW/pnArzuTsw8xzRq5MgtMlMI/skv7FMcMxSL1ePYkAgmFibQ+sdIG2huKKq
+	 KKxvNq5hDihgM5q6dNHTXTZnBlVfCpBjrLcaNcOGBtrSXegUc/wtyyJLFM2k4/i1q+
+	 x/KzknIGQG+em2KeD9KZtJGOfZ177BthZSPV3h1U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7FC50F80571;
-	Wed,  8 Dec 2021 12:11:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D3545F8059F;
+	Wed,  8 Dec 2021 12:11:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B947CF80568; Wed,  8 Dec 2021 12:11:53 +0100 (CET)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ id BFB43F804FC; Wed,  8 Dec 2021 12:11:55 +0100 (CET)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6B6FFF8055A
- for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2021 12:11:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B6FFF8055A
-X-IronPort-AV: E=McAfee;i="6200,9189,10191"; a="237750434"
-X-IronPort-AV: E=Sophos;i="5.87,297,1631602800"; d="scan'208";a="237750434"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 338E3F80563
+ for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2021 12:11:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 338E3F80563
+X-IronPort-AV: E=McAfee;i="6200,9189,10191"; a="236548365"
+X-IronPort-AV: E=Sophos;i="5.87,297,1631602800"; d="scan'208";a="236548365"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Dec 2021 03:11:33 -0800
+ by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 08 Dec 2021 03:11:46 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,297,1631602800"; d="scan'208";a="600600180"
+X-IronPort-AV: E=Sophos;i="5.87,297,1631602800"; d="scan'208";a="600600233"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by FMSMGA003.fm.intel.com with ESMTP; 08 Dec 2021 03:11:26 -0800
+ by FMSMGA003.fm.intel.com with ESMTP; 08 Dec 2021 03:11:43 -0800
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [RFC 12/37] ASoC: Intel: avs: Add power management requests
-Date: Wed,  8 Dec 2021 12:12:36 +0100
-Message-Id: <20211208111301.1817725-13-cezary.rojewski@intel.com>
+Subject: [RFC 16/37] ASoC: Intel: avs: Declare module configuration types
+Date: Wed,  8 Dec 2021 12:12:40 +0100
+Message-Id: <20211208111301.1817725-17-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211208111301.1817725-1-cezary.rojewski@intel.com>
 References: <20211208111301.1817725-1-cezary.rojewski@intel.com>
@@ -73,105 +73,305 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Audio DSP supports low power states i.e.: transitions between D0 and D3
-and D0-substates in form of D0i3. That process is a combination of core
-and IPC operations. Here, Dx and D0ix IPC handlers are added.
+Declare structures and constants for all modules being part of basefw
+binary. These are used in streaming operations to communicate the needs
+of software to firmware side.
+
+While adding module types, append handler for SET_SINK_FORMAT runtime
+for COPIER module which allows for configuration of output pin other
+than the default one (0).
 
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/avs/messages.c | 43 ++++++++++++++++++++++++++++++++++
- sound/soc/intel/avs/messages.h | 16 +++++++++++++
- 2 files changed, 59 insertions(+)
+ sound/soc/intel/avs/messages.c |  17 +++
+ sound/soc/intel/avs/messages.h | 252 +++++++++++++++++++++++++++++++++
+ 2 files changed, 269 insertions(+)
 
 diff --git a/sound/soc/intel/avs/messages.c b/sound/soc/intel/avs/messages.c
-index e870d5792a77..1b589689410f 100644
+index b9e1bcd749fa..b9d2bd06fe3a 100644
 --- a/sound/soc/intel/avs/messages.c
 +++ b/sound/soc/intel/avs/messages.c
-@@ -347,3 +347,46 @@ int avs_ipc_get_large_config(struct avs_dev *adev, u16 module_id, u8 instance_id
- 
+@@ -623,3 +623,20 @@ int avs_ipc_get_modules_info(struct avs_dev *adev, struct avs_mods_info **info)
+ 	*info = (struct avs_mods_info *)payload;
  	return 0;
  }
 +
-+int avs_ipc_set_dx(struct avs_dev *adev, u32 core_mask, bool powerup)
++int avs_ipc_copier_set_sink_format(struct avs_dev *adev, u16 module_id,
++				   u8 instance_id, u32 sink_id,
++				   const struct avs_audio_format *src_fmt,
++				   const struct avs_audio_format *sink_fmt)
 +{
-+	union avs_module_msg msg = AVS_MODULE_REQUEST(SET_DX);
-+	struct avs_ipc_msg request;
-+	struct avs_dxstate_info dx;
-+	int ret;
++	struct avs_copier_sink_format cpr_fmt;
 +
-+	dx.core_mask = core_mask;
-+	dx.dx_mask = powerup ? core_mask : 0;
-+	request.header = msg.val;
-+	request.data = &dx;
-+	request.size = sizeof(dx);
++	cpr_fmt.sink_id = sink_id;
++	/* Firmware expects driver to resend copier's input format. */
++	cpr_fmt.src_fmt = *src_fmt;
++	cpr_fmt.sink_fmt = *sink_fmt;
 +
-+	/*
-+	 * SET_D0 is sent for non-main cores only while SET_D3 is used to
-+	 * suspend for all of them. Both cases prevent any D0I3 transitions.
-+	 */
-+	ret = avs_dsp_send_pm_msg(adev, &request, NULL, true);
-+	if (ret)
-+		avs_ipc_err(adev, &request, "set dx", ret);
-+
-+	return ret;
-+}
-+
-+int avs_ipc_set_d0ix(struct avs_dev *adev, bool enable_pg, bool streaming)
-+{
-+	union avs_module_msg msg = AVS_MODULE_REQUEST(SET_D0IX);
-+	struct avs_ipc_msg request = {0};
-+	int ret;
-+
-+	/* Wake & streaming for < cAVS 2.0 */
-+	msg.ext.set_d0ix.wake = enable_pg;
-+	msg.ext.set_d0ix.streaming = streaming;
-+
-+	request.header = msg.val;
-+
-+	ret = avs_dsp_send_pm_msg(adev, &request, NULL, false);
-+	if (ret)
-+		avs_ipc_err(adev, &request, "set d0ix", ret);
-+
-+	return ret;
++	return avs_ipc_set_large_config(adev, module_id, instance_id,
++					AVS_COPIER_SET_SINK_FORMAT,
++					(u8 *)&cpr_fmt, sizeof(cpr_fmt));
 +}
 diff --git a/sound/soc/intel/avs/messages.h b/sound/soc/intel/avs/messages.h
-index 1dabd1005327..bbdba4631b1f 100644
+index 44e8efa980f3..a79aadba161d 100644
 --- a/sound/soc/intel/avs/messages.h
 +++ b/sound/soc/intel/avs/messages.h
-@@ -101,6 +101,8 @@ enum avs_module_msg_type {
- 	AVS_MOD_LARGE_CONFIG_SET = 4,
- 	AVS_MOD_BIND = 5,
- 	AVS_MOD_UNBIND = 6,
-+	AVS_MOD_SET_DX = 7,
-+	AVS_MOD_SET_D0IX = 8,
- 	AVS_MOD_DELETE_INSTANCE = 11,
- };
+@@ -507,4 +507,256 @@ static inline bool avs_module_entry_is_loaded(struct avs_module_entry *mentry)
  
-@@ -137,6 +139,11 @@ union avs_module_msg {
- 				u32 dst_queue:3;
- 				u32 src_queue:3;
- 			} bind_unbind;
-+			struct {
-+				/* cAVS < 2.0 */
-+				u32 wake:1;
-+				u32 streaming:1;
-+			} set_d0ix;
- 		} ext;
- 	};
- } __packed;
-@@ -298,4 +305,13 @@ int avs_ipc_get_large_config(struct avs_dev *adev, u16 module_id, u8 instance_id
- 			     u8 param_id, u8 *request_data, size_t request_size,
- 			     u8 **reply_data, size_t *reply_size);
+ int avs_ipc_get_modules_info(struct avs_dev *adev, struct avs_mods_info **info);
  
-+/* DSP cores and domains power management messages */
-+struct avs_dxstate_info {
-+	u32 core_mask;
-+	u32 dx_mask;
++/* Module configuration */
++
++#define AVS_MIXIN_MOD_UUID \
++	GUID_INIT(0x39656EB2, 0x3B71, 0x4049, 0x8D, 0x3F, 0xF9, 0x2C, 0xD5, 0xC4, 0x3C, 0x09)
++
++#define AVS_MIXOUT_MOD_UUID \
++	GUID_INIT(0x3C56505A, 0x24D7, 0x418F, 0xBD, 0xDC, 0xC1, 0xF5, 0xA3, 0xAC, 0x2A, 0xE0)
++
++#define AVS_COPIER_MOD_UUID \
++	GUID_INIT(0x9BA00C83, 0xCA12, 0x4A83, 0x94, 0x3C, 0x1F, 0xA2, 0xE8, 0x2F, 0x9D, 0xDA)
++
++#define AVS_KPBUFF_MOD_UUID \
++	GUID_INIT(0xA8A0CB32, 0x4A77, 0x4DB1, 0x85, 0xC7, 0x53, 0xD7, 0xEE, 0x07, 0xBC, 0xE6)
++
++#define AVS_MICSEL_MOD_UUID \
++	GUID_INIT(0x32FE92C1, 0x1E17, 0x4FC2, 0x97, 0x58, 0xC7, 0xF3, 0x54, 0x2E, 0x98, 0x0A)
++
++#define AVS_MUX_MOD_UUID \
++	GUID_INIT(0x64CE6E35, 0x857A, 0x4878, 0xAC, 0xE8, 0xE2, 0xA2, 0xF4, 0x2e, 0x30, 0x69)
++
++#define AVS_UPDWMIX_MOD_UUID \
++	GUID_INIT(0x42F8060C, 0x832F, 0x4DBF, 0xB2, 0x47, 0x51, 0xE9, 0x61, 0x99, 0x7b, 0x35)
++
++#define AVS_SRCINTC_MOD_UUID \
++	GUID_INIT(0xE61BB28D, 0x149A, 0x4C1F, 0xB7, 0x09, 0x46, 0x82, 0x3E, 0xF5, 0xF5, 0xAE)
++
++#define AVS_PROBE_MOD_UUID \
++	GUID_INIT(0x7CAD0808, 0xAB10, 0xCD23, 0xEF, 0x45, 0x12, 0xAB, 0x34, 0xCD, 0x56, 0xEF)
++
++#define AVS_AEC_MOD_UUID \
++	GUID_INIT(0x46CB87FB, 0xD2C9, 0x4970, 0x96, 0xD2, 0x6D, 0x7E, 0x61, 0x4B, 0xB6, 0x05)
++
++#define AVS_ASRC_MOD_UUID \
++	GUID_INIT(0x66B4402D, 0xB468, 0x42F2, 0x81, 0xA7, 0xB3, 0x71, 0x21, 0x86, 0x3D, 0xD4)
++
++#define AVS_INTELWOV_MOD_UUID \
++	GUID_INIT(0xEC774FA9, 0x28D3, 0x424A, 0x90, 0xE4, 0x69, 0xF9, 0x84, 0xF1, 0xEE, 0xB7)
++
++/* channel map */
++enum avs_channel_index {
++	AVS_CHANNEL_LEFT = 0,
++	AVS_CHANNEL_RIGHT = 1,
++	AVS_CHANNEL_CENTER = 2,
++	AVS_CHANNEL_LEFT_SURROUND = 3,
++	AVS_CHANNEL_CENTER_SURROUND = 3,
++	AVS_CHANNEL_RIGHT_SURROUND = 4,
++	AVS_CHANNEL_LFE = 7,
++	AVS_CHANNEL_INVALID = 0xF,
++};
++
++enum avs_channel_config {
++	AVS_CHANNEL_CONFIG_MONO = 0,
++	AVS_CHANNEL_CONFIG_STEREO = 1,
++	AVS_CHANNEL_CONFIG_2_1 = 2,
++	AVS_CHANNEL_CONFIG_3_0 = 3,
++	AVS_CHANNEL_CONFIG_3_1 = 4,
++	AVS_CHANNEL_CONFIG_QUATRO = 5,
++	AVS_CHANNEL_CONFIG_4_0 = 6,
++	AVS_CHANNEL_CONFIG_5_0 = 7,
++	AVS_CHANNEL_CONFIG_5_1 = 8,
++	AVS_CHANNEL_CONFIG_DUAL_MONO = 9,
++	AVS_CHANNEL_CONFIG_I2S_DUAL_STEREO_0 = 10,
++	AVS_CHANNEL_CONFIG_I2S_DUAL_STEREO_1 = 11,
++	AVS_CHANNEL_CONFIG_4_CHANNEL = 12,
++	AVS_CHANNEL_CONFIG_INVALID
++};
++
++enum avs_interleaving {
++	AVS_INTERLEAVING_PER_CHANNEL = 0,
++	AVS_INTERLEAVING_PER_SAMPLE = 1,
++};
++
++enum avs_sample_type {
++	AVS_SAMPLE_TYPE_INT_MSB = 0,
++	AVS_SAMPLE_TYPE_INT_LSB = 1,
++	AVS_SAMPLE_TYPE_INT_SIGNED = 2,
++	AVS_SAMPLE_TYPE_INT_UNSIGNED = 3,
++	AVS_SAMPLE_TYPE_FLOAT = 4,
++};
++
++#define AVS_CHANNELS_MAX	8
++#define AVS_ALL_CHANNELS_MASK	UINT_MAX
++
++struct avs_audio_format {
++	u32 sampling_freq;
++	u32 bit_depth;
++	u32 channel_map;
++	u32 channel_config;
++	u32 interleaving;
++	u32 num_channels:8;
++	u32 valid_bit_depth:8;
++	u32 sample_type:8;
++	u32 reserved:8;
 +} __packed;
 +
-+int avs_ipc_set_dx(struct avs_dev *adev, u32 core_mask, bool powerup);
-+int avs_ipc_set_d0ix(struct avs_dev *adev, bool enable_pg, bool streaming);
++struct avs_modcfg_base {
++	u32 cpc;
++	u32 ibs;
++	u32 obs;
++	u32 is_pages;
++	struct avs_audio_format audio_fmt;
++} __packed;
++
++struct avs_pin_format {
++	u32 pin_index;
++	u32 iobs;
++	struct avs_audio_format audio_fmt;
++} __packed;
++
++struct avs_modcfg_ext {
++	struct avs_modcfg_base base;
++	u16 num_input_pins;
++	u16 num_output_pins;
++	u8 reserved[12];
++	/* input pin formats followed by output ones */
++	struct avs_pin_format pin_fmts[];
++} __packed;
++
++enum avs_dma_type {
++	AVS_DMA_HDA_HOST_OUTPUT = 0,
++	AVS_DMA_HDA_HOST_INPUT = 1,
++	AVS_DMA_HDA_LINK_OUTPUT = 8,
++	AVS_DMA_HDA_LINK_INPUT = 9,
++	AVS_DMA_DMIC_LINK_INPUT = 11,
++	AVS_DMA_I2S_LINK_OUTPUT = 12,
++	AVS_DMA_I2S_LINK_INPUT = 13,
++};
++
++union avs_virtual_index {
++	u8 val;
++	struct {
++		u8 time_slot:4;
++		u8 instance:4;
++	} i2s;
++	struct {
++		u8 queue_id:3;
++		u8 time_slot:2;
++		u8 instance:3;
++	} dmic;
++} __packed;
++
++union avs_connector_node_id {
++	u32 val;
++	struct {
++		u32 vindex:8;
++		u32 dma_type:5;
++		u32 rsvd:19;
++	};
++} __packed;
++
++#define INVALID_PIPELINE_ID	0xFF
++#define INVALID_NODE_ID \
++	((union avs_connector_node_id) { UINT_MAX })
++
++union avs_gtw_attributes {
++	u32 val;
++	struct {
++		u32 lp_buffer_alloc:1;
++		u32 rsvd:31;
++	};
++} __packed;
++
++struct avs_copier_gtw_cfg {
++	union avs_connector_node_id node_id;
++	u32 dma_buffer_size;
++	u32 config_length;
++	struct {
++		union avs_gtw_attributes attrs;
++		u32 blob[];
++	} config;
++} __packed;
++
++struct avs_copier_cfg {
++	struct avs_modcfg_base base;
++	struct avs_audio_format out_fmt;
++	u32 feature_mask;
++	struct avs_copier_gtw_cfg gtw_cfg;
++} __packed;
++
++struct avs_micsel_cfg {
++	struct avs_modcfg_base base;
++	struct avs_audio_format out_fmt;
++} __packed;
++
++struct avs_mux_cfg {
++	struct avs_modcfg_base base;
++	struct avs_audio_format ref_fmt;
++	struct avs_audio_format out_fmt;
++} __packed;
++
++struct avs_updown_mixer_cfg {
++	struct avs_modcfg_base base;
++	u32 out_channel_config;
++	u32 coefficients_select;
++	s32 coefficients[AVS_CHANNELS_MAX];
++	u32 channel_map;
++} __packed;
++
++struct avs_src_cfg {
++	struct avs_modcfg_base base;
++	u32 out_freq;
++} __packed;
++
++struct avs_probe_gtw_cfg {
++	union avs_connector_node_id node_id;
++	u32 dma_buffer_size;
++} __packed;
++
++struct avs_probe_cfg {
++	struct avs_modcfg_base base;
++	struct avs_probe_gtw_cfg gtw_cfg;
++} __packed;
++
++struct avs_aec_cfg {
++	struct avs_modcfg_base base;
++	struct avs_audio_format ref_fmt;
++	struct avs_audio_format out_fmt;
++	u32 cpc_lp_mode;
++} __packed;
++
++struct avs_asrc_cfg {
++	struct avs_modcfg_base base;
++	u32 out_freq;
++	u32 rsvd0:1;
++	u32 mode:1;
++	u32 rsvd2:2;
++	u32 disable_jitter_buffer:1;
++	u32 rsvd3:27;
++} __packed;
++
++struct avs_wov_cfg {
++	struct avs_modcfg_base base;
++	u32 cpc_lp_mode;
++} __packed;
++
++/* Module runtime parameters */
++
++enum avs_copier_runtime_param {
++	AVS_COPIER_SET_SINK_FORMAT = 2,
++};
++
++struct avs_copier_sink_format {
++	u32 sink_id;
++	struct avs_audio_format src_fmt;
++	struct avs_audio_format sink_fmt;
++} __packed;
++
++int avs_ipc_copier_set_sink_format(struct avs_dev *adev, u16 module_id,
++				   u8 instance_id, u32 sink_id,
++				   const struct avs_audio_format *src_fmt,
++				   const struct avs_audio_format *sink_fmt);
 +
  #endif /* __SOUND_SOC_INTEL_AVS_MSGS_H */
 -- 
