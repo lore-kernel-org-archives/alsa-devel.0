@@ -4,47 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14D64C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Dec 2021 12:31:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6717C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Dec 2021 12:37:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7D90425F6;
-	Wed,  8 Dec 2021 13:30:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D90425F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id B2A5C26E5;
+	Wed,  8 Dec 2021 13:36:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2A5C26E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638966659;
-	bh=xbFdNIw9HM4YAc7uIEh+h7mVxqskjsU7UitTUb6mpGU=;
-	h=Date:To:Subject:In-Reply-To:References:From:Cc:List-Id:
+	s=default; t=1638967049;
+	bh=znyexa54gmAFMVVPsHGzcNM3jz0mBtEth3Prqq4yswg=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CtMG4mVV5DjF0dpKrDwJyVat5bwj1ouMhaNFqEwDHJUsPnN1BabfcdQ+xXrAefUhL
-	 qdQoS9K1qEdMlK72HqQ3Ex1sVf8O2mLGo59MyJJs5du2PUHQ5Ym+QPpoBspi7k9nTs
-	 hWg63YW53oO7lk9VOHP4HfiFPP+rIJDbLhJ5VCDg=
+	b=RSW9BNEmouxLt+6cT6UhtmBD0gohxMsmi6q51WkeYZpELhuAMZ4bKm6g7/58Kt1sm
+	 qNvuVjTZ8NQyZJ2+mLqwXils+rLwqSpyBwWYAowh6WBPPJhqf3KLFoVS1+UGQVETtb
+	 yu5nT5mvx9TmePIVhK21TKvZxx/2ZJMShzAaFfmU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0EE79F804CC;
-	Wed,  8 Dec 2021 13:30:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 576AEF804CC;
+	Wed,  8 Dec 2021 13:36:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DDF55F804E5; Wed,  8 Dec 2021 13:30:07 +0100 (CET)
-Received: from mx1.net9.ga (mx1.net9.ga [192.210.226.127])
+ id 0AC99F804E5; Wed,  8 Dec 2021 13:36:38 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B24D1F80103
+ for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2021 13:36:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B24D1F80103
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="KiXnLuIU"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 146F1F80217
- for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2021 13:29:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 146F1F80217
-Received: from u34 by mx1.net9.ga with local (@Mail Server)
- (envelope-from <u34@net9.ga>)
- id 1muw55-000WNp-Ui; Wed, 08 Dec 2021 12:29:55 +0000
-Date: Wed, 08 Dec 2021 12:29:55 +0000
-To: Takashi Iwai <tiwai@suse.de>
-Subject: Re: Is it a regression? 5.15.5: No sound with speaker-test.
- 5.12.13: it works.
-In-Reply-To: <s5hlf0wojv8.wl-tiwai@suse.de>
-References: <E1mrgJF-000RWu-7d@mx1.net9.ga> <s5hlf0wojv8.wl-tiwai@suse.de>
-User-Agent: s-nail v14.9.22
-Message-Id: <E1muw55-000WNp-Ui@mx1.net9.ga>
-From: u34@net9.ga
-Cc: alsa-devel@alsa-project.org
+ by sin.source.kernel.org (Postfix) with ESMTPS id B8018CE2151;
+ Wed,  8 Dec 2021 12:36:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58F4DC00446;
+ Wed,  8 Dec 2021 12:36:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1638966987;
+ bh=znyexa54gmAFMVVPsHGzcNM3jz0mBtEth3Prqq4yswg=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=KiXnLuIUa9SKtRE5aqsbmgWhNEpm1iougve1JMZhFdRXPMhSXNUC7AxqZo3ByL9tX
+ RH3l8g1ybykYS5z4aZO0f0qApLq0hOKmpldDf/Va4v6GTQu7ULFrZS1BChi2PD9oeA
+ T2T1u9eXz5S8xIJrkwGa1bj0A4OYiGC1Ac122OFMcFDGURb18VSkKgzS5igjcmsnEc
+ PMr81e70XZPP13You5vTaEK68KNjDOgELTcH188hKMt7jXm/l99UcJMVzdMI3O6+NT
+ tcyuowbmg9YnvhGXTbVZrzp6lVGEquL7ozp71q1j4QWZ4E19ujRoHVjyhopB+gfV9l
+ pHx9pamuvVNAg==
+Date: Wed, 8 Dec 2021 12:36:22 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH] kselftest: alsa: Use private alsa-lib configuration in
+ mixer test
+Message-ID: <YbCmxkGJ+67dMm/R@sirena.org.uk>
+References: <20211208095209.1772296-1-perex@perex.cz>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="swPdFJYatFmHaV+0"
+Content-Disposition: inline
+In-Reply-To: <20211208095209.1772296-1-perex@perex.cz>
+X-Cookie: Alex Haley was adopted!
+Cc: ALSA development <alsa-devel@alsa-project.org>,
+ Takashi Iwai <tiwai@suse.de>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -60,60 +84,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Takashi Iwai <tiwai@suse.de> wrote:
 
-Thank you.
+--swPdFJYatFmHaV+0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> On Mon, 29 Nov 2021 14:03:05 +0100,
-> u34@net9.ga wrote:
-> > 
-> > The following looks to me a regression in the linux sound driver.
-> > alsa-info.sh output is included at the bottom of this message. There are 2 
-> > outputs. An output with a 5.12.13 kernel. The other output is with a 
-> > 5.15.5. They were obtained with the same PC. With 5.12.13, the 
-> > speaker-test program works as expected. There is no sound when the 
-> > speaker-test program is ran with 5.15.5.
-> > 5.15.5 has 
-> >     options snd-hda-intel id=PCH index=0
-> >     options snd-hda-intel id=HDMI index=1
-> > , which 5.12.13 does not have.
-> 
-> Both those lines conflict with each other, so they make no sense and
-> are already incorrect.
-> 
-> If you want to swap the card indices inevitably needed, just pass a
-> single option line below instead.
-> 
->   options snd-hda-intel index=1,0
-> 
+On Wed, Dec 08, 2021 at 10:52:09AM +0100, Jaroslav Kysela wrote:
+> As mentined by Takashi Sakamoto, the system-wide alsa-lib configuration
+> may override the standard device declarations. This patch use the private
+> alsa-lib configuration to set the predictable environment.
 
-I have modified my setting as you suggested.
+Reviewed-by: Mark Brown <broonie@kernel.org>
 
-speaker-test is now producing sound with both 5.12.13, and 5.15.5. Which is 
-actualy 5.15.6, not 5.15.5, by now. It got upgraded a few days ago. I don't 
-know what is the exact change that made it working. I have done several 
-other chnages in the last couple of days.
+--swPdFJYatFmHaV+0
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> And how did you invoke speaker-test?
+-----BEGIN PGP SIGNATURE-----
 
-With 5.12.13 I invoked speaker-test either by
-    speaker-test -c2 -Ddefault:PCH
-or by
-    speaker-test -c2 -t sine -f 1000 -Ddefault:PCH
-With 5.15.5 I invoked speaker-test by similar commands. But, usualy, ommiting 
--Ddefault:PCH.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGwpsYACgkQJNaLcl1U
+h9DEIQf+ISBqvHy8+SsI9Lpj4vpFpC4TexgHDFQoy+54s0JwjOyecOeiXCF24Rdn
+sXwD31/K4c9h0HvsMGu+rK9F9xmtEK1Utax79+fYljytVJG8r394WnklN3qjFOtc
++s7JQAFR2Mp0anw15T89KQ4LjLeI7Mv6gQyvg5k0tXbXDd2HIaa/Fe0CUyIB9n+k
+XKA2iUy16Hzhnv4meRPlMgdl3KEcOSuDeoNiX0pBz8r0zudhcrAYy+We2R7Ihpev
+5DWvpV4ip/wCxm6zqqRiQ/1vg4ikcW4InrZID4b9dn4cW4pPEiMy8bUjBWDXqHIF
+HqD25gRMt1JUb8YVTzkz4lC1MyoW5Q==
+=1cX4
+-----END PGP SIGNATURE-----
 
-> 
-> Is it only about speaker-test and aplay works as is?
-> 
-
-I don't follow you. What is only about speaker-test and aplay?
-Is it that my report is only about speaker-test and aplay?
-I haven't tried anything else, other then speaker-test and aplay. In fact, 
-I used aplay only with -L or -l options for its reports. I didn't try to 
-play any sound file after I realized that speaker-test is failing with 5.15.5.
-
-> Takashi
-
---
-u34
+--swPdFJYatFmHaV+0--
