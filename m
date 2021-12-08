@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC57EC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Dec 2021 16:48:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A54F6C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Dec 2021 16:48:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B7EDF2601;
-	Wed,  8 Dec 2021 17:47:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B7EDF2601
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3F6EB2618;
+	Wed,  8 Dec 2021 17:48:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F6EB2618
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638982115;
-	bh=o0Xfq88/Qvxm4jCum7Hmjy3/tv/PnI2RqmMSIV8SAy8=;
+	s=default; t=1638982136;
+	bh=lYb2Kj6m9oPKsI3VCoXbViVJdjy+yJ9GUUp34226s9A=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TyuYs/L1RabVAiQWhHDmfuNIK+97EaLWdbgvSVlfpy2XjS8/NrPYxzd/orCoe/+AY
-	 rE+2ENp5YkaJQecLI+6U5Dc+33/b4ak2xiwN48O21V7749KQZkiHQ6MdfXLwWQ3uQ5
-	 DyzdgjKJM4muEG/BMmOtDhwRVF8aqCafqdyD1+TM=
+	b=BWGetoXwjqtXKvxfbqwkXjYlWWiJ6mkZAtDlLxKw8nTj4tcbi5ye6ezzX19Q4zJaB
+	 vrAHg8ucjgDFdATy9IVtBIfuD5NLtoGBmBrm+Jbfypf+qnSdVplwaZRFZWdvn3SKap
+	 x+NxH+nzb8NIqpaz/akCkmO54keP4kjsRSCH28qs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 36293F80507;
-	Wed,  8 Dec 2021 17:46:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B8E74F8050F;
+	Wed,  8 Dec 2021 17:47:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A5B7DF80506; Wed,  8 Dec 2021 17:46:56 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 955DFF80516; Wed,  8 Dec 2021 17:47:00 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8C0A3F804E5
- for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2021 17:46:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C0A3F804E5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1FBB3F8050F
+ for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2021 17:46:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1FBB3F8050F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="mQL35443"
+ header.b="lyQ0TtWr"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id C3341B821C7;
- Wed,  8 Dec 2021 16:46:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95EBBC341C7;
- Wed,  8 Dec 2021 16:46:46 +0000 (UTC)
+ by sin.source.kernel.org (Postfix) with ESMTPS id 41B40CE1E7F;
+ Wed,  8 Dec 2021 16:46:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C7A1C00446;
+ Wed,  8 Dec 2021 16:46:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1638982008;
- bh=o0Xfq88/Qvxm4jCum7Hmjy3/tv/PnI2RqmMSIV8SAy8=;
+ s=k20201202; t=1638982012;
+ bh=lYb2Kj6m9oPKsI3VCoXbViVJdjy+yJ9GUUp34226s9A=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=mQL35443PKoKfRjTpT9offBSzLuTaw5uvMxGVXEQw+isubpB+iyXqvL1emcPc90dc
- Zw/nNi1v5Q35duy6z+jJiXDnNbNw6K8IAr0kNSXgWwCluhhM8I0kzc9g5v36DBgQD9
- G8UM0aSVIhokqn2sVq9KIz/BIVikYft1mpkwcI8nqL8Jo8Cz+ihk3YU+zHWp9hxHCJ
- RuOVzVJFTaY4/MG3ZXKFbzZibFgiepvOWGtqKPNM2RieXqU+J1drpKPIovFra4az4K
- rBZ6dspqmUrhNxn3hNa2/wd0Q6T5NBM+oZEQBITghW3GDh6dvqO3Y3HgYKIpSnfVaS
- WOPc75is6YK4A==
+ b=lyQ0TtWr3Bch5OPFRSNjgU3NBEKAx9mMsHEeDKq83qbTkOVzvUSj37k52szqgvclR
+ gOvAABYTAWgjJtgaLrBOfLhBghG3xSk3fJiF+oqZJKJR5ujV/z4unltpz5IYx7yA/F
+ LjOySUBMfvPKETAuYUl0patPfZX9FMaS+ZvdJBAepjCs+1P/hyfT45d/lwBqj837nR
+ aRPGfdv3j30Hgr2W2AhxZfDwje/1zaXJ4sgpcndf/WgooQNzdwxe28JJ+FhD24jUQf
+ 2ekI3of9BFBWN3lZmIvMA8vON6nP+ka+u8AlOaN5giqpmPTk979eVPrOrxfwDuXNf4
+ rjY0tXxvLBgcQ==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, shumingf@realtek.com
-In-Reply-To: <20211208101654.28925-1-shumingf@realtek.com>
-References: <20211208101654.28925-1-shumingf@realtek.com>
-Subject: Re: [PATCH 1/2] ASoC: dt-bindings: rt5682s: add AMIC delay time
- property
-Message-Id: <163898200634.3880815.3850635215001645317.b4-ty@kernel.org>
-Date: Wed, 08 Dec 2021 16:46:46 +0000
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org
+In-Reply-To: <20211207192309.43883-1-pierre-louis.bossart@linux.intel.com>
+References: <20211207192309.43883-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: AMD: acp-config: fix missing dependency on
+ SND_SOC_ACPI
+Message-Id: <163898201114.3880815.8479861749914237444.b4-ty@kernel.org>
+Date: Wed, 08 Dec 2021 16:46:51 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
- lars@metafoo.de, albertchen@realtek.com, derek.fang@realtek.com,
- Trevor.Wu@mediatek.com, flove@realtek.com
+Cc: tiwai@suse.de, kernel test robot <lkp@intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,12 +81,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 8 Dec 2021 18:16:54 +0800, shumingf@realtek.com wrote:
-> From: Shuming Fan <shumingf@realtek.com>
+On Tue, 7 Dec 2021 13:23:09 -0600, Pierre-Louis Bossart wrote:
+> With a custom .config, the following error is thrown:
 > 
-> Add the AMIC delay time to control how much delay time (ms) to unmute the stereo1 ADC.
+> ERROR: modpost: "snd_soc_acpi_codec_list"
+> [sound/soc/amd/snd-acp-config.ko] undefined!
 > 
+> Fix by adding a clear dependency on SND_SOC_ACPI
 > 
+> [...]
 
 Applied to
 
@@ -94,8 +97,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: dt-bindings: rt5682s: add AMIC delay time property
-      commit: 6c7ac18cd82108a0cd58e21b9814503e631dbb5d
+[1/1] ASoC: AMD: acp-config: fix missing dependency on SND_SOC_ACPI
+      commit: d9b994cd7641ad8eda97aa8633f4e2f35d7d0a79
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
