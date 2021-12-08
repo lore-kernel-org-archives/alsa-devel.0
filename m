@@ -4,68 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54BFCC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Dec 2021 16:49:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4CF7EC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Dec 2021 16:49:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 30A5716B1;
-	Wed,  8 Dec 2021 17:48:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 30A5716B1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5DA8D2635;
+	Wed,  8 Dec 2021 17:48:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5DA8D2635
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638982164;
-	bh=YbISJnQzsM5eSFYYtdFrdjLSHXTJxn8bZGcYAqUmR/I=;
+	s=default; t=1638982170;
+	bh=9sl05KB/Wmmgh8hTPjQUEeSxpALKqcfSoRdKFAet8JE=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=esQ1Sq4I5966zwzoo0pUaDEuFDb/CN6w2NPcwng2yXaAmdjb6iCm0a9/icXQKEykD
-	 50mtw+DLhwZBLd7PGjatI9hzYFhHW6kTHKzvrp4seIskjw1SUHjdEdjhRi3UJwafeN
-	 U8EEivcjf3btShJAHtUhTNEtIYKgaS8F0gLYISq0=
+	b=b6wFpitBaEOVvNBbijqG9UW2oGzKM+zgN4xBoaz5FtKNONawp2wBkzsLPz6MeZPZL
+	 WKuPPRQUH3khVczB7oGZctsRDGM74kd8Ok5QBYbUKVN/jSccHS728ALIJVoSjZDrqO
+	 mxZqD//JjfbWjF4LwXOdG3iRty52LZUvp0lM1vU4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5EAB8F80518;
-	Wed,  8 Dec 2021 17:47:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1EFF6F8051C;
+	Wed,  8 Dec 2021 17:47:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E9213F8051A; Wed,  8 Dec 2021 17:47:03 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+ id 47C3BF80519; Wed,  8 Dec 2021 17:47:05 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A1DC4F80510
- for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2021 17:46:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1DC4F80510
+ by alsa1.perex.cz (Postfix) with ESMTPS id AD72CF80515
+ for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2021 17:47:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AD72CF80515
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="bItQBn8p"
+ header.b="jviW+zWd"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id B830ACE225F;
+ by ams.source.kernel.org (Postfix) with ESMTPS id 40F5CB821C5;
+ Wed,  8 Dec 2021 16:46:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E42E6C341CA;
  Wed,  8 Dec 2021 16:46:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0393C341C6;
- Wed,  8 Dec 2021 16:46:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1638982010;
- bh=YbISJnQzsM5eSFYYtdFrdjLSHXTJxn8bZGcYAqUmR/I=;
+ s=k20201202; t=1638982015;
+ bh=9sl05KB/Wmmgh8hTPjQUEeSxpALKqcfSoRdKFAet8JE=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=bItQBn8pbfa7oDy5ZiiWmR2FClwuQuyfDLIOsvPZBtBnWmhdJTrnry+FjkZXOqPuD
- 9sS2wqp9BdkhUu7mvA/34kGOVfJ8T+LRcBLgn55RpzdQX0304A4KHdOMGT2jJC2nnC
- MSoCWdmn/iXoOH9QUEuvyVx5Q/0n2pkOewHpw13Mwg18/1geYjzevZ41vtvPB6CQnn
- d8V/CBsyg6ddAOR6pcPzMhMh0idF3THL15R7VFi4hR1XTyknp9rxgbZ3ccsVJBm6iF
- 71+Ll3udOH/TiMQnvOzczhlkpg64filkhQNrTiz8WBg/vYqXy0M7XlVHTV/QqxOp65
- /c4zDFFnNOnjQ==
+ b=jviW+zWdyQMn66S2HDRfLnruwnaF/rvB2sTf6cUubb2j/WeBPnBxg+jBODq/Yazcq
+ PL37dID/7dbpv8PmDmpvDE/kfVygra/a6mFTfrnE8Cj9nyuRW7Sr/pOxIRqYor1pvw
+ Nygz5xsy5FY/XPvRMl9H86HyR6OaRNVf5V3LMl8ht+0FnEcC7yHVvKftoEwssktbJi
+ dkczjxvBRmec4SCBi8QKibf5jEiJHBpO2svaiU0ug3PD/9awHakYEtUlrUR1qG144M
+ DnT5zuVDPpquo3M4MsRxXel+7oOB6ukjlLO/btpp+HG+pMNvIMDQg87kNkiybQ+fLW
+ TnrWzsXEJcAZQ==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, shumingf@realtek.com
-In-Reply-To: <20211208101718.28945-1-shumingf@realtek.com>
-References: <20211208101718.28945-1-shumingf@realtek.com>
-Subject: Re: [PATCH 2/2] ASoC: rt5682s: add delay time to fix pop sound issue
-Message-Id: <163898200870.3880815.10610236665541967384.b4-ty@kernel.org>
-Date: Wed, 08 Dec 2021 16:46:48 +0000
+To: Liam Girdwood <lgirdwood@gmail.com>,
+ Dan Carpenter <dan.carpenter@oracle.com>
+In-Reply-To: <20211208151145.GA29257@kili>
+References: <20211208151145.GA29257@kili>
+Subject: Re: [PATCH] ASoC: mediatek: mt8195: silence uninitialized variable
+ warning
+Message-Id: <163898201265.3880815.10727023271133668606.b4-ty@kernel.org>
+Date: Wed, 08 Dec 2021 16:46:52 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
- lars@metafoo.de, albertchen@realtek.com, derek.fang@realtek.com,
- Trevor.Wu@mediatek.com, flove@realtek.com
+Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+ Bixuan Cui <cuibixuan@huawei.com>, Trevor Wu <trevor.wu@mediatek.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>, linux-mediatek@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,13 +84,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 8 Dec 2021 18:17:18 +0800, shumingf@realtek.com wrote:
-> From: Shuming Fan <shumingf@realtek.com>
+On Wed, 8 Dec 2021 18:11:45 +0300, Dan Carpenter wrote:
+> Smatch complains that we might hit the continue path on every iteration
+> through the loop.
 > 
-> There is a pop noise at the beginning of the capture data.
-> This patch adds the delay time before stereo1 ADC unmute to fix the pop sound issue.
+>     sound/soc/mediatek/mt8195/mt8195-mt6359-rt1019-rt5682.c:831
+>       mt8195_mt6359_rt1019_rt5682_card_late_probe()
+>     error: uninitialized symbol 'sof_comp'.
 > 
-> 
+> [...]
 
 Applied to
 
@@ -95,8 +100,8 @@ Applied to
 
 Thanks!
 
-[2/2] ASoC: rt5682s: add delay time to fix pop sound issue
-      commit: 7cfa3d00730a4c0694b55fb1974823baeab8815b
+[1/1] ASoC: mediatek: mt8195: silence uninitialized variable warning
+      commit: 9abc21c966619d6ead27fd48481966014fdc680f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
