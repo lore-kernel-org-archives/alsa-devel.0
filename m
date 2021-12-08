@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 818DEC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Dec 2021 16:48:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC57EC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Dec 2021 16:48:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8F63B24B5;
-	Wed,  8 Dec 2021 17:47:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F63B24B5
+	by alsa0.perex.cz (Postfix) with ESMTPS id B7EDF2601;
+	Wed,  8 Dec 2021 17:47:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B7EDF2601
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638982109;
-	bh=uENSplhFkRT82Pbyo/UMTrFRwRcLICrYkF5lV1BAh0Y=;
+	s=default; t=1638982115;
+	bh=o0Xfq88/Qvxm4jCum7Hmjy3/tv/PnI2RqmMSIV8SAy8=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=t7gLD1ETR109OgfJMrUsBplPDIzvRwux3q0L1lsjNYXXr0hqDSzXwQBauZ7Zjdoew
-	 QQP2g09vKpJMQXC8ohnrglpJiiyIhIxl9KYBaj0GVqfdFB2JfpQgHp23uArDLcpQrt
-	 4qLelJFLy6QMv9jkBq5aTecDMqFoy2RZAIgsJwn8=
+	b=TyuYs/L1RabVAiQWhHDmfuNIK+97EaLWdbgvSVlfpy2XjS8/NrPYxzd/orCoe/+AY
+	 rE+2ENp5YkaJQecLI+6U5Dc+33/b4ak2xiwN48O21V7749KQZkiHQ6MdfXLwWQ3uQ5
+	 DyzdgjKJM4muEG/BMmOtDhwRVF8aqCafqdyD1+TM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8FBD6F804FE;
-	Wed,  8 Dec 2021 17:46:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 36293F80507;
+	Wed,  8 Dec 2021 17:46:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D0E16F804F3; Wed,  8 Dec 2021 17:46:53 +0100 (CET)
+ id A5B7DF80506; Wed,  8 Dec 2021 17:46:56 +0100 (CET)
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8E7DDF80217
- for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2021 17:46:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E7DDF80217
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8C0A3F804E5
+ for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2021 17:46:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C0A3F804E5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="FqRzgJVE"
+ header.b="mQL35443"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 32220B82192;
+ by ams.source.kernel.org (Postfix) with ESMTPS id C3341B821C7;
+ Wed,  8 Dec 2021 16:46:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95EBBC341C7;
  Wed,  8 Dec 2021 16:46:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02102C341CA;
- Wed,  8 Dec 2021 16:46:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1638982005;
- bh=uENSplhFkRT82Pbyo/UMTrFRwRcLICrYkF5lV1BAh0Y=;
+ s=k20201202; t=1638982008;
+ bh=o0Xfq88/Qvxm4jCum7Hmjy3/tv/PnI2RqmMSIV8SAy8=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=FqRzgJVEKpOLiYWHI/tqzUkmUgv9UOXQrBiEqilsFm7ELiTYt8VCNM4FROjZ+uXUf
- EV8MnTnpesFPKJ3SQsM2dG+FaqrmPFxKzlc+tsQbB26dak/V4PeEV+szLdNohPB3+N
- rXRjYfevvGPa6jZc3wF4hLrVIvEoGdIHTPkzMiICqn3rh9niK/YASXopIBEuWLuEbk
- x5gHGTP4JdqDLERYlxNFApPwzDVkYuAZ9zF1r00g4Gnb5ZlMrymKzH6ZC34iZGRbZ3
- TxeTf0Yr/dNSzAKOxDc0+cQSlkjP5CQDHTbMDnwjsGQkGrF8jmRtQ67tFVwwUBVQn6
- bvtNGPbyAAUXg==
+ b=mQL35443PKoKfRjTpT9offBSzLuTaw5uvMxGVXEQw+isubpB+iyXqvL1emcPc90dc
+ Zw/nNi1v5Q35duy6z+jJiXDnNbNw6K8IAr0kNSXgWwCluhhM8I0kzc9g5v36DBgQD9
+ G8UM0aSVIhokqn2sVq9KIz/BIVikYft1mpkwcI8nqL8Jo8Cz+ihk3YU+zHWp9hxHCJ
+ RuOVzVJFTaY4/MG3ZXKFbzZibFgiepvOWGtqKPNM2RieXqU+J1drpKPIovFra4az4K
+ rBZ6dspqmUrhNxn3hNa2/wd0Q6T5NBM+oZEQBITghW3GDh6dvqO3Y3HgYKIpSnfVaS
+ WOPc75is6YK4A==
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org
-In-Reply-To: <20211207192458.44007-1-pierre-louis.bossart@linux.intel.com>
-References: <20211207192458.44007-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: sof_rt5682: Move rt1015 speaker amp to
- common file
-Message-Id: <163898200371.3880815.13827114243808569058.b4-ty@kernel.org>
-Date: Wed, 08 Dec 2021 16:46:43 +0000
+To: lgirdwood@gmail.com, shumingf@realtek.com
+In-Reply-To: <20211208101654.28925-1-shumingf@realtek.com>
+References: <20211208101654.28925-1-shumingf@realtek.com>
+Subject: Re: [PATCH 1/2] ASoC: dt-bindings: rt5682s: add AMIC delay time
+ property
+Message-Id: <163898200634.3880815.3850635215001645317.b4-ty@kernel.org>
+Date: Wed, 08 Dec 2021 16:46:46 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, Bard Liao <yung-chuan.liao@linux.intel.com>,
- Yong Zhi <yong.zhi@intel.com>
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
+ lars@metafoo.de, albertchen@realtek.com, derek.fang@realtek.com,
+ Trevor.Wu@mediatek.com, flove@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,15 +81,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 7 Dec 2021 13:24:58 -0600, Pierre-Louis Bossart wrote:
-> From: Yong Zhi <yong.zhi@intel.com>
+On Wed, 8 Dec 2021 18:16:54 +0800, shumingf@realtek.com wrote:
+> From: Shuming Fan <shumingf@realtek.com>
 > 
-> Move rt1015 driver code to common file to be consistent with
-> rt1011 and rt1015p.
+> Add the AMIC delay time to control how much delay time (ms) to unmute the stereo1 ADC.
 > 
-> No functional change.
 > 
-> [...]
 
 Applied to
 
@@ -97,8 +94,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Intel: sof_rt5682: Move rt1015 speaker amp to common file
-      commit: 77659872be233e56019041d05b44d134022296b7
+[1/2] ASoC: dt-bindings: rt5682s: add AMIC delay time property
+      commit: 6c7ac18cd82108a0cd58e21b9814503e631dbb5d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
