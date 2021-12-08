@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B81F0C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Dec 2021 11:15:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1FD4C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Dec 2021 11:15:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E96E624A2;
-	Wed,  8 Dec 2021 12:14:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E96E624A2
+	by alsa0.perex.cz (Postfix) with ESMTPS id F0D0324CF;
+	Wed,  8 Dec 2021 12:15:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F0D0324CF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1638962129;
-	bh=HuTQ0QlIWWobJM5j5fAO1gqbnSZm905iNuukWb1VDak=;
+	s=default; t=1638962152;
+	bh=WZjSYicC/aED0tS56RRZxEShcexPgw37nr0ZcY9ToNs=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BjiesEB2xSAYP3NxtklvHkm81pINHpjrZPXMxIH/DZce+IgftYo6+mZnLSjVAErGC
-	 72tpUcn3wjlDbsmBYrM1ldBI8VSPMhs0A25Ew1S4ORR4GO9q2zBNLRrAz35fk20MkV
-	 VmVh9j02+/+HVZuObOYBpwlaKKPM5sDA8hmYZm+4=
+	b=iyrPi7GUr24fNn9xWOBmjTNmIbb2ZDNjvH2tOYTu7O88vqUeA9+KIz0eSnTnfk+Rq
+	 ZbLzYLpf6HA2XhL1srJU2Re+ho/McUX+dS4J5u7sttu0Sww2YPhCZa8z8CgMOUjCfT
+	 3vrWqQz8Bv6GwUVz1icq2wKxS2riMgxnjJPcCxMk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3E725F80544;
-	Wed,  8 Dec 2021 12:11:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CE61FF8054A;
+	Wed,  8 Dec 2021 12:11:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C1A9DF8053E; Wed,  8 Dec 2021 12:11:33 +0100 (CET)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ id 4D7F1F80551; Wed,  8 Dec 2021 12:11:39 +0100 (CET)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 32D7DF80538
- for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2021 12:11:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32D7DF80538
-X-IronPort-AV: E=McAfee;i="6200,9189,10191"; a="238036322"
-X-IronPort-AV: E=Sophos;i="5.87,297,1631602800"; d="scan'208";a="238036322"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 418E5F80536
+ for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2021 12:11:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 418E5F80536
+X-IronPort-AV: E=McAfee;i="6200,9189,10191"; a="261884906"
+X-IronPort-AV: E=Sophos;i="5.87,297,1631602800"; d="scan'208";a="261884906"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Dec 2021 03:11:26 -0800
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 08 Dec 2021 03:11:16 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,297,1631602800"; d="scan'208";a="600600168"
+X-IronPort-AV: E=Sophos;i="5.87,297,1631602800"; d="scan'208";a="600600123"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by FMSMGA003.fm.intel.com with ESMTP; 08 Dec 2021 03:11:23 -0800
+ by FMSMGA003.fm.intel.com with ESMTP; 08 Dec 2021 03:11:12 -0800
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [RFC 11/37] ASoC: Intel: avs: Add module management requests
-Date: Wed,  8 Dec 2021 12:12:35 +0100
-Message-Id: <20211208111301.1817725-12-cezary.rojewski@intel.com>
+Subject: [RFC 08/37] ASoC: Intel: avs: Inter process communication
+Date: Wed,  8 Dec 2021 12:12:32 +0100
+Message-Id: <20211208111301.1817725-9-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211208111301.1817725-1-cezary.rojewski@intel.com>
 References: <20211208111301.1817725-1-cezary.rojewski@intel.com>
@@ -73,348 +73,810 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Firmware modules implement processing algorithms. Their lifecycle,
-similarly to pipelines is being controlled by IPCs: initialization,
-deletion and (un)binding.
+Implement the IPC between Intel audio firmware and kernel driver. The
+IPC allows transmission of requests, handling of responses as well as
+unsolicited (i.e. firmware-generated) notifications.
 
-Modules can be configured at runtime - runtime parameters. This is done
-with help of LARGE_CONFIG IPCs: getter and setter.
+A subscription mechanism is added to enable different parts of the
+driver to register for specific notifications.
+
+The boot process involving ROM-code requires specific handling with
+'unstall' operations which are not required post-boot with normal IPC so
+separate set of send-message handlers is added for each of the usecases.
 
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/avs/ipc.c      |   8 +-
- sound/soc/intel/avs/messages.c | 208 +++++++++++++++++++++++++++++++++
- sound/soc/intel/avs/messages.h |  53 +++++++++
- 3 files changed, 268 insertions(+), 1 deletion(-)
+ sound/soc/intel/avs/Makefile    |   2 +-
+ sound/soc/intel/avs/avs.h       |  93 ++++++++
+ sound/soc/intel/avs/ipc.c       | 397 ++++++++++++++++++++++++++++++++
+ sound/soc/intel/avs/messages.h  | 170 ++++++++++++++
+ sound/soc/intel/avs/registers.h |  45 ++++
+ 5 files changed, 706 insertions(+), 1 deletion(-)
+ create mode 100644 sound/soc/intel/avs/ipc.c
+ create mode 100644 sound/soc/intel/avs/messages.h
 
-diff --git a/sound/soc/intel/avs/ipc.c b/sound/soc/intel/avs/ipc.c
-index b497e55b6770..c461f7db3683 100644
---- a/sound/soc/intel/avs/ipc.c
-+++ b/sound/soc/intel/avs/ipc.c
-@@ -20,9 +20,15 @@ static void avs_dsp_receive_rx(struct avs_dev *adev, u64 header)
- 	union avs_reply_msg msg = AVS_MSG(header);
+diff --git a/sound/soc/intel/avs/Makefile b/sound/soc/intel/avs/Makefile
+index 5f7976a95fe2..e243806dd38a 100644
+--- a/sound/soc/intel/avs/Makefile
++++ b/sound/soc/intel/avs/Makefile
+@@ -1,5 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0-only
  
- 	ipc->rx.header = header;
--	if (!msg.status)
-+	if (!msg.status) {
-+		/* update size in case of LARGE_CONFIG_GET */
-+		if (msg.msg_target == AVS_MOD_MSG &&
-+		    msg.global_msg_type == AVS_MOD_LARGE_CONFIG_GET)
-+			ipc->rx.size = msg.ext.large_config.data_off_size;
-+
- 		memcpy_fromio(ipc->rx.data, avs_uplink_addr(adev),
- 			      ipc->rx.size);
-+	}
- }
+-snd-soc-avs-objs := dsp.o
++snd-soc-avs-objs := dsp.o ipc.o
  
- static void avs_dsp_process_notification(struct avs_dev *adev, u64 header)
-diff --git a/sound/soc/intel/avs/messages.c b/sound/soc/intel/avs/messages.c
-index ab13fc7809fe..e870d5792a77 100644
---- a/sound/soc/intel/avs/messages.c
-+++ b/sound/soc/intel/avs/messages.c
-@@ -6,6 +6,7 @@
- //          Amadeusz Slawinski <amadeuszx.slawinski@linux.intel.com>
- //
+ obj-$(CONFIG_SND_SOC_INTEL_AVS) += snd-soc-avs.o
+diff --git a/sound/soc/intel/avs/avs.h b/sound/soc/intel/avs/avs.h
+index 7ece210b0777..8620d2f7fee0 100644
+--- a/sound/soc/intel/avs/avs.h
++++ b/sound/soc/intel/avs/avs.h
+@@ -11,6 +11,7 @@
  
-+#include <linux/slab.h>
- #include "avs.h"
- #include "messages.h"
+ #include <linux/device.h>
+ #include <sound/hda_codec.h>
++#include "messages.h"
  
-@@ -139,3 +140,210 @@ int avs_ipc_get_pipeline_state(struct avs_dev *adev, u8 instance_id,
- 	*state = reply.rsp.ext.get_ppl_state.state;
- 	return ret;
- }
+ struct avs_dev;
+ 
+@@ -18,6 +19,9 @@ struct avs_dsp_ops {
+ 	int (* const power)(struct avs_dev *, u32, bool);
+ 	int (* const reset)(struct avs_dev *, u32, bool);
+ 	int (* const stall)(struct avs_dev *, u32, bool);
++	irqreturn_t (* const irq_handler)(int, void *);
++	irqreturn_t (* const irq_thread)(int, void *);
++	void (* const int_control)(struct avs_dev *, bool);
+ };
+ 
+ #define avs_dsp_op(adev, op, ...) \
+@@ -34,6 +38,18 @@ struct avs_spec {
+ 
+ 	const u32 core_init_mask;	/* used during DSP boot */
+ 	const u64 attributes;		/* bitmask of AVS_PLATATTR_* */
++	const u32 sram_base_offset;
++	const u32 sram_window_size;
 +
-+int avs_ipc_init_instance(struct avs_dev *adev, u16 module_id, u8 instance_id,
-+			  u8 ppl_id, u8 core_id, u8 domain,
-+			  void *param, u32 param_size)
-+{
-+	union avs_module_msg msg = AVS_MODULE_REQUEST(INIT_INSTANCE);
-+	struct avs_ipc_msg request;
-+	int ret;
++	const u32 rom_status;
++	const u32 hipc_req_offset;
++	const u32 hipc_req_ext_offset;
++	const u32 hipc_req_busy_mask;
++	const u32 hipc_ack_offset;
++	const u32 hipc_ack_done_mask;
++	const u32 hipc_rsp_offset;
++	const u32 hipc_rsp_busy_mask;
++	const u32 hipc_ctl_offset;
+ };
+ 
+ struct avs_dev {
+@@ -42,6 +58,9 @@ struct avs_dev {
+ 
+ 	void __iomem *adsp_ba;
+ 	const struct avs_spec *spec;
++	struct avs_ipc *ipc;
 +
-+	msg.module_id = module_id;
-+	msg.instance_id = instance_id;
-+	/* firmware expects size provided in dwords */
-+	msg.ext.init_instance.param_block_size =
-+			DIV_ROUND_UP(param_size, sizeof(u32));
-+	msg.ext.init_instance.ppl_instance_id = ppl_id;
-+	msg.ext.init_instance.core_id = core_id;
-+	msg.ext.init_instance.proc_domain = domain;
++	struct completion fw_ready;
+ };
+ 
+ /* from hda_bus to avs_dev */
+@@ -61,4 +80,78 @@ int avs_dsp_core_stall(struct avs_dev *adev, u32 core_mask, bool stall);
+ int avs_dsp_core_enable(struct avs_dev *adev, u32 core_mask);
+ int avs_dsp_core_disable(struct avs_dev *adev, u32 core_mask);
+ 
++/* Inter Process Communication */
 +
-+	request.header = msg.val;
-+	request.data = param;
-+	request.size = param_size;
-+
-+	ret = avs_dsp_send_msg(adev, &request, NULL);
-+	if (ret)
-+		avs_ipc_err(adev, &request, "init instance", ret);
-+
-+	return ret;
-+}
-+
-+int avs_ipc_delete_instance(struct avs_dev *adev, u16 module_id, u8 instance_id)
-+{
-+	union avs_module_msg msg = AVS_MODULE_REQUEST(DELETE_INSTANCE);
-+	struct avs_ipc_msg request = {0};
-+	int ret;
-+
-+	msg.module_id = module_id;
-+	msg.instance_id = instance_id;
-+	request.header = msg.val;
-+
-+	ret = avs_dsp_send_msg(adev, &request, NULL);
-+	if (ret)
-+		avs_ipc_err(adev, &request, "delete instance", ret);
-+
-+	return ret;
-+}
-+
-+int avs_ipc_bind(struct avs_dev *adev, u16 module_id, u8 instance_id,
-+		 u16 dst_module_id, u8 dst_instance_id,
-+		 u8 dst_queue, u8 src_queue)
-+{
-+	union avs_module_msg msg = AVS_MODULE_REQUEST(BIND);
-+	struct avs_ipc_msg request = {0};
-+	int ret;
-+
-+	msg.module_id = module_id;
-+	msg.instance_id = instance_id;
-+	msg.ext.bind_unbind.dst_module_id = dst_module_id;
-+	msg.ext.bind_unbind.dst_instance_id = dst_instance_id;
-+	msg.ext.bind_unbind.dst_queue = dst_queue;
-+	msg.ext.bind_unbind.src_queue = src_queue;
-+	request.header = msg.val;
-+
-+	ret = avs_dsp_send_msg(adev, &request, NULL);
-+	if (ret)
-+		avs_ipc_err(adev, &request, "bind modules", ret);
-+
-+	return ret;
-+}
-+
-+int avs_ipc_unbind(struct avs_dev *adev, u16 module_id, u8 instance_id,
-+		   u16 dst_module_id, u8 dst_instance_id,
-+		   u8 dst_queue, u8 src_queue)
-+{
-+	union avs_module_msg msg = AVS_MODULE_REQUEST(UNBIND);
-+	struct avs_ipc_msg request = {0};
-+	int ret;
-+
-+	msg.module_id = module_id;
-+	msg.instance_id = instance_id;
-+	msg.ext.bind_unbind.dst_module_id = dst_module_id;
-+	msg.ext.bind_unbind.dst_instance_id = dst_instance_id;
-+	msg.ext.bind_unbind.dst_queue = dst_queue;
-+	msg.ext.bind_unbind.src_queue = src_queue;
-+	request.header = msg.val;
-+
-+	ret = avs_dsp_send_msg(adev, &request, NULL);
-+	if (ret)
-+		avs_ipc_err(adev, &request, "unbind modules", ret);
-+
-+	return ret;
-+}
-+
-+static int __avs_ipc_set_large_config(struct avs_dev *adev, u16 module_id, u8 instance_id,
-+				      u8 param_id, bool init_block, bool final_block,
-+				      u8 *request_data, size_t request_size, size_t off_size)
-+{
-+	union avs_module_msg msg = AVS_MODULE_REQUEST(LARGE_CONFIG_SET);
-+	struct avs_ipc_msg request;
-+	int ret;
-+
-+	msg.module_id = module_id;
-+	msg.instance_id = instance_id;
-+	msg.ext.large_config.data_off_size = off_size;
-+	msg.ext.large_config.large_param_id = param_id;
-+	msg.ext.large_config.final_block = final_block;
-+	msg.ext.large_config.init_block = init_block;
-+
-+	request.header = msg.val;
-+	request.data = request_data;
-+	request.size = request_size;
-+
-+	ret = avs_dsp_send_msg(adev, &request, NULL);
-+	if (ret)
-+		avs_ipc_err(adev, &request, "large config set", ret);
-+
-+	return ret;
-+}
-+
-+int avs_ipc_set_large_config(struct avs_dev *adev, u16 module_id,
-+			     u8 instance_id, u8 param_id,
-+			     u8 *request, size_t request_size)
-+{
-+	size_t remaining, tx_size;
-+	bool final;
-+	int ret;
-+
-+	remaining = request_size;
-+	tx_size = min_t(size_t, AVS_MAILBOX_SIZE, remaining);
-+	final = (tx_size == remaining);
-+
-+	/* Initial request states total payload size. */
-+	ret = __avs_ipc_set_large_config(adev, module_id, instance_id,
-+					 param_id, 1, final, request, tx_size,
-+					 request_size);
-+	if (ret)
-+		return ret;
-+
-+	remaining -= tx_size;
-+
-+	/* Loop the rest only when payload exceeds mailbox's size. */
-+	while (remaining) {
-+		size_t offset;
-+
-+		offset = request_size - remaining;
-+		tx_size = min_t(size_t, AVS_MAILBOX_SIZE, remaining);
-+		final = (tx_size == remaining);
-+
-+		ret = __avs_ipc_set_large_config(adev, module_id, instance_id,
-+						 param_id, 0, final,
-+						 request + offset, tx_size,
-+						 offset);
-+		if (ret)
-+			return ret;
-+
-+		remaining -= tx_size;
-+	}
-+
-+	return 0;
-+}
-+
-+int avs_ipc_get_large_config(struct avs_dev *adev, u16 module_id, u8 instance_id,
-+			     u8 param_id, u8 *request_data, size_t request_size,
-+			     u8 **reply_data, size_t *reply_size)
-+{
-+	union avs_module_msg msg = AVS_MODULE_REQUEST(LARGE_CONFIG_GET);
-+	struct avs_ipc_msg request;
-+	struct avs_ipc_msg reply = {0};
++struct avs_ipc_msg {
++	union {
++		u64 header;
++		union avs_global_msg glb;
++		union avs_reply_msg rsp;
++	};
++	void *data;
 +	size_t size;
-+	void *buf;
-+	int ret;
-+
-+	reply.data = kzalloc(AVS_MAILBOX_SIZE, GFP_KERNEL);
-+	if (!reply.data)
-+		return -ENOMEM;
-+
-+	msg.module_id = module_id;
-+	msg.instance_id = instance_id;
-+	msg.ext.large_config.data_off_size = request_size;
-+	msg.ext.large_config.large_param_id = param_id;
-+	/* final_block is always 0 on request. Updated by fw on reply. */
-+	msg.ext.large_config.final_block = 0;
-+	msg.ext.large_config.init_block = 1;
-+
-+	request.header = msg.val;
-+	request.data = request_data;
-+	request.size = request_size;
-+	reply.size = AVS_MAILBOX_SIZE;
-+
-+	ret = avs_dsp_send_msg(adev, &request, &reply);
-+	if (ret) {
-+		avs_ipc_err(adev, &request, "large config get", ret);
-+		kfree(reply.data);
-+		return ret;
-+	}
-+
-+	size = reply.rsp.ext.large_config.data_off_size;
-+	buf = krealloc(reply.data, size, GFP_KERNEL);
-+	if (!buf) {
-+		kfree(reply.data);
-+		return -ENOMEM;
-+	}
-+
-+	*reply_data = buf;
-+	*reply_size = size;
-+
-+	return 0;
-+}
-diff --git a/sound/soc/intel/avs/messages.h b/sound/soc/intel/avs/messages.h
-index 67f7e1826e45..1dabd1005327 100644
---- a/sound/soc/intel/avs/messages.h
-+++ b/sound/soc/intel/avs/messages.h
-@@ -95,6 +95,15 @@ struct avs_tlv {
- 	u32 value[];
- } __packed;
- 
-+enum avs_module_msg_type {
-+	AVS_MOD_INIT_INSTANCE = 0,
-+	AVS_MOD_LARGE_CONFIG_GET = 3,
-+	AVS_MOD_LARGE_CONFIG_SET = 4,
-+	AVS_MOD_BIND = 5,
-+	AVS_MOD_UNBIND = 6,
-+	AVS_MOD_DELETE_INSTANCE = 11,
 +};
 +
- union avs_module_msg {
- 	u64 val;
- 	struct {
-@@ -110,6 +119,24 @@ union avs_module_msg {
- 		};
- 		union {
- 			u32 val;
-+			struct {
-+				u32 param_block_size:16;
-+				u32 ppl_instance_id:8;
-+				u32 core_id:4;
-+				u32 proc_domain:1;
-+			} init_instance;
-+			struct {
-+				u32 data_off_size:20;
-+				u32 large_param_id:8;
-+				u32 final_block:1;
-+				u32 init_block:1;
-+			} large_config;
-+			struct {
-+				u32 dst_module_id:16;
-+				u32 dst_instance_id:8;
-+				u32 dst_queue:3;
-+				u32 src_queue:3;
-+			} bind_unbind;
- 		} ext;
- 	};
- } __packed;
-@@ -136,6 +163,13 @@ union avs_reply_msg {
- 			struct {
- 				u32 state:5;
- 			} get_ppl_state;
-+			/* module management */
-+			struct {
-+				u32 data_off_size:20;
-+				u32 large_param_id:8;
-+				u32 final_block:1;
-+				u32 init_block:1;
-+			} large_config;
- 		} ext;
- 	};
- } __packed;
-@@ -245,4 +279,23 @@ int avs_ipc_set_pipeline_state(struct avs_dev *adev, u8 instance_id,
- int avs_ipc_get_pipeline_state(struct avs_dev *adev, u8 instance_id,
- 			       enum avs_pipeline_state *state);
- 
-+/* Module management messages */
-+int avs_ipc_init_instance(struct avs_dev *adev, u16 module_id, u8 instance_id,
-+			  u8 ppl_id, u8 core_id, u8 domain,
-+			  void *param, u32 param_size);
-+int avs_ipc_delete_instance(struct avs_dev *adev, u16 module_id,
-+			    u8 instance_id);
-+int avs_ipc_bind(struct avs_dev *adev, u16 module_id, u8 instance_id,
-+		 u16 dst_module_id, u8 dst_instance_id,
-+		 u8 dst_queue, u8 src_queue);
-+int avs_ipc_unbind(struct avs_dev *adev, u16 module_id, u8 instance_id,
-+		   u16 dst_module_id, u8 dst_instance_id,
-+		   u8 dst_queue, u8 src_queue);
-+int avs_ipc_set_large_config(struct avs_dev *adev, u16 module_id,
-+			     u8 instance_id, u8 param_id,
-+			     u8 *request, size_t request_size);
-+int avs_ipc_get_large_config(struct avs_dev *adev, u16 module_id, u8 instance_id,
-+			     u8 param_id, u8 *request_data, size_t request_size,
-+			     u8 **reply_data, size_t *reply_size);
++struct avs_ipc {
++	struct device *dev;
 +
- #endif /* __SOUND_SOC_INTEL_AVS_MSGS_H */
++	struct avs_ipc_msg rx;
++	u32 default_timeout_ms;
++	bool ready;
++
++	bool rx_completed;
++	spinlock_t rx_lock;
++	struct mutex msg_mutex;
++	struct completion done_completion;
++	struct completion busy_completion;
++};
++
++#define AVS_EIPC	EREMOTEIO
++/*
++ * IPC handlers may return positive value (firmware error code) what denotes
++ * successful HOST <-> DSP communication yet failure to process specific request.
++ *
++ * Below macro converts returned value to linux kernel error code.
++ * All IPC callers MUST use it as soon as firmware error code is consumed.
++ */
++#define AVS_IPC_RET(ret) \
++	(((ret) <= 0) ? (ret) : -AVS_EIPC)
++
++static inline void avs_ipc_err(struct avs_dev *adev, struct avs_ipc_msg *tx,
++			       const char *name, int error)
++{
++	/*
++	 * If IPC channel is blocked e.g.: due to ongoing recovery,
++	 * -EPERM error code is expected and thus it's not an actual error.
++	 */
++	if (error == -EPERM)
++		dev_dbg(adev->dev, "%s 0x%08x 0x%08x failed: %d\n", name,
++			tx->glb.primary, tx->glb.ext.val, error);
++	else
++		dev_err(adev->dev, "%s 0x%08x 0x%08x failed: %d\n", name,
++			tx->glb.primary, tx->glb.ext.val, error);
++}
++
++irqreturn_t avs_dsp_irq_handler(int irq, void *dev_id);
++irqreturn_t avs_dsp_irq_thread(int irq, void *dev_id);
++void avs_dsp_process_response(struct avs_dev *adev, u64 header);
++int avs_dsp_send_pm_msg_timeout(struct avs_dev *adev,
++				struct avs_ipc_msg *request,
++				struct avs_ipc_msg *reply, int timeout,
++				bool wake_d0i0);
++int avs_dsp_send_pm_msg(struct avs_dev *adev,
++			struct avs_ipc_msg *request,
++			struct avs_ipc_msg *reply, bool wake_d0i0);
++int avs_dsp_send_msg_timeout(struct avs_dev *adev,
++			     struct avs_ipc_msg *request,
++			     struct avs_ipc_msg *reply, int timeout);
++int avs_dsp_send_msg(struct avs_dev *adev,
++		     struct avs_ipc_msg *request, struct avs_ipc_msg *reply);
++int avs_dsp_send_rom_msg_timeout(struct avs_dev *adev,
++				 struct avs_ipc_msg *request, int timeout);
++int avs_dsp_send_rom_msg(struct avs_dev *adev, struct avs_ipc_msg *request);
++void avs_dsp_interrupt_control(struct avs_dev *adev, bool enable);
++int avs_ipc_init(struct avs_ipc *ipc, struct device *dev);
++void avs_ipc_block(struct avs_ipc *ipc);
++
+ #endif /* __SOUND_SOC_INTEL_AVS_H */
+diff --git a/sound/soc/intel/avs/ipc.c b/sound/soc/intel/avs/ipc.c
+new file mode 100644
+index 000000000000..b497e55b6770
+--- /dev/null
++++ b/sound/soc/intel/avs/ipc.c
+@@ -0,0 +1,397 @@
++// SPDX-License-Identifier: GPL-2.0-only
++//
++// Copyright(c) 2021 Intel Corporation. All rights reserved.
++//
++// Authors: Cezary Rojewski <cezary.rojewski@intel.com>
++//          Amadeusz Slawinski <amadeuszx.slawinski@linux.intel.com>
++//
++
++#include <linux/slab.h>
++#include <sound/hdaudio_ext.h>
++#include "avs.h"
++#include "messages.h"
++#include "registers.h"
++
++#define AVS_IPC_TIMEOUT_MS	300
++
++static void avs_dsp_receive_rx(struct avs_dev *adev, u64 header)
++{
++	struct avs_ipc *ipc = adev->ipc;
++	union avs_reply_msg msg = AVS_MSG(header);
++
++	ipc->rx.header = header;
++	if (!msg.status)
++		memcpy_fromio(ipc->rx.data, avs_uplink_addr(adev),
++			      ipc->rx.size);
++}
++
++static void avs_dsp_process_notification(struct avs_dev *adev, u64 header)
++{
++	struct avs_notify_mod_data mod_data;
++	union avs_notify_msg msg = AVS_MSG(header);
++	size_t data_size = 0;
++	void *data = NULL;
++
++	/* Calculate notification payload size. */
++	switch (msg.notify_msg_type) {
++	case AVS_NOTIFY_FW_READY:
++		break;
++
++	case AVS_NOTIFY_PHRASE_DETECTED:
++		data_size = sizeof(struct avs_notify_voice_data);
++		break;
++
++	case AVS_NOTIFY_RESOURCE_EVENT:
++		data_size = sizeof(struct avs_notify_res_data);
++		break;
++
++	case AVS_NOTIFY_MODULE_EVENT:
++		memcpy_fromio(&mod_data, avs_uplink_addr(adev), sizeof(mod_data));
++		data_size = sizeof(mod_data) + mod_data.data_size;
++		break;
++
++	default:
++		dev_warn(adev->dev, "unknown notification: 0x%x\n",
++			 msg.primary);
++		break;
++	}
++
++	if (data_size) {
++		data = kmalloc(data_size, GFP_KERNEL);
++		if (!data)
++			return;
++
++		memcpy_fromio(data, avs_uplink_addr(adev), data_size);
++	}
++
++	/* Perform notification-specific operations. */
++	switch (msg.notify_msg_type) {
++	case AVS_NOTIFY_FW_READY:
++		dev_dbg(adev->dev, "FW READY %x\n", msg.primary);
++		adev->ipc->ready = true;
++		complete(&adev->fw_ready);
++		break;
++
++	default:
++		break;
++	}
++
++	kfree(data);
++}
++
++void avs_dsp_process_response(struct avs_dev *adev, u64 header)
++{
++	struct avs_ipc *ipc = adev->ipc;
++
++	if (avs_msg_is_reply(header)) {
++		/* Response processing is invoked from IRQ thread. */
++		spin_lock_irq(&ipc->rx_lock);
++		avs_dsp_receive_rx(adev, header);
++		ipc->rx_completed = true;
++		spin_unlock_irq(&ipc->rx_lock);
++	} else {
++		avs_dsp_process_notification(adev, header);
++	}
++
++	complete(&ipc->busy_completion);
++}
++
++irqreturn_t avs_dsp_irq_handler(int irq, void *dev_id)
++{
++	struct avs_dev *adev = dev_id;
++	struct avs_ipc *ipc = adev->ipc;
++	const struct avs_spec *const spec = adev->spec;
++	u32 adspis, hipc_rsp, hipc_ack;
++	irqreturn_t ret = IRQ_NONE;
++
++	adspis = snd_hdac_adsp_readl(adev, AVS_ADSP_REG_ADSPIS);
++	if (adspis == UINT_MAX || !(adspis & AVS_ADSP_ADSPIS_IPC))
++		return ret;
++
++	hipc_ack = snd_hdac_adsp_readl(adev, spec->hipc_ack_offset);
++	hipc_rsp = snd_hdac_adsp_readl(adev, spec->hipc_rsp_offset);
++
++	/* DSP acked host's request */
++	if (hipc_ack & spec->hipc_ack_done_mask) {
++		/* mask done interrupt */
++		snd_hdac_adsp_updatel(adev, spec->hipc_ctl_offset,
++				      AVS_ADSP_HIPCCTL_DONE, 0);
++
++		complete(&ipc->done_completion);
++
++		/* tell DSP it has our attention */
++		snd_hdac_adsp_updatel(adev, spec->hipc_ack_offset,
++				      spec->hipc_ack_done_mask,
++				      spec->hipc_ack_done_mask);
++		/* unmask done interrupt */
++		snd_hdac_adsp_updatel(adev, spec->hipc_ctl_offset,
++				      AVS_ADSP_HIPCCTL_DONE,
++				      AVS_ADSP_HIPCCTL_DONE);
++		ret = IRQ_HANDLED;
++	}
++
++	/* DSP sent new response to process */
++	if (hipc_rsp & spec->hipc_rsp_busy_mask) {
++		/* mask busy interrupt */
++		snd_hdac_adsp_updatel(adev, spec->hipc_ctl_offset,
++				      AVS_ADSP_HIPCCTL_BUSY, 0);
++
++		ret = IRQ_WAKE_THREAD;
++	}
++
++	return ret;
++}
++
++irqreturn_t avs_dsp_irq_thread(int irq, void *dev_id)
++{
++	struct avs_dev *adev = dev_id;
++	union avs_reply_msg msg;
++	u32 hipct, hipcte;
++
++	hipct = snd_hdac_adsp_readl(adev, SKL_ADSP_REG_HIPCT);
++	hipcte = snd_hdac_adsp_readl(adev, SKL_ADSP_REG_HIPCTE);
++
++	/* ensure DSP sent new response to process */
++	if (!(hipct & SKL_ADSP_HIPCT_BUSY))
++		return IRQ_NONE;
++
++	msg.primary = hipct;
++	msg.ext.val = hipcte;
++	avs_dsp_process_response(adev, msg.val);
++
++	/* tell DSP we accepted its message */
++	snd_hdac_adsp_updatel(adev, SKL_ADSP_REG_HIPCT,
++			      SKL_ADSP_HIPCT_BUSY, SKL_ADSP_HIPCT_BUSY);
++	/* unmask busy interrupt */
++	snd_hdac_adsp_updatel(adev, SKL_ADSP_REG_HIPCCTL,
++			      AVS_ADSP_HIPCCTL_BUSY, AVS_ADSP_HIPCCTL_BUSY);
++
++	return IRQ_HANDLED;
++}
++
++static bool avs_ipc_is_busy(struct avs_ipc *ipc)
++{
++	struct avs_dev *adev = to_avs_dev(ipc->dev);
++	const struct avs_spec *const spec = adev->spec;
++	u32 hipc_rsp;
++
++	hipc_rsp = snd_hdac_adsp_readl(adev, spec->hipc_rsp_offset);
++	return hipc_rsp & spec->hipc_rsp_busy_mask;
++}
++
++static int avs_ipc_wait_busy_completion(struct avs_ipc *ipc, int timeout)
++{
++	int ret;
++
++again:
++	ret = wait_for_completion_timeout(&ipc->busy_completion,
++					  msecs_to_jiffies(timeout));
++	/*
++	 * DSP could be unresponsive at this point e.g. manifested by
++	 * EXCEPTION_CAUGHT notification. If so, no point in continuing.
++	 */
++	if (!ipc->ready)
++		return -EPERM;
++
++	if (!ret) {
++		if (!avs_ipc_is_busy(ipc))
++			return -ETIMEDOUT;
++		/*
++		 * Firmware did its job, either notification or reply
++		 * has been received - now wait until it's processed.
++		 */
++		wait_for_completion_killable(&ipc->busy_completion);
++	}
++
++	/* Ongoing notification's bottom-half may cause early wakeup */
++	spin_lock(&ipc->rx_lock);
++	if (!ipc->rx_completed) {
++		/* Reply delayed due to notification. */
++		reinit_completion(&ipc->busy_completion);
++		spin_unlock(&ipc->rx_lock);
++		goto again;
++	}
++
++	spin_unlock(&ipc->rx_lock);
++	return 0;
++}
++
++static void avs_ipc_msg_init(struct avs_ipc *ipc, struct avs_ipc_msg *reply)
++{
++	lockdep_assert_held(&ipc->rx_lock);
++
++	ipc->rx.header = 0;
++	ipc->rx.size = reply ? reply->size : 0;
++	ipc->rx_completed = false;
++
++	reinit_completion(&ipc->done_completion);
++	reinit_completion(&ipc->busy_completion);
++}
++
++static void avs_dsp_send_tx(struct avs_dev *adev, const struct avs_ipc_msg *tx)
++{
++	const struct avs_spec *const spec = adev->spec;
++
++	if (tx->size)
++		memcpy_toio(avs_downlink_addr(adev), tx->data, tx->size);
++	snd_hdac_adsp_writel(adev, spec->hipc_req_ext_offset, tx->header >> 32);
++	snd_hdac_adsp_writel(adev, spec->hipc_req_offset,
++			     (tx->header & UINT_MAX) | spec->hipc_req_busy_mask);
++}
++
++static int avs_dsp_do_send_msg(struct avs_dev *adev, struct avs_ipc_msg *request,
++			       struct avs_ipc_msg *reply, int timeout)
++{
++	struct avs_ipc *ipc = adev->ipc;
++	int ret;
++
++	if (!ipc->ready)
++		return -EPERM;
++
++	mutex_lock(&ipc->msg_mutex);
++
++	spin_lock(&ipc->rx_lock);
++	avs_ipc_msg_init(ipc, reply);
++	avs_dsp_send_tx(adev, request);
++	spin_unlock(&ipc->rx_lock);
++
++	ret = avs_ipc_wait_busy_completion(ipc, timeout);
++	if (ret) {
++		if (ret == -ETIMEDOUT) {
++			dev_crit(adev->dev, "communication severed: %d, rebooting dsp..\n",
++				 ret);
++
++			avs_ipc_block(ipc);
++		}
++		goto exit;
++	}
++
++	ret = ipc->rx.rsp.status;
++	if (reply) {
++		reply->header = ipc->rx.header;
++		if (reply->data && ipc->rx.size)
++			memcpy(reply->data, ipc->rx.data, reply->size);
++	}
++
++exit:
++	mutex_unlock(&ipc->msg_mutex);
++	return ret;
++}
++
++static int avs_dsp_send_msg_sequence(struct avs_dev *adev,
++				     struct avs_ipc_msg *request,
++				     struct avs_ipc_msg *reply, int timeout,
++				     bool wake_d0i0, bool schedule_d0ix)
++{
++	return avs_dsp_do_send_msg(adev, request, reply, timeout);
++}
++
++int avs_dsp_send_msg_timeout(struct avs_dev *adev, struct avs_ipc_msg *request,
++			     struct avs_ipc_msg *reply, int timeout)
++{
++	return avs_dsp_send_msg_sequence(adev, request, reply, timeout,
++					 false, false);
++}
++
++int avs_dsp_send_msg(struct avs_dev *adev, struct avs_ipc_msg *request,
++		     struct avs_ipc_msg *reply)
++{
++	return avs_dsp_send_msg_timeout(adev, request, reply,
++					adev->ipc->default_timeout_ms);
++}
++
++int avs_dsp_send_pm_msg_timeout(struct avs_dev *adev,
++				struct avs_ipc_msg *request,
++				struct avs_ipc_msg *reply, int timeout,
++				bool wake_d0i0)
++{
++	return avs_dsp_send_msg_sequence(adev, request, reply, timeout,
++					 wake_d0i0, false);
++}
++
++int avs_dsp_send_pm_msg(struct avs_dev *adev,
++			struct avs_ipc_msg *request,
++			struct avs_ipc_msg *reply, bool wake_d0i0)
++{
++	return avs_dsp_send_pm_msg_timeout(adev, request, reply,
++					   adev->ipc->default_timeout_ms,
++					   wake_d0i0);
++}
++
++static int avs_dsp_do_send_rom_msg(struct avs_dev *adev, struct avs_ipc_msg *request,
++				   int timeout)
++{
++	struct avs_ipc *ipc = adev->ipc;
++	int ret;
++
++	mutex_lock(&ipc->msg_mutex);
++
++	spin_lock(&ipc->rx_lock);
++	avs_ipc_msg_init(ipc, NULL);
++	avs_dsp_send_tx(adev, request);
++	spin_unlock(&ipc->rx_lock);
++
++	/* ROM messages must be sent before main core is unstalled */
++	avs_dsp_op(adev, stall, AVS_MAIN_CORE_MASK, false);
++
++	ret = wait_for_completion_timeout(&ipc->done_completion,
++					  msecs_to_jiffies(timeout));
++
++	mutex_unlock(&ipc->msg_mutex);
++
++	if (!ret)
++		return -ETIMEDOUT;
++	return 0;
++}
++
++int avs_dsp_send_rom_msg_timeout(struct avs_dev *adev,
++				 struct avs_ipc_msg *request, int timeout)
++{
++	return avs_dsp_do_send_rom_msg(adev, request, timeout);
++}
++
++int avs_dsp_send_rom_msg(struct avs_dev *adev, struct avs_ipc_msg *request)
++{
++	return avs_dsp_send_rom_msg_timeout(adev, request,
++					    adev->ipc->default_timeout_ms);
++}
++
++void avs_dsp_interrupt_control(struct avs_dev *adev, bool enable)
++{
++	const struct avs_spec *const spec = adev->spec;
++	u32 value;
++
++	value = enable ? AVS_ADSP_ADSPIC_IPC : 0;
++	snd_hdac_adsp_updatel(adev, AVS_ADSP_REG_ADSPIC,
++			      AVS_ADSP_ADSPIC_IPC, value);
++
++	value = enable ? AVS_ADSP_HIPCCTL_DONE : 0;
++	snd_hdac_adsp_updatel(adev, spec->hipc_ctl_offset,
++			      AVS_ADSP_HIPCCTL_DONE, value);
++
++	value = enable ? AVS_ADSP_HIPCCTL_BUSY : 0;
++	snd_hdac_adsp_updatel(adev, spec->hipc_ctl_offset,
++			      AVS_ADSP_HIPCCTL_BUSY, value);
++}
++
++int avs_ipc_init(struct avs_ipc *ipc, struct device *dev)
++{
++	ipc->rx.data = devm_kzalloc(dev, AVS_MAILBOX_SIZE, GFP_KERNEL);
++	if (!ipc->rx.data)
++		return -ENOMEM;
++
++	ipc->dev = dev;
++	ipc->ready = false;
++	ipc->default_timeout_ms = AVS_IPC_TIMEOUT_MS;
++	init_completion(&ipc->done_completion);
++	init_completion(&ipc->busy_completion);
++	spin_lock_init(&ipc->rx_lock);
++	mutex_init(&ipc->msg_mutex);
++
++	return 0;
++}
++
++void avs_ipc_block(struct avs_ipc *ipc)
++{
++	ipc->ready = false;
++}
+diff --git a/sound/soc/intel/avs/messages.h b/sound/soc/intel/avs/messages.h
+new file mode 100644
+index 000000000000..003e634f5547
+--- /dev/null
++++ b/sound/soc/intel/avs/messages.h
+@@ -0,0 +1,170 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Copyright(c) 2021 Intel Corporation. All rights reserved.
++ *
++ * Authors: Cezary Rojewski <cezary.rojewski@intel.com>
++ *          Amadeusz Slawinski <amadeuszx.slawinski@linux.intel.com>
++ */
++
++#ifndef __SOUND_SOC_INTEL_AVS_MSGS_H
++#define __SOUND_SOC_INTEL_AVS_MSGS_H
++
++struct avs_dev;
++
++#define AVS_MAILBOX_SIZE 4096
++
++enum avs_msg_target {
++	AVS_FW_GEN_MSG = 0,
++	AVS_MOD_MSG = 1
++};
++
++enum avs_msg_direction {
++	AVS_MSG_REQUEST = 0,
++	AVS_MSG_REPLY = 1
++};
++
++enum avs_global_msg_type {
++	AVS_GLB_NOTIFICATION = 27,
++};
++
++union avs_global_msg {
++	u64 val;
++	struct {
++		union {
++			u32 primary;
++			struct {
++				u32 rsvd:24;
++				u32 global_msg_type:5;
++				u32 msg_direction:1;
++				u32 msg_target:1;
++			};
++		};
++		union {
++			u32 val;
++		} ext;
++	};
++} __packed;
++
++struct avs_tlv {
++	u32 type;
++	u32 length;
++	u32 value[];
++} __packed;
++
++union avs_module_msg {
++	u64 val;
++	struct {
++		union {
++			u32 primary;
++			struct {
++				u32 module_id:16;
++				u32 instance_id:8;
++				u32 module_msg_type:5;
++				u32 msg_direction:1;
++				u32 msg_target:1;
++			};
++		};
++		union {
++			u32 val;
++		} ext;
++	};
++} __packed;
++
++union avs_reply_msg {
++	u64 val;
++	struct {
++		union {
++			u32 primary;
++			struct {
++				u32 status:24;
++				u32 global_msg_type:5;
++				u32 msg_direction:1;
++				u32 msg_target:1;
++			};
++		};
++		union {
++			u32 val;
++		} ext;
++	};
++} __packed;
++
++enum avs_notify_msg_type {
++	AVS_NOTIFY_PHRASE_DETECTED = 4,
++	AVS_NOTIFY_RESOURCE_EVENT = 5,
++	AVS_NOTIFY_FW_READY = 8,
++	AVS_NOTIFY_MODULE_EVENT = 12,
++};
++
++union avs_notify_msg {
++	u64 val;
++	struct {
++		union {
++			u32 primary;
++			struct {
++				u32 rsvd:16;
++				u32 notify_msg_type:8;
++				u32 global_msg_type:5;
++				u32 msg_direction:1;
++				u32 msg_target:1;
++			};
++		};
++		union {
++			u32 val;
++		} ext;
++	};
++} __packed;
++
++#define AVS_MSG(hdr) { .val = hdr }
++
++#define AVS_GLOBAL_REQUEST(msg_type)		\
++{						\
++	.global_msg_type = AVS_GLB_##msg_type,	\
++	.msg_direction = AVS_MSG_REQUEST,	\
++	.msg_target = AVS_FW_GEN_MSG,		\
++}
++
++#define AVS_MODULE_REQUEST(msg_type)		\
++{						\
++	.module_msg_type = AVS_MOD_##msg_type,	\
++	.msg_direction = AVS_MSG_REQUEST,	\
++	.msg_target = AVS_MOD_MSG,		\
++}
++
++#define AVS_NOTIFICATION(msg_type)		\
++{						\
++	.notify_msg_type = AVS_NOTIFY_##msg_type,\
++	.global_msg_type = AVS_GLB_NOTIFICATION,\
++	.msg_direction = AVS_MSG_REPLY,		\
++	.msg_target = AVS_FW_GEN_MSG,		\
++}
++
++#define avs_msg_is_reply(hdr) \
++({ \
++	union avs_reply_msg __msg = AVS_MSG(hdr); \
++	__msg.msg_direction == AVS_MSG_REPLY && \
++	__msg.global_msg_type != AVS_GLB_NOTIFICATION; \
++})
++
++/* Notification types */
++
++struct avs_notify_voice_data {
++	u16 kpd_score;
++	u16 reserved;
++} __packed;
++
++struct avs_notify_res_data {
++	u32 resource_type;
++	u32 resource_id;
++	u32 event_type;
++	u32 reserved;
++	u32 data[6];
++} __packed;
++
++struct avs_notify_mod_data {
++	u32 module_instance_id;
++	u32 event_id;
++	u32 data_size;
++	u32 data[];
++} __packed;
++
++#endif /* __SOUND_SOC_INTEL_AVS_MSGS_H */
+diff --git a/sound/soc/intel/avs/registers.h b/sound/soc/intel/avs/registers.h
+index e0b6c8ffe633..6bd7f2602cf8 100644
+--- a/sound/soc/intel/avs/registers.h
++++ b/sound/soc/intel/avs/registers.h
+@@ -12,6 +12,11 @@
+ /* Intel HD Audio General DSP Registers */
+ #define AVS_ADSP_GEN_BASE		0x0
+ #define AVS_ADSP_REG_ADSPCS		(AVS_ADSP_GEN_BASE + 0x04)
++#define AVS_ADSP_REG_ADSPIC		(AVS_ADSP_GEN_BASE + 0x08)
++#define AVS_ADSP_REG_ADSPIS		(AVS_ADSP_GEN_BASE + 0x0C)
++
++#define AVS_ADSP_ADSPIC_IPC		BIT(0)
++#define AVS_ADSP_ADSPIS_IPC		BIT(0)
+ 
+ #define AVS_ADSPCS_CRST_MASK(cm)	(cm)
+ #define AVS_ADSPCS_CSTALL_MASK(cm)	((cm) << 8)
+@@ -19,4 +24,44 @@
+ #define AVS_ADSPCS_CPA_MASK(cm)		((cm) << 24)
+ #define AVS_MAIN_CORE_MASK		BIT(0)
+ 
++#define AVS_ADSP_HIPCCTL_DONE		BIT(1)
++#define AVS_ADSP_HIPCCTL_BUSY		BIT(0)
++
++/* SKL Intel HD Audio Inter-Processor Communication Registers */
++#define SKL_ADSP_IPC_BASE		0x40
++#define SKL_ADSP_REG_HIPCT		(SKL_ADSP_IPC_BASE + 0x00)
++#define SKL_ADSP_REG_HIPCTE		(SKL_ADSP_IPC_BASE + 0x04)
++#define SKL_ADSP_REG_HIPCI		(SKL_ADSP_IPC_BASE + 0x08)
++#define SKL_ADSP_REG_HIPCIE		(SKL_ADSP_IPC_BASE + 0x0C)
++#define SKL_ADSP_REG_HIPCCTL		(SKL_ADSP_IPC_BASE + 0x10)
++
++#define SKL_ADSP_HIPCI_BUSY		BIT(31)
++#define SKL_ADSP_HIPCIE_DONE		BIT(30)
++#define SKL_ADSP_HIPCT_BUSY		BIT(31)
++
++/* Constants used when accessing SRAM, space shared with firmware */
++#define AVS_FW_REG_BASE(adev)		((adev)->spec->sram_base_offset)
++#define AVS_FW_REG_STATUS(adev)		(AVS_FW_REG_BASE(adev) + 0x0)
++#define AVS_FW_REG_ERROR_CODE(adev)	(AVS_FW_REG_BASE(adev) + 0x4)
++
++#define AVS_FW_REGS_SIZE		PAGE_SIZE
++#define AVS_FW_REGS_WINDOW		0
++/* DSP -> HOST communication window */
++#define AVS_UPLINK_WINDOW		AVS_FW_REGS_WINDOW
++/* HOST -> DSP communication window */
++#define AVS_DOWNLINK_WINDOW		1
++
++/* registry I/O helpers */
++#define avs_sram_offset(adev, window_idx) \
++	((adev)->spec->sram_base_offset + \
++	 (adev)->spec->sram_window_size * (window_idx))
++
++#define avs_sram_addr(adev, window_idx) \
++	((adev)->adsp_ba + avs_sram_offset(adev, window_idx))
++
++#define avs_uplink_addr(adev) \
++	(avs_sram_addr(adev, AVS_UPLINK_WINDOW) + AVS_FW_REGS_SIZE)
++#define avs_downlink_addr(adev) \
++	avs_sram_addr(adev, AVS_DOWNLINK_WINDOW)
++
+ #endif /* __SOUND_SOC_INTEL_AVS_REGS_H */
 -- 
 2.25.1
 
