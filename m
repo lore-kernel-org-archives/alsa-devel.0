@@ -4,58 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6C12C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Dec 2021 17:56:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 445A1C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Dec 2021 19:17:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9FB162114;
-	Thu,  9 Dec 2021 18:55:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9FB162114
+	by alsa0.perex.cz (Postfix) with ESMTPS id C0003206D;
+	Thu,  9 Dec 2021 20:16:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C0003206D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639072558;
-	bh=L1BjZ8uSjJMDXcioMYth4yKfPiejWglWdt+O/FHYnOk=;
-	h=Date:To:From:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=DriaKrNvLMN583MexE1FE+mFXEjgBaFRnasb37iC9otljfli0N7EtiM0fIAgc9B5e
-	 TXbq9ab1F1nTDmYFvKvRlSq9dd7coGb0peK8uej7CpNBca7+9suduhOGtSrQ5xTwhb
-	 TkMohi9oqXaF5hhh3RhKjNvDnG6FCSpxmPkVQjCI=
+	s=default; t=1639077458;
+	bh=VqPjE74hUiM+wV9wag+bjqN/URzt4NeUOb8KYkowL5o=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=gs82ut9Nq3VMoSSgA9wZMWlyk0UF2i8xGaoTOOPo0EfkqY4SSp9w3ptCBzDD6iWyL
+	 bwltcbs9rGXvNqABG8ztjBUb+S7PGe+fnrIchMiBSUvuf3XpZZGwx6+M3KB7nIGFVQ
+	 vQtHXUZlibF92eK9Tx+JsgNVRbEd3miFvGDinGo0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3410BF80431;
-	Thu,  9 Dec 2021 18:55:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 47D90F80431;
+	Thu,  9 Dec 2021 20:16:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8F18EF804AE; Thu,  9 Dec 2021 18:55:05 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ id DA9E6F804AE; Thu,  9 Dec 2021 20:16:41 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5E46FF8028D
- for <alsa-devel@alsa-project.org>; Thu,  9 Dec 2021 18:54:54 +0100 (CET)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 004B6A0067
- for <alsa-devel@alsa-project.org>; Thu,  9 Dec 2021 18:54:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 004B6A0067
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1639072494; bh=rYkDLk78LlQhkOEbSbFYTS2VgD+3TkReF30Xkrna7Eg=;
- h=Date:To:From:Subject:From;
- b=EvQUy//4MzGl2B6oEGKifKx5BiK9EC+0aKeP7tFZw3uh9gKlKbRN59PfCi69P4rHG
- v5Pn/VZ+rw+x9gFbumDFcHW5/ahwTxi0Y65jcMR4M9awm/lAgF6uvPtsO/LCq5cIZb
- /ZKoU1VUxJ1Be6EXZaHSjU2LTfhG/5yyJuMhMaq4=
-Received: from [192.168.100.98] (unknown [192.168.100.98])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA
- for <alsa-devel@alsa-project.org>; Thu,  9 Dec 2021 18:54:52 +0100 (CET)
-Message-ID: <dd325d18-0247-279a-c3b7-e160ed039f55@perex.cz>
-Date: Thu, 9 Dec 2021 18:54:52 +0100
+ by alsa1.perex.cz (Postfix) with ESMTPS id EDF74F800AB
+ for <alsa-devel@alsa-project.org>; Thu,  9 Dec 2021 20:16:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EDF74F800AB
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="sjEvlS5+"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by sin.source.kernel.org (Postfix) with ESMTPS id 745F7CE27F7;
+ Thu,  9 Dec 2021 19:16:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C43FCC004DD;
+ Thu,  9 Dec 2021 19:16:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1639077388;
+ bh=VqPjE74hUiM+wV9wag+bjqN/URzt4NeUOb8KYkowL5o=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=sjEvlS5+hQU4fB/H9lpg9Ts/lSab8T1RBLIEr589scWZqkl2Bkc/dPI+bzGs41I1O
+ BUFfIjluzuUFhqYpPFUf0nc7HO5X2+z0sJkezTb4W1fNDBrAnLSdcZ1p86+5bNkA77
+ N1Me/mr3L1zj2Oqq22/KDABOSN66s2/TffrX0dp4AQY7sMTgf/tfmUBtdhdfFTkyXb
+ Pv88yhhaO1I4+7uHsMV4Srg/ENdeH4OoXslRUXnguMCWvz/mBK7ekTpI7lhYidVpWB
+ iKRDjFboULkE8YiJBUnEV02p6l9yjJkg/tq/RRjzsL6Yofwc7BBSCkghSZZI5e6CBn
+ Mb0i4gW2ffuDg==
+Date: Thu, 9 Dec 2021 19:16:22 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Daniel Baluta <daniel.baluta@oss.nxp.com>
+Subject: Re: [PATCH] ASoC: SOF: Remove pm_runtime_put_autosuspend() for SOF
+ OF device
+Message-ID: <YbJWBpxHo4zN4zFJ@sirena.org.uk>
+References: <20211209174657.141268-1-daniel.baluta@oss.nxp.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Content-Language: en-US
-To: ALSA development <alsa-devel@alsa-project.org>
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: ALSA 1.2.6.1 release
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="hEvhH7N569Hzdzpj"
+Content-Disposition: inline
+In-Reply-To: <20211209174657.141268-1-daniel.baluta@oss.nxp.com>
+X-Cookie: One picture is worth 128K words.
+Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
+ Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>, kai.vehmanen@linux.intel.com,
+ lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
+ linux-mediatek@lists.infradead.org, Paul Olaru <paul.olaru@oss.nxp.com>,
+ Daniel Baluta <daniel.baluta@nxp.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -71,31 +86,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello all,
 
-       new ALSA userspace packages were released. This is a quick bugfix 
-release. You may download them from the ALSA website 
-http://www.alsa-project.org or directly:
+--hEvhH7N569Hzdzpj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-       HTTP: https://www.alsa-project.org/files/pub
-       FTP:  ftp://ftp.alsa-project.org/pub
+On Thu, Dec 09, 2021 at 07:46:57PM +0200, Daniel Baluta wrote:
+>=20
+> Signed-off-by: Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
+> Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
+> Reviewed-by: Paul Olaru <paul.olaru@oss.nxp.com>
+> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> ---
 
-Released packages:
 
-       alsa-lib
-       alsa-ucm-conf
+You've not provided a Signed-off-by for this so I can't do anything with
+it, please see Documentation/process/submitting-patches.rst for details
+on what this is and why it's important.
 
-Full list of changes:
+--hEvhH7N569Hzdzpj
+Content-Type: application/pgp-signature; name="signature.asc"
 
-       https://www.alsa-project.org/wiki/Changes_v1.2.6_v1.2.6.1
+-----BEGIN PGP SIGNATURE-----
 
-The fingerprint of the public signing key is:
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGyVgUACgkQJNaLcl1U
+h9DXDAf/V9WKvYxWtyKZWaVx8aEh0kubvlvQRgFVA9NuUrK8ERYh83ykeUpVX6JC
+3x8VgygJLVz00vpIZ7/+Xe6kmpHTezjzdhKayOtXEdBr8uGA4UaTErSb8DWpYJ5f
+Es7u+0jIIOJa2QvHRgTmAq2EllPEEgQ4rt2aISxj/tUEhWHdF6ElY//3EzZXxf82
+U0fQq8LHRPfPdjrywngBPVbyGOUgXzM3FAYCatVYdG2cclJejWWHPD6Zc44TRIc9
+H2qDFnaEzZTvdQ6ZNvhkK9w4QLeh80YSWplXHoSLWuG/vqdivqNJkqgPqFDra4Iw
+bPaNP6k50hPDeiFdIWPFIhUH989GSQ==
+=BmDs
+-----END PGP SIGNATURE-----
 
-       F04D F507 37AC 1A88 4C4B 3D71 8380 596D A6E5 9C91
-
-				Have fun,
-					Jaroslav
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+--hEvhH7N569Hzdzpj--
