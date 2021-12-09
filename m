@@ -4,42 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00908C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Dec 2021 04:19:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4DF17C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Dec 2021 05:50:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3D73022AB;
-	Thu,  9 Dec 2021 05:18:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D73022AB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9FDF52191;
+	Thu,  9 Dec 2021 06:49:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9FDF52191
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639023584;
-	bh=37MVlfpiy4LY5uW6uHJmvHxhEczwKaqdm0d3qc2KjBk=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1639029013;
+	bh=kK/h+NSEFYzg44ULry5GUHoFGQnU/GHJzyuxxwIzZQc=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=czGUZ7a0Kjfju6+MS4ZvsFFLais12Zcfdl4FVNNDP5D+rs3dTDyLsFoyMMX8AYpPm
-	 l4FZsPs7nxGdMisjGBxN4YBo6kjK0gJQxQ7Mp9vsDSMdpvEmCOfldQ2uJOgbUkW6i2
-	 rLsdkdZGlaZ45w7935PHeLzXzuoZWY+3YLmDnNyk=
+	b=oQf/P4A5o4T8t9qujc7aOfyisaxHt5Hm1Zf8JywScr6JE1L0fe+xF9iiHW8TZ081G
+	 i+dyYHgPjpGyKh8ql868ZvpGJtGziT0obm4SAbBU9/NmkZ8Pd7veDEjBmmONm531py
+	 czuN0PvEfJtMt8DoOPKcZCzxxkkKZjVZ8BFakP+g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B1CBAF80259;
-	Thu,  9 Dec 2021 05:18:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2DA70F800AB;
+	Thu,  9 Dec 2021 06:49:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A998CF8028D; Thu,  9 Dec 2021 05:18:52 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 2E3AFF800AB
- for <alsa-devel@alsa-project.org>; Thu,  9 Dec 2021 05:18:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E3AFF800AB
+ id 68B2EF8028D; Thu,  9 Dec 2021 06:49:21 +0100 (CET)
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0BE3BF800AB
+ for <alsa-devel@alsa-project.org>; Thu,  9 Dec 2021 06:49:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0BE3BF800AB
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="ITeY9XQJ"
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1B95n9QI054338;
+ Wed, 8 Dec 2021 23:49:09 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1639028949;
+ bh=3DzJ5UfTbjOyfKamsLgBOyMkZhB6TUL60sGkvETPZm4=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=ITeY9XQJRzzelezhViOi+Fk2Xp7xyDTwYTSPuxE9K9mkOeJeL+39V9ybyw0kPjUM1
+ nVRpPx17xZUyUoDrCIdcGM74dwgUAjbPolswAN5mZzKjDRZ68+6hGI53umAIR/3/Bo
+ dOVgSf9M15pH21HW+P+LWkWtnepvzNrZhRy4viDg=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1B95n8kn040541
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Wed, 8 Dec 2021 23:49:09 -0600
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 8
+ Dec 2021 23:49:08 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Wed, 8 Dec 2021 23:49:08 -0600
+Received: from [172.24.145.75] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1B95n6S9013694;
+ Wed, 8 Dec 2021 23:49:06 -0600
+Subject: Re: [PATCH v4] ASoC: dt-bindings: davinci-mcasp: convert McASP
+ bindings to yaml schema
+To: =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>,
+ <robh+dt@kernel.org>
+References: <20211203120243.24173-1-j-choudhary@ti.com>
+ <ed6c9be9-32d3-719a-ee0d-608b228f36b3@gmail.com>
+ <20449d7b-0524-a8df-7852-a4c495157682@ti.com>
+ <b6af56f1-7e6b-81ca-7bae-8f2a2dfaf0eb@gmail.com>
+From: Jayesh Choudhary <j-choudhary@ti.com>
+Message-ID: <5c032067-3396-dcf2-5f1a-09aca6f8e647@ti.com>
+Date: Thu, 9 Dec 2021 11:19:05 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1639023515547167063-webhooks-bot@alsa-project.org>
-References: <1639023515547167063-webhooks-bot@alsa-project.org>
-Subject: alsa-lib-1.2.6 regression, no audio
-Message-Id: <20211209041852.A998CF8028D@alsa1.perex.cz>
-Date: Thu,  9 Dec 2021 05:18:52 +0100 (CET)
+In-Reply-To: <b6af56f1-7e6b-81ca-7bae-8f2a2dfaf0eb@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, broonie@kernel.org,
+ lgirdwood@gmail.com, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -55,19 +95,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #199 was opened from gkubaryk:
 
-after upgrading the following packages, there is no audio:
-=media-plugins/alsa-plugins-1.2.6
-=media-sound/alsa-utils-1.2.6
-=media-libs/alsa-ucm-conf-1.2.6
-=media-libs/alsa-lib-1.2.6
 
-I checked each of the four individually and the last one (alsa-lib, 1.2.5.1) is the one that restored audio.
+On 08/12/21 1:14 am, Péter Ujfalusi wrote:
 
-alsa-info.sh output, as run from 1.2.5.1 (but it downloaded the newer version of the script to /tmp) is at http://alsa-project.org/db/?f=f94a60ff547f9cce9e872acae67fdf35473fa754
+> 
+> I'm fine if the port remains here
+> 
+>> Peter,
+>> Any other changes I should make?
+> 
+> Not much, this already looking good.
+> I would fix the dts files which generates warning/error with this yaml
+> as they are incorrect.
+> 
 
-let me know if I can be of further assistance; I need the audio working for the rest of the day but would be able to provide output from 1.2.6 tomorrow perhaps, if desired.
+One patch has already been sent for the typo error in the dts file which
+generates a warning:
+https://lore.kernel.org/all/20211125105326.17000-1-j-choudhary@ti.com/
 
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/199
-Repository URL: https://github.com/alsa-project/alsa-lib
+The 'num-serializer' issue needs to be fixed.
+
+-Jayesh
