@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CFC7AC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Dec 2021 22:05:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B546C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Dec 2021 22:07:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 09DE01AD1;
-	Thu,  9 Dec 2021 23:04:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 09DE01AD1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 89F97214B;
+	Thu,  9 Dec 2021 23:06:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 89F97214B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639087547;
-	bh=16ja2IKOPsfNJhL8W80bhoh4mI9C+Im6AIYwEO4T2aA=;
+	s=default; t=1639087618;
+	bh=VUtHe2oVR/Z9qXToeyncnO6N0DYzrpFXuTRQ73Nfa0c=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Y4eVJ+lfU03OxUaPEk4GYaK8T53VHqfYnSmqGO7YcqxkRARwbbn7MhY6IIf2XqeVu
-	 9yPsqfERVQEqFR1VpNUTSOsiHF2mOrcVeLc8m0DjNOboCxD43xT4v7Agy81cOVx8eK
-	 ETvTRQQqsJzds6K7dDcBq+2xsxAMHKfrJmmBhriI=
+	b=idq+EAnzofyPslIBeKIEeREUdDqqMKCGvB3nQQO0aI/qAfD1/SM3ldGz5G+HrqjU4
+	 FMRjbBTNmot2aYx6WDVlQI6OezSGGy4U/f/9joamrzLLq0JUaa4ZkHyzgi/983q9cJ
+	 j2yubdX7BXapyQudYhxBsZEgC4fpZPstwIqirESg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4B1BCF80431;
-	Thu,  9 Dec 2021 23:04:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F3516F80431;
+	Thu,  9 Dec 2021 23:06:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9D4F9F804AE; Thu,  9 Dec 2021 23:04:54 +0100 (CET)
+ id 54524F804AE; Thu,  9 Dec 2021 23:06:07 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 6D346F8028D
- for <alsa-devel@alsa-project.org>; Thu,  9 Dec 2021 23:04:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D346F8028D
+ by alsa1.perex.cz (Postfix) with ESMTP id 3521BF8028D
+ for <alsa-devel@alsa-project.org>; Thu,  9 Dec 2021 23:06:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3521BF8028D
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1639087486438345909-webhooks-bot@alsa-project.org>
-References: <1639087486438345909-webhooks-bot@alsa-project.org>
+In-Reply-To: <1639087560992140055-webhooks-bot@alsa-project.org>
+References: <1639087560992140055-webhooks-bot@alsa-project.org>
 Subject: microphone disappeared on alsa-ucm-conf 1.2.6.1
-Message-Id: <20211209220454.9D4F9F804AE@alsa1.perex.cz>
-Date: Thu,  9 Dec 2021 23:04:54 +0100 (CET)
+Message-Id: <20211209220607.54524F804AE@alsa1.perex.cz>
+Date: Thu,  9 Dec 2021 23:06:07 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -61,8 +61,16 @@ after upgrade alsa-ucm-conf 1.2.5.1-1 to 1.2.6.1-1 (arch linux) my microphone di
 
 Similar to: https://bugs.archlinux.org/task/71180
 
-lspci:
-00:1f.3 Audio device: Intel Corporation Tiger Lake-LP Smart Sound Technology Audio Controller (rev 20)
+```
+00:1f.3 Audio device: Intel Corporation Tiger Lake-LP Smart Sound Technology Audio Controller (rev 20) (prog-if 80)
+        Subsystem: Lenovo Device 22c9
+        Flags: bus master, fast devsel, latency 64, IRQ 187, IOMMU group 12
+        Memory at 603dbc0000 (64-bit, non-prefetchable) [size=16K]
+        Memory at 603da00000 (64-bit, non-prefetchable) [size=1M]
+        Capabilities: <access denied>
+        Kernel driver in use: sof-audio-pci-intel-tgl
+        Kernel modules: snd_hda_intel, snd_sof_pci_intel_tgl
+```
 
 Issue URL     : https://github.com/alsa-project/alsa-lib/issues/200
 Repository URL: https://github.com/alsa-project/alsa-lib
