@@ -4,60 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C9CEC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Dec 2021 11:32:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 563C9C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Dec 2021 11:48:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A44EE1FCA;
-	Fri, 10 Dec 2021 12:31:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A44EE1FCA
+	by alsa0.perex.cz (Postfix) with ESMTPS id BCADB1FC2;
+	Fri, 10 Dec 2021 12:48:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BCADB1FC2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639135959;
-	bh=WC3yHWSmgEqvitDRxqDxx3dms+8Jbme1gjcws6lqa1c=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=EaCtDmbDwxH8Hh2eYMyQL1Jk4MT7KmymdYQuovhn6ydyqm6TJEz59M7SIbU2P+orE
-	 vBF0AswPkviJT98dM/Bx5skHFxHUioI1+WDVpCA9MevRDmmpxn9iDI/0m2+SozopsK
-	 vPF4CvDX87eTMmQFZg44hrOtJJzoxbGhNGJES0DY=
+	s=default; t=1639136935;
+	bh=wjLoWfU0uyOpEqEaUouQT6PTs7ZGFieDrbqEZTvSD4Q=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Kws1mnC24xpD1Ob8L6xaIj7j9edK7XfDrdt9OoBvWdOGfl11SHQSDD5Z0HgGow15n
+	 D4jg8mi3LOBTFCpXa8/e2iuJpTq4rFTiRI538AsYnDhL9KVbyprfCCCsBaqEAaIE/5
+	 Gcxe08Ol3WF0Rj7WpFaODYwa1XZOsMKk0oDpg6wY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3CF8BF804CC;
-	Fri, 10 Dec 2021 12:31:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3ACD4F804E6;
+	Fri, 10 Dec 2021 12:48:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 486D1F804EC; Fri, 10 Dec 2021 12:31:48 +0100 (CET)
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de
- [IPv6:2a01:488:42:1000:50ed:8234::])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 0FBA3F804EC; Fri, 10 Dec 2021 12:48:03 +0100 (CET)
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com
+ [IPv6:2a00:1450:4864:20::334])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1F6EDF804CC
- for <alsa-devel@alsa-project.org>; Fri, 10 Dec 2021 12:31:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F6EDF804CC
-Received: from ip4d173d4a.dynamic.kabel-deutschland.de ([77.23.61.74]
- helo=[192.168.66.200]); authenticated
- by wp530.webpack.hosteurope.de running ExIM with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
- id 1mve7k-0007kh-OC; Fri, 10 Dec 2021 12:31:36 +0100
-Message-ID: <977e3179-89a8-6abf-8a8f-7afe13c44dee@leemhuis.info>
-Date: Fri, 10 Dec 2021 12:31:34 +0100
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9F8A9F804CC
+ for <alsa-devel@alsa-project.org>; Fri, 10 Dec 2021 12:47:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F8A9F804CC
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="PwbcylkT"
+Received: by mail-wm1-x334.google.com with SMTP id y196so6599489wmc.3
+ for <alsa-devel@alsa-project.org>; Fri, 10 Dec 2021 03:47:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=DdPRnVGVlNPycJ9DTbcky3GEfi1/qO6rilh8GdIfKm8=;
+ b=PwbcylkTeZEeIL6UBJi3g6ypNrRUQOcj0MzGxICst0UQEnZGD4GKrXqHNcF7ANjdmz
+ vcmzuEXie0jFhjkU50uMLPZx6wD/EX4AO122aPqsRw/ErgXh5bj4MEuGcRJquZwtWLld
+ RmMHDtepCxyMpFJ1SukqoshAu9d2PJ08+4z+c+Qppqio2PrJoOVATfZdryPw+62m+gBY
+ 94hVO607KSg2weyTuWrVxqgZlEFkMQPp+dSdJ1HRxJJDX8wGvzycs9q93gQW7biMr8y2
+ f1J5CSeyx72WhuVgnHn+NExrRUZzfll0H86ltWXcgZLh1q+jtbb5Qdpjw+NfGPRUgaHy
+ eGcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=DdPRnVGVlNPycJ9DTbcky3GEfi1/qO6rilh8GdIfKm8=;
+ b=1Ro293XH06J2mNyXxYaX6x/Pt2739AuV0bSgtKDJ/E71yXIR0Scf+x1cFP0D+DA78c
+ vDZQyxVFaQVKUl3EnOI0mdTYVNgN29T2MONS3nEeJrxkSRPt7sdaUkbm+VU/jvjN9+YV
+ j7kAoBxVSpCt0DhebNMtH46W3s0ggqyUxLNh40EYsGJuZECY0ExJzrkVtinJI/7C/uV5
+ 3m+/+DtzNJFJP9HPY5rmeDMAAvBMFEYeQ1UHY1Vu56wWsGSGwcwmAlqJXE9LIPR04t9U
+ +LH81Rkjjj9pgUG5I9GeL0Ah9x3r5ewvacg0t17hf6syuwizkHJQosDFh1DjXZpto8mL
+ mPew==
+X-Gm-Message-State: AOAM533V/ag9TeZw+Dw4ebra7jUApzUaKiHgPim4AFX8WtVjWaq7kWom
+ ocDqaBNhvFzKZPZf7Mz2Pp8z1g==
+X-Google-Smtp-Source: ABdhPJx7yY3Fqo+dlZ2ZI3y6N+B/3ysazcxkVn8RR8G3dVto96Ljv5epauhXEivULr6OwbtUvuqHKA==
+X-Received: by 2002:a7b:c257:: with SMTP id b23mr15907315wmj.67.1639136870916; 
+ Fri, 10 Dec 2021 03:47:50 -0800 (PST)
+Received: from srini-hackbox.lan
+ (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
+ by smtp.gmail.com with ESMTPSA id a9sm2412753wrt.66.2021.12.10.03.47.50
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 10 Dec 2021 03:47:50 -0800 (PST)
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: lee.jones@linaro.org
+Subject: [PATCH] mfd: wcd934x: fix typo and a duplicate register define
+Date: Fri, 10 Dec 2021 11:47:47 +0000
+Message-Id: <20211210114747.1485-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: Is it a regression? 5.15.5: No sound with speaker-test. 5.12.13:
- it works.
-Content-Language: en-BZ
-To: u34@net9.ga, Takashi Iwai <tiwai@suse.de>
-References: <E1mrgJF-000RWu-7d@mx1.net9.ga> <s5hlf0wojv8.wl-tiwai@suse.de>
- <E1muw55-000WNp-Ui@mx1.net9.ga>
-From: Thorsten Leemhuis <regressions@leemhuis.info>
-In-Reply-To: <E1muw55-000WNp-Ui@mx1.net9.ga>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de; regressions@leemhuis.info; 1639135903;
- 8f5a8c9b; 
-X-HE-SMSGID: 1mve7k-0007kh-OC
-Cc: alsa-devel@alsa-project.org,
- "regressions@lists.linux.dev" <regressions@lists.linux.dev>
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -73,61 +92,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Looks like we ended up with a typo and a duplicate in WCD register defines.
+Fix these.
 
-On 08.12.21 13:29, u34@net9.ga wrote:
-> Takashi Iwai <tiwai@suse.de> wrote:
->> On Mon, 29 Nov 2021 14:03:05 +0100,
->> u34@net9.ga wrote:
->>>
->>> The following looks to me a regression in the linux sound driver.
->>> alsa-info.sh output is included at the bottom of this message. There are 2 
->>> outputs. An output with a 5.12.13 kernel. The other output is with a 
->>> 5.15.5. They were obtained with the same PC. With 5.12.13, the 
->>> speaker-test program works as expected. There is no sound when the 
->>> speaker-test program is ran with 5.15.5.
->>> 5.15.5 has 
->>>     options snd-hda-intel id=PCH index=0
->>>     options snd-hda-intel id=HDMI index=1
->>> , which 5.12.13 does not have.
->>
->> Both those lines conflict with each other, so they make no sense and
->> are already incorrect.
->>
->> If you want to swap the card indices inevitably needed, just pass a
->> single option line below instead.
->>
->>   options snd-hda-intel index=1,0
-> 
-> I have modified my setting as you suggested.
-> 
-> speaker-test is now producing sound with both 5.12.13, and 5.15.5. Which is 
-> actualy 5.15.6, not 5.15.5, by now. It got upgraded a few days ago. I don't 
-> know what is the exact change that made it working. I have done several 
-> other chnages in the last couple of days.
-> [...]
+Fixes: 6ac7e4d7ad70 ("mfd: wcd934x: Add support to wcd9340/wcd9341 codec")
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ include/linux/mfd/wcd934x/registers.h | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Sounds to me like "there might still be a small problem lurking there,
-but things are working now for the reporter and maybe the problem was
-caused by something else anyway", so I guess I'll remove in from the
-regression tracking.
+diff --git a/include/linux/mfd/wcd934x/registers.h b/include/linux/mfd/wcd934x/registers.h
+index 76a943c83c63..bcec70a66fff 100644
+--- a/include/linux/mfd/wcd934x/registers.h
++++ b/include/linux/mfd/wcd934x/registers.h
+@@ -34,7 +34,6 @@
+ #define WCD934X_DMIC_RATE_MASK					GENMASK(3, 1)
+ #define WCD934X_CPE_SS_DMIC2_CTL				0x021a
+ #define WCD934X_CPE_SS_DMIC_CFG					0x021b
+-#define WCD934X_CPE_SS_DMIC_CFG					0x021b
+ #define WCD934X_CPE_SS_CPAR_CFG					0x021c
+ #define WCD934X_INTR_PIN1_MASK0					0x0409
+ #define WCD934X_INTR_PIN1_STATUS0				0x0411
+@@ -375,7 +374,7 @@
+ #define WCD934X_CDC_RX2_RX_PATH_SEC3				0x0b74
+ #define WCD934X_CDC_RX2_RX_PATH_DSMDEM_CTL			0x0b7b
+ #define WCD934X_CDC_RX3_RX_PATH_CTL				0x0b7d
+-#define WCD934X_CDC_RX3_RX_PATH_CFG0				0x0b6e
++#define WCD934X_CDC_RX3_RX_PATH_CFG0				0x0b7e
+ #define WCD934X_CDC_RX3_RX_PATH_CFG2				0x0b80
+ #define WCD934X_CDC_RX3_RX_VOL_CTL				0x0b81
+ #define WCD934X_CDC_RX3_RX_PATH_MIX_CTL				0x0b82
+-- 
+2.21.0
 
-#regzbot invalid: things are working again, what exactly helped remains
-unkown
-#regzbot ignore-activity
-
-Ciao, Thorsten (wearing his 'Linux kernel regression tracker' hat).
-
-P.S.: As a Linux kernel regression tracker I'm getting a lot of reports
-on my table. I can only look briefly into most of them. Unfortunately
-therefore I sometimes will get things wrong or miss something important.
-I hope that's not the case here; if you think it is, don't hesitate to
-tell me about it in a public reply. That's in everyone's interest, as
-what I wrote above might be misleading to everyone reading this; any
-suggestion I gave thus might sent someone reading this down the wrong
-rabbit hole, which none of us wants.
-
-BTW, I have no personal interest in this issue, which is tracked using
-regzbot, my Linux kernel regression tracking bot
-(https://linux-regtracking.leemhuis.info/regzbot/). I'm only posting
-this mail to get things rolling again and hence don't need to be CC on
-all further activities wrt to this regression.
