@@ -4,58 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0994C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Dec 2021 14:29:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0FC0FC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Dec 2021 15:12:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 069371AE7;
-	Fri, 10 Dec 2021 15:28:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 069371AE7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5F72B1F5E;
+	Fri, 10 Dec 2021 16:11:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5F72B1F5E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639146579;
-	bh=vYr7ai1Y/QYM9SXpnQW9J1SPyOHuP3ilj3tnJu0vmeg=;
-	h=Date:To:From:Subject:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1639149141;
+	bh=rvNl7qd5p9y3Cnh1ZMlY0hnxgikF+fR+3FMkCjAWZd0=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=ncCgXfhoBUsjusff5FQGtjnuQDc4Cxvvj0sKctCRSbATc7isNFaiOtEU+74ss2uuX
-	 xM43mT6cWSWOp82Mz5Z5xmczcffXyjgwlALKHxRZOY5hdMVyhqSObc/KYWBRRpMdz5
-	 lzVGiMExe5v33ndEc82PwRCKtYJulEi8KH9VWsZI=
+	b=l28+pAFzQ6YVeW7MqNLYZUD5H5gTk42Wm4oqpBtzGWtSorXs+fEuqnzhtqP73YfK9
+	 9Xa/AeqRmQaSzapA5qPSeqzhLtiuq5s7geuKF6t9/po2+yH3gxVrOFn/hGI0z627fn
+	 MnGspotkWPWJe6xl0pILCKyBJwYFRJAq9KtjmkVs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 76F2EF804E6;
-	Fri, 10 Dec 2021 15:28:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E0D0EF804E6;
+	Fri, 10 Dec 2021 16:11:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ACAB9F804EC; Fri, 10 Dec 2021 15:28:45 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B2898F8028D
- for <alsa-devel@alsa-project.org>; Fri, 10 Dec 2021 15:28:38 +0100 (CET)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 06A01A0040
- for <alsa-devel@alsa-project.org>; Fri, 10 Dec 2021 15:28:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 06A01A0040
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1639146513; bh=m266FMGrZ81suO4vO9/gt4abUd1+GkLYybGgb2a8cKE=;
- h=Date:To:From:Subject:From;
- b=cXTtKKAKExpetynRu1B3o30BtEKi9UM1eslqY9QTPHs407sCtRu16WYi5RBzeut+y
- f/85+qVsIOH0R9PxfUr9y044T8o8EGkImntDp7yeeTngorpKLFKnzBudUDN14yzQS2
- CrS2SGsitDRdBswqYL36TFOCXuZ08iCtFOlrNM6E=
-Received: from [192.168.100.98] (unknown [192.168.100.98])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA
- for <alsa-devel@alsa-project.org>; Fri, 10 Dec 2021 15:28:31 +0100 (CET)
-Message-ID: <d39d643c-2276-580d-ba8c-c59921ffa680@perex.cz>
-Date: Fri, 10 Dec 2021 15:28:31 +0100
+ id E045BF804EC; Fri, 10 Dec 2021 16:11:28 +0100 (CET)
+Received: from mail3-166.sinamail.sina.com.cn (mail3-166.sinamail.sina.com.cn
+ [202.108.3.166]) by alsa1.perex.cz (Postfix) with SMTP id E00EDF804E5
+ for <alsa-devel@alsa-project.org>; Fri, 10 Dec 2021 16:11:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E00EDF804E5
+Received: from unknown (HELO localhost.localdomain)([36.36.86.102])
+ by sina.com (172.16.97.23) with ESMTP
+ id 61B36DFD0001D2F3; Fri, 10 Dec 2021 23:11:11 +0800 (CST)
+X-Sender: chenshumin86@sina.com
+X-Auth-ID: chenshumin86@sina.com
+X-SMAIL-MID: 13655154919406
+From: Shumin Chen <chenshumin86@sina.com>
+To: perex@perex.cz, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org
+Subject: [PATCH 0/2] This patches provide ASoc codec support for ES8156
+Date: Fri, 10 Dec 2021 23:10:39 +0800
+Message-Id: <20211210151041.108751-1-chenshumin86@sina.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Content-Language: en-US
-To: ALSA development <alsa-devel@alsa-project.org>
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: ALSA 1.2.6.2 release
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Shumin Chen <chenshumin86@sina.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -71,30 +60,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello all,
+Introduce new ASoc codec ES8156 support
 
-        new ALSA userspace packages were released. This is second bugfix
-release. You may download them from the ALSA website
-http://www.alsa-project.org or directly:
+Shumin Chen (2):
+  ASoC: add ES8156 codec driver
+  ASoC: convert Everest ES8156 binding to yaml
 
-        HTTP: https://www.alsa-project.org/files/pub
-        FTP:  ftp://ftp.alsa-project.org/pub
-
-Released packages:
-
-        alsa-ucm-conf
-
-Full list of changes:
-
-        https://www.alsa-project.org/wiki/Changes_v1.2.6.1_v1.2.6.2
-
-The fingerprint of the public signing key is:
-
-        F04D F507 37AC 1A88 4C4B 3D71 8380 596D A6E5 9C91
-
-				Have fun,
-					Jaroslav
+ .../bindings/sound/everest,es8156.yaml        |  49 ++
+ sound/soc/codecs/Kconfig                      |   5 +
+ sound/soc/codecs/Makefile                     |   2 +
+ sound/soc/codecs/es8156.c                     | 614 ++++++++++++++++++
+ sound/soc/codecs/es8156.h                     |  76 +++
+ 5 files changed, 746 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/everest,es8156.yaml
+ create mode 100644 sound/soc/codecs/es8156.c
+ create mode 100644 sound/soc/codecs/es8156.h
 
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+2.25.1
+
