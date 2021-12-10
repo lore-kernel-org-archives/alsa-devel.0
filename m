@@ -4,78 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E1F7C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Dec 2021 20:11:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1BD36C433FE
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Dec 2021 21:16:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E6D8C2007;
-	Fri, 10 Dec 2021 21:10:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6D8C2007
+	by alsa0.perex.cz (Postfix) with ESMTPS id AE4CD1FCB;
+	Fri, 10 Dec 2021 22:15:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE4CD1FCB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639167085;
-	bh=TsO7FiKkcOXBWq+1aUzyogu9xI4+2SRxD8Phn6GnTR8=;
+	s=default; t=1639171001;
+	bh=0fZqNImgM/m7nQZmSHJpLvAgLq7dYU0BfiqtoA1oa90=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ERst5+7QfAC76v8HvQoMMusuRPvbmN75x1byzeO+k7/rMIgy0utF7IjL4TGJi8XVB
-	 /14kUN27j++8q+PjTIA+3RLk2aCDjw7acgR/yfWJfK07fRhkt2vNXeP0mLP7w4ajs5
-	 +KaZ8EVTcIncNhulxF827UKC+Qg2cJJqU5I/py0c=
+	b=QR0LvLnycOuHdOAmL7gg4SQT/OtIzMVBCZJpRHcwG37aSQFEvcS1j+HCzrJXzwKJs
+	 SPevlq4ZeKwqcTMevOPCHj53Rz3mYT82I4up/9A3smO5vy32R4FK9n/N/ZcB7hFlEp
+	 nyGQ1k5opSwBwnGu0NtHCS39i2cAkuDcUAjmOdv4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7B679F804E6;
-	Fri, 10 Dec 2021 21:10:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3EF21F804E6;
+	Fri, 10 Dec 2021 22:15:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B91F4F804EC; Fri, 10 Dec 2021 21:10:32 +0100 (CET)
-Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com
- [209.85.167.182])
+ id AFA7DF804E5; Fri, 10 Dec 2021 22:15:49 +0100 (CET)
+Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com
+ [209.85.210.45])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 352ECF8028D
- for <alsa-devel@alsa-project.org>; Fri, 10 Dec 2021 21:10:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 352ECF8028D
-Received: by mail-oi1-f182.google.com with SMTP id t19so14766921oij.1
- for <alsa-devel@alsa-project.org>; Fri, 10 Dec 2021 12:10:28 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 39280F804E5
+ for <alsa-devel@alsa-project.org>; Fri, 10 Dec 2021 22:15:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39280F804E5
+Received: by mail-ot1-f45.google.com with SMTP id
+ w6-20020a9d77c6000000b0055e804fa524so10915110otl.3
+ for <alsa-devel@alsa-project.org>; Fri, 10 Dec 2021 13:15:42 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to;
- bh=PaqEpE42JwT8DXwsVY8kEv7gNunVXJQXAeFfbCH81XM=;
- b=Bkumkzei5IJEPeohLCKgr4Fiv89HTOmBu5AtSZXr39mwQUt3nr4Kwqj1a8lHx4wqFF
- yiOmTtCVMaPHMmeSStIhmzUe4lxtnT6JsadzyDBX+eUiesjKoHMmdkf98fGEKEfYY2Qw
- sgbaFlua/cCwTls7lIb2Yjz4UAmqroKxIkwmVrATGmRGqt12y5hszeCbKUobhxgE5Hnh
- dmE4SiOPKgo/CcVca/LA5jA8eeO5x0hB4KMtdpSVQP+X4KtXOMuFJa3GL7DcBNgD4gWE
- UdHQQeIAkMpcj/NfgAlcH/xhZdCZaWQMyksqOSNRSC6IftkcCcQCBr8LbLLUUXlEtlal
- KDnQ==
-X-Gm-Message-State: AOAM532nf7ed5FB9nTEsX3vp8P4QmnigaYD6AkmYwzUhVvVzPjwsQ7s1
- FPRMLykI30AqV56JUqdkvA==
-X-Google-Smtp-Source: ABdhPJxQHE8T/q7gJ37kD0SDsARybgtPjuYbEctbSQdiMZTsg/lr1mlPRTFIcqwOt2DpMwICm7YI0Q==
-X-Received: by 2002:a05:6808:60e:: with SMTP id
- y14mr13980733oih.162.1639167026601; 
- Fri, 10 Dec 2021 12:10:26 -0800 (PST)
+ bh=Rz+f4jxcorJhG5xhkcaE/Z8zmcaXPwrM4bIXAQx1u7s=;
+ b=jOY9Z74yIv9Vy52dl/WiHcHHKb2otsTHTRyoJIu2QTaxvbJLxaC8SFt60mutrkgYmG
+ CnVacveKCsYg6ZdSqCD9yVo/H8LIcSUuCHgxIzVK2PAkWMp7T/jgiyCJ0wrCVsAxRUt0
+ nwnZZ9jFNJcauCI94JBuit1Va73lO8sWv2uefRcBg1AkkK4NMVWy6rKvajS/wFdoiJi8
+ pAS6nJNrMTL5j1QsYvi3qPjAX/+lFoogaPmqwefOeJZvYUklA2lo83aXPQImtPOMe+Hb
+ Y+VpMX9uWxoQ3hHWy6cFGHaxJ7VjxazhlNHxQoPD13E9a2ND5I7DGZLCLzlW9/yBEPmG
+ Jm4A==
+X-Gm-Message-State: AOAM531cREUzS4iZUhi7ivMNTNra9PeYZBWAJWrlFe8JmE+PXHM1dAcQ
+ LcT1/UHCVkM86PtMQ1IjOw==
+X-Google-Smtp-Source: ABdhPJyF0GaaJsZV1wR3zOSFn48M6x1bOCOHkCw6T0wcpl8sQFfIcxANMa3TuO+iZUTD231D2SKtUA==
+X-Received: by 2002:a9d:69ce:: with SMTP id v14mr12956753oto.312.1639170940576; 
+ Fri, 10 Dec 2021 13:15:40 -0800 (PST)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net.
  [66.90.148.213])
- by smtp.gmail.com with ESMTPSA id u6sm1020552oiu.34.2021.12.10.12.10.25
+ by smtp.gmail.com with ESMTPSA id o10sm718190oom.32.2021.12.10.13.15.38
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 10 Dec 2021 12:10:25 -0800 (PST)
-Received: (nullmailer pid 1813329 invoked by uid 1000);
- Fri, 10 Dec 2021 20:10:24 -0000
-Date: Fri, 10 Dec 2021 14:10:24 -0600
+ Fri, 10 Dec 2021 13:15:39 -0800 (PST)
+Received: (nullmailer pid 1911427 invoked by uid 1000);
+ Fri, 10 Dec 2021 21:15:38 -0000
+Date: Fri, 10 Dec 2021 15:15:38 -0600
 From: Rob Herring <robh@kernel.org>
-To: YC Hung <yc.hung@mediatek.com>
-Subject: Re: [PATCH v6] dt-bindings: dsp: mediatek: Add mt8195 DSP binding
- support
-Message-ID: <YbO0MKXKYN48+kzN@robh.at.kernel.org>
-References: <20211202144818.31626-1-yc.hung@mediatek.com>
+To: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+Subject: Re: [PATCH v5 1/5] dt-bindings: pinctrl: qcom: Update lpass lpi file
+ name to SoC specific
+Message-ID: <YbPDesOMfpoiQFIa@robh.at.kernel.org>
+References: <1638891339-21806-1-git-send-email-quic_srivasam@quicinc.com>
+ <1638891339-21806-2-git-send-email-quic_srivasam@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211202144818.31626-1-yc.hung@mediatek.com>
+In-Reply-To: <1638891339-21806-2-git-send-email-quic_srivasam@quicinc.com>
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- allen-kh.cheng@mediatek.com, tiwai@suse.com, peter.ujfalusi@intel.com,
- linux-kernel@vger.kernel.org, broonie@kernel.org,
- linux-mediatek@lists.infradead.org, trevor.wu@mediatek.com,
- matthias.bgg@gmail.com, daniel.baluta@nxp.com,
- linux-arm-kernel@lists.infradead.org
+ bgoswami@codeaurora.org, lgirdwood@gmail.com, linux-arm-msm@vger.kernel.org,
+ plai@codeaurora.org, tiwai@suse.com, agross@kernel.org, robh+dt@kernel.org,
+ bjorn.andersson@linaro.org, linux-gpio@vger.kernel.org, broonie@kernel.org,
+ rohitkr@codeaurora.org, swboyd@chromium.org,
+ Venkata Prasad Potturu <quic_potturu@quicinc.com>, judyhsiao@chromium.org,
+ Linus Walleij <linus.walleij@linaro.org>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,73 +93,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Dec 02, 2021 at 10:48:18PM +0800, YC Hung wrote:
-> From: "yc.hung" <yc.hung@mediatek.com>
+On Tue, 07 Dec 2021 21:05:35 +0530, Srinivasa Rao Mandadapu wrote:
+> Change generic lpass lpi pincotrol bindings file to SoC specific file,
+> to distinguish and accomadate other SoC specific dt bindings.
 > 
-> This describes the mt8195 DSP device tree node.
-
-This doesn't match the change.
-
-> 
-> Signed-off-by: yc.hung <yc.hung@mediatek.com>
+> Signed-off-by: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+> Co-developed-by: Venkata Prasad Potturu <quic_potturu@quicinc.com>
+> Signed-off-by: Venkata Prasad Potturu <quic_potturu@quicinc.com>
 > ---
-> Changes since v5:
->     Remove sub node "sound" and "mediatek,platform", "mediatek,dptx-codec",
->     "mediatek,hdmi-codec" properties. Let dsp node as an individual node and
->     sound card has phandle of this dsp node per discussion in 
->     https://github.com/thesofproject/linux/pull/3239
+>  .../bindings/pinctrl/qcom,lpass-lpi-pinctrl.yaml   | 130 ---------------------
+>  .../pinctrl/qcom,sm8250-lpass-lpi-pinctrl.yaml     | 130 +++++++++++++++++++++
+>  2 files changed, 130 insertions(+), 130 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,lpass-lpi-pinctrl.yaml
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sm8250-lpass-lpi-pinctrl.yaml
 > 
-> Changes since v4:
->   - remove patch 1 with clocks as it will be reviewed and merged to SOF tree.
->     https://github.com/thesofproject/linux/pull/3237
->   - refine DT file binding files with Rob's comments.
-> ---  
->  .../bindings/dsp/mtk,mt8195-dsp.yaml          | 19 -------------------
->  1 file changed, 19 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/dsp/mtk,mt8195-dsp.yaml b/Documentation/devicetree/bindings/dsp/mtk,mt8195-dsp.yaml
-> index f8bacd50b018..33db11ee2336 100644
-> --- a/Documentation/devicetree/bindings/dsp/mtk,mt8195-dsp.yaml
-> +++ b/Documentation/devicetree/bindings/dsp/mtk,mt8195-dsp.yaml
-> @@ -70,22 +70,6 @@ properties:
->        - description: A phandle to a reserved memory region is used for dma buffer between host and DSP.   
->        - description: A phandle to a reserved memory region is used for DSP system memory.
->  
-> -  model:
-> -    $ref: /schemas/types.yaml#/definitions/string
-> -    description: User specified audio sound card name
-> -
-> -  mediatek,platform:
-> -    $ref: "/schemas/types.yaml#/definitions/phandle"
-> -    description: The phandle of MT8195 ASoC platform.
-> -
-> -  mediatek,dptx-codec:
-> -    $ref: "/schemas/types.yaml#/definitions/phandle"
-> -    description: The phandle of MT8195 Display Port Tx codec node.
-> -
-> -  mediatek,hdmi-codec:
-> -    $ref: "/schemas/types.yaml#/definitions/phandle"
-> -    description: The phandle of MT8195 HDMI codec node.
-> -
->  required:
->    - compatible
->    - reg
-> @@ -98,7 +82,6 @@ required:
->    - power-domains
->    - mbox-names
->    - mboxes
-> -  - mediatek,platform
->  
->  additionalProperties: false
->  
-> @@ -130,6 +113,4 @@ examples:
->         power-domains = <&spm 6>; //MT8195_POWER_DOMAIN_ADSP
->         mbox-names = "mbox0", "mbox1";
->         mboxes = <&adsp_mailbox0>, <&adsp_mailbox1>;
-> -       mediatek,dptx-codec = <&dp_tx>;
-> -       mediatek,platform = <&afe>;
->         };
-> -- 
-> 2.18.0
-> 
-> 
+
+Acked-by: Rob Herring <robh@kernel.org>
