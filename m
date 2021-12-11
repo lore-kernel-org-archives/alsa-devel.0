@@ -4,43 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DF0EC433EF
-	for <alsa-devel@archiver.kernel.org>; Sat, 11 Dec 2021 01:21:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72668C433EF
+	for <alsa-devel@archiver.kernel.org>; Sat, 11 Dec 2021 01:38:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D81E61F37;
-	Sat, 11 Dec 2021 02:20:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D81E61F37
+	by alsa0.perex.cz (Postfix) with ESMTPS id DA42220D6;
+	Sat, 11 Dec 2021 02:37:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA42220D6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639185687;
-	bh=FNPBPojWSuF9XTmtuXDbqY6dpaLYJU46NeY2Uvo9n+0=;
+	s=default; t=1639186680;
+	bh=bLCDZrzmpCX+bwS78J9tCVo+d4n5ZbtT1Qgh+RjOlEE=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=F4ebYMjdYhEzucmf7wu2JXVCMriahAGnb29dBR4g6NxDXlFO9NwSqtQBtdrWa+Hgs
-	 uH8bCraWMy2VZ3YzCocioUOIWVtrluBYpdecLDtzuUGa454rJ1gRDcGRFZOpjubwe4
-	 JIKom47Td2h57dsiFY1q+zmxdCTko8u5JVCHJRzc=
+	b=UJARUiIFUvyxfcMN9HRdcuTHRYLVk7cRmWCAGmZvcE/pFuq4B9Dy8frnPCTR3LcbF
+	 9qhFWqcux5PMjJJTR42rjl/D6kxkTx43wb+WCOxRV0lO7O4WDh3I/9RywegaILT/Gb
+	 R4bDX1o2wm+mOam6TMPqnt61f0OfnEPkJC3ChoxY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 55E36F804E6;
-	Sat, 11 Dec 2021 02:20:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 54646F804E6;
+	Sat, 11 Dec 2021 02:37:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0C612F804EC; Sat, 11 Dec 2021 02:20:34 +0100 (CET)
+ id A3626F804EC; Sat, 11 Dec 2021 02:37:08 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id A52DEF8028D
- for <alsa-devel@alsa-project.org>; Sat, 11 Dec 2021 02:20:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A52DEF8028D
+ by alsa1.perex.cz (Postfix) with ESMTP id DE25AF804E5
+ for <alsa-devel@alsa-project.org>; Sat, 11 Dec 2021 02:37:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE25AF804E5
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - opened <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1639185626577805042-webhooks-bot@alsa-project.org>
-References: <1639185626577805042-webhooks-bot@alsa-project.org>
-Subject: Permissions of alsatplg -o output are hardcoded to S_IRUSR | S_IWUSR
- (600)
-Message-Id: <20211211012035.0C612F804EC@alsa1.perex.cz>
-Date: Sat, 11 Dec 2021 02:20:34 +0100 (CET)
+In-Reply-To: <1639186619512762070-webhooks-bot@alsa-project.org>
+References: <1639186619512762070-webhooks-bot@alsa-project.org>
+Subject: Audio output not working at all on Fedora all in alsa 1.2.6
+Message-Id: <20211211013708.A3626F804EC@alsa1.perex.cz>
+Date: Sat, 11 Dec 2021 02:37:08 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -56,36 +55,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-utils issue #126 was opened from marc-hb:
+alsa-project/alsa-lib issue #202 was opened from sstraightea:
 
->From https://github.com/alsa-project/alsa-utils/blob/c8c348e28a258f17e3/topology/topology.c#L172
+After upgrading to the newest version of alsa GNOME shows me I do not have any audio input device. 
+The microphone seems to still be working for me. 
+Downgrading solves the problem. 
+I have been able to reproduce this problem on two different machines. Just install the newest Fedora and do a normal update. 
 
-```C
-static int save(const char *output_file, void *buf, size_t size)
-{
+My system: 
+Fedora 35
+GNOME 41.2
 
-               fd = open(fname, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
-
+>From dnf info alsa-lib: 
+```
+Name         : alsa-lib
+Version      : 1.2.6
+Release      : 1.fc35
+Architecture : x86_64
+Size         : 1.4 M
+Source       : alsa-lib-1.2.6-1.fc35.src.rpm
+Repository   : @System
+>From repo    : updates
 ```
 
-When using alsatplg in a build system (e.g.: https://github.com/thesofproject/sof/blob/3e1c160e5053eae/tools/topology/topology1/CMakeLists.txt#L243), all other artefacts follow the process's umask **except** alsatplg output. This causes subtle and time-consuming errors when trying to share artefacts across different processes.
+If you need any log files, configs, output of some command I am happy to provide that, but I am not sure what information you need.
 
-
-git blame finds: 
-
-commit cbabe7a3f0cc84ecd352d4cbf85148946fa6c0d5
-Author: Jaroslav Kysela <perex@perex.cz>
-Date:   Thu Dec 19 15:36:05 2019 +0100
-
-    alsatplg: rewrite to use the new libatopology functions
-
-
-Before cbabe7a3f0, opening the output file was delegated to library function `snd_tplg_build_file()`. Not sure what permissions were used then.
-
-Workaround:
-```shell
-alsatplg -c intput.conf -o - > output.tplg
-```
-
-Issue URL     : https://github.com/alsa-project/alsa-utils/issues/126
-Repository URL: https://github.com/alsa-project/alsa-utils
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/202
+Repository URL: https://github.com/alsa-project/alsa-lib
