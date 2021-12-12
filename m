@@ -4,96 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1899AC433F5
-	for <alsa-devel@archiver.kernel.org>; Sun, 12 Dec 2021 11:33:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E15FC433EF
+	for <alsa-devel@archiver.kernel.org>; Sun, 12 Dec 2021 11:52:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 79A181ED7;
-	Sun, 12 Dec 2021 12:32:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 79A181ED7
+	by alsa0.perex.cz (Postfix) with ESMTPS id BE2661909;
+	Sun, 12 Dec 2021 12:51:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE2661909
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639308796;
-	bh=TCWc+h/vwWmKtIVqHzrz9eayynXyiKUebxz+mJXPPg4=;
-	h=In-Reply-To:References:Date:From:To:Subject:Cc:List-Id:
+	s=default; t=1639309938;
+	bh=sC7VsgMdvpbJMADn51kt37v6U3U/BBXjmz9LT1TTAa4=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iEHkcGYmUPLomUOp8kZ07RfuvB7adoMCawxYW7xPvOIsndpztwSBPdBgtNWh8CwEg
-	 KhZSHpB+jP5GYCkhBObO2b1XJj96PouLbH3xCiGQgf+b0JqTyHLaOwLb+jJOHJnkIh
-	 HCjthZ5cQLaurmp56nCMq87npxFyLlzqEQvnfdVw=
+	b=lrfX1XWR2YsWsvm9UZiIa1UBaPce10kC0R3TuOAUSEJnw2/pSlcx9j7435DWMDJ3o
+	 mVz8oXcuE6gqVwkJkHULx+6OUYfuc8+/XZ3/DJRZuCm0RFRJTIpXUz2wxDGxJ4Td2u
+	 7Mp573hgSeg8JoUbhUx+6OIocDhnPLN8tSQwgN2Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E7011F80059;
-	Sun, 12 Dec 2021 12:32:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 55E12F80165;
+	Sun, 12 Dec 2021 12:51:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EC903F80246; Sun, 12 Dec 2021 12:32:23 +0100 (CET)
+ id 14D88F80246; Sun, 12 Dec 2021 12:51:27 +0100 (CET)
 Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
  [66.111.4.27])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1C7A8F80059
- for <alsa-devel@alsa-project.org>; Sun, 12 Dec 2021 12:32:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C7A8F80059
+ by alsa1.perex.cz (Postfix) with ESMTPS id C9CABF80161
+ for <alsa-devel@alsa-project.org>; Sun, 12 Dec 2021 12:51:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9CABF80161
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="k+2lZOYm"; 
+ header.b="mIJX827A"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="kHroChj1"
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
- by mailout.nyi.internal (Postfix) with ESMTP id 65DBB5C009D;
- Sun, 12 Dec 2021 06:32:06 -0500 (EST)
-Received: from imap41 ([10.202.2.91])
- by compute3.internal (MEProxy); Sun, 12 Dec 2021 06:32:06 -0500
+ header.i=@messagingengine.com header.b="YVl98n/u"
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+ by mailout.nyi.internal (Postfix) with ESMTP id 788725C009F;
+ Sun, 12 Dec 2021 06:51:21 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+ by compute6.internal (MEProxy); Sun, 12 Dec 2021 06:51:21 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
- h=mime-version:message-id:in-reply-to:references:date:from:to
- :cc:subject:content-type; s=fm3; bh=f+M/+zqwJP7xDBJ/1quT7uhlmDCp
- znvs/CgwEASFalg=; b=k+2lZOYmvFjtW+fuJw8NnN2FNJyxzeb0hGz26uQfKQv6
- PvrfvhvS8MyfYroIzwf3GM8j0svWxDxNvcOOy3vBndA3HkvF1ZYxhzEtQU0xCjW+
- ve3o50h4iJ+xJNQ5/bk2YACFfqSDsM5LaPfGvwLF4BuSebNnQHHYQXzwGuHl0B9W
- ji6+0x2Ke/gLJCObNUNFbKzMXEHXVqKEQEQFlyTxDGY8w/v5zuuYv2O4Nd+4Q4uy
- tMPSge/EB8ljudavvCO/bVohYiFrkZ5dyXOm3zrBD7Xk3Lddb535RSt1as/mPgBI
- KBMJqJID5qbYWtP/Fu3h5oTCloxKwhpnXttiMoXwog==
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-type:in-reply-to; s=fm3; bh=EycX5ym0EnPa7yW4BE7A5SkjPPj
+ OyXeH61CZajHpRBA=; b=mIJX827AGJY0zCvGGvi6eZM01R4F4DhvrQbyl7idkjK
+ mLN9TGhvfebEwVZg5BZgJv7spE6FHba79Tu+ASe9GXA6etXtYIr0lIRIYy/fhKrC
+ s/V0YOPxJcoLe1H5LPWv8FjHGps8IZhQMEucYty+a1JhhG9vkjlL2l87eBu66qE+
+ lbeYfN6WuFYauEVqr4IetPH1B4Y8FNu1xz7s9YkEftU7J44K9aGkUu9owkK3fXXB
+ C6VSGqux3S/LkiQacPvs16r6FdrdFb085w6AbGKDsxVeYcFnc7Rc1t0MiofS0XeI
+ fLoMBwoOPjoR9TYaFpd3D4ZgshOBMeLaw7cSfksFtcA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-type:date:from:in-reply-to
  :message-id:mime-version:references:subject:to:x-me-proxy
- :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=f+M/+z
- qwJP7xDBJ/1quT7uhlmDCpznvs/CgwEASFalg=; b=kHroChj1gk5qH/ySwpK7CY
- nFle0l2GXbfOuzF4CaQMWcfl5CjFFuEEbpf2g4mnGZnaKDBNTpG3X6V5zisAFSpO
- VmVslA5zib7t3JPvIRatAw8POg6KZ8SLHNi6/Nc9x4GsDWKf4kneRsStAEBO3/P/
- 18eHajYF0W2q7UEK4OFG59rNLev/jjyuM99gyGl3WP8n3l6nbv/qbbjSY3eu0oo1
- nJuNr5V3rXH22UXt8QwzYSKdbz0cDdlxZ/mjRwi5hkN5jtcrebYEUlFhuW11251d
- PpSm4jjZ+f+7u8K2Zzo/RH2kYWbsDFRbJENk3ZQ0iXBPHt4RVAqpnL/PpSQsHMpw
+ :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=EycX5y
+ m0EnPa7yW4BE7A5SkjPPjOyXeH61CZajHpRBA=; b=YVl98n/u3Cv2e7gbMRn7NE
+ pn0J8rskhOtJSmnt8KoT8FMveQhBq9DroqBsvyrozojR+0UVjL/9BvXwDOQVG3Ll
+ fGNus+mAfL69aQ7PiaGNyiKAcVAMJBHFlXHM2Wn1XYQKSfPwtJx8+yHhNOCSwIJ8
+ vr8kox9a5l5Rsb3L0t0IAekSSW1EJgiGd9j/hoSoEFGd3R9LsdjLSbmA6CfG+IOr
+ 8Z+QeSbhyGIHxMCosiw0cR8/Ly4lHsFtw3esu73pzOCOKn+bgR2ZjW8CNL0UZCCE
+ IZsjVoB0nmYe1mbmRHvVZo4L3Aw9Mrdf2bEhazdjSQIC9CnVgAzqrSfYYZHavasQ
  ==
-X-ME-Sender: <xms:tt21YRagKIik7MdRKPrt_VMTgIrzbeahIHZqx_9_OCzh7hgcj4ie7A>
- <xme:tt21YYYJXmklwf2tDFirfXWsIA9XLmCgNgUfQH9XEi2FpoF_kdl7ioVsBuoFMZgMN
- G_qwqdTFx15UR_Stfs>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrkeeigddvlecutefuodetggdotefrodftvf
+X-ME-Sender: <xms:OeK1YXNLKRDqIosPJkAWQb_WcxpHXhXF7vkP-V8bX_yOodJV8B53oQ>
+ <xme:OeK1YR-OWIuQniTLQcJxywObdySxiAzUTorO4kiAFSg_y88BM7c7OZQkjyxaHnJ9E
+ w96Yy-Ufama0cw7Aeg>
+X-ME-Received: <xmr:OeK1YWS1WMI7PvgsrpM-lpk5Oqg3SotHKbpGPzirNYmdzZM8oPPp-E0jgrsHT_grVaPNL34FczcboHfKtM6tsJu0bS0RnAJQFA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrkeeigdeffecutefuodetggdotefrodftvf
  curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
  uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
- fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedfvfgrkhgr
- shhhihcuufgrkhgrmhhothhofdcuoehoqdhtrghkrghshhhisehsrghkrghmohgttghhih
- drjhhpqeenucggtffrrghtthgvrhhnpeekkefgtdeigffgheefleduveefvdevgeehffet
- jefghfejheffudduieevvedvieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
- epmhgrihhlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:tt21YT_KgEwuJITit0KtjNxonXRJxzUzCj9AxJrR02v6S9VHGFqYZA>
- <xmx:tt21YfoigqE2zqD6tTeW5Gl1mn_jubtF2dKZB9dokOz7QoiBFjHMyA>
- <xmx:tt21YcpEkfadz53yQHJ_7f5BQ9FsoCIFWvM6aYxzYPf9ysWbfTXA9A>
- <xmx:tt21YSGnKwc_cdIHESl5i4fdRt5S2fCUHd0-doCsrblERYrkAoohoQ>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
- id 2F66E3C0246; Sun, 12 Dec 2021 06:32:06 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-4514-g2bdc19e04f-fm-20211209.002-g2bdc19e0
-Mime-Version: 1.0
-Message-Id: <30685ab6-3347-43ee-b20d-6e11994242b4@www.fastmail.com>
-In-Reply-To: <s5heedo3cdu.wl-tiwai@suse.de>
-References: <20210529033353.21641-1-o-takashi@sakamocchi.jp>
- <s5heedo3cdu.wl-tiwai@suse.de>
-Date: Sun, 12 Dec 2021 20:30:30 +0900
-From: "Takashi Sakamoto" <o-takashi@sakamocchi.jp>
-To: "Takashi Iwai" <tiwai@suse.de>
-Subject: Re: [PATCH] ALSA: pcm: comment about relation between msbits hw
- parameter and [S|U32] formats
-Content-Type: text/plain
-Cc: alsa-devel@alsa-project.org
+ fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfgrkhgrshhh
+ ihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
+ eqnecuggftrfgrthhtvghrnhepjeegieefueevueefieeggeejledvgfejgeffjefgvdek
+ leehgfdtfeetjeelkeejnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhush
+ htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhi
+ sehsrghkrghmohgttghhihdrjhhp
+X-ME-Proxy: <xmx:OeK1Ybt_0KcK0GfaZOrC0RD0aiLnZp-9GNWmOiasiBLWsqzfo8AgWw>
+ <xmx:OeK1YfcoMO0ZsRgtWPQR8wZwAjweAvFJaKlu6V63TF7pNrfB0sjq0w>
+ <xmx:OeK1YX336bhY-gkX-eUCpc2jEX29e1BjaHQPfM1N-lbWjzZpEkDU7g>
+ <xmx:OeK1Yfma2aGAF0pVn2XZiIs5REcGdUIy-O_Jdwe_dCn7vLAPGhsIFQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 12 Dec 2021 06:51:20 -0500 (EST)
+Date: Sun, 12 Dec 2021 20:51:17 +0900
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: Marios Sioutis <smarios@jaist.ac.jp>
+Subject: Re: S24LE and S32LE format equivalency
+Message-ID: <YbXiNdYIp99Df47Q@workstation>
+Mail-Followup-To: Marios Sioutis <smarios@jaist.ac.jp>,
+ alsa <alsa-devel@alsa-project.org>
+References: <2a4907ee-96d2-9969-de47-80b77b7444d1@jaist.ac.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2a4907ee-96d2-9969-de47-80b77b7444d1@jaist.ac.jp>
+Cc: alsa <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,57 +112,39 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Hi,
 
-On Sun, May 30, 2021, at 16:32, Takashi Iwai wrote:
-> On Sat, 29 May 2021 05:33:53 +0200,
-> Takashi Sakamoto wrote:
->> 
->> Regarding to handling [U|S][32|24] PCM formats, many userspace
->> application developers and driver developers have confusion, since they
->> require them to understand justification or padding. It easily
->> loses consistency and soundness to operate with many type of devices. In
->> this commit, I attempt to solve the situation by adding comment about
->> relation between [S|U]32 formats and 'msbits' hardware parameter.
->> 
->> The formats are used for 'left-justified' sample format, and the available
->> bit count in most significant bit is delivered to userspace in msbits
->> hardware parameter (struct snd_pcm_hw_params.msbits), which is decided by
->> msbits constraint added by pcm drivers (snd_pcm_hw_constraint_msbits()).
->> 
->> In driver side, the msbits constraint includes two elements; the physical
->> width of format and the available width of the format in most significant
->> bit. The former is used to match SAMPLE_BITS of format. (For my
->> convenience, I ignore wildcard in the usage of the constraint.)
->> 
->> As a result of interaction between ALSA pcm core and ALSA pcm application,
->> when the format in which SAMPLE_BITS equals to physical width of the
->> msbits constaint, the msbits parameter is set by referring to the
->> available width of the constraint. When the msbits parameter is not
->> changed in the above process, ALSA pcm core set it alternatively with
->> SAMPLE_BIT of chosen format.
->> 
->> In userspace application side, the msbits is only available after calling
->> ioctl(2) with SNDRV_PCM_IOCTL_HW_PARAMS request. Even if the hardware
->> parameter structure includes somewhat value of SAMPLE_BITS interval
->> parameter as width of format, all of the width is not always available
->> since msbits can be less than the width.
->> 
->> I note that [S|U24] formats are used for 'right-justified' 24 bit sample
->> formats within 32 bit frame. The first byte in most significant bit
->> should be invalidated. Although the msbits exposed to userspace should be
->> zero as invalid value, actually it is 32 from physical width of format.
->> 
->> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
->
-> Thanks, applied.
->
->
-> Takashi
+On Sun, Dec 12, 2021 at 08:16:57PM +0900, Marios Sioutis wrote:
+> Hi all,
+> 
+> Quick question, I was troubleshooting a 24bit USB device and got down the
+> rabbit hole of sample formats. The device advertises itself as S24LE (4byte
+> payload) but it appears as S32LE under alsa, something that bothered me a
+> lot initially. However, If the conversion between the two formats is to just
+> << 8 i.e. put a zero byte as LSB, then the two formats are essentially
+> equivalent.
+> 
+> Is this actually the case? If yes, who performs the conversion? Is it on the
+> alsa side, or the device already adds a zero byte LSB?
+> 
+> Thank you in advance,
+> 
+> Marios
+ 
+I think the format of sample is 'left-justified' or 'right-padding' 24
+bit in 32 bit frame. For the case, in ALSA PCM interface, [S|U]32 sample format is
+used with 'msbits' hardware parameter. The snd-ua101 USB driver might be
+an good example for the case.
 
-I can not find the patch in your tree. Would I ask you to review again?
+ * https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/sound/usb/misc/ua101.c#n615
 
-If it should be going to be applied, I'd like you to fix my typo in the subject line;
+In detail, please refer to my previous patch:
 
- * "[S|U32]" -> "[S|U]32"
+ * https://lore.kernel.org/alsa-devel/20210529033353.21641-1-o-takashi@sakamocchi.jp/
+
+Unfortunately, as long as I know, no userspace application evaluates the
+msbits parameter with sample format, however in theory the conversion
+should be done in userspace in advance of transmission of audio data
+frame.
+
 
 Regards
 
