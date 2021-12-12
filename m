@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 766FDC433F5
-	for <alsa-devel@archiver.kernel.org>; Sun, 12 Dec 2021 15:44:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D210AC433F5
+	for <alsa-devel@archiver.kernel.org>; Sun, 12 Dec 2021 15:48:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E94941933;
-	Sun, 12 Dec 2021 16:43:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E94941933
+	by alsa0.perex.cz (Postfix) with ESMTPS id E1CA81AA0;
+	Sun, 12 Dec 2021 16:47:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1CA81AA0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639323863;
-	bh=v/94qhD1Lcoeg/ec30oL6V3RKC66P6DKEu+uYMax3gA=;
+	s=default; t=1639324090;
+	bh=4rxcZLHbk3XVy6y4CffFQwgwws46s6/xcd/iZkcND8Y=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sYw2QgR9mpBhZmc+hgtsUP5R4DWKuS2BmRmuc65imDa5Z3jvV/8RgXBmG4BFMtOWX
-	 0XR2vdNbijqNcfSZ4tMB8J36ODgWw7ETkjAX+/YGX2+4t3hPz0t8OwpjKlVjM0P5rS
-	 XV4E5M5PtGvjErL8HF0OzCriCBtQbUZ+Is6XjVTA=
+	b=vd7YKmrLlaZQgngsn8OCgEK685FpW45j+VE40hypCkzsjJEGpS494yFWZgNCgV2pU
+	 kaImsJ7i8jEMVPEW0Klu+eJv7rAEKMaPpnXB+IlqOJXrv9M9QcaRWn30KgVuvEbxB5
+	 jfxvCsZlm6p3goCVjNdlbNC6KoKuKb1+Fz2ODDOg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8440DF80165;
-	Sun, 12 Dec 2021 16:43:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7DFC6F80165;
+	Sun, 12 Dec 2021 16:47:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 03B68F80246; Sun, 12 Dec 2021 16:43:30 +0100 (CET)
+ id 3CC26F80246; Sun, 12 Dec 2021 16:47:18 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 7BD56F80059
- for <alsa-devel@alsa-project.org>; Sun, 12 Dec 2021 16:43:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7BD56F80059
+ by alsa1.perex.cz (Postfix) with ESMTP id A5AB4F80059
+ for <alsa-devel@alsa-project.org>; Sun, 12 Dec 2021 16:47:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5AB4F80059
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub pull_request - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1639323807501960993-webhooks-bot@alsa-project.org>
-References: <1639323807501960993-webhooks-bot@alsa-project.org>
+In-Reply-To: <1639324030376167059-webhooks-bot@alsa-project.org>
+References: <1639324030376167059-webhooks-bot@alsa-project.org>
 Subject: Move the call to expand variables and expressions
-Message-Id: <20211212154331.03B68F80246@alsa1.perex.cz>
-Date: Sun, 12 Dec 2021 16:43:30 +0100 (CET)
+Message-Id: <20211212154718.3CC26F80246@alsa1.perex.cz>
+Date: Sun, 12 Dec 2021 16:47:18 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -61,7 +61,7 @@ With the addition of the math expression evaluator in alsa-lib, we can use it to
 
 For ex: we can set the expression for buffer size as follows:
 
-buffer_size "$[$[$in_channels * 48] * 4]"
+buffer_size "$[($in_channels * 48) * 4]"
 
 The buffer_size attribute value will be computed with the attribute value "in_channels" based on the expression above. So if $in_channels = 2, buffer_size will be evaluated to 384.
 
