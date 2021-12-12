@@ -4,79 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 579C5C433EF
-	for <alsa-devel@archiver.kernel.org>; Sun, 12 Dec 2021 08:59:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 856D2C433EF
+	for <alsa-devel@archiver.kernel.org>; Sun, 12 Dec 2021 09:01:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9A3FC191A;
-	Sun, 12 Dec 2021 09:58:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9A3FC191A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6C24A1EDC;
+	Sun, 12 Dec 2021 10:00:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C24A1EDC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639299571;
-	bh=4b6KvQdtWnmj/gkyCgFHIcpUmfiTSuzl01tlVmOMx0c=;
+	s=default; t=1639299690;
+	bh=KXFjuM75w4yWtqMYjxREUHdRX9jfD1Azo4fa9ITT1+o=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZaQnO5eSczg3KvgRgJ9gRkIDTyoqSbsYym+dMwXfS3Ah2HwXxGTaul0QOcJcs7orb
-	 5r72g1XXrAJfhZMxIn/VNiAsVTy07MsrP3+raDvmtVxqrO2FRqv9x7Qk5/dKi7ZCLy
-	 lGzuPtgK3SIbqjSdHFKrc7hbzZSmKFw6U6+N5cIo=
+	b=i2NgcA/TT2Gbeo02dQRVnVsMfkc1cwb+HarUoMl9dYqcqMOoEpmNZq2jkcdhSPm7p
+	 4Kp65HF9JukSXRUtzz44c2cWc9iJdCMJcsSVU0z8zKUa6PGYzFO1Q5yq8y5HMThhQX
+	 z3z5M+N71BHdlSaufXZK5r2ZFVtxjAlng4E6yfuc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 35BA8F80165;
-	Sun, 12 Dec 2021 09:58:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 14BD6F80165;
+	Sun, 12 Dec 2021 10:00:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B4244F80246; Sun, 12 Dec 2021 09:58:39 +0100 (CET)
+ id 07E29F80246; Sun, 12 Dec 2021 10:00:39 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 95C54F80059
- for <alsa-devel@alsa-project.org>; Sun, 12 Dec 2021 09:58:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95C54F80059
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9CFE1F80161
+ for <alsa-devel@alsa-project.org>; Sun, 12 Dec 2021 10:00:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9CFE1F80161
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="SRDdQrTH"; 
+ header.b="yO4T3trL"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="EKWma8HO"
+ header.b="jY0NFM1M"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id DBA241F3AC;
- Sun, 12 Dec 2021 08:58:31 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 159511F3AF;
+ Sun, 12 Dec 2021 09:00:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1639299511; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1639299634; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=RdQERHM96yBBje3WLQrA2u2xMGiyCJwJHqviZnXvKlY=;
- b=SRDdQrTHKUFY1dasR0do6uLLHNl0S2oR4XOYwu8ppoYOjCkAqOXC4uR+XnvJwIMkLvVhyz
- GM0ACvzUEyxAxWFIHjLMpjd8XCJXzrhHRLM6fOn+Wde1sJSMO6SMpshLZQryTd6hBYaQfJ
- Tw3FiLkbcBuT/LXZdFPVPRcZx5W4x0Y=
+ bh=l6AWHjo6PQ4BPF1NmbEadN6JkpBp7NJYDqAaABlQrJA=;
+ b=yO4T3trLR3Y7Qtb5BPXdQ71UqgUWjx/BALtPjZVb7AiAUgPTNiDKOf1EZzLxDlYzyWreGE
+ YfCwdyZsActTG5kCj5ZkvCjxyBeAznxpewO8esAwMRvcxJabMJvzX9IBImEuMP0NJvZg9n
+ Fx/Q4IGU1MdJ9scAfKPaF7ba8R1TkF4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1639299511;
+ s=susede2_ed25519; t=1639299634;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=RdQERHM96yBBje3WLQrA2u2xMGiyCJwJHqviZnXvKlY=;
- b=EKWma8HOpEuFSxv1dXTn0Fsq+UMd5n3dIZUReSjHYmrehd1DRPLRYL6ziXIu0ZFU5dpYeJ
- ioFzMLoIOPv5qVBw==
+ bh=l6AWHjo6PQ4BPF1NmbEadN6JkpBp7NJYDqAaABlQrJA=;
+ b=jY0NFM1MnKr1TmAVxEHgQN4018OzeYqQnSGampGhlJitezM95HRntOoS1GEupEz6mzhcEm
+ veGwFkyGeIBN0zDA==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 3C972A3B81;
- Sun, 12 Dec 2021 08:58:31 +0000 (UTC)
-Date: Sun, 12 Dec 2021 09:58:31 +0100
-Message-ID: <s5ha6h6fbd4.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id D267DA3B83;
+ Sun, 12 Dec 2021 09:00:33 +0000 (UTC)
+Date: Sun, 12 Dec 2021 10:00:33 +0100
+Message-ID: <s5h8rwqfb9q.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Bradley Scott <Bradley.Scott@zebra.com>
-Subject: Re: [PATCH] ALSA: hda/realtek: Amp init fixup for HP ZBook 15 G6
-In-Reply-To: <20211210192614.460529-1-Bradley.Scott@zebra.com>
-References: <20211210192614.460529-1-Bradley.Scott@zebra.com>
+To: "Colin King (gmail)" <colin.i.king@gmail.com>
+Subject: Re: ALSA: drivers: opl3: assignment of a pointer that is not used,
+ probable bug
+In-Reply-To: <fbae9be5-c847-0b6b-f755-312a2af1e285@gmail.com>
+References: <fbae9be5-c847-0b6b-f755-312a2af1e285@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Kailang Yang <kailang@realtek.com>,
- Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
- Jeremy Szu <jeremy.szu@canonical.com>, linux-doc@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Werner Sembach <wse@tuxedocomputers.com>,
- Hui Wang <hui.wang@canonical.com>, Sami Loone <sami@loone.fi>,
- Cameron Berkenpas <cam@neo-zeon.de>, Elia Devito <eliadevito@gmail.com>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,29 +90,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 10 Dec 2021 20:26:12 +0100,
-Bradley Scott wrote:
+On Sat, 11 Dec 2021 19:19:30 +0100,
+Colin King (gmail) wrote:
 > 
-> HP ZBook 15 G6 (SSID 103c:860f) needs the same speaker amplifier
-> initialization as used on several other HP laptops using ALC285.
+> Hi,
 > 
-> This commit also adds a new "alc285-hp-amp-init" model that can be used
-> to apply this same amp init fixup to other devices by passing
-> "hda_model=alc285-hp-amp-init" to the snd-sof-intel-hda-common module or
-> "model=alc285-hp-amp-init" to the snd-hda-intel module, depending on
-> which is being used.
+> static analysis with scan-build has found an assignment to vp2 that is
+> never used in function snd_opl3_note_on(),
+> sound/drivers/opl3/opl3_midi.c as follows:
 > 
-> Signed-off-by: Bradley Scott <Bradley.Scott@zebra.com>
+>         if (instr_4op) {
+>                 vp2 = &opl3->voices[voice + 3];
+>                 if (vp->state > 0) {
+>                         opl3_reg = reg_side | (OPL3_REG_KEYON_BLOCK +
+>                                                voice_offset + 3);
+>                         reg_val = vp->keyon_reg & ~OPL3_KEYON_BIT;
+>                         opl3->command(opl3, opl3_reg, reg_val);
+>                 }
+>         }
+> 
+> sound/drivers/opl3/opl3_midi.c:399:3: warning: Value stored to 'vp2'
+> is never read [deadcode.DeadStores]
+>                 vp2 = &opl3->voices[voice + 3];
+>                 ^     ~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> I suspect that references to vp in this if block should be to vp2, but
+> I'm unsure if that is for all references or not, hence I'm reporting
+> this issue.
 
-Thanks for the patch.  Unfortunately, somehow your MUA broke the tabs
-with spaces and the patch wasn't cleanly applicable.
+Yes, the next vp->state > 0 check must be vp2->state > 0.
+Care to submit a proper fix patch?
 
-Also, I prefer splitting the changes to two, the addition of a quirk
-entry and the addition to the model string.  Then old stable kernels
-have more chance to pick up.
 
-Could you try to resubmit?  In the worst case, I can take the
-attachments, too.
-
+Thanks!
 
 Takashi
