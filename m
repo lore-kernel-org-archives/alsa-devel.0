@@ -4,57 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F483C433F5
-	for <alsa-devel@archiver.kernel.org>; Sun, 12 Dec 2021 07:05:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00745C433EF
+	for <alsa-devel@archiver.kernel.org>; Sun, 12 Dec 2021 07:31:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AB9371937;
-	Sun, 12 Dec 2021 08:04:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB9371937
+	by alsa0.perex.cz (Postfix) with ESMTPS id 885201AA4;
+	Sun, 12 Dec 2021 08:31:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 885201AA4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639292739;
-	bh=o3eafrWNEYVOzyJngeclrCWED49H1bLWLlJr5zEoikA=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=hC9rO9GooldcC6LCoJ9WMLWeN3NiYCh8lN54feFZCI7DG2bNoOe8ViEIwSjuCoSzF
-	 lBy7KBv5psRM0faDMMRRnZ8YmSbsglNd2tRaq3L40jjEP0zDqZUy0+C7i5NE7wqJvl
-	 ASvqq8SvIcWjDz2hyCVQNA6PSKAHh4yRo0bSWT74=
+	s=default; t=1639294311;
+	bh=ZCP5mNpWYay/4Z2iB13uvdNCyZzx3AIFqExvAD17uPI=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=iYm0K5G9JDxZ8Rs9Ua4JUQlVu5x9qUWMW9PyDQ+R9Ku/47vZkqr74Xunxq4wKWasw
+	 gZ8peYNwfAyuZbKMD5bUR9ou5v7qBmnzxQAJl3TJKgErfLeHITV0I9lmHHfnel2xFW
+	 W0Z1Em3ArBUw2KP4Ua00SdNuYbsbyoMiA1CHRKTQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 364E9F80165;
-	Sun, 12 Dec 2021 08:04:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1133CF80165;
+	Sun, 12 Dec 2021 08:31:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 47A49F800BC; Sun, 12 Dec 2021 08:04:47 +0100 (CET)
-Received: from smtpbg587.qq.com (smtpbg128.qq.com [106.55.201.39])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2B9B9F800BC
- for <alsa-devel@alsa-project.org>; Sun, 12 Dec 2021 08:04:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B9B9F800BC
-X-QQ-mid: bizesmtp51t1639292666tdc0063s
-Received: from localhost.localdomain (unknown [182.132.179.213])
- by esmtp6.qq.com (ESMTP) with 
- id ; Sun, 12 Dec 2021 15:04:24 +0800 (CST)
-X-QQ-SSF: 01000000002000D0I000B00A0000000
-X-QQ-FEAT: NXXopmE8dHbdspMIfiXAad1qP2yuR39QVi2oeQSv3rBI97xxw1I0MtBjMjlyf
- MRiAnfVLGM6nJSVEwt8cBPMifHtaa0vmNkA1uTH2Mu2Kc1NrqN93Y5LMeqf5+lLSRUrHlsz
- CX/FBs3/s0+oDsZfpq0340fvGQ8HC+0BQXHHoUFEA/Nxb9Zqnj+diTjVYvAs9GHRxnMNh1M
- Lvm7WOPaIipL62z8eC7CM6Vu3M9lDBMxHa5ZcFODcairpJvgss8Hnc2shzhCQA9HiHS87qK
- XiAG65hzRWTiIanrdp/R+O+ANsIOczrzvnmvphx7JQh31AU/Vikm2YJDRPm1DswLcqn6uXs
- 9YFY2a7QlT8qCDENnirsjYjpfOfAYGQKWRTY8kvKgaTzZ+kNGU=
-X-QQ-GoodBg: 0
-From: Jason Wang <wangborong@cdjrlc.com>
-To: tiwai@suse.com
-Subject: [PATCH] ALSA: sparc: no need to initialise statics to 0
-Date: Sun, 12 Dec 2021 15:04:22 +0800
-Message-Id: <20211212070422.281924-1-wangborong@cdjrlc.com>
-X-Mailer: git-send-email 2.34.1
+ id 1FF19F80246; Sun, 12 Dec 2021 08:30:59 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id BA516F800BC
+ for <alsa-devel@alsa-project.org>; Sun, 12 Dec 2021 08:30:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA516F800BC
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam5
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- wangborong@cdjrlc.com, leon@kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1639294246636231899-webhooks-bot@alsa-project.org>
+References: <1639294246636231899-webhooks-bot@alsa-project.org>
+Subject: Add profile for Behringer UMC204HD
+Message-Id: <20211212073059.1FF19F80246@alsa1.perex.cz>
+Date: Sun, 12 Dec 2021 08:30:59 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -70,46 +55,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Static variables do not need to be initialised to 0, because compiler
-will initialise all uninitialised statics to 0. Thus, remove the
-unneeded initializations.
+alsa-project/alsa-ucm-conf pull request #128 was opened from brndd:
 
-Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
----
- sound/sparc/dbri.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Adds a profile for the Behringer UMC204HD to split a 4-channel output into two outputs, and a 2-channel input into two inputs, as per the physical layout of the device. I have very little idea what I'm doing, so let me know if something looks incorrect (there's one thing that looks incorrect even to me which I shall point out in a comment below). The config does at least work, though.
 
-diff --git a/sound/sparc/dbri.c b/sound/sparc/dbri.c
-index 6b84f66e4af4..3881e1c1b08a 100644
---- a/sound/sparc/dbri.c
-+++ b/sound/sparc/dbri.c
-@@ -688,7 +688,7 @@ static void dbri_cmdsend(struct snd_dbri *dbri, s32 *cmd, int len)
- {
- 	u32 dvma_addr = (u32)dbri->dma_dvma;
- 	s32 tmp, addr;
--	static int wait_id = 0;
-+	static int wait_id;
- 
- 	wait_id++;
- 	wait_id &= 0xffff;	/* restrict it to a 16 bit counter. */
-@@ -1926,7 +1926,7 @@ static void dbri_process_interrupt_buffer(struct snd_dbri *dbri)
- static irqreturn_t snd_dbri_interrupt(int irq, void *dev_id)
- {
- 	struct snd_dbri *dbri = dev_id;
--	static int errcnt = 0;
-+	static int errcnt;
- 	int x;
- 
- 	if (dbri == NULL)
-@@ -2591,7 +2591,7 @@ static int dbri_probe(struct platform_device *op)
- 	struct snd_dbri *dbri;
- 	struct resource *rp;
- 	struct snd_card *card;
--	static int dev = 0;
-+	static int dev;
- 	int irq;
- 	int err;
- 
--- 
-2.34.1
+[alsa-info.txt](https://github.com/alsa-project/alsa-ucm-conf/files/7698277/alsa-info.txt)
 
+
+-----
+
+![UMC204HD_P0BK0_Front_XL](https://user-images.githubusercontent.com/5822375/145704001-5bb9b741-0d1f-4f83-8184-6335c9b53fbf.png)
+![UMC204HD_P0BK0_Rear_XL](https://user-images.githubusercontent.com/5822375/145703999-918614e6-3298-4191-a7b6-7260e8eb3638.png)
+
+Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/128
+Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/128.patch
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
