@@ -4,74 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4FD8C433FE
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Dec 2021 08:20:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 632A9C433FE
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Dec 2021 09:37:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CEA2C18FF;
-	Mon, 13 Dec 2021 09:19:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CEA2C18FF
+	by alsa0.perex.cz (Postfix) with ESMTPS id B51DC18DE;
+	Mon, 13 Dec 2021 10:36:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B51DC18DE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639383635;
-	bh=Nhd5q6S5xMr1JLr34GO5UbIQtjVnFs7jRyi+oXcHb7Q=;
+	s=default; t=1639388255;
+	bh=PUYiz/tcHpzD7Oy4mFh9v6JPa0pQ3PzfWW9PGcrPAXE=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ij8wAvT/A8eLS/ySk1RWX7lC8HSEOFrqqPI6wi+2ejFg97c77qZ9DqfPB1KzX/rOc
-	 3P607gIa0nqy8RcuDmuafHmPJ5MnYsN9MdvNsIoNYIzDrl97nxxVJhHx0e1vGEJA0B
-	 Oao88HD4jCYERsdJUklCbwCWnorblm8vV85oSYvg=
+	b=A3vYNsvc0Z3ayXb7eP2ZB1MPO7U2pLp5gKMbE8xqk3faXxbjXNLz2zuUx4JpQ5y6d
+	 ETQhW9LI/i9JalApdFQdp3CawJC8fQuEvGKlG+a3OEnhdvd6qvgkBFVzy7G5X1BPOG
+	 hAKE3n1RUWGqlT6SO9rKWHlnpsrz+q4HbQ+DuxKw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 706E4F8027C;
-	Mon, 13 Dec 2021 09:19:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4991DF80229;
+	Mon, 13 Dec 2021 10:36:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D0F34F802E8; Mon, 13 Dec 2021 09:19:43 +0100 (CET)
+ id 6B051F8025D; Mon, 13 Dec 2021 10:36:39 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A9F30F8013C
- for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2021 09:19:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9F30F8013C
+ by alsa1.perex.cz (Postfix) with ESMTPS id B7F7BF80161
+ for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2021 10:36:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7F7BF80161
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="WP/Io3vL"; 
+ header.b="A+zJ5xJx"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="v+Dj7Rql"
+ header.b="auCY3scA"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 3F65B2113A;
- Mon, 13 Dec 2021 08:19:35 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 63981210E6;
+ Mon, 13 Dec 2021 09:36:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1639383575; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1639388194; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=1zXO5yUb1MmGhUBfXi6LbtIbBV7IR/3qymjQlymhi38=;
- b=WP/Io3vLzGNxKNpq9iST8nyCVEuSIllclm7q9/q9JLYMrWKSejZEKowm//sLHHD2J5ivRI
- z9JklP/pOq8/yMnXZqP9nzZGKx24aeVMAJa13UlOXKP+Q1hS1z0rG+2+GZ4LK90kpWvFcJ
- y4T9lnBobO1kVEuR1uCx1OIAgCmUxmA=
+ bh=pEji7qG1lTG6T1BGFdtW1A7Ap+VS97P266CofDR8fQ8=;
+ b=A+zJ5xJxX03S4bo/5eo+q0q17dJxAR8omRSL73uYL66E7GtZr5QegeqmsRIlIwzBO5Vlhe
+ YY5R4D3bdEdzPux+yX8TCxV8VyHCXjmL/89+n3QFI1eJumR9fro+yo/h9A+xDfV8SXrGNH
+ VDtmd41Z+YwYIFjWKf/Fb0Cymt8VOBo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1639383575;
+ s=susede2_ed25519; t=1639388194;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=1zXO5yUb1MmGhUBfXi6LbtIbBV7IR/3qymjQlymhi38=;
- b=v+Dj7Rql9KNcyBFmswRdKIUeUrSDX0RRUYXJG/iDW+HkFgNmJndzjBjT2yD39YWvYH5Ko7
- Md/1NN+XzXjV4/Dw==
+ bh=pEji7qG1lTG6T1BGFdtW1A7Ap+VS97P266CofDR8fQ8=;
+ b=auCY3scAiBCqb0omX8COw2CSytol3N654vmh13IKj5jR9/uAVphBDD/iZC2FOtNafX3qxr
+ WjWKZ/3LmTgUfRDg==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 2D00FA3B84;
- Mon, 13 Dec 2021 08:19:35 +0000 (UTC)
-Date: Mon, 13 Dec 2021 09:19:35 +0100
-Message-ID: <s5hv8zsex2g.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id 43A62A3B8B;
+ Mon, 13 Dec 2021 09:36:34 +0000 (UTC)
+Date: Mon, 13 Dec 2021 10:36:34 +0100
+Message-ID: <s5hlf0oeti5.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH] ALSA: uapi: use C90 comment style instead of C99 style
-In-Reply-To: <20211213081257.36097-1-o-takashi@sakamocchi.jp>
-References: <20211213081257.36097-1-o-takashi@sakamocchi.jp>
+To: Colin Ian King <colin.i.king@gmail.com>
+Subject: Re: [PATCH] ALSA: drivers: opl3: Fix incorrect use of vp->state
+In-Reply-To: <20211212172025.470367-1-colin.i.king@gmail.com>
+References: <20211212172025.470367-1-colin.i.king@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ kernel-janitors@vger.kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,16 +90,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 13 Dec 2021 09:12:57 +0100,
-Takashi Sakamoto wrote:
+On Sun, 12 Dec 2021 18:20:25 +0100,
+Colin Ian King wrote:
 > 
-> UAPI headers are built with compiler option for C90, thus double-slashes
-> comment introduced in C99 is not preferable.
+> Static analysis with scan-build has found an assignment to vp2 that is
+> never used. It seems that the check on vp->state > 0 should be actually
+> on vp2->state instead. Fix this.
 > 
-> Fixes: fb6723daf890 ("ALSA: pcm: comment about relation between msbits hw parameter and [S|U]32 formats")
-> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+> This dates back to 2002, I found the offending commit from the git
+> history git://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git,
+> commit 91e39521bbf6 ("[PATCH] ALSA patch for 2.5.4")
+> 
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 
-Thanks, applied.
+Thanks, applied now with Cc-to-stable.
 
 
 Takashi
