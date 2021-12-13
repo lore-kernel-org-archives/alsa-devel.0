@@ -4,54 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA017C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Dec 2021 16:01:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92167C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Dec 2021 16:01:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BF8DA1845;
-	Mon, 13 Dec 2021 17:00:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF8DA1845
+	by alsa0.perex.cz (Postfix) with ESMTPS id CD1441868;
+	Mon, 13 Dec 2021 17:01:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD1441868
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639411291;
+	s=default; t=1639411314;
 	bh=E3kyiEeT5dBdXWhbp1IxPuCcvru4Lfbtt7wr9gZYQ2k=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=sH0nUb4GoEKzegj7OXqVTjuw1JzVzcyb8VIr0VMY4IEiMeqQFEdquNvuTKl7pS37h
-	 6HcuqIPjCS1EE1WG+FTCGJBP9G6hV2/mwxodekrm0Sp+dFy2fTuwMA0t23oc/skAbV
-	 S9RaZpOJW4ZlqXQI919bDljffhwdpgfVcs68pMgE=
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=TyR/Sxl4R9hHY8uy+tqFl0fCyiovMY4Tlqk7+v8rwC0R1gBuysWtrTtkgbKgCssn9
+	 Fwufx3XEYOXtzUTeVfPvTllghsNC9cKa4q71FBV/yzbfACsWFKGLhad/SpkEKYnBqM
+	 Dr+lNs+A0+A1TP/TxPqebVp9AIKbD2++O23OmUrM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2CB91F8042F;
+	by alsa1.perex.cz (Postfix) with ESMTP id B0767F804CA;
 	Mon, 13 Dec 2021 17:00:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5C776F802E8; Mon, 13 Dec 2021 17:00:10 +0100 (CET)
-Received: from msg-4.mailo.com (ip-15.mailobj.net [213.182.54.15])
+ id 78177F8025D; Mon, 13 Dec 2021 17:00:12 +0100 (CET)
+Received: from msg-6.mailo.com (ip-16.mailobj.net [213.182.54.16])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1C034F8013C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 456D3F80229
  for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2021 17:00:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C034F8013C
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 456D3F80229
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=mailoo.org header.i=@mailoo.org
- header.b="d3GqlFbW"
+ header.b="Y7qYa/SE"
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailoo.org; s=mailo;
- t=1639411171; bh=E3kyiEeT5dBdXWhbp1IxPuCcvru4Lfbtt7wr9gZYQ2k=;
- h=X-EA-Auth:From:To:Cc:Subject:Date:Message-Id:X-Mailer:
- MIME-Version:Content-Transfer-Encoding;
- b=d3GqlFbWXAkuQMYjrVoutU1EGlIJOi1ljXLqLng5C1uUnT26uwl4jfe1qYyzN2y6f
- 3vtHb5C6Nm6zBWAM7xHz/a+f+Hcek39i22YXBnhXtOM4Dj6b7E1F9OYWWoFsw3TufG
- K0qFVvsX3niu4rJLkBxjj3r/xd4ShmkZi5KYnByA=
+ t=1639411186; bh=E3kyiEeT5dBdXWhbp1IxPuCcvru4Lfbtt7wr9gZYQ2k=;
+ h=X-EA-Auth:From:To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:
+ References:MIME-Version:Content-Transfer-Encoding;
+ b=Y7qYa/SEPboiGN+BKjbW2AnBofCooqFhDr4LxclXA5cCeSlAxMW7I+tBfIAwqYO88
+ fXbd1pPvBRSID33bpSDZ90MYZ0K8Y0DpisqLn+c/dMuYNA414iJygAH4V94okjZ3hF
+ losxxBGFKZvjMklwtAZeWjNNQxU60JxbhLXC3gVg=
 Received: by b-6.in.mailobj.net [192.168.90.16] with ESMTP
  via proxy.mailoo.org [213.182.55.207]
- Mon, 13 Dec 2021 16:59:31 +0100 (CET)
-X-EA-Auth: wFsVhjkcT7DL+4gBttlWG8tX9AXPDvpJqJmfnzCnwvqZa0Pgv7B5tNpI1VmhAt5iIHMq7MY78Fq2Jy45N2iiWjWzYnxc9QJsAewSTKabX6s=
+ Mon, 13 Dec 2021 16:59:46 +0100 (CET)
+X-EA-Auth: NvMRoCzQJGxu+IlpveVVDgcVM0W0nEdywnstX6OZgaOgw3DO+XYrfBfKVI8I86n94Ca/KcihO8JtETUNJ05y6jlwIhD+4x0B9aC0lhmgpMM=
 From: Vincent Knecht <vincent.knecht@mailoo.org>
 To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
  perex@perex.cz, tiwai@suse.com
 Subject: [PATCH 1/2] ASoC: dt-bindings: codecs: Add bindings for ak4375
-Date: Mon, 13 Dec 2021 16:59:11 +0100
-Message-Id: <20211213155914.2558902-1-vincent.knecht@mailoo.org>
+Date: Mon, 13 Dec 2021 16:59:13 +0100
+Message-Id: <20211213155914.2558902-3-vincent.knecht@mailoo.org>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20211213155914.2558902-1-vincent.knecht@mailoo.org>
+References: <20211213155914.2558902-1-vincent.knecht@mailoo.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
