@@ -4,72 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3DA1FC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Dec 2021 13:25:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D01CC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Dec 2021 13:26:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 45AEA1841;
-	Mon, 13 Dec 2021 14:24:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45AEA1841
+	by alsa0.perex.cz (Postfix) with ESMTPS id 11A981865;
+	Mon, 13 Dec 2021 14:25:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 11A981865
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639401949;
-	bh=Yh4yu62D/8anXnooRgPkv65KXM0AAYyxozj2YtA9qTc=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=eHKeQx9VguSQtYxicj8A035YG/5/0QN/ojyGnk9EggSrGQaJ7/UT+bH11HiQrXiyy
-	 Nc4J3CamSIflBfWBZQa1ceueRBTbedZcvcykEE7NMmgWqhPezUh/giTjuZVwuaCTar
-	 GM4+aCNZq79ns+1b31Q1N+dPmCu/K86mv8XxdqC0=
+	s=default; t=1639401977;
+	bh=SOjEvBeZMCgDvnO8WHFAcoaGRU0S+xD6wVu8Y2u1IZk=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=IdvHaqu9EiqpWuMAUoTb0guvfxOR7ihIdFW2NQ4bE8aIpQqJZ3Y+qq+wTnBn0wNaM
+	 qGL8+HQGxJ7ZFdbpJq4vpx/ur2ylyBYR/A2y8Wg5ZbQbRCsMOIA6S0e8rfoW87a/Yu
+	 VGI2+Xbei3dz2/Er0QB1ibUTy+iS74ZB2O4qRJw4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B231FF8016A;
-	Mon, 13 Dec 2021 14:24:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5CAFDF8027C;
+	Mon, 13 Dec 2021 14:25:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E76EFF8025F; Mon, 13 Dec 2021 14:24:57 +0100 (CET)
+ id ACFA6F8025F; Mon, 13 Dec 2021 14:24:58 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2208CF8013C
- for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2021 14:24:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2208CF8013C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 99282F8016A
+ for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2021 14:24:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99282F8016A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="bx39TpFp"; 
+ header.b="dCAxPr1Z"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="3hyUGD3I"
+ header.b="F65hUQ3s"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 754181F3BA;
- Mon, 13 Dec 2021 13:24:46 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id D01C41F3BE;
+ Mon, 13 Dec 2021 13:24:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1639401886; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=OGzUh/JvQiXjMmLf4oWYlSjkcuzSqkoHgbLEfNm4UWc=;
- b=bx39TpFpnJhifMwuoJfr1LqXmXFdfw6ZVa8M0bqOts7qfrXC8bz2dsIDtcH/z7APJlrYF2
- yoSJd6P0utgqor+DvxZb4WCQnw4A4odNLiA12NGg8qVgexzi1e/8Zvfs6Q/7GYAp9b65Yb
- +ajTrVyDazBVzx2iqp7HMHrzG795IDw=
+ t=1639401885; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=57qkfZrnIUr7d6gpj3C6+VuSRqu6+JRJyBBxAbkOA8A=;
+ b=dCAxPr1Z/K+fIwmtHIm8d1RxxGrM4PhfIW1pbASjyMMIg0HvziFCSIrhRG/lvXEfeKETH7
+ lLwikY+biwy8Zi+8GIvDL5G/6xn4jXURuRQLBls/sPiN1BQ054BC4jQbVazPQk9DEKigyn
+ nkCSW/tuyQtlfvTg12V5oLhy9WUz2nE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1639401886;
+ s=susede2_ed25519; t=1639401885;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=OGzUh/JvQiXjMmLf4oWYlSjkcuzSqkoHgbLEfNm4UWc=;
- b=3hyUGD3Igj2T0XLRojFKGQt8Osw5p5QcDv9IHrkz/Rc4j/ILJjYXYuP0RVrKjFazR3niTw
- TwJ7QVFpFXVpzTBg==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=57qkfZrnIUr7d6gpj3C6+VuSRqu6+JRJyBBxAbkOA8A=;
+ b=F65hUQ3sQhCKXKtJu7EeW1/aNIwg3tOzNC9AlJTZrwvDW7MY+k8sqkYMIKwZEMerUwmNjH
+ ieCm3lyYxSjABYCw==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 6EAE5A3B8B;
- Mon, 13 Dec 2021 13:24:46 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id BF81DA3B8A;
+ Mon, 13 Dec 2021 13:24:45 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 2/2] ALSA: gus: Fix memory leaks at error paths in memory
- allocations
-Date: Mon, 13 Dec 2021 14:24:44 +0100
-Message-Id: <20211213132444.22385-2-tiwai@suse.de>
+Subject: [PATCH 1/2] ALSA: gus: Fix erroneous memory allocation
+Date: Mon, 13 Dec 2021 14:24:43 +0100
+Message-Id: <20211213132444.22385-1-tiwai@suse.de>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211213132444.22385-1-tiwai@suse.de>
-References: <20211213132444.22385-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: Xiaoke Wang <xkernel.wang@foxmail.com>
@@ -88,54 +80,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When snd_gf1_mem_xalloc() returns NULL, the current code still leaves
-the formerly allocated block.name string but returns an error
-immediately.  This patch covers the all callers to deal with the
-release of leftover name strings in the error paths.
+snd_gf1_mem_xalloc() returns NULL incorrectly when the memory chunk is
+allocated in the middle of the chain.  This patch corrects the return
+value to treat it properly.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/isa/gus/gus_mem.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+ sound/isa/gus/gus_mem.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/isa/gus/gus_mem.c b/sound/isa/gus/gus_mem.c
-index 5e3ff3137dd7..1509e3e5d30e 100644
+index 4c691dbf2721..5e3ff3137dd7 100644
 --- a/sound/isa/gus/gus_mem.c
 +++ b/sound/isa/gus/gus_mem.c
-@@ -204,6 +204,8 @@ struct snd_gf1_mem_block *snd_gf1_mem_alloc(struct snd_gf1_mem * alloc, int owne
- 		return NULL;
+@@ -44,7 +44,7 @@ static struct snd_gf1_mem_block *snd_gf1_mem_xalloc(struct snd_gf1_mem * alloc,
+ 			else
+ 				nblock->prev->next = nblock;
+ 			mutex_unlock(&alloc->memory_mutex);
+-			return NULL;
++			return nblock;
+ 		}
+ 		pblock = pblock->next;
  	}
- 	nblock = snd_gf1_mem_xalloc(alloc, &block);
-+	if (!nblock)
-+		kfree(block.name);
- 	snd_gf1_mem_lock(alloc, 1);
- 	return nblock;
- }
-@@ -241,14 +243,22 @@ int snd_gf1_mem_init(struct snd_gus_card * gus)
- 		block.ptr = 0;
- 		block.size = 1024;
- 		block.name = kstrdup("InterWave LFOs", GFP_KERNEL);
--		if (block.name == NULL || snd_gf1_mem_xalloc(alloc, &block) == NULL)
-+		if (block.name == NULL)
- 			return -ENOMEM;
-+		if (snd_gf1_mem_xalloc(alloc, &block) == NULL) {
-+			kfree(block.name);
-+			return -ENOMEM;
-+		}
- 	}
- 	block.ptr = gus->gf1.default_voice_address;
- 	block.size = 4;
- 	block.name = kstrdup("Voice default (NULL's)", GFP_KERNEL);
--	if (block.name == NULL || snd_gf1_mem_xalloc(alloc, &block) == NULL)
-+	if (block.name == NULL)
- 		return -ENOMEM;
-+	if (snd_gf1_mem_xalloc(alloc, &block) == NULL) {
-+		kfree(block.name);
-+		return -ENOMEM;
-+	}
- #ifdef CONFIG_SND_DEBUG
- 	snd_card_ro_proc_new(gus->card, "gusmem", gus, snd_gf1_mem_info_read);
- #endif
 -- 
 2.31.1
 
