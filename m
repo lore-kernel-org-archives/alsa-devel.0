@@ -4,75 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1954C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Dec 2021 13:24:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3DA1FC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Dec 2021 13:25:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 51DE7181D;
-	Mon, 13 Dec 2021 14:23:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 51DE7181D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 45AEA1841;
+	Mon, 13 Dec 2021 14:24:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45AEA1841
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639401842;
-	bh=mABgAJIZdxMQ8/G+q5zi0J7bcISCF4GB7WI4q843WiU=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1639401949;
+	bh=Yh4yu62D/8anXnooRgPkv65KXM0AAYyxozj2YtA9qTc=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=igPNtze9jbhZuaalvFpGkxKGkxYo2cCHAAwRVQq8BBohgjb+j+1SLWx8euwHbuZVn
-	 iejcgEcLPIW2xq/3GCe016APew9vcLKBbBr+u9he1RXKWHmMZbjJpJw5jjVdDfaX1t
-	 bmMqOJ6SGUZT3P07ewHIM2Kmtd6SeomlOxQCkb+k=
+	b=eHKeQx9VguSQtYxicj8A035YG/5/0QN/ojyGnk9EggSrGQaJ7/UT+bH11HiQrXiyy
+	 Nc4J3CamSIflBfWBZQa1ceueRBTbedZcvcykEE7NMmgWqhPezUh/giTjuZVwuaCTar
+	 GM4+aCNZq79ns+1b31Q1N+dPmCu/K86mv8XxdqC0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E1FC2F8016A;
-	Mon, 13 Dec 2021 14:23:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B231FF8016A;
+	Mon, 13 Dec 2021 14:24:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C95D6F8025D; Mon, 13 Dec 2021 14:23:10 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id E76EFF8025F; Mon, 13 Dec 2021 14:24:57 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DD66EF8016A
- for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2021 14:23:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD66EF8016A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2208CF8013C
+ for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2021 14:24:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2208CF8013C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="mzrzkvw1"; 
+ header.b="bx39TpFp"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="EmXhpqx6"
+ header.b="3hyUGD3I"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id AAFF92111A;
- Mon, 13 Dec 2021 13:23:01 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 754181F3BA;
+ Mon, 13 Dec 2021 13:24:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1639401781; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ t=1639401886; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Rv1XlQo6nj/92BtG35/KGmG6N9zBV3ZTKHuEaXrsTac=;
- b=mzrzkvw1pm9xPky4biekJZf29hG9hGJfB/JmS5N5yTZO1VH9xu6a3jvXdGZ6FVuvUjy/S0
- F6YWqUSXT5t3npwWjF/T0Xhv5Si5ZG42Faf0xQPcNuJ0p1IvPwHm3K9gJBOK9hEWWZUNzY
- r7hQI+bOLYUT70WwUEpXzyMp+mgZa+c=
+ bh=OGzUh/JvQiXjMmLf4oWYlSjkcuzSqkoHgbLEfNm4UWc=;
+ b=bx39TpFpnJhifMwuoJfr1LqXmXFdfw6ZVa8M0bqOts7qfrXC8bz2dsIDtcH/z7APJlrYF2
+ yoSJd6P0utgqor+DvxZb4WCQnw4A4odNLiA12NGg8qVgexzi1e/8Zvfs6Q/7GYAp9b65Yb
+ +ajTrVyDazBVzx2iqp7HMHrzG795IDw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1639401781;
+ s=susede2_ed25519; t=1639401886;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Rv1XlQo6nj/92BtG35/KGmG6N9zBV3ZTKHuEaXrsTac=;
- b=EmXhpqx65hzsrIUq+Y6AKcl3Syeir/7CTtRpuXEadDzVyQVScaNPE+t/rH1mY2TQhlVS/G
- uGugPRsM3DbwQsBw==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 9A610A3B83;
- Mon, 13 Dec 2021 13:23:01 +0000 (UTC)
-Date: Mon, 13 Dec 2021 14:23:01 +0100
-Message-ID: <s5hy24od4ga.wl-tiwai@suse.de>
+ bh=OGzUh/JvQiXjMmLf4oWYlSjkcuzSqkoHgbLEfNm4UWc=;
+ b=3hyUGD3Igj2T0XLRojFKGQt8Osw5p5QcDv9IHrkz/Rc4j/ILJjYXYuP0RVrKjFazR3niTw
+ TwJ7QVFpFXVpzTBg==
+Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 6EAE5A3B8B;
+ Mon, 13 Dec 2021 13:24:46 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
-To: Xiaoke Wang <xkernel.wang@foxmail.com>
-Subject: Re: [PATCH v2] ALSA: sound/isa/gus: check the return value of
- kstrdup()
-In-Reply-To: <tencent_1E3950293AC22395ACFE99404C985D738309@qq.com>
-References: <tencent_1E3950293AC22395ACFE99404C985D738309@qq.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 2/2] ALSA: gus: Fix memory leaks at error paths in memory
+ allocations
+Date: Mon, 13 Dec 2021 14:24:44 +0100
+Message-Id: <20211213132444.22385-2-tiwai@suse.de>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20211213132444.22385-1-tiwai@suse.de>
+References: <20211213132444.22385-1-tiwai@suse.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Xiaoke Wang <xkernel.wang@foxmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,67 +88,54 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 13 Dec 2021 11:52:32 +0100,
-Xiaoke Wang wrote:
-> 
-> kstrdup() returns NULL when some internal memory errors happen, it is
-> better to check the return value of it. Otherwise, we may not to be able
-> to catch some memory errors in time.
-> 
-> Signed-off-by: Xiaoke Wang <xkernel.wang@foxmail.com>
-> ---
-> Changes in v2:
->  - add the proper error handling.
-> Thanks for the suggestions from Takashi Iwai. In the future, I'll pay 
-> more attention to what he mentioned.
+When snd_gf1_mem_xalloc() returns NULL, the current code still leaves
+the formerly allocated block.name string but returns an error
+immediately.  This patch covers the all callers to deal with the
+release of leftover name strings in the error paths.
 
-Thanks, now I applied as is.
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/isa/gus/gus_mem.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
-BTW, when you look at the code carefully, you'll find that the memory
-leaks may occur at the second and the third chunk in your patch. It's
-not a fault of this change, but it's a bug in the original code.
+diff --git a/sound/isa/gus/gus_mem.c b/sound/isa/gus/gus_mem.c
+index 5e3ff3137dd7..1509e3e5d30e 100644
+--- a/sound/isa/gus/gus_mem.c
++++ b/sound/isa/gus/gus_mem.c
+@@ -204,6 +204,8 @@ struct snd_gf1_mem_block *snd_gf1_mem_alloc(struct snd_gf1_mem * alloc, int owne
+ 		return NULL;
+ 	}
+ 	nblock = snd_gf1_mem_xalloc(alloc, &block);
++	if (!nblock)
++		kfree(block.name);
+ 	snd_gf1_mem_lock(alloc, 1);
+ 	return nblock;
+ }
+@@ -241,14 +243,22 @@ int snd_gf1_mem_init(struct snd_gus_card * gus)
+ 		block.ptr = 0;
+ 		block.size = 1024;
+ 		block.name = kstrdup("InterWave LFOs", GFP_KERNEL);
+-		if (block.name == NULL || snd_gf1_mem_xalloc(alloc, &block) == NULL)
++		if (block.name == NULL)
+ 			return -ENOMEM;
++		if (snd_gf1_mem_xalloc(alloc, &block) == NULL) {
++			kfree(block.name);
++			return -ENOMEM;
++		}
+ 	}
+ 	block.ptr = gus->gf1.default_voice_address;
+ 	block.size = 4;
+ 	block.name = kstrdup("Voice default (NULL's)", GFP_KERNEL);
+-	if (block.name == NULL || snd_gf1_mem_xalloc(alloc, &block) == NULL)
++	if (block.name == NULL)
+ 		return -ENOMEM;
++	if (snd_gf1_mem_xalloc(alloc, &block) == NULL) {
++		kfree(block.name);
++		return -ENOMEM;
++	}
+ #ifdef CONFIG_SND_DEBUG
+ 	snd_card_ro_proc_new(gus->card, "gusmem", gus, snd_gf1_mem_info_read);
+ #endif
+-- 
+2.31.1
 
-Actually there are two issues -- one is about the incorrect return
-value from snd_gf1_mem_xalloc() and another is the missing kfree of
-block.name.  Will submit two fix patches as a follow up.
-
-
-Takashi
-
-> ---
-> sound/isa/gus/gus_mem.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/isa/gus/gus_mem.c b/sound/isa/gus/gus_mem.c
-> index ff9480f..4c691db 100644
-> --- a/sound/isa/gus/gus_mem.c
-> +++ b/sound/isa/gus/gus_mem.c
-> @@ -199,6 +199,10 @@ struct snd_gf1_mem_block *snd_gf1_mem_alloc(struct snd_gf1_mem * alloc, int owne
->  		memcpy(&block.share_id, share_id, sizeof(block.share_id));
->  	block.owner = owner;
->  	block.name = kstrdup(name, GFP_KERNEL);
-> +	if (block.name == NULL) {
-> +		snd_gf1_mem_lock(alloc, 1);
-> +		return NULL;
-> +	}
->  	nblock = snd_gf1_mem_xalloc(alloc, &block);
->  	snd_gf1_mem_lock(alloc, 1);
->  	return nblock;
-> @@ -237,13 +241,13 @@ int snd_gf1_mem_init(struct snd_gus_card * gus)
->  		block.ptr = 0;
->  		block.size = 1024;
->  		block.name = kstrdup("InterWave LFOs", GFP_KERNEL);
-> -		if (snd_gf1_mem_xalloc(alloc, &block) == NULL)
-> +		if (block.name == NULL || snd_gf1_mem_xalloc(alloc, &block) == NULL)
->  			return -ENOMEM;
->  	}
->  	block.ptr = gus->gf1.default_voice_address;
->  	block.size = 4;
->  	block.name = kstrdup("Voice default (NULL's)", GFP_KERNEL);
-> -	if (snd_gf1_mem_xalloc(alloc, &block) == NULL)
-> +	if (block.name == NULL || snd_gf1_mem_xalloc(alloc, &block) == NULL)
->  		return -ENOMEM;
->  #ifdef CONFIG_SND_DEBUG
->  	snd_card_ro_proc_new(gus->card, "gusmem", gus, snd_gf1_mem_info_read);
-> -- 
-> 
