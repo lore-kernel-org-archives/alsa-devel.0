@@ -4,56 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21118C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Dec 2021 05:50:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41431C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Dec 2021 07:21:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 60ABB18F8;
-	Mon, 13 Dec 2021 06:49:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 60ABB18F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4E57D17CF;
+	Mon, 13 Dec 2021 08:20:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E57D17CF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639374610;
-	bh=ZYRAeqmvghRhAjtz0XYxw1JeARMsfR/b3oVdv/E+Eyg=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1639380098;
+	bh=nCmncDTzdWesOw1iqDAHIL4sHKVVEacTfK5uVCfHubE=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Q49ir+P9DSWdPiOUSHtIpy8Szatv0v/XLEXrT8KoBcycpqFV5SZEHz2UE+iIaffWT
-	 NPC7ZG9jsY0gc4ugREmm42cgs5wUsVU/+I3E34ChO8PDQKEdZvAVEJ3k5pg99173jg
-	 N/JfUkFj33CclAV0r3jNEUpNTguR+DOYY1yMu734=
+	b=U4yYHasL4GDqwCAM4rInAVc539CpZYQesxEEgWuvv4QpTd/VbwoEMZ9UqCR//9Om1
+	 ZUiqhGyOgeRN3kP+eHyXTtppMThiAjZFXT7XcP3ytjNUbC+mcgo6tcEp8f614u8l77
+	 pONsZHnjKZ5L0/O/gRuP2DSks9TBnzXLfy2MeT1I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6E811F80518;
-	Mon, 13 Dec 2021 06:48:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D14F7F8016A;
+	Mon, 13 Dec 2021 08:20:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EEBC9F80229; Mon, 13 Dec 2021 06:48:05 +0100 (CET)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 2C0D8F8025D; Mon, 13 Dec 2021 08:20:46 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 75832F80161
- for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2021 06:46:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75832F80161
-X-IronPort-AV: E=McAfee;i="6200,9189,10196"; a="237402028"
-X-IronPort-AV: E=Sophos;i="5.88,201,1635231600"; d="scan'208";a="237402028"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Dec 2021 21:46:56 -0800
-X-IronPort-AV: E=Sophos;i="5.88,201,1635231600"; d="scan'208";a="517608156"
-Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
- by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Dec 2021 21:46:53 -0800
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	vkoul@kernel.org
-Subject: [PATCH 3/7] soundwire: intel: improve suspend flows
-Date: Mon, 13 Dec 2021 13:46:30 +0800
-Message-Id: <20211213054634.30088-4-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211213054634.30088-1-yung-chuan.liao@linux.intel.com>
-References: <20211213054634.30088-1-yung-chuan.liao@linux.intel.com>
-Cc: vinod.koul@linaro.org, tiwai@suse.de, gregkh@linuxfoundation.org,
- linux-kernel@vger.kernel.org, pierre-louis.bossart@linux.intel.com,
- broonie@kernel.org, srinivas.kandagatla@linaro.org, sanyog.r.kale@intel.com,
- bard.liao@intel.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6B122F8016A
+ for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2021 08:20:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B122F8016A
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="E//4t9bt"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="OSU46vMQ"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 697FD210F4;
+ Mon, 13 Dec 2021 07:20:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1639380039; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=cpXSxvt9Ir8XvdbKQV4mLAZE1cR+Yom23PX2QcCQEIM=;
+ b=E//4t9btOcX2ecP4w19tKqSth9d8K2uyVx93DWqHl4IxtOVqHnoUZ1CkjpWG86KcFkdzUi
+ CvhGSGs9CTxIdmX6P8sxNkFC2hTTRgeQZrnRTKZ0UiyzT2kFFN6VYkzb4hiEB4vIEIgpR7
+ VVLFiO4G7TkqUP1Ama0ABrjVS90Dm9I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1639380039;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=cpXSxvt9Ir8XvdbKQV4mLAZE1cR+Yom23PX2QcCQEIM=;
+ b=OSU46vMQHDvwftBJGi+5SWo8td0P8MtMvo50K+FN5u69ZXNxHQs85HdRJSKstc1ySUv+UJ
+ bNn63A+1lWgpG5AA==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 5A016A3B89;
+ Mon, 13 Dec 2021 07:20:38 +0000 (UTC)
+Date: Mon, 13 Dec 2021 08:20:38 +0100
+Message-ID: <s5h1r2hezsp.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: "Takashi Sakamoto" <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] ALSA: pcm: comment about relation between msbits hw
+ parameter and [S|U32] formats
+In-Reply-To: <30685ab6-3347-43ee-b20d-6e11994242b4@www.fastmail.com>
+References: <20210529033353.21641-1-o-takashi@sakamocchi.jp>
+ <s5heedo3cdu.wl-tiwai@suse.de>
+ <30685ab6-3347-43ee-b20d-6e11994242b4@www.fastmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -69,221 +90,70 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+On Sun, 12 Dec 2021 12:30:30 +0100,
+Takashi Sakamoto wrote:
+> 
+> Hi,
+> 
+> On Sun, May 30, 2021, at 16:32, Takashi Iwai wrote:
+> > On Sat, 29 May 2021 05:33:53 +0200,
+> > Takashi Sakamoto wrote:
+> >> 
+> >> Regarding to handling [U|S][32|24] PCM formats, many userspace
+> >> application developers and driver developers have confusion, since they
+> >> require them to understand justification or padding. It easily
+> >> loses consistency and soundness to operate with many type of devices. In
+> >> this commit, I attempt to solve the situation by adding comment about
+> >> relation between [S|U]32 formats and 'msbits' hardware parameter.
+> >> 
+> >> The formats are used for 'left-justified' sample format, and the available
+> >> bit count in most significant bit is delivered to userspace in msbits
+> >> hardware parameter (struct snd_pcm_hw_params.msbits), which is decided by
+> >> msbits constraint added by pcm drivers (snd_pcm_hw_constraint_msbits()).
+> >> 
+> >> In driver side, the msbits constraint includes two elements; the physical
+> >> width of format and the available width of the format in most significant
+> >> bit. The former is used to match SAMPLE_BITS of format. (For my
+> >> convenience, I ignore wildcard in the usage of the constraint.)
+> >> 
+> >> As a result of interaction between ALSA pcm core and ALSA pcm application,
+> >> when the format in which SAMPLE_BITS equals to physical width of the
+> >> msbits constaint, the msbits parameter is set by referring to the
+> >> available width of the constraint. When the msbits parameter is not
+> >> changed in the above process, ALSA pcm core set it alternatively with
+> >> SAMPLE_BIT of chosen format.
+> >> 
+> >> In userspace application side, the msbits is only available after calling
+> >> ioctl(2) with SNDRV_PCM_IOCTL_HW_PARAMS request. Even if the hardware
+> >> parameter structure includes somewhat value of SAMPLE_BITS interval
+> >> parameter as width of format, all of the width is not always available
+> >> since msbits can be less than the width.
+> >> 
+> >> I note that [S|U24] formats are used for 'right-justified' 24 bit sample
+> >> formats within 32 bit frame. The first byte in most significant bit
+> >> should be invalidated. Although the msbits exposed to userspace should be
+> >> zero as invalid value, actually it is 32 from physical width of format.
+> >> 
+> >> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+> >
+> > Thanks, applied.
+> >
+> >
+> > Takashi
+> 
+> I can not find the patch in your tree. Would I ask you to review again?
 
-This patch provides both a simplification of the suspend flows and a
-better balanced operation during suspend/resume transition, as part of
-the transition of Sound Open Firmware (SOF) to dynamic pipelines: the
-DSP resources are only enabled when required instead of enabled on
-startup.
+Hrm, it seems that the commit was lost by some reason.  Sorry!
 
-The exiting code relies on a convoluted way of dealing with suspend
-signals. Since there is no .suspend DAI callback, we used the
-component .suspend and marked all the component DAI dmas as
-'suspended'. The information was used in the .prepare stage to
-differentiate resume operations from xrun handling, and only
-reinitialize SHIM registers and DMA in the former case.
+> If it should be going to be applied, I'd like you to fix my typo in the subject line;
+> 
+>  * "[S|U32]" -> "[S|U]32"
 
-While this solution has been working reliably for about 2 years, there
-is a much better solution consisting in trapping the TRIGGER_SUSPEND
-in the .trigger DAI ops. The DMA is still marked in the same way for
-the .prepare op to run, but in addition the callbacks sent to DSP
-firmware are now balanced.
+There was another similar typo in the patch description and I
+corrected both.  Now applied to for-next, commit
+fb6723daf89083a0d2290f3a0abc777e40766c84.
 
-Normal operation:
-hw_params -> intel_params_stream
-hw_free   -> intel_free_stream
 
-suspend    -> intel_free_stream
-prepare    -> intel_params_stream
+thanks,
 
-This balanced operation was not required with existing SOF firmware
-relying on static pipelines instantiated at every boot. With the
-on-going transition to dynamic pipelines, it's however a requirement
-to keep the use count for the DAI widget balanced across all
-transitions.
-
-The component suspend is not removed but instead modified to deal with
-a corner case: when a substream is PAUSED, the ALSA core does not
-throw the TRIGGER_SUSPEND. This is problematic since the refcount for
-all pipelines and widgets is not balanced, leading to issues on
-resume. The trigger callback keeps track of the 'paused' state with a
-new flag, which is tested during the component suspend called later to
-release the remaining DSP resources. These resources will be
-re-enabled in the .prepare step.
-
-The IPC used in the TRIGGER_SUSPEND to release DSP resources is not a
-problem since the BE dailink is already marked as non-atomic.
-
-Co-developed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- drivers/soundwire/cadence_master.h |   2 +
- drivers/soundwire/intel.c          | 110 +++++++++++++++++++++++------
- 2 files changed, 89 insertions(+), 23 deletions(-)
-
-diff --git a/drivers/soundwire/cadence_master.h b/drivers/soundwire/cadence_master.h
-index e587aede63bf..aa4b9b0eb2a8 100644
---- a/drivers/soundwire/cadence_master.h
-+++ b/drivers/soundwire/cadence_master.h
-@@ -86,6 +86,7 @@ struct sdw_cdns_stream_config {
-  * @link_id: Master link id
-  * @hw_params: hw_params to be applied in .prepare step
-  * @suspended: status set when suspended, to be used in .prepare
-+ * @paused: status set in .trigger, to be used in suspend
-  */
- struct sdw_cdns_dma_data {
- 	char *name;
-@@ -96,6 +97,7 @@ struct sdw_cdns_dma_data {
- 	int link_id;
- 	struct snd_pcm_hw_params *hw_params;
- 	bool suspended;
-+	bool paused;
- };
- 
- /**
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 25c5f5b9f058..3d29f02ad5a6 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -871,6 +871,7 @@ static int intel_hw_params(struct snd_pcm_substream *substream,
- 	sdw_cdns_config_stream(cdns, ch, dir, pdi);
- 
- 	/* store pdi and hw_params, may be needed in prepare step */
-+	dma->paused = false;
- 	dma->suspended = false;
- 	dma->pdi = pdi;
- 	dma->hw_params = params;
-@@ -1008,29 +1009,6 @@ static void intel_shutdown(struct snd_pcm_substream *substream,
- 	pm_runtime_put_autosuspend(cdns->dev);
- }
- 
--static int intel_component_dais_suspend(struct snd_soc_component *component)
--{
--	struct sdw_cdns_dma_data *dma;
--	struct snd_soc_dai *dai;
--
--	for_each_component_dais(component, dai) {
--		/*
--		 * we don't have a .suspend dai_ops, and we don't have access
--		 * to the substream, so let's mark both capture and playback
--		 * DMA contexts as suspended
--		 */
--		dma = dai->playback_dma_data;
--		if (dma)
--			dma->suspended = true;
--
--		dma = dai->capture_dma_data;
--		if (dma)
--			dma->suspended = true;
--	}
--
--	return 0;
--}
--
- static int intel_pcm_set_sdw_stream(struct snd_soc_dai *dai,
- 				    void *stream, int direction)
- {
-@@ -1059,11 +1037,97 @@ static void *intel_get_sdw_stream(struct snd_soc_dai *dai,
- 	return dma->stream;
- }
- 
-+static int intel_trigger(struct snd_pcm_substream *substream, int cmd, struct snd_soc_dai *dai)
-+{
-+	struct sdw_cdns *cdns = snd_soc_dai_get_drvdata(dai);
-+	struct sdw_intel *sdw = cdns_to_intel(cdns);
-+	struct sdw_cdns_dma_data *dma;
-+	int ret = 0;
-+
-+	dma = snd_soc_dai_get_dma_data(dai, substream);
-+	if (!dma) {
-+		dev_err(dai->dev, "failed to get dma data in %s\n",
-+			__func__);
-+		return -EIO;
-+	}
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+
-+		/*
-+		 * The .prepare callback is used to deal with xruns and resume operations.
-+		 * In the case of xruns, the DMAs and SHIM registers cannot be touched,
-+		 * but for resume operations the DMAs and SHIM registers need to be initialized.
-+		 * the .trigger callback is used to track the suspend case only.
-+		 */
-+
-+		dma->suspended = true;
-+
-+		ret = intel_free_stream(sdw, substream->stream, dai, sdw->instance);
-+		break;
-+
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		dma->paused = true;
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		dma->paused = false;
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
-+static int intel_component_dais_suspend(struct snd_soc_component *component)
-+{
-+	struct snd_soc_dai *dai;
-+
-+	/*
-+	 * In the corner case where a SUSPEND happens during a PAUSE, the ALSA core
-+	 * does not throw the TRIGGER_SUSPEND. This leaves the DAIs in an unbalanced state.
-+	 * Since the component suspend is called last, we can trap this corner case
-+	 * and force the DAIs to release their resources.
-+	 */
-+	for_each_component_dais(component, dai) {
-+		struct sdw_cdns *cdns = snd_soc_dai_get_drvdata(dai);
-+		struct sdw_intel *sdw = cdns_to_intel(cdns);
-+		struct sdw_cdns_dma_data *dma;
-+		int stream;
-+		int ret;
-+
-+		dma = dai->playback_dma_data;
-+		stream = SNDRV_PCM_STREAM_PLAYBACK;
-+		if (!dma) {
-+			dma = dai->capture_dma_data;
-+			stream = SNDRV_PCM_STREAM_CAPTURE;
-+		}
-+
-+		if (!dma)
-+			continue;
-+
-+		if (dma->suspended)
-+			continue;
-+
-+		if (dma->paused) {
-+			dma->suspended = true;
-+
-+			ret = intel_free_stream(sdw, stream, dai, sdw->instance);
-+			if (ret < 0)
-+				return ret;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- static const struct snd_soc_dai_ops intel_pcm_dai_ops = {
- 	.startup = intel_startup,
- 	.hw_params = intel_hw_params,
- 	.prepare = intel_prepare,
- 	.hw_free = intel_hw_free,
-+	.trigger = intel_trigger,
- 	.shutdown = intel_shutdown,
- 	.set_sdw_stream = intel_pcm_set_sdw_stream,
- 	.get_sdw_stream = intel_get_sdw_stream,
--- 
-2.17.1
-
+Takashi
