@@ -4,72 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC852C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Dec 2021 22:43:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DE86C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Dec 2021 22:43:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 25CC617DE;
-	Mon, 13 Dec 2021 23:42:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 25CC617DE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 65C0C18AF;
+	Mon, 13 Dec 2021 23:43:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 65C0C18AF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639435406;
-	bh=dDQFAFUmTORVECs8IuRszmLZ6KqUu5Nfojvby5Bc3rM=;
+	s=default; t=1639435434;
+	bh=Hsx/h17pYckZy7guc8kdLDa2Eaa4EzAB9kUhCPjzMrQ=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=p9uKqsX4cayXlbIN4EUC23U3yii0KoNH4DDRYzzUd2mGqUoCNkl0BZkaDwrRytRFW
-	 Pni9xdY0K8pN3/z3o96COhw2FgisBu7PeTtaFn9MEGYVWasljVtO6uZlgX2dGR42ei
-	 PY9PXcUByjeYuCTEWtaPNW1+g/dLnfknbV1ZNRAo=
+	b=IKyOsapoqeykMABXfGjCFEAeOVxb1kt68NG1i+3RYy6vLUAqIbi5p65GCIs0EWi9+
+	 VEdbrljTMVuXOX1JjZ1F7VJqYI1Rawx4sOe2g/JIpuhQNK2jOocln9bJH/bcny98Hh
+	 yPJf3q+LkbR4oifYlhNoiQFOKNncdWR8yJD50ezo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9A935F80229;
-	Mon, 13 Dec 2021 23:42:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 99E6CF8027C;
+	Mon, 13 Dec 2021 23:42:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 35252F8025D; Mon, 13 Dec 2021 23:42:33 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 04478F8025F; Mon, 13 Dec 2021 23:42:40 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C10A4F8016A
- for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2021 23:42:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C10A4F8016A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 66EFDF8025F
+ for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2021 23:42:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66EFDF8025F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="QUX9zrPh"
+ header.b="mGILp2LW"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id D01D4B81670;
- Mon, 13 Dec 2021 22:42:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AFFBFC34600;
- Mon, 13 Dec 2021 22:42:23 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 78502612A0;
+ Mon, 13 Dec 2021 22:42:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66CCCC34607;
+ Mon, 13 Dec 2021 22:42:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1639435345;
- bh=dDQFAFUmTORVECs8IuRszmLZ6KqUu5Nfojvby5Bc3rM=;
+ s=k20201202; t=1639435352;
+ bh=Hsx/h17pYckZy7guc8kdLDa2Eaa4EzAB9kUhCPjzMrQ=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=QUX9zrPh31+XK+TMxIuA6+kPF4uIX6QRj1Q+26ETWZrZ6f0tcMg2/H94di7h0yysc
- zaiuMd3+xt5uNVevsiNk2yO7VUq6aL7Be/+Ho8zpUd4RMf09sqR7rSoHjJtJGZK/gc
- lwNs6cwupky48u1WEdk8toOE2bsgG74Yjnt6qZBKfxFwPk4GVcEfDCTgLR8HZe5hWL
- o+Rvh0hcd/oHuATZUnq1soZ/0+vH6ylr+PTcB8zIM0Si7RANNuKBkwMz25ZqTe+PqJ
- +izi4OUBUKxKNnPEflzaA5QjFIeFeA6CqGKWZdkxb4xb/k93Vg8OBNa473nURZldTN
- 6JVzNqwWozF1w==
+ b=mGILp2LWRQQJVBn2BQsI+IBRy4krJktvKZrGVHBZl5j74HvYeAmxmu8J+LjGSoWfS
+ uHuEzvzeiFdZlju+K8Qjj2dVwu+QpgrXF77ygeXYYV4J6OBvEwlcqwwXw4iOf3IoGi
+ Si8EKf+ksobmSYJIsPcMQf4Ss3Gx+Gg4mX2IKZnv/F4cXFYRy6LvBJyyzl0VQQ2FXW
+ HxhWw9XsaZB1C6ct+EbHgyvdp6kQnn6HAtac/znZaOzBn71NQL3Wlq2e+rUM5uZyze
+ Bt4pwfiSiCEcbDP8kUdAdRsplOjY0BRlCFPVnoEJox2+fOyLLj/dKmnJyHRb9qyuGw
+ sI4Ppp8wAkGpw==
 From: Mark Brown <broonie@kernel.org>
-To: Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>,
- Takashi Iwai <tiwai@suse.com>, Dmitry Osipenko <digetx@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>,
- Thomas Graichen <thomas.graichen@gmail.com>,
- Thierry Reding <thierry.reding@gmail.com>
-In-Reply-To: <20211211231146.6137-1-digetx@gmail.com>
-References: <20211211231146.6137-1-digetx@gmail.com>
-Subject: Re: [PATCH v1 1/2] ASoC: tegra: Add DAPM switches for headphones and
- mic jack
-Message-Id: <163943534342.1012216.11678969524505932920.b4-ty@kernel.org>
-Date: Mon, 13 Dec 2021 22:42:23 +0000
+To: alsa-devel@alsa-project.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20211207193947.71080-1-pierre-louis.bossart@linux.intel.com>
+References: <20211207193947.71080-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/7] ASoC: Intel: SOF: clarifications on hardware support
+Message-Id: <163943535114.1016050.11577883573360025061.b4-ty@kernel.org>
+Date: Mon, 13 Dec 2021 22:42:31 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+Cc: tiwai@suse.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,23 +80,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 12 Dec 2021 02:11:45 +0300, Dmitry Osipenko wrote:
-> UCM of Acer Chromebook (Nyan) uses DAPM switches of headphones and mic
-> jack. These switches were lost by accident during unification of the
-> machine drivers, restore them.
+On Tue, 7 Dec 2021 13:39:40 -0600, Pierre-Louis Bossart wrote:
+> This patchset revisits the Intel hardware support in SOF. The HDAudio
+> DMA position information was not following hardware recommended
+> programming sequences (similar changes are already part of the HDaudio
+> legacy driver), and the stream assignment applied a work-around that
+> was only needed on specific versions of hardware. These changes are
+> not tagged as 'Fixes' and don't need to be applied to -stable
+> versions.
 > 
-> 
+> [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-linus
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
 Thanks!
 
-[1/2] ASoC: tegra: Add DAPM switches for headphones and mic jack
-      commit: d341b427c3c3fd6a58263ce01e01700d16861c28
-[2/2] ASoC: tegra: Restore headphones jack name on Nyan Big
-      commit: db635ba4fadf3ba676d07537f3b3f58166aa7b0e
+[1/7] ASoC: SOF: Intel: ICL: move ICL-specific ops to icl.c
+      commit: c697ef868f596aba7a5e90be8eb10bf4d4a98990
+[2/7] ASoC: SOF: Intel: hda-stream: limit PROCEN workaround
+      commit: a792bfc1c2bc4b5e2311edc62e0efe5adec5d079
+[3/7] ASoC: SOF: Intel: hda-ctrl: apply symmetry for DPIB
+      commit: 12ce213821b77242b2217d08850ff972e1fb50bb
+[4/7] ASoC: SOF: hda-stream: only enable DPIB if needed
+      commit: ae81d8fd57ff7d2b421c80f0f9426d9e775023b5
+[5/7] ASoC: SOF: Intel: hda: add quirks for HDAudio DMA position information
+      commit: 288fad2f71fa0b989c075d4984879c26d47cfb06
+[6/7] ASoC: SOF: Intel: hda-dai: remove unused fields
+      commit: 924631df4134d62b51a9442d97355eeba7ff613c
+[7/7] ASoC: SOF: Intel: add comment on JasperLake support
+      commit: 290a7c5509b6f14c28e959392f3cbc4d5b2c9318
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
