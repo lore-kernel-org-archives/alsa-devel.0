@@ -4,68 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0771C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Dec 2021 22:44:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DE37C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Dec 2021 22:44:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7F2E918D8;
-	Mon, 13 Dec 2021 23:43:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F2E918D8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6697418E9;
+	Mon, 13 Dec 2021 23:43:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6697418E9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639435457;
-	bh=eGOn9R4/r9WTJ3fguC8+nzmsSiBmWCn5D/O1wRbjkec=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1639435488;
+	bh=UEBxljg7U0AjxP8YVVrv1TQKitx1bpMVVjCQIvNZxmM=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=f25OvoiGV6qMI/SiN5N65ii1mUXg8uZ/TMNRKBPYf52i9jXMMIPsCa/ukOLUo5L1G
-	 7X40PCd6DxDJxNtB60w2aqcpz4w4QDKLHKIEsCb5BGC3naTz/Z1/4/YDUDnnTbE0on
-	 DWxXa4A01k5DdDrU5E24wiPbxPn4tzljkXO+mRN4=
+	b=HwwVPit5u30wUjlg/V40C4xAsZ3FCjpdbFItMAwKp/zgJiNIZfc8tOC/H7OaqqfJh
+	 9DQ7oIzWVtwy35YDxvM6nzKcrmtaCwgs3LRhsxfR4MYtv6dTPd/0WNTOvYxTvJEN/8
+	 fdI5LVYDxGpuKXmaToUlIIinCmxQlo3QsGBQPKFU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4CD44F804CB;
-	Mon, 13 Dec 2021 23:42:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0A542F8025D;
+	Mon, 13 Dec 2021 23:43:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6E410F802E8; Mon, 13 Dec 2021 23:42:41 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 289A2F8027C
- for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2021 23:42:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 289A2F8027C
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ELty3FkC"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 68E5BF8025F; Mon, 13 Dec 2021 23:43:56 +0100 (CET)
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk
+ [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 2870AB816CE;
- Mon, 13 Dec 2021 22:42:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B517C34600;
- Mon, 13 Dec 2021 22:42:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1639435351;
- bh=eGOn9R4/r9WTJ3fguC8+nzmsSiBmWCn5D/O1wRbjkec=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=ELty3FkCr60mWZyKXZzkFM074a0u2GLBDsaPaxay6zH+YMAKnjCRtZ7TfvOPeFBix
- GTTwtDLrwmtWj5DA/WcThDztMsAbraIw48yxtYolzZlBATX5xVE7nVM1JtDUcylzn+
- TwALQqlGFHlOsCCgec/TuGvocfwi57W9xkxz1V2k1FPRBAyVxQs9sKBTP2LiFj0HLC
- RB7GllpXVT6SFwB+O1RjZSMKarlIhALb3rdLJCLtD8o5OEPmBRgXNZ4QoHYtat039O
- hx6RE7MFR22eHQTKe0dkE9r0ABOBJ3zvbqPH4GcKGwRC/+kHaBM3XJa3c2GoivDxLJ
- 0HYqR8oSQzriA==
-From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>,
- Thierry Reding <thierry.reding@gmail.com>
-In-Reply-To: <20211206154624.229018-1-thierry.reding@gmail.com>
-References: <20211206154624.229018-1-thierry.reding@gmail.com>
-Subject: Re: [PATCH] ASoC: dt-bindings: tegra: Document interconnects property
-Message-Id: <163943534909.1016050.10549071402255477167.b4-ty@kernel.org>
-Date: Mon, 13 Dec 2021 22:42:29 +0000
+ by alsa1.perex.cz (Postfix) with ESMTPS id 177CCF80229
+ for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2021 23:43:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 177CCF80229
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com
+ header.b="gtp42DPr"
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+ (Authenticated sender: adalessandro) with ESMTPSA id 7E26C1F44304
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
+ t=1639435424; bh=UEBxljg7U0AjxP8YVVrv1TQKitx1bpMVVjCQIvNZxmM=;
+ h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+ b=gtp42DPr62P1xEgyR9Ua5atRu227T9uo7AU0GOjOCcpdQT76gXktGHcEoHfDVKpSm
+ G9sbIRXCepQNryY6CwJygV68qXn+qbLbDs2F0RIUrvbim3xazRDRoBTx+0fEfk3JfQ
+ 5MMwP3aNhLdNnQTZJymmDEt+r5UKlav1XDpH0FwwQWWwkBPNL5syEkmDr3nNSsFc0l
+ x79S1m3gYVR9BXAiYlzobKsupboLT4i+G51pLLa901grhOEhxA9DflmEb7EiuhZC6/
+ seQl9WwNKCE589LGMiy59wHts1Ulv9mQVyVx0CXwnS5yA8wJUrILquRIEExGCUy92N
+ vh51hArjODXrA==
+Subject: Re: [PATCH 0/4] fsl-asoc-card: Add optional dt property for setting
+ mclk-id
+To: Rob Herring <robh@kernel.org>
+References: <20211203134930.128703-1-ariel.dalessandro@collabora.com>
+ <YbeukcwXQueEquJZ@robh.at.kernel.org>
+From: Ariel D'Alessandro <ariel.dalessandro@collabora.com>
+Message-ID: <f35f34bc-e850-40a8-7d5e-3b783aeeaac8@collabora.com>
+Date: Mon, 13 Dec 2021 19:43:32 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YbeukcwXQueEquJZ@robh.at.kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Sameer Pujar <spujar@nvidia.com>, Jon Hunter <jonathanh@nvidia.com>,
- Rob Herring <robh+dt@kernel.org>, linux-tegra@vger.kernel.org
+ michael@amarulasolutions.com, kuninori.morimoto.gx@renesas.com,
+ Xiubo.Lee@gmail.com, tony@atomide.com, festevam@gmail.com,
+ shengjiu.wang@gmail.com, tiwai@suse.com, linux-kernel@vger.kernel.org,
+ lgirdwood@gmail.com, nicoleotsuka@gmail.com, broonie@kernel.org,
+ bcousson@baylibre.com, linux-omap@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,40 +84,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 6 Dec 2021 16:46:24 +0100, Thierry Reding wrote:
-> From: Thierry Reding <treding@nvidia.com>
+Hi Rob,
+
+Thanks for the review.
+
+On 12/13/21 5:35 PM, Rob Herring wrote:
+> On Fri, Dec 03, 2021 at 10:49:26AM -0300, Ariel D'Alessandro wrote:
+>> This is a follow up of patchset:
+>>
+>>     [RFC patch 0/5] Support BCLK input clock in tlv320aic31xx
 > 
-> Add the interconnects and interconnect-names properties to the bindings
-> for the sound card on various NVIDIA Tegra based boards. These are used
-> to describe the device's memory paths to and from memory.
+> Link?
+
+Link to the datasheet?
+
+http://www.ti.com/lit/ds/symlink/tlv320aic3100.pdf
+
 > 
+>> Sound cards may allow using different main clock inputs. In the generic
+>> fsl-asoc-card driver, these values are hardcoded for each specific card
+>> configuration.
+>>
+>> Let's make it more flexible, allowing setting mclk-id from the
+>> device-tree node.
+>>
+>> Ariel D'Alessandro (4):
+>>   dt-bindings: sound: Rename tlv320aic31xx-micbias as tlv320aic31xx
+>>   dt-bindings: tlv320aic31xx: Define PLL clock inputs
+>>   ASoC: fsl-asoc-card: Add optional dt property for setting mclk-id
 > 
-> [...]
+> 'mclk-id' is not documented.
+> 
+>>   ASoC: fsl-asoc-card: Remove BCLK default value for tlv320aic31xx card
+>>
+>>  .../devicetree/bindings/sound/fsl-asoc-card.txt    |  1 +
+>>  .../devicetree/bindings/sound/tlv320aic31xx.txt    |  2 +-
+>>  arch/arm/boot/dts/am43x-epos-evm.dts               |  2 +-
+>>  include/dt-bindings/sound/tlv320aic31xx-micbias.h  |  9 ---------
+>>  include/dt-bindings/sound/tlv320aic31xx.h          | 14 ++++++++++++++
+>>  sound/soc/codecs/tlv320aic31xx.c                   |  2 +-
+>>  sound/soc/fsl/fsl-asoc-card.c                      |  7 ++++++-
+>>  7 files changed, 24 insertions(+), 13 deletions(-)
+>>  delete mode 100644 include/dt-bindings/sound/tlv320aic31xx-micbias.h
+>>  create mode 100644 include/dt-bindings/sound/tlv320aic31xx.h
+>>
+>> -- 
+>> 2.30.2
 
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: dt-bindings: tegra: Document interconnects property
-      commit: 5f9155a7d2dc067d72a95b42168f944c7710c0d5
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Regards,
+Ariel
