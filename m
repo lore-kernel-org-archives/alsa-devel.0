@@ -4,67 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D01CC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Dec 2021 13:26:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98377C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Dec 2021 13:59:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 11A981865;
-	Mon, 13 Dec 2021 14:25:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 11A981865
+	by alsa0.perex.cz (Postfix) with ESMTPS id E9F8417E2;
+	Mon, 13 Dec 2021 14:58:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E9F8417E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639401977;
-	bh=SOjEvBeZMCgDvnO8WHFAcoaGRU0S+xD6wVu8Y2u1IZk=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=IdvHaqu9EiqpWuMAUoTb0guvfxOR7ihIdFW2NQ4bE8aIpQqJZ3Y+qq+wTnBn0wNaM
-	 qGL8+HQGxJ7ZFdbpJq4vpx/ur2ylyBYR/A2y8Wg5ZbQbRCsMOIA6S0e8rfoW87a/Yu
-	 VGI2+Xbei3dz2/Er0QB1ibUTy+iS74ZB2O4qRJw4=
+	s=default; t=1639403944;
+	bh=1USJyK5D94uDOuLnUPjIg0OKQaWPcei2cKCXhH/RmIM=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=QPuPH2fD2acot708z0JPrFVvDKbI7Dbv8MxRQJKmqnlAEL+Ty7vFyQg8IoHrlIyvL
+	 +guRc/nHNZxlUdSnBCAklpIYnQ6rzljqNlO7FEs0SEbdVnrY4yw/9rK8wUqH9tlznt
+	 N55CKTVGc6nKsDdKksns/H+R4Mb8WgP/YGVjpiAM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5CAFDF8027C;
-	Mon, 13 Dec 2021 14:25:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8D444F80161;
+	Mon, 13 Dec 2021 14:58:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ACFA6F8025F; Mon, 13 Dec 2021 14:24:58 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 02D1BF8025D; Mon, 13 Dec 2021 14:58:12 +0100 (CET)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 99282F8016A
- for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2021 14:24:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99282F8016A
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="dCAxPr1Z"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="F65hUQ3s"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id D01C41F3BE;
- Mon, 13 Dec 2021 13:24:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1639401885; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=57qkfZrnIUr7d6gpj3C6+VuSRqu6+JRJyBBxAbkOA8A=;
- b=dCAxPr1Z/K+fIwmtHIm8d1RxxGrM4PhfIW1pbASjyMMIg0HvziFCSIrhRG/lvXEfeKETH7
- lLwikY+biwy8Zi+8GIvDL5G/6xn4jXURuRQLBls/sPiN1BQ054BC4jQbVazPQk9DEKigyn
- nkCSW/tuyQtlfvTg12V5oLhy9WUz2nE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1639401885;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=57qkfZrnIUr7d6gpj3C6+VuSRqu6+JRJyBBxAbkOA8A=;
- b=F65hUQ3sQhCKXKtJu7EeW1/aNIwg3tOzNC9AlJTZrwvDW7MY+k8sqkYMIKwZEMerUwmNjH
- ieCm3lyYxSjABYCw==
-Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id BF81DA3B8A;
- Mon, 13 Dec 2021 13:24:45 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/2] ALSA: gus: Fix erroneous memory allocation
-Date: Mon, 13 Dec 2021 14:24:43 +0100
-Message-Id: <20211213132444.22385-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.31.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9F7D9F80161
+ for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2021 14:58:04 +0100 (CET)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id BA394A003F;
+ Mon, 13 Dec 2021 14:57:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz BA394A003F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1639403878; bh=ERfDJ+5y6FB2daGqxZ7WlC4n5x7Koq/GR/LiVwCS4vI=;
+ h=Date:Subject:To:References:Cc:From:In-Reply-To:From;
+ b=Dd7kn8LVfHHLKtzssilVOYPb6xBpqKmmuasJuOix92LzPuq/LfP/ukpnGllvz5NO0
+ 3LYQf78m7i2nbLKyeS7UXK8OqTR3+Mogn/V7qO6UeKWIDZXwKAuCZeQoUKxa84gdRm
+ JoiKj6nADqAHuoMh52/XXk+4vzWunEH+ZD4NgE/8=
+Received: from [192.168.100.98] (unknown [192.168.100.98])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Mon, 13 Dec 2021 14:57:56 +0100 (CET)
+Message-ID: <6dac7c41-dce1-a03b-f890-65c9e9abf00e@perex.cz>
+Date: Mon, 13 Dec 2021 14:57:56 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Xiaoke Wang <xkernel.wang@foxmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 1/2] ALSA: gus: Fix erroneous memory allocation
+Content-Language: en-US
+To: Takashi Iwai <tiwai@suse.de>
+References: <20211213132444.22385-1-tiwai@suse.de>
+From: Jaroslav Kysela <perex@perex.cz>
+In-Reply-To: <20211213132444.22385-1-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: ALSA development <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,28 +75,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-snd_gf1_mem_xalloc() returns NULL incorrectly when the memory chunk is
-allocated in the middle of the chain.  This patch corrects the return
-value to treat it properly.
+On 13. 12. 21 14:24, Takashi Iwai wrote:
+> snd_gf1_mem_xalloc() returns NULL incorrectly when the memory chunk is
+> allocated in the middle of the chain.  This patch corrects the return
+> value to treat it properly.
+> 
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/isa/gus/gus_mem.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Reviewed-by: Jaroslav Kysela <perex@perex.cz>
 
-diff --git a/sound/isa/gus/gus_mem.c b/sound/isa/gus/gus_mem.c
-index 4c691dbf2721..5e3ff3137dd7 100644
---- a/sound/isa/gus/gus_mem.c
-+++ b/sound/isa/gus/gus_mem.c
-@@ -44,7 +44,7 @@ static struct snd_gf1_mem_block *snd_gf1_mem_xalloc(struct snd_gf1_mem * alloc,
- 			else
- 				nblock->prev->next = nblock;
- 			mutex_unlock(&alloc->memory_mutex);
--			return NULL;
-+			return nblock;
- 		}
- 		pblock = pblock->next;
- 	}
+			Thanks,
+				Jaroslav
+
 -- 
-2.31.1
-
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
