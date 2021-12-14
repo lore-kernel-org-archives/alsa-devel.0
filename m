@@ -4,75 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56F73C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Dec 2021 02:15:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F23D4C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Dec 2021 02:15:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6C03F1ED7;
-	Tue, 14 Dec 2021 03:14:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C03F1ED7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 458891EFD;
+	Tue, 14 Dec 2021 03:14:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 458891EFD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639448132;
-	bh=QuW9LZxtU6gZmopXKfF1Lzyij+Xa4oggm4C7w9xhLGE=;
+	s=default; t=1639448146;
+	bh=sKblV5eTzNMbrV8+n6vDt1bRP8aKO7Na92dspOY3hHk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RALVpuGXfC/pccMQ8NvWB/ptxH5uxwuZCFYjMAiehoQ07mZEU9U5KgttiKaTn4Omk
-	 rlUQiMrPic52y5rpIkU3+oJJsTEtFW51S1FOtPrAVDScjCzpLNx/Zucnfk8IRKips6
-	 MNJgJu+mZdIva3j2yXdgik9w0YG3mReV7dWbGDug=
+	b=qAN3E2PpvTe3QKgoTY07E3HCndiQEBRvMANLUDLzNGJdRAPWqnbGTQ+v56O/ECOHP
+	 Et/uO7PUIvUaLSWRXp0KQFNh4kSa8aKVCjChyuNjQETM3FVmFqlS3gfkdoeH2bUrsR
+	 aG1LdymRWQjgXvw/79d2pXTOj+KvauK8L+tBGfIk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 30BAFF805A9;
+	by alsa1.perex.cz (Postfix) with ESMTP id DFE2BF80557;
 	Tue, 14 Dec 2021 03:10:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 93549F8058C; Tue, 14 Dec 2021 03:10:01 +0100 (CET)
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com
- [IPv6:2607:f8b0:4864:20::52e])
+ id 2585AF80589; Tue, 14 Dec 2021 03:10:02 +0100 (CET)
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com
+ [IPv6:2607:f8b0:4864:20::531])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6DBB8F80535
- for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2021 03:09:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DBB8F80535
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2921DF8053E
+ for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2021 03:09:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2921DF8053E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="XRjKmSFG"
-Received: by mail-pg1-x52e.google.com with SMTP id k4so16124323pgb.8
- for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2021 18:09:48 -0800 (PST)
+ header.b="gflC/poU"
+Received: by mail-pg1-x531.google.com with SMTP id 133so16099447pgc.12
+ for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2021 18:09:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=wp45VQT5DqY04bk5bm0mAq3SR0p4/w1XHvrPZLjlHQk=;
- b=XRjKmSFGDbx7VBif50EghtqFPDh7TYK6II/ldYdKgyE6Z/WOIzIIWUNs+Eh9vFhfKo
- jykfqL9bolYRMP3pl1cvHfQ89J+V8QlF7sR/WtRQNHcvSmeDz0yqM0FF14pBEgk3DgZD
- NkCcmA+Fe5f2SbSBWadJk+yovIIj5ziF1cSDe2dXZLd0R/BMnZxmalShAHaIALgnh41a
- y38ggeouT034UsNlKpPcaZI/n3OQhIvjYP++IP+lXcpR+COWRojL+5VchTHWHmotGtm+
- kqETpWIfcSaoxKulAyBi3bZAOVb04VKhQ5qx3zN0fhC4Pn4aWlKoqwx31eMteDUrhLpE
- xXdA==
+ bh=6u6FkCPCfv4J7pdg4Ybljstse/ix+a86moRRp7mRqHM=;
+ b=gflC/poUt+2r7cA9Q5zzWqPY8DRXaTP5MRDsuAQXZiUILJxP5ELCxq6TEKRuP7gi5e
+ tjkaWbVFlIXFuxWZRrzv1amRPpBaPUUHHz5/YCxBuyt+yNfO8fVuryrTEWKLN7tXu/e2
+ NJ38CrTYOPE/k4ZjQz2EZ8kSXfU40hAZIgnoqb/yp5JWOK8BvaNvVRlrMK9I4OyDmctx
+ oHInFeWTtW0QSfrvv2v3a5iWz9GuZUxaePkKHFG9nBB3utZP3m6b3JDlO3oUfuf5WTuz
+ Rbb7PFY34SYuv9DY4YdnNhspQaoY8S5jkkYkmJ5AjdYOluPyhswU/i3O3X26Qf734uIY
+ sQ6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
  :in-reply-to:references:mime-version:content-transfer-encoding;
- bh=wp45VQT5DqY04bk5bm0mAq3SR0p4/w1XHvrPZLjlHQk=;
- b=6HWBu1HCEUQAfIUcLK201uUERv6BMkdvv+6fybAKk3Ep1ncOp22niNlFYeU28zbIke
- +TPg8EUiowrKmnHMVtFSlazbQSQAq3VRFPUeTS/KCAPDWJmpYX/D2aHSN6HnfTehOW1/
- 89D+edF2vqGI/Rwd10wfH1aW406aHRb1tqzwmpAr5rCNQHfZDdr3irCec5fHlcJ/vmkw
- ddhoyaGrlDZxl8vzAYC/nU0hLatxrNNkQcD2vcdplk5xolZfjMeQnkWdcYa53nAM+LOf
- 8iOhDcnb9zmVp9oeYbV659jYF5wJHqjiGyBXO7V3iwIeGrygMDpO+2gwmIRjuDzNI9gU
- /xEQ==
-X-Gm-Message-State: AOAM530y+s2rVtuf/BDBMHxsJpugzp9flV/rdQypmuX3COdtBBpMaukH
- zfn8DetpgsPZ/meTVyosKM0=
-X-Google-Smtp-Source: ABdhPJweHEQk2coBKEra7KFmdCsjezm/7dlycTmKDOfFjSJ5pX6fWY3CEsmN8K9fDf/9VbFeHr3oOw==
-X-Received: by 2002:a63:6a87:: with SMTP id f129mr1665421pgc.391.1639447785475; 
- Mon, 13 Dec 2021 18:09:45 -0800 (PST)
+ bh=6u6FkCPCfv4J7pdg4Ybljstse/ix+a86moRRp7mRqHM=;
+ b=due9Q76a2VgKTPl6f02YEpuFOmfIQaE3x9x6eKfHlp/o4EaYi+ld+rZ4qceLRhVX5X
+ fSFpyihu+KEczNEqt+oYsXoxnDd5xPiPcmXgI29CaR5pW+P8AfDt2FyiJDWgCOpxr/2A
+ yYYACz+Rh0Hyemh0DESSJLFuontEGpADtqqBAs9jIQbu/IlXj75KLi7BW6JYmUMD7rqu
+ ny+BjmuNDKmRf0Ua2PR9E/UdpiLYb9xKNVhgwdJ1DhJxocB3mf7MyM1/JrUwhqzt/h3o
+ A9478pMAZyw256PvDfplBPQ4lAbuB1MLwEKqbrbPnVV6WEqouxI7Im5jOQ4PlZououZA
+ bZFw==
+X-Gm-Message-State: AOAM533xtezJx1bSF57ycCnpDBIbp7HJSMjARdCcfcxkz53Sp87EproI
+ oEy07uw/4FtohWXgSI3/RDE=
+X-Google-Smtp-Source: ABdhPJzSVH3Mnxdpn9YFOt4CPLgiUCSLVVw9mCHtXX79l7AP11X9GIpLmL8ENtNUOcz8kBIX8vxTNg==
+X-Received: by 2002:a63:191d:: with SMTP id z29mr1743341pgl.358.1639447788205; 
+ Mon, 13 Dec 2021 18:09:48 -0800 (PST)
 Received: from localhost.localdomain ([126.249.140.249])
- by smtp.gmail.com with ESMTPSA id b2sm14622296pfv.198.2021.12.13.18.09.44
+ by smtp.gmail.com with ESMTPSA id b2sm14622296pfv.198.2021.12.13.18.09.47
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 13 Dec 2021 18:09:45 -0800 (PST)
+ Mon, 13 Dec 2021 18:09:47 -0800 (PST)
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 16/22] ASoC: meson: Use dev_err_probe() helper
-Date: Tue, 14 Dec 2021 11:08:37 +0900
-Message-Id: <20211214020843.2225831-17-kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH 18/22] ASoC: qcom: Use dev_err_probe() helper
+Date: Tue, 14 Dec 2021 11:08:39 +0900
+Message-Id: <20211214020843.2225831-19-kuninori.morimoto.gx@renesas.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211214020843.2225831-1-kuninori.morimoto.gx@renesas.com>
 References: <20211214020843.2225831-1-kuninori.morimoto.gx@renesas.com>
@@ -103,405 +103,37 @@ operation.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/meson/aiu.c               | 36 +++++++--------------
- sound/soc/meson/axg-fifo.c          | 16 +++------
- sound/soc/meson/axg-pdm.c           | 25 ++++-----------
- sound/soc/meson/axg-spdifin.c       | 17 +++-------
- sound/soc/meson/axg-spdifout.c      | 17 +++-------
- sound/soc/meson/axg-tdm-formatter.c | 50 ++++++++---------------------
- sound/soc/meson/axg-tdm-interface.c | 25 ++++-----------
- sound/soc/meson/meson-card-utils.c  |  8 ++---
- sound/soc/meson/t9015.c             | 14 +++-----
- 9 files changed, 56 insertions(+), 152 deletions(-)
+ sound/soc/qcom/common.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/meson/aiu.c b/sound/soc/meson/aiu.c
-index ba15d5762b0b..d299a70db7e5 100644
---- a/sound/soc/meson/aiu.c
-+++ b/sound/soc/meson/aiu.c
-@@ -218,34 +218,23 @@ static int aiu_clk_get(struct device *dev)
- 	int ret;
+diff --git a/sound/soc/qcom/common.c b/sound/soc/qcom/common.c
+index 2e1c618f7529..e1bf04d00625 100644
+--- a/sound/soc/qcom/common.c
++++ b/sound/soc/qcom/common.c
+@@ -94,9 +94,8 @@ int qcom_snd_parse_of(struct snd_soc_card *card)
  
- 	aiu->pclk = devm_clk_get(dev, "pclk");
--	if (IS_ERR(aiu->pclk)) {
--		if (PTR_ERR(aiu->pclk) != -EPROBE_DEFER)
--			dev_err(dev, "Can't get the aiu pclk\n");
--		return PTR_ERR(aiu->pclk);
--	}
-+	if (IS_ERR(aiu->pclk))
-+		return dev_err_probe(dev, PTR_ERR(aiu->pclk), "Can't get the aiu pclk\n");
- 
- 	aiu->spdif_mclk = devm_clk_get(dev, "spdif_mclk");
--	if (IS_ERR(aiu->spdif_mclk)) {
--		if (PTR_ERR(aiu->spdif_mclk) != -EPROBE_DEFER)
--			dev_err(dev, "Can't get the aiu spdif master clock\n");
--		return PTR_ERR(aiu->spdif_mclk);
--	}
-+	if (IS_ERR(aiu->spdif_mclk))
-+		return dev_err_probe(dev, PTR_ERR(aiu->spdif_mclk),
-+				     "Can't get the aiu spdif master clock\n");
- 
- 	ret = aiu_clk_bulk_get(dev, aiu_i2s_ids, ARRAY_SIZE(aiu_i2s_ids),
- 			       &aiu->i2s);
--	if (ret) {
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "Can't get the i2s clocks\n");
--		return ret;
--	}
-+	if (ret)
-+		return dev_err_probe(dev, ret, "Can't get the i2s clocks\n");
- 
- 	ret = aiu_clk_bulk_get(dev, aiu_spdif_ids, ARRAY_SIZE(aiu_spdif_ids),
- 			       &aiu->spdif);
--	if (ret) {
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "Can't get the spdif clocks\n");
--		return ret;
--	}
-+	if (ret)
-+		return dev_err_probe(dev, ret, "Can't get the spdif clocks\n");
- 
- 	ret = clk_prepare_enable(aiu->pclk);
- 	if (ret) {
-@@ -281,11 +270,8 @@ static int aiu_probe(struct platform_device *pdev)
- 	platform_set_drvdata(pdev, aiu);
- 
- 	ret = device_reset(dev);
--	if (ret) {
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "Failed to reset device\n");
--		return ret;
--	}
-+	if (ret)
-+		return dev_err_probe(dev, ret, "Failed to reset device\n");
- 
- 	regs = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(regs))
-diff --git a/sound/soc/meson/axg-fifo.c b/sound/soc/meson/axg-fifo.c
-index b9af2d513e09..bccfb770b339 100644
---- a/sound/soc/meson/axg-fifo.c
-+++ b/sound/soc/meson/axg-fifo.c
-@@ -351,20 +351,12 @@ int axg_fifo_probe(struct platform_device *pdev)
- 	}
- 
- 	fifo->pclk = devm_clk_get(dev, NULL);
--	if (IS_ERR(fifo->pclk)) {
--		if (PTR_ERR(fifo->pclk) != -EPROBE_DEFER)
--			dev_err(dev, "failed to get pclk: %ld\n",
--				PTR_ERR(fifo->pclk));
--		return PTR_ERR(fifo->pclk);
--	}
-+	if (IS_ERR(fifo->pclk))
-+		return dev_err_probe(dev, PTR_ERR(fifo->pclk), "failed to get pclk\n");
- 
- 	fifo->arb = devm_reset_control_get_exclusive(dev, NULL);
--	if (IS_ERR(fifo->arb)) {
--		if (PTR_ERR(fifo->arb) != -EPROBE_DEFER)
--			dev_err(dev, "failed to get arb reset: %ld\n",
--				PTR_ERR(fifo->arb));
--		return PTR_ERR(fifo->arb);
--	}
-+	if (IS_ERR(fifo->arb))
-+		return dev_err_probe(dev, PTR_ERR(fifo->arb), "failed to get arb reset\n");
- 
- 	fifo->irq = of_irq_get(dev->of_node, 0);
- 	if (fifo->irq <= 0) {
-diff --git a/sound/soc/meson/axg-pdm.c b/sound/soc/meson/axg-pdm.c
-index bfd37d49a73e..672e43a9729d 100644
---- a/sound/soc/meson/axg-pdm.c
-+++ b/sound/soc/meson/axg-pdm.c
-@@ -586,7 +586,6 @@ static int axg_pdm_probe(struct platform_device *pdev)
- 	struct device *dev = &pdev->dev;
- 	struct axg_pdm *priv;
- 	void __iomem *regs;
--	int ret;
- 
- 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
- 	if (!priv)
-@@ -611,28 +610,16 @@ static int axg_pdm_probe(struct platform_device *pdev)
- 	}
- 
- 	priv->pclk = devm_clk_get(dev, "pclk");
--	if (IS_ERR(priv->pclk)) {
--		ret = PTR_ERR(priv->pclk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get pclk: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(priv->pclk))
-+		return dev_err_probe(dev, PTR_ERR(priv->pclk), "failed to get pclk\n");
- 
- 	priv->dclk = devm_clk_get(dev, "dclk");
--	if (IS_ERR(priv->dclk)) {
--		ret = PTR_ERR(priv->dclk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get dclk: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(priv->dclk))
-+		return dev_err_probe(dev, PTR_ERR(priv->dclk), "failed to get dclk\n");
- 
- 	priv->sysclk = devm_clk_get(dev, "sysclk");
--	if (IS_ERR(priv->sysclk)) {
--		ret = PTR_ERR(priv->sysclk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get dclk: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(priv->sysclk))
-+		return dev_err_probe(dev, PTR_ERR(priv->sysclk), "failed to get dclk\n");
- 
- 	return devm_snd_soc_register_component(dev, &axg_pdm_component_drv,
- 					       &axg_pdm_dai_drv, 1);
-diff --git a/sound/soc/meson/axg-spdifin.c b/sound/soc/meson/axg-spdifin.c
-index d0d09f945b48..4ba44e0d65d9 100644
---- a/sound/soc/meson/axg-spdifin.c
-+++ b/sound/soc/meson/axg-spdifin.c
-@@ -454,7 +454,6 @@ static int axg_spdifin_probe(struct platform_device *pdev)
- 	struct axg_spdifin *priv;
- 	struct snd_soc_dai_driver *dai_drv;
- 	void __iomem *regs;
--	int ret;
- 
- 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
- 	if (!priv)
-@@ -479,20 +478,12 @@ static int axg_spdifin_probe(struct platform_device *pdev)
- 	}
- 
- 	priv->pclk = devm_clk_get(dev, "pclk");
--	if (IS_ERR(priv->pclk)) {
--		ret = PTR_ERR(priv->pclk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get pclk: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(priv->pclk))
-+		return dev_err_probe(dev, PTR_ERR(priv->pclk), "failed to get pclk\n");
- 
- 	priv->refclk = devm_clk_get(dev, "refclk");
--	if (IS_ERR(priv->refclk)) {
--		ret = PTR_ERR(priv->refclk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get mclk: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(priv->refclk))
-+		return dev_err_probe(dev, PTR_ERR(priv->refclk), "failed to get mclk\n");
- 
- 	dai_drv = axg_spdifin_get_dai_drv(dev, priv);
- 	if (IS_ERR(dai_drv)) {
-diff --git a/sound/soc/meson/axg-spdifout.c b/sound/soc/meson/axg-spdifout.c
-index e769a5ee6e27..3960d082e143 100644
---- a/sound/soc/meson/axg-spdifout.c
-+++ b/sound/soc/meson/axg-spdifout.c
-@@ -403,7 +403,6 @@ static int axg_spdifout_probe(struct platform_device *pdev)
- 	struct device *dev = &pdev->dev;
- 	struct axg_spdifout *priv;
- 	void __iomem *regs;
--	int ret;
- 
- 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
- 	if (!priv)
-@@ -422,20 +421,12 @@ static int axg_spdifout_probe(struct platform_device *pdev)
- 	}
- 
- 	priv->pclk = devm_clk_get(dev, "pclk");
--	if (IS_ERR(priv->pclk)) {
--		ret = PTR_ERR(priv->pclk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get pclk: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(priv->pclk))
-+		return dev_err_probe(dev, PTR_ERR(priv->pclk), "failed to get pclk\n");
- 
- 	priv->mclk = devm_clk_get(dev, "mclk");
--	if (IS_ERR(priv->mclk)) {
--		ret = PTR_ERR(priv->mclk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get mclk: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(priv->mclk))
-+		return dev_err_probe(dev, PTR_ERR(priv->mclk), "failed to get mclk\n");
- 
- 	return devm_snd_soc_register_component(dev, &axg_spdifout_component_drv,
- 			axg_spdifout_dai_drv, ARRAY_SIZE(axg_spdifout_dai_drv));
-diff --git a/sound/soc/meson/axg-tdm-formatter.c b/sound/soc/meson/axg-tdm-formatter.c
-index cab7fa2851aa..9883dc777f63 100644
---- a/sound/soc/meson/axg-tdm-formatter.c
-+++ b/sound/soc/meson/axg-tdm-formatter.c
-@@ -255,7 +255,6 @@ int axg_tdm_formatter_probe(struct platform_device *pdev)
- 	const struct axg_tdm_formatter_driver *drv;
- 	struct axg_tdm_formatter *formatter;
- 	void __iomem *regs;
--	int ret;
- 
- 	drv = of_device_get_match_data(dev);
- 	if (!drv) {
-@@ -282,57 +281,34 @@ int axg_tdm_formatter_probe(struct platform_device *pdev)
- 
- 	/* Peripharal clock */
- 	formatter->pclk = devm_clk_get(dev, "pclk");
--	if (IS_ERR(formatter->pclk)) {
--		ret = PTR_ERR(formatter->pclk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get pclk: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(formatter->pclk))
-+		return dev_err_probe(dev, PTR_ERR(formatter->pclk), "failed to get pclk\n");
- 
- 	/* Formatter bit clock */
- 	formatter->sclk = devm_clk_get(dev, "sclk");
--	if (IS_ERR(formatter->sclk)) {
--		ret = PTR_ERR(formatter->sclk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get sclk: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(formatter->sclk))
-+		return dev_err_probe(dev, PTR_ERR(formatter->sclk), "failed to get sclk\n");
- 
- 	/* Formatter sample clock */
- 	formatter->lrclk = devm_clk_get(dev, "lrclk");
--	if (IS_ERR(formatter->lrclk)) {
--		ret = PTR_ERR(formatter->lrclk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get lrclk: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(formatter->lrclk))
-+		return dev_err_probe(dev, PTR_ERR(formatter->lrclk), "failed to get lrclk\n");
- 
- 	/* Formatter bit clock input multiplexer */
- 	formatter->sclk_sel = devm_clk_get(dev, "sclk_sel");
--	if (IS_ERR(formatter->sclk_sel)) {
--		ret = PTR_ERR(formatter->sclk_sel);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get sclk_sel: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(formatter->sclk_sel))
-+		return dev_err_probe(dev, PTR_ERR(formatter->sclk_sel), "failed to get sclk_sel\n");
- 
- 	/* Formatter sample clock input multiplexer */
- 	formatter->lrclk_sel = devm_clk_get(dev, "lrclk_sel");
--	if (IS_ERR(formatter->lrclk_sel)) {
--		ret = PTR_ERR(formatter->lrclk_sel);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get lrclk_sel: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(formatter->lrclk_sel))
-+		return dev_err_probe(dev, PTR_ERR(formatter->lrclk_sel),
-+				     "failed to get lrclk_sel\n");
- 
- 	/* Formatter dedicated reset line */
- 	formatter->reset = devm_reset_control_get_optional_exclusive(dev, NULL);
--	if (IS_ERR(formatter->reset)) {
--		ret = PTR_ERR(formatter->reset);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get reset: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(formatter->reset))
-+		return dev_err_probe(dev, PTR_ERR(formatter->reset), "failed to get reset\n");
- 
- 	return devm_snd_soc_register_component(dev, drv->component_drv,
- 					       NULL, 0);
-diff --git a/sound/soc/meson/axg-tdm-interface.c b/sound/soc/meson/axg-tdm-interface.c
-index db077773af7a..0c31934a9630 100644
---- a/sound/soc/meson/axg-tdm-interface.c
-+++ b/sound/soc/meson/axg-tdm-interface.c
-@@ -533,21 +533,13 @@ static int axg_tdm_iface_probe(struct platform_device *pdev)
- 
- 	/* Bit clock provided on the pad */
- 	iface->sclk = devm_clk_get(dev, "sclk");
--	if (IS_ERR(iface->sclk)) {
--		ret = PTR_ERR(iface->sclk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get sclk: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(iface->sclk))
-+		return dev_err_probe(dev, PTR_ERR(iface->sclk), "failed to get sclk\n");
- 
- 	/* Sample clock provided on the pad */
- 	iface->lrclk = devm_clk_get(dev, "lrclk");
--	if (IS_ERR(iface->lrclk)) {
--		ret = PTR_ERR(iface->lrclk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get lrclk: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(iface->lrclk))
-+		return dev_err_probe(dev, PTR_ERR(iface->lrclk), "failed to get lrclk\n");
- 
- 	/*
- 	 * mclk maybe be missing when the cpu dai is in slave mode and
-@@ -558,13 +550,10 @@ static int axg_tdm_iface_probe(struct platform_device *pdev)
- 	iface->mclk = devm_clk_get(dev, "mclk");
- 	if (IS_ERR(iface->mclk)) {
- 		ret = PTR_ERR(iface->mclk);
--		if (ret == -ENOENT) {
-+		if (ret == -ENOENT)
- 			iface->mclk = NULL;
--		} else {
+ 		ret = snd_soc_of_get_dai_name(cpu, &link->cpus->dai_name);
+ 		if (ret) {
 -			if (ret != -EPROBE_DEFER)
--				dev_err(dev, "failed to get mclk: %d\n", ret);
--			return ret;
--		}
-+		else
-+			return dev_err_probe(dev, ret, "failed to get mclk\n");
- 	}
+-				dev_err(card->dev, "%s: error getting cpu dai name: %d\n",
+-					link->name, ret);
++			dev_err_probe(card->dev, ret,
++				      "%s: error getting cpu dai name\n", link->name);
+ 			goto err;
+ 		}
  
- 	return devm_snd_soc_register_component(dev,
-diff --git a/sound/soc/meson/meson-card-utils.c b/sound/soc/meson/meson-card-utils.c
-index 29b0174f4b5c..2d8d5717fd8b 100644
---- a/sound/soc/meson/meson-card-utils.c
-+++ b/sound/soc/meson/meson-card-utils.c
-@@ -85,11 +85,9 @@ int meson_card_parse_dai(struct snd_soc_card *card,
+@@ -116,9 +115,8 @@ int qcom_snd_parse_of(struct snd_soc_card *card)
+ 		if (codec) {
+ 			ret = snd_soc_of_get_dai_link_codecs(dev, codec, link);
+ 			if (ret < 0) {
+-				if (ret != -EPROBE_DEFER)
+-					dev_err(card->dev, "%s: codec dai not found: %d\n",
+-						link->name, ret);
++				dev_err_probe(card->dev, ret,
++					      "%s: codec dai not found\n", link->name);
+ 				goto err;
+ 			}
  
- 	ret = of_parse_phandle_with_args(node, "sound-dai",
- 					 "#sound-dai-cells", 0, &args);
--	if (ret) {
--		if (ret != -EPROBE_DEFER)
--			dev_err(card->dev, "can't parse dai %d\n", ret);
--		return ret;
--	}
-+	if (ret)
-+		return dev_err_probe(card->dev, ret, "can't parse dai\n");
-+
- 	*dai_of_node = args.np;
- 
- 	return snd_soc_get_dai_name(&args, dai_name);
-diff --git a/sound/soc/meson/t9015.c b/sound/soc/meson/t9015.c
-index 4c1349dd1e06..a9b8c4e77d40 100644
---- a/sound/soc/meson/t9015.c
-+++ b/sound/soc/meson/t9015.c
-@@ -258,18 +258,12 @@ static int t9015_probe(struct platform_device *pdev)
- 	platform_set_drvdata(pdev, priv);
- 
- 	priv->pclk = devm_clk_get(dev, "pclk");
--	if (IS_ERR(priv->pclk)) {
--		if (PTR_ERR(priv->pclk) != -EPROBE_DEFER)
--			dev_err(dev, "failed to get core clock\n");
--		return PTR_ERR(priv->pclk);
--	}
-+	if (IS_ERR(priv->pclk))
-+		return dev_err_probe(dev, PTR_ERR(priv->pclk), "failed to get core clock\n");
- 
- 	priv->avdd = devm_regulator_get(dev, "AVDD");
--	if (IS_ERR(priv->avdd)) {
--		if (PTR_ERR(priv->avdd) != -EPROBE_DEFER)
--			dev_err(dev, "failed to AVDD\n");
--		return PTR_ERR(priv->avdd);
--	}
-+	if (IS_ERR(priv->avdd))
-+		return dev_err_probe(dev, PTR_ERR(priv->avdd), "failed to AVDD\n");
- 
- 	ret = clk_prepare_enable(priv->pclk);
- 	if (ret) {
 -- 
 2.25.1
 
