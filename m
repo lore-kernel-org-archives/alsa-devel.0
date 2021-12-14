@@ -4,76 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5777AC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Dec 2021 02:14:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E2A1C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Dec 2021 02:15:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 953801AEA;
-	Tue, 14 Dec 2021 03:14:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 953801AEA
+	by alsa0.perex.cz (Postfix) with ESMTPS id DF4691EE5;
+	Tue, 14 Dec 2021 03:14:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF4691EE5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639448096;
-	bh=6VCsq0zPRtndlyARduu6CGAoY4V9TBkprQN5VbC3dtM=;
+	s=default; t=1639448115;
+	bh=WlBZA3hOwkSnvjYnMyM/xT2LOEuYLWEibGpivmPSmf4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sfu8+5Y0vzqqo3tkFP0tXbh4k2s3ssue4ddfWqgYeF2Y8/ld6Xs/KywNdaY5KX+Ma
-	 o2lnhzFCACCcvGPTrOh22+bs1n1C8UG7KI4uUUwK6PPuM9kLqxXz2Z6M/hr7xueZmU
-	 RTAv1IXNUbj6skQoN6zrW58Ubc4Wuf3iLsiK9Qv0=
+	b=Ux8da5OMz0ayVC8NP7tOFt6LaNL56AqgiAuDpLIZp2ni3gwc0X/IiqOOM01VuRLJz
+	 P0JTPUJF79X/buxjr++A371kNJZvrcVo4zbgw2ywxmYoCJGg7WFyPARPpL6f4tAsAL
+	 30dInz2bUT38WZWF+WKE48r+wUQDg2iJVYdcbkzk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 05E78F8057D;
-	Tue, 14 Dec 2021 03:10:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9D32CF80552;
+	Tue, 14 Dec 2021 03:10:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 053D2F8055B; Tue, 14 Dec 2021 03:09:55 +0100 (CET)
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com
- [IPv6:2607:f8b0:4864:20::62c])
+ id C82F6F80566; Tue, 14 Dec 2021 03:09:57 +0100 (CET)
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com
+ [IPv6:2607:f8b0:4864:20::436])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8D0D2F8051B
- for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2021 03:09:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D0D2F8051B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5AF92F80271
+ for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2021 03:09:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5AF92F80271
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="XmOcDYld"
-Received: by mail-pl1-x62c.google.com with SMTP id p18so12476046plf.13
- for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2021 18:09:47 -0800 (PST)
+ header.b="bS9lECcq"
+Received: by mail-pf1-x436.google.com with SMTP id k26so16559113pfp.10
+ for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2021 18:09:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=01SNm5V6Ok+GPemak/uYh+NgF0ENZPJa+gfjvOiRKJk=;
- b=XmOcDYldtrKZFw9RUMgYWcoX1uSdplZj4y7C5eKtdLhaKgwBHlsXqTN0ZiQau7U0YV
- BCB+fgMIHBOkZemXMP/y6cEMyk9uIzwW50OxMqK2hTuJP5x9L0lBMRt/sVLE1fsqKhAg
- Z//JHN4SjJsxw1Mg2dVboWmahVJoBzVv0cB6YTotutkZoEIwDI/mp+fAccTJ0PFUno74
- KUa+r9VfBioOfm19okTNo1wZ2iL+bNkFCY8+Rqyw/tGTsHX31JUkzozL+gxFbZD/YIeO
- kaNO2HsKAs0bZUjzxcKpHZpJmXGBC51tRiJy8iVP2mWkQ1k5bqsWaDYZhznQNCjiZOgH
- 7+ZA==
+ bh=gWLNyRd+QR94H4OPXuxp57vguJN59LfbMWiwC+2REnc=;
+ b=bS9lECcqcWrBGRfgBF4EDrgXb1QfA9MlFtMPLNQz2e/dC0L6MN0koSnfdYrq5+SdBU
+ kMZTvBb+skhgq+5oxfcRPcqbbXNnXm7+DbBaFZfMk8Td41DSkGG72gvbcP2IPuOECfph
+ h6++UrdLxWR1gwSM6kkzRClFxs1ph6QZG5Z1IyfEuzJpvyiX64LIlxocFH/H0tz4XSzj
+ FHs7FFWUwBv2GEYnekVajwT5whLnrQrITcRi2V6qaWEyVvK/u39gukFyFCV+iiqWBVP5
+ B/4EB1Ux3rbPVJ+MQT8yG9iALK4tT5B+TwYWBit0eLLR2NUTu//rp9/OXLy85qb2PBmD
+ kNrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
  :in-reply-to:references:mime-version:content-transfer-encoding;
- bh=01SNm5V6Ok+GPemak/uYh+NgF0ENZPJa+gfjvOiRKJk=;
- b=y2hEUnazyAYs1faTmungsuneYKDx+WLLdwqe3DYOcofaWLDdys2QwtUBsFyQ6A0d0M
- DxUuwdwtieQ+rzNNFZCd3HYNgobCo24z04S1EQid5Ez+J44bRUMjqFKjssdwnI6U9g3t
- HHzbWAdUyhHExmc0zM2dgG2aRjdl5lRcQW+O+7vXALabMNkAi8a5Cwpwzf5P48JDkh66
- zr6a+sRkUqZZrKzdX5keD/E/jRI76B7hMlHO6NaZheuC3fPJ0MmXXFet5UfzOp+wveJ3
- LgE7dmTGxVILUuBcjAK/jdLuCHlGORaaV2NqejyaBeQ93PaMMtlTU8Srk28dDe8L5L1D
- ewxw==
-X-Gm-Message-State: AOAM530GTEQsierhW0MXGuVtP8JAyomUkWeSR/ffqDQRmyNX2+TjlF6w
- 05/YVFCw5YTYO6CoO7CDM+8=
-X-Google-Smtp-Source: ABdhPJwcQ3Tvt8xl03QbSarxcNhqe4OFtRxpcPul3p6pi0tS5O6vgna+6rojac2eOwiF3+SmjSZZAw==
-X-Received: by 2002:a17:90a:1b67:: with SMTP id
- q94mr2234252pjq.119.1639447783938; 
- Mon, 13 Dec 2021 18:09:43 -0800 (PST)
+ bh=gWLNyRd+QR94H4OPXuxp57vguJN59LfbMWiwC+2REnc=;
+ b=MJQkX07zfutHqr4FPMldrnL9LRtfSX6SlJ/i4VtVKgfIhE1geRaPNAs9pBnLRPVCCg
+ q/MbslhVoyzOrnJbeWAT8mP8etU11398ueqMvbWrFSq69Y01X3HhS00IJkq7hos3K/uq
+ X1euCM3Oo8zOPN9ZjYZlaknAhsyuxIYzvPJdLOIaDNmD0jbeZW9P3Rp6CvcEpkTq42l9
+ ffEZS0ENURt8GXhmN33BePteJXAC+gl+Y/lZTSpei/mK0oKc3UbKcEmhNgtwpkuEgvFt
+ Zsm61AXBKfWY9UHLWVE1ez04lN7T1wCmmVgpsMUKf5elwRHbCNNKHwPr3H9b7YohIC15
+ N8wQ==
+X-Gm-Message-State: AOAM532zEY90PYLwHEE8TXRzDzByq5xBFtbXT7TRIi3s06SyIRX9eAU+
+ 7NK5gNpmHShqpDa5lAxetvoWjviz7ok=
+X-Google-Smtp-Source: ABdhPJxxzFTdcCFg0UBHRKdA/ZelC1gl4XSw2BsDR7I4vGigRpiNxdmy0oFJgFTqESPe3HQ3kVkfsA==
+X-Received: by 2002:a63:d608:: with SMTP id q8mr1697569pgg.84.1639447786840;
+ Mon, 13 Dec 2021 18:09:46 -0800 (PST)
 Received: from localhost.localdomain ([126.249.140.249])
- by smtp.gmail.com with ESMTPSA id b2sm14622296pfv.198.2021.12.13.18.09.42
+ by smtp.gmail.com with ESMTPSA id b2sm14622296pfv.198.2021.12.13.18.09.45
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 13 Dec 2021 18:09:43 -0800 (PST)
+ Mon, 13 Dec 2021 18:09:46 -0800 (PST)
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 15/22] ASoC: img: Use dev_err_probe() helper
-Date: Tue, 14 Dec 2021 11:08:36 +0900
-Message-Id: <20211214020843.2225831-16-kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH 17/22] ASoC: mxs: Use dev_err_probe() helper
+Date: Tue, 14 Dec 2021 11:08:38 +0900
+Message-Id: <20211214020843.2225831-18-kuninori.morimoto.gx@renesas.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211214020843.2225831-1-kuninori.morimoto.gx@renesas.com>
 References: <20211214020843.2225831-1-kuninori.morimoto.gx@renesas.com>
@@ -104,189 +103,28 @@ operation.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/img/img-i2s-in.c             |  8 +++-----
- sound/soc/img/img-i2s-out.c            | 24 +++++++++---------------
- sound/soc/img/img-parallel-out.c       | 24 +++++++++---------------
- sound/soc/img/img-spdif-in.c           |  8 +++-----
- sound/soc/img/img-spdif-out.c          | 24 +++++++++---------------
- sound/soc/img/pistachio-internal-dac.c |  9 +++------
- 6 files changed, 36 insertions(+), 61 deletions(-)
+ sound/soc/mxs/mxs-sgtl5000.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/img/img-i2s-in.c b/sound/soc/img/img-i2s-in.c
-index 1bf5d6edbd32..f1f36f15a503 100644
---- a/sound/soc/img/img-i2s-in.c
-+++ b/sound/soc/img/img-i2s-in.c
-@@ -451,11 +451,9 @@ static int img_i2s_in_probe(struct platform_device *pdev)
- 	i2s->channel_base = base + (max_i2s_chan_pow_2 * 0x20);
+diff --git a/sound/soc/mxs/mxs-sgtl5000.c b/sound/soc/mxs/mxs-sgtl5000.c
+index a6407f4388de..2412dc7e65d4 100644
+--- a/sound/soc/mxs/mxs-sgtl5000.c
++++ b/sound/soc/mxs/mxs-sgtl5000.c
+@@ -160,12 +160,8 @@ static int mxs_sgtl5000_probe(struct platform_device *pdev)
+ 	}
  
- 	i2s->clk_sys = devm_clk_get(dev, "sys");
--	if (IS_ERR(i2s->clk_sys)) {
--		if (PTR_ERR(i2s->clk_sys) != -EPROBE_DEFER)
--			dev_err(dev, "Failed to acquire clock 'sys'\n");
--		return PTR_ERR(i2s->clk_sys);
--	}
-+	if (IS_ERR(i2s->clk_sys))
-+		return dev_err_probe(dev, PTR_ERR(i2s->clk_sys),
-+				     "Failed to acquire clock 'sys'\n");
- 
- 	pm_runtime_enable(&pdev->dev);
- 	if (!pm_runtime_enabled(&pdev->dev)) {
-diff --git a/sound/soc/img/img-i2s-out.c b/sound/soc/img/img-i2s-out.c
-index 4f90d36dc7df..28f48ca1508a 100644
---- a/sound/soc/img/img-i2s-out.c
-+++ b/sound/soc/img/img-i2s-out.c
-@@ -457,25 +457,19 @@ static int img_i2s_out_probe(struct platform_device *pdev)
- 	i2s->channel_base = base + (max_i2s_chan_pow_2 * 0x20);
- 
- 	i2s->rst = devm_reset_control_get_exclusive(&pdev->dev, "rst");
--	if (IS_ERR(i2s->rst)) {
--		if (PTR_ERR(i2s->rst) != -EPROBE_DEFER)
--			dev_err(&pdev->dev, "No top level reset found\n");
--		return PTR_ERR(i2s->rst);
--	}
-+	if (IS_ERR(i2s->rst))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(i2s->rst),
-+				     "No top level reset found\n");
- 
- 	i2s->clk_sys = devm_clk_get(&pdev->dev, "sys");
--	if (IS_ERR(i2s->clk_sys)) {
--		if (PTR_ERR(i2s->clk_sys) != -EPROBE_DEFER)
--			dev_err(dev, "Failed to acquire clock 'sys'\n");
--		return PTR_ERR(i2s->clk_sys);
--	}
-+	if (IS_ERR(i2s->clk_sys))
-+		return dev_err_probe(dev, PTR_ERR(i2s->clk_sys),
-+				     "Failed to acquire clock 'sys'\n");
- 
- 	i2s->clk_ref = devm_clk_get(&pdev->dev, "ref");
--	if (IS_ERR(i2s->clk_ref)) {
--		if (PTR_ERR(i2s->clk_ref) != -EPROBE_DEFER)
--			dev_err(dev, "Failed to acquire clock 'ref'\n");
--		return PTR_ERR(i2s->clk_ref);
--	}
-+	if (IS_ERR(i2s->clk_ref))
-+		return dev_err_probe(dev, PTR_ERR(i2s->clk_ref),
-+				     "Failed to acquire clock 'ref'\n");
- 
- 	i2s->suspend_ch_ctl = devm_kcalloc(dev,
- 		i2s->max_i2s_chan, sizeof(*i2s->suspend_ch_ctl), GFP_KERNEL);
-diff --git a/sound/soc/img/img-parallel-out.c b/sound/soc/img/img-parallel-out.c
-index ce0f08d3777c..800f247283cd 100644
---- a/sound/soc/img/img-parallel-out.c
-+++ b/sound/soc/img/img-parallel-out.c
-@@ -229,25 +229,19 @@ static int img_prl_out_probe(struct platform_device *pdev)
- 	prl->base = base;
- 
- 	prl->rst = devm_reset_control_get_exclusive(&pdev->dev, "rst");
--	if (IS_ERR(prl->rst)) {
--		if (PTR_ERR(prl->rst) != -EPROBE_DEFER)
--			dev_err(&pdev->dev, "No top level reset found\n");
--		return PTR_ERR(prl->rst);
--	}
-+	if (IS_ERR(prl->rst))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(prl->rst),
-+				     "No top level reset found\n");
- 
- 	prl->clk_sys = devm_clk_get(&pdev->dev, "sys");
--	if (IS_ERR(prl->clk_sys)) {
--		if (PTR_ERR(prl->clk_sys) != -EPROBE_DEFER)
--			dev_err(dev, "Failed to acquire clock 'sys'\n");
--		return PTR_ERR(prl->clk_sys);
--	}
-+	if (IS_ERR(prl->clk_sys))
-+		return dev_err_probe(dev, PTR_ERR(prl->clk_sys),
-+				     "Failed to acquire clock 'sys'\n");
- 
- 	prl->clk_ref = devm_clk_get(&pdev->dev, "ref");
--	if (IS_ERR(prl->clk_ref)) {
--		if (PTR_ERR(prl->clk_ref) != -EPROBE_DEFER)
--			dev_err(dev, "Failed to acquire clock 'ref'\n");
--		return PTR_ERR(prl->clk_ref);
--	}
-+	if (IS_ERR(prl->clk_ref))
-+		return dev_err_probe(dev, PTR_ERR(prl->clk_ref),
-+				     "Failed to acquire clock 'ref'\n");
- 
- 	ret = clk_prepare_enable(prl->clk_sys);
- 	if (ret)
-diff --git a/sound/soc/img/img-spdif-in.c b/sound/soc/img/img-spdif-in.c
-index 6364eb742f6d..95914d0612fe 100644
---- a/sound/soc/img/img-spdif-in.c
-+++ b/sound/soc/img/img-spdif-in.c
-@@ -739,11 +739,9 @@ static int img_spdif_in_probe(struct platform_device *pdev)
- 	spdif->base = base;
- 
- 	spdif->clk_sys = devm_clk_get(dev, "sys");
--	if (IS_ERR(spdif->clk_sys)) {
--		if (PTR_ERR(spdif->clk_sys) != -EPROBE_DEFER)
--			dev_err(dev, "Failed to acquire clock 'sys'\n");
--		return PTR_ERR(spdif->clk_sys);
--	}
-+	if (IS_ERR(spdif->clk_sys))
-+		return dev_err_probe(dev, PTR_ERR(spdif->clk_sys),
-+				     "Failed to acquire clock 'sys'\n");
- 
- 	pm_runtime_enable(&pdev->dev);
- 	if (!pm_runtime_enabled(&pdev->dev)) {
-diff --git a/sound/soc/img/img-spdif-out.c b/sound/soc/img/img-spdif-out.c
-index 858e1b853820..c3189d9ff72f 100644
---- a/sound/soc/img/img-spdif-out.c
-+++ b/sound/soc/img/img-spdif-out.c
-@@ -342,25 +342,19 @@ static int img_spdif_out_probe(struct platform_device *pdev)
- 	spdif->base = base;
- 
- 	spdif->rst = devm_reset_control_get_exclusive(&pdev->dev, "rst");
--	if (IS_ERR(spdif->rst)) {
--		if (PTR_ERR(spdif->rst) != -EPROBE_DEFER)
--			dev_err(&pdev->dev, "No top level reset found\n");
--		return PTR_ERR(spdif->rst);
--	}
-+	if (IS_ERR(spdif->rst))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(spdif->rst),
-+				     "No top level reset found\n");
- 
- 	spdif->clk_sys = devm_clk_get(&pdev->dev, "sys");
--	if (IS_ERR(spdif->clk_sys)) {
--		if (PTR_ERR(spdif->clk_sys) != -EPROBE_DEFER)
--			dev_err(dev, "Failed to acquire clock 'sys'\n");
--		return PTR_ERR(spdif->clk_sys);
--	}
-+	if (IS_ERR(spdif->clk_sys))
-+		return dev_err_probe(dev, PTR_ERR(spdif->clk_sys),
-+				     "Failed to acquire clock 'sys'\n");
- 
- 	spdif->clk_ref = devm_clk_get(&pdev->dev, "ref");
--	if (IS_ERR(spdif->clk_ref)) {
--		if (PTR_ERR(spdif->clk_ref) != -EPROBE_DEFER)
--			dev_err(dev, "Failed to acquire clock 'ref'\n");
--		return PTR_ERR(spdif->clk_ref);
--	}
-+	if (IS_ERR(spdif->clk_ref))
-+		return dev_err_probe(dev, PTR_ERR(spdif->clk_ref),
-+				     "Failed to acquire clock 'ref'\n");
- 
- 	pm_runtime_enable(&pdev->dev);
- 	if (!pm_runtime_enabled(&pdev->dev)) {
-diff --git a/sound/soc/img/pistachio-internal-dac.c b/sound/soc/img/pistachio-internal-dac.c
-index fe181c2e51d6..802c0ee63aa2 100644
---- a/sound/soc/img/pistachio-internal-dac.c
-+++ b/sound/soc/img/pistachio-internal-dac.c
-@@ -161,12 +161,9 @@ static int pistachio_internal_dac_probe(struct platform_device *pdev)
- 		return PTR_ERR(dac->regmap);
- 
- 	dac->supply = devm_regulator_get(dev, "VDD");
--	if (IS_ERR(dac->supply)) {
--		ret = PTR_ERR(dac->supply);
+ 	ret = devm_snd_soc_register_card(&pdev->dev, card);
+-	if (ret) {
 -		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to acquire supply 'VDD-supply': %d\n", ret);
+-			dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n",
+-				ret);
 -		return ret;
 -	}
-+	if (IS_ERR(dac->supply))
-+		return dev_err_probe(dev, PTR_ERR(dac->supply),
-+				     "failed to acquire supply 'VDD-supply'\n");
++	if (ret)
++		return dev_err_probe(&pdev->dev, ret, "snd_soc_register_card failed\n");
  
- 	ret = regulator_enable(dac->supply);
- 	if (ret) {
+ 	return 0;
+ }
 -- 
 2.25.1
 
