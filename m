@@ -4,82 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF14FC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Dec 2021 14:03:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B193DC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Dec 2021 14:03:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 224F11F6B;
-	Tue, 14 Dec 2021 15:02:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 224F11F6B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9FB31179D;
+	Tue, 14 Dec 2021 15:02:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9FB31179D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639490600;
-	bh=VDNOmaWciKfvJFen0D4ia5IcztezRAMZB18k4D9ZsYs=;
+	s=default; t=1639490625;
+	bh=oSWKT6ZNg3uzJGxn/Q1s2RPT7+QG47JNfy9ytgIp544=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FgEF0GKLKf5MUAEwYyGnBj8I0mh51wdTJ9IKm/ixMKFsRypr0vnpOuXOLEswqQBDk
-	 qB8RuacmIGzye1Yo4u2svidKJS8bsS/Jsxv7Mhap0tHEPv8GJtx2C6i4Pu89P05Hm8
-	 LAzoSj/J+lhUKxnD5hEmnyRR40lbkZrnJSHF/BY4=
+	b=d+LR1eFnpOTrONRIy2C3hwwQL1MahiQN8+hjvW667/s3lTGn/ymEl7xE1VhKWt9fn
+	 AFYgrW0ih3s7tZpXMeaoed3H14KHsTb4dvOvk71dYkvqhFvo6MaJnfPIRPJ80priub
+	 1n1arrdRkECFcg8rI7dxtCUfwHEVLNrQc6thC9J8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8224EF80535;
-	Tue, 14 Dec 2021 15:00:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E17AAF80542;
+	Tue, 14 Dec 2021 15:00:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7639CF80534; Tue, 14 Dec 2021 15:00:25 +0100 (CET)
+ id C90F7F8052E; Tue, 14 Dec 2021 15:00:26 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EDB1CF80516
- for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2021 15:00:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EDB1CF80516
+ by alsa1.perex.cz (Postfix) with ESMTPS id 61B5EF80515
+ for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2021 15:00:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 61B5EF80515
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="ayx4qY5m"
+ header.b="RP/W2r4W"
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1BEAdVUR003487;
- Tue, 14 Dec 2021 08:00:09 -0600
+ by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1BEAdVUS003487;
+ Tue, 14 Dec 2021 08:00:10 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=BC24Xj+sGTtmtv+TxQ7A7FhmVeZQJ/KMVYNnYqbgQf4=;
- b=ayx4qY5muHiaAKaSrUopsRp/zVDQz9eTgjlT5XNIxDnGvAvSlcO5WQagAafydmpTABBt
- FGsVt7TY9cEzCGftBSXuiR9vyh+CPS0uCzrCmx6XqaaFlU8BWlIJRrZH8ul8kgFO/Nl2
- LCaH9k85DeqNMRjwVtj1Qa7nkXHqdfUkjgtlPvTaFLACStF4/6vkGDTW5bNJ7t2CJtN4
- 5lAmR+MgLDkA2RmpO0ssUF9IlMmIThi1BjYJOiGMzzNxiccqWv6WptkXdybkhu0TJT16
- NKxnacVqw1cf/pNsWLOtis9oyyo77jUXoRbxz3mOzqvPbcCylqsObUiP9YJw9OGp50Zg uQ== 
+ bh=le5QrY93oJaQcrGed4nRdWn7iLRo6OoqajMw7T+4nho=;
+ b=RP/W2r4WGUU6UmH6s+TKqybKCdBAcrgFmpFlo+JTXc/wKM0zA4cD+6bsEw0XtnTC0Fov
+ 92RWD6eYERxkB/iko6bSAIpplS8EbsgWPXCyiXMEM4ptumcnXAShGC0VjMzpZdS6Dfae
+ mQhAkseyg2ydWuRUlRyQKei9zHB/dRhTifY6SwQBb+4/Pwj2eCsKARnoJzWBBzhb5jI+
+ yT/R6QvZyPAZswkr/xfgnCGazzhj6FE3RPSxBd/trL0uQzJNYGo9zuJKcBqSoZq1nQ6k
+ mFsZihxOgQuf80J2TgakgrJvm7URVUHd5R/sW7ogSfUQwo6GUt2SrI4AVc6QLROlRLOL Fw== 
 Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3cxe2f0uq1-4
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3cxe2f0uq1-5
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Tue, 14 Dec 2021 08:00:08 -0600
+ Tue, 14 Dec 2021 08:00:09 -0600
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Tue, 14 Dec
- 2021 14:00:03 +0000
+ 2021 14:00:04 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.17 via
- Frontend Transport; Tue, 14 Dec 2021 14:00:03 +0000
+ Frontend Transport; Tue, 14 Dec 2021 14:00:04 +0000
 Received: from aryzen.ad.cirrus.com (unknown [198.61.64.39])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 32C307C;
- Tue, 14 Dec 2021 14:00:03 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2AABC7C;
+ Tue, 14 Dec 2021 14:00:04 +0000 (UTC)
 From: Lucas Tanure <tanureal@opensource.cirrus.com>
 To: "Rafael J . Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
  Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>,
  Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
  Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v4 06/10] ASoC: cs35l41: Create shared function for boost
- configuration
-Date: Tue, 14 Dec 2021 13:59:55 +0000
-Message-ID: <20211214135959.1317949-7-tanureal@opensource.cirrus.com>
+Subject: [PATCH v4 08/10] ACPI / scan: Create platform device for CLSA0100 and
+ CSC3551 ACPI nodes
+Date: Tue, 14 Dec 2021 13:59:57 +0000
+Message-ID: <20211214135959.1317949-9-tanureal@opensource.cirrus.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20211214135959.1317949-1-tanureal@opensource.cirrus.com>
 References: <20211214135959.1317949-1-tanureal@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 6C9z6EcO0wr1ABOgLCO-LM6H9fGUi-py
-X-Proofpoint-GUID: 6C9z6EcO0wr1ABOgLCO-LM6H9fGUi-py
+X-Proofpoint-ORIG-GUID: Wx5fxdHZfL_xfccOmnaNzhMmGzm_WriJ
+X-Proofpoint-GUID: Wx5fxdHZfL_xfccOmnaNzhMmGzm_WriJ
 X-Proofpoint-Spam-Reason: safe
 Cc: alsa-devel@alsa-project.org, Lucas Tanure <tanureal@opensource.cirrus.com>,
  patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
@@ -99,267 +99,65 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-ASoC and HDA will use the same registers to configure
-internal boost for the device
+The ACPI device with CLSA0100 or CSC3551 is a sound card
+with multiple instances of CS35L41 connectec by I2C to
+the main CPU.
+
+We add an ID to the i2c_multi_instantiate_ids list to enumerate
+all I2C slaves correctly.
 
 Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
 ---
- include/sound/cs35l41.h        |   2 +
- sound/soc/codecs/cs35l41-lib.c |  98 ++++++++++++++++++++++++++++++
- sound/soc/codecs/cs35l41.c     | 105 +--------------------------------
- 3 files changed, 102 insertions(+), 103 deletions(-)
+ drivers/acpi/scan.c                          |  3 +++
+ drivers/platform/x86/i2c-multi-instantiate.c | 11 +++++++++++
+ 2 files changed, 14 insertions(+)
 
-diff --git a/include/sound/cs35l41.h b/include/sound/cs35l41.h
-index 39d150f61382..29a527457b48 100644
---- a/include/sound/cs35l41.h
-+++ b/include/sound/cs35l41.h
-@@ -767,5 +767,7 @@ int cs35l41_register_errata_patch(struct device *dev, struct regmap *reg, unsign
- int cs35l41_set_channels(struct device *dev, struct regmap *reg,
- 			 unsigned int tx_num, unsigned int *tx_slot,
- 			 unsigned int rx_num, unsigned int *rx_slot);
-+int cs35l41_boost_config(struct device *dev, struct regmap *regmap, int boost_ind, int boost_cap,
-+			 int boost_ipk);
+diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+index 5991dddbc9ce..333ae8914cf5 100644
+--- a/drivers/acpi/scan.c
++++ b/drivers/acpi/scan.c
+@@ -1706,8 +1706,11 @@ static bool acpi_device_enumeration_by_parent(struct acpi_device *device)
+ 	static const struct acpi_device_id i2c_multi_instantiate_ids[] = {
+ 		{"BSG1160", },
+ 		{"BSG2150", },
++		{"CSC3551", },
+ 		{"INT33FE", },
+ 		{"INT3515", },
++		/* Non-conforming _HID for Cirrus Logic already released */
++		{"CLSA0100", },
+ 		{}
+ 	};
  
- #endif /* __CS35L41_H */
-diff --git a/sound/soc/codecs/cs35l41-lib.c b/sound/soc/codecs/cs35l41-lib.c
-index 99f2b246f5b7..6b7ff63d650b 100644
---- a/sound/soc/codecs/cs35l41-lib.c
-+++ b/sound/soc/codecs/cs35l41-lib.c
-@@ -964,6 +964,104 @@ int cs35l41_set_channels(struct device *dev, struct regmap *reg,
- }
- EXPORT_SYMBOL_GPL(cs35l41_set_channels);
- 
-+static const unsigned char cs35l41_bst_k1_table[4][5] = {
-+	{ 0x24, 0x32, 0x32, 0x4F, 0x57 },
-+	{ 0x24, 0x32, 0x32, 0x4F, 0x57 },
-+	{ 0x40, 0x32, 0x32, 0x4F, 0x57 },
-+	{ 0x40, 0x32, 0x32, 0x4F, 0x57 }
-+};
-+
-+static const unsigned char cs35l41_bst_k2_table[4][5] = {
-+	{ 0x24, 0x49, 0x66, 0xA3, 0xEA },
-+	{ 0x24, 0x49, 0x66, 0xA3, 0xEA },
-+	{ 0x48, 0x49, 0x66, 0xA3, 0xEA },
-+	{ 0x48, 0x49, 0x66, 0xA3, 0xEA }
-+};
-+
-+static const unsigned char cs35l41_bst_slope_table[4] = {
-+	0x75, 0x6B, 0x3B, 0x28
-+};
-+
-+
-+int cs35l41_boost_config(struct device *dev, struct regmap *regmap, int boost_ind, int boost_cap,
-+			 int boost_ipk)
-+{
-+	unsigned char bst_lbst_val, bst_cbst_range, bst_ipk_scaled;
-+	int ret;
-+
-+	switch (boost_ind) {
-+	case 1000:	/* 1.0 uH */
-+		bst_lbst_val = 0;
-+		break;
-+	case 1200:	/* 1.2 uH */
-+		bst_lbst_val = 1;
-+		break;
-+	case 1500:	/* 1.5 uH */
-+		bst_lbst_val = 2;
-+		break;
-+	case 2200:	/* 2.2 uH */
-+		bst_lbst_val = 3;
-+		break;
-+	default:
-+		dev_err(dev, "Invalid boost inductor value: %d nH\n", boost_ind);
-+		return -EINVAL;
-+	}
-+
-+	switch (boost_cap) {
-+	case 0 ... 19:
-+		bst_cbst_range = 0;
-+		break;
-+	case 20 ... 50:
-+		bst_cbst_range = 1;
-+		break;
-+	case 51 ... 100:
-+		bst_cbst_range = 2;
-+		break;
-+	case 101 ... 200:
-+		bst_cbst_range = 3;
-+		break;
-+	default:	/* 201 uF and greater */
-+		bst_cbst_range = 4;
-+	}
-+
-+	ret = regmap_update_bits(regmap, CS35L41_BSTCVRT_COEFF,
-+				 CS35L41_BST_K1_MASK | CS35L41_BST_K2_MASK,
-+				 cs35l41_bst_k1_table[bst_lbst_val][bst_cbst_range]
-+					<< CS35L41_BST_K1_SHIFT |
-+				 cs35l41_bst_k2_table[bst_lbst_val][bst_cbst_range]
-+					<< CS35L41_BST_K2_SHIFT);
-+	if (ret) {
-+		dev_err(dev, "Failed to write boost coefficients: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = regmap_update_bits(regmap, CS35L41_BSTCVRT_SLOPE_LBST,
-+				 CS35L41_BST_SLOPE_MASK | CS35L41_BST_LBST_VAL_MASK,
-+				 cs35l41_bst_slope_table[bst_lbst_val]
-+					<< CS35L41_BST_SLOPE_SHIFT |
-+				 bst_lbst_val << CS35L41_BST_LBST_VAL_SHIFT);
-+	if (ret) {
-+		dev_err(dev, "Failed to write boost slope/inductor value: %d\n", ret);
-+		return ret;
-+	}
-+
-+	if (boost_ipk < 1600 || boost_ipk > 4500) {
-+		dev_err(dev, "Invalid boost inductor peak current: %d mA\n", boost_ipk);
-+		return -EINVAL;
-+	}
-+	bst_ipk_scaled = ((boost_ipk - 1600) / 50) + 0x10;
-+
-+	ret = regmap_update_bits(regmap, CS35L41_BSTCVRT_PEAK_CUR, CS35L41_BST_IPK_MASK,
-+				 bst_ipk_scaled << CS35L41_BST_IPK_SHIFT);
-+	if (ret) {
-+		dev_err(dev, "Failed to write boost inductor peak current: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(cs35l41_boost_config);
-+
- MODULE_DESCRIPTION("CS35L41 library");
- MODULE_AUTHOR("David Rhodes, Cirrus Logic Inc, <david.rhodes@cirrus.com>");
- MODULE_AUTHOR("Lucas Tanure, Cirrus Logic Inc, <tanureal@opensource.cirrus.com>");
-diff --git a/sound/soc/codecs/cs35l41.c b/sound/soc/codecs/cs35l41.c
-index 88d6e77fdb50..d9e6e84e64d0 100644
---- a/sound/soc/codecs/cs35l41.c
-+++ b/sound/soc/codecs/cs35l41.c
-@@ -150,24 +150,6 @@ static const struct cs35l41_fs_mon_config cs35l41_fs_mon[] = {
- 	{ 6144000,	16,	24 },
+diff --git a/drivers/platform/x86/i2c-multi-instantiate.c b/drivers/platform/x86/i2c-multi-instantiate.c
+index 4956a1df5b90..a889789b966c 100644
+--- a/drivers/platform/x86/i2c-multi-instantiate.c
++++ b/drivers/platform/x86/i2c-multi-instantiate.c
+@@ -147,6 +147,14 @@ static const struct i2c_inst_data int3515_data[]  = {
+ 	{}
  };
  
--static const unsigned char cs35l41_bst_k1_table[4][5] = {
--	{ 0x24, 0x32, 0x32, 0x4F, 0x57 },
--	{ 0x24, 0x32, 0x32, 0x4F, 0x57 },
--	{ 0x40, 0x32, 0x32, 0x4F, 0x57 },
--	{ 0x40, 0x32, 0x32, 0x4F, 0x57 }
--};
--
--static const unsigned char cs35l41_bst_k2_table[4][5] = {
--	{ 0x24, 0x49, 0x66, 0xA3, 0xEA },
--	{ 0x24, 0x49, 0x66, 0xA3, 0xEA },
--	{ 0x48, 0x49, 0x66, 0xA3, 0xEA },
--	{ 0x48, 0x49, 0x66, 0xA3, 0xEA }
--};
--
--static const unsigned char cs35l41_bst_slope_table[4] = {
--	0x75, 0x6B, 0x3B, 0x28
--};
--
- static int cs35l41_get_fs_mon_config_index(int freq)
- {
- 	int i;
-@@ -992,88 +974,6 @@ static int cs35l41_dai_set_sysclk(struct snd_soc_dai *dai,
- 	return 0;
- }
- 
--static int cs35l41_boost_config(struct cs35l41_private *cs35l41,
--				int boost_ind, int boost_cap, int boost_ipk)
--{
--	unsigned char bst_lbst_val, bst_cbst_range, bst_ipk_scaled;
--	struct regmap *regmap = cs35l41->regmap;
--	struct device *dev = cs35l41->dev;
--	int ret;
--
--	switch (boost_ind) {
--	case 1000:	/* 1.0 uH */
--		bst_lbst_val = 0;
--		break;
--	case 1200:	/* 1.2 uH */
--		bst_lbst_val = 1;
--		break;
--	case 1500:	/* 1.5 uH */
--		bst_lbst_val = 2;
--		break;
--	case 2200:	/* 2.2 uH */
--		bst_lbst_val = 3;
--		break;
--	default:
--		dev_err(dev, "Invalid boost inductor value: %d nH\n", boost_ind);
--		return -EINVAL;
--	}
--
--	switch (boost_cap) {
--	case 0 ... 19:
--		bst_cbst_range = 0;
--		break;
--	case 20 ... 50:
--		bst_cbst_range = 1;
--		break;
--	case 51 ... 100:
--		bst_cbst_range = 2;
--		break;
--	case 101 ... 200:
--		bst_cbst_range = 3;
--		break;
--	default:	/* 201 uF and greater */
--		bst_cbst_range = 4;
--	}
--
--	ret = regmap_update_bits(regmap, CS35L41_BSTCVRT_COEFF,
--				 CS35L41_BST_K1_MASK | CS35L41_BST_K2_MASK,
--				 cs35l41_bst_k1_table[bst_lbst_val][bst_cbst_range]
--					<< CS35L41_BST_K1_SHIFT |
--				 cs35l41_bst_k2_table[bst_lbst_val][bst_cbst_range]
--					<< CS35L41_BST_K2_SHIFT);
--	if (ret) {
--		dev_err(dev, "Failed to write boost coefficients: %d\n", ret);
--		return ret;
--	}
--
--	ret = regmap_update_bits(regmap, CS35L41_BSTCVRT_SLOPE_LBST,
--				 CS35L41_BST_SLOPE_MASK | CS35L41_BST_LBST_VAL_MASK,
--				 cs35l41_bst_slope_table[bst_lbst_val]
--					<< CS35L41_BST_SLOPE_SHIFT |
--				 bst_lbst_val << CS35L41_BST_LBST_VAL_SHIFT);
--	if (ret) {
--		dev_err(dev, "Failed to write boost slope/inductor value: %d\n", ret);
--		return ret;
--	}
--
--	if (boost_ipk < 1600 || boost_ipk > 4500) {
--		dev_err(dev, "Invalid boost inductor peak current: %d mA\n",
--			boost_ipk);
--		return -EINVAL;
--	}
--	bst_ipk_scaled = ((boost_ipk - 1600) / 50) + 0x10;
--
--	ret = regmap_update_bits(regmap, CS35L41_BSTCVRT_PEAK_CUR,
--				 CS35L41_BST_IPK_MASK,
--				 bst_ipk_scaled << CS35L41_BST_IPK_SHIFT);
--	if (ret) {
--		dev_err(dev, "Failed to write boost inductor peak current: %d\n", ret);
--		return ret;
--	}
--
--	return 0;
--}
--
- static int cs35l41_set_pdata(struct cs35l41_private *cs35l41)
- {
- 	int ret;
-@@ -1082,9 +982,8 @@ static int cs35l41_set_pdata(struct cs35l41_private *cs35l41)
- 	/* Required */
- 	if (cs35l41->pdata.bst_ipk &&
- 	    cs35l41->pdata.bst_ind && cs35l41->pdata.bst_cap) {
--		ret = cs35l41_boost_config(cs35l41, cs35l41->pdata.bst_ind,
--					   cs35l41->pdata.bst_cap,
--					   cs35l41->pdata.bst_ipk);
-+		ret = cs35l41_boost_config(cs35l41->dev, cs35l41->regmap, cs35l41->pdata.bst_ind,
-+					   cs35l41->pdata.bst_cap, cs35l41->pdata.bst_ipk);
- 		if (ret) {
- 			dev_err(cs35l41->dev, "Error in Boost DT config: %d\n", ret);
- 			return ret;
++static const struct i2c_inst_data cs35l41_hda[] = {
++	{ "cs35l41-hda", IRQ_RESOURCE_GPIO, 0 },
++	{ "cs35l41-hda", IRQ_RESOURCE_GPIO, 0 },
++	{ "cs35l41-hda", IRQ_RESOURCE_GPIO, 0 },
++	{ "cs35l41-hda", IRQ_RESOURCE_GPIO, 0 },
++	{}
++};
++
+ /*
+  * Note new device-ids must also be added to i2c_multi_instantiate_ids in
+  * drivers/acpi/scan.c: acpi_device_enumeration_by_parent().
+@@ -154,7 +162,10 @@ static const struct i2c_inst_data int3515_data[]  = {
+ static const struct acpi_device_id i2c_multi_inst_acpi_ids[] = {
+ 	{ "BSG1160", (unsigned long)bsg1160_data },
+ 	{ "BSG2150", (unsigned long)bsg2150_data },
++	{ "CSC3551", (unsigned long)cs35l41_hda },
+ 	{ "INT3515", (unsigned long)int3515_data },
++	/* Non-conforming _HID for Cirrus Logic already released */
++	{ "CLSA0100", (unsigned long)cs35l41_hda },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(acpi, i2c_multi_inst_acpi_ids);
 -- 
 2.34.1
 
