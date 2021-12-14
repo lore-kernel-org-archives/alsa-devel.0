@@ -4,75 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02936C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Dec 2021 02:11:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96F1CC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Dec 2021 02:11:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1E5151932;
-	Tue, 14 Dec 2021 03:10:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E5151932
+	by alsa0.perex.cz (Postfix) with ESMTPS id D2758193D;
+	Tue, 14 Dec 2021 03:10:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D2758193D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639447882;
-	bh=a8xDp6otNqt9nFtyhAqeRmB0Yotd5YEWWm6ttECh1bU=;
+	s=default; t=1639447907;
+	bh=JUV2k0Ac8f5CFwKyLmmzIkIuQAoPasVSt/33y4wZItI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=o4CM0bu9HugMVXCCRPFqHGjpTIA1IcrPcrgIwMY5ynKhYXzKX745PzGz3SoZRRnyy
-	 riSZ/Z2fTQTgmjbOVBCUH8If8c7yufAiDyfe24AsSMBO+adJXmksDw0B7hNDxiSC9k
-	 Q+jIjH5Fn3H7kLEktVtsZq1/GwuK1bIQBrbYjqtU=
+	b=TAz/ZlcksZOMyaXdDGcsvQ2Ncm70SwXZrXcZ3Q7Di1T+Py0p6bgj25767oIdcERVI
+	 RualUgkhC8Kgng2YOqX02YaSddXGAwzkIB6SnphxX4YY6JM4KnK9j5jadr6k98w30C
+	 SncloB6OjPyGpUcYzkYDvSKVlWDupYM/hcbIZxkM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 97B1EF80249;
-	Tue, 14 Dec 2021 03:09:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A786BF80526;
+	Tue, 14 Dec 2021 03:09:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8DB5EF8051C; Tue, 14 Dec 2021 03:09:41 +0100 (CET)
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com
- [IPv6:2607:f8b0:4864:20::42f])
+ id 003DDF8051E; Tue, 14 Dec 2021 03:09:41 +0100 (CET)
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com
+ [IPv6:2607:f8b0:4864:20::634])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 67FB2F80246
+ by alsa1.perex.cz (Postfix) with ESMTPS id 81032F8025A
  for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2021 03:09:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67FB2F80246
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81032F8025A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="FHSyvx6Z"
-Received: by mail-pf1-x42f.google.com with SMTP id x131so16538448pfc.12
+ header.b="bjpjzzeS"
+Received: by mail-pl1-x634.google.com with SMTP id u17so12497585plg.9
  for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2021 18:09:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=4GMiAc2zffga/KCdfd43WaAOAZcdnBOXgfVjwzKiIlU=;
- b=FHSyvx6ZDImKYKXesVCtyx8oHkJo4cg5FPUSOZEPoQL3NyPb84n2iCr8TkoCv/oIyg
- i14SpZzdT1t6PBoB7TYz2YvqdIcmIgSwpUYMi1w5wR6MgQPv/EnjBKTytgvAAAmYCbja
- KoSS4mQG3l0ct5V7S3phN4dIIS5ZZBjJOF29sC5xfMoPa1GiCLpcGL++FlaYBf7E+jeY
- UyrUfwMJdCXtZfxuyapzrCcwXQLP5CruEFC6RC9FBUHiXaWub2cHlBynnPtMmJKBy0un
- wFawsh48HAa1kZgppFyXIyybIzlkeVhQoXL1tsXeCcbhcb7a5GkQN2TAMwC2xy+z6mNS
- qdDw==
+ bh=bnfUAs0V7JtpPn6OI4QrS36CkDViGktkiepn8bX3vT0=;
+ b=bjpjzzeSxOgDTpovILWb5AC4NVhoqoF/2B4/YZVYpUALJnGa9m0LGJrw7R/JjCGl0h
+ DJaIg+NZgzbrJVrLv19yjIKebmJqgOeGqgOFy6zEj4kthwsUkM936CmvKCR49iqa0JVO
+ X91NhJ2s93mP8ucNA2nxhlXx+z90zIYnRVjcwcER43N0JSWow++zP+R3mLrC6Rciiv2C
+ ER42FQMhggpDaVR900pvo5qUKc0WpSF/tOTYWATA1/SOnGOd+KwVY8/afs3jhN/3LJ8h
+ umFavsFRogl+E5A2VqcLOs8X3yTptZOPl6WkcbOpRiJ5nlqe9g3IqhDuemFMm4ZJCXJn
+ 9s6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
  :in-reply-to:references:mime-version:content-transfer-encoding;
- bh=4GMiAc2zffga/KCdfd43WaAOAZcdnBOXgfVjwzKiIlU=;
- b=YgfZbpdMWcibCZ+sGMdSjXVy77mRx5MsMBiadfaDsitZEZ1Psr8IBE5r0xw5wZ5AIW
- n3p7l51a27qT1WgC10By27Fhy4Y7MQWERqiMYMC0qV/2K4o9X7bchMI+S8ltP4L79Fdg
- QR9r56SOw+C6NYi0fBXYln+c8Eb7OvL3uEMmEnRvGvJGtatETYS3ex82XirtrTSw+Q6+
- a/LHDVj/itHXth6cd4IN5lPjG99CDvD7i11ytCQYz7+Ok+SN3dSIb5lA6CULVlq3Usk/
- pqNX2y9crjVGkk0/oGAPu0DHd2TabjxGqcr5cq2pO2hs2PO9vXSrSHs7YJqTgn5j7eQ9
- kjrw==
-X-Gm-Message-State: AOAM5335yAzfiXs5A0h7VKvO4ocdl70SbfUkFhB3RUHdBfSI7xxL2a1L
- OijBy53o6rue9EA6k/IkbPM=
-X-Google-Smtp-Source: ABdhPJxLRVfDjVWMrdoSVSydqMokrj6iA9YAGFPcbLi7YoAGXXcYIpdd0ooGJozmvgF7FLikK5k6xQ==
-X-Received: by 2002:a65:6a0a:: with SMTP id m10mr1742700pgu.82.1639447769644; 
- Mon, 13 Dec 2021 18:09:29 -0800 (PST)
+ bh=bnfUAs0V7JtpPn6OI4QrS36CkDViGktkiepn8bX3vT0=;
+ b=TbzBDTeg9u6cfMDkzNIKsRWwhZ3/iRZCjrUj1uzFrYEwH28iXGGBKWyRkq9uWzOBa9
+ si3RUKtysZF19v3JFkKeqss3H7jGloAPLOTlh7cfbDnv6Cmnt3PNFRpo6LpiLpQzFv/l
+ FtytWEzQtfgiroP5rRYHMLszdmSisjW8nWU3iaHtdKVooGsv/g5aD6AM3ZEdcxhzzXCb
+ xRdvx2q/WA7NS3qHmujy0MmfsTd0DMJEjI0Vf/octBKgPD0OaG98Ip/uWOIKr+SglzL/
+ QBsfDoQ7yeWJVVB2yxkurnsiiXQyo0yYPguOH+ALi0y65v5MWVxM5MFFgQslvKzX73CL
+ QLWw==
+X-Gm-Message-State: AOAM533dFChw9yKcLV8rPvF6rpwqdFS2l2zvPAbCV2eNE5IpJ0VV/+S8
+ umoR185O4Lwqb1SOYHB0ESg=
+X-Google-Smtp-Source: ABdhPJzGZY+hAFiMohm0xRpF6CnN4a2EpOYUADJjYiV8hL8JrMBFyK5aD3Zsxo9u6BJKmvCJXEQbXw==
+X-Received: by 2002:a17:902:6acb:b0:142:76c3:d35f with SMTP id
+ i11-20020a1709026acb00b0014276c3d35fmr2529865plt.89.1639447768169; 
+ Mon, 13 Dec 2021 18:09:28 -0800 (PST)
 Received: from localhost.localdomain ([126.249.140.249])
- by smtp.gmail.com with ESMTPSA id b2sm14622296pfv.198.2021.12.13.18.09.28
+ by smtp.gmail.com with ESMTPSA id b2sm14622296pfv.198.2021.12.13.18.09.27
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 13 Dec 2021 18:09:29 -0800 (PST)
+ Mon, 13 Dec 2021 18:09:27 -0800 (PST)
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 05/22] ASoC: codecs: pcm3168a: Use dev_err_probe() helper
-Date: Tue, 14 Dec 2021 11:08:26 +0900
-Message-Id: <20211214020843.2225831-6-kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH 04/22] ASoC: codecs: max9860: Use dev_err_probe() helper
+Date: Tue, 14 Dec 2021 11:08:25 +0900
+Message-Id: <20211214020843.2225831-5-kuninori.morimoto.gx@renesas.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211214020843.2225831-1-kuninori.morimoto.gx@renesas.com>
 References: <20211214020843.2225831-1-kuninori.morimoto.gx@renesas.com>
@@ -103,49 +104,37 @@ operation.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/codecs/pcm3168a.c | 22 +++++++---------------
- 1 file changed, 7 insertions(+), 15 deletions(-)
+ sound/soc/codecs/max9860.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/pcm3168a.c b/sound/soc/codecs/pcm3168a.c
-index b6fd412441a1..fdf92c8b28e1 100644
---- a/sound/soc/codecs/pcm3168a.c
-+++ b/sound/soc/codecs/pcm3168a.c
-@@ -751,21 +751,14 @@ int pcm3168a_probe(struct device *dev, struct regmap *regmap)
- 	pcm3168a->gpio_rst = devm_gpiod_get_optional(dev, "reset",
- 						GPIOD_OUT_LOW |
- 						GPIOD_FLAGS_BIT_NONEXCLUSIVE);
--	if (IS_ERR(pcm3168a->gpio_rst)) {
--		ret = PTR_ERR(pcm3168a->gpio_rst);
--		if (ret != -EPROBE_DEFER )
--			dev_err(dev, "failed to acquire RST gpio: %d\n", ret);
--
+diff --git a/sound/soc/codecs/max9860.c b/sound/soc/codecs/max9860.c
+index dd29b183ecd6..7c9686be59d9 100644
+--- a/sound/soc/codecs/max9860.c
++++ b/sound/soc/codecs/max9860.c
+@@ -606,12 +606,9 @@ static int max9860_probe(struct i2c_client *i2c)
+ 		return -ENOMEM;
+ 
+ 	max9860->dvddio = devm_regulator_get(dev, "DVDDIO");
+-	if (IS_ERR(max9860->dvddio)) {
+-		ret = PTR_ERR(max9860->dvddio);
+-		if (ret != -EPROBE_DEFER)
+-			dev_err(dev, "Failed to get DVDDIO supply: %d\n", ret);
 -		return ret;
 -	}
-+	if (IS_ERR(pcm3168a->gpio_rst))
-+		return dev_err_probe(dev, PTR_ERR(pcm3168a->gpio_rst),
-+				     "failed to acquire RST gpio\n");
++	if (IS_ERR(max9860->dvddio))
++		return dev_err_probe(dev, PTR_ERR(max9860->dvddio),
++				     "Failed to get DVDDIO supply\n");
  
- 	pcm3168a->scki = devm_clk_get(dev, "scki");
--	if (IS_ERR(pcm3168a->scki)) {
--		ret = PTR_ERR(pcm3168a->scki);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to acquire clock 'scki': %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(pcm3168a->scki))
-+		return dev_err_probe(dev, PTR_ERR(pcm3168a->scki),
-+				     "failed to acquire clock 'scki'\n");
+ 	max9860->dvddio_nb.notifier_call = max9860_dvddio_event;
  
- 	ret = clk_prepare_enable(pcm3168a->scki);
- 	if (ret) {
-@@ -781,8 +774,7 @@ int pcm3168a_probe(struct device *dev, struct regmap *regmap)
- 	ret = devm_regulator_bulk_get(dev,
- 			ARRAY_SIZE(pcm3168a->supplies), pcm3168a->supplies);
- 	if (ret) {
+@@ -643,8 +640,7 @@ static int max9860_probe(struct i2c_client *i2c)
+ 
+ 	if (IS_ERR(mclk)) {
+ 		ret = PTR_ERR(mclk);
 -		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to request supplies: %d\n", ret);
-+		dev_err_probe(dev, ret, "failed to request supplies\n");
- 		goto err_clk;
+-			dev_err(dev, "Failed to get MCLK: %d\n", ret);
++		dev_err_probe(dev, ret, "Failed to get MCLK\n");
+ 		goto err_regulator;
  	}
  
 -- 
