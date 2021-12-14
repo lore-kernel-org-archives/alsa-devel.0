@@ -4,80 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C51B2C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Dec 2021 17:16:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 613BDC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Dec 2021 17:19:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3A7441FF4;
-	Tue, 14 Dec 2021 18:15:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A7441FF4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0CC311FFD;
+	Tue, 14 Dec 2021 18:18:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0CC311FFD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639502196;
-	bh=7Chk8ePc8fgwfb6GoMDMcWBnfNzzXQjDNRjxe2RwyHM=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1639502362;
+	bh=qRczuY+UNN+qbk0KSjlgxKClfHB0e5rqUACREGhHYFc=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WxHvVFvKCajm05LUpMdam2JBRtRp9ahhc7jtbAsUNhDzjr+b/nKdiVv56T5cRP5lA
-	 o9KSjoLLFCG8PFelMBo6cSlKHO7sDq0HH6vxntRlx1O8FSl9CM9DGVzx2RWsYCJCzd
-	 wkzkFD9VyfQxG1oCcmKhgqk7QcjEVIGWxUorV8kg=
+	b=sfLrSszwJj0dTnwD0QTMyRvr3WlFqKPA1+cQlTI1wpL4atYb1pEwaae5snFw0SA4Y
+	 G05dxqPBUbGuAOJNtFhlq1KESUAkrApCAo7eRGxIiHup54AI9OM5rS8ruYRedKFpUj
+	 zvNvJ1Cn3CO5qL4l2OoOc21sjy2vjI0+wKjq0gFk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C55BFF801EC;
-	Tue, 14 Dec 2021 18:15:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8E981F801EC;
+	Tue, 14 Dec 2021 18:18:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F0FFCF80246; Tue, 14 Dec 2021 18:15:44 +0100 (CET)
-Received: from alexa-out-sd-01.qualcomm.com (alexa-out-sd-01.qualcomm.com
- [199.106.114.38])
- (using TLSv1.2 with cipher AES256-SHA (256/256 bits))
+ id 67969F80246; Tue, 14 Dec 2021 18:18:30 +0100 (CET)
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com
+ [IPv6:2a00:1450:4864:20::52b])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5AEE2F8016A
- for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2021 18:15:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5AEE2F8016A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2D34EF800FE
+ for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2021 18:18:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2D34EF800FE
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=quicinc.com header.i=@quicinc.com
- header.b="i8FI4tVu"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
- t=1639502139; x=1671038139;
- h=subject:to:cc:references:from:message-id:date:
- mime-version:in-reply-to:content-transfer-encoding;
- bh=V3ZUoQpiArCEzg9uDWxQEPmkSZnIQmzZmlxrBFeYcTE=;
- b=i8FI4tVuPsOpHdmvPgKd9vtgonDrVoqAjzho3h06Cn3wmQr7Yc99HX9W
- c65V17mCWQR78pEEynidhM0Lp1dWP/HwQnGx3Dlhb66pyrFwqA+qPiTc1
- I/T41VDGaLl6NohAQSPaTuodvTXFTl7tIOOQb+F4STLUNpBfbh6Ba68wa c=;
-Received: from unknown (HELO ironmsg02-sd.qualcomm.com) ([10.53.140.142])
- by alexa-out-sd-01.qualcomm.com with ESMTP; 14 Dec 2021 09:15:34 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
- by ironmsg02-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Dec 2021 09:15:33 -0800
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Tue, 14 Dec 2021 09:15:33 -0800
-Received: from [10.216.27.180] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Tue, 14 Dec
- 2021 09:15:26 -0800
-Subject: Re: [PATCH v5 3/5] pinctrl: qcom: Extract chip specific LPASS LPI code
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="E/0G7D28"
+Received: by mail-ed1-x52b.google.com with SMTP id z7so4376236edc.11
+ for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2021 09:18:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=n4k5xaxFhaWmmMpFWuwoV5BzpXXgW4I+HqRbm5rb7jQ=;
+ b=E/0G7D28L5ngV0FeoItTWxWCu93mlXAxXRQGbhVuVR/4XZx1fRJ30udAun2qn4uj5G
+ x+WdA2mCOnVS9EBKt3++NrkzRMRzd1225YRW0PXZuPOX/hyWYE3vt4VZPBZHAALjIoLl
+ 3qjAFrCGDteLu5JFgajrUCBMaZsMiOI4N6WlGy12nTIlbmZmp14zXehZA7xnZyYTG16T
+ uF/IDmhPRBcENwdV7m8w6edfxhjEqYoDmo8VbI/v+WvFtPdW7GtUbevbwomTgfHUdDpG
+ dXY6LzDz4Ap5dlYCrL4K49eRnqBqBBq0osDjRwUPt+EZIRVkG0MvSFQLqoboygwLvfXl
+ 0q2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=n4k5xaxFhaWmmMpFWuwoV5BzpXXgW4I+HqRbm5rb7jQ=;
+ b=b/iiwSRzeWLH2dbrCvr1nB9hFrM/blOnpFRqYvuh8Dy9r9NIn44YqQOJzClvfwwILq
+ tEGulVoAAKIFIJSDQ5U0UYrzoH6lyExYROMsHERuUntb67B0e+6m8mG5xBxOoPMd5X6i
+ zCkIlBTsKE/GRcJTNuY7UucUC0guPGA4Zmzvxjwfx2pUQxmLTr7jEqmmcdCsFSmyYMlk
+ ugIN4Q2psVj9L/cbBbPaIaZ/Lsqvadjht6tnvMn2GU/E/XGiwwTPN+6MioHtwJ8C/8bl
+ A4JvjsBYMpbhAfrrfoRqe5GF8yrX3AQaoxTovlTas7MFCxdco5TIHzqofM+C8YqGOmcS
+ 7Srw==
+X-Gm-Message-State: AOAM531op/fDdWaZDy3yxdWH593dXKUtGq5ylxQIf0J9zKyRyu+hpdiT
+ XOt6QSmddgrhFnUPmw892irFLx+wzjWlwtUnixg=
+X-Google-Smtp-Source: ABdhPJzvpULuko8jJTmI6gtokS4SL3ehpvJGK6X1x3V2r6BF2DkuActxc/xuzD9om2ud1n0bwycObZY3BBBvqdpIxMI=
+X-Received: by 2002:a17:906:af1a:: with SMTP id
+ lx26mr7201191ejb.44.1639502300844; 
+ Tue, 14 Dec 2021 09:18:20 -0800 (PST)
+MIME-Version: 1.0
 References: <1638891339-21806-1-git-send-email-quic_srivasam@quicinc.com>
  <1638891339-21806-4-git-send-email-quic_srivasam@quicinc.com>
  <CAHp75Vd=47Tv9Sf+styPhxS2=O1H2KUDeKQXTULUYU5fDgGwwA@mail.gmail.com>
-From: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
-Organization: Qualcomm
-Message-ID: <0f6621e5-f014-27c9-be8b-6c32ab994304@quicinc.com>
-Date: Tue, 14 Dec 2021 22:45:23 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <CAHp75Vd=47Tv9Sf+styPhxS2=O1H2KUDeKQXTULUYU5fDgGwwA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+ <0f6621e5-f014-27c9-be8b-6c32ab994304@quicinc.com>
+In-Reply-To: <0f6621e5-f014-27c9-be8b-6c32ab994304@quicinc.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Tue, 14 Dec 2021 19:16:50 +0200
+Message-ID: <CAHp75VdL3hmr23CcJLDpvbHaKv5HrDZjmVQpCnRNmPM7nEx6WQ@mail.gmail.com>
+Subject: Re: [PATCH v5 3/5] pinctrl: qcom: Extract chip specific LPASS LPI code
+To: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
 Cc: devicetree <devicetree@vger.kernel.org>,
  ALSA Development Mailing List <alsa-devel@alsa-project.org>,
  Banajit Goswami <bgoswami@codeaurora.org>,
@@ -107,64 +105,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Tue, Dec 14, 2021 at 7:15 PM Srinivasa Rao Mandadapu
+<quic_srivasam@quicinc.com> wrote:
+> On 12/8/2021 11:58 AM, Andy Shevchenko wrote:
 
-On 12/8/2021 11:58 AM, Andy Shevchenko wrote:
-Thanks for your time Andy!!!
-> On Wed, Dec 8, 2021 at 2:39 AM Srinivasa Rao Mandadapu
-> <quic_srivasam@quicinc.com> wrote:
->> Extract the chip specific SM8250 data from the LPASS LPI pinctrl driver
->> to allow reusing the common code in the addition of subsequent
->> platforms.
-> ...
->
->> @@ -661,8 +454,10 @@ static int lpi_pinctrl_probe(struct platform_device *pdev)
->>
->>          return ret;
->>   }
->> +EXPORT_SYMBOL(lpi_pinctrl_probe);
->> +
-> Stray change.
->
-> ...
+...
 
-okay. will remove it.
+> >> +#define NO_SLEW                                -1
+> > Naming sucks for the header.
+> >
+> > LPI_NO_SLEW ?
+>
+> Actually it's already mainline code. Just these patches are
+> rearrangement of old code.
+>
+> still do you suggest to change?
 
->
->> +#ifndef __PINCTRL_LPASS_LPI_H__
->> +#define __PINCTRL_LPASS_LPI_H__
-> Missed headers.
-> At least bits.h.
->
-> ...
-Okay. will add.
->> +#define NO_SLEW                                -1
-> Naming sucks for the header.
->
-> LPI_NO_SLEW ?
+I would, but this means it should be in a separate change.
 
-Actually it's already mainline code. Just these patches are 
-rearrangement of old code.
+...
 
-still do you suggest to change?
+> >> +struct lpi_pingroup {
+> >> +       const char *name;
+> >> +       const unsigned int *pins;
+> >> +       unsigned int npins;
+> >> +       unsigned int pin;
+> >> +       /* Bit offset in slew register for SoundWire pins only */
+> >> +       int slew_offset;
+> >> +       unsigned int *funcs;
+> >> +       unsigned int nfuncs;
+> >> +};
+> > Are you going to convert this to use struct group_desc?
 
->
-> ...
->
->> +struct lpi_pingroup {
->> +       const char *name;
->> +       const unsigned int *pins;
->> +       unsigned int npins;
->> +       unsigned int pin;
->> +       /* Bit offset in slew register for SoundWire pins only */
->> +       int slew_offset;
->> +       unsigned int *funcs;
->> +       unsigned int nfuncs;
->> +};
-> Are you going to convert this to use struct group_desc?
->
-> ...
->
->> +       LPI_MUX__,
-> Strange naming. Besides, if it is the terminator, drop the comma.
-okay will remove comma. but name is from existing code.
->
+Any comments on this? It sounds like further improvements.
+
+-- 
+With Best Regards,
+Andy Shevchenko
