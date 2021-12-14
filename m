@@ -4,71 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48F4EC433FE
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Dec 2021 13:26:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64CD7C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Dec 2021 13:27:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 469741AC3;
-	Tue, 14 Dec 2021 14:26:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 469741AC3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 935071AD1;
+	Tue, 14 Dec 2021 14:26:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 935071AD1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639488416;
-	bh=+FyMOj1y47J0jKkiU7/fNkq+8RT+GijdYH8HXwKy9UM=;
+	s=default; t=1639488437;
+	bh=C1uJktXTIMr7sT2GFRLDAAL2YnFQrtakUNIPjjHazus=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=a6Qst1wZhdj6O8esE92TF7iVvvObn1c08CiX8WDn406ZdDkDvmr5EEqRaUgDdl7C+
-	 LdxE3dVDp3DoAu4Gd8lPIBzyW1OGwLI7Zr6NNzJFHRQu2piuwyKeZ01GSX+sk6d2Gr
-	 MSocadK6pSNVy7h/Y1nFBUKgnbZa8rXSKOvx67l4=
+	b=ow/TJhq2LtBcQ8opi1DZVIz1+vkwWxIyequ6EztIFDCnNWvWUnL4wEGVKIappMGVY
+	 toR7PFjO+hSWNmQcKzN1twjjQ+XTshWUj5LdixBqX7agh7Vkr259Ub8S5oQ4360wqT
+	 cbcd871j6p0QH7nRZ0XRbXlNt/M6STcd1H0v7X/M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E43F5F801EC;
-	Tue, 14 Dec 2021 14:25:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C77F0F804F2;
+	Tue, 14 Dec 2021 14:25:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AF344F80475; Tue, 14 Dec 2021 14:25:36 +0100 (CET)
+ id 385B7F80271; Tue, 14 Dec 2021 14:25:37 +0100 (CET)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ED989F80246
- for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2021 14:25:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED989F80246
+ by alsa1.perex.cz (Postfix) with ESMTPS id B9735F8016A
+ for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2021 14:25:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9735F8016A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="K3hKjq/U"
+ header.b="pBayhBOI"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 52D3B614F3;
- Tue, 14 Dec 2021 13:25:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35CA2C34605;
- Tue, 14 Dec 2021 13:25:30 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id BA233614E3;
+ Tue, 14 Dec 2021 13:25:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10650C34605;
+ Tue, 14 Dec 2021 13:25:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1639488332;
- bh=+FyMOj1y47J0jKkiU7/fNkq+8RT+GijdYH8HXwKy9UM=;
+ s=k20201202; t=1639488327;
+ bh=C1uJktXTIMr7sT2GFRLDAAL2YnFQrtakUNIPjjHazus=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=K3hKjq/Upt25FBJ1BBPN71lKZHUzxMW0Bev6LE+t+EG5KTwVqghwvEGBNBAkFF6fu
- aCMPYWhrpje5mTlIkIAmzVIrF9sf9it3U93yklsiUiPjY0bp4NWTcruukG1QluXtk5
- oE4wJcA5wvcxnKADPHis9WBgJH9B8+tT0e2NqiR0H+o9ycsXDiEsRmfemwtKog49uZ
- u/KQTIhumt8czyKtdsKzBKr/VFXXsS40vepyYSC6CffeziPmW628Sh6BWd5Q26OgYG
- ETeqJATzGFnBJMlV+E2UvFWVEUKCVoQPmTVDMUbEKz/qfTfYK9JLRDX463/DUSVSrF
- r1pAREIfnrQ8w==
+ b=pBayhBOI91scR4orTqi8lR9XS5GYX9pBvTo9urfTJAaIPYF3hkmUt2d5VVrmSz9X0
+ V4lJohLQjkfw7Zj0jlYRtotFOahoesgLNJhiozUm6YZJMJdv41mUV7gWqSs0Jy9oTK
+ jTDv3J2C4csu8xxImqbkCadkQAql+EXOBV+rvvUV+P+LN4NYz4xEpJ0SVCLjWzJ0si
+ Y7oh4ILao5VkdyVj+XYV1ISd6c3qjjb02nyWYi2T/jnvKSZ3BVguGAW7Hp+/l6slwu
+ qipepkPv3OTBCL/+aQZRFH50jukBBotgzjsAQJJBO0uJ67zsTIu3+KSdHYXENYJG3i
+ kKLbZqFUS4gog==
 From: Mark Brown <broonie@kernel.org>
-To: Stephan Gerhold <stephan@gerhold.net>
-In-Reply-To: <20211202145505.58852-1-stephan@gerhold.net>
-References: <20211202145505.58852-1-stephan@gerhold.net>
-Subject: Re: [PATCH 0/5] ASoC: qcom: apq8016_sbc: Allow routing audio through
- QDSP6
-Message-Id: <163948832993.2865729.5795229789612585528.b4-ty@kernel.org>
-Date: Tue, 14 Dec 2021 13:25:29 +0000
+To: Daniel Baluta <daniel.baluta@oss.nxp.com>
+In-Reply-To: <20211209200830.145005-1-daniel.baluta@oss.nxp.com>
+References: <20211209200830.145005-1-daniel.baluta@oss.nxp.com>
+Subject: Re: [PATCH v2] ASoC: SOF: Remove pm_runtime_put_autosuspend() for SOF
+ OF device
+Message-Id: <163948832478.2865729.8112402279770630792.b4-ty@kernel.org>
+Date: Tue, 14 Dec 2021 13:25:24 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Banajit Goswami <bgoswami@codeaurora.org>, linux-arm-msm@vger.kernel.org,
- Liam Girdwood <lgirdwood@gmail.com>,
- Bjorn Andersson <bjorn.andersson@linaro.org>, Rob Herring <robh+dt@kernel.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- ~postmarketos/upstreaming@lists.sr.ht
+Cc: alsa-devel@alsa-project.org, Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>,
+ kai.vehmanen@linux.intel.com, lgirdwood@gmail.com,
+ linux-kernel@vger.kernel.org, pierre-louis.bossart@linux.intel.com,
+ ranjani.sridharan@linux.intel.com, linux-mediatek@lists.infradead.org,
+ Paul Olaru <paul.olaru@oss.nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,15 +83,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 2 Dec 2021 15:55:00 +0100, Stephan Gerhold wrote:
-> This series makes it possible to route audio through the combined
-> audio/modem DSP on MSM8916/APQ8016 devices instead of bypassing it using
-> the LPASS drivers. This is necessary to support certain functionality such
-> as voice call audio. See PATCH 4/5 for details.
+On Thu, 9 Dec 2021 22:08:30 +0200, Daniel Baluta wrote:
+> From: Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
 > 
-> Also, qcom,apq8016-sbc.txt is converted to DT schema by adding it to the
-> existing qcom,sm8250.yaml. The bindings are similar enough that it is easier
-> to share a single schema instead of duplicating everything into multiple ones.
+> In SOF OF device, pm_runtime_put_autosuspend() is not
+> matching any pm_runtime_get_sync().
+> 
+> This is imbalanced for PM runtime.
 > 
 > [...]
 
@@ -102,16 +99,8 @@ Applied to
 
 Thanks!
 
-[1/5] ASoC: dt-bindings: qcom: sm8250: Drop redundant MultiMedia routes
-      commit: c55676ec292e0ff83261eb61efaf99a91079a3b8
-[2/5] ASoC: dt-bindings: qcom: sm8250: Document "aux-devs"
-      commit: 1875ae76f82c5c9acd7b7f44bd9226fbcbe858b7
-[3/5] ASoC: dt-bindings: qcom: apq8016-sbc: Move to qcom,sm8250 DT schema
-      commit: b7875d88bf70100d2fe0dc08072018f994ccd6c4
-[4/5] ASoC: dt-bindings: qcom: Document qcom,msm8916-qdsp6-sndcard compatible
-      commit: 38192dc36f1fe1615b7a12cc78b9354d6b4ba8b7
-[5/5] ASoC: qcom: apq8016_sbc: Allow routing audio through QDSP6
-      commit: 190357e1e09f271566e91fcd108c161f7e25a253
+[1/1] ASoC: SOF: Remove pm_runtime_put_autosuspend() for SOF OF device
+      commit: 475b17b4a875ef31246c6a038ee60d5ca4982ea5
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
