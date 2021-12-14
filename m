@@ -4,105 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 252F3C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Dec 2021 13:57:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4CC7C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Dec 2021 14:01:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1AB0E1B10;
-	Tue, 14 Dec 2021 14:56:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1AB0E1B10
+	by alsa0.perex.cz (Postfix) with ESMTPS id C3C031751;
+	Tue, 14 Dec 2021 15:00:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3C031751
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639490237;
-	bh=eY4KUO+BRiYsSOgCC6o6HI0HW4s1ZhxI6a+HgNZzO6Y=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1639490463;
+	bh=C2PULqmr2LhYXOTyVzKx9xeOKW8rFR3AOhv7IKfD588=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kRUbzS2Kp+lMDr2R2LOuaJO8yF1s71Mqs8UiE26K/rzIjga8xXrUeXEhiy80lyG08
-	 rQBHJoqavsyejHaOimrUakwYVKNuwz80vaYBQj1lVe+DT93nhUKoSnXp+quaGOXwsn
-	 LiTFeVijvpB8wmJEz86x7nydvpemOoaWbuGsgm7w=
+	b=vR0cVcoHx/SJwNjgd2SNLgBjzNaSFyWS4wwf9jB6qqRKicRaqU0T7X2/iqt1MHDSM
+	 FRlQDDaBBb/4jrIGHPkSKe/o0+S+di8VYmd6G+OnujRMIuxke7/qIPuAxMwQRPn3QN
+	 OKohy/qo1jcpHkxWQ6RZybJnIr5NS03YyYe+mQ3M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B00E1F801EC;
-	Tue, 14 Dec 2021 14:56:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 44EF4F80271;
+	Tue, 14 Dec 2021 15:00:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 76921F80246; Tue, 14 Dec 2021 14:56:25 +0100 (CET)
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com
- [IPv6:2a00:1450:4864:20::12a])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id EEB7CF804F2; Tue, 14 Dec 2021 15:00:11 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E5F5DF8013C
- for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2021 14:56:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5F5DF8013C
+ by alsa1.perex.cz (Postfix) with ESMTPS id D3A7CF8016A
+ for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2021 15:00:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3A7CF8016A
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="PCN+/1TX"
-Received: by mail-lf1-x12a.google.com with SMTP id d10so36961371lfg.6
- for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2021 05:56:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=Ov1iHx+DbaxD+iHI0Gl52GMo9SpDpJ2lnEERZMJTQc0=;
- b=PCN+/1TXNrEnIWgXa9Ms5J/9ctNNSoMaK3CgAZuUEkyNZ5ljmYFglFOkxA7CRow2PB
- +diaiwIvMw9UeUujxgonngIcbHvXYo0BVP0KWlk0gtfON9lMcEXPXUVMrYFXDi7v21xN
- zer5d5ICKk58mX8MqKAwK4ff0FZCqFTrp/SdMMOYi8tBUzeqg7X72Y05OIf3gfqTswBo
- wILCCniRxptpP9q+n2Oqg0VRg1xUyLOhSV+2Qj7HerA8u+uZO4ptYAjYLQb6vQseLUVd
- iCCoI0sXF32rAhNJDFu7p9FqQxg/9GsXrJ1uuzm4E0NzFSaA887IVXBUoAWvfSRMyTvv
- UQFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=Ov1iHx+DbaxD+iHI0Gl52GMo9SpDpJ2lnEERZMJTQc0=;
- b=qSqFQoH4QlMrJLFPXWQWsi6GMnUe15Y0jqDaGpIjwv2ncpCb6t7UBsGFOeHq9rwT2s
- qEOE8BzkGq3dHrFbeAOJ8/WbW06VIsMiyQf7FPSHgEA80xKXxHYb2hmWJwo/M+2l9IAL
- D52BTOGqkfYiVY/GPAQ1EuFGaewwHzBX+dZ/74Mv4FcJNRxeZlJ0muKtllwnL5c5XB4d
- PdAMtLvJxYH7+mtT40kwus82wpaD0j7YucaocBeiF6O7zf2HewTJ4rGRkt2zRXwDtwn3
- SUAsDZnttFKD6YsKMa4TdaKsmjTcLzL+Q6WHbKXVBYbsX9yru5QcuxBfoTYwnB7/1SnT
- x7NA==
-X-Gm-Message-State: AOAM532IvXQ+NbdTTzonz+20scwv1i38lPwn3V0iaVAyBVZudZwZW35T
- KSCj9Q0IOHV9e54ELTquGk4=
-X-Google-Smtp-Source: ABdhPJzir6qiHtR9sVJHfjCLkS//nrIH5PQaLZq8UcVv5KSRk4JLkxpk1YKgGvYjCBPB6t11uHsAqA==
-X-Received: by 2002:ac2:5615:: with SMTP id v21mr5340562lfd.112.1639490174001; 
- Tue, 14 Dec 2021 05:56:14 -0800 (PST)
-Received: from [192.168.2.145] (94-29-63-156.dynamic.spd-mgts.ru.
- [94.29.63.156])
- by smtp.googlemail.com with ESMTPSA id q24sm1838370lfp.103.2021.12.14.05.56.12
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 14 Dec 2021 05:56:13 -0800 (PST)
-Subject: Re: [PATCH 1/3] ALSA: hda/tegra: Skip reset on BPMP devices
-To: Sameer Pujar <spujar@nvidia.com>, tiwai@suse.com, broonie@kernel.org,
- lgirdwood@gmail.com, thierry.reding@gmail.com, perex@perex.cz
-References: <1638858770-22594-1-git-send-email-spujar@nvidia.com>
- <1638858770-22594-2-git-send-email-spujar@nvidia.com>
- <7742adae-cdbe-a9ea-2cef-f63363298d73@gmail.com>
- <8fd704d9-43ce-e34a-a3c0-b48381ef0cd8@nvidia.com>
- <56bb43b6-8d72-b1de-4402-a2cb31707bd9@gmail.com>
- <4855e9c4-e4c2-528b-c9ad-2be7209dc62a@nvidia.com>
- <5d441571-c1c2-5433-729f-86d6396c2853@gmail.com>
- <f32cde65-63dc-67f8-ded8-b58ea5e89f4e@nvidia.com>
- <95cc7efa-251c-690b-9afa-53ee9e052c34@gmail.com>
- <148fba18-5d14-d342-0eb9-4ff224cc58ad@nvidia.com>
- <3b0de739-7866-3886-be9c-a853c746f8b7@gmail.com>
- <73d04377-9898-930b-09db-bb6c4b3eb90a@nvidia.com>
- <ad388f5e-6f60-cf78-8510-87aec8524e33@gmail.com>
- <50bf5a83-051e-8c12-6502-aabd8edd0a72@nvidia.com>
- <7230ad0b-2b04-4f1b-b616-b7d98789ded0@gmail.com>
- <48f891bc-d8f6-2634-6dd1-6ea4f14ae6a3@nvidia.com>
-From: Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <0761f6f2-27f8-4e1a-fabc-9d319f465a9e@gmail.com>
-Date: Tue, 14 Dec 2021 16:56:12 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="HUF9rTT/"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1BE4Ko3k006814;
+ Tue, 14 Dec 2021 08:00:03 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=JwdEvJNSccwPwzdfwacOslSxZt9T4OuG+VPsh+orUNE=;
+ b=HUF9rTT/zOdbVhTt+p4cQEYuOTyTwUwaInU5k7VMaxPABFIcbyLSckvaLRJi+JTh1IzC
+ 6KbCJPPNxQLAepsRwCz0bdMyMW4hihKTPgNfcuPz4q8VsrIP/2daR/QRVW6v3/BSUgzc
+ 89tPUcbaoQGv7Q2jCOOBhX8n8s+j3jhVUh1DO9+jaCdLb3c5xy5HZyjJ701+zQeys7JN
+ HQ0yoUb8Jyi+bEi7ZPzbAmaD7WqnhZVu3KpPFBDa0/r5Le/0D95URVBZvmsAc4Dathyh
+ By5r+PQJE0aQYupP14rbFzshA9hXbu82G9NTIoqdfDkra6Idwr8QXHkrQXPSBlqSXDXJ /Q== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3cxh14grht-2
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Tue, 14 Dec 2021 08:00:03 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Tue, 14 Dec
+ 2021 14:00:01 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.17 via
+ Frontend Transport; Tue, 14 Dec 2021 14:00:01 +0000
+Received: from aryzen.ad.cirrus.com (unknown [198.61.64.39])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 41F09B12;
+ Tue, 14 Dec 2021 14:00:01 +0000 (UTC)
+From: Lucas Tanure <tanureal@opensource.cirrus.com>
+To: "Rafael J . Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
+ Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH v4 02/10] ASoC: cs35l41: Move cs35l41_otp_unpack to shared code
+Date: Tue, 14 Dec 2021 13:59:51 +0000
+Message-ID: <20211214135959.1317949-3-tanureal@opensource.cirrus.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20211214135959.1317949-1-tanureal@opensource.cirrus.com>
+References: <20211214135959.1317949-1-tanureal@opensource.cirrus.com>
 MIME-Version: 1.0
-In-Reply-To: <48f891bc-d8f6-2634-6dd1-6ea4f14ae6a3@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org, jonathanh@nvidia.com,
- robh+dt@kernel.org, linux-tegra@vger.kernel.org,
- Mohan Kumar <mkumard@nvidia.com>
+Content-Type: text/plain
+X-Proofpoint-GUID: O1AZfcBVVIYM8LNb-F3KBNnZAsq8A3Cz
+X-Proofpoint-ORIG-GUID: O1AZfcBVVIYM8LNb-F3KBNnZAsq8A3Cz
+X-Proofpoint-Spam-Reason: safe
+Cc: alsa-devel@alsa-project.org, Lucas Tanure <tanureal@opensource.cirrus.com>,
+ patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+ platform-driver-x86@vger.kernel.org, linux-acpi@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -118,54 +98,344 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-14.12.2021 10:22, Sameer Pujar пишет:
-...
->>> How the reset behavior is different? At this point when HDA driver is
->>> loaded the HW is already reset during display ungate. What matters,
->>> during HDA driver load, is whether the HW is in predictable state or not
->>> and the answer is yes. So I am not sure what problem you are referring
->>> to. Question is, if BPMP already ensures this, then why driver needs to
->>> take care of it.
->> 1. Enable display
->> 2. Play audio over HDMI
-> 
->> 3. HDA hardware now is in dirty state
-> 
-> Why this would be a dirty state? It is rather a functional state. Isn't
-> it? Power-domain is ON while all this happens.
+ASoC and HDA will do the same cs35l41_otp_unpack, so move it
+to shared code
 
-In general state should be a functional, but we shouldn't assume that.
-There is always a possibility for a subtle bug in a driver that may put
-h/w into a bad state. Full hardware reset is encouraged by users.
+Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
+---
+ include/sound/cs35l41.h        |   4 +-
+ sound/soc/codecs/cs35l41-lib.c | 121 ++++++++++++++++++++++++++++++-
+ sound/soc/codecs/cs35l41.c     | 125 +--------------------------------
+ 3 files changed, 122 insertions(+), 128 deletions(-)
 
-> Another point is, with present logic the reset is not applied for every
-> runtime PM resume of HDA device, which is confusing. It depends on the
-> state of 'chip->running' flag and I don't see this getting cleared
-> anywhere. Would you say subsequent HDA playback happen under a dirty state?
+diff --git a/include/sound/cs35l41.h b/include/sound/cs35l41.h
+index aac3ffb9bc89..6cf3ef02b26a 100644
+--- a/include/sound/cs35l41.h
++++ b/include/sound/cs35l41.h
+@@ -534,7 +534,6 @@
+ #define CS35L41_MAX_CACHE_REG		36
+ #define CS35L41_OTP_SIZE_WORDS		32
+ #define CS35L41_NUM_OTP_ELEM		100
+-#define CS35L41_NUM_OTP_MAPS		5
+ 
+ #define CS35L41_VALID_PDATA		0x80000000
+ #define CS35L41_NUM_SUPPLIES            2
+@@ -760,8 +759,9 @@ struct cs35l41_otp_map_element_t {
+ 	u32 word_offset;
+ };
+ 
+-extern const struct cs35l41_otp_map_element_t cs35l41_otp_map_map[CS35L41_NUM_OTP_MAPS];
+ extern struct regmap_config cs35l41_regmap_i2c;
+ extern struct regmap_config cs35l41_regmap_spi;
+ 
++int cs35l41_otp_unpack(struct device *dev, struct regmap *regmap);
++
+ #endif /* __CS35L41_H */
+diff --git a/sound/soc/codecs/cs35l41-lib.c b/sound/soc/codecs/cs35l41-lib.c
+index f19531ebf729..dc5f502447a2 100644
+--- a/sound/soc/codecs/cs35l41-lib.c
++++ b/sound/soc/codecs/cs35l41-lib.c
+@@ -7,8 +7,11 @@
+ // Author: David Rhodes <david.rhodes@cirrus.com>
+ // Author: Lucas Tanure <lucas.tanure@cirrus.com>
+ 
++#include <linux/dev_printk.h>
+ #include <linux/module.h>
+ #include <linux/regmap.h>
++#include <linux/regulator/consumer.h>
++#include <linux/slab.h>
+ 
+ #include <sound/cs35l41.h>
+ 
+@@ -655,7 +658,7 @@ static const struct cs35l41_otp_packed_element_t otp_map_2[CS35L41_NUM_OTP_ELEM]
+ 	{ 0x00017044,	0,	24 }, /*LOT_NUMBER*/
+ };
+ 
+-const struct cs35l41_otp_map_element_t cs35l41_otp_map_map[CS35L41_NUM_OTP_MAPS] = {
++static const struct cs35l41_otp_map_element_t cs35l41_otp_map_map[] = {
+ 	{
+ 		.id = 0x01,
+ 		.map = otp_map_1,
+@@ -692,7 +695,6 @@ const struct cs35l41_otp_map_element_t cs35l41_otp_map_map[CS35L41_NUM_OTP_MAPS]
+ 		.word_offset = 2,
+ 	},
+ };
+-EXPORT_SYMBOL_GPL(cs35l41_otp_map_map);
+ 
+ struct regmap_config cs35l41_regmap_i2c = {
+ 	.reg_bits = 32,
+@@ -727,6 +729,121 @@ struct regmap_config cs35l41_regmap_spi = {
+ };
+ EXPORT_SYMBOL_GPL(cs35l41_regmap_spi);
+ 
++static const struct cs35l41_otp_map_element_t *cs35l41_find_otp_map(u32 otp_id)
++{
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(cs35l41_otp_map_map); i++) {
++		if (cs35l41_otp_map_map[i].id == otp_id)
++			return &cs35l41_otp_map_map[i];
++	}
++
++	return NULL;
++}
++
++int cs35l41_otp_unpack(struct device *dev, struct regmap *regmap)
++{
++	const struct cs35l41_otp_map_element_t *otp_map_match;
++	const struct cs35l41_otp_packed_element_t *otp_map;
++	int bit_offset, word_offset, ret, i;
++	unsigned int bit_sum = 8;
++	u32 otp_val, otp_id_reg;
++	u32 *otp_mem;
++
++	otp_mem = kmalloc_array(CS35L41_OTP_SIZE_WORDS, sizeof(*otp_mem), GFP_KERNEL);
++	if (!otp_mem)
++		return -ENOMEM;
++
++	ret = regmap_read(regmap, CS35L41_OTPID, &otp_id_reg);
++	if (ret) {
++		dev_err(dev, "Read OTP ID failed: %d\n", ret);
++		goto err_otp_unpack;
++	}
++
++	otp_map_match = cs35l41_find_otp_map(otp_id_reg);
++
++	if (!otp_map_match) {
++		dev_err(dev, "OTP Map matching ID %d not found\n", otp_id_reg);
++		ret = -EINVAL;
++		goto err_otp_unpack;
++	}
++
++	ret = regmap_bulk_read(regmap, CS35L41_OTP_MEM0, otp_mem, CS35L41_OTP_SIZE_WORDS);
++	if (ret) {
++		dev_err(dev, "Read OTP Mem failed: %d\n", ret);
++		goto err_otp_unpack;
++	}
++
++	otp_map = otp_map_match->map;
++
++	bit_offset = otp_map_match->bit_offset;
++	word_offset = otp_map_match->word_offset;
++
++	ret = regmap_write(regmap, CS35L41_TEST_KEY_CTL, 0x00000055);
++	if (ret) {
++		dev_err(dev, "Write Unlock key failed 1/2: %d\n", ret);
++		goto err_otp_unpack;
++	}
++	ret = regmap_write(regmap, CS35L41_TEST_KEY_CTL, 0x000000AA);
++	if (ret) {
++		dev_err(dev, "Write Unlock key failed 2/2: %d\n", ret);
++		goto err_otp_unpack;
++	}
++
++	for (i = 0; i < otp_map_match->num_elements; i++) {
++		dev_dbg(dev, "bitoffset= %d, word_offset=%d, bit_sum mod 32=%d\n",
++			bit_offset, word_offset, bit_sum % 32);
++		if (bit_offset + otp_map[i].size - 1 >= 32) {
++			otp_val = (otp_mem[word_offset] &
++					GENMASK(31, bit_offset)) >> bit_offset;
++			otp_val |= (otp_mem[++word_offset] &
++					GENMASK(bit_offset + otp_map[i].size - 33, 0)) <<
++					(32 - bit_offset);
++			bit_offset += otp_map[i].size - 32;
++		} else {
++			otp_val = (otp_mem[word_offset] &
++				   GENMASK(bit_offset + otp_map[i].size - 1, bit_offset)
++				  ) >> bit_offset;
++			bit_offset += otp_map[i].size;
++		}
++		bit_sum += otp_map[i].size;
++
++		if (bit_offset == 32) {
++			bit_offset = 0;
++			word_offset++;
++		}
++
++		if (otp_map[i].reg != 0) {
++			ret = regmap_update_bits(regmap, otp_map[i].reg,
++						 GENMASK(otp_map[i].shift + otp_map[i].size - 1,
++							 otp_map[i].shift),
++						 otp_val << otp_map[i].shift);
++			if (ret < 0) {
++				dev_err(dev, "Write OTP val failed: %d\n", ret);
++				goto err_otp_unpack;
++			}
++		}
++	}
++
++	ret = regmap_write(regmap, CS35L41_TEST_KEY_CTL, 0x000000CC);
++	if (ret) {
++		dev_err(dev, "Write Lock key failed 1/2: %d\n", ret);
++		goto err_otp_unpack;
++	}
++	ret = regmap_write(regmap, CS35L41_TEST_KEY_CTL, 0x00000033);
++	if (ret) {
++		dev_err(dev, "Write Lock key failed 2/2: %d\n", ret);
++		goto err_otp_unpack;
++	}
++	ret = 0;
++
++err_otp_unpack:
++	kfree(otp_mem);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(cs35l41_otp_unpack);
++
+ MODULE_DESCRIPTION("CS35L41 library");
+ MODULE_AUTHOR("David Rhodes, Cirrus Logic Inc, <david.rhodes@cirrus.com>");
+ MODULE_AUTHOR("Lucas Tanure, Cirrus Logic Inc, <tanureal@opensource.cirrus.com>");
+diff --git a/sound/soc/codecs/cs35l41.c b/sound/soc/codecs/cs35l41.c
+index 60332eae1162..aa57c59b334d 100644
+--- a/sound/soc/codecs/cs35l41.c
++++ b/sound/soc/codecs/cs35l41.c
+@@ -14,7 +14,6 @@
+ #include <linux/moduleparam.h>
+ #include <linux/of_device.h>
+ #include <linux/property.h>
+-#include <linux/slab.h>
+ #include <sound/initval.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+@@ -420,128 +419,6 @@ static const struct snd_kcontrol_new cs35l41_aud_controls[] = {
+ 	WM_ADSP_FW_CONTROL("DSP1", 0),
+ };
+ 
+-static const struct cs35l41_otp_map_element_t *cs35l41_find_otp_map(u32 otp_id)
+-{
+-	int i;
+-
+-	for (i = 0; i < ARRAY_SIZE(cs35l41_otp_map_map); i++) {
+-		if (cs35l41_otp_map_map[i].id == otp_id)
+-			return &cs35l41_otp_map_map[i];
+-	}
+-
+-	return NULL;
+-}
+-
+-static int cs35l41_otp_unpack(void *data)
+-{
+-	const struct cs35l41_otp_map_element_t *otp_map_match;
+-	const struct cs35l41_otp_packed_element_t *otp_map;
+-	struct cs35l41_private *cs35l41 = data;
+-	int bit_offset, word_offset, ret, i;
+-	unsigned int bit_sum = 8;
+-	u32 otp_val, otp_id_reg;
+-	u32 *otp_mem;
+-
+-	otp_mem = kmalloc_array(CS35L41_OTP_SIZE_WORDS, sizeof(*otp_mem), GFP_KERNEL);
+-	if (!otp_mem)
+-		return -ENOMEM;
+-
+-	ret = regmap_read(cs35l41->regmap, CS35L41_OTPID, &otp_id_reg);
+-	if (ret < 0) {
+-		dev_err(cs35l41->dev, "Read OTP ID failed: %d\n", ret);
+-		goto err_otp_unpack;
+-	}
+-
+-	otp_map_match = cs35l41_find_otp_map(otp_id_reg);
+-
+-	if (!otp_map_match) {
+-		dev_err(cs35l41->dev, "OTP Map matching ID %d not found\n",
+-			otp_id_reg);
+-		ret = -EINVAL;
+-		goto err_otp_unpack;
+-	}
+-
+-	ret = regmap_bulk_read(cs35l41->regmap, CS35L41_OTP_MEM0, otp_mem,
+-			       CS35L41_OTP_SIZE_WORDS);
+-	if (ret < 0) {
+-		dev_err(cs35l41->dev, "Read OTP Mem failed: %d\n", ret);
+-		goto err_otp_unpack;
+-	}
+-
+-	otp_map = otp_map_match->map;
+-
+-	bit_offset = otp_map_match->bit_offset;
+-	word_offset = otp_map_match->word_offset;
+-
+-	ret = regmap_write(cs35l41->regmap, CS35L41_TEST_KEY_CTL, 0x00000055);
+-	if (ret < 0) {
+-		dev_err(cs35l41->dev, "Write Unlock key failed 1/2: %d\n", ret);
+-		goto err_otp_unpack;
+-	}
+-	ret = regmap_write(cs35l41->regmap, CS35L41_TEST_KEY_CTL, 0x000000AA);
+-	if (ret < 0) {
+-		dev_err(cs35l41->dev, "Write Unlock key failed 2/2: %d\n", ret);
+-		goto err_otp_unpack;
+-	}
+-
+-	for (i = 0; i < otp_map_match->num_elements; i++) {
+-		dev_dbg(cs35l41->dev,
+-			"bitoffset= %d, word_offset=%d, bit_sum mod 32=%d\n",
+-			bit_offset, word_offset, bit_sum % 32);
+-		if (bit_offset + otp_map[i].size - 1 >= 32) {
+-			otp_val = (otp_mem[word_offset] &
+-					GENMASK(31, bit_offset)) >>
+-					bit_offset;
+-			otp_val |= (otp_mem[++word_offset] &
+-					GENMASK(bit_offset +
+-						otp_map[i].size - 33, 0)) <<
+-					(32 - bit_offset);
+-			bit_offset += otp_map[i].size - 32;
+-		} else {
+-			otp_val = (otp_mem[word_offset] &
+-				GENMASK(bit_offset + otp_map[i].size - 1,
+-					bit_offset)) >>	bit_offset;
+-			bit_offset += otp_map[i].size;
+-		}
+-		bit_sum += otp_map[i].size;
+-
+-		if (bit_offset == 32) {
+-			bit_offset = 0;
+-			word_offset++;
+-		}
+-
+-		if (otp_map[i].reg != 0) {
+-			ret = regmap_update_bits(cs35l41->regmap,
+-						 otp_map[i].reg,
+-						 GENMASK(otp_map[i].shift +
+-							 otp_map[i].size - 1,
+-						 otp_map[i].shift),
+-						 otp_val << otp_map[i].shift);
+-			if (ret < 0) {
+-				dev_err(cs35l41->dev, "Write OTP val failed: %d\n",
+-					ret);
+-				goto err_otp_unpack;
+-			}
+-		}
+-	}
+-
+-	ret = regmap_write(cs35l41->regmap, CS35L41_TEST_KEY_CTL, 0x000000CC);
+-	if (ret < 0) {
+-		dev_err(cs35l41->dev, "Write Lock key failed 1/2: %d\n", ret);
+-		goto err_otp_unpack;
+-	}
+-	ret = regmap_write(cs35l41->regmap, CS35L41_TEST_KEY_CTL, 0x00000033);
+-	if (ret < 0) {
+-		dev_err(cs35l41->dev, "Write Lock key failed 2/2: %d\n", ret);
+-		goto err_otp_unpack;
+-	}
+-	ret = 0;
+-
+-err_otp_unpack:
+-	kfree(otp_mem);
+-	return ret;
+-}
+-
+ static irqreturn_t cs35l41_irq(int irq, void *data)
+ {
+ 	struct cs35l41_private *cs35l41 = data;
+@@ -1667,7 +1544,7 @@ int cs35l41_probe(struct cs35l41_private *cs35l41,
+ 		goto err;
+ 	}
+ 
+-	ret = cs35l41_otp_unpack(cs35l41);
++	ret = cs35l41_otp_unpack(cs35l41->dev, cs35l41->regmap);
+ 	if (ret < 0) {
+ 		dev_err(cs35l41->dev, "OTP Unpack failed: %d\n", ret);
+ 		goto err;
+-- 
+2.34.1
 
-This is a good point. There should be another potential problem in the
-HDA driver for newer SoCs because apparently we don't re-initialize HDA
-controller properly after runtime PM resume.
-
-See hda_tegra_first_init() that is invoked only during driver probe, it
-configures FPCI_DBG_CFG_2 register on T194, which isn't done by
-hda_tegra_init(), and thus, this register may be  in reset state after
-resume from RPM suspend. It should be a bug in the HDA driver that needs
-to be fixed.
-
-On older SoCs: HDA resides in the APB power domain which could be
-disabled only across system suspend/resume. HDA is only clock-gated
-during runtime PM suspend.
-
-On newer SoCs: HDA power state could be lost after RPM suspend/resume,
-depending on the state of display. I'm wondering whether HDMI playback
-works after DPMS on T194+, I assume this case was never tested properly.
-
-It looks like it should be safe to reset HDA on runtime PM resume
-regardless of the chip->running, and thus, we could remove that check
-and reset HDA unconditionally. Will great if you could check/test and
-improve this in the driver.
-
-I'm also wondering whether snd_power_change_state() should be moved into
-RPM callbacks and whether this function does anything practically useful
-on Tegra at all.
