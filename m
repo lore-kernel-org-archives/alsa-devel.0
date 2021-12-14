@@ -4,75 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24E6EC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Dec 2021 02:13:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7482C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Dec 2021 02:13:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 45BEF1ACC;
-	Tue, 14 Dec 2021 03:12:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45BEF1ACC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 095C31ADF;
+	Tue, 14 Dec 2021 03:12:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 095C31ADF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639447997;
-	bh=RHFnF8IKI5qVeoGUapYtoLWvA0kXISOQbg3j6d/NIlQ=;
+	s=default; t=1639448013;
+	bh=x3GpHzJKyLfWmrZWAhIYdN3g2g7IbRADz1p+3n2SizE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MEBqoKfiKcmIULvzQ0q6YFT/awOGmbD04fLSD4L4BPHQtm6jKQ6nPbNHAYVIOU1Nq
-	 IBOCrunD+4oI0Ur3asZjpaLH1VAXv34i+NvH2VIOwBAd2XlUC3o7gjxfJ7mv32Cwb6
-	 YFjTMJYxLpHw8MH47Zk1vNVB6Hv+N7AOrnWf6J6o=
+	b=YaixM17FnRy7vymS4YjEL3K59LLbHQ7fY5oUMNYradx+5Ii7tNO/r3Too0nZexX39
+	 qS3nNO7KB1gjYmULj1eUkaIArfnjhp4BpnbLqYPd5mp+CKiU4XkSdKHyplNa+kKvfx
+	 L9/YPAUzAt9XgS3E9zxBcRA50AkCiQJcUFOMK0GU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 616E1F80553;
-	Tue, 14 Dec 2021 03:09:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 81327F8055B;
+	Tue, 14 Dec 2021 03:09:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4B799F80535; Tue, 14 Dec 2021 03:09:48 +0100 (CET)
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com
- [IPv6:2607:f8b0:4864:20::432])
+ id 83051F80533; Tue, 14 Dec 2021 03:09:48 +0100 (CET)
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com
+ [IPv6:2607:f8b0:4864:20::1032])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BB086F8051E
- for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2021 03:09:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB086F8051E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5F4DDF8051B
+ for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2021 03:09:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F4DDF8051B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="kUrnJpsA"
-Received: by mail-pf1-x432.google.com with SMTP id g18so16576132pfk.5
- for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2021 18:09:37 -0800 (PST)
+ header.b="MUv3GKtO"
+Received: by mail-pj1-x1032.google.com with SMTP id
+ np6-20020a17090b4c4600b001a90b011e06so14852196pjb.5
+ for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2021 18:09:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=0m7+RV35C2IK1AeVqYynJWc44tnirqkkVx+QKmMJDV8=;
- b=kUrnJpsAiuoBev+UuABzlHCAdjnzCL1IMvtmaZ/c9G2I11orsEMFCZQyxBwKPwTdSk
- xRuXBf1h27adBAdD/2X3v/YvwzSxtaBgZn8GiNsaOf/FPonBCZmt9f3DoF5wYR4bBJHF
- u+4uhcTVD1ZwnMUU/pqyJH+Pcd5bs2YQYDiipoqHlNMykZu1GG9aMTVeaFGrhGuprqr2
- 2qXVGrW2hRTG7pBizjsn29UwLgpRnnH/7sXZ+C0pIVF7h9IRff2VFrZwFenDVn/7Aeaw
- VLnPuh7SZ9wOUtRVQGyy/ckHmUZSecpMHiSYgdqeV3AJiv6at1/nZ+wLyMH4ZkhcOAuI
- gyzQ==
+ bh=tfKuPEirzmZovO9zaScDKVcFMWzL838W0ZG9woUWLZQ=;
+ b=MUv3GKtOZNpJN96bc+FA2PI2SpZhbtDDABt0pysYIB5qpsG9CEP7zuEzmkG8zVgYb0
+ QHmWV4GJcXE5zWX5Ae4sEKexBPwZX7VnFrAYbAAivbaAWOGWlGHY81IwAwbTpBQsqtPb
+ JYnJlUmb10tbgyrjhjObBRvcGLYPp9evteySFZTPGfDEtBb8721nSH2aFY96vCjsHGp0
+ vo3OoHJywwy6RAVs8l4H9iVqq4PphyGJcwBpTiwYDqFfEpvtG3HPeRIFd1E70JQe0vcD
+ fdXgiOOPoBgRO9gzSIUOz1582v40m4bC26zbQdjN43VjYSwkwsrAJB3v1+QNJMNgceJ6
+ acAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
  :in-reply-to:references:mime-version:content-transfer-encoding;
- bh=0m7+RV35C2IK1AeVqYynJWc44tnirqkkVx+QKmMJDV8=;
- b=GD3tbXcDYcUdKCpzBHuzlKPUf8Q8FMvGudPFgo613+2ps7W34NMJx0eeFP+LxP18O/
- q3uqSLyXGLr1RKCOoqmEZgw+1cST1MloBqAKaVZ5dMmmaeEUgP0zSFkBhgByBpARqvcz
- ov1yQrOOW70T/MHWZQGiumopcUawju9bYjR4EFk6IY+wr3EbzKUjaVdEYmiNxthrIL+Z
- r7dSHVXuttW1ORJYXvg8eEFmPM/v2BZZl5a+vN57Q/ygd1Vh4FQncTEh8qybV/RvH8lF
- V5mJUyVGgCjfP/jAjVs/IAyvkfMDyy6SiSBBkHapar3nrttdQj7iAH9QwjZv2nc80rcL
- 7ebA==
-X-Gm-Message-State: AOAM533RH/M+FQV8cWjQe/Q4AsBIb8RZUbOSHo6iJh7vgssxlISer7wU
- X5z0PolE3xeIptC4DPrQT+w=
-X-Google-Smtp-Source: ABdhPJyWM9gcNuY05Bd8Kb7EHy4n6XhjBizleCxpM3k61dsmuvW2kjCs05HIjGQXr6AVAaeJJ9hT8g==
-X-Received: by 2002:a63:6c8a:: with SMTP id h132mr1728134pgc.85.1639447773996; 
- Mon, 13 Dec 2021 18:09:33 -0800 (PST)
+ bh=tfKuPEirzmZovO9zaScDKVcFMWzL838W0ZG9woUWLZQ=;
+ b=uNVD/CNoYXhxXubfMT/7X1RjgadS19HVMeBPoD1wMBXLa4zSMdlsc9DFdVXWdgmQAW
+ I3zKUtn2NlRYR4FnJpO1eawCBe1J4tgKkEpMez4KxJBq4+sj2MX4uVgBRN3o/1/M5YYR
+ qebVlN+vwEaV/c4LWwXi/BUQbejD3tc3Rso7othAtYsf/EK7kmMP0kNy2kO0T3ag+ixE
+ gaTI46o+K0ZMdnkns/ai4GWLCb05XKHxgQKLoT3ka157xsGeEUsCfe3kJjQmrnIGq1Qt
+ wUj0DdRU1fEvuGJy4e3xNG2hTgyyd0UFBGJZraMWU2mLL5GCk6FZREHeh/tvgWYWfRdf
+ ibOQ==
+X-Gm-Message-State: AOAM532kSpnoH5ldI1ymPTYRvNdU/ksNdmsnIrwQzJUdz/cQ3u2Vrun1
+ yA8rLsvzxHxeyGzg1L+8lb7XfXuAhWc=
+X-Google-Smtp-Source: ABdhPJx+hA6LEDSxYyg4LcgjuJskm933iXfUKfi1bsyp6N1+rvqUP4Vu7EDIiuoRibmMy14dgF5WAg==
+X-Received: by 2002:a17:902:e5c9:b0:142:53c4:478d with SMTP id
+ u9-20020a170902e5c900b0014253c4478dmr2103918plf.33.1639447779591; 
+ Mon, 13 Dec 2021 18:09:39 -0800 (PST)
 Received: from localhost.localdomain ([126.249.140.249])
- by smtp.gmail.com with ESMTPSA id b2sm14622296pfv.198.2021.12.13.18.09.32
+ by smtp.gmail.com with ESMTPSA id b2sm14622296pfv.198.2021.12.13.18.09.38
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 13 Dec 2021 18:09:33 -0800 (PST)
+ Mon, 13 Dec 2021 18:09:39 -0800 (PST)
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 08/22] ASoC: codecs: simple-mux: Use dev_err_probe() helper
-Date: Tue, 14 Dec 2021 11:08:29 +0900
-Message-Id: <20211214020843.2225831-9-kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH 12/22] ASoC: ti: Use dev_err_probe() helper
+Date: Tue, 14 Dec 2021 11:08:33 +0900
+Message-Id: <20211214020843.2225831-13-kuninori.morimoto.gx@renesas.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211214020843.2225831-1-kuninori.morimoto.gx@renesas.com>
 References: <20211214020843.2225831-1-kuninori.morimoto.gx@renesas.com>
@@ -103,37 +105,52 @@ operation.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/codecs/simple-mux.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ sound/soc/ti/davinci-mcasp.c | 10 +++-------
+ sound/soc/ti/j721e-evm.c     | 10 +++-------
+ 2 files changed, 6 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/codecs/simple-mux.c b/sound/soc/codecs/simple-mux.c
-index e0a09dadfa7c..d30c0d24d90a 100644
---- a/sound/soc/codecs/simple-mux.c
-+++ b/sound/soc/codecs/simple-mux.c
-@@ -82,7 +82,6 @@ static int simple_mux_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
- 	struct simple_mux *priv;
--	int err;
+diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
+index 3e105caac95e..2c146b91fca3 100644
+--- a/sound/soc/ti/davinci-mcasp.c
++++ b/sound/soc/ti/davinci-mcasp.c
+@@ -2024,13 +2024,9 @@ static int davinci_mcasp_get_dma_type(struct davinci_mcasp *mcasp)
  
- 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
- 	if (!priv)
-@@ -91,12 +90,9 @@ static int simple_mux_probe(struct platform_device *pdev)
- 	dev_set_drvdata(dev, priv);
- 
- 	priv->gpiod_mux = devm_gpiod_get(dev, "mux", GPIOD_OUT_LOW);
--	if (IS_ERR(priv->gpiod_mux)) {
--		err = PTR_ERR(priv->gpiod_mux);
--		if (err != -EPROBE_DEFER)
--			dev_err(dev, "Failed to get 'mux' gpio: %d", err);
--		return err;
+ 	tmp = mcasp->dma_data[SNDRV_PCM_STREAM_PLAYBACK].filter_data;
+ 	chan = dma_request_chan(mcasp->dev, tmp);
+-	if (IS_ERR(chan)) {
+-		if (PTR_ERR(chan) != -EPROBE_DEFER)
+-			dev_err(mcasp->dev,
+-				"Can't verify DMA configuration (%ld)\n",
+-				PTR_ERR(chan));
+-		return PTR_ERR(chan);
 -	}
-+	if (IS_ERR(priv->gpiod_mux))
-+		return dev_err_probe(dev, PTR_ERR(priv->gpiod_mux),
-+				     "Failed to get 'mux' gpio");
++	if (IS_ERR(chan))
++		return dev_err_probe(mcasp->dev, PTR_ERR(chan),
++				     "Can't verify DMA configuration\n");
+ 	if (WARN_ON(!chan->device || !chan->device->dev)) {
+ 		dma_release_channel(chan);
+ 		return -EINVAL;
+diff --git a/sound/soc/ti/j721e-evm.c b/sound/soc/ti/j721e-evm.c
+index 9347f982c3e1..4077e15ec48b 100644
+--- a/sound/soc/ti/j721e-evm.c
++++ b/sound/soc/ti/j721e-evm.c
+@@ -464,13 +464,9 @@ static int j721e_get_clocks(struct device *dev,
+ 	int ret;
  
- 	return devm_snd_soc_register_component(dev, &simple_mux_component_driver, NULL, 0);
- }
+ 	clocks->target = devm_clk_get(dev, prefix);
+-	if (IS_ERR(clocks->target)) {
+-		ret = PTR_ERR(clocks->target);
+-		if (ret != -EPROBE_DEFER)
+-			dev_err(dev, "failed to acquire %s: %d\n",
+-				prefix, ret);
+-		return ret;
+-	}
++	if (IS_ERR(clocks->target))
++		return dev_err_probe(dev, PTR_ERR(clocks->target),
++				     "failed to acquire %s\n", prefix);
+ 
+ 	clk_name = kasprintf(GFP_KERNEL, "%s-48000", prefix);
+ 	if (clk_name) {
 -- 
 2.25.1
 
