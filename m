@@ -4,71 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F02DC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Dec 2021 13:27:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2027C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Dec 2021 13:48:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6B0B01A3B;
-	Tue, 14 Dec 2021 14:26:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B0B01A3B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 577091B07;
+	Tue, 14 Dec 2021 14:47:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 577091B07
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639488454;
-	bh=CXlirWpNtiv8wz5K4EzPuevYWM3pXeCBCGuXbnoMg4g=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1639489705;
+	bh=JwhJuFAM42vOdloILusvkHUTcWrMLKPvkc4iARM3qMM=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=po62eEACFsW4/6KYp3oLxo41SnHMgvJe7HQYUfLniQ+zUgTdpm+0DW2PmRC7Ph2D/
-	 +B+dv9CEeaho6ft+yHCgnaDeK2I2mVsY16kVfrvFa9eMvg/RCdkRrasNdm2/NnvvCQ
-	 CoYwp1YaRqY8KmA/55U4oxbHjBAMsN49T6QLcNlU=
+	b=GLBp3l0DeGShFqJZ5ndxMLoQh38oJDFWidstU7G520gpH8H75hmWSEomOyin9HvSB
+	 eInoN//WyXRB29fgljaPcACFxhcLmu1gaa3O7nMoBwxH5CRCqTNz7jkNF3DP+oB07Y
+	 o33VR60qRAHjiwRQdUfoHMNsVZCEliasb8I1sikA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 883F9F80511;
-	Tue, 14 Dec 2021 14:25:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DDF7AF801EC;
+	Tue, 14 Dec 2021 14:47:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2000CF80246; Tue, 14 Dec 2021 14:25:38 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 7F15FF80246; Tue, 14 Dec 2021 14:47:33 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D7519F801EC;
- Tue, 14 Dec 2021 14:25:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7519F801EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 59FFEF8016A
+ for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2021 14:47:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59FFEF8016A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="m0eIIm1l"
+ header.b="apP8Sai+"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 06CAAB817F1;
- Tue, 14 Dec 2021 13:25:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CD7BC34601;
- Tue, 14 Dec 2021 13:25:27 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 636A56142D;
+ Tue, 14 Dec 2021 13:47:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A9BEC34601;
+ Tue, 14 Dec 2021 13:47:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1639488329;
- bh=CXlirWpNtiv8wz5K4EzPuevYWM3pXeCBCGuXbnoMg4g=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=m0eIIm1lOkOQ7SFJ5VEJ7buHuN/A1tRSn/wawPe1l3lOyt4uehRzvT8zXz7KlQIMl
- Q8S/lz4qY6I2NxYzqY3ES7nWfyQi3V2mnpFg82Pzzbx/vSKtyxBf4zPGGhRT5p4OO4
- O2+gPFN4w8gnhm6dQVdXkvsjPsjtbdeBx2AzOwHtv4RblmbPqhI8onVDuV7KQKjtBB
- +oaKVyTQmstzYeawV1vUyGqacxDp7nysczgtQ2gxwi5Ku5rGoV3DOuFeyWWHpWxfgi
- 2mpSXy9pJwylCc+Kuwt9t8NpgzbSJveh8FoNeRNFYwk0hmXleFgVyJxbs83yuQzlXC
- TZIV+as0AG5yg==
+ s=k20201202; t=1639489646;
+ bh=JwhJuFAM42vOdloILusvkHUTcWrMLKPvkc4iARM3qMM=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=apP8Sai+uw6orF0J8Pdag1y0oCVskMkaL82ePR5nwcTtpFgTSnat28j7m9XPP6Dl5
+ BAAs1W8v3gC+5rF0JYAm+G0D83jysqezGg1Zhf6PjGYSvbFOgjacmFR2z2pS04isTd
+ duMRkBNiiS5KBAfQCwKasbWyX/zXaCUD9jyFrjKsumPPVqAJ7uqhU/PwGv16NRl0st
+ yWymDcubn4TM3nojw1l/+RlacNQA9fXBMtXPwueUhtZCAndW9gPnp7LajG+DgygF1a
+ eZ0qT5yMltwpPARDaCHPWdfLqV+eTF8W7bdS9CnT0QKIfOgt5JwAuN6dkXwrjnAno5
+ uu/K+FyqlPmzQ==
+Date: Tue, 14 Dec 2021 13:47:20 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Rikard Falkeborn <rikard.falkeborn@gmail.com>,
- Daniel Baluta <daniel.baluta@nxp.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20211204203220.54712-1-rikard.falkeborn@gmail.com>
-References: <20211204203220.54712-1-rikard.falkeborn@gmail.com>
-Subject: Re: [PATCH] ASoC: SOF: sof-probes: Constify sof_probe_compr_ops
-Message-Id: <163948832737.2865729.1547928501780400598.b4-ty@kernel.org>
-Date: Tue, 14 Dec 2021 13:25:27 +0000
+To: Judy Hsiao <judyhsiao@chromium.org>
+Subject: Re: [v3] SoC: qcom: Distinguish headset codec by codec_dai->name
+Message-ID: <YbigaFWiLzi/4Ljv@sirena.org.uk>
+References: <20211214022509.1288245-1-judyhsiao@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: Takashi Iwai <tiwai@suse.com>, sound-open-firmware@alsa-project.org,
- linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="PMc1jF/EEbgjBUTX"
+Content-Disposition: inline
+In-Reply-To: <20211214022509.1288245-1-judyhsiao@chromium.org>
+X-Cookie: No solicitors.
+Cc: judyhsiao@google.com, Banajit Goswami <bgoswami@codeaurora.org>,
+ cychiang@google.com, alsa-devel@alsa-project.org,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-arm-msm@vger.kernel.org,
+ swboyd@chromium.org, dianders@chromium.org, Takashi Iwai <tiwai@suse.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, yuhsuan@chromium.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,38 +85,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 4 Dec 2021 21:32:20 +0100, Rikard Falkeborn wrote:
-> The only usage of sof_probe_compr_ops is to assign its address to the
-> cops field in the snd_soc_dai_driver struct (in
-> sound/soc/sof/intel/hda-dai.c). Make it const to allow the compiler to
-> put it in read-only memory.
-> 
-> 
 
-Applied to
+--PMc1jF/EEbgjBUTX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On Tue, Dec 14, 2021 at 10:25:09AM +0800, Judy Hsiao wrote:
+> Distinguish which headset codec is on the board by codec_dai->name
+> instead of card->name.
 
-Thanks!
+Please submit patches using subject lines reflecting the style for the
+subsystem, this makes it easier for people to identify relevant patches.
+Look at what existing commits in the area you're changing are doing and
+make sure your subject lines visually resemble what they're doing.
+There's no need to resubmit to fix this alone.
 
-[1/1] ASoC: SOF: sof-probes: Constify sof_probe_compr_ops
-      commit: ec247fea7380244626d7095dfc1a0bb6c1f84f29
+--PMc1jF/EEbgjBUTX
+Content-Type: application/pgp-signature; name="signature.asc"
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+-----BEGIN PGP SIGNATURE-----
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmG4oGgACgkQJNaLcl1U
+h9AkBAf/dut9BUz9jbak9a35YO2OSGoVSscO2+hGoFIOS6RNh6DYvQbq7ldY/A8+
+OBkfvWnBkatZzkcf4yeKwUmCWD/JAMzqiq7JYRF+B+ziNyqCmv28d727fR5uvhAY
+tW+TmcaZnIHZ58vTa5UdrKctv6cbwuZOoT/oFEcFnq2aJ+kKlrJ87cm2QWE4i22V
+yZggCd67+9zFGErXbL1y/9q5Ca3zboCPQhySFUL0QxSWV2tKesT7H+PagX96m33k
+mjN50juAOlpQ990xRNBmUrhahEkJ3sbHauTHUISq7eQhRRF5zszyjdMPB/v+kfWz
+zOc+UmOjPyYI+URxH/5wZZM5IVrVNg==
+=DvSY
+-----END PGP SIGNATURE-----
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+--PMc1jF/EEbgjBUTX--
