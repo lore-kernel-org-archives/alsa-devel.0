@@ -4,69 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2025C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Dec 2021 13:26:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48F4EC433FE
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Dec 2021 13:26:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1A6C61943;
-	Tue, 14 Dec 2021 14:25:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A6C61943
+	by alsa0.perex.cz (Postfix) with ESMTPS id 469741AC3;
+	Tue, 14 Dec 2021 14:26:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 469741AC3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639488386;
-	bh=Kfpg8F/M83/BGQDlYPcnf3fKEKL4vgzfFaEYnWCRd5M=;
+	s=default; t=1639488416;
+	bh=+FyMOj1y47J0jKkiU7/fNkq+8RT+GijdYH8HXwKy9UM=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JPaGWYqLj26+/QSvLonYcrSrZtxBJp2ZU+Q0TfWnMTFkRPkavvA2lCXi5x7cO6bMl
-	 u6VuS2bIxNiwy6mEMjS0QehRq7ZHUjQzrgmvkTAbWnCrODZtBxWunLGb3BDnxUW0Hp
-	 ewOFDRzkitcBuxKFHLmp51MMbwezm3oQa5inxjqs=
+	b=a6Qst1wZhdj6O8esE92TF7iVvvObn1c08CiX8WDn406ZdDkDvmr5EEqRaUgDdl7C+
+	 LdxE3dVDp3DoAu4Gd8lPIBzyW1OGwLI7Zr6NNzJFHRQu2piuwyKeZ01GSX+sk6d2Gr
+	 MSocadK6pSNVy7h/Y1nFBUKgnbZa8rXSKOvx67l4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9C599F80254;
-	Tue, 14 Dec 2021 14:25:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E43F5F801EC;
+	Tue, 14 Dec 2021 14:25:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0C7FCF80249; Tue, 14 Dec 2021 14:25:34 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id AF344F80475; Tue, 14 Dec 2021 14:25:36 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6FAF5F8013C
- for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2021 14:25:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6FAF5F8013C
+ by alsa1.perex.cz (Postfix) with ESMTPS id ED989F80246
+ for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2021 14:25:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED989F80246
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="WxUOtrNo"
+ header.b="K3hKjq/U"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 337156149A;
- Tue, 14 Dec 2021 13:25:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5368C34601;
- Tue, 14 Dec 2021 13:25:22 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 52D3B614F3;
+ Tue, 14 Dec 2021 13:25:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35CA2C34605;
+ Tue, 14 Dec 2021 13:25:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1639488324;
- bh=Kfpg8F/M83/BGQDlYPcnf3fKEKL4vgzfFaEYnWCRd5M=;
+ s=k20201202; t=1639488332;
+ bh=+FyMOj1y47J0jKkiU7/fNkq+8RT+GijdYH8HXwKy9UM=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=WxUOtrNoJsZzUDkAZoEnCQpr8bYiQ7GZi5DCSyW5ApQv+Jk5QJGEkfyhaWJtC9/RC
- 0fbXIU7EaEdQE0YHC0TXJk6+bcyP4xpvzuuL7PPMjqAgiTd97JhGUsoDIf2GziwL8V
- RADhkcRjbvjXYQmQ0+57gxkRRP19kibc2bDQGLeZ9ZzKPE0MYshi12g5WJvZQs2rGp
- o3V8+/Xi0B6/064bZ0FC2JjaOBbC0w0fRuENKuUuVKT44Dw3jvoLli8ESaMJgLbh92
- NXcIH97XXqqQbVZyjZO34RESiOfMfh5H+BGJUIM8SYxMt4Ne87OUH98VXvE9RDOopo
- VjvAEHH8ws6xg==
+ b=K3hKjq/Upt25FBJ1BBPN71lKZHUzxMW0Bev6LE+t+EG5KTwVqghwvEGBNBAkFF6fu
+ aCMPYWhrpje5mTlIkIAmzVIrF9sf9it3U93yklsiUiPjY0bp4NWTcruukG1QluXtk5
+ oE4wJcA5wvcxnKADPHis9WBgJH9B8+tT0e2NqiR0H+o9ycsXDiEsRmfemwtKog49uZ
+ u/KQTIhumt8czyKtdsKzBKr/VFXXsS40vepyYSC6CffeziPmW628Sh6BWd5Q26OgYG
+ ETeqJATzGFnBJMlV+E2UvFWVEUKCVoQPmTVDMUbEKz/qfTfYK9JLRDX463/DUSVSrF
+ r1pAREIfnrQ8w==
 From: Mark Brown <broonie@kernel.org>
-To: linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
- linux-arm-kernel@lists.infradead.org, Jiaxin Yu <jiaxin.yu@mediatek.com>,
- linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-In-Reply-To: <20211209073224.21793-1-jiaxin.yu@mediatek.com>
-References: <20211209073224.21793-1-jiaxin.yu@mediatek.com>
-Subject: Re: [PATCH] ASoC: mediatek: assign correct type to argument
-Message-Id: <163948832239.2865729.5262628793021796967.b4-ty@kernel.org>
-Date: Tue, 14 Dec 2021 13:25:22 +0000
+To: Stephan Gerhold <stephan@gerhold.net>
+In-Reply-To: <20211202145505.58852-1-stephan@gerhold.net>
+References: <20211202145505.58852-1-stephan@gerhold.net>
+Subject: Re: [PATCH 0/5] ASoC: qcom: apq8016_sbc: Allow routing audio through
+ QDSP6
+Message-Id: <163948832993.2865729.5795229789612585528.b4-ty@kernel.org>
+Date: Tue, 14 Dec 2021 13:25:29 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tzungbi@google.com, kernel test robot <lkp@intel.com>,
- trevor.wu@mediatek.com, yc.hung@mediatek.com
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Banajit Goswami <bgoswami@codeaurora.org>, linux-arm-msm@vger.kernel.org,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ ~postmarketos/upstreaming@lists.sr.ht
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,14 +84,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 9 Dec 2021 15:32:24 +0800, Jiaxin Yu wrote:
-> Fix the following sparse warning: (new ones prefixed by >>)
-> >> sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c:370:33:
->      sparse: sparse: incorrect type in argument 3 (different base types)
->    sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c:370:33: sparse:
->      expected unsigned int to
->    sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c:370:33: sparse:
->      got restricted snd_pcm_format_t [usertype]
+On Thu, 2 Dec 2021 15:55:00 +0100, Stephan Gerhold wrote:
+> This series makes it possible to route audio through the combined
+> audio/modem DSP on MSM8916/APQ8016 devices instead of bypassing it using
+> the LPASS drivers. This is necessary to support certain functionality such
+> as voice call audio. See PATCH 4/5 for details.
+> 
+> Also, qcom,apq8016-sbc.txt is converted to DT schema by adding it to the
+> existing qcom,sm8250.yaml. The bindings are similar enough that it is easier
+> to share a single schema instead of duplicating everything into multiple ones.
 > 
 > [...]
 
@@ -99,8 +102,16 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: mediatek: assign correct type to argument
-      commit: 03c2192ab636987db72e99f319a942cc4f3cb352
+[1/5] ASoC: dt-bindings: qcom: sm8250: Drop redundant MultiMedia routes
+      commit: c55676ec292e0ff83261eb61efaf99a91079a3b8
+[2/5] ASoC: dt-bindings: qcom: sm8250: Document "aux-devs"
+      commit: 1875ae76f82c5c9acd7b7f44bd9226fbcbe858b7
+[3/5] ASoC: dt-bindings: qcom: apq8016-sbc: Move to qcom,sm8250 DT schema
+      commit: b7875d88bf70100d2fe0dc08072018f994ccd6c4
+[4/5] ASoC: dt-bindings: qcom: Document qcom,msm8916-qdsp6-sndcard compatible
+      commit: 38192dc36f1fe1615b7a12cc78b9354d6b4ba8b7
+[5/5] ASoC: qcom: apq8016_sbc: Allow routing audio through QDSP6
+      commit: 190357e1e09f271566e91fcd108c161f7e25a253
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
