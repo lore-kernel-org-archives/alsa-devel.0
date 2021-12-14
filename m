@@ -4,79 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9DEADC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Dec 2021 14:25:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25A66C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Dec 2021 14:30:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A82AE1FDB;
-	Tue, 14 Dec 2021 15:24:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A82AE1FDB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 021C11FBD;
+	Tue, 14 Dec 2021 15:29:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 021C11FBD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639491899;
-	bh=2dDNUldn/GWjkkMo/5vstfOfw/V/JlyhoW+cSlhqIbI=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1639492223;
+	bh=dXYGjRGNV7WOig2fEPaxCgoob09VOrTPHwcgZOUqRLE=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CKN5eJ4XNy538D5xcUDjcJ+Yl1PAYwQUSFGVGFuOc3RgqFOV6rXncY+Kz6uPkc+U0
-	 CCWhbVlCayUNVyx5bzmvwtbRqSELZEYwIAh7JDXNhq7KUgdADakN2QC1ddE3QTJoCw
-	 EGXNf7cN6fdKyFAkg0/ioKz3sa1429DKqmuFEpZc=
+	b=txjYXYe+K73szrt+m5YG2Ro98oKLtdDdkbx2PJd6jh/6OYQtbBeY21IyAbmbk5Fdy
+	 q4MJNvuaxUDWV9w2XjkmgompoLC8ZUr2yL2XTtM9OwIJJmc0JMpU8Ue2AZ7eShWMiL
+	 o+QMUUANaxVLyZV5/OIQkfBKCahiNdaQlgaxdR8Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 73E71F80518;
-	Tue, 14 Dec 2021 15:22:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 87B37F800FE;
+	Tue, 14 Dec 2021 15:29:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 73244F804F2; Tue, 14 Dec 2021 15:22:52 +0100 (CET)
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de
- [85.215.255.82])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 56962F80246; Tue, 14 Dec 2021 15:29:29 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5C0CCF8016A
- for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2021 15:22:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C0CCF8016A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 072EEF800FE
+ for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2021 15:29:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 072EEF800FE
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net
- header.b="e2jcaIpB"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1639491756;
- s=strato-dkim-0002; d=gerhold.net;
- h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
- From:Subject:Sender;
- bh=nK1WI/n5WJTnKoFcfera4gLZkWVqZW1oe5BBzB4Dcuo=;
- b=e2jcaIpBwW/gjK+Wrev+TvSAp2KUSBzwJMDosivaYYohMOPejnp+EI3O3GOb4bNnRr
- bVGriNq7ub/7G9ZdGvKTvdjMsg7UOX2f11il6jzKLEYVdp+qgR3w3l/mO8vWJT+Ekdce
- N5wC18lSqySEgNC8wsCNsniqOq3Gsvc/qX0PUaxVcLgq9nmcbZoLwygE5Kok6TF1kgNg
- Si6U5EJIVJU+pqn2Ivcfn9m9UtECynpaJEY50RaP9aUuf8C+BXerKr7rK4vE1NtqdMae
- Vj7i0+RYZiWGsBWb6bvyT8KTmm152DiSPeb7CpDCaOsWX136tkN9r6ngsf4UNkWBLhKA
- 83Hw==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVORvLd4SsytBXQ7UOGqRde+a0fiL1O/hR"
-X-RZG-CLASS-ID: mo00
-Received: from droid.. by smtp.strato.de (RZmta 47.35.3 AUTH)
- with ESMTPSA id x08baexBEEMZ8rY
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
- (Client did not present a certificate);
- Tue, 14 Dec 2021 15:22:35 +0100 (CET)
-From: Stephan Gerhold <stephan@gerhold.net>
-To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 3/4] ASoC: qcom: common: Parse "pin-switches" and "widgets"
- from DT
-Date: Tue, 14 Dec 2021 15:20:48 +0100
-Message-Id: <20211214142049.20422-4-stephan@gerhold.net>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20211214142049.20422-1-stephan@gerhold.net>
-References: <20211214142049.20422-1-stephan@gerhold.net>
-MIME-Version: 1.0
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="Pbun/mO0"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="gtETqHrK"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 49FAE1F37C;
+ Tue, 14 Dec 2021 14:29:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1639492161; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=d7lElfo1JjyiNkLK1DnhHBlqCrDDlV8cw/kEYhI1B1A=;
+ b=Pbun/mO06fvHw/NWhoynPH31hikjiBUqyWTxNgjEjHR6IJNup+qaZA0ANgWYKpXzsOr5Bb
+ lfJqINzXsJX4gvTyFBE0umjlS4ZgQB4VTeW0CldgCJAq8rROqzD0WVpX6r1wQvyOoZsB4o
+ BdHb8Tuvt/n4SB8aB/JEvp5xGy442iQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1639492161;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=d7lElfo1JjyiNkLK1DnhHBlqCrDDlV8cw/kEYhI1B1A=;
+ b=gtETqHrKV7YpLtr/1U4uCNbTSv2pHg8jKMFX60xBvwf7pUT37DoMXroXPoahzFLzNQhaWj
+ pl+azC0GRCd44lAg==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 2EE0DA3B88;
+ Tue, 14 Dec 2021 14:29:21 +0000 (UTC)
+Date: Tue, 14 Dec 2021 15:29:21 +0100
+Message-ID: <s5hv8zr9s5a.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Dmitry Osipenko <digetx@gmail.com>
+Subject: Re: [PATCH 1/3] ALSA: hda/tegra: Skip reset on BPMP devices
+In-Reply-To: <0761f6f2-27f8-4e1a-fabc-9d319f465a9e@gmail.com>
+References: <1638858770-22594-1-git-send-email-spujar@nvidia.com>
+ <1638858770-22594-2-git-send-email-spujar@nvidia.com>
+ <7742adae-cdbe-a9ea-2cef-f63363298d73@gmail.com>
+ <8fd704d9-43ce-e34a-a3c0-b48381ef0cd8@nvidia.com>
+ <56bb43b6-8d72-b1de-4402-a2cb31707bd9@gmail.com>
+ <4855e9c4-e4c2-528b-c9ad-2be7209dc62a@nvidia.com>
+ <5d441571-c1c2-5433-729f-86d6396c2853@gmail.com>
+ <f32cde65-63dc-67f8-ded8-b58ea5e89f4e@nvidia.com>
+ <95cc7efa-251c-690b-9afa-53ee9e052c34@gmail.com>
+ <148fba18-5d14-d342-0eb9-4ff224cc58ad@nvidia.com>
+ <3b0de739-7866-3886-be9c-a853c746f8b7@gmail.com>
+ <73d04377-9898-930b-09db-bb6c4b3eb90a@nvidia.com>
+ <ad388f5e-6f60-cf78-8510-87aec8524e33@gmail.com>
+ <50bf5a83-051e-8c12-6502-aabd8edd0a72@nvidia.com>
+ <7230ad0b-2b04-4f1b-b616-b7d98789ded0@gmail.com>
+ <48f891bc-d8f6-2634-6dd1-6ea4f14ae6a3@nvidia.com>
+ <0761f6f2-27f8-4e1a-fabc-9d319f465a9e@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Banajit Goswami <bgoswami@codeaurora.org>,
- Stephan Gerhold <stephan@gerhold.net>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- linux-arm-msm@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
- Rob Herring <robh+dt@kernel.org>, Bjorn Andersson <bjorn.andersson@linaro.org>,
- Paul Cercueil <paul@crapouillou.net>, Andy Gross <agross@kernel.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
- Vincent Knecht <vincent.knecht@mailoo.org>
+ lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
+ Sameer Pujar <spujar@nvidia.com>, tiwai@suse.com, stable@vger.kernel.org,
+ robh+dt@kernel.org, broonie@kernel.org, thierry.reding@gmail.com,
+ linux-tegra@vger.kernel.org, jonathanh@nvidia.com,
+ Mohan Kumar <mkumard@nvidia.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,46 +111,66 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Use the DT helpers in the ASoC core to parse the "pin-switches" and
-"widgets" properties from the device tree. This allows adding extra
-mixers to disable e.g. an extra speaker amplifier that would be
-normally powered on automatically because it is connected to a shared
-output pin.
+On Tue, 14 Dec 2021 14:56:12 +0100,
+Dmitry Osipenko wrote:
+> 
+> 14.12.2021 10:22, Sameer Pujar пишет:
+> ...
+> >>> How the reset behavior is different? At this point when HDA driver is
+> >>> loaded the HW is already reset during display ungate. What matters,
+> >>> during HDA driver load, is whether the HW is in predictable state or not
+> >>> and the answer is yes. So I am not sure what problem you are referring
+> >>> to. Question is, if BPMP already ensures this, then why driver needs to
+> >>> take care of it.
+> >> 1. Enable display
+> >> 2. Play audio over HDMI
+> > 
+> >> 3. HDA hardware now is in dirty state
+> > 
+> > Why this would be a dirty state? It is rather a functional state. Isn't
+> > it? Power-domain is ON while all this happens.
+> 
+> In general state should be a functional, but we shouldn't assume that.
+> There is always a possibility for a subtle bug in a driver that may put
+> h/w into a bad state. Full hardware reset is encouraged by users.
+> 
+> > Another point is, with present logic the reset is not applied for every
+> > runtime PM resume of HDA device, which is confusing. It depends on the
+> > state of 'chip->running' flag and I don't see this getting cleared
+> > anywhere. Would you say subsequent HDA playback happen under a dirty state?
+> 
+> This is a good point. There should be another potential problem in the
+> HDA driver for newer SoCs because apparently we don't re-initialize HDA
+> controller properly after runtime PM resume.
+> 
+> See hda_tegra_first_init() that is invoked only during driver probe, it
+> configures FPCI_DBG_CFG_2 register on T194, which isn't done by
+> hda_tegra_init(), and thus, this register may be  in reset state after
+> resume from RPM suspend. It should be a bug in the HDA driver that needs
+> to be fixed.
+> 
+> On older SoCs: HDA resides in the APB power domain which could be
+> disabled only across system suspend/resume. HDA is only clock-gated
+> during runtime PM suspend.
+> 
+> On newer SoCs: HDA power state could be lost after RPM suspend/resume,
+> depending on the state of display. I'm wondering whether HDMI playback
+> works after DPMS on T194+, I assume this case was never tested properly.
+> 
+> It looks like it should be safe to reset HDA on runtime PM resume
+> regardless of the chip->running, and thus, we could remove that check
+> and reset HDA unconditionally. Will great if you could check/test and
+> improve this in the driver.
+> 
+> I'm also wondering whether snd_power_change_state() should be moved into
+> RPM callbacks and whether this function does anything practically useful
+> on Tegra at all.
 
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
----
- sound/soc/qcom/common.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+This call is mostly for ALSA core stuff, and not necessarily
+reflecting the exact device power state.  The major role is for
+controlling / blocking the device accesses at the system
+suspend/resume, so it's correct to set only in the system
+suspend/resume callbacks, not in runtime PM.
 
-diff --git a/sound/soc/qcom/common.c b/sound/soc/qcom/common.c
-index 2e1c618f7529..eff134785051 100644
---- a/sound/soc/qcom/common.c
-+++ b/sound/soc/qcom/common.c
-@@ -26,6 +26,12 @@ int qcom_snd_parse_of(struct snd_soc_card *card)
- 		return ret;
- 	}
- 
-+	if (of_property_read_bool(dev->of_node, "widgets")) {
-+		ret = snd_soc_of_parse_audio_simple_widgets(card, "widgets");
-+		if (ret)
-+			return ret;
-+	}
-+
- 	/* DAPM routes */
- 	if (of_property_read_bool(dev->of_node, "audio-routing")) {
- 		ret = snd_soc_of_parse_audio_routing(card, "audio-routing");
-@@ -39,6 +45,10 @@ int qcom_snd_parse_of(struct snd_soc_card *card)
- 			return ret;
- 	}
- 
-+	ret = snd_soc_of_parse_pin_switches(card, "pin-switches");
-+	if (ret)
-+		return ret;
-+
- 	ret = snd_soc_of_parse_aux_devs(card, "aux-devs");
- 	if (ret)
- 		return ret;
--- 
-2.34.1
 
+Takashi
