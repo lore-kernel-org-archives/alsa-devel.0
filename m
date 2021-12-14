@@ -4,76 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E7CEC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Dec 2021 02:14:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5777AC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Dec 2021 02:14:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B1EA51B0D;
-	Tue, 14 Dec 2021 03:13:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B1EA51B0D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 953801AEA;
+	Tue, 14 Dec 2021 03:14:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 953801AEA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639448082;
-	bh=y2jV7FrdPykhC7jRF7EMV4m3EBpKY+XRYaVXBxA13Xw=;
+	s=default; t=1639448096;
+	bh=6VCsq0zPRtndlyARduu6CGAoY4V9TBkprQN5VbC3dtM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PlX7qzERBa/fg7l2RXsoArw+1V0f6V8WvFpygh7f4RejUoYWrT1DVt1+AEmc2kNBP
-	 0uWSXk/1uWyMlOe6wPEwk3Z8STIu1W8U3FuWTU6Sz0fNWco6vSzey4g2zFNRfglOd2
-	 M43WXpAt1K9X6YcfTYM6YQFFqYgQbuoAJCcm+cTo=
+	b=sfu8+5Y0vzqqo3tkFP0tXbh4k2s3ssue4ddfWqgYeF2Y8/ld6Xs/KywNdaY5KX+Ma
+	 o2lnhzFCACCcvGPTrOh22+bs1n1C8UG7KI4uUUwK6PPuM9kLqxXz2Z6M/hr7xueZmU
+	 RTAv1IXNUbj6skQoN6zrW58Ubc4Wuf3iLsiK9Qv0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9BF29F80587;
-	Tue, 14 Dec 2021 03:10:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 05E78F8057D;
+	Tue, 14 Dec 2021 03:10:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6F2D6F8054A; Tue, 14 Dec 2021 03:09:54 +0100 (CET)
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com
- [IPv6:2607:f8b0:4864:20::531])
+ id 053D2F8055B; Tue, 14 Dec 2021 03:09:55 +0100 (CET)
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com
+ [IPv6:2607:f8b0:4864:20::62c])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D8374F80527
- for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2021 03:09:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8374F80527
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8D0D2F8051B
+ for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2021 03:09:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D0D2F8051B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="O0TFNZ4V"
-Received: by mail-pg1-x531.google.com with SMTP id 200so7294064pgg.3
- for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2021 18:09:43 -0800 (PST)
+ header.b="XmOcDYld"
+Received: by mail-pl1-x62c.google.com with SMTP id p18so12476046plf.13
+ for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2021 18:09:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=L3F85+gScuw2iCO1i31KCrbl5yRrJQv0xVYGhAgYmRM=;
- b=O0TFNZ4Vl+zsTtOeRE/41cPLUdxeck5kr1/PideANvbrf0Ewi/UI0LsyDNuVs7ERqp
- ZvQJ6DVnDR6DX7KDsXQd5nhli9TaupDQD/IGRvzwLIe5HPMNOZWP+WFTNTp/rEmvc6eK
- mX1pS3/GkqBpUyUYocFe7I531pd0+1olKN5nS5i04dUDkMJxm5sTacAC1DJ7v4gFPdgx
- Mtu2xuWX66Ck6ZzF5Uj8vHsKGzcRQ2R9uUWzNEJGv+pMgho6KdddeBuk03y8W7HRksLH
- 6yoDk2rXeuS6NxYU/BL1Q3dTAHCBHnKez6nQeSJfPcwiRRZwlyQsaIqr4TFxkRAbJnga
- GJHA==
+ bh=01SNm5V6Ok+GPemak/uYh+NgF0ENZPJa+gfjvOiRKJk=;
+ b=XmOcDYldtrKZFw9RUMgYWcoX1uSdplZj4y7C5eKtdLhaKgwBHlsXqTN0ZiQau7U0YV
+ BCB+fgMIHBOkZemXMP/y6cEMyk9uIzwW50OxMqK2hTuJP5x9L0lBMRt/sVLE1fsqKhAg
+ Z//JHN4SjJsxw1Mg2dVboWmahVJoBzVv0cB6YTotutkZoEIwDI/mp+fAccTJ0PFUno74
+ KUa+r9VfBioOfm19okTNo1wZ2iL+bNkFCY8+Rqyw/tGTsHX31JUkzozL+gxFbZD/YIeO
+ kaNO2HsKAs0bZUjzxcKpHZpJmXGBC51tRiJy8iVP2mWkQ1k5bqsWaDYZhznQNCjiZOgH
+ 7+ZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
  :in-reply-to:references:mime-version:content-transfer-encoding;
- bh=L3F85+gScuw2iCO1i31KCrbl5yRrJQv0xVYGhAgYmRM=;
- b=ELuSQYoKABsTFJnRywKqrpG0s/QpWThdNr5AH7dz8sg/WLqUH4MkwXXyWABX5gR+rx
- GNhcxdBh5hiSpkJVWgq0Kb267n3Gh1cXF1dkuOUAaT1NRZnOzeCJMmIhCuHt9zj907AF
- +3rYX1opasvY9XDbfZGExQeWbP2wHWOa/Fmjkv6J7feFzDRxeXr/qMtJZNeui6b/qyz7
- P4FvPcoGZ6IfyJ9u6keYkyCyWZQnLbzsuHL6xTMAFi/E3eflXh8CxG1fEa+iuFBw/XZn
- ZuawovQxSzaIumKd7L3AEL0+7jIpPOnQVcXTiKTT+YBTji2weYl5VUtc7qMeXSpjnAD0
- zieA==
-X-Gm-Message-State: AOAM533qEvKmyqB7ZDAxwLlj0BPNm4oTsE0gghAIoeS7ALzjUJy41bUs
- 2VzSPqRk3ZvMyQWcU37boP8eMOZ46n0=
-X-Google-Smtp-Source: ABdhPJx6CeBFRYW036dlf8oLt7pqsWJmIzw0Vemtzw9JAG0fkyhWnZdhGWgyYX7g7BBupyPtOydWlg==
-X-Received: by 2002:aa7:8219:0:b0:4a4:bec7:ef10 with SMTP id
- k25-20020aa78219000000b004a4bec7ef10mr1742797pfi.37.1639447781046; 
- Mon, 13 Dec 2021 18:09:41 -0800 (PST)
+ bh=01SNm5V6Ok+GPemak/uYh+NgF0ENZPJa+gfjvOiRKJk=;
+ b=y2hEUnazyAYs1faTmungsuneYKDx+WLLdwqe3DYOcofaWLDdys2QwtUBsFyQ6A0d0M
+ DxUuwdwtieQ+rzNNFZCd3HYNgobCo24z04S1EQid5Ez+J44bRUMjqFKjssdwnI6U9g3t
+ HHzbWAdUyhHExmc0zM2dgG2aRjdl5lRcQW+O+7vXALabMNkAi8a5Cwpwzf5P48JDkh66
+ zr6a+sRkUqZZrKzdX5keD/E/jRI76B7hMlHO6NaZheuC3fPJ0MmXXFet5UfzOp+wveJ3
+ LgE7dmTGxVILUuBcjAK/jdLuCHlGORaaV2NqejyaBeQ93PaMMtlTU8Srk28dDe8L5L1D
+ ewxw==
+X-Gm-Message-State: AOAM530GTEQsierhW0MXGuVtP8JAyomUkWeSR/ffqDQRmyNX2+TjlF6w
+ 05/YVFCw5YTYO6CoO7CDM+8=
+X-Google-Smtp-Source: ABdhPJwcQ3Tvt8xl03QbSarxcNhqe4OFtRxpcPul3p6pi0tS5O6vgna+6rojac2eOwiF3+SmjSZZAw==
+X-Received: by 2002:a17:90a:1b67:: with SMTP id
+ q94mr2234252pjq.119.1639447783938; 
+ Mon, 13 Dec 2021 18:09:43 -0800 (PST)
 Received: from localhost.localdomain ([126.249.140.249])
- by smtp.gmail.com with ESMTPSA id b2sm14622296pfv.198.2021.12.13.18.09.39
+ by smtp.gmail.com with ESMTPSA id b2sm14622296pfv.198.2021.12.13.18.09.42
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 13 Dec 2021 18:09:40 -0800 (PST)
+ Mon, 13 Dec 2021 18:09:43 -0800 (PST)
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 13/22] ASoC: fsl: Use dev_err_probe() helper
-Date: Tue, 14 Dec 2021 11:08:34 +0900
-Message-Id: <20211214020843.2225831-14-kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH 15/22] ASoC: img: Use dev_err_probe() helper
+Date: Tue, 14 Dec 2021 11:08:36 +0900
+Message-Id: <20211214020843.2225831-16-kuninori.morimoto.gx@renesas.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211214020843.2225831-1-kuninori.morimoto.gx@renesas.com>
 References: <20211214020843.2225831-1-kuninori.morimoto.gx@renesas.com>
@@ -104,98 +104,189 @@ operation.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/fsl/fsl-asoc-card.c |  3 +--
- sound/soc/fsl/imx-card.c      | 17 ++++++-----------
- sound/soc/fsl/imx-sgtl5000.c  |  4 +---
- sound/soc/fsl/imx-spdif.c     |  4 ++--
- 4 files changed, 10 insertions(+), 18 deletions(-)
+ sound/soc/img/img-i2s-in.c             |  8 +++-----
+ sound/soc/img/img-i2s-out.c            | 24 +++++++++---------------
+ sound/soc/img/img-parallel-out.c       | 24 +++++++++---------------
+ sound/soc/img/img-spdif-in.c           |  8 +++-----
+ sound/soc/img/img-spdif-out.c          | 24 +++++++++---------------
+ sound/soc/img/pistachio-internal-dac.c |  9 +++------
+ 6 files changed, 36 insertions(+), 61 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-index 90cbed496f98..5ee945505281 100644
---- a/sound/soc/fsl/fsl-asoc-card.c
-+++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -853,8 +853,7 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+diff --git a/sound/soc/img/img-i2s-in.c b/sound/soc/img/img-i2s-in.c
+index 1bf5d6edbd32..f1f36f15a503 100644
+--- a/sound/soc/img/img-i2s-in.c
++++ b/sound/soc/img/img-i2s-in.c
+@@ -451,11 +451,9 @@ static int img_i2s_in_probe(struct platform_device *pdev)
+ 	i2s->channel_base = base + (max_i2s_chan_pow_2 * 0x20);
  
- 	ret = devm_snd_soc_register_card(&pdev->dev, &priv->card);
- 	if (ret) {
+ 	i2s->clk_sys = devm_clk_get(dev, "sys");
+-	if (IS_ERR(i2s->clk_sys)) {
+-		if (PTR_ERR(i2s->clk_sys) != -EPROBE_DEFER)
+-			dev_err(dev, "Failed to acquire clock 'sys'\n");
+-		return PTR_ERR(i2s->clk_sys);
+-	}
++	if (IS_ERR(i2s->clk_sys))
++		return dev_err_probe(dev, PTR_ERR(i2s->clk_sys),
++				     "Failed to acquire clock 'sys'\n");
+ 
+ 	pm_runtime_enable(&pdev->dev);
+ 	if (!pm_runtime_enabled(&pdev->dev)) {
+diff --git a/sound/soc/img/img-i2s-out.c b/sound/soc/img/img-i2s-out.c
+index 4f90d36dc7df..28f48ca1508a 100644
+--- a/sound/soc/img/img-i2s-out.c
++++ b/sound/soc/img/img-i2s-out.c
+@@ -457,25 +457,19 @@ static int img_i2s_out_probe(struct platform_device *pdev)
+ 	i2s->channel_base = base + (max_i2s_chan_pow_2 * 0x20);
+ 
+ 	i2s->rst = devm_reset_control_get_exclusive(&pdev->dev, "rst");
+-	if (IS_ERR(i2s->rst)) {
+-		if (PTR_ERR(i2s->rst) != -EPROBE_DEFER)
+-			dev_err(&pdev->dev, "No top level reset found\n");
+-		return PTR_ERR(i2s->rst);
+-	}
++	if (IS_ERR(i2s->rst))
++		return dev_err_probe(&pdev->dev, PTR_ERR(i2s->rst),
++				     "No top level reset found\n");
+ 
+ 	i2s->clk_sys = devm_clk_get(&pdev->dev, "sys");
+-	if (IS_ERR(i2s->clk_sys)) {
+-		if (PTR_ERR(i2s->clk_sys) != -EPROBE_DEFER)
+-			dev_err(dev, "Failed to acquire clock 'sys'\n");
+-		return PTR_ERR(i2s->clk_sys);
+-	}
++	if (IS_ERR(i2s->clk_sys))
++		return dev_err_probe(dev, PTR_ERR(i2s->clk_sys),
++				     "Failed to acquire clock 'sys'\n");
+ 
+ 	i2s->clk_ref = devm_clk_get(&pdev->dev, "ref");
+-	if (IS_ERR(i2s->clk_ref)) {
+-		if (PTR_ERR(i2s->clk_ref) != -EPROBE_DEFER)
+-			dev_err(dev, "Failed to acquire clock 'ref'\n");
+-		return PTR_ERR(i2s->clk_ref);
+-	}
++	if (IS_ERR(i2s->clk_ref))
++		return dev_err_probe(dev, PTR_ERR(i2s->clk_ref),
++				     "Failed to acquire clock 'ref'\n");
+ 
+ 	i2s->suspend_ch_ctl = devm_kcalloc(dev,
+ 		i2s->max_i2s_chan, sizeof(*i2s->suspend_ch_ctl), GFP_KERNEL);
+diff --git a/sound/soc/img/img-parallel-out.c b/sound/soc/img/img-parallel-out.c
+index ce0f08d3777c..800f247283cd 100644
+--- a/sound/soc/img/img-parallel-out.c
++++ b/sound/soc/img/img-parallel-out.c
+@@ -229,25 +229,19 @@ static int img_prl_out_probe(struct platform_device *pdev)
+ 	prl->base = base;
+ 
+ 	prl->rst = devm_reset_control_get_exclusive(&pdev->dev, "rst");
+-	if (IS_ERR(prl->rst)) {
+-		if (PTR_ERR(prl->rst) != -EPROBE_DEFER)
+-			dev_err(&pdev->dev, "No top level reset found\n");
+-		return PTR_ERR(prl->rst);
+-	}
++	if (IS_ERR(prl->rst))
++		return dev_err_probe(&pdev->dev, PTR_ERR(prl->rst),
++				     "No top level reset found\n");
+ 
+ 	prl->clk_sys = devm_clk_get(&pdev->dev, "sys");
+-	if (IS_ERR(prl->clk_sys)) {
+-		if (PTR_ERR(prl->clk_sys) != -EPROBE_DEFER)
+-			dev_err(dev, "Failed to acquire clock 'sys'\n");
+-		return PTR_ERR(prl->clk_sys);
+-	}
++	if (IS_ERR(prl->clk_sys))
++		return dev_err_probe(dev, PTR_ERR(prl->clk_sys),
++				     "Failed to acquire clock 'sys'\n");
+ 
+ 	prl->clk_ref = devm_clk_get(&pdev->dev, "ref");
+-	if (IS_ERR(prl->clk_ref)) {
+-		if (PTR_ERR(prl->clk_ref) != -EPROBE_DEFER)
+-			dev_err(dev, "Failed to acquire clock 'ref'\n");
+-		return PTR_ERR(prl->clk_ref);
+-	}
++	if (IS_ERR(prl->clk_ref))
++		return dev_err_probe(dev, PTR_ERR(prl->clk_ref),
++				     "Failed to acquire clock 'ref'\n");
+ 
+ 	ret = clk_prepare_enable(prl->clk_sys);
+ 	if (ret)
+diff --git a/sound/soc/img/img-spdif-in.c b/sound/soc/img/img-spdif-in.c
+index 6364eb742f6d..95914d0612fe 100644
+--- a/sound/soc/img/img-spdif-in.c
++++ b/sound/soc/img/img-spdif-in.c
+@@ -739,11 +739,9 @@ static int img_spdif_in_probe(struct platform_device *pdev)
+ 	spdif->base = base;
+ 
+ 	spdif->clk_sys = devm_clk_get(dev, "sys");
+-	if (IS_ERR(spdif->clk_sys)) {
+-		if (PTR_ERR(spdif->clk_sys) != -EPROBE_DEFER)
+-			dev_err(dev, "Failed to acquire clock 'sys'\n");
+-		return PTR_ERR(spdif->clk_sys);
+-	}
++	if (IS_ERR(spdif->clk_sys))
++		return dev_err_probe(dev, PTR_ERR(spdif->clk_sys),
++				     "Failed to acquire clock 'sys'\n");
+ 
+ 	pm_runtime_enable(&pdev->dev);
+ 	if (!pm_runtime_enabled(&pdev->dev)) {
+diff --git a/sound/soc/img/img-spdif-out.c b/sound/soc/img/img-spdif-out.c
+index 858e1b853820..c3189d9ff72f 100644
+--- a/sound/soc/img/img-spdif-out.c
++++ b/sound/soc/img/img-spdif-out.c
+@@ -342,25 +342,19 @@ static int img_spdif_out_probe(struct platform_device *pdev)
+ 	spdif->base = base;
+ 
+ 	spdif->rst = devm_reset_control_get_exclusive(&pdev->dev, "rst");
+-	if (IS_ERR(spdif->rst)) {
+-		if (PTR_ERR(spdif->rst) != -EPROBE_DEFER)
+-			dev_err(&pdev->dev, "No top level reset found\n");
+-		return PTR_ERR(spdif->rst);
+-	}
++	if (IS_ERR(spdif->rst))
++		return dev_err_probe(&pdev->dev, PTR_ERR(spdif->rst),
++				     "No top level reset found\n");
+ 
+ 	spdif->clk_sys = devm_clk_get(&pdev->dev, "sys");
+-	if (IS_ERR(spdif->clk_sys)) {
+-		if (PTR_ERR(spdif->clk_sys) != -EPROBE_DEFER)
+-			dev_err(dev, "Failed to acquire clock 'sys'\n");
+-		return PTR_ERR(spdif->clk_sys);
+-	}
++	if (IS_ERR(spdif->clk_sys))
++		return dev_err_probe(dev, PTR_ERR(spdif->clk_sys),
++				     "Failed to acquire clock 'sys'\n");
+ 
+ 	spdif->clk_ref = devm_clk_get(&pdev->dev, "ref");
+-	if (IS_ERR(spdif->clk_ref)) {
+-		if (PTR_ERR(spdif->clk_ref) != -EPROBE_DEFER)
+-			dev_err(dev, "Failed to acquire clock 'ref'\n");
+-		return PTR_ERR(spdif->clk_ref);
+-	}
++	if (IS_ERR(spdif->clk_ref))
++		return dev_err_probe(dev, PTR_ERR(spdif->clk_ref),
++				     "Failed to acquire clock 'ref'\n");
+ 
+ 	pm_runtime_enable(&pdev->dev);
+ 	if (!pm_runtime_enabled(&pdev->dev)) {
+diff --git a/sound/soc/img/pistachio-internal-dac.c b/sound/soc/img/pistachio-internal-dac.c
+index fe181c2e51d6..802c0ee63aa2 100644
+--- a/sound/soc/img/pistachio-internal-dac.c
++++ b/sound/soc/img/pistachio-internal-dac.c
+@@ -161,12 +161,9 @@ static int pistachio_internal_dac_probe(struct platform_device *pdev)
+ 		return PTR_ERR(dac->regmap);
+ 
+ 	dac->supply = devm_regulator_get(dev, "VDD");
+-	if (IS_ERR(dac->supply)) {
+-		ret = PTR_ERR(dac->supply);
 -		if (ret != -EPROBE_DEFER)
--			dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
-+		dev_err_probe(&pdev->dev, ret, "snd_soc_register_card failed\n");
- 		goto asrc_fail;
- 	}
- 
-diff --git a/sound/soc/fsl/imx-card.c b/sound/soc/fsl/imx-card.c
-index 6f06afd23b16..e758c4f1b0bc 100644
---- a/sound/soc/fsl/imx-card.c
-+++ b/sound/soc/fsl/imx-card.c
-@@ -563,9 +563,8 @@ static int imx_card_parse_of(struct imx_card_data *data)
- 
- 		ret = snd_soc_of_get_dai_name(cpu, &link->cpus->dai_name);
- 		if (ret) {
--			if (ret != -EPROBE_DEFER)
--				dev_err(card->dev, "%s: error getting cpu dai name: %d\n",
--					link->name, ret);
-+			dev_err_probe(card->dev, ret,
-+				      "%s: error getting cpu dai name\n", link->name);
- 			goto err;
- 		}
- 
-@@ -573,9 +572,8 @@ static int imx_card_parse_of(struct imx_card_data *data)
- 		if (codec) {
- 			ret = snd_soc_of_get_dai_link_codecs(dev, codec, link);
- 			if (ret < 0) {
--				if (ret != -EPROBE_DEFER)
--					dev_err(dev, "%s: codec dai not found: %d\n",
--						link->name, ret);
-+				dev_err_probe(dev, ret, "%s: codec dai not found\n",
-+						link->name);
- 				goto err;
- 			}
- 
-@@ -814,11 +812,8 @@ static int imx_card_probe(struct platform_device *pdev)
- 	}
- 
- 	ret = devm_snd_soc_register_card(&pdev->dev, &data->card);
--	if (ret) {
--		if (ret != -EPROBE_DEFER)
--			dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
+-			dev_err(dev, "failed to acquire supply 'VDD-supply': %d\n", ret);
 -		return ret;
 -	}
-+	if (ret)
-+		return dev_err_probe(&pdev->dev, ret, "snd_soc_register_card failed\n");
++	if (IS_ERR(dac->supply))
++		return dev_err_probe(dev, PTR_ERR(dac->supply),
++				     "failed to acquire supply 'VDD-supply'\n");
  
- 	return 0;
- }
-diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
-index 2f1acd011042..8daced42d55e 100644
---- a/sound/soc/fsl/imx-sgtl5000.c
-+++ b/sound/soc/fsl/imx-sgtl5000.c
-@@ -173,9 +173,7 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
- 
- 	ret = devm_snd_soc_register_card(&pdev->dev, &data->card);
+ 	ret = regulator_enable(dac->supply);
  	if (ret) {
--		if (ret != -EPROBE_DEFER)
--			dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n",
--				ret);
-+		dev_err_probe(&pdev->dev, ret, "snd_soc_register_card failed\n");
- 		goto fail;
- 	}
- 
-diff --git a/sound/soc/fsl/imx-spdif.c b/sound/soc/fsl/imx-spdif.c
-index 6c4dadf60355..4446fba755b9 100644
---- a/sound/soc/fsl/imx-spdif.c
-+++ b/sound/soc/fsl/imx-spdif.c
-@@ -70,8 +70,8 @@ static int imx_spdif_audio_probe(struct platform_device *pdev)
- 		goto end;
- 
- 	ret = devm_snd_soc_register_card(&pdev->dev, &data->card);
--	if (ret && ret != -EPROBE_DEFER)
--		dev_err(&pdev->dev, "snd_soc_register_card failed: %d\n", ret);
-+	if (ret)
-+		dev_err_probe(&pdev->dev, ret, "snd_soc_register_card failed\n");
- 
- end:
- 	of_node_put(spdif_np);
 -- 
 2.25.1
 
