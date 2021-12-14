@@ -4,78 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDE33C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Dec 2021 14:04:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 177ADC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Dec 2021 14:04:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AD35A1F97;
-	Tue, 14 Dec 2021 15:03:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD35A1F97
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4CA511F82;
+	Tue, 14 Dec 2021 15:03:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4CA511F82
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639490644;
-	bh=ob5pofodR9+8dUM2gJTv7mP9+aSDcCD5GCZ2itn3njw=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=mXJP/v3F/gg07cema3rj01HBvpqGeK6+zLKIPCQ20dJjei+z00qDV9edNvgZBlFSE
-	 Eyle5aqDHc79zF+pGlfFmAcvYQh+dMOMWcZaTyvFcnOLECrspUpdmw+7kNoKBTO6PY
-	 q49617Fcg+zGW9xb7R+6yVXm+t8ILLE5cqGFN5AA=
+	s=default; t=1639490660;
+	bh=D1gWbyq/tLPgeAL/XASWznWyObTYi+vue0U42aTCbuo=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=fX4Rytwp9nCrpDg2GKUqmjRg1VErJ0/YkoOYesSQd+am6C4A2plfvc0LA2kKeJeW6
+	 DjWkjVRAZoisPNp2MBNxVQ6OKgyP4sqo9eXdUtJ3ngATb9Sq1wT4sCuc6BhFKdOlzV
+	 8ntIJSw8yizkIhxpLOFJn5KklSeDM8K3pHbqvA5E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 72394F80548;
-	Tue, 14 Dec 2021 15:00:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 32036F80552;
+	Tue, 14 Dec 2021 15:00:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 64B85F80515; Tue, 14 Dec 2021 15:00:27 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id 3A211F80553; Tue, 14 Dec 2021 15:00:35 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6852CF801EC
- for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2021 15:00:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6852CF801EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 67AB3F80475
+ for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2021 15:00:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67AB3F80475
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="foz8zeSv"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1BE4Ko3j006814;
- Tue, 14 Dec 2021 08:00:02 -0600
+ header.b="l9jZuFXh"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1BEAdVUP003487;
+ Tue, 14 Dec 2021 08:00:08 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=HxfX/SoFE0LgM6209wZqoglTHFuqx9omB1l1OGzjfZw=;
- b=foz8zeSvrXrqg1fLlMilCuC8xmOKSeFqtHftwn5e/bEckIFKuG2gsj/mxo+63CweucR6
- 47unlpW7ZSDn4PZpF+iWE6pw6Nf9hBbIm9xlj/7oJ0q0kHbGzGsemyPIgWlLqzar0UwY
- JR9KabpVHEm1lpQSYYUQCryoZIA8c7qpiIeJ6wOdbFSDEs2xarljSh6kbFifkOMplSSH
- D8bmQeWzHAz/4JI7Rf2oSp4xdC5yoJ2QdAwycZJ8CcihTh6OqyEbi9Tw8CQ6tvcq4R2w
- 2ozkgjOlbmfZi8Z2hxglNs2/Ezv86ne3VSxyFzPGl4mKhF2O65J9np4AyHa6ZXoOz7Oz zA== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3cxh14grht-1
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=j3V8+JWRmfRTTdDyMQCIL0LOWiyWdzd/3mbfnljnCVY=;
+ b=l9jZuFXhLJOI4FwPtOAyV/cxBhZwOqK6Vv82K1V5sVu75B5zRVi/lPO6PpPYOjYWwdfL
+ tsmVYTy6MOl4Kk5IFjS8QgdpH11igT50ThiI1j9UvWjRdnrPIdcDhLw++QQeeZjgOWfA
+ CKyqblEuOD7vZjSFEMvnLkF7XQq+PyX3sgmCkQ0OFlHrcVvDZvsrhBelNeA8jn3Z6Ect
+ q8N3Ob6ItAMS/dQywzUUP/H52NCu4nGe9IVaUXGSLE6J6gW59Eb+PtbaJneO9W4AjMov
+ mPLJoY2up39SgjeS/1dj6WhXqe1Vgdc2k4U/yWiJMDn/s2is40uPWrtlJGv86lWjN97i RQ== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3cxe2f0uq1-3
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Tue, 14 Dec 2021 08:00:02 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ Tue, 14 Dec 2021 08:00:08 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Tue, 14 Dec
- 2021 14:00:00 +0000
+ 2021 14:00:02 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.17 via
- Frontend Transport; Tue, 14 Dec 2021 14:00:00 +0000
+ Frontend Transport; Tue, 14 Dec 2021 14:00:02 +0000
 Received: from aryzen.ad.cirrus.com (unknown [198.61.64.39])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 34C4D7C;
- Tue, 14 Dec 2021 14:00:00 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 3BBCAB13;
+ Tue, 14 Dec 2021 14:00:02 +0000 (UTC)
 From: Lucas Tanure <tanureal@opensource.cirrus.com>
 To: "Rafael J . Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
  Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>,
  Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
  Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v4 00/10] Add support for CS35L41 in HDA systems
-Date: Tue, 14 Dec 2021 13:59:49 +0000
-Message-ID: <20211214135959.1317949-1-tanureal@opensource.cirrus.com>
+Subject: [PATCH v4 04/10] ASoC: cs35l41: Create shared function for errata
+ patches
+Date: Tue, 14 Dec 2021 13:59:53 +0000
+Message-ID: <20211214135959.1317949-5-tanureal@opensource.cirrus.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20211214135959.1317949-1-tanureal@opensource.cirrus.com>
+References: <20211214135959.1317949-1-tanureal@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: kzg2siUfDy0WOJbouaCNJPoYdExKSr7D
-X-Proofpoint-ORIG-GUID: kzg2siUfDy0WOJbouaCNJPoYdExKSr7D
+X-Proofpoint-ORIG-GUID: 4bloYUJRujw5CEQ2JcdSXWq9m5KU5I32
+X-Proofpoint-GUID: 4bloYUJRujw5CEQ2JcdSXWq9m5KU5I32
 X-Proofpoint-Spam-Reason: safe
 Cc: alsa-devel@alsa-project.org, Lucas Tanure <tanureal@opensource.cirrus.com>,
  patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
@@ -95,84 +99,241 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add support for laptops that have CS35L41 connected to an HDA
-codec by I2S and direct I2C connection to the CPU.
+ASoC and HDA systems require the same errata patches, so
+move it to the shared code using a function the correctly
+applies the patches by revision
 
-Laptops that use CS35L41 and are SPI will be added in the future,
-after the support for it is resolved at i2c-multi-instantiate driver.
-i2c-multi-instantiate thread: https://lkml.org/lkml/2021/12/10/557
+Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
+---
+ include/sound/cs35l41.h        |  1 +
+ sound/soc/codecs/cs35l41-lib.c | 88 +++++++++++++++++++++++++++++++++
+ sound/soc/codecs/cs35l41.c     | 89 ++--------------------------------
+ 3 files changed, 92 insertions(+), 86 deletions(-)
 
-Hardware:
- - Some laptops have two CS35L41 amplifiers, connected to Realtek ALC287
-   by an I2S bus and by and direct I2C to the CPU.
- - The ALC287 codec is connected to the CPU by an HDA bus.
- - The CS35L41 has a DSP which will require firmware to be loaded.
-
-Architecture:
- - Creation of a library of shared functions for CS35L41 ASoC and HDA
- - HDA codec driver (RealTek) and CS35L41 HDA driver are combined
- by using component binding, where it uses device names to find the
- components and bind to the master
- - The HDA CS35L41 driver applies pre-defined registers sequences
- for each action in playback for HDA Sound card
-
-Changes from V3:
- - SPI bus driver starter added
- - Use separate modules approach instead of liking library
- - Add CSC3551 ACPI _HID for more I2C laptops
- - Removed regulators from HDA driver
- - Add note about Non-conforming _HID
-V3: https://lkml.org/lkml/2021/11/23/723
-
-Changes from V2:
- - Not an RFC
- - Create a new HDA driver for CS35L41 instead of using the ASoC one
- - Use component binding and device names to find the CS35L41 driver
- - Create a shared library for ASoC and HDA CS35L41 drivers
-v2: https://lkml.org/lkml/2021/10/8/344
-
-Lucas Tanure (9):
-  ASoC: cs35l41: Convert tables to shared source code
-  ASoC: cs35l41: Move cs35l41_otp_unpack to shared code
-  ASoC: cs35l41: Move power initializations to reg_sequence
-  ASoC: cs35l41: Create shared function for errata patches
-  ASoC: cs35l41: Create shared function for setting channels
-  ASoC: cs35l41: Create shared function for boost configuration
-  hda: cs35l41: Add support for CS35L41 in HDA systems
-  ACPI / scan: Create platform device for CLSA0100 and CSC3551 ACPI
-    nodes
-  ALSA: hda/realtek: Add support for Legion 7 16ACHg6 laptop
-
-Stefan Binding (1):
-  ALSA: hda/realtek: Add CS35L41 support for Thinkpad laptops
-
- MAINTAINERS                                   |   2 +
- drivers/acpi/scan.c                           |   3 +
- drivers/platform/x86/i2c-multi-instantiate.c  |  11 +
- include/sound/cs35l41.h                       | 739 ++++++++++++++++++
- sound/pci/hda/Kconfig                         |  27 +
- sound/pci/hda/Makefile                        |  10 +
- sound/pci/hda/cs35l41_hda.c                   | 525 +++++++++++++
- sound/pci/hda/cs35l41_hda.h                   |  68 ++
- sound/pci/hda/cs35l41_hda_i2c.c               |  66 ++
- sound/pci/hda/cs35l41_hda_spi.c               |  63 ++
- sound/pci/hda/hda_component.h                 |  20 +
- sound/pci/hda/patch_realtek.c                 | 147 ++++
- sound/soc/codecs/Kconfig                      |   7 +
- sound/soc/codecs/Makefile                     |   4 +-
- sound/soc/codecs/cs35l41-i2c.c                |   1 -
- .../{cs35l41-tables.c => cs35l41-lib.c}       | 353 ++++++++-
- sound/soc/codecs/cs35l41-spi.c                |   1 -
- sound/soc/codecs/cs35l41.c                    | 360 +--------
- sound/soc/codecs/cs35l41.h                    | 734 -----------------
- 19 files changed, 2049 insertions(+), 1092 deletions(-)
- create mode 100644 sound/pci/hda/cs35l41_hda.c
- create mode 100644 sound/pci/hda/cs35l41_hda.h
- create mode 100644 sound/pci/hda/cs35l41_hda_i2c.c
- create mode 100644 sound/pci/hda/cs35l41_hda_spi.c
- create mode 100644 sound/pci/hda/hda_component.h
- rename sound/soc/codecs/{cs35l41-tables.c => cs35l41-lib.c} (71%)
-
+diff --git a/include/sound/cs35l41.h b/include/sound/cs35l41.h
+index 6cf3ef02b26a..ad2e32a12b8c 100644
+--- a/include/sound/cs35l41.h
++++ b/include/sound/cs35l41.h
+@@ -763,5 +763,6 @@ extern struct regmap_config cs35l41_regmap_i2c;
+ extern struct regmap_config cs35l41_regmap_spi;
+ 
+ int cs35l41_otp_unpack(struct device *dev, struct regmap *regmap);
++int cs35l41_register_errata_patch(struct device *dev, struct regmap *reg, unsigned int reg_revid);
+ 
+ #endif /* __CS35L41_H */
+diff --git a/sound/soc/codecs/cs35l41-lib.c b/sound/soc/codecs/cs35l41-lib.c
+index 1387553afd3c..035d311d336a 100644
+--- a/sound/soc/codecs/cs35l41-lib.c
++++ b/sound/soc/codecs/cs35l41-lib.c
+@@ -658,6 +658,60 @@ static const struct cs35l41_otp_packed_element_t otp_map_2[CS35L41_NUM_OTP_ELEM]
+ 	{ 0x00017044,	0,	24 }, /*LOT_NUMBER*/
+ };
+ 
++static const struct reg_sequence cs35l41_reva0_errata_patch[] = {
++	{ 0x00000040,			 0x00005555 },
++	{ 0x00000040,			 0x0000AAAA },
++	{ 0x00003854,			 0x05180240 },
++	{ CS35L41_VIMON_SPKMON_RESYNC,	 0x00000000 },
++	{ 0x00004310,			 0x00000000 },
++	{ CS35L41_VPVBST_FS_SEL,	 0x00000000 },
++	{ CS35L41_OTP_TRIM_30,		 0x9091A1C8 },
++	{ 0x00003014,			 0x0200EE0E },
++	{ CS35L41_BSTCVRT_DCM_CTRL,	 0x00000051 },
++	{ 0x00000054,			 0x00000004 },
++	{ CS35L41_IRQ1_DB3,		 0x00000000 },
++	{ CS35L41_IRQ2_DB3,		 0x00000000 },
++	{ CS35L41_DSP1_YM_ACCEL_PL0_PRI, 0x00000000 },
++	{ CS35L41_DSP1_XM_ACCEL_PL0_PRI, 0x00000000 },
++	{ 0x00000040,			 0x0000CCCC },
++	{ 0x00000040,			 0x00003333 },
++	{ CS35L41_DSP1_CCM_CORE_CTRL,	 0x00000000 },
++	{ CS35L41_PWR_CTRL2,		 0x00000000 },
++	{ CS35L41_AMP_GAIN_CTRL,	 0x00000000 },
++};
++
++static const struct reg_sequence cs35l41_revb0_errata_patch[] = {
++	{ 0x00000040,			 0x00005555 },
++	{ 0x00000040,			 0x0000AAAA },
++	{ CS35L41_VIMON_SPKMON_RESYNC,	 0x00000000 },
++	{ 0x00004310,			 0x00000000 },
++	{ CS35L41_VPVBST_FS_SEL,	 0x00000000 },
++	{ CS35L41_BSTCVRT_DCM_CTRL,	 0x00000051 },
++	{ CS35L41_DSP1_YM_ACCEL_PL0_PRI, 0x00000000 },
++	{ CS35L41_DSP1_XM_ACCEL_PL0_PRI, 0x00000000 },
++	{ 0x00000040,			 0x0000CCCC },
++	{ 0x00000040,			 0x00003333 },
++	{ CS35L41_DSP1_CCM_CORE_CTRL,	 0x00000000 },
++	{ CS35L41_PWR_CTRL2,		 0x00000000 },
++	{ CS35L41_AMP_GAIN_CTRL,	 0x00000000 },
++};
++
++static const struct reg_sequence cs35l41_revb2_errata_patch[] = {
++	{ 0x00000040,			 0x00005555 },
++	{ 0x00000040,			 0x0000AAAA },
++	{ CS35L41_VIMON_SPKMON_RESYNC,	 0x00000000 },
++	{ 0x00004310,			 0x00000000 },
++	{ CS35L41_VPVBST_FS_SEL,	 0x00000000 },
++	{ CS35L41_BSTCVRT_DCM_CTRL,	 0x00000051 },
++	{ CS35L41_DSP1_YM_ACCEL_PL0_PRI, 0x00000000 },
++	{ CS35L41_DSP1_XM_ACCEL_PL0_PRI, 0x00000000 },
++	{ 0x00000040,			 0x0000CCCC },
++	{ 0x00000040,			 0x00003333 },
++	{ CS35L41_DSP1_CCM_CORE_CTRL,	 0x00000000 },
++	{ CS35L41_PWR_CTRL2,		 0x00000000 },
++	{ CS35L41_AMP_GAIN_CTRL,	 0x00000000 },
++};
++
+ static const struct cs35l41_otp_map_element_t cs35l41_otp_map_map[] = {
+ 	{
+ 		.id = 0x01,
+@@ -844,6 +898,40 @@ int cs35l41_otp_unpack(struct device *dev, struct regmap *regmap)
+ }
+ EXPORT_SYMBOL_GPL(cs35l41_otp_unpack);
+ 
++int cs35l41_register_errata_patch(struct device *dev, struct regmap *reg, unsigned int reg_revid)
++{
++	int ret = 0;
++	char *rev;
++
++	switch (reg_revid) {
++	case CS35L41_REVID_A0:
++		ret = regmap_register_patch(reg, cs35l41_reva0_errata_patch,
++					    ARRAY_SIZE(cs35l41_reva0_errata_patch));
++		rev = "A0";
++		break;
++	case CS35L41_REVID_B0:
++		ret = regmap_register_patch(reg, cs35l41_revb0_errata_patch,
++					    ARRAY_SIZE(cs35l41_revb0_errata_patch));
++		rev = "B0";
++		break;
++	case CS35L41_REVID_B2:
++		ret = regmap_register_patch(reg, cs35l41_revb2_errata_patch,
++					    ARRAY_SIZE(cs35l41_revb2_errata_patch));
++		rev = "B2";
++		break;
++	default:
++		ret = -EINVAL;
++		rev = "XX";
++		break;
++	}
++
++	if (ret)
++		dev_err(dev, "Failed to apply %s errata patch: %d\n", rev, ret);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(cs35l41_register_errata_patch);
++
+ MODULE_DESCRIPTION("CS35L41 library");
+ MODULE_AUTHOR("David Rhodes, Cirrus Logic Inc, <david.rhodes@cirrus.com>");
+ MODULE_AUTHOR("Lucas Tanure, Cirrus Logic Inc, <tanureal@opensource.cirrus.com>");
+diff --git a/sound/soc/codecs/cs35l41.c b/sound/soc/codecs/cs35l41.c
+index 4ed7490cab95..afc10f7ca65e 100644
+--- a/sound/soc/codecs/cs35l41.c
++++ b/sound/soc/codecs/cs35l41.c
+@@ -1271,60 +1271,6 @@ static int cs35l41_handle_pdata(struct device *dev,
+ 	return 0;
+ }
+ 
+-static const struct reg_sequence cs35l41_reva0_errata_patch[] = {
+-	{ 0x00000040,			 0x00005555 },
+-	{ 0x00000040,			 0x0000AAAA },
+-	{ 0x00003854,			 0x05180240 },
+-	{ CS35L41_VIMON_SPKMON_RESYNC,	 0x00000000 },
+-	{ 0x00004310,			 0x00000000 },
+-	{ CS35L41_VPVBST_FS_SEL,	 0x00000000 },
+-	{ CS35L41_OTP_TRIM_30,		 0x9091A1C8 },
+-	{ 0x00003014,			 0x0200EE0E },
+-	{ CS35L41_BSTCVRT_DCM_CTRL,	 0x00000051 },
+-	{ 0x00000054,			 0x00000004 },
+-	{ CS35L41_IRQ1_DB3,		 0x00000000 },
+-	{ CS35L41_IRQ2_DB3,		 0x00000000 },
+-	{ CS35L41_DSP1_YM_ACCEL_PL0_PRI, 0x00000000 },
+-	{ CS35L41_DSP1_XM_ACCEL_PL0_PRI, 0x00000000 },
+-	{ 0x00000040,			 0x0000CCCC },
+-	{ 0x00000040,			 0x00003333 },
+-	{ CS35L41_DSP1_CCM_CORE_CTRL,	 0x00000000 },
+-	{ CS35L41_PWR_CTRL2,		 0x00000000 },
+-	{ CS35L41_AMP_GAIN_CTRL,	 0x00000000 },
+-};
+-
+-static const struct reg_sequence cs35l41_revb0_errata_patch[] = {
+-	{ 0x00000040,			 0x00005555 },
+-	{ 0x00000040,			 0x0000AAAA },
+-	{ CS35L41_VIMON_SPKMON_RESYNC,	 0x00000000 },
+-	{ 0x00004310,			 0x00000000 },
+-	{ CS35L41_VPVBST_FS_SEL,	 0x00000000 },
+-	{ CS35L41_BSTCVRT_DCM_CTRL,	 0x00000051 },
+-	{ CS35L41_DSP1_YM_ACCEL_PL0_PRI, 0x00000000 },
+-	{ CS35L41_DSP1_XM_ACCEL_PL0_PRI, 0x00000000 },
+-	{ 0x00000040,			 0x0000CCCC },
+-	{ 0x00000040,			 0x00003333 },
+-	{ CS35L41_DSP1_CCM_CORE_CTRL,	 0x00000000 },
+-	{ CS35L41_PWR_CTRL2,		 0x00000000 },
+-	{ CS35L41_AMP_GAIN_CTRL,	 0x00000000 },
+-};
+-
+-static const struct reg_sequence cs35l41_revb2_errata_patch[] = {
+-	{ 0x00000040,			 0x00005555 },
+-	{ 0x00000040,			 0x0000AAAA },
+-	{ CS35L41_VIMON_SPKMON_RESYNC,	 0x00000000 },
+-	{ 0x00004310,			 0x00000000 },
+-	{ CS35L41_VPVBST_FS_SEL,	 0x00000000 },
+-	{ CS35L41_BSTCVRT_DCM_CTRL,	 0x00000051 },
+-	{ CS35L41_DSP1_YM_ACCEL_PL0_PRI, 0x00000000 },
+-	{ CS35L41_DSP1_XM_ACCEL_PL0_PRI, 0x00000000 },
+-	{ 0x00000040,			 0x0000CCCC },
+-	{ 0x00000040,			 0x00003333 },
+-	{ CS35L41_DSP1_CCM_CORE_CTRL,	 0x00000000 },
+-	{ CS35L41_PWR_CTRL2,		 0x00000000 },
+-	{ CS35L41_AMP_GAIN_CTRL,	 0x00000000 },
+-};
+-
+ static const struct reg_sequence cs35l41_fs_errata_patch[] = {
+ 	{ CS35L41_DSP1_RX1_RATE,	0x00000001 },
+ 	{ CS35L41_DSP1_RX2_RATE,	0x00000001 },
+@@ -1504,38 +1450,9 @@ int cs35l41_probe(struct cs35l41_private *cs35l41,
+ 		goto err;
+ 	}
+ 
+-	switch (reg_revid) {
+-	case CS35L41_REVID_A0:
+-		ret = regmap_register_patch(cs35l41->regmap,
+-					    cs35l41_reva0_errata_patch,
+-					    ARRAY_SIZE(cs35l41_reva0_errata_patch));
+-		if (ret < 0) {
+-			dev_err(cs35l41->dev,
+-				"Failed to apply A0 errata patch: %d\n", ret);
+-			goto err;
+-		}
+-		break;
+-	case CS35L41_REVID_B0:
+-		ret = regmap_register_patch(cs35l41->regmap,
+-					    cs35l41_revb0_errata_patch,
+-					    ARRAY_SIZE(cs35l41_revb0_errata_patch));
+-		if (ret < 0) {
+-			dev_err(cs35l41->dev,
+-				"Failed to apply B0 errata patch: %d\n", ret);
+-			goto err;
+-		}
+-		break;
+-	case CS35L41_REVID_B2:
+-		ret = regmap_register_patch(cs35l41->regmap,
+-					    cs35l41_revb2_errata_patch,
+-					    ARRAY_SIZE(cs35l41_revb2_errata_patch));
+-		if (ret < 0) {
+-			dev_err(cs35l41->dev,
+-				"Failed to apply B2 errata patch: %d\n", ret);
+-			goto err;
+-		}
+-		break;
+-	}
++	ret = cs35l41_register_errata_patch(cs35l41->dev, cs35l41->regmap, reg_revid);
++	if (ret)
++		goto err;
+ 
+ 	irq_pol = cs35l41_irq_gpio_config(cs35l41);
+ 
 -- 
 2.34.1
 
