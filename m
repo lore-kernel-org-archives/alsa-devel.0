@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C610C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Dec 2021 02:39:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 110D7C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Dec 2021 02:44:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 19A1B1FDA;
-	Wed, 15 Dec 2021 03:38:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 19A1B1FDA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 197852006;
+	Wed, 15 Dec 2021 03:43:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 197852006
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639535986;
-	bh=KoGGgDXuhMCIMBH7OPTMIm4S3789a6/DspS153Yref4=;
+	s=default; t=1639536270;
+	bh=DyFNFjna194z0lzCSiXTTYeIu7oTjjxfQ2ttFjnpfBo=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vdODabTpS4ztusHLjiOXd6ugrIellJ8fVn1Pi1np21blMoubPcr+KyZKKmBIZQV8U
-	 r2VAU8WycFL7g5cubDv7pHjfQrJZjSkvqIg32nNhU6WZN/nON56+/AcsbtYQf5oUhT
-	 3KyK7BmMwQUVODxm0xehorilj9usr5cLiUqLjrI4=
+	b=UV89Go4XxUJIcOHHzMY3zaiDik42Ig3HDe1s1bv0S8fZWArtrmv66+UW4R9f9Nr5/
+	 27aCbC/wLBM7hwF+ivhwiSh6gaH3c3vaQDtA5gDaYk7p7Jlg7B4d09vi2A/AVhFCNM
+	 R9uv0XAHS0EMh4smtQC7ZY//dzUWWFwg9in6mDzY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 815C9F801DB;
-	Wed, 15 Dec 2021 03:38:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id ADB27F80229;
+	Wed, 15 Dec 2021 03:43:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B6789F8025D; Wed, 15 Dec 2021 03:38:54 +0100 (CET)
+ id B23AFF8025D; Wed, 15 Dec 2021 03:43:37 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id BF8BEF801DB
- for <alsa-devel@alsa-project.org>; Wed, 15 Dec 2021 03:38:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BF8BEF801DB
+ by alsa1.perex.cz (Postfix) with ESMTP id E7309F801DB
+ for <alsa-devel@alsa-project.org>; Wed, 15 Dec 2021 03:43:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7309F801DB
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1639535930120713949-webhooks-bot@alsa-project.org>
-References: <1639535930120713949-webhooks-bot@alsa-project.org>
+In-Reply-To: <1639536205801037073-webhooks-bot@alsa-project.org>
+References: <1639536205801037073-webhooks-bot@alsa-project.org>
 Subject: Cant't open mixer and no sound , helem (MIXER,
  'Front Mic Boots Valume', 0, 1, 0) appears twice or more
-Message-Id: <20211215023854.B6789F8025D@alsa1.perex.cz>
-Date: Wed, 15 Dec 2021 03:38:54 +0100 (CET)
+Message-Id: <20211215024337.B23AFF8025D@alsa1.perex.cz>
+Date: Wed, 15 Dec 2021 03:43:37 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -56,7 +56,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #205 was opened from WolsYang:
+alsa-project/alsa-lib issue #205 was edited from WolsYang:
 
 **I had  try the way in this issue, but not work for me : (**
 
@@ -104,6 +104,73 @@ card 0: PCH [HDA Intel PCH], device 8: HDMI 2 [HDMI 2]
   Subdevices: 1/1
   Subdevice #0: subdevice #0
 ```
+**$ amixer -c 0 controls**
+```
+numid=18,iface=CARD,name='Front Line Out Front Phantom Jack'
+numid=16,iface=CARD,name='Front Mic Jack'
+numid=76,iface=CARD,name='Front Mic Jack',index=1
+numid=41,iface=CARD,name='HDMI/DP,pcm=3 Jack'
+numid=47,iface=CARD,name='HDMI/DP,pcm=7 Jack'
+numid=53,iface=CARD,name='HDMI/DP,pcm=8 Jack'
+numid=78,iface=CARD,name='Headphone Front Jack'
+numid=79,iface=CARD,name='Headphone Surround Jack'
+numid=19,iface=CARD,name='Line Out Surround Phantom Jack'
+numid=17,iface=CARD,name='Rear Mic Jack'
+numid=77,iface=CARD,name='Rear Mic Jack',index=1
+numid=15,iface=MIXER,name='Master Playback Switch'
+numid=14,iface=MIXER,name='Master Playback Volume'
+numid=64,iface=MIXER,name='Headphone Playback Switch'
+numid=66,iface=MIXER,name='Headphone Playback Switch',index=1
+numid=63,iface=MIXER,name='Headphone Playback Volume'
+numid=65,iface=MIXER,name='Headphone Playback Volume',index=1
+numid=62,iface=MIXER,name='PCM Playback Volume'
+numid=12,iface=MIXER,name='Front Mic Boost Volume'
+numid=7,iface=MIXER,name='Front Mic Playback Switch'
+numid=6,iface=MIXER,name='Front Mic Playback Volume'
+numid=74,iface=MIXER,name='Front Mic Boost Volume',device=1
+numid=69,iface=MIXER,name='Front Mic Playback Switch',device=1
+numid=68,iface=MIXER,name='Front Mic Playback Volume',device=1
+numid=2,iface=MIXER,name='Front Playback Switch'
+numid=1,iface=MIXER,name='Front Playback Volume'
+numid=4,iface=MIXER,name='Surround Playback Switch'
+numid=3,iface=MIXER,name='Surround Playback Volume'
+numid=11,iface=MIXER,name='Capture Switch'
+numid=73,iface=MIXER,name='Capture Switch',device=1
+numid=10,iface=MIXER,name='Capture Volume'
+numid=72,iface=MIXER,name='Capture Volume',device=1
+numid=5,iface=MIXER,name='Loopback Mixing'
+numid=67,iface=MIXER,name='Loopback Mixing',device=1
+numid=42,iface=MIXER,name='IEC958 Playback Con Mask'
+numid=48,iface=MIXER,name='IEC958 Playback Con Mask',index=1
+numid=54,iface=MIXER,name='IEC958 Playback Con Mask',index=2
+numid=43,iface=MIXER,name='IEC958 Playback Pro Mask'
+numid=49,iface=MIXER,name='IEC958 Playback Pro Mask',index=1
+numid=55,iface=MIXER,name='IEC958 Playback Pro Mask',index=2
+numid=44,iface=MIXER,name='IEC958 Playback Default'
+numid=50,iface=MIXER,name='IEC958 Playback Default',index=1
+numid=56,iface=MIXER,name='IEC958 Playback Default',index=2
+numid=45,iface=MIXER,name='IEC958 Playback Switch'
+numid=51,iface=MIXER,name='IEC958 Playback Switch',index=1
+numid=57,iface=MIXER,name='IEC958 Playback Switch',index=2
+numid=13,iface=MIXER,name='Rear Mic Boost Volume'
+numid=9,iface=MIXER,name='Rear Mic Playback Switch'
+numid=8,iface=MIXER,name='Rear Mic Playback Volume'
+numid=75,iface=MIXER,name='Rear Mic Boost Volume',device=1
+numid=71,iface=MIXER,name='Rear Mic Playback Switch',device=1
+numid=70,iface=MIXER,name='Rear Mic Playback Volume',device=1
+numid=21,iface=PCM,name='Capture Channel Map'
+numid=20,iface=PCM,name='Playback Channel Map'
+numid=81,iface=PCM,name='Capture Channel Map',device=2
+numid=80,iface=PCM,name='Playback Channel Map',device=2
+numid=46,iface=PCM,name='ELD',device=3
+numid=59,iface=PCM,name='Playback Channel Map',device=3
+numid=52,iface=PCM,name='ELD',device=7
+numid=60,iface=PCM,name='Playback Channel Map',device=7
+numid=58,iface=PCM,name='ELD',device=8
+numid=61,iface=PCM,name='Playback Channel Map',device=8
+
+```
+
 
 **$ pactl list modules**
 ```
