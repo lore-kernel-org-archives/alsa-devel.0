@@ -4,63 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78B2AC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Dec 2021 17:08:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5B37C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Dec 2021 18:07:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7A36F193D;
-	Wed, 15 Dec 2021 18:07:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A36F193D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2EF6518A6;
+	Wed, 15 Dec 2021 19:06:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2EF6518A6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639588127;
-	bh=dxevgy5vy6Cl5vkPcI2PgcDi2RF2XSbrXpORtTYdNds=;
-	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=tI3WzJKpxz+3qa4PLjf9Cvb0VMzlhhw2rjMFIfhDSyC4UBOphLOGFqkv0pk8iACnQ
-	 QvH9PSXUpliJUfjEXnIZiqQJjouJ5Mi1+a+JJYg+T0/UwhJfR/V9DnLdwhAn/eEQ+X
-	 WNz3YBSgP/YaUcG/xJZTB2luZWCq4Mn4BpI4GHlA=
+	s=default; t=1639591665;
+	bh=qJREh0NSSUxHfI5+Ndul/GFoZR2ecW73FdQySh5OER4=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=OkJSlKBMclGJC1abjHLa1vgaiJ6Tin9mJnBK9dSbmVCj8vzoqnyCX9T/mVMFwrJ32
+	 HeCjW+4GONm0B8eH3TNqI4/+I5C9eNHkafQ73V4U+dpSMI/nznYTzs1fWFumdt46Og
+	 FT8R2meSNxM/P0EdvdN9Gq6XanC0gCyn0WsT/adw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 12FFAF801F5;
-	Wed, 15 Dec 2021 18:07:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8F02DF80236;
+	Wed, 15 Dec 2021 19:06:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 75243F80236; Wed, 15 Dec 2021 18:07:55 +0100 (CET)
-Received: from smtp1.axis.com (smtp1.axis.com [195.60.68.17])
+ id C3A28F80236; Wed, 15 Dec 2021 19:06:52 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 86CE9F8019D
- for <alsa-devel@alsa-project.org>; Wed, 15 Dec 2021 18:07:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86CE9F8019D
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=axis.com header.i=@axis.com
- header.b="UEbZt99S"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=axis.com; q=dns/txt; s=axis-central1; t=1639588070;
- x=1671124070;
- h=date:from:to:cc:subject:message-id:mime-version;
- bh=E5x5Fh3kAPl1d8ha//eW/GWflI0/Y717alolefM8qg0=;
- b=UEbZt99S1RQEivfRlrvixC3DU1ieWkK2u9VAGUQZlILC0GntsnALZaX9
- x1sRIBqvC7Rxfu5XHvN31w+hhSLkajdhb5Lm5RctvEGUcxDc+2ah0xHVv
- 9IzDue2eGIQtPoi6UEW1SwPVNFioj58/56YOHWepBvPB74QUTt5EJ0LyU
- mh8Wix9CkegICowlNs3O7OwGp1zSBdG9C/tepXaOd6dTDnoAc0qLrRuyl
- AGFIOaPMvqC7XEz1cnCa/hy+ymEJ7f2TJTcSnqQW/OBvo/gHTo0WDUGTb
- ttCX2OYLxAz+xd0gQ+rIlJu8S1nE4FT7SmfEXxlSormEPt2c6hhbOB/J7 Q==;
-Date: Wed, 15 Dec 2021 18:07:37 +0100
-From: Ricard Wanderlof <ricardw@axis.com>
-X-X-Sender: ricardw@lap5cg0092dnk.se.axis.com
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Rob
- Herring <robh+dt@kernel.org>
-Subject: [RESEND, PATCH v7 1/2] dt-bindings: sound: tlv320adc3xxx: New codec
- driver
-Message-ID: <alpine.DEB.2.21.2112151806100.27889@lap5cg0092dnk.se.axis.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B53C2F800B0
+ for <alsa-devel@alsa-project.org>; Wed, 15 Dec 2021 19:06:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B53C2F800B0
+X-IronPort-AV: E=McAfee;i="6200,9189,10199"; a="239519999"
+X-IronPort-AV: E=Sophos;i="5.88,207,1635231600"; d="scan'208";a="239519999"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Dec 2021 10:04:13 -0800
+X-IronPort-AV: E=Sophos;i="5.88,207,1635231600"; d="scan'208";a="662015057"
+Received: from manamie-mobl.amr.corp.intel.com (HELO
+ rsridh2-mobl1.localdomain) ([10.254.37.3])
+ by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Dec 2021 10:04:13 -0800
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 5/8] ASoC: SOF: sof-audio: Drop the `cmd` member from struct
+ snd_sof_control
+Date: Wed, 15 Dec 2021 10:04:01 -0800
+Message-Id: <20211215180404.53254-6-ranjani.sridharan@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211215180404.53254-1-ranjani.sridharan@linux.intel.com>
+References: <20211215180404.53254-1-ranjani.sridharan@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-X-Originating-IP: [10.0.5.60]
-X-ClientProxiedBy: se-mail03w.axis.com (10.20.40.9) To se-mail07w.axis.com
- (10.20.40.13)
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- alsa-devel <alsa-devel@alsa-project.org>
+Content-Transfer-Encoding: 8bit
+Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>, tiwai@suse.de,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,200 +73,131 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 
-DT bindings for Texas Instruments TLV320ADC3001 and TLV320ADC3101
-audio ADCs.
+There is no need to use two variables to store and check the same
+information, the scontrol->cmd is the same as scontrol->control_data->cmd.
 
-Signed-off-by: Ricard Wanderlof <ricardw@axis.com>
+Drop the former one and when it is needed, access the cmd from the
+control_data.
+
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- .../bindings/sound/ti,tlv320adc3xxx.yaml      | 137 ++++++++++++++++++
- include/dt-bindings/sound/tlv320adc3xxx.h     |  28 ++++
- 2 files changed, 165 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/ti,tlv320adc3xxx.yaml
- create mode 100644 include/dt-bindings/sound/tlv320adc3xxx.h
+ sound/soc/sof/control.c   |  6 +++---
+ sound/soc/sof/sof-audio.c |  2 +-
+ sound/soc/sof/sof-audio.h |  1 -
+ sound/soc/sof/topology.c  | 14 +++++---------
+ 4 files changed, 9 insertions(+), 14 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/ti,tlv320adc3xxx.yaml b/Documentation/devicetree/bindings/sound/ti,tlv320adc3xxx.yaml
-new file mode 100644
-index 000000000000..83936f594d1a
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/ti,tlv320adc3xxx.yaml
-@@ -0,0 +1,137 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/ti,tlv320adc3xxx.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Texas Instruments TLV320ADC3001/TLV320ADC3101 Stereo ADC
-+
-+maintainers:
-+  - Ricard Wanderlof <ricardw@axis.com>
-+
-+description: |
-+  Texas Instruments TLV320ADC3001 and TLV320ADC3101 Stereo ADC
-+  https://www.ti.com/product/TLV320ADC3001
-+  https://www.ti.com/product/TLV320ADC3101
-+
-+properties:
-+  compatible:
-+    enum:
-+      - ti,tlv320adc3001
-+      - ti,tlv320adc3101
-+
-+  reg:
-+    maxItems: 1
-+    description: I2C address
-+
-+  '#sound-dai-cells':
-+    const: 0
-+
-+  '#gpio-cells':
-+    const: 2
-+
-+  gpio-controller: true
-+
-+  reset-gpios:
-+    maxItems: 1
-+    description: GPIO pin used for codec reset (RESET pin)
-+
-+  clocks:
-+    maxItems: 1
-+    description: Master clock (MCLK)
-+
-+  ti,dmdin-gpio1:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    enum:
-+      - 0 # ADC3XXX_GPIO_DISABLED       - I/O buffers powered down and not used
-+      - 1 # ADC3XXX_GPIO_INPUT          - Various non-GPIO input functions
-+      - 2 # ADC3XXX_GPIO_GPI            - General purpose input
-+      - 3 # ADC3XXX_GPIO_GPO            - General purpose output
-+      - 4 # ADC3XXX_GPIO_CLKOUT         - Clock source set in CLKOUT_MUX reg
-+      - 5 # ADC3XXX_GPIO_INT1           - INT1 output
-+      - 6 # ADC3XXX_GPIO_SECONDARY_BCLK - Codec interface secondary BCLK
-+      - 7 # ADC3XXX_GPIO_SECONDARY_WCLK - Codec interface secondary WCLK
-+    default: 0
-+    description: |
-+      Configuration for DMDIN/GPIO1 pin.
-+
-+      When ADC3XXX_GPIO_GPO is configured, this causes corresponding the
-+      ALSA control "GPIOx Output" to appear, as a switch control.
-+
-+  ti,dmclk-gpio2:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    enum:
-+      - 0 # ADC3XXX_GPIO_DISABLED       - I/O buffers powered down and not used
-+      - 1 # ADC3XXX_GPIO_INPUT          - Various non-GPIO input functions
-+      - 2 # ADC3XXX_GPIO_GPI            - General purpose input
-+      - 3 # ADC3XXX_GPIO_GPO            - General purpose output
-+      - 4 # ADC3XXX_GPIO_CLKOUT         - Clock source set in CLKOUT_MUX reg
-+      - 5 # ADC3XXX_GPIO_INT1           - INT1 output
-+      - 6 # ADC3XXX_GPIO_SECONDARY_BCLK - Codec interface secondary BCLK
-+      - 7 # ADC3XXX_GPIO_SECONDARY_WCLK - Codec interface secondary WCLK
-+    default: 0
-+    description: |
-+      Configuration for DMCLK/GPIO2 pin.
-+
-+      When ADC3XXX_GPIO_GPO is configured, this causes corresponding the
-+      ALSA control "GPIOx Output" to appear, as a switch control.
-+
-+      Note that there is currently no support for reading the GPIO pins as
-+      inputs.
-+
-+  ti,micbias1-vg:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    enum:
-+      - 0 # ADC3XXX_MICBIAS_OFF		- Mic bias is powered down
-+      - 1 # ADC3XXX_MICBIAS_2_0V	- Mic bias is set to 2.0V
-+      - 2 # ADC3XXX_MICBIAS_2_5V	- Mic bias is set to 2.5V
-+      - 3 # ADC3XXX_MICBIAS_AVDD	- Mic bias is same as AVDD supply
-+    default: 0
-+    description: |
-+      Mic bias voltage output on MICBIAS1 pin
-+
-+  ti,micbias2-vg:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    enum:
-+      - 0 # ADC3XXX_MICBIAS_OFF		- Mic bias is powered down
-+      - 1 # ADC3XXX_MICBIAS_2_0V	- Mic bias is set to 2.0V
-+      - 2 # ADC3XXX_MICBIAS_2_5V	- Mic bias is set to 2.5V
-+      - 3 # ADC3XXX_MICBIAS_AVDD	- Mic bias is same as AVDD supply
-+    default: 0
-+    description: |
-+      Mic bias voltage output on MICBIAS2 pin
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+
-+    #include <dt-bindings/gpio/gpio.h>
-+    #include <dt-bindings/sound/tlv320adc3xxx.h>
-+
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        tlv320adc3101: audio-codec@18 {
-+            compatible = "ti,tlv320adc3101";
-+            reg = <0x18>;
-+            reset-gpios = <&gpio_pc 3 GPIO_ACTIVE_LOW>;
-+            clocks = <&audio_mclk>;
-+            gpio-controller;
-+            #gpio-cells = <2>;
-+            ti,dmdin-gpio1 = <ADC3XXX_GPIO_GPO>;
-+            ti,micbias1-vg = <ADC3XXX_MICBIAS_AVDD>;
-+        };
-+    };
-+
-+    audio_mclk: clock {
-+        compatible = "fixed-clock";
-+        #clock-cells = <0>;
-+        clock-frequency = <24576000>;
-+    };
-+...
-diff --git a/include/dt-bindings/sound/tlv320adc3xxx.h b/include/dt-bindings/sound/tlv320adc3xxx.h
-new file mode 100644
-index 000000000000..ec988439da20
---- /dev/null
-+++ b/include/dt-bindings/sound/tlv320adc3xxx.h
-@@ -0,0 +1,28 @@
-+/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
-+/*
-+ * Devicetree bindings definitions for tlv320adc3xxx driver.
-+ *
-+ * Copyright (C) 2021 Axis Communications AB
-+ */
-+#ifndef __DT_TLV320ADC3XXX_H
-+#define __DT_TLV320ADC3XXX_H
-+
-+#define ADC3XXX_GPIO_DISABLED		0 /* I/O buffers powered down */
-+#define ADC3XXX_GPIO_INPUT		1 /* Various non-GPIO inputs */
-+#define ADC3XXX_GPIO_GPI		2 /* General purpose input */
-+#define ADC3XXX_GPIO_GPO		3 /* General purpose output */
-+#define ADC3XXX_GPIO_CLKOUT		4 /* Source set in reg. CLKOUT_MUX */
-+#define ADC3XXX_GPIO_INT1		5 /* INT1 output */
-+#define ADC3XXX_GPIO_INT2		6 /* INT2 output */
-+/* value 7 is reserved */
-+#define ADC3XXX_GPIO_SECONDARY_BCLK	8 /* Codec interface secondary BCLK */
-+#define ADC3XXX_GPIO_SECONDARY_WCLK	9 /* Codec interface secondary WCLK */
-+#define ADC3XXX_GPIO_ADC_MOD_CLK	10 /* Clock output for digital mics */
-+/* values 11-15 reserved */
-+
-+#define ADC3XXX_MICBIAS_OFF		0 /* Micbias pin powered off */
-+#define ADC3XXX_MICBIAS_2_0V		1 /* Micbias pin set to 2.0V */
-+#define ADC3XXX_MICBIAS_2_5V		2 /* Micbias pin set to 2.5V */
-+#define ADC3XXX_MICBIAS_AVDD		3 /* Use AVDD voltage for micbias pin */
-+
-+#endif /* __DT_TLV320ADC3XXX_H */
+diff --git a/sound/soc/sof/control.c b/sound/soc/sof/control.c
+index 23a916ea93f8..9297b29d65cd 100644
+--- a/sound/soc/sof/control.c
++++ b/sound/soc/sof/control.c
+@@ -372,7 +372,7 @@ int snd_sof_bytes_ext_put(struct snd_kcontrol *kcontrol,
+ 	}
+ 
+ 	/* Check that header id matches the command */
+-	if (header.numid != scontrol->cmd) {
++	if (header.numid != cdata->cmd) {
+ 		dev_err_ratelimited(scomp->dev,
+ 				    "error: incorrect numid %d\n",
+ 				    header.numid);
+@@ -462,7 +462,7 @@ int snd_sof_bytes_ext_volatile_get(struct snd_kcontrol *kcontrol, unsigned int _
+ 		goto out;
+ 	}
+ 
+-	header.numid = scontrol->cmd;
++	header.numid = cdata->cmd;
+ 	header.length = data_size;
+ 	if (copy_to_user(tlvd, &header, sizeof(struct snd_ctl_tlv))) {
+ 		ret = -EFAULT;
+@@ -522,7 +522,7 @@ int snd_sof_bytes_ext_get(struct snd_kcontrol *kcontrol,
+ 	if (data_size > size)
+ 		return -ENOSPC;
+ 
+-	header.numid = scontrol->cmd;
++	header.numid = cdata->cmd;
+ 	header.length = data_size;
+ 	if (copy_to_user(tlvd, &header, sizeof(struct snd_ctl_tlv)))
+ 		return -EFAULT;
+diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
+index 269eca26eab9..4530c6ed34e0 100644
+--- a/sound/soc/sof/sof-audio.c
++++ b/sound/soc/sof/sof-audio.c
+@@ -21,7 +21,7 @@ static int sof_kcontrol_setup(struct snd_sof_dev *sdev, struct snd_sof_control *
+ 	scontrol->readback_offset = 0;
+ 
+ 	/* notify DSP of kcontrol values */
+-	switch (scontrol->cmd) {
++	switch (scontrol->control_data->cmd) {
+ 	case SOF_CTRL_CMD_VOLUME:
+ 	case SOF_CTRL_CMD_ENUM:
+ 	case SOF_CTRL_CMD_SWITCH:
+diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
+index 5bcc842e4792..84a8ebe3b1c3 100644
+--- a/sound/soc/sof/sof-audio.h
++++ b/sound/soc/sof/sof-audio.h
+@@ -74,7 +74,6 @@ struct snd_sof_control {
+ 	u32 readback_offset; /* offset to mmapped data if used */
+ 	struct sof_ipc_ctrl_data *control_data;
+ 	u32 size;	/* cdata size */
+-	enum sof_ipc_ctrl_cmd cmd;
+ 	u32 *volume_table; /* volume table computed from tlv data*/
+ 
+ 	struct list_head list;	/* list in sdev control list */
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index c440e1c53ca5..ec59baf32699 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -1090,13 +1090,11 @@ static int sof_control_load_volume(struct snd_soc_component *scomp,
+ 
+ 	/* set cmd for mixer control */
+ 	if (le32_to_cpu(mc->max) == 1) {
+-		scontrol->cmd = SOF_CTRL_CMD_SWITCH;
+-		scontrol->control_data->cmd = scontrol->cmd;
++		scontrol->control_data->cmd = SOF_CTRL_CMD_SWITCH;
+ 		goto skip;
+ 	}
+ 
+-	scontrol->cmd = SOF_CTRL_CMD_VOLUME;
+-	scontrol->control_data->cmd = scontrol->cmd;
++	scontrol->control_data->cmd = SOF_CTRL_CMD_VOLUME;
+ 
+ 	/* extract tlv data */
+ 	if (!kc->tlv.p || get_tlv_data(kc->tlv.p, tlv) < 0) {
+@@ -1167,8 +1165,7 @@ static int sof_control_load_enum(struct snd_soc_component *scomp,
+ 	scontrol->comp_id = sdev->next_comp_id;
+ 	scontrol->num_channels = le32_to_cpu(ec->num_channels);
+ 	scontrol->control_data->index = kc->index;
+-	scontrol->cmd = SOF_CTRL_CMD_ENUM;
+-	scontrol->control_data->cmd = scontrol->cmd;
++	scontrol->control_data->cmd = SOF_CTRL_CMD_ENUM;
+ 
+ 	dev_dbg(scomp->dev, "tplg: load kcontrol index %d chans %d comp_id %d\n",
+ 		scontrol->comp_id, scontrol->num_channels, scontrol->comp_id);
+@@ -1214,8 +1211,7 @@ static int sof_control_load_bytes(struct snd_soc_component *scomp,
+ 	}
+ 
+ 	scontrol->comp_id = sdev->next_comp_id;
+-	scontrol->cmd = SOF_CTRL_CMD_BINARY;
+-	scontrol->control_data->cmd = scontrol->cmd;
++	scontrol->control_data->cmd = SOF_CTRL_CMD_BINARY;
+ 	scontrol->control_data->index = kc->index;
+ 
+ 	dev_dbg(scomp->dev, "tplg: load kcontrol index %d chans %d\n",
+@@ -2080,7 +2076,7 @@ static int sof_get_control_data(struct snd_soc_component *scomp,
+ 		*size += wdata[i].pdata->size;
+ 
+ 		/* get data type */
+-		switch (wdata[i].control->cmd) {
++		switch (wdata[i].control->control_data->cmd) {
+ 		case SOF_CTRL_CMD_VOLUME:
+ 		case SOF_CTRL_CMD_ENUM:
+ 		case SOF_CTRL_CMD_SWITCH:
 -- 
-2.20.1
+2.25.1
 
-
--- 
-Ricard Wolf Wanderlof                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
