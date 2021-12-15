@@ -4,60 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36D25C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Dec 2021 18:10:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76E26C433FE
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Dec 2021 18:10:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5DE851AC2;
-	Wed, 15 Dec 2021 19:09:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5DE851AC2
+	by alsa0.perex.cz (Postfix) with ESMTPS id A6F5A18B7;
+	Wed, 15 Dec 2021 19:09:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6F5A18B7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639591805;
-	bh=KDLNHdW8UsZ5hZfnutB9+v1aw0u8bf1MWI8mW3tg9xE=;
+	s=default; t=1639591819;
+	bh=KIFf1KiX7mcT9FgeGScU3+yqjb9/ZW/8YOT/3A3xm8o=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HFwnIrJfSeEEvrKtsAcliwEm2r08AeCe7Y6B+e0BEdHg/QrpIV5q3PDlmjgCj16zM
-	 JOE0XgTe8cj5+C1x0Qw2rsd5VWQ/snzMtxP4g3LXwhuESc3O0M4aDY1a1OBM55I1Oz
-	 rnLbJCnoOdrO9tEsPa7svzY9c6sg+MouFOwBt4YQ=
+	b=f7LQcYMjFffO707TOIBUXcYNhkHf+b63WHoi0P1lMH4qJU2IwXXNCMqPTlxpnL/1u
+	 d+9EsX01fJj9lTT40vM3+9Rm1KyZ2U4PoQ0j+kB3LhmT+l4+ENGjlPaGZI9z6a6NcI
+	 Pxv3njzwGIotjMrMHCqWUZ2XQO4R3Q5jGnMKMeIo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D88A6F8051E;
-	Wed, 15 Dec 2021 19:07:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BF70EF80525;
+	Wed, 15 Dec 2021 19:07:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3EBADF8051C; Wed, 15 Dec 2021 19:07:09 +0100 (CET)
+ id 805D0F8051A; Wed, 15 Dec 2021 19:07:10 +0100 (CET)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3C1E9F80311
+ by alsa1.perex.cz (Postfix) with ESMTPS id 34985F8030F
  for <alsa-devel@alsa-project.org>; Wed, 15 Dec 2021 19:06:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3C1E9F80311
-X-IronPort-AV: E=McAfee;i="6200,9189,10199"; a="302671003"
-X-IronPort-AV: E=Sophos;i="5.88,207,1635231600"; d="scan'208";a="302671003"
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34985F8030F
+X-IronPort-AV: E=McAfee;i="6200,9189,10199"; a="302671006"
+X-IronPort-AV: E=Sophos;i="5.88,207,1635231600"; d="scan'208";a="302671006"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Dec 2021 10:04:13 -0800
-X-IronPort-AV: E=Sophos;i="5.88,207,1635231600"; d="scan'208";a="662015059"
+ 15 Dec 2021 10:04:14 -0800
+X-IronPort-AV: E=Sophos;i="5.88,207,1635231600"; d="scan'208";a="662015066"
 Received: from manamie-mobl.amr.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.254.37.3])
  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  15 Dec 2021 10:04:13 -0800
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 6/8] ASoC: SOF: control: Do not handle control notification
- with component type
-Date: Wed, 15 Dec 2021 10:04:02 -0800
-Message-Id: <20211215180404.53254-7-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 8/8] ASoC: SOF: topology: read back control data from DSP
+Date: Wed, 15 Dec 2021 10:04:04 -0800
+Message-Id: <20211215180404.53254-9-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211215180404.53254-1-ranjani.sridharan@linux.intel.com>
 References: <20211215180404.53254-1-ranjani.sridharan@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>, tiwai@suse.de,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
- Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc: tiwai@suse.de, broonie@kernel.org,
+ =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -73,52 +72,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Read back the control data from the DSP to initialize the control data
+size to match that of the data in the DSP. This is particularly useful
+for volatile read-only kcontrols in static pipelines.
 
-The component type is not used in firmware nor in the kernel currently and
-it is not even clear how it should be handled.
-
-Do not even try to handle it to avoid errors.
-
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/sof/control.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ sound/soc/sof/sof-audio.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/sound/soc/sof/control.c b/sound/soc/sof/control.c
-index 9297b29d65cd..dac0b630b6a0 100644
---- a/sound/soc/sof/control.c
-+++ b/sound/soc/sof/control.c
-@@ -577,6 +577,13 @@ void snd_sof_control_notify(struct snd_sof_dev *sdev,
- 	bool found = false;
- 	int i, type;
- 
-+	if (cdata->type == SOF_CTRL_TYPE_VALUE_COMP_GET ||
-+	    cdata->type == SOF_CTRL_TYPE_VALUE_COMP_SET) {
-+		dev_err(sdev->dev,
-+			"Component data is not supported in control notification\n");
-+		return;
-+	}
+diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
+index 735fbc5fe1bd..91e3fa5a7350 100644
+--- a/sound/soc/sof/sof-audio.c
++++ b/sound/soc/sof/sof-audio.c
+@@ -59,12 +59,26 @@ static int sof_widget_kcontrol_setup(struct snd_sof_dev *sdev, struct snd_sof_wi
+ 	/* set up all controls for the widget */
+ 	list_for_each_entry(scontrol, &sdev->kcontrol_list, list)
+ 		if (scontrol->comp_id == swidget->comp_id) {
++			/* set kcontrol data in DSP */
+ 			ret = sof_kcontrol_setup(sdev, scontrol);
+ 			if (ret < 0) {
+ 				dev_err(sdev->dev, "error: fail to set up kcontrols for widget %s\n",
+ 					swidget->widget->name);
+ 				return ret;
+ 			}
 +
- 	/* Find the swidget first */
- 	list_for_each_entry(swidget, &sdev->widget_list, list) {
- 		if (swidget->comp_id == cdata->comp_id) {
-@@ -643,11 +650,6 @@ void snd_sof_control_notify(struct snd_sof_dev *sdev,
- 		expected_size += cdata->num_elems *
- 				 sizeof(struct sof_ipc_ctrl_value_chan);
- 		break;
--	case SOF_CTRL_TYPE_VALUE_COMP_GET:
--	case SOF_CTRL_TYPE_VALUE_COMP_SET:
--		expected_size += cdata->num_elems *
--				 sizeof(struct sof_ipc_ctrl_value_comp);
--		break;
- 	case SOF_CTRL_TYPE_DATA_GET:
- 	case SOF_CTRL_TYPE_DATA_SET:
- 		expected_size += cdata->num_elems + sizeof(struct sof_abi_hdr);
++			/*
++			 * Read back the data from the DSP for static widgets. This is particularly
++			 * useful for binary kcontrols associated with static pipeline widgets to
++			 * initialize the data size to match that in the DSP.
++			 */
++			if (swidget->dynamic_pipeline_widget)
++				continue;
++
++			ret = snd_sof_ipc_set_get_comp_data(scontrol, false);
++			if (ret < 0)
++				dev_warn(sdev->dev, "Failed kcontrol get for control in widget %s\n",
++					 swidget->widget->name);
+ 		}
+ 
+ 	return 0;
 -- 
 2.25.1
 
