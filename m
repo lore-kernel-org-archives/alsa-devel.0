@@ -4,59 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76E26C433FE
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Dec 2021 18:10:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E2BAC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Dec 2021 18:15:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A6F5A18B7;
-	Wed, 15 Dec 2021 19:09:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6F5A18B7
+	by alsa0.perex.cz (Postfix) with ESMTPS id C350D1AE7;
+	Wed, 15 Dec 2021 19:14:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C350D1AE7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639591819;
-	bh=KIFf1KiX7mcT9FgeGScU3+yqjb9/ZW/8YOT/3A3xm8o=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1639592103;
+	bh=5YQrU93bqSYbc6ms1kkePtc6SK3B2uJd8ggOzZ6cDDk=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=f7LQcYMjFffO707TOIBUXcYNhkHf+b63WHoi0P1lMH4qJU2IwXXNCMqPTlxpnL/1u
-	 d+9EsX01fJj9lTT40vM3+9Rm1KyZ2U4PoQ0j+kB3LhmT+l4+ENGjlPaGZI9z6a6NcI
-	 Pxv3njzwGIotjMrMHCqWUZ2XQO4R3Q5jGnMKMeIo=
+	b=BIT6T0ErLdAbq9WJvqBP8Rzm3lpWwsL/ZtAUhzrwc25hxg3PAe4T8bABza8iA73bR
+	 nc3rKxS1WtaJlH6Sk2cOLqemYKqC9BBPjCA0LWaN/cLN3oIW/cY8WAyBS5lZJsaa32
+	 gvNp8AMPxGjQDBwBEDCMxtG00GwWPk/XeTh5Otrk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BF70EF80525;
-	Wed, 15 Dec 2021 19:07:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 57DF7F8019D;
+	Wed, 15 Dec 2021 19:14:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 805D0F8051A; Wed, 15 Dec 2021 19:07:10 +0100 (CET)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ id 71193F8014C; Wed, 15 Dec 2021 19:14:11 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 104C8F8014C
+ for <alsa-devel@alsa-project.org>; Wed, 15 Dec 2021 19:14:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 104C8F8014C
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="f9q7Z1mS"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 34985F8030F
- for <alsa-devel@alsa-project.org>; Wed, 15 Dec 2021 19:06:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34985F8030F
-X-IronPort-AV: E=McAfee;i="6200,9189,10199"; a="302671006"
-X-IronPort-AV: E=Sophos;i="5.88,207,1635231600"; d="scan'208";a="302671006"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Dec 2021 10:04:14 -0800
-X-IronPort-AV: E=Sophos;i="5.88,207,1635231600"; d="scan'208";a="662015066"
-Received: from manamie-mobl.amr.corp.intel.com (HELO
- rsridh2-mobl1.localdomain) ([10.254.37.3])
- by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Dec 2021 10:04:13 -0800
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 8/8] ASoC: SOF: topology: read back control data from DSP
-Date: Wed, 15 Dec 2021 10:04:04 -0800
-Message-Id: <20211215180404.53254-9-ranjani.sridharan@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211215180404.53254-1-ranjani.sridharan@linux.intel.com>
-References: <20211215180404.53254-1-ranjani.sridharan@linux.intel.com>
+ by dfw.source.kernel.org (Postfix) with ESMTPS id C5E9361896;
+ Wed, 15 Dec 2021 18:14:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BCC2C36AE2;
+ Wed, 15 Dec 2021 18:14:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1639592046;
+ bh=5YQrU93bqSYbc6ms1kkePtc6SK3B2uJd8ggOzZ6cDDk=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=f9q7Z1mSvAKMVyiDpM9Fd4XDRjxvYd9opcJ7BXM7A7ZuU+Y3IwkM93aZEZIcuBfcf
+ ZK+Ir8S+s7S+oXGAjc9iCbbaHuVsR5Y7cUudmPDfAZIb7/34i9EyGDXHXTYcE3NsyV
+ L0pVybgwAwDsAiWjVV7gEXXYpd4uosEG+yPza2Ge6qJh2CeZraN41AUHwhv3Tl/moP
+ ZUZv4pc6KzzfaeOj0FYqvQv8EGw/eNEzqsNL+Ae7jyQDDTsz+1fsWMR7Q90x1sAJht
+ i1wPdqTGSPCUa6LqtPAOpJ1i1Dc4JvlHaz7RetRi7zunCnQwW4GiED02E08Fo8lUr3
+ 50BSLqIoGp+CQ==
+From: Mark Brown <broonie@kernel.org>
+To: Martin Povišer <povik@protonmail.com>, lgirdwood@gmail.com
+In-Reply-To: <20211206224529.74656-1-povik@protonmail.com>
+References: <20211206224529.74656-1-povik@protonmail.com>
+Subject: Re: [PATCH] ASoC: tas2770: Fix setting of high sample rates
+Message-Id: <163959204483.2212554.13270915403974702166.b4-ty@kernel.org>
+Date: Wed, 15 Dec 2021 18:14:04 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, broonie@kernel.org,
- =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, trivial@kernel.org, dmurphy@ti.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,48 +79,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Read back the control data from the DSP to initialize the control data
-size to match that of the data in the DSP. This is particularly useful
-for volatile read-only kcontrols in static pipelines.
+On Mon, 06 Dec 2021 22:45:43 +0000, Martin Povišer wrote:
+> Although the codec advertises support for 176.4 and 192 ksps, without
+> this fix setting those sample rates fails with EINVAL at hw_params time.
+> 
+> 
 
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
----
- sound/soc/sof/sof-audio.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+Applied to
 
-diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
-index 735fbc5fe1bd..91e3fa5a7350 100644
---- a/sound/soc/sof/sof-audio.c
-+++ b/sound/soc/sof/sof-audio.c
-@@ -59,12 +59,26 @@ static int sof_widget_kcontrol_setup(struct snd_sof_dev *sdev, struct snd_sof_wi
- 	/* set up all controls for the widget */
- 	list_for_each_entry(scontrol, &sdev->kcontrol_list, list)
- 		if (scontrol->comp_id == swidget->comp_id) {
-+			/* set kcontrol data in DSP */
- 			ret = sof_kcontrol_setup(sdev, scontrol);
- 			if (ret < 0) {
- 				dev_err(sdev->dev, "error: fail to set up kcontrols for widget %s\n",
- 					swidget->widget->name);
- 				return ret;
- 			}
-+
-+			/*
-+			 * Read back the data from the DSP for static widgets. This is particularly
-+			 * useful for binary kcontrols associated with static pipeline widgets to
-+			 * initialize the data size to match that in the DSP.
-+			 */
-+			if (swidget->dynamic_pipeline_widget)
-+				continue;
-+
-+			ret = snd_sof_ipc_set_get_comp_data(scontrol, false);
-+			if (ret < 0)
-+				dev_warn(sdev->dev, "Failed kcontrol get for control in widget %s\n",
-+					 swidget->widget->name);
- 		}
- 
- 	return 0;
--- 
-2.25.1
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-linus
 
+Thanks!
+
+[1/1] ASoC: tas2770: Fix setting of high sample rates
+      commit: 80d5be1a057e05f01d66e986cfd34d71845e5190
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
