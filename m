@@ -4,82 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9976EC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Dec 2021 11:45:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82907C4332F
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Dec 2021 11:45:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AFC4F19FF;
-	Thu, 16 Dec 2021 12:44:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AFC4F19FF
+	by alsa0.perex.cz (Postfix) with ESMTPS id A955E1838;
+	Thu, 16 Dec 2021 12:44:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A955E1838
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639655132;
-	bh=UzKHJyQmCViUQKHXcQpdeLq8k5D2JYbdNlMy4kfZ9g4=;
+	s=default; t=1639655149;
+	bh=C2PULqmr2LhYXOTyVzKx9xeOKW8rFR3AOhv7IKfD588=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EgeQk74fRdbP+K7paCPyTnXRP1FRl6xkSryvgS1wGP7W2yX5ailDKCUeMLcNxMs0z
-	 x12rKeAunIvbgSdvJhAx5ztoHQZKkNlkZuz3uXdkIDsZdNHqSPxesR+5ThmVNb1QEK
-	 e2RwIiPieGjuQYX+MgiG7ItSwwa5pOkPbNAjQfAI=
+	b=RsXJvoHLJEqeLJ5JI094k/44s9BPs/1/nZWt7XomSf7WBLL7nkdQDDPpme2LpIl9j
+	 Px4RtOMuVkXFgulQHnnTU5UvTZdB30YYWngVKDhOVOZokH8GDNHzKaXT0q+pIOIoWB
+	 nOfORu0GrcCQxxk7hiGC/H2ESEvIDfDixEiyb99w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7817FF8027C;
-	Thu, 16 Dec 2021 12:43:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5028FF8047C;
+	Thu, 16 Dec 2021 12:44:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DB729F8032D; Thu, 16 Dec 2021 12:43:53 +0100 (CET)
+ id EEA8FF80116; Thu, 16 Dec 2021 12:43:53 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 84704F8014C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 88948F8025D
  for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2021 12:43:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84704F8014C
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88948F8025D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="JrLtQ37p"
+ header.b="lgsfT5oP"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1BG6WwLm019726;
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1BG6fNWC032113;
  Thu, 16 Dec 2021 05:43:39 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=P95jRnxTNpTTnBxEgj64aqh6RHhx6DAfvOrgb1F9Zu0=;
- b=JrLtQ37pJ1LxkGVuwN/uqsdnnW34BL6N8lL8boHJW/5HJEtQmlhLLt4xD4aEnhz4tsp/
- ksvpC32Qm86AruH9uL0u17Q4WLPoSBeCIEnZUBa4SpnryJUIEk0z3QCB6PHjD6+rqlKu
- TyQ+DarT4PRcEjkImHgOYSgyyoY/Syd1b1hJK8jhVyfhhf7IQQg8tNTYCedusFaCTFPR
- xgia6jHn/iUuWhV+jTSsh71eadg69so3KJ9kI7RpVfaSrec7hWJObkZnoz/6Zy4diJd4
- G9pnYhgSN2C+DewSJ4IwrqPLcWaO7Gl2BMi7EVUkRvjPT04PntDtuidlzDrYhNCJ/lum rA== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3cymsc110q-3
+ bh=JwdEvJNSccwPwzdfwacOslSxZt9T4OuG+VPsh+orUNE=;
+ b=lgsfT5oPwy7HdcRrr4/xLKKOkLcP5fWZ8EzoVf7wS2o7UiqeHEXRX7grXAQuer/AddTx
+ Ky8U6wVWbUWhXEg3v+kcj+hbsziMXaOFg4/R8VyQSrFe03nxyCkTCnrXnuvlqgx4QxmY
+ SjanAO9Mha/uHPYfvoBCCpWIyw0qwI0B+tpiTOZKVQEyjd+G9GYJMYVQq6W6TC27zIcJ
+ GGYGVxCgeB1/L3LNZ0KtFz3PaT/Oqh2xXth3I8ny1Jfn/lbqruNRgPskhGsW88qbBemL
+ BLGsrSaw9wZRG9eO+/fzyx+CsCA6jp4N9qSKJdVOkHG9QSNftNvYYGx1RMlCAq6Necig Pw== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3cymsc110r-2
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
  Thu, 16 Dec 2021 05:43:39 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Thu, 16 Dec
- 2021 11:43:37 +0000
+ 2021 11:43:36 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.17 via
- Frontend Transport; Thu, 16 Dec 2021 11:43:37 +0000
+ Frontend Transport; Thu, 16 Dec 2021 11:43:36 +0000
 Received: from aryzen.ad.cirrus.com (unknown [198.61.64.39])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id B558E45D;
- Thu, 16 Dec 2021 11:43:36 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id B9A4B45D;
+ Thu, 16 Dec 2021 11:43:35 +0000 (UTC)
 From: Lucas Tanure <tanureal@opensource.cirrus.com>
 To: "Rafael J . Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
  Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>,
  Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
  Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v5 04/10] ASoC: cs35l41: Create shared function for errata
- patches
-Date: Thu, 16 Dec 2021 11:43:26 +0000
-Message-ID: <20211216114332.153409-5-tanureal@opensource.cirrus.com>
+Subject: [PATCH v5 02/10] ASoC: cs35l41: Move cs35l41_otp_unpack to shared code
+Date: Thu, 16 Dec 2021 11:43:24 +0000
+Message-ID: <20211216114332.153409-3-tanureal@opensource.cirrus.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20211216114332.153409-1-tanureal@opensource.cirrus.com>
 References: <20211216114332.153409-1-tanureal@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: yUWwipG6f3dD-Kz_JiMnm7YLEWMMiiaL
-X-Proofpoint-ORIG-GUID: yUWwipG6f3dD-Kz_JiMnm7YLEWMMiiaL
+X-Proofpoint-GUID: rkyFrGMuy9ue6LNrt1dNfap0yDTQnU5w
+X-Proofpoint-ORIG-GUID: rkyFrGMuy9ue6LNrt1dNfap0yDTQnU5w
 X-Proofpoint-Spam-Reason: safe
 Cc: alsa-devel@alsa-project.org, Lucas Tanure <tanureal@opensource.cirrus.com>,
  patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
@@ -99,257 +98,344 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-ASoC and HDA systems require the same errata patches, so
-move it to the shared code using a function the correctly
-applies the patches by revision
-
-Also, move CS35L41_DSP1_CCM_CORE_CTRL write to errata
-patch function as is required to be written at boot,
-but not in regmap_register_patch sequence as will affect
-waking up from hibernation
+ASoC and HDA will do the same cs35l41_otp_unpack, so move it
+to shared code
 
 Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
 ---
- include/sound/cs35l41.h        |  1 +
- sound/soc/codecs/cs35l41-lib.c | 89 ++++++++++++++++++++++++++++++++
- sound/soc/codecs/cs35l41.c     | 92 ++--------------------------------
- 3 files changed, 93 insertions(+), 89 deletions(-)
+ include/sound/cs35l41.h        |   4 +-
+ sound/soc/codecs/cs35l41-lib.c | 121 ++++++++++++++++++++++++++++++-
+ sound/soc/codecs/cs35l41.c     | 125 +--------------------------------
+ 3 files changed, 122 insertions(+), 128 deletions(-)
 
 diff --git a/include/sound/cs35l41.h b/include/sound/cs35l41.h
-index 6cf3ef02b26a..ad2e32a12b8c 100644
+index aac3ffb9bc89..6cf3ef02b26a 100644
 --- a/include/sound/cs35l41.h
 +++ b/include/sound/cs35l41.h
-@@ -763,5 +763,6 @@ extern struct regmap_config cs35l41_regmap_i2c;
+@@ -534,7 +534,6 @@
+ #define CS35L41_MAX_CACHE_REG		36
+ #define CS35L41_OTP_SIZE_WORDS		32
+ #define CS35L41_NUM_OTP_ELEM		100
+-#define CS35L41_NUM_OTP_MAPS		5
+ 
+ #define CS35L41_VALID_PDATA		0x80000000
+ #define CS35L41_NUM_SUPPLIES            2
+@@ -760,8 +759,9 @@ struct cs35l41_otp_map_element_t {
+ 	u32 word_offset;
+ };
+ 
+-extern const struct cs35l41_otp_map_element_t cs35l41_otp_map_map[CS35L41_NUM_OTP_MAPS];
+ extern struct regmap_config cs35l41_regmap_i2c;
  extern struct regmap_config cs35l41_regmap_spi;
  
- int cs35l41_otp_unpack(struct device *dev, struct regmap *regmap);
-+int cs35l41_register_errata_patch(struct device *dev, struct regmap *reg, unsigned int reg_revid);
- 
++int cs35l41_otp_unpack(struct device *dev, struct regmap *regmap);
++
  #endif /* __CS35L41_H */
 diff --git a/sound/soc/codecs/cs35l41-lib.c b/sound/soc/codecs/cs35l41-lib.c
-index b3567e10adc4..5e382eaea340 100644
+index f19531ebf729..dc5f502447a2 100644
 --- a/sound/soc/codecs/cs35l41-lib.c
 +++ b/sound/soc/codecs/cs35l41-lib.c
-@@ -659,6 +659,57 @@ static const struct cs35l41_otp_packed_element_t otp_map_2[CS35L41_NUM_OTP_ELEM]
+@@ -7,8 +7,11 @@
+ // Author: David Rhodes <david.rhodes@cirrus.com>
+ // Author: Lucas Tanure <lucas.tanure@cirrus.com>
+ 
++#include <linux/dev_printk.h>
+ #include <linux/module.h>
+ #include <linux/regmap.h>
++#include <linux/regulator/consumer.h>
++#include <linux/slab.h>
+ 
+ #include <sound/cs35l41.h>
+ 
+@@ -655,7 +658,7 @@ static const struct cs35l41_otp_packed_element_t otp_map_2[CS35L41_NUM_OTP_ELEM]
  	{ 0x00017044,	0,	24 }, /*LOT_NUMBER*/
  };
  
-+static const struct reg_sequence cs35l41_reva0_errata_patch[] = {
-+	{ 0x00000040,			 0x00005555 },
-+	{ 0x00000040,			 0x0000AAAA },
-+	{ 0x00003854,			 0x05180240 },
-+	{ CS35L41_VIMON_SPKMON_RESYNC,	 0x00000000 },
-+	{ 0x00004310,			 0x00000000 },
-+	{ CS35L41_VPVBST_FS_SEL,	 0x00000000 },
-+	{ CS35L41_OTP_TRIM_30,		 0x9091A1C8 },
-+	{ 0x00003014,			 0x0200EE0E },
-+	{ CS35L41_BSTCVRT_DCM_CTRL,	 0x00000051 },
-+	{ 0x00000054,			 0x00000004 },
-+	{ CS35L41_IRQ1_DB3,		 0x00000000 },
-+	{ CS35L41_IRQ2_DB3,		 0x00000000 },
-+	{ CS35L41_DSP1_YM_ACCEL_PL0_PRI, 0x00000000 },
-+	{ CS35L41_DSP1_XM_ACCEL_PL0_PRI, 0x00000000 },
-+	{ 0x00000040,			 0x0000CCCC },
-+	{ 0x00000040,			 0x00003333 },
-+	{ CS35L41_PWR_CTRL2,		 0x00000000 },
-+	{ CS35L41_AMP_GAIN_CTRL,	 0x00000000 },
-+};
-+
-+static const struct reg_sequence cs35l41_revb0_errata_patch[] = {
-+	{ 0x00000040,			 0x00005555 },
-+	{ 0x00000040,			 0x0000AAAA },
-+	{ CS35L41_VIMON_SPKMON_RESYNC,	 0x00000000 },
-+	{ 0x00004310,			 0x00000000 },
-+	{ CS35L41_VPVBST_FS_SEL,	 0x00000000 },
-+	{ CS35L41_BSTCVRT_DCM_CTRL,	 0x00000051 },
-+	{ CS35L41_DSP1_YM_ACCEL_PL0_PRI, 0x00000000 },
-+	{ CS35L41_DSP1_XM_ACCEL_PL0_PRI, 0x00000000 },
-+	{ 0x00000040,			 0x0000CCCC },
-+	{ 0x00000040,			 0x00003333 },
-+	{ CS35L41_PWR_CTRL2,		 0x00000000 },
-+	{ CS35L41_AMP_GAIN_CTRL,	 0x00000000 },
-+};
-+
-+static const struct reg_sequence cs35l41_revb2_errata_patch[] = {
-+	{ 0x00000040,			 0x00005555 },
-+	{ 0x00000040,			 0x0000AAAA },
-+	{ CS35L41_VIMON_SPKMON_RESYNC,	 0x00000000 },
-+	{ 0x00004310,			 0x00000000 },
-+	{ CS35L41_VPVBST_FS_SEL,	 0x00000000 },
-+	{ CS35L41_BSTCVRT_DCM_CTRL,	 0x00000051 },
-+	{ CS35L41_DSP1_YM_ACCEL_PL0_PRI, 0x00000000 },
-+	{ CS35L41_DSP1_XM_ACCEL_PL0_PRI, 0x00000000 },
-+	{ 0x00000040,			 0x0000CCCC },
-+	{ 0x00000040,			 0x00003333 },
-+	{ CS35L41_PWR_CTRL2,		 0x00000000 },
-+	{ CS35L41_AMP_GAIN_CTRL,	 0x00000000 },
-+};
-+
- static const struct cs35l41_otp_map_element_t cs35l41_otp_map_map[] = {
+-const struct cs35l41_otp_map_element_t cs35l41_otp_map_map[CS35L41_NUM_OTP_MAPS] = {
++static const struct cs35l41_otp_map_element_t cs35l41_otp_map_map[] = {
  	{
  		.id = 0x01,
-@@ -845,6 +896,44 @@ int cs35l41_otp_unpack(struct device *dev, struct regmap *regmap)
- }
- EXPORT_SYMBOL_GPL(cs35l41_otp_unpack);
+ 		.map = otp_map_1,
+@@ -692,7 +695,6 @@ const struct cs35l41_otp_map_element_t cs35l41_otp_map_map[CS35L41_NUM_OTP_MAPS]
+ 		.word_offset = 2,
+ 	},
+ };
+-EXPORT_SYMBOL_GPL(cs35l41_otp_map_map);
  
-+int cs35l41_register_errata_patch(struct device *dev, struct regmap *reg, unsigned int reg_revid)
+ struct regmap_config cs35l41_regmap_i2c = {
+ 	.reg_bits = 32,
+@@ -727,6 +729,121 @@ struct regmap_config cs35l41_regmap_spi = {
+ };
+ EXPORT_SYMBOL_GPL(cs35l41_regmap_spi);
+ 
++static const struct cs35l41_otp_map_element_t *cs35l41_find_otp_map(u32 otp_id)
 +{
-+	char *rev;
-+	int ret;
++	int i;
 +
-+	switch (reg_revid) {
-+	case CS35L41_REVID_A0:
-+		ret = regmap_register_patch(reg, cs35l41_reva0_errata_patch,
-+					    ARRAY_SIZE(cs35l41_reva0_errata_patch));
-+		rev = "A0";
-+		break;
-+	case CS35L41_REVID_B0:
-+		ret = regmap_register_patch(reg, cs35l41_revb0_errata_patch,
-+					    ARRAY_SIZE(cs35l41_revb0_errata_patch));
-+		rev = "B0";
-+		break;
-+	case CS35L41_REVID_B2:
-+		ret = regmap_register_patch(reg, cs35l41_revb2_errata_patch,
-+					    ARRAY_SIZE(cs35l41_revb2_errata_patch));
-+		rev = "B2";
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		rev = "XX";
-+		break;
++	for (i = 0; i < ARRAY_SIZE(cs35l41_otp_map_map); i++) {
++		if (cs35l41_otp_map_map[i].id == otp_id)
++			return &cs35l41_otp_map_map[i];
 +	}
 +
-+	if (ret)
-+		dev_err(dev, "Failed to apply %s errata patch: %d\n", rev, ret);
++	return NULL;
++}
 +
-+	ret = regmap_write(reg, CS35L41_DSP1_CCM_CORE_CTRL, 0);
-+	if (ret < 0)
-+		dev_err(dev, "Write CCM_CORE_CTRL failed: %d\n", ret);
++int cs35l41_otp_unpack(struct device *dev, struct regmap *regmap)
++{
++	const struct cs35l41_otp_map_element_t *otp_map_match;
++	const struct cs35l41_otp_packed_element_t *otp_map;
++	int bit_offset, word_offset, ret, i;
++	unsigned int bit_sum = 8;
++	u32 otp_val, otp_id_reg;
++	u32 *otp_mem;
++
++	otp_mem = kmalloc_array(CS35L41_OTP_SIZE_WORDS, sizeof(*otp_mem), GFP_KERNEL);
++	if (!otp_mem)
++		return -ENOMEM;
++
++	ret = regmap_read(regmap, CS35L41_OTPID, &otp_id_reg);
++	if (ret) {
++		dev_err(dev, "Read OTP ID failed: %d\n", ret);
++		goto err_otp_unpack;
++	}
++
++	otp_map_match = cs35l41_find_otp_map(otp_id_reg);
++
++	if (!otp_map_match) {
++		dev_err(dev, "OTP Map matching ID %d not found\n", otp_id_reg);
++		ret = -EINVAL;
++		goto err_otp_unpack;
++	}
++
++	ret = regmap_bulk_read(regmap, CS35L41_OTP_MEM0, otp_mem, CS35L41_OTP_SIZE_WORDS);
++	if (ret) {
++		dev_err(dev, "Read OTP Mem failed: %d\n", ret);
++		goto err_otp_unpack;
++	}
++
++	otp_map = otp_map_match->map;
++
++	bit_offset = otp_map_match->bit_offset;
++	word_offset = otp_map_match->word_offset;
++
++	ret = regmap_write(regmap, CS35L41_TEST_KEY_CTL, 0x00000055);
++	if (ret) {
++		dev_err(dev, "Write Unlock key failed 1/2: %d\n", ret);
++		goto err_otp_unpack;
++	}
++	ret = regmap_write(regmap, CS35L41_TEST_KEY_CTL, 0x000000AA);
++	if (ret) {
++		dev_err(dev, "Write Unlock key failed 2/2: %d\n", ret);
++		goto err_otp_unpack;
++	}
++
++	for (i = 0; i < otp_map_match->num_elements; i++) {
++		dev_dbg(dev, "bitoffset= %d, word_offset=%d, bit_sum mod 32=%d\n",
++			bit_offset, word_offset, bit_sum % 32);
++		if (bit_offset + otp_map[i].size - 1 >= 32) {
++			otp_val = (otp_mem[word_offset] &
++					GENMASK(31, bit_offset)) >> bit_offset;
++			otp_val |= (otp_mem[++word_offset] &
++					GENMASK(bit_offset + otp_map[i].size - 33, 0)) <<
++					(32 - bit_offset);
++			bit_offset += otp_map[i].size - 32;
++		} else {
++			otp_val = (otp_mem[word_offset] &
++				   GENMASK(bit_offset + otp_map[i].size - 1, bit_offset)
++				  ) >> bit_offset;
++			bit_offset += otp_map[i].size;
++		}
++		bit_sum += otp_map[i].size;
++
++		if (bit_offset == 32) {
++			bit_offset = 0;
++			word_offset++;
++		}
++
++		if (otp_map[i].reg != 0) {
++			ret = regmap_update_bits(regmap, otp_map[i].reg,
++						 GENMASK(otp_map[i].shift + otp_map[i].size - 1,
++							 otp_map[i].shift),
++						 otp_val << otp_map[i].shift);
++			if (ret < 0) {
++				dev_err(dev, "Write OTP val failed: %d\n", ret);
++				goto err_otp_unpack;
++			}
++		}
++	}
++
++	ret = regmap_write(regmap, CS35L41_TEST_KEY_CTL, 0x000000CC);
++	if (ret) {
++		dev_err(dev, "Write Lock key failed 1/2: %d\n", ret);
++		goto err_otp_unpack;
++	}
++	ret = regmap_write(regmap, CS35L41_TEST_KEY_CTL, 0x00000033);
++	if (ret) {
++		dev_err(dev, "Write Lock key failed 2/2: %d\n", ret);
++		goto err_otp_unpack;
++	}
++	ret = 0;
++
++err_otp_unpack:
++	kfree(otp_mem);
 +
 +	return ret;
 +}
-+EXPORT_SYMBOL_GPL(cs35l41_register_errata_patch);
++EXPORT_SYMBOL_GPL(cs35l41_otp_unpack);
 +
  MODULE_DESCRIPTION("CS35L41 library");
  MODULE_AUTHOR("David Rhodes, Cirrus Logic Inc, <david.rhodes@cirrus.com>");
  MODULE_AUTHOR("Lucas Tanure, Cirrus Logic Inc, <tanureal@opensource.cirrus.com>");
 diff --git a/sound/soc/codecs/cs35l41.c b/sound/soc/codecs/cs35l41.c
-index 7494710ae6e6..afc10f7ca65e 100644
+index 60332eae1162..aa57c59b334d 100644
 --- a/sound/soc/codecs/cs35l41.c
 +++ b/sound/soc/codecs/cs35l41.c
-@@ -1271,57 +1271,6 @@ static int cs35l41_handle_pdata(struct device *dev,
- 	return 0;
- }
+@@ -14,7 +14,6 @@
+ #include <linux/moduleparam.h>
+ #include <linux/of_device.h>
+ #include <linux/property.h>
+-#include <linux/slab.h>
+ #include <sound/initval.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+@@ -420,128 +419,6 @@ static const struct snd_kcontrol_new cs35l41_aud_controls[] = {
+ 	WM_ADSP_FW_CONTROL("DSP1", 0),
+ };
  
--static const struct reg_sequence cs35l41_reva0_errata_patch[] = {
--	{ 0x00000040,			 0x00005555 },
--	{ 0x00000040,			 0x0000AAAA },
--	{ 0x00003854,			 0x05180240 },
--	{ CS35L41_VIMON_SPKMON_RESYNC,	 0x00000000 },
--	{ 0x00004310,			 0x00000000 },
--	{ CS35L41_VPVBST_FS_SEL,	 0x00000000 },
--	{ CS35L41_OTP_TRIM_30,		 0x9091A1C8 },
--	{ 0x00003014,			 0x0200EE0E },
--	{ CS35L41_BSTCVRT_DCM_CTRL,	 0x00000051 },
--	{ 0x00000054,			 0x00000004 },
--	{ CS35L41_IRQ1_DB3,		 0x00000000 },
--	{ CS35L41_IRQ2_DB3,		 0x00000000 },
--	{ CS35L41_DSP1_YM_ACCEL_PL0_PRI, 0x00000000 },
--	{ CS35L41_DSP1_XM_ACCEL_PL0_PRI, 0x00000000 },
--	{ 0x00000040,			 0x0000CCCC },
--	{ 0x00000040,			 0x00003333 },
--	{ CS35L41_PWR_CTRL2,		 0x00000000 },
--	{ CS35L41_AMP_GAIN_CTRL,	 0x00000000 },
--};
+-static const struct cs35l41_otp_map_element_t *cs35l41_find_otp_map(u32 otp_id)
+-{
+-	int i;
 -
--static const struct reg_sequence cs35l41_revb0_errata_patch[] = {
--	{ 0x00000040,			 0x00005555 },
--	{ 0x00000040,			 0x0000AAAA },
--	{ CS35L41_VIMON_SPKMON_RESYNC,	 0x00000000 },
--	{ 0x00004310,			 0x00000000 },
--	{ CS35L41_VPVBST_FS_SEL,	 0x00000000 },
--	{ CS35L41_BSTCVRT_DCM_CTRL,	 0x00000051 },
--	{ CS35L41_DSP1_YM_ACCEL_PL0_PRI, 0x00000000 },
--	{ CS35L41_DSP1_XM_ACCEL_PL0_PRI, 0x00000000 },
--	{ 0x00000040,			 0x0000CCCC },
--	{ 0x00000040,			 0x00003333 },
--	{ CS35L41_PWR_CTRL2,		 0x00000000 },
--	{ CS35L41_AMP_GAIN_CTRL,	 0x00000000 },
--};
--
--static const struct reg_sequence cs35l41_revb2_errata_patch[] = {
--	{ 0x00000040,			 0x00005555 },
--	{ 0x00000040,			 0x0000AAAA },
--	{ CS35L41_VIMON_SPKMON_RESYNC,	 0x00000000 },
--	{ 0x00004310,			 0x00000000 },
--	{ CS35L41_VPVBST_FS_SEL,	 0x00000000 },
--	{ CS35L41_BSTCVRT_DCM_CTRL,	 0x00000051 },
--	{ CS35L41_DSP1_YM_ACCEL_PL0_PRI, 0x00000000 },
--	{ CS35L41_DSP1_XM_ACCEL_PL0_PRI, 0x00000000 },
--	{ 0x00000040,			 0x0000CCCC },
--	{ 0x00000040,			 0x00003333 },
--	{ CS35L41_PWR_CTRL2,		 0x00000000 },
--	{ CS35L41_AMP_GAIN_CTRL,	 0x00000000 },
--};
--
- static const struct reg_sequence cs35l41_fs_errata_patch[] = {
- 	{ CS35L41_DSP1_RX1_RATE,	0x00000001 },
- 	{ CS35L41_DSP1_RX2_RATE,	0x00000001 },
-@@ -1501,38 +1450,9 @@ int cs35l41_probe(struct cs35l41_private *cs35l41,
- 		goto err;
- 	}
- 
--	switch (reg_revid) {
--	case CS35L41_REVID_A0:
--		ret = regmap_register_patch(cs35l41->regmap,
--					    cs35l41_reva0_errata_patch,
--					    ARRAY_SIZE(cs35l41_reva0_errata_patch));
--		if (ret < 0) {
--			dev_err(cs35l41->dev,
--				"Failed to apply A0 errata patch: %d\n", ret);
--			goto err;
--		}
--		break;
--	case CS35L41_REVID_B0:
--		ret = regmap_register_patch(cs35l41->regmap,
--					    cs35l41_revb0_errata_patch,
--					    ARRAY_SIZE(cs35l41_revb0_errata_patch));
--		if (ret < 0) {
--			dev_err(cs35l41->dev,
--				"Failed to apply B0 errata patch: %d\n", ret);
--			goto err;
--		}
--		break;
--	case CS35L41_REVID_B2:
--		ret = regmap_register_patch(cs35l41->regmap,
--					    cs35l41_revb2_errata_patch,
--					    ARRAY_SIZE(cs35l41_revb2_errata_patch));
--		if (ret < 0) {
--			dev_err(cs35l41->dev,
--				"Failed to apply B2 errata patch: %d\n", ret);
--			goto err;
--		}
--		break;
+-	for (i = 0; i < ARRAY_SIZE(cs35l41_otp_map_map); i++) {
+-		if (cs35l41_otp_map_map[i].id == otp_id)
+-			return &cs35l41_otp_map_map[i];
 -	}
-+	ret = cs35l41_register_errata_patch(cs35l41->dev, cs35l41->regmap, reg_revid);
-+	if (ret)
-+		goto err;
- 
- 	irq_pol = cs35l41_irq_gpio_config(cs35l41);
- 
-@@ -1556,12 +1476,6 @@ int cs35l41_probe(struct cs35l41_private *cs35l41,
- 		goto err;
- 	}
- 
--	ret = regmap_write(cs35l41->regmap, CS35L41_DSP1_CCM_CORE_CTRL, 0);
+-
+-	return NULL;
+-}
+-
+-static int cs35l41_otp_unpack(void *data)
+-{
+-	const struct cs35l41_otp_map_element_t *otp_map_match;
+-	const struct cs35l41_otp_packed_element_t *otp_map;
+-	struct cs35l41_private *cs35l41 = data;
+-	int bit_offset, word_offset, ret, i;
+-	unsigned int bit_sum = 8;
+-	u32 otp_val, otp_id_reg;
+-	u32 *otp_mem;
+-
+-	otp_mem = kmalloc_array(CS35L41_OTP_SIZE_WORDS, sizeof(*otp_mem), GFP_KERNEL);
+-	if (!otp_mem)
+-		return -ENOMEM;
+-
+-	ret = regmap_read(cs35l41->regmap, CS35L41_OTPID, &otp_id_reg);
 -	if (ret < 0) {
--		dev_err(cs35l41->dev, "Write CCM_CORE_CTRL failed: %d\n", ret);
--		goto err;
+-		dev_err(cs35l41->dev, "Read OTP ID failed: %d\n", ret);
+-		goto err_otp_unpack;
 -	}
 -
- 	ret = cs35l41_set_pdata(cs35l41);
+-	otp_map_match = cs35l41_find_otp_map(otp_id_reg);
+-
+-	if (!otp_map_match) {
+-		dev_err(cs35l41->dev, "OTP Map matching ID %d not found\n",
+-			otp_id_reg);
+-		ret = -EINVAL;
+-		goto err_otp_unpack;
+-	}
+-
+-	ret = regmap_bulk_read(cs35l41->regmap, CS35L41_OTP_MEM0, otp_mem,
+-			       CS35L41_OTP_SIZE_WORDS);
+-	if (ret < 0) {
+-		dev_err(cs35l41->dev, "Read OTP Mem failed: %d\n", ret);
+-		goto err_otp_unpack;
+-	}
+-
+-	otp_map = otp_map_match->map;
+-
+-	bit_offset = otp_map_match->bit_offset;
+-	word_offset = otp_map_match->word_offset;
+-
+-	ret = regmap_write(cs35l41->regmap, CS35L41_TEST_KEY_CTL, 0x00000055);
+-	if (ret < 0) {
+-		dev_err(cs35l41->dev, "Write Unlock key failed 1/2: %d\n", ret);
+-		goto err_otp_unpack;
+-	}
+-	ret = regmap_write(cs35l41->regmap, CS35L41_TEST_KEY_CTL, 0x000000AA);
+-	if (ret < 0) {
+-		dev_err(cs35l41->dev, "Write Unlock key failed 2/2: %d\n", ret);
+-		goto err_otp_unpack;
+-	}
+-
+-	for (i = 0; i < otp_map_match->num_elements; i++) {
+-		dev_dbg(cs35l41->dev,
+-			"bitoffset= %d, word_offset=%d, bit_sum mod 32=%d\n",
+-			bit_offset, word_offset, bit_sum % 32);
+-		if (bit_offset + otp_map[i].size - 1 >= 32) {
+-			otp_val = (otp_mem[word_offset] &
+-					GENMASK(31, bit_offset)) >>
+-					bit_offset;
+-			otp_val |= (otp_mem[++word_offset] &
+-					GENMASK(bit_offset +
+-						otp_map[i].size - 33, 0)) <<
+-					(32 - bit_offset);
+-			bit_offset += otp_map[i].size - 32;
+-		} else {
+-			otp_val = (otp_mem[word_offset] &
+-				GENMASK(bit_offset + otp_map[i].size - 1,
+-					bit_offset)) >>	bit_offset;
+-			bit_offset += otp_map[i].size;
+-		}
+-		bit_sum += otp_map[i].size;
+-
+-		if (bit_offset == 32) {
+-			bit_offset = 0;
+-			word_offset++;
+-		}
+-
+-		if (otp_map[i].reg != 0) {
+-			ret = regmap_update_bits(cs35l41->regmap,
+-						 otp_map[i].reg,
+-						 GENMASK(otp_map[i].shift +
+-							 otp_map[i].size - 1,
+-						 otp_map[i].shift),
+-						 otp_val << otp_map[i].shift);
+-			if (ret < 0) {
+-				dev_err(cs35l41->dev, "Write OTP val failed: %d\n",
+-					ret);
+-				goto err_otp_unpack;
+-			}
+-		}
+-	}
+-
+-	ret = regmap_write(cs35l41->regmap, CS35L41_TEST_KEY_CTL, 0x000000CC);
+-	if (ret < 0) {
+-		dev_err(cs35l41->dev, "Write Lock key failed 1/2: %d\n", ret);
+-		goto err_otp_unpack;
+-	}
+-	ret = regmap_write(cs35l41->regmap, CS35L41_TEST_KEY_CTL, 0x00000033);
+-	if (ret < 0) {
+-		dev_err(cs35l41->dev, "Write Lock key failed 2/2: %d\n", ret);
+-		goto err_otp_unpack;
+-	}
+-	ret = 0;
+-
+-err_otp_unpack:
+-	kfree(otp_mem);
+-	return ret;
+-}
+-
+ static irqreturn_t cs35l41_irq(int irq, void *data)
+ {
+ 	struct cs35l41_private *cs35l41 = data;
+@@ -1667,7 +1544,7 @@ int cs35l41_probe(struct cs35l41_private *cs35l41,
+ 		goto err;
+ 	}
+ 
+-	ret = cs35l41_otp_unpack(cs35l41);
++	ret = cs35l41_otp_unpack(cs35l41->dev, cs35l41->regmap);
  	if (ret < 0) {
- 		dev_err(cs35l41->dev, "Set pdata failed: %d\n", ret);
+ 		dev_err(cs35l41->dev, "OTP Unpack failed: %d\n", ret);
+ 		goto err;
 -- 
 2.34.1
 
