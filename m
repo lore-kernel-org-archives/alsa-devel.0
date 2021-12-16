@@ -4,63 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC894C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Dec 2021 11:57:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA37FC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Dec 2021 11:57:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0D0C01B5F;
-	Thu, 16 Dec 2021 12:56:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D0C01B5F
+	by alsa0.perex.cz (Postfix) with ESMTPS id EEA4E1E72;
+	Thu, 16 Dec 2021 12:57:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EEA4E1E72
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639655857;
-	bh=SEAz8JSicQKaNx86YhGpnPZFwr5WpgMgh8FM46Lt5FA=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Dda8J7mKVTyQHZNZQQm8EI08czzh6xXZKGpiHo1r+n0Cf6CLChx3im9aJCks7FKkh
-	 gjhJXGTXmRU9ZdDxP1vXusGEuxqDrURKtol1Rjqg9tFf818HxQLD8ciG4ggx2PYUlC
-	 C8s6jgQldhN3/zULeK/k0uYs2oJwQKVc79l+I+zY=
+	s=default; t=1639655873;
+	bh=L3dXPB6xC9umFovRHn3/BXBj2TeY/SOLQYJKF+fyMpM=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=sDRUNCnbgFmqpcZ7KdX7+jMjB9uaN0PO3/Alq0+D93D5L3ZCzh/lvZP4KYBQFtw9R
+	 41mutWapM7kVOWs8wJMImz4xLfwprcVLr0rAInksGk22RqeeiXurN4dZ8jlMCqXIDW
+	 KwzukvOqrM2VKukJI+5nX0ylkJrFkCS/XRAhYrk8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3F108F8027C;
-	Thu, 16 Dec 2021 12:56:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E8530F80311;
+	Thu, 16 Dec 2021 12:56:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 53B10F8016E; Thu, 16 Dec 2021 12:56:10 +0100 (CET)
+ id D1291F8047B; Thu, 16 Dec 2021 12:56:12 +0100 (CET)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4C1BDF800DE
- for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2021 12:56:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C1BDF800DE
+ by alsa1.perex.cz (Postfix) with ESMTPS id B41CAF8014C
+ for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2021 12:56:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B41CAF8014C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="GiPr1YkM"
+ header.b="ZBxXAunN"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
  t=1639655768; x=1671191768;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=SEAz8JSicQKaNx86YhGpnPZFwr5WpgMgh8FM46Lt5FA=;
- b=GiPr1YkMj8BrAv12sOgF6izgS/gAg3gGurrwNaQ0WdqlNOSfeGjBfP3G
- DRoJruEwGT2grYii0GkL7Xjbn/hlzJqDuoFSEg130YKsuqvadA4cwlRWy
- vYscN/mvsOICoiuLtLjeHYKwhxyTIaXq2E4RdVcO5MkLnb4GrqGhp+PDw
- vvciI8Sr5Y/7+8Wm+YQz6XXVxjT1ee2jD9oSpkBGnIOHFqOer+3Wfxgc+
- fz6J/Ux8PVzcRsANJzdqVdsazPb9K+JEdLEEjp6BYXK/KOa5b72Fhfx5/
- U80LpXNdyt2lDlu0uL46YUyaKt7oaLQL06+d+74Br4ODyvT41wYNBfHqs Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10199"; a="239692030"
-X-IronPort-AV: E=Sophos;i="5.88,211,1635231600"; d="scan'208";a="239692030"
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=L3dXPB6xC9umFovRHn3/BXBj2TeY/SOLQYJKF+fyMpM=;
+ b=ZBxXAunNUIZDlYs3vKVt9eMxCmECDtMyYOkswO+bOS3/4iF1WeFVto8M
+ EOVU6MJuDiS+rBWu2ejYmYG7Ox6Kc3MbxvMazGun6p7dEXJYAGZ/QoHZT
+ SJZg6mmqbZwRz79o0VHOiqcPoyyigMCfLXClCfjCvVpqtl8Lg5Qp31E1i
+ 2t6PePVKILK2V6SUKx437puDGLbHshMXrrT9Gc6RE/TvMkxtUmwq3CmPN
+ 0y8J73emm9hfMtGFvhe73T3nMZWiZ9h2IBNLNtRrYOTvjwnCmAgWich1A
+ S9IMBe3w1JO9y9yfzEs7bD+GFuqX9Ww0X5FMqIJdeS5GikOdCN1NBtHp3 g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10199"; a="239692039"
+X-IronPort-AV: E=Sophos;i="5.88,211,1635231600"; d="scan'208";a="239692039"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Dec 2021 03:55:59 -0800
+ 16 Dec 2021 03:56:02 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,211,1635231600"; d="scan'208";a="506248410"
+X-IronPort-AV: E=Sophos;i="5.88,211,1635231600"; d="scan'208";a="506248427"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by orsmga007.jf.intel.com with ESMTP; 16 Dec 2021 03:55:57 -0800
+ by orsmga007.jf.intel.com with ESMTP; 16 Dec 2021 03:56:00 -0800
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 0/5] ASoC: Intel: catpt: Dma-transfer fix and couple
-Date: Thu, 16 Dec 2021 12:57:38 +0100
-Message-Id: <20211216115743.2130622-1-cezary.rojewski@intel.com>
+Subject: [PATCH 2/5] ASoC: Intel: catpt: Reduce size of catpt_component_open()
+Date: Thu, 16 Dec 2021 12:57:40 +0100
+Message-Id: <20211216115743.2130622-3-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211216115743.2130622-1-cezary.rojewski@intel.com>
+References: <20211216115743.2130622-1-cezary.rojewski@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: Cezary Rojewski <cezary.rojewski@intel.com>, broonie@kernel.org,
@@ -80,31 +83,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Set is made of one fix for dma-transfer so that result of
-dmaengine_submit() is tested before moving on, and few cleanups:
+With some improved if-logy, function's size can be reduced slightly.
 
-- two non-impactful, where catpt_component_open() layout gets improved
-  slightly as well as relocation of couple of locals found in
-  PCM-functions so that they look more cohesive
-- no need to expose catpt-driver board-matching information globally.
-  Most fields are not by it and it's the sole user of haswell_machines
-  table. By having them locally it is clear what is actually being used
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+---
+ sound/soc/intel/catpt/pcm.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-Cezary Rojewski (5):
-  ASoC: Intel: catpt: Test dmaengine_submit() result before moving on
-  ASoC: Intel: catpt: Reduce size of catpt_component_open()
-  ASoC: Intel: catpt: Streamline locals declaration for PCM-functions
-  ASoC: Intel: catpt: Drop SND_SOC_ACPI_INTEL_MATCH dependency
-  ASoC: Intel: Drop legacy HSW/BDW board-match information
-
- include/sound/soc-acpi-intel-match.h          |  1 -
- sound/soc/intel/Kconfig                       |  2 +-
- sound/soc/intel/catpt/device.c                | 33 +++++++++++++++--
- sound/soc/intel/catpt/dsp.c                   | 14 ++++++-
- sound/soc/intel/catpt/pcm.c                   | 37 +++++++++----------
- .../common/soc-acpi-intel-hsw-bdw-match.c     | 16 --------
- 6 files changed, 61 insertions(+), 42 deletions(-)
-
+diff --git a/sound/soc/intel/catpt/pcm.c b/sound/soc/intel/catpt/pcm.c
+index ebb27daeb1c7..16146c693c08 100644
+--- a/sound/soc/intel/catpt/pcm.c
++++ b/sound/soc/intel/catpt/pcm.c
+@@ -595,9 +595,8 @@ static int catpt_component_open(struct snd_soc_component *component,
+ {
+ 	struct snd_soc_pcm_runtime *rtm = substream->private_data;
+ 
+-	if (rtm->dai_link->no_pcm)
+-		return 0;
+-	snd_soc_set_runtime_hwparams(substream, &catpt_pcm_hardware);
++	if (!rtm->dai_link->no_pcm)
++		snd_soc_set_runtime_hwparams(substream, &catpt_pcm_hardware);
+ 	return 0;
+ }
+ 
 -- 
 2.25.1
 
