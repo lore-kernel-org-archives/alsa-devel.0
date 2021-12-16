@@ -4,67 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF398C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Dec 2021 02:23:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A18DC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Dec 2021 02:25:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 47F6F1AD7;
-	Thu, 16 Dec 2021 03:22:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 47F6F1AD7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7F87E1ADC;
+	Thu, 16 Dec 2021 03:24:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F87E1ADC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639621384;
-	bh=s1qwF1vQj1DNpN+kOZyHRMF7gQEdyxhEvWQnz4kuSrc=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=FOpBP4ekFD/gKNa1JVAEKCYnvFpFqv33+BzKt/YH25+isdmUHU1mYtH6S5aSOdTHM
-	 dVAbDsfAVFQOgZ12BHUTNiu9gtjmJxoJvZsRWwrNGJZz+Lm/SyhF03Tl9H0MLtAtgR
-	 TcQBPaZwLVSWSknAU+TNE6MNAAluqRgi54d8NhYI=
+	s=default; t=1639621537;
+	bh=CNwjVEcCkdQFNlkvCdjw02XyNM/blNNqYDvbsfb6TFk=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=CBgG9pdO3dVYF9ZOZaSsnWU3iB/p0zUwwImCzsnsG1jW1CGchRLohfCSzwP7ORvWS
+	 UPdUbVYNi8IMXGvlSSvhAE1+Sqmd/xq2vT95K/MRvMOQeKA/wEq3W42Lzz6soJ2V9M
+	 ZAxHkeuHsVdJ15bwvJaaLh6yXGnXIoBT2EF0xxEU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 40AD9F80248;
-	Thu, 16 Dec 2021 03:21:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 11EFAF80158;
+	Thu, 16 Dec 2021 03:24:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2B979F80158; Thu, 16 Dec 2021 03:21:22 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4B332F80158
- for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2021 03:21:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B332F80158
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="OqEgt9Az"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id D3AD1F8019D; Thu, 16 Dec 2021 03:24:45 +0100 (CET)
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 3F8B661B97;
- Thu, 16 Dec 2021 02:21:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02CF5C36AE3;
- Thu, 16 Dec 2021 02:21:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1639621271;
- bh=s1qwF1vQj1DNpN+kOZyHRMF7gQEdyxhEvWQnz4kuSrc=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=OqEgt9AzAHireOvorlZ+D1aArZO5xbcWQq2/LZlkrqJh1qJjmjAr1A+UQx+Y273Nd
- 6eWvjA6a6DTHmV4srAKC6fnrLMk1i618bs5F53E4Km1JcfD+sTP+J0A3FDsDKq6xLx
- FgwdYCq94SL+yhdd03Z6odKiAVVwv6MitljmlElEXXw/H+EUI+9iDP9FpzwAN1irbZ
- xm/FN/hqNHIRe/qVRgS6sefGSDsjvkFuAQzlR7jFqk72BSAlWpXE2o73xAH8fRLTrc
- rJ5bmeqEmAg60p4QYLGl6dNCdv9SnBYeRGwGr6D4HAgG91Zr0bY0omqyIdiKqe15zQ
- 6J80PWxhIdItA==
-From: Mark Brown <broonie@kernel.org>
-To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- alsa-devel@alsa-project.org
-In-Reply-To: <20211215180404.53254-1-ranjani.sridharan@linux.intel.com>
-References: <20211215180404.53254-1-ranjani.sridharan@linux.intel.com>
-Subject: Re: [PATCH 0/8] Changes to SOF kcontrol data set/get ops
-Message-Id: <163962127067.2075333.4822473610568587937.b4-ty@kernel.org>
-Date: Thu, 16 Dec 2021 02:21:10 +0000
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5F826F80157
+ for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2021 03:24:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F826F80157
+X-UUID: 0e311d87e129456c830bbb56eb241c3c-20211216
+X-UUID: 0e311d87e129456c830bbb56eb241c3c-20211216
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+ (envelope-from <trevor.wu@mediatek.com>)
+ (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+ with ESMTP id 1773176115; Thu, 16 Dec 2021 10:24:29 +0800
+Received: from mtkexhb02.mediatek.inc (172.21.101.103) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 16 Dec 2021 10:24:28 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by mtkexhb02.mediatek.inc
+ (172.21.101.103) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+ Thu, 16 Dec 2021 10:24:28 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via
+ Frontend Transport; Thu, 16 Dec 2021 10:24:28 +0800
+From: Trevor Wu <trevor.wu@mediatek.com>
+To: <broonie@kernel.org>, <tiwai@suse.com>, <matthias.bgg@gmail.com>
+Subject: [PATCH] ASoC: mediatek: mt8195: correct default value
+Date: Thu, 16 Dec 2021 10:24:24 +0800
+Message-ID: <20211216022424.28470-1-trevor.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de
+Content-Type: text/plain
+X-MTK: N
+Cc: alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
+ trevor.wu@mediatek.com, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,64 +73,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 15 Dec 2021 10:03:56 -0800, Ranjani Sridharan wrote:
-> This set of patches deals with modifications to the signature of kcontrol
-> get/set data functions to make them more intuitive. The last patch deals
-> with initializing the binary control data size after boot up.
-> 
-> Peter Ujfalusi (7):
->   ASoC: SOF: ipc: Rename send parameter in
->     snd_sof_ipc_set_get_comp_data()
->   ASoC: SOF: Drop ipc_cmd parameter for snd_sof_ipc_set_get_comp_data()
->   ASoC: SOF: topology: Set control_data->cmd alongside scontrol->cmd
->   ASoC: SOF: Drop ctrl_cmd parameter for snd_sof_ipc_set_get_comp_data()
->   ASoC: SOF: sof-audio: Drop the `cmd` member from struct
->     snd_sof_control
->   ASoC: SOF: control: Do not handle control notification with component
->     type
->   ASoC: SOF: Drop ctrl_type parameter for
->     snd_sof_ipc_set_get_comp_data()
-> 
-> [...]
+mt8195_cg_patch is used to reset the default value of audio cg, so the
+register value could be consistent with CCF reference count.
+Nevertheless, AUDIO_TOP_CON1[1:0] is used to control an internal mux,
+and it's expected to keep the default value 0.
 
-Applied to
+This patch corrects the default value in case an unexpected behavior
+happens in the future.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Fixes: 6746cc8582599 ("ASoC: mediatek: mt8195: add platform driver")
+Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
+---
+ sound/soc/mediatek/mt8195/mt8195-afe-pcm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks!
+diff --git a/sound/soc/mediatek/mt8195/mt8195-afe-pcm.c b/sound/soc/mediatek/mt8195/mt8195-afe-pcm.c
+index 8a6db24116e3..e425f868476a 100644
+--- a/sound/soc/mediatek/mt8195/mt8195-afe-pcm.c
++++ b/sound/soc/mediatek/mt8195/mt8195-afe-pcm.c
+@@ -3029,7 +3029,7 @@ static const struct reg_sequence mt8195_afe_reg_defaults[] = {
+ 
+ static const struct reg_sequence mt8195_cg_patch[] = {
+ 	{ AUDIO_TOP_CON0, 0xfffffffb },
+-	{ AUDIO_TOP_CON1, 0xfffffffa },
++	{ AUDIO_TOP_CON1, 0xfffffff8 },
+ };
+ 
+ static int mt8195_afe_init_registers(struct mtk_base_afe *afe)
+-- 
+2.18.0
 
-[1/8] ASoC: SOF: ipc: Rename send parameter in snd_sof_ipc_set_get_comp_data()
-      commit: 9d562fdcd52b1bb1a13cd5078ffc06dd3eff3aef
-[2/8] ASoC: SOF: Drop ipc_cmd parameter for snd_sof_ipc_set_get_comp_data()
-      commit: d4a06c4334aed1fe76ae2b7aaae6ee8b72f30a8e
-[3/8] ASoC: SOF: topology: Set control_data->cmd alongside scontrol->cmd
-      commit: 8af783723f41d3b3d4f7f8452f190405e7059472
-[4/8] ASoC: SOF: Drop ctrl_cmd parameter for snd_sof_ipc_set_get_comp_data()
-      commit: 9182f3c40b52ebd91d4796d96186ba10b720b4ba
-[5/8] ASoC: SOF: sof-audio: Drop the `cmd` member from struct snd_sof_control
-      commit: dd2fef982ff75fbae618cc274fda09bd40582acd
-[6/8] ASoC: SOF: control: Do not handle control notification with component type
-      commit: 68be4f0ed40cce833cb313871c52878025e40596
-[7/8] ASoC: SOF: Drop ctrl_type parameter for snd_sof_ipc_set_get_comp_data()
-      commit: 47d7328f8cda15e60422c8ca36d067c4deb19b7e
-[8/8] ASoC: SOF: topology: read back control data from DSP
-      commit: fc5adc2bb13a6988df7ce377320f381add236002
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
