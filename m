@@ -4,49 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37DEDC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Dec 2021 23:18:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0BF2CC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Dec 2021 23:18:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6A8591FEC;
-	Fri, 17 Dec 2021 00:17:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A8591FEC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3F10A2024;
+	Fri, 17 Dec 2021 00:17:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F10A2024
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639696695;
-	bh=656bol65cWpWIQr+3WCQyE8h0GX+tZ4rK+z0RQ9129U=;
+	s=default; t=1639696711;
+	bh=Bua+u+SfEmFCRRGpff3oU6RSHFYxl0mIqnjxsSMN1vs=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Km9TqZAbngQsiDR4Z5dIUcO35LlnIY5SROJCNEYFeevxHbzmHvmDcTx1lSRRHSg1B
-	 yOBh6hJ+6hAuL8n7WHTqSJRpDunhQ4vfp6BDWyDPIqUHPRrls2odMfetZPb80itPJl
-	 Ib8bfYp/V1k17pqiRHOFvz7PuXA9EokV7V/wkw8E=
+	b=meoVCsZ3P0EdcK6EhA1iby8VXILAjfHUQEMDNssmoEq5yHCJ/1G7rod4IRmy1awLK
+	 9MHkkXtoLLZu3iG1S/UEt1Ks8eV6rfjACpq98OZn4lialAwzIUtYae5Ez+u33UapFa
+	 +wuPiWpFRsaUlmrUlxIaq/GWRA46tj3ds+P5UaHQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B0303F8025D;
-	Fri, 17 Dec 2021 00:16:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 632DBF802A0;
+	Fri, 17 Dec 2021 00:16:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F2266F800F4; Fri, 17 Dec 2021 00:16:53 +0100 (CET)
+ id 21285F8030F; Fri, 17 Dec 2021 00:16:56 +0100 (CET)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4BE6AF800F4
- for <alsa-devel@alsa-project.org>; Fri, 17 Dec 2021 00:16:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4BE6AF800F4
-X-IronPort-AV: E=McAfee;i="6200,9189,10200"; a="219641673"
-X-IronPort-AV: E=Sophos;i="5.88,212,1635231600"; d="scan'208";a="219641673"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 55CDDF80165
+ for <alsa-devel@alsa-project.org>; Fri, 17 Dec 2021 00:16:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55CDDF80165
+X-IronPort-AV: E=McAfee;i="6200,9189,10200"; a="219641678"
+X-IronPort-AV: E=Sophos;i="5.88,212,1635231600"; d="scan'208";a="219641678"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Dec 2021 15:16:38 -0800
-X-IronPort-AV: E=Sophos;i="5.88,212,1635231600"; d="scan'208";a="756279922"
+ 16 Dec 2021 15:16:39 -0800
+X-IronPort-AV: E=Sophos;i="5.88,212,1635231600"; d="scan'208";a="756279937"
 Received: from priyosmi-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.100.174])
  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Dec 2021 15:16:37 -0800
+ 16 Dec 2021 15:16:38 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/3] ASoC: SOF: pcm: remove support for RESUME trigger
-Date: Thu, 16 Dec 2021 17:16:26 -0600
-Message-Id: <20211216231628.344687-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 3/3] ASoC: SOF: Intel: hda: remove support for RESUME in
+ platform trigger
+Date: Thu, 16 Dec 2021 17:16:28 -0600
+Message-Id: <20211216231628.344687-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211216231628.344687-1-pierre-louis.bossart@linux.intel.com>
 References: <20211216231628.344687-1-pierre-louis.bossart@linux.intel.com>
@@ -77,7 +78,8 @@ The SOF driver removed the support for INFO_RESUME in the commit
 "ASoC: SOF: pcm: do not add SNDRV_PCM_INFO_RESUME to runtime hw info".
 And resuming is handled by the ALSA core with the .prepare and
 .trigger_start stages. So, remove handling of RESUME trigger in the
-component driver trigger op.
+component driver trigger op. So, remove handling the RESUME trigger in
+the platform trigger op for HDA platforms.
 
 Reviewed-by: Kai Vehmanen <kai.vehmanen@intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
@@ -85,40 +87,21 @@ Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/pcm.c | 20 --------------------
- 1 file changed, 20 deletions(-)
+ sound/soc/sof/intel/hda-stream.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
-index e4446defe51e..37fb8e6cd493 100644
---- a/sound/soc/sof/pcm.c
-+++ b/sound/soc/sof/pcm.c
-@@ -395,26 +395,6 @@ static int sof_pcm_trigger(struct snd_soc_component *component,
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 		stream.hdr.cmd |= SOF_IPC_STREAM_TRIG_RELEASE;
- 		break;
+diff --git a/sound/soc/sof/intel/hda-stream.c b/sound/soc/sof/intel/hda-stream.c
+index e910f68706d9..ba60807fbd8f 100644
+--- a/sound/soc/sof/intel/hda-stream.c
++++ b/sound/soc/sof/intel/hda-stream.c
+@@ -329,7 +329,6 @@ int hda_dsp_stream_trigger(struct snd_sof_dev *sdev,
+ 
+ 	/* cmd must be for audio stream */
+ 	switch (cmd) {
 -	case SNDRV_PCM_TRIGGER_RESUME:
--		if (spcm->stream[substream->stream].suspend_ignored) {
--			/*
--			 * this case will be triggered when INFO_RESUME is
--			 * supported, no need to resume streams that remained
--			 * enabled in D0ix.
--			 */
--			spcm->stream[substream->stream].suspend_ignored = false;
--			return 0;
--		}
--
--		/* set up hw_params */
--		ret = sof_pcm_prepare(component, substream);
--		if (ret < 0) {
--			dev_err(component->dev,
--				"error: failed to set up hw_params upon resume\n");
--			return ret;
--		}
--
--		fallthrough;
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
  	case SNDRV_PCM_TRIGGER_START:
- 		if (spcm->stream[substream->stream].suspend_ignored) {
- 			/*
+ 		snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR, SOF_HDA_INTCTL,
 -- 
 2.25.1
 
