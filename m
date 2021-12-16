@@ -4,58 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9F22C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Dec 2021 23:26:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58AF2C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Dec 2021 23:26:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3A34C2830;
-	Fri, 17 Dec 2021 00:25:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A34C2830
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8AFF920DC;
+	Fri, 17 Dec 2021 00:25:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8AFF920DC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639697192;
-	bh=XM3s03kg3MX5qnHroGCondBz3x4ysUdtYRdcYMdVm3A=;
+	s=default; t=1639697202;
+	bh=bntY7/xG7i/bdzj/emTP+O6SXJorFLZaVocXzQt2E2c=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CW5z+OHPRUey4UbiC71SPzv6/NocaSbWxlDE1qIGkSjuGGAlCzWehJlnfOZ5B3f4t
-	 UQI5qg5J2COH/x6qTRenZEj0vr5SCb7CfP4xzgUMkpxfMia4GfUY1ojq4loRIkfdKr
-	 utkXPOYCxVJyP51oYtz+gyADb4pn1qvygCxvffoQ=
+	b=si2WNug3J/ayvKr8KNdSEyDTuaKMKIKegxswpfy+H1uAus37pcBCFNyiwrPesOCXy
+	 nYLbPMSc3EIAFYGuW9C/s2IA1SEljnf+B8SoHth81Tf+Pqn7CpCdPMmPgbq/Z61WI8
+	 u+SYk4W6Qw4z0D35gxtHrX1c5fhJGcsNnqGYlZa4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 235CAF8047C;
-	Fri, 17 Dec 2021 00:24:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id ADCEFF804E2;
+	Fri, 17 Dec 2021 00:25:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D6B2DF8016E; Fri, 17 Dec 2021 00:24:57 +0100 (CET)
+ id 594DEF804EB; Fri, 17 Dec 2021 00:25:00 +0100 (CET)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6216DF8016E
- for <alsa-devel@alsa-project.org>; Fri, 17 Dec 2021 00:24:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6216DF8016E
-X-IronPort-AV: E=McAfee;i="6200,9189,10200"; a="239439665"
-X-IronPort-AV: E=Sophos;i="5.88,212,1635231600"; d="scan'208";a="239439665"
+ by alsa1.perex.cz (Postfix) with ESMTPS id A595FF80116
+ for <alsa-devel@alsa-project.org>; Fri, 17 Dec 2021 00:24:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A595FF80116
+X-IronPort-AV: E=McAfee;i="6200,9189,10200"; a="239439660"
+X-IronPort-AV: E=Sophos;i="5.88,212,1635231600"; d="scan'208";a="239439660"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  16 Dec 2021 15:24:44 -0800
-X-IronPort-AV: E=Sophos;i="5.88,212,1635231600"; d="scan'208";a="605702545"
+X-IronPort-AV: E=Sophos;i="5.88,212,1635231600"; d="scan'208";a="605702537"
 Received: from priyosmi-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.100.174])
  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Dec 2021 15:24:44 -0800
+ 16 Dec 2021 15:24:43 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 3/3] ipc: debug: Add shared memory heap to memory scan
-Date: Thu, 16 Dec 2021 17:24:22 -0600
-Message-Id: <20211216232422.345164-4-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 2/3] ASoC: SOF: ipc: Add null pointer check for
+ substream->runtime
+Date: Thu, 16 Dec 2021 17:24:21 -0600
+Message-Id: <20211216232422.345164-3-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211216232422.345164-1-pierre-louis.bossart@linux.intel.com>
 References: <20211216232422.345164-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>, tiwai@suse.de,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- broonie@kernel.org, Liam Girdwood <liam.r.girdwood@intel.com>,
- Karol Trzcinski <karolx.trzcinski@linux.intel.com>
+Cc: tiwai@suse.de, broonie@kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -71,32 +72,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Karol Trzcinski <karolx.trzcinski@linux.intel.com>
+From: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
 
-Newly added shared heap zones should be taken into account during
-memory usage scanning.
+When pcm stream is stopped "substream->runtime" pointer will be set
+to NULL by ALSA core. In case host received an ipc msg from firmware
+of type IPC_STREAM_POSITION after pcm stream is stopped, there will
+be kernel NULL pointer exception in ipc_period_elapsed(). This patch
+fixes it by adding NULL pointer check for "substream->runtime".
 
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Liam Girdwood <liam.r.girdwood@intel.com>
-Signed-off-by: Karol Trzcinski <karolx.trzcinski@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- include/sound/sof/debug.h | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/sof/ipc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/include/sound/sof/debug.h b/include/sound/sof/debug.h
-index 3ecb5793789d..38693e3fb514 100644
---- a/include/sound/sof/debug.h
-+++ b/include/sound/sof/debug.h
-@@ -19,6 +19,8 @@ enum sof_ipc_dbg_mem_zone {
- 	SOF_IPC_MEM_ZONE_SYS_RUNTIME	= 1,	/**< System-runtime zone */
- 	SOF_IPC_MEM_ZONE_RUNTIME	= 2,	/**< Runtime zone */
- 	SOF_IPC_MEM_ZONE_BUFFER		= 3,	/**< Buffer zone */
-+	SOF_IPC_MEM_ZONE_RUNTIME_SHARED	= 4,	/**< System runtime zone */
-+	SOF_IPC_MEM_ZONE_SYS_SHARED	= 5,	/**< System shared zone */
- };
+diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
+index 8a1eacc7ec5f..12860da1d373 100644
+--- a/sound/soc/sof/ipc.c
++++ b/sound/soc/sof/ipc.c
+@@ -623,7 +623,8 @@ static void ipc_period_elapsed(struct snd_sof_dev *sdev, u32 msg_id)
  
- /** ABI3.18 */
+ 	if (spcm->pcm.compress)
+ 		snd_sof_compr_fragment_elapsed(stream->cstream);
+-	else if (!stream->substream->runtime->no_period_wakeup)
++	else if (stream->substream->runtime &&
++		 !stream->substream->runtime->no_period_wakeup)
+ 		/* only inform ALSA for period_wakeup mode */
+ 		snd_sof_pcm_period_elapsed(stream->substream);
+ }
 -- 
 2.25.1
 
