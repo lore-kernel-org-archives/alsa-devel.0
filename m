@@ -4,95 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A52E9C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Dec 2021 11:56:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF270C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Dec 2021 11:58:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 157141B31;
-	Fri, 17 Dec 2021 12:55:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 157141B31
+	by alsa0.perex.cz (Postfix) with ESMTPS id BCB471F73;
+	Fri, 17 Dec 2021 12:57:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BCB471F73
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639742209;
-	bh=7wjgN/XnNNp13TkLcLeUPfjUrBdb+sTUpgsiRjNz1UI=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1639742304;
+	bh=Cafpp1ZyN2I0/0qOIJv9C+otZJrn395f1Sx/xElYMlg=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Fm4rAvJ/ueKuF9n/40LOrJfRLEGbJmATaOagTH7lbEDNio5xWB6FCy0ZMWpqVhqhZ
-	 ywWKTOt5cnw9pulGtf8/JczKDyPTy+xIAJMc81CYNdl4DuKbcW2fqz2oNMP2PbjHev
-	 Ianq6VjZm8megr0pOKS+nkGs1Np4A/zf/zEXQdUk=
+	b=MbkaRRX/E+KHFvDiDAER+s42oQmOKW1hGxDFSGEB8dfnZggKaZ5h5l30yQVI8J6he
+	 GslKBZLqTIRgMZ6cx8QP6lG6T37+1ZqKAOIPm0YCpD/lghdm8vCDPY7no2/d1+kQgP
+	 D2hKu+6LVqiv/YNitb04VWvusyuvVEQpts5MyB54=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 91392F80148;
-	Fri, 17 Dec 2021 12:55:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 50AEFF80310;
+	Fri, 17 Dec 2021 12:57:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C48E2F80143; Fri, 17 Dec 2021 12:55:55 +0100 (CET)
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com
- [IPv6:2a00:1450:4864:20::133])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id B011AF80311; Fri, 17 Dec 2021 12:57:31 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 72FEEF80143
- for <alsa-devel@alsa-project.org>; Fri, 17 Dec 2021 12:55:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72FEEF80143
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9FA12F800F4
+ for <alsa-devel@alsa-project.org>; Fri, 17 Dec 2021 12:57:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9FA12F800F4
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="Gj4M7BgL"
-Received: by mail-lf1-x133.google.com with SMTP id g11so4128774lfu.2
- for <alsa-devel@alsa-project.org>; Fri, 17 Dec 2021 03:55:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=IVoSwh1vrOcOYMzSFZcBGiekwmrvmnu/yu9ynAy3UtA=;
- b=Gj4M7BgLMNPwhiJBvGzl/JDenwkO7HDujABojJBRvVGLCRYQeHHyruewEpwh6ybCyL
- Av1yUjLdjkR52TDV9592LyZLu1xchFpalL3pBfN/s4J6GTD8OOlofaYsxubHYKVU2D6O
- CbHHedms1cH2t6sC0TTo3ffEOH/fd2BqYI9jaqOIfwtwvVCamaraABKsvlzeRrJ4cZOF
- 7tXhjqCqOV+AEwTPnXm7hTyGdi7sLrHvX26MLPYSwDk05X49ikx2cs4YXE2R435mCgYf
- BeB9yakD/M3i6mbNh1aJSrhdCmtLCJpriqea6faSFaKjZhK9ZTwQb/aCz6oBwahpX3C/
- o4oQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=IVoSwh1vrOcOYMzSFZcBGiekwmrvmnu/yu9ynAy3UtA=;
- b=Rpl7mg1dggC9qySRzLXOTgYJTlQR9HsFINU7tUohNPRkJ3FN447YwQTnBBxOYxQGDZ
- ZG6ykUGLe/JqGJMRb99JoOCQGKYlG4J0gzmUsQJGeT+4j3s8DDaKjJV5npbdw0zuYKe2
- qczmoc9sWjQNsuTK3+Nd8i40DA8UI9bywtQ8AegE0NolNfw4JmYIm02mxq3nC6xeAYmC
- ccXCH6vyAHue71dEKtTmqGWCkQKGMFTbW+X5iqKP7JdtzVOU/NMeRds34YANLUTiSuD3
- gyhQ2Gj/FEXL46olUuoQd/haJ1WSFWw5ay9rIxaYE5Do+2Xut7NTy5jc3NrUb4bMa44r
- sqgA==
-X-Gm-Message-State: AOAM532S/NzVSRPs07VvlK9lkD3KHR6EfVaXygcjrEMEQS9X0Xf5S6HW
- ZGYlanMeW8x8LG9A+SLppQQ=
-X-Google-Smtp-Source: ABdhPJzR7F4ntqza5TxeJHdnruw3Sr909Ky7UaeX6gfiS/xaUtY7aJ1DkExo+7MWJU3p6Tpo8cWycQ==
-X-Received: by 2002:a05:6512:308b:: with SMTP id
- z11mr2508194lfd.177.1639742150078; 
- Fri, 17 Dec 2021 03:55:50 -0800 (PST)
-Received: from [192.168.2.145] (94-29-63-156.dynamic.spd-mgts.ru.
- [94.29.63.156])
- by smtp.googlemail.com with ESMTPSA id f10sm1355834lfg.211.2021.12.17.03.55.49
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 17 Dec 2021 03:55:49 -0800 (PST)
-Subject: Re: [PATCH v4 04/22] dt-bindings: host1x: Document optional HDMI
- sound-dai-cells
-To: Mark Brown <broonie@kernel.org>, Thierry Reding <thierry.reding@gmail.com>
-References: <20211204143725.31646-1-digetx@gmail.com>
- <20211204143725.31646-5-digetx@gmail.com> <YbtLJeIxXlVyQhd3@orome>
- <Ybxwovlw2GARzqUO@sirena.org.uk>
-From: Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <4edfbff2-ffd9-1c33-de0c-013a29dc286c@gmail.com>
-Date: Fri, 17 Dec 2021 14:55:48 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="jbdAIfbw"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1BH8Oppg016817;
+ Fri, 17 Dec 2021 05:57:22 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=9o1JulQx1RfDJhAZY8/epNV4zyts01siPwgI5Q1HMi0=;
+ b=jbdAIfbwOZYn0uOuufPHZxEHPkcK0tV0AzfwEKGVQkdK8GoEMvbJR/xk2nibgeNTF3jy
+ M+ubVwSudkPHvsP/M3AQMJ+ene5PU5i+Yh2kzySjwZ3NO06tCyU/oeQV4z4Io4ZU+n0z
+ VWiRU3zmWkdQntVnkvt2N1sKj2RgAm5vc4LdA5iWNDRDSDIzInxbpgsDW4JY1D25rYUn
+ xgnhLPFbfjzIJu+qtIN5m3F8dRMXJCwN90usGdkbE+fQy663xjK5rfIWdP3ZECj4x13p
+ W9Df6+7E9RYtRM+1+XpjJuuy0GuNVduMcjYy+w4PH7p4POD4UXwkSfZhRwDtfzM+BQi6 5A== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3d0q0m06ka-2
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Fri, 17 Dec 2021 05:57:22 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Fri, 17 Dec
+ 2021 11:57:21 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.17 via
+ Frontend Transport; Fri, 17 Dec 2021 11:57:21 +0000
+Received: from aryzen.ad.cirrus.com (unknown [198.61.64.39])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2F8D9478;
+ Fri, 17 Dec 2021 11:57:21 +0000 (UTC)
+From: Lucas Tanure <tanureal@opensource.cirrus.com>
+To: "Rafael J . Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
+ Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH v6 03/10] ASoC: cs35l41: Move power initializations to
+ reg_sequence
+Date: Fri, 17 Dec 2021 11:57:01 +0000
+Message-ID: <20211217115708.882525-4-tanureal@opensource.cirrus.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20211217115708.882525-1-tanureal@opensource.cirrus.com>
+References: <20211217115708.882525-1-tanureal@opensource.cirrus.com>
 MIME-Version: 1.0
-In-Reply-To: <Ybxwovlw2GARzqUO@sirena.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- dri-devel@lists.freedesktop.org, Rob Herring <robh+dt@kernel.org>,
- Agneli <poczt@protonmail.ch>, linux-tegra@vger.kernel.org,
- Jonathan Hunter <jonathanh@nvidia.com>
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: yCN68q9oOfymmoZY90hztuX9U933kCDP
+X-Proofpoint-GUID: yCN68q9oOfymmoZY90hztuX9U933kCDP
+X-Proofpoint-Spam-Reason: safe
+Cc: alsa-devel@alsa-project.org, Lucas Tanure <tanureal@opensource.cirrus.com>,
+ patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+ platform-driver-x86@vger.kernel.org, linux-acpi@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,23 +99,92 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-17.12.2021 14:12, Mark Brown пишет:
-> On Thu, Dec 16, 2021 at 03:20:21PM +0100, Thierry Reding wrote:
->> On Sat, Dec 04, 2021 at 05:37:07PM +0300, Dmitry Osipenko wrote:
->>> Document new optional sound-dai-cells property of HDMI node. This node will
->>> be used as endpoint of HDMI sound DAI graph.
-> 
->> It's probably best for this to go through ASoC along with the other
->> audio-related bindings.
-> 
->> Alternatively, I've just sent out a patch that converts the host1x
->> bindings to json-schema, so I could work this into that as well.
-> 
-> It doesn't apply to the ASoC tree for whatever reason so probably best
-> to roll it in with those JSON updates.
-> 
+ASoC and HDA systems for all revisions of CS35L41 will benefit
+from having this initialization, so add it to reg_sequence of
+each revision
 
-This hos1tx binding patch indeed will conflict with the Thierry's patch.
+By moving to reg_sequence all gains are set to zero. And boost,
+monitoring parts, and class D amplifier are disabled.
 
-Thierry, will you be able to take the binding patches into the Tegra
-tree and resolve all those hos1tx binding conflicts there?
+Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
+---
+ sound/soc/codecs/cs35l41-lib.c |  3 ++-
+ sound/soc/codecs/cs35l41.c     | 20 ++++++--------------
+ 2 files changed, 8 insertions(+), 15 deletions(-)
+
+diff --git a/sound/soc/codecs/cs35l41-lib.c b/sound/soc/codecs/cs35l41-lib.c
+index dc5f502447a2..b3567e10adc4 100644
+--- a/sound/soc/codecs/cs35l41-lib.c
++++ b/sound/soc/codecs/cs35l41-lib.c
+@@ -17,6 +17,7 @@
+ 
+ static const struct reg_default cs35l41_reg[] = {
+ 	{ CS35L41_PWR_CTRL1,			0x00000000 },
++	{ CS35L41_PWR_CTRL2,			0x00000000 },
+ 	{ CS35L41_PWR_CTRL3,			0x01000010 },
+ 	{ CS35L41_GPIO_PAD_CONTROL,		0x00000000 },
+ 	{ CS35L41_SP_ENABLES,			0x00000000 },
+@@ -46,7 +47,7 @@ static const struct reg_default cs35l41_reg[] = {
+ 	{ CS35L41_CLASSH_CFG,			0x000B0405 },
+ 	{ CS35L41_WKFET_CFG,			0x00000111 },
+ 	{ CS35L41_NG_CFG,			0x00000033 },
+-	{ CS35L41_AMP_GAIN_CTRL,		0x00000273 },
++	{ CS35L41_AMP_GAIN_CTRL,		0x00000000 },
+ 	{ CS35L41_GPIO1_CTRL1,			0xE1000001 },
+ 	{ CS35L41_GPIO2_CTRL1,			0xE1000001 },
+ 	{ CS35L41_MIXER_NGATE_CFG,		0x00000000 },
+diff --git a/sound/soc/codecs/cs35l41.c b/sound/soc/codecs/cs35l41.c
+index aa57c59b334d..7494710ae6e6 100644
+--- a/sound/soc/codecs/cs35l41.c
++++ b/sound/soc/codecs/cs35l41.c
+@@ -1288,6 +1288,8 @@ static const struct reg_sequence cs35l41_reva0_errata_patch[] = {
+ 	{ CS35L41_DSP1_XM_ACCEL_PL0_PRI, 0x00000000 },
+ 	{ 0x00000040,			 0x0000CCCC },
+ 	{ 0x00000040,			 0x00003333 },
++	{ CS35L41_PWR_CTRL2,		 0x00000000 },
++	{ CS35L41_AMP_GAIN_CTRL,	 0x00000000 },
+ };
+ 
+ static const struct reg_sequence cs35l41_revb0_errata_patch[] = {
+@@ -1301,6 +1303,8 @@ static const struct reg_sequence cs35l41_revb0_errata_patch[] = {
+ 	{ CS35L41_DSP1_XM_ACCEL_PL0_PRI, 0x00000000 },
+ 	{ 0x00000040,			 0x0000CCCC },
+ 	{ 0x00000040,			 0x00003333 },
++	{ CS35L41_PWR_CTRL2,		 0x00000000 },
++	{ CS35L41_AMP_GAIN_CTRL,	 0x00000000 },
+ };
+ 
+ static const struct reg_sequence cs35l41_revb2_errata_patch[] = {
+@@ -1314,6 +1318,8 @@ static const struct reg_sequence cs35l41_revb2_errata_patch[] = {
+ 	{ CS35L41_DSP1_XM_ACCEL_PL0_PRI, 0x00000000 },
+ 	{ 0x00000040,			 0x0000CCCC },
+ 	{ 0x00000040,			 0x00003333 },
++	{ CS35L41_PWR_CTRL2,		 0x00000000 },
++	{ CS35L41_AMP_GAIN_CTRL,	 0x00000000 },
+ };
+ 
+ static const struct reg_sequence cs35l41_fs_errata_patch[] = {
+@@ -1556,20 +1562,6 @@ int cs35l41_probe(struct cs35l41_private *cs35l41,
+ 		goto err;
+ 	}
+ 
+-	ret = regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL2,
+-				 CS35L41_AMP_EN_MASK, 0);
+-	if (ret < 0) {
+-		dev_err(cs35l41->dev, "Write CS35L41_PWR_CTRL2 failed: %d\n", ret);
+-		goto err;
+-	}
+-
+-	ret = regmap_update_bits(cs35l41->regmap, CS35L41_AMP_GAIN_CTRL,
+-				 CS35L41_AMP_GAIN_PCM_MASK, 0);
+-	if (ret < 0) {
+-		dev_err(cs35l41->dev, "Write CS35L41_AMP_GAIN_CTRL failed: %d\n", ret);
+-		goto err;
+-	}
+-
+ 	ret = cs35l41_set_pdata(cs35l41);
+ 	if (ret < 0) {
+ 		dev_err(cs35l41->dev, "Set pdata failed: %d\n", ret);
+-- 
+2.34.1
+
