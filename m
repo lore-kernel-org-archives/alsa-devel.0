@@ -4,80 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7303C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Dec 2021 18:00:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2BE4C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Dec 2021 18:00:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 94C021FDA;
-	Fri, 17 Dec 2021 18:59:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94C021FDA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0D29B285F;
+	Fri, 17 Dec 2021 18:59:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D29B285F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639764013;
-	bh=Vl/41kvfdFpyRHJ6pNDcrzc48X1FAH4DBnCBilQ1CLE=;
+	s=default; t=1639764032;
+	bh=mOQ2eHw2UAJ//F0AMmxVBH++DECSj33r4EBlB3u0ixY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LCs3Lu4AXMlZwBDo1CQwsMiX2OpO01BamZEf1cSoMPI8kROG9e1VsZ88kFF6FbiNO
-	 vO3IheDLNw8+yiaQcwV4Cw5kjBYlR5J1Tqi8o/NYBoaz5kg0qZ3k8gnd8hYNfGRWh3
-	 sHwz6YQcxRik2LxrngNpyOVvwwnD/Dne71bUX0rY=
+	b=S6OvIbbaoa+lI4Up2pogm/dF3u6LentXR96kUVi1bY6VgdW8f7Lius5vPxL7LXBUN
+	 IP4+zvAFyAPPzskp20J0mdluDIuzHBp5PCq+r9FflwH6pObFb02FJAJh+NgiDvya9H
+	 dSdQKQpRYWLQc/WpU6z8BbvUlco2Uv8pvFZ6D1hY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3DF29F804EB;
+	by alsa1.perex.cz (Postfix) with ESMTP id CDB28F80511;
 	Fri, 17 Dec 2021 18:58:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 15BB0F804FA; Fri, 17 Dec 2021 18:58:18 +0100 (CET)
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com
- [IPv6:2a00:1450:4864:20::136])
+ id 47975F804EB; Fri, 17 Dec 2021 18:58:18 +0100 (CET)
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com
+ [IPv6:2a00:1450:4864:20::22a])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6DB07F800AB
- for <alsa-devel@alsa-project.org>; Fri, 17 Dec 2021 18:58:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DB07F800AB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 19B28F8016D
+ for <alsa-devel@alsa-project.org>; Fri, 17 Dec 2021 18:58:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 19B28F8016D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="Hp038EhP"
-Received: by mail-lf1-x136.google.com with SMTP id cf39so6239654lfb.8
- for <alsa-devel@alsa-project.org>; Fri, 17 Dec 2021 09:58:09 -0800 (PST)
+ header.b="DTTzqDWs"
+Received: by mail-lj1-x22a.google.com with SMTP id z8so4566552ljz.9
+ for <alsa-devel@alsa-project.org>; Fri, 17 Dec 2021 09:58:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=Aa9yOoBAsbVbHG/p5jLgnwkk1qHi5k7LSoJyKHkxWf8=;
- b=Hp038EhPsEX/h9Yl3bv4AclbmQNLVpsMCwmu+Kap3o46DhCTol4mS+RxfvPnIndB+W
- 337wZ6Qeji9i20vF3dYXIufPjaTC5zEeeAro27XaYktqAqdzx0f1sHUNaoz6723np3C8
- tg9prHr8luMRr9nwPCzZ3pvGOeNQgXohRf+7ACcOEOuseMgIKL11x5na7fzW4cJ1JP6S
- /NwIqyso0eqSOfGhK0+AQJnpPQPVzcexsSRgHr8Q9QsrlgeiEcD5LUQAtD5m3BNWNRk8
- MrAxR5p/h/W80Av/jEoAOarE7gcJCdBMjO1G/cCh72JJvu78aVRg1JJediQlhSHXHNiu
- Dp9g==
+ bh=FB8NrCq6c0f8jOXV4dsj1D+bh3p8PUaX1SHo3nADxp4=;
+ b=DTTzqDWsrj8mQnQqF5bFz1nJoz4ryQ+TBjJ62UPxuqmU1c6lfqA3zhDCj1aI/J8Yqs
+ u4gpHSQ6WBL0e3X2bV4yz+uI+C+cGQ2tJp14M5lESuw6+Z7rfVgI3VBVB52dUxtP3TrB
+ ycu4MtjczH4KO5DLTU3GZCi2sqDRm6qlWUmhyDljTVdpxNNxVrtzG9G6Kr57lYOrljZd
+ ElKFgEBwiQalsAuX1UslJcbh/5/cy91pl83mFMkqKhXvvbwzf6fyDCkxPIR4gTeo3VY7
+ YSdMIVQ5vGG0fRJvKVjCe7wEnOO28+SvkBQhWLrjsb8iO0qKdgxU5OB+YHlQcu1oBgwf
+ S8/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=Aa9yOoBAsbVbHG/p5jLgnwkk1qHi5k7LSoJyKHkxWf8=;
- b=7TXyF6UV69eBJmYDenl15PjBete1Zum7/1bocTb8o9BiNT5eHLH+kYtS6+Jqq4g8oU
- 32/4yNbchsDgSjA21h9NSDXDecLWse57pIbKTTqIkAAhbbExkVbmleEKwUgAtdnC9kzQ
- dEkCLXKyK0Lc1709GF7mSuXojuNt1gsFuT232tIINvh5lBBM+AIGYtQphS/lNH3WL5GW
- huidbuDDxh2cAKXg/HUI0zSEXO9u9fOVR4pTx7ZQRuzxmjGOUo/FunM47xoJp/gaauxH
- XwMeSEn+Q6aCytJ+NdXO8y/lo5FBkHHkHyl6Kulyvnq9CTjvlQ4aBXwavDgwWSQHbzi3
- xykA==
-X-Gm-Message-State: AOAM53373B1gQRfK0znuORi9iPvdqRYpBmm8iEfC8AVs2FBMPdmY7u17
- xJAcu+1DrTA2QNjXcMzRygI=
-X-Google-Smtp-Source: ABdhPJxDbG9C/hfS2qMWQsIB4NCcsWLXQr40hT4oghlO4QZ/abjfdAKcGOjou7Lqh1mV0z92cH0Wuw==
-X-Received: by 2002:a05:6512:b14:: with SMTP id
- w20mr3659502lfu.164.1639763887504; 
- Fri, 17 Dec 2021 09:58:07 -0800 (PST)
+ bh=FB8NrCq6c0f8jOXV4dsj1D+bh3p8PUaX1SHo3nADxp4=;
+ b=MLYwsH2gYlq0WUzM49q8bi6lKkfV7yV9sXH67Yhxg0DFJvz6uIzBLyqhtaLkdaTa5V
+ Cp27HRMkJ8PzzQMK6X69mBlsZhFvsWCmnjp/4qQ+FGTBkDKaKfz0PbV2swmbWXWx79ip
+ O8YwbTsIDMJNrseuMXS5nmwfiANRfuaKNas6imF740we3zLUT83dZoMFh+hA57ztL44p
+ u3Tfz8FDigyjp5mYFWRxbUQfXE11klMukUQzNgnUENN4Jx6prBTI5AbVD4bjckP1s+/T
+ 3pRcQmZo1cm4pfp42gKOhWVCGZlNKnvRjZkD0N01/mN47pr9ni4WdF+CQQuFPhTO9taj
+ RkWA==
+X-Gm-Message-State: AOAM530hEjROUfrfpbqqZnuhVwNG10N0lGIFX7elWfDU5xxhJEW/YZzt
+ kgo3HehN7GiguOV0zNwOSp0=
+X-Google-Smtp-Source: ABdhPJw5GliGY6dDen834MJOvCLphrGd/gm1fsIvCdMW/uW2lbBnsZTOwSnfyo+8Q8xQqR2DeFRK5A==
+X-Received: by 2002:a2e:8691:: with SMTP id l17mr3559188lji.119.1639763884754; 
+ Fri, 17 Dec 2021 09:58:04 -0800 (PST)
 Received: from localhost.localdomain (94-29-63-156.dynamic.spd-mgts.ru.
  [94.29.63.156])
- by smtp.gmail.com with ESMTPSA id w23sm1479244lfa.191.2021.12.17.09.58.06
+ by smtp.gmail.com with ESMTPSA id w23sm1479244lfa.191.2021.12.17.09.58.04
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 17 Dec 2021 09:58:07 -0800 (PST)
+ Fri, 17 Dec 2021 09:58:04 -0800 (PST)
 From: Dmitry Osipenko <digetx@gmail.com>
 To: Thierry Reding <thierry.reding@gmail.com>,
  Jonathan Hunter <jonathanh@nvidia.com>, Mark Brown <broonie@kernel.org>,
  Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
  Liam Girdwood <lgirdwood@gmail.com>, Agneli <poczt@protonmail.ch>
-Subject: [PATCH v5 05/11] ASoC: tegra20: spdif: Support device-tree
-Date: Fri, 17 Dec 2021 20:56:00 +0300
-Message-Id: <20211217175606.22645-6-digetx@gmail.com>
+Subject: [PATCH v5 01/11] ASoC: dt-bindings: Add binding for Tegra20 S/PDIF
+Date: Fri, 17 Dec 2021 20:55:56 +0300
+Message-Id: <20211217175606.22645-2-digetx@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211217175606.22645-1-digetx@gmail.com>
 References: <20211217175606.22645-1-digetx@gmail.com>
@@ -100,59 +99,107 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Tegra20 S/PDIF driver was added in a pre-DT era and was never used since
-that time. Revive driver by adding device-tree support.
+Add device-tree binding for Tegra20 S/PDIF controller.
 
+Reviewed-by: Rob Herring <robh@kernel.org>
 Acked-by: Thierry Reding <treding@nvidia.com>
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- sound/soc/tegra/tegra20_spdif.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ .../bindings/sound/nvidia,tegra20-spdif.yaml  | 85 +++++++++++++++++++
+ 1 file changed, 85 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra20-spdif.yaml
 
-diff --git a/sound/soc/tegra/tegra20_spdif.c b/sound/soc/tegra/tegra20_spdif.c
-index e45e371edc42..801784915004 100644
---- a/sound/soc/tegra/tegra20_spdif.c
-+++ b/sound/soc/tegra/tegra20_spdif.c
-@@ -10,6 +10,7 @@
- #include <linux/device.h>
- #include <linux/io.h>
- #include <linux/module.h>
-+#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/regmap.h>
-@@ -270,7 +271,7 @@ static int tegra20_spdif_platform_probe(struct platform_device *pdev)
- 
- 	dev_set_drvdata(&pdev->dev, spdif);
- 
--	spdif->clk_spdif_out = devm_clk_get(&pdev->dev, "spdif_out");
-+	spdif->clk_spdif_out = devm_clk_get(&pdev->dev, "out");
- 	if (IS_ERR(spdif->clk_spdif_out)) {
- 		pr_err("Can't retrieve spdif clock\n");
- 		ret = PTR_ERR(spdif->clk_spdif_out);
-@@ -340,10 +341,17 @@ static const struct dev_pm_ops tegra20_spdif_pm_ops = {
- 			   tegra20_spdif_runtime_resume, NULL)
- };
- 
-+static const struct of_device_id tegra20_spdif_of_match[] = {
-+	{ .compatible = "nvidia,tegra20-spdif", },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, tegra20_spdif_of_match);
+diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra20-spdif.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra20-spdif.yaml
+new file mode 100644
+index 000000000000..296248eed0ee
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/nvidia,tegra20-spdif.yaml
+@@ -0,0 +1,85 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/nvidia,tegra20-spdif.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- static struct platform_driver tegra20_spdif_driver = {
- 	.driver = {
- 		.name = DRV_NAME,
- 		.pm = &tegra20_spdif_pm_ops,
-+		.of_match_table = tegra20_spdif_of_match,
- 	},
- 	.probe = tegra20_spdif_platform_probe,
- 	.remove = tegra20_spdif_platform_remove,
-@@ -354,4 +362,3 @@ module_platform_driver(tegra20_spdif_driver);
- MODULE_AUTHOR("Stephen Warren <swarren@nvidia.com>");
- MODULE_DESCRIPTION("Tegra20 SPDIF ASoC driver");
- MODULE_LICENSE("GPL");
--MODULE_ALIAS("platform:" DRV_NAME);
++title: NVIDIA Tegra20 S/PDIF Controller
++
++description: |
++  The S/PDIF controller supports both input and output in serial audio
++  digital interface format. The input controller can digitally recover
++  a clock from the received stream. The S/PDIF controller is also used
++  to generate the embedded audio for HDMI output channel.
++
++maintainers:
++  - Thierry Reding <treding@nvidia.com>
++  - Jon Hunter <jonathanh@nvidia.com>
++
++properties:
++  compatible:
++    const: nvidia,tegra20-spdif
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    minItems: 2
++
++  clock-names:
++    items:
++      - const: out
++      - const: in
++
++  resets:
++    maxItems: 1
++
++  dmas:
++    minItems: 2
++
++  dma-names:
++    items:
++      - const: rx
++      - const: tx
++
++  "#sound-dai-cells":
++    const: 0
++
++  nvidia,fixed-parent-rate:
++    description: |
++      Specifies whether board prefers parent clock to stay at a fixed rate.
++      This allows multiple Tegra20 audio components work simultaneously by
++      limiting number of supportable audio rates.
++    type: boolean
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++  - resets
++  - dmas
++  - dma-names
++  - "#sound-dai-cells"
++
++additionalProperties: false
++
++examples:
++  - |
++    spdif@70002400 {
++        compatible = "nvidia,tegra20-spdif";
++        reg = <0x70002400 0x200>;
++        interrupts = <77>;
++        clocks = <&clk 99>, <&clk 98>;
++        clock-names = "out", "in";
++        resets = <&rst 10>;
++        dmas = <&apbdma 3>, <&apbdma 3>;
++        dma-names = "rx", "tx";
++        #sound-dai-cells = <0>;
++    };
++
++...
 -- 
 2.33.1
 
