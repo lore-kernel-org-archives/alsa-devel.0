@@ -4,57 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6AFC3C433EF
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Dec 2021 12:40:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3D8BC433F5
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Dec 2021 14:26:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8A9131923;
-	Sat, 18 Dec 2021 13:39:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A9131923
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3E68918CD;
+	Sat, 18 Dec 2021 15:25:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E68918CD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639831238;
-	bh=d0HYc7fwgcTxLa6zyFp6qdE56LcLVwdwp8lk6H/MDPE=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=suKO/YiDuM7R8hzoW7N9Gj/EK3L0/N0vX1QlPpVPb4n7tHBzZCevw86MTOCalAl9h
-	 PWSztt0eBBAjhCpmQ/YBlcQPZ7eiVc9Xe4RwziOdyVvXklAXnkU7iHwTfaX0KX4C90
-	 fFHchSK0UyGRo8kglPJiTs8MdZFtS5mP4zUxDXHI=
+	s=default; t=1639837568;
+	bh=6aGetMSe5wCWDFqOejK8BUrr6MsgJ0DO51IlD41Qqww=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Y8r0QITTUz3IFkMvznRnpopms4FGpY+zNu0AFBrrmRmN9uM6MbGNXRZE7mm1/gpv7
+	 zETmI0oVIg+vXUyHjcJqa0YFC3fszxmBUosmxX56afSWlBTPAkIoZlbEP9yE1AO5Ac
+	 PRWjeN7HVuKjEU/d/Wf+i8lVoUeMhDUKRvP9sBCc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 24A1EF80130;
-	Sat, 18 Dec 2021 13:39:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B5A38F80139;
+	Sat, 18 Dec 2021 15:25:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CC1BBF800F4; Sat, 18 Dec 2021 13:39:45 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 022AFF800E9
- for <alsa-devel@alsa-project.org>; Sat, 18 Dec 2021 13:39:36 +0100 (CET)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 24E08A003F;
- Sat, 18 Dec 2021 13:39:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 24E08A003F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1639831175; bh=NF2mJk2kv3e4yilXaNDZkRYSePxSxNBzGWMwTzcCLnU=;
- h=From:To:Cc:Subject:Date:From;
- b=PWBv77S/oLdFpeQALBNpDgC4yMQp3GzAt7l66CjHb/MXk0YVHKZ/8Lzsu7XQ0fsgC
- AK/T0fNbm/3Xamqjco8rYiR5bR3KKwZpbYAJQQw2ISwtN3mTlYk8EkFlRa0+uqXfbf
- /x044BvurS+AwH+YibJGs6P6I1rPIi/qY/AqdRy8=
-Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Sat, 18 Dec 2021 13:39:29 +0100 (CET)
-From: Jaroslav Kysela <perex@perex.cz>
-To: ALSA development <alsa-devel@alsa-project.org>
-Subject: [PATCH] ALSA: rawmidi - fix the uninitalized user_pversion
-Date: Sat, 18 Dec 2021 13:39:25 +0100
-Message-Id: <20211218123925.2583847-1-perex@perex.cz>
-X-Mailer: git-send-email 2.31.1
+ id 50231F80139; Sat, 18 Dec 2021 15:25:15 +0100 (CET)
+Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 789BDF800B0
+ for <alsa-devel@alsa-project.org>; Sat, 18 Dec 2021 15:25:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 789BDF800B0
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org
+ header.b="SrZRa4EF"
+Received: from smtp2.mailbox.org (smtp2.mailbox.org
+ [IPv6:2001:67c:2050:105:465:1:2:0])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest
+ SHA256) (No client certificate requested)
+ by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4JGSmg2WMBzQlMN;
+ Sat, 18 Dec 2021 15:25:07 +0100 (CET)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org;
+ s=mail20150812; t=1639837505;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=XF9vQjylQsXIaoxe2xV57DPHnmDDChvv1OAmnlTSlAM=;
+ b=SrZRa4EFPNZtE5k8EMDMIYbfeTdQhyFmB1NKZax7Dw+r8Xu9Y9AERvNWxrXmHVPbxJ+UDY
+ bsbGSU0f8UWchBkPXCvy5h77alqvNckvQhL7n0PQr1ZqYPM+ugiDzPjWZwBuyW9DJ89f0i
+ TbgXPWK583RoV8oRMtICYfXAcQyKzVnjahqxmFQo1v9tx97j8LJ0wDuO/hOP9QCYuRfB5o
+ 65XIrFH/po5T55DjUOb4HwbH8klo0dfZddkXY7/suOvytTmVasIApF5RLou4/3VbURUhF1
+ eJf7y3oXUcmY+sB8wRpBcahpHn9BVH3BnGIRpWbVlFBN3hx8yp5z9slIiHXfWg==
+From: Alexander Stein <alexander.stein@mailbox.org>
+To: Jerome Brunet <jbrunet@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>
+Subject: [PATCH 3/3] ASoC: meson: g12a: add missing sound-name-prefix property
+Date: Sat, 18 Dec 2021 15:24:51 +0100
+Message-Id: <20211218142451.15010-3-alexander.stein@mailbox.org>
+In-Reply-To: <20211218142451.15010-1-alexander.stein@mailbox.org>
+References: <20211218142451.15010-1-alexander.stein@mailbox.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Takashi Iwai <tiwai@suse.de>, broonie@kernel.org,
- syzbot+88412ee8811832b00dbe@syzkaller.appspotmail.com, stable@kernel.org
+Cc: Alexander Stein <alexander.stein@mailbox.org>, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -70,34 +82,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The user_pversion was unitialized for the user space file structure
-in the open function, because the file private structure use
-kmalloc for the allocation.
+This is used in meson-sm1 and meson-g12 .dtsi. Add the property to
+the binding.
+This fixes the dtschema warning:
+audio-controller@740: 'sound-name-prefix' does not match any of the
+regexes: 'pinctrl-[0-9]+'
 
-The kernel ALSA sequencer code clears the file structure, so no additional
-fixes are required.
-
-Cc: stable@kernel.org
-Cc: broonie@kernel.org
-BugLink: https://github.com/alsa-project/alsa-lib/issues/178
-Fixes: 09d23174402d ("ALSA: rawmidi: introduce SNDRV_RAWMIDI_IOCTL_USER_PVERSION")
-Reported-by: syzbot+88412ee8811832b00dbe@syzkaller.appspotmail.com
-Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+Signed-off-by: Alexander Stein <alexander.stein@mailbox.org>
 ---
- sound/core/rawmidi.c | 1 +
- 1 file changed, 1 insertion(+)
+All users have set this to "TOACODEC", but I am not sure if this value is
+mandatory, so I opted to not set a pattern for this property.
 
-diff --git a/sound/core/rawmidi.c b/sound/core/rawmidi.c
-index 6f30231bdb88..befa9809ff00 100644
---- a/sound/core/rawmidi.c
-+++ b/sound/core/rawmidi.c
-@@ -447,6 +447,7 @@ static int snd_rawmidi_open(struct inode *inode, struct file *file)
- 		err = -ENOMEM;
- 		goto __error;
- 	}
-+	rawmidi_file->user_pversion = 0;
- 	init_waitqueue_entry(&wait, current);
- 	add_wait_queue(&rmidi->open_wait, &wait);
- 	while (1) {
+ .../devicetree/bindings/sound/amlogic,g12a-toacodec.yaml     | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/sound/amlogic,g12a-toacodec.yaml b/Documentation/devicetree/bindings/sound/amlogic,g12a-toacodec.yaml
+index 3c3891d17238..28c082b07c3e 100644
+--- a/Documentation/devicetree/bindings/sound/amlogic,g12a-toacodec.yaml
++++ b/Documentation/devicetree/bindings/sound/amlogic,g12a-toacodec.yaml
+@@ -9,6 +9,9 @@ title: Amlogic G12a Internal DAC Control Glue
+ maintainers:
+   - Jerome Brunet <jbrunet@baylibre.com>
+ 
++allOf:
++  - $ref: name-prefix.yaml#
++
+ properties:
+   $nodename:
+     pattern: "^audio-controller@.*"
+@@ -31,6 +34,8 @@ properties:
+   resets:
+     maxItems: 1
+ 
++  sound-name-prefix: pass
++
+ required:
+   - "#sound-dai-cells"
+   - compatible
 -- 
-2.31.1
+2.34.1
+
