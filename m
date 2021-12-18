@@ -4,64 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6D0BC433EF
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Dec 2021 14:36:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98457C433F5
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Dec 2021 14:36:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 235EC1AB2;
-	Sat, 18 Dec 2021 15:35:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 235EC1AB2
+	by alsa0.perex.cz (Postfix) with ESMTPS id BC83C1AC2;
+	Sat, 18 Dec 2021 15:35:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC83C1AC2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639838170;
-	bh=ZUBh3Htb2r03DB6YDVQeoewM3wSFna0ydu1x0Vr7Eas=;
+	s=default; t=1639838187;
+	bh=F2/V2zPfl5JI6BlpfHX/GEd9eZfB2v0lyNpixcYf3Og=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fizOD8zkfbNg232RZC0w2SoHkZXq2qZKDgE4k3ytYihWIpJIgp0GUbzE7qlOXFMIL
-	 HNfwxVJdveRdFUFBZ73Ms/S+rNtPxZCGLnT6qjBzMy9YqBpjuRGjIYoQRpbOZHaJ7S
-	 YSU6+hS0UA7DOce4Rea57JP3oQ+tGn03G4+1QTt0=
+	b=vaOitiXQ+GBU9ILxH+7SnfFNf/TCMm9+E3FRtDEKcW8w5fjKe8SQ7lrlIXtlG02E2
+	 HLH5vq4aP5RPjxGLY4N+nPTKbsZ/iuqE5lgtvEhc40B1CV1J094Y0EBx22NzESqDbo
+	 yWxGCYUFpe2/K+/7skxgg/rcH4ZYFp11lQhsEJU0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 48F03F80166;
-	Sat, 18 Dec 2021 15:34:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 79DA9F804E4;
+	Sat, 18 Dec 2021 15:34:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5193CF80311; Sat, 18 Dec 2021 15:34:44 +0100 (CET)
-Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [80.241.56.152])
+ id A19DFF8047C; Sat, 18 Dec 2021 15:34:49 +0100 (CET)
+Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
  bits)) (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A8629F80139
- for <alsa-devel@alsa-project.org>; Sat, 18 Dec 2021 15:34:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8629F80139
+ by alsa1.perex.cz (Postfix) with ESMTPS id B39A4F80130
+ for <alsa-devel@alsa-project.org>; Sat, 18 Dec 2021 15:34:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B39A4F80130
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org
- header.b="CUpKVtUX"
-Received: from smtp202.mailbox.org (smtp202.mailbox.org
- [IPv6:2001:67c:2050:105:465:1:4:0])
+ header.b="ZYbT2IT6"
+Received: from smtp202.mailbox.org (smtp202.mailbox.org [80.241.60.245])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest
  SHA256) (No client certificate requested)
- by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4JGSzd2Vc6zQl4q;
- Sat, 18 Dec 2021 15:34:37 +0100 (CET)
+ by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4JGSzc3VCdzQkBp;
+ Sat, 18 Dec 2021 15:34:36 +0100 (CET)
 X-Virus-Scanned: amavisd-new at heinlein-support.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org;
- s=mail20150812; t=1639838075;
+ s=mail20150812; t=1639838074;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=nXB+08+k7M9poCYOa2pdqxCM6ES+Bb3wI7MNLLV8K24=;
- b=CUpKVtUXP2RuOXvLx4vEDJu/i7f/IzhyDKNPtHxv/toXjyNDyFIuCrgueB0GTaiFFuGHf1
- vAZdzIh6dR/zfs2vsDaIEUliAHEvalQRRrJ3RhWdrxzkfw6xhp03NYHFiSVpfD8Ou1doXL
- 9cs6ikjxTrNO4/MoWXkaSbyP+qxxVPo0ruJdNArHKMzJ823EM0sZTeDYE5+2IlZNfs5vVi
- ujekC6Q+TxTh5hO1rWQdJJGgVk0E1RVk6oVgCEsbgwmS+hVaEj8B9gWNUT8tX+X2La8Ga0
- XQFEPSQ5NxQj0EcTIhjM6x1W9sOk40iTMgKlYHYK81/ZI7vpme0jaJGqEaZB8g==
+ bh=9c4gpNYB79+7nhkfAcvn/kEQPe3TsDkeCKNXjg70i1o=;
+ b=ZYbT2IT6AsvXqUH89Tlki8hOyCDZRHQjWLZ34LzvIoKmc4WGY4I68z94kUgANiX+4XgZ9h
+ bUZmcv6cHgLIk3eCAEMDwbTUllRT5VQTESDRxDEM8hSQRovMlf2qM5G+MIsQ2HM6nsD/1S
+ UI1Gp4/M78PYxUX6KE71wLltMay46ib2xX7r4aEBBef58uyfa0wNqfgadT2VA9W/NhnJ/Y
+ +G2sYFK2+xGzCcvr/92FEaRpSOuuTOnnGKpjEY9laTCj3nhsg99RMKnOTQxU5RXHEShr9p
+ WdMXh1RvjD/cyQv9gdhyCpYgvJswe3rAXYFUF6oaZ/7cNCQ9anu9jsD341DTmA==
 From: Alexander Stein <alexander.stein@mailbox.org>
 To: Jerome Brunet <jbrunet@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>,
  Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>
-Subject: [PATCH v2 3/3] ASoC: meson: g12a: add missing sound-name-prefix
+Subject: [PATCH v2 2/3] ASoC: meson: t9015: add missing sound-name-prefix
  property
-Date: Sat, 18 Dec 2021 15:34:23 +0100
-Message-Id: <20211218143423.18768-3-alexander.stein@mailbox.org>
+Date: Sat, 18 Dec 2021 15:34:22 +0100
+Message-Id: <20211218143423.18768-2-alexander.stein@mailbox.org>
 In-Reply-To: <20211218143423.18768-1-alexander.stein@mailbox.org>
 References: <20211218143423.18768-1-alexander.stein@mailbox.org>
 MIME-Version: 1.0
@@ -83,28 +82,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This is used in meson-sm1 and meson-g12 .dtsi. Add the property to
+This is used in meson-gxl and meson-g12-common .dtsi. Add the property to
 the binding.
 This fixes the dtschema warning:
-audio-controller@740: 'sound-name-prefix' does not match any of the
+audio-controller@32000: 'sound-name-prefix' does not match any of the
 regexes: 'pinctrl-[0-9]+'
 
 Signed-off-by: Alexander Stein <alexander.stein@mailbox.org>
 ---
-All users have set this to "TOACODEC", but I am not sure if this value is
+All users have set this to "ACODEC", but I am not sure if this value is
 mandatory, so I opted to not set a pattern for this property.
 
 Changes in v2:
-* Fix 'pass' -> 'true'
+* None
 
-.../devicetree/bindings/sound/amlogic,g12a-toacodec.yaml     | 5 +++++
+ Documentation/devicetree/bindings/sound/amlogic,t9015.yaml | 5 +++++
  1 file changed, 5 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/amlogic,g12a-toacodec.yaml b/Documentation/devicetree/bindings/sound/amlogic,g12a-toacodec.yaml
-index 3c3891d17238..77469a45bb7a 100644
---- a/Documentation/devicetree/bindings/sound/amlogic,g12a-toacodec.yaml
-+++ b/Documentation/devicetree/bindings/sound/amlogic,g12a-toacodec.yaml
-@@ -9,6 +9,9 @@ title: Amlogic G12a Internal DAC Control Glue
+diff --git a/Documentation/devicetree/bindings/sound/amlogic,t9015.yaml b/Documentation/devicetree/bindings/sound/amlogic,t9015.yaml
+index db7b04da0b39..580a3d040abc 100644
+--- a/Documentation/devicetree/bindings/sound/amlogic,t9015.yaml
++++ b/Documentation/devicetree/bindings/sound/amlogic,t9015.yaml
+@@ -9,6 +9,9 @@ title: Amlogic T9015 Internal Audio DAC
  maintainers:
    - Jerome Brunet <jbrunet@baylibre.com>
  
@@ -114,9 +113,9 @@ index 3c3891d17238..77469a45bb7a 100644
  properties:
    $nodename:
      pattern: "^audio-controller@.*"
-@@ -31,6 +34,8 @@ properties:
-   resets:
-     maxItems: 1
+@@ -38,6 +41,8 @@ properties:
+     description:
+       Analogue power supply.
  
 +  sound-name-prefix: true
 +
