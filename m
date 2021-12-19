@@ -4,69 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98457C433F5
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Dec 2021 14:36:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DEC8CC433F5
+	for <alsa-devel@archiver.kernel.org>; Sun, 19 Dec 2021 09:28:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BC83C1AC2;
-	Sat, 18 Dec 2021 15:35:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC83C1AC2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 39544185D;
+	Sun, 19 Dec 2021 10:27:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 39544185D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1639838187;
-	bh=F2/V2zPfl5JI6BlpfHX/GEd9eZfB2v0lyNpixcYf3Og=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1639906115;
+	bh=4o+CCYyIeN/CaotC58JjZ4yybHl1AyPF/RHPO7IZqZE=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vaOitiXQ+GBU9ILxH+7SnfFNf/TCMm9+E3FRtDEKcW8w5fjKe8SQ7lrlIXtlG02E2
-	 HLH5vq4aP5RPjxGLY4N+nPTKbsZ/iuqE5lgtvEhc40B1CV1J094Y0EBx22NzESqDbo
-	 yWxGCYUFpe2/K+/7skxgg/rcH4ZYFp11lQhsEJU0=
+	b=Aao9KF+vWPOQn/b5Ic6akQStyuY7hHNjmQB/IAE5bxjXDm/qnt/7r2OH54MMywECS
+	 uIJNvcVSbrPxCT3J5o/LuXhAoUL/EG5xBZahnog6ooZkpbtiRThz5ydEr89D6iJOEW
+	 BEkTZTONpt9D2CsSOrGXwfvFlP98p2AMeHf1n9Mw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 79DA9F804E4;
-	Sat, 18 Dec 2021 15:34:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C0EFFF8026A;
+	Sun, 19 Dec 2021 10:27:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A19DFF8047C; Sat, 18 Dec 2021 15:34:49 +0100 (CET)
-Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B39A4F80130
- for <alsa-devel@alsa-project.org>; Sat, 18 Dec 2021 15:34:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B39A4F80130
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org
- header.b="ZYbT2IT6"
-Received: from smtp202.mailbox.org (smtp202.mailbox.org [80.241.60.245])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest
- SHA256) (No client certificate requested)
- by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4JGSzc3VCdzQkBp;
- Sat, 18 Dec 2021 15:34:36 +0100 (CET)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org;
- s=mail20150812; t=1639838074;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=9c4gpNYB79+7nhkfAcvn/kEQPe3TsDkeCKNXjg70i1o=;
- b=ZYbT2IT6AsvXqUH89Tlki8hOyCDZRHQjWLZ34LzvIoKmc4WGY4I68z94kUgANiX+4XgZ9h
- bUZmcv6cHgLIk3eCAEMDwbTUllRT5VQTESDRxDEM8hSQRovMlf2qM5G+MIsQ2HM6nsD/1S
- UI1Gp4/M78PYxUX6KE71wLltMay46ib2xX7r4aEBBef58uyfa0wNqfgadT2VA9W/NhnJ/Y
- +G2sYFK2+xGzCcvr/92FEaRpSOuuTOnnGKpjEY9laTCj3nhsg99RMKnOTQxU5RXHEShr9p
- WdMXh1RvjD/cyQv9gdhyCpYgvJswe3rAXYFUF6oaZ/7cNCQ9anu9jsD341DTmA==
-From: Alexander Stein <alexander.stein@mailbox.org>
-To: Jerome Brunet <jbrunet@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>
-Subject: [PATCH v2 2/3] ASoC: meson: t9015: add missing sound-name-prefix
- property
-Date: Sat, 18 Dec 2021 15:34:22 +0100
-Message-Id: <20211218143423.18768-2-alexander.stein@mailbox.org>
-In-Reply-To: <20211218143423.18768-1-alexander.stein@mailbox.org>
-References: <20211218143423.18768-1-alexander.stein@mailbox.org>
+ id 4EE92F8012A; Sun, 19 Dec 2021 10:27:42 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 5AAA4F8012A
+ for <alsa-devel@alsa-project.org>; Sun, 19 Dec 2021 10:27:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5AAA4F8012A
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Alexander Stein <alexander.stein@mailbox.org>, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1639906055141784906-webhooks-bot@alsa-project.org>
+References: <1639906055141784906-webhooks-bot@alsa-project.org>
+Subject: Missing profile 7.1
+Message-Id: <20211219092742.4EE92F8012A@alsa1.perex.cz>
+Date: Sun, 19 Dec 2021 10:27:42 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,46 +55,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This is used in meson-gxl and meson-g12-common .dtsi. Add the property to
-the binding.
-This fixes the dtschema warning:
-audio-controller@32000: 'sound-name-prefix' does not match any of the
-regexes: 'pinctrl-[0-9]+'
+alsa-project/alsa-utils issue #128 was opened from raven2cz:
 
-Signed-off-by: Alexander Stein <alexander.stein@mailbox.org>
----
-All users have set this to "ACODEC", but I am not sure if this value is
-mandatory, so I opted to not set a pattern for this property.
+Hello,
+I have several years profile 7.1 which is missing now around 1.5-2months. I already write these issues 
+* https://bbs.archlinux.org/viewtopic.php?id=272280
+* https://gitlab.freedesktop.org/pulseaudio/pulseaudio/-/issues/1309
 
-Changes in v2:
-* None
+It seems that the problem can be in alsa-utils.
+```
+control.45 {
+                iface PCM
+                name 'Playback Channel Map'
+                value.0 0
+                value.1 0
+                value.2 0
+                value.3 0
+                value.4 0
+                value.5 0
+                comment {
+                        access read
+                        type INTEGER
+                        count 6
+                        range '0 - 36'
+                }
+        }
+```
+I already try to change kernels, not help. See inside the issues whole test env. 
 
- Documentation/devicetree/bindings/sound/amlogic,t9015.yaml | 5 +++++
- 1 file changed, 5 insertions(+)
+Can you help me?
 
-diff --git a/Documentation/devicetree/bindings/sound/amlogic,t9015.yaml b/Documentation/devicetree/bindings/sound/amlogic,t9015.yaml
-index db7b04da0b39..580a3d040abc 100644
---- a/Documentation/devicetree/bindings/sound/amlogic,t9015.yaml
-+++ b/Documentation/devicetree/bindings/sound/amlogic,t9015.yaml
-@@ -9,6 +9,9 @@ title: Amlogic T9015 Internal Audio DAC
- maintainers:
-   - Jerome Brunet <jbrunet@baylibre.com>
- 
-+allOf:
-+  - $ref: name-prefix.yaml#
-+
- properties:
-   $nodename:
-     pattern: "^audio-controller@.*"
-@@ -38,6 +41,8 @@ properties:
-     description:
-       Analogue power supply.
- 
-+  sound-name-prefix: true
-+
- required:
-   - "#sound-dai-cells"
-   - compatible
--- 
-2.34.1
-
+Issue URL     : https://github.com/alsa-project/alsa-utils/issues/128
+Repository URL: https://github.com/alsa-project/alsa-utils
