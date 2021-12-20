@@ -4,95 +4,122 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C996DC433FE
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Dec 2021 17:25:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED73FC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Dec 2021 17:31:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C800D174E;
-	Mon, 20 Dec 2021 18:24:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C800D174E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2CE851753;
+	Mon, 20 Dec 2021 18:30:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2CE851753
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640021136;
-	bh=7b04cqfWVA72QWdzQ0NXz5H4KwF8KeHmbfQHRhzr6rU=;
-	h=From:To:References:In-Reply-To:Subject:Date:Cc:List-Id:
+	s=default; t=1640021504;
+	bh=UNyg9W0NahItkomQ+dQfdMvX6oTK9JvzsfnYDrt3b3g=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=u2RQDT3uW9FbqVa4rhehDqpMT5Ek1rXxmeODBroWI/17WTEOhroBRUch59J1fcfYz
-	 b1iV89DBe2qYGJCjyIZW+blHRM47iMmYGe1JojrKDKiizp8vc7P5fm8sschfnGxeCU
-	 9dzpodAHB03L9VaHKs3o8ltErvJsG/QphjL1y/fk=
+	b=KWW2fKEZE6SaABEJhYuSYTmXS6ylPj0nYIi6+FMIpHMim0vUKV9ummjMmveUUfV8A
+	 Lx95ekN3D6n3JOk8kdKW5Pj6f5MDd7J9M+6nnQM/xBlQJ+kybgHd+Oq8Llrr58hDTl
+	 F++2ALlnrHOhVlQomtnGhrL/egWU92AOQ6NoKuhA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 69671F80125;
-	Mon, 20 Dec 2021 18:24:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9D3D2F80125;
+	Mon, 20 Dec 2021 18:30:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9D662F80117; Mon, 20 Dec 2021 18:24:43 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id 643E0F8012A; Mon, 20 Dec 2021 18:30:50 +0100 (CET)
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com
+ (mail-bn1nam07on2077.outbound.protection.outlook.com [40.107.212.77])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C0F04F80117
- for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2021 18:24:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0F04F80117
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7267BF80117
+ for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2021 18:30:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7267BF80117
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="pP1udFz/"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1BKBpnDB004263;
- Mon, 20 Dec 2021 11:24:33 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- references : in-reply-to : subject : date : message-id : mime-version :
- content-type : content-transfer-encoding; s=PODMain02222019;
- bh=Ur4oCNLSBcusPp8m3eB1JJYW8fExWXXtlc0PG/qBVF4=;
- b=pP1udFz/oHxh0Z9iLKoRB3q/F5dN9MPb2scU6lqZ31jJabtEnQTTwVDeT/ehVTbGMKO5
- wTkB0T+lV40IULwY2w5YW/fyoSMelg+45qZ+euJhSB6FOs2PQsQY8mHz2csZKA4j/LYX
- a+bPtudedUHLAwwUzxW31GGpRPxwWf4P2Wtd1CsO9p6v1fiJISeUic7cDeL2obWwYC6l
- 865TnZmTZ+Pw2bJ5DiUPTUBinMfSFAZnpTDTIWtjWgBZYPbNxlN7TcbBAwsG1hClhUMF
- GG40YUeiHyKXQjyrx7/deE8mUwRySINOTCRpUGTP7iXpxvaDsW4HzoWOrchVtVjCLy5Q tg== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3d2kt8grtj-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Mon, 20 Dec 2021 11:24:32 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Mon, 20 Dec
- 2021 17:24:31 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.17 via
- Frontend Transport; Mon, 20 Dec 2021 17:24:31 +0000
-Received: from LONN2DGDQ73 (unknown [198.90.238.81])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 3FD2C2A9;
- Mon, 20 Dec 2021 17:24:30 +0000 (UTC)
-From: Stefan Binding <sbinding@opensource.cirrus.com>
-To: 'Hans de Goede' <hdegoede@redhat.com>, "'Rafael J. Wysocki'"
- <rafael@kernel.org>, 'Lucas Tanure' <tanureal@opensource.cirrus.com>
-References: <20211217115708.882525-1-tanureal@opensource.cirrus.com>
- <20211217115708.882525-9-tanureal@opensource.cirrus.com>
- <CAJZ5v0jTELqFeO6q6w_mYNo_yf1R9SX66RrEz0ZSe27w7E6kog@mail.gmail.com>
- <4b5506b1-20c6-3983-d541-86dc2388b2a7@redhat.com>
-In-Reply-To: <4b5506b1-20c6-3983-d541-86dc2388b2a7@redhat.com>
-Subject: RE: [PATCH v6 08/10] ACPI / scan: Create platform device for CLSA0100
- and CSC3551 ACPI nodes
-Date: Mon, 20 Dec 2021 17:24:30 +0000
-Message-ID: <004001d7f5c6$7329d4d0$597d7e70$@opensource.cirrus.com>
+ dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com
+ header.b="g9wVc9Mm"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cX8fLgLSvQwZgSMfPJnFuk/nkmT58p+CXUgfCjpT9xtZF1rdTCRClH2r2fNN5r/1wluTYeBZI9UyTuKWygKaBthUpk3V6sQBPBQk/Q2TNwV3UeWZnejxjV4f5YFobCi7q2ec1+pq1x+xTfec16smQAGZf202NAPuInvRy60t++OtkqyHbvLkckQc1203FcaXvae3BCpR/sv4BS7PFwZleN0a+dbFp7jvQIh3ZIoUvmhXvGv3VlzSFW3aNPiho4DByu0Swa1FounyyIuhNOPzp+t4M7xMO2BtDPV+JuCUlSvskQJYutQZ2vkLt5YAd6Za3RZZvewGn4N8dvPC+H1Gwg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=sBMj28G4lKaOP1IblIEhgKmSuZdjCAxJ9lk9/1VutR0=;
+ b=maNNmLNkDelc2sD+3YaSHGt0omEdtt9fqKCSW9asmZdot0Q0UgFR/O2UGSlbOBmfMCZpoIzP1JhvAehl1mWuSu/GRLtfgEtH8PURu6dMZBxJJLZn3MO/kjiEYZA/HmfboVCHtUznlipriEUVQ/dm2ej9nf+K8XW1DxMuPnMzLMoXcL//GdYYIfLY4y9XUdjWtlprcQxnPmuwru2sLzxWoHam4RuM2g5BSMvs90b1uqplROYLIt1RQvlenYdmnLQwiZxUU356abD9nyrqg7u0WTMpQN6T+iUQBCiMMC15ZEmBmoWvAaTbpQKkWfM1HUCgG9S//rXuJol/8BMrnkFTjA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 12.22.5.238) smtp.rcpttodomain=suse.com smtp.mailfrom=nvidia.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sBMj28G4lKaOP1IblIEhgKmSuZdjCAxJ9lk9/1VutR0=;
+ b=g9wVc9MmNotHcpakNO81+6PNCWak8IUnOYs75NhGpfoqaTw9wgZdDFKvceZrPnjjIsVk3sql5V/YiTbZEIJW0IsxGw0H28E6oEXazQU8D5PHeatwiAsD/ztQhIsQdFwzmqWEBhx7j/T0DEiS99xjq2MyY5f7yBzdFO82VQeBuO54NJSwLJBODjA0LlnJvOkQL2yn+FvR4OQxY8QeQ4qNZr3DhrLOaVepoHwso2QSTrECENGnP5iyEkjFAloC2D1rWwoEXusjNQo1FoihqYelDqoz3WfFDRL6DQmUQVT/2poLtQY7L39/e5geMJpq8PDvbH5ldQGVC+9aE5+i1+Mz8Q==
+Received: from BN9PR03CA0359.namprd03.prod.outlook.com (2603:10b6:408:f6::34)
+ by BL0PR12MB4961.namprd12.prod.outlook.com (2603:10b6:208:1c9::24)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4801.14; Mon, 20 Dec
+ 2021 17:30:37 +0000
+Received: from BN8NAM11FT009.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:f6:cafe::5a) by BN9PR03CA0359.outlook.office365.com
+ (2603:10b6:408:f6::34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4801.15 via Frontend
+ Transport; Mon, 20 Dec 2021 17:30:37 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 12.22.5.238)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 12.22.5.238 as permitted sender) receiver=protection.outlook.com;
+ client-ip=12.22.5.238; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (12.22.5.238) by
+ BN8NAM11FT009.mail.protection.outlook.com (10.13.176.65) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4801.14 via Frontend Transport; Mon, 20 Dec 2021 17:30:37 +0000
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by DRHQMAIL105.nvidia.com
+ (10.27.9.14) with Microsoft SMTP Server (TLS) id 15.0.1497.18;
+ Mon, 20 Dec 2021 17:30:36 +0000
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 20 Dec
+ 2021 17:30:35 +0000
+Received: from audio.nvidia.com (172.20.187.6) by mail.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
+ Transport; Mon, 20 Dec 2021 17:30:32 +0000
+From: Sameer Pujar <spujar@nvidia.com>
+To: <tiwai@suse.com>, <broonie@kernel.org>, <lgirdwood@gmail.com>,
+ <robh+dt@kernel.org>, <thierry.reding@gmail.com>, <perex@perex.cz>
+Subject: [PATCH v2 1/3] ALSA: hda/tegra: Fix Tegra194 HDA reset failure
+Date: Mon, 20 Dec 2021 23:00:06 +0530
+Message-ID: <1640021408-12824-2-git-send-email-spujar@nvidia.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1640021408-12824-1-git-send-email-spujar@nvidia.com>
+References: <1640021408-12824-1-git-send-email-spujar@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Content-Language: en-gb
-Thread-Index: AQFonMI0WTNmVk9vhQUnEV0YSPsGcgGkMuwYAgUuTOECRVQNZKzq2vIA
-X-Proofpoint-ORIG-GUID: tUzAAlnJajlhkW3wcG-HzLZr4h-wzfPI
-X-Proofpoint-GUID: tUzAAlnJajlhkW3wcG-HzLZr4h-wzfPI
-X-Proofpoint-Spam-Reason: safe
-Cc: "'moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM...'"
- <alsa-devel@alsa-project.org>, 'Liam Girdwood' <lgirdwood@gmail.com>,
- patches@opensource.cirrus.com, 'Takashi Iwai' <tiwai@suse.com>,
- 'Mark Gross' <markgross@kernel.org>,
- 'ACPI Devel Maling List' <linux-acpi@vger.kernel.org>,
- 'Mark Brown' <broonie@kernel.org>,
- 'Platform Driver' <platform-driver-x86@vger.kernel.org>,
- 'Linux Kernel Mailing List' <linux-kernel@vger.kernel.org>,
- 'Len Brown' <lenb@kernel.org>
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e008a5a2-0118-4c3f-46cb-08d9c3de6fdd
+X-MS-TrafficTypeDiagnostic: BL0PR12MB4961:EE_
+X-Microsoft-Antispam-PRVS: <BL0PR12MB496151AB2FD9319265A1B86FA77B9@BL0PR12MB4961.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: AvgF44KpK93M5L8dH9lxzcSLo02/fjszhXxV6z9/5HUqA85/BAsX2X3tqoemUzyPzXM/ZUC0fe8Qqo+OqUi6546IcNOUT3JLr7A9DY/w0gYodmO9zHBk86bZ6e+3acFckjpNbv9g+ZWN+Rovp0BlEDCZsiuxAnQD0rYF4vmz6w9Tok547nudykH+zQ76kkIt/EH6bkHlx02EJcKb0DioWbQrBpCwYVBuKqRLn7F7zg6KcgRnhcELdIP5opxDuHmK7syFGXktutsEJyUyQRpf9hdgRFYv2EvqnoOL3fgKlj6qh6p8MhKS7n5Co0isVlt+dXS1s3n4daMRpP/aZj0jnSGFp5NQA1zV6KivUu7UhUk3WSx5zbKrKn/LY0IEyzsBeSzK12PiCrfuP3aOUd1EXM4nS8sGNsVgL7DkIiPcxsXboff4fcNbfBqJ4SJm+4mdfFVO1RmVsGTX0sEpI1QEydag5Ib56IRobbwMxzDJiLOPV3INEsqwNNFc2S8LBJ2PHqL+l1/lsgm2ldkugMX88tyuMBxgXB/mSvmVILjxEURpZ296qW36Aq3vppLW/aCEiZLrxpKysXm0cdTTrpKO4KfYJNdP8QPFCOEFkfnaJ7k14PpwATIsIkin9PeaMGWJ+2dtT72bnwjfrRrGZO17NZ4SquUhdn4v2vvoqklmIuwOZY68kA/1gP5IYbNYBbopD/m7kMuHwaRBrnE+1vJwR65/IRPXzqjQRBMN5cI7Y4pybgI4gszw28IyuGbArpzNHkge3uIP8GFHhBl1pYJs9tsiZbBW8cSTqA9e9g0tata7+dkk5mUAHJGsRDSJ6767MqhBKBH+BrA/xl2CmILKRA==
+X-Forefront-Antispam-Report: CIP:12.22.5.238; CTRY:US; LANG:en; SCL:1; SRV:;
+ IPV:CAL; SFV:NSPM; H:mail.nvidia.com; PTR:InfoNoRecords; CAT:NONE;
+ SFS:(4636009)(46966006)(36840700001)(40470700001)(70586007)(36756003)(4326008)(356005)(34020700004)(40460700001)(47076005)(26005)(508600001)(186003)(70206006)(82310400004)(7696005)(81166007)(336012)(316002)(36860700001)(2616005)(83380400001)(2906002)(8676002)(426003)(6666004)(5660300002)(7416002)(8936002)(110136005)(54906003)(86362001)(36900700001);
+ DIR:OUT; SFP:1101; 
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Dec 2021 17:30:37.4845 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: e008a5a2-0118-4c3f-46cb-08d9c3de6fdd
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a; Ip=[12.22.5.238];
+ Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT009.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB4961
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Sameer Pujar <spujar@nvidia.com>, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org, jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
+ digetx@gmail.com, mkumard@nvidia.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,153 +135,176 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+HDA regression is recently reported on Tegra194 based platforms.
+This happens because "hda2codec_2x" reset does not really exist
+in Tegra194 and it causes probe failure. All the HDA based audio
+tests fail at the moment. This underlying issue is exposed by
+commit c045ceb5a145 ("reset: tegra-bpmp: Handle errors in BPMP
+response") which now checks return code of BPMP command response.
+Fix this issue by skipping unavailable reset on Tegra194.
 
-> -----Original Message-----
-> From: Hans de Goede <hdegoede@redhat.com>
-> Sent: 17 December 2021 18:27
-> To: Rafael J. Wysocki <rafael@kernel.org>; Lucas Tanure
-> <tanureal@opensource.cirrus.com>; Stefan Binding
-> <sbinding@opensource.cirrus.com>
-> Cc: Len Brown <lenb@kernel.org>; Mark Gross <markgross@kernel.org>;
-> Liam Girdwood <lgirdwood@gmail.com>; Jaroslav Kysela <perex@perex.cz>;
-> Mark Brown <broonie@kernel.org>; Takashi Iwai <tiwai@suse.com>;
-> moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM...
-> <alsa-devel@alsa-project.org>; ACPI Devel Maling List <linux-
-> acpi@vger.kernel.org>; patches@opensource.cirrus.com; Platform Driver
-> <platform-driver-x86@vger.kernel.org>; Linux Kernel Mailing List =
-<linux-
-> kernel@vger.kernel.org>
-> Subject: Re: [PATCH v6 08/10] ACPI / scan: Create platform device for
-> CLSA0100 and CSC3551 ACPI nodes
->=20
-> Hi,
->=20
-> On 12/17/21 18:19, Rafael J. Wysocki wrote:
-> > On Fri, Dec 17, 2021 at 12:57 PM Lucas Tanure
-> > <tanureal@opensource.cirrus.com> wrote:
-> >>
-> >> The ACPI device with CLSA0100 or CSC3551 is a sound card
-> >> with multiple instances of CS35L41 connectec by I2C to
-> >
-> > "connected" I suppose?
-> >
-> >> the main CPU.
-> >>
-> >> We add an ID to the i2c_multi_instantiate_ids list to enumerate
-> >> all I2C slaves correctly.
-> >>
-> >> Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
-> >
-> > This requires an ACK from Hans.
-> >
-> > If you receive one, please feel free to add my ACK to it too.
->=20
-> One problem which I see here is that this change conflicts with
-> this series:
->=20
-> https://lore.kernel.org/all/20211210154050.3713-1-
-> sbinding@opensource.cirrus.com/
->=20
-> I have reviewing that series on my todo list.
->=20
-> One interesting question for you (Rafael) about that series is
-> that i2c-multi-instantiate.c, which after the series also handles
-> spi devices,is being moved to drivers/acpi .
->=20
-> This is fine with me, but I wonder if it would not be better
-> to keep it under drivers/platform/x86 ? Since the new SPI
-> use-cases are also all on x86 laptops AFAICT.
->=20
-> But back to this series, as said the 2 series conflict, since
-> both are being submitted by @opensource.cirrus.com people,
-> it would be good if the Cirrus folks can decide in which
-> order these series should be merged.
->=20
-> It might be best to just move this one patch to the other series?
-> Thus removing the conflict between the 2 series.
->=20
-> Regards,
->=20
-> Hans
->=20
+Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+Cc: stable@vger.kernel.org
+Depends-on: 87f0e46e7559 ("ALSA: hda/tegra: Reset hardware")
+---
+ sound/pci/hda/hda_tegra.c | 96 ++++++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 86 insertions(+), 10 deletions(-)
 
-We don=E2=80=99t really have a preference which order these two chains=20
-should be merged in. We would rebase the other chain if one
-got merged first.
-If pushed for an answer, maybe:
-https://lore.kernel.org/all/20211210154050.3713-1-sbinding@opensource.cir=
-rus.com/
-should be merged first?
-
-Thanks,
-Stefan
-
->=20
->=20
-> >> ---
-> >>  drivers/acpi/scan.c                          |  3 +++
-> >>  drivers/platform/x86/i2c-multi-instantiate.c | 11 +++++++++++
-> >>  2 files changed, 14 insertions(+)
-> >>
-> >> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-> >> index b7a6b982226e..8740cfa11f59 100644
-> >> --- a/drivers/acpi/scan.c
-> >> +++ b/drivers/acpi/scan.c
-> >> @@ -1712,8 +1712,11 @@ static bool
-> acpi_device_enumeration_by_parent(struct acpi_device *device)
-> >>         static const struct acpi_device_id =
-i2c_multi_instantiate_ids[] =3D {
-> >>                 {"BSG1160", },
-> >>                 {"BSG2150", },
-> >> +               {"CSC3551", },
-> >>                 {"INT33FE", },
-> >>                 {"INT3515", },
-> >> +               /* Non-conforming _HID for Cirrus Logic already =
-released */
-> >> +               {"CLSA0100", },
-> >>                 {}
-> >>         };
-> >>
-> >> diff --git a/drivers/platform/x86/i2c-multi-instantiate.c
-> b/drivers/platform/x86/i2c-multi-instantiate.c
-> >> index 4956a1df5b90..a889789b966c 100644
-> >> --- a/drivers/platform/x86/i2c-multi-instantiate.c
-> >> +++ b/drivers/platform/x86/i2c-multi-instantiate.c
-> >> @@ -147,6 +147,14 @@ static const struct i2c_inst_data =
-int3515_data[]  =3D
-> {
-> >>         {}
-> >>  };
-> >>
-> >> +static const struct i2c_inst_data cs35l41_hda[] =3D {
-> >> +       { "cs35l41-hda", IRQ_RESOURCE_GPIO, 0 },
-> >> +       { "cs35l41-hda", IRQ_RESOURCE_GPIO, 0 },
-> >> +       { "cs35l41-hda", IRQ_RESOURCE_GPIO, 0 },
-> >> +       { "cs35l41-hda", IRQ_RESOURCE_GPIO, 0 },
-> >> +       {}
-> >> +};
-> >> +
-> >>  /*
-> >>   * Note new device-ids must also be added to =
-i2c_multi_instantiate_ids in
-> >>   * drivers/acpi/scan.c: acpi_device_enumeration_by_parent().
-> >> @@ -154,7 +162,10 @@ static const struct i2c_inst_data =
-int3515_data[]  =3D
-> {
-> >>  static const struct acpi_device_id i2c_multi_inst_acpi_ids[] =3D {
-> >>         { "BSG1160", (unsigned long)bsg1160_data },
-> >>         { "BSG2150", (unsigned long)bsg2150_data },
-> >> +       { "CSC3551", (unsigned long)cs35l41_hda },
-> >>         { "INT3515", (unsigned long)int3515_data },
-> >> +       /* Non-conforming _HID for Cirrus Logic already released */
-> >> +       { "CLSA0100", (unsigned long)cs35l41_hda },
-> >>         { }
-> >>  };
-> >>  MODULE_DEVICE_TABLE(acpi, i2c_multi_inst_acpi_ids);
-> >> --
-> >> 2.34.1
-> >>
-> >
-
+diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
+index ea700395..be010cd 100644
+--- a/sound/pci/hda/hda_tegra.c
++++ b/sound/pci/hda/hda_tegra.c
+@@ -68,14 +68,21 @@
+  */
+ #define TEGRA194_NUM_SDO_LINES	  4
+ 
++struct hda_tegra_soc {
++	bool has_hda2codec_2x_reset;
++};
++
+ struct hda_tegra {
+ 	struct azx chip;
+ 	struct device *dev;
+-	struct reset_control *reset;
++	struct reset_control *reset_hda;
++	struct reset_control *reset_hda2hdmi;
++	struct reset_control *reset_hda2codec_2x;
+ 	struct clk_bulk_data clocks[3];
+ 	unsigned int nclocks;
+ 	void __iomem *regs;
+ 	struct work_struct probe_work;
++	const struct hda_tegra_soc *data;
+ };
+ 
+ #ifdef CONFIG_PM
+@@ -170,9 +177,26 @@ static int __maybe_unused hda_tegra_runtime_resume(struct device *dev)
+ 	int rc;
+ 
+ 	if (!chip->running) {
+-		rc = reset_control_assert(hda->reset);
+-		if (rc)
++		rc = reset_control_assert(hda->reset_hda);
++		if (rc) {
++			dev_err(dev, "hda reset assert failed, err: %d\n", rc);
++			return rc;
++		}
++
++		rc = reset_control_assert(hda->reset_hda2hdmi);
++		if (rc) {
++			dev_err(dev, "hda2hdmi reset assert failed, err: %d\n",
++				rc);
++			return rc;
++		}
++
++		rc = reset_control_assert(hda->reset_hda2codec_2x);
++		if (rc) {
++			dev_err(dev,
++				"hda2codec_2x reset assert failed, err: %d\n",
++				rc);
+ 			return rc;
++		}
+ 	}
+ 
+ 	rc = clk_bulk_prepare_enable(hda->nclocks, hda->clocks);
+@@ -187,9 +211,27 @@ static int __maybe_unused hda_tegra_runtime_resume(struct device *dev)
+ 	} else {
+ 		usleep_range(10, 100);
+ 
+-		rc = reset_control_deassert(hda->reset);
+-		if (rc)
++		rc = reset_control_deassert(hda->reset_hda);
++		if (rc) {
++			dev_err(dev, "hda reset deassert failed, err: %d\n",
++				rc);
+ 			return rc;
++		}
++
++		rc = reset_control_deassert(hda->reset_hda2hdmi);
++		if (rc) {
++			dev_err(dev, "hda2hdmi reset deassert failed, err: %d\n",
++				rc);
++			return rc;
++		}
++
++		rc = reset_control_deassert(hda->reset_hda2codec_2x);
++		if (rc) {
++			dev_err(dev,
++				"hda2codec_2x reset deassert failed, err: %d\n",
++				rc);
++			return rc;
++		}
+ 	}
+ 
+ 	return 0;
+@@ -427,9 +469,17 @@ static int hda_tegra_create(struct snd_card *card,
+ 	return 0;
+ }
+ 
++static const struct hda_tegra_soc tegra30_data = {
++	.has_hda2codec_2x_reset = true,
++};
++
++static const struct hda_tegra_soc tegra194_data = {
++	.has_hda2codec_2x_reset = false,
++};
++
+ static const struct of_device_id hda_tegra_match[] = {
+-	{ .compatible = "nvidia,tegra30-hda" },
+-	{ .compatible = "nvidia,tegra194-hda" },
++	{ .compatible = "nvidia,tegra30-hda", .data = &tegra30_data },
++	{ .compatible = "nvidia,tegra194-hda", .data = &tegra194_data },
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, hda_tegra_match);
+@@ -449,6 +499,10 @@ static int hda_tegra_probe(struct platform_device *pdev)
+ 	hda->dev = &pdev->dev;
+ 	chip = &hda->chip;
+ 
++	hda->data = of_device_get_match_data(&pdev->dev);
++	if (!hda->data)
++		return -EINVAL;
++
+ 	err = snd_card_new(&pdev->dev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1,
+ 			   THIS_MODULE, 0, &card);
+ 	if (err < 0) {
+@@ -456,12 +510,34 @@ static int hda_tegra_probe(struct platform_device *pdev)
+ 		return err;
+ 	}
+ 
+-	hda->reset = devm_reset_control_array_get_exclusive(&pdev->dev);
+-	if (IS_ERR(hda->reset)) {
+-		err = PTR_ERR(hda->reset);
++	hda->reset_hda = devm_reset_control_get_exclusive(&pdev->dev, "hda");
++	if (IS_ERR(hda->reset_hda)) {
++		err = PTR_ERR(hda->reset_hda);
+ 		goto out_free;
+ 	}
+ 
++	hda->reset_hda2hdmi = devm_reset_control_get_exclusive(&pdev->dev,
++							       "hda2hdmi");
++	if (IS_ERR(hda->reset_hda2hdmi)) {
++		err = PTR_ERR(hda->reset_hda2hdmi);
++		goto out_free;
++	}
++
++	/*
++	 * "hda2codec_2x" reset is not present on Tegra194. Though DT would
++	 * be updated to reflect this, but to have backward compatibility
++	 * below is necessary.
++	 */
++	if (hda->data->has_hda2codec_2x_reset) {
++		hda->reset_hda2codec_2x =
++			devm_reset_control_get_exclusive(&pdev->dev,
++							 "hda2codec_2x");
++		if (IS_ERR(hda->reset_hda2codec_2x)) {
++			err = PTR_ERR(hda->reset_hda2codec_2x);
++			goto out_free;
++		}
++	}
++
+ 	hda->clocks[hda->nclocks++].id = "hda";
+ 	hda->clocks[hda->nclocks++].id = "hda2hdmi";
+ 	hda->clocks[hda->nclocks++].id = "hda2codec_2x";
+-- 
+2.7.4
 
