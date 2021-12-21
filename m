@@ -4,68 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B73C8C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Dec 2021 17:52:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 493DDC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Dec 2021 17:52:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 808D117CC;
-	Tue, 21 Dec 2021 18:51:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 808D117CC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8062D17DC;
+	Tue, 21 Dec 2021 18:51:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8062D17DC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640109119;
-	bh=5f+E7cJULqIn1P5GZHZpSxW+++jdp1IvvCYJFitA2bE=;
+	s=default; t=1640109155;
+	bh=NmEmT3Un/vMD6zH7cnBpscoeivgF9Jg5mO8daytArtY=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=far5q8NBo7KOBoctQCDieEGLpkr8lIrUiCS5TpkZJCp5CIoAg4zZHI19HSsC6Akik
-	 OmYdKP1LE3x/0AvzEg1+9ASt6Piq1/RIt8DLEbO3PWoHkEzdxkNeAz9eFkTMxXpNCm
-	 Jvci1SyabUJwNUQ75dpiEYBRf36l4MsaNeUbfSdA=
+	b=dL+BTsGVUenRE8ERTVZNUHprNqIuXhM0/9ewDYo0S0Wab6C0kCqMYZEUvDNkIQVHE
+	 KLoaMZsAm1YxQXxhWriC6C0ztqsD/dO9qYmolfqxbF7WX5FOeEKAwCKFx9ggpmxkWE
+	 4rnWPLLgE576CD5qOQEgzzkHYFc065FGNH+9H3YQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1EFA5F80118;
-	Tue, 21 Dec 2021 18:51:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C65E8F8012E;
+	Tue, 21 Dec 2021 18:51:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D20F5F80125; Tue, 21 Dec 2021 18:51:07 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 9AC25F804D9; Tue, 21 Dec 2021 18:51:10 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7E991F80084
- for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2021 18:51:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E991F80084
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5F4D7F800E3;
+ Tue, 21 Dec 2021 18:51:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F4D7F800E3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="RO079kw1"
+ header.b="jroo0rkA"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id EA328616CB;
- Tue, 21 Dec 2021 17:50:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4AD4C36AE9;
- Tue, 21 Dec 2021 17:50:56 +0000 (UTC)
+ by sin.source.kernel.org (Postfix) with ESMTPS id DF913CE1882;
+ Tue, 21 Dec 2021 17:50:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9BB2C36AE8;
+ Tue, 21 Dec 2021 17:50:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1640109058;
- bh=5f+E7cJULqIn1P5GZHZpSxW+++jdp1IvvCYJFitA2bE=;
+ s=k20201202; t=1640109056;
+ bh=NmEmT3Un/vMD6zH7cnBpscoeivgF9Jg5mO8daytArtY=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=RO079kw1zrxfLpiu9+IoGDdHZZICfml4yYeLh2QQd3uiht3M1IrOGkMbejVV/Pjv1
- 0dg1mCJtKhqLc8LFREepRu6wVHNothqXpKExMxsHc9IMZ4VBtV/hhBbQQcHO82mHVB
- 5dUjJD2x/6eSjikgHURtiZBUiDLFm0qL8gs4WcPO6EiEzUN3ZTticrIDheJYbBVoNi
- At+eiHgWP1fS2mU8dqd8DFFOemqh0O5C5o6MUoT/zzdeLCQcK1+yv4GXt7VL7urdcE
- Zz6mi6Ma6UfLHcWlRsBK4UJqEj9IdtOm9sTc5dqD3kcj7fgBtaNnhmAjKlRaCQzeuC
- fxkk1JZ60L4CA==
+ b=jroo0rkAdUpEJiZe+QLjWSk8+7iOrgg42lrqSTlwkSazlkQ67i6LgQxNG1Oc2vZ+w
+ uUywvn/WqNMaiJqOw5HSdQxTJr+jXmGA2GlqTL7HHF3aoa5GJC196El2i8OOeemVYF
+ oWGx9r01qaeN/MXvXuTnUHO7eUIyQKT+GKgZmTXbejgyhD1UmaoTvW7d56TU3K/9EJ
+ 2NKH0pz3/tZfI0BBLhr8PFTbveN2msqG2um7Si8edQ6YP1qMIcKcrzYHmwl8pcykqm
+ ZAacZFrkN0giRH4Q/BAMVUkHc9jOPD3A4fjvVLVljzBxk3CrNNt9ffVFX/Ru9CnNnW
+ OIYOq2I7lHMXA==
 From: Mark Brown <broonie@kernel.org>
-To: Thierry Reding <thierry.reding@gmail.com>, David Heidelberg <david@ixit.cz>,
- Jonathan Hunter <jonathanh@nvidia.com>, Dmitry Osipenko <digetx@gmail.com>,
- Rob Herring <robh+dt@kernel.org>
-In-Reply-To: <20211216160229.17049-1-digetx@gmail.com>
-References: <20211216160229.17049-1-digetx@gmail.com>
-Subject: Re: [PATCH v1] dt-bindings: sound: tegra-audio-rt5677: Correct example
-Message-Id: <164010905640.2818037.9602407885797991307.b4-ty@kernel.org>
-Date: Tue, 21 Dec 2021 17:50:56 +0000
+To: alsa-devel@alsa-project.org, Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
+In-Reply-To: <20211221161814.236318-1-AjitKumar.Pandey@amd.com>
+References: <20211221161814.236318-1-AjitKumar.Pandey@amd.com>
+Subject: Re: (subset) [PATCH 1/3] ASoC: SOF: AMD: simplify return status
+ handling
+Message-Id: <164010905266.2818037.15491289903542342464.b4-ty@kernel.org>
+Date: Tue, 21 Dec 2021 17:50:52 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Daniel Baluta <daniel.baluta@nxp.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Sunil-kumar.Dommati@amd.com, Kai Vehmanen <kai.vehmanen@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>, Basavaraj.Hiregoudar@amd.com, Ranjani Sridharan <ranjani.sridharan@intel.com>, Takashi Iwai <tiwai@suse.com>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, Vijendar.Mukunda@amd.com, Alexander.Deucher@amd.com, Péter Ujfalusi <peter.ujfalusi@linux.intel.com>, Bard Liao <bard.liao@intel.com>, "moderated list:SOUND - SOUND OPEN FIRMWARE \(SOF\) DRIVERS" <sound-open-firmware@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,13 +80,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 16 Dec 2021 19:02:29 +0300, Dmitry Osipenko wrote:
-> Remove non-existent properties from the example of the binding. These
-> properties were borrower from the old txt binding, but they were never
-> used in practice and aren't documented in the new binding. They aren't
-> reported by the binding checker because dtschema needs extra patch that
-> hasn't been upstreamed yet to make unevaluatedProperties work properly.
+On Tue, 21 Dec 2021 21:48:07 +0530, Ajit Kumar Pandey wrote:
+> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 > 
+> cppcheck warning:
+> 
+> sound/soc/sof/amd/acp.c:222:9: warning: Identical condition and return
+> expression 'ret', return value is always 0
+> [identicalConditionAfterEarlyExit]
+>  return ret;
+>         ^
+> sound/soc/sof/amd/acp.c:213:6: note: If condition 'ret' is true, the
+> function will return/exit
+>  if (ret)
+>      ^
+> sound/soc/sof/amd/acp.c:222:9: note: Returning identical expression 'ret'
+>  return ret;
+>         ^
 > 
 > [...]
 
@@ -97,8 +106,10 @@ Applied to
 
 Thanks!
 
-[1/1] dt-bindings: sound: tegra-audio-rt5677: Correct example
-      commit: 3bf4fb25d5c2455396a1decd43f5e6b775f0b377
+[2/3] ASoC: amd: acp-config: Enable SOF audio for Google chrome boards.
+      commit: f487201343312faa697ac40124085a834e0e26d8
+[3/3] ASoC: amd: acp-config: Update sof_tplg_filename for SOF machines
+      commit: 0082e3299a49286a7761f4d237530b07c00676fb
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
