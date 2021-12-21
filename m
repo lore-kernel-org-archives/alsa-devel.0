@@ -4,73 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2EE9C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Dec 2021 17:40:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B73C8C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Dec 2021 17:52:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 17AC517C9;
-	Tue, 21 Dec 2021 18:39:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 17AC517C9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 808D117CC;
+	Tue, 21 Dec 2021 18:51:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 808D117CC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640108427;
-	bh=RUxBK3Sz6ZQbxCfbdMI94N4GisqxuF36fxPs7yZeswY=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1640109119;
+	bh=5f+E7cJULqIn1P5GZHZpSxW+++jdp1IvvCYJFitA2bE=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EHVsUUyGGdVnWeJn/xAlqU/VUCOE6Uog2rbkfLJPATl0byf6rO9MDlUA3VFK6iGeH
-	 GJIGZgqSzWWrAjDvk8c8FHsiMhWUDr6Hjvz5K1yBvUglt0LUZIOjvXhzCSCiC1UAhP
-	 pF65GnSLmtXd0NXyY1GaJyy+lfBfFHRJUXPFekqQ=
+	b=far5q8NBo7KOBoctQCDieEGLpkr8lIrUiCS5TpkZJCp5CIoAg4zZHI19HSsC6Akik
+	 OmYdKP1LE3x/0AvzEg1+9ASt6Piq1/RIt8DLEbO3PWoHkEzdxkNeAz9eFkTMxXpNCm
+	 Jvci1SyabUJwNUQ75dpiEYBRf36l4MsaNeUbfSdA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 99803F8010B;
-	Tue, 21 Dec 2021 18:39:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1EFA5F80118;
+	Tue, 21 Dec 2021 18:51:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7875DF80118; Tue, 21 Dec 2021 18:39:35 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id D20F5F80125; Tue, 21 Dec 2021 18:51:07 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9FF43F80084
- for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2021 18:39:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9FF43F80084
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7E991F80084
+ for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2021 18:51:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E991F80084
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="HtuExwT+"
+ header.b="RO079kw1"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 5C5C0616A0;
- Tue, 21 Dec 2021 17:39:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D50D6C36AE8;
- Tue, 21 Dec 2021 17:39:20 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id EA328616CB;
+ Tue, 21 Dec 2021 17:50:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4AD4C36AE9;
+ Tue, 21 Dec 2021 17:50:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1640108363;
- bh=RUxBK3Sz6ZQbxCfbdMI94N4GisqxuF36fxPs7yZeswY=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=HtuExwT+QBunVcgRxK+Vn4aMU3YsI4/WRH7JP0Bwq8SGkBn3H1UlFrv5WGbLKLdzq
- xixWXfxu6R6tMB2Fvoh8urM3RMPTOClmu1TldTOZsEcrc5az7VObeMHLNzDb9OzJL6
- RrlNeJkcpeEdnTsPifZMe1LwnZHBDTc4OXjMp0INuR5qCu0E1R9/EvWxbnF9jb/dhk
- v2SyhVMdBe5O39boDrpj21pcKBKRAbnRmsMFZfd74OhC0vvAm6St6XExVJsiLqAXk2
- 3aSsVD83t4F7XCDkIeVTEoegzp2hXKwlKNbqe09fmW+rUwQiKo3eG319t+jcmYbPB2
- o71/4ESsN43Ow==
-Date: Tue, 21 Dec 2021 17:39:17 +0000
+ s=k20201202; t=1640109058;
+ bh=5f+E7cJULqIn1P5GZHZpSxW+++jdp1IvvCYJFitA2bE=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=RO079kw1zrxfLpiu9+IoGDdHZZICfml4yYeLh2QQd3uiht3M1IrOGkMbejVV/Pjv1
+ 0dg1mCJtKhqLc8LFREepRu6wVHNothqXpKExMxsHc9IMZ4VBtV/hhBbQQcHO82mHVB
+ 5dUjJD2x/6eSjikgHURtiZBUiDLFm0qL8gs4WcPO6EiEzUN3ZTticrIDheJYbBVoNi
+ At+eiHgWP1fS2mU8dqd8DFFOemqh0O5C5o6MUoT/zzdeLCQcK1+yv4GXt7VL7urdcE
+ Zz6mi6Ma6UfLHcWlRsBK4UJqEj9IdtOm9sTc5dqD3kcj7fgBtaNnhmAjKlRaCQzeuC
+ fxkk1JZ60L4CA==
 From: Mark Brown <broonie@kernel.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [RFC 18/37] ASoC: Intel: avs: Topology parsing
-Message-ID: <YcIRRevkBpM/jIKV@sirena.org.uk>
-References: <20211208111301.1817725-1-cezary.rojewski@intel.com>
- <20211208111301.1817725-19-cezary.rojewski@intel.com>
+To: Thierry Reding <thierry.reding@gmail.com>, David Heidelberg <david@ixit.cz>,
+ Jonathan Hunter <jonathanh@nvidia.com>, Dmitry Osipenko <digetx@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>
+In-Reply-To: <20211216160229.17049-1-digetx@gmail.com>
+References: <20211216160229.17049-1-digetx@gmail.com>
+Subject: Re: [PATCH v1] dt-bindings: sound: tegra-audio-rt5677: Correct example
+Message-Id: <164010905640.2818037.9602407885797991307.b4-ty@kernel.org>
+Date: Tue, 21 Dec 2021 17:50:56 +0000
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="8qQgyWuz5wSMkO0z"
-Content-Disposition: inline
-In-Reply-To: <20211208111301.1817725-19-cezary.rojewski@intel.com>
-X-Cookie: knowledge, n.:
-Cc: alsa-devel@alsa-project.org, upstream@semihalf.com, harshapriya.n@intel.com,
- yung-chuan.liao@linux.intel.com, rad@semihalf.com,
- pierre-louis.bossart@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
- ranjani.sridharan@linux.intel.com, amadeuszx.slawinski@linux.intel.com,
- cujomalainey@chromium.org, peter.ujfalusi@linux.intel.com, lma@semihalf.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,80 +81,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Thu, 16 Dec 2021 19:02:29 +0300, Dmitry Osipenko wrote:
+> Remove non-existent properties from the example of the binding. These
+> properties were borrower from the old txt binding, but they were never
+> used in practice and aren't documented in the new binding. They aren't
+> reported by the binding checker because dtschema needs extra patch that
+> hasn't been upstreamed yet to make unevaluatedProperties work properly.
+> 
+> 
+> [...]
 
---8qQgyWuz5wSMkO0z
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Applied to
 
-On Wed, Dec 08, 2021 at 12:12:42PM +0100, Cezary Rojewski wrote:
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-> Implementation of ASoC topology feature for AVS driver. AudioDSP
-> firmware supports a wide range of audio formats, module configurations
-> and multi-pipeline streams. To represent all of this in form of static
-> ALSA topology file, which resides usually in /lib/firmware/, while
-> simultaneously not hindering user from any of the possibilities, 'path
-> template' and its 'path variants' concept is introduced. These are later
-> converted into actual runtime path. This part is explained in follow-up
-> change.
+Thanks!
 
-This sounds like it should be extending the topology code (it's talking
-about "ALSA topologies") but it seems to be outside of that.
+[1/1] dt-bindings: sound: tegra-audio-rt5677: Correct example
+      commit: 3bf4fb25d5c2455396a1decd43f5e6b775f0b377
 
-> Path template is just a pattern like its name suggests. It is tied to
-> DAPM widget which represents a FE or a BE and is used during path
-> instantiation when substream is opened for streaming. It carries a range
-> of available variants and only these represent actual implementation of
-> a runtime path in AudioDSP. Only one variant of given path template can
-> be instantiated at a time and selection is based off of audio format
-> provided from userspace and currently selected one on the codec.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-So this sounds like it's baking a table of use cases into the firmware
-rather than a separate UCM type configuration file?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> AVS topology is split into two major parts: dictionaries - found within
-> ASoC topology manifest - and path templates - found within DAPM widget
-> private data. Dictionaries job is to reduce the total amount of memory
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Or are the use cases baked into the driver code if they're in the DAPM
-widget private data?
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-> +struct avs_tplg_token_parser {
-> +	enum avs_tplg_token token;
-> +	u32 type;
-> +	u32 offset;
-> +	int (*parse)(struct snd_soc_component *comp, void *elem, void *object, u32 offset);
-> +};
-> +
-> +static int
-> +avs_parse_uuid_token(struct snd_soc_component *comp, void *elem, void *object, u32 offset)
-> +{
-> +	struct snd_soc_tplg_vendor_value_elem *tuple = elem;
-> +	guid_t *val = (guid_t *)((u8 *)object + offset);
-> +
-> +	guid_copy((guid_t *)val, (const guid_t *)&tuple->value);
-> +
-> +	return 0;
-> +}
-
-I have to say I'm having a hard time telling if these parsers are doing
-the right thing - the interface is a bit obscure and all the void *s
-make it hard to follow, and of course the format is undocumented.  I
-looked through a lot of it but I've definitely not gone through this
-code properly.
-
---8qQgyWuz5wSMkO0z
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmHCEUUACgkQJNaLcl1U
-h9D/3wf/Vlel6bZdsm9QW+gEWsJX+EWECWKlRTQurnZlVp7Npi2SAFPGusSA5NHg
-PyXo8klAffzzNdfogFmOdjfVFgmNMmoQLRM5x4knrPPabzt7qMdQ0rLbs1ioFr6x
-+EJfWsKq453nMcx5x5bmhYQKv3HoPsKHmhLryQn2DssuSzK0JhvEmBnM+KBkYcpW
-1sQwqYhzYpl6XU6bDe8seeLbl4Yih7hnrqT9kqoubXhA62E7Y17ap/q7W8gUqvKK
-cDLrouT/VxIm9aflBaTh74OWCMW5Myv0JPkOESMaGoDFUjW3Fd2v21XEXUZRgOxU
-ala8ERiYXDx7zBcJGZS6ZgtBOyn9Xw==
-=1seF
------END PGP SIGNATURE-----
-
---8qQgyWuz5wSMkO0z--
+Thanks,
+Mark
