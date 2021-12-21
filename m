@@ -4,67 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 493DDC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Dec 2021 17:52:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1E53C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Dec 2021 17:56:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8062D17DC;
-	Tue, 21 Dec 2021 18:51:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8062D17DC
+	by alsa0.perex.cz (Postfix) with ESMTPS id A4C17209;
+	Tue, 21 Dec 2021 18:55:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A4C17209
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640109155;
-	bh=NmEmT3Un/vMD6zH7cnBpscoeivgF9Jg5mO8daytArtY=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1640109395;
+	bh=11+OOrOy+QxOSlW36IgdACCcHI4Q+D72iaqrukirtrc=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dL+BTsGVUenRE8ERTVZNUHprNqIuXhM0/9ewDYo0S0Wab6C0kCqMYZEUvDNkIQVHE
-	 KLoaMZsAm1YxQXxhWriC6C0ztqsD/dO9qYmolfqxbF7WX5FOeEKAwCKFx9ggpmxkWE
-	 4rnWPLLgE576CD5qOQEgzzkHYFc065FGNH+9H3YQ=
+	b=CX5ahL+O93jquRz2xjU4vCXtyEdz2lkTQfVNGj1eEXYFwcSQGcy9BpdvKw8y6X1ik
+	 NMZrplkuAUJVchSS9buaftj5oS1c5Mf9zmp+wwEZyKmehqQx17b/b37azgNKBAkuLb
+	 10k8WruAl5nmGKcBX4+BUJsMYeDeSutRL9ZVI23M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C65E8F8012E;
-	Tue, 21 Dec 2021 18:51:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 39161F8010B;
+	Tue, 21 Dec 2021 18:55:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9AC25F804D9; Tue, 21 Dec 2021 18:51:10 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+ id BADCBF800E3; Tue, 21 Dec 2021 18:55:43 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5F4D7F800E3;
- Tue, 21 Dec 2021 18:51:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F4D7F800E3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5774BF800E3
+ for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2021 18:55:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5774BF800E3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="jroo0rkA"
+ header.b="BtSmvSd2"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id DF913CE1882;
- Tue, 21 Dec 2021 17:50:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9BB2C36AE8;
- Tue, 21 Dec 2021 17:50:52 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id B2C1B6165A;
+ Tue, 21 Dec 2021 17:55:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1F40C36AE9;
+ Tue, 21 Dec 2021 17:55:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1640109056;
- bh=NmEmT3Un/vMD6zH7cnBpscoeivgF9Jg5mO8daytArtY=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=jroo0rkAdUpEJiZe+QLjWSk8+7iOrgg42lrqSTlwkSazlkQ67i6LgQxNG1Oc2vZ+w
- uUywvn/WqNMaiJqOw5HSdQxTJr+jXmGA2GlqTL7HHF3aoa5GJC196El2i8OOeemVYF
- oWGx9r01qaeN/MXvXuTnUHO7eUIyQKT+GKgZmTXbejgyhD1UmaoTvW7d56TU3K/9EJ
- 2NKH0pz3/tZfI0BBLhr8PFTbveN2msqG2um7Si8edQ6YP1qMIcKcrzYHmwl8pcykqm
- ZAacZFrkN0giRH4Q/BAMVUkHc9jOPD3A4fjvVLVljzBxk3CrNNt9ffVFX/Ru9CnNnW
- OIYOq2I7lHMXA==
+ s=k20201202; t=1640109336;
+ bh=11+OOrOy+QxOSlW36IgdACCcHI4Q+D72iaqrukirtrc=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=BtSmvSd2/jW204QLdtidI0J4ozoAfeq9RpamCDzJ0+2s1P5+ELfIoer1uA1n04Ixe
+ dI4vhLywtR+pTSrmfCjwChuHL+kkGbh6z/6pOXgY3k0kR2H70TO5tevQfvvCKZ+ipP
+ GhdQ9QBE10Ab65RGHoeCEYpURrm/tLhpjMZY2h27YM2ukN9i6vpDMaHtwFz7DowWPm
+ e4ChEce7P+BclogSzUWTh387z9gvBfZruDAnO2dPnB0SfOMB2ssPAoJV17ln+dBWSY
+ E00er5o3+kyJ/VhKzv1w5fXU9d/6GpE3/GuPyQzhPgkSrFOjQnZq0ymx2qVZ74SZnt
+ Ae4vSlbMC03IQ==
+Date: Tue, 21 Dec 2021 17:55:30 +0000
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
-In-Reply-To: <20211221161814.236318-1-AjitKumar.Pandey@amd.com>
-References: <20211221161814.236318-1-AjitKumar.Pandey@amd.com>
-Subject: Re: (subset) [PATCH 1/3] ASoC: SOF: AMD: simplify return status
- handling
-Message-Id: <164010905266.2818037.15491289903542342464.b4-ty@kernel.org>
-Date: Tue, 21 Dec 2021 17:50:52 +0000
+To: Vincent Knecht <vincent.knecht@mailoo.org>
+Subject: Re: [PATCH v2 2/2] ASoC: Add AK4375 support
+Message-ID: <YcIVEgTOuzKRoGdh@sirena.org.uk>
+References: <20211220193725.2650356-1-vincent.knecht@mailoo.org>
+ <20211220193725.2650356-2-vincent.knecht@mailoo.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: Daniel Baluta <daniel.baluta@nxp.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Sunil-kumar.Dommati@amd.com, Kai Vehmanen <kai.vehmanen@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>, Basavaraj.Hiregoudar@amd.com, Ranjani Sridharan <ranjani.sridharan@intel.com>, Takashi Iwai <tiwai@suse.com>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, Vijendar.Mukunda@amd.com, Alexander.Deucher@amd.com, Péter Ujfalusi <peter.ujfalusi@linux.intel.com>, Bard Liao <bard.liao@intel.com>, "moderated list:SOUND - SOUND OPEN FIRMWARE \(SOF\) DRIVERS" <sound-open-firmware@alsa-project.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="fBIqR1sn4Hlue0Mg"
+Content-Disposition: inline
+In-Reply-To: <20211220193725.2650356-2-vincent.knecht@mailoo.org>
+X-Cookie: knowledge, n.:
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ phone-devel@vger.kernel.org, stephan@gerhold.net, linux-kernel@vger.kernel.org,
+ tiwai@suse.com, lgirdwood@gmail.com, robh+dt@kernel.org,
+ ~postmarketos/upstreaming@lists.sr.ht
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,52 +85,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 21 Dec 2021 21:48:07 +0530, Ajit Kumar Pandey wrote:
-> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> 
-> cppcheck warning:
-> 
-> sound/soc/sof/amd/acp.c:222:9: warning: Identical condition and return
-> expression 'ret', return value is always 0
-> [identicalConditionAfterEarlyExit]
->  return ret;
->         ^
-> sound/soc/sof/amd/acp.c:213:6: note: If condition 'ret' is true, the
-> function will return/exit
->  if (ret)
->      ^
-> sound/soc/sof/amd/acp.c:222:9: note: Returning identical expression 'ret'
->  return ret;
->         ^
-> 
-> [...]
 
-Applied to
+--fBIqR1sn4Hlue0Mg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On Mon, Dec 20, 2021 at 08:37:25PM +0100, Vincent Knecht wrote:
 
-Thanks!
+> +	SOC_ENUM("DACL Signal Invert", ak4375_invl_enum),
+> +	SOC_ENUM("DACR Signal Invert", ak4375_invr_enum),
 
-[2/3] ASoC: amd: acp-config: Enable SOF audio for Google chrome boards.
-      commit: f487201343312faa697ac40124085a834e0e26d8
-[3/3] ASoC: amd: acp-config: Update sof_tplg_filename for SOF machines
-      commit: 0082e3299a49286a7761f4d237530b07c00676fb
+These should really be a "DAC Signal Invert Switch" control rather than
+an enum - really it's an on/off control for inversion.  Other than that
+the driver looks good so I'm going to go ahead and apply, please send an
+incremental patch fixing this issue.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+--fBIqR1sn4Hlue0Mg
+Content-Type: application/pgp-signature; name="signature.asc"
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+-----BEGIN PGP SIGNATURE-----
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmHCFRIACgkQJNaLcl1U
+h9BR1Af+NrdhRclUC9F2gH4p4RpkuDfU0uVKoWvRectyEkS+IxVIVZn5K883FaBY
+jeRP3uBYm8C9GD68NOeq/So3Nh+oi7W1RycbtvMPMHtIvmDk4NFCWfSxhdH+hNLI
+JiQW1bupwiS5TQBNSoD9Xx2B3i4Yw2FSHUSDDYT3IyxTs83Ya5UVWSV0R5OhWYoi
+yQY6uDqjsS/4m7YHpuBHNpxrB+TSUJZsGq1OCHdEXhktGhMvYbHNA9ZWkBmg3PIi
+yg16BkTfJEjiHEcjgBPz7OBdH0yO9cm28GURU2jhRoe1jai6MMNYqjVijEbVVVuR
+mqaKDfkp4KmKgZwhc2y+2ec8qHJkZQ==
+=HTjc
+-----END PGP SIGNATURE-----
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+--fBIqR1sn4Hlue0Mg--
