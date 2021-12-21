@@ -4,70 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76B1FC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Dec 2021 19:15:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E69E3C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Dec 2021 19:54:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AB94B185D;
-	Tue, 21 Dec 2021 20:14:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB94B185D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 371EC17C7;
+	Tue, 21 Dec 2021 20:53:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 371EC17C7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640114113;
-	bh=zgeZRVRuafwQrEQMbJc8CNZl8kFQYTvPQfyRtjn3/VM=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1640116471;
+	bh=wxHx7ON4wS3CgIVDTBcTewY7gB11Z5Pj3BUzw1p5/cs=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CovJGngpjd8S+XbACSM16+KORtmoRARvlDv2sMqLZpsZJsuu3q8SbFKSKQ4A/nzH4
-	 lUya5FJa+DAmqWIRAoH/0tt2SQZpN0eNANSik8pGG2pNEusfmukXLMuaRgC/JcBlue
-	 2XDnqp72kOWEvGx33jqdVfiri4qBkBUrFc1mNk9M=
+	b=EYgnNUWOjR6ld/rOvKgefz3PuNP4uTjkhFhX5n/qcE+6RHvsbsFYkg1ZGvCxWEAo6
+	 rL6p91Obc5Zepnbcnw96fBhxaZi4qAgAy4sbI7mMC6ho0NkH+YmHD/GUDkcbmZJ+sq
+	 m7ym1rmmmj02kr4ALfM4lH+tRJk/l8dij4Kh5DoU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 122F2F80515;
-	Tue, 21 Dec 2021 20:12:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 91FD1F80118;
+	Tue, 21 Dec 2021 20:53:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BDFB0F80507; Tue, 21 Dec 2021 20:12:52 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 41170F800E3; Tue, 21 Dec 2021 20:53:38 +0100 (CET)
+Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com
+ [209.85.219.50])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9D24EF804F2
- for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2021 20:12:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D24EF804F2
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="YxKHvZ4i"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 7599B6178B;
- Tue, 21 Dec 2021 19:12:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63D9FC36AEA;
- Tue, 21 Dec 2021 19:12:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1640113963;
- bh=zgeZRVRuafwQrEQMbJc8CNZl8kFQYTvPQfyRtjn3/VM=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=YxKHvZ4ib1x6Od9tHuokB1h1qHxqybGhoN7wyIAgjd0TcnUx8xrR180OnZGIqNbEG
- uK+Eyyhyt58sG8LmjJCUqzSFxRImuHJAm/0mrAvSLMSgiXJbOn20qOmKKU/Txs7LAc
- 77n+KrSKhsBmM0qegALj+df95fCBoYZTSAh3qj6e3krHmW9V6itRJwfO/pTO++I/4M
- iogMmDPv71uSgy21Ci89XQtVGMaxWikwskmkUg5Pr4UZuXTftki+arO2kEFaJmXyRN
- Wifkrc08Ns4AtDn6NTnFtpzaoAlSDo8x48yBl+biBThOlMfa2LvdE0Dvbu3phCXuRG
- WPcRs34/YYGJA==
-From: Mark Brown <broonie@kernel.org>
-To: Miaoqian Lin <linmq006@gmail.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Dan Carpenter <dan.carpenter@oracle.com>
-In-Reply-To: <20211217150007.GB16611@kili>
-References: <20211217150007.GB16611@kili>
-Subject: Re: [PATCH] ASoC: qdsp6: fix a use after free bug in open()
-Message-Id: <164011396113.93163.3445360337147394616.b4-ty@kernel.org>
-Date: Tue, 21 Dec 2021 19:12:41 +0000
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0DB21F800E3
+ for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2021 20:53:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0DB21F800E3
+Received: by mail-qv1-f50.google.com with SMTP id h5so262548qvh.8
+ for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2021 11:53:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=inhzLUzVk01mb2/NsFRt+qCJNW848Xt0oNeOLwfZLYg=;
+ b=LBAbmsDJrszXioW5U5hhQyrz01VMEnlb6WEmr6+FJy2R5uNI5pBAyxRdqajbtdp7Mi
+ Rjn8mA6DaYgZVMyeALikSP9GvbQ+cnITAMgOcGqsphJb2d67wm/W6wPvxkVhwtRRxbbG
+ JxRM5IRRmhUznHpjVWoXKZEhgHUECrEnts+buBg3p7M2DO9oJNsSfDE1zaoVt/yedQl2
+ wTeLTx2KjiTnI9q3n8qhIxKiMgCod/L+LmUhGdu1aY+hKokdZqTVl/WCeXIIfN8yqbah
+ wY8TACEqozCRX4x7WfAu10uQYm9XqPWO1MMbibeVWxUaX2wDXoyQHinCvAhXkfzjn2iZ
+ g2yg==
+X-Gm-Message-State: AOAM532IbtCYoCbW2G1GOQmT0vPGQXCYjKvfFRrHeuM5Q2gFh7rBbaym
+ kZsdkTEaOWc2q4apgF8ehg==
+X-Google-Smtp-Source: ABdhPJy+s2cGnxE3IhTQslgrHswM1Pf/g+KTtweTfco05upr9r2sS6TKOHUkkz9IBvD8vbZKX6JELg==
+X-Received: by 2002:a05:6214:27e6:: with SMTP id
+ jt6mr4114227qvb.7.1640116408210; 
+ Tue, 21 Dec 2021 11:53:28 -0800 (PST)
+Received: from robh.at.kernel.org ([24.55.105.145])
+ by smtp.gmail.com with ESMTPSA id r23sm13219102qkk.25.2021.12.21.11.53.26
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 21 Dec 2021 11:53:27 -0800 (PST)
+Received: (nullmailer pid 1642209 invoked by uid 1000);
+ Tue, 21 Dec 2021 19:53:26 -0000
+Date: Tue, 21 Dec 2021 15:53:26 -0400
+From: Rob Herring <robh@kernel.org>
+To: Alexander Stein <alexander.stein@mailbox.org>
+Subject: Re: [PATCH v2 1/3] ASoC: dt-bindings: Use name-prefix schema
+Message-ID: <YcIwtgtvdCiEMoRP@robh.at.kernel.org>
+References: <20211218143423.18768-1-alexander.stein@mailbox.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
- kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211218143423.18768-1-alexander.stein@mailbox.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Mark Brown <broonie@kernel.org>, Jerome Brunet <jbrunet@baylibre.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,36 +86,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 17 Dec 2021 18:00:07 +0300, Dan Carpenter wrote:
-> This code frees "graph" and then dereferences to save the error code.
-> Save the error code first and then use gotos to unwind the allocation.
+On Sat, 18 Dec 2021 15:34:21 +0100, Alexander Stein wrote:
+> name-prefix.txt does not exist anymore, just reference the schema instead.
 > 
+> Signed-off-by: Alexander Stein <alexander.stein@mailbox.org>
+> ---
+> Changes in v2:
+> * Fix 'pass' -> 'true'
+> 
+> .../devicetree/bindings/sound/simple-audio-amplifier.yaml | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 > 
 
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: qdsp6: fix a use after free bug in open()
-      commit: ac1e6bc146d45e15f0a5c0908338f918f6261388
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Reviewed-by: Rob Herring <robh@kernel.org>
