@@ -4,51 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32028C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Dec 2021 01:09:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DCCAC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Dec 2021 01:10:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8794D170C;
-	Tue, 21 Dec 2021 02:08:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8794D170C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 89C38172C;
+	Tue, 21 Dec 2021 02:09:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 89C38172C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640048979;
-	bh=i1tXTJcSPCIs8vQRFdGhVbKgBpGRpBUkhbABw4TMExA=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=NXXWphjI/5Brm65XTH5aYAmipeGCxlURIS0SJQiU9S4LVW9lljSaXbSe3N4iAQaHb
-	 7Bp1T9nEJUgSTujKK99DPRBEU1aM3lhdMdAqE+Dcz8FJHUjYkaVHIK8wnqoq+5wqhF
-	 4Ndfb9Y035ipJdQU3SXmnoOv1JIuaUBoc+QFkRl4=
+	s=default; t=1640049016;
+	bh=6ubr+4TEavfDo2liSNUTHZSq/Z+O+LHkMZgIpOlB/N4=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=LRQGIdv9kO4AX4P/pV+ulUjNP9eNPive21neOJnYW4vcPLAl8p18aeA658FWoegD3
+	 KCvyY6FdZ40Yd706JkpMrN/8s5drCWEfAbNUovGERvg23BS6KMx1InviBr51o9Ea6H
+	 uCdQsN9u5/kul+6cZRNgnieXIvq9B/h/s0KibTkE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1DBDEF8012A;
-	Tue, 21 Dec 2021 02:08:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 54B1AF8025B;
+	Tue, 21 Dec 2021 02:08:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8A936F80125; Tue, 21 Dec 2021 02:08:40 +0100 (CET)
+ id D38F1F8012A; Tue, 21 Dec 2021 02:08:45 +0100 (CET)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2B0B8F80125
- for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2021 02:08:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B0B8F80125
-X-IronPort-AV: E=McAfee;i="6200,9189,10204"; a="237838426"
-X-IronPort-AV: E=Sophos;i="5.88,221,1635231600"; d="scan'208";a="237838426"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3098BF80149
+ for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2021 02:08:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3098BF80149
+X-IronPort-AV: E=McAfee;i="6200,9189,10204"; a="237838429"
+X-IronPort-AV: E=Sophos;i="5.88,221,1635231600"; d="scan'208";a="237838429"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Dec 2021 17:08:28 -0800
-X-IronPort-AV: E=Sophos;i="5.88,221,1635231600"; d="scan'208";a="684478610"
+ 20 Dec 2021 17:08:32 -0800
+X-IronPort-AV: E=Sophos;i="5.88,221,1635231600"; d="scan'208";a="684478626"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Dec 2021 17:08:25 -0800
+ 20 Dec 2021 17:08:30 -0800
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	tiwai@suse.de,
 	broonie@kernel.org
-Subject: [PATCH 0/2] ALSA: hda: intel-sdw-acpi: go through HDAS ACPI at max
+Subject: [PATCH 2/2] ALSA: hda: intel-sdw-acpi: go through HDAS ACPI at max
  depth of 2
-Date: Tue, 21 Dec 2021 09:08:15 +0800
-Message-Id: <20211221010817.23636-1-yung-chuan.liao@linux.intel.com>
+Date: Tue, 21 Dec 2021 09:08:17 +0800
+Message-Id: <20211221010817.23636-3-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20211221010817.23636-1-yung-chuan.liao@linux.intel.com>
+References: <20211221010817.23636-1-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -69,17 +72,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Libin Yang <libin.yang@intel.com>
+
 In the HDAS ACPI scope, the SoundWire may not be the direct child of HDAS.
 It needs to go through the ACPI table at max depth of 2 to find the
 SoundWire device from HDAS.
 
-Libin Yang (2):
-  ALSA: hda: intel-sdw-acpi: harden detection of controller
-  ALSA: hda: intel-sdw-acpi: go through HDAS ACPI at max depth of 2
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Signed-off-by: Libin Yang <libin.yang@intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+---
+ sound/hda/intel-sdw-acpi.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
- sound/hda/intel-sdw-acpi.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
-
+diff --git a/sound/hda/intel-sdw-acpi.c b/sound/hda/intel-sdw-acpi.c
+index ba8a872a2901..b7758dbe2371 100644
+--- a/sound/hda/intel-sdw-acpi.c
++++ b/sound/hda/intel-sdw-acpi.c
+@@ -165,8 +165,14 @@ int sdw_intel_acpi_scan(acpi_handle *parent_handle,
+ 	acpi_status status;
+ 
+ 	info->handle = NULL;
++	/*
++	 * In the HDAS ACPI scope, 'SNDW' may be either the child of
++	 * 'HDAS' or the grandchild of 'HDAS'. So let's go through
++	 * the ACPI from 'HDAS' at max depth of 2 to find the 'SNDW'
++	 * device.
++	 */
+ 	status = acpi_walk_namespace(ACPI_TYPE_DEVICE,
+-				     parent_handle, 1,
++				     parent_handle, 2,
+ 				     sdw_intel_acpi_cb,
+ 				     NULL, info, NULL);
+ 	if (ACPI_FAILURE(status) || info->handle == NULL)
 -- 
 2.17.1
 
