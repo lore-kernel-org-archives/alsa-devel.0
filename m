@@ -4,66 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E830C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Dec 2021 02:52:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E08E4C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Dec 2021 02:53:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B59411752;
-	Tue, 21 Dec 2021 03:51:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B59411752
+	by alsa0.perex.cz (Postfix) with ESMTPS id 21D4E176E;
+	Tue, 21 Dec 2021 03:52:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 21D4E176E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640055149;
-	bh=HnpNOtspzDhWwmKYV0kN529sItn2tnYQ4xgAceq/f0E=;
+	s=default; t=1640055179;
+	bh=NflUddK7ZSORKU6UF7tiO2E1Di36GbuGTE02whw17Bw=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QabThKubRmvTkcqg2k5Ec50wN/6hQXqUS404KigmJ5lrJGYiK1VapXYfcXsiBO68a
-	 5F0XU6h7ugncb8cYMnmmJGonR7AmUkPwvRpKeEJNFSFE5UTq721TNXSO1GgUk0qX4Y
-	 NPd7fQ1ZbQWxliQ8Rgth1KLaz4PpAnBTzIM1XCuU=
+	b=RMpncFEcD1HDbfxmET2Sy/0IK6owlOmpn0NxX5+QBJWRfYP1X+B/3sVsMm3aF/dBa
+	 5mJRrRXlAuEHW4Hxl6LfYfhbs1Z3OInbWDfIzzJnpt3L5hZ1IVAsxZX+kya4sh6VUD
+	 4JeYtreA87AMEQb+/9FhB/kvQYhlyHMHirNYBZe0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AA7B5F804FE;
-	Tue, 21 Dec 2021 03:50:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4AE1AF80511;
+	Tue, 21 Dec 2021 03:50:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DA7A4F804E2; Tue, 21 Dec 2021 03:50:49 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 3B31DF804EC; Tue, 21 Dec 2021 03:50:52 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 24547F8010B
- for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2021 03:50:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24547F8010B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3F207F8012E
+ for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2021 03:50:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3F207F8012E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="JNgi8vOp"
+ header.b="Wi9KZ7fw"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 0549E61374;
- Tue, 21 Dec 2021 02:50:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7732C36AE9;
- Tue, 21 Dec 2021 02:50:44 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id BAAD561365;
+ Tue, 21 Dec 2021 02:50:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF910C36AE8;
+ Tue, 21 Dec 2021 02:50:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1640055045;
- bh=HnpNOtspzDhWwmKYV0kN529sItn2tnYQ4xgAceq/f0E=;
+ s=k20201202; t=1640055042;
+ bh=NflUddK7ZSORKU6UF7tiO2E1Di36GbuGTE02whw17Bw=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=JNgi8vOp232qTuTofl1eNudVeYVwArVYf2PESkQ8kV6hIVPsPH70lDo9LypxUXJnQ
- VTFHilheapNFnpwP3wDWLmR590VkTxdWIBZ3mgdYLdBUOA6qCXeK01s6rF4G2eK35S
- npdC2EMPz+WUq92PP8V3dUnMG/PTcmiPiL3WuEnQYu8of4G4gFyzQp6c8jWysgI1jg
- lwcfFhA0v5uDm474EociSsOfsQqpZtiIjWmcbTLwvcgUqapwaT2heyIbz5KJX1pnbJ
- ubvcED2T9EVkhagRCHR8d8bQwvxAIVJvpMxoxpYQdTJIaBEEPrI+PLUwLEvBvH2+KJ
- 00zPAVQaWXBfg==
+ b=Wi9KZ7fwyVIefDHjMdgeiKxq5SSqYzmVHLxRgJBKZnNhc7akAidwD1L4ri8QE6+HY
+ EYzi4z6pdprQqJP3fGm+niSWTBNNc1cQT7buIp9+l4v4OUC7W3l9gvAe4cflnO5hBC
+ aayyfyW1Oi0ityZ5ecXXqsnL19SWafMZ6GQVDPDX8kmWQ/CKpDjsU2Zyh8symQlHPQ
+ sfiUarNdHUtjJUwcdKI3qaKUGEL0Ef6SHQVA7+94Hs2b4Ud413Z/oLISXQy/PX8NHt
+ jvjiU0AZ/oX1sWs5rnlyz4Kw/ZYVipGXkwcMLSX5eEt1/7W88EXecpcqCLGFJS4K8K
+ 6LRmISst06oMw==
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org
-In-Reply-To: <20211216231628.344687-1-pierre-louis.bossart@linux.intel.com>
-References: <20211216231628.344687-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/3] ASoC: SOF: remove suport for TRIGGER_RESUME
-Message-Id: <164005504460.2647792.15148138424517768936.b4-ty@kernel.org>
-Date: Tue, 21 Dec 2021 02:50:44 +0000
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Rob Herring <robh+dt@kernel.org>
+In-Reply-To: <20211216000018.2641925-1-kuninori.morimoto.gx@renesas.com>
+References: <20211216000018.2641925-1-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH v2] ASoC: dt-bindings: audio-graph-port: enable both
+ flag/phandle for bitclock/frame-master
+Message-Id: <164005504144.2647792.1608765502662236125.b4-ty@kernel.org>
+Date: Tue, 21 Dec 2021 02:50:41 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,17 +81,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 16 Dec 2021 17:16:25 -0600, Pierre-Louis Bossart wrote:
-> None of the SOF platforms support INFO_RESUME, and rely on the
-> indirect path used by the ALSA core with the prepare and TRIGGER_START
-> steps.
+On Thu, 16 Dec 2021 09:00:18 +0900, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > 
-> Let's remove the left-over dead code.
-> 
-> Ranjani Sridharan (3):
->   ASoC: SOF: pcm: remove support for RESUME trigger
->   ASoC: SOF: Intel: hda: remove support for RESUME trigger
->   ASoC: SOF: Intel: hda: remove support for RESUME in platform trigger
+> snd_soc_daifmt_parse_clock_provider_raw() is handling both
+> bitclock/frame-master, and is supporting both flag/phandle.
+> Current DT is assuming it is flag style.
+> This patch allows both case.
 > 
 > [...]
 
@@ -99,12 +97,8 @@ Applied to
 
 Thanks!
 
-[1/3] ASoC: SOF: pcm: remove support for RESUME trigger
-      commit: eed5391f6747ffa7e3972b53aa721bded8feeff7
-[2/3] ASoC: SOF: Intel: hda: remove support for RESUME trigger
-      commit: 9b465060d144dd8196729cc8d77e328f1328dcbf
-[3/3] ASoC: SOF: Intel: hda: remove support for RESUME in platform trigger
-      commit: 35218cf61869ca4b11c8c0b49a95f75f379e403a
+[1/1] ASoC: dt-bindings: audio-graph-port: enable both flag/phandle for bitclock/frame-master
+      commit: 9b3c847b5fa0364a00227f13ab8ac0cbaf69be83
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
