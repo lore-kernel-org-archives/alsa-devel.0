@@ -4,63 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97FC3C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Dec 2021 02:52:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E830C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Dec 2021 02:52:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C58011758;
-	Tue, 21 Dec 2021 03:51:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C58011758
+	by alsa0.perex.cz (Postfix) with ESMTPS id B59411752;
+	Tue, 21 Dec 2021 03:51:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B59411752
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640055147;
-	bh=qQto044tUPVPpnbdUp5FktJtQgOCgBJ1qD3rpkVMAfo=;
+	s=default; t=1640055149;
+	bh=HnpNOtspzDhWwmKYV0kN529sItn2tnYQ4xgAceq/f0E=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AsxjV3u3DUxl/wqbwWCFW4gdLjZL30rT0uPgLj8XFfVuLc5/BeoWXR0hOgZk6x7Qn
-	 NbgYb3OHuVAmYIO5kx2rUjhULrUIkzn5H3iN7jxdwKe5MdIKWs3mbQjk2d4amW8TqR
-	 LX9AeyhqPGXcUTOxf4KWwc2HZGIZhMH4V6gBTLwU=
+	b=QabThKubRmvTkcqg2k5Ec50wN/6hQXqUS404KigmJ5lrJGYiK1VapXYfcXsiBO68a
+	 5F0XU6h7ugncb8cYMnmmJGonR7AmUkPwvRpKeEJNFSFE5UTq721TNXSO1GgUk0qX4Y
+	 NPd7fQ1ZbQWxliQ8Rgth1KLaz4PpAnBTzIM1XCuU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 20EA5F804E2;
+	by alsa1.perex.cz (Postfix) with ESMTP id AA7B5F804FE;
 	Tue, 21 Dec 2021 03:50:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B02A7F804F2; Tue, 21 Dec 2021 03:50:51 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id DA7A4F804E2; Tue, 21 Dec 2021 03:50:49 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 02675F804D9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 24547F8010B
  for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2021 03:50:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02675F804D9
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24547F8010B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="QvnhPB34"
+ header.b="JNgi8vOp"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id D8AB66134A;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 0549E61374;
  Tue, 21 Dec 2021 02:50:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05170C36AEA;
- Tue, 21 Dec 2021 02:50:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7732C36AE9;
+ Tue, 21 Dec 2021 02:50:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1640055046;
- bh=qQto044tUPVPpnbdUp5FktJtQgOCgBJ1qD3rpkVMAfo=;
+ s=k20201202; t=1640055045;
+ bh=HnpNOtspzDhWwmKYV0kN529sItn2tnYQ4xgAceq/f0E=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=QvnhPB34XF3PdY7T6KmcVD2QFgRcE06eIRA6+brQ2RnGG94Tua6cx+4MaE5Eimisk
- NicVdEbvvizSpAhCQBIvOVo1Zimoqzje6vAqCuvmpWiFLUEoB9Q+XwFKR3gI5Gjl41
- 64FQJHp/Me/NUxLRM5Fq2mkjiLPXqiOq7nvJ0RRGYwLWtE7+WkWc5rrGDK3TrCKvl5
- b8PkRvS3uyDI3D7GpsFIyI95nEnBLm6EHeQeO9BTttnNqchBMQl0XK9DLE6vDgNP6Y
- Sdyj3DXpfg5PiD2G2GZe1+lfp31mwvbP+w8ctl7VOVQxYwoJjvdyeJoa/aR9d2TZ2s
- ymRGl9TMloXrw==
+ b=JNgi8vOp232qTuTofl1eNudVeYVwArVYf2PESkQ8kV6hIVPsPH70lDo9LypxUXJnQ
+ VTFHilheapNFnpwP3wDWLmR590VkTxdWIBZ3mgdYLdBUOA6qCXeK01s6rF4G2eK35S
+ npdC2EMPz+WUq92PP8V3dUnMG/PTcmiPiL3WuEnQYu8of4G4gFyzQp6c8jWysgI1jg
+ lwcfFhA0v5uDm474EociSsOfsQqpZtiIjWmcbTLwvcgUqapwaT2heyIbz5KJX1pnbJ
+ ubvcED2T9EVkhagRCHR8d8bQwvxAIVJvpMxoxpYQdTJIaBEEPrI+PLUwLEvBvH2+KJ
+ 00zPAVQaWXBfg==
 From: Mark Brown <broonie@kernel.org>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  alsa-devel@alsa-project.org
-In-Reply-To: <20211216232422.345164-1-pierre-louis.bossart@linux.intel.com>
-References: <20211216232422.345164-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/3] ASoC: SOF: couple of cleanups
-Message-Id: <164005504574.2647792.9498416669327296948.b4-ty@kernel.org>
-Date: Tue, 21 Dec 2021 02:50:45 +0000
+In-Reply-To: <20211216231628.344687-1-pierre-louis.bossart@linux.intel.com>
+References: <20211216231628.344687-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/3] ASoC: SOF: remove suport for TRIGGER_RESUME
+Message-Id: <164005504460.2647792.15148138424517768936.b4-ty@kernel.org>
+Date: Tue, 21 Dec 2021 02:50:44 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -80,15 +79,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 16 Dec 2021 17:24:19 -0600, Pierre-Louis Bossart wrote:
-> Guennadi spotted inconsistencies with our 'const' handling, Ajit Kumar
-> flagged a missing check for a null pointer and we missed the
-> definition of debug zones.
+On Thu, 16 Dec 2021 17:16:25 -0600, Pierre-Louis Bossart wrote:
+> None of the SOF platforms support INFO_RESUME, and rely on the
+> indirect path used by the ALSA core with the prepare and TRIGGER_START
+> steps.
 > 
-> This should be queued for 5.17.
+> Let's remove the left-over dead code.
 > 
-> Ajit Kumar Pandey (1):
->   ASoC: SOF: ipc: Add null pointer check for substream->runtime
+> Ranjani Sridharan (3):
+>   ASoC: SOF: pcm: remove support for RESUME trigger
+>   ASoC: SOF: Intel: hda: remove support for RESUME trigger
+>   ASoC: SOF: Intel: hda: remove support for RESUME in platform trigger
 > 
 > [...]
 
@@ -98,12 +99,12 @@ Applied to
 
 Thanks!
 
-[1/3] ASoC: SOF: avoid casting "const" attribute away
-      commit: cb515f105cab124c5740e70dd0e8c78186ae81b7
-[2/3] ASoC: SOF: ipc: Add null pointer check for substream->runtime
-      commit: 182b682b9ab1348e07ea1bf9d8f2505cc67f9237
-[3/3] ipc: debug: Add shared memory heap to memory scan
-      commit: 60ded273e4c047aec364f70195aced71a4082f90
+[1/3] ASoC: SOF: pcm: remove support for RESUME trigger
+      commit: eed5391f6747ffa7e3972b53aa721bded8feeff7
+[2/3] ASoC: SOF: Intel: hda: remove support for RESUME trigger
+      commit: 9b465060d144dd8196729cc8d77e328f1328dcbf
+[3/3] ASoC: SOF: Intel: hda: remove support for RESUME in platform trigger
+      commit: 35218cf61869ca4b11c8c0b49a95f75f379e403a
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
