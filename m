@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46BA8C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Dec 2021 17:02:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61255C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Dec 2021 17:03:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 79BF417B7;
-	Tue, 21 Dec 2021 18:01:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 79BF417B7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7BAAD17C3;
+	Tue, 21 Dec 2021 18:02:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7BAAD17C3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640106166;
-	bh=scpjXrtM79p1p9m75RDgdjtBqlW1qqg3EnMxpbmqA0Y=;
+	s=default; t=1640106181;
+	bh=ClQSwPuNGvSt0ejlQ+c08kAgx6xNa5baqIL+Utl+WWE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GXPdr9O+ADfH/g1n1cnIbhZBNYreYzCcRCPryKJqf+8+asT4590PmlIPpCBM4YKva
-	 hTlEJiiyE0Jr7XCsceAYVuegcQ+z5tdT1Da9X2VLWyLDHdyrsefq0hgiVloIfzQxGG
-	 lsznH9AyPzviwfS0RhkHbPv8iCbNq9i2/T8gQlFg=
+	b=cIO+LwRTNw6nnkVDlzUAB7/LoPukFnGwZEqsP31cQEMjmGvffro7IlLrn1puzWSZR
+	 vf3UvjwwvuC07SXDbm+kfwGRV1fc4Ikr1oD8BCtnJv3ok5Artd7IzgNfER1BXDTt24
+	 t66zD1HiwShpq4oh3yRZFlIvdX6Puak2aBlaBU9c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E8A6BF8032B;
-	Tue, 21 Dec 2021 18:01:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 54B87F804D9;
+	Tue, 21 Dec 2021 18:01:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 16E00F8032B; Tue, 21 Dec 2021 18:01:22 +0100 (CET)
+ id 6E5C6F804E6; Tue, 21 Dec 2021 18:01:28 +0100 (CET)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 45B6AF80118
- for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2021 18:01:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45B6AF80118
-X-IronPort-AV: E=Sophos;i="5.88,224,1635174000"; d="scan'208";a="104253504"
+ by alsa1.perex.cz (Postfix) with ESMTP id 5E729F8010B
+ for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2021 18:01:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5E729F8010B
+X-IronPort-AV: E=Sophos;i="5.88,224,1635174000"; d="scan'208";a="104253507"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 22 Dec 2021 02:01:11 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 22 Dec 2021 02:01:14 +0900
 Received: from localhost.localdomain (unknown [10.226.36.204])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id E143F4004BAE;
- Wed, 22 Dec 2021 02:01:08 +0900 (JST)
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id AA4B540083DD;
+ Wed, 22 Dec 2021 02:01:11 +0900 (JST)
 From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 To: Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
  Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
  Takashi Iwai <tiwai@suse.com>, Florian Fainelli <f.fainelli@gmail.com>,
  bcm-kernel-feedback-list@broadcom.com,
  Michal Simek <michal.simek@xilinx.com>, alsa-devel@alsa-project.org
-Subject: [PATCH v2 1/2] ASoC: xlnx: Use platform_get_irq() to get the interrupt
-Date: Tue, 21 Dec 2021 17:00:59 +0000
-Message-Id: <20211221170100.27423-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH v2 2/2] ASoC: bcm: Use platform_get_irq() to get the interrupt
+Date: Tue, 21 Dec 2021 17:01:00 +0000
+Message-Id: <20211221170100.27423-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20211221170100.27423-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 References: <20211221170100.27423-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
@@ -75,43 +75,64 @@ irq chaining.
 In preparation for removal of static setup of IRQ resource from DT core
 code use platform_get_irq().
 
+While at it also drop "r_irq" member from struct bcm_i2s_priv as there
+are no users of it.
+
 Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
 v1->v2
-* No change
+* Included RB tag from Florian
+* Included irq.h to fix builds for x86
 ---
- sound/soc/xilinx/xlnx_spdif.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ sound/soc/bcm/bcm63xx-i2s.h          |  1 -
+ sound/soc/bcm/bcm63xx-pcm-whistler.c | 13 ++++++-------
+ 2 files changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/xilinx/xlnx_spdif.c b/sound/soc/xilinx/xlnx_spdif.c
-index e2ca087adee6..cba0e868a7d7 100644
---- a/sound/soc/xilinx/xlnx_spdif.c
-+++ b/sound/soc/xilinx/xlnx_spdif.c
-@@ -237,7 +237,6 @@ MODULE_DEVICE_TABLE(of, xlnx_spdif_of_match);
- static int xlnx_spdif_probe(struct platform_device *pdev)
+diff --git a/sound/soc/bcm/bcm63xx-i2s.h b/sound/soc/bcm/bcm63xx-i2s.h
+index edc328ba53d3..f30556bec89e 100644
+--- a/sound/soc/bcm/bcm63xx-i2s.h
++++ b/sound/soc/bcm/bcm63xx-i2s.h
+@@ -74,7 +74,6 @@
+ 
+ struct bcm_i2s_priv {
+ 	struct device *dev;
+-	struct resource *r_irq;
+ 	struct regmap *regmap_i2s;
+ 	struct clk *i2s_clk;
+ 	struct snd_pcm_substream	*play_substream;
+diff --git a/sound/soc/bcm/bcm63xx-pcm-whistler.c b/sound/soc/bcm/bcm63xx-pcm-whistler.c
+index b5096f64c576..2c600b017524 100644
+--- a/sound/soc/bcm/bcm63xx-pcm-whistler.c
++++ b/sound/soc/bcm/bcm63xx-pcm-whistler.c
+@@ -6,6 +6,7 @@
+ 
+ #include <linux/dma-mapping.h>
+ #include <linux/io.h>
++#include <linux/irq.h>
+ #include <linux/module.h>
+ #include <sound/pcm_params.h>
+ #include <linux/regmap.h>
+@@ -387,14 +388,12 @@ int bcm63xx_soc_platform_probe(struct platform_device *pdev,
  {
  	int ret;
--	struct resource *res;
- 	struct snd_soc_dai_driver *dai_drv;
- 	struct spdif_dev_data *ctx;
  
-@@ -273,13 +272,10 @@ static int xlnx_spdif_probe(struct platform_device *pdev)
- 	if (ctx->mode) {
- 		dai_drv = &xlnx_spdif_tx_dai;
- 	} else {
--		res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
--		if (!res) {
--			dev_err(dev, "No IRQ resource found\n");
--			ret = -ENODEV;
-+		ret = platform_get_irq(pdev, 0);
-+		if (ret < 0)
- 			goto clk_err;
--		}
--		ret = devm_request_irq(dev, res->start,
-+		ret = devm_request_irq(dev, ret,
- 				       xlnx_spdifrx_irq_handler,
- 				       0, "XLNX_SPDIF_RX", ctx);
- 		if (ret) {
+-	i2s_priv->r_irq = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
+-	if (!i2s_priv->r_irq) {
+-		dev_err(&pdev->dev, "Unable to get register irq resource.\n");
+-		return -ENODEV;
+-	}
++	ret = platform_get_irq(pdev, 0);
++	if (ret < 0)
++		return ret;
+ 
+-	ret = devm_request_irq(&pdev->dev, i2s_priv->r_irq->start, i2s_dma_isr,
+-			i2s_priv->r_irq->flags, "i2s_dma", (void *)i2s_priv);
++	ret = devm_request_irq(&pdev->dev, ret, i2s_dma_isr,
++			       irq_get_trigger_type(ret), "i2s_dma", (void *)i2s_priv);
+ 	if (ret) {
+ 		dev_err(&pdev->dev,
+ 			"i2s_init: failed to request interrupt.ret=%d\n", ret);
 -- 
 2.17.1
 
