@@ -4,67 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7F37C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Dec 2021 02:53:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55FEBC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Dec 2021 02:54:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 084A0178B;
-	Tue, 21 Dec 2021 03:53:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 084A0178B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 77C85178F;
+	Tue, 21 Dec 2021 03:53:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 77C85178F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640055231;
-	bh=4kirLb6cOsVO8KPJBPaXeZYabCSuBuDo4945kcSie0E=;
+	s=default; t=1640055249;
+	bh=qdD3IlBLcb1CCrc6ryPjrgcuHWvblXz5Qe4tDjAsWtw=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jFKUDOf5xD3xMQzKjqgzfmCDWxMrZEwJ5oEYZvUvZ9ekUUZLBaQN84gBUenx4INqj
-	 kh/LXd/eGDhPsZiZvQbyQCl1V2kXw3v3zXRCqQH/YW1jHoSxspl4pCETcwWNSlkM3y
-	 YvuQHFzIe6trfCFbRapXLEvtgOuiphqxktuPfwgY=
+	b=RkuPp0Hi7hpR0LnTv8x2rKMcdoClxY5HyJTSe/MMsq2TmWQrvsMOqDxq/ZUOJd7D3
+	 grssKm//l7YVmIwrVbWWVUiEEwzjAHfG2KVEz1gITeVy51kXGep0k+P3eA3GzUPywJ
+	 R9bFX2P5BuVw2R26Yuv9d1Hvvt0+zBzVIhng7kpo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C72D5F80525;
-	Tue, 21 Dec 2021 03:51:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 70175F80526;
+	Tue, 21 Dec 2021 03:51:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CA60BF8051A; Tue, 21 Dec 2021 03:50:57 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id A307FF8051A; Tue, 21 Dec 2021 03:50:58 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1D588F80517
+ by alsa1.perex.cz (Postfix) with ESMTPS id 61F4CF80518
  for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2021 03:50:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D588F80517
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 61F4CF80518
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="DvX53i3u"
+ header.b="Fg+OGFBP"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 0945161314;
- Tue, 21 Dec 2021 02:50:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC24BC36AE8;
+ by ams.source.kernel.org (Postfix) with ESMTPS id 08781B8111A;
  Tue, 21 Dec 2021 02:50:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27462C36AE8;
+ Tue, 21 Dec 2021 02:50:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1640055052;
- bh=4kirLb6cOsVO8KPJBPaXeZYabCSuBuDo4945kcSie0E=;
+ s=k20201202; t=1640055049;
+ bh=qdD3IlBLcb1CCrc6ryPjrgcuHWvblXz5Qe4tDjAsWtw=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=DvX53i3u52JYDsHwbAoAnmILt3hJK7K25ObeVzabRsEgg2t6MeJpjN30KFDh7QAkL
- 3fRJWemExHkxy1W7hw6LoH54P2WqgOtlAyMRB9hjYSNlc2HE2yIk4DbjSZb+sIZUEl
- WdJHQRPAeKkpOLGoVfsTq9LOz2hQZ3YGKsdFqOYTcdYiDOA+Lep+2FpnCxh3kZFmwL
- 0hs4xSQrzlyfewqwX/bVTjp7RuWoWwAnWa8yMnMKzMX6qbom2ZvBqIj2FOiY+ibObe
- fflY1LYVYRn4oOfVCVUBxTWeTqkJCJIr76MI/Pgu06mUVt22G9395DyeRH+imBydFq
- LUc9EUszNqcxg==
+ b=Fg+OGFBPKXG2ANEnS4eOCr0jhnl41sdAIuROHNPh/dQmDY+sAVIIKv8W5usHNwdR/
+ vATmSDCAJ8FBGojgQqtHJbqqE37D3EDP8VBYziYkj49Kki7daG/IXOurrosCXjKX/t
+ hPeYlazbcEbwskAA0I7UEjdHXL7CKhrXmNFoOElq9vAn9DRRX9ZsiWOr6CGPufAVw+
+ oaphnyZvbylwVfXPROo8rrgHN+bCqGJ5TjJvejOq6kdGySSzu2jqrVZHsSZ5Q/ctGy
+ xiL32gGKfozvaDh/WwMH9XxMbKVgTH9duXhH0eyXTGGyfRV5lYvi18s42N5N4oU6LL
+ j2k6QB+nLYRSA==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, Cezary Rojewski <cezary.rojewski@intel.com>
-In-Reply-To: <20211216115743.2130622-1-cezary.rojewski@intel.com>
-References: <20211216115743.2130622-1-cezary.rojewski@intel.com>
-Subject: Re: (subset) [PATCH 0/5] ASoC: Intel: catpt: Dma-transfer fix and
- couple
-Message-Id: <164005505149.2647792.1278814749965974230.b4-ty@kernel.org>
-Date: Tue, 21 Dec 2021 02:50:51 +0000
+To: Dmitry Osipenko <digetx@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Thierry Reding <thierry.reding@gmail.com>,
+ Agneli <poczt@protonmail.ch>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>
+In-Reply-To: <20211204143725.31646-1-digetx@gmail.com>
+References: <20211204143725.31646-1-digetx@gmail.com>
+Subject: Re: (subset) [PATCH v4 00/22] Support HDMI audio on NVIDIA Tegra20
+Message-Id: <164005504688.2647792.15486992358595152806.b4-ty@kernel.org>
+Date: Tue, 21 Dec 2021 02:50:46 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.com
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, Rob Herring <robh+dt@kernel.org>,
+ linux-tegra@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,16 +85,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 16 Dec 2021 12:57:38 +0100, Cezary Rojewski wrote:
-> Set is made of one fix for dma-transfer so that result of
-> dmaengine_submit() is tested before moving on, and few cleanups:
-> 
-> - two non-impactful, where catpt_component_open() layout gets improved
->   slightly as well as relocation of couple of locals found in
->   PCM-functions so that they look more cohesive
-> - no need to expose catpt-driver board-matching information globally.
->   Most fields are not by it and it's the sole user of haswell_machines
->   table. By having them locally it is clear what is actually being used
+On Sat, 4 Dec 2021 17:37:03 +0300, Dmitry Osipenko wrote:
+> This series revives Tegra20 S/PDIF driver which was upstreamed long time
+> ago, but never was used. It also turns Tegra DRM HDMI driver into HDMI
+> audio CODEC provider. Finally, HDMI audio is enabled in device-trees.
+> For now the audio is enable only for Acer A500 tablet and Toshiba AC100
+> netbook because they're already supported by upstream, later on ASUS TF101
+> tablet will join them.
 > 
 > [...]
 
@@ -99,12 +101,30 @@ Applied to
 
 Thanks!
 
-[1/5] ASoC: Intel: catpt: Test dmaengine_submit() result before moving on
-      commit: 2a9a72e290d4a4741e673f86b9fba9bfb319786d
-[2/5] ASoC: Intel: catpt: Reduce size of catpt_component_open()
-      commit: dad492cfd24caf1b62d598555cde279bcca4755e
-[3/5] ASoC: Intel: catpt: Streamline locals declaration for PCM-functions
-      commit: a62a02986d3990f4b55c2d75610f8fb2074b0870
+[01/22] ASoC: dt-bindings: Add binding for Tegra20 S/PDIF
+        commit: 46f016119e2ac38d9efd32e4957bc888dc71fffe
+[02/22] ASoC: dt-bindings: tegra20-i2s: Convert to schema
+        commit: 80c3d0a97abfd2a678b6077236a77ccb8c4747fa
+[03/22] ASoC: dt-bindings: tegra20-i2s: Document new nvidia,fixed-parent-rate property
+        commit: 549818e5c85a6d806cdef146d0203df2689d4e2f
+[05/22] ASoC: tegra20: spdif: Set FIFO trigger level
+        commit: 16736a0221db6d6f3fe130750c6dc5bbf5417da4
+[06/22] ASoC: tegra20-spdif: stop setting slave_id
+        (no commit info)
+[07/22] ASoC: tegra20: spdif: Support device-tree
+        commit: c0000fc618cdbe190274cf37040033dfa23c159d
+[08/22] ASoC: tegra20: spdif: Improve driver's code
+        commit: 117aeed43974e500dcbd106e51218a83ae2c9977
+[09/22] ASoC: tegra20: spdif: Use more resource-managed helpers
+        commit: 150f4d573fe19a77864f6dec31aa444332f9fc9e
+[10/22] ASoC: tegra20: spdif: Reset hardware
+        commit: ec1b4545d75575118e01a5e95699cff5010b4e19
+[11/22] ASoC: tegra20: spdif: Support system suspend
+        commit: d51693092ecc732fca3f49549cde1c5206331b09
+[12/22] ASoC: tegra20: spdif: Filter out unsupported rates
+        commit: 9d8f51cd1fa993939db02a014d4f4b6e252c2a18
+[13/22] ASoC: tegra20: i2s: Filter out unsupported rates
+        commit: bfa4671db1effe315cade5bddd6cf025e1c403d0
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
