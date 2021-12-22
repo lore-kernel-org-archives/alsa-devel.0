@@ -4,59 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02E67C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Dec 2021 13:55:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C08EC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Dec 2021 14:05:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3ABE116E3;
-	Wed, 22 Dec 2021 14:54:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3ABE116E3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 20EAC1703;
+	Wed, 22 Dec 2021 15:04:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20EAC1703
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640181336;
-	bh=y8jlbXfYt1AeDQhiMiTHZHLZPsddA25UVMnP2UJ9BiU=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=uYoooEyPgVpacSSLu0tACuaQXCdY8hqHEIC0ZeYx1klBTsSF79JLYqPxy58pK7JkF
-	 3mB1RaYaPxgbJTySPuBPzChnc2D/no0JEAlrCQ6ddyKng7WWzn3ONoCtVk7in3uDh4
-	 WGFs44q9j0zNEl4788IgK51SvHoHYRq3kQ/qZDQI=
+	s=default; t=1640181945;
+	bh=GNoSR9vATcN9dhd1CYRFeQx4pH59qmWj2wK1IQ1OdLU=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=H6v+Hvl3TJDI4qI38ZwwWAZS/XuHxNDiR/EAFajWkxwAlNWT+snbeg9jlF/Q3rHoG
+	 Pzli72lIJ6d/2px7fKEGePW7++EGkbfZR0W3rj+pQPL0fKDkbWJXAZFKHDhOQy80GH
+	 2LmLowygO0R5eHWDGHxuyxrV1VP8Jw2xHRNNuW5o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CE598F80107;
-	Wed, 22 Dec 2021 14:54:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9AFDBF80107;
+	Wed, 22 Dec 2021 15:04:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4DE43F80109; Wed, 22 Dec 2021 14:54:44 +0100 (CET)
-Received: from msg-6.mailo.com (ip-16.mailobj.net [213.182.54.16])
+ id 29EC8F80109; Wed, 22 Dec 2021 15:04:51 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8531AF80105
+ for <alsa-devel@alsa-project.org>; Wed, 22 Dec 2021 15:04:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8531AF80105
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="RPLXrACy"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CDCBCF800B5
- for <alsa-devel@alsa-project.org>; Wed, 22 Dec 2021 14:54:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CDCBCF800B5
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=mailoo.org header.i=@mailoo.org
- header.b="FFYy4yPP"
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailoo.org; s=mailo;
- t=1640181266; bh=y8jlbXfYt1AeDQhiMiTHZHLZPsddA25UVMnP2UJ9BiU=;
- h=X-EA-Auth:From:To:Cc:Subject:Date:Message-Id:X-Mailer:
- MIME-Version:Content-Transfer-Encoding;
- b=FFYy4yPP37Iov3V2+kplZ6D/SF/7+58u+X2LM7p/SAVsmZK8f934MeXz1iwQHl/OW
- MZfKgPvcc6pYt10lOF7HGXmknDx3MYnT4e2X+S2PUsOU4x5R1jepqRTA7Ui3bgXVrz
- 0+fkf9pQ884/2fi4eNdWO368axGOewd5qey2jLw0=
-Received: by b-3.in.mailobj.net [192.168.90.13] with ESMTP
- via proxy.mailoo.org [213.182.55.207]
- Wed, 22 Dec 2021 14:54:26 +0100 (CET)
-X-EA-Auth: t8EL3DbqiWC969FFZkRYrCyuIZ/vmSsrsNuxeYWaPTdY9PXzEbXh18Lb+DVV5hZO0XcqdB7WVS+XV8q+znoISXe03fXVjhpQUJMouuDhgps=
-From: Vincent Knecht <vincent.knecht@mailoo.org>
-To: broonie@kernel.org
-Subject: [PATCH] ASoC: codecs: ak4375: Change invert controls to a stereo
- switch
-Date: Wed, 22 Dec 2021 14:54:03 +0100
-Message-Id: <20211222135403.2991657-1-vincent.knecht@mailoo.org>
-X-Mailer: git-send-email 2.31.1
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 4B6A161A38;
+ Wed, 22 Dec 2021 14:04:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7702AC36AEA;
+ Wed, 22 Dec 2021 14:04:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1640181883;
+ bh=GNoSR9vATcN9dhd1CYRFeQx4pH59qmWj2wK1IQ1OdLU=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=RPLXrACyo+zki3TL6/5jE5+DFghyQj9p9XLlNuRVUhjR7NBNVXU4r1L8Ymim1S6+c
+ qGmD7qYWE17yzP+RKpFR+innBJHu6WDYe5qvFTPzgeSe2IiyXwLrOykfNIqbd5MOJt
+ RUIp9OvmDRiqWK2pdinnJFrP9a/aW4GyB6uypgWVlZkN943cPlyIAyPa9Hahbcg/mQ
+ YkAFt/q54b9l0bB+BF8hNkJcC6B8M+MZqGo8tImKj/rIUnjozr7IgaO64hvaWqiO/9
+ Sd741ngElI5Cfd7WZgplUMQXFPEw44f2clSsNeIwTMBA7cidiffUpwLU1CYYTaASez
+ ex/qIOjLKo2ZQ==
+From: Mark Brown <broonie@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Jerome Brunet <jbrunet@baylibre.com>,
+ Alexander Stein <alexander.stein@mailbox.org>
+In-Reply-To: <20211218143423.18768-1-alexander.stein@mailbox.org>
+References: <20211218143423.18768-1-alexander.stein@mailbox.org>
+Subject: Re: [PATCH v2 1/3] ASoC: dt-bindings: Use name-prefix schema
+Message-Id: <164018188218.2905927.3191011789641589358.b4-ty@kernel.org>
+Date: Wed, 22 Dec 2021 14:04:42 +0000
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, stephan@gerhold.net,
- linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
- phone-devel@vger.kernel.org, Vincent Knecht <vincent.knecht@mailoo.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,55 +80,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Don't use enums for DACL/DACR Signal Invert controls,
-and change them into a stereo "DAC Signal Invert Switch" control.
+On Sat, 18 Dec 2021 15:34:21 +0100, Alexander Stein wrote:
+> name-prefix.txt does not exist anymore, just reference the schema instead.
+> 
+> 
 
-Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
----
- sound/soc/codecs/ak4375.c | 11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
+Applied to
 
-diff --git a/sound/soc/codecs/ak4375.c b/sound/soc/codecs/ak4375.c
-index a893aff42a01..22cda0699341 100644
---- a/sound/soc/codecs/ak4375.c
-+++ b/sound/soc/codecs/ak4375.c
-@@ -127,7 +127,6 @@ static DECLARE_TLV_DB_SCALE(hpg_tlv, -4200, 20, 0);
- 
- static const char * const ak4375_ovolcn_select_texts[]	= { "Dependent", "Independent" };
- static const char * const ak4375_mdac_select_texts[]	= { "x1", "x1/2" };
--static const char * const ak4375_inv_select_texts[]	= { "Normal", "Inverting" };
- static const char * const ak4375_cpmode_select_texts[]	= {
- 	"Automatic Switching",
- 	"+-VDD Operation",
-@@ -157,12 +156,6 @@ static const struct soc_enum ak4375_mdacl_enum =
- static const struct soc_enum ak4375_mdacr_enum =
- 	SOC_ENUM_SINGLE(AK4375_07_DAC_MONO_MIXING, 6,
- 			ARRAY_SIZE(ak4375_mdac_select_texts), ak4375_mdac_select_texts);
--static const struct soc_enum ak4375_invl_enum =
--	SOC_ENUM_SINGLE(AK4375_07_DAC_MONO_MIXING, 3,
--			ARRAY_SIZE(ak4375_inv_select_texts), ak4375_inv_select_texts);
--static const struct soc_enum ak4375_invr_enum =
--	SOC_ENUM_SINGLE(AK4375_07_DAC_MONO_MIXING, 7,
--			ARRAY_SIZE(ak4375_inv_select_texts), ak4375_inv_select_texts);
- static const struct soc_enum ak4375_cpmode_enum =
- 	SOC_ENUM_SINGLE(AK4375_03_POWER_MANAGEMENT4, 2,
- 			ARRAY_SIZE(ak4375_cpmode_select_texts), ak4375_cpmode_select_texts);
-@@ -176,11 +169,11 @@ static const struct snd_kcontrol_new ak4375_snd_controls[] = {
- 	SOC_SINGLE_TLV("HP-Amp Analog Volume",
- 		       AK4375_0D_HP_VOLUME_CONTROL, 0, 0x1f, 0, hpg_tlv),
- 
-+	SOC_DOUBLE("DAC Signal Invert Switch", AK4375_07_DAC_MONO_MIXING, 3, 7, 1, 0),
-+
- 	SOC_ENUM("Digital Volume Control", ak4375_ovolcn_enum),
- 	SOC_ENUM("DACL Signal Level", ak4375_mdacl_enum),
- 	SOC_ENUM("DACR Signal Level", ak4375_mdacr_enum),
--	SOC_ENUM("DACL Signal Invert", ak4375_invl_enum),
--	SOC_ENUM("DACR Signal Invert", ak4375_invr_enum),
- 	SOC_ENUM("Charge Pump Mode", ak4375_cpmode_enum),
- 	SOC_ENUM("DAC Digital Filter Mode", ak4375_digfil_enum),
- };
--- 
-2.31.1
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
+Thanks!
 
+[1/3] ASoC: dt-bindings: Use name-prefix schema
+      commit: 0d422a466ef7fdbbe402194ac06144d1bbcdc227
+[2/3] ASoC: meson: t9015: add missing sound-name-prefix property
+      commit: 847cbea6459d5beb3f0f960fde4337f28b663eae
+[3/3] ASoC: meson: g12a: add missing sound-name-prefix property
+      commit: 1f6532073e3e9caee1dbc3f9b4be28359a181ea4
 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
