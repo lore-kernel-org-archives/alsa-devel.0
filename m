@@ -4,77 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F596C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Dec 2021 19:22:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3DC00C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Dec 2021 19:24:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8613717DE;
-	Wed, 22 Dec 2021 20:22:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8613717DE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5AF0417C6;
+	Wed, 22 Dec 2021 20:23:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5AF0417C6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640200972;
-	bh=75INwDgBu+MNQRQ6hwQIz05qC8xYoD+E8d3DAq0ag74=;
+	s=default; t=1640201042;
+	bh=2U3SuYsBlb8gMr0Qwz4f9tcomoGcoo/ddIiHyEOxooc=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Nmvnmb1joyTwxaemBq0sUxNUuaRkaiBi3FQijTCf8Mvpb1vYBu3NN0szGcea/1tdc
-	 BcRpX4mOUVNA6FkoBbOvDKpFWBLco9SgMdp6lq7RpSnLllYzd6fmu8DRRNi5HyIgCW
-	 ecp098+SExp8KrgisNiqJ/wlmyuxFO5GrUboPE6I=
+	b=SKMhibsSWL5mITDUTEhmWn33cX5+bJyS6V2O8SLi3GCyBOezbYWj7Q3KGKKhlWzTN
+	 sxQx6C99L6R8gqoqxXL5F3mebfirehlqz6WNgFk0ABNOSH2OgZ076s0rCZKb4C6RdN
+	 03BrPiDl9SBgTyoMuzOsoQqVfHqF3tPMHp668RQA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 61AC2F804D8;
-	Wed, 22 Dec 2021 20:21:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 084C5F80105;
+	Wed, 22 Dec 2021 20:23:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2307CF804E4; Wed, 22 Dec 2021 20:21:57 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id 907A0F80084; Wed, 22 Dec 2021 20:23:10 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C98E5F80124
- for <alsa-devel@alsa-project.org>; Wed, 22 Dec 2021 20:21:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C98E5F80124
+ by alsa1.perex.cz (Postfix) with ESMTPS id 415A3F80084
+ for <alsa-devel@alsa-project.org>; Wed, 22 Dec 2021 20:23:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 415A3F80084
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="fJ8d825X"; 
+ header.b="F4DnQmK9"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="16jZff+c"
+ header.b="5D3sx4Yp"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id DD8F221118;
- Wed, 22 Dec 2021 19:21:48 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 295991F389;
+ Wed, 22 Dec 2021 19:23:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1640200908; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1640200987; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=huE2dFXum4sI66P8qX7L/b+HGNamJDuIj0tTs/ZuL6Y=;
- b=fJ8d825XAeduSOJtACS27qzIj0EPqACu4T2YIPAnxuysxonDUyYLjFgQgZUzuNZPFtsflj
- zuYIPLrZwcD64GEUBfRI5yveAozfZyiwiTuv2e+hoFbv7shPGcoxyA1PalyoS3QMcbERsn
- q/jK8wqFp+Fm1yIydUsubiGc97Jy03M=
+ bh=qob38HUGtOSFjzUCm9vtmlboA+fmcWC9qVaxIFHefQU=;
+ b=F4DnQmK9xlOqdLX89Pon3VLIGTymMOFEw8VAAPDemU5UvS9+ciW9kN737HRaFvGb6xazwQ
+ IEVK1JYy3Zulki+/72j/9HHy/jWvRVL+ZD70r3UMr2/VJfpckN3VGLwoA7q3LGoTj6TJ8K
+ DIWTsMo316Hb+7X9aaiqT0eTnzVAOQY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1640200908;
+ s=susede2_ed25519; t=1640200987;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=huE2dFXum4sI66P8qX7L/b+HGNamJDuIj0tTs/ZuL6Y=;
- b=16jZff+cMrOXyEksOM2z01NzSWBU4OrOn444qVBczaAnZQf6XeD8E2hnE6f+f0UVfLB5GG
- VzY5Abs57QkjJEAg==
+ bh=qob38HUGtOSFjzUCm9vtmlboA+fmcWC9qVaxIFHefQU=;
+ b=5D3sx4YpZH3GRsigA03L4nSY+hO6LM5aARsVcnAgnakZD2JDoGDMxbAyYY2bSBNfyzFcMp
+ Np3xCt6ksUWewDBw==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id C19E5A3B84;
- Wed, 22 Dec 2021 19:21:48 +0000 (UTC)
-Date: Wed, 22 Dec 2021 20:21:48 +0100
-Message-ID: <s5hilvgqwc3.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id 224C8A3B83;
+ Wed, 22 Dec 2021 19:23:07 +0000 (UTC)
+Date: Wed, 22 Dec 2021 20:23:07 +0100
+Message-ID: <s5hh7b0qw9w.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Bard Liao <yung-chuan.liao@linux.intel.com>
-Subject: Re: [PATCH 0/2] ALSA: hda: intel-sdw-acpi: go through HDAS ACPI at
- max depth of 2
-In-Reply-To: <20211221010817.23636-1-yung-chuan.liao@linux.intel.com>
-References: <20211221010817.23636-1-yung-chuan.liao@linux.intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/2] ALSA: hda: intel-sdw-acpi: fix controller detection
+In-Reply-To: <20211215165632.152976-1-pierre-louis.bossart@linux.intel.com>
+References: <20211215165632.152976-1-pierre-louis.bossart@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: libin.yang@intel.com, alsa-devel@alsa-project.org,
- pierre-louis.bossart@linux.intel.com, vkoul@kernel.org, broonie@kernel.org,
- bard.liao@intel.com
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, vkoul@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,18 +87,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 21 Dec 2021 02:08:15 +0100,
-Bard Liao wrote:
+On Wed, 15 Dec 2021 17:56:30 +0100,
+Pierre-Louis Bossart wrote:
 > 
-> In the HDAS ACPI scope, the SoundWire may not be the direct child of HDAS.
-> It needs to go through the ACPI table at max depth of 2 to find the
-> SoundWire device from HDAS.
+> The SoundWire-related information provided by platform firmware (DSDT)
+> hasn't changed since 2016, but with a recent change of device
+> hierarchy we need to change how the controller is detected.
+> 
+> These patches were tested on existing devices and don't break
+> anything, but are very much needed for newer devices (quirks already
+> in Linus' branch for 5.16, see e.g. commit f55af7055cd4 ("ASoC: Intel:
+> sof_sdw: Add support for SKU 0B12 product"). Unfortunately the BIOS
+> changes happened *after* the initial patches were contributed.
 > 
 > Libin Yang (2):
 >   ALSA: hda: intel-sdw-acpi: harden detection of controller
 >   ALSA: hda: intel-sdw-acpi: go through HDAS ACPI at max depth of 2
 
-Thanks, applied now both patches.
+Sorry, this was delayed due to my vacation, and now I merged the
+submissions from Bard, which should be identical.
 
 
 Takashi
