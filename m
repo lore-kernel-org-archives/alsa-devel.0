@@ -4,74 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6ED64C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Dec 2021 19:22:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1DB2C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Dec 2021 19:22:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B277B175F;
-	Wed, 22 Dec 2021 20:21:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B277B175F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 99E7A1770;
+	Wed, 22 Dec 2021 20:21:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99E7A1770
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640200921;
-	bh=acvAh2Y6he3ELqh6W/Wv6PqmvO/NJhfkvSDHGucBTr0=;
+	s=default; t=1640200956;
+	bh=0NrDEEzI/yJeWZtbcfS0pWYryLWLU8yAw7v/8l2iq6w=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VlkKkeMHLCKndN6c1s7WJz1dYTEFzQGljWxjApVrfjSZK9OukkhzsFmaSA1faRwC4
-	 orj0/tLjEHdos/IDd97EkDgjgYkTWkYKmxaIezCFcYmZnyyRckOWR/ofDE4QNZIKBT
-	 UITcqcvvSTJJlZYPGyFVQKV2TNR0YqlYIJW2lpbc=
+	b=pMV5mgLKXUi1KpQxG0hrvAibS/kEqDhFoJZUPfhvCyLpJZ1AJSoYYtz+zA8UeYkSZ
+	 8MO0ueXu/VrESLFJhgauDdjkVGaygynZOPquVMgDkRNLRQvUZVbD8y5CL8ai+NVpom
+	 KyBT6qsN8Vei8SbkMPk9eVAciKwcZFgVieTRibLs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 31FFAF80084;
-	Wed, 22 Dec 2021 20:21:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D12B8F80105;
+	Wed, 22 Dec 2021 20:21:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 63E2AF80109; Wed, 22 Dec 2021 20:21:09 +0100 (CET)
+ id 1A9B3F80124; Wed, 22 Dec 2021 20:21:31 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7698BF80084
- for <alsa-devel@alsa-project.org>; Wed, 22 Dec 2021 20:21:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7698BF80084
+ by alsa1.perex.cz (Postfix) with ESMTPS id 47E80F80107
+ for <alsa-devel@alsa-project.org>; Wed, 22 Dec 2021 20:21:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47E80F80107
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="BDmKP5TB"; 
+ header.b="gCtUAjEJ"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="nLPUempE"
+ header.b="GpxR5WqX"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 178091F38B;
- Wed, 22 Dec 2021 19:20:56 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 083B31F38A;
+ Wed, 22 Dec 2021 19:21:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1640200856; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1640200885; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=1zHmlER6FzSVw4dWcjyK+b62FBYuP29ydpBgw6lGwcc=;
- b=BDmKP5TB24o/km0CgXB1JbI7PHUYXjpRu8a7WbDYJjGzq6thoQjAuQ7M6zbIg9gqRYq7Sq
- 7Pyvmrb5ZTZIxNdGbMGTf3+IwOsBwK7HBPiGQ2xPNEyPP9zC8ozhHsEDR0SxsCgizWn1iL
- sApZKjWpm1jy+LSqq6YwWluVW8Gcq/M=
+ bh=z3wUzqD0FEBz3snGbS9wiinZh3bBFD00v662bGiCxHU=;
+ b=gCtUAjEJL5qoBERJTo49azCm3hUugonz/rsLRG+ucqqYlmY8NOVU3/EBH84o1fLbKcO1hM
+ dylM8Ty5SvPaJkEF/sEHWhskPuKWe/KzpHSaMlZRhOb+Zydvsm96K1aIZk9jHEg/8ZC7Od
+ BUq7xF5ywye7f1GBXfqFefWrDkRmivs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1640200856;
+ s=susede2_ed25519; t=1640200885;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=1zHmlER6FzSVw4dWcjyK+b62FBYuP29ydpBgw6lGwcc=;
- b=nLPUempEuzqrbaQQ83UFL2r7tiUY9BmSZwkcj0OGuP5ciBODrmBKJx94ltU2v+Lj33/Rpm
- pTPdDtHO36KyFZBw==
+ bh=z3wUzqD0FEBz3snGbS9wiinZh3bBFD00v662bGiCxHU=;
+ b=GpxR5WqXKdZbH9x/QjoXmgHk1hNSvwvZjdwMhB8x5b8IZT76LTvcnXdKg/u8C8Icdt76cS
+ 01107m15sqMWs+CQ==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 07FDDA3B83;
- Wed, 22 Dec 2021 19:20:56 +0000 (UTC)
-Date: Wed, 22 Dec 2021 20:20:56 +0100
-Message-ID: <s5hlf0cqwdj.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id E6C85A3B88;
+ Wed, 22 Dec 2021 19:21:24 +0000 (UTC)
+Date: Wed, 22 Dec 2021 20:21:24 +0100
+Message-ID: <s5hk0fwqwcr.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Werner Sembach <wse@tuxedocomputers.com>
-Subject: Re: [PATCH] ALSA: hda/realtek: Fix quirk for Clevo NJ51CU
-In-Reply-To: <20211215191646.844644-1-wse@tuxedocomputers.com>
-References: <20211215191646.844644-1-wse@tuxedocomputers.com>
+To: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH] ALSA: rawmidi - fix the uninitalized user_pversion
+In-Reply-To: <20211218123925.2583847-1-perex@perex.cz>
+References: <20211218123925.2583847-1-perex@perex.cz>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
+Cc: ALSA development <alsa-devel@alsa-project.org>, broonie@kernel.org,
+ syzbot+88412ee8811832b00dbe@syzkaller.appspotmail.com, stable@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,23 +88,24 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 15 Dec 2021 20:16:46 +0100,
-Werner Sembach wrote:
+On Sat, 18 Dec 2021 13:39:25 +0100,
+Jaroslav Kysela wrote:
 > 
-> The Clevo NJ51CU comes either with the ALC293 or the ALC256 codec, but uses
-> the 0x8686 subproduct id in both cases. The ALC256 codec needs a different
-> quirk for the headset microphone working and and edditional quirk for sound
-> working after suspend and resume.
+> The user_pversion was unitialized for the user space file structure
+> in the open function, because the file private structure use
+> kmalloc for the allocation.
 > 
-> When waking up from s3 suspend the Coef 0x10 is set to 0x0220 instead of
-> 0x0020 on  the ALC256 codec. Setting the value manually makes the sound
-> work again. This patch does this automatically.
+> The kernel ALSA sequencer code clears the file structure, so no additional
+> fixes are required.
 > 
-> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
-> Fixes: b5acfe152abaa ("ALSA: hda/realtek: Add some Clove SSID in the ALC293(ALC1220)")
-> Cc: <stable@vger.kernel.org>
+> Cc: stable@kernel.org
+> Cc: broonie@kernel.org
+> BugLink: https://github.com/alsa-project/alsa-lib/issues/178
+> Fixes: 09d23174402d ("ALSA: rawmidi: introduce SNDRV_RAWMIDI_IOCTL_USER_PVERSION")
+> Reported-by: syzbot+88412ee8811832b00dbe@syzkaller.appspotmail.com
+> Signed-off-by: Jaroslav Kysela <perex@perex.cz>
 
-Thanks, applied now with a minor coding style fix.
+Thanks, applied now with a minor typo fix.
 
 
 Takashi
