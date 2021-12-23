@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21431C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Dec 2021 11:38:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11262C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Dec 2021 11:38:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 27478182B;
-	Thu, 23 Dec 2021 12:37:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 27478182B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 83AEA185E;
+	Thu, 23 Dec 2021 12:38:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 83AEA185E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640259518;
-	bh=/wlZ8DyxRUmqfQm9ZXK31HDGWeexHXsFXisouT+nn94=;
+	s=default; t=1640259534;
+	bh=+XolmdYY3GtWHRw2Xygi3HDFlIyKlBdrEVo5rYJDfvA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JcCZINu3BAv/MMFEayhSaxLihywmJETfHDzGAJ6UuFT5lBMvMMTdRkgjQaI7SH/vp
-	 su2G7knXFNE5/PZrKh46qxAEZMku2GGRKL+Qy8YsihnhbxdKNmjI1uf5G/ok/uEyOv
-	 5rposIP+hh9mg71+I/lSY3REQz/fJyJTgsQQU9f4=
+	b=U0uYtdBEAA3QMjYMJHNnZIulH+KhBJLqomsfv49il2KZz9JAuGq5mR/WoYbsr5mbr
+	 Uno+4hFaMub68+ZWOjkizSx8Kd6Ef2YqWTAweXt9Q0gmXM5c8iaZo0vBf4FuYw6pr8
+	 LiGpvuu4LawsBwLl4UcodvvR3qKQAJ2dhYRsM+O0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 87290F80515;
-	Thu, 23 Dec 2021 12:36:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 386F7F80519;
+	Thu, 23 Dec 2021 12:36:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CE0CCF804FA; Thu, 23 Dec 2021 12:36:30 +0100 (CET)
+ id 1405CF80511; Thu, 23 Dec 2021 12:36:32 +0100 (CET)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 32F14F80084
- for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2021 12:36:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32F14F80084
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1FB2DF80104
+ for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2021 12:36:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1FB2DF80104
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="BehgdtTY"
+ header.b="cxXwzpnA"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1640259382; x=1671795382;
+ t=1640259387; x=1671795387;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=/wlZ8DyxRUmqfQm9ZXK31HDGWeexHXsFXisouT+nn94=;
- b=BehgdtTYuLySRBJf/iYMKupW8/RdPp21fL6jlXHM0r7SsPKCHe3cQhJQ
- hYedqeX8Ff8V8GA6j0VpHAg4T09eHgK6XX3BdV6CRUV2BlKuQG9hYGqdI
- GrTR++zjzh+7m9kgPcma4Ubx3/Eqa4W2gQ142z3yxoD/CVFr9meyZP36N
- EwOrT16R24j3gLbFLr1xGfTA/xRAYAcIlIQuPK//bXyAJ4u2BxVPcDqA7
- RJu6VPtKDE29r3NJHUycuaARA8H4/2MVheHUBD+c30JnFpT0xO61Mysxz
- M1m4+2NE2J8yQZs3UwLuqbuCF9upVCv+s1gfgd9zT+Wi3jdaeXSIgT/EJ g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10206"; a="304180798"
-X-IronPort-AV: E=Sophos;i="5.88,229,1635231600"; d="scan'208";a="304180798"
+ bh=+XolmdYY3GtWHRw2Xygi3HDFlIyKlBdrEVo5rYJDfvA=;
+ b=cxXwzpnAGBomU8q2j3bZCqrPiu1fikX2ELhbenCs2oTZE69tbBADBwDv
+ otuqWcEoF0bYnKR0fLDH71jgOYoK59OexSLWolABGPc58jjOtqlmqSFtu
+ d0AGgAWpaCqdnsKr9CEHQqPa920qNoIaUw8/YS0qXMHHx3YS02ogv1U1d
+ lNEnMmD2SFXkT1U67szawWmVKVYmKtZN+74LaAFl+hQCw8J/3VtPVK4BZ
+ G7HRRamxkxLoanWDYv8/kXVBh8QDpNY1QfmUHRXlNPvVzVz3JzdmIeTaG
+ JG0e0ywF/r+91Csuf3bN71KaJMlSAFeTgXvTHhOM+Wd8C0UIz+vQwzbz+ g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10206"; a="304180815"
+X-IronPort-AV: E=Sophos;i="5.88,229,1635231600"; d="scan'208";a="304180815"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Dec 2021 03:36:19 -0800
-X-IronPort-AV: E=Sophos;i="5.88,229,1635231600"; d="scan'208";a="522065073"
+ 23 Dec 2021 03:36:24 -0800
+X-IronPort-AV: E=Sophos;i="5.88,229,1635231600"; d="scan'208";a="522065094"
 Received: from gcatala-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.251.214.126])
  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Dec 2021 03:36:16 -0800
+ 23 Dec 2021 03:36:21 -0800
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
-Subject: [PATCH 04/20] ASoC: SOF: Use sof_debug_check_flag() instead of
- sof_core_debug directly
-Date: Thu, 23 Dec 2021 13:36:12 +0200
-Message-Id: <20211223113628.18582-5-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 06/20] ASoC: SOF: Add a 'message' parameter to
+ snd_sof_dsp_dbg_dump()
+Date: Thu, 23 Dec 2021 13:36:14 +0200
+Message-Id: <20211223113628.18582-7-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20211223113628.18582-1-peter.ujfalusi@linux.intel.com>
 References: <20211223113628.18582-1-peter.ujfalusi@linux.intel.com>
@@ -87,126 +87,167 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The sof_debug_check_flag() is available for checking flags set in
-sof_core_debug.
+When snd_sof_dsp_dbg_dump() is called we have an explanatory message to
+give some hint on the reason why we have the dump on the caller level.
 
-sof_core_debug can be marked static in core.c
+Pass this message to snd_sof_dsp_dbg_dump() and handle the print according
+to the dump rules.
+
+This way we can finally print information on the HDA boot iteration if all
+dumps are enabled.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- sound/soc/sof/core.c     |  4 ++--
- sound/soc/sof/debug.c    |  6 +++---
- sound/soc/sof/sof-priv.h |  1 -
- sound/soc/sof/topology.c | 12 ++++++------
- 4 files changed, 11 insertions(+), 12 deletions(-)
+ sound/soc/sof/debug.c            |  9 +++++++--
+ sound/soc/sof/intel/hda-loader.c | 15 +++++++++------
+ sound/soc/sof/loader.c           |  8 ++++----
+ sound/soc/sof/ops.c              |  5 ++---
+ sound/soc/sof/ops.h              |  2 +-
+ 5 files changed, 23 insertions(+), 16 deletions(-)
 
-diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
-index 1224a7da053a..00f8ffee2866 100644
---- a/sound/soc/sof/core.c
-+++ b/sound/soc/sof/core.c
-@@ -19,7 +19,7 @@
- #endif
- 
- /* see SOF_DBG_ flags */
--int sof_core_debug =  IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_ENABLE_FIRMWARE_TRACE);
-+static int sof_core_debug =  IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_ENABLE_FIRMWARE_TRACE);
- module_param_named(sof_debug, sof_core_debug, int, 0444);
- MODULE_PARM_DESC(sof_debug, "SOF core debug options (0x0 all off)");
- 
-@@ -218,7 +218,7 @@ static int sof_probe_continue(struct snd_sof_dev *sdev)
- 		goto fw_run_err;
- 	}
- 
--	if (sof_core_debug & SOF_DBG_ENABLE_TRACE) {
-+	if (sof_debug_check_flag(SOF_DBG_ENABLE_TRACE)) {
- 		sdev->dtrace_is_supported = true;
- 
- 		/* init DMA trace */
 diff --git a/sound/soc/sof/debug.c b/sound/soc/sof/debug.c
-index 2f8b5ac9b78a..9e4a128b5918 100644
+index 9e4a128b5918..cf7d95c33afe 100644
 --- a/sound/soc/sof/debug.c
 +++ b/sound/soc/sof/debug.c
-@@ -957,7 +957,7 @@ static void snd_sof_dbg_print_fw_state(struct snd_sof_dev *sdev)
+@@ -955,7 +955,7 @@ static void snd_sof_dbg_print_fw_state(struct snd_sof_dev *sdev)
+ 	dev_err(sdev->dev, "fw_state: UNKNOWN (%d)\n", sdev->fw_state);
+ }
  
- void snd_sof_dsp_dbg_dump(struct snd_sof_dev *sdev, u32 flags)
+-void snd_sof_dsp_dbg_dump(struct snd_sof_dev *sdev, u32 flags)
++void snd_sof_dsp_dbg_dump(struct snd_sof_dev *sdev, const char *msg, u32 flags)
  {
--	bool print_all = !!(sof_core_debug & SOF_DBG_PRINT_ALL_DUMPS);
-+	bool print_all = sof_debug_check_flag(SOF_DBG_PRINT_ALL_DUMPS);
+ 	bool print_all = sof_debug_check_flag(SOF_DBG_PRINT_ALL_DUMPS);
  
- 	if (flags & SOF_DBG_DUMP_OPTIONAL && !print_all)
- 		return;
-@@ -979,7 +979,7 @@ static void snd_sof_ipc_dump(struct snd_sof_dev *sdev)
- 		dev_err(sdev->dev, "------------[ IPC dump start ]------------\n");
- 		sof_ops(sdev)->ipc_dump(sdev);
- 		dev_err(sdev->dev, "------------[ IPC dump end ]------------\n");
--		if (!(sof_core_debug & SOF_DBG_PRINT_ALL_DUMPS))
-+		if (!sof_debug_check_flag(SOF_DBG_PRINT_ALL_DUMPS))
- 			sdev->ipc_dump_printed = true;
+@@ -964,11 +964,15 @@ void snd_sof_dsp_dbg_dump(struct snd_sof_dev *sdev, u32 flags)
+ 
+ 	if (sof_ops(sdev)->dbg_dump && !sdev->dbg_dump_printed) {
+ 		dev_err(sdev->dev, "------------[ DSP dump start ]------------\n");
++		if (msg)
++			dev_err(sdev->dev, "%s\n", msg);
+ 		snd_sof_dbg_print_fw_state(sdev);
+ 		sof_ops(sdev)->dbg_dump(sdev, flags);
+ 		dev_err(sdev->dev, "------------[ DSP dump end ]------------\n");
+ 		if (!print_all)
+ 			sdev->dbg_dump_printed = true;
++	} else if (msg) {
++		dev_err(sdev->dev, "%s\n", msg);
  	}
  }
-@@ -987,7 +987,7 @@ static void snd_sof_ipc_dump(struct snd_sof_dev *sdev)
- void snd_sof_handle_fw_exception(struct snd_sof_dev *sdev)
- {
- 	if (IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_RETAIN_DSP_CONTEXT) ||
--	    (sof_core_debug & SOF_DBG_RETAIN_CTX)) {
-+	    sof_debug_check_flag(SOF_DBG_RETAIN_CTX)) {
- 		/* should we prevent DSP entering D3 ? */
- 		if (!sdev->ipc_dump_printed)
- 			dev_info(sdev->dev,
-diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index 35c5b2d6930b..0f849cdbfbc8 100644
---- a/sound/soc/sof/sof-priv.h
-+++ b/sound/soc/sof/sof-priv.h
-@@ -42,7 +42,6 @@
- #define SOF_DBG_DUMP_OPTIONAL		BIT(4) /* only dump if SOF_DBG_PRINT_ALL_DUMPS is set */
+ EXPORT_SYMBOL(snd_sof_dsp_dbg_dump);
+@@ -997,7 +1001,8 @@ void snd_sof_handle_fw_exception(struct snd_sof_dev *sdev)
  
- /* global debug state set by SOF_DBG_ flags */
--extern int sof_core_debug;
- bool sof_debug_check_flag(int mask);
+ 	/* dump vital information to the logs */
+ 	snd_sof_ipc_dump(sdev);
+-	snd_sof_dsp_dbg_dump(sdev, SOF_DBG_DUMP_REGS | SOF_DBG_DUMP_MBOX);
++	snd_sof_dsp_dbg_dump(sdev, "Firmware exception",
++			     SOF_DBG_DUMP_REGS | SOF_DBG_DUMP_MBOX);
+ 	snd_sof_trace_notify_for_error(sdev);
+ }
+ EXPORT_SYMBOL(snd_sof_handle_fw_exception);
+diff --git a/sound/soc/sof/intel/hda-loader.c b/sound/soc/sof/intel/hda-loader.c
+index 8ef16f1082e3..33306d2023a7 100644
+--- a/sound/soc/sof/intel/hda-loader.c
++++ b/sound/soc/sof/intel/hda-loader.c
+@@ -88,6 +88,7 @@ static int cl_dsp_init(struct snd_sof_dev *sdev, int stream_tag)
+ 	const struct sof_intel_dsp_desc *chip = hda->desc;
+ 	unsigned int status;
+ 	unsigned long mask;
++	char *dump_msg;
+ 	u32 flags, j;
+ 	int ret;
+ 	int i;
+@@ -189,9 +190,12 @@ static int cl_dsp_init(struct snd_sof_dev *sdev, int stream_tag)
+ 	if (hda->boot_iteration == HDA_FW_BOOT_ATTEMPTS)
+ 		flags &= ~SOF_DBG_DUMP_OPTIONAL;
  
- /* max BARs mmaped devices can use */
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index ec59baf32699..e72dcae5e7ee 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -1695,12 +1695,12 @@ static int sof_widget_load_pipeline(struct snd_soc_component *scomp, int index,
- 		goto err;
- 	}
+-	snd_sof_dsp_dbg_dump(sdev, flags);
++	dump_msg = kasprintf(GFP_KERNEL, "Boot iteration failed: %d/%d",
++			     hda->boot_iteration, HDA_FW_BOOT_ATTEMPTS);
++	snd_sof_dsp_dbg_dump(sdev, dump_msg, flags);
+ 	hda_dsp_core_reset_power_down(sdev, chip->host_managed_cores_mask);
  
--	if (sof_core_debug & SOF_DBG_DISABLE_MULTICORE)
-+	if (sof_debug_check_flag(SOF_DBG_DISABLE_MULTICORE))
- 		pipeline->core = SOF_DSP_PRIMARY_CORE;
++	kfree(dump_msg);
+ 	return ret;
+ }
  
--	if (sof_core_debug & SOF_DBG_DYNAMIC_PIPELINES_OVERRIDE)
--		swidget->dynamic_pipeline_widget = sof_core_debug &
--			SOF_DBG_DYNAMIC_PIPELINES_ENABLE;
-+	if (sof_debug_check_flag(SOF_DBG_DYNAMIC_PIPELINES_OVERRIDE))
-+		swidget->dynamic_pipeline_widget =
-+			sof_debug_check_flag(SOF_DBG_DYNAMIC_PIPELINES_ENABLE);
+@@ -421,12 +425,11 @@ int hda_dsp_cl_boot_firmware(struct snd_sof_dev *sdev)
+ 	 */
+ 	hda->boot_iteration = HDA_FW_BOOT_ATTEMPTS;
+ 	ret = cl_copy_fw(sdev, stream);
+-	if (!ret) {
++	if (!ret)
+ 		dev_dbg(sdev->dev, "Firmware download successful, booting...\n");
+-	} else {
+-		snd_sof_dsp_dbg_dump(sdev, SOF_DBG_DUMP_PCI | SOF_DBG_DUMP_MBOX);
+-		dev_err(sdev->dev, "error: load fw failed ret: %d\n", ret);
+-	}
++	else
++		snd_sof_dsp_dbg_dump(sdev, "Firmware download failed",
++				     SOF_DBG_DUMP_PCI | SOF_DBG_DUMP_MBOX);
  
- 	dev_dbg(scomp->dev, "pipeline %s: period %d pri %d mips %d core %d frames %d dynamic %d\n",
- 		swidget->widget->name, pipeline->period, pipeline->priority,
-@@ -2295,7 +2295,7 @@ static int sof_widget_ready(struct snd_soc_component *scomp, int index,
+ cleanup:
+ 	/*
+diff --git a/sound/soc/sof/loader.c b/sound/soc/sof/loader.c
+index c04646647637..8977a65b5704 100644
+--- a/sound/soc/sof/loader.c
++++ b/sound/soc/sof/loader.c
+@@ -820,8 +820,8 @@ int snd_sof_run_firmware(struct snd_sof_dev *sdev)
+ 	/* boot the firmware on the DSP */
+ 	ret = snd_sof_dsp_run(sdev);
+ 	if (ret < 0) {
+-		dev_err(sdev->dev, "error: failed to start DSP\n");
+-		snd_sof_dsp_dbg_dump(sdev, SOF_DBG_DUMP_MBOX | SOF_DBG_DUMP_PCI);
++		snd_sof_dsp_dbg_dump(sdev, "Failed to start DSP",
++				     SOF_DBG_DUMP_MBOX | SOF_DBG_DUMP_PCI);
  		return ret;
  	}
  
--	if (sof_core_debug & SOF_DBG_DISABLE_MULTICORE)
-+	if (sof_debug_check_flag(SOF_DBG_DISABLE_MULTICORE))
- 		comp.core = SOF_DSP_PRIMARY_CORE;
+@@ -835,8 +835,8 @@ int snd_sof_run_firmware(struct snd_sof_dev *sdev)
+ 				 sdev->fw_state > SOF_FW_BOOT_IN_PROGRESS,
+ 				 msecs_to_jiffies(sdev->boot_timeout));
+ 	if (ret == 0) {
+-		dev_err(sdev->dev, "error: firmware boot failure\n");
+-		snd_sof_dsp_dbg_dump(sdev, SOF_DBG_DUMP_REGS | SOF_DBG_DUMP_MBOX |
++		snd_sof_dsp_dbg_dump(sdev, "Firmware boot failure due to timeout",
++				     SOF_DBG_DUMP_REGS | SOF_DBG_DUMP_MBOX |
+ 				     SOF_DBG_DUMP_TEXT | SOF_DBG_DUMP_PCI);
+ 		sof_set_fw_state(sdev, SOF_FW_BOOT_FAILED);
+ 		return -EIO;
+diff --git a/sound/soc/sof/ops.c b/sound/soc/sof/ops.c
+index 9abf7a8e55e0..edfd080a3e4f 100644
+--- a/sound/soc/sof/ops.c
++++ b/sound/soc/sof/ops.c
+@@ -171,12 +171,11 @@ void snd_sof_dsp_panic(struct snd_sof_dev *sdev, u32 offset, bool non_recoverabl
+ 	 * if all dumps should be printed
+ 	 */
+ 	if (non_recoverable || sof_debug_check_flag(SOF_DBG_PRINT_ALL_DUMPS)) {
+-		dev_err(sdev->dev, "DSP panic!\n");
+-
+ 		/* We want to see the DSP panic! */
+ 		sdev->dbg_dump_printed = false;
  
- 	swidget->core = comp.core;
-@@ -3542,7 +3542,7 @@ static int sof_complete(struct snd_soc_component *scomp)
+-		snd_sof_dsp_dbg_dump(sdev, SOF_DBG_DUMP_REGS | SOF_DBG_DUMP_MBOX);
++		snd_sof_dsp_dbg_dump(sdev, "DSP panic!",
++				     SOF_DBG_DUMP_REGS | SOF_DBG_DUMP_MBOX);
+ 		snd_sof_trace_notify_for_error(sdev);
  	}
+ }
+diff --git a/sound/soc/sof/ops.h b/sound/soc/sof/ops.h
+index bca7d35536e4..ffe7456e7713 100644
+--- a/sound/soc/sof/ops.h
++++ b/sound/soc/sof/ops.h
+@@ -274,7 +274,7 @@ snd_sof_dsp_set_power_state(struct snd_sof_dev *sdev,
+ }
  
- 	/* verify topology components loading including dynamic pipelines */
--	if (sof_core_debug & SOF_DBG_VERIFY_TPLG) {
-+	if (sof_debug_check_flag(SOF_DBG_VERIFY_TPLG)) {
- 		ret = sof_set_up_pipelines(sdev, true);
- 		if (ret < 0) {
- 			dev_err(sdev->dev, "error: topology verification failed %d\n", ret);
+ /* debug */
+-void snd_sof_dsp_dbg_dump(struct snd_sof_dev *sdev, u32 flags);
++void snd_sof_dsp_dbg_dump(struct snd_sof_dev *sdev, const char *msg, u32 flags);
+ 
+ static inline int snd_sof_debugfs_add_region_item(struct snd_sof_dev *sdev,
+ 		enum snd_sof_fw_blk_type blk_type, u32 offset, size_t size,
 -- 
 2.34.1
 
