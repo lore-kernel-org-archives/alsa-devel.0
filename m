@@ -4,72 +4,122 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C03B9C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Dec 2021 11:46:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E81EEC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Dec 2021 11:55:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 18C6218E2;
-	Thu, 23 Dec 2021 12:45:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 18C6218E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3A5F418DB;
+	Thu, 23 Dec 2021 12:54:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A5F418DB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640259983;
-	bh=DGLkQSnQa6hNT1VLaNoirSJoO1SizD2TmD/9S1mdHPY=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1640260504;
+	bh=+y0+WSOhCZkhZj6IvT97IeDTZ+mLmvMZbZ4bQmp0sT4=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MUZbIG8R1/NzmaT3HL6hYAvlSx1HGnSL68zQsxKmezXKw/oUdaEp0IRpLvbZEpRxW
-	 fpDZ1gVgSbyqnYSrRiqeWUghw6fGgh88pQmfPQGJj0OWrT0xZzJdJfos/Vo6fIWdfC
-	 A3ODuj8O1WuICmBMJc6LkcThg65Mr7WRN26LTscs=
+	b=AKmAVBn+RSJjyl2arR7DFT+Z19Tm9bKt+LfPKQm3F82rvYFoo+qaEB8da0YtDrYbO
+	 6izq1SlA1+ZlL8sLjoroEzT1XAWjEuM9SJ5x71kxuk8DlUdUFjXTS6mlNrmRYLWb7p
+	 KAFxELEOsbKtvpg4x3Ha48xZjpUcVD4MuCxrVQyQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A3E5EF80105;
-	Thu, 23 Dec 2021 12:45:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CFFCBF80115;
+	Thu, 23 Dec 2021 12:54:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0B914F80115; Thu, 23 Dec 2021 12:45:30 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F36C7F80084
- for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2021 12:45:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F36C7F80084
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="nRPdhyVc"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 598B7F8011C; Thu, 23 Dec 2021 12:54:12 +0100 (CET)
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com
+ (mail-mw2nam12on2052.outbound.protection.outlook.com [40.107.244.52])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id E2583B81F7B;
- Thu, 23 Dec 2021 11:45:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 030E2C36AEB;
- Thu, 23 Dec 2021 11:45:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1640259920;
- bh=DGLkQSnQa6hNT1VLaNoirSJoO1SizD2TmD/9S1mdHPY=;
- h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=nRPdhyVc86yJv1tqkkQ4SyektyoJTKnk4f9DKkPq6Kn6XcXHJqOvg2do+5JdBWBQi
- t2NHFFqzU4ohttSDFxX4UHKgV94uxEpvl+EFfLePbukzNYyEWgomcZYs9vCa0KRbyU
- tRgBNDVkcTTFp1HXeyolDngZpKeofxmQo8QeDP/4OK+aHiyhfWultY8zmxedzUIswc
- lnGfhtvXXgS/zZFqv4zcMwxcdkbSqURjfSpisoqC3pv9SKg/M+VK54RI8Zy1KJqxdI
- eFfDci+WihILu/BFOvZMIWc+5kF53nMTK6KOKUBvu+DcBAFthrhyEKlw6zb+Ibm47j
- UpB214KvHbOCg==
-Date: Thu, 23 Dec 2021 12:45:15 +0100
-From: Mauro Carvalho Chehab <mchehab@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 3/5] ASoC: Intel: add machine driver for SOF+ES8336
-Message-ID: <20211223124515.31096a6a@coco.lan>
-In-Reply-To: <137f321b-0be3-eeb2-b6f3-a88d687f7848@linux.intel.com>
-References: <20211004213512.220836-1-pierre-louis.bossart@linux.intel.com>
- <20211004213512.220836-4-pierre-louis.bossart@linux.intel.com>
- <20211121190035.2a5e3ad7@sal.lan>
- <137f321b-0be3-eeb2-b6f3-a88d687f7848@linux.intel.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 90D35F80104
+ for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2021 12:54:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90D35F80104
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com
+ header.b="kXjm0N6l"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ijIX6Iz2pBBXZcyaXsoWBWvU/V9x3cJ97G3yYcBjVs73yTHnrqDUYR8lKyE5ZoIxIJjCzugh4T5VWXhaVVPpue12+/dGL1su8lWAkFcqBYs6vJl3uF/uJYrVLAsf3pSWIN0GuNV3kpaTHPJ4SH8APWojIjSrIz5jSNUrv9L44AY67rcsSLPidTRRscSHzUmOK1uyznV3/NDXZu8oVecxWgvKpqJS1Pkj6gBjllgqDbGBkHILotII0z2xhKiADrXdekZqXJTRzs/vk92ROV3WXrnUfh955UOBhnWv4mEK+mAYdqW77w5oq8YwfiXZkSAxoYhrLlN8F/p83nMYHdQlcw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=JthUVBn/n9x7garHu4PkRdUcAg4FGaoozbAcDRTDcgU=;
+ b=couGccpC/XqKuUc0ef3FbvmF3IjX9CRiHGTf992YT9TgZQdRjKi7kic3BC6yi2qG7qUC3CJvlAHrCc4xlFT4MoOJZTjkdEHuXJq0ctZ3g83SA1cN+mPa5Jo3Cxy6k72BHYp245xP+ta9YyUJn2YuoU7Ruq8sEaHPTI/MApfn7QyBwnOmKsHRd4d6ln1rLU8BYjFDihQdCMEf5CtbGsVmQq3+NggPDa4XMW5B8EoJpQHsOHHkxAexD4cA0kwuCPvABplYeYZ8yyw7oRaUJ5RnpCAeZ158swnclyvAeHfWH+kQSDRh1WEcW0dviTqt1Dx+5U2w+SRC8KQVG00wTT/vXA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 12.22.5.238) smtp.rcpttodomain=suse.com smtp.mailfrom=nvidia.com; dmarc=pass
+ (p=reject sp=reject pct=100) action=none header.from=nvidia.com; dkim=none
+ (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JthUVBn/n9x7garHu4PkRdUcAg4FGaoozbAcDRTDcgU=;
+ b=kXjm0N6lMUTi0mC8Lsl8FAReePDUv6/ZSJ81oXZLmmqZsY83o+r0S1NMVSlChiuHl+mnyPPQoMgKiq3ryxmpnkjljIb/prml3CIPWywb3JkncA15vLi0P7cCFw4som0FWakwAby2nUbAFOIHSwrqa8ADw21M6+WmKASVOzBfwcSPrLwvFPYwFk84myP9IVEBGiTPvakfPpWdURDLmRb06GhKwIjI63bGfHq9h1ymhIid6T9mLKFEoqm3kLqXarQlGAy0JPFB8czrYCP502J9aXfBYnOrzukaT0bKWyNehPfa5WLdyHTFtldFm+/B2xtun8D96zdajvexN4KGUU9AlA==
+Received: from CO2PR04CA0079.namprd04.prod.outlook.com (2603:10b6:102:1::47)
+ by BN9PR12MB5180.namprd12.prod.outlook.com (2603:10b6:408:11d::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4801.17; Thu, 23 Dec
+ 2021 11:54:03 +0000
+Received: from CO1NAM11FT058.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:102:1:cafe::b0) by CO2PR04CA0079.outlook.office365.com
+ (2603:10b6:102:1::47) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4823.18 via Frontend
+ Transport; Thu, 23 Dec 2021 11:54:03 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 12.22.5.238)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 12.22.5.238 as permitted sender) receiver=protection.outlook.com;
+ client-ip=12.22.5.238; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (12.22.5.238) by
+ CO1NAM11FT058.mail.protection.outlook.com (10.13.174.164) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4823.18 via Frontend Transport; Thu, 23 Dec 2021 11:54:02 +0000
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by DRHQMAIL105.nvidia.com
+ (10.27.9.14) with Microsoft SMTP Server (TLS) id 15.0.1497.18;
+ Thu, 23 Dec 2021 11:54:02 +0000
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 23 Dec
+ 2021 11:54:01 +0000
+Received: from audio.nvidia.com (172.20.187.6) by mail.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
+ Transport; Thu, 23 Dec 2021 11:53:58 +0000
+From: Sameer Pujar <spujar@nvidia.com>
+To: <tiwai@suse.com>, <broonie@kernel.org>, <lgirdwood@gmail.com>,
+ <robh+dt@kernel.org>, <thierry.reding@gmail.com>, <perex@perex.cz>
+Subject: [PATCH v4 1/3] ALSA: hda/tegra: Fix Tegra194 HDA reset failure
+Date: Thu, 23 Dec 2021 17:23:49 +0530
+Message-ID: <1640260431-11613-2-git-send-email-spujar@nvidia.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1640260431-11613-1-git-send-email-spujar@nvidia.com>
+References: <1640260431-11613-1-git-send-email-spujar@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- tiwai@suse.de, Huajun Li <huajun.li@intel.com>, broonie@kernel.org,
- Bard Liao <yung-chuan.liao@linux.intel.com>
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 802b4ad0-d585-4524-0d20-08d9c60aea36
+X-MS-TrafficTypeDiagnostic: BN9PR12MB5180:EE_
+X-Microsoft-Antispam-PRVS: <BN9PR12MB518015FEB7D04C306BE57B53A77E9@BN9PR12MB5180.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7Y8oKu62bOUs4tBtGDMWKvWVYppqlfxlj7F43MiBgqrZwz9QcBbldOdDe+O214WXoeqYoBJqHkZT8SxU2TKChGpFftZdznEqNDNca4IUQ67aRXGV1JOGbhBW1PuaxaZG8/D1XehehU3QzjjaA14buCs1g6IMlTEQYYW9aqdyeuX8xMWWouRqJPeKm2mhquU19MiNkU771TjUDuSlKXMag5C26gD5LpvGSAwa9eLkKg569+s7XZx8RWre89eKjN4Nik93sxw6KKfEdTJunKKwVOHNyc+SbwXXwqd2uFBwUmCUk+OC9qM9FwRzktkj+mSUEEKgUY+mkoxAXpIX+y2whIc2UegdrCAWGha8ZM6L0iaD0oOjJrH/KLrKElgtUtvose6BHmWZKBrWnS9948ErzX1gcSXnVJdUu69tl6xWybVfbH+AluEwkCOkhAi2vxjRncuB/e+pIqwcud2jwD7VkHRoQHEH6OKHi+Ic7SPhW9PGc6S/1mLkBT0rSgiPalrCWRzP8B/TgEzwzY4BxgEOnjNJ0KC761R5gRmB7mF9dCosf+79A3AiZaj0rJfuuGB9E99vZ6fz7Y2xTgx6DSBSz5ktG2lQrdOD2UQi0D1VZTyIZIkO5sQl4SanmrOZnx03BUeqJ62DjnS9r3Q8yFlx4RmSYsfFhG/1y1eMbpLZTMW1SNLJ/KE8lybJHdyWDoXpjxwHfRV3TEa3eg5EkMLtpN4TE4+OOGOxExhTxGj3WS5+BwuGwYP5TSrA74c1QyOiStEH7iMveD8kzo28TU8tuEOpK0o+yARwmm/qbjPY/IQ=
+X-Forefront-Antispam-Report: CIP:12.22.5.238; CTRY:US; LANG:en; SCL:1; SRV:;
+ IPV:CAL; SFV:NSPM; H:mail.nvidia.com; PTR:InfoNoRecords; CAT:NONE;
+ SFS:(4636009)(36840700001)(46966006)(40470700002)(81166007)(5660300002)(4326008)(316002)(426003)(186003)(26005)(36860700001)(336012)(36756003)(6666004)(508600001)(2906002)(2616005)(40460700001)(83380400001)(7416002)(356005)(8936002)(54906003)(7696005)(47076005)(82310400004)(70206006)(8676002)(110136005)(70586007)(86362001)(36900700001);
+ DIR:OUT; SFP:1101; 
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Dec 2021 11:54:02.9613 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 802b4ad0-d585-4524-0d20-08d9c60aea36
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a; Ip=[12.22.5.238];
+ Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT058.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5180
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Sameer Pujar <spujar@nvidia.com>, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org, jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
+ digetx@gmail.com, mkumard@nvidia.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,93 +135,119 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Pierre-Louis,
+HDA regression is recently reported on Tegra194 based platforms.
+This happens because "hda2codec_2x" reset does not really exist
+in Tegra194 and it causes probe failure. All the HDA based audio
+tests fail at the moment. This underlying issue is exposed by
+commit c045ceb5a145 ("reset: tegra-bpmp: Handle errors in BPMP
+response") which now checks return code of BPMP command response.
+Fix this issue by skipping unavailable reset on Tegra194.
 
-Em Mon, 22 Nov 2021 10:45:35 -0600
-Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com> escreveu:
+Cc: stable@vger.kernel.org
+Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ sound/pci/hda/hda_tegra.c | 43 ++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 34 insertions(+), 9 deletions(-)
 
-> Hi Mauro,
-> 
-> >> Add machine driver to support APL/GLK/TGL platforms.
-> >> The TGL platform supports DMIC, APL and GLK do not.  
-> > 
-> > I just bought a Comet Lake notebook with ES8336, but I'm having a hard
-> > time to make audio work on it.  
-> 
-> Yes, we're aware of this design and we've tried to help. There's a
-> series of devices based on this I2C/I2S device, which is the exception
-> to the rule that all Windows-based designs are based on HDaudio or
-> SoundWire. Intel wasn't informed of this device so we we've added quirks
-> device after device, as bug reports came in.
-> 
-> The CometLake enablement is tracked at
-> https://github.com/thesofproject/linux/issues/3248
-> 
-> I will upstream the two quirks for CometLake later today.
-> 
-> The latest hacky recipe to get the driver to probe is at
-> https://github.com/thesofproject/linux/pull/3107
-> 
-> There is still work to do for the 'topology' part. The comment
-> https://github.com/thesofproject/linux/issues/3248#issuecomment-959573378 has
-> a tar file with 3 possible options for the I2S/SSP connection.
-> 
-> The remaining part will be the codec driver, which is problematic for
-> now, we're still waiting for updates from the vendor and it's unclear
-> if/when they will be submitted.
+diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
+index ea700395..773f490 100644
+--- a/sound/pci/hda/hda_tegra.c
++++ b/sound/pci/hda/hda_tegra.c
+@@ -68,14 +68,20 @@
+  */
+ #define TEGRA194_NUM_SDO_LINES	  4
+ 
++struct hda_tegra_soc {
++	bool has_hda2codec_2x_reset;
++};
++
+ struct hda_tegra {
+ 	struct azx chip;
+ 	struct device *dev;
+-	struct reset_control *reset;
++	struct reset_control_bulk_data resets[3];
+ 	struct clk_bulk_data clocks[3];
++	unsigned int nresets;
+ 	unsigned int nclocks;
+ 	void __iomem *regs;
+ 	struct work_struct probe_work;
++	const struct hda_tegra_soc *soc;
+ };
+ 
+ #ifdef CONFIG_PM
+@@ -170,7 +176,7 @@ static int __maybe_unused hda_tegra_runtime_resume(struct device *dev)
+ 	int rc;
+ 
+ 	if (!chip->running) {
+-		rc = reset_control_assert(hda->reset);
++		rc = reset_control_bulk_assert(hda->nresets, hda->resets);
+ 		if (rc)
+ 			return rc;
+ 	}
+@@ -187,7 +193,7 @@ static int __maybe_unused hda_tegra_runtime_resume(struct device *dev)
+ 	} else {
+ 		usleep_range(10, 100);
+ 
+-		rc = reset_control_deassert(hda->reset);
++		rc = reset_control_bulk_deassert(hda->nresets, hda->resets);
+ 		if (rc)
+ 			return rc;
+ 	}
+@@ -427,9 +433,17 @@ static int hda_tegra_create(struct snd_card *card,
+ 	return 0;
+ }
+ 
++static const struct hda_tegra_soc tegra30_data = {
++	.has_hda2codec_2x_reset = true,
++};
++
++static const struct hda_tegra_soc tegra194_data = {
++	.has_hda2codec_2x_reset = false,
++};
++
+ static const struct of_device_id hda_tegra_match[] = {
+-	{ .compatible = "nvidia,tegra30-hda" },
+-	{ .compatible = "nvidia,tegra194-hda" },
++	{ .compatible = "nvidia,tegra30-hda", .data = &tegra30_data },
++	{ .compatible = "nvidia,tegra194-hda", .data = &tegra194_data },
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, hda_tegra_match);
+@@ -449,6 +463,8 @@ static int hda_tegra_probe(struct platform_device *pdev)
+ 	hda->dev = &pdev->dev;
+ 	chip = &hda->chip;
+ 
++	hda->soc = of_device_get_match_data(&pdev->dev);
++
+ 	err = snd_card_new(&pdev->dev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1,
+ 			   THIS_MODULE, 0, &card);
+ 	if (err < 0) {
+@@ -456,11 +472,20 @@ static int hda_tegra_probe(struct platform_device *pdev)
+ 		return err;
+ 	}
+ 
+-	hda->reset = devm_reset_control_array_get_exclusive(&pdev->dev);
+-	if (IS_ERR(hda->reset)) {
+-		err = PTR_ERR(hda->reset);
++	hda->resets[hda->nresets++].id = "hda";
++	hda->resets[hda->nresets++].id = "hda2hdmi";
++	/*
++	 * "hda2codec_2x" reset is not present on Tegra194. Though DT would
++	 * be updated to reflect this, but to have backward compatibility
++	 * below is necessary.
++	 */
++	if (hda->soc->has_hda2codec_2x_reset)
++		hda->resets[hda->nresets++].id = "hda2codec_2x";
++
++	err = devm_reset_control_bulk_get_exclusive(&pdev->dev, hda->nresets,
++						    hda->resets);
++	if (err)
+ 		goto out_free;
+-	}
+ 
+ 	hda->clocks[hda->nclocks++].id = "hda";
+ 	hda->clocks[hda->nclocks++].id = "hda2hdmi";
+-- 
+2.7.4
 
-Sorry for taking a long time to answer. I lost access to the notebook,
-due to a travel.
-
-I applied all "es8336" branches from your tree altogether:
-
-	8af10fc5d7f4 (HEAD) Merge remote-tracking branch 'plbossart/fix/es8336-codec' into HEAD
-	f47dc3daf1da Merge remote-tracking branch 'plbossart/fix/es8336-cml' into HEAD
-	b8df4ae02c0a Merge remote-tracking branch 'plbossart/fix/es8336-acpi-hid' into HEAD
-	5e149dc4d6e9 (plbossart/fix/sof-es8336-quirk) fixup! ALSA: intel-nhlt: add helper to detect SSP link mask
-
-Unfortunately, it is failing to modprobe the SOF driver:
-
-[    3.479810] snd_hda_intel 0000:00:1f.3: DSP detected with PCI class/subclass/prog-if info 0x040100
-[    3.479828] snd_hda_intel 0000:00:1f.3: Digital mics found on Skylake+ platform, using SOF driver
-[    3.479830] [681] snd_hda_intel 0000:00:1f.3: HDAudio driver not selected, aborting probe
-[    3.655569] snd_soc_skl 0000:00:1f.3: DSP detected with PCI class/subclass/prog-if info 0x040100
-[    3.655587] snd_soc_skl 0000:00:1f.3: Digital mics found on Skylake+ platform, using SOF driver
-[    3.706810] RPC: Registered named UNIX socket transport module.
-[    3.730708] sof-audio-pci-intel-cnl 0000:00:1f.3: DSP detected with PCI class/subclass/prog-if info 0x040100
-[    3.730728] sof-audio-pci-intel-cnl 0000:00:1f.3: Digital mics found on Skylake+ platform, using SOF driver
-[    3.730952] sof-audio-pci-intel-cnl 0000:00:1f.3: enabling device (0000 -> 0002)
-[    3.731103] sof-audio-pci-intel-cnl 0000:00:1f.3: DSP detected with PCI class/subclass/prog-if 0x040100
-[    3.731204] sof-audio-pci-intel-cnl 0000:00:1f.3: bound 0000:00:02.0 (ops i915_audio_component_bind_ops [i915])
-[    3.741143] sof-audio-pci-intel-cnl 0000:00:1f.3: use msi interrupt mode
-[    3.791894] [80] sof-audio-pci-intel-cnl 0000:00:1f.3: intel_nhlt_get_dmic_geo: found 2 format definitions
-[    3.791898] [80] sof-audio-pci-intel-cnl 0000:00:1f.3: intel_nhlt_get_dmic_geo: max channels found 2
-[    3.791900] [80] sof-audio-pci-intel-cnl 0000:00:1f.3: intel_nhlt_get_dmic_geo: Array with 2 dmics
-[    3.791902] [80] sof-audio-pci-intel-cnl 0000:00:1f.3: intel_nhlt_get_dmic_geo: dmic number 2 max_ch 2
-[    3.791904] sof-audio-pci-intel-cnl 0000:00:1f.3: hda codecs found, mask 4
-[    3.793102] sof-audio-pci-intel-cnl 0000:00:1f.3: Firmware info: version 1:9:2-e096c
-[    3.793108] sof-audio-pci-intel-cnl 0000:00:1f.3: Firmware: ABI 3:20:0 Kernel ABI 3:18:0
-[    3.793110] sof-audio-pci-intel-cnl 0000:00:1f.3: warn: FW ABI is more recent than kernel
-[    3.793114] sof-audio-pci-intel-cnl 0000:00:1f.3: unknown sof_ext_man header type 3 size 0x30
-[    3.852602] Bluetooth: BNEP socket layer initialized
-[    3.891581] sof-audio-pci-intel-cnl 0000:00:1f.3: Firmware info: version 1:9:2-e096c
-[    3.891585] sof-audio-pci-intel-cnl 0000:00:1f.3: Firmware: ABI 3:20:0 Kernel ABI 3:18:0
-[    3.891588] sof-audio-pci-intel-cnl 0000:00:1f.3: warn: FW ABI is more recent than kernel
-[    3.901310] sof-essx8336 sof-essx8336: quirk SSP2
-[    3.903162] sof-audio-pci-intel-cnl 0000:00:1f.3: Topology: ABI 3:20:0 Kernel ABI 3:18:0
-[    3.903167] sof-audio-pci-intel-cnl 0000:00:1f.3: warn: topology ABI is more recent than kernel
-[    3.903180] sof-audio-pci-intel-cnl 0000:00:1f.3: error: can't connect DAI SSP0.OUT stream SSP0-Codec
-[    3.903182] sof-audio-pci-intel-cnl 0000:00:1f.3: error: failed to add widget id 0 type 27 name : SSP0.OUT stream SSP0-Codec
-[    3.903184] sof-essx8336 sof-essx8336: ASoC: failed to load widget SSP0.OUT
-[    3.903185] sof-essx8336 sof-essx8336: ASoC: topology: could not load header: -22
-[    3.903187] sof-audio-pci-intel-cnl 0000:00:1f.3: error: tplg component load failed -22
-[    3.903191] sof-audio-pci-intel-cnl 0000:00:1f.3: error: failed to load DSP topology -22
-[    3.903193] sof-audio-pci-intel-cnl 0000:00:1f.3: ASoC: error at snd_soc_component_probe on 0000:00:1f.3: -22
-[    3.903201] sof-essx8336 sof-essx8336: ASoC: failed to instantiate card -22
-[    3.903302] sof-essx8336 sof-essx8336: snd_soc_register_card failed: -22
-[    3.903304] sof-essx8336: probe of sof-essx8336 failed with error -22
-
-Any hints about how to fix the topology issues on it?
-
-Thanks,
-Mauro
