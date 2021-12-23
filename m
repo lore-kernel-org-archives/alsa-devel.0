@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8F5BC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Dec 2021 11:42:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9DC5C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Dec 2021 11:42:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F1B0418D6;
-	Thu, 23 Dec 2021 12:41:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F1B0418D6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 11DB718C7;
+	Thu, 23 Dec 2021 12:41:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 11DB718C7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640259746;
-	bh=Ge62tpfRSlEvvinNhAXRV1hWm2EHQvHlD6bCK/SUGbs=;
+	s=default; t=1640259763;
+	bh=EkqVJs/khj++KhLgjxQZWW4O10AXGkFwnAyS+jVQHPs=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jd1PoDiSKl736HtHsWW6DwEsRzOE5082YOy0lE9ccwsM0R/n02PZr02f1XAgro8jJ
-	 FElh3AqCW9sdODXE5Jhxemc7rQvTVYuRhIuKtmGybjS9yuV5sdO7keqfwidGogoskl
-	 vjV3abIVxM/FxlnHrLlK9pVYM2xYDyKM2HWPKpmY=
+	b=hloN5/qY6ncFdN/eHIy/gnOMyE6PKHc2Wni6rn5pklH9udK14mW+3Ec/UegPRHRsh
+	 tJWzJlVBcskM8RhkW/sV0eN1ySJyDhj2QPTi5GNLIwqQk+m64hBQH1uNcTh5XAwHsW
+	 kFveG1wmOq95SZKjmciDpSPpyh/am5dn8EnpJhgM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3E045F80587;
+	by alsa1.perex.cz (Postfix) with ESMTP id BCFD5F80589;
 	Thu, 23 Dec 2021 12:37:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2DCC8F80553; Thu, 23 Dec 2021 12:37:03 +0100 (CET)
+ id 45457F80571; Thu, 23 Dec 2021 12:37:05 +0100 (CET)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DD12CF80551
- for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2021 12:36:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD12CF80551
+ by alsa1.perex.cz (Postfix) with ESMTPS id F422BF8054A
+ for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2021 12:36:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F422BF8054A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="BEX8V/5F"
+ header.b="iZKCfT4Q"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1640259412; x=1671795412;
+ t=1640259415; x=1671795415;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=Ge62tpfRSlEvvinNhAXRV1hWm2EHQvHlD6bCK/SUGbs=;
- b=BEX8V/5FFSgOmYMRhuzf+9ul7wPEnqyaBtDK0iQNXlQuYdTtjazqUWj4
- MW9tHeSgOmk1POqiiGqgwLd5awVrjf9wbWOBLxY4miMEq1F4Ok0ux033B
- 1Cf2Ok/NskrO4F+8mXcVFdckjRwBTEB5Vn/4FqJhxI8GoWAdVAkdv22Ku
- gNrJTY1Qszhlv4+nePfWXhrB5SsZG3hkOV55C+4r+DZDHi1+cgO+LPab6
- kiES5wgkE8SmOkgr7ezz3lr8peYADi6uebVjBjX9/aDyrqsQnGUCAWJhQ
- Jd1wHElfy8c7p5b7wCH74tlgqk4n3LLhabGJY+Ly8/8tlB3zchjScFKrI A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10206"; a="304180845"
-X-IronPort-AV: E=Sophos;i="5.88,229,1635231600"; d="scan'208";a="304180845"
+ bh=EkqVJs/khj++KhLgjxQZWW4O10AXGkFwnAyS+jVQHPs=;
+ b=iZKCfT4QdX5KEThb9YCvBp2clnxlNyxuA8Gxc1rPq7jE4XpII/xaEi/o
+ 65p5ZH89zZEOqvpLGUlqvqkEFkCY75mSVsHwz0zbgAuw70Ap9SPAkMOrj
+ RX34pGaUQQdcJbiyMkD0dvnnhIK/UdmsT/gCd9RYQwLxhwLyOnJaGnspZ
+ P2oJAq9L6nRFnTYHBDjzsNtKYg9tQT1GuWNs61HTNx6FEq/LUvaTehh2m
+ zaCfacEiAF3bunUyZb6hlL4XZiHZ2UW2CavW9PKmG8uQBlxeE959REfd6
+ SSzqyZMIKQrnhQLn3QKeOGAEzgDGwXL/IHxoZUSatET3UebtCJi2GVsFQ g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10206"; a="304180868"
+X-IronPort-AV: E=Sophos;i="5.88,229,1635231600"; d="scan'208";a="304180868"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Dec 2021 03:36:43 -0800
-X-IronPort-AV: E=Sophos;i="5.88,229,1635231600"; d="scan'208";a="522065204"
+ 23 Dec 2021 03:36:53 -0800
+X-IronPort-AV: E=Sophos;i="5.88,229,1635231600"; d="scan'208";a="522065263"
 Received: from gcatala-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.251.214.126])
  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Dec 2021 03:36:41 -0800
+ 23 Dec 2021 03:36:51 -0800
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
-Subject: [PATCH 14/20] ASoc: SOF: core: Update the FW boot state transition
- diagram
-Date: Thu, 23 Dec 2021 13:36:22 +0200
-Message-Id: <20211223113628.18582-15-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 18/20] ASoC: SOF: Add clarifying comments for sof_core_debug
+ and DSP dump flags
+Date: Thu, 23 Dec 2021 13:36:26 +0200
+Message-Id: <20211223113628.18582-19-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20211223113628.18582-1-peter.ujfalusi@linux.intel.com>
 References: <20211223113628.18582-1-peter.ujfalusi@linux.intel.com>
@@ -87,79 +87,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Update the state flow diagram to reflect the current implementation.
+Update the comment for the global SOF level debug flags and add one for
+the flags used to control the DSP dump functionality.
+
+Document the expected behavior when the SOF_DBG_DUMP_OPTIONAL is passed
+for the DSP dump:
+Only print the dump if SOF_DBG_PRINT_ALL_DUMPS is set
+Print must use KERN_DEBUG log level
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Chao Song <chao.song@intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/core.c | 52 ++++++++++++++++++++++----------------------
- 1 file changed, 26 insertions(+), 26 deletions(-)
+ sound/soc/sof/sof-priv.h | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
-index aa7a721f34e4..bc3d7192bdda 100644
---- a/sound/soc/sof/core.c
-+++ b/sound/soc/sof/core.c
-@@ -114,32 +114,32 @@ EXPORT_SYMBOL(snd_sof_get_status);
- /*
-  *			FW Boot State Transition Diagram
-  *
-- *    +-----------------------------------------------------------------------+
-- *    |									      |
-- * ------------------	     ------------------				      |
-- * |		    |	     |		      |				      |
-- * |   BOOT_FAILED  |	     |  READY_FAILED  |-------------------------+     |
-- * |		    |	     |	              |				|     |
-- * ------------------	     ------------------				|     |
-- *	^			    ^					|     |
-- *	|			    |					|     |
-- * (FW Boot Timeout)		(FW_READY FAIL)				|     |
-- *	|			    |					|     |
-- *	|			    |					|     |
-- * ------------------		    |		   ------------------	|     |
-- * |		    |		    |		   |		    |	|     |
-- * |   IN_PROGRESS  |---------------+------------->|    COMPLETE    |	|     |
-- * |		    | (FW Boot OK)   (FW_READY OK) |		    |	|     |
-- * ------------------				   ------------------	|     |
-- *	^						|		|     |
-- *	|						|		|     |
-- * (FW Loading OK)			       (System Suspend/Runtime Suspend)
-- *	|						|		|     |
-- *	|						|		|     |
-- * ------------------		------------------	|		|     |
-- * |		    |		|		 |<-----+		|     |
-- * |   PREPARE	    |		|   NOT_STARTED  |<---------------------+     |
-- * |		    |		|		 |<---------------------------+
-+ *    +----------------------------------------------------------------------+
-+ *    |									     |
-+ * ------------------	     ------------------				     |
-+ * |		    |	     |		      |				     |
-+ * |   BOOT_FAILED  |<-------|  READY_FAILED  |				     |
-+ * |		    |<--+    |	              |	   ------------------	     |
-+ * ------------------	|    ------------------	   |		    |	     |
-+ *	^		|	    ^		   |	CRASHED	    |---+    |
-+ *	|		|	    |		   |		    |	|    |
-+ * (FW Boot Timeout)	|	(FW_READY FAIL)	   ------------------	|    |
-+ *	|		|	    |		     ^			|    |
-+ *	|		|	    |		     |(DSP Panic)	|    |
-+ * ------------------	|	    |		   ------------------	|    |
-+ * |		    |	|	    |		   |		    |	|    |
-+ * |   IN_PROGRESS  |---------------+------------->|    COMPLETE    |	|    |
-+ * |		    | (FW Boot OK)   (FW_READY OK) |		    |	|    |
-+ * ------------------	|			   ------------------	|    |
-+ *	^		|				|		|    |
-+ *	|		|				|		|    |
-+ * (FW Loading OK)	|			(System Suspend/Runtime Suspend)
-+ *	|		|				|		|    |
-+ *	|	(FW Loading Fail)			|		|    |
-+ * ------------------	|	------------------	|		|    |
-+ * |		    |	|	|		 |<-----+		|    |
-+ * |   PREPARE	    |---+	|   NOT_STARTED  |<---------------------+    |
-+ * |		    |		|		 |<--------------------------+
-  * ------------------		------------------
-  *    |	    ^			    |	   ^
-  *    |	    |			    |	   |
+diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
+index 5fbd4f29321a..087935192ce8 100644
+--- a/sound/soc/sof/sof-priv.h
++++ b/sound/soc/sof/sof-priv.h
+@@ -20,7 +20,7 @@
+ #include <uapi/sound/sof/fw.h>
+ #include <sound/sof/ext_manifest.h>
+ 
+-/* debug flags */
++/* Flag definitions used in sof_core_debug (sof_debug module parameter) */
+ #define SOF_DBG_ENABLE_TRACE	BIT(0)
+ #define SOF_DBG_RETAIN_CTX	BIT(1)	/* prevent DSP D3 on FW exception */
+ #define SOF_DBG_VERIFY_TPLG	BIT(2) /* verify topology during load */
+@@ -35,11 +35,13 @@
+ 							*/
+ #define SOF_DBG_PRINT_ALL_DUMPS		BIT(6) /* Print all ipc and dsp dumps */
+ 
++/* Flag definitions used for controlling the DSP dump behavior */
+ #define SOF_DBG_DUMP_REGS		BIT(0)
+ #define SOF_DBG_DUMP_MBOX		BIT(1)
+ #define SOF_DBG_DUMP_TEXT		BIT(2)
+ #define SOF_DBG_DUMP_PCI		BIT(3)
+-#define SOF_DBG_DUMP_OPTIONAL		BIT(4) /* only dump if SOF_DBG_PRINT_ALL_DUMPS is set */
++/* Output this dump (at the DEBUG level) only when SOF_DBG_PRINT_ALL_DUMPS is set */
++#define SOF_DBG_DUMP_OPTIONAL		BIT(4)
+ 
+ /* global debug state set by SOF_DBG_ flags */
+ bool sof_debug_check_flag(int mask);
 -- 
 2.34.1
 
