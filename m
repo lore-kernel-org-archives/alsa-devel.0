@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8FA6DC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Dec 2021 11:38:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21AFAC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Dec 2021 11:38:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DBF061832;
-	Thu, 23 Dec 2021 12:37:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DBF061832
+	by alsa0.perex.cz (Postfix) with ESMTPS id 427A21820;
+	Thu, 23 Dec 2021 12:37:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 427A21820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640259483;
-	bh=n3U/5UEy7DTiAItrGuJ7MEu3Uq5ZBPWazjtLpsqj6uk=;
+	s=default; t=1640259499;
+	bh=84tANAwaci9fOct4dRZrbogwqVXaKFDkSqT4hZajzhU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BcLSlmuUN+8CdTq9XTogCcOA8bYAEINyNb8Y2y+7ubEgVg2NGmT2mDz/ZA/exLoLq
-	 6bISgPYHDHkbHdu3KcBqYPxm40nfThIwCA8x1lNhcgxilv4JY5RQND1jYedgSdkzPn
-	 LezxTEieTkGWEt98Dl7vMNLZ0J/XBscwLO6kTqVM=
+	b=PuW3dBEQijiMwcDces4npjt+ZWBZ/WIQl8gxC3WTmPQI3NrRnq3BpV5CWh9Es+ej8
+	 keKbqX75NUY5XHhW0QRNgY1GFSzZZdfOwo37b2leiKrw4nZZJPAs+s9bK9wi15BNpB
+	 IjbObdJf83IgzWb6QAHGvTcHN5WpTF7V35ucoZnI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 27436F804EC;
-	Thu, 23 Dec 2021 12:36:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A2897F80507;
+	Thu, 23 Dec 2021 12:36:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 28B47F804E6; Thu, 23 Dec 2021 12:36:27 +0100 (CET)
+ id 2528EF804F2; Thu, 23 Dec 2021 12:36:28 +0100 (CET)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 392D6F800AF
- for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2021 12:36:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 392D6F800AF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7A469F80115
+ for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2021 12:36:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A469F80115
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="WBhmhSr4"
+ header.b="AVJOOcXa"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1640259380; x=1671795380;
+ t=1640259382; x=1671795382;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=n3U/5UEy7DTiAItrGuJ7MEu3Uq5ZBPWazjtLpsqj6uk=;
- b=WBhmhSr4bCOIHDIHXMlIvyp1DU9cLX0fYN06VmwAelG2bpOh5qbG3LXs
- SwvT1wQGHXrinuuzKxJmFAV9KOrlvs8GhVg25xRq+5nxz8d5OWVL5+29m
- hxiMpbR89Q06wwHQEixvburX9liYPGPY+DGoQLdt1Aza85MrCEPtKbcqQ
- sp9RMQOlREo9qMCUp803cWVWsad5YaNz0005ggGokaZHt/NWxkQhlzSRZ
- RUvXlBguD40v7t52caO0GbrR6+klupYWApikZlHSmv9jMd8fQ14cQ9f6D
- uwdwUZlwNOzYb6e3kj+joKYFggMq5uJCC623/PNrNloCFbofybq5+UDjY w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10206"; a="304180785"
-X-IronPort-AV: E=Sophos;i="5.88,229,1635231600"; d="scan'208";a="304180785"
+ bh=84tANAwaci9fOct4dRZrbogwqVXaKFDkSqT4hZajzhU=;
+ b=AVJOOcXaVGAH9Azv9XYLhEHQTcdrZIZxysMMm5+eKcQSlQVVVt2X6DhX
+ PLqfuqZanZ3GzvnK491EYKlw8I/2F94xri0v5jsHExLcSb7LfqrPnJF+o
+ +9T7HjSVk+BnCOX7HYLYufjoluMUv88Nmv8aBxzWz9YF4MeEOuSl+k0J6
+ 5Ig7ck8kePKevLQnrrh6bK7zuohi2wHy6+32JZPf1g+R/LsXIH/6QOcdP
+ byIIx42eNGpkV9BCGlwZ/Q6gHMd97qbeTgxFUgqg5vzBKFH2F1+edDacA
+ 6Dw9xD3lxfpCzl88ldDdcQKZaqc79rlIA8oQY/HOQX2BffPUFgJDUI4SD Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10206"; a="304180787"
+X-IronPort-AV: E=Sophos;i="5.88,229,1635231600"; d="scan'208";a="304180787"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Dec 2021 03:36:11 -0800
-X-IronPort-AV: E=Sophos;i="5.88,229,1635231600"; d="scan'208";a="522065040"
+ 23 Dec 2021 03:36:14 -0800
+X-IronPort-AV: E=Sophos;i="5.88,229,1635231600"; d="scan'208";a="522065049"
 Received: from gcatala-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.251.214.126])
  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Dec 2021 03:36:09 -0800
+ 23 Dec 2021 03:36:11 -0800
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
-Subject: [PATCH 01/20] ASoC: SOF: ops: Use dev_warn() if the panic offsets
- differ
-Date: Thu, 23 Dec 2021 13:36:09 +0200
-Message-Id: <20211223113628.18582-2-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 02/20] ASoC: SOF: Intel: hda-loader: Avoid re-defining the
+ HDA_FW_BOOT_ATTEMPTS
+Date: Thu, 23 Dec 2021 13:36:10 +0200
+Message-Id: <20211223113628.18582-3-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20211223113628.18582-1-peter.ujfalusi@linux.intel.com>
 References: <20211223113628.18582-1-peter.ujfalusi@linux.intel.com>
@@ -87,54 +87,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Catch the cases when the stored sdev->dsp_oops_offset and the offset
-received via the panic message differs and print a warning, but keep using
-the dsp_oops_offset for the oops query.
+HDA_FW_BOOT_ATTEMPTS is defined in hda.h, do not define it again locally
+in hda-loader.c
+
+At the same time correct the indentation for the define in hda.h
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- sound/soc/sof/ops.c | 21 +++++++++++++--------
- 1 file changed, 13 insertions(+), 8 deletions(-)
+ sound/soc/sof/intel/hda-loader.c | 1 -
+ sound/soc/sof/intel/hda.h        | 2 +-
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/sof/ops.c b/sound/soc/sof/ops.c
-index 160b88a2d59f..1d6a95a00cf5 100644
---- a/sound/soc/sof/ops.c
-+++ b/sound/soc/sof/ops.c
-@@ -144,18 +144,23 @@ EXPORT_SYMBOL(snd_sof_dsp_update_bits_forced);
+diff --git a/sound/soc/sof/intel/hda-loader.c b/sound/soc/sof/intel/hda-loader.c
+index bfb0e374ebab..5f5f396f4fb8 100644
+--- a/sound/soc/sof/intel/hda-loader.c
++++ b/sound/soc/sof/intel/hda-loader.c
+@@ -23,7 +23,6 @@
+ #include "../ops.h"
+ #include "hda.h"
  
- void snd_sof_dsp_panic(struct snd_sof_dev *sdev, u32 offset)
- {
--	dev_err(sdev->dev, "error : DSP panic!\n");
--
- 	/*
--	 * check if DSP is not ready and did not set the dsp_oops_offset.
--	 * if the dsp_oops_offset is not set, set it from the panic message.
--	 * Also add a check to memory window setting with panic message.
-+	 * if DSP is not ready and the dsp_oops_offset is not yet set, use the
-+	 * offset from the panic message.
- 	 */
- 	if (!sdev->dsp_oops_offset)
- 		sdev->dsp_oops_offset = offset;
--	else
--		dev_dbg(sdev->dev, "panic: dsp_oops_offset %zu offset %d\n",
--			sdev->dsp_oops_offset, offset);
-+
-+	/*
-+	 * Print warning if the offset from the panic message differs from
-+	 * dsp_oops_offset
-+	 */
-+	if (sdev->dsp_oops_offset != offset)
-+		dev_warn(sdev->dev,
-+			 "%s: dsp_oops_offset %zu differs from panic offset %u\n",
-+			 __func__, sdev->dsp_oops_offset, offset);
-+
-+	dev_err(sdev->dev, "DSP panic!\n");
+-#define HDA_FW_BOOT_ATTEMPTS	3
+ #define HDA_CL_STREAM_FORMAT 0x40
  
- 	/* We want to see the DSP panic! */
- 	sdev->dbg_dump_printed = false;
+ static struct hdac_ext_stream *cl_stream_prepare(struct snd_sof_dev *sdev, unsigned int format,
+diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
+index 5b4d59647a1d..03a6bb7a165c 100644
+--- a/sound/soc/sof/intel/hda.h
++++ b/sound/soc/sof/intel/hda.h
+@@ -273,7 +273,7 @@
+ #define BXT_D0I3_DELAY 5000
+ 
+ #define FW_CL_STREAM_NUMBER		0x1
+-#define HDA_FW_BOOT_ATTEMPTS	3
++#define HDA_FW_BOOT_ATTEMPTS		3
+ 
+ /* ADSPCS - Audio DSP Control & Status */
+ 
 -- 
 2.34.1
 
