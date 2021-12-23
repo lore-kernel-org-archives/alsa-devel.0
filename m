@@ -4,66 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38D0AC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Dec 2021 11:37:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BED1C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Dec 2021 11:37:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 327BC17B7;
-	Thu, 23 Dec 2021 12:36:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 327BC17B7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4983F1831;
+	Thu, 23 Dec 2021 12:36:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4983F1831
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640259433;
-	bh=M0IwaPhl3BqiEdRYfE8bly7TbYhb9CatK8IH7aOpS70=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=mmazpl7wvQlM14UJbBSFocPFFqEWDlMuDvc5S6Y7mz53aqr/IZtX21Ip0J/Zv0y2i
-	 2I3EEEIocbVpcthLVtrrNYzzGDdmvCc7GKw8M/lUSQbDww9cggcyqcOIl/mck+9ir2
-	 279ePcCX/Nz3/jQNBpW0F0och3gIw2hzn80hAvlo=
+	s=default; t=1640259469;
+	bh=i4OwgT1fu4jT6m6rkEuzscE4mGGtiitjaiemkrgSMbg=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=a9HGa0QrASEyle3r+sMMJXaEQYhv5DPLARi2K0+JCyLzA4MO3k6e8e4/A9yy6XYju
+	 88Uu2uer3wLARvtezV2Jv5C2CiFkXWgn6KlRKjdf45IYlefXaB/4rMXG29GWwDS0oU
+	 XPWPJJibIFfT2A2XpQtOYrNIBQZ0hwzMNqw3Or9Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BAF54F80105;
-	Thu, 23 Dec 2021 12:36:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6E7BCF804E4;
+	Thu, 23 Dec 2021 12:36:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 68498F80084; Thu, 23 Dec 2021 12:36:21 +0100 (CET)
+ id 6EA83F804E4; Thu, 23 Dec 2021 12:36:25 +0100 (CET)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DA9C9F80084
- for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2021 12:36:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA9C9F80084
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0FD2FF80104
+ for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2021 12:36:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0FD2FF80104
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="QEKR6JwK"
+ header.b="VqX9yJpO"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1640259379; x=1671795379;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=M0IwaPhl3BqiEdRYfE8bly7TbYhb9CatK8IH7aOpS70=;
- b=QEKR6JwK+EhsYFjtojWZRoUnTSUU5Gl+nW8IeFg9VhWZe/PZ5H82KWCh
- 8KMZVZjlHIsOESfYZxQN409uBoUqYR3XFYCRfAqX+9KjeBMpf3EkWWiMo
- +vpdvvKDrho6RaFgbc/2sRsfSyfQXUcSmymz14qLV5FVVeCvgsW07rP2T
- KT6CZEI+UENtaVFmLnGleorvwT39c43saNt5deHJFHcVb/OaF3yDrr/zx
- Q61sPb98aqSZNhyL7h4+zTx4C7SSkMJZ01OHfPlZohpNBrg9fId2zypL4
- mO9SdVkxCO47lDZqVQCaXhVVXkHzM63sMIL6wI6rH24IOiw6rRh0kywVY w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10206"; a="304180784"
-X-IronPort-AV: E=Sophos;i="5.88,229,1635231600"; d="scan'208";a="304180784"
+ t=1640259381; x=1671795381;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=i4OwgT1fu4jT6m6rkEuzscE4mGGtiitjaiemkrgSMbg=;
+ b=VqX9yJpO6bdpQzFdGDuuFfo3TMnTbd8jx2LXfaCdf7AUoSTSihvoui+M
+ TtZZwHp4bMdU6ZGH5Uu/IoC2+UHUzwIY7JdH+dKe9l71WHF/ZCJoE8+7w
+ vzTxKPeKAwGgKEgJmZv/tuW7+5s68qdKloiBSO2keFrdYpR+mmibYL4My
+ V4ciW79JSH2MK0kGLg7n3D5hcLZ4GYYXIYeSA4scV1m5kR4ROA1sEFvPX
+ pV9Zw/YnEWk45uMM1EO79q6uQFNvEyR/+yeyYYOmSwWomNG2MSQpqJRl/
+ ZlMQk1SyDWxZ85H202Vtj6bHtM+IzTJ4ooeze1e8JSlSs7dhW6grexGCM A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10206"; a="304180791"
+X-IronPort-AV: E=Sophos;i="5.88,229,1635231600"; d="scan'208";a="304180791"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Dec 2021 03:36:09 -0800
-X-IronPort-AV: E=Sophos;i="5.88,229,1635231600"; d="scan'208";a="522065028"
+ 23 Dec 2021 03:36:16 -0800
+X-IronPort-AV: E=Sophos;i="5.88,229,1635231600"; d="scan'208";a="522065061"
 Received: from gcatala-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.251.214.126])
  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Dec 2021 03:36:07 -0800
+ 23 Dec 2021 03:36:14 -0800
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
-Subject: [PATCH 00/20] ASoC: SOF: Re-visit firmware state and panic
- tracking/handling
-Date: Thu, 23 Dec 2021 13:36:08 +0200
-Message-Id: <20211223113628.18582-1-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 03/20] ASoC: SOF: core: Add simple wrapper to check flags in
+ sof_core_debug
+Date: Thu, 23 Dec 2021 13:36:11 +0200
+Message-Id: <20211223113628.18582-4-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20211223113628.18582-1-peter.ujfalusi@linux.intel.com>
+References: <20211223113628.18582-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
@@ -84,82 +87,57 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+The sof_debug_check_flag() can be used to check a flag or a combination of
+them in sof_core_debug.
 
-this series will improve how we are tracking the firmware's state to be able to
-avoid communication with it when it is not going to answer due to a panic and
-we will attempt to force power cycle the DSP to recover at the next runtime
-suspend time.
-
-The state handling brings in other improvements on the way the kernel reports
-errors and DSP panics to reduce the printed lines for normal users, but at the
-same time allowing developers (or for bug reports) to have more precise
-information available to track down the issue.
-
-We can now place messages easily in the correct debug level and not bound to the
-static ERROR for some of the print chains, causing excess amount or partial
-information to be printed, confusing users and machines (CI).
-
-I would have prefered to split this series up, but it was developed together to
-achieve a single goal to reduce the noise, but also provide the details we need
-to be able to rootcause issues.
-
-Regards,
-Peter
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
-Peter Ujfalusi (20):
-  ASoC: SOF: ops: Use dev_warn() if the panic offsets differ
-  ASoC: SOF: Intel: hda-loader: Avoid re-defining the
-    HDA_FW_BOOT_ATTEMPTS
-  ASoC: SOF: core: Add simple wrapper to check flags in sof_core_debug
-  ASoC: SOF: Use sof_debug_check_flag() instead of sof_core_debug
-    directly
-  ASoC: SOF: Add 'non_recoverable' parameter to snd_sof_dsp_panic()
-  ASoC: SOF: Add a 'message' parameter to snd_sof_dsp_dbg_dump()
-  ASoC: SOF: Introduce new firmware state: SOF_FW_CRASHED
-  ASoC: SOF: Introduce new firmware state: SOF_FW_BOOT_READY_OK
-  ASoC: SOF: Move the definition of enum snd_sof_fw_state to global
-    header
-  ASoC: SOF: Rename 'enum snd_sof_fw_state' to 'enum sof_fw_state'
-  ASoC: SOF: ipc: Only allow sending of an IPC in SOF_FW_BOOT_COMPLETE
-    state
-  ASoC: SOF: Set SOF_FW_BOOT_FAILED in case we have failure during boot
-  ASoC: SOF: pm: Force DSP off on suspend in BOOT_FAILED state also
-  ASoc: SOF: core: Update the FW boot state transition diagram
-  ASoC: SOF: ops: Always print DSP Panic message but use different
-    message
-  ASoC: SOF: dsp_arch_ops: add kernel log level parameter for oops and
-    stack
-  ASoC: SOF: Rename snd_sof_get_status() and add kernel log level
-    parameter
-  ASoC: SOF: Add clarifying comments for sof_core_debug and DSP dump
-    flags
-  ASoC: SOF: debug: Use DEBUG log level for optional prints
-  ASoC: SOF: Intel: hda: Use DEBUG log level for optional prints
+ sound/soc/sof/core.c     | 16 ++++++++++++++++
+ sound/soc/sof/sof-priv.h |  1 +
+ 2 files changed, 17 insertions(+)
 
- include/sound/sof.h              |  22 ++++++
- sound/soc/sof/core.c             | 119 +++++++++++++++++++------------
- sound/soc/sof/debug.c            |  35 +++++----
- sound/soc/sof/imx/imx-common.c   |   4 +-
- sound/soc/sof/imx/imx8.c         |   2 +-
- sound/soc/sof/imx/imx8m.c        |   2 +-
- sound/soc/sof/intel/atom.c       |   8 +--
- sound/soc/sof/intel/bdw.c        |   8 +--
- sound/soc/sof/intel/cnl.c        |  21 +++++-
- sound/soc/sof/intel/hda-ipc.c    |  19 ++++-
- sound/soc/sof/intel/hda-loader.c |  24 ++++---
- sound/soc/sof/intel/hda.c        |  20 +++---
- sound/soc/sof/intel/hda.h        |   2 +-
- sound/soc/sof/ipc.c              |   4 +-
- sound/soc/sof/loader.c           |  16 ++---
- sound/soc/sof/ops.c              |  47 ++++++++----
- sound/soc/sof/ops.h              |   4 +-
- sound/soc/sof/pm.c               |  10 +++
- sound/soc/sof/sof-priv.h         |  44 +++++-------
- sound/soc/sof/topology.c         |  12 ++--
- sound/soc/sof/xtensa/core.c      |  44 +++++++-----
- 21 files changed, 299 insertions(+), 168 deletions(-)
-
+diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
+index 40549cdd6d58..1224a7da053a 100644
+--- a/sound/soc/sof/core.c
++++ b/sound/soc/sof/core.c
+@@ -27,6 +27,22 @@ MODULE_PARM_DESC(sof_debug, "SOF core debug options (0x0 all off)");
+ #define TIMEOUT_DEFAULT_IPC_MS  500
+ #define TIMEOUT_DEFAULT_BOOT_MS 2000
+ 
++/**
++ * sof_debug_check_flag - check if a given flag(s) is set in sof_core_debug
++ * @mask: Flag or combination of flags to check
++ *
++ * Returns true if all bits set in mask is also set in sof_core_debug, otherwise
++ * false
++ */
++bool sof_debug_check_flag(int mask)
++{
++	if ((sof_core_debug & mask) == mask)
++		return true;
++
++	return false;
++}
++EXPORT_SYMBOL(sof_debug_check_flag);
++
+ /*
+  * FW Panic/fault handling.
+  */
+diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
+index 114882e4370f..35c5b2d6930b 100644
+--- a/sound/soc/sof/sof-priv.h
++++ b/sound/soc/sof/sof-priv.h
+@@ -43,6 +43,7 @@
+ 
+ /* global debug state set by SOF_DBG_ flags */
+ extern int sof_core_debug;
++bool sof_debug_check_flag(int mask);
+ 
+ /* max BARs mmaped devices can use */
+ #define SND_SOF_BARS	8
 -- 
 2.34.1
 
