@@ -4,72 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70680C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Dec 2021 17:19:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5591FC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Dec 2021 18:28:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7A6EA18D4;
-	Thu, 23 Dec 2021 18:18:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A6EA18D4
+	by alsa0.perex.cz (Postfix) with ESMTPS id ACA4917DC;
+	Thu, 23 Dec 2021 19:27:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ACA4917DC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640279970;
-	bh=Sk7H+nhdFE764xNL6pqceUv9O6Os6KdUst6P2k4cENc=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1640284088;
+	bh=4U8UtwVy0KszuMa67n1hL7aI5XZh6iDm1CqeBYOSGDU=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=T4dFbT+AQc6ouCRGSKiSDR6PRCkQHbL5yCD3w+YU2qjuRy8IT+IXKYnYoXIdn2lLL
-	 rGS/e2ZHiiPJE24ML3YyyC7/vVDKlOLS8ePwo5KPkzgJjIpCtuCUBl258b2UlsQtT4
-	 8CL8c2ULVd2R7ZOdgxTKkIpY8k+qCa/THJDxZg18=
+	b=Uctp1yJBvskNGZsnWkt24f4vAw48xdHuh5yueuLaqPY7p2l7Xrv64ROAtXRUbeubL
+	 gzXTNjVT+AaSoYTsI8AXwLjrHUMpnS3f4AOewirQTGZlxO3/Jh8eYjLIQp40qX45Iv
+	 FOIG9d1HKHKFgkaQBrxvrUdGxmKWuTuheZMmNJ5M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6117FF80153;
-	Thu, 23 Dec 2021 18:17:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 46FE2F80104;
+	Thu, 23 Dec 2021 19:27:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B95A3F804E6; Thu, 23 Dec 2021 18:17:52 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 7CA8AF80105; Thu, 23 Dec 2021 19:27:16 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 29737F80084
- for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2021 18:17:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 29737F80084
+ by alsa1.perex.cz (Postfix) with ESMTPS id 05E45F80084
+ for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2021 19:27:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05E45F80084
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="uYm3lRLk"
+ header.b="MCyLkLPZ"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 4ED5961EFE;
- Thu, 23 Dec 2021 17:17:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C0E7C36AE5;
- Thu, 23 Dec 2021 17:17:36 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 56B8061F04;
+ Thu, 23 Dec 2021 18:27:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 673BDC36AE5;
+ Thu, 23 Dec 2021 18:26:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1640279858;
- bh=Sk7H+nhdFE764xNL6pqceUv9O6Os6KdUst6P2k4cENc=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=uYm3lRLk2w/GkwN2NTWKady0B4TYkZeuXh2Ca5r4dUfvvdL8xI1kTMht9MyyjU6aT
- 4S2uYNg175qVLqdfA5PoDj08+cLMDhURFyovMknc72spMJcBC4GpOzV2bNN1rgevCl
- m5Fezpow35iK0MHHjH0oI3uEEnEU1pTgrjQLwy28q81PCmrltEhRl0E5BsQjk9eti8
- VVJzzoUmmbTsDv/p0WXwplBhXrfLo1zONlFBFxQ8kmKwILrr6BAgncdV7ejj5T/611
- sNzQI+vPFVVNtxka+RNewFZ23v4sqRg/r2gHrusn6ZgSbq24R6ZEXbjA/NLy0yypjB
- 1QTsnQVcL1noA==
+ s=k20201202; t=1640284021;
+ bh=4U8UtwVy0KszuMa67n1hL7aI5XZh6iDm1CqeBYOSGDU=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=MCyLkLPZupeIqlIzPLu8CFnZ+okNCpZea/S7RsWdAb/6lC1ohbhVoaPzCy9xgRnOb
+ 1N/yZGlSFEHdb2mvgGP9E2iKTm8Zaf+ZgwTm+FhjybeLoKStaLOYe+K7e8hYzesYPV
+ aZoG1CbP59GpsSL+K5SZtpYTAaOePATQyAbXQZuJKnCqV/LM/V7IbeDERfCet4E5b5
+ k8Xd276foRyBp/vjq2ZGHwA9hiByMtLnkQzMreRf3gPUc3NJ03xMttEeOSQsSojYLU
+ Vi1j61JokYUPtQ7Xmvr4WREO/21kPvbXmfDDdjzSABP3mzX0XmwOh6vp9GktK908xM
+ 6crW5tp4dxOwQ==
+Date: Thu, 23 Dec 2021 18:26:56 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
- Neil Armstrong <narmstrong@baylibre.com>,
- Alexander Stein <alexander.stein@mailbox.org>, David Airlie <airlied@linux.ie>,
- Rob Herring <robh+dt@kernel.org>, Kevin Hilman <khilman@baylibre.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Jerome Brunet <jbrunet@baylibre.com>
-In-Reply-To: <20211223122434.39378-1-alexander.stein@mailbox.org>
-References: <20211223122434.39378-1-alexander.stein@mailbox.org>
-Subject: Re: (subset) [PATCH 0/3] More amlogic sound-name-prefix DT fixes
-Message-Id: <164027985607.1292681.12642503043684144882.b4-ty@kernel.org>
-Date: Thu, 23 Dec 2021 17:17:36 +0000
+To: Bard Liao <yung-chuan.liao@linux.intel.com>
+Subject: Re: [PATCH 7/7] soundwire: intel: remove PDM support
+Message-ID: <YcS/cPb0UXsc9SWm@sirena.org.uk>
+References: <20211213054634.30088-1-yung-chuan.liao@linux.intel.com>
+ <20211213054634.30088-8-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- dri-devel@lists.freedesktop.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="oH+CFB7uVqhnu6IS"
+Content-Disposition: inline
+In-Reply-To: <20211213054634.30088-8-yung-chuan.liao@linux.intel.com>
+X-Cookie: A modem is a baudy house.
+Cc: alsa-devel@alsa-project.org, vinod.koul@linaro.org, tiwai@suse.de,
+ gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+ pierre-louis.bossart@linux.intel.com, vkoul@kernel.org,
+ srinivas.kandagatla@linaro.org, sanyog.r.kale@intel.com, bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,47 +84,72 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 23 Dec 2021 13:24:31 +0100, Alexander Stein wrote:
-> Following up [1] here are more fix for missing sound-name-prefix properties in
-> the arch/arm64/boot/dts/amlogic/ subtree.
-> 
-> [1] https://www.spinics.net/lists/devicetree/msg466125.html
-> 
-> Alexander Stein (3):
->   dt-bindings: display: meson-dw-hdmi: add missing sound-name-prefix
->     property
->   ASoC: dt-bindings: spdif-dit: add missing sound-name-prefix property
->   ASoC: dt-bindings: aiu: spdif-dit: add missing sound-name-prefix
->     property
-> 
-> [...]
 
-Applied to
+--oH+CFB7uVqhnu6IS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On Mon, Dec 13, 2021 at 01:46:34PM +0800, Bard Liao wrote:
+> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>=20
+> While the hardware supports PDM streams, this capability has never
+> been tested or enabled on any product, so this is dead-code. Let's
+> remove all this.
 
-Thanks!
+This doesn't build with current code, I'm guessing due to a Soundwire
+dependency I don't have:
 
-[2/3] ASoC: dt-bindings: spdif-dit: add missing sound-name-prefix property
-      commit: c6cef35bf723ef0152258d15179c725c5f8cbeba
-[3/3] ASoC: dt-bindings: aiu: spdif-dit: add missing sound-name-prefix property
-      commit: 559ec82aa47d7c9ce39f3c769f1ba5f3237f6869
+/mnt/kernel/drivers/soundwire/intel.c:1142:3: error: 'const struct snd_soc_=
+dai_ops' has no member named 'set_sdw_stream'; did you mean 'set_stream'?
+ 1142 |  .set_sdw_stream =3D intel_pdm_set_sdw_stream,
+      |   ^~~~~~~~~~~~~~
+      |   set_stream
+/mnt/kernel/drivers/soundwire/intel.c:1142:20: error: initialization of 'in=
+t (*)(struct snd_pcm_substream *, struct snd_pcm_hw_params *, struct snd_so=
+c_dai *)' from incompatible pointer type 'int (*)(struct snd_soc_dai *, voi=
+d *, int)' [-Werror=3Dincompatible-pointer-types]
+ 1142 |  .set_sdw_stream =3D intel_pdm_set_sdw_stream,
+      |                    ^~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/kernel/drivers/soundwire/intel.c:1142:20: note: (near initialization f=
+or 'intel_pdm_dai_ops.hw_params')
+/mnt/kernel/drivers/soundwire/intel.c:1143:3: error: 'const struct snd_soc_=
+dai_ops' has no member named 'get_sdw_stream'; did you mean 'get_stream'?
+ 1143 |  .get_sdw_stream =3D intel_get_sdw_stream,
+      |   ^~~~~~~~~~~~~~
+      |   get_stream
+/mnt/kernel/drivers/soundwire/intel.c:1143:20: error: initialization of 'in=
+t (*)(struct snd_pcm_substream *, struct snd_soc_dai *)' from incompatible =
+pointer type 'void * (*)(struct snd_soc_dai *, int)' [-Werror=3Dincompatibl=
+e-pointer-types]
+ 1143 |  .get_sdw_stream =3D intel_get_sdw_stream,
+      |                    ^~~~~~~~~~~~~~~~~~~~
+/mnt/kernel/drivers/soundwire/intel.c:1143:20: note: (near initialization f=
+or 'intel_pdm_dai_ops.hw_free')
+cc1: all warnings being treated as errors
+make[3]: *** [/mnt/kernel/scripts/Makefile.build:287: drivers/soundwire/int=
+el.o] Error 1
+make[3]: *** Waiting for unfinished jobs....
+make[2]: *** [/mnt/kernel/scripts/Makefile.build:549: drivers/soundwire] Er=
+ror 2
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [/mnt/kernel/Makefile:1846: drivers] Error 2
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:219: __sub-make] Error 2
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+--oH+CFB7uVqhnu6IS
+Content-Type: application/pgp-signature; name="signature.asc"
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+-----BEGIN PGP SIGNATURE-----
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmHEv28ACgkQJNaLcl1U
+h9COhQf/XJITxI7uwmAdAs5euRIHx45jbk3mP4sDaiWxN/zxKpNsUhk9g1K/aBuo
+Vcdo0H4FKTG5R/PvxRC14VTcDd3NexCOqmUgDxsR6WP0DLNqYPSYO+2RcHqWv/zb
+MMpn3TIgNO4nGEmIrLaygph/u4t814+TUlCD8wjnXdkJgzXwwXk2EcrHfibCOetX
+9WWWRB59W5ULjHVveRjxdYzRakTpLNAmthvU0R7OdfLcXW/u8v9rHmN4TAhXvx9w
+wK7gabo+1fU16VIiNUSVLcwhVRbcyijIPPU6n0T7oiGbgQgVi0a/ihCUa+MHAYn5
+4MZMyaEPEwOOaHmnZuS43gmkq7y8eQ==
+=abL6
+-----END PGP SIGNATURE-----
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+--oH+CFB7uVqhnu6IS--
