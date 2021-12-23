@@ -4,66 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C773DC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Dec 2021 11:39:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC1ECC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Dec 2021 11:39:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0202C1877;
-	Thu, 23 Dec 2021 12:38:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0202C1877
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0F4C81887;
+	Thu, 23 Dec 2021 12:38:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F4C81887
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640259551;
-	bh=9E3hb3yjd3gfBjVAKrt3hH6vk29BHonG9AJOm3shRBw=;
+	s=default; t=1640259568;
+	bh=XN787V49axW00iMlfaQVBeQ8NOlw1M/w9PJnOTlBoP4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YUzuz+rhUNnDysLuNT953uh4Ix354h6y5A/o3mhiYtXWuJ6UTqvj5Lq+jXs+eRVbY
-	 iQrwMH8mQduK44s3sua0IE6nuqkr0YAq2j21kHgbscbqn2nqNd/ZNQLdYszLZ8qQ91
-	 T68k26H4Au0qydJhl5CKwTzuLk2VNnpPQ2doikf0=
+	b=Mqq5XQB4bn8WGub9UdHzxk3B9kJ2LPHvzbmbOL1CDeppUskzJDTwKl42Wnjik8UM/
+	 8N1p/2l5xbziW3VJ35bk7+LYUhEzJdh18Jr4CP+mf93gA9ZDcQXwn68d2FOGNhZOxm
+	 wxtNti5gneK6oEk6EpOyv36txUf8j8dhf2ASmXsI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C3845F804FB;
-	Thu, 23 Dec 2021 12:36:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 40662F80520;
+	Thu, 23 Dec 2021 12:36:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E7E30F80517; Thu, 23 Dec 2021 12:36:34 +0100 (CET)
+ id 336B0F8051D; Thu, 23 Dec 2021 12:36:37 +0100 (CET)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5B7D4F80431
- for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2021 12:36:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B7D4F80431
+ by alsa1.perex.cz (Postfix) with ESMTPS id 43AD7F80115
+ for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2021 12:36:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43AD7F80115
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="D/mZDzof"
+ header.b="g8JcsqUt"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1640259383; x=1671795383;
+ t=1640259390; x=1671795390;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=9E3hb3yjd3gfBjVAKrt3hH6vk29BHonG9AJOm3shRBw=;
- b=D/mZDzoffI6cZkhpOpTMDXgjoFG6lJrdwWgnewo67a0UJpAEQydBlzDn
- M5w4ftPEwhCAN4DLVWtoLbPagvUI1zC8Phn7kwRJa2EtvUuCVSDLynP6s
- V1uyRj7rZWp4Y5oKU4pHRHy+gtI2pQoRlEjr5dTG2IhgojJ2bV0cVVXln
- mtQEN/qWNgrxxBAKzvgxQH0ggVpDENeKLAazQDfx3Xxfwh+jNAxoXt5jq
- bD//uk4sOFLS9vEyNxCBmSm+QrTg0CFDSeemd/nWp9b1Z3ckqyJg+IR/T
- 5dBJ1T22/UvGXgWxKE5S2BE3rNsTX0PkyZEDL702uvi7FH+UrFyVQXF/m A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10206"; a="304180804"
-X-IronPort-AV: E=Sophos;i="5.88,229,1635231600"; d="scan'208";a="304180804"
+ bh=XN787V49axW00iMlfaQVBeQ8NOlw1M/w9PJnOTlBoP4=;
+ b=g8JcsqUt2GLToisjfkQBWprULhd1FfW9RCepd3qOwTP9zes+MwSuZ7iO
+ /zW0mygWhTw+tuWWtlOrY+lIDXmfKtXNjwmrMnSD6e5JdnC6crJbvCCFT
+ zQ9tlx168XoNBtqRCH279Vec1Os1Zy160IBXxFL0P/1CDzhCX4yF8H7+D
+ 8dQDKEf6kxmcbI0/5ZLeKbRQa7aS1/G+ICMxguobzmy1TT5sv6RdaTlJK
+ yGOhXNBm+sSRW+de0DqFXioSptXbI65d2aRC+dcVpzVpMOrVumURxrDlS
+ Ez2un97CidOLyfDc6AX7PwLov2BYPbXNb9u9FD/PjecE4PQlJvU/BdZNs Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10206"; a="304180822"
+X-IronPort-AV: E=Sophos;i="5.88,229,1635231600"; d="scan'208";a="304180822"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Dec 2021 03:36:21 -0800
-X-IronPort-AV: E=Sophos;i="5.88,229,1635231600"; d="scan'208";a="522065082"
+ 23 Dec 2021 03:36:26 -0800
+X-IronPort-AV: E=Sophos;i="5.88,229,1635231600"; d="scan'208";a="522065110"
 Received: from gcatala-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.251.214.126])
  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Dec 2021 03:36:19 -0800
+ 23 Dec 2021 03:36:24 -0800
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
-Subject: [PATCH 05/20] ASoC: SOF: Add 'non_recoverable' parameter to
- snd_sof_dsp_panic()
-Date: Thu, 23 Dec 2021 13:36:13 +0200
-Message-Id: <20211223113628.18582-6-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 07/20] ASoC: SOF: Introduce new firmware state: SOF_FW_CRASHED
+Date: Thu, 23 Dec 2021 13:36:15 +0200
+Message-Id: <20211223113628.18582-8-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20211223113628.18582-1-peter.ujfalusi@linux.intel.com>
 References: <20211223113628.18582-1-peter.ujfalusi@linux.intel.com>
@@ -87,222 +86,93 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Some platforms use retries during firmware boot to overcome DSP startup
-issues.
-In these cases we might receive a DSP panic message which should not be
-treated as fatal if it happens during boot.
+The SOF_FW_CRASHED state is meant to indicate the unfortunate case when the
+firmware has crashed after a successful boot.
 
-Pass this information to snd_sof_dsp_panic() and omit the panic print if
-it is not fatal or the user does not want to see all dumps.
+IPC tx timeout is not treated as indication of a firmware crash as it tends
+to happen regularly while the firmware is operational.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Paul Olaru <paul.olaru@oss.nxp.com>
 ---
- sound/soc/sof/imx/imx8.c         |  2 +-
- sound/soc/sof/imx/imx8m.c        |  2 +-
- sound/soc/sof/intel/atom.c       |  4 ++--
- sound/soc/sof/intel/bdw.c        |  4 ++--
- sound/soc/sof/intel/cnl.c        | 21 ++++++++++++++++++---
- sound/soc/sof/intel/hda-ipc.c    | 19 +++++++++++++++++--
- sound/soc/sof/intel/hda-loader.c |  8 ++++++--
- sound/soc/sof/ops.c              | 24 ++++++++++++++++++------
- sound/soc/sof/ops.h              |  2 +-
- 9 files changed, 66 insertions(+), 20 deletions(-)
+ sound/soc/sof/debug.c    | 1 +
+ sound/soc/sof/ipc.c      | 2 +-
+ sound/soc/sof/ops.c      | 2 ++
+ sound/soc/sof/pm.c       | 7 +++++++
+ sound/soc/sof/sof-priv.h | 1 +
+ 5 files changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/imx/imx8.c b/sound/soc/sof/imx/imx8.c
-index 099b4356122c..f6baecbb57fb 100644
---- a/sound/soc/sof/imx/imx8.c
-+++ b/sound/soc/sof/imx/imx8.c
-@@ -97,7 +97,7 @@ static void imx8_dsp_handle_request(struct imx_dsp_ipc *ipc)
+diff --git a/sound/soc/sof/debug.c b/sound/soc/sof/debug.c
+index cf7d95c33afe..5941316751dd 100644
+--- a/sound/soc/sof/debug.c
++++ b/sound/soc/sof/debug.c
+@@ -939,6 +939,7 @@ static const struct soc_fw_state_info {
+ 	{SOF_FW_BOOT_FAILED, "SOF_FW_BOOT_FAILED"},
+ 	{SOF_FW_BOOT_READY_FAILED, "SOF_FW_BOOT_READY_FAILED"},
+ 	{SOF_FW_BOOT_COMPLETE, "SOF_FW_BOOT_COMPLETE"},
++	{SOF_FW_CRASHED, "SOF_FW_CRASHED"},
+ };
  
- 	/* Check to see if the message is a panic code (0x0dead***) */
- 	if ((p & SOF_IPC_PANIC_MAGIC_MASK) == SOF_IPC_PANIC_MAGIC)
--		snd_sof_dsp_panic(priv->sdev, p);
-+		snd_sof_dsp_panic(priv->sdev, p, true);
- 	else
- 		snd_sof_ipc_msgs_rx(priv->sdev);
- }
-diff --git a/sound/soc/sof/imx/imx8m.c b/sound/soc/sof/imx/imx8m.c
-index c026caea4c8b..788e77bcb603 100644
---- a/sound/soc/sof/imx/imx8m.c
-+++ b/sound/soc/sof/imx/imx8m.c
-@@ -90,7 +90,7 @@ static void imx8m_dsp_handle_request(struct imx_dsp_ipc *ipc)
+ static void snd_sof_dbg_print_fw_state(struct snd_sof_dev *sdev)
+diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
+index 12860da1d373..898f261e8603 100644
+--- a/sound/soc/sof/ipc.c
++++ b/sound/soc/sof/ipc.c
+@@ -302,7 +302,7 @@ static int sof_ipc_tx_message_unlocked(struct snd_sof_ipc *ipc, u32 header,
+ 	struct snd_sof_ipc_msg *msg;
+ 	int ret;
  
- 	/* Check to see if the message is a panic code (0x0dead***) */
- 	if ((p & SOF_IPC_PANIC_MAGIC_MASK) == SOF_IPC_PANIC_MAGIC)
--		snd_sof_dsp_panic(priv->sdev, p);
-+		snd_sof_dsp_panic(priv->sdev, p, true);
- 	else
- 		snd_sof_ipc_msgs_rx(priv->sdev);
- }
-diff --git a/sound/soc/sof/intel/atom.c b/sound/soc/sof/intel/atom.c
-index 5aa064b28fca..bcb2eb2acf2e 100644
---- a/sound/soc/sof/intel/atom.c
-+++ b/sound/soc/sof/intel/atom.c
-@@ -165,8 +165,8 @@ irqreturn_t atom_irq_thread(int irq, void *context)
- 
- 		/* Handle messages from DSP Core */
- 		if ((ipcd & SOF_IPC_PANIC_MAGIC_MASK) == SOF_IPC_PANIC_MAGIC) {
--			snd_sof_dsp_panic(sdev, PANIC_OFFSET(ipcd) +
--					  MBOX_OFFSET);
-+			snd_sof_dsp_panic(sdev, PANIC_OFFSET(ipcd) + MBOX_OFFSET,
-+					  true);
- 		} else {
- 			snd_sof_ipc_msgs_rx(sdev);
- 		}
-diff --git a/sound/soc/sof/intel/bdw.c b/sound/soc/sof/intel/bdw.c
-index 1121711e9029..10c9a0b39371 100644
---- a/sound/soc/sof/intel/bdw.c
-+++ b/sound/soc/sof/intel/bdw.c
-@@ -344,8 +344,8 @@ static irqreturn_t bdw_irq_thread(int irq, void *context)
- 
- 		/* Handle messages from DSP Core */
- 		if ((ipcd & SOF_IPC_PANIC_MAGIC_MASK) == SOF_IPC_PANIC_MAGIC) {
--			snd_sof_dsp_panic(sdev, BDW_PANIC_OFFSET(ipcx) +
--					  MBOX_OFFSET);
-+			snd_sof_dsp_panic(sdev, BDW_PANIC_OFFSET(ipcx) + MBOX_OFFSET,
-+					  true);
- 		} else {
- 			snd_sof_ipc_msgs_rx(sdev);
- 		}
-diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
-index 3da158d08980..e615125d575e 100644
---- a/sound/soc/sof/intel/cnl.c
-+++ b/sound/soc/sof/intel/cnl.c
-@@ -82,9 +82,24 @@ irqreturn_t cnl_ipc_irq_thread(int irq, void *context)
- 			 msg, msg_ext);
- 
- 		/* handle messages from DSP */
--		if ((hipctdr & SOF_IPC_PANIC_MAGIC_MASK) ==
--		   SOF_IPC_PANIC_MAGIC) {
--			snd_sof_dsp_panic(sdev, HDA_DSP_PANIC_OFFSET(msg_ext));
-+		if ((hipctdr & SOF_IPC_PANIC_MAGIC_MASK) == SOF_IPC_PANIC_MAGIC) {
-+			struct sof_intel_hda_dev *hda = sdev->pdata->hw_pdata;
-+			bool non_recoverable = true;
-+
-+			/*
-+			 * This is a PANIC message!
-+			 *
-+			 * If it is arriving during firmware boot and it is not
-+			 * the last boot attempt then change the non_recoverable
-+			 * to false as the DSP might be able to boot in the next
-+			 * iteration(s)
-+			 */
-+			if (sdev->fw_state == SOF_FW_BOOT_IN_PROGRESS &&
-+			    hda->boot_iteration < HDA_FW_BOOT_ATTEMPTS)
-+				non_recoverable = false;
-+
-+			snd_sof_dsp_panic(sdev, HDA_DSP_PANIC_OFFSET(msg_ext),
-+					  non_recoverable);
- 		} else {
- 			snd_sof_ipc_msgs_rx(sdev);
- 		}
-diff --git a/sound/soc/sof/intel/hda-ipc.c b/sound/soc/sof/intel/hda-ipc.c
-index 2019087a84ce..f0cf8019d72d 100644
---- a/sound/soc/sof/intel/hda-ipc.c
-+++ b/sound/soc/sof/intel/hda-ipc.c
-@@ -173,8 +173,23 @@ irqreturn_t hda_dsp_ipc_irq_thread(int irq, void *context)
- 
- 		/* handle messages from DSP */
- 		if ((hipct & SOF_IPC_PANIC_MAGIC_MASK) == SOF_IPC_PANIC_MAGIC) {
--			/* this is a PANIC message !! */
--			snd_sof_dsp_panic(sdev, HDA_DSP_PANIC_OFFSET(msg_ext));
-+			struct sof_intel_hda_dev *hda = sdev->pdata->hw_pdata;
-+			bool non_recoverable = true;
-+
-+			/*
-+			 * This is a PANIC message!
-+			 *
-+			 * If it is arriving during firmware boot and it is not
-+			 * the last boot attempt then change the non_recoverable
-+			 * to false as the DSP might be able to boot in the next
-+			 * iteration(s)
-+			 */
-+			if (sdev->fw_state == SOF_FW_BOOT_IN_PROGRESS &&
-+			    hda->boot_iteration < HDA_FW_BOOT_ATTEMPTS)
-+				non_recoverable = false;
-+
-+			snd_sof_dsp_panic(sdev, HDA_DSP_PANIC_OFFSET(msg_ext),
-+					  non_recoverable);
- 		} else {
- 			/* normal message - process normally */
- 			snd_sof_ipc_msgs_rx(sdev);
-diff --git a/sound/soc/sof/intel/hda-loader.c b/sound/soc/sof/intel/hda-loader.c
-index 5f5f396f4fb8..8ef16f1082e3 100644
---- a/sound/soc/sof/intel/hda-loader.c
-+++ b/sound/soc/sof/intel/hda-loader.c
-@@ -413,9 +413,13 @@ int hda_dsp_cl_boot_firmware(struct snd_sof_dev *sdev)
- 		hda_sdw_process_wakeen(sdev);
+-	if (ipc->disable_ipc_tx)
++	if (ipc->disable_ipc_tx || sdev->fw_state == SOF_FW_CRASHED)
+ 		return -ENODEV;
  
  	/*
--	 * at this point DSP ROM has been initialized and
--	 * should be ready for code loading and firmware boot
-+	 * Set the boot_iteration to the last attempt, indicating that the
-+	 * DSP ROM has been initialized and from this point there will be no
-+	 * retry done to boot.
-+	 *
-+	 * Continue with code loading and firmware boot
- 	 */
-+	hda->boot_iteration = HDA_FW_BOOT_ATTEMPTS;
- 	ret = cl_copy_fw(sdev, stream);
- 	if (!ret) {
- 		dev_dbg(sdev->dev, "Firmware download successful, booting...\n");
 diff --git a/sound/soc/sof/ops.c b/sound/soc/sof/ops.c
-index 1d6a95a00cf5..9abf7a8e55e0 100644
+index edfd080a3e4f..ed46f33ce72b 100644
 --- a/sound/soc/sof/ops.c
 +++ b/sound/soc/sof/ops.c
-@@ -142,7 +142,13 @@ void snd_sof_dsp_update_bits_forced(struct snd_sof_dev *sdev, u32 bar,
+@@ -176,6 +176,8 @@ void snd_sof_dsp_panic(struct snd_sof_dev *sdev, u32 offset, bool non_recoverabl
+ 
+ 		snd_sof_dsp_dbg_dump(sdev, "DSP panic!",
+ 				     SOF_DBG_DUMP_REGS | SOF_DBG_DUMP_MBOX);
++		if (non_recoverable)
++			sof_set_fw_state(sdev, SOF_FW_CRASHED);
+ 		snd_sof_trace_notify_for_error(sdev);
+ 	}
  }
- EXPORT_SYMBOL(snd_sof_dsp_update_bits_forced);
+diff --git a/sound/soc/sof/pm.c b/sound/soc/sof/pm.c
+index ac8ae6e422a7..f22b5ee23478 100644
+--- a/sound/soc/sof/pm.c
++++ b/sound/soc/sof/pm.c
+@@ -312,6 +312,13 @@ int snd_sof_prepare(struct device *dev)
+ 	/* will suspend to S3 by default */
+ 	sdev->system_suspend_target = SOF_SUSPEND_S3;
  
--void snd_sof_dsp_panic(struct snd_sof_dev *sdev, u32 offset)
-+/**
-+ * snd_sof_dsp_panic - handle a received DSP panic message
-+ * @sdev: Pointer to the device's sdev
-+ * @offset: offset of panic information
-+ * @non_recoverable: the panic is fatal, no recovery will be done by the caller
-+ */
-+void snd_sof_dsp_panic(struct snd_sof_dev *sdev, u32 offset, bool non_recoverable)
- {
- 	/*
- 	 * if DSP is not ready and the dsp_oops_offset is not yet set, use the
-@@ -160,12 +166,18 @@ void snd_sof_dsp_panic(struct snd_sof_dev *sdev, u32 offset)
- 			 "%s: dsp_oops_offset %zu differs from panic offset %u\n",
- 			 __func__, sdev->dsp_oops_offset, offset);
- 
--	dev_err(sdev->dev, "DSP panic!\n");
 +	/*
-+	 * Only print the panic information if we have non recoverable panic or
-+	 * if all dumps should be printed
++	 * if the firmware is crashed then we try to aim for S3 to reboot the
++	 * firmware
 +	 */
-+	if (non_recoverable || sof_debug_check_flag(SOF_DBG_PRINT_ALL_DUMPS)) {
-+		dev_err(sdev->dev, "DSP panic!\n");
++	if (sdev->fw_state == SOF_FW_CRASHED)
++		return 0;
++
+ 	if (!desc->use_acpi_target_states)
+ 		return 0;
  
--	/* We want to see the DSP panic! */
--	sdev->dbg_dump_printed = false;
-+		/* We want to see the DSP panic! */
-+		sdev->dbg_dump_printed = false;
+diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
+index 0f849cdbfbc8..9bb30b2a516f 100644
+--- a/sound/soc/sof/sof-priv.h
++++ b/sound/soc/sof/sof-priv.h
+@@ -382,6 +382,7 @@ enum snd_sof_fw_state {
+ 	SOF_FW_BOOT_FAILED,
+ 	SOF_FW_BOOT_READY_FAILED, /* firmware booted but fw_ready op failed */
+ 	SOF_FW_BOOT_COMPLETE,
++	SOF_FW_CRASHED,
+ };
  
--	snd_sof_dsp_dbg_dump(sdev, SOF_DBG_DUMP_REGS | SOF_DBG_DUMP_MBOX);
--	snd_sof_trace_notify_for_error(sdev);
-+		snd_sof_dsp_dbg_dump(sdev, SOF_DBG_DUMP_REGS | SOF_DBG_DUMP_MBOX);
-+		snd_sof_trace_notify_for_error(sdev);
-+	}
- }
- EXPORT_SYMBOL(snd_sof_dsp_panic);
-diff --git a/sound/soc/sof/ops.h b/sound/soc/sof/ops.h
-index b0ffb2a93bcc..bca7d35536e4 100644
---- a/sound/soc/sof/ops.h
-+++ b/sound/soc/sof/ops.h
-@@ -643,5 +643,5 @@ int snd_sof_dsp_register_poll(struct snd_sof_dev *sdev, u32 bar, u32 offset,
- 			      u32 mask, u32 target, u32 timeout_ms,
- 			      u32 interval_us);
- 
--void snd_sof_dsp_panic(struct snd_sof_dev *sdev, u32 offset);
-+void snd_sof_dsp_panic(struct snd_sof_dev *sdev, u32 offset, bool non_recoverable);
- #endif
+ /*
 -- 
 2.34.1
 
