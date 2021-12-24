@@ -4,71 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9DC6DC433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Dec 2021 16:19:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C52ADC433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Dec 2021 16:19:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D262F17E6;
-	Fri, 24 Dec 2021 17:18:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D262F17E6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8B3D51811;
+	Fri, 24 Dec 2021 17:18:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8B3D51811
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640362756;
-	bh=c770Vl0s4K8ne0JvN1d9u+B9NXqvmS0SNJ/Vr5lpXpE=;
+	s=default; t=1640362759;
+	bh=2uH7mH8oGbK+ACkY2KT3Qtp9cnR6xVZp/PRiSZfd42k=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NASnollOaLoqiuQmAZ8hCMvuE/xUjvVxHYt7e2FFnuisyms6cQ52UUkV/wt1ilWw9
-	 WU3MhbE8bdgQVdx8yaPqNYEDI63KUBLtZpl++nLlIrFQn5jz1YbFqXWfSB3tCnUfF6
-	 Rn3ZqxeT59pI4bBhFPmS72ug+ta2W75n2L4cSCI8=
+	b=Egqn/AhtLlgtjny0hXcjtAvDYm5CGPUySzU/M9ycQbdMnCIF4wdm3EFTXhyTpyRwp
+	 a4DQ4qgD//9LeqPmh+UUziKvijzra6+fZwCjkohb6ai7FNKxwa/LKxLUnDL44AGXGm
+	 t/rrxogBoRtGEGi64xH8dTYa16d62DJUOrRFnjq8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AA97FF804FE;
-	Fri, 24 Dec 2021 17:17:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D3F1AF8050F;
+	Fri, 24 Dec 2021 17:17:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F369BF8014B; Fri, 24 Dec 2021 17:17:38 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 31FD2F80511; Fri, 24 Dec 2021 17:17:42 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BE6EFF800F2
- for <alsa-devel@alsa-project.org>; Fri, 24 Dec 2021 17:17:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE6EFF800F2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6F08EF804E6
+ for <alsa-devel@alsa-project.org>; Fri, 24 Dec 2021 17:17:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F08EF804E6
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ZEHguiC6"
+ header.b="X7ci/SSW"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id EA16A61E1D;
- Fri, 24 Dec 2021 16:17:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05F5FC36AE8;
- Fri, 24 Dec 2021 16:17:25 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 00B7DB82331;
+ Fri, 24 Dec 2021 16:17:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8546C36AE8;
+ Fri, 24 Dec 2021 16:17:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1640362649;
- bh=c770Vl0s4K8ne0JvN1d9u+B9NXqvmS0SNJ/Vr5lpXpE=;
+ s=k20201202; t=1640362653;
+ bh=2uH7mH8oGbK+ACkY2KT3Qtp9cnR6xVZp/PRiSZfd42k=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=ZEHguiC6Sx7jrCAhJzIdc2b9ali2tP+4TU7f9jBubYM0wRTV+5z2WM1d+UdVO+SSM
- 4pW7maR7w6UnpSEr5pGdlEcI7kV19acXkdaZ6ur5GPnzaCnsBwQegp5vLvQHOtsezx
- 50d8BGJHorLbpnq3Y7QfTbaJBh6een0e4Lf7RQSTZpsb1uBYsf9bJTCGeQ9dqLsVra
- 1w+6qTu+nP1SNiNTASOCEP4dyg6JnKwZngEGpDLtacCxpviuFrOk2Ko0k3GpuC8Vxk
- 0RkZrccFISvkZh6J+83wizRMFkcpGi0UV4X+FbWDVzSBpeuGIXmQn3BjLB8alJbv6q
- 6wjAsYfRYVHhg==
+ b=X7ci/SSWlbVKTlAqNRx3U1GxuuvcCpO69n22EEqaT7GAXWEzxoYC/ovDHmKZcnHBX
+ QVZrZn82+Ae1Y7MLY18VuD9XJFx6VtnVWYsge3lijTpoWl8+JTOLlQvvR/sMRFts5F
+ qLrellKiB5TKT6bbhX2VPukK20iA7X3pT5QC612Xdl2WFwAEe68ZTsIyrs8xhk7SZX
+ ROIX+EODVm+CErDyA77e+cV5wfRos4z9jiqTDdB0vuFWAwKuIZYDdDoC0RJ4VGLp8y
+ k/q6tEv8ameWH3M7z2mn7VdvhyUSV871V1hEMCvSCUzWmfMKHku9icjQJ31cft7m8y
+ cBl4Z1r43fO8g==
 From: Mark Brown <broonie@kernel.org>
-To: cgel.zte@gmail.com, lgirdwood@gmail.com
-In-Reply-To: <20211209015707.409870-1-chi.minghao@zte.com.cn>
-References: <20211209015707.409870-1-chi.minghao@zte.com.cn>
-Subject: Re: [PATCH] sound:soc:remove unneeded variable
-Message-Id: <164036264573.3720027.488082222157598597.b4-ty@kernel.org>
-Date: Fri, 24 Dec 2021 16:17:25 +0000
+To: Tzung-Bi Shih <tzungbi@google.com>
+In-Reply-To: <20211224064719.2031210-1-tzungbi@google.com>
+References: <20211224064719.2031210-1-tzungbi@google.com>
+Subject: Re: [PATCH 0/4] ASoC: mediatek: fix device_node leak
+Message-Id: <164036265260.3720027.15119723749705753132.b4-ty@kernel.org>
+Date: Fri, 24 Dec 2021 16:17:32 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
- srivasam@codeaurora.org, lkp@intel.com, kuninori.morimoto.gx@renesas.com,
- Zeal Robot <zealci@zte.com.cm>, tiwai@suse.com, linux-kernel@vger.kernel.org,
- chi.minghao@zte.com.cn, srinivas.kandagatla@linaro.org, pulehui@huawei.com,
- matthias.bgg@gmail.com, linux-mediatek@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, trevor.wu@mediatek.com, jiaxin.yu@mediatek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,13 +79,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 9 Dec 2021 01:57:07 +0000, cgel.zte@gmail.com wrote:
-> From: chiminghao <chi.minghao@zte.com.cn>
+On Fri, 24 Dec 2021 14:47:15 +0800, Tzung-Bi Shih wrote:
+> The series is a follow up series.
 > 
-> return value form directly instead of
-> taking this in another redundant variable.
+> The 1st and 2nd patch follow [1] to fix the device_node leak.
 > 
+> The 3rd patch follows [2] to reduce the log verbosity.
 > 
+> The 4th patch cleans the device_node related code on MT8195.
+> In order to align to previous platforms.
+> 
+> [...]
 
 Applied to
 
@@ -98,8 +97,14 @@ Applied to
 
 Thanks!
 
-[1/1] sound:soc:remove unneeded variable
-      commit: b2fde4deff854ca7d49ec735a8252d944418b64d
+[1/4] ASoC: mediatek: mt8173: fix device_node leak
+      commit: 493433785df0075afc0c106ab65f10a605d0b35d
+[2/4] ASoC: mediatek: mt8183: fix device_node leak
+      commit: cb006006fe6221f092fadaffd3f219288304c9ad
+[3/4] ASoC: mediatek: mt8173: reduce log verbosity in probe()
+      commit: db3f5abe68ea5ea39d84e6af4f0f2ce5d5e2daf4
+[4/4] ASoC: mediatek: mt8195: release device_node after snd_soc_register_card
+      commit: 082482a5022780d42180a394fe6843e71fe963d8
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
