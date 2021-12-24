@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB0D4C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Dec 2021 02:13:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C96CC433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Dec 2021 02:13:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E219218CA;
-	Fri, 24 Dec 2021 03:12:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E219218CA
+	by alsa0.perex.cz (Postfix) with ESMTPS id C0CA118C5;
+	Fri, 24 Dec 2021 03:12:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C0CA118C5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640311989;
-	bh=alLTBXDy3O+6GzU4DwFSKQ3fIJ/zBnApQ/F3BpD6psQ=;
+	s=default; t=1640312012;
+	bh=msm7tfLCoHZqfF+K+E5ysRidbrrgu9OSUH/p39H3I1o=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=htQ/ODNON+itmQKlc32pF7bCO+dpIOoD8vo+Swua93jW1cKOjK55aH14HHzKcDxfn
-	 cwIwFMCWncWAOVUw5EFEz5lQLTzieayLU62j3ZYcJIOCvw5hXBnVlJ8Ic/BAoaoX69
-	 j5bEf3kAw0AVqPbLJDmIxaHFaRqLTMWnf/vf9XeE=
+	b=Eh4YBduUXg5emlQvQUZqZExlQl8CJm0UWSA3V2xw1SRvRWBLQx3GEugvfva2Igqyl
+	 d1nIVlLgyip8Z0vLiel8o6T9Kj3qpcNpemCfBTDXWzAGScY97vSdGxLE5H2L7plyfN
+	 x/X7hE7CEmqwf4QI+C4QzpQr7kDy6WFopTg3VzSE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 675F1F80510;
-	Fri, 24 Dec 2021 03:11:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1040FF80516;
+	Fri, 24 Dec 2021 03:11:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 23E43F804FE; Fri, 24 Dec 2021 03:11:32 +0100 (CET)
+ id 414F4F804FE; Fri, 24 Dec 2021 03:11:34 +0100 (CET)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8E55BF80121
- for <alsa-devel@alsa-project.org>; Fri, 24 Dec 2021 03:11:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E55BF80121
+ by alsa1.perex.cz (Postfix) with ESMTPS id DC490F804E4
+ for <alsa-devel@alsa-project.org>; Fri, 24 Dec 2021 03:11:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC490F804E4
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="BsvPkG+Y"
+ header.b="dKHm6psG"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1640311886; x=1671847886;
+ t=1640311891; x=1671847891;
  h=from:to:cc:subject:date:message-id:in-reply-to: references;
- bh=alLTBXDy3O+6GzU4DwFSKQ3fIJ/zBnApQ/F3BpD6psQ=;
- b=BsvPkG+Y4mQjVJ82rcyGHN4FMwvT7cKE7NoRKMQaO/dSoyasrjFGWlzf
- X5SfTJIl6437+uws84hYGT/Udd1jtazIt5OerAD7y4UqpETnfQaEft/kd
- w73+WFhbA7q0cxm9hDTUK9YAgA17FPX2LoMl/KrsBq0M/Yt9ZMANH66mP
- A2/ff0OT9wOslMUSUrF6dInFF+D1lPVF9ZzxLjLn6pOEizRPod3KGUGC5
- UfPJv8TE1nIUgQzdzFccaZ2tICTML7V1q5jRVA+1QK8kk4hCWXXLOEtzy
- sQlnAEjirjZsd4yAED8dSc0wBueoqfFWufbVJ2PmWcCpZkmQYzS/LUNve A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10207"; a="265127375"
-X-IronPort-AV: E=Sophos;i="5.88,231,1635231600"; d="scan'208";a="265127375"
+ bh=msm7tfLCoHZqfF+K+E5ysRidbrrgu9OSUH/p39H3I1o=;
+ b=dKHm6psGooHw5x6498CWThvDCcSdVCzbom5cVIEglmvHR08f0RMzpVhz
+ LvZpa3FLhvJP3ZifeUItufZnshTvvWreAUTexRle03o6Wx0rN1SAaz+eF
+ B640oKD6eVfwQUk6nre1ogJb/rQdc1pvkN4Po3vgIt3CThR56ENcM6FeG
+ WLN0eGuPw7JB1oAHfhaEHH17XreEUBg92Gsb4IT4SjqvQNLldT2kqHg9l
+ cr8jAPrej2jQXqJSTKS6GSaFLrMvxbjcsYd9xYJUNX630BKg9d6xsF++T
+ TLdWD9z14+8GEJMB4I3ivhAL1xSTTpfKjOwZNqkqsdUwvIdbFLT8AuwiL Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10207"; a="265127380"
+X-IronPort-AV: E=Sophos;i="5.88,231,1635231600"; d="scan'208";a="265127380"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Dec 2021 18:11:14 -0800
-X-IronPort-AV: E=Sophos;i="5.88,231,1635231600"; d="scan'208";a="467156195"
+ 23 Dec 2021 18:11:15 -0800
+X-IronPort-AV: E=Sophos;i="5.88,231,1635231600"; d="scan'208";a="467156229"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Dec 2021 18:10:48 -0800
+ 23 Dec 2021 18:11:01 -0800
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH v2 1/7] ASOC: SOF: Intel: use snd_soc_dai_get_widget()
-Date: Fri, 24 Dec 2021 10:10:28 +0800
-Message-Id: <20211224021034.26635-2-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH v2 3/7] soundwire: intel: improve suspend flows
+Date: Fri, 24 Dec 2021 10:10:30 +0800
+Message-Id: <20211224021034.26635-4-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20211224021034.26635-1-yung-chuan.liao@linux.intel.com>
 References: <20211224021034.26635-1-yung-chuan.liao@linux.intel.com>
@@ -83,46 +83,222 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
-We have a helper, use it to simplify widget lookup
+This patch provides both a simplification of the suspend flows and a
+better balanced operation during suspend/resume transition, as part of
+the transition of Sound Open Firmware (SOF) to dynamic pipelines: the
+DSP resources are only enabled when required instead of enabled on
+startup.
 
-Suggested-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+The exiting code relies on a convoluted way of dealing with suspend
+signals. Since there is no .suspend DAI callback, we used the
+component .suspend and marked all the component DAI dmas as
+'suspended'. The information was used in the .prepare stage to
+differentiate resume operations from xrun handling, and only
+reinitialize SHIM registers and DMA in the former case.
+
+While this solution has been working reliably for about 2 years, there
+is a much better solution consisting in trapping the TRIGGER_SUSPEND
+in the .trigger DAI ops. The DMA is still marked in the same way for
+the .prepare op to run, but in addition the callbacks sent to DSP
+firmware are now balanced.
+
+Normal operation:
+hw_params -> intel_params_stream
+hw_free   -> intel_free_stream
+
+suspend    -> intel_free_stream
+prepare    -> intel_params_stream
+
+This balanced operation was not required with existing SOF firmware
+relying on static pipelines instantiated at every boot. With the
+on-going transition to dynamic pipelines, it's however a requirement
+to keep the use count for the DAI widget balanced across all
+transitions.
+
+The component suspend is not removed but instead modified to deal with
+a corner case: when a substream is PAUSED, the ALSA core does not
+throw the TRIGGER_SUSPEND. This is problematic since the refcount for
+all pipelines and widgets is not balanced, leading to issues on
+resume. The trigger callback keeps track of the 'paused' state with a
+new flag, which is tested during the component suspend called later to
+release the remaining DSP resources. These resources will be
+re-enabled in the .prepare step.
+
+The IPC used in the TRIGGER_SUSPEND to release DSP resources is not a
+problem since the BE dailink is already marked as non-atomic.
+
+Co-developed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@intel.com>
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Acked-By: Vinod Koul <vkoul@kernel.org>
 ---
- sound/soc/sof/intel/hda.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+ drivers/soundwire/cadence_master.h |   2 +
+ drivers/soundwire/intel.c          | 110 +++++++++++++++++++++++------
+ 2 files changed, 89 insertions(+), 23 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 18abbd13d593..99255028d3fe 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -189,10 +189,7 @@ static int sdw_params_stream(struct device *dev,
- 	struct snd_soc_dai *d = params_data->dai;
- 	struct snd_soc_dapm_widget *w;
+diff --git a/drivers/soundwire/cadence_master.h b/drivers/soundwire/cadence_master.h
+index e587aede63bf..aa4b9b0eb2a8 100644
+--- a/drivers/soundwire/cadence_master.h
++++ b/drivers/soundwire/cadence_master.h
+@@ -86,6 +86,7 @@ struct sdw_cdns_stream_config {
+  * @link_id: Master link id
+  * @hw_params: hw_params to be applied in .prepare step
+  * @suspended: status set when suspended, to be used in .prepare
++ * @paused: status set in .trigger, to be used in suspend
+  */
+ struct sdw_cdns_dma_data {
+ 	char *name;
+@@ -96,6 +97,7 @@ struct sdw_cdns_dma_data {
+ 	int link_id;
+ 	struct snd_pcm_hw_params *hw_params;
+ 	bool suspended;
++	bool paused;
+ };
  
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		w = d->playback_widget;
--	else
--		w = d->capture_widget;
-+	w = snd_soc_dai_get_widget(d, substream->stream);
+ /**
+diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+index 25c5f5b9f058..3d29f02ad5a6 100644
+--- a/drivers/soundwire/intel.c
++++ b/drivers/soundwire/intel.c
+@@ -871,6 +871,7 @@ static int intel_hw_params(struct snd_pcm_substream *substream,
+ 	sdw_cdns_config_stream(cdns, ch, dir, pdi);
  
- 	return sdw_dai_config_ipc(sdev, w, params_data->link_id, params_data->alh_stream_id,
- 				  d->id, true);
-@@ -206,10 +203,7 @@ static int sdw_free_stream(struct device *dev,
- 	struct snd_soc_dai *d = free_data->dai;
- 	struct snd_soc_dapm_widget *w;
+ 	/* store pdi and hw_params, may be needed in prepare step */
++	dma->paused = false;
+ 	dma->suspended = false;
+ 	dma->pdi = pdi;
+ 	dma->hw_params = params;
+@@ -1008,29 +1009,6 @@ static void intel_shutdown(struct snd_pcm_substream *substream,
+ 	pm_runtime_put_autosuspend(cdns->dev);
+ }
  
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		w = d->playback_widget;
--	else
--		w = d->capture_widget;
-+	w = snd_soc_dai_get_widget(d, substream->stream);
+-static int intel_component_dais_suspend(struct snd_soc_component *component)
+-{
+-	struct sdw_cdns_dma_data *dma;
+-	struct snd_soc_dai *dai;
+-
+-	for_each_component_dais(component, dai) {
+-		/*
+-		 * we don't have a .suspend dai_ops, and we don't have access
+-		 * to the substream, so let's mark both capture and playback
+-		 * DMA contexts as suspended
+-		 */
+-		dma = dai->playback_dma_data;
+-		if (dma)
+-			dma->suspended = true;
+-
+-		dma = dai->capture_dma_data;
+-		if (dma)
+-			dma->suspended = true;
+-	}
+-
+-	return 0;
+-}
+-
+ static int intel_pcm_set_sdw_stream(struct snd_soc_dai *dai,
+ 				    void *stream, int direction)
+ {
+@@ -1059,11 +1037,97 @@ static void *intel_get_sdw_stream(struct snd_soc_dai *dai,
+ 	return dma->stream;
+ }
  
- 	/* send invalid stream_id */
- 	return sdw_dai_config_ipc(sdev, w, free_data->link_id, 0xFFFF, d->id, false);
++static int intel_trigger(struct snd_pcm_substream *substream, int cmd, struct snd_soc_dai *dai)
++{
++	struct sdw_cdns *cdns = snd_soc_dai_get_drvdata(dai);
++	struct sdw_intel *sdw = cdns_to_intel(cdns);
++	struct sdw_cdns_dma_data *dma;
++	int ret = 0;
++
++	dma = snd_soc_dai_get_dma_data(dai, substream);
++	if (!dma) {
++		dev_err(dai->dev, "failed to get dma data in %s\n",
++			__func__);
++		return -EIO;
++	}
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++
++		/*
++		 * The .prepare callback is used to deal with xruns and resume operations.
++		 * In the case of xruns, the DMAs and SHIM registers cannot be touched,
++		 * but for resume operations the DMAs and SHIM registers need to be initialized.
++		 * the .trigger callback is used to track the suspend case only.
++		 */
++
++		dma->suspended = true;
++
++		ret = intel_free_stream(sdw, substream->stream, dai, sdw->instance);
++		break;
++
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		dma->paused = true;
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		dma->paused = false;
++		break;
++	default:
++		break;
++	}
++
++	return ret;
++}
++
++static int intel_component_dais_suspend(struct snd_soc_component *component)
++{
++	struct snd_soc_dai *dai;
++
++	/*
++	 * In the corner case where a SUSPEND happens during a PAUSE, the ALSA core
++	 * does not throw the TRIGGER_SUSPEND. This leaves the DAIs in an unbalanced state.
++	 * Since the component suspend is called last, we can trap this corner case
++	 * and force the DAIs to release their resources.
++	 */
++	for_each_component_dais(component, dai) {
++		struct sdw_cdns *cdns = snd_soc_dai_get_drvdata(dai);
++		struct sdw_intel *sdw = cdns_to_intel(cdns);
++		struct sdw_cdns_dma_data *dma;
++		int stream;
++		int ret;
++
++		dma = dai->playback_dma_data;
++		stream = SNDRV_PCM_STREAM_PLAYBACK;
++		if (!dma) {
++			dma = dai->capture_dma_data;
++			stream = SNDRV_PCM_STREAM_CAPTURE;
++		}
++
++		if (!dma)
++			continue;
++
++		if (dma->suspended)
++			continue;
++
++		if (dma->paused) {
++			dma->suspended = true;
++
++			ret = intel_free_stream(sdw, stream, dai, sdw->instance);
++			if (ret < 0)
++				return ret;
++		}
++	}
++
++	return 0;
++}
++
+ static const struct snd_soc_dai_ops intel_pcm_dai_ops = {
+ 	.startup = intel_startup,
+ 	.hw_params = intel_hw_params,
+ 	.prepare = intel_prepare,
+ 	.hw_free = intel_hw_free,
++	.trigger = intel_trigger,
+ 	.shutdown = intel_shutdown,
+ 	.set_sdw_stream = intel_pcm_set_sdw_stream,
+ 	.get_sdw_stream = intel_get_sdw_stream,
 -- 
 2.17.1
 
