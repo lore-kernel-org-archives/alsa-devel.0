@@ -4,78 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70A77C433F5
-	for <alsa-devel@archiver.kernel.org>; Sat, 25 Dec 2021 08:56:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 454ADC433F5
+	for <alsa-devel@archiver.kernel.org>; Sat, 25 Dec 2021 08:57:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A663D16E8;
-	Sat, 25 Dec 2021 09:55:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A663D16E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5A8411786;
+	Sat, 25 Dec 2021 09:56:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5A8411786
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640422583;
-	bh=aWv/fRLAnDmyZFcfrM8jsaHDApxFvBpYNyX7lo3/pE4=;
+	s=default; t=1640422628;
+	bh=uuonLf7OQDG6Y70cohJWCg9LWXFTFbpAYdh4tajnr7U=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=btezUttc5Uug5wnl9MvuY0Pb9qEhLuChiDHE6IcztwF/AtFaeJCkjxgBeG4jk4hVO
-	 2JE26QapbXAjp1WaWR2BZpNnegoMzm34yr3Bqe7ZtjxSBsumlVYxtAbtZisWF7HERG
-	 fP3tfjNLjBISTJqGxTpOYQiXs8CXjkTwu7e9YuTE=
+	b=b3lb+P1XyFBCe68p5LdBx7E6FeeH51lwuOwSM4JAp/qHakNwD9K8I5Mn2CINRGZrF
+	 W85Dnl8miHVW0++X8rWOvYCUsw33qki5ZbG0IE3EDciP/tK5H47++QWN6PkHuqJ8p/
+	 z0EblprXjMv+wD3iYs2Jn2PrXJhy5RRCjUCaKkyk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 373ABF800ED;
-	Sat, 25 Dec 2021 09:55:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E4320F8013C;
+	Sat, 25 Dec 2021 09:56:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 048E3F800F0; Sat, 25 Dec 2021 09:55:32 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id CD9ECF8014E; Sat, 25 Dec 2021 09:56:16 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9CD63F800E5
- for <alsa-devel@alsa-project.org>; Sat, 25 Dec 2021 09:55:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9CD63F800E5
+ by alsa1.perex.cz (Postfix) with ESMTPS id CD77FF800F3
+ for <alsa-devel@alsa-project.org>; Sat, 25 Dec 2021 09:56:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CD77FF800F3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="JV/SwrYr"; 
+ header.b="RDHmbFIO"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="L3G1mJ/A"
+ header.b="YAzAh2X5"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 289F31F37B;
- Sat, 25 Dec 2021 08:55:27 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 45B6221122;
+ Sat, 25 Dec 2021 08:56:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1640422527; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1640422569; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=gHMYAfiG/XH7TbZtWF+oQ/6AQ6YwkF9KUGW/AQmw7rk=;
- b=JV/SwrYr7K+Z3CA/O7O4c/xZfJ6Nr2SZBnUisY3VqObhUx7rs892AIdE5X8BA+48aw0gjH
- kINMWIBPkIn7vJQoE7q33N7WPc7w6GYugYIJSuiuJxAoPfUVERE22Xj3D8x7KWRM/xWjry
- HWzZFm4LVvLFj0ojTT0ZlIMQUrx7/Lk=
+ bh=i0wVixnq34RSXq841zKZ7UCSGBnUUOxseHyZXtHHxq8=;
+ b=RDHmbFIOsniL1LKYCQYPSetvUZKjPHrV+I6AS8aB6fyU3H+d6QHOwzvOegO5IBVG1Hy0i5
+ 0Nl9+cw3C2Hmt3YOYGRBFOEk6z/Z/PcxCXGq3W4cV9DJLoX6swRTsHiyBsB2tRiJ7YkF3u
+ jrx0pTtInvffktW3Jmr3pJaEobI0EVg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1640422527;
+ s=susede2_ed25519; t=1640422569;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=gHMYAfiG/XH7TbZtWF+oQ/6AQ6YwkF9KUGW/AQmw7rk=;
- b=L3G1mJ/AUw5cUyrYt3fDUx1eCXSKcUx5pZI802t+LoISN5Eq4+L9zauuQrBdRd6+iiJpAX
- dXBJ2IocSu+38hBw==
+ bh=i0wVixnq34RSXq841zKZ7UCSGBnUUOxseHyZXtHHxq8=;
+ b=YAzAh2X5lHBYNX9iEbSx7LBAAKZ4JAvatOxZNLJXX1IwkYy1MoJcgOhdAKK7HIpQilCyJC
+ mGLLypHAm/zOJHAA==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 84476A3B81;
- Sat, 25 Dec 2021 08:55:26 +0000 (UTC)
-Date: Sat, 25 Dec 2021 09:55:26 +0100
-Message-ID: <s5hzgopoygx.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id 2DDA4A3B81;
+ Sat, 25 Dec 2021 08:56:09 +0000 (UTC)
+Date: Sat, 25 Dec 2021 09:56:09 +0100
+Message-ID: <s5hy249oyfq.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: arsgeiger@gmail.com
-Subject: Re: [PATCH] ALSA: hda/realtek: Add speaker fixup for some Yoga 15ITL5
- devices
-In-Reply-To: <20211223232857.30741-1-arsgeiger@gmail.com>
-References: <20211223232857.30741-1-arsgeiger@gmail.com>
+To: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: Re: [PATCH] ALSA: hda/realtek: Use ALC285_FIXUP_HP_GPIO_LED on
+ another HP laptop
+In-Reply-To: <20211224035015.310068-1-kai.heng.feng@canonical.com>
+References: <20211224035015.310068-1-kai.heng.feng@canonical.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
 Cc: alsa-devel@alsa-project.org, Kailang Yang <kailang@realtek.com>,
- Jeremy Szu <jeremy.szu@canonical.com>, Elia Devito <eliadevito@gmail.com>,
- Takashi Iwai <tiwai@suse.com>, Werner Sembach <wse@tuxedocomputers.com>,
- open list <linux-kernel@vger.kernel.org>, Hui Wang <hui.wang@canonical.com>,
+ Jeremy Szu <jeremy.szu@canonical.com>, linux-kernel@vger.kernel.org,
+ Elia Devito <eliadevito@gmail.com>, tiwai@suse.com,
+ Werner Sembach <wse@tuxedocomputers.com>, Hui Wang <hui.wang@canonical.com>,
  Sami Loone <sami@loone.fi>, Cameron Berkenpas <cam@neo-zeon.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -92,19 +92,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 24 Dec 2021 00:28:57 +0100,
-arsgeiger@gmail.com wrote:
+On Fri, 24 Dec 2021 04:50:13 +0100,
+Kai-Heng Feng wrote:
 > 
-> From: Arie Geiger <arsgeiger@gmail.com>
+> The audio mute and mic mute LEDs don't work, so use the quirk to make
+> them work.
 > 
-> This patch adds another possible subsystem ID for the ALC287 used by
-> the Lenovo Yoga 15ITL5.
-> It uses the same initalization as the others.
-> This patch has been tested and works for my device.
-> 
-> Signed-off-by: Arie Geiger <arsgeiger@gmail.com>
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-Thanks, applied.
+Applied now.  Thanks.
 
 
 Takashi
