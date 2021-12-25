@@ -4,75 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35DFCC433F5
-	for <alsa-devel@archiver.kernel.org>; Sat, 25 Dec 2021 08:14:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 685D7C433F5
+	for <alsa-devel@archiver.kernel.org>; Sat, 25 Dec 2021 08:16:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3B1C01759;
-	Sat, 25 Dec 2021 09:13:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B1C01759
+	by alsa0.perex.cz (Postfix) with ESMTPS id 57B3E1766;
+	Sat, 25 Dec 2021 09:15:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57B3E1766
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640420089;
-	bh=AJ+lc1F8iKqakZVNW1w6uKeSni3oBfMnxCucTYF9HYc=;
+	s=default; t=1640420162;
+	bh=+2Al4sqUd3Lv83H10XJ1ze9Ke4nnchLbqinPNYiWi1o=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UXyZ15wg4xFcLfFbsuuJXq3W4iT+ViDRY+0WkyPkt4ATASOZlQ3jYg4c1S7bHVJ22
-	 SDc0svYDmUhWgrUyUG3f4c6Y7k29NIhD65rWfeeruBHSZkPeUpurn45D9SbH1dupr0
-	 aBW4w9DU9VJ0Q1jDS+dZ+YyO5wYk12YaulOzX8Tk=
+	b=DyjzBt0lkAvyy44M8DaQXONvfAF49UHFZI5H8w27ClTI9TRxzsRautZQMahfLm5Hl
+	 G+GsBIAHQssZMhbN/yLHRuiLumVUNewIpY6d4T+GTKn0cY2Td0Ukjz9+Joy0k4+N1k
+	 x3xaiRy11ksu04f9w7TFhDxw4NbOxQoe6WgCFjnI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DA704F80084;
-	Sat, 25 Dec 2021 09:13:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id ECC78F800F0;
+	Sat, 25 Dec 2021 09:15:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 55414F800F0; Sat, 25 Dec 2021 09:13:57 +0100 (CET)
+ id A4DBFF800F3; Sat, 25 Dec 2021 09:15:10 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 002DCF80084
- for <alsa-devel@alsa-project.org>; Sat, 25 Dec 2021 09:13:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 002DCF80084
+ by alsa1.perex.cz (Postfix) with ESMTPS id 06263F800F0
+ for <alsa-devel@alsa-project.org>; Sat, 25 Dec 2021 09:15:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06263F800F0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="nmkJ5DCd"; 
+ header.b="Ks7oPjc+"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="YHC2rzCU"
+ header.b="ZFFbTbff"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 02B9B1F380;
- Sat, 25 Dec 2021 08:13:54 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id BDB291F37B;
+ Sat, 25 Dec 2021 08:15:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1640420034; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1640420101; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=yi4h7sdb/c7ewY8l1z9yRu+mAHdA2ap/RfVwgIu9oZQ=;
- b=nmkJ5DCdTE/pzy6A56EtMailTX7/0wejQt6YqaiXZWBqr1MBuWO0VNi+S1mmPoNlo3+3KF
- iVRmwwTz4a+EIow/+6iO4eTrdWA6Bf0p9HGBKQUjKh2UfgpvIyF3iz01YOfIp7wrpjh/VW
- aalqc+sU4BoC9Mdbcja7D/+/T8Q4bbo=
+ bh=HwssHzidtCaja6GtIVeanrgqiHw6qjbbLErML1dCbF4=;
+ b=Ks7oPjc+fs068iOc3qzh5QGDxknCORYodKO80la7fLRgDDyS1H0hRCAvjbdasSORxqX3VH
+ 8UUc4G6z1bSqnav0Q+bfSX+pOA6sbqiknp8RAYw4qrj28yXfbqKlxqyzQ5413IWXj81Ds3
+ Rwev9N9n8e5CtyGbFT4Pmi00fUVFKvo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1640420034;
+ s=susede2_ed25519; t=1640420101;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=yi4h7sdb/c7ewY8l1z9yRu+mAHdA2ap/RfVwgIu9oZQ=;
- b=YHC2rzCUrKunOkTzi0C23ytqoaRHTpmFhRWt/ms81BRVXmQaRRtO2XV5dmGKTMH+KIr5My
- oOsT6mz1GBuBk2BA==
+ bh=HwssHzidtCaja6GtIVeanrgqiHw6qjbbLErML1dCbF4=;
+ b=ZFFbTbffp9N52oh3R6IgROuW4FO595QaTCOL95tluitxPahw6NEVVgFJKewDIiS4Ctkkxw
+ j6COWQnpz9MdhbBg==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id E1A5AA3B81;
- Sat, 25 Dec 2021 08:13:53 +0000 (UTC)
-Date: Sat, 25 Dec 2021 09:13:53 +0100
-Message-ID: <s5h5yrdqeym.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id 73381A3B81;
+ Sat, 25 Dec 2021 08:15:00 +0000 (UTC)
+Date: Sat, 25 Dec 2021 09:15:00 +0100
+Message-ID: <s5h4k6xqewr.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v1 0/2] kselftest: alsa: Small enhancements to mixer-test
-In-Reply-To: <20211217130213.3893415-1-broonie@kernel.org>
-References: <20211217130213.3893415-1-broonie@kernel.org>
+To: davidcomponentone@gmail.com
+Subject: Re: [PATCH] ALSA: hda: use swap() to make code cleaner
+In-Reply-To: <ebc9db44b802dfc88e1538629b517e000acb27b3.1639790796.git.yang.guang5@zte.com.cn>
+References: <ebc9db44b802dfc88e1538629b517e000acb27b3.1639790796.git.yang.guang5@zte.com.cn>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Shuah Khan <shuah@kernel.org>,
- linux-kselftest@vger.kernel.org
+Cc: Yang Guang <yang.guang5@zte.com.cn>, alsa-devel@alsa-project.org,
+ Zeal Robot <zealci@zte.com.cn>, linux-kernel@vger.kernel.org, tiwai@suse.com,
+ broonie@kernel.org, joe@perches.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,19 +89,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 17 Dec 2021 14:02:11 +0100,
-Mark Brown wrote:
+On Sat, 18 Dec 2021 02:54:16 +0100,
+davidcomponentone@gmail.com wrote:
 > 
-> These two patches improve the mixer test, checking that the default
-> values for enums are valid and extending them to cover all the values
-> for multi-value controls, not just the first one.  It also factors out
-> the validation that values are OK for controls for future reuse.
+> From: Yang Guang <yang.guang5@zte.com.cn>
 > 
-> Mark Brown (2):
->   kselftest: alsa: Factor out check that values meet constraints
->   kselftest: alsa: Validate values read from enumerations
+> Use the macro 'swap()' defined in 'include/linux/minmax.h' to avoid
+> opencoding it.
+> 
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: David Yang <davidcomponentone@gmail.com>
+> Signed-off-by: Yang Guang <yang.guang5@zte.com.cn>
 
-Applied both patches now.  Thanks.
+Applied now.  Thanks.
 
 
 Takashi
