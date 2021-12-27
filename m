@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10F0DC433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Dec 2021 15:36:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43AC8C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Dec 2021 15:36:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4B3741716;
-	Mon, 27 Dec 2021 16:35:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B3741716
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7B8D11735;
+	Mon, 27 Dec 2021 16:35:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B8D11735
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640619360;
-	bh=H7ziflq0df/KiYiFibcaLMS4/2w95AWhNQ8LcdpxQkg=;
+	s=default; t=1640619381;
+	bh=15rp81zr93B0jcoNTHYJePjpzC69bKpCnj/Lsd+w4ZQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eAdw2VfaFzsvAblXkbEflfsjX6X00xLbppIynNZeIMu9rVGbT+PKJUFdVrCZZGzVX
-	 RKyZrkckor8nGEXz4CTkVglLPrjMd/3LRfGvedvcJg5dL737K0coDzbRoESXDuK3sv
-	 me6xGrJh8oU0yFmu0VTnnzaLFc8VD2XcuXkdb3VU=
+	b=DSEOWC/AY2XEERlkTY669isvd6T7fj9XLc+Zz/NYOy6YanKnYNY8flW0co/XLM/vE
+	 ucHn4FSITIYcXn+P6ataCFsHsGwwGsCQiz1p+aVMQj/VvBN9hD+Oo8Usvtyiqa1/Iw
+	 evPoSIvo5JWDht+qlNZuwKUcK9JcuI5nK9bi2Kfw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9ADD5F804FB;
-	Mon, 27 Dec 2021 16:34:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8D1D8F80515;
+	Mon, 27 Dec 2021 16:34:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9BDD4F801F5; Mon, 27 Dec 2021 16:34:04 +0100 (CET)
+ id DAC95F804FA; Mon, 27 Dec 2021 16:34:09 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B3811F800E9
- for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2021 16:33:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3811F800E9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4C2D1F80161
+ for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2021 16:34:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C2D1F80161
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="gturkFbh"
+ header.b="I5+CD30f"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1640619237;
+ s=mimecast20190719; t=1640619243;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=W3zU7Q8y6oMU63gbxPdSIAWKT1+FCZtg5oI/7Z/adjo=;
- b=gturkFbhSPEy1XNCIpzjZ7zhXusUda3zk5uqrjOwFpygWFO+8UOOA6THDD/O+FefdXYPjl
- cw8C0lYyWuub0IN7HdK54A/LYmpSZVa1YfAY8h1zsSmp0dbY3qfBqMkqGjUQ/HKAyfhF6J
- Nxzk9mW6TYmZD1VqWGJO+Pxr0PDP9B0=
+ bh=fu2IVANqwHpaTAOMejiMntenzsJGxnvmd3CBgQy2S00=;
+ b=I5+CD30fyR4wBFt6QXuVGCVapS3Q9X8XgVgiYxvTLFxLJeAGFONGhOFHCsslrLnwjzv6OY
+ grHvnoIhfB3DUxV3NpqzO8EnOFjscSmseSsEIsacE2r9vXOKAgwGN4EL7Fzl2Pp7VuMzqD
+ LSM+r318Qi2Gd7IjZiBZTDH4XDiQZrk=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-56-JN7R98ulMD6h6x3ouBWu7w-1; Mon, 27 Dec 2021 10:33:54 -0500
-X-MC-Unique: JN7R98ulMD6h6x3ouBWu7w-1
+ us-mta-286-GEbh42cmNiuNnpzdwr-YWw-1; Mon, 27 Dec 2021 10:33:58 -0500
+X-MC-Unique: GEbh42cmNiuNnpzdwr-YWw-1
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com
  [10.5.11.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E9E282F24;
- Mon, 27 Dec 2021 15:33:52 +0000 (UTC)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 090FE654;
+ Mon, 27 Dec 2021 15:33:57 +0000 (UTC)
 Received: from shalem.redhat.com (unknown [10.39.192.60])
- by smtp.corp.redhat.com (Postfix) with ESMTP id BB22675747;
- Mon, 27 Dec 2021 15:33:49 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 756FB75744;
+ Mon, 27 Dec 2021 15:33:55 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Cezary Rojewski <cezary.rojewski@intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Liam Girdwood <lgirdwood@gmail.com>, Jie Yang <yang.jie@linux.intel.com>,
  Mark Brown <broonie@kernel.org>
-Subject: [PATCH 3/5] ASoC: rt5640: Add support for boards with an external
- jack-detect GPIO
-Date: Mon, 27 Dec 2021 16:33:42 +0100
-Message-Id: <20211227153344.155803-3-hdegoede@redhat.com>
+Subject: [PATCH 5/5] ASoC: Intel: bytcr_rt5640: Add support for external GPIO
+ jack-detect
+Date: Mon, 27 Dec 2021 16:33:44 +0100
+Message-Id: <20211227153344.155803-5-hdegoede@redhat.com>
 In-Reply-To: <20211227153344.155803-1-hdegoede@redhat.com>
 References: <20211227153344.155803-1-hdegoede@redhat.com>
 MIME-Version: 1.0
@@ -101,143 +101,105 @@ still do things like headset vs headphones and button-press detection,
 but instead of using one of the JD pins of the codec, an external GPIO
 is used to report the jack-presence switch status of the jack.
 
-Add support for this.
+Add support for boards which have this setup and which specify which
+external GPIO to use in the special Android AMCR0F28 ACPI device.
+
+And add a quirk for the Asus TF103C tablet which uses this setup.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/codecs/rt5640.c | 45 +++++++++++++++++++++++++++++++++++----
- sound/soc/codecs/rt5640.h |  5 +++++
- 2 files changed, 46 insertions(+), 4 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5640.c | 43 +++++++++++++++++++++++++--
+ 1 file changed, 40 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
-index 5244b6f7de84..47a21765c8c4 100644
---- a/sound/soc/codecs/rt5640.c
-+++ b/sound/soc/codecs/rt5640.c
-@@ -2159,7 +2159,11 @@ static bool rt5640_jack_inserted(struct snd_soc_component *component)
- 	struct rt5640_priv *rt5640 = snd_soc_component_get_drvdata(component);
- 	int val;
- 
--	val = snd_soc_component_read(component, RT5640_INT_IRQ_ST);
-+	if (rt5640->jd_gpio)
-+		val = gpiod_get_value(rt5640->jd_gpio) ? RT5640_JD_STATUS : 0;
-+	else
-+		val = snd_soc_component_read(component, RT5640_INT_IRQ_ST);
-+
- 	dev_dbg(component->dev, "irq status %#04x\n", val);
- 
- 	if (rt5640->jd_inverted)
-@@ -2362,6 +2366,16 @@ static irqreturn_t rt5640_irq(int irq, void *data)
- 	return IRQ_HANDLED;
- }
- 
-+static irqreturn_t rt5640_jd_gpio_irq(int irq, void *data)
-+{
-+	struct rt5640_priv *rt5640 = data;
-+
-+	queue_delayed_work(system_long_wq, &rt5640->jack_work,
-+			   msecs_to_jiffies(JACK_SETTLE_TIME));
-+
-+	return IRQ_HANDLED;
-+}
-+
- static void rt5640_cancel_work(void *data)
- {
- 	struct rt5640_priv *rt5640 = data;
-@@ -2406,7 +2420,12 @@ static void rt5640_disable_jack_detect(struct snd_soc_component *component)
- 	if (!rt5640->jack)
- 		return;
- 
--	free_irq(rt5640->irq, rt5640);
-+	if (rt5640->jd_gpio_irq_requested)
-+		free_irq(rt5640->jd_gpio_irq, rt5640);
-+
-+	if (rt5640->irq_requested)
-+		free_irq(rt5640->irq, rt5640);
-+
- 	rt5640_cancel_work(rt5640);
- 
- 	if (rt5640->jack->status & SND_JACK_MICROPHONE) {
-@@ -2415,6 +2434,9 @@ static void rt5640_disable_jack_detect(struct snd_soc_component *component)
- 		snd_soc_jack_report(rt5640->jack, 0, SND_JACK_BTN_0);
- 	}
- 
-+	rt5640->jd_gpio_irq_requested = false;
-+	rt5640->irq_requested = false;
-+	rt5640->jd_gpio = NULL;
- 	rt5640->jack = NULL;
- }
- 
-@@ -2467,16 +2489,31 @@ static void rt5640_enable_jack_detect(struct snd_soc_component *component,
- 	if (jack_data && jack_data->codec_irq_override)
- 		rt5640->irq = jack_data->codec_irq_override;
- 
-+	if (jack_data && jack_data->jd_gpio) {
-+		rt5640->jd_gpio = jack_data->jd_gpio;
-+		rt5640->jd_gpio_irq = gpiod_to_irq(rt5640->jd_gpio);
-+
-+		ret = request_irq(rt5640->jd_gpio_irq, rt5640_jd_gpio_irq,
-+				  IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING,
-+				  "rt5640-jd-gpio", rt5640);
-+		if (ret) {
-+			dev_warn(component->dev, "Failed to request jd GPIO IRQ %d: %d\n",
-+				 rt5640->jd_gpio_irq, ret);
-+			rt5640_disable_jack_detect(component);
-+			return;
-+		}
-+		rt5640->jd_gpio_irq_requested = true;
-+	}
-+
- 	ret = request_irq(rt5640->irq, rt5640_irq,
- 			  IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
- 			  "rt5640", rt5640);
- 	if (ret) {
- 		dev_warn(component->dev, "Failed to reguest IRQ %d: %d\n", rt5640->irq, ret);
--		rt5640->irq = -ENXIO;
--		/* Undo above settings */
- 		rt5640_disable_jack_detect(component);
- 		return;
- 	}
-+	rt5640->irq_requested = true;
- 
- 	/* sync initial jack state */
- 	queue_delayed_work(system_long_wq, &rt5640->jack_work, 0);
-diff --git a/sound/soc/codecs/rt5640.h b/sound/soc/codecs/rt5640.h
-index 2f4da5a8ecb2..9e49b9a0ccaa 100644
---- a/sound/soc/codecs/rt5640.h
-+++ b/sound/soc/codecs/rt5640.h
-@@ -2124,6 +2124,7 @@ struct rt5640_priv {
- 
- 	int ldo1_en; /* GPIO for LDO1_EN */
- 	int irq;
-+	int jd_gpio_irq;
- 	int sysclk;
- 	int sysclk_src;
- 	int lrck[RT5640_AIFS];
-@@ -2136,6 +2137,8 @@ struct rt5640_priv {
- 
- 	bool hp_mute;
- 	bool asrc_en;
-+	bool irq_requested;
-+	bool jd_gpio_irq_requested;
- 
- 	/* Jack and button detect data */
- 	bool ovcd_irq_enabled;
-@@ -2147,6 +2150,7 @@ struct rt5640_priv {
- 	struct delayed_work bp_work;
- 	struct delayed_work jack_work;
- 	struct snd_soc_jack *jack;
-+	struct gpio_desc *jd_gpio;
- 	unsigned int jd_src;
- 	bool jd_inverted;
- 	unsigned int ovcd_th;
-@@ -2155,6 +2159,7 @@ struct rt5640_priv {
- 
- struct rt5640_set_jack_data {
- 	int codec_irq_override;
-+	struct gpio_desc *jd_gpio;
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index f37ab44ae957..2ace32c03ec9 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -40,6 +40,8 @@ enum {
+ 	BYT_RT5640_NO_INTERNAL_MIC_MAP,
  };
  
- int rt5640_dmic_enable(struct snd_soc_component *component,
++#define RT5640_JD_SRC_EXT_GPIO			0x0f
++
+ enum {
+ 	BYT_RT5640_JD_SRC_GPIO1		= (RT5640_JD_SRC_GPIO1 << 4),
+ 	BYT_RT5640_JD_SRC_JD1_IN4P	= (RT5640_JD_SRC_JD1_IN4P << 4),
+@@ -47,6 +49,7 @@ enum {
+ 	BYT_RT5640_JD_SRC_GPIO2		= (RT5640_JD_SRC_GPIO2 << 4),
+ 	BYT_RT5640_JD_SRC_GPIO3		= (RT5640_JD_SRC_GPIO3 << 4),
+ 	BYT_RT5640_JD_SRC_GPIO4		= (RT5640_JD_SRC_GPIO4 << 4),
++	BYT_RT5640_JD_SRC_EXT_GPIO	= (RT5640_JD_SRC_EXT_GPIO << 4)
+ };
+ 
+ enum {
+@@ -627,6 +630,19 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 					BYT_RT5640_SSP0_AIF2 |
+ 					BYT_RT5640_MCLK_EN),
+ 	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
++			DMI_MATCH(DMI_PRODUCT_NAME, "TF103C"),
++		},
++		.driver_data = (void *)(BYT_RT5640_IN1_MAP |
++					BYT_RT5640_JD_SRC_EXT_GPIO |
++					BYT_RT5640_OVCD_TH_2000UA |
++					BYT_RT5640_OVCD_SF_0P75 |
++					BYT_RT5640_SSP0_AIF1 |
++					BYT_RT5640_MCLK_EN |
++					BYT_RT5640_USE_AMCR0F28),
++	},
+ 	{	/* Chuwi Vi8 (CWI506) */
+ 		.matches = {
+ 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Insyde"),
+@@ -1083,9 +1099,11 @@ static int byt_rt5640_add_codec_device_props(struct device *i2c_dev,
+ 	}
+ 
+ 	if (BYT_RT5640_JDSRC(byt_rt5640_quirk)) {
+-		props[cnt++] = PROPERTY_ENTRY_U32(
+-				    "realtek,jack-detect-source",
+-				    BYT_RT5640_JDSRC(byt_rt5640_quirk));
++		if (BYT_RT5640_JDSRC(byt_rt5640_quirk) != RT5640_JD_SRC_EXT_GPIO) {
++			props[cnt++] = PROPERTY_ENTRY_U32(
++					    "realtek,jack-detect-source",
++					    BYT_RT5640_JDSRC(byt_rt5640_quirk));
++		}
+ 
+ 		props[cnt++] = PROPERTY_ENTRY_U32(
+ 				    "realtek,over-current-threshold-microamp",
+@@ -1113,6 +1131,13 @@ static int byt_rt5640_add_codec_device_props(struct device *i2c_dev,
+ }
+ 
+ /* Some Android devs specify IRQs/GPIOS in a special AMCR0F28 ACPI device */
++static const struct acpi_gpio_params amcr0f28_jd_gpio = { 1, 0, false };
++
++static const struct acpi_gpio_mapping amcr0f28_gpios[] = {
++	{ "rt5640-jd-gpios", &amcr0f28_jd_gpio, 1 },
++	{ }
++};
++
+ static int byt_rt5640_get_amcr0f28_settings(struct snd_soc_card *card)
+ {
+ 	struct byt_rt5640_private *priv = snd_soc_card_get_drvdata(card);
+@@ -1133,6 +1158,18 @@ static int byt_rt5640_get_amcr0f28_settings(struct snd_soc_card *card)
+ 		goto put_adev;
+ 	}
+ 
++	if (BYT_RT5640_JDSRC(byt_rt5640_quirk) == RT5640_JD_SRC_EXT_GPIO) {
++		acpi_dev_add_driver_gpios(adev, amcr0f28_gpios);
++		data->jd_gpio = devm_fwnode_gpiod_get(card->dev, acpi_fwnode_handle(adev),
++						      "rt5640-jd", GPIOD_IN, "rt5640-jd");
++		acpi_dev_remove_driver_gpios(adev);
++
++		if (IS_ERR(data->jd_gpio)) {
++			ret = PTR_ERR(data->jd_gpio);
++			dev_err(card->dev, "error %d getting jd GPIO\n", ret);
++		}
++	}
++
+ put_adev:
+ 	acpi_dev_put(adev);
+ 	return ret;
 -- 
 2.33.1
 
