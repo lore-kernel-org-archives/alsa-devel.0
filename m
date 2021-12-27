@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 189B6C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Dec 2021 09:08:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C671EC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Dec 2021 09:11:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7199A1680;
-	Mon, 27 Dec 2021 10:08:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7199A1680
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9E2AE16F0;
+	Mon, 27 Dec 2021 10:10:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E2AE16F0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640596134;
-	bh=iEREfrirCvRzKNr38gE3GKBXENNiTnypLpCoCa89Md4=;
+	s=default; t=1640596281;
+	bh=JUoc45I7uqbh2yzieGS5o4tp7bP0qqOUkZs4yQbnSLo=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=V9Oget4GxhCPdSiQT3sXymO/RJnUU5HW9fj3qHJ1mpjvpgltcRirjUzFhzyBY+6Zt
-	 qHm5y0+K5IryVAYs6xvRnkPgTNPDQeL4+RKuzwcLE+OMgfVratFZDNHB8qRf4NJnOE
-	 nwTNpg0XYQYcGkAr3/vP7j9d5MBWMXV4DfGR0y1o=
+	b=bXEnbc5pSYr1gyyZf23SBC+rXtEDYnLy8W7B5dLlrFF8tT28LoyLc8itZNkmep13X
+	 CZcEPcvOslb+IFydib6Uboy9KUov2MUGcbM0KFe43wPEqfReYNZGyUQn7n1BJTIjOa
+	 hMcsjpJtsouTOIha66Z+wkSr1nc1jH4Kk7hu0ru4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ED4F4F800F5;
-	Mon, 27 Dec 2021 10:08:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 43835F800F5;
+	Mon, 27 Dec 2021 10:10:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 96B22F80158; Mon, 27 Dec 2021 10:08:01 +0100 (CET)
+ id 91BC9F80158; Mon, 27 Dec 2021 10:10:26 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 89013F800AB
- for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2021 10:07:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89013F800AB
+ by alsa1.perex.cz (Postfix) with ESMTP id 346EFF800E9
+ for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2021 10:10:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 346EFF800E9
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1640596075865680933-webhooks-bot@alsa-project.org>
-References: <1640596075865680933-webhooks-bot@alsa-project.org>
+In-Reply-To: <1640596223921334982-webhooks-bot@alsa-project.org>
+References: <1640596223921334982-webhooks-bot@alsa-project.org>
 Subject: After Update: No more sound. Downgrading solved it.
-Message-Id: <20211227090801.96B22F80158@alsa1.perex.cz>
-Date: Mon, 27 Dec 2021 10:08:01 +0100 (CET)
+Message-Id: <20211227091026.91BC9F80158@alsa1.perex.cz>
+Date: Mon, 27 Dec 2021 10:10:26 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -55,14 +55,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #131 was opened from aljazzair:
+alsa-project/alsa-ucm-conf issue #131 was edited from aljazzair:
 
 Hello.
 
 I am on Manjaro Linux, an Arch derivative.
 Recently, after a system update, sound was gone.
 After a couple of hours investigation, I narrowed it down to an update of alsa-ucm-conf.
-Basically after downgrading 1.2.6.3-0 => 1.2.5.1-1, my problem is gone.
+Basically after downgrading 1.2.6.3-0 => 1.2.5.1-1, my problem is gone. I
 
 Symptom: With 1.2.6.3-0, there was no sound.
 Running aplay -l listed my hardware.
@@ -77,7 +77,7 @@ I looked at the list of recent upgrades and saw alsa-ucm-conf in the logs. Downg
 
 Distribution:
 
-> Linux netsrvr 5.13.19-2-MANJARO #1 SMP PREEMPT Sun Sep 19 21:31:53 UTC 2021 x86_64 GNU/Linux
+> Linux homelab 5.13.19-2-MANJARO #1 SMP PREEMPT Sun Sep 19 21:31:53 UTC 2021 x86_64 GNU/Linux
 
 List of PLAYBACK Hardware Devices from aplay -l:
 
