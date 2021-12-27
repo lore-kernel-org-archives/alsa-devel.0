@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95EF2C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Dec 2021 09:12:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0BD16C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Dec 2021 09:13:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 99BF716EB;
-	Mon, 27 Dec 2021 10:11:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99BF716EB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 50850170E;
+	Mon, 27 Dec 2021 10:12:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50850170E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640596355;
-	bh=KDqGsOMPg3OPbe0LjO/QEZo2VLJENJO8i7IIP4V2WTI=;
+	s=default; t=1640596410;
+	bh=RnE3MMBfb27MbfnkiYLrfna+UGvMSaEZZqTAp0XgABI=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iFAfEVTSPGzAkjRmUKGFXvEoprTX7aMCpkrYNenBHbn/bcz0x7TQSI2Hg8/sMAI74
-	 cwMCxycIRrgE8rO72E6AE2aISBotOgN6Pz5kom/Drhi6Ix79933byddn35Iq6yIGoy
-	 KGzzVBBgESD11c97EXe3ppqYTeMBhq1mAqaO8ntU=
+	b=caiQuuCGu2yAPfD+//lB3225N7qLE1hWdotK9/Nj9RDmOamr9kJIkElVvPH1Cx+GU
+	 nqvEQwUhjxn/8Yn+WMr+VRrdD5KKh0Hi+KpBvo0zW/XRldcBoELMwUejH9+zxCuAYF
+	 ejc01AHYaC3Fo6gzOO6RDSY/0EfWbkNfn49qTChk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 44F56F800E9;
-	Mon, 27 Dec 2021 10:11:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F1F54F800E9;
+	Mon, 27 Dec 2021 10:12:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DA58DF800F5; Mon, 27 Dec 2021 10:11:43 +0100 (CET)
+ id 880DAF800F5; Mon, 27 Dec 2021 10:12:39 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 4E0A3F800D3
- for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2021 10:11:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E0A3F800D3
+ by alsa1.perex.cz (Postfix) with ESMTP id 3BB61F800D3
+ for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2021 10:12:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3BB61F800D3
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1640596299229834080-webhooks-bot@alsa-project.org>
-References: <1640596299229834080-webhooks-bot@alsa-project.org>
+In-Reply-To: <1640596351613255978-webhooks-bot@alsa-project.org>
+References: <1640596351613255978-webhooks-bot@alsa-project.org>
 Subject: After Update: No more sound. Downgrading solved it.
-Message-Id: <20211227091143.DA58DF800F5@alsa1.perex.cz>
-Date: Mon, 27 Dec 2021 10:11:43 +0100 (CET)
+Message-Id: <20211227091239.880DAF800F5@alsa1.perex.cz>
+Date: Mon, 27 Dec 2021 10:12:39 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,7 +111,7 @@ Sound managed with:
 > Linked with libpipewire 0.3.40
 > 
 
-I am posting this in order to document what happened in case someone has the same issue, and searches google.
+I am posting this in order to document what happened in case someone has the same issue, and searches google for hints.
 Also to inform the developper, maybe something can be done to avoid this.
 
 Thank you.
