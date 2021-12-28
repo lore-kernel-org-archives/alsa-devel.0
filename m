@@ -4,54 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C23ACC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Dec 2021 14:24:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D503C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Dec 2021 14:25:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0F22617E0;
-	Wed, 29 Dec 2021 15:24:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F22617E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id B8B3E17B8;
+	Wed, 29 Dec 2021 15:24:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B8B3E17B8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640787896;
-	bh=mJZbUJwRHeDPtocpi2IbwMtnDzzMO+WSDhY8NDfn1kc=;
-	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=o+FI3fkenTxLKlwVavJ4yxrHDlh4GuEk+a4j9vtuALiBHXwgk5KmIh/5TT9umSTof
-	 St56hJUaLtRdD7R7UKV14eQZYLpm2BaKehXAbed6DLTWuzVJl0q40QJJFRMbKt8F1U
-	 ftyBhFWHpcnFghyqKcqlt5bcuvsBivW217inV55I=
+	s=default; t=1640787911;
+	bh=Ei+lXkPbIaHpS0txYCFNixqmQqcdQQaWmqFXnMYH2oM=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=JzFVK57thndvJemTYOB29kbVg6iLqXQ9zJAU/xLe6wcssVgm2Dejur27138LAzpan
+	 NfPuyAXqLdFsN9PSMNPT2DPnnMRfZKZFzjzAHQCmP9+bIWRcAdmjfmoxGNCScwRid4
+	 046bzWdEpuLl45iPuslZYHQExxvQnjPRTIuWn4dc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F1082F80534;
-	Wed, 29 Dec 2021 15:20:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8BFF5F8053B;
+	Wed, 29 Dec 2021 15:20:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EF591F80224; Tue, 28 Dec 2021 19:10:00 +0100 (CET)
+ id CE235F800D1; Tue, 28 Dec 2021 19:11:26 +0100 (CET)
 Received: from sender11-of-o51.zoho.eu (sender11-of-o51.zoho.eu
  [31.186.226.237])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 347ECF800D1
- for <alsa-devel@alsa-project.org>; Tue, 28 Dec 2021 19:09:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 347ECF800D1
-ARC-Seal: i=1; a=rsa-sha256; t=1640714974; cv=none; d=zohomail.eu; s=zohoarc; 
- b=b+2at6/dS3v78Y4eHWBZ+2wS9KgpDxcfg90OGlhKXFSnZpa1Iy7LrzS41PAghefXVdxUWhrLSlgAajpDxXVhVk3gkwA8uVLGCfG6PjhGbFJD/EBYmvyrbMIduCYJuvbsbWov3l6VjuRUPcDNSFUjT5QGFvY82Ej5fimGi4sHVY8=
+ by alsa1.perex.cz (Postfix) with ESMTPS id A70B8F800D1
+ for <alsa-devel@alsa-project.org>; Tue, 28 Dec 2021 19:11:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A70B8F800D1
+ARC-Seal: i=1; a=rsa-sha256; t=1640715068; cv=none; d=zohomail.eu; s=zohoarc; 
+ b=Wt4GPHKEWTIIBDsTgNxtbBUanAmIzXlQAGfi67OhlnkxyM8ynFgb5G8lZ0HueEDgS6a4AO6Sms/y6KQ7sp/ctATMR0Ashng04Fte1gmd6DTZti+q4eOFJkSd0eweR6i7IJyZIs66YqqfKXDJpE9YYejmrbpHO2jiRyjgUHyznOo=
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu;
- s=zohoarc; t=1640714974;
- h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To;
- bh=oynB9R8k0PLl1IH46elp4NZHwnEBnjiXaZcMGJZ+cRY=; 
- b=EJoBw4b5ePgr40U5SjGlpKS2nEGxPrKIrV9RZRwOx6vYwkXJBvzGcTfOnR/ql9qzKm03QSDuUyDX+q4gBupGbpVEhS+Nr78rE/z+Yi4Lez7GOxkjl7S3jJDLB5eEZ7+1gUJ0IuPgnLcTBqsIzHZONcEkCu4dYY18zcH22VY+f30=
+ s=zohoarc; t=1640715068;
+ h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To;
+ bh=/fwc56FAKMG1LNYNd43a5rhbPAtQvSgiuBH2beg1ceg=; 
+ b=IZI7NDm96uvJ5rxdpdXuN3SFghnG7I68C4EH3OahWfsj27uH0+r2rsawHpGrVRhATvTORyTdxwxyWu7WImOquG/RhKJkD7c+VPcKAGbsldCmOudM6N2p+oOgWSGO1FSVy2AX+4HUbWCatzG3Ua2QE3qTB0ILTDVSuqsQt1GRkTc=
 ARC-Authentication-Results: i=1; mx.zohomail.eu;
  spf=pass  smtp.mailfrom=philipp@uvos.xyz;
  dmarc=pass header.from=<philipp@uvos.xyz>
 Received: from UVOSLinux (aftr-37-201-192-113.unity-media.net
  [37.201.192.113]) by mx.zoho.eu
- with SMTPS id 1640714972300267.32556141033467;
- Tue, 28 Dec 2021 19:09:32 +0100 (CET)
-Date: Tue, 28 Dec 2021 19:09:31 +0100
+ with SMTPS id 1640715065616408.4636139419308;
+ Tue, 28 Dec 2021 19:11:05 +0100 (CET)
+Date: Tue, 28 Dec 2021 19:11:04 +0100
 From: Carl Philipp Klemm <philipp@uvos.xyz>
 To: alsa-devel@alsa-project.org
-Subject: [RFC PATCH 1/3] ASoC: simple-card-utils: add support for componants
- provideing jack events via set_jack
-Message-Id: <20211228190931.df5d518220080a734532ebfd@uvos.xyz>
+Subject: [RFC PATCH 2/3] ARM: dts: motorola-mapphone: add interrupt for
+ headphone detection
+Message-Id: <20211228191104.631d126f13ac0bb09e91ca13@uvos.xyz>
+In-Reply-To: <20211228190931.df5d518220080a734532ebfd@uvos.xyz>
+References: <20211228190931.df5d518220080a734532ebfd@uvos.xyz>
 X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-unknown-linux-gnu)
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -75,130 +78,24 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This allows componants that want a jack to report state on to do so by calling
-set_jack on components implementing this function.
-
-Im not entirely sure this is the right way to do this so RFC
-
 Signed-off-by: Carl Philipp Klemm <philipp@uvos.xyz>
 ---
- include/sound/simple_card_utils.h     |  6 ++--
- sound/soc/generic/simple-card-utils.c | 47 +++++++++++++++++++--------
- 2 files changed, 36 insertions(+), 17 deletions(-)
+ arch/arm/boot/dts/motorola-cpcap-mapphone.dtsi | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
-index 51b3b485a92e..547ad537613d 100644
---- a/include/sound/simple_card_utils.h
-+++ b/include/sound/simple_card_utils.h
-@@ -57,8 +57,8 @@ struct asoc_simple_priv {
- 		struct prop_nums num;
- 		unsigned int mclk_fs;
- 	} *dai_props;
--	struct asoc_simple_jack hp_jack;
--	struct asoc_simple_jack mic_jack;
-+	struct asoc_simple_jack *hp_jack;
-+	struct asoc_simple_jack *mic_jack;
- 	struct snd_soc_dai_link *dai_link;
- 	struct asoc_simple_dai *dais;
- 	struct snd_soc_dai_link_component *dlcs;
-@@ -173,7 +173,7 @@ int asoc_simple_parse_pin_switches(struct snd_soc_card *card,
- 				   char *prefix);
+diff --git a/arch/arm/boot/dts/motorola-cpcap-mapphone.dtsi b/arch/arm/boot/dts/motorola-cpcap-mapphone.dtsi
+index 0aff0d306d06..e164169bf820 100644
+--- a/arch/arm/boot/dts/motorola-cpcap-mapphone.dtsi
++++ b/arch/arm/boot/dts/motorola-cpcap-mapphone.dtsi
+@@ -72,6 +72,9 @@ cpcap_audio: audio-codec {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
  
- int asoc_simple_init_jack(struct snd_soc_card *card,
--			       struct asoc_simple_jack *sjack,
-+			       struct asoc_simple_jack **sjack,
- 			       int is_hp, char *prefix, char *pin);
- int asoc_simple_init_priv(struct asoc_simple_priv *priv,
- 			       struct link_info *li);
-diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index 10c63b73900c..1899feba16cc 100644
---- a/sound/soc/generic/simple-card-utils.c
-+++ b/sound/soc/generic/simple-card-utils.c
-@@ -395,6 +395,7 @@ int asoc_simple_dai_init(struct snd_soc_pcm_runtime *rtd)
- 	struct asoc_simple_priv *priv = snd_soc_card_get_drvdata(rtd->card);
- 	struct simple_dai_props *props = simple_priv_to_props(priv, rtd->num);
- 	struct asoc_simple_dai *dai;
-+	struct snd_soc_component *component;
- 	int i, ret;
- 
- 	for_each_prop_dai_codec(props, i, dai) {
-@@ -412,6 +413,21 @@ int asoc_simple_dai_init(struct snd_soc_pcm_runtime *rtd)
- 	if (ret < 0)
- 		return ret;
- 
-+	for_each_rtd_components(rtd, i, component) {
-+		if (component->driver->set_jack) {
-+			if (!priv->hp_jack) {
-+				priv->hp_jack = devm_kzalloc(priv->snd_card.dev,
-+					sizeof(*priv->hp_jack), GFP_KERNEL);
-+				snd_soc_card_jack_new(&priv->snd_card,
-+					"Headphones",
-+					SND_JACK_HEADPHONE,
-+					&priv->hp_jack->jack,
-+					NULL, 0);
-+			}
-+			snd_soc_component_set_jack(component, &priv->hp_jack->jack, NULL);
-+		}
-+	}
++			interrupts-extended = <&cpcap 9 0>;
++			interrupt-names = "hpplugged";
 +
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(asoc_simple_dai_init);
-@@ -554,7 +570,7 @@ int asoc_simple_parse_pin_switches(struct snd_soc_card *card,
- EXPORT_SYMBOL_GPL(asoc_simple_parse_pin_switches);
- 
- int asoc_simple_init_jack(struct snd_soc_card *card,
--			  struct asoc_simple_jack *sjack,
-+			  struct asoc_simple_jack **sjack,
- 			  int is_hp, char *prefix,
- 			  char *pin)
- {
-@@ -569,8 +585,6 @@ int asoc_simple_init_jack(struct snd_soc_card *card,
- 	if (!prefix)
- 		prefix = "";
- 
--	sjack->gpio.gpio = -ENOENT;
--
- 	if (is_hp) {
- 		snprintf(prop, sizeof(prop), "%shp-det-gpio", prefix);
- 		pin_name	= pin ? pin : "Headphones";
-@@ -588,21 +602,26 @@ int asoc_simple_init_jack(struct snd_soc_card *card,
- 		return -EPROBE_DEFER;
- 
- 	if (gpio_is_valid(det)) {
--		sjack->pin.pin		= pin_name;
--		sjack->pin.mask		= mask;
-+		struct asoc_simple_jack *sjack_d;
-+
-+		sjack = devm_kzalloc(dev, sizeof(*(*sjack)), GFP_KERNEL);
-+		sjack_d = *sjack;
-+
-+		sjack_d->pin.pin		= pin_name;
-+		sjack_d->pin.mask		= mask;
- 
--		sjack->gpio.name	= gpio_name;
--		sjack->gpio.report	= mask;
--		sjack->gpio.gpio	= det;
--		sjack->gpio.invert	= !!(flags & OF_GPIO_ACTIVE_LOW);
--		sjack->gpio.debounce_time = 150;
-+		sjack_d->gpio.name	= gpio_name;
-+		sjack_d->gpio.report	= mask;
-+		sjack_d->gpio.gpio	= det;
-+		sjack_d->gpio.invert	= !!(flags & OF_GPIO_ACTIVE_LOW);
-+		sjack_d->gpio.debounce_time = 150;
- 
- 		snd_soc_card_jack_new(card, pin_name, mask,
--				      &sjack->jack,
--				      &sjack->pin, 1);
-+				      &sjack_d->jack,
-+				      &sjack_d->pin, 1);
- 
--		snd_soc_jack_add_gpios(&sjack->jack, 1,
--				       &sjack->gpio);
-+		snd_soc_jack_add_gpios(&sjack_d->jack, 1,
-+				       &sjack_d->gpio);
- 	}
- 
- 	return 0;
+ 			port@0 {
+ 				reg = <0>;
+ 				cpcap_audio_codec0: endpoint {
 -- 
 2.34.1
