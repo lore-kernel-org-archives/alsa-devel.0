@@ -4,99 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61D6CC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Dec 2021 13:13:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C777C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Dec 2021 17:12:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B24D81683;
-	Tue, 28 Dec 2021 14:12:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B24D81683
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7F9AD20C;
+	Tue, 28 Dec 2021 18:11:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F9AD20C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640697224;
-	bh=myWWuQbNzvR83lW49dDvEV2aOzwfduo6cw/k/KO4QXo=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1640711524;
+	bh=0C2qSGWm7N0zY8XVX1Z5ISUo1fUeWKsM5JyFcKXTY14=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uNcTlW/h3ObQzeQXZqLESa4zpp5qRFgfZ6fAdpr6mqQ3g63fOBuDdi6NkUfuzjN/V
-	 kj6beEB797U+nt8VSE0RxPjkdhIgcvfy9MGdYz86C/ZZ7NyijlOqIBPGs4Vcxp2rTS
-	 q8qh/ugsox0+6zb15e7n2EOgkM5wKhKSCytMHets=
+	b=jWI40foCmDqaoCZiVXgWxSJAFoCe1B2ziWjkvDgKpsuZZUi7xwbg3MLDfSb6xU6h3
+	 gf9ikW0neHBtPZvyH0LsJXkBlbpufgkEFB4dvFdy6lPzBeGzewaEVBx7IeB1qsYq/0
+	 3zP2C3Gh4s/AR2a5b7JnFLsIdf0+Nz1qrGW62/Uo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 46E40F801EC;
-	Tue, 28 Dec 2021 14:12:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 07C27F800D1;
+	Tue, 28 Dec 2021 18:11:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 142E6F80224; Tue, 28 Dec 2021 14:12:53 +0100 (CET)
-Received: from smtp-relay-internal-1.canonical.com
- (smtp-relay-internal-1.canonical.com [185.125.188.123])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1819DF800E9
- for <alsa-devel@alsa-project.org>; Tue, 28 Dec 2021 14:12:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1819DF800E9
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com
- header.b="iqUw/HgI"
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id DEE153F1A5
- for <alsa-devel@alsa-project.org>; Tue, 28 Dec 2021 13:12:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1640697163;
- bh=PHoxW3qi5dqUGPM3GtNEF3gB6+cmt8tlvVRU3SmK+uQ=;
- h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
- In-Reply-To:Content-Type;
- b=iqUw/HgIeeASox6ZlQmsssd35WIbzE7etR6wBqpqRMO766Txx/5dWxC5862lVea5x
- J3NSResRz4OCYARMykVaOFgvP0YP9y+8mozH48+u7SBlep/Vqz43ZMOYMm8QEfHsaV
- bBc0a+Gcb0gy3RC6adwIia4OLy/OPUB/FpyJU18B+xIfqHN27TkfnQ7NUh057UCMKL
- yJogGz1NlOqkeDrJuPBkiFqNqakT1RWhpCmAXqrLGK46fF5JQ/kE9cLnqiqYXfxYO9
- syVS3/0CyvzVV4r1cEzMHHAhTb561UblCBvjxem+Q6Tffo4L4GX/8TrJM7PIskgDLs
- nuo97lhGkkbYA==
-Received: by mail-lj1-f198.google.com with SMTP id
- v19-20020a2e87d3000000b0022dbe4687f1so3238664ljj.7
- for <alsa-devel@alsa-project.org>; Tue, 28 Dec 2021 05:12:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
- :content-language:to:cc:references:from:in-reply-to
- :content-transfer-encoding;
- bh=PHoxW3qi5dqUGPM3GtNEF3gB6+cmt8tlvVRU3SmK+uQ=;
- b=YPywgaxVSJwv6CVc0huPC4LYh6uJzf75jsNkF1e3eTqACkZM8JO2x8FHEdvIKTO3/M
- NOTGeSOJoGj/DXmgI7u8eUZhcsT4eHvI5QygkildsEAftC+BtTEYJrIiSq3VACqVTtAn
- 26/fF3aHUw49XakAhO71QglXIbsDcnWXTZ2WDs4zUp6M1p63CoS9xwnCuuPCfSLLtbO3
- BZDALgsmwQ/JpqzdXsu/rTHEeDcXOziIPT4+OgZxRFbxkgjxpaJXHOYmpNFDarmgSqq8
- WDx0GpQ56LewD4G5odtKiWSKkjU0bPiH273QkVcdzS/k1bd+Gk4xdEjI2CPhAYJtUQUB
- vzug==
-X-Gm-Message-State: AOAM531AHb2BRRjRVtxPdloi34QCVTMyiJI9av4LC3tjKzK4ZWmCDsHH
- x8tYXkXNkqu1RIYX0qxtXM/imRBcvX79nFzKIoppHroEYyqXYiqk+G59smzryVbS/3H9LTCFpHu
- uqoOiSlFfzwTxvXdzorQMpOS4JHqGkJwP/xyGtL7z
-X-Received: by 2002:ac2:46d4:: with SMTP id p20mr19141642lfo.653.1640697162839; 
- Tue, 28 Dec 2021 05:12:42 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyoavReARFXLadW++33qI3Nh2nMVHqNtx8xt4u7Le2xVMY4oTna4zrRBpafVgDfdAK51erwxw==
-X-Received: by 2002:ac2:46d4:: with SMTP id p20mr19141604lfo.653.1640697162249; 
- Tue, 28 Dec 2021 05:12:42 -0800 (PST)
-Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
- by smtp.gmail.com with ESMTPSA id
- r11sm115506ljp.18.2021.12.28.05.12.39
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 28 Dec 2021 05:12:40 -0800 (PST)
-Message-ID: <5e799c7f-573b-d254-80e6-85404ef536b6@canonical.com>
-Date: Tue, 28 Dec 2021 14:12:39 +0100
+ id 4AC2EF80224; Tue, 28 Dec 2021 18:11:12 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id AE451F800D1
+ for <alsa-devel@alsa-project.org>; Tue, 28 Dec 2021 18:11:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE451F800D1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.1
-Subject: Re: [PATCH] ASoC: samsung: idma: Check of ioremap return value
-Content-Language: en-US
-To: Jiasheng Jiang <jiasheng@iscas.ac.cn>, s.nawrocki@samsung.com,
- lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
-References: <20211228034026.1659385-1-jiasheng@iscas.ac.cn>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20211228034026.1659385-1-jiasheng@iscas.ac.cn>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1640711466576225996-webhooks-bot@alsa-project.org>
+References: <1640711466576225996-webhooks-bot@alsa-project.org>
+Subject: [patch] 1st line of /usr/share/alsa/init/00main,
+ which is a comment and contains a typo
+Message-Id: <20211228171112.4AC2EF80224@alsa1.perex.cz>
+Date: Tue, 28 Dec 2021 18:11:12 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,22 +56,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 28/12/2021 04:40, Jiasheng Jiang wrote:
-> Because of the potential failure of the ioremap(), the buf->area could
-> be NULL.
-> Therefore, we need to check it and return -ENOMEM in order to transfer
-> the error.
-> 
-> Fixes: f09aecd50f39 ("ASoC: SAMSUNG: Add I2S0 internal dma driver")
-> Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
-> ---
->  sound/soc/samsung/idma.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
+alsa-project/alsa-utils issue #132 was opened from ZjYwMj:
 
+```
+--- a/usr/share/alsa/init/00main	2021-12-06 18:44:25.000000000 +0000
++++ b/usr/share/alsa/init/00main	2021-12-28 17:04:36.835174838 +0000
+@@ -1,4 +1,4 @@
+-# This is toplevel configuration for for 'alsactl init'.
++# This is the toplevel configuration file for 'alsactl init'.
+ # See 'man alsactl_init' for syntax.
+ 
+ # set root device directory in sysfs for soundcard for ATTR{} command
+```
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-
-
-Best regards,
-Krzysztof
+Issue URL     : https://github.com/alsa-project/alsa-utils/issues/132
+Repository URL: https://github.com/alsa-project/alsa-utils
