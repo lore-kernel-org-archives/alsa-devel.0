@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 039EAC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Dec 2021 20:03:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8EEC3C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Dec 2021 20:07:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CB5781FC;
-	Tue, 28 Dec 2021 21:02:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB5781FC
+	by alsa0.perex.cz (Postfix) with ESMTPS id A667F168A;
+	Tue, 28 Dec 2021 21:06:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A667F168A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640721816;
-	bh=OzQsJxaSTH9Xc/W/6g197Z+Zc+OgtspoDjWxjKmpFMA=;
+	s=default; t=1640722027;
+	bh=0Raldd+sSSV9G/cKJHU7uhNAuKsQop4Z5I/mtIAZgrE=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=V0KxfLS8g+8ZUSVCWtAvhPLzXmpl7rQfFu7YlblkWfl9/TvuLrxsl0eA4OcUkXml/
-	 17knfqCfLGoSCw891haqM9IER/5hJSWzL/oCiwan6wWCdHhP6VUsP646RBt9RGwd+Z
-	 4AGbznF/CLz4StrPg5SCOm2R+Ve8yOTmXaoVbO74=
+	b=lbCj429qYYxMU2OHabFgu4gr8AxpmNy6s+HQ/aC4vmIm01SmgTUEAdUEbXPRCB/KE
+	 +GQKncNkaaXBZpAAwT/ZeXddlurMfexO86f73Qvr/V1JNIrq1VUk53ToVscPKn8Sox
+	 8DB8erAm68kw3utLkdm1W7N4svD8qBJwronf+BfE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 49196F800D3;
-	Tue, 28 Dec 2021 21:02:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2E6CFF801EC;
+	Tue, 28 Dec 2021 21:06:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E08E2F80224; Tue, 28 Dec 2021 21:02:43 +0100 (CET)
+ id 40AD6F80224; Tue, 28 Dec 2021 21:06:15 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 66071F800D3
- for <alsa-devel@alsa-project.org>; Tue, 28 Dec 2021 21:02:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66071F800D3
+ by alsa1.perex.cz (Postfix) with ESMTP id E6C1BF800D1
+ for <alsa-devel@alsa-project.org>; Tue, 28 Dec 2021 21:06:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6C1BF800D1
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1640721760342704058-webhooks-bot@alsa-project.org>
-References: <1640721760342704058-webhooks-bot@alsa-project.org>
+In-Reply-To: <1640721971392262936-webhooks-bot@alsa-project.org>
+References: <1640721971392262936-webhooks-bot@alsa-project.org>
 Subject: [patch] /usr/share/alsa/speaker-test/sample_map.csv is not accurate, 
  not affecting operation of speaker-test
-Message-Id: <20211228200243.E08E2F80224@alsa1.perex.cz>
-Date: Tue, 28 Dec 2021 21:02:43 +0100 (CET)
+Message-Id: <20211228200615.40AD6F80224@alsa1.perex.cz>
+Date: Tue, 28 Dec 2021 21:06:15 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,7 +68,7 @@ With alsa-utils 1.2.6:
 +0, "Front Left", "/usr/share/sounds/alsa/Front_Left.wav"
 +1, "Front Right", "/usr/share/sounds/alsa/Front_Right.wav"
 ```
-Although this file is not accurate, it does not affect the operation of speaker-test. Perhaps the paths to the wav files are hard coded within speaker-test. Still, I find it a minor bug.
+/usr/share/alsa/samples does not exist. It sounds as the files mentioned in the diff. This inaccuracy does not affect the operation of speaker-test. Perhaps the paths to the wav files are hard coded within speaker-test. Still, I find it a minor bug.
 
 Issue URL     : https://github.com/alsa-project/alsa-utils/issues/133
 Repository URL: https://github.com/alsa-project/alsa-utils
