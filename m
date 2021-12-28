@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9BC3CC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Dec 2021 20:00:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 039EAC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Dec 2021 20:03:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CED7B167C;
-	Tue, 28 Dec 2021 20:59:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CED7B167C
+	by alsa0.perex.cz (Postfix) with ESMTPS id CB5781FC;
+	Tue, 28 Dec 2021 21:02:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB5781FC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640721628;
-	bh=JHv90Kvh5EWY3BLQq6SEZrlUub12DqquWY7q8EFLd7I=;
+	s=default; t=1640721816;
+	bh=OzQsJxaSTH9Xc/W/6g197Z+Zc+OgtspoDjWxjKmpFMA=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=C6fKhp4uX6e6DmgX6lFb6iIJRr52HO8ZOCHIj3pLH0wwDNjSKf8R1Z1gx25u6pFcL
-	 N/loM2e9oV0a02GQoPkhAuwmXdAZGyqWoqxWTG2xxhAGMhRX5ZKeYP83jVrMmm2CD3
-	 b97AbEPf6R0d+ZMGhEnqcOK8AaL1FrmNyXcKFe1w=
+	b=V0KxfLS8g+8ZUSVCWtAvhPLzXmpl7rQfFu7YlblkWfl9/TvuLrxsl0eA4OcUkXml/
+	 17knfqCfLGoSCw891haqM9IER/5hJSWzL/oCiwan6wWCdHhP6VUsP646RBt9RGwd+Z
+	 4AGbznF/CLz4StrPg5SCOm2R+Ve8yOTmXaoVbO74=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5410BF801EC;
-	Tue, 28 Dec 2021 20:59:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 49196F800D3;
+	Tue, 28 Dec 2021 21:02:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7543FF80224; Tue, 28 Dec 2021 20:59:36 +0100 (CET)
+ id E08E2F80224; Tue, 28 Dec 2021 21:02:43 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 22821F800D3
- for <alsa-devel@alsa-project.org>; Tue, 28 Dec 2021 20:59:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22821F800D3
+ by alsa1.perex.cz (Postfix) with ESMTP id 66071F800D3
+ for <alsa-devel@alsa-project.org>; Tue, 28 Dec 2021 21:02:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66071F800D3
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1640721571321252108-webhooks-bot@alsa-project.org>
-References: <1640721571321252108-webhooks-bot@alsa-project.org>
+In-Reply-To: <1640721760342704058-webhooks-bot@alsa-project.org>
+References: <1640721760342704058-webhooks-bot@alsa-project.org>
 Subject: [patch] /usr/share/alsa/speaker-test/sample_map.csv is not accurate, 
  not affecting operation of speaker-test
-Message-Id: <20211228195936.7543FF80224@alsa1.perex.cz>
-Date: Tue, 28 Dec 2021 20:59:36 +0100 (CET)
+Message-Id: <20211228200243.E08E2F80224@alsa1.perex.cz>
+Date: Tue, 28 Dec 2021 21:02:43 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -56,7 +56,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-utils issue #133 was opened from ZjYwMj:
+alsa-project/alsa-utils issue #133 was edited from ZjYwMj:
 
 With alsa-utils 1.2.6:
 ```
@@ -68,7 +68,7 @@ With alsa-utils 1.2.6:
 +0, "Front Left", "/usr/share/sounds/alsa/Front_Left.wav"
 +1, "Front Right", "/usr/share/sounds/alsa/Front_Right.wav"
 ```
-Although this file is not accurate, it does not affect the operation of speaker-test. Perhaps the paths to the files are hard coded within speaker-test. Still, I find it a minor bug.
+Although this file is not accurate, it does not affect the operation of speaker-test. Perhaps the paths to the wav files are hard coded within speaker-test. Still, I find it a minor bug.
 
 Issue URL     : https://github.com/alsa-project/alsa-utils/issues/133
 Repository URL: https://github.com/alsa-project/alsa-utils
