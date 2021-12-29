@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BA19C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Dec 2021 02:13:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E8FBC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Dec 2021 02:15:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 75069174B;
-	Wed, 29 Dec 2021 03:12:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75069174B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2A48E1754;
+	Wed, 29 Dec 2021 03:15:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A48E1754
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640744009;
-	bh=69mQw8AzHK62KMWz6FvLggkb57AmTHGwOitHnaCsahQ=;
+	s=default; t=1640744150;
+	bh=qs+gCC6MrXwU0LwSwJF6LaJV9C0nkdp7peVAJzGBz5A=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GcTNUIkCxbHBD7DVX3bQfM1dlOD0+7/1PeWBqAJN6EuLTiXGS4Wos1GN3rkDT6pXH
-	 IpFlTMN5nyhqXt0MNb9UdKvxPj9rqlavtuBaNdt1DamIVxJkY2vML8qB6x0//m0v/X
-	 3BmRCDoH6up6y2lJsJFadA5r5eAkUEUHIIAAO7H4=
+	b=vni4oqeRX/HfQsM0FbwY12Q4a0fi0UJdU4KKjshCeBqcOAtLlxpK/JBj+uacZnSQi
+	 AWBLL7nfje6PnkcLZvivP4GPXvCvTHisK4pvltEwp+daPy07T/cpCxgp+0H4fdMh4p
+	 InnB6g73G39Bi8sP6iymYAg6aTp9WRj9NWEdDtNY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 21F56F80224;
-	Wed, 29 Dec 2021 03:12:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CD73FF800D3;
+	Wed, 29 Dec 2021 03:14:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6C9F3F80236; Wed, 29 Dec 2021 03:12:37 +0100 (CET)
+ id B48E1F801EC; Wed, 29 Dec 2021 03:14:58 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 19849F800D3
- for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2021 03:12:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 19849F800D3
+ by alsa1.perex.cz (Postfix) with ESMTP id 497E7F800CE
+ for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2021 03:14:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 497E7F800CE
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1640743954332365990-webhooks-bot@alsa-project.org>
-References: <1640743954332365990-webhooks-bot@alsa-project.org>
-Subject: [patch]  alsa-utils/alsactl/init/00main:1,
- which is a comment and contains a typo
-Message-Id: <20211229021237.6C9F3F80236@alsa1.perex.cz>
-Date: Wed, 29 Dec 2021 03:12:37 +0100 (CET)
+In-Reply-To: <1640744096106848955-webhooks-bot@alsa-project.org>
+References: <1640744096106848955-webhooks-bot@alsa-project.org>
+Subject: [patch]  speaker-test/samples/sample_map.csv is not accurate,
+ which does not affect operation of speaker-test
+Message-Id: <20211229021458.B48E1F801EC@alsa1.perex.cz>
+Date: Wed, 29 Dec 2021 03:14:58 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -56,20 +56,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-utils issue #132 was edited from ZjYwMj:
+alsa-project/alsa-utils issue #133 was edited from ZjYwMj:
 
 With alsa-utils 1.2.6:
-This should probably get applied to [00main:1](https://github.com/alsa-project/alsa-utils/blob/90f59671784a7e47b40485095cd66892d4840ed7/alsactl/init/00main#L1).
 ```
---- a/usr/share/alsa/init/00main	2021-12-06 18:44:25.000000000 +0000
-+++ b/usr/share/alsa/init/00main	2021-12-28 17:04:36.835174838 +0000
-@@ -1,4 +1,4 @@
--# This is toplevel configuration for for 'alsactl init'.
-+# This is the toplevel configuration file for 'alsactl init'.
- # See 'man alsactl_init' for syntax.
- 
- # set root device directory in sysfs for soundcard for ATTR{} command
+--- a/usr/share/alsa/speaker-test/sample_map.csv	2021-12-06 18:44:25.000000000 +0000
++++ b/usr/share/alsa/speaker-test/sample_map.csv	2021-12-28 19:48:02.390305957 +0000
+@@ -1,2 +1,2 @@
+-0, "Front Left", "/usr/share/alsa/samples/Front_Left.wav"
+-1, "Front Right", "/usr/share/alsa/samples/Front_Right.wav"
++0, "Front Left", "/usr/share/sounds/alsa/Front_Left.wav"
++1, "Front Right", "/usr/share/sounds/alsa/Front_Right.wav"
 ```
+The directory ``/usr/share/alsa/samples/`` does not exist. It sounds as if ``speaker-test -t wav`` plays the files mentioned in the diff. This inaccuracy does not affect the operation of ``speaker-test``. Do the paths to the wav files hard coded within ``speaker-test``? Does only their ``basename`` counts?  Still, I find it a minor bug.
+Why is ``/usr/share/alsa/speaker-test/sample_map.csv`` distributed anyway? Am I misunderstanding [Install sound samples to correct places](https://github.com/alsa-project/alsa-utils/commit/fb2f99f1f99c430d1ca263be84d919aa808601c3)? Is it for informational purposes? Was it used in the past, and no longer serves its purpose? Is it planed to be used in the future? Is it something else?
+[speaker-test.c:745](https://github.com/alsa-project/alsa-utils/blob/00be486131129a6d209de62202d2a4974638127f/speaker-test/speaker-test.c#L745) and [746](https://github.com/alsa-project/alsa-utils/blob/00be486131129a6d209de62202d2a4974638127f/speaker-test/speaker-test.c#L746) has the ``basename``s hardcoded. And there is also the default value for ``speaker-test --wavdir`` of ``/usr/share/sounds/alsa``.
 
-Issue URL     : https://github.com/alsa-project/alsa-utils/issues/132
+Issue URL     : https://github.com/alsa-project/alsa-utils/issues/133
 Repository URL: https://github.com/alsa-project/alsa-utils
