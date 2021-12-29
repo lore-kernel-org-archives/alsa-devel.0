@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77263C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Dec 2021 00:41:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E1A5C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Dec 2021 00:43:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4606316C3;
-	Wed, 29 Dec 2021 01:40:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4606316C3
+	by alsa0.perex.cz (Postfix) with ESMTPS id EBD6116F1;
+	Wed, 29 Dec 2021 01:42:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EBD6116F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640738479;
+	s=default; t=1640738596;
 	bh=xBHPX1g/VhNACM/B7G6xs8xh7D4vxdxhhC+E23EcbFo=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nyfeW7oNdsKWEFu/4WSz7Y5NzoOIQm1EnsD/gi29TLlJ9osPmEvShQlYwh+Fv1PCQ
-	 nGw20kf6UrthhArywFJ5ue0rrJC6rxJNJjiw3XsWwftRDlkAlSdSX02SAXvChvhiFl
-	 i1N1HNrctJnVZf/jHLK02AP2IozlShfMmI8qvGkc=
+	b=GMbiWMjuhGMaU/fRHMazxJKr0aaqYa+CIdoBMqurf8UbiskNoQgnvocuMVa/GwxG7
+	 Oo2uCAilGoOxgWRlVeUSiTxDhlnvwThoY64FWinMzMQcJ1pIbJaGkQp3jA7oX9Qbv1
+	 inExWHUpax4ELh8wmTcwR/Q36uG7maPc77G0gSOg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E587AF80224;
-	Wed, 29 Dec 2021 01:40:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 905CBF801EC;
+	Wed, 29 Dec 2021 01:42:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EE951F80246; Wed, 29 Dec 2021 01:40:27 +0100 (CET)
+ id EE797F80224; Wed, 29 Dec 2021 01:42:23 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 9FA9EF800E9
- for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2021 01:40:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9FA9EF800E9
+ by alsa1.perex.cz (Postfix) with ESMTP id AF74FF800D1
+ for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2021 01:42:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF74FF800D1
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1640738420767071962-webhooks-bot@alsa-project.org>
-References: <1640738420767071962-webhooks-bot@alsa-project.org>
+In-Reply-To: <1640738536043701887-webhooks-bot@alsa-project.org>
+References: <1640738536043701887-webhooks-bot@alsa-project.org>
 Subject: [patch] /usr/share/alsa/speaker-test/sample_map.csv is not accurate, 
- not affecting operation of speaker-test
-Message-Id: <20211229004027.EE951F80246@alsa1.perex.cz>
-Date: Wed, 29 Dec 2021 01:40:27 +0100 (CET)
+ which does not affect operation of speaker-test
+Message-Id: <20211229004223.EE797F80224@alsa1.perex.cz>
+Date: Wed, 29 Dec 2021 01:42:23 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
