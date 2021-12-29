@@ -4,66 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0FFDC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Dec 2021 13:31:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0B94C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Dec 2021 13:31:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0490016AD;
-	Wed, 29 Dec 2021 14:30:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0490016AD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 945A1178D;
+	Wed, 29 Dec 2021 14:30:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 945A1178D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640784670;
-	bh=WF83XAVknA58xaV3lKVpn6rXWqV15kL9ZY8e/opwK6c=;
+	s=default; t=1640784685;
+	bh=w6y+9dzjomrSxzPcW24vCF6O/7bcBimAL2ZN9jS8ljg=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qGYApIIC9sF5TL3/VfpDJfeCbEXkPQOr3T3QBRoFSnJscSemQoUUx0q8prbcHdh85
-	 ABAZbknOCU7vCLUKeAUZUL1NqBBBglzYRrx5u1yA5EOUeosGB0s+K20B+Mjt2IRc7Q
-	 VwjTxuvMUZh5/46zQQhAy8grZhSAm6nB0S/iV8bo=
+	b=XaKb1Q+clmSu58EymJmzK0NrRnZ5mhtonKfYthB/c8XrBGlbzY7Qrp2X5I0yUt4cR
+	 pH77zyZ7dZC0vHjI8k0JomPvYM6VkRxxM2IbFvbnj+UvdbeOGoQKyQ/vK7VTDCpVx4
+	 MbTQmqdMwwVkaxZNhIogTYOC5UkQ30QybTy8GTlQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4B2E4F801EC;
+	by alsa1.perex.cz (Postfix) with ESMTP id DE615F80248;
 	Wed, 29 Dec 2021 14:29:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DA732F800D3; Wed, 29 Dec 2021 14:29:43 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id EEEEEF80246; Wed, 29 Dec 2021 14:29:44 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2F359F800D3
- for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2021 14:29:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F359F800D3
+ by alsa1.perex.cz (Postfix) with ESMTPS id AC80AF800F8
+ for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2021 14:29:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC80AF800F8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="l615b7Bi"
+ header.b="elI2EpHj"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 8193FB81907;
- Wed, 29 Dec 2021 13:29:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9015C36AE7;
- Wed, 29 Dec 2021 13:29:33 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id A664F614B2;
+ Wed, 29 Dec 2021 13:29:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7887C36AEC;
+ Wed, 29 Dec 2021 13:29:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1640784574;
- bh=WF83XAVknA58xaV3lKVpn6rXWqV15kL9ZY8e/opwK6c=;
+ s=k20201202; t=1640784571;
+ bh=w6y+9dzjomrSxzPcW24vCF6O/7bcBimAL2ZN9jS8ljg=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=l615b7BiIHEuIBc9H/gFqlOJ29CFg7Sw541F4PcgL7yEpW+9T9IwabYx9veLLtj3J
- TqMBu4wzZxHFIf84ffLNn/L1e0NMhe8XGZcs+g5mPiZDheJUxUYzCQaUsqbmXFhh3i
- 92F5dhZAaRrAowqMZoH8axzBS90XlDqFwTyO5myzFzQ6UPaCJBAeamzjlF4Uxfqwt/
- ZiKMkcB881PwZSdMeKGblwOn9VyFbV0/lYkXudcmGrxI8WSUIJFbFs/iOpJCiJpC+9
- 9BY3O9f7RPGa1a9h0rQKmaCu389BoQ8hp9T/DwHfK3XuMDarDFAVYwCcvhwbzpZF8C
- N1KWpuwojvuFw==
+ b=elI2EpHjUB9aJk3DJnPn/IzH6GdXQV9wWItA82EsK3fLcr12rBkc0RPTT0+yo23st
+ PrUe2rTvxJV3J1eKJA7edVTwpiLBmrpI0QLoHHphhDFz4HH7xZhmpVOgb5TY8iW10q
+ eWo71swh3BHJepACiPL6I+8Jd55ZhE3/6WS692WBnxZ49Po53BjpnlPa9/LGi6XOpY
+ hlC24u8N3GAIO3jGxI8woskJU+9PrlBmwjYjHMlNfLZWDa3Sbihgw+1LGZxxc/oF+9
+ xgsQktkjNmUE5yaD/50YW+aGyRIBsA4NOx1Yf/p6H0uBbDW40W8qW2zJXrlXnOEZ9x
+ z/SRta6yd6org==
 From: Mark Brown <broonie@kernel.org>
-To: Tzung-Bi Shih <tzungbi@google.com>
-In-Reply-To: <20211227062153.3887447-1-tzungbi@google.com>
-References: <20211227062153.3887447-1-tzungbi@google.com>
-Subject: Re: [PATCH] ASoC: mediatek: use of_device_get_match_data()
-Message-Id: <164078457348.1246652.10436511969265120898.b4-ty@kernel.org>
-Date: Wed, 29 Dec 2021 13:29:33 +0000
+To: Fabio Estevam <festevam@gmail.com>
+In-Reply-To: <20211222141920.1482451-1-festevam@gmail.com>
+References: <20211222141920.1482451-1-festevam@gmail.com>
+Subject: Re: (subset) [PATCH RESEND 1/2] ASoC: cs4265: Fix part number ID
+ error message
+Message-Id: <164078456960.1246652.4845859047265094767.b4-ty@kernel.org>
+Date: Wed, 29 Dec 2021 13:29:29 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Fabio Estevam <festevam@denx.de>,
+ ckeepax@opensource.cirrus.com, Paul.Handrigan@cirrus.com,
+ james.schulman@cirrus.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,10 +82,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 27 Dec 2021 14:21:53 +0800, Tzung-Bi Shih wrote:
-> Uses of_device_get_match_data() helper to clean some boilerplate code.
+On Wed, 22 Dec 2021 11:19:19 -0300, Fabio Estevam wrote:
+> From: Fabio Estevam <festevam@denx.de>
 > 
+> The Chip ID - Register 01h contains the following description
+> as per the CS4265 datasheet:
 > 
+> "Bits 7 through 4 are the part number ID, which is 1101b (0Dh)"
+> 
+> [...]
 
 Applied to
 
@@ -90,8 +98,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: mediatek: use of_device_get_match_data()
-      commit: 3667a037e50a31555276a7989435126e501f0f15
+[1/2] ASoC: cs4265: Fix part number ID error message
+      commit: 8f85317292f1d99e8a70a400a46ee697d64e3326
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
