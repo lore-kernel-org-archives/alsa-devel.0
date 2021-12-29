@@ -4,69 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0B94C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Dec 2021 13:31:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1BC05C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Dec 2021 13:31:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 945A1178D;
-	Wed, 29 Dec 2021 14:30:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 945A1178D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2BFC31788;
+	Wed, 29 Dec 2021 14:30:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2BFC31788
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640784685;
-	bh=w6y+9dzjomrSxzPcW24vCF6O/7bcBimAL2ZN9jS8ljg=;
+	s=default; t=1640784700;
+	bh=MVd5KxCSC+WZfhjw2O7WEcyUHBPE/JuOeakntOcIc14=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XaKb1Q+clmSu58EymJmzK0NrRnZ5mhtonKfYthB/c8XrBGlbzY7Qrp2X5I0yUt4cR
-	 pH77zyZ7dZC0vHjI8k0JomPvYM6VkRxxM2IbFvbnj+UvdbeOGoQKyQ/vK7VTDCpVx4
-	 MbTQmqdMwwVkaxZNhIogTYOC5UkQ30QybTy8GTlQ=
+	b=J/nbNOIAssXD/ZgfOPKIfk4TWvjHQcbWZKkMC4vA4E9cm56j/mkbNTCZMoVUFzQX9
+	 ExownqIWOAzYJT0PA3MdkPCSvIOzIGTZlifONyETfZjMQH8E98Dh0N/DPPHuBeMgKN
+	 OyeDD14RuYabknWbyLqt3Tyd1nVJiHAPaZr8b+hc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DE615F80248;
-	Wed, 29 Dec 2021 14:29:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 72795F804FA;
+	Wed, 29 Dec 2021 14:29:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EEEEEF80246; Wed, 29 Dec 2021 14:29:44 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 396CEF800F8; Wed, 29 Dec 2021 14:29:45 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AC80AF800F8
- for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2021 14:29:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC80AF800F8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 55904F80224
+ for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2021 14:29:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55904F80224
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="elI2EpHj"
+ header.b="C5gSrjwR"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id A664F614B2;
- Wed, 29 Dec 2021 13:29:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7887C36AEC;
- Wed, 29 Dec 2021 13:29:29 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 70DC2B81908;
+ Wed, 29 Dec 2021 13:29:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACD0AC36AED;
+ Wed, 29 Dec 2021 13:29:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1640784571;
- bh=w6y+9dzjomrSxzPcW24vCF6O/7bcBimAL2ZN9jS8ljg=;
+ s=k20201202; t=1640784576;
+ bh=MVd5KxCSC+WZfhjw2O7WEcyUHBPE/JuOeakntOcIc14=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=elI2EpHjUB9aJk3DJnPn/IzH6GdXQV9wWItA82EsK3fLcr12rBkc0RPTT0+yo23st
- PrUe2rTvxJV3J1eKJA7edVTwpiLBmrpI0QLoHHphhDFz4HH7xZhmpVOgb5TY8iW10q
- eWo71swh3BHJepACiPL6I+8Jd55ZhE3/6WS692WBnxZ49Po53BjpnlPa9/LGi6XOpY
- hlC24u8N3GAIO3jGxI8woskJU+9PrlBmwjYjHMlNfLZWDa3Sbihgw+1LGZxxc/oF+9
- xgsQktkjNmUE5yaD/50YW+aGyRIBsA4NOx1Yf/p6H0uBbDW40W8qW2zJXrlXnOEZ9x
- z/SRta6yd6org==
+ b=C5gSrjwRStroLkZ/epa1jGi2OA8EOu32iTt1btMArfi06cXJ7ITIMnVk87msdu8IF
+ K3Oz+tsCBORRd8fxjqGxlPPU33SUQs6TeqaZOaRk16E7LIavEtVemojAa7v5zCLPnG
+ 3Sh8NO8aIV0BabukM9WJkdD23tGP8XatUztzWlalIhaq02ZhsZv81DUeUR0ZfWcHj3
+ lUtiordOhrC2uRibydkZreZnvANV3wLz4u7X7eXubjC+IRoVuKSLr6jtPc7jNZRRGA
+ LCAWnU+aN7j5mdqw/GpizeVKo5PaWnpJ/WuI7nJMVHS04A6vue+jDQhWGzYEgaI5mQ
+ aJ8RxG3/4uJ3A==
 From: Mark Brown <broonie@kernel.org>
-To: Fabio Estevam <festevam@gmail.com>
-In-Reply-To: <20211222141920.1482451-1-festevam@gmail.com>
-References: <20211222141920.1482451-1-festevam@gmail.com>
-Subject: Re: (subset) [PATCH RESEND 1/2] ASoC: cs4265: Fix part number ID
- error message
-Message-Id: <164078456960.1246652.4845859047265094767.b4-ty@kernel.org>
-Date: Wed, 29 Dec 2021 13:29:29 +0000
+To: lgirdwood@gmail.com, tiwai@suse.com, krzysztof.kozlowski@canonical.com,
+ s.nawrocki@samsung.com, perex@perex.cz, Jiasheng Jiang <jiasheng@iscas.ac.cn>
+In-Reply-To: <20211228034026.1659385-1-jiasheng@iscas.ac.cn>
+References: <20211228034026.1659385-1-jiasheng@iscas.ac.cn>
+Subject: Re: [PATCH] ASoC: samsung: idma: Check of ioremap return value
+Message-Id: <164078457442.1246652.6708919601470029287.b4-ty@kernel.org>
+Date: Wed, 29 Dec 2021 13:29:34 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Fabio Estevam <festevam@denx.de>,
- ckeepax@opensource.cirrus.com, Paul.Handrigan@cirrus.com,
- james.schulman@cirrus.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,15 +80,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 22 Dec 2021 11:19:19 -0300, Fabio Estevam wrote:
-> From: Fabio Estevam <festevam@denx.de>
+On Tue, 28 Dec 2021 11:40:26 +0800, Jiasheng Jiang wrote:
+> Because of the potential failure of the ioremap(), the buf->area could
+> be NULL.
+> Therefore, we need to check it and return -ENOMEM in order to transfer
+> the error.
 > 
-> The Chip ID - Register 01h contains the following description
-> as per the CS4265 datasheet:
 > 
-> "Bits 7 through 4 are the part number ID, which is 1101b (0Dh)"
-> 
-> [...]
 
 Applied to
 
@@ -98,8 +94,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: cs4265: Fix part number ID error message
-      commit: 8f85317292f1d99e8a70a400a46ee697d64e3326
+[1/1] ASoC: samsung: idma: Check of ioremap return value
+      commit: 3ecb46755eb85456b459a1a9f952c52986bce8ec
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
