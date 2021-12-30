@@ -4,91 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7985DC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Dec 2021 16:43:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 863F8C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Dec 2021 07:57:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9BCC8173F;
-	Wed, 29 Dec 2021 17:42:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9BCC8173F
+	by alsa0.perex.cz (Postfix) with ESMTPS id DFA2E165D;
+	Thu, 30 Dec 2021 08:56:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DFA2E165D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640796180;
-	bh=Jy44pQhoh1SsdFj54HgE1uR5Y+iMGbuMqhjF2WeWB7s=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1640851027;
+	bh=4xYnAdHOPkWxpTwFLFaoqBSqtJJ9DfMDAhPpyiSGzvw=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Fwg04nBJnzI0rDpnk2oGZVTJW5ijnFBVNG6IycNMTNKekYAwLRaCUs0TmFv2996Rh
-	 1CkCJ8ffGGmg+RerPqbYYplemxTqd0naD3xuovoOkzzR5LBQBZ8YvIUybKNZ4NPgQv
-	 TefWZEX7PVpt8cEJh3MVvzYWvPSXemVOKfKqKdEw=
+	b=H8r05bj+e9avIr7VMRnRQ2amWveYDdU2ef5nJiqcstDROeT42Bl/ao1QLHr2VB9wN
+	 wPMOPFbww429a/Ygh59RlaQa4m2IcvacK6nKByIUuqS19aFx5ALMyuXGyc92jOmoFt
+	 Tdq1jwqColqxamuRDCe07yV/5evOYTvHg6ImpPK8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 32F9DF800F8;
-	Wed, 29 Dec 2021 17:42:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5B660F80117;
+	Thu, 30 Dec 2021 08:56:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0EEAEF801EC; Wed, 29 Dec 2021 17:42:09 +0100 (CET)
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com
- [IPv6:2607:f8b0:4864:20::1029])
+ id A8D7AF8012A; Thu, 30 Dec 2021 08:56:14 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A57BEF800D3
- for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2021 17:42:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A57BEF800D3
+ by alsa1.perex.cz (Postfix) with ESMTPS id CE98FF800C9
+ for <alsa-devel@alsa-project.org>; Thu, 30 Dec 2021 08:56:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CE98FF800C9
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="N7L/ompp"
-Received: by mail-pj1-x1029.google.com with SMTP id
- f18-20020a17090aa79200b001ad9cb23022so20413737pjq.4
- for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2021 08:42:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=message-id:date:mime-version:user-agent:subject:content-language:to
- :cc:references:from:in-reply-to:content-transfer-encoding;
- bh=O2pbmS818arXigvBH3gLZ+98cJUFjjjLwuoZwBCC54M=;
- b=N7L/omppPMV1C0ehMzFhzNPNeqZA3VP/LFeXG2fzUnpA7oT+fQ5eHCVLFYLxB4kx4G
- 5SidwXOxubPiDh7BsEHiytCsZfgbPBCrNIHVbBmvCyLlYeQVhSFz68wOiIKs95zmNMWK
- 4ckShIPdJiKLQURmfcPITh+FoBrcGvGd0ItAscVNTuNG6KJf1ca+mNIZ8ngGG9wc6HQ0
- bXa5qVLrCeKWjle5tMbigdgU04SL9vczQA3sXr8FcSASgZUaIEBLx2TZ+KjfokX/vO3G
- ymzBwUYDi1NmlNiXUrQbUqnLWDwxmazyJD8sRKQyQTb+FXy5nu1AQfVE0FUvihzEMuNU
- XSbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
- :content-language:to:cc:references:from:in-reply-to
- :content-transfer-encoding;
- bh=O2pbmS818arXigvBH3gLZ+98cJUFjjjLwuoZwBCC54M=;
- b=yPxf0Q73xrFoF8mcaUtHeb0XeQLL5kjM/EgkQqyz3iZ1aksnxxqLD7Du4M+V/QE6VB
- oLv1xW5rir50unJ7/9J3P759PYKIWPCWIJHJW2M9TOdXYtWoK4jlvFImzslPzw5fvEz+
- 3JvNTZzJ0qDqoJA+HvbhRu4J9g72W9GFHHDnzb1rrYGxVnWlRrvEO6Id4+IdBESnycWi
- e65AsLRLSMFeKJ+0XoI2ovGPOfKJ5m0dBGi+4re/7/o57TPV39JF81k7alx2St8Zdt3V
- zPCDGRwDmDsuBHtgrXtqLeigK7o4xGspOwm03qLDPFH+TH6xQpPicBvzSWhl5EAEyeV0
- VlHg==
-X-Gm-Message-State: AOAM532BMMFSQvuS42Hn8wJfTSxDh5icX/3OIyfC4bSXDErocZLH1/hW
- uWhoBfN+293CkM0+Afsq1Pw=
-X-Google-Smtp-Source: ABdhPJzR4LfeXTTm9rQzzjk9apUOFDuZ8ZDYkGLT2rBEW4l51w8K06POiEJOQ3cgVmgta0tUZxVizg==
-X-Received: by 2002:a17:902:a408:b0:149:9055:98b1 with SMTP id
- p8-20020a170902a40800b00149905598b1mr9422261plq.2.1640796116250; 
- Wed, 29 Dec 2021 08:41:56 -0800 (PST)
-Received: from [10.230.2.158] ([192.19.161.250])
- by smtp.gmail.com with ESMTPSA id 145sm20757066pgd.0.2021.12.29.08.41.54
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 29 Dec 2021 08:41:55 -0800 (PST)
-Message-ID: <abefdc9b-bf5f-3ec9-4d14-172f525d962f@gmail.com>
-Date: Wed, 29 Dec 2021 08:41:54 -0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.1
-Subject: Re: [PATCH] mips: bcm63xx: add support for clk_set_parent()
-Content-Language: en-US
-To: Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
- linux-mips@vger.kernel.org, Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-References: <20211229000553.32240-1-rdunlap@infradead.org>
-From: Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20211229000553.32240-1-rdunlap@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>,
- Russell King <linux@armlinux.org.uk>, Paul Cercueil <paul@crapouillou.net>,
- Andy Shevchenko <andy.shevchenko@gmail.com>,
- bcm-kernel-feedback-list@broadcom.com, Jonathan Cameron <jic23@kernel.org>
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="WS6riKN9"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="XQvTABy7"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 67D1521101;
+ Thu, 30 Dec 2021 07:56:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1640850970; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=kI7RlWLKZBCoBup3xYfD4BIj34mO5ObvZ9FFVtwc2vk=;
+ b=WS6riKN9Ce9vp1a9wPM43nRs3Epgu1P4FyQYwJusNDfpAOQEDy9XrpU3P3edkhcEln6pY6
+ dfueKrzCxF/4ByAAHGFQ6EJoxHCcphMtNd+RYidYQOMd+dxjQtjTB9MB8l3nwqkLYyxh4L
+ IKnFnOXEheZRjk87t1j89VEBD9hIVmg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1640850970;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=kI7RlWLKZBCoBup3xYfD4BIj34mO5ObvZ9FFVtwc2vk=;
+ b=XQvTABy7og8MR8VZUSHa1gslDxRIhKPEqv9KJhc9YanhMDAcOV5CGDEHIhmIY0ViMWsbLo
+ kGwDOiPqO2/wabDQ==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 7E46BA3B84;
+ Thu, 30 Dec 2021 07:56:09 +0000 (UTC)
+Date: Thu, 30 Dec 2021 08:56:09 +0100
+Message-ID: <s5hwnjmo7ae.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Rouven Czerwinski <rouven@czerwinskis.de>
+Subject: Re: IOMMU Page Fault with Creative Soundblaster Zx after suspend
+In-Reply-To: <87mtkjqvgj.fsf@czerwinskis.de>
+References: <87mtkjqvgj.fsf@czerwinskis.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, Colin Ian King <colin.king@intel.com>,
+ Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Simeon Simeonoff <sim.simeonoff@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -104,23 +90,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-On 12/28/2021 4:05 PM, Randy Dunlap wrote:
-> The MIPS BMC63XX subarch does not provide/support clk_set_parent().
-> This causes build errors in a few drivers, so add a simple implementation
-> of that function so that callers of it will build without errors.
+On Wed, 29 Dec 2021 16:24:13 +0100,
+Rouven Czerwinski wrote:
 > 
-> Fixes these build errors:
+> Hi,
 > 
-> ERROR: modpost: "clk_set_parent" [sound/soc/jz4740/snd-soc-jz4740-i2s.ko] undefined!
-> ERROR: modpost: "clk_set_parent" [sound/soc/atmel/snd-soc-atmel-i2s.ko] undefined!
+> With current 5.15.11, my soundblaster Zx is not correctly coming back
+> from suspend. Dmesg prints:
 > 
-> Fixes: e7300d04bd08 ("MIPS: BCM63xx: Add support for the Broadcom BCM63xx family of SOCs." )
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> [Mi Dez 29 16:12:14 2021] [drm] UVD and UVD ENC initialized successfully.
+> [Mi Dez 29 16:12:14 2021] snd_hda_codec_ca0132 hdaudioC0D1: ca0132 DSP downloaded and running
+> [Mi Dez 29 16:12:15 2021] [drm] VCE initialized successfully.
+> [Mi Dez 29 16:12:15 2021] usb 1-5: reset full-speed USB device number 2 using xhci_hcd
+> [Mi Dez 29 16:12:16 2021] ata1.00: Enabling discard_zeroes_data
+> [Mi Dez 29 16:12:16 2021] OOM killer enabled.
+> [Mi Dez 29 16:12:16 2021] Restarting tasks ... done.
+> [Mi Dez 29 16:12:16 2021] PM: suspend exit
+> [Mi Dez 29 16:12:16 2021] snd_hda_intel 0000:06:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x000f address=0xdf880000 flags=0x0000]
+> [Mi Dez 29 16:12:17 2021] igb 0000:08:00.0 enp8s0: igb: enp8s0 NIC Link is Up 1000 Mbps Full Duplex, Flow Control: RX/TX
+> 
+> Where the IOMMU Page Fault looks suspicious. Unbinding and rebinding the
+> driver using sysfs fixes it, thats the current workaround I have
+> been using.
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Is it a regression from the earlier releases?  If yes, please try to
+narrow down the regression range, at least, which version started
+showing the problem.  It'd be great if you can perform git bisection,
+of course.
 
-Thanks!
--- 
-Florian
+
+thanks,
+
+Takashi
