@@ -4,71 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 323F3C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Dec 2021 07:58:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00FD3C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Dec 2021 08:29:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0A84A1744;
-	Thu, 30 Dec 2021 08:57:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A84A1744
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4E7ED172B;
+	Thu, 30 Dec 2021 09:28:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E7ED172B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640851081;
-	bh=3+cxsWJzcxwxvlgm8JC15q9orIzlvp5B33kSIsTPbvA=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=k/jX76DyBmHl0c9F6NQEQJFhaWO8EJIiLt8e3EsqZyPLCeSfdPGDyWhaRByz2sb/g
-	 jcdURVNO+HSJLxhNglPQFMesfraF3KIcocxWU/RH1OEZAWgvFkPjOL2/FUvTujzVjg
-	 N7qNetA8xF9VBWtIR+ryk975lmlSa+wOrHhgBRgM=
+	s=default; t=1640852952;
+	bh=H6HeILvrUuZ+OXT2S9/oIod5ZSSfv+aK6EM6mba1B8s=;
+	h=Subject:From:In-Reply-To:Date:References:To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Z+GhIrBBHHnkJVP/a8nteCAzT7nwqqNCCRM1t+bHvcRCWBV7Z+YWHf89G2eJxa9O4
+	 D2xYcyERRhmXFGzJ+r7b+CXI4VG23aPtPGJ83jSgHP6IiAPlSZJZYgMDhqLT0+ZmUj
+	 oxMBe7nl7QJj13XGzM3u9M/uPr/RW3OnUJrewmfk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 906D8F8012A;
-	Thu, 30 Dec 2021 08:57:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D5986F80117;
+	Thu, 30 Dec 2021 09:28:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1E959F801EC; Wed, 29 Dec 2021 16:31:23 +0100 (CET)
-Received: from magratgarlick.emantor.de (magratgarlick.emantor.de
- [IPv6:2a01:4f8:c17:c88::2])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 35C13F8012A; Thu, 30 Dec 2021 09:28:16 +0100 (CET)
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com
+ [IPv6:2a00:1450:4864:20::534])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 20FBCF800CE
- for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2021 16:31:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 20FBCF800CE
+ by alsa1.perex.cz (Postfix) with ESMTPS id AF0BCF800EB
+ for <alsa-devel@alsa-project.org>; Thu, 30 Dec 2021 09:28:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF0BCF800EB
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=czerwinskis.de header.i=@czerwinskis.de
- header.b="Mkt5SUHx"; 
- dkim=pass (1024-bit key) header.d=czerwinskis.de header.i=@czerwinskis.de
- header.b="E6h0sbTW"
-Received: by magratgarlick.emantor.de (Postfix, from userid 114)
- id D70889122C; Wed, 29 Dec 2021 16:31:11 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=czerwinskis.de;
- s=mail; t=1640791871;
- bh=3+cxsWJzcxwxvlgm8JC15q9orIzlvp5B33kSIsTPbvA=;
- h=From:To:Cc:Subject:Date:From;
- b=Mkt5SUHxwySzgFwnFNwas6Qr0sFoWQ/eIuMcOd1SSQT1H2sfyNl+8Eq4oWY+sIdLm
- OcVwLadBf4k6dZyanPIOUCqjOpTEXHEJZdfdfiAXTvQBWq+R1HpX3Q+6V04CuUln+t
- t33qJM8tqvkee74Iuv3NqFWN1z1DCZWZjfhj8v6s=
-Received: from localhost (unknown
- [IPv6:2001:9e8:2145:1402:c0d3:dbff:fefe:ff70])
- by magratgarlick.emantor.de (Postfix) with ESMTPSA id 3987C909AC;
- Wed, 29 Dec 2021 16:31:09 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=czerwinskis.de;
- s=mail; t=1640791869;
- bh=3+cxsWJzcxwxvlgm8JC15q9orIzlvp5B33kSIsTPbvA=;
- h=From:To:Cc:Subject:Date:From;
- b=E6h0sbTWvJSGKmYmR3cxSM+AycehfQjSMaqkPlfA42julzHJd45aqbuEPNH7AAFxR
- 2LwBeMecwo5mnVAhLZyCIzGLzZMY3dCyl9T69jTMaC8ohv2jH5p0X8JRlswY3vjqBM
- SgIjAxMfJhhU0Unxe436eyF1oTAJiR+tGhZhrjCU=
-User-agent: mu4e 1.6.10; emacs 27.2
-From: Rouven Czerwinski <rouven@czerwinskis.de>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: IOMMU Page Fault with Creative Soundblaster Zx after suspend
-Date: Wed, 29 Dec 2021 16:24:13 +0100
-Message-ID: <87mtkjqvgj.fsf@czerwinskis.de>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Mailman-Approved-At: Thu, 30 Dec 2021 08:57:09 +0100
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org, Colin Ian King <colin.king@intel.com>,
- linux-kernel@vger.kernel.org, Simeon Simeonoff <sim.simeonoff@gmail.com>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="UYD1GfnW"
+Received: by mail-ed1-x534.google.com with SMTP id z9so25430328edm.10
+ for <alsa-devel@alsa-project.org>; Thu, 30 Dec 2021 00:28:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:subject:from:in-reply-to:date:cc
+ :content-transfer-encoding:message-id:references:to;
+ bh=5yvQhuYvXnvEeI7WZkUwrQY3AKPGSjoK0ne8pwJj6HY=;
+ b=UYD1GfnWLkjCvwmL+tnTGmQj5QOSul2KartH/iRcaET8vhLQW6W8+EN2KCzmIKQsM9
+ zidXGD7JQ3efyH9MuFGXZQt4tfyib+S0TINAkm2mtVbNVT9ZIrUKlQTS6oH4tYyqHz2i
+ kdImc+VdV7c4E1Lutx1hHhV8WOzuRYjJ+M7FmjXw++7j+CaQsrkuR57kJe9D7qEyUxIv
+ MUlIwcVHJFnHcmfL/weucff0A4P9nJfm0KVr9uUQcwAsPCjYULacDGGEbv8wVOOCJMTs
+ QEwljsOjbAmPaqE4+fir+aukATd4Sn29TwMduPymeGo/D53OPp6lsPyDGI1Ubh5tWacR
+ pDMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+ :content-transfer-encoding:message-id:references:to;
+ bh=5yvQhuYvXnvEeI7WZkUwrQY3AKPGSjoK0ne8pwJj6HY=;
+ b=WY1KZDX0pYFKfWIj5yx3CDBXdBfcqZ0C4F7DKWYMt1/hYKYYE1uXsDzQMP39LFlQOa
+ ICBFS1nZGXchJI5kyNQim5a9qoypcUmrXzFO7Vf7SZQFt1aABz++bw4onvuOiOO7ongg
+ cO7VzEeaSxgR7HdYQGfbfykef2cWvH51BWFti0NgPOCoz+PXFMuZSYnlQLlZciseDiTg
+ iCCz3vfIurarrANGkWARkn5G9fv/W1CuOkSGY6XlAKDMf0yAwSTWyTQVVadNw56cJySL
+ GPzYQEQ2zNhT9nHsSU5auMMyqg/YqVIqxRFSiVL0IZdWxRWh5G6m0DlgYksR5ufsYNTA
+ CVGg==
+X-Gm-Message-State: AOAM531racDJ8ylGo5RJIXX7OFvylTcENjABnziXERl59pNDpoZ8qYer
+ pLWHOO1fsin6CglMzX3Ro2k=
+X-Google-Smtp-Source: ABdhPJzBcx1zb3V8UlpY4BmblRlGHidVLyNI+mgCtzsRjsJ2AheSV34OyZSZLQhNExpX2n2bko8jyg==
+X-Received: by 2002:a17:907:a089:: with SMTP id
+ hu9mr24864474ejc.448.1640852885746; 
+ Thu, 30 Dec 2021 00:28:05 -0800 (PST)
+Received: from [172.16.30.20] ([91.135.9.67])
+ by smtp.gmail.com with ESMTPSA id r3sm7484756ejr.79.2021.12.30.00.28.04
+ (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+ Thu, 30 Dec 2021 00:28:05 -0800 (PST)
+Content-Type: text/plain;
+	charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.7\))
+Subject: Re: [RESEND] Amlogic DPCM audio card(s) speaker placement issue
+From: Christian Hewitt <christianshewitt@gmail.com>
+In-Reply-To: <3cd96113-3272-1efe-aa81-39de952d1e68@perex.cz>
+Date: Thu, 30 Dec 2021 08:28:04 +0000
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <FF1307EB-5133-441A-B221-D5361B6F0AB2@gmail.com>
+References: <ECC56215-1E02-4735-82F3-B68E73F56CB4@gmail.com>
+ <3cd96113-3272-1efe-aa81-39de952d1e68@perex.cz>
+To: Jaroslav Kysela <perex@perex.cz>
+X-Mailer: Apple Mail (2.3608.120.23.2.7)
+Cc: Matthias Reichl <hias@horus.com>, alsa-devel@alsa-project.org,
+ Jerome Brunet <jbrunet@baylibre.com>, linux-amlogic@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,25 +99,99 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
 
-With current 5.15.11, my soundblaster Zx is not correctly coming back
-from suspend. Dmesg prints:
+> On 26 Dec 2021, at 5:30 pm, Jaroslav Kysela <perex@perex.cz> wrote:
+>=20
+> On 26. 12. 21 12:43, Christian Hewitt wrote:
+>=20
+>> **** List of PLAYBACK Hardware Devices ****
+>> card 0: LIBRETECHCC [LIBRETECH-CC], device 0: fe.dai-link-0 (*) []
+>>  Subdevices: 1/1
+>>  Subdevice #0: subdevice #0
+>=20
+>> numid=3D12,iface=3DPCM,name=3D'ELD',device=3D2
+>> numid=3D11,iface=3DPCM,name=3D'IEC958 Playback Default',device=3D2
+>> numid=3D10,iface=3DPCM,name=3D'IEC958 Playback Mask',device=3D2
+>> numid=3D9,iface=3DPCM,name=3D'Playback Channel Map',device=3D2
+>> =
+https://github.com/torvalds/linux/blob/master/arch/arm64/boot/dts/amlogic/=
+meson-gxl-s905x-libretech-cc.dts#L136-L188
+>=20
+> Have you tried to reorder the dai-link-# sections in DT? It appears to =
+me that sound/soc/codecs/hdmi-codec.c / hdmi_codec_pcm_new() gets the =
+internal PCM
+> device rather than the exported PCM device for the user space.
 
-[Mi Dez 29 16:12:14 2021] [drm] UVD and UVD ENC initialized successfully.
-[Mi Dez 29 16:12:14 2021] snd_hda_codec_ca0132 hdaudioC0D1: ca0132 DSP downloaded and running
-[Mi Dez 29 16:12:15 2021] [drm] VCE initialized successfully.
-[Mi Dez 29 16:12:15 2021] usb 1-5: reset full-speed USB device number 2 using xhci_hcd
-[Mi Dez 29 16:12:16 2021] ata1.00: Enabling discard_zeroes_data
-[Mi Dez 29 16:12:16 2021] OOM killer enabled.
-[Mi Dez 29 16:12:16 2021] Restarting tasks ... done.
-[Mi Dez 29 16:12:16 2021] PM: suspend exit
-[Mi Dez 29 16:12:16 2021] snd_hda_intel 0000:06:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x000f address=0xdf880000 flags=0x0000]
-[Mi Dez 29 16:12:17 2021] igb 0000:08:00.0 enp8s0: igb: enp8s0 NIC Link is Up 1000 Mbps Full Duplex, Flow Control: RX/TX
+I did a test reordering the nodes on the WP2 box like this:
 
-Where the IOMMU Page Fault looks suspicious. Unbinding and rebinding the
-driver using sysfs fixes it, thats the current workaround I have
-been using.
+        dai-link-0 {
+                sound-dai =3D <&aiu AIU_HDMI CTRL_OUT>;
 
-Thanks and happy holidays,
-Rouven Czerwinski
+                codec-0 {
+                        sound-dai =3D <&hdmi_tx>;
+                };
+        };
+
+        dai-link-1 {
+                sound-dai =3D <&aiu AIU_CPU CPU_I2S_FIFO>;
+        };
+
+        dai-link-2 {
+                sound-dai =3D <&aiu AIU_CPU CPU_SPDIF_FIFO>;
+        };
+
+        dai-link-3 {
+                sound-dai =3D <&aiu AIU_CPU CPU_I2S_ENCODER>;
+                dai-format =3D "i2s";
+                mclk-fs =3D <256>;
+
+                codec-0 {
+                        sound-dai =3D <&aiu AIU_HDMI CTRL_I2S>;
+                };
+        };
+
+        dai-link-4 {
+                sound-dai =3D <&aiu AIU_CPU CPU_SPDIF_ENCODER>;
+
+                codec-0 {
+                        sound-dai =3D <&spdif_dit>;
+                };
+        };
+
+This gives output like:
+
+WP2:~ # amixer controls
+numid=3D5,iface=3DMIXER,name=3D'AIU HDMI CTRL SRC'
+numid=3D6,iface=3DMIXER,name=3D'AIU SPDIF SRC SEL'
+numid=3D4,iface=3DPCM,name=3D'ELD'
+numid=3D3,iface=3DPCM,name=3D'IEC958 Playback Default'
+numid=3D2,iface=3DPCM,name=3D'IEC958 Playback Mask'
+numid=3D1,iface=3DPCM,name=3D'Playback Channel Map=E2=80=99
+
+The =E2=80=9Cdevice=3D4=E2=80=9D is gone, but also gone is the default =
+PCM device:
+
+WP2:~ # aplay -L
+null
+    Discard all samples (playback) or generate zero samples (capture)
+iec958:CARD=3DWETEKPLAY2,DEV=3D0
+    WETEK-PLAY2,=20
+    IEC958 (S/PDIF) Digital Audio Output
+
+Assuming I did the changes above correctly? it looks like DAI order
+matters and cannot be changed.
+
+> If the DAI routing cannot be changed, then the hdmi-codec.c should be =
+modified to export the correct device number for the user space:
+>=20
+> =
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/so=
+und/soc/codecs/hdmi-codec.c?h=3Dv5.16-rc6#n805
+
+
+That=E2=80=99s some way beyond my limited kernel skills, so I will need =
+to
+phone friends and ask the audience for assistance :)
+
+Christian
+
