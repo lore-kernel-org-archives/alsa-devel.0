@@ -4,70 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92EB7C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 31 Dec 2021 14:41:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67BCDC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 31 Dec 2021 17:15:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6D02616C3;
-	Fri, 31 Dec 2021 15:40:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D02616C3
+	by alsa0.perex.cz (Postfix) with ESMTPS id BCD5716B9;
+	Fri, 31 Dec 2021 18:14:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BCD5716B9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640961684;
-	bh=2W2cwR7BA+V3M91KMdo9uv7m6sBpz3dbJ6TOw8ZwOsA=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1640970923;
+	bh=xJoQgGs6jpe/nEBkuVJJEWLNMwSa/zmuXqmXFrnGEiQ=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HdNJxC6C4oVByqeln7wVAwbwKmDF4pacPLP8s2kGsFoMrWZ9zwdWL3x6nhC2C8TSL
-	 OJnAn2oF4C1cPJhoC5u1n/Lp1GI0kqxfLQlcJEk2IzbMewY0b/MpExWct0kE3EbhDa
-	 LCtSzZoc+WXfVZ+OBrAT/7YuTf8uZ2iebMZ0oBlk=
+	b=Zo2dP2lCwwu90J0Ha1ymdaGZmp5NYEh/xe0ikpGNU4lvs3429rwppyXv9WMWjWmC8
+	 XVz8MBlJevjKn4TWyYL3jhajcFE3+o1Ps6DKHCXfHnSsizfgh8iS72TGdSQ1oLQreb
+	 ouHAAqs8ycs591sSr1jXBMXsJRFemFoGaEWNjDjs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0E989F8010B;
-	Fri, 31 Dec 2021 15:40:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 506DFF8010B;
+	Fri, 31 Dec 2021 18:14:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C1182F800C9; Fri, 31 Dec 2021 15:40:12 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 17AAEF80118; Fri, 31 Dec 2021 18:14:32 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 55452F8010B
- for <alsa-devel@alsa-project.org>; Fri, 31 Dec 2021 15:39:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55452F8010B
+ by alsa1.perex.cz (Postfix) with ESMTPS id A685BF800EB
+ for <alsa-devel@alsa-project.org>; Fri, 31 Dec 2021 18:14:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A685BF800EB
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="LpTeI5wQ"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id C3ABB61795;
- Fri, 31 Dec 2021 14:39:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6DB0C36AEC;
- Fri, 31 Dec 2021 14:39:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1640961597;
- bh=2W2cwR7BA+V3M91KMdo9uv7m6sBpz3dbJ6TOw8ZwOsA=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=LpTeI5wQiK+t9XWW6ufpzlYWGvsTw4AUlwbgInViIurwwMafKLp23FAprisyCSv9U
- eoMY08kYN4K7IEkdcRQldz/YyC5xWYUc/4utxzIInEFn7U985MFiMbtJH7vyxsg3WY
- Fb/Imbs69sQydoYq2vveay+TxlBx62f7IQA5oCtw+jNV4pQqw3d5O60WO0DXrA6+w/
- WbVTdrRFloRlZkL40jIw4orqWi6z3ddIO/JENu3Nwvl4EkWtTnMo8A5qDaMeozrQhq
- fhrdsIAs3OQ+Q2R6sVV1uOu9jF1FQt0eUxjzXkwqcO/1Luk1Bf28K8d2iXaSR4/7Bo
- W/YpqxRWr82Yw==
-From: Mark Brown <broonie@kernel.org>
-To: Len Brown <lenb@kernel.org>, Mark Gross <markgross@kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Lucas Tanure <tanureal@opensource.cirrus.com>,
- Liam Girdwood <lgirdwood@gmail.com>, "Rafael J . Wysocki" <rafael@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20211217115708.882525-1-tanureal@opensource.cirrus.com>
-References: <20211217115708.882525-1-tanureal@opensource.cirrus.com>
-Subject: Re: (subset) [PATCH v6 00/10] Add support for CS35L41 in HDA systems
-Message-Id: <164096159451.2355590.17653987935012339046.b4-ty@kernel.org>
-Date: Fri, 31 Dec 2021 14:39:54 +0000
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-acpi@vger.kernel.org
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="qD4TiDg7"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="92X9530X"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id D84681F387;
+ Fri, 31 Dec 2021 17:14:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1640970866; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=lAlIbCwt8/dbQUNJUXK2rYMZ7mOjbl+Y5KB9vD1z6ZQ=;
+ b=qD4TiDg7jcWE93GIP2EQvEziujvCF+a2Dge/unGYRLbovy/B15qziTKtgtckZ5TnauAbhq
+ 5nX5XY0cTfvu3IFamI294jFxF5Mt9gsgFko8J+SjB+hxcsGFagS2k5ckWoaKNBtU6ZkCu0
+ TXCu2jB3NpnVMsSDg37tqktnjqB2+ww=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1640970866;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=lAlIbCwt8/dbQUNJUXK2rYMZ7mOjbl+Y5KB9vD1z6ZQ=;
+ b=92X9530XMMDZaCn8Sbhb6i2QpXt3wDERsrPpLuKh8Xfe9B1FfOrdZQxZhv3W89NYiVrU1S
+ sFQL1K6iLvbmf3BQ==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 93AFCA3B81;
+ Fri, 31 Dec 2021 17:14:26 +0000 (UTC)
+Date: Fri, 31 Dec 2021 18:14:26 +0100
+Message-ID: <s5hk0fkofwt.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Christian Lachner <gladiac@gmail.com>
+Subject: Re: [PATCH 1/1] ALSA: hda/realtek - Fix silent output on Gigabyte
+ X570 Aorus Master after reboot from Windows
+In-Reply-To: <20211231102138.3226-2-gladiac@gmail.com>
+References: <20211231102138.3226-1-gladiac@gmail.com>
+ <20211231102138.3226-2-gladiac@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ kailang@realtek.com, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,50 +90,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 17 Dec 2021 11:56:58 +0000, Lucas Tanure wrote:
-> Add support for laptops that have CS35L41 connected to an HDA
-> codec by I2S and direct I2C connection to the CPU.
+On Fri, 31 Dec 2021 11:21:38 +0100,
+Christian Lachner wrote:
 > 
-> Laptops that use CS35L41 and are SPI will be added in the future,
-> after the support for it is resolved at i2c-multi-instantiate driver.
-> i2c-multi-instantiate thread: https://lkml.org/lkml/2021/12/10/557
-> 
-> [...]
+> +static void alc1220_fixup_gb_x570(struct hda_codec *codec,
+> +				     const struct hda_fixup *fix,
+> +				     int action)
+> +{
+> +	static const hda_nid_t conn1[] = { 0x0c };
+> +
+> +	if (action != HDA_FIXUP_ACT_PRE_PROBE)
+> +		return;
+> +
+> +	alc_write_coef_idx(codec, 0x1a, 0x01c1);
+> +	alc_write_coef_idx(codec, 0x1b, 0x0202);
+> +	alc_write_coef_idx(codec, 0x43, 0x3005);
+> +	alc_write_coef_idx(codec, 0x58, 0x8fd6);
+> +	alc_write_coef_idx(codec, 0x5f, 0xa3c5);
+> +	alc_write_coef_idx(codec, 0x6a, 0x0232);
 
-Applied to
+Those could be better with struct coef_fw table to be processed via
+alc_process_coef_fw().
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Also the coef update needs to be performed not only at PRE_INIT but
+also at each resume, so this should be better done for action ==
+HDA_FIXUP_ACT_INIT, I suppose.
 
-Thanks!
 
-[01/10] ASoC: cs35l41: Convert tables to shared source code
-        commit: a87d42227cf5614fe0040ddd1fe642c54298b42c
-[02/10] ASoC: cs35l41: Move cs35l41_otp_unpack to shared code
-        commit: fe120d4cb6f6cd03007239e7c578b8703fe6d336
-[03/10] ASoC: cs35l41: Move power initializations to reg_sequence
-        commit: 062ce0593315e22aac527389dd6dd4328c49f0fb
-[04/10] ASoC: cs35l41: Create shared function for errata patches
-        commit: 8b2278604b6de27329ec7ed82ca696c4751111b6
-[05/10] ASoC: cs35l41: Create shared function for setting channels
-        commit: 3bc3e3da657f17c14df8ae8fab58183407bd7521
-[06/10] ASoC: cs35l41: Create shared function for boost configuration
-        commit: e8e4fcc047c6e0c5411faeb8cc29aed2e5036a00
+thanks,
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Takashi
