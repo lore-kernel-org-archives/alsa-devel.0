@@ -4,77 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20FADC433F5
-	for <alsa-devel@archiver.kernel.org>; Mon,  3 Jan 2022 14:20:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 101F5C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  3 Jan 2022 14:23:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 41C3017AC;
-	Mon,  3 Jan 2022 15:20:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41C3017AC
+	by alsa0.perex.cz (Postfix) with ESMTPS id F002B17CC;
+	Mon,  3 Jan 2022 15:22:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F002B17CC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1641219654;
-	bh=Sxzrne7gjGcNTpyL10KnGgRtLlBSt3+G623ZRAjahVU=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=fLiBqh2L0QQAPAK0KnqxEl5LUMY6dXipuWLuk7S7Bv+mw+1KvpSAaHQl1S7F6nfPH
-	 luoNyrLH0wcljL/u6X8IecxMIjbVjWcsrgujeFyE/9xznh2t3wd+chbFtnk6T8eH6R
-	 qS1kWjWSRVKnI7UCS4Xu50ayPPF7JMzCuhl8FkEI=
+	s=default; t=1641219798;
+	bh=Zwd+PakxP9Ni6gXsbc7ixZnB36Fn5vBTS5wcPKs2pK8=;
+	h=From:Date:Subject:To:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Zz5JvBBYJvNZXRq1efLcZLasFMkDk4eAVNXBcj4UzY9XHubgkxAP7BzkCyVEdqdYe
+	 8pcKR+QFrmIThGBUJFUHIjE8DY4YFvLwXCVqxdX5PzYlv7ptKb8e+PoDf8sTihPNZu
+	 gFyRhV7cYshAhDCb55I1TNtun/0qAnqnByADraGs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CF437F800E3;
-	Mon,  3 Jan 2022 15:20:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 93F97F800FF;
+	Mon,  3 Jan 2022 15:22:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EFB55F80107; Mon,  3 Jan 2022 15:20:02 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id 1153CF80111; Sat,  1 Jan 2022 12:49:35 +0100 (CET)
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com
+ [IPv6:2607:f8b0:4864:20::72e])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2A45CF800E3
- for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2022 15:19:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2A45CF800E3
+ by alsa1.perex.cz (Postfix) with ESMTPS id C2D77F800E3
+ for <alsa-devel@alsa-project.org>; Sat,  1 Jan 2022 12:49:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2D77F800E3
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="KUzqc20g"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="J2IHNHT8"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 3FF631F381;
- Mon,  3 Jan 2022 14:19:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1641219597; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=jfa4SuGSj9EC7/7mQQY7Eyg/NfHteUPqQazpLPF+JBU=;
- b=KUzqc20gJ3kRAltmG1dIT99trVY05/8GBi8B2g7Ln/5E1iltmPc9iUdMNbx/8TsbLz3a52
- 4Zk8MdUxwk9WDSqpPIFqEUtzOAZ+qqI9zO5Tgc0uVKD4tX7OjUIglyKomR6rJZSGWakKUR
- JWigHNs/aOchf93rFwq3LMWwU2/VkVE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1641219597;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=jfa4SuGSj9EC7/7mQQY7Eyg/NfHteUPqQazpLPF+JBU=;
- b=J2IHNHT8x3kuRPiIMF01DH5DU3QTHUEBHUfzILLjwO/hByuGbO31GI8daiscru9pXKcGRg
- zH/h9CaGETQLQACg==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id EB28CA3B81;
- Mon,  3 Jan 2022 14:19:56 +0000 (UTC)
-Date: Mon, 03 Jan 2022 15:19:56 +0100
-Message-ID: <s5ha6gcnboz.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Christian Lachner <gladiac@gmail.com>
-Subject: Re: [PATCH v2 1/1] ALSA: hda/realtek - Fix silent output on Gigabyte
- X570 Aorus Master after reboot from Windows
-In-Reply-To: <20220103140517.30273-2-gladiac@gmail.com>
-References: <20220103140517.30273-1-gladiac@gmail.com>
- <20220103140517.30273-2-gladiac@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- kailang@realtek.com, tiwai@suse.com
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="Xlv56Vyu"
+Received: by mail-qk1-x72e.google.com with SMTP id e25so21255103qkl.12
+ for <alsa-devel@alsa-project.org>; Sat, 01 Jan 2022 03:49:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:from:date:message-id:subject:to;
+ bh=K6NxfvYs0iJ4cWlIsGoXY6y3SVYpO3PgxorbDzDTeQU=;
+ b=Xlv56VyuzgYU0sggx3yfveAvO9OM4u5J0e/bbBzaLia8DA0q6h+nX5a9nZXS+Mb/4D
+ pWtd6FJWMosyf/qSIvix6bpiYpzTXUvNutr8PULCdL02F5K0ZHMNJ4aAci/QScK2ScjQ
+ 27mruyETIlsIkuJqcAUvORs17wQa1FFNAX+Aiax3IvS0OBJk9fhxvRBtWOz2NDXhOzQm
+ FSGt5avS7iQdljCUun1Q+lnF2wa4CXv/qL1Bpa72QZtlvDotEOZX0SXBQ69gOTDL6rEQ
+ O3z9EZd/OlmmdUi2BO6kQxi0+2Fy3ZSJaMPCn3IDzSXtJVuHN4UTa1pgkhkBXBxHXwQz
+ 7Gcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+ bh=K6NxfvYs0iJ4cWlIsGoXY6y3SVYpO3PgxorbDzDTeQU=;
+ b=YbX8uEmcQE02tLUcBVrB45Oi59GKJmR1KOG3bVcBslRHh2cbWqYlFS9vDdDQ+L1Ern
+ FroXHlJhAZ4mC36OTgezWGLd81ZPY4qaQk4iAcBHdF/VxCuuhcY1UDyPgJo3ZXDaf/6o
+ nQbi3D3+K8CiUVBBRb1Q6ODCIok53e/xqnbBBuTd9mM89EYuwqDRc2qIRZ7X4noBS8UE
+ dRbWKMDFSuqxYEC5MLg1rx4OBXf3Tk6UZYGoorarXVaVUojm0QtChnQ6vssILGSbabpq
+ SH/eLXxvXWP3Qrs8XXbsuKu9oOgsP453rK3Axxi4+6uC2G+o04wnd8zFwiuk50UfBALh
+ z5Ig==
+X-Gm-Message-State: AOAM533+YvafG53uHSZlT4ZOgyBVE+7m4QEP9lN0mpsrMPyV34bkA87z
+ hH7oe5jgfVHmuVW85itAHjRlf6/YfLXW/BuB7kdhrB3hpg==
+X-Google-Smtp-Source: ABdhPJwfNtLmiNCZydpLOlurijhPCVnWpsrW8XA6NC2LISNAWcKuYkJGCFLlOmboKWJxDZid+uI14t/uM2fAgOcB6X8=
+X-Received: by 2002:a05:620a:1a01:: with SMTP id
+ bk1mr26822756qkb.539.1641037764325; 
+ Sat, 01 Jan 2022 03:49:24 -0800 (PST)
+MIME-Version: 1.0
+From: Stefan Sauer <st.kost@gmail.com>
+Date: Sat, 1 Jan 2022 12:49:13 +0100
+Message-ID: <CAJ4JBRO7qE63TAC-=4y=QMaiAEfkyjRmgiZEF_57Hm+ztc8+Qg@mail.gmail.com>
+Subject: slow snd_rawmidi_drain() for VirMidi devcies
+To: alsa-devel@alsa-project.org
+X-Mailman-Approved-At: Mon, 03 Jan 2022 15:22:25 +0100
+Content-Type: text/plain; charset="UTF-8"
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,38 +86,67 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 03 Jan 2022 15:05:17 +0100,
-Christian Lachner wrote:
-> 
-> This patch addresses an issue where after rebooting from Windows into Linux
-> there would be no audio output.
-> 
-> It turns out that the Realtek Audio driver on Windows changes some coeffs
-> which are not being reset/reinitialized when rebooting the machine. As a
-> result, there is no audio output until these coeffs are being reset to
-> their initial state. This patch takes care of that by setting known-good
-> (initial) values to the coeffs.
-> 
-> We initially relied upon alc1220_fixup_clevo_p950() to fix some pins in the
-> connection list. However, it also sets coef 0x7 which does not need to be
-> touched. Furthermore, to prevent mixing device-specific quirks I introduced
-> a new alc1220_fixup_gb_x570() which is heavily based on
-> alc1220_fixup_clevo_p950() but does not set coeff 0x7 and fixes the coeffs
-> that are actually needed instead.
-> 
-> This new alc1220_fixup_gb_x570() is believed to also work for other boards,
-> like the Gigabyte X570 Aorus Extreme and the newer Gigabyte Aorus X570S
-> Master. However, as there is no way for me to test these I initially only
-> enable this new behaviour for the mainboard I have which is the Gigabyte
-> X570(non-S) Aorus Master.
-> 
-> I tested this patch on the 5.15 branch as well as on master and it is
-> working well for me.
-> 
-> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=205275
-> Signed-off-by: Christian Lachner <gladiac@gmail.com>
+hi,
 
-Thanks, applied now (with Cc-to-stable and Fixes tag).
+I've tried to link BitwigStudio to the webapp cables.gl over virmidi.
+Unfortunately Bitwig Studio only supports rawmidi. What I discovered is
+that there is a strange slowness when sending data to virmidi caused
+by snd_rawmidi_drain().
 
+I've posted two tiny, self-contained c apps to:
+https://gist.github.com/ensonic/c7588b87fa6c1fa94a8f753b1e0aa394
+See some examples below. 2 observations:
+* snd_rawmidi_type() is *not* reporting virmidi as VIRTUAL
+* snd_rawmidi_drain() takes about 60ms! on virtual vs. less that 0.1 ms on
+usb midi (I checked all my hw midi and the worst was avg=1ms on physical
+midi image unitor8)
 
-Takashi
+When comparing the implementations:
+https://github.com/alsa-project/alsa-lib/blob/master/src/rawmidi/rawmidi_virt.c#L173
+https://github.com/alsa-project/alsa-lib/blob/master/src/rawmidi/rawmidi_hw.c#L164
+I see that the hw one results in an IOCTL which I can see when striking the
+code and I wonder if this is the root cause? Why is rawmidi_virt.c not used
+for virmidi?
+From poking at snd_rawmidi_open_conf() I have not yet figured where this is
+decided ....
+
+Stefan
+
+> amidi -l
+Dir Device    Name
+IO  hw:0,0,0  Scarlett 18i20 USB MIDI 1
+IO  hw:3,0,0  nanoKEY2 nanoKEY2 _ KEYBOARD
+IO  hw:5,0,0  nanoKONTROL nanoKONTROL _ SLIDE
+IO  hw:10,0    Virtual Raw MIDI (16 subdevices)
+IO  hw:11,0    Virtual Raw MIDI (16 subdevices)
+
+# using direct i/o to virmidi - all good
+> ./rawmidi_oss /dev/midi11 0
+Using device '/dev/midi11' without draining
+write took min=  0.0015 ms, avg=  0.0016 ms, max=  0.0110 ms
+> ./rawmidi_oss /dev/midi11 1
+Using device '/dev/midi11' with draining
+write took min=  0.0015 ms, avg=  0.0017 ms, max=  0.0101 ms
+drain took min=  0.0001 ms, avg=  0.0001 ms, max=  0.0008 ms
+
+# using snd_rawmidi to virmidi - slow drain operations
+> ./rawmidi_alsa hw:11,0 0
+Using device 'hw:11,0' without draining
+SND_RAWMIDI_TYPE_HW
+write took min=  0.0010 ms, avg=  0.0011 ms, max=  0.0056 ms
+> ./rawmidi_alsa hw:11,0 1
+Using device 'hw:11,0' with draining
+SND_RAWMIDI_TYPE_HW
+write took min=  0.0016 ms, avg=  0.0040 ms, max=  0.0077 ms
+drain took min= 55.9951 ms, avg= 60.4330 ms, max= 64.0653 ms
+
+# using snd_rawmidi to usb hw - all good
+> ./rawmidi_alsa hw:3,0 0
+Using device 'hw:3,0' without draining
+SND_RAWMIDI_TYPE_HW
+write took min=  0.0012 ms, avg=  0.0015 ms, max=  0.0121 ms
+> ./rawmidi_alsa hw:3,0 1
+Using device 'hw:3,0' with draining
+SND_RAWMIDI_TYPE_HW
+write took min=  0.0024 ms, avg=  0.0032 ms, max=  0.0110 ms
+drain took min=  0.0293 ms, avg=  0.0636 ms, max=  0.2277 ms
