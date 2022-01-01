@@ -4,47 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F12EC433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 31 Dec 2021 17:17:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C313C433F5
+	for <alsa-devel@archiver.kernel.org>; Sat,  1 Jan 2022 15:49:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 33079170A;
-	Fri, 31 Dec 2021 18:16:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33079170A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7FFBB178E;
+	Sat,  1 Jan 2022 16:48:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7FFBB178E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1640971029;
-	bh=kmFCbeBoNckRPph5FcAxLBziF4jYyKKeQcmc+M/kb90=;
-	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=GTZSEZashcXUfs1FgcNt113h5g499rSYMSUpv0KUaEMV6+6rhunUyDZ8cyeBTmb17
-	 e1C17cbi8DUUtpXw/YpNwUszqG20Yqy9AY/hUPuYQ0cx3YUHHwrwnDjKSbUtaLlS1d
-	 /xdFS5sw9emP8DZ93s+Ya3LF7Xr4+cGYAVQAhpZc=
+	s=default; t=1641052147;
+	bh=M+O1H+u6Pdlb1P7xyqBtP4UiTnt2xRcP0/P9bqUq/lQ=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=A/cYCFbR2psY58DIvfFLvAjA9tFxomZjq8IjohrDGjRWyP227dwwgaOm4cFDMYssX
+	 3PmIEyGAYr82zDkI4gp4Zywfi6Kw9Nzi8cUBXMGorcw1W2AGXmULWOMzYFvLPeP7Vm
+	 KzrG2VSdJitskGjAKpS4opcpF3syQCAvsoplS4uw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F3B67F804FE;
-	Fri, 31 Dec 2021 18:15:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0F97FF80109;
+	Sat,  1 Jan 2022 16:48:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 99F88F80118; Fri, 31 Dec 2021 14:44:40 +0100 (CET)
-Received: from cae.in-ulm.de (cae.in-ulm.de [217.10.14.231])
- by alsa1.perex.cz (Postfix) with ESMTP id 84259F800EB
- for <alsa-devel@alsa-project.org>; Fri, 31 Dec 2021 14:44:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84259F800EB
-Received: by cae.in-ulm.de (Postfix, from userid 1000)
- id 4E7AA14042E; Fri, 31 Dec 2021 14:44:32 +0100 (CET)
-Date: Fri, 31 Dec 2021 14:44:32 +0100
-From: "Christian A. Ehrhardt" <cae@familie-ehrhardt.de>
-To: alsa-devel@alsa-project.org
-Subject: hda/cs8904: Fix jack detection after resume
-Message-ID: <20211231134432.atwmuzeceqiklcoa@cae.in-ulm.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-Mailman-Approved-At: Fri, 31 Dec 2021 18:15:28 +0100
-Cc: Stefan Binding <sbinding@opensource.cirrus.com>,
- Lucas Tanure <tanureal@opensource.cirrus.com>,
- Vitaly Rodionov <vitalyr@opensource.cirrus.com>, Takashi Iwai <tiwai@suse.com>,
- linux-kernel@vger.kernel.org
+ id D0768F80111; Sat,  1 Jan 2022 16:48:13 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id DC437F800E3
+ for <alsa-devel@alsa-project.org>; Sat,  1 Jan 2022 16:48:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC437F800E3
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="Gm4YMxIR"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="I1w19BW9"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id EB0331F387;
+ Sat,  1 Jan 2022 15:48:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1641052087; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=chbhCQj6hAZogsch5Y5wPKP/+t88RAVuQw/XW7sQuSc=;
+ b=Gm4YMxIRurIJHvqgIdaH4wq0fLMTqwhixOYrjyUR/xD2HEgBoBME1hdbNGmPMvfkvB52f5
+ cko9TqD1PoaZpO67afUw9vhuTHwu1oZz6X80lEILDiVA3SvXZrvCzwVaUduxWIsbIt0I11
+ ErtwQnKlk5kkXhUA9NJjmxcwXkb0EHA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1641052087;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=chbhCQj6hAZogsch5Y5wPKP/+t88RAVuQw/XW7sQuSc=;
+ b=I1w19BW9LhWgIbjFBUzlS1Uryk5ZZamS7br+ZGdLWL+whCKUEpZZa5jca4QHpe/UGDNzHP
+ LUxMV10+fkrdywAw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 655C4A3B81;
+ Sat,  1 Jan 2022 15:48:07 +0000 (UTC)
+Date: Sat, 01 Jan 2022 16:48:07 +0100
+Message-ID: <s5h7dbjo3t4.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Sameer Pujar <spujar@nvidia.com>
+Subject: Re: [PATCH v4 0/3] Fix Tegra194 HDA regression
+In-Reply-To: <1640260431-11613-1-git-send-email-spujar@nvidia.com>
+References: <1640260431-11613-1-git-send-email-spujar@nvidia.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ lgirdwood@gmail.com, linux-kernel@vger.kernel.org, tiwai@suse.com,
+ robh+dt@kernel.org, broonie@kernel.org, thierry.reding@gmail.com,
+ linux-tegra@vger.kernel.org, digetx@gmail.com, jonathanh@nvidia.com,
+ mkumard@nvidia.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -60,124 +91,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Thu, 23 Dec 2021 12:53:48 +0100,
+Sameer Pujar wrote:
+> 
+> HDA probe failure is observed on Tegra194 based platforms and this
+> happens due to reset failure. This series fixes the problem by
+> skipping the failing reset and DT bindings are updated accordingly.
+> 
+> 
+> Changelog
+> =========
+>  v3 -> v4:
+>  ---------
+>    * Rename SoC data variable in HDA driver patch.
+>    * Remove NULL check for compatible match data in HDA driver patch.
+>    * Drop "Depends-on" tag from commit message and add "Reviewed-by"
+>      tag from Dmitry.
+>    * Update binding doc patch as per comment from Rob.
+> 
+>  
+>  v2 -> v3:
+>  ---------
+>    * Use reset bulk APIs in HDA driver as suggested by Dmitry.
+> 
+> 
+>  v1 -> v2:
+>  ---------
+>    * Updated HDA driver patch to skip the failing reset instead of
+>      skipping resets in general for BPMP devices as per comment from
+>      Dmitry.
+>    * Used a better strucure name for SoC data as per comment from
+>      Thierry.
+>    * Dropped 'Fixes' tag in binding doc patch as per comment from
+>      Dmitry.
+> 
+> Sameer Pujar (3):
+>   ALSA: hda/tegra: Fix Tegra194 HDA reset failure
+>   dt-bindings: sound: tegra: Add minItems for resets
+>   arm64: tegra: Remove non existent Tegra194 reset
 
-Hi,
+As there seems no objection for this revision, I applied all three
+patches now to for-next branch of sound.git tree.
 
-while debugging something different, I found the following
-jack detection related bug in the cs8904 driver on my DELL
-Inspirion 3501:
-- Plug in a headset, play some sound to make sure that
-  the headset is detected.
-- Stop the sound, wait for the codec to go into suspend (30s
-  should be plenty enough time)
-- Unplug the headset while the codec is in suspend.
-- Try to play sound on the internal speakers. Notice that
-  the the driver still thinks the headset is connected. As a result
-  there is no sound on the internal speakers.
 
-AFAICS the bug was introduced by the following commit:
-| commit 424e531b47f83da87490464c5bf633dfb624fe6a
-| Author: Stefan Binding <sbinding@opensource.cirrus.com>
-| Date:   Fri Aug 27 12:02:51 2021 +0100
-| 
-|     ALSA: hda/cs8409: Ensure Type Detection is only run on startup when
-|     necessary
+thanks,
 
-The bug is with the hp_jack_in and mic_jack_in flags that are used
-to determine if jack detection should be run etc. These flags
-are cleared in the suspend path. This prevents a status change from
-being detected after resume as hp_jack_in is cleared by suspend and
-there is no jack due to the unplug of the headset.
-
-This status change was never reported to the HDA core, though.
-On suspend this is not done, only hd_jack_in is cleared and on
-resume the driver thinks that there is no change the needs reporting.
-
-Proposed fix below, please consider inclusion.
-
-     regards   Christian
-
-From 1dcf34c1d1c6c4852a86ec3ae189afa5d90ea09c Mon Sep 17 00:00:00 2001
-From: "Christian A. Ehrhardt" <lk@c--e.de>
-Date: Fri, 31 Dec 2021 12:13:48 +0100
-Subject: [PATCH 2/2] ALSA: hda/cs8409: Fix Jack detection after resume
-
-The suspend code unconditionally sets ->hp_jack_in and ->mic_jack_in
-to zero but without reporting this status change to the HDA core.
-To compensate for this, always assume a status change on the
-first unsol event after boot or resume.
-
-Fixes:	424e531b47f8 ("ALSA: hda/cs8409: Ensure Type Detection is only run on startup when necessary")
-Signed-off-by: Christian A. Ehrhardt <lk@c--e.de>
----
- sound/pci/hda/patch_cs8409-tables.c | 3 +++
- sound/pci/hda/patch_cs8409.c        | 5 ++++-
- sound/pci/hda/patch_cs8409.h        | 1 +
- 3 files changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/sound/pci/hda/patch_cs8409-tables.c b/sound/pci/hda/patch_cs8409-tables.c
-index 0fb0a428428b..df0b4522babf 100644
---- a/sound/pci/hda/patch_cs8409-tables.c
-+++ b/sound/pci/hda/patch_cs8409-tables.c
-@@ -252,6 +252,7 @@ struct sub_codec cs8409_cs42l42_codec = {
- 	.init_seq_num = ARRAY_SIZE(cs42l42_init_reg_seq),
- 	.hp_jack_in = 0,
- 	.mic_jack_in = 0,
-+	.force_status_change = 1,
- 	.paged = 1,
- 	.suspended = 1,
- 	.no_type_dect = 0,
-@@ -443,6 +444,7 @@ struct sub_codec dolphin_cs42l42_0 = {
- 	.init_seq_num = ARRAY_SIZE(dolphin_c0_init_reg_seq),
- 	.hp_jack_in = 0,
- 	.mic_jack_in = 0,
-+	.force_status_change = 1,
- 	.paged = 1,
- 	.suspended = 1,
- 	.no_type_dect = 0,
-@@ -456,6 +458,7 @@ struct sub_codec dolphin_cs42l42_1 = {
- 	.init_seq_num = ARRAY_SIZE(dolphin_c1_init_reg_seq),
- 	.hp_jack_in = 0,
- 	.mic_jack_in = 0,
-+	.force_status_change = 1,
- 	.paged = 1,
- 	.suspended = 1,
- 	.no_type_dect = 1,
-diff --git a/sound/pci/hda/patch_cs8409.c b/sound/pci/hda/patch_cs8409.c
-index bf5d7f0c6ba5..aff2b5abb81e 100644
---- a/sound/pci/hda/patch_cs8409.c
-+++ b/sound/pci/hda/patch_cs8409.c
-@@ -636,7 +636,9 @@ static void cs42l42_run_jack_detect(struct sub_codec *cs42l42)
- 
- static int cs42l42_handle_tip_sense(struct sub_codec *cs42l42, unsigned int reg_ts_status)
- {
--	int status_changed = 0;
-+	int status_changed = cs42l42->force_status_change;
-+
-+	cs42l42->force_status_change = 0;
- 
- 	/* TIP_SENSE INSERT/REMOVE */
- 	switch (reg_ts_status) {
-@@ -791,6 +793,7 @@ static void cs42l42_suspend(struct sub_codec *cs42l42)
- 	cs42l42->last_page = 0;
- 	cs42l42->hp_jack_in = 0;
- 	cs42l42->mic_jack_in = 0;
-+	cs42l42->force_status_change = 1;
- 
- 	/* Put CS42L42 into Reset */
- 	gpio_data = snd_hda_codec_read(codec, CS8409_PIN_AFG, 0, AC_VERB_GET_GPIO_DATA, 0);
-diff --git a/sound/pci/hda/patch_cs8409.h b/sound/pci/hda/patch_cs8409.h
-index ade2b838590c..d0b725c7285b 100644
---- a/sound/pci/hda/patch_cs8409.h
-+++ b/sound/pci/hda/patch_cs8409.h
-@@ -305,6 +305,7 @@ struct sub_codec {
- 
- 	unsigned int hp_jack_in:1;
- 	unsigned int mic_jack_in:1;
-+	unsigned int force_status_change:1;
- 	unsigned int suspended:1;
- 	unsigned int paged:1;
- 	unsigned int last_page;
--- 
-2.32.0
-
+Takashi
