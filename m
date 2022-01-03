@@ -4,86 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5EE2BC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  3 Jan 2022 14:24:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50989C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon,  3 Jan 2022 19:59:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A8FEB17E9;
-	Mon,  3 Jan 2022 15:23:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A8FEB17E9
+	by alsa0.perex.cz (Postfix) with ESMTPS id D69371732;
+	Mon,  3 Jan 2022 20:58:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D69371732
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1641219848;
-	bh=2Y2peMbnr/naOehScFiGUHl0kbK+AL3Oihg6rWnQTcg=;
-	h=References:From:To:Subject:Date:In-reply-to:Cc:List-Id:
+	s=default; t=1641239972;
+	bh=8V2LmOrfSbkQzRED6tpkAX4Wjpj2Yr6G2s7zD5Pz1t4=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GSuBgdwe5a/icDchY+r6FphVk9BIepti5bwM31Zf4exvr5DThPY/1t/fIM05qWPWx
-	 kiZ95vfqGS+52FfHBBLR1qptuugrdbkhnwCgJ5gcjuZAnJ/8N1mTLjkXPTqHPMxA6T
-	 AhtzJDcfueLoKsl541K2sta0V2do2eUbIibGDxG4=
+	b=FMWIW1NGI0Bjg2iktRYGRpttRc0bAEysdOKDzkeqoRL6OQ/wXNz1v1rhGdlp317vD
+	 KHy6Ds6+mYLFWnY/K65PgstfkzhyWGl63MSfFRe71Jp2tsOwswYIa+Q6jaIgyOO4zo
+	 HMLd6FdVupRxIJRqsr36n3LwBDVJEJ6NkG89Z5d4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7B4ADF804FA;
-	Mon,  3 Jan 2022 15:22:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 536F7F80107;
+	Mon,  3 Jan 2022 20:58:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 47866F8007E; Mon,  3 Jan 2022 11:11:26 +0100 (CET)
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com
- [IPv6:2a00:1450:4864:20::42c])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3B226F8007E
- for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2022 11:11:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3B226F8007E
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=baylibre-com.20210112.gappssmtp.com
- header.i=@baylibre-com.20210112.gappssmtp.com header.b="N73pqWLK"
-Received: by mail-wr1-x42c.google.com with SMTP id v6so7209877wra.8
- for <alsa-devel@alsa-project.org>; Mon, 03 Jan 2022 02:11:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=baylibre-com.20210112.gappssmtp.com; s=20210112;
- h=references:user-agent:from:to:cc:subject:date:in-reply-to
- :message-id:mime-version;
- bh=d4U06QtxKLvpS3QwhJk/To0yMhx1a1d3B47g5ui1Y04=;
- b=N73pqWLKMdYBN+pI9KTb20m5dxZSEgGZZvVAFMAHmWsQ8Hfda9VmQtsEBnWSLEgu+c
- P+m1o7k3pOJu5kxb+Pm2cFWtu+fCS93F1P7jrTqbW2ewfTHsG1IcSABPAR9yfhy1gw6J
- ObWUOIHaV5sLU5O8PwurnR65PPUe4qJcCxpDPjiJQdGHBawifdlTV3k0HkMqx0Z91TEW
- 0E5PTxU9/sdSQ5n4dRVgiMqs0ssbGlwIizRCT47tEiDzF41JX/X6jqbSBIdIci8j0qIq
- MjHDq3c9S/Qw9VJqBahq5+75DGbc/7v6mHV0qLrANZiAjhnLlqsbOohfjm4UMdwdhXHl
- y4fQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
- :in-reply-to:message-id:mime-version;
- bh=d4U06QtxKLvpS3QwhJk/To0yMhx1a1d3B47g5ui1Y04=;
- b=z1PyGg6YBg0dYNiHHkSi69onyJNjRqwIV6eH2ELi8iVxBJwWJbRID7DP68dnppVUmF
- LFEn1RjwDVfwrL1bu6eHkSXAClh+CxhHGgWgScFUZD6K3zRrGGOuipijT5ieb9c9fwav
- 4e0QR5BPZXRfrpKoeohj9oB77uDiKwy9wGOz+7aLVvU2G9+p3zpqZ6YCqQkOJk/BPN/0
- UOsmor7atGEEqGICvFM/Yefgd9cW3Wzx9HVpjoMcSJZvcyxRfMJfDXJMbvHQH+15G5UX
- rvUQEkaqGM9vrEiaCIUzmfTFQQ3EdbSE3to5luhZyAbssEOVJcSE0ap6Ysb4VgHQWnwY
- Bwwg==
-X-Gm-Message-State: AOAM531ZpcEUrHN4nuCeIQfYIY4i93OUhK2uhPwxByLDu23R9dALZpC4
- jd3+azPGZ7qCXI+gBh6SPVxjew==
-X-Google-Smtp-Source: ABdhPJwBsSg18zloX8QHWVynGr6SCd20lAOIcyUGf8cgq+SDNIimM752PDm8+HOIssQHmVIn8nb6jw==
-X-Received: by 2002:a5d:6dd1:: with SMTP id d17mr22919440wrz.520.1641204678700; 
- Mon, 03 Jan 2022 02:11:18 -0800 (PST)
-Received: from localhost (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr.
- [90.63.244.31])
- by smtp.gmail.com with ESMTPSA id m21sm32816239wrb.2.2022.01.03.02.11.17
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 03 Jan 2022 02:11:18 -0800 (PST)
-References: <ECC56215-1E02-4735-82F3-B68E73F56CB4@gmail.com>
- <3cd96113-3272-1efe-aa81-39de952d1e68@perex.cz>
-User-agent: mu4e 1.6.10; emacs 27.1
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: Jaroslav Kysela <perex@perex.cz>, Christian Hewitt
- <christianshewitt@gmail.com>, alsa-devel@alsa-project.org
-Subject: Re: [RESEND] Amlogic DPCM audio card(s) speaker placement issue
-Date: Mon, 03 Jan 2022 10:57:00 +0100
-In-reply-to: <3cd96113-3272-1efe-aa81-39de952d1e68@perex.cz>
-Message-ID: <1jk0fh86yj.fsf@starbuckisacylon.baylibre.com>
+ id EC794F8013F; Mon,  3 Jan 2022 20:58:40 +0100 (CET)
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+ by alsa1.perex.cz (Postfix) with ESMTP id 72481F800E3
+ for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2022 20:58:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72481F800E3
+Received: from uucp (helo=alpha)
+ by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+ id 1n4TTQ-0004X1-00; Mon, 03 Jan 2022 20:58:28 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+ id 3B398C0A4B; Mon,  3 Jan 2022 20:51:33 +0100 (CET)
+Date: Mon, 3 Jan 2022 20:51:33 +0100
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH] mips: lantiq: add support for clk_set_parent()
+Message-ID: <20220103195133.GA10983@alpha.franken.de>
+References: <20211229000345.24199-1-rdunlap@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Mailman-Approved-At: Mon, 03 Jan 2022 15:22:25 +0100
-Cc: Matthias Reichl <hias@horus.com>, linux-amlogic@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211229000345.24199-1-rdunlap@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: alsa-devel@alsa-project.org, kernel test robot <lkp@intel.com>,
+ Russell King <linux@armlinux.org.uk>, linux-kernel@vger.kernel.org,
+ Andy Shevchenko <andy.shevchenko@gmail.com>, John Crispin <john@phrozen.org>,
+ linux-mips@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,50 +65,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Tue, Dec 28, 2021 at 04:03:45PM -0800, Randy Dunlap wrote:
+> Provide a simple implementation of clk_set_parent() in the lantiq
+> subarch so that callers of it will build without errors.
+> 
+> Fixes these build errors:
+> 
+> ERROR: modpost: "clk_set_parent" [sound/soc/jz4740/snd-soc-jz4740-i2s.ko] undefined!
+> ERROR: modpost: "clk_set_parent" [sound/soc/atmel/snd-soc-atmel-i2s.ko] undefined!
+> 
+> Fixes: 171bb2f19ed6 ("MIPS: Lantiq: Add initial support for Lantiq SoCs")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> --to=linux-mips@vger.kernel.org --cc="John Crispin <john@phrozen.org>" --cc="Jonathan Cameron <jic23@kernel.org>" --cc="Russell King <linux@armlinux.org.uk>" --cc="Andy Shevchenko <andy.shevchenko@gmail.com>" --cc=alsa-devel@alsa-project.org --to="Thomas Bogendoerfer <tsbogend@alpha.franken.de>"
+> ---
+>  arch/mips/lantiq/clk.c |    6 ++++++
+>  1 file changed, 6 insertions(+)
 
-On Sun 26 Dec 2021 at 18:30, Jaroslav Kysela <perex@perex.cz> wrote:
+applied to mips-next.
 
-> On 26. 12. 21 12:43, Christian Hewitt wrote:
->
->> **** List of PLAYBACK Hardware Devices ****
->> card 0: LIBRETECHCC [LIBRETECH-CC], device 0: fe.dai-link-0 (*) []
->>   Subdevices: 1/1
->>   Subdevice #0: subdevice #0
->
->> numid=12,iface=PCM,name='ELD',device=2
->> numid=11,iface=PCM,name='IEC958 Playback Default',device=2
->> numid=10,iface=PCM,name='IEC958 Playback Mask',device=2
->> numid=9,iface=PCM,name='Playback Channel Map',device=2
->> https://github.com/torvalds/linux/blob/master/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-libretech-cc.dts#L136-L188
->
-> Have you tried to reorder the dai-link-# sections in DT? It appears to me that sound/soc/codecs/hdmi-codec.c / hdmi_codec_pcm_new() gets the internal PCM
-> device rather than the exported PCM device for the user space.
->
-> If the DAI routing cannot be changed, then the hdmi-codec.c should be modified to export the correct device number for the user space:
->
+Thomas.
 
-The DAI routing is dynamic, especially on the AXG series.
-There is actually two routing stages:
-
-1) Between the user interfaces (DMA) and the i2s/TDM encoders/decoders:
-   -> This is using DPCM
-
-2) Between the i2s/TDM encoders and the HDMI controller:
-   -> This is using Codec-to-Codec links
-
-The problem exposed here is
- - How to get the get the "Playback Channel Map" related to the pcm
- device of a given playback ?
-
-I don't really know how to answer this.
-As you noted above, given the routing is dynamic, I don't think the
-problem can be solved with a specific link ordering
-
-However, on these platforms, there will only be one such control
-AFAIK. The one you get is the one you are looking for. It's not ideal
-but it's a start.
-
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/sound/soc/codecs/hdmi-codec.c?h=v5.16-rc6#n805
->
-> 						Jaroslav
-
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
