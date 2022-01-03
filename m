@@ -4,85 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A09A8C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  3 Jan 2022 12:55:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B13BC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon,  3 Jan 2022 14:00:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CBAE51790;
-	Mon,  3 Jan 2022 13:54:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CBAE51790
+	by alsa0.perex.cz (Postfix) with ESMTPS id B128F1796;
+	Mon,  3 Jan 2022 14:59:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B128F1796
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1641214529;
-	bh=BrTlml0xBVKPn4Wi1nT1qAMQkOQ2OQsE99VCpJHmwJM=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1641218404;
+	bh=n5/ffVGdKhgUcaJT9Gz5BXgZMycTUwLG711xFUvNOsQ=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lQ8YyfHziEF5y3p7G/87nXycxh9KGSBuzOcvlkQ7Gx+Y3aVFSd2wfYblCObAjg5w+
-	 mhten8y0HfldK5cUKIxTi7eO4RQRpxJhPJYbEwqnyvYN2ISD/m0y7SF75sj/SskGBE
-	 agAR4eTPPCBHD9dwz1URuG6TlOvN+Gw1b+tBamHs=
+	b=o21ptoY3exzc+lxcqtY43rd1WcQGUICsMW0t+JhPTdZPpHmcKCeLW97FjodIUjywf
+	 E/zhgqLG0u+Psxq4/LJ4kb6Yj7YA4kWDRW8Eu+R4WT1lyp+1E2r96AYjnncSV8FPro
+	 62I4xeu/Jd0R9e/HK0ky+Q1OG/D8ZOLxX+gRHxug=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 636ECF800FF;
-	Mon,  3 Jan 2022 13:54:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 37D2CF800FF;
+	Mon,  3 Jan 2022 14:59:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1A98FF800E3; Mon,  3 Jan 2022 13:54:37 +0100 (CET)
-Received: from cable.insite.cz (cable.insite.cz [84.242.75.189])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 06C0BF800C8; Mon,  3 Jan 2022 14:59:08 +0100 (CET)
+Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com
+ [209.85.167.171])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0414EF800E3
- for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2022 13:54:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0414EF800E3
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ivitera.com header.i=@ivitera.com
- header.b="OtZKl6Kw"; 
- dkim=pass (1024-bit key) header.d=ivitera.com header.i=@ivitera.com
- header.b="RE9lTgg5"
-Received: from localhost (localhost [127.0.0.1])
- by cable.insite.cz (Postfix) with ESMTP id 17D9BA1A3D405;
- Mon,  3 Jan 2022 13:54:20 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ivitera.com; s=mail;
- t=1641214460; bh=BrTlml0xBVKPn4Wi1nT1qAMQkOQ2OQsE99VCpJHmwJM=;
- h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
- b=OtZKl6Kw8aJQbT75fw67k/BhP6SI7bIz5dqM3V4V10CC1+aLFsVu/WOr5ViLpJaGZ
- Bd8PJ30gUqd1cRARLVKKYK71BnxTmVBTBxlHWQHqJJQRJvuuwxHO4SOP69XR6LvFq8
- m5LvqLnLFmC5QMfv1bIqPZrct2qQT9rHFGDrw0gQ=
-Received: from cable.insite.cz ([84.242.75.189])
- by localhost (server.insite.cz [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id qy4kPZ4bL_Je; Mon,  3 Jan 2022 13:54:14 +0100 (CET)
-Received: from [192.168.105.22] (dustin.pilsfree.net [81.201.58.138])
- (Authenticated sender: pavel)
- by cable.insite.cz (Postfix) with ESMTPSA id 2A365A1A3D404;
- Mon,  3 Jan 2022 13:54:14 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ivitera.com; s=mail;
- t=1641214454; bh=BrTlml0xBVKPn4Wi1nT1qAMQkOQ2OQsE99VCpJHmwJM=;
- h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
- b=RE9lTgg518V1Sv0GBNNuoUxHAmhG8kixF3VeFQEi5tzK7i7VYOj0D3gP9CfcDkaho
- KaYHZC0c6VxEVI9jsjeh0CAi0L/SgDHrflDZZwAb3QecakNFIqKuWpw5gPjJwk2i+J
- 4bueDkoPjOpI97GBUdDR7dFCyJpDyCEXFoXzk/O4=
-Subject: Re: Correct stopping capture and playback substreams?
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-References: <448e059f-fbac-66ed-204b-f6f9c2c19212@ivitera.com>
- <9635d70f-dc12-f9ed-29f5-ce34a1d4b112@ivitera.com>
- <baefb4a7-0373-49b0-0247-f70c3c585eaf@perex.cz>
- <fbd19fee-343c-c5c6-d426-02ccaa497f7f@ivitera.com>
- <s5ho84tm2vv.wl-tiwai@suse.de>
- <581f6464-37ef-9ab6-e7e2-657ad645aa9e@perex.cz>
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-Message-ID: <86ad951b-29f7-59ef-d369-a6c06f9422a4@ivitera.com>
-Date: Mon, 3 Jan 2022 13:54:13 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <581f6464-37ef-9ab6-e7e2-657ad645aa9e@perex.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-Cc: Julian Scheel <julian@jusst.de>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
- Jack Pham <jackp@codeaurora.org>, John Keeping <john@metanate.com>,
- Ruslan Bilovol <ruslan.bilovol@gmail.com>, Yunhao Tian <t123yh.xyz@gmail.com>,
- Jerome Brunet <jbrunet@baylibre.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 25F39F800C8
+ for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2022 14:59:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 25F39F800C8
+Received: by mail-oi1-f171.google.com with SMTP id t23so55017888oiw.3
+ for <alsa-devel@alsa-project.org>; Mon, 03 Jan 2022 05:59:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+ :message-id;
+ bh=wzDM9gjQL9KJfKSfYGCQK2zI/KnBbFjyptgpSxeAvX8=;
+ b=lKSyo3QDMvPJgf1AqPJjHG3bTy7OLG1N8+z8H/1nS+lpPqJiJ5Wyw/lMXkajcTApQv
+ rvUQLsSnQprYq6FHS4Tqrwi1TVU63neHJwUTPVGBtDSU45evNf1R1ZcU8z/Y6UbVBSYq
+ QIeaDs21eyaRGizhwm1uLLWmhJaU1C/JVg/CzcwfG8GLhrT/rDKsYRkZIBjOWn/AcBUS
+ 8r8hjQNba6Sve72NvIWneUqqzW2Nuhhxojfq4FL/WyET9PlZIlR3FJ9x5PF123Pd1JIV
+ KrkNRdkhvCgKd26maKO1Hyl4mKsPZNkKtpFd+d95F3VcPigRzTbRvIyLoI1LsYq1Cf5t
+ +skA==
+X-Gm-Message-State: AOAM531PoIFOPxohVnRYYwHi6u+fL3hI7tsomLDByKaKbWH3xjaOI278
+ t2q+usnQf5Hih/WdsKGQAg==
+X-Google-Smtp-Source: ABdhPJw7S2QyvbSVgsDRCOh58ieaDF4BWKOnY006IkcKhBMkOI0VpUV+B5SwjktePQEdZqXq20LIlQ==
+X-Received: by 2002:a05:6808:2309:: with SMTP id
+ bn9mr34944786oib.42.1641218341421; 
+ Mon, 03 Jan 2022 05:59:01 -0800 (PST)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net.
+ [66.90.148.213])
+ by smtp.gmail.com with ESMTPSA id t66sm8264920oie.39.2022.01.03.05.59.00
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 03 Jan 2022 05:59:00 -0800 (PST)
+Received: (nullmailer pid 2378537 invoked by uid 1000);
+ Mon, 03 Jan 2022 13:58:59 -0000
+From: Rob Herring <robh@kernel.org>
+To: Jayesh Choudhary <j-choudhary@ti.com>
+In-Reply-To: <20220103074427.4233-1-j-choudhary@ti.com>
+References: <20220103074427.4233-1-j-choudhary@ti.com>
+Subject: Re: [PATCH v5] ASoC: dt-bindings: davinci-mcasp: convert McASP
+ bindings to yaml schema
+Date: Mon, 03 Jan 2022 07:58:59 -0600
+Message-Id: <1641218339.997415.2378536.nullmailer@robh.at.kernel.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, robh+dt@kernel.org, lgirdwood@gmail.com,
+ broonie@kernel.org, peter.ujfalusi@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,141 +85,100 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-Dne 03. 01. 22 v 13:28 Jaroslav Kysela napsal(a):
-> On 03. 01. 22 13:15, Takashi Iwai wrote:
->> On Mon, 03 Jan 2022 12:32:53 +0100,
->> Pavel Hofman wrote:
->>>
->>>
->>>
->>> Dne 03. 01. 22 v 10:10 Jaroslav Kysela napsal(a):
->>>> On 03. 01. 22 9:22, Pavel Hofman wrote:
->>>>>
->>>>> Dne 23. 12. 21 v 9:18 Pavel Hofman napsal(a):
->>>>>> Hi Takashi,
->>>>>>
->>>>>> I am working on stopping alsa streams of audio USB gadget when USB 
->>>>>> host
->>>>>> stops capture/playback/USB cable unplugged.
->>>>>>
->>>>>> For capture I used code from AK4114 SPDIF receiver
->>>>>> https://elixir.bootlin.com/linux/latest/source/sound/i2c/other/ak4114.c#L590: 
->>>>>>
->>>>>>
->>>>>>
->>>>>>
->>>>>> static void stop_substream(struct uac_rtd_params *prm)
->>>>>> {
->>>>>>        unsigned long _flags;
->>>>>>        struct snd_pcm_substream *substream;
->>>>>>
->>>>>>        substream = prm->ss;
->>>>>>        if (substream) {
->>>>>>            snd_pcm_stream_lock_irqsave(substream, _flags);
->>>>>>            if (snd_pcm_running(substream))
->>>>>>                // TODO - correct handling for playback substream?
->>>>>>                snd_pcm_stop(substream, SNDRV_PCM_STATE_DRAINING);
->>>>>>            snd_pcm_stream_unlock_irqrestore(substream, _flags);
->>>>>>        }
->>>>>> }
->>>>>>
->>>>>> For setup I found calling snd_pcm_stop(substream, 
->>>>>> SNDRV_PCM_STATE_SETUP)
->>>>>> (https://elixir.bootlin.com/linux/latest/source/drivers/staging/vc04_services/bcm2835-audio/bcm2835-pcm.c#L63) 
->>>>>>
->>>>>>
->>>>>>     Or for both capture and playback using 
->>>>>> SNDRV_PCM_STATE_DISCONNECTED
->>>>>> (https://elixir.bootlin.com/linux/latest/source/sound/core/pcm.c#L1103). 
->>>>>>
->>>>>>
->>>>>> Or perhaps using snd_pcm_dev_disconnect(dev) or 
->>>>>> snd_pcm_drop(substream)?
->>>>>>
->>>>>> Please what is the recommended way?
->>>>>>
->>>>>
->>>>> Please can I ask for expert view on this issue? E.g. in SoX 
->>>>> stopping the
->>>>> stream with SNDRV_PCM_STATE_SETUP/SNDRV_PCM_STATE_DRAINING does not 
->>>>> stop
->>>>> the application, while with SNDRV_PCM_STATE_DISCONNECTED SoX exits 
->>>>> with
->>>>> non-recoverable status. I am considering implementing both methods and
->>>>> letting users choose their suitable snd_pcm_stop operation (none
->>>>> (default)/SETUP-DRAINING/DISCONNECTED) for the two events (host
->>>>> playback/capture stop, cable disconnection) with a configfs param. 
->>>>> Would
->>>>> this make sense?
->>>>
->>>> The disconnection state is unrecoverable. It's expected that the
->>>> device will be freed and cannot be reused.
->>>>
->>>> If you expect to keep the PCM device, we should probably introduce a
->>>> new function which puts the device to the SNDRV_PCM_STATE_OPEN
->>>> state. In this state, all I/O routines will return -EBADFD for the
->>>> applications, so they should close or re-initialize the PCM device
->>>> completely.
->>>>
->>>> https://elixir.bootlin.com/linux/latest/source/sound/core/pcm_native.c#L794 
->>>>
->>>>
->>>
->>> The fact is that after closing the USB host can re-open the device
->>> with different samplerate (and perhaps later on with different
->>> channels count/sample size). That would hint at the need to
->>> re-initialize the gadget side before opening  anyway.
->>>
->>> As of keeping the device - it's likely some use cases would prefer
->>> keeping the device, to minimize the operations needed to react to the
->>> host-side playback/capture start.
->>>
->>> A function you describe would make sense for this. IMO from the gadget
->>> POW there is no difference  between the host stopping playback/capture
->>> and cable disconnection, in both cases the data stream is stopped and
->>> next stream can have entirely different parameters. Maybe the gadget
->>> configfs parameter could only toggle between no action (i.e. current
->>> situation) and the new alsa function stopping the stream.
->>>
->>> Jaroslav, please can you draft such a function? Perhaps both changes
->>> could make it to 5.17.
->>
->> (Sorry for the delayed response, as I've been on vacation and now
->> catching up the huge pile of backlogs...)
->>
->> About the change to keep PCM OPEN state: I'm afraid that the
->> disconnection in the host side may happen at any time, and keeping the
->> state OPEN would confuse the things if the host is indeed
->> unrecoverable.
+On Mon, 03 Jan 2022 13:14:27 +0530, Jayesh Choudhary wrote:
+> Convert the bindings for McASP controllers for TI SOCs from txt
+> to YAML schema.
 > 
-> I don't think so. The SNDRV_PCM_IOCTL_HW_PARAMS must be issued by the 
-> application (in the PCM_OPEN state) and if the USB bus connection is no 
-> longer active, it may fail. We can distinguish between host -> device 
-> disconnection and device -> host one. It is not really a similar thing.
+> Adds additional properties 'clocks', 'clock-names', 'power-domains',
+> '#sound-dai-cells' and 'port' which were missing from the txt file.
+> Removes properties 'sram-size-playback' and 'sram-size-capture'
+> since they are not used.
+> Adds 'dmas' and 'dma-names' in the example which were missing from
+> the txt file.
+> Changes 'interrupts' and 'interrupt-names' from optional to
+> required properties.
+> Changes 'op-modes', 'serial-dir' to optional properties as they are
+> not needed if the McASP is used only as GPIO.
+> Changes 'tdm-slots' to required property only for I2S operation mode.
 > 
-> I think that the idea was to avoid to re-build the whole card / device 
-> structure for the fixed device allocation.
+> Adds the yaml file in the 'MAINTAINERS' under the heading 'TEXAS
+> INSTRUMENTS ASoC DRIVERS'
 > 
-> Pavel, if the USB host is not connected to the gadget, where the 
-> playback PCM device fails now ? Is the PCM device created or not ?
+> Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
+> ---
+> Changelog:
+> v5:
+> - changes the commit message
+> - changes description for 'reg', 'op-mode', 'tx-num-evt',
+>   'rx-num-evt' and 'interrupts'
+> - adds minimum and maximum for 'tdm-slots'
+> - removes default from 'serial-dir'
+> - removes maxItems from 'tdm-slots', 'tx-num-evt', 'rx-num-evt' and
+>   'auxclk-fs-ratio' as they are of type uint32
+> - adds 'tdm-slots' as conditionally required property for I2S mode
+>   of operation
+> 
+> v4:
+> - changes the commit message
+> - adds type and description to relevant properties
+> - changes maxItems for 'serial-dir'
+> - removes properties 'sram-size-playback' and 'sram-size-capture'
+>   as they are not used
+> - removes 'function-gpios'
+> - removes 'num-serializer'
+> - marks 'tdm-slots', 'op-mode' and 'serial-dir' as optional properties
+> - adds the yaml file in MAINTAINERS
+> 
+> v3:
+> - remove maxItems from 'clock-names'
+> 
+> v2:
+> - changes the commit message
+> - modifies the properties 'clocks', 'clock-names', 'dma-names',
+>   'dmas', 'interrupts' and 'interrupt-names' according to the
+>   arm SOCs
+> - adds 'ports' and 'num-serializer' as node properties
+> 
+>  .../bindings/sound/davinci-mcasp-audio.txt    |  86 --------
+>  .../bindings/sound/davinci-mcasp-audio.yaml   | 201 ++++++++++++++++++
+>  MAINTAINERS                                   |   1 +
+>  3 files changed, 202 insertions(+), 86 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
+>  create mode 100644 Documentation/devicetree/bindings/sound/davinci-mcasp-audio.yaml
 > 
 
-The gaudio PCM device is created when the gadget function is activated 
-(module loaded), regardless whether the USB host is actually connected. 
-The playback/capture fails after the blocking read/write times out. The 
-data delivery/consumption method is simply not called when no usb 
-requests get completed 
-https://elixir.bootlin.com/linux/latest/source/drivers/usb/gadget/function/u_audio.c#L147 
-.
+Running 'make dtbs_check' with the schema in this patch gives the
+following warnings. Consider if they are expected or the schema is
+incorrect. These may not be new warnings.
 
-The current code does basically nothing to the alsa pcm stream at 
-capture/playback start/stop by the host (called when altsetting changes 
-in the gadget) 
-https://elixir.bootlin.com/linux/latest/source/drivers/usb/gadget/function/u_audio.c#L468 
-https://elixir.bootlin.com/linux/latest/source/drivers/usb/gadget/function/u_audio.c#L557
+Note that it is not yet a requirement to have 0 warnings for dtbs_check.
+This will change in the future.
 
-Best regards,
+Full log is available here: https://patchwork.ozlabs.org/patch/1574696
 
-Pavel.
+
+mcasp@0: 'num-serializer' does not match any of the regexes: 'pinctrl-[0-9]+'
+	arch/arm/boot/dts/am335x-cm-t335.dt.yaml
+	arch/arm/boot/dts/am335x-sbc-t335.dt.yaml
+
+mcasp@0: 'rt-num-evt' does not match any of the regexes: 'pinctrl-[0-9]+'
+	arch/arm/boot/dts/am335x-wega-rdk.dt.yaml
+
+mcasp@2b00000: 'tdm-slots' is a required property
+	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dt.yaml
+	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dt.yaml
+	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dt.yaml
+	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dt.yaml
+
+mcasp@2b10000: 'tdm-slots' is a required property
+	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dt.yaml
+	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dt.yaml
+	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dt.yaml
+	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dt.yaml
+
+mcasp@2b20000: 'tdm-slots' is a required property
+	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dt.yaml
+	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dt.yaml
+	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dt.yaml
+	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dt.yaml
+
