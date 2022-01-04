@@ -4,76 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3679C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Jan 2022 08:52:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7A50C4332F
+	for <alsa-devel@archiver.kernel.org>; Tue,  4 Jan 2022 11:11:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 399A01701;
-	Tue,  4 Jan 2022 09:52:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 399A01701
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6F29C1702;
+	Tue,  4 Jan 2022 12:10:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F29C1702
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1641286370;
-	bh=qBWalmtKSmagHda2t4OLj3e+LegwcyqsE7AA17/oBUE=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1641294682;
+	bh=Iblaf2FX1GBm4ZPwarVk/foVQcK9ANMV4KgSGY/3TMw=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XxjZMQZ35ASH0H2gqYRbeKnaYK3Jy/qc4Cla0EXFWTF2DgJxr0BoJiJTjSY881z91
-	 9O9FzOIZ5tUSYuzeJir6ZFy4oUz9hLGIPL3R/FqBgtkyCDJLxVGV+tyX47RWtVz5N6
-	 EEiy9SbRU2PeVdRFVUP0+eDfoXKyHr9hhItHunmI=
+	b=kYmKq6KpUgy8jYJRir7Jvz238xpVz+Ka38ZgcrLA2Jw2gOL0hz9Fjb8FvjJDjEpe3
+	 Q3bwQm5rKdLjYbwHk6ULxWOThESevIBQnwkmlgKxJ6hqmmw4RrcBrkToe/CsrCpT2e
+	 mC2WVJ9rMs1A+wWlXmibQKS0LodFBmg96ODsKXzw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BDA79F800FF;
-	Tue,  4 Jan 2022 09:51:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 06C95F8007E;
+	Tue,  4 Jan 2022 12:10:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7250AF80310; Tue,  4 Jan 2022 09:51:58 +0100 (CET)
-Received: from magratgarlick.emantor.de (magratgarlick.emantor.de
- [78.46.208.201])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id D28F8F8049C; Tue,  4 Jan 2022 12:10:28 +0100 (CET)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F41E1F80089
- for <alsa-devel@alsa-project.org>; Tue,  4 Jan 2022 09:51:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F41E1F80089
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=czerwinskis.de header.i=@czerwinskis.de
- header.b="HqpbkZ5R"; 
- dkim=pass (1024-bit key) header.d=czerwinskis.de header.i=@czerwinskis.de
- header.b="qrS2vg4R"
-Received: by magratgarlick.emantor.de (Postfix, from userid 114)
- id 4DF4491608; Tue,  4 Jan 2022 09:51:53 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=czerwinskis.de;
- s=mail; t=1641286313;
- bh=qBWalmtKSmagHda2t4OLj3e+LegwcyqsE7AA17/oBUE=;
- h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=HqpbkZ5R2rXGOhRQzetJxWpJT2+kYJ7NbKhHJFzgTWqWsoO/Qp8bLG5Hs2whASAQw
- PWnOfLs+/Kmd00fD9Nxe/IF5xitzZmDghWt5deMJp7ncBYlnn2EMO3qFN/hcu3nZch
- HRNEKDmyCGxsm+sqFYKpWjSScnGcMA+OU0C+XOYk=
-Received: from webmail.emantor.de (magratgarlick.emantor.de
- [IPv6:2a01:4f8:c17:c88::2])
- by magratgarlick.emantor.de (Postfix) with ESMTPA id B8BCA915FB;
- Tue,  4 Jan 2022 09:51:50 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=czerwinskis.de;
- s=mail; t=1641286310;
- bh=qBWalmtKSmagHda2t4OLj3e+LegwcyqsE7AA17/oBUE=;
- h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=qrS2vg4Rgw3Ez9BAx2YYKumQcsmZTn6CHmhxthAPEZIsH5zO4ie7E3TBeCdR32e9l
- XHr8aBLvxjvEZgcCzwRKYo7MSTWeSyakUF959sCev3OoNMBHnUiOmgPixY1w/ix90V
- vQbI0+iWtFIS5V0xtwlDuP3REAtaetfS9MN0dOzk=
-MIME-Version: 1.0
-Date: Tue, 04 Jan 2022 09:51:50 +0100
-From: rouven@czerwinskis.de
-To: Takashi Iwai <tiwai@suse.de>
-Subject: Re: IOMMU Page Fault with Creative Soundblaster Zx after suspend
-In-Reply-To: <s5hwnjmo7ae.wl-tiwai@suse.de>
-References: <87mtkjqvgj.fsf@czerwinskis.de> <s5hwnjmo7ae.wl-tiwai@suse.de>
-Message-ID: <f039f58c6aa161a15ed38737c51cc233@czerwinskis.de>
-X-Sender: rouven@czerwinskis.de
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, Colin Ian King <colin.king@intel.com>,
- Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Simeon Simeonoff <sim.simeonoff@gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id D65D6F80089
+ for <alsa-devel@alsa-project.org>; Tue,  4 Jan 2022 12:10:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D65D6F80089
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 047551A2251;
+ Tue,  4 Jan 2022 12:10:22 +0100 (CET)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com
+ (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id C1E4C1A223A;
+ Tue,  4 Jan 2022 12:10:21 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+ by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 2A0D4183AC4C;
+ Tue,  4 Jan 2022 19:10:20 +0800 (+08)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+ festevam@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+ alsa-devel@alsa-project.org
+Subject: [PATCH 2/3] ASoC: imx-card: Fix mclk calculation issue for akcodec
+Date: Tue,  4 Jan 2022 18:40:34 +0800
+Message-Id: <1641292835-19085-3-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1641292835-19085-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1641292835-19085-1-git-send-email-shengjiu.wang@nxp.com>
+X-Virus-Scanned: ClamAV using ClamSMTP
+Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,53 +70,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+Transfer the refined slots and slot_width to akcodec_get_mclk_rate()
+for mclk calculation, otherwise the mclk frequency does not match
+with the slots and slot_width for S16_LE format, because the default
+slot_width is 32.
 
-Am 2021-12-30 08:56, schrieb Takashi Iwai:
-> On Wed, 29 Dec 2021 16:24:13 +0100,
-> Rouven Czerwinski wrote:
->> 
->> Hi,
->> 
->> With current 5.15.11, my soundblaster Zx is not correctly coming back
->> from suspend. Dmesg prints:
->> 
->> [Mi Dez 29 16:12:14 2021] [drm] UVD and UVD ENC initialized 
->> successfully.
->> [Mi Dez 29 16:12:14 2021] snd_hda_codec_ca0132 hdaudioC0D1: ca0132 DSP 
->> downloaded and running
->> [Mi Dez 29 16:12:15 2021] [drm] VCE initialized successfully.
->> [Mi Dez 29 16:12:15 2021] usb 1-5: reset full-speed USB device number 
->> 2 using xhci_hcd
->> [Mi Dez 29 16:12:16 2021] ata1.00: Enabling discard_zeroes_data
->> [Mi Dez 29 16:12:16 2021] OOM killer enabled.
->> [Mi Dez 29 16:12:16 2021] Restarting tasks ... done.
->> [Mi Dez 29 16:12:16 2021] PM: suspend exit
->> [Mi Dez 29 16:12:16 2021] snd_hda_intel 0000:06:00.0: AMD-Vi: Event 
->> logged [IO_PAGE_FAULT domain=0x000f address=0xdf880000 flags=0x0000]
->> [Mi Dez 29 16:12:17 2021] igb 0000:08:00.0 enp8s0: igb: enp8s0 NIC 
->> Link is Up 1000 Mbps Full Duplex, Flow Control: RX/TX
->> 
->> Where the IOMMU Page Fault looks suspicious. Unbinding and rebinding 
->> the
->> driver using sysfs fixes it, thats the current workaround I have
->> been using.
-> 
-> Is it a regression from the earlier releases?  If yes, please try to
-> narrow down the regression range, at least, which version started
-> showing the problem.  It'd be great if you can perform git bisection,
-> of course.
+Fixes: aa736700f42f ("ASoC: imx-card: Add imx-card machine driver")
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ sound/soc/fsl/imx-card.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-I thought it was but it isn't, I recently switched the profile from 
-"Analog Stereo Duplex"
-to "Analog Surround 5.1" within pavucontrol (underlying sound daemon is 
-pipewire).
-This seems to lead to the IOMMU error on resume, using 2.0 works fine 
-over a suspend resume
-cycle.
-Time to find out what the surround handling does differently from plain 
-stereo for the
-soundblaster Z cards.
+diff --git a/sound/soc/fsl/imx-card.c b/sound/soc/fsl/imx-card.c
+index e0f3aa6d9501..f9196fb7e833 100644
+--- a/sound/soc/fsl/imx-card.c
++++ b/sound/soc/fsl/imx-card.c
+@@ -247,13 +247,14 @@ static bool codec_is_akcodec(unsigned int type)
+ }
+ 
+ static unsigned long akcodec_get_mclk_rate(struct snd_pcm_substream *substream,
+-					   struct snd_pcm_hw_params *params)
++					   struct snd_pcm_hw_params *params,
++					   int slots, int slot_width)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct imx_card_data *data = snd_soc_card_get_drvdata(rtd->card);
+ 	const struct imx_card_plat_data *plat_data = data->plat_data;
+ 	struct dai_link_data *link_data = &data->link_data[rtd->num];
+-	unsigned int width = link_data->slots * link_data->slot_width;
++	unsigned int width = slots * slot_width;
+ 	unsigned int rate = params_rate(params);
+ 	int i;
+ 
+@@ -349,7 +350,7 @@ static int imx_aif_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	/* Set MCLK freq */
+ 	if (codec_is_akcodec(plat_data->type))
+-		mclk_freq = akcodec_get_mclk_rate(substream, params);
++		mclk_freq = akcodec_get_mclk_rate(substream, params, slots, slot_width);
+ 	else
+ 		mclk_freq = params_rate(params) * slots * slot_width;
+ 	/* Use the maximum freq from DSD512 (512*44100 = 22579200) */
+-- 
+2.17.1
 
-Kind regards,
-Rouven
