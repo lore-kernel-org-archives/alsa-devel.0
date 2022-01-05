@@ -4,82 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F8FEC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jan 2022 14:45:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3FAE6C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jan 2022 15:44:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A6AC1191E;
-	Wed,  5 Jan 2022 15:44:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6AC1191E
+	by alsa0.perex.cz (Postfix) with ESMTPS id BCAAB18C3;
+	Wed,  5 Jan 2022 16:43:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BCAAB18C3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1641393903;
-	bh=KOa7OfHkYV1QuKFQb7TDkARN8bdEbjPX9Rn1pC+XLW4=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1641397482;
+	bh=de5g0FWpu0e/vDtytVIPcjC69oX7X3/MDuLqujkVEeg=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RyayDA48OJKHPkwxOP9Hh+tL+cgLZRI4gFpLtbYDhGbCuHbZpsxQa5eNwwJ8+ChpO
-	 xXgq/Qo5ufnTECo5OwVeZomU0urcJc6x5Tf6KQGH0I8G1EshkmbW+N+y5luX3BKAHD
-	 wITV9f1Oh19lH64IR4XJpM5e4SvnVKEilmptKd0w=
+	b=hEGxp0akWKnK7vfdKCLJXP3vwXpUsOE+KosOm+W4U/tnfObuk+z3spPSWKTcWt7YK
+	 mo0qFmbfX29TApxQecoeX+JgFrCcbGMBX63+6hRPFY7xP55rbGRaJmzEGloRRyox5s
+	 nFOvAdl+kAnbnnIPqFmdTa9akVIKwQnrVa/Gw3aY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F3B7DF80167;
-	Wed,  5 Jan 2022 15:44:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4D050F8007E;
+	Wed,  5 Jan 2022 16:43:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 89248F801D8; Wed,  5 Jan 2022 15:44:11 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 34041F801D8; Wed,  5 Jan 2022 16:43:48 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E398CF8007E
- for <alsa-devel@alsa-project.org>; Wed,  5 Jan 2022 15:44:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E398CF8007E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0907BF800BB
+ for <alsa-devel@alsa-project.org>; Wed,  5 Jan 2022 16:43:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0907BF800BB
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="ggPejQ+4"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 205BpCgh020067;
- Wed, 5 Jan 2022 08:44:06 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=JtM8XlNE8jS3ESrEB/vt/isdtCnCkfKIi50WYQ34oi4=;
- b=ggPejQ+4jwitwT8zPzs2O1bSHQsgGvWVao55wzn+K7sGWKdqRLB9TKgcrNmd5DyNLuPD
- dlOgrA5kJitXPeAH4fMCH43vL5yKvAFxmzvX52YL2vtP4xRZEhDWdhmj371RfJOFpGZW
- sqXf5JinltCjX5hP62/btUd8ozMXCFkB2pzvcCcaNfKSuIq5aY5LCcx00wfrXQbbOfRN
- MBKJjfvc+F9xQTMKzIeIVWjTNx95GwQs9jAAisG5Nfcyhlq67pDcmSHb4h0WEB4JhFLZ
- qY6Jgiqr61y8RCcUYCW6wNGYk5U7RH9Q1ksDaS3img3Xm3gHnTbaTsWpKwALPWfwi1/a 0A== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3dd8jy88r1-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Wed, 05 Jan 2022 08:44:06 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Wed, 5 Jan
- 2022 14:44:03 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.17 via
- Frontend Transport; Wed, 5 Jan 2022 14:44:03 +0000
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D701B11D7;
- Wed,  5 Jan 2022 14:44:03 +0000 (UTC)
-Date: Wed, 5 Jan 2022 14:44:03 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="OqGyMWpa"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="Hi4GY93y"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 322561F397;
+ Wed,  5 Jan 2022 15:43:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1641397419; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=UsB8Tl8IxpSClgxyZCdrEIoWg+7UXXmTO/v3nSrLZXI=;
+ b=OqGyMWpa6n01YkXfHYYrerGLrTzbU2Oq68MiNi/Ae1aFb7ojyn9ZoJEO+8r6zU+TbrPPtU
+ ntRp8eaQXebQ652PIDXbOI0my2n2SLF1b5oeIMzWiIQcwNccIc0d0dyvcjW/wja6vLudPB
+ 48UJtfPKI08tIcbczQegnv/tdJkcewE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1641397419;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=UsB8Tl8IxpSClgxyZCdrEIoWg+7UXXmTO/v3nSrLZXI=;
+ b=Hi4GY93yE+UmqBY+JjB7g9W5vwV4gFOsfSTiOJVHJ0UM1NWkK1YnVsd2FVbBg/W7R53K7P
+ oki0YYH538cbfQDg==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 54685A3B81;
+ Wed,  5 Jan 2022 15:43:38 +0000 (UTC)
+Date: Wed, 05 Jan 2022 16:43:38 +0100
+Message-ID: <s5hiluyi3x1.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
 To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/8] Add low power hibernation support to cs35l41
-Message-ID: <20220105144403.GG18506@ediswmail.ad.cirrus.com>
-References: <20220105113026.18955-1-ckeepax@opensource.cirrus.com>
- <YdWrhS557UTykPY9@sirena.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <YdWrhS557UTykPY9@sirena.org.uk>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: f8SPmSySFz2WocF-AKgZooPakCP3OfOP
-X-Proofpoint-ORIG-GUID: f8SPmSySFz2WocF-AKgZooPakCP3OfOP
-X-Proofpoint-Spam-Reason: safe
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- david.rhodes@cirrus.com, lgirdwood@gmail.com, tiwai@suse.com
+Subject: Re: [GIT PULL] ASoC updates for v5.17
+In-Reply-To: <20220105141037.5241DC36AE0@smtp.kernel.org>
+References: <20220105141037.5241DC36AE0@smtp.kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,21 +87,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Jan 05, 2022 at 02:30:29PM +0000, Mark Brown wrote:
-> On Wed, Jan 05, 2022 at 11:30:18AM +0000, Charles Keepax wrote:
+On Wed, 05 Jan 2022 15:10:18 +0100,
+Mark Brown wrote:
 > 
-> > Patches 7,8 specifically will cause some very minor conflicts with
-> > Lucas's currently outstanding work on the HDA version of cs35l41.
-> > Whilst things will still build, this patch adds a test key function
+> The following changes since commit ee907afb0c39a41ee74b862882cfe12820c74b98:
 > 
-> No they won't, an x86 allmodconfig gives this:
+>   ASoC: meson: aiu: Move AIU_I2S_MISC hold setting to aiu-fifo-i2s (2021-12-14 17:15:32 +0000)
 > 
-> ERROR: modpost: "cs35l41_pm_ops" [sound/soc/codecs/snd-soc-cs35l41-i2c.ko] undefined!
-> ERROR: modpost: "cs35l41_pm_ops" [sound/soc/codecs/snd-soc-cs35l41-spi.ko] undefined!
-> ERROR: modpost: "cs35l41_test_key_lock" [sound/soc/codecs/snd-soc-cs35l41.ko] undefined!
-> ERROR: modpost: "cs35l41_test_key_unlock" [sound/soc/codecs/snd-soc-cs35l41.ko] undefined!
+> are available in the Git repository at:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-v5.17
+> 
+> for you to fetch changes up to 9f3d45318dd9e739ed62e4218839a7a824d3cced:
+> 
+>   ASoC: fsl_mqs: fix MODULE_ALIAS (2022-01-04 14:59:37 +0000)
+> 
+> ----------------------------------------------------------------
+> ASoC: Updates for v5.17
+> 
+> Not much going on framework release this time, but a big update for
+> drivers especially the Intel and SOF ones.
+> 
+>  - Refinements and cleanups around the delay() APIs.
+>  - Wider use of dev_err_probe().
+>  - Continuing cleanups and improvements to the SOF code.
+>  - Support for pin switches in simple-card derived cards.
+>  - Support for AMD Renoir ACP, Asahi Kasei Microdevices AKM4375, Intel
+>    systems using NAU8825 and MAX98390, Mediatek MT8915, nVidia Tegra20
+>    S/PDIF, Qualcomm systems using ALC5682I-VS and Texas Instruments
+>    TLV320ADC3xxx.
 
-Hmm... apologies, let me look into that one.
+Thanks, pulled now.
 
-Thanks,
-Charles
+
+Takashi
