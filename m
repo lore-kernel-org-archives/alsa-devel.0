@@ -4,81 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0415C433FE
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jan 2022 11:34:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C343FC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jan 2022 11:38:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D32A31831;
-	Wed,  5 Jan 2022 12:33:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D32A31831
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1351F17D9;
+	Wed,  5 Jan 2022 12:37:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1351F17D9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1641382447;
-	bh=9h+6byO1IV7IBBFkMdTyDJpMKKRZEl0Bt6EIUSovYQI=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=R4269Y+IhH5qolZVR5yCVSD0/emNPD+iBOlVS0D7egQh46+SSGZW35I17bsxO/wTb
-	 q5kMcQGQ9td3O+33uUw81cg3anOtbPgvhVC52KMihaPN0V7ftyadSrt12tNLiFwF2d
-	 caLpBvSVg6U89LjrcMvy6t6WADp37kNMNTj1W69o=
+	s=default; t=1641382721;
+	bh=Omzoaby344e3CyTiNEoT1kYVmdGEOukRKKxxPAWe3u8=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=iu/UKPD2IMWxf9GKRo9zlT4nGgqyBXEWjqGV3BMH3UDNAUHvZPDrTXbK2oOsgYYnA
+	 tW43EeJEaLQX1cF0W5Ts8+/eUTfc2W7hY8Ufwk8+ALxJVqoiXM13CXXfViaM47g81n
+	 9KwZWY5bz/XkEjP6yR50V8DrKbD7EWS5rRbnloSk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 247C6F80534;
-	Wed,  5 Jan 2022 12:30:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A77F4F80089;
+	Wed,  5 Jan 2022 12:37:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 06EC8F80529; Wed,  5 Jan 2022 12:30:50 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id 06C8DF800BB; Wed,  5 Jan 2022 12:37:49 +0100 (CET)
+Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DCA8EF804FA
- for <alsa-devel@alsa-project.org>; Wed,  5 Jan 2022 12:30:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DCA8EF804FA
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="di9iJvuE"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 2059IfsD015775;
- Wed, 5 Jan 2022 05:30:32 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=PODMain02222019;
- bh=X8vQ8K312RiLxRzitmHI+ToIEVqWnmiXDjWVbaCRido=;
- b=di9iJvuEdQ0UX/ObhDjVeenQmE/0g4z6cr/gr/X0YQ8NMscZIAzdESdL79dBrpvxvoNS
- cBxQlYxp+lQsHWrKFuT8Cl3nN/QlKAa4unWgU3Ep7HFYFGkJaTfxVXqp0jAUMylbDdCx
- QVKslj/sDJcyTyVQ/gYTC8ZJzs7sQSBD4v/HQOG0qc23IhWq1n3I+Ssa9jY3ge63n9Gf
- MUrXINiCCrNTBQFByqy/u4p5P0eZvufNrIEH6YwzWLnMhTKfNljJcAOXmzAIdLF5K9PV
- NtBRZwRo8O9Q9/OFIN+LKNnXsy5OUSZS5V8AVkfpo4lXIc8SrXm+PwieqEasVShjbGLz 5Q== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3dd8jy839d-5
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Wed, 05 Jan 2022 05:30:31 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Wed, 5 Jan
- 2022 11:30:27 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.17 via
- Frontend Transport; Wed, 5 Jan 2022 11:30:27 +0000
-Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 51ABE11D7;
- Wed,  5 Jan 2022 11:30:27 +0000 (UTC)
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: <broonie@kernel.org>
-Subject: [PATCH 8/8] ASoC: cs35l41: Add support for hibernate memory retention
- mode
-Date: Wed, 5 Jan 2022 11:30:26 +0000
-Message-ID: <20220105113026.18955-9-ckeepax@opensource.cirrus.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20220105113026.18955-1-ckeepax@opensource.cirrus.com>
-References: <20220105113026.18955-1-ckeepax@opensource.cirrus.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-GUID: VcGmfr1wt7V5sPluDzroGxuuvJH5jBdP
-X-Proofpoint-ORIG-GUID: VcGmfr1wt7V5sPluDzroGxuuvJH5jBdP
-X-Proofpoint-Spam-Reason: safe
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- david.rhodes@cirrus.com, lgirdwood@gmail.com, tiwai@suse.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id 10999F800BB
+ for <alsa-devel@alsa-project.org>; Wed,  5 Jan 2022 12:37:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10999F800BB
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id E21BF200635;
+ Wed,  5 Jan 2022 12:37:41 +0100 (CET)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com
+ (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 7D9392011D1;
+ Wed,  5 Jan 2022 12:37:41 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+ by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 51607183F0C0;
+ Wed,  5 Jan 2022 19:37:39 +0800 (+08)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+ festevam@gmail.com, broonie@kernel.org, alsa-devel@alsa-project.org,
+ lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com
+Subject: [PATCH] ASoC: fsl_asrc: refine the check of available clock divider
+Date: Wed,  5 Jan 2022 19:08:03 +0800
+Message-Id: <1641380883-20709-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
+Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,409 +67,150 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The cs35l41 supports a low power DSP memory retention mode. Add support
-for entering this mode when then device is not in use.
+According to RM, the clock divider range is from 1 to 8, clock
+prescaling ratio may be any power of 2 from 1 to 128.
+So the supported divider is not all the value between
+1 and 1024, just limited value in that range.
 
-Co-authored-by: David Rhodes <david.rhodes@cirrus.com>
-Signed-off-by: David Rhodes <david.rhodes@cirrus.com>
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Create table for the supported divder and add function to
+check the clock divider is available by comparing with
+the table.
+
+Fixes: d0250cf4f2ab ("ASoC: fsl_asrc: Add an option to select internal ratio mode")
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- include/sound/cs35l41.h        |   5 ++
- sound/soc/codecs/cs35l41-i2c.c |   1 +
- sound/soc/codecs/cs35l41-lib.c |   6 ++
- sound/soc/codecs/cs35l41-spi.c |   1 +
- sound/soc/codecs/cs35l41.c     | 200 ++++++++++++++++++++++++++++++++++++++++-
- sound/soc/codecs/cs35l41.h     |   4 +
- 6 files changed, 213 insertions(+), 4 deletions(-)
+ sound/soc/fsl/fsl_asrc.c | 69 +++++++++++++++++++++++++++++++++-------
+ 1 file changed, 58 insertions(+), 11 deletions(-)
 
-diff --git a/include/sound/cs35l41.h b/include/sound/cs35l41.h
-index 56289b67b9a0e..bf7f9a9aeba04 100644
---- a/include/sound/cs35l41.h
-+++ b/include/sound/cs35l41.h
-@@ -40,6 +40,9 @@
- #define CS35L41_PROTECT_REL_ERR_IGN	0x00002034
- #define CS35L41_GPIO_PAD_CONTROL	0x0000242C
- #define CS35L41_JTAG_CONTROL		0x00002438
-+#define CS35L41_PWRMGT_CTL		0x00002900
-+#define CS35L41_WAKESRC_CTL		0x00002904
-+#define CS35L41_PWRMGT_STS		0x00002908
- #define CS35L41_PLL_CLK_CTRL		0x00002C04
- #define CS35L41_DSP_CLK_CTRL		0x00002C08
- #define CS35L41_GLOBAL_CLK_CTRL		0x00002C0C
-@@ -635,6 +638,8 @@
- #define CS35L41_INPUT_DSP_TX1		0x32
- #define CS35L41_INPUT_DSP_TX2		0x33
+diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
+index 24b41881a68f..d7d1536a4f37 100644
+--- a/sound/soc/fsl/fsl_asrc.c
++++ b/sound/soc/fsl/fsl_asrc.c
+@@ -19,6 +19,7 @@
+ #include "fsl_asrc.h"
  
-+#define CS35L41_WR_PEND_STS_MASK	0x2
-+
- #define CS35L41_PLL_CLK_SEL_MASK	0x07
- #define CS35L41_PLL_CLK_SEL_SHIFT	0
- #define CS35L41_PLL_CLK_EN_MASK		0x10
-diff --git a/sound/soc/codecs/cs35l41-i2c.c b/sound/soc/codecs/cs35l41-i2c.c
-index eb8dfb6d9c950..faad5c638cb82 100644
---- a/sound/soc/codecs/cs35l41-i2c.c
-+++ b/sound/soc/codecs/cs35l41-i2c.c
-@@ -86,6 +86,7 @@ MODULE_DEVICE_TABLE(acpi, cs35l41_acpi_match);
- static struct i2c_driver cs35l41_i2c_driver = {
- 	.driver = {
- 		.name		= "cs35l41",
-+		.pm		= &cs35l41_pm_ops,
- 		.of_match_table = of_match_ptr(cs35l41_of_match),
- 		.acpi_match_table = ACPI_PTR(cs35l41_acpi_match),
+ #define IDEAL_RATIO_DECIMAL_DEPTH 26
++#define DIVIDER_NUM  64
+ 
+ #define pair_err(fmt, ...) \
+ 	dev_err(&asrc->pdev->dev, "Pair %c: " fmt, 'A' + index, ##__VA_ARGS__)
+@@ -101,6 +102,55 @@ static unsigned char clk_map_imx8qxp[2][ASRC_CLK_MAP_LEN] = {
  	},
-diff --git a/sound/soc/codecs/cs35l41-lib.c b/sound/soc/codecs/cs35l41-lib.c
-index 4037831a2ca98..215f6e36260bc 100644
---- a/sound/soc/codecs/cs35l41-lib.c
-+++ b/sound/soc/codecs/cs35l41-lib.c
-@@ -90,6 +90,9 @@ static bool cs35l41_readable_reg(struct device *dev, unsigned int reg)
- 	case CS35L41_PROTECT_REL_ERR_IGN:
- 	case CS35L41_GPIO_PAD_CONTROL:
- 	case CS35L41_JTAG_CONTROL:
-+	case CS35L41_PWRMGT_CTL:
-+	case CS35L41_WAKESRC_CTL:
-+	case CS35L41_PWRMGT_STS:
- 	case CS35L41_PLL_CLK_CTRL:
- 	case CS35L41_DSP_CLK_CTRL:
- 	case CS35L41_GLOBAL_CLK_CTRL:
-@@ -376,6 +379,9 @@ static bool cs35l41_volatile_reg(struct device *dev, unsigned int reg)
- 	case CS35L41_OTPID:
- 	case CS35L41_TEST_KEY_CTL:
- 	case CS35L41_USER_KEY_CTL:
-+	case CS35L41_PWRMGT_CTL:
-+	case CS35L41_WAKESRC_CTL:
-+	case CS35L41_PWRMGT_STS:
- 	case CS35L41_DTEMP_EN:
- 	case CS35L41_IRQ1_STATUS:
- 	case CS35L41_IRQ1_STATUS1:
-diff --git a/sound/soc/codecs/cs35l41-spi.c b/sound/soc/codecs/cs35l41-spi.c
-index 86bbe2fba956e..6dfd5459aa207 100644
---- a/sound/soc/codecs/cs35l41-spi.c
-+++ b/sound/soc/codecs/cs35l41-spi.c
-@@ -84,6 +84,7 @@ MODULE_DEVICE_TABLE(acpi, cs35l41_acpi_match);
- static struct spi_driver cs35l41_spi_driver = {
- 	.driver = {
- 		.name		= "cs35l41",
-+		.pm		= &cs35l41_pm_ops,
- 		.of_match_table = of_match_ptr(cs35l41_of_match),
- 		.acpi_match_table = ACPI_PTR(cs35l41_acpi_match),
- 	},
-diff --git a/sound/soc/codecs/cs35l41.c b/sound/soc/codecs/cs35l41.c
-index e1b9fd8ee9966..d4ebf3465efa4 100644
---- a/sound/soc/codecs/cs35l41.c
-+++ b/sound/soc/codecs/cs35l41.c
-@@ -13,6 +13,7 @@
- #include <linux/module.h>
- #include <linux/moduleparam.h>
- #include <linux/of_device.h>
-+#include <linux/pm_runtime.h>
- #include <linux/property.h>
- #include <sound/initval.h>
- #include <sound/pcm.h>
-@@ -187,8 +188,14 @@ static int cs35l41_dsp_preload_ev(struct snd_soc_dapm_widget *w,
+ };
  
- 	switch (event) {
- 	case SND_SOC_DAPM_PRE_PMU:
-+		if (cs35l41->dsp.cs_dsp.booted)
-+			return 0;
-+
- 		return wm_adsp_early_event(w, kcontrol, event);
- 	case SND_SOC_DAPM_PRE_PMD:
-+		if (cs35l41->dsp.preloaded)
-+			return 0;
-+
- 		if (cs35l41->dsp.cs_dsp.running) {
- 			ret = wm_adsp_event(w, kcontrol, event);
- 			if (ret)
-@@ -209,6 +216,7 @@ static bool cs35l41_check_cspl_mbox_sts(enum cs35l41_cspl_mbox_cmd cmd,
- 	case CSPL_MBOX_CMD_UNKNOWN_CMD:
- 		return true;
- 	case CSPL_MBOX_CMD_PAUSE:
-+	case CSPL_MBOX_CMD_OUT_OF_HIBERNATE:
- 		return (sts == CSPL_MBOX_STS_PAUSED);
- 	case CSPL_MBOX_CMD_RESUME:
- 		return (sts == CSPL_MBOX_STS_RUNNING);
-@@ -230,7 +238,8 @@ static int cs35l41_set_cspl_mbox_cmd(struct cs35l41_private *cs35l41,
- 	// Set mailbox cmd
- 	ret = regmap_write(cs35l41->regmap, CS35L41_DSP_VIRT1_MBOX_1, cmd);
- 	if (ret < 0) {
--		dev_err(cs35l41->dev, "Failed to write MBOX: %d\n", ret);
-+		if (cmd != CSPL_MBOX_CMD_OUT_OF_HIBERNATE)
-+			dev_err(cs35l41->dev, "Failed to write MBOX: %d\n", ret);
- 		return ret;
- 	}
- 
-@@ -413,6 +422,8 @@ static irqreturn_t cs35l41_irq(int irq, void *data)
- 	int ret = IRQ_NONE;
- 	unsigned int i;
- 
-+	pm_runtime_get_sync(cs35l41->dev);
-+
- 	for (i = 0; i < ARRAY_SIZE(status); i++) {
- 		regmap_read(cs35l41->regmap,
- 			    CS35L41_IRQ1_STATUS1 + (i * CS35L41_REGSTRIDE),
-@@ -425,7 +436,7 @@ static irqreturn_t cs35l41_irq(int irq, void *data)
- 	/* Check to see if unmasked bits are active */
- 	if (!(status[0] & ~masks[0]) && !(status[1] & ~masks[1]) &&
- 	    !(status[2] & ~masks[2]) && !(status[3] & ~masks[3]))
--		return IRQ_NONE;
-+		goto done;
- 
- 	if (status[3] & CS35L41_OTP_BOOT_DONE) {
- 		regmap_update_bits(cs35l41->regmap, CS35L41_IRQ1_MASK4,
-@@ -530,6 +541,10 @@ static irqreturn_t cs35l41_irq(int irq, void *data)
- 		ret = IRQ_HANDLED;
- 	}
- 
-+done:
-+	pm_runtime_mark_last_busy(cs35l41->dev);
-+	pm_runtime_put_autosuspend(cs35l41->dev);
-+
- 	return ret;
- }
- 
-@@ -1180,6 +1195,7 @@ static int cs35l41_dsp_init(struct cs35l41_private *cs35l41)
- 	dsp->cs_dsp.type = WMFW_HALO;
- 	dsp->cs_dsp.rev = 0;
- 	dsp->fw = 9; /* 9 is WM_ADSP_FW_SPK_PROT in wm_adsp.c */
-+	dsp->toggle_preload = true;
- 	dsp->cs_dsp.dev = cs35l41->dev;
- 	dsp->cs_dsp.regmap = cs35l41->regmap;
- 	dsp->cs_dsp.base = CS35L41_DSP1_CTRL_BASE;
-@@ -1367,20 +1383,32 @@ int cs35l41_probe(struct cs35l41_private *cs35l41,
- 	if (ret < 0)
- 		goto err;
- 
-+	pm_runtime_set_autosuspend_delay(cs35l41->dev, 3000);
-+	pm_runtime_use_autosuspend(cs35l41->dev);
-+	pm_runtime_mark_last_busy(cs35l41->dev);
-+	pm_runtime_set_active(cs35l41->dev);
-+	pm_runtime_get_noresume(cs35l41->dev);
-+	pm_runtime_enable(cs35l41->dev);
-+
- 	ret = devm_snd_soc_register_component(cs35l41->dev,
- 					      &soc_component_dev_cs35l41,
- 					      cs35l41_dai, ARRAY_SIZE(cs35l41_dai));
- 	if (ret < 0) {
- 		dev_err(cs35l41->dev, "Register codec failed: %d\n", ret);
--		goto err_dsp;
-+		goto err_pm;
- 	}
- 
-+	pm_runtime_put_autosuspend(cs35l41->dev);
-+
- 	dev_info(cs35l41->dev, "Cirrus Logic CS35L41 (%x), Revision: %02X\n",
- 		 regid, reg_revid);
- 
- 	return 0;
- 
--err_dsp:
-+err_pm:
-+	pm_runtime_disable(cs35l41->dev);
-+	pm_runtime_put_noidle(cs35l41->dev);
-+
- 	wm_adsp2_remove(&cs35l41->dsp);
- err:
- 	regulator_bulk_disable(CS35L41_NUM_SUPPLIES, cs35l41->supplies);
-@@ -1392,13 +1420,177 @@ EXPORT_SYMBOL_GPL(cs35l41_probe);
- 
- void cs35l41_remove(struct cs35l41_private *cs35l41)
- {
-+	pm_runtime_get_sync(cs35l41->dev);
-+	pm_runtime_disable(cs35l41->dev);
-+
- 	regmap_write(cs35l41->regmap, CS35L41_IRQ1_MASK1, 0xFFFFFFFF);
- 	wm_adsp2_remove(&cs35l41->dsp);
-+
-+	pm_runtime_put_noidle(cs35l41->dev);
-+
- 	regulator_bulk_disable(CS35L41_NUM_SUPPLIES, cs35l41->supplies);
- 	gpiod_set_value_cansleep(cs35l41->reset_gpio, 0);
- }
- EXPORT_SYMBOL_GPL(cs35l41_remove);
- 
-+static int __maybe_unused cs35l41_runtime_suspend(struct device *dev)
-+{
-+	struct cs35l41_private *cs35l41 = dev_get_drvdata(dev);
-+
-+	dev_dbg(cs35l41->dev, "Runtime suspend\n");
-+
-+	if (!cs35l41->dsp.preloaded || !cs35l41->dsp.cs_dsp.running)
-+		return 0;
-+
-+	dev_dbg(cs35l41->dev, "Enter hibernate\n");
-+
-+	regmap_write(cs35l41->regmap, CS35L41_WAKESRC_CTL, 0x0088);
-+	regmap_write(cs35l41->regmap, CS35L41_WAKESRC_CTL, 0x0188);
-+
-+	// Don't wait for ACK since bus activity would wake the device
-+	regmap_write(cs35l41->regmap, CS35L41_DSP_VIRT1_MBOX_1,
-+		     CSPL_MBOX_CMD_HIBERNATE);
-+
-+	regcache_cache_only(cs35l41->regmap, true);
-+	regcache_mark_dirty(cs35l41->regmap);
-+
-+	return 0;
-+}
-+
-+static void cs35l41_wait_for_pwrmgt_sts(struct cs35l41_private *cs35l41)
-+{
-+	const int pwrmgt_retries = 10;
-+	unsigned int sts;
-+	int i, ret;
-+
-+	for (i = 0; i < pwrmgt_retries; i++) {
-+		ret = regmap_read(cs35l41->regmap, CS35L41_PWRMGT_STS, &sts);
-+		if (ret)
-+			dev_err(cs35l41->dev, "Failed to read PWRMGT_STS: %d\n", ret);
-+		else if (!(sts & CS35L41_WR_PEND_STS_MASK))
-+			return;
-+
-+		udelay(20);
-+	}
-+
-+	dev_err(cs35l41->dev, "Timed out reading PWRMGT_STS\n");
-+}
-+
-+static int cs35l41_exit_hibernate(struct cs35l41_private *cs35l41)
-+{
-+	const int wake_retries = 20;
-+	const int sleep_retries = 5;
-+	int ret, i, j;
-+
-+	for (i = 0; i < sleep_retries; i++) {
-+		dev_dbg(cs35l41->dev, "Exit hibernate\n");
-+
-+		for (j = 0; j < wake_retries; j++) {
-+			ret = cs35l41_set_cspl_mbox_cmd(cs35l41,
-+							CSPL_MBOX_CMD_OUT_OF_HIBERNATE);
-+			if (!ret)
-+				break;
-+
-+			usleep_range(100, 200);
-+		}
-+
-+		if (j < wake_retries) {
-+			dev_dbg(cs35l41->dev, "Wake success at cycle: %d\n", j);
-+			return 0;
-+		}
-+
-+		dev_err(cs35l41->dev, "Wake failed, re-enter hibernate: %d\n", ret);
-+
-+		cs35l41_wait_for_pwrmgt_sts(cs35l41);
-+		regmap_write(cs35l41->regmap, CS35L41_WAKESRC_CTL, 0x0088);
-+
-+		cs35l41_wait_for_pwrmgt_sts(cs35l41);
-+		regmap_write(cs35l41->regmap, CS35L41_WAKESRC_CTL, 0x0188);
-+
-+		cs35l41_wait_for_pwrmgt_sts(cs35l41);
-+		regmap_write(cs35l41->regmap, CS35L41_PWRMGT_CTL, 0x3);
-+	}
-+
-+	dev_err(cs35l41->dev, "Timed out waking device\n");
-+
-+	return -ETIMEDOUT;
-+}
-+
-+static int __maybe_unused cs35l41_runtime_resume(struct device *dev)
-+{
-+	struct cs35l41_private *cs35l41 = dev_get_drvdata(dev);
-+	int ret;
-+
-+	dev_dbg(cs35l41->dev, "Runtime resume\n");
-+
-+	if (!cs35l41->dsp.preloaded || !cs35l41->dsp.cs_dsp.running)
-+		return 0;
-+
-+	regcache_cache_only(cs35l41->regmap, false);
-+
-+	ret = cs35l41_exit_hibernate(cs35l41);
-+	if (ret)
-+		return ret;
-+
-+	/* Test key needs to be unlocked to allow the OTP settings to re-apply */
-+	cs35l41_test_key_unlock(cs35l41->dev, cs35l41->regmap);
-+	ret = regcache_sync(cs35l41->regmap);
-+	cs35l41_test_key_lock(cs35l41->dev, cs35l41->regmap);
-+	if (ret) {
-+		dev_err(cs35l41->dev, "Failed to restore register cache: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused cs35l41_sys_suspend(struct device *dev)
-+{
-+	struct cs35l41_private *cs35l41 = dev_get_drvdata(dev);
-+
-+	dev_dbg(cs35l41->dev, "System suspend, disabling IRQ\n");
-+	disable_irq(cs35l41->irq);
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused cs35l41_sys_suspend_noirq(struct device *dev)
-+{
-+	struct cs35l41_private *cs35l41 = dev_get_drvdata(dev);
-+
-+	dev_dbg(cs35l41->dev, "Late system suspend, reenabling IRQ\n");
-+	enable_irq(cs35l41->irq);
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused cs35l41_sys_resume_noirq(struct device *dev)
-+{
-+	struct cs35l41_private *cs35l41 = dev_get_drvdata(dev);
-+
-+	dev_dbg(cs35l41->dev, "Early system resume, disabling IRQ\n");
-+	disable_irq(cs35l41->irq);
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused cs35l41_sys_resume(struct device *dev)
-+{
-+	struct cs35l41_private *cs35l41 = dev_get_drvdata(dev);
-+
-+	dev_dbg(cs35l41->dev, "System resume, reenabling IRQ\n");
-+	enable_irq(cs35l41->irq);
-+
-+	return 0;
-+}
-+
-+const struct dev_pm_ops cs35l41_pm_ops = {
-+	SET_RUNTIME_PM_OPS(cs35l41_runtime_suspend, cs35l41_runtime_resume, NULL)
-+
-+	SET_SYSTEM_SLEEP_PM_OPS(cs35l41_sys_suspend, cs35l41_sys_resume)
-+	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(cs35l41_sys_suspend_noirq, cs35l41_sys_resume_noirq)
++/*
++ * According to RM, the divider range is 1 ~ 8,
++ * prescaler is power of 2 from 1 ~ 128.
++ */
++static int asrc_clk_divider[DIVIDER_NUM] = {
++	1,  2,  4,  8,  16,  32,  64,  128,  /* divider = 1 */
++	2,  4,  8, 16,  32,  64, 128,  256,  /* divider = 2 */
++	3,  6, 12, 24,  48,  96, 192,  384,  /* divider = 3 */
++	4,  8, 16, 32,  64, 128, 256,  512,  /* divider = 4 */
++	5, 10, 20, 40,  80, 160, 320,  640,  /* divider = 5 */
++	6, 12, 24, 48,  96, 192, 384,  768,  /* divider = 6 */
++	7, 14, 28, 56, 112, 224, 448,  896,  /* divider = 7 */
++	8, 16, 32, 64, 128, 256, 512, 1024,  /* divider = 8 */
 +};
 +
- MODULE_DESCRIPTION("ASoC CS35L41 driver");
- MODULE_AUTHOR("David Rhodes, Cirrus Logic Inc, <david.rhodes@cirrus.com>");
- MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/cs35l41.h b/sound/soc/codecs/cs35l41.h
-index 26a08d58a8c34..88a3d6e3434fb 100644
---- a/sound/soc/codecs/cs35l41.h
-+++ b/sound/soc/codecs/cs35l41.h
-@@ -21,6 +21,8 @@
- #define CS35L41_RX_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE)
- #define CS35L41_TX_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE)
- 
-+extern const struct dev_pm_ops cs35l41_pm_ops;
++/*
++ * Check if the divider is available for internal ratio mode
++ */
++static bool fsl_asrc_divider_avail(int clk_rate, int rate, int *div)
++{
++	u32 rem, i;
++	u64 n;
 +
- enum cs35l41_cspl_mbox_status {
- 	CSPL_MBOX_STS_RUNNING = 0,
- 	CSPL_MBOX_STS_PAUSED = 1,
-@@ -33,6 +35,8 @@ enum cs35l41_cspl_mbox_cmd {
- 	CSPL_MBOX_CMD_RESUME = 2,
- 	CSPL_MBOX_CMD_REINIT = 3,
- 	CSPL_MBOX_CMD_STOP_PRE_REINIT = 4,
-+	CSPL_MBOX_CMD_HIBERNATE = 5,
-+	CSPL_MBOX_CMD_OUT_OF_HIBERNATE = 6,
- 	CSPL_MBOX_CMD_UNKNOWN_CMD = -1,
- 	CSPL_MBOX_CMD_INVALID_SEQUENCE = -2,
- };
++	if (div)
++		*div = 0;
++
++	if (clk_rate == 0 || rate == 0)
++		return false;
++
++	n = clk_rate;
++	rem = do_div(n, rate);
++
++	if (div)
++		*div = n;
++
++	if (rem != 0)
++		return false;
++
++	for (i = 0; i < DIVIDER_NUM; i++) {
++		if (n == asrc_clk_divider[i])
++			break;
++	}
++
++	if (i == DIVIDER_NUM)
++		return false;
++
++	return true;
++}
++
+ /**
+  * fsl_asrc_sel_proc - Select the pre-processing and post-processing options
+  * @inrate: input sample rate
+@@ -330,12 +380,12 @@ static int fsl_asrc_config_pair(struct fsl_asrc_pair *pair, bool use_ideal_rate)
+ 	enum asrc_word_width input_word_width;
+ 	enum asrc_word_width output_word_width;
+ 	u32 inrate, outrate, indiv, outdiv;
+-	u32 clk_index[2], div[2], rem[2];
++	u32 clk_index[2], div[2];
+ 	u64 clk_rate;
+ 	int in, out, channels;
+ 	int pre_proc, post_proc;
+ 	struct clk *clk;
+-	bool ideal;
++	bool ideal, div_avail;
+ 
+ 	if (!config) {
+ 		pair_err("invalid pair config\n");
+@@ -415,8 +465,7 @@ static int fsl_asrc_config_pair(struct fsl_asrc_pair *pair, bool use_ideal_rate)
+ 	clk = asrc_priv->asrck_clk[clk_index[ideal ? OUT : IN]];
+ 
+ 	clk_rate = clk_get_rate(clk);
+-	rem[IN] = do_div(clk_rate, inrate);
+-	div[IN] = (u32)clk_rate;
++	div_avail = fsl_asrc_divider_avail(clk_rate, inrate, &div[IN]);
+ 
+ 	/*
+ 	 * The divider range is [1, 1024], defined by the hardware. For non-
+@@ -425,7 +474,7 @@ static int fsl_asrc_config_pair(struct fsl_asrc_pair *pair, bool use_ideal_rate)
+ 	 * only result in different converting speeds. So remainder does not
+ 	 * matter, as long as we keep the divider within its valid range.
+ 	 */
+-	if (div[IN] == 0 || (!ideal && (div[IN] > 1024 || rem[IN] != 0))) {
++	if (div[IN] == 0 || (!ideal && !div_avail)) {
+ 		pair_err("failed to support input sample rate %dHz by asrck_%x\n",
+ 				inrate, clk_index[ideal ? OUT : IN]);
+ 		return -EINVAL;
+@@ -436,13 +485,12 @@ static int fsl_asrc_config_pair(struct fsl_asrc_pair *pair, bool use_ideal_rate)
+ 	clk = asrc_priv->asrck_clk[clk_index[OUT]];
+ 	clk_rate = clk_get_rate(clk);
+ 	if (ideal && use_ideal_rate)
+-		rem[OUT] = do_div(clk_rate, IDEAL_RATIO_RATE);
++		div_avail = fsl_asrc_divider_avail(clk_rate, IDEAL_RATIO_RATE, &div[OUT]);
+ 	else
+-		rem[OUT] = do_div(clk_rate, outrate);
+-	div[OUT] = clk_rate;
++		div_avail = fsl_asrc_divider_avail(clk_rate, outrate, &div[OUT]);
+ 
+ 	/* Output divider has the same limitation as the input one */
+-	if (div[OUT] == 0 || (!ideal && (div[OUT] > 1024 || rem[OUT] != 0))) {
++	if (div[OUT] == 0 || (!ideal && !div_avail)) {
+ 		pair_err("failed to support output sample rate %dHz by asrck_%x\n",
+ 				outrate, clk_index[OUT]);
+ 		return -EINVAL;
+@@ -621,8 +669,7 @@ static void fsl_asrc_select_clk(struct fsl_asrc_priv *asrc_priv,
+ 			clk_index = asrc_priv->clk_map[j][i];
+ 			clk_rate = clk_get_rate(asrc_priv->asrck_clk[clk_index]);
+ 			/* Only match a perfect clock source with no remainder */
+-			if (clk_rate != 0 && (clk_rate / rate[j]) <= 1024 &&
+-			    (clk_rate % rate[j]) == 0)
++			if (fsl_asrc_divider_avail(clk_rate, rate[j], NULL))
+ 				break;
+ 		}
+ 
 -- 
-2.11.0
+2.17.1
 
