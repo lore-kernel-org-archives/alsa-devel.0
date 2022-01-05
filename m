@@ -4,69 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81542C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jan 2022 11:45:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 448E8C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jan 2022 12:04:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 936C118A5;
-	Wed,  5 Jan 2022 12:44:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 936C118A5
+	by alsa0.perex.cz (Postfix) with ESMTPS id A771B188F;
+	Wed,  5 Jan 2022 13:03:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A771B188F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1641383125;
-	bh=jMfT9xPIsqEfxt0aSl5f1zq4xF1hcR4BpRNAog5nMW4=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1641384289;
+	bh=IrUTIrC0MgkGSOaZxdGvPFCJJ+S6BCcV8QWI4/GCIaM=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FW04TlKNm66a09AM5TUsF884GRShEdiRM1vCoC6po9lIO3Ol0F8wawUdVFrcqzmgE
-	 zjYcU46DZ0bJhagFSG/kh+C9xiZRNDYMxNlKaadGCHuDE9NdOBF2qvDhKPpZ2QAEYh
-	 tEjN0WWNbEixYMAvnjr4iaEJMap1izLHjdNKYhuI=
+	b=OysGn4wj6YmjmvSnyV8ht8bzURRCuMrIp8x5sKc9QoAw2dX5/ow5dXKQUyC+X7XQr
+	 wcxpilhEFDJt37hOsktfyEwvWixa74loOO/2Hc2QG4Ep+SbCfvYMo9+NPdH5O85hB7
+	 tZi9JOd3j/kZcdULUs93CMu5dnqX9cGBeXymMydY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 34116F80167;
-	Wed,  5 Jan 2022 12:44:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 315E1F80167;
+	Wed,  5 Jan 2022 13:03:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B06D0F801D8; Wed,  5 Jan 2022 12:44:33 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 8E75CF801D8; Wed,  5 Jan 2022 13:03:54 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BEBC9F800BB
- for <alsa-devel@alsa-project.org>; Wed,  5 Jan 2022 12:44:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BEBC9F800BB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6E740F8007E
+ for <alsa-devel@alsa-project.org>; Wed,  5 Jan 2022 13:03:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6E740F8007E
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=linuxfoundation.org
- header.i=@linuxfoundation.org header.b="jq8/KP/p"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 0A403B81A9C;
- Wed,  5 Jan 2022 11:44:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 210AEC36AEB;
- Wed,  5 Jan 2022 11:44:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1641383063;
- bh=jMfT9xPIsqEfxt0aSl5f1zq4xF1hcR4BpRNAog5nMW4=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=jq8/KP/p2TuxJ+h96v8nf2Iy2zKsb/RmESIKkjqMYzBO9W+sy0CbQotgMRBHu6oFv
- +qBOjFWxhF/7yCmduYEyFvFaF6hoRp4X22U8KPbCpR7+1zDggUESvJSMj5vl3Wy8mQ
- Lqe9/lYRpsSSym8eGXoIumcaxyBBLt1f5SFHK7gw=
-Date: Wed, 5 Jan 2022 12:44:21 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Baole Fang <fbl718@163.com>
-Subject: Re: [PATCH] ALSA: hda/realtek: Add quirk for Legion Y9000X 2020
-Message-ID: <YdWElRjkZ0lybrMJ@kroah.com>
-References: <20220105034103.12484-1-fbl718@163.com>
- <s5ha6gak2qf.wl-tiwai@suse.de> <YdV5MNWOwgrtH2UC@kroah.com>
- <757a4402-1067-e3c8-8ca3-43ee62047ebe@163.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <757a4402-1067-e3c8-8ca3-43ee62047ebe@163.com>
-Cc: alsa-devel@alsa-project.org, Kailang Yang <kailang@realtek.com>,
- Jeremy Szu <jeremy.szu@canonical.com>, Takashi Iwai <tiwai@suse.de>,
- linux-kernel@vger.kernel.org, Elia Devito <eliadevito@gmail.com>,
- Takashi Iwai <tiwai@suse.com>, Werner Sembach <wse@tuxedocomputers.com>,
- Hui Wang <hui.wang@canonical.com>, Sami Loone <sami@loone.fi>,
- Cameron Berkenpas <cam@neo-zeon.de>
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="UpqfDHz4"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="O40fihy8"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 66D5821117;
+ Wed,  5 Jan 2022 12:03:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1641384225; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=OeRKACjLHNOkj8MaXUEuxCs2DOhRfys16Qnk1SI/NpA=;
+ b=UpqfDHz4/KtcNXoDjFhfFWww48drgylBy05hesUh2kpW/YDlpQigFXNOpYNAcCZd7VhJ2z
+ ERO+nrF0qZ3DHOkyBAz8U5U/c+9UZzb1tgHZvE/K9hKWy1uOKijdqdoNgSybLuB4s6uUy/
+ 5FNOmoVJayMERYckSLIKJJLIdo1Le6s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1641384225;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=OeRKACjLHNOkj8MaXUEuxCs2DOhRfys16Qnk1SI/NpA=;
+ b=O40fihy8ZHr43iLquJk4XcnG+gFgVpzzxC3M5cozcawk/jPKaOHvLitS7uR3GkYRqJl3oE
+ 2U/eAj6GUo+7qoCg==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 5068FA3B8B;
+ Wed,  5 Jan 2022 12:03:45 +0000 (UTC)
+Date: Wed, 05 Jan 2022 13:03:45 +0100
+Message-ID: <s5hr19mie3i.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH 0/8] Add low power hibernation support to cs35l41
+In-Reply-To: <20220105113026.18955-1-ckeepax@opensource.cirrus.com>
+References: <20220105113026.18955-1-ckeepax@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com, tiwai@suse.com,
+ lgirdwood@gmail.com, david.rhodes@cirrus.com, broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,23 +88,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Jan 05, 2022 at 07:39:33PM +0800, Baole Fang wrote:
-> Sorry, this is my first time to submit patch to Linux, so I'm not quite
-> familiar with the convention. Since I was changing based on v5.15.12 and I
-> saw others mentioning their upstream commit, I included the that commit id.
+On Wed, 05 Jan 2022 12:30:18 +0100,
+Charles Keepax wrote:
+> 
+> This patch series adds support for the low power hibernation feature
+> on cs35l41. This allows the DSP memory to be retained whilst the
+> device enters a very low power state.
+> 
+> Patches 1-6 can happily be applied straight away and are mostly bug
+> fixes to set things up for the series specifically around getting the
+> cache handling corrected in the driver.
+> 
+> Patches 7,8 specifically will cause some very minor conflicts with
+> Lucas's currently outstanding work on the HDA version of cs35l41.
+> Whilst things will still build, this patch adds a test key function
+> his code will now have to call. If his patches are getting merged
+> first I will respin this series to update his code, he is currently on
+> holiday until the 12th of Jan, so if we want to wait for another spin
+> of those patches I can work with him to update them at that time. Or
+> alternatively we could just merge them all and I will do a quick fixup
+> patch at the end, since there is no build breakage.
 
-Those commits were coming from the stable backports only, they were not
-done by the original author.
+FWIW, the ASoC part of Lucas's patch set has been already merged in
+Mark's asoc tree.  (HD-audio part isn't merged yet though).
 
-> Please forgive me and tell me what is supposed to be done if possible. I
-> still have a lot to learn.
 
-Please take a look at the "first kernel patch" tutorial on the
-kernelnewbies.org site for a good example of how to do all of this.
-
-Also the Documentation/SubmittingPatches file in the kernel source tree
-should help out.
-
-thanks,
-
-greg k-h
+Takashi
