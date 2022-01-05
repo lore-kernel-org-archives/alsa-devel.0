@@ -4,72 +4,148 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED230C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Jan 2022 18:08:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 760D3C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jan 2022 07:10:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 734BF17F6;
-	Tue,  4 Jan 2022 19:07:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 734BF17F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id A4D4F170D;
+	Wed,  5 Jan 2022 08:09:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A4D4F170D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1641319680;
-	bh=txfvS+Gitakuv4kkZ9OkxwiKDa6QdbuL+sIHK0c2OxI=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1641366612;
+	bh=S/T8/UEZP3jeQ7eJCMC/qCQENGTXoW6hG3JPQnXazeA=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=o9Npnf6oXSIgRoD3OhURlDimbndKS8dlWoY6g++o2RgNVPGCgjclLE0LB2qejdeW6
-	 EHAB7ZG2YuV+P7BV70x7ryYKIc9pl+DK4DQbTysQnxMlm6T3JNq/mtln1QUQo4AlHo
-	 2FxbmuEL+uIlt94PyupbZZxhhvYE5XXyQ3Ne9n50=
+	b=tZHW9kcUftHZAHjKFJhavCa1Ssh0NKYoegY2CsMX/ivIeBak7Pzlnbv+vCmNULI/N
+	 Qa+UZj4xcSnXHjPloznp+TkGF6lxF4uqi01s6Z3TL1EhvXCuSRH9iFBsvaz0uZr6jO
+	 rVW1g7428XH9u3QIK2Q0wVu4YIaajJ42095zPDIo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C0494F80423;
-	Tue,  4 Jan 2022 19:07:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 385DDF80167;
+	Wed,  5 Jan 2022 08:09:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6AE3FF80424; Tue,  4 Jan 2022 19:07:06 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 73989F8027C
- for <alsa-devel@alsa-project.org>; Tue,  4 Jan 2022 19:07:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73989F8027C
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="TODSu9Pk"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 5F298F800BB; Wed,  5 Jan 2022 08:09:20 +0100 (CET)
+Received: from APC01-SG2-obe.outbound.protection.outlook.com
+ (mail-sgaapc01on20624.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:feab::624])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 28C55B817A2;
- Tue,  4 Jan 2022 18:07:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D34CDC36AED;
- Tue,  4 Jan 2022 18:06:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1641319620;
- bh=txfvS+Gitakuv4kkZ9OkxwiKDa6QdbuL+sIHK0c2OxI=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=TODSu9PkSjLNlNUJyBzC+8Cdt+Ux36ZiJX6gytEt0Sg56BXO3Eo1sgHAjb6ZJ53U6
- 03ekSEye8DfpM2W7iS7LpZ//U+8LjI7GaY1fi09XDA+FbBnRWVEkBOPCaA+bCKqJ2B
- UcAmuTuICA5nzHRaPCUcIjm41628b+o0qXaQopyYLY9i5PO4mMSGS5/60uLRMvchqz
- 6SlVOosnsr5UNzLgSvKMyCUOYZ8mbpw7fKA4uh/1AStk5NpgZK7aGSmAWu9DNWTW9i
- swxQBKY3tXMy4CqNMly8wyByj2/HWX9TQDMEJ2AGBFWaFlSxz9Ck2BETWKTUDHkDnV
- xpKmO8fLsT+MQ==
-Date: Tue, 4 Jan 2022 18:06:54 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Shengjiu Wang <shengjiu.wang@nxp.com>
-Subject: Re: [PATCH 1/3] ASoC: imx-card: Need special setting for ak4497 on
- i.MX8MQ
-Message-ID: <YdSMvtXHsYWl7E0U@sirena.org.uk>
-References: <1641292835-19085-1-git-send-email-shengjiu.wang@nxp.com>
- <1641292835-19085-2-git-send-email-shengjiu.wang@nxp.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 209D1F800BB
+ for <alsa-devel@alsa-project.org>; Wed,  5 Jan 2022 08:09:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 209D1F800BB
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=nuvoton.onmicrosoft.com
+ header.i=@nuvoton.onmicrosoft.com header.b="lm8Vyh16"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eixQGn1AoSSZuWgnm2uf+7c1THc5kpH9XqRCAM2q0wN2DnVJZt9yVhjIZkwCnltIyy4PXqwRQC0yer3kj8z0hc7uFcvByeHl73VThkFIVCodjoLkD3kwS1g8uIRyDeL47qZpcCN2MGq6BGJcxvD9NFzOk9akAUW42jems2S35BlFO6WrZ/bXA3x4Nd3YuUSdgUwuungRG70B4jayGdfG0utV80w99nzW9Yhp7XQb6gPk/eMXlpZIkxVVY7uJjezERopaYwCdkZ0miYm2256CseR0SERUFsPEezZTXg5jFjVgFBlB2MbikcoJXz6CmyQsfYapZgFHkP9GxSDNxi/AEw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=SUf+ADuOWeGERWWcBxGQD7DHQGxfNqtMlGV0ogNtiLc=;
+ b=oB1JqRITOUAFXxjrlHTcuCkSpniTsVDtIE6ve1eKPXgBuSfoYu8wn0zrhc53Iv0X6Lc7BkHxd3xZbpu0sof2MwzYE6yQqXiX/tuMCKGS9JC1BH2cMizX1GIbXLHDy8APfgNj6FLAE7QhC+G0gTHQc/MAmmAUHHPAAWtASw65kQzdZuCuFYS5X2xTWRD+Vcndn8xM7dETi/foaLUO54i03W0BMJyU2PabHcUlO+smOu4QEXKzOc3x9uQPOMWzvz0SjTsnKs3kN4/v+UN7stc0Z8etuwDEL6mMwA0BoMw83Dzbw2vHT+rEtql6TAYgAQswbgFYaxYQNJoyFnHE7fVASg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nuvoton.com; dmarc=pass action=none header.from=nuvoton.com;
+ dkim=pass header.d=nuvoton.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=nuvoton.onmicrosoft.com; s=selector2-nuvoton-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SUf+ADuOWeGERWWcBxGQD7DHQGxfNqtMlGV0ogNtiLc=;
+ b=lm8Vyh16/ach/B8Oozp+fIUsfDBeVxSA+lcpEANYX/jnVnFlwWqD6h2t/NomcqLZj0HOtkBxOnaPLPtxIiI2f9fxW5Ko8O+0ROxFVo5MPurveFlpUbZoogls/DWy+lXV3TxxGrj9wtPZrtidIovfAM0Jw4f3d54pcwSwHqKd6dU=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nuvoton.com;
+Received: from HK2PR03MB4337.apcprd03.prod.outlook.com (2603:1096:202:23::13)
+ by HK0PR03MB3731.apcprd03.prod.outlook.com (2603:1096:203:7b::15)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4867.4; Wed, 5 Jan
+ 2022 07:09:02 +0000
+Received: from HK2PR03MB4337.apcprd03.prod.outlook.com
+ ([fe80::28a5:ecc7:6c9c:1fc6]) by HK2PR03MB4337.apcprd03.prod.outlook.com
+ ([fe80::28a5:ecc7:6c9c:1fc6%6]) with mapi id 15.20.4867.007; Wed, 5 Jan 2022
+ 07:09:02 +0000
+Message-ID: <bcb1938a-ae41-7c82-9c4c-51c1b1f1b937@nuvoton.com>
+Date: Wed, 5 Jan 2022 15:08:51 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.1
+Subject: Re: [PATCH] ASoC: nau8821: Add DMIC selections.
+Content-Language: en-US
+To: Mark Brown <broonie@kernel.org>
+References: <20211228035101.2973294-1-wtli@nuvoton.com>
+ <YcxYZqZ6aVh1zfY3@sirena.org.uk>
+ <b38d3788-689a-70ee-c808-4919b2b7a01d@nuvoton.com>
+ <YdRZrLKL8p3u3ZoF@sirena.org.uk>
+From: SevenLee <wtli@nuvoton.com>
+In-Reply-To: <YdRZrLKL8p3u3ZoF@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: HK2PR02CA0181.apcprd02.prod.outlook.com
+ (2603:1096:201:21::17) To HK2PR03MB4337.apcprd03.prod.outlook.com
+ (2603:1096:202:23::13)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="wM9Rnn4bmiJ3jtwv"
-Content-Disposition: inline
-In-Reply-To: <1641292835-19085-2-git-send-email-shengjiu.wang@nxp.com>
-X-Cookie: The horror... the horror!
-Cc: alsa-devel@alsa-project.org, timur@kernel.org, Xiubo.Lee@gmail.com,
- linuxppc-dev@lists.ozlabs.org, tiwai@suse.com, nicoleotsuka@gmail.com,
- festevam@gmail.com, linux-kernel@vger.kernel.org
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7cf3ae69-51c3-41b5-1f75-08d9d01a40be
+X-MS-TrafficTypeDiagnostic: HK0PR03MB3731:EE_
+X-Microsoft-Antispam-PRVS: <HK0PR03MB37318A44F22A1450EFA80E7AC44B9@HK0PR03MB3731.apcprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: rV2Hi2Ns152Pqd3mpswAm2qIzWRc928XNgsj9rKxVa2Nnp8FpufS+mfTFPWtxaTFDKGwVxbkNtNeaDqOG4lHYSdNxPZAKkQUZ8Q5AAkQkAsGZYiGQXzo3wnGI9dXl+JIdc+tEGjUSBu9ny8qsqsBq53B/DDpfgtzTq5voJEACEhz9kxikYhqXCUmiGBr2uF5XzqJdyNhQxOEKhtJ9SSqS57+tPpeIh1u0mV+fXOm9R0fd+FfhhDjWrPb01BwI/oZmycSp1r+dmqY3bnCEL+4KRXNWXerJDUeQdAzknfc6QH+ImDKk6YRNG2urQ1kafQ1WLn6BlwG0enCOV2aoVDA00Vz7lxkdIboXqG4uIt2AT/rx378ZqZcquAkL96Y6Vt8s/U7BTfoiXrV2obCiGXh9cOXHWJ+w9rStpt3M7xwWt/NVqwcIcGht5FRfoMR8A6WwvF8ou8k5qUk8UGPTrpNte/fVQAdTAISe0KFIXb7HVnJIMEM1AuvQ9ffRzhVCDL5EkseJ2PyfgIDtyot74FB/0/ZwzMXeFmlhIk32VfJUoNN9n+xqZRCG385YiGO9hyNW5Ps+LzzM/AtTv1LmfGUWWCH+Uh2R+qYlom3PxeSWL7P8RP7ERYuRv7WdZ47iDcKSAw3iVfHrkJwnZNaxP0HkuAhGRMJBdn4E66dEl1IDy2y1zLHjcJP4XJBxOVDy397WCsTu0uAcHr1c/mMuXy2n97M63Qdj8VVu4fqf7UZ/lRqRpuzxVwqaBtr6ID8VEUkOLivOMqNZw1ClSvh7UiJgg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:HK2PR03MB4337.apcprd03.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230001)(4636009)(366004)(2906002)(186003)(26005)(2616005)(38100700002)(38350700002)(107886003)(83380400001)(5660300002)(66946007)(66476007)(66556008)(86362001)(6506007)(4326008)(6486002)(31686004)(8936002)(8676002)(6916009)(52116002)(316002)(36756003)(508600001)(53546011)(6666004)(31696002)(6512007)(43740500002)(45980500001)(20210929001);
+ DIR:OUT; SFP:1101; 
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WEFsdTNMRmV5VVJpYnlGK21WcXN6MFNOdi9kS0FLVzhxRUFqOUR4QUhnVXBK?=
+ =?utf-8?B?Zm9yblIxOWxtTUhnbVpJTTRNMFVHVXA2T2RMVlJzVGNXVkFvL0M5TFRYSlFp?=
+ =?utf-8?B?dFMvZ0pQT2huenhmb2d5NEZNVmhaWWJVRDM4RVNTOHdXVHpsT1ZmTTZnR29m?=
+ =?utf-8?B?TmQrLzRkKzdrRlFoZjg0UlR1aVkwWFlPMG1xVnkyVzl2UHI1L3VJYVl5cFU0?=
+ =?utf-8?B?QnJncGhMY3hoY2NibWtac2ZKaGJZdmpySE5NR0ZObVo0ZXQ4NExOYytuR1Mw?=
+ =?utf-8?B?bTEzOTVxdXNwNndGbTQ3bmNXdmFRODhoNDdRWEVsZ1lKK1JmWWNkc1ozS2JS?=
+ =?utf-8?B?Mk5KcVZod3h3dExTMm1BQ3ZadVFKVFg2djhNSWlYWFNreVBDRGhjL0JtREdm?=
+ =?utf-8?B?VXNRenhURy9zZFl4R2czN1BmaXUwdzd1blVRZzVwd0pkbGRkZlRXUzhKbXFQ?=
+ =?utf-8?B?bkgrL2NiU0VReHpjUTlXeTZkSFcrUllvN1I0Lyt3c3g1SjNLbVRYT3hCRTVw?=
+ =?utf-8?B?R0kyQUttOTR4ZE94ZDlPOHZ6ZW9FSDh0N3Y3YThrNmxVQ083aWovUnd4czBZ?=
+ =?utf-8?B?MVQrY3dLVFZHZ09wN2hNWmRwV1RzY0wwbUl0c1gyMWxiMDlObHZlVndHajFS?=
+ =?utf-8?B?QVgvc0JVVDBqVEJZR3JLUGh3SW1HTk5Pb3UxK3hISHVxYUNaWXV6UTJsdEc5?=
+ =?utf-8?B?NzBqaUxDOTAybm51bVJXQUloa0xLZjROVEFZMEtpODkvSXJIZFFHUVZlRXBS?=
+ =?utf-8?B?SEt4Uk54QTlPYWZ5OWphQkNkeW9kNW9mOHVRbkRDcHdQdHNyajFqRllyRjBw?=
+ =?utf-8?B?ZUYyMXVhMTFKM2xlQ3V4MjdXSmkrbVBpenR3NUNtMWpoVXN6QndNT3JMN1Rr?=
+ =?utf-8?B?OU5zZ1VjejRpM1dmVXlzODRiQXJWbUFabFdScUliYi9SZEdYYjQxcWxmcUJS?=
+ =?utf-8?B?cjJlNG5WWnZSVUpyRmErd0dwMUlhWEcyNTdpWEtKRVp1aW9mbHhsQ3YrVTNh?=
+ =?utf-8?B?YjlGUjdXT2ZUb1VHYXVrWGNzUjIvSVd0QWI4T3h6U3A4RFgrbSt3TEhIL2dy?=
+ =?utf-8?B?bmgxdmJIbzk1S1orNjVmTElDNi9jcGc5b1J5TEtpNzk1UXVhUEFTTURMaHF2?=
+ =?utf-8?B?bWZGeDhxYmxHclBqblJPbFZxclhLTzUwT0ZVUE9hR0tSSk9Uc2s2YW1BV3pO?=
+ =?utf-8?B?cmxUQXpJYlNSbUVjMCtaRGM1SHF3eHI3YnYwVkc5Vlo3SERCNjEwT3pZekxK?=
+ =?utf-8?B?VXVtb3p6RURxTnMwTlBMMTBSK1ZCRG9IckhRMzRma2dGNUlVRkpsU0tFWDlF?=
+ =?utf-8?B?MGVmeWJ3K05uY0twZ1hUOUJ3UmJHbENiV3A0RVhDSktVV0hVSktLRjEwWVpj?=
+ =?utf-8?B?MDZ0elJoTkFLZTEzc0QwdnVsc0hvZXJlaE1rRVQ5bHpvdFl1Y0dORWxUNTZw?=
+ =?utf-8?B?d011K1BXRzA3UFNIVlFLL3lxWDdiZ0pJKzNLeUlLTlJYRnlFWjRpV2pSZlFa?=
+ =?utf-8?B?NUVhU2syazJsdUx5QyszZ09kcTA5dWFlNkRxMnBIOXJibmpqY1ZVMVJHNlFU?=
+ =?utf-8?B?azVvUi9RWWdoQnBGdEtjQnBmNWF2RFpMQXZLOW1MTkk2ZG95QUtlK05XZmdO?=
+ =?utf-8?B?VzFnWWNYNXF0QnZiaFpVaGVKR0xTWEN1MlhDMEFCM284V28veUdhYTZzSmdj?=
+ =?utf-8?B?eEdTUDdpYy91ZnMyMC9ERVpoeVFhU3J1Nkt0Z0FlOUVEMXhkK01lajFiL0Fi?=
+ =?utf-8?B?aXpTVkxvbGJpa3BSbngra29Wa0s3WGJxbHNKTHlpd1pBRlE5ZG03WXFkUWF1?=
+ =?utf-8?B?WC9tMWtLL1ZJZ3NZeUlHVHZIWVpTaVcya21mOWVKQ2R5cTdDdnl1bDIrbUh6?=
+ =?utf-8?B?ZE9NekRXS2JyVVFwck51eno5TEJNSEVKanVRa0pMTGRndEJMN283NVpPR2lZ?=
+ =?utf-8?B?b2FhU2RzTEw0bStLMEJMY3QrZmpIRFBsSk9DY20rMXZ0SGo1VmJxdVFaYUNy?=
+ =?utf-8?B?RTdacmlZYXdyU0M4MktCdFVzbDIrZVo2RVRnQm40T0I2YzRpMzlpM3FPMGpp?=
+ =?utf-8?B?S05ZTyt5ZEIyTE8rOWhUclJDOXF5WWpnbzF3Y1JiSVU1YmR3cDc0RGx3YmQ3?=
+ =?utf-8?B?YkRPL3Bvdk5IY2V1dWQ0VlY4ckJWQ0t2aTErZDdKSzlNWERaVlhGQlZ6MEdM?=
+ =?utf-8?Q?qu2HBCkPlUupO55cSDR0kHM=3D?=
+X-OriginatorOrg: nuvoton.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7cf3ae69-51c3-41b5-1f75-08d9d01a40be
+X-MS-Exchange-CrossTenant-AuthSource: HK2PR03MB4337.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jan 2022 07:09:02.5752 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a3f24931-d403-4b4a-94f1-7d83ac638e07
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: oj5+qvaseE3lbL7mvJ+qfQJmgNCeB1fpCj/1goKlG1cMtmumYxDItYtVr0Yt9cUKqtzji8y49XG+qPJ8JMZ/RA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0PR03MB3731
+Cc: alsa-devel@alsa-project.org, scott6986@gmail.com, SJLIN0@nuvoton.com,
+ KCHSU0@nuvoton.com, lgirdwood@gmail.com, YHCHuang@nuvoton.com,
+ CTLIN0@nuvoton.com, dardar923@gmail.com, supercraig0719@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,41 +162,38 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---wM9Rnn4bmiJ3jtwv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 1/4/2022 10:29 PM, Mark Brown wrote:
+> On Tue, Jan 04, 2022 at 11:05:59AM +0800, SevenLee wrote:
+>>   On 2021/12/29 08:45 PM, Mark Brown wrote:
+>>> The clock speed seems sensible enough to control from userspace since
+>>> it's going to be a power/performance tradeoff but why also expose the
+>>> slew rate to userspace - that seems more like something that would come
+>>> from the board design?
+>> Because customers need to adjust different DMIC materials by themselves.
+>> Adjust which slope is the most suitable according to the conditions of
+>> use, and
+>> improve electromagnetic interference by setting the slew rate so that
+>> customers
+>> can try the best solution.
+> Sure, but do they need to do this at runtime?  That sounds like tuning
+> that you do once during system design and never touch again so better
+> done as a DT property.
 
-On Tue, Jan 04, 2022 at 06:40:33PM +0800, Shengjiu Wang wrote:
+They are not to do at run-time. You are right, I will send the new patch
+for clock
+selection again, and then send the second patch with the slew rate for
+the DT
+property.
 
->  			/* sai may support mclk/bclk = 1 */
-> -			if (of_find_property(np, "fsl,mclk-equal-bclk", NULL))
-> +			if (of_find_property(np, "fsl,mclk-equal-bclk", NULL)) {
->  				link_data->one2one_ratio = true;
-> +			} else {
-> +				int i;
-> +
-> +				/*
-> +				 * i.MX8MQ don't support one2one ratio, then
-> +				 * with ak4497 only 16bit case is supported.
-> +				 */
-> +				for (i = 0; i < ARRAY_SIZE(ak4497_fs_mul); i++) {
-
-Shouldn't this be keyed off checking that we are actually running with
-an ak4497?
-
---wM9Rnn4bmiJ3jtwv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmHUjL0ACgkQJNaLcl1U
-h9DLtQf+NYjFfOunR2kagpHatM3uw3vj6y2ywBhn8AKl0Ar0TPugAPIBV7cClQVk
-1sHU5pGUol0aOrSl9c/y+uccKTxxK+dZs3jnI2RX3u8n9UdW/tsiQepu/rkVgMYy
-SZdNhfcCp0VkJGYq8099YjMoo0zH4WUC5b5Ph0Jb0c80dixXJ2LCFtcKoKaxMkHZ
-oYCJrpeu1LWU4b9hqgjkuRpFpU2ihQWuHQQwMIXzqk2+zdRYbyGabWRdxnyN2F+8
-3LHLlPlUXGdyomQfUFWu//LqMI1Yi/xqHDeyk1Oi7WFduA4WvFuSrwtaHDqSpX9E
-ds+WpmNO0leJRKzk7+c+U8iIqlXt3g==
-=8shi
------END PGP SIGNATURE-----
-
---wM9Rnn4bmiJ3jtwv--
+________________________________
+________________________________
+ The privileged confidential information contained in this email is intende=
+d for use only by the addressees as indicated by the original sender of thi=
+s email. If you are not the addressee indicated in this email or are not re=
+sponsible for delivery of the email to such a person, please kindly reply t=
+o the sender indicating this fact and delete all copies of it from your com=
+puter and network server immediately. Your cooperation is highly appreciate=
+d. It is advised that any unauthorized use of confidential information of N=
+uvoton is strictly prohibited; and any information in this email irrelevant=
+ to the official business of Nuvoton shall be deemed as neither given nor e=
+ndorsed by Nuvoton.
