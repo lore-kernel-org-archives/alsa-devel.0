@@ -4,85 +4,138 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B69A9C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jan 2022 08:43:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B48DCC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jan 2022 09:03:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 06AD81767;
-	Wed,  5 Jan 2022 09:43:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 06AD81767
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2D7571776;
+	Wed,  5 Jan 2022 10:02:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D7571776
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1641372237;
-	bh=T4eg1sA/wakejbQOiRTT6j4i2E47Q9/yUoUz5SigmQc=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=pZc1hUS2SJQDAXTEfAdiltu6PGeHGe71ul0g+JrTIR4xm6Rsl3vfVUUd+BhT5gSB0
-	 IVroZt1aHj1IqWisAdoocR+FmiWyNJ/m/OvVJr1/lEoQUohBwol3uDu/s+AB/HZOLz
-	 N1pM0aWSGmyX7XW8sokgOikQ9gD3wsSOzCq8dNW8=
+	s=default; t=1641373424;
+	bh=+md92K6eBmJFPmCRL5A10W4V2eFt1R6FWVd5LJX5CB0=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=fituwcA3mPx6UPhhtcRWnV2VqT+6fdSY53uPuwBEUuKC329p86VlkEfqYrXRgpPpv
+	 JbQy8WIvvt0BiQlJ3i7LVc2CGZhCwQpRf03oy28bSClQTxHvqcMZZdjdsFIzyZqhEM
+	 d1sghO5lfah24h6BIPjkQj0X8NyyeqwMOaYkJPb0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1E3CAF804FB;
-	Wed,  5 Jan 2022 09:42:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A9610F800BB;
+	Wed,  5 Jan 2022 10:02:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 391C5F801D8; Wed,  5 Jan 2022 06:36:40 +0100 (CET)
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com
- [IPv6:2607:f8b0:4864:20::434])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id DBBFCF801D8; Wed,  5 Jan 2022 10:02:48 +0100 (CET)
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com
+ (mail-eopbgr70085.outbound.protection.outlook.com [40.107.7.85])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8F532F80089
- for <alsa-devel@alsa-project.org>; Wed,  5 Jan 2022 06:36:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F532F80089
+ by alsa1.perex.cz (Postfix) with ESMTPS id 080BAF800BB
+ for <alsa-devel@alsa-project.org>; Wed,  5 Jan 2022 10:02:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 080BAF800BB
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="m7cIBW0o"
-Received: by mail-pf1-x434.google.com with SMTP id m1so34214571pfk.8
- for <alsa-devel@alsa-project.org>; Tue, 04 Jan 2022 21:36:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=date:message-id:from:to:cc:subject:in-reply-to:references
- :user-agent:mime-version;
- bh=TVi5CpksORLcfI1fN+SmnI5coKP1w9QYwiZzMlp/wXM=;
- b=m7cIBW0oUCsCJcIhy0K70SnFBvUyPeOka8Sf4E2OqxfbTsXA0mQ5JIdnVTvHnp5+gp
- 0PC1RwgHjYRLzEgdWjziovrFB8WuIcFv1GYd7AQ7XVdnNCdjB3hWVsYtiITPfRSnjc3V
- 85LSq+em5vmwo66Y5WJtXlsY8sf9Fq9NsaSZYEHJ1pp2j0IbqZcaDrwJVFjEXXnlZcxt
- jyWVOvvx7ttbBevVpEOduataTpCztss0ppBN52Reb9LFNFfYmw1loYLTZSDJcgBm0KsD
- 8A6etMk76RMOCBMIKNiaNwc1pZP3D2BhAng79YeFmAXeuWif893it+8A+b8ELIEiriqa
- uk+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:date:message-id:from:to:cc:subject:in-reply-to
- :references:user-agent:mime-version;
- bh=TVi5CpksORLcfI1fN+SmnI5coKP1w9QYwiZzMlp/wXM=;
- b=2OO2Oc87Rj4T6HunCKafFdhSuhjT/Qq0OC5XOZHEI2yUTNOYLj3U3xoGtyodbEI4Lj
- AnKGWXsRBEQCyiC4uD5wYT8FrT8jHbl9GjmKyX6EJyMvZq5E1dCVykX8tXOxAQ6Df9S+
- HKwZBMO4wZ8q//11KLWdpmmoDt29f0AYQWzQl3UMW9FfMRS/KUq5TNSUlRG/j5TLnuID
- C1P4D0wT9yDJPbxXTrgPU2dSmFmpUpiboHB8mRy5qFFFAMMUMOUvHuhLEnN1miGKIwdO
- RTj9ZlEbuG7N4usSS75S1MgaS0DRpRTrMYDvV29C54uvot+wRpiC60tgFiuM1itYsNf5
- 69gA==
-X-Gm-Message-State: AOAM532niZsfT8+jSHjvnf/VcKe0RBJpu7zblPqlW/qx4WERn/nfZtXW
- qoSw2t4Xtvhi/uEnuko4sX4=
-X-Google-Smtp-Source: ABdhPJxS4nJvxIzDMug+tzIw6awXdeHfXLMbKClZga9KXE2Tsam3bsyShb6tEYWh1NlymAgXCU9vHQ==
-X-Received: by 2002:a63:711a:: with SMTP id m26mr29336420pgc.49.1641360993389; 
- Tue, 04 Jan 2022 21:36:33 -0800 (PST)
-Received: from venus.gmail.com ([126.249.140.249])
- by smtp.gmail.com with ESMTPSA id c17sm44886141pfc.163.2022.01.04.21.36.31
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 04 Jan 2022 21:36:33 -0800 (PST)
-Date: Tue, 04 Jan 2022 21:36:33 -0800 (PST)
-Message-ID: <87a6gawxpe.wl-kuninori.morimoto.gx@gmail.com>
-From: kuninori.morimoto.gx@gmail.com
-To: Carl Philipp Klemm <philipp@uvos.xyz>
-Subject: Re: [RFC PATCH 1/3] ASoC: simple-card-utils: add support for
- componants provideing jack events via set_jack
-In-Reply-To: <20211228190931.df5d518220080a734532ebfd@uvos.xyz>
-References: <20211228190931.df5d518220080a734532ebfd@uvos.xyz>
-User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Mailman-Approved-At: Wed, 05 Jan 2022 09:42:15 +0100
-Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com,
- tony@atomide.com, merlijn@wizzup.org, sre@kernel.org,
- linux-omap@vger.kernel.org
+ dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com
+ header.b="anPL2R8K"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HAyNLZStNMLRyix0JWeVJZabvM2b66FcmR8k+lRbD07BkmkA/Gw0lSRIi8uREOaOYE4aZmOtP1grlUfuKECNSiTGhUOBZ2w1Qpy96d5P70+nPkKWkuGzAcjaTzu2noE/UQNInDB4rWnVLwQlgRgYhEegw7l1M/TR47iJj5InWctVjMgt2dszLw+H7k59ywsxWEQf9TKTyfXSXaH1mrVnESCDVz7EZ5jrpH5IOB3rgakCen9jC3t4ojapby9zNBKoM6OaeWMJgQW0SX2bUDwi8L9mHR2Qw7RCqk77Z9erWrXOuF7t0OuQuVrg5A84cwkUUT+4mEfHXkoiXdiu/vRBeQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MWzqq4vSsYu+MH67aPMWryn3svQpFRVFLhmttS4n3I8=;
+ b=kwbtj8L2PoJ8qidSYBVTGf6y0/NhJtw4lh9h5FChq/kpBTobs5WLHHLDDUx2V4Ves4RiiZJ51ar0TtmJgrAeowjx9XXhD/W8NI8AXtqgCkOBJr3MBSKvintPTju8cvMH61H9c3O4ouRDA3xk1ZE9Y0eBAS8nOoYnPXmSj7YGqByv0ltNTJ6ghX93AKbLqLC+Li6AoGpBO1UAjYpdvbXKgAqGNe/ACblT7PG3M0zn/h4BNOR3DuQHCliEwHQvVsCTTsr0+WYGMG6DktMkynB2+ICTC7z9hZrqBWuuLOdtLSvMv/fizfgqpqWAxFv1WzZr2zQx9EHjwVdWZhLtCQjGxw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2; 
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MWzqq4vSsYu+MH67aPMWryn3svQpFRVFLhmttS4n3I8=;
+ b=anPL2R8KfzviZeSu+iqa1HMPxvlE2netH1JjJA9M+1QHPLyv1DdGoEuwgzSasb0yVzLY5ejZDwUb7wSTIBdqsbVFJ5pKyKWqUMLAtFR8mZzVVDlzKhNZt6YilJKVNqo9EKza7/uVeTE+eAwNi7DpW9LS3g4k/xoPBZPEz/GY8+A=
+Received: from PAXPR04MB9089.eurprd04.prod.outlook.com (2603:10a6:102:225::22)
+ by PAXPR04MB8831.eurprd04.prod.outlook.com (2603:10a6:102:20e::18)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4844.15; Wed, 5 Jan
+ 2022 09:02:41 +0000
+Received: from PAXPR04MB9089.eurprd04.prod.outlook.com
+ ([fe80::192:f955:f98a:4d62]) by PAXPR04MB9089.eurprd04.prod.outlook.com
+ ([fe80::192:f955:f98a:4d62%4]) with mapi id 15.20.4867.007; Wed, 5 Jan 2022
+ 09:02:41 +0000
+From: "S.J. Wang" <shengjiu.wang@nxp.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/3] ASoC: imx-card: Need special setting for ak4497 on
+ i.MX8MQ
+Thread-Topic: [PATCH 1/3] ASoC: imx-card: Need special setting for ak4497 on
+ i.MX8MQ
+Thread-Index: AdgCEhZ7Lb6RtTFBSJ+4JF9NIvhERw==
+Date: Wed, 5 Jan 2022 09:02:40 +0000
+Message-ID: <PAXPR04MB9089C99640D09D6CC22AC0DFE34B9@PAXPR04MB9089.eurprd04.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: fc5a9e4f-d050-42db-ac56-08d9d02a210f
+x-ms-traffictypediagnostic: PAXPR04MB8831:EE_
+x-microsoft-antispam-prvs: <PAXPR04MB8831A576E4ACBEE8139C2D8EE34B9@PAXPR04MB8831.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5797;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: s6cEfGQd5tWeTxdhhRFZPZrw/N2Yxhxa0JLB1VRFofKKkYy4GKeQ/SdI/xpcW7ordBaMeDI26oPZvSG5/1WyRMi4N607y1KiWaqhnrA0MxwOIKYInyjvkUI/GyJLRM6KyUHomGy8gtl7cwZ8J0tUqgpYGQScNlp0sxuhwfq8ZKqwVUixUnpfUhwLfuJo1XVN8Fr8v0lbNMdEOExZ9WHuka9nzgpXv5mz1x4iqLOqDmIASlu2ZZofvCLOKnAe4d3PXu8tB4y81f+T5RhOr6qORygmME1uDrOt73obU+l1iVZ11ikb4yZAptEF2Rx9G+fuIw7h1U96hLi746kIawfnRIgb1LsHk6o3rVKToLlL+xp1V0n5BYjuPuB9VpaZuMlbrj/NqU+1UPK6MWEwiX7C6BB39SwGpPs2RzZeVFUWw0XnPEyjsYjZv9SNuCgdwgujEMbeV/0PcafzxYy/gpAKwZ10DdY2wsuWJwwi9jm4wC+gIMO4SMVaZ0/DhdoYUErd/01JrBO3ePDXtAWp782nOZ9QjTVWytzgcbpkqTwaMDLfZzNHlAlmJ/nVmm9JsE/guxNnIN0uirmwuFPzPivnrw32mmg8AHWYgXxFW8QkJVrUickgcAa6ovXySyJCs5zCXdpIjzXcA3NnEtrITDbTLT6n238p7Euh5ZBOdTmt9bo2HkHZ2dh2W4anidXSu4RTrmbMADKXc3jV8iVZXMnPCw==
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:PAXPR04MB9089.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(4636009)(366004)(8936002)(6506007)(508600001)(4326008)(7696005)(66556008)(186003)(26005)(66446008)(55016003)(122000001)(64756008)(66946007)(76116006)(66476007)(5660300002)(38100700002)(9686003)(316002)(83380400001)(54906003)(38070700005)(8676002)(6916009)(52536014)(33656002)(7416002)(86362001)(4744005)(2906002)(71200400001);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Yfl1q6Gy8mD9rMr4Xtmc1TTwBGit4VYPbJRPJGgMKWn220ft5wvzxEDF9EK5?=
+ =?us-ascii?Q?8heNhe+LMlc970x95OLwILHjMciO0Qtrd0gT4ubBvs1/hRHPNd1scUCmZ1iC?=
+ =?us-ascii?Q?hP4iy3w+fVv7lx3PjERwmay2e+8JbufjV0StlmgWFBIJxPBge6y7Jw+4nT9T?=
+ =?us-ascii?Q?TbbMMUBtuukfj1jAG0ek0FmZwL7ndrGzDn/JVwUYK4FcARidO9cPdxvqUA+R?=
+ =?us-ascii?Q?q9iAm3PBWX24mc3MDF6QjDIWS4GokJFkG7T3B6mHoWji6fOMjTioyZklDXeB?=
+ =?us-ascii?Q?GHW2A/3ZMiqcdb/CPZEriIBGEEKM3NSplgeOTUPMTqKNUESbDL1l3DUNdHiS?=
+ =?us-ascii?Q?+OrHbXmy1I/OAUTz4m4VSa8dQr+/K5YDaoeIEz72N8OWXOAMKpifn2Lqz32g?=
+ =?us-ascii?Q?u7c+5vMbKqlCMGINpCMV8rXmmxaBT8vaM7JP3vF8u9ZDCZyoGtgT8MJ6a0Qc?=
+ =?us-ascii?Q?PHTPT7697d8CPMjJk7XqerfenKXM0oHcuXsOeGPgh3oPVRWhwY5ae/jwocKb?=
+ =?us-ascii?Q?3Roih1WV/1S+2xGrUtBgGOCqhmSWnzCjdchV66RzdRBD8Q+EhSHROc8bs3Ix?=
+ =?us-ascii?Q?gRZ67Yx5VZwVdn4ANoKeN6kUoN25dyTVCcGKvxvZR6w0eqHyMunwtCcJR7EF?=
+ =?us-ascii?Q?GrhrrLZsq3z+s05MKd8Q8wi7oXu4ZFJBkAiQ52uhj43o3w1uUzveyB2YkZK9?=
+ =?us-ascii?Q?RHGHbPxGDxKTJfIvagAxJZxztTob+rT8rH9YIjQybhwFuwmosUL6I6VwTb5J?=
+ =?us-ascii?Q?WO6wM75J1el7vSzCmp4lhVqapuObkVtR5R08HaKc1D8FiTR/NE1t1tIIjmhV?=
+ =?us-ascii?Q?8fxrsSigrRrz5YpCb/C9jAIbs70xNXQokAJkwahW7Yn/7FUPlr09aPYC3o0M?=
+ =?us-ascii?Q?DdP1AOvBMDzHmc4JAkPUzhrtmrIyDmElTY1Sv+GQjf1Wj8+QwdjRuNRTHJ5q?=
+ =?us-ascii?Q?auSxoggcdyl5g+IrkASSgPAck8CS6lgSC7I5bhvJiISanr6s6nklq1MgzOHQ?=
+ =?us-ascii?Q?PtBpH0e3JJiWZh/dYnraQ50iKOY+pd2FL4in42YB/rEocfDoP/SRKRe9rxlG?=
+ =?us-ascii?Q?lFMBbe+zv0a6mKEWsG8a2d//mL/UnZhiPRT4LDNV5fXqRod8kpWbhqGJ5T/O?=
+ =?us-ascii?Q?djdEniZBJwLV6xdu/fOrZgJ6sriVe7z8hKwcfAgiy1NiPpxj06l9IGiPu2SZ?=
+ =?us-ascii?Q?i7oaQwtefSRYQK+MD9iTZpcO2T3afel6KnbQIkMd/ZpUtSZ7Og5LibHqNaig?=
+ =?us-ascii?Q?6adyfF+WKhAqkhhhCwrl+iG4KQ4IEiAGR12Cezp1sIe7eNht6DzFbSDK/EJC?=
+ =?us-ascii?Q?srXLXMgGx90Tpm49aelNQl2OFTgYoqEwvui1vf9H31bKgEOWP0MipStri7mz?=
+ =?us-ascii?Q?RlOT3EViY+KyN6l1d+yDWv0l53uY2HlwpRKFRYmlj6QSG7CysHbcWKsdXp0D?=
+ =?us-ascii?Q?q0LgCJeg2JpqPbIDuhZonjgGIQLG/0+oyRokooZl+K8EA2ob1ZCqB0T0lIKf?=
+ =?us-ascii?Q?/ir9CAQNdkGpbGmlWewOBulGtZ/AiOL8rh4fuGOckVZSfn8XGHuV3H4WK4dq?=
+ =?us-ascii?Q?ei/mQCQuJ1X047C1em1Iadq3lMWKKgc+Niqgkiw8pMLzatbGqYTK4xDik25p?=
+ =?us-ascii?Q?hQ=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9089.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fc5a9e4f-d050-42db-ac56-08d9d02a210f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Jan 2022 09:02:41.0577 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: A975re9hDVsFGyvl0YBKDImV0NgMoxaznJ9LYv7VY9Zwsf5k55bMoy/4UCwtjPkK6jWM+pV4PG88bzwMta92RA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8831
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "timur@kernel.org" <timur@kernel.org>,
+ "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>,
+ "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+ "tiwai@suse.com" <tiwai@suse.com>,
+ "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>,
+ "festevam@gmail.com" <festevam@gmail.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,65 +151,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi
 
-Hi Carl
+>=20
+> >  			/* sai may support mclk/bclk =3D 1 */
+> > -			if (of_find_property(np, "fsl,mclk-equal-bclk", NULL))
+> > +			if (of_find_property(np, "fsl,mclk-equal-bclk", NULL))
+> {
+> >  				link_data->one2one_ratio =3D true;
+> > +			} else {
+> > +				int i;
+> > +
+> > +				/*
+> > +				 * i.MX8MQ don't support one2one ratio,
+> then
+> > +				 * with ak4497 only 16bit case is supported.
+> > +				 */
+> > +				for (i =3D 0; i < ARRAY_SIZE(ak4497_fs_mul); i++)
+> {
+>=20
+> Shouldn't this be keyed off checking that we are actually running with an
+> ak4497?
 
-Thank you for your patch.
-
-> This allows componants that want a jack to report state on to do so by calling
-> set_jack on components implementing this function.
->
-> Im not entirely sure this is the right way to do this so RFC
-(snip)
-> +	for_each_rtd_components(rtd, i, component) {
-> +		if (component->driver->set_jack) {
-> +			if (!priv->hp_jack) {
-> +				priv->hp_jack = devm_kzalloc(priv->snd_card.dev,
-> +					sizeof(*priv->hp_jack), GFP_KERNEL);
-> +				snd_soc_card_jack_new(&priv->snd_card,
-> +					"Headphones",
-> +					SND_JACK_HEADPHONE,
-> +					&priv->hp_jack->jack,
-> +					NULL, 0);
-> +			}
-> +			snd_soc_component_set_jack(component, &priv->hp_jack->jack, NULL);
-> +		}
-> +	}
-
-I'm sorry but I don't understand what you want to do by this patch.
-Is main code of this patch asoc_simple_dai_init() update
-(= call set_jack() for all component) ?
-
->  int asoc_simple_init_jack(struct snd_soc_card *card,
-> -			       struct asoc_simple_jack *sjack,
-> +			       struct asoc_simple_jack **sjack,
->  			       int is_hp, char *prefix, char *pin);
-
-${LINUX}/sound/soc/fsl/fsl-asoc-card.c is using this function, too.
-We will have compile error without update it.
-
->  int asoc_simple_init_jack(struct snd_soc_card *card,
-> -			  struct asoc_simple_jack *sjack,
-> +			  struct asoc_simple_jack **sjack,
->  			  int is_hp, char *prefix,
->  			  char *pin)
-(snip)
->  	if (gpio_is_valid(det)) {
-> -		sjack->pin.pin		= pin_name;
-> -		sjack->pin.mask		= mask;
-> +		struct asoc_simple_jack *sjack_d;
-> +
-> +		sjack = devm_kzalloc(dev, sizeof(*(*sjack)), GFP_KERNEL);
-> +		sjack_d = *sjack;
-
-Am I misunderstanding ?
-I think you need to do here is this ?
-
-	-	sjack = devm_kzalloc(dev, sizeof(*(*sjack)), GFP_KERNEL);	
-	+	*sjack = devm_kzalloc(dev, sizeof(*(*sjack)), GFP_KERNEL);
-
-Thank you for your help !!
+No need. Here just update the ak4497_fs_mul table, before it is used the
+codec type is checked.
 
 Best regards
----
-Kuninori Morimoto
+Wang Shengjiu
