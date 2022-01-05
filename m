@@ -4,67 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25F64C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jan 2022 16:13:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5BEBAC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jan 2022 16:14:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6981318D3;
-	Wed,  5 Jan 2022 17:12:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6981318D3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 607791A22;
+	Wed,  5 Jan 2022 17:13:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 607791A22
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1641399229;
-	bh=OLmJ52CHuqXo//NMSkzVPxjjQ+LZ6ErApBM18DGlsaY=;
+	s=default; t=1641399267;
+	bh=LRFNrgss+xIi1J6OY9225bbt64RcNCWaztOCJzwcQuU=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VRyq6sA73g+7yCVBykzu4tM4oFfVZA/W2WF943smBevPAwmU9wSc8cf6pS+XYmXJ9
-	 LLuZ2MQm3ZzyZqJqXgnVwBWISctln1gSoNEA+1rxLnC6c3IsaIqq3zNYzIItGGX5kG
-	 vVMdzIMysbZ7FqUOnAScLIUe/IuHjHEiVCmTl8Qw=
+	b=cRh9cQQuw0lnHI7/gKHLiXZxKQJ8UVHOEYhz5a/1Skq01MaBBAsCnefPvVlQnPCP5
+	 Yms3Ac3uII/M25IgIoDXEctRbZTm0+a2wHOH6yNFPQRA3WrMXidB/WnnuFgjs6imDm
+	 CSR2dHdzt5NSBv/RExUEal53bWq3nahKfe5tEdPE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0A738F801D8;
-	Wed,  5 Jan 2022 17:12:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A2122F80089;
+	Wed,  5 Jan 2022 17:13:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CF46DF801D8; Wed,  5 Jan 2022 17:12:57 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 23242F802D2; Wed,  5 Jan 2022 17:13:00 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5ADCFF8007E
- for <alsa-devel@alsa-project.org>; Wed,  5 Jan 2022 17:12:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5ADCFF8007E
+ by alsa1.perex.cz (Postfix) with ESMTPS id F099BF80089
+ for <alsa-devel@alsa-project.org>; Wed,  5 Jan 2022 17:12:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F099BF80089
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="lNHwHhXX"
+ header.b="UprKjiKG"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 0CEF8B8196F;
- Wed,  5 Jan 2022 16:12:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 961A0C36AE9;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id B74D6617A2;
  Wed,  5 Jan 2022 16:12:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD271C36AE0;
+ Wed,  5 Jan 2022 16:12:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1641399167;
- bh=OLmJ52CHuqXo//NMSkzVPxjjQ+LZ6ErApBM18DGlsaY=;
+ s=k20201202; t=1641399166;
+ bh=LRFNrgss+xIi1J6OY9225bbt64RcNCWaztOCJzwcQuU=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=lNHwHhXXRq58QzbkbxrqfaHb2EOh2jkyqOjQVKL5EX//u+UePKpkkDqvfbAwINM+H
- 9W6yWgarzBTw+rWIGQSE/gu+V1/pap8ysQ/mYFNUp+ITTXsfkq/hHR/PKe2bOf+9vW
- LQmQb8hwGlj+DZUKy3hlndvss5NOK1R08Rd+S/ynqLWjzpvCm1/L80O+e37aWMAdzG
- Lw2khzgVdpxTHjbZ8gTp3Sz1W9XMGobxm8ueCXwmEkhZuTx8RYvhw4r3MJaq7pQ990
- EgW4kB52B35eGPl/SXnFS+mZTHonRKFUryg1TuSsZCcMih/f4zpmHOcWMj0YG62YSN
- PmgqLI/1jeMjg==
+ b=UprKjiKGkFwYcWmpQYDNb3FpUZ0nAeEK81FWlWnWk5+ZjCfzXMpsqkgAfx6s+VtZE
+ Tw0ehwb7x8xaqi/OHTN/yYHb0VaCKBmkwEP0rl+cjtAlfp1Z695PB93p/ijjmiqlie
+ xgT669OmmbIppkJvWVRKdMMK/gNkoGg5szffRe1v1vT5wrFL6VmcqUwGC2qBpWjMKS
+ WB1hhlcKkS2MTkGzZruiHXJe3ptiNQkECZzc5CfnPlnRs0c0Vu3YfblIyUMl9CZCfC
+ 1eQnu9HSsw2RPChyHcbxtwVpwHwZU3ZBzwc/B8VhTY+uHTMzPQu3MsQxdY/gRuUFNk
+ xtzXata/tRnzg==
 From: Mark Brown <broonie@kernel.org>
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-In-Reply-To: <20220105113026.18955-1-ckeepax@opensource.cirrus.com>
-References: <20220105113026.18955-1-ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH 0/8] Add low power hibernation support to cs35l41
-Message-Id: <164139916633.3066423.305146285867242412.b4-ty@kernel.org>
-Date: Wed, 05 Jan 2022 16:12:46 +0000
+To: Fabio Estevam <festevam@gmail.com>
+In-Reply-To: <20220104180613.639317-1-festevam@gmail.com>
+References: <20220104180613.639317-1-festevam@gmail.com>
+Subject: Re: [PATCH v3] ASoC: cs4265: Add a remove() function
+Message-Id: <164139916453.3066423.11098261040208863967.b4-ty@kernel.org>
+Date: Wed, 05 Jan 2022 16:12:44 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- lgirdwood@gmail.com, tiwai@suse.com, david.rhodes@cirrus.com
+Cc: alsa-devel@alsa-project.org, Fabio Estevam <festevam@denx.de>,
+ ckeepax@opensource.cirrus.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,14 +79,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 5 Jan 2022 11:30:18 +0000, Charles Keepax wrote:
-> This patch series adds support for the low power hibernation feature
-> on cs35l41. This allows the DSP memory to be retained whilst the
-> device enters a very low power state.
+On Tue, 4 Jan 2022 15:06:13 -0300, Fabio Estevam wrote:
+> From: Fabio Estevam <festevam@denx.de>
 > 
-> Patches 1-6 can happily be applied straight away and are mostly bug
-> fixes to set things up for the series specifically around getting the
-> cache handling corrected in the driver.
+> When the reset_gpio GPIO is used, it is better to put the codec
+> back into reset state when the driver unbinds.
+> 
+> Add a remove() function to accomplish that.
 > 
 > [...]
 
@@ -97,22 +95,8 @@ Applied to
 
 Thanks!
 
-[1/8] ASoC: cs35l41: Add cs35l51/53 IDs
-      commit: dcf821319474edde7e85b95608a4539703a2b67d
-[2/8] ASoC: cs35l41: Remove incorrect comment
-      commit: 4e7c3cd87db8d9350062a25a8476f90fd1cbc4c9
-[3/8] ASoC: cs35l41: Correct DSP power down
-      commit: 56852cf4b2179fb90068a49538501f31c2de18ea
-[4/8] ASoC: cs35l41: Correct handling of some registers in the cache
-      commit: 5f2f539901b0d9bda722637521a11b7f7cf753f1
-[5/8] firmware: cs_dsp: Clear core reset for cache
-      commit: 7aa1cc1091e0a424e9e7711ca381ebe98b6865bc
-[6/8] ASoC: wm_adsp: Add support for "toggle" preloaders
-      commit: ba235634b138cd9d012dbe983e7920481211e132
-[7/8] ASoC: cs35l41: Update handling of test key registers
-      (no commit info)
-[8/8] ASoC: cs35l41: Add support for hibernate memory retention mode
-      (no commit info)
+[1/1] ASoC: cs4265: Add a remove() function
+      commit: a319cb32e7cfd2703db3a883ce260a7b06729895
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
