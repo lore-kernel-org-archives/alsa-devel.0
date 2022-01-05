@@ -4,66 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23502C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jan 2022 12:30:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18738C433FE
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jan 2022 12:34:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 20A2218C6;
-	Wed,  5 Jan 2022 13:29:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20A2218C6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0207518D0;
+	Wed,  5 Jan 2022 13:34:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0207518D0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1641385839;
-	bh=MN7vUCXSMriTsJ8t8ylJSaTen5x8PPPTBUXqiyj5t+4=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1641386093;
+	bh=ehS9Wp4klxNh6imSS80ubyOMxmVlzZk1ZeiNIm5nyzI=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RUjPRostAAH8gxO6d8Jxrt4pN8zLx3fLV8pnciIoOnh0T9vFgDu3mgqMVRwhHNvo1
-	 672S7N7oCGb1KW42uq+64GuJ23HHYS6DaX5SsQ8qg8bhsr0vK924nlxTv0csvd7HFu
-	 7mGWPTU/g4JUvqta+XtXQnDOgYXfrvOczCWviaYg=
+	b=mG4yFRay54k04uTHGo4UPLXo5QiOVJonyn7uUCQwHZHFHlQEp0TI3IYlZN9pGxOi3
+	 bV0f8uTaETUbUIGYTiwfeMO6s8tiwBsCmyEMBjTDBFT1JKfw9PkJHVj68MKhKvhZ/5
+	 N8O2t1ufUxwBomE2nU9trfWcAO0e8hSvJVV0l07M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AF8C9F80167;
-	Wed,  5 Jan 2022 13:29:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 94B55F80167;
+	Wed,  5 Jan 2022 13:34:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 43AD6F801D8; Wed,  5 Jan 2022 13:29:46 +0100 (CET)
-Received: from m12-14.163.com (m12-14.163.com [220.181.12.14])
- by alsa1.perex.cz (Postfix) with ESMTP id 4F86CF8007E
- for <alsa-devel@alsa-project.org>; Wed,  5 Jan 2022 13:29:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F86CF8007E
+ id A4146F80089; Wed,  5 Jan 2022 13:34:00 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D6A12F80089
+ for <alsa-devel@alsa-project.org>; Wed,  5 Jan 2022 13:33:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6A12F80089
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=163.com header.i=@163.com
- header.b="jvhM0XBk"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
- s=s110527; h=Subject:From:Message-ID:Date:MIME-Version; bh=QlYCT
- R6UDr5CDBVSQl2bSnVcDalgsUO6BAbkJ+ro+m0=; b=jvhM0XBkZXt0LanB9IZZe
- +DSEZbTprZtHrbDfH5ebRwHZm0P8ajxkrHtirRChooLM10FeniVbYvTMHZUwCe5X
- xZpZClUHgi83acNGQ/yU7SsDzYuRdNXUe6/pkDGfSS+DRSRionVgwUyvOgMrW4PJ
- QvVaNGVe4yo301AWqyGlFQ=
-Received: from [192.168.31.101] (unknown [183.194.153.98])
- by smtp10 (Coremail) with SMTP id DsCowADXZQImj9VhELkWGQ--.4490S2;
- Wed, 05 Jan 2022 20:29:27 +0800 (CST)
+ dkim=pass (1024-bit key) header.d=linuxfoundation.org
+ header.i=@linuxfoundation.org header.b="nEVBmKp/"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 3D78EB81A88;
+ Wed,  5 Jan 2022 12:33:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EFCDC36AEB;
+ Wed,  5 Jan 2022 12:33:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+ s=korg; t=1641386031;
+ bh=ehS9Wp4klxNh6imSS80ubyOMxmVlzZk1ZeiNIm5nyzI=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=nEVBmKp/xF2RVPedxZZvilxaYXiDqhT3DrhbW83UTQyahfZyJsZaN+lJM51WfrAk6
+ j0PiHLXuJiAeyXdA0apXnG2LkU2s5cr6u4uKuWlrKCrtpULjI4k2xM57MPV+8dXxeq
+ Zd20bPOyU6nd/wdgEhje87Elak00dlFhn8wA6kQ0=
+Date: Wed, 5 Jan 2022 13:33:48 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Baole Fang <fbl718@163.com>
 Subject: Re: [PATCH] ALSA: hda/realtek: Add quirk for Legion Y9000X 2020
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Message-ID: <YdWQLOtV8Tz8ArrH@kroah.com>
 References: <20220105034103.12484-1-fbl718@163.com>
  <s5ha6gak2qf.wl-tiwai@suse.de> <YdV5MNWOwgrtH2UC@kroah.com>
- <757a4402-1067-e3c8-8ca3-43ee62047ebe@163.com> <YdWElRjkZ0lybrMJ@kroah.com>
-From: Baole Fang <fbl718@163.com>
-Message-ID: <6bf35d26-73d4-ba14-f931-8d379c623482@163.com>
-Date: Wed, 5 Jan 2022 20:29:26 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+ <757a4402-1067-e3c8-8ca3-43ee62047ebe@163.com>
+ <YdWElRjkZ0lybrMJ@kroah.com>
+ <6bf35d26-73d4-ba14-f931-8d379c623482@163.com>
 MIME-Version: 1.0
-In-Reply-To: <YdWElRjkZ0lybrMJ@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID: DsCowADXZQImj9VhELkWGQ--.4490S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7Jw45uFWDCryUuw47Wry7Awb_yoWftwcEyr
- 4q9F9rC3WDGFWIyay3JrsI9rWxGFW7ZrZ8ZrW5tr1qqr1UWFWkGFnYkF93Xw4Fqr409FZ8
- Ar1kZFWqywnxZjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
- 9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUb-B_UUUUUU==
-X-Originating-IP: [183.194.153.98]
-X-CM-SenderInfo: 5ieoliqy6rljoofrz/1tbiTRJ-6Vc7U0cIjQABs1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6bf35d26-73d4-ba14-f931-8d379c623482@163.com>
 Cc: alsa-devel@alsa-project.org, Kailang Yang <kailang@realtek.com>,
  Jeremy Szu <jeremy.szu@canonical.com>, Takashi Iwai <tiwai@suse.de>,
  linux-kernel@vger.kernel.org, Elia Devito <eliadevito@gmail.com>,
@@ -85,30 +84,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Thank you for your explanation! I shouldn't have written that line and I 
-supposed it can be ignored. Is there anything else I could do?
+A: http://en.wikipedia.org/wiki/Top_post
+Q: Were do I find info about this thing called top-posting?
+A: Because it messes up the order in which people normally read text.
+Q: Why is top-posting such a bad thing?
+A: Top-posting.
+Q: What is the most annoying thing in e-mail?
 
-Best Regards,
+A: No.
+Q: Should I include quotations after my reply?
 
-Baole Fang
+http://daringfireball.net/2007/07/on_top
 
-On 2022/1/5 下午7:44, Greg Kroah-Hartman wrote:
-> On Wed, Jan 05, 2022 at 07:39:33PM +0800, Baole Fang wrote:
->> Sorry, this is my first time to submit patch to Linux, so I'm not quite
->> familiar with the convention. Since I was changing based on v5.15.12 and I
->> saw others mentioning their upstream commit, I included the that commit id.
-> Those commits were coming from the stable backports only, they were not
-> done by the original author.
->
->> Please forgive me and tell me what is supposed to be done if possible. I
->> still have a lot to learn.
-> Please take a look at the "first kernel patch" tutorial on the
-> kernelnewbies.org site for a good example of how to do all of this.
->
-> Also the Documentation/SubmittingPatches file in the kernel source tree
-> should help out.
->
-> thanks,
->
-> greg k-h
+On Wed, Jan 05, 2022 at 08:29:26PM +0800, Baole Fang wrote:
+> Thank you for your explanation! I shouldn't have written that line and I
+> supposed it can be ignored. Is there anything else I could do?
 
+We can not just "ignore" it, you need to fix your change up and resend
+it in a proper format so that it can be applied.
+
+As-is, it is not acceptable, sorry.
+
+thanks,
+
+greg k-h
