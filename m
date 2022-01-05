@@ -4,71 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98FF7C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jan 2022 12:55:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8D3CEC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jan 2022 13:06:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0E4C3189C;
-	Wed,  5 Jan 2022 13:54:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E4C3189C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8956B1755;
+	Wed,  5 Jan 2022 14:05:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8956B1755
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1641387307;
-	bh=8JL+5tV0OySHqWZPF4qHORWko9npkfbM3ji3E/RcwN8=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1641387972;
+	bh=fuBptuYCoe7CoQW66NYSwVCBtN0+iUEyNZZbnnS8Jpc=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dkHz6UknTPCzc9FzU/unvaQq4SSskaOFLJn2jyMDjlPBdfKPNcBPaWBTz5VHoleK6
-	 1srS3NxlbjRvsSoe11dNIjB4qkhxXPK6g5ws4Qxivzu3iDpSJD6y99Gq6+mXPaOty5
-	 RCcBvKbYbzVwUYANSFlja6eKfMgb+n5fD+WG+ZHs=
+	b=eVcZqFXkcmuhoh2MtcQSsQG0KOxeff74qm9F412ognhTN7L1WUBg0VmCOZHHRvJwC
+	 hF1YC0BP1OOKnr05bSANjgEbhjRJx1WWpiKqTk4SCR3qTmvu73r/zvy26mROw5n5H8
+	 Ch2tbzP61mLNHFJF7jcjPLI9lcfKOIPeGf2cGCzY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 969E0F80167;
-	Wed,  5 Jan 2022 13:54:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 275CFF8007E;
+	Wed,  5 Jan 2022 14:05:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A77DEF8007E; Wed,  5 Jan 2022 13:54:13 +0100 (CET)
-Received: from m12-14.163.com (m12-14.163.com [220.181.12.14])
- by alsa1.perex.cz (Postfix) with ESMTP id B1BC1F8007E
- for <alsa-devel@alsa-project.org>; Wed,  5 Jan 2022 13:54:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1BC1F8007E
+ id ED653F801D8; Wed,  5 Jan 2022 14:05:20 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 35501F8007E
+ for <alsa-devel@alsa-project.org>; Wed,  5 Jan 2022 14:05:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35501F8007E
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=163.com header.i=@163.com
- header.b="poHHO9as"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
- s=s110527; h=Subject:From:Message-ID:Date:MIME-Version; bh=8JL+5
- tV0OySHqWZPF4qHORWko9npkfbM3ji3E/RcwN8=; b=poHHO9asTjYHqcf7RngaT
- PEav9gXE49h6m/TZkBsSRcWs3CJ7u0BVm2hkrsQUPvNzNExPwUdudNLJUgj5ka2S
- wsaDHe2XA87izUCSG9RFoO8aXFbllADtJVEiPzyj7SZy+sQpQqtBv0VUnq0mfZ8Y
- aGHaMQjnMXnGBRuLHh9xhk=
-Received: from [192.168.31.101] (unknown [183.194.153.98])
- by smtp10 (Coremail) with SMTP id DsCowADXSM7nlNVhfw4aGQ--.47504S2;
- Wed, 05 Jan 2022 20:53:59 +0800 (CST)
-Subject: Re: [PATCH] ALSA: hda/realtek: Add quirk for Legion Y9000X 2020
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20220105034103.12484-1-fbl718@163.com>
- <s5ha6gak2qf.wl-tiwai@suse.de> <YdV5MNWOwgrtH2UC@kroah.com>
- <757a4402-1067-e3c8-8ca3-43ee62047ebe@163.com> <YdWElRjkZ0lybrMJ@kroah.com>
- <6bf35d26-73d4-ba14-f931-8d379c623482@163.com> <YdWQLOtV8Tz8ArrH@kroah.com>
-From: Baole Fang <fbl718@163.com>
-Message-ID: <7de9fab1-589f-a737-c00e-f98812a23c71@163.com>
-Date: Wed, 5 Jan 2022 20:53:58 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="cr7SoP7I"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 2059JDVk015982;
+ Wed, 5 Jan 2022 07:05:14 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=TSHvFPK4z1Ie3LRnhmdtzQot5Tuz4O0gVu7CkjwLivM=;
+ b=cr7SoP7IQMxRILFtjeIKzBCvHHYUYrNzKHMkoCFJY3Bf/hyVMTp900MvcXXWJUCq/Fr9
+ PyCueJhc4Sb9G7TSjgLAAY6UvtyLlFMj+CQKrV5accZe9pkf6AD3D+oxr2LUs6QrVTyQ
+ V0Rn0QM+C071iyg9QS/IKfxNBnykdOEYnIUEpu9Fe8j6pzla+ODGydU+cpepRdrrw3BL
+ Did1tMxFi5hWEUHbYo3lCI/hIKU/AdyVNzqni0+jEPfxfuR9OF/yZzTrSp4fAwYW7q+l
+ yLbFvotgNVMMuIcl30JGAm5LqQRwviNd43rLVbIImhBdR7f4moRSTiDb+IMyKanJN5qE yw== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3dd8jy85jp-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Wed, 05 Jan 2022 07:05:14 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Wed, 5 Jan
+ 2022 13:05:12 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.17 via
+ Frontend Transport; Wed, 5 Jan 2022 13:05:12 +0000
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 22A80475;
+ Wed,  5 Jan 2022 13:05:12 +0000 (UTC)
+Date: Wed, 5 Jan 2022 13:05:12 +0000
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: Takashi Iwai <tiwai@suse.de>
+Subject: Re: [PATCH 0/8] Add low power hibernation support to cs35l41
+Message-ID: <20220105130512.GE18506@ediswmail.ad.cirrus.com>
+References: <20220105113026.18955-1-ckeepax@opensource.cirrus.com>
+ <s5hr19mie3i.wl-tiwai@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <YdWQLOtV8Tz8ArrH@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID: DsCowADXSM7nlNVhfw4aGQ--.47504S2
-X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
- VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxUYQ6JUUUUU
-X-Originating-IP: [183.194.153.98]
-X-CM-SenderInfo: 5ieoliqy6rljoofrz/1tbiYwh-6VaEGamGPAAAsl
-Cc: alsa-devel@alsa-project.org, Kailang Yang <kailang@realtek.com>,
- Jeremy Szu <jeremy.szu@canonical.com>, Takashi Iwai <tiwai@suse.de>,
- linux-kernel@vger.kernel.org, Elia Devito <eliadevito@gmail.com>,
- Takashi Iwai <tiwai@suse.com>, Werner Sembach <wse@tuxedocomputers.com>,
- Hui Wang <hui.wang@canonical.com>, Sami Loone <sami@loone.fi>,
- Cameron Berkenpas <cam@neo-zeon.de>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <s5hr19mie3i.wl-tiwai@suse.de>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-GUID: LMrZ2Fx60J9UaBT7DaOeSUKlRw0QAE_K
+X-Proofpoint-ORIG-GUID: LMrZ2Fx60J9UaBT7DaOeSUKlRw0QAE_K
+X-Proofpoint-Spam-Reason: safe
+Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com, tiwai@suse.com,
+ lgirdwood@gmail.com, david.rhodes@cirrus.com, broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,15 +95,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 2022/1/5 下午8:33, Greg Kroah-Hartman wrote:
-> We can not just "ignore" it, you need to fix your change up and resend
-> it in a proper format so that it can be applied.
->
-> As-is, it is not acceptable, sorry.
+On Wed, Jan 05, 2022 at 01:03:45PM +0100, Takashi Iwai wrote:
+> On Wed, 05 Jan 2022 12:30:18 +0100,
+> Charles Keepax wrote:
+> > Patches 7,8 specifically will cause some very minor conflicts with
+> > Lucas's currently outstanding work on the HDA version of cs35l41.
+> > Whilst things will still build, this patch adds a test key function
+> > his code will now have to call. If his patches are getting merged
+> > first I will respin this series to update his code, he is currently on
+> > holiday until the 12th of Jan, so if we want to wait for another spin
+> > of those patches I can work with him to update them at that time. Or
+> > alternatively we could just merge them all and I will do a quick fixup
+> > patch at the end, since there is no build breakage.
+> 
+> FWIW, the ASoC part of Lucas's patch set has been already merged in
+> Mark's asoc tree.  (HD-audio part isn't merged yet though).
+> 
 
-Thank you, I'm going to resend the patch.
+Yeah its the HDA part that would require a small change after
+those last two patches to call the additional function. The
+series is already based on top of the merged ASoC changes.
 
-Best Regards,
-
-Baole Fang
-
+Thanks,
+Charles
