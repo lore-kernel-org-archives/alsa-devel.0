@@ -4,66 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5BEBAC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jan 2022 16:14:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F316EC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jan 2022 16:25:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 607791A22;
-	Wed,  5 Jan 2022 17:13:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 607791A22
+	by alsa0.perex.cz (Postfix) with ESMTPS id B9B461A44;
+	Wed,  5 Jan 2022 17:24:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9B461A44
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1641399267;
-	bh=LRFNrgss+xIi1J6OY9225bbt64RcNCWaztOCJzwcQuU=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=cRh9cQQuw0lnHI7/gKHLiXZxKQJ8UVHOEYhz5a/1Skq01MaBBAsCnefPvVlQnPCP5
-	 Yms3Ac3uII/M25IgIoDXEctRbZTm0+a2wHOH6yNFPQRA3WrMXidB/WnnuFgjs6imDm
-	 CSR2dHdzt5NSBv/RExUEal53bWq3nahKfe5tEdPE=
+	s=default; t=1641399908;
+	bh=CcdX2N69ne+eSqyA3M2iwxLCypKP3s4ANTuCjFBJkqs=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=dpCqP4VFn5sq8eFDMFuPtpoiw5CHyPJYrH1Zk4JtdfJfIzAFL8o3+06HvVoWijsJE
+	 lN5Whf87X/C5gJI8/7OyE2H6BHM0IWL2zDiR9DURIVbZm9PvknSZhP+rMrfzr4Mad/
+	 awi9RK5qr3ma467WF2Ci7gNdLvGzF17ZcJsd1st0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A2122F80089;
-	Wed,  5 Jan 2022 17:13:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 61622F80167;
+	Wed,  5 Jan 2022 17:24:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 23242F802D2; Wed,  5 Jan 2022 17:13:00 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 286D2F8007E; Wed,  5 Jan 2022 17:24:17 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F099BF80089
- for <alsa-devel@alsa-project.org>; Wed,  5 Jan 2022 17:12:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F099BF80089
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2B66FF8007E
+ for <alsa-devel@alsa-project.org>; Wed,  5 Jan 2022 17:24:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B66FF8007E
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="UprKjiKG"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id B74D6617A2;
- Wed,  5 Jan 2022 16:12:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD271C36AE0;
- Wed,  5 Jan 2022 16:12:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1641399166;
- bh=LRFNrgss+xIi1J6OY9225bbt64RcNCWaztOCJzwcQuU=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=UprKjiKGkFwYcWmpQYDNb3FpUZ0nAeEK81FWlWnWk5+ZjCfzXMpsqkgAfx6s+VtZE
- Tw0ehwb7x8xaqi/OHTN/yYHb0VaCKBmkwEP0rl+cjtAlfp1Z695PB93p/ijjmiqlie
- xgT669OmmbIppkJvWVRKdMMK/gNkoGg5szffRe1v1vT5wrFL6VmcqUwGC2qBpWjMKS
- WB1hhlcKkS2MTkGzZruiHXJe3ptiNQkECZzc5CfnPlnRs0c0Vu3YfblIyUMl9CZCfC
- 1eQnu9HSsw2RPChyHcbxtwVpwHwZU3ZBzwc/B8VhTY+uHTMzPQu3MsQxdY/gRuUFNk
- xtzXata/tRnzg==
-From: Mark Brown <broonie@kernel.org>
-To: Fabio Estevam <festevam@gmail.com>
-In-Reply-To: <20220104180613.639317-1-festevam@gmail.com>
-References: <20220104180613.639317-1-festevam@gmail.com>
-Subject: Re: [PATCH v3] ASoC: cs4265: Add a remove() function
-Message-Id: <164139916453.3066423.11098261040208863967.b4-ty@kernel.org>
-Date: Wed, 05 Jan 2022 16:12:44 +0000
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="11AEZb5a"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="4vDdxEXw"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id F30F21F37B;
+ Wed,  5 Jan 2022 16:24:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1641399850; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=ZoTAqvn3cSScz678Px3ymY3f7sM9aK8Jj+9p7LS7kX8=;
+ b=11AEZb5awCdqT699PD70Yj2xBypzyi7ethzrkyvvTdDb4JSgYpKLQ6jgCREND4WtDDyj2N
+ 5DxIpXeWoozyZ06sZwWm8y6bLVckwoFKSgDetVaFpkM103WdtzViTJvimumEt2wWr1XARj
+ ORYhOd7ykovzxb+tACXMDwlmdrGM5+s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1641399850;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=ZoTAqvn3cSScz678Px3ymY3f7sM9aK8Jj+9p7LS7kX8=;
+ b=4vDdxEXw6meFYTLwPcUputVDpvJc5XPT508RsaLKMko/8R8C2hu7jdFrlEeow3ifuY6Fxl
+ aYAewiHZqOwOY5Bw==
+Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id D7D6BA3B81;
+ Wed,  5 Jan 2022 16:24:09 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: ak4375: Fix unused function error
+Date: Wed,  5 Jan 2022 17:24:09 +0100
+Message-Id: <20220105162409.20635-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Fabio Estevam <festevam@denx.de>,
- ckeepax@opensource.cirrus.com
+Cc: alsa-devel@alsa-project.org, Vincent Knecht <vincent.knecht@mailoo.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,40 +83,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 4 Jan 2022 15:06:13 -0300, Fabio Estevam wrote:
-> From: Fabio Estevam <festevam@denx.de>
-> 
-> When the reset_gpio GPIO is used, it is better to put the codec
-> back into reset state when the driver unbinds.
-> 
-> Add a remove() function to accomplish that.
-> 
-> [...]
+A randconfig caught a compile warning that is now treated as a fatal
+error:
+  sound/soc/codecs/ak4375.c:415:13: error: ‘ak4375_power_off’ defined but not used [-Werror=unused-function]
 
-Applied to
+where ak4375_power_off() is used only from the PM handler.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+As both suspend and resumes are already marked with __maybe_unused,
+let's rip off the superfluous ifdef CONFIG_PM, so that the error above
+can be avoided.
 
-Thanks!
+Fixes: 53778b8292b5 ("ASoC: Add AK4375 support")
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/soc/codecs/ak4375.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-[1/1] ASoC: cs4265: Add a remove() function
-      commit: a319cb32e7cfd2703db3a883ce260a7b06729895
+diff --git a/sound/soc/codecs/ak4375.c b/sound/soc/codecs/ak4375.c
+index 22cda0699341..9a7b662016b9 100644
+--- a/sound/soc/codecs/ak4375.c
++++ b/sound/soc/codecs/ak4375.c
+@@ -438,7 +438,6 @@ static int ak4375_power_on(struct ak4375_priv *ak4375)
+ 	return 0;
+ }
+ 
+-#ifdef CONFIG_PM
+ static int __maybe_unused ak4375_runtime_suspend(struct device *dev)
+ {
+ 	struct ak4375_priv *ak4375 = dev_get_drvdata(dev);
+@@ -463,7 +462,6 @@ static int __maybe_unused ak4375_runtime_resume(struct device *dev)
+ 
+ 	return regcache_sync(ak4375->regmap);
+ }
+-#endif /* CONFIG_PM */
+ 
+ static const struct snd_soc_component_driver soc_codec_dev_ak4375 = {
+ 	.controls		= ak4375_snd_controls,
+-- 
+2.31.1
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
