@@ -4,63 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7620C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Jan 2022 09:45:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5B26C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Jan 2022 11:02:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8623C183A;
-	Thu,  6 Jan 2022 10:44:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8623C183A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5767A1817;
+	Thu,  6 Jan 2022 12:01:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5767A1817
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1641462309;
-	bh=zFUz3QzlgRDPtTcQ5jImxrA6GFaEzqkvnNkFi8XKPSc=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=XkQkjVIKInlqZHytdOBYZAmn9BZjhknIAGNEBoc2/YOQNaHiKSu258RebvjwI7+q7
-	 DP1VdW4swCL7kWZJ9w9UYWAxJsbKtX8JaZENOHBqvshuWgTgQbq0MXjeNOhXTQrqCh
-	 G4oRffg040IldnOztV5m0q/R749qCgl9xbKvvmDY=
+	s=default; t=1641466957;
+	bh=VWdVnzgsLpU6Lddb1fNfFzSWyeYYAHqLTYf+giddV0I=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=CbdhYaX5pn/N2jYYa/UwnpS8qhrpoU7VmZ1x0T4R+mXcBtRTk51lNhv1YCOmPYhgF
+	 K/e+VL6D2pnF+C2lbPdPphpI+ABt5Ihk5HseKRHCz0p82NGru/g9vQ+DT4/Kd4KCK0
+	 FS7jD03CfCEoHGl61QN2i+BHOgMUHfOpEKzN6q04=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 29DD6F80121;
-	Thu,  6 Jan 2022 10:44:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E6CDFF80121;
+	Thu,  6 Jan 2022 12:01:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E7B18F8007E; Thu,  6 Jan 2022 10:44:17 +0100 (CET)
-Received: from cstnet.cn (smtp25.cstnet.cn [159.226.251.25])
- by alsa1.perex.cz (Postfix) with ESMTP id 1A5AAF800BB
- for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2022 10:44:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A5AAF800BB
-Received: from localhost.localdomain (unknown [124.16.138.126])
- by APP-05 (Coremail) with SMTP id zQCowAD3_wPjudZht_C1BQ--.61084S2;
- Thu, 06 Jan 2022 17:44:03 +0800 (CST)
-From: Jiasheng Jiang <jiasheng@iscas.ac.cn>
-To: tiwai@suse.de
-Subject: [PATCH v2] ALSA: intel_hdmi: Check for error num after setting mask
-Date: Thu,  6 Jan 2022 17:44:02 +0800
-Message-Id: <20220106094402.2738082-1-jiasheng@iscas.ac.cn>
-X-Mailer: git-send-email 2.25.1
+ id 61EF3F80161; Thu,  6 Jan 2022 12:01:45 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D5CF3F800AE
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2022 12:01:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5CF3F800AE
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
+ header.b="A3bMkX1H"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1641466900;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=8DQ7Kfrw1JppVlEKDBQzTyS/B9DTkCjylDuvSXKlAdE=;
+ b=A3bMkX1HEDQ/q/xHPGslicokWpD9W/luioqMfec8dRSJrGnknmffa25NofHmWi/4pH2pOM
+ nq36FQHkgkYQfwW36lgUzIgoPRfm81c1E47maZJlnMeE5QtA47kHfZteY5nizrIjdS28n0
+ lCaB+Oxrfw15cQdBFrTS40L4rdMTE2k=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-586-JcFHEMFkMpeBcDKm0WU1Vw-1; Thu, 06 Jan 2022 06:01:38 -0500
+X-MC-Unique: JcFHEMFkMpeBcDKm0WU1Vw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com
+ [10.5.11.12])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9FCCD1006AA7;
+ Thu,  6 Jan 2022 11:01:36 +0000 (UTC)
+Received: from shalem.redhat.com (unknown [10.39.192.137])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id AE2497E12C;
+ Thu,  6 Jan 2022 11:01:34 +0000 (UTC)
+From: Hans de Goede <hdegoede@redhat.com>
+To: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Jie Yang <yang.jie@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>
+Subject: [PATCH v2 2/6] ASoC: rt5640: Change jack_work to a delayed_work
+Date: Thu,  6 Jan 2022 12:01:24 +0100
+Message-Id: <20220106110128.66049-3-hdegoede@redhat.com>
+In-Reply-To: <20220106110128.66049-1-hdegoede@redhat.com>
+References: <20220106110128.66049-1-hdegoede@redhat.com>
 MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: zQCowAD3_wPjudZht_C1BQ--.61084S2
-X-Coremail-Antispam: 1UD129KBjvdXoWruFyDKw1fAr4rXr15tw15CFg_yoWDGFg_tw
- 18Ww4kWFy5AFySvw45CrW3Cr92939IvFyYgryrtF17Ga4DJFW7Jw1UGr4fur1fu3yfWry7
- u3ZFqrWSyry7ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
- 9fnUUIcSsGvfJTRUUUbcAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
- 6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
- A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
- Gr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
- Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
- I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
- 4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_GFWl
- 42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
- WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAK
- I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r
- 4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVW8JVWxJwCI
- 42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfU8KZXUUUUU
-X-Originating-IP: [124.16.138.126]
-X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
-Cc: alsa-devel@alsa-project.org, leon@kernel.org, linux-kernel@vger.kernel.org,
- Jiasheng Jiang <jiasheng@iscas.ac.cn>, tiwai@suse.com, broonie@kernel.org,
- joe@perches.com
+Content-Type: text/plain; charset="US-ASCII"
+Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org,
+ Stephan Gerhold <stephan@gerhold.net>, Bard Liao <bard.liao@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,36 +95,105 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-To maintain the consistency of the code, it should be better to add the
-sanity check after calling dma_set_mask_and_coherent(), like
-tegra_pcm_dma_allocate() in `sound/soc/tegra/tegra_pcm.c`.
+Change jack_work from a struct work_struct to a struct delayed_work, this
+is a preparation patch for adding support for boards where an external
+GPIO is used for jack-detect, rather then one of the JD pins of the codec.
 
-Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
-Changelog
+ sound/soc/codecs/rt5640.c | 16 ++++++++--------
+ sound/soc/codecs/rt5640.h |  2 +-
+ 2 files changed, 9 insertions(+), 9 deletions(-)
 
-v1 -> v2
-
-* Change 1. Remove the fixes tag and change the message.
----
- sound/x86/intel_hdmi_audio.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/sound/x86/intel_hdmi_audio.c b/sound/x86/intel_hdmi_audio.c
-index 33b12aa67cf5..6caea517f07f 100644
---- a/sound/x86/intel_hdmi_audio.c
-+++ b/sound/x86/intel_hdmi_audio.c
-@@ -1770,7 +1770,9 @@ static int hdmi_lpe_audio_probe(struct platform_device *pdev)
- 	card_ctx->irq = irq;
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index ceb2d50b17aa..a1e4e3ac99f1 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -2298,7 +2298,7 @@ EXPORT_SYMBOL_GPL(rt5640_detect_headset);
+ static void rt5640_jack_work(struct work_struct *work)
+ {
+ 	struct rt5640_priv *rt5640 =
+-		container_of(work, struct rt5640_priv, jack_work);
++		container_of(work, struct rt5640_priv, jack_work.work);
+ 	struct snd_soc_component *component = rt5640->component;
+ 	int status;
  
- 	/* only 32bit addressable */
--	dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
-+	ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
-+	if (ret)
-+		goto err;
+@@ -2381,7 +2381,7 @@ static void rt5640_jack_work(struct work_struct *work)
+ 		 * disabled the OVCD IRQ, the IRQ pin will stay high and as
+ 		 * we react to edges, we miss the unplug event -> recheck.
+ 		 */
+-		queue_work(system_long_wq, &rt5640->jack_work);
++		queue_delayed_work(system_long_wq, &rt5640->jack_work, 0);
+ 	}
+ }
  
- 	init_channel_allocations();
+@@ -2390,7 +2390,7 @@ static irqreturn_t rt5640_irq(int irq, void *data)
+ 	struct rt5640_priv *rt5640 = data;
  
+ 	if (rt5640->jack)
+-		queue_work(system_long_wq, &rt5640->jack_work);
++		queue_delayed_work(system_long_wq, &rt5640->jack_work, 0);
+ 
+ 	return IRQ_HANDLED;
+ }
+@@ -2399,7 +2399,7 @@ static void rt5640_cancel_work(void *data)
+ {
+ 	struct rt5640_priv *rt5640 = data;
+ 
+-	cancel_work_sync(&rt5640->jack_work);
++	cancel_delayed_work_sync(&rt5640->jack_work);
+ 	cancel_delayed_work_sync(&rt5640->bp_work);
+ }
+ 
+@@ -2508,7 +2508,7 @@ static void rt5640_enable_jack_detect(struct snd_soc_component *component,
+ 	}
+ 
+ 	/* sync initial jack state */
+-	queue_work(system_long_wq, &rt5640->jack_work);
++	queue_delayed_work(system_long_wq, &rt5640->jack_work, 0);
+ }
+ 
+ static void rt5640_enable_hda_jack_detect(
+@@ -2546,7 +2546,7 @@ static void rt5640_enable_hda_jack_detect(
+ 	}
+ 
+ 	/* sync initial jack state */
+-	queue_work(system_long_wq, &rt5640->jack_work);
++	queue_delayed_work(system_long_wq, &rt5640->jack_work, 0);
+ }
+ 
+ static int rt5640_set_jack(struct snd_soc_component *component,
+@@ -2745,7 +2745,7 @@ static int rt5640_resume(struct snd_soc_component *component)
+ 			snd_soc_component_write(component, RT5640_DUMMY2,
+ 				0x4001);
+ 
+-		queue_work(system_long_wq, &rt5640->jack_work);
++		queue_delayed_work(system_long_wq, &rt5640->jack_work, 0);
+ 	}
+ 
+ 	return 0;
+@@ -2950,7 +2950,7 @@ static int rt5640_i2c_probe(struct i2c_client *i2c,
+ 	rt5640->hp_mute = true;
+ 	rt5640->irq = i2c->irq;
+ 	INIT_DELAYED_WORK(&rt5640->bp_work, rt5640_button_press_work);
+-	INIT_WORK(&rt5640->jack_work, rt5640_jack_work);
++	INIT_DELAYED_WORK(&rt5640->jack_work, rt5640_jack_work);
+ 
+ 	/* Make sure work is stopped on probe-error / remove */
+ 	ret = devm_add_action_or_reset(&i2c->dev, rt5640_cancel_work, rt5640);
+diff --git a/sound/soc/codecs/rt5640.h b/sound/soc/codecs/rt5640.h
+index 2c28f83e338a..7ab930def8dd 100644
+--- a/sound/soc/codecs/rt5640.h
++++ b/sound/soc/codecs/rt5640.h
+@@ -2145,7 +2145,7 @@ struct rt5640_priv {
+ 	int release_count;
+ 	int poll_count;
+ 	struct delayed_work bp_work;
+-	struct work_struct jack_work;
++	struct delayed_work jack_work;
+ 	struct snd_soc_jack *jack;
+ 	unsigned int jd_src;
+ 	bool jd_inverted;
 -- 
-2.25.1
+2.33.1
 
