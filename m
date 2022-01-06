@@ -4,71 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29764C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Jan 2022 11:03:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C841C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Jan 2022 11:03:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5D5FA187A;
-	Thu,  6 Jan 2022 12:02:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D5FA187A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 55DC11893;
+	Thu,  6 Jan 2022 12:02:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 55DC11893
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1641467008;
-	bh=/2NclrnSx3vNMJoVMxoZP6JWRr7CeTWmbHMQWJ1mDvM=;
+	s=default; t=1641467024;
+	bh=wIRKXX47jlCaYcl09owqdEv7pF/Q7FLUdJNFZVcmhEw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WTXktTQO39nSCfP4czG9qzkeQ05P8HM6FA7FVfpa0h0rQ9JcAADWgGk1vLq6vdVGS
-	 tgl1iV6d3Of1gWArxAyaRxvafb02q1i7kdjrQx+fuhP5jrRC3/ocHa8sK+CZMyLA6O
-	 TZbF3x7+P3aSe7wMsXNctRynRm8JTzXhRb+zoaLQ=
+	b=jP7uzUyy94a3BDrawa5f/LYh8or6ICujjcOkQy/5EkDYRvHeim5tWSJHOpbkoSQZr
+	 ttD1aaSYuPHAroeuUuPm1qVjSG9Y1wGJty9kKgG9BamCpCYnFyYzKGEe1XE1Wp3kat
+	 U7AftuyJpwDumcwM/dbOGtMZsWa4bO4jOIY1Gj4s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D8DDCF80163;
-	Thu,  6 Jan 2022 12:01:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 840A8F80510;
+	Thu,  6 Jan 2022 12:01:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D2C50F804FB; Thu,  6 Jan 2022 12:01:47 +0100 (CET)
+ id 02A7DF804FB; Thu,  6 Jan 2022 12:01:48 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8EC64F800AE
- for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2022 12:01:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8EC64F800AE
+ by alsa1.perex.cz (Postfix) with ESMTPS id AE9CDF800BB
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2022 12:01:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE9CDF800BB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="JQn1h20x"
+ header.b="DPGBTJK2"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1641466901;
+ s=mimecast20190719; t=1641466899;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=42w/s9O/nqUs4E2rlffJtHqBwOZtwao3P+fRO2kMP/Q=;
- b=JQn1h20x2dFySNRenKwmAC64O8eBxA1vrISR467cH1HuN+tauUF6JbqJG2NY+VNMoUMKir
- bAbFUaWY+nlkB743RFmDmOyNioBZAIvMM4l0TawYdMNiSVxnSBJqNvU473lBi0PAn8nzCR
- ivUGTbhL79C9tRQzfl4BQVfo7PXFmpg=
+ bh=DH7c+j/JJm/6lgho1gqY0xzSzN0YIryPVi/RpIaE6/w=;
+ b=DPGBTJK2zk3QYi/gplutnT2pm87jlrKs2szdzb1LmcSXcc3h6HWXqIL2qjDMomyASO+IeV
+ 0wAzZlR4JTd7sXiEtNbYZyfvkavhGcvolqMM7iJUz6pUGMJoFYP+eOm6YfDj91/HnM8slz
+ kn6BQMG+1Jpqtc0Z/zGfRKjg2BdCBkk=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-14-rE-Q-Xx7NCWuXQNcFE57HA-1; Thu, 06 Jan 2022 06:01:40 -0500
-X-MC-Unique: rE-Q-Xx7NCWuXQNcFE57HA-1
+ us-mta-450-kyg9SdNMPomuI0OyxHyZYQ-1; Thu, 06 Jan 2022 06:01:35 -0500
+X-MC-Unique: kyg9SdNMPomuI0OyxHyZYQ-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com
  [10.5.11.12])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AD0E78042E0;
- Thu,  6 Jan 2022 11:01:38 +0000 (UTC)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5FEE41023F4E;
+ Thu,  6 Jan 2022 11:01:34 +0000 (UTC)
 Received: from shalem.redhat.com (unknown [10.39.192.137])
- by smtp.corp.redhat.com (Postfix) with ESMTP id EB3537E12C;
- Thu,  6 Jan 2022 11:01:36 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 39F6D7E124;
+ Thu,  6 Jan 2022 11:01:32 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Cezary Rojewski <cezary.rojewski@intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Liam Girdwood <lgirdwood@gmail.com>, Jie Yang <yang.jie@linux.intel.com>,
  Mark Brown <broonie@kernel.org>
-Subject: [PATCH v2 3/6] ASoC: rt5640: Allow snd_soc_component_set_jack() to
- override the codec IRQ
-Date: Thu,  6 Jan 2022 12:01:25 +0100
-Message-Id: <20220106110128.66049-4-hdegoede@redhat.com>
+Subject: [PATCH v2 1/6] ASoC: rt5640: Fix possible NULL pointer deref on resume
+Date: Thu,  6 Jan 2022 12:01:23 +0100
+Message-Id: <20220106110128.66049-2-hdegoede@redhat.com>
 In-Reply-To: <20220106110128.66049-1-hdegoede@redhat.com>
 References: <20220106110128.66049-1-hdegoede@redhat.com>
 MIME-Version: 1.0
@@ -79,8 +78,9 @@ X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset="US-ASCII"
-Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org,
- Stephan Gerhold <stephan@gerhold.net>, Bard Liao <bard.liao@intel.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Hans de Goede <hdegoede@redhat.com>,
+ alsa-devel@alsa-project.org, Stephan Gerhold <stephan@gerhold.net>,
+ Bard Liao <bard.liao@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,68 +96,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On some boards where the firmware/fwnode information is in essence
-read-only (x86 + ACPI boards) the i2c_client for the codec may contain
-the wrong IRQ or no IRQ at all.
+Commit 2b9c8d2b3c89 ("ASoC: rt5640: Add the HDA header support") adds
+re-queuing of the jack_work on resume when rt5640->jd_src != 0.
 
-Since we only request the IRQ once snd_soc_component_set_jack() gets
-called, allow machine drivers to override the IRQ with the proper one
-through the data parameter to snd_soc_component_set_jack().
+But the jack_work will unconditionally deref rt5640->jack and that might
+be NULL. E.g. the sound/soc/intel/boards/bytcr_rt5640.c machine driver
+call snd_soc_component_set_jack(codec, NULL, NULL) from pre_suspend to
+disable the IRQ to avoid spurious wakeups, so when rt5640_resume()
+runs rt5640->jack will be NULL in this case.
 
+Make the queueing of the work conditional on rt5640->jack instead of
+on rt5640->jd_src to fix this.
+
+Fixes: 2b9c8d2b3c89 ("ASoC: rt5640: Add the HDA header support")
+Cc: Oder Chiou <oder_chiou@realtek.com>
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/codecs/rt5640.c | 8 ++++++--
- sound/soc/codecs/rt5640.h | 4 ++++
- 2 files changed, 10 insertions(+), 2 deletions(-)
+ sound/soc/codecs/rt5640.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
-index a1e4e3ac99f1..fabc6e44b4a6 100644
+index f3659b14c74e..ceb2d50b17aa 100644
 --- a/sound/soc/codecs/rt5640.c
 +++ b/sound/soc/codecs/rt5640.c
-@@ -2452,7 +2452,8 @@ static void rt5640_disable_jack_detect(struct snd_soc_component *component)
- }
+@@ -2737,7 +2737,7 @@ static int rt5640_resume(struct snd_soc_component *component)
+ 	regcache_cache_only(rt5640->regmap, false);
+ 	regcache_sync(rt5640->regmap);
  
- static void rt5640_enable_jack_detect(struct snd_soc_component *component,
--				      struct snd_soc_jack *jack)
-+				      struct snd_soc_jack *jack,
-+				      struct rt5640_set_jack_data *jack_data)
- {
- 	struct rt5640_priv *rt5640 = snd_soc_component_get_drvdata(component);
- 	int ret;
-@@ -2496,6 +2497,9 @@ static void rt5640_enable_jack_detect(struct snd_soc_component *component,
- 		rt5640_enable_micbias1_ovcd_irq(component);
- 	}
- 
-+	if (jack_data && jack_data->codec_irq_override)
-+		rt5640->irq = jack_data->codec_irq_override;
-+
- 	ret = request_irq(rt5640->irq, rt5640_irq,
- 			  IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
- 			  "rt5640", rt5640);
-@@ -2558,7 +2562,7 @@ static int rt5640_set_jack(struct snd_soc_component *component,
+-	if (rt5640->jd_src) {
++	if (rt5640->jack) {
  		if (rt5640->jd_src == RT5640_JD_SRC_HDA_HEADER)
- 			rt5640_enable_hda_jack_detect(component, jack);
- 		else
--			rt5640_enable_jack_detect(component, jack);
-+			rt5640_enable_jack_detect(component, jack, data);
- 	} else {
- 		rt5640_disable_jack_detect(component);
- 	}
-diff --git a/sound/soc/codecs/rt5640.h b/sound/soc/codecs/rt5640.h
-index 7ab930def8dd..2f4da5a8ecb2 100644
---- a/sound/soc/codecs/rt5640.h
-+++ b/sound/soc/codecs/rt5640.h
-@@ -2153,6 +2153,10 @@ struct rt5640_priv {
- 	unsigned int ovcd_sf;
- };
- 
-+struct rt5640_set_jack_data {
-+	int codec_irq_override;
-+};
-+
- int rt5640_dmic_enable(struct snd_soc_component *component,
- 		       bool dmic1_data_pin, bool dmic2_data_pin);
- int rt5640_sel_asrc_clk_src(struct snd_soc_component *component,
+ 			snd_soc_component_update_bits(component,
+ 				RT5640_DUMMY2, 0x1100, 0x1100);
 -- 
 2.33.1
 
