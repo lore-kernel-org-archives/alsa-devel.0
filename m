@@ -4,70 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B154C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Jan 2022 20:30:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8ED6C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Jan 2022 20:31:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AC0871AC8;
-	Thu,  6 Jan 2022 21:30:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC0871AC8
+	by alsa0.perex.cz (Postfix) with ESMTPS id E88471AA4;
+	Thu,  6 Jan 2022 21:30:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E88471AA4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1641501056;
-	bh=WJ2sfcxn6GVvDjVhkMuBqAzdc3GwgvrPGmKcfFu60ec=;
+	s=default; t=1641501073;
+	bh=/HeOpyMdXJEm0oJ6Rb/pWakA0Uu7ogZ2rdPbVlKI3hg=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pVzGa/RsLhvh68xxgTS5W0njqjBsQWGNSfTFefd2wQ1akHT1YNddQAkgmp6Zsetwe
-	 3Kdqf6YuyQHSar7U1L5TTBTe9hMCjWhZ+ICE3uRrmjnjYYsXquC/7flZWd1/j3GyaS
-	 xCj/QxeHtfz2GA96mQGn7PCqCBn5bEfNXwrCeec8=
+	b=TRvZJzRVzs6SJT045Vi6DfdDjmiwF/O5chmwQOg3dwXPng/yzqBCgEi9EolCP4/5N
+	 L/QGl7JeS/1QBd5h2pvBOWkWlScucfxQ2ewWlR5Y3tnksDGvnQdC3gZgOkM7vg0dPU
+	 kSCgALuWKkc7YZHcDUTxg19TBDCU5J6fp1MNP8d0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 41E21F80518;
+	by alsa1.perex.cz (Postfix) with ESMTP id BE470F8051E;
 	Thu,  6 Jan 2022 21:28:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4E1FEF80517; Thu,  6 Jan 2022 21:28:28 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id DEF17F80517; Thu,  6 Jan 2022 21:28:28 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6DB76F8050F
- for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2022 21:28:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DB76F8050F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0AF4EF8007E
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2022 21:28:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0AF4EF8007E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="K0B2TiIi"
+ header.b="Pp7rwB+l"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id C30A461E15;
- Thu,  6 Jan 2022 20:28:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C19B8C36AE5;
- Thu,  6 Jan 2022 20:28:17 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 2932861E1C;
+ Thu,  6 Jan 2022 20:28:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60040C36AE3;
+ Thu,  6 Jan 2022 20:28:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1641500899;
- bh=WJ2sfcxn6GVvDjVhkMuBqAzdc3GwgvrPGmKcfFu60ec=;
+ s=k20201202; t=1641500902;
+ bh=/HeOpyMdXJEm0oJ6Rb/pWakA0Uu7ogZ2rdPbVlKI3hg=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=K0B2TiIiP/OB5JpWTBCGOLDpev+HYLQW3HR3vjJ/2pGG53/TaYk6exXM6T+eC4waY
- LFxUtOajGRr09bpzsDMVd5Qc96WRBKtIwqEFN3FbmYLs/3PPd+dgOclOkSrrP94uck
- VgDPzDToBHma7GfPRq9f70p+oneyV0plwFq/U6KEeeF4xw3HAVt47VAJ9jM1s/4uLG
- nL5rhGF4jICnLDgHqoJbX+5wvo+bV9uU+Xpp5UHJiqS2r6PU+EJtIXFSpIH5owaJov
- 7KRjcn9+EoZFPcLgTT67d3zIQ9KljRzNCveEel6n/l4SnfQrCD2GLRNNhX6FQgAK/l
- 51DNYDa/ZVEzg==
+ b=Pp7rwB+liL//1RFg9Fhzw5ISNYvnCdxiYgkFVq56vKyd9GFwvMuRK2Ru2pu8jRBHg
+ pMf8s88ooC0x26yOTxwvpjRSnno4PyGLYgPAblEEUjOTgwXQb/eiuTwOpenXQrxhgV
+ p5BiTTOAu8P7Tn+yJUEbe83TetluzlpDIwg9Y3I0lVYz3PoaMqR0WqLn10GkvjLwvu
+ QpMDvKs7aq8Aw87Letr/v0B21CvWpCMKQlSWW90Q4W2WvC7PqssQfE8hi4UryR0InP
+ Uv3JGWU3lhOP+zyiSe2HlmA8sy9Vqxc/xdNorYqocYD5xNz8K2u1akiNTxvRo/f08U
+ vwPHIQjFxCpTQ==
 From: Mark Brown <broonie@kernel.org>
-To: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>, alsa-devel@alsa-project.org
-In-Reply-To: <20220106150525.396170-1-AjitKumar.Pandey@amd.com>
-References: <20220106150525.396170-1-AjitKumar.Pandey@amd.com>
-Subject: Re: [PATCH] ASoC: amd: acp: acp-mach: Change default RT1019 amp dev id
-Message-Id: <164150089750.2243486.8547152917333843393.b4-ty@kernel.org>
-Date: Thu, 06 Jan 2022 20:28:17 +0000
+To: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org,
+ Yassine Oudjana <y.oudjana@protonmail.com>, Takashi Iwai <tiwai@suse.com>,
+ Banajit Goswami <bgoswami@codeaurora.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+In-Reply-To: <20220104033356.343685-1-y.oudjana@protonmail.com>
+References: <20220104033356.343685-1-y.oudjana@protonmail.com>
+Subject: Re: [PATCH] ASoC: wcd9335: Keep a RX port value for each SLIM RX mux
+Message-Id: <164150090010.2243486.16272491720524163841.b4-ty@kernel.org>
+Date: Thu, 06 Jan 2022 20:28:20 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Sunil-kumar.Dommati@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
- Basavaraj.Hiregoudar@amd.com, open list <linux-kernel@vger.kernel.org>,
- Takashi Iwai <tiwai@suse.com>,
- V sujith kumar Reddy <vsujithkumar.reddy@amd.com>, Vijendar.Mukunda@amd.com,
- Alexander.Deucher@amd.com
+Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,14 +81,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 6 Jan 2022 20:35:21 +0530, Ajit Kumar Pandey wrote:
-> RT1019 components was initially registered with i2c1 and i2c2 but
-> now changed to i2c0 and i2c1 in most of our AMD platforms. Change
-> default rt1019 components to 10EC1019:00 and 10EC1019:01 which is
-> aligned with most of AMD machines.
+On Tue, 04 Jan 2022 03:35:36 +0000, Yassine Oudjana wrote:
+> Currently, rx_port_value is a single unsigned int that gets overwritten
+> when slim_rx_mux_put() is called for any RX mux, then the same value is
+> read when slim_rx_mux_get() is called for any of them. This results in
+> slim_rx_mux_get() reporting the last value set by slim_rx_mux_put()
+> regardless of which SLIM RX mux is in question.
 > 
-> Any exception to rt1019 device ids in near future board design can
-> be handled using dmi based quirk for that machine.
+> Turn rx_port_value into an array and store a separate value for each
+> SLIM RX mux.
 > 
 > [...]
 
@@ -100,8 +99,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: amd: acp: acp-mach: Change default RT1019 amp dev id
-      commit: 7112550890d7e415188a3351ec0a140be60f6deb
+[1/1] ASoC: wcd9335: Keep a RX port value for each SLIM RX mux
+      commit: 3b247eeaecfefe35ecca1578b0ed48be65bc6ca3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
