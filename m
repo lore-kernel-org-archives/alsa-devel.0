@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 344CEC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Jan 2022 15:09:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DEB39C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Jan 2022 15:10:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 53C7A1A24;
-	Thu,  6 Jan 2022 16:08:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 53C7A1A24
+	by alsa0.perex.cz (Postfix) with ESMTPS id CC9B81A42;
+	Thu,  6 Jan 2022 16:10:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC9B81A42
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1641481783;
-	bh=uazz0rOIQ5v5iAGxI9HWkPtFJ6x811173DPlWwVAqu8=;
+	s=default; t=1641481851;
+	bh=RmyhBFf5tNc3o3lkdtY+ECMrx2gpFetLyMdsk5UtMPQ=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NcU+CPGsvn+2V/42RTihGUuWgZVMDtWxmSQo8i4wjnobUGDL6TWHintY1A+lQd2Ma
-	 4/AOketpMW+KzzCZNJho1qACqAGjlGhI600hJ2o8Be7ytoNNxWjMObvozYsCydwGRv
-	 6AdNjCsCd+695Oo+F5xQhF17TXoeOZZSbv8X8ugY=
+	b=UyHnTSeTylMlQWjP32JO3xhxx5ZPnoZcXN+zqCPPzNgwKNOd/bEExt9FVkHMBsm8O
+	 8v6l1mz8Mph4vBU0ApI+489wtoTDZ/REhstC9ADSwpkNMyx2+PMd9QB0CksULbo19Z
+	 LfTIJw8JHsSkVAbwuSg+ZZvmXOJzr3NyBopO3i9g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E50B5F80121;
-	Thu,  6 Jan 2022 16:08:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7C4ECF80155;
+	Thu,  6 Jan 2022 16:10:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 019A4F800AE; Thu,  6 Jan 2022 16:08:50 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id 7166AF800AE; Thu,  6 Jan 2022 16:10:00 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4B615F8007E
- for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2022 16:08:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B615F8007E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 00079F800AE
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2022 16:09:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00079F800AE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="AnCyzfGv"; 
+ header.b="2BJN3B8D"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="pPfzUZws"
+ header.b="dprmqSso"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id A57BA1F397;
- Thu,  6 Jan 2022 15:08:38 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 44D0821108;
+ Thu,  6 Jan 2022 15:09:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1641481718; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1641481791; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=38dm+nbYkJbYlsI8QC0aHe/BT2jCQoNT7qyfhxcb4A4=;
- b=AnCyzfGv7qCuppyV6ZAFqYtogrWBesuf0wpR6eszC+JRD4hiUrYUV46tL4u1HwBu2pFu1i
- 891ed3PSbgFOUUsmvIWlnrUt/RUmUvb1su8luPZTVuGzusJMmAeZ73Klwf+qo/OH2nUzLg
- L789ab2SocEOuTXfwx8gfV4l/JntOn4=
+ bh=wnn39zCwHUh+RfJlT6Bs9dN5LQH5uzxjGYp4CwbfCs0=;
+ b=2BJN3B8DJHoco7TNxzWfj16k9XAtaTC0KKNGfFJiryk/jXPbLjSyeYMmOhiEkywQlzhc5O
+ PZKzkxrW7qR/4RKTD9v1UFsqMuoin2z40g31CywM0hYsisVoS60ny/wzh5vroobxzOGAG3
+ LL0i1dUz69TVffyF+k47iRKKJNrXcxI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1641481718;
+ s=susede2_ed25519; t=1641481791;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=38dm+nbYkJbYlsI8QC0aHe/BT2jCQoNT7qyfhxcb4A4=;
- b=pPfzUZwsGDVb5yXnKf83tlFpSsZ4gm7Y9lSVOsn3FIte9uX/OJk6djZK51PyAyW35IEHFu
- Db9cyszCP2r2QaAg==
+ bh=wnn39zCwHUh+RfJlT6Bs9dN5LQH5uzxjGYp4CwbfCs0=;
+ b=dprmqSsotzOuTLxgeSvG/of17VWEwP40qnZsUeL8Xc3g5UJza5wJ65M9KQ3y9aczOJSfZl
+ b0w7oBV2VGOgKeAg==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 95D10A4019;
- Thu,  6 Jan 2022 15:08:38 +0000 (UTC)
-Date: Thu, 06 Jan 2022 16:08:38 +0100
-Message-ID: <s5hmtk8hpft.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id 34724A3BCE;
+ Thu,  6 Jan 2022 15:09:51 +0000 (UTC)
+Date: Thu, 06 Jan 2022 16:09:51 +0100
+Message-ID: <s5hk0fchpds.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Stefan Sauer <st_kost@gmx.de>
-Subject: Re: [PATCH 1/2] ALSA: seq: virmidi: Add a drain operation
-In-Reply-To: <20220106124145.17254-1-st_kost@gmx.de>
-References: <20220106124145.17254-1-st_kost@gmx.de>
+Subject: Re: [PATCH 2/2] ALSA: virmidi: Remove duplicated code
+In-Reply-To: <20220106123821.16691-1-st_kost@gmx.de>
+References: <20220106123821.16691-1-st_kost@gmx.de>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -87,19 +87,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 06 Jan 2022 13:41:45 +0100,
+On Thu, 06 Jan 2022 13:38:21 +0100,
 Stefan Sauer wrote:
 > 
-> If a driver does not supply a drain operation for outputs, a default code
-> path will execute msleep(50). Especially for a virtual midi device
-> this severely limmits the throughput.
-> 
-> This implementation for the virtual midi driver simply flushes the output
-> workqueue.
+> seq_virmidi.c: snd_virmidi_new() is already setting seq_mode to
+> SNDRV_VIRMIDI_SEQ_DISPATCH.
 > 
 > Signed-off-by: Stefan Sauer <st_kost@gmx.de>
 
-Thanks, applied.
+Thanks, applied now.
+
+BTW, at the next time, please put maintainers to Cc.
 
 
 Takashi
