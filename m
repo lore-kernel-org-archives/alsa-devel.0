@@ -4,70 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C841C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Jan 2022 11:03:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CF1AC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Jan 2022 11:04:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 55DC11893;
-	Thu,  6 Jan 2022 12:02:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 55DC11893
+	by alsa0.perex.cz (Postfix) with ESMTPS id 54AA418A9;
+	Thu,  6 Jan 2022 12:03:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 54AA418A9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1641467024;
-	bh=wIRKXX47jlCaYcl09owqdEv7pF/Q7FLUdJNFZVcmhEw=;
+	s=default; t=1641467045;
+	bh=ZNEyyvBuyzO593IUvbIXmqLPbL8ekFsJMJ+TwDf0bws=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jP7uzUyy94a3BDrawa5f/LYh8or6ICujjcOkQy/5EkDYRvHeim5tWSJHOpbkoSQZr
-	 ttD1aaSYuPHAroeuUuPm1qVjSG9Y1wGJty9kKgG9BamCpCYnFyYzKGEe1XE1Wp3kat
-	 U7AftuyJpwDumcwM/dbOGtMZsWa4bO4jOIY1Gj4s=
+	b=grEadvx4qedpO7U5y6fry0t95qxJkj72Ld20D1ciWXrCH6IVpMRz7qyvdocXf8kpG
+	 ExgfDMZ8eMFC5YMN4dbFIHoV4WwTtX9fxNA2QIb4C0AQAs1/vAEsGcpEeAg3wEY9Y/
+	 oYI+Y8YtI7XKH+WjvytfJ3OG2pA6Wg0WYolnwws4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 840A8F80510;
-	Thu,  6 Jan 2022 12:01:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 086F0F80517;
+	Thu,  6 Jan 2022 12:01:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 02A7DF804FB; Thu,  6 Jan 2022 12:01:48 +0100 (CET)
+ id A2E84F804FE; Thu,  6 Jan 2022 12:01:49 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AE9CDF800BB
- for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2022 12:01:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE9CDF800BB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 75594F8019D
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2022 12:01:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75594F8019D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="DPGBTJK2"
+ header.b="iZCPO9cl"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1641466899;
+ s=mimecast20190719; t=1641466905;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=DH7c+j/JJm/6lgho1gqY0xzSzN0YIryPVi/RpIaE6/w=;
- b=DPGBTJK2zk3QYi/gplutnT2pm87jlrKs2szdzb1LmcSXcc3h6HWXqIL2qjDMomyASO+IeV
- 0wAzZlR4JTd7sXiEtNbYZyfvkavhGcvolqMM7iJUz6pUGMJoFYP+eOm6YfDj91/HnM8slz
- kn6BQMG+1Jpqtc0Z/zGfRKjg2BdCBkk=
+ bh=nld+KLMNEF6aXZ0nwEYKhirK7j+HHGUB0ZghppeBscw=;
+ b=iZCPO9cliiS2jo0m2o8NTjJ+Vl95XhWg1QM6e8Mdnt4+83bzXyqxQbU2pstP6m/DSqIJ5x
+ SGFAcQjT2CfcoP+4oD4AIUNpMuV906l3CgT3BC8GNXWi/RYxAeQvb7quyz8jOcjhJz7Mfs
+ 2E/LZYZsPCnWuI97+db223bID2+3RbE=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-450-kyg9SdNMPomuI0OyxHyZYQ-1; Thu, 06 Jan 2022 06:01:35 -0500
-X-MC-Unique: kyg9SdNMPomuI0OyxHyZYQ-1
+ us-mta-110-KCSAqL5NNWivC9dD29dXow-1; Thu, 06 Jan 2022 06:01:42 -0500
+X-MC-Unique: KCSAqL5NNWivC9dD29dXow-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com
  [10.5.11.12])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5FEE41023F4E;
- Thu,  6 Jan 2022 11:01:34 +0000 (UTC)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D52FB8042E1;
+ Thu,  6 Jan 2022 11:01:40 +0000 (UTC)
 Received: from shalem.redhat.com (unknown [10.39.192.137])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 39F6D7E124;
- Thu,  6 Jan 2022 11:01:32 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 03D187E125;
+ Thu,  6 Jan 2022 11:01:38 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Cezary Rojewski <cezary.rojewski@intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Liam Girdwood <lgirdwood@gmail.com>, Jie Yang <yang.jie@linux.intel.com>,
  Mark Brown <broonie@kernel.org>
-Subject: [PATCH v2 1/6] ASoC: rt5640: Fix possible NULL pointer deref on resume
-Date: Thu,  6 Jan 2022 12:01:23 +0100
-Message-Id: <20220106110128.66049-2-hdegoede@redhat.com>
+Subject: [PATCH v2 4/6] ASoC: rt5640: Add support for boards with an external
+ jack-detect GPIO
+Date: Thu,  6 Jan 2022 12:01:26 +0100
+Message-Id: <20220106110128.66049-5-hdegoede@redhat.com>
 In-Reply-To: <20220106110128.66049-1-hdegoede@redhat.com>
 References: <20220106110128.66049-1-hdegoede@redhat.com>
 MIME-Version: 1.0
@@ -78,9 +79,8 @@ X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset="US-ASCII"
-Cc: Oder Chiou <oder_chiou@realtek.com>, Hans de Goede <hdegoede@redhat.com>,
- alsa-devel@alsa-project.org, Stephan Gerhold <stephan@gerhold.net>,
- Bard Liao <bard.liao@intel.com>
+Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org,
+ Stephan Gerhold <stephan@gerhold.net>, Bard Liao <bard.liao@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,38 +96,148 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Commit 2b9c8d2b3c89 ("ASoC: rt5640: Add the HDA header support") adds
-re-queuing of the jack_work on resume when rt5640->jd_src != 0.
+Some boards have the codec IRQ hooked-up as normally, so the driver can
+still do things like headset vs headphones and button-press detection,
+but instead of using one of the JD pins of the codec, an external GPIO
+is used to report the jack-presence switch status of the jack.
 
-But the jack_work will unconditionally deref rt5640->jack and that might
-be NULL. E.g. the sound/soc/intel/boards/bytcr_rt5640.c machine driver
-call snd_soc_component_set_jack(codec, NULL, NULL) from pre_suspend to
-disable the IRQ to avoid spurious wakeups, so when rt5640_resume()
-runs rt5640->jack will be NULL in this case.
+Add support for this.
 
-Make the queueing of the work conditional on rt5640->jack instead of
-on rt5640->jd_src to fix this.
-
-Fixes: 2b9c8d2b3c89 ("ASoC: rt5640: Add the HDA header support")
-Cc: Oder Chiou <oder_chiou@realtek.com>
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/codecs/rt5640.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/rt5640.c | 45 +++++++++++++++++++++++++++++++++++----
+ sound/soc/codecs/rt5640.h |  5 +++++
+ 2 files changed, 46 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
-index f3659b14c74e..ceb2d50b17aa 100644
+index fabc6e44b4a6..e7a82565b905 100644
 --- a/sound/soc/codecs/rt5640.c
 +++ b/sound/soc/codecs/rt5640.c
-@@ -2737,7 +2737,7 @@ static int rt5640_resume(struct snd_soc_component *component)
- 	regcache_cache_only(rt5640->regmap, false);
- 	regcache_sync(rt5640->regmap);
+@@ -2160,7 +2160,11 @@ static bool rt5640_jack_inserted(struct snd_soc_component *component)
+ 	struct rt5640_priv *rt5640 = snd_soc_component_get_drvdata(component);
+ 	int val;
  
--	if (rt5640->jd_src) {
-+	if (rt5640->jack) {
- 		if (rt5640->jd_src == RT5640_JD_SRC_HDA_HEADER)
- 			snd_soc_component_update_bits(component,
- 				RT5640_DUMMY2, 0x1100, 0x1100);
+-	val = snd_soc_component_read(component, RT5640_INT_IRQ_ST);
++	if (rt5640->jd_gpio)
++		val = gpiod_get_value(rt5640->jd_gpio) ? RT5640_JD_STATUS : 0;
++	else
++		val = snd_soc_component_read(component, RT5640_INT_IRQ_ST);
++
+ 	dev_dbg(component->dev, "irq status %#04x\n", val);
+ 
+ 	if (rt5640->jd_inverted)
+@@ -2395,6 +2399,16 @@ static irqreturn_t rt5640_irq(int irq, void *data)
+ 	return IRQ_HANDLED;
+ }
+ 
++static irqreturn_t rt5640_jd_gpio_irq(int irq, void *data)
++{
++	struct rt5640_priv *rt5640 = data;
++
++	queue_delayed_work(system_long_wq, &rt5640->jack_work,
++			   msecs_to_jiffies(JACK_SETTLE_TIME));
++
++	return IRQ_HANDLED;
++}
++
+ static void rt5640_cancel_work(void *data)
+ {
+ 	struct rt5640_priv *rt5640 = data;
+@@ -2439,7 +2453,12 @@ static void rt5640_disable_jack_detect(struct snd_soc_component *component)
+ 	if (!rt5640->jack)
+ 		return;
+ 
+-	free_irq(rt5640->irq, rt5640);
++	if (rt5640->jd_gpio_irq_requested)
++		free_irq(rt5640->jd_gpio_irq, rt5640);
++
++	if (rt5640->irq_requested)
++		free_irq(rt5640->irq, rt5640);
++
+ 	rt5640_cancel_work(rt5640);
+ 
+ 	if (rt5640->jack->status & SND_JACK_MICROPHONE) {
+@@ -2448,6 +2467,9 @@ static void rt5640_disable_jack_detect(struct snd_soc_component *component)
+ 		snd_soc_jack_report(rt5640->jack, 0, SND_JACK_BTN_0);
+ 	}
+ 
++	rt5640->jd_gpio_irq_requested = false;
++	rt5640->irq_requested = false;
++	rt5640->jd_gpio = NULL;
+ 	rt5640->jack = NULL;
+ }
+ 
+@@ -2500,16 +2522,31 @@ static void rt5640_enable_jack_detect(struct snd_soc_component *component,
+ 	if (jack_data && jack_data->codec_irq_override)
+ 		rt5640->irq = jack_data->codec_irq_override;
+ 
++	if (jack_data && jack_data->jd_gpio) {
++		rt5640->jd_gpio = jack_data->jd_gpio;
++		rt5640->jd_gpio_irq = gpiod_to_irq(rt5640->jd_gpio);
++
++		ret = request_irq(rt5640->jd_gpio_irq, rt5640_jd_gpio_irq,
++				  IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING,
++				  "rt5640-jd-gpio", rt5640);
++		if (ret) {
++			dev_warn(component->dev, "Failed to request jd GPIO IRQ %d: %d\n",
++				 rt5640->jd_gpio_irq, ret);
++			rt5640_disable_jack_detect(component);
++			return;
++		}
++		rt5640->jd_gpio_irq_requested = true;
++	}
++
+ 	ret = request_irq(rt5640->irq, rt5640_irq,
+ 			  IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
+ 			  "rt5640", rt5640);
+ 	if (ret) {
+ 		dev_warn(component->dev, "Failed to reguest IRQ %d: %d\n", rt5640->irq, ret);
+-		rt5640->irq = -ENXIO;
+-		/* Undo above settings */
+ 		rt5640_disable_jack_detect(component);
+ 		return;
+ 	}
++	rt5640->irq_requested = true;
+ 
+ 	/* sync initial jack state */
+ 	queue_delayed_work(system_long_wq, &rt5640->jack_work, 0);
+diff --git a/sound/soc/codecs/rt5640.h b/sound/soc/codecs/rt5640.h
+index 2f4da5a8ecb2..9e49b9a0ccaa 100644
+--- a/sound/soc/codecs/rt5640.h
++++ b/sound/soc/codecs/rt5640.h
+@@ -2124,6 +2124,7 @@ struct rt5640_priv {
+ 
+ 	int ldo1_en; /* GPIO for LDO1_EN */
+ 	int irq;
++	int jd_gpio_irq;
+ 	int sysclk;
+ 	int sysclk_src;
+ 	int lrck[RT5640_AIFS];
+@@ -2136,6 +2137,8 @@ struct rt5640_priv {
+ 
+ 	bool hp_mute;
+ 	bool asrc_en;
++	bool irq_requested;
++	bool jd_gpio_irq_requested;
+ 
+ 	/* Jack and button detect data */
+ 	bool ovcd_irq_enabled;
+@@ -2147,6 +2150,7 @@ struct rt5640_priv {
+ 	struct delayed_work bp_work;
+ 	struct delayed_work jack_work;
+ 	struct snd_soc_jack *jack;
++	struct gpio_desc *jd_gpio;
+ 	unsigned int jd_src;
+ 	bool jd_inverted;
+ 	unsigned int ovcd_th;
+@@ -2155,6 +2159,7 @@ struct rt5640_priv {
+ 
+ struct rt5640_set_jack_data {
+ 	int codec_irq_override;
++	struct gpio_desc *jd_gpio;
+ };
+ 
+ int rt5640_dmic_enable(struct snd_soc_component *component,
 -- 
 2.33.1
 
