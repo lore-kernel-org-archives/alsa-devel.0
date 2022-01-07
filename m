@@ -4,75 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D118AC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri,  7 Jan 2022 21:50:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E77AC433F5
+	for <alsa-devel@archiver.kernel.org>; Fri,  7 Jan 2022 21:50:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E30121A74;
-	Fri,  7 Jan 2022 22:49:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E30121A74
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1E93D1AB3;
+	Fri,  7 Jan 2022 22:49:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E93D1AB3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1641592203;
-	bh=iXayETYBe34wswKWR+HFAsICqVIbjBG9AoNkdbyM0t0=;
+	s=default; t=1641592216;
+	bh=VuysXKQNQwOg2Qd96xuEZ8FMQH8DuBNmmgaldm7Lp7k=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FXbxsFzu9DOu21W+arewYHxrpdPgXoY5JQe74gD6DSjDaHnOv/ejk2rsghabQn+gG
-	 CeSBJ6sHisrXaat2lKUrua6tJqoTfDhR1U2tiJSFPSf6zjzSSQFG39gFPpzcOplTVT
-	 wJawiQwCHlhS3xNOlvKczQ9qHTlqe9/EZhVy3j7w=
+	b=AR2HBotezi1JwSPajQXXFuC92TPbbQpEIJbi+wOuqSvXqhC/9vae94iLTBmI6FAfm
+	 wC3L/aDCiuF1/yMurkL7pPuLQVkEa1W+3Dgvt57ie5sMxgLSA4u/DYSNbFJZdkbNkV
+	 tnphwFHFMX/RbVAOtp1QalGwinGFMLUxULDZyVkg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E1313F80515;
-	Fri,  7 Jan 2022 22:47:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 60CD3F8051D;
+	Fri,  7 Jan 2022 22:47:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C4761F80515; Fri,  7 Jan 2022 22:47:51 +0100 (CET)
+ id E24E0F80511; Fri,  7 Jan 2022 22:47:51 +0100 (CET)
 Received: from mx0d-0054df01.pphosted.com (mx0d-0054df01.pphosted.com
  [67.231.150.19])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AF611F80425
- for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2022 22:47:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF611F80425
+ by alsa1.perex.cz (Postfix) with ESMTPS id 46C47F80082
+ for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2022 22:47:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46C47F80082
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=calian.com header.i=@calian.com
- header.b="SM36YUZg"
+ header.b="4IFUN31k"
 Received: from pps.filterd (m0209000.ppops.net [127.0.0.1])
- by mx0c-0054df01.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 207LPGa2026852;
- Fri, 7 Jan 2022 16:47:40 -0500
+ by mx0c-0054df01.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 207LEDca023805;
+ Fri, 7 Jan 2022 16:47:42 -0500
 Received: from can01-qb1-obe.outbound.protection.outlook.com
- (mail-qb1can01lp2057.outbound.protection.outlook.com [104.47.60.57])
- by mx0c-0054df01.pphosted.com (PPS) with ESMTPS id 3de4vqgpyc-1
+ (mail-qb1can01lp2056.outbound.protection.outlook.com [104.47.60.56])
+ by mx0c-0054df01.pphosted.com (PPS) with ESMTPS id 3de4vqgpye-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 07 Jan 2022 16:47:40 -0500
+ Fri, 07 Jan 2022 16:47:42 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VeJ49kSNFO0wsBpMyH+604VnJHk64vUTc1rvMgmR/emG93xwQvdD1bFUHTJ5egxisToCpsKIvg9AY2CYQyO5wjDgYC2heVVsbaVxF1LtO1DEo/FSycMidXJSZip0k5IJC6v87CuNcZb2FQXoWA/RM0m//SCf79s3J0kbPV98kxLJlrDgVqBff4rpR/CWA3dVaWuVtf1f2FfWsx9wja1k5ZQM70wcsp0HdQNkIiyfFNPQ6OiQBMFN4S7PeBrxafq2OrV9iWxJFcqr8ORFuaErguaHwRYwDgQfvDJxcBeTpaIWsY6Lm9+501YY8sdouYF202oXJI2gQsEeCGahnZxciw==
+ b=oSRUY6rJaMrbrmeOs59rALU+nzHl0z+62fe1BI1qQKWjNAugUxXTdvz0u8lFDlLongHmCb107kVe2rJNfdA62OCIzus9q7xYlOtmLtpZXkdH9Df1l7X84E6f/uShbr1O3fLFNENeYDLb+877NnfOPjrU5Hh/ROU2zOxfEzSwpbO8MMcxdedXfc8ZV0agL16eJ/03NNx08uSzCMmZnigNggBQlRMKK0sNGEw4Pq/pL1B3KAXpFCBffEnMwKutK19PApgBRm8TVuA8sJ7opU0hnpexYKGVQjJM0x5KeiUj4OIOSWLSEVs58Nq1nSvCSViPearN3kvTACeT9lAHRktoCA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WBuGkiztIfrv7X50LeaVLlCCS1E9XCeo2SZegZqpvxM=;
- b=PZmrTMYk9NRv8uBkzmrW4Ge9RxJtK1sjEFfdQiYtNWiER4RLiyqqujti0qKakbdxYG0BfjeHIynJuok/lOiTiqYMHi8WW2uV2j9tiILZW3vN17ceGYsoy8Wscx6/Aay3XU3wSiojI1/Ac0kVgMz+0akryUF6U13okuvl15ctntaS6/yKNkDqJ5Pnhx2/g6Ky+bgJv6oxVVhfBa48Fj3U3eXq8VTXb6oWG01D2a5xTsIa+jKxLjc/ybFjtYb920hpONYHSpLr9eU8IjnP77/EQ0Vq1KpPgcpaYnj1fUX/L4HDG8jtDDI5jhP2A6n10wM9IfwaQM1S42U3LbASX9qMVA==
+ bh=ssLWqb+N4hYZWFUJSYIdc2q982jDapCqANYNkNsF37g=;
+ b=HF6Stdf0/ZDJJ/YISURHxPQoAQh0lydT7yrl8yL/zWERSAii9OxQmUDtRBSuxk+5OcN7PeqqJfaVl6TMTz/SM3yTWnTn+X/WumigGyjC/n71wwMZ337HV82pEipWTPjgR596tdKsPNWWCZ+iVD5nno5wS++/ypkYCvQF+XAsv6lCL8aCmqYDlyAeqgBeLLGoChuTmIIaKBZ3jfZF3dEbgQnnPDIY+amxpcNsawQ86fxhHM/L1M1VydxZduwru1MnFKS2zvpfOAPp5ZR2ksikaOgFU7TAsuNmzoUexW71xC2AGIx/+z7NYVkKfyIcT9BOYxyhjMSXEwTFa757EqZpeQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=calian.com; dmarc=pass action=none header.from=calian.com;
  dkim=pass header.d=calian.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=calian.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WBuGkiztIfrv7X50LeaVLlCCS1E9XCeo2SZegZqpvxM=;
- b=SM36YUZgAbF8MwCn8KSCA6q9U0Oh2TqJIqyvT07nXfauKo5ti18L0v2jkfqUp14SEsdy6/iuttQ7elYnlK+xALr/tDiQZip4McZ3FrZaCM2QFS89MVOMfG4P0mMSgyFEz27gqWWcVjip+rNTwiepebRFD/Y9IsiclsNLOeh5XDE=
+ bh=ssLWqb+N4hYZWFUJSYIdc2q982jDapCqANYNkNsF37g=;
+ b=4IFUN31kfWej0tmwCqRnhgAWaDWz3MNHaWUfQuagDXayljHIRUXiFE7hKotkIDGydoKAcUAwfX4hhM/gabrrVGbSTOTr6a9ft+RdewUt6xtQnBjy6rCL13RSIjioiaMWeIRcOR3+0/CTAEyB8I5nAhZ3zQ/8lbrQTJQzkr4pEm4=
 Received: from YT3PR01MB6274.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:6a::19)
  by YT3PR01MB6275.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:6a::22)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4844.15; Fri, 7 Jan
- 2022 21:47:39 +0000
+ 2022 21:47:41 +0000
 Received: from YT3PR01MB6274.CANPRD01.PROD.OUTLOOK.COM
  ([fe80::d1f6:d9e4:7cc7:af76]) by YT3PR01MB6274.CANPRD01.PROD.OUTLOOK.COM
  ([fe80::d1f6:d9e4:7cc7:af76%5]) with mapi id 15.20.4844.016; Fri, 7 Jan 2022
- 21:47:39 +0000
+ 21:47:41 +0000
 From: Robert Hancock <robert.hancock@calian.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 3/6] ASoC: xilinx: xlnx_i2s: create drvdata structure
-Date: Fri,  7 Jan 2022 15:47:08 -0600
-Message-Id: <20220107214711.1100162-4-robert.hancock@calian.com>
+Subject: [PATCH v2 5/6] ASoC: simple-card: fix probe failure on platform
+ component
+Date: Fri,  7 Jan 2022 15:47:10 -0600
+Message-Id: <20220107214711.1100162-6-robert.hancock@calian.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20220107214711.1100162-1-robert.hancock@calian.com>
 References: <20220107214711.1100162-1-robert.hancock@calian.com>
@@ -83,66 +84,66 @@ X-ClientProxiedBy: CO2PR04CA0136.namprd04.prod.outlook.com (2603:10b6:104::14)
  (2603:10b6:b01:6a::19)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0072bf79-c1ae-4ede-d6f1-08d9d227532c
+X-MS-Office365-Filtering-Correlation-Id: 70dd0e8e-6d71-4633-1591-08d9d2275489
 X-MS-TrafficTypeDiagnostic: YT3PR01MB6275:EE_
-X-Microsoft-Antispam-PRVS: <YT3PR01MB6275DC593048833029228BBAEC4D9@YT3PR01MB6275.CANPRD01.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:47;
+X-Microsoft-Antispam-PRVS: <YT3PR01MB62757CB0CB52E491506FE10BEC4D9@YT3PR01MB6275.CANPRD01.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3383;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TkDFRMF3w1NJIGvV5XbjPcVEg5KqqmxAvsVsQmbmj3t74l/yHUlOBEzf6443erDoWAqODjfrb4zbY3qbmh3Z2QCp7x3jxQAU7TFXcGJTuX8OT9WHdMTLxxtNY7Y28ylU5B9FLi0rmXoU9x2EXxB5qLWiH14dwkOnbJ1OIungQ0OfhDSHVSesT+hB/XMM8o01+l2O9L8BXhgr1nU66uYL7ck+sfRqGfcVfB7YlMenmG2z5HKp5MKncmAbi4o2EI6biVuB5P879ZWriHTHKXsADYkQaTAGORyuMCI3ELM2ka0jiNzcoTPbZ297oXzEeL6MnddLKfButo0iaqgqVTEX/P2t+Jrks9mWuC2CSMhSzZDAd0SBJqwO7qhfw3uKEWpO9FfZHzFk+YFfyyf5Gm7/F/B+4tDJLw69oxCaWdZXSKzpvQabkrnW8bMRA45TF6M7eRuXStk5tqRGfxfSQYi8Pq0O7XTl62X341Wu1fv1uwodBHgZ/s9XYRnzlhSmwOwhNJTHvbxB1WCOyq1+rVtdurL86i3as26+nQmh+hjTCuPRD2veZtpIzXJ7QQU2TArxAUACrbfuPCS9Vbg5tuQOhaNLb4GCnAa6RtKU5oMtdAg5AvXRoNFPgo9P59PqD6PJro5FzdMkz3JBLEQJEmqaC3KGeRayuZyXA9O2tNnjyhmDMLWAVbGZmeJ5SOlHKCMoNE3BcwhT7eO9hoKeRVK4Uw==
+X-Microsoft-Antispam-Message-Info: fjfXBvu9x7MDTTDOR4EvPgXZwQQ2Fqs4KfT8LOQBfezC6LoOId663b7mKWT6W6776+H/29UhitsXyEPVkK4oZEYLtVCHY68lw4fYRjmtERYA+uEcud+1lBVFol5a5twRpzZYPgS/DcvLMK+taf4L3uX/srklwma69/62LmL+hqoFbPhd3ovrjmwhsLIhR7H/QokGB1P4VMf8HRIy+un1TDpmXiXbittbCzZjqxAXg7mDGs4uqMMsbqJltikXTEh3+UCgTW/3Pw6DNOJBxVJop+vu3wT7RnfOAIOmIWfa+r4C7Gu2e5mE6owLbGYCyJMxQWzQdN0MfgJKfIMGj+mchE51BFGsdnX0ccqorXrMvIh/jaFYSyQAUglowhoFOCsFkdGhXs0hWyw9oTuCxpg0uWdcm9ias4yi2E+Vq3SYMVGmbeu++pN7MtXFUF32AAm1w3/WKSZYzvtUUlzG9jfeyDJiAJsSIsh0R6fh4wrDmUUK71te0QKG17Hb3/99gCf+ZKGMnPpDhATyc6G8BIjllX2In+9B/Mw8YUa57KzeUoqZ2x+lkptz0w8Tluo2cNjTVjp7xw/eqNZppvSB4xSkXDxskHmlFd56Qq1/pIngPMMZ+4YLXZiAFP5L3B52+9Ha3qJ3flSbM3tJejU3+u3MgFuGy0i4ZgKCrtZ90YU0JjnteOYSmJRKi2KjGqd8x8pU3taOuh4UzyAhy/Y9bBeYI6UWPDGoh1ZHbdYZ9IPs2FM=
 X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:YT3PR01MB6274.CANPRD01.PROD.OUTLOOK.COM; PTR:; CAT:NONE;
- SFS:(4636009)(366004)(38100700002)(38350700002)(83380400001)(86362001)(26005)(6666004)(316002)(8676002)(4326008)(508600001)(52116002)(8936002)(186003)(36756003)(44832011)(6916009)(2616005)(6486002)(6512007)(2906002)(107886003)(6506007)(66476007)(66556008)(5660300002)(66946007)(1076003);
+ SFS:(4636009)(366004)(38100700002)(38350700002)(83380400001)(86362001)(26005)(6666004)(316002)(8676002)(4326008)(508600001)(52116002)(8936002)(186003)(36756003)(44832011)(6916009)(2616005)(6486002)(6512007)(2906002)(107886003)(6506007)(66476007)(66556008)(5660300002)(66946007)(1076003)(21314003);
  DIR:OUT; SFP:1101; 
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?EYr6iLIW2RMcvNIxZj31AgGjQUBnV96qpnBz77SCCWzjzuTYzsfYna7ymE/X?=
- =?us-ascii?Q?3Xref4vCT3Jyz1oGlhWIC0pF7Pp2QJAnwhYUA+Gf1TPofSmYtOB9VoEs1WDG?=
- =?us-ascii?Q?p5ZahfIghGo2bLTcbDxRyNcRvOGkOzOJhBEHdj9iD9eZqwIe+vBjmXeT8ehL?=
- =?us-ascii?Q?URmPZ7RPApEqwSkz60nxVEHuKu3ySlgy2jEe6ihzXSvT4pLHu6Emtt9T9jsT?=
- =?us-ascii?Q?29/U6usYhns5zGn/uQ2WL4isdIjuz3zLtfrEowYfKhAuZVyzTBrl7eTXc7YC?=
- =?us-ascii?Q?s6AQOhYtgCl4RFs0YlsLhRh4Fo9/SkCk0m3PRjFlbiWpTzzw+JPuOnk+1Ryp?=
- =?us-ascii?Q?F6TItRdfbjowgvDGLxIyEI/A1NLaDMTsgtcke1fjnlV0sPrP+lbkeW9/Ar0s?=
- =?us-ascii?Q?95jxqgYr1EkRq88LTAEBZMhGiG7dUGpJB3ZexZTarKHhLJ96+9Az3e2c+w3d?=
- =?us-ascii?Q?WYkny9GbSLZrDxWR6AegftyS1+vBrHRa5k3b7KiRfsUSsCTrVdb5P5Px/huQ?=
- =?us-ascii?Q?AuefHl+rW9cUMo+aMuidxXiahFit3DmG/6VVs+X0vr9kpShJ/dI6A5DtygwJ?=
- =?us-ascii?Q?bQqzqmUcRLDngEG/+4dfxSVh+T6gyf6QKfahE9EXsP0w6OLbLoWmnFU5SrrL?=
- =?us-ascii?Q?dp7Qvjaz8Fo5nZXDENkp5U8FdHE6wKwEbp95IgfJaUKTp1q92/adj1j+H/5v?=
- =?us-ascii?Q?l80qoJjlvBMVOhO4I2o7zhFBDPcK7tR+S4Q2CcjW1D9wrDGXsP/wc8snVH2H?=
- =?us-ascii?Q?bEblMozTUi5ELCTGJsj34wHkJYPnyc9J7Oo/Jd+hIWu5TlQN6D2HwxW7nIgJ?=
- =?us-ascii?Q?/pxbrh4Kl9qirHGVq6hdgEabEfp7LgBF/3ZpnSIv0O4GRvlntQPWL8aD7kTM?=
- =?us-ascii?Q?pssOwYn4ighzaybB4NvrEbT3whu6sRA3CRSCpg1NN9HlmByHMZV5154gYxn8?=
- =?us-ascii?Q?iysDGblaOP3HZsPaOl2I5og902ZhGGLD/GiUD/sMkAHdvjr5gI5HjqZv/BXH?=
- =?us-ascii?Q?bg97S0JRz+sOIqo9sOaURDPdpy9A+Z2TsX2sXw8JAN94cYtbl9do/dq19Wm2?=
- =?us-ascii?Q?uyGxW0aSVhavBobK99vrdg0EH3zmz0OZYTeA7a4gKhGR9k0EZWb7VUim+lIl?=
- =?us-ascii?Q?OZsvCwcEDoosaudF0zPEZv3B4ZLZzBNourxXZTJzOAR/vXJQyOZteGeFyOjB?=
- =?us-ascii?Q?t7kcnOD0VC6CyeELth6yjGoJNglGvEhAsClElfDQFYCu/OcCsQIfqNzDvH5f?=
- =?us-ascii?Q?pH3YXSOAiTVnirGCZ7Uyv42X1mlVRM5ZJIm8ajkjokzbzgPUIOHAYhauIaso?=
- =?us-ascii?Q?3a0REe4E+YQzP1j1oe9XR9kIfeLbNr9QODWasWITSojziAnDt5u3mT5hu7m7?=
- =?us-ascii?Q?Vz0kMX1gwzu6VJRDgPaKmO2r7ZSG6qJqAR60GXGx8EzDNoI5M7KV6c+Jz2AI?=
- =?us-ascii?Q?5M6/4PaazF2TXZL6b8LZxpqEOmvpn2sP9Vaxnx28bh4F1LGuHMfJkzmLxzeM?=
- =?us-ascii?Q?6QRn0UHQLpGOMybrYhxpEtcimapCrC2+uwVuTBrCCxUrDUoQQwjNMHl5vcZ9?=
- =?us-ascii?Q?rjhwd0smEFc4U9SUuROnvWVINSrn8J0CQChuyr9/HTobFrp0EUjsYXuT2opQ?=
- =?us-ascii?Q?P5olrC5Vab+pdBuBiylSm2VCUwfFK+EqecZ7e5xFdfX89Ncum/ahKh/BeHV1?=
- =?us-ascii?Q?jLZ1bdl6tZq37ZvqAM6j/4ODTDU=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?n5085O1l/zizuRO77DMv46hQz72BUbeQ8lsoXNNxRctZXfc0mx45trSZhaOk?=
+ =?us-ascii?Q?Qii2NYnoe68NakT94I42EKUrbSaMKgSdeSVF0KOzkLQ3YS6oorvyEjO1Hi4o?=
+ =?us-ascii?Q?Tcei8KufxkEhePKEeTQnFXoEPLMpRqrBWHItyrWrxvw2Eyr04+sC6DKbJqBl?=
+ =?us-ascii?Q?izWNzfjT9IVoONakRkneRp5vN6338B3PrCA+uJ9vAnptzkY3EeIVbC25inCu?=
+ =?us-ascii?Q?ODQX7qv765LK7FumQB16BWcFhTAf24Nc+tcRKMbGgxD/VnjxgefAGCLnMKpR?=
+ =?us-ascii?Q?LKzLrH3YR8KgCWZgzo8gSI/ITNjW9MTpMPlQW+4szI8fXKqncm1nDf551GdE?=
+ =?us-ascii?Q?8RvQQcnfyX2TVa+/iaWPreXOAkmWrmKxi3XePCtbFAVq9DCbfiH7REpnLzTQ?=
+ =?us-ascii?Q?maPuFN8Q/us761MIjC6jNmgO75WQSFdwiOogk2+Y4OjKJd1hKJlSa8chK2/X?=
+ =?us-ascii?Q?bD0/HeIdE4faeM1NH3bS8Iaiq72WdS1gfrTMd6YlT4Nnz9z29teKSeIRMSFY?=
+ =?us-ascii?Q?c8BtMHFEFO2UxyE2H3MVn3uszi3Xb81p+rr8hkzuqFLcIUoZAbCM7hBPi4OW?=
+ =?us-ascii?Q?anSqJZFOGy0kNeorxKNzjq0mvOgsz/WiBYVJOwuDY//tYVm2v6RXUJsymWD6?=
+ =?us-ascii?Q?5CbQnpRKAE0h7MrZ8lpFg2ra77b4Gz2gvbyMmxIWNl7kplhBmpLJSOiCtMYm?=
+ =?us-ascii?Q?ycAXRpKjUuS3H5Dnj7/9maQ/46BTr97NqGo61N5qwO/fI9JhVdQMhKjhg4Ly?=
+ =?us-ascii?Q?oVaSHcXkViCezjYzBJiWCNze97RMiW8hB//gQCjaSOLvspB6M9pGXx/8ngYZ?=
+ =?us-ascii?Q?UIpVDXp40hC9o4EISPeKzjG4+pvpHAUc7HhiHE6ZYgxE5kIZ38vqIBPsIFcD?=
+ =?us-ascii?Q?5Vv43oJNOHwyAxtHCw2CNrWhFlB85cxt9PFcNbWnnrBiDz4FfIeOpD6+NP69?=
+ =?us-ascii?Q?WZiLHAnejd4dSd/7rSfYzvGiVZTNoHzo+JooWbrerkVK2pNzEqylbdzluAbO?=
+ =?us-ascii?Q?gILMvLULgHIpUWW8oJ2orQtp/4DpRbEvIp4Iy63wpS//bPtNwkn4VNoCUkN9?=
+ =?us-ascii?Q?qhQvbGI1F7zRRHKqi5jfQUjJOvBOYhPx+RBIVMcKoxC8jEhZmls/KtK7I0K8?=
+ =?us-ascii?Q?pMmy3CDCuWXoBt/OPk/BdY89Z0So0wFDFjgO6j/z1aj7OXtGbF1q1T8NESPE?=
+ =?us-ascii?Q?UaFbG6WNNKeT3yPLbsqgrHYKCfb9KdKqURdWJoQx/427slY9Mlxkf2zmjJCW?=
+ =?us-ascii?Q?K6lp3vIOEFuO/zKVcLXDsy3xnIGiF5GZM0MkEu4t7JZHMRApcciTWFQcKmkf?=
+ =?us-ascii?Q?009cY3rzo+QvhVNWDe2Rthrw6Y8uppvNLPCppaHk7C7aJjiB1pDH64YOnovi?=
+ =?us-ascii?Q?8RNzLExkniqil+Wgw3KL5bkFF3QfojAVohuZYPOQ1VdvvP2d4q4ZKDvI+oD2?=
+ =?us-ascii?Q?zMu6Qx9PfUR5wtuWSd9PEG0Cp1tOndzSZ0dxaWT//sS/6oQDwpDmaAyUnYxd?=
+ =?us-ascii?Q?sKiZMmpVlWUULOzeGUn+da74obup7XiKrCJVKF4aRCwbc6rNAyu0VpYyx1Ea?=
+ =?us-ascii?Q?ipxiGUdlVvom+HvDNENpB+sIjHLCVEAAC+/4CwGRVFcWigKXOtz16rCPLuwr?=
+ =?us-ascii?Q?29DMV4rsd3hihP1rbgkZ8kxlQkI6mQoR7dXwEvGqwpN7XeMi/mYsLnFLzDan?=
+ =?us-ascii?Q?mMBMGuism6+7lZluTzbAmMYGaqM=3D?=
 X-OriginatorOrg: calian.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0072bf79-c1ae-4ede-d6f1-08d9d227532c
+X-MS-Exchange-CrossTenant-Network-Message-Id: 70dd0e8e-6d71-4633-1591-08d9d2275489
 X-MS-Exchange-CrossTenant-AuthSource: YT3PR01MB6274.CANPRD01.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jan 2022 21:47:39.1890 (UTC)
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jan 2022 21:47:41.4556 (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 23b57807-562f-49ad-92c4-3bb0f07a1fdf
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: nxqvCWyCLpM+fbIrHnvqgKTEj89g/ejrTKnKh+v7kz/qQ2QWVf3AbtGI/DW1zVIJiwsEAFxNeUmst2XN2INDR96gyIf+8TtydiYkE7X5TL4=
+X-MS-Exchange-CrossTenant-UserPrincipalName: meKIKZRhn7kcwstqEqd3Zk1cEmgy3SZuvCXP+tIg1SoSfBwu983ZPlzYD1iRNMjsFAVeC85sfYhbt6NEXAsnw7tdugclooLqg1rAO6uDrdU=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: YT3PR01MB6275
-X-Proofpoint-GUID: iDh8HMsnSoNGq4hkKGli3Sn0dSsPk4Z3
-X-Proofpoint-ORIG-GUID: iDh8HMsnSoNGq4hkKGli3Sn0dSsPk4Z3
+X-Proofpoint-GUID: 9GAXaHe1hwcrcTP-j19oScS-EevB3iSm
+X-Proofpoint-ORIG-GUID: 9GAXaHe1hwcrcTP-j19oScS-EevB3iSm
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
  definitions=2022-01-07_10,2022-01-07_01,2021-12-02_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
  impostorscore=0
- mlxlogscore=620 spamscore=0 mlxscore=0 lowpriorityscore=0 suspectscore=0
+ mlxlogscore=999 spamscore=0 mlxscore=0 lowpriorityscore=0 suspectscore=0
  phishscore=0 priorityscore=1501 clxscore=1015 adultscore=0 bulkscore=0
  malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2110150000 definitions=main-2201070129
@@ -164,160 +165,65 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-An upcoming change will require storing additional driver data other
-than the memory base address. Create a drvdata structure and use that
-rather than storing the raw base address pointer.
+A previous change to simple-card resulted in asoc_simple_parse_dai
+attempting to retrieve the dai_name for platform components, which are
+unlikely to have a valid DAI name. This caused simple-card to fail to
+probe when using the xlnx_formatter_pcm as the platform component, since
+it does not register any DAI components.
 
+Since the dai_name is not used for platform components, just skip trying
+to retrieve it for those.
+
+Fixes: f107294c6422 ("ASoC: simple-card: support snd_soc_dai_link_component style for cpu")
 Signed-off-by: Robert Hancock <robert.hancock@calian.com>
 ---
- sound/soc/xilinx/xlnx_i2s.c | 66 ++++++++++++++++++++-----------------
- 1 file changed, 35 insertions(+), 31 deletions(-)
+ sound/soc/generic/simple-card.c | 26 +++++++++++++++++++++++++-
+ 1 file changed, 25 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/xilinx/xlnx_i2s.c b/sound/soc/xilinx/xlnx_i2s.c
-index cc641e582c82..3bafa34b789a 100644
---- a/sound/soc/xilinx/xlnx_i2s.c
-+++ b/sound/soc/xilinx/xlnx_i2s.c
-@@ -22,15 +22,20 @@
- #define I2S_CH0_OFFSET			0x30
- #define I2S_I2STIM_VALID_MASK		GENMASK(7, 0)
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index a89d1cfdda32..78419e18717d 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -28,6 +28,30 @@ static const struct snd_soc_ops simple_ops = {
+ 	.hw_params	= asoc_simple_hw_params,
+ };
  
-+struct xlnx_i2s_drv_data {
-+	struct snd_soc_dai_driver dai_drv;
-+	void __iomem *base;
-+};
++static int asoc_simple_parse_platform(struct device_node *node,
++				      struct snd_soc_dai_link_component *dlc)
++{
++	struct of_phandle_args args;
++	int ret;
 +
- static int xlnx_i2s_set_sclkout_div(struct snd_soc_dai *cpu_dai,
- 				    int div_id, int div)
- {
--	void __iomem *base = snd_soc_dai_get_drvdata(cpu_dai);
-+	struct xlnx_i2s_drv_data *drv_data = snd_soc_dai_get_drvdata(cpu_dai);
++	if (!node)
++		return 0;
++
++	/*
++	 * Get node via "sound-dai = <&phandle port>"
++	 * it will be used as xxx_of_node on soc_bind_dai_link()
++	 */
++	ret = of_parse_phandle_with_args(node, DAI, CELL, 0, &args);
++	if (ret)
++		return ret;
++
++	/* dai_name is not required and may not exist for plat component */
++
++	dlc->of_node = args.np;
++
++	return 0;
++}
++
+ static int asoc_simple_parse_dai(struct device_node *node,
+ 				 struct snd_soc_dai_link_component *dlc,
+ 				 int *is_single_link)
+@@ -289,7 +313,7 @@ static int simple_dai_link_of(struct asoc_simple_priv *priv,
+ 	if (ret < 0)
+ 		goto dai_link_of_err;
  
- 	if (!div || (div & ~I2S_I2STIM_VALID_MASK))
- 		return -EINVAL;
+-	ret = asoc_simple_parse_dai(plat, platforms, NULL);
++	ret = asoc_simple_parse_platform(plat, platforms);
+ 	if (ret < 0)
+ 		goto dai_link_of_err;
  
--	writel(div, base + I2S_I2STIM_OFFSET);
-+	writel(div, drv_data->base + I2S_I2STIM_OFFSET);
- 
- 	return 0;
- }
-@@ -40,13 +45,13 @@ static int xlnx_i2s_hw_params(struct snd_pcm_substream *substream,
- 			      struct snd_soc_dai *i2s_dai)
- {
- 	u32 reg_off, chan_id;
--	void __iomem *base = snd_soc_dai_get_drvdata(i2s_dai);
-+	struct xlnx_i2s_drv_data *drv_data = snd_soc_dai_get_drvdata(i2s_dai);
- 
- 	chan_id = params_channels(params) / 2;
- 
- 	while (chan_id > 0) {
- 		reg_off = I2S_CH0_OFFSET + ((chan_id - 1) * 4);
--		writel(chan_id, base + reg_off);
-+		writel(chan_id, drv_data->base + reg_off);
- 		chan_id--;
- 	}
- 
-@@ -56,18 +61,18 @@ static int xlnx_i2s_hw_params(struct snd_pcm_substream *substream,
- static int xlnx_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
- 			    struct snd_soc_dai *i2s_dai)
- {
--	void __iomem *base = snd_soc_dai_get_drvdata(i2s_dai);
-+	struct xlnx_i2s_drv_data *drv_data = snd_soc_dai_get_drvdata(i2s_dai);
- 
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_RESUME:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
--		writel(1, base + I2S_CORE_CTRL_OFFSET);
-+		writel(1, drv_data->base + I2S_CORE_CTRL_OFFSET);
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
--		writel(0, base + I2S_CORE_CTRL_OFFSET);
-+		writel(0, drv_data->base + I2S_CORE_CTRL_OFFSET);
- 		break;
- 	default:
- 		return -EINVAL;
-@@ -95,20 +100,19 @@ MODULE_DEVICE_TABLE(of, xlnx_i2s_of_match);
- 
- static int xlnx_i2s_probe(struct platform_device *pdev)
- {
--	void __iomem *base;
--	struct snd_soc_dai_driver *dai_drv;
-+	struct xlnx_i2s_drv_data *drv_data;
- 	int ret;
- 	u32 ch, format, data_width;
- 	struct device *dev = &pdev->dev;
- 	struct device_node *node = dev->of_node;
- 
--	dai_drv = devm_kzalloc(&pdev->dev, sizeof(*dai_drv), GFP_KERNEL);
--	if (!dai_drv)
-+	drv_data = devm_kzalloc(&pdev->dev, sizeof(*drv_data), GFP_KERNEL);
-+	if (!drv_data)
- 		return -ENOMEM;
- 
--	base = devm_platform_ioremap_resource(pdev, 0);
--	if (IS_ERR(base))
--		return PTR_ERR(base);
-+	drv_data->base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(drv_data->base))
-+		return PTR_ERR(drv_data->base);
- 
- 	ret = of_property_read_u32(node, "xlnx,num-channels", &ch);
- 	if (ret < 0) {
-@@ -134,35 +138,35 @@ static int xlnx_i2s_probe(struct platform_device *pdev)
- 	}
- 
- 	if (of_device_is_compatible(node, "xlnx,i2s-transmitter-1.0")) {
--		dai_drv->name = "xlnx_i2s_playback";
--		dai_drv->playback.stream_name = "Playback";
--		dai_drv->playback.formats = format;
--		dai_drv->playback.channels_min = ch;
--		dai_drv->playback.channels_max = ch;
--		dai_drv->playback.rates	= SNDRV_PCM_RATE_8000_192000;
--		dai_drv->ops = &xlnx_i2s_dai_ops;
-+		drv_data->dai_drv.name = "xlnx_i2s_playback";
-+		drv_data->dai_drv.playback.stream_name = "Playback";
-+		drv_data->dai_drv.playback.formats = format;
-+		drv_data->dai_drv.playback.channels_min = ch;
-+		drv_data->dai_drv.playback.channels_max = ch;
-+		drv_data->dai_drv.playback.rates	= SNDRV_PCM_RATE_8000_192000;
-+		drv_data->dai_drv.ops = &xlnx_i2s_dai_ops;
- 	} else if (of_device_is_compatible(node, "xlnx,i2s-receiver-1.0")) {
--		dai_drv->name = "xlnx_i2s_capture";
--		dai_drv->capture.stream_name = "Capture";
--		dai_drv->capture.formats = format;
--		dai_drv->capture.channels_min = ch;
--		dai_drv->capture.channels_max = ch;
--		dai_drv->capture.rates = SNDRV_PCM_RATE_8000_192000;
--		dai_drv->ops = &xlnx_i2s_dai_ops;
-+		drv_data->dai_drv.name = "xlnx_i2s_capture";
-+		drv_data->dai_drv.capture.stream_name = "Capture";
-+		drv_data->dai_drv.capture.formats = format;
-+		drv_data->dai_drv.capture.channels_min = ch;
-+		drv_data->dai_drv.capture.channels_max = ch;
-+		drv_data->dai_drv.capture.rates = SNDRV_PCM_RATE_8000_192000;
-+		drv_data->dai_drv.ops = &xlnx_i2s_dai_ops;
- 	} else {
- 		return -ENODEV;
- 	}
- 
--	dev_set_drvdata(&pdev->dev, base);
-+	dev_set_drvdata(&pdev->dev, drv_data);
- 
- 	ret = devm_snd_soc_register_component(&pdev->dev, &xlnx_i2s_component,
--					      dai_drv, 1);
-+					      &drv_data->dai_drv, 1);
- 	if (ret) {
- 		dev_err(&pdev->dev, "i2s component registration failed\n");
- 		return ret;
- 	}
- 
--	dev_info(&pdev->dev, "%s DAI registered\n", dai_drv->name);
-+	dev_info(&pdev->dev, "%s DAI registered\n", drv_data->dai_drv.name);
- 
- 	return ret;
- }
 -- 
 2.31.1
 
