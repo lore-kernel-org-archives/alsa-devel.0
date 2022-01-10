@@ -4,75 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59391C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Jan 2022 07:19:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9618EC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Jan 2022 07:22:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1B1531774;
-	Mon, 10 Jan 2022 08:19:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B1531774
+	by alsa0.perex.cz (Postfix) with ESMTPS id CB341178F;
+	Mon, 10 Jan 2022 08:21:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB341178F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1641799195;
-	bh=vmkoKIYv0StyTHpVRRQgeDpfygLwDICuKkT9/Qw/8ME=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=KS9HmhbfBknLUJbXIeAy8Vm36jRKGH0+SxWI5sBTbh9o+Xx/g853tDuUWh2RGTeMZ
-	 kBVSS7DdUYL9TKNUpuhwc04yYccdkPL5L8NzSxoe0+A/yixB9KdRTAyS3Ylcq3dZXr
-	 qgbXAyic+MZhVbi/zRkHrq6VU28oW6uJurakVMAg=
+	s=default; t=1641799356;
+	bh=rRVWLRufSTgMd4+97aEcGcFYX371nGXm0iPw3Zesi40=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=vhi82YJWDyksibkG32iHdxyYUXBS8LAv1RacjNGEVs+sFCgB8mN4S4nodd66Othek
+	 jj82aDiF6xlX/8EhYAA/U1YW6/gn9N6EBFQQZiX+o/0jIgofnQPp9Fwc+fn+z6LXkT
+	 FJHEkAgm9H9vy6868K8DB7ykCSvQVu71nXX+G0UY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A9AECF80125;
-	Mon, 10 Jan 2022 08:19:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6A0D4F800B6;
+	Mon, 10 Jan 2022 08:21:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0B1E3F8012E; Mon, 10 Jan 2022 08:19:03 +0100 (CET)
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+ id 8F479F8012E; Mon, 10 Jan 2022 08:21:45 +0100 (CET)
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2A095F800B6
- for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2022 08:18:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2A095F800B6
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <ukl@pengutronix.de>)
- id 1n6ox4-0003bD-Gr; Mon, 10 Jan 2022 08:18:46 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
- by drehscheibe.grey.stw.pengutronix.de with esmtps (TLS1.3) tls
- TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.94.2)
- (envelope-from <ukl@pengutronix.de>)
- id 1n6ox0-009Twd-Kv; Mon, 10 Jan 2022 08:18:41 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
- (envelope-from <ukl@pengutronix.de>)
- id 1n6owz-0008HT-M8; Mon, 10 Jan 2022 08:18:41 +0100
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: James Schulman <james.schulman@cirrus.com>,
- David Rhodes <david.rhodes@cirrus.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH v2] ASoC: cs42l51: Improve error handling in cs42l51_remove()
-Date: Mon, 10 Jan 2022 08:18:32 +0100
-Message-Id: <20220110071832.306185-1-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.34.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 93397F800B6
+ for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2022 08:21:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93397F800B6
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="c7MYhY2r"
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 20A7LaMQ095117;
+ Mon, 10 Jan 2022 01:21:36 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1641799296;
+ bh=450FrwEmAX4YxuRUwLjrMBnF3pKuFNomrfzlMhwifIE=;
+ h=Subject:To:CC:References:From:Date:In-Reply-To;
+ b=c7MYhY2r4D6TmgOkLFJHRS11ciXvTiulcWy45AJbeLeRXzN92OZ3wSc3gCRDM/+HY
+ p9NffA5UNjetI+fD5Csj3ggdnG9yRWLHBC2sDcqFw9RbT89P3iOkHyLHLDOidyR9tm
+ bvjyDUnTP0jtvVJBy1RTMdHb6TZuSeZRl+0MotKo=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 20A7LaFi094509
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Mon, 10 Jan 2022 01:21:36 -0600
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 10
+ Jan 2022 01:21:31 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Mon, 10 Jan 2022 01:21:31 -0600
+Received: from [172.24.145.56] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 20A7LSTs068148;
+ Mon, 10 Jan 2022 01:21:29 -0600
+Subject: Re: [PATCH v5] ASoC: dt-bindings: davinci-mcasp: convert McASP
+ bindings to yaml schema
+To: Rob Herring <robh@kernel.org>
+References: <20220103074427.4233-1-j-choudhary@ti.com>
+ <1641218339.997415.2378536.nullmailer@robh.at.kernel.org>
+From: Jayesh Choudhary <j-choudhary@ti.com>
+Message-ID: <ed22462f-7e71-85e6-8d97-cbaf533fa0d5@ti.com>
+Date: Mon, 10 Jan 2022 12:51:28 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3103; h=from:subject;
- bh=vmkoKIYv0StyTHpVRRQgeDpfygLwDICuKkT9/Qw/8ME=;
- b=owEBbQGS/pANAwAKAcH8FHityuwJAcsmYgBh293EKGJmbtSnRDkL2KIBXKjJBeEDEkXb2q422xQL
- qD1nGdyJATMEAAEKAB0WIQR+cioWkBis/z50pAvB/BR4rcrsCQUCYdvdxAAKCRDB/BR4rcrsCdprB/
- 9SWqKJOLApgy2yleUIAEkuQoSi/gwdXHP03n1ykA1mOAJgRgDQmnGzY4Z/dHrbM+0Jb4iYT7Qrxyru
- A/NLCvIXMBjg02XCZjIAQS84PJWq/AlIalTrVRcAJ12hov50WqXfwUKqnDnmGUvocVkR5iZOd1gVKf
- 2IMLtAmWON4CiKlrMQyeyB7cqPpNFiJKCrOEGMicZTOxQbN2j6pysVeSiFpqkWJ2y+eV8SuWiiS2n1
- Q/x73TvqjgPAgShO0Pdrs5W0tZc5IoCWr36GvyllojScCrOVAr0ClEX5Szmk6ull985VSDyZ2cRJia
- bI8KdG5mm4VL9xVzsDvl/dGhPskwv7
-X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp;
- fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: alsa-devel@alsa-project.org
-Cc: alsa-devel@alsa-project.org, kernel@pengutronix.de
+In-Reply-To: <1641218339.997415.2378536.nullmailer@robh.at.kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, robh+dt@kernel.org, lgirdwood@gmail.com,
+ broonie@kernel.org, peter.ujfalusi@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,92 +93,87 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When disabling a regulator fails while the device goes away, there is
-little we can do and the machine is probably in enough trouble that any
-action we'd want to take fails anyhow.
 
-The return value used to be passed on in cs42l51_i2c_remove() (i.e. the
-i2c device remove callback). But the i2c core ignores the error code
-(apart from emitting a generic warning) and removes the device anyhow.
 
-So return 0 unconditionally in cs42l51_i2c_remove(), and instead of
-returning the error code to the upper layer emit a more helpful warning
-message. After that nobody is interested any more in the actual error
-code, so let cs42l51_remove() return void.
+On 03/01/22 7:28 pm, Rob Herring wrote:
+> On Mon, 03 Jan 2022 13:14:27 +0530, Jayesh Choudhary wrote:
+>> Convert the bindings for McASP controllers for TI SOCs from txt
+>> to YAML schema.
+>>
+>> Adds additional properties 'clocks', 'clock-names', 'power-domains',
+>> '#sound-dai-cells' and 'port' which were missing from the txt file.
+>> Removes properties 'sram-size-playback' and 'sram-size-capture'
+>> since they are not used.
+>> Adds 'dmas' and 'dma-names' in the example which were missing from
+>> the txt file.
+>> Changes 'interrupts' and 'interrupt-names' from optional to
+>> required properties.
+>> Changes 'op-modes', 'serial-dir' to optional properties as they are
+>> not needed if the McASP is used only as GPIO.
+>> Changes 'tdm-slots' to required property only for I2S operation mode.
+>>
+>> Adds the yaml file in the 'MAINTAINERS' under the heading 'TEXAS
+>> INSTRUMENTS ASoC DRIVERS'
+>>
+>> Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
+>> ---
+>>   .../bindings/sound/davinci-mcasp-audio.txt    |  86 --------
+>>   .../bindings/sound/davinci-mcasp-audio.yaml   | 201 ++++++++++++++++++
+>>   MAINTAINERS                                   |   1 +
+>>   3 files changed, 202 insertions(+), 86 deletions(-)
+>>   delete mode 100644 Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
+>>   create mode 100644 Documentation/devicetree/bindings/sound/davinci-mcasp-audio.yaml
+>>
+> 
+> Running 'make dtbs_check' with the schema in this patch gives the
+> following warnings. Consider if they are expected or the schema is
+> incorrect. These may not be new warnings.
+> 
+> Note that it is not yet a requirement to have 0 warnings for dtbs_check.
+> This will change in the future.
+> 
+> Full log is available here: https://patchwork.ozlabs.org/patch/1574696
+> 
+> 
+> mcasp@0: 'num-serializer' does not match any of the regexes: 'pinctrl-[0-9]+'
+> 	arch/arm/boot/dts/am335x-cm-t335.dt.yaml
+> 	arch/arm/boot/dts/am335x-sbc-t335.dt.yaml
+> 
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
-Hello,
+This is an error in the dts file. It has not been updated.
+As pointed out by Peter, this property was removed by the commit ID:
+1427e660b49e87cd842dba94158b0fc73030c17e
 
-compared to v1 (Message-Id:
-20211021103627.70975-1-u.kleine-koenig@pengutronix.de) I'm using
-regulator_bulk_disable() instead of regulator_bulk_force_disable().
+> mcasp@0: 'rt-num-evt' does not match any of the regexes: 'pinctrl-[0-9]+'
+> 	arch/arm/boot/dts/am335x-wega-rdk.dt.yaml
+> 
+> mcasp@2b00000: 'tdm-slots' is a required property
+> 	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dt.yaml
+> 	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dt.yaml
+> 	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dt.yaml
+> 	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dt.yaml
+> 
+> mcasp@2b10000: 'tdm-slots' is a required property
+> 	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dt.yaml
+> 	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dt.yaml
+> 	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dt.yaml
+> 	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dt.yaml
+> 
+> mcasp@2b20000: 'tdm-slots' is a required property
+> 	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dt.yaml
+> 	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dt.yaml
+> 	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dt.yaml
+> 	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dt.yaml
+> 
 
-Best regards
-Uwe
+Patches to fix the above errors have already been applied to linux-next 
+tree.
 
- sound/soc/codecs/cs42l51-i2c.c |  4 +++-
- sound/soc/codecs/cs42l51.c     | 11 ++++++++---
- sound/soc/codecs/cs42l51.h     |  2 +-
- 3 files changed, 12 insertions(+), 5 deletions(-)
+Links:
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=277ee96f89d806f110e3011ea324155dd69e798f
 
-diff --git a/sound/soc/codecs/cs42l51-i2c.c b/sound/soc/codecs/cs42l51-i2c.c
-index 70260e0a8f09..3cb21a2ba29f 100644
---- a/sound/soc/codecs/cs42l51-i2c.c
-+++ b/sound/soc/codecs/cs42l51-i2c.c
-@@ -31,7 +31,9 @@ static int cs42l51_i2c_probe(struct i2c_client *i2c,
- 
- static int cs42l51_i2c_remove(struct i2c_client *i2c)
- {
--	return cs42l51_remove(&i2c->dev);
-+	cs42l51_remove(&i2c->dev);
-+
-+	return 0;
- }
- 
- static const struct dev_pm_ops cs42l51_pm_ops = {
-diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
-index c61b17dc2af8..e9c3cb4e2bfc 100644
---- a/sound/soc/codecs/cs42l51.c
-+++ b/sound/soc/codecs/cs42l51.c
-@@ -793,14 +793,19 @@ int cs42l51_probe(struct device *dev, struct regmap *regmap)
- }
- EXPORT_SYMBOL_GPL(cs42l51_probe);
- 
--int cs42l51_remove(struct device *dev)
-+void cs42l51_remove(struct device *dev)
- {
- 	struct cs42l51_private *cs42l51 = dev_get_drvdata(dev);
-+	int ret;
- 
- 	gpiod_set_value_cansleep(cs42l51->reset_gpio, 1);
- 
--	return regulator_bulk_disable(ARRAY_SIZE(cs42l51->supplies),
--				      cs42l51->supplies);
-+	ret = regulator_bulk_disable(ARRAY_SIZE(cs42l51->supplies),
-+				     cs42l51->supplies);
-+	if (ret)
-+		dev_warn(dev, "Failed to disable all regulators (%pe)\n",
-+			 ERR_PTR(ret));
-+
- }
- EXPORT_SYMBOL_GPL(cs42l51_remove);
- 
-diff --git a/sound/soc/codecs/cs42l51.h b/sound/soc/codecs/cs42l51.h
-index 9d06cf7f8876..a79343e8a54e 100644
---- a/sound/soc/codecs/cs42l51.h
-+++ b/sound/soc/codecs/cs42l51.h
-@@ -13,7 +13,7 @@ struct device;
- 
- extern const struct regmap_config cs42l51_regmap;
- int cs42l51_probe(struct device *dev, struct regmap *regmap);
--int cs42l51_remove(struct device *dev);
-+void cs42l51_remove(struct device *dev);
- int __maybe_unused cs42l51_suspend(struct device *dev);
- int __maybe_unused cs42l51_resume(struct device *dev);
- extern const struct of_device_id cs42l51_of_match[];
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=29a5e8496b3ac0d400dfe32288c26c774beb8cc8
 
-base-commit: df0cc57e057f18e44dac8e6c18aba47ab53202f9
--- 
-2.34.1
+I re-ran the checks with the latest dt_schema. I didn't see these errors.
 
+- Jayesh
