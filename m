@@ -4,54 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9323CC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Jan 2022 09:49:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8F72C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Jan 2022 09:50:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B46BE17A4;
-	Mon, 10 Jan 2022 10:48:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B46BE17A4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 221B317B3;
+	Mon, 10 Jan 2022 10:49:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 221B317B3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1641808189;
-	bh=9sTJXCSWDlEleCoSEdYWDukHIqg4BLDYmPSY+oJ/qd4=;
+	s=default; t=1641808207;
+	bh=u0/QazhwAru1ZOtWn7gUMMCW3D667oKJgPNfXlFHklE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=q7AG/08fHdzJ/hsjXArtC0rCSm4fBz2n4raTJVUBoXRnYEUweQeBrj7fU+Lrn/lX5
-	 hEOaWZMMjnROeeSjQIYI2i7NPYoI9z1s+4IXHVdiNpFkFCVok2DK2toucxN+UXdZnv
-	 XYuwif637gT9ZD4lrTlelmKT5Sn74zwhDAPEmSl4=
+	b=ugmntAdpItbdruX7jxyaz9xB6eJOVpUQSy4RGoPWUyyeZJ12iwq70dkxICpvpjh+d
+	 ifwKsaQ/SfftfdjWvumhuIN5ksuajRJbwhL8EOfvPcqF240zyXQ/f88RDhSSudU1A7
+	 5pmwCVl+UQl7JFYWmSy4KznEuW8fZKICWG40aizU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3E392F8050F;
-	Mon, 10 Jan 2022 10:48:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C1CDBF80248;
+	Mon, 10 Jan 2022 10:48:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B37C7F80125; Mon, 10 Jan 2022 10:48:11 +0100 (CET)
+ id 35925F80518; Mon, 10 Jan 2022 10:48:47 +0100 (CET)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 6A0C8F80125
- for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2022 10:47:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A0C8F80125
-X-IronPort-AV: E=Sophos;i="5.88,276,1635174000"; d="scan'208";a="106003021"
+ by alsa1.perex.cz (Postfix) with ESMTP id E881CF80134
+ for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2022 10:48:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E881CF80134
+X-IronPort-AV: E=Sophos;i="5.88,276,1635174000"; d="scan'208";a="106003032"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 10 Jan 2022 18:47:51 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 10 Jan 2022 18:48:00 +0900
 Received: from localhost.localdomain (unknown [10.226.36.204])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 1125B4238CA4;
- Mon, 10 Jan 2022 18:47:48 +0900 (JST)
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 160774238CA4;
+ Mon, 10 Jan 2022 18:47:57 +0900 (JST)
 From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
- Biju Das <biju.das.jz@bp.renesas.com>
-Subject: [PATCH 1/5] ASoC: sh: rz-ssi: Drop calling rz_ssi_pio_recv()
- recursively
-Date: Mon, 10 Jan 2022 09:47:07 +0000
-Message-Id: <20220110094711.8574-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH 4/5] ASoC: sh: rz-ssi: Make return type of
+ rz_ssi_stream_is_valid() to bool
+Date: Mon, 10 Jan 2022 09:47:10 +0000
+Message-Id: <20220110094711.8574-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20220110094711.8574-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 References: <20220110094711.8574-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc: linux-renesas-soc@vger.kernel.org, Pavel Machek <pavel@denx.de>,
- Prabhakar <prabhakar.csengg@gmail.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Pavel Machek <pavel@denx.de>,
+ Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+ linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ Prabhakar <prabhakar.csengg@gmail.com>, Biju Das <biju.das.jz@bp.renesas.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -67,114 +66,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Instead of recursively calling rz_ssi_pio_recv() use a while loop
-to read the samples from RX fifo.
+rz_ssi_stream_is_valid() never returns an int, it returns the result of
+a condition which is either true or false.
 
-This also fixes an issue where the return value of rz_ssi_pio_recv()
-was ignored when called recursively.
+While at it, drop "!!" as the expression is boolean.
 
-Fixes: 03e786bd4341 ("ASoC: sh: Add RZ/G2L SSIF-2 driver")
 Reported-by: Pavel Machek <pavel@denx.de>
 Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 ---
- sound/soc/sh/rz-ssi.c | 68 ++++++++++++++++++++++---------------------
- 1 file changed, 35 insertions(+), 33 deletions(-)
+ sound/soc/sh/rz-ssi.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/sh/rz-ssi.c b/sound/soc/sh/rz-ssi.c
-index fa0cc08f70ec..37466f65c2b0 100644
+index fa68d3a0bd62..aabd15e9d515 100644
 --- a/sound/soc/sh/rz-ssi.c
 +++ b/sound/soc/sh/rz-ssi.c
-@@ -411,54 +411,56 @@ static int rz_ssi_pio_recv(struct rz_ssi_priv *ssi, struct rz_ssi_stream *strm)
- {
- 	struct snd_pcm_substream *substream = strm->substream;
- 	struct snd_pcm_runtime *runtime;
-+	bool done = false;
- 	u16 *buf;
- 	int fifo_samples;
- 	int frames_left;
--	int samples = 0;
-+	int samples;
- 	int i;
- 
- 	if (!rz_ssi_stream_is_valid(ssi, strm))
- 		return -EINVAL;
- 
- 	runtime = substream->runtime;
--	/* frames left in this period */
--	frames_left = runtime->period_size - (strm->buffer_pos %
--					      runtime->period_size);
--	if (frames_left == 0)
--		frames_left = runtime->period_size;
- 
--	/* Samples in RX FIFO */
--	fifo_samples = (rz_ssi_reg_readl(ssi, SSIFSR) >>
--			SSIFSR_RDC_SHIFT) & SSIFSR_RDC_MASK;
--
--	/* Only read full frames at a time */
--	while (frames_left && (fifo_samples >= runtime->channels)) {
--		samples += runtime->channels;
--		fifo_samples -= runtime->channels;
--		frames_left--;
--	}
-+	while (!done) {
-+		/* frames left in this period */
-+		frames_left = runtime->period_size -
-+			      (strm->buffer_pos % runtime->period_size);
-+		if (!frames_left)
-+			frames_left = runtime->period_size;
-+
-+		/* Samples in RX FIFO */
-+		fifo_samples = (rz_ssi_reg_readl(ssi, SSIFSR) >>
-+				SSIFSR_RDC_SHIFT) & SSIFSR_RDC_MASK;
-+
-+		/* Only read full frames at a time */
-+		samples = 0;
-+		while (frames_left && (fifo_samples >= runtime->channels)) {
-+			samples += runtime->channels;
-+			fifo_samples -= runtime->channels;
-+			frames_left--;
-+		}
- 
--	/* not enough samples yet */
--	if (samples == 0)
--		return 0;
-+		/* not enough samples yet */
-+		if (!samples)
-+			break;
- 
--	/* calculate new buffer index */
--	buf = (u16 *)(runtime->dma_area);
--	buf += strm->buffer_pos * runtime->channels;
-+		/* calculate new buffer index */
-+		buf = (u16 *)(runtime->dma_area);
-+		buf += strm->buffer_pos * runtime->channels;
- 
--	/* Note, only supports 16-bit samples */
--	for (i = 0; i < samples; i++)
--		*buf++ = (u16)(rz_ssi_reg_readl(ssi, SSIFRDR) >> 16);
-+		/* Note, only supports 16-bit samples */
-+		for (i = 0; i < samples; i++)
-+			*buf++ = (u16)(rz_ssi_reg_readl(ssi, SSIFRDR) >> 16);
- 
--	rz_ssi_reg_mask_setl(ssi, SSIFSR, SSIFSR_RDF, 0);
--	rz_ssi_pointer_update(strm, samples / runtime->channels);
-+		rz_ssi_reg_mask_setl(ssi, SSIFSR, SSIFSR_RDF, 0);
-+		rz_ssi_pointer_update(strm, samples / runtime->channels);
- 
--	/*
--	 * If we finished this period, but there are more samples in
--	 * the RX FIFO, call this function again
--	 */
--	if (frames_left == 0 && fifo_samples >= runtime->channels)
--		rz_ssi_pio_recv(ssi, strm);
-+		/* check if there are no more samples in the RX FIFO */
-+		if (!(!frames_left && fifo_samples >= runtime->channels))
-+			done = true;
-+	}
- 
- 	return 0;
+@@ -188,14 +188,14 @@ static inline bool rz_ssi_is_dma_enabled(struct rz_ssi_priv *ssi)
+ 	return (ssi->playback.dma_ch && (ssi->dma_rt || ssi->capture.dma_ch));
  }
+ 
+-static int rz_ssi_stream_is_valid(struct rz_ssi_priv *ssi,
+-				  struct rz_ssi_stream *strm)
++static bool rz_ssi_stream_is_valid(struct rz_ssi_priv *ssi,
++				   struct rz_ssi_stream *strm)
+ {
+ 	unsigned long flags;
+-	int ret;
++	bool ret;
+ 
+ 	spin_lock_irqsave(&ssi->lock, flags);
+-	ret = !!(strm->substream && strm->substream->runtime);
++	ret = strm->substream && strm->substream->runtime;
+ 	spin_unlock_irqrestore(&ssi->lock, flags);
+ 
+ 	return ret;
 -- 
 2.17.1
 
