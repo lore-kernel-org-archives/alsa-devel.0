@@ -4,70 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D2F9C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jan 2022 17:27:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7AD5C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jan 2022 17:30:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 419FF1AA1;
-	Tue, 11 Jan 2022 18:26:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 419FF1AA1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9E07A1AA9;
+	Tue, 11 Jan 2022 18:29:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E07A1AA9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1641922036;
-	bh=+USC2U210eNPZ+gGshSrTxgkE8++ZidiVRNzC37IG8Q=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1641922226;
+	bh=aj+BMT7q2YA/CSyOTyFf6yCyaf8AVyARtnbUWBltfKQ=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hrfjLe6c9Ossm6/HmAHot2bbA+vTahWp8bGIsLDPhwsHRXqj7jy3QH8jmSROHVNnS
-	 v16YCZmhLP0ZGMR/JTFwSv8/K9FKj+MFLASQ636/20W9j+x2MGLtWwxeZr9hJoB7di
-	 A/zrrJOLOmF8695WoTcWzR0VZ0G/M33u3PTs6qPg=
+	b=jgg6GEUdGMiSyCGy6699c8GGJWGhkJq6NfzVO/3GfigIK6nzYvNb9XbQyohcwliT7
+	 2Z5ycWrLSP/x4eoAWlwcUQWh+9Yf90QKGc9TgsEYHdPFSwZ4agKTrgbx61FcyebeEZ
+	 f5bGhlNNaOHoGFHT16xFj3sG/NpT9jmSpPsET21Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E1BA5F80302;
-	Tue, 11 Jan 2022 18:26:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 22FC7F8025E;
+	Tue, 11 Jan 2022 18:29:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B6046F80430; Tue, 11 Jan 2022 18:26:23 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6D5A8F8025E
- for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2022 18:26:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D5A8F8025E
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="nUslgCvz"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id E166FF80302; Tue, 11 Jan 2022 18:29:32 +0100 (CET)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 271ADB81C0E;
- Tue, 11 Jan 2022 17:26:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28C43C36AE3;
- Tue, 11 Jan 2022 17:26:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1641921979;
- bh=+USC2U210eNPZ+gGshSrTxgkE8++ZidiVRNzC37IG8Q=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=nUslgCvzMWyjlcrZ6gTSHZAyRbpXwq56Pos/HFPUqTWplqQtjCYmXA3t8yBCHDuyO
- sk0YWNpoVY416UjjHojvnooAsygaXWxvkXu4uma7+Hmt9Ez8vaSgBoQe3TpozY2Pls
- g4n6Cmsi3JCT1vVw8sWtM2c01DBtdOs8OOkDBgvlR53h73Z0ZTPoDU+Kf+k/rjkTsM
- w6DYvgbwPDd+nFl3CmHKLorS23ug/0byIO/xvaWOsfEbt9Wc9esRYcB1YojSaGm+++
- 9c2rL2ybunT1F9GKF7MIo2hyTL0ZffIvZ6gZwFrL9xma/hYYVGaDQ1Y/SZEmz8xlIi
- iVrSEbsFJ9QYQ==
-Date: Tue, 11 Jan 2022 17:26:14 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Daniel Beer <daniel.beer@igorinstitute.com>
-Subject: Re: [PATCH 2/2] ASoC: dt-bindings: add bindings for TI TAS5805M.
-Message-ID: <Yd29tk6ZJgDFDvVI@sirena.org.uk>
-References: <61dccc5c.1c69fb81.9af91.0df6@mx.google.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5DC9BF80054
+ for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2022 18:29:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5DC9BF80054
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="FDuMeBJT"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1641922167; x=1673458167;
+ h=subject:to:cc:references:from:message-id:date:
+ mime-version:in-reply-to:content-transfer-encoding;
+ bh=aj+BMT7q2YA/CSyOTyFf6yCyaf8AVyARtnbUWBltfKQ=;
+ b=FDuMeBJT2I+FIYXuYwRu3T57c8JRu8505yhvSk0b+it6lyPqpR+Eo+yy
+ eP6htDIN9KUULzyTbm/Vcm+7bbL0eGEmF2E81JmDikrZTWwmozPS43BWy
+ JdS8tY3cALOfEUvaIF0icAT92DLbgl2tTJthwzsUFtNo5ne9tUy0Kjsi9
+ /u1cizPZKWJvmyjROw8GrADVSK1g9iCtXfGFZNx7BT7qW18MtfCUqpagL
+ L+6iHVuFOjmOBuvGm309V7IKsHw9cI8KOnxtjh+zUf4UW4liKKjUn+qoZ
+ r4jHAWG9dE2zDcLq7Ibh3FrfOjAmeE3mkfrTfp0crEMik1ttzW5AeYYka A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10223"; a="230881558"
+X-IronPort-AV: E=Sophos;i="5.88,279,1635231600"; d="scan'208";a="230881558"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 Jan 2022 09:23:33 -0800
+X-IronPort-AV: E=Sophos;i="5.88,279,1635231600"; d="scan'208";a="592749781"
+Received: from cdoher2x-mobl1.amr.corp.intel.com (HELO [10.212.119.165])
+ ([10.212.119.165])
+ by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 Jan 2022 09:23:30 -0800
+Subject: Re: [PATCH 2/3] ASoC: topology: Allow TLV control to be either read
+ or write
+To: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
+References: <20220111190528.445248-1-amadeuszx.slawinski@linux.intel.com>
+ <20220111190528.445248-3-amadeuszx.slawinski@linux.intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <b4e04b4d-147a-5dd1-d54e-429a61f7f84d@linux.intel.com>
+Date: Tue, 11 Jan 2022 10:48:23 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="pespAewDyHzmcXC6"
-Content-Disposition: inline
-In-Reply-To: <61dccc5c.1c69fb81.9af91.0df6@mx.google.com>
-X-Cookie: Many a family tree needs trimming.
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
- Andy Liu <andy-liu@ti.com>, Rob Herring <robh+dt@kernel.org>,
- Derek Simkowiak <derek.simkowiak@igorinstitute.com>
+In-Reply-To: <20220111190528.445248-3-amadeuszx.slawinski@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,38 +91,41 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---pespAewDyHzmcXC6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Tue, Jan 11, 2022 at 01:00:09PM +1300, Daniel Beer wrote:
+On 1/11/22 1:05 PM, Amadeusz Sławiński wrote:
+> There is no reason to force readwrite access on TLV controls. It can be
+> either read, write or both. This is further evidenced in code where it
+> performs following checks:
+>                 if ((k->access & SNDRV_CTL_ELEM_ACCESS_TLV_READ) && !sbe->get)
+>                         return -EINVAL;
+>                 if ((k->access & SNDRV_CTL_ELEM_ACCESS_TLV_WRITE) && !sbe->put)
+>                         return -EINVAL;
+> 
+> Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+> Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
 
-> +  ti,dsp-config: |
-> +    description: |
-> +      A byte sequence giving DSP configuration. Each pair of bytes, in
-> +      sequence, gives a register address and a value to write. If you
-> +      are taking this data from TI's PPC3 tool, this should contain only
-> +      the register writes following the 5ms delay.
+Should there be a Fixes tag
 
-This doesn't look appropriate for DT, it looks more like it should be
-loaded as firmware since systems might want to support multiple
-configurations at runtime based on use casea.  It would also be good to
-have code to validate that any supplied coefficeints/firmware don't
-overwrite registers managed by the driver, just in case.
+Fixes: 1a3232d2f61d ("ASoC: topology: Add support for TLV bytes controls")
 
---pespAewDyHzmcXC6
-Content-Type: application/pgp-signature; name="signature.asc"
+?
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmHdvbUACgkQJNaLcl1U
-h9B+qQf/RAvCDjhhHqPNniWnFRpjbe5z/2NuAauqqYPNQYky/skCoi7zrmxcDK4w
-rT59+xQSENPoqc+ribF28qL5PE1XMPyqU+IoplUZ01rwJ+gXBScRECdnpK0geABv
-jWnM2ofpoy1pgAweDEbTi9NiSBGrcOZUrIsN+vVEvKIe45BZ5mV+BmCTMY7m2zl7
-gY0Vvo2wNEhWQmL7B9+6WxNijM7V5SoS8S3KQ/kLudr6Q2ey2ZkD5qq2VpxAUV6t
-qqyDh/agk+j8uhyvn9Rpxem25jDl/7fM4kBMsKAKokYvvKb79rmwcA46mqYwK5D6
-mPevtQRnZDGKTZ/mC2IrK8t8xYx2pA==
-=uhKS
------END PGP SIGNATURE-----
-
---pespAewDyHzmcXC6--
+> ---
+>  sound/soc/soc-topology.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+> index e0f72ddd72c1..9d24184f85f9 100644
+> --- a/sound/soc/soc-topology.c
+> +++ b/sound/soc/soc-topology.c
+> @@ -512,7 +512,8 @@ static int soc_tplg_kcontrol_bind_io(struct snd_soc_tplg_ctl_hdr *hdr,
+>  
+>  	if (le32_to_cpu(hdr->ops.info) == SND_SOC_TPLG_CTL_BYTES
+>  		&& k->iface & SNDRV_CTL_ELEM_IFACE_MIXER
+> -		&& k->access & SNDRV_CTL_ELEM_ACCESS_TLV_READWRITE
+> +		&& (k->access & SNDRV_CTL_ELEM_ACCESS_TLV_READ
+> +		    || k->access & SNDRV_CTL_ELEM_ACCESS_TLV_WRITE)
+>  		&& k->access & SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK) {
+>  		struct soc_bytes_ext *sbe;
+>  		struct snd_soc_tplg_bytes_control *be;
+> 
