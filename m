@@ -4,81 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A076C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jan 2022 17:25:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D2F9C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jan 2022 17:27:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A3A7C1A9B;
-	Tue, 11 Jan 2022 18:24:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3A7C1A9B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 419FF1AA1;
+	Tue, 11 Jan 2022 18:26:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 419FF1AA1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1641921911;
-	bh=gEUR+PS3VK1rPxJq6WRhpVCCJmBWIol2sYXcM1N0t6I=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1641922036;
+	bh=+USC2U210eNPZ+gGshSrTxgkE8++ZidiVRNzC37IG8Q=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qBfPKyl56ppsy6OJTXCklwZhCR1kflG5ksColzZXF1ot3NispQWbpnrHUeEosh23u
-	 xMoM02NrfukkPLIN6Wy3lTKWFEh3rPX1IR0Zb3d9v/6hxRA4FtaodiZVNxtuCFjqy/
-	 cnI0oh6U4CPpHvFAFWz5jojMBetv+D/7IqyxXRFE=
+	b=hrfjLe6c9Ossm6/HmAHot2bbA+vTahWp8bGIsLDPhwsHRXqj7jy3QH8jmSROHVNnS
+	 v16YCZmhLP0ZGMR/JTFwSv8/K9FKj+MFLASQ636/20W9j+x2MGLtWwxeZr9hJoB7di
+	 A/zrrJOLOmF8695WoTcWzR0VZ0G/M33u3PTs6qPg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BF86CF80430;
-	Tue, 11 Jan 2022 18:23:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E1BA5F80302;
+	Tue, 11 Jan 2022 18:26:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3E2C6F8049E; Tue, 11 Jan 2022 18:23:46 +0100 (CET)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ id B6046F80430; Tue, 11 Jan 2022 18:26:23 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6D5A8F8025E
+ for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2022 18:26:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D5A8F8025E
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="nUslgCvz"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 516C1F800A7;
- Tue, 11 Jan 2022 18:23:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 516C1F800A7
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="anNagfXT"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1641921820; x=1673457820;
- h=subject:to:cc:references:from:message-id:date:
- mime-version:in-reply-to:content-transfer-encoding;
- bh=gEUR+PS3VK1rPxJq6WRhpVCCJmBWIol2sYXcM1N0t6I=;
- b=anNagfXTEhdQvdxJASaJ0VM7we0CwbaH3KfAN13r/p6D9Ttyfb6VSZGl
- UXHS3Wcs/brj5ffTavfnV3NZBIrmm3/I0G7FNM+Ptpj/2l+UHiaeoKZXp
- joWqHn+hEKGcE40vt/eRDdapAqo4tdLLGrxcGLjkLyFPh4vL0N9MOPQLH
- nzXj3CixD1+QcW38ct0FGv2JTD5tY306vYkmZS3sPDgGB19mJUQMTZVbn
- +WvO3IU/giCrM8hdoGcakqx4Th/vPWTAMAwIn4YCugfX+ArKRfW1nsrSP
- 5DmTnrqlL53p03ONaQehxlFyQOkMHb/14Vc/gM4gPM/Xx+qkc+1mCHOdG w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10223"; a="224237925"
-X-IronPort-AV: E=Sophos;i="5.88,279,1635231600"; d="scan'208";a="224237925"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Jan 2022 09:23:33 -0800
-X-IronPort-AV: E=Sophos;i="5.88,279,1635231600"; d="scan'208";a="592749789"
-Received: from cdoher2x-mobl1.amr.corp.intel.com (HELO [10.212.119.165])
- ([10.212.119.165])
- by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Jan 2022 09:23:32 -0800
-Subject: Re: [PATCH] firmware: mediatek: add adsp ipc protocol interface
-To: "allen-kh.cheng" <allen-kh.cheng@mediatek.com>,
- Matthias Brugger <matthias.bgg@gmail.com>, Mark Brown <broonie@kernel.org>
-References: <20220111071011.5964-1-allen-kh.cheng@mediatek.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <91eef4c9-adda-1921-16b5-af181b30d36e@linux.intel.com>
-Date: Tue, 11 Jan 2022 11:02:03 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.14.0
+ by ams.source.kernel.org (Postfix) with ESMTPS id 271ADB81C0E;
+ Tue, 11 Jan 2022 17:26:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28C43C36AE3;
+ Tue, 11 Jan 2022 17:26:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1641921979;
+ bh=+USC2U210eNPZ+gGshSrTxgkE8++ZidiVRNzC37IG8Q=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=nUslgCvzMWyjlcrZ6gTSHZAyRbpXwq56Pos/HFPUqTWplqQtjCYmXA3t8yBCHDuyO
+ sk0YWNpoVY416UjjHojvnooAsygaXWxvkXu4uma7+Hmt9Ez8vaSgBoQe3TpozY2Pls
+ g4n6Cmsi3JCT1vVw8sWtM2c01DBtdOs8OOkDBgvlR53h73Z0ZTPoDU+Kf+k/rjkTsM
+ w6DYvgbwPDd+nFl3CmHKLorS23ug/0byIO/xvaWOsfEbt9Wc9esRYcB1YojSaGm+++
+ 9c2rL2ybunT1F9GKF7MIo2hyTL0ZffIvZ6gZwFrL9xma/hYYVGaDQ1Y/SZEmz8xlIi
+ iVrSEbsFJ9QYQ==
+Date: Tue, 11 Jan 2022 17:26:14 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Daniel Beer <daniel.beer@igorinstitute.com>
+Subject: Re: [PATCH 2/2] ASoC: dt-bindings: add bindings for TI TAS5805M.
+Message-ID: <Yd29tk6ZJgDFDvVI@sirena.org.uk>
+References: <61dccc5c.1c69fb81.9af91.0df6@mx.google.com>
 MIME-Version: 1.0
-In-Reply-To: <20220111071011.5964-1-allen-kh.cheng@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, cujomalainey@google.com,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Project_Global_Chrome_Upstream_Group@mediatek.com, tzungbi@google.com,
- linux-mediatek@lists.infradead.org, Daniel Baluta <daniel.baluta@nxp.com>,
- linux-arm-kernel@lists.infradead.org, sound-open-firmware@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="pespAewDyHzmcXC6"
+Content-Disposition: inline
+In-Reply-To: <61dccc5c.1c69fb81.9af91.0df6@mx.google.com>
+X-Cookie: Many a family tree needs trimming.
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+ Andy Liu <andy-liu@ti.com>, Rob Herring <robh+dt@kernel.org>,
+ Derek Simkowiak <derek.simkowiak@igorinstitute.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,134 +84,38 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-> +int mtk_adsp_ipc_send(struct mtk_adsp_ipc *ipc, unsigned int idx, uint32_t msg)
-> +{
-> +	struct mtk_adsp_chan *dsp_chan;
-> +	int ret;
-> +
-> +	if (idx >= MTK_ADSP_MBOX_NUM)
-> +		return -EINVAL;
-> +
-> +	dsp_chan = &ipc->chans[idx];
-> +	ret = mbox_send_message(dsp_chan->ch, &msg);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	return 0;
+--pespAewDyHzmcXC6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-this can be simplified a bit without the 'ret' variable
+On Tue, Jan 11, 2022 at 01:00:09PM +1300, Daniel Beer wrote:
 
-return mbox_send_message(dsp_chan->ch, &msg);
+> +  ti,dsp-config: |
+> +    description: |
+> +      A byte sequence giving DSP configuration. Each pair of bytes, in
+> +      sequence, gives a register address and a value to write. If you
+> +      are taking this data from TI's PPC3 tool, this should contain only
+> +      the register writes following the 5ms delay.
 
-> +}
-> +EXPORT_SYMBOL(mtk_adsp_ipc_send);
+This doesn't look appropriate for DT, it looks more like it should be
+loaded as firmware since systems might want to support multiple
+configurations at runtime based on use casea.  It would also be good to
+have code to validate that any supplied coefficeints/firmware don't
+overwrite registers managed by the driver, just in case.
 
+--pespAewDyHzmcXC6
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> +static int mtk_adsp_ipc_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct mtk_adsp_ipc *dsp_ipc;
-> +	struct mtk_adsp_chan *dsp_chan;
-> +	struct mbox_client *cl;
-> +	char *chan_name;
-> +	int ret;
-> +	int i, j;
-> +
-> +	device_set_of_node_from_dev(&pdev->dev, pdev->dev.parent);
-> +
-> +	dsp_ipc = devm_kzalloc(dev, sizeof(*dsp_ipc), GFP_KERNEL);
-> +	if (!dsp_ipc)
-> +		return -ENOMEM;
-> +
-> +	for (i = 0; i < MTK_ADSP_MBOX_NUM; i++) {
-> +		chan_name = kasprintf(GFP_KERNEL, "mbox%d", i);
-> +		if (!chan_name) {
-> +			ret = -ENOMEM;
-> +			goto out;
-> +		}
+-----BEGIN PGP SIGNATURE-----
 
-in this case with the existing code you will free something that was not
-allocated. It's not super elegant, consider using different labels as
-suggested below.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmHdvbUACgkQJNaLcl1U
+h9B+qQf/RAvCDjhhHqPNniWnFRpjbe5z/2NuAauqqYPNQYky/skCoi7zrmxcDK4w
+rT59+xQSENPoqc+ribF28qL5PE1XMPyqU+IoplUZ01rwJ+gXBScRECdnpK0geABv
+jWnM2ofpoy1pgAweDEbTi9NiSBGrcOZUrIsN+vVEvKIe45BZ5mV+BmCTMY7m2zl7
+gY0Vvo2wNEhWQmL7B9+6WxNijM7V5SoS8S3KQ/kLudr6Q2ey2ZkD5qq2VpxAUV6t
+qqyDh/agk+j8uhyvn9Rpxem25jDl/7fM4kBMsKAKokYvvKb79rmwcA46mqYwK5D6
+mPevtQRnZDGKTZ/mC2IrK8t8xYx2pA==
+=uhKS
+-----END PGP SIGNATURE-----
 
-> +
-> +		dsp_chan = &dsp_ipc->chans[i];
-> +		cl = &dsp_chan->cl;
-> +		cl->dev = dev->parent;
-> +		cl->tx_block = false;
-> +		cl->knows_txdone = false;
-> +		cl->tx_prepare = NULL;
-> +		cl->rx_callback = mtk_adsp_ipc_recv;
-> +
-> +		dsp_chan->ipc = dsp_ipc;
-> +		dsp_chan->idx = i;
-> +		dsp_chan->ch = mbox_request_channel_byname(cl, chan_name);
-> +		if (IS_ERR(dsp_chan->ch)) {
-> +			ret = PTR_ERR(dsp_chan->ch);
-> +			if (ret != -EPROBE_DEFER)
-> +				dev_err(dev, "Failed to request mbox chan %d ret %d\n",
-> +					i, ret);
-> +			goto out;
-
-goto out_free;
-
-> +		}
-> +
-> +		dev_dbg(dev, "request mbox chan %s\n", chan_name);
-> +		kfree(chan_name);
-> +	}
-> +
-> +	dsp_ipc->dev = dev;
-> +	dev_set_drvdata(dev, dsp_ipc);
-> +	dev_dbg(dev, "MTK ADSP IPC initialized\n");
-> +
-> +	return 0;
-> +
-> +out:
-
-out_free:
-> +	kfree(chan_name);
-
-out:
-
-> +	for (j = 0; j < i; j++) {
-> +		dsp_chan = &dsp_ipc->chans[j];
-> +		mbox_free_channel(dsp_chan->ch);
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static int mtk_adsp_ipc_remove(struct platform_device *pdev)
-> +{
-> +	struct mtk_adsp_ipc *dsp_ipc = dev_get_drvdata(&pdev->dev);
-> +	struct mtk_adsp_chan *dsp_chan;
-> +	int i;
-> +
-> +	for (i = 0; i < MTK_ADSP_MBOX_NUM; i++) {
-> +		dsp_chan = &dsp_ipc->chans[i];
-> +		mbox_free_channel(dsp_chan->ch);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static struct platform_driver mtk_adsp_ipc_driver = {
-> +	.driver = {
-> +		.name = "mtk-adsp-ipc",
-> +	},
-> +	.probe = mtk_adsp_ipc_probe,
-> +	.remove = mtk_adsp_ipc_remove,
-> +};
-> +builtin_platform_driver(mtk_adsp_ipc_driver);
-> +
-> +MODULE_AUTHOR("Allen-KH Cheng <allen-kh.cheng@mediatek.com>");
-> +MODULE_DESCRIPTION("MTK ADSP IPC Driver");
-> +MODULE_LICENSE("GPL v2");
-
-the v2 here isn't useful, the license information can be found in the
-SPDX line.
-
-MODULE_LICENSE("GPL");
-
-
+--pespAewDyHzmcXC6--
