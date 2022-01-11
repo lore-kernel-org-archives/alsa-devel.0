@@ -4,77 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7AD5C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jan 2022 17:30:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44457C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jan 2022 17:52:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9E07A1AA9;
-	Tue, 11 Jan 2022 18:29:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E07A1AA9
+	by alsa0.perex.cz (Postfix) with ESMTPS id EA6B21AA8;
+	Tue, 11 Jan 2022 18:51:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA6B21AA8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1641922226;
-	bh=aj+BMT7q2YA/CSyOTyFf6yCyaf8AVyARtnbUWBltfKQ=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1641923565;
+	bh=rdKh6MpTy7+tSNLZYf0C23vpccBlumjfJSxYfn2a4dE=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jgg6GEUdGMiSyCGy6699c8GGJWGhkJq6NfzVO/3GfigIK6nzYvNb9XbQyohcwliT7
-	 2Z5ycWrLSP/x4eoAWlwcUQWh+9Yf90QKGc9TgsEYHdPFSwZ4agKTrgbx61FcyebeEZ
-	 f5bGhlNNaOHoGFHT16xFj3sG/NpT9jmSpPsET21Q=
+	b=WlNZYHubNkW1/dvCSZu7EWu6t2o8/D0lUvEQvY53Lsb3yJlCMOkzM8m19h2iH78gP
+	 d6pjMnYrGVWxvEW00gBu+Y3WfIZEUa/RooQDX7IPTuBbaHK6DnRLo6DBwrpzd/vOtt
+	 cvuSa/tGHF86EJeX0VRED7rNN2da7eR/KQ5K/aRk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 22FC7F8025E;
-	Tue, 11 Jan 2022 18:29:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8315CF8025E;
+	Tue, 11 Jan 2022 18:51:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E166FF80302; Tue, 11 Jan 2022 18:29:32 +0100 (CET)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 088A0F80302; Tue, 11 Jan 2022 18:51:53 +0100 (CET)
+Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com
+ [209.85.161.53])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5DC9BF80054
- for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2022 18:29:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5DC9BF80054
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="FDuMeBJT"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1641922167; x=1673458167;
- h=subject:to:cc:references:from:message-id:date:
- mime-version:in-reply-to:content-transfer-encoding;
- bh=aj+BMT7q2YA/CSyOTyFf6yCyaf8AVyARtnbUWBltfKQ=;
- b=FDuMeBJT2I+FIYXuYwRu3T57c8JRu8505yhvSk0b+it6lyPqpR+Eo+yy
- eP6htDIN9KUULzyTbm/Vcm+7bbL0eGEmF2E81JmDikrZTWwmozPS43BWy
- JdS8tY3cALOfEUvaIF0icAT92DLbgl2tTJthwzsUFtNo5ne9tUy0Kjsi9
- /u1cizPZKWJvmyjROw8GrADVSK1g9iCtXfGFZNx7BT7qW18MtfCUqpagL
- L+6iHVuFOjmOBuvGm309V7IKsHw9cI8KOnxtjh+zUf4UW4liKKjUn+qoZ
- r4jHAWG9dE2zDcLq7Ibh3FrfOjAmeE3mkfrTfp0crEMik1ttzW5AeYYka A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10223"; a="230881558"
-X-IronPort-AV: E=Sophos;i="5.88,279,1635231600"; d="scan'208";a="230881558"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Jan 2022 09:23:33 -0800
-X-IronPort-AV: E=Sophos;i="5.88,279,1635231600"; d="scan'208";a="592749781"
-Received: from cdoher2x-mobl1.amr.corp.intel.com (HELO [10.212.119.165])
- ([10.212.119.165])
- by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Jan 2022 09:23:30 -0800
-Subject: Re: [PATCH 2/3] ASoC: topology: Allow TLV control to be either read
- or write
-To: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
-References: <20220111190528.445248-1-amadeuszx.slawinski@linux.intel.com>
- <20220111190528.445248-3-amadeuszx.slawinski@linux.intel.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <b4e04b4d-147a-5dd1-d54e-429a61f7f84d@linux.intel.com>
-Date: Tue, 11 Jan 2022 10:48:23 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.14.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 86722F800A7
+ for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2022 18:51:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86722F800A7
+Received: by mail-oo1-f53.google.com with SMTP id
+ c1-20020a4a9c41000000b002dd0450ba2aso553186ook.8
+ for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2022 09:51:49 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=UifqrbSv4P6oUwIS9VVpUp4MVpz/i09ZMQyiV9QJa6A=;
+ b=Aqf9Knd1h/uRnBFoYygtfwkZge8dbzlcJLRJUPcC8fXtpAkLCv2Czq7YY09JestmVS
+ Ab6KN8Vah3pI70HQ9TCTrVVTrd5MNdZ7V+sonkV50Bo1fcLYTxw3zu82IvlxLQkF2d5K
+ OR3N0WMrsqZJKrsCFx67wmhjwXTKWcqJpQAsmKD2HaVnJxcqvVhxHkj4+AjQH9fVvdWp
+ JrZsm5kKINVgQow6UfJT96cfvpjbS+Fg4jNK3VALIoxOkmdcYMgV1DpsWOTAChPJwRTn
+ NwkJ/NgH0B1/3d6l3zRm7CZBBsTuVIR0gr+vdrYPja2m7qD1FKqksxg6/9xT4FMfkik2
+ 35Fg==
+X-Gm-Message-State: AOAM533jzd6Dgc39FG1zfdQchozNTnvtK9IVdKofDgA6yrRZnd25cxaB
+ dzEqAluHIKKyh/DhcbNFfA==
+X-Google-Smtp-Source: ABdhPJznNaT1VvHIngLtpJFtz0iASueDANoXRX2e5SW6ZAucUfj28fstai6hZocWcmtpqr5MeaK/UA==
+X-Received: by 2002:a4a:3bd4:: with SMTP id s203mr3882712oos.18.1641923507894; 
+ Tue, 11 Jan 2022 09:51:47 -0800 (PST)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net.
+ [66.90.148.213])
+ by smtp.gmail.com with ESMTPSA id x13sm2018165oof.19.2022.01.11.09.51.46
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 11 Jan 2022 09:51:47 -0800 (PST)
+Received: (nullmailer pid 3228864 invoked by uid 1000);
+ Tue, 11 Jan 2022 17:51:46 -0000
+Date: Tue, 11 Jan 2022 11:51:46 -0600
+From: Rob Herring <robh@kernel.org>
+To: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH] dt-bindings: Drop required 'interrupt-parent'
+Message-ID: <Yd3DsoMYTylcOWDo@robh.at.kernel.org>
+References: <20220107031905.2406176-1-robh@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20220111190528.445248-3-amadeuszx.slawinski@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220107031905.2406176-1-robh@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-pci@vger.kernel.org,
+ Linus Walleij <linus.walleij@linaro.org>, John Crispin <john@phrozen.org>,
+ Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+ Suman Anna <s-anna@ti.com>, Lee Jones <lee.jones@linaro.org>,
+ linux-riscv@lists.infradead.org, Bartosz Golaszewski <brgl@bgdev.pl>,
+ Jassi Brar <jassisinghbrar@gmail.com>, Michal Simek <michal.simek@xilinx.com>,
+ Jakub Kicinski <kuba@kernel.org>, Greentime Hu <greentime.hu@sifive.com>,
+ devicetree@vger.kernel.org, Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Kumar Gogada <bharat.kumar.gogada@xilinx.com>,
+ Hauke Mehrtens <hauke@hauke-m.de>, linux-gpio@vger.kernel.org,
+ Richard Fitzgerald <rf@opensource.cirrus.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Bjorn Helgaas <bhelgaas@google.com>,
+ linux-arm-kernel@lists.infradead.org, - <patches@opensource.cirrus.com>,
+ linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@dabbelt.com>,
+ netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,42 +99,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-On 1/11/22 1:05 PM, Amadeusz Sławiński wrote:
-> There is no reason to force readwrite access on TLV controls. It can be
-> either read, write or both. This is further evidenced in code where it
-> performs following checks:
->                 if ((k->access & SNDRV_CTL_ELEM_ACCESS_TLV_READ) && !sbe->get)
->                         return -EINVAL;
->                 if ((k->access & SNDRV_CTL_ELEM_ACCESS_TLV_WRITE) && !sbe->put)
->                         return -EINVAL;
+On Thu, 06 Jan 2022 21:19:04 -0600, Rob Herring wrote:
+> 'interrupt-parent' is never required as it can be in a parent node or a
+> parent node itself can be an interrupt provider. Where exactly it lives is
+> outside the scope of a binding schema.
 > 
-> Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
-> Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
-
-Should there be a Fixes tag
-
-Fixes: 1a3232d2f61d ("ASoC: topology: Add support for TLV bytes controls")
-
-?
-
+> Signed-off-by: Rob Herring <robh@kernel.org>
 > ---
->  sound/soc/soc-topology.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  .../devicetree/bindings/gpio/toshiba,gpio-visconti.yaml  | 1 -
+>  .../devicetree/bindings/mailbox/ti,omap-mailbox.yaml     | 9 ---------
+>  Documentation/devicetree/bindings/mfd/cirrus,madera.yaml | 1 -
+>  .../devicetree/bindings/net/lantiq,etop-xway.yaml        | 1 -
+>  .../devicetree/bindings/net/lantiq,xrx200-net.yaml       | 1 -
+>  .../devicetree/bindings/pci/sifive,fu740-pcie.yaml       | 1 -
+>  .../devicetree/bindings/pci/xilinx-versal-cpm.yaml       | 1 -
+>  7 files changed, 15 deletions(-)
 > 
-> diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-> index e0f72ddd72c1..9d24184f85f9 100644
-> --- a/sound/soc/soc-topology.c
-> +++ b/sound/soc/soc-topology.c
-> @@ -512,7 +512,8 @@ static int soc_tplg_kcontrol_bind_io(struct snd_soc_tplg_ctl_hdr *hdr,
->  
->  	if (le32_to_cpu(hdr->ops.info) == SND_SOC_TPLG_CTL_BYTES
->  		&& k->iface & SNDRV_CTL_ELEM_IFACE_MIXER
-> -		&& k->access & SNDRV_CTL_ELEM_ACCESS_TLV_READWRITE
-> +		&& (k->access & SNDRV_CTL_ELEM_ACCESS_TLV_READ
-> +		    || k->access & SNDRV_CTL_ELEM_ACCESS_TLV_WRITE)
->  		&& k->access & SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK) {
->  		struct soc_bytes_ext *sbe;
->  		struct snd_soc_tplg_bytes_control *be;
-> 
+
+Applied, thanks!
