@@ -4,67 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 021BFC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jan 2022 14:22:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4028C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jan 2022 15:15:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9C7EA18D2;
-	Tue, 11 Jan 2022 15:21:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C7EA18D2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 513CE18BF;
+	Tue, 11 Jan 2022 16:15:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 513CE18BF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1641910962;
-	bh=jiUkjZIvRhFm8pHwwppwGyhpeNFAO7JfTTZCkHmN35s=;
+	s=default; t=1641914155;
+	bh=ADB5GI847zCArJtKNOIf0lo0xSGpKkRGx9zYGaD7gZI=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bTCrqWGLb0dIezHdqXhqWN2Bp/RH/Mb6WAkDrFtstcQFpwY3maScJgDjDtSPPExXk
-	 rl/ea+WJ3OUxY+LQw22C57MiDqoIjjC1yfrfYyl95uzCdvavVkyqBecZKg8NsKZmlM
-	 OshBg5/jQwZxjK31phbw/3SnB5RpyPtuc6hsai7c=
+	b=FeFKlVeBnqx1hEWts7pbBcoeoA/xI1bS97+Yj50cEo7z8VxFyVInkXyDiZVVtVYH9
+	 V705Wh+2ERIzq05sAN/hMADYp5LkSqmIBf24u+BmqU6cDCHGAzc2DfNojz0mBGRRmc
+	 ByaGKDWjvMArgiOyyCyKFGL/5KFhrkdA+1Shzedw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3BB0AF8025E;
-	Tue, 11 Jan 2022 15:21:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D6C1CF8025E;
+	Tue, 11 Jan 2022 16:15:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 47F9BF80118; Tue, 11 Jan 2022 15:21:51 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 98D6EF8025E; Tue, 11 Jan 2022 16:15:00 +0100 (CET)
+Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com
+ [209.85.210.50])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EEF93F80118
- for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2022 15:21:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EEF93F80118
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="OPgbHrJF"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 99E0BB818B8;
- Tue, 11 Jan 2022 14:21:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C1D4C36AE3;
- Tue, 11 Jan 2022 14:21:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1641910906;
- bh=jiUkjZIvRhFm8pHwwppwGyhpeNFAO7JfTTZCkHmN35s=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=OPgbHrJF2sak7gjjMco9H0buFs8udcgvr/u0HQKvPAMviknHSyVRiyGFl+LrIhPT/
- N2XREIKv7nXFiuPjJ0n4PbDB68dVVeu1ItYh9q8kDA3LWAshjX7eenTywCi1xJxRyL
- 80EsF0DuacCkZyjoNsY4vz78f2JocWsE9tJkt0UHbZMPjEKiHBs7qiazK0X0PmXsNV
- YRkIqMNxUxDp2mI9MowA2AiPBChU0g3u2J1h6UEG0vLYSCb98gwZ2Msi2x5/xE+HHP
- G+UNhCiU8TqHiwbaExaAogc41IwTNOT6M26nN4JzHtTJkyuyaHAqB8T2S35VIZO9Xv
- iesukpc4dvMyA==
-From: Mark Brown <broonie@kernel.org>
-To: Robert Hancock <robert.hancock@calian.com>, alsa-devel@alsa-project.org
-In-Reply-To: <20220107214711.1100162-1-robert.hancock@calian.com>
-References: <20220107214711.1100162-1-robert.hancock@calian.com>
-Subject: Re: (subset) [PATCH v2 0/6] ASoC: Xilinx fixes
-Message-Id: <164191090481.1752423.10373421525300855428.b4-ty@kernel.org>
-Date: Tue, 11 Jan 2022 14:21:44 +0000
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: kuninori.morimoto.gx@renesas.com, michal.simek@xilinx.com,
- maruthi.srinivas.bayyavarapu@xilinx.com, tiwai@suse.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id D7304F80054
+ for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2022 16:14:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7304F80054
+Received: by mail-ot1-f50.google.com with SMTP id
+ w19-20020a056830061300b0058f1dd48932so18853614oti.11
+ for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2022 07:14:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+ :message-id;
+ bh=H5aXFc3cTbqVbXAscJ8U7IrcuiVGZ2Ji9H3Um66jTps=;
+ b=TEZ05vt3EDzJqVT70qEbU3oIL2j1mdJDLsLmjMqiCcDPZ2DaAWvsPl9KXNd46kizac
+ U9YnOcjnJvkRzCA42rkLrMONfe9P0gvhxOLo/xmzT3L+LTXQcXVvmYpZ1zdaoyVTeN9B
+ IRELQxYYJc7GahU9tBjF34NYP7842CC71vzEeb+eAvAM6nZj0rzU6ZsmGzB+hFEKavuE
+ atSOvUv2eH3xIjDt5TF8cugrrxw9uO2o2NfXFNLIpAN3EdaNY+Xrik8k20INEU3lPi0o
+ gt+HcMge0ynA0AfsGBcVnvaZheD0oZQuTHVKtfOO+gMjPZFRiWLPjv7TST8aoF0bj/ds
+ kpag==
+X-Gm-Message-State: AOAM531gcksADY90lRYfs2UNMKViJ4cfSfQjUGct7OZymjiDGAi21Dqj
+ hWGbWHkLeRv4kCjxMgJ1Xg==
+X-Google-Smtp-Source: ABdhPJxOa21BbGALyE4de7BK9kyi2XavjSItN8TUDfHHHGzgfxNo02m5/Yq7yGoooGkxiPWUljlFsg==
+X-Received: by 2002:a05:6830:1e10:: with SMTP id
+ s16mr3550212otr.259.1641914092570; 
+ Tue, 11 Jan 2022 07:14:52 -0800 (PST)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net.
+ [66.90.148.213])
+ by smtp.gmail.com with ESMTPSA id x14sm205238oiv.39.2022.01.11.07.14.51
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 11 Jan 2022 07:14:51 -0800 (PST)
+Received: (nullmailer pid 2944756 invoked by uid 1000);
+ Tue, 11 Jan 2022 15:14:49 -0000
+From: Rob Herring <robh@kernel.org>
+To: Daniel Beer <daniel.beer@igorinstitute.com>
+In-Reply-To: <61dccc5c.1c69fb81.9af91.0df6@mx.google.com>
+References: <61dccc5c.1c69fb81.9af91.0df6@mx.google.com>
+Subject: Re: [PATCH 2/2] ASoC: dt-bindings: add bindings for TI TAS5805M.
+Date: Tue, 11 Jan 2022 09:14:49 -0600
+Message-Id: <1641914089.172148.2944755.nullmailer@robh.at.kernel.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ linux-kernel@vger.kernel.org, Andy Liu <andy-liu@ti.com>,
+ Mark Brown <broonie@kernel.org>,
+ Derek Simkowiak <derek.simkowiak@igorinstitute.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,44 +87,65 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 7 Jan 2022 15:47:05 -0600, Robert Hancock wrote:
-> There are drivers in mainline for the Xilinx Audio Formatter and Xilinx
-> I2S IP cores. However, because of a few issues, these were only really
-> usable with Xilinx's xlnx_pl_snd_card top-level driver, which is not in
-> mainline (and not suitable for mainline).
+On Tue, 11 Jan 2022 13:00:09 +1300, Daniel Beer wrote:
+> The TAS5805M is a class D speaker amplifier with integrated DSP. The
+> example here includes a tested flat configuration for mono (PBTL)
+> output.
 > 
-> The fixes in this patchset, for the simple-card layer as well as the
-> Xilinx drivers, now allow these drivers to be properly used with
-> simple-card without any out-of-tree support code.
+> Signed-off-by: Daniel Beer <daniel.beer@igorinstitute.com>
+> ---
+>  .../devicetree/bindings/sound/tas5805m.yaml   | 201 ++++++++++++++++++
+>  1 file changed, 201 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/tas5805m.yaml
 > 
-> [...]
 
-Applied to
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-linus
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/sound/tas5805m.yaml:44:1: [error] syntax error: found character '\t' that cannot start any token (syntax)
 
-Thanks!
+dtschema/dtc warnings/errors:
+./Documentation/devicetree/bindings/sound/tas5805m.yaml:  while scanning a block scalar
+  in "<unicode string>", line 41, column 5
+found a tab character where an indentation space is expected
+  in "<unicode string>", line 44, column 1
+make[1]: *** Deleting file 'Documentation/devicetree/bindings/sound/tas5805m.example.dts'
+Traceback (most recent call last):
+  File "/usr/local/bin/dt-extract-example", line 46, in <module>
+    binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 434, in load
+    return constructor.get_single_data()
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 119, in get_single_data
+    node = self.composer.get_single_node()
+  File "_ruamel_yaml.pyx", line 706, in _ruamel_yaml.CParser.get_single_node
+  File "_ruamel_yaml.pyx", line 724, in _ruamel_yaml.CParser._compose_document
+  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
+  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
+  File "_ruamel_yaml.pyx", line 773, in _ruamel_yaml.CParser._compose_node
+  File "_ruamel_yaml.pyx", line 848, in _ruamel_yaml.CParser._compose_sequence_node
+  File "_ruamel_yaml.pyx", line 904, in _ruamel_yaml.CParser._parse_next_event
+ruamel.yaml.scanner.ScannerError: while scanning a block scalar
+  in "<unicode string>", line 41, column 5
+found a tab character where an indentation space is expected
+  in "<unicode string>", line 44, column 1
+make[1]: *** [Documentation/devicetree/bindings/Makefile:25: Documentation/devicetree/bindings/sound/tas5805m.example.dts] Error 1
+make[1]: *** Waiting for unfinished jobs....
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/tas5805m.yaml: ignoring, error parsing file
+make: *** [Makefile:1413: dt_binding_check] Error 2
 
-[1/6] ASoC: xilinx: xlnx_formatter_pcm: Make buffer bytes multiple of period bytes
-      commit: e958b5884725dac86d36c1e7afe5a55f31feb0b2
-[5/6] ASoC: simple-card: fix probe failure on platform component
-      commit: a64067f4cecaaa4deed8e33d3266bc0bcc189142
+doc reference errors (make refcheckdocs):
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+See https://patchwork.ozlabs.org/patch/1578223
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+pip3 install dtschema --upgrade
 
-Thanks,
-Mark
+Please check and re-submit.
+
