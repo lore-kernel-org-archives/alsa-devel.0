@@ -4,86 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F0D4C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jan 2022 16:11:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51593C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jan 2022 16:13:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7FF3E18A2;
-	Tue, 11 Jan 2022 17:11:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7FF3E18A2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7484018E3;
+	Tue, 11 Jan 2022 17:12:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7484018E3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1641917517;
-	bh=eP7Yu/TTIqOjgTtKwMpxkn6Zwzi7bdfpptr9WsMVK6w=;
+	s=default; t=1641917596;
+	bh=SCPIYNURozUhERBBeaxL2BRhfU906eyIGSvRjugwy7g=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=phRO6D6YT/F7Pk4a27qarlRKOqRi2ZWSNUNhKXl5H+CLRn31LV08DGy7Xid+CWE/V
-	 lZQMCmkNb4c0FoStOZVOOUlrxWn9rR+uvvYE1Ts3Q9AJudec0++pRS6Z31CTQ3QQrb
-	 FRdIikaY1VqNIlnZeiXISkc2JVPaqHoz3o7aQNwg=
+	b=RqgwabTeRTqjbj4KDuHTuA+u/Ovq0TqtCT2xayq+XdOasFm2qARCvThJ2di1VhIxp
+	 Ov5iuuEC8FI7IVbL9YSdczSqHMakqQsDT8Xj1IcEt/2JQoFxJ6MBzL/zBDU9fxYgyj
+	 aRwNB87Kv+jLii7+cJTuSc4q7kGo4pd8Onuee5gk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 23598F8025E;
-	Tue, 11 Jan 2022 17:11:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1EF2AF8025E;
+	Tue, 11 Jan 2022 17:12:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A1B44F80302; Tue, 11 Jan 2022 17:11:05 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id 3510AF80302; Tue, 11 Jan 2022 17:12:22 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 72B53F80118
- for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2022 17:11:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72B53F80118
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0ADD6F80054
+ for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2022 17:12:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0ADD6F80054
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="gw//o/SE"; 
+ header.b="1dO6US2A"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="F+bpKfSD"
+ header.b="q8UMCbtj"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 4D7B021135;
- Tue, 11 Jan 2022 16:11:00 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 5D1511F3B8;
+ Tue, 11 Jan 2022 16:12:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1641917460; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1641917537; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=sc1CBYFF5ymyW+1HvB5nHhEJzHMwZx8HHI5lpt+9E7g=;
- b=gw//o/SEbQ5lH7CGHX2p+7nOep+l/uxv2g40y/F68M9U+CPc3GzDzmhWNti91BtFmvrQrw
- EOH9PAfkdwjpoMylAUgPP0DzkNFUCssc8qcykV9sUOrtaWqDtYgN1Nh5MwZTnvP+thS56S
- iN1Cau4rfcAPOk0zUKaZ+JunUU4IHGE=
+ bh=9XdATUmQb6zOFVtyu38WgSydF2C+5pfKLKLKIn1UbqM=;
+ b=1dO6US2Ap3Gp79v8ZqHAdHH0NbCKxWeOSBFSfuWf9/dzXxAc4s46s4xWNIXUCS0KCReHpO
+ TdGbIgU1lE20u6o4tbglPeT+Z/P2mOfKsflq0+VAtOICRp59Dtg5vER9P0xaOhDtZ/7C6k
+ RtyQzUX4+QJOg084B+aGbE2aeT+Md7U=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1641917460;
+ s=susede2_ed25519; t=1641917537;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=sc1CBYFF5ymyW+1HvB5nHhEJzHMwZx8HHI5lpt+9E7g=;
- b=F+bpKfSDND4/zG+ELos1B9ivmFs3AIAmqjoC0/Cc5Y16b5wRXMin1MuFTpbFSBPmnMGPZn
- AuaFa7YekP0+3rBQ==
+ bh=9XdATUmQb6zOFVtyu38WgSydF2C+5pfKLKLKIn1UbqM=;
+ b=q8UMCbtjsXn8R2KsRxEAmY8RtLkDV01z13+NHbYxtIwvwPotajqUmfOPbstfpYZZkdEZhV
+ ZXKnua3amU4+sPAQ==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 36DC3A3B90;
- Tue, 11 Jan 2022 16:11:00 +0000 (UTC)
-Date: Tue, 11 Jan 2022 17:11:00 +0100
-Message-ID: <s5hee5eb6cr.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id 55C24A3B81;
+ Tue, 11 Jan 2022 16:12:17 +0000 (UTC)
+Date: Tue, 11 Jan 2022 17:12:17 +0100
+Message-ID: <s5hbl0ib6am.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Tom Rix <trix@redhat.com>
-Subject: Re: [PATCH] ALSA: hda: cs35l41: fix double free in cs35l41_hda_probe()
-In-Reply-To: <CAHp75VdJOzYR0HsZ2LWn-iAMwcM3s0NNDKQdXZZudcEB9RwE9A@mail.gmail.com>
-References: <20220108140756.3985487-1-trix@redhat.com>
- <CAHp75VfbSmgeyi=8q1_he7mpGrNxYAOewKYWD=h8BSuxz2XWOw@mail.gmail.com>
- <0c0926d9-9b72-1519-7e22-e90ffc229940@redhat.com>
- <CAHp75VdJOzYR0HsZ2LWn-iAMwcM3s0NNDKQdXZZudcEB9RwE9A@mail.gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [GIT PULL] ASoC updates for v5.17-2
+In-Reply-To: <20220110132849.0948FC36AE5@smtp.kernel.org>
+References: <20220110132849.0948FC36AE5@smtp.kernel.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "tanureal@opensource.cirrus.com" <tanureal@opensource.cirrus.com>,
- "patches@opensource.cirrus.com" <patches@opensource.cirrus.com>,
- "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
- "ndesaulniers@google.com" <ndesaulniers@google.com>,
- "tiwai@suse.com" <tiwai@suse.com>, "nathan@kernel.org" <nathan@kernel.org>,
- Andy Shevchenko <andy.shevchenko@gmail.com>,
- "james.schulman@cirrus.com" <james.schulman@cirrus.com>,
- "david.rhodes@cirrus.com" <david.rhodes@cirrus.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,32 +87,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 10 Jan 2022 11:21:11 +0100,
-Andy Shevchenko wrote:
+On Mon, 10 Jan 2022 14:28:35 +0100,
+Mark Brown wrote:
 > 
-> On Mon, Jan 10, 2022 at 2:37 AM Tom Rix <trix@redhat.com> wrote:
-> > On 1/9/22 2:33 PM, Andy Shevchenko wrote:
-> > On Saturday, January 8, 2022, <trix@redhat.com> wrote:
+> The following changes since commit ee907afb0c39a41ee74b862882cfe12820c74b98:
 > 
-> ...
+>   ASoC: meson: aiu: Move AIU_I2S_MISC hold setting to aiu-fifo-i2s (2021-12-14 17:15:32 +0000)
 > 
-> >> +       if (unlikely(ret)) {
-> >
-> > This is double weird. First of all, wtf unlikely is here? Second, I commented on the patch that does something with this driver and pointed out to the return 0 in some cases. This one seems a band aid.
-> >
-> > Unlikely to have an error.
+> are available in the Git repository at:
 > 
-> We don't use likely() and unlikely() here and there, you need to
-> provide a very good justification of its use.
+>   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-v5.17-2
 > 
-> For the record, I forwarded you my review against the code where you
-> can find much more issues with it that are subject to fix / amend.
+> for you to fetch changes up to f517ba4924ad026f2583553db02f3c8bc69de88b:
+> 
+>   ASoC: cs35l41: Add support for hibernate memory retention mode (2022-01-07 17:14:27 +0000)
+> 
+> ----------------------------------------------------------------
+> ASoC: Updates for v5.17
+> 
+> A few more updates for v5.17, nothing hugely stand out in the few days
+> since the initial pull request was sent.
 
-For this particular bug fix, Dan submitted a simpler patch and I took
-it now:
-  https://lore.kernel.org/r/20220111072232.GG11243@kili
+Thanks, pulled.
 
-
-thanks,
 
 Takashi
