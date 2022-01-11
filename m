@@ -4,82 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 442DEC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jan 2022 16:43:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A2BEC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jan 2022 16:45:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C81CF1AEE;
-	Wed, 12 Jan 2022 17:42:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C81CF1AEE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 271E21AEC;
+	Wed, 12 Jan 2022 17:45:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 271E21AEC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1642005792;
-	bh=fRrm1uZQrkX3U3iwIWdjmqt0HX6DyiPt9SbTXaP/1Wc=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1642005957;
+	bh=d1H/uOHb7hbe/NVKstK9IntyIqrjHuXgX6Hzr9Jq6ro=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Vnfaru2hkRtnTZUDxCYnvFPPWlB+qTuBhlvk6QF7LwBANOEK0mGXclwT0AkXEOstK
-	 Du1WRMG7nePnEFAL42doa1Unv9lDw9ME8mHsD1d7syKY3Kq7utADExXIKK1xpAkBbW
-	 QyRaDGJgPso98hJKtwiL1MdqOzbFKVhihU7pFlOs=
+	b=RPnBoSvtrGqqxKKhsPMU9/O9AOizkh5tYj9Vw+5QuKzu2srzbySH9PbhVAzoA/18Q
+	 WOMLdp9WBRSeG0jMDOR2TiwEhdpy6TwkLMtJiflgzWsIYQuh8FRdooIn6upmtlRNcc
+	 r7nCQRLInU4rmkkATOurPciCBO/Q1wixwCaJAX44=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 06D22F80272;
-	Wed, 12 Jan 2022 17:42:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BDE71F8025E;
+	Wed, 12 Jan 2022 17:45:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C8C6DF8026A; Wed, 12 Jan 2022 17:42:18 +0100 (CET)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 15AD5F80054; Tue, 11 Jan 2022 20:46:55 +0100 (CET)
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com
+ [IPv6:2a00:1450:4864:20::130])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CAFACF800B9;
- Wed, 12 Jan 2022 17:42:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CAFACF800B9
+ by alsa1.perex.cz (Postfix) with ESMTPS id BE78BF80054
+ for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2022 20:46:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE78BF80054
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="iknAcxxG"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1642005733; x=1673541733;
- h=subject:to:cc:references:from:message-id:date:
- mime-version:in-reply-to:content-transfer-encoding;
- bh=fRrm1uZQrkX3U3iwIWdjmqt0HX6DyiPt9SbTXaP/1Wc=;
- b=iknAcxxGLscXru+ne8FS/YwXCnkLjbn6glIxllA3r+FDpGaCnf6Bd4lb
- WOzy3w47Sd1lNfuSZ7qT+Thzg/NpsCeckebk0MLK7rFBpIXqhkMetqmCH
- f4QDzmjD7K8kTU3OPl14EVGibOc1FR+xUTP+VzhwH7boXVYXoW17EyDoL
- +4lMkbERzPGsN8KLx73m3RraDuEek5WhG1eVypknZtzmd5gw/AOGzRC2R
- jxmzbSrBzHQeyYfxA6a7nls4KnXx5uY0nOx8/a7I+asM9rWTVmJmusqqo
- pvRm8z/pJyDuJozU/tbR5hyPksj7leciY2ikIMyQydWy9cEspLrvka142 g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10224"; a="268124063"
-X-IronPort-AV: E=Sophos;i="5.88,282,1635231600"; d="scan'208";a="268124063"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Jan 2022 08:42:07 -0800
-X-IronPort-AV: E=Sophos;i="5.88,282,1635231600"; d="scan'208";a="529248449"
-Received: from rfriess-x1c10.amr.corp.intel.com (HELO [10.212.33.247])
- ([10.212.33.247])
- by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Jan 2022 08:42:05 -0800
-Subject: Re: [PATCH v2 0/1] firmware: mtk: add adsp ipc protocol for sof
-To: "allen-kh.cheng" <allen-kh.cheng@mediatek.com>,
- Matthias Brugger <matthias.bgg@gmail.com>, Mark Brown <broonie@kernel.org>
-References: <20220112113247.29135-1-allen-kh.cheng@mediatek.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <61ba06c7-74e4-03f9-2fe7-f12f862c7942@linux.intel.com>
-Date: Wed, 12 Jan 2022 10:42:04 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.14.0
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="DXpNeyKu"
+Received: by mail-lf1-x130.google.com with SMTP id s30so375323lfo.7
+ for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2022 11:46:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=date:from:to:cc:subject:message-id:user-agent:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=apllgcjqBKhHcPY4Sq8NPNisypZi4criwNIiRJZhedQ=;
+ b=DXpNeyKuZmuLb0+7GiV1ndEf+fbOh4LSggvF/lB4mjqSyH/QPDWvHKtW8+wfmRxaba
+ CMRbxQZXneFCfwegj3BP/5oSBWQReCyHOyGxajdzvQUBoc/sTr26Mziw45CgHIozWfbU
+ lxpsYR6UzLe9x1TAsegfCo9bZRPnIE6G6pQhLcO7CJTwjzQ457+Nhrkm/RVSlqtMK2VM
+ dK39vrS51bbgseP5/FX7eb/Z+dZxg009dY3os8jvlSn6J8p6UC3FJeRoQLnfCRCrijJI
+ YdG2tMitceKSqcEnJy5NTmwqx+p0WTFDeq24g7NLLLO4/LlAjF4KahWVH8c4X1I/QYZL
+ VGRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:user-agent
+ :references:mime-version:content-disposition:in-reply-to;
+ bh=apllgcjqBKhHcPY4Sq8NPNisypZi4criwNIiRJZhedQ=;
+ b=B2j5MsZ37PbEsUyGbC1Xqiar8q8DVG9U5kiqYCVOIE2H3rTTfwCqRjexGDz1QblSzL
+ +Uoz+jBa4mWU50qe/9NGaL76SwsuA68dunDgFoSrKW+d1YeEzRdqHPB6Dys5e0JdGWs+
+ B88wQE7R3Hh0ZUqq7Vb4QlI+079lSS4J96DToOVRQ2r8BgRlpa+kbHakT0HPpaF48gyv
+ exYVyNx3N8J8pmvsufYRKj4eKq4aMjKVnD9t/9SaZjC+V7LMtqjej+r5NS6WmfXeGaK6
+ DF8i+ryb1UdX/bI20I8o+6hr9sXEpHqQyi4eF1SBTWPUMgdd+zM9CqBq7Y6q3OUkGEs+
+ ij7w==
+X-Gm-Message-State: AOAM5325NXyLw+0WZGe+smujzKmk8xiIImjNSRidtOqEByDhVWicMr8o
+ 7JMs/vMu97ITc5CiSKkrEls=
+X-Google-Smtp-Source: ABdhPJwoxw5c19Gb3/UWLAH/Kj/4pGO1pTvvZ3zzqg+dVKHuPS8luPJvCmfXz9PXtbHVwDmXmeLV8w==
+X-Received: by 2002:ac2:4f02:: with SMTP id k2mr4319120lfr.187.1641930410857; 
+ Tue, 11 Jan 2022 11:46:50 -0800 (PST)
+Received: from localhost.localdomain (ntd06459.static.corbina.ru.
+ [95.31.14.149])
+ by smtp.gmail.com with ESMTPSA id k12sm1372993ljq.91.2022.01.11.11.46.50
+ (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+ Tue, 11 Jan 2022 11:46:50 -0800 (PST)
+Date: Tue, 11 Jan 2022 22:52:29 +0300
+From: Alexander Sergeyev <sergeev917@gmail.com>
+To: Jeremy Szu <jeremy.szu@canonical.com>
+Subject: Re: [PATCH 1/4] ALSA: hda/realtek: fix mute/micmute LEDs for HP 855 G8
+Message-ID: <20220111195229.a77wrpjclqwrx4bx@localhost.localdomain>
+User-Agent: mtt
+References: <20210519170357.58410-1-jeremy.szu@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <20220112113247.29135-1-allen-kh.cheng@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, cujomalainey@google.com,
- Kevin Hilman <khilman@baylibre.com>, Takashi Iwai <tiwai@suse.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Project_Global_Chrome_Upstream_Group@mediatek.com, tzungbi@google.com,
- linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- Daniel Baluta <daniel.baluta@nxp.com>, linux-kernel@vger.kernel.org,
- sound-open-firmware@alsa-project.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210519170357.58410-1-jeremy.szu@canonical.com>
+X-Mailman-Approved-At: Wed, 12 Jan 2022 17:45:04 +0100
+Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+ Kailang Yang <kailang@realtek.com>, open list <linux-kernel@vger.kernel.org>,
+ Huacai Chen <chenhuacai@kernel.org>, tiwai@suse.com,
+ Jian-Hong Pan <jhp@endlessos.org>, Hui Wang <hui.wang@canonical.com>,
+ PeiSen Hou <pshou@realtek.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,37 +101,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hello,
 
+On Thu, May 20, 2021 at 01:03:53AM +0800, Jeremy Szu wrote:
+>The HP EliteBook 855 G8 Notebook PC is using ALC285 codec which needs
+>ALC285_FIXUP_HP_MUTE_LED fixup to make it works. After applying the
+>fixup, the mute/micmute LEDs work good.
 
-On 1/12/22 5:32 AM, allen-kh.cheng wrote:
-> From: Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
-> 
-> This patch provides mtk adsp ipc support for sof.
-> 
-> ADSP IPC protocol offers (send/recv) interfaces using
-> mediatek-mailbox APIs.
-> 
-> changes since v1:
-> - add comments for mtk_adsp_ipc_send and mtk_adsp_ipc_recv
-> - remove unuseful MODULE_LICENSE
-> - change label name to out_free
+I've recently got HP EliteBook 855 G8 and it happens that neither micmute LED 
+nor speakers work (except rare cases, more on that later) in 5.16.0. The 
+corresponding ALC285_FIXUP_HP_MUTE_LED fixup is definitely applied (verified by 
+adding a printk into alc285_fixup_hp_mute_led).
 
-my comment was not on changing the label name, but making sure you only
-free something that was allocated by using *two* labels.
+What is the most interesting, both micmute LED and speakers do work on rare 
+boots. I've written some scripts to pick up sound from speakers using a 
+known-good USB microphone. Out of 709 boots today only 16 ended up with working 
+micmute LED and speakers.
 
-> 
-> Allen-KH Cheng (1):
->   firmware: mediatek: add adsp ipc protocol interface
-> 
->  drivers/firmware/Kconfig                      |   1 +
->  drivers/firmware/Makefile                     |   1 +
->  drivers/firmware/mediatek/Kconfig             |   9 +
->  drivers/firmware/mediatek/Makefile            |   2 +
->  drivers/firmware/mediatek/mtk-adsp-ipc.c      | 159 ++++++++++++++++++
->  .../linux/firmware/mediatek/mtk-adsp-ipc.h    |  65 +++++++
->  6 files changed, 237 insertions(+)
->  create mode 100644 drivers/firmware/mediatek/Kconfig
->  create mode 100644 drivers/firmware/mediatek/Makefile
->  create mode 100644 drivers/firmware/mediatek/mtk-adsp-ipc.c
->  create mode 100644 include/linux/firmware/mediatek/mtk-adsp-ipc.h
-> 
+Is there anything I can do to help with debugging of this problem?
+
+Initially reported at https://bugzilla.kernel.org/show_bug.cgi?id=215466
