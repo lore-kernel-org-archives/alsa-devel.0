@@ -4,75 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1E28C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jan 2022 02:30:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ADC1DC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jan 2022 02:52:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6E0431856;
-	Tue, 11 Jan 2022 03:29:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E0431856
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1FB6718C7;
+	Tue, 11 Jan 2022 03:51:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1FB6718C7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1641868199;
-	bh=DY7ydjH9yuzR7u2+fPUzkUM0bOAZmfHlyd6m+4428pM=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=R3GPp2UdBMKBJk5gIxcxawORrjD3rG9/yeK1DS03ECzV1a4yL726dRdW9yvyXCH3S
-	 NOXGfP3vi+RABDCQxsI4ZvUz4T7zh8GFh1pxqs34eoXeZb076XUuJ4zKSjjB/HTiVv
-	 vcPe/Va6Nk/mCih4cWS7FHaqlbSO81cStt5Jm7ic=
+	s=default; t=1641869523;
+	bh=Mth9/dR41w8NcBzIdKVkAKKJQLws8ZtZq4Q06QtgOSo=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=NuG8DJmHOpRt0kGUx9hunv3x1EodbsVI+Y3ZhTEDH9+wC4XU+wlJVPr0hF1t8wXSk
+	 qaENiZfG2DT+QRyOs5WHiwwJi1xpvDLWrxAWTA3mauvtGo7DWU2DrPz1wKH/zQGlks
+	 sgqZUcJnIqP5u9yYcPMV4luXC9QCzZUuJ29k+pnw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CEFF5F800A7;
-	Tue, 11 Jan 2022 03:29:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A072FF8025E;
+	Tue, 11 Jan 2022 03:51:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1DD74F80302; Tue, 11 Jan 2022 03:28:58 +0100 (CET)
-Received: from mail-oi1-f193.google.com (mail-oi1-f193.google.com
- [209.85.167.193])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B36F6F80118
- for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2022 03:28:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B36F6F80118
-Received: by mail-oi1-f193.google.com with SMTP id v124so13873125oie.0
- for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2022 18:28:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=MXIaIsWWEUQYqFn1KRmQY2r7PRSAKIBrP5Pdb7uhVuo=;
- b=A6kmnk193I8k09kZLZivnvCffducfCfUsTlE5dY7Wtfvxr4dG8x78T9hYtRYuHhWlQ
- AnRR+rLVTFBQS1nK6v+woVDgSAprji8cpJixrjNWatiuXRWL9gpxlVu3rwhacGkK5BUh
- 0AZHMeHXgBurPqyZzfa/UspoDWYBNd9VNd3B+u709CXzW9/WtXBD/vzcf1XKQLJD56Y2
- c6o8vOr5//kr1X4KeszLR1wGbHca3aH+L58DHawKEpxfhhiyIpLRyVLrhnybjGHr7bIe
- xzprTq4y98nK+hCK68Ngrx+LgOEeTHzRQIywVsFFGDjqrzti1hMAaUz8yv1+/M70FkiV
- UyNg==
-X-Gm-Message-State: AOAM533jA4UIGOcQw+TWg1V0lXdayG1eyIiGx3EgH1yI7wknZeYGBeg1
- MVZYpDe4qTdJu946+ZytTw==
-X-Google-Smtp-Source: ABdhPJxkI3oMGK2yHbgQ8hKosNWiPtlRTLOK9JgTyo4rMSbn5AjGqaFK85cFTVC/CO1SluiGNLCV1A==
-X-Received: by 2002:a05:6808:1147:: with SMTP id
- u7mr442549oiu.117.1641868129893; 
- Mon, 10 Jan 2022 18:28:49 -0800 (PST)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net.
- [66.90.148.213])
- by smtp.gmail.com with ESMTPSA id w1sm1672399oop.23.2022.01.10.18.28.48
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 10 Jan 2022 18:28:49 -0800 (PST)
-Received: (nullmailer pid 2019363 invoked by uid 1000);
- Tue, 11 Jan 2022 02:28:48 -0000
-Date: Mon, 10 Jan 2022 20:28:48 -0600
-From: Rob Herring <robh@kernel.org>
-To: Jayesh Choudhary <j-choudhary@ti.com>
-Subject: Re: [PATCH v5] ASoC: dt-bindings: davinci-mcasp: convert McASP
- bindings to yaml schema
-Message-ID: <YdzrYNG85uoiY2P7@robh.at.kernel.org>
-References: <20220103074427.4233-1-j-choudhary@ti.com>
+ id 79932F80302; Tue, 11 Jan 2022 03:51:10 +0100 (CET)
+Received: from cstnet.cn (smtp23.cstnet.cn [159.226.251.23])
+ by alsa1.perex.cz (Postfix) with ESMTP id 902F9F800A7
+ for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2022 03:51:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 902F9F800A7
+Received: from localhost.localdomain (unknown [124.16.138.126])
+ by APP-03 (Coremail) with SMTP id rQCowABnb1uO8NxhZQNmBQ--.51057S2;
+ Tue, 11 Jan 2022 10:50:54 +0800 (CST)
+From: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+ tony@atomide.com, sre@kernel.org, pavel@ucw.cz
+Subject: [PATCH] ASoC: cpcap: Check for NULL pointer after calling
+ of_get_child_by_name
+Date: Tue, 11 Jan 2022 10:50:48 +0800
+Message-Id: <20220111025048.524134-1-jiasheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220103074427.4233-1-j-choudhary@ti.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, broonie@kernel.org,
- lgirdwood@gmail.com, linux-kernel@vger.kernel.org, robh+dt@kernel.org,
- peter.ujfalusi@gmail.com
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: rQCowABnb1uO8NxhZQNmBQ--.51057S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrZr13KFy3XryxZryktF4fXwb_yoWfKwb_K3
+ y8ua9agry2q3WIqFZrZw12vrnYvrn3Cr1jqr4ktry7ta45AF4fJanxZr13ur4UWrs7WFy5
+ GF9I9rW2yr12gjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+ 9fnUUIcSsGvfJTRUUUb3xFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+ 6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+ A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+ Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr
+ 0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+ 6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
+ 0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E
+ 8cxan2IY04v7MxkIecxEwVAFwVW8JwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbV
+ WUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF
+ 67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42
+ IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1l
+ IxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvf
+ C2KfnxnUUI43ZEXa7VUbpwZ7UUUUU==
+X-Originating-IP: [124.16.138.126]
+X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
+Cc: alsa-devel@alsa-project.org, Jiasheng Jiang <jiasheng@iscas.ac.cn>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,66 +78,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 03 Jan 2022 13:14:27 +0530, Jayesh Choudhary wrote:
-> Convert the bindings for McASP controllers for TI SOCs from txt
-> to YAML schema.
-> 
-> Adds additional properties 'clocks', 'clock-names', 'power-domains',
-> '#sound-dai-cells' and 'port' which were missing from the txt file.
-> Removes properties 'sram-size-playback' and 'sram-size-capture'
-> since they are not used.
-> Adds 'dmas' and 'dma-names' in the example which were missing from
-> the txt file.
-> Changes 'interrupts' and 'interrupt-names' from optional to
-> required properties.
-> Changes 'op-modes', 'serial-dir' to optional properties as they are
-> not needed if the McASP is used only as GPIO.
-> Changes 'tdm-slots' to required property only for I2S operation mode.
-> 
-> Adds the yaml file in the 'MAINTAINERS' under the heading 'TEXAS
-> INSTRUMENTS ASoC DRIVERS'
-> 
-> Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
-> ---
-> Changelog:
-> v5:
-> - changes the commit message
-> - changes description for 'reg', 'op-mode', 'tx-num-evt',
->   'rx-num-evt' and 'interrupts'
-> - adds minimum and maximum for 'tdm-slots'
-> - removes default from 'serial-dir'
-> - removes maxItems from 'tdm-slots', 'tx-num-evt', 'rx-num-evt' and
->   'auxclk-fs-ratio' as they are of type uint32
-> - adds 'tdm-slots' as conditionally required property for I2S mode
->   of operation
-> 
-> v4:
-> - changes the commit message
-> - adds type and description to relevant properties
-> - changes maxItems for 'serial-dir'
-> - removes properties 'sram-size-playback' and 'sram-size-capture'
->   as they are not used
-> - removes 'function-gpios'
-> - removes 'num-serializer'
-> - marks 'tdm-slots', 'op-mode' and 'serial-dir' as optional properties
-> - adds the yaml file in MAINTAINERS
-> 
-> v3:
-> - remove maxItems from 'clock-names'
-> 
-> v2:
-> - changes the commit message
-> - modifies the properties 'clocks', 'clock-names', 'dma-names',
->   'dmas', 'interrupts' and 'interrupt-names' according to the
->   arm SOCs
-> - adds 'ports' and 'num-serializer' as node properties
-> 
->  .../bindings/sound/davinci-mcasp-audio.txt    |  86 --------
->  .../bindings/sound/davinci-mcasp-audio.yaml   | 201 ++++++++++++++++++
->  MAINTAINERS                                   |   1 +
->  3 files changed, 202 insertions(+), 86 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
->  create mode 100644 Documentation/devicetree/bindings/sound/davinci-mcasp-audio.yaml
-> 
+If the device does not exist, of_get_child_by_name() will return NULL
+pointer.
+And devm_snd_soc_register_component() does not check it.
+Also, I have noticed that cpcap_codec_driver has not been used yet.
+Therefore, it should be better to check it in order to avoid the future
+dereference of the NULL pointer.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Fixes: f6cdf2d3445d ("ASoC: cpcap: new codec")
+Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+---
+ sound/soc/codecs/cpcap.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/sound/soc/codecs/cpcap.c b/sound/soc/codecs/cpcap.c
+index 05bbacd0d174..f1c13f42e1c1 100644
+--- a/sound/soc/codecs/cpcap.c
++++ b/sound/soc/codecs/cpcap.c
+@@ -1667,6 +1667,8 @@ static int cpcap_codec_probe(struct platform_device *pdev)
+ {
+ 	struct device_node *codec_node =
+ 		of_get_child_by_name(pdev->dev.parent->of_node, "audio-codec");
++	if (!codec_node)
++		return -ENODEV;
+ 
+ 	pdev->dev.of_node = codec_node;
+ 
+-- 
+2.25.1
+
