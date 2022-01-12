@@ -4,69 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62154C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jan 2022 14:53:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 442DEC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jan 2022 16:43:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DE7661AC1;
-	Wed, 12 Jan 2022 15:52:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE7661AC1
+	by alsa0.perex.cz (Postfix) with ESMTPS id C81CF1AEE;
+	Wed, 12 Jan 2022 17:42:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C81CF1AEE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1641999179;
-	bh=4bXOYi2po9ChxQikcMSbKftEl0oPCwWdt//SzZM/Brw=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1642005792;
+	bh=fRrm1uZQrkX3U3iwIWdjmqt0HX6DyiPt9SbTXaP/1Wc=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pWpiCmaTJ7qCg8cwgQCBOb6GCTDEU2YS5gJYFqAcfYPYXuDmWggi03IfLori1Lwhx
-	 6tOgnWXavk32m84VyA7KIDbaaR8SxAO1tdRchAUko3AuQ1581g6HTSRXGp8M9aDQr+
-	 qnN1Cv2xofsMcc3Si6wVav48Td3DOq3RsA+r8rI0=
+	b=Vnfaru2hkRtnTZUDxCYnvFPPWlB+qTuBhlvk6QF7LwBANOEK0mGXclwT0AkXEOstK
+	 Du1WRMG7nePnEFAL42doa1Unv9lDw9ME8mHsD1d7syKY3Kq7utADExXIKK1xpAkBbW
+	 QyRaDGJgPso98hJKtwiL1MdqOzbFKVhihU7pFlOs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6D648F80054;
-	Wed, 12 Jan 2022 15:52:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 06D22F80272;
+	Wed, 12 Jan 2022 17:42:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 55A4CF8026A; Wed, 12 Jan 2022 15:52:07 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E0CE5F80054
- for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2022 15:52:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0CE5F80054
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="bktxcMZc"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id C8C6DF8026A; Wed, 12 Jan 2022 17:42:18 +0100 (CET)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 499CD60EBB;
- Wed, 12 Jan 2022 14:51:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F211DC36AEB;
- Wed, 12 Jan 2022 14:51:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1641999118;
- bh=4bXOYi2po9ChxQikcMSbKftEl0oPCwWdt//SzZM/Brw=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=bktxcMZcoQjM+6sw7PsLJyfpBB6iEo022Top+h/Wvin1+LF15ONBAlSiBfs/8+KEL
- kN3VyFrj5kSboT9tI3xORdj5YVkWkzjar9TmOQ6iFc5EwWR1fgGRVj3v3FlYaek74V
- SVJCcDXRPeUT3gOeXOQgCHGDSgIurJxZR8oX3uPk0k8De6CmAcj8akcPhzXZoK9qsb
- kKZGDp8wBO5WA73L50UlI83SqmWyy1o35htrig8E92ZYZdIs6DNsSTRUEuROZ1s9cJ
- LgQMq2hCFm/Oq0jwL5JGlkTeMRfrg8vAyfl0Fwxrvl1VFBOnhBBJf3PhZRC57ZvSU9
- f++9RPv3KzT+A==
-From: Mark Brown <broonie@kernel.org>
-To: perex@perex.cz, pavel@ucw.cz, sre@kernel.org,
- Jiasheng Jiang <jiasheng@iscas.ac.cn>, lgirdwood@gmail.com, tony@atomide.com,
- tiwai@suse.com
-In-Reply-To: <20220111025048.524134-1-jiasheng@iscas.ac.cn>
-References: <20220111025048.524134-1-jiasheng@iscas.ac.cn>
-Subject: Re: [PATCH] ASoC: cpcap: Check for NULL pointer after calling
- of_get_child_by_name
-Message-Id: <164199911671.1042212.15547958448190798911.b4-ty@kernel.org>
-Date: Wed, 12 Jan 2022 14:51:56 +0000
+ by alsa1.perex.cz (Postfix) with ESMTPS id CAFACF800B9;
+ Wed, 12 Jan 2022 17:42:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CAFACF800B9
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="iknAcxxG"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1642005733; x=1673541733;
+ h=subject:to:cc:references:from:message-id:date:
+ mime-version:in-reply-to:content-transfer-encoding;
+ bh=fRrm1uZQrkX3U3iwIWdjmqt0HX6DyiPt9SbTXaP/1Wc=;
+ b=iknAcxxGLscXru+ne8FS/YwXCnkLjbn6glIxllA3r+FDpGaCnf6Bd4lb
+ WOzy3w47Sd1lNfuSZ7qT+Thzg/NpsCeckebk0MLK7rFBpIXqhkMetqmCH
+ f4QDzmjD7K8kTU3OPl14EVGibOc1FR+xUTP+VzhwH7boXVYXoW17EyDoL
+ +4lMkbERzPGsN8KLx73m3RraDuEek5WhG1eVypknZtzmd5gw/AOGzRC2R
+ jxmzbSrBzHQeyYfxA6a7nls4KnXx5uY0nOx8/a7I+asM9rWTVmJmusqqo
+ pvRm8z/pJyDuJozU/tbR5hyPksj7leciY2ikIMyQydWy9cEspLrvka142 g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10224"; a="268124063"
+X-IronPort-AV: E=Sophos;i="5.88,282,1635231600"; d="scan'208";a="268124063"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 Jan 2022 08:42:07 -0800
+X-IronPort-AV: E=Sophos;i="5.88,282,1635231600"; d="scan'208";a="529248449"
+Received: from rfriess-x1c10.amr.corp.intel.com (HELO [10.212.33.247])
+ ([10.212.33.247])
+ by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 Jan 2022 08:42:05 -0800
+Subject: Re: [PATCH v2 0/1] firmware: mtk: add adsp ipc protocol for sof
+To: "allen-kh.cheng" <allen-kh.cheng@mediatek.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>, Mark Brown <broonie@kernel.org>
+References: <20220112113247.29135-1-allen-kh.cheng@mediatek.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <61ba06c7-74e4-03f9-2fe7-f12f862c7942@linux.intel.com>
+Date: Wed, 12 Jan 2022 10:42:04 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20220112113247.29135-1-allen-kh.cheng@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, cujomalainey@google.com,
+ Kevin Hilman <khilman@baylibre.com>, Takashi Iwai <tiwai@suse.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Project_Global_Chrome_Upstream_Group@mediatek.com, tzungbi@google.com,
+ linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ Daniel Baluta <daniel.baluta@nxp.com>, linux-kernel@vger.kernel.org,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,40 +95,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 11 Jan 2022 10:50:48 +0800, Jiasheng Jiang wrote:
-> If the device does not exist, of_get_child_by_name() will return NULL
-> pointer.
-> And devm_snd_soc_register_component() does not check it.
-> Also, I have noticed that cpcap_codec_driver has not been used yet.
-> Therefore, it should be better to check it in order to avoid the future
-> dereference of the NULL pointer.
+
+
+On 1/12/22 5:32 AM, allen-kh.cheng wrote:
+> From: Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
 > 
-> [...]
+> This patch provides mtk adsp ipc support for sof.
+> 
+> ADSP IPC protocol offers (send/recv) interfaces using
+> mediatek-mailbox APIs.
+> 
+> changes since v1:
+> - add comments for mtk_adsp_ipc_send and mtk_adsp_ipc_recv
+> - remove unuseful MODULE_LICENSE
+> - change label name to out_free
 
-Applied to
+my comment was not on changing the label name, but making sure you only
+free something that was allocated by using *two* labels.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-linus
-
-Thanks!
-
-[1/1] ASoC: cpcap: Check for NULL pointer after calling of_get_child_by_name
-      commit: f7a6021aaf02088870559f82fc13c58cda7fea1a
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+> 
+> Allen-KH Cheng (1):
+>   firmware: mediatek: add adsp ipc protocol interface
+> 
+>  drivers/firmware/Kconfig                      |   1 +
+>  drivers/firmware/Makefile                     |   1 +
+>  drivers/firmware/mediatek/Kconfig             |   9 +
+>  drivers/firmware/mediatek/Makefile            |   2 +
+>  drivers/firmware/mediatek/mtk-adsp-ipc.c      | 159 ++++++++++++++++++
+>  .../linux/firmware/mediatek/mtk-adsp-ipc.h    |  65 +++++++
+>  6 files changed, 237 insertions(+)
+>  create mode 100644 drivers/firmware/mediatek/Kconfig
+>  create mode 100644 drivers/firmware/mediatek/Makefile
+>  create mode 100644 drivers/firmware/mediatek/mtk-adsp-ipc.c
+>  create mode 100644 include/linux/firmware/mediatek/mtk-adsp-ipc.h
+> 
