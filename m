@@ -4,77 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C88FC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jan 2022 09:02:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BBBC1C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jan 2022 09:46:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 84B621A98;
-	Wed, 12 Jan 2022 10:01:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84B621A98
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6CCAD18A5;
+	Wed, 12 Jan 2022 10:45:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6CCAD18A5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1641978163;
-	bh=OOctC/WJvrvUusIpbqZbeVs1ealVVe3KRmSoy/SYgoc=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1641980808;
+	bh=X/aetbjtwG6Eo/UooYm1liGKpYGTApqNFp9IwYJme3M=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=V614o32uT4SmMPhutzE6NChkd6/iFsEy2HY3qLSwkAH5VfbRYbjuI+xmlFLWfmxvJ
-	 8XSKDO+qWe+HbY44a6lYVBLIi8vo3mJenOAKBHbYVq5z/vRjkEJkKnTRBcvNVesGHc
-	 YmR7TJoz1DnXpUkAUiw0yORluiFqR9roWp/g1b4E=
+	b=V9bKVvswQOa5lyJmrWs5hs9BlH+RZqGGLwMFBESiafjL80dHhpZJr265hTaNkKrIr
+	 noqN0IY8h2YJ0HzZAXasAyLK+4qIwOm3DJ9dVThntIBQliz1DEeVCfO39izlgPb4hh
+	 qYb6awk7+GNLrgA6/a7aA9fyGLNDIBsgVV6YQDEs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 121E4F80510;
-	Wed, 12 Jan 2022 10:00:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EE38CF800B9;
+	Wed, 12 Jan 2022 10:45:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3B8D1F80511; Wed, 12 Jan 2022 10:00:53 +0100 (CET)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 468DEF8026A; Wed, 12 Jan 2022 10:45:51 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B67CCF8025E
- for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2022 10:00:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B67CCF8025E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 902BCF800B9
+ for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2022 10:45:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 902BCF800B9
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="guQGL2ct"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1641978047; x=1673514047;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=OOctC/WJvrvUusIpbqZbeVs1ealVVe3KRmSoy/SYgoc=;
- b=guQGL2ctHfvZhueaT/Fv8hYybJgq3MXOEhzKO8T6CzlDsb3KW/3PEn0j
- fi+4L85eA/WWTrxdG3TG9FvZ8iGATb3lLEc1ZLr5CSGVQncn8tiy72Oto
- d9Wz57xrQ/OrJneEI3LqqaAmc3wqKf4Li+iZ6CEV3L2Ntb56tzHQ3GaUT
- a8kwHZWbT0mhWveVxip/RaYfweRNCjmbmg5/aSji8EgpR1JZBrmSVqdWp
- 7johnaFbgSNhrrWwQtDUZKQZG3hMpIkTeU5laDEhqZyTjSC3JPCaCMSDk
- ffreMZ9XPHywhh7mVSCLbhRWJ1I0fBAlryiD5SGBs7s8oGR6xs06jTaqL g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10224"; a="223674394"
-X-IronPort-AV: E=Sophos;i="5.88,282,1635231600"; d="scan'208";a="223674394"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Jan 2022 01:00:43 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,282,1635231600"; d="scan'208";a="691318397"
-Received: from dev2.igk.intel.com ([10.237.148.94])
- by orsmga005.jf.intel.com with ESMTP; 12 Jan 2022 01:00:41 -0800
-From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v2 3/3] ASoC: topology: Optimize
- soc_tplg_dapm_graph_elems_load behavior
-Date: Wed, 12 Jan 2022 18:00:30 +0100
-Message-Id: <20220112170030.569712-4-amadeuszx.slawinski@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220112170030.569712-1-amadeuszx.slawinski@linux.intel.com>
-References: <20220112170030.569712-1-amadeuszx.slawinski@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="qBs3n8dK"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="3mQqo6I4"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id B5B681F37F;
+ Wed, 12 Jan 2022 09:45:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1641980746; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=S0hfHUEfEqIPRrTdwX5rGhyplG9JrqVKgLku5Gt6wPY=;
+ b=qBs3n8dKfvZ6MccYUMHCxLTMgd48VTY7jZqxkZWh2ZIL3kw6/MwoPUeRdc5kKO1sO/VlOr
+ rROU7NuNz8OG8wRWK/AtGWE7mmKU2hhULaht2DMYNxLFNGTMLA2SVfQiXK8toGGN5hYXbf
+ zXZTdgBjmAHTNPApYI8Km+/+5vKNR24=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1641980746;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=S0hfHUEfEqIPRrTdwX5rGhyplG9JrqVKgLku5Gt6wPY=;
+ b=3mQqo6I44Z09ToqUhgHMdcRa1BhiT9XAaOSZreEzidOBBIAmHNHxbc5l6YRYr9+cPnFtsi
+ AxacVEExEg9R8pAw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 61703A3B84;
+ Wed, 12 Jan 2022 09:45:46 +0000 (UTC)
+Date: Wed, 12 Jan 2022 10:45:46 +0100
+Message-ID: <s5ho84h9tit.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Alexander Sergeyev <sergeev917@gmail.com>
+Subject: Re: [PATCH 1/4] ALSA: hda/realtek: fix mute/micmute LEDs for HP 855 G8
+In-Reply-To: <20220111195229.a77wrpjclqwrx4bx@localhost.localdomain>
+References: <20210519170357.58410-1-jeremy.szu@canonical.com>
+ <20220111195229.a77wrpjclqwrx4bx@localhost.localdomain>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+ Kailang Yang <kailang@realtek.com>, Jeremy Szu <jeremy.szu@canonical.com>,
+ Huacai Chen <chenhuacai@kernel.org>, open list <linux-kernel@vger.kernel.org>,
+ tiwai@suse.com, Hui Wang <hui.wang@canonical.com>,
+ PeiSen Hou <pshou@realtek.com>, Jian-Hong Pan <jhp@endlessos.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,121 +92,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Before commit "ASoC: topology: Change allocations to resource managed"
-soc_tplg_dapm_graph_elems_load() used to free routes on error. During
-migration to managed allocations the routes table was left as is, but
-looking at it again it is unnecessary, so remove routes table and just
-keep pointer to DAPM route currently being set up. Also remove outdated
-comments which keep describing old behavior of remove_route() freeing
-memory. While it still does some cleanup, it leaves freeing memory to
-framework.
+On Tue, 11 Jan 2022 20:52:29 +0100,
+Alexander Sergeyev wrote:
+> 
+> Hello,
+> 
+> On Thu, May 20, 2021 at 01:03:53AM +0800, Jeremy Szu wrote:
+> >The HP EliteBook 855 G8 Notebook PC is using ALC285 codec which needs
+> >ALC285_FIXUP_HP_MUTE_LED fixup to make it works. After applying the
+> >fixup, the mute/micmute LEDs work good.
+> 
+> I've recently got HP EliteBook 855 G8 and it happens that neither
+> micmute LED nor speakers work (except rare cases, more on that later)
+> in 5.16.0. The corresponding ALC285_FIXUP_HP_MUTE_LED fixup is
+> definitely applied (verified by adding a printk into
+> alc285_fixup_hp_mute_led).
+> 
+> What is the most interesting, both micmute LED and speakers do work on
+> rare boots. I've written some scripts to pick up sound from speakers
+> using a known-good USB microphone. Out of 709 boots today only 16
+> ended up with working micmute LED and speakers.
+> 
+> Is there anything I can do to help with debugging of this problem?
+> 
+> Initially reported at https://bugzilla.kernel.org/show_bug.cgi?id=215466
 
-Fixes: ff9226224437 ("ASoC: topology: Change allocations to resource managed")
-Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
-Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/soc-topology.c | 56 ++++++++++------------------------------
- 1 file changed, 14 insertions(+), 42 deletions(-)
+The problem is about the built-in drivers, or do you see the very same
+problem even with modules?  AFAIK, quite a few AMD platforms tend to
+have some issues with various devices showing initialization problems
+at the early boot.  Just reloading / rebinding the device later often
+helps.
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 9d24184f85f9..6c7dc571c006 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -1094,7 +1094,7 @@ static int soc_tplg_dapm_graph_elems_load(struct soc_tplg *tplg,
- {
- 	struct snd_soc_dapm_context *dapm = &tplg->comp->dapm;
- 	struct snd_soc_tplg_dapm_graph_elem *elem;
--	struct snd_soc_dapm_route **routes;
-+	struct snd_soc_dapm_route *route;
- 	int count, i;
- 	int ret = 0;
- 
-@@ -1108,24 +1108,10 @@ static int soc_tplg_dapm_graph_elems_load(struct soc_tplg *tplg,
- 	dev_dbg(tplg->dev, "ASoC: adding %d DAPM routes for index %d\n", count,
- 		hdr->index);
- 
--	/* allocate memory for pointer to array of dapm routes */
--	routes = kcalloc(count, sizeof(struct snd_soc_dapm_route *),
--			 GFP_KERNEL);
--	if (!routes)
--		return -ENOMEM;
--
--	/*
--	 * allocate memory for each dapm route in the array.
--	 * This needs to be done individually so that
--	 * each route can be freed when it is removed in remove_route().
--	 */
- 	for (i = 0; i < count; i++) {
--		routes[i] = devm_kzalloc(tplg->dev, sizeof(*routes[i]), GFP_KERNEL);
--		if (!routes[i])
-+		route = devm_kzalloc(tplg->dev, sizeof(*route), GFP_KERNEL);
-+		if (!route)
- 			return -ENOMEM;
--	}
--
--	for (i = 0; i < count; i++) {
- 		elem = (struct snd_soc_tplg_dapm_graph_elem *)tplg->pos;
- 		tplg->pos += sizeof(struct snd_soc_tplg_dapm_graph_elem);
- 
-@@ -1146,46 +1132,32 @@ static int soc_tplg_dapm_graph_elems_load(struct soc_tplg *tplg,
- 			break;
- 		}
- 
--		routes[i]->source = elem->source;
--		routes[i]->sink = elem->sink;
-+		route->source = elem->source;
-+		route->sink = elem->sink;
- 
- 		/* set to NULL atm for tplg users */
--		routes[i]->connected = NULL;
-+		route->connected = NULL;
- 		if (strnlen(elem->control, SNDRV_CTL_ELEM_ID_NAME_MAXLEN) == 0)
--			routes[i]->control = NULL;
-+			route->control = NULL;
- 		else
--			routes[i]->control = elem->control;
-+			route->control = elem->control;
- 
- 		/* add route dobj to dobj_list */
--		routes[i]->dobj.type = SND_SOC_DOBJ_GRAPH;
--		routes[i]->dobj.ops = tplg->ops;
--		routes[i]->dobj.index = tplg->index;
--		list_add(&routes[i]->dobj.list, &tplg->comp->dobj_list);
-+		route->dobj.type = SND_SOC_DOBJ_GRAPH;
-+		route->dobj.ops = tplg->ops;
-+		route->dobj.index = tplg->index;
-+		list_add(&route->dobj.list, &tplg->comp->dobj_list);
- 
--		ret = soc_tplg_add_route(tplg, routes[i]);
-+		ret = soc_tplg_add_route(tplg, route);
- 		if (ret < 0) {
- 			dev_err(tplg->dev, "ASoC: topology: add_route failed: %d\n", ret);
--			/*
--			 * this route was added to the list, it will
--			 * be freed in remove_route() so increment the
--			 * counter to skip it in the error handling
--			 * below.
--			 */
--			i++;
- 			break;
- 		}
- 
- 		/* add route, but keep going if some fail */
--		snd_soc_dapm_add_routes(dapm, routes[i], 1);
-+		snd_soc_dapm_add_routes(dapm, route, 1);
- 	}
- 
--	/*
--	 * free pointer to array of dapm routes as this is no longer needed.
--	 * The memory allocated for each dapm route will be freed
--	 * when it is removed in remove_route().
--	 */
--	kfree(routes);
--
- 	return ret;
- }
- 
--- 
-2.25.1
 
+Takashi
