@@ -4,69 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BBBC1C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jan 2022 09:46:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 308AEC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jan 2022 10:14:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6CCAD18A5;
-	Wed, 12 Jan 2022 10:45:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6CCAD18A5
+	by alsa0.perex.cz (Postfix) with ESMTPS id C87C318B7;
+	Wed, 12 Jan 2022 11:13:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C87C318B7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1641980808;
-	bh=X/aetbjtwG6Eo/UooYm1liGKpYGTApqNFp9IwYJme3M=;
+	s=default; t=1641982479;
+	bh=k5ofVPaXI+WYuqgi2UgjWrPHsuusyiezHiE7ipT/A6I=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=V9bKVvswQOa5lyJmrWs5hs9BlH+RZqGGLwMFBESiafjL80dHhpZJr265hTaNkKrIr
-	 noqN0IY8h2YJ0HzZAXasAyLK+4qIwOm3DJ9dVThntIBQliz1DEeVCfO39izlgPb4hh
-	 qYb6awk7+GNLrgA6/a7aA9fyGLNDIBsgVV6YQDEs=
+	b=vjMAO5yt7dqVZmPlUQmCaFYPoBTte5OzI8WSRW8MKXnKW6jUAtPcZMtj+Nnsz58HN
+	 xMjc/+QJ1moRsi2OEX9JY7IkqjkxGYui21C9FpT11tCKUfqZU2QAinsfPOMOxSL1/p
+	 K8LCWdYoNhfQbnJHdsGNRmQZy108F/CMVIglPf6Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EE38CF800B9;
-	Wed, 12 Jan 2022 10:45:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 55514F8025E;
+	Wed, 12 Jan 2022 11:13:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 468DEF8026A; Wed, 12 Jan 2022 10:45:51 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id 01F95F80236; Wed, 12 Jan 2022 11:13:47 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 902BCF800B9
- for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2022 10:45:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 902BCF800B9
+ by alsa1.perex.cz (Postfix) with ESMTPS id B0841F80236
+ for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2022 11:13:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0841F80236
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="qBs3n8dK"; 
+ header.b="XbR0K9Nh"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="3mQqo6I4"
+ header.b="JQH7OOvp"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id B5B681F37F;
- Wed, 12 Jan 2022 09:45:46 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 9EE2B212CC;
+ Wed, 12 Jan 2022 10:13:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1641980746; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1641982424; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=S0hfHUEfEqIPRrTdwX5rGhyplG9JrqVKgLku5Gt6wPY=;
- b=qBs3n8dKfvZ6MccYUMHCxLTMgd48VTY7jZqxkZWh2ZIL3kw6/MwoPUeRdc5kKO1sO/VlOr
- rROU7NuNz8OG8wRWK/AtGWE7mmKU2hhULaht2DMYNxLFNGTMLA2SVfQiXK8toGGN5hYXbf
- zXZTdgBjmAHTNPApYI8Km+/+5vKNR24=
+ bh=WAuqoJikNaKlAZZLVtTf/B6Ec8TCbF3YJ/K9z4Q4nGk=;
+ b=XbR0K9NhA6MzKVwWKrJO+4FaVIZs3RdMrC2xEEYk/I4YAcB90d8eWDd7VQNV7Q6BjPUnwC
+ W/GgGJRESiV5ymiU+mW4+AZn/aK/c5HfSwsNoBt3WkkZkbQ71x+JBj7A21hBByeZV5RGUp
+ jfC+wmgT+BHaWhlXXsb5sQrTeQOsvDI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1641980746;
+ s=susede2_ed25519; t=1641982424;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=S0hfHUEfEqIPRrTdwX5rGhyplG9JrqVKgLku5Gt6wPY=;
- b=3mQqo6I44Z09ToqUhgHMdcRa1BhiT9XAaOSZreEzidOBBIAmHNHxbc5l6YRYr9+cPnFtsi
- AxacVEExEg9R8pAw==
+ bh=WAuqoJikNaKlAZZLVtTf/B6Ec8TCbF3YJ/K9z4Q4nGk=;
+ b=JQH7OOvploefYR5ShciVwymR3bdB5HhWRsB0TeFzVD5+gEbCuhIxEeXCHZiGClg5VK+kmX
+ CYoV4Jr5mmaA0SBQ==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 61703A3B84;
- Wed, 12 Jan 2022 09:45:46 +0000 (UTC)
-Date: Wed, 12 Jan 2022 10:45:46 +0100
-Message-ID: <s5ho84h9tit.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id 9160AA3B8F;
+ Wed, 12 Jan 2022 10:13:44 +0000 (UTC)
+Date: Wed, 12 Jan 2022 11:13:44 +0100
+Message-ID: <s5hilup9s87.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Alexander Sergeyev <sergeev917@gmail.com>
 Subject: Re: [PATCH 1/4] ALSA: hda/realtek: fix mute/micmute LEDs for HP 855 G8
-In-Reply-To: <20220111195229.a77wrpjclqwrx4bx@localhost.localdomain>
+In-Reply-To: <20220112101249.ya73jvpmqmeh4ggg@localhost.localdomain>
 References: <20210519170357.58410-1-jeremy.szu@canonical.com>
  <20220111195229.a77wrpjclqwrx4bx@localhost.localdomain>
+ <s5ho84h9tit.wl-tiwai@suse.de>
+ <20220112101249.ya73jvpmqmeh4ggg@localhost.localdomain>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -92,36 +94,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 11 Jan 2022 20:52:29 +0100,
+On Wed, 12 Jan 2022 11:12:49 +0100,
 Alexander Sergeyev wrote:
 > 
-> Hello,
+> On Wed, Jan 12, 2022 at 10:45:46AM +0100, Takashi Iwai wrote:
+> > The problem is about the built-in drivers, or do you see the very
+> > same problem even with modules?
 > 
-> On Thu, May 20, 2021 at 01:03:53AM +0800, Jeremy Szu wrote:
-> >The HP EliteBook 855 G8 Notebook PC is using ALC285 codec which needs
-> >ALC285_FIXUP_HP_MUTE_LED fixup to make it works. After applying the
-> >fixup, the mute/micmute LEDs work good.
+> The problem is definitely there for the built-in drivers which I've
+> tested quite a lot. It's the primary usecase for me, as I tend to
+> build minimal device-specific and self-contained kernels in Gentoo.
 > 
-> I've recently got HP EliteBook 855 G8 and it happens that neither
-> micmute LED nor speakers work (except rare cases, more on that later)
-> in 5.16.0. The corresponding ALC285_FIXUP_HP_MUTE_LED fixup is
-> definitely applied (verified by adding a printk into
-> alc285_fixup_hp_mute_led).
-> 
-> What is the most interesting, both micmute LED and speakers do work on
-> rare boots. I've written some scripts to pick up sound from speakers
-> using a known-good USB microphone. Out of 709 boots today only 16
-> ended up with working micmute LED and speakers.
-> 
-> Is there anything I can do to help with debugging of this problem?
-> 
-> Initially reported at https://bugzilla.kernel.org/show_bug.cgi?id=215466
+> For builds with modules things are not very consistent. Live Ubuntu
+> with an older (and probably vendor-patched) kernel works just fine,
+> but when I pull Ubuntu kernel sources and build it with the mostly
+> same config (including modules) it boots with no sound in
+> Gentoo. Mostly same -- because I need nvme drivers to be built-in as I
+> don't use initrd.
 
-The problem is about the built-in drivers, or do you see the very same
-problem even with modules?  AFAIK, quite a few AMD platforms tend to
-have some issues with various devices showing initialization problems
-at the early boot.  Just reloading / rebinding the device later often
-helps.
+Sounds like some timing issue, then.  It's pretty hard to debug,
+unfortunately.
+
+You may try to get the codec proc dump with COEF by passing
+snd_hda_codec.dump_coef=1 module option for both working and
+non-working cases.  Check the difference of the COEF and apply the
+difference with hda-verb manually.
+
+
+> > AFAIK, quite a few AMD platforms tend to have some issues with
+> > various devices showing initialization problems at the early
+> > boot. Just reloading / rebinding the device later often helps.
+> 
+> Is it possible to do with the built-in drivers?
+
+You can unbind and re-bind the PCI (HD-audio controller) device via
+sysfs.
 
 
 Takashi
