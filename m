@@ -4,89 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BD49C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jan 2022 19:26:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8BF3C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jan 2022 19:53:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EB4151E7D;
-	Wed, 12 Jan 2022 20:26:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB4151E7D
+	by alsa0.perex.cz (Postfix) with ESMTPS id E8D341E73;
+	Wed, 12 Jan 2022 20:52:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8D341E73
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1642015617;
-	bh=oqb3porLNx+xL8LPszd6cBs+HKnYfYssZ8m+DqN9VEA=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=cVLdBYwcwbIzEybJ1T9D3xuArBp3GqL9JecALzeZxOCebVjxnI8x9/3/QsbM1tYRB
-	 xTDWRZ0ZVEw8fXk7EzhhcXb33cgus0oP1NMAzCt6WBl4Orb6E8Qpwvb2Wlz7mr6GJO
-	 0ezNNTqmqMm6ScPlukxLjVvZbLyiInesSshcXsh4=
+	s=default; t=1642017213;
+	bh=TxuvZi6RfXHBb4/PyWqWdHPlRlcCKt+lsNuJ1bXWUH8=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=LROK3Pb4WCjKwXKRve1YSoz+/zjN/GyrbTiHFZllkOS90NqfeeRndJqN0Xd/c1oG4
+	 ECTm/CFHI6VpwsT1Rzu7XrgBUf+Duq5HlP/OhOCNxP1Hyk8Y+1Z/D9qH7OFvU4pPQF
+	 ZpbtdZoSsXak/CCEuFgMxFzAbdqlXar2a8I7a+H0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 95357F80054;
-	Wed, 12 Jan 2022 20:26:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7B9AAF8025E;
+	Wed, 12 Jan 2022 20:52:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 37A2CF80279; Wed, 12 Jan 2022 20:26:04 +0100 (CET)
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com
- [IPv6:2607:f8b0:4864:20::82b])
+ id 83ED4F8026A; Wed, 12 Jan 2022 20:52:39 +0100 (CET)
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com
+ [IPv6:2a00:1450:4864:20::135])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 25031F80054
- for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2022 20:25:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 25031F80054
+ by alsa1.perex.cz (Postfix) with ESMTPS id ED186F80236
+ for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2022 20:52:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED186F80236
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="JblWP2i4"
-Received: by mail-qt1-x82b.google.com with SMTP id y17so4201602qtx.9
- for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2022 11:25:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=oqb3porLNx+xL8LPszd6cBs+HKnYfYssZ8m+DqN9VEA=;
- b=JblWP2i4DLSV2FyMNw36nU485keGSlI6pKsZ/cvydLVu6L3v0/mVIV+DFzlwPb5zqC
- 6HLM7hm1YzH1Bm7u5uyEHrtXlt5U/fWRwORt7j5BvzgJCFinC4s6CWBXrE1tP2avSuYZ
- IWhxIPyAx8uAN+UB91LIGGdJXalmzTlHGbYdqqBhTeTLmfFuvbICHwUxpeIts2ilbLfw
- 06/ABRLD/vLSsH1ewNN3zca9VKlBgkyEEWQz1M0vJ4W9qfu6+AKuqBKqej59yUksH5IT
- eMsYR86MqkHfuoX+UVtue+m28tXOamjsgWZJaWSF7Y7ke8I9FXDbih/bPJxLkDkdBZC0
- gK9w==
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="NCgDByj6"
+Received: by mail-lf1-x135.google.com with SMTP id p27so260427lfa.1
+ for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2022 11:52:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=He7BjM6dCMMuZ+d1PaptWEfTiiaWHjufRifL/qaqDNQ=;
+ b=NCgDByj6hejwY7MuOGvvvTVFdE0SIutf2M2dNIqTnLWvTYZrGZcHThTDRYKIyu0+1a
+ v9LpidK7TVBhU34aEpmdnnkJ0neebUciWxItaGoons6aj1nBdDkqm59faz57DZlHdAWi
+ LPIyKtOTp3ok2nd2Jmr9r68FSIQcIybhJZBVkeoeiwoVX52xpNi8jiWudtU4Rn0v5Vy4
+ 8DFPJi+9FV/6Y9fmLfT/OaaS+p9/y3rZQ9nG8x/au6mEU9hDtKvNeSt4FVZD88FDnGGC
+ lKUrV7JjzA4vV7c4xyOMrkgZtcCrKwwSFUyDXpWRqtpDfS1CU0A0cS5aJZY/mLd5/imR
+ 1kYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=oqb3porLNx+xL8LPszd6cBs+HKnYfYssZ8m+DqN9VEA=;
- b=Dxp+nYAVDbtOBoKL0nQmpEGh2oWDtw5VdMDxBHVfwU1jmT9AavGzEzzHwuyhPGh7D7
- E14O6VsySEmM/RfYPBzVNwn7QOXzMIhiJ+bWVZz0f7FtuvZUY8McVJHUt6Z4hIuv31q3
- fx8311n/DAkC4Doauf2/5q6+zWJ/s5I8spgxONoedxN5fCrvIL9Uy0qDz4HDh/vWvj2g
- aA0g7nd2hr3jSCWbqeo/afZ1Tbm+EJGzh4oaJWT+LhqL6lda+iWPDfLUqQ/oCxJATgWP
- OD8t2VhY2fMlYovZEG+K46naSS6ZZux9mn5up+4wEr07U6c/YniL/Dpq7U/qI/RsQlnD
- rkfQ==
-X-Gm-Message-State: AOAM533xknQMoMgshxqY6gGl9JBC7S3EnX8AxaXCOcdHeYP9o2pWKpH3
- g2NfHIuz4I+IjkM7w6imxQYw4hDtyyXUwYMLSy89Qg==
-X-Google-Smtp-Source: ABdhPJyY1HDRNDcRGH2Y8HwDgStmoOsQvc5QbGqYHkwVCXfhTw8Oky+Gr6lvVhzr2CXUzxeJWT5FMQtyKlZBVm29bSw=
-X-Received: by 2002:ac8:584a:: with SMTP id h10mr866476qth.615.1642015554496; 
- Wed, 12 Jan 2022 11:25:54 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=He7BjM6dCMMuZ+d1PaptWEfTiiaWHjufRifL/qaqDNQ=;
+ b=wvtkHXQ3NUjfkCqwtzEXdYLLI8KMXAkTPQw3PLv1XTHWtVBiFbKHWIfkwve84sbXUD
+ DsfAFS4T/UGiWknWDKp9eeU7NEZTyJMnf2LjamhsFj7PdO38rZKe90/AtzbnCJTRjW+j
+ L2gKVJVVaaHd1PpjfxlSxUpFL2UJZCjBcfFQKqsX3681BidaGf0g6lW3yI11g4zQ71xi
+ Ww1EeW9w2SOZi1Fsp2lCS1iWZli3h7fjZ6TGGOdaEyxBe2aTdhsIL9D087A2x+V2FMax
+ 3Xm8zDv9zsGQ/ijkLx8/5668WCRf0mTZjA4Nudo3gcvR0HR18PEEno91cqBiH57ii7jz
+ xg8Q==
+X-Gm-Message-State: AOAM531lYEj/aCm73DfL2qd7AEVf8JPKVyVlw3TYMU5TKPx56DpNXLM6
+ LoSwWWB4EiSTiwAoKqVy9Mr+HhLqvqg=
+X-Google-Smtp-Source: ABdhPJzk+NRGmXVUet+lyHm2CN5FnEA2iJ4erteSkUXSDA2UFv+FYnd+7IGa8JwGGNOUHUesuS051w==
+X-Received: by 2002:ac2:4c56:: with SMTP id o22mr945861lfk.558.1642017153504; 
+ Wed, 12 Jan 2022 11:52:33 -0800 (PST)
+Received: from localhost.localdomain (94-29-62-108.dynamic.spd-mgts.ru.
+ [94.29.62.108])
+ by smtp.gmail.com with ESMTPSA id k7sm75860lfu.141.2022.01.12.11.52.32
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 12 Jan 2022 11:52:33 -0800 (PST)
+From: Dmitry Osipenko <digetx@gmail.com>
+To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>
+Subject: [PATCH v1] ASoC: hdmi-codec: Fix OOB memory accesses
+Date: Wed, 12 Jan 2022 22:50:39 +0300
+Message-Id: <20220112195039.1329-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-References: <20220112113247.29135-1-allen-kh.cheng@mediatek.com>
- <20220112113247.29135-2-allen-kh.cheng@mediatek.com>
-In-Reply-To: <20220112113247.29135-2-allen-kh.cheng@mediatek.com>
-From: Curtis Malainey <cujomalainey@google.com>
-Date: Wed, 12 Jan 2022 11:25:42 -0800
-Message-ID: <CAOReqxga6hLXs4P2hD1k_X01AWesQBae5AhJTLtiK_3Ndex_Sw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] firmware: mediatek: add adsp ipc protocol interface
-To: "allen-kh.cheng" <allen-kh.cheng@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
- Linux-ALSA <alsa-devel@alsa-project.org>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Kevin Hilman <khilman@baylibre.com>, Takashi Iwai <tiwai@suse.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Project_Global_Chrome_Upstream_Group@mediatek.com,
- Tzung-Bi Shih <tzungbi@google.com>, Mark Brown <broonie@kernel.org>,
- linux-mediatek@lists.infradead.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Daniel Baluta <daniel.baluta@nxp.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- sound-open-firmware@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,23 +93,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Jan 12, 2022 at 3:43 AM allen-kh.cheng
-<allen-kh.cheng@mediatek.com> wrote:
->
-> From: Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
->
-> Some of mediatek processors contain
-> the Tensilica HiFix DSP for audio processing.
->
-> The communication between Host CPU and DSP firmware is
-> taking place using a shared memory area for message passing.
->
-> ADSP IPC protocol offers (send/recv) interfaces using
-> mediatek-mailbox APIs.
->
-> We use two mbox channels to implement a request-reply protocol.
->
-> Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
-> Signed-off-by: Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
+Correct size of iec_status array by changing it to the size of status
+array of the struct snd_aes_iec958. This fixes out-of-bounds slab
+read accesses made by memcpy() of the hdmi-codec driver. This problem
+is reported by KASAN.
 
-Reviewed-by: Curtis Malainey <cujomalainey@chromium.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ include/uapi/sound/asound.h   | 4 +++-
+ sound/soc/codecs/hdmi-codec.c | 2 +-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+index ef0cafe295b2..2d3e5df39a59 100644
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
+@@ -56,8 +56,10 @@
+  *                                                                          *
+  ****************************************************************************/
+ 
++#define AES_IEC958_STATUS_SIZE		24
++
+ struct snd_aes_iec958 {
+-	unsigned char status[24];	/* AES/IEC958 channel status bits */
++	unsigned char status[AES_IEC958_STATUS_SIZE]; /* AES/IEC958 channel status bits */
+ 	unsigned char subcode[147];	/* AES/IEC958 subcode bits */
+ 	unsigned char pad;		/* nothing */
+ 	unsigned char dig_subframe[4];	/* AES/IEC958 subframe bits */
+diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+index b61f980cabdc..b07607a9ecea 100644
+--- a/sound/soc/codecs/hdmi-codec.c
++++ b/sound/soc/codecs/hdmi-codec.c
+@@ -277,7 +277,7 @@ struct hdmi_codec_priv {
+ 	bool busy;
+ 	struct snd_soc_jack *jack;
+ 	unsigned int jack_status;
+-	u8 iec_status[5];
++	u8 iec_status[AES_IEC958_STATUS_SIZE];
+ };
+ 
+ static const struct snd_soc_dapm_widget hdmi_widgets[] = {
+-- 
+2.33.1
+
