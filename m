@@ -4,88 +4,128 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83CFCC433EF
-	for <alsa-devel@archiver.kernel.org>; Sat, 15 Jan 2022 07:56:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 903D6C433EF
+	for <alsa-devel@archiver.kernel.org>; Sat, 15 Jan 2022 08:03:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 156AF1931;
-	Sat, 15 Jan 2022 08:55:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 156AF1931
+	by alsa0.perex.cz (Postfix) with ESMTPS id ACFFC18CA;
+	Sat, 15 Jan 2022 09:02:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ACFFC18CA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1642233385;
-	bh=C5K5ZEju6fuQYIDdUUr6co2jLU+K2vBEmvJtHtMesnc=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1642233820;
+	bh=P+vCoi7wNnNx99gRdxFM+Ughrg6Num7mlnrxqHh626A=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RWW3Wfly1C7esXSrFyzMQRqh4yr0D+YJQjgcxkqXH9GT4Tq5X3/rctnISjyMRDgFk
-	 /XFIcGIEd6AriuJNCnWiQMsGDhzpKYW42Ti1ZBlbqtNHlvZyEEIpInMQcOYBf+GH7c
-	 lFfImFgiSuEAmVl0pr0xNxL5AJ2kIbnPwr/KnjrI=
+	b=V7rqxFoigjOp43uIZCOUtg5tRxwyWZNM8e8EnUKeG7WVkc3VOrVJ7TyUR+dirGC3I
+	 P8w7sJQS5eGtbYSmSWZ16D0dOJ54Iz06SXCoYCLLsbUfSgH2ZWmQWgr0VZwL0C8jq+
+	 JB2vNXnlIA77Hi4b069tNn57LhlSxNUogBBGK6AI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AAABFF80167;
-	Sat, 15 Jan 2022 08:55:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4C95EF80141;
+	Sat, 15 Jan 2022 09:02:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3167CF801D8; Sat, 15 Jan 2022 08:55:32 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 48392F8013F; Thu, 13 Jan 2022 21:18:09 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E35EEF80141
- for <alsa-devel@alsa-project.org>; Sat, 15 Jan 2022 08:55:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E35EEF80141
+ by alsa1.perex.cz (Postfix) with ESMTPS id BCF8BF80088
+ for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2022 21:18:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BCF8BF80088
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="ROou3wcQ"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="AOzgvSaH"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 60E7D1F3A7;
- Sat, 15 Jan 2022 07:55:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1642233328; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=vbSkh4UntaygzRJkDFV/8mX3nAqS8NhGLcZl6dVcAzY=;
- b=ROou3wcQitCIjHYh3ohJaecX2Bqbm5A6jZ1hLdxIexi6naaSlkrqzMJLb8bGC8BpuPyzt6
- z5aKi60VMasjoyUimEXE7uj+Bo7c7vkZFaYuRYTB9NrMwRIJaFyrlg+r73WubRYgU3J60r
- zXQ4QFiIc9UUgzlhru0H3pxG79iWpHg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1642233328;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=vbSkh4UntaygzRJkDFV/8mX3nAqS8NhGLcZl6dVcAzY=;
- b=AOzgvSaHSSj22/Z67r4IWoPtIQ/63wDzYwufUq6G0XneSSqKuCPoc6vpQj8VofncYD/gYb
- U8Mv8aSglT972ZBg==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 1221BA3B81;
- Sat, 15 Jan 2022 07:55:28 +0000 (UTC)
-Date: Sat, 15 Jan 2022 08:55:28 +0100
-Message-ID: <s5hsftp3027.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Alexander Sergeyev <sergeev917@gmail.com>
-Subject: Re: [PATCH 1/4] ALSA: hda/realtek: fix mute/micmute LEDs for HP 855 G8
-In-Reply-To: <20220114183720.n46wealclg6spxkp@localhost.localdomain>
-References: <20210519170357.58410-1-jeremy.szu@canonical.com>
- <20220111195229.a77wrpjclqwrx4bx@localhost.localdomain>
- <s5ho84h9tit.wl-tiwai@suse.de>
- <20220112101249.ya73jvpmqmeh4ggg@localhost.localdomain>
- <s5hilup9s87.wl-tiwai@suse.de>
- <20220112104827.4aymoth7ua65nwge@localhost.localdomain>
- <20220112201824.qmphnz2hx4frda6e@localhost.localdomain>
- <s5h8rvk85uy.wl-tiwai@suse.de>
- <20220113183141.kla37mbqmo4x6wxp@localhost.localdomain>
- <s5ha6fy46jt.wl-tiwai@suse.de>
- <20220114183720.n46wealclg6spxkp@localhost.localdomain>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>,
- Kailang Yang <kailang@realtek.com>, Jeremy Szu <jeremy.szu@canonical.com>,
- Huacai Chen <chenhuacai@kernel.org>, open list <linux-kernel@vger.kernel.org>,
- tiwai@suse.com, Hui Wang <hui.wang@canonical.com>,
- PeiSen Hou <pshou@realtek.com>, Jian-Hong Pan <jhp@endlessos.org>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="aTWLTeW2"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 75B8361DC1;
+ Thu, 13 Jan 2022 20:17:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD3FDC36AE9;
+ Thu, 13 Jan 2022 20:17:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1642105076;
+ bh=P+vCoi7wNnNx99gRdxFM+Ughrg6Num7mlnrxqHh626A=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=aTWLTeW2+US6XFjr0IeK4MW8hptcFgfTgzfAoEoi+BJwyaiRzFU6gH5hq1NL1ZlUv
+ /DQwqilofY0WLFvsF8d74DdUbIpzgs0bETzZqOJzFXqM64Lz0A/Qfeh8qxrvihqmVy
+ xgwPD3HPglDgErZ1Jz6iGQKBUyY3K9WksHonymEdM9xCxPTiVZtYmYrbnczDaLasWd
+ yrPtAk8U7+ExUAXePSh3l6uXki2GGHwlfI/cEpOiKZ11aT9awJXMGd4nhni8BCKEn6
+ OWBQwG61UMT1yA7Q8HHbxmZ9hYq2o1l8pNm+0IIwCWAjZRb04oZmTMKsZJ9SipUYqo
+ hfFABLCe7UChQ==
+Date: Thu, 13 Jan 2022 20:17:39 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH] driver core: platform: Rename
+ platform_get_irq_optional() to platform_get_irq_silent()
+Message-ID: <YeCI47ltlWzjzjYy@sirena.org.uk>
+References: <20220110201014.mtajyrfcfznfhyqm@pengutronix.de>
+ <YdyilpjC6rtz6toJ@lunn.ch>
+ <CAMuHMdWK3RKVXRzMASN4HaYfLckdS7rBvSopafq+iPADtGEUzA@mail.gmail.com>
+ <20220112085009.dbasceh3obfok5dc@pengutronix.de>
+ <CAMuHMdWsMGPiQaPS0-PJ_+Mc5VQ37YdLfbHr_aS40kB+SfW-aw@mail.gmail.com>
+ <20220112213121.5ruae5mxwj6t3qiy@pengutronix.de>
+ <Yd9L9SZ+g13iyKab@sirena.org.uk>
+ <20220113110831.wvwbm75hbfysbn2d@pengutronix.de>
+ <YeA7CjOyJFkpuhz/@sirena.org.uk>
+ <20220113194358.xnnbhsoyetihterb@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="R/43kckW41lQLx5e"
+Content-Disposition: inline
+In-Reply-To: <20220113194358.xnnbhsoyetihterb@pengutronix.de>
+X-Cookie: Slow day.  Practice crawling.
+X-Mailman-Approved-At: Sat, 15 Jan 2022 09:02:46 +0100
+Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Vignesh Raghavendra <vigneshr@ti.com>, KVM list <kvm@vger.kernel.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, linux-iio@vger.kernel.org,
+ Linus Walleij <linus.walleij@linaro.org>, Amit Kucheria <amitk@kernel.org>,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Guenter Roeck <groeck@chromium.org>, Thierry Reding <thierry.reding@gmail.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Linux I2C <linux-i2c@vger.kernel.org>,
+ "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-phy@lists.infradead.org,
+ netdev@vger.kernel.org, linux-spi <linux-spi@vger.kernel.org>,
+ Jiri Slaby <jirislaby@kernel.org>, Khuong Dinh <khuong@os.amperecomputing.com>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+ Kamal Dasu <kdasu.kdev@gmail.com>, Lee Jones <lee.jones@linaro.org>,
+ Bartosz Golaszewski <brgl@bgdev.pl>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Kishon Vijay Abraham I <kishon@ti.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+ bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+ Zhang Rui <rui.zhang@intel.com>, platform-driver-x86@vger.kernel.org,
+ Linux PWM List <linux-pwm@vger.kernel.org>, Robert Richter <rric@kernel.org>,
+ Saravanan Sekar <sravanhome@gmail.com>, Corey Minyard <minyard@acm.org>,
+ Linux PM list <linux-pm@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>, John Garry <john.garry@huawei.com>,
+ Takashi Iwai <tiwai@suse.com>, Peter Korsgaard <peter@korsgaard.com>,
+ William Breathitt Gray <vilhelm.gray@gmail.com>,
+ Mark Gross <markgross@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
+ Alex Williamson <alex.williamson@redhat.com>,
+ Sergey Shtylyov <s.shtylyov@omp.ru>, Borislav Petkov <bp@alien8.de>,
+ Jakub Kicinski <kuba@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+ openipmi-developer@lists.sourceforge.net,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Benson Leung <bleung@chromium.org>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>, linux-edac@vger.kernel.org,
+ Tony Luck <tony.luck@intel.com>, Richard Weinberger <richard@nod.at>,
+ Mun Yew Tham <mun.yew.tham@intel.com>, Eric Auger <eric.auger@redhat.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+ Cornelia Huck <cohuck@redhat.com>, Linux MMC List <linux-mmc@vger.kernel.org>,
+ Joakim Zhang <qiangqing.zhang@nxp.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+ Vinod Koul <vkoul@kernel.org>, James Morse <james.morse@arm.com>,
+ Zha Qipeng <qipeng.zha@intel.com>, Sebastian Reichel <sre@kernel.org>,
+ Niklas =?iso-8859-1?Q?S=F6derlund?= <niklas.soderlund@ragnatech.se>,
+ linux-mediatek@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,40 +141,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 14 Jan 2022 19:37:20 +0100,
-Alexander Sergeyev wrote:
-> 
-> On Fri, Jan 14, 2022 at 05:37:42PM +0100, Takashi Iwai wrote:
-> > > I assume that the referred repository is the one at [1]. I've tried
-> > > 081c73701ef0 "ALSA: hda: intel-dsp-config: reorder the config
-> > > table". It crashed with nearly identical logs.
-> >
-> > OK, then it's still something to do with the led cdev
-> > unregisteration.
-> >
-> > Could you try the patch below?
-> 
-> This patch solved the BUG problem. But after unbind/bind micmute LED stopped 
-> working. Speakers and mute LED are fine though.
 
-Does the corresponding sysfs entry exist in /sys/class/leds/*?
-And can you control LED over there?
+--R/43kckW41lQLx5e
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, Jan 13, 2022 at 08:43:58PM +0100, Uwe Kleine-K=F6nig wrote:
+> The subsystems regulator, clk and gpio have the concept of a dummy
+> resource. For regulator, clk and gpio there is a semantic difference
+> between the regular _get() function and the _get_optional() variant.
+> (One might return the dummy resource, the other won't. Unfortunately
+> which one implements which isn't the same for these three.) The
+> difference between platform_get_irq() and platform_get_irq_optional() is
+> only that the former might emit an error message and the later won't.
 
-> Dmesg:
-> snd_hda_intel 0000:05:00.6: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0015 address=0x1fffff800 flags=0x0020]
+Reviewed-by: Mark Brown <broonie@kernel.org>
 
-Hmm, that looks bad.  Something must be accessing out of bound.
+--R/43kckW41lQLx5e
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> snd_hda_codec_realtek hdaudioC1D0: out of range cmd 0:20:400:90170118
-> snd_hda_codec_realtek hdaudioC1D0: out of range cmd 0:20:400:411111f0
-> snd_hda_codec_realtek hdaudioC1D0: out of range cmd 0:20:400:270300
+-----BEGIN PGP SIGNATURE-----
 
-This seems to be a bogus COEF.  But I have no idea from where this
-comes.  The values look completely wrong.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmHgiOIACgkQJNaLcl1U
+h9Cg3gf/W4m9gden1y/CRqXbudeIS5o86rgl7aSHGJ8sspVowtin+xIScyALL6hN
+iMujjX/XY6/HIl9ExSDF2Tfn2qvHXOjYRspS4KcxU74XtxNXTkZt1hTFqDgiK6AN
+sxr4uJMtFAtJVkibADtU/hN92yX3wEJPVyXbhDI0q1RCHLJEfWISOhyYGOZzO+rg
++umqMRe7HjLgYT6LcWu/fIQbm73/hxtjK1fakHcMXEj4urJTi+HF3HpYHK1UjgRH
+XAnyMclm3MFYXN+hJ4tXt+oIfs/JY1DL5cPGBvF2aD/WZotIfoqehsstB2jcEjIv
+U2dlHZo6p71WHH31Zeg1/3AeucLIlA==
+=AUmf
+-----END PGP SIGNATURE-----
 
-I guess you'd need to put some debug prints to trace down how those
-are triggered...
-
-
-Takashi
+--R/43kckW41lQLx5e--
