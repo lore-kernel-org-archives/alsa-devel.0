@@ -4,81 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A4D6C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Jan 2022 17:09:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B7C7C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Jan 2022 17:09:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 685672006;
-	Thu, 13 Jan 2022 18:08:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 685672006
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8ACC92010;
+	Thu, 13 Jan 2022 18:08:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8ACC92010
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1642093747;
-	bh=HCuF+JLwAfO4pGgFL8/yewbZvLUNniZUOVrmwxPJQQA=;
+	s=default; t=1642093764;
+	bh=iKeK+QqRAHqhorJkx9Ay1XJnrqOvVZ/FeiwNL7DGehg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rrOlfRwwjZRY9UgP9PH3GJ1GuGtWULLCFN2QtRv7xkiKb5UxpOu981ZbJgXpUhL9k
-	 uoNscKC0oVVoCEiKC9BzSNHrqOH9ffjZjhOrRhqRB09btsukB78Aaz/0t4/YthmxLD
-	 KqVi1P2RhlvYuZF30sWI4r+YzmInBh3n7WP4OoFY=
+	b=lJa+mYnVeOTYltozzqxGkLadOo6R60Juc0Kw3GmgFQVOLP831mAHaslIPIsHACZYd
+	 jl4G0J7vupuAHEH2BxyxcPklC/rWwAZ5aBuz8FPNQRpqJZb4fnmIkNQXLqtZ4Wznxe
+	 kYRYmYB/cqrDkD1PBbkJwd32ZDw0M2rYidRI7W9c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D5765F8013F;
-	Thu, 13 Jan 2022 18:07:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6AE11F804FE;
+	Thu, 13 Jan 2022 18:07:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A3B17F8028D; Thu, 13 Jan 2022 18:07:42 +0100 (CET)
+ id DE482F804FB; Thu, 13 Jan 2022 18:07:43 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7BC25F8010B
- for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2022 18:07:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7BC25F8010B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 05346F8013F
+ for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2022 18:07:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05346F8013F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="ACXWgahF"
+ header.b="VHybBKuH"
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20DGAV41020998;
- Thu, 13 Jan 2022 11:07:34 -0600
+ by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20DGAV43020998;
+ Thu, 13 Jan 2022 11:07:36 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=Gec5JZr/Y9//uxGFGGdu2d0McsJMuIB7A7Bb0u1sRVw=;
- b=ACXWgahFZ9fSR7ggCRO6q6WcMrTFiJBdI0Mo9XOZdMQxb7wz7U6LwAWgh913BPE8ny53
- ++dJvUXvVAqfBzUH0DNiCF70XYgoNxmVEBFbi1Ih7y3gUxFGCDLNMku6mNaAL3od9ZxD
- AHPPzwQvd/xmXBVw9EXfPL8IZm5KI29gL6Lx+/MO/44tw75DrJhLYDWrB6rLG9s7Eyq8
- BECGMRxmjMoqlfyrgBwaAJggFXXUUyp5ls2PRSemMXGlWaaABVscxemndUV2InBavxK0
- 0e+FGQyKBJXzeR3dtJKsdZxz3H5cKzM73N+G/3f0veHc9PXrfq1eCBrRINu+xwUQE1d1 jg== 
+ bh=GSiBkVP9UmloE0oIArp77dF5D6A7HQmpsTBzlpdvMyY=;
+ b=VHybBKuHOuMu13cAI/5M7TPpZbLvYs2eSzykmjI8f57kUHaif2g9ZViibiMJjkb0P19u
+ aBOg+nOF+esO59I+eH6mB9c54P/ISMrj8nrh17LWstrUucXs5kvUKRCpE11pdHzaniJB
+ lOQYhp4hv7H+RFqjhoL7NS0mkbaivQEZ0kxBXjl7FwKEEt5cT93OYrHyyWACbqT2JUqo
+ IFwtaUTjuCrtFGjzHhSKYqFFD9/gZOAk+ndrNzHkuUe6H01z2BsK0iae3nnXgIuv37pz
+ RNafqMxCfNakLoUdA2e2znNnnZWW/HnPHPxEK4XquZqNkLmBBwBOs2M90PSIFfL6Ger8 hQ== 
 Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3djqcb026y-2
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3djqcb026y-4
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 13 Jan 2022 11:07:33 -0600
+ Thu, 13 Jan 2022 11:07:35 -0600
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Thu, 13 Jan
- 2022 17:07:31 +0000
+ 2022 17:07:32 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.18 via
- Frontend Transport; Thu, 13 Jan 2022 17:07:31 +0000
+ Frontend Transport; Thu, 13 Jan 2022 17:07:32 +0000
 Received: from aryzen.ad.cirrus.com (unknown [198.61.65.50])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4B04BB13;
- Thu, 13 Jan 2022 17:07:31 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 23A6AB0E;
+ Thu, 13 Jan 2022 17:07:32 +0000 (UTC)
 From: Lucas Tanure <tanureal@opensource.cirrus.com>
 To: "Rafael J . Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
  Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 3/5] ALSA: hda: cs35l41: Move cs35l41* calls to its own symbol
- namespace
-Date: Thu, 13 Jan 2022 17:07:26 +0000
-Message-ID: <20220113170728.1953559-3-tanureal@opensource.cirrus.com>
+Subject: [PATCH 5/5] ACPI / scan: Create platform device for CLSA0100
+Date: Thu, 13 Jan 2022 17:07:28 +0000
+Message-ID: <20220113170728.1953559-5-tanureal@opensource.cirrus.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220113170728.1953559-1-tanureal@opensource.cirrus.com>
 References: <20220113170728.1953559-1-tanureal@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: -focsmKxe0hIUvMgZBWBu82KdQqnWk2U
-X-Proofpoint-ORIG-GUID: -focsmKxe0hIUvMgZBWBu82KdQqnWk2U
+X-Proofpoint-GUID: 6hGjFieOBt8Dt08GJJouyJ77KoV70pmi
+X-Proofpoint-ORIG-GUID: 6hGjFieOBt8Dt08GJJouyJ77KoV70pmi
 X-Proofpoint-Spam-Reason: safe
 Cc: alsa-devel@alsa-project.org, Lucas Tanure <tanureal@opensource.cirrus.com>,
  patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
@@ -98,60 +97,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Create own namespace and avoid polluting the global namespace
+The ACPI device with CLSA0100 is a sound card with
+multiple instances of CS35L41 connected by I2C to
+the main CPU.
+
+We add an ID to the i2c_multi_instantiate_idsi list
+to enumerate all I2C slaves correctly.
 
 Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
 ---
- sound/pci/hda/cs35l41_hda.c     | 5 ++---
- sound/pci/hda/cs35l41_hda_i2c.c | 1 +
- sound/pci/hda/cs35l41_hda_spi.c | 1 +
- 3 files changed, 4 insertions(+), 3 deletions(-)
+ drivers/acpi/scan.c                          | 2 ++
+ drivers/platform/x86/i2c-multi-instantiate.c | 8 ++++++++
+ 2 files changed, 10 insertions(+)
 
-diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
-index 509a380f9be7..c4f25e48dcc0 100644
---- a/sound/pci/hda/cs35l41_hda.c
-+++ b/sound/pci/hda/cs35l41_hda.c
-@@ -514,7 +514,7 @@ int cs35l41_hda_probe(struct device *dev, const char *device_name, int id, int i
+diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+index c215bc8723d0..2a68031d953e 100644
+--- a/drivers/acpi/scan.c
++++ b/drivers/acpi/scan.c
+@@ -1753,6 +1753,8 @@ static bool acpi_device_enumeration_by_parent(struct acpi_device *device)
+ 	 */
+ 		{"BCM4752", },
+ 		{"LNV4752", },
++	/* Non-conforming _HID for Cirrus Logic already released */
++		{"CLSA0100", },
+ 		{}
+ 	};
  
- 	return ret;
- }
--EXPORT_SYMBOL_GPL(cs35l41_hda_probe);
-+EXPORT_SYMBOL_NS_GPL(cs35l41_hda_probe, SND_HDA_SCODEC_CS35L41);
+diff --git a/drivers/platform/x86/i2c-multi-instantiate.c b/drivers/platform/x86/i2c-multi-instantiate.c
+index 4956a1df5b90..a51a74933fa9 100644
+--- a/drivers/platform/x86/i2c-multi-instantiate.c
++++ b/drivers/platform/x86/i2c-multi-instantiate.c
+@@ -147,6 +147,12 @@ static const struct i2c_inst_data int3515_data[]  = {
+ 	{}
+ };
  
- int cs35l41_hda_remove(struct device *dev)
- {
-@@ -528,8 +528,7 @@ int cs35l41_hda_remove(struct device *dev)
- 
- 	return 0;
- }
--EXPORT_SYMBOL_GPL(cs35l41_hda_remove);
--
-+EXPORT_SYMBOL_NS_GPL(cs35l41_hda_remove, SND_HDA_SCODEC_CS35L41);
- 
- MODULE_DESCRIPTION("CS35L41 HDA Driver");
- MODULE_AUTHOR("Lucas Tanure, Cirrus Logic Inc, <tanureal@opensource.cirrus.com>");
-diff --git a/sound/pci/hda/cs35l41_hda_i2c.c b/sound/pci/hda/cs35l41_hda_i2c.c
-index 4a9462fb5c14..eeb387853ee3 100644
---- a/sound/pci/hda/cs35l41_hda_i2c.c
-+++ b/sound/pci/hda/cs35l41_hda_i2c.c
-@@ -62,5 +62,6 @@ static struct i2c_driver cs35l41_i2c_driver = {
- module_i2c_driver(cs35l41_i2c_driver);
- 
- MODULE_DESCRIPTION("HDA CS35L41 driver");
-+MODULE_IMPORT_NS(SND_HDA_SCODEC_CS35L41);
- MODULE_AUTHOR("Lucas Tanure <tanureal@opensource.cirrus.com>");
- MODULE_LICENSE("GPL");
-diff --git a/sound/pci/hda/cs35l41_hda_spi.c b/sound/pci/hda/cs35l41_hda_spi.c
-index 77426e96c58f..15345a72b9d1 100644
---- a/sound/pci/hda/cs35l41_hda_spi.c
-+++ b/sound/pci/hda/cs35l41_hda_spi.c
-@@ -59,5 +59,6 @@ static struct spi_driver cs35l41_spi_driver = {
- module_spi_driver(cs35l41_spi_driver);
- 
- MODULE_DESCRIPTION("HDA CS35L41 driver");
-+MODULE_IMPORT_NS(SND_HDA_SCODEC_CS35L41);
- MODULE_AUTHOR("Lucas Tanure <tanureal@opensource.cirrus.com>");
- MODULE_LICENSE("GPL");
++static const struct i2c_inst_data cs35l41_hda[] = {
++	{ "cs35l41-hda", IRQ_RESOURCE_GPIO, 0 },
++	{ "cs35l41-hda", IRQ_RESOURCE_GPIO, 0 },
++	{}
++};
++
+ /*
+  * Note new device-ids must also be added to i2c_multi_instantiate_ids in
+  * drivers/acpi/scan.c: acpi_device_enumeration_by_parent().
+@@ -155,6 +161,8 @@ static const struct acpi_device_id i2c_multi_inst_acpi_ids[] = {
+ 	{ "BSG1160", (unsigned long)bsg1160_data },
+ 	{ "BSG2150", (unsigned long)bsg2150_data },
+ 	{ "INT3515", (unsigned long)int3515_data },
++	/* Non-conforming _HID for Cirrus Logic already released */
++	{ "CLSA0100", (unsigned long)cs35l41_hda },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(acpi, i2c_multi_inst_acpi_ids);
 -- 
 2.34.1
 
