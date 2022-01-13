@@ -4,66 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59EEEC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Jan 2022 01:57:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE8AFC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Jan 2022 07:15:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B47411B12;
-	Thu, 13 Jan 2022 02:56:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B47411B12
+	by alsa0.perex.cz (Postfix) with ESMTPS id B0ACA1A46;
+	Thu, 13 Jan 2022 08:14:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0ACA1A46
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1642039036;
-	bh=pc5mjXXq2Wbie5CcpLERffYqZp3Uv2D2NGLR2ia5rZo=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Eq4tqynWhzPc5euMcejtTeLhjwmTVh93tvIUVM1zZrwpl3GimvwFDy8Vvu6FHrN4Q
-	 aGeWCgCcobMEZnRqQ7AI8fYqvlTrN442Y4ZeTYXXQYvbJsesRDM5+/NtFyikjaiSZ+
-	 itoTbUMLxamomGDo2oZsB+RSMZzng1njE3vuwKTA=
+	s=default; t=1642058128;
+	bh=Ew+nVGUYKhnxky8VOJG/+V2FzsIOG5hCpUMe/n/lNWs=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=M1+jvyKWjwOBq99uWdPhEhUlRjppxjwJd7hLVp1yzVAe9LRmaegi035KvpbQEjGU7
+	 Zmc18w7I+clowQH/gjGdXAB8nRZM1LxwPoqFkcIrVdSyjdi/sy4knXTrj8yKsNJ+GL
+	 WZEzwoLgtTJiVIBcbypmmVCX2pso+5fwOTyApL48=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4C965F8025E;
-	Thu, 13 Jan 2022 02:56:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4C452F80054;
+	Thu, 13 Jan 2022 08:14:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9681BF8026A; Thu, 13 Jan 2022 02:56:23 +0100 (CET)
-Received: from cstnet.cn (smtp25.cstnet.cn [159.226.251.25])
- by alsa1.perex.cz (Postfix) with ESMTP id D88D3F80236
- for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2022 02:56:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D88D3F80236
-Received: from localhost.localdomain (unknown [124.16.138.126])
- by APP-05 (Coremail) with SMTP id zQCowAD3_ye4ht9hf0sdBg--.22540S2;
- Thu, 13 Jan 2022 09:56:08 +0800 (CST)
-From: Jiasheng Jiang <jiasheng@iscas.ac.cn>
-To: broonie@kernel.org
-Subject: Re: Re: [PATCH] ASoC: codecs: Check for error pointer after calling
- devm_regmap_init_mmio
-Date: Thu, 13 Jan 2022 09:56:07 +0800
-Message-Id: <20220113015607.1124916-1-jiasheng@iscas.ac.cn>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: zQCowAD3_ye4ht9hf0sdBg--.22540S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7Xry8GF15uF1UtF17WFWfZrb_yoWfXrg_Ww
- 4FyF17Cw4UW3ZrJF1DtrnxZr98KF40qrZFyrn8GanxW3s3CFyrAr93u3WfZ34kCrZa9342
- gr4jvF4Iqr13tjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
- 9fnUUIcSsGvfJTRUUUb3xFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
- 6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
- A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
- 6F4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
- 4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2Wl
- Yx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbV
- WUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7Cj
- xVA2Y2ka0xkIwI1lc2xSY4AK67AK6w4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7
- v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF
- 1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIx
- AIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0D
- MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvf
- C2KfnxnUUI43ZEXa7VUbLiSPUUUUU==
-X-Originating-IP: [124.16.138.126]
-X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
-Cc: cezary.rojewski@intel.com, bgoswami@codeaurora.org,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Jiasheng Jiang <jiasheng@iscas.ac.cn>, tiwai@suse.com, lgirdwood@gmail.com,
- srinivas.kandagatla@linaro.org
+ id EA35EF8013F; Thu, 13 Jan 2022 08:14:36 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 40441F80054
+ for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2022 08:14:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40441F80054
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="SCPGJPa5"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="0N6bdpLi"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 62779212B9;
+ Thu, 13 Jan 2022 07:14:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1642058069; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=68BPiA9q74CYVpmbvqf14shCqahIvJ0BJK1IwaLqeeQ=;
+ b=SCPGJPa5Tq7C++7BQwJ193k7gp3DVEm2jBQNWEGliSztiScMm9VY30+I5Etev0yyWgsffd
+ rqQ0MhGCuTTsom0+h2SNv//ohxhb6rr62BBAPtdaMxKJzFy5XpAUjU45K/OVLh5CmtQA+u
+ tEjMwUYi5vdzcaqwNLovKyWHck27iG4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1642058069;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=68BPiA9q74CYVpmbvqf14shCqahIvJ0BJK1IwaLqeeQ=;
+ b=0N6bdpLiJjUWUzXNHa1SnPNHkoQh96eub9mYWeMAbFrMCZj9gRDZ5hXAD4qZt9e1t1AT8S
+ 617rNmvoMSS0H1CA==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 1AEA5A3B83;
+ Thu, 13 Jan 2022 07:14:29 +0000 (UTC)
+Date: Thu, 13 Jan 2022 08:14:29 +0100
+Message-ID: <s5h8rvk85uy.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Alexander Sergeyev <sergeev917@gmail.com>
+Subject: Re: [PATCH 1/4] ALSA: hda/realtek: fix mute/micmute LEDs for HP 855 G8
+In-Reply-To: <20220112201824.qmphnz2hx4frda6e@localhost.localdomain>
+References: <20210519170357.58410-1-jeremy.szu@canonical.com>
+ <20220111195229.a77wrpjclqwrx4bx@localhost.localdomain>
+ <s5ho84h9tit.wl-tiwai@suse.de>
+ <20220112101249.ya73jvpmqmeh4ggg@localhost.localdomain>
+ <s5hilup9s87.wl-tiwai@suse.de>
+ <20220112104827.4aymoth7ua65nwge@localhost.localdomain>
+ <20220112201824.qmphnz2hx4frda6e@localhost.localdomain>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+ Kailang Yang <kailang@realtek.com>, Jeremy Szu <jeremy.szu@canonical.com>,
+ Huacai Chen <chenhuacai@kernel.org>, open list <linux-kernel@vger.kernel.org>,
+ tiwai@suse.com, Hui Wang <hui.wang@canonical.com>,
+ PeiSen Hou <pshou@realtek.com>, Jian-Hong Pan <jhp@endlessos.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,25 +97,117 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Jan 12, 2022 at 10:20:34PM +0800, Mark Brown wrote:
->> The devm_regmap_init_mmio() may return error pointer under certain
->> circumstances, for example the possible failure of the kzalloc() in
->> regmap_mmio_gen_context(), which is called by devm_regmap_init_mmio().
->
-> This doesn't apply against current code, please check and resend.
+On Wed, 12 Jan 2022 21:18:24 +0100,
+Alexander Sergeyev wrote:
+> 
+> On Wed, Jan 12, 2022 at 01:48:28PM +0300, Alexander Sergeyev wrote:
+> >On Wed, Jan 12, 2022 at 11:13:44AM +0100, Takashi Iwai wrote:
+> >> You may try to get the codec proc dump with COEF by passing
+> >> snd_hda_codec.dump_coef=1 module option for both working and
+> >> non-working cases.
+> >>You can unbind and re-bind the PCI (HD-audio controller) device via sysfs.
+> >
+> >I'll try both options later today when able, thank you!
+> 
+> First, about unbind and bind via sysfs -- attempts to unbind the
+> HD-audio controller immediately trigger BUGs:
+> 
+> 05:00.6 Audio device [0403]: Advanced Micro Devices, Inc. [AMD] Family
+> 17h (Models 10h-1fh) HD Audio Controller [1022:15e3]
+> 
+> echo -n '0000:05:00.6' > /sys/bus/pci/drivers/snd_hda_intel/unbind
+> 
+> BUG: unable to handle page fault for address 000000000000173c
+> #PF: supervisor read access in kernel mode
+> #PF: error_code(0x0000) - not-present page
+> PGD 0 P4D 0
+> Oops: 0000 [#1] SMP NOPTI
+> CPU: 2 PID: 167 Comm: kworker/2:3 Tainted: G  T 5.16.0-dirty #3
+> Workqueue: events set_brightness_delayed
+> RIP: 0010:coef_micmute_led_set+0xf/0x60
+> ...
+> Call Trace:
+>   <TASK>
+>   set_brightness_delayed+0x6f/0xb0
+>   process_one_work+0x1e1/0x380
+>   worker_thread+0x4b/0x3b0
+>   ? rescuer_thread+0x370/0x370
+>   kthread+0x142/0x160
+>   ? set_kthread_struct+0x50/0x50
+>   ret_from_work+0x22/0x30
+>   </TASK>
+> 
+> Is it normal/expected?
 
-I checked linux-5.16, and don't think what I said is not against the
-latest code.
-The devm_regmap_init_mmio() is defined as devm_regmap_init_mmio_clk()
-in `include/linux/regmap.h`.
-And in the same file, the devm_regmap_init_mmio_clk() is defined as
-__devm_regmap_init_mmio_clk().
-Then, __devm_regmap_init_mmio_clk() -> regmap_mmio_gen_context() ->
-kzalloc().
-So I have no idea what's wrong.
-Maybe I didn't write the commit message clear.
-Please give me more detail.
+A sort of.  The sysfs unbind is little tested and may be still buggy
+if done during the stream operation.
 
-Sincerely thanks,
-Jiang
+To be sure, could you check with my latest sound.git tree for-linus
+branch?  There are a few fixes that harden the dynamic unbind.
 
+Though, the code path is from the leds class, and it might not be
+covered yet.  It's managed via devm, so it should have been cleared,
+but there may be still some ordering problem...
+
+> Second, about dump_coef. I've collected a bunch of samples from
+> /proc/asound/Generic_1/codec#0. Overall, there are 6 different
+> versions across 196 samples, two versions are with working sound (and
+> micmute LED).
+> 
+> 
+> Differences between _non-working_ versions:
+> 
+> Node 0x02 [Audio Output] wcaps 0x41d: Stereo Amp-Out
+> Amp-Out vals:  [0x3c 0x3c] // (!) OR [0x53 0x53]
+> Converter: stream=5, channel=0 // (!) OR stream=0, channel=0
+> 
+> Node 0x03 [Audio Output] wcaps 0x41d: Stereo Amp-Out
+> Amp-Out vals:  [0x3c 0x3c] // (!) OR [0x53 0x53]
+> Converter: stream=5, channel=0 // (!) OR stream=0, channel=0
+> 
+> Node 0x20 [Vendor Defined Widget] wcaps 0xf00040: Mono
+> Processing caps: benign=0, ncoeff=142
+> Coeff 0x0b: 0x8003 // (!) OR 0x7770
+> Coeff 0x19: 0x01e3 // (!) OR 0x21e3
+> 
+> Node 0x08 [Audio Input] wcaps 0x10051b: Stereo Amp-In
+> Amp-In vals:  [0x27 0x27] // (!) OR [0xa7 0xa7]
+> 
+> 
+> Differences between _working_ versions:
+> 
+> Node 0x20 [Vendor Defined Widget] wcaps 0xf00040: Mono
+> Processing caps: benign=0, ncoeff=142
+> Coeff 0x0b: 0x8003 // (!) OR 0x7770
+> 
+> 
+> Differences between _non_working_ and _working_ versions:
+> 
+> Node 0x20 [Vendor Defined Widget] wcaps 0xf00040: Mono
+> Processing caps: benign=0, ncoeff=142
+> Coeff 0x19: 0x01e3 OR 0x21e3 // (!) 0x8e11 for working versions
+> 
+> 
+> In short:
+> 1) Coeff 0x0b is flapping between 0x8003 and 0x7770 and does not seem
+> to have any effect in both non-working and working versions. Not sure
+> about this, maybe microphone is not operational since I haven't
+> checked it yet.
+> 2) Coeff 0x19 with 0x8e11 value makes speakers work. Non-working
+> values are 0x01e3 and 0x21e3.
+> 
+> Running the following commands makes speakers and micmute LED work
+> (0x20 is the node id, which is mentioned in the snippets above):
+> 
+> hda-verb /dev/snd/hwC1D0 0x20 SET_COEF_INDEX 0x19
+> hda-verb /dev/snd/hwC1D0 0x20 SET_PROC_COEF 0x8e11
+> 
+> Is it possible to somehow trace this particular coefficient to hunt
+> the timing issue? It would be great to have a proper fix.
+
+Those might be some codec init values, which aren't set up properly by
+whatever reason, e.g. it might need a bit more wait time for init,
+etc.  You can fix it rather by issuing those explicitly at the fixup.
+
+
+Takashi
