@@ -4,77 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1CABC433FE
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Jan 2022 18:40:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 771CFC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Jan 2022 18:40:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0DF712040;
-	Thu, 13 Jan 2022 19:39:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0DF712040
+	by alsa0.perex.cz (Postfix) with ESMTPS id BACEF2044;
+	Thu, 13 Jan 2022 19:39:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BACEF2044
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1642099219;
-	bh=iL2fgWOOuJEzuniZ3WuPssSOffY8aRg6eYScK3p39JQ=;
+	s=default; t=1642099235;
+	bh=5g26MQKibx5sVbKGA7CFhTcEXcX6VmlkTwTbFUe7AUw=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jGbPylhGSHHHDB3Q30+Y6HrJNvr1+Ed4o9R5f/ewWvlbOE0ewCOIJM63T6RLanqLm
-	 VqKaF7QattUX0ks5aZVDUm36Cq+YR+kBNE4o7QmuCuMta6vZy+Eyp/CXE8ofqNscta
-	 XaJKCoaA/1tYAP/wzWdTPvWAtGfZYGjjXckF2v4s=
+	b=psIBSIcC4U6lKBhdlXWsEHIGjEu6BzVHeBG8+P5zeVER/3bxdJf7kXe+uvYmjDV03
+	 NHlkWJSdYX9t9fODqIzTE1SW6B8osre2kIjNrNDtS5jhGneYvuHYtqcmsE1pmA2xGI
+	 uJg/f67ZQOTB6jfmRwcVVvPQqC8Vk1Qm2hmo0IFk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3EE62F8019B;
+	by alsa1.perex.cz (Postfix) with ESMTP id CA9BEF804FB;
 	Thu, 13 Jan 2022 19:38:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 376B5F804B1; Thu, 13 Jan 2022 19:38:57 +0100 (CET)
+ id 42A72F8019B; Thu, 13 Jan 2022 19:38:57 +0100 (CET)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 24AF2F80054
- for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2022 19:38:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24AF2F80054
+ by alsa1.perex.cz (Postfix) with ESMTPS id 218D5F8028D
+ for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2022 19:38:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 218D5F8028D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="TTkCYr8G"
+ header.b="Sx/dNDGI"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1642099131; x=1673635131;
+ t=1642099135; x=1673635135;
  h=subject:to:cc:references:from:message-id:date:
  mime-version:in-reply-to:content-transfer-encoding;
- bh=iL2fgWOOuJEzuniZ3WuPssSOffY8aRg6eYScK3p39JQ=;
- b=TTkCYr8G+b5L1L3+UCpmrY2KI5rUlx8+lpHDIOLehKLrbmYxlT2Gp3iq
- QtVtnJQoSyOvz/BPFHi7C9sq5TZid14or1ll7qNRWcbgPtbnbAWfuw2MZ
- nbrzqTruYajv89YhtfTFAQZBZM6Am3j0dUJzQ9IUgqlwluK6h1rgWH4/e
- LC/plQWwwES8Fb24W0xiJpYywVBrXCDPQ8gaw2C72GZHIyuc/yXnICol1
- xZwtqyXETtxC938/6zJmvKK3J6NeaGfcslzCkIaymAwSY5r35UopYbMoU
- G2KC53wkOnA01GQgS3b2G5biKMDZsPJdGxZzKArg5+22V3cWps07+Wuwq w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10226"; a="307431357"
-X-IronPort-AV: E=Sophos;i="5.88,286,1635231600"; d="scan'208";a="307431357"
+ bh=5g26MQKibx5sVbKGA7CFhTcEXcX6VmlkTwTbFUe7AUw=;
+ b=Sx/dNDGIgxK1KqmD2uDqlK8sb6v5boGGx2Rr7B9lWiRJ2PM2Dnn3k/pi
+ U9x4VUzDNEBg2b8F09ZaDVZKTcXo6qkX8Tq9qZwnufMHS3MBDl/qR4xAm
+ BmGDU2QKsfeiz8MXM7rqzUg1sfElo8SmK+hb7DMg676bGXXnMX9U1yzRj
+ ubLHCIgAwgB5OkZbKs7RSYHEDbtLxN7DkMdb+mdw8nAILh+iD76wh7AzG
+ JXI48clcgXpECLwj2fT2e3qf218Cwj9/KD7hl6X032VV+OlufeuOqRFbZ
+ wv6+0E308ZcjDixc6Qi6cXnfn1+iLMZgPZ9DblYXdCS/3FvFTPjyjsz63 w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10226"; a="307431369"
+X-IronPort-AV: E=Sophos;i="5.88,286,1635231600"; d="scan'208";a="307431369"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Jan 2022 10:38:45 -0800
-X-IronPort-AV: E=Sophos;i="5.88,286,1635231600"; d="scan'208";a="620699902"
+ 13 Jan 2022 10:38:48 -0800
+X-IronPort-AV: E=Sophos;i="5.88,286,1635231600"; d="scan'208";a="620699925"
 Received: from ypchen-mobl.amr.corp.intel.com (HELO [10.212.66.70])
  ([10.212.66.70])
  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Jan 2022 10:38:44 -0800
-Subject: Re: [PATCH v2 1/6] ASoC: amd: acp: Add generic support for PDM
- controller on ACP
+ 13 Jan 2022 10:38:47 -0800
+Subject: Re: [PATCH v2 5/6] ASoC: amd: acp: acp-legacy: Add DMIC dai link
+ support for Renoir
 To: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>, broonie@kernel.org,
  alsa-devel@alsa-project.org
 References: <20220113163348.434108-1-AjitKumar.Pandey@amd.com>
- <20220113163348.434108-2-AjitKumar.Pandey@amd.com>
+ <20220113163348.434108-6-AjitKumar.Pandey@amd.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <7d79a8a7-b9b5-8a0c-a140-810bc647927c@linux.intel.com>
-Date: Thu, 13 Jan 2022 12:34:19 -0600
+Message-ID: <090e073f-01d8-e0b1-646d-5ae1eceed7d9@linux.intel.com>
+Date: Thu, 13 Jan 2022 12:38:26 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Firefox/78.0 Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <20220113163348.434108-2-AjitKumar.Pandey@amd.com>
+In-Reply-To: <20220113163348.434108-6-AjitKumar.Pandey@amd.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Cc: Sunil-kumar.Dommati@amd.com, Arnd Bergmann <arnd@arndb.de>,
- Geert Uytterhoeven <geert+renesas@glider.be>, Basavaraj.Hiregoudar@amd.com,
+Cc: Sunil-kumar.Dommati@amd.com, Basavaraj.Hiregoudar@amd.com,
  Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
  open list <linux-kernel@vger.kernel.org>, Alexander.Deucher@amd.com,
  Vijendar.Mukunda@amd.com, V sujith kumar Reddy <vsujithkumar.reddy@amd.com>
@@ -93,174 +92,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-couple of nit-picks:
 
 
-> diff --git a/sound/soc/amd/acp/acp-pdm.c b/sound/soc/amd/acp/acp-pdm.c
-> new file mode 100644
-> index 000000000000..cb9bbd795eee
-> --- /dev/null
-> +++ b/sound/soc/amd/acp/acp-pdm.c
-> @@ -0,0 +1,181 @@
-> +// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
-> +//
-> +// This file is provided under a dual BSD/GPLv2 license. When using or
-> +// redistributing this file, you may do so under either license.
-> +//
-> +// Copyright(c) 2021 Advanced Micro Devices, Inc.
 
-2022?
+> diff --git a/sound/soc/amd/acp/acp-legacy-mach.c b/sound/soc/amd/acp/acp-legacy-mach.c
+> index 0ad1cf41b308..91140d15691b 100644
+> --- a/sound/soc/amd/acp/acp-legacy-mach.c
+> +++ b/sound/soc/amd/acp/acp-legacy-mach.c
+> @@ -23,10 +23,10 @@
+>  static struct acp_card_drvdata rt5682_rt1019_data = {
+>  	.hs_cpu_id = I2S_SP,
+>  	.amp_cpu_id = I2S_SP,
+> -	.dmic_cpu_id = NONE,
+> +	.dmic_cpu_id = DMIC,
+>  	.hs_codec_id = RT5682,
+>  	.amp_codec_id = RT1019,
+> -	.dmic_codec_id = NONE,
+> +	.dmic_codec_id = DMIC,
 
-> +//
-> +// Authors: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
-> +//	    Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-> +//
-> +
-> +/*
-> + * Generic Hardware interface for ACP Audio PDM controller
-> + */
-> +
-> +#include <linux/platform_device.h>
-> +#include <linux/module.h>
-> +#include <linux/err.h>
-> +#include <linux/io.h>
-> +#include <sound/pcm_params.h>
-> +#include <sound/soc.h>
-> +#include <sound/soc-dai.h>
-> +#include <linux/dma-mapping.h>
+this definition is not used?
 
-alphabetical order?
-
-> +
-> +#include "amd.h"
-> +
-> +#define DRV_NAME "acp-pdm"
-> +
-> +#define PDM_DMA_STAT		0x10
-> +#define PDM_DMA_INTR_MASK	0x10000
-> +#define PDM_DEC_64		0x2
-> +#define PDM_CLK_FREQ_MASK	0x07
-> +#define PDM_MISC_CTRL_MASK	0x10
-> +#define PDM_ENABLE		0x01
-> +#define PDM_DISABLE		0x00
-> +#define DMA_EN_MASK		0x02
-> +#define DELAY_US		5
-> +#define PDM_TIMEOUT		1000
-> +
-> +static int acp_dmic_dai_trigger(struct snd_pcm_substream *substream,
-> +			       int cmd, struct snd_soc_dai *dai)
-> +{
-> +	struct acp_stream *stream = substream->runtime->private_data;
-> +	struct device *dev = dai->component->dev;
-> +	struct acp_dev_data *adata = dev_get_drvdata(dev);
-> +	u32 physical_addr, size_dmic, period_bytes;
-> +	unsigned int dma_enable;
-> +	int ret = 0;
-> +
-> +	period_bytes = frames_to_bytes(substream->runtime,
-> +			substream->runtime->period_size);
-> +	size_dmic = frames_to_bytes(substream->runtime,
-> +			substream->runtime->buffer_size);
-> +
-> +	physical_addr = stream->reg_offset + MEM_WINDOW_START;
-> +
-> +	/* Init DMIC Ring buffer */
-> +	writel(physical_addr, adata->acp_base + ACP_WOV_RX_RINGBUFADDR);
-> +	writel(size_dmic, adata->acp_base + ACP_WOV_RX_RINGBUFSIZE);
-> +	writel(period_bytes, adata->acp_base + ACP_WOV_RX_INTR_WATERMARK_SIZE);
-> +	writel(0x01, adata->acp_base + ACPAXI2AXI_ATU_CTRL);
-
-could this be done in a .prepare step?
-
-> +
-> +	switch (cmd) {
-> +	case SNDRV_PCM_TRIGGER_START:
-> +	case SNDRV_PCM_TRIGGER_RESUME:
-> +	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-> +		dma_enable = readl(adata->acp_base + ACP_WOV_PDM_DMA_ENABLE);
-> +		if (!(dma_enable & DMA_EN_MASK)) {
-> +			writel(PDM_ENABLE, adata->acp_base + ACP_WOV_PDM_ENABLE);
-> +			writel(PDM_ENABLE, adata->acp_base + ACP_WOV_PDM_DMA_ENABLE);
-> +		}
-> +
-> +		ret = readl_poll_timeout_atomic(adata->acp_base + ACP_WOV_PDM_DMA_ENABLE,
-> +						dma_enable, (dma_enable & DMA_EN_MASK),
-> +						DELAY_US, PDM_TIMEOUT);
-> +		break;
-> +	case SNDRV_PCM_TRIGGER_STOP:
-> +	case SNDRV_PCM_TRIGGER_SUSPEND:
-> +	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-> +		dma_enable = readl(adata->acp_base + ACP_WOV_PDM_DMA_ENABLE);
-> +		if ((dma_enable & DMA_EN_MASK)) {
-> +			writel(PDM_DISABLE, adata->acp_base + ACP_WOV_PDM_ENABLE);
-> +			writel(PDM_DISABLE, adata->acp_base + ACP_WOV_PDM_DMA_ENABLE);
-> +
-> +		}
-> +
-> +		ret = readl_poll_timeout_atomic(adata->acp_base + ACP_WOV_PDM_DMA_ENABLE,
-> +						dma_enable, !(dma_enable & DMA_EN_MASK),
-> +						DELAY_US, PDM_TIMEOUT);
-
-is the _atomic needed?
-
-> +		break;
-> +	default:
-> +		ret = -EINVAL;
-> +		break;
+>  	.gpio_spkr_en = EN_SPKR_GPIO_GB,
+>  };
+>  
+> diff --git a/sound/soc/amd/acp/acp-mach-common.c b/sound/soc/amd/acp/acp-mach-common.c
+> index c9caade5cb74..b163e3a68166 100644
+> --- a/sound/soc/amd/acp/acp-mach-common.c
+> +++ b/sound/soc/amd/acp/acp-mach-common.c
+> @@ -438,6 +438,8 @@ SND_SOC_DAILINK_DEF(sof_sp,
+>  	DAILINK_COMP_ARRAY(COMP_CPU("acp-sof-sp")));
+>  SND_SOC_DAILINK_DEF(sof_dmic,
+>  	DAILINK_COMP_ARRAY(COMP_CPU("acp-sof-dmic")));
+> +SND_SOC_DAILINK_DEF(pdm_dmic,
+> +	DAILINK_COMP_ARRAY(COMP_CPU("acp-pdm-dmic")));
+>  
+>  int acp_sofdsp_dai_links_create(struct snd_soc_card *card)
+>  {
+> @@ -613,6 +615,19 @@ int acp_legacy_dai_links_create(struct snd_soc_card *card)
+>  			links[i].ops = &acp_card_maxim_ops;
+>  			links[i].init = acp_card_maxim_init;
+>  		}
+> +		i++;
 > +	}
 > +
-> +	return ret;
-> +}
-> +
-> +static int acp_dmic_hwparams(struct snd_pcm_substream *substream,
-> +	struct snd_pcm_hw_params *hwparams, struct snd_soc_dai *dai)
-> +{
-> +	struct device *dev = dai->component->dev;
-> +	struct acp_dev_data *adata = dev_get_drvdata(dev);
-> +	unsigned int dmic_ctrl, channels, ch_mask;
-> +
-> +	/* Enable default DMIC clk */
-> +	writel(PDM_CLK_FREQ_MASK, adata->acp_base + ACP_WOV_CLK_CTRL);
-> +	dmic_ctrl = readl(adata->acp_base + ACP_WOV_MISC_CTRL);
-> +	dmic_ctrl |= PDM_MISC_CTRL_MASK;
-> +	writel(dmic_ctrl, adata->acp_base + ACP_WOV_MISC_CTRL);
-
-.hw_params can be called multiple times, should this clock handling be
-done in a .prepare step?
-
-Or alternatively in .startup - this doesn't seem to depend on hardware
-parameters?
-
-> +
-> +	channels = params_channels(hwparams);
-> +	switch (channels) {
-> +	case 2:
-> +		ch_mask = 0;
-> +		break;
-> +	case 4:
-> +		ch_mask = 1;
-> +		break;
-> +	case 6:
-> +		ch_mask = 2;
-> +		break;
-> +	default:
-> +		dev_err(dev, "Invalid channels %d\n", channels);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (params_format(hwparams) != SNDRV_PCM_FORMAT_S32_LE) {
-> +		dev_err(dai->dev, "Invalid format:%d\n", params_format(hwparams));
-> +		return -EINVAL;
-> +	}
-> +
-> +	writel(ch_mask, adata->acp_base + ACP_WOV_PDM_NO_OF_CHANNELS);
-> +	writel(PDM_DEC_64, adata->acp_base + ACP_WOV_PDM_DECIMATION_FACTOR);
-> +
-> +	return 0;
-> +}
-
-> +MODULE_LICENSE("GPL v2");
-
-"GPL" is enough
-
-
+> +	if (drv_data->dmic_cpu_id == DMIC) {
+> +		links[i].name = "acp-dmic-codec";
+> +		links[i].id = DMIC_BE_ID;
+> +		links[i].codecs = dmic_codec;
+> +		links[i].num_codecs = ARRAY_SIZE(dmic_codec);
+> +		links[i].cpus = pdm_dmic;
+> +		links[i].num_cpus = ARRAY_SIZE(pdm_dmic);
+> +		links[i].platforms = platform_component;
+> +		links[i].num_platforms = ARRAY_SIZE(platform_component);
+> +		links[i].dpcm_capture = 1;
+>  	}
+>  
+>  	card->dai_link = links;
+> 
