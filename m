@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1481AC433F5
-	for <alsa-devel@archiver.kernel.org>; Sat, 15 Jan 2022 01:25:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7F76C433FE
+	for <alsa-devel@archiver.kernel.org>; Sat, 15 Jan 2022 01:25:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D72711F5E;
-	Sat, 15 Jan 2022 02:24:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D72711F5E
+	by alsa0.perex.cz (Postfix) with ESMTPS id EB4772026;
+	Sat, 15 Jan 2022 02:24:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB4772026
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1642209909;
-	bh=KE+1xRVMuiZlLZfJVaybpgvVtxSCq2cVwrqPntT13vE=;
+	s=default; t=1642209912;
+	bh=wF6uXjkDxXmRq6U6p/WnhMqw8MgE506nI4jm/toT8/Q=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mEQ6fHsJtLXgNWfvUDKG0UISqHZQRZg/9UlIqLJgEdqc36t1reoyu4KMs6tcUPjQX
-	 V+21llW05r8KAlfkLUcO9jB0ZkywatlqKUJDipJqUIRLkoPyzJA8s+l4D5aWvf/oz8
-	 6PZ79g0RYrz68LiZK3nBtH1scUKz7Pofo4GMqAKE=
+	b=J+ylRwpjh2d03DgNJtIOEnNacEu5QHMA+ivAnMC2emsQxLsoh98ZBKyqEJ4mO36IJ
+	 tWTSLciJk06QesgTbxA+FgHNvzGvQoDPyxps7yNvvY3ubeh4Hu0dzP4PoMjotypnmA
+	 tn/+n2VqxN04qlVTyM0AafsxZ9EjVhfOFdAEPPfs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 854A5F80515;
-	Sat, 15 Jan 2022 02:23:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3735AF80517;
+	Sat, 15 Jan 2022 02:23:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 77BB2F8027C; Sat, 15 Jan 2022 02:23:31 +0100 (CET)
+ id 2DB9AF80511; Sat, 15 Jan 2022 02:23:33 +0100 (CET)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 02D73F8027C
- for <alsa-devel@alsa-project.org>; Sat, 15 Jan 2022 02:23:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02D73F8027C
-X-IronPort-AV: E=Sophos;i="5.88,290,1635174000"; d="scan'208";a="107116841"
+ by alsa1.perex.cz (Postfix) with ESMTP id 2D1CCF8032B
+ for <alsa-devel@alsa-project.org>; Sat, 15 Jan 2022 02:23:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2D1CCF8032B
+X-IronPort-AV: E=Sophos;i="5.88,290,1635174000"; d="scan'208";a="107116851"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 15 Jan 2022 10:23:20 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 15 Jan 2022 10:23:27 +0900
 Received: from localhost.localdomain (unknown [10.226.36.204])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 37065417EAC6;
- Sat, 15 Jan 2022 10:23:18 +0900 (JST)
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 052E1417EAC6;
+ Sat, 15 Jan 2022 10:23:24 +0900 (JST)
 From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v2 2/5] ASoC: sh: rz-ssi: Make the data structures available
- before registering the handlers
-Date: Sat, 15 Jan 2022 01:23:00 +0000
-Message-Id: <20220115012303.29651-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH v2 4/5] ASoC: sh: rz-ssi: Change return type of
+ rz_ssi_stream_is_valid() to bool
+Date: Sat, 15 Jan 2022 01:23:02 +0000
+Message-Id: <20220115012303.29651-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20220115012303.29651-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 References: <20220115012303.29651-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
@@ -67,8 +67,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Initialize the spinlock and make the data structures available before
-registering the interrupt handlers.
+rz_ssi_stream_is_valid() never returns an int, it returns the result of
+a condition which is either true or false.
+
+While at it, drop "!!" as the expression is boolean.
 
 Reported-by: Pavel Machek <pavel@denx.de>
 Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
@@ -77,32 +79,32 @@ Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 v1->v2
 * No change
 ---
- sound/soc/sh/rz-ssi.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/soc/sh/rz-ssi.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/sh/rz-ssi.c b/sound/soc/sh/rz-ssi.c
-index 637802117c6c..89428945d48b 100644
+index 50699e94772b..2da43eecfb3e 100644
 --- a/sound/soc/sh/rz-ssi.c
 +++ b/sound/soc/sh/rz-ssi.c
-@@ -972,6 +972,9 @@ static int rz_ssi_probe(struct platform_device *pdev)
- 	ssi->playback.priv = ssi;
- 	ssi->capture.priv = ssi;
+@@ -188,14 +188,14 @@ static inline bool rz_ssi_is_dma_enabled(struct rz_ssi_priv *ssi)
+ 	return (ssi->playback.dma_ch && (ssi->dma_rt || ssi->capture.dma_ch));
+ }
  
-+	spin_lock_init(&ssi->lock);
-+	dev_set_drvdata(&pdev->dev, ssi);
-+
- 	/* Error Interrupt */
- 	ssi->irq_int = platform_get_irq_byname(pdev, "int_req");
- 	if (ssi->irq_int < 0)
-@@ -1019,8 +1022,6 @@ static int rz_ssi_probe(struct platform_device *pdev)
- 	pm_runtime_enable(&pdev->dev);
- 	pm_runtime_resume_and_get(&pdev->dev);
+-static int rz_ssi_stream_is_valid(struct rz_ssi_priv *ssi,
+-				  struct rz_ssi_stream *strm)
++static bool rz_ssi_stream_is_valid(struct rz_ssi_priv *ssi,
++				   struct rz_ssi_stream *strm)
+ {
+ 	unsigned long flags;
+-	int ret;
++	bool ret;
  
--	spin_lock_init(&ssi->lock);
--	dev_set_drvdata(&pdev->dev, ssi);
- 	ret = devm_snd_soc_register_component(&pdev->dev, &rz_ssi_soc_component,
- 					      rz_ssi_soc_dai,
- 					      ARRAY_SIZE(rz_ssi_soc_dai));
+ 	spin_lock_irqsave(&ssi->lock, flags);
+-	ret = !!(strm->substream && strm->substream->runtime);
++	ret = strm->substream && strm->substream->runtime;
+ 	spin_unlock_irqrestore(&ssi->lock, flags);
+ 
+ 	return ret;
 -- 
 2.17.1
 
