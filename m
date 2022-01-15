@@ -4,85 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9C43C433F5
-	for <alsa-devel@archiver.kernel.org>; Sat, 15 Jan 2022 07:01:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83CFCC433EF
+	for <alsa-devel@archiver.kernel.org>; Sat, 15 Jan 2022 07:56:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1A77E1B30;
-	Sat, 15 Jan 2022 08:00:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A77E1B30
+	by alsa0.perex.cz (Postfix) with ESMTPS id 156AF1931;
+	Sat, 15 Jan 2022 08:55:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 156AF1931
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1642230060;
-	bh=9QBcIgDaZwAHlE/HI0o32QBONEynNFncRr4zFnpVfQc=;
+	s=default; t=1642233385;
+	bh=C5K5ZEju6fuQYIDdUUr6co2jLU+K2vBEmvJtHtMesnc=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FiUM3pJj/bmIq6TbbCM6i0pxVfcmzcefIVNOhtI1wxTdpIiylqzwDl6xm5we0B25g
-	 z51G3oWibxcnUJLbJAZ2QFxZE2h3Cfe41XuqGBZHeyjasR6Lwz6KbQxP/lR03oCKZw
-	 yKEHCzyN6DP3ctxEffBWHUWAY/u6kj6V0KpM44zk=
+	b=RWW3Wfly1C7esXSrFyzMQRqh4yr0D+YJQjgcxkqXH9GT4Tq5X3/rctnISjyMRDgFk
+	 /XFIcGIEd6AriuJNCnWiQMsGDhzpKYW42Ti1ZBlbqtNHlvZyEEIpInMQcOYBf+GH7c
+	 lFfImFgiSuEAmVl0pr0xNxL5AJ2kIbnPwr/KnjrI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A2A95F8020C;
-	Sat, 15 Jan 2022 08:00:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AAABFF80167;
+	Sat, 15 Jan 2022 08:55:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7BF3EF8020C; Sat, 15 Jan 2022 08:00:06 +0100 (CET)
+ id 3167CF801D8; Sat, 15 Jan 2022 08:55:32 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 22EE6F800CE
- for <alsa-devel@alsa-project.org>; Sat, 15 Jan 2022 07:59:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22EE6F800CE
+ by alsa1.perex.cz (Postfix) with ESMTPS id E35EEF80141
+ for <alsa-devel@alsa-project.org>; Sat, 15 Jan 2022 08:55:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E35EEF80141
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="eIj4SZcQ"; 
+ header.b="ROou3wcQ"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="+OfH3tSQ"
+ header.b="AOzgvSaH"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 410171F394;
- Sat, 15 Jan 2022 06:59:57 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 60E7D1F3A7;
+ Sat, 15 Jan 2022 07:55:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1642229997; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1642233328; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=hPpaLHDUo6nY/syh5TXQg7yaeRb8DjB9j4D5fpeu5QU=;
- b=eIj4SZcQH/CYWjy15Su5W9fEiK6JctiCUhESZ71D31v4u3xY5Qu2QpM5PZ8dnwk6nquOsS
- Kr+MOJYpjTlyhe1ai5O7VrgI70i5Uv3Fb/+F6cAdrUwqUm4hrvVWVmT3f+GRKAG4P5Tldo
- j+Px+tp6RgvCNs160IurFCeWSYn3Edg=
+ bh=vbSkh4UntaygzRJkDFV/8mX3nAqS8NhGLcZl6dVcAzY=;
+ b=ROou3wcQitCIjHYh3ohJaecX2Bqbm5A6jZ1hLdxIexi6naaSlkrqzMJLb8bGC8BpuPyzt6
+ z5aKi60VMasjoyUimEXE7uj+Bo7c7vkZFaYuRYTB9NrMwRIJaFyrlg+r73WubRYgU3J60r
+ zXQ4QFiIc9UUgzlhru0H3pxG79iWpHg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1642229997;
+ s=susede2_ed25519; t=1642233328;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=hPpaLHDUo6nY/syh5TXQg7yaeRb8DjB9j4D5fpeu5QU=;
- b=+OfH3tSQvQJoCBCbbXCvvzgXhxSoR7XtPyWoqh7uYN+gOtDgu2UlPMoMAa+DBhz/lET7em
- on82127RVloDarAQ==
+ bh=vbSkh4UntaygzRJkDFV/8mX3nAqS8NhGLcZl6dVcAzY=;
+ b=AOzgvSaHSSj22/Z67r4IWoPtIQ/63wDzYwufUq6G0XneSSqKuCPoc6vpQj8VofncYD/gYb
+ U8Mv8aSglT972ZBg==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 1C240A3B81;
- Sat, 15 Jan 2022 06:59:57 +0000 (UTC)
-Date: Sat, 15 Jan 2022 07:59:57 +0100
-Message-ID: <s5hy23h32mq.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id 1221BA3B81;
+ Sat, 15 Jan 2022 07:55:28 +0000 (UTC)
+Date: Sat, 15 Jan 2022 08:55:28 +0100
+Message-ID: <s5hsftp3027.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH 5/5] ACPI / scan: Create platform device for CLSA0100
-In-Reply-To: <55cb8127-65e2-4d56-5127-2722c5bfe11f@redhat.com>
-References: <20220113170728.1953559-1-tanureal@opensource.cirrus.com>
- <20220113170728.1953559-5-tanureal@opensource.cirrus.com>
- <s5hee5a47et.wl-tiwai@suse.de>
- <CAJZ5v0ijGWNd9s-4mrFgK-QbPDhnj2K3DF+Z45t7ckV6ET0hpQ@mail.gmail.com>
- <55cb8127-65e2-4d56-5127-2722c5bfe11f@redhat.com>
+To: Alexander Sergeyev <sergeev917@gmail.com>
+Subject: Re: [PATCH 1/4] ALSA: hda/realtek: fix mute/micmute LEDs for HP 855 G8
+In-Reply-To: <20220114183720.n46wealclg6spxkp@localhost.localdomain>
+References: <20210519170357.58410-1-jeremy.szu@canonical.com>
+ <20220111195229.a77wrpjclqwrx4bx@localhost.localdomain>
+ <s5ho84h9tit.wl-tiwai@suse.de>
+ <20220112101249.ya73jvpmqmeh4ggg@localhost.localdomain>
+ <s5hilup9s87.wl-tiwai@suse.de>
+ <20220112104827.4aymoth7ua65nwge@localhost.localdomain>
+ <20220112201824.qmphnz2hx4frda6e@localhost.localdomain>
+ <s5h8rvk85uy.wl-tiwai@suse.de>
+ <20220113183141.kla37mbqmo4x6wxp@localhost.localdomain>
+ <s5ha6fy46jt.wl-tiwai@suse.de>
+ <20220114183720.n46wealclg6spxkp@localhost.localdomain>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
- <alsa-devel@alsa-project.org>, Lucas Tanure <tanureal@opensource.cirrus.com>,
- "Rafael J. Wysocki" <rafael@kernel.org>, patches@opensource.cirrus.com,
- Takashi Iwai <tiwai@suse.com>, Mark Gross <markgross@kernel.org>,
- ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
- Platform Driver <platform-driver-x86@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Len Brown <lenb@kernel.org>
+Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+ Kailang Yang <kailang@realtek.com>, Jeremy Szu <jeremy.szu@canonical.com>,
+ Huacai Chen <chenhuacai@kernel.org>, open list <linux-kernel@vger.kernel.org>,
+ tiwai@suse.com, Hui Wang <hui.wang@canonical.com>,
+ PeiSen Hou <pshou@realtek.com>, Jian-Hong Pan <jhp@endlessos.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,49 +101,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 14 Jan 2022 19:56:04 +0100,
-Hans de Goede wrote:
+On Fri, 14 Jan 2022 19:37:20 +0100,
+Alexander Sergeyev wrote:
 > 
-> Hi,
+> On Fri, Jan 14, 2022 at 05:37:42PM +0100, Takashi Iwai wrote:
+> > > I assume that the referred repository is the one at [1]. I've tried
+> > > 081c73701ef0 "ALSA: hda: intel-dsp-config: reorder the config
+> > > table". It crashed with nearly identical logs.
+> >
+> > OK, then it's still something to do with the led cdev
+> > unregisteration.
+> >
+> > Could you try the patch below?
 > 
-> On 1/14/22 18:51, Rafael J. Wysocki wrote:
-> > On Fri, Jan 14, 2022 at 5:19 PM Takashi Iwai <tiwai@suse.de> wrote:
-> >>
-> >> On Thu, 13 Jan 2022 18:07:28 +0100,
-> >> Lucas Tanure wrote:
-> >>>
-> >>> The ACPI device with CLSA0100 is a sound card with
-> >>> multiple instances of CS35L41 connected by I2C to
-> >>> the main CPU.
-> >>>
-> >>> We add an ID to the i2c_multi_instantiate_idsi list
-> >>> to enumerate all I2C slaves correctly.
-> >>>
-> >>> Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
-> >>
-> >> I think it's better to merge this from sound git tree together with
-> >> others in the patch set, presumably for rc1.
-> >>
-> >> It'd be great if ACPI people can take a review and give an ack/nack.
-> > 
-> > Hans, what do you think?
-> 
-> This patch (5/5) applies on top of:
-> 
-> https://lore.kernel.org/linux-acpi/20211210154050.3713-1-sbinding@opensource.cirrus.com/
-> 
-> Which still needs some work and which really should be merged
-> through the ACPI tree. IMHO it would be best to simply drop
-> this (5/5) from this series and move it to the v3 of the
-> series which I've linked to above.
-> 
-> 1-4 can be merged through the alsa tree independently of 5/5 AFAIK.
+> This patch solved the BUG problem. But after unbind/bind micmute LED stopped 
+> working. Speakers and mute LED are fine though.
 
-OK, that's fine.
-
-Lucas, could you submit v3 patches in the suggested way?
+Does the corresponding sysfs entry exist in /sys/class/leds/*?
+And can you control LED over there?
 
 
-thanks,
+> Dmesg:
+> snd_hda_intel 0000:05:00.6: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0015 address=0x1fffff800 flags=0x0020]
+
+Hmm, that looks bad.  Something must be accessing out of bound.
+
+> snd_hda_codec_realtek hdaudioC1D0: out of range cmd 0:20:400:90170118
+> snd_hda_codec_realtek hdaudioC1D0: out of range cmd 0:20:400:411111f0
+> snd_hda_codec_realtek hdaudioC1D0: out of range cmd 0:20:400:270300
+
+This seems to be a bogus COEF.  But I have no idea from where this
+comes.  The values look completely wrong.
+
+I guess you'd need to put some debug prints to trace down how those
+are triggered...
+
 
 Takashi
