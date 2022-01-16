@@ -4,69 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B580C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jan 2022 05:42:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2ADAC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jan 2022 07:04:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E44832EFC;
-	Thu, 20 Jan 2022 06:41:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E44832EFC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 084962EE5;
+	Thu, 20 Jan 2022 08:03:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 084962EE5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1642657332;
-	bh=n2chdbr+BdcpZ2Ap4JnU+Yn5y2Tg0DWqA8Cjh1BJA5Q=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=fmM6Uc9Yh9JBlPd7RUxGrYPwYxd/kqnN/utv+JlrfAjwAIPrjgUdEnCWQIt3bv5/8
-	 /lQVM4tOidqOgt5FwG6gx5gGFex1qw5Z+xn02ymVUUbasivu1jlyZjJVb/gcAsKFUq
-	 qNlTAj5Lr5P+xeIVcn3d0QRYm/Yx6ynsRjJ5ZDAw=
+	s=default; t=1642662268;
+	bh=KujYZ44NbqHewC3hStYnBx16eqgxm1SsBiD7vgCzy1A=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=jYqczTMOq0VrFi15xl/9V30UMdn439Alt639nU8aDKcexpQN4U9lLRS/NCEGHLJcH
+	 R/vlQGkzXkiPx0ukLs6dqCW2d622uVuW9DTq2GnmD0hKsB3IyR8X+No70Hf44RejaY
+	 H/Shuapvz+TzqwxbfokmWng2xcxvIV5iYbnv0/IM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 71280F80128;
-	Thu, 20 Jan 2022 06:41:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A01D3F80128;
+	Thu, 20 Jan 2022 08:03:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D7CD2F8012E; Thu, 20 Jan 2022 06:41:19 +0100 (CET)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ id 4AB4FF804CC; Sun, 16 Jan 2022 15:19:16 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id BA84AF800BF
+ for <alsa-devel@alsa-project.org>; Sun, 16 Jan 2022 15:19:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA84AF800BF
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=linuxfoundation.org
+ header.i=@linuxfoundation.org header.b="sKsNPdg/"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BD4EBF800F8
- for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2022 06:41:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BD4EBF800F8
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="AwU5Dsh3"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1642657276; x=1674193276;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=n2chdbr+BdcpZ2Ap4JnU+Yn5y2Tg0DWqA8Cjh1BJA5Q=;
- b=AwU5Dsh3TGJvSOoKP0C8EVr5iy+84/cH9275Bq9OQ3BueqcZod8kCf/A
- WB4NpcpILcnV/oWo3/z3h/lqcXzo7WlQx1EIXQBXUkvHFVTnUzM4vfnwq
- EyIdJ3htAGEFZwXmRy4SauHeWD+oFJIW4Amd1HgxvGwMowEbI+OO4rYBU
- hKqlszqivIDxvRC2mL8aOGDOrgtH5qK6+oAL7vf1RhMv6GNuKTVtq2gYc
- CuEMxnUwYU4qY1+yKB+fupNKeRmJyS1+5Y+781tCTGKOHmNL9J6iXml+H
- d3lTMr0bohsqN/piksvCeHgLA4+h/YWjixsQE9bxGTJxmabLUYjbH2RGi g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10232"; a="245473661"
-X-IronPort-AV: E=Sophos;i="5.88,301,1635231600"; d="scan'208";a="245473661"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Jan 2022 21:41:09 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,301,1635231600"; d="scan'208";a="626169920"
-Received: from macchian-builder.itwn.intel.com ([10.5.253.188])
- by orsmga004.jf.intel.com with ESMTP; 19 Jan 2022 21:41:07 -0800
-From: Mac Chiang <mac.chiang@intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH v2] ASoC: Intel: sof_rt5682: add 512FS MCLK clock configuration
-Date: Thu, 20 Jan 2022 00:40:12 -0500
-Message-Id: <20220120054012.15849-1-mac.chiang@intel.com>
-X-Mailer: git-send-email 2.20.1
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 2F7EB60F14;
+ Sun, 16 Jan 2022 14:19:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D360C36AE7;
+ Sun, 16 Jan 2022 14:19:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+ s=korg; t=1642342750;
+ bh=KujYZ44NbqHewC3hStYnBx16eqgxm1SsBiD7vgCzy1A=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=sKsNPdg/t/aehm0kbBx0+iaMt7Vs15thP7mY+lgsvv2wpHp7hhFp/CL3s/+VFunx8
+ VMGsJpG9T+206AG5qxqWiAVL+YwMP+lMdgO6G29sYG5yQOnXi5Wp9YcaTPGre6QZaH
+ 1Q5W85dO5PtMcGij5VwJ57avVdKo6t7UZumaWiEk=
+Date: Sun, 16 Jan 2022 15:19:06 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH 1/2] platform: make platform_get_irq_optional() optional
+ (summary)
+Message-ID: <YeQpWu2sUVOSaT9I@kroah.com>
+References: <20220110195449.12448-1-s.shtylyov@omp.ru>
+ <20220110195449.12448-2-s.shtylyov@omp.ru>
+ <20220115183643.6zxalxqxrhkfgdfq@pengutronix.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Cc: guennadi.liakhovetski@linux.intel.com, kai.vehmanen@linux.intel.com,
- pierre-louis.bossart@linux.intel.com, liam.r.girdwood@linux.intel.com,
- mac.chiang@intel.com, broonie@kernel.org, shumingf@realtek.com,
- brent.lu@intel.com
+In-Reply-To: <20220115183643.6zxalxqxrhkfgdfq@pengutronix.de>
+X-Mailman-Approved-At: Thu, 20 Jan 2022 08:03:35 +0100
+Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Vignesh Raghavendra <vigneshr@ti.com>, kvm@vger.kernel.org,
+ "Rafael J. Wysocki" <rafael@kernel.org>, linux-iio@vger.kernel.org,
+ Linus Walleij <linus.walleij@linaro.org>, Amit Kucheria <amitk@kernel.org>,
+ alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
+ Guenter Roeck <groeck@chromium.org>, Thierry Reding <thierry.reding@gmail.com>,
+ linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-phy@lists.infradead.org,
+ Lee Jones <lee.jones@linaro.org>, Khuong Dinh <khuong@os.amperecomputing.com>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+ Joakim Zhang <qiangqing.zhang@nxp.com>, Kamal Dasu <kdasu.kdev@gmail.com>,
+ Jiri Slaby <jirislaby@kernel.org>, Bartosz Golaszewski <brgl@bgdev.pl>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>, Tony Luck <tony.luck@intel.com>,
+ Kishon Vijay Abraham I <kishon@ti.com>, bcm-kernel-feedback-list@broadcom.com,
+ linux-serial@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+ Zhang Rui <rui.zhang@intel.com>, Matthias Brugger <matthias.bgg@gmail.com>,
+ platform-driver-x86@vger.kernel.org, linux-pwm@vger.kernel.org,
+ Robert Richter <rric@kernel.org>, Saravanan Sekar <sravanhome@gmail.com>,
+ Corey Minyard <minyard@acm.org>, linux-pm@vger.kernel.org,
+ Mauro Carvalho Chehab <mchehab@kernel.org>, John Garry <john.garry@huawei.com>,
+ Peter Korsgaard <peter@korsgaard.com>,
+ William Breathitt Gray <vilhelm.gray@gmail.com>,
+ Mark Gross <markgross@kernel.org>, linux-gpio@vger.kernel.org,
+ Alex Williamson <alex.williamson@redhat.com>, Mark Brown <broonie@kernel.org>,
+ Borislav Petkov <bp@alien8.de>, Eric Auger <eric.auger@redhat.com>,
+ Takashi Iwai <tiwai@suse.com>, openipmi-developer@lists.sourceforge.net,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Benson Leung <bleung@chromium.org>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
+ Sergey Shtylyov <s.shtylyov@omp.ru>, Richard Weinberger <richard@nod.at>,
+ Mun Yew Tham <mun.yew.tham@intel.com>, Hans de Goede <hdegoede@redhat.com>,
+ netdev@vger.kernel.org, Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+ Cornelia Huck <cohuck@redhat.com>, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+ linux-renesas-soc@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+ James Morse <james.morse@arm.com>, Zha Qipeng <qipeng.zha@intel.com>,
+ Sebastian Reichel <sre@kernel.org>,
+ Niklas =?iso-8859-1?Q?S=F6derlund?= <niklas.soderlund@ragnatech.se>,
+ linux-mediatek@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,48 +121,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-codec system clock source support 512FS MCLK synchronous directly, so
-no need to set PLL configuration when MCLK 24.576MHz.
+On Sat, Jan 15, 2022 at 07:36:43PM +0100, Uwe Kleine-König wrote:
+> A possible compromise: We can have both. We rename
+> platform_get_irq_optional() to platform_get_irq_silent() (or
+> platform_get_irq_silently() if this is preferred) and once all users are
+> are changed (which can be done mechanically), we reintroduce a
+> platform_get_irq_optional() with Sergey's suggested semantic (i.e.
+> return 0 on not-found, no error message printking).
 
-Suggested-by: Shuming Fan <shumingf@realtek.com>
-Signed-off-by: Mac Chiang <mac.chiang@intel.com>
----
-Changelog:
+Please do not do that as anyone trying to forward-port an old driver
+will miss the abi change of functionality and get confused.  Make
+build-breaking changes, if the way a function currently works is
+changed in order to give people a chance.
 
-v2:
-  - apply mclk configuration to both rt5682vd and rt5682vs
-  - Thanks to Brent by suggesting pll_in condition if MCLK or
-    PLL requires.
----
- sound/soc/intel/boards/sof_rt5682.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
+thanks,
 
-diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index bd6d2e7dea53..f4e833cbffe1 100644
---- a/sound/soc/intel/boards/sof_rt5682.c
-+++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -369,11 +369,16 @@ static int sof_rt5682_hw_params(struct snd_pcm_substream *substream,
- 
- 	pll_out = params_rate(params) * 512;
- 
--	/* Configure pll for codec */
--	ret = snd_soc_dai_set_pll(codec_dai, pll_id, pll_source, pll_in,
--				  pll_out);
--	if (ret < 0)
--		dev_err(rtd->dev, "snd_soc_dai_set_pll err = %d\n", ret);
-+	/* when MCLK is 512FS, no need to set PLL configuration additionally. */
-+	if (pll_in == pll_out)
-+		clk_id = RT5682S_SCLK_S_MCLK;
-+	else {
-+		/* Configure pll for codec */
-+		ret = snd_soc_dai_set_pll(codec_dai, pll_id, pll_source, pll_in,
-+					  pll_out);
-+		if (ret < 0)
-+			dev_err(rtd->dev, "snd_soc_dai_set_pll err = %d\n", ret);
-+	}
- 
- 	/* Configure sysclk for codec */
- 	ret = snd_soc_dai_set_sysclk(codec_dai, clk_id,
--- 
-2.20.1
-
+greg k-h
