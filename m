@@ -4,90 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33A74C433F5
-	for <alsa-devel@archiver.kernel.org>; Sun, 16 Jan 2022 01:01:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B01C4C433EF
+	for <alsa-devel@archiver.kernel.org>; Sun, 16 Jan 2022 02:04:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9D98C17D9;
-	Sun, 16 Jan 2022 02:01:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D98C17D9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 112FD17D0;
+	Sun, 16 Jan 2022 03:03:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 112FD17D0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1642294916;
-	bh=Mvm5vUyKs5kYAHhlRX+tJ2Sag3I2sUu9dnHTlvrb5qA=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=d3lgGVkc+qXC1dfsOq+Bf6jYqRZT+XxN6EUHuiO6m2RQFCY3S+Mircljj5xmsdsh+
-	 fifsYB9nFMnlD3V04HZi/Jlc1qbpQ02GqJ0X3yyuOISCs3txZJ9Htr/AMG7vqOR+Ks
-	 teSrJ2i0k8vANRWzx5bQxXvE4cRbgjyCKLslFF1A=
+	s=default; t=1642298674;
+	bh=WWvj996DJHkYdq0ay2teie3/0YF2EV2ek8GLsn216GI=;
+	h=From:Date:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=fEa9qB8DrEbXDfumronbFb1f6dvU+1CG1tf4yNBBBlZHZ/q+jFWsadT/CHv63BQpR
+	 qmk3NGWmVDNWabF/MmTV4htz3ijyunLuN+k59JyK37mgH2+VjXxcDTMhrbhkLMB8aP
+	 3n4dnqyf9ECaL8KWz5igjH5cbAaP+T4c+79UT89Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3134CF800B0;
-	Sun, 16 Jan 2022 02:01:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7AE6DF801D8;
+	Sun, 16 Jan 2022 03:03:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E1378F801D8; Sun, 16 Jan 2022 02:01:03 +0100 (CET)
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com
- [IPv6:2607:f8b0:4864:20::331])
+ id 168D8F801D8; Sun, 16 Jan 2022 03:03:40 +0100 (CET)
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com
+ [IPv6:2607:f8b0:4864:20::430])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C4A25F800B0
- for <alsa-devel@alsa-project.org>; Sun, 16 Jan 2022 02:01:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4A25F800B0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6E208F800B0
+ for <alsa-devel@alsa-project.org>; Sun, 16 Jan 2022 03:03:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6E208F800B0
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="a5S18Xee"
-Received: by mail-ot1-x331.google.com with SMTP id
- i5-20020a05683033e500b0057a369ac614so14989338otu.10
- for <alsa-devel@alsa-project.org>; Sat, 15 Jan 2022 17:01:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to;
- bh=YBBa0f6uaBxxNY+oyqspNIPd8utEcYl+VVFRbkH/mGA=;
- b=a5S18Xee1rcNhUncm74H3VPvYiV6zRmal2lkOkR00Dq6izPNR45h0tXo7VwRL/3juI
- 2sY6WO2+890VAbz/MY20PtKvpD7xe+8he2SJjqAc3Ko4WwW0w6zA4lMFTrPRkChpZ0Sc
- gzHyUpMuN/duzsRevaLZHUs47MCwp/bV9xDLfpyieHZoItcEsxcx0OSgYhQygxibQxFA
- zy0n/o7zpypnD+Fkvg2JAXVjzbuvq8ui1ovod8jcyy0EnsnMvQFR6SH3ynZK9TCg6lIC
- 6th9N4+9g6KR2cr5M8qjMWsObx/ch3ZIitQH7SZODAAqLa0OiTpOGCLueutosy4C7KgJ
- AxPg==
+ dkim=pass (2048-bit key) header.d=igorinstitute-com.20210112.gappssmtp.com
+ header.i=@igorinstitute-com.20210112.gappssmtp.com header.b="WyZmlmZp"
+Received: by mail-pf1-x430.google.com with SMTP id 78so6408235pfu.10
+ for <alsa-devel@alsa-project.org>; Sat, 15 Jan 2022 18:03:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=igorinstitute-com.20210112.gappssmtp.com; s=20210112;
+ h=message-id:from:date:subject:to:cc;
+ bh=EQpPofv3xqVheya0dgefCVu2/vpqFU87ufMossH4bmQ=;
+ b=WyZmlmZplLS8zfYwy8JZCK4zxfN773ZY67zGGv43GjSQbpeJp2sSAgI/ZzQRFrZlX8
+ FLGhVsixwvrXFVgbAFnRzNE2XDpwDgL3RdJBKMrnMeX3wEy3BExHbaC0/0F8+8s/3DZH
+ CTSNY4v5VwwBZ+ShgfXy//zoDrUSdpels/Of4iN1J/LeJdIhWr7KKqyWJIciF6d4q3B8
+ 83TePSuKskIQrH2nLGtK776rp8eH5TZo3lQPe8HP6YAJis4xdtEXw7hbw0oIAYcr0eyS
+ oMFBlWLTSX2SyU2eNq+YtA3vDwzc2fJv3bZjNnhZj0rAmUs4aX+2Zu6E0XQXrTZ3oKQ3
+ j/Eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=YBBa0f6uaBxxNY+oyqspNIPd8utEcYl+VVFRbkH/mGA=;
- b=aqq0ATkwoiVxEmsRFunHsreZmwFBdSapXJUVs8L015EtjMUD8iB6kZpjOfmXBo9Tga
- Z4rRAu0m0+Rjq6krF2VBTO7/k/1cxv6zev9Ho3TuE7FOUc9msRla1/0SvJvwiH2y9bD5
- QE3ZAQdiTbQPJ+MzIsdcj/PGGv4r9U5aoQY4YtA+8VaRjtBET/SoXBDd0XuiH88M1PZ+
- eVxNkhX8EhV1r2pWbzCXsIBpc1qRk7HCybNbpbBLc1/uSOf6TWMQJWgsRSY58kFsSMYk
- uiXZXYYsQ3v7UOaWGXOOK8Zrdakte6R7ppVsVoD9/YWM/hdQ/LnYcwsD8bOfTj5kGLnW
- yanA==
-X-Gm-Message-State: AOAM533iIrxHtRlEWPSsZJR9EgYdijtlYZFdz6XHVmqC7U+ej1L87XNu
- jPdZBhIzkyIi3Q4TkNK1rnY=
-X-Google-Smtp-Source: ABdhPJwneHI/BWmFI6/pTXeX5DxLB1K9NFI8Rn1jX2JIDFLlonxZEHbIy+G5dQJAbTZcjXI1QdH9pQ==
-X-Received: by 2002:a9d:1b0f:: with SMTP id l15mr11495663otl.38.1642294858045; 
- Sat, 15 Jan 2022 17:00:58 -0800 (PST)
-Received: from geday ([2804:7f2:8006:2ed4:dd1b:ebb9:4bfc:fcb3])
- by smtp.gmail.com with ESMTPSA id y2sm3907511otq.27.2022.01.15.17.00.56
+ h=x-gm-message-state:message-id:from:date:subject:to:cc;
+ bh=EQpPofv3xqVheya0dgefCVu2/vpqFU87ufMossH4bmQ=;
+ b=UOu8exGzsUya6Xjnx45o7XqH3W35xV8rW/Txa+Yz+HXZgYxTdiiDOmUCGzfUraIRnF
+ KuzbTbXlgpfHBrjjqAYMDXs8DsUhnaxIeXGgRxGAZ9Jz78CTe+jTM+TQ6lKXjsMlODUp
+ ahgI9+Bu3dhqZnU9MfXQvuprWNaMI+nAt8tnaVWklOC03mItVsbgBnIA4qh0WtnJys9Q
+ 4hEC5G4i1HluVx+vvxzltt6CXwFsbMUjNcgUrbMYmNgQkOM84KR5srovXPC2VA+x3axK
+ ioqOjxPk70mnSBqKNEEShb0Wi/Yev94pJ3ieQH0xaL08JQwRpuqP4kas7b0WHlv5mE8O
+ 03jw==
+X-Gm-Message-State: AOAM532TvUVyYvhoLc6C0nc93qs2rPl5aTqAjeGnlokgnKT9j1zPDT49
+ nok4krjw5QhflkDjg4K8SBM9wPjPsKztDFrs
+X-Google-Smtp-Source: ABdhPJzi4Nm0DAxYTAaquO6l69+WqV4eA7FwkV4Kp5hunLWNzSWKwTbscVwRpgaBdnUYKJtCnkMnRg==
+X-Received: by 2002:aa7:9ec7:0:b0:4be:19fa:f0f3 with SMTP id
+ r7-20020aa79ec7000000b004be19faf0f3mr15342794pfq.8.1642298612838; 
+ Sat, 15 Jan 2022 18:03:32 -0800 (PST)
+Received: from localhost ([121.99.145.49])
+ by smtp.gmail.com with ESMTPSA id c10sm9761822pfl.200.2022.01.15.18.03.31
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 15 Jan 2022 17:00:57 -0800 (PST)
-Date: Sat, 15 Jan 2022 22:00:58 -0300
-From: Geraldo Nascimento <geraldogabriel@gmail.com>
-To: Nandakumar Edamana <nandakumar@nandakumar.co.in>
-Subject: Re: Behringer UMC202HD issues and a partial solution
-Message-ID: <YeNuSip2RcH4DlV+@geday>
-References: <d61a41eb-a820-b1ca-dcf6-f447f80494a8@nandakumar.co.in>
- <YeB2zEnPlwVEKbTI@geday>
- <e1a7d67d-9862-3085-4e01-091ca443d2df@nandakumar.co.in>
- <YeDw89KZOh4yG7c8@geday>
- <e30962b0-931c-83b4-12fb-aa5e377b4f4d@nandakumar.co.in>
- <YeEp5xUjf1DAeGTY@geday>
- <2137c7e3-805b-7371-6042-1c2d5f61e302@nandakumar.co.in>
- <YeH5FlQzM9PNm6s0@geday>
- <5fba3e63-6fd2-de1c-1564-ac6b8870e730@nandakumar.co.in>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5fba3e63-6fd2-de1c-1564-ac6b8870e730@nandakumar.co.in>
-Cc: ALSA-devel <alsa-devel@alsa-project.org>
+ Sat, 15 Jan 2022 18:03:32 -0800 (PST)
+Message-Id: <cover.1642298336.git.daniel.beer@igorinstitute.com>
+From: Daniel Beer <daniel.beer@igorinstitute.com>
+Date: Sun, 16 Jan 2022 14:58:56 +1300
+Subject: [PATCH v3 0/2] ASoC: add support for TAS5805M digital amplifier
+To: alsa-devel@alsa-project.org, devicetree@vger.kernel.org
+Cc: Daniel Beer <daniel.beer@igorinstitute.com>, linux-kernel@vger.kernel.org,
+ Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Andy Liu <andy-liu@ti.com>, Mark Brown <broonie@kernel.org>,
+ Derek Simkowiak <derek.simkowiak@igorinstitute.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -103,106 +91,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, Jan 15, 2022 at 12:29:18PM +0530, Nandakumar Edamana wrote:
-> Could compile and reload the module successfully, but the stuttering is 
-> still there.
+This pair of patches implements support for the TAS5805M class D audio
+amplifier. This driver, and the example configuration in the device-tree
+file, were originally based on a 4.19 series kernel and have been
+modified slightly from the tested version.
 
-Hi Nandakumar,
+This resubmission differs from v2 as follows:
 
-OK, my mistake, scratch that patch.
+  - The redundant mutex has been removed
+  - DSP configuration is loaded as a firmware image, rather than
+    directly from the device-tree
+  - The volume control returns non-zero when the values have changed, as
+    required
+  - Some corrections to device-tree example
 
-The codepath that activates Implicit Feedback when implicit_fb=1 is
-passed to the module as an option is the same that should activate when
-the quirk is in place.
+Daniel Beer (2):
+  ASoC: add support for TAS5805M digital amplifier
+  ASoC: dt-bindings: add bindings for TI TAS5805M.
 
-Like I said, it's very strange that your device skips implicit feedback
-when the quirk is in place, but can pick implicit feedback when
-implicit_fb=1 is passed to the module as an option.
+ .../devicetree/bindings/sound/tas5805m.yaml   |  56 ++
+ sound/soc/codecs/Kconfig                      |   9 +
+ sound/soc/codecs/Makefile                     |   2 +
+ sound/soc/codecs/tas5805m.c                   | 567 ++++++++++++++++++
+ 4 files changed, 634 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/tas5805m.yaml
+ create mode 100644 sound/soc/codecs/tas5805m.c
 
-I've prepared some printk's hooked up to every codepath I can think of
-that will skip implicit feedback. Please test and share your results,
-always with dyndbg on.
+-- 
+2.30.2
 
---- implicit.c	2022-01-14 16:41:53.946606013 -0300
-+++ implicit.c	2022-01-15 21:45:15.108655890 -0300
-@@ -90,8 +90,10 @@ static int add_implicit_fb_sync_ep(struc
- 
- 	if (!alts) {
- 		iface = usb_ifnum_to_if(chip->dev, ifnum);
--		if (!iface || iface->num_altsetting < 2)
-+		if (!iface || iface->num_altsetting < 2) {
-+			printk(KERN_WARNING "implicit: add_implicit_fb_sync_ep(): not a usb_host_interface or less than 2 altsettings");
- 			return 0;
-+		}
- 		alts = &iface->altsetting[1];
- 	}
- 
-@@ -242,17 +244,23 @@ static int __add_generic_implicit_fb(str
- 	struct usb_endpoint_descriptor *epd;
- 
- 	alts = snd_usb_get_host_interface(chip, iface, altset);
--	if (!alts)
-+	if (!alts) {
-+		printk(KERN_WARNING "implicit: __add_generic_implicit_fb(): not a usb_host_interface");
- 		return 0;
-+	}
- 
- 	if ((alts->desc.bInterfaceClass != USB_CLASS_VENDOR_SPEC &&
- 	     alts->desc.bInterfaceClass != USB_CLASS_AUDIO) ||
--	    alts->desc.bNumEndpoints < 1)
-+	    alts->desc.bNumEndpoints < 1) {
-+		printk(KERN_WARNING "implicit: __add_generic_implicit_fb(): no endpoints or wrong Interface Class");
- 		return 0;
-+	}
- 	epd = get_endpoint(alts, 0);
- 	if (!usb_endpoint_is_isoc_in(epd) ||
--	    (epd->bmAttributes & USB_ENDPOINT_SYNCTYPE) != USB_ENDPOINT_SYNC_ASYNC)
-+	    (epd->bmAttributes & USB_ENDPOINT_SYNCTYPE) != USB_ENDPOINT_SYNC_ASYNC) {
-+		printk(KERN_WARNING "implicit: __add_generic_implicit_fb(): not Isochronous IN or not Asynchronous");
- 		return 0;
-+	}
- 	return add_implicit_fb_sync_ep(chip, fmt, epd->bEndpointAddress, 0,
- 				       iface, alts);
- }
-@@ -262,8 +270,10 @@ static int add_generic_implicit_fb(struc
- 				   struct audioformat *fmt,
- 				   struct usb_host_interface *alts)
- {
--	if ((fmt->ep_attr & USB_ENDPOINT_SYNCTYPE) != USB_ENDPOINT_SYNC_ASYNC)
-+	if ((fmt->ep_attr & USB_ENDPOINT_SYNCTYPE) != USB_ENDPOINT_SYNC_ASYNC) {
-+		printk(KERN_WARNING "implicit: add_generic_implicit_fb(): not Asynchronous");
- 		return 0;
-+	}
- 
- 	if (__add_generic_implicit_fb(chip, fmt,
- 				      alts->desc.bInterfaceNumber + 1,
-@@ -302,8 +312,10 @@ static int audioformat_implicit_fb_quirk
- 	if (p) {
- 		switch (p->type) {
- 		case IMPLICIT_FB_GENERIC:
-+			printk(KERN_WARNING "implicit: audioformat_implicit_fb_quirk(): matched GENERIC inside playback_implicit_fb_quirks[]");
- 			return add_generic_implicit_fb(chip, fmt, alts);
- 		case IMPLICIT_FB_NONE:
-+			printk(KERN_WARNING "implicit: audioformat_implicit_fb_quirk(): matched SKIP_DEV inside playback_implicit_fb_quirks[]");
- 			return 0; /* No quirk */
- 		case IMPLICIT_FB_FIXED:
- 			return add_implicit_fb_sync_ep(chip, fmt, p->ep_num, 0,
-@@ -311,6 +323,10 @@ static int audioformat_implicit_fb_quirk
- 		}
- 	}
- 
-+	else {
-+		printk(KERN_WARNING "implicit: audioformat_implicit_fb_quirk(): no matches found inside playback_implicit_fb_quirks[]");
-+	}
-+
- 	/* Special handling for devices with capture quirks */
- 	p = find_implicit_fb_entry(chip, capture_implicit_fb_quirks, alts);
- 	if (p) {
-@@ -354,6 +370,7 @@ static int audioformat_implicit_fb_quirk
- 		return add_generic_implicit_fb(chip, fmt, alts);
- 
- 	/* No quirk */
-+	printk(KERN_WARNING "implicit: audioformat_implicit_fb_quirk(): returning 0 because no quirk was found");
- 	return 0;
- }
- 
