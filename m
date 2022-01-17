@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BCCCC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Jan 2022 17:01:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76C21C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Jan 2022 17:02:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6D0EF1890;
-	Mon, 17 Jan 2022 18:00:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D0EF1890
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7F6661899;
+	Mon, 17 Jan 2022 18:01:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F6661899
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1642438902;
-	bh=L5fMBsQ4GFTUWDax+L1PtBdZ0vB16WfrrFYjYR1GER4=;
+	s=default; t=1642438919;
+	bh=vqm+l+et8fHmf+ZDrFYxAyjLbW9sX4AdX0B4LSjo1aY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EYZtxyNCSjj7PHc2i2Gkr6v067hFd7QrfrLO5EfX3k8I6je0yZqUNOyPWPExdNlWY
-	 b0xsYbF1dHV3p5zRcMQx+6MStXsivbxGXB3TvqTIQrhmrcGM66iMYBbRqipgHLHguE
-	 JTieyMciYnvHeyLtFYQjFdHwLy2eqrAoSuQOuUC0=
+	b=iv7FmuH6kywHPL985gWFtncVkF+PMTQXKVNbv3mK0Z9xSMgEBGQ47d4rDoDRhohua
+	 nd+l/qNzq6+GQaFKAn4MwzyBKZbGhkTA9/UD13390RN6Na3eqqOgWVTSpQyvvcm7+d
+	 MEdxIvJD7Et/6BbWnu/eHtqqVICuvMJizsTMwRVQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1B35FF8014B;
-	Mon, 17 Jan 2022 18:00:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0ECB3F80508;
+	Mon, 17 Jan 2022 18:00:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D173AF80249; Mon, 17 Jan 2022 18:00:40 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 7EE16F80516; Mon, 17 Jan 2022 18:00:55 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8CDE7F80515;
- Mon, 17 Jan 2022 18:00:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8CDE7F80515
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4184CF800CE
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jan 2022 18:00:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4184CF800CE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="c7jI1Ia6"
+ header.b="p1E3b/3a"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 9250C611C0;
- Mon, 17 Jan 2022 17:00:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6FA8C36AE7;
- Mon, 17 Jan 2022 17:00:29 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 06429B81142;
+ Mon, 17 Jan 2022 17:00:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B0D1C36AE3;
+ Mon, 17 Jan 2022 17:00:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1642438831;
- bh=L5fMBsQ4GFTUWDax+L1PtBdZ0vB16WfrrFYjYR1GER4=;
+ s=k20201202; t=1642438848;
+ bh=vqm+l+et8fHmf+ZDrFYxAyjLbW9sX4AdX0B4LSjo1aY=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=c7jI1Ia6bczbyFVopt/bG+gLCDOU+MocDsP74/x54DeZwWES3hD2XVk4Zc8wfeYUc
- sUYzq2upNamnlcSTuvba+oWp6HzEzForKtpulxYS9nernkl4200NQUbkBclnQJhY0J
- 9FXhNsbURzU7rgijV6C482VpV0TWTyVUuZWGS/TzC7L0tNDtnq6ywQFoGOXbL1qCzM
- ni3nnwmkoTGSk+2hOcodcsgBDR8RWKElq6n+F36RWRqFEBCOH6inu+IrSPb7z7B2bd
- cUcjjopr+KXpvxBBz6c1GT5xQN0VKLTnuQiEyRAa3jnxiElpDC1HJCLmsYhAQe/IsO
- Q6LIAihaG/tUg==
+ b=p1E3b/3atEdyXJfPNyWoAjkL1drHzsh96miZe0YqvLW1Doe2SfoCrWh3h+YsxVFkC
+ 3MryI3OHEV4634h0UmyzJDUpLPbMauAUmLsQMPGiejpVlxOma1/B7G66zhHEozNhHq
+ 8wMjcKxiig4Kdb5VW1Z/cM8zv/glXXLeu4G3WN4aCRh09myy7XFqU2apV4ksCP4kny
+ 01OUGsZBBnqB8Qqg4nneAuzcVEiTkGd683Z647N1qM0MhDb+qQcvZhj2nMXzlovVDR
+ RAjcBqhakjBuujX7J+KAjzrQAEOiUUsagHqxkbIqZoO8Fhc9XkgLCBneyaHeNK2/Nv
+ H8YdDjS3FoWgw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.16 38/52] ASoC: SOF: ipc: Add null pointer check for
- substream->runtime
-Date: Mon, 17 Jan 2022 11:58:39 -0500
-Message-Id: <20220117165853.1470420-38-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.16 43/52] ASoC: mediatek: mt8192-mt6359: fix
+ device_node leak
+Date: Mon, 17 Jan 2022 11:58:44 -0500
+Message-Id: <20220117165853.1470420-43-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220117165853.1470420-1-sashal@kernel.org>
 References: <20220117165853.1470420-1-sashal@kernel.org>
@@ -67,13 +67,11 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
- Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>, tiwai@suse.com,
- lgirdwood@gmail.com, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Mark Brown <broonie@kernel.org>, daniel.baluta@nxp.com,
- sound-open-firmware@alsa-project.org
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ tiwai@suse.com, jiaxin.yu@mediatek.com, lgirdwood@gmail.com,
+ Tzung-Bi Shih <tzungbi@google.com>, Mark Brown <broonie@kernel.org>,
+ linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,40 +87,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
+From: Tzung-Bi Shih <tzungbi@google.com>
 
-[ Upstream commit 182b682b9ab1348e07ea1bf9d8f2505cc67f9237 ]
+[ Upstream commit 4e28491a7a198c668437f2be8a91a76aa52f20eb ]
 
-When pcm stream is stopped "substream->runtime" pointer will be set
-to NULL by ALSA core. In case host received an ipc msg from firmware
-of type IPC_STREAM_POSITION after pcm stream is stopped, there will
-be kernel NULL pointer exception in ipc_period_elapsed(). This patch
-fixes it by adding NULL pointer check for "substream->runtime".
+The of_parse_phandle() document:
+    >>> Use of_node_put() on it when done.
 
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20211216232422.345164-3-pierre-louis.bossart@linux.intel.com
+The driver didn't call of_node_put().  Fixes the leak.
+
+Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
+Link: https://lore.kernel.org/r/20211214040028.2992627-1-tzungbi@google.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sof/ipc.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
-index e6c53c6c470e4..ca30c506a0fd6 100644
---- a/sound/soc/sof/ipc.c
-+++ b/sound/soc/sof/ipc.c
-@@ -547,7 +547,8 @@ static void ipc_period_elapsed(struct snd_sof_dev *sdev, u32 msg_id)
+diff --git a/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c b/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c
+index a606133951b70..24a5d0adec1ba 100644
+--- a/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c
++++ b/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c
+@@ -1172,7 +1172,11 @@ static int mt8192_mt6359_dev_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
  
- 	if (spcm->pcm.compress)
- 		snd_sof_compr_fragment_elapsed(stream->cstream);
--	else if (!stream->substream->runtime->no_period_wakeup)
-+	else if (stream->substream->runtime &&
-+		 !stream->substream->runtime->no_period_wakeup)
- 		/* only inform ALSA for period_wakeup mode */
- 		snd_sof_pcm_period_elapsed(stream->substream);
+-	return devm_snd_soc_register_card(&pdev->dev, card);
++	ret = devm_snd_soc_register_card(&pdev->dev, card);
++
++	of_node_put(platform_node);
++	of_node_put(hdmi_codec);
++	return ret;
  }
+ 
+ #ifdef CONFIG_OF
 -- 
 2.34.1
 
