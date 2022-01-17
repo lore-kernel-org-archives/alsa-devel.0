@@ -4,113 +4,124 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 114DDC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jan 2022 07:06:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EBA27C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jan 2022 07:06:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 631852F7D;
-	Thu, 20 Jan 2022 08:05:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 631852F7D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2607D2F71;
+	Thu, 20 Jan 2022 08:05:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2607D2F71
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1642662384;
-	bh=N5UHvUo8yoJp7eSBQbs/HrkxotinQJL3d0n81Xt/kdk=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1642662401;
+	bh=KahPkGd62HlpTNRwonxkqeMzwbhhlTVHUgDFV2XrfRA=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HdP2CrEclkejnuPWhoi21X4LsxF/v/buIXN54yVcP1HyfIDkfwTtHp41UpFY3GMri
-	 DCrGnSDdh+yTFzsuP+CWSHDAcznwHTX1BEBEZ8mcpLAEpjgOGLTI/9xVTPvPWl+XsZ
-	 qGi4F3JZGuNWwKqxBbAlmpLVMJu9tSsKwUxk1UXs=
+	b=c6WoQHsdZmwT4/gszfhHL2HfLnnujpbYgVE9iP90ixnImNJ18jDABC2J0FbJFF0ur
+	 iZckH0HQs0a/5GhVlnKuNpNrI3wtABObLODEznlwLTz4T9oo9cohidm/LjdtQPod5U
+	 zY2Nzl33YRQD99Yn9ho7TNHlZNuwuUFqa3Zvb2hQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5BD30F80520;
+	by alsa1.perex.cz (Postfix) with ESMTP id D6CB6F80527;
 	Thu, 20 Jan 2022 08:03:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 150BDF801F7; Wed, 19 Jan 2022 11:32:31 +0100 (CET)
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com
- [IPv6:2a00:1450:4864:20::12e])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 513E8F800CE; Mon, 17 Jan 2022 10:25:02 +0100 (CET)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9FC4AF80128
- for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2022 11:32:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9FC4AF80128
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="Xp8s21ft"
-Received: by mail-lf1-x12e.google.com with SMTP id p27so7591908lfa.1
- for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2022 02:32:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=Sr17yjVIJ3L6nqEXDMpIqK2xXImflLFzz6ALbEm9u68=;
- b=Xp8s21ftcZ0WG13DDgbdH7NIUsuYX+ghvkD5zw1hiLod5qbV+yjC9/iw3BxedgypWz
- j185xcOoN7LD6uCNH62mSJRvMAjwIi7qcbYCznd6Wd0VuvmCQ/sizMwR5aWhMScNA/rl
- hmuEc+DbVv1NqMjk5IXcy/Hk3oFXKZ0haMWzOfivc06wvoxpEiX1vitoLqGmZuk04L2x
- HC73i8VxJwVCI/4Mkmi2NET/E8BffuYg/4Zged81GUTCUySqRPVe2agczTV87+sP+2pN
- pDJV7fJq03+xTsoQaVBtN6S+RGEn7oHeifzgS2DkyqcDDGnQ9aAHk1KN9hJBM2T+WaJf
- EdtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=Sr17yjVIJ3L6nqEXDMpIqK2xXImflLFzz6ALbEm9u68=;
- b=e9PjHiUw+RLsrTfFYFBg974FOEo0K5vDItLGoPiNUzNKFdnhuHYUJfg5BrUBMd5nn2
- pVTF1yLdiypyXNyeKOOpbqXv8Fsit0J6RDPs9Wx4D6XLL5QiWn8yWfjzn/2eRDdioSkD
- GxzbYm1Yy/0saLJIJPZaYXXYKfg3N5uOEQiZVqaP8uPv+nzqROrrj/w1kXv878/PYEDG
- BzCSILQRJODau8VzoBKLIV0T2C33QXDnS/BB1s9HyORWOVgXf15y6mmZbGbuVulc8m0H
- ga3k7p+Ur3mIRoWnfg6IcMlxh6pvQzJmbK8qhJG7gmxKUC3uJ+JW/KKSMeQQlH3AJ6Ai
- 1ghA==
-X-Gm-Message-State: AOAM530j2X1Obu/p2VJKpyo14AD6ckKHS6j7nagwBGzf0G01PYulQphT
- Hky/t5noshrE4xhmZhW0K7fjJjJOlXl6V34Zf0ok5w==
-X-Google-Smtp-Source: ABdhPJz5t3UBuJxmMbI2E3pOLPGLQiV4ByMa0pgkUilXefnRDUK3bGbZ4bWfdB/wwOZVZ58x7DxfCbRQTc3tUAIioE8=
-X-Received: by 2002:a2e:a26d:: with SMTP id k13mr10012578ljm.300.1642588342599; 
- Wed, 19 Jan 2022 02:32:22 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 43E51F800CE
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jan 2022 10:24:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43E51F800CE
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <ukl@pengutronix.de>)
+ id 1n9OFv-0006KR-Ei; Mon, 17 Jan 2022 10:24:51 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+ by drehscheibe.grey.stw.pengutronix.de with esmtps (TLS1.3) tls
+ TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.94.2)
+ (envelope-from <ukl@pengutronix.de>)
+ id 1n9OFp-00AnDX-Gd; Mon, 17 Jan 2022 10:24:44 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+ (envelope-from <ukl@pengutronix.de>)
+ id 1n9OFo-0002fs-6r; Mon, 17 Jan 2022 10:24:44 +0100
+Date: Mon, 17 Jan 2022 10:24:44 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 1/2] platform: make platform_get_irq_optional() optional
+Message-ID: <20220117092444.opoedfcf5k5u6otq@pengutronix.de>
+References: <20220112085009.dbasceh3obfok5dc@pengutronix.de>
+ <CAMuHMdWsMGPiQaPS0-PJ_+Mc5VQ37YdLfbHr_aS40kB+SfW-aw@mail.gmail.com>
+ <20220112213121.5ruae5mxwj6t3qiy@pengutronix.de>
+ <Yd9L9SZ+g13iyKab@sirena.org.uk>
+ <29f0c65d-77f2-e5b2-f6cc-422add8a707d@omp.ru>
+ <20220114092557.jrkfx7ihg26ekzci@pengutronix.de>
+ <61b80939-357d-14f5-df99-b8d102a4e1a1@omp.ru>
+ <20220114202226.ugzklxv4wzr6egwj@pengutronix.de>
+ <c9026f17-2b3f-ee94-0ea3-5630f981fbc1@omp.ru>
+ <CAMuHMdXVbRudGs69f9ZzaP1PXhteDNZiXA658eMFAwP4nr9r3w@mail.gmail.com>
 MIME-Version: 1.0
-References: <20220119015038.2433585-1-robh@kernel.org>
-In-Reply-To: <20220119015038.2433585-1-robh@kernel.org>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Wed, 19 Jan 2022 11:31:45 +0100
-Message-ID: <CAPDyKFr5uT3H8NaAvPyGajo2R6DriYC92y=RdAk=G4PMC4MxYw@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: Improve phandle-array schemas
-To: Rob Herring <robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="ycu5k3o6g2lyq6o4"
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdXVbRudGs69f9ZzaP1PXhteDNZiXA658eMFAwP4nr9r3w@mail.gmail.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: alsa-devel@alsa-project.org
 X-Mailman-Approved-At: Thu, 20 Jan 2022 08:03:34 +0100
-Cc: Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Chun-Kuang Hu <chunkuang.hu@kernel.org>,
- Linus Walleij <linus.walleij@linaro.org>, linux-remoteproc@vger.kernel.org,
- dri-devel@lists.freedesktop.org, Sebastian Reichel <sre@kernel.org>,
- linux-ide@vger.kernel.org, Thierry Reding <thierry.reding@gmail.com>,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Pavel Machek <pavel@ucw.cz>, linux-phy@lists.infradead.org,
- netdev@vger.kernel.org, Jonathan Hunter <jonathanh@nvidia.com>,
- Lee Jones <lee.jones@linaro.org>, linux-riscv@lists.infradead.org,
- linux-leds@vger.kernel.org, Daniel Thompson <daniel.thompson@linaro.org>,
+Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Vignesh Raghavendra <vigneshr@ti.com>, KVM list <kvm@vger.kernel.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, linux-iio@vger.kernel.org,
+ Linus Walleij <linus.walleij@linaro.org>, Amit Kucheria <amitk@kernel.org>,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Guenter Roeck <groeck@chromium.org>, Thierry Reding <thierry.reding@gmail.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Linux I2C <linux-i2c@vger.kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-phy@lists.infradead.org,
+ Jiri Slaby <jirislaby@kernel.org>, openipmi-developer@lists.sourceforge.net,
+ Khuong Dinh <khuong@os.amperecomputing.com>,
  Florian Fainelli <f.fainelli@gmail.com>,
- Herbert Xu <herbert@gondor.apana.org.au>,
- Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
- Marc Zyngier <maz@kernel.org>,
- Damien Le Moal <damien.lemoal@opensource.wdc.com>,
- "Rafael J. Wysocki" <rafael@kernel.org>, iommu@lists.linux-foundation.org,
- Kishon Vijay Abraham I <kishon@ti.com>, Jakub Kicinski <kuba@kernel.org>,
- Zhang Rui <rui.zhang@intel.com>, linux-usb@vger.kernel.org,
- Vivien Didelot <vivien.didelot@gmail.com>,
- Wolfgang Grandegger <wg@grandegger.com>, linux-media@vger.kernel.org,
- devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
- Kalle Valo <kvalo@kernel.org>, Sudeep Holla <sudeep.holla@arm.com>,
- linux-can@vger.kernel.org, linux-gpio@vger.kernel.org,
+ Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+ Joakim Zhang <qiangqing.zhang@nxp.com>, Kamal Dasu <kdasu.kdev@gmail.com>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Mark Brown <broonie@kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>,
- Thomas Gleixner <tglx@linutronix.de>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Mathieu Poirier <mathieu.poirier@linaro.org>, Stephen Boyd <sboyd@kernel.org>,
- Jingoo Han <jingoohan1@gmail.com>, Kevin Hilman <khilman@kernel.org>,
- linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
- Vinod Koul <vkoul@kernel.org>,
- Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
- linux-crypto@vger.kernel.org, Philipp Zabel <p.zabel@pengutronix.de>,
- Viresh Kumar <vireshk@kernel.org>, dmaengine@vger.kernel.org,
- Georgi Djakov <djakov@kernel.org>, Vladimir Oltean <olteanv@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Joerg Roedel <joro@8bytes.org>
+ Lee Jones <lee.jones@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>, Tony Luck <tony.luck@intel.com>,
+ Kishon Vijay Abraham I <kishon@ti.com>,
+ bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+ "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+ Jakub Kicinski <kuba@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
+ Linux PWM List <linux-pwm@vger.kernel.org>, Robert Richter <rric@kernel.org>,
+ Saravanan Sekar <sravanhome@gmail.com>, Corey Minyard <minyard@acm.org>,
+ Linux PM list <linux-pm@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>, John Garry <john.garry@huawei.com>,
+ Peter Korsgaard <peter@korsgaard.com>,
+ William Breathitt Gray <vilhelm.gray@gmail.com>,
+ Mark Gross <markgross@kernel.org>,
+ "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+ Alex Williamson <alex.williamson@redhat.com>, Mark Brown <broonie@kernel.org>,
+ Borislav Petkov <bp@alien8.de>, Sebastian Reichel <sre@kernel.org>,
+ Eric Auger <eric.auger@redhat.com>, Matthias Brugger <matthias.bgg@gmail.com>,
+ Takashi Iwai <tiwai@suse.com>, platform-driver-x86@vger.kernel.org,
+ Benson Leung <bleung@chromium.org>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>, linux-edac@vger.kernel.org,
+ Sergey Shtylyov <s.shtylyov@omp.ru>, Mun Yew Tham <mun.yew.tham@intel.com>,
+ Hans de Goede <hdegoede@redhat.com>, netdev@vger.kernel.org,
+ Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+ Cornelia Huck <cohuck@redhat.com>, Linux MMC List <linux-mmc@vger.kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-spi <linux-spi@vger.kernel.org>,
+ Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+ Vinod Koul <vkoul@kernel.org>, James Morse <james.morse@arm.com>,
+ Zha Qipeng <qipeng.zha@intel.com>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Richard Weinberger <richard@nod.at>,
+ Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
+ linux-mediatek@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -126,95 +137,104 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 19 Jan 2022 at 02:50, Rob Herring <robh@kernel.org> wrote:
->
-> The 'phandle-array' type is a bit ambiguous. It can be either just an
-> array of phandles or an array of phandles plus args. Many schemas for
-> phandle-array properties aren't clear in the schema which case applies
-> though the description usually describes it.
->
-> The array of phandles case boils down to needing:
->
-> items:
->   maxItems: 1
->
-> The phandle plus args cases should typically take this form:
->
-> items:
->   - items:
->       - description: A phandle
->       - description: 1st arg cell
->       - description: 2nd arg cell
->
-> With this change, some examples need updating so that the bracketing of
-> property values matches the schema.
->
-> Cc: Damien Le Moal <damien.lemoal@opensource.wdc.com>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-> Cc: Philipp Zabel <p.zabel@pengutronix.de>
-> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Cc: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Cc: Georgi Djakov <djakov@kernel.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: Lee Jones <lee.jones@linaro.org>
-> Cc: Daniel Thompson <daniel.thompson@linaro.org>
-> Cc: Jingoo Han <jingoohan1@gmail.com>
-> Cc: Pavel Machek <pavel@ucw.cz>
-> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Wolfgang Grandegger <wg@grandegger.com>
-> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-> Cc: Andrew Lunn <andrew@lunn.ch>
-> Cc: Vivien Didelot <vivien.didelot@gmail.com>
-> Cc: Florian Fainelli <f.fainelli@gmail.com>
-> Cc: Vladimir Oltean <olteanv@gmail.com>
-> Cc: Kalle Valo <kvalo@kernel.org>
-> Cc: Viresh Kumar <vireshk@kernel.org>
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: Kishon Vijay Abraham I <kishon@ti.com>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> Cc: Kevin Hilman <khilman@kernel.org>
-> Cc: Ulf Hansson <ulf.hansson@linaro.org>
-> Cc: Sebastian Reichel <sre@kernel.org>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Cc: Zhang Rui <rui.zhang@intel.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Thierry Reding <thierry.reding@gmail.com>
-> Cc: Jonathan Hunter <jonathanh@nvidia.com>
-> Cc: Sudeep Holla <sudeep.holla@arm.com>
-> Cc: Geert Uytterhoeven <geert+renesas@glider.be>
-> Cc: linux-ide@vger.kernel.org
-> Cc: linux-crypto@vger.kernel.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: dmaengine@vger.kernel.org
-> Cc: linux-pm@vger.kernel.org
-> Cc: iommu@lists.linux-foundation.org
-> Cc: linux-leds@vger.kernel.org
-> Cc: linux-media@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Cc: linux-can@vger.kernel.org
-> Cc: linux-wireless@vger.kernel.org
-> Cc: linux-phy@lists.infradead.org
-> Cc: linux-gpio@vger.kernel.org
-> Cc: linux-riscv@lists.infradead.org
-> Cc: linux-remoteproc@vger.kernel.org
-> Cc: alsa-devel@alsa-project.org
-> Cc: linux-usb@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
 
-For CPUs and PM domains:
+--ycu5k3o6g2lyq6o4
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Acked-by: Ulf Hansson <ulf.hansson@linaro.org>
+Hello Geert,
 
-Kind regards
-Uffe
+On Mon, Jan 17, 2022 at 09:41:42AM +0100, Geert Uytterhoeven wrote:
+> On Sat, Jan 15, 2022 at 9:22 PM Sergey Shtylyov <s.shtylyov@omp.ru> wrote:
+> > On 1/14/22 11:22 PM, Uwe Kleine-K=F6nig wrote:
+> > > You have to understand that for clk (and regulator and gpiod) NULL is=
+ a
+> > > valid descriptor that can actually be used, it just has no effect. So
+> > > this is a convenience value for the case "If the clk/regulator/gpiod =
+in
+> > > question isn't available, there is nothing to do". This is what makes
+> > > clk_get_optional() and the others really useful and justifies their
+> > > existence. This doesn't apply to platform_get_irq_optional().
+> >
+> >    I do understand that. However, IRQs are a different beast with their
+> > own justifications...
+>=20
+> > > clk_get_optional() is sane and sensible for cases where the clk might=
+ be
+> > > absent and it helps you because you don't have to differentiate betwe=
+en
+> > > "not found" and "there is an actual resource".
+> > >
+> > > The reason for platform_get_irq_optional()'s existence is just that
+> > > platform_get_irq() emits an error message which is wrong or suboptimal
+> >
+> >    I think you are very wrong here. The real reason is to simplify the
+> > callers.
+>=20
+> Indeed.
+
+The commit that introduced platform_get_irq_optional() said:
+
+	Introduce a new platform_get_irq_optional() that works much like
+	platform_get_irq() but does not output an error on failure to
+	find the interrupt.
+
+So the author of 8973ea47901c81a1912bd05f1577bed9b5b52506 failed to
+mention the real reason? Or look at
+31a8d8fa84c51d3ab00bf059158d5de6178cf890:
+
+	[...] use platform_get_irq_optional() to get second/third IRQ
+	which are optional to avoid below error message during probe:
+	[...]
+
+Look through the output of
+
+	git log -Splatform_get_irq_optional
+
+to find several more of these.
+
+Also I fail to see how a caller of (today's) platform_get_irq_optional()
+is simpler than a caller of platform_get_irq() given that there is no
+semantic difference between the two. Please show me a single
+conversion from platform_get_irq to platform_get_irq_optional that
+yielded a simplification.
+
+So you need some more effort to convince me of your POV.
+
+> Even for clocks, you cannot assume that you can always blindly use
+> the returned dummy (actually a NULL pointer) to call into the clk
+> API.  While this works fine for simple use cases, where you just
+> want to enable/disable an optional clock (clk_prepare_enable() and
+> clk_disable_unprepare()), it does not work for more complex use cases.
+
+Agreed. But for clks and gpiods and regulators the simple case is quite
+usual. For irqs it isn't.
+
+And if you cannot blindly use the dummy, then you're not the targetted
+caller of *_get_optional() and should better use *_get() and handle
+-ENODEV explicitly.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--ycu5k3o6g2lyq6o4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmHlNdMACgkQwfwUeK3K
+7AkbyQf/dzwfw39nzRfi8yss0CiqoAU/yS+7MsnZvnWGKQxcIojgK1OX/xdxiMKI
+C4HnYtImt4dRHJdZDTL5+BWmwrkKo3ytJl8YRHBffgzQdKfAXOit1Pce623dbYvd
+wKJedLR6H9VXuTa1ULEvTnC0cXupHaoxjvQbKkUhlz/PahrhX91+dNJcoWTB6eB2
+YSb6MMcqwMFJ6y2P4pDKDoCf0RNjt8EzTKMWUdx1zcCrqT+wDzA0Ub0UvM7EpUXn
+ziLd4JEC+3SxJZvr2Y8jPQUGb4RMr+Z20vfEOG154m+zZ5lZe7Pcp1ggo6wb+fZ9
+qM6JVYjExAvA43UcTTna2uSeE/+nfA==
+=gHVT
+-----END PGP SIGNATURE-----
+
+--ycu5k3o6g2lyq6o4--
