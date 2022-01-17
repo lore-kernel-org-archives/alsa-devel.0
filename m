@@ -4,72 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1CA7C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Jan 2022 17:09:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7299DC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Jan 2022 18:06:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0EA351916;
-	Mon, 17 Jan 2022 18:08:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0EA351916
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8095418C1;
+	Mon, 17 Jan 2022 19:05:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8095418C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1642439364;
-	bh=1j7mayRmOuGQ+nRLdXsL59wVA+c5vHDalgnqM39ocY4=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1642442791;
+	bh=sr3C5cQceJjxjERCqWF3bWzmLe/ZuRmb0b5q/2wgs+o=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SYiUOeQtZ/cmTNhJi7VcR7qwNlkUf1wBz3D76FLZD/zedFsWmgAEq/F1u/CcV0hnl
-	 h/xXYu3BHZ2LN54QN+Rl5PCkNAHEHjjS8p0yYgvB+ZtbYJ9iu9QUNtQPw/rf3JAuR4
-	 h4vQkYo19e+gVJgYWXqPqRqgbwTyYc7a3AjTbKBY=
+	b=QYzpsOE+e0x0Bgbm35fpLrZw5fLaitiwXLMeja6Nd3ePUgM3ISlLRXL9L0lKnaook
+	 Z4vL1JxYU2doKiIggKKG75IpJCR9K9WWFz2iqEnDvnWzfpIexIiIl6g8VYpBri1LnA
+	 6pv4pFQgKV8NrtvXqj/zAnzMOGJ5fOhzmBRCf9Wk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AAC7CF80254;
-	Mon, 17 Jan 2022 18:08:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E4B43F800EB;
+	Mon, 17 Jan 2022 19:05:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 12E69F80254; Mon, 17 Jan 2022 18:08:32 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id D435DF80249; Mon, 17 Jan 2022 19:05:38 +0100 (CET)
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com
+ [IPv6:2a00:1450:4864:20::12d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B7B49F80254
- for <alsa-devel@alsa-project.org>; Mon, 17 Jan 2022 18:08:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7B49F80254
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3187CF800EB
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jan 2022 19:05:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3187CF800EB
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Si8sFMV3"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 94BD4611F0;
- Mon, 17 Jan 2022 17:08:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 135E2C36AE3;
- Mon, 17 Jan 2022 17:08:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1642439298;
- bh=1j7mayRmOuGQ+nRLdXsL59wVA+c5vHDalgnqM39ocY4=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=Si8sFMV3nG3l2aHYSD7vfEhM/AXiLbNYQfrLSyLfcbdWJZw5T74GRip0yljRjPtlQ
- +Ir4X95TUu9T3zc6PaeqPetjW2pdCF48cBgFIgbdjkY7RqOQ7a4UQ3J1QRlZ49ux9j
- +EPcERxTslUYqPsMtlFhM16L8OELfm3+KKs1J9VgW3PD8SvVr749MHMMhLrSvIpDI1
- RgMehNsUocX30jDemisIk0pd7VmTRy+O7LkU7dRFUQudRRALkoO3rd7fhHXnP8gpQH
- 042FQI5eKkp6PIEaJQ95X8VH8Hp+1CwnAlwqy3M507OvZ1Jf4VQV9O0nlGJOlq5geY
- fhkmE9mKTFbbg==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 09/12] ALSA: seq: Set upper limit of processed
- events
-Date: Mon, 17 Jan 2022 12:07:53 -0500
-Message-Id: <20220117170757.1473318-9-sashal@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220117170757.1473318-1-sashal@kernel.org>
-References: <20220117170757.1473318-1-sashal@kernel.org>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="CF1ojwh8"
+Received: by mail-lf1-x12d.google.com with SMTP id s30so60715734lfo.7
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jan 2022 10:05:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=date:from:to:cc:subject:message-id:user-agent:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=tdmQHxjn7EyX8OWtdiBRgoVEAM5RY1oLHJ9+0zFtQPM=;
+ b=CF1ojwh86pK3M82SUEWHol8uvjleEFASvHZtUVzoKx3L9dYcvrjd8M9j3ZNd5f/yOq
+ QBV1qv5abr8wkixYbt/Gopehe0ulXSbEPA5EFRDC2EOAs7wZiR5kQI2V1QDp5dFoRnkd
+ KioKmotveQHYVhyLPoFT6BkkpFA9epL9CIio/f3dgSRugwn6e5u3WYpwuKH0nxajHjU2
+ cGdtSI6CzivT7DLiKTrh2xy83QmOOyYFFw6SwOIvzTxd57HWAx99P6BD1+g+OVbtS83+
+ 5uEeKAyfoRV7qgLWRTAJSl7S4/CvY2gQsMq5IGNYp09hAvMTinacmLoUYxh1RPVxomsR
+ y1Yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:user-agent
+ :references:mime-version:content-disposition:in-reply-to;
+ bh=tdmQHxjn7EyX8OWtdiBRgoVEAM5RY1oLHJ9+0zFtQPM=;
+ b=xYBoQ9xFJ27p+SgDRLFrTBejncwsMrVAVBuXhiUrlnEyUouBitaEOfo9qCLGq8DcYL
+ Y/6F505IuTWnVLyoZ4G7UCiBfVV2QTwjZiYILnS1UnmLWnOqckvz7YEVtwicQKzka/kT
+ Stt1kdo2oBdqfzp+XG1FLTICXGKgMbPzdidIwHoI7PljYhGvXoRJQvTBpMa9/LDV5uRK
+ mOrftZ+ST6IsBLDkHdrhsX0zVMXNqxkN2HVty4eZuJEX1VM9sh2hcloANnwKYbJIEcfU
+ fdmAhBIEydjF5r4EH0Z80RkZpCRWc+M3D7aLkyAM97FLdcJcEja8q8eVNeQm6KfcaQ3V
+ iB8Q==
+X-Gm-Message-State: AOAM532orbEgKoFoNsUcxRz2nKU226rmIR4cG49v0CpEEdXThwoibxoZ
+ HUcrdRtbVX5uOtNiYpA9rDm8ezHr6kDb6w==
+X-Google-Smtp-Source: ABdhPJzBduXLtqcJVcc9jMhwGadAFDTIf+f7CQ2dkKbhLRLre8sT+112gzGJCky/2UC6QMrjr/5BkA==
+X-Received: by 2002:a05:651c:1549:: with SMTP id
+ y9mr14480440ljp.94.1642442730095; 
+ Mon, 17 Jan 2022 10:05:30 -0800 (PST)
+Received: from localhost.localdomain (ntd06459.static.corbina.ru.
+ [95.31.14.149])
+ by smtp.gmail.com with ESMTPSA id s18sm1041196lfs.23.2022.01.17.10.05.29
+ (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+ Mon, 17 Jan 2022 10:05:29 -0800 (PST)
+Date: Mon, 17 Jan 2022 21:11:12 +0300
+From: Alexander Sergeyev <sergeev917@gmail.com>
+To: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: Re: [PATCH v2 1/1] ALSA: hda/realtek: fix speakers and micmute on HP
+ 855 G8
+Message-ID: <20220117181112.bmbjcofdjjpsfgzo@localhost.localdomain>
+User-Agent: mtt
+References: <20220114164904.lgj7yimbei6fmloe@localhost.localdomain>
+ <20220114165050.ouw2nknuspclynro@localhost.localdomain>
+ <CAAd53p6KXD2mEHgkU_TpTrsU-vQ9Vxdip+6sPfDaVoSOkmaz-g@mail.gmail.com>
+ <20220115163208.xmvum6ehqcadonj7@localhost.localdomain>
+ <CAAd53p64w38NCo7c0cnKCyjaswa0_Rns-CjWBwOnph3V5J2taQ@mail.gmail.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.de>, tiwai@suse.com,
- Zqiang <qiang.zhang1211@gmail.com>,
- syzbot+bb950e68b400ab4f65f8@syzkaller.appspotmail.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAd53p64w38NCo7c0cnKCyjaswa0_Rns-CjWBwOnph3V5J2taQ@mail.gmail.com>
+Cc: alsa-devel@alsa-project.org, Kailang Yang <kailang@realtek.com>,
+ Jeremy Szu <jeremy.szu@canonical.com>, linux-kernel@vger.kernel.org,
+ Elia Devito <eliadevito@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ Werner Sembach <wse@tuxedocomputers.com>, Hui Wang <hui.wang@canonical.com>,
+ Sami Loone <sami@loone.fi>, Cameron Berkenpas <cam@neo-zeon.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,85 +106,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Takashi Iwai <tiwai@suse.de>
+On Mon, Jan 17, 2022 at 08:12:08AM +0800, Kai-Heng Feng wrote:
+> If this issue also happens to cold boot it seems to be a BIOS issue.
 
-[ Upstream commit 6fadb494a638d8b8a55864ecc6ac58194f03f327 ]
+I've discussed the problem in more detail [1] before sending the patch. 
+In short, speakers seems to reliably work in live Ubuntu which differs in 
+using initrd with modules vs UEFI stub with built-in drivers in my case 
+(I've tried Ubuntu kernel sources). I've tried using modules as well 
+(modprobe'ing the list of modules which are load by Ubuntu) with no 
+success.
 
-Currently ALSA sequencer core tries to process the queued events as
-much as possible when they become dispatchable.  If applications try
-to queue too massive events to be processed at the very same timing,
-the sequencer core would still try to process such all events, either
-in the interrupt context or via some notifier; in either away, it
-might be a cause of RCU stall or such problems.
+It was suggested that there is a timing issue somewhere. I'm opened for 
+ideas to try to debug the problem origins further (to avoid the need in 
+the fixup).
 
-As a potential workaround for those problems, this patch adds the
-upper limit of the amount of events to be processed.  The remaining
-events are processed in the next batch, so they won't be lost.
+> > > If the issue only happen to warm boot, please try reverting commit
+> > > 9d3fcb28f9b9 "Revert "PM: ACPI: reboot: Use S5 for reboot"".
+> > > Many HP systems requires it to have a functional reboot.
+>
+> If possible, please still give that commit a try.
 
-For the time being, it's limited up to 1000 events per queue, which
-should be high enough for any normal usages.
+Well, the first cold boot (with this commit reverted) didn't have any 
+sound, the same goes for the subsequent reboot.
 
-Reported-by: Zqiang <qiang.zhang1211@gmail.com>
-Reported-by: syzbot+bb950e68b400ab4f65f8@syzkaller.appspotmail.com
-Link: https://lore.kernel.org/r/20211102033222.3849-1-qiang.zhang1211@gmail.com
-Link: https://lore.kernel.org/r/20211207165146.2888-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- sound/core/seq/seq_queue.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
-
-diff --git a/sound/core/seq/seq_queue.c b/sound/core/seq/seq_queue.c
-index ea1aa07962761..b923059a22276 100644
---- a/sound/core/seq/seq_queue.c
-+++ b/sound/core/seq/seq_queue.c
-@@ -257,12 +257,15 @@ struct snd_seq_queue *snd_seq_queue_find_name(char *name)
- 
- /* -------------------------------------------------------- */
- 
-+#define MAX_CELL_PROCESSES_IN_QUEUE	1000
-+
- void snd_seq_check_queue(struct snd_seq_queue *q, int atomic, int hop)
- {
- 	unsigned long flags;
- 	struct snd_seq_event_cell *cell;
- 	snd_seq_tick_time_t cur_tick;
- 	snd_seq_real_time_t cur_time;
-+	int processed = 0;
- 
- 	if (q == NULL)
- 		return;
-@@ -285,6 +288,8 @@ void snd_seq_check_queue(struct snd_seq_queue *q, int atomic, int hop)
- 		if (!cell)
- 			break;
- 		snd_seq_dispatch_event(cell, atomic, hop);
-+		if (++processed >= MAX_CELL_PROCESSES_IN_QUEUE)
-+			goto out; /* the rest processed at the next batch */
- 	}
- 
- 	/* Process time queue... */
-@@ -294,14 +299,19 @@ void snd_seq_check_queue(struct snd_seq_queue *q, int atomic, int hop)
- 		if (!cell)
- 			break;
- 		snd_seq_dispatch_event(cell, atomic, hop);
-+		if (++processed >= MAX_CELL_PROCESSES_IN_QUEUE)
-+			goto out; /* the rest processed at the next batch */
- 	}
- 
-+ out:
- 	/* free lock */
- 	spin_lock_irqsave(&q->check_lock, flags);
- 	if (q->check_again) {
- 		q->check_again = 0;
--		spin_unlock_irqrestore(&q->check_lock, flags);
--		goto __again;
-+		if (processed < MAX_CELL_PROCESSES_IN_QUEUE) {
-+			spin_unlock_irqrestore(&q->check_lock, flags);
-+			goto __again;
-+		}
- 	}
- 	q->check_blocked = 0;
- 	spin_unlock_irqrestore(&q->check_lock, flags);
--- 
-2.34.1
-
+[1] https://lkml.org/lkml/2022/1/12/221
