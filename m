@@ -4,81 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8A6EC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Jan 2022 18:08:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EDFC4C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Jan 2022 19:57:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EF7A3192D;
-	Mon, 17 Jan 2022 19:07:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF7A3192D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2C72B1748;
+	Mon, 17 Jan 2022 20:56:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C72B1748
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1642442914;
-	bh=wYHbQfUDUU/CHuHFtEJtTd5cuPb4vVUaDD7VmSKxuYI=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1642449452;
+	bh=6dJs5Td9H1OGFxn++y9iuILJz9WYYb5T5EY5km1jwA0=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MV/nwtirkiqyb/XF4U24VCqp98UqTziDCetK/9Uu4z3KMycd6T7JpzXadVV/Q6N8b
-	 +QMuLTbbvk7yUdJO0LNkga53Yv0ERgmJFAyenaV3zTxqeRdCSFDamKoI/dJ2/R30ep
-	 8q4X26ULkSYaEdTQC+ZRcwyQQUHhJrjFSm2QWCRk=
+	b=f1yJLg/c6EpBvaRMKABB15JpMIZ2edPnKqnIp/nOYoDmf1dEdExKCNdu/xIIouibs
+	 9/lnv9DgG832v5eKCHcV4ux5tumMM49fzTYOcvVvOVRfIOi+f3bdqNWaZ9C0RcI2o3
+	 v0jYmZxTqYgSFvmrFwgIC5pWSygrT+fgzODzcr9U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3BDDDF80508;
-	Mon, 17 Jan 2022 19:07:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B931CF8014B;
+	Mon, 17 Jan 2022 20:56:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B523FF8050F; Mon, 17 Jan 2022 19:07:25 +0100 (CET)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id D3369F80249; Mon, 17 Jan 2022 20:56:34 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2C710F80507
- for <alsa-devel@alsa-project.org>; Mon, 17 Jan 2022 19:07:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C710F80507
+ by alsa1.perex.cz (Postfix) with ESMTPS id 765B4F800EB
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jan 2022 20:56:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 765B4F800EB
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="VU8AMh//"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1642442843; x=1673978843;
- h=subject:to:cc:references:from:message-id:date:
- mime-version:in-reply-to:content-transfer-encoding;
- bh=wYHbQfUDUU/CHuHFtEJtTd5cuPb4vVUaDD7VmSKxuYI=;
- b=VU8AMh//mxT2iATxQg66J5YqK2ww1v0dagIVw+Vd2RyadQiLqzFtREz8
- /oFs0gTxY3IeC2LuKqbpvSreyMQxCMttmbbb9ENDhZ9/webtUwesttRz8
- X5PmrVvEStw6tl8Mh13JojGlLU5P3QEGLkBEoprX7wJNrADo+q6JsUsTj
- PkPtr1arBzm2iP5uHsD3hmGRu1B+zi3ZeSM9kCD0c60qju2wTz+DAO/ry
- rzl+0saqxkPOvL8pkwm2xVvUvF3OILvDFJ/VHs3u7prvLz03ykIGXgaRx
- QKLQeDjXmLv52BnqOKczdRRNNyhKnE9AlpZV+DzmdHjqnyVIoFSFbHbrx w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10229"; a="244469569"
-X-IronPort-AV: E=Sophos;i="5.88,296,1635231600"; d="scan'208";a="244469569"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Jan 2022 10:07:18 -0800
-X-IronPort-AV: E=Sophos;i="5.88,296,1635231600"; d="scan'208";a="625260181"
-Received: from pthompso-mobl1.amr.corp.intel.com (HELO [10.213.168.97])
- ([10.213.168.97])
- by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Jan 2022 10:06:55 -0800
-Subject: Re: [PATCH] CHROMIUM:ASOC: amd: Add Machine driver Support for
- rt5682s codec
-To: V sujith kumar Reddy <vsujithkumar.reddy@amd.com>, broonie@kernel.org,
- alsa-devel@alsa-project.org
-References: <20220117201856.3299086-1-vsujithkumar.reddy@amd.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <fe11cf0d-8012-a431-d06b-6e9d90976d35@linux.intel.com>
-Date: Mon, 17 Jan 2022 11:22:23 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <20220117201856.3299086-1-vsujithkumar.reddy@amd.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: Sunil-kumar.Dommati@amd.com, Lucas Tanure <tanureal@opensource.cirrus.com>,
- ajitkumar.pandey@amd.com, open list <linux-kernel@vger.kernel.org>,
- Basavaraj.Hiregoudar@amd.com, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Mario Limonciello <mario.limonciello@amd.com>, Vijendar.Mukunda@amd.com,
- Alexander.Deucher@amd.com, Julian Braha <julianbraha@gmail.com>,
- Daniel Baluta <daniel.baluta@nxp.com>
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="kbzExjsp"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="IoKUbUfl"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 86BC6212BB;
+ Mon, 17 Jan 2022 19:56:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1642449391; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=VMmfVtWZfJayBoRg9IT/rKNycU3qQzjET9EY7uXPW80=;
+ b=kbzExjsp4JpeHHwIZRJCubyF/IB1E/jmZSzeeILWAnQH75/TrSKIkX74WmASeiVmpn5j0b
+ hYDbjjAU6EWNB287GSpgmzFMmPDLrQfUA6QaUP12xZqZCMi3vm+3npNuDXdwWjslx5Z16T
+ b9JchkTF2qrH3GZiAWqLpKUcBYBjFiQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1642449391;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=VMmfVtWZfJayBoRg9IT/rKNycU3qQzjET9EY7uXPW80=;
+ b=IoKUbUflFJ6ZUB0IbLwWutrHc8uD1YJs4aDa5zqZ0YgZQ83wjCIxiIon5vDtG3qOTxXi8o
+ 3fbo1HrBdYEh5zBQ==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 70B04A3B84;
+ Mon, 17 Jan 2022 19:56:31 +0000 (UTC)
+Date: Mon, 17 Jan 2022 20:56:31 +0100
+Message-ID: <s5hlezeyw40.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: soc-pcm: use GFP_ATOMIC in
+ dpcm_create_debugfs_state()
+In-Reply-To: <bbe18490-fba4-9307-fe5f-b02c00433d07@linux.intel.com>
+References: <ed322b8821fa787907c1a4cce879564d1281b69d.1642331884.git.christophe.jaillet@wanadoo.fr>
+ <s5hwniy21cl.wl-tiwai@suse.de>
+ <bbe18490-fba4-9307-fe5f-b02c00433d07@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>,
+ Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,186 +96,77 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-is the CHROMIUM prefix intentional? this should be ASoC: amd: ...
+On Mon, 17 Jan 2022 18:11:42 +0100,
+Pierre-Louis Bossart wrote:
+> 
+> 
+> 
+> On 1/17/22 2:49 AM, Takashi Iwai wrote:
+> > On Sun, 16 Jan 2022 12:18:17 +0100,
+> > Christophe JAILLET wrote:
+> >>
+> >> The commit below states that dpcm_be_connect() may be called from atomic
+> >> context. It changes a GFP_KERNEL into a GFP_ATOMIC to deal with it.
+> >>
+> >> Another memory allocation is done in dpcm_create_debugfs_state() which is
+> >> called by dpcm_be_connect(). Also use GFP_ATOMIC there to be consistent
+> >> and be compliant with atomic context.
+> >>
+> >> Fixes: d8a9c6e1f676 ("ASoC: soc-pcm: use GFP_ATOMIC for dpcm structure")
+> >> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> >> ---
+> >> Not clear to me how dpcm_be_connect() can be called from an atomic context,
+> >> though. But better safe than sorry.
+> > 
+> > I don't think this no longer valid for the very latest code.
+> > The commit b7898396f4bb dropped the spurious dpcm_lock spinlock, so
+> > the code path you touched must be always sleepable.
+> > 
+> > Similarly, the commit d8a9c6e1f676 can be reverted now.
+> 
+> Can we really revert d8a9c6e1f676?
+> 
+> We did propagate the non-atomic FE property to the BE, but if both FE
+> and BE are both atomic that constraint would be required, no?
+
+At the kzalloc() call in dpcm_be_connect, there is no spin lock
+involved.  It's merely protected by card->pcm_mutex, instead.  The
+spinlock is applied at the later call with
+snd_soc_pcm_stream_lock_irq() only for the list manipulations.  (See
+it's *_irq(), not *_irqsave(); that means the context being sleepable
+at that point.)  So, we can use GFP_KERNEL safely there.
+
+GFP_ATOMIC was needed in the past where dpcm_be_connect() itself is
+called in dpcm_lock spinlock.  It was removed recently.
 
 
-> +static int acp3x_5682s_init(struct snd_soc_pcm_runtime *rtd)
-> +{
-> +	int ret;
-> +	struct snd_soc_card *card = rtd->card;
-> +	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
-> +	struct snd_soc_component *component = codec_dai->component;
+Takashi
 
-reverse x-mas tree style?
-
-> +
-> +	dev_info(rtd->dev, "codec dai name = %s\n", codec_dai->name);
-
-not really useful?
-
-> +
-> +	/* set rt5682s dai fmt */
-> +	ret =  snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S
-> +			| SND_SOC_DAIFMT_NB_NF
-> +			| SND_SOC_DAIFMT_CBM_CFM);
-
-please use CBP_CFP
-
-> +	if (ret < 0) {
-> +		dev_err(rtd->card->dev,
-> +			"Failed to set rt5682s dai fmt: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	/* set codec PLL */
-> +	ret = snd_soc_dai_set_pll(codec_dai, RT5682S_PLL2, RT5682S_PLL_S_MCLK,
-> +				  PCO_PLAT_CLK, RT5682_PLL_FREQ);
-> +	if (ret < 0) {
-> +		dev_err(rtd->dev, "can't set rt5682s PLL: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	/* Set codec sysclk */
-> +	ret = snd_soc_dai_set_sysclk(codec_dai, RT5682S_SCLK_S_PLL2,
-> +				     RT5682_PLL_FREQ, SND_SOC_CLOCK_IN);
-> +	if (ret < 0) {
-> +		dev_err(rtd->dev,
-> +			"Failed to set rt5682s SYSCLK: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	/* Set tdm/i2s1 master bclk ratio */
-> +	ret = snd_soc_dai_set_bclk_ratio(codec_dai, 64);
-> +	if (ret < 0) {
-> +		dev_err(rtd->dev,
-> +			"Failed to set rt5682s tdm bclk ratio: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	rt5682_dai_wclk = clk_get(component->dev, "rt5682-dai-wclk");
-> +	rt5682_dai_bclk = clk_get(component->dev, "rt5682-dai-bclk");
-
-test the clocks?
-
-also use devm_ ...
-
-> +
-> +	ret = snd_soc_card_jack_new(card, "Headset Jack",
-> +				    SND_JACK_HEADSET | SND_JACK_LINEOUT |
-> +				    SND_JACK_BTN_0 | SND_JACK_BTN_1 |
-> +				    SND_JACK_BTN_2 | SND_JACK_BTN_3,
-> +				    &pco_jack, NULL, 0);
-> +	if (ret) {
-> +		dev_err(card->dev, "HP jack creation failed %d\n", ret);
-> +		return ret;
-
-... since in this case and below the clocks are not released.
-
-and actually the clock and jack should be handled in the platform driver
-probe, not here. This wouldn't work if you remove the platform driver,
-would it?
-
-> +	}
-> +
-> +	snd_jack_set_key(pco_jack.jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
-> +	snd_jack_set_key(pco_jack.jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
-> +	snd_jack_set_key(pco_jack.jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
-> +	snd_jack_set_key(pco_jack.jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
-> +
-> +	ret = snd_soc_component_set_jack(component, &pco_jack, NULL);
-> +	if (ret) {
-> +		dev_err(rtd->dev, "Headset Jack call-back failed: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	return ret;
-> +}
-> +
->  static int acp3x_5682_init(struct snd_soc_pcm_runtime *rtd)
->  {
->  	int ret;
-> @@ -271,6 +343,8 @@ SND_SOC_DAILINK_DEF(acp3x_i2s,
->  SND_SOC_DAILINK_DEF(acp3x_bt,
->  	DAILINK_COMP_ARRAY(COMP_CPU("acp3x_i2s_playcap.2")));
->  
-> +SND_SOC_DAILINK_DEF(rt5682s,
-> +	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-RTL5682:00", "rt5682s-aif1")));
->  SND_SOC_DAILINK_DEF(rt5682,
->  	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-10EC5682:00", "rt5682-aif1")));
->  SND_SOC_DAILINK_DEF(max,
-> @@ -458,6 +532,19 @@ static struct snd_soc_card acp3x_1015p = {
->  	.num_controls = ARRAY_SIZE(acp3x_mc_1015p_controls),
->  };
->  
-> +static struct snd_soc_card acp3x_5682s = {
-> +	.name = "acp3xrt5682s98357",
-> +	.owner = THIS_MODULE,
-> +	.dai_link = acp3x_dai,
-> +	.num_links = ARRAY_SIZE(acp3x_dai),
-> +	.dapm_widgets = acp3x_1015p_widgets,
-> +	.num_dapm_widgets = ARRAY_SIZE(acp3x_1015p_widgets),
-> +	.dapm_routes = acp3x_1015p_route,
-> +	.num_dapm_routes = ARRAY_SIZE(acp3x_1015p_route),
-> +	.controls = acp3x_mc_1015p_controls,
-> +	.num_controls = ARRAY_SIZE(acp3x_mc_1015p_controls),
-> +};
-> +
->  void *soc_is_rltk_max(struct device *dev)
->  {
->  	const struct acpi_device_id *match;
-> @@ -468,6 +555,27 @@ void *soc_is_rltk_max(struct device *dev)
->  	return (void *)match->driver_data;
->  }
->  
-> +static void card_hs_dai_link_present(struct snd_soc_dai_link *links,
-> +					const char *card_name)
-> +{
-> +	if (!strcmp(card_name, "acp3xrt5682s98357")) {
-> +		links[0].name = "acp3x-5682s-play";
-> +		links[0].stream_name = "Playback";
-> +		links[0].dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-> +				   SND_SOC_DAIFMT_CBM_CFM;
-
-CBP_CFP
-
-> +
-> +		links[0].codecs = rt5682s;
-> +		links[0].num_codecs = ARRAY_SIZE(rt5682s);
-> +		links[0].init = acp3x_5682s_init;
-
-again it seems wrong to allocate resources such as jacks and clocks in a
-dailink init.
-
-> +		links[0].dpcm_playback = 1;
-> +		links[0].dpcm_capture = 1;
-> +		links[0].cpus = acp3x_i2s;
-> +		links[0].num_cpus = ARRAY_SIZE(acp3x_i2s);
-> +		links[0].platforms = platform;
-> +		links[0].num_platforms = ARRAY_SIZE(platform);
-> +	}
-> +}
-> +
->  static void card_spk_dai_link_present(struct snd_soc_dai_link *links,
->  						const char *card_name)
->  {
-> @@ -497,7 +605,7 @@ static int acp3x_probe(struct platform_device *pdev)
->  	machine = devm_kzalloc(&pdev->dev, sizeof(*machine), GFP_KERNEL);
->  	if (!machine)
->  		return -ENOMEM;
-> -
-> +	card_hs_dai_link_present(card->dai_link, card->name);
->  	card_spk_dai_link_present(card->dai_link, card->name);
->  	card->dev = &pdev->dev;
->  	platform_set_drvdata(pdev, card);
-> @@ -523,6 +631,7 @@ static const struct acpi_device_id acp3x_audio_acpi_match[] = {
->  	{ "AMDI5682", (unsigned long)&acp3x_5682},
->  	{ "AMDI1015", (unsigned long)&acp3x_1015},
->  	{ "10021015", (unsigned long)&acp3x_1015p},
-> +	{ "10029835", (unsigned long)&acp3x_5682s},
-
-how does '9835' relate to RT5682s? You may want at least a comment.
-
->  	{},
->  };
->  MODULE_DEVICE_TABLE(acpi, acp3x_audio_acpi_match);
+> 
+> 
+> > 
+> > thanks,
+> > 
+> > Takashi
+> > 
+> >> ---
+> >>  sound/soc/soc-pcm.c | 2 +-
+> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+> >> index 7abfc48b26ca..1a536a2b9dc3 100644
+> >> --- a/sound/soc/soc-pcm.c
+> >> +++ b/sound/soc/soc-pcm.c
+> >> @@ -212,7 +212,7 @@ static void dpcm_create_debugfs_state(struct snd_soc_dpcm *dpcm, int stream)
+> >>  {
+> >>  	char *name;
+> >>  
+> >> -	name = kasprintf(GFP_KERNEL, "%s:%s", dpcm->be->dai_link->name,
+> >> +	name = kasprintf(GFP_ATOMIC, "%s:%s", dpcm->be->dai_link->name,
+> >>  			 stream ? "capture" : "playback");
+> >>  	if (name) {
+> >>  		dpcm->debugfs_state = debugfs_create_dir(
+> >> -- 
+> >> 2.32.0
+> >>
 > 
