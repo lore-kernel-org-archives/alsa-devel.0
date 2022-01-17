@@ -4,80 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EEB32C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Jan 2022 16:10:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D5F7C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Jan 2022 16:10:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D1BAA17E0;
-	Mon, 17 Jan 2022 17:09:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D1BAA17E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 20551183A;
+	Mon, 17 Jan 2022 17:10:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20551183A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1642435838;
-	bh=ziFdbF4qxwJAQPFrXZTHiwWTyM0Fy9EzGPLsny91jXA=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=STx9QT9CdWt29gHZ1UdN3q3Fi/IbWC45ti020SJR1mtdq5ryKTeXOuSFhHCUfzfId
-	 NUgN5T4n8SUkXibnfMar8kACOflwEB4qg57qrtcFEkvpvm5EUNGxB4afNZhqfKBv4k
-	 QmVeO6dKi4WwpAiUOPhfgbd9ExaRBWLwJoBU/X5E=
+	s=default; t=1642435856;
+	bh=YiyJ330lUfCfVVNTP89SnpCxZDaA3BZArkMGXia7FIQ=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=rMyLDJNOZUAKb/lgadYmaFBQ/nHUbdRMcXM8TtHuXmL9XNNcBsSre0wOZiL73SCG+
+	 zIMPt+rBFCJCjkk/AanQDEUfbVzhQ97lvjGB1573k76RhYK8qkbJJIViTB8UF4tWb7
+	 0WgOHd2rb0HH1ZkXdVcyu5LP6gjAJnw8KzpQD9+A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5B332F8050F;
+	by alsa1.perex.cz (Postfix) with ESMTP id ED53FF80518;
 	Mon, 17 Jan 2022 17:08:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 82061F800EB; Mon, 17 Jan 2022 17:08:45 +0100 (CET)
+ id 727B4F80506; Mon, 17 Jan 2022 17:08:45 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A8B28F80100
+ by alsa1.perex.cz (Postfix) with ESMTPS id 986D2F80254
  for <alsa-devel@alsa-project.org>; Mon, 17 Jan 2022 17:08:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8B28F80100
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 986D2F80254
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="aH9gWWxr"
+ header.b="MIyIeJSI"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20HFFYHA025138;
- Mon, 17 Jan 2022 10:08:34 -0600
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20HFFYHE025138;
+ Mon, 17 Jan 2022 10:08:36 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=KUv7ngvVuTUvfvAzKJH6kDlqhmw0mCvg7E2LNqztcsg=;
- b=aH9gWWxrwrp06o1iVySEwmvNsSTgYwG3Ih6PrPl5mQK2OtTIVgSJFBtnMcZPvx00KLEn
- lRu8ZMc5ZG30X8sOOqm8/9U/SpXt5iqCalnGKyCWQPLtnQo4aqDOF/Zv34oBSfhjynjB
- nUfSTmghIHhMDnPaEJyI8mFgtQ4C0a2X07Mi1Ce7mo/Ed5eji2bJuDbRWPGdnh+1/mw3
- oT97g+6BEWL/ncFLmgaI4RmRAKspU393prnqPwJbN7MAJl1K6iKvA2OSJvkZ5Zmenx/y
- BvLKRy8mDHfj81LDZBm/Ew4d25Hg9VBjxWNsHMQfMTsJB52T1XMr0HjyT4CF1mysj8hl mQ== 
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=NqFmW4aYe7NQ0YXxt5Fa5KfR4HPhf3lNiliwkux8kLk=;
+ b=MIyIeJSIPljG+M2IbdnLf1NRVmvY+Fppn5obR5gFeVM4GqLenth/rBbMIY9plT4by2yh
+ wuKi3mpNCw0/MwgEa99peYNjbpU5xaWq4PSgjjc+ubuAprgiQVcDngh4HLnBadNeZQQ9
+ Y4cO+N0HIkC0akZHfypJqmHU6YgVRT5tgJ3+gh5yxZ6CifcigO79yBf3sTSLndPVHZis
+ Ze2BX+XgzmxsXosD0lm7B+2OBc3njV5hgvcGfvK/hIUIGo6IetSYHGMOPT5kCO93RtF+
+ U40YEIdWd11l8Aym1eX7E/Eu2N51L0thr1H1YfLSgKsoijFLloBnlSq9CjswfpMnSKFR qQ== 
 Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3dnaxhr22c-1
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3dnaxhr22c-3
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Mon, 17 Jan 2022 10:08:34 -0600
+ Mon, 17 Jan 2022 10:08:35 -0600
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Mon, 17 Jan
- 2022 16:08:32 +0000
+ 2022 16:08:33 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.18 via
- Frontend Transport; Mon, 17 Jan 2022 16:08:32 +0000
+ Frontend Transport; Mon, 17 Jan 2022 16:08:33 +0000
 Received: from aryzen.ad.cirrus.com (unknown [198.61.64.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D679E459;
- Mon, 17 Jan 2022 16:08:31 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id CA24911D7;
+ Mon, 17 Jan 2022 16:08:32 +0000 (UTC)
 From: Lucas Tanure <tanureal@opensource.cirrus.com>
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Mark
  Brown <broonie@kernel.org>
-Subject: [PATCH v2 1/6] ALSA: hda: cs35l41: Avoid overwriting register patch
-Date: Mon, 17 Jan 2022 16:08:25 +0000
-Message-ID: <20220117160830.709403-1-tanureal@opensource.cirrus.com>
+Subject: [PATCH v2 4/6] ALSA: hda: cs35l41: Add missing default cases
+Date: Mon, 17 Jan 2022 16:08:28 +0000
+Message-ID: <20220117160830.709403-4-tanureal@opensource.cirrus.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220117160830.709403-1-tanureal@opensource.cirrus.com>
+References: <20220117160830.709403-1-tanureal@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: ZQoJ3bLYtcWhv2KkilNAPdRESf1c6SdB
-X-Proofpoint-ORIG-GUID: ZQoJ3bLYtcWhv2KkilNAPdRESf1c6SdB
+X-Proofpoint-GUID: nkTHCk8YUaqFAqyB5i0hANWIX6iRwZDA
+X-Proofpoint-ORIG-GUID: nkTHCk8YUaqFAqyB5i0hANWIX6iRwZDA
 X-Proofpoint-Spam-Reason: safe
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- Charles Keepax <ckeepax@opensource.cirrus.com>, linux-kernel@vger.kernel.org,
- Lucas Tanure <tanureal@opensource.cirrus.com>
+ linux-kernel@vger.kernel.org, Lucas Tanure <tanureal@opensource.cirrus.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,38 +95,62 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Add switch default cases at gpio pins configs
 
-regmap_register_patch can't be used to apply the probe sequence as a
-patch is already registers with the regmap by
-cs35l41_register_errata_patch and only a single patch can be attached to
-a single regmap. The driver doesn't currently rely on a cache sync to
-re-apply this probe sequence so simply switch it to a multi write.
-
-Fixes: 7b2f3eb492da ("ALSA: hda: cs35l41: Add support for CS35L41 in HDA systems")
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
 ---
 
-V2: Add Fixes tag
+V2: New patch with code split from Tidyup patch in this series
 
 ---
- sound/pci/hda/cs35l41_hda.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/hda/cs35l41_hda.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
 diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
-index 30b40d865863..c47c5f0b4e59 100644
+index c4f25e48dcc0..82f982f574a9 100644
 --- a/sound/pci/hda/cs35l41_hda.c
 +++ b/sound/pci/hda/cs35l41_hda.c
-@@ -480,7 +480,7 @@ int cs35l41_hda_probe(struct device *dev, const char *device_name, int id, int i
- 	acpi_hw_cfg = NULL;
+@@ -161,6 +161,9 @@ static void cs35l41_hda_playback_hook(struct device *dev, int action)
+ 		if (reg_seq->close)
+ 			ret = regmap_multi_reg_write(reg, reg_seq->close, reg_seq->num_close);
+ 		break;
++	default:
++		ret = -EINVAL;
++		break;
+ 	}
  
- 	if (cs35l41->reg_seq->probe) {
--		ret = regmap_register_patch(cs35l41->regmap, cs35l41->reg_seq->probe,
-+		ret = regmap_multi_reg_write(cs35l41->regmap, cs35l41->reg_seq->probe,
- 					    cs35l41->reg_seq->num_probe);
- 		if (ret) {
- 			dev_err(cs35l41->dev, "Fail to apply probe reg patch: %d\n", ret);
+ 	if (ret)
+@@ -227,6 +230,8 @@ static int cs35l41_hda_apply_properties(struct cs35l41_hda *cs35l41,
+ 		internal_boost = true;
+ 
+ 	switch (hw_cfg->gpio1_func) {
++	case CS35L41_NOT_USED:
++		break;
+ 	case CS35l41_VSPK_SWITCH:
+ 		regmap_update_bits(cs35l41->regmap, CS35L41_GPIO_PAD_CONTROL,
+ 				   CS35L41_GPIO1_CTRL_MASK, 1 << CS35L41_GPIO1_CTRL_SHIFT);
+@@ -235,13 +240,21 @@ static int cs35l41_hda_apply_properties(struct cs35l41_hda *cs35l41,
+ 		regmap_update_bits(cs35l41->regmap, CS35L41_GPIO_PAD_CONTROL,
+ 				   CS35L41_GPIO1_CTRL_MASK, 2 << CS35L41_GPIO1_CTRL_SHIFT);
+ 		break;
++	default:
++		dev_err(cs35l41->dev, "Invalid function %d for GPIO1\n", hw_cfg->gpio1_func);
++		return -EINVAL;
+ 	}
+ 
+ 	switch (hw_cfg->gpio2_func) {
++	case CS35L41_NOT_USED:
++		break;
+ 	case CS35L41_INTERRUPT:
+ 		regmap_update_bits(cs35l41->regmap, CS35L41_GPIO_PAD_CONTROL,
+ 				   CS35L41_GPIO2_CTRL_MASK, 2 << CS35L41_GPIO2_CTRL_SHIFT);
+ 		break;
++	default:
++		dev_err(cs35l41->dev, "Invalid function %d for GPIO2\n", hw_cfg->gpio2_func);
++		return -EINVAL;
+ 	}
+ 
+ 	if (internal_boost) {
 -- 
 2.34.1
 
