@@ -4,67 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E13B7C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Jan 2022 13:24:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68D90C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Jan 2022 16:09:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 21D811825;
-	Mon, 17 Jan 2022 14:23:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 21D811825
+	by alsa0.perex.cz (Postfix) with ESMTPS id C8C7117DC;
+	Mon, 17 Jan 2022 17:08:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C8C7117DC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1642425850;
-	bh=HHl+tcKsaJd/EjkC5QH/VuLb6CdI2cBHcVNYB/vWclg=;
+	s=default; t=1642435772;
+	bh=0Rmt3op8NP3FL863hviZ7BB3200QVboGDJuy0fOGcmQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Wj1LR68e3/VwUz9ZPRMiXOC3Z7sEllxVdQScfy/PEU013gDtAo6UBfZfnC7Fz0vb8
-	 4EIF5GfdWqEw6so5sAVCYG/xvori4GnrShR/cfnFjWjyW1wUs3LV3QvF2v4hyf3dz2
-	 7bZy2jOfSzUo+L4vNV02takFzeaR+FHaHBhpYS58=
+	b=YmKp9q1Zpyf75LW9EmAgz6bjSqyiuYKE3XSTQgiCjKSJZFhtReW4ffH/VOKhZU19o
+	 6UKen0GbACWzWzKLNE/nbWZWi07/jWisuOR28MWTUNM6wtiX9HZp+GQtXztsj/8q9T
+	 abWR8A9nRhjsDmzsJ7aqsj/tVqNgQHzB690Cl46M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AEF2DF8051E;
-	Mon, 17 Jan 2022 14:22:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 483BCF8025D;
+	Mon, 17 Jan 2022 17:08:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 19323F80525; Mon, 17 Jan 2022 14:22:00 +0100 (CET)
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D82E0F8051E
- for <alsa-devel@alsa-project.org>; Mon, 17 Jan 2022 14:21:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D82E0F8051E
+ id AB686F8014B; Mon, 17 Jan 2022 17:08:40 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id BA4B4F80100
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jan 2022 17:08:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA4B4F80100
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com
- header.b="S2P6fFa0"
-Received: from [127.0.0.1] (localhost [127.0.0.1])
- (Authenticated sender: adalessandro) with ESMTPSA id 769371F439D5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
- s=mail; t=1642425715;
- bh=HHl+tcKsaJd/EjkC5QH/VuLb6CdI2cBHcVNYB/vWclg=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=S2P6fFa0uw/eluYfvxcMao8Xr5PP7TpK1pfsxPrAUf3ehEYZiQoYze2gVB8kqSLEo
- kMZyAWiIlC2cPYo0oajrpH9Ov0TwYPmuqCKJ2Ba2vbydO9FcPZ5hzsta6xFpOXt9lG
- MRwCOBzxRkBFczXOvpLP2FBWSTQEdUBCpz9hdrC2pA4MFo0/hlKA4mGE+99C8tEM5C
- dcKWzFBjHFVWrtbqjFK0wzff9JwnD/cbNSusMIZTba0iJ5mIe+sZHS+bM+DsptZkPZ
- n8C+pE2afJl4GksgRZhH0Bt11eokqmPVvwDXYl96kRgtsJkC5Bvlm7YIHzbnQQtJqp
- ovtVMKtWpRflw==
-From: Ariel D'Alessandro <ariel.dalessandro@collabora.com>
-To: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v2 5/5] ASoC: fsl-asoc-card: Remove BCLK default value for
- tlv320aic31xx card
-Date: Mon, 17 Jan 2022 10:21:09 -0300
-Message-Id: <20220117132109.283365-6-ariel.dalessandro@collabora.com>
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="SNG04o8d"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20HFFYHB025138;
+ Mon, 17 Jan 2022 10:08:34 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=Q2jmIUxxgQlvMQHeVaQWubU1ZkCD95Vx51R0jGfn5TM=;
+ b=SNG04o8dV/i9+3DIaf0FHZoKf1fe1PwPGBB0tHUdhQfQ9rbrB3D3TVg7BOypgqigsg+z
+ MbwTEGwYA+hBU82NsZ69f0SVm7BXlDSvXgP/oxCKMQ90H9+TRSRxm892PVN8d7SR2mhG
+ JvNE68N7OHagLa3a55hC5TgLJutBNvMzmDVeL7BNKwahXfMIJa/Yb2MXjdL+V9az7fgl
+ ZfMwaMBguL0hsjFtSEq32RegT5nob1J5MX8fqAjNQOGUmEoZEEULmsrFrAad1281Sjbc
+ URJB9FbS3I7DKK5n76S4EUk00qbUSDUraMDHL317Os8mW8jm7nNxEIosmi6YPmbEYGRV HA== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3dnaxhr22f-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Mon, 17 Jan 2022 10:08:34 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Mon, 17 Jan
+ 2022 16:08:32 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.18 via
+ Frontend Transport; Mon, 17 Jan 2022 16:08:32 +0000
+Received: from aryzen.ad.cirrus.com (unknown [198.61.64.122])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 80DEB459;
+ Mon, 17 Jan 2022 16:08:32 +0000 (UTC)
+From: Lucas Tanure <tanureal@opensource.cirrus.com>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Mark
+ Brown <broonie@kernel.org>
+Subject: [PATCH v2 3/6] ALSA: hda: cs35l41: Move cs35l41* calls to its own
+ symbol namespace
+Date: Mon, 17 Jan 2022 16:08:27 +0000
+Message-ID: <20220117160830.709403-3-tanureal@opensource.cirrus.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220117132109.283365-1-ariel.dalessandro@collabora.com>
-References: <20220117132109.283365-1-ariel.dalessandro@collabora.com>
+In-Reply-To: <20220117160830.709403-1-tanureal@opensource.cirrus.com>
+References: <20220117160830.709403-1-tanureal@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: ariel.dalessandro@collabora.com, kuninori.morimoto.gx@renesas.com,
- Xiubo.Lee@gmail.com, tony@atomide.com, shengjiu.wang@gmail.com, tiwai@suse.com,
- lgirdwood@gmail.com, robh+dt@kernel.org, nicoleotsuka@gmail.com,
- broonie@kernel.org, bcousson@baylibre.com, michael@amarulasolutions.com,
- festevam@gmail.com
+Content-Type: text/plain
+X-Proofpoint-GUID: 6pceskFdUxspxGs1oRjnSlbngedhwVgk
+X-Proofpoint-ORIG-GUID: 6pceskFdUxspxGs1oRjnSlbngedhwVgk
+X-Proofpoint-Spam-Reason: safe
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Lucas Tanure <tanureal@opensource.cirrus.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,27 +96,64 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Now that fsl-asoc-card support setting mclk-id through the device-tree
-mclk-id property, let's remove the default BCLK configuration for this
-card.
+Create own namespace and avoid polluting the global namespace
 
-Signed-off-by: Ariel D'Alessandro <ariel.dalessandro@collabora.com>
+Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
 ---
- sound/soc/fsl/fsl-asoc-card.c | 1 -
- 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-index 156d3c669274..370bc790c6ba 100644
---- a/sound/soc/fsl/fsl-asoc-card.c
-+++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -637,7 +637,6 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
- 		priv->dai_link[2].dpcm_capture = 0;
- 		priv->cpu_priv.sysclk_dir[TX] = SND_SOC_CLOCK_OUT;
- 		priv->cpu_priv.sysclk_dir[RX] = SND_SOC_CLOCK_OUT;
--		priv->codec_priv.mclk_id = AIC31XX_PLL_CLKIN_BCLK;
- 		priv->card.dapm_routes = audio_map_tx;
- 		priv->card.num_dapm_routes = ARRAY_SIZE(audio_map_tx);
- 	} else if (of_device_is_compatible(np, "fsl,imx-audio-wm8962")) {
+V2: No changes
+
+---
+ sound/pci/hda/cs35l41_hda.c     | 5 ++---
+ sound/pci/hda/cs35l41_hda_i2c.c | 1 +
+ sound/pci/hda/cs35l41_hda_spi.c | 1 +
+ 3 files changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
+index 509a380f9be7..c4f25e48dcc0 100644
+--- a/sound/pci/hda/cs35l41_hda.c
++++ b/sound/pci/hda/cs35l41_hda.c
+@@ -514,7 +514,7 @@ int cs35l41_hda_probe(struct device *dev, const char *device_name, int id, int i
+ 
+ 	return ret;
+ }
+-EXPORT_SYMBOL_GPL(cs35l41_hda_probe);
++EXPORT_SYMBOL_NS_GPL(cs35l41_hda_probe, SND_HDA_SCODEC_CS35L41);
+ 
+ int cs35l41_hda_remove(struct device *dev)
+ {
+@@ -528,8 +528,7 @@ int cs35l41_hda_remove(struct device *dev)
+ 
+ 	return 0;
+ }
+-EXPORT_SYMBOL_GPL(cs35l41_hda_remove);
+-
++EXPORT_SYMBOL_NS_GPL(cs35l41_hda_remove, SND_HDA_SCODEC_CS35L41);
+ 
+ MODULE_DESCRIPTION("CS35L41 HDA Driver");
+ MODULE_AUTHOR("Lucas Tanure, Cirrus Logic Inc, <tanureal@opensource.cirrus.com>");
+diff --git a/sound/pci/hda/cs35l41_hda_i2c.c b/sound/pci/hda/cs35l41_hda_i2c.c
+index 4a9462fb5c14..eeb387853ee3 100644
+--- a/sound/pci/hda/cs35l41_hda_i2c.c
++++ b/sound/pci/hda/cs35l41_hda_i2c.c
+@@ -62,5 +62,6 @@ static struct i2c_driver cs35l41_i2c_driver = {
+ module_i2c_driver(cs35l41_i2c_driver);
+ 
+ MODULE_DESCRIPTION("HDA CS35L41 driver");
++MODULE_IMPORT_NS(SND_HDA_SCODEC_CS35L41);
+ MODULE_AUTHOR("Lucas Tanure <tanureal@opensource.cirrus.com>");
+ MODULE_LICENSE("GPL");
+diff --git a/sound/pci/hda/cs35l41_hda_spi.c b/sound/pci/hda/cs35l41_hda_spi.c
+index 77426e96c58f..15345a72b9d1 100644
+--- a/sound/pci/hda/cs35l41_hda_spi.c
++++ b/sound/pci/hda/cs35l41_hda_spi.c
+@@ -59,5 +59,6 @@ static struct spi_driver cs35l41_spi_driver = {
+ module_spi_driver(cs35l41_spi_driver);
+ 
+ MODULE_DESCRIPTION("HDA CS35L41 driver");
++MODULE_IMPORT_NS(SND_HDA_SCODEC_CS35L41);
+ MODULE_AUTHOR("Lucas Tanure <tanureal@opensource.cirrus.com>");
+ MODULE_LICENSE("GPL");
 -- 
 2.34.1
 
