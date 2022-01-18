@@ -4,72 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05F7EC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jan 2022 17:12:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39355C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jan 2022 17:23:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BF65C2951;
-	Tue, 18 Jan 2022 18:11:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF65C2951
+	by alsa0.perex.cz (Postfix) with ESMTPS id B96F62BD4;
+	Tue, 18 Jan 2022 18:22:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B96F62BD4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1642525922;
-	bh=9Oiq6z0NhX/tzLVnd+VfU3zd3DlXHBDOmoHeXqvmIik=;
+	s=default; t=1642526612;
+	bh=nprtLpXrRfvglwbXoOGOQ6/KtgrFZDOqeMJxXlz0s0A=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KiPniykuHmbIN6zUwESPYDepILs8dX/P/1RQHTPf5yWoWjviiFvdgbn/X+VeOASEA
-	 hjIaSUuoTG4LFOttwAhky4JqJ3XkH1YN3avhLCMW5NkwgiO01/DtKg/qh+Q7wd1tTd
-	 Dxljx8NtHxDlbs5v23h9bZegWKsav6jdnqQ8I0UU=
+	b=J5531hVwAMh0zOPKH5sLX+041pPBEl4I6cwe5G9nwkjlFID0KfdgcF/O9iMbEUpsS
+	 r6wF30MwjobMGPdRze6WWzfcQp5gInzz/acn+0Sp8FctuGuzN9ROtuSvjvUrPx3Nmy
+	 xUTlZCJFSxduSqZ1lr/istVRiZTXZz0X6BlQ5R6I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 91F2CF80100;
-	Tue, 18 Jan 2022 18:11:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 60891F8023A;
+	Tue, 18 Jan 2022 18:22:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F1167F80100; Tue, 18 Jan 2022 18:11:09 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id E9B06F800D8; Tue, 18 Jan 2022 18:22:40 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B69DEF80100
- for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2022 18:11:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B69DEF80100
+ by alsa1.perex.cz (Postfix) with ESMTPS id A4930F800D8
+ for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2022 18:22:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4930F800D8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="bZSz15dq"
+ header.b="TK4R4ujo"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 357F6B816E3;
- Tue, 18 Jan 2022 17:11:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C70FC340E0;
- Tue, 18 Jan 2022 17:10:58 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id BF02A60EF9;
+ Tue, 18 Jan 2022 17:22:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 824F7C340E0;
+ Tue, 18 Jan 2022 17:22:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1642525860;
- bh=9Oiq6z0NhX/tzLVnd+VfU3zd3DlXHBDOmoHeXqvmIik=;
+ s=k20201202; t=1642526556;
+ bh=nprtLpXrRfvglwbXoOGOQ6/KtgrFZDOqeMJxXlz0s0A=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=bZSz15dqy7JLztDN0MIhWS0xoD/DVspHNJtE5Ot0Gf0c8sI9DkdUNhWxSgKcfDdmn
- mi34k1CvopHdAisO9jdc1O495rvsnJn5vFg/Bg6Gi6j2LOH+15p2rjCWiz8l6tY/TJ
- nK73s1klZDmx9/oQOpCm7GCbWOVNs3OOAxtKk1eOgiJlmS6rdvAqXNgCfzRfdBHS+N
- 3eTRk91Yhjs1GvNWbN5xA7o0DQAnuUQ5TjHVXzXPKUX4Pp8XeYJK3vWzOkdGMh85bK
- zsqb0Dqk0KRemFCEmQBJGdAtwdUcYmLdgEEeaZAZbpmxJdGRxxaT+XxDzuTxfh/94Y
- 2/HNi66h9sN0Q==
-Date: Tue, 18 Jan 2022 17:10:55 +0000
+ b=TK4R4ujoiynCj4SK6WpD8pNaaMAAg1E7afe4kJAjp/SwXXskZVB7P7pfm42MyyhU5
+ zIR+LqYy9RKz7cG08fXze2SfdT9cnp9J2oz2wPB9mCyUUg7L7QCaPn//bArAzOupZ1
+ OLCNvKWWAJg3oRcBLCSgxFBP9D4uGmY8SNKv0aGbNen/jPdgpWVoHUe5ETbT3IHm7P
+ SHe4/F0ZYGmohxfI7SiUlH/oSQDAnnz+tuvYj7uVFwBYtOxUqiSgwtUbgnryk+P/ct
+ 9FUdHcNrkvGhrezFy1ZTRL7bOQ5eF7jhOQA90iMfVUwGWu7kTRNDmszkU+QVa/L+R8
+ 4oAq7e+qRmxFw==
+Date: Tue, 18 Jan 2022 17:22:29 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Julian Braha <julianbraha@gmail.com>
-Subject: Re: [PATCH] ASoC: amd: fix unmet dependency on GPIOLIB for
- SND_SOC_DMIC
-Message-ID: <Yeb0n9AVXeVzBHrT@sirena.org.uk>
-References: <20220117041528.59958-1-julianbraha@gmail.com>
+To: Ariel D'Alessandro <ariel.dalessandro@collabora.com>
+Subject: Re: [PATCH v2 2/5] dt-bindings: tlv320aic31xx: Define PLL clock inputs
+Message-ID: <Yeb3VVmrUDIYw3AK@sirena.org.uk>
+References: <20220117132109.283365-1-ariel.dalessandro@collabora.com>
+ <20220117132109.283365-3-ariel.dalessandro@collabora.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="CS/byuj3seJkHJeR"
+ protocol="application/pgp-signature"; boundary="tabkMTr0FaHh+1SV"
 Content-Disposition: inline
-In-Reply-To: <20220117041528.59958-1-julianbraha@gmail.com>
+In-Reply-To: <20220117132109.283365-3-ariel.dalessandro@collabora.com>
 X-Cookie: Do YOU have redeeming social value?
-Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
- AjitKumar.Pandey@amd.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
- fazilyildiran@gmail.com, pierre-louis.bossart@linux.intel.com, tiwai@suse.com,
- Vijendar.Mukunda@amd.com, tanureal@opensource.cirrus.com
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ michael@amarulasolutions.com, kuninori.morimoto.gx@renesas.com,
+ Xiubo.Lee@gmail.com, tony@atomide.com, festevam@gmail.com,
+ shengjiu.wang@gmail.com, tiwai@suse.com, linux-kernel@vger.kernel.org,
+ lgirdwood@gmail.com, nicoleotsuka@gmail.com, robh+dt@kernel.org,
+ bcousson@baylibre.com, linux-omap@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,40 +88,32 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---CS/byuj3seJkHJeR
+--tabkMTr0FaHh+1SV
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Sun, Jan 16, 2022 at 11:15:28PM -0500, Julian Braha wrote:
-> When SND_SOC_AMD_YC_MACH is selected,
-> and GPIOLIB is not selected,
-> Kbuild gives the following warning:
->=20
-> WARNING: unmet direct dependencies detected for SND_SOC_DMIC
->   Depends on [n]: SOUND [=3Dy] && !UML && SND [=3Dy] && SND_SOC [=3Dy] &&=
- GPIOLIB [=3Dn]
->   Selected by [y]:
->   - SND_SOC_AMD_YC_MACH [=3Dy] && SOUND [=3Dy] && !UML && SND [=3Dy] && S=
-ND_SOC [=3Dy] && SND_SOC_AMD_ACP6x [=3Dy]
+On Mon, Jan 17, 2022 at 10:21:06AM -0300, Ariel D'Alessandro wrote:
+> Add constants for the different PLL clock inputs in tlv320aic31xx.
 
-Why is this a good fix and not removing the dependency on gpiolib from
-DMIC?  While a DMIC *can* use a GPIO it's not something that's an
-intrinsic requirement and it's entirely optional in the code.
+Please submit patches using subject lines reflecting the style for the
+subsystem, this makes it easier for people to identify relevant patches.
+Look at what existing commits in the area you're changing are doing and
+make sure your subject lines visually resemble what they're doing.
+There's no need to resubmit to fix this alone.
 
---CS/byuj3seJkHJeR
+--tabkMTr0FaHh+1SV
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmHm9J4ACgkQJNaLcl1U
-h9BKuwf/Z8fB1aPDyhYaL2XXxpKPsXuHvvGt5D8UkgJbTPWxZ7fSxW/y7c1N06wl
-kxUICkVKHTKHyml19J8jfBoMIiGtOsRj4FupD0ofYuyrBGt6kdMaVg+XVmkwtaDz
-MgivjuU+iWO3sX0N490JUfsKlAoZv2RpkrlkD7hHmYIl/ks1a2D695ZJ2vs3unJG
-nR8s5zDbf6Zjn6PedxL4uQ7XySc3WJvpcW8Y53ixZLsOiZc4gmA7LBKOXIaWyz4m
-bKq9QzokLmwVkB6o7KCVmRj2W9/s0m1X+LMmaAUhgdtBKjX6fyy6TvcFX02RoUUi
-LGU7wQKllI2X4535+htPG0KYmDChAg==
-=gjhz
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmHm91QACgkQJNaLcl1U
+h9Culwf/RPr3IjTPjy4XtWKgvBrp1Pai0Yj0+dMs5dFSjw/0kFwL+B1+1VUoq3vI
+h4UkHtRogVAXjQ+ciJgSGz6NRlSjg6rJbuZ3DcYse48EWDrbZj8y1MNwI4Y1AIkm
+QjXhSubuj/ahL+jWDJD3R4hXmdP3HrJJehztN73R1/chIwJDmJAXg1zSgU2NBsXy
+DXKQRc4meJcv8Poq9gtebfbz2prqrfbBc+GyJsPYPjMVwvC8JSJA0GYGJJG9vmj2
+OvRKjjRymO4WEawTzpCydcMlPtnZjUwmPl2u/TE9JamAxFxJC5CCaeybLOOET8kp
+Pww0euG+OUvlDiGuAyJ4du3StSJ5Mg==
+=v5Cq
 -----END PGP SIGNATURE-----
 
---CS/byuj3seJkHJeR--
+--tabkMTr0FaHh+1SV--
