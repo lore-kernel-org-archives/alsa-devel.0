@@ -4,87 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E117BC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jan 2022 14:56:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B27CC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jan 2022 14:56:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EF3941813;
-	Tue, 18 Jan 2022 15:55:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF3941813
+	by alsa0.perex.cz (Postfix) with ESMTPS id 58F6118D4;
+	Tue, 18 Jan 2022 15:55:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 58F6118D4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1642517765;
-	bh=00q2HMPDb5q9DlQps6CALb/V00i3AoRLrBwce+tZ8OE=;
+	s=default; t=1642517771;
+	bh=urDIsXUZL4M2wAnIJtrKOQJaFCcqfXvxzM4qGrANCNo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Pq8uWZz3T3prRkJlRjtLClFl9JedxpGmw85hX/CJyLHYzmogZO6onIgSTxuceTgUc
-	 wP1K2eXt4MF7YQ4EjqcHkLVoT46zVulAitX9td4vtDT8IGUvGPNG4gLnxEbwYiU6Ug
-	 FboXGwjXnqXWVjZn8yzQsKMtfRCMzId1lbycFadk=
+	b=k2qo52+5JX/lyBPaz7E4pVktm3ytfbIOekxUM8oihDCAgk+kXhCEZe8pda+4kHcPu
+	 MAJNtsJ3U7jhZgv3/h3S4y3fRDdBXN5PdgKWtZwP+YCely1wevpeUgSOav9yfZR9kU
+	 P7SepTaM9vh2lSIuiPNNLYcn9tx61BxCGcKz5utc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 15AD6F80528;
-	Tue, 18 Jan 2022 15:53:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 466FEF8052D;
+	Tue, 18 Jan 2022 15:53:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E5495F8051F; Tue, 18 Jan 2022 15:53:50 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id EDA37F80511; Tue, 18 Jan 2022 15:53:50 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 445B4F80515
- for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2022 15:53:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 445B4F80515
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4DF56F80519
+ for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2022 15:53:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4DF56F80519
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="qDkFadmL"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20I1MV5r021792;
- Tue, 18 Jan 2022 08:53:36 -0600
+ header.b="TqsmurpJ"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20I3r9SM009450;
+ Tue, 18 Jan 2022 08:53:45 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=0TVxBDOiUr12OuPIFyA5/1w1LgYsgtcjV4mdb8rtSok=;
- b=qDkFadmL0/AgDz3iGm2PqcfT5jD93kZENaZ1VVlhLsHu0YaP2weGHS3ZAvfR2ZjK91/t
- 3i8U8OxjkWprjVkbrpwcMwmljHNKlT7kH0WMC2mi4nzgxJArpJxaxFJnl7lyG3BJNhCU
- b/qt5F/YgCVh6Xt02jVguJ3i6wCUKnEfMkf3npLrCYdIGFbQtwvqagRasm9zgmOrLx4E
- TythIy33G/ka07Dnks9uiDmsZG2tnhGPt49cerOHGaYm4SvjHtRZ1YV6Bi/dF3rT7MxV
- f+dYcWpqOnV0Iwm29gV0lKLKQ3l5DKvZP/8g5t6FyAf1MVPBSaY9N01Glz5FTFrB88vR WQ== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3dnaxhs9na-2
+ bh=R5uyFqfTfrDD7G+2dbwaFrqTm251w9zGshUntVK6xUE=;
+ b=TqsmurpJ96J573so/AigeUs/iwXO3OtGTGq545Js5kTwlXla2oh47TEnGTJrZ73AhzPl
+ FyCXHHF9EfERvh+3P9MKsq8a+F0g06bNOVDwW8SNduLbj8LzcuebeyUoKsoM5ssQPpCb
+ G1YFfLZ5itWskweie1aX5psB+90n4mVPLWwms9LFRkv1vrLGfLIyI4RSz9wm9UFZM5KK
+ SKqVMCqskrj3cn31QAz5FjTSnRr79UAM7bfjr5VFdOOTjEXmAuaQVDYAdDHdn7cpgh0u
+ 0zRvliPgNjkA7o4evyn16FfAOz1E5SjPMotEJZfg1nq0KKqvgtIrLh3Wmw6DGFce4h4h cA== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3dn8k2s8t5-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Tue, 18 Jan 2022 08:53:36 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ Tue, 18 Jan 2022 08:53:44 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Tue, 18 Jan
- 2022 14:53:35 +0000
+ 2022 14:53:43 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.18 via
- Frontend Transport; Tue, 18 Jan 2022 14:53:35 +0000
+ Frontend Transport; Tue, 18 Jan 2022 14:53:43 +0000
 Received: from LONN2DGDQ73.ad.cirrus.com (unknown [198.90.238.138])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id F055A7C;
- Tue, 18 Jan 2022 14:53:33 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 55C2CB13;
+ Tue, 18 Jan 2022 14:53:41 +0000 (UTC)
 From: Stefan Binding <sbinding@opensource.cirrus.com>
 To: Mark Brown <broonie@kernel.org>, "Rafael J . Wysocki" <rafael@kernel.org>, 
  Len Brown <lenb@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
  Mark Gross <markgross@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
  Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v3 03/10] spi: Support selection of the index of the ACPI Spi
- Resource before alloc
-Date: Tue, 18 Jan 2022 14:52:44 +0000
-Message-ID: <20220118145251.1548-4-sbinding@opensource.cirrus.com>
+Subject: [PATCH v3 07/10] ACPI: bus-multi-instantiate: Reorganize I2C functions
+Date: Tue, 18 Jan 2022 14:52:48 +0000
+Message-ID: <20220118145251.1548-8-sbinding@opensource.cirrus.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220118145251.1548-1-sbinding@opensource.cirrus.com>
 References: <20220118145251.1548-1-sbinding@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: UVvcDV_Co8DZNT7JBlCqRXOznYoUWqtl
-X-Proofpoint-ORIG-GUID: UVvcDV_Co8DZNT7JBlCqRXOznYoUWqtl
+X-Proofpoint-GUID: _zsWiuqrCBNFeq-TObDtrcfBgjwXJM8K
+X-Proofpoint-ORIG-GUID: _zsWiuqrCBNFeq-TObDtrcfBgjwXJM8K
 X-Proofpoint-Spam-Reason: safe
-Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
- linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
- linux-acpi@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>,
- linux-spi@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Lucas Tanure <tanureal@opensource.cirrus.com>,
+ patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+ platform-driver-x86@vger.kernel.org, linux-acpi@vger.kernel.org,
+ Stefan Binding <sbinding@opensource.cirrus.com>, linux-spi@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,172 +99,214 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-If a node contains more than one Spi Resources, it may be necessary to
-use an index to select which one you want to allocate a spi device for.
+From: Lucas Tanure <tanureal@opensource.cirrus.com>
 
+Reorganize I2C functions to accommodate SPI support
+Split the probe and factor out parts of the code
+that will be used in the SPI support
+
+Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
 Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 ---
- drivers/spi/spi.c       | 56 +++++++++++++++++++++++++++++++++++------
- include/linux/spi/spi.h |  6 +++--
- 2 files changed, 52 insertions(+), 10 deletions(-)
+ drivers/acpi/bus-multi-instantiate.c | 150 +++++++++++++++++----------
+ 1 file changed, 96 insertions(+), 54 deletions(-)
 
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index 13f4701f0694..898cc9931490 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -2320,6 +2320,9 @@ struct acpi_spi_lookup {
- 	int			irq;
- 	u8			bits_per_word;
- 	u8			chip_select;
-+	int			n;
-+	int			index;
-+	int			irq_index;
+diff --git a/drivers/acpi/bus-multi-instantiate.c b/drivers/acpi/bus-multi-instantiate.c
+index 982dfecfd27c..50f1540762e9 100644
+--- a/drivers/acpi/bus-multi-instantiate.c
++++ b/drivers/acpi/bus-multi-instantiate.c
+@@ -29,85 +29,129 @@ struct bmi_instance {
+ 
+ struct bmi {
+ 	int i2c_num;
+-	struct i2c_client *i2c_devs[];
++	struct i2c_client **i2c_devs;
  };
  
- static void acpi_spi_parse_apple_properties(struct acpi_device *dev,
-@@ -2351,6 +2354,8 @@ static void acpi_spi_parse_apple_properties(struct acpi_device *dev,
- 		lookup->mode |= SPI_CPHA;
- }
- 
-+static struct spi_controller *acpi_spi_find_controller_by_adev(struct acpi_device *adev);
+-static int bmi_probe(struct platform_device *pdev)
++static int bmi_get_irq(struct platform_device *pdev, struct acpi_device *adev,
++		       const struct bmi_instance *inst)
++{
++	int ret;
 +
- static int acpi_spi_add_resource(struct acpi_resource *ares, void *data)
- {
- 	struct acpi_spi_lookup *lookup = data;
-@@ -2364,14 +2369,35 @@ static int acpi_spi_add_resource(struct acpi_resource *ares, void *data)
- 		sb = &ares->data.spi_serial_bus;
- 		if (sb->type == ACPI_RESOURCE_SERIAL_TYPE_SPI) {
- 
-+			if (lookup->index != -1 && lookup->n++ != lookup->index)
-+				return 1;
++	switch (inst->flags & IRQ_RESOURCE_TYPE) {
++	case IRQ_RESOURCE_GPIO:
++		ret = acpi_dev_gpio_irq_get(adev, inst->irq_idx);
++		break;
++	case IRQ_RESOURCE_APIC:
++		ret = platform_get_irq(pdev, inst->irq_idx);
++		break;
++	default:
++		ret = 0;
++		break;
++	}
 +
-+			if (lookup->index == -1 && !ctlr)
-+				return -ENODEV;
++	if (ret < 0)
++		dev_err_probe(&pdev->dev, ret, "Error requesting irq at index %d: %d\n",
++			      inst->irq_idx, ret);
 +
- 			status = acpi_get_handle(NULL,
- 						 sb->resource_source.string_ptr,
- 						 &parent_handle);
- 
--			if (ACPI_FAILURE(status) ||
--			    ACPI_HANDLE(ctlr->dev.parent) != parent_handle)
-+			if (ACPI_FAILURE(status))
- 				return -ENODEV;
- 
-+			if (ctlr) {
-+				if (ACPI_HANDLE(ctlr->dev.parent) != parent_handle)
-+					return -ENODEV;
-+			} else {
-+				struct acpi_device *adev;
++	return ret;
++}
 +
-+				if (acpi_bus_get_device(parent_handle, &adev))
-+					return -ENODEV;
++static void bmi_devs_unregister(struct bmi *bmi)
++{
++	while (bmi->i2c_num > 0)
++		i2c_unregister_device(bmi->i2c_devs[--bmi->i2c_num]);
++}
 +
-+				ctlr = acpi_spi_find_controller_by_adev(adev);
-+				if (!ctlr)
-+					return -ENODEV;
-+
-+				lookup->ctlr = ctlr;
-+			}
-+
- 			/*
- 			 * ACPI DeviceSelection numbering is handled by the
- 			 * host controller driver in Windows and can vary
-@@ -2402,7 +2428,7 @@ static int acpi_spi_add_resource(struct acpi_resource *ares, void *data)
- 	} else if (lookup->irq < 0) {
- 		struct resource r;
- 
--		if (acpi_dev_resource_interrupt(ares, 0, &r))
-+		if (acpi_dev_resource_interrupt(ares, lookup->irq_index, &r))
- 			lookup->irq = r.start;
- 	}
- 
-@@ -2414,14 +2440,22 @@ static int acpi_spi_add_resource(struct acpi_resource *ares, void *data)
-  * acpi_spi_device_alloc - Allocate a spi device, and fill it in with ACPI information
-  * @ctlr: controller to which the spi device belongs
-  * @adev: ACPI Device for the spi device
-+ * @index: Index of the spi resource inside the ACPI Node
-+ * @irq_index: Index of the GPIO resource for the IRQ inside the ACPI Node
-  *
-  * This should be used to allocate a new spi device from and ACPI Node.
-  * The caller is responsible for calling spi_add_device to register the spi device.
-  *
-+ * If ctlr is set to NULL, the Controller for the spi device will be looked up
-+ * using the resource.
-+ * If index is set to -1, index is not used.
-+ * Note: If index is -1, ctlr must be set.
++/**
++ * bmi_i2c_probe - Instantiate multiple I2C devices from inst array
++ * @pdev:	Platform device
++ * @adev:	ACPI device
++ * @bmi:	Internal struct for Bus multi instantiate driver
++ * @inst:	Array of instances to probe
 + *
-  * Return: a pointer to the new device, or ERR_PTR on error.
-  */
- struct spi_device *acpi_spi_device_alloc(struct spi_controller *ctlr,
--					 struct acpi_device *adev)
-+					 struct acpi_device *adev,
-+					 int index, int irq_index)
++ * Returns the number of I2C devices instantiate, Zero if none is found or a negative error code.
++ */
++static int bmi_i2c_probe(struct platform_device *pdev, struct acpi_device *adev, struct bmi *bmi,
++			 const struct bmi_instance *inst_array)
  {
- 	acpi_handle parent_handle = NULL;
- 	struct list_head resource_list;
-@@ -2429,8 +2463,14 @@ struct spi_device *acpi_spi_device_alloc(struct spi_controller *ctlr,
- 	struct spi_device *spi;
- 	int ret;
+ 	struct i2c_board_info board_info = {};
+-	const struct bmi_instance *inst;
+ 	struct device *dev = &pdev->dev;
+-	struct acpi_device *adev;
+-	struct bmi *bmi;
+ 	char name[32];
+-	int i, ret;
++	int i, ret = 0, count;
  
-+	if (!ctlr && index == -1)
-+		return ERR_PTR(-EINVAL);
+-	inst = device_get_match_data(dev);
+-	if (!inst) {
+-		dev_err(dev, "Error ACPI match data is missing\n");
+-		return -ENODEV;
+-	}
+-
+-	adev = ACPI_COMPANION(dev);
+-
+-	/* Count number of clients to instantiate */
+ 	ret = i2c_acpi_client_count(adev);
+-	if (ret < 0)
++	if (ret <= 0)
+ 		return ret;
++	count = ret;
+ 
+-	bmi = devm_kmalloc(dev, struct_size(bmi, i2c_devs, ret), GFP_KERNEL);
+-	if (!bmi)
++	bmi->i2c_devs = devm_kcalloc(dev, count, sizeof(*bmi->i2c_devs), GFP_KERNEL);
++	if (!bmi->i2c_devs)
+ 		return -ENOMEM;
+ 
+-	bmi->i2c_num = ret;
+-
+-	for (i = 0; i < bmi->i2c_num && inst[i].type; i++) {
++	for (i = 0; i < count && inst_array[i].type; i++) {
+ 		memset(&board_info, 0, sizeof(board_info));
+-		strlcpy(board_info.type, inst[i].type, I2C_NAME_SIZE);
+-		snprintf(name, sizeof(name), "%s-%s.%d", dev_name(dev), inst[i].type, i);
++		strscpy(board_info.type, inst_array[i].type, I2C_NAME_SIZE);
++		snprintf(name, sizeof(name), "%s-%s.%d", dev_name(dev), inst_array[i].type, i);
+ 		board_info.dev_name = name;
+-		switch (inst[i].flags & IRQ_RESOURCE_TYPE) {
+-		case IRQ_RESOURCE_GPIO:
+-			ret = acpi_dev_gpio_irq_get(adev, inst[i].irq_idx);
+-			if (ret < 0) {
+-				dev_err(dev, "Error requesting irq at index %d: %d\n",
+-						inst[i].irq_idx, ret);
+-				goto error;
+-			}
+-			board_info.irq = ret;
+-			break;
+-		case IRQ_RESOURCE_APIC:
+-			ret = platform_get_irq(pdev, inst[i].irq_idx);
+-			if (ret < 0) {
+-				dev_dbg(dev, "Error requesting irq at index %d: %d\n",
+-					inst[i].irq_idx, ret);
+-				goto error;
+-			}
+-			board_info.irq = ret;
+-			break;
+-		default:
+-			board_info.irq = 0;
+-			break;
+-		}
 +
- 	lookup.ctlr		= ctlr;
- 	lookup.irq		= -1;
-+	lookup.index		= index;
-+	lookup.n		= 0;
-+	lookup.irq_index	= irq_index;
- 
- 	INIT_LIST_HEAD(&resource_list);
- 	ret = acpi_dev_get_resources(adev, &resource_list,
-@@ -2443,7 +2483,7 @@ struct spi_device *acpi_spi_device_alloc(struct spi_controller *ctlr,
- 
- 	if (!lookup.max_speed_hz &&
- 	    ACPI_SUCCESS(acpi_get_parent(adev->handle, &parent_handle)) &&
--	    ACPI_HANDLE(ctlr->dev.parent) == parent_handle) {
-+	    ACPI_HANDLE(lookup.ctlr->dev.parent) == parent_handle) {
- 		/* Apple does not use _CRS but nested devices for SPI slaves */
- 		acpi_spi_parse_apple_properties(adev, &lookup);
++		ret = bmi_get_irq(pdev, adev, &inst_array[i]);
++		if (ret < 0)
++			goto error;
++		board_info.irq = ret;
++
+ 		bmi->i2c_devs[i] = i2c_acpi_new_device(dev, i, &board_info);
+ 		if (IS_ERR(bmi->i2c_devs[i])) {
+ 			ret = dev_err_probe(dev, PTR_ERR(bmi->i2c_devs[i]),
+ 					    "Error creating i2c-client, idx %d\n", i);
+ 			goto error;
+ 		}
++		bmi->i2c_num++;
  	}
-@@ -2451,9 +2491,9 @@ struct spi_device *acpi_spi_device_alloc(struct spi_controller *ctlr,
- 	if (!lookup.max_speed_hz)
- 		return ERR_PTR(-ENODEV);
- 
--	spi = spi_alloc_device(ctlr);
-+	spi = spi_alloc_device(lookup.ctlr);
- 	if (!spi) {
--		dev_err(&ctlr->dev, "failed to allocate SPI device for %s\n",
-+		dev_err(&lookup.ctlr->dev, "failed to allocate SPI device for %s\n",
- 			dev_name(&adev->dev));
- 		return ERR_PTR(-ENOMEM);
+-	if (i < bmi->i2c_num) {
++	if (bmi->i2c_num < count) {
+ 		dev_err(dev, "Error finding driver, idx %d\n", i);
+ 		ret = -ENODEV;
+ 		goto error;
  	}
-@@ -2478,7 +2518,7 @@ static acpi_status acpi_register_spi_device(struct spi_controller *ctlr,
- 	    acpi_device_enumerated(adev))
- 		return AE_OK;
  
--	spi = acpi_spi_device_alloc(ctlr, adev);
-+	spi = acpi_spi_device_alloc(ctlr, adev, -1, 0);
- 	if (IS_ERR(spi)) {
- 		if (PTR_ERR(spi) == -ENOMEM)
- 			return AE_NO_MEMORY;
-diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
-index 200725692b93..1a34fd0f6ca2 100644
---- a/include/linux/spi/spi.h
-+++ b/include/linux/spi/spi.h
-@@ -762,10 +762,12 @@ extern void spi_unregister_controller(struct spi_controller *ctlr);
+-	platform_set_drvdata(pdev, bmi);
+-	return 0;
++	dev_info(dev, "Instantiate %d I2C devices.\n", bmi->i2c_num);
  
- #if IS_ENABLED(CONFIG_ACPI)
- extern struct spi_device *acpi_spi_device_alloc(struct spi_controller *ctlr,
--						struct acpi_device *adev);
-+						struct acpi_device *adev,
-+						int index, int irq_index);
- #else
- static inline struct spi_device *acpi_spi_device_alloc(struct spi_controller *ctlr,
--						       struct acpi_device *adev);
-+						       struct acpi_device *adev,
-+						       int index, int irq_index);
++	return bmi->i2c_num;
+ error:
+-	while (--i >= 0)
+-		i2c_unregister_device(bmi->i2c_devs[i]);
++	dev_err_probe(dev, ret, "I2C error %d\n", ret);
++	bmi_devs_unregister(bmi);
++
++	return ret;
++}
++
++static int bmi_probe(struct platform_device *pdev)
++{
++	const struct bmi_instance *inst_array;
++	struct device *dev = &pdev->dev;
++	struct acpi_device *adev;
++	struct bmi *bmi;
++	int ret;
++
++	inst_array = device_get_match_data(dev);
++	if (!inst_array) {
++		dev_err(dev, "Error ACPI match data is missing\n");
++		return -ENODEV;
++	}
++
++	adev = ACPI_COMPANION(dev);
++	if (!adev)
++		return -ENODEV;
++
++	bmi = devm_kzalloc(dev, sizeof(*bmi), GFP_KERNEL);
++	if (!bmi)
++		return -ENOMEM;
++
++	platform_set_drvdata(pdev, bmi);
++
++	ret = bmi_i2c_probe(pdev, adev, bmi, inst_array);
++	if (ret > 0)
++		return 0;
++	if (ret == 0)
++		ret = -ENODEV;
+ 
+ 	return ret;
+ }
+@@ -115,10 +159,8 @@ static int bmi_probe(struct platform_device *pdev)
+ static int bmi_remove(struct platform_device *pdev)
  {
- 	return ERR_PTR(-EOPNOTSUPP);
+ 	struct bmi *bmi = platform_get_drvdata(pdev);
+-	int i;
+ 
+-	for (i = 0; i < bmi->i2c_num; i++)
+-		i2c_unregister_device(bmi->i2c_devs[i]);
++	bmi_devs_unregister(bmi);
+ 
+ 	return 0;
  }
 -- 
 2.25.1
