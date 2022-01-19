@@ -4,79 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B737C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Jan 2022 02:08:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9502AC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Jan 2022 06:00:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7F26C340E;
-	Wed, 19 Jan 2022 03:07:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F26C340E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 141113338;
+	Wed, 19 Jan 2022 06:59:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 141113338
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1642558114;
-	bh=SADnO3+RxA7TLM946fh6hsuryNfZzjZ8vuXRamwkzA0=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1642572042;
+	bh=nQAmdo16Vq58Zy7cZD8RCems/wC3KORTogxczHUYSQw=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=svsRqx8iG2ivu6bRdBLc0fCu/m2Tnp0QwfdFWot4EOKIZdApXhOV5UeMFSD/awR/M
-	 u6pTQ42Zuazx8hKPra8tyoyNz/vAHkli9Y0yazDLdOQEl8Udz/C1uajZm2ZKA5G4CR
-	 7BmWazgIrpYWk8os9zMhzGo5qIuuTELsWKAg6paE=
+	b=lO/MyxMSThi4Nj/t0FOlNrrIhak8ylmWi7ivDUw8mqaoLsIpiL6I+SHfDn3+zcVlA
+	 usAfuxpQjBUqFXzVogzcZToCl9XEKRMGPNLK/LxrmQynPKvU5padrQdxjAuK6JZVVt
+	 WCzDWVog05C0y4CepiH9o+hylePwVlWOUeW6rH5I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1ECF0F8023A;
-	Wed, 19 Jan 2022 03:07:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 92B5EF801F7;
+	Wed, 19 Jan 2022 06:59:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 84BA2F8023B; Wed, 19 Jan 2022 03:07:42 +0100 (CET)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 2B5C2F801F7; Wed, 19 Jan 2022 06:59:49 +0100 (CET)
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com
+ [IPv6:2a00:1450:4864:20::130])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 22DC8F800D8;
- Wed, 19 Jan 2022 03:07:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22DC8F800D8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9CCF8F80128
+ for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2022 06:59:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9CCF8F80128
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="d+Gkvwic"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1642558057; x=1674094057;
- h=subject:to:cc:references:from:message-id:date:
- mime-version:in-reply-to:content-transfer-encoding;
- bh=SADnO3+RxA7TLM946fh6hsuryNfZzjZ8vuXRamwkzA0=;
- b=d+GkvwicinhqBhIUk4YNu4oQIAxT/4g8RC1CyvROcczBPVIrltNMeE0D
- /KSICE47qXm+ByDLlWR7R4K3FZekvK4DaO+fP2RifnYIFlF8KrrSQLtBz
- +jjIlFCrBtgsyYAcdarjq/T3nMOykCbnqKfc2IZ8bTgr7YpIi19a5olK5
- FnCCCqTH6Pq2HjlMMekb+8gI29KvM4TwlZkHIx7gtJN8Y958qalD+VsX2
- iugwJlsiBIPpRKSCJJBeHItsqD+Bsb0pOpzvYR57Obm2XMwmp6LuPZ31T
- qhhswAXWDhm5iPWqHOmxp4TWgo21vWAkagkJgszW4Xuz7B5VDx+KInRf0 w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10231"; a="269348768"
-X-IronPort-AV: E=Sophos;i="5.88,298,1635231600"; d="scan'208";a="269348768"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Jan 2022 18:07:32 -0800
-X-IronPort-AV: E=Sophos;i="5.88,298,1635231600"; d="scan'208";a="622350895"
-Received: from mdzurick-mobl.amr.corp.intel.com (HELO [10.209.145.208])
- ([10.209.145.208])
- by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Jan 2022 18:07:31 -0800
-Subject: Re: [PATCH v2 2/2] ASoC: SOF: compress: Implement get_caps and
- get_codec_caps
-To: Daniel Baluta <daniel.baluta@oss.nxp.com>, lgirdwood@gmail.com,
- broonie@kernel.org
-References: <20220118212732.281657-1-daniel.baluta@oss.nxp.com>
- <20220118212732.281657-3-daniel.baluta@oss.nxp.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <41ae6093-8e27-01d4-e532-8a28fb1d9cf1@linux.intel.com>
-Date: Tue, 18 Jan 2022 19:00:35 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.14.0
+ dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
+ header.b="O3rjR1xw"
+Received: by mail-lf1-x130.google.com with SMTP id x22so4818057lfd.10
+ for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2022 21:59:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=1tKYVg7wJMJMNFKIyw+d3Kv62PM5IDYj6Uiog3M1guQ=;
+ b=O3rjR1xwJ5RJa/8Pr4j+o/xz2ODymM24FgRvDAyyXVz801NpNIj40tnMPXagEzzIdN
+ YgApJ9Se2RtCuzQIBr9UoxOYieOUmAITh7Ff2mH+sSXNnt/MyPTQm0hxbsds1OhLg9Lx
+ iGrVXc3V0OyRFdbBmsPvPpedratR1otyTGqBk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=1tKYVg7wJMJMNFKIyw+d3Kv62PM5IDYj6Uiog3M1guQ=;
+ b=WCuBRUvn8j8MTRtcR3glb2GneIV+dDCHv0gdACr0BaXK2R3e+oKn4XWo3mVniB2fTA
+ gBQ7o5jyJHoOpHwO/doadT9Gdy3iTBc1mpK4AXVBgHSiIKEXKBeZSSXytQjhLH4mGpJB
+ hRmjmxIs/xAxbulMOqQAUkzH8UqOPN/hcWUSa6Y4g7skHfPUxeDqkbbR0Xc1tQvGe4yI
+ 9GfribRTksim8XenM1CVmXabHGwhwxV7JOmaSMCw2CfdCxRly8UsNxa8d3+Nk6SGWdP7
+ AewNGE8DUEkUt0hXZ/pjYim8ZH4YWzr2CGnv7OqNcWhr+rWUG7Yq94KhESGKG3JcPGle
+ op/Q==
+X-Gm-Message-State: AOAM530dJMF9NFlKZ/Ds3tQwhePWjgwszreCvBqM3506ZvQBD65wuAs7
+ r96iwPvekWN1gHua4SWEJj9Da7Z14FvsXKbXd9LLLA==
+X-Google-Smtp-Source: ABdhPJxmDuwkFJziW4xvLsZmdp9HyrtsLl84OWqtBxpyS7OeNwc36CaaRT+rymCOgrfcQNTO0R57Np83PfJ/v382SjQ=
+X-Received: by 2002:a05:6512:1320:: with SMTP id
+ x32mr25449431lfu.597.1642571980606; 
+ Tue, 18 Jan 2022 21:59:40 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20220118212732.281657-3-daniel.baluta@oss.nxp.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
- cezary.rojewski@intel.com, ranjani.sridharan@linux.intel.com,
- linux-kernel@vger.kernel.org, paul.olaru@nxp.com, daniel.baluta@nxp.com,
- sound-open-firmware@alsa-project.org
+References: <20220114230209.4091727-1-briannorris@chromium.org>
+ <20220114150129.v2.3.I3c79b1466c14b02980071221e5b99283cd26ec77@changeid>
+ <CAGXv+5HC00YU6ARtGDahxWLqivvUCowh7wDq5H5OzoGO9htB+g@mail.gmail.com>
+ <YecgcwXrQNzCesMN@google.com>
+In-Reply-To: <YecgcwXrQNzCesMN@google.com>
+From: Chen-Yu Tsai <wenst@chromium.org>
+Date: Wed, 19 Jan 2022 13:59:29 +0800
+Message-ID: <CAGXv+5HANAorgJhSupH96V_n01VzvO5mY6LXf=bzzMi3ek089w@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] ASoC: rk3399_gru_sound: Wire up DP jack detection
+To: Brian Norris <briannorris@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Heiko Stuebner <heiko@sntech.de>, David Airlie <airlied@linux.ie>,
+ linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+ dri-devel@lists.freedesktop.org, Sandy Huang <hjc@rock-chips.com>,
+ linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>,
+ Daniel Vetter <daniel@ffwll.ch>, Rob Herring <robh+dt@kernel.org>,
+ linux-arm-kernel@lists.infradead.org, Lin Huang <hl@rock-chips.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,126 +95,66 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Wed, Jan 19, 2022 at 4:18 AM Brian Norris <briannorris@chromium.org> wrote:
+>
+> Hi Chen-Yu,
+>
+> On Mon, Jan 17, 2022 at 05:01:52PM +0800, Chen-Yu Tsai wrote:
+> > On Sat, Jan 15, 2022 at 7:03 AM Brian Norris <briannorris@chromium.org> wrote:
+> > >
+> > > Now that the cdn-dp driver supports plug-change callbacks, let's wire it
+> > > up.
+> > >
+> > > Signed-off-by: Brian Norris <briannorris@chromium.org>
+> > > ---
+> > >
+> > > (no changes since v1)
+> > >
+> > >  sound/soc/rockchip/rk3399_gru_sound.c | 20 ++++++++++++++++++++
+> > >  1 file changed, 20 insertions(+)
+> > >
+> > > diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
+> > > index e2d52d8d0ff9..eeef3ed70037 100644
+> > > --- a/sound/soc/rockchip/rk3399_gru_sound.c
+> > > +++ b/sound/soc/rockchip/rk3399_gru_sound.c
+> > > @@ -164,6 +164,25 @@ static int rockchip_sound_da7219_hw_params(struct snd_pcm_substream *substream,
+> > >         return 0;
+> > >  }
+> > >
+> > > +static struct snd_soc_jack cdn_dp_card_jack;
+> > > +
+> > > +static int rockchip_sound_cdndp_init(struct snd_soc_pcm_runtime *rtd)
+> > > +{
+> > > +       struct snd_soc_component *component = asoc_rtd_to_codec(rtd, 0)->component;
+> >
+> > Using snd_soc_card_get_codec_dai() might be a better choice throughout this
+> > driver. While it will work for the cdn_dp case, because it is the first DAI
+> > in |rockchip_dais[]|, all the invocations for the other codecs are likely
+> > returning the wrong DAI.
+>
+> I'll admit, I'm not very familiar with the ASoC object model, so you may
+> well be correct that there's something fishy in here. But I did trace
+> through the objects involved here, and we *are* getting the correct DAI
+> for both this case and the DA7219 case (preexisting code).
 
+Neither am I, so ...
 
-On 1/18/22 3:27 PM, Daniel Baluta wrote:
-> From: Paul Olaru <paul.olaru@nxp.com>
-> 
-> These functions are used by the userspace to determine what the firmware
-> supports and tools like cplay should use in terms of sample rate, bit
-> rate, buffer size and channel count.
-> 
-> The current implementation uses i.MX8 tested scenarios!
-> 
-> Signed-off-by: Paul Olaru <paul.olaru@nxp.com>
-> Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
-> ---
->  sound/soc/sof/compress.c | 74 ++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 74 insertions(+)
-> 
-> diff --git a/sound/soc/sof/compress.c b/sound/soc/sof/compress.c
-> index 91a9c95929cd..e3f3f309f312 100644
-> --- a/sound/soc/sof/compress.c
-> +++ b/sound/soc/sof/compress.c
-> @@ -308,6 +308,78 @@ static int sof_compr_pointer(struct snd_soc_component *component,
->  	return 0;
->  }
->  
-> +static int sof_compr_get_caps(struct snd_soc_component *component,
-> +			      struct snd_compr_stream *cstream,
-> +			      struct snd_compr_caps *caps)
-> +{
-> +	caps->num_codecs = 3;
-> +	caps->min_fragment_size = 3840;
-> +	caps->max_fragment_size = 3840;
-> +	caps->min_fragments = 2;
-> +	caps->max_fragments = 2;
-> +	caps->codecs[0] = SND_AUDIOCODEC_MP3;
-> +	caps->codecs[1] = SND_AUDIOCODEC_AAC;
-> +	caps->codecs[2] = SND_AUDIOCODEC_PCM;
+> It looks like we actually have a new runtime for each of our static
+> dai_links:
+>
+> devm_snd_soc_register_card()
+>   ...
+>   for_each_card_prelinks()
+>     snd_soc_add_pcm_runtime()
+>
+> So I think this is valid to keep as-is.
 
-I don't think you can add this unconditionally for all
-devices/platforms, clearly this wouldn't be true for Intel for now.
+I missed this bit. As you say, things are good.
 
-If the information is not part of a firmware manifest or topology, then
-it's likely we have to use an abstraction layer to add this for specific
-platforms.
+> > For this particular patch it works either way, so
+> >
+> > Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
+>
+> Thanks for looking!
 
-it's really a bit odd to hard-code all of this at the kernel level, this
-was not really what I had in mind when we come up with the concept of
-querying capabilities. I understand though that for testing this is
-convenient, so maybe this can become a set of fall-back properties in
-case the firmware doesn't advertise anything.
-
-> +
-> +	return 0;
-> +}
-> +
-> +static struct snd_compr_codec_caps caps_pcm = {
-> +	.num_descriptors = 1,
-> +	.descriptor[0].max_ch = 2,
-> +	.descriptor[0].sample_rates[0] = 48000,
-> +	.descriptor[0].num_sample_rates = 1,
-> +	.descriptor[0].bit_rate = {1536, 3072},
-> +	.descriptor[0].num_bitrates = 2,
-> +	.descriptor[0].profiles = SND_AUDIOPROFILE_PCM,
-> +	.descriptor[0].modes = 0,
-> +	.descriptor[0].formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE,
-> +};
-> +
-> +static struct snd_compr_codec_caps caps_mp3 = {
-> +	.num_descriptors = 1,
-> +	.descriptor[0].max_ch = 2,
-> +	.descriptor[0].sample_rates[0] = 48000,
-> +	.descriptor[0].num_sample_rates = 1,
-> +	.descriptor[0].bit_rate = {32, 40, 48, 56, 64, 80, 96, 112, 224, 256, 320},
-> +	.descriptor[0].num_bitrates = 11,
-> +	.descriptor[0].profiles = 0,
-> +	.descriptor[0].modes = SND_AUDIOCHANMODE_MP3_STEREO,
-> +	.descriptor[0].formats = 0,
-> +};
-> +
-> +static struct snd_compr_codec_caps caps_aac = {
-> +	.num_descriptors = 1,
-> +	.descriptor[0].max_ch = 2,
-> +	.descriptor[0].sample_rates[0] = 48000,
-> +	.descriptor[0].num_sample_rates = 1,
-> +	.descriptor[0].bit_rate = {128, 192},
-> +	.descriptor[0].num_bitrates = 2,
-> +	.descriptor[0].profiles = 0,
-> +	.descriptor[0].modes = 0,
-> +	.descriptor[0].formats = SND_AUDIOSTREAMFORMAT_MP4ADTS | SND_AUDIOSTREAMFORMAT_MP2ADTS,
-> +};
-> +
-> +static int sof_compr_get_codec_caps(struct snd_soc_component *component,
-> +				    struct snd_compr_stream *cstream,
-> +				    struct snd_compr_codec_caps *codec)
-> +{
-> +	switch (codec->codec) {
-> +	case SND_AUDIOCODEC_MP3:
-> +		*codec = caps_mp3;
-> +		break;
-> +	case SND_AUDIOCODEC_AAC:
-> +		*codec = caps_aac;
-> +		break;
-> +	case SND_AUDIOCODEC_PCM:
-> +		*codec = caps_pcm;
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +	return 0;
-> +}
-> +
->  struct snd_compress_ops sof_compressed_ops = {
->  	.open		= sof_compr_open,
->  	.free		= sof_compr_free,
-> @@ -316,5 +388,7 @@ struct snd_compress_ops sof_compressed_ops = {
->  	.trigger	= sof_compr_trigger,
->  	.pointer	= sof_compr_pointer,
->  	.copy		= sof_compr_copy,
-> +	.get_caps	= sof_compr_get_caps,
-> +	.get_codec_caps	= sof_compr_get_codec_caps,
->  };
->  EXPORT_SYMBOL(sof_compressed_ops);
-> 
+And thanks for double checking!
