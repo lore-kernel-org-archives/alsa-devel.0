@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63BD8C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jan 2022 07:15:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4251AC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jan 2022 07:16:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A8C5330C2;
-	Thu, 20 Jan 2022 08:15:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A8C5330C2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 81ADF30CA;
+	Thu, 20 Jan 2022 08:15:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 81ADF30CA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1642662953;
-	bh=UxCJC6eWdEdNah12KsCkH6nSMwzBaq9zmFaRweUROSw=;
+	s=default; t=1642662970;
+	bh=pJ3GNueq7O6gH3lUcp2UWza1P3qxEpzR0oarM5vPP+c=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cF0g9AVV4+kJsvLY4wvfRZ73dz5n2AN3oGMI+lWmdVpP09XYccv3cXoYlT+3FqX+F
-	 ppPaHYlkj1TtyJRYv8yxrl+YmUh1KJVGXBH3V8HQnGwyh/t5W4DuPTCQ6ZZnQ94Vy3
-	 HnFizbWeCI8sVRLfNcT7zdYN1/FwdJvircABEXrw=
+	b=BhKHB2qVLN9WexEAs8fC7K8H14a48WZRo2JVTPA2D76rEXtyg8haSwL0qV/GOMxiE
+	 3VbYNSBREjBK+EKeO4KP1h1H/q7pdMBs4U+nNogpK4sj5ydgwYLg2CnH+BAL3Wr2e1
+	 cT0GF/xo2uB74Hrl39nEl8mnhiMYbCxRkfrBWsJI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2390CF8060A;
+	by alsa1.perex.cz (Postfix) with ESMTP id 9B2D1F8060E;
 	Thu, 20 Jan 2022 08:04:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A9E6CF80162; Wed, 19 Jan 2022 20:15:59 +0100 (CET)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ id 67BD8F801F7; Wed, 19 Jan 2022 20:17:35 +0100 (CET)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6428BF80100
- for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2022 20:15:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6428BF80100
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3BDBAF80100
+ for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2022 20:17:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3BDBAF80100
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="I8HNlvd9"
+ header.b="OlEKQAk1"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1642619754; x=1674155754;
+ t=1642619853; x=1674155853;
  h=date:from:to:cc:subject:message-id:references:
  mime-version:content-transfer-encoding:in-reply-to;
- bh=UxCJC6eWdEdNah12KsCkH6nSMwzBaq9zmFaRweUROSw=;
- b=I8HNlvd9/HLW4SxMwrNSHBiPUvfqIZbuFcQxkwmZsKx5JdoDXp+bVeXq
- yomLbx3QheKKy4ZHM77alEnt57aNZj3/4BbSY+4Rn2IKvqbuqsfq9mXDm
- uREeR1tlESUIJlWBOvCmXB+eE2OacXQ6zAn/M0vykdxgpuLhJv15Jdnbr
- +5WLLUStbArPm418RxkebL8UIUPI0+gzGRH4TXwiUIx/caVieE/onSSik
- OHi85Fqba9EiN1gj9JZPLJw0ecZX0qbJ2anhTITGs25koS9PcWcZmWBty
- qLUFOMF8RBUm8OjCBSXPX//u2eXd5MgF7jnUX1dJKlhBl+RjE3Sm1ghI5 w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10231"; a="243983971"
-X-IronPort-AV: E=Sophos;i="5.88,300,1635231600"; d="scan'208";a="243983971"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Jan 2022 10:38:30 -0800
-X-IronPort-AV: E=Sophos;i="5.88,300,1635231600"; d="scan'208";a="518285423"
+ bh=pJ3GNueq7O6gH3lUcp2UWza1P3qxEpzR0oarM5vPP+c=;
+ b=OlEKQAk1Qq8CrKdUe7jaUIuN3xWHaUrhSb1+Lc379gn3vQc7l+H8ZFIq
+ 2IXY+gkK7kwYH/D7/eGw/+EXKT37Qoj2hfCdai1gyq7AVwZLSUXsGCmHu
+ GiRQ9P3TfdTPgZxdYPm0Y+c9E/FcGFrppyh65RIpEjLWLAlu5MbWPzA1K
+ 4mdQQ2OwAS2UJZZeQRqrhWYIFP68R4RS+hvIV5m/t4nXifmVD5iqsKirI
+ DNw8DPsZ8AOO7g7U7dTv++jRSg1Ta8R5GCshmBeQSIrh8CVmpFq1eek5t
+ JilKeoTaJeXJpz24n6N95vCgWcNyugNW0T4gfTTElwJHrIw7Qh/HqZ6jW Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10231"; a="331514711"
+X-IronPort-AV: E=Sophos;i="5.88,300,1635231600"; d="scan'208";a="331514711"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Jan 2022 10:41:48 -0800
+X-IronPort-AV: E=Sophos;i="5.88,300,1635231600"; d="scan'208";a="765040746"
 Received: from smile.fi.intel.com ([10.237.72.61])
- by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Jan 2022 10:38:09 -0800
+ by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Jan 2022 10:41:32 -0800
 Received: from andy by smile.fi.intel.com with local (Exim 4.95)
  (envelope-from <andriy.shevchenko@linux.intel.com>)
- id 1nAFpH-00CDps-NH; Wed, 19 Jan 2022 20:36:55 +0200
-Date: Wed, 19 Jan 2022 20:36:55 +0200
+ id 1nAFsa-00CDtL-3g; Wed, 19 Jan 2022 20:40:20 +0200
+Date: Wed, 19 Jan 2022 20:40:19 +0200
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
 Subject: Re: [PATCH] driver core: platform: Rename
  platform_get_irq_optional() to platform_get_irq_silent()
-Message-ID: <YehaRwIe4LjymMhS@smile.fi.intel.com>
+Message-ID: <YehbE03fMBSuOleX@smile.fi.intel.com>
 References: <20220112085009.dbasceh3obfok5dc@pengutronix.de>
  <CAMuHMdWsMGPiQaPS0-PJ_+Mc5VQ37YdLfbHr_aS40kB+SfW-aw@mail.gmail.com>
  <20220112213121.5ruae5mxwj6t3qiy@pengutronix.de>
@@ -148,21 +148,16 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 On Sat, Jan 15, 2022 at 02:55:50PM +0100, Uwe Kleine-König wrote:
 > On Fri, Jan 14, 2022 at 08:55:07PM +0300, Sergey Shtylyov wrote:
-> > On 1/14/22 12:42 AM, Florian Fainelli wrote:
 
-> So you oppose to the name chosen, but not the renaming as such.
+> Or do you think kmalloc should better be called
+> kmalloc_optional because it returns NULL if there is no more memory
+> available?
 
-I oppose the name change. The unneeded churn right now since it won't fix
-the issues with the underneath API (platform_get_irq() in this case) and
-will require one more iteration over callers again.
+Oh, do you know that kmalloc() may return NULL and small cookie value and
+actually one has to check for that (yes, either before or after against
+different variables)?
 
-The main issue that platform_get_irq*() returns magic error code while
-treating 0 in a very special way (issuing WARN() and considering it as
-a successful cookie) and this all is quite confusing.
-
-If you are going to fix the underlying issue, welcome! Now I see only
-the step to somewhere. I.o.w. this change _standalone_ makes no sense
-to me.
+kmalloc() is exactly an example that justifies the Sergey's patch.
 
 -- 
 With Best Regards,
