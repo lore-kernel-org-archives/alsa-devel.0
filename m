@@ -4,98 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2C66C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Jan 2022 00:20:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7787AC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Jan 2022 01:55:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5721D3406;
-	Wed, 19 Jan 2022 01:19:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5721D3406
+	by alsa0.perex.cz (Postfix) with ESMTPS id B1BF733CA;
+	Wed, 19 Jan 2022 02:54:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B1BF733CA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1642551607;
-	bh=QSCplCLjAh3bK8fuBrxiKgKrA0P0KcoqVOgcqtRLwHE=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=gq4x75tCep0IGYKlBkpGAh51UgO5H3WWONHDZulU3+RtyQpqsOFECfkFE/sRrdL92
-	 PE9Bw4ZmmMZB7nb8EEjB+bCBawuGUDyjgTT9VQwlIWd2HeEepVPxxMbodbB85Go5SA
-	 OSKY4sdGO2DvxiSWKIyTr6GRvH2BcsAKCfKNzB3Y=
+	s=default; t=1642557338;
+	bh=5rFmBURZkN8HrXOzHNzSNjgpgAjjQjU3npfWRh5tGpA=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=DdPFU082u1ypIlw0Y6SNBSGlNibF5AW82PStSI32bbXmN2dAxkIAwAoJVOvYEktn8
+	 u6b+iIXecPaqS/AW9OKJnT6xa160xd10I5NKvYYQSCheuIc0GtOiPl/ZgsXWZkZkpB
+	 6Bz1kPKu2uHMYz0D1u+RtT6ptJgNm5mGH/aeleZQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F0291F8023A;
-	Wed, 19 Jan 2022 01:19:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 45D9AF8023A;
+	Wed, 19 Jan 2022 02:54:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1B21EF8023B; Wed, 19 Jan 2022 01:19:15 +0100 (CET)
-Received: from smtp-relay-internal-0.canonical.com
- (smtp-relay-internal-0.canonical.com [185.125.188.122])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id C0A43F8023B; Wed, 19 Jan 2022 02:54:46 +0100 (CET)
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com
+ [209.85.210.47])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 03869F800D8
- for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2022 01:19:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03869F800D8
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com
- header.b="lm8aivL+"
-Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
- [209.85.210.72])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id C50DE3F31F
- for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2022 00:19:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1642551546;
- bh=QSCplCLjAh3bK8fuBrxiKgKrA0P0KcoqVOgcqtRLwHE=;
- h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
- To:Cc:Content-Type;
- b=lm8aivL+ZWTNUCy3r679jTrF/cnURbyqQnBvwUOpMUIYnAS1WIJYRysauKCcJC3j2
- j5XtFRe99lW6XGE4Fx21/me/LvdULnaYQLksnGRuTgJLV14sFClb5sD+PAVAFQqPCt
- b3M5TYvtt7gqoJNWdYxR6dIxQBOxQyCGe0Rt3GlScuPbnppFV61Jgr1jUPbZ4g8rOP
- O8qOrtknMxVVhVLY2ufd2GaQMqvq2+qrBlp0P7j9hjubA4hoH5+0aQpSQMb/AJz3vm
- w2PnAvTLSUblvQkV4m/5nks/zmRrSyReZomiAy/R6l2V4bKYxDOg9zgYG0mWz3TZEt
- atUgS5kQkYemw==
-Received: by mail-ot1-f72.google.com with SMTP id
- 39-20020a9d0eaa000000b0058f56d89582so353596otj.0
- for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2022 16:19:06 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 23FE9F800D8
+ for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2022 02:54:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23FE9F800D8
+Received: by mail-ot1-f47.google.com with SMTP id
+ l64-20020a9d1b46000000b005983a0a8aaaso1047171otl.3
+ for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2022 17:54:43 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=QSCplCLjAh3bK8fuBrxiKgKrA0P0KcoqVOgcqtRLwHE=;
- b=Oia0bVFnUp4oJegTV0T9R189V1xP1E4EGUJpmBrSEFZmD74jVMT0CO3tsxfBpLoH8S
- Dy75icy+0yr/YN6rBM4+w7Z05F1rJYcEh5rpQrvwg8WQSW58QlhPY/36qZItxhI04TYH
- f+0CNbccOnOVVGZ4uSPn9P7V8aSZbEB9Y6LRSxlrUvF3os2RLTx0stTrjC9SnsIhbx3h
- 2SMDRfG1Orqy3d9Z0mAVU3f5x/fPMQXN82X4zQ46iLo2BpmIWuGsYaw1gyMW2wTMvYYr
- PKh62flCnuiba5MvlO7w6adClpwWKgX228W+csGFU4rjx9abZa9SUXomTYTUvaOr4L7C
- oeGw==
-X-Gm-Message-State: AOAM531DYCJY1oetwYzjqv471rROstsnoTr6f5UF6ashttdJBlPAr798
- UumdH6KyfmUZQLOd77DafB0mpzZam8YWxjX4JPLqPbEMNzZHr63ADbSaH77ToaY7xIgxlh733X+
- zL7ZFJXLX7Q5LwxuCD0ikPGsoXfQ0QiRgH6ujviM2qLLQ/C8u+Xkvbb1O
-X-Received: by 2002:a4a:4994:: with SMTP id z142mr20364644ooa.78.1642551545488; 
- Tue, 18 Jan 2022 16:19:05 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwK/qk0KbWw4aZe2tSGjXq4jI8Rl1MTLRatX+XFGTTKTsxvw3z9+j+R4HQU6W1TjVQYUbkgr5oXAPwXmzqbR7s=
-X-Received: by 2002:a4a:4994:: with SMTP id z142mr20364618ooa.78.1642551545067; 
- Tue, 18 Jan 2022 16:19:05 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=qwNF7gDQbaVP4ndpQ6YMR5OTB3DEGyDODGB0cvvqRfI=;
+ b=3PbuZf53KbChtlzRPyR9tofJLBSqx8OBgzOlrCN6YAVrrlLrNgkez/psD4UyUc/KJ6
+ tt7EEmWEZNoiBM5jioiXhCcZEIYM0S7W0sWlXqdnvlq98haiysVenKkJOTW0rxKfqsFu
+ EZZyJlqMbG7K2Ah8oexIrSQ0hfhLBl6SQ8hrnGrZ5uck/PTB23yDV8XulCLiMwh/WLeS
+ qDsM5/tTCZLd2OzzCEOeNB+N218xCm27LvkT3y9r4Sy0o1vO91b/duIMwiHAgV1FfMKO
+ GY9f0UIt3y728WuWpvg0dUmxWN+4v0o+iwAW9G2FRMj51dbFsulDkCGo5ClOaOtPTJyp
+ FAwQ==
+X-Gm-Message-State: AOAM530jIXjr97rVN+Z5bvCCFQvvxys8ewbMnBA/GYhoDOSpRT3RV8ve
+ uk2t4gUAsylUkCAfUgtV5A==
+X-Google-Smtp-Source: ABdhPJzVUKXAC2YcMFSv4hVv2ACgxjnkM4ifG2UCVa32kabvoUCd5Cz5lVIyctz4yYEGV/7yATw++g==
+X-Received: by 2002:a9d:4b13:: with SMTP id q19mr22246546otf.300.1642557282257; 
+ Tue, 18 Jan 2022 17:54:42 -0800 (PST)
+Received: from xps15.herring.priv (66-90-148-213.dyn.grandenetworks.net.
+ [66.90.148.213])
+ by smtp.googlemail.com with ESMTPSA id x26sm8030086ote.78.2022.01.18.17.54.40
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 18 Jan 2022 17:54:41 -0800 (PST)
+From: Rob Herring <robh@kernel.org>
+To: Sandy Huang <hjc@rock-chips.com>,
+ =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
+ David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Richard Fitzgerald <rf@opensource.cirrus.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+ Sylwester Nawrocki <s.nawrocki@samsung.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ - <patches@opensource.cirrus.com>
+Subject: [PATCH] dt-bindings: Drop unnecessary pinctrl properties
+Date: Tue, 18 Jan 2022 19:53:25 -0600
+Message-Id: <20220119015325.2438277-1-robh@kernel.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20220114164904.lgj7yimbei6fmloe@localhost.localdomain>
- <20220114165050.ouw2nknuspclynro@localhost.localdomain>
- <CAAd53p6KXD2mEHgkU_TpTrsU-vQ9Vxdip+6sPfDaVoSOkmaz-g@mail.gmail.com>
- <20220115163208.xmvum6ehqcadonj7@localhost.localdomain>
- <CAAd53p64w38NCo7c0cnKCyjaswa0_Rns-CjWBwOnph3V5J2taQ@mail.gmail.com>
- <20220117181112.bmbjcofdjjpsfgzo@localhost.localdomain>
-In-Reply-To: <20220117181112.bmbjcofdjjpsfgzo@localhost.localdomain>
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date: Wed, 19 Jan 2022 08:18:52 +0800
-Message-ID: <CAAd53p7OWs2ULT10hwC=E7t+KHEidUFMiRmDHGwEM_8+Bib8fA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] ALSA: hda/realtek: fix speakers and micmute on HP
- 855 G8
-To: Alexander Sergeyev <sergeev917@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Cc: alsa-devel@alsa-project.org, Kailang Yang <kailang@realtek.com>,
- Jeremy Szu <jeremy.szu@canonical.com>, linux-kernel@vger.kernel.org,
- Elia Devito <eliadevito@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- Werner Sembach <wse@tuxedocomputers.com>, Hui Wang <hui.wang@canonical.com>,
- Sami Loone <sami@loone.fi>, Cameron Berkenpas <cam@neo-zeon.de>
+Content-Transfer-Encoding: 8bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-rockchip@lists.infradead.org,
+ Krzysztof Kozlowski <krzk@kernel.org>, linux-input@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,41 +94,112 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Jan 18, 2022 at 2:05 AM Alexander Sergeyev <sergeev917@gmail.com> wrote:
->
-> On Mon, Jan 17, 2022 at 08:12:08AM +0800, Kai-Heng Feng wrote:
-> > If this issue also happens to cold boot it seems to be a BIOS issue.
->
-> I've discussed the problem in more detail [1] before sending the patch.
-> In short, speakers seems to reliably work in live Ubuntu which differs in
-> using initrd with modules vs UEFI stub with built-in drivers in my case
-> (I've tried Ubuntu kernel sources). I've tried using modules as well
-> (modprobe'ing the list of modules which are load by Ubuntu) with no
-> success.
->
-> It was suggested that there is a timing issue somewhere. I'm opened for
-> ideas to try to debug the problem origins further (to avoid the need in
-> the fixup).
+For a single pinctrl mode, it is not necessary to define pinctrl
+properties as the tools always allow pinctrl properties.
 
-Yes it does sound like a timing issue.
-Most system firmwares are only test against Windows.
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+ .../display/rockchip/rockchip,rk3066-hdmi.yaml         |  8 --------
+ Documentation/devicetree/bindings/input/gpio-keys.yaml |  6 ------
+ .../devicetree/bindings/pinctrl/cirrus,lochnagar.yaml  |  9 ---------
+ .../devicetree/bindings/pinctrl/cirrus,madera.yaml     | 10 ----------
+ .../devicetree/bindings/sound/samsung-i2s.yaml         |  6 ------
+ 5 files changed, 39 deletions(-)
 
-HP has started to enable Ubuntu on some of their systems, but your
-case (EFI stub) is uncovered.
+diff --git a/Documentation/devicetree/bindings/display/rockchip/rockchip,rk3066-hdmi.yaml b/Documentation/devicetree/bindings/display/rockchip/rockchip,rk3066-hdmi.yaml
+index 008c144257cb..1a68a940d165 100644
+--- a/Documentation/devicetree/bindings/display/rockchip/rockchip,rk3066-hdmi.yaml
++++ b/Documentation/devicetree/bindings/display/rockchip/rockchip,rk3066-hdmi.yaml
+@@ -26,14 +26,6 @@ properties:
+   clock-names:
+     const: hclk
+ 
+-  pinctrl-0:
+-    maxItems: 2
+-
+-  pinctrl-names:
+-    const: default
+-    description:
+-      Switch the iomux for the HPD/I2C pins to HDMI function.
+-
+   power-domains:
+     maxItems: 1
+ 
+diff --git a/Documentation/devicetree/bindings/input/gpio-keys.yaml b/Documentation/devicetree/bindings/input/gpio-keys.yaml
+index dbe7ecc19ccb..7fe1966ea28a 100644
+--- a/Documentation/devicetree/bindings/input/gpio-keys.yaml
++++ b/Documentation/devicetree/bindings/input/gpio-keys.yaml
+@@ -88,12 +88,6 @@ patternProperties:
+             which can be disabled to suppress events from the button.
+           type: boolean
+ 
+-        pinctrl-0:
+-          maxItems: 1
+-
+-        pinctrl-names:
+-          maxItems: 1
+-
+       required:
+         - linux,code
+ 
+diff --git a/Documentation/devicetree/bindings/pinctrl/cirrus,lochnagar.yaml b/Documentation/devicetree/bindings/pinctrl/cirrus,lochnagar.yaml
+index 80020539c3bb..5cd512b7d5ba 100644
+--- a/Documentation/devicetree/bindings/pinctrl/cirrus,lochnagar.yaml
++++ b/Documentation/devicetree/bindings/pinctrl/cirrus,lochnagar.yaml
+@@ -51,15 +51,6 @@ properties:
+       appropriate of the LOCHNAGARx_PIN_NUM_GPIOS define, see [3].
+     maxItems: 1
+ 
+-  pinctrl-0:
+-    description:
+-      A phandle to the default pinctrl state.
+-
+-  pinctrl-names:
+-    description:
+-      A pinctrl state named "default" must be defined.
+-    const: default
+-
+   pin-settings:
+     type: object
+     patternProperties:
+diff --git a/Documentation/devicetree/bindings/pinctrl/cirrus,madera.yaml b/Documentation/devicetree/bindings/pinctrl/cirrus,madera.yaml
+index e50d7ad5c229..c85f759ae5a3 100644
+--- a/Documentation/devicetree/bindings/pinctrl/cirrus,madera.yaml
++++ b/Documentation/devicetree/bindings/pinctrl/cirrus,madera.yaml
+@@ -30,16 +30,6 @@ description: |
+     Documentation/devicetree/bindings/pinctrl/pinctrl-bindings.txt
+ 
+ properties:
+-  pinctrl-0:
+-    description:
+-      A phandle to the node containing the subnodes containing default
+-      configurations.
+-
+-  pinctrl-names:
+-    description:
+-      A pinctrl state named "default" must be defined.
+-    const: default
+-
+   pin-settings:
+     description:
+       One subnode is required to contain the default settings. It
+diff --git a/Documentation/devicetree/bindings/sound/samsung-i2s.yaml b/Documentation/devicetree/bindings/sound/samsung-i2s.yaml
+index 2e3628ef48df..84c4d6cba521 100644
+--- a/Documentation/devicetree/bindings/sound/samsung-i2s.yaml
++++ b/Documentation/devicetree/bindings/sound/samsung-i2s.yaml
+@@ -110,12 +110,6 @@ properties:
+       Internal DMA register base address of the audio
+       subsystem (used in secondary sound source).
+ 
+-  pinctrl-0:
+-    description: Should specify pin control groups used for this controller.
+-
+-  pinctrl-names:
+-    const: default
+-
+   power-domains:
+     maxItems: 1
+ 
+-- 
+2.32.0
 
->
-> > > > If the issue only happen to warm boot, please try reverting commit
-> > > > 9d3fcb28f9b9 "Revert "PM: ACPI: reboot: Use S5 for reboot"".
-> > > > Many HP systems requires it to have a functional reboot.
-> >
-> > If possible, please still give that commit a try.
->
-> Well, the first cold boot (with this commit reverted) didn't have any
-> sound, the same goes for the subsequent reboot.
-
-Thanks for the testing.
-
-Kai-Heng
-
->
-> [1] https://lkml.org/lkml/2022/1/12/221
