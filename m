@@ -4,91 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8F62C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jan 2022 07:06:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 114DDC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jan 2022 07:06:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 064062F78;
-	Thu, 20 Jan 2022 08:05:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 064062F78
+	by alsa0.perex.cz (Postfix) with ESMTPS id 631852F7D;
+	Thu, 20 Jan 2022 08:05:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 631852F7D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1642662369;
-	bh=T4I+NiZDPfYGwwYatxi7EqmpRFkBFdVZcQEMHPOSpCk=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1642662384;
+	bh=N5UHvUo8yoJp7eSBQbs/HrkxotinQJL3d0n81Xt/kdk=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ko3qTaW70z9L2t2I165W4EQQ0V7rO00/HB4+IFUPnhXXMvOhCKLKyjmI9ElBafuXn
-	 1ZHnv4PEm5E9KVjiko0P0KkDxiWI5EmBApkJMVb2IzJGfbxGM6qge6fTbVHxRflrDN
-	 2D080DLnHzZmQBMootKPupT6ts6bHqw26sk2LNwo=
+	b=HdP2CrEclkejnuPWhoi21X4LsxF/v/buIXN54yVcP1HyfIDkfwTtHp41UpFY3GMri
+	 DCrGnSDdh+yTFzsuP+CWSHDAcznwHTX1BEBEZ8mcpLAEpjgOGLTI/9xVTPvPWl+XsZ
+	 qGi4F3JZGuNWwKqxBbAlmpLVMJu9tSsKwUxk1UXs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CFB8EF8051C;
-	Thu, 20 Jan 2022 08:03:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5BD30F80520;
+	Thu, 20 Jan 2022 08:03:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E00D0F801F7; Wed, 19 Jan 2022 08:44:11 +0100 (CET)
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com
- [IPv6:2607:f8b0:4864:20::434])
+ id 150BDF801F7; Wed, 19 Jan 2022 11:32:31 +0100 (CET)
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com
+ [IPv6:2a00:1450:4864:20::12e])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9F757F80128
- for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2022 08:44:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F757F80128
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9FC4AF80128
+ for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2022 11:32:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9FC4AF80128
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="p+cHoZyZ"
-Received: by mail-pf1-x434.google.com with SMTP id m21so1812344pfd.3
- for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2022 23:44:05 -0800 (PST)
+ header.b="Xp8s21ft"
+Received: by mail-lf1-x12e.google.com with SMTP id p27so7591908lfa.1
+ for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2022 02:32:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to:user-agent;
- bh=wgsNFzNpSSdccSgxfw+zCKaHdZrvmLN4TxH4pmEqHFM=;
- b=p+cHoZyZ/KxchMwriiVowMDalr/duztSsP8wupwGCXnhLANZc8nlOxi8DRiXRCJMIe
- ThXD3VtztapjDQndPVMlgQCNBGdaB/6GtGter/A53dpnPy0/ro9sY23pR2hrOCNdpJ6x
- A4o4u75fhuW3Mo06+JGLmcZyvqLXji4TLjjrijhdVwv1S53EEBqkn8vl1ndTRxbd3dZz
- uybHANAtOcV/NY4/riEthmOAO/ZD0wmVB13Z8eWzwiHuCL/kM8zjRhZyQ+O10QzOw4WU
- 8T8YqXxpWNqIHjpyLGArRjsnP8Y9EWKTmKSTB1lK98Rd0uAtb5HaP0a2q3DyQSfNmTwM
- RKFA==
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=Sr17yjVIJ3L6nqEXDMpIqK2xXImflLFzz6ALbEm9u68=;
+ b=Xp8s21ftcZ0WG13DDgbdH7NIUsuYX+ghvkD5zw1hiLod5qbV+yjC9/iw3BxedgypWz
+ j185xcOoN7LD6uCNH62mSJRvMAjwIi7qcbYCznd6Wd0VuvmCQ/sizMwR5aWhMScNA/rl
+ hmuEc+DbVv1NqMjk5IXcy/Hk3oFXKZ0haMWzOfivc06wvoxpEiX1vitoLqGmZuk04L2x
+ HC73i8VxJwVCI/4Mkmi2NET/E8BffuYg/4Zged81GUTCUySqRPVe2agczTV87+sP+2pN
+ pDJV7fJq03+xTsoQaVBtN6S+RGEn7oHeifzgS2DkyqcDDGnQ9aAHk1KN9hJBM2T+WaJf
+ EdtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=wgsNFzNpSSdccSgxfw+zCKaHdZrvmLN4TxH4pmEqHFM=;
- b=xWdyDpUWQWDYIGn95x9WpawtzwJ6TYY8/r7rWXpSof9JD9Tl8TRjUZuGO5QR3F5Ipk
- U2vL5uqCas4xt+Yav/te2J4s8Kkh2HP4OZWb1RKOXMN/gUM20QFyFrDxAu1+0d2Z02US
- fDzWUlhqdelxraBlT6DUqKMd2YWe5FFml96eIFrUaJ08r0VePhh3xVhFUxIJZSp2xMeR
- pBcJ6WQuZhqt4VeP+CBom7CZWf3WRptjsD2XM8/hDoAgf4cDKjte5A6k9otffNW/XBXs
- O2TCv9kqVUyLh88b3oTLvkM2/yipRvfMC+H9dpbc4cpLsfwHYHd102ZbRoXWGviKYxaJ
- LmQg==
-X-Gm-Message-State: AOAM5308JjwxWFBblQaPq7cipP7VLFIeliUKGawFcu4qDkaYFXpGuHWX
- srm5lon9RoS2iUaC848bgx+09A==
-X-Google-Smtp-Source: ABdhPJyNKcbiEGUcgkz9zXpAgkBgubu/10nRg7X8eh23rlI2iY9kKxwwNMydTTsODjGuMFGY0jhtqA==
-X-Received: by 2002:a05:6a00:88f:b0:4bc:3b4e:255a with SMTP id
- q15-20020a056a00088f00b004bc3b4e255amr29453525pfj.79.1642578242462; 
- Tue, 18 Jan 2022 23:44:02 -0800 (PST)
-Received: from localhost ([223.184.90.234])
- by smtp.gmail.com with ESMTPSA id g14sm16984301pgp.76.2022.01.18.23.44.01
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 18 Jan 2022 23:44:01 -0800 (PST)
-Date: Wed, 19 Jan 2022 13:14:00 +0530
-From: Viresh Kumar <viresh.kumar@linaro.org>
-To: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH] dt-bindings: Improve phandle-array schemas
-Message-ID: <20220119074400.rqldtq6wqo73lqqg@vireshk-i7>
-References: <20220119015038.2433585-1-robh@kernel.org>
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=Sr17yjVIJ3L6nqEXDMpIqK2xXImflLFzz6ALbEm9u68=;
+ b=e9PjHiUw+RLsrTfFYFBg974FOEo0K5vDItLGoPiNUzNKFdnhuHYUJfg5BrUBMd5nn2
+ pVTF1yLdiypyXNyeKOOpbqXv8Fsit0J6RDPs9Wx4D6XLL5QiWn8yWfjzn/2eRDdioSkD
+ GxzbYm1Yy/0saLJIJPZaYXXYKfg3N5uOEQiZVqaP8uPv+nzqROrrj/w1kXv878/PYEDG
+ BzCSILQRJODau8VzoBKLIV0T2C33QXDnS/BB1s9HyORWOVgXf15y6mmZbGbuVulc8m0H
+ ga3k7p+Ur3mIRoWnfg6IcMlxh6pvQzJmbK8qhJG7gmxKUC3uJ+JW/KKSMeQQlH3AJ6Ai
+ 1ghA==
+X-Gm-Message-State: AOAM530j2X1Obu/p2VJKpyo14AD6ckKHS6j7nagwBGzf0G01PYulQphT
+ Hky/t5noshrE4xhmZhW0K7fjJjJOlXl6V34Zf0ok5w==
+X-Google-Smtp-Source: ABdhPJz5t3UBuJxmMbI2E3pOLPGLQiV4ByMa0pgkUilXefnRDUK3bGbZ4bWfdB/wwOZVZ58x7DxfCbRQTc3tUAIioE8=
+X-Received: by 2002:a2e:a26d:: with SMTP id k13mr10012578ljm.300.1642588342599; 
+ Wed, 19 Jan 2022 02:32:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20220119015038.2433585-1-robh@kernel.org>
 In-Reply-To: <20220119015038.2433585-1-robh@kernel.org>
-User-Agent: NeoMutt/20180716-391-311a52
+From: Ulf Hansson <ulf.hansson@linaro.org>
+Date: Wed, 19 Jan 2022 11:31:45 +0100
+Message-ID: <CAPDyKFr5uT3H8NaAvPyGajo2R6DriYC92y=RdAk=G4PMC4MxYw@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: Improve phandle-array schemas
+To: Rob Herring <robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Mailman-Approved-At: Thu, 20 Jan 2022 08:03:34 +0100
-Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
+Cc: Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org,
  Daniel Lezcano <daniel.lezcano@linaro.org>,
  Geert Uytterhoeven <geert+renesas@glider.be>,
  Chun-Kuang Hu <chunkuang.hu@kernel.org>,
  Linus Walleij <linus.walleij@linaro.org>, linux-remoteproc@vger.kernel.org,
- alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org,
- Sebastian Reichel <sre@kernel.org>, linux-ide@vger.kernel.org,
- Thierry Reding <thierry.reding@gmail.com>,
+ dri-devel@lists.freedesktop.org, Sebastian Reichel <sre@kernel.org>,
+ linux-ide@vger.kernel.org, Thierry Reding <thierry.reding@gmail.com>,
  Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
  Pavel Machek <pavel@ucw.cz>, linux-phy@lists.infradead.org,
  netdev@vger.kernel.org, Jonathan Hunter <jonathanh@nvidia.com>,
@@ -135,33 +126,95 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 18-01-22, 19:50, Rob Herring wrote:
+On Wed, 19 Jan 2022 at 02:50, Rob Herring <robh@kernel.org> wrote:
+>
 > The 'phandle-array' type is a bit ambiguous. It can be either just an
 > array of phandles or an array of phandles plus args. Many schemas for
 > phandle-array properties aren't clear in the schema which case applies
 > though the description usually describes it.
-> 
+>
 > The array of phandles case boils down to needing:
-> 
+>
 > items:
 >   maxItems: 1
-> 
+>
 > The phandle plus args cases should typically take this form:
-> 
+>
 > items:
 >   - items:
 >       - description: A phandle
 >       - description: 1st arg cell
 >       - description: 2nd arg cell
-> 
+>
 > With this change, some examples need updating so that the bracketing of
 > property values matches the schema.
-> 
+>
+> Cc: Damien Le Moal <damien.lemoal@opensource.wdc.com>
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> Cc: Philipp Zabel <p.zabel@pengutronix.de>
+> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Cc: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> Cc: Vinod Koul <vkoul@kernel.org>
+> Cc: Georgi Djakov <djakov@kernel.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Lee Jones <lee.jones@linaro.org>
+> Cc: Daniel Thompson <daniel.thompson@linaro.org>
+> Cc: Jingoo Han <jingoohan1@gmail.com>
+> Cc: Pavel Machek <pavel@ucw.cz>
+> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Wolfgang Grandegger <wg@grandegger.com>
+> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+> Cc: Andrew Lunn <andrew@lunn.ch>
+> Cc: Vivien Didelot <vivien.didelot@gmail.com>
+> Cc: Florian Fainelli <f.fainelli@gmail.com>
+> Cc: Vladimir Oltean <olteanv@gmail.com>
+> Cc: Kalle Valo <kvalo@kernel.org>
+> Cc: Viresh Kumar <vireshk@kernel.org>
+> Cc: Stephen Boyd <sboyd@kernel.org>
+> Cc: Kishon Vijay Abraham I <kishon@ti.com>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+> Cc: Kevin Hilman <khilman@kernel.org>
+> Cc: Ulf Hansson <ulf.hansson@linaro.org>
+> Cc: Sebastian Reichel <sre@kernel.org>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Cc: Zhang Rui <rui.zhang@intel.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Thierry Reding <thierry.reding@gmail.com>
+> Cc: Jonathan Hunter <jonathanh@nvidia.com>
+> Cc: Sudeep Holla <sudeep.holla@arm.com>
+> Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+> Cc: linux-ide@vger.kernel.org
+> Cc: linux-crypto@vger.kernel.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: dmaengine@vger.kernel.org
+> Cc: linux-pm@vger.kernel.org
+> Cc: iommu@lists.linux-foundation.org
+> Cc: linux-leds@vger.kernel.org
+> Cc: linux-media@vger.kernel.org
+> Cc: netdev@vger.kernel.org
+> Cc: linux-can@vger.kernel.org
+> Cc: linux-wireless@vger.kernel.org
+> Cc: linux-phy@lists.infradead.org
+> Cc: linux-gpio@vger.kernel.org
+> Cc: linux-riscv@lists.infradead.org
+> Cc: linux-remoteproc@vger.kernel.org
+> Cc: alsa-devel@alsa-project.org
+> Cc: linux-usb@vger.kernel.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
 
->  .../devicetree/bindings/opp/opp-v2-base.yaml  |  2 +
->  .../bindings/power/power-domain.yaml          |  4 +
+For CPUs and PM domains:
 
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+Acked-by: Ulf Hansson <ulf.hansson@linaro.org>
 
--- 
-viresh
+Kind regards
+Uffe
