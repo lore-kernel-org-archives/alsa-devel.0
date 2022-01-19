@@ -4,69 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5CBC9C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Jan 2022 18:03:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31B0AC433FE
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Jan 2022 18:04:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 15EA63134;
-	Wed, 19 Jan 2022 19:02:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 15EA63134
+	by alsa0.perex.cz (Postfix) with ESMTPS id EEEBE313F;
+	Wed, 19 Jan 2022 19:03:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EEEBE313F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1642615416;
-	bh=ntFkmrYHf7DolESwdFrg5bWQtilBQv+yuy5/Fz0esAE=;
+	s=default; t=1642615449;
+	bh=lFbFmk/aY3Awpx6kg8ejVPc7bOfnP/ly0j3vvYiYSLk=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=B4OqqprUfWexnbQg2xRHbBTp4nbct8dxYrVLVEJco/N2lAi2sIvhWEHUbAHIA6GgX
-	 GB8jskU5BLytfWEKBZirXc2uLnFKu8ZlKFNk6LbIwLtb/K4PaEil+n6zUX6pItWK3F
-	 YShapszWjk8roLz0NOKq0GIg8iv70BEoseTnamkU=
+	b=bLuhO0W5dO1Z4/8Tvt1NEOiFAiEBZXFlYEc2QdmeO5HbeAaTsUQ1CQcnj0MfIrlFM
+	 G1CfOft+15RYqJpbRkUFG9PyO0pw5RrWxUy6L6d+VAO4AvgIh7yaKmlCAoLopXreWB
+	 djUk4bs3l6Gbie/2ro3MpHx749obBNfQoUIbB+GM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8620BF80162;
-	Wed, 19 Jan 2022 19:02:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 51132F80212;
+	Wed, 19 Jan 2022 19:02:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1A842F80212; Wed, 19 Jan 2022 19:02:44 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 429A9F801F7; Wed, 19 Jan 2022 19:02:44 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D2ABAF80100
- for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2022 19:02:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D2ABAF80100
+ by alsa1.perex.cz (Postfix) with ESMTPS id C3E5EF80128
+ for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2022 19:02:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C3E5EF80128
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Num7Tfcz"
+ header.b="X13pX4fJ"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 581F7B81AD5;
- Wed, 19 Jan 2022 18:02:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11466C004E1;
- Wed, 19 Jan 2022 18:02:35 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 277D161659;
+ Wed, 19 Jan 2022 18:02:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0858EC340E1;
+ Wed, 19 Jan 2022 18:02:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1642615358;
- bh=ntFkmrYHf7DolESwdFrg5bWQtilBQv+yuy5/Fz0esAE=;
+ s=k20201202; t=1642615355;
+ bh=lFbFmk/aY3Awpx6kg8ejVPc7bOfnP/ly0j3vvYiYSLk=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=Num7TfczXyuFgQUEaNnJsxuhSPEJa5PzPlZ5KozMoGrfRWShxkoP7/mYFMiHF95OE
- 7+5+NJYqaTSEO2qcVwWnoCbmR9lfq4XyuAgMjh089/69bWLCukl3vxSoxJ2umxSCcl
- CeMeOLNjfSgTa0+lHuC2wo39eaIbiMVRnrp+n0Dk3ofzouenC3Zh5iPDLAGMv5Uh0f
- EIaPwQeOepjIJArXqYokLFfuJsTzq+wvMMl/+rZkPsLF+tohMh8mvDS7/Fir8UDLkB
- WYkdzPwCb+75pOQdsP/qlB8lB7jod41ydD5NOUoYgQE8QBuaWz8oDBPbPq/zWyCO84
- tRPVbP0FWry3A==
+ b=X13pX4fJy3fRJZKI7F7MRVUE9FDrT6nBmOjzxghhUmAx2oa89pVuGluI1ZYQomcy6
+ J+u9NeebYvDBhaYmNBCPyWnAjj843aXJvGQIg5lEMex3rGmpPraZKtS0Sx3GixOSWu
+ vOFCHvDwIjpsucj9Dm3JF8fyjUVl+U1NJKul284TSlhz9ilYs39lj11XWUJ/f0eAWA
+ aoMRjTtdGCjJ1nOQKkTsTFwusUiXG8pCTiSkWRpA4jWRHdLqZ9X43k7TEqlfTQxDbf
+ s7aV3RXj48GWZ8ij+1oHhON0CDe042M5476jVs1mtL2ADTwQ7m1iF2hjoGebAbAjNd
+ 8fitwOsx/LB2w==
 From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>,
- Neil Armstrong <narmstrong@baylibre.com>,
- Dan Carpenter <dan.carpenter@oracle.com>
-In-Reply-To: <20220119123101.GA9509@kili>
-References: <20220119123101.GA9509@kili>
-Subject: Re: [PATCH] ASoC: max9759: fix underflow in speaker_gain_control_put()
-Message-Id: <164261535576.2816847.8184092572557171826.b4-ty@kernel.org>
-Date: Wed, 19 Jan 2022 18:02:35 +0000
+To: tiwai@suse.com, lgirdwood@gmail.com, Julian Braha <julianbraha@gmail.com>,
+ matthias.bgg@gmail.com, tzungbi@google.com, geert+renesas@glider.be,
+ perex@perex.cz, trevor.wu@mediatek.com
+In-Reply-To: <20220117050324.68371-1-julianbraha@gmail.com>
+References: <20220117050324.68371-1-julianbraha@gmail.com>
+Subject: Re: [PATCH] ASoC: mediatek: fix unmet dependency on GPIOLIB for
+ SND_SOC_DMIC
+Message-Id: <164261535273.2816847.12797426159265748718.b4-ty@kernel.org>
+Date: Wed, 19 Jan 2022 18:02:32 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: fazilyildiran@gmail.com, alsa-devel@alsa-project.org,
+ linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,13 +83,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 19 Jan 2022 15:31:01 +0300, Dan Carpenter wrote:
-> Check for negative values of "priv->gain" to prevent an out of bounds
-> access.  The concern is that these might come from the user via:
->   -> snd_ctl_elem_write_user()
->     -> snd_ctl_elem_write()
->       -> kctl->put()
+On Mon, 17 Jan 2022 00:03:24 -0500, Julian Braha wrote:
+> When SND_SOC_MT8195_MT6359_RT1011_RT5682 is selected,
+> and GPIOLIB is not selected,
+> Kbuild gives the following warning:
 > 
+> WARNING: unmet direct dependencies detected for SND_SOC_DMIC
+>   Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && GPIOLIB [=n]
+>   Selected by [y]:
+>   - SND_SOC_MT8195_MT6359_RT1011_RT5682 [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && I2C [=y] && SND_SOC_MT8195 [=y] && MTK_PMIC_WRAP [=y]
 > 
 > [...]
 
@@ -98,8 +101,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: max9759: fix underflow in speaker_gain_control_put()
-      commit: 4c907bcd9dcd233da6707059d777ab389dcbd964
+[1/1] ASoC: mediatek: fix unmet dependency on GPIOLIB for SND_SOC_DMIC
+      commit: 579b2c8f72d974f27d85bbd53846f34675ee3b01
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
