@@ -4,79 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35AE2C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Jan 2022 16:31:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47362C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Jan 2022 16:47:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8485C312D;
-	Wed, 19 Jan 2022 17:30:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8485C312D
+	by alsa0.perex.cz (Postfix) with ESMTPS id E349F2C14;
+	Wed, 19 Jan 2022 17:47:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E349F2C14
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1642609897;
-	bh=NPkrUgRYzcxwa3lnZh2dJ3qyPo1V5StcWneeKtWaOTI=;
+	s=default; t=1642610873;
+	bh=jcFYJMa4KHuzmvPQKCs7JdmJXADGOrQOZ7yiO5vDztM=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=U+7lwKy4IddBf7zsOjwb5gEf3Wg+mtJdfnIN2o6mLiYgcl3tj1wCxjlAVccMRiA94
-	 RCZ56+gf8U5iVNYFqqrR5I5ldf2fsxm2+McB/nmF6mjxXUigRDU4oxuBFQW6he2ABN
-	 CITW+ss0KDgpzBLv4JuDLLQoghSeOa2mW9Q/0VTE=
+	b=LYyPoStX7AgLKuttRaiIpv6/yQxBcFg0XH294wBRLjWRIXr8ZvQscx40wt1Y53rxV
+	 JFtbDPBnTkZkof0l8dnUu28o8LcyfyrqwKSWO3KiwU+H6cCvWCu3XD3vpI8euOSMUa
+	 rQgt/dzpGapHdNGCyG0FmmElSwUezzrL1fwkPPdo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 08E2AF80162;
-	Wed, 19 Jan 2022 17:30:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 77426F80162;
+	Wed, 19 Jan 2022 17:47:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AA251F801F7; Wed, 19 Jan 2022 17:30:44 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id B851CF801F7; Wed, 19 Jan 2022 17:47:00 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C33A3F800F8
- for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2022 17:30:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C33A3F800F8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1AA11F80128
+ for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2022 17:46:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1AA11F80128
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="GMhWu7C3"
+ header.b="ufL4z/Kq"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 6E46661581;
- Wed, 19 Jan 2022 16:30:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 955B2C004E1;
- Wed, 19 Jan 2022 16:30:32 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id AC5E961556;
+ Wed, 19 Jan 2022 16:46:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D772C004E1;
+ Wed, 19 Jan 2022 16:46:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1642609836;
- bh=NPkrUgRYzcxwa3lnZh2dJ3qyPo1V5StcWneeKtWaOTI=;
+ s=k20201202; t=1642610811;
+ bh=jcFYJMa4KHuzmvPQKCs7JdmJXADGOrQOZ7yiO5vDztM=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=GMhWu7C3B60BdL8/99pPFWzH0CB7LU7Dz7GFXyQtbGWeKeKQJEE+V2fEbRhv/QrJW
- yYagtUm7pysfgqkJMyR27/xktDwbdWcoif82n5bf4F716uAgvyW4CrM7nnlUKhGZf0
- FU8zZ8ZvZl+QEyzj+ByrVczubpcuk9CdfXWCIEjg23SntmAfLaHiquJ5KbvTGWQWfn
- Hr8GUX32FKay/k82RyllkJOyRWhWEFPpRz5SEs7TiLsMcVgix5+RDcoF6No3Mm8HeE
- dgP9NlrSSG2qLfoDBPumyLb9lbK1A0ADtU3DkLXQ9hZS91Urze/uzDqpkaas6/c5dZ
- OCMIIrEVF0X5A==
-Date: Wed, 19 Jan 2022 16:30:29 +0000
+ b=ufL4z/Kq1K7yccutI10koc9w/C/Ue7o6ubD5rp1l79h79Z7FIFu+0LwtIG6T8yzHP
+ 7tjEGxGQBcosFEhSwZcWkjNaNPRA4PThoZWefyDJiVcpRHLqArASg+i4fxGQ+KTAcF
+ vPpfN6iTnXt9MezWt4gUCi2YftxdJkUVbMS+oiuCcrxiXTmIcBlndjVH1tbVC/yUY/
+ 1RCmWEzn94bQ9LVQB6aIEe9CM0jiXrccBRwMpeV10vWJ0uqk6bSVnXLyD/2Aa8jCbG
+ rfDEwGy37njcfmFSyXui/bMj1Mz/Gu+Mhs10CTcmrZku/9zTT/lw5T/m/vKuUkEv29
+ nEXXIoZV45s6w==
+Date: Wed, 19 Jan 2022 16:46:45 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH] dt-bindings: Drop unnecessary pinctrl properties
-Message-ID: <Yeg8pWYUwWKqOjhe@sirena.org.uk>
-References: <20220119015325.2438277-1-robh@kernel.org>
+To: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Subject: Re: [PATCH v2] ASoC: codecs: Check for error pointer after calling
+ devm_regmap_init_mmio
+Message-ID: <YehAdeQAlPubkNZ3@sirena.org.uk>
+References: <20220114065713.1246619-1-jiasheng@iscas.ac.cn>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="pa3KE12yHs9Xnd2D"
+ protocol="application/pgp-signature"; boundary="JFhvXVQvk5tjTnut"
 Content-Disposition: inline
-In-Reply-To: <20220119015325.2438277-1-robh@kernel.org>
-X-Cookie: This bag is recyclable.
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Charles Keepax <ckeepax@opensource.cirrus.com>,
- Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
- Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
- David Airlie <airlied@linux.ie>, - <patches@opensource.cirrus.com>,
- Linus Walleij <linus.walleij@linaro.org>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-kernel@vger.kernel.org,
- Sandy Huang <hjc@rock-chips.com>, Krzysztof Kozlowski <krzk@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>, linux-rockchip@lists.infradead.org,
- Richard Fitzgerald <rf@opensource.cirrus.com>, linux-gpio@vger.kernel.org,
- dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
- linux-input@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20220114065713.1246619-1-jiasheng@iscas.ac.cn>
+X-Cookie: YOW!!  The land of the rising SONY!!
+Cc: cezary.rojewski@intel.com, bgoswami@codeaurora.org,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com,
+ lgirdwood@gmail.com, srinivas.kandagatla@linaro.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,29 +84,32 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---pa3KE12yHs9Xnd2D
+--JFhvXVQvk5tjTnut
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Jan 18, 2022 at 07:53:25PM -0600, Rob Herring wrote:
-> For a single pinctrl mode, it is not necessary to define pinctrl
-> properties as the tools always allow pinctrl properties.
+On Fri, Jan 14, 2022 at 02:57:13PM +0800, Jiasheng Jiang wrote:
+> Since the possible failure of the devm_regmap_init_mmio(), it will
+> return error pointer and be assigned to the regmap.
+> Then the error pointer will be dereferenced.
+> For example rx->regmap will be used in rx_macro_mclk_enable().
+> Therefore, it should be better to check it.
 
-Acked-by: Mark Brown <broonie@kernel.org>
+This doesn't apply against current code, please check and resend.
 
---pa3KE12yHs9Xnd2D
+--JFhvXVQvk5tjTnut
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmHoPKQACgkQJNaLcl1U
-h9CK5ggAgSoOi6gEd+9fFCP6FCxOQatzUUojOHSGhmWyvIDZNwu17IQjUqhzZ5Lk
-8Z9Or7iFzVcEVfaKQ0w1HRWHQIrPLjnGtm1pnD26p3iqmdDC/1hDvKb/kd7EjOmF
-NEx6LRQoJL0LQX9I/c8rkwoW5mXpxaBck270IlQAaOI5/iOQFHp2oDn02Csbli0e
-XtJH3S6dPtjKQN/+SC9ruVF3usw6u4Vxi5FNXA1ABQYeKP+4/lyft2SWzGZEShhy
-Kmn6JJCH6fa4Aqbz85d4dpvuG9t9ukvdK8zrRCpsH2xw8AlHDeJtcDG6/LXw5hPG
-u+NgtzFSWl0tPBvoyeSNpNi3YEkbyg==
-=vG1Q
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmHoQHUACgkQJNaLcl1U
+h9DHWgf/dwBXaKQcvpj3mwPc9R2yoQkwmc8zfpixVlq00cQOS0JHq2a1st/qcSBq
+iqWL4AtENPGRIrw9Lnw6a9u+nwoE76TS7yzt5PNqq1jq2T+kqaO+fMGj62QoVX/u
+wNLWTfd0SebMrchZKSXkursHv0CBUydYiF6n/yjgJb3VVj/fhcrrrZ9SOGbfxdyq
+17cm7S+bc0r6EMEVIUeSFcSNsWnRayIzP2O5OLkImC0+hUgy6uaI2Vjndg7yCqbZ
+WApyAOyqm8Pfhb9CU3PcMupfgB4MqISA+PyeayR5gX6TtxhoGxZbapmDHVB8nN+4
+q1liOHkZa9rg2JIg8M1DOzY7R4n0OA==
+=MJdS
 -----END PGP SIGNATURE-----
 
---pa3KE12yHs9Xnd2D--
+--JFhvXVQvk5tjTnut--
