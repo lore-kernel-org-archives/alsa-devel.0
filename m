@@ -4,79 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B36FFC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jan 2022 17:57:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D4A9C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jan 2022 17:57:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6CCEA2981;
-	Thu, 20 Jan 2022 18:56:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6CCEA2981
+	by alsa0.perex.cz (Postfix) with ESMTPS id A39052E8B;
+	Thu, 20 Jan 2022 18:56:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A39052E8B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1642701451;
-	bh=oAVu90eWvMsfOyzUac2hnJWuM8Eqfkz2xgUQUkXrJFY=;
+	s=default; t=1642701468;
+	bh=o1w3m8udOKoJ3CiYVJRSuvIA6fio505Gb8fULpRe2lI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oPcv0nt3CPoUqk4L/EDnN2Qihj+h1BhlT3hKd0BqUjUm/a/O/iRB6VTq/jzmbHRA3
-	 SQ3Sw/Ywbcije05EWu+czGMeXkxRpHCNIh52mv3OZBfRH1xH6x7VoYNxQcCvOQhH+B
-	 60zKpU1KdCG5gVVBK7mQYW+9gKWvgvfCEOXb9zK8=
+	b=kKyc+C9RFD1q7p7oTf1hZgBxsjuqPmwuX6fPxlpC+OJHs5XDZ/pjroaGu4zQdmnjG
+	 Sky00Qy+ttjlx4++5gi461vPS9Yv8yb6v7MnHsRwEvI1fFeurVxHTcrar24dE3RsdL
+	 GHgHKBcSErLbjB5B1kJr7I6nLqfGn2D6QUoFe48s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BD7B7F804AA;
-	Thu, 20 Jan 2022 18:56:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 22C6BF80516;
+	Thu, 20 Jan 2022 18:56:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DD6C7F80248; Thu, 20 Jan 2022 18:56:04 +0100 (CET)
+ id F34ACF80508; Thu, 20 Jan 2022 18:56:07 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1A187F800F2
- for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2022 18:56:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A187F800F2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 617DCF800F8
+ for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2022 18:56:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 617DCF800F8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="FVEuddPr"
+ header.b="LaO+BOC8"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20K4urv7021640;
- Thu, 20 Jan 2022 11:55:58 -0600
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20K5IpA1022340;
+ Thu, 20 Jan 2022 11:55:59 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=XvGB7UycBpGzVQC72iu2qmzvGDvfYND/7pGY61cSEew=;
- b=FVEuddPreuC2YhzhmQ1QaTpD6VdnDatajMnkMfWWRzVYVuuc6+dlc9Ajgne202AoCgbM
- mfHm+VPMurhxIVqpMRfWGixTMHFgj8Dkr6Af6ERLwpANiIQ9R0ztaLAV8bqUZxheuopz
- rSKRnNa4LKk30USK+3+o1EDy+A0v9jsPNNJzSOvvpNGbveKs+46QEQbqawbpL6CXmO6n
- jR7xN1JBkBGmBvZ3CvmSqKp0r4f2viQB+3wXjiPJmC+yRYuHUmPhukJxQhrEO+SpiMQZ
- VhaeqS/c785gH6hgcjxzflW5XNyzQkhDpwpRJLNjRpgCrDbT2Op1xAJ+RGDs8ShJnywe bw== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3dpms0hh18-1
+ bh=/5EEVxedqyc4lS3w9/oKz7sNBu3Ep8/TONL9EDmsebU=;
+ b=LaO+BOC8DgmKHsw0DabB9ReCkuJ1l9E+aL43q8qnIDry7TxQ2aN46EMBu8AEYfoZOROf
+ pwEUCC4W9STP68Hk4jaPuDEwyW89q/Eqga/D3wTdUh4yBaZ74Fiog0oorxfNC/mjLJDP
+ w6faTs/w/MIT53USD9eILlK421aeYUOUMK1PthNPsu05Q4GOVOcfZ77iLlliSmM751jn
+ 571Of9i3mga253ab3VUV3Lm8BK4c15/TqG4xKKn/RGXOq9gwbY5IRJdLdf9iToBVjvoG
+ FmBzsB+hu7/eYOs/TV2+RdOk/DBW9gjSTpYDX9gOYEyfg7HmSLfy8nWO5+S1cIkkGWhk ZA== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3dpms0hh17-2
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
  Thu, 20 Jan 2022 11:55:58 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Thu, 20 Jan
- 2022 17:55:54 +0000
+ 2022 17:55:53 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.18 via
- Frontend Transport; Thu, 20 Jan 2022 17:55:54 +0000
+ Frontend Transport; Thu, 20 Jan 2022 17:55:53 +0000
 Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com
  [198.61.65.33])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 33DD711D7;
- Thu, 20 Jan 2022 17:55:54 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 83FD946D;
+ Thu, 20 Jan 2022 17:55:53 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 3/3] ASoC: cs42l42: Handle system suspend
-Date: Thu, 20 Jan 2022 17:55:49 +0000
-Message-ID: <20220120175549.671831-4-rf@opensource.cirrus.com>
+Subject: [PATCH 1/3] ASoC: cs42l42: Report full jack status when plug is
+ detected
+Date: Thu, 20 Jan 2022 17:55:47 +0000
+Message-ID: <20220120175549.671831-2-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220120175549.671831-1-rf@opensource.cirrus.com>
 References: <20220120175549.671831-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: a_vnEG4sxbh_94GlblzDDpmx9wrfu0q_
-X-Proofpoint-GUID: a_vnEG4sxbh_94GlblzDDpmx9wrfu0q_
+X-Proofpoint-ORIG-GUID: AxmdCqB-YQ3vszAcLXuXqLZGPDmSFNFW
+X-Proofpoint-GUID: AxmdCqB-YQ3vszAcLXuXqLZGPDmSFNFW
 X-Proofpoint-Spam-Reason: safe
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
  Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
@@ -95,221 +96,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add system suspend functions to handle clean power-down on suspend and
-restoring registers on resume.
+When a plug event is detect report the full state of all status
+bits, don't assume that there will have been a previous unplug
+event to clear all the bits. Report the state of both HEADPHONE
+and MICROPHONE bits according to detected type, and clear all the
+button status bits. The current button status is already checked
+and reported at the end of the function.
 
-The jack state could change during suspend. Plug->unplug and unplug->plug
-are straightforward because this looks no different from any other plug
-state change - there will be a plugged or unplugged interrupt pending.
-The jack could be unplugged and a different type of jack plugged, and on
-resume the plug state would not have changed. Setting plug_state back to
-TS_TRANS (transitioning) will make the next plug interrupt after resume
-run a type detection.
-
-During system suspend any jack plug/unplug and button events will not be
-reported or generate a system wakeup. If the plug state or headset type
-has changed it will be reported after resume.
+During a system suspend the jack could be unplugged and plugged,
+possibly changing the jack type. On resume the interrupt status will
+indicate a plug event - there will not be an unplug event to clear
+the bits.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- sound/soc/codecs/cs42l42.c | 139 +++++++++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/cs42l42.h |   5 ++
- 2 files changed, 144 insertions(+)
+ sound/soc/codecs/cs42l42.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index f1b95d45af4a..f577b39a2fc0 100644
+index 43d98bdb5b5b..2c294868008e 100644
 --- a/sound/soc/codecs/cs42l42.c
 +++ b/sound/soc/codecs/cs42l42.c
-@@ -1614,6 +1614,10 @@ static irqreturn_t cs42l42_irq_thread(int irq, void *data)
- 	int report = 0;
+@@ -1637,7 +1637,11 @@ static irqreturn_t cs42l42_irq_thread(int irq, void *data)
  
- 	mutex_lock(&cs42l42->irq_lock);
-+	if (cs42l42->suspended) {
-+		mutex_unlock(&cs42l42->irq_lock);
-+		return IRQ_NONE;
-+	}
+ 	mutex_lock(&cs42l42->jack_detect_mutex);
  
- 	/* Read sticky registers to clear interurpt */
- 	for (i = 0; i < ARRAY_SIZE(stickies); i++) {
-@@ -2047,6 +2051,136 @@ static int cs42l42_handle_device_data(struct device *dev,
- 	return 0;
- }
- 
-+/* Datasheet suspend sequence */
-+static const struct reg_sequence __maybe_unused cs42l42_shutdown_seq[] = {
-+	REG_SEQ0(CS42L42_MIC_DET_CTL1,		0x9F),
-+	REG_SEQ0(CS42L42_ADC_OVFL_INT_MASK,	0x01),
-+	REG_SEQ0(CS42L42_MIXER_INT_MASK,	0x0F),
-+	REG_SEQ0(CS42L42_SRC_INT_MASK,		0x0F),
-+	REG_SEQ0(CS42L42_ASP_RX_INT_MASK,	0x1F),
-+	REG_SEQ0(CS42L42_ASP_TX_INT_MASK,	0x0F),
-+	REG_SEQ0(CS42L42_CODEC_INT_MASK,	0x03),
-+	REG_SEQ0(CS42L42_SRCPL_INT_MASK,	0x7F),
-+	REG_SEQ0(CS42L42_VPMON_INT_MASK,	0x01),
-+	REG_SEQ0(CS42L42_PLL_LOCK_INT_MASK,	0x01),
-+	REG_SEQ0(CS42L42_TSRS_PLUG_INT_MASK,	0x0F),
-+	REG_SEQ0(CS42L42_WAKE_CTL,		0xE1),
-+	REG_SEQ0(CS42L42_DET_INT1_MASK,		0xE0),
-+	REG_SEQ0(CS42L42_DET_INT2_MASK,		0xFF),
-+	REG_SEQ0(CS42L42_MIXER_CHA_VOL,		0x3F),
-+	REG_SEQ0(CS42L42_MIXER_ADC_VOL,		0x3F),
-+	REG_SEQ0(CS42L42_MIXER_CHB_VOL,		0x3F),
-+	REG_SEQ0(CS42L42_HP_CTL,		0x0F),
-+	REG_SEQ0(CS42L42_ASP_RX_DAI0_EN,	0x00),
-+	REG_SEQ0(CS42L42_ASP_CLK_CFG,		0x00),
-+	REG_SEQ0(CS42L42_HSDET_CTL2,		0x00),
-+	REG_SEQ0(CS42L42_PWR_CTL1,		0xFE),
-+	REG_SEQ0(CS42L42_PWR_CTL2,		0x8C),
-+	REG_SEQ0(CS42L42_DAC_CTL2,		0x02),
-+	REG_SEQ0(CS42L42_HS_CLAMP_DISABLE,	0x00),
-+	REG_SEQ0(CS42L42_MISC_DET_CTL,		0x03),
-+	REG_SEQ0(CS42L42_TIPSENSE_CTL,		0x02),
-+	REG_SEQ0(CS42L42_HSBIAS_SC_AUTOCTL,	0x03),
-+	REG_SEQ0(CS42L42_PWR_CTL1,		0xFF)
-+};
-+
-+static int __maybe_unused cs42l42_suspend(struct device *dev)
-+{
-+	struct cs42l42_private *cs42l42 = dev_get_drvdata(dev);
-+	unsigned int reg;
-+	u8 save_regs[ARRAY_SIZE(cs42l42_shutdown_seq)];
-+	int i, ret;
-+
+-	/* Check auto-detect status */
 +	/*
-+	 * Wait for threaded irq handler to be idle and stop it processing
-+	 * future interrupts. This ensures a safe disable if the interrupt
-+	 * is shared.
++	 * Check auto-detect status. Don't assume a previous unplug event has
++	 * cleared the flags. If the jack is unplugged and plugged during
++	 * system suspend there won't have been an unplug event.
 +	 */
-+	mutex_lock(&cs42l42->irq_lock);
-+	cs42l42->suspended = true;
-+
-+	/* Save register values that will be overwritten by shutdown sequence */
-+	for (i = 0; i < ARRAY_SIZE(cs42l42_shutdown_seq); ++i) {
-+		regmap_read(cs42l42->regmap, cs42l42_shutdown_seq[i].reg, &reg);
-+		save_regs[i] = (u8)reg;
-+	}
-+
-+	/* Shutdown codec */
-+	regmap_multi_reg_write(cs42l42->regmap,
-+			       cs42l42_shutdown_seq,
-+			       ARRAY_SIZE(cs42l42_shutdown_seq));
-+
-+	/* All interrupt sources are now disabled */
-+	mutex_unlock(&cs42l42->irq_lock);
-+
-+	/* Wait for power-down complete */
-+	msleep(CS42L42_PDN_DONE_TIME_MS);
-+	ret = regmap_read_poll_timeout(cs42l42->regmap,
-+				       CS42L42_CODEC_STATUS, reg,
-+				       (reg & CS42L42_PDN_DONE_MASK),
-+				       CS42L42_PDN_DONE_POLL_US,
-+				       CS42L42_PDN_DONE_TIMEOUT_US);
-+	if (ret)
-+		dev_warn(dev, "Failed to get PDN_DONE: %d\n", ret);
-+
-+	/* Discharge FILT+ */
-+	regmap_update_bits(cs42l42->regmap, CS42L42_PWR_CTL2,
-+			   CS42L42_DISCHARGE_FILT_MASK, CS42L42_DISCHARGE_FILT_MASK);
-+	msleep(CS42L42_FILT_DISCHARGE_TIME_MS);
-+
-+	regcache_cache_only(cs42l42->regmap, true);
-+	gpiod_set_value_cansleep(cs42l42->reset_gpio, 0);
-+	regulator_bulk_disable(ARRAY_SIZE(cs42l42->supplies), cs42l42->supplies);
-+
-+	/* Restore register values to the regmap cache */
-+	for (i = 0; i < ARRAY_SIZE(cs42l42_shutdown_seq); ++i)
-+		regmap_write(cs42l42->regmap, cs42l42_shutdown_seq[i].reg, save_regs[i]);
-+
-+	/* The cached address page register value is now stale */
-+	regcache_drop_region(cs42l42->regmap, CS42L42_PAGE_REGISTER, CS42L42_PAGE_REGISTER);
-+
-+	dev_dbg(dev, "System suspended\n");
-+
-+	return 0;
-+
-+}
-+
-+static int __maybe_unused cs42l42_resume(struct device *dev)
-+{
-+	struct cs42l42_private *cs42l42 = dev_get_drvdata(dev);
-+	int ret;
-+
-+	/*
-+	 * If jack was unplugged and re-plugged during suspend it could
-+	 * have changed type but the tip-sense state hasn't changed.
-+	 * Force a plugged state to be re-evaluated.
-+	 */
-+	if (cs42l42->plug_state != CS42L42_TS_UNPLUG)
-+		cs42l42->plug_state = CS42L42_TS_TRANS;
-+
-+	ret = regulator_bulk_enable(ARRAY_SIZE(cs42l42->supplies), cs42l42->supplies);
-+	if (ret != 0) {
-+		dev_err(dev, "Failed to enable supplies: %d\n", ret);
-+		return ret;
-+	}
-+
-+	gpiod_set_value_cansleep(cs42l42->reset_gpio, 1);
-+	usleep_range(CS42L42_BOOT_TIME_US, CS42L42_BOOT_TIME_US * 2);
-+
-+	regcache_cache_only(cs42l42->regmap, false);
-+	regcache_mark_dirty(cs42l42->regmap);
-+
-+	/* Sync LATCH_TO_VP first so the VP domain registers sync correctly */
-+	regcache_sync_region(cs42l42->regmap, CS42L42_MIC_DET_CTL1, CS42L42_MIC_DET_CTL1);
-+	regcache_sync(cs42l42->regmap);
-+
-+	cs42l42->suspended = false;
-+
-+	dev_dbg(dev, "System resumed\n");
-+
-+	return 0;
-+}
-+
- static int cs42l42_i2c_probe(struct i2c_client *i2c_client,
- 				       const struct i2c_device_id *id)
- {
-@@ -2217,6 +2351,10 @@ static int cs42l42_i2c_remove(struct i2c_client *i2c_client)
- 	return 0;
- }
- 
-+static const struct dev_pm_ops cs42l42_pm_ops = {
-+	SET_SYSTEM_SLEEP_PM_OPS(cs42l42_suspend, cs42l42_resume)
-+};
-+
- #ifdef CONFIG_OF
- static const struct of_device_id cs42l42_of_match[] = {
- 	{ .compatible = "cirrus,cs42l42", },
-@@ -2243,6 +2381,7 @@ MODULE_DEVICE_TABLE(i2c, cs42l42_id);
- static struct i2c_driver cs42l42_i2c_driver = {
- 	.driver = {
- 		.name = "cs42l42",
-+		.pm = &cs42l42_pm_ops,
- 		.of_match_table = of_match_ptr(cs42l42_of_match),
- 		.acpi_match_table = ACPI_PTR(cs42l42_acpi_match),
- 		},
-diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
-index 53d96287abba..244b24d1f5e9 100644
---- a/sound/soc/codecs/cs42l42.h
-+++ b/sound/soc/codecs/cs42l42.h
-@@ -826,6 +826,10 @@
- #define CS42L42_PLL_LOCK_POLL_US	250
- #define CS42L42_PLL_LOCK_TIMEOUT_US	1250
- #define CS42L42_HP_ADC_EN_TIME_US	20000
-+#define CS42L42_PDN_DONE_POLL_US	1000
-+#define CS42L42_PDN_DONE_TIMEOUT_US	200000
-+#define CS42L42_PDN_DONE_TIME_MS	100
-+#define CS42L42_FILT_DISCHARGE_TIME_MS	46
- 
- static const char *const cs42l42_supply_names[CS42L42_NUM_SUPPLIES] = {
- 	"VA",
-@@ -860,6 +864,7 @@ struct  cs42l42_private {
- 	u8 hs_bias_sense_en;
- 	u8 stream_use;
- 	bool hp_adc_up_pending;
-+	bool suspended;
- };
- 
- #endif /* __CS42L42_H__ */
+ 	if ((~masks[5]) & irq_params_table[5].mask) {
+ 		if (stickies[5] & CS42L42_HSDET_AUTO_DONE_MASK) {
+ 			cs42l42_process_hs_type_detect(cs42l42);
+@@ -1645,11 +1649,15 @@ static irqreturn_t cs42l42_irq_thread(int irq, void *data)
+ 			case CS42L42_PLUG_CTIA:
+ 			case CS42L42_PLUG_OMTP:
+ 				snd_soc_jack_report(cs42l42->jack, SND_JACK_HEADSET,
+-						    SND_JACK_HEADSET);
++						    SND_JACK_HEADSET |
++						    SND_JACK_BTN_0 | SND_JACK_BTN_1 |
++						    SND_JACK_BTN_2 | SND_JACK_BTN_3);
+ 				break;
+ 			case CS42L42_PLUG_HEADPHONE:
+ 				snd_soc_jack_report(cs42l42->jack, SND_JACK_HEADPHONE,
+-						    SND_JACK_HEADPHONE);
++						    SND_JACK_HEADSET |
++						    SND_JACK_BTN_0 | SND_JACK_BTN_1 |
++						    SND_JACK_BTN_2 | SND_JACK_BTN_3);
+ 				break;
+ 			default:
+ 				break;
 -- 
 2.11.0
 
