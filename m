@@ -4,69 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CEF1C4332F
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jan 2022 23:16:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6A45C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jan 2022 23:17:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2BC2D2C42;
-	Fri, 21 Jan 2022 00:15:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2BC2D2C42
+	by alsa0.perex.cz (Postfix) with ESMTPS id EE1F92DC7;
+	Fri, 21 Jan 2022 00:16:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE1F92DC7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1642720601;
-	bh=sYJTTViIxrStwsVLzbtRFy6Ua4t9VL51qaRzRiSPe4s=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Eu+TwFn9wUUw628YXiekRYj4HGTTlNiV2loFA31B9mNCd02oz0zZ/TQY8ts/LyDEP
-	 5048vz8ARln7A0hydvyZav7waiAFTDVpBefLg7lMn5+teqZvyYzivVgbtJetxa9J6v
-	 Uq4iayWsl4p3CKfFQ4pIAbkgbrzNvBVsCE0YUlMQ=
+	s=default; t=1642720636;
+	bh=YzwhIx/BcLqW8OrP/DLYnVD9dmojhpOJVFWQweeBL0g=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=BiM4bUrYsgsK1vAkwvsxBYkfTxAqXBakAKBUPaNi1TVUHLps2QYObheRmgYeS6M1H
+	 YF1JBNFwA00G+AXkRw3EEOVGN4A3AfNOdc9ls/m0k9Sax+hCL4Cwfd4Go95wSqOVCf
+	 bidMVlED9lOQzrlC/aj6RSBW3NPydVNxbUIijieI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BBE71F80134;
-	Fri, 21 Jan 2022 00:15:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A332DF80423;
+	Fri, 21 Jan 2022 00:15:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8756BF800F8; Fri, 21 Jan 2022 00:15:49 +0100 (CET)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ id 95CE5F8050F; Fri, 21 Jan 2022 00:15:54 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BA23FF800F8
- for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2022 00:15:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA23FF800F8
+ by alsa1.perex.cz (Postfix) with ESMTPS id D3A44F800F2
+ for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2022 00:15:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3A44F800F2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="AVio3ZNU"
+ header.b="MUxI/+e7"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1642720548; x=1674256548;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=sYJTTViIxrStwsVLzbtRFy6Ua4t9VL51qaRzRiSPe4s=;
- b=AVio3ZNUQ7GJbDCa55a2wgV8w2cZjSTXMR4flvkKAPW3z0uMYAKrx//D
- OmjWJGjxzNg84cnGhjYCNd8IdeSH1AJ3ePO8V52SA1XbE6qqZ73EZErL6
- Op6/B21+9s2RMfAbvddW8lHNeOrAU5W/ioPqLri6JGIFTvI2fx1iRoZWx
- FUqqulmojtUzXV3gAhwwyoQOACasA5In5NJLtTATdngz9eW6/SFNxY3EW
- J7v7fV4aaNwLZj5aG94IJ/Ynk+IbjuT88D9Us5SegivyVCenmLFFcJubQ
- 0zfRWbag16chmpy8rRDhmAqC831xTHTdnw8/mUuD3J7znhW04RAqoApdf Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10233"; a="245460643"
-X-IronPort-AV: E=Sophos;i="5.88,303,1635231600"; d="scan'208";a="245460643"
+ t=1642720549; x=1674256549;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=YzwhIx/BcLqW8OrP/DLYnVD9dmojhpOJVFWQweeBL0g=;
+ b=MUxI/+e7Mo7PKP5/2FFcKR9/dnVFgfU77EERWS9j0vard43gRxhsI5Uy
+ 7bY8+iBe1UsTITmnx6KhZ6ac0DRAGmOtsY54aAtueJufeCulBRO+3foaW
+ ITDnONU/q9MZNUggQWwUwcUauArITZGf2aS2G44eC/IJMEmUKpQv0cBii
+ lzTDIzkBwdRbotVhNhxxFBbRMJsewiwvnzbsUmBQj4s+RR8reL3TbLEwx
+ vNXstoFwTcsLx0mY8TDM90hdXRQmW2QY5G24clA3iHd3SFmNbaPML8DY3
+ EhO9oAxQfiSFOCp6rsR1XkzzDhfmzx7Ibi9Y27Hgk5jXG320LIH7WwpSj w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10233"; a="245721376"
+X-IronPort-AV: E=Sophos;i="5.88,303,1635231600"; d="scan'208";a="245721376"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Jan 2022 15:15:43 -0800
-X-IronPort-AV: E=Sophos;i="5.88,303,1635231600"; d="scan'208";a="672741383"
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 Jan 2022 15:15:44 -0800
+X-IronPort-AV: E=Sophos;i="5.88,303,1635231600"; d="scan'208";a="672741386"
 Received: from sthambit-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.64.44])
  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Jan 2022 15:15:40 -0800
+ 20 Jan 2022 15:15:41 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 0/5] ASoC: SOF: Intel: don't download firmware at each resume
-Date: Thu, 20 Jan 2022 17:15:27 -0600
-Message-Id: <20220120231532.196926-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 2/5] ASoC: SOF: Intel: use inclusive language for SSP clocks
+Date: Thu, 20 Jan 2022 17:15:29 -0600
+Message-Id: <20220120231532.196926-3-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220120231532.196926-1-pierre-louis.bossart@linux.intel.com>
+References: <20220120231532.196926-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, Keyon Jie <yang.jie@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
+ =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,34 +87,57 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-After the first firmware boot, the firmware is capable of
-saving/restoring its context to/from IMR (Isolated Memory Region, set
-aside by BIOS on startup). This capability improves the resume speed.
+We introduced provider/consumer terms, and CBP_CFP acronyms for codec
+drivers, let's use them as well in SOF.
 
-Due to an unexplained issue on Up2 boards, this capability is disabled
-on ApolloLake.
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Keyon Jie <yang.jie@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/sof/intel/hda-loader.c | 6 +++---
+ sound/soc/sof/intel/hda.h        | 6 +++---
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
-For backwards compatibility, the regular boot flow is used with older
-firmware. For added peace of mind, a kernel module parameter is
-provided to force the regular boot flow - this shouldn't be necessary
-since we've been testing these patches for 6+ months.
-
-Keyon Jie (4):
-  ASoC: SOF: add _D3_PERSISTENT flag to fw_ready message
-  ASoC: SOF: Intel: hda-loader: add SSP helper
-  ASoC: SOF: Intel: hda-loader: add IMR restore support
-  ASoC: SOF: add flag to disable IMR restore to sof_debug
-
-Pierre-Louis Bossart (1):
-  ASoC: SOF: Intel: use inclusive language for SSP clocks
-
- include/sound/sof/info.h         |  1 +
- include/uapi/sound/sof/abi.h     |  2 +-
- sound/soc/sof/intel/hda-loader.c | 68 +++++++++++++++++++++++++++-----
- sound/soc/sof/intel/hda.h        |  6 +--
- sound/soc/sof/sof-priv.h         |  3 ++
- 5 files changed, 66 insertions(+), 14 deletions(-)
-
+diff --git a/sound/soc/sof/intel/hda-loader.c b/sound/soc/sof/intel/hda-loader.c
+index 33306d2023a7..43de6f1d62a9 100644
+--- a/sound/soc/sof/intel/hda-loader.c
++++ b/sound/soc/sof/intel/hda-loader.c
+@@ -101,14 +101,14 @@ static int cl_dsp_init(struct snd_sof_dev *sdev, int stream_tag)
+ 		goto err;
+ 	}
+ 
+-	/* DSP is powered up, set all SSPs to slave mode */
++	/* DSP is powered up, set all SSPs to clock consumer/codec provider mode */
+ 	for (i = 0; i < chip->ssp_count; i++) {
+ 		snd_sof_dsp_update_bits_unlocked(sdev, HDA_DSP_BAR,
+ 						 chip->ssp_base_offset
+ 						 + i * SSP_DEV_MEM_SIZE
+ 						 + SSP_SSC1_OFFSET,
+-						 SSP_SET_SLAVE,
+-						 SSP_SET_SLAVE);
++						 SSP_SET_CBP_CFP,
++						 SSP_SET_CBP_CFP);
+ 	}
+ 
+ 	/* step 2: purge FW request */
+diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
+index 03a6bb7a165c..7838a998ea95 100644
+--- a/sound/soc/sof/intel/hda.h
++++ b/sound/soc/sof/intel/hda.h
+@@ -383,9 +383,9 @@
+ 
+ /* SSP Registers */
+ #define SSP_SSC1_OFFSET		0x4
+-#define SSP_SET_SCLK_SLAVE	BIT(25)
+-#define SSP_SET_SFRM_SLAVE	BIT(24)
+-#define SSP_SET_SLAVE		(SSP_SET_SCLK_SLAVE | SSP_SET_SFRM_SLAVE)
++#define SSP_SET_SCLK_CONSUMER	BIT(25)
++#define SSP_SET_SFRM_CONSUMER	BIT(24)
++#define SSP_SET_CBP_CFP		(SSP_SET_SCLK_CONSUMER | SSP_SET_SFRM_CONSUMER)
+ 
+ #define HDA_IDISP_ADDR		2
+ #define HDA_IDISP_CODEC(x) ((x) & BIT(HDA_IDISP_ADDR))
 -- 
 2.25.1
 
