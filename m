@@ -4,83 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54E09C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jan 2022 13:45:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5A9FC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jan 2022 13:45:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1A8022E92;
-	Thu, 20 Jan 2022 14:44:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A8022E92
+	by alsa0.perex.cz (Postfix) with ESMTPS id F423E2EFA;
+	Thu, 20 Jan 2022 14:44:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F423E2EFA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1642686312;
-	bh=nWsvxoa8MD8gyQ3hFz77FuTwryQd5E/j1Mx+AdG4490=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=hZDbljpRXkDdF872nCGYz1wKXO2mWHagdOKZw7dakAQ38tFALVUqm49JFM/zAHbxj
-	 yL4dRwyxFj8/HZRhmcRWQQgHkPWXGo9/wNY4QCLN6xCw9/81pYFGjgjbjUVBL/shpG
-	 qpdHUTnOFPhE/rG9dQRp7AIOIM7hNWcIGXeTUUeY=
+	s=default; t=1642686329;
+	bh=jg0i98pi8Y0Q4ra/PZIfym9fBHfgkORJWfQ+otNp/xQ=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=iIv/3xExJn/MavyeDNCwP/fAIrl5bBb0U2o2/NqmsRM8PGDDnlLMFIdu8QWy3KyjT
+	 /Sy1MlD7az2T/653rR/YyRmNoOomfpQ2p/Fh8FrA0n+DqAjhSfTqPz+7TT2z0KirQ7
+	 JQDkRvMnXiqlC5zk/03D1kDqX0zuvoWHLQco106U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BB531F80511;
-	Thu, 20 Jan 2022 14:43:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4A170F8050F;
+	Thu, 20 Jan 2022 14:43:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9E7E6F800F2; Thu, 20 Jan 2022 14:43:48 +0100 (CET)
+ id 15018F8050F; Thu, 20 Jan 2022 14:43:51 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E1BA1F800F2
- for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2022 14:43:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1BA1F800F2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7C716F80134
+ for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2022 14:43:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C716F80134
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="PeG5I/+V"
+ header.b="XbEGm7ut"
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20K4mpgj024668;
- Thu, 20 Jan 2022 07:43:41 -0600
+ by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20K4mpgm024668;
+ Thu, 20 Jan 2022 07:43:43 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=DzR07ZdJHZPEr4WdjQIs/Aa6Ap341lhnel2ikN6KcYQ=;
- b=PeG5I/+V3g+zlBmOJ0W83BCDaWNbXXtPEiiMk6bY4ne1y6SEHKxnVpaztVD72WjcbWNI
- q32g3B/M522unWRjePKIUew2/H1jn/hdKmfhVfbBhqH0OU81/iIvy5DJ9DplWzGuuPCN
- PRGLXz2m6YBNcspCIywcDrYLLKRJPdd1yT081ibi4t/0cp9+PGbLtTPg7wveglpkzszE
- jto/yj5NDAq/kXbI16Z54cvg9XO1JZepHOgTLoVwPkIUmP+5/F71yzZHSZAh085RGxcm
- H9VgEYl9zp164Z9iYQ3juPDQEXbvbpYzk6EKt1QXyDtHrN+sNTVtNLS4y4KOhUS45pEs RQ== 
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=NnT76tFDTsJKnRu3BbxkL9dyW+2s7WfbF9csCDbyTxM=;
+ b=XbEGm7utjcNfY/S4Jt6fqA1FUYnyS1jsUf7n4GH7vf8qE5fNGZW5DXdNGk4TP00ywRdp
+ Ac16Xqu1f5NTVdXMexbWw75ceeMPy2hTVa1uBX5K87frXgMT0Wa0CvkXZstlLgMOuLtM
+ JbaGm0bF6W1F6WIcTSE3XHaDXULMND5myBTF55pujiS3bUOQRltSdYLUWE0NcmjRHBCg
+ wDJ4VHVw4W3Hwc0+VxPjFpKJeMts1X4YlEETvOU+NJnrKGvt+P2mAJ4Wt9O3PRG1Yv88
+ LiI38ge6SuuBHpwxBEw8fbYx1a8GsuReG/rC4OBsqIQUWG0Epgs+PXnZXCLer229xgBb hg== 
 Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3dpk9mh838-1
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3dpk9mh838-4
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 20 Jan 2022 07:43:41 -0600
+ Thu, 20 Jan 2022 07:43:43 -0600
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Thu, 20 Jan
- 2022 13:43:40 +0000
+ 2022 13:43:43 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.18 via
- Frontend Transport; Thu, 20 Jan 2022 13:43:40 +0000
+ Frontend Transport; Thu, 20 Jan 2022 13:43:43 +0000
 Received: from LONN2DGDQ73.ad.cirrus.com (unknown [198.90.238.138])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id CEB9CB13;
- Thu, 20 Jan 2022 13:43:39 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A277A11D7;
+ Thu, 20 Jan 2022 13:43:42 +0000 (UTC)
 From: Stefan Binding <sbinding@opensource.cirrus.com>
 To: Mark Brown <broonie@kernel.org>, "Rafael J . Wysocki" <rafael@kernel.org>, 
  Len Brown <lenb@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
  Mark Gross <markgross@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
  Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v4 0/9] Support Spi in i2c-multi-instantiate driver
-Date: Thu, 20 Jan 2022 13:43:17 +0000
-Message-ID: <20220120134326.5295-1-sbinding@opensource.cirrus.com>
+Subject: [PATCH v4 8/9] ALSA: hda/realtek: Add support for HP Laptops
+Date: Thu, 20 Jan 2022 13:43:25 +0000
+Message-ID: <20220120134326.5295-9-sbinding@opensource.cirrus.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220120134326.5295-1-sbinding@opensource.cirrus.com>
+References: <20220120134326.5295-1-sbinding@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 12Kqa8o7-oMcgl1qB3jB62GN_b8lxr3R
-X-Proofpoint-GUID: 12Kqa8o7-oMcgl1qB3jB62GN_b8lxr3R
+X-Proofpoint-ORIG-GUID: XgiWZaEwhgvfb-fl5Tm8OKhDQ3daBZig
+X-Proofpoint-GUID: XgiWZaEwhgvfb-fl5Tm8OKhDQ3daBZig
 X-Proofpoint-Spam-Reason: safe
-Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
- linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
- linux-acpi@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>,
- linux-spi@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Lucas Tanure <tanureal@opensource.cirrus.com>,
+ patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+ platform-driver-x86@vger.kernel.org, linux-acpi@vger.kernel.org,
+ Stefan Binding <sbinding@opensource.cirrus.com>, linux-spi@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,63 +99,93 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add support for SPI bus in the i2c-multi-instantiate driver as
-upcoming laptops will need to multi instantiate SPI devices from
-a single device node, which has multiple SpiSerialBus entries at
-the ACPI table.
+From: Lucas Tanure <tanureal@opensource.cirrus.com>
 
-With the new SPI support, i2c-multi-instantiate becomes
-bus-multi-instantiate and is moved to the ACPI folder.
+Add support for two and four CS35L41 using the component
+binding method
 
-The intention is to support the SPI bus by re-using the current
-I2C multi instantiate, instead of creating a new SPI multi
-instantiate, to make it possible for peripherals that can be
-controlled by I2C or SPI to have the same HID at the ACPI table.
+Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
+Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+---
+ sound/pci/hda/patch_realtek.c | 43 ++++++++++++++++++++++++++++++++++-
+ 1 file changed, 42 insertions(+), 1 deletion(-)
 
-The new driver (Bus multi instantiate, bmi) checks for the
-hard-coded bus type and returns -ENODEV in case of zero devices
-found for that bus. In the case of automatic bus detection, 
-the driver will give preference to I2C.
-
-The expectation is for a device node in the ACPI table to have
-multiple I2cSerialBus only or multiple SpiSerialBus only, not
-a mix of both; and for the case where there are both entries in
-one device node, only the I2C ones would be probed.
-
-This new bus multi instantiate will be used in CS35L41 HDA new
-driver.
-
-Changes since V2:
- - Moved bus-multi-instantiate back into platform/x86
-
-Lucas Tanure (4):
-  platform/x86: i2c-multi-instantiate: Rename it for a generic bus
-    driver name
-  platform/x86: bus-multi-instantiate: Reorganize I2C functions
-  ALSA: hda/realtek: Add support for HP Laptops
-  ACPI / scan: Create platform device for CS35L41
-
-Stefan Binding (5):
-  spi: Make spi_alloc_device and spi_add_device public again
-  spi: Create helper API to lookup ACPI info for spi device
-  spi: Support selection of the index of the ACPI Spi Resource before
-    alloc
-  spi: Add API to count spi acpi resources
-  platform/x86: bus-multi-instantiate: Add SPI support
-
- MAINTAINERS                                  |   4 +-
- drivers/acpi/scan.c                          |  16 +-
- drivers/platform/x86/Kconfig                 |  14 +-
- drivers/platform/x86/Makefile                |   2 +-
- drivers/platform/x86/bus-multi-instantiate.c | 369 +++++++++++++++++++
- drivers/platform/x86/i2c-multi-instantiate.c | 174 ---------
- drivers/spi/spi.c                            | 142 ++++++-
- include/linux/spi/spi.h                      |  32 ++
- sound/pci/hda/patch_realtek.c                |  43 ++-
- 9 files changed, 588 insertions(+), 208 deletions(-)
- create mode 100644 drivers/platform/x86/bus-multi-instantiate.c
- delete mode 100644 drivers/platform/x86/i2c-multi-instantiate.c
-
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 668274e52674..956515aa4ec3 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6611,6 +6611,16 @@ static void cs35l41_fixup_i2c_two(struct hda_codec *cdc, const struct hda_fixup
+ 	cs35l41_generic_fixup(cdc, action, "i2c", "CSC3551", 2);
+ }
+ 
++static void cs35l41_fixup_spi_two(struct hda_codec *codec, const struct hda_fixup *fix, int action)
++{
++	cs35l41_generic_fixup(codec, action, "spi0", "CSC3551", 2);
++}
++
++static void cs35l41_fixup_spi_four(struct hda_codec *codec, const struct hda_fixup *fix, int action)
++{
++	cs35l41_generic_fixup(codec, action, "spi0", "CSC3551", 4);
++}
++
+ static void alc287_legion_16achg6_playback_hook(struct hda_pcm_stream *hinfo, struct hda_codec *cdc,
+ 						struct snd_pcm_substream *sub, int action)
+ {
+@@ -6948,6 +6958,9 @@ enum {
+ 	ALC285_FIXUP_LEGION_Y9000X_AUTOMUTE,
+ 	ALC287_FIXUP_LEGION_16ACHG6,
+ 	ALC287_FIXUP_CS35L41_I2C_2,
++	ALC245_FIXUP_CS35L41_SPI_2,
++	ALC245_FIXUP_CS35L41_SPI_4,
++	ALC245_FIXUP_CS35L41_SPI_4_HP_GPIO_LED,
+ 	ALC285_FIXUP_HP_SPEAKERS_MICMUTE_LED,
+ };
+ 
+@@ -8699,6 +8712,20 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = cs35l41_fixup_i2c_two,
+ 	},
++	[ALC245_FIXUP_CS35L41_SPI_2] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = cs35l41_fixup_spi_two,
++	},
++	[ALC245_FIXUP_CS35L41_SPI_4] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = cs35l41_fixup_spi_four,
++	},
++	[ALC245_FIXUP_CS35L41_SPI_4_HP_GPIO_LED] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc245_fixup_hp_gpio_led,
++		.chained = true,
++		.chain_id = ALC245_FIXUP_CS35L41_SPI_4,
++	},
+ 	[ALC285_FIXUP_HP_SPEAKERS_MICMUTE_LED] = {
+ 		.type = HDA_FIXUP_VERBS,
+ 		.v.verbs = (const struct hda_verb[]) {
+@@ -8926,8 +8953,22 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x8896, "HP EliteBook 855 G8 Notebook PC", ALC285_FIXUP_HP_MUTE_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8898, "HP EliteBook 845 G8 Notebook PC", ALC285_FIXUP_HP_LIMIT_INT_MIC_BOOST),
+ 	SND_PCI_QUIRK(0x103c, 0x88d0, "HP Pavilion 15-eh1xxx (mainboard 88D0)", ALC287_FIXUP_HP_GPIO_LED),
+-	SND_PCI_QUIRK(0x103c, 0x89c3, "HP", ALC285_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x89ca, "HP", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
++	SND_PCI_QUIRK(0x103c, 0x896E, "HP EliteBook x360 830 G9", ALC245_FIXUP_CS35L41_SPI_2),
++	SND_PCI_QUIRK(0x103c, 0x8971, "HP EliteBook 830 G9", ALC245_FIXUP_CS35L41_SPI_2),
++	SND_PCI_QUIRK(0x103c, 0x8972, "HP EliteBook 840 G9", ALC245_FIXUP_CS35L41_SPI_2),
++	SND_PCI_QUIRK(0x103c, 0x8973, "HP EliteBook 860 G9", ALC245_FIXUP_CS35L41_SPI_2),
++	SND_PCI_QUIRK(0x103c, 0x8974, "HP EliteBook 840 Aero G9", ALC245_FIXUP_CS35L41_SPI_2),
++	SND_PCI_QUIRK(0x103c, 0x8975, "HP EliteBook x360 840 Aero G9", ALC245_FIXUP_CS35L41_SPI_2),
++	SND_PCI_QUIRK(0x103c, 0x8981, "HP Elite Dragonfly G3", ALC245_FIXUP_CS35L41_SPI_4),
++	SND_PCI_QUIRK(0x103c, 0x898E, "HP EliteBook 835 G9", ALC287_FIXUP_CS35L41_I2C_2),
++	SND_PCI_QUIRK(0x103c, 0x898F, "HP EliteBook 835 G9", ALC287_FIXUP_CS35L41_I2C_2),
++	SND_PCI_QUIRK(0x103c, 0x8991, "HP EliteBook 845 G9", ALC287_FIXUP_CS35L41_I2C_2),
++	SND_PCI_QUIRK(0x103c, 0x8992, "HP EliteBook 845 G9", ALC287_FIXUP_CS35L41_I2C_2),
++	SND_PCI_QUIRK(0x103c, 0x8994, "HP EliteBook 855 G9", ALC287_FIXUP_CS35L41_I2C_2),
++	SND_PCI_QUIRK(0x103c, 0x8995, "HP EliteBook 855 G9", ALC287_FIXUP_CS35L41_I2C_2),
++	SND_PCI_QUIRK(0x103c, 0x89C3, "Zbook Studio G9", ALC245_FIXUP_CS35L41_SPI_4_HP_GPIO_LED),
++	SND_PCI_QUIRK(0x103c, 0x89C6, "Zbook Fury 17 G9", ALC245_FIXUP_CS35L41_SPI_2),
+ 	SND_PCI_QUIRK(0x1043, 0x103e, "ASUS X540SA", ALC256_FIXUP_ASUS_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x103f, "ASUS TX300", ALC282_FIXUP_ASUS_TX300),
+ 	SND_PCI_QUIRK(0x1043, 0x106d, "Asus K53BE", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
 -- 
 2.25.1
 
