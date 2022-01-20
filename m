@@ -4,68 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3FCD1C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jan 2022 23:03:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99C57C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jan 2022 23:04:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 85EBB2AA7;
-	Fri, 21 Jan 2022 00:02:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 85EBB2AA7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7B6342DCA;
+	Fri, 21 Jan 2022 00:03:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B6342DCA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1642719813;
-	bh=S3V9FhgBYQuTR9oQNex40kJACUULr6Zum3vdsX+ubdw=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=UC6/DxcoKoX4KN0IOYKcbW8KL+4LqszL8oeybdsMCFSs4w0wiR0l28/qqkiNqnp6e
-	 Zi1uo1MusjMM7Wpmfq0ybjzYzNOg8j9Y+fE3pMatwyRCs2Obas6lpz6j6jZN7n7T6Z
-	 eGb/0+j+hwDirR9orcWKg4Bq65nTIp+x8RsU2s8w=
+	s=default; t=1642719848;
+	bh=cS97qPbQWIkeoC1Qme5b/0oN1W+YWDkm1dURqRnQkGI=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=M2jUt/4EkMkKaGqXTS428m6keT/sRuBZ9jiBczAOG9T6MACMfe1FixzbLLtqjVN+G
+	 fph7pKuV9yj7fcy4nfdE03r2eepLE+iHgizZ5oAyKS2U1P44nuzZ/1H4JijFHddtvC
+	 FThcc1lG72gG3v410foK3OdtJNNR7AVOp3enLx+Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 31023F80134;
-	Fri, 21 Jan 2022 00:02:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 21F55F80128;
+	Fri, 21 Jan 2022 00:02:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 759A0F800F2; Fri, 21 Jan 2022 00:02:41 +0100 (CET)
+ id 5BAE1F804AA; Fri, 21 Jan 2022 00:02:45 +0100 (CET)
 Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 25715F800F2
- for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2022 00:02:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 25715F800F2
+ by alsa1.perex.cz (Postfix) with ESMTPS id E5596F80128
+ for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2022 00:02:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5596F80128
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="XMV2CPCn"
+ header.b="lwg+IJDu"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1642719759; x=1674255759;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=S3V9FhgBYQuTR9oQNex40kJACUULr6Zum3vdsX+ubdw=;
- b=XMV2CPCnuIfNJvm9aKHTJCIOdk33rnO/3Xjr0ux6ie712PdIxYH7R2GS
- /K1e1u+02DAiFY9Fj8WWv3KAvKDyZXJmQ9+visXXmDqYXDuCfxgEtedWC
- IVDWwo4PCOAJLIFf9V7Dg7cYUgiC0E969QRfNWPCPZXfydMUlla/uIBvO
- W3ONLOuA6vKb8D69CwtH+R2ZT+u2FxXLb64r8nODUtDLjzyVQZbgQDjyq
- w7BiOmih48FZ9A5fF+9Axlij2fU976OOhxdc1UiEGTCJJ7mW40lQLjEHs
- CpsMKLieRbw8Ds28d19IGznS5mh/0hzCXcYBLkcpsbFhIEoWGql55PVxG A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10233"; a="306232003"
-X-IronPort-AV: E=Sophos;i="5.88,303,1635231600"; d="scan'208";a="306232003"
+ t=1642719763; x=1674255763;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=cS97qPbQWIkeoC1Qme5b/0oN1W+YWDkm1dURqRnQkGI=;
+ b=lwg+IJDuuAAoLWjwCbI6NIpquPGRi67HOHXT0o6OyXp1TMJcL6xKJ7Is
+ ZRHI7g5kvMpL4TJjAMGM7UHdsVcdNFFPIWVoWxGydL/4yFfwMrKYNqDuo
+ iA8AOT9u+Czy/xVpx0U1nrgXr6arUJnbH5fr5d+cZaQJ/djcGA+NYISRQ
+ SItUXsLS6ZrWkVLxI9tjjOTP537B0uvYtTityCspu/JB6WWfiXxKKWKyf
+ Z747SQ8Z7umQi2Mv2/13J+lHW2yn1W3V8ht1kWTCgmdVI3ClljfEjTQEb
+ h/4R78AjQLwPqG0wbxbedbNnFg+g07qmZHGpAMwI/mkrt3ueBY0EKUlk4 A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10233"; a="306232005"
+X-IronPort-AV: E=Sophos;i="5.88,303,1635231600"; d="scan'208";a="306232005"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Jan 2022 15:02:34 -0800
-X-IronPort-AV: E=Sophos;i="5.88,303,1635231600"; d="scan'208";a="533014779"
+ 20 Jan 2022 15:02:35 -0800
+X-IronPort-AV: E=Sophos;i="5.88,303,1635231600"; d="scan'208";a="533014790"
 Received: from sthambit-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.64.44])
  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  20 Jan 2022 15:02:34 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 0/2] ASoC: Intel: sof_rt5682: add two derivative options
-Date: Thu, 20 Jan 2022 17:02:24 -0600
-Message-Id: <20220120230226.175906-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 1/2] ASoC: Intel: sof_rt5682: add support for systems without
+ i915 audio
+Date: Thu, 20 Jan 2022 17:02:25 -0600
+Message-Id: <20220120230226.175906-2-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220120230226.175906-1-pierre-louis.bossart@linux.intel.com>
+References: <20220120230226.175906-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>, tiwai@suse.de,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ broonie@kernel.org, Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Yong Zhi <yong.zhi@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,19 +88,103 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add support for platforms without amplifier (headset codec only) and
-without Intel graphics.
+From: Yong Zhi <yong.zhi@intel.com>
 
-Ajye Huang (1):
-  ASoC: Intel: sof_rt5682: Add support for platform without amplifier
+Add support to systems where iDisp HDMI/DP audio codec is disabled for some
+reason, switch codecs to SoC dummy in the affected DAI links. This allows
+to reuse existing topologies as hdmi_num is 3 by default.
 
-Yong Zhi (1):
-  ASoC: Intel: sof_rt5682: add support for systems without i915 audio
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Yong Zhi <yong.zhi@intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/intel/boards/sof_rt5682.c | 32 ++++++++++++++++++++---------
+ 1 file changed, 22 insertions(+), 10 deletions(-)
 
- sound/soc/intel/boards/sof_rt5682.c           | 40 ++++++++++++++-----
- .../intel/common/soc-acpi-intel-adl-match.c   |  6 +++
- 2 files changed, 36 insertions(+), 10 deletions(-)
-
+diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
+index bd6d2e7dea53..8391bea8ec79 100644
+--- a/sound/soc/intel/boards/sof_rt5682.c
++++ b/sound/soc/intel/boards/sof_rt5682.c
+@@ -81,6 +81,7 @@ struct sof_card_private {
+ 	struct snd_soc_jack sof_headset;
+ 	struct list_head hdmi_pcm_list;
+ 	bool common_hdmi_codec_drv;
++	bool idisp_codec;
+ };
+ 
+ static int sof_rt5682_quirk_cb(const struct dmi_system_id *id)
+@@ -417,7 +418,7 @@ static int sof_card_late_probe(struct snd_soc_card *card)
+ 	int i = 0;
+ 
+ 	/* HDMI is not supported by SOF on Baytrail/CherryTrail */
+-	if (is_legacy_cpu)
++	if (is_legacy_cpu || !ctx->idisp_codec)
+ 		return 0;
+ 
+ 	if (list_empty(&ctx->hdmi_pcm_list))
+@@ -558,11 +559,14 @@ static struct snd_soc_dai_link_component dummy_component[] = {
+ 	}
+ };
+ 
++#define IDISP_CODEC_MASK	0x4
++
+ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
+ 							  int ssp_codec,
+ 							  int ssp_amp,
+ 							  int dmic_be_num,
+-							  int hdmi_num)
++							  int hdmi_num,
++							  bool idisp_codec)
+ {
+ 	struct snd_soc_dai_link_component *idisp_components;
+ 	struct snd_soc_dai_link_component *cpus;
+@@ -676,13 +680,18 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
+ 		if (!links[id].cpus->dai_name)
+ 			goto devm_err;
+ 
+-		idisp_components[i - 1].name = "ehdaudio0D2";
+-		idisp_components[i - 1].dai_name = devm_kasprintf(dev,
+-								  GFP_KERNEL,
+-								  "intel-hdmi-hifi%d",
+-								  i);
+-		if (!idisp_components[i - 1].dai_name)
+-			goto devm_err;
++		if (idisp_codec) {
++			idisp_components[i - 1].name = "ehdaudio0D2";
++			idisp_components[i - 1].dai_name = devm_kasprintf(dev,
++									  GFP_KERNEL,
++									  "intel-hdmi-hifi%d",
++									  i);
++			if (!idisp_components[i - 1].dai_name)
++				goto devm_err;
++		} else {
++			idisp_components[i - 1].name = "snd-soc-dummy";
++			idisp_components[i - 1].dai_name = "snd-soc-dummy-dai";
++		}
+ 
+ 		links[id].codecs = &idisp_components[i - 1];
+ 		links[id].num_codecs = 1;
+@@ -838,6 +847,9 @@ static int sof_audio_probe(struct platform_device *pdev)
+ 		/* default number of HDMI DAI's */
+ 		if (!hdmi_num)
+ 			hdmi_num = 3;
++
++		if (mach->mach_params.codec_mask & IDISP_CODEC_MASK)
++			ctx->idisp_codec = true;
+ 	}
+ 
+ 	/* need to get main clock from pmc */
+@@ -892,7 +904,7 @@ static int sof_audio_probe(struct platform_device *pdev)
+ 		sof_audio_card_rt5682.num_links++;
+ 
+ 	dai_links = sof_card_dai_links_create(&pdev->dev, ssp_codec, ssp_amp,
+-					      dmic_be_num, hdmi_num);
++					      dmic_be_num, hdmi_num, ctx->idisp_codec);
+ 	if (!dai_links)
+ 		return -ENOMEM;
+ 
 -- 
 2.25.1
 
