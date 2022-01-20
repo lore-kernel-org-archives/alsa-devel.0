@@ -4,70 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31B0AC433FE
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Jan 2022 18:04:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA934C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jan 2022 00:08:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EEEBE313F;
-	Wed, 19 Jan 2022 19:03:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EEEBE313F
+	by alsa0.perex.cz (Postfix) with ESMTPS id E33062FE3;
+	Thu, 20 Jan 2022 01:07:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E33062FE3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1642615449;
-	bh=lFbFmk/aY3Awpx6kg8ejVPc7bOfnP/ly0j3vvYiYSLk=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=bLuhO0W5dO1Z4/8Tvt1NEOiFAiEBZXFlYEc2QdmeO5HbeAaTsUQ1CQcnj0MfIrlFM
-	 G1CfOft+15RYqJpbRkUFG9PyO0pw5RrWxUy6L6d+VAO4AvgIh7yaKmlCAoLopXreWB
-	 djUk4bs3l6Gbie/2ro3MpHx749obBNfQoUIbB+GM=
+	s=default; t=1642637330;
+	bh=+jNT40e3buQeCRmePpis8mqyA1ni74XkL1YM5TAbY54=;
+	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=BADhn0zqHVkRkubMjz1T93wr6jchtRT7GhSzm2z2ww/bqB2xxJUuhmaiX1aGqTqFr
+	 BmJIKbH8fAe9ezIXb2/sygHbtl4A9htGp+RBpCy9tlIv36Ccw9QprZIr49Ysp3M2wN
+	 XrJm7Dq8UkZXJbDnAV6SLVscDN7sH5ect4L+8ZFE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 51132F80212;
-	Wed, 19 Jan 2022 19:02:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 67955F80162;
+	Thu, 20 Jan 2022 01:07:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 429A9F801F7; Wed, 19 Jan 2022 19:02:44 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 1C544F80100; Thu, 20 Jan 2022 01:07:57 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C3E5EF80128
- for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2022 19:02:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C3E5EF80128
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6554EF80100
+ for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2022 01:07:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6554EF80100
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="X13pX4fJ"
+ header.b="JTBcBHa4"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 277D161659;
- Wed, 19 Jan 2022 18:02:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0858EC340E1;
- Wed, 19 Jan 2022 18:02:32 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 1BDFD6150C;
+ Thu, 20 Jan 2022 00:07:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 368AAC004E1;
+ Thu, 20 Jan 2022 00:07:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1642615355;
- bh=lFbFmk/aY3Awpx6kg8ejVPc7bOfnP/ly0j3vvYiYSLk=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=X13pX4fJy3fRJZKI7F7MRVUE9FDrT6nBmOjzxghhUmAx2oa89pVuGluI1ZYQomcy6
- J+u9NeebYvDBhaYmNBCPyWnAjj843aXJvGQIg5lEMex3rGmpPraZKtS0Sx3GixOSWu
- vOFCHvDwIjpsucj9Dm3JF8fyjUVl+U1NJKul284TSlhz9ilYs39lj11XWUJ/f0eAWA
- aoMRjTtdGCjJ1nOQKkTsTFwusUiXG8pCTiSkWRpA4jWRHdLqZ9X43k7TEqlfTQxDbf
- s7aV3RXj48GWZ8ij+1oHhON0CDe042M5476jVs1mtL2ADTwQ7m1iF2hjoGebAbAjNd
- 8fitwOsx/LB2w==
-From: Mark Brown <broonie@kernel.org>
-To: tiwai@suse.com, lgirdwood@gmail.com, Julian Braha <julianbraha@gmail.com>,
- matthias.bgg@gmail.com, tzungbi@google.com, geert+renesas@glider.be,
- perex@perex.cz, trevor.wu@mediatek.com
-In-Reply-To: <20220117050324.68371-1-julianbraha@gmail.com>
-References: <20220117050324.68371-1-julianbraha@gmail.com>
-Subject: Re: [PATCH] ASoC: mediatek: fix unmet dependency on GPIOLIB for
- SND_SOC_DMIC
-Message-Id: <164261535273.2816847.12797426159265748718.b4-ty@kernel.org>
-Date: Wed, 19 Jan 2022 18:02:32 +0000
+ s=k20201202; t=1642637269;
+ bh=+jNT40e3buQeCRmePpis8mqyA1ni74XkL1YM5TAbY54=;
+ h=Date:From:To:Cc:Subject:From;
+ b=JTBcBHa4acX3Q639wJcpmIl4rnYEQ4aqTdDa0uzXy352Ey77I+vv5EgILkPaOlmhs
+ I7yXrmWPRaiuW8lI3BHv7+oaDLTnIR+VZpoRQecr8XTCVkzCn8Dic0SDn0D9tW6Ucc
+ HYaBtZdKYyXhFDzQZIG/2yqG0W+4c3bfm+kInN6MvMSqvGLWJWN4CHK6Qo//93Nh5g
+ lqR4IAxkXOCBVqku2XIPqNZ3EPsSIzAOoyrssTsz+BjdJKlPXfc4jouHvQlRehPbxR
+ dg0ZH4w+oxp1Cki/BaZkb226l/9MhbMEIK6eV1y0NWwsP+biM8Th0OOxP0aryLex7r
+ cREtjeb16Guaw==
+Date: Wed, 19 Jan 2022 18:14:23 -0600
+From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To: "Geoffrey D. Bennett" <g@b4.vu>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH][next] ALSA: usb-audio: scarlett2: Use struct_size() helper
+ in scarlett2_usb()
+Message-ID: <20220120001423.GA69878@embeddedor>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: fazilyildiran@gmail.com, alsa-devel@alsa-project.org,
- linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: alsa-devel@alsa-project.org, linux-hardening@vger.kernel.org,
+ linux-kernel@vger.kernel.org, "Gustavo A. R. Silva" <gustavoars@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,42 +79,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 17 Jan 2022 00:03:24 -0500, Julian Braha wrote:
-> When SND_SOC_MT8195_MT6359_RT1011_RT5682 is selected,
-> and GPIOLIB is not selected,
-> Kbuild gives the following warning:
-> 
-> WARNING: unmet direct dependencies detected for SND_SOC_DMIC
->   Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && GPIOLIB [=n]
->   Selected by [y]:
->   - SND_SOC_MT8195_MT6359_RT1011_RT5682 [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && I2C [=y] && SND_SOC_MT8195 [=y] && MTK_PMIC_WRAP [=y]
-> 
-> [...]
+Make use of the struct_size() helper instead of an open-coded version,
+in order to avoid any potential type mistakes or integer overflows that,
+in the worst scenario, could lead to heap overflows.
 
-Applied to
+Also, address the following sparse warnings:
+sound/usb/mixer_scarlett_gen2.c:1064:28: warning: using sizeof on a flexible structure
+sound/usb/mixer_scarlett_gen2.c:1065:29: warning: using sizeof on a flexible structure
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-linus
+Link: https://github.com/KSPP/linux/issues/160
+Link: https://github.com/KSPP/linux/issues/174
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ sound/usb/mixer_scarlett_gen2.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Thanks!
+diff --git a/sound/usb/mixer_scarlett_gen2.c b/sound/usb/mixer_scarlett_gen2.c
+index 53ebabf42472..311413f015f0 100644
+--- a/sound/usb/mixer_scarlett_gen2.c
++++ b/sound/usb/mixer_scarlett_gen2.c
+@@ -1061,9 +1061,9 @@ static int scarlett2_usb(
+ {
+ 	struct scarlett2_data *private = mixer->private_data;
+ 	struct usb_device *dev = mixer->chip->dev;
+-	u16 req_buf_size = sizeof(struct scarlett2_usb_packet) + req_size;
+-	u16 resp_buf_size = sizeof(struct scarlett2_usb_packet) + resp_size;
+ 	struct scarlett2_usb_packet *req, *resp = NULL;
++	size_t req_buf_size = struct_size(req, data, req_size);
++	size_t resp_buf_size = struct_size(resp, data, resp_size);
+ 	int err;
+ 
+ 	req = kmalloc(req_buf_size, GFP_KERNEL);
+@@ -1111,7 +1111,7 @@ static int scarlett2_usb(
+ 		usb_audio_err(
+ 			mixer->chip,
+ 			"Scarlett Gen 2/3 USB response result cmd %x was %d "
+-			"expected %d\n",
++			"expected %lu\n",
+ 			cmd, err, resp_buf_size);
+ 		err = -EINVAL;
+ 		goto unlock;
+-- 
+2.27.0
 
-[1/1] ASoC: mediatek: fix unmet dependency on GPIOLIB for SND_SOC_DMIC
-      commit: 579b2c8f72d974f27d85bbd53846f34675ee3b01
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
