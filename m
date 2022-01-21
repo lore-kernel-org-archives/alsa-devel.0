@@ -4,81 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42ADCC433FE
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jan 2022 14:34:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C93A4C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jan 2022 14:34:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 310432AA2;
-	Fri, 21 Jan 2022 15:33:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 310432AA2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 851222B6D;
+	Fri, 21 Jan 2022 15:33:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 851222B6D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1642775659;
-	bh=uFP+GM9og1X1KbuSIM1VapGRcASo72XZ5lKNYTmaDtE=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Frn002lgK0xgWKJwyIOIg/qNtbZJ6/IPR0Mn6vCslVJmRs6/9SXB3z5aKtL8ULWwx
-	 afcGhZilHUogu1QV0I/W0x5qLsFDvzcY0TuOcPcN1KemwzoIDBQKjUijs0kbcT3Tuv
-	 vGnnTnCDKbU+jk2wEVjQvY6JWpCyc8otGSkI2cis=
+	s=default; t=1642775662;
+	bh=NB+VKAUruCTHX8N9LgARt6/ZxKg6ImCAHMeXYvo0j/k=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=fxkfv6UqWFI0/1pQ0EFmjh9206/Zcs1KXTe1pGaHqXRjvW7Jctze7wS1cWzBY7iDq
+	 XXFghi297ISSU7mqbZXl8GTmfPsfeGRhP2Sz1GZFt/GdO2LGQb89nb1GJ5kUsbhFZl
+	 ldSMXCxq6NWEG1Csa4y7UlsldI5Kqogh1psBM6HU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 53CF3F8051C;
-	Fri, 21 Jan 2022 15:33:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 31E01F8050F;
+	Fri, 21 Jan 2022 15:33:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 39FC2F80519; Fri, 21 Jan 2022 15:33:08 +0100 (CET)
+ id 2F9FAF80525; Fri, 21 Jan 2022 15:33:13 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 12306F80508
- for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2022 15:33:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 12306F80508
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3B61CF80507
+ for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2022 15:33:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3B61CF80507
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="fjgCUiYk"
+ header.b="eCGBuWYy"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20LDS7PI017315;
- Fri, 21 Jan 2022 08:33:00 -0600
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20LDS7PF017315;
+ Fri, 21 Jan 2022 08:32:57 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=hpkiyedjwFNaW1dW6W1BZYk7mgOTqs24UOHKVbPt4Kk=;
- b=fjgCUiYkw07idAqoePK+Rxkanygu53psuOsxQeMI1+N6Wk8iy67gLNaXD7Nkkrwy0F+T
- WVXcWi7edj63AyraCraWQ07zs9Yzy5yZW7s6TFbZyshlERnrm2lO0ynq22nJsJ9xVUjN
- 0WHyN7QQycyboN+mEY9VsQmOQQIM8w9dv/ZjyEpdpWHfPFCUg4P7d+I37TRGB20vtlwz
- W9T+QuhB2Ks3SzkA0eiCTVo9QQSfj6XEe4IIGfPKM94Qr2ZFcYF31Y8a8hu1BzfyX6VP
- O/9o7hW8yfcC+Z1QNgMKc7Ha9ExBow3694O1vwFhUgws4/KWwooDT5wfj0a3Lm+rmTFD gg== 
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=8hcY3hq134C9MEdnIhZfFx5d+Fsp8aYUr67yHiyM5wc=;
+ b=eCGBuWYyTjc5aI1YDO0ML08Qllo6J1xD5spZvz0bkAiCFJ82Bu09zmnwnHtLL3XZ0mgQ
+ 1uxO6oDh+yHLGV1XmxbDXjWrICowocwPVoVlQwImjHdAtUoinNq5qZQ0CvmtKXzsVbSN
+ o3Kf/bXk7azK6RoqtFOnh3+VZF7FbgaLBr2QIcjm34BBWdc5zZf/KxI1nxBRtUE4FXHC
+ Oa6Etun0GoCK9gv8gP9CUZpEcoh14KwhIxn0Y937c98NEw7CFGt/g4pOboWPDcjl2aMZ
+ Q+Gm14YlinBimQ/OEtqKlnK06jWHpT4Pf0mwz4/Y0sTpHDqOOi/wSaVDxQu0ie9EEHdE Tw== 
 Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3dqhyq0up1-4
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3dqhyq0up1-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Fri, 21 Jan 2022 08:32:59 -0600
+ Fri, 21 Jan 2022 08:32:57 -0600
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Fri, 21 Jan
- 2022 14:32:58 +0000
+ 2022 14:32:55 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.18 via
- Frontend Transport; Fri, 21 Jan 2022 14:32:58 +0000
+ Frontend Transport; Fri, 21 Jan 2022 14:32:55 +0000
 Received: from LONN2DGDQ73.ad.cirrus.com (unknown [198.90.238.138])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 91E1DB0E;
- Fri, 21 Jan 2022 14:32:57 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 0E1A7B0E;
+ Fri, 21 Jan 2022 14:32:55 +0000 (UTC)
 From: Stefan Binding <sbinding@opensource.cirrus.com>
 To: Mark Brown <broonie@kernel.org>, "Rafael J . Wysocki" <rafael@kernel.org>, 
  Len Brown <lenb@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
  Mark Gross <markgross@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
  Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v5 4/9] spi: Add API to count spi acpi resources
-Date: Fri, 21 Jan 2022 14:32:49 +0000
-Message-ID: <20220121143254.6432-5-sbinding@opensource.cirrus.com>
+Subject: [PATCH v5 0/9] Support Spi in i2c-multi-instantiate driver
+Date: Fri, 21 Jan 2022 14:32:45 +0000
+Message-ID: <20220121143254.6432-1-sbinding@opensource.cirrus.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220121143254.6432-1-sbinding@opensource.cirrus.com>
-References: <20220121143254.6432-1-sbinding@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: YXs0xOKaxUze4Bglh0tWMW4u0kkZMcxt
-X-Proofpoint-ORIG-GUID: YXs0xOKaxUze4Bglh0tWMW4u0kkZMcxt
+X-Proofpoint-GUID: 1cpfQeCaNrkUXtnFnLZoLBN1q9VoT5xe
+X-Proofpoint-ORIG-GUID: 1cpfQeCaNrkUXtnFnLZoLBN1q9VoT5xe
 X-Proofpoint-Spam-Reason: safe
 Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
  linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
@@ -99,79 +96,67 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Some ACPI nodes may have more than one Spi Resource.
-To be able to handle these case, its necessary to have
-a way of counting these resources.
+Add support for SPI bus in the i2c-multi-instantiate driver as
+upcoming laptops will need to multi instantiate SPI devices from
+a single device node, which has multiple SpiSerialBus entries at
+the ACPI table.
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
----
- drivers/spi/spi.c       | 40 ++++++++++++++++++++++++++++++++++++++++
- include/linux/spi/spi.h |  1 +
- 2 files changed, 41 insertions(+)
+With the new SPI support, i2c-multi-instantiate becomes
+bus-multi-instantiate and is moved to the ACPI folder.
 
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index 06c0a308b38b..ec9f2ed579e3 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -2324,6 +2324,46 @@ struct acpi_spi_lookup {
- 	int			index;
- };
- 
-+static int acpi_spi_count(struct acpi_resource *ares, void *data)
-+{
-+	struct acpi_resource_spi_serialbus *sb;
-+	int *count = data;
-+
-+	if (ares->type != ACPI_RESOURCE_TYPE_SERIAL_BUS)
-+		return 1;
-+
-+	sb = &ares->data.spi_serial_bus;
-+	if (sb->type != ACPI_RESOURCE_SERIAL_TYPE_SPI)
-+		return 1;
-+
-+	*count = *count + 1;
-+
-+	return 1;
-+}
-+
-+/**
-+ * acpi_spi_count_resources - Count the number of SpiSerialBus resources
-+ * @adev:	ACPI device
-+ *
-+ * Returns the number of SpiSerialBus resources in the ACPI-device's
-+ * resource-list; or a negative error code.
-+ */
-+int acpi_spi_count_resources(struct acpi_device *adev)
-+{
-+	LIST_HEAD(r);
-+	int count = 0;
-+	int ret;
-+
-+	ret = acpi_dev_get_resources(adev, &r, acpi_spi_count, &count);
-+	if (ret < 0)
-+		return ret;
-+
-+	acpi_dev_free_resource_list(&r);
-+
-+	return count;
-+}
-+EXPORT_SYMBOL_GPL(acpi_spi_count_resources);
-+
- static void acpi_spi_parse_apple_properties(struct acpi_device *dev,
- 					    struct acpi_spi_lookup *lookup)
- {
-diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
-index e5bbb9cbd3d7..394b4241d989 100644
---- a/include/linux/spi/spi.h
-+++ b/include/linux/spi/spi.h
-@@ -764,6 +764,7 @@ extern void spi_unregister_controller(struct spi_controller *ctlr);
- extern struct spi_device *acpi_spi_device_alloc(struct spi_controller *ctlr,
- 						struct acpi_device *adev,
- 						int index);
-+int acpi_spi_count_resources(struct acpi_device *adev);
- #endif
- 
- /*
+The intention is to support the SPI bus by re-using the current
+I2C multi instantiate, instead of creating a new SPI multi
+instantiate, to make it possible for peripherals that can be
+controlled by I2C or SPI to have the same HID at the ACPI table.
+
+The new driver (serial multi instantiate, smi) checks for the
+hard-coded bus type and returns -ENODEV in case of zero devices
+found for that bus. In the case of automatic bus detection, 
+the driver will give preference to I2C.
+
+The expectation is for a device node in the ACPI table to have
+multiple I2cSerialBus only or multiple SpiSerialBus only, not
+a mix of both; and for the case where there are both entries in
+one device node, only the I2C ones would be probed.
+
+This new serial multi instantiate will be used in CS35L41 HDA new
+driver.
+
+Changes since V4:
+ - renamed bus-multi-instantiate to serial-multi-instantiate
+ - various minor fixes in serial-multi-instantiate
+ - fix returns in serial-multi-instantiate
+ - removed unnecessary stubs in spi.h
+ - re-order SSIDs in patch_realtek.c
+
+Lucas Tanure (4):
+  platform/x86: i2c-multi-instantiate: Rename it for a generic serial
+    driver name
+  platform/x86: serial-multi-instantiate: Reorganize I2C functions
+  ALSA: hda/realtek: Add support for HP Laptops
+  ACPI / scan: Create platform device for CS35L41
+
+Stefan Binding (5):
+  spi: Make spi_alloc_device and spi_add_device public again
+  spi: Create helper API to lookup ACPI info for spi device
+  spi: Support selection of the index of the ACPI Spi Resource before
+    alloc
+  spi: Add API to count spi acpi resources
+  platform/x86: serial-multi-instantiate: Add SPI support
+
+ MAINTAINERS                                   |   4 +-
+ drivers/acpi/scan.c                           |  16 +-
+ drivers/platform/x86/Kconfig                  |  14 +-
+ drivers/platform/x86/Makefile                 |   2 +-
+ drivers/platform/x86/i2c-multi-instantiate.c  | 174 ---------
+ .../platform/x86/serial-multi-instantiate.c   | 346 ++++++++++++++++++
+ drivers/spi/spi.c                             | 137 ++++++-
+ include/linux/spi/spi.h                       |  20 +
+ sound/pci/hda/patch_realtek.c                 |  43 ++-
+ 9 files changed, 549 insertions(+), 207 deletions(-)
+ delete mode 100644 drivers/platform/x86/i2c-multi-instantiate.c
+ create mode 100644 drivers/platform/x86/serial-multi-instantiate.c
+
 -- 
 2.25.1
 
