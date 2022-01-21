@@ -4,86 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3085CC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jan 2022 14:36:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4697BC433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jan 2022 14:36:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 747E02B6E;
-	Fri, 21 Jan 2022 15:35:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 747E02B6E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 818652B7E;
+	Fri, 21 Jan 2022 15:35:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 818652B7E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1642775760;
-	bh=sSSbD5bWSiX4UxQ18Afjf1WFDxKCDukC31mF2TxYg3E=;
+	s=default; t=1642775772;
+	bh=GAzIlvXzcaYBKSRWftmYu+1ifqI0UppQkFclTE9Muyc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sgh54I1+vU/OTKKUYdzeQEirQYLxgcCqboxq64SyGZL3tJMES98tAR/J7VC2k1Buo
-	 Dc7V1h66SgR9ZnDUi7Lk8p8tA3mfRfDvDQnuMuf5Q8sTwmPxND27+NGju2LdQb9bFs
-	 YWr930IUuaOwzHyFd9xV2LzUmKE9gL87tj++rG/s=
+	b=Jxcm8DL6+uPlknvu/MUNL8NET4SnskWlylEkJVJu4hQeCrCNWUYU9DObdk9iMX8XN
+	 cTwyl10pOnpQVDHPcyIkm0Rxb5WEU7ajZneEYwDdiJUoucgMQZ0Jly7TT8CgGEDHEd
+	 WPMbf56Iq5NryD6S/ZAVVY9IxgJqHmu3mN3VVntg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A1A1BF8052E;
-	Fri, 21 Jan 2022 15:33:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 68C37F80536;
+	Fri, 21 Jan 2022 15:33:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 46406F80516; Fri, 21 Jan 2022 15:33:16 +0100 (CET)
+ id 2E1D1F80520; Fri, 21 Jan 2022 15:33:16 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7A911F80518
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7A8EEF80517
  for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2022 15:33:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A911F80518
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A8EEF80517
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="n+p12vG/"
+ header.b="j1xBAeAS"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20LDS7PK017315;
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20L6W2WV017662;
  Fri, 21 Jan 2022 08:33:01 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=SeTHs7tezQ9JTFk92AAVSYnvlRgxi9TT/qpp81Qypp8=;
- b=n+p12vG/OU8vJ9pAqhaRSmNidtczJ3nVqJaNbJqdMO5pRBJ5RoWdN6WQzAn7hXh5Lqi9
- dbIU3lGOQ9oYLLqfNz28fXLvsSusMhJVRo+1lEqpLSktZvB1w32gCExpk3vtVpgf1ptD
- 6rAVWbeLHgTaWk1YP0FwlDkUTmZ67aM4Hdjlq1NwWPHlqpezkxWDDwcRKJD5RwBQZTN4
- hy/NfpxdFUBbJGEXVyBVx4z0Oh6ZLHVAEamWE3lAzjJKYVLRuljsylxtbS8rE5xdIixl
- lxexQIk903g7oRwzsVAf5sxjcUwwp55lvoRtYlY205+l76xZwd5FA6EXjQI37oN7IaL3 +A== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3dqhyq0up1-6
+ bh=DwaEGr5lFolQw3//vCs8wMBAoNJwu/cdVjKRu3PY+1M=;
+ b=j1xBAeAS/tyjGtF+Co2zNSttw7+diD4kQgZzBfN1Ad9115wDueY2ZH1x7nN/6J9qnhsv
+ K1bGdr3GeIQjNXfaCUjUomFLfCZCBU0GEKPzjb94c2XNrG4mXy1tqqLGHB7xFndrfw0B
+ XfluO65tmFxkyaKM9iZcNZVWXtTLcif8i7QoPX/qc5SrHvYUBYQISL9BXy+fUB8SHs9Y
+ b8Ig+WryD2dCpXKZPccmHJQ4ug+Et8lGPLd281sadIsgQatZSxhHQNNCNEK3jm4J00hN
+ 81upLU+MgWgfssfEcsJmudpqbyr3z9p+YPSbC8p45hS4MDA5rzi4d5dJTA169BN/FZpd 2Q== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3dqhyq0up3-3
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
  Fri, 21 Jan 2022 08:33:01 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Fri, 21 Jan
- 2022 14:32:59 +0000
+ 2022 14:33:00 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.18 via
- Frontend Transport; Fri, 21 Jan 2022 14:32:59 +0000
+ Frontend Transport; Fri, 21 Jan 2022 14:33:00 +0000
 Received: from LONN2DGDQ73.ad.cirrus.com (unknown [198.90.238.138])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2733B11D7;
- Fri, 21 Jan 2022 14:32:59 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2F652B0E;
+ Fri, 21 Jan 2022 14:33:00 +0000 (UTC)
 From: Stefan Binding <sbinding@opensource.cirrus.com>
 To: Mark Brown <broonie@kernel.org>, "Rafael J . Wysocki" <rafael@kernel.org>, 
  Len Brown <lenb@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
  Mark Gross <markgross@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
  Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v5 7/9] platform/x86: serial-multi-instantiate: Add SPI support
-Date: Fri, 21 Jan 2022 14:32:52 +0000
-Message-ID: <20220121143254.6432-8-sbinding@opensource.cirrus.com>
+Subject: [PATCH v5 9/9] ACPI / scan: Create platform device for CS35L41
+Date: Fri, 21 Jan 2022 14:32:54 +0000
+Message-ID: <20220121143254.6432-10-sbinding@opensource.cirrus.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220121143254.6432-1-sbinding@opensource.cirrus.com>
 References: <20220121143254.6432-1-sbinding@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: QVaKH_74rC8gmIijxIPexmuTgSnVMBCN
-X-Proofpoint-ORIG-GUID: QVaKH_74rC8gmIijxIPexmuTgSnVMBCN
+X-Proofpoint-GUID: RPke203RcFz_mYx1Y6zvtTAtXU5QK4v_
+X-Proofpoint-ORIG-GUID: RPke203RcFz_mYx1Y6zvtTAtXU5QK4v_
 X-Proofpoint-Spam-Reason: safe
-Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
- linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
- linux-acpi@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>,
- linux-spi@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Lucas Tanure <tanureal@opensource.cirrus.com>,
+ patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+ platform-driver-x86@vger.kernel.org, linux-acpi@vger.kernel.org,
+ Stefan Binding <sbinding@opensource.cirrus.com>, linux-spi@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,324 +99,67 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add support for spi bus in serial-multi-instantiate driver
+From: Lucas Tanure <tanureal@opensource.cirrus.com>
 
-Some peripherals can have either a I2C or a SPI connection
-to the host (but not both) but use the same HID for both
-types. So it is not possible to use the HID to determine
-whether it is I2C or SPI. The driver must check the node
-to see if it contains I2cSerialBus or SpiSerialBus entries.
+The ACPI device with CSC3551 or CLSA0100 are sound cards
+with multiple instances of CS35L41 connectec by I2C or SPI
+to the main CPU.
 
-For backwards-compatibility with the existing nodes I2C is
-checked first and if such entries are found ONLY I2C devices
-are created. Since some existing nodes that were already
-handled by this driver could also contain unrelated
-SpiSerialBus nodes that were previously ignored, and this
-preserves that behavior. If there is ever a need to handle
-a node where both I2C and SPI devices must be instantiated
-this can be added in future.
+We add an ID to the ignore_serial_bus_ids list to enumerate
+all I2C or SPI devices correctly.
 
+Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
 Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 ---
- drivers/acpi/scan.c                           |  13 +-
- drivers/platform/x86/Kconfig                  |  10 +-
- .../platform/x86/serial-multi-instantiate.c   | 174 +++++++++++++++---
- 3 files changed, 161 insertions(+), 36 deletions(-)
+ drivers/acpi/scan.c                             |  3 +++
+ drivers/platform/x86/serial-multi-instantiate.c | 14 ++++++++++++++
+ 2 files changed, 17 insertions(+)
 
 diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-index 8b237eb4e029..38c4f55960f4 100644
+index 38c4f55960f4..b59e4c994878 100644
 --- a/drivers/acpi/scan.c
 +++ b/drivers/acpi/scan.c
-@@ -1734,12 +1734,13 @@ static bool acpi_device_enumeration_by_parent(struct acpi_device *device)
- 	bool is_serial_bus_slave = false;
- 	static const struct acpi_device_id ignore_serial_bus_ids[] = {
- 	/*
--	 * These devices have multiple I2cSerialBus resources and an i2c-client
--	 * must be instantiated for each, each with its own i2c_device_id.
--	 * Normally we only instantiate an i2c-client for the first resource,
--	 * using the ACPI HID as id. These special cases are handled by the
--	 * drivers/platform/x86/serial-multi-instantiate.c driver, which knows
--	 * which i2c_device_id to use for each resource.
-+	 * These devices have multiple I2cSerialBus/SpiSerialBus resources
-+	 * and an (i2c/spi)-client must be instantiated for each, each with
-+	 * its own i2c_device_id/spi_device_id.
-+	 * Normally we only instantiate an (i2c/spi)-client for the first
-+	 * resource, using the ACPI HID as id. These special cases are handled
-+	 * by the drivers/platform/x86/serial-multi-instantiate.c driver, which
-+	 * knows which i2c_device_id or spi_device_id to use for each resource.
+@@ -1744,8 +1744,11 @@ static bool acpi_device_enumeration_by_parent(struct acpi_device *device)
  	 */
  		{"BSG1160", },
  		{"BSG2150", },
-diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-index 5b65d687f046..28f5bbf0f27a 100644
---- a/drivers/platform/x86/Kconfig
-+++ b/drivers/platform/x86/Kconfig
-@@ -991,12 +991,12 @@ config TOPSTAR_LAPTOP
- 	  If you have a Topstar laptop, say Y or M here.
- 
- config SERIAL_MULTI_INSTANTIATE
--	tristate "I2C multi instantiate pseudo device driver"
--	depends on I2C && ACPI
-+	tristate "I2C and SPI multi instantiate pseudo device driver"
-+	depends on I2C && SPI && ACPI
- 	help
--	  Some ACPI-based systems list multiple i2c-devices in a single ACPI
--	  firmware-node. This driver will instantiate separate i2c-clients
--	  for each device in the firmware-node.
-+	  Some ACPI-based systems list multiple i2c/spi devices in a
-+	  single ACPI firmware-node. This driver will instantiate separate
-+	  i2c-clients or spi-devices for each device in the firmware-node.
- 
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called serial-multi-instantiate.
++		{"CSC3551", },
+ 		{"INT33FE", },
+ 		{"INT3515", },
++	/* Non-conforming _HID for Cirrus Logic already released */
++		{"CLSA0100", },
+ 	/*
+ 	 * HIDs of device with an UartSerialBusV2 resource for which userspace
+ 	 * expects a regular tty cdev to be created (instead of the in kernel
 diff --git a/drivers/platform/x86/serial-multi-instantiate.c b/drivers/platform/x86/serial-multi-instantiate.c
-index 162ec20a861a..535c80789852 100644
+index 535c80789852..cef201065fdb 100644
 --- a/drivers/platform/x86/serial-multi-instantiate.c
 +++ b/drivers/platform/x86/serial-multi-instantiate.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0+
- /*
-  * Serial multi-instantiate driver, pseudo driver to instantiate multiple
-- * i2c-clients from a single fwnode.
-+ * i2c-clients or spi-devices from a single fwnode.
-  *
-  * Copyright 2018 Hans de Goede <hdegoede@redhat.com>
-  */
-@@ -14,6 +14,7 @@
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/property.h>
-+#include <linux/spi/spi.h>
- #include <linux/types.h>
+@@ -305,6 +305,17 @@ static const struct smi_node int3515_data = {
+ 	.bus_type = SMI_I2C,
+ };
  
- #define IRQ_RESOURCE_TYPE	GENMASK(1, 0)
-@@ -21,15 +22,28 @@
- #define IRQ_RESOURCE_GPIO	1
- #define IRQ_RESOURCE_APIC	2
- 
-+enum smi_bus_type {
-+	SMI_I2C,
-+	SMI_SPI,
-+	SMI_AUTO_DETECT,
++static const struct smi_node cs35l41_hda = {
++	.instances = {
++		{ "cs35l41-hda", IRQ_RESOURCE_GPIO, 0 },
++		{ "cs35l41-hda", IRQ_RESOURCE_GPIO, 0 },
++		{ "cs35l41-hda", IRQ_RESOURCE_GPIO, 0 },
++		{ "cs35l41-hda", IRQ_RESOURCE_GPIO, 0 },
++		{}
++	},
++	.bus_type = SMI_AUTO_DETECT,
 +};
 +
- struct smi_instance {
- 	const char *type;
- 	unsigned int flags;
- 	int irq_idx;
- };
- 
-+struct smi_node {
-+	enum smi_bus_type bus_type;
-+	struct smi_instance instances[];
-+};
-+
- struct smi {
- 	int i2c_num;
-+	int spi_num;
- 	struct i2c_client **i2c_devs;
-+	struct spi_device **spi_devs;
- };
- 
- static int smi_get_irq(struct platform_device *pdev, struct acpi_device *adev,
-@@ -60,6 +74,93 @@ static void smi_devs_unregister(struct smi *smi)
- {
- 	while (smi->i2c_num > 0)
- 		i2c_unregister_device(smi->i2c_devs[--smi->i2c_num]);
-+
-+	while (smi->spi_num > 0)
-+		spi_unregister_device(smi->spi_devs[--smi->spi_num]);
-+}
-+
-+/**
-+ * smi_spi_probe - Instantiate multiple SPI devices from inst array
-+ * @pdev:	Platform device
-+ * @adev:	ACPI device
-+ * @smi:	Internal struct for Serial multi instantiate driver
-+ * @inst:	Array of instances to probe
-+ *
-+ * Returns the number of SPI devices instantiate, Zero if none is found or a negative error code.
-+ */
-+static int smi_spi_probe(struct platform_device *pdev, struct acpi_device *adev, struct smi *smi,
-+			 const struct smi_instance *inst_array)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct spi_controller *ctlr;
-+	struct spi_device *spi_dev;
-+	char name[50];
-+	int i, ret, count;
-+
-+	ret = acpi_spi_count_resources(adev);
-+	if (ret <= 0)
-+		return ret == 0 ? -ENODEV : ret;
-+
-+	count = ret;
-+
-+	smi->spi_devs = devm_kcalloc(dev, count, sizeof(*smi->spi_devs), GFP_KERNEL);
-+	if (!smi->spi_devs)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < count && inst_array[i].type; i++) {
-+
-+		spi_dev = acpi_spi_device_alloc(NULL, adev, i);
-+		if (IS_ERR(spi_dev)) {
-+			ret = PTR_ERR(spi_dev);
-+			dev_err_probe(dev, ret, "failed to allocate SPI device %s from ACPI: %d\n",
-+				      dev_name(&adev->dev), ret);
-+			goto error;
-+		}
-+
-+		ctlr = spi_dev->controller;
-+
-+		strscpy(spi_dev->modalias, inst_array[i].type, sizeof(spi_dev->modalias));
-+
-+		ret = smi_get_irq(pdev, adev, &inst_array[i]);
-+		if (ret < 0) {
-+			spi_dev_put(spi_dev);
-+			goto error;
-+		}
-+		spi_dev->irq = ret;
-+
-+		snprintf(name, sizeof(name), "%s-%s-%s.%d", dev_name(&ctlr->dev), dev_name(dev),
-+			 inst_array[i].type, i);
-+		spi_dev->dev.init_name = name;
-+
-+		ret = spi_add_device(spi_dev);
-+		if (ret) {
-+			dev_err_probe(&ctlr->dev, ret,
-+				      "failed to add SPI device %s from ACPI: %d\n",
-+				      dev_name(&adev->dev), ret);
-+			spi_dev_put(spi_dev);
-+			goto error;
-+		}
-+
-+		dev_dbg(dev, "SPI device %s using chip select %u", name, spi_dev->chip_select);
-+
-+		smi->spi_devs[i] = spi_dev;
-+		smi->spi_num++;
-+	}
-+
-+	if (smi->spi_num < count) {
-+		dev_err(dev, "Error finding driver, idx %d\n", i);
-+		ret = -ENODEV;
-+		goto error;
-+	}
-+
-+	dev_info(dev, "Instantiated %d SPI devices.\n", smi->spi_num);
-+
-+	return 0;
-+error:
-+	smi_devs_unregister(smi);
-+
-+	return ret;
-+
- }
- 
- /**
-@@ -125,13 +226,13 @@ static int smi_i2c_probe(struct platform_device *pdev, struct acpi_device *adev,
- 
- static int smi_probe(struct platform_device *pdev)
- {
--	const struct smi_instance *inst_array;
- 	struct device *dev = &pdev->dev;
-+	const struct smi_node *node;
- 	struct acpi_device *adev;
- 	struct smi *smi;
- 
--	inst_array = device_get_match_data(dev);
--	if (!inst_array) {
-+	node = device_get_match_data(dev);
-+	if (!node) {
- 		dev_err(dev, "Error ACPI match data is missing\n");
- 		return -ENODEV;
- 	}
-@@ -146,7 +247,21 @@ static int smi_probe(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, smi);
- 
--	return smi_i2c_probe(pdev, adev, smi, inst_array);
-+	switch (node->bus_type) {
-+	case SMI_I2C:
-+		return smi_i2c_probe(pdev, adev, smi, node->instances);
-+	case SMI_SPI:
-+		return smi_spi_probe(pdev, adev, smi, node->instances);
-+	case SMI_AUTO_DETECT:
-+		if (i2c_acpi_client_count(adev) > 0)
-+			return smi_i2c_probe(pdev, adev, smi, node->instances);
-+		else
-+			return smi_spi_probe(pdev, adev, smi, node->instances);
-+	default:
-+		break;
-+	}
-+
-+	return 0; /* never reached */
- }
- 
- static int smi_remove(struct platform_device *pdev)
-@@ -158,27 +273,36 @@ static int smi_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--static const struct smi_instance bsg1160_data[]  = {
--	{ "bmc150_accel", IRQ_RESOURCE_GPIO, 0 },
--	{ "bmc150_magn" },
--	{ "bmg160" },
--	{}
-+static const struct smi_node bsg1160_data = {
-+	.instances = {
-+		{ "bmc150_accel", IRQ_RESOURCE_GPIO, 0 },
-+		{ "bmc150_magn" },
-+		{ "bmg160" },
-+		{}
-+	},
-+	.bus_type = SMI_I2C,
- };
- 
--static const struct smi_instance bsg2150_data[]  = {
--	{ "bmc150_accel", IRQ_RESOURCE_GPIO, 0 },
--	{ "bmc150_magn" },
--	/* The resources describe a 3th client, but it is not really there. */
--	{ "bsg2150_dummy_dev" },
--	{}
-+static const struct smi_node bsg2150_data = {
-+	.instances = {
-+		{ "bmc150_accel", IRQ_RESOURCE_GPIO, 0 },
-+		{ "bmc150_magn" },
-+		/* The resources describe a 3th client, but it is not really there. */
-+		{ "bsg2150_dummy_dev" },
-+		{}
-+	},
-+	.bus_type = SMI_I2C,
- };
- 
--static const struct smi_instance int3515_data[]  = {
--	{ "tps6598x", IRQ_RESOURCE_APIC, 0 },
--	{ "tps6598x", IRQ_RESOURCE_APIC, 1 },
--	{ "tps6598x", IRQ_RESOURCE_APIC, 2 },
--	{ "tps6598x", IRQ_RESOURCE_APIC, 3 },
--	{}
-+static const struct smi_node int3515_data = {
-+	.instances = {
-+		{ "tps6598x", IRQ_RESOURCE_APIC, 0 },
-+		{ "tps6598x", IRQ_RESOURCE_APIC, 1 },
-+		{ "tps6598x", IRQ_RESOURCE_APIC, 2 },
-+		{ "tps6598x", IRQ_RESOURCE_APIC, 3 },
-+		{}
-+	},
-+	.bus_type = SMI_I2C,
- };
- 
  /*
-@@ -186,9 +310,9 @@ static const struct smi_instance int3515_data[]  = {
+  * Note new device-ids must also be added to serial_multi_instantiate_ids in
   * drivers/acpi/scan.c: acpi_device_enumeration_by_parent().
-  */
- static const struct acpi_device_id smi_acpi_ids[] = {
--	{ "BSG1160", (unsigned long)bsg1160_data },
--	{ "BSG2150", (unsigned long)bsg2150_data },
--	{ "INT3515", (unsigned long)int3515_data },
-+	{ "BSG1160", (unsigned long)&bsg1160_data },
-+	{ "BSG2150", (unsigned long)&bsg2150_data },
-+	{ "INT3515", (unsigned long)&int3515_data },
+@@ -313,6 +324,9 @@ static const struct acpi_device_id smi_acpi_ids[] = {
+ 	{ "BSG1160", (unsigned long)&bsg1160_data },
+ 	{ "BSG2150", (unsigned long)&bsg2150_data },
+ 	{ "INT3515", (unsigned long)&int3515_data },
++	{ "CSC3551", (unsigned long)&cs35l41_hda },
++	/* Non-conforming _HID for Cirrus Logic already released */
++	{ "CLSA0100", (unsigned long)&cs35l41_hda },
  	{ }
  };
  MODULE_DEVICE_TABLE(acpi, smi_acpi_ids);
