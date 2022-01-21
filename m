@@ -4,87 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAF4DC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jan 2022 14:35:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EFACCC433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jan 2022 14:35:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E5C542ABA;
-	Fri, 21 Jan 2022 15:34:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E5C542ABA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3E1FB2AAA;
+	Fri, 21 Jan 2022 15:34:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E1FB2AAA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1642775710;
-	bh=/AvoChD43WovsmcSBX0oCEYxGC8CJqRKPBOIh1e/CKI=;
+	s=default; t=1642775720;
+	bh=g8JY68aw5kNpF376d0IfKzBP01yaALOhuQWoJvdAN2A=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EWvDceVkewctp6nJNigPfsoWH7S9yUubQn8pI67VzWGHA1XdnbgDFUqoNpn3kJuQ1
-	 CuN2a15BEUPk2CGYMBSzeDisTZEhRI05Yp5214BeJbUdSWU9gIe0D/6gzSJJCkLEWQ
-	 /jjbDGW2Y9NQjvZXUYXrQNXrYx1Sz7Q4ycd8c3Kg=
+	b=KoUsqIqftSO33gVH8FVnTpye9w0E7JZKPaucimNaYn5ZbCez1u12NwvmKzc7W+NOZ
+	 GajRnGcY9y4r5doiOpQWf5NuDW00hf8PIaAMwdmbH40X3HnzW2lvYR6TErO2USJHoR
+	 qa4mVDChoIlOueQhxHSJqR4mR0wch+OOeNMdAPoE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 61123F80518;
-	Fri, 21 Jan 2022 15:33:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 04775F80526;
+	Fri, 21 Jan 2022 15:33:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 566BFF8051F; Fri, 21 Jan 2022 15:33:14 +0100 (CET)
+ id E9D69F8051F; Fri, 21 Jan 2022 15:33:15 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C5A3AF80511
- for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2022 15:33:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5A3AF80511
+ by alsa1.perex.cz (Postfix) with ESMTPS id 567CEF80516
+ for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2022 15:33:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 567CEF80516
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="OayBnmrd"
+ header.b="Jh+A4WhU"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20L6W2WU017662;
- Fri, 21 Jan 2022 08:33:00 -0600
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20LDS7PH017315;
+ Fri, 21 Jan 2022 08:32:59 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=/TLrm4d3U/sEY8UqGOdlkkiMo7BlmRWnr/kv/z56glc=;
- b=OayBnmrdkOwIA2LB6/LujBGvMNNaEO+wJ08JTG9LHP9NnbIbzTokNH0ZKVUu3SFNpg7m
- hHcakHjp7mybjCXFFH2fT/9fDlq38bnMMkhnoosXXE4XhtDik06ZQ3D/umakQBXv47DW
- 6UUPojXotVBU/8ZJiyaisNGv1J85jim+QVLiVAPYezjRcWJ4ZSQgDiocCuBSCBGqe3t4
- E8yOoO8sDlVJXrxwBKX8WJhGQAwJmJIqZoHXvxDEARO2GQ7j517lqmEL0S6BrMI4HlOY
- eObfHb57wYf1N2pz6wAlkq30fLN77365TUpR+mf3/itGSRMtmYQS/zXxm6m1pF+pRPx0 Ww== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3dqhyq0up3-2
+ bh=esQa06hrgOMJ8WsoJmpq9RLqCEOqwnnCnVua0114bvg=;
+ b=Jh+A4WhUzL+ohowftN4vLlo3pgGNcSdAE6RbAarP2Q8o7IM9wphlLBXh8+PZhQw60CLg
+ 0dEBwFI3Udut+pbS6pk1RuFg0v4w4h2EbPG9lQoUkWvq+d42hPwvnZbTHLRoyyscikBA
+ AdAWIdjQetkdoGqXu7SHI8ASz+Qrom3bQWqOkg1W0uE/+a+1drBCr39D/X8JrpVHLDhG
+ wLHIO3I/irPv9Me2OqZzJ5ysmU/Xv6Ujy97t9ki8oTeQHt5oRRfn0xMWh25KSh1hYcIg
+ dh6dfI+8VwtGbS7aEHo/RYVRhCSXH4nALeEdMGOL6aaUjR8n1RbQWc1P+kpTpsBb7aAk /w== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3dqhyq0up1-3
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Fri, 21 Jan 2022 08:33:00 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ Fri, 21 Jan 2022 08:32:59 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Fri, 21 Jan
- 2022 14:32:58 +0000
+ 2022 14:32:57 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.18 via
- Frontend Transport; Fri, 21 Jan 2022 14:32:58 +0000
+ Frontend Transport; Fri, 21 Jan 2022 14:32:57 +0000
 Received: from LONN2DGDQ73.ad.cirrus.com (unknown [198.90.238.138])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 186B945D;
- Fri, 21 Jan 2022 14:32:58 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 1389D11D8;
+ Fri, 21 Jan 2022 14:32:56 +0000 (UTC)
 From: Stefan Binding <sbinding@opensource.cirrus.com>
 To: Mark Brown <broonie@kernel.org>, "Rafael J . Wysocki" <rafael@kernel.org>, 
  Len Brown <lenb@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
  Mark Gross <markgross@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
  Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v5 5/9] platform/x86: i2c-multi-instantiate: Rename it for a
- generic serial driver name
-Date: Fri, 21 Jan 2022 14:32:50 +0000
-Message-ID: <20220121143254.6432-6-sbinding@opensource.cirrus.com>
+Subject: [PATCH v5 2/9] spi: Create helper API to lookup ACPI info for spi
+ device
+Date: Fri, 21 Jan 2022 14:32:47 +0000
+Message-ID: <20220121143254.6432-3-sbinding@opensource.cirrus.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220121143254.6432-1-sbinding@opensource.cirrus.com>
 References: <20220121143254.6432-1-sbinding@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: G3HlgXnm8H3UWllofW035CK-x4VFZklJ
-X-Proofpoint-ORIG-GUID: G3HlgXnm8H3UWllofW035CK-x4VFZklJ
+X-Proofpoint-GUID: o6ioXOnKxJh9O_1iIHLim2wSEGISFNQ3
+X-Proofpoint-ORIG-GUID: o6ioXOnKxJh9O_1iIHLim2wSEGISFNQ3
 X-Proofpoint-Spam-Reason: safe
-Cc: alsa-devel@alsa-project.org, Lucas Tanure <tanureal@opensource.cirrus.com>,
- patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
- platform-driver-x86@vger.kernel.org, linux-acpi@vger.kernel.org,
- Stefan Binding <sbinding@opensource.cirrus.com>, linux-spi@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+ linux-acpi@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>,
+ linux-spi@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,295 +100,131 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Lucas Tanure <tanureal@opensource.cirrus.com>
+This can then be used to find a spi resource inside an
+ACPI node, and allocate a spi device.
 
-Rename I2C multi instantiate driver to serial-multi-instantiate for
-upcoming addition of SPI support
-
-Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
 Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 ---
- MAINTAINERS                                   |  4 +-
- drivers/acpi/scan.c                           |  2 +-
- drivers/platform/x86/Kconfig                  |  4 +-
- drivers/platform/x86/Makefile                 |  2 +-
- ...stantiate.c => serial-multi-instantiate.c} | 89 +++++++++----------
- 5 files changed, 50 insertions(+), 51 deletions(-)
- rename drivers/platform/x86/{i2c-multi-instantiate.c => serial-multi-instantiate.c} (52%)
+ drivers/spi/spi.c       | 46 ++++++++++++++++++++++++++++++++---------
+ include/linux/spi/spi.h |  6 ++++++
+ 2 files changed, 42 insertions(+), 10 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 4e828542b089..be50537ea6bd 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -388,11 +388,11 @@ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
- S:	Maintained
- F:	drivers/acpi/arm64
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 1eb84101c4ad..13f4701f0694 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -2410,8 +2410,18 @@ static int acpi_spi_add_resource(struct acpi_resource *ares, void *data)
+ 	return 1;
+ }
  
--ACPI I2C MULTI INSTANTIATE DRIVER
-+ACPI SERIAL MULTI INSTANTIATE DRIVER
- M:	Hans de Goede <hdegoede@redhat.com>
- L:	platform-driver-x86@vger.kernel.org
- S:	Maintained
--F:	drivers/platform/x86/i2c-multi-instantiate.c
-+F:	drivers/platform/x86/serial-multi-instantiate.c
- 
- ACPI PCC(Platform Communication Channel) MAILBOX DRIVER
- M:	Sudeep Holla <sudeep.holla@arm.com>
-diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-index 1331756d4cfc..8b237eb4e029 100644
---- a/drivers/acpi/scan.c
-+++ b/drivers/acpi/scan.c
-@@ -1738,7 +1738,7 @@ static bool acpi_device_enumeration_by_parent(struct acpi_device *device)
- 	 * must be instantiated for each, each with its own i2c_device_id.
- 	 * Normally we only instantiate an i2c-client for the first resource,
- 	 * using the ACPI HID as id. These special cases are handled by the
--	 * drivers/platform/x86/i2c-multi-instantiate.c driver, which knows
-+	 * drivers/platform/x86/serial-multi-instantiate.c driver, which knows
- 	 * which i2c_device_id to use for each resource.
- 	 */
- 		{"BSG1160", },
-diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-index 24deeeb29af2..5b65d687f046 100644
---- a/drivers/platform/x86/Kconfig
-+++ b/drivers/platform/x86/Kconfig
-@@ -990,7 +990,7 @@ config TOPSTAR_LAPTOP
- 
- 	  If you have a Topstar laptop, say Y or M here.
- 
--config I2C_MULTI_INSTANTIATE
-+config SERIAL_MULTI_INSTANTIATE
- 	tristate "I2C multi instantiate pseudo device driver"
- 	depends on I2C && ACPI
- 	help
-@@ -999,7 +999,7 @@ config I2C_MULTI_INSTANTIATE
- 	  for each device in the firmware-node.
- 
- 	  To compile this driver as a module, choose M here: the module
--	  will be called i2c-multi-instantiate.
-+	  will be called serial-multi-instantiate.
- 
- config MLX_PLATFORM
- 	tristate "Mellanox Technologies platform support"
-diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
-index c12a9b044fd8..9527088bba7f 100644
---- a/drivers/platform/x86/Makefile
-+++ b/drivers/platform/x86/Makefile
-@@ -110,7 +110,7 @@ obj-$(CONFIG_TOPSTAR_LAPTOP)	+= topstar-laptop.o
- 
- # Platform drivers
- obj-$(CONFIG_FW_ATTR_CLASS)		+= firmware_attributes_class.o
--obj-$(CONFIG_I2C_MULTI_INSTANTIATE)	+= i2c-multi-instantiate.o
-+obj-$(CONFIG_SERIAL_MULTI_INSTANTIATE)	+= serial-multi-instantiate.o
- obj-$(CONFIG_MLX_PLATFORM)		+= mlx-platform.o
- obj-$(CONFIG_TOUCHSCREEN_DMI)		+= touchscreen_dmi.o
- obj-$(CONFIG_WIRELESS_HOTKEY)		+= wireless-hotkey.o
-diff --git a/drivers/platform/x86/i2c-multi-instantiate.c b/drivers/platform/x86/serial-multi-instantiate.c
-similarity index 52%
-rename from drivers/platform/x86/i2c-multi-instantiate.c
-rename to drivers/platform/x86/serial-multi-instantiate.c
-index 4956a1df5b90..32fb3f904547 100644
---- a/drivers/platform/x86/i2c-multi-instantiate.c
-+++ b/drivers/platform/x86/serial-multi-instantiate.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0+
- /*
-- * I2C multi-instantiate driver, pseudo driver to instantiate multiple
-+ * Serial multi-instantiate driver, pseudo driver to instantiate multiple
-  * i2c-clients from a single fwnode.
-  *
-  * Copyright 2018 Hans de Goede <hdegoede@redhat.com>
-@@ -21,29 +21,29 @@
- #define IRQ_RESOURCE_GPIO	1
- #define IRQ_RESOURCE_APIC	2
- 
--struct i2c_inst_data {
-+struct smi_instance {
- 	const char *type;
- 	unsigned int flags;
- 	int irq_idx;
- };
- 
--struct i2c_multi_inst_data {
--	int num_clients;
--	struct i2c_client *clients[];
-+struct smi {
-+	int i2c_num;
-+	struct i2c_client *i2c_devs[];
- };
- 
--static int i2c_multi_inst_probe(struct platform_device *pdev)
-+static int smi_probe(struct platform_device *pdev)
+-static acpi_status acpi_register_spi_device(struct spi_controller *ctlr,
+-					    struct acpi_device *adev)
++/**
++ * acpi_spi_device_alloc - Allocate a spi device, and fill it in with ACPI information
++ * @ctlr: controller to which the spi device belongs
++ * @adev: ACPI Device for the spi device
++ *
++ * This should be used to allocate a new spi device from and ACPI Node.
++ * The caller is responsible for calling spi_add_device to register the spi device.
++ *
++ * Return: a pointer to the new device, or ERR_PTR on error.
++ */
++struct spi_device *acpi_spi_device_alloc(struct spi_controller *ctlr,
++					 struct acpi_device *adev)
  {
--	struct i2c_multi_inst_data *multi;
--	const struct i2c_inst_data *inst_data;
- 	struct i2c_board_info board_info = {};
-+	const struct smi_instance *inst;
- 	struct device *dev = &pdev->dev;
- 	struct acpi_device *adev;
-+	struct smi *smi;
- 	char name[32];
- 	int i, ret;
+ 	acpi_handle parent_handle = NULL;
+ 	struct list_head resource_list;
+@@ -2419,10 +2429,6 @@ static acpi_status acpi_register_spi_device(struct spi_controller *ctlr,
+ 	struct spi_device *spi;
+ 	int ret;
  
--	inst_data = device_get_match_data(dev);
--	if (!inst_data) {
-+	inst = device_get_match_data(dev);
-+	if (!inst) {
- 		dev_err(dev, "Error ACPI match data is missing\n");
- 		return -ENODEV;
- 	}
-@@ -55,33 +55,32 @@ static int i2c_multi_inst_probe(struct platform_device *pdev)
+-	if (acpi_bus_get_status(adev) || !adev->status.present ||
+-	    acpi_device_enumerated(adev))
+-		return AE_OK;
+-
+ 	lookup.ctlr		= ctlr;
+ 	lookup.irq		= -1;
+ 
+@@ -2433,7 +2439,7 @@ static acpi_status acpi_register_spi_device(struct spi_controller *ctlr,
+ 
  	if (ret < 0)
- 		return ret;
+ 		/* found SPI in _CRS but it points to another controller */
+-		return AE_OK;
++		return ERR_PTR(-ENODEV);
  
--	multi = devm_kmalloc(dev, struct_size(multi, clients, ret), GFP_KERNEL);
--	if (!multi)
-+	smi = devm_kmalloc(dev, struct_size(smi, i2c_devs, ret), GFP_KERNEL);
-+	if (!smi)
- 		return -ENOMEM;
- 
--	multi->num_clients = ret;
-+	smi->i2c_num = ret;
- 
--	for (i = 0; i < multi->num_clients && inst_data[i].type; i++) {
-+	for (i = 0; i < smi->i2c_num && inst[i].type; i++) {
- 		memset(&board_info, 0, sizeof(board_info));
--		strlcpy(board_info.type, inst_data[i].type, I2C_NAME_SIZE);
--		snprintf(name, sizeof(name), "%s-%s.%d", dev_name(dev),
--			 inst_data[i].type, i);
-+		strlcpy(board_info.type, inst[i].type, I2C_NAME_SIZE);
-+		snprintf(name, sizeof(name), "%s-%s.%d", dev_name(dev), inst[i].type, i);
- 		board_info.dev_name = name;
--		switch (inst_data[i].flags & IRQ_RESOURCE_TYPE) {
-+		switch (inst[i].flags & IRQ_RESOURCE_TYPE) {
- 		case IRQ_RESOURCE_GPIO:
--			ret = acpi_dev_gpio_irq_get(adev, inst_data[i].irq_idx);
-+			ret = acpi_dev_gpio_irq_get(adev, inst[i].irq_idx);
- 			if (ret < 0) {
- 				dev_err(dev, "Error requesting irq at index %d: %d\n",
--					inst_data[i].irq_idx, ret);
-+						inst[i].irq_idx, ret);
- 				goto error;
- 			}
- 			board_info.irq = ret;
- 			break;
- 		case IRQ_RESOURCE_APIC:
--			ret = platform_get_irq(pdev, inst_data[i].irq_idx);
-+			ret = platform_get_irq(pdev, inst[i].irq_idx);
- 			if (ret < 0) {
- 				dev_dbg(dev, "Error requesting irq at index %d: %d\n",
--					inst_data[i].irq_idx, ret);
-+					inst[i].irq_idx, ret);
- 				goto error;
- 			}
- 			board_info.irq = ret;
-@@ -90,48 +89,48 @@ static int i2c_multi_inst_probe(struct platform_device *pdev)
- 			board_info.irq = 0;
- 			break;
- 		}
--		multi->clients[i] = i2c_acpi_new_device(dev, i, &board_info);
--		if (IS_ERR(multi->clients[i])) {
--			ret = dev_err_probe(dev, PTR_ERR(multi->clients[i]),
-+		smi->i2c_devs[i] = i2c_acpi_new_device(dev, i, &board_info);
-+		if (IS_ERR(smi->i2c_devs[i])) {
-+			ret = dev_err_probe(dev, PTR_ERR(smi->i2c_devs[i]),
- 					    "Error creating i2c-client, idx %d\n", i);
- 			goto error;
- 		}
- 	}
--	if (i < multi->num_clients) {
-+	if (i < smi->i2c_num) {
- 		dev_err(dev, "Error finding driver, idx %d\n", i);
- 		ret = -ENODEV;
- 		goto error;
+ 	if (!lookup.max_speed_hz &&
+ 	    ACPI_SUCCESS(acpi_get_parent(adev->handle, &parent_handle)) &&
+@@ -2443,16 +2449,15 @@ static acpi_status acpi_register_spi_device(struct spi_controller *ctlr,
  	}
  
--	platform_set_drvdata(pdev, multi);
-+	platform_set_drvdata(pdev, smi);
- 	return 0;
+ 	if (!lookup.max_speed_hz)
+-		return AE_OK;
++		return ERR_PTR(-ENODEV);
  
- error:
- 	while (--i >= 0)
--		i2c_unregister_device(multi->clients[i]);
-+		i2c_unregister_device(smi->i2c_devs[i]);
+ 	spi = spi_alloc_device(ctlr);
+ 	if (!spi) {
+ 		dev_err(&ctlr->dev, "failed to allocate SPI device for %s\n",
+ 			dev_name(&adev->dev));
+-		return AE_NO_MEMORY;
++		return ERR_PTR(-ENOMEM);
+ 	}
  
- 	return ret;
- }
+-
+ 	ACPI_COMPANION_SET(&spi->dev, adev);
+ 	spi->max_speed_hz	= lookup.max_speed_hz;
+ 	spi->mode		|= lookup.mode;
+@@ -2460,6 +2465,27 @@ static acpi_status acpi_register_spi_device(struct spi_controller *ctlr,
+ 	spi->bits_per_word	= lookup.bits_per_word;
+ 	spi->chip_select	= lookup.chip_select;
  
--static int i2c_multi_inst_remove(struct platform_device *pdev)
-+static int smi_remove(struct platform_device *pdev)
- {
--	struct i2c_multi_inst_data *multi = platform_get_drvdata(pdev);
-+	struct smi *smi = platform_get_drvdata(pdev);
- 	int i;
++	return spi;
++}
++EXPORT_SYMBOL_GPL(acpi_spi_device_alloc);
++
++static acpi_status acpi_register_spi_device(struct spi_controller *ctlr,
++					    struct acpi_device *adev)
++{
++	struct spi_device *spi;
++
++	if (acpi_bus_get_status(adev) || !adev->status.present ||
++	    acpi_device_enumerated(adev))
++		return AE_OK;
++
++	spi = acpi_spi_device_alloc(ctlr, adev);
++	if (IS_ERR(spi)) {
++		if (PTR_ERR(spi) == -ENOMEM)
++			return AE_NO_MEMORY;
++		else
++			return AE_OK;
++	}
++
+ 	acpi_set_modalias(adev, acpi_device_hid(adev), spi->modalias,
+ 			  sizeof(spi->modalias));
  
--	for (i = 0; i < multi->num_clients; i++)
--		i2c_unregister_device(multi->clients[i]);
-+	for (i = 0; i < smi->i2c_num; i++)
-+		i2c_unregister_device(smi->i2c_devs[i]);
+diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+index 0346a3ff27fd..d159cef12f1a 100644
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -16,6 +16,7 @@
+ #include <linux/gpio/consumer.h>
  
- 	return 0;
- }
+ #include <uapi/linux/spi/spi.h>
++#include <linux/acpi.h>
  
--static const struct i2c_inst_data bsg1160_data[]  = {
-+static const struct smi_instance bsg1160_data[]  = {
- 	{ "bmc150_accel", IRQ_RESOURCE_GPIO, 0 },
- 	{ "bmc150_magn" },
- 	{ "bmg160" },
- 	{}
- };
+ struct dma_chan;
+ struct software_node;
+@@ -759,6 +760,11 @@ extern int devm_spi_register_controller(struct device *dev,
+ 					struct spi_controller *ctlr);
+ extern void spi_unregister_controller(struct spi_controller *ctlr);
  
--static const struct i2c_inst_data bsg2150_data[]  = {
-+static const struct smi_instance bsg2150_data[]  = {
- 	{ "bmc150_accel", IRQ_RESOURCE_GPIO, 0 },
- 	{ "bmc150_magn" },
- 	/* The resources describe a 3th client, but it is not really there. */
-@@ -139,7 +138,7 @@ static const struct i2c_inst_data bsg2150_data[]  = {
- 	{}
- };
- 
--static const struct i2c_inst_data int3515_data[]  = {
-+static const struct smi_instance int3515_data[]  = {
- 	{ "tps6598x", IRQ_RESOURCE_APIC, 0 },
- 	{ "tps6598x", IRQ_RESOURCE_APIC, 1 },
- 	{ "tps6598x", IRQ_RESOURCE_APIC, 2 },
-@@ -148,27 +147,27 @@ static const struct i2c_inst_data int3515_data[]  = {
- };
- 
++#if IS_ENABLED(CONFIG_ACPI)
++extern struct spi_device *acpi_spi_device_alloc(struct spi_controller *ctlr,
++						struct acpi_device *adev);
++#endif
++
  /*
-- * Note new device-ids must also be added to i2c_multi_instantiate_ids in
-+ * Note new device-ids must also be added to serial_multi_instantiate_ids in
-  * drivers/acpi/scan.c: acpi_device_enumeration_by_parent().
+  * SPI resource management while processing a SPI message
   */
--static const struct acpi_device_id i2c_multi_inst_acpi_ids[] = {
-+static const struct acpi_device_id smi_acpi_ids[] = {
- 	{ "BSG1160", (unsigned long)bsg1160_data },
- 	{ "BSG2150", (unsigned long)bsg2150_data },
- 	{ "INT3515", (unsigned long)int3515_data },
- 	{ }
- };
--MODULE_DEVICE_TABLE(acpi, i2c_multi_inst_acpi_ids);
-+MODULE_DEVICE_TABLE(acpi, smi_acpi_ids);
- 
--static struct platform_driver i2c_multi_inst_driver = {
-+static struct platform_driver smi_driver = {
- 	.driver	= {
--		.name = "I2C multi instantiate pseudo device driver",
--		.acpi_match_table = i2c_multi_inst_acpi_ids,
-+		.name = "Serial multi instantiate pseudo device driver",
-+		.acpi_match_table = smi_acpi_ids,
- 	},
--	.probe = i2c_multi_inst_probe,
--	.remove = i2c_multi_inst_remove,
-+	.probe = smi_probe,
-+	.remove = smi_remove,
- };
--module_platform_driver(i2c_multi_inst_driver);
-+module_platform_driver(smi_driver);
- 
--MODULE_DESCRIPTION("I2C multi instantiate pseudo device driver");
-+MODULE_DESCRIPTION("Serial multi instantiate pseudo device driver");
- MODULE_AUTHOR("Hans de Goede <hdegoede@redhat.com>");
- MODULE_LICENSE("GPL");
 -- 
 2.25.1
 
