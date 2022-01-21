@@ -4,86 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92238C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jan 2022 14:36:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10445C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jan 2022 14:40:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B80632B8E;
-	Fri, 21 Jan 2022 15:35:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B80632B8E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 462A72B65;
+	Fri, 21 Jan 2022 15:39:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 462A72B65
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1642775802;
-	bh=NV5BQh80hY3TGQMbGUrbcBePpqQSBblYGnRw/siAFPc=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1642776047;
+	bh=Fs3xRDqbPFG0+2FoHNgXK8/dXb4LBqbm9BspxfvewXM=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=l4CWhbUGPiVXDkBt/1v1HGaxlIgxFug6nkL0zYM5i05mySffiJOODUXBh0j30mD1i
-	 sdsk/r8WSpz/fL301EAA5gcmO13P0SOUdpbxO5K/QUI5agQX74SmOXXgmlq5HYkq/5
-	 HF55wyr7fPouRJRjJBcZt+k4tUpwic1eJItMOyo0=
+	b=qcHCtFTAEA3I5VQKthkIOU4/OJ0kamZwzD0lcrlANi1rUvPepECEYtJoM1iBrE8Q4
+	 WKtrb6INhhN/1ZypLlqy2oixZR0R683v5E+T31zZ5efd1CoffZcGDL3hQ3qO0qbmCB
+	 IGF3J9Did0G4SZZjj1B1Q1puF8SNBur31RdstneE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CDBE9F80544;
-	Fri, 21 Jan 2022 15:33:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D1321F80125;
+	Fri, 21 Jan 2022 15:39:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 51FC6F8051F; Fri, 21 Jan 2022 15:33:17 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 60FECF8028B; Fri, 21 Jan 2022 15:39:55 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6EB5FF80515
- for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2022 15:33:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6EB5FF80515
+ by alsa1.perex.cz (Postfix) with ESMTPS id A7FF7F800F8
+ for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2022 15:39:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7FF7F800F8
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="MOI6EtNB"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20LDS7PL017315;
- Fri, 21 Jan 2022 08:33:02 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=rEn0h8SRiY2No5hBRUCbDy0KDS79Bfzu7iJq6A2CKhc=;
- b=MOI6EtNBj//9slHrxPiAZVK494+JxskwmKMCeh109K0ve1L2Vi1z+hXPDd/18dCAsXoF
- PVuuCJ/P6IDpXIHWFRe/m4AYYicS4M2qG40gQKWjG3zkrN1TYjYlunq9NEni4bnMoToQ
- zWrEMTp9n8uxgvf/nMAAWFwpbMOdAvyifkNOpFuh5929+5kE4hK4yo42BrOA0ZLtLEvA
- /59JIGHgQYG9n05MR17lcKkIuYABLVNsUaS+fD2RiVU9ByZYbnh3UWwtdiL8CPG+JvtW
- ZdMoK9fkwuFT9nSRe5S/iROY973qKLKMgtkI2I1hBi4Cktx/L+VyOTE+C4+hcsoku1xO gw== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3dqhyq0up1-7
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Fri, 21 Jan 2022 08:33:02 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Fri, 21 Jan
- 2022 14:33:00 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.18 via
- Frontend Transport; Fri, 21 Jan 2022 14:33:00 +0000
-Received: from LONN2DGDQ73.ad.cirrus.com (unknown [198.90.238.138])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A281845D;
- Fri, 21 Jan 2022 14:32:59 +0000 (UTC)
-From: Stefan Binding <sbinding@opensource.cirrus.com>
-To: Mark Brown <broonie@kernel.org>, "Rafael J . Wysocki" <rafael@kernel.org>, 
- Len Brown <lenb@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
- Mark Gross <markgross@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v5 8/9] ALSA: hda/realtek: Add support for HP Laptops
-Date: Fri, 21 Jan 2022 14:32:53 +0000
-Message-ID: <20220121143254.6432-9-sbinding@opensource.cirrus.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220121143254.6432-1-sbinding@opensource.cirrus.com>
-References: <20220121143254.6432-1-sbinding@opensource.cirrus.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: P6PNFL1HqGz3IEJORufkOZbe5lobq6Er
-X-Proofpoint-ORIG-GUID: P6PNFL1HqGz3IEJORufkOZbe5lobq6Er
-X-Proofpoint-Spam-Reason: safe
-Cc: alsa-devel@alsa-project.org, Lucas Tanure <tanureal@opensource.cirrus.com>,
- patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
- platform-driver-x86@vger.kernel.org, linux-acpi@vger.kernel.org,
- Stefan Binding <sbinding@opensource.cirrus.com>, linux-spi@vger.kernel.org
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="ylXZ/uq4"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="183+lWyC"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 45E7721982;
+ Fri, 21 Jan 2022 14:39:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1642775987; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=YAahMuqFx1y2j0gx3GLTjHZcyfAflC+QYlZqqlZMHYw=;
+ b=ylXZ/uq4riyl2WMBJerF50H8mr8mmJsjlX2lWZUHkkwGnix2p2Xw7mOLUlQRDeS7Trj7G7
+ +r8EymvLNE34/l5Cxvpfp33mrb67kq6ZbQtDSmzoZea34N59RaK9dIFO250PDbxwRVmeF3
+ AtWbwKUIPrM/8+tMDaV8vgIIyw2Ud8U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1642775987;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=YAahMuqFx1y2j0gx3GLTjHZcyfAflC+QYlZqqlZMHYw=;
+ b=183+lWyCjbEjxA2fvSIfSHKWw+NcSIBEosL8NXuPOlEtW4z6puOb3/abH/CYseF1PWl9ik
+ dKn2juUMhwDFUxBw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 32EFEA3B85;
+ Fri, 21 Jan 2022 14:39:47 +0000 (UTC)
+Date: Fri, 21 Jan 2022 15:39:47 +0100
+Message-ID: <s5hmtjprw3w.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Stefan Binding <sbinding@opensource.cirrus.com>
+Subject: Re: [PATCH v4 8/9] ALSA: hda/realtek: Add support for HP Laptops
+In-Reply-To: <018c01d80ed3$b5a5a610$20f0f230$@opensource.cirrus.com>
+References: <20220120134326.5295-1-sbinding@opensource.cirrus.com>
+ <20220120134326.5295-9-sbinding@opensource.cirrus.com>
+ <s5ha6fqtokp.wl-tiwai@suse.de>
+ <018c01d80ed3$b5a5a610$20f0f230$@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org,
+ 'Lucas Tanure' <tanureal@opensource.cirrus.com>,
+ "'Rafael J . Wysocki'" <rafael@kernel.org>, patches@opensource.cirrus.com,
+ 'Takashi Iwai' <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+ platform-driver-x86@vger.kernel.org, 'Mark Gross' <markgross@kernel.org>,
+ linux-acpi@vger.kernel.org, 'Mark Brown' <broonie@kernel.org>,
+ 'Hans de Goede' <hdegoede@redhat.com>, linux-spi@vger.kernel.org,
+ 'Len Brown' <lenb@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,92 +97,55 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Lucas Tanure <tanureal@opensource.cirrus.com>
+On Fri, 21 Jan 2022 15:32:24 +0100,
+Stefan Binding wrote:
+> 
+> Hi Takashi,
+> 
+> > -----Original Message-----
+> > From: Alsa-devel <alsa-devel-bounces@alsa-project.org> On Behalf Of
+> > Takashi Iwai
+> > Sent: 20 January 2022 15:27
+> > To: Stefan Binding <sbinding@opensource.cirrus.com>
+> > Cc: platform-driver-x86@vger.kernel.org; alsa-devel@alsa-project.org;
+> linux-
+> > acpi@vger.kernel.org; Lucas Tanure <tanureal@opensource.cirrus.com>;
+> > Rafael J . Wysocki <rafael@kernel.org>; linux-kernel@vger.kernel.org;
+> > Takashi Iwai <tiwai@suse.com>; Mark Gross <markgross@kernel.org>; Hans
+> > de Goede <hdegoede@redhat.com>; Mark Brown <broonie@kernel.org>;
+> > patches@opensource.cirrus.com; linux-spi@vger.kernel.org; Len Brown
+> > <lenb@kernel.org>
+> > Subject: Re: [PATCH v4 8/9] ALSA: hda/realtek: Add support for HP Laptops
+> > 
+> > On Thu, 20 Jan 2022 14:43:25 +0100,
+> > Stefan Binding wrote:
+> > >
+> > > From: Lucas Tanure <tanureal@opensource.cirrus.com>
+> > >
+> > > Add support for two and four CS35L41 using the component
+> > > binding method
+> > >
+> > > Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
+> > > Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+> > 
+> > I guess this patch won't be applicable until ACPI or other tree syncs
+> > with the latest Linus tree or sound git tree.  Must this patch be
+> > merged with other patches?
+> 
+> In order for these laptops to work correctly, it will need all of the
+> patches merged,
+> including both this change and the ACPI changes - without the ACPI changes,
+> some of the amps will not probe.
 
-Add support for two and four CS35L41 using the component
-binding method
+Well, the question is whether merging it would break other things or
+not.
 
-Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
----
- sound/pci/hda/patch_realtek.c | 43 ++++++++++++++++++++++++++++++++++-
- 1 file changed, 42 insertions(+), 1 deletion(-)
+Currently the sound on the laptop won't work anyway, and applying this
+in other tree would need the back-pull of existing HD-audio changes
+from sound.git tree or Linus treee, which is often cumbersome.  The
+goal is to plumb everything up in 5.17-rc as soon as possible, and
+it's often faster if each tree concentrates on only the responsible
+bits.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 668274e52674..b4fde8f603b1 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6611,6 +6611,16 @@ static void cs35l41_fixup_i2c_two(struct hda_codec *cdc, const struct hda_fixup
- 	cs35l41_generic_fixup(cdc, action, "i2c", "CSC3551", 2);
- }
- 
-+static void cs35l41_fixup_spi_two(struct hda_codec *codec, const struct hda_fixup *fix, int action)
-+{
-+	cs35l41_generic_fixup(codec, action, "spi0", "CSC3551", 2);
-+}
-+
-+static void cs35l41_fixup_spi_four(struct hda_codec *codec, const struct hda_fixup *fix, int action)
-+{
-+	cs35l41_generic_fixup(codec, action, "spi0", "CSC3551", 4);
-+}
-+
- static void alc287_legion_16achg6_playback_hook(struct hda_pcm_stream *hinfo, struct hda_codec *cdc,
- 						struct snd_pcm_substream *sub, int action)
- {
-@@ -6948,6 +6958,9 @@ enum {
- 	ALC285_FIXUP_LEGION_Y9000X_AUTOMUTE,
- 	ALC287_FIXUP_LEGION_16ACHG6,
- 	ALC287_FIXUP_CS35L41_I2C_2,
-+	ALC245_FIXUP_CS35L41_SPI_2,
-+	ALC245_FIXUP_CS35L41_SPI_4,
-+	ALC245_FIXUP_CS35L41_SPI_4_HP_GPIO_LED,
- 	ALC285_FIXUP_HP_SPEAKERS_MICMUTE_LED,
- };
- 
-@@ -8699,6 +8712,20 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = cs35l41_fixup_i2c_two,
- 	},
-+	[ALC245_FIXUP_CS35L41_SPI_2] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = cs35l41_fixup_spi_two,
-+	},
-+	[ALC245_FIXUP_CS35L41_SPI_4] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = cs35l41_fixup_spi_four,
-+	},
-+	[ALC245_FIXUP_CS35L41_SPI_4_HP_GPIO_LED] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc245_fixup_hp_gpio_led,
-+		.chained = true,
-+		.chain_id = ALC245_FIXUP_CS35L41_SPI_4,
-+	},
- 	[ALC285_FIXUP_HP_SPEAKERS_MICMUTE_LED] = {
- 		.type = HDA_FIXUP_VERBS,
- 		.v.verbs = (const struct hda_verb[]) {
-@@ -8926,7 +8953,21 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x103c, 0x8896, "HP EliteBook 855 G8 Notebook PC", ALC285_FIXUP_HP_MUTE_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8898, "HP EliteBook 845 G8 Notebook PC", ALC285_FIXUP_HP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x103c, 0x88d0, "HP Pavilion 15-eh1xxx (mainboard 88D0)", ALC287_FIXUP_HP_GPIO_LED),
--	SND_PCI_QUIRK(0x103c, 0x89c3, "HP", ALC285_FIXUP_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x896E, "HP EliteBook x360 830 G9", ALC245_FIXUP_CS35L41_SPI_2),
-+	SND_PCI_QUIRK(0x103c, 0x8971, "HP EliteBook 830 G9", ALC245_FIXUP_CS35L41_SPI_2),
-+	SND_PCI_QUIRK(0x103c, 0x8972, "HP EliteBook 840 G9", ALC245_FIXUP_CS35L41_SPI_2),
-+	SND_PCI_QUIRK(0x103c, 0x8973, "HP EliteBook 860 G9", ALC245_FIXUP_CS35L41_SPI_2),
-+	SND_PCI_QUIRK(0x103c, 0x8974, "HP EliteBook 840 Aero G9", ALC245_FIXUP_CS35L41_SPI_2),
-+	SND_PCI_QUIRK(0x103c, 0x8975, "HP EliteBook x360 840 Aero G9", ALC245_FIXUP_CS35L41_SPI_2),
-+	SND_PCI_QUIRK(0x103c, 0x8981, "HP Elite Dragonfly G3", ALC245_FIXUP_CS35L41_SPI_4),
-+	SND_PCI_QUIRK(0x103c, 0x898E, "HP EliteBook 835 G9", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x103c, 0x898F, "HP EliteBook 835 G9", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x103c, 0x8991, "HP EliteBook 845 G9", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x103c, 0x8992, "HP EliteBook 845 G9", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x103c, 0x8994, "HP EliteBook 855 G9", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x103c, 0x8995, "HP EliteBook 855 G9", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x103c, 0x89C3, "Zbook Studio G9", ALC245_FIXUP_CS35L41_SPI_4_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x89C6, "Zbook Fury 17 G9", ALC245_FIXUP_CS35L41_SPI_2),
- 	SND_PCI_QUIRK(0x103c, 0x89ca, "HP", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
- 	SND_PCI_QUIRK(0x1043, 0x103e, "ASUS X540SA", ALC256_FIXUP_ASUS_MIC),
- 	SND_PCI_QUIRK(0x1043, 0x103f, "ASUS TX300", ALC282_FIXUP_ASUS_TX300),
--- 
-2.25.1
 
+Takashi
