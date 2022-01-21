@@ -4,82 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC8C8C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jan 2022 17:26:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F1B5C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jan 2022 17:26:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 328C62B2A;
-	Fri, 21 Jan 2022 18:25:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 328C62B2A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8863A2AC4;
+	Fri, 21 Jan 2022 18:26:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8863A2AC4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1642785995;
-	bh=80zbMjjnXAvz3FyrKf0cnQriHuUWwJ+3hqtIucoR7lE=;
+	s=default; t=1642786010;
+	bh=uT3WW6jAIFAY7/Xf9tds0wxTilEh1fPM2aPHnOZSIbE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JU5xEfIt7ZcHVRCloS8c/A0prGXIFo2s4KpZGxg0DnyrDj7QH81rUcsRMBZn+RNUM
-	 32SI7OIOQPGh/8HsK1p66QvpqF/JBHjQewg0SFNnaFPo3nuO/h9mvw1VkN4COxk4kb
-	 tNpLEB7M3/YBwHJz0su9GpTHe76ZRyWHKb8d9L30=
+	b=I/jaDz6c0KYQIch7x9/XloOylqhamkveOVKEaRc2q1fR2YRlz8xtEIi007ifZCcxz
+	 6lS/NjJ2QGx8AxCAhwyujWHg3YbB6H3Dbs/IUSpm6e6Y6FCYFHJ2YQARfYOxs88HAn
+	 E94QC0Qm3tmTXp3A1h4LFYLzMatRC7vsSU+ZCTss=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BA74AF80125;
-	Fri, 21 Jan 2022 18:25:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4EB56F80508;
+	Fri, 21 Jan 2022 18:25:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6A518F80516; Fri, 21 Jan 2022 18:25:01 +0100 (CET)
+ id B65A3F80517; Fri, 21 Jan 2022 18:25:04 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2A039F80125
+ by alsa1.perex.cz (Postfix) with ESMTPS id 473FEF8047C
  for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2022 18:24:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2A039F80125
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 473FEF8047C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="K1BwODWb"
+ header.b="gpuwkmbv"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20LH9VJG024708;
- Fri, 21 Jan 2022 11:24:52 -0600
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20LH9VJH024708;
+ Fri, 21 Jan 2022 11:24:53 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=LqwQlGSPZbY4FUWN/PCbYAVSFcGSRCshh6dVtPJgmMk=;
- b=K1BwODWblvOiwR591g8qVpcrV2/Z8m0/HwlFkpgJwxd+Dz5f69aFrl4IQnl4rNzrQ87U
- 6P2AoMD3hJRVDmESJhZyhV9dxqmCCNAMcXHcdr4/2Fda02dqS4UD3Js/yLTBrP6T+bKA
- v05xQv/mABBwYlKXBYgqumx6fcQFNx1hIW7ef++pBVu6XmS01CFTEmR7L4xy2pHRbZL5
- ZAZAJyGJGg0VV5OOCjDfhN41tRgcGszYqdyYNW5jyQfngnq3dKi5dzO1UUk9djYmyyXC
- IL8yWFGABUT0C/LklIl7Mj+lg1uJiZnzxhpyFWQGzwp61UCTEpVOfbmtBajE9S+/l7uk Kw== 
+ bh=rnCBUrcHxzyIdUNa/FPu7w14BdmJjhGgvRwHWbTMLhU=;
+ b=gpuwkmbvUEwLqNEtAsI+AKMMetJ5jd053PDJwsMPNDvToQYd/CRjCwBchsUl1IPzCFZB
+ AUuQASoq+a32b8ovILTFyArOGp/PUsKggp0FV0vGqOJiVae8kb5J7DYoU2IsCRL/Tvia
+ K1FqeeusYe/qmc3TA+/0809sgOqjyj+2VHGw9NglZC9QQwtwxY98aTjAyfvyAUk1Us0D
+ YhEu5ZV+AZxAIKXJEfDRT0zueD4hs2edEDFZLSLXHVq9yvH+u5qKeMCioPERnva+u4ur
+ E7tBUOEuqjFv0szp5pQOmKdczEKMkn61EBMlbjk7FFHibQQrKpa/aoOT+NSg/JT59mu4 lQ== 
 Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3dqhyq14dj-1
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3dqhyq14dj-2
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Fri, 21 Jan 2022 11:24:51 -0600
+ Fri, 21 Jan 2022 11:24:52 -0600
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Fri, 21 Jan
- 2022 17:24:49 +0000
+ 2022 17:24:50 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.18 via
- Frontend Transport; Fri, 21 Jan 2022 17:24:49 +0000
+ Frontend Transport; Fri, 21 Jan 2022 17:24:50 +0000
 Received: from LONN2DGDQ73.ad.cirrus.com (unknown [198.90.238.138])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A968145D;
- Fri, 21 Jan 2022 17:24:46 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2968C45D;
+ Fri, 21 Jan 2022 17:24:50 +0000 (UTC)
 From: Stefan Binding <sbinding@opensource.cirrus.com>
 To: Mark Brown <broonie@kernel.org>, "Rafael J . Wysocki" <rafael@kernel.org>, 
  Len Brown <lenb@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
  Mark Gross <markgross@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
  Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v6 1/9] spi: Make spi_alloc_device and spi_add_device public
- again
-Date: Fri, 21 Jan 2022 17:24:23 +0000
-Message-ID: <20220121172431.6876-2-sbinding@opensource.cirrus.com>
+Subject: [PATCH v6 3/9] spi: Support selection of the index of the ACPI Spi
+ Resource before alloc
+Date: Fri, 21 Jan 2022 17:24:25 +0000
+Message-ID: <20220121172431.6876-4-sbinding@opensource.cirrus.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220121172431.6876-1-sbinding@opensource.cirrus.com>
 References: <20220121172431.6876-1-sbinding@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: q1CdZV91haAymerfcNt8Cp-_FalUMHXZ
-X-Proofpoint-ORIG-GUID: q1CdZV91haAymerfcNt8Cp-_FalUMHXZ
+X-Proofpoint-GUID: 23OJYFVcL7qAW7hTctW9xp9reKBLOkoZ
+X-Proofpoint-ORIG-GUID: 23OJYFVcL7qAW7hTctW9xp9reKBLOkoZ
 X-Proofpoint-Spam-Reason: safe
 Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
  linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
@@ -100,81 +100,156 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This functions were previously made private since they
-were not used. However, these functions will be needed
-again.
-
-Partial revert of commit da21fde0fdb3
-("spi: Make several public functions private to spi.c")
+If a node contains more than one Spi Resources, it may be necessary to
+use an index to select which one you want to allocate a spi device for.
 
 Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 ---
- drivers/spi/spi.c       |  6 ++++--
- include/linux/spi/spi.h | 12 ++++++++++++
- 2 files changed, 16 insertions(+), 2 deletions(-)
+ drivers/spi/spi.c       | 51 +++++++++++++++++++++++++++++++++++------
+ include/linux/spi/spi.h |  3 ++-
+ 2 files changed, 46 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index 4599b121d744..1eb84101c4ad 100644
+index 13f4701f0694..06c0a308b38b 100644
 --- a/drivers/spi/spi.c
 +++ b/drivers/spi/spi.c
-@@ -532,7 +532,7 @@ static DEFINE_MUTEX(board_lock);
-  *
-  * Return: a pointer to the new device, or NULL.
-  */
--static struct spi_device *spi_alloc_device(struct spi_controller *ctlr)
-+struct spi_device *spi_alloc_device(struct spi_controller *ctlr)
- {
- 	struct spi_device	*spi;
+@@ -2320,6 +2320,8 @@ struct acpi_spi_lookup {
+ 	int			irq;
+ 	u8			bits_per_word;
+ 	u8			chip_select;
++	int			n;
++	int			index;
+ };
  
-@@ -557,6 +557,7 @@ static struct spi_device *spi_alloc_device(struct spi_controller *ctlr)
- 	device_initialize(&spi->dev);
- 	return spi;
+ static void acpi_spi_parse_apple_properties(struct acpi_device *dev,
+@@ -2351,6 +2353,8 @@ static void acpi_spi_parse_apple_properties(struct acpi_device *dev,
+ 		lookup->mode |= SPI_CPHA;
  }
-+EXPORT_SYMBOL_GPL(spi_alloc_device);
  
- static void spi_dev_set_name(struct spi_device *spi)
++static struct spi_controller *acpi_spi_find_controller_by_adev(struct acpi_device *adev);
++
+ static int acpi_spi_add_resource(struct acpi_resource *ares, void *data)
  {
-@@ -652,7 +653,7 @@ static int __spi_add_device(struct spi_device *spi)
+ 	struct acpi_spi_lookup *lookup = data;
+@@ -2364,14 +2368,35 @@ static int acpi_spi_add_resource(struct acpi_resource *ares, void *data)
+ 		sb = &ares->data.spi_serial_bus;
+ 		if (sb->type == ACPI_RESOURCE_SERIAL_TYPE_SPI) {
+ 
++			if (lookup->index != -1 && lookup->n++ != lookup->index)
++				return 1;
++
++			if (lookup->index == -1 && !ctlr)
++				return -ENODEV;
++
+ 			status = acpi_get_handle(NULL,
+ 						 sb->resource_source.string_ptr,
+ 						 &parent_handle);
+ 
+-			if (ACPI_FAILURE(status) ||
+-			    ACPI_HANDLE(ctlr->dev.parent) != parent_handle)
++			if (ACPI_FAILURE(status))
+ 				return -ENODEV;
+ 
++			if (ctlr) {
++				if (ACPI_HANDLE(ctlr->dev.parent) != parent_handle)
++					return -ENODEV;
++			} else {
++				struct acpi_device *adev;
++
++				if (acpi_bus_get_device(parent_handle, &adev))
++					return -ENODEV;
++
++				ctlr = acpi_spi_find_controller_by_adev(adev);
++				if (!ctlr)
++					return -ENODEV;
++
++				lookup->ctlr = ctlr;
++			}
++
+ 			/*
+ 			 * ACPI DeviceSelection numbering is handled by the
+ 			 * host controller driver in Windows and can vary
+@@ -2414,14 +2439,21 @@ static int acpi_spi_add_resource(struct acpi_resource *ares, void *data)
+  * acpi_spi_device_alloc - Allocate a spi device, and fill it in with ACPI information
+  * @ctlr: controller to which the spi device belongs
+  * @adev: ACPI Device for the spi device
++ * @index: Index of the spi resource inside the ACPI Node
   *
-  * Return: 0 on success; negative errno on failure
+  * This should be used to allocate a new spi device from and ACPI Node.
+  * The caller is responsible for calling spi_add_device to register the spi device.
+  *
++ * If ctlr is set to NULL, the Controller for the spi device will be looked up
++ * using the resource.
++ * If index is set to -1, index is not used.
++ * Note: If index is -1, ctlr must be set.
++ *
+  * Return: a pointer to the new device, or ERR_PTR on error.
   */
--static int spi_add_device(struct spi_device *spi)
-+int spi_add_device(struct spi_device *spi)
+ struct spi_device *acpi_spi_device_alloc(struct spi_controller *ctlr,
+-					 struct acpi_device *adev)
++					 struct acpi_device *adev,
++					 int index)
  {
- 	struct spi_controller *ctlr = spi->controller;
- 	struct device *dev = ctlr->dev.parent;
-@@ -673,6 +674,7 @@ static int spi_add_device(struct spi_device *spi)
- 	mutex_unlock(&ctlr->add_lock);
- 	return status;
- }
-+EXPORT_SYMBOL_GPL(spi_add_device);
+ 	acpi_handle parent_handle = NULL;
+ 	struct list_head resource_list;
+@@ -2429,8 +2461,13 @@ struct spi_device *acpi_spi_device_alloc(struct spi_controller *ctlr,
+ 	struct spi_device *spi;
+ 	int ret;
  
- static int spi_add_device_locked(struct spi_device *spi)
- {
++	if (!ctlr && index == -1)
++		return ERR_PTR(-EINVAL);
++
+ 	lookup.ctlr		= ctlr;
+ 	lookup.irq		= -1;
++	lookup.index		= index;
++	lookup.n		= 0;
+ 
+ 	INIT_LIST_HEAD(&resource_list);
+ 	ret = acpi_dev_get_resources(adev, &resource_list,
+@@ -2443,7 +2480,7 @@ struct spi_device *acpi_spi_device_alloc(struct spi_controller *ctlr,
+ 
+ 	if (!lookup.max_speed_hz &&
+ 	    ACPI_SUCCESS(acpi_get_parent(adev->handle, &parent_handle)) &&
+-	    ACPI_HANDLE(ctlr->dev.parent) == parent_handle) {
++	    ACPI_HANDLE(lookup.ctlr->dev.parent) == parent_handle) {
+ 		/* Apple does not use _CRS but nested devices for SPI slaves */
+ 		acpi_spi_parse_apple_properties(adev, &lookup);
+ 	}
+@@ -2451,9 +2488,9 @@ struct spi_device *acpi_spi_device_alloc(struct spi_controller *ctlr,
+ 	if (!lookup.max_speed_hz)
+ 		return ERR_PTR(-ENODEV);
+ 
+-	spi = spi_alloc_device(ctlr);
++	spi = spi_alloc_device(lookup.ctlr);
+ 	if (!spi) {
+-		dev_err(&ctlr->dev, "failed to allocate SPI device for %s\n",
++		dev_err(&lookup.ctlr->dev, "failed to allocate SPI device for %s\n",
+ 			dev_name(&adev->dev));
+ 		return ERR_PTR(-ENOMEM);
+ 	}
+@@ -2478,7 +2515,7 @@ static acpi_status acpi_register_spi_device(struct spi_controller *ctlr,
+ 	    acpi_device_enumerated(adev))
+ 		return AE_OK;
+ 
+-	spi = acpi_spi_device_alloc(ctlr, adev);
++	spi = acpi_spi_device_alloc(ctlr, adev, -1);
+ 	if (IS_ERR(spi)) {
+ 		if (PTR_ERR(spi) == -ENOMEM)
+ 			return AE_NO_MEMORY;
 diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
-index 7ab3fed7b804..0346a3ff27fd 100644
+index d159cef12f1a..e5bbb9cbd3d7 100644
 --- a/include/linux/spi/spi.h
 +++ b/include/linux/spi/spi.h
-@@ -1452,7 +1452,19 @@ spi_register_board_info(struct spi_board_info const *info, unsigned n)
-  * use spi_new_device() to describe each device.  You can also call
-  * spi_unregister_device() to start making that device vanish, but
-  * normally that would be handled by spi_unregister_controller().
-+ *
-+ * You can also use spi_alloc_device() and spi_add_device() to use a two
-+ * stage registration sequence for each spi_device. This gives the caller
-+ * some more control over the spi_device structure before it is registered,
-+ * but requires that caller to initialize fields that would otherwise
-+ * be defined using the board info.
-  */
-+extern struct spi_device *
-+spi_alloc_device(struct spi_controller *ctlr);
-+
-+extern int
-+spi_add_device(struct spi_device *spi);
-+
- extern struct spi_device *
- spi_new_device(struct spi_controller *, struct spi_board_info *);
+@@ -762,7 +762,8 @@ extern void spi_unregister_controller(struct spi_controller *ctlr);
  
+ #if IS_ENABLED(CONFIG_ACPI)
+ extern struct spi_device *acpi_spi_device_alloc(struct spi_controller *ctlr,
+-						struct acpi_device *adev);
++						struct acpi_device *adev,
++						int index);
+ #endif
+ 
+ /*
 -- 
 2.25.1
 
