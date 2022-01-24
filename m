@@ -4,77 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 160E6C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Jan 2022 16:24:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A91EFC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Jan 2022 16:30:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ACB142862;
-	Mon, 24 Jan 2022 17:23:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ACB142862
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8523F2876;
+	Mon, 24 Jan 2022 17:30:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8523F2876
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1643041479;
-	bh=zkVnxmZoUn2PXNTt6Cj60EJHO4p9UXlPBZUS9Jg10dI=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1643041855;
+	bh=wiowfXnUrKIxt6oxyIA44n2yj8iXHC5ly9yp5cW24lI=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GYouyIOmYILd20vAgzu3NFkhOXR1xgjfaYnt60ZJZ30JelRrHYojLH146C3nCgR3l
-	 SJ1D2p/5CheNEbOLFdOWDvxldinl6baNAz3SH/RrtxKq5ZTnjx6s0FA7zAKnzMymky
-	 3Vs9HzztgXYOr3AMS1GhycGHLFjZW6TTOEqWgXoY=
+	b=hbopRCxZXQXGPvE43DzsJEGXYszUUX4qeFd2Gr/VSiInHujn72zZHzh5zRn1nQyIh
+	 RUIi+r/1CDXG+yh+yBRVUU2vgEIlglbhqDLLjqifsrGF8Y4UwwdZtU5M9j3SExiXsk
+	 r1+JQw+rdGgJ4kC+W+32oSBog4rPwSV2BOc6ARvk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 466F8F80163;
-	Mon, 24 Jan 2022 17:23:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 104BAF80163;
+	Mon, 24 Jan 2022 17:30:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 18707F8027C; Mon, 24 Jan 2022 17:23:47 +0100 (CET)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 89FE8F8027C; Mon, 24 Jan 2022 17:30:01 +0100 (CET)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8E446F800E9
- for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2022 17:23:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E446F800E9
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="PqQTUS4U"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1643041421; x=1674577421;
- h=date:from:to:cc:subject:message-id:references:
- mime-version:in-reply-to;
- bh=zkVnxmZoUn2PXNTt6Cj60EJHO4p9UXlPBZUS9Jg10dI=;
- b=PqQTUS4U+tyJjADPyBA3sg6vglzCH5m+DtGeCETz3URqelO8rATxIpYx
- q7cxxUPESC/kIMD8MrBMc4YHX/5t0NaLd/geeMWH23poo184bP/Svv8rp
- zKntNA9zFXCEZJluCqy7Ia+Bg5Oam9siyEz45wKYTnMPzd01EHOinp97B
- NeL49MYfRkiyjyjA45XBnQ3S1YmfYA9WRd/nbd1fN1aRZ+ojMpkiuSDt0
- 0AOrW3E+LTm3ef6OQ6pEm9bWAR/CfQjiwtibMiYAyeOAKAdR2rP9y9DX3
- EZ7MXH8YsGxD8/XIcJAUX2W7Aq/HKvlYepWn+D/9yHyEKg08UxAfKzXTT w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10236"; a="332437776"
-X-IronPort-AV: E=Sophos;i="5.88,311,1635231600"; d="scan'208";a="332437776"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Jan 2022 08:23:36 -0800
-X-IronPort-AV: E=Sophos;i="5.88,311,1635231600"; d="scan'208";a="479135670"
-Received: from smile.fi.intel.com ([10.237.72.61])
- by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Jan 2022 08:23:34 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
- (envelope-from <andriy.shevchenko@linux.intel.com>)
- id 1nC26t-00Dwzw-NZ; Mon, 24 Jan 2022 18:22:27 +0200
-Date: Mon, 24 Jan 2022 18:22:27 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH v1 1/1] ASoC: madera: Replace kernel.h with the necessary
- inclusions
-Message-ID: <Ye7SQ7Na4Q5KyvOk@smile.fi.intel.com>
-References: <20211222164534.67636-1-andriy.shevchenko@linux.intel.com>
- <20211229095345.GX18506@ediswmail.ad.cirrus.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id CADA5F800E9
+ for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2022 17:29:54 +0100 (CET)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id EDC4EA0040;
+ Mon, 24 Jan 2022 17:29:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz EDC4EA0040
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1643041794; bh=HTUzWnwspR/C+AN7lsB7wLgz6zBpEJmY/ri1dQyN+5Q=;
+ h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+ b=pO02frmrh6+lsS+w9a5lUks7D8XmNP5EnjFikjvWxNR/iJK8kRpsKO5TDF0F644ZR
+ Ogw29Bzcd20CDDduocPUF4XbNTAkBQOJPhcmjbMr+/te25/Ox6kBh9ClrGu/5zpxn+
+ 5dhbjymepBiCzHGp4uj4NjaLxavxn2Nsc4wBf4/I=
+Received: from [192.168.100.98] (unknown [192.168.100.98])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Mon, 24 Jan 2022 17:29:50 +0100 (CET)
+Message-ID: <9eecf478-b705-7273-7553-24bafaec5404@perex.cz>
+Date: Mon, 24 Jan 2022 17:29:50 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211229095345.GX18506@ediswmail.ad.cirrus.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
- Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
- Richard Fitzgerald <rf@opensource.cirrus.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.0
+Subject: Re: [PATCH v1 0/3] ASoC: Add bounds checking for written values
+Content-Language: en-US
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+References: <20220124153253.3548853-1-broonie@kernel.org>
+From: Jaroslav Kysela <perex@perex.cz>
+In-Reply-To: <20220124153253.3548853-1-broonie@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,21 +75,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Dec 29, 2021 at 09:53:45AM +0000, Charles Keepax wrote:
-> On Wed, Dec 22, 2021 at 06:45:34PM +0200, Andy Shevchenko wrote:
-> > When kernel.h is used in the headers it adds a lot into dependency hell,
-> > especially when there are circular dependencies are involved.
-> > 
-> > Replace kernel.h inclusion with the list of what is really being used.
+On 24. 01. 22 16:32, Mark Brown wrote:
+> This series adds verification that values written to registers are in
+> bounds for controls since the core doesn't validate for us.
 
-> Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+As discussed, those conditions should be optional to eventually catch the 
+wrong applications. I don't see any benefit to report the range error back 
+when there is value masking code already. The users will note when the 
+unwanted values are written to the hardware, or not?
 
-Thanks!
-
-Takashi, should I resend this?
+			Thanks,
+				Jaroslav
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
