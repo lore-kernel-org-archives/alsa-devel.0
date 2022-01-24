@@ -4,85 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 584B9C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Jan 2022 17:06:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A00FC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Jan 2022 17:07:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7A67C28E9;
-	Mon, 24 Jan 2022 18:05:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A67C28E9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6EF0328D1;
+	Mon, 24 Jan 2022 18:06:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6EF0328D1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1643044004;
-	bh=WjAdBxp5WIQgilzKveCMMtFwnljsWIPgg5aY0b4Du0c=;
+	s=default; t=1643044021;
+	bh=3DvfaMY3W9pVhODWbUagdlCyMZx1Q+cM147ebesPZg0=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JZ9QErgzk4iNh4SnY+xunEBeWOBL6sFFdUW6/xJZ7mWCY6Deaqz7og5UjucnZ1yB7
-	 2u++Ou44iroaBYCvHkmrQV6T0cwrKH0WJSyGlJjufYYC6suKcYyuLMz1TYkVUdxvnV
-	 F0eqCevNWqN1eG4XpasHg3R9PY7N1+Hi6nL5Cmn4=
+	b=Z0MXZZqMDeYWFWWpu+j/AfDJJLJygnIevx4QimG6WwH0PY1ce5a2yeL6JW5zMrDNb
+	 Vf0GOJR8HzGiKH/egteOKCq/r63P8dtC81iyHthmjW0ebmxHxpM8WLZwUxbFqPeBLm
+	 FymYUZIwUneJ5Cgb6u5CHEF+2Y3bcAUsEoSVz2F0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C36A1F8051E;
-	Mon, 24 Jan 2022 18:04:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7CEBBF80524;
+	Mon, 24 Jan 2022 18:04:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 28F84F8051A; Mon, 24 Jan 2022 18:04:33 +0100 (CET)
-Received: from smtp-relay-internal-1.canonical.com
- (smtp-relay-internal-1.canonical.com [185.125.188.123])
+ id C62EFF80525; Mon, 24 Jan 2022 18:04:37 +0100 (CET)
+Received: from smtp-relay-internal-0.canonical.com
+ (smtp-relay-internal-0.canonical.com [185.125.188.122])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 662B1F80424
- for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2022 18:04:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 662B1F80424
+ by alsa1.perex.cz (Postfix) with ESMTPS id 05A13F80517
+ for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2022 18:04:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05A13F80517
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com
- header.b="pKa54jeS"
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72])
+ header.b="cJpOrBPo"
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 118BD3F1A4
- for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2022 17:04:22 +0000 (UTC)
+ by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 54D793FFFD
+ for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2022 17:04:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1643043862;
- bh=5FFlQVfiPYwOVz/qR1ttwGkalvSmqMhuguJRa3JpJFQ=;
+ s=20210705; t=1643043869;
+ bh=tXqK0pipG2DbLRjVtcGxzSWNM2TWL5POjuuSkj4vEW8=;
  h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
  MIME-Version;
- b=pKa54jeSkusUE3Hw9673mak37Y6Y0iuo84fM4+oaPUm2/vC4kNLvKVosDEjRbfp/p
- Bx/qFQVkKr0ywfJEFSqeGuwihIbnL/KlaNi7moVqeh5DAy9/0jBIqaMUfvZCXWTqcj
- XrplZk5tA9XlUebtdgEWu1hWZeHUefDClDc0tv/iNR9xSgpepApOIrMBtJBn84OXcz
- X/0jlyc2xbgUnQ+VCzfqgG/YrFzpMzQ6bLInOSRoi2zazmDKvAkNZdDxnTJp8C1OhQ
- xktUbeBFCmIFnz6INGwIwsOSl8q8Xd81YDqePH2SmmWqUFup8s4Sz61ceuo328CX5i
- iTQQLrk4kGAww==
-Received: by mail-ej1-f72.google.com with SMTP id
- d18-20020a1709063ed200b006a5eeb2ee4dso2330107ejj.3
- for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2022 09:04:22 -0800 (PST)
+ b=cJpOrBPoyMpgaIMBUKgrGNMt6w3UvvSimrkwVFwIZZv48KB+GjVukAVJalXBCnr2o
+ UCmNB5aIIykOtRAYDEEt3Ho7ydfh3BkuVuTEsn7nFHAxWXTCN9DBTjnmAiyc355/Fd
+ TybYjyGOmVFoK8LCdn3Jlsj85u353eBd2xG/fSnA9AWNZHiyDUjmz8PvrHT/jvso2F
+ 4L9YLlxPKJQMT1hJ5TA+mCdifEKey8wN5K+d3fn0fTvmZ1UkKjwf1y+lHrw1R8NSUo
+ m2MXia/UOVhnADuGw//yRgcTkGI1Gxwu6JCW3Aa9NyHFl7P7c52HC5UGIxfZMOeupt
+ yar7SgJ2jyKzg==
+Received: by mail-ed1-f71.google.com with SMTP id
+ c11-20020a056402120b00b0040321cea9d4so13455925edw.23
+ for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2022 09:04:29 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=5FFlQVfiPYwOVz/qR1ttwGkalvSmqMhuguJRa3JpJFQ=;
- b=llsxb+43Lbg9zLywrdo4k7lZlD0DKn7zdK21Aa7fjPaX7BrNObfTp2PydtHBDMP9kH
- VGfYSNXRq943lbGRc/qLs+EFO1GCXY3S0JJ00KI5YvDn5DBwXyGPHeWpM9AK6xmnuByh
- wbX37ukTR8X3en25zbSmlumPocG6J9+ReiDXxgd+zyxQHp3XbDjbo4H1YU+jpziQif/w
- k0n0RJ2KasFd9eg0QrUnWDvGDWCT1TQ2dem8qN7lfXcjfzdBlLB1aRkCcFUlYGCki58k
- 12pBKANYzCPJpwGZ7oRVQsPcXKrd8VyNEpA0DZDVDToOWV+X8nu5m4KwyEJFXPaNR6F0
- 2J8Q==
-X-Gm-Message-State: AOAM530KNXLFL1BTVYtDcsAo0AvRGGaykcL/9SV8Ee/T192ZaOsH/9mT
- 1eSoGJwBYfwsyewO1ihpbogmNRZDZGgXHFoqXm1BU3K8CLTkFuuESuUY1a2+M8MEXnq8gf+7/qn
- xlhOTQU28TacAn4zxvn8GtmrbA+/S8WxbXBG2fFXs
-X-Received: by 2002:a17:906:7003:: with SMTP id
- n3mr13196766ejj.160.1643043861295; 
- Mon, 24 Jan 2022 09:04:21 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwSHmcPIiDwaWIhrNLyt3hgJ6DEahlcrBImfV1TaDHD72Fiq6kwC/08hZHQNxbcb99lYE/AuA==
-X-Received: by 2002:a17:906:7003:: with SMTP id
- n3mr13196752ejj.160.1643043861075; 
- Mon, 24 Jan 2022 09:04:21 -0800 (PST)
+ bh=tXqK0pipG2DbLRjVtcGxzSWNM2TWL5POjuuSkj4vEW8=;
+ b=04JJ4/ucQz3AXemDrfORRo7ilL07RpX2tSn8gvrSV8CMCGesb6yz3EKsKah5EXTb2G
+ WvWx3c4QrQTCjllHn0d9aetAWtHMomddG/1FnWmudcvMYqWZKtTMs1+5VjAA/LT4T9ew
+ iZYRezKLXm58e7GzpJtD106NDw9t0bQbAwHd9Mda6aT1g+w2yy5u4kp+X2mxDTUk6qO5
+ NyPD+oAHC3InpD4AuQ3LvOGmHl39wHHgQcntwB0ksf52gN/hyZbJymEZJt5ouJ6ZjbYm
+ JKwp4eBX/VoQlx1q0cm33bNp5+nk7yDZuE4bRavATLsl4CnpP12qR/Uq4HHbptMx4Rbm
+ cs8g==
+X-Gm-Message-State: AOAM532IXeLnzGjxOAAKtmCZkNUn143YJBJ98tOqF9ScZRfLAIAOkzFV
+ tbvYtxio4miy5/xb4VtLERAzMKOLRn3IJc0a5pq2aRveqyHA347uG2Iw9nj+RCx0hjp3x3l1jmj
+ wMYRhW4Nneia4N5uBvGaAlO6wWq+N4fMoEYPXd3IA
+X-Received: by 2002:a17:907:62a1:: with SMTP id
+ nd33mr13076926ejc.578.1643043867803; 
+ Mon, 24 Jan 2022 09:04:27 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzXf92USALcbrXLrv5+/4JqlVrxe0UnW/ZBZv+jrm84Km565mZiaUpixrWAnqJJLbn1fOdrOw==
+X-Received: by 2002:a17:907:62a1:: with SMTP id
+ nd33mr13076897ejc.578.1643043867500; 
+ Mon, 24 Jan 2022 09:04:27 -0800 (PST)
 Received: from localhost.localdomain (xdsl-188-155-168-84.adslplus.ch.
  [188.155.168.84])
- by smtp.gmail.com with ESMTPSA id o11sm6903846edh.75.2022.01.24.09.04.19
+ by smtp.gmail.com with ESMTPSA id o11sm6903846edh.75.2022.01.24.09.04.25
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 24 Jan 2022 09:04:20 -0800 (PST)
+ Mon, 24 Jan 2022 09:04:26 -0800 (PST)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  Rob Herring <robh+dt@kernel.org>,
@@ -90,9 +90,9 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  Sylwester Nawrocki <s.nawrocki@samsung.com>,
  Jonathan Bakker <xc-racer2@live.ca>, alsa-devel@alsa-project.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/6] ASoC: dt-bindings: samsung,arndale: convert to dtschema
-Date: Mon, 24 Jan 2022 18:03:32 +0100
-Message-Id: <20220124170336.164320-2-krzysztof.kozlowski@canonical.com>
+Subject: [PATCH 6/6] ASoC: dt-bindings: samsung,tm2: convert to dtschema
+Date: Mon, 24 Jan 2022 18:03:36 +0100
+Message-Id: <20220124170336.164320-6-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20220124170336.164320-1-krzysztof.kozlowski@canonical.com>
 References: <20220124170336.164320-1-krzysztof.kozlowski@canonical.com>
@@ -113,61 +113,78 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Convert the audio complex on Arndale boards with Samsung Exynos SoC to
-DT schema format.
+Convert the audio complex on Samsung TM2 boards with Samsung Exynos SoC
+to DT schema format.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- .../devicetree/bindings/sound/arndale.txt     | 25 -----------
- .../bindings/sound/samsung,arndale.yaml       | 44 +++++++++++++++++++
- 2 files changed, 44 insertions(+), 25 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/arndale.txt
- create mode 100644 Documentation/devicetree/bindings/sound/samsung,arndale.yaml
+ .../bindings/sound/samsung,tm2-audio.txt      | 42 ----------
+ .../bindings/sound/samsung,tm2.yaml           | 80 +++++++++++++++++++
+ 2 files changed, 80 insertions(+), 42 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/samsung,tm2-audio.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/samsung,tm2.yaml
 
-diff --git a/Documentation/devicetree/bindings/sound/arndale.txt b/Documentation/devicetree/bindings/sound/arndale.txt
+diff --git a/Documentation/devicetree/bindings/sound/samsung,tm2-audio.txt b/Documentation/devicetree/bindings/sound/samsung,tm2-audio.txt
 deleted file mode 100644
-index 17530120ccfc..000000000000
---- a/Documentation/devicetree/bindings/sound/arndale.txt
+index f5ccc12ddc00..000000000000
+--- a/Documentation/devicetree/bindings/sound/samsung,tm2-audio.txt
 +++ /dev/null
-@@ -1,25 +0,0 @@
--Audio Binding for Arndale boards
+@@ -1,42 +0,0 @@
+-Samsung Exynos5433 TM2(E) audio complex with WM5110 codec
 -
 -Required properties:
--- compatible : Can be one of the following:
--		"samsung,arndale-rt5631",
--		"samsung,arndale-wm1811"
 -
--- samsung,audio-cpu: The phandle of the Samsung I2S controller
--- samsung,audio-codec: The phandle of the audio codec
+- - compatible		 : "samsung,tm2-audio"
+- - model		 : the user-visible name of this sound complex
+- - audio-codec		 : the first entry should be phandle of the wm5110 audio
+-			   codec node, as described in ../mfd/arizona.txt;
+-			   the second entry should be phandle of the HDMI
+-			   transmitter node
+- - i2s-controller	 : the list of phandle and argument tuples pointing to
+-			   I2S controllers, the first entry should be I2S0 and
+-			   the second one I2S1
+- - audio-amplifier	 : the phandle of the MAX98504 amplifier
+- - samsung,audio-routing : a list of the connections between audio components;
+-			   each entry is a pair of strings, the first being the
+-			   connection's sink, the second being the connection's
+-			   source; valid names for sources and sinks are the
+-			   WM5110's and MAX98504's pins and the jacks on the
+-			   board: HP, SPK, Main Mic, Sub Mic, Third Mic,
+-			   Headset Mic
+- - mic-bias-gpios	 : GPIO pin that enables the Main Mic bias regulator
 -
--Optional:
--- samsung,model: The name of the sound-card
--
--Arndale Boards has many audio daughter cards, one of them is
--rt5631/alc5631. Below example shows audio bindings for rt5631/
--alc5631 based codec.
 -
 -Example:
 -
 -sound {
--		compatible = "samsung,arndale-rt5631";
--
--		samsung,audio-cpu = <&i2s0>
--		samsung,audio-codec = <&rt5631>;
+-	compatible = "samsung,tm2-audio";
+-	audio-codec = <&wm5110>, <&hdmi>;
+-	i2s-controller = <&i2s0 0>, <&i2s1 0>;
+-	audio-amplifier = <&max98504>;
+-	mic-bias-gpios = <&gpr3 2 0>;
+-	model = "wm5110";
+-	samsung,audio-routing =
+-		"HP", "HPOUT1L",
+-		"HP", "HPOUT1R",
+-		"SPK", "SPKOUT",
+-		"SPKOUT", "HPOUT2L",
+-		"SPKOUT", "HPOUT2R",
+-		"Main Mic", "MICBIAS2",
+-		"IN1R", "Main Mic";
 -};
-diff --git a/Documentation/devicetree/bindings/sound/samsung,arndale.yaml b/Documentation/devicetree/bindings/sound/samsung,arndale.yaml
+diff --git a/Documentation/devicetree/bindings/sound/samsung,tm2.yaml b/Documentation/devicetree/bindings/sound/samsung,tm2.yaml
 new file mode 100644
-index 000000000000..e7dc65637f02
+index 000000000000..74712d6f3ef4
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/samsung,arndale.yaml
-@@ -0,0 +1,44 @@
++++ b/Documentation/devicetree/bindings/sound/samsung,tm2.yaml
+@@ -0,0 +1,80 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/sound/samsung,arndale.yaml#
++$id: http://devicetree.org/schemas/sound/samsung,tm2.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Insignal Arndale boards audio complex
++title: Samsung Exynos5433 TM2(E) audio complex with WM5110 codec
 +
 +maintainers:
 +  - Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
@@ -175,35 +192,71 @@ index 000000000000..e7dc65637f02
 +
 +properties:
 +  compatible:
-+    enum:
-+      - samsung,arndale-rt5631
-+      - samsung,arndale-wm1811
++    const: samsung,tm2-audio
 +
-+  samsung,audio-codec:
-+    description: Phandle to the audio codec.
++  audio-amplifier:
++    description: Phandle to the MAX98504 amplifier.
 +    $ref: /schemas/types.yaml#/definitions/phandle
 +
-+  samsung,audio-cpu:
-+    description: Phandle to the Samsung I2S controller.
-+    $ref: /schemas/types.yaml#/definitions/phandle
++  audio-codec:
++    description: Phandles to the codecs.
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    items:
++      - description: Phandle to the WM5110 audio codec.
++      - description: Phandle to the HDMI transmitter node.
 +
-+  samsung,model:
++  samsung,audio-routing:
++    description: |
++      List of the connections between audio components; each entry is
++      a pair of strings, the first being the connection's sink, the second
++      being the connection's source; valid names for sources and sinks are the
++      WM5110's and MAX98504's pins and the jacks on the board: HP, SPK, Main
++      Mic, Sub Mic, Third Mic, Headset Mic.
++    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
++
++  i2s-controller:
++    description: Phandles to the I2S controllers.
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    items:
++      - description: Phandle to I2S0.
++      - description: Phandle to I2S1.
++
++  mic-bias-gpios:
++    description: GPIO pin that enables the Main Mic bias regulator.
++
++  model:
 +    description: The user-visible name of this sound complex.
 +    $ref: /schemas/types.yaml#/definitions/string
 +
 +required:
 +  - compatible
-+  - samsung,audio-codec
-+  - samsung,audio-cpu
++  - audio-amplifier
++  - audio-codec
++  - samsung,audio-routing
++  - i2s-controller
++  - mic-bias-gpios
++  - model
 +
 +additionalProperties: false
 +
 +examples:
 +  - |
++    #include <dt-bindings/gpio/gpio.h>
++
 +    sound {
-+        compatible = "samsung,arndale-rt5631";
-+        samsung,audio-cpu = <&i2s0>;
-+        samsung,audio-codec = <&rt5631>;
++        compatible = "samsung,tm2-audio";
++        audio-codec = <&wm5110>, <&hdmi>;
++        i2s-controller = <&i2s0 0>, <&i2s1 0>;
++        audio-amplifier = <&max98504>;
++        mic-bias-gpios = <&gpr3 2 GPIO_ACTIVE_HIGH>;
++        model = "wm5110";
++        samsung,audio-routing = "HP", "HPOUT1L",
++                                "HP", "HPOUT1R",
++                                "SPK", "SPKOUT",
++                                "SPKOUT", "HPOUT2L",
++                                "SPKOUT", "HPOUT2R",
++                                "RCV", "HPOUT3L",
++                                "RCV", "HPOUT3R";
 +    };
 -- 
 2.32.0
