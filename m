@@ -4,68 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C510C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jan 2022 10:22:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D9CDC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jan 2022 10:22:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 947BA20FD;
-	Tue, 25 Jan 2022 11:21:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 947BA20FD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 780EE20B6;
+	Tue, 25 Jan 2022 11:21:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 780EE20B6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1643106146;
-	bh=ExbJRYNtfVD1s5WkJJibRPzKPc9HJ2TEz1/Xye0GnXE=;
+	s=default; t=1643106162;
+	bh=bPm0LjPdqkJuh3S4vN12VSn0qh8bPUdA5DbAm6JDSKI=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Y5cOJdyYVeyQ0Z3DFIR1S9jaWXYfE0UKpIOEJa0t0bH2JbnGDXm5+jCS1o4iXq42c
-	 R8LJR/okA9R36aJASWpOgZE022EsZtXjxcYxqLxLulGbgnEw2G4SHumW+7UeKe7cMM
-	 kKX1ZI2ggUV/L6VyLjrU5kjy8mhBu0ExIYl6S1Yg=
+	b=uKmc/nbS47EvnksVNbZCTltCvGe6Y5dpQu0+edTJssxfsa1ekDVmimogq/GAknvht
+	 v9s+FH3O6rUtniGAUy7ZhfFSLljhVOVqSRmLk94O826H8YPCSw4XzwZuKjmuBavkTd
+	 bLduOAfdGmoH4CX+jOdzRRGxBDytHa9QrUNRoQoI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3C557F8051B;
-	Tue, 25 Jan 2022 11:20:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CC3CCF80520;
+	Tue, 25 Jan 2022 11:20:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1D868F80508; Tue, 25 Jan 2022 11:20:24 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id ACEB7F8051B; Tue, 25 Jan 2022 11:20:30 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6C0BFF8050F
- for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2022 11:20:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C0BFF8050F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1AF88F80517
+ for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2022 11:20:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1AF88F80517
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="XbBlcFol"
+ header.b="E0g1wqBL"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 6F830B81752;
+ by ams.source.kernel.org (Postfix) with ESMTPS id DDCC8B81752;
+ Tue, 25 Jan 2022 10:20:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54366C340E5;
  Tue, 25 Jan 2022 10:20:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A70AC340E0;
- Tue, 25 Jan 2022 10:20:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1643106019;
- bh=ExbJRYNtfVD1s5WkJJibRPzKPc9HJ2TEz1/Xye0GnXE=;
+ s=k20201202; t=1643106023;
+ bh=bPm0LjPdqkJuh3S4vN12VSn0qh8bPUdA5DbAm6JDSKI=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=XbBlcFolcJ6CjYh6lffKWnbPXVNuKPmolwII2mPN6HFOtV+DbYrhaOxuxUHzCwQBK
- QVsKwUNhkAVuBSHAJsACTa5GGTBWURu+7HHedxIe4nYy2KyD4ThndS1Ssd+DzfGT18
- oHN3VHIyY9u5+HnKdh8ngPTPDHky+2SsurRy3YRAQaw18DNQ6qp05ikAx9qWHxYslS
- x9SFRb/9fpYATYGMxkvIEOMoJYQZ5tGpYKJXY7wcSDnb5dG9WK7JuncBzMCY133C9r
- ES23EZdRWJ4MXm3YZQfCKvUJJiZIPR87gD1mvsXOAhK6wLybyck9eTzPVPpbxcS39Q
- PHK9zlqoS1fcA==
+ b=E0g1wqBLEi1ip7lwDDh6jAKSNrueJIO+J0FOpq62I7AyowojSutWWFQbU8me7o04V
+ rsYRAH9ZkB1Ri9RGHM636oiMoGhse+mlfVjQ+X5ue3y/7EIiB4jhYyHBc7vDhxy92a
+ f07gXfB7UvO0Gd5Wfu5xUWZmB+GlNVb/ewuAuZ0zlWLVeIfOhI8how56sbrGszcnSj
+ ZgqVhR7FLfQ/qNHy3cWz1qYwGZDU+TEkFV+MjW0J1Z//bCqPB34erCS7otnbW7CEek
+ nJtv5F3/F3zA8LBmta6Qe03PefruPPgKOq1peyynvmGAlK8ZqGvZS6b+z1WGf2q/4h
+ 0/AuOhLHqfo0w==
 From: Mark Brown <broonie@kernel.org>
-To: Jiasheng Jiang <jiasheng@iscas.ac.cn>
-In-Reply-To: <20220114065713.1246619-1-jiasheng@iscas.ac.cn>
-References: <20220114065713.1246619-1-jiasheng@iscas.ac.cn>
-Subject: Re: [PATCH v2] ASoC: codecs: Check for error pointer after calling
- devm_regmap_init_mmio
-Message-Id: <164310601716.74844.9223636725378282440.b4-ty@kernel.org>
-Date: Tue, 25 Jan 2022 10:20:17 +0000
+To: Ariel D'Alessandro <ariel.dalessandro@collabora.com>,
+ alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org
+In-Reply-To: <20220117132109.283365-1-ariel.dalessandro@collabora.com>
+References: <20220117132109.283365-1-ariel.dalessandro@collabora.com>
+Subject: Re: [PATCH v2 0/5] fsl-asoc-card: Add optional dt property for
+ setting mclk-id
+Message-Id: <164310602006.74844.15557219169532586931.b4-ty@kernel.org>
+Date: Tue, 25 Jan 2022 10:20:20 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: cezary.rojewski@intel.com, bgoswami@codeaurora.org,
- alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.com,
- linux-kernel@vger.kernel.org, srinivas.kandagatla@linaro.org
+Cc: kuninori.morimoto.gx@renesas.com, Xiubo.Lee@gmail.com, tony@atomide.com,
+ festevam@gmail.com, tiwai@suse.com, lgirdwood@gmail.com,
+ nicoleotsuka@gmail.com, robh+dt@kernel.org, bcousson@baylibre.com,
+ michael@amarulasolutions.com, shengjiu.wang@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,13 +86,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 14 Jan 2022 14:57:13 +0800, Jiasheng Jiang wrote:
-> Since the possible failure of the devm_regmap_init_mmio(), it will
-> return error pointer and be assigned to the regmap.
-> Then the error pointer will be dereferenced.
-> For example rx->regmap will be used in rx_macro_mclk_enable().
-> Therefore, it should be better to check it.
+On Mon, 17 Jan 2022 10:21:04 -0300, Ariel D'Alessandro wrote:
+> This is a follow up of patchset:
 > 
+>     [RFC patch 0/5] Support BCLK input clock in tlv320aic31xx
+> 
+> Sound cards may allow using different main clock inputs. In the generic
+> fsl-asoc-card driver, these values are hardcoded for each specific card
+> configuration.
 > 
 > [...]
 
@@ -97,8 +103,16 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: codecs: Check for error pointer after calling devm_regmap_init_mmio
-      commit: aa505ecccf2ae7546e0e262d574e18a9241f3005
+[1/5] dt-bindings: sound: Rename tlv320aic31xx-micbias as tlv320aic31xx
+      commit: 85f856f790b5fd427cb31b3f62755713174da0aa
+[2/5] dt-bindings: tlv320aic31xx: Define PLL clock inputs
+      commit: 6045ffd366283236f0de79c8a0e98ae766e9a8f9
+[3/5] ASoC: bindings: fsl-asoc-card: Add mclk-id optional property
+      commit: 55915f20ad9ae92015bf7b2c4ac854e5b720d63f
+[4/5] ASoC: fsl-asoc-card: Add optional dt property for setting mclk-id
+      commit: e6ec5a3936ee0c01f46e1d09dc758bb762e06dd9
+[5/5] ASoC: fsl-asoc-card: Remove BCLK default value for tlv320aic31xx card
+      commit: d4c4e2861560ab1cbf540bbda5bcdf4c92b17110
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
