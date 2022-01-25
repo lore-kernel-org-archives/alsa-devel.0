@@ -4,69 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6AB17C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jan 2022 10:22:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C997AC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jan 2022 10:23:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A450E21A8;
-	Tue, 25 Jan 2022 11:22:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A450E21A8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 030B522CA;
+	Tue, 25 Jan 2022 11:22:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 030B522CA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1643106170;
-	bh=lHbr/XHtohtZv4WPTENAycbeFslCLLfzxFh1ho8lZgs=;
+	s=default; t=1643106202;
+	bh=WQ5zDLwVwwS1ynSOHJWo3a8DI0uSQmuqRVk4pP95Oi8=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=U0uIZLQjJLVyqDK5hhrJmoVeXuuVNK5tY+eIbyE2SGkSMVzyr180N7vBUHxr96aA2
-	 ruu9QdXYk8j7AJ15kOG+PIs9pEfYQIjbc2khSo1di6WVIBvDQVB1oTxOAkmAaIirLg
-	 H6s96GD2AIdM5w86Uz2cWz5zJSeamgmbgsYNlrZI=
+	b=gJq7mfU6tUfRVqF6Pij6nYWL7HNP9ODE/9uhnv+CUSI4asTs91wkzjJS6pks5MnnY
+	 aZJf6KZGW8v11qBJpEDneaVmXdVT3+LnHIKdWBVu0CNeQXT0NhfJcGATB/JUcVEPq4
+	 goRPH/JOvj5tPswAtFVV73P82IUaJJ1RUUzZXNyk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 733EDF80526;
-	Tue, 25 Jan 2022 11:20:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 53F1CF80535;
+	Tue, 25 Jan 2022 11:20:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6F819F8051D; Tue, 25 Jan 2022 11:20:33 +0100 (CET)
+ id 26099F80527; Tue, 25 Jan 2022 11:20:36 +0100 (CET)
 Received: from ams.source.kernel.org (ams.source.kernel.org
  [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ED80AF8051A
- for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2022 11:20:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED80AF8051A
+ by alsa1.perex.cz (Postfix) with ESMTPS id D219FF80517
+ for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2022 11:20:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D219FF80517
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="jNURRxl1"
+ header.b="iZy2JXEY"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 4A1FCB8174B;
- Tue, 25 Jan 2022 10:20:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74C82C340E5;
- Tue, 25 Jan 2022 10:20:26 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 49077B81753;
+ Tue, 25 Jan 2022 10:20:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CE9CC340E0;
+ Tue, 25 Jan 2022 10:20:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1643106028;
- bh=lHbr/XHtohtZv4WPTENAycbeFslCLLfzxFh1ho8lZgs=;
+ s=k20201202; t=1643106026;
+ bh=WQ5zDLwVwwS1ynSOHJWo3a8DI0uSQmuqRVk4pP95Oi8=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=jNURRxl14bETE3BtGe0qCU395qFA0Kx4q6IVWgyK/MP8hKX4rlXVC450RpYifAgLz
- amsiHAMzJptke7eXPMElmmUibwYuTkiiHS12MYNgibT4EA53R+/sjxRu1/QEDz7NsQ
- cALJlDqk01DZrmCrWMoxpTa82MG52ARTYO78I5TEgLqzeIIYP0vmP/dG98s6+jfc5+
- UM6K7JGVNdJEJyQA82toL6u0W/GcV6+Z+yPAAByqH0iQ/p75ek0OO46M0UFUlrm3vZ
- +yp2kHGc2nbY6Iz6JIUF4sB59Z9WfPjOIoirIeVEexhehBLt9qD7deWiz2OadueUDh
- Y7l2TQuJs3s6A==
+ b=iZy2JXEYkKApBCD2hhPXk8EjIaamFY3tj58S67dzym4UmfRLu+joXr3GGhpaeC4iw
+ JbI1QsZRmsQ7C7VONB7YREoh+knaPAZOzuOmC8utuTgCf8bWZNlaZloWk7PVZ6yN8e
+ wlT0Bk4j4t5PHsZWQWx+rofNHNf/x8pX+kAnJPYvhsuDRL5k4SdtXCOr3hpFLwalli
+ 3CsdXQHy7GfFaoghuW0y4KSwa/7tOSRPcXf+x1yXXgnFkioHfsO7FbK1SZvoEY7O4a
+ 5TNME0d6YOUm/gNUN1Jhik90TzSeXdngj7XxjM87dYZ7DkjtAj16DTAqRd9DjtzC2S
+ TK4B1Fw+gsFNw==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, Daniel Beer <daniel.beer@igorinstitute.com>,
- devicetree@vger.kernel.org
-In-Reply-To: <cover.1642298336.git.daniel.beer@igorinstitute.com>
-References: <cover.1642298336.git.daniel.beer@igorinstitute.com>
-Subject: Re: [PATCH v3 0/2] ASoC: add support for TAS5805M digital amplifier
-Message-Id: <164310602619.74844.8879999031786613742.b4-ty@kernel.org>
-Date: Tue, 25 Jan 2022 10:20:26 +0000
+To: krzysztof.kozlowski@canonical.com, cgel.zte@gmail.com
+In-Reply-To: <20220117110357.863990-1-chi.minghao@zte.com.cn>
+References: <20220117110357.863990-1-chi.minghao@zte.com.cn>
+Subject: Re: [PATCH] sound/soc/samsung: remove unneeded ret variable
+Message-Id: <164310602383.74844.16089601402972484181.b4-ty@kernel.org>
+Date: Tue, 25 Jan 2022 10:20:23 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Derek Simkowiak <derek.simkowiak@igorinstitute.com>,
- Andy Liu <andy-liu@ti.com>, Rob Herring <robh+dt@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Zeal Robot <zealci@zte.com.cn>, tiwai@suse.com, lgirdwood@gmail.com,
+ Minghao Chi <chi.minghao@zte.com.cn>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,15 +81,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 16 Jan 2022 14:58:56 +1300, Daniel Beer wrote:
-> This pair of patches implements support for the TAS5805M class D audio
-> amplifier. This driver, and the example configuration in the device-tree
-> file, were originally based on a 4.19 series kernel and have been
-> modified slightly from the tested version.
+On Mon, 17 Jan 2022 11:03:57 +0000, cgel.zte@gmail.com wrote:
+> From: Minghao Chi <chi.minghao@zte.com.cn>
 > 
-> This resubmission differs from v2 as follows:
+> Return value from io_remap_pfn_range() directly instead
+> of taking this in another redundant variable.
 > 
-> [...]
+> 
 
 Applied to
 
@@ -98,10 +95,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: add support for TAS5805M digital amplifier
-      commit: 2e5a74c68d601b11a496f91f76fa7bb236d10bd0
-[2/2] ASoC: dt-bindings: add bindings for TI TAS5805M.
-      commit: b8aec7a4a01b75973c22f004377a48593a3fef03
+[1/1] sound/soc/samsung: remove unneeded ret variable
+      commit: de531908ca4251918f3aff4b21440a8f7b96b0b7
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
