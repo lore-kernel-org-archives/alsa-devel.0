@@ -4,54 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 178F2C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jan 2022 14:21:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DFDF5C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jan 2022 14:35:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3E23C1FFF;
-	Tue, 25 Jan 2022 15:20:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E23C1FFF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6CB1D1B55;
+	Tue, 25 Jan 2022 15:35:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6CB1D1B55
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1643120474;
-	bh=U8uzjlfarASKlZEltJ9edaO6es3rAysjyjbC43H0z7w=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1643121353;
+	bh=5clRBsdVXBAvTi/3xGhcRtm3jyRN3XEGvnSEh70XfEE=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KruDG9g2Xf6F8EqKw6+evocsCjVgYGB7VBYiizRj6QQIWpEB5q2aNJqOU+7g7rcfR
-	 QhMcAmcD+QdiCBQFCzSoMBxkJYPrvRuwfi3yxDJrfoJ0S6VgNsiZpDMHgX82Nb7GGo
-	 Di2sjyStorc3DnlD+jjh7PU9Cks69Fk+GZLfZa5U=
+	b=FjShCiMFGs3J29ofM04qbYeqz5ar9rTrJKhtx4hLYz6el692jl4uzUnzl1Mma0b19
+	 yHJ1yUnxC+ng5EaXFSVjO41Bn2N5S8u0zo2DfRohajNcvCsYgbIvQqynBBiFDz6UFh
+	 bfxpjwGfTb2EiKluE4c0XY6w0Gy6jkBLYjstX5pc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D7E76F80161;
-	Tue, 25 Jan 2022 15:20:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 085A3F80169;
+	Tue, 25 Jan 2022 15:35:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2844DF804C3; Tue, 25 Jan 2022 15:20:23 +0100 (CET)
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
- by alsa1.perex.cz (Postfix) with ESMTP id E4757F80161
- for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2022 15:20:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4757F80161
-Received: from uucp (helo=alpha)
- by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
- id 1nCMg9-0001mq-00; Tue, 25 Jan 2022 15:20:13 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
- id 87595C10D8; Tue, 25 Jan 2022 15:20:02 +0100 (CET)
-Date: Tue, 25 Jan 2022 15:20:02 +0100
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: Build regressions/improvements in v5.17-rc1
-Message-ID: <20220125142002.GA26778@alpha.franken.de>
-References: <20220123125737.2658758-1-geert@linux-m68k.org>
- <alpine.DEB.2.22.394.2201240851560.2674757@ramsan.of.borg>
+ id 3F250F804C3; Tue, 25 Jan 2022 15:35:02 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0AB1AF80161
+ for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2022 15:34:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0AB1AF80161
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="WMbCLTsS"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 1A170615D8;
+ Tue, 25 Jan 2022 14:34:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEA22C340E0;
+ Tue, 25 Jan 2022 14:34:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1643121293;
+ bh=5clRBsdVXBAvTi/3xGhcRtm3jyRN3XEGvnSEh70XfEE=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=WMbCLTsSdJQw5UwSvoS9nKpOIrF1LWqEVG9vECp+cVNNO6SOjldyWoNiNG5pxo15z
+ S9EFvfe9oxncKuDjIlORfjVWUPX8S3w+VJnvS/EBYl3mlsBWsh205/nwPJNLTuwKBk
+ Vz6+tpP9eB6IrOe+HlTxXf8Z/wcbfjSTifqEX4o0Cj+J5kqTlaX8hhp5wgEbQZ6qcs
+ khEIQdKApROCMH0OMgnbl1U2xjUFTZ561U6pfbeAEAlfeTIEged2C+IhG/qj9D0lRs
+ zeUEUOacG6bnV3imI4uMqjhPVJPMPmkRVFqIYSMuJCMGZfHvBnt/a7HZJNpXKHxJAr
+ xkvYILj+hvwXQ==
+From: Mark Brown <broonie@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+In-Reply-To: <20220124153253.3548853-1-broonie@kernel.org>
+References: <20220124153253.3548853-1-broonie@kernel.org>
+Subject: Re: [PATCH v1 0/3] ASoC: Add bounds checking for written values
+Message-Id: <164312129256.3596085.4283851500413394138.b4-ty@kernel.org>
+Date: Tue, 25 Jan 2022 14:34:52 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2201240851560.2674757@ramsan.of.borg>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org, kvm@vger.kernel.org, netdev@vger.kernel.org,
- linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
- amd-gfx@lists.freedesktop.org, linux-mips@vger.kernel.org,
- Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>, sparclinux@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, "Tobin C. Harding" <me@tobin.cc>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -67,17 +79,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Jan 24, 2022 at 08:55:40AM +0100, Geert Uytterhoeven wrote:
-> >  + /kisskb/src/lib/test_printf.c: error: "PTR" redefined [-Werror]:  => 247:0, 247
-> >  + /kisskb/src/sound/pci/ca0106/ca0106.h: error: "PTR" redefined [-Werror]:  => 62, 62:0
+On Mon, 24 Jan 2022 15:32:50 +0000, Mark Brown wrote:
+> This series adds verification that values written to registers are in
+> bounds for controls since the core doesn't validate for us.
 > 
-> mips-gcc8/mips-allmodconfig
-> mipsel/mips-allmodconfig
+> Mark Brown (3):
+>   ASoC: ops: Reject out of bounds values in snd_soc_put_volsw()
+>   ASoC: ops: Reject out of bounds values in snd_soc_put_volsw_sx()
+>   ASoC: ops: Reject out of bounds values in snd_soc_put_xr_sx()
+> 
+> [...]
 
-fixing patch sent.
+Applied to
 
-Thomas.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-linus
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Thanks!
+
+[1/3] ASoC: ops: Reject out of bounds values in snd_soc_put_volsw()
+      commit: 817f7c9335ec01e0f5e8caffc4f1dcd5e458a4c0
+[2/3] ASoC: ops: Reject out of bounds values in snd_soc_put_volsw_sx()
+      commit: 4f1e50d6a9cf9c1b8c859d449b5031cacfa8404e
+[3/3] ASoC: ops: Reject out of bounds values in snd_soc_put_xr_sx()
+      commit: 4cf28e9ae6e2e11a044be1bcbcfa1b0d8675fe4d
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
