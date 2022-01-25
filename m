@@ -4,68 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01054C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jan 2022 10:23:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3803C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jan 2022 10:23:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 42F7317C3;
-	Tue, 25 Jan 2022 11:22:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 42F7317C3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1BAFF215C;
+	Tue, 25 Jan 2022 11:23:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1BAFF215C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1643106217;
-	bh=9oanPmGbEa5RXVfsZnBLjEA4BeGdcq9Tr6zFHoUW3cI=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1643106231;
+	bh=zLXcxuD3ZkIGicT8Whgipq8GPdiZk/A+XfSraaSJzf4=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=q7X7vR1aHhxtmVNOVmjkBn6orI/gkfUkBO7hFRFNMrm9u9A3Ns/DpV18rnRN0OX9s
-	 uWMpZcaSqsYvaBtz4kyUU+sVQzOmu8VPEaOuhRat+XpXhnqslfSrx6LNSv4CerAUvC
-	 /8LNGoDYMSAXVg9ifiRx0C4rK8sd9pZcpZu+TVYU=
+	b=rw6xkJLBLXmSFD8FCdUASy+uY0wLmCEl2f8MfqGOKyHHMRWX5EFjzPmpjAZMcWNP/
+	 dTMv4nYdtstCTLliHm1Huo79WLfscYfK8/bqyfRAVaf2vvExCnGe2kcJkmnYj5kJ7d
+	 a1igbzp8s8l9H+xLiHiFl/DuPcxDARLDf2m8IMb8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 53978F8053B;
-	Tue, 25 Jan 2022 11:20:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EF19BF80525;
+	Tue, 25 Jan 2022 11:20:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A0F61F8051C; Tue, 25 Jan 2022 11:20:36 +0100 (CET)
+ id 9B4FEF80529; Tue, 25 Jan 2022 11:20:37 +0100 (CET)
 Received: from ams.source.kernel.org (ams.source.kernel.org
  [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 10998F8051C
+ by alsa1.perex.cz (Postfix) with ESMTPS id F24DEF80525
  for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2022 11:20:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10998F8051C
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F24DEF80525
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="n1hLkgqO"
+ header.b="Y14QzTgr"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 366A6B81757;
- Tue, 25 Jan 2022 10:20:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89A85C340E0;
- Tue, 25 Jan 2022 10:20:30 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 451ACB81754;
+ Tue, 25 Jan 2022 10:20:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F0D2C340E5;
+ Tue, 25 Jan 2022 10:20:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1643106031;
- bh=9oanPmGbEa5RXVfsZnBLjEA4BeGdcq9Tr6zFHoUW3cI=;
- h=From:To:In-Reply-To:References:Subject:Date:From;
- b=n1hLkgqOUOQ1uj4tQZHu6lnsHZJ1l41hlJWZGXAYw3xWCn3/fWOQ0+roowbnTmr24
- +dHu9sLzOzPVxPvHUVrZqZbPXBFlRYVt18vZy1ee2QH5zXnoqx9/fTJ1u5wy4i8Vw/
- Ml6Zf7lDmNI4loAFcsyoTy9wJk0ZqYUpyWqhpUlnT+pPpf8BMKGl4czzgp+bcPSKsP
- /m1DvZP2VaLb8rtpDWkzKA7UXSZocd8WvDh1Y74MCTD0WrSWHQtIhA5adMIkhb4El8
- eEbNOOXwWfJgITgfWh5xSC0CKaYPX3JvysTwOhiIRQhQwsD/YS6yu6VDV5Ffnt6Qfq
- Wjc6E3KtnLm2g==
+ s=k20201202; t=1643106033;
+ bh=zLXcxuD3ZkIGicT8Whgipq8GPdiZk/A+XfSraaSJzf4=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=Y14QzTgrFpXzrWbbcMNOXARwsxeKQH+BQ8VtqaNedCYRr8DFYJ7Xzz7Aa8jsIjz/2
+ ER+CvQSJPZ3teCQ4aaPSR1sD3Pqe8lWunBksZ4LPBOOhI9Ipp9qM448349akD+gQXk
+ UfgsiG6DSxKYDZtRB/t4dg70ZQAc+ThecgFHsTPnxdbV/RZAa9XFPIsNxn7RR+TZmc
+ 9NQskfL9LEF7se8uQQeRA4odib58hF8di8HOrRuOJSoMA6ljlef0HeRR7xwQwUnEMo
+ i48KG9j0O36y18xOoKTLUsYlk23ynwd98maouW3ps+J4YKOmjHUQ3X/vvm/f5+4YKW
+ d5KzLnpjacxdA==
 From: Mark Brown <broonie@kernel.org>
-To: tiwai@suse.com, lgirdwood@gmail.com, lars@metafoo.de,
- linux-kernel@vger.kernel.org, Shengjiu Wang <shengjiu.wang@nxp.com>,
- perex@perex.cz, alsa-devel@alsa-project.org
-In-Reply-To: <1642646642-15908-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1642646642-15908-1-git-send-email-shengjiu.wang@nxp.com>
-Subject: Re: [PATCH] ASoC: soc-generic-dmaengine-pcm: separate max_buffer_size
- assignment
-Message-Id: <164310603029.74844.18163154288522285277.b4-ty@kernel.org>
-Date: Tue, 25 Jan 2022 10:20:30 +0000
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org
+In-Reply-To: <20220120230226.175906-1-pierre-louis.bossart@linux.intel.com>
+References: <20220120230226.175906-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/2] ASoC: Intel: sof_rt5682: add two derivative options
+Message-Id: <164310603211.74844.1328934003926514228.b4-ty@kernel.org>
+Date: Tue, 25 Jan 2022 10:20:32 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Cc: tiwai@suse.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,12 +80,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 20 Jan 2022 10:44:02 +0800, Shengjiu Wang wrote:
-> The config->pcm_hardware may be NULL when config->prealloc_buffer_size
-> is not zero, so it is better to move max_buffer_size assignment under
-> a separate condition.
+On Thu, 20 Jan 2022 17:02:24 -0600, Pierre-Louis Bossart wrote:
+> Add support for platforms without amplifier (headset codec only) and
+> without Intel graphics.
 > 
+> Ajye Huang (1):
+>   ASoC: Intel: sof_rt5682: Add support for platform without amplifier
 > 
+> Yong Zhi (1):
+>   ASoC: Intel: sof_rt5682: add support for systems without i915 audio
+> 
+> [...]
 
 Applied to
 
@@ -94,8 +98,10 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: soc-generic-dmaengine-pcm: separate max_buffer_size assignment
-      commit: 88c62b16281e5fe748f22f44da3def8a91fb1c34
+[1/2] ASoC: Intel: sof_rt5682: add support for systems without i915 audio
+      commit: 22cefca393ea3256fa7afb97cca39d5a088053f4
+[2/2] ASoC: Intel: sof_rt5682: Add support for platform without amplifier
+      commit: c8e98eaf2bcb91291b309f7f703dea345cae1411
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
