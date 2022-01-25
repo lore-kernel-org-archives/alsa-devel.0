@@ -4,77 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3A75C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jan 2022 14:12:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F183FC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jan 2022 14:15:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 299EC2062;
-	Tue, 25 Jan 2022 15:11:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 299EC2062
+	by alsa0.perex.cz (Postfix) with ESMTPS id CC6012066;
+	Tue, 25 Jan 2022 15:14:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC6012066
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1643119967;
-	bh=7CymtQ9aLbLWhZry/a+HBYAVAldZ2Z3THlyh2wIj6Cc=;
+	s=default; t=1643120113;
+	bh=5D44eq4f1KHY2SHcZFS4L8CG4NtW7sbeNZS183YD5Dw=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tlBjb89ryBIT7nBhoiyaES+r/II9yYeWeH4nbrxMnhjNkV0x0+Rplz8CTUJ+J23jG
-	 lBEh+21mVsJAwUwFBgfpSVG4U9kWJhB99rKsidYzmG6H5Zyrv1JO7TfJ6HfAArIrLa
-	 iFV71jXw1bvgB/WGFoUBT8l75UmwYwH0mABUwsko=
+	b=S6UNVtM3hHpQHiHi8A02dMHnFnV6hxxPcXtOaDq6okevU12wJziz7ER43Dl92Aq6k
+	 hweht+x328CVlnSLgDN5HhqkNvxPBkTgxttDHTCUNQq9z/VxU3k1yPkSGkJceNbc3Z
+	 IgNHzL+58a94IP5S5b3v6QvHV3CIsKaFK/hSGgyk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BD80FF80169;
-	Tue, 25 Jan 2022 15:11:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7581EF80161;
+	Tue, 25 Jan 2022 15:14:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BC64DF804C3; Tue, 25 Jan 2022 15:11:53 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id 378F3F804C3; Tue, 25 Jan 2022 15:14:22 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8E99AF80161
- for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2022 15:11:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E99AF80161
+ by alsa1.perex.cz (Postfix) with ESMTPS id 00751F80161
+ for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2022 15:14:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00751F80161
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="ghgzhHxM"; 
+ header.b="LvmiRU6J"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="ULvJZ3ta"
+ header.b="BbLbKuML"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id E916E1F381;
- Tue, 25 Jan 2022 14:11:50 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 36FA8210E2;
+ Tue, 25 Jan 2022 14:14:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1643119910; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1643120055; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Rz6I6KvsbC3JmWn5u5HiUD6dpDAY3TCPycX+RIt0T+Q=;
- b=ghgzhHxMu1tPiPbtdJeYr8a2pdLL3mMziV+Nwc68coiiVOB7r/Jv58qZtMlU9/T0c6oaVt
- w8fYuYD9YYBpA94gk2GjaCFeRHU2y8c7ozH8bh7wm/a5unrFe6gI73xfKaE+88WVxFbpXN
- BIpPpe7YE5yJFFU3YblQcRX7wFJWmpk=
+ bh=EPufQYCfjk0CmwsqlRmnaqd3XhXd7OMY3GxDqpQUduU=;
+ b=LvmiRU6JEm4Fk2IdB/JDzmWRQngUKQskUAP6FIA7GjJYfBSZyBxLUmrSniXCEwKnPR6PFq
+ 1vga6tQiM6V+BQvrN/n63fkAnjzsp/oBbrcKyg1JDP0I0xrBuDUh4nq71H2ewpgvxBLP6R
+ /U4TCtqUNVgFQ42LqL5hYjz5ZCpCXhQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1643119910;
+ s=susede2_ed25519; t=1643120055;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Rz6I6KvsbC3JmWn5u5HiUD6dpDAY3TCPycX+RIt0T+Q=;
- b=ULvJZ3taZUVAIUUVzlJqZodE6YiS/D8iIIb+yITXZ45PFf/6JUVzvdoYA2nWCNWm8kCwJk
- Xrxx+6CBr8rkVZCg==
+ bh=EPufQYCfjk0CmwsqlRmnaqd3XhXd7OMY3GxDqpQUduU=;
+ b=BbLbKuML6yb02kPW7w53iLZ6pyHW2UApDvbuFOWUVWRybqaSR//jP0AiC1KYcYAs2XOF5d
+ 5klJfS9hlFD46sBQ==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id F2834A3B84;
- Tue, 25 Jan 2022 14:11:48 +0000 (UTC)
-Date: Tue, 25 Jan 2022 15:11:48 +0100
-Message-ID: <s5h1r0vq50b.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id 23A37A3B8E;
+ Tue, 25 Jan 2022 14:14:15 +0000 (UTC)
+Date: Tue, 25 Jan 2022 15:14:15 +0100
+Message-ID: <s5hzgnjoqbs.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: Re: [PATCH v2][next] ALSA: usb-audio: scarlett2: Use struct_size()
- helper in scarlett2_usb()
-In-Reply-To: <20220120211600.GA28841@embeddedor>
-References: <20220120211600.GA28841@embeddedor>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] kselftest: alsa: Add test case for writing invalid values
+In-Reply-To: <20220124151410.2715572-1-broonie@kernel.org>
+References: <20220124151410.2715572-1-broonie@kernel.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, linux-hardening@vger.kernel.org,
- "Geoffrey D. Bennett" <g@b4.vu>
+Cc: alsa-devel@alsa-project.org, Shuah Khan <shuah@kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, linux-kselftest@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,24 +88,24 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 20 Jan 2022 22:16:00 +0100,
-Gustavo A. R. Silva wrote:
-> 
-> Make use of the struct_size() helper instead of an open-coded version,
-> in order to avoid any potential type mistakes or integer overflows that,
-> in the worst scenario, could lead to heap overflows.
-> 
-> Also, address the following sparse warnings:
-> sound/usb/mixer_scarlett_gen2.c:1064:28: warning: using sizeof on a flexible structure
-> sound/usb/mixer_scarlett_gen2.c:1065:29: warning: using sizeof on a flexible structure
-> 
-> Link: https://github.com/KSPP/linux/issues/174
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
-> Changes in v2:
->  - Use correct format specifier %zu for type size_t argument.
+On Mon, 24 Jan 2022 16:14:10 +0100,
+Mark Brown wrote:
+> +bool test_ctl_write_invalid_integer64(struct ctl_data *ctl)
+> +{
+....
+> +			/* Minimum representable value */
+> +			snd_ctl_elem_value_copy(val, ctl->def_val);
+> +			snd_ctl_elem_value_set_integer(val, i, LLONG_MIN);
 
-Applied now.  Thanks.
+This should be snd_ctl_elem_value_set_integer64()?
 
+> +			/* Maximum representable value */
+> +			snd_ctl_elem_value_copy(val, ctl->def_val);
+> +			snd_ctl_elem_value_set_integer(val, i, LLONG_MAX);
+
+Ditto.
+
+
+thanks,
 
 Takashi
