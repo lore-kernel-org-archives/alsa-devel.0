@@ -4,68 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC7A5C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jan 2022 10:24:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64DABC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jan 2022 10:24:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 117592075;
-	Tue, 25 Jan 2022 11:23:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 117592075
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9B8E720D4;
+	Tue, 25 Jan 2022 11:23:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B8E720D4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1643106249;
-	bh=+fclevw+qK/qkvHdiC+IxYySl5sZ4hCtOSt8CTZmnCY=;
+	s=default; t=1643106266;
+	bh=teZpSSDIJO8MxzMjV0LQdvAm1PtEQNLwt0AmngnKKyI=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=q+tXXl2ZZNQ3M2mUiJxGhRSbgtzbVvbAyB3XhzMWiF8vyJoA2qYmgM8seTVUzXWA4
-	 UoCR3wFSRtxvx/SHz5DOAddIiB5viEauxDFSOSUZuNvJuoyKpXLkVZQzBQ84yk7W26
-	 myA5/rrCmIYzQqsYpSvq8FVI/mcTc4QC+V4BylU4=
+	b=WV5180sd65lbS+3mhucm8RCPY+5BYpf4WoN0bCwt2X52J1dnrM3/AydWwy/p5KwOr
+	 cW8U6Ica/q+6xpG+7NZX+n3pBuJOu83BsGaC4ofQn/FywXHTgzJqxVKfsB6C7x71zF
+	 EK9xyfTg6Ui6oCQCVAZ9mMcBl+MxbhtiVpzRRmi4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 89D79F80542;
-	Tue, 25 Jan 2022 11:20:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0C6FBF8054A;
+	Tue, 25 Jan 2022 11:20:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B8CEFF80535; Tue, 25 Jan 2022 11:20:39 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 0BAC7F80535; Tue, 25 Jan 2022 11:20:42 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A8D55F80525
- for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2022 11:20:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8D55F80525
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4B153F8052E
+ for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2022 11:20:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B153F8052E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="hUDVmVDZ"
+ header.b="dYPxNsfg"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 67CE9B8174B;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 4ACAC6163B;
+ Tue, 25 Jan 2022 10:20:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA4CBC340E0;
  Tue, 25 Jan 2022 10:20:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79A3EC340E9;
- Tue, 25 Jan 2022 10:20:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1643106034;
- bh=+fclevw+qK/qkvHdiC+IxYySl5sZ4hCtOSt8CTZmnCY=;
+ s=k20201202; t=1643106036;
+ bh=teZpSSDIJO8MxzMjV0LQdvAm1PtEQNLwt0AmngnKKyI=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=hUDVmVDZfEyXaoIYXjsYKLRZ7NZFpIoPa0kqOawhZTW1iuNKVjDTrcim/co9THcYP
- 8Os6ZnjXy45ZvfrSMToBf5+9H38a28jnOpqoiwgYyPLBwuPM09B1HWub355oNp8EPv
- giJsZO5Gz2/N81JMwhCy0JjiqkU2JJPhYSIFSPI+Su04eNv92bwmCsavrXx/eOP3t0
- NEBxIZWh0Bil9AEE+eXacq1d7t8AIaWLNqCkit6Lt94VCp84bW7nh0hcTL9+pTtE1+
- agSoLQ4UvcsoTGZRYtWKDCQnG3aQ60hXrKOqOKNFqjkREJ9Rg2TVok3saiQ1juxCI8
- q7byKUx5NGHZg==
+ b=dYPxNsfgvNGvhmD+fMaXfnYHhV3TJYQ57AavGj92hdZnTsmn51oewzSYGtjgpZFA8
+ kCXMb5eZHPQGcQHt1UWvCcN0fpq2EdWg9bAhIAz1DbaV48P3rRNf1+6Tn6rqRrJ8Tp
+ rHUWTtlocmLtQl8jblnWlzeUbHPCrN6qyMWwbS5TzGIkCfhgjQ7LLWmoWzu3RYppn1
+ qotbJ6YjF8Kg/ORPJ+oTKgfKZ7hcqwuiFUeCSRQKaiT08/maQlZTXgySNiaYTx4B1e
+ jlcueyAC0HIKNsDFz9jGaj2Dwr5n2zZvYgUF4OFQTul62rgURXMpidnMz1GuVQReQ6
+ RTM1UdDu4ZWLQ==
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org
-In-Reply-To: <20220120231532.196926-1-pierre-louis.bossart@linux.intel.com>
-References: <20220120231532.196926-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/5] ASoC: SOF: Intel: don't download firmware at each
- resume
-Message-Id: <164310603322.74844.800269420089030232.b4-ty@kernel.org>
-Date: Tue, 25 Jan 2022 10:20:33 +0000
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+In-Reply-To: <20220121120412.672284-1-rf@opensource.cirrus.com>
+References: <20220121120412.672284-1-rf@opensource.cirrus.com>
+Subject: Re: [PATCH v2 0/3] ASOC: cs42l42: Add support for system suspend
+Message-Id: <164310603562.74844.1855667686976141960.b4-ty@kernel.org>
+Date: Tue, 25 Jan 2022 10:20:35 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,13 +80,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 20 Jan 2022 17:15:27 -0600, Pierre-Louis Bossart wrote:
-> After the first firmware boot, the firmware is capable of
-> saving/restoring its context to/from IMR (Isolated Memory Region, set
-> aside by BIOS on startup). This capability improves the resume speed.
+On Fri, 21 Jan 2022 12:04:09 +0000, Richard Fitzgerald wrote:
+> Add system suspend and resume handlers so that the cs42l42 is cleanly
+> put into power-off state during system suspend and the registers are
+> restored in resume.
 > 
-> Due to an unexplained issue on Up2 boards, this capability is disabled
-> on ApolloLake.
+> The first two patches separate out two small changes that can stand
+> alone and are needed to enable the system suspend implementation:
 > 
 > [...]
 
@@ -97,16 +96,12 @@ Applied to
 
 Thanks!
 
-[1/5] ASoC: SOF: add _D3_PERSISTENT flag to fw_ready message
-      commit: 1dafede34dda19fc2878724145dc16c0b51dc174
-[2/5] ASoC: SOF: Intel: use inclusive language for SSP clocks
-      commit: bd586a0292e0724fac571a2e4b629134ab2c686c
-[3/5] ASoC: SOF: Intel: hda-loader: add SSP helper
-      commit: a749d744561ccc8658cebe23fc284034a57e6ceb
-[4/5] ASoC: SOF: Intel: hda-loader: add IMR restore support
-      commit: 5fb5f51185126059e1d7eb4e452e08c7b17c3301
-[5/5] ASoC: SOF: add flag to disable IMR restore to sof_debug
-      commit: d7a8fbd17bfef174e85d81d94507b8015732a58e
+[1/3] ASoC: cs42l42: Report full jack status when plug is detected
+      commit: 8d06f797f844d04a961f201f886f7f9985edc9bf
+[2/3] ASoC: cs42l42: Change jack_detect_mutex to a lock of all IRQ handling
+      commit: 5982b5a8ec7ddb076e774bdd0b17d74681ab0943
+[3/3] ASoC: cs42l42: Handle system suspend
+      commit: f8593e88540052b3feaf1fb36f2c1c0484c9dc14
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
