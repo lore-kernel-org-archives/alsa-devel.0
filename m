@@ -4,64 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5B86C5AC75
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Jan 2022 01:16:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC776C5AC75
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Jan 2022 01:16:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 19C2F1DE5;
-	Wed, 26 Jan 2022 02:15:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 19C2F1DE5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1F2331F6B;
+	Wed, 26 Jan 2022 02:15:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F2331F6B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1643159768;
-	bh=cH0XyDQ4K5w193zV62nuPqzVps5xaLQVLtjpTPjw14E=;
+	s=default; t=1643159804;
+	bh=4ie7NmQiHe1ezeLtR9C2w+62rfFvkBb3pIYs6EglC0g=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=ASTHXoNCNDFARcxss+tblvgBgc2CaWIktjsOX/WquSaUTzMkeW4azCw+0fGkrHmnT
-	 YoEspAgvOHvph1tKMyvmnySdd0waVoOy5sahpvZosivzJUfy2VkgL6c/xXNfX3XEP5
-	 Z2G8OubafIMadHdc1D2GNH9vMCNXhP+cG5QvHP/8=
+	b=GAojtb+7vSguGd5YB+gB+X3F+cJcrwH4W1vOFxFw82v2zE17sfZJbf3us4Qqvz4PV
+	 Yzh/AkVpEK2nC9gL60AeIqqDvcM7je9mdzpyKL22CG0f/7en0uvIYlv2UW3lyom/Vn
+	 1KIwVJuCFKDaF2lLkvu530NVKAQznmMbHYk5j4Ok=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8A266F80169;
-	Wed, 26 Jan 2022 02:15:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3DC66F804D1;
+	Wed, 26 Jan 2022 02:15:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3AFF4F804C3; Wed, 26 Jan 2022 02:15:14 +0100 (CET)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ id CDA5FF804D2; Wed, 26 Jan 2022 02:15:49 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9296EF80161
- for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2022 02:15:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9296EF80161
+ by alsa1.perex.cz (Postfix) with ESMTPS id EDAFBF80118
+ for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2022 02:15:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EDAFBF80118
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="fUgP4Tmb"
+ header.b="k1R8vndN"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1643159710; x=1674695710;
+ t=1643159744; x=1674695744;
  h=from:to:cc:subject:date:message-id;
- bh=cH0XyDQ4K5w193zV62nuPqzVps5xaLQVLtjpTPjw14E=;
- b=fUgP4TmbLSH4bSUwwDa4QSqUDqmwKOe4rDiMlncLL1ga9v36QQfkpn5N
- BNAtvyR09hm83+GTAuT+Sh4zDfLGawlwBI0q/pt4jEV1Tv4iT0NM1oBAB
- Jss2VOcEgickp3IhAb5MXLOU5gUafKk9RtaTO4cdKQt9F8ppscBrCYcVu
- n8sJdTgmBy/Mo1lIRhlzjnbupyPERz34DGjPpRpONm6r9O/l8QFfxHcQI
- e9U6yflYxqOMrqLt8pDVN3nIXh0VVGvw+Df0bLGBzJFZMSzrKPfmsiS9J
- oAD1dUafnil6P3mDAyk6oNWLhq33v1hqdfPQ5/SW/Z/ETYRw37XKTUa7b Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10238"; a="230030640"
-X-IronPort-AV: E=Sophos;i="5.88,316,1635231600"; d="scan'208";a="230030640"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Jan 2022 17:15:03 -0800
-X-IronPort-AV: E=Sophos;i="5.88,316,1635231600"; d="scan'208";a="479719122"
+ bh=4ie7NmQiHe1ezeLtR9C2w+62rfFvkBb3pIYs6EglC0g=;
+ b=k1R8vndNNZL0xL7CPyHM2UmCgb6fbfS6z7rANRXohSmlN5CXdYdlfpZx
+ Yo/poATUdo4GmdRGxsTBQX1PXt203+wih8EC2/KEo6KO27yxBp+yJ+Y4L
+ 7JLgQjgyss74eVH3rR6VC78HGvABqihEycx7MfK/DR3HkDa1cAlb68O8z
+ mrDnLZbqvK+VXUjVwAqq/fiWk6CYc6pa0MuGBe0R9SzLqx0Lee8UdZYld
+ cFP/9/BeuEZVqtrCfer3ee08WsHKcgawBkBpu3rByqzQYsEtP6nCwfyPN
+ ACT0mvW/l8aNO8sXV4AeSYlLPzMQJN/+V0F8RL1nPXEjHMr1YeAvK7N3X g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10238"; a="246235779"
+X-IronPort-AV: E=Sophos;i="5.88,316,1635231600"; d="scan'208";a="246235779"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Jan 2022 17:15:38 -0800
+X-IronPort-AV: E=Sophos;i="5.88,316,1635231600"; d="scan'208";a="520616673"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
- by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Jan 2022 17:15:00 -0800
+ by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Jan 2022 17:15:35 -0800
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH] soundwire: intel: fix wrong register name in intel_shim_wake
-Date: Wed, 26 Jan 2022 09:14:51 +0800
-Message-Id: <20220126011451.27853-1-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH] soundwire: bus: add dev_warn() messages to track UNATTACHED
+ devices
+Date: Wed, 26 Jan 2022 09:15:27 +0800
+Message-Id: <20220126011527.27930-1-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
-Cc: libin.yang@intel.com, vinod.koul@linaro.org, gregkh@linuxfoundation.org,
+Cc: vinod.koul@linaro.org, gregkh@linuxfoundation.org,
  pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
  srinivas.kandagatla@linaro.org, sanyog.r.kale@intel.com, bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
@@ -79,34 +80,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Libin Yang <libin.yang@intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-When clearing the sdw wakests status, we should use SDW_SHIM_WAKESTS.
+In rare cases, some devices seem to lose sync and never re-attach on
+the bus. This seems to happen only when there are more than one device
+per link, which suggests either an electrical issue, a race condition
+or a state machine issue.
 
-Fixes: 4a17c441c7cb ("soundwire: intel: revisit SHIM programming sequences.")
-Signed-off-by: Libin Yang <libin.yang@intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Add two dev_warn() messages to identify the sequence by which the
+devices become UNATTACHED.
+
+BugLink: https://github.com/thesofproject/linux/issues/3063
+BugLink: https://github.com/thesofproject/linux/issues/3325
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/intel.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/soundwire/bus.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 122f7a29d8ca..63101f1ba271 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -448,8 +448,8 @@ static void intel_shim_wake(struct sdw_intel *sdw, bool wake_enable)
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index 67369e941d0d..354d3f89366f 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -1749,8 +1749,11 @@ int sdw_handle_slave_status(struct sdw_bus *bus,
+ 			continue;
  
- 		/* Clear wake status */
- 		wake_sts = intel_readw(shim, SDW_SHIM_WAKESTS);
--		wake_sts |= (SDW_SHIM_WAKEEN_ENABLE << link_id);
--		intel_writew(shim, SDW_SHIM_WAKESTS_STATUS, wake_sts);
-+		wake_sts |= (SDW_SHIM_WAKESTS_STATUS << link_id);
-+		intel_writew(shim, SDW_SHIM_WAKESTS, wake_sts);
+ 		if (status[i] == SDW_SLAVE_UNATTACHED &&
+-		    slave->status != SDW_SLAVE_UNATTACHED)
++		    slave->status != SDW_SLAVE_UNATTACHED) {
++			dev_warn(&slave->dev, "Slave %d state check1: UNATTACHED, status was %d\n",
++				 i, slave->status);
+ 			sdw_modify_slave_status(slave, SDW_SLAVE_UNATTACHED);
++		}
  	}
- 	mutex_unlock(sdw->link_res->shim_lock);
- }
+ 
+ 	if (status[0] == SDW_SLAVE_ATTACHED) {
+@@ -1785,6 +1788,9 @@ int sdw_handle_slave_status(struct sdw_bus *bus,
+ 			if (slave->status == SDW_SLAVE_UNATTACHED)
+ 				break;
+ 
++			dev_warn(&slave->dev, "Slave %d state check2: UNATTACHED, status was %d\n",
++				 i, slave->status);
++
+ 			sdw_modify_slave_status(slave, SDW_SLAVE_UNATTACHED);
+ 			break;
+ 
 -- 
 2.17.1
 
