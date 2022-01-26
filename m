@@ -4,64 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CFFA2C3525A
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Jan 2022 01:19:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 586B3C5DF62
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Jan 2022 01:19:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 270001F76;
-	Wed, 26 Jan 2022 02:18:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 270001F76
+	by alsa0.perex.cz (Postfix) with ESMTPS id A4FF01F8A;
+	Wed, 26 Jan 2022 02:18:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A4FF01F8A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1643159947;
-	bh=r96d366BOZOklC6E0TxFNatMgTAwkA3B2SyQlBSc03c=;
+	s=default; t=1643159963;
+	bh=3xf4jfiB2XJp4alN6rFXrArNNBQgEJCYpcp1fFvmcbw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TaBb1jNHS6/uPbwfbnjG4mQwHfAi8d6kmm1EW3Ur2CGnqPXxopE0C2S362MCPPp3s
-	 m9C2gLvS5v8oh4SCEzqAlQ4ouOyZKW/2HKUva5tsdnwYV0dHv2S9+6dC8GLzYovhm9
-	 FJ5ddslCihrmQE/0Q/7ZW04TCMFLGp8HURkT8A1U=
+	b=XJ/PvEut/4hpyqYHlXmdZCVz6AfjbWBvuEb5tkbPUCevMKxrGtasPV4FFuwQC9EQb
+	 T1D13aPJCRWfkkBu9b4edyHaG0mnSsuanvwpLApvicZZ/wzybWEOVKHsGHnp2FIVlS
+	 nlhqUvrBb+uPMmlkFCju94pYEAspyMHOaBF/oJJ8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8CD6FF804D2;
-	Wed, 26 Jan 2022 02:17:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 134C8F80517;
+	Wed, 26 Jan 2022 02:17:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BACC7F80506; Wed, 26 Jan 2022 02:17:43 +0100 (CET)
+ id 56506F80506; Wed, 26 Jan 2022 02:17:44 +0100 (CET)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1F557F80161
- for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2022 02:17:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F557F80161
+ by alsa1.perex.cz (Postfix) with ESMTPS id 94BE6F804C3
+ for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2022 02:17:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94BE6F804C3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="J6Vwe0DQ"
+ header.b="nZSOghh7"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
  t=1643159858; x=1674695858;
  h=from:to:cc:subject:date:message-id:in-reply-to: references;
- bh=r96d366BOZOklC6E0TxFNatMgTAwkA3B2SyQlBSc03c=;
- b=J6Vwe0DQWxUeqCh8xYuMxdkkvFf+ROTLIcmTgrZ2ELOlexyzsECGPB0q
- pJWSk3hBfvi3171bq4Qk9tqxiUnH3LMvjtSYzOHnv6o2ObOAk3sAT1bqn
- 6rrlK0iqrKxAOhLIQ/sVTQSMtTXp7uwlkJtqEOE9+fENqdj4PKc72dsfE
- yHrOlzno860ys7BH07pHpX2TIIJ9NVzTg4dVVcv1vmbl1MeeQ13mR5yJ1
- ajIK1M0vRNhDbajvlL5EDcbR2IdIIFggOg2WWWR3vpvrF8mxYKQnsYtUo
- s/z3pT5xbM187lUgei4ugrBfL+TuDZ3D2PN5yhPcAb2kAXGEZx5L50e+Z A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10238"; a="246236110"
-X-IronPort-AV: E=Sophos;i="5.88,316,1635231600"; d="scan'208";a="246236110"
+ bh=3xf4jfiB2XJp4alN6rFXrArNNBQgEJCYpcp1fFvmcbw=;
+ b=nZSOghh7xuCx/Nz41y/1+ZnsfdoQqApsCfucU3uKPS87R3LLddyzqHVe
+ CkEB6PMXgwnRY7gejHA4R2XIzH3221DQlcXTm8On1UA83UH4vI7IpFt6i
+ gJL0ThaCvKfh1AuoD5GVrtZK8F6MaER8MWapOcyT1lTdFYYjV6ABYYrAx
+ Bcxnbj7a64E6JhmUkgcxWpQB7ARa004sQ81YLASC69tTLPO/0JIv9OamG
+ eVTjUj486xf9H8f9bBnTvHIhAl54cBqxwnGGwCG+blk81UKlGq+XJMhlS
+ NwLRg/GG6aMt36dP8k3kk+u0ZnJvTKBWIJcagYYgmv36Ap8g9JDJ/LZYd A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10238"; a="246236116"
+X-IronPort-AV: E=Sophos;i="5.88,316,1635231600"; d="scan'208";a="246236116"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Jan 2022 17:17:32 -0800
-X-IronPort-AV: E=Sophos;i="5.88,316,1635231600"; d="scan'208";a="520617318"
+ 25 Jan 2022 17:17:35 -0800
+X-IronPort-AV: E=Sophos;i="5.88,316,1635231600"; d="scan'208";a="520617352"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Jan 2022 17:17:30 -0800
+ 25 Jan 2022 17:17:32 -0800
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH 01/19] soundwire: stream: remove unused parameter in
- sdw_stream_add_slave
-Date: Wed, 26 Jan 2022 09:16:57 +0800
-Message-Id: <20220126011715.28204-2-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 02/19] soundwire: stream: add slave runtime to list earlier
+Date: Wed, 26 Jan 2022 09:16:58 +0800
+Message-Id: <20220126011715.28204-3-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20220126011715.28204-1-yung-chuan.liao@linux.intel.com>
 References: <20220126011715.28204-1-yung-chuan.liao@linux.intel.com>
@@ -85,44 +84,48 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-The stream parameter is not used, remove before further simplifications.
+sdw_config_stream() only verifies the compatibility between
+information provided by the Slave driver and the stream configuration.
+
+There is no problem if we add the slave runtime to the list earlier.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/stream.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/soundwire/stream.c | 17 ++++-------------
+ 1 file changed, 4 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
-index 980f26d49b66..a30d0fb4871b 100644
+index a30d0fb4871b..a75d3576bfcf 100644
 --- a/drivers/soundwire/stream.c
 +++ b/drivers/soundwire/stream.c
-@@ -968,14 +968,12 @@ static struct sdw_master_runtime
-  *
-  * @slave: Slave handle
-  * @stream_config: Stream configuration
-- * @stream: Stream runtime handle
-  *
-  * This function is to be called with bus_lock held.
-  */
- static struct sdw_slave_runtime
- *sdw_alloc_slave_rt(struct sdw_slave *slave,
--		    struct sdw_stream_config *stream_config,
--		    struct sdw_stream_runtime *stream)
-+		    struct sdw_stream_config *stream_config)
- {
- 	struct sdw_slave_runtime *s_rt;
- 
-@@ -1367,7 +1365,7 @@ int sdw_stream_add_slave(struct sdw_slave *slave,
- 		goto error;
+@@ -1373,21 +1373,12 @@ int sdw_stream_add_slave(struct sdw_slave *slave,
+ 		ret = -ENOMEM;
+ 		goto stream_error;
  	}
+-
+-	ret = sdw_config_stream(&slave->dev, stream, stream_config, true);
+-	if (ret) {
+-		/*
+-		 * sdw_release_master_stream will release s_rt in slave_rt_list in
+-		 * stream_error case, but s_rt is only added to slave_rt_list
+-		 * when sdw_config_stream is successful, so free s_rt explicitly
+-		 * when sdw_config_stream is failed.
+-		 */
+-		kfree(s_rt);
+-		goto stream_error;
+-	}
+-
+ 	list_add_tail(&s_rt->m_rt_node, &m_rt->slave_rt_list);
  
--	s_rt = sdw_alloc_slave_rt(slave, stream_config, stream);
-+	s_rt = sdw_alloc_slave_rt(slave, stream_config);
- 	if (!s_rt) {
- 		dev_err(&slave->dev,
- 			"Slave runtime config failed for stream:%s\n",
++	ret = sdw_config_stream(&slave->dev, stream, stream_config, true);
++	if (ret)
++		goto stream_error;
++
+ 	ret = sdw_slave_port_config(slave, s_rt, port_config, num_ports);
+ 	if (ret)
+ 		goto stream_error;
 -- 
 2.17.1
 
