@@ -4,86 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13120C5DF62
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Jan 2022 11:38:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46445C28CF5
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Jan 2022 12:59:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4CE9C1F45;
-	Wed, 26 Jan 2022 12:37:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4CE9C1F45
+	by alsa0.perex.cz (Postfix) with ESMTPS id 509521EFF;
+	Wed, 26 Jan 2022 13:58:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 509521EFF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1643197099;
-	bh=EQkaQaUkc+wyREHktGItkocSaoVeoMfuOb+QxQENXl0=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1643201946;
+	bh=wwU+tnK1eUMgwaHuPMF+WVqKYm6bBk9k4K2YQcP3bjI=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gPzHejPqcjXgGEmmKlMV4yrFEscK5K84FD82oSWFq6YUHhhAGjA5+Rt+XDgw5zdfG
-	 Q1hbdczl9Ea7lBcuyS9q1nf0eRZfuDMKpUu6JlymgSmDj+Md4rAy5sdo53s//wzIvQ
-	 V/pq5qCFNTIECFRihVtQv2fwl74mcAMKfoOEsqno=
+	b=LvvRnzeMScLmt6LGM895fhwmdKs3+gvwc1m52R66pMh4iqWNYEUwjTObK4wdTo+VI
+	 K5vQFfKoXIE19Hpp7CoEdvOKmdq8RJE2yibf3QnPashKIUdY9Py6erBQagSu8sqSit
+	 8AYTzonCSkiidsEJiL7WuocC46ye8ZdzhCOaCtNM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 60135F80516;
-	Wed, 26 Jan 2022 12:36:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E42D3F8047D;
+	Wed, 26 Jan 2022 13:58:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7B49DF80511; Wed, 26 Jan 2022 12:36:12 +0100 (CET)
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com
- [IPv6:2a00:1450:4864:20::436])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 9E5A2F8049C; Wed, 26 Jan 2022 13:58:11 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C2DA8F804C1
- for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2022 12:36:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2DA8F804C1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 533FFF80118
+ for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2022 13:58:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 533FFF80118
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="bOPFKWeS"
-Received: by mail-wr1-x436.google.com with SMTP id w11so13062876wra.4
- for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2022 03:36:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=bXVjE+WHy8056yU6PQ186TKgk9YFsJSf/z9MoSICAgo=;
- b=bOPFKWeSDz/5+SWrCSqxTxArgqoAVTVn9JPw/LwQVWw/KF8qXvJXOqSe+p0LykVAMl
- FVHAvDWl4uq+Twi3eh6lCLiaMXN2PjAqVCezLLxc2VTlKJL4V9FMusPREkrzc18XNK60
- P2GhDxWYXChfe2PmIXOrCdKEjLmpQi7RantbrgMCzXL7uphq0emDusi5DtgizxaxvnBn
- q8nIoIuTRT21j9n3EZpMW9+5fyqF+9pxctLuV2LVwTZVkByAvGfM639trJdAOOvWMbpo
- E/bS5WOiEOIE0kXb/hi4CE/hRZcYL78/7AvmLPJk91Rr2hxlGTm7pG93zIoUcJpbLfhJ
- 7Ugw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=bXVjE+WHy8056yU6PQ186TKgk9YFsJSf/z9MoSICAgo=;
- b=U8ooaywNbkhWOox9GzDscb3JAQi9Vas2i9wY3aq4JFFAbGQknydxwi1WXwEypoOVP3
- qmDNTkW7ZJNvFjNZ4cY8xwjSs8T+gGrHdrnD8d/OJ5doxYWf15Vj3Ulpp4XEwVaM2aLX
- /PERh8Z6ispXuF7ecf0DyvZtlI6+PPssDY2fbVdWVM3Z96R32wp+7G0f8oLVOWdR7Zf1
- D1y2G6LStD2/IJhrtQqcWtaOsItrylEGhzzVh6tgpiuCOQq2o73be3hXtS1wPLI7NLRj
- 406B04yGG5edJEs0Vk7mnsv4XfNERc4auGqrZ6b48YGjzAdWqgdjqvtLjuS3ANTVPHiQ
- qpXA==
-X-Gm-Message-State: AOAM532mR4g9m9pBRPpNLMHBHo54c3lHQ98J13FHIaN9BMIIfJIbs6R3
- pigFUyOdYxpI+6HK/VRoOLUjkhGpLLzmCA==
-X-Google-Smtp-Source: ABdhPJzXvbDq09qiBfc5o13vwHQzmqhkxGwNvWS1trLsF9xfkIUo9E3GK79OPSvS6pT/ByTWosOOxA==
-X-Received: by 2002:adf:e48c:: with SMTP id i12mr21498933wrm.43.1643196960863; 
- Wed, 26 Jan 2022 03:36:00 -0800 (PST)
-Received: from srini-hackbox.lan
- (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
- by smtp.gmail.com with ESMTPSA id n14sm11999188wri.75.2022.01.26.03.35.59
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 26 Jan 2022 03:36:00 -0800 (PST)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: broonie@kernel.org
-Subject: [PATCH 2/4] ASoC: codecs: lpass-rx-macro: fix sidetone register
- offsets
-Date: Wed, 26 Jan 2022 11:35:47 +0000
-Message-Id: <20220126113549.8853-3-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20220126113549.8853-1-srinivas.kandagatla@linaro.org>
-References: <20220126113549.8853-1-srinivas.kandagatla@linaro.org>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="F8GAxMNU"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 6211761A3F;
+ Wed, 26 Jan 2022 12:58:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F57DC340E8;
+ Wed, 26 Jan 2022 12:58:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1643201885;
+ bh=wwU+tnK1eUMgwaHuPMF+WVqKYm6bBk9k4K2YQcP3bjI=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=F8GAxMNUriS6oQyq9vKrcrtTrp/dW/3M66NWvd7HkQc94AGS3d8JeBDz/xEz6Yoi8
+ Uw2Qbwjbfl4czkluzZXEZl8yrgYLYbNOtyRObL9qwjX7mR83Sqf64Dn/YrvGhqeMt0
+ ecu0wpmXEQ7fJg9f6u2M4WrlLxIQVrltbgSDQxIb7dfGy+JSebNDe4u+sF+2k/2h5N
+ EQAYUMya973vEi4HDML7m9G4ceZeMTFnN0CAK3BxmeWfFI7YULrScjRPQ1KPs3kdTw
+ 3myYN7YI7b26LgkUAL/P0DmUkop+wF04eQADykCqWeQNWyMd9kuE7hnmEVMsK4YWC6
+ XK7w6GFjYxupw==
+Date: Wed, 26 Jan 2022 12:58:01 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Miaoqian Lin <linmq006@gmail.com>
+Subject: Re: [PATCH] ASoC: fsl: Add missing error handling in
+ pcm030_fabric_probe
+Message-ID: <YfFFWSVgnbL6ETxo@sirena.org.uk>
+References: <20220126113307.1673-1-linmq006@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
- linux-kernel@vger.kernel.org, pierre-louis.bossart@linux.intel.com,
- tiwai@suse.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- quic_srivasam@quicinc.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="NmCm27cBeyhb9V5C"
+Content-Disposition: inline
+In-Reply-To: <20220126113307.1673-1-linmq006@gmail.com>
+X-Cookie: Use only in a well-ventilated area.
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Eric Millbrandt <emillbrandt@dekaresearch.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,50 +83,54 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-For some reason we ended up with incorrect register offfset calcuations
-for sidetone. regmap clearly throw errors when accessing these incorrect
-registers as these do not belong to any read/write ranges.
-so fix them to point to correct register offsets.
 
-Fixes: f3ce6f3c9a99 ("ASoC: codecs: lpass-rx-macro: add iir widgets")
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- sound/soc/codecs/lpass-rx-macro.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+--NmCm27cBeyhb9V5C
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/soc/codecs/lpass-rx-macro.c b/sound/soc/codecs/lpass-rx-macro.c
-index aec5127260fd..6ffe88345de5 100644
---- a/sound/soc/codecs/lpass-rx-macro.c
-+++ b/sound/soc/codecs/lpass-rx-macro.c
-@@ -2688,8 +2688,8 @@ static uint32_t get_iir_band_coeff(struct snd_soc_component *component,
- 	int reg, b2_reg;
- 
- 	/* Address does not automatically update if reading */
--	reg = CDC_RX_SIDETONE_IIR0_IIR_COEF_B1_CTL + 16 * iir_idx;
--	b2_reg = CDC_RX_SIDETONE_IIR0_IIR_COEF_B2_CTL + 16 * iir_idx;
-+	reg = CDC_RX_SIDETONE_IIR0_IIR_COEF_B1_CTL + 0x80 * iir_idx;
-+	b2_reg = CDC_RX_SIDETONE_IIR0_IIR_COEF_B2_CTL + 0x80 * iir_idx;
- 
- 	snd_soc_component_write(component, reg,
- 				((band_idx * BAND_MAX + coeff_idx) *
-@@ -2718,7 +2718,7 @@ static uint32_t get_iir_band_coeff(struct snd_soc_component *component,
- static void set_iir_band_coeff(struct snd_soc_component *component,
- 			       int iir_idx, int band_idx, uint32_t value)
- {
--	int reg = CDC_RX_SIDETONE_IIR0_IIR_COEF_B2_CTL + 16 * iir_idx;
-+	int reg = CDC_RX_SIDETONE_IIR0_IIR_COEF_B2_CTL + 0x80 * iir_idx;
- 
- 	snd_soc_component_write(component, reg, (value & 0xFF));
- 	snd_soc_component_write(component, reg, (value >> 8) & 0xFF);
-@@ -2739,7 +2739,7 @@ static int rx_macro_put_iir_band_audio_mixer(
- 	int iir_idx = ctl->iir_idx;
- 	int band_idx = ctl->band_idx;
- 	u32 coeff[BAND_MAX];
--	int reg = CDC_RX_SIDETONE_IIR0_IIR_COEF_B1_CTL + 16 * iir_idx;
-+	int reg = CDC_RX_SIDETONE_IIR0_IIR_COEF_B1_CTL + 0x80 * iir_idx;
- 
- 	memcpy(&coeff[0], ucontrol->value.bytes.data, params->max);
- 
--- 
-2.21.0
+On Wed, Jan 26, 2022 at 11:33:04AM +0000, Miaoqian Lin wrote:
+> Add the missing platform_device_put() and platform_device_del()
+> before return from pcm030_fabric_probe in the error handling case.
 
+>  	ret =3D platform_device_add(pdata->codec_device);
+> -	if (ret)
+> +	if (ret) {
+>  		dev_err(&op->dev, "platform_device_add() failed: %d\n", ret);
+> +		goto exit_device_put;
+> +	}
+> =20
+>  	ret =3D snd_soc_register_card(card);
+>  	if (ret)
+>  		dev_err(&op->dev, "snd_soc_register_card() failed: %d\n", ret);
+> =20
+>  	platform_set_drvdata(op, pdata);
+> +	return ret;
+
+This means we'll skip the cleanup of the platform device that you just
+added if card creation fails:
+
+> +exit_release_dev:
+> +	platform_device_del(pdata->codec_device);
+> +exit_device_put:
+> +	platform_device_put(pdata->codec_device);
+>  	return ret;
+
+It needs to return early only if the card registration failed.
+
+--NmCm27cBeyhb9V5C
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmHxRVgACgkQJNaLcl1U
+h9A7WAf+JZkt/zEa/dvgMZU5Q/VVk/9sewHPs0PgMWrUdfeW8UimVO//E3AAX9UK
+ht2lweYpZ86PFZBtz5nsNO08huPNbN6qD5TcNN4f1dIZXUaqwV88pQPPS7yAsVQD
+LIOhBTfYasGQXEBjClW54BzHLZ/6EjPijoBcYNyc65+ys2AJxeScoiUUpNWFdqsH
+FTm8URWPkzMYEbNCw7+bb+E/ZdCXE4z2Eo8gu1ENnW/AJsowB6U/qtphM5qvlgHo
+70F9alVxTYCYjHthrQEryGzGpuUAfrgB6O4lti7xXbdl6HFcROCLPa0VWhw3EQvu
+L8CTKGLtwn1HN5kEU9kaW1eHTqFvIg==
+=Cy4u
+-----END PGP SIGNATURE-----
+
+--NmCm27cBeyhb9V5C--
