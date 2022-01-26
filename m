@@ -4,76 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EA52C28CF5
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Jan 2022 11:38:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13120C5DF62
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Jan 2022 11:38:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 493B41EE6;
-	Wed, 26 Jan 2022 12:37:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 493B41EE6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4CE9C1F45;
+	Wed, 26 Jan 2022 12:37:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4CE9C1F45
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1643197081;
-	bh=P9lLvPmm/S8wX9jlxO9fKTl4fXZWd8h3bgNemwB/PRs=;
+	s=default; t=1643197099;
+	bh=EQkaQaUkc+wyREHktGItkocSaoVeoMfuOb+QxQENXl0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YnfKgr6ZHxdAKK90t00q+2y04TnTEESFyf9A6nnIlKcWgh6/5XV11qKmoT7tPF77k
-	 Hc8dnbdtwY5hDrRUC/cU48yCgEurOya4M33OTnGGn76pV4WZMtJpY8/fUxWB5Lgupg
-	 PkRcwc4jqWEaYoCQ6tMXFelcX4JWW6VtJmt4mWtU=
+	b=gPzHejPqcjXgGEmmKlMV4yrFEscK5K84FD82oSWFq6YUHhhAGjA5+Rt+XDgw5zdfG
+	 Q1hbdczl9Ea7lBcuyS9q1nf0eRZfuDMKpUu6JlymgSmDj+Md4rAy5sdo53s//wzIvQ
+	 V/pq5qCFNTIECFRihVtQv2fwl74mcAMKfoOEsqno=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D8D9BF80511;
-	Wed, 26 Jan 2022 12:36:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 60135F80516;
+	Wed, 26 Jan 2022 12:36:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7D491F804C3; Wed, 26 Jan 2022 12:36:11 +0100 (CET)
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
- [IPv6:2a00:1450:4864:20::329])
+ id 7B49DF80511; Wed, 26 Jan 2022 12:36:12 +0100 (CET)
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com
+ [IPv6:2a00:1450:4864:20::436])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C9746F8049C
- for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2022 12:36:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9746F8049C
+ by alsa1.perex.cz (Postfix) with ESMTPS id C2DA8F804C1
+ for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2022 12:36:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2DA8F804C1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="jte/6bj9"
-Received: by mail-wm1-x329.google.com with SMTP id c192so2145192wma.4
- for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2022 03:36:03 -0800 (PST)
+ header.b="bOPFKWeS"
+Received: by mail-wr1-x436.google.com with SMTP id w11so13062876wra.4
+ for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2022 03:36:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=wTvnkKEb+4UL86WLI4y9ZHDzYIRRSQJF903Pn2y7+HU=;
- b=jte/6bj9Lu4Bn2k+uHE6Nlb3BHk5VedwUaNZG2hSiwCE7TR4bBfsTigqHAcN3aXB1Q
- 3dgOb9H4cRMzlz9RYKQWB9+xtrcxyz/kWLe/9yrdAD3gEcPnR8eKaF4UbzvipPkBdCfW
- pCoYATosVlFVnGSArIihhOrsDJFkYvI7ZxCgMs5m899RVlIJM++jFILUgkLX82FYA0O+
- 6xZqTmsmGEV6PMGTX5lziQUM/jYrg6g7+3U72oFv8wtKruHpslTaroqVL6847EWsBxP8
- XblL5KZKFVBkJb8SvhZgxL8hYjK9WMrd7ugCzgR0swA+c+zg6TBvc35nE6BA+FF6SGZM
- vt0Q==
+ bh=bXVjE+WHy8056yU6PQ186TKgk9YFsJSf/z9MoSICAgo=;
+ b=bOPFKWeSDz/5+SWrCSqxTxArgqoAVTVn9JPw/LwQVWw/KF8qXvJXOqSe+p0LykVAMl
+ FVHAvDWl4uq+Twi3eh6lCLiaMXN2PjAqVCezLLxc2VTlKJL4V9FMusPREkrzc18XNK60
+ P2GhDxWYXChfe2PmIXOrCdKEjLmpQi7RantbrgMCzXL7uphq0emDusi5DtgizxaxvnBn
+ q8nIoIuTRT21j9n3EZpMW9+5fyqF+9pxctLuV2LVwTZVkByAvGfM639trJdAOOvWMbpo
+ E/bS5WOiEOIE0kXb/hi4CE/hRZcYL78/7AvmLPJk91Rr2hxlGTm7pG93zIoUcJpbLfhJ
+ 7Ugw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=wTvnkKEb+4UL86WLI4y9ZHDzYIRRSQJF903Pn2y7+HU=;
- b=yc0YNxVmyjbsEC92FDccO/wip/xpWdmI4cEl783j3O4mD/6ITaRWQzB7yaRKHhVXa/
- GnoYc8drtL/PeUAwBLowMSuz9uYZyzLXrQMukNwIWXNUuKMUeoPg9ilDSoNjxJSZiNoO
- QpYKEjI+UATTbNxVdVksFnCDysLUqfz/tFJjDl+vCDkeiySij3/69O3TiPtlj5EdUTC/
- SL8Ig7aa6IhNclWS6S3neOKcQJEaEjg/sAeRRtnwDJw18yWi/t6yiJAJTmNPcMcf+P4H
- J5Pi3PdJF581PfASz4CgkwdndkphpSiqc8bUkCv501Ca+AD1vgBppLcgLAUU2tCyp82v
- WX+A==
-X-Gm-Message-State: AOAM532rXtrLMNR+RA35VqCHC2SyUgbKrzBLAeHjbdUVVF/jQXnIidaD
- qkdGe0pKZPJcZuujOOOaF9wLUw==
-X-Google-Smtp-Source: ABdhPJxNol80N6KgPVyzOBjJcP+P3qPnV0rBGrzx5NQUKiryTqB/K9m2g9NoTimj/hv+KNyRbSBHhw==
-X-Received: by 2002:a7b:cd14:: with SMTP id f20mr7156768wmj.110.1643196962831; 
- Wed, 26 Jan 2022 03:36:02 -0800 (PST)
+ bh=bXVjE+WHy8056yU6PQ186TKgk9YFsJSf/z9MoSICAgo=;
+ b=U8ooaywNbkhWOox9GzDscb3JAQi9Vas2i9wY3aq4JFFAbGQknydxwi1WXwEypoOVP3
+ qmDNTkW7ZJNvFjNZ4cY8xwjSs8T+gGrHdrnD8d/OJ5doxYWf15Vj3Ulpp4XEwVaM2aLX
+ /PERh8Z6ispXuF7ecf0DyvZtlI6+PPssDY2fbVdWVM3Z96R32wp+7G0f8oLVOWdR7Zf1
+ D1y2G6LStD2/IJhrtQqcWtaOsItrylEGhzzVh6tgpiuCOQq2o73be3hXtS1wPLI7NLRj
+ 406B04yGG5edJEs0Vk7mnsv4XfNERc4auGqrZ6b48YGjzAdWqgdjqvtLjuS3ANTVPHiQ
+ qpXA==
+X-Gm-Message-State: AOAM532mR4g9m9pBRPpNLMHBHo54c3lHQ98J13FHIaN9BMIIfJIbs6R3
+ pigFUyOdYxpI+6HK/VRoOLUjkhGpLLzmCA==
+X-Google-Smtp-Source: ABdhPJzXvbDq09qiBfc5o13vwHQzmqhkxGwNvWS1trLsF9xfkIUo9E3GK79OPSvS6pT/ByTWosOOxA==
+X-Received: by 2002:adf:e48c:: with SMTP id i12mr21498933wrm.43.1643196960863; 
+ Wed, 26 Jan 2022 03:36:00 -0800 (PST)
 Received: from srini-hackbox.lan
  (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
- by smtp.gmail.com with ESMTPSA id n14sm11999188wri.75.2022.01.26.03.36.01
+ by smtp.gmail.com with ESMTPSA id n14sm11999188wri.75.2022.01.26.03.35.59
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 26 Jan 2022 03:36:02 -0800 (PST)
+ Wed, 26 Jan 2022 03:36:00 -0800 (PST)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH 4/4] ASoC: qdsp6: q6apm-dai: only stop graphs that are started
-Date: Wed, 26 Jan 2022 11:35:49 +0000
-Message-Id: <20220126113549.8853-5-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 2/4] ASoC: codecs: lpass-rx-macro: fix sidetone register
+ offsets
+Date: Wed, 26 Jan 2022 11:35:47 +0000
+Message-Id: <20220126113549.8853-3-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20220126113549.8853-1-srinivas.kandagatla@linaro.org>
 References: <20220126113549.8853-1-srinivas.kandagatla@linaro.org>
@@ -98,37 +99,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Its possible that the sound card is just opened and closed without actually
-playing stream, ex: if the audio file itself is missing.
+For some reason we ended up with incorrect register offfset calcuations
+for sidetone. regmap clearly throw errors when accessing these incorrect
+registers as these do not belong to any read/write ranges.
+so fix them to point to correct register offsets.
 
-Even in such cases we do call stop on graphs that are not yet started.
-DSP can throw errors in such cases, so add a check to see if the graph
-was started before stopping it.
-
-Fixes: 9b4fe0f1cd79 ("ASoC: qdsp6: audioreach: add q6apm-dai support")
+Fixes: f3ce6f3c9a99 ("ASoC: codecs: lpass-rx-macro: add iir widgets")
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/qdsp6/q6apm-dai.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ sound/soc/codecs/lpass-rx-macro.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/qcom/qdsp6/q6apm-dai.c b/sound/soc/qcom/qdsp6/q6apm-dai.c
-index eb1c3aec479b..19c4a90ec1ea 100644
---- a/sound/soc/qcom/qdsp6/q6apm-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6apm-dai.c
-@@ -308,8 +308,11 @@ static int q6apm_dai_close(struct snd_soc_component *component,
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct q6apm_dai_rtd *prtd = runtime->private_data;
+diff --git a/sound/soc/codecs/lpass-rx-macro.c b/sound/soc/codecs/lpass-rx-macro.c
+index aec5127260fd..6ffe88345de5 100644
+--- a/sound/soc/codecs/lpass-rx-macro.c
++++ b/sound/soc/codecs/lpass-rx-macro.c
+@@ -2688,8 +2688,8 @@ static uint32_t get_iir_band_coeff(struct snd_soc_component *component,
+ 	int reg, b2_reg;
  
--	q6apm_graph_stop(prtd->graph);
--	q6apm_unmap_memory_regions(prtd->graph, substream->stream);
-+	if (prtd->state) { /* only stop graph that is started */
-+		q6apm_graph_stop(prtd->graph);
-+		q6apm_unmap_memory_regions(prtd->graph, substream->stream);
-+	}
-+
- 	q6apm_graph_close(prtd->graph);
- 	prtd->graph = NULL;
- 	kfree(prtd);
+ 	/* Address does not automatically update if reading */
+-	reg = CDC_RX_SIDETONE_IIR0_IIR_COEF_B1_CTL + 16 * iir_idx;
+-	b2_reg = CDC_RX_SIDETONE_IIR0_IIR_COEF_B2_CTL + 16 * iir_idx;
++	reg = CDC_RX_SIDETONE_IIR0_IIR_COEF_B1_CTL + 0x80 * iir_idx;
++	b2_reg = CDC_RX_SIDETONE_IIR0_IIR_COEF_B2_CTL + 0x80 * iir_idx;
+ 
+ 	snd_soc_component_write(component, reg,
+ 				((band_idx * BAND_MAX + coeff_idx) *
+@@ -2718,7 +2718,7 @@ static uint32_t get_iir_band_coeff(struct snd_soc_component *component,
+ static void set_iir_band_coeff(struct snd_soc_component *component,
+ 			       int iir_idx, int band_idx, uint32_t value)
+ {
+-	int reg = CDC_RX_SIDETONE_IIR0_IIR_COEF_B2_CTL + 16 * iir_idx;
++	int reg = CDC_RX_SIDETONE_IIR0_IIR_COEF_B2_CTL + 0x80 * iir_idx;
+ 
+ 	snd_soc_component_write(component, reg, (value & 0xFF));
+ 	snd_soc_component_write(component, reg, (value >> 8) & 0xFF);
+@@ -2739,7 +2739,7 @@ static int rx_macro_put_iir_band_audio_mixer(
+ 	int iir_idx = ctl->iir_idx;
+ 	int band_idx = ctl->band_idx;
+ 	u32 coeff[BAND_MAX];
+-	int reg = CDC_RX_SIDETONE_IIR0_IIR_COEF_B1_CTL + 16 * iir_idx;
++	int reg = CDC_RX_SIDETONE_IIR0_IIR_COEF_B1_CTL + 0x80 * iir_idx;
+ 
+ 	memcpy(&coeff[0], ucontrol->value.bytes.data, params->max);
+ 
 -- 
 2.21.0
 
