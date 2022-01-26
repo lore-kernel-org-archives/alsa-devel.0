@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6F6FC3525A
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Jan 2022 01:20:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4FEC9C3525A
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Jan 2022 01:20:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1961A1F7F;
-	Wed, 26 Jan 2022 02:19:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1961A1F7F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 96D351F8C;
+	Wed, 26 Jan 2022 02:19:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 96D351F8C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1643160014;
-	bh=Y5QFgrRE6gbcfE8Im68LjhUmIaas2atxywqLCLJsx/Q=;
+	s=default; t=1643160026;
+	bh=jHgJPNa8SPiX6zp1DNPAMTWl+vgD5iiQX0Bg4hGORN0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gTUVN76Bu2dCPUp8kkiF46Au+GMr969pZ66igMdb7laiK93nkq8CeKT5AXu9ZVvhq
-	 46p1iRvp3sZf7Q+NKz8vc9JBrrRznkTUZq1p2pWjqvnSScLsQrhpBRXvoaiUSpW4UO
-	 cJv+DoF0hbsP+9Ysq+ML+nW29aHP0hyaPZksvS6M=
+	b=E6hILnLOEuqyJBzc7n1OrxdikpFQrfvZ9cbgyJ9U/Ja9qX6i1OK2qQ3HIhxePHJgO
+	 fUTaTSj7LX5+RWscKrr5Xo61UiJlw9jdqG2yENCS3zEwpA+F88E0rCuDJqJYPQ+8yS
+	 hf0ZQgJRA0XXkWm9clQU9REkcuirpy8B50BMHWFE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 57DC5F80525;
+	by alsa1.perex.cz (Postfix) with ESMTP id EC94CF80529;
 	Wed, 26 Jan 2022 02:17:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 030AFF8051B; Wed, 26 Jan 2022 02:17:49 +0100 (CET)
+ id CDD52F80169; Wed, 26 Jan 2022 02:17:50 +0100 (CET)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 54CB6F80169
- for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2022 02:17:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54CB6F80169
+ by alsa1.perex.cz (Postfix) with ESMTPS id 54B4BF80515
+ for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2022 02:17:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54B4BF80515
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="EY/0vfpn"
+ header.b="jptc1egA"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1643159863; x=1674695863;
+ t=1643159868; x=1674695868;
  h=from:to:cc:subject:date:message-id:in-reply-to: references;
- bh=Y5QFgrRE6gbcfE8Im68LjhUmIaas2atxywqLCLJsx/Q=;
- b=EY/0vfpn/iYYrf6W9nPFlY9WBnGm0Rcws3ja8KbGSOlB+47LOdeEcGB3
- eZoGOYGQNOlByzrK9yH0n2CkmR/CUUJhDGvEfIw3XbNLmFxQ5CN6Idcm6
- EVLkmqLMttIq5/vrR1KSGdU3c+9DU9Vht23sUKrozSl31S46rQS4h7FKY
- 2CLxAi2WyFxvmeZPsOtFrROA9nImUZj9ykg67Edze1JFXLvi64MS3lD41
- rQNnBCXeuArE6j6ssLP/ZCEFEh8ZxO8YoDniX4G5vponx7rH1zq/JLP3a
- Z9U5EVRX4cn+U7L+4rFqLWHYSszCS+yIQKfAz64Vj6R/8Zcsl7a9XEcwt A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10238"; a="246236135"
-X-IronPort-AV: E=Sophos;i="5.88,316,1635231600"; d="scan'208";a="246236135"
+ bh=jHgJPNa8SPiX6zp1DNPAMTWl+vgD5iiQX0Bg4hGORN0=;
+ b=jptc1egAne4vxkGmzk9oPf9yoeq5Tbz+q+K3iTy7X2eQ3qcLzgIInapG
+ TipPMfCVhMGID2OXq7QTe4lnnS3b4tKg1lQb/igAkToCgQrDlb70pJplR
+ 5Z0g8qWGAXnSp16FhBPGmJjRl8FN1H/0twoDvvtFrj9f+uTJgi4il78bj
+ Iy0T0dN8wYvTfYlh76p9wnpNRNEbDB1Q1sMP/wO+DMK/KKe5H4cMP6P1h
+ 2yU/NEiO3kaFxWeCEtiCAkOS1AE+3H1W0iZ5oata/6weayUSBpEwtMi1u
+ 8GoO3YQ10iyb2B0Uol/8MQ4lFWZPj9+ZQLR0QfbskGJnL1mV+vAGS4wMy w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10238"; a="246236155"
+X-IronPort-AV: E=Sophos;i="5.88,316,1635231600"; d="scan'208";a="246236155"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Jan 2022 17:17:40 -0800
-X-IronPort-AV: E=Sophos;i="5.88,316,1635231600"; d="scan'208";a="520617403"
+ 25 Jan 2022 17:17:44 -0800
+X-IronPort-AV: E=Sophos;i="5.88,316,1635231600"; d="scan'208";a="520617449"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Jan 2022 17:17:37 -0800
+ 25 Jan 2022 17:17:42 -0800
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH 04/19] soundwire: stream: add alloc/config/free helpers for
- ports
-Date: Wed, 26 Jan 2022 09:17:00 +0800
-Message-Id: <20220126011715.28204-5-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 06/19] soundwire: stream: split alloc and config in two
+ functions
+Date: Wed, 26 Jan 2022 09:17:02 +0800
+Message-Id: <20220126011715.28204-7-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20220126011715.28204-1-yung-chuan.liao@linux.intel.com>
 References: <20220126011715.28204-1-yung-chuan.liao@linux.intel.com>
@@ -85,166 +85,115 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-The existing code only has a config helper that allocates memory,
-start adding alloc/config/free for ports, as a first step in the
-simplification of the stream API.
-
-This change removes a kfree() on a configuration error, this should
-have not impact on existing platforms and error handling will be
-revisited in follow-up patches to make sure invalid configurations
-have not impact on memory allocation.
+Continue the split with two functions for master and slave, and remove
+unused arguments.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/stream.c | 83 +++++++++++++++++++++-----------------
- 1 file changed, 45 insertions(+), 38 deletions(-)
+ drivers/soundwire/stream.c | 49 ++++++++++++++++++++++++++++----------
+ 1 file changed, 37 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
-index 3ac2e5a66700..49d3a8d2fa31 100644
+index b97c59e71bdb..e3cb55de0d12 100644
 --- a/drivers/soundwire/stream.c
 +++ b/drivers/soundwire/stream.c
-@@ -865,6 +865,39 @@ static int do_bank_switch(struct sdw_stream_runtime *stream)
- 	return ret;
- }
- 
-+static struct sdw_port_runtime *sdw_port_alloc(struct list_head *port_list)
-+{
-+	struct sdw_port_runtime *p_rt;
-+
-+	p_rt = kzalloc(sizeof(*p_rt), GFP_KERNEL);
-+	if (!p_rt)
-+		return NULL;
-+
-+	list_add_tail(&p_rt->port_node, port_list);
-+
-+	return p_rt;
-+}
-+
-+static int sdw_port_config(struct sdw_port_runtime *p_rt,
-+			   struct sdw_port_config *port_config,
-+			   int port_index)
-+{
-+	p_rt->ch_mask = port_config[port_index].ch_mask;
-+	p_rt->num = port_config[port_index].num;
-+
-+	/*
-+	 * TODO: Check port capabilities for requested configuration
-+	 */
-+
-+	return 0;
-+}
-+
-+static void sdw_port_free(struct sdw_port_runtime *p_rt)
-+{
-+	list_del(&p_rt->port_node);
-+	kfree(p_rt);
-+}
-+
- /**
-  * sdw_release_stream() - Free the assigned stream runtime
-  *
-@@ -995,8 +1028,7 @@ static void sdw_master_port_release(struct sdw_bus *bus,
- 	struct sdw_port_runtime *p_rt, *_p_rt;
- 
- 	list_for_each_entry_safe(p_rt, _p_rt, &m_rt->port_list, port_node) {
--		list_del(&p_rt->port_node);
--		kfree(p_rt);
-+		sdw_port_free(p_rt);
- 	}
- }
- 
-@@ -1015,8 +1047,7 @@ static void sdw_slave_port_release(struct sdw_bus *bus,
- 
- 			list_for_each_entry_safe(p_rt, _p_rt,
- 						 &s_rt->port_list, port_node) {
--				list_del(&p_rt->port_node);
--				kfree(p_rt);
-+				sdw_port_free(p_rt);
- 			}
- 		}
- 	}
-@@ -1187,43 +1218,24 @@ static int sdw_is_valid_port_range(struct device *dev, int num)
+@@ -1218,13 +1218,10 @@ static int sdw_is_valid_port_range(struct device *dev, int num)
  	return 0;
  }
  
--static struct sdw_port_runtime
--*sdw_port_alloc(struct device *dev,
--		struct sdw_port_config *port_config,
--		int port_index)
--{
--	struct sdw_port_runtime *p_rt;
--
--	p_rt = kzalloc(sizeof(*p_rt), GFP_KERNEL);
--	if (!p_rt)
--		return NULL;
--
--	p_rt->ch_mask = port_config[port_index].ch_mask;
--	p_rt->num = port_config[port_index].num;
--
--	return p_rt;
--}
--
- static int sdw_master_port_config(struct sdw_bus *bus,
- 				  struct sdw_master_runtime *m_rt,
- 				  struct sdw_port_config *port_config,
- 				  unsigned int num_ports)
+-static int sdw_master_port_config(struct sdw_bus *bus,
+-				  struct sdw_master_runtime *m_rt,
+-				  struct sdw_port_config *port_config,
+-				  unsigned int num_ports)
++static int sdw_master_port_alloc(struct sdw_master_runtime *m_rt,
++				 unsigned int num_ports)
  {
  	struct sdw_port_runtime *p_rt;
-+	int ret;
+-	int ret;
  	int i;
  
  	/* Iterate for number of ports to perform initialization */
- 	for (i = 0; i < num_ports; i++) {
--		p_rt = sdw_port_alloc(bus->dev, port_config, i);
-+		p_rt = sdw_port_alloc(&m_rt->port_list);
- 		if (!p_rt)
+@@ -1234,6 +1231,16 @@ static int sdw_master_port_config(struct sdw_bus *bus,
  			return -ENOMEM;
- 
--		/*
--		 * TODO: Check port capabilities for requested
--		 * configuration (audio mode support)
--		 */
--
--		list_add_tail(&p_rt->port_node, &m_rt->port_list);
-+		ret = sdw_port_config(p_rt, port_config, i);
-+		if (ret < 0)
-+			return ret;
  	}
  
++	return 0;
++}
++
++static int sdw_master_port_config(struct sdw_master_runtime *m_rt,
++				  struct sdw_port_config *port_config)
++{
++	struct sdw_port_runtime *p_rt;
++	int ret;
++	int i;
++
+ 	i = 0;
+ 	list_for_each_entry(p_rt, &m_rt->port_list, port_node) {
+ 		ret = sdw_port_config(p_rt, port_config, i);
+@@ -1245,13 +1252,12 @@ static int sdw_master_port_config(struct sdw_bus *bus,
  	return 0;
-@@ -1239,7 +1251,7 @@ static int sdw_slave_port_config(struct sdw_slave *slave,
+ }
+ 
+-static int sdw_slave_port_config(struct sdw_slave *slave,
+-				 struct sdw_slave_runtime *s_rt,
+-				 struct sdw_port_config *port_config,
+-				 unsigned int num_config)
++static int sdw_slave_port_alloc(struct sdw_slave *slave,
++				struct sdw_slave_runtime *s_rt,
++				unsigned int num_config)
+ {
+ 	struct sdw_port_runtime *p_rt;
+-	int i, ret;
++	int i;
  
  	/* Iterate for number of ports to perform initialization */
  	for (i = 0; i < num_config; i++) {
--		p_rt = sdw_port_alloc(&slave->dev, port_config, i);
-+		p_rt = sdw_port_alloc(&s_rt->port_list);
- 		if (!p_rt)
+@@ -1260,6 +1266,17 @@ static int sdw_slave_port_config(struct sdw_slave *slave,
  			return -ENOMEM;
- 
-@@ -1248,17 +1260,12 @@ static int sdw_slave_port_config(struct sdw_slave *slave,
- 		 * slave
- 		 */
- 		ret = sdw_is_valid_port_range(&slave->dev, port_config[i].num);
--		if (ret < 0) {
--			kfree(p_rt);
-+		if (ret < 0)
- 			return ret;
--		}
- 
--		/*
--		 * TODO: Check port capabilities for requested
--		 * configuration (audio mode support)
--		 */
--
--		list_add_tail(&p_rt->port_node, &s_rt->port_list);
-+		ret = sdw_port_config(p_rt, port_config, i);
-+		if (ret < 0)
-+			return ret;
  	}
  
- 	return 0;
++	return 0;
++}
++
++static int sdw_slave_port_config(struct sdw_slave *slave,
++				 struct sdw_slave_runtime *s_rt,
++				 struct sdw_port_config *port_config)
++{
++	struct sdw_port_runtime *p_rt;
++	int ret;
++	int i;
++
+ 	i = 0;
+ 	list_for_each_entry(p_rt, &s_rt->port_list, port_node) {
+ 		/*
+@@ -1324,7 +1341,11 @@ int sdw_stream_add_master(struct sdw_bus *bus,
+ 	if (ret)
+ 		goto stream_error;
+ 
+-	ret = sdw_master_port_config(bus, m_rt, port_config, num_ports);
++	ret = sdw_master_port_alloc(m_rt, num_ports);
++	if (ret)
++		goto stream_error;
++
++	ret = sdw_master_port_config(m_rt, port_config);
+ 	if (ret)
+ 		goto stream_error;
+ 
+@@ -1392,7 +1413,11 @@ int sdw_stream_add_slave(struct sdw_slave *slave,
+ 	if (ret)
+ 		goto stream_error;
+ 
+-	ret = sdw_slave_port_config(slave, s_rt, port_config, num_ports);
++	ret = sdw_slave_port_alloc(slave, s_rt, num_ports);
++	if (ret)
++		goto stream_error;
++
++	ret = sdw_slave_port_config(slave, s_rt, port_config);
+ 	if (ret)
+ 		goto stream_error;
+ 
 -- 
 2.17.1
 
