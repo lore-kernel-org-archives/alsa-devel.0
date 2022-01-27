@@ -4,83 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B27F5C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Jan 2022 13:14:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 692CAC433FE
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Jan 2022 13:42:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 14C791919;
-	Thu, 27 Jan 2022 14:13:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 14C791919
+	by alsa0.perex.cz (Postfix) with ESMTPS id 31FA51B11;
+	Thu, 27 Jan 2022 14:41:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31FA51B11
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1643289283;
-	bh=IEsjkRBo8VNuspUc7lc0OMVB+ejks8lPC1jN3f7B/Ls=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1643290946;
+	bh=Rzgm4WFarmQ0LAdIjRvVmQY4g/6xGSm80cWF+oGxUE8=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AFO+SpSQvp4T0w+jonzmvWimEFHyy3icJoAd9osjT6ILFAAMbUm10tcrLn6UgPxZJ
-	 gmPNO8GB2E7fiGzlU/dWsgy6RPft19F2pHOOey1xByyM3Dp2wuc9T5rNicy2ftJ/p1
-	 M71zOnJWbkzqYqWKeviX95KaffVcYkNsqKnYNbT8=
+	b=JAtJf474ump8lYG3keRSVMifOZ7OMOK1BWXzGBueJfEUPBgJfVZqTcKf7MoSRQEWp
+	 Ib/RxEY2WA51JyFhCyLbc7lNEx2N1b5HN7md8ojSGVOj93LudVNx+z3gk1G+Fv5x4S
+	 gtBiRjc75ZQwvMk9BQolmzspMSe618xKTgA1ftpE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A28EFF80249;
-	Thu, 27 Jan 2022 14:13:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BA2A3F80249;
+	Thu, 27 Jan 2022 14:41:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F0001F80254; Thu, 27 Jan 2022 14:13:49 +0100 (CET)
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com
- [IPv6:2607:f8b0:4864:20::629])
+ id 859F7F80254; Thu, 27 Jan 2022 14:41:34 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 89547F800C8
- for <alsa-devel@alsa-project.org>; Thu, 27 Jan 2022 14:13:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89547F800C8
+ by alsa1.perex.cz (Postfix) with ESMTPS id BACE9F80118
+ for <alsa-devel@alsa-project.org>; Thu, 27 Jan 2022 14:41:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BACE9F80118
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="ABvPbSjy"
-Received: by mail-pl1-x629.google.com with SMTP id h14so2468652plf.1
- for <alsa-devel@alsa-project.org>; Thu, 27 Jan 2022 05:13:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:in-reply-to:references;
- bh=YXzkvLeXLi2eCYEQ5gEHtGCtSrlAhjMGW+JtDUaBg2s=;
- b=ABvPbSjyT6rV20F/ei4kOOQ1fFDOwJMtWo/sSVF9nIHbwU6Nqceo9/hWVX96sXehSx
- 8ZsJVv3qVRw8N1xyHhNdLY/X8DD/XEoUT4H5eZ6EQG3+XZRclCPQ8IE8qdmobawqMRxr
- r6qQQ36gH5zwgOjsTBNi3nJfE1VtJpELMqDsF+jhoJ6vL/QTPfr+jWOa7uIYPXNtNdrO
- DTbby/kjEYxmz+tA4E1ifrjujFQVq1XjEGm8ipynyUYPmeckGnlGHqMYfJP9t83wmPlZ
- PmEQjfbmgnLQJAnxxvqsgMBYyaz+UDI4KEuQGYUo5iFukbzekZUltwXwB/mOLK5jkSzn
- c37g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references;
- bh=YXzkvLeXLi2eCYEQ5gEHtGCtSrlAhjMGW+JtDUaBg2s=;
- b=kTFwC60WN07VQ7A0zxVSqBpZOEsgTsL+fqQGYxsdJusllqz5lQj0rdcooWMyNAtujb
- N56F0oI8JUJxdWRG0A0ogQJj2JnCNxuHBwYmD+QT375/Ha3ckaxaZWJr0hNOYVAKVY/t
- WJq1lcjA7ZMrQjqdxuBKCTwYgIuM/g+WOckY+tsGG3WWzJFbu7V/vMzZByKArF3UAbww
- CAAhCWqmKLStMQpP9+1xXyZCYKlkNNo6JRWxEQ2IhFMbbl7cR05yIfERF9LMN8uFcO75
- qCiahBip73wdWBOfUz8Iqc92x0JOiqACVkprSVUABT9Vtsnxj5zWxEhvcVWZp33/f8gA
- K4QQ==
-X-Gm-Message-State: AOAM530u2D/b07z7m2Khp6Uo8vqtSk9NLUeS3RoCFcCVuDj5JPH23Cgh
- LwIgQ8Jo7kcOgXA4DIic/o7H3eMSjc8wr3Po
-X-Google-Smtp-Source: ABdhPJysbG0ubLDHAuk/vm5CAv0jg6oZWRdNVaWO0vQPW+mAPZCdMtTl6CK+a5TjP6POX6vPtKJxxg==
-X-Received: by 2002:a17:90b:17ca:: with SMTP id
- me10mr9860243pjb.207.1643289221704; 
- Thu, 27 Jan 2022 05:13:41 -0800 (PST)
-Received: from localhost.localdomain ([159.226.95.43])
- by smtp.googlemail.com with ESMTPSA id d9sm5683355pfl.69.2022.01.27.05.13.39
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 27 Jan 2022 05:13:41 -0800 (PST)
-From: Miaoqian Lin <linmq006@gmail.com>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Eric Millbrandt <emillbrandt@dekaresearch.com>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] ASoC: fsl: Add missing error handling in
- pcm030_fabric_probe
-Date: Thu, 27 Jan 2022 13:13:34 +0000
-Message-Id: <20220127131336.30214-1-linmq006@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <YfFFWSVgnbL6ETxo@sirena.org.uk>
-References: <YfFFWSVgnbL6ETxo@sirena.org.uk>
-Cc: linmq006@gmail.com
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="MBM6wQlk"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="f1kjFnru"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 65A2A1F3A9;
+ Thu, 27 Jan 2022 13:41:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1643290890; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=CsNqWadBVftamGMdNcq8yj2hlSzuyWYBlN4D3DqGekY=;
+ b=MBM6wQlkkbtHV1aMirek2g+HK4bXd43zwV3NTEq9eGAY1G4QWk+bP6Jdeca6RDcP0aBuGa
+ rrZoGmI19MKYt4MQcKX5QfrgQ6aOAunDu034PmR/l+DxltsYjy8veXB0C409xWRymjMyds
+ TjJtOTs33d7MbPkVgAUIB66Bb6Dmtww=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1643290890;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=CsNqWadBVftamGMdNcq8yj2hlSzuyWYBlN4D3DqGekY=;
+ b=f1kjFnru1IyQiOL8k8PWNK8IJT6qfQz/XKRIJguaC+x0wtanz79XikI2MhzyhPGg5T54kd
+ wQK4fyjPtPHkySBA==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 2EF76A3B81;
+ Thu, 27 Jan 2022 13:41:30 +0000 (UTC)
+Date: Thu, 27 Jan 2022 14:41:30 +0100
+Message-ID: <s5ha6fhjnxx.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: trix@redhat.com
+Subject: Re: [PATCH] ALSA: usb-audio: initialize variables that could ignore
+ errors
+In-Reply-To: <20220126182142.1184819-1-trix@redhat.com>
+References: <20220126182142.1184819-1-trix@redhat.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: jiapeng.chong@linux.alibaba.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, llvm@lists.linux.dev, ndesaulniers@google.com,
+ tiwai@suse.com, nathan@kernel.org, kai.heng.feng@canonical.com,
+ giun7a@gmail.com, colin.king@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,47 +91,24 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add the missing platform_device_put() and platform_device_del()
-before return from pcm030_fabric_probe in the error handling case.
+On Wed, 26 Jan 2022 19:21:42 +0100,
+trix@redhat.com wrote:
+> 
+> From: Tom Rix <trix@redhat.com>
+> 
+> clang static analysis reports this representative issue
+> mixer.c:1548:35: warning: Assigned value is garbage or undefined
+>         ucontrol->value.integer.value[0] = val;
+>                                          ^ ~~~
+> 
+> The filter_error() macro allows errors to be ignored.
+> If errors can be ignored, initialize variables
+> so garbage will not be used.
+> 
+> Fixes: 48cc42973509 ("ALSA: usb-audio: Filter error from connector kctl ops, too")
+> Signed-off-by: Tom Rix <trix@redhat.com>
 
-Fixes: c912fa913446 ("ASoC: fsl: register the wm9712-codec")
-Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
----
-Changes in v2:
-- avoid return early before the card registration.
----
- sound/soc/fsl/pcm030-audio-fabric.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+Thanks, applied.
 
-diff --git a/sound/soc/fsl/pcm030-audio-fabric.c b/sound/soc/fsl/pcm030-audio-fabric.c
-index af3c3b90c0ac..83b4a22bf15a 100644
---- a/sound/soc/fsl/pcm030-audio-fabric.c
-+++ b/sound/soc/fsl/pcm030-audio-fabric.c
-@@ -93,16 +93,21 @@ static int pcm030_fabric_probe(struct platform_device *op)
- 		dev_err(&op->dev, "platform_device_alloc() failed\n");
- 
- 	ret = platform_device_add(pdata->codec_device);
--	if (ret)
-+	if (ret) {
- 		dev_err(&op->dev, "platform_device_add() failed: %d\n", ret);
-+		platform_device_put(pdata->codec_device);
-+	}
- 
- 	ret = snd_soc_register_card(card);
--	if (ret)
-+	if (ret) {
- 		dev_err(&op->dev, "snd_soc_register_card() failed: %d\n", ret);
-+		platform_device_del(pdata->codec_device);
-+		platform_device_put(pdata->codec_device);
-+	}
- 
- 	platform_set_drvdata(op, pdata);
--
- 	return ret;
-+
- }
- 
- static int pcm030_fabric_remove(struct platform_device *op)
--- 
-2.17.1
 
+Takashi
