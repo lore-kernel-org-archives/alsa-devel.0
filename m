@@ -4,67 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78BDCC433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Jan 2022 23:48:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75FB9C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Jan 2022 23:48:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A0DD6173C;
-	Sat, 29 Jan 2022 00:47:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A0DD6173C
+	by alsa0.perex.cz (Postfix) with ESMTPS id AC31D1711;
+	Sat, 29 Jan 2022 00:48:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC31D1711
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1643413720;
-	bh=jb+7wVF0N8FRGaFAktQ2hXk3Id0/NgbfKwfEMIjr0Ss=;
+	s=default; t=1643413734;
+	bh=5apkettzIiX+OPI0gdZmyvbdiXBJsgjX2ch0UKkff2I=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hv/secrIv60n49yK3HSAkiwl32Af4OUStjEwD6mYi0W31MhKXLsh5QIiQCguVlleu
-	 Y/nDKcEL1cHAoJWsiYa+wc2lFzBtEI/iJms2LGN3plDtIdCKe+tswEnm5lrdo01vXN
-	 LRsN6QBGJ/vI8k7cQu8VO07y1hWXqSpFLiH0cMjg=
+	b=g2V8jzHXzZ9LegdFQqvsPdxTrgkgUBp0/Entwe3yJmz9zn9Mx8FkrO+8fFk2WyhUp
+	 TeEKO7X2H6/cdDyzSsIVu1R8+zAV7XHVEllHeksoUF9kpvXMgQTNZyuhBhsCGtvObk
+	 aB8R2eLVnNqT3FxS1kOUnknskrlkx7Chc3d/AiQg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4D020F80508;
-	Sat, 29 Jan 2022 00:47:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 55A80F8050F;
+	Sat, 29 Jan 2022 00:47:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 550B7F80249; Sat, 29 Jan 2022 00:46:54 +0100 (CET)
+ id AC7EAF80246; Sat, 29 Jan 2022 00:46:58 +0100 (CET)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6D553F800C0
- for <alsa-devel@alsa-project.org>; Sat, 29 Jan 2022 00:46:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D553F800C0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5F37FF80118
+ for <alsa-devel@alsa-project.org>; Sat, 29 Jan 2022 00:46:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F37FF80118
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="GKX92s0t"
+ header.b="UjxaIaY7"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 7AEB861F3D;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 2C47961EE5;
+ Fri, 28 Jan 2022 23:46:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CA14C340E7;
  Fri, 28 Jan 2022 23:46:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7EA3C340EC;
- Fri, 28 Jan 2022 23:46:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1643413608;
- bh=jb+7wVF0N8FRGaFAktQ2hXk3Id0/NgbfKwfEMIjr0Ss=;
+ s=k20201202; t=1643413610;
+ bh=5apkettzIiX+OPI0gdZmyvbdiXBJsgjX2ch0UKkff2I=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=GKX92s0tih3kUz3YkFsmkblN2iViRLZmRPOxzF9dPf/9OFSnaPVKx+xFreBJV+/Am
- Iw9Ni+3KwInI9Qzkz2AnoRNOAxRexT58V4G9boIuQ1ok6uj9DNv4ZhZvD1lItN76+S
- qi8lEVOHtjYWjLXmF6ylIGpoCXSQFn28DS+753c78vCJez9rh2R9noXuvnxnjxrr1O
- fyl8hjSfal7iFvR5lcJFKlcyq7VCuMqmSpvxN3xvs6Qgy1tet7/PHcLKUh5E3VEQcm
- AIXoSUzKHaPV2LeN9D5phcT987xvMkNKr4mcRv6NW/RzqIK3LyGUMGa1X3uUjSc0qs
- Ufgqud8UWLtBw==
+ b=UjxaIaY7dJeMsOQ8Bf/NB5fqHYz7r7aDzcuraEaF6ZfAak/6EqJanXB2w4/hifrQT
+ 4tkvQXWsfI2GYqp+ZD1DlOlUDMC1txcquWme3Dvw0rFYaEFVYlFSxKw/WSPzierN3i
+ R6Vao+LZ7fF3nLF6fhGNUveWXC4NlvFP+SEJgl1CWMV2/fEGXoYUkfr+UByREm7tiG
+ LYJ6vkc8UcFlHmuqVUQRjCXRFv/fMCHwpd84Wb5ox/owjekANyIejoPkOdJ96Vywn/
+ p0XFJlSgqKn+24iqirup8TaqrWbS2pUYBQV8Yc4U3olEqk2zLBCZPi+MqPtYz63h5p
+ yLJV6y6vrwFXw==
 From: Mark Brown <broonie@kernel.org>
-To: Takashi Iwai <tiwai@suse.de>
-In-Reply-To: <20220119155249.26754-1-tiwai@suse.de>
-References: <20220119155249.26754-1-tiwai@suse.de>
-Subject: Re: [PATCH v2 0/2] ASoC DPCM lockdep fixes
-Message-Id: <164341360760.694662.12609476959781347657.b4-ty@kernel.org>
-Date: Fri, 28 Jan 2022 23:46:47 +0000
+To: Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ Jaroslav Kysela <perex@perex.cz>, Dmitry Osipenko <digetx@gmail.com>
+In-Reply-To: <20220112195039.1329-1-digetx@gmail.com>
+References: <20220112195039.1329-1-digetx@gmail.com>
+Subject: Re: [PATCH v1] ASoC: hdmi-codec: Fix OOB memory accesses
+Message-Id: <164341360910.694662.2417882289675781544.b4-ty@kernel.org>
+Date: Fri, 28 Jan 2022 23:46:49 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,18 +79,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 19 Jan 2022 16:52:47 +0100, Takashi Iwai wrote:
-> this is the revised patches for addressing ASoC lockdep warnings due
-> to the recent DPCM locking refactoring.
+On Wed, 12 Jan 2022 22:50:39 +0300, Dmitry Osipenko wrote:
+> Correct size of iec_status array by changing it to the size of status
+> array of the struct snd_aes_iec958. This fixes out-of-bounds slab
+> read accesses made by memcpy() of the hdmi-codec driver. This problem
+> is reported by KASAN.
 > 
 > 
-> Takashi
-> 
-> v1->v2:
->   - minor correction in the changelog for nested lock
->   - debugfs removal workaround
-> 
-> [...]
 
 Applied to
 
@@ -99,10 +93,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: soc-pcm: Fix DPCM lockdep warning due to nested stream locks
-      commit: 3c75c0ea5da749bd1efebd1387f2e5011b8c7d78
-[2/2] ASoC: soc-pcm: Move debugfs removal out of spinlock
-      commit: 9f620684c1ef5a002b6622ecc7b5818e81252f48
+[1/1] ASoC: hdmi-codec: Fix OOB memory accesses
+      commit: 06feec6005c9d9500cd286ec440aabf8b2ddd94d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
