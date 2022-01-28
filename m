@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B3B3C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Jan 2022 16:00:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91D79C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Jan 2022 16:00:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7C2E5171B;
-	Fri, 28 Jan 2022 16:59:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7C2E5171B
+	by alsa0.perex.cz (Postfix) with ESMTPS id A35461701;
+	Fri, 28 Jan 2022 16:59:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A35461701
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1643385627;
-	bh=TNhGzP3L4A62xIW3WqJXmAepqSZa9f/QpFgq2evI+GY=;
+	s=default; t=1643385641;
+	bh=SG0hgFKjqWwBCUkDI0TEOtxJTRzQD+ug6SvmhGJoPNE=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QrzeF93+R5eAXx3zM/Ki5iFVXJ6dko6/GMUS7F9wBJtDAse7Ik1+VhkFwL3JvGYxK
-	 N4843LPGXzyduOMlUhNgsz7ZxhjHKa9rQBFisXpzpJdJ8cE6Z5a+AuySDXi9QL5PD4
-	 nf1husmyD7R8FdY37Gg68ziqldSImVuuU/AfXiEc=
+	b=bCjS/U2p8oBIw1jd5m8DIWQTJTDvWXoyWaPBMGWnMSab+HKxoW9lP5uPf/iNyB/i7
+	 C1A6HK4/wxXkS9G81oYBwppdlQS/+47MJsLRSq3+aJBuYddmxVHSMoZQxHHVGrLOQ5
+	 Xn1eS7GwHjmZCpkxoPHQCdOmOttcIBTCfB4Bj/eY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 720D1F80508;
-	Fri, 28 Jan 2022 16:58:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0E6E9F80515;
+	Fri, 28 Jan 2022 16:58:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C5864F804A9; Fri, 28 Jan 2022 16:58:49 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id C1371F8050F; Fri, 28 Jan 2022 16:58:52 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6801DF804A9
- for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2022 16:58:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6801DF804A9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 30580F804A9
+ for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2022 16:58:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30580F804A9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="cLo52bKz"
+ header.b="dM7FKElz"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id EC34FB8263E;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 1686C61EBA;
+ Fri, 28 Jan 2022 15:58:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3741BC340ED;
  Fri, 28 Jan 2022 15:58:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 879EFC340E0;
- Fri, 28 Jan 2022 15:58:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1643385524;
- bh=TNhGzP3L4A62xIW3WqJXmAepqSZa9f/QpFgq2evI+GY=;
+ s=k20201202; t=1643385527;
+ bh=SG0hgFKjqWwBCUkDI0TEOtxJTRzQD+ug6SvmhGJoPNE=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=cLo52bKzZ8GfrFghA1xPWJnhoWIHtxlzjqxTcLxSjmrczYwy/J4qkSuMpHTCKCa28
- 7RBkW6WwTtldAUfdfUM1PbzM+qMGbjCXRdFNDNsSaQmTsNnh9VvZp15iTBu7yHcQIB
- lkvX/Yo80fbskFQpSmkn8WCOCGR2HT6NmWVHEJsF/AdjbazXjTvfG9ISD6d91Gt6Uk
- 8FASTGnHiVa+u45iJnBg0PZ0fHZFI5bVGHSX89k87WIkRx8LPM8ea0vRZf1BgAQbSE
- 6UN1EZPa5S2Z2YcbTW+8lPryFcd1epj4tLzioc3056J+8wHNxJ2Ole0Qf4rpsw8QyK
- q83EIDhiCkQ8Q==
+ b=dM7FKElzgK5/EIrq4HLLjJRGcdxqdwJHyMketq/GIVO3YulxTdDJ69awmByZDEtCa
+ ot/1O2+PBWng50JkL65onkOEIUv6SPv5jYNKGGzVG5R54X0fAvHb4aZLayFbJUrs6a
+ quj3IMsdUoAJ2eQU9FKOH1pWLBfjTCjOsl6Z4wbYQG5Mrd9ZY7NJrFveXyaieRikb6
+ keTNUKTdbh+4GocJLOS0UEczUmz4B60wjScCJEEyjjIKqOnjH2FoqxVq7a9svCasDQ
+ mZXpY9MN69nQYfcQTcvPT5nicayRBGr/HvFuDYFTGHaPRxkuogFnRaWxwJbznq3/hj
+ TXCK228dndnCA==
 From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh@kernel.org>,
- Derek Fang <derek.fang@realtek.com>
-In-Reply-To: <20220126231358.1637174-1-robh@kernel.org>
-References: <20220126231358.1637174-1-robh@kernel.org>
-Subject: Re: [PATCH] ASoC: dt-bindings: realtek,
- rt5682s: Drop Tegra specifics from example
-Message-Id: <164338552327.1711274.18356400085950572134.b4-ty@kernel.org>
-Date: Fri, 28 Jan 2022 15:58:43 +0000
+To: tiwai@suse.com, lgirdwood@gmail.com, thierry.reding@gmail.com,
+ perex@perex.cz, Sameer Pujar <spujar@nvidia.com>, robh+dt@kernel.org
+In-Reply-To: <1643268455-15567-1-git-send-email-spujar@nvidia.com>
+References: <1643268455-15567-1-git-send-email-spujar@nvidia.com>
+Subject: Re: (subset) [PATCH v2 0/5] Tegra234 APE support
+Message-Id: <164338552494.1711274.10416282145153327937.b4-ty@kernel.org>
+Date: Fri, 28 Jan 2022 15:58:44 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+ linux-kernel@vger.kernel.org, jonathanh@nvidia.com,
+ linux-tegra@vger.kernel.org, mkumard@nvidia.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,12 +82,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 26 Jan 2022 17:13:58 -0600, Rob Herring wrote:
-> There's no need to complicate examples with a platform specific macro.
-> It also complicates example parsing to figure out the number of interrupt
-> cells in examples (based on bracketing).
+On Thu, 27 Jan 2022 12:57:30 +0530, Sameer Pujar wrote:
+> This adds APE support on Tegra234 and enables sound card on
+> Jetson AGX Orin platform.
 > 
 > 
+> Changelog
+> =========
+>  v1->v2
+>  ------
+>    * Rebased patches on latest linux-next
+> 
+> [...]
 
 Applied to
 
@@ -95,8 +101,10 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: dt-bindings: realtek,rt5682s: Drop Tegra specifics from example
-      commit: 0cfe76156cc1c7f8a707969c03ed2242db8f0292
+[1/5] ASoC: tegra: Update AHUB driver for Tegra234
+      commit: 4fcc8710fdd91b37760ccd99bbfbe10352df7600
+[3/5] dt-bindings: Document Tegra234 APE support
+      (no commit info)
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
