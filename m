@@ -4,66 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 364D7C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Jan 2022 23:49:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 606B3C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Jan 2022 23:49:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7F56F174D;
-	Sat, 29 Jan 2022 00:48:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F56F174D
+	by alsa0.perex.cz (Postfix) with ESMTPS id B61C11760;
+	Sat, 29 Jan 2022 00:48:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B61C11760
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1643413753;
-	bh=2FP0kMjTyBWf79RyoN93ttDxKW9dj8rCfxXBwnsnSxU=;
+	s=default; t=1643413773;
+	bh=YbZLwG+eJY1ZimQ3PDJ414ftXS0oYjH5t+IwvoH0++s=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sqU6qdIKWPSMvXll/r6gEq1ZsU3wMN0ZbLi3Wqke72UB0z3s8AmlGWOkrZ8zgShLG
-	 xqpz31DDAwOZjqcJ9FsQlR0u7DatY8xf502O2EKuWWuMVkzoYsglRekazQk56FLqsw
-	 UCEgxu7rQswFkMxFChCEDWy5OlK85DK3RUwTjU9w=
+	b=cJybQ4lh6svjo0yF6pxT5rN/uFm5SodtVeTewupSsQDVie3ROxs5Mb2oiJ5ysvwF0
+	 M+V74r5W0r9i21/62fkqfJbrczR+12qSxiIi2aEVtusKBcj6IOb4MVhF1DshHzSla9
+	 56C+iRMiUa9Kkr15d2Y6udwjj4+CSTDVdQ1veieg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E9710F80482;
-	Sat, 29 Jan 2022 00:47:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DA37AF80524;
+	Sat, 29 Jan 2022 00:47:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3A7F7F80249; Sat, 29 Jan 2022 00:47:01 +0100 (CET)
+ id 1BB2DF8050F; Sat, 29 Jan 2022 00:47:06 +0100 (CET)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AB944F80425
- for <alsa-devel@alsa-project.org>; Sat, 29 Jan 2022 00:46:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB944F80425
+ by alsa1.perex.cz (Postfix) with ESMTPS id 28A8BF80246
+ for <alsa-devel@alsa-project.org>; Sat, 29 Jan 2022 00:47:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 28A8BF80246
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="NscSZvsC"
+ header.b="H6N+qa02"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 54F6D61F40;
- Fri, 28 Jan 2022 23:46:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B8E9C340E8;
- Fri, 28 Jan 2022 23:46:50 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 4DFE361F3E;
+ Fri, 28 Jan 2022 23:47:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1611DC340E8;
+ Fri, 28 Jan 2022 23:46:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1643413611;
- bh=2FP0kMjTyBWf79RyoN93ttDxKW9dj8rCfxXBwnsnSxU=;
+ s=k20201202; t=1643413620;
+ bh=YbZLwG+eJY1ZimQ3PDJ414ftXS0oYjH5t+IwvoH0++s=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=NscSZvsCHgEhyC3i+5oHr4BXa6mGPoZPrNXcG136VsGt+5KrBLkYqWn7WQwA+Sg/4
- 18bXuMWE/3py10P7OE445c64k1LUY1GzrzdiuR4uRtVWU8GBjuse0x+Fi5rgzR0SPr
- TxhrWsAMmoZAP343e8G4d/hikCOPwkC+3u3xs4th/Xcwym7PCxl7xBz+iDZ3ZzOoPT
- TSm6y54fzcEA8E1ks/t0YU/6nXiqFKaqUdSyePRfDdUQCjRTX2Ifb2mV9LNShEPPrk
- PITJyPi0WpkHH+/THNvcAnaB6zQTa9UN5hPTngx0zkZzF8M+c215Abq5IMyPMGbcEP
- HsnSq39sBW5Jw==
+ b=H6N+qa02zvveNZcva5WhrGiGfFlJ66Cb6+yfRLYilkduh+hulF7T0OeTu/hburMzI
+ yri78rLL6daKW9gr8X08EibZESI18/IBpN1Pbc1hUchVwsl9f1LfyCo1WFwktqwb8/
+ WhMvDqfjoXFeMWDKTJAFvPq07d9H9J95VdV4XpgahRGHn8cMJcF4WTXB1tus4t4Uh1
+ 5GnvTRmAL9qKEWspIPzel0cYJTWOmOhQW3fmKwYGPfuBHC5T3VxISuz3I97zsJVC+N
+ KJ0PrtCoVJ9qsR9tTbUB13DANVzaUtP5ujdmoAOK3ZTdma0dMi9TkcPU5eWB2rSYik
+ XmBrYqh7uuWpQ==
 From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-In-Reply-To: <20220128192443.3504823-1-broonie@kernel.org>
-References: <20220128192443.3504823-1-broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: ops: Check for negative values before reading them
-Message-Id: <164341361076.694662.932219840656877286.b4-ty@kernel.org>
-Date: Fri, 28 Jan 2022 23:46:50 +0000
+To: Liam Girdwood <lgirdwood@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Brian Norris <briannorris@chromium.org>, Heiko Stuebner <heiko@sntech.de>,
+ David Airlie <airlied@linux.ie>
+In-Reply-To: <20220114230209.4091727-1-briannorris@chromium.org>
+References: <20220114230209.4091727-1-briannorris@chromium.org>
+Subject: Re: (subset) [PATCH v2 0/3] (Re)enable DP/HDMI audio for RK3399 Gru
+Message-Id: <164341361780.694709.13259283241590347085.b4-ty@kernel.org>
+Date: Fri, 28 Jan 2022 23:46:57 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Lin Huang <hl@rock-chips.com>, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, Sandy Huang <hjc@rock-chips.com>,
+ linux-rockchip@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,24 +85,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 28 Jan 2022 19:24:43 +0000, Mark Brown wrote:
-> The controls allow inputs to be specified as negative but our manipulating
-> them into register fields need to be done on unsigned variables so the
-> checks for negative numbers weren't taking effect properly. Do the checks
-> for negative values on the variable in the ABI struct rather than on our
-> local unsigned copy.
+On Fri, 14 Jan 2022 15:02:06 -0800, Brian Norris wrote:
+> This series fixes DP/HDMI audio for RK3399 Gru systems.
 > 
+> First, there was a regression with the switch to SPDIF. Patch 1 can be
+> taken separately as a regression fix if desired. But it's not quite so
+> useful (at least on Chrome OS systems) without the second part.
+> 
+> Second, jack detection was never upstreamed, because the hdmi-codec
+> dependencies were still being worked out when this platform was first
+> supported.
 > 
 > [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-linus
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
 Thanks!
 
-[1/1] ASoC: ops: Check for negative values before reading them
-      commit: 1601033da2dd2052e0489137f7788a46a8fcd82f
+[2/3] drm/rockchip: cdn-dp: Support HDMI codec plug-change callback
+      commit: 9da1467b49ad6c02840e8f331c5da69f6a5bdb2e
+[3/3] ASoC: rk3399_gru_sound: Wire up DP jack detection
+      commit: 6a8bc4b68ca0c6ef73518b692c00b7e1e010d056
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
