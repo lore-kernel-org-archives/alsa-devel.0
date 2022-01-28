@@ -4,68 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54EAAC433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Jan 2022 23:49:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0FBCC433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Jan 2022 23:50:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 95D401762;
-	Sat, 29 Jan 2022 00:48:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95D401762
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4E34C1733;
+	Sat, 29 Jan 2022 00:49:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E34C1733
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1643413786;
-	bh=V2hlaQUwVYAhX5sapkiCadueN/CP7V6HFi+LjLl/M4Q=;
+	s=default; t=1643413805;
+	bh=F27xKt1k5Qx/rPYDcTSyI5MrOc5jMprMLk+/SCPUYns=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nbK3dlmkXZEFH4jkZb37KqERbTQ3+eWTPOKvFGwmBXtoeNkwSrOD1T9bru0ubrCzn
-	 DoAiTtPwSQoV8jj+mcMnfSXbpco+dY/RTv3M7IXQEir01ROikRkTxHVzuOjSvWTw9X
-	 4N5scblAOUUgDiL5zgen9DoxdQhTk1zX5zyS7qzM=
+	b=jb6Iyhgpxk61bKhLgHey+WxF4rSX5hLy8jEatuv70bualUby3c+Mh1+BEChoBx2aU
+	 Zvv9rE7FXFkfEVpMmP73e/8GCTkk8L4c8tOpvpv7w50RpJBl5zp+qqpir8HIKA7Qla
+	 e2YMMx1BKDCCWL5sxFerlDrhCHEc3pqCOnRC9Yxc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 76D77F80528;
-	Sat, 29 Jan 2022 00:47:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0BB35F8052F;
+	Sat, 29 Jan 2022 00:47:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 94988F80518; Sat, 29 Jan 2022 00:47:07 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+ id E2E39F80527; Sat, 29 Jan 2022 00:47:13 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 67A16F80482
- for <alsa-devel@alsa-project.org>; Sat, 29 Jan 2022 00:47:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67A16F80482
+ by alsa1.perex.cz (Postfix) with ESMTPS id 682AAF8052F
+ for <alsa-devel@alsa-project.org>; Sat, 29 Jan 2022 00:47:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 682AAF8052F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ankvu6tw"
+ header.b="iZtApCPC"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id 516EDCE2803;
- Fri, 28 Jan 2022 23:46:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64791C340E7;
- Fri, 28 Jan 2022 23:46:56 +0000 (UTC)
+ by sin.source.kernel.org (Postfix) with ESMTPS id 4F189CE2803;
+ Fri, 28 Jan 2022 23:47:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68C6DC340E7;
+ Fri, 28 Jan 2022 23:47:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1643413617;
- bh=V2hlaQUwVYAhX5sapkiCadueN/CP7V6HFi+LjLl/M4Q=;
+ s=k20201202; t=1643413624;
+ bh=F27xKt1k5Qx/rPYDcTSyI5MrOc5jMprMLk+/SCPUYns=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=ankvu6twiuvg8eygebbnv0pC7E/TI/i8GZKF+HN6mTXa3yMpVLEJ7D1taiIgS/RHn
- 2xu1/h1GAPY1wa2aRSQwfvBByI7YvK/+lsALaw803wUp3Krgbm2s2ooQkr4x6sKhG+
- 9lhQtUevvCaM4K8Ox6YNpfIIriz11fyAtzNvCHDZva7knG8zyf2OkRF2iT5IS8JxYq
- TzCiAea4mj17JIkGmV2ysRLPhJ0FY+00EWsXrQYyymJKWLWI7GrYjq0M/PdsbpD53g
- ugzjWw85jzlbYnmiDaJVJfH0Vt2E8Yjg4W9faWYWWcS8r9qMzxxMrd1GXTAGwciu2+
- r7xkqJXMnb9iA==
+ b=iZtApCPCEgrx6ylEShx5LCCmDTNsKIo8o9fcjZZR9U5XfKhwOesohL6RQGTVKT7ly
+ sRO6FhMj4LZLos75cTi9j0sl/1D0zKWK0UsIOGxz5IhQVRVeKeCY5tcbbs15DNg/Ai
+ eoscUHxVYCsebvNCm16j7ZFTF7rdvKZnbEn12DfPRlu6+SBVtOVwHQ6BTjcQa45njq
+ tSsUzs4C8QTdHB5OWvsbC42MnVNgZommKnUc55NybJoWaYlYzx2H6A9yjSafkd8a2j
+ kGNIR1cNEiu16OnhbdN5Z97gsq0LfInqoH/PnqQZ+z7GzYkLCSbde4VId3OhyEwK6O
+ roNhppw26G6Og==
 From: Mark Brown <broonie@kernel.org>
-To: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>, alsa-devel@alsa-project.org
-In-Reply-To: <20220117115854.455995-1-AjitKumar.Pandey@amd.com>
-References: <20220117115854.455995-1-AjitKumar.Pandey@amd.com>
-Subject: Re: [PATCH v3 0/6] ASOC: amd: acp: Add generic PDM and PCI driver
- support for ACP
-Message-Id: <164341361612.694709.10584729229948593969.b4-ty@kernel.org>
-Date: Fri, 28 Jan 2022 23:46:56 +0000
+To: Liam Girdwood <lgirdwood@gmail.com>, James Schulman <james.schulman@cirrus.com>, David Rhodes <david.rhodes@cirrus.com>, Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+In-Reply-To: <20220110071832.306185-1-u.kleine-koenig@pengutronix.de>
+References: <20220110071832.306185-1-u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH v2] ASoC: cs42l51: Improve error handling in
+ cs42l51_remove()
+Message-Id: <164341362314.694709.18206268969781285326.b4-ty@kernel.org>
+Date: Fri, 28 Jan 2022 23:47:03 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Alexander.Deucher@amd.com, Basavaraj.Hiregoudar@amd.com,
- Sunil-kumar.Dommati@amd.com, Vijendar.Mukunda@amd.com
+Cc: alsa-devel@alsa-project.org, kernel@pengutronix.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,13 +79,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 17 Jan 2022 17:28:48 +0530, Ajit Kumar Pandey wrote:
-> changes since v2:
+On Mon, 10 Jan 2022 08:18:32 +0100, Uwe Kleine-König wrote:
+> When disabling a regulator fails while the device goes away, there is
+> little we can do and the machine is probably in enough trouble that any
+> action we'd want to take fails anyhow.
 > 
-> - add dmic prepare callback and adopted few nitpicks comments
-> - use read_poll_timeout in place of while loop
-> - added check for unused variable as pointed out
-> - few cleanups
+> The return value used to be passed on in cs42l51_i2c_remove() (i.e. the
+> i2c device remove callback). But the i2c core ignores the error code
+> (apart from emitting a generic warning) and removes the device anyhow.
 > 
 > [...]
 
@@ -97,18 +96,8 @@ Applied to
 
 Thanks!
 
-[1/6] ASoC: amd: acp: Add generic support for PDM controller on ACP
-      commit: c32bd332ce5c9eda087dedae2cf5f98bb008e841
-[2/6] ASoC: amd: acp: Add PDM controller based dmic dai for Renoir
-      commit: def6dc25070342be2eb220cb1650a286ee29734d
-[3/6] ASoC: amd: acp: Add generic PCI driver module for ACP device
-      commit: 5a9f07a41522e1d16f2a43b1843e266434df0866
-[4/6] ASoC: amd: acp: Add ACP init()/deinit() callback for Renoir.
-      commit: 6a75585a3d4bc86e7f5f95b131c4e34125c871ba
-[5/6] ASoC: amd: acp: acp-legacy: Add DMIC dai link support for Renoir
-      commit: 611ba05e8bc55b35690e90bcc6710f422dd72587
-[6/6] ASoC: amd: renoir: Add check for acp configuration flags
-      commit: 2d7d9f36b567ec44c9a758e1ee6e599b4db3cad8
+[1/1] ASoC: cs42l51: Improve error handling in cs42l51_remove()
+      commit: 73d4c3135b2aa2308fe058f58ddbf658436aa385
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
