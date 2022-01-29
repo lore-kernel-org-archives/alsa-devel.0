@@ -4,83 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 894D7C433EF
-	for <alsa-devel@archiver.kernel.org>; Sat, 29 Jan 2022 12:25:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70D07C433F5
+	for <alsa-devel@archiver.kernel.org>; Sat, 29 Jan 2022 12:25:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A488F1784;
-	Sat, 29 Jan 2022 13:25:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A488F1784
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9DF5A1755;
+	Sat, 29 Jan 2022 13:25:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9DF5A1755
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1643459150;
-	bh=WjAdBxp5WIQgilzKveCMMtFwnljsWIPgg5aY0b4Du0c=;
+	s=default; t=1643459154;
+	bh=w3jaXEw89uah6bQhp9pupDriGii4X30rhU3VXVX/Bu0=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=p8k8cJHyLOHJYXNe/5PmhcdqzX3CMZhedAeXhtjH4t5sP885rtgqeOm0q+ySfOnhj
-	 EkEsGeQnWY0c9rBgRfwfbcFZtQo3BaFnxlF6+vn038Yp5LBbMN3oFeZLdpdAD2Op6I
-	 4JMmW0K1y25sC6IVDJY2V39moi82Wux03RlZ5BTg=
+	b=iqV+/ZOCQaHoYiPbYBVKvuWzaW7s4mDOaPXFxpAWx1TWtYcUPboGT5uJr8npe9+HG
+	 5KJuPaP5mpztKS8HxWIP7en9ZUO5+vGf+3luOcwEH6jAeuXyIJ07A2iDSfjd9qHXjO
+	 xtIAm0EPpNYhRZTabDFwtk8Q8npZcvJN8z1+rhE8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E6AADF80515;
-	Sat, 29 Jan 2022 13:24:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E2DC2F8051A;
+	Sat, 29 Jan 2022 13:24:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ACF33F80510; Sat, 29 Jan 2022 13:24:41 +0100 (CET)
-Received: from smtp-relay-internal-0.canonical.com
- (smtp-relay-internal-0.canonical.com [185.125.188.122])
+ id 9CBA2F8051A; Sat, 29 Jan 2022 13:24:43 +0100 (CET)
+Received: from smtp-relay-internal-1.canonical.com
+ (smtp-relay-internal-1.canonical.com [185.125.188.123])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8C596F80510
- for <alsa-devel@alsa-project.org>; Sat, 29 Jan 2022 13:24:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C596F80510
+ by alsa1.perex.cz (Postfix) with ESMTPS id D0D88F80516
+ for <alsa-devel@alsa-project.org>; Sat, 29 Jan 2022 13:24:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0D88F80516
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com
- header.b="hsHOsLMG"
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71])
+ header.b="RCuxcgW+"
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 266C33F197
- for <alsa-devel@alsa-project.org>; Sat, 29 Jan 2022 12:24:34 +0000 (UTC)
+ by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id DFD783F1D9
+ for <alsa-devel@alsa-project.org>; Sat, 29 Jan 2022 12:24:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1643459074;
- bh=5FFlQVfiPYwOVz/qR1ttwGkalvSmqMhuguJRa3JpJFQ=;
+ s=20210705; t=1643459076;
+ bh=aFma7LFfbMy+pdLU8XgqpfQtVODFsB45EwHFjG4cPHo=;
  h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
  MIME-Version;
- b=hsHOsLMG3aed4NV0oYPPTfgR/lCkwJvnTUrQA6BzwuCvIIVuExMaMpDM4jOYOOyp6
- 18pxFrxbTk9o/mACp8mX8HMbs6cNc7Xd3pSZ8STLCQ47NiSHyR6R5OgcfexNTQ+uqE
- 85uqp3fidMofVOOLy4Alu5153YcyaeKoDm1bne0R8bwsLwMauQX60QD5rmqfeR85nq
- oLZVPNBtAma3k3UR1k7SGBwHwg0c9HzwSMKVGxJfd70HDnjoFdV4hYWB7iQsh2tXOy
- AN9cz1X4HX9FB/yy3LGxBW1KGIp7vbvYFr4mR4buNCwNCxGjAhgbAdP0lw6pk5+ck7
- 1vAQNGvPMEjVQ==
-Received: by mail-wm1-f71.google.com with SMTP id
- q71-20020a1ca74a000000b003507f38e330so7385370wme.9
- for <alsa-devel@alsa-project.org>; Sat, 29 Jan 2022 04:24:34 -0800 (PST)
+ b=RCuxcgW+KUeRyLhFSOEFTrmg6B6VRtdisIDeQRW5TqPHMAnxNKqJeLKpqMb7rKlzl
+ yX4g4mGfttHR42wdG5pnCLDk843xf1279O2BiwgpbqCa5JTVsVsBd+RYO4swED3nE1
+ 08t9J7Yam/2jYTja/NpJa+FC8SPfvqABSQt8fb5ffn5lhdryR9rC7i/TmZAk5KExzU
+ sctskBNEz6gp558TZWpKkhcNn7XooCkTGk61VgXfcsmB3BXRcYwKt/EfmmkWVSpRQU
+ Bg+MRYkdcJden+f9XVKdUJpOF7BfQNLgUdK/BgJW+u3NnuwQlW9CjlUMv2CyXchijL
+ hhSstXI7Bz2rg==
+Received: by mail-wr1-f69.google.com with SMTP id
+ o26-20020adfa11a000000b001dd1d3a73c7so2935449wro.21
+ for <alsa-devel@alsa-project.org>; Sat, 29 Jan 2022 04:24:36 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=5FFlQVfiPYwOVz/qR1ttwGkalvSmqMhuguJRa3JpJFQ=;
- b=Rec+G+qbnBdCoZheUNov0Fh19DNcn0fNprTC6jS6Fs+9sTF8oBZ+PNy47Tx6RXCY18
- Wfb5TwgVkM1SAr8wN2Vx4Df7a9H+Vo8omsaPr7BxOai1kpFhlvW52pPNeb9l3HSNjKyK
- MPLL5jUjze7QO7/oIc/sEU+ba9kZLPnwjdhegb3ZQjHeY2OmhBVNMSL8lP8/P8pDmYo2
- 4kSlaIslQ4Gv0jlqbZZKdouba/+cBFEDgngklmQzh8VKdhvbLHzPlhCRr4sC+CNQj3Ty
- Ra7D3HoQLgricg7p5yl/gwM1j8/xIubuGOlh49P415ug+C8vNw//AbNxplg4PuwMTrei
- vuXA==
-X-Gm-Message-State: AOAM532uOv2GzOJMRRomXn2t1VR0kunychA0JLsUEV9LbGp+UbnHQHi+
- HbwOnDueK1UuwyV9GGonFx24L5oUi7w5MJixXDtnRovWsOoRqea6cALxRReYOK/q/pACEgR7Cdf
- eoC8iCs0qYZrTfgO8oez1tEt+edze0NU5c3YhP7sw
-X-Received: by 2002:adf:f64e:: with SMTP id x14mr10041191wrp.216.1643459073802; 
- Sat, 29 Jan 2022 04:24:33 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyxe6dsREF4mKdGOp2shKuhk+vTGgCTqdm3WOG32IIYdm9aRaZQctbPT/4EIxznruMFid33Pw==
-X-Received: by 2002:adf:f64e:: with SMTP id x14mr10041176wrp.216.1643459073650; 
- Sat, 29 Jan 2022 04:24:33 -0800 (PST)
+ bh=aFma7LFfbMy+pdLU8XgqpfQtVODFsB45EwHFjG4cPHo=;
+ b=Zg16PprzwCJyeUK1FrftlcWK2fwrZzMxmgqb2Lm4pSR+bSnyGVP8XHM/aBq6szi9OT
+ Jg2a+MLhsYsh5/Ex0P4g71fMt3DGiLIzpx8NrUrP1EddR6XykWe4/t0g1kNyOVYRx1QU
+ fZyzXUnlNCN0/ScnLuNLpcLOS4luyrYXpuEontP280sFlaV9dlu1w9i2oZ8fCl/xROdh
+ Z9ikWbIaSxGN48/6PwaDd9bR5vdsLGoTdWxdRbSJKNnHfPBuTvWK1ymIWn7RbdZN59h9
+ uYXh6S+C40ytJmWc5GF7m7K3YD/6mjDdzxqTjhGWR88WesdQ8GKLZR/hYXmbC8GFg0eZ
+ d6RQ==
+X-Gm-Message-State: AOAM532Jldu/4Qq5jNqY0h4Mo/dBSd7L82oPVZDio6Y5S5r2vSwMI1OE
+ 77cVuygnHJxMA6shMfxjKbKSO2+Rm+pFgkQyxVL08437EqZcqNhvCKzJlUGqjKdp+hjcOUcLycr
+ ElraeDVzfO0roDiCk2rp9oWx8r2T45MTI8eMdmBgu
+X-Received: by 2002:adf:f046:: with SMTP id t6mr10225196wro.684.1643459076553; 
+ Sat, 29 Jan 2022 04:24:36 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy6uVQv1yZoAqdrgKAJVhPpKtEPV3VRQWrLgTAFRKnvJZBUsYggRfijpP0h3y5+sFPo0x/DpA==
+X-Received: by 2002:adf:f046:: with SMTP id t6mr10225189wro.684.1643459076349; 
+ Sat, 29 Jan 2022 04:24:36 -0800 (PST)
 Received: from localhost.localdomain (xdsl-188-155-168-84.adslplus.ch.
  [188.155.168.84])
- by smtp.gmail.com with ESMTPSA id m28sm1106875wms.34.2022.01.29.04.24.32
+ by smtp.gmail.com with ESMTPSA id m28sm1106875wms.34.2022.01.29.04.24.34
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 29 Jan 2022 04:24:32 -0800 (PST)
+ Sat, 29 Jan 2022 04:24:35 -0800 (PST)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  Rob Herring <robh+dt@kernel.org>,
@@ -88,10 +88,10 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  Sylwester Nawrocki <s.nawrocki@samsung.com>,
  Jonathan Bakker <xc-racer2@live.ca>, alsa-devel@alsa-project.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/6] ASoC: dt-bindings: samsung,
- arndale: convert to dtschema
-Date: Sat, 29 Jan 2022 13:24:26 +0100
-Message-Id: <20220129122430.45694-1-krzysztof.kozlowski@canonical.com>
+Subject: [PATCH v2 4/6] ASoC: dt-bindings: samsung,
+ smdk5250: convert to dtschema
+Date: Sat, 29 Jan 2022 13:24:28 +0100
+Message-Id: <20220129122430.45694-3-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20220129122357.45545-1-krzysztof.kozlowski@canonical.com>
 References: <20220129122357.45545-1-krzysztof.kozlowski@canonical.com>
@@ -112,61 +112,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Convert the audio complex on Arndale boards with Samsung Exynos SoC to
+Convert the audio complex on SMDK5250 boards with Samsung Exynos SoC to
 DT schema format.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- .../devicetree/bindings/sound/arndale.txt     | 25 -----------
- .../bindings/sound/samsung,arndale.yaml       | 44 +++++++++++++++++++
- 2 files changed, 44 insertions(+), 25 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/arndale.txt
- create mode 100644 Documentation/devicetree/bindings/sound/samsung,arndale.yaml
+ .../bindings/sound/samsung,smdk-wm8994.txt    | 14 -------
+ .../bindings/sound/samsung,smdk5250.yaml      | 38 +++++++++++++++++++
+ 2 files changed, 38 insertions(+), 14 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/samsung,smdk-wm8994.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/samsung,smdk5250.yaml
 
-diff --git a/Documentation/devicetree/bindings/sound/arndale.txt b/Documentation/devicetree/bindings/sound/arndale.txt
+diff --git a/Documentation/devicetree/bindings/sound/samsung,smdk-wm8994.txt b/Documentation/devicetree/bindings/sound/samsung,smdk-wm8994.txt
 deleted file mode 100644
-index 17530120ccfc..000000000000
---- a/Documentation/devicetree/bindings/sound/arndale.txt
+index 4686646fb122..000000000000
+--- a/Documentation/devicetree/bindings/sound/samsung,smdk-wm8994.txt
 +++ /dev/null
-@@ -1,25 +0,0 @@
--Audio Binding for Arndale boards
+@@ -1,14 +0,0 @@
+-Samsung SMDK audio complex
 -
 -Required properties:
--- compatible : Can be one of the following:
--		"samsung,arndale-rt5631",
--		"samsung,arndale-wm1811"
--
--- samsung,audio-cpu: The phandle of the Samsung I2S controller
--- samsung,audio-codec: The phandle of the audio codec
--
--Optional:
--- samsung,model: The name of the sound-card
--
--Arndale Boards has many audio daughter cards, one of them is
--rt5631/alc5631. Below example shows audio bindings for rt5631/
--alc5631 based codec.
--
+-- compatible : "samsung,smdk-wm8994"
+-- samsung,i2s-controller: The phandle of the Samsung I2S0 controller
+-- samsung,audio-codec: The phandle of the WM8994 audio codec
 -Example:
 -
 -sound {
--		compatible = "samsung,arndale-rt5631";
+-		compatible = "samsung,smdk-wm8994";
 -
--		samsung,audio-cpu = <&i2s0>
--		samsung,audio-codec = <&rt5631>;
+-		samsung,i2s-controller = <&i2s0>;
+-		samsung,audio-codec = <&wm8994>;
 -};
-diff --git a/Documentation/devicetree/bindings/sound/samsung,arndale.yaml b/Documentation/devicetree/bindings/sound/samsung,arndale.yaml
+diff --git a/Documentation/devicetree/bindings/sound/samsung,smdk5250.yaml b/Documentation/devicetree/bindings/sound/samsung,smdk5250.yaml
 new file mode 100644
-index 000000000000..e7dc65637f02
+index 000000000000..cb51af90435e
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/samsung,arndale.yaml
-@@ -0,0 +1,44 @@
++++ b/Documentation/devicetree/bindings/sound/samsung,smdk5250.yaml
+@@ -0,0 +1,38 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/sound/samsung,arndale.yaml#
++$id: http://devicetree.org/schemas/sound/samsung,smdk5250.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Insignal Arndale boards audio complex
++title: Samsung SMDK5250 audio complex with WM8994 codec
 +
 +maintainers:
 +  - Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
@@ -174,35 +163,29 @@ index 000000000000..e7dc65637f02
 +
 +properties:
 +  compatible:
-+    enum:
-+      - samsung,arndale-rt5631
-+      - samsung,arndale-wm1811
++    const: samsung,smdk-wm8994
 +
 +  samsung,audio-codec:
 +    description: Phandle to the audio codec.
 +    $ref: /schemas/types.yaml#/definitions/phandle
 +
-+  samsung,audio-cpu:
++  samsung,i2s-controller:
 +    description: Phandle to the Samsung I2S controller.
 +    $ref: /schemas/types.yaml#/definitions/phandle
-+
-+  samsung,model:
-+    description: The user-visible name of this sound complex.
-+    $ref: /schemas/types.yaml#/definitions/string
 +
 +required:
 +  - compatible
 +  - samsung,audio-codec
-+  - samsung,audio-cpu
++  - samsung,i2s-controller
 +
 +additionalProperties: false
 +
 +examples:
 +  - |
 +    sound {
-+        compatible = "samsung,arndale-rt5631";
-+        samsung,audio-cpu = <&i2s0>;
-+        samsung,audio-codec = <&rt5631>;
++        compatible = "samsung,smdk-wm8994";
++        samsung,i2s-controller = <&i2s0>;
++        samsung,audio-codec = <&wm8994>;
 +    };
 -- 
 2.32.0
