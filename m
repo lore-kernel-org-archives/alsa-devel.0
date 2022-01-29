@@ -4,68 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5F36C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Jan 2022 23:50:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A680DC433F5
+	for <alsa-devel@archiver.kernel.org>; Sat, 29 Jan 2022 03:34:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 07AE2175B;
-	Sat, 29 Jan 2022 00:49:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 07AE2175B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 54D041709;
+	Sat, 29 Jan 2022 04:33:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 54D041709
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1643413824;
-	bh=5uoeE9QX7/h/QHvmNYA3KQvjtSiQ30QgsdGB51e8dfA=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=H3O9PBQBnlmxs98tAsTloNm2SIYrj3lYAuJnuOfah2HeG3FtE2UDoUhrCydnS1p1o
-	 j6+xVKPfu2PwWZPY/ba7g3jNm7QQWJZlQRyTlYbxoQGNtUGBUt7R7n/Gr0ud9+gvUS
-	 /jnNWOtZprWvWIWmv4QyzlcMK5GsIQ/C29dm2+hY=
+	s=default; t=1643427268;
+	bh=AqS+T53oSMfTsklME5wFD2BNwcePUKud1G6jeZ5/fBc=;
+	h=From:Subject:To:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=g7p33lpq+Kc+8pZMJO9aoRFBBRjhqEkjiAJaM27BIsldeqaan+oJ3CM9h1UEIwN9+
+	 OHkZry+RtvGLC9ALzMu6XwdWC8aQy8W1WxurQHrV0CE+xNGHk+ZN6JfyfHMyjTxwjx
+	 NutARjn3axmjq4ps6B4s9X2Zr6zITAJ6P7iyU9Kk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DEDBEF80536;
-	Sat, 29 Jan 2022 00:47:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CD65BF80162;
+	Sat, 29 Jan 2022 04:33:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DB40FF80534; Sat, 29 Jan 2022 00:47:13 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id E7377F801F7; Sat, 29 Jan 2022 04:33:34 +0100 (CET)
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
+ [IPv6:2a00:1450:4864:20::434])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 64F13F80527
- for <alsa-devel@alsa-project.org>; Sat, 29 Jan 2022 00:47:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64F13F80527
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1A127F800CE
+ for <alsa-devel@alsa-project.org>; Sat, 29 Jan 2022 04:33:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A127F800CE
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="IERKzBUC"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id A3E6DCE27E0;
- Fri, 28 Jan 2022 23:47:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FEDFC340EB;
- Fri, 28 Jan 2022 23:47:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1643413623;
- bh=5uoeE9QX7/h/QHvmNYA3KQvjtSiQ30QgsdGB51e8dfA=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=IERKzBUCeJKd50KssHydZi0VdfrBSq50ZrhqBtQ4R2y1z0Pqvm85v97YHeYl/VTnV
- d+DVXzISZfSQXmsBAyii6bhUX6OqWr3ZADYw0XKPkKwHRA/ZWSv2LFfIdSQ58zYcCe
- I+iVNkJoHCu1LnXSWktKlUJcjvnb+pabB3QYEPVhpRUspk8OBoBZxBHQ5YERIulAOJ
- pUjdfivS1LiEdm+ZRRDlidIJnTX91v3LraVPpU1m7rXcYaYAx+l3kq0kkQVyO40sII
- LVmM3ahQhoWZ7cCJP9jZ2xUsL+el4uclIKU7j/vSycB2WKgTgALjIL3h2jSksbu8bh
- QZsIhatQCkkjA==
-From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <20220128133620.9411-1-peter.ujfalusi@linux.intel.com>
-References: <20220128133620.9411-1-peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH 0/3] SoC: SOF: ipc: Optimizations for tx message
-Message-Id: <164341362091.694709.8014500727183175893.b4-ty@kernel.org>
-Date: Fri, 28 Jan 2022 23:47:00 +0000
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="ft1K6ec+"
+Received: by mail-wr1-x434.google.com with SMTP id v13so14372288wrv.10
+ for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2022 19:33:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:subject:to:cc:message-id:date:user-agent:mime-version
+ :content-transfer-encoding:content-language;
+ bh=MEEV8WH7gcIBaywuZqpSloW8+fQPmSsXYorwBGkwcEQ=;
+ b=ft1K6ec+bpsSUrO6sHzilNhZI5D7ygOV6cUs23pfaPUJ86HDBgX0unZVVHu1tlpSzV
+ S3HLok9V9mqEFkQpws5xw3ogn4wQonCdzOjENUWOUKy8jo4+t3fYvLRvRDxuVO+D/A8n
+ uVVH1VpoDrgOPq8e6nNviJBhGUMnUUFf351smOMUpH42GpfGrQUlo0HiNEt2nPCdDija
+ Nq1cTeDQUAxClEhhGfdNvCub+wDMVFSBMW86P6wTCiyT0VBQQyrZ/86VMrYpRGJ/eYAN
+ FSNbmr2PQVAZT2m7sVIM3lcR8LHGZiXTF1Eg54+4IXZ+i/y0eIvKSj1+PNMrNzT/eDp0
+ Bv9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:subject:to:cc:message-id:date:user-agent
+ :mime-version:content-transfer-encoding:content-language;
+ bh=MEEV8WH7gcIBaywuZqpSloW8+fQPmSsXYorwBGkwcEQ=;
+ b=5E6FqvZaHyiWz1rwrPo0WKTR77lJGUsB2xgs/EuORpEtKeuyqUtDNm0bFfOJy92tr4
+ vS1bV/KA4dY+uwKhG8aSJlrb1WggV1THWBQjII+WmnCFpPwNOIHAgoQWdSZt1o56O6ll
+ RVGQlQ3FCrpXodcAmoODaSrM6q9wngKIoKS+3EH+ZyispsLPZRLgfCpKz+C2K7e9Qelg
+ HwpkWsxzkq3IBkoQvJgK6kyrJwZH1IzXbO1xBkhkK42PAs9NTibIEWvidgRg3NISNSTe
+ 3nxXdEJjjAWVVE3UdfH7fHIKhSVtNE+lf0QiAc3kKrc5/EgCYeDn5+7LIo+4oqX0CS2h
+ skWQ==
+X-Gm-Message-State: AOAM532dOQKFDo07mfNkxLHVnd8WxvAyA4fU7Xn4+LlrxRWM2c5lIVEB
+ b1j1Hy/yJs4q1b0geyLNglI=
+X-Google-Smtp-Source: ABdhPJyiMDc7MH6tbWAjV3Be75ZoFQZE5hbcKQdm0LjQKmgM7IzYGTiitEr0vIiW8lRjpb0lPUKvKQ==
+X-Received: by 2002:a5d:494b:: with SMTP id r11mr9289806wrs.626.1643427210591; 
+ Fri, 28 Jan 2022 19:33:30 -0800 (PST)
+Received: from [10.96.0.6] ([85.203.46.187])
+ by smtp.gmail.com with ESMTPSA id j19sm3551042wmq.17.2022.01.28.19.33.27
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 28 Jan 2022 19:33:30 -0800 (PST)
+From: Jia-Ju Bai <baijiaju1990@gmail.com>
+Subject: [BUG] ALSA: core: possible deadlock involving waiting and locking
+ operations
+To: perex@perex.cz, tiwai@suse.com, broonie@kernel.org, o-takashi@sakamocchi.jp
+Message-ID: <56766037-972e-9e5b-74c1-88633a72a77f@gmail.com>
+Date: Sat, 29 Jan 2022 11:33:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
- daniel.baluta@nxp.com, pierre-louis.bossart@linux.intel.com,
- ranjani.sridharan@linux.intel.com, rander.wang@intel.com,
- yung-chuan.liao@linux.intel.com
+Content-Language: en-US
+Cc: alsa-devel@alsa-project.org, linux-kernel <linux-kernel@vger.kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,45 +95,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 28 Jan 2022 15:36:17 +0200, Peter Ujfalusi wrote:
-> The series will drop the internal use of 'header' parameter which is always
-> set to hdr->cmd.
-> 
-> The other simplification is to use the provided message directly as it is
-> guarantied to be valid throughout the message sending and we can save memory
-> by not allocating a temporary buffer, also saving on needles memcpy()
-> operations.
-> 
-> [...]
+Hello,
 
-Applied to
+My static analysis tool reports a possible deadlock in the sound driver 
+in Linux 5.10:
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+snd_card_disconnect_sync()
+   spin_lock_irq(&card->files_lock); --> Line 461 (Lock A)
+   wait_event_lock_irq(card->remove_sleep, ...); --> Line 462 (Wait X)
+   spin_unlock_irq(&card->files_lock); --> Line 465 (Unlock A)
 
-Thanks!
+snd_hwdep_release()
+   mutex_lock(&hw->open_mutex); --> Line 152 (Lock B)
+   mutex_unlock(&hw->open_mutex); --> Line 157 (Unlock B)
+   snd_card_file_remove()
+     wake_up_all(&card->remove_sleep); --> Line 976 (Wake X)
 
-[1/3] ASoC: SOF: Intel: cnl: Use pm_gate->hdr.cmd in cnl_compact_ipc_compress()
-      commit: 5b6988fe844a298263821beef5fcc41286a048dc
-[2/3] ASoC: SOF: ipc: Drop header parameter from sof_ipc_tx_message_unlocked()
-      commit: 73a548bd1fa3cbe5d18026230a34c1f058257536
-[3/3] ASoC: SOF: ipc: Do not allocate buffer for msg_data
-      commit: 2acfab7101140e93928a61ca48d7e442aa538dd7
+snd_hwdep_open()
+   mutex_lock(&hw->open_mutex); --> Line 95 (Lock B)
+   snd_card_file_add()
+     spin_lock(&card->files_lock); --> Line 932 (Lock A)
+     spin_unlock(&card->files_lock); --> Line 940 (Unlock A)
+   mutex_unlock(&hw->open_mutex); --> Line 139 (Unlock B)
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+When snd_card_disconnect_sync() is executed, "Wait X" is performed by 
+holding "Lock A". If snd_hwdep_open() is executed at this time, it holds 
+"Lock B" and then waits for acquiring "Lock A". If snd_hwdep_release() 
+is executed at this time, it waits for acquiring "Lock B", and thus 
+"Wake X" cannot be performed to wake up "Wait X" in 
+snd_card_disconnect_sync(), causing a possible deadlock.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+I am not quite sure whether this possible problem is real and how to fix 
+it if it is real.
+Any feedback would be appreciated, thanks :)
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Best wishes,
+Jia-Ju Bai
