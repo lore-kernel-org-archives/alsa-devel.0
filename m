@@ -4,86 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91481C433EF
-	for <alsa-devel@archiver.kernel.org>; Sat, 29 Jan 2022 11:35:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2402C433EF
+	for <alsa-devel@archiver.kernel.org>; Sat, 29 Jan 2022 12:24:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D4EB91749;
-	Sat, 29 Jan 2022 12:34:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D4EB91749
+	by alsa0.perex.cz (Postfix) with ESMTPS id 45F2A1754;
+	Sat, 29 Jan 2022 13:24:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45F2A1754
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1643456112;
-	bh=lv1c8u7ZI2B1J5J5g56ZIDMiMyfbFOl041TMOQPXLnA=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Ucpm2l43jMeb2nt/+mJVF5322on7guzWi0+t9VzuVRw+Ivt4wUkohaeyfVnD0C8ux
-	 rALpaJPQ9qdE7ib/noUPupuRYhm/ORqvi6/fxgzfpmSuUzqAKEniJ30kH9uqktWUWz
-	 rfwuC5xKG3Ukp+bzmYlR++srqJ/PN47h8kjYVxKg=
+	s=default; t=1643459097;
+	bh=SLQNxvcaH2GZMF2JAgDmOpIBFKT8IgZzjgP0ttzRr9Y=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=JABHf2fa/FywRFEBuYS4kGe+Q29hlA9Ao5Q6CVCbVf+kV9IsmoBsQHQH8HSS0tPWL
+	 kAyiJEj7NWRsie9lfex1LjRHcK7nOUQ745YwF/EfmecABUMahnbtXvBk/AB9PfsKiS
+	 YDJ0CUrLBFZTIA6cOtwBwvDXz+Vr9oGCFF38NXlA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AEE84F80511;
-	Sat, 29 Jan 2022 12:33:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C8E3DF800CE;
+	Sat, 29 Jan 2022 13:24:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C9E03F80506; Sat, 29 Jan 2022 12:33:22 +0100 (CET)
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com
- [IPv6:2a00:1450:4864:20::531])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 5D235F801F7; Sat, 29 Jan 2022 13:24:05 +0100 (CET)
+Received: from smtp-relay-internal-1.canonical.com
+ (smtp-relay-internal-1.canonical.com [185.125.188.123])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5F414F80212
- for <alsa-devel@alsa-project.org>; Sat, 29 Jan 2022 12:33:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F414F80212
+ by alsa1.perex.cz (Postfix) with ESMTPS id F12E4F800CE
+ for <alsa-devel@alsa-project.org>; Sat, 29 Jan 2022 13:24:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F12E4F800CE
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="oAnGyMaN"
-Received: by mail-ed1-x531.google.com with SMTP id w14so15710046edd.10
- for <alsa-devel@alsa-project.org>; Sat, 29 Jan 2022 03:33:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=Sru1jdaN0i8x7BMpLToXDQYkXxi+rqmOmOeEeeUCi8w=;
- b=oAnGyMaNax0I3RmgHekqsLU9GExFU8MdPWRMoUgsM0/KyoGqF3j17wvCP2d7r2MErD
- dQY0cvVfW8p5BbHBbHPQr9Fv8Gm5t2Og27W8JoT5EwJ9877viAtCJMVBdKt1wJr8wc6d
- 4pEa5UCK3aQGakgHPwW3g6OhckKFpVEUACxPycUjEd3a8Kn1elF0VFNgUHxmxcEd1Cm/
- 1qAMC6YFeLAAEovPrYs1ScwvsWvT1G6xy673H1XAQsy4q+uQUBK+iM5ysLcr2sSpsaNf
- 3OF865pyXiPZkW4ChbMhhBNrpExCRccTS9OzP5lxU7o6+/UkOg3QQcc81Mo9Kr1wK7Uw
- MXRA==
+ dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com
+ header.b="VZhSXu9v"
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id C76623F1C6
+ for <alsa-devel@alsa-project.org>; Sat, 29 Jan 2022 12:23:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+ s=20210705; t=1643459039;
+ bh=x4o0tadweuj23sLkh9uK/49Ckg22Ago7xB3yd+9McbM=;
+ h=From:To:Subject:Date:Message-Id:MIME-Version;
+ b=VZhSXu9vwBHUaIhkfD0+K9eABZ0anng0dYAXXKmyh+QfNaw6/DPM3ixAf4eK4Y/gE
+ 4IbsKPDMu5nE0hCUmt1HCMkyZuYGeikFGHpbFXgwBPan3gZBppbPBqEySwIwM8sK7/
+ iJ7Z2aZy2alH+Db+HXbXaZtkCxvzT4GKzOy5L9cMV8C5ozKn2nm20Nl3J6XHAdNv/u
+ vkDUOioNRQESfUvhPrCMB9+KgbiADRVQQtp9TjEYLRWWmt/2aeCI+ZoytzkMaT53Ny
+ s/6dynzOlq6GWY0PejcdZbhAdoXVzSGkI/+Pc1ezIAz6+7PIWA2IVMG42aXw8N/43S
+ jsMwbVA/KCGkA==
+Received: by mail-wr1-f69.google.com with SMTP id
+ g8-20020adfa488000000b001d8e6467fe8so2963905wrb.6
+ for <alsa-devel@alsa-project.org>; Sat, 29 Jan 2022 04:23:59 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=Sru1jdaN0i8x7BMpLToXDQYkXxi+rqmOmOeEeeUCi8w=;
- b=PVRLouupook4irnVpFh1puf84gZBNM5SzyaMm2dJNmrRj4YGA7aUNwN7Pux2o+o1UU
- +TSUrcwbW1uhhKBzxg2ONPhjs+ix0dFlpcZZ/Xb46Tt+ZM3N2eHvnAqRSM45UH2NTe8V
- 7MC/a/w3MO3vXOrol6o2zxh/FhimlG2WFiUQ99hW1zrDNAqh/cUG/EsSJFtO4eb9C4IJ
- eMN6vNJBBNSoTfLrQX9dXtKlF8avdTKvlDTynIB3/77QTL+6JhT4CwJerkc2aCxXgTDF
- o76BJtVhYHU50IGbd4YzUzSa7RK15wRwKEJhcmptMfw/GOyZMeTfEGKfsHhaL+WL70kQ
- 4XnQ==
-X-Gm-Message-State: AOAM532uEtBsJ3Wet8ttIDJrUJ76oEwLTOVyq3cWlsxYNRdlO/uqErOD
- IeBNi+KMOqaBEC8wippo+5I=
-X-Google-Smtp-Source: ABdhPJzBi8S9tPmb0gPjL+mqr1DSXbVLEoeBxZimbwlpMKMIEusoJzn6cn4RgGbtDGRcQtCP/pCsmw==
-X-Received: by 2002:a50:fc14:: with SMTP id i20mr12197926edr.261.1643455992567; 
- Sat, 29 Jan 2022 03:33:12 -0800 (PST)
-Received: from cosmos.lan (178.113.77.92.wireless.dyn.drei.com.
- [178.113.77.92])
- by smtp.gmail.com with ESMTPSA id g6sm8885062ejz.170.2022.01.29.03.33.11
+ h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=x4o0tadweuj23sLkh9uK/49Ckg22Ago7xB3yd+9McbM=;
+ b=WcTP8054NkKRfTVl3zupNh07mbVwfBfnkSfxWoUnw6tfBAq5ys9wRKnN5q9YTzzI4b
+ yUE6tzUapDllt7QXbvO5JTLIHl+EgrTg5ARGvM49ckVieWxsH4otZahccpsA+J669liy
+ /0Trl8mPDNGiIMvjFUEcIDRb7S9S+9MQLlhcXCt11ElP7RYtQb8Jw/RZaftSfj+Lv1Ai
+ pToLe1g6FU11QA4LTff8Sou5yFMnX5NvesZvRcGB7Rol3ZgFIeYH9WHo8P5fsedUNqZb
+ Zz5Os+eIgF6X/v7OWkgTrLh1eKv16wJUm26e2xaUM1UXZ0OleNZeYER8g0ivxE0jxXuo
+ FE6w==
+X-Gm-Message-State: AOAM532gMhsRSLkLCHucLFjz6vWXaaS/o0Q65WdwhspeqkmH38AZpAyA
+ Wt6O+8ZYi9ucg1kql1AERdu3sI3EgX7O3nuv0wb7KY9auLmJq9tssd9wEQiJNaWi+dd0ReuwP5J
+ /SlHwIB9Rw6sbz9ilmNfwuVgw68VSuVY4x7fBjtt5
+X-Received: by 2002:a05:6000:3ce:: with SMTP id
+ b14mr11007108wrg.118.1643459039519; 
+ Sat, 29 Jan 2022 04:23:59 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJygRY/OO3A1gLYNKDwc5YcDp9OYKQQJgKxWDSCXzN4Pa9hV5T3InC2pPxALeSJIge3bJVVrsw==
+X-Received: by 2002:a05:6000:3ce:: with SMTP id
+ b14mr11007100wrg.118.1643459039297; 
+ Sat, 29 Jan 2022 04:23:59 -0800 (PST)
+Received: from localhost.localdomain (xdsl-188-155-168-84.adslplus.ch.
+ [188.155.168.84])
+ by smtp.gmail.com with ESMTPSA id z13sm7901534wrm.90.2022.01.29.04.23.58
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 29 Jan 2022 03:33:12 -0800 (PST)
-From: Christian Lachner <gladiac@gmail.com>
-To: perex@perex.cz,
-	tiwai@suse.com,
-	kailang@realtek.com
-Subject: [PATCH 2/3] hda/realtek: Fix silent output on Gigabyte X570S Aorus
- Master (newer chipset)
-Date: Sat, 29 Jan 2022 12:32:42 +0100
-Message-Id: <20220129113243.93068-3-gladiac@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220129113243.93068-1-gladiac@gmail.com>
-References: <20220129113243.93068-1-gladiac@gmail.com>
+ Sat, 29 Jan 2022 04:23:58 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+ Sylwester Nawrocki <s.nawrocki@samsung.com>,
+ Jonathan Bakker <xc-racer2@live.ca>, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/6] ASoC: dt-bindings: samsung: convert to dtschema
+Date: Sat, 29 Jan 2022 13:23:51 +0100
+Message-Id: <20220129122357.45545-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Christian Lachner <gladiac@gmail.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,46 +109,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Newer versions of the X570 Master come with a newer revision of the
-mainboard chipset - the X570S. These boards have the same ALC1220 codec
-but seem to initialize the codec with a different parameter in Coef 0x7
-which causes the output audio to be very low. We therefore write a
-known-good value to Coef 0x7 to fix that. As the value is the exact same
-as on the other X570(non-S) boards the same quirk-function can be shared
-between both generations.
+Hi,
 
-This commit adds the Gigabyte X570S Aorus Master to the list of boards
-using the ALC1220_FIXUP_GB_X570 quirk. This fixes both, the silent output
-and the no-audio after reboot from windows problems.
+The patchset is based on Rob's sound-dai changes:
+https://lore.kernel.org/all/20220126231427.1638089-1-robh@kernel.org/
 
-This work has been tested by the folks over at the level1techs forum here:
-https://forum.level1techs.com/t/has-anybody-gotten-audio-working-in-linux-on-aorus-x570-master/154072
+Changes since v1:
+1. Correct samsung,snow cpu/sound-dai.
 
-Signed-off-by: Christian Lachner <gladiac@gmail.com>
----
- sound/pci/hda/patch_realtek.c | 2 ++
- 1 file changed, 2 insertions(+)
+Best regards,
+Krzysztof
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 48af182f87e4..ca8475c24187 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -2125,6 +2125,7 @@ static void alc1220_fixup_gb_x570(struct hda_codec *codec,
- {
- 	static const hda_nid_t conn1[] = { 0x0c };
- 	static const struct coef_fw gb_x570_coefs[] = {
-+		WRITE_COEF(0x07, 0x03c0),
- 		WRITE_COEF(0x1a, 0x01c1),
- 		WRITE_COEF(0x1b, 0x0202),
- 		WRITE_COEF(0x43, 0x3005),
-@@ -2552,6 +2553,7 @@ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1458, 0xa0b8, "Gigabyte AZ370-Gaming", ALC1220_FIXUP_GB_DUAL_CODECS),
- 	SND_PCI_QUIRK(0x1458, 0xa0cd, "Gigabyte X570 Aorus Master", ALC1220_FIXUP_GB_X570),
- 	SND_PCI_QUIRK(0x1458, 0xa0ce, "Gigabyte X570 Aorus Xtreme", ALC1220_FIXUP_CLEVO_P950),
-+	SND_PCI_QUIRK(0x1458, 0xa0d5, "Gigabyte X570S Aorus Master", ALC1220_FIXUP_GB_X570),
- 	SND_PCI_QUIRK(0x1462, 0x11f7, "MSI-GE63", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1462, 0x1228, "MSI-GP63", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1462, 0x1229, "MSI-GP73", ALC1220_FIXUP_CLEVO_P950),
+Krzysztof Kozlowski (6):
+  ASoC: dt-bindings: samsung,aries-wm8994: require sound-dai property
+  ASoC: dt-bindings: samsung,arndale: convert to dtschema
+  ASoC: dt-bindings: samsung,arndale: document ALC5631
+  ASoC: dt-bindings: samsung,smdk5250: convert to dtschema
+  ASoC: dt-bindings: samsung,snow: convert to dtschema
+  ASoC: dt-bindings: samsung,tm2: convert to dtschema
+
+ .../devicetree/bindings/sound/arndale.txt     | 25 ------
+ .../bindings/sound/samsung,aries-wm8994.yaml  |  4 +
+ .../bindings/sound/samsung,arndale.yaml       | 45 +++++++++++
+ .../bindings/sound/samsung,smdk-wm8994.txt    | 14 ----
+ .../bindings/sound/samsung,smdk5250.yaml      | 38 +++++++++
+ .../bindings/sound/samsung,snow.yaml          | 74 +++++++++++++++++
+ .../bindings/sound/samsung,tm2-audio.txt      | 42 ----------
+ .../bindings/sound/samsung,tm2.yaml           | 80 +++++++++++++++++++
+ .../devicetree/bindings/sound/snow.txt        | 31 -------
+ 9 files changed, 241 insertions(+), 112 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/arndale.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/samsung,arndale.yaml
+ delete mode 100644 Documentation/devicetree/bindings/sound/samsung,smdk-wm8994.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/samsung,smdk5250.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/samsung,snow.yaml
+ delete mode 100644 Documentation/devicetree/bindings/sound/samsung,tm2-audio.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/samsung,tm2.yaml
+ delete mode 100644 Documentation/devicetree/bindings/sound/snow.txt
+
 -- 
-2.34.1
+2.32.0
 
