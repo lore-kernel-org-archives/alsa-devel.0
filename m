@@ -4,80 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39D49C433EF
-	for <alsa-devel@archiver.kernel.org>; Sat, 29 Jan 2022 11:34:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB6B0C433F5
+	for <alsa-devel@archiver.kernel.org>; Sat, 29 Jan 2022 11:35:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D24E51754;
-	Sat, 29 Jan 2022 12:33:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D24E51754
+	by alsa0.perex.cz (Postfix) with ESMTPS id C9D351765;
+	Sat, 29 Jan 2022 12:34:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C9D351765
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1643456085;
-	bh=w+AKfiXGxsB1dMrfmQe7wTUy9LH9Wu5g7QCGVY7U7Zs=;
+	s=default; t=1643456098;
+	bh=RSwC69Vp4UrLOvPAtkYbYdjM1cGuzcEz/Klvy4l3sJg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=t46PkbZ8aSFQxyE4XZ8SOuzBknnlVEY9JF/OaXH5KhUrkk02Zepkgb/3lg7WV/BZA
-	 04JjNXB01YBmqyniiEkMj7rW2Hn7B9+FnCk+cwYin7XDvTswcrK9kZ6xLsj7J8FIbQ
-	 TtHELLwFiortyFbo9NcxqsJ2IhSc2iJek83RCKFM=
+	b=tJVVmDCaSEvdHtKVK2tTVwm/9Sh7vIn6Sp1jpORO9HTVmiXaPf7cq3khuLPmW1Sq+
+	 5JCXz6UGobIN6tRudEoI/PjAmYF1bjmlP50zqUrRAoPbjR/9JMoZS4qJBdF7Iphz7l
+	 HRAP9mYfCF8ndamhFWSzCp7aol2NW0iYmXKOum1w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8A03CF8024C;
-	Sat, 29 Jan 2022 12:33:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2897FF80506;
+	Sat, 29 Jan 2022 12:33:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E6788F801F7; Sat, 29 Jan 2022 12:33:15 +0100 (CET)
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com
- [IPv6:2a00:1450:4864:20::533])
+ id E4A53F8024C; Sat, 29 Jan 2022 12:33:19 +0100 (CET)
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com
+ [IPv6:2a00:1450:4864:20::530])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 73909F8014B
- for <alsa-devel@alsa-project.org>; Sat, 29 Jan 2022 12:33:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73909F8014B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4D9A7F8024C
+ for <alsa-devel@alsa-project.org>; Sat, 29 Jan 2022 12:33:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4D9A7F8024C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="P1NiM06r"
-Received: by mail-ed1-x533.google.com with SMTP id p7so15631592edc.12
- for <alsa-devel@alsa-project.org>; Sat, 29 Jan 2022 03:33:13 -0800 (PST)
+ header.b="Zi8eoe7g"
+Received: by mail-ed1-x530.google.com with SMTP id u18so15594603edt.6
+ for <alsa-devel@alsa-project.org>; Sat, 29 Jan 2022 03:33:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=ERA8aqBvYsjnUMCz9U3prbef6jppsXR/APdHoQnIWjI=;
- b=P1NiM06ryBLQy3PdF+YpGkhXnOuNMR3s8H1hQSsvru5rizLJ7ry7FqvJ3vWk9DV9nS
- PlUjGs9ofhwEoHiosLGbGNy3yqtrTNemNzSrlcuq9mt7vj0cFJuT+bXrsw70rs3peRTz
- RUXFPvgVugBgBKomRdW0C24/qgG3t/DCG2JA4uNZ1xWGPVPPKombPk4PuthWsbQe8FcT
- 94xi0DwL5gX2/1SRrZxIH0H3tQlwg4aDnOxImjglbQnb+bTgdbpbKiBs9svG8hQ+mjbh
- Y0EyFlOXzXc09r9aXVE0k4Euwp9B3BlAvENQLzEmnOmAgM/ARgyYHmhRTZq2PUOz+7XQ
- pDkQ==
+ bh=FNNDRp1DwqScqAKKfKlwRaoAS6b293HuHJmyYnE9wS8=;
+ b=Zi8eoe7gWXACuUnDq5t0aWFzMJGG4durC3+Muthlr1md1mipaKJpB5q05nI5KKSpap
+ P8iZm0jVx2+xK5IJXfmR5J6isPNA/Yv8nSKeWpCN0nlatcSJFk7QAekzdMYqFPXYY69d
+ 2xMPRRJ58KunDFjAnjn8xprIKwaBQf+5qHq6thXwLOqcDkn11HSmOrUiaHaYVcjPVtvm
+ AH4bCx/hfq/8auaG40sjTIc1bgd4CIP8ZN31sgiBb/R86mi4YpktODHw1ir1tDUnEOBd
+ xugN3WOAVzI6wJle7otsVeBeqy1d6pJz0B0OHAfWpKPiMukwxuU397W+Rb2W5s+yEMMr
+ Wb1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=ERA8aqBvYsjnUMCz9U3prbef6jppsXR/APdHoQnIWjI=;
- b=PlfCVEl3pADCH8H3EIZ5QTC6PpETZrlnMoRaefxoHQoX4nORhiE+0kphJwJeRtzdra
- LU5eZaycMZYx6CPd1E9+XgSE9S1FKO3OryrG1LvC/WhcyCbJKGhSe5FXk/sFe9gms7tJ
- LkpN0tPrd6teQPb0stI9UAv3aPaOCDNCHH+McVahpu75hcTwZ16JwsiypxCGbv2CYwps
- a8U1fH0Oi5cJNwYIxwpswrWeok2WoD5oBPOmrtqW65QF4OuctpMogDWHjltww0kuG4ky
- b267ofqkhV4RAqnE6FPBtFRmm2fz1K5TQdvnteRG7BAnRyl2FTYUBklJ0krvVee34Obf
- UZWw==
-X-Gm-Message-State: AOAM533hmTF8iN9HE9O25NxWB6f1d1/fZo3Y3ZwK99rbfUD1anIhazeI
- tfQQk5hng0BhmmlytWamGxQ=
-X-Google-Smtp-Source: ABdhPJzLP+bbtbCvN3Io1A8R1+++zl+5dkNH9PZbnUUObW7WZv04fmuU2WXnQGXu/SJSsU31RnO0JQ==
-X-Received: by 2002:a05:6402:5147:: with SMTP id
- n7mr12261744edd.2.1643455991590; 
- Sat, 29 Jan 2022 03:33:11 -0800 (PST)
+ bh=FNNDRp1DwqScqAKKfKlwRaoAS6b293HuHJmyYnE9wS8=;
+ b=QCngue8EFfAigXxrKVViN/BeebLHGKq3MzLGzjVw7cbuB+PSqDSRzMY0DjB6X1Hc8I
+ 7OOSZ0oBrTOhgH7o4jsiZEKQgW8zyfLcg4dO5Yw6jU1oIPzGzJeEkXk33XlHaYV+JXyo
+ 9znh+8DbEOtMH5dMIfBjuQn8Mj3xJ7RC3DSB+mUT9fCJGAzxKlWQEunfjhZ+u3gMFXsd
+ h02Rb4bskxiM48V3JgWcua6yUqt9hpfRC4zelkltFF7VCOTbb/XFKOb0smCvOiDVA/DQ
+ zVe25hcZsf6Dqn5mx/VSDO7/YKI7K/jq8HrAbgwE16SqytRGswDdYHPjafu69SnRR8Xl
+ xKGA==
+X-Gm-Message-State: AOAM5332+VHoHtPH5w9hroDDhfY8oFt2Bymz6RVH5d+dz87hP7pTO+c4
+ hxly+3jF5D6oiUjwF+bENxU=
+X-Google-Smtp-Source: ABdhPJzcGNGWAcIyzhGn3nbQK2CtmvxSCcdePO+OD9d6F0cJ+39tKSEi8scnnzCon2J/8kOxyRkixA==
+X-Received: by 2002:a05:6402:1705:: with SMTP id
+ y5mr12271070edu.200.1643455993377; 
+ Sat, 29 Jan 2022 03:33:13 -0800 (PST)
 Received: from cosmos.lan (178.113.77.92.wireless.dyn.drei.com.
  [178.113.77.92])
- by smtp.gmail.com with ESMTPSA id g6sm8885062ejz.170.2022.01.29.03.33.10
+ by smtp.gmail.com with ESMTPSA id g6sm8885062ejz.170.2022.01.29.03.33.12
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 29 Jan 2022 03:33:11 -0800 (PST)
+ Sat, 29 Jan 2022 03:33:13 -0800 (PST)
 From: Christian Lachner <gladiac@gmail.com>
 To: perex@perex.cz,
 	tiwai@suse.com,
 	kailang@realtek.com
-Subject: [PATCH 1/3] hda/realtek: Add missing fixup-model entry for Gigabyte
- X570 ALC1220 quirks
-Date: Sat, 29 Jan 2022 12:32:41 +0100
-Message-Id: <20220129113243.93068-2-gladiac@gmail.com>
+Subject: [PATCH 3/3] hda/realtek: Fix silent output on Gigabyte X570 Aorus
+ Xtreme after reboot from Windows
+Date: Sat, 29 Jan 2022 12:32:43 +0100
+Message-Id: <20220129113243.93068-4-gladiac@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220129113243.93068-1-gladiac@gmail.com>
 References: <20220129113243.93068-1-gladiac@gmail.com>
@@ -100,27 +100,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The initial commit of the new Gigabyte X570 ALC1220 quirks lacked the
-fixup-model entry in alc882_fixup_models[]. It seemed not to cause any ill
-effects but for completeness sake this commit makes up for that.
+This commit switches the Gigabyte X570 Aorus Xtreme from using the
+ALC1220_FIXUP_CLEVO_P950 to the ALC1220_FIXUP_GB_X570 quirk. This fixes
+the no-audio after reboot from windows problem.
 
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=205275
 Signed-off-by: Christian Lachner <gladiac@gmail.com>
 ---
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/pci/hda/patch_realtek.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 668274e52674..48af182f87e4 100644
+index ca8475c24187..a2e36bf0f25e 100644
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -2626,6 +2626,7 @@ static const struct hda_model_fixup alc882_fixup_models[] = {
- 	{.id = ALC882_FIXUP_NO_PRIMARY_HP, .name = "no-primary-hp"},
- 	{.id = ALC887_FIXUP_ASUS_BASS, .name = "asus-bass"},
- 	{.id = ALC1220_FIXUP_GB_DUAL_CODECS, .name = "dual-codecs"},
-+	{.id = ALC1220_FIXUP_GB_X570, .name = "gb-x570"},
- 	{.id = ALC1220_FIXUP_CLEVO_P950, .name = "clevo-p950"},
- 	{}
- };
+@@ -2552,7 +2552,7 @@ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1458, 0xa002, "Gigabyte EP45-DS3/Z87X-UD3H", ALC889_FIXUP_FRONT_HP_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1458, 0xa0b8, "Gigabyte AZ370-Gaming", ALC1220_FIXUP_GB_DUAL_CODECS),
+ 	SND_PCI_QUIRK(0x1458, 0xa0cd, "Gigabyte X570 Aorus Master", ALC1220_FIXUP_GB_X570),
+-	SND_PCI_QUIRK(0x1458, 0xa0ce, "Gigabyte X570 Aorus Xtreme", ALC1220_FIXUP_CLEVO_P950),
++	SND_PCI_QUIRK(0x1458, 0xa0ce, "Gigabyte X570 Aorus Xtreme", ALC1220_FIXUP_GB_X570),
+ 	SND_PCI_QUIRK(0x1458, 0xa0d5, "Gigabyte X570S Aorus Master", ALC1220_FIXUP_GB_X570),
+ 	SND_PCI_QUIRK(0x1462, 0x11f7, "MSI-GE63", ALC1220_FIXUP_CLEVO_P950),
+ 	SND_PCI_QUIRK(0x1462, 0x1228, "MSI-GP63", ALC1220_FIXUP_CLEVO_P950),
 -- 
 2.34.1
 
