@@ -4,80 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1BE27C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Feb 2022 07:13:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1392EC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Feb 2022 11:22:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2C1C017E7;
-	Tue,  1 Feb 2022 08:12:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C1C017E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 285DB179A;
+	Tue,  1 Feb 2022 12:21:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 285DB179A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1643699591;
-	bh=8nVhaKbj3+qotPdDsGRH+c2TSXdG/c6O6ITrEhZDRng=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=UQ0bArLH5lNrjcXOCEe+l8FXAToUFqpoahC0QpcRoajE+YYi4mBl0fmpNt045se1P
-	 Y2dGYwDFO8RHCeJ1lvFFj5cBVbF0R1AH+IcFKC+9k8TivsbWEEg1QPq+rmQ4XN6wj/
-	 vLRzpRs2TCSfS6tjvEC/FFUbPvQjTCqFEhwIwv6Y=
+	s=default; t=1643714537;
+	bh=7QFuC8ZWm2tRkRjzkdAtsBOyN37zA6nPzhj3PQ7Shds=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=vhTcHEuZn4Yzw5VS7SxCx+smcy3xEXmAhgxUiP6/1JhyAYgIL9OdzP2MC60FVXpfG
+	 jGGGTHjudoFroMm3/vXUoXF+wq9usmrX4DPWfQW6s2r3XHq4dIeRCs6iBiRYu3b/xR
+	 i5Zx4Vj7p8krA1eZQv7u9kB8hIFt8+2HlEHI8tGo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CA6AFF80166;
-	Tue,  1 Feb 2022 08:12:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B9B27F8012C;
+	Tue,  1 Feb 2022 12:21:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B9EA4F80311; Tue,  1 Feb 2022 08:12:16 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 72BF7F80130; Tue,  1 Feb 2022 12:21:24 +0100 (CET)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B0849F80089
- for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2022 08:12:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0849F80089
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4A80DF80089
+ for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2022 12:21:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4A80DF80089
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="LJZAXPRK"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="pRjGTbt2"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 98B4C21123;
- Tue,  1 Feb 2022 07:12:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1643699528; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=e5pD/uyOwT+fedUBHy30mmqQQ/tiB8vLKqaMblLPE4c=;
- b=LJZAXPRKUz7u/m1675ly31YhkgZUyGmM++COT5l+I3BYdijN0y9CFdzvW81HaQibiKAKNs
- tzvMthLe/OJRxWwmsr8QOg4aNgd4lJAu8PPwkHYG54Fo7jHaUkzwxOjDH0pFqk8APO4W7z
- hiiXZq6WITtRCrcZ2U32etwl2SxlYpE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1643699528;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=e5pD/uyOwT+fedUBHy30mmqQQ/tiB8vLKqaMblLPE4c=;
- b=pRjGTbt27b62yWSDQPxoQJlHNAHrM7cbpA+qM2kJYNix6Kmi3QYHSRjtfBlqUu6LuS5yEi
- Bom8ceSSw/AA6rDQ==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 8BD9FA3B84;
- Tue,  1 Feb 2022 07:12:08 +0000 (UTC)
-Date: Tue, 01 Feb 2022 08:12:08 +0100
-Message-ID: <s5hy22v83hz.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Jonas Hahnfeld <hahnjo@hahnjo.de>
-Subject: Re: [PATCH] ALSA: usb-audio: Correct quirk for VF0770
-In-Reply-To: <20220131183516.61191-1-hahnjo@hahnjo.de>
-References: <20220131183516.61191-1-hahnjo@hahnjo.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=UTF-8
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="i7aPzUTh"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1643714482; x=1675250482;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=7QFuC8ZWm2tRkRjzkdAtsBOyN37zA6nPzhj3PQ7Shds=;
+ b=i7aPzUThXXyirnmrA8WBMNHg50q2oHtBYD6vUk1smV+CxcHEYq7fafk8
+ LKcEkCHvo+MpabGAq/yTSNxyis+SSZEwqMwJ7yc4LwNlLlnMf7vQCC9qM
+ 1dFIlU8qdBViKkiqnNMIS3hRVLXFJbAYAQqKUHLMwmvgKJchgkU9U+xFh
+ /40xNxuJ5zoHBfVSSQF6Vo3c5S8zlogjHzI+lu7T6vTyLD7k7rGcccked
+ +i0A/JfGOKZoQ9rYmrFzRr/HYdv4+x0tJIbB6dz40hCuuf36lqxPSEhNO
+ TqquCbYhFCQnSk6GBUbZ8J+bSzVN94jfEmBzRyJDqsChq0UN4Wv7ZReZ1 g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10244"; a="247622419"
+X-IronPort-AV: E=Sophos;i="5.88,333,1635231600"; d="scan'208";a="247622419"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 01 Feb 2022 03:21:15 -0800
+X-IronPort-AV: E=Sophos;i="5.88,333,1635231600"; d="scan'208";a="537767949"
+Received: from addost-mobl2.ger.corp.intel.com (HELO
+ pujfalus-desk.ger.corp.intel.com) ([10.252.56.84])
+ by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 01 Feb 2022 03:21:11 -0800
+From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+To: tiwai@suse.com
+Subject: [PATCH] ALSA: hda: Skip codec shutdown in case the codec is not
+ registered
+Date: Tue,  1 Feb 2022 13:21:44 +0200
+Message-Id: <20220201112144.29411-1-peter.ujfalusi@linux.intel.com>
+X-Mailer: git-send-email 2.35.0
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- =?UTF-8?B?UGF3ZcWC?= Susicki <pawel.susicki@gmail.com>,
- Takashi Iwai <tiwai@suse.com>, Jukka Heikintalo <heikintalo.jukka@gmail.com>,
- stable@vger.kernel.org
+Cc: guennadi.liakhovetski@linux.intel.com, alsa-devel@alsa-project.org,
+ pierre-louis.bossart@linux.intel.com, kai.vehmanen@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,25 +82,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 31 Jan 2022 19:35:16 +0100,
-Jonas Hahnfeld wrote:
-> 
-> This device provides both audio and video. The original quirk added in
-> commit 48827e1d6af5 ("ALSA: usb-audio: Add quirk for VF0770") used
-> USB_DEVICE to match the vendor and product ID. Depending on module order,
-> if snd-usb-audio was asked first, it would match the entire device and
-> uvcvideo wouldn't get to see it. Change the matching to USB_AUDIO_DEVICE
-> to restore uvcvideo matching in all cases.
-> 
-> Fixes: 48827e1d6af5 ("ALSA: usb-audio: Add quirk for VF0770")
-> Reported-by: Jukka Heikintalo <heikintalo.jukka@gmail.com>
-> Tested-by: Jukka Heikintalo <heikintalo.jukka@gmail.com>
-> Reported-by: Paweł Susicki <pawel.susicki@gmail.com>
-> Tested-by: Paweł Susicki <pawel.susicki@gmail.com>
-> Cc: <stable@vger.kernel.org> # 5.4, 5.10, 5.14, 5.15
-> Signed-off-by: Jonas Hahnfeld <hahnjo@hahnjo.de>
+If the codec->registered is not set then it means that pm_runtime is
+not yet enabled and the codec->pcm_list_head has not been initialized.
 
-Thanks, applied now.
+The access to the not initialized pcm_list_head will lead a kernel crash
+during shutdown.
 
+Reported-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Tested-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+---
+ sound/pci/hda/hda_codec.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Takashi
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 7016b48227bf..f552785d301e 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -3000,6 +3000,10 @@ void snd_hda_codec_shutdown(struct hda_codec *codec)
+ {
+ 	struct hda_pcm *cpcm;
+ 
++	/* Skip the shutdown if codec is not registered */
++	if (!codec->registered)
++		return;
++
+ 	list_for_each_entry(cpcm, &codec->pcm_list_head, list)
+ 		snd_pcm_suspend_all(cpcm->pcm);
+ 
+-- 
+2.35.0
+
