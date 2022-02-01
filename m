@@ -4,79 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9CC20C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Feb 2022 15:59:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CEB3AC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Feb 2022 16:04:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D4BAC1863;
-	Tue,  1 Feb 2022 16:58:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D4BAC1863
+	by alsa0.perex.cz (Postfix) with ESMTPS id DBFD01811;
+	Tue,  1 Feb 2022 17:03:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DBFD01811
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1643731171;
-	bh=QTGmCkc8xHsSc4UxccqN8v9eMK0ZjM1hmtWk5qpf5Bc=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1643731445;
+	bh=eaJ9Yw9voOV5YtpvCowCMCHeW8zSZoGJMpr3YuXILrg=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GpfggLLq8RjV7LzQpZY5mLPWFu1ZkwhSrBRO3IATANmqPCcaVM2ojLNw6pRbAakgH
-	 oYYuEc4l186FJQCdgZMY0Vj5UN1xIDgqtKMs4pjVXA3dFquj8wQ92l4BQnvSW7lyGQ
-	 5HhjozyhyqSFl0ilC5qP+3QGwL0L8+ZsT+Lgg5eM=
+	b=RT6WBNEBlANTsc5pBtJrFRl28BCOEHp1UYmEhcYMZBPAsMyvHZlTdFK+M+Uu1xKhN
+	 EF/SuHOfs5s3EgtRmO1M/hwhpJdtToqRWAS9jh6Ckf3L/ViRH8LLgLAOUUEBtUF1iv
+	 FjTqu9AYN29hxArqNoMNtvFj35+srD3sRZDPSIBg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A3291F8051D;
-	Tue,  1 Feb 2022 16:57:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 78306F8012C;
+	Tue,  1 Feb 2022 17:03:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A7264F8051B; Tue,  1 Feb 2022 16:57:24 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 8F663F80130; Tue,  1 Feb 2022 17:03:13 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2BA12F80511
- for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2022 16:57:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2BA12F80511
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1C990F80095
+ for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2022 17:02:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C990F80095
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="qY/b0b96"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 3325E616FD;
- Tue,  1 Feb 2022 15:57:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74BDBC340ED;
- Tue,  1 Feb 2022 15:57:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1643731034;
- bh=QTGmCkc8xHsSc4UxccqN8v9eMK0ZjM1hmtWk5qpf5Bc=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=qY/b0b96iQv7eSGC7spV5Be59adzduJK4OVNElpUiBBcHLAxoF48IHxJJkKwML1AM
- Fbh1cgEGb5WSEDpnboi9DNJAqurwLUOWkZ6V70WtV1yC7cxbKGt4gsObqc2+yW9S4C
- cqz/hlG9w+b8wAFINeHb1QwtbIeK1W2GTSaheHmKyu7VcTijUG8vGFMrc3jezlQBXL
- LnBVVWm4cKw7icB0d+Tbk7ikXL8HdhBveHp5XOAmCLEsBFaon+fWfFKhicdOhEBPMw
- 7eBycBxYhxRpDBx1Q9tmjPNTve2Vjr2/qU42xEQ+ncBPPdOYKbJ5hQEXHpdeANjv17
- XeBvS85dQd1xw==
-From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH v1 3/4] ASoC: ops: Fix stereo change notifications in
- snd_soc_put_volsw_range()
-Date: Tue,  1 Feb 2022 15:56:28 +0000
-Message-Id: <20220201155629.120510-4-broonie@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220201155629.120510-1-broonie@kernel.org>
-References: <20220201155629.120510-1-broonie@kernel.org>
-MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1710; h=from:subject;
- bh=QTGmCkc8xHsSc4UxccqN8v9eMK0ZjM1hmtWk5qpf5Bc=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBh+VgrYf8FNriLi0uMk58JVTX8BJUYs7WiQ7xNh/dI
- koeyceWJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYflYKwAKCRAk1otyXVSH0LpZB/
- 0ZRFFHtp2uv2bLQO3T/zGiXDAcmgEGJZRITphls0zTCdtLdwPhVE+6vDRc70aZdcim9wnvoZoDi0TE
- cImeaGr11aVqGVitwsd/Osfzvtie2q8yfJXpOciEHWZe6ZfYK6nxYvGOfS4gxo69OJ9OP2JyoDHjNo
- vr1nibIBP1h1HAo6B+roTYMYKMuN2CcZB6KuFZP9vVTR39aC6chHeCvaOUfmyxXnTFAWyWzAcpGVdX
- NzBspuFT4cd1NNau2lSsw11tINGl+oArZ4LBwdbkMucFWGmOgiOnNdPhaA4ae19tCTXUcbq+xnmBNH
- N0WgH7zjbbtkUhTRjm6q4l5PD6dXDy
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- stable@vger.kernel.org
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="Y+QHc+US"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="4RxbGqDR"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 7CC771F37E;
+ Tue,  1 Feb 2022 16:02:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1643731377; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=VYVNH2thKIMYE0BcUKzj3s+bfMMtMYP34ojpAvaMgZU=;
+ b=Y+QHc+USQ84skXJZUFAsSW6G+UXE5gvNaDBEU4fO1XOGO4w5iu2WpyDIhV18zZCDfU5Vqk
+ AA5j7sjVYK8j+qU3vczUF91VMeGpc2+dWzFYKHOHua+SkhQ4/4dx562VQQTJ79Z93/bavt
+ jsME9RJN2UYrAisKsS+piElbryxyres=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1643731377;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=VYVNH2thKIMYE0BcUKzj3s+bfMMtMYP34ojpAvaMgZU=;
+ b=4RxbGqDRGDOtWAdyb2dP4A2JNbuGA8VYdaYYQfzPcjO9jbn6oQDxbzjII1vtb/AfgC29JR
+ 6RQmwKFzCwgFeSDw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 65EC0A3B85;
+ Tue,  1 Feb 2022 16:02:57 +0000 (UTC)
+Date: Tue, 01 Feb 2022 17:02:57 +0100
+Message-ID: <s5hk0ee1sni.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH] ALSA: hda: Skip codec shutdown in case the codec is not
+ registered
+In-Reply-To: <20220201112144.29411-1-peter.ujfalusi@linux.intel.com>
+References: <20220201112144.29411-1-peter.ujfalusi@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: guennadi.liakhovetski@linux.intel.com, alsa-devel@alsa-project.org,
+ kai.vehmanen@linux.intel.com, pierre-louis.bossart@linux.intel.com,
+ tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,58 +90,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When writing out a stereo control we discard the change notification from
-the first channel, meaning that events are only generated based on changes
-to the second channel. Ensure that we report a change if either channel
-has changed.
+On Tue, 01 Feb 2022 12:21:44 +0100,
+Peter Ujfalusi wrote:
+> 
+> If the codec->registered is not set then it means that pm_runtime is
+> not yet enabled and the codec->pcm_list_head has not been initialized.
+> 
+> The access to the not initialized pcm_list_head will lead a kernel crash
+> during shutdown.
+> 
+> Reported-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+> Tested-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
----
- sound/soc/soc-ops.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
+Thanks, applied now.
 
-diff --git a/sound/soc/soc-ops.c b/sound/soc/soc-ops.c
-index f0d1aeb38346..fefd4f34cbc1 100644
---- a/sound/soc/soc-ops.c
-+++ b/sound/soc/soc-ops.c
-@@ -498,7 +498,7 @@ int snd_soc_put_volsw_range(struct snd_kcontrol *kcontrol,
- 	unsigned int mask = (1 << fls(max)) - 1;
- 	unsigned int invert = mc->invert;
- 	unsigned int val, val_mask;
--	int ret;
-+	int err, ret;
- 
- 	if (invert)
- 		val = (max - ucontrol->value.integer.value[0]) & mask;
-@@ -507,9 +507,10 @@ int snd_soc_put_volsw_range(struct snd_kcontrol *kcontrol,
- 	val_mask = mask << shift;
- 	val = val << shift;
- 
--	ret = snd_soc_component_update_bits(component, reg, val_mask, val);
--	if (ret < 0)
--		return ret;
-+	err = snd_soc_component_update_bits(component, reg, val_mask, val);
-+	if (err < 0)
-+		return err;
-+	ret = err;
- 
- 	if (snd_soc_volsw_is_stereo(mc)) {
- 		if (invert)
-@@ -519,8 +520,12 @@ int snd_soc_put_volsw_range(struct snd_kcontrol *kcontrol,
- 		val_mask = mask << shift;
- 		val = val << shift;
- 
--		ret = snd_soc_component_update_bits(component, rreg, val_mask,
-+		err = snd_soc_component_update_bits(component, rreg, val_mask,
- 			val);
-+		/* Don't discard any error code or drop change flag */
-+		if (ret == 0 || err < 0) {
-+			ret = err;
-+		}
- 	}
- 
- 	return ret;
--- 
-2.30.2
 
+Takashi
