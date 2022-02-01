@@ -4,74 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 492BAC433FE
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Feb 2022 15:59:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9CC20C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Feb 2022 15:59:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BE327185D;
-	Tue,  1 Feb 2022 16:58:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE327185D
+	by alsa0.perex.cz (Postfix) with ESMTPS id D4BAC1863;
+	Tue,  1 Feb 2022 16:58:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D4BAC1863
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1643731142;
-	bh=VnWhYXoSublRCB+1wcOOpYhqio7frWE6T8zFex0MlxI=;
+	s=default; t=1643731171;
+	bh=QTGmCkc8xHsSc4UxccqN8v9eMK0ZjM1hmtWk5qpf5Bc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cY+qosNQbUP7xvDLeeOwQqZc/wNW8eTZi57CAIZlQaPSYaGPzZrGZf8au2D4TPzeV
-	 sJ8Exss1sCxOzsymFbG/dfUhOCmux/+Pv2qZoWLTen0F4uyg6QCTB2CxtqtGT7pnIv
-	 fmERjALIWSkB1qq6urIbTllgZ2aE8liRQAPkv8NA=
+	b=GpfggLLq8RjV7LzQpZY5mLPWFu1ZkwhSrBRO3IATANmqPCcaVM2ojLNw6pRbAakgH
+	 oYYuEc4l186FJQCdgZMY0Vj5UN1xIDgqtKMs4pjVXA3dFquj8wQ92l4BQnvSW7lyGQ
+	 5HhjozyhyqSFl0ilC5qP+3QGwL0L8+ZsT+Lgg5eM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C0643F8051A;
-	Tue,  1 Feb 2022 16:57:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A3291F8051D;
+	Tue,  1 Feb 2022 16:57:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2D95EF80139; Tue,  1 Feb 2022 16:57:21 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id A7264F8051B; Tue,  1 Feb 2022 16:57:24 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C53E9F800F8
- for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2022 16:57:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C53E9F800F8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2BA12F80511
+ for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2022 16:57:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2BA12F80511
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="qyDH9x0r"
+ header.b="qY/b0b96"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 731E9B82EBB;
- Tue,  1 Feb 2022 15:57:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A160C340F2;
- Tue,  1 Feb 2022 15:57:14 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 3325E616FD;
+ Tue,  1 Feb 2022 15:57:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74BDBC340ED;
+ Tue,  1 Feb 2022 15:57:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1643731036;
- bh=VnWhYXoSublRCB+1wcOOpYhqio7frWE6T8zFex0MlxI=;
+ s=k20201202; t=1643731034;
+ bh=QTGmCkc8xHsSc4UxccqN8v9eMK0ZjM1hmtWk5qpf5Bc=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=qyDH9x0rAubhmtN+jqn8UpfmWNRQjRyIlv/UFEuCuh9GuA2OHYdkAPqz0cB5XeWFu
- iuGD9pJ8JpxZvoPuGMTh3S/Dm6/MLjWcSPQcGao0BrsJf8fQV9LsLXRe3mvNM6bt9x
- S2+RY+ikcfmg1mE3+k9AhRSxqfQeypflHTZ3d9Qee9dPrXFjNJU28yZzU7WEJPbmx0
- UJUxMAvMdJW5wyvHWhpl1l56v38bf3uwHB7yB1MJKwhfxjVK+oUhMHkxpcNEiKNmGR
- TByrObquwXvGdofawh93oteISlUvrCxv/msUK0SvXHNRW5ZZ1A3M1BE+Cv16R1Jvsy
- pbCavoMmzQNRQ==
+ b=qY/b0b96iQv7eSGC7spV5Be59adzduJK4OVNElpUiBBcHLAxoF48IHxJJkKwML1AM
+ Fbh1cgEGb5WSEDpnboi9DNJAqurwLUOWkZ6V70WtV1yC7cxbKGt4gsObqc2+yW9S4C
+ cqz/hlG9w+b8wAFINeHb1QwtbIeK1W2GTSaheHmKyu7VcTijUG8vGFMrc3jezlQBXL
+ LnBVVWm4cKw7icB0d+Tbk7ikXL8HdhBveHp5XOAmCLEsBFaon+fWfFKhicdOhEBPMw
+ 7eBycBxYhxRpDBx1Q9tmjPNTve2Vjr2/qU42xEQ+ncBPPdOYKbJ5hQEXHpdeANjv17
+ XeBvS85dQd1xw==
 From: Mark Brown <broonie@kernel.org>
 To: Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH v1 4/4] ASoC: ops: Fix stereo change notifications in
- snd_soc_put_xr_sx()
-Date: Tue,  1 Feb 2022 15:56:29 +0000
-Message-Id: <20220201155629.120510-5-broonie@kernel.org>
+Subject: [PATCH v1 3/4] ASoC: ops: Fix stereo change notifications in
+ snd_soc_put_volsw_range()
+Date: Tue,  1 Feb 2022 15:56:28 +0000
+Message-Id: <20220201155629.120510-4-broonie@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220201155629.120510-1-broonie@kernel.org>
 References: <20220201155629.120510-1-broonie@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1062; h=from:subject;
- bh=VnWhYXoSublRCB+1wcOOpYhqio7frWE6T8zFex0MlxI=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBh+VgsLu4zMn5YXRfnMlkoi6j6z/SZ9Iy/LLhl7L29
- 4B/A656JATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYflYLAAKCRAk1otyXVSH0IpLB/
- 9YQ+9hIYFMiyjlW9PEgtBYLZh8roYtm/kwoGkde9MmPGlh7SxACNvDW/Chh0tEcFkERC0XxyTW3z0S
- OvzjU+KECDOtlqXho/YTAWdX5dpdVE7TS7xsTH6GHKylJzjDpTjvrEgKpY6NIg0F2SEPkXDZM8eUwl
- VyWeOXCmlgLqJ86E6+2uwRhvRELkU+KNrrp7cYyiD5OQzvGHyEBa59lyqwO2dhrU9FT8cIO8YNDtgj
- WkrtJIPqOB65fEltw+w7bC6ylNb7iV0YiAZStnC97dJpM0UoEPxCxASL0ND4+FkKODl2VOe1k/8/Wv
- 369Vu1zpxlhWaS+cIpKUOQRF79LbcS
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1710; h=from:subject;
+ bh=QTGmCkc8xHsSc4UxccqN8v9eMK0ZjM1hmtWk5qpf5Bc=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBh+VgrYf8FNriLi0uMk58JVTX8BJUYs7WiQ7xNh/dI
+ koeyceWJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYflYKwAKCRAk1otyXVSH0LpZB/
+ 0ZRFFHtp2uv2bLQO3T/zGiXDAcmgEGJZRITphls0zTCdtLdwPhVE+6vDRc70aZdcim9wnvoZoDi0TE
+ cImeaGr11aVqGVitwsd/Osfzvtie2q8yfJXpOciEHWZe6ZfYK6nxYvGOfS4gxo69OJ9OP2JyoDHjNo
+ vr1nibIBP1h1HAo6B+roTYMYKMuN2CcZB6KuFZP9vVTR39aC6chHeCvaOUfmyxXnTFAWyWzAcpGVdX
+ NzBspuFT4cd1NNau2lSsw11tINGl+oArZ4LBwdbkMucFWGmOgiOnNdPhaA4ae19tCTXUcbq+xnmBNH
+ N0WgH7zjbbtkUhTRjm6q4l5PD6dXDy
 X-Developer-Key: i=broonie@kernel.org; a=openpgp;
  fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 Content-Transfer-Encoding: 8bit
@@ -100,34 +100,50 @@ has changed.
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Cc: stable@vger.kernel.org
 ---
- sound/soc/soc-ops.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ sound/soc/soc-ops.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/soc-ops.c b/sound/soc/soc-ops.c
-index fefd4f34cbc1..6b922d12afb5 100644
+index f0d1aeb38346..fefd4f34cbc1 100644
 --- a/sound/soc/soc-ops.c
 +++ b/sound/soc/soc-ops.c
-@@ -874,6 +874,7 @@ int snd_soc_put_xr_sx(struct snd_kcontrol *kcontrol,
- 	unsigned long mask = (1UL<<mc->nbits)-1;
- 	long max = mc->max;
- 	long val = ucontrol->value.integer.value[0];
-+	int ret = 0;
- 	unsigned int i;
+@@ -498,7 +498,7 @@ int snd_soc_put_volsw_range(struct snd_kcontrol *kcontrol,
+ 	unsigned int mask = (1 << fls(max)) - 1;
+ 	unsigned int invert = mc->invert;
+ 	unsigned int val, val_mask;
+-	int ret;
++	int err, ret;
  
  	if (invert)
-@@ -886,9 +887,11 @@ int snd_soc_put_xr_sx(struct snd_kcontrol *kcontrol,
- 							regmask, regval);
- 		if (err < 0)
- 			return err;
-+		if (err > 0)
+ 		val = (max - ucontrol->value.integer.value[0]) & mask;
+@@ -507,9 +507,10 @@ int snd_soc_put_volsw_range(struct snd_kcontrol *kcontrol,
+ 	val_mask = mask << shift;
+ 	val = val << shift;
+ 
+-	ret = snd_soc_component_update_bits(component, reg, val_mask, val);
+-	if (ret < 0)
+-		return ret;
++	err = snd_soc_component_update_bits(component, reg, val_mask, val);
++	if (err < 0)
++		return err;
++	ret = err;
+ 
+ 	if (snd_soc_volsw_is_stereo(mc)) {
+ 		if (invert)
+@@ -519,8 +520,12 @@ int snd_soc_put_volsw_range(struct snd_kcontrol *kcontrol,
+ 		val_mask = mask << shift;
+ 		val = val << shift;
+ 
+-		ret = snd_soc_component_update_bits(component, rreg, val_mask,
++		err = snd_soc_component_update_bits(component, rreg, val_mask,
+ 			val);
++		/* Don't discard any error code or drop change flag */
++		if (ret == 0 || err < 0) {
 +			ret = err;
++		}
  	}
  
--	return 0;
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(snd_soc_put_xr_sx);
- 
+ 	return ret;
 -- 
 2.30.2
 
