@@ -4,73 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C40CC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Feb 2022 19:25:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8CE8CC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Feb 2022 19:26:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 672E3175F;
-	Wed,  2 Feb 2022 20:25:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 672E3175F
+	by alsa0.perex.cz (Postfix) with ESMTPS id C2A2F1786;
+	Wed,  2 Feb 2022 20:25:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C2A2F1786
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1643829953;
-	bh=vlWMjjqn0NVmvDNd0G2CcPnUtlGnOe53KMMwW1Tf5R4=;
+	s=default; t=1643829973;
+	bh=tLgv79jNdeUYFtmFVtlmDEJNuaksR0QH6/raff/c9+I=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rkfROhq0GdgthMdfp+wRdjZjFuS/EhUqc3YsFnqUeD+tDHp8IJP9o0b8G2xyt5TUE
-	 gPiR2WfR+Bhw5Wpf3bcgMYpPfDltxD5B4tZstZlx5FGEG+3Zf1jEbPWMCQSFYVS2Lj
-	 U/dtwJ8MItW06qvAyMu3YKQ86kmoce+EjOfDX4uw=
+	b=MMrAbgNTbbAVHFGuU2Yldx121KAhm9frju0VO8tpgy0qqFoCYn8eYvRb6KWq7GCgL
+	 TVA/o1GvnvDonKi9I2V6DDKBgMnY8HHzS2r8L8YFqoZ9V/WsjLJeA5THGgLg6Ql4Fy
+	 v/e1GKEVIJAvetvm6asFwPJ0UfeLWtewrxlF904g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 24170F80511;
-	Wed,  2 Feb 2022 20:24:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 13451F8051D;
+	Wed,  2 Feb 2022 20:24:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7204BF804B0; Wed,  2 Feb 2022 20:23:55 +0100 (CET)
+ id 4C3A7F80518; Wed,  2 Feb 2022 20:23:59 +0100 (CET)
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 36FF5F80130
- for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2022 20:23:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36FF5F80130
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1DD54F804FF
+ for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2022 20:23:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1DD54F804FF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="N3LJ93rI"
+ header.b="bcpCt27j"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 58BA3B83255;
- Wed,  2 Feb 2022 19:23:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3570C004E1;
- Wed,  2 Feb 2022 19:23:49 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id DE805B82A30;
+ Wed,  2 Feb 2022 19:23:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F24DC340E4;
+ Wed,  2 Feb 2022 19:23:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1643829831;
- bh=vlWMjjqn0NVmvDNd0G2CcPnUtlGnOe53KMMwW1Tf5R4=;
+ s=k20201202; t=1643829835;
+ bh=tLgv79jNdeUYFtmFVtlmDEJNuaksR0QH6/raff/c9+I=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=N3LJ93rIJfbG64z++baCCW//tIUlSUdwP3lKrYCm5xrrd8qsH9sfndpkNEJYdKEMM
- wSTNJCRXmDavVdAvabwlIGDf4a4XAUJwahEAiclH6DQhLBWkDQYMCHLRtUPlcETr/f
- 1Sllft96okYgMSWmp7F0LLpznGGy/LifjHTdl8VGBcMKYNOBewaoYM5waONSbWXbIz
- dZsxA+YwpGrSFJyr1e69fssA65JsEdT5IbuPAIxIkpvRKvffM4Xa6dEHsF3NElxvtz
- 5SjXDEcbapDNVu8+1BrLstzwQAIm6FH73po66Y18hGzXBAVdwNMwuZwHLPlq8XNOAP
- AKeZHOWDstJjQ==
+ b=bcpCt27jm3dRpaCZuulEhyp2FA2D7YQ0C04/hDKF8lBQ2STJ6vXGrszdGtUoAtVgB
+ Oj76R0N2JafFlivPH9rYHJpuitXfs8ETnBcGHw0rXPwNnfh2XUZvz+YU82+uGRtkCX
+ +utJ2db+5GUkqNv7mBSUOBElCyURkl8NwouQ6ajnr4I1BCFZSuYGmp3AbyXqsuGcC6
+ v6CMCfUlwpGdhXlUWpXlAY8ckF+4fyyhiRy02/O6OWEZPJsEwRnJOm6/x1rCx7veux
+ jvxZMk3rC/d5dpEzuFSD90Z+7+S3nHgn0jjutEwPXRb4zNUr6U+cmqrPaA8W/6Lj+h
+ 5KtVPTZpWszvQ==
 From: Mark Brown <broonie@kernel.org>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Oder Chiou <oder_chiou@realtek.com>
-Subject: [PATCH v1 3/6] ASoC: simple-amplifier: Remove spurious gpiolib select
-Date: Wed,  2 Feb 2022 19:23:30 +0000
-Message-Id: <20220202192333.3655269-4-broonie@kernel.org>
+Subject: [PATCH v1 6/6] ASoC: simple-mux: Depend on gpiolib rather than
+ selecting it
+Date: Wed,  2 Feb 2022 19:23:33 +0000
+Message-Id: <20220202192333.3655269-7-broonie@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220202192333.3655269-1-broonie@kernel.org>
 References: <20220202192333.3655269-1-broonie@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=637; h=from:subject;
- bh=vlWMjjqn0NVmvDNd0G2CcPnUtlGnOe53KMMwW1Tf5R4=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBh+toxMq4mzrZwM8U8dAAtviN8csZ7SOVrWGBnE7gb
- sPEWljqJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYfraMQAKCRAk1otyXVSH0OTPB/
- 0YMUrViI5Qsunye4Vr7vFEYREIphrNQpVhBYSbA8/I5ra60GzgDVJ2dMFW3Wfxiy4Vke6vN1i2IlXU
- zERUJv7Jh+QK0mQjowuMwe9nHE/t42DnCPcnnSqTIZCZUlrVWyb/W8F0xINLsAP6RQ6ybJN2/451Hz
- h4Erq/8wIuJebyOiPP4cM7C7dhfF6CzstsfI3sFOenDmdaf75Ab9rGvjmUWVFnjosaR6c1fhslx1b+
- tQMapb8+xWUuGI75Ek2PKo1a+/Wi0wVWJABEWCcq/Cp46GLQlH6UyekvWh7yN/4A6QOeDvEwtlJ7iP
- FZloHwywKf/n2deczwFrlFpyGjoXBA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=817; h=from:subject;
+ bh=tLgv79jNdeUYFtmFVtlmDEJNuaksR0QH6/raff/c9+I=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBh+tozctafQLiIXEbT3iOEm1vrtd9otLBlU24zw0z3
+ tXc2LzeJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYfraMwAKCRAk1otyXVSH0PYmB/
+ 9zEgLb2nw5bLynnGZ2bQwUC3JZ1X3ON3uuwyOyt06bkkf/M5p4sDSnVrETRYiJn5UKVtt5NRtz4x4c
+ vSlbpyd+mv2XDEWAdXnIG6yFDKASHOBsT2x/zrJ8u0x+g/E2k0KscyjJLAPvYgvwm7KpujOSw9n//8
+ ttGcG6FLqLyZPMTwEt2elbEWWPXBP9KXEzbxZXxvr+PKjH9Gm0oLCsW2YkXt9XR2HKat1Qjn9Y0TDH
+ tI49Uc5dPg8wOSe0XsYKTENs9ofBpwsKG0DPID/KY8HcgLiDGaBxpq+sGnVXYXs9KtEWgoiisNhYnL
+ /89GfSU0sXjjeOQAgGunaqx6IGlBG0
 X-Developer-Key: i=broonie@kernel.org; a=openpgp;
  fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 Content-Transfer-Encoding: 8bit
@@ -90,26 +91,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The usage of GPIOs is optional in the code so don't force on gpiolib when
-building it, avoiding warnings in randconfigs.
+The simple-mux driver requires gpiolib. Currently it selects GPIOLIB but
+since the use of select can lead to issues with randconfig let's instead
+depend on GPIOLIB, select is more idiomatically used for Kconfig symbols
+that are not user selectable but GPIOLIB is user selectable.
 
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/codecs/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 196b5d9b08c3..54eb6005f99c 100644
+index 8a2e1c61f616..0ef2cfe40723 100644
 --- a/sound/soc/codecs/Kconfig
 +++ b/sound/soc/codecs/Kconfig
-@@ -1391,7 +1391,6 @@ config SND_SOC_SIGMADSP_REGMAP
- 
- config SND_SOC_SIMPLE_AMPLIFIER
- 	tristate "Simple Audio Amplifier"
--	select GPIOLIB
+@@ -1394,7 +1394,7 @@ config SND_SOC_SIMPLE_AMPLIFIER
  
  config SND_SOC_SIMPLE_MUX
  	tristate "Simple Audio Mux"
+-	select GPIOLIB
++	depends on GPIOLIB
+ 
+ config SND_SOC_SPDIF
+ 	tristate "S/PDIF CODEC"
 -- 
 2.30.2
 
