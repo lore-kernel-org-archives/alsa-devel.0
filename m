@@ -4,88 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1CDB6C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Feb 2022 14:23:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 040FCC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Feb 2022 14:46:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DBFEE181A;
-	Mon,  7 Feb 2022 15:22:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DBFEE181A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 66D76180D;
+	Mon,  7 Feb 2022 15:45:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 66D76180D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1644243786;
-	bh=8VKhuGsGMxb+Me5jnvB4Inp2OlMhDiQOaRdBmZnBuvo=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1644245175;
+	bh=ftaBg70Fywe23xPOkzO2k/1SUWqJcEF9h7huEHsLFR4=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=L7nLa19EqqJx3DK+/urC0NVyHEgwmA415PcYHfjR91FC5Q3xsewNTi5FJF3Tp8G2j
-	 5qpjkU0a0cy2J8Qfyudls/Wp2zLeYw6KtzeQbj7uxWanC1nZUmmywssbrKucX3nl+s
-	 bZO09EQuhWpB0FI6TfnElqcsypGy7/6oJ2tQAvZU=
+	b=UhB6HdPpkqIs/5pz4hL1VfjbNjDmwyoIFa7+RuCbcFSDi8dF+xwsKyOwEqdYjB1Ji
+	 5pP/3tuTCZR89f1sdff/WWmq5i7Y6Ec2XV0OWeL75VBFPf0UhYf3FEIs7JyfibUmxD
+	 aulK72wym/q8D0PbM2GXyHMoAva1sZgXMeN6I0FQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9C134F804A9;
-	Mon,  7 Feb 2022 15:22:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 04B11F800E1;
+	Mon,  7 Feb 2022 15:45:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 03708F80511; Mon,  7 Feb 2022 15:22:02 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 93B9FF8027C; Thu,  3 Feb 2022 10:22:14 +0100 (CET)
+Received: from comms.puri.sm (comms.puri.sm [159.203.221.185])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 66327F804A9
- for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2022 15:21:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66327F804A9
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="iBfqES/I"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="QXXXuqoI"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 6B311210FD;
- Mon,  7 Feb 2022 14:21:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1644243718; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=sAhh4gqPC9v9hFbZq/l77CXsNyM7wDN8WvcunYKnnQw=;
- b=iBfqES/I9Wd6THlQ1EkiHdjWlvW8EKqfLotzLJoSA0USixJN5V0aqNq/Fo6ROlJNgJjgAJ
- IWvahUOFHfQ2eTuqh9MIud46EK4vsQfGYlrjkO9K121XHYTo1o04Wi6/ANXqoaGqRPQcP2
- 4pG8SlgNbKN08ml0TDaOlbToHc5NM/Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1644243718;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=sAhh4gqPC9v9hFbZq/l77CXsNyM7wDN8WvcunYKnnQw=;
- b=QXXXuqoIaBjXf1BCW9WHoz6QzhXCnPDaxMbtyE3OR6hyPWOWo9ZJTGvdZcA+w8DSi6DWRZ
- MSS7W/MkYd2LXWAA==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 18B42A3BA1;
- Mon,  7 Feb 2022 14:21:58 +0000 (UTC)
-Date: Mon, 07 Feb 2022 15:21:58 +0100
-Message-ID: <s5hzgn2u589.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Alexander Sergeyev <sergeev917@gmail.com>
-Subject: Re: [PATCH 1/4] ALSA: hda/realtek: fix mute/micmute LEDs for HP 855 G8
-In-Reply-To: <20220205175132.ihwp5wlxga4efngl@localhost.localdomain>
-References: <20220115152215.kprws5nja2i43qax@localhost.localdomain>
- <s5hilugw0l0.wl-tiwai@suse.de>
- <20220119093249.eaxem33bjqjxcher@localhost.localdomain>
- <20220122190522.ycaygrqcen7d3hj2@localhost.localdomain>
- <20220122205637.7gzurdu7xl4sthxw@localhost.localdomain>
- <s5ho83yldu3.wl-tiwai@suse.de>
- <20220129144704.xlmeylllvy3b3fum@localhost.localdomain>
- <20220130111020.44gzrm5ckrakjta2@localhost.localdomain>
- <s5htudk9cn3.wl-tiwai@suse.de>
- <20220205150016.gvrst7ldvgjh7fra@localhost.localdomain>
- <20220205175132.ihwp5wlxga4efngl@localhost.localdomain>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>,
- Kailang Yang <kailang@realtek.com>, Jeremy Szu <jeremy.szu@canonical.com>,
- Huacai Chen <chenhuacai@kernel.org>, tiwai@suse.com,
- open list <linux-kernel@vger.kernel.org>, Hui Wang <hui.wang@canonical.com>,
- PeiSen Hou <pshou@realtek.com>, Jian-Hong Pan <jhp@endlessos.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3EFCAF80082
+ for <alsa-devel@alsa-project.org>; Thu,  3 Feb 2022 10:22:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3EFCAF80082
+Received: from localhost (localhost [127.0.0.1])
+ by comms.puri.sm (Postfix) with ESMTP id 2FD6DDFAB9;
+ Thu,  3 Feb 2022 01:21:33 -0800 (PST)
+Received: from comms.puri.sm ([127.0.0.1])
+ by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id rGQv4tBnuPp7; Thu,  3 Feb 2022 01:21:32 -0800 (PST)
+Message-ID: <77418b2bac0c91002488f126db5a9d5b79416782.camel@puri.sm>
+Subject: Re: [PATCH] ASoC: wm8962: Allow switching between analog and
+ digital inputs
+From: Martin Kepplinger <martin.kepplinger@puri.sm>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>, broonie@kernel.org
+Date: Thu, 03 Feb 2022 10:21:28 +0100
+In-Reply-To: <20220202164545.30457-1-ckeepax@opensource.cirrus.com>
+References: <20220202164545.30457-1-ckeepax@opensource.cirrus.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Mailman-Approved-At: Mon, 07 Feb 2022 15:45:23 +0100
+Cc: patches@opensource.cirrus.com, shengjiu.wang@nxp.com, daniel.baluta@nxp.com,
+ lgirdwood@gmail.com, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,74 +68,87 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 05 Feb 2022 18:51:32 +0100,
-Alexander Sergeyev wrote:
+Am Mittwoch, dem 02.02.2022 um 16:45 +0000 schrieb Charles Keepax:
+> When the DMIC_ENA bit is set the analogue inputs are disconnected
+> from
+> the digital core of the chip, in favour of the digital microphones.
+> Currently the driver will always enable DMIC_ENA whilst the GPIOs are
+> configured for the DMIC function, this means the user can't currently
+> use both the analog inputs and the digital inputs in one system.
 > 
-> On Mon, Jan 31, 2022 at 03:57:04PM +0100, Takashi Iwai wrote:
-> > In anyway, we need to track down exactly which access triggers those 
-> > errors...
+> Add an additional DAPM mutex that allows switching between analog and
+> digital inputs into the digital core.
 > 
-> I went deeper into codec reads and writes:
-> - snd_hda_codec_write
-> - snd_hdac_codec_write
-> - codec_write
-> - snd_hdac_exec_verb
-> - codec_exec_verb
-> - snd_hdac_bus_exec_verb_unlocked
-> - azx_send_cmd / azx_get_response
-> - snd_hdac_bus_send_cmd / azx_rirb_get_response
-> 
-> In the last functions a circular buffer is used to write commands. The 
-> problem is that "bus->corb.buf[wp]" and "bus->rirb.res[addr]" are 
-> nowhere close to the IOMMU-reported address of the offending memory 
-> access. It's likely that I've missed other communication channels. But 
-> is it possible that IOMMU-reported address and buffers addresses are of 
-> different kinds (physical/virtual) or different regions mapped to the 
-> same physical pages?
-> 
-> Example:
-> snd_hdac_bus_send_cmd: bus->corb.buf[wp] = cpu_to_le32(val) // = 0x3b8000, wp=0xfb, &buf[wp]=00000000f1fd4592
-> snd_hdac_bus_get_response: reading result from 0000000059c4003d
-> snd_hdac_bus_send_cmd: bus->corb.buf[wp] = cpu_to_le32(val) // = 0x339000, wp=0xfc, &buf[wp]=000000007f14c128
-> snd_hdac_bus_get_response: reading result from 0000000059c4003d
-> snd_hdac_bus_send_cmd: bus->corb.buf[wp] = cpu_to_le32(val) // = 0x1470740, wp=0xfd, &buf[wp]=00000000a6b14901
-> snd_hdac_bus_get_response: reading result from 0000000059c4003d
-> snd_hdac_bus_send_cmd: bus->corb.buf[wp] = cpu_to_le32(val) // = 0x14ba000, wp=0xfe, &buf[wp]=00000000d8d1672a
-> snd_hdac_bus_get_response: reading result from 0000000059c4003d
-> snd_hdac_bus_send_cmd: bus->corb.buf[wp] = cpu_to_le32(val) // = 0x14b8000, wp=0xff, &buf[wp]=00000000b87b3287
-> snd_hdac_bus_get_response: reading result from 0000000059c4003d
-> snd_hdac_bus_send_cmd: bus->corb.buf[wp] = cpu_to_le32(val) // = 0x2ba000, wp=0x0, &buf[wp]=000000002162c728
-> snd_hdac_bus_get_response: reading result from 0000000059c4003d
-> snd_hdac_bus_send_cmd: bus->corb.buf[wp] = cpu_to_le32(val) // = 0x2b8000, wp=0x1, &buf[wp]=0000000095f61061
-> snd_hda_intel 0000:05:00.6: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0015 address=0x1fffff800 flags=0x0020]
+> Reported-by: Martin Kepplinger <martin.kepplinger@puri.sm>
 
-Hm, I'm not sure, either.  But let's try to avoid some possible
-confusion at first, e.g. a patch like below.
+Hi Charles, thank you again very much for this! You can make this
+
+Reported-and-tested-by: Martin Kepplinger <martin.kepplinger@puri.sm>
 
 
-Takashi
+> Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+> ---
+>  sound/soc/codecs/wm8962.c | 21 +++++++++++++++++----
+>  1 file changed, 17 insertions(+), 4 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+> index a5584ba962dcf..2c41d31956aa8 100644
+> --- a/sound/soc/codecs/wm8962.c
+> +++ b/sound/soc/codecs/wm8962.c
+> @@ -2049,6 +2049,13 @@ static SOC_ENUM_SINGLE_DECL(hpoutl_enum,
+>  static const struct snd_kcontrol_new hpoutl_mux =
+>         SOC_DAPM_ENUM("HPOUTL Mux", hpoutl_enum);
+>  
+> +static const char * const input_mode_text[] = { "Analog", "Digital"
+> };
+> +
+> +static SOC_ENUM_SINGLE_VIRT_DECL(input_mode_enum, input_mode_text);
+> +
+> +static const struct snd_kcontrol_new input_mode_mux =
+> +       SOC_DAPM_ENUM("Input Mode", input_mode_enum);
+> +
+>  static const struct snd_kcontrol_new inpgal[] = {
+>  SOC_DAPM_SINGLE("IN1L Switch", WM8962_LEFT_INPUT_PGA_CONTROL, 3, 1,
+> 0),
+>  SOC_DAPM_SINGLE("IN2L Switch", WM8962_LEFT_INPUT_PGA_CONTROL, 2, 1,
+> 0),
+> @@ -2147,6 +2154,9 @@ SND_SOC_DAPM_MIXER("MIXINR", WM8962_PWR_MGMT_1,
+> 4, 0,
+>  
+>  SND_SOC_DAPM_AIF_IN("DMIC_ENA", NULL, 0, WM8962_PWR_MGMT_1, 10, 0),
+>  
+> +SND_SOC_DAPM_MUX("Input Mode L", SND_SOC_NOPM, 0, 0,
+> &input_mode_mux),
+> +SND_SOC_DAPM_MUX("Input Mode R", SND_SOC_NOPM, 0, 0,
+> &input_mode_mux),
+> +
+>  SND_SOC_DAPM_ADC("ADCL", "Capture", WM8962_PWR_MGMT_1, 3, 0),
+>  SND_SOC_DAPM_ADC("ADCR", "Capture", WM8962_PWR_MGMT_1, 2, 0),
+>  
+> @@ -2226,16 +2236,19 @@ static const struct snd_soc_dapm_route
+> wm8962_intercon[] = {
+>  
+>         { "DMIC_ENA", NULL, "DMICDAT" },
+>  
+> +       { "Input Mode L", "Analog", "MIXINL" },
+> +       { "Input Mode L", "Digital", "DMIC_ENA" },
+> +       { "Input Mode R", "Analog", "MIXINR" },
+> +       { "Input Mode R", "Digital", "DMIC_ENA" },
+> +
+>         { "ADCL", NULL, "SYSCLK" },
+>         { "ADCL", NULL, "TOCLK" },
+> -       { "ADCL", NULL, "MIXINL" },
+> -       { "ADCL", NULL, "DMIC_ENA" },
+> +       { "ADCL", NULL, "Input Mode L" },
+>         { "ADCL", NULL, "DSP2" },
+>  
+>         { "ADCR", NULL, "SYSCLK" },
+>         { "ADCR", NULL, "TOCLK" },
+> -       { "ADCR", NULL, "MIXINR" },
+> -       { "ADCR", NULL, "DMIC_ENA" },
+> +       { "ADCR", NULL, "Input Mode R" },
+>         { "ADCR", NULL, "DSP2" },
+>  
+>         { "STL", "Left", "ADCL" },
 
--- 8< --
-diff --git a/sound/hda/hdac_controller.c b/sound/hda/hdac_controller.c
-index f7bd6e2db085..074199aa73ea 100644
---- a/sound/hda/hdac_controller.c
-+++ b/sound/hda/hdac_controller.c
-@@ -618,7 +618,7 @@ int snd_hdac_bus_alloc_stream_pages(struct hdac_bus *bus)
- 	if (WARN_ON(!num_streams))
- 		return -EINVAL;
- 	/* allocate memory for the position buffer */
--	err = snd_dma_alloc_pages(dma_type, bus->dev,
-+	err = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, bus->dev,
- 				  num_streams * 8, &bus->posbuf);
- 	if (err < 0)
- 		return -ENOMEM;
-@@ -626,7 +626,7 @@ int snd_hdac_bus_alloc_stream_pages(struct hdac_bus *bus)
- 		s->posbuf = (__le32 *)(bus->posbuf.area + s->index * 8);
- 
- 	/* single page (at least 4096 bytes) must suffice for both ringbuffes */
--	return snd_dma_alloc_pages(dma_type, bus->dev, PAGE_SIZE, &bus->rb);
-+	return snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, bus->dev, PAGE_SIZE, &bus->rb);
- }
- EXPORT_SYMBOL_GPL(snd_hdac_bus_alloc_stream_pages);
- 
 
