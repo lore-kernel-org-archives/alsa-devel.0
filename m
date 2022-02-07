@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A67DC433F5
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Feb 2022 11:53:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E44FC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Feb 2022 11:55:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C621A1630;
-	Mon,  7 Feb 2022 12:52:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C621A1630
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6C6721670;
+	Mon,  7 Feb 2022 12:54:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C6721670
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1644234824;
-	bh=lBQ7WaUH4caBFeOfurqKKmOR+fCB40xoUoAkqzmWg6M=;
+	s=default; t=1644234933;
+	bh=gkd+MmpB8HvixzPc0SBX7yieo402Km4C6LS1rrCdpt4=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WmbyfRON4Zu1YXM7QeGHrY1CUHdB+qj/FW1mx2a7cHmqZ019u/MoYe6Yfhw48dS8K
-	 RFnKFrXrQfHhrLXgjGrqoQnQmqTvDmatw1ghIJ6KweiBn3g9swvAwD1qsjnkT0PY1C
-	 DXesLGZgezpdqa6vpmBxGIx224XDmgxIWjh3NvJE=
+	b=tgjhdKnuqDD/9LhF9R7jgxEy480MAtboArb2wp5iATYjzvXIIO46kF+Ts1orXaYEB
+	 yo8HPI9HwEvDzELcmpNcaAypuvDue4BVCnyH4ufqiENDWNdj3muzZWcAkGgsB3FBUC
+	 ofvlj/baeTFDUXlXN4TGmagMS5kcQVxYAAjdKOAQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 69178F8023B;
-	Mon,  7 Feb 2022 12:52:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 142AAF8023B;
+	Mon,  7 Feb 2022 12:54:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A52B0F80240; Mon,  7 Feb 2022 12:52:53 +0100 (CET)
+ id 0BC4EF80240; Mon,  7 Feb 2022 12:54:41 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 31248F800E1
- for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2022 12:52:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31248F800E1
+ by alsa1.perex.cz (Postfix) with ESMTP id E555EF800E1
+ for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2022 12:54:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E555EF800E1
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub pull_request - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1644234768117971897-webhooks-bot@alsa-project.org>
-References: <1644234768117971897-webhooks-bot@alsa-project.org>
+In-Reply-To: <1644234869328393936-webhooks-bot@alsa-project.org>
+References: <1644234869328393936-webhooks-bot@alsa-project.org>
 Subject: WIP: Add UCM for PinePhone
-Message-Id: <20220207115253.A52B0F80240@alsa1.perex.cz>
-Date: Mon,  7 Feb 2022 12:52:53 +0100 (CET)
+Message-Id: <20220207115441.0BC4EF80240@alsa1.perex.cz>
+Date: Mon,  7 Feb 2022 12:54:41 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -69,7 +69,7 @@ This UCM has been tested via Pulseaudio's ALSA_CONFIG_UCM2 environment variable,
 
 Todo:
 
-* [x] Test that this UCM is correctly recognised on a PinePhone.
+* [x] Test that this UCM is correctly recognised on a PinePhone. Done. This testing found that the `File` directive in `SectionUseCase` needs to be absolute (for the symlink to work). I've fixed this in https://github.com/alsa-project/alsa-ucm-conf/pull/134/commits/5059e57a2197bb38848bbec10f589637df64679e.
 
 See also:
 * https://gitlab.com/pine64-org/pine64-alsa-ucm/-/merge_requests/1
