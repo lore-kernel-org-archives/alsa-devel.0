@@ -4,75 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6399C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Feb 2022 13:49:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EA8FC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Feb 2022 14:07:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D61A317E0;
-	Mon,  7 Feb 2022 14:48:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D61A317E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id EC84E1ED;
+	Mon,  7 Feb 2022 15:06:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC84E1ED
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1644241746;
-	bh=AGuiTKUcur18lkayFASwvG9wxHBKvcs76p2RzclV8Lo=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=vljxdl9jZnVx49XC0bpbIqeHVLQYnw81AQnnamuX4Io8mh3E1Eor6lplCMfqEXyaE
-	 a6LP4gzIIXdo1WyHzhWwUH9EZTkmMegwV3tseoig07Wt/YIoLleyZwphvT3YQtb5nj
-	 +pZFNo2Ytf4VtpSetP9E67LaTOsAIx3CEeAVYoSg=
+	s=default; t=1644242838;
+	bh=rCcsH6TuR9fkG5Ythz+wA2JNsI+ErlMTUMNeDYwyspk=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Yx+BIbkvfc8JLZ3UGFX9o9+ica0dxoeF6n/DLNE3OHnZ4DyTCdcN8IuVL2fo90V3i
+	 QGE7Jbbn7sQJyj3zoiq8Cf7yS+cOSV24Rwozes4jj4n5lNw6ECbEhJjSc1EtOEyMBJ
+	 k3JPjKLFQYUr8b2yRRrt0k+ApU3B81L+aorA2zQY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 67FBFF800F5;
-	Mon,  7 Feb 2022 14:48:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8B2DEF8023B;
+	Mon,  7 Feb 2022 15:06:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AA4D9F80240; Mon,  7 Feb 2022 14:48:13 +0100 (CET)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id E44C2F800E1; Mon,  7 Feb 2022 15:06:24 +0100 (CET)
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com
+ [IPv6:2a00:1450:4864:20::42c])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E769AF800F5
- for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2022 14:48:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E769AF800F5
+ by alsa1.perex.cz (Postfix) with ESMTPS id E440CF800E1
+ for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2022 15:06:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E440CF800E1
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="Z+kjRhdS"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1644241692; x=1675777692;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=AGuiTKUcur18lkayFASwvG9wxHBKvcs76p2RzclV8Lo=;
- b=Z+kjRhdSB/bVJF1hNKxYxd44l26UO195h/poC8xD1QDeTXt1K+oBbiMq
- 1jqQQKuMgY7ml7/xSdehV10HkGwOJasikqR/OFuvRAAvu5XN98b+n4u9L
- w7+B4oE1oyV+lrwVhMcyak2E5ZGuvvHKz0EKFBAnLXBuOTvkBVV+PubPz
- r/f61kBjQ6hLibG28jfkqF1YlHTwfnIS7G67rOMogmK1y+VAux4kcYhpJ
- 6WdS63Jhwz5RzX9yFLJ9qb+Wc2QQcSkS5Ii4IIFVJt5eBP3ipa1KJgGJY
- cqMCx3f2Vvk1Ovtu9ATq8i7pX0P6Gjt9C0/17WvQs04maf7nlAhyemwhZ w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10250"; a="228685852"
-X-IronPort-AV: E=Sophos;i="5.88,349,1635231600"; d="scan'208";a="228685852"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Feb 2022 05:48:06 -0800
-X-IronPort-AV: E=Sophos;i="5.88,349,1635231600"; d="scan'208";a="632461588"
-Received: from psayyaga-mobl2.amr.corp.intel.com (HELO [10.212.85.20])
- ([10.212.85.20])
- by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Feb 2022 05:48:05 -0800
-Message-ID: <e609134a-a501-77fb-dcb8-60514d231d3d@linux.intel.com>
-Date: Mon, 7 Feb 2022 06:35:30 -0600
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="dXHUkHHH"
+Received: by mail-wr1-x42c.google.com with SMTP id r29so7049727wrr.13
+ for <alsa-devel@alsa-project.org>; Mon, 07 Feb 2022 06:06:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=tBKWnS+g7You4oahdBZV1moenSdw6O464+uIoP4Ehfw=;
+ b=dXHUkHHHLQVcF081BhnShtt/ILiXpVb0T3NzyCo3i0nakhqxWs2EPz9K/tIrOG4t/q
+ ZmJBv6zMZ9oe2EmWqrcUsw0RWxqGsxtBSS4T4i2UE1VGygzOS0q5+qq1slHJLFk61oua
+ 32mR5gFhRVh0FEPZ8PCqrbEPsdeUVImaqnqPUkg2cYvsF55RNOzS7L/8Bl9l/pljVxiV
+ Tc8pb7VPlg5FpOF2bd6lqh7OJ7EpRKlboqsn/+n+WB8gl5tuYmx6b8XTa6k97x7IPPxt
+ q7Mvq5E2Hi7r8q6eIWDyZ0jZ+gnBR4HFiHWwyOlmMbRQeGVbu6rIxc85DNgUrhocF6eh
+ OF4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=tBKWnS+g7You4oahdBZV1moenSdw6O464+uIoP4Ehfw=;
+ b=scOHXtpi9t5s9CnYH3R4H/c48BOZ9qNlg0ynfIZ6pGrd0s06R73Y3TttIZJfldGUst
+ 42ZR0BVdaFpH1WXyw8h/5P3FoHgcozTagXYkYFXIzQfHkeEwgIEgRhIzOVZi3LYZS8PV
+ Do9IvETOBlFJyPui2lirOA5DX64SejynJZLG1wnNEDS8pK7pr3tP2U4NeOHECGehQaxr
+ BbAoptvLscy1qPlp5AdQvI3oYgaGGpP4lruoxEgaJhhMGjv/e4WwR8FXZY7Jx0LBMWwk
+ NaH9pa3YumePXgs+x/76KrEQnKSHSl9J3116eTZZNbWuPY2BWag93jI9/7OAkdsFvVd0
+ HKbw==
+X-Gm-Message-State: AOAM532ar1xtOzdMx4x0OtUKaFJ4EQTwdBderddVPLof8wL5gS2Z0vRO
+ vh+Hrrg7DOGDmDfKBgvVFXY=
+X-Google-Smtp-Source: ABdhPJyKet9Uuh60UU/p6hDZJIyCF7NM/ixYXuVRcY9k1xOZeokpEzA36xzaIhpdpjAHmboNRpfbrw==
+X-Received: by 2002:a05:6000:1866:: with SMTP id
+ d6mr10140333wri.309.1644242778904; 
+ Mon, 07 Feb 2022 06:06:18 -0800 (PST)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net.
+ [80.193.200.194])
+ by smtp.gmail.com with ESMTPSA id n10sm4140786wrt.93.2022.02.07.06.06.18
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 07 Feb 2022 06:06:18 -0800 (PST)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: usb-audio: remove redundant assignment to variable c
+Date: Mon,  7 Feb 2022 14:06:17 +0000
+Message-Id: <20220207140617.341172-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.5.0
-Subject: Re: [PATCH 0/4] ALSA: hda: Expose codec organization functions
-Content-Language: en-US
-To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
-References: <20220207114906.3759800-1-cezary.rojewski@intel.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20220207114906.3759800-1-cezary.rojewski@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: upstream@semihalf.com, harshapriya.n@intel.com, rad@semihalf.com,
- tiwai@suse.com, hdegoede@redhat.com, broonie@kernel.org,
- cujomalainey@chromium.org, lma@semihalf.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,25 +95,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+The variable c is being initialized in an outer for-loop and also
+re-initialized inside an inner for-loop. The first initialization
+is redundant and can be removed.
 
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ sound/usb/mixer_s1810c.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 2/7/22 05:49, Cezary Rojewski wrote:
-> Changes expose several function that are currently unavailable for
-> HDA-DSP drivers for use. Those functions are:
-> 
-> snd_hda_codec_cleanup_for_unbind()
-> snd_hda_codec_set_power_save()
-> snd_hda_codec_register()
-> snd_hda_codec_unregister()
-> snd_hda_codec_device_init()
-
-
-It would be useful to explain why a platform driver would need to make
-use of codec-management related routines, which would typically be
-needed only in a codec or machine driver, or hidden as part of a generic
-bus layer.
-
-In addition, both the Skylake and SOF/HDA drivers make use of e.g.,
-snd_hdac_ext_bus_device_init(), what was wrong with this approach that's
-been used since 2018?
+diff --git a/sound/usb/mixer_s1810c.c b/sound/usb/mixer_s1810c.c
+index 0255089c9efb..fac4bbc6b275 100644
+--- a/sound/usb/mixer_s1810c.c
++++ b/sound/usb/mixer_s1810c.c
+@@ -221,7 +221,7 @@ static int snd_s1810c_init_mixer_maps(struct snd_usb_audio *chip)
+ 	e = 0xbc;
+ 	for (n = 0; n < 2; n++) {
+ 		off = n * 18;
+-		for (b = off, c = 0; b < 18 + off; b++) {
++		for (b = off; b < 18 + off; b++) {
+ 			/* This channel to all outputs ? */
+ 			for (c = 0; c <= 8; c++) {
+ 				snd_s1810c_send_ctl_packet(dev, a, b, c, 0, e);
+-- 
+2.34.1
 
