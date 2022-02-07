@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8645C35272
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Feb 2022 11:48:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0520EC433FE
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Feb 2022 11:49:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EA316163F;
-	Mon,  7 Feb 2022 12:48:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA316163F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0D9BD163C;
+	Mon,  7 Feb 2022 12:48:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D9BD163C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1644234534;
-	bh=uqQLq4r3XQeXrKyg/yfTfYsuiVgvhSCCqA+N/Lc1OMg=;
+	s=default; t=1644234549;
+	bh=0r0xNEzSkirXFSBY7vrc6wveTYbRqbTjdzDULMG6hns=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XSmacL+Si2ngJfgy2OnnKwAny61qLNzh7U/gE8qFxKP+V4lvgS09kt8XxmjExWdhs
-	 KXBb51TSHgJs+r3Ti87BNx+603HHKxTy8I6broAB2cX9NvJRZFfIO+vaAv25fsJXMT
-	 7DnG0Lqs6Jls+uj4x6STTYSgrhD674wzbITYe6T0=
+	b=s4uc3ATt9CaeiUEipyc8VepghNe5J/EjGNrJwLNu+O4jpJz2xUEGyjmyvpio8Dqcv
+	 Y2VOcff4QLdBe9k/R0tp3tn15i2MVIjKLNohsmTKQTsTJXmp5Oz3BMVT9WY/VjQZh2
+	 xbuuFdb88y8vSTJbO8Ez6YcRojB6WKTIvjXU2QzE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1F81CF804FF;
+	by alsa1.perex.cz (Postfix) with ESMTP id 929C0F80516;
 	Mon,  7 Feb 2022 12:47:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 520B6F80249; Mon,  7 Feb 2022 12:47:11 +0100 (CET)
+ id 134EAF80240; Mon,  7 Feb 2022 12:47:15 +0100 (CET)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 543F0F800E1
- for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2022 12:47:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 543F0F800E1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 27D92F80482
+ for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2022 12:47:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27D92F80482
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="WdxCxhOz"
+ header.b="afGR6ylo"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1644234429; x=1675770429;
+ t=1644234433; x=1675770433;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=uqQLq4r3XQeXrKyg/yfTfYsuiVgvhSCCqA+N/Lc1OMg=;
- b=WdxCxhOz+Y9iUOMXteyl8+h8iwYLmKngISVHlVnQa3vXDLgOmGBTxF+q
- JjBq+zSaoFLjEJ+GjM8mJqcW4WQ4o8D+Dai4bNReXnM2oNAircMN4WBwQ
- F/BUtZCKOlMal6kEmVhBSXOEKCqbenutEBn33ITS3zzr24tialTJYNifX
- oryzTt+n5V1czHeySgR9ZKU0yfykjHzFuQnJx92lJ9g6VAU4+FiOzcyzx
- QyWqsIqNv1pA6AdE4wSxqbvDPl+NItaRNTdkwRSXiF7lqhXIs6lN9aJaC
- niweWdf04nfdCepy04ZEkcJ/r06XnjKhpTLpBxwpP8//zWqLKraQjy9AO A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10250"; a="273217742"
-X-IronPort-AV: E=Sophos;i="5.88,349,1635231600"; d="scan'208";a="273217742"
+ bh=0r0xNEzSkirXFSBY7vrc6wveTYbRqbTjdzDULMG6hns=;
+ b=afGR6yloRUTwedrbhHZZUv3DA7TPCbWEs7gda1X87HSEK+0nmnzERHxm
+ 2cb80zwFdX9AOlBP0FqN8ruQFT+LtWrhffz/u9Ky/TB6Sumb/0WQN01FQ
+ QUlxBGXOMQyKfkIsapVwH0V3G+ky0Q4cwiXxeUqfd+ohqT5T3eyoSPpMC
+ QlE68UFyUgaR+IxBYfPhNJlZfgBT7mB+ool3gbJYD+NZUwd8Ke4dN8HvN
+ tJGjlgalzmLYKZ6YKdkXQA1N9nc4qEKRM4VUgnXvJfUqE6eV0FXzCsPr8
+ gi3OyXvpflQ8j7FiXE2bmvwvd6hTd+rzzU4DXdPDomDRiUP/e/bNi3jqS A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10250"; a="273217770"
+X-IronPort-AV: E=Sophos;i="5.88,349,1635231600"; d="scan'208";a="273217770"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Feb 2022 03:47:01 -0800
+ 07 Feb 2022 03:47:11 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,349,1635231600"; d="scan'208";a="484394900"
+X-IronPort-AV: E=Sophos;i="5.88,349,1635231600"; d="scan'208";a="484394971"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by orsmga006.jf.intel.com with ESMTP; 07 Feb 2022 03:46:59 -0800
+ by orsmga006.jf.intel.com with ESMTP; 07 Feb 2022 03:47:08 -0800
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/4] ALSA: hda: Add snd_hdac_ext_bus_link_at() helper
-Date: Mon,  7 Feb 2022 12:49:03 +0100
-Message-Id: <20220207114906.3759800-2-cezary.rojewski@intel.com>
+Subject: [PATCH 4/4] ALSA: hda: Expose codec cleanup and power-save functions
+Date: Mon,  7 Feb 2022 12:49:06 +0100
+Message-Id: <20220207114906.3759800-5-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220207114906.3759800-1-cezary.rojewski@intel.com>
 References: <20220207114906.3759800-1-cezary.rojewski@intel.com>
@@ -85,84 +85,99 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch exposes a new helper to directly retrieve the link from the
-codec address, and makes use of this helper when retrieving the link
-from the codec name.
+With few changes, snd_hda_codec_set_power_save() and
+snd_hda_codec_cleanup_for_unbind() can be re-used by ASoC drivers.
+While at it, provide kernel doc for the exposed functions.
 
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- include/sound/hdaudio_ext.h         |  1 +
- sound/hda/ext/hdac_ext_controller.c | 31 +++++++++++++++++++----------
- 2 files changed, 22 insertions(+), 10 deletions(-)
+ include/sound/hda_codec.h |  3 +++
+ sound/pci/hda/hda_codec.c | 14 ++++++++++++--
+ sound/pci/hda/hda_local.h |  1 -
+ 3 files changed, 15 insertions(+), 3 deletions(-)
 
-diff --git a/include/sound/hdaudio_ext.h b/include/sound/hdaudio_ext.h
-index 77123c3e4095..b0c8e4936168 100644
---- a/include/sound/hdaudio_ext.h
-+++ b/include/sound/hdaudio_ext.h
-@@ -28,6 +28,7 @@ void snd_hdac_ext_stream_spbcap_enable(struct hdac_bus *chip,
- 				 bool enable, int index);
+diff --git a/include/sound/hda_codec.h b/include/sound/hda_codec.h
+index f74abc13414f..77426ff58338 100644
+--- a/include/sound/hda_codec.h
++++ b/include/sound/hda_codec.h
+@@ -318,6 +318,7 @@ int snd_hda_codec_configure(struct hda_codec *codec);
+ int snd_hda_codec_update_widgets(struct hda_codec *codec);
+ void snd_hda_codec_register(struct hda_codec *codec);
+ void snd_hda_codec_unregister(struct hda_codec *codec);
++void snd_hda_codec_cleanup_for_unbind(struct hda_codec *codec);
  
- int snd_hdac_ext_bus_get_ml_capabilities(struct hdac_bus *bus);
-+struct hdac_ext_link *snd_hdac_ext_bus_link_at(struct hdac_bus *bus, int addr);
- struct hdac_ext_link *snd_hdac_ext_bus_get_link(struct hdac_bus *bus,
- 						const char *codec_name);
+ /*
+  * low level functions
+@@ -496,9 +497,11 @@ int hda_call_check_power_status(struct hda_codec *codec, hda_nid_t nid)
+ #define snd_hda_power_down(codec)	snd_hdac_power_down(&(codec)->core)
+ #define snd_hda_power_down_pm(codec)	snd_hdac_power_down_pm(&(codec)->core)
+ #ifdef CONFIG_PM
++void snd_hda_codec_set_power_save(struct hda_codec *codec, int delay);
+ void snd_hda_set_power_save(struct hda_bus *bus, int delay);
+ void snd_hda_update_power_acct(struct hda_codec *codec);
+ #else
++static inline void snd_hda_codec_set_power_save(struct hda_codec *codec, int delay) {}
+ static inline void snd_hda_set_power_save(struct hda_bus *bus, int delay) {}
+ #endif
  
-diff --git a/sound/hda/ext/hdac_ext_controller.c b/sound/hda/ext/hdac_ext_controller.c
-index b2df7b4f9227..b072392725c7 100644
---- a/sound/hda/ext/hdac_ext_controller.c
-+++ b/sound/hda/ext/hdac_ext_controller.c
-@@ -132,6 +132,26 @@ void snd_hdac_link_free_all(struct hdac_bus *bus)
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 4406b7983c07..34db37ce8847 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -766,6 +766,10 @@ static void codec_release_pcms(struct hda_codec *codec)
+ 	}
  }
- EXPORT_SYMBOL_GPL(snd_hdac_link_free_all);
  
 +/**
-+ * snd_hdac_ext_bus_link_at - get link at specified address
-+ * @bus: link's parent bus device
-+ * @addr: codec device address
-+ *
-+ * Returns link object or NULL if matching link is not found.
++ * snd_hda_codec_cleanup_for_unbind - Prepare codec for removal
++ * @codec: codec device to cleanup
 + */
-+struct hdac_ext_link *snd_hdac_ext_bus_link_at(struct hdac_bus *bus, int addr)
-+{
-+	struct hdac_ext_link *hlink;
-+	int i;
-+
-+	list_for_each_entry(hlink, &bus->hlink_list, list)
-+		for (i = 0; i < HDA_MAX_CODECS; i++)
-+			if (hlink->lsdiid & (0x1 << addr))
-+				return hlink;
-+	return NULL;
-+}
-+EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_link_at);
-+
- /**
-  * snd_hdac_ext_bus_get_link - get link based on codec name
-  * @bus: the pointer to HDAC bus object
-@@ -140,8 +160,6 @@ EXPORT_SYMBOL_GPL(snd_hdac_link_free_all);
- struct hdac_ext_link *snd_hdac_ext_bus_get_link(struct hdac_bus *bus,
- 						 const char *codec_name)
+ void snd_hda_codec_cleanup_for_unbind(struct hda_codec *codec)
  {
--	int i;
--	struct hdac_ext_link *hlink = NULL;
- 	int bus_idx, addr;
+ 	if (codec->registered) {
+@@ -3397,7 +3401,12 @@ int snd_hda_add_new_ctls(struct hda_codec *codec,
+ EXPORT_SYMBOL_GPL(snd_hda_add_new_ctls);
  
- 	if (sscanf(codec_name, "ehdaudio%dD%d", &bus_idx, &addr) != 2)
-@@ -151,14 +169,7 @@ struct hdac_ext_link *snd_hdac_ext_bus_get_link(struct hdac_bus *bus,
- 	if (addr < 0 || addr > 31)
- 		return NULL;
+ #ifdef CONFIG_PM
+-static void codec_set_power_save(struct hda_codec *codec, int delay)
++/**
++ * snd_hda_codec_set_power_save - Configure codec's runtime PM
++ * @codec: codec device to configure
++ * @delay: autosuspend delay
++ */
++void snd_hda_codec_set_power_save(struct hda_codec *codec, int delay)
+ {
+ 	struct device *dev = hda_codec_dev(codec);
  
--	list_for_each_entry(hlink, &bus->hlink_list, list) {
--		for (i = 0; i < HDA_MAX_CODECS; i++) {
--			if (hlink->lsdiid & (0x1 << addr))
--				return hlink;
--		}
--	}
--
--	return NULL;
-+	return snd_hdac_ext_bus_link_at(bus, addr);
+@@ -3415,6 +3424,7 @@ static void codec_set_power_save(struct hda_codec *codec, int delay)
+ 		pm_runtime_forbid(dev);
+ 	}
  }
- EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_get_link);
++EXPORT_SYMBOL_GPL(snd_hda_codec_set_power_save);
  
+ /**
+  * snd_hda_set_power_save - reprogram autosuspend for the given delay
+@@ -3428,7 +3438,7 @@ void snd_hda_set_power_save(struct hda_bus *bus, int delay)
+ 	struct hda_codec *c;
+ 
+ 	list_for_each_codec(c, bus)
+-		codec_set_power_save(c, delay);
++		snd_hda_codec_set_power_save(c, delay);
+ }
+ EXPORT_SYMBOL_GPL(snd_hda_set_power_save);
+ 
+diff --git a/sound/pci/hda/hda_local.h b/sound/pci/hda/hda_local.h
+index 4c52dfb615bc..aca592651870 100644
+--- a/sound/pci/hda/hda_local.h
++++ b/sound/pci/hda/hda_local.h
+@@ -135,7 +135,6 @@ int __snd_hda_add_vmaster(struct hda_codec *codec, char *name,
+ #define snd_hda_add_vmaster(codec, name, tlv, followers, suffix, access) \
+ 	__snd_hda_add_vmaster(codec, name, tlv, followers, suffix, true, access, NULL)
+ int snd_hda_codec_reset(struct hda_codec *codec);
+-void snd_hda_codec_cleanup_for_unbind(struct hda_codec *codec);
+ void snd_hda_codec_disconnect_pcms(struct hda_codec *codec);
+ 
+ #define snd_hda_regmap_sync(codec)	snd_hdac_regmap_sync(&(codec)->core)
 -- 
 2.25.1
 
