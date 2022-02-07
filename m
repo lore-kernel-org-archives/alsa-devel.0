@@ -4,42 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB91AC433F5
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Feb 2022 12:27:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2FD0C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Feb 2022 13:24:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4111916C2;
-	Mon,  7 Feb 2022 13:26:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4111916C2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3084A1733;
+	Mon,  7 Feb 2022 14:24:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3084A1733
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1644236848;
-	bh=XNhcDDTemOBayVV82sFx9x1jQUmWWl5oXgIkNCJZPjg=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=F7/Ka5J/Ze0gL8GHClReR9ZJG8BrymI3n1HguPoq7MoLb9MtYS64HJJ/ZVTdaTMli
-	 OcFc/SCf0RhveXFSFbfj9wdK95AnD06bPs3XNdiSb7IX7vFewPaUSbjIZhcmyrMT6d
-	 CougLZskdPonIvXdCFnZ7h5s5ujPf4pz6vg+GrvE=
+	s=default; t=1644240296;
+	bh=XpGgoG6h1iV+g/By2vSWdxXSDhJBe6uKNfUmTXRc2UI=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=mz1O4iQbluNdI1gxTGeZNZCDVUWTV4C1TblXSv7h0oBj9RrIMnNsfEmpp/hN2L/vO
+	 aVGGHvMrkLbKII5O59zbMPAhd8KrFsu+591oKcBy/KuV8H/opkwxklPh4phJbYn+5I
+	 //+IQDFm7zuZUptbPEVtJ8d60wusHyQPE6rps778=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E455DF8023B;
-	Mon,  7 Feb 2022 13:26:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CA427F80249;
+	Mon,  7 Feb 2022 14:24:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0A5E5F800F5; Mon,  7 Feb 2022 13:26:37 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 08194F800F5
- for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2022 13:26:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 08194F800F5
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - edited <github@alsa-project.org>
+ id 28E72F800E9; Mon,  7 Feb 2022 14:24:01 +0100 (CET)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id CC114F800E9
+ for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2022 14:23:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC114F800E9
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="gA4PT3Z9"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1644240239; x=1675776239;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=XpGgoG6h1iV+g/By2vSWdxXSDhJBe6uKNfUmTXRc2UI=;
+ b=gA4PT3Z9AYZdQuThFHSBaN+uNEbrcfKhSe229I/lJYnS3fOVo/oeOcmQ
+ aXHWT3nTy3OF8RNxWsDW6Col88nQnh+s0kEuFoijl3HMkgGCWI8uGDYNu
+ ye+8drlX4qZQNJls5eEKUyiLdiqWF3XQXsoTBhg9iZpLrWLK6/6jnjzFn
+ Ct70g6ise6dfWtKj9gEuLRbcqYKxftEIfz/uvwhs4HIlKnrheyq2kMUo5
+ tJUD8ckJyNxyN0+vbQHGaLZ4m4FcUgkKvHmiARtzSiolOnpWXrBtObjUl
+ e2Y8Pz+CQiXB3S3r8qqqILj6w9C7KIrEami57zZq0GnqDsfjevbh/R4Zr Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10250"; a="312011458"
+X-IronPort-AV: E=Sophos;i="5.88,349,1635231600"; d="scan'208";a="312011458"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Feb 2022 05:23:50 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,349,1635231600"; d="scan'208";a="677751256"
+Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
+ by fmsmga001.fm.intel.com with ESMTP; 07 Feb 2022 05:23:46 -0800
+From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1644236790368707895-webhooks-bot@alsa-project.org>
-References: <1644236790368707895-webhooks-bot@alsa-project.org>
-Subject: Add UCM for PinePhone
-Message-Id: <20220207122637.0A5E5F800F5@alsa1.perex.cz>
-Date: Mon,  7 Feb 2022 13:26:37 +0100 (CET)
+Subject: [RFC 00/13] ASoC: Intel: avs: Topology and path management
+Date: Mon,  7 Feb 2022 14:25:18 +0100
+Message-Id: <20220207132532.3782412-1-cezary.rojewski@intel.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, rad@semihalf.com,
+ upstream@semihalf.com, harshapriya.n@intel.com, tiwai@suse.com,
+ pierre-louis.bossart@linux.intel.com, hdegoede@redhat.com, broonie@kernel.org,
+ amadeuszx.slawinski@linux.intel.com, cujomalainey@chromium.org,
+ lma@semihalf.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -55,23 +84,63 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #134 was edited from tomfitzhenry:
+A continuation of avs-driver initial series [1]. This chapter covers
+path management and topology parsing part which was ealier path of the
+main series. The two patches that represented these two subjects in the
+initial series, have been split into many to allow for easier review and
+discussion.
 
-Fixes https://github.com/alsa-project/alsa-ucm-conf/issues/124.
+AVS topology is split into two major parts: dictionaries - found within
+ASoC topology manifest - and path templates - found within DAPM widget
+private data. Dictionaries job is to reduce the total amount of memory
+occupied by topology elements. Rather than having every pipeline and
+module carry its own information, each refers to specific entry in
+specific dictionary by provided (from topology file) indexes. In
+consequence, most struct avs_tplg_xxx are made out of pointers.
 
-The DTS configuration has had a unique audio card name since 5.14:
+A 'path' represents a DSP side of audio stream in runtime - is a logical
+container for pipelines which are themselves composed of modules -
+processing units. Due to high range of possible audio format
+combinations, there can be more variants of given path (and thus, its
+pipelines and modules) than total number of pipelines and module
+instances which firmware supports concurrently, all the instance IDs are
+allocated dynamically with help of IDA interface. 'Path templates' come
+from topology file and describe a pattern which is later used to
+actually create runtime 'path'.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi?h=v5.14#n436
+[1]: https://lore.kernel.org/alsa-devel/20220207122108.3780926-1-cezary.rojewski@intel.com/T/#t
 
-This UCM config is copied from https://gitlab.com/pine64-org/pine64-alsa-ucm/, which was developed by many developers ( https://gitlab.com/pine64-org/pine64-alsa-ucm/-/merge_requests/1 ) and is BSD-3-Clause licensed.
 
-I have tested that with this PR, the PinePhone has the expected HiFi and VoiceCall profiles.This testing found that the `File` directive in `SectionUseCase` needs to be absolute (for the symlink to work). I've fixed this in this PR: https://github.com/alsa-project/alsa-ucm-conf/pull/134/commits/5059e57a2197bb38848bbec10f589637df64679e.
+Cezary Rojewski (13):
+  ASoC: Intel: avs: Declare vendor tokens
+  ASoC: Intel: avs: Add topology parsing infrastructure
+  ASoC: Intel: avs: Parse module-extension tuples
+  ASoC: Intel: avs: Parse pplcfg and binding tuples
+  ASoC: Intel: avs: Parse pipeline and module tuples
+  ASoC: Intel: avs: Parse path and path templates tuples
+  ASoC: Intel: avs: Add topology loading operations
+  ASoC: Intel: avs: Declare path and its components
+  ASoC: Intel: avs: Path creation and freeing
+  ASoC: Intel: avs: Path state management
+  ASoC: Intel: avs: Arm paths after creating them
+  ASoC: Intel: avs: Prepare modules before bindings them
+  ASoC: Intel: avs: Configure modules according to their type
 
-See also:
-* `alsa-info`: https://alsa-project.org/db/?f=5e331f5ef10bd167b3bd7640bfcf0e879100f80d
-* `pa-info`: [pa-info.txt](https://github.com/alsa-project/alsa-ucm-conf/files/8015083/pa-info.txt)
-* https://gitlab.com/pine64-org/pine64-alsa-ucm/-/issues/3
+ include/uapi/sound/intel/avs/tokens.h |  126 ++
+ sound/soc/intel/Kconfig               |    2 +
+ sound/soc/intel/avs/Makefile          |    3 +-
+ sound/soc/intel/avs/avs.h             |   23 +
+ sound/soc/intel/avs/path.c            | 1008 ++++++++++++++++
+ sound/soc/intel/avs/path.h            |   72 ++
+ sound/soc/intel/avs/topology.c        | 1600 +++++++++++++++++++++++++
+ sound/soc/intel/avs/topology.h        |  195 +++
+ 8 files changed, 3028 insertions(+), 1 deletion(-)
+ create mode 100644 include/uapi/sound/intel/avs/tokens.h
+ create mode 100644 sound/soc/intel/avs/path.c
+ create mode 100644 sound/soc/intel/avs/path.h
+ create mode 100644 sound/soc/intel/avs/topology.c
+ create mode 100644 sound/soc/intel/avs/topology.h
 
-Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/134
-Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/134.patch
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+-- 
+2.25.1
+
