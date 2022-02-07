@@ -4,67 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5EA50C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Feb 2022 15:40:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE171C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Feb 2022 15:40:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 40F2E1866;
-	Mon,  7 Feb 2022 16:39:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 40F2E1866
+	by alsa0.perex.cz (Postfix) with ESMTPS id F12D71872;
+	Mon,  7 Feb 2022 16:39:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F12D71872
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1644248412;
-	bh=meH7z7nrUfTvpLjwaj/Q3CO+U0gl866RXS+WQMwHa+Q=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=BVbw/O9ZAn6z7jlEv3PatMudbpjYn4kYxJ7Lz4fZSqRl+5zWQ8DX/1wJUWDIlb5CH
-	 W4mUL+7fSVT+jHEclH9NkLPVXDCKQtIfLTDTQ5b8lhQ8LThbSxEOffBmtPn9UyDYgB
-	 b3kZvvzUNmpEvpQiEtPFTwFJYVBlBeN214h5HJFE=
+	s=default; t=1644248432;
+	bh=HY7MVKcXpMu5mQDAhQkFIj+x1Nih51r+Y0slJWpEr98=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=K3u1M4Xd3OLMG0lvCEzLpOPUw8+pdqJfXnOmYXYmXMGBbWTfO3xRcbY26vQ3Ltxkf
+	 u8iU9guZ/h0UqFfGHA4KYgeoVRj4axPpfVYAZEr7Fm2YdxX7tbikk+s6hKD9SQg6S6
+	 26ir3x8ow+ZUFaq6L9XGjkZsjqRHm2SXMdnuveC4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4D708F80246;
-	Mon,  7 Feb 2022 16:38:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BAC1AF804FF;
+	Mon,  7 Feb 2022 16:38:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8F255F804D2; Mon,  7 Feb 2022 16:38:51 +0100 (CET)
+ id 904E2F8023B; Mon,  7 Feb 2022 16:38:54 +0100 (CET)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 189A2F800E9
- for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2022 16:38:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 189A2F800E9
+ by alsa1.perex.cz (Postfix) with ESMTPS id A174DF8023B
+ for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2022 16:38:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A174DF8023B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="l2b0JPE3"
+ header.b="GJ+2RDIo"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1644248326; x=1675784326;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=meH7z7nrUfTvpLjwaj/Q3CO+U0gl866RXS+WQMwHa+Q=;
- b=l2b0JPE32rElOe3DKCbrhEdlZVb7N9K+EFU/tsW7hAvpUr6zlRIG2NZL
- rvQF2qCDAi8xP94v3pfc6Oo10OP70NNN8xuKjSohLq6vXZz7TX9CbwvLx
- hpuTVl67zeRZBm8xhOYUk7x1TX9otSbp0QzZlZRv6+o8LTOnCY2hxL7ON
- aGcT89P8J6afHhxg9C++wfvfgwOq+2f5B503jMNHD/n4JNYybnKEmJzSh
- IWmS/ZLEl5kr8S8JEHbFHuCSFNF2awrSpSNyie0/DWqC0+fJDO/4RXHB3
- XO9O5i7tdaVIud5E2h2F7QERH2ecjmTkZnlEbM1LZ/IZpEOzJxkphkBrn Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10250"; a="228708988"
-X-IronPort-AV: E=Sophos;i="5.88,350,1635231600"; d="scan'208";a="228708988"
+ t=1644248327; x=1675784327;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=HY7MVKcXpMu5mQDAhQkFIj+x1Nih51r+Y0slJWpEr98=;
+ b=GJ+2RDIoWy1ZHFFDDzWbvqD0nLwHl+pcAw/Ll8VqH9JkMqlQyQGBhoDj
+ 8LkwUbzadgg0jR6V0ikNM59kC4bp8xGFKNECjjGviHGRgl7FlEge+DgWC
+ 0z/ncQIehLxlnWKDynDsdXd0TL3lvr5+tIICYD7nWHNEY56RRwNtZ8iIV
+ 56XkO2mSVIYliw+Z/yGuZPpQ8SZ6vZwS8gdqfwSJh/EUkZ3pR39e+p1yP
+ bmiUwSWyJD5Rmfgj9t/TMQQxPqTkwtkmY1LMqGgYtpY/KgcANaR6HliSP
+ z//1q+U31ucwvTowoeo4rv8gxSkqxZ7uRWNmGnmEtUp2cbM9BNI5nOyPw A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10250"; a="228708969"
+X-IronPort-AV: E=Sophos;i="5.88,350,1635231600"; d="scan'208";a="228708969"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Feb 2022 07:38:43 -0800
+ 07 Feb 2022 07:38:37 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,350,1635231600"; d="scan'208";a="481616915"
+X-IronPort-AV: E=Sophos;i="5.88,350,1635231600"; d="scan'208";a="481616889"
 Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by orsmga003.jf.intel.com with ESMTP; 07 Feb 2022 07:38:41 -0800
+ by orsmga003.jf.intel.com with ESMTP; 07 Feb 2022 07:38:34 -0800
 From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 To: alsa-devel@alsa-project.org, Oder Chiou <oder_chiou@realtek.com>,
  broonie@kernel.org
-Subject: [PATCH 3/3] ASoC: rt5682: do not block workqueue if card is unbound
-Date: Mon,  7 Feb 2022 17:30:00 +0200
-Message-Id: <20220207153000.3452802-3-kai.vehmanen@linux.intel.com>
+Subject: [PATCH 1/3] ASoC: rt5682s: do not block workqueue if card is unbound
+Date: Mon,  7 Feb 2022 17:29:58 +0200
+Message-Id: <20220207153000.3452802-1-kai.vehmanen@linux.intel.com>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220207153000.3452802-1-kai.vehmanen@linux.intel.com>
-References: <20220207153000.3452802-1-kai.vehmanen@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -87,7 +84,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The current rt5682_jack_detect_handler() assumes the component
+The current rt5682s_jack_detect_handler() assumes the component
 and card will always show up and implements an infinite usleep
 loop waiting for them to show up.
 
@@ -109,32 +106,34 @@ Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Shuming Fan <shumingf@realtek.com>
 ---
- sound/soc/codecs/rt5682.c | 12 +++++++-----
+ sound/soc/codecs/rt5682s.c | 12 +++++++-----
  1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
-index 415ec564c82e..4b164a04d4dc 100644
---- a/sound/soc/codecs/rt5682.c
-+++ b/sound/soc/codecs/rt5682.c
-@@ -1096,11 +1096,13 @@ void rt5682_jack_detect_handler(struct work_struct *work)
- 		container_of(work, struct rt5682_priv, jack_detect_work.work);
+diff --git a/sound/soc/codecs/rt5682s.c b/sound/soc/codecs/rt5682s.c
+index efa1016831dd..1e662d1be2b3 100644
+--- a/sound/soc/codecs/rt5682s.c
++++ b/sound/soc/codecs/rt5682s.c
+@@ -824,11 +824,13 @@ static void rt5682s_jack_detect_handler(struct work_struct *work)
+ 		container_of(work, struct rt5682s_priv, jack_detect_work.work);
  	int val, btn_type;
  
--	while (!rt5682->component)
+-	while (!rt5682s->component)
 -		usleep_range(10000, 15000);
 -
--	while (!rt5682->component->card->instantiated)
+-	while (!rt5682s->component->card->instantiated)
 -		usleep_range(10000, 15000);
-+	if (!rt5682->component || !rt5682->component->card ||
-+	    !rt5682->component->card->instantiated) {
++	if (!rt5682s->component || !rt5682s->component->card ||
++	    !rt5682s->component->card->instantiated) {
 +		/* card not yet ready, try later */
 +		mod_delayed_work(system_power_efficient_wq,
-+				 &rt5682->jack_detect_work, msecs_to_jiffies(15));
++				 &rt5682s->jack_detect_work, msecs_to_jiffies(15));
 +		return;
 +	}
  
- 	mutex_lock(&rt5682->jdet_mutex);
- 	mutex_lock(&rt5682->calibrate_mutex);
+ 	mutex_lock(&rt5682s->jdet_mutex);
+ 	mutex_lock(&rt5682s->calibrate_mutex);
+
+base-commit: d466706b9d0dae4754a47c34fd5f4654ee54f609
 -- 
 2.35.1
 
