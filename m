@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C456EC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Feb 2022 13:26:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D41C9C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Feb 2022 13:27:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1219D1759;
-	Mon,  7 Feb 2022 14:26:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1219D1759
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1C399179F;
+	Mon,  7 Feb 2022 14:26:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C399179F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1644240410;
-	bh=ZR8UOEUP9t2phXysUDv0YnRMI57l3BS8DAF8VEzbWrc=;
+	s=default; t=1644240435;
+	bh=Q9juU6vSnvsHaSLg08p6dICrWYKAT7JVo6hXeUuNL0Y=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Lcbs789lgyvHllamxibaX9FfYSCoz9oPyKkmjCgiH5Ueh5nvvqaK26b3udjhGpd87
-	 BgUXkhHWsZxbvwakn4Wa/sO0H65z87Xzhhc6+MoPvhaU2v4fEYSFRVLRbpMsdLG61T
-	 0HyEIN4V6tNc27j+h35DMuxWXrFPQE5xcbTr5C1I=
+	b=IvVGGnEZOAEPbFj/OgZVc3PBVtAQn971clKMJ/C9zz7+XD87QRzr4PTgdQbA4Ge+w
+	 tcms20pNffrCgC8Osg7Icmu+kiqOaaJdW8xEYVHIc45eR45Qxv/uTELaDJqq3882ft
+	 FdEBY1Cgnnt+2h1b3ncwJz59deQiQFh1ppURDU5E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 009C0F80535;
-	Mon,  7 Feb 2022 14:24:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E2114F80542;
+	Mon,  7 Feb 2022 14:24:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 48577F80528; Mon,  7 Feb 2022 14:24:12 +0100 (CET)
+ id 94092F8023B; Mon,  7 Feb 2022 14:24:15 +0100 (CET)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0308CF8023B
- for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2022 14:24:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0308CF8023B
+ by alsa1.perex.cz (Postfix) with ESMTPS id DCDD6F8023B
+ for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2022 14:24:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DCDD6F8023B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="VznXJGfY"
+ header.b="hfVTBSZe"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1644240244; x=1675776244;
+ t=1644240253; x=1675776253;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=ZR8UOEUP9t2phXysUDv0YnRMI57l3BS8DAF8VEzbWrc=;
- b=VznXJGfYSr5zm8vxfPdaPlG35BC/ZvW0V1WsIXQ/pAZ9djCjhmJ+q8nF
- XIOJQ5zuLnBX7hVNP1vah8CBvjX54E4HdPmi7lVKWo0H3t9LpTZwwQXjT
- NmRvLdPkIrvpkTtoCP+N0cTrOBKnxdnIJax+ucHN6yYD7aMrl1t61lLYS
- WHbSsPg4aEzwTycNPxLr4I+udEHCsOqHkvjxhabQvsRdONZGfhW77OSz2
- mx6YEBWP92raz6R8exi/mQytIwgNDhOIqxAqfx5KCO9Ms19EeLNortQ9m
- aNjmqHD3QQY9mSSh/wF7Rlg4G5RVs1Gb5VZi9kfJBQGFIHYO+pGNXdhTF Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10250"; a="312011531"
-X-IronPort-AV: E=Sophos;i="5.88,349,1635231600"; d="scan'208";a="312011531"
+ bh=Q9juU6vSnvsHaSLg08p6dICrWYKAT7JVo6hXeUuNL0Y=;
+ b=hfVTBSZe3C6KscEisCcJv/FpVdoG3Fuce2CxcN8Q2pNGeMrb1uSZL/Jj
+ 8iRlglThgfZUP8SAh6VEIyECPor5UdMOyEd4X8QO07l7xvKU9bgWQ+wLT
+ 2EdHBJUkXbvqNR7A3hGjE4MAolfwN81a3KxLMYNqfG0HgjG8dmUF+IQEm
+ vw8iNY8vTdfufBHaDGWU3IbeLgiadLL2Ff6J+n48IB9q+2+qYjBwWnaSp
+ ku9UXGQsWp8HwvJSm75tnp23OaeaOALgICXJLVnNuWgpfeydnzAtcBC4A
+ UbvG2beRj7r9HQ19Nmhlix5qTw4xx6OG4krVrBnzeGsUq8JlZCFs2ReOV Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10250"; a="312011569"
+X-IronPort-AV: E=Sophos;i="5.88,349,1635231600"; d="scan'208";a="312011569"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Feb 2022 05:24:02 -0800
+ 07 Feb 2022 05:24:11 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,349,1635231600"; d="scan'208";a="677751298"
+X-IronPort-AV: E=Sophos;i="5.88,349,1635231600"; d="scan'208";a="677751323"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga001.fm.intel.com with ESMTP; 07 Feb 2022 05:23:59 -0800
+ by fmsmga001.fm.intel.com with ESMTP; 07 Feb 2022 05:24:08 -0800
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [RFC 04/13] ASoC: Intel: avs: Parse pplcfg and binding tuples
-Date: Mon,  7 Feb 2022 14:25:22 +0100
-Message-Id: <20220207132532.3782412-5-cezary.rojewski@intel.com>
+Subject: [RFC 07/13] ASoC: Intel: avs: Add topology loading operations
+Date: Mon,  7 Feb 2022 14:25:25 +0100
+Message-Id: <20220207132532.3782412-8-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220207132532.3782412-1-cezary.rojewski@intel.com>
 References: <20220207132532.3782412-1-cezary.rojewski@intel.com>
@@ -87,189 +87,351 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Stream on ADSP firmware is represented by one or more pipelines. Just
-like modules, these are described by a config structure. Add parsing
-helpers to support loading such information from the topology file.
+AVS topology is split into two major parts: dictionaries - found within
+ASoC topology manifest - and path templates - found within DAPM widget
+private data. Add custom handlers for a range of operations available
+in struct snd_soc_tplg_ops to allow for actually loading the topology
+file.
 
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/avs/topology.c | 114 +++++++++++++++++++++++++++++++++
- sound/soc/intel/avs/topology.h |  29 +++++++++
- 2 files changed, 143 insertions(+)
+ sound/soc/intel/Kconfig        |   1 +
+ sound/soc/intel/avs/Makefile   |   3 +-
+ sound/soc/intel/avs/avs.h      |   2 +
+ sound/soc/intel/avs/topology.c | 259 +++++++++++++++++++++++++++++++++
+ sound/soc/intel/avs/topology.h |   5 +
+ 5 files changed, 269 insertions(+), 1 deletion(-)
 
+diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+index 96aa702d831d..f0688c3d76a7 100644
+--- a/sound/soc/intel/Kconfig
++++ b/sound/soc/intel/Kconfig
+@@ -216,6 +216,7 @@ config SND_SOC_INTEL_AVS
+ 	depends on SND_SOC_INTEL_SKYLAKE_FAMILY=n
+ 	default n
+ 	select SND_SOC_ACPI
++	select SND_SOC_TOPOLOGY
+ 	select SND_HDA_EXT_CORE
+ 	select SND_HDA_DSP_LOADER
+ 	help
+diff --git a/sound/soc/intel/avs/Makefile b/sound/soc/intel/avs/Makefile
+index f842bfc5e97e..5e12a3a89e64 100644
+--- a/sound/soc/intel/avs/Makefile
++++ b/sound/soc/intel/avs/Makefile
+@@ -1,6 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ 
+-snd-soc-avs-objs := dsp.o ipc.o messages.o utils.o core.o loader.o
++snd-soc-avs-objs := dsp.o ipc.o messages.o utils.o core.o loader.o \
++		    topology.o
+ snd-soc-avs-objs += cldma.o
+ 
+ obj-$(CONFIG_SND_SOC_INTEL_AVS) += snd-soc-avs.o
+diff --git a/sound/soc/intel/avs/avs.h b/sound/soc/intel/avs/avs.h
+index 61842720c894..b0c17c45d7c6 100644
+--- a/sound/soc/intel/avs/avs.h
++++ b/sound/soc/intel/avs/avs.h
+@@ -237,4 +237,6 @@ struct avs_soc_component {
+ #define to_avs_soc_component(comp) \
+ 	container_of(comp, struct avs_soc_component, base)
+ 
++extern const struct snd_soc_dai_ops avs_dai_fe_ops;
++
+ #endif /* __SOUND_SOC_INTEL_AVS_H */
 diff --git a/sound/soc/intel/avs/topology.c b/sound/soc/intel/avs/topology.c
-index 6c682fed9f5f..7d454a0ea000 100644
+index 92f7b9a361e1..d7390359c39c 100644
 --- a/sound/soc/intel/avs/topology.c
 +++ b/sound/soc/intel/avs/topology.c
-@@ -345,6 +345,8 @@ avs_parse_##name##_ptr(struct snd_soc_component *comp, void *elem, void *object,
- AVS_DEFINE_PTR_PARSER(audio_format, struct avs_audio_format, fmts);
- AVS_DEFINE_PTR_PARSER(modcfg_base, struct avs_tplg_modcfg_base, modcfgs_base);
- AVS_DEFINE_PTR_PARSER(modcfg_ext, struct avs_tplg_modcfg_ext, modcfgs_ext);
-+AVS_DEFINE_PTR_PARSER(pplcfg, struct avs_tplg_pplcfg, pplcfgs);
-+AVS_DEFINE_PTR_PARSER(binding, struct avs_tplg_binding, bindings);
+@@ -6,6 +6,7 @@
+ //          Amadeusz Slawinski <amadeuszx.slawinski@linux.intel.com>
+ //
  
- static int
- parse_audio_format_bitfield(struct snd_soc_component *comp, void *elem, void *object, u32 offset)
-@@ -890,3 +892,115 @@ static int avs_tplg_parse_modcfgs_ext(struct snd_soc_component *comp,
++#include <linux/firmware.h>
+ #include <linux/uuid.h>
+ #include <sound/soc.h>
+ #include <sound/soc-acpi.h>
+@@ -14,6 +15,8 @@
+ #include "avs.h"
+ #include "topology.h"
  
- 	return 0;
++const struct snd_soc_dai_ops avs_dai_fe_ops;
++
+ /* Get pointer to vendor array at the specified offset. */
+ #define avs_tplg_vendor_array_at(array, offset) \
+ 	((struct snd_soc_tplg_vendor_array *)((u8 *)array + offset))
+@@ -1339,3 +1342,259 @@ avs_tplg_path_template_create(struct snd_soc_component *comp, struct avs_tplg *o
+ 
+ 	return template;
  }
 +
-+static const struct avs_tplg_token_parser pplcfg_parsers[] = {
-+	{
-+		.token = AVS_TKN_PPLCFG_REQ_SIZE_U16,
-+		.type = SND_SOC_TPLG_TUPLE_TYPE_SHORT,
-+		.offset = offsetof(struct avs_tplg_pplcfg, req_size),
-+		.parse = avs_parse_short_token,
-+	},
-+	{
-+		.token = AVS_TKN_PPLCFG_PRIORITY_U8,
-+		.type = SND_SOC_TPLG_TUPLE_TYPE_BYTE,
-+		.offset = offsetof(struct avs_tplg_pplcfg, priority),
-+		.parse = avs_parse_byte_token,
-+	},
-+	{
-+		.token = AVS_TKN_PPLCFG_LOW_POWER_BOOL,
-+		.type = SND_SOC_TPLG_TUPLE_TYPE_BOOL,
-+		.offset = offsetof(struct avs_tplg_pplcfg, lp),
-+		.parse = avs_parse_bool_token,
-+	},
-+	{
-+		.token = AVS_TKN_PPLCFG_ATTRIBUTES_U16,
-+		.type = SND_SOC_TPLG_TUPLE_TYPE_SHORT,
-+		.offset = offsetof(struct avs_tplg_pplcfg, attributes),
-+		.parse = avs_parse_short_token,
-+	},
-+	{
-+		.token = AVS_TKN_PPLCFG_TRIGGER_U32,
-+		.type = SND_SOC_TPLG_TUPLE_TYPE_WORD,
-+		.offset = offsetof(struct avs_tplg_pplcfg, trigger),
-+		.parse = avs_parse_word_token,
-+	},
-+};
-+
-+static int avs_tplg_parse_pplcfgs(struct snd_soc_component *comp,
-+				  struct snd_soc_tplg_vendor_array *tuples,
-+				  u32 block_size)
++static int avs_route_load(struct snd_soc_component *comp, int index,
++			  struct snd_soc_dapm_route *route)
 +{
-+	struct avs_soc_component *acomp = to_avs_soc_component(comp);
-+	struct avs_tplg *tplg = acomp->tplg;
++	struct snd_soc_acpi_mach *mach = dev_get_platdata(comp->card->dev);
++	size_t len = SNDRV_CTL_ELEM_ID_NAME_MAXLEN;
++	char buf[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
++	u32 port;
 +
-+	return parse_dictionary(comp, tuples, block_size, (void **)&tplg->pplcfgs,
-+				&tplg->num_pplcfgs, sizeof(*tplg->pplcfgs),
-+				AVS_TKN_MANIFEST_NUM_PPLCFGS_U32,
-+				AVS_TKN_PPLCFG_ID_U32,
-+				pplcfg_parsers, ARRAY_SIZE(pplcfg_parsers));
++	/* See parse_link_formatted_string() for dynamic naming when(s). */
++	if (hweight_long(mach->link_mask) == 1) {
++		port = __ffs(mach->link_mask);
++
++		snprintf(buf, len, route->source, port);
++		strncpy((char *)route->source, buf, len);
++		snprintf(buf, len, route->sink, port);
++		strncpy((char *)route->sink, buf, len);
++		if (route->control) {
++			snprintf(buf, len, route->control, port);
++			strncpy((char *)route->control, buf, len);
++		}
++	}
++
++	return 0;
 +}
 +
-+static const struct avs_tplg_token_parser binding_parsers[] = {
++static int avs_widget_load(struct snd_soc_component *comp, int index,
++			   struct snd_soc_dapm_widget *w,
++			   struct snd_soc_tplg_dapm_widget *dw)
++{
++	struct snd_soc_acpi_mach *mach;
++	struct avs_tplg_path_template *template;
++	struct avs_soc_component *acomp = to_avs_soc_component(comp);
++	struct avs_tplg *tplg;
++
++	if (!le32_to_cpu(dw->priv.size))
++		return 0;
++
++	tplg = acomp->tplg;
++	mach = dev_get_platdata(comp->card->dev);
++
++	/* See parse_link_formatted_string() for dynamic naming when(s). */
++	if (hweight_long(mach->link_mask) == 1) {
++		kfree(w->name);
++		/* ->name is freed later by soc_tplg_dapm_widget_create() */
++		w->name = kasprintf(GFP_KERNEL, dw->name, __ffs(mach->link_mask));
++		if (!w->name)
++			return -ENOMEM;
++	}
++
++	template = avs_tplg_path_template_create(comp, tplg, dw->priv.array,
++						 le32_to_cpu(dw->priv.size));
++	if (IS_ERR(template)) {
++		dev_err(comp->dev, "widget %s load failed: %ld\n", dw->name,
++			PTR_ERR(template));
++		return PTR_ERR(template);
++	}
++
++	w->priv = template; /* link path information to widget */
++	list_add_tail(&template->node, &tplg->path_tmpl_list);
++	return 0;
++}
++
++static int avs_dai_load(struct snd_soc_component *comp, int index,
++			struct snd_soc_dai_driver *dai_drv, struct snd_soc_tplg_pcm *pcm,
++			struct snd_soc_dai *dai)
++{
++	if (pcm)
++		dai_drv->ops = &avs_dai_fe_ops;
++	return 0;
++}
++
++static int avs_link_load(struct snd_soc_component *comp, int index, struct snd_soc_dai_link *link,
++			 struct snd_soc_tplg_link_config *cfg)
++{
++	/* Stream control handled by IPCs. */
++	link->nonatomic = true;
++
++	if (!link->no_pcm) {
++		/* Open LINK (BE) pipes last and close them first to prevent xruns. */
++		link->trigger[0] = SND_SOC_DPCM_TRIGGER_PRE;
++		link->trigger[1] = SND_SOC_DPCM_TRIGGER_PRE;
++	}
++
++	return 0;
++}
++
++static const struct avs_tplg_token_parser manifest_parsers[] = {
 +	{
-+		.token = AVS_TKN_BINDING_TARGET_TPLG_NAME_STRING,
++		.token = AVS_TKN_MANIFEST_NAME_STRING,
 +		.type = SND_SOC_TPLG_TUPLE_TYPE_STRING,
-+		.offset = offsetof(struct avs_tplg_binding, target_tplg_name),
++		.offset = offsetof(struct avs_tplg, name),
 +		.parse = parse_link_formatted_string,
 +	},
 +	{
-+		.token = AVS_TKN_BINDING_TARGET_PATH_TMPL_ID_U32,
++		.token = AVS_TKN_MANIFEST_VERSION_U32,
 +		.type = SND_SOC_TPLG_TUPLE_TYPE_WORD,
-+		.offset = offsetof(struct avs_tplg_binding, target_path_tmpl_id),
++		.offset = offsetof(struct avs_tplg, version),
 +		.parse = avs_parse_word_token,
-+	},
-+	{
-+		.token = AVS_TKN_BINDING_TARGET_PPL_ID_U32,
-+		.type = SND_SOC_TPLG_TUPLE_TYPE_WORD,
-+		.offset = offsetof(struct avs_tplg_binding, target_ppl_id),
-+		.parse = avs_parse_word_token,
-+	},
-+	{
-+		.token = AVS_TKN_BINDING_TARGET_MOD_ID_U32,
-+		.type = SND_SOC_TPLG_TUPLE_TYPE_WORD,
-+		.offset = offsetof(struct avs_tplg_binding, target_mod_id),
-+		.parse = avs_parse_word_token,
-+	},
-+	{
-+		.token = AVS_TKN_BINDING_TARGET_MOD_PIN_U8,
-+		.type = SND_SOC_TPLG_TUPLE_TYPE_BYTE,
-+		.offset = offsetof(struct avs_tplg_binding, target_mod_pin),
-+		.parse = avs_parse_byte_token,
-+	},
-+	{
-+		.token = AVS_TKN_BINDING_MOD_ID_U32,
-+		.type = SND_SOC_TPLG_TUPLE_TYPE_WORD,
-+		.offset = offsetof(struct avs_tplg_binding, mod_id),
-+		.parse = avs_parse_word_token,
-+	},
-+	{
-+		.token = AVS_TKN_BINDING_MOD_PIN_U8,
-+		.type = SND_SOC_TPLG_TUPLE_TYPE_BYTE,
-+		.offset = offsetof(struct avs_tplg_binding, mod_pin),
-+		.parse = avs_parse_byte_token,
-+	},
-+	{
-+		.token = AVS_TKN_BINDING_IS_SINK_U8,
-+		.type = SND_SOC_TPLG_TUPLE_TYPE_BYTE,
-+		.offset = offsetof(struct avs_tplg_binding, is_sink),
-+		.parse = avs_parse_byte_token,
 +	},
 +};
 +
-+static int avs_tplg_parse_bindings(struct snd_soc_component *comp,
-+				   struct snd_soc_tplg_vendor_array *tuples,
-+				   u32 block_size)
++static int avs_manifest(struct snd_soc_component *comp, int index,
++			struct snd_soc_tplg_manifest *manifest)
 +{
++	struct snd_soc_tplg_vendor_array *tuples = manifest->priv.array;
 +	struct avs_soc_component *acomp = to_avs_soc_component(comp);
-+	struct avs_tplg *tplg = acomp->tplg;
++	size_t remaining = le32_to_cpu(manifest->priv.size);
++	u32 offset;
++	int ret;
 +
-+	return parse_dictionary(comp, tuples, block_size, (void **)&tplg->bindings,
-+				&tplg->num_bindings, sizeof(*tplg->bindings),
-+				AVS_TKN_MANIFEST_NUM_BINDINGS_U32,
-+				AVS_TKN_BINDING_ID_U32,
-+				binding_parsers, ARRAY_SIZE(binding_parsers));
++	ret = avs_tplg_vendor_array_lookup(tuples, remaining,
++					   AVS_TKN_MANIFEST_NUM_LIBRARIES_U32, &offset);
++	/* Manifest MUST begin with a header. */
++	if (!ret && !offset)
++		ret = -EINVAL;
++	if (ret) {
++		dev_err(comp->dev, "incorrect manifest format: %d\n", ret);
++		return ret;
++	}
++
++	/* Process header which precedes any of the dictionaries. */
++	ret = avs_parse_tokens(comp, acomp->tplg, manifest_parsers,
++			       ARRAY_SIZE(manifest_parsers), tuples, offset);
++	if (ret < 0)
++		return ret;
++
++	remaining -= offset;
++	tuples = avs_tplg_vendor_array_at(tuples, offset);
++
++	ret = avs_tplg_vendor_array_lookup(tuples, remaining,
++					   AVS_TKN_MANIFEST_NUM_AFMTS_U32, &offset);
++	if (ret) {
++		dev_err(comp->dev, "audio formats lookup failed: %d\n", ret);
++		return ret;
++	}
++
++	/* Libraries dictionary. */
++	ret = avs_tplg_parse_libraries(comp, tuples, offset);
++	if (ret < 0)
++		return ret;
++
++	remaining -= offset;
++	tuples = avs_tplg_vendor_array_at(tuples, offset);
++
++	ret = avs_tplg_vendor_array_lookup(tuples, remaining,
++					   AVS_TKN_MANIFEST_NUM_MODCFGS_BASE_U32, &offset);
++	if (ret) {
++		dev_err(comp->dev, "modcfgs_base lookup failed: %d\n", ret);
++		return ret;
++	}
++
++	/* Audio formats dictionary. */
++	ret = avs_tplg_parse_audio_formats(comp, tuples, offset);
++	if (ret < 0)
++		return ret;
++
++	remaining -= offset;
++	tuples = avs_tplg_vendor_array_at(tuples, offset);
++
++	ret = avs_tplg_vendor_array_lookup(tuples, remaining,
++					   AVS_TKN_MANIFEST_NUM_MODCFGS_EXT_U32, &offset);
++	if (ret) {
++		dev_err(comp->dev, "modcfgs_ext lookup failed: %d\n", ret);
++		return ret;
++	}
++
++	/* Module configs-base dictionary. */
++	ret = avs_tplg_parse_modcfgs_base(comp, tuples, offset);
++	if (ret < 0)
++		return ret;
++
++	remaining -= offset;
++	tuples = avs_tplg_vendor_array_at(tuples, offset);
++
++	ret = avs_tplg_vendor_array_lookup(tuples, remaining,
++					   AVS_TKN_MANIFEST_NUM_PPLCFGS_U32, &offset);
++	if (ret) {
++		dev_err(comp->dev, "pplcfgs lookup failed: %d\n", ret);
++		return ret;
++	}
++
++	/* Module configs-ext dictionary. */
++	ret = avs_tplg_parse_modcfgs_ext(comp, tuples, offset);
++	if (ret < 0)
++		return ret;
++
++	remaining -= offset;
++	tuples = avs_tplg_vendor_array_at(tuples, offset);
++
++	ret = avs_tplg_vendor_array_lookup(tuples, remaining,
++					   AVS_TKN_MANIFEST_NUM_BINDINGS_U32, &offset);
++	if (ret) {
++		dev_err(comp->dev, "bindings lookup failed: %d\n", ret);
++		return ret;
++	}
++
++	/* Pipeline configs dictionary. */
++	ret = avs_tplg_parse_pplcfgs(comp, tuples, offset);
++	if (ret < 0)
++		return ret;
++
++	remaining -= offset;
++	tuples = avs_tplg_vendor_array_at(tuples, offset);
++
++	/* Bindings dictionary. */
++	return avs_tplg_parse_bindings(comp, tuples, remaining);
++}
++
++static struct snd_soc_tplg_ops avs_tplg_ops = {
++	.dapm_route_load	= avs_route_load,
++	.widget_load		= avs_widget_load,
++	.dai_load		= avs_dai_load,
++	.link_load		= avs_link_load,
++	.manifest		= avs_manifest,
++};
++
++struct avs_tplg *avs_tplg_new(struct snd_soc_component *comp)
++{
++	struct avs_tplg *tplg;
++
++	tplg = devm_kzalloc(comp->card->dev, sizeof(*tplg), GFP_KERNEL);
++	if (!tplg)
++		return NULL;
++
++	tplg->comp = comp;
++	INIT_LIST_HEAD(&tplg->path_tmpl_list);
++
++	return tplg;
++}
++
++int avs_load_topology(struct snd_soc_component *comp, const char *filename)
++{
++	const struct firmware *fw;
++	int ret;
++
++	ret = request_firmware(&fw, filename, comp->dev);
++	if (ret < 0) {
++		dev_err(comp->dev, "request topology \"%s\" failed: %d\n", filename, ret);
++		return ret;
++	}
++
++	ret = snd_soc_tplg_component_load(comp, &avs_tplg_ops, fw);
++	if (ret < 0)
++		dev_err(comp->dev, "load topology \"%s\" failed: %d\n", filename, ret);
++
++	release_firmware(fw);
++	return ret;
++}
++
++int avs_remove_topology(struct snd_soc_component *comp)
++{
++	snd_soc_tplg_component_remove(comp);
++
++	return 0;
 +}
 diff --git a/sound/soc/intel/avs/topology.h b/sound/soc/intel/avs/topology.h
-index ce51fd7a99de..d23f4aba0bcc 100644
+index 383931ab1d77..6058d868f802 100644
 --- a/sound/soc/intel/avs/topology.h
 +++ b/sound/soc/intel/avs/topology.h
-@@ -29,6 +29,10 @@ struct avs_tplg {
- 	u32 num_modcfgs_base;
- 	struct avs_tplg_modcfg_ext *modcfgs_ext;
- 	u32 num_modcfgs_ext;
-+	struct avs_tplg_pplcfg *pplcfgs;
-+	u32 num_pplcfgs;
-+	struct avs_tplg_binding *bindings;
-+	u32 num_bindings;
+@@ -187,4 +187,9 @@ struct avs_tplg_module {
+ 	struct list_head node;
  };
  
- struct avs_tplg_library {
-@@ -100,4 +104,29 @@ struct avs_tplg_modcfg_ext {
- 	};
- };
- 
-+/* Specifies path behaviour during PCM ->trigger(START) commnand. */
-+enum avs_tplg_trigger {
-+	AVS_TPLG_TRIGGER_AUTO = 0,
-+	AVS_TPLG_TRIGGER_USERSPACE = 1, /* via sysfs */
-+};
++struct avs_tplg *avs_tplg_new(struct snd_soc_component *comp);
 +
-+struct avs_tplg_pplcfg {
-+	u16 req_size;
-+	u8 priority;
-+	bool lp;
-+	u16 attributes;
-+	enum avs_tplg_trigger trigger;
-+};
-+
-+struct avs_tplg_binding {
-+	char target_tplg_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
-+	u32 target_path_tmpl_id;
-+	u32 target_ppl_id;
-+	u32 target_mod_id;
-+	u8 target_mod_pin;
-+	u32 mod_id;
-+	u8 mod_pin;
-+	u8 is_sink;
-+};
++int avs_load_topology(struct snd_soc_component *comp, const char *filename);
++int avs_remove_topology(struct snd_soc_component *comp);
 +
  #endif
 -- 
