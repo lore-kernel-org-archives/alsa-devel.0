@@ -4,72 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5840C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Feb 2022 11:49:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A67DC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Feb 2022 11:53:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 09674166A;
-	Mon,  7 Feb 2022 12:48:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 09674166A
+	by alsa0.perex.cz (Postfix) with ESMTPS id C621A1630;
+	Mon,  7 Feb 2022 12:52:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C621A1630
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1644234564;
-	bh=jOJjrmfq6gfXpvWibkuFrdwVJ3A3FTEUSAzz9BRibQ8=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1644234824;
+	bh=lBQ7WaUH4caBFeOfurqKKmOR+fCB40xoUoAkqzmWg6M=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mWI2e2YF61pjKQ+jWBOUF/cnLGHaIFPMg5CyxDEuChpe0RAAnMLACF3uDtVGG4fB9
-	 /79CqDApSnpx8kqr6kC6r3LTfjjq2+clNUOE/W7VC/hSpp1SIpB6xbSzp3ja1i+x91
-	 Hace6KLkwYGAbJrqKrjhs64tfYGs/Bv5K50DGfSE=
+	b=WmbyfRON4Zu1YXM7QeGHrY1CUHdB+qj/FW1mx2a7cHmqZ019u/MoYe6Yfhw48dS8K
+	 RFnKFrXrQfHhrLXgjGrqoQnQmqTvDmatw1ghIJ6KweiBn3g9swvAwD1qsjnkT0PY1C
+	 DXesLGZgezpdqa6vpmBxGIx224XDmgxIWjh3NvJE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 21F35F8051A;
-	Mon,  7 Feb 2022 12:47:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 69178F8023B;
+	Mon,  7 Feb 2022 12:52:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 938B6F804FF; Mon,  7 Feb 2022 12:47:13 +0100 (CET)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 41964F80240
- for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2022 12:47:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41964F80240
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="SOBewgn4"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1644234431; x=1675770431;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=jOJjrmfq6gfXpvWibkuFrdwVJ3A3FTEUSAzz9BRibQ8=;
- b=SOBewgn4/uRaSvLY/niAdeng87G0gZn+9iNspq1FO7NvbfWz3KjdydKs
- 3bHqSi0pHVw/M+TcBNGkt1JtKtWH5ixkXBB3MyHOTnPOL8JJovv85okW4
- d1R24jpd4IH+gLoALc92i6N4BT0KSNv8a1I1f/2REZpU/eUHeEE/4rjZk
- Qgz7OtJRrypruutcmUy+e2+Bl6/bFasl3/+6WRMGN1UF+e4vhNRrw770h
- hYFrKjS8AsWr5mHMx2GTjWdiJR9pWxIRuVybNifl4KCRRIBqLdArNvkCC
- NZZlEdO9BPHm2xsYvu2Vgp71F0klVpRO2Uf90dJoQk4juBfcgzz8URKnh g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10250"; a="273217759"
-X-IronPort-AV: E=Sophos;i="5.88,349,1635231600"; d="scan'208";a="273217759"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Feb 2022 03:47:08 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,349,1635231600"; d="scan'208";a="484394939"
-Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by orsmga006.jf.intel.com with ESMTP; 07 Feb 2022 03:47:05 -0800
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 3/4] ALSA: hda: Update and expose codec register procedures
-Date: Mon,  7 Feb 2022 12:49:05 +0100
-Message-Id: <20220207114906.3759800-4-cezary.rojewski@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220207114906.3759800-1-cezary.rojewski@intel.com>
-References: <20220207114906.3759800-1-cezary.rojewski@intel.com>
+ id A52B0F80240; Mon,  7 Feb 2022 12:52:53 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 31248F800E1
+ for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2022 12:52:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31248F800E1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: pierre-louis.bossart@linux.intel.com,
- Cezary Rojewski <cezary.rojewski@intel.com>, upstream@semihalf.com,
- harshapriya.n@intel.com, rad@semihalf.com, tiwai@suse.com, hdegoede@redhat.com,
- broonie@kernel.org, cujomalainey@chromium.org, lma@semihalf.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - edited <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1644234768117971897-webhooks-bot@alsa-project.org>
+References: <1644234768117971897-webhooks-bot@alsa-project.org>
+Subject: WIP: Add UCM for PinePhone
+Message-Id: <20220207115253.A52B0F80240@alsa1.perex.cz>
+Date: Mon,  7 Feb 2022 12:52:53 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,152 +55,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-With few changes, snd_hda_codec_register() and its
-unregister-counterpart can be re-used by ASoC drivers. While at it,
-provide kernel doc for the exposed functions.
+alsa-project/alsa-ucm-conf pull request #134 was edited from tomfitzhenry:
 
-Due to ALSA-device vs ASoC-component organization differences, new
-'snddev_managed' argument is specified allowing for better control over
-codec registration process.
+Fixes https://github.com/alsa-project/alsa-ucm-conf/issues/124.
 
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
----
- include/sound/hda_codec.h   |  5 ++++-
- sound/pci/hda/hda_codec.c   | 35 ++++++++++++++++++++++++++---------
- sound/pci/hda/hda_local.h   |  1 -
- sound/soc/codecs/hdac_hda.c |  2 +-
- 4 files changed, 31 insertions(+), 12 deletions(-)
+The DTS configuration has had a unique audio card name since 5.14:
 
-diff --git a/include/sound/hda_codec.h b/include/sound/hda_codec.h
-index 5e3cbcca42f0..f74abc13414f 100644
---- a/include/sound/hda_codec.h
-+++ b/include/sound/hda_codec.h
-@@ -312,9 +312,12 @@ snd_hda_codec_device_init(struct hda_bus *bus, unsigned int codec_addr,
- int snd_hda_codec_new(struct hda_bus *bus, struct snd_card *card,
- 		      unsigned int codec_addr, struct hda_codec **codecp);
- int snd_hda_codec_device_new(struct hda_bus *bus, struct snd_card *card,
--		      unsigned int codec_addr, struct hda_codec *codec);
-+		      unsigned int codec_addr, struct hda_codec *codec,
-+		      bool snddev_managed);
- int snd_hda_codec_configure(struct hda_codec *codec);
- int snd_hda_codec_update_widgets(struct hda_codec *codec);
-+void snd_hda_codec_register(struct hda_codec *codec);
-+void snd_hda_codec_unregister(struct hda_codec *codec);
- 
- /*
-  * low level functions
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 3787060ad77f..4406b7983c07 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -813,7 +813,12 @@ void snd_hda_codec_display_power(struct hda_codec *codec, bool enable)
- 		snd_hdac_display_power(&codec->bus->core, codec->addr, enable);
- }
- 
--/* also called from hda_bind.c */
-+/**
-+ * snd_hda_codec_register - Finalize codec initialization
-+ * @codec: codec device to register
-+ *
-+ * Also called from hda_bind.c
-+ */
- void snd_hda_codec_register(struct hda_codec *codec)
- {
- 	if (codec->registered)
-@@ -826,6 +831,7 @@ void snd_hda_codec_register(struct hda_codec *codec)
- 		codec->registered = 1;
- 	}
- }
-+EXPORT_SYMBOL_GPL(snd_hda_codec_register);
- 
- static int snd_hda_codec_dev_register(struct snd_device *device)
- {
-@@ -833,10 +839,12 @@ static int snd_hda_codec_dev_register(struct snd_device *device)
- 	return 0;
- }
- 
--static int snd_hda_codec_dev_free(struct snd_device *device)
-+/**
-+ * snd_hda_codec_unregister - Unregister specified codec device
-+ * @codec: codec device to unregister
-+ */
-+void snd_hda_codec_unregister(struct hda_codec *codec)
- {
--	struct hda_codec *codec = device->device_data;
--
- 	codec->in_freeing = 1;
- 	/*
- 	 * snd_hda_codec_device_new() is used by legacy HDA and ASoC driver.
-@@ -853,7 +861,12 @@ static int snd_hda_codec_dev_free(struct snd_device *device)
- 	 */
- 	if (codec->core.type == HDA_DEV_LEGACY)
- 		put_device(hda_codec_dev(codec));
-+}
-+EXPORT_SYMBOL_GPL(snd_hda_codec_unregister);
- 
-+static int snd_hda_codec_dev_free(struct snd_device *device)
-+{
-+	snd_hda_codec_unregister(device->device_data);
- 	return 0;
- }
- 
-@@ -940,12 +953,13 @@ int snd_hda_codec_new(struct hda_bus *bus, struct snd_card *card,
- 		return PTR_ERR(codec);
- 	*codecp = codec;
- 
--	return snd_hda_codec_device_new(bus, card, codec_addr, *codecp);
-+	return snd_hda_codec_device_new(bus, card, codec_addr, *codecp, false);
- }
- EXPORT_SYMBOL_GPL(snd_hda_codec_new);
- 
- int snd_hda_codec_device_new(struct hda_bus *bus, struct snd_card *card,
--			unsigned int codec_addr, struct hda_codec *codec)
-+			unsigned int codec_addr, struct hda_codec *codec,
-+			bool snddev_managed)
- {
- 	char component[31];
- 	hda_nid_t fg;
-@@ -1020,9 +1034,12 @@ int snd_hda_codec_device_new(struct hda_bus *bus, struct snd_card *card,
- 		codec->core.subsystem_id, codec->core.revision_id);
- 	snd_component_add(card, component);
- 
--	err = snd_device_new(card, SNDRV_DEV_CODEC, codec, &dev_ops);
--	if (err < 0)
--		goto error;
-+	if (snddev_managed) {
-+		/* ASoC features component management instead */
-+		err = snd_device_new(card, SNDRV_DEV_CODEC, codec, &dev_ops);
-+		if (err < 0)
-+			goto error;
-+	}
- 
- 	/* PM runtime needs to be enabled later after binding codec */
- 	pm_runtime_forbid(&codec->core.dev);
-diff --git a/sound/pci/hda/hda_local.h b/sound/pci/hda/hda_local.h
-index 8621f576446b..4c52dfb615bc 100644
---- a/sound/pci/hda/hda_local.h
-+++ b/sound/pci/hda/hda_local.h
-@@ -135,7 +135,6 @@ int __snd_hda_add_vmaster(struct hda_codec *codec, char *name,
- #define snd_hda_add_vmaster(codec, name, tlv, followers, suffix, access) \
- 	__snd_hda_add_vmaster(codec, name, tlv, followers, suffix, true, access, NULL)
- int snd_hda_codec_reset(struct hda_codec *codec);
--void snd_hda_codec_register(struct hda_codec *codec);
- void snd_hda_codec_cleanup_for_unbind(struct hda_codec *codec);
- void snd_hda_codec_disconnect_pcms(struct hda_codec *codec);
- 
-diff --git a/sound/soc/codecs/hdac_hda.c b/sound/soc/codecs/hdac_hda.c
-index de5955db0a5f..667f3df239c7 100644
---- a/sound/soc/codecs/hdac_hda.c
-+++ b/sound/soc/codecs/hdac_hda.c
-@@ -413,7 +413,7 @@ static int hdac_hda_codec_probe(struct snd_soc_component *component)
- 				       HDA_CODEC_IDX_CONTROLLER, true);
- 
- 	ret = snd_hda_codec_device_new(hcodec->bus, component->card->snd_card,
--				       hdev->addr, hcodec);
-+				       hdev->addr, hcodec, true);
- 	if (ret < 0) {
- 		dev_err(&hdev->dev, "failed to create hda codec %d\n", ret);
- 		goto error_no_pm;
--- 
-2.25.1
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi?h=v5.14#n436
 
+This UCM config is copied from https://gitlab.com/pine64-org/pine64-alsa-ucm/, which is BSD-3-Clause licensed.
+
+This UCM has been tested via Pulseaudio's ALSA_CONFIG_UCM2 environment variable, but I've not yet tested that this UCM, when included in this package, is correctly recognised on a PinePhone as part of this
+
+Todo:
+
+* [x] Test that this UCM is correctly recognised on a PinePhone.
+
+See also:
+* https://gitlab.com/pine64-org/pine64-alsa-ucm/-/merge_requests/1
+* https://gitlab.com/pine64-org/pine64-alsa-ucm/-/issues/3
+
+Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/134
+Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/134.patch
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
