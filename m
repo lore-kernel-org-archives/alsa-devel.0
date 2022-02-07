@@ -4,67 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B8FDC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Feb 2022 12:23:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 518C1C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Feb 2022 12:23:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5059A16E9;
-	Mon,  7 Feb 2022 13:22:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5059A16E9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9CB2E16F6;
+	Mon,  7 Feb 2022 13:22:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CB2E16F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1644236583;
-	bh=B3iuVHD/ExtqUuCka0n3IvpOkFyl+AQEuEUjValvk1g=;
+	s=default; t=1644236603;
+	bh=glAgPzCZ0xJMbAPz2lCUpavAdNRVnmoYfuZyRVWPliA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ArhNPdRW6Coae/jIkdSKKJf465x+WBsoE8SjI1I5Ccvi1ERwS9GwbKft7d1/K2eHQ
-	 Tjan/CB6N2ciwRTE7rNGSrMtJYRznn/Bu02yPM2GntMkzw23UjQ4YQqMsnitFuBrZt
-	 sB8//IErMPUyEzxBUF94pciof8U1n7AERQ0Iqj5I=
+	b=fWzp1cUJaOv6zOicJ9ECxlvgNSZ0Z3xW66oNy5axLzZFnrxvSLMiL0cInojwhn788
+	 67xh8plqatDNcq9Z8Oq42byDpR9igsK0F0KBgarp9aWKqkugkYGXitL8/fl3R9OBRT
+	 JEPsasEcOOATjs7QAu4iT815Fhwb9dvSIG/KdLxc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8BC89F80557;
-	Mon,  7 Feb 2022 13:19:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 17D32F80558;
+	Mon,  7 Feb 2022 13:19:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F2CF6F8051F; Mon,  7 Feb 2022 13:19:40 +0100 (CET)
+ id 3DED0F80536; Mon,  7 Feb 2022 13:19:43 +0100 (CET)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7EA84F8023B
- for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2022 13:19:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7EA84F8023B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 69DC5F80518
+ for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2022 13:19:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69DC5F80518
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="TbXPXZk6"
+ header.b="HM1CVewj"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1644236374; x=1675772374;
+ t=1644236376; x=1675772376;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=B3iuVHD/ExtqUuCka0n3IvpOkFyl+AQEuEUjValvk1g=;
- b=TbXPXZk6paZ4yW7+5DglC+WnQ5JvepNLgOqJBtWZdF7S6P9VjChupqEO
- w4fJ4z1N5mZ1w5Rmyn5L2PxtVxA1IRgs2zl2LUJlSy773ioQrjYaymbQm
- Zn0Iwujzs6OuPpihVxi478IGp5e95Ad4KMbxU1k9L+dJGJhDPaM7U2/Nu
- a63nrDXeJCRXIkX8sGCf8u+dykvTjts+RkciJbMP48LM+yAJI7nAenpcG
- p6eAwP5FfxoSupL/SwLmh4TaK9FAIx4Qw0oojYqAQbhKTNoivDCtUYGL9
- wnyRA0G8q02sETS6N2P56zAPwZJycnOU+VFzi7EY5IdRHlpYx/4oBYhAx A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10250"; a="248914778"
-X-IronPort-AV: E=Sophos;i="5.88,349,1635231600"; d="scan'208";a="248914778"
+ bh=glAgPzCZ0xJMbAPz2lCUpavAdNRVnmoYfuZyRVWPliA=;
+ b=HM1CVewj1zSBIjh2mDsoBLwbviLq5pU2yfcQmx5ngun6UldPcOIlkJcN
+ Hsnaj+XQ+t2JZyJa8IBQxE3qr42SqtCQTA2O5zTAYv6H7TGlol0Z1JKSK
+ gKHAqIYGrck2orzbKQPqpqu3FXSeZAtGRsg3ZoS7vBE4xQy2fsJPCgxz8
+ FGPTqHGvLzPE/b/nK19yvPRBLH2FXuDnptcMDYRiy9g3hfR2TAWQO90Mn
+ 4vb7VxpSZSeol3fTJ+HRhkSd9TP+NegK4PcpYDKb+xRq4f24Dm/fpCbRl
+ 7nCDeETUAkK/ehQ+zjoJpaD0D5I3xJ/CnSl1htoEgL2zP8TXP9CFKyqY5 g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10250"; a="248914849"
+X-IronPort-AV: E=Sophos;i="5.88,349,1635231600"; d="scan'208";a="248914849"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Feb 2022 04:18:54 -0800
+ 07 Feb 2022 04:19:27 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,349,1635231600"; d="scan'208";a="525112398"
+X-IronPort-AV: E=Sophos;i="5.88,349,1635231600"; d="scan'208";a="525112581"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by orsmga007.jf.intel.com with ESMTP; 07 Feb 2022 04:18:51 -0800
+ by orsmga007.jf.intel.com with ESMTP; 07 Feb 2022 04:19:24 -0800
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 01/17] ALSA: hda: Add helper macros for DSP capable devices
-Date: Mon,  7 Feb 2022 13:20:52 +0100
-Message-Id: <20220207122108.3780926-2-cezary.rojewski@intel.com>
+Subject: [PATCH 11/17] ASoC: Intel: avs: Firmware resources management
+ utilities
+Date: Mon,  7 Feb 2022 13:21:02 +0100
+Message-Id: <20220207122108.3780926-12-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220207122108.3780926-1-cezary.rojewski@intel.com>
 References: <20220207122108.3780926-1-cezary.rojewski@intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Cc: Cezary Rojewski <cezary.rojewski@intel.com>, rad@semihalf.com,
  upstream@semihalf.com, harshapriya.n@intel.com, tiwai@suse.com,
@@ -86,97 +88,372 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-HDAudio drivers make heavy use of I/O operations. Declare a range of
-update, read and write helpers similar to those available for HDAudio
-legacy driver. These macros are used by AVS driver to improve code
-readability.
+With basefw runtime parameter handlers added, implement utility
+functions to ease pipeline and module allocation. IDA is enlisted to
+help with that. Also, as firmware is modular and multiple binaries can
+be loaded throughout the lifetime of a driver, custom firmware caching
+mechanism is added.
 
+Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- include/sound/hdaudio.h     |  2 ++
- include/sound/hdaudio_ext.h | 49 +++++++++++++++++++++++++++++++++++++
- 2 files changed, 51 insertions(+)
+ sound/soc/intel/avs/Makefile |   2 +-
+ sound/soc/intel/avs/avs.h    |  29 ++++
+ sound/soc/intel/avs/utils.c  | 282 +++++++++++++++++++++++++++++++++++
+ 3 files changed, 312 insertions(+), 1 deletion(-)
+ create mode 100644 sound/soc/intel/avs/utils.c
 
-diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
-index 6a90ce405e60..69907260b9ce 100644
---- a/include/sound/hdaudio.h
-+++ b/include/sound/hdaudio.h
-@@ -448,6 +448,8 @@ static inline u16 snd_hdac_reg_readw(struct hdac_bus *bus, void __iomem *addr)
+diff --git a/sound/soc/intel/avs/Makefile b/sound/soc/intel/avs/Makefile
+index c0824f30fd3b..d9f92c5f5407 100644
+--- a/sound/soc/intel/avs/Makefile
++++ b/sound/soc/intel/avs/Makefile
+@@ -1,5 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0-only
  
- #define snd_hdac_reg_writel(bus, addr, val)	writel(val, addr)
- #define snd_hdac_reg_readl(bus, addr)	readl(addr)
-+#define snd_hdac_reg_writeq(bus, addr, val)	writeq(val, addr)
-+#define snd_hdac_reg_readq(bus, addr)		readq(addr)
+-snd-soc-avs-objs := dsp.o ipc.o messages.o
++snd-soc-avs-objs := dsp.o ipc.o messages.o utils.o
  
- /*
-  * macros for easy use
-diff --git a/include/sound/hdaudio_ext.h b/include/sound/hdaudio_ext.h
-index b0c8e4936168..8c06c4a3bcd2 100644
---- a/include/sound/hdaudio_ext.h
-+++ b/include/sound/hdaudio_ext.h
-@@ -2,6 +2,7 @@
- #ifndef __SOUND_HDAUDIO_EXT_H
- #define __SOUND_HDAUDIO_EXT_H
+ obj-$(CONFIG_SND_SOC_INTEL_AVS) += snd-soc-avs.o
+diff --git a/sound/soc/intel/avs/avs.h b/sound/soc/intel/avs/avs.h
+index 8620d2f7fee0..d12b19a7299b 100644
+--- a/sound/soc/intel/avs/avs.h
++++ b/sound/soc/intel/avs/avs.h
+@@ -52,6 +52,13 @@ struct avs_spec {
+ 	const u32 hipc_ctl_offset;
+ };
  
-+#include <linux/iopoll.h>
- #include <sound/hdaudio.h>
- 
- int snd_hdac_ext_bus_init(struct hdac_bus *bus, struct device *dev,
-@@ -144,6 +145,54 @@ void snd_hdac_ext_bus_link_power(struct hdac_device *codec, bool enable);
- 	writew(((readw(addr + reg) & ~(mask)) | (val)), \
- 		addr + reg)
- 
-+#define snd_hdac_adsp_writeb(chip, reg, value) \
-+	snd_hdac_reg_writeb(chip, (chip)->adsp_ba + (reg), value)
-+#define snd_hdac_adsp_readb(chip, reg) \
-+	snd_hdac_reg_readb(chip, (chip)->adsp_ba + (reg))
-+#define snd_hdac_adsp_writew(chip, reg, value) \
-+	snd_hdac_reg_writew(chip, (chip)->adsp_ba + (reg), value)
-+#define snd_hdac_adsp_readw(chip, reg) \
-+	snd_hdac_reg_readw(chip, (chip)->adsp_ba + (reg))
-+#define snd_hdac_adsp_writel(chip, reg, value) \
-+	snd_hdac_reg_writel(chip, (chip)->adsp_ba + (reg), value)
-+#define snd_hdac_adsp_readl(chip, reg) \
-+	snd_hdac_reg_readl(chip, (chip)->adsp_ba + (reg))
-+#define snd_hdac_adsp_writeq(chip, reg, value) \
-+	snd_hdac_reg_writeq(chip, (chip)->adsp_ba + (reg), value)
-+#define snd_hdac_adsp_readq(chip, reg) \
-+	snd_hdac_reg_readq(chip, (chip)->adsp_ba + (reg))
++struct avs_fw_entry {
++	char *name;
++	const struct firmware *fw;
 +
-+#define snd_hdac_adsp_updateb(chip, reg, mask, val) \
-+	snd_hdac_adsp_writeb(chip, reg, \
-+			(snd_hdac_adsp_readb(chip, reg) & ~(mask)) | (val))
-+#define snd_hdac_adsp_updatew(chip, reg, mask, val) \
-+	snd_hdac_adsp_writew(chip, reg, \
-+			(snd_hdac_adsp_readw(chip, reg) & ~(mask)) | (val))
-+#define snd_hdac_adsp_updatel(chip, reg, mask, val) \
-+	snd_hdac_adsp_writel(chip, reg, \
-+			(snd_hdac_adsp_readl(chip, reg) & ~(mask)) | (val))
-+#define snd_hdac_adsp_updateq(chip, reg, mask, val) \
-+	snd_hdac_adsp_writeq(chip, reg, \
-+			(snd_hdac_adsp_readq(chip, reg) & ~(mask)) | (val))
++	struct list_head node;
++};
 +
-+#define snd_hdac_adsp_readb_poll(chip, reg, val, cond, delay_us, timeout_us) \
-+	readb_poll_timeout((chip)->adsp_ba + (reg), val, cond, \
-+			   delay_us, timeout_us)
-+#define snd_hdac_adsp_readw_poll(chip, reg, val, cond, delay_us, timeout_us) \
-+	readw_poll_timeout((chip)->adsp_ba + (reg), val, cond, \
-+			   delay_us, timeout_us)
-+#define snd_hdac_adsp_readl_poll(chip, reg, val, cond, delay_us, timeout_us) \
-+	readl_poll_timeout((chip)->adsp_ba + (reg), val, cond, \
-+			   delay_us, timeout_us)
-+#define snd_hdac_adsp_readq_poll(chip, reg, val, cond, delay_us, timeout_us) \
-+	readq_poll_timeout((chip)->adsp_ba + (reg), val, cond, \
-+			   delay_us, timeout_us)
-+#define snd_hdac_stream_readb_poll(strm, reg, val, cond, delay_us, timeout_us) \
-+	readb_poll_timeout((strm)->sd_addr + AZX_REG_ ## reg, val, cond, \
-+			   delay_us, timeout_us)
-+#define snd_hdac_stream_readl_poll(strm, reg, val, cond, delay_us, timeout_us) \
-+	readl_poll_timeout((strm)->sd_addr + AZX_REG_ ## reg, val, cond, \
-+			   delay_us, timeout_us)
+ struct avs_dev {
+ 	struct hda_bus base;
+ 	struct device *dev;
+@@ -60,6 +67,14 @@ struct avs_dev {
+ 	const struct avs_spec *spec;
+ 	struct avs_ipc *ipc;
  
- struct hdac_ext_device;
++	struct avs_fw_cfg fw_cfg;
++	struct avs_hw_cfg hw_cfg;
++	struct avs_mods_info *mods_info;
++	struct ida **mod_idas;
++	struct mutex modres_mutex;
++	struct ida ppl_ida;
++	struct list_head fw_list;
++
+ 	struct completion fw_ready;
+ };
  
+@@ -154,4 +169,18 @@ void avs_dsp_interrupt_control(struct avs_dev *adev, bool enable);
+ int avs_ipc_init(struct avs_ipc *ipc, struct device *dev);
+ void avs_ipc_block(struct avs_ipc *ipc);
+ 
++/* Firmware resources management */
++
++int avs_get_module_entry(struct avs_dev *adev, const guid_t *uuid, struct avs_module_entry *entry);
++int avs_get_module_id_entry(struct avs_dev *adev, u32 module_id, struct avs_module_entry *entry);
++int avs_get_module_id(struct avs_dev *adev, const guid_t *uuid);
++bool avs_is_module_ida_empty(struct avs_dev *adev, u32 module_id);
++
++int avs_module_info_init(struct avs_dev *adev, bool purge);
++void avs_module_info_free(struct avs_dev *adev);
++int avs_module_id_alloc(struct avs_dev *adev, u16 module_id);
++void avs_module_id_free(struct avs_dev *adev, u16 module_id, u8 instance_id);
++int avs_request_firmware(struct avs_dev *adev, const struct firmware **fw_p, const char *name);
++void avs_release_firmwares(struct avs_dev *adev);
++
+ #endif /* __SOUND_SOC_INTEL_AVS_H */
+diff --git a/sound/soc/intel/avs/utils.c b/sound/soc/intel/avs/utils.c
+new file mode 100644
+index 000000000000..cf8663c32609
+--- /dev/null
++++ b/sound/soc/intel/avs/utils.c
+@@ -0,0 +1,282 @@
++// SPDX-License-Identifier: GPL-2.0-only
++//
++// Copyright(c) 2021 Intel Corporation. All rights reserved.
++//
++// Authors: Cezary Rojewski <cezary.rojewski@intel.com>
++//          Amadeusz Slawinski <amadeuszx.slawinski@linux.intel.com>
++//
++
++#include <linux/firmware.h>
++#include <linux/slab.h>
++#include "avs.h"
++#include "messages.h"
++
++/* Caller responsible for holding adev->modres_mutex. */
++static int avs_module_entry_index(struct avs_dev *adev, const guid_t *uuid)
++{
++	int i;
++
++	for (i = 0; i < adev->mods_info->count; i++) {
++		struct avs_module_entry *module;
++
++		module = &adev->mods_info->entries[i];
++		if (guid_equal(&module->uuid, uuid))
++			return i;
++	}
++
++	return -ENOENT;
++}
++
++/* Caller responsible for holding adev->modres_mutex. */
++static int avs_module_id_entry_index(struct avs_dev *adev, u32 module_id)
++{
++	int i;
++
++	for (i = 0; i < adev->mods_info->count; i++) {
++		struct avs_module_entry *module;
++
++		module = &adev->mods_info->entries[i];
++		if (module->module_id == module_id)
++			return i;
++	}
++
++	return -ENOENT;
++}
++
++int avs_get_module_entry(struct avs_dev *adev, const guid_t *uuid, struct avs_module_entry *entry)
++{
++	int idx;
++
++	mutex_lock(&adev->modres_mutex);
++
++	idx = avs_module_entry_index(adev, uuid);
++	if (idx >= 0)
++		memcpy(entry, &adev->mods_info->entries[idx], sizeof(*entry));
++
++	mutex_unlock(&adev->modres_mutex);
++	return (idx < 0) ? idx : 0;
++}
++
++int avs_get_module_id_entry(struct avs_dev *adev, u32 module_id, struct avs_module_entry *entry)
++{
++	int idx;
++
++	mutex_lock(&adev->modres_mutex);
++
++	idx = avs_module_id_entry_index(adev, module_id);
++	if (idx >= 0)
++		memcpy(entry, &adev->mods_info->entries[idx], sizeof(*entry));
++
++	mutex_unlock(&adev->modres_mutex);
++	return (idx < 0) ? idx : 0;
++}
++
++int avs_get_module_id(struct avs_dev *adev, const guid_t *uuid)
++{
++	struct avs_module_entry module;
++	int ret;
++
++	ret = avs_get_module_entry(adev, uuid, &module);
++	return !ret ? module.module_id : -ENOENT;
++}
++
++bool avs_is_module_ida_empty(struct avs_dev *adev, u32 module_id)
++{
++	bool ret = false;
++	int idx;
++
++	mutex_lock(&adev->modres_mutex);
++
++	idx = avs_module_id_entry_index(adev, module_id);
++	if (idx >= 0)
++		ret = ida_is_empty(adev->mod_idas[idx]);
++
++	mutex_unlock(&adev->modres_mutex);
++	return ret;
++}
++
++/* Caller responsible for holding adev->modres_mutex. */
++static void avs_module_ida_destroy(struct avs_dev *adev)
++{
++	int i = adev->mods_info ? adev->mods_info->count : 0;
++
++	while (i--) {
++		ida_destroy(adev->mod_idas[i]);
++		kfree(adev->mod_idas[i]);
++	}
++	kfree(adev->mod_idas);
++}
++
++/* Caller responsible for holding adev->modres_mutex. */
++static int
++avs_module_ida_alloc(struct avs_dev *adev, struct avs_mods_info *newinfo, bool purge)
++{
++	struct avs_mods_info *oldinfo = adev->mods_info;
++	struct ida **ida_ptrs;
++	u32 tocopy_count = 0;
++	int i;
++
++	if (!purge && oldinfo) {
++		if (oldinfo->count >= newinfo->count)
++			dev_warn(adev->dev, "refreshing %d modules info with %d\n",
++				 oldinfo->count, newinfo->count);
++		tocopy_count = oldinfo->count;
++	}
++
++	ida_ptrs = kcalloc(newinfo->count, sizeof(*ida_ptrs), GFP_KERNEL);
++	if (!ida_ptrs)
++		return -ENOMEM;
++
++	if (tocopy_count)
++		memcpy(ida_ptrs, adev->mod_idas, tocopy_count * sizeof(*ida_ptrs));
++
++	for (i = tocopy_count; i < newinfo->count; i++) {
++		ida_ptrs[i] = kzalloc(sizeof(**ida_ptrs), GFP_KERNEL);
++		if (!ida_ptrs[i]) {
++			while (i--)
++				kfree(ida_ptrs[i]);
++
++			kfree(ida_ptrs);
++			return -ENOMEM;
++		}
++
++		ida_init(ida_ptrs[i]);
++	}
++
++	/* If old elements have been reused, don't wipe them. */
++	if (tocopy_count)
++		kfree(adev->mod_idas);
++	else
++		avs_module_ida_destroy(adev);
++
++	adev->mod_idas = ida_ptrs;
++	return 0;
++}
++
++int avs_module_info_init(struct avs_dev *adev, bool purge)
++{
++	struct avs_mods_info *info;
++	int ret;
++
++	ret = avs_ipc_get_modules_info(adev, &info);
++	if (ret)
++		return AVS_IPC_RET(ret);
++
++	mutex_lock(&adev->modres_mutex);
++
++	ret = avs_module_ida_alloc(adev, info, purge);
++	if (ret < 0) {
++		dev_err(adev->dev, "initialize module idas failed: %d\n", ret);
++		goto exit;
++	}
++
++	/* Refresh current information with newly received table. */
++	kfree(adev->mods_info);
++	adev->mods_info = info;
++
++exit:
++	mutex_unlock(&adev->modres_mutex);
++	return ret;
++}
++
++void avs_module_info_free(struct avs_dev *adev)
++{
++	mutex_lock(&adev->modres_mutex);
++
++	avs_module_ida_destroy(adev);
++	kfree(adev->mods_info);
++	adev->mods_info = NULL;
++
++	mutex_unlock(&adev->modres_mutex);
++}
++
++int avs_module_id_alloc(struct avs_dev *adev, u16 module_id)
++{
++	int ret, idx, max_id;
++
++	mutex_lock(&adev->modres_mutex);
++
++	idx = avs_module_id_entry_index(adev, module_id);
++	if (idx == -ENOENT) {
++		WARN(1, "invalid module id: %d", module_id);
++		ret = -EINVAL;
++		goto exit;
++	}
++	max_id = adev->mods_info->entries[idx].instance_max_count - 1;
++	ret = ida_alloc_max(adev->mod_idas[idx], max_id, GFP_KERNEL);
++exit:
++	mutex_unlock(&adev->modres_mutex);
++	return ret;
++}
++
++void avs_module_id_free(struct avs_dev *adev, u16 module_id, u8 instance_id)
++{
++	int idx;
++
++	mutex_lock(&adev->modres_mutex);
++
++	idx = avs_module_id_entry_index(adev, module_id);
++	if (idx == -ENOENT) {
++		WARN(1, "invalid module id: %d", module_id);
++		goto exit;
++	}
++
++	ida_free(adev->mod_idas[idx], instance_id);
++exit:
++	mutex_unlock(&adev->modres_mutex);
++}
++
++/*
++ * Once driver loads FW it should keep it in memory, so we are not affected
++ * by FW removal from filesystem or even worse by loading different FW at
++ * runtime suspend/resume.
++ */
++int avs_request_firmware(struct avs_dev *adev, const struct firmware **fw_p, const char *name)
++{
++	struct avs_fw_entry *entry;
++	int ret;
++
++	/* first check in list if it is not already loaded */
++	list_for_each_entry(entry, &adev->fw_list, node) {
++		if (!strcmp(name, entry->name)) {
++			*fw_p = entry->fw;
++			return 0;
++		}
++	}
++
++	/* FW is not loaded, let's load it now and add to the list */
++	entry = kzalloc(sizeof(*entry), GFP_KERNEL);
++	if (!entry)
++		return -ENOMEM;
++
++	entry->name = kstrdup(name, GFP_KERNEL);
++	if (!entry->name) {
++		kfree(entry);
++		return -ENOMEM;
++	}
++
++	ret = request_firmware(&entry->fw, name, adev->dev);
++	if (ret < 0) {
++		kfree(entry->name);
++		kfree(entry);
++		return ret;
++	}
++
++	*fw_p = entry->fw;
++
++	list_add_tail(&entry->node, &adev->fw_list);
++
++	return 0;
++}
++
++void avs_release_firmwares(struct avs_dev *adev)
++{
++	struct avs_fw_entry *entry, *tmp;
++
++	list_for_each_entry_safe(entry, tmp, &adev->fw_list, node) {
++		list_del(&entry->node);
++		release_firmware(entry->fw);
++		kfree(entry->name);
++		kfree(entry);
++	}
++}
 -- 
 2.25.1
 
