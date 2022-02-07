@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2537CC433FE
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Feb 2022 13:28:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C16F0C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Feb 2022 13:28:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5B8A317DD;
-	Mon,  7 Feb 2022 14:27:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5B8A317DD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1046917E6;
+	Mon,  7 Feb 2022 14:27:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1046917E6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1644240487;
-	bh=XeHA2kWZxiBo4UllOJBLmMg4Q7IMfJnFyQUJQ5FozXQ=;
+	s=default; t=1644240501;
+	bh=xNosrPZHUJjnGJG87FMN59AgoZRLfDjSyHsgNebB+1E=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=smZ4GKmurHyd4jBOvDSbFpdNoyPHZ65eMWHOlxwKosqwnGILB97LDEhXXSr9u0jWe
-	 RJznBO0jvv+plYAjZwRQN8kfrCJGeuNDR6mIW1RlIW6U3tSueol76CDCttL+6ijH1u
-	 WitVkX/x4/ckR7tZtKYRUG4+2Mln88rhTrzo3uN4=
+	b=qoMfOB1mAhPQy2dND2mwmq5Vnaw22jqVxbkTTg3pPaB2uYlLjNpwwX5AoH9F83DUK
+	 hiHv3vN+V8BB8NsNTzTku9lizmHwLzyfsb54mNchaooOLc7GrJRYZS4pTth0+y826Z
+	 t5RWRIufmR9Uj4TahlAw2ADxBvDBfnUXjKjmalws=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C1B07F80567;
-	Mon,  7 Feb 2022 14:24:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6A05AF80570;
+	Mon,  7 Feb 2022 14:24:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9D11AF80568; Mon,  7 Feb 2022 14:24:27 +0100 (CET)
+ id 9997DF80571; Mon,  7 Feb 2022 14:24:29 +0100 (CET)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DFEA1F8054A
- for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2022 14:24:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DFEA1F8054A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7E4CEF80566
+ for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2022 14:24:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E4CEF80566
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="DL1pm/kP"
+ header.b="GwT79dy4"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1644240262; x=1675776262;
+ t=1644240267; x=1675776267;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=XeHA2kWZxiBo4UllOJBLmMg4Q7IMfJnFyQUJQ5FozXQ=;
- b=DL1pm/kP/kba2UbTt7oFSQJ91k5admZADR4eTFLmMOuQGGdUGzo/rysO
- iPIiPstemfIsuWQDNTCGc1BsZ4kCijT2sjzvOlC1KyrtP9AVcQBiv26o/
- AggxnhlyGhJnr+pKhWJW3dgichOBydja97bMpBM9SGC4L+2bKCIkqJOqF
- NcXUcC4SrBSrNDxssrHpwOYSYDcZNZScg7cXKAeB7ITsVnigSA1G/PJf9
- oTN9lqQiyrlHQbrnJpdScu6sQPqXgMdwaTezjCAYesTBTQqIR+dotGWx8
- 7C4V+Jb0lpmdAYi0XWmwngiqSZFl/kXZTVUocpPSXrYW1h91wl6ft3svU w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10250"; a="312011592"
-X-IronPort-AV: E=Sophos;i="5.88,349,1635231600"; d="scan'208";a="312011592"
+ bh=xNosrPZHUJjnGJG87FMN59AgoZRLfDjSyHsgNebB+1E=;
+ b=GwT79dy4z33IQv6AvjdRPrL8QijdNnUbcXU5jrc/lSMcgem/hMdPRGRv
+ 49xbRsZ+9B5Z1i2Zl1Q0ESftb0cC7QTCHOZdTBmwb4l8Xzi8+TUu1QsBp
+ 4qmzniHh6j6Il7G9RYIQB+vwp/oRcW/LQJrlDi+kaR65p6dA/Mvqk0+Qb
+ ++FWozn1z5/gkD5UL3vY7ANiGe5HBeFom0HJqNgsnQwL3JxEGicav/E1S
+ W0hCAfewhmpFdefWtPm1QQunCStZ9FtpTDcW2mNLyKidBH488zNKdwNfc
+ 7iuGdhjlgPzK1pTJ5UEoXNKHxqJt0NvtYVTdlPGUVps1bsbxr9cPwMMJy g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10250"; a="312011621"
+X-IronPort-AV: E=Sophos;i="5.88,349,1635231600"; d="scan'208";a="312011621"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Feb 2022 05:24:20 -0800
+ 07 Feb 2022 05:24:26 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,349,1635231600"; d="scan'208";a="677751348"
+X-IronPort-AV: E=Sophos;i="5.88,349,1635231600"; d="scan'208";a="677751376"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga001.fm.intel.com with ESMTP; 07 Feb 2022 05:24:17 -0800
+ by fmsmga001.fm.intel.com with ESMTP; 07 Feb 2022 05:24:23 -0800
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [RFC 10/13] ASoC: Intel: avs: Path state management
-Date: Mon,  7 Feb 2022 14:25:28 +0100
-Message-Id: <20220207132532.3782412-11-cezary.rojewski@intel.com>
+Subject: [RFC 12/13] ASoC: Intel: avs: Prepare modules before bindings them
+Date: Mon,  7 Feb 2022 14:25:30 +0100
+Message-Id: <20220207132532.3782412-13-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220207132532.3782412-1-cezary.rojewski@intel.com>
 References: <20220207132532.3782412-1-cezary.rojewski@intel.com>
@@ -87,174 +87,69 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add functions to ease with state changing of all objects found in the
-path. Each represents either a BIND/UNBIND or SET_PIPEPILE_STATE IPC.
-
-DSP pipelines follow simple state machine scheme:
-CREATE -> RESET -> PAUSE -> RUNNING -> PAUSE -> RESET -> DELETE
-
-There is no STOP, PAUSE serves that purpose instead.
+When binding modules to pins other than pin0, sometimes additional
+preparations need to be made, depending on the module type.
+Add function that prepares modules when necessary before binding them.
 
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/avs/path.c | 130 +++++++++++++++++++++++++++++++++++++
- sound/soc/intel/avs/path.h |   5 ++
- 2 files changed, 135 insertions(+)
+ sound/soc/intel/avs/path.c | 35 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
 
 diff --git a/sound/soc/intel/avs/path.c b/sound/soc/intel/avs/path.c
-index 272d868bedc9..c6db3f091e66 100644
+index abeb6921fcce..b5c0f89add4f 100644
 --- a/sound/soc/intel/avs/path.c
 +++ b/sound/soc/intel/avs/path.c
-@@ -285,3 +285,133 @@ struct avs_path *avs_path_create(struct avs_dev *adev, u32 dma_id,
- 
+@@ -466,6 +466,37 @@ struct avs_path *avs_path_create(struct avs_dev *adev, u32 dma_id,
  	return path;
  }
-+
-+int avs_path_bind(struct avs_path *path)
-+{
-+	struct avs_path_pipeline *ppl;
-+	struct avs_dev *adev = path->owner;
-+	int ret;
-+
-+	list_for_each_entry(ppl, &path->ppl_list, node) {
-+		struct avs_path_binding *binding;
-+
-+		list_for_each_entry(binding, &ppl->binding_list, node) {
-+			struct avs_path_module *source, *sink;
-+
-+			source = binding->source;
-+			sink = binding->sink;
-+
-+			ret = avs_ipc_bind(adev, source->module_id,
-+					   source->instance_id, sink->module_id,
-+					   sink->instance_id, binding->sink_pin,
-+					   binding->source_pin);
-+			if (ret) {
-+				dev_err(adev->dev, "bind path failed: %d\n", ret);
-+				return AVS_IPC_RET(ret);
-+			}
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+int avs_path_unbind(struct avs_path *path)
-+{
-+	struct avs_path_pipeline *ppl;
-+	struct avs_dev *adev = path->owner;
-+	int ret;
-+
-+	list_for_each_entry(ppl, &path->ppl_list, node) {
-+		struct avs_path_binding *binding;
-+
-+		list_for_each_entry(binding, &ppl->binding_list, node) {
-+			struct avs_path_module *source, *sink;
-+
-+			source = binding->source;
-+			sink = binding->sink;
-+
-+			ret = avs_ipc_unbind(adev, source->module_id,
-+					     source->instance_id, sink->module_id,
-+					     sink->instance_id, binding->sink_pin,
-+					     binding->source_pin);
-+			if (ret) {
-+				dev_err(adev->dev, "unbind path failed: %d\n", ret);
-+				return AVS_IPC_RET(ret);
-+			}
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+int avs_path_reset(struct avs_path *path)
-+{
-+	struct avs_path_pipeline *ppl;
-+	struct avs_dev *adev = path->owner;
-+	int ret;
-+
-+	if (path->state == AVS_PPL_STATE_RESET)
-+		return 0;
-+
-+	list_for_each_entry(ppl, &path->ppl_list, node) {
-+		ret = avs_ipc_set_pipeline_state(adev, ppl->instance_id,
-+						 AVS_PPL_STATE_RESET);
-+		if (ret) {
-+			dev_err(adev->dev, "reset path failed: %d\n", ret);
-+			path->state = AVS_PPL_STATE_INVALID;
-+			return AVS_IPC_RET(ret);
-+		}
-+	}
-+
-+	path->state = AVS_PPL_STATE_RESET;
-+	return 0;
-+}
-+
-+int avs_path_pause(struct avs_path *path)
-+{
-+	struct avs_path_pipeline *ppl;
-+	struct avs_dev *adev = path->owner;
-+	int ret;
-+
-+	if (path->state == AVS_PPL_STATE_PAUSED)
-+		return 0;
-+
-+	list_for_each_entry_reverse(ppl, &path->ppl_list, node) {
-+		ret = avs_ipc_set_pipeline_state(adev, ppl->instance_id,
-+						 AVS_PPL_STATE_PAUSED);
-+		if (ret) {
-+			dev_err(adev->dev, "pause path failed: %d\n", ret);
-+			path->state = AVS_PPL_STATE_INVALID;
-+			return AVS_IPC_RET(ret);
-+		}
-+	}
-+
-+	path->state = AVS_PPL_STATE_PAUSED;
-+	return 0;
-+}
-+
-+int avs_path_run(struct avs_path *path, int trigger)
-+{
-+	struct avs_path_pipeline *ppl;
-+	struct avs_dev *adev = path->owner;
-+	int ret;
-+
-+	if (path->state == AVS_PPL_STATE_RUNNING && trigger == AVS_TPLG_TRIGGER_AUTO)
-+		return 0;
-+
-+	list_for_each_entry(ppl, &path->ppl_list, node) {
-+		if (ppl->template->cfg->trigger != trigger)
-+			continue;
-+
-+		ret = avs_ipc_set_pipeline_state(adev, ppl->instance_id,
-+						 AVS_PPL_STATE_RUNNING);
-+		if (ret) {
-+			dev_err(adev->dev, "run path failed: %d\n", ret);
-+			path->state = AVS_PPL_STATE_INVALID;
-+			return AVS_IPC_RET(ret);
-+		}
-+	}
-+
-+	path->state = AVS_PPL_STATE_RUNNING;
-+	return 0;
-+}
-diff --git a/sound/soc/intel/avs/path.h b/sound/soc/intel/avs/path.h
-index 3843e5a062a1..04a06473f04b 100644
---- a/sound/soc/intel/avs/path.h
-+++ b/sound/soc/intel/avs/path.h
-@@ -62,5 +62,10 @@ struct avs_path *avs_path_create(struct avs_dev *adev, u32 dma_id,
- 				 struct avs_tplg_path_template *template,
- 				 struct snd_pcm_hw_params *fe_params,
- 				 struct snd_pcm_hw_params *be_params);
-+int avs_path_bind(struct avs_path *path);
-+int avs_path_unbind(struct avs_path *path);
-+int avs_path_reset(struct avs_path *path);
-+int avs_path_pause(struct avs_path *path);
-+int avs_path_run(struct avs_path *path, int trigger);
  
- #endif
++static int avs_path_bind_prepare(struct avs_dev *adev,
++				 struct avs_path_binding *binding)
++{
++	const struct avs_audio_format *src_fmt, *sink_fmt;
++	struct avs_tplg_module *tsource = binding->source->template;
++	struct avs_path_module *source = binding->source;
++	int ret;
++
++	/*
++	 * only copier modules about to be bound
++	 * to output pin other than 0 need preparation
++	 */
++	if (!binding->source_pin)
++		return 0;
++	if (!guid_equal(&tsource->cfg_ext->type, &AVS_COPIER_MOD_UUID))
++		return 0;
++
++	src_fmt = tsource->in_fmt;
++	sink_fmt = binding->sink->template->in_fmt;
++
++	ret = avs_ipc_copier_set_sink_format(adev, source->module_id,
++					     source->instance_id, binding->source_pin,
++					     src_fmt, sink_fmt);
++	if (ret) {
++		dev_err(adev->dev, "config copier failed: %d\n", ret);
++		return AVS_IPC_RET(ret);
++	}
++
++	return 0;
++}
++
+ int avs_path_bind(struct avs_path *path)
+ {
+ 	struct avs_path_pipeline *ppl;
+@@ -481,6 +512,10 @@ int avs_path_bind(struct avs_path *path)
+ 			source = binding->source;
+ 			sink = binding->sink;
+ 
++			ret = avs_path_bind_prepare(adev, binding);
++			if (ret < 0)
++				return ret;
++
+ 			ret = avs_ipc_bind(adev, source->module_id,
+ 					   source->instance_id, sink->module_id,
+ 					   sink->instance_id, binding->sink_pin,
 -- 
 2.25.1
 
