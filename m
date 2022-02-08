@@ -4,67 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4FC25C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Feb 2022 19:01:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BFD2C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Feb 2022 19:44:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7B8F9184C;
-	Tue,  8 Feb 2022 20:01:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B8F9184C
+	by alsa0.perex.cz (Postfix) with ESMTPS id A8EF81817;
+	Tue,  8 Feb 2022 20:43:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A8EF81817
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1644346913;
-	bh=b5q5pF8UzOEpYcQYZhXkzd4MKuEtCee+DCQiem20o7I=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1644349463;
+	bh=CupTHGMS6BsjYxNCmJxt9JxOwl4qUtkm9OqtBWC26yo=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kWec1T4mhc8gU+kkG350zp5/yizO6LxxsjX1GCdgSdhJQzCGJxEtW9mY18PppbLIb
-	 fs1ENmuJ21bNxtF76LFPAFv38Lx7IdSIkhoVJHniWxB8HDigu+I4aeCMzBOCq4AyYq
-	 U+25JjUQySaEyiL/sS+kfglZeOV5dt4OuAiBDpzw=
+	b=pMjzJEq6lv4yl4SrLLMj2vKYv/lRRMpeCSUq42xylO8eIagEPD6K+p8xzuvUYu+Tb
+	 8Mtjsf9GDzRNiYvx0m2lpJVlYcgQ50X+UN+x7/dAMWlD8B2QJv7UEFx2qZN8svGT+y
+	 xbAeN0W5vGPBZYdgbRhtNCzWW+YGdCnUuRsxs7tQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B5F5FF80519;
-	Tue,  8 Feb 2022 20:00:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2C24AF8012B;
+	Tue,  8 Feb 2022 20:43:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 337B1F80475; Tue,  8 Feb 2022 20:00:09 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 741FCF8013C; Tue,  8 Feb 2022 20:43:31 +0100 (CET)
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com
+ [IPv6:2a00:1450:4864:20::22e])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BF824F80475
- for <alsa-devel@alsa-project.org>; Tue,  8 Feb 2022 20:00:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BF824F80475
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6DA57F800F0
+ for <alsa-devel@alsa-project.org>; Tue,  8 Feb 2022 20:43:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DA57F800F0
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="szpdvlKL"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 7EDCD612D5;
- Tue,  8 Feb 2022 19:00:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1063FC340F2;
- Tue,  8 Feb 2022 18:59:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1644346799;
- bh=b5q5pF8UzOEpYcQYZhXkzd4MKuEtCee+DCQiem20o7I=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=szpdvlKLkmIahCuMqao38fK2Mnfr/LsJaGZgZN4M4om1K7+862USsJ/tM/hjKXVlR
- mWxO1zE7pzkOIkD0K9jBofVB6MDCjjEvkXreBeSiWB0qkXO8BE6vZpP4I19V5ewwwi
- SSvAxbyUdqOlHM5zu51EX+K1xTFB6K+V/ltrParP14GCH310gd71ekTokWA3nUEvWL
- zsJ6JSJWCwKKI5zU8qPAN/ZnNcrAs6L4P+s22i6HRzeQ2aX+l9NMq2y93H64OdZwFy
- X/IHKhH2rGTgtJcpauuH3FsEwkooVeWP+b2ncbWFFifCrL/gDZ3Qs30fgB2pmqOq1i
- 1Wb2KTqbTvBgw==
-From: Mark Brown <broonie@kernel.org>
-To: Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>
-In-Reply-To: <20220202192333.3655269-1-broonie@kernel.org>
-References: <20220202192333.3655269-1-broonie@kernel.org>
-Subject: Re: [PATCH v1 0/6] ASoC: Fix gpiolib dependencies
-Message-Id: <164434679879.1135369.6546240907240735507.b4-ty@kernel.org>
-Date: Tue, 08 Feb 2022 18:59:58 +0000
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="qgIYmDi/"
+Received: by mail-lj1-x22e.google.com with SMTP id z7so393678ljj.4
+ for <alsa-devel@alsa-project.org>; Tue, 08 Feb 2022 11:43:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=date:from:to:cc:subject:message-id:user-agent:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=1tEJAxplWOdsST7VjAL8Y9Sw3P8bafgTU+Sinq81TpA=;
+ b=qgIYmDi/ZeicFaofjllkpa+BrnvfUv4EOU+wxz9K63WiLaH5xS0CZFXk2kZgFuo8Mq
+ g3NXYajQoNtsik4kRxCC7rtl9YSyG5jPbpFs3bjV8s0XW7PhyVR+Ns3Y+ETMrKmeRI7H
+ Xdi9HF2KuPX5VHeRLrOrheb1zXHfPTtvAtoryglvLUUHsOCbU4KkCYo0/1UzIAHT5aKU
+ xcWGY7P//34ib2u47l3dszXaLnD84GjUVRc5fvjRKeMYAJxocxB3vxrPy0iiamDFw+K8
+ xRWuGX0cG6+//fzzHOKklg+gAdyHOE+/KAm7v/fwnIbh/z7FkI7mpG5sepn43VzK1K9W
+ neEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:user-agent
+ :references:mime-version:content-disposition:in-reply-to;
+ bh=1tEJAxplWOdsST7VjAL8Y9Sw3P8bafgTU+Sinq81TpA=;
+ b=gvvPxy6m9j/Nk9VRPVLEMNf2N4SpI6C50doMHjZK+i44FxAc3+PdHwLPLZtF54Euku
+ ePGQMDhtdUOGsKtxbswYXPi+kuytUlr3xpcOi/7ZEAZeC1ChBy3STzO3Z3n6Jrs8f6pk
+ kzbDjyd5GaaDtr4CwQ4CeCxGlY7ygMo+aeV5zfzKyLMX0s9CPKH5ikmmZQKFumgOIjaj
+ BiQTv8/AWTtv1Sdm/uEx4SgwVq9Xc/RlL3oEtcNBAWV6we/z6MIgr2pEQJsm45NebmIY
+ g2HTCObMdCm2r433g/0ykSgvw5NwVPsfhv9Hrlo/W/atPLkzA9iTANLx6rBe/nesgY5i
+ x8Ww==
+X-Gm-Message-State: AOAM533s5csSlr13djw+uV1EgutZHLG9rT7bR7OBodlYhe6Sr7gg+hje
+ i0Gpr9HvAIdY7ga4Jp8U0HQ=
+X-Google-Smtp-Source: ABdhPJy2TPJeIGKofeUIN1Ki9KOHuEUkQIzaTDtyAX5L3UBuGUlxdnB00lMLWmvVS9I3SdVYp91G7Q==
+X-Received: by 2002:a2e:2ac1:: with SMTP id q184mr3755627ljq.360.1644349403757; 
+ Tue, 08 Feb 2022 11:43:23 -0800 (PST)
+Received: from localhost.localdomain (broadband-95-84-228-163.ip.moscow.rt.ru.
+ [95.84.228.163])
+ by smtp.gmail.com with ESMTPSA id t16sm352001lfp.137.2022.02.08.11.43.22
+ (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+ Tue, 08 Feb 2022 11:43:23 -0800 (PST)
+Date: Tue, 8 Feb 2022 22:49:21 +0300
+From: Alexander Sergeyev <sergeev917@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Subject: Re: [PATCH 1/4] ALSA: hda/realtek: fix mute/micmute LEDs for HP 855 G8
+Message-ID: <20220208194921.kqx4rguwe5i7rnvg@localhost.localdomain>
+User-Agent: mtt
+References: <20220119093249.eaxem33bjqjxcher@localhost.localdomain>
+ <20220122190522.ycaygrqcen7d3hj2@localhost.localdomain>
+ <20220122205637.7gzurdu7xl4sthxw@localhost.localdomain>
+ <s5ho83yldu3.wl-tiwai@suse.de>
+ <20220129144704.xlmeylllvy3b3fum@localhost.localdomain>
+ <20220130111020.44gzrm5ckrakjta2@localhost.localdomain>
+ <s5htudk9cn3.wl-tiwai@suse.de>
+ <20220205150016.gvrst7ldvgjh7fra@localhost.localdomain>
+ <20220205175132.ihwp5wlxga4efngl@localhost.localdomain>
+ <s5hzgn2u589.wl-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <s5hzgn2u589.wl-tiwai@suse.de>
+Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+ Kailang Yang <kailang@realtek.com>, Jeremy Szu <jeremy.szu@canonical.com>,
+ Huacai Chen <chenhuacai@kernel.org>, tiwai@suse.com,
+ open list <linux-kernel@vger.kernel.org>, Hui Wang <hui.wang@canonical.com>,
+ PeiSen Hou <pshou@realtek.com>, Jian-Hong Pan <jhp@endlessos.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,54 +109,84 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 2 Feb 2022 19:23:27 +0000, Mark Brown wrote:
-> This series removes a bunch of spurious selects of gpiolib that were
-> causing noise in randconfig build tests.
-> 
-> Mark Brown (6):
->   ASoC: dmic: Remove spurious gpiolib select
->   ASoC: rt9120: Remove spurious gpiolib select
->   ASoC: simple-amplifier: Remove spurious gpiolib select
->   ASoC: max9759: Remove spurious gpiolib select
->   ASoC: zl38060: Remove spurious gpiolib select
->   ASoC: simple-mux: Depend on gpiolib rather than selecting it
-> 
-> [...]
+On Mon, Feb 07, 2022 at 03:21:58PM +0100, Takashi Iwai wrote:
+> > In the last functions a circular buffer is used to write commands. The 
+> > problem is that "bus->corb.buf[wp]" and "bus->rirb.res[addr]" are nowhere 
+> > close to the IOMMU-reported address of the offending memory access. It's 
+> > likely that I've missed other communication channels. But is it possible 
+> > that IOMMU-reported address and buffers addresses are of different kinds 
+> > (physical/virtual) or different regions mapped to the same physical pages?
+> Hm, I'm not sure, either.  But let's try to avoid some possible
+> confusion at first, e.g. a patch like below.
 
-Applied to
+No changes with the patch applied. Also, I added logs for dma_type used:
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+snd_hdac_bus_alloc_stream_pages: dma_type = 2
+snd_hdac_bus_alloc_stream_pages: dma_type = 2
+snd_hdac_bus_alloc_stream_pages: dma_type = 2
 
-Thanks!
+Which matches SNDRV_DMA_TYPE_DEV, so the same behavior is expected.
 
-[1/6] ASoC: dmic: Remove spurious gpiolib select
-      commit: 823868f59ff4f1a8889120bc71a216542b79d909
-[2/6] ASoC: rt9120: Remove spurious gpiolib select
-      commit: 2cc12ef489a39d22230d4029c9890d27902a855b
-[3/6] ASoC: simple-amplifier: Remove spurious gpiolib select
-      commit: 44bd27c42a1c9a00f1fbcb58301a7f3e6f5cdd0f
-[4/6] ASoC: max9759: Remove spurious gpiolib select
-      commit: c29744876071c3186871515b3f849a884dc47241
-[5/6] ASoC: zl38060: Remove spurious gpiolib select
-      commit: 8e70aaae32b72d3088d18a3447b67112b3f5979a
-[6/6] ASoC: simple-mux: Depend on gpiolib rather than selecting it
-      commit: 805fff750107bce59f769a54f77205a8c4c37705
+I've noticed that the IO_PAGE_FAULT regularly comes shortly after the write 
+position overflows and restarts from 0, while after the driver binding the wp 
+starts from 1 and not 0. Correlation does not mean causation, through. A 
+similar overflow happens during the initial kernel bootup with no error 
+messages. An another way of looking on it -- the fault comes on wp=0x1, which 
+corresponds to the first re-used address in the buffer.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+bus->corb.buf[wp] = cpu_to_le32(val) // = 0x14ba000, wp=0xfe, &buf[wp]=000000005b92167d
+snd_hdac_bus_get_response: reading result from 0000000096c36d67
+bus->corb.buf[wp] = cpu_to_le32(val) // = 0x14b8000, wp=0xff, &buf[wp]=00000000a91a3679
+snd_hdac_bus_get_response: reading result from 0000000096c36d67
+bus->corb.buf[wp] = cpu_to_le32(val) // = 0x2ba000, wp=0x0, &buf[wp]=000000002fda9222
+snd_hdac_bus_get_response: reading result from 0000000096c36d67
+bus->corb.buf[wp] = cpu_to_le32(val) // = 0x2b8000, wp=0x1, &buf[wp]=000000009747a629
+snd_hda_intel 0000:05:00.6: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0015 address=0x1fffff800 flags=0x0020]
+snd_hda_intel 0000:05:00.6: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0015 address=0x1fffff800 flags=0x0020]
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+And I finally got "out of range cmd", but logging is limited to IO addresses.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+bus->corb.buf[wp] = cpu_to_le32(val) // = 0x14ba000, wp=0xfe, &buf[wp]=0000000036a02eae
+snd_hdac_bus_get_response: reading result from 0000000037aa0724
+bus->corb.buf[wp] = cpu_to_le32(val) // = 0x14b8000, wp=0xff, &buf[wp]=00000000ce140303
+snd_hdac_bus_get_response: reading result from 0000000037aa0724
+bus->corb.buf[wp] = cpu_to_le32(val) // = 0x2ba000, wp=0x0, &buf[wp]=000000004c6aa283
+snd_hdac_bus_get_response: reading result from 0000000037aa0724
+bus->corb.buf[wp] = cpu_to_le32(val) // = 0x2b8000, wp=0x1, &buf[wp]=000000002a825cc8
+snd_hda_intel 0000:05:00.6: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0015 address=0x1fffff800 flags=0x0020]
+snd_hda_intel 0000:05:00.6: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0015 address=0x1fffff800 flags=0x0020]
+snd_hdac_bus_get_response: reading result from 0000000037aa0724
+bus->corb.buf[wp] = cpu_to_le32(val) // = 0x239000, wp=0x2, &buf[wp]=0000000078eca2cf
+snd_hda_intel 0000:05:00.6: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0015 address=0x1fffff800 flags=0x0020]
+snd_hdac_bus_get_response: reading result from 0000000037aa0724
+bus->corb.buf[wp] = cpu_to_le32(val) // = 0x1970724, wp=0x3, &buf[wp]=00000000613071da
+snd_hdac_bus_get_response: reading result from 0000000037aa0724
+bus->corb.buf[wp] = cpu_to_le32(val) // = 0x1270720, wp=0x4, &buf[wp]=000000006db33d93
+snd_hda_intel 0000:05:00.6: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0015 address=0x1fffff800 flags=0x0020]
+snd_hdac_bus_get_response: reading result from 0000000037aa0724
+snd_hda_intel 0000:05:00.6: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0015 address=0x1fffff820 flags=0x0020]
+bus->corb.buf[wp] = cpu_to_le32(val) // = 0x8b2000, wp=0x5, &buf[wp]=000000002a3c7e90
+snd_hda_intel 0000:05:00.6: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0015 address=0x1fffff820 flags=0x0020]
+snd_hdac_bus_get_response: reading result from 0000000037aa0724
+bus->corb.buf[wp] = cpu_to_le32(val) // = 0x836080, wp=0x6, &buf[wp]=00000000571d53bf
+snd_hdac_bus_get_response: reading result from 0000000037aa0724
+bus->corb.buf[wp] = cpu_to_le32(val) // = 0x8b0000, wp=0x7, &buf[wp]=000000000a52a2af
+snd_hda_intel 0000:05:00.6: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0015 address=0x1fffff820 flags=0x0020]
+snd_hda_intel 0000:05:00.6: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0015 address=0x1fffff820 flags=0x0020]
+snd_hdac_bus_get_response: reading result from 0000000037aa0724
+bus->corb.buf[wp] = cpu_to_le32(val) // = 0x835080, wp=0x8, &buf[wp]=00000000f139c302
+snd_hda_intel 0000:05:00.6: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0015 address=0x1fffff840 flags=0x0020]
+snd_hdac_bus_get_response: reading result from 0000000037aa0724
+bus->corb.buf[wp] = cpu_to_le32(val) // = 0x23f000d, wp=0x9, &buf[wp]=000000003c565021
+snd_hda_intel 0000:05:00.6: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0015 address=0x1fffff840 flags=0x0020]
+snd_hdac_bus_get_response: reading result from 0000000037aa0724
+...
+bus->corb.buf[wp] = cpu_to_le32(val) // = 0x205000b, wp=0x3e, &buf[wp]=000000002ce016ac
+snd_hdac_bus_get_response: reading result from 0000000037aa0724
+bus->corb.buf[wp] = cpu_to_le32(val) // = 0x20c0000, wp=0x3f, &buf[wp]=000000003ad48d6f
+snd_hdac_bus_get_response: reading result from 0000000037aa0724
+bus->corb.buf[wp] = cpu_to_le32(val) // = 0x8350a7, wp=0x40, &buf[wp]=0000000098c2fb2d
+snd_hdac_bus_get_response: reading result from 0000000037aa0724
+bus->corb.buf[wp] = cpu_to_le32(val) // = 0x205000b, wp=0x41, &buf[wp]=000000006e281f5b
+snd_hdac_bus_get_response: reading result from 0000000037aa0724
+snd_hda_codec_realtek hdaudioC1D0: out of range cmd 0:20:400:40600001
