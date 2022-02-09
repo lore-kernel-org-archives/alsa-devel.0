@@ -4,81 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3832BC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Feb 2022 16:21:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76195C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Feb 2022 16:49:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1F8FC18E3;
-	Wed,  9 Feb 2022 17:20:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F8FC18E3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 05B2218F2;
+	Wed,  9 Feb 2022 17:48:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 05B2218F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1644423689;
-	bh=nsKVMWfxwfN8ccpXygbn+n5LKV9dHgDtT5ldM3gNEMk=;
-	h=Date:From:Subject:To:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1644425338;
+	bh=YXL0w5qwbL1EgluPfZLm4aZ4zMIoVBqHmflC1bKT2eU=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KuX+9a572U7hrF51Wmltjz+79aaiLSInfRhWT4gsqIGjLzaNxhA09bYnTSGRHoJXK
-	 sGfrSMBxUVzCaUAh8ZtiY+4YxJ0idFXICr5Oee6XS6wYYWsBbCbYDyY8fQ+DNI6OiW
-	 0QHiVh8Uo+rF1xtEeN4aJzbR0r6JK9wTeqn+WQc0=
+	b=DLpGZxPAl2tt2Q0SbcWRlEwMWxz8H5l23qrlogzcdppF9h+w95QEQEWhrE02qB+xW
+	 GW3Hb7RR5M+WrQBjsDPKDO8YG60OyN08YkhMUJl/SFctOjzDabVuKxp/448lcVOZvT
+	 d0hbJiE9Ove1Eye0bDL3PvpvcipKtfYg5ULIs8aI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BF6CAF800F0;
-	Wed,  9 Feb 2022 17:20:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 94918F8014B;
+	Wed,  9 Feb 2022 17:48:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 66417F8016A; Wed,  9 Feb 2022 17:20:37 +0100 (CET)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ id 64336F8016A; Wed,  9 Feb 2022 17:48:04 +0100 (CET)
+Received: from mout.web.de (mout.web.de [217.72.192.78])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 73712F800ED
- for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2022 17:20:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73712F800ED
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7DDCBF800F0
+ for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2022 17:47:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7DDCBF800F0
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="AJpbKcZs"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1644423635; x=1675959635;
- h=message-id:date:mime-version:from:subject:to:cc:
- references:in-reply-to:content-transfer-encoding;
- bh=nsKVMWfxwfN8ccpXygbn+n5LKV9dHgDtT5ldM3gNEMk=;
- b=AJpbKcZsxduN56Z5cmV/n0hbfNrdb2MINHj+AwZEGNCXMsqR+nYjCdeO
- CX1eeiMHDtEbGyuTK5IQcN1kZSaY2Hqd0pLifcmQn79FVjbwtw9RuzaZ9
- A3SdD47Lefq72mcz8LYKjLlgBGWwD6sR2edDBXGTILYaqu3xaCPlIlEtj
- Ci6DJ8OAvNZuHtrp/yzKjbekt2saR4yCAFFcV1FSfZ/73VSiqKXAnAi8n
- AkwUN3pYNhI+PZk2nFCDsf9JfG2ctxWEm6ihWug5mjQ4I9KYmubTaitTX
- DHRptj5gP8GME4HdJGlAlmpjhYeH3NaNXxjrYzwNaVEbiqtf1WHrDvAqO g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10252"; a="248999420"
-X-IronPort-AV: E=Sophos;i="5.88,356,1635231600"; d="scan'208";a="248999420"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Feb 2022 08:20:32 -0800
-X-IronPort-AV: E=Sophos;i="5.88,356,1635231600"; d="scan'208";a="482379492"
-Received: from qiangfan-mobl.amr.corp.intel.com (HELO [10.212.86.102])
- ([10.212.86.102])
- by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Feb 2022 08:20:30 -0800
-Message-ID: <4d90d851-753e-3e6d-b51a-eefb2159a48c@linux.intel.com>
-Date: Wed, 9 Feb 2022 10:08:09 -0600
+ dkim=pass (1024-bit key) header.d=web.de header.i=@web.de header.b="QLycPu/8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+ s=dbaedf251592; t=1644425274;
+ bh=8zvv3UVuypLdPnTkeYYi3l3bwG8b66SgKrPydbpOnvU=;
+ h=X-UI-Sender-Class:From:To:Subject:Date:In-Reply-To:References;
+ b=QLycPu/80B07XhtqScmbgr+i/j6HRKp2vQrgXEEp0u7cQWsL7SO57BlRqnNimnv2b
+ 14Ax5s+/0XI4StaDMPE/iYTDFYbbrP/Oq2llZ+oLmSq8OoMvg10b2bpAKRmAPcDuzp
+ ppKRn9rsDXoDK00yXd1M8K51tjztztkCwWOd0g7k=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [185.196.22.219] ([185.196.22.219]) by web-mail.web.de
+ (3c-app-webde-bap11.server.lan [172.19.172.11]) (via HTTP); Wed, 9 Feb 2022
+ 17:47:54 +0100
+Message-ID: <trinity-dc5c0214-ab7c-48bf-a502-e93062638611-1644425274650@3c-app-webde-bap11>
+From: dmummenschanz@web.de
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org
+Subject: Aw: Re:  Re: Cannon Lake PCH cAVS (ALC892) not detected by kernel
+ driver
+Date: Wed, 9 Feb 2022 17:47:54 +0100
+Importance: normal
+Sensitivity: Normal
+In-Reply-To: <c71dbf89-80a3-538e-6ebe-e1d1869183e8@linux.intel.com>
+References: <trinity-f018660b-95c9-442b-a2a8-c92a56eb07ed-1644345967148@3c-app-webde-bap22>
+ <209270c3-4a46-d6a1-0f1d-d4400ecc5962@linux.intel.com>
+ <trinity-c5ab92fd-fbab-4431-8579-f8576a9ba71e-1644390880605@3c-app-webde-bap12>
+ <c71dbf89-80a3-538e-6ebe-e1d1869183e8@linux.intel.com>
+X-UI-Message-Type: mail
+X-Priority: 3
+X-Provags-ID: V03:K1:GGUipQjOhzWvxms8gYnqx00QELObNN8eVzlZDGF59jYy74FrUfQ4+uHI2ymtRwJFyHoR2
+ nqDfAj0jMyA68OBKpDTQNo3B/SgevyNqRGK05TSZMYJMSIcwCptfguN749kVBEIsBkIXCIS6qm9G
+ xaGM3kBuFfWbEOFYJBNB6vOrNeTyPkdAnxMPWIWeMGNB0Wmth6vzsymPspdXXfJoC+JVbcGy6+/N
+ nwGDzZJv0p1MLN2sF1QA4JStZKGwi7di5+YjAy8fEUGscx9ut16zFh7Yvevv9YLoEJsAV6LAlErz
+ /k=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:xUi9NexvHx8=:LcqQFWzVISzAdxKMz0rb5E
+ YkOD8nrDXDFrTH1SzLq0liPTs7A3AbXZz5xoV2vYk25tXqeIMutCM7VIG47GFnsw2JOXISxao
+ p/oZNZ+mxWDeYsvCbkdzv+0LbRQ4VCO+9oGLI9viYnON3hoJZM/VisZL66GYKnwSjxmYRWq0R
+ pqTAfmOmfpnSvmu625IXDc2mQmEMEM69swi27nd3fdgmewINRj8UTRZPrSYaURM+p+B/ceIW3
+ Nu9P5r2b6Xx0nGc5oZKlArXpe26PwWeKPiWkWsgpdbqGidH0JU1xjjKn2lwzSck1wqZsFmw96
+ DAaHnSltsmIihlYlbHSSCy4+H6OfWcJaK1JxoDiWiM4Li3EZqT3tQB2Cr5zLXVs8Ckcz9WZMD
+ gayNxX62GDF6n2qiClAZKl0RCB96hPL46fbaSx4zsPctnLr348BvchDxrpb0QF3d6ijMIfWNx
+ HQg0MrTpARbQrV2aCS73jp9RJC17rakOtAvsHx9dHU8soptSkhmkIZ4o7wpShrLele8p+Ymhm
+ KktvJ5e1QgcEEMWkjn3VxqOna83jMS3ytcGVEszunJttJ56GE0KsVm+7JVJn+OlgybRNaB0Um
+ WK6qBzp+CuRxs53OoApFTys6PrLoNOd8mRVcrBkmwiDwKik5FXvBNH70Eb9jMahRkDnSHr8Ov
+ fApKI8ri6gke7qT00kUzpCAOzdxJlj0VThn/L1ufwyEPPddtHvbNVzVlcRqaJuzIJlNAeZN/J
+ d0UIH1x8iMkEUPVgTYcHqmIhH17CXFinffTu+N+wcZYzc9ybBjjmAa3wN7xMLqLPb8skbSekE
+ fERDn/B
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.5.0
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 3/4] ALSA: hda: Update and expose codec register procedures
-To: Cezary Rojewski <cezary.rojewski@intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>
-References: <20220207114906.3759800-1-cezary.rojewski@intel.com>
- <20220207114906.3759800-4-cezary.rojewski@intel.com>
- <alpine.DEB.2.22.394.2202081753430.3088432@eliteleevi.tm.intel.com>
- <c144c67d-e6a8-1baa-82e8-37065c053919@intel.com>
- <41671a26-bd27-78ab-3440-eb9cb22c1ad1@linux.intel.com>
- <23f36ba1-277c-6998-f569-2861887720dd@intel.com>
-Content-Language: en-US
-In-Reply-To: <23f36ba1-277c-6998-f569-2861887720dd@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, upstream@semihalf.com, harshapriya.n@intel.com,
- rad@semihalf.com, tiwai@suse.com, hdegoede@redhat.com, broonie@kernel.org,
- cujomalainey@chromium.org, lma@semihalf.com
+Content-Type: text/plain; charset="UTF-8"
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,48 +97,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+   snd_intel_dspcfg: dsp_driver=1
+
+   was a leftover from testing. I' ve removed all parameters, add added
+   the debug options you've asked.
+
+   http://alsa-project.org/db/?f=6e30e9f598bd2f03b2f5cff0df261f78719ea29d
+
+   Some googling reveals that others suffer from the same problen on the
+   same laptop as well. Some report that the device appears after pci-bus
+   rescanning however that did not work in my case so I agree there might
+   be an issue with probing the relatek device. Unfortunately I'm not a
+   kernel dev so I don't even know where to start looking however I'm
+   happy to investigate with your help.
 
 
-On 2/9/22 06:05, Cezary Rojewski wrote:
->> FWIW, in our latest SOF work we went back to handling ONE DAI with
->> analog playback and capture and ditched the 'digital playback'. Trying
->> to do more led us to too many issues of 'works on platform A' and 'does
->> not work on platform B', and sometimes with different answers depending
->> on which BIOS version is used.
->>
->> IMHO what's really problematic for HDaudio is the support for amplifiers
->> located behind the HDaudio codec, for which we more often than not are
->> missing the I2C configuration sequences. Suspend-resume is a recurring
->> problem as well.
->>
->> I am not saying no for the sake of saying no, I have just never heard of
->> anyone complain about restrictions on the number of DAIs in the HDaudio
->> world.
-> 
-> 
-> I believe our goals align. Rather than hardcoding Analog/Alt
-> Analog/Digital endpoints as it's done currently, when codec most of the
-> time do not have them working anyway, rely on behavior found in
-> sound/hda and sound/pci/hda. If there are some problems there it's
-> win:win for us and legacy driver. Fix one spot, have both drivers happy.
+   Gesendet: Mittwoch, 09. Februar 2022 um 16:51 Uhr
+   Von: "Pierre-Louis Bossart" <pierre-louis.bossart@linux.intel.com>
+   An: dmummenschanz@web.de, alsa-devel@alsa-project.org
+   Betreff: Re: Aw: Re: Cannon Lake PCH cAVS (ALC892) not detected by
+   kernel driver
+   On 2/9/22 01:14, dmummenschanz@web.de wrote:
+   > The information about the codec is based on the string windows
+   > provides:
+   >
+   >
+   HDAUDIO\FUNC_01&VEN_10EC&DEV_0892&SUBSYS_15580351&REV_1003\4&16AF2B56&&
+   > 0001
+   >
+   > Here is the alsa-info output for the 5.16 mainline kernel:
+   >
+   >
+   [1]http://alsa-project.org/db/?f=38c48cd24dc4ba9a9487dd96f857120cc9ce43
+   67
+   The use of this option is not clear:
+   snd_intel_dspcfg: dsp_driver=1
+   This means you are trying to force the use of the legacy driver. is
+   this
+   intentional? Can you remove it and see what happens?
+   The results show you don't have a driver bound to the PCI device, so
+   likely something goes boink in the probe.
+   It wouldn't hurt to enable dynamic debug as well.
+   options snd_hda_intel dyndbg=+p
+   options snd_intel_dspcfg dyndbg=+p
 
-I don't quite see the alignment: the only thing that we've seen work
-reliably and that we do need is the analog part, and we want to get rid
-of the other paths which we can't test in the first place. I must admit
-I don't recall why we bothered to expose those alt analog and digital
-paths back in 2018, they have not been used nor tested by anyone.
+References
 
-Now if this patch helped to make sure we do indeed have an analog path,
-that'd be fine. That would indeed avoid a hard-coded decision and report
-configuration errors.
-
-I just don't see what exposing additional paths brings, they never
-worked reliably for us when we tried. IIRC half of our team gets an
-error with the Digital playback stream on Up Extreme and the other half
-can play just fine - albeit with no connector to actually see what the
-output is.
-
-FWIW there are many things made possible by HDaudio, in practice we
-often have to limit ourselves to what is known to work and what is
-needed by end-products. You could spend all your time chasing
-configuration issues, missing NIDS and bad verbs. Been there, done that.
+   1. http://alsa-project.org/db/?f=38c48cd24dc4ba9a9487dd96f857120cc9ce4367
