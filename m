@@ -4,77 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76516C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Feb 2022 13:29:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 125DFC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Feb 2022 14:20:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7FE0C18B2;
-	Wed,  9 Feb 2022 14:28:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7FE0C18B2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 636C21890;
+	Wed,  9 Feb 2022 15:19:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 636C21890
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1644413373;
-	bh=nawsjVKxHhbbOBcurX3gXBT3kAOXoZt0Jv51hKn1rJQ=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=u0E8ceve7esQQzF4ggYHHA7rtK6qpd9rJ1y7vrRzyauhcbyQOpPYbH4KRuxp0RMDr
-	 qqSIHymMNIJHyymFFZFmDE6UGco+XCKug2vlXGNL+k6qQKvwvV0UQtoS3gU4VyszSZ
-	 FYRo/DJpTLAzilqwsP4IWBkBVKGJp8D4m4g3knTE=
+	s=default; t=1644416416;
+	bh=87ZbZid1h6vMNdj2JzYO6xfkvFGFWYSGlQPGNDDRWy0=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=ukq8YzLeyN3brwW5IqW8VXwW9FEOmsEubWnZ237SqJ2C/Qfr0sCOy7Jcxp/8UKbu8
+	 vlr66mB5AZMmq2BaN1QsDjurykacrAcdHcCADXQIKeRf/xDo8UKzqLebx/j5gmeW+B
+	 NUEW+C1Y5Svkfx+V5OmwxhKJVjPP6nt2zubYQ2To=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E67FCF8051B;
-	Wed,  9 Feb 2022 14:27:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 012BBF800ED;
+	Wed,  9 Feb 2022 15:19:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 67E25F8051C; Wed,  9 Feb 2022 14:27:43 +0100 (CET)
-Received: from alexa-out.qualcomm.com (alexa-out.qualcomm.com [129.46.98.28])
- (using TLSv1.2 with cipher AES256-SHA (256/256 bits))
+ id 9F7CDF8016A; Wed,  9 Feb 2022 15:19:19 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C055CF80517
- for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2022 14:27:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C055CF80517
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3893FF800ED
+ for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2022 15:19:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3893FF800ED
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=quicinc.com header.i=@quicinc.com
- header.b="FfRTdvOF"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
- t=1644413262; x=1675949262;
- h=from:to:cc:subject:date:message-id:mime-version;
- bh=g81XqEg610YOWPcEx1mg1A5BtET0yAQT4NmAhA1VPPs=;
- b=FfRTdvOFNu2okLcWmIJAffC0jpuzTKpEYPWFAop5J0MkQA8+XUNcz/sI
- Yrvb/nKIGXZDw3h1fTmYrMqkEPpDwsp3oYiVmUsNrczlHcyzGLYsLjB52
- SRqIsheG1tdKB50DyuTYAaRPrODyj6ZJUYLR8NPAFX1hG6T9HM9RoT7/x M=;
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
- by alexa-out.qualcomm.com with ESMTP; 09 Feb 2022 05:27:37 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
- by ironmsg09-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Feb 2022 05:27:21 -0800
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Wed, 9 Feb 2022 05:26:41 -0800
-Received: from hu-srivasam-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Wed, 9 Feb 2022 05:26:35 -0800
-From: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
-To: <agross@kernel.org>, <bjorn.andersson@linaro.org>, <lgirdwood@gmail.com>, 
- <broonie@kernel.org>, <robh+dt@kernel.org>, <plai@codeaurora.org>,
- <bgoswami@codeaurora.org>, <perex@perex.cz>, <tiwai@suse.com>,
- <srinivas.kandagatla@linaro.org>, <rohitkr@codeaurora.org>,
- <linux-arm-msm@vger.kernel.org>, <alsa-devel@alsa-project.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <swboyd@chromium.org>, <judyhsiao@chromium.org>
-Subject: [RESEND v8 0/3] Machine driver to support LPASS SC7280 sound card
- registration
-Date: Wed, 9 Feb 2022 18:56:18 +0530
-Message-ID: <1644413181-26358-1-git-send-email-quic_srivasam@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-Cc: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="FVpg0FQR"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="HblWCAC2"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id AAA46210E7;
+ Wed,  9 Feb 2022 14:19:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1644416352; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=7lBNcaCRUjLDNn5Z/CDgIURzMwfhPlWXJg5XHIqsIK4=;
+ b=FVpg0FQRFjKk573kUfHyhZoU1TyGwCTiSmMmnVkQ3G0GNamVS7dnJWqStAciqf7pDJMe31
+ RwA5dh+eTqsb/zxHrCrmb1xsjjBUn1QPFOXFCMOFanxQgqLmgyAJLMj5fypDpmFBxZY1Gl
+ h79MuxQlRYQ9gnqkg272AYVDZhLVhuo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1644416352;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=7lBNcaCRUjLDNn5Z/CDgIURzMwfhPlWXJg5XHIqsIK4=;
+ b=HblWCAC2HJ/Q3PRbxI1O945Ay0XkkDxtOC45azzoArNsJaaHYskaCj/2+c6dYcOhNeMbv0
+ HbM4m2DskiMhkcCg==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 93C4CA3B84;
+ Wed,  9 Feb 2022 14:19:12 +0000 (UTC)
+Date: Wed, 09 Feb 2022 15:19:12 +0100
+Message-ID: <s5hpmnwnmvz.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: Re: [PATCH 3/4] ALSA: hda: Update and expose codec register procedures
+In-Reply-To: <397ec3b5-c54c-5b7b-22b1-e34e3afc0943@intel.com>
+References: <20220207114906.3759800-1-cezary.rojewski@intel.com>
+ <20220207114906.3759800-4-cezary.rojewski@intel.com>
+ <alpine.DEB.2.22.394.2202081753430.3088432@eliteleevi.tm.intel.com>
+ <c144c67d-e6a8-1baa-82e8-37065c053919@intel.com>
+ <s5hiltpqo0n.wl-tiwai@suse.de>
+ <14d6492c-ad72-772c-55ed-2e5d51f3cbdc@intel.com>
+ <397ec3b5-c54c-5b7b-22b1-e34e3afc0943@intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, upstream@semihalf.com,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, harshapriya.n@intel.com,
+ rad@semihalf.com, pierre-louis.bossart@linux.intel.com, tiwai@suse.com,
+ hdegoede@redhat.com, broonie@kernel.org, cujomalainey@chromium.org,
+ lma@semihalf.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,48 +97,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch set is to add support for SC7280 sound card registration and
-to add dt-bindings documentation file.
+On Wed, 09 Feb 2022 11:38:23 +0100,
+Cezary Rojewski wrote:
+> 
+> On 2022-02-09 11:21 AM, Cezary Rojewski wrote:
+> > snd_soc_bind_card() invokes snd_card_register() which in consequence
+> > leads to snd_device_register_all() and that to automatic
+> > ->dev_register call. That call involves PM operations, and at that
+> > moment, codec is not ready for it.
+> By that I mean: bus driver (here, avs-driver) has some saying on the
+> PM matter too e.g.: sets their (codecs) status to suspended via
+> pm_runtime_set_suspended() so the bus runtime suspend is not blocked
+> by codecs that could possibly never complete their probing.
 
-Srinivasa Rao Mandadapu (3):
-  ASoC: google: dt-bindings: Add sc7280-herobrine machine bindings
-  ASoC: qcom: Add macro for lpass DAI id's max limit
-  ASoC: qcom: SC7280: Add machine driver
+Hm, but the runtime PM of hda_codec device is suppressed at first in
+snd_hda_codec_device_new() via pm_runtime_forbid(), i.e. the codec
+should be kept running until it reaches to snd_hda_codec_register(),
+it shouldn't be runtime-suspended beforehand.
 
-Changes Since V7:
-    -- Create separate patch for dai id's macro.
-    -- Remove unused dapm widget structure.
-    -- Move to quicinc domain email id's.
-Changes Since V6:
-    -- Remove redundant headers.
-    -- Move max ports macro to lpass.h header.
-    -- Arrange structure alignment.
-    -- Fix indentation errors.
-    -- Update module license.
-Changes Since V5:
-    -- Add required properties to dt-bindings
-Changes Since V4:
-    -- Add COMPILE_TEST flag in sc7280 configuration.
-    -- Remove redundant startup and shutdown callbacks of snd_soc_ops.
-    -- Fix typo errors.
-Changes Since V3:
-    -- Change audio jack playpause key value.
-Changes Since V2:
-    -- updated required field in bindings
-    -- updated Return type check with proper enum in sc7280.c
-    -- Updated Header name and Typos in sc7280.c
-Changes Since V1:
-    -- Indentation changes and typo.
+I might overlook something, but it's a bit hard to follow...
 
- .../bindings/sound/google,sc7280-herobrine.yaml    | 171 +++++++++++++
- sound/soc/qcom/Kconfig                             |  14 +
- sound/soc/qcom/Makefile                            |   2 +
- sound/soc/qcom/lpass.h                             |   1 +
- sound/soc/qcom/sc7280.c                            | 284 +++++++++++++++++++++
- 5 files changed, 472 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
- create mode 100644 sound/soc/qcom/sc7280.c
 
--- 
-2.7.4
+thanks,
 
+Takashi
