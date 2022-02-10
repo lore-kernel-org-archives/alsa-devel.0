@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12D0DC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Feb 2022 16:54:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75200C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Feb 2022 16:54:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6DF2519E7;
-	Thu, 10 Feb 2022 17:53:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6DF2519E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 756181A40;
+	Thu, 10 Feb 2022 17:53:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 756181A40
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1644512052;
-	bh=HAU9jECp8vk3akhAHZrT9sbV+MlXVMIjLGnKhGgo6v8=;
+	s=default; t=1644512088;
+	bh=jU4woLASpR6Ex/J6X55lhs4XNVlGTKqO4+sal3OhZzg=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jYXR8eC+aP+3a7HoUMTmDz8EXCuudrIYNmytS5wpQBT/CixBKJZKDRktJ4PUzvQ2J
-	 hYf0PbpUADvUwCUKwsIgiJhkEL/szT9nA68bdCuZ++nTf2SYSIQNeNBtIO7j6VGvJq
-	 yCvcyrp/IpFpJ+BQ/FQ7zmoaIc28x0D8bQXLdRfs=
+	b=a2lfAKxwEPvzQ+/JrVQBIlldF2Yx13ihf4bSyngOlfr1Sx6he6w5tzcRDjkGbd8OR
+	 swPR/EuutstLHzaJAj6PF59yank5zl1y2tUPvcbldoCMU9WcxrZDxM1hzPlBSj68+t
+	 lmK77iZWocQatJZpofiL/j+2S6igmFiica0hRC3M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E4368F8016C;
-	Thu, 10 Feb 2022 17:53:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9F224F80423;
+	Thu, 10 Feb 2022 17:53:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9AAF0F8028B; Thu, 10 Feb 2022 17:53:19 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id A059DF804AB; Thu, 10 Feb 2022 17:53:23 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E2E89F80054
- for <alsa-devel@alsa-project.org>; Thu, 10 Feb 2022 17:53:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2E89F80054
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1B222F80302
+ for <alsa-devel@alsa-project.org>; Thu, 10 Feb 2022 17:53:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B222F80302
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="o7Nw65ZD"
+ header.b="MtSnP5go"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 88D48B82662;
- Thu, 10 Feb 2022 16:53:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AF44C004E1;
- Thu, 10 Feb 2022 16:53:09 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id A946161D99;
+ Thu, 10 Feb 2022 16:53:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD6A0C340EB;
+ Thu, 10 Feb 2022 16:53:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1644511993;
- bh=HAU9jECp8vk3akhAHZrT9sbV+MlXVMIjLGnKhGgo6v8=;
+ s=k20201202; t=1644511999;
+ bh=jU4woLASpR6Ex/J6X55lhs4XNVlGTKqO4+sal3OhZzg=;
  h=From:To:In-Reply-To:References:Subject:Date:From;
- b=o7Nw65ZDQ0K80ka/Paeu31omt3SmW1dxm5+mHMvPCzvzT8ogIfUh35GZN+m7Eg/+r
- XfaDIwJIsoKicy+eicDxgiQ4oF+GZtqA+W1TqbLJA4PiIUhAXAScr4x9TUoR7N8NrN
- /oMsmG8XQSx9FeT7lXtrkow9T339kvIwcLnxnHucMfLk4HnTBDDHLbQjNHc/B4MMnw
- ZgY7i8cUbMJwIfid6XO0Wbr8gDqL2kec1T0zSSJbCzKqh/9pSVRbmCMWMsILc89MIb
- 7B5LPhwNmT7xCEttNiFrzKo6UqlEYgoDw2D74IECu83ZEJcKt+2nMtQmP0JieZiDFa
- VkRj2hsuITVZQ==
+ b=MtSnP5goZivyhhcyM1qavOq0s+jAuT2xOsOPztOxRfCVXqxOgtmL+EzpUdD9Ie9vd
+ /CaIzzqw2YbXKjaqPVdI3x7xrep0rLJ6CIkSuMoPdN4SsWxGi/nTvSOj757LD/taku
+ HqLDfWdBeO3X9hcDWADDFwCpzQAt1ZA5/IM39/JQCorHxM3kCLpyD4MLqPNl83lXXY
+ L7xmwvYH5Lyo7SRGDOGn7IXMcwkfxDzp5iT5sL3PIoNO+bz9n3Xd3t2wcnqNN/RtvK
+ MHoyLVYSdYuhw5dyN3rk3YxbnXMwIOtXTxSWHcsfE8iMvQIS9aj/137kyiFQPzoIUr
+ xvXkJ5VSiCpVQ==
 From: Mark Brown <broonie@kernel.org>
 To: bgoswami@codeaurora.org, srinivas.kandagatla@linaro.org,
  Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>, tiwai@suse.com,
  perex@perex.cz, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- plai@codeaurora.org, robh+dt@kernel.org, lgirdwood@gmail.com,
- bjorn.andersson@linaro.org, judyhsiao@chromium.org, agross@kernel.org,
+ plai@codeaurora.org, robh+dt@kernel.org, judyhsiao@chromium.org,
+ bjorn.andersson@linaro.org, lgirdwood@gmail.com, agross@kernel.org,
  swboyd@chromium.org, alsa-devel@alsa-project.org, rohitkr@codeaurora.org,
  linux-arm-msm@vger.kernel.org
-In-Reply-To: <1644413181-26358-1-git-send-email-quic_srivasam@quicinc.com>
-References: <1644413181-26358-1-git-send-email-quic_srivasam@quicinc.com>
-Subject: Re: [RESEND v8 0/3] Machine driver to support LPASS SC7280 sound card
+In-Reply-To: <1644497415-25291-1-git-send-email-quic_srivasam@quicinc.com>
+References: <1644497415-25291-1-git-send-email-quic_srivasam@quicinc.com>
+Subject: Re: [PATCH v9 0/3] Machine driver to support LPASS SC7280 sound card
  registration
-Message-Id: <164451198976.2625306.6596305549471507379.b4-ty@kernel.org>
-Date: Thu, 10 Feb 2022 16:53:09 +0000
+Message-Id: <164451199562.2625306.8749637139176937235.b4-ty@kernel.org>
+Date: Thu, 10 Feb 2022 16:53:15 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -84,7 +84,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 9 Feb 2022 18:56:18 +0530, Srinivasa Rao Mandadapu wrote:
+On Thu, 10 Feb 2022 18:20:12 +0530, Srinivasa Rao Mandadapu wrote:
 > This patch set is to add support for SC7280 sound card registration and
 > to add dt-bindings documentation file.
 > 
