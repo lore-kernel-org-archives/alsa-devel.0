@@ -4,118 +4,121 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B2EFC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Feb 2022 06:52:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41E4DC433FE
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Feb 2022 06:52:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E201F1767;
-	Thu, 10 Feb 2022 07:51:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E201F1767
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6311F1774;
+	Thu, 10 Feb 2022 07:52:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6311F1774
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1644475929;
-	bh=0VTzn7sGQ21RZmuce4gxVoNUO7Q8Ort0N4WJ7faOrws=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=bL04n81nCe0LR7Lr9xGXX+aST1RPdET+Xh62UmJ0t7eD6d3a5pBQsOPmprs2obBu5
-	 BOo4rjmTqc/h6um/51SJGnlXcctdBJFYyMsspJNmf0DMWbCyDJxW/477VjEE+ESJkj
-	 NamBQGEeb9o2I9B4X99tv0+pYONzKx09TefNEwXk=
+	s=default; t=1644475971;
+	bh=f4lU9uZWQQImWtpy2Wv0/tEOjOZHTqKZhQ6o1nMmLfw=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=KLfWWqxODTg8QEulGNK8l2OF3WTyh9wp7Mxa+gGmleoNzC9BhlNp4uTxNhYiPQDcK
+	 7oWsoiZ2q5NjP5P9MS+z3pyIg2aWZiB/28vIr6wydIs46Wfo3NCbF8D5GDzT+uywq8
+	 PjyVfl45S+cQGloMXesv4YJdgNZhVZs65v+ig6Pw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6B0E6F8016C;
-	Thu, 10 Feb 2022 07:51:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4DE29F80423;
+	Thu, 10 Feb 2022 07:51:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B9410F8028B; Thu, 10 Feb 2022 07:51:16 +0100 (CET)
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com
- (mail-bn8nam11on20615.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:7eae::615])
+ id A55BBF80423; Thu, 10 Feb 2022 07:51:24 +0100 (CET)
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com
+ (mail-dm3nam07on20613.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:7e83::613])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 173E9F8013D
- for <alsa-devel@alsa-project.org>; Thu, 10 Feb 2022 07:51:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 173E9F8013D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 673AAF80423
+ for <alsa-devel@alsa-project.org>; Thu, 10 Feb 2022 07:51:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 673AAF80423
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com
- header.b="l2omKSgk"
+ header.b="VVRWdu/z"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dL6Th4Fjj7oqwCr4sqOnljJJSxSp2J7cpoJ7+H6p5Jft8sLcEobBVmXy9kzIGhCK4zhOvvP9Qjw+Jph2+HMkG1qF8pi5LfGz7VXo58JKB3wUi2uBXUNWuMxefj0rXB6spdXxVX1OSb2GXSNlSrjldizelwVtcLnC826vfTdrK2O1+f/2WZOFsWNGjeN5IpIO8AlY9iJhfMYZ8jYzRLk2JTvwyEQt+wdu1e6VY1/J9Zb2oWph8Opb7IoaNbC3Z1qs5JaqjrWvg83jMLhBDVTYLztPTdnnG8Egn1suCTXjRsopIHXQmtG8ii3rRyScu7omLCG69EmJm1BEUIamU5M/ng==
+ b=LYKLRTsXKNmkHeNO3wbRS4Wy2OANj/XdoU1az4NBWpYkbPaz40UMtkJofxRERC8pucG+HHP/CSdgJgUnTN78aTiBpSqbToM3H/kUWENJDOqEBNRreAiffhungRWi5KScQ3KL7giVDoQdwC1x2k/TzNp38I6Se/a1tV0sDkZsCyqbk6WUdx+j8iMTsWZT7qNw5OkOLvtzar1wtAtTtIlGZVYwhUJuRZ1eQCv2WTqX5QMVfDha1ZMuVOs6a3LZPaA0bSZjcSC52FJSps340J9kFDsVcYxq/56QoNeo8SQDhM+xvucK9HHCR/oZZKUE+c824jbdscSrgxuLFZ1J81XZJw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oth4zHlmn8/i6IFuqYGar0qxlfg0OX/Apl8IGmIQ/6A=;
- b=k7Jq+NFW7k9w8D+8gjm2IyTUC9xIx5e1vz2QDTr4dDijpn2SPqj/XadzychPRnQlZpzfPHrAZ2LLJDIKAXn30/9gGlLVWpGhq9tyYZFhQ1gNgdkFsKqB1BPj+wP8Si9OYBgTh6OS5+1K8nAiOCtSZH0gyYUjeEFGUbQ+Z+jK9azSyk7qDIGyuqB0ndoKrfiDvGTExE5tWlzD5EWA4o3hQT0ybzcO3J4TTfKDfL+xTQFcvVdr6Lmbl170Sp5n7IktdQWdktfBvP/dZwuHneGfj9my663NU/CCxSTg7BrkTJNYH6p2svypkSsLVB2U09Kh52GUVznfDtneqCZVZrl6iQ==
+ bh=TyzCqJeD1HQ0eLP5+04rVR1LsYSQBNJgx+wbf5BLld8=;
+ b=hgw+TDmj2HBf1AzoNK/CEfUSro8mUmPTCsu4IWBdiZVp2Jh13HgHbV8chbuAT2lSqU30m6yaGybu1Xhynvu83QW0eT3EeFRSghbNET8bpsqQlyci9igVLPfUujRB7VVq7GHP98DGqh3+1Ongir+xr7VYoJVcy4+XU9rohx+NdsYBp/PSN/oSgcmXebdwLvXVddoT29Fyyw0l0SDlayFY3sZJVKTLVG/60jSuPE8FmzYSRE8W0SKeIoF0c5ZEr4l5afpZs+gZsKhUrRLI48kR7K/xc/pVuvC3Xhn8r5qzldukivgvd++VPQhrligEaeRcj4LjZpo7trIkNUwZ5CLuVw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 12.22.5.238) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ 12.22.5.235) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
  dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oth4zHlmn8/i6IFuqYGar0qxlfg0OX/Apl8IGmIQ/6A=;
- b=l2omKSgkPATORscZHIdz560B30lISiz1l7Ry011BRcw2MGqQiwaqIExRgDxxF3ULJ1XAm1xb8a3IcBEYUsAnYSo/8WDfoqoRI1AhpRlqjlFWcrJef2x1SXByRF+SriEmLB1UlGe99iW6rVi832hs0kNoAwVKCw0rNHPyGVU4BlsZmZRTpXA6cXyURz9lgsxTFzi8YO1LhXR4YknON26jeJKcPzp8h1kW+8F22zyOv82gT6eRn2RoBwAwt7macCW8rAdHls406aqBQeMKo9ZkQ+PF21KZiS+iAdjhbuQdmBEJU22phswesakNtMTQQpDaxbKV3yNhYe2RcpS9FvP8bg==
-Received: from MWHPR08CA0058.namprd08.prod.outlook.com (2603:10b6:300:c0::32)
- by DM6PR12MB4927.namprd12.prod.outlook.com (2603:10b6:5:20a::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4951.12; Thu, 10 Feb
- 2022 06:51:06 +0000
-Received: from CO1NAM11FT030.eop-nam11.prod.protection.outlook.com
- (2603:10b6:300:c0:cafe::77) by MWHPR08CA0058.outlook.office365.com
- (2603:10b6:300:c0::32) with Microsoft SMTP Server (version=TLS1_2,
+ bh=TyzCqJeD1HQ0eLP5+04rVR1LsYSQBNJgx+wbf5BLld8=;
+ b=VVRWdu/zbjCl0a/ap2w3P9Y7VIcXnS33zFKBAi19sC3rOjrIk/mA21qRgrcoJNHLq2pN2hItP4zw9hkkaVHmLYukC8mxM9VW5lqkHAWyatuw3mDlJ/W/tbV+f2s0H7LPXAK6q2YXY2XR90sklntO3U+YMBU6Itedw0BNNu+gJquZ53LZGX1VtfUplmAofZu2rd2jmue3HhBuekUewkm0T5sQA8UttoqNgCwcaEWQ8TEn6MMuiqHlQyPkH7KM5vb0YD5I0X9Xzg6V1Y2gspbhbzSzy+mMxVupVYJhD+PpNDJk9XES1A1rnLtFJK773fDeZ/wdi/NYbGplqRwHwalA5A==
+Received: from DM6PR07CA0105.namprd07.prod.outlook.com (2603:10b6:5:330::8) by
+ SA0PR12MB4446.namprd12.prod.outlook.com (2603:10b6:806:71::18) with
+ Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4951.12; Thu, 10 Feb 2022 06:51:13 +0000
+Received: from DM6NAM11FT058.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:5:330:cafe::99) by DM6PR07CA0105.outlook.office365.com
+ (2603:10b6:5:330::8) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4975.12 via Frontend
- Transport; Thu, 10 Feb 2022 06:51:06 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 12.22.5.238)
+ Transport; Thu, 10 Feb 2022 06:51:13 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 12.22.5.235)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 12.22.5.238 as permitted sender) receiver=protection.outlook.com;
- client-ip=12.22.5.238; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (12.22.5.238) by
- CO1NAM11FT030.mail.protection.outlook.com (10.13.174.125) with Microsoft SMTP
+ 12.22.5.235 as permitted sender) receiver=protection.outlook.com;
+ client-ip=12.22.5.235; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (12.22.5.235) by
+ DM6NAM11FT058.mail.protection.outlook.com (10.13.172.216) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4975.11 via Frontend Transport; Thu, 10 Feb 2022 06:51:06 +0000
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by DRHQMAIL105.nvidia.com
- (10.27.9.14) with Microsoft SMTP Server (TLS) id 15.0.1497.18;
- Thu, 10 Feb 2022 06:51:04 +0000
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail203.nvidia.com
- (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
+ 15.20.4975.11 via Frontend Transport; Thu, 10 Feb 2022 06:51:13 +0000
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1497.18;
+ Thu, 10 Feb 2022 06:51:12 +0000
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail202.nvidia.com
+ (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.9; Wed, 9 Feb 2022
- 22:51:03 -0800
+ 22:51:11 -0800
 Received: from mkumard.nvidia.com (10.127.8.13) by mail.nvidia.com
  (10.129.68.9) with Microsoft SMTP Server id 15.2.986.9 via Frontend
- Transport; Wed, 9 Feb 2022 22:51:00 -0800
+ Transport; Wed, 9 Feb 2022 22:51:08 -0800
 From: Mohan Kumar <mkumard@nvidia.com>
 To: <broonie@kernel.org>, <lgirdwood@gmail.com>, <robh+dt@kernel.org>,
  <thierry.reding@gmail.com>, <tiwai@suse.com>, <jonathanh@nvidia.com>,
  <spujar@nvidia.com>
-Subject: [PATCH v2 0/6] Add Tegra234 HDA support
-Date: Thu, 10 Feb 2022 12:20:51 +0530
-Message-ID: <20220210065057.13555-1-mkumard@nvidia.com>
+Subject: [PATCH v2 2/6] ALSA: hda/tegra: Hardcode GCAP ISS value on T234
+Date: Thu, 10 Feb 2022 12:20:53 +0530
+Message-ID: <20220210065057.13555-3-mkumard@nvidia.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20220210065057.13555-1-mkumard@nvidia.com>
+References: <20220210065057.13555-1-mkumard@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9a690448-03c8-4b38-cdff-08d9ec61b623
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4927:EE_
-X-Microsoft-Antispam-PRVS: <DM6PR12MB49278C44EF1C6C4AA762E839C12F9@DM6PR12MB4927.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
+X-MS-Office365-Filtering-Correlation-Id: 72944eea-044b-4a13-26dc-08d9ec61ba57
+X-MS-TrafficTypeDiagnostic: SA0PR12MB4446:EE_
+X-Microsoft-Antispam-PRVS: <SA0PR12MB4446EBF37E7005DFEAE2B1C2C12F9@SA0PR12MB4446.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: duy1AqUecKJYwznyVPJRen4wDy7i7qV3ntnQHfgGoE/dQTa94ga2z9S1NVjVZ3e/5Tbd4st8UTHthw089tyNxBSRIHJ4Jxof/IubrE3TncGVBYB4YvrSHape4GMakGTTSx3L5ELu/udo5ohtaNCWp2dl9uOqg049DpG5n6GgunC6AY9BZV/2iHxOlO4ghE+PwTMcpLmyYPyoJV48WIhZ2H4V77GYSUFKNfcLTOM0Wz+oT7SmIM0ehBdiGRa8b9yIQBWLlcBlOA9oCZL0eAvjjxorLLloq8AKUJK35Teepep0xK+PMmZEroeYNpNeXfQgECYDBe0CGXX8fMVlDLl9ft/XMGRFqDHvXiwneVprMr4I0DvyUL5ATAv9ldifcs2oalM09T8NYH5MjYMx3KqaPR1KbhWxRKOpjuMkHtSkllZbdGlPQfcG/ofAzHzHP2oLjJMkXfB7NngHSoZyfdRSY+E3BPZapxxzEkUD1zvnDspXh3rCcGXnBgHz4RtMLqT2lsG5t4wt1d2huOD4HZvcs3jiMmLvNlQjrY9JA3uS7RPJP28w7Im9NyaFzQT18K+e8lF6NZzGwFC2zjgOmEKJ0/JGFTi1yv4NkcLRPqz1nbWkEDnqUL8Y36vCEp5Ue1DhpOZ5TPXJjIL6nZi44MEzcWzJBIqPddbYkA7PljrE+GceYHxTU8JRLUiOc6CFVMDG7RxAxI9oPMDpjbB5grfO6eBULMCPy4S1v2+9PfQfLWs=
-X-Forefront-Antispam-Report: CIP:12.22.5.238; CTRY:US; LANG:en; SCL:1; SRV:;
+X-Microsoft-Antispam-Message-Info: +oxbnvQvITJeh+FbQWvA/EMoE4rl7lgKvwowl+Q0EEkwRsVs1BF1cTFHu2EM6ubT9b8PUuG1Ad3Ek5Ix0dv0pAkskE/zbBFoVKA6HjGXI9v4GM/cf0qKO41gBhZ7Dglbl5/tjjuDpg2xAQ8ngzvmelX/ykM01bMOmKzfg4lzf+Sx2ZIMFe6xe1VWSmW2yVaS1oXFk+5s1a6yHJZy8dRGou8m8TSqzE4KHTE3OjM+iQ2TCkFhn/1tCTfO+B5UMzH+A1MNMRy2twuwacUjgReBqYE1veFk/cpwxVoijhu9lXrjNOfsTD99PNyuThwAaCDCAyeDJbVtKt48z2sH4YqvEOldGtJx1JvN+72GhP8viadgqx+S0mp0jonzaubTrjrDfsYH14/F9AblTfb5HIkVuqcSjstYar01NW6luM+BA2iePq/JbthwDj2ko6nlK9x9N1s+8dso/9uhjNFa0CFmMV2n51drGosKDHVGRN2/RLxj6ttKcksFvNTaKkgi2J9JsWOKihsj9VSGewhGS0LX7jp6Pf4POLKNZMu9d7k4FhnAIBeSi9DCtQSNs4P+vXv6vF0FpSGptbfvLSV2iYKQG74ODOtHJh8yvLjNBqWujt2PgshEGbKc9NNTEuybXaD/sNCAbZQE6FC1/UlOfE0ynlBkG9nE5D9nfQS4Z1jC67YCfMIlj7CWCpWApXucxbiInxBmk/UmYd1o88T6AGAqK1TGIF38CH5twh4xJwqkWV4=
+X-Forefront-Antispam-Report: CIP:12.22.5.235; CTRY:US; LANG:en; SCL:1; SRV:;
  IPV:CAL; SFV:NSPM; H:mail.nvidia.com; PTR:InfoNoRecords; CAT:NONE;
- SFS:(13230001)(4636009)(36840700001)(40470700004)(46966006)(5660300002)(316002)(6636002)(4326008)(8676002)(8936002)(110136005)(508600001)(6666004)(7696005)(70206006)(70586007)(54906003)(86362001)(2906002)(186003)(426003)(40460700003)(47076005)(2616005)(1076003)(36860700001)(26005)(4744005)(336012)(82310400004)(36756003)(81166007)(107886003)(356005)(83380400001)(36900700001)(2101003);
+ SFS:(13230001)(4636009)(40470700004)(46966006)(36840700001)(6666004)(2616005)(107886003)(356005)(7696005)(82310400004)(81166007)(5660300002)(316002)(508600001)(36860700001)(110136005)(6636002)(54906003)(2906002)(47076005)(40460700003)(70586007)(36756003)(336012)(70206006)(1076003)(4326008)(8676002)(8936002)(26005)(186003)(426003)(86362001)(36900700001)(2101003);
  DIR:OUT; SFP:1101; 
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Feb 2022 06:51:06.0168 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9a690448-03c8-4b38-cdff-08d9ec61b623
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Feb 2022 06:51:13.0798 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 72944eea-044b-4a13-26dc-08d9ec61ba57
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a; Ip=[12.22.5.238];
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a; Ip=[12.22.5.235];
  Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT030.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT058.eop-nam11.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4927
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4446
 Cc: linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
  alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
  Mohan Kumar <mkumard@nvidia.com>
@@ -134,28 +137,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This series add the support for TEGRA234 HDA driver support
+The GCAP register on Tegra234 implies no Input Streams(ISS)
+supported, but the HW output stream descriptor programming
+should start with offset 0x20*4 from base stream descriptor
+address. This will be a problem while calculating the offset
+for output stream descriptor which will be considering input
+stream also. So here output stream starts with offset 0 which
+is wrong as HW register for output stream offset starts with 4.
+So hardcode the input stream numbers to 4 to avoid the issue
+in offset calculation.
 
-Mohan Kumar (6):
-  ALSA: hda/tegra: Add Tegra234 hda driver support
-  ALSA: hda/tegra: Hardcode GCAP ISS value on T234
-  ALSA: hda/tegra: Update scratch reg. communication
-  dt-bindings: Add HDA support for Tegra234
-  dt-bindings: Document Tegra234 HDA support
-  arm64: tegra: Add hda dts node for Tegra234
+Signed-off-by: Mohan Kumar <mkumard@nvidia.com>
+---
+ sound/pci/hda/hda_tegra.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
- .../bindings/sound/nvidia,tegra30-hda.yaml    |   3 +
- .../nvidia/tegra234-p3737-0000+p3701-0000.dts |   6 +
- arch/arm64/boot/dts/nvidia/tegra234.dtsi      |  18 +++
- include/dt-bindings/clock/tegra234-clock.h    |   4 +
- include/dt-bindings/memory/tegra234-mc.h      |   6 +
- .../dt-bindings/power/tegra234-powergate.h    |   9 ++
- include/dt-bindings/reset/tegra234-reset.h    |   2 +
- sound/pci/hda/hda_tegra.c                     |  33 ++++-
- sound/pci/hda/patch_hdmi.c                    | 118 ++++++++++++++----
- 9 files changed, 175 insertions(+), 24 deletions(-)
- create mode 100644 include/dt-bindings/power/tegra234-powergate.h
-
+diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
+index 95df52b0505b..2347d0304f93 100644
+--- a/sound/pci/hda/hda_tegra.c
++++ b/sound/pci/hda/hda_tegra.c
+@@ -315,6 +315,18 @@ static int hda_tegra_first_init(struct azx *chip, struct platform_device *pdev)
+ 	 * hardcoded value
+ 	 */
+ 	chip->capture_streams = (gcap >> 8) & 0x0f;
++
++	/* The GCAP register on Tegra234 implies no Input Streams(ISS) support,
++	 * but the HW output stream descriptor programming should start with
++	 * offset 0x20*4 from base stream descriptor address. This will be a
++	 * problem while calculating the offset for output stream descriptor
++	 * which will be considering input stream also. So here output stream
++	 * starts with offset 0 which is wrong as HW register for output stream
++	 * offset starts with 4.
++	 */
++	if (of_device_is_compatible(np, "nvidia,tegra234-hda"))
++		chip->capture_streams = 4;
++
+ 	chip->playback_streams = (gcap >> 12) & 0x0f;
+ 	if (!chip->playback_streams && !chip->capture_streams) {
+ 		/* gcap didn't give any info, switching to old method */
 -- 
 2.17.1
 
