@@ -4,65 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B1A0C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Feb 2022 10:58:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9924C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Feb 2022 10:59:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9C49518B0;
-	Thu, 10 Feb 2022 11:57:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C49518B0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5881A1840;
+	Thu, 10 Feb 2022 11:58:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5881A1840
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1644490708;
-	bh=AEfNjRzAVytF6bGBharl5sxyImB1HHqq9vSUPz7ew5I=;
+	s=default; t=1644490755;
+	bh=0a13th8h9Lv5Z+IwxFrXbqOGa1xLawzT2dOPjxWpNgI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AKl+KK/2ZnZnHdS964aP7p4AGugJoBWN/z5YY3y0y4NKlwIMQGw0i1FbbbXzqbfvC
-	 owl+9dBsrCKOF7HalOhtW//VC7CgVvQmLe948Jm8eblHLYoqC/tMMZuM3Iy1OCS5k2
-	 kAinpFlqsmYEXN94JDtCk+bQI6O4y7MhJ++KDpds=
+	b=XPwYSWTlTNt9+dX1HwEybFqOlaev76K2G5Naus6ExNb3mK8hpiyiNaO8lGHMaYt6V
+	 Ozkwf3JzSPpLAxnUk5ZHn1F6h1rOFRKRNCUD/CxcpR/d1WU+Up+zBpsgDDNy/GUdge
+	 6U1LnIyNPlEecZjBlwVcpdvQI2OlpdvKtIUzXvpo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 73BB6F80525;
-	Thu, 10 Feb 2022 11:55:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5ECC3F8053A;
+	Thu, 10 Feb 2022 11:55:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 750B2F8051A; Thu, 10 Feb 2022 11:55:46 +0100 (CET)
+ id 0659AF8051C; Thu, 10 Feb 2022 11:55:51 +0100 (CET)
 Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F0855F80423
- for <alsa-devel@alsa-project.org>; Thu, 10 Feb 2022 11:55:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0855F80423
+ by alsa1.perex.cz (Postfix) with ESMTPS id CD28BF8016C
+ for <alsa-devel@alsa-project.org>; Thu, 10 Feb 2022 11:55:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CD28BF8016C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="T80F8vvi"
+ header.b="WzgfP+g5"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1644490540; x=1676026540;
+ t=1644490546; x=1676026546;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=AEfNjRzAVytF6bGBharl5sxyImB1HHqq9vSUPz7ew5I=;
- b=T80F8vvinGjwPUQ2FMl+fK4Ic5loSIcmoWAUuHAS5VauhCRB2vM53MkX
- PNzmeyodPkzx9H04v12SKA3JlS3tBxwaWoHs0gHHF7RiJV2lxS5PiEyb/
- b7T6TN7DfzHWqy85IWYG7MX/JqOFZD/XiQbAK65n+Ah9s/k2NxDYIz27k
- +/y2xGgWapv3AQq/v5zNShJjsk5d3y3XHh2tgekswRTATMycfbH74QOsL
- AuE8aP6V8tVj4MWjOe1kB7gXdIMvtPugST+SSZmQOVoSgIQCw64QdQqJk
- FxrbEeJVQUEPETGpVD1JvbBF1I1HGhQiMCXb0sF9U3jXz9AlFoVkDUJz/ g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10253"; a="310202865"
-X-IronPort-AV: E=Sophos;i="5.88,358,1635231600"; d="scan'208";a="310202865"
+ bh=0a13th8h9Lv5Z+IwxFrXbqOGa1xLawzT2dOPjxWpNgI=;
+ b=WzgfP+g5/W09NiBdON24NSeIBUMx9vmlAnhEPT/jLvLZBuWAl+XoFmDx
+ M7cVjXtZCnV9yfUfvVLTCeiPOKcnKJT2RH5usJ+qBFc9/FE46Xf5bWSmZ
+ +iW6qg8rp0iFH7PBzgHHBPqLGAWs/Xc//Iqdzsw5x3uW/l54/kloOxLRY
+ EOqudTJYDUjX58c9WtH6fLkA2Cb3NDqd8WLzfpzdL7dIdpdcmwX/0DWrf
+ TkfiDXwK91pdDaemkW6xhjMdd6JmU1t9TW+82eIpysu1D0hZTGa3jea+M
+ HyRj3U3Vy3kG5EhurwcxZZt4oOlqzzjtf7xEJ2Lab7hTbGskgH0s0y4Va Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10253"; a="310202882"
+X-IronPort-AV: E=Sophos;i="5.88,358,1635231600"; d="scan'208";a="310202882"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Feb 2022 02:55:38 -0800
-X-IronPort-AV: E=Sophos;i="5.88,358,1635231600"; d="scan'208";a="679106856"
+ 10 Feb 2022 02:55:44 -0800
+X-IronPort-AV: E=Sophos;i="5.88,358,1635231600"; d="scan'208";a="679106866"
 Received: from barabano-mobl.ccr.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.41.18])
  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Feb 2022 02:55:35 -0800
+ 10 Feb 2022 02:55:41 -0800
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com, broonie@kernel.org,
  pierre-louis.bossart@linux.intel.com, ranjani.sridharan@linux.intel.com
-Subject: [PATCH 5/9] ASoC: SOF: Introduce IPC SOF client support
-Date: Thu, 10 Feb 2022 12:55:15 +0200
-Message-Id: <20220210105519.19795-6-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 7/9] ASoC: SOF: Convert the generic IPC flood test into SOF
+ client
+Date: Thu, 10 Feb 2022 12:55:17 +0200
+Message-Id: <20220210105519.19795-8-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220210105519.19795-1-peter.ujfalusi@linux.intel.com>
 References: <20220210105519.19795-1-peter.ujfalusi@linux.intel.com>
@@ -85,25 +86,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-A client in the SOF (Sound Open Firmware) context is a driver that needs
-to communicate with the DSP via IPC messages. The SOF core is responsible
-for serializing the IPC messages to the DSP from the different clients.
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
-One example of an SOF client would be an IPC test client that floods the
-DSP with test IPC messages to validate if the serialization works as
-expected.
+Move the IPC flood test code out from the debug file as separate SOF client
+driver.
 
-Multi-client support will also add the ability to split the existing audio
-cards into multiple ones, so as to e.g. to deal with HDMI with a dedicated
-client instead of adding HDMI to all cards.
-
-This patch introduces descriptors for SOF client driver and SOF client
-device along with APIs for registering and unregistering a SOF client
-driver, sending IPCs from a client device and accessing the SOF core
-debugfs root entry.
-
-Along with this, add a couple of new members to struct snd_sof_dev that
-will be used for maintaining the list of clients.
+Based on the kernel configuration, the device registration for the new IPC
+flood test is going to happen in the core.
+With the separate client driver it is going to be possible to run multiple
+flood tests in parallel to increase the stress, the new Kconfig option can
+be used to select this (defaults to 1).
+In order to preserve backward compatibility with existing SW/scripts, the
+first IPC flood test's debugfs files have been linked to the old files.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
@@ -113,193 +107,361 @@ Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/Kconfig      |   7 +
- sound/soc/sof/Makefile     |   1 +
- sound/soc/sof/core.c       |  43 ++++-
- sound/soc/sof/ipc.c        |  25 +--
- sound/soc/sof/sof-client.c | 340 +++++++++++++++++++++++++++++++++++++
- sound/soc/sof/sof-client.h |  67 ++++++++
- sound/soc/sof/sof-priv.h   |  78 ++++++++-
- 7 files changed, 540 insertions(+), 21 deletions(-)
- create mode 100644 sound/soc/sof/sof-client.c
- create mode 100644 sound/soc/sof/sof-client.h
+ sound/soc/sof/Kconfig                     |  16 +-
+ sound/soc/sof/Makefile                    |   4 +
+ sound/soc/sof/core.c                      |   1 +
+ sound/soc/sof/debug.c                     | 231 -------------
+ sound/soc/sof/sof-client-ipc-flood-test.c | 396 ++++++++++++++++++++++
+ sound/soc/sof/sof-client.c                |  56 ++-
+ sound/soc/sof/sof-priv.h                  |   6 +-
+ 7 files changed, 469 insertions(+), 241 deletions(-)
+ create mode 100644 sound/soc/sof/sof-client-ipc-flood-test.c
 
 diff --git a/sound/soc/sof/Kconfig b/sound/soc/sof/Kconfig
-index 1a7d6cefd3b7..468d7c113dae 100644
+index 468d7c113dae..3f8a2cadd2f8 100644
 --- a/sound/soc/sof/Kconfig
 +++ b/sound/soc/sof/Kconfig
-@@ -61,6 +61,13 @@ config SND_SOC_SOF_DEBUG_PROBES
- 	  Say Y if you want to enable probes.
+@@ -194,13 +194,23 @@ config SND_SOC_SOF_DEBUG_ENABLE_FIRMWARE_TRACE
  	  If unsure, select "N".
  
-+config SND_SOC_SOF_CLIENT
-+	tristate
-+	select AUXILIARY_BUS
+ config SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST
+-	bool "SOF enable IPC flood test"
++	tristate "SOF enable IPC flood test"
++	select SND_SOC_SOF_CLIENT
+ 	help
+-	  This option enables the IPC flood test which can be used to flood
+-	  the DSP with test IPCs and gather stats about response times.
++	  This option enables a separate client device for IPC flood test
++	  which can be used to flood the DSP with test IPCs and gather stats
++	  about response times.
+ 	  Say Y if you want to enable IPC flood test.
+ 	  If unsure, select "N".
+ 
++config SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST_NUM
++	int "Number of IPC flood test clients"
++	range 1 32
++	default 2
++	depends on SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST
 +	help
-+	  This option is not user-selectable but automagically handled by
-+	  'select' statements at a higher level.
++	  Select the number of IPC flood test clients to be created.
 +
- config SND_SOC_SOF_DEVELOPER_SUPPORT
- 	bool "SOF developer options support"
- 	depends on EXPERT && SND_SOC_SOF
+ config SND_SOC_SOF_DEBUG_IPC_MSG_INJECTOR
+ 	bool "SOF enable IPC message injector"
+ 	help
 diff --git a/sound/soc/sof/Makefile b/sound/soc/sof/Makefile
-index 4b9fccacc2b7..38ce2fe376fa 100644
+index 38ce2fe376fa..964eff43c9ba 100644
 --- a/sound/soc/sof/Makefile
 +++ b/sound/soc/sof/Makefile
-@@ -2,6 +2,7 @@
+@@ -11,6 +11,8 @@ snd-sof-pci-objs := sof-pci-dev.o
+ snd-sof-acpi-objs := sof-acpi-dev.o
+ snd-sof-of-objs := sof-of-dev.o
  
- snd-sof-objs := core.o ops.o loader.o ipc.o pcm.o pm.o debug.o topology.o\
- 		control.o trace.o iomem-utils.o sof-audio.o stream-ipc.o
-+snd-sof-$(CONFIG_SND_SOC_SOF_CLIENT) += sof-client.o
++snd-sof-ipc-flood-test-objs := sof-client-ipc-flood-test.o
++
+ snd-sof-nocodec-objs := nocodec.o
  
- snd-sof-$(CONFIG_SND_SOC_SOF_DEBUG_PROBES) += sof-probes.o
- snd-sof-$(CONFIG_SND_SOC_SOF_COMPRESS) += compress.o
+ snd-sof-utils-objs := sof-utils.o
+@@ -24,6 +26,8 @@ obj-$(CONFIG_SND_SOC_SOF_ACPI_DEV) += snd-sof-acpi.o
+ obj-$(CONFIG_SND_SOC_SOF_OF_DEV) += snd-sof-of.o
+ obj-$(CONFIG_SND_SOC_SOF_PCI_DEV) += snd-sof-pci.o
+ 
++obj-$(CONFIG_SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST) += snd-sof-ipc-flood-test.o
++
+ obj-$(CONFIG_SND_SOC_SOF_INTEL_TOPLEVEL) += intel/
+ obj-$(CONFIG_SND_SOC_SOF_IMX_TOPLEVEL) += imx/
+ obj-$(CONFIG_SND_SOC_SOF_AMD_TOPLEVEL) += amd/
 diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
-index 8f32b5b12b3e..2aabaac9007f 100644
+index 2aabaac9007f..f29fe573ec3c 100644
 --- a/sound/soc/sof/core.c
 +++ b/sound/soc/sof/core.c
-@@ -122,6 +122,27 @@ void sof_print_oops_and_stack(struct snd_sof_dev *sdev, const char *level,
+@@ -484,3 +484,4 @@ MODULE_AUTHOR("Liam Girdwood");
+ MODULE_DESCRIPTION("Sound Open Firmware (SOF) Core");
+ MODULE_LICENSE("Dual BSD/GPL");
+ MODULE_ALIAS("platform:sof-audio");
++MODULE_IMPORT_NS(SND_SOC_SOF_CLIENT);
+diff --git a/sound/soc/sof/debug.c b/sound/soc/sof/debug.c
+index 6d6757075f7c..e3a5f77bbd4d 100644
+--- a/sound/soc/sof/debug.c
++++ b/sound/soc/sof/debug.c
+@@ -234,107 +234,6 @@ static int snd_sof_debugfs_probe_item(struct snd_sof_dev *sdev,
  }
- EXPORT_SYMBOL(sof_print_oops_and_stack);
- 
-+/* Helper to manage DSP state */
-+void sof_set_fw_state(struct snd_sof_dev *sdev, enum sof_fw_state new_state)
-+{
-+	if (sdev->fw_state == new_state)
-+		return;
-+
-+	dev_dbg(sdev->dev, "fw_state change: %d -> %d\n", sdev->fw_state, new_state);
-+	sdev->fw_state = new_state;
-+
-+	switch (new_state) {
-+	case SOF_FW_BOOT_NOT_STARTED:
-+	case SOF_FW_BOOT_COMPLETE:
-+	case SOF_FW_CRASHED:
-+		sof_client_fw_state_dispatcher(sdev);
-+		fallthrough;
-+	default:
-+		break;
-+	}
-+}
-+EXPORT_SYMBOL(sof_set_fw_state);
-+
- /*
-  *			FW Boot State Transition Diagram
-  *
-@@ -266,6 +287,12 @@ static int sof_probe_continue(struct snd_sof_dev *sdev)
- 		goto fw_trace_err;
- 	}
- 
-+	ret = sof_register_clients(sdev);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "failed to register clients %d\n", ret);
-+		goto sof_machine_err;
-+	}
-+
- 	/*
- 	 * Some platforms in SOF, ex: BYT, may not have their platform PM
- 	 * callbacks set. Increment the usage count so as to
-@@ -281,6 +308,8 @@ static int sof_probe_continue(struct snd_sof_dev *sdev)
- 
- 	return 0;
- 
-+sof_machine_err:
-+	snd_sof_machine_unregister(sdev, plat_data);
- fw_trace_err:
- 	snd_sof_free_trace(sdev);
- fw_run_err:
-@@ -329,7 +358,6 @@ int snd_sof_device_probe(struct device *dev, struct snd_sof_pdata *plat_data)
- 
- 	sdev->pdata = plat_data;
- 	sdev->first_boot = true;
--	sof_set_fw_state(sdev, SOF_FW_BOOT_NOT_STARTED);
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_PROBES)
- 	sdev->extractor_stream_tag = SOF_PROBE_INVALID_NODE_ID;
  #endif
-@@ -350,9 +378,14 @@ int snd_sof_device_probe(struct device *dev, struct snd_sof_pdata *plat_data)
- 	INIT_LIST_HEAD(&sdev->widget_list);
- 	INIT_LIST_HEAD(&sdev->dai_list);
- 	INIT_LIST_HEAD(&sdev->route_list);
-+	INIT_LIST_HEAD(&sdev->ipc_client_list);
-+	INIT_LIST_HEAD(&sdev->ipc_rx_handler_list);
-+	INIT_LIST_HEAD(&sdev->fw_state_handler_list);
- 	spin_lock_init(&sdev->ipc_lock);
- 	spin_lock_init(&sdev->hw_lock);
- 	mutex_init(&sdev->power_state_access);
-+	mutex_init(&sdev->ipc_client_mutex);
-+	mutex_init(&sdev->client_event_handler_mutex);
  
- 	/* set default timeouts if none provided */
- 	if (plat_data->desc->ipc_timeout == 0)
-@@ -364,6 +397,8 @@ int snd_sof_device_probe(struct device *dev, struct snd_sof_pdata *plat_data)
- 	else
- 		sdev->boot_timeout = plat_data->desc->boot_timeout;
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST)
+-#define MAX_IPC_FLOOD_DURATION_MS 1000
+-#define MAX_IPC_FLOOD_COUNT 10000
+-#define IPC_FLOOD_TEST_RESULT_LEN 512
+-
+-static int sof_debug_ipc_flood_test(struct snd_sof_dev *sdev,
+-				    struct snd_sof_dfsentry *dfse,
+-				    bool flood_duration_test,
+-				    unsigned long ipc_duration_ms,
+-				    unsigned long ipc_count)
+-{
+-	struct sof_ipc_cmd_hdr hdr;
+-	struct sof_ipc_reply reply;
+-	u64 min_response_time = U64_MAX;
+-	ktime_t start, end, test_end;
+-	u64 avg_response_time = 0;
+-	u64 max_response_time = 0;
+-	u64 ipc_response_time;
+-	int i = 0;
+-	int ret;
+-
+-	/* configure test IPC */
+-	hdr.cmd = SOF_IPC_GLB_TEST_MSG | SOF_IPC_TEST_IPC_FLOOD;
+-	hdr.size = sizeof(hdr);
+-
+-	/* set test end time for duration flood test */
+-	if (flood_duration_test)
+-		test_end = ktime_get_ns() + ipc_duration_ms * NSEC_PER_MSEC;
+-
+-	/* send test IPC's */
+-	while (1) {
+-		start = ktime_get();
+-		ret = sof_ipc_tx_message(sdev->ipc, hdr.cmd, &hdr, hdr.size,
+-					 &reply, sizeof(reply));
+-		end = ktime_get();
+-
+-		if (ret < 0)
+-			break;
+-
+-		/* compute min and max response times */
+-		ipc_response_time = ktime_to_ns(ktime_sub(end, start));
+-		min_response_time = min(min_response_time, ipc_response_time);
+-		max_response_time = max(max_response_time, ipc_response_time);
+-
+-		/* sum up response times */
+-		avg_response_time += ipc_response_time;
+-		i++;
+-
+-		/* test complete? */
+-		if (flood_duration_test) {
+-			if (ktime_to_ns(end) >= test_end)
+-				break;
+-		} else {
+-			if (i == ipc_count)
+-				break;
+-		}
+-	}
+-
+-	if (ret < 0)
+-		dev_err(sdev->dev,
+-			"error: ipc flood test failed at %d iterations\n", i);
+-
+-	/* return if the first IPC fails */
+-	if (!i)
+-		return ret;
+-
+-	/* compute average response time */
+-	do_div(avg_response_time, i);
+-
+-	/* clear previous test output */
+-	memset(dfse->cache_buf, 0, IPC_FLOOD_TEST_RESULT_LEN);
+-
+-	if (flood_duration_test) {
+-		dev_dbg(sdev->dev, "IPC Flood test duration: %lums\n",
+-			ipc_duration_ms);
+-		snprintf(dfse->cache_buf, IPC_FLOOD_TEST_RESULT_LEN,
+-			 "IPC Flood test duration: %lums\n", ipc_duration_ms);
+-	}
+-
+-	dev_dbg(sdev->dev,
+-		"IPC Flood count: %d, Avg response time: %lluns\n",
+-		i, avg_response_time);
+-	dev_dbg(sdev->dev, "Max response time: %lluns\n",
+-		max_response_time);
+-	dev_dbg(sdev->dev, "Min response time: %lluns\n",
+-		min_response_time);
+-
+-	/* format output string */
+-	snprintf(dfse->cache_buf + strlen(dfse->cache_buf),
+-		 IPC_FLOOD_TEST_RESULT_LEN - strlen(dfse->cache_buf),
+-		 "IPC Flood count: %d\nAvg response time: %lluns\n",
+-		 i, avg_response_time);
+-
+-	snprintf(dfse->cache_buf + strlen(dfse->cache_buf),
+-		 IPC_FLOOD_TEST_RESULT_LEN - strlen(dfse->cache_buf),
+-		 "Max response time: %lluns\nMin response time: %lluns\n",
+-		 max_response_time, min_response_time);
+-
+-	return ret;
+-}
+-#endif
  
-+	sof_set_fw_state(sdev, SOF_FW_BOOT_NOT_STARTED);
-+
- 	if (IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE)) {
- 		INIT_WORK(&sdev->probe_work, sof_probe_work);
- 		schedule_work(&sdev->probe_work);
-@@ -391,6 +426,12 @@ int snd_sof_device_remove(struct device *dev)
- 	if (IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE))
- 		cancel_work_sync(&sdev->probe_work);
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_MSG_INJECTOR)
+ static ssize_t msg_inject_read(struct file *file, char __user *buffer,
+@@ -437,15 +336,6 @@ static int snd_sof_debugfs_msg_inject_item(struct snd_sof_dev *sdev,
+ static ssize_t sof_dfsentry_write(struct file *file, const char __user *buffer,
+ 				  size_t count, loff_t *ppos)
+ {
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST)
+-	struct snd_sof_dfsentry *dfse = file->private_data;
+-	struct snd_sof_dev *sdev = dfse->sdev;
+-	unsigned long ipc_duration_ms = 0;
+-	bool flood_duration_test = false;
+-	unsigned long ipc_count = 0;
+-	struct dentry *dentry;
+-	int err;
+-#endif
+ 	size_t size;
+ 	char *string;
+ 	int ret;
+@@ -457,78 +347,6 @@ static ssize_t sof_dfsentry_write(struct file *file, const char __user *buffer,
+ 	size = simple_write_to_buffer(string, count, ppos, buffer, count);
+ 	ret = size;
  
-+	/*
-+	 * Unregister any registered client device first before IPC and debugfs
-+	 * to allow client drivers to be removed cleanly
-+	 */
-+	sof_unregister_clients(sdev);
-+
- 	/*
- 	 * Unregister machine driver. This will unbind the snd_card which
- 	 * will remove the component driver and unload the topology
-diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
-index ee56d4fa4053..c729bb7bf8c8 100644
---- a/sound/soc/sof/ipc.c
-+++ b/sound/soc/sof/ipc.c
-@@ -557,22 +557,25 @@ void snd_sof_ipc_msgs_rx(struct snd_sof_dev *sdev)
- 		break;
- 	}
- 
--	if (rx_callback) {
--		/* read the full message as we have rx handler for it */
--		msg_buf = kmalloc(hdr.size, GFP_KERNEL);
--		if (!msg_buf)
--			return;
-+	/* read the full message */
-+	msg_buf = kmalloc(hdr.size, GFP_KERNEL);
-+	if (!msg_buf)
-+		return;
- 
--		err = snd_sof_ipc_msg_data(sdev, NULL, msg_buf, hdr.size);
--		if (err < 0)
--			dev_err(sdev->dev, "%s: Failed to read message: %d\n",
--				__func__, err);
--		else
-+	err = snd_sof_ipc_msg_data(sdev, NULL, msg_buf, hdr.size);
-+	if (err < 0) {
-+		dev_err(sdev->dev, "%s: Failed to read message: %d\n", __func__, err);
-+	} else {
-+		/* Call local handler for the message */
-+		if (rx_callback)
- 			rx_callback(sdev, msg_buf);
- 
--		kfree(msg_buf);
-+		/* Notify registered clients */
-+		sof_client_ipc_rx_dispatcher(sdev, msg_buf);
- 	}
- 
-+	kfree(msg_buf);
-+
- 	ipc_log_header(sdev->dev, "ipc rx done", hdr.cmd);
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST)
+-	/*
+-	 * write op is only supported for ipc_flood_count or
+-	 * ipc_flood_duration_ms debugfs entries atm.
+-	 * ipc_flood_count floods the DSP with the number of IPC's specified.
+-	 * ipc_duration_ms test floods the DSP for the time specified
+-	 * in the debugfs entry.
+-	 */
+-	dentry = file->f_path.dentry;
+-	if (strcmp(dentry->d_name.name, "ipc_flood_count") &&
+-	    strcmp(dentry->d_name.name, "ipc_flood_duration_ms")) {
+-		ret = -EINVAL;
+-		goto out;
+-	}
+-
+-	if (!strcmp(dentry->d_name.name, "ipc_flood_duration_ms"))
+-		flood_duration_test = true;
+-
+-	/* test completion criterion */
+-	if (flood_duration_test)
+-		ret = kstrtoul(string, 0, &ipc_duration_ms);
+-	else
+-		ret = kstrtoul(string, 0, &ipc_count);
+-	if (ret < 0)
+-		goto out;
+-
+-	/* limit max duration/ipc count for flood test */
+-	if (flood_duration_test) {
+-		if (!ipc_duration_ms) {
+-			ret = size;
+-			goto out;
+-		}
+-
+-		/* find the minimum. min() is not used to avoid warnings */
+-		if (ipc_duration_ms > MAX_IPC_FLOOD_DURATION_MS)
+-			ipc_duration_ms = MAX_IPC_FLOOD_DURATION_MS;
+-	} else {
+-		if (!ipc_count) {
+-			ret = size;
+-			goto out;
+-		}
+-
+-		/* find the minimum. min() is not used to avoid warnings */
+-		if (ipc_count > MAX_IPC_FLOOD_COUNT)
+-			ipc_count = MAX_IPC_FLOOD_COUNT;
+-	}
+-
+-	ret = pm_runtime_get_sync(sdev->dev);
+-	if (ret < 0 && ret != -EACCES) {
+-		dev_err_ratelimited(sdev->dev,
+-				    "error: debugfs write failed to resume %d\n",
+-				    ret);
+-		pm_runtime_put_noidle(sdev->dev);
+-		goto out;
+-	}
+-
+-	/* flood test */
+-	ret = sof_debug_ipc_flood_test(sdev, dfse, flood_duration_test,
+-				       ipc_duration_ms, ipc_count);
+-
+-	pm_runtime_mark_last_busy(sdev->dev);
+-	err = pm_runtime_put_autosuspend(sdev->dev);
+-	if (err < 0)
+-		dev_err_ratelimited(sdev->dev,
+-				    "error: debugfs write failed to idle %d\n",
+-				    err);
+-
+-	/* return size if test is successful */
+-	if (ret >= 0)
+-		ret = size;
+-out:
+-#endif
+ 	kfree(string);
+ 	return ret;
  }
- EXPORT_SYMBOL(snd_sof_ipc_msgs_rx);
-diff --git a/sound/soc/sof/sof-client.c b/sound/soc/sof/sof-client.c
+@@ -544,24 +362,6 @@ static ssize_t sof_dfsentry_read(struct file *file, char __user *buffer,
+ 	int size;
+ 	u8 *buf;
+ 
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST)
+-	struct dentry *dentry;
+-
+-	dentry = file->f_path.dentry;
+-	if ((!strcmp(dentry->d_name.name, "ipc_flood_count") ||
+-	     !strcmp(dentry->d_name.name, "ipc_flood_duration_ms"))) {
+-		if (*ppos)
+-			return 0;
+-
+-		count = strlen(dfse->cache_buf);
+-		size_ret = copy_to_user(buffer, dfse->cache_buf, count);
+-		if (size_ret)
+-			return -EFAULT;
+-
+-		*ppos += count;
+-		return count;
+-	}
+-#endif
+ 	size = dfse->size;
+ 
+ 	/* validate position & count */
+@@ -719,19 +519,6 @@ int snd_sof_debugfs_buf_item(struct snd_sof_dev *sdev,
+ 	dfse->size = size;
+ 	dfse->sdev = sdev;
+ 
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST)
+-	if (!strncmp(name, "ipc_flood", strlen("ipc_flood"))) {
+-		/*
+-		 * cache_buf is unused for SOF_DFSENTRY_TYPE_BUF debugfs entries.
+-		 * So, use it to save the results of the last IPC flood test.
+-		 */
+-		dfse->cache_buf = devm_kzalloc(sdev->dev, IPC_FLOOD_TEST_RESULT_LEN,
+-					       GFP_KERNEL);
+-		if (!dfse->cache_buf)
+-			return -ENOMEM;
+-	}
+-#endif
+-
+ 	debugfs_create_file(name, mode, sdev->debugfs_root, dfse,
+ 			    &sof_dfs_fops);
+ 	/* add to dfsentry list */
+@@ -892,24 +679,6 @@ int snd_sof_dbg_init(struct snd_sof_dev *sdev)
+ 		return err;
+ #endif
+ 
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST)
+-	/* create read-write ipc_flood_count debugfs entry */
+-	err = snd_sof_debugfs_buf_item(sdev, NULL, 0,
+-				       "ipc_flood_count", 0666);
+-
+-	/* errors are only due to memory allocation, not debugfs */
+-	if (err < 0)
+-		return err;
+-
+-	/* create read-write ipc_flood_duration_ms debugfs entry */
+-	err = snd_sof_debugfs_buf_item(sdev, NULL, 0,
+-				       "ipc_flood_duration_ms", 0666);
+-
+-	/* errors are only due to memory allocation, not debugfs */
+-	if (err < 0)
+-		return err;
+-#endif
+-
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_MSG_INJECTOR)
+ 	err = snd_sof_debugfs_msg_inject_item(sdev, "ipc_msg_inject", 0644,
+ 					      &msg_inject_fops);
+diff --git a/sound/soc/sof/sof-client-ipc-flood-test.c b/sound/soc/sof/sof-client-ipc-flood-test.c
 new file mode 100644
-index 000000000000..6f747d051b59
+index 000000000000..db3a052c5dd2
 --- /dev/null
-+++ b/sound/soc/sof/sof-client.c
-@@ -0,0 +1,340 @@
++++ b/sound/soc/sof/sof-client-ipc-flood-test.c
+@@ -0,0 +1,396 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +//
 +// Copyright(c) 2022 Intel Corporation. All rights reserved.
@@ -308,519 +470,495 @@ index 000000000000..6f747d051b59
 +//	    Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 +//
 +
++#include <linux/auxiliary_bus.h>
++#include <linux/completion.h>
 +#include <linux/debugfs.h>
-+#include <linux/errno.h>
-+#include <linux/list.h>
++#include <linux/ktime.h>
++#include <linux/mod_devicetable.h>
 +#include <linux/module.h>
-+#include <linux/mutex.h>
++#include <linux/pm_runtime.h>
 +#include <linux/slab.h>
-+#include "ops.h"
++#include <linux/uaccess.h>
++#include <sound/sof/header.h>
++
 +#include "sof-client.h"
-+#include "sof-priv.h"
 +
-+/**
-+ * struct sof_ipc_event_entry - IPC client event description
-+ * @ipc_msg_type:	IPC msg type of the event the client is interested
-+ * @cdev:		sof_client_dev of the requesting client
-+ * @callback:		Callback function of the client
-+ * @list:		item in SOF core client event list
-+ */
-+struct sof_ipc_event_entry {
-+	u32 ipc_msg_type;
-+	struct sof_client_dev *cdev;
-+	sof_client_event_callback callback;
-+	struct list_head list;
++#define MAX_IPC_FLOOD_DURATION_MS	1000
++#define MAX_IPC_FLOOD_COUNT		10000
++#define IPC_FLOOD_TEST_RESULT_LEN	512
++#define SOF_IPC_CLIENT_SUSPEND_DELAY_MS	3000
++
++#define DEBUGFS_IPC_FLOOD_COUNT		"ipc_flood_count"
++#define DEBUGFS_IPC_FLOOD_DURATION	"ipc_flood_duration_ms"
++
++struct sof_ipc_flood_priv {
++	struct dentry *dfs_root;
++	struct dentry *dfs_link[2];
++	char *buf;
 +};
 +
-+/**
-+ * struct sof_state_event_entry - DSP panic event subscription entry
-+ * @cdev:		sof_client_dev of the requesting client
-+ * @callback:		Callback function of the client
-+ * @list:		item in SOF core client event list
-+ */
-+struct sof_state_event_entry {
-+	struct sof_client_dev *cdev;
-+	sof_client_fw_state_callback callback;
-+	struct list_head list;
-+};
-+
-+static void sof_client_auxdev_release(struct device *dev)
++static int sof_ipc_flood_dfs_open(struct inode *inode, struct file *file)
 +{
-+	struct auxiliary_device *auxdev = to_auxiliary_dev(dev);
-+	struct sof_client_dev *cdev = auxiliary_dev_to_sof_client_dev(auxdev);
-+
-+	kfree(cdev->auxdev.dev.platform_data);
-+	kfree(cdev);
-+}
-+
-+static int sof_client_dev_add_data(struct sof_client_dev *cdev, const void *data,
-+				   size_t size)
-+{
-+	void *d = NULL;
-+
-+	if (data) {
-+		d = kmemdup(data, size, GFP_KERNEL);
-+		if (!d)
-+			return -ENOMEM;
-+	}
-+
-+	cdev->auxdev.dev.platform_data = d;
-+	return 0;
-+}
-+
-+int sof_register_clients(struct snd_sof_dev *sdev)
-+{
-+	if (sof_ops(sdev) && sof_ops(sdev)->register_ipc_clients)
-+		return sof_ops(sdev)->register_ipc_clients(sdev);
-+
-+	return 0;
-+}
-+
-+void sof_unregister_clients(struct snd_sof_dev *sdev)
-+{
-+	if (sof_ops(sdev) && sof_ops(sdev)->unregister_ipc_clients)
-+		sof_ops(sdev)->unregister_ipc_clients(sdev);
-+}
-+
-+int sof_client_dev_register(struct snd_sof_dev *sdev, const char *name, u32 id,
-+			    const void *data, size_t size)
-+{
-+	struct auxiliary_device *auxdev;
-+	struct sof_client_dev *cdev;
++	struct sof_client_dev *cdev = inode->i_private;
 +	int ret;
 +
-+	cdev = kzalloc(sizeof(*cdev), GFP_KERNEL);
-+	if (!cdev)
-+		return -ENOMEM;
++	if (sof_client_get_fw_state(cdev) == SOF_FW_CRASHED)
++		return -ENODEV;
 +
-+	cdev->sdev = sdev;
-+	auxdev = &cdev->auxdev;
-+	auxdev->name = name;
-+	auxdev->dev.parent = sdev->dev;
-+	auxdev->dev.release = sof_client_auxdev_release;
-+	auxdev->id = id;
-+
-+	ret = sof_client_dev_add_data(cdev, data, size);
-+	if (ret < 0)
-+		goto err_dev_add_data;
-+
-+	ret = auxiliary_device_init(auxdev);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "failed to initialize client dev %s.%d\n", name, id);
-+		goto err_dev_init;
-+	}
-+
-+	ret = auxiliary_device_add(&cdev->auxdev);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "failed to add client dev %s.%d\n", name, id);
-+		/*
-+		 * sof_client_auxdev_release() will be invoked to free up memory
-+		 * allocations through put_device()
-+		 */
-+		auxiliary_device_uninit(&cdev->auxdev);
++	ret = debugfs_file_get(file->f_path.dentry);
++	if (unlikely(ret))
 +		return ret;
-+	}
 +
-+	/* add to list of SOF client devices */
-+	mutex_lock(&sdev->ipc_client_mutex);
-+	list_add(&cdev->list, &sdev->ipc_client_list);
-+	mutex_unlock(&sdev->ipc_client_mutex);
-+
-+	return 0;
-+
-+err_dev_init:
-+	kfree(cdev->auxdev.dev.platform_data);
-+
-+err_dev_add_data:
-+	kfree(cdev);
++	ret = simple_open(inode, file);
++	if (ret)
++		debugfs_file_put(file->f_path.dentry);
 +
 +	return ret;
 +}
-+EXPORT_SYMBOL_NS_GPL(sof_client_dev_register, SND_SOC_SOF_CLIENT);
 +
-+void sof_client_dev_unregister(struct snd_sof_dev *sdev, const char *name, u32 id)
++/*
++ * helper function to perform the flood test. Only one of the two params, ipc_duration_ms
++ * or ipc_count, will be non-zero and will determine the type of test
++ */
++static int sof_debug_ipc_flood_test(struct sof_client_dev *cdev,
++				    bool flood_duration_test,
++				    unsigned long ipc_duration_ms,
++				    unsigned long ipc_count)
 +{
-+	struct sof_client_dev *cdev;
++	struct sof_ipc_flood_priv *priv = cdev->data;
++	struct device *dev = &cdev->auxdev.dev;
++	struct sof_ipc_cmd_hdr hdr;
++	struct sof_ipc_reply reply;
++	u64 min_response_time = U64_MAX;
++	ktime_t start, end, test_end;
++	u64 avg_response_time = 0;
++	u64 max_response_time = 0;
++	u64 ipc_response_time;
++	int i = 0;
++	int ret;
 +
-+	mutex_lock(&sdev->ipc_client_mutex);
++	/* configure test IPC */
++	hdr.cmd = SOF_IPC_GLB_TEST_MSG | SOF_IPC_TEST_IPC_FLOOD;
++	hdr.size = sizeof(hdr);
++
++	/* set test end time for duration flood test */
++	if (flood_duration_test)
++		test_end = ktime_get_ns() + ipc_duration_ms * NSEC_PER_MSEC;
++
++	/* send test IPC's */
++	while (1) {
++		start = ktime_get();
++		ret = sof_client_ipc_tx_message(cdev, &hdr, &reply, sizeof(reply));
++		end = ktime_get();
++
++		if (ret < 0)
++			break;
++
++		/* compute min and max response times */
++		ipc_response_time = ktime_to_ns(ktime_sub(end, start));
++		min_response_time = min(min_response_time, ipc_response_time);
++		max_response_time = max(max_response_time, ipc_response_time);
++
++		/* sum up response times */
++		avg_response_time += ipc_response_time;
++		i++;
++
++		/* test complete? */
++		if (flood_duration_test) {
++			if (ktime_to_ns(end) >= test_end)
++				break;
++		} else {
++			if (i == ipc_count)
++				break;
++		}
++	}
++
++	if (ret < 0)
++		dev_err(dev, "ipc flood test failed at %d iterations\n", i);
++
++	/* return if the first IPC fails */
++	if (!i)
++		return ret;
++
++	/* compute average response time */
++	do_div(avg_response_time, i);
++
++	/* clear previous test output */
++	memset(priv->buf, 0, IPC_FLOOD_TEST_RESULT_LEN);
++
++	if (!ipc_count) {
++		dev_dbg(dev, "IPC Flood test duration: %lums\n", ipc_duration_ms);
++		snprintf(priv->buf, IPC_FLOOD_TEST_RESULT_LEN,
++			 "IPC Flood test duration: %lums\n", ipc_duration_ms);
++	}
++
++	dev_dbg(dev, "IPC Flood count: %d, Avg response time: %lluns\n",
++		i, avg_response_time);
++	dev_dbg(dev, "Max response time: %lluns\n", max_response_time);
++	dev_dbg(dev, "Min response time: %lluns\n", min_response_time);
++
++	/* format output string and save test results */
++	snprintf(priv->buf + strlen(priv->buf),
++		 IPC_FLOOD_TEST_RESULT_LEN - strlen(priv->buf),
++		 "IPC Flood count: %d\nAvg response time: %lluns\n",
++		 i, avg_response_time);
++
++	snprintf(priv->buf + strlen(priv->buf),
++		 IPC_FLOOD_TEST_RESULT_LEN - strlen(priv->buf),
++		 "Max response time: %lluns\nMin response time: %lluns\n",
++		 max_response_time, min_response_time);
++
++	return ret;
++}
++
++/*
++ * Writing to the debugfs entry initiates the IPC flood test based on
++ * the IPC count or the duration specified by the user.
++ */
++static ssize_t sof_ipc_flood_dfs_write(struct file *file, const char __user *buffer,
++				       size_t count, loff_t *ppos)
++{
++	struct sof_client_dev *cdev = file->private_data;
++	struct device *dev = &cdev->auxdev.dev;
++	unsigned long ipc_duration_ms = 0;
++	bool flood_duration_test = false;
++	unsigned long ipc_count = 0;
++	struct dentry *dentry;
++	int err;
++	size_t size;
++	char *string;
++	int ret;
++
++	string = kzalloc(count + 1, GFP_KERNEL);
++	if (!string)
++		return -ENOMEM;
++
++	size = simple_write_to_buffer(string, count, ppos, buffer, count);
 +
 +	/*
-+	 * sof_client_auxdev_release() will be invoked to free up memory
-+	 * allocations through put_device()
++	 * write op is only supported for ipc_flood_count or
++	 * ipc_flood_duration_ms debugfs entries atm.
++	 * ipc_flood_count floods the DSP with the number of IPC's specified.
++	 * ipc_duration_ms test floods the DSP for the time specified
++	 * in the debugfs entry.
 +	 */
-+	list_for_each_entry(cdev, &sdev->ipc_client_list, list) {
-+		if (!strcmp(cdev->auxdev.name, name) && cdev->auxdev.id == id) {
-+			list_del(&cdev->list);
-+			auxiliary_device_delete(&cdev->auxdev);
-+			auxiliary_device_uninit(&cdev->auxdev);
-+			break;
-+		}
++	dentry = file->f_path.dentry;
++	if (strcmp(dentry->d_name.name, DEBUGFS_IPC_FLOOD_COUNT) &&
++	    strcmp(dentry->d_name.name, DEBUGFS_IPC_FLOOD_DURATION)) {
++		ret = -EINVAL;
++		goto out;
 +	}
 +
-+	mutex_unlock(&sdev->ipc_client_mutex);
++	if (!strcmp(dentry->d_name.name, DEBUGFS_IPC_FLOOD_DURATION))
++		flood_duration_test = true;
++
++	/* test completion criterion */
++	if (flood_duration_test)
++		ret = kstrtoul(string, 0, &ipc_duration_ms);
++	else
++		ret = kstrtoul(string, 0, &ipc_count);
++	if (ret < 0)
++		goto out;
++
++	/* limit max duration/ipc count for flood test */
++	if (flood_duration_test) {
++		if (!ipc_duration_ms) {
++			ret = size;
++			goto out;
++		}
++
++		/* find the minimum. min() is not used to avoid warnings */
++		if (ipc_duration_ms > MAX_IPC_FLOOD_DURATION_MS)
++			ipc_duration_ms = MAX_IPC_FLOOD_DURATION_MS;
++	} else {
++		if (!ipc_count) {
++			ret = size;
++			goto out;
++		}
++
++		/* find the minimum. min() is not used to avoid warnings */
++		if (ipc_count > MAX_IPC_FLOOD_COUNT)
++			ipc_count = MAX_IPC_FLOOD_COUNT;
++	}
++
++	ret = pm_runtime_get_sync(dev);
++	if (ret < 0 && ret != -EACCES) {
++		dev_err_ratelimited(dev, "debugfs write failed to resume %d\n", ret);
++		pm_runtime_put_noidle(dev);
++		goto out;
++	}
++
++	/* flood test */
++	ret = sof_debug_ipc_flood_test(cdev, flood_duration_test,
++				       ipc_duration_ms, ipc_count);
++
++	pm_runtime_mark_last_busy(dev);
++	err = pm_runtime_put_autosuspend(dev);
++	if (err < 0)
++		dev_err_ratelimited(dev, "debugfs write failed to idle %d\n", err);
++
++	/* return size if test is successful */
++	if (ret >= 0)
++		ret = size;
++out:
++	kfree(string);
++	return ret;
 +}
-+EXPORT_SYMBOL_NS_GPL(sof_client_dev_unregister, SND_SOC_SOF_CLIENT);
 +
-+int sof_client_ipc_tx_message(struct sof_client_dev *cdev, void *ipc_msg,
-+			      void *reply_data, size_t reply_bytes)
++/* return the result of the last IPC flood test */
++static ssize_t sof_ipc_flood_dfs_read(struct file *file, char __user *buffer,
++				      size_t count, loff_t *ppos)
 +{
-+	struct sof_ipc_cmd_hdr *hdr = ipc_msg;
++	struct sof_client_dev *cdev = file->private_data;
++	struct sof_ipc_flood_priv *priv = cdev->data;
++	size_t size_ret;
 +
-+	return sof_ipc_tx_message(cdev->sdev->ipc, hdr->cmd, ipc_msg, hdr->size,
-+				  reply_data, reply_bytes);
++	struct dentry *dentry;
++
++	dentry = file->f_path.dentry;
++	if (!strcmp(dentry->d_name.name, DEBUGFS_IPC_FLOOD_COUNT) ||
++	    !strcmp(dentry->d_name.name, DEBUGFS_IPC_FLOOD_DURATION)) {
++		if (*ppos)
++			return 0;
++
++		count = min_t(size_t, count, strlen(priv->buf));
++		size_ret = copy_to_user(buffer, priv->buf, count);
++		if (size_ret)
++			return -EFAULT;
++
++		*ppos += count;
++		return count;
++	}
++	return count;
 +}
-+EXPORT_SYMBOL_NS_GPL(sof_client_ipc_tx_message, SND_SOC_SOF_CLIENT);
 +
-+struct dentry *sof_client_get_debugfs_root(struct sof_client_dev *cdev)
++static int sof_ipc_flood_dfs_release(struct inode *inode, struct file *file)
 +{
-+	return cdev->sdev->debugfs_root;
-+}
-+EXPORT_SYMBOL_NS_GPL(sof_client_get_debugfs_root, SND_SOC_SOF_CLIENT);
-+
-+/* DMA buffer allocation in client drivers must use the core SOF device */
-+struct device *sof_client_get_dma_dev(struct sof_client_dev *cdev)
-+{
-+	return cdev->sdev->dev;
-+}
-+EXPORT_SYMBOL_NS_GPL(sof_client_get_dma_dev, SND_SOC_SOF_CLIENT);
-+
-+const struct sof_ipc_fw_version *sof_client_get_fw_version(struct sof_client_dev *cdev)
-+{
-+	struct snd_sof_dev *sdev = sof_client_dev_to_sof_dev(cdev);
-+
-+	return &sdev->fw_ready.version;
-+}
-+EXPORT_SYMBOL_NS_GPL(sof_client_get_fw_version, SND_SOC_SOF_CLIENT);
-+
-+/* module refcount management of SOF core */
-+int sof_client_core_module_get(struct sof_client_dev *cdev)
-+{
-+	struct snd_sof_dev *sdev = sof_client_dev_to_sof_dev(cdev);
-+
-+	if (!try_module_get(sdev->dev->driver->owner))
-+		return -ENODEV;
++	debugfs_file_put(file->f_path.dentry);
 +
 +	return 0;
 +}
-+EXPORT_SYMBOL_NS_GPL(sof_client_core_module_get, SND_SOC_SOF_CLIENT);
 +
-+void sof_client_core_module_put(struct sof_client_dev *cdev)
-+{
-+	struct snd_sof_dev *sdev = sof_client_dev_to_sof_dev(cdev);
++static const struct file_operations sof_ipc_flood_fops = {
++	.open = sof_ipc_flood_dfs_open,
++	.read = sof_ipc_flood_dfs_read,
++	.llseek = default_llseek,
++	.write = sof_ipc_flood_dfs_write,
++	.release = sof_ipc_flood_dfs_release,
 +
-+	module_put(sdev->dev->driver->owner);
-+}
-+EXPORT_SYMBOL_NS_GPL(sof_client_core_module_put, SND_SOC_SOF_CLIENT);
-+
-+/* IPC event handling */
-+void sof_client_ipc_rx_dispatcher(struct snd_sof_dev *sdev, void *msg_buf)
-+{
-+	struct sof_ipc_cmd_hdr *hdr = msg_buf;
-+	u32 msg_type = hdr->cmd & SOF_GLB_TYPE_MASK;
-+	struct sof_ipc_event_entry *event;
-+
-+	mutex_lock(&sdev->client_event_handler_mutex);
-+
-+	list_for_each_entry(event, &sdev->ipc_rx_handler_list, list) {
-+		if (event->ipc_msg_type == msg_type)
-+			event->callback(event->cdev, msg_buf);
-+	}
-+
-+	mutex_unlock(&sdev->client_event_handler_mutex);
-+}
-+
-+int sof_client_register_ipc_rx_handler(struct sof_client_dev *cdev,
-+				       u32 ipc_msg_type,
-+				       sof_client_event_callback callback)
-+{
-+	struct snd_sof_dev *sdev = sof_client_dev_to_sof_dev(cdev);
-+	struct sof_ipc_event_entry *event;
-+
-+	if (!callback || !(ipc_msg_type & SOF_GLB_TYPE_MASK))
-+		return -EINVAL;
-+
-+	event = kmalloc(sizeof(*event), GFP_KERNEL);
-+	if (!event)
-+		return -ENOMEM;
-+
-+	event->ipc_msg_type = ipc_msg_type;
-+	event->cdev = cdev;
-+	event->callback = callback;
-+
-+	/* add to list of SOF client devices */
-+	mutex_lock(&sdev->client_event_handler_mutex);
-+	list_add(&event->list, &sdev->ipc_rx_handler_list);
-+	mutex_unlock(&sdev->client_event_handler_mutex);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_NS_GPL(sof_client_register_ipc_rx_handler, SND_SOC_SOF_CLIENT);
-+
-+void sof_client_unregister_ipc_rx_handler(struct sof_client_dev *cdev,
-+					  u32 ipc_msg_type)
-+{
-+	struct snd_sof_dev *sdev = sof_client_dev_to_sof_dev(cdev);
-+	struct sof_ipc_event_entry *event;
-+
-+	mutex_lock(&sdev->client_event_handler_mutex);
-+
-+	list_for_each_entry(event, &sdev->ipc_rx_handler_list, list) {
-+		if (event->cdev == cdev && event->ipc_msg_type == ipc_msg_type) {
-+			list_del(&event->list);
-+			kfree(event);
-+			break;
-+		}
-+	}
-+
-+	mutex_unlock(&sdev->client_event_handler_mutex);
-+}
-+EXPORT_SYMBOL_NS_GPL(sof_client_unregister_ipc_rx_handler, SND_SOC_SOF_CLIENT);
-+
-+/*DSP state notification and query */
-+void sof_client_fw_state_dispatcher(struct snd_sof_dev *sdev)
-+{
-+	struct sof_state_event_entry *event;
-+
-+	mutex_lock(&sdev->client_event_handler_mutex);
-+
-+	list_for_each_entry(event, &sdev->fw_state_handler_list, list)
-+		event->callback(event->cdev, sdev->fw_state);
-+
-+	mutex_unlock(&sdev->client_event_handler_mutex);
-+}
-+
-+int sof_client_register_fw_state_handler(struct sof_client_dev *cdev,
-+					 sof_client_fw_state_callback callback)
-+{
-+	struct snd_sof_dev *sdev = sof_client_dev_to_sof_dev(cdev);
-+	struct sof_state_event_entry *event;
-+
-+	if (!callback)
-+		return -EINVAL;
-+
-+	event = kmalloc(sizeof(*event), GFP_KERNEL);
-+	if (!event)
-+		return -ENOMEM;
-+
-+	event->cdev = cdev;
-+	event->callback = callback;
-+
-+	/* add to list of SOF client devices */
-+	mutex_lock(&sdev->client_event_handler_mutex);
-+	list_add(&event->list, &sdev->fw_state_handler_list);
-+	mutex_unlock(&sdev->client_event_handler_mutex);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_NS_GPL(sof_client_register_fw_state_handler, SND_SOC_SOF_CLIENT);
-+
-+void sof_client_unregister_fw_state_handler(struct sof_client_dev *cdev)
-+{
-+	struct snd_sof_dev *sdev = sof_client_dev_to_sof_dev(cdev);
-+	struct sof_state_event_entry *event;
-+
-+	mutex_lock(&sdev->client_event_handler_mutex);
-+
-+	list_for_each_entry(event, &sdev->fw_state_handler_list, list) {
-+		if (event->cdev == cdev) {
-+			list_del(&event->list);
-+			kfree(event);
-+			break;
-+		}
-+	}
-+
-+	mutex_unlock(&sdev->client_event_handler_mutex);
-+}
-+EXPORT_SYMBOL_NS_GPL(sof_client_unregister_fw_state_handler, SND_SOC_SOF_CLIENT);
-+
-+enum sof_fw_state sof_client_get_fw_state(struct sof_client_dev *cdev)
-+{
-+	struct snd_sof_dev *sdev = sof_client_dev_to_sof_dev(cdev);
-+
-+	return sdev->fw_state;
-+}
-+EXPORT_SYMBOL_NS_GPL(sof_client_get_fw_state, SND_SOC_SOF_CLIENT);
-diff --git a/sound/soc/sof/sof-client.h b/sound/soc/sof/sof-client.h
-new file mode 100644
-index 000000000000..4b6394b4c694
---- /dev/null
-+++ b/sound/soc/sof/sof-client.h
-@@ -0,0 +1,67 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+
-+#ifndef __SOC_SOF_CLIENT_H
-+#define __SOC_SOF_CLIENT_H
-+
-+#include <linux/auxiliary_bus.h>
-+#include <linux/device.h>
-+#include <linux/list.h>
-+#include <sound/sof.h>
-+
-+struct sof_ipc_fw_version;
-+struct sof_ipc_cmd_hdr;
-+struct snd_sof_dev;
-+struct dentry;
-+
-+/**
-+ * struct sof_client_dev - SOF client device
-+ * @auxdev:	auxiliary device
-+ * @sdev:	pointer to SOF core device struct
-+ * @list:	item in SOF core client dev list
-+ * @data:	device specific data
-+ */
-+struct sof_client_dev {
-+	struct auxiliary_device auxdev;
-+	struct snd_sof_dev *sdev;
-+	struct list_head list;
-+	void *data;
++	.owner = THIS_MODULE,
 +};
 +
-+#define sof_client_dev_to_sof_dev(cdev)		((cdev)->sdev)
++/*
++ * The IPC test client creates a couple of debugfs entries that will be used
++ * flood tests. Users can write to these entries to execute the IPC flood test
++ * by specifying either the number of IPCs to flood the DSP with or the duration
++ * (in ms) for which the DSP should be flooded with test IPCs. At the
++ * end of each test, the average, min and max response times are reported back.
++ * The results of the last flood test can be accessed by reading the debugfs
++ * entries.
++ */
++static int sof_ipc_flood_probe(struct auxiliary_device *auxdev,
++			       const struct auxiliary_device_id *id)
++{
++	struct sof_client_dev *cdev = auxiliary_dev_to_sof_client_dev(auxdev);
++	struct dentry *debugfs_root = sof_client_get_debugfs_root(cdev);
++	struct device *dev = &auxdev->dev;
++	struct sof_ipc_flood_priv *priv;
 +
-+#define auxiliary_dev_to_sof_client_dev(auxiliary_dev) \
-+	container_of(auxiliary_dev, struct sof_client_dev, auxdev)
++	/* allocate memory for client data */
++	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
 +
-+#define dev_to_sof_client_dev(dev) \
-+	container_of(to_auxiliary_dev(dev), struct sof_client_dev, auxdev)
++	priv->buf = devm_kmalloc(dev, IPC_FLOOD_TEST_RESULT_LEN, GFP_KERNEL);
++	if (!priv->buf)
++		return -ENOMEM;
 +
-+int sof_client_ipc_tx_message(struct sof_client_dev *cdev, void *ipc_msg,
-+			      void *reply_data, size_t reply_bytes);
++	cdev->data = priv;
 +
-+struct dentry *sof_client_get_debugfs_root(struct sof_client_dev *cdev);
-+struct device *sof_client_get_dma_dev(struct sof_client_dev *cdev);
-+const struct sof_ipc_fw_version *sof_client_get_fw_version(struct sof_client_dev *cdev);
++	/* create debugfs root folder with device name under parent SOF dir */
++	priv->dfs_root = debugfs_create_dir(dev_name(dev), debugfs_root);
++	if (!IS_ERR_OR_NULL(priv->dfs_root)) {
++		/* create read-write ipc_flood_count debugfs entry */
++		debugfs_create_file(DEBUGFS_IPC_FLOOD_COUNT, 0644, priv->dfs_root,
++				    cdev, &sof_ipc_flood_fops);
 +
-+/* module refcount management of SOF core */
-+int sof_client_core_module_get(struct sof_client_dev *cdev);
-+void sof_client_core_module_put(struct sof_client_dev *cdev);
++		/* create read-write ipc_flood_duration_ms debugfs entry */
++		debugfs_create_file(DEBUGFS_IPC_FLOOD_DURATION, 0644,
++				    priv->dfs_root, cdev, &sof_ipc_flood_fops);
 +
-+/* IPC notification */
-+typedef void (*sof_client_event_callback)(struct sof_client_dev *cdev, void *msg_buf);
++		if (auxdev->id == 0) {
++			/*
++			 * Create symlinks for backwards compatibility to the
++			 * first IPC flood test instance
++			 */
++			char target[100];
 +
-+int sof_client_register_ipc_rx_handler(struct sof_client_dev *cdev,
-+				       u32 ipc_msg_type,
-+				       sof_client_event_callback callback);
-+void sof_client_unregister_ipc_rx_handler(struct sof_client_dev *cdev,
-+					  u32 ipc_msg_type);
++			snprintf(target, 100, "%s/" DEBUGFS_IPC_FLOOD_COUNT,
++				 dev_name(dev));
++			priv->dfs_link[0] =
++				debugfs_create_symlink(DEBUGFS_IPC_FLOOD_COUNT,
++						       debugfs_root, target);
 +
-+/* DSP state notification and query */
-+typedef void (*sof_client_fw_state_callback)(struct sof_client_dev *cdev,
-+					     enum sof_fw_state state);
++			snprintf(target, 100, "%s/" DEBUGFS_IPC_FLOOD_DURATION,
++				 dev_name(dev));
++			priv->dfs_link[1] =
++				debugfs_create_symlink(DEBUGFS_IPC_FLOOD_DURATION,
++						       debugfs_root, target);
++		}
++	}
 +
-+int sof_client_register_fw_state_handler(struct sof_client_dev *cdev,
-+					 sof_client_fw_state_callback callback);
-+void sof_client_unregister_fw_state_handler(struct sof_client_dev *cdev);
-+enum sof_fw_state sof_client_get_fw_state(struct sof_client_dev *cdev);
++	/* enable runtime PM */
++	pm_runtime_set_autosuspend_delay(dev, SOF_IPC_CLIENT_SUSPEND_DELAY_MS);
++	pm_runtime_use_autosuspend(dev);
++	pm_runtime_enable(dev);
++	pm_runtime_mark_last_busy(dev);
++	pm_runtime_idle(dev);
 +
-+#endif /* __SOC_SOF_CLIENT_H */
++	return 0;
++}
++
++static void sof_ipc_flood_remove(struct auxiliary_device *auxdev)
++{
++	struct sof_client_dev *cdev = auxiliary_dev_to_sof_client_dev(auxdev);
++	struct sof_ipc_flood_priv *priv = cdev->data;
++
++	pm_runtime_disable(&auxdev->dev);
++
++	if (auxdev->id == 0) {
++		debugfs_remove(priv->dfs_link[0]);
++		debugfs_remove(priv->dfs_link[1]);
++	}
++
++	debugfs_remove_recursive(priv->dfs_root);
++}
++
++static const struct auxiliary_device_id sof_ipc_flood_client_id_table[] = {
++	{ .name = "snd_sof.ipc_flood" },
++	{},
++};
++MODULE_DEVICE_TABLE(auxiliary, sof_ipc_flood_client_id_table);
++
++/*
++ * No need for driver pm_ops as the generic pm callbacks in the auxiliary bus
++ * type are enough to ensure that the parent SOF device resumes to bring the DSP
++ * back to D0.
++ * Driver name will be set based on KBUILD_MODNAME.
++ */
++static struct auxiliary_driver sof_ipc_flood_client_drv = {
++	.probe = sof_ipc_flood_probe,
++	.remove = sof_ipc_flood_remove,
++
++	.id_table = sof_ipc_flood_client_id_table,
++};
++
++module_auxiliary_driver(sof_ipc_flood_client_drv);
++
++MODULE_DESCRIPTION("SOF IPC Flood Test Client Driver");
++MODULE_LICENSE("GPL");
++MODULE_IMPORT_NS(SND_SOC_SOF_CLIENT);
+diff --git a/sound/soc/sof/sof-client.c b/sound/soc/sof/sof-client.c
+index 932bdea49c24..0ffe7a26a19a 100644
+--- a/sound/soc/sof/sof-client.c
++++ b/sound/soc/sof/sof-client.c
+@@ -66,18 +66,70 @@ static int sof_client_dev_add_data(struct sof_client_dev *cdev, const void *data
+ 	return 0;
+ }
+ 
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST)
++static int sof_register_ipc_flood_test(struct snd_sof_dev *sdev)
++{
++	int ret = 0;
++	int i;
++
++	for (i = 0; i < CONFIG_SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST_NUM; i++) {
++		ret = sof_client_dev_register(sdev, "ipc_flood", i, NULL, 0);
++		if (ret < 0)
++			break;
++	}
++
++	if (ret) {
++		for (; i >= 0; --i)
++			sof_client_dev_unregister(sdev, "ipc_flood", i);
++	}
++
++	return ret;
++}
++
++static void sof_unregister_ipc_flood_test(struct snd_sof_dev *sdev)
++{
++	int i;
++
++	for (i = 0; i < CONFIG_SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST_NUM; i++)
++		sof_client_dev_unregister(sdev, "ipc_flood", i);
++}
++#else
++static inline int sof_register_ipc_flood_test(struct snd_sof_dev *sdev)
++{
++	return 0;
++}
++
++static inline void sof_unregister_ipc_flood_test(struct snd_sof_dev *sdev) {}
++#endif /* CONFIG_SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST */
++
+ int sof_register_clients(struct snd_sof_dev *sdev)
+ {
++	int ret;
++
++	/* Register platform independent client devices */
++	ret = sof_register_ipc_flood_test(sdev);
++	if (ret) {
++		dev_err(sdev->dev, "IPC flood test client registration failed\n");
++		return ret;
++	}
++
++	/* Platform depndent client device registration */
++
+ 	if (sof_ops(sdev) && sof_ops(sdev)->register_ipc_clients)
+-		return sof_ops(sdev)->register_ipc_clients(sdev);
++		ret = sof_ops(sdev)->register_ipc_clients(sdev);
+ 
+-	return 0;
++	if (ret)
++		sof_unregister_ipc_flood_test(sdev);
++
++	return ret;
+ }
+ 
+ void sof_unregister_clients(struct snd_sof_dev *sdev)
+ {
+ 	if (sof_ops(sdev) && sof_ops(sdev)->unregister_ipc_clients)
+ 		sof_ops(sdev)->unregister_ipc_clients(sdev);
++
++	sof_unregister_ipc_flood_test(sdev);
+ }
+ 
+ int sof_client_dev_register(struct snd_sof_dev *sdev, const char *name, u32 id,
 diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index 27d2f3ca2f06..f641833f3ff9 100644
+index 39bbba5aeab2..1af61ff89345 100644
 --- a/sound/soc/sof/sof-priv.h
 +++ b/sound/soc/sof/sof-priv.h
-@@ -292,6 +292,10 @@ struct snd_sof_dsp_ops {
- 	void (*set_mach_params)(struct snd_soc_acpi_mach *mach,
- 				struct snd_sof_dev *sdev); /* optional */
+@@ -69,10 +69,6 @@ bool sof_debug_check_flag(int mask);
+ #define SOF_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE | \
+ 	SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_FLOAT)
  
-+	/* IPC client ops */
-+	int (*register_ipc_clients)(struct snd_sof_dev *sdev); /* optional */
-+	void (*unregister_ipc_clients)(struct snd_sof_dev *sdev); /* optional */
-+
- 	/* DAI ops */
- 	struct snd_soc_dai_driver *drv;
- 	int num_drv;
-@@ -479,6 +483,30 @@ struct snd_sof_dev {
- 	 */
- 	int dsp_core_ref_count[SOF_MAX_DSP_NUM_CORES];
- 
-+	/*
-+	 * Used to keep track of registered IPC client devices so that they can
-+	 * be removed when the parent SOF module is removed.
-+	 */
-+	struct list_head ipc_client_list;
-+
-+	/* mutex to protect client list */
-+	struct mutex ipc_client_mutex;
-+
-+	/*
-+	 * Used for tracking the IPC client's RX registration for DSP initiated
-+	 * message handling.
-+	 */
-+	struct list_head ipc_rx_handler_list;
-+
-+	/*
-+	 * Used for tracking the IPC client's registration for DSP state change
-+	 * notification
-+	 */
-+	struct list_head fw_state_handler_list;
-+
-+	/* to protect the ipc_rx_handler_list  and  dsp_state_handler_list list */
-+	struct mutex client_event_handler_mutex;
-+
- 	void *private;			/* core does not touch this */
- };
- 
-@@ -582,15 +610,7 @@ extern const struct dsp_arch_ops sof_xtensa_arch_ops;
- /*
-  * Firmware state tracking
-  */
--static inline void sof_set_fw_state(struct snd_sof_dev *sdev,
--				    enum sof_fw_state new_state)
--{
--	if (sdev->fw_state == new_state)
--		return;
+-#define ENABLE_DEBUGFS_CACHEBUF \
+-	(IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_ENABLE_DEBUGFS_CACHE) || \
+-	 IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST))
 -
--	dev_dbg(sdev->dev, "fw_state change: %d -> %d\n", sdev->fw_state, new_state);
--	sdev->fw_state = new_state;
--}
-+void sof_set_fw_state(struct snd_sof_dev *sdev, enum sof_fw_state new_state);
+ /* So far the primary core on all DSPs has ID 0 */
+ #define SOF_DSP_PRIMARY_CORE 0
  
- /*
-  * Utilities
-@@ -623,4 +643,44 @@ int sof_stream_pcm_close(struct snd_sof_dev *sdev,
- 			 struct snd_pcm_substream *substream);
- 
- int sof_machine_check(struct snd_sof_dev *sdev);
-+
-+/* SOF client support */
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_CLIENT)
-+int sof_client_dev_register(struct snd_sof_dev *sdev, const char *name, u32 id,
-+			    const void *data, size_t size);
-+void sof_client_dev_unregister(struct snd_sof_dev *sdev, const char *name, u32 id);
-+int sof_register_clients(struct snd_sof_dev *sdev);
-+void sof_unregister_clients(struct snd_sof_dev *sdev);
-+void sof_client_ipc_rx_dispatcher(struct snd_sof_dev *sdev, void *msg_buf);
-+void sof_client_fw_state_dispatcher(struct snd_sof_dev *sdev);
-+#else /* CONFIG_SND_SOC_SOF_CLIENT */
-+static inline int sof_client_dev_register(struct snd_sof_dev *sdev, const char *name,
-+					  u32 id, const void *data, size_t size)
-+{
-+	return 0;
-+}
-+
-+static inline void sof_client_dev_unregister(struct snd_sof_dev *sdev,
-+					     const char *name, u32 id)
-+{
-+}
-+
-+static inline int sof_register_clients(struct snd_sof_dev *sdev)
-+{
-+	return 0;
-+}
-+
-+static inline  void sof_unregister_clients(struct snd_sof_dev *sdev)
-+{
-+}
-+
-+static inline void sof_client_ipc_rx_dispatcher(struct snd_sof_dev *sdev, void *msg_buf)
-+{
-+}
-+
-+static inline void sof_client_fw_state_dispatcher(struct snd_sof_dev *sdev)
-+{
-+}
-+#endif /* CONFIG_SND_SOC_SOF_CLIENT */
-+
+@@ -326,7 +322,7 @@ struct snd_sof_dfsentry {
+ 	 * or if it is accessible only when the DSP is in D0.
+ 	 */
+ 	enum sof_debugfs_access_type access_type;
+-#if ENABLE_DEBUGFS_CACHEBUF
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_ENABLE_DEBUGFS_CACHE)
+ 	char *cache_buf; /* buffer to cache the contents of debugfs memory */
  #endif
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_MSG_INJECTOR)
 -- 
 2.35.1
 
