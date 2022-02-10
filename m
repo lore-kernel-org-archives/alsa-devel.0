@@ -4,77 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07F66C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Feb 2022 17:22:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D18FBC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Feb 2022 18:18:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 249341AA9;
-	Thu, 10 Feb 2022 18:21:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 249341AA9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 358AF1887;
+	Thu, 10 Feb 2022 19:17:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 358AF1887
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1644513767;
-	bh=UITBnANS4QAxDPCyGeMrlwr/H1mF81TpJ7v/Ppew1wQ=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=T3UEYtDNEvBHPsN/Dl23JPQpsUFeErnJjYecZFZsezFSkaiM8tVbODS1JI3F8A8Mu
-	 /AcFJMb5xK+DRacVqZ1sfy/XcqQe2I8T0Z3h9F/2oATgGhqR91RQzvS6d+PrQxOx2Z
-	 MT3cU6EeSYRGRlrhqH2bcg6yrie0KPkxLQPs5TnM=
+	s=default; t=1644517091;
+	bh=y9KoYEHTuytQnzjdUCEQMgDLFL2j5uawuME74AvZBFw=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=a91UQaY8C1DOchLaNOPDxK+3kUOc9rc5oAZRjjYP8Mijk/vXF7DgS+9K2pt1WSfzI
+	 DmN+p8iSleKbXqNGA31YakPpKPRib1QTdBIB4iuDqFkkP33Ef8lVfvwLj4XAbMk2eQ
+	 +78si7fTRMVJTFTReae6ZQ08lhEwgr9Z/qO60J7c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 22521F804FF;
-	Thu, 10 Feb 2022 18:21:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CB455F8028B;
+	Thu, 10 Feb 2022 19:17:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4C30AF80508; Thu, 10 Feb 2022 18:21:09 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id 89F71F800A7; Thu, 10 Feb 2022 19:17:19 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 03B54F800A7
+ for <alsa-devel@alsa-project.org>; Thu, 10 Feb 2022 19:17:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03B54F800A7
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="ix/mZN/5"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 788F4F8028B
- for <alsa-devel@alsa-project.org>; Thu, 10 Feb 2022 18:20:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 788F4F8028B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="EQlOVO8B"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 21AEBvVh026091;
- Thu, 10 Feb 2022 11:20:55 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : mime-version : content-type;
- s=PODMain02222019; bh=pFbNrBPDkKKayEep6x/nv1MVmuK6rnPq1IzMvsZ90jA=;
- b=EQlOVO8B2O2Gdpi6BSrseYDuMVb95XRru5owoa8dhbcD6qx9Vx0nvFjWsCtfomSaP2Hq
- ZqfPsjayOa3lueHRaKftSB96de9cmdZLWe73auwfC9dGkcLO05ehqgKRB8h7KNcNyR9m
- sARoSgXpsAyet3oUx7NrgcGH3Uyu5qHROyDvBwIlGUxpqg3m5kdU4jISouIsAUZGmYGt
- LKdZA0ywajP5AQB/Q9MSqt7vBuXYCx4cz7CgJslbtJNg1LPRcUaYwb1kk5oODdKpsZaa
- 7a7BJgKIBgUugvAQnwUeT6EPHN26NSNjbb8YJrB0rdKeEnVagvBLka/2Z5wI14V6e2Bv kQ== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3e4brb9y38-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 10 Feb 2022 11:20:55 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Thu, 10 Feb
- 2022 17:20:53 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.18 via
- Frontend Transport; Thu, 10 Feb 2022 17:20:53 +0000
-Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 31D732A1;
- Thu, 10 Feb 2022 17:20:53 +0000 (UTC)
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: <broonie@kernel.org>
-Subject: [PATCH 1/3] ASoC: wm_adsp: Correct control read size when parsing
- compressed buffer
-Date: Thu, 10 Feb 2022 17:20:51 +0000
-Message-ID: <20220210172053.22782-1-ckeepax@opensource.cirrus.com>
-X-Mailer: git-send-email 2.11.0
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 99E1161E59;
+ Thu, 10 Feb 2022 18:17:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DC03C004E1;
+ Thu, 10 Feb 2022 18:17:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1644517030;
+ bh=y9KoYEHTuytQnzjdUCEQMgDLFL2j5uawuME74AvZBFw=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=ix/mZN/5UW7pmVM3vYhS7NC+PUaymZ+trN2vNmdR2x1+Jhg/EyMXtP6O/J0KCQZa8
+ f3kpnqnwUAbrZwkQU9XW2d54BbskBx7K1C/sYEXQP8zZ7m0vxz8QyehqFEQX958Iz3
+ qIq2HOuR9XJknJcVm3IwN5Oc8bVwyfusA+NvaTH4tBF8OIAhugHP5gn5/nrGQX+otk
+ J0fy+g/JbeBvQ2/BHpQd5M7exuntEgKQWxDSSov9qCLwZgMMvQbIKxYAcEIk4nmGTf
+ UYonPN9jiuDyUeX+rBH/UklWubkXd0VQ2SDdNFaQGrI3PN+IXIisAVMqDBDR2tGWi2
+ gtzLpSDPoH5lA==
+From: Mark Brown <broonie@kernel.org>
+To: pierre-louis.bossart@linux.intel.com, ranjani.sridharan@linux.intel.com,
+ lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+In-Reply-To: <20220210105519.19795-1-peter.ujfalusi@linux.intel.com>
+References: <20220210105519.19795-1-peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH 0/9] ASoC: SOF: IPC client infrastructure
+Message-Id: <164451702780.82170.4074299845971307664.b4-ty@kernel.org>
+Date: Thu, 10 Feb 2022 18:17:07 +0000
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: SkWsBQ2M1z616kscrAW7i2IQCRBY4ZdU
-X-Proofpoint-GUID: SkWsBQ2M1z616kscrAW7i2IQCRBY4ZdU
-X-Proofpoint-Spam-Reason: safe
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- Vlad.Karpovich@cirrus.com, lgirdwood@gmail.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com, tiwai@suse.com,
+ linux-kernel@vger.kernel.org, fred.oh@linux.intel.com, daniel.baluta@nxp.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,38 +81,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When parsing the compressed stream the whole buffer descriptor is
-now read in a single cs_dsp_coeff_read_ctrl; on older firmwares
-this descriptor is just 4 bytes but on more modern firmwares it is
-24 bytes. The current code reads the full 24 bytes regardless, this
-was working but reading junk for the last 20 bytes. However commit
-f444da38ac92 ("firmware: cs_dsp: Add offset to cs_dsp read/write")
-added a size check into cs_dsp_coeff_read_ctrl, causing the older
-firmwares to now return an error.
+On Thu, 10 Feb 2022 12:55:10 +0200, Peter Ujfalusi wrote:
+> The Linux SOF implementation is historically monolithic in a sense that all
+> features accessible in the firmware can be used via the snd_sof_dev struct in
+> one way or another.
+> 
+> Support for features can not be added or removed runtime and with the current
+> way of things it is hard if not impossible to implement support for dynamic
+> feature support when based on the firmware manifest we can easily enable/access
+> independent modules with the SOF.
+> 
+> [...]
 
-Update the code to only read the amount of data appropriate for
-the firmware loaded.
+Applied to
 
-Fixes: 04ae08596737 ("ASoC: wm_adsp: Switch to using wm_coeff_read_ctrl for compressed buffers")
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
- sound/soc/codecs/wm_adsp.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index f3672e3d1703e..0582585236a28 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -1441,7 +1441,8 @@ static int wm_adsp_buffer_parse_coeff(struct cs_dsp_coeff_ctl *cs_ctl)
- 	int ret, i;
- 
- 	for (i = 0; i < 5; ++i) {
--		ret = cs_dsp_coeff_read_ctrl(cs_ctl, 0, &coeff_v1, sizeof(coeff_v1));
-+		ret = cs_dsp_coeff_read_ctrl(cs_ctl, 0, &coeff_v1,
-+					     min(cs_ctl->len, sizeof(coeff_v1)));
- 		if (ret < 0)
- 			return ret;
- 
--- 
-2.11.0
+Thanks!
 
+[1/9] ASoC: SOF: Drop unused DSP power states: D3_HOT and D3_COLD
+      commit: 2439a35508277922ea116c99ff4d4a32c607464c
+[2/9] ASoC: SOF: Move the definition of enum sof_dsp_power_states to global header
+      commit: 5fdc1242453e2ae88b2cdb607e4eda6b687f084c
+[3/9] ASoC: SOF: ipc: Read and pass the whole message to handlers for IPC events
+      commit: ab3a2189a3744527f54ace1be19eb13e6c3d24df
+[4/9] ASoC: SOF: Split up utils.c into sof-utils and iomem-utils
+      commit: ee8443050b2bf06d80fdd2c78cc25cae2abdedcd
+[5/9] ASoC: SOF: Introduce IPC SOF client support
+      commit: 6955d9512d0ea814f1c2761bef7ad7b3cedf4d68
+[6/9] ASoC: SOF: sof-client: Add support for clients not managed by pm framework
+      commit: 1069967afe1e6b728061682ff99ec534a55a5613
+[7/9] ASoC: SOF: Convert the generic IPC flood test into SOF client
+      commit: 6e9548cdb30e5d6724236dd7b89a79a270751485
+[8/9] ASoC: SOF: Convert the generic IPC message injector into SOF client
+      commit: cac0b0887e5304bddfda91a4a7106f9328c31318
+[9/9] ASoC: SOF: Convert the generic probe support to SOF client
+      commit: 3dc0d709177828a22dfc9d0072e3ac937ef90d06
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
