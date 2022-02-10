@@ -4,69 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9FECAC433FE
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Feb 2022 13:55:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C312C433FE
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Feb 2022 14:43:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8C48618F0;
-	Thu, 10 Feb 2022 14:55:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C48618F0
+	by alsa0.perex.cz (Postfix) with ESMTPS id BFD5E18E6;
+	Thu, 10 Feb 2022 15:42:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BFD5E18E6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1644501354;
-	bh=4T5GxSxlHHWGyyYwn7ZFv0DAVMPMJFjG9l8aHaQ2gB8=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1644504180;
+	bh=oKLvFFIPOkAhwdM4DVcD44a/FjVoxptg+i1dfhscPkk=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EQkpFuPKCwh4Q0zFXquhgMZgyMh7KCq6qr8W8jV3Fi8YVnXdFOrHcA5q1w+f45HCW
-	 lxgbR4AmmYOChDjsTqDqDoGrZHaRvAfdkVB0U7BFPS1ZNHeUBk4GCU9qo9HZ9OREcc
-	 beQNwEV13TW/83YLAs7CJTqVnzgb1vKiu1qZHGIo=
+	b=tIV+nl04jjI3xld0BN3TTuKfj5/0/Thl16mFT3EFjH+6k7UFk5nYv3ay0h3bWEZp1
+	 uzVJ4oi9tNVu1CxEaO56YrZPA7ZmtiXb0ltWeCez2jb3tR2kiDL/dcb5NxJEgPHbVe
+	 DUhxmSX+tvKohuuLKUiJRUM1ptIQJVvnmFwWSe3o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 18E67F8013D;
-	Thu, 10 Feb 2022 14:55:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 55E2AF800A7;
+	Thu, 10 Feb 2022 15:42:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 37506F8028B; Thu, 10 Feb 2022 14:55:03 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A6729F80054
- for <alsa-devel@alsa-project.org>; Thu, 10 Feb 2022 14:54:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6729F80054
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="X7sbkJhH"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 250AFF8028B; Thu, 10 Feb 2022 15:42:05 +0100 (CET)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 5F087B8255C;
- Thu, 10 Feb 2022 13:54:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD615C004E1;
- Thu, 10 Feb 2022 13:54:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1644501296;
- bh=4T5GxSxlHHWGyyYwn7ZFv0DAVMPMJFjG9l8aHaQ2gB8=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=X7sbkJhHzVrU26hiKYcg+Ezd64u/+3cu4op9Bwj15hVpVamwFX5sYdvPTkjd8P2f6
- 6liB3Qw3YkisZX7fIICk7joeUad9bkIX+fhLVMj4HRn5b/dwLC+lSPTrMh4VzvhxBV
- ZvyCXGqNIwahvMgFqEob7xR229BuYL8G0fqePNnBdNJDr3WC44KwFCKb/6HeLvZXsq
- BWFrSRpkdKShh3/FfXaKgA/WxvYTp8YPu6VJcYftZnMfKKCOq8/V8LikIT9nV6Tg7g
- c2Lwx0VZDn53tHlVcFm7MCx1GMY3mVR2wF83K8uvr4oua/vepMqyrnet6D7AjShkCf
- 3uscYbY4zIbYA==
-Date: Thu, 10 Feb 2022 13:54:50 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 11587F800A7
+ for <alsa-devel@alsa-project.org>; Thu, 10 Feb 2022 15:41:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11587F800A7
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="Pi/zUK9i"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1644504121; x=1676040121;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=oKLvFFIPOkAhwdM4DVcD44a/FjVoxptg+i1dfhscPkk=;
+ b=Pi/zUK9i5nXh4b+q534NExNHqJmV8mmVxwsaqKrumD99+tHUUt82p4zK
+ 0nqv7ANM/ONpp8rdp0LXEPWFz45UzouICdEuCNZ0TjjlqhCggR4wTGttV
+ UqUl2HkonCwlY1L/2/HkSTZ44BYxx6T1WZdkJXaWQ90uWp7JBciB+vVuU
+ 5MuthYEmF1Hd8IEZTJBV+JGisuXmWKXYjhj6WCGRZWUQqpRx7JY4UBfUx
+ vHqlAHNjS/IyaGA/ke4KsPwNq8E82XRT9N9rullT/LYVsHuodErwqzmwo
+ eGDPdCufXLdtjHMyOT/tu2+5HLv84zZtsrGlPc7yH5qF4qhi4q4zNe0uH w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10253"; a="310240972"
+X-IronPort-AV: E=Sophos;i="5.88,359,1635231600"; d="scan'208";a="310240972"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 10 Feb 2022 06:41:52 -0800
+X-IronPort-AV: E=Sophos;i="5.88,359,1635231600"; d="scan'208";a="679165836"
+Received: from barabano-mobl.ccr.corp.intel.com (HELO [10.252.41.18])
+ ([10.252.41.18])
+ by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 10 Feb 2022 06:41:49 -0800
+Message-ID: <cc1598d7-5029-197c-9abc-49043fdc11ed@linux.intel.com>
+Date: Thu, 10 Feb 2022 16:41:48 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.1
 Subject: Re: [PATCH 9/9] ASoC: SOF: Convert the generic probe support to SOF
  client
-Message-ID: <YgUZKgPacRNrFk/e@sirena.org.uk>
+Content-Language: en-US
+To: Mark Brown <broonie@kernel.org>
 References: <20220210105519.19795-1-peter.ujfalusi@linux.intel.com>
  <20220210105519.19795-10-peter.ujfalusi@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="QMm/tXeGvkQp+EWG"
-Content-Disposition: inline
-In-Reply-To: <20220210105519.19795-10-peter.ujfalusi@linux.intel.com>
-X-Cookie: I want a WESSON OIL lease!!
+ <YgUZKgPacRNrFk/e@sirena.org.uk>
+From: =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
+In-Reply-To: <YgUZKgPacRNrFk/e@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
  kai.vehmanen@linux.intel.com, linux-kernel@vger.kernel.org, tiwai@suse.com,
  ranjani.sridharan@linux.intel.com, lgirdwood@gmail.com,
@@ -87,36 +93,25 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---QMm/tXeGvkQp+EWG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Thu, Feb 10, 2022 at 12:55:19PM +0200, Peter Ujfalusi wrote:
-> Add a new client driver for probes support and move
-> all the probes-related code from the core to the
-> client driver.
+On 10/02/2022 15:54, Mark Brown wrote:
+> On Thu, Feb 10, 2022 at 12:55:19PM +0200, Peter Ujfalusi wrote:
+>> Add a new client driver for probes support and move
+>> all the probes-related code from the core to the
+>> client driver.
+> 
+> This breaks an x86 allmodconfig build:
+> 
+> /mnt/kernel/sound/soc/sof/compress.c: In function 'create_page_table':
+> /mnt/kernel/sound/soc/sof/compress.c:87:9: error: implicit declaration of function 'snd_sof_create_page_table'; did you mean 'create_page_table'? [-Werror=implicit-function-declaration]
+>    87 |  return snd_sof_create_page_table(component->dev, dmab,
+>       |         ^~~~~~~~~~~~~~~~~~~~~~~~~
+>       |         create_page_table
 
-This breaks an x86 allmodconfig build:
+Interesting, we have this under constant builds for months and we
+certainly are building things as modules.
 
-/mnt/kernel/sound/soc/sof/compress.c: In function 'create_page_table':
-/mnt/kernel/sound/soc/sof/compress.c:87:9: error: implicit declaration of function 'snd_sof_create_page_table'; did you mean 'create_page_table'? [-Werror=implicit-function-declaration]
-   87 |  return snd_sof_create_page_table(component->dev, dmab,
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~
-      |         create_page_table
+Let me check and fix this.
 
---QMm/tXeGvkQp+EWG
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmIFGSoACgkQJNaLcl1U
-h9CW0Qf/Q4GQ+DKEP1CNG0ioomd5kKN5fZu16CQ8wlQPl9Cp+h5flqb5dQnZNJGe
-JuyktYDqCZxyJxGdzgHhBSnQ6lCtTW/b6KhBs08lij3PypAVXFyFIuEtbLM4N405
-6mUuoGmoB7HcihCODnDZ+QAhbh7DtPkoN1SoOQO15N4EwYVkL4NuGFkJYD2Am57q
-tr1V/YsYSYlyyuUemcfTQxOr8H5E0c3A7Zm8klJGhM7tIhDldAsoDZUKdh6l6747
-PCe6LSvQ5EyTGj4YxAqYzLPghly8eXCgeRV1Xc4wnjBSn3zZmeal7/klX+p47HPj
-8QMNhdXpErMJbT7SKZr7IPC3bzNOUw==
-=nbVs
------END PGP SIGNATURE-----
-
---QMm/tXeGvkQp+EWG--
+-- 
+Péter
