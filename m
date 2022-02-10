@@ -4,71 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75200C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Feb 2022 16:54:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C03AC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Feb 2022 16:55:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 756181A40;
-	Thu, 10 Feb 2022 17:53:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 756181A40
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1C4E61A2C;
+	Thu, 10 Feb 2022 17:54:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C4E61A2C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1644512088;
-	bh=jU4woLASpR6Ex/J6X55lhs4XNVlGTKqO4+sal3OhZzg=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1644512103;
+	bh=UI4Mv4qVHEGpdjZQVIbbdsVyd0EHwfhjae+7UgeGC5A=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=a2lfAKxwEPvzQ+/JrVQBIlldF2Yx13ihf4bSyngOlfr1Sx6he6w5tzcRDjkGbd8OR
-	 swPR/EuutstLHzaJAj6PF59yank5zl1y2tUPvcbldoCMU9WcxrZDxM1hzPlBSj68+t
-	 lmK77iZWocQatJZpofiL/j+2S6igmFiica0hRC3M=
+	b=ZVIKleiAku3i/opmDL3JEg1PJa5avwMCvfiZsZEOlp/qXRHvi8g1Uw5dCpcKW89af
+	 4E+/Ogcf1OgMTG4nYCw1iOEpbVe/lQrxYZ9Bij9gpPMjyNQz/+gfgSuUz/SSfYNWjo
+	 I6cR+hlHINdCgPH+Pg5HihxtUlMXbG7W3QYY1k7Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9F224F80423;
-	Thu, 10 Feb 2022 17:53:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D30FDF804FF;
+	Thu, 10 Feb 2022 17:53:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A059DF804AB; Thu, 10 Feb 2022 17:53:23 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id E7F02F80423; Thu, 10 Feb 2022 17:53:23 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1B222F80302
- for <alsa-devel@alsa-project.org>; Thu, 10 Feb 2022 17:53:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B222F80302
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5B7A7F80423
+ for <alsa-devel@alsa-project.org>; Thu, 10 Feb 2022 17:53:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B7A7F80423
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="MtSnP5go"
+ header.b="IJIpXo/X"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id A946161D99;
- Thu, 10 Feb 2022 16:53:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD6A0C340EB;
- Thu, 10 Feb 2022 16:53:15 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 02C9A61006;
+ Thu, 10 Feb 2022 16:53:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A957BC340EF;
+ Thu, 10 Feb 2022 16:53:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1644511999;
- bh=jU4woLASpR6Ex/J6X55lhs4XNVlGTKqO4+sal3OhZzg=;
- h=From:To:In-Reply-To:References:Subject:Date:From;
- b=MtSnP5goZivyhhcyM1qavOq0s+jAuT2xOsOPztOxRfCVXqxOgtmL+EzpUdD9Ie9vd
- /CaIzzqw2YbXKjaqPVdI3x7xrep0rLJ6CIkSuMoPdN4SsWxGi/nTvSOj757LD/taku
- HqLDfWdBeO3X9hcDWADDFwCpzQAt1ZA5/IM39/JQCorHxM3kCLpyD4MLqPNl83lXXY
- L7xmwvYH5Lyo7SRGDOGn7IXMcwkfxDzp5iT5sL3PIoNO+bz9n3Xd3t2wcnqNN/RtvK
- MHoyLVYSdYuhw5dyN3rk3YxbnXMwIOtXTxSWHcsfE8iMvQIS9aj/137kyiFQPzoIUr
- xvXkJ5VSiCpVQ==
+ s=k20201202; t=1644511995;
+ bh=UI4Mv4qVHEGpdjZQVIbbdsVyd0EHwfhjae+7UgeGC5A=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=IJIpXo/XKmo35Zk76235PhkWQhhx2ZXUCwjuBTHnGRP7aOxOOr9sLUDkCaH0YjhlS
+ KOf7KtFRKfiQhad8R9vEo19ffCmgJkjOCXKk3sjwTrfDXuL6+wQA6CvO73NOumJGCW
+ 2ZftkVvpDOyx5t/mBYWHZNM6qfGCz0ad8GJdTWv/zJfcaXrimPELka1cNItgms26MI
+ oULj4UBvdGVfAfcwLRQZP2lh10wn/AWcwxZfD7C5uZF6JGKkPBJfZDSPhFiwscbJph
+ S9G4lpKzN/25ZcCevsbhtnDcCUDqNGk+rcFhH1U/vQaHnLQJnNdGBzShehoeW8zrKx
+ FH5z/ybSs6LWg==
 From: Mark Brown <broonie@kernel.org>
-To: bgoswami@codeaurora.org, srinivas.kandagatla@linaro.org,
- Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>, tiwai@suse.com,
- perex@perex.cz, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- plai@codeaurora.org, robh+dt@kernel.org, judyhsiao@chromium.org,
- bjorn.andersson@linaro.org, lgirdwood@gmail.com, agross@kernel.org,
- swboyd@chromium.org, alsa-devel@alsa-project.org, rohitkr@codeaurora.org,
- linux-arm-msm@vger.kernel.org
-In-Reply-To: <1644497415-25291-1-git-send-email-quic_srivasam@quicinc.com>
-References: <1644497415-25291-1-git-send-email-quic_srivasam@quicinc.com>
-Subject: Re: [PATCH v9 0/3] Machine driver to support LPASS SC7280 sound card
- registration
-Message-Id: <164451199562.2625306.8749637139176937235.b4-ty@kernel.org>
-Date: Thu, 10 Feb 2022 16:53:15 +0000
+To: lgirdwood@gmail.com, Oder Chiou <oder_chiou@realtek.com>
+In-Reply-To: <20220210071900.17287-1-oder_chiou@realtek.com>
+References: <20220210071900.17287-1-oder_chiou@realtek.com>
+Subject: Re: [PATCH] ASoC: rt5640: Remove the sysclk and sysclk_src checking
+Message-Id: <164451199341.2625306.11810466943506622797.b4-ty@kernel.org>
+Date: Thu, 10 Feb 2022 16:53:13 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, spujar@nvidia.com,
+ albertchen@realtek.com, derek.fang@realtek.com, shumingf@realtek.com,
+ flove@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,16 +81,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 10 Feb 2022 18:20:12 +0530, Srinivasa Rao Mandadapu wrote:
-> This patch set is to add support for SC7280 sound card registration and
-> to add dt-bindings documentation file.
+On Thu, 10 Feb 2022 15:19:00 +0800, Oder Chiou wrote:
+> Remove the sysclk and sysclk_src checking in the function set_sysclk() to
+> prevent the PLL power off. It is not getting re-programmed during
+> subsequent runs after the first run (in BIAS_OFF stage).
 > 
-> Srinivasa Rao Mandadapu (3):
->   ASoC: google: dt-bindings: Add sc7280-herobrine machine bindings
->   ASoC: qcom: Add macro for lpass DAI id's max limit
->   ASoC: qcom: SC7280: Add machine driver
 > 
-> [...]
 
 Applied to
 
@@ -101,12 +94,8 @@ Applied to
 
 Thanks!
 
-[1/3] ASoC: google: dt-bindings: Add sc7280-herobrine machine bindings
-      commit: 7bd431486511482b6e789dd69d07654a1d8c5eba
-[2/3] ASoC: qcom: Add macro for lpass DAI id's max limit
-      commit: 77d0ffef793da818741127f4905a3e3d45d05ac7
-[3/3] ASoC: qcom: SC7280: Add machine driver
-      commit: 57350bd41c3ac01bcae1d94e2c85d47dd90b6a3f
+[1/1] ASoC: rt5640: Remove the sysclk and sysclk_src checking
+      commit: d9c5996ab37fca71b4d97440798d54dd87540c8b
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
