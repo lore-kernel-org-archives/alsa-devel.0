@@ -4,77 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E017C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Feb 2022 17:22:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07F66C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Feb 2022 17:22:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5872B1AA1;
-	Thu, 10 Feb 2022 18:21:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5872B1AA1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 249341AA9;
+	Thu, 10 Feb 2022 18:21:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 249341AA9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1644513752;
-	bh=iCLNTfpQJFFbyELTgzBJKNVvgxfvsH8MxI1zM6ttyiw=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=GXUL0Cli+SUUZliHBXVFIO2mP26fEDTzLhzziL7r5RCVDA+v+2HtYifZtq/1Mjq7m
-	 rUGbkGICRHtv+m5XsrVl31I5pnIG7Aggmqo74g1DhzNLqXgPOhANOKd7aJKM0oUXCK
-	 Z525JRP4V3zfpVxCs55fy1Oiob0BRBSTxNORs0IY=
+	s=default; t=1644513767;
+	bh=UITBnANS4QAxDPCyGeMrlwr/H1mF81TpJ7v/Ppew1wQ=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=T3UEYtDNEvBHPsN/Dl23JPQpsUFeErnJjYecZFZsezFSkaiM8tVbODS1JI3F8A8Mu
+	 /AcFJMb5xK+DRacVqZ1sfy/XcqQe2I8T0Z3h9F/2oATgGhqR91RQzvS6d+PrQxOx2Z
+	 MT3cU6EeSYRGRlrhqH2bcg6yrie0KPkxLQPs5TnM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 90161F80423;
-	Thu, 10 Feb 2022 18:21:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 22521F804FF;
+	Thu, 10 Feb 2022 18:21:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CD971F80302; Thu, 10 Feb 2022 18:21:04 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id 4C30AF80508; Thu, 10 Feb 2022 18:21:09 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B90A7F8013D
- for <alsa-devel@alsa-project.org>; Thu, 10 Feb 2022 18:20:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B90A7F8013D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 788F4F8028B
+ for <alsa-devel@alsa-project.org>; Thu, 10 Feb 2022 18:20:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 788F4F8028B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="AShIqHe1"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 21AEBNjS025596;
+ header.b="EQlOVO8B"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 21AEBvVh026091;
  Thu, 10 Feb 2022 11:20:55 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=PODMain02222019;
- bh=opLz0YF9twg7fDDwq/vize/4Am+R+TU5ADoJDsZOuw0=;
- b=AShIqHe1xW1Mdr5EqlakWm2PmYuE2km+vRQM9DGb5+VfhmpAZrzyIUmGQ+CbIT2qDZar
- xG+fjOTZPJ4ldnfbSZwCu+tfawV2EzVVysAOx9UmIAgVBJoHs6Fjce5AsCL49c7ToURP
- oKe8eW8wVYPd3N+Ao9MZ9U/Xm1WosYj9RkgU8KNWpVFKA1izVQ+G86foGycoUdOAMT9u
- aJio2w327eycVcEZC7rTnc1D6MVqrH3fAahdxnw67GScRT46N5HZiavRZVApNjuBlpcX
- bMR7ZRk+xw6DVFqjbogBLfUAqEd9dojGU4EyhCpKSBXoHxh/uxDXEq17pfkq2j/I65MG 3g== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3e4detss0h-1
+ subject : date : message-id : mime-version : content-type;
+ s=PODMain02222019; bh=pFbNrBPDkKKayEep6x/nv1MVmuK6rnPq1IzMvsZ90jA=;
+ b=EQlOVO8B2O2Gdpi6BSrseYDuMVb95XRru5owoa8dhbcD6qx9Vx0nvFjWsCtfomSaP2Hq
+ ZqfPsjayOa3lueHRaKftSB96de9cmdZLWe73auwfC9dGkcLO05ehqgKRB8h7KNcNyR9m
+ sARoSgXpsAyet3oUx7NrgcGH3Uyu5qHROyDvBwIlGUxpqg3m5kdU4jISouIsAUZGmYGt
+ LKdZA0ywajP5AQB/Q9MSqt7vBuXYCx4cz7CgJslbtJNg1LPRcUaYwb1kk5oODdKpsZaa
+ 7a7BJgKIBgUugvAQnwUeT6EPHN26NSNjbb8YJrB0rdKeEnVagvBLka/2Z5wI14V6e2Bv kQ== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3e4brb9y38-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 10 Feb 2022 11:20:54 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ Thu, 10 Feb 2022 11:20:55 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Thu, 10 Feb
  2022 17:20:53 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.18 via
  Frontend Transport; Thu, 10 Feb 2022 17:20:53 +0000
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4EF79B10;
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 31D732A1;
  Thu, 10 Feb 2022 17:20:53 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 3/3] ASoC: wm_adsp: Add trace caps to speaker protection FW
-Date: Thu, 10 Feb 2022 17:20:53 +0000
-Message-ID: <20220210172053.22782-3-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 1/3] ASoC: wm_adsp: Correct control read size when parsing
+ compressed buffer
+Date: Thu, 10 Feb 2022 17:20:51 +0000
+Message-ID: <20220210172053.22782-1-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20220210172053.22782-1-ckeepax@opensource.cirrus.com>
-References: <20220210172053.22782-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Proofpoint-GUID: amz0nJaQRQjWdI2aZjrWwGWgw0MrfIwH
-X-Proofpoint-ORIG-GUID: amz0nJaQRQjWdI2aZjrWwGWgw0MrfIwH
+X-Proofpoint-ORIG-GUID: SkWsBQ2M1z616kscrAW7i2IQCRBY4ZdU
+X-Proofpoint-GUID: SkWsBQ2M1z616kscrAW7i2IQCRBY4ZdU
 X-Proofpoint-Spam-Reason: safe
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
  Vlad.Karpovich@cirrus.com, lgirdwood@gmail.com
@@ -93,45 +90,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Vlad Karpovich <Vlad.Karpovich@cirrus.com>
+When parsing the compressed stream the whole buffer descriptor is
+now read in a single cs_dsp_coeff_read_ctrl; on older firmwares
+this descriptor is just 4 bytes but on more modern firmwares it is
+24 bytes. The current code reads the full 24 bytes regardless, this
+was working but reading junk for the last 20 bytes. However commit
+f444da38ac92 ("firmware: cs_dsp: Add offset to cs_dsp read/write")
+added a size check into cs_dsp_coeff_read_ctrl, causing the older
+firmwares to now return an error.
 
-Enable access to the speaker protection firmware debug stream
-using compress stream API and lower minimum fragment size to
-16 words.
+Update the code to only read the amount of data appropriate for
+the firmware loaded.
 
-Signed-off-by: Vlad Karpovich <Vlad.Karpovich@cirrus.com>
+Fixes: 04ae08596737 ("ASoC: wm_adsp: Switch to using wm_coeff_read_ctrl for compressed buffers")
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/soc/codecs/wm_adsp.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 8e5ebc4838ec3..7a32efa1fd90e 100644
+index f3672e3d1703e..0582585236a28 100644
 --- a/sound/soc/codecs/wm_adsp.c
 +++ b/sound/soc/codecs/wm_adsp.c
-@@ -180,7 +180,7 @@ struct wm_adsp_compr {
+@@ -1441,7 +1441,8 @@ static int wm_adsp_buffer_parse_coeff(struct cs_dsp_coeff_ctl *cs_ctl)
+ 	int ret, i;
  
- #define WM_ADSP_MIN_FRAGMENTS          1
- #define WM_ADSP_MAX_FRAGMENTS          256
--#define WM_ADSP_MIN_FRAGMENT_SIZE      (64 * CS_DSP_DATA_WORD_SIZE)
-+#define WM_ADSP_MIN_FRAGMENT_SIZE      (16 * CS_DSP_DATA_WORD_SIZE)
- #define WM_ADSP_MAX_FRAGMENT_SIZE      (4096 * CS_DSP_DATA_WORD_SIZE)
+ 	for (i = 0; i < 5; ++i) {
+-		ret = cs_dsp_coeff_read_ctrl(cs_ctl, 0, &coeff_v1, sizeof(coeff_v1));
++		ret = cs_dsp_coeff_read_ctrl(cs_ctl, 0, &coeff_v1,
++					     min(cs_ctl->len, sizeof(coeff_v1)));
+ 		if (ret < 0)
+ 			return ret;
  
- #define WM_ADSP_ALG_XM_STRUCT_MAGIC    0x49aec7
-@@ -296,7 +296,12 @@ static const struct {
- 		.num_caps = ARRAY_SIZE(trace_caps),
- 		.caps = trace_caps,
- 	},
--	[WM_ADSP_FW_SPK_PROT] = { .file = "spk-prot" },
-+	[WM_ADSP_FW_SPK_PROT] = {
-+		.file = "spk-prot",
-+		.compr_direction = SND_COMPRESS_CAPTURE,
-+		.num_caps = ARRAY_SIZE(trace_caps),
-+		.caps = trace_caps,
-+	},
- 	[WM_ADSP_FW_SPK_CALI] = { .file = "spk-cali" },
- 	[WM_ADSP_FW_SPK_DIAG] = { .file = "spk-diag" },
- 	[WM_ADSP_FW_MISC] =     { .file = "misc" },
 -- 
 2.11.0
 
