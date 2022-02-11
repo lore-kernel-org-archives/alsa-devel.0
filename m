@@ -4,57 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABC44C4332F
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Feb 2022 10:40:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF0B0C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Feb 2022 10:40:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 32A6E18D4;
-	Fri, 11 Feb 2022 11:39:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32A6E18D4
+	by alsa0.perex.cz (Postfix) with ESMTPS id EB94D18D9;
+	Fri, 11 Feb 2022 11:40:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB94D18D9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1644576026;
-	bh=+85evDKHlISVRu2Z7XJT0H9Pz1RTINv7wBu4bpoN2IE=;
+	s=default; t=1644576055;
+	bh=eo4iFYm78vmcOZyQyf/Hz4YT31CGoc//xEi0TwA5vvg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lj09xsm/lpCSM3yfyeJk3NuRniS6ZToo9dplcIOQrxJPdcFIGeKJCc8OB41oy4PW4
-	 qj3+d7oUnYivhJaqqYHpIaIEG4xL+VyeoxYyifDzlWEj9Kxlkr0mPZghN68JMeMQPE
-	 Y7880igKwmYwK4cztgPMfWqID+qhDoZ0532rPQUA=
+	b=YfkptJDlexY7xuCEDkYZXVfrf6kYH39i6ThkxOs4mGuthXOhe9vnkV6fYTV25Hyt9
+	 1eaeOQCFtAHYO2IkFxxLXbE9IbH9y+eQChSEOa1BM/hdZdnx/7l2hQJOk2UguWXZ6R
+	 eyUxXBYpuKPhuNwsYWBI5h0YvKeu/PSDIcGJ1Dec=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 92D0EF80515;
-	Fri, 11 Feb 2022 11:38:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 922AEF80527;
+	Fri, 11 Feb 2022 11:38:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 95D65F80511; Fri, 11 Feb 2022 11:38:42 +0100 (CET)
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+ id 6B345F80517; Fri, 11 Feb 2022 11:38:43 +0100 (CET)
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E1BA4F80125
- for <alsa-devel@alsa-project.org>; Fri, 11 Feb 2022 11:38:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1BA4F80125
-X-UUID: ca786e55090041f09f42187473e802cc-20220211
-X-UUID: ca786e55090041f09f42187473e802cc-20220211
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by
- mailgw02.mediatek.com (envelope-from <jiaxin.yu@mediatek.com>)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D20A5F80166
+ for <alsa-devel@alsa-project.org>; Fri, 11 Feb 2022 11:38:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D20A5F80166
+X-UUID: 4bfcfb739035478c9ee69cfac0cee880-20220211
+X-UUID: 4bfcfb739035478c9ee69cfac0cee880-20220211
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
+ (envelope-from <jiaxin.yu@mediatek.com>)
  (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
- with ESMTP id 1526165724; Fri, 11 Feb 2022 18:38:26 +0800
-Received: from mtkexhb02.mediatek.inc (172.21.101.103) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3; 
- Fri, 11 Feb 2022 18:38:25 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by mtkexhb02.mediatek.inc
- (172.21.101.103) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
- Fri, 11 Feb 2022 18:38:25 +0800
+ with ESMTP id 476545473; Fri, 11 Feb 2022 18:38:31 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 11 Feb 2022 18:38:30 +0800
 Received: from localhost.localdomain (10.17.3.154) by mtkcas11.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 11 Feb 2022 18:38:24 +0800
+ Transport; Fri, 11 Feb 2022 18:38:29 +0800
 From: Jiaxin Yu <jiaxin.yu@mediatek.com>
 To: <broonie@kernel.org>, <lgirdwood@gmail.com>, <tiwai@suse.com>,
  <robh+dt@kernel.org>, <matthias.bgg@gmail.com>, <perex@perex.cz>,
  <p.zabel@pengutronix.de>, <geert+renesas@glider.be>
-Subject: [PATCH 02/15] ASoC: mediatek: mt8186: support audsys clock control
-Date: Fri, 11 Feb 2022 18:38:05 +0800
-Message-ID: <20220211103818.8266-3-jiaxin.yu@mediatek.com>
+Subject: [PATCH 07/15] ASoC: mediatek: mt8186: support pcm in platform driver
+Date: Fri, 11 Feb 2022 18:38:10 +0800
+Message-ID: <20220211103818.8266-8-jiaxin.yu@mediatek.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220211103818.8266-1-jiaxin.yu@mediatek.com>
 References: <20220211103818.8266-1-jiaxin.yu@mediatek.com>
@@ -82,249 +78,453 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch adds mt8186 audio cg control.
-Audio clock gates are registered to CCF for reference count and
-clock parent management.
+This patch adds mt8186 pcm dai driver.
 
 Signed-off-by: Jiaxin Yu <jiaxin.yu@mediatek.com>
 ---
- sound/soc/mediatek/mt8186/mt8186-audsys-clk.c | 151 ++++++++++++++++++
- sound/soc/mediatek/mt8186/mt8186-audsys-clk.h |  15 ++
- .../soc/mediatek/mt8186/mt8186-audsys-clkid.h |  45 ++++++
- 3 files changed, 211 insertions(+)
- create mode 100644 sound/soc/mediatek/mt8186/mt8186-audsys-clk.c
- create mode 100644 sound/soc/mediatek/mt8186/mt8186-audsys-clk.h
- create mode 100644 sound/soc/mediatek/mt8186/mt8186-audsys-clkid.h
+ sound/soc/mediatek/mt8186/mt8186-dai-pcm.c | 433 +++++++++++++++++++++
+ 1 file changed, 433 insertions(+)
+ create mode 100644 sound/soc/mediatek/mt8186/mt8186-dai-pcm.c
 
-diff --git a/sound/soc/mediatek/mt8186/mt8186-audsys-clk.c b/sound/soc/mediatek/mt8186/mt8186-audsys-clk.c
+diff --git a/sound/soc/mediatek/mt8186/mt8186-dai-pcm.c b/sound/soc/mediatek/mt8186/mt8186-dai-pcm.c
 new file mode 100644
-index 000000000000..f0ca57f00e91
+index 000000000000..6fd2844660dd
 --- /dev/null
-+++ b/sound/soc/mediatek/mt8186/mt8186-audsys-clk.c
-@@ -0,0 +1,151 @@
++++ b/sound/soc/mediatek/mt8186/mt8186-dai-pcm.c
+@@ -0,0 +1,433 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * mt8186-audsys-clk.h  --  Mediatek 8186 audsys clock control
++ *  MediaTek ALSA SoC Audio DAI I2S Control
 + *
-+ * Copyright (c) 2022 MediaTek Inc.
-+ * Author: Jiaxin Yu <jiaxin.yu@mediatek.com>
++ *  Copyright (c) 2022 MediaTek Inc.
++ *  Author: Jiaxin Yu <jiaxin.yu@mediatek.com>
 + */
 +
-+#include <linux/clk.h>
-+#include <linux/clk-provider.h>
-+#include <linux/clkdev.h>
++#include <linux/regmap.h>
++#include <sound/pcm_params.h>
 +#include "mt8186-afe-common.h"
-+#include "mt8186-audsys-clk.h"
-+#include "mt8186-audsys-clkid.h"
-+#include "mt8186-reg.h"
++#include "mt8186-afe-gpio.h"
++#include "mt8186-interconnection.h"
 +
-+struct afe_gate {
-+	int id;
-+	const char *name;
-+	const char *parent_name;
-+	int reg;
-+	u8 bit;
-+	const struct clk_ops *ops;
-+	unsigned long flags;
-+	u8 cg_flags;
++struct mtk_afe_pcm_priv {
++	unsigned int id;
++	unsigned int fmt;
++	unsigned int bck_invert;
++	unsigned int lck_invert;
 +};
 +
-+#define GATE_AFE_FLAGS(_id, _name, _parent, _reg, _bit, _flags, _cgflags) {\
-+		.id = _id,					\
-+		.name = _name,					\
-+		.parent_name = _parent,				\
-+		.reg = _reg,					\
-+		.bit = _bit,					\
-+		.flags = _flags,				\
-+		.cg_flags = _cgflags,				\
-+	}
-+
-+#define GATE_AFE(_id, _name, _parent, _reg, _bit)		\
-+	GATE_AFE_FLAGS(_id, _name, _parent, _reg, _bit,		\
-+		       CLK_SET_RATE_PARENT, CLK_GATE_SET_TO_DISABLE)
-+
-+#define GATE_AUD0(_id, _name, _parent, _bit)			\
-+	GATE_AFE(_id, _name, _parent, AUDIO_TOP_CON0, _bit)
-+
-+#define GATE_AUD1(_id, _name, _parent, _bit)			\
-+	GATE_AFE(_id, _name, _parent, AUDIO_TOP_CON1, _bit)
-+
-+#define GATE_AUD2(_id, _name, _parent, _bit)			\
-+	GATE_AFE(_id, _name, _parent, AUDIO_TOP_CON2, _bit)
-+
-+static const struct afe_gate aud_clks[CLK_AUD_NR_CLK] = {
-+	/* AUD0 */
-+	GATE_AUD0(CLK_AUD_AFE, "aud_afe_clk", "top_audio", 2),
-+	GATE_AUD0(CLK_AUD_22M, "aud_apll22m_clk", "top_aud_engen1", 8),
-+	GATE_AUD0(CLK_AUD_24M, "aud_apll24m_clk", "top_aud_engen2", 9),
-+	GATE_AUD0(CLK_AUD_APLL2_TUNER, "aud_apll2_tuner_clk", "top_aud_engen2", 18),
-+	GATE_AUD0(CLK_AUD_APLL_TUNER, "aud_apll_tuner_clk", "top_aud_engen1", 19),
-+	GATE_AUD0(CLK_AUD_TDM, "aud_tdm_clk", "top_aud_1", 20),
-+	GATE_AUD0(CLK_AUD_ADC, "aud_adc_clk", "top_audio", 24),
-+	GATE_AUD0(CLK_AUD_DAC, "aud_dac_clk", "top_audio", 25),
-+	GATE_AUD0(CLK_AUD_DAC_PREDIS, "aud_dac_predis_clk", "top_audio", 26),
-+	GATE_AUD0(CLK_AUD_TML, "aud_tml_clk", "top_audio", 27),
-+	GATE_AUD0(CLK_AUD_NLE, "aud_nle_clk", "top_audio", 28),
-+
-+	/* AUD1 */
-+	GATE_AUD1(CLK_AUD_I2S1_BCLK, "aud_i2s1_bclk", "top_audio", 4),
-+	GATE_AUD1(CLK_AUD_I2S2_BCLK, "aud_i2s2_bclk", "top_audio", 5),
-+	GATE_AUD1(CLK_AUD_I2S3_BCLK, "aud_i2s3_bclk", "top_audio", 6),
-+	GATE_AUD1(CLK_AUD_I2S4_BCLK, "aud_i2s4_bclk", "top_audio", 7),
-+	GATE_AUD1(CLK_AUD_CONNSYS_I2S_ASRC, "aud_connsys_i2s_asrc", "top_audio", 12),
-+	GATE_AUD1(CLK_AUD_GENERAL1_ASRC, "aud_general1_asrc", "top_audio", 13),
-+	GATE_AUD1(CLK_AUD_GENERAL2_ASRC, "aud_general2_asrc", "top_audio", 14),
-+	GATE_AUD1(CLK_AUD_DAC_HIRES, "aud_dac_hires_clk", "top_audio_h", 15),
-+	GATE_AUD1(CLK_AUD_ADC_HIRES, "aud_adc_hires_clk", "top_audio_h", 16),
-+	GATE_AUD1(CLK_AUD_ADC_HIRES_TML, "aud_adc_hires_tml", "top_audio_h", 17),
-+	GATE_AUD1(CLK_AUD_ADDA6_ADC, "aud_adda6_adc", "top_audio", 20),
-+	GATE_AUD1(CLK_AUD_ADDA6_ADC_HIRES, "aud_adda6_adc_hires", "top_audio_h", 21),
-+	GATE_AUD1(CLK_AUD_3RD_DAC, "aud_3rd_dac", "top_audio", 28),
-+	GATE_AUD1(CLK_AUD_3RD_DAC_PREDIS, "aud_3rd_dac_predis", "top_audio", 29),
-+	GATE_AUD1(CLK_AUD_3RD_DAC_TML, "aud_3rd_dac_tml", "top_audio", 30),
-+	GATE_AUD1(CLK_AUD_3RD_DAC_HIRES, "aud_3rd_dac_hires", "top_audio_h", 31),
-+
-+	/* AUD2 */
-+	GATE_AUD2(CLK_AUD_ETDM_IN1_BCLK, "aud_etdm_in1_bclk", "top_audio", 23),
-+	GATE_AUD2(CLK_AUD_ETDM_OUT1_BCLK, "aud_etdm_out1_bclk", "top_audio", 24),
++enum AUD_TX_LCH_RPT {
++	AUD_TX_LCH_RPT_NO_REPEAT = 0,
++	AUD_TX_LCH_RPT_REPEAT = 1
 +};
 +
-+int mt8186_audsys_clk_register(struct mtk_base_afe *afe)
++enum AUD_VBT_16K_MODE {
++	AUD_VBT_16K_MODE_DISABLE = 0,
++	AUD_VBT_16K_MODE_ENABLE = 1
++};
++
++enum AUD_EXT_MODEM {
++	AUD_EXT_MODEM_SELECT_INTERNAL = 0,
++	AUD_EXT_MODEM_SELECT_EXTERNAL = 1
++};
++
++enum AUD_PCM_SYNC_TYPE {
++	/* bck sync length = 1 */
++	AUD_PCM_ONE_BCK_CYCLE_SYNC = 0,
++	/* bck sync length = PCM_INTF_CON1[9:13] */
++	AUD_PCM_EXTENDED_BCK_CYCLE_SYNC = 1
++};
++
++enum AUD_BT_MODE {
++	AUD_BT_MODE_DUAL_MIC_ON_TX = 0,
++	AUD_BT_MODE_SINGLE_MIC_ON_TX = 1
++};
++
++enum AUD_PCM_AFIFO_SRC {
++	/* slave mode & external modem uses different crystal */
++	AUD_PCM_AFIFO_ASRC = 0,
++	/* slave mode & external modem uses the same crystal */
++	AUD_PCM_AFIFO_AFIFO = 1
++};
++
++enum AUD_PCM_CLOCK_SOURCE {
++	AUD_PCM_CLOCK_MASTER_MODE = 0,
++	AUD_PCM_CLOCK_SLAVE_MODE = 1
++};
++
++enum AUD_PCM_WLEN {
++	AUD_PCM_WLEN_PCM_32_BCK_CYCLES = 0,
++	AUD_PCM_WLEN_PCM_64_BCK_CYCLES = 1
++};
++
++enum AUD_PCM_24BIT {
++	AUD_PCM_24BIT_PCM_16_BITS = 0,
++	AUD_PCM_24BIT_PCM_24_BITS = 1
++};
++
++enum AUD_PCM_MODE {
++	AUD_PCM_MODE_PCM_MODE_8K = 0,
++	AUD_PCM_MODE_PCM_MODE_16K = 1,
++	AUD_PCM_MODE_PCM_MODE_32K = 2,
++	AUD_PCM_MODE_PCM_MODE_48K = 3,
++};
++
++enum AUD_PCM_FMT {
++	AUD_PCM_FMT_I2S = 0,
++	AUD_PCM_FMT_EIAJ = 1,
++	AUD_PCM_FMT_PCM_MODE_A = 2,
++	AUD_PCM_FMT_PCM_MODE_B = 3
++};
++
++enum AUD_BCLK_OUT_INV {
++	AUD_BCLK_OUT_INV_NO_INVERSE = 0,
++	AUD_BCLK_OUT_INV_INVERSE = 1
++};
++
++enum AUD_LRCLK_OUT_INV {
++	AUD_LRCLK_OUT_INV_NO_INVERSE = 0,
++	AUD_LRCLK_OUT_INV_INVERSE = 1
++};
++
++enum AUD_PCM_EN {
++	AUD_PCM_EN_DISABLE = 0,
++	AUD_PCM_EN_ENABLE = 1
++};
++
++/* dai component */
++static const struct snd_kcontrol_new mtk_pcm_1_playback_ch1_mix[] = {
++	SOC_DAPM_SINGLE_AUTODISABLE("ADDA_UL_CH1", AFE_CONN7,
++				    I_ADDA_UL_CH1, 1, 0),
++	SOC_DAPM_SINGLE_AUTODISABLE("DL2_CH1", AFE_CONN7,
++				    I_DL2_CH1, 1, 0),
++	SOC_DAPM_SINGLE_AUTODISABLE("DL4_CH1", AFE_CONN7_1,
++				    I_DL4_CH1, 1, 0),
++};
++
++static const struct snd_kcontrol_new mtk_pcm_1_playback_ch2_mix[] = {
++	SOC_DAPM_SINGLE_AUTODISABLE("ADDA_UL_CH2", AFE_CONN8,
++				    I_ADDA_UL_CH2, 1, 0),
++	SOC_DAPM_SINGLE_AUTODISABLE("DL2_CH2", AFE_CONN8,
++				    I_DL2_CH2, 1, 0),
++	SOC_DAPM_SINGLE_AUTODISABLE("DL4_CH2", AFE_CONN8_1,
++				    I_DL4_CH2, 1, 0),
++};
++
++static int mtk_pcm_en_event(struct snd_soc_dapm_widget *w,
++			    struct snd_kcontrol *kcontrol,
++			    int event)
 +{
-+	struct mt8186_afe_private *afe_priv = afe->platform_priv;
-+	struct clk *clk;
-+	struct clk_lookup *cl;
-+	int i;
++	struct snd_soc_component *cmpnt = snd_soc_dapm_to_component(w->dapm);
++	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(cmpnt);
 +
-+	afe_priv->lookup = devm_kcalloc(afe->dev, CLK_AUD_NR_CLK,
-+					sizeof(*afe_priv->lookup),
-+					GFP_KERNEL);
++	dev_info(afe->dev, "%s(), name %s, event 0x%x\n",
++		 __func__, w->name, event);
 +
-+	if (!afe_priv->lookup)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < ARRAY_SIZE(aud_clks); i++) {
-+		const struct afe_gate *gate = &aud_clks[i];
-+
-+		clk = clk_register_gate(afe->dev, gate->name, gate->parent_name,
-+					gate->flags, afe->base_addr + gate->reg,
-+					gate->bit, gate->cg_flags, NULL);
-+
-+		if (IS_ERR(clk)) {
-+			dev_err(afe->dev, "Failed to register clk %s: %ld\n",
-+				gate->name, PTR_ERR(clk));
-+			continue;
-+		}
-+
-+		/* add clk_lookup for devm_clk_get(SND_SOC_DAPM_CLOCK_SUPPLY) */
-+		cl = kzalloc(sizeof(*cl), GFP_KERNEL);
-+		if (!cl)
-+			return -ENOMEM;
-+
-+		cl->clk = clk;
-+		cl->con_id = gate->name;
-+		cl->dev_id = dev_name(afe->dev);
-+		clkdev_add(cl);
-+
-+		afe_priv->lookup[i] = cl;
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		mt8186_afe_gpio_request(afe->dev, true, MT8186_DAI_PCM, 0);
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		mt8186_afe_gpio_request(afe->dev, false, MT8186_DAI_PCM, 0);
++		break;
 +	}
 +
 +	return 0;
 +}
 +
-+void mt8186_audsys_clk_unregister(struct mtk_base_afe *afe)
-+{
-+	struct mt8186_afe_private *afe_priv = afe->platform_priv;
-+	struct clk *clk;
-+	struct clk_lookup *cl;
-+	int i;
-+
-+	if (!afe_priv)
-+		return;
-+
-+	for (i = 0; i < CLK_AUD_NR_CLK; i++) {
-+		cl = afe_priv->lookup[i];
-+		if (!cl)
-+			continue;
-+
-+		clk = cl->clk;
-+		clk_unregister_gate(clk);
-+
-+		clkdev_drop(cl);
-+	}
-+}
-diff --git a/sound/soc/mediatek/mt8186/mt8186-audsys-clk.h b/sound/soc/mediatek/mt8186/mt8186-audsys-clk.h
-new file mode 100644
-index 000000000000..6023cd788b13
---- /dev/null
-+++ b/sound/soc/mediatek/mt8186/mt8186-audsys-clk.h
-@@ -0,0 +1,15 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * mt8186-audsys-clk.h  --  Mediatek 8186 audsys clock definition
-+ *
-+ * Copyright (c) 2022 MediaTek Inc.
-+ * Author: Trevor Wu <trevor.wu@mediatek.com>
-+ */
-+
-+#ifndef _MT8186_AUDSYS_CLK_H_
-+#define _MT8186_AUDSYS_CLK_H_
-+
-+int mt8186_audsys_clk_register(struct mtk_base_afe *afe);
-+void mt8186_audsys_clk_unregister(struct mtk_base_afe *afe);
-+
-+#endif
-diff --git a/sound/soc/mediatek/mt8186/mt8186-audsys-clkid.h b/sound/soc/mediatek/mt8186/mt8186-audsys-clkid.h
-new file mode 100644
-index 000000000000..823ee43a0c55
---- /dev/null
-+++ b/sound/soc/mediatek/mt8186/mt8186-audsys-clkid.h
-@@ -0,0 +1,45 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * mt8186-audsys-clkid.h  --  Mediatek 8186 audsys clock id definition
-+ *
-+ * Copyright (c) 2022 MediaTek Inc.
-+ * Author: Jiaxin Yu <jiaxin.yu@mediatek.com>
-+ */
-+
-+#ifndef _MT8186_AUDSYS_CLKID_H_
-+#define _MT8186_AUDSYS_CLKID_H_
-+
-+enum{
-+	CLK_AUD_AFE,
-+	CLK_AUD_22M,
-+	CLK_AUD_24M,
-+	CLK_AUD_APLL2_TUNER,
-+	CLK_AUD_APLL_TUNER,
-+	CLK_AUD_TDM,
-+	CLK_AUD_ADC,
-+	CLK_AUD_DAC,
-+	CLK_AUD_DAC_PREDIS,
-+	CLK_AUD_TML,
-+	CLK_AUD_NLE,
-+	CLK_AUD_I2S1_BCLK,
-+	CLK_AUD_I2S2_BCLK,
-+	CLK_AUD_I2S3_BCLK,
-+	CLK_AUD_I2S4_BCLK,
-+	CLK_AUD_CONNSYS_I2S_ASRC,
-+	CLK_AUD_GENERAL1_ASRC,
-+	CLK_AUD_GENERAL2_ASRC,
-+	CLK_AUD_DAC_HIRES,
-+	CLK_AUD_ADC_HIRES,
-+	CLK_AUD_ADC_HIRES_TML,
-+	CLK_AUD_ADDA6_ADC,
-+	CLK_AUD_ADDA6_ADC_HIRES,
-+	CLK_AUD_3RD_DAC,
-+	CLK_AUD_3RD_DAC_PREDIS,
-+	CLK_AUD_3RD_DAC_TML,
-+	CLK_AUD_3RD_DAC_HIRES,
-+	CLK_AUD_ETDM_IN1_BCLK,
-+	CLK_AUD_ETDM_OUT1_BCLK,
-+	CLK_AUD_NR_CLK,
++/* pcm in/out lpbk */
++static const char * const pcm_lpbk_mux_map[] = {
++	"Normal", "Lpbk",
 +};
 +
-+#endif
++static int pcm_lpbk_mux_map_value[] = {
++	0, 1,
++};
++
++static SOC_VALUE_ENUM_SINGLE_AUTODISABLE_DECL(pcm_in_lpbk_mux_map_enum,
++					      PCM_INTF_CON1,
++					      PCM_I2S_PCM_LOOPBACK_SFT,
++					      1,
++					      pcm_lpbk_mux_map,
++					      pcm_lpbk_mux_map_value);
++
++static const struct snd_kcontrol_new pcm_in_lpbk_mux_control =
++	SOC_DAPM_ENUM("PCM In Lpbk Select", pcm_in_lpbk_mux_map_enum);
++
++static SOC_VALUE_ENUM_SINGLE_AUTODISABLE_DECL(pcm_out_lpbk_mux_map_enum,
++					      PCM_INTF_CON1,
++					      PCM_I2S_PCM_LOOPBACK_SFT,
++					      1,
++					      pcm_lpbk_mux_map,
++					      pcm_lpbk_mux_map_value);
++
++static const struct snd_kcontrol_new pcm_out_lpbk_mux_control =
++	SOC_DAPM_ENUM("PCM Out Lpbk Select", pcm_out_lpbk_mux_map_enum);
++
++static const struct snd_soc_dapm_widget mtk_dai_pcm_widgets[] = {
++	/* inter-connections */
++	SND_SOC_DAPM_MIXER("PCM_1_PB_CH1", SND_SOC_NOPM, 0, 0,
++			   mtk_pcm_1_playback_ch1_mix,
++			   ARRAY_SIZE(mtk_pcm_1_playback_ch1_mix)),
++	SND_SOC_DAPM_MIXER("PCM_1_PB_CH2", SND_SOC_NOPM, 0, 0,
++			   mtk_pcm_1_playback_ch2_mix,
++			   ARRAY_SIZE(mtk_pcm_1_playback_ch2_mix)),
++
++	SND_SOC_DAPM_SUPPLY("PCM_1_EN",
++			    PCM_INTF_CON1, PCM_EN_SFT, 0,
++			    mtk_pcm_en_event,
++			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++
++	/* pcm in lpbk */
++	SND_SOC_DAPM_MUX("PCM_In_Lpbk_Mux",
++			 SND_SOC_NOPM, 0, 0, &pcm_in_lpbk_mux_control),
++
++	/* pcm out lpbk */
++	SND_SOC_DAPM_MUX("PCM_Out_Lpbk_Mux",
++			 SND_SOC_NOPM, 0, 0, &pcm_out_lpbk_mux_control),
++};
++
++static const struct snd_soc_dapm_route mtk_dai_pcm_routes[] = {
++	{"PCM 1 Playback", NULL, "PCM_1_PB_CH1"},
++	{"PCM 1 Playback", NULL, "PCM_1_PB_CH2"},
++
++	{"PCM 1 Playback", NULL, "PCM_1_EN"},
++	{"PCM 1 Capture", NULL, "PCM_1_EN"},
++
++	{"PCM_1_PB_CH1", "DL2_CH1", "DL2"},
++	{"PCM_1_PB_CH2", "DL2_CH2", "DL2"},
++
++	{"PCM_1_PB_CH1", "DL4_CH1", "DL4"},
++	{"PCM_1_PB_CH2", "DL4_CH2", "DL4"},
++
++	/* pcm out lpbk */
++	{"PCM_Out_Lpbk_Mux", "Lpbk", "PCM 1 Playback"},
++	{"I2S0", NULL, "PCM_Out_Lpbk_Mux"},
++
++	/* pcm in lpbk */
++	{"PCM_In_Lpbk_Mux", "Lpbk", "PCM 1 Capture"},
++	{"I2S3", NULL, "PCM_In_Lpbk_Mux"},
++};
++
++/* dai ops */
++static int mtk_dai_pcm_hw_params(struct snd_pcm_substream *substream,
++				 struct snd_pcm_hw_params *params,
++				 struct snd_soc_dai *dai)
++{
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
++	struct mt8186_afe_private *afe_priv = afe->platform_priv;
++	int pcm_id = dai->id;
++	struct mtk_afe_pcm_priv *pcm_priv = afe_priv->dai_priv[pcm_id];
++	unsigned int rate = params_rate(params);
++	unsigned int rate_reg = mt8186_rate_transform(afe->dev, rate, dai->id);
++	snd_pcm_format_t format = params_format(params);
++	unsigned int data_width =
++		snd_pcm_format_width(format);
++	unsigned int wlen_width =
++		snd_pcm_format_physical_width(format);
++	unsigned int pcm_con = 0;
++
++	dev_info(afe->dev, "%s(), id %d, stream %d, widget active p %d, c %d\n",
++		 __func__,
++		 dai->id,
++		 substream->stream,
++		 dai->playback_widget->active,
++		 dai->capture_widget->active);
++	dev_info(afe->dev, "%s(), rate %d, rate_reg %d, data_width %d, wlen_width %d\n",
++		 __func__,
++		 rate,
++		 rate_reg,
++		 data_width,
++		 wlen_width);
++
++	if (dai->playback_widget->active || dai->capture_widget->active)
++		return 0;
++
++	switch (dai->id) {
++	case MT8186_DAI_PCM:
++		pcm_con |= AUD_TX_LCH_RPT_NO_REPEAT << PCM_TX_LCH_RPT_SFT;
++		pcm_con |= AUD_VBT_16K_MODE_DISABLE << PCM_VBT_16K_MODE_SFT;
++		pcm_con |= AUD_EXT_MODEM_SELECT_EXTERNAL << PCM_EXT_MODEM_SFT;
++		pcm_con |= AUD_PCM_ONE_BCK_CYCLE_SYNC << PCM_SYNC_TYPE_SFT;
++		pcm_con |= AUD_BT_MODE_DUAL_MIC_ON_TX << PCM_BT_MODE_SFT;
++		pcm_con |= AUD_PCM_AFIFO_AFIFO << PCM_BYP_ASRC_SFT;
++		pcm_con |= AUD_PCM_CLOCK_MASTER_MODE << PCM_SLAVE_SFT;
++		pcm_con |= 0 << PCM_SYNC_LENGTH_SFT;
++
++		/* sampling rate */
++		pcm_con |= rate_reg << PCM_MODE_SFT;
++
++		/* format */
++		pcm_con |= pcm_priv->fmt << PCM_FMT_SFT;
++
++		/* 24bit data width */
++		if (data_width > 16)
++			pcm_con |= AUD_PCM_24BIT_PCM_24_BITS << PCM_24BIT_SFT;
++		else
++			pcm_con |= AUD_PCM_24BIT_PCM_16_BITS << PCM_24BIT_SFT;
++
++		/* wlen width*/
++		if (wlen_width > 16)
++			pcm_con |= AUD_PCM_WLEN_PCM_64_BCK_CYCLES << PCM_WLEN_SFT;
++		else
++			pcm_con |= AUD_PCM_WLEN_PCM_32_BCK_CYCLES << PCM_WLEN_SFT;
++
++		/* clock invert */
++		pcm_con |= pcm_priv->lck_invert << PCM_SYNC_OUT_INV_SFT;
++		pcm_con |= pcm_priv->bck_invert << PCM_BCLK_OUT_INV_SFT;
++
++		regmap_update_bits(afe->regmap, PCM_INTF_CON1,
++				   0xfffffffe, pcm_con);
++		break;
++	default:
++		dev_info(afe->dev, "%s(), id %d not support\n",
++			 __func__, dai->id);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int mtk_dai_pcm_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
++{
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
++	struct mt8186_afe_private *afe_priv = afe->platform_priv;
++	struct mtk_afe_pcm_priv *pcm_priv = afe_priv->dai_priv[dai->id];
++
++	if (!pcm_priv) {
++		dev_info(afe->dev, "%s(), tdm_priv == NULL", __func__);
++		return -EINVAL;
++	}
++
++	/* DAI mode*/
++	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_I2S:
++		pcm_priv->fmt = AUD_PCM_FMT_I2S;
++		break;
++	case SND_SOC_DAIFMT_LEFT_J:
++		pcm_priv->fmt = AUD_PCM_FMT_EIAJ;
++		break;
++	case SND_SOC_DAIFMT_DSP_A:
++		pcm_priv->fmt = AUD_PCM_FMT_PCM_MODE_A;
++		break;
++	case SND_SOC_DAIFMT_DSP_B:
++		pcm_priv->fmt = AUD_PCM_FMT_PCM_MODE_B;
++		break;
++	default:
++		pcm_priv->fmt = AUD_PCM_FMT_I2S;
++	}
++
++	/* DAI clock inversion*/
++	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
++	case SND_SOC_DAIFMT_NB_NF:
++		pcm_priv->bck_invert = AUD_BCLK_OUT_INV_NO_INVERSE;
++		pcm_priv->lck_invert = AUD_LRCLK_OUT_INV_NO_INVERSE;
++		break;
++	case SND_SOC_DAIFMT_NB_IF:
++		pcm_priv->bck_invert = AUD_BCLK_OUT_INV_NO_INVERSE;
++		pcm_priv->lck_invert = AUD_BCLK_OUT_INV_INVERSE;
++		break;
++	case SND_SOC_DAIFMT_IB_NF:
++		pcm_priv->bck_invert = AUD_BCLK_OUT_INV_INVERSE;
++		pcm_priv->lck_invert = AUD_LRCLK_OUT_INV_NO_INVERSE;
++		break;
++	case SND_SOC_DAIFMT_IB_IF:
++		pcm_priv->bck_invert = AUD_BCLK_OUT_INV_INVERSE;
++		pcm_priv->lck_invert = AUD_BCLK_OUT_INV_INVERSE;
++		break;
++	default:
++		pcm_priv->bck_invert = AUD_BCLK_OUT_INV_NO_INVERSE;
++		pcm_priv->lck_invert = AUD_LRCLK_OUT_INV_NO_INVERSE;
++		break;
++	}
++
++	return 0;
++}
++
++static const struct snd_soc_dai_ops mtk_dai_pcm_ops = {
++	.hw_params = mtk_dai_pcm_hw_params,
++	.set_fmt = mtk_dai_pcm_set_fmt,
++};
++
++/* dai driver */
++#define MTK_PCM_RATES (SNDRV_PCM_RATE_8000 |\
++		       SNDRV_PCM_RATE_16000 |\
++		       SNDRV_PCM_RATE_32000 |\
++		       SNDRV_PCM_RATE_48000)
++
++#define MTK_PCM_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |\
++			 SNDRV_PCM_FMTBIT_S24_LE |\
++			 SNDRV_PCM_FMTBIT_S32_LE)
++
++static struct snd_soc_dai_driver mtk_dai_pcm_driver[] = {
++	{
++		.name = "PCM 1",
++		.id = MT8186_DAI_PCM,
++		.playback = {
++			.stream_name = "PCM 1 Playback",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = MTK_PCM_RATES,
++			.formats = MTK_PCM_FORMATS,
++		},
++		.capture = {
++			.stream_name = "PCM 1 Capture",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = MTK_PCM_RATES,
++			.formats = MTK_PCM_FORMATS,
++		},
++		.ops = &mtk_dai_pcm_ops,
++		.symmetric_rate = 1,
++		.symmetric_sample_bits = 1,
++	},
++};
++
++static struct mtk_afe_pcm_priv *init_pcm_priv_data(struct mtk_base_afe *afe)
++{
++	struct mtk_afe_pcm_priv *pcm_priv;
++
++	pcm_priv = devm_kzalloc(afe->dev, sizeof(struct mtk_afe_pcm_priv),
++				GFP_KERNEL);
++	if (!pcm_priv)
++		return NULL;
++
++	pcm_priv->id = MT8186_DAI_PCM;
++	pcm_priv->fmt = AUD_PCM_FMT_I2S;
++	pcm_priv->bck_invert = AUD_BCLK_OUT_INV_NO_INVERSE;
++	pcm_priv->lck_invert = AUD_LRCLK_OUT_INV_NO_INVERSE;
++
++	return pcm_priv;
++}
++
++int mt8186_dai_pcm_register(struct mtk_base_afe *afe)
++{
++	struct mt8186_afe_private *afe_priv = afe->platform_priv;
++	struct mtk_afe_pcm_priv *pcm_priv;
++	struct mtk_base_afe_dai *dai;
++
++	dai = devm_kzalloc(afe->dev, sizeof(*dai), GFP_KERNEL);
++	if (!dai)
++		return -ENOMEM;
++
++	list_add(&dai->list, &afe->sub_dais);
++
++	dai->dai_drivers = mtk_dai_pcm_driver;
++	dai->num_dai_drivers = ARRAY_SIZE(mtk_dai_pcm_driver);
++
++	dai->dapm_widgets = mtk_dai_pcm_widgets;
++	dai->num_dapm_widgets = ARRAY_SIZE(mtk_dai_pcm_widgets);
++	dai->dapm_routes = mtk_dai_pcm_routes;
++	dai->num_dapm_routes = ARRAY_SIZE(mtk_dai_pcm_routes);
++
++	pcm_priv = init_pcm_priv_data(afe);
++	if (!pcm_priv)
++		return -ENOMEM;
++
++	afe_priv->dai_priv[MT8186_DAI_PCM] = pcm_priv;
++
++	return 0;
++}
 -- 
 2.18.0
 
