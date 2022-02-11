@@ -4,75 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CA99C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Feb 2022 11:59:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2ABEC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Feb 2022 12:14:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7533E1906;
-	Fri, 11 Feb 2022 12:58:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7533E1906
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2E6C51924;
+	Fri, 11 Feb 2022 13:13:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E6C51924
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1644580788;
-	bh=pgz5WoyfElnAyzBIovA0IXn76dZ8q1uHsh96lNL+XAI=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1644581642;
+	bh=E1EmZRPmz9zCH5C8E2vwYvc1f9Bit4GPxAuWE1SRMXk=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OqdZY/wZGUzZoWliRoxkDydDBI51e6wo8epRRma0SVjFR226gDPW9ZUFsyjjf+m9T
-	 Crn+UZSToS18s+J1SmKeaArkTPOe/CQHF59DAw67RV/+I52HriLD2rP6+IWJ06tpT6
-	 EGrGsNR8jJywspv2MqBxUFaRcth6O/+75RGpQPZE=
+	b=kt1zhib0iqRjWyaU2BLLdpXK66Iwu+QCluD3Ssxpf5c4vUS8f/vdk17ChX01F51TY
+	 yMhW1YagqY3acWXgBI95mics3dv476C+HWCKGZHjFxIKycMxIdVXVCPHTsRqj7Dsu6
+	 sMwUBbQZeQS41uvbcmSBNJN/7PdmN48iQrelEzlk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1A01CF8012C;
-	Fri, 11 Feb 2022 12:58:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BB171F8012C;
+	Fri, 11 Feb 2022 13:13:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6FB56F80125; Fri, 11 Feb 2022 12:58:51 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 86ADAF80054; Fri, 11 Feb 2022 13:13:10 +0100 (CET)
+Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com
+ [209.85.167.169])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 22D0AF80125;
- Fri, 11 Feb 2022 12:58:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22D0AF80125
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="V5oUialu"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id F11DE61B76;
- Fri, 11 Feb 2022 11:58:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B7CAC340E9;
- Fri, 11 Feb 2022 11:58:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1644580724;
- bh=pgz5WoyfElnAyzBIovA0IXn76dZ8q1uHsh96lNL+XAI=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=V5oUialuPGmZ70jHjuFpzC/zncDrcjgmjV/chXHS1MOpvH46ZCdBB6gPoeOwyuDs5
- S0FH6N6snATeM/uDQ0tOrdbfcbKTZ1zU2Af6fzcN+ZaUq7jdZgk7DlKlcw5n0FfDbN
- T9TRnHyjoi4SV/Q+VBCw/EJZP+LIz1M9WjOeTqy6LSm7WECz0Pd2t1S7pqGrxxYTYw
- QFnRyReKldltujYEXPImbvKFMiRzLk9AA6OGOlHau0W9dSk2C/ylZI0gbRxXvZpZba
- 05rjN2QwlljnC++eiK/8VAFO4Hr7bAP/qnsXblASkVmiu258weJTz/VoudFkHcZaIn
- yoMCanTuXa1nQ==
-Date: Fri, 11 Feb 2022 11:58:39 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Luiz Sampaio <sampaio.ime@gmail.com>
-Subject: Re: [PATCH 31/31] sound: soc: sof: changing LED_* from enum
- led_brightness to actual value
-Message-ID: <YgZPb39aPMm64gSL@sirena.org.uk>
-References: <20220121165436.30956-1-sampaio.ime@gmail.com>
- <20220121165436.30956-32-sampaio.ime@gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="plmduE3cU0Ei6ORP"
-Content-Disposition: inline
-In-Reply-To: <20220121165436.30956-32-sampaio.ime@gmail.com>
-X-Cookie: do {
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Daniel Baluta <daniel.baluta@nxp.com>, sound-open-firmware@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5FD22F80054
+ for <alsa-devel@alsa-project.org>; Fri, 11 Feb 2022 13:13:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5FD22F80054
+Received: by mail-oi1-f169.google.com with SMTP id r27so9309218oiw.4
+ for <alsa-devel@alsa-project.org>; Fri, 11 Feb 2022 04:13:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+ :message-id;
+ bh=cuBlIjJY4vaAWQT/4C6Ak9m1WRcqNbkYIsxGyvkT4rk=;
+ b=o/QgV5HipN8e1X2hIINQuFWLIhtGii+z/JY6pYaCupN/W17pScZnEmpcgTB8w0kxJ8
+ WWbr+yZIM36+vSGFpUJDLKZL9fwODEjyr3eQ9ySkyZr8FI+haiMKYSINVt0eT495/zEd
+ eAlDA7qPSHPU5waGV0ydrpkm9SkIkZDHO3OAERT/vswYD/cz5S554TOtxBpnJglYQe0U
+ YMXbOlOq3kg0mcp84PmgoKcvEVCuSgoVP6KHvFRV4eets3JZfX8WvwKZnq3sKq67uCDh
+ uBcB97eXnFUlSx7HlMSiEqupiGwEXtcan4XQLDcGDm0lt6bBKA/ewsKjOtjnswnL9wki
+ n1vw==
+X-Gm-Message-State: AOAM5330JRTPkj1SHetgm75RkwOYT98uWVPkY8ZG6bkjSQL4Uo8kByPq
+ 6yUGVw15xRU/O6/WiRvcpw==
+X-Google-Smtp-Source: ABdhPJwC68NbqlKCoT6iGNdOcPryVMllb8uhD4nbb/rVM94vLoxVJPFWGXcXeY9hjrenDtePrHtmxQ==
+X-Received: by 2002:a05:6808:2026:: with SMTP id
+ q38mr16779oiw.243.1644581582414; 
+ Fri, 11 Feb 2022 04:13:02 -0800 (PST)
+Received: from robh.at.kernel.org ([2607:fb90:20d4:10b7:69a2:33cd:1782:fb47])
+ by smtp.gmail.com with ESMTPSA id
+ bx41sm6384628oib.7.2022.02.11.04.12.45
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 11 Feb 2022 04:13:01 -0800 (PST)
+Received: (nullmailer pid 141879 invoked by uid 1000);
+ Fri, 11 Feb 2022 12:12:43 -0000
+From: Rob Herring <robh@kernel.org>
+To: Jiaxin Yu <jiaxin.yu@mediatek.com>
+In-Reply-To: <20220211103818.8266-12-jiaxin.yu@mediatek.com>
+References: <20220211103818.8266-1-jiaxin.yu@mediatek.com>
+ <20220211103818.8266-12-jiaxin.yu@mediatek.com>
+Subject: Re: [PATCH 11/15] dt-bindings: mediatek: mt8186: add audio afe
+ document
+Date: Fri, 11 Feb 2022 06:12:43 -0600
+Message-Id: <1644581563.497957.141878.nullmailer@robh.at.kernel.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ geert+renesas@glider.be, broonie@kernel.org, tiwai@suse.com,
+ linux-kernel@vger.kernel.org, lgirdwood@gmail.com, tzungbi@google.com,
+ robh+dt@kernel.org, linux-mediatek@lists.infradead.org, trevor.wu@mediatek.com,
+ p.zabel@pengutronix.de, matthias.bgg@gmail.com, zhangqilong3@huawei.com,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,40 +89,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
---plmduE3cU0Ei6ORP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Jan 21, 2022 at 01:54:36PM -0300, Luiz Sampaio wrote:
-> The enum led_brightness, which contains the declaration of LED_OFF,
-> LED_ON, LED_HALF and LED_FULL is obsolete, as the led class now supports
-> max_brightness.
+On Fri, 11 Feb 2022 18:38:14 +0800, Jiaxin Yu wrote:
+> This patch adds mt8186 audio afe document.
+> 
+> Signed-off-by: Jiaxin Yu <jiaxin.yu@mediatek.com>
 > ---
+>  .../bindings/sound/mt8186-afe-pcm.yaml        | 175 ++++++++++++++++++
+>  1 file changed, 175 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/mt8186-afe-pcm.yaml
+> 
 
-You've not provided a Signed-off-by for this so I can't do anything with
-it, please see Documentation/process/submitting-patches.rst for details
-on what this is and why it's important.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Please submit patches using subject lines reflecting the style for the
-subsystem, this makes it easier for people to identify relevant patches.
-Look at what existing commits in the area you're changing are doing and
-make sure your subject lines visually resemble what they're doing.
-There's no need to resubmit to fix this alone.
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/sound/mt8186-afe-pcm.yaml:10:4: [warning] wrong indentation: expected 2 but found 3 (indentation)
+./Documentation/devicetree/bindings/sound/mt8186-afe-pcm.yaml:14:7: [warning] wrong indentation: expected 4 but found 6 (indentation)
 
---plmduE3cU0Ei6ORP
-Content-Type: application/pgp-signature; name="signature.asc"
+dtschema/dtc warnings/errors:
 
------BEGIN PGP SIGNATURE-----
+doc reference errors (make refcheckdocs):
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmIGT24ACgkQJNaLcl1U
-h9Dligf+M7qs1xkty0Kg+UH9bpC0lH91jFsVPaoq+vPltqshE0VI0JvJryAUdaA3
-040Qmc5PWko17MNBzyf+9ME5bDy+gQzhgiREmqPnNnQQYg6p4/ib9VtPQ01U+juB
-5cSXcNp5YHv/1Ewum9vvSGUDgLnHeTqp8NDF0CyosRL88EvPEcA93jrFh+KzzB7y
-mrSNhEpXNcFaCHpUgN/PjjEpOzgRuwwEihTa5IFoeAoiLqkT0rZUvi3pW3ieyUpN
-0oIMw5VKrUN/q+Ub5yXgZc6qdCtyy9VlHPsk/2jPfw/EwBOb39u1A5JVCmeqP+DL
-/LwIe7ZulmRGqnE02dtCKbujcehWdA==
-=nfQH
------END PGP SIGNATURE-----
+See https://patchwork.ozlabs.org/patch/1591561
 
---plmduE3cU0Ei6ORP--
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
