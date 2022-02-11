@@ -4,75 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8D47FC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Feb 2022 15:16:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BFE56C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Feb 2022 15:24:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6CD41191F;
-	Fri, 11 Feb 2022 16:15:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6CD41191F
+	by alsa0.perex.cz (Postfix) with ESMTPS id AFB13192B;
+	Fri, 11 Feb 2022 16:23:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AFB13192B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1644592578;
-	bh=IBFj2X+hcyPR39ZMQ3rlleTF8vNjd5w2MnpIK3BBRMY=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1644593087;
+	bh=CrPq5YS+lxN16TxZOXpw0gfG9SvjUFsH6sQxn1HVE3c=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=t3SeJKHmGFDH/dyhtVAnUXpvfDpCs0KTt4pI1WDTUJ0BqOD+vrn7rlIvWNNxV4UYi
-	 wq5H3lBNIz7asEQ7/fR4/F7g79PxMfs9+zmyvo4h6RWLxznNYEOQDCe98WuhNILHPx
-	 j5Opke/U2ex+CYDHqh6SuxtClg+3Yr2awjmmF/dc=
+	b=BWkWylAy7TBRJSXRQqijrhOuqTRKpnzF1q+m756NaIyxuXrygvwhq2g0hrnCE5bo+
+	 dwXrwgGDswmSsE2So6w6gfbsc8zzMrDp8HpeSGYDMrR4y5ejTV4QSwM89M3eFs3m3B
+	 wlNR3iIlH5WrEf+WRlgVS20v/7l0XLzHUnb06o6Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EC650F80054;
-	Fri, 11 Feb 2022 16:15:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 51C16F80054;
+	Fri, 11 Feb 2022 16:23:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 85BD8F80139; Fri, 11 Feb 2022 16:15:26 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 37353F80054
- for <alsa-devel@alsa-project.org>; Fri, 11 Feb 2022 16:15:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 37353F80054
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="MmGCHoL2"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 94A84F80139; Fri, 11 Feb 2022 16:23:56 +0100 (CET)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id B131461FE5;
- Fri, 11 Feb 2022 15:15:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D12EC340E9;
- Fri, 11 Feb 2022 15:15:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1644592519;
- bh=IBFj2X+hcyPR39ZMQ3rlleTF8vNjd5w2MnpIK3BBRMY=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=MmGCHoL2jBqJx8fSZnFJir8mkhPKSgxt2JUHRSn60wV1qepXUXKX5nrall0vTrbG6
- b/4Kyddinm/0jrcIJnuDm/pPNxU2mm0I3mbiSPOQX80EEtFmpeLDb7b8vLPKk3s/Ro
- GKEDYUaWCIpvV3t4nrNROIi6XxRbm0NC9G/eyxfe+7FSsM8lOaTMH4SThmDZoM7pc/
- XikLLCFV3CnMYX1CqbZm0O6V79kllMYeXpgsHA5Hcfx5KUOSJfNJI2bsow6rSTEjel
- dLIwQcvks95mIbWaUlz2dw3PpzeUZbmP/8ZLz6gDeCZ9gqYi9pJZQ+kLVQxoE7fpwE
- LvfbdduK+f4FQ==
-Date: Fri, 11 Feb 2022 15:15:13 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Jiaxin Yu <jiaxin.yu@mediatek.com>
-Subject: Re: [PATCH 05/15] ASoC: mediatek: mt8186: support hw gain in
- platform driver
-Message-ID: <YgZ9gadN8RksWeWN@sirena.org.uk>
-References: <20220211103818.8266-1-jiaxin.yu@mediatek.com>
- <20220211103818.8266-6-jiaxin.yu@mediatek.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1656EF80054
+ for <alsa-devel@alsa-project.org>; Fri, 11 Feb 2022 16:23:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1656EF80054
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="SC86aybW"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1644593034; x=1676129034;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=CrPq5YS+lxN16TxZOXpw0gfG9SvjUFsH6sQxn1HVE3c=;
+ b=SC86aybWXG+MiHxUci9Y8NG/e+8MFAfvOtTntOl9kAttcXoat96aXKEC
+ k8zVXwDVkAIG2pNcyysu07pMb7mzV1TRcOu45tdoquWRv1dr2JXwD1NVs
+ 6yA4thFS/oQrEfRL8qWQV9e9aFYtJR0ZZUlGDAQJFd/LOllLw+3bAlomr
+ /3xcK1lkCTMYKtc4DpnTqxEgB4FUaV1uNB8t2AArpT4wsWd2y5FZoJYdI
+ wwjpVvy80BVWusGyRsl0VfZgoQRIpepKWOKAC9zolrDCt3cOksGciJtVU
+ ofiQzOIqFnGItCaUjc7P1j+38hOQc70t+NOgdqC1hUjGFfFp38f9NwvO6 g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10254"; a="274306850"
+X-IronPort-AV: E=Sophos;i="5.88,361,1635231600"; d="scan'208";a="274306850"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 Feb 2022 07:23:48 -0800
+X-IronPort-AV: E=Sophos;i="5.88,361,1635231600"; d="scan'208";a="526988681"
+Received: from nsnead-mobl.amr.corp.intel.com (HELO [10.209.133.241])
+ ([10.209.133.241])
+ by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 Feb 2022 07:23:47 -0800
+Message-ID: <9d90f640-041c-b29b-6161-c35c78d9250a@linux.intel.com>
+Date: Fri, 11 Feb 2022 09:23:46 -0600
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="c+ZpsOQ7A1I9zFvP"
-Content-Disposition: inline
-In-Reply-To: <20220211103818.8266-6-jiaxin.yu@mediatek.com>
-X-Cookie: do {
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- geert+renesas@glider.be, linux-kernel@vger.kernel.org, zhangqilong3@huawei.com,
- tiwai@suse.com, lgirdwood@gmail.com, tzungbi@google.com, robh+dt@kernel.org,
- linux-mediatek@lists.infradead.org, trevor.wu@mediatek.com,
- p.zabel@pengutronix.de, matthias.bgg@gmail.com,
- linux-arm-kernel@lists.infradead.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.5.0
+Subject: Re: [PATCH 3/4] ALSA: hda: Update and expose codec register procedures
+Content-Language: en-US
+To: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>
+References: <20220207114906.3759800-1-cezary.rojewski@intel.com>
+ <20220207114906.3759800-4-cezary.rojewski@intel.com>
+ <alpine.DEB.2.22.394.2202081753430.3088432@eliteleevi.tm.intel.com>
+ <c144c67d-e6a8-1baa-82e8-37065c053919@intel.com>
+ <41671a26-bd27-78ab-3440-eb9cb22c1ad1@linux.intel.com>
+ <23f36ba1-277c-6998-f569-2861887720dd@intel.com>
+ <4d90d851-753e-3e6d-b51a-eefb2159a48c@linux.intel.com>
+ <1dab33cb-c20e-1134-cdf2-e03209018318@intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <1dab33cb-c20e-1134-cdf2-e03209018318@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org, upstream@semihalf.com, harshapriya.n@intel.com,
+ rad@semihalf.com, tiwai@suse.com, hdegoede@redhat.com, broonie@kernel.org,
+ cujomalainey@chromium.org, lma@semihalf.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,46 +97,28 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---c+ZpsOQ7A1I9zFvP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> Again, we are not trying to force-expose stuff which does not work. In
+> majority of the cases, non-HDMI codecs we're dealing with notify about
+> just single analog endpoint. For now, it's 100% of the cases, but I'm
+> aware of fact that RVPs and a dozen of Dell/Lenovo/Acer laptops do not
+> equal to entire market.
 
-On Fri, Feb 11, 2022 at 06:38:08PM +0800, Jiaxin Yu wrote:
+We are in agreement, but since we don't have any ability to test those
+alt/digital parts my take is 'don't even bother about them'.
 
-Again, mostly looks good just some minor issues (I've not repeated some
-that applied to the prior code):
+> Remember that you can always use topology to "gate" userspace from
+> streaming through endpoints which we do not work. And right now, we are
+> working with topologies supporting single endpoint for non-HDMI devices.
 
-> +static const struct snd_kcontrol_new mtk_hw_gain2_in_ch1_mix[] = {
-> +	SOC_DAPM_SINGLE_AUTODISABLE("ADDA_UL_CH1", AFE_CONN15,
-> +				    I_ADDA_UL_CH1, 1, 0),
-> +};
+May I ask how you 'gate' parts of a topology? Or did you mean that you
+use different topologies?
 
-These end up as regular user visible controls so should have standard
-control names - in this case ending in Switch since it's a simple
-on/off.  A similar issue was there in the earlier patches.
+> 
+> So, this is a clear upgrade when compared to Analog/Alt
+> Analog/Digitalh-hardcoded configuration used currently. That's on top of
+> aligning with hda legacy behavior.
 
-> +static const struct snd_kcontrol_new mtk_hw_gain_controls[] = {
-> +	SOC_SINGLE("HW Gain 1", AFE_GAIN1_CON1,
-> +		   GAIN1_TARGET_SFT, GAIN1_TARGET_MASK, 0),
-> +	SOC_SINGLE("HW Gain 2", AFE_GAIN2_CON1,
-> +		   GAIN2_TARGET_SFT, GAIN2_TARGET_MASK, 0),
-
-These should have standard names like "HW 1 Volume" so userspace has a
-better idea how to display them.
-
---c+ZpsOQ7A1I9zFvP
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmIGfYAACgkQJNaLcl1U
-h9Ct/Af/SB+lHd2ZvAn42VmwpobHVEpUjwZsElRbAQHPqUKPY43uoQ75NXOvyRQS
-HLaoNrQ0kkAVtNBtcolPvRac1ke9kTDEapfuhrUuv4QrgtdgRG3N6bL+m+dyQ6g5
-33pIVvYTByz9HsJbzdSFqP527RJqmIUMGucj/p91edb9vTx/SEUZSuj6qqlohr2h
-eVoa/P+QCK9bs29/EAD3HmucuJispsMgmntjOE9sYcGFmMDydZSHmyBozPDUuEJ0
-S/8o/RVRY7h/KFKLAcc6+kSH4SctBryW4lXtdbZzueBFSefbMzjcHePyeJ0qox5N
-Xa9RTpXYvvkNT7fsmvi3+zf0sBZGrw==
-=22jY
------END PGP SIGNATURE-----
-
---c+ZpsOQ7A1I9zFvP--
+Agree, but it still leaves the door open to exposing those paths which
+may or may not work - no one has ever tested them. It's better IMHO to
+only allow for the analog path. If we can detect the presence of this
+path, great.
