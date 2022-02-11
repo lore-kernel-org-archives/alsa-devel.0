@@ -4,74 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3183C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Feb 2022 14:19:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52240C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Feb 2022 14:20:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 660C81799;
-	Fri, 11 Feb 2022 15:18:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 660C81799
+	by alsa0.perex.cz (Postfix) with ESMTPS id 46C5C18EC;
+	Fri, 11 Feb 2022 15:19:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 46C5C18EC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1644589146;
-	bh=sEitLs9Oy9NFTuggQ1eiLJbY6rYJK3xYrO3RWCzltgU=;
+	s=default; t=1644589213;
+	bh=x9C2Bb6frfVQFKFaq/0g4LunzapRYHzuR5YppUynbGk=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Z8XH8tT6dz7eIY7AbYMQZMQ8W0axr0b+9/wsX2bwGgBSB/Bo+xHN6GkCtvGQiGknJ
-	 /HY3sps7dngqvGh8hKXmd3f9RV25OA7g7xIqTRrsrbHl/7VTYABFtKCJowjOynieB4
-	 +FwlVYb9nwuL+XOMjdGRQEKLq2jLX8ACmoKCI6ak=
+	b=OId/qxNpXU/D1TqO5FOzhExt21yoYtXlg4a1XRJwHZKvKwQn+PZnN5ngSA36fklLD
+	 2XgB46UPlowfXNXKnsHNTEJEQfFC44H2AGODX3q0HTvVDSj6lSl+pxD/IezfVuukr1
+	 55UG9XGfghbXM6uGXpP7IYHoTuw3FXcT1DvpetKE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D8320F8012C;
-	Fri, 11 Feb 2022 15:18:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E2E67F8012C;
+	Fri, 11 Feb 2022 15:19:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 13AA4F80139; Fri, 11 Feb 2022 15:18:12 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id 1B956F80139; Fri, 11 Feb 2022 15:19:20 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C4EF4F80054
- for <alsa-devel@alsa-project.org>; Fri, 11 Feb 2022 15:18:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4EF4F80054
+ by alsa1.perex.cz (Postfix) with ESMTPS id DFDA0F800B0
+ for <alsa-devel@alsa-project.org>; Fri, 11 Feb 2022 15:19:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DFDA0F800B0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="goF/eA9d"; 
+ header.b="EhPw1EyK"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="pBd3aa2u"
+ header.b="MC5RbUir"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 6A9931F3AB;
- Fri, 11 Feb 2022 14:18:01 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 7835721155;
+ Fri, 11 Feb 2022 14:19:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1644589081; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1644589156; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=c5AsJR6A8cNfsKy3Ar3Vg+cie9HEjM9A4tjn/VyzDP0=;
- b=goF/eA9dfivRSNuEXisH3EsiwqyJ/SJRqXgASY2k5gWjvFzID1GZ8ULgwweD66e4YvVLAd
- HyVf/fgOEZnqGyVf0ddV5TNUv0jKPKUKGfI2HPgJ+ZNWIt8pFmdtKem3Qj4XqMPKJXZlL5
- /B+/9n4k+bCrPWbOvtYeZ5zL4AlENfs=
+ bh=bziBOwLrSKIEMIHMu7GAiJ1RTf+TTErYgXhgi+/flPA=;
+ b=EhPw1EyKn1dCrL+uza5yCJty7X+Me1hkmGojLsRyEHivisKX0ZRtBNsVfLugt3pqRt9UKw
+ 6LQR6dhvVGZ37wP6EW7x9/pOhKAnTy+4hiXvsgpoNPEa+okpfeLtporC5GqmoMilcWEyd6
+ N/wZBpL10H1jxvm5UspMoyGED1pt89E=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1644589081;
+ s=susede2_ed25519; t=1644589156;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=c5AsJR6A8cNfsKy3Ar3Vg+cie9HEjM9A4tjn/VyzDP0=;
- b=pBd3aa2ue/s5sPdG3QKdiUIu3iKluA4ItH8AUyplmOrWckEFGn2h4/scBWk6pQQdA+jRp5
- Ej/hH/mhqNGvUODQ==
+ bh=bziBOwLrSKIEMIHMu7GAiJ1RTf+TTErYgXhgi+/flPA=;
+ b=MC5RbUirL0xqPR+1fNx+qzKypV2P6NhL8Yhux3Ip4R+KPFRv9KiD1bSAGu2oO4DqSXYXEX
+ nqcdaSdxN+nkqQBA==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 565B0A3B8D;
- Fri, 11 Feb 2022 14:18:01 +0000 (UTC)
-Date: Fri, 11 Feb 2022 15:18:01 +0100
-Message-ID: <s5hr189ij1i.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id 640E0A3B83;
+ Fri, 11 Feb 2022 14:19:16 +0000 (UTC)
+Date: Fri, 11 Feb 2022 15:19:16 +0100
+Message-ID: <s5ho83diizf.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: Re: [PATCH] ALSA: hda: Add PCI and HDMI IDs for Intel Raptor Lake
-In-Reply-To: <20220210185423.3671603-1-kai.vehmanen@linux.intel.com>
-References: <20220210185423.3671603-1-kai.vehmanen@linux.intel.com>
+To: trix@redhat.com
+Subject: Re: [PATCH] ALSA: cleanup double word in comment
+In-Reply-To: <20220209150133.2291856-1-trix@redhat.com>
+References: <20220209150133.2291856-1-trix@redhat.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,13 +87,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 10 Feb 2022 19:54:23 +0100,
-Kai Vehmanen wrote:
+On Wed, 09 Feb 2022 16:01:33 +0100,
+trix@redhat.com wrote:
 > 
-> Add a set of HD Audio PCI IDs, and the HDMI codec VID, for
-> Intel Raptor Lake.
+> From: Tom Rix <trix@redhat.com>
 > 
-> Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+> Remove the second 'device'.
+> 
+> Signed-off-by: Tom Rix <trix@redhat.com>
 
 Thanks, applied.
 
