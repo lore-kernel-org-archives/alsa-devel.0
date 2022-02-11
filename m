@@ -4,54 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 636B6C433FE
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Feb 2022 10:40:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABC44C4332F
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Feb 2022 10:40:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8365A189C;
-	Fri, 11 Feb 2022 11:39:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8365A189C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 32A6E18D4;
+	Fri, 11 Feb 2022 11:39:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32A6E18D4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1644576024;
-	bh=MvobmMEM1R9bxGPrRtNCy6dFwU6ykKzih0dNHgI4NLw=;
+	s=default; t=1644576026;
+	bh=+85evDKHlISVRu2Z7XJT0H9Pz1RTINv7wBu4bpoN2IE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FLDFCxPSaI5AGrrdqhvVTNbjJzrTbLV/MRgUKvWq9X1eee1wrm1xJ2GtUQXUZU2ke
-	 rqEuJtJlUVblDO20dLbzCmwqZahViDEDWBqO+qkd5MS/t8Fj88Ih5/VibXvCY6Nkne
-	 Byae1KCp5ZafDiBARh4F0r9/x1iUSSUAITdTW93Y=
+	b=lj09xsm/lpCSM3yfyeJk3NuRniS6ZToo9dplcIOQrxJPdcFIGeKJCc8OB41oy4PW4
+	 qj3+d7oUnYivhJaqqYHpIaIEG4xL+VyeoxYyifDzlWEj9Kxlkr0mPZghN68JMeMQPE
+	 Y7880igKwmYwK4cztgPMfWqID+qhDoZ0532rPQUA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 71D4FF80520;
-	Fri, 11 Feb 2022 11:38:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 92D0EF80515;
+	Fri, 11 Feb 2022 11:38:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AB763F804FF; Fri, 11 Feb 2022 11:38:42 +0100 (CET)
+ id 95D65F80511; Fri, 11 Feb 2022 11:38:42 +0100 (CET)
 Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 08275F8013D
- for <alsa-devel@alsa-project.org>; Fri, 11 Feb 2022 11:38:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 08275F8013D
-X-UUID: ba800765569f40a78f1905721e9613ad-20220211
-X-UUID: ba800765569f40a78f1905721e9613ad-20220211
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
- (envelope-from <jiaxin.yu@mediatek.com>)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E1BA4F80125
+ for <alsa-devel@alsa-project.org>; Fri, 11 Feb 2022 11:38:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1BA4F80125
+X-UUID: ca786e55090041f09f42187473e802cc-20220211
+X-UUID: ca786e55090041f09f42187473e802cc-20220211
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by
+ mailgw02.mediatek.com (envelope-from <jiaxin.yu@mediatek.com>)
  (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
- with ESMTP id 1563662989; Fri, 11 Feb 2022 18:38:27 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 11 Feb 2022 18:38:27 +0800
+ with ESMTP id 1526165724; Fri, 11 Feb 2022 18:38:26 +0800
+Received: from mtkexhb02.mediatek.inc (172.21.101.103) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3; 
+ Fri, 11 Feb 2022 18:38:25 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by mtkexhb02.mediatek.inc
+ (172.21.101.103) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+ Fri, 11 Feb 2022 18:38:25 +0800
 Received: from localhost.localdomain (10.17.3.154) by mtkcas11.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 11 Feb 2022 18:38:26 +0800
+ Transport; Fri, 11 Feb 2022 18:38:24 +0800
 From: Jiaxin Yu <jiaxin.yu@mediatek.com>
 To: <broonie@kernel.org>, <lgirdwood@gmail.com>, <tiwai@suse.com>,
  <robh+dt@kernel.org>, <matthias.bgg@gmail.com>, <perex@perex.cz>,
  <p.zabel@pengutronix.de>, <geert+renesas@glider.be>
-Subject: [PATCH 04/15] ASoC: mediatek: mt8186: support hostless in platform
- driver
-Date: Fri, 11 Feb 2022 18:38:07 +0800
-Message-ID: <20220211103818.8266-5-jiaxin.yu@mediatek.com>
+Subject: [PATCH 02/15] ASoC: mediatek: mt8186: support audsys clock control
+Date: Fri, 11 Feb 2022 18:38:05 +0800
+Message-ID: <20220211103818.8266-3-jiaxin.yu@mediatek.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220211103818.8266-1-jiaxin.yu@mediatek.com>
 References: <20220211103818.8266-1-jiaxin.yu@mediatek.com>
@@ -79,316 +82,249 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch adds mt8186 hostless dai driver.
+This patch adds mt8186 audio cg control.
+Audio clock gates are registered to CCF for reference count and
+clock parent management.
 
 Signed-off-by: Jiaxin Yu <jiaxin.yu@mediatek.com>
 ---
- .../soc/mediatek/mt8186/mt8186-dai-hostless.c | 296 ++++++++++++++++++
- 1 file changed, 296 insertions(+)
- create mode 100644 sound/soc/mediatek/mt8186/mt8186-dai-hostless.c
+ sound/soc/mediatek/mt8186/mt8186-audsys-clk.c | 151 ++++++++++++++++++
+ sound/soc/mediatek/mt8186/mt8186-audsys-clk.h |  15 ++
+ .../soc/mediatek/mt8186/mt8186-audsys-clkid.h |  45 ++++++
+ 3 files changed, 211 insertions(+)
+ create mode 100644 sound/soc/mediatek/mt8186/mt8186-audsys-clk.c
+ create mode 100644 sound/soc/mediatek/mt8186/mt8186-audsys-clk.h
+ create mode 100644 sound/soc/mediatek/mt8186/mt8186-audsys-clkid.h
 
-diff --git a/sound/soc/mediatek/mt8186/mt8186-dai-hostless.c b/sound/soc/mediatek/mt8186/mt8186-dai-hostless.c
+diff --git a/sound/soc/mediatek/mt8186/mt8186-audsys-clk.c b/sound/soc/mediatek/mt8186/mt8186-audsys-clk.c
 new file mode 100644
-index 000000000000..bc1f32a0c9d9
+index 000000000000..f0ca57f00e91
 --- /dev/null
-+++ b/sound/soc/mediatek/mt8186/mt8186-dai-hostless.c
-@@ -0,0 +1,296 @@
++++ b/sound/soc/mediatek/mt8186/mt8186-audsys-clk.c
+@@ -0,0 +1,151 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
-+ *  MediaTek ALSA SoC Audio DAI Hostless Control
++ * mt8186-audsys-clk.h  --  Mediatek 8186 audsys clock control
 + *
-+ *  Copyright (c) 2022 MediaTek Inc.
-+ *  Author: Jiaxin Yu <jiaxin.yu@mediatek.com>
++ * Copyright (c) 2022 MediaTek Inc.
++ * Author: Jiaxin Yu <jiaxin.yu@mediatek.com>
 + */
 +
++#include <linux/clk.h>
++#include <linux/clk-provider.h>
++#include <linux/clkdev.h>
 +#include "mt8186-afe-common.h"
++#include "mt8186-audsys-clk.h"
++#include "mt8186-audsys-clkid.h"
++#include "mt8186-reg.h"
 +
-+static const struct snd_pcm_hardware mt8186_hostless_hardware = {
-+	.info = (SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_INTERLEAVED |
-+		 SNDRV_PCM_INFO_MMAP_VALID),
-+	.period_bytes_min = 256,
-+	.period_bytes_max = 4 * 48 * 1024,
-+	.periods_min = 2,
-+	.periods_max = 256,
-+	.buffer_bytes_max = 4 * 48 * 1024,
-+	.fifo_size = 0,
++struct afe_gate {
++	int id;
++	const char *name;
++	const char *parent_name;
++	int reg;
++	u8 bit;
++	const struct clk_ops *ops;
++	unsigned long flags;
++	u8 cg_flags;
 +};
 +
-+/* dai component */
-+static const struct snd_soc_dapm_route mtk_dai_hostless_routes[] = {
-+	/* Hostless ADDA Loopback */
-+	{"ADDA_DL_CH1", "ADDA_UL_CH1", "Hostless LPBK DL"},
-+	{"ADDA_DL_CH1", "ADDA_UL_CH2", "Hostless LPBK DL"},
-+	{"ADDA_DL_CH2", "ADDA_UL_CH1", "Hostless LPBK DL"},
-+	{"ADDA_DL_CH2", "ADDA_UL_CH2", "Hostless LPBK DL"},
-+	{"I2S1_CH1", "ADDA_UL_CH1", "Hostless LPBK DL"},
-+	{"I2S1_CH2", "ADDA_UL_CH2", "Hostless LPBK DL"},
-+	{"I2S3_CH1", "ADDA_UL_CH1", "Hostless LPBK DL"},
-+	{"I2S3_CH1", "ADDA_UL_CH2", "Hostless LPBK DL"},
-+	{"I2S3_CH2", "ADDA_UL_CH1", "Hostless LPBK DL"},
-+	{"I2S3_CH2", "ADDA_UL_CH2", "Hostless LPBK DL"},
-+	{"Hostless LPBK UL", NULL, "ADDA_UL_Mux"},
++#define GATE_AFE_FLAGS(_id, _name, _parent, _reg, _bit, _flags, _cgflags) {\
++		.id = _id,					\
++		.name = _name,					\
++		.parent_name = _parent,				\
++		.reg = _reg,					\
++		.bit = _bit,					\
++		.flags = _flags,				\
++		.cg_flags = _cgflags,				\
++	}
 +
-+	/* Hostelss FM */
-+	/* connsys_i2s to hw gain 1*/
-+	{"Hostless FM UL", NULL, "Connsys I2S"},
++#define GATE_AFE(_id, _name, _parent, _reg, _bit)		\
++	GATE_AFE_FLAGS(_id, _name, _parent, _reg, _bit,		\
++		       CLK_SET_RATE_PARENT, CLK_GATE_SET_TO_DISABLE)
 +
-+	{"HW_GAIN1_IN_CH1", "CONNSYS_I2S_CH1", "Hostless FM DL"},
-+	{"HW_GAIN1_IN_CH2", "CONNSYS_I2S_CH2", "Hostless FM DL"},
-+	/* hw gain to adda dl */
-+	{"Hostless FM UL", NULL, "HW Gain 1 Out"},
++#define GATE_AUD0(_id, _name, _parent, _bit)			\
++	GATE_AFE(_id, _name, _parent, AUDIO_TOP_CON0, _bit)
 +
-+	{"ADDA_DL_CH1", "GAIN1_OUT_CH1", "Hostless FM DL"},
-+	{"ADDA_DL_CH2", "GAIN1_OUT_CH2", "Hostless FM DL"},
-+	/* hw gain to i2s3 */
-+	{"I2S3_CH1", "GAIN1_OUT_CH1", "Hostless FM DL"},
-+	{"I2S3_CH2", "GAIN1_OUT_CH2", "Hostless FM DL"},
-+	/* hw gain to i2s1 */
-+	{"I2S1_CH1", "GAIN1_OUT_CH1", "Hostless FM DL"},
-+	{"I2S1_CH2", "GAIN1_OUT_CH2", "Hostless FM DL"},
++#define GATE_AUD1(_id, _name, _parent, _bit)			\
++	GATE_AFE(_id, _name, _parent, AUDIO_TOP_CON1, _bit)
 +
-+	/* Hostless_SRC */
-+	{"ADDA_DL_CH1", "SRC_1_OUT_CH1", "Hostless_SRC_1_DL"},
-+	{"ADDA_DL_CH2", "SRC_1_OUT_CH2", "Hostless_SRC_1_DL"},
-+	{"I2S1_CH1", "SRC_1_OUT_CH1", "Hostless_SRC_1_DL"},
-+	{"I2S1_CH2", "SRC_1_OUT_CH2", "Hostless_SRC_1_DL"},
-+	{"I2S3_CH1", "SRC_1_OUT_CH1", "Hostless_SRC_1_DL"},
-+	{"I2S3_CH2", "SRC_1_OUT_CH2", "Hostless_SRC_1_DL"},
-+	{"Hostless_SRC_1_UL", NULL, "HW_SRC_1_Out"},
++#define GATE_AUD2(_id, _name, _parent, _bit)			\
++	GATE_AFE(_id, _name, _parent, AUDIO_TOP_CON2, _bit)
 +
-+	/* Hostless_SRC_bargein */
-+	{"HW_SRC_1_IN_CH1", "I2S0_CH1", "Hostless_SRC_Bargein_DL"},
-+	{"HW_SRC_1_IN_CH2", "I2S0_CH2", "Hostless_SRC_Bargein_DL"},
-+	{"Hostless_SRC_Bargein_UL", NULL, "I2S0"},
++static const struct afe_gate aud_clks[CLK_AUD_NR_CLK] = {
++	/* AUD0 */
++	GATE_AUD0(CLK_AUD_AFE, "aud_afe_clk", "top_audio", 2),
++	GATE_AUD0(CLK_AUD_22M, "aud_apll22m_clk", "top_aud_engen1", 8),
++	GATE_AUD0(CLK_AUD_24M, "aud_apll24m_clk", "top_aud_engen2", 9),
++	GATE_AUD0(CLK_AUD_APLL2_TUNER, "aud_apll2_tuner_clk", "top_aud_engen2", 18),
++	GATE_AUD0(CLK_AUD_APLL_TUNER, "aud_apll_tuner_clk", "top_aud_engen1", 19),
++	GATE_AUD0(CLK_AUD_TDM, "aud_tdm_clk", "top_aud_1", 20),
++	GATE_AUD0(CLK_AUD_ADC, "aud_adc_clk", "top_audio", 24),
++	GATE_AUD0(CLK_AUD_DAC, "aud_dac_clk", "top_audio", 25),
++	GATE_AUD0(CLK_AUD_DAC_PREDIS, "aud_dac_predis_clk", "top_audio", 26),
++	GATE_AUD0(CLK_AUD_TML, "aud_tml_clk", "top_audio", 27),
++	GATE_AUD0(CLK_AUD_NLE, "aud_nle_clk", "top_audio", 28),
 +
-+	/* Hostless AAudio */
-+	{"Hostless HW Gain AAudio In", NULL, "HW Gain 2 In"},
-+	{"Hostless SRC AAudio UL", NULL, "HW Gain 2 Out"},
-+	{"HW_SRC_2_IN_CH1", "HW_GAIN2_OUT_CH1", "Hostless SRC AAudio DL"},
-+	{"HW_SRC_2_IN_CH2", "HW_GAIN2_OUT_CH2", "Hostless SRC AAudio DL"},
++	/* AUD1 */
++	GATE_AUD1(CLK_AUD_I2S1_BCLK, "aud_i2s1_bclk", "top_audio", 4),
++	GATE_AUD1(CLK_AUD_I2S2_BCLK, "aud_i2s2_bclk", "top_audio", 5),
++	GATE_AUD1(CLK_AUD_I2S3_BCLK, "aud_i2s3_bclk", "top_audio", 6),
++	GATE_AUD1(CLK_AUD_I2S4_BCLK, "aud_i2s4_bclk", "top_audio", 7),
++	GATE_AUD1(CLK_AUD_CONNSYS_I2S_ASRC, "aud_connsys_i2s_asrc", "top_audio", 12),
++	GATE_AUD1(CLK_AUD_GENERAL1_ASRC, "aud_general1_asrc", "top_audio", 13),
++	GATE_AUD1(CLK_AUD_GENERAL2_ASRC, "aud_general2_asrc", "top_audio", 14),
++	GATE_AUD1(CLK_AUD_DAC_HIRES, "aud_dac_hires_clk", "top_audio_h", 15),
++	GATE_AUD1(CLK_AUD_ADC_HIRES, "aud_adc_hires_clk", "top_audio_h", 16),
++	GATE_AUD1(CLK_AUD_ADC_HIRES_TML, "aud_adc_hires_tml", "top_audio_h", 17),
++	GATE_AUD1(CLK_AUD_ADDA6_ADC, "aud_adda6_adc", "top_audio", 20),
++	GATE_AUD1(CLK_AUD_ADDA6_ADC_HIRES, "aud_adda6_adc_hires", "top_audio_h", 21),
++	GATE_AUD1(CLK_AUD_3RD_DAC, "aud_3rd_dac", "top_audio", 28),
++	GATE_AUD1(CLK_AUD_3RD_DAC_PREDIS, "aud_3rd_dac_predis", "top_audio", 29),
++	GATE_AUD1(CLK_AUD_3RD_DAC_TML, "aud_3rd_dac_tml", "top_audio", 30),
++	GATE_AUD1(CLK_AUD_3RD_DAC_HIRES, "aud_3rd_dac_hires", "top_audio_h", 31),
++
++	/* AUD2 */
++	GATE_AUD2(CLK_AUD_ETDM_IN1_BCLK, "aud_etdm_in1_bclk", "top_audio", 23),
++	GATE_AUD2(CLK_AUD_ETDM_OUT1_BCLK, "aud_etdm_out1_bclk", "top_audio", 24),
 +};
 +
-+/* dai ops */
-+static int mtk_dai_hostless_startup(struct snd_pcm_substream *substream,
-+				    struct snd_soc_dai *dai)
++int mt8186_audsys_clk_register(struct mtk_base_afe *afe)
 +{
-+	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	int ret;
++	struct mt8186_afe_private *afe_priv = afe->platform_priv;
++	struct clk *clk;
++	struct clk_lookup *cl;
++	int i;
 +
-+	snd_soc_set_runtime_hwparams(substream, &mt8186_hostless_hardware);
++	afe_priv->lookup = devm_kcalloc(afe->dev, CLK_AUD_NR_CLK,
++					sizeof(*afe_priv->lookup),
++					GFP_KERNEL);
 +
-+	ret = snd_pcm_hw_constraint_integer(runtime,
-+					    SNDRV_PCM_HW_PARAM_PERIODS);
-+	if (ret < 0)
-+		dev_info(afe->dev, "snd_pcm_hw_constraint_integer failed\n");
-+	return ret;
-+}
-+
-+static const struct snd_soc_dai_ops mtk_dai_hostless_ops = {
-+	.startup = mtk_dai_hostless_startup,
-+};
-+
-+/* dai driver */
-+#define MTK_HOSTLESS_RATES (SNDRV_PCM_RATE_8000_48000 |\
-+			   SNDRV_PCM_RATE_88200 |\
-+			   SNDRV_PCM_RATE_96000 |\
-+			   SNDRV_PCM_RATE_176400 |\
-+			   SNDRV_PCM_RATE_192000)
-+
-+#define MTK_HOSTLESS_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |\
-+			     SNDRV_PCM_FMTBIT_S24_LE |\
-+			     SNDRV_PCM_FMTBIT_S32_LE)
-+
-+static struct snd_soc_dai_driver mtk_dai_hostless_driver[] = {
-+	{
-+		.name = "Hostless LPBK DAI",
-+		.id = MT8186_DAI_HOSTLESS_LPBK,
-+		.playback = {
-+			.stream_name = "Hostless LPBK DL",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = MTK_HOSTLESS_RATES,
-+			.formats = MTK_HOSTLESS_FORMATS,
-+		},
-+		.capture = {
-+			.stream_name = "Hostless LPBK UL",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = MTK_HOSTLESS_RATES,
-+			.formats = MTK_HOSTLESS_FORMATS,
-+		},
-+		.ops = &mtk_dai_hostless_ops,
-+	},
-+	{
-+		.name = "Hostless FM DAI",
-+		.id = MT8186_DAI_HOSTLESS_FM,
-+		.playback = {
-+			.stream_name = "Hostless FM DL",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = MTK_HOSTLESS_RATES,
-+			.formats = MTK_HOSTLESS_FORMATS,
-+		},
-+		.capture = {
-+			.stream_name = "Hostless FM UL",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = MTK_HOSTLESS_RATES,
-+			.formats = MTK_HOSTLESS_FORMATS,
-+		},
-+		.ops = &mtk_dai_hostless_ops,
-+	},
-+	{
-+		.name = "Hostless_SRC_1_DAI",
-+		.id = MT8186_DAI_HOSTLESS_SRC_1,
-+		.playback = {
-+			.stream_name = "Hostless_SRC_1_DL",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = MTK_HOSTLESS_RATES,
-+			.formats = MTK_HOSTLESS_FORMATS,
-+		},
-+		.capture = {
-+			.stream_name = "Hostless_SRC_1_UL",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = MTK_HOSTLESS_RATES,
-+			.formats = MTK_HOSTLESS_FORMATS,
-+		},
-+		.ops = &mtk_dai_hostless_ops,
-+	},
-+	{
-+		.name = "Hostless_SRC_Bargein_DAI",
-+		.id = MT8186_DAI_HOSTLESS_SRC_BARGEIN,
-+		.playback = {
-+			.stream_name = "Hostless_SRC_Bargein_DL",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = MTK_HOSTLESS_RATES,
-+			.formats = MTK_HOSTLESS_FORMATS,
-+		},
-+		.capture = {
-+			.stream_name = "Hostless_SRC_Bargein_UL",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = MTK_HOSTLESS_RATES,
-+			.formats = MTK_HOSTLESS_FORMATS,
-+		},
-+		.ops = &mtk_dai_hostless_ops,
-+	},
-+	/* BE dai */
-+	{
-+		.name = "Hostless_UL1 DAI",
-+		.id = MT8186_DAI_HOSTLESS_UL1,
-+		.capture = {
-+			.stream_name = "Hostless_UL1 UL",
-+			.channels_min = 1,
-+			.channels_max = 4,
-+			.rates = MTK_HOSTLESS_RATES,
-+			.formats = MTK_HOSTLESS_FORMATS,
-+		},
-+		.ops = &mtk_dai_hostless_ops,
-+	},
-+	{
-+		.name = "Hostless_UL2 DAI",
-+		.id = MT8186_DAI_HOSTLESS_UL2,
-+		.capture = {
-+			.stream_name = "Hostless_UL2 UL",
-+			.channels_min = 1,
-+			.channels_max = 4,
-+			.rates = MTK_HOSTLESS_RATES,
-+			.formats = MTK_HOSTLESS_FORMATS,
-+		},
-+		.ops = &mtk_dai_hostless_ops,
-+	},
-+	{
-+		.name = "Hostless_UL3 DAI",
-+		.id = MT8186_DAI_HOSTLESS_UL3,
-+		.capture = {
-+			.stream_name = "Hostless_UL3 UL",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = MTK_HOSTLESS_RATES,
-+			.formats = MTK_HOSTLESS_FORMATS,
-+		},
-+		.ops = &mtk_dai_hostless_ops,
-+	},
-+	{
-+		.name = "Hostless_UL5 DAI",
-+		.id = MT8186_DAI_HOSTLESS_UL5,
-+		.capture = {
-+			.stream_name = "Hostless_UL5 UL",
-+			.channels_min = 1,
-+			.channels_max = 12,
-+			.rates = MTK_HOSTLESS_RATES,
-+			.formats = MTK_HOSTLESS_FORMATS,
-+		},
-+		.ops = &mtk_dai_hostless_ops,
-+	},
-+	{
-+		.name = "Hostless_UL6 DAI",
-+		.id = MT8186_DAI_HOSTLESS_UL6,
-+		.capture = {
-+			.stream_name = "Hostless_UL6 UL",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = MTK_HOSTLESS_RATES,
-+			.formats = MTK_HOSTLESS_FORMATS,
-+		},
-+		.ops = &mtk_dai_hostless_ops,
-+	},
-+	{
-+		.name = "Hostless HW Gain AAudio DAI",
-+		.id = MT8186_DAI_HOSTLESS_HW_GAIN_AAUDIO,
-+		.capture = {
-+			.stream_name = "Hostless HW Gain AAudio In",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = MTK_HOSTLESS_RATES,
-+			.formats = MTK_HOSTLESS_FORMATS,
-+		},
-+		.ops = &mtk_dai_hostless_ops,
-+	},
-+	{
-+		.name = "Hostless SRC AAudio DAI",
-+		.id = MT8186_DAI_HOSTLESS_SRC_AAUDIO,
-+		.playback = {
-+			.stream_name = "Hostless SRC AAudio DL",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = MTK_HOSTLESS_RATES,
-+			.formats = MTK_HOSTLESS_FORMATS,
-+		},
-+		.capture = {
-+			.stream_name = "Hostless SRC AAudio UL",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = MTK_HOSTLESS_RATES,
-+			.formats = MTK_HOSTLESS_FORMATS,
-+		},
-+		.ops = &mtk_dai_hostless_ops,
-+	},
-+};
-+
-+int mt8186_dai_hostless_register(struct mtk_base_afe *afe)
-+{
-+	struct mtk_base_afe_dai *dai;
-+
-+	dai = devm_kzalloc(afe->dev, sizeof(*dai), GFP_KERNEL);
-+	if (!dai)
++	if (!afe_priv->lookup)
 +		return -ENOMEM;
 +
-+	list_add(&dai->list, &afe->sub_dais);
++	for (i = 0; i < ARRAY_SIZE(aud_clks); i++) {
++		const struct afe_gate *gate = &aud_clks[i];
 +
-+	dai->dai_drivers = mtk_dai_hostless_driver;
-+	dai->num_dai_drivers = ARRAY_SIZE(mtk_dai_hostless_driver);
++		clk = clk_register_gate(afe->dev, gate->name, gate->parent_name,
++					gate->flags, afe->base_addr + gate->reg,
++					gate->bit, gate->cg_flags, NULL);
 +
-+	dai->dapm_routes = mtk_dai_hostless_routes;
-+	dai->num_dapm_routes = ARRAY_SIZE(mtk_dai_hostless_routes);
++		if (IS_ERR(clk)) {
++			dev_err(afe->dev, "Failed to register clk %s: %ld\n",
++				gate->name, PTR_ERR(clk));
++			continue;
++		}
++
++		/* add clk_lookup for devm_clk_get(SND_SOC_DAPM_CLOCK_SUPPLY) */
++		cl = kzalloc(sizeof(*cl), GFP_KERNEL);
++		if (!cl)
++			return -ENOMEM;
++
++		cl->clk = clk;
++		cl->con_id = gate->name;
++		cl->dev_id = dev_name(afe->dev);
++		clkdev_add(cl);
++
++		afe_priv->lookup[i] = cl;
++	}
 +
 +	return 0;
 +}
++
++void mt8186_audsys_clk_unregister(struct mtk_base_afe *afe)
++{
++	struct mt8186_afe_private *afe_priv = afe->platform_priv;
++	struct clk *clk;
++	struct clk_lookup *cl;
++	int i;
++
++	if (!afe_priv)
++		return;
++
++	for (i = 0; i < CLK_AUD_NR_CLK; i++) {
++		cl = afe_priv->lookup[i];
++		if (!cl)
++			continue;
++
++		clk = cl->clk;
++		clk_unregister_gate(clk);
++
++		clkdev_drop(cl);
++	}
++}
+diff --git a/sound/soc/mediatek/mt8186/mt8186-audsys-clk.h b/sound/soc/mediatek/mt8186/mt8186-audsys-clk.h
+new file mode 100644
+index 000000000000..6023cd788b13
+--- /dev/null
++++ b/sound/soc/mediatek/mt8186/mt8186-audsys-clk.h
+@@ -0,0 +1,15 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * mt8186-audsys-clk.h  --  Mediatek 8186 audsys clock definition
++ *
++ * Copyright (c) 2022 MediaTek Inc.
++ * Author: Trevor Wu <trevor.wu@mediatek.com>
++ */
++
++#ifndef _MT8186_AUDSYS_CLK_H_
++#define _MT8186_AUDSYS_CLK_H_
++
++int mt8186_audsys_clk_register(struct mtk_base_afe *afe);
++void mt8186_audsys_clk_unregister(struct mtk_base_afe *afe);
++
++#endif
+diff --git a/sound/soc/mediatek/mt8186/mt8186-audsys-clkid.h b/sound/soc/mediatek/mt8186/mt8186-audsys-clkid.h
+new file mode 100644
+index 000000000000..823ee43a0c55
+--- /dev/null
++++ b/sound/soc/mediatek/mt8186/mt8186-audsys-clkid.h
+@@ -0,0 +1,45 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * mt8186-audsys-clkid.h  --  Mediatek 8186 audsys clock id definition
++ *
++ * Copyright (c) 2022 MediaTek Inc.
++ * Author: Jiaxin Yu <jiaxin.yu@mediatek.com>
++ */
++
++#ifndef _MT8186_AUDSYS_CLKID_H_
++#define _MT8186_AUDSYS_CLKID_H_
++
++enum{
++	CLK_AUD_AFE,
++	CLK_AUD_22M,
++	CLK_AUD_24M,
++	CLK_AUD_APLL2_TUNER,
++	CLK_AUD_APLL_TUNER,
++	CLK_AUD_TDM,
++	CLK_AUD_ADC,
++	CLK_AUD_DAC,
++	CLK_AUD_DAC_PREDIS,
++	CLK_AUD_TML,
++	CLK_AUD_NLE,
++	CLK_AUD_I2S1_BCLK,
++	CLK_AUD_I2S2_BCLK,
++	CLK_AUD_I2S3_BCLK,
++	CLK_AUD_I2S4_BCLK,
++	CLK_AUD_CONNSYS_I2S_ASRC,
++	CLK_AUD_GENERAL1_ASRC,
++	CLK_AUD_GENERAL2_ASRC,
++	CLK_AUD_DAC_HIRES,
++	CLK_AUD_ADC_HIRES,
++	CLK_AUD_ADC_HIRES_TML,
++	CLK_AUD_ADDA6_ADC,
++	CLK_AUD_ADDA6_ADC_HIRES,
++	CLK_AUD_3RD_DAC,
++	CLK_AUD_3RD_DAC_PREDIS,
++	CLK_AUD_3RD_DAC_TML,
++	CLK_AUD_3RD_DAC_HIRES,
++	CLK_AUD_ETDM_IN1_BCLK,
++	CLK_AUD_ETDM_OUT1_BCLK,
++	CLK_AUD_NR_CLK,
++};
++
++#endif
 -- 
 2.18.0
 
