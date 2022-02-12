@@ -4,124 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC0A2C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Feb 2022 09:25:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D225C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Feb 2022 09:26:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 24811189A;
-	Wed, 16 Feb 2022 10:24:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 24811189A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6BE3818B4;
+	Wed, 16 Feb 2022 10:25:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6BE3818B4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645003543;
-	bh=KA3uFHCdVe4O18mIzZg6KX+QH5Up6qo8aMwCDSwzegs=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=B6jxH3oDZdioKDwo+S16l9vf3Iyym0QAZfp/nNjdBWPskAI3c4eCWLTu4yCFNF/ru
-	 f2wglC7pQjF75tIHjtjFxFJBQBl9agl3T/rImErTN+pQdhSnbYN7ScAcfRdG2xter8
-	 ovPpeYZMch6zIXgP2RP60sLou8BUZWk1RHLrZzL4=
+	s=default; t=1645003595;
+	bh=2Da5ayKzFZ3+gWWgIJC+3iufoyGtvqI1t2GHzGmZ5xM=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=k1DCVrft9hDKscHlZHUEVxEd8oKGrfZABrmcQl65qxMNiHbMmNllEw9qkbWN9Vliw
+	 jz/lE3WZbsHspKy4LnYxk32QsI9jgtk0SQ5qm+kib9QM1o+RUsxKjhu2QMhgAebk+v
+	 BdEEyl5EzoPWV9Kz4FlficPR08tshpQ3FIJh/vX8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E3C92F8052D;
-	Wed, 16 Feb 2022 10:23:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 17080F8011C;
+	Wed, 16 Feb 2022 10:25:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A44DAF80534; Wed, 16 Feb 2022 10:23:23 +0100 (CET)
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com
- (mail-dm6nam12on20610.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:fe59::610])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id A4AA6F8014E; Sat, 12 Feb 2022 17:08:48 +0100 (CET)
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com
+ [IPv6:2607:f8b0:4864:20::62a])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B3E25F8052D
- for <alsa-devel@alsa-project.org>; Wed, 16 Feb 2022 10:23:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3E25F8052D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 09486F800B0
+ for <alsa-devel@alsa-project.org>; Sat, 12 Feb 2022 17:08:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 09486F800B0
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com
- header.b="FzZEKGeE"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ka1g/ZPb+v2LQitpeNcrBJU0k4PkNQD+IirugZPhwX/atgHqZ1RqE/jGTPASuK3x08LlP+Vsxy4gnYyMSTLZ3Vx/0PXTA2Rd2VoL83pxwhN4witXjhA1vXWdQB7A9GI7Z/9SBlDcwQ/7UJFGLdswljFIIEcoH+bz84YFOAWMBEmvADXElrxAgajF/2NZD5WHLzc8BJwz6Da0jC/+zUrue19KIdl9BMNoa1uC19xrdBI866JsKG3lbOCbE+d0Z/FLl3AC4aqdn2/WtO2RQO5TvPlU8/dB867V0FtAmf26riB95I3Z79XgxtOwyKAxDhI+BkuD/fHAInwPBH/ZAMA1NA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1E3V/XFXAPpfQGael9rZzRGGmlMpTvUEZcL90X/5EMg=;
- b=oCvPZpQuhopWG6wegtTNz4kX7GxI5gH/DHmntN2ycDA/epqSBTM2fBWyHId2kSAwhGVKCAWeWPTGclUMVbJu5yao5b4+mQoms11cQl8QM0NKjQJzEyuQkvy1pQ4w+jfXy3vJ1vnBHh2+KOSGenUuVgKnzAt4heiJ1Kcz38OVOAqP61ynAPHV4cY57Hr1pdxLObIEnLAO/HQ7eneIsoIKpNU5WtUKWAH+PcKeuMoe5MqMz9z0ydMu0u/XuLHVE40cYm09p2zedbv1olPS7S0NtJAZWs94oTDYGAX2dJVqJacO2TYHoU198h/DMCY5TvbNm3bhPjSTcVrN5AG+3fEQDA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 12.22.5.235) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1E3V/XFXAPpfQGael9rZzRGGmlMpTvUEZcL90X/5EMg=;
- b=FzZEKGeEinc8PYt4Cui+BKpo2AgUjwyAxczFCdVSVQG+P5xTGAWonKIdHAIBqwyxMeTeQcnFxWiiOUBTiD+5qb8tZC6uFNku4hTxihcp3KyNci5lUaoSkVlcfXVBKoK5E/yZnUojPirXlHEykiSQGiBzCXYTQkN6jUdmQ36tLUUUdy6jj3G+qZ5P6fxFunImVcfx09xCtjAxEBvc1W766Y2TCHn92/QTxXYBflfTgwcuFFdkAbEbfhP4ScHxd8Jna6O1MaGHbVoQe1TNUTD05+j5tZHsmHwe09cQjq5WmCL0yPudz9gRQVlL1AJbhNjU/EESTIl+FojlG1srFKwx4Q==
-Received: from BN8PR04CA0061.namprd04.prod.outlook.com (2603:10b6:408:d4::35)
- by BL0PR12MB4609.namprd12.prod.outlook.com (2603:10b6:208:8d::25)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4995.16; Wed, 16 Feb
- 2022 09:23:10 +0000
-Received: from BN8NAM11FT055.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:d4:cafe::31) by BN8PR04CA0061.outlook.office365.com
- (2603:10b6:408:d4::35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4975.14 via Frontend
- Transport; Wed, 16 Feb 2022 09:23:10 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 12.22.5.235)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 12.22.5.235 as permitted sender) receiver=protection.outlook.com;
- client-ip=12.22.5.235; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (12.22.5.235) by
- BN8NAM11FT055.mail.protection.outlook.com (10.13.177.62) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4975.11 via Frontend Transport; Wed, 16 Feb 2022 09:23:10 +0000
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1497.18;
- Wed, 16 Feb 2022 09:23:09 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail202.nvidia.com
- (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.9; Wed, 16 Feb 2022
- 01:23:09 -0800
-Received: from mkumard.nvidia.com (10.127.8.13) by mail.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server id 15.2.986.9 via Frontend
- Transport; Wed, 16 Feb 2022 01:23:06 -0800
-From: Mohan Kumar <mkumard@nvidia.com>
-To: <broonie@kernel.org>, <lgirdwood@gmail.com>, <robh+dt@kernel.org>,
- <thierry.reding@gmail.com>, <tiwai@suse.com>, <jonathanh@nvidia.com>,
- <spujar@nvidia.com>
-Subject: [PATCH v3 6/6] arm64: tegra: Add hda dts node for Tegra234
-Date: Wed, 16 Feb 2022 14:52:40 +0530
-Message-ID: <20220216092240.26464-7-mkumard@nvidia.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20220216092240.26464-1-mkumard@nvidia.com>
-References: <20220216092240.26464-1-mkumard@nvidia.com>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="h4s6bzXK"
+Received: by mail-pl1-x62a.google.com with SMTP id y18so7052415plb.11
+ for <alsa-devel@alsa-project.org>; Sat, 12 Feb 2022 08:08:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=QSwK6RRjbzNVQwnKp+oBVZXI61a/08VcvKS7heKKV2g=;
+ b=h4s6bzXK6jbFajR4totZLL3pGpcCvcfAE6ZFjnDxX32rMVRNiTHHrN3NVPPDdkDO99
+ c8F5916Ew+HMqgaiykKrPCrkKHlS5OeDOet9tOcKJIGygAsXO+7TxhJ+V7aWGJBOpIpU
+ /eSBLJdJ4Iv8HuGliSUFqbxkBsB/G+GcKLZBpKDti6gZHS+29Pcb7ih9M2quzjySoRkr
+ m0bZyu3sedQ4MoeRtefZPOgKu4N2nsC6t+s/4kJqgBcJLC5RBZEbqZTRamoYVyqHWsrk
+ rkGmbqOK2zxvssv5twJjuUAa0uR0oX+KOORP3PkveepcrfDUlYSGhpCzeP6KMUl7b+I+
+ b3/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=QSwK6RRjbzNVQwnKp+oBVZXI61a/08VcvKS7heKKV2g=;
+ b=ClDdtAZmbNDSNSgj/PFi/inwsSLxGd7ZYzKQDjjQVmIny9z3bhJ0IG5LDjR/SLGFlb
+ aNN2PTmFMtqZfrk3HRWwC7JSgLX3RFWJdak8taMHli5j2+72kIfFIUxj67mKWXH2vh0h
+ PMpK8YeossAID6YTnLAj4F61VuocaIi3SI8Vr00/Tudox6SJD1wHJe0A7gX/+DkYO/eP
+ 5fsct03jHfLiQFI0DgY+mE+ZfXklMNxzx9fz5T/uU4WPr5umyLHytTkgJvu5T0cSsupF
+ 9C7oY+xlpzJxgrKwBCCx1uxBkxqeY2lqRWBuSEmklQc+zL3qGzc065HrkumkBDjS5QmT
+ D/3w==
+X-Gm-Message-State: AOAM533Wl9EM8tH4laBKRJtYsc5WUnp2bl8B8YHXrOGkoMTXmA5NmV2e
+ bQDVGxn8TdTjdznA+LWduvs=
+X-Google-Smtp-Source: ABdhPJxeUu1OamV4npdmAvvs1z4UWQFLFmo8u9WTAH2gEzB0pzwxk3PQzb64+K9XOfPAl42K1fMsgQ==
+X-Received: by 2002:a17:90a:ac0f:: with SMTP id
+ o15mr5838778pjq.140.1644682122847; 
+ Sat, 12 Feb 2022 08:08:42 -0800 (PST)
+Received: from localhost.localdomain ([212.107.28.166])
+ by smtp.gmail.com with ESMTPSA id x23sm31170280pfh.216.2022.02.12.08.08.39
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sat, 12 Feb 2022 08:08:42 -0800 (PST)
+From: Yu Huang <diwang90@gmail.com>
+To: perex@perex.cz
+Subject: [PATCH] ALSA: hda/realtek: Add quirk for Legion Y9000X 2019
+Date: Sun, 13 Feb 2022 00:08:33 +0800
+Message-Id: <20220212160835.165065-1-diwang90@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ecb52475-d313-4424-1984-08d9f12df352
-X-MS-TrafficTypeDiagnostic: BL0PR12MB4609:EE_
-X-Microsoft-Antispam-PRVS: <BL0PR12MB4609502B835D465FC345557EC1359@BL0PR12MB4609.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1079;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jDeWuZBIZRTRqEBozAi/VVaapbmcT/bNKsiLR4MsrHzQgJMwLZ5IZO9dqhyCVsqmHaUUOGuBsYyf+CrCejmW/mt1YNpItidtpmmREOBGUdfeOpjV6Jnttqq/9qMlxSpAkmSybvG3PY+gSwbvu8svZUXWbfYbddxd7Zusl8J0ZzNHfrDdOUyS6xD5YPA2nZKfiB6u39Zjqmm1HylC7LlLD8swutkv/sSidOTOJbzsn5QWVDY+e9LSrutPVngTutXwpqW1DKWMZxPpau52yMnujOuQfcxeYRbf4FSFhH/WEXa3Q3VOADdhkbAtq8eKSRPrXcjal9A5gEvcJmw/U7gEXz0P+RXNW+Q1OjEDyiY5ydoef9wQAVL/IhsSMCKLM6wtfuXTU7I4M/EVlXxtv3ixG1jPZ/6wLTzUy/fFuaBoBWFuSi8poMissuAA38pPvFXImt26F1f+D0BqS1R/MuQIGEA2iefzvcrfVcq/Ezme4RO1mWk12Xzmhg/gzh+Yox80PGkJrITCMTr1c+NqGwcxXqAN3RLoWVVOKSiVUFwscyYqMF4Jgko9MyEhxV9dBoW8wGrQ48cC+LDiF9dHSD0McAKSShMAInowwVUwDggO24ln4aOWRAO68X+E7gpH9PdtP6Tu5rX5bKxtl5Ze1iLSMBkZIJ+2h0e6LZmAseXJ0FtJQnjgpJ2UfZv2Y6mo7vTurD8knRoo0HfQWuguvfvqPjF1+XMWgCNq9NuLSbVhvto=
-X-Forefront-Antispam-Report: CIP:12.22.5.235; CTRY:US; LANG:en; SCL:1; SRV:;
- IPV:CAL; SFV:NSPM; H:mail.nvidia.com; PTR:InfoNoRecords; CAT:NONE;
- SFS:(13230001)(4636009)(40470700004)(46966006)(36840700001)(2906002)(186003)(8936002)(5660300002)(426003)(336012)(26005)(356005)(47076005)(7696005)(54906003)(110136005)(6636002)(36860700001)(2616005)(36756003)(4326008)(8676002)(86362001)(1076003)(6666004)(83380400001)(316002)(40460700003)(81166007)(70206006)(107886003)(508600001)(70586007)(82310400004)(2101003)(36900700001);
- DIR:OUT; SFP:1101; 
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2022 09:23:10.5671 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ecb52475-d313-4424-1984-08d9f12df352
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a; Ip=[12.22.5.235];
- Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT055.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB4609
-Cc: linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Mohan Kumar <mkumard@nvidia.com>
+Content-Transfer-Encoding: 8bit
+X-Mailman-Approved-At: Wed, 16 Feb 2022 10:25:43 +0100
+Cc: alsa-devel@alsa-project.org, Kailang Yang <kailang@realtek.com>,
+ Lucas Tanure <tanureal@opensource.cirrus.com>,
+ Jeremy Szu <jeremy.szu@canonical.com>, Takashi Iwai <tiwai@suse.com>,
+ Werner Sembach <wse@tuxedocomputers.com>, linux-kernel@vger.kernel.org,
+ Hui Wang <hui.wang@canonical.com>, diwang90@gmail.com,
+ Cameron Berkenpas <cam@neo-zeon.de>, Sami Loone <sami@loone.fi>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -137,65 +98,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add HDA dts node for Tegra234 chip and for AGX orin platform.
+Legion Y9000X 2019 has the same speaker with Y9000X 2020,
+but with a different quirk address. Add one quirk entry
+to make the speaker work on Y9000X 2019 too.
 
-Signed-off-by: Mohan Kumar <mkumard@nvidia.com>
+Signed-off-by: Yu Huang <diwang90@gmail.com>
 ---
- .../nvidia/tegra234-p3737-0000+p3701-0000.dts  |  6 ++++++
- arch/arm64/boot/dts/nvidia/tegra234.dtsi       | 18 ++++++++++++++++++
- 2 files changed, 24 insertions(+)
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/nvidia/tegra234-p3737-0000+p3701-0000.dts b/arch/arm64/boot/dts/nvidia/tegra234-p3737-0000+p3701-0000.dts
-index efbbb878ba5a..792e4a8b272b 100644
---- a/arch/arm64/boot/dts/nvidia/tegra234-p3737-0000+p3701-0000.dts
-+++ b/arch/arm64/boot/dts/nvidia/tegra234-p3737-0000+p3701-0000.dts
-@@ -21,4 +21,10 @@
- 	serial {
- 		status = "okay";
- 	};
-+
-+	bus@0 {
-+		hda@3510000 {
-+			nvidia,model = "NVIDIA Jetson AGX Orin HDA";
-+		};
-+	};
- };
-diff --git a/arch/arm64/boot/dts/nvidia/tegra234.dtsi b/arch/arm64/boot/dts/nvidia/tegra234.dtsi
-index cbebf1ee5958..a5271d33a458 100644
---- a/arch/arm64/boot/dts/nvidia/tegra234.dtsi
-+++ b/arch/arm64/boot/dts/nvidia/tegra234.dtsi
-@@ -4,6 +4,7 @@
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/mailbox/tegra186-hsp.h>
- #include <dt-bindings/memory/tegra234-mc.h>
-+#include <dt-bindings/power/tegra234-powergate.h>
- #include <dt-bindings/reset/tegra234-reset.h>
- 
- / {
-@@ -394,6 +395,23 @@
- 			#interrupt-cells = <3>;
- 			interrupt-controller;
- 		};
-+
-+		hda@3510000 {
-+			compatible = "nvidia,tegra234-hda", "nvidia,tegra30-hda";
-+			reg = <0x3510000 0x10000>;
-+			interrupts = <GIC_SPI 60 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&bpmp TEGRA234_CLK_AZA_BIT>,
-+				 <&bpmp TEGRA234_CLK_AZA_2XBIT>;
-+			clock-names = "hda", "hda2codec_2x";
-+			resets = <&bpmp TEGRA234_RESET_HDA>,
-+				 <&bpmp TEGRA234_RESET_HDACODEC>;
-+			reset-names = "hda", "hda2codec_2x";
-+			power-domains = <&bpmp TEGRA234_POWER_DOMAIN_DISP>;
-+			interconnects = <&mc TEGRA234_MEMORY_CLIENT_HDAR &emc>,
-+					<&mc TEGRA234_MEMORY_CLIENT_HDAW &emc>;
-+			interconnect-names = "dma-mem", "write";
-+			status = "disabled";
-+		};
- 	};
- 
- 	sram@40000000 {
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 8315bf7d4c38..9473fb76ff19 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -9170,6 +9170,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x3824, "Legion Y9000X 2020", ALC285_FIXUP_LEGION_Y9000X_SPEAKERS),
+ 	SND_PCI_QUIRK(0x17aa, 0x3827, "Ideapad S740", ALC285_FIXUP_IDEAPAD_S740_COEF),
+ 	SND_PCI_QUIRK(0x17aa, 0x3834, "Lenovo IdeaPad Slim 9i 14ITL5", ALC287_FIXUP_YOGA7_14ITL_SPEAKERS),
++	SND_PCI_QUIRK(0x17aa, 0x383d, "Legion Y9000X 2019", ALC285_FIXUP_LEGION_Y9000X_SPEAKERS),
+ 	SND_PCI_QUIRK(0x17aa, 0x3843, "Yoga 9i", ALC287_FIXUP_IDEAPAD_BASS_SPK_AMP),
+ 	SND_PCI_QUIRK(0x17aa, 0x3847, "Legion 7 16ACHG6", ALC287_FIXUP_LEGION_16ACHG6),
+ 	SND_PCI_QUIRK(0x17aa, 0x384a, "Lenovo Yoga 7 15ITL5", ALC287_FIXUP_YOGA7_14ITL_SPEAKERS),
 -- 
-2.17.1
+2.34.1
 
