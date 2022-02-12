@@ -4,81 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84166C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Feb 2022 17:20:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2ACE9C433EF
+	for <alsa-devel@archiver.kernel.org>; Sat, 12 Feb 2022 02:22:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 202A1193D;
-	Fri, 11 Feb 2022 18:19:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 202A1193D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 95F1B17EA;
+	Sat, 12 Feb 2022 03:21:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95F1B17EA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1644600048;
-	bh=gaQhMOYUQLQdGqxXTEjbL7f36XXptHIIgVrGbBgzwCg=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=ezpNp5jr5WEQJ+xe8TFaQRYyp9T8eOseF4xPjMSV+9uMnJlF+Rcs68gRkywHw6qw1
-	 mUAANlLVCIXfCGktl8WXvmW5KpRcp+Ad9z5bz+3f3gQ9Iq/J6A9J0g8X5KC1dz/jGg
-	 M68vPtkXRLcWVHRj6eR1bIOiXd5+lExl3GgDzsmU=
+	s=default; t=1644632559;
+	bh=1aM/AolbwfB8Dwa/GKVVhM3AjloUYTKqezDPBTfpsrs=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=OIySMyxV8Hl/PsXGHCwvLAH2DULpSyk85kwWmsC6MuPVAoVyf8Nujtp1JyFIcDteP
+	 gql6xWXrzhwgtlNS+xUPfxzg4WEEuk0/n+aOotAvyPDDZOTPBp4TZWs1xiuOs63UNJ
+	 +s7RzfpzOpQgGs4UMfs1tB6OgHFCXkvTCMWAgiS8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AA1C0F80054;
-	Fri, 11 Feb 2022 18:19:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1E449F800BF;
+	Sat, 12 Feb 2022 03:21:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AD834F80125; Fri, 11 Feb 2022 18:19:54 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 0052CF804B0; Sat, 12 Feb 2022 03:21:47 +0100 (CET)
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com
+ [64.147.123.24])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 77DE6F80125
- for <alsa-devel@alsa-project.org>; Fri, 11 Feb 2022 18:19:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77DE6F80125
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6A360F800BF
+ for <alsa-devel@alsa-project.org>; Sat, 12 Feb 2022 03:21:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A360F800BF
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="d6npwrZA"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 21B5Tw9C021781;
- Fri, 11 Feb 2022 11:19:43 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=r251vmoQ2L83FQn2q//QAdd00DY8XmonuwupWWqZbUQ=;
- b=d6npwrZAxXY3brRJzxErPJJNeWqhPCX6f7yk4LAMTj/puBoUCcNhwJbVzcHqkwdKxffc
- 4fC1hpWkgWaCihS9M0TsikldlvBwSLlcYWvW6oRhL1YRHqqZANGP0mTl6Ad2mG7HQenq
- 0HNZEJ/IVQek5NYehOAH73vFkEPiOBhxEMOdTO9L7CDcGIXWP0ogXeKphdKPWnrdp5Z1
- 6weSQA1Uhl3ztnyAzWBeJ3aAHoH6QT7ZmxCgQlMQ/rL+25oI1XjgRLurTJUlw+bgNv5X
- wXp3TCuFEYtIJ0IwgdKpfdEtNNNjM5OYU0WES/1GBPMEn9d0R2CEwq4185RfQ42AJPnO gQ== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3e4brbb92e-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Fri, 11 Feb 2022 11:19:43 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Fri, 11 Feb
- 2022 17:19:41 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.18 via
- Frontend Transport; Fri, 11 Feb 2022 17:19:41 +0000
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 1F919459;
- Fri, 11 Feb 2022 17:19:41 +0000 (UTC)
-Date: Fri, 11 Feb 2022 17:19:41 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: wm8731: Delete empty remove() function
-Message-ID: <20220211171941.GA38351@ediswmail.ad.cirrus.com>
-References: <20220211165811.1176005-1-broonie@kernel.org>
+ dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
+ header.b="pBtajA1I"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="KTfgNKpH"
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+ by mailout.west.internal (Postfix) with ESMTP id 96AB93201D2D;
+ Fri, 11 Feb 2022 21:21:38 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+ by compute1.internal (MEProxy); Fri, 11 Feb 2022 21:21:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+ h=cc:cc:content-transfer-encoding:date:date:from:from
+ :in-reply-to:message-id:mime-version:reply-to:sender:subject
+ :subject:to:to; s=fm3; bh=cRHm2GhJlaNLqABTQI1t1w+2bCz5SKGqO3g6bK
+ 8UMd4=; b=pBtajA1I6pgzKR1auvViNuflvfBpKlGJA+6ZOMnvWsFSojrf9yTndH
+ Rs+dggcqIrPR8MR/wFbhVI76wgH+erlYODcQRTStY02J/BWsIgjf8o2CEpUv7OrO
+ sfoT+aK4Cgf3/m+Ux60+okacv16itS37WDhd1Ln62ppLnEmqnDBHjxIH2vUnY8Gf
+ QuK0x0+4/nlsXhw5T/VUWG2IK0MvcnCRBYvEHwB+ciFeYhvSJl6+TgbNfmqyI2La
+ xr30/ONmnd6Cq+it3tr0EovXyRU7rLlgXDcWKDu0jqIQf1VIPSmmMksguuM6TC2S
+ 4pvu5Tybauka/YKn7S5T9tNPgJKIFivw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
+ :from:from:in-reply-to:message-id:mime-version:reply-to:sender
+ :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
+ :x-me-sender:x-sasl-enc; s=fm2; bh=cRHm2GhJlaNLqABTQI1t1w+2bCz5S
+ KGqO3g6bK8UMd4=; b=KTfgNKpHZkoGuLnUmQGBMpY7UkQIQYNwznMvIeJHpTpkL
+ IgiPW/NHb99aG1u+TQ8Avv7pbYzlkWr/p13JdrYgvndD2ycI4Xlld3CE3mV9AgGH
+ QIfhN3WG/lmAsQKMkJl0WEev8cU8UN0xoe9LfcZN9KPoSwNhMBx99pQ0DokOXR3i
+ tK/RcZgWZS6rYRc+Qg9P9oDODGLFXiT7F2RUcmvcZfOdV9fEs3FXm6ZLeKgO+maY
+ YxUV9Vjqm6OlNmAFFFz1RkOeTLV5vX0XxqzhBqHIEpGYz/5KCYKgLVK4onVyrysJ
+ fLlk2nYX4V5GKgmcafyk3dxdfqjchDgRhXoTrESDA==
+X-ME-Sender: <xms:sBkHYqcK7qMNW5nbufNxoz4YgG4E3MwBqISt-gWDzMHF3xeQspdgKQ>
+ <xme:sBkHYkOv1pVt7sp9_SuAl_yXYUqxlsTekI4do0Pam0N-ufKH6z8NTh8ir2QdsVz2i
+ OXa6ilPffY6yUJvshc>
+X-ME-Received: <xmr:sBkHYrgpA1Gy5YcgvZl2OT21B1JvP_0TKYo9JsfrU0ycfsV1VprjA8_PkQoMPUA8iFn0qOfsdtGoY-qmBpFSAQO2IXo5YCHKJjpQsJKAWS6FrThZlFCz>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddrieeggdeghecutefuodetggdotefrodftvf
+ curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+ uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
+ dtnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghkrghshhhi
+ sehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpeetieeuhfejkeekfe
+ ehteeikedvgeefhffggfdvieehhefhheeivdfhgfejjeduudenucffohhmrghinhepkhgv
+ rhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+ hfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
+X-ME-Proxy: <xmx:sBkHYn9_V6CgeO3i4WDnsRF2Gve6FOfGKHpUIGNyuHTjQoxgSZE0FA>
+ <xmx:sBkHYmsnJcngHTFp3qAOQe5obyH7Kyqj2i7QUXKrTUwnYGZhB9h5ZQ>
+ <xmx:sBkHYuGGxqfR9EMbg0JMIGF8AtY0VA4APGJBsqDaYTXjm46UKOgv7g>
+ <xmx:shkHYqKHihHg8ePsurbu1UjYVnN7weHcc0TrNzIURrz_xVLjHAW3lw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 11 Feb 2022 21:21:35 -0500 (EST)
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: stefanr@s5r6.in-berlin.de
+Subject: [PATCH v2 0/3] firewire: assist unit driver to compute packet time
+ stamp
+Date: Sat, 12 Feb 2022 11:21:28 +0900
+Message-Id: <20220212022131.199855-1-o-takashi@sakamocchi.jp>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20220211165811.1176005-1-broonie@kernel.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-ORIG-GUID: EkZFbUVSWz3vL8c8E6dOJJdQtcfZj4YG
-X-Proofpoint-GUID: EkZFbUVSWz3vL8c8E6dOJJdQtcfZj4YG
-X-Proofpoint-Spam-Reason: safe
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- Liam Girdwood <lgirdwood@gmail.com>
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net,
+ clemens@ladisch.de, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,14 +107,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, Feb 11, 2022 at 04:58:11PM +0000, Mark Brown wrote:
-> The I2C remove function is empty for the wm8731 driver, it can just be
-> deleted.
-> 
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-> ---
+Hi,
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Current implementation of Linux FireWire subsystem doesn't allow unit
+driver to operate content of packet in IR context according to
+time stamp. Additionally it doesn't allow unit driver to read current value
+of CYCLE_TIME register in OHCI 1394 controller. It brings disadvantages to
+drivers in Linux sound subsystem in regards of handling time for sampled
+data such as PCM frames and MIDI messages.
 
-Thanks,
-Charles
+This rerolled patchset is first step to improve the situation.
+
+Changes in v2:
+ * Rebase v1 patchset to v5.16 release
+
+V1:
+ * https://lore.kernel.org/lkml/20211202113457.24011-1-o-takashi@sakamocchi.jp/
+
+
+Hector Martin (1):
+  firewire: Add dummy read_csr/write_csr functions
+
+Takashi Sakamoto (2):
+  firewire: add kernel API to access CYCLE_TIME register
+  firewire: add kernel API to access packet structure in request
+    structure for AR context
+
+ drivers/firewire/core-card.c        | 39 +++++++++++++++++++++++++++++
+ drivers/firewire/core-cdev.c        |  6 +++--
+ drivers/firewire/core-transaction.c | 18 +++++++++++++
+ include/linux/firewire.h            |  3 +++
+ 4 files changed, 64 insertions(+), 2 deletions(-)
+
+-- 
+2.32.0
+
