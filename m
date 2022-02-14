@@ -4,71 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE8E3C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Feb 2022 14:57:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77462C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Feb 2022 14:59:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CF07517DA;
-	Mon, 14 Feb 2022 15:56:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF07517DA
+	by alsa0.perex.cz (Postfix) with ESMTPS id BB93C17EF;
+	Mon, 14 Feb 2022 15:58:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BB93C17EF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1644850665;
-	bh=y+Rr2b5WM7F6auE0BW2a+3Ab1MYhu1zzwg5gCTdAqH0=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=eLYlCmh22p0CVIBuLdFSbHhHi6dxYsXpMuR8V79nwjfuaoBGYwmKz/agFqINI/A+d
-	 pZkspY95LDGyADflu0/oozFajdFEeFTy6PC3CD4sBfAvJYYubE0yuKpZ9wZP6oy1zx
-	 1RaA6FHQfH5c2lC9GiBgXbDcmCluE5NkrptYYKjY=
+	s=default; t=1644850784;
+	bh=zSPEb7kyznL9qofUAhOhXl4qSCldpsYRmRX3LGEfJME=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=VPqYmBKfqt9JpoKWM/4hnBo4h+l2Wx3iVMeOx/wI0uGHrVGWPmNNyX4o+RwgG8cxW
+	 7nFBR1MbStusK4PCtdMe+KoEOxEuROr1bhvD+vnpHfYHGsS5zsJsnZVew/u/zLZgtk
+	 7Ng56WFOP4BO4+ulgXBIG3TiX6ndDk+eFf4j9GKE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A29F4F80516;
-	Mon, 14 Feb 2022 15:56:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 689C9F80310;
+	Mon, 14 Feb 2022 15:58:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5EF74F800C0; Mon, 14 Feb 2022 15:56:10 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 03489F804CF; Mon, 14 Feb 2022 15:58:53 +0100 (CET)
+Received: from alexa-out.qualcomm.com (alexa-out.qualcomm.com [129.46.98.28])
+ (using TLSv1.2 with cipher AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 47861F800C0
- for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2022 15:56:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47861F800C0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 15C9AF800C0
+ for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2022 15:58:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15C9AF800C0
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="uhVfjJh+"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 1A464B810D8;
- Mon, 14 Feb 2022 14:56:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD81DC340EE;
- Mon, 14 Feb 2022 14:55:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1644850560;
- bh=y+Rr2b5WM7F6auE0BW2a+3Ab1MYhu1zzwg5gCTdAqH0=;
- h=From:To:In-Reply-To:References:Subject:Date:From;
- b=uhVfjJh+bKD8Lhh2LM5ApUe0IXmjlp2loNhS8irmzKR2weyQXsE+dbzbo3VnG/S31
- uIGqxIEaSH4aAHJser2DJiBJZ/+WRMPO59ccn1JA8wyq+rI+1HXlgadEgSndi/geL8
- jcFxWXuWgn6bcnO3MxbFM10FGfClt09QMcv9/WPDMXHQvVDkaht6MfvAendi8dea3b
- iQVRHh7kX1CWME38u+S+KdypK0ym3loxfKQQax6zISrSWdHQdLxamtZOa02HZZZV4Z
- rW2/iYPMCVI38hIfOX0WHyxXZdr97+v3ZdkOS1HkPCOpVhtBcEOlvnIyZJTwBgCFsv
- 25yxmJIwwJEWQ==
-From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
- Jaroslav Kysela <perex@perex.cz>, Daniel Baluta <daniel.baluta@nxp.com>,
- Shengjiu Wang <shengjiu.wang@freescale.com>,
- Charles Keepax <ckeepax@opensource.cirrus.com>, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.com>, Viorel Suman <viorel.suman@nxp.com>,
- patches@opensource.cirrus.com, "Viorel Suman (OSS)" <viorel.suman@oss.nxp.com>
-In-Reply-To: <20220208121727.4461-1-viorel.suman@oss.nxp.com>
-References: <20220208121727.4461-1-viorel.suman@oss.nxp.com>
-Subject: Re: [PATCH] ASoC: codec: wm8960: complete discharge on BIAS
- OFF->STANDBY
-Message-Id: <164485055842.397940.7117468372476499848.b4-ty@kernel.org>
-Date: Mon, 14 Feb 2022 14:55:58 +0000
+ dkim=pass (1024-bit key) header.d=quicinc.com header.i=@quicinc.com
+ header.b="Q4A33IPe"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+ t=1644850731; x=1676386731;
+ h=from:to:cc:subject:date:message-id:mime-version;
+ bh=SVss2eSgCl0uSJ4+s5xwdiQdW+NPwUXMhvsr5scf8D4=;
+ b=Q4A33IPeidJzgTU0Cz5hjMpXJ+sOaGEvmGQV4OyNp3OMz4INdKEgJCqb
+ 53FQWCTvU5ZFbBR5y6u9xzp8OYn5PY63MjoARoCu7zOE0RyGWSG9eOfDa
+ hdGIb0yoRIA8uyPd/arPI6vCpThooNxfp9Mp2MWI3yaEcC9rb0EY68yls U=;
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+ by alexa-out.qualcomm.com with ESMTP; 14 Feb 2022 06:58:47 -0800
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+ by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 14 Feb 2022 06:58:46 -0800
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.15; Mon, 14 Feb 2022 06:58:46 -0800
+Received: from hu-srivasam-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.922.19; Mon, 14 Feb 2022 06:58:40 -0800
+From: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+To: <agross@kernel.org>, <bjorn.andersson@linaro.org>, <lgirdwood@gmail.com>, 
+ <broonie@kernel.org>, <robh+dt@kernel.org>, <quic_plai@quicinc.com>,
+ <bgoswami@codeaurora.org>, <perex@perex.cz>, <tiwai@suse.com>,
+ <srinivas.kandagatla@linaro.org>, <rohitkr@codeaurora.org>,
+ <linux-arm-msm@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <swboyd@chromium.org>, <judyhsiao@chromium.org>
+Subject: [RESEND v13 00/10] Add support for audio on SC7280 based targets
+Date: Mon, 14 Feb 2022 20:28:18 +0530
+Message-ID: <1644850708-11099-1-git-send-email-quic_srivasam@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+Cc: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,42 +89,82 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 8 Feb 2022 14:17:27 +0200, Viorel Suman (OSS) wrote:
-> From: Viorel Suman <viorel.suman@nxp.com>
-> 
-> On BIAS STANDBY->OFF transition the current implementation sleeps
-> 600ms on suspend in order to discharge the chip. The suspend is
-> propagated from "snd_soc_suspend" call for all audio cards in a
-> serial fashion, thus in case of boards like i.MX8DXL EVK which has
-> 3 distinct WM8960 codecs the total cumulated sleep on suspend is 1.8
-> seconds.
-> 
-> [...]
+This patch set is to add support for Audio over wcd codec,
+digital mics, through digital codecs and without ADSP.
 
-Applied to
+Changes Since V12:
+    -- Fix arguments type mismatch.
+Changes Since V11:
+    -- Fix kernel robot issue on arguments type mismatch.
+Changes Since V10:
+    -- Split bulk clock voting to individual clock voting as per use case in cdc-dma driver.
+    -- Add missing codec dma clocks.
+    -- Update rxtx lpm buffer size.
+Changes Since V9:
+    -- Change individual clock voting to bulk clock voting of lpass-sc7280 platform driver.
+    -- Remove redundant clocks in lpass variant structure.
+    -- Add mclk for MI2S based headset path.
+    -- Remove unused lpass variant structure members in lpass header.
+Changes Since V8:
+    -- Fix errors in sc7280 lpass cpu dt-bindings.
+    -- Move to quicinc domain email id's.
+Changes Since V7:
+    -- Fix indentation errors.
+    -- Bisect patches to avoid interdependency.
+Changes Since V6:
+    -- Split cdc dma regmap config macros.
+    -- Add write dma reg fields for i2s path.
+    -- Add helper function to distinguish rxtx and va dma ports.
+    -- Optimizing clock and reg name in cpu dt-bindings.
+    -- Update buffer management for cdc dma path.
+    -- Remove Kconfig fields of machine driver.
+Changes Since V5:
+    -- Include MI2S primary node to snd_soc_dai_driver in lpass-sc7280 platform driver.
+    -- Move dependency patch list to corresponding patch.
+    -- Add support for missing cdc-dma ports.
+    -- Change if/else conditional statements to switch cases.
+    -- Add missing error handlings.
+    -- Typo errors fix.
+Changes Since V4:
+    -- Remove unused variable in lpass-sc7280 platform driver.
+Changes Since V3:
+    -- Remove redundant power domain controls. As power domains can be configured from dtsi.
+Changes Since V2:
+    -- Split lpass sc7280 cpu driver patch and create regmap config patch.
+    -- Create patches based on latest kernel tip.
+    -- Add helper function to get dma control and lpaif handle.
+    -- Remove unused variables.
+Changes Since V1:
+    -- Typo errors fix
+    -- CPU driver readable/writable apis optimization.
+    -- Add Missing config patch
+    -- Add Common api for repeated dmactl initialization.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Srinivasa Rao Mandadapu (10):
+  ASoC: qcom: SC7280: Update config for building codec dma drivers
+  ASoC: qcom: Move lpass_pcm_data structure to lpass header
+  ASoC: qcom: lpass: Add dma fields for codec dma lpass interface
+  ASoC: qcom: Add helper function to get dma control and lpaif handle
+  ASoC: qcom: Add register definition for codec rddma and wrdma
+  ASoC: qcom: Add regmap config support for codec dma driver
+  ASoC: qcom: Add support for codec dma driver
+  ASoC: qcom: Add lpass CPU driver for codec dma control
+  ASoC: dt-bindings: Add SC7280 lpass cpu bindings
+  ASoC: qcom: lpass-sc7280: Add platform driver for lpass audio
 
-Thanks!
+ .../devicetree/bindings/sound/qcom,lpass-cpu.yaml  |  75 ++-
+ sound/soc/qcom/Kconfig                             |  11 +
+ sound/soc/qcom/Makefile                            |   4 +
+ sound/soc/qcom/lpass-cdc-dma.c                     | 304 ++++++++++
+ sound/soc/qcom/lpass-cpu.c                         | 244 +++++++-
+ sound/soc/qcom/lpass-lpaif-reg.h                   | 127 ++++-
+ sound/soc/qcom/lpass-platform.c                    | 617 ++++++++++++++++++---
+ sound/soc/qcom/lpass-sc7280.c                      | 447 +++++++++++++++
+ sound/soc/qcom/lpass.h                             | 145 +++++
+ 9 files changed, 1887 insertions(+), 87 deletions(-)
+ create mode 100644 sound/soc/qcom/lpass-cdc-dma.c
+ create mode 100644 sound/soc/qcom/lpass-sc7280.c
 
-[1/1] ASoC: codec: wm8960: complete discharge on BIAS OFF->STANDBY
-      commit: 3c7a4c24bd0ac2dfeb4f3f9053a2207cad90c7dd
+-- 
+2.7.4
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
