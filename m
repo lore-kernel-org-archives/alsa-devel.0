@@ -4,69 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD9ABC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Feb 2022 14:56:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 769C4C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Feb 2022 14:57:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 85CE91711;
-	Mon, 14 Feb 2022 15:56:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 85CE91711
+	by alsa0.perex.cz (Postfix) with ESMTPS id 61ABB17E2;
+	Mon, 14 Feb 2022 15:56:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 61ABB17E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1644850615;
-	bh=ClzPXiHGSV1D78vo35GeeCpuxD0sHuhefm+2UeDa9fk=;
+	s=default; t=1644850658;
+	bh=gwcVXSFrQqoddbyPtV8ZiviYsA3eI+Tq3EsDwGCM+sM=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TIFs33Zb5Iuqg6tV7YjlwYVNv5mF6u8TsHDNHoJK8BLmfUPwUIHasUkVAVbxsi9gU
-	 ee11zI0lFLob0BopEQmYA6Ey237fY9kOHF3I0xJ1JUPw9qmS3H2LJq8mPPRrKky6vy
-	 WI7J2ubCYwtnF3rdMOzTWg5a/H80RCorRd8S8M1Q=
+	b=u+FDfStutdW6oEJTThcmRukvgKv/dkQ3IrpJWbnN9LI3MJapKh7C+VJUy58O7T44I
+	 cCv0zP/Ga8qO3AbovWaBeqkbvupPpKlkJpWl42L8eYZsuAY+FIc8xOokN3wx1v+EP9
+	 3YyCgZUavOuAY7WYgL3J61u95ds2aqvhlHMzpO4A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1D7FAF80169;
-	Mon, 14 Feb 2022 15:56:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 27263F804CF;
+	Mon, 14 Feb 2022 15:56:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F3D18F80310; Mon, 14 Feb 2022 15:56:03 +0100 (CET)
+ id 3184DF804FE; Mon, 14 Feb 2022 15:56:08 +0100 (CET)
 Received: from ams.source.kernel.org (ams.source.kernel.org
  [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 87EB9F800C0
- for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2022 15:56:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87EB9F800C0
+ by alsa1.perex.cz (Postfix) with ESMTPS id D4C28F800D8
+ for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2022 15:56:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D4C28F800D8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="goysGbYO"
+ header.b="EhhYz1Kv"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 67914B810D5;
- Mon, 14 Feb 2022 14:55:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B48C8C340E9;
- Mon, 14 Feb 2022 14:55:56 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 3DEA2B810E8;
+ Mon, 14 Feb 2022 14:56:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D9CCC340E9;
+ Mon, 14 Feb 2022 14:56:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1644850558;
- bh=ClzPXiHGSV1D78vo35GeeCpuxD0sHuhefm+2UeDa9fk=;
+ s=k20201202; t=1644850562;
+ bh=gwcVXSFrQqoddbyPtV8ZiviYsA3eI+Tq3EsDwGCM+sM=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=goysGbYO/E6BNSGxe3aWMtmFrEx9FaRj053wc7JSgtgi55QmQGG6ioP4E58NK2A7V
- lZS9b/Jrjl6g+VSzzoGGAB9haXAh21AY5oEb0miEynxOwsupy5juGJbcrx3XZlp+5S
- JugTZDouzwjRs/Mv/zRAPLQ9uNV/t5ZRyZlyoU4L2sruQ74sSwQ89VlLS5CwTVXvKA
- cuoAe/fI+3DkOaC2LyWC2UxGyKrmu52ii1AXwL1xbuEjbAqZ7G9ohKS8S05kX13rWQ
- VaaGKsizr5evLX29H6X9PiA28jHP6FI2Y1gmirz2OzU/8b3LnBkIKJmioL4h5xz5Kg
- fPzYiYPyT1fjA==
+ b=EhhYz1KvmYXbeyKKBs14WgwIerUSyaxNEZVOUKpE/ZfeDdLVhzj6Def8MJjaTkV+2
+ lZ4UIM0heGC6ODQC+9e29XIBzF7vwt/kNmiplEBpvogr0ndrJLc0C9LIV9fH4WtfG6
+ LxhdMK8BIZjA45gJRbFzDs1A7gntgqFfNynLn8D7aXCUmvdJCIRS8InXBjODl9vq9w
+ 3qk2KNE3cpLqyjbS0Y3JnpA3GZ5qHrtqYSAOvuOX9/sKG1pUB5qMqvnS3aSmoTGqJJ
+ gNfZfwLA+IzXg+AeB26YL30GdIR/g/6wpOTZ8I+z6HvYIzNkPbCBFgRaXMhdiK0myr
+ KNPocogtl1/cg==
 From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-In-Reply-To: <20220208084220.1289836-1-nikita.yoush@cogentembedded.com>
-References: <20220208084220.1289836-1-nikita.yoush@cogentembedded.com>
-Subject: Re: [PATCH 0/4] ASoC: pcm3168a: code cleanup
-Message-Id: <164485055645.397940.4337733738992515921.b4-ty@kernel.org>
-Date: Mon, 14 Feb 2022 14:55:56 +0000
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+In-Reply-To: <20220211165811.1176005-1-broonie@kernel.org>
+References: <20220211165811.1176005-1-broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: wm8731: Delete empty remove() function
+Message-Id: <164485056109.397940.15009909214528816031.b4-ty@kernel.org>
+Date: Mon, 14 Feb 2022 14:56:01 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,17 +79,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 8 Feb 2022 11:42:16 +0300, Nikita Yushchenko wrote:
-> These patches clean up pcm3168a driver, without introducing any
-> functional change.
+On Fri, 11 Feb 2022 16:58:11 +0000, Mark Brown wrote:
+> The I2C remove function is empty for the wm8731 driver, it can just be
+> deleted.
 > 
-> Nikita Yushchenko (4):
->   ASoC: pcm3168a: cleanup unintuitive mask usage
->   ASoC: pcm3168a: refactor hw_params routine
->   ASoC: pcm3168a: refactor format handling
->   ASoC: pcm3168a: remove numeric PCM3168A_NUM_SUPPLIES
 > 
-> [...]
 
 Applied to
 
@@ -100,14 +91,8 @@ Applied to
 
 Thanks!
 
-[1/4] ASoC: pcm3168a: cleanup unintuitive mask usage
-      commit: 0c483a07e92638aca1f7d42a4986e32c58d29ad2
-[2/4] ASoC: pcm3168a: refactor hw_params routine
-      commit: c7270209fc6fc377ba5813e8d5b2ce2b26352ee7
-[3/4] ASoC: pcm3168a: refactor format handling
-      commit: 6bfc1242ee995f23f8c167bf1308a43b86560fce
-[4/4] ASoC: pcm3168a: remove numeric PCM3168A_NUM_SUPPLIES
-      commit: 3e63d3c1a2e52fb60d66bb23cb62c92c92ad0a3f
+[1/1] ASoC: wm8731: Delete empty remove() function
+      commit: 0b88a659002151e354272a13ae29d8b795ef1b46
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
