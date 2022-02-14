@@ -4,77 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A204C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Feb 2022 08:10:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39F1BC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Feb 2022 08:43:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4B1F316C6;
-	Mon, 14 Feb 2022 09:09:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B1F316C6
+	by alsa0.perex.cz (Postfix) with ESMTPS id C460D16CA;
+	Mon, 14 Feb 2022 09:42:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C460D16CA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1644826237;
-	bh=BGr0P3fizjwbR+GAi1vciouCEBYBQFUSW30o0cbeQNA=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=oS9yUy1YkLgKedRQXB53Zk5HAK5GXtQYTplgBYI/sEC98DNKggs1O5bQcNOrJ2g0r
-	 pKq17a3aJwaQmtmB45dCNgWUnBa2BuHNiy5yhndRJ1PPB8bkcVBiGIvWQUSp3Wumu6
-	 pr2o8lMWrqv6t9qCvF2yjW+GHZ5FGYEVsX/XFAeM=
+	s=default; t=1644828183;
+	bh=UfTYQGrMt7g/jkD5H7ahiax4HrhWetuyJAFxoHhQD9o=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=OCrmIjO7WikKhD6uwkv6JfpLMaVGxe9/jOE+VOsyLIHqis8VXeFZKh2oGREhQaT1h
+	 s8S4KQdKB6/iSOiNvGl0F18060HY7bUwSpUNmD+wTsO5aBSUQNcR9q6sjI/ciFy/0U
+	 4rvxN9UCHQoE8zFt/Ra/iEB0yOuqqEMUXNmtkCMM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7F6F6F804CF;
-	Mon, 14 Feb 2022 09:09:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4B51BF800D8;
+	Mon, 14 Feb 2022 09:42:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2F89BF804D1; Mon, 14 Feb 2022 09:09:29 +0100 (CET)
-Received: from alexa-out-sd-01.qualcomm.com (alexa-out-sd-01.qualcomm.com
- [199.106.114.38])
- (using TLSv1.2 with cipher AES256-SHA (256/256 bits))
+ id 1168DF80310; Mon, 14 Feb 2022 09:42:12 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 50A66F80310
- for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2022 09:09:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50A66F80310
+ by alsa1.perex.cz (Postfix) with ESMTPS id AC6F3F800D8
+ for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2022 09:42:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC6F3F800D8
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=quicinc.com header.i=@quicinc.com
- header.b="fmplWm7v"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
- t=1644826167; x=1676362167;
- h=from:to:cc:subject:date:message-id:mime-version;
- bh=4gRqdwpdcbamSHfFSPt2D5EeeVOtpQgJGkim5FH8yTw=;
- b=fmplWm7vvjLfqbObnuIVgXSSeZtyzuDaNgZio/xbjRWQYs132U44b4uE
- pYfBGyqeqn2gAECdZMOnbFY+ydJhrl60llPOs/TmEkorz0AjNMAiHbAjn
- U/v5BuycUdtypqvBZOXLaVFjHjFnC1cZ9iX+BCAiCtRElD8eLmD4eI0BU 4=;
-Received: from unknown (HELO ironmsg03-sd.qualcomm.com) ([10.53.140.143])
- by alexa-out-sd-01.qualcomm.com with ESMTP; 14 Feb 2022 00:09:21 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
- by ironmsg03-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Feb 2022 00:08:51 -0800
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.15; Mon, 14 Feb 2022 00:08:49 -0800
-Received: from hu-srivasam-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Mon, 14 Feb 2022 00:08:40 -0800
-From: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
-To: <agross@kernel.org>, <bjorn.andersson@linaro.org>, <lgirdwood@gmail.com>, 
- <broonie@kernel.org>, <robh+dt@kernel.org>, <quic_plai@quicinc.com>,
- <bgoswami@codeaurora.org>, <perex@perex.cz>, <tiwai@suse.com>,
- <srinivas.kandagatla@linaro.org>, <rohitkr@codeaurora.org>,
- <linux-arm-msm@vger.kernel.org>, <alsa-devel@alsa-project.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <swboyd@chromium.org>, <judyhsiao@chromium.org>
-Subject: [PATCH v12 00/10] Add support for audio on SC7280 based targets
-Date: Mon, 14 Feb 2022 13:38:21 +0530
-Message-ID: <1644826102-15276-1-git-send-email-quic_srivasam@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-Cc: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="xcAHWLlX"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="UV+SwxeK"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 66A25210F5;
+ Mon, 14 Feb 2022 08:42:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1644828128; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=3hgWWvfrQuOVxMCMx6CXcZaa/IOPaQ4tYpR7d5Vh33Q=;
+ b=xcAHWLlXGBV4ubKU8Gp3WX9rIdXopiOZyuV9YK4gKjYoHBm+5v3QOE49AyKR+n7QaByS5I
+ ud03wcgcrYF01vu6UxpfznXf+NETwXy0nD/JycJCShmh7n+UX0iEyIAmWkz82gLfmXKANw
+ CO88Y0XcqYCFV2v3QmStc2EH5MJ8+pM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1644828128;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=3hgWWvfrQuOVxMCMx6CXcZaa/IOPaQ4tYpR7d5Vh33Q=;
+ b=UV+SwxeK5T+YK4fyRXm2Y2IzQgcI1ig8vNJAx7Ir58z7GV82DjtvFT6w9KRqy3aHypdPBK
+ c7HparYAZVS225AA==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 5F075A3B88;
+ Mon, 14 Feb 2022 08:42:08 +0000 (UTC)
+Date: Mon, 14 Feb 2022 09:42:08 +0100
+Message-ID: <s5hbkz9hman.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: dmummenschanz@web.de
+Subject: Re: Cannon Lake PCH cAVS (ALC892) not detected by kernel driver
+In-Reply-To: <trinity-5e9e2188-92d3-4307-9e57-4981ce4440db-1644824332706@3c-app-webde-bap49>
+References: <trinity-f018660b-95c9-442b-a2a8-c92a56eb07ed-1644345967148@3c-app-webde-bap22>
+ <209270c3-4a46-d6a1-0f1d-d4400ecc5962@linux.intel.com>
+ <trinity-c5ab92fd-fbab-4431-8579-f8576a9ba71e-1644390880605@3c-app-webde-bap12>
+ <c71dbf89-80a3-538e-6ebe-e1d1869183e8@linux.intel.com>
+ <trinity-dc5c0214-ab7c-48bf-a502-e93062638611-1644425274650@3c-app-webde-bap11>
+ <trinity-7e2e8baa-0f43-4b12-902d-a907bd7efb79-1644665613748@3c-app-webde-bs56>
+ <2db61794-d772-8df6-a843-fd1512cfaa57@linux.intel.com>
+ <s5hmtivgmld.wl-tiwai@suse.de>
+ <trinity-354a4a90-f564-4f73-bbea-ed00bc502c24-1644821395116@3c-app-webde-bs52>
+ <s5hfsolhqm3.wl-tiwai@suse.de>
+ <trinity-5e9e2188-92d3-4307-9e57-4981ce4440db-1644824332706@3c-app-webde-bap49>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: multipart/mixed; boundary="Multipart_Mon_Feb_14_09:42:08_2022-1"
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,80 +97,113 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch set is to add support for Audio over wcd codec,
-digital mics, through digital codecs and without ADSP.
+--Multipart_Mon_Feb_14_09:42:08_2022-1
+Content-Type: text/plain; charset=US-ASCII
 
-Changes Since V11:
-    -- Fix kernel robot issue on arguments type mismatch.
-Changes Since V10:
-    -- Split bulk clock voting to individual clock voting as per use case in cdc-dma driver.
-    -- Add missing codec dma clocks.
-    -- Update rxtx lpm buffer size.
-Changes Since V9:
-    -- Change individual clock voting to bulk clock voting of lpass-sc7280 platform driver.
-    -- Remove redundant clocks in lpass variant structure.
-    -- Add mclk for MI2S based headset path.
-    -- Remove unused lpass variant structure members in lpass header.
-Changes Since V8:
-    -- Fix errors in sc7280 lpass cpu dt-bindings.
-    -- Move to quicinc domain email id's.
-Changes Since V7:
-    -- Fix indentation errors.
-    -- Bisect patches to avoid interdependency.
-Changes Since V6:
-    -- Split cdc dma regmap config macros.
-    -- Add write dma reg fields for i2s path.
-    -- Add helper function to distinguish rxtx and va dma ports.
-    -- Optimizing clock and reg name in cpu dt-bindings.
-    -- Update buffer management for cdc dma path.
-    -- Remove Kconfig fields of machine driver.
-Changes Since V5:
-    -- Include MI2S primary node to snd_soc_dai_driver in lpass-sc7280 platform driver.
-    -- Move dependency patch list to corresponding patch.
-    -- Add support for missing cdc-dma ports.
-    -- Change if/else conditional statements to switch cases.
-    -- Add missing error handlings.
-    -- Typo errors fix.
-Changes Since V4:
-    -- Remove unused variable in lpass-sc7280 platform driver.
-Changes Since V3:
-    -- Remove redundant power domain controls. As power domains can be configured from dtsi.
-Changes Since V2:
-    -- Split lpass sc7280 cpu driver patch and create regmap config patch.
-    -- Create patches based on latest kernel tip.
-    -- Add helper function to get dma control and lpaif handle.
-    -- Remove unused variables.
-Changes Since V1:
-    -- Typo errors fix
-    -- CPU driver readable/writable apis optimization.
-    -- Add Missing config patch
-    -- Add Common api for repeated dmactl initialization.
+On Mon, 14 Feb 2022 08:38:52 +0100,
+dmummenschanz@web.de wrote:
+> 
+> Applied yout patch with "probe_mask=0x105" option. ALC892 is now found and I
+> have sound. Thanks! :)
 
-Srinivasa Rao Mandadapu (10):
-  ASoC: qcom: SC7280: Update config for building codec dma drivers
-  ASoC: qcom: Move lpass_pcm_data structure to lpass header
-  ASoC: qcom: lpass: Add dma fields for codec dma lpass interface
-  ASoC: qcom: Add helper function to get dma control and lpaif handle
-  ASoC: qcom: Add register definition for codec rddma and wrdma
-  ASoC: qcom: Add regmap config support for codec dma driver
-  ASoC: qcom: Add support for codec dma driver
-  ASoC: qcom: Add lpass CPU driver for codec dma control
-  ASoC: dt-bindings: Add SC7280 lpass cpu bindings
-  ASoC: qcom: lpass-sc7280: Add platform driver for lpass audio
+Good to hear.
 
- .../devicetree/bindings/sound/qcom,lpass-cpu.yaml  |  75 ++-
- sound/soc/qcom/Kconfig                             |  11 +
- sound/soc/qcom/Makefile                            |   4 +
- sound/soc/qcom/lpass-cdc-dma.c                     | 304 ++++++++++
- sound/soc/qcom/lpass-cpu.c                         | 244 +++++++-
- sound/soc/qcom/lpass-lpaif-reg.h                   | 127 ++++-
- sound/soc/qcom/lpass-platform.c                    | 617 ++++++++++++++++++---
- sound/soc/qcom/lpass-sc7280.c                      | 447 +++++++++++++++
- sound/soc/qcom/lpass.h                             | 145 +++++
- 9 files changed, 1887 insertions(+), 87 deletions(-)
- create mode 100644 sound/soc/qcom/lpass-cdc-dma.c
- create mode 100644 sound/soc/qcom/lpass-sc7280.c
+Below are two patches, one for a slightly revised version of
+probe_mask fix, and another to add your device to the quirk table.
+Could you give those a try, and test without probe_mask option?
 
+
+thanks,
+
+Takashi
+
+
+--Multipart_Mon_Feb_14_09:42:08_2022-1
+Content-Type: application/octet-stream; type=patch
+Content-Disposition: attachment; filename="0001-ALSA-hda-Fix-regression-on-forced-probe-mask-option.patch"
+Content-Transfer-Encoding: 7bit
+
+From 652dae26e0894c4bafe865eb89f0d57ba1bdfb8a Mon Sep 17 00:00:00 2001
+From: Takashi Iwai <tiwai@suse.de>
+Date: Mon, 14 Feb 2022 09:33:54 +0100
+Subject: [PATCH 1/2] ALSA: hda: Fix regression on forced probe mask option
+
+The forced probe mask via probe_mask 0x100 bit doesn't work any longer
+as expected since the bus init code was moved and it's clearing the
+codec_mask value that was set beforehand.  This patch fixes the
+long-time regression by moving the check_probe_mask() call.
+
+Fixes: a41d122449be ("ALSA: hda - Embed bus into controller object")
+Reported-by: dmummenschanz@web.de
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/trinity-f018660b-95c9-442b-a2a8-c92a56eb07ed-1644345967148@3c-app-webde-bap22
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/hda_intel.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 4b0338c4c543..18b795220b52 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -1798,8 +1798,6 @@ static int azx_create(struct snd_card *card, struct pci_dev *pci,
+ 
+ 	assign_position_fix(chip, check_position_fix(chip, position_fix[dev]));
+ 
+-	check_probe_mask(chip, dev);
+-
+ 	if (single_cmd < 0) /* allow fallback to single_cmd at errors */
+ 		chip->fallback_to_single_cmd = 1;
+ 	else /* explicitly set to single_cmd or not */
+@@ -1825,6 +1823,8 @@ static int azx_create(struct snd_card *card, struct pci_dev *pci,
+ 		chip->bus.core.needs_damn_long_delay = 1;
+ 	}
+ 
++	check_probe_mask(chip, dev);
++
+ 	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
+ 	if (err < 0) {
+ 		dev_err(card->dev, "Error creating device [card]!\n");
 -- 
-2.7.4
+2.31.1
 
+
+--Multipart_Mon_Feb_14_09:42:08_2022-1
+Content-Type: application/octet-stream; type=patch
+Content-Disposition: attachment; filename="0002-ALSA-hda-Fix-missing-codec-probe-on-Shenker-Dock-15.patch"
+Content-Transfer-Encoding: 7bit
+
+From 122e4fb9cc7845c252cd29f871c0166d32698e88 Mon Sep 17 00:00:00 2001
+From: Takashi Iwai <tiwai@suse.de>
+Date: Mon, 14 Feb 2022 09:39:03 +0100
+Subject: [PATCH 2/2] ALSA: hda: Fix missing codec probe on Shenker Dock 15
+
+By some unknown reason, BIOS on Shenker Dock 15 doesn't set up the
+codec mask properly for the onboard audio.  Let's set the forced codec
+mask to enable the codec discovery.
+
+Reported-by: dmummenschanz@web.de
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/trinity-f018660b-95c9-442b-a2a8-c92a56eb07ed-1644345967148@3c-app-webde-bap22
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/hda_intel.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 18b795220b52..917ad9d375b1 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -1615,6 +1615,7 @@ static const struct snd_pci_quirk probe_mask_list[] = {
+ 	/* forced codec slots */
+ 	SND_PCI_QUIRK(0x1043, 0x1262, "ASUS W5Fm", 0x103),
+ 	SND_PCI_QUIRK(0x1046, 0x1262, "ASUS W5F", 0x103),
++	SND_PCI_QUIRK(0x1558, 0x0351, "Schenker Dock 15", 0x105),
+ 	/* WinFast VP200 H (Teradici) user reported broken communication */
+ 	SND_PCI_QUIRK(0x3a21, 0x040d, "WinFast VP200 H", 0x101),
+ 	{}
+-- 
+2.31.1
+
+
+--Multipart_Mon_Feb_14_09:42:08_2022-1--
