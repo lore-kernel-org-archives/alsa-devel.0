@@ -4,82 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22819C433FE
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Feb 2022 09:30:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CBFBAC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Feb 2022 09:31:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4C5A11A47;
-	Wed, 16 Feb 2022 10:29:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4C5A11A47
+	by alsa0.perex.cz (Postfix) with ESMTPS id 25095185F;
+	Wed, 16 Feb 2022 10:30:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 25095185F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645003848;
-	bh=JaPx4p3SMwP6KH5zXyV+yZMH6uQmM6+MsvdhmaW4ctI=;
+	s=default; t=1645003864;
+	bh=aWKfLj+OcuQ7ORm2NzKcSLdWPXwTMvCyCCSlhItZJdc=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sush4VOPyWPuIumOVMwrBUxAq2lbNXCr1wRJ6Rz3JM6iUZWjQ4RZRzfeOgHtmhgb9
-	 2emDCSm1ttzv/4FmerBg+KJRqFD48kWXas2neheQnl+jGG4Mri5CR0bGRPM2SQ4R8O
-	 TStYvXc5WvXA6rhFYRB9qtbzy2xs5tGxYeF0G9jE=
+	b=bjBCl3KM3UtN7pbuBZncyHyh+78y6XjrQ04pO21OLYXf3NBLyfiJ3bNCPx8cYY/iP
+	 JMOWFUfHErkdHZr75T1+8aM4w371UOPDxoZBu5GPaa0pqF3353Y1JM6GzX0IlM+Od4
+	 O4go/SHVIVgPkoPLgJNi5WYP24bEdKRZIOyz6kIM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 11115F80567;
+	by alsa1.perex.cz (Postfix) with ESMTP id 958E3F8057A;
 	Wed, 16 Feb 2022 10:25:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A4835F80132; Tue, 15 Feb 2022 19:17:52 +0100 (CET)
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com
- [IPv6:2607:f8b0:4864:20::102c])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 554C3F800C0; Tue, 15 Feb 2022 20:13:44 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 19069F80100
- for <alsa-devel@alsa-project.org>; Tue, 15 Feb 2022 19:17:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 19069F80100
+ by alsa1.perex.cz (Postfix) with ESMTPS id 35D6CF800C0
+ for <alsa-devel@alsa-project.org>; Tue, 15 Feb 2022 20:13:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35D6CF800C0
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="BbY3zUMb"
-Received: by mail-pj1-x102c.google.com with SMTP id
- t4-20020a17090a510400b001b8c4a6cd5dso2838648pjh.5
- for <alsa-devel@alsa-project.org>; Tue, 15 Feb 2022 10:17:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:content-transfer-encoding:in-reply-to;
- bh=rU/cr+2YS83r8ZzfG0ihHyfke5lY7dzNO33vRqwTRo0=;
- b=BbY3zUMbpsKVLuD6QiFaFpnxej58wpxQPVVGisDcf+K+2coTsFmZNXGoWqBeKoLb1x
- 3ZptFg7el6LpqeSuHR1QjwuSCHfpkEX/T+XcjAHpaQzkvx2kHT7d0+kYGoaayuMfQhPV
- CAs5kcpK7DDzn/NDlTFukbq1xe316LjUYcWLM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:content-transfer-encoding
- :in-reply-to;
- bh=rU/cr+2YS83r8ZzfG0ihHyfke5lY7dzNO33vRqwTRo0=;
- b=wz2lFIFyBPeqZK2hnTeRzGzOOmrYHwU4o8HCQuIS68d/nyF4eYPmPzFuocif3MyQjC
- XbhtyE4SUktoUlmaiRHfqjgX42WUl/wtBofDoWUgBHOH2I+/qIe8xPJjWqKxFPNn5gSb
- ungOOsknOE1cGRRu0QplpIpeZgUjnaX6z/GcB9BXQaUlDMAtKQ+RRL0ha1pX+vAWsCM4
- LuWrVH076SWNyIwAanh5S0OVGCJc/1cJr91x52+xrQpW267Kkqr8dPPnufnEFr+5qOj6
- 6TqIkmjXVYwsYyvOEkPlC1IB35HflTcKzCsxmQmTD6hWmoW23J0sWT3gmMnExR4NPM/I
- UDcQ==
-X-Gm-Message-State: AOAM533n89iyrIIkZy55/N4PB+ujh6guPI3RptWlA41fSBagMR0yzh3n
- ug3IqrHiQuOi8GbexW4UV02UIQ==
-X-Google-Smtp-Source: ABdhPJwjJJkj0fC2gO+FdGjnaisWCk9FKkCf0qazg7PUuY4rrjoW+egyeLOWB+yCEr/MI5qa+9+dbA==
-X-Received: by 2002:a17:902:eb8f:: with SMTP id
- q15mr235036plg.67.1644949062021; 
- Tue, 15 Feb 2022 10:17:42 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
- by smtp.gmail.com with ESMTPSA id a186sm3157627pgc.70.2022.02.15.10.17.41
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 15 Feb 2022 10:17:41 -0800 (PST)
-Date: Tue, 15 Feb 2022 10:17:40 -0800
-From: Kees Cook <keescook@chromium.org>
-To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="Pb9b+lIl"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 2784BB81C66;
+ Tue, 15 Feb 2022 19:13:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA149C340EB;
+ Tue, 15 Feb 2022 19:13:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1644952415;
+ bh=aWKfLj+OcuQ7ORm2NzKcSLdWPXwTMvCyCCSlhItZJdc=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=Pb9b+lIl3czsbILZx4JGaHKfxai5nhmkbafSdXIePkm1+42+PtZWRvtnxsIxieHjT
+ 9ekyHuwvisvcr9fVX07+lClUNa2p0vhktIvKZSAjwuXs2gg0KwuzJxVI1eJwsCEsx9
+ QAqj6xuEKLMkpaRxHB9Jbh5UZNn3lhP/U/32rVpI9FJi1e5LJ0Z2HLVW0p7KctTIZB
+ uH0ohVDX/Qm561zC5FzYDM+alYJWObfXnSGwWXg348TFcT9AqtFzE3U54RAksJmBj5
+ t03G17WjapCI9e95mge26r6O7cubp0cNepLCQdTnroGWEV76h8vqtZwzBmUYMX3S66
+ UcWCeciahTo0A==
+Date: Tue, 15 Feb 2022 13:21:10 -0600
+From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To: Kees Cook <keescook@chromium.org>
 Subject: Re: [PATCH][next] treewide: Replace zero-length arrays with
  flexible-array members
-Message-ID: <202202151016.C0471D6E@keescook>
+Message-ID: <20220215192110.GA883653@embeddedor>
 References: <20220215174743.GA878920@embeddedor>
+ <202202151016.C0471D6E@keescook>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220215174743.GA878920@embeddedor>
+In-Reply-To: <202202151016.C0471D6E@keescook>
 X-Mailman-Approved-At: Wed, 16 Feb 2022 10:25:43 +0100
 Cc: alsa-devel@alsa-project.org, linux-ia64@vger.kernel.org,
  linux-sh@vger.kernel.org, nouveau@lists.freedesktop.org,
@@ -115,34 +100,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Feb 15, 2022 at 11:47:43AM -0600, Gustavo A. R. Silva wrote:
-> There is a regular need in the kernel to provide a way to declare
-> having a dynamically sized set of trailing elements in a structure.
-> Kernel code should always use “flexible array members”[1] for these
-> cases. The older style of one-element or zero-length arrays should
-> no longer be used[2].
+On Tue, Feb 15, 2022 at 10:17:40AM -0800, Kees Cook wrote:
+> On Tue, Feb 15, 2022 at 11:47:43AM -0600, Gustavo A. R. Silva wrote:
+> > There is a regular need in the kernel to provide a way to declare
+> > having a dynamically sized set of trailing elements in a structure.
+> > Kernel code should always use “flexible array members”[1] for these
+> > cases. The older style of one-element or zero-length arrays should
+> > no longer be used[2].
+> > 
+> > This code was transformed with the help of Coccinelle:
+> > (next-20220214$ spatch --jobs $(getconf _NPROCESSORS_ONLN) --sp-file script.cocci --include-headers --dir . > output.patch)
+> > 
+> > @@
+> > identifier S, member, array;
+> > type T1, T2;
+> > @@
+> > 
+> > struct S {
+> >   ...
+> >   T1 member;
+> >   T2 array[
+> > - 0
+> >   ];
+> > };
 > 
-> This code was transformed with the help of Coccinelle:
-> (next-20220214$ spatch --jobs $(getconf _NPROCESSORS_ONLN) --sp-file script.cocci --include-headers --dir . > output.patch)
+> These all look trivially correct to me. Only two didn't have the end of
+> the struct visible in the patch, and checking those showed them to be
+> trailing members as well, so:
 > 
-> @@
-> identifier S, member, array;
-> type T1, T2;
-> @@
-> 
-> struct S {
->   ...
->   T1 member;
->   T2 array[
-> - 0
->   ];
-> };
+> Reviewed-by: Kees Cook <keescook@chromium.org>
 
-These all look trivially correct to me. Only two didn't have the end of
-the struct visible in the patch, and checking those showed them to be
-trailing members as well, so:
+I'll add this to my -next tree.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
-
--- 
-Kees Cook
+Thanks!
+--
+Gustavo
