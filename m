@@ -4,64 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2FC2C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Feb 2022 13:08:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A0CAC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Feb 2022 13:19:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D8078174A;
-	Tue, 15 Feb 2022 14:07:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8078174A
+	by alsa0.perex.cz (Postfix) with ESMTPS id B0FB217EC;
+	Tue, 15 Feb 2022 14:18:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0FB217EC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1644930493;
-	bh=fYYbK/OBz8MJd2YyRGCIlHWQmx8wNvnc38HpuBoRA8o=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=XxNjRuKW70STHgX9zHN63lvSQW2IB02OgShvsP9DeeXMaTs87gEBibtq5ncY8SUEA
-	 Ckjer5OH6EtG7Ir6J1+zZp6UWPtG0ZjpM5glyRU9d9pbxdSHFGN6hPJ66VqJH/VQls
-	 E/ZoxpEs/JmQZ6nGum+jW12okCr3lYRzbuB1glO4=
+	s=default; t=1644931174;
+	bh=6sDK0ccoSzhYNr2YTp0NKTVctS799bzZHwni9VvC+GI=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=H/IJOVDQkR2FdL/aSTwxiYlMyMUZ4QsPRTnGbkWFBmAWDarsnD5pXriOd5/DhycJ1
+	 VWTmHXaxTo9Hbdw0EFbz41r00Gn4lZmaTDwFBDJ2wucwYo+2SnCbLDHIm1cNNo7vHQ
+	 mUv0djF+pCn0ulWWORoCS+5vYxdSCenm/it6HaF8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 728FBF80124;
-	Tue, 15 Feb 2022 14:07:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4FF62F80124;
+	Tue, 15 Feb 2022 14:18:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DEB50F80132; Tue, 15 Feb 2022 14:07:21 +0100 (CET)
-Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 0C7E8F800D8; Tue, 15 Feb 2022 14:18:40 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D62B8F80100
- for <alsa-devel@alsa-project.org>; Tue, 15 Feb 2022 14:07:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D62B8F80100
+ by alsa1.perex.cz (Postfix) with ESMTPS id B0709F800D8
+ for <alsa-devel@alsa-project.org>; Tue, 15 Feb 2022 14:18:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0709F800D8
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de
- header.b="wuy6q9KE"
-Received: from tr.lan (ip-89-176-112-137.net.upcbroadband.cz [89.176.112.137])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="CeIMzQji"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- (Authenticated sender: marex@denx.de)
- by phobos.denx.de (Postfix) with ESMTPSA id 13E8383886;
- Tue, 15 Feb 2022 14:07:14 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
- s=phobos-20191101; t=1644930434;
- bh=+5XeOXiBdY2HU+UPOtxSSMLjN9PVOQsjLd31SIQQPRY=;
- h=From:To:Cc:Subject:Date:From;
- b=wuy6q9KEzXzN+3V0tBAFURaiIRYty2mr9O3ATEWd0ACAEIlr/8mLwf4cloXftAni9
- eJrBFJDLCFmxIlllZQojiI+yTSYnCA9jx2LYZrTMD9FAav10LRkkxTcoh8mJGBhMWl
- ryXncxykBHtMho+d30d5kDIDfK0sgYCxbZ7fPQbIeRSVgdAh7vuvmSUsKu6uaz0kFU
- ABZu0nGGhEsTqH2lsbo6Mg4IyTOfHEGwSfSlLC9yM+Em2l+4S6Bc4TnmME74Fbd2o1
- PG1ykbOQ/yKtR7yu6gcgZFtu8rdzvRky/9y3zsx5kx3Bo/V7X3vJ/JQvmZ17v/TtrK
- m4EGdLsjCRMHw==
-From: Marek Vasut <marex@denx.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: ops: Shift tested values in snd_soc_put_volsw() by +min
-Date: Tue, 15 Feb 2022 14:06:45 +0100
-Message-Id: <20220215130645.164025-1-marex@denx.de>
-X-Mailer: git-send-email 2.34.1
+ by ams.source.kernel.org (Postfix) with ESMTPS id 8921DB819C4;
+ Tue, 15 Feb 2022 13:18:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3062CC340ED;
+ Tue, 15 Feb 2022 13:18:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1644931113;
+ bh=6sDK0ccoSzhYNr2YTp0NKTVctS799bzZHwni9VvC+GI=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=CeIMzQji6pQPppttKX9ZxoE2OPFrWW9a+9Fu8Coii2iyM02IjSEw+UxvuZ4ouWUt2
+ SsJlW8lFWyj2o7mR+xGUnSVGvyeEBjQrMauJS5pY3nxkqFk2U3tuabW1GPt7HKCbMd
+ zGUKpP2Uylv5OPTAqCGLkBNVgv920ngnO8CGHQN21B0nqMuamtknG5ra4t/pUjek98
+ mwTHb66jaPsTTV1QREPLPJqoB4zVqOQERavSVroCXrbWqNARdgA7gmyMi/6u3OgrlL
+ Gxut4aQT4COPorjx2VNFAEL2BAmeh8MIXHLzaxyftpXG7E2FrWkjzwBdMGAMECbUut
+ 9OBjgEoT7yzqA==
+From: Mark Brown <broonie@kernel.org>
+To: Dmitry Osipenko <digetx@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
+ Jonathan Hunter <jonathanh@nvidia.com>,
+ Colin Ian King <colin.i.king@gmail.com>,
+ Thierry Reding <thierry.reding@gmail.com>
+In-Reply-To: <20220214213223.65780-1-colin.i.king@gmail.com>
+References: <20220214213223.65780-1-colin.i.king@gmail.com>
+Subject: Re: [PATCH] ASoC: tegra20: spdif: make const array rates static
+Message-Id: <164493111091.974741.18170472602420654568.b4-ty@kernel.org>
+Date: Tue, 15 Feb 2022 13:18:30 +0000
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: clamav-milter 0.103.5 at phobos.denx.de
-X-Virus-Status: Clean
-Cc: Marek Vasut <marex@denx.de>, Mark Brown <broonie@kernel.org>,
- stable@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,41 +84,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-While the $val/$val2 values passed in from userspace are always >= 0
-integers, the limits of the control can be signed integers and the $min
-can be non-zero and less than zero. To correctly validate $val/$val2
-against platform_max, add the $min offset to val first.
+On Mon, 14 Feb 2022 21:32:23 +0000, Colin Ian King wrote:
+> Don't populate the read-only const array rates on the stack but
+> instead it static. Also makes the object code a little smaller.
+> 
+> 
 
-Fixes: 817f7c9335ec0 ("ASoC: ops: Reject out of bounds values in snd_soc_put_volsw()")
-Signed-off-by: Marek Vasut <marex@denx.de>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
----
- sound/soc/soc-ops.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Applied to
 
-diff --git a/sound/soc/soc-ops.c b/sound/soc/soc-ops.c
-index f24f7354f46fe..6389a512c4dc6 100644
---- a/sound/soc/soc-ops.c
-+++ b/sound/soc/soc-ops.c
-@@ -317,7 +317,7 @@ int snd_soc_put_volsw(struct snd_kcontrol *kcontrol,
- 		mask = BIT(sign_bit + 1) - 1;
- 
- 	val = ucontrol->value.integer.value[0];
--	if (mc->platform_max && val > mc->platform_max)
-+	if (mc->platform_max && ((int)val + min) > mc->platform_max)
- 		return -EINVAL;
- 	if (val > max - min)
- 		return -EINVAL;
-@@ -330,7 +330,7 @@ int snd_soc_put_volsw(struct snd_kcontrol *kcontrol,
- 	val = val << shift;
- 	if (snd_soc_volsw_is_stereo(mc)) {
- 		val2 = ucontrol->value.integer.value[1];
--		if (mc->platform_max && val2 > mc->platform_max)
-+		if (mc->platform_max && ((int)val2 + min) > mc->platform_max)
- 			return -EINVAL;
- 		if (val2 > max - min)
- 			return -EINVAL;
--- 
-2.34.1
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
+Thanks!
+
+[1/1] ASoC: tegra20: spdif: make const array rates static
+      commit: 83a1bed1f49869ea0fc7de321d5dcc598d0dfb15
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
