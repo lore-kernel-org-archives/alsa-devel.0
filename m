@@ -4,71 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23CD1C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Feb 2022 13:29:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DDDA2C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Feb 2022 13:29:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 61CDE1884;
-	Tue, 15 Feb 2022 14:28:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 61CDE1884
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3387B188B;
+	Tue, 15 Feb 2022 14:29:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3387B188B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1644931778;
-	bh=6d5SNBgxQtPJrBrT8LK0hWepNSx3p+SntidjU2Z4W9s=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=dw1TY1w57ZMWSUuaz6Rdw3AFR8g9mHPjIwi1I5P6mCPvDB4YRdjWtDO8+riHoRPce
-	 yh01DhE6uwIyxpIQJhNzAA6GQ2TpBywVrpr4FmWEAljiWaPL8zK4v3HPHetxxh4xHP
-	 xIicMUnhdT+QnOgT5mCeCbfW0SHxnrFZ07CzcIiw=
+	s=default; t=1644931793;
+	bh=hm5LMmhN6QkdqrAIMqSbUJK0D4PvQZ930ZnY+AJwYiE=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=mGlw5tSliT9Pr5Rw81xPUve0JyaWvayL+dG44Mlc8BpDNZ/3uV0n7+iiScJiiayws
+	 5Ho3yVknZBVita75CUR7JZKI9St28RYSgeMTtI1Hbgv7ybCD38bDUhV3nBbl2SEXgy
+	 a6bFuxhnDNFuat2EaEMKunHpl/K07HWxmJqScyds=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DEE67F800D8;
-	Tue, 15 Feb 2022 14:28:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7CF90F80508;
+	Tue, 15 Feb 2022 14:28:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DEDE0F8032B; Tue, 15 Feb 2022 14:28:06 +0100 (CET)
+ id A6B84F8020D; Tue, 15 Feb 2022 14:28:08 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6F9FEF800C0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 90D5AF80132
  for <alsa-devel@alsa-project.org>; Tue, 15 Feb 2022 14:28:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F9FEF800C0
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90D5AF80132
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="tTi7BrRW"; 
+ header.b="w1z8tepS"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="lucRdLVJ"
+ header.b="iBSzS8Tb"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id A34781F393;
+ by smtp-out2.suse.de (Postfix) with ESMTP id 953561F391;
  Tue, 15 Feb 2022 13:27:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1644931679; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=hiBPXntsQVrnHF1LhQZAwtlogP++hq9mCuBueWXtD/M=;
- b=tTi7BrRWzMmNzhD0+e1MMTaPDHLFFwP1eGMcQ+y4IJL6j/fS2kH4i1hvM1JKcMS9XlIfYb
- uQzKrYxRaQ4Bxa2NJAcdhh38doPdswnsHbUqGf4hfKv0wBSwrhxz7D5CkORrWeJ43UX/4G
- /RbrOcgxnM+tb/QrMNreuwzauklFB6g=
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=SyUccQZxZ9BU22iennaGfM54hk+63SSdk9vc1BSwwbk=;
+ b=w1z8tepSoKUkLZTGpMKwzLBOIewahQalnSL4lw8IqNLKt7j/olCt/C8pbTfsKM8APTUksX
+ Z6toMOZp/Lm/le3g6g2ksT05mJ3DojbdL3uDjol3vurXwJvcENTwZsYzQvuvS+x6keCUF2
+ w5Zz1Jtn2QAylxLZIPiQKWNCuhz9/sY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1644931679;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=hiBPXntsQVrnHF1LhQZAwtlogP++hq9mCuBueWXtD/M=;
- b=lucRdLVJQRZKa/rjD+Nb2m2xh9FH4fNoIjNcGl3G7h7X58Djf/nhwrJdflsCq40NN9kk1F
- gMWSrb8T56gXPqAQ==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=SyUccQZxZ9BU22iennaGfM54hk+63SSdk9vc1BSwwbk=;
+ b=iBSzS8TbewjfU5E/E/URq1NBbnRioayL3Nu+B1Y+u+6Ndvk90drQQoqoZ1Vj8GR65ysi4b
+ SHHEoj9DnK7uufCA==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 92540A3B87;
+ by relay2.suse.de (Postfix) with ESMTP id 79014A3B84;
  Tue, 15 Feb 2022 13:27:59 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/3] ALSA: hda: Set max DMA segment size
-Date: Tue, 15 Feb 2022 14:27:54 +0100
-Message-Id: <20220215132756.31236-2-tiwai@suse.de>
+Subject: [PATCH 0/3] ALSA: Set max DMA segment size
+Date: Tue, 15 Feb 2022 14:27:53 +0100
+Message-Id: <20220215132756.31236-1-tiwai@suse.de>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20220215132756.31236-1-tiwai@suse.de>
-References: <20220215132756.31236-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: Mark Brown <broonie@kernel.org>,
@@ -88,33 +81,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The recent code refactoring to use the standard DMA helper requires
-the max	DMA segment size setup for SG list management.	Without	it,
-the kernel may spew warnings when a large buffer is allocated.
+Hi,
 
-This patch sets	up dma_set_max_seg_size() for avoiding spurious
-warnings.
+this is a oneliner patches to address the spurious kernel WARNING from
+DMA debug code for the missing setup of DMA segment size for SG pages.
 
-Fixes: 2c95b92ecd92 ("ALSA: memalloc: Unify x86 SG-buffer handling (take#3)")
-Cc: <stable@vger.kernel.org>
-BugLink: https://github.com/thesofproject/linux/issues/3430
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/hda_intel.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 917ad9d375b1..572ff0d1fafe 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -1941,6 +1941,7 @@ static int azx_first_init(struct azx *chip)
- 		dma_bits = 32;
- 	if (dma_set_mask_and_coherent(&pci->dev, DMA_BIT_MASK(dma_bits)))
- 		dma_set_mask_and_coherent(&pci->dev, DMA_BIT_MASK(32));
-+	dma_set_max_seg_size(&pci->dev, UINT_MAX);
- 
- 	/* read number of streams from GCAP register instead of using
- 	 * hardcoded value
+Takashi
+
+===
+
+Takashi Iwai (3):
+  ALSA: hda: Set max DMA segment size
+  ASoC: SOF: hda: Set max DMA segment size
+  ASoC: intel: skylake: Set max DMA segment size
+
+ sound/pci/hda/hda_intel.c     | 1 +
+ sound/soc/intel/skylake/skl.c | 1 +
+ sound/soc/sof/intel/hda.c     | 1 +
+ 3 files changed, 3 insertions(+)
+
 -- 
 2.31.1
 
