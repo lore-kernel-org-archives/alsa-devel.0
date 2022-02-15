@@ -4,67 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89D6AC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Feb 2022 13:20:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98191C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Feb 2022 13:25:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B2FB31813;
-	Tue, 15 Feb 2022 14:19:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2FB31813
+	by alsa0.perex.cz (Postfix) with ESMTPS id DD3591825;
+	Tue, 15 Feb 2022 14:24:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DD3591825
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1644931210;
-	bh=8cMCtic2t5pEf/DSz0kJZRrHovHUh2AE3w5SyPIBVxo=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1644931500;
+	bh=tg5KVXiLNtnlBHB2E+Xu2CmiA0YkZT0KL2za/dqZN0o=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mndCv3StPdtZ5wv1Rx5m1qgJHl99nk9i6cAnD+FRc9xXpJE7NhHPlf+aDgL2Xt1c9
-	 J7+cyYNDz+morwnPsb65AuhqqTqR9ODXa9zSpCNfpHqpEcuEIr1zIDRVCNquh6sTUB
-	 cbcwmPlPqlbaJXGpQNy1hpCshXUY+htr/3NnEDYE=
+	b=GN0HiUh/1Za/o3zw3WLK2/IVpekFOOIjyXaHTDvCwutMiZQX8q1VKe7qQNM1lGoyD
+	 sjLWa7tVtICtzzW4BvG/42NZeLoJ67r4kR4+aFCIWFuvI9XKgue2xxY/7NdjWMfyRf
+	 cU9opCEVfE2Iob1qSQm063kyP/5WxdkOiqFBKO2c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E48BFF8020D;
-	Tue, 15 Feb 2022 14:18:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 72839F800D8;
+	Tue, 15 Feb 2022 14:24:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B785EF80271; Tue, 15 Feb 2022 14:18:51 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 36E4EF80100
- for <alsa-devel@alsa-project.org>; Tue, 15 Feb 2022 14:18:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36E4EF80100
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="sANB+cZN"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id EBD64F80132; Tue, 15 Feb 2022 14:24:09 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 49A59616EA;
- Tue, 15 Feb 2022 13:18:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E129C340EB;
- Tue, 15 Feb 2022 13:18:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1644931110;
- bh=8cMCtic2t5pEf/DSz0kJZRrHovHUh2AE3w5SyPIBVxo=;
- h=From:To:In-Reply-To:References:Subject:Date:From;
- b=sANB+cZNShkF2pr662E4ZWpeXA64APS5swjVSiyw9GZjEsObehp/MFKFJcnjIL6PU
- IIwqQyTX9GRw3DbRMWGePPcl5FOKtQm0pVrKmvok0N120yRB80ueHiunpWJjZ+uvdd
- B/AiH6bCnLHnAsW+E1ZArx0yaIDCykMYVLYAKTZub/woS39wrd/V1Brts8c2TM5Dxk
- oBx2DfK2PgBewS3/n8Ik5MGT7tvUzjLNCGWf49NyF2PighXJhfeE4DP9dHw3JtPf2C
- bDLFnJgKQgjc3G8becqXbdn9i4aeGJGuxo/6ztLKB8ccd+GI240v7rCE7yPo3nmQOO
- YaSobjaXfBgHQ==
-From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, alsa-devel@alsa-project.org, tiwai@suse.com,
- perex@perex.cz, linux-kernel@vger.kernel.org,
- Shengjiu Wang <shengjiu.wang@nxp.com>
-In-Reply-To: <1644491952-7457-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1644491952-7457-1-git-send-email-shengjiu.wang@nxp.com>
-Subject: Re: [PATCH] ASoC: soc-core: skip zero num_dai component in searching
- dai name
-Message-Id: <164493110923.974741.6888113145562787379.b4-ty@kernel.org>
-Date: Tue, 15 Feb 2022 13:18:29 +0000
+ by alsa1.perex.cz (Postfix) with ESMTPS id EF99DF800D8
+ for <alsa-devel@alsa-project.org>; Tue, 15 Feb 2022 14:24:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF99DF800D8
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="RMwV/bnL"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 21FCQn0R027968;
+ Tue, 15 Feb 2022 07:24:00 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=GwXfAsvDJx5IcqRJVN2beKTyGRoEjyULajUSVSVdQvQ=;
+ b=RMwV/bnLNRKWTK+mfEh0+u0wZPYezvx5t8PYpM3y330G1HVAeaD/Bu6FasD44d4DKbbl
+ WS+ZMEVbme38gTNjzbUJAXG3bMh9WniyBNsP+7ypuZ/kb5wHo5G3FMvcEcgxmhpw7Ard
+ vREj9w34ityzrUgzV7c0SDp0Jgzru0/zYmr2qxQQAu6wpLoSqNtb1IMxMfrCQeRGADf9
+ 6ewUp55B2Hkhs3mzg9UqUi9JjIDd/4+x+vybtE2rnBFN6WOiPVxd1RObiYqo4+u/eDsE
+ OCz0Ygb+Cq+82XfHBXZ5H2z1dQQXMWINIe43hKpscslO0xrV0fcvj/PeksxMCgWAvIB7 yg== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3e7qq19bss-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Tue, 15 Feb 2022 07:24:00 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Tue, 15 Feb
+ 2022 13:23:58 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.18 via
+ Frontend Transport; Tue, 15 Feb 2022 13:23:58 +0000
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 530252A9;
+ Tue, 15 Feb 2022 13:23:58 +0000 (UTC)
+Date: Tue, 15 Feb 2022 13:23:58 +0000
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH v2] ASoC: cs4265: Fix the duplicated control name
+Message-ID: <20220215132358.GG38351@ediswmail.ad.cirrus.com>
+References: <20220215120514.1760628-1-festevam@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20220215120514.1760628-1-festevam@gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-ORIG-GUID: 46gsrPcG_amcGj1zrUqOSsa_8ugLBxPa
+X-Proofpoint-GUID: 46gsrPcG_amcGj1zrUqOSsa_8ugLBxPa
+X-Proofpoint-Spam-Reason: safe
+Cc: Fabio Estevam <festevam@denx.de>, alsa-devel@alsa-project.org,
+ broonie@kernel.org, flatmax@flatmax.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,42 +94,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 10 Feb 2022 19:19:12 +0800, Shengjiu Wang wrote:
-> In the case like dmaengine which's not a dai but as a component, the
-> num_dai is zero, dmaengine component has the same component_of_node
-> as cpu dai, when cpu dai component is not ready, but dmaengine component
-> is ready, try to get cpu dai name, the snd_soc_get_dai_name() return
-> -EINVAL, not -EPROBE_DEFER, that cause below error:
+On Tue, Feb 15, 2022 at 09:05:14AM -0300, Fabio Estevam wrote:
+> From: Fabio Estevam <festevam@denx.de>
 > 
-> asoc-simple-card <card name>: parse error -22
-> asoc-simple-card: probe of <card name> failed with error -22
+> Currently, the following error messages are seen during boot:
 > 
-> [...]
+> asoc-simple-card sound: control 2:0:0:SPDIF Switch:0 is already present
+> cs4265 1-004f: ASoC: failed to add widget SPDIF dapm kcontrol SPDIF Switch: -16
+> 
+> Quoting Mark Brown:
+> 
+> "The driver is just plain buggy, it defines both a regular SPIDF Switch
+> control and a SND_SOC_DAPM_SWITCH() called SPDIF both of which will
+> create an identically named control, it can never have loaded without
+> error.  One or both of those has to be renamed or they need to be
+> merged into one thing."
+> 
+> Fix the duplicated control name by combining the two SPDIF controls here
+> and move the register bits onto the DAPM widget and have DAPM control them.
+> 
+> Fixes: f853d6b3ba34 ("ASoC: cs4265: Add a S/PDIF enable switch")
+> Signed-off-by: Fabio Estevam <festevam@denx.de>
+> ---
 
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: soc-core: skip zero num_dai component in searching dai name
-      commit: f7d344a2bd5ec81fbd1ce76928fd059e57ec9bea
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
 Thanks,
-Mark
+Charles
