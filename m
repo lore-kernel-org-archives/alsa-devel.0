@@ -4,68 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE2A7C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Feb 2022 09:31:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4D70C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Feb 2022 09:31:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 289D71A7D;
-	Wed, 16 Feb 2022 10:30:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 289D71A7D
+	by alsa0.perex.cz (Postfix) with ESMTPS id BC9B01A96;
+	Wed, 16 Feb 2022 10:30:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC9B01A96
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645003881;
-	bh=RxAYLCqbUWlxjV9GFahzPwnkRBYKU9aVJMxo+INb+K8=;
+	s=default; t=1645003898;
+	bh=kUCZYr9eynBGfoyFNpGztKhdR0TjeWfPR20goAdEojo=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=td7U2dK65dg4uOR6f7cehtrPvWGlgMTCsO1Y0m7jtGqfVLYmV/MNoIcOWSicdrDR0
-	 OezO9qhdZalCqK6cyFB8gUgn5Jhvu21fclxro+jJjJCVyf4VAibvx/D7Iy6SdLjep+
-	 cRcG+Z0RZmRPB9nhJYrzxuWOFIalvGUgoj/jjn2U=
+	b=PeYMFmoEFGiVc9JrpeM5GbhSd8i4lZdP8UtYP+LvzTCEODzdYTz8WD02lZigjgDXS
+	 qYHhlq337ZzOXFF2KNvqNFRFFc01ACBJ4+of8xmh3RohzoeY2IGL079Cm3y24fdP68
+	 +Ac7VcbcRhwSkKNxEkMgG3Ala5CecMBLP5ajr0BE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1F91DF8057B;
+	by alsa1.perex.cz (Postfix) with ESMTP id 8A47CF8059F;
 	Wed, 16 Feb 2022 10:25:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2D425F80132; Tue, 15 Feb 2022 20:19:51 +0100 (CET)
+ id 1FA87F80132; Tue, 15 Feb 2022 20:24:57 +0100 (CET)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C9C79F800D8
- for <alsa-devel@alsa-project.org>; Tue, 15 Feb 2022 20:19:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9C79F800D8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 136E7F800D8
+ for <alsa-devel@alsa-project.org>; Tue, 15 Feb 2022 20:24:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 136E7F800D8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="oa82FKq0"
+ header.b="pgheRwOA"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 3A349617A1;
- Tue, 15 Feb 2022 19:19:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E76B9C340EB;
- Tue, 15 Feb 2022 19:19:38 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 4835061758;
+ Tue, 15 Feb 2022 19:24:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8127AC340EB;
+ Tue, 15 Feb 2022 19:24:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1644952780;
- bh=RxAYLCqbUWlxjV9GFahzPwnkRBYKU9aVJMxo+INb+K8=;
+ s=k20201202; t=1644953086;
+ bh=kUCZYr9eynBGfoyFNpGztKhdR0TjeWfPR20goAdEojo=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=oa82FKq0/HZo1Hieccox0xhuEOltsBpyNCb/oKWHfz9JimsfI5qrPFHosVG+Hw9KD
- FqjMZvJ5BquXlsEM1IUTOugfyhHJjbL+NoooCvHgJp/wzFU4N6mJ3/+qfEy0h1bhbj
- fv9Bo5w4LHHM1g+pM9OlS1+FV6MX0/N+Aa88X5OzELy65s1Xs5Q/258d9WBNoUp0fb
- HMGG+vm/A6PvbbvtXJ00MB45hauRqyRZCekvmCmXYRktZmaEtd9qOIjTryp50cyo1/
- 0DT+ajNam/uql+1lfstz9xW/6FSdwogqLIyHb8bwuPl3b0gveaOfCnpwJkPBK0mL1q
- tCTR2Et3rHU/g==
-Date: Tue, 15 Feb 2022 21:19:29 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+ b=pgheRwOAKjRlXMfJul10RwEjs5CBKHR/i0QEhyIM79774uc0ovg3u5myvyhB8s/qu
+ xkZdoun6Ve/NuXn1+qZDB9F/trYlid+yq9euKiwm3PP7bJ4zoGvDfPTjgfeWCzsH6f
+ Z5GtGABFqXnkSAxbAOokUuetZQuukvg8GogLN1PAUilOeXNWgORbaiYjI/aeCr++5W
+ YWvZj7f6KVH+xfahOEVmZaopl52rdr1jj6eaQg39ut/UgM8cVQWsEKIq8K1eRZzAAa
+ TaPAe7uN1AmbZCmz+9XMV8T/S9ihvGxGOcJfBqdWD8uwk44Sq4S7ITZBKug7wSeC6N
+ S7tHpNRHJfaSA==
+Date: Tue, 15 Feb 2022 13:32:21 -0600
+From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To: Leon Romanovsky <leon@kernel.org>
 Subject: Re: [PATCH][next] treewide: Replace zero-length arrays with
  flexible-array members
-Message-ID: <Ygv8wY75hNqS7zO6@unreal>
+Message-ID: <20220215193221.GA884407@embeddedor>
 References: <20220215174743.GA878920@embeddedor>
  <202202151016.C0471D6E@keescook>
- <20220215192110.GA883653@embeddedor>
+ <20220215192110.GA883653@embeddedor> <Ygv8wY75hNqS7zO6@unreal>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220215192110.GA883653@embeddedor>
+In-Reply-To: <Ygv8wY75hNqS7zO6@unreal>
 X-Mailman-Approved-At: Wed, 16 Feb 2022 10:25:43 +0100
 Cc: alsa-devel@alsa-project.org, linux-ia64@vger.kernel.org,
  linux-sh@vger.kernel.org, nouveau@lists.freedesktop.org,
@@ -102,45 +101,24 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Feb 15, 2022 at 01:21:10PM -0600, Gustavo A. R. Silva wrote:
-> On Tue, Feb 15, 2022 at 10:17:40AM -0800, Kees Cook wrote:
-> > On Tue, Feb 15, 2022 at 11:47:43AM -0600, Gustavo A. R. Silva wrote:
-> > > There is a regular need in the kernel to provide a way to declare
-> > > having a dynamically sized set of trailing elements in a structure.
-> > > Kernel code should always use “flexible array members”[1] for these
-> > > cases. The older style of one-element or zero-length arrays should
-> > > no longer be used[2].
+On Tue, Feb 15, 2022 at 09:19:29PM +0200, Leon Romanovsky wrote:
+> On Tue, Feb 15, 2022 at 01:21:10PM -0600, Gustavo A. R. Silva wrote:
+> > On Tue, Feb 15, 2022 at 10:17:40AM -0800, Kees Cook wrote:
+> > > On Tue, Feb 15, 2022 at 11:47:43AM -0600, Gustavo A. R. Silva wrote:
 > > > 
-> > > This code was transformed with the help of Coccinelle:
-> > > (next-20220214$ spatch --jobs $(getconf _NPROCESSORS_ONLN) --sp-file script.cocci --include-headers --dir . > output.patch)
+> > > These all look trivially correct to me. Only two didn't have the end of
+> > > the struct visible in the patch, and checking those showed them to be
+> > > trailing members as well, so:
 > > > 
-> > > @@
-> > > identifier S, member, array;
-> > > type T1, T2;
-> > > @@
-> > > 
-> > > struct S {
-> > >   ...
-> > >   T1 member;
-> > >   T2 array[
-> > > - 0
-> > >   ];
-> > > };
+> > > Reviewed-by: Kees Cook <keescook@chromium.org>
 > > 
-> > These all look trivially correct to me. Only two didn't have the end of
-> > the struct visible in the patch, and checking those showed them to be
-> > trailing members as well, so:
-> > 
-> > Reviewed-by: Kees Cook <keescook@chromium.org>
+> > I'll add this to my -next tree.
 > 
-> I'll add this to my -next tree.
+> I would like to ask you to send mlx5 patch separately to netdev. We are working
+> to delete that file completely and prefer to avoid from unnecessary merge conflicts.
 
-I would like to ask you to send mlx5 patch separately to netdev. We are working
-to delete that file completely and prefer to avoid from unnecessary merge conflicts.
+Oh OK. Sure thing; I will do so.
 
 Thanks
-
-> 
-> Thanks!
-> --
-> Gustavo
+--
+Gustavo
