@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 659C8C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Feb 2022 13:29:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23CD1C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Feb 2022 13:29:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 77A8917F6;
-	Tue, 15 Feb 2022 14:28:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 77A8917F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 61CDE1884;
+	Tue, 15 Feb 2022 14:28:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 61CDE1884
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1644931742;
-	bh=LaDwNiUpLQxetZHinM9cc/CH9/o+iBTQ5Nd2fvdtY8I=;
+	s=default; t=1644931778;
+	bh=6d5SNBgxQtPJrBrT8LK0hWepNSx3p+SntidjU2Z4W9s=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BEQ+VJOK9iv1XaaMNeDVU4hj0PlIg77RMpo5I5VTe0Zfwwb+59jo1/rHZDxTbn8M8
-	 IXnK3mV+aGfNyylYaAjhZO1+ZjqYPO8km3aabyXq51IJFlEWY5PH4iHzErqLPKhbCr
-	 Qim2srwakpg7afOBNQSeykVSmeeFZPXAoB8J8i9Y=
+	b=dw1TY1w57ZMWSUuaz6Rdw3AFR8g9mHPjIwi1I5P6mCPvDB4YRdjWtDO8+riHoRPce
+	 yh01DhE6uwIyxpIQJhNzAA6GQ2TpBywVrpr4FmWEAljiWaPL8zK4v3HPHetxxh4xHP
+	 xIicMUnhdT+QnOgT5mCeCbfW0SHxnrFZ07CzcIiw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D98E8F80132;
-	Tue, 15 Feb 2022 14:28:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DEE67F800D8;
+	Tue, 15 Feb 2022 14:28:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1DE79F80100; Tue, 15 Feb 2022 14:28:06 +0100 (CET)
+ id DEDE0F8032B; Tue, 15 Feb 2022 14:28:06 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 71EFEF80100
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6F9FEF800C0
  for <alsa-devel@alsa-project.org>; Tue, 15 Feb 2022 14:28:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71EFEF80100
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F9FEF800C0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="h47wWPDu"; 
+ header.b="tTi7BrRW"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="vE9xRNyB"
+ header.b="lucRdLVJ"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id B1FF31F394;
+ by smtp-out2.suse.de (Postfix) with ESMTP id A34781F393;
  Tue, 15 Feb 2022 13:27:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1644931679; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=7CzKrtC6zyn0NUJbIaGrHYx4DAikmTJeMO7sUWp4HiY=;
- b=h47wWPDuksfza0W5HYNbjghh2tjXPQg6KYBjPapjApQkfCNYIgds7+vOt+4yF8jf7DgmHY
- nR0lxJIvJsvdmjJ+1cPNokFJF8IU/vFMyB6houDe23tN4uHVq/CmG59QhdaW6vPgVEQrDJ
- XZAdC/QpTA0F3eyEPsvaK6FzaQQibxs=
+ bh=hiBPXntsQVrnHF1LhQZAwtlogP++hq9mCuBueWXtD/M=;
+ b=tTi7BrRWzMmNzhD0+e1MMTaPDHLFFwP1eGMcQ+y4IJL6j/fS2kH4i1hvM1JKcMS9XlIfYb
+ uQzKrYxRaQ4Bxa2NJAcdhh38doPdswnsHbUqGf4hfKv0wBSwrhxz7D5CkORrWeJ43UX/4G
+ /RbrOcgxnM+tb/QrMNreuwzauklFB6g=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1644931679;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=7CzKrtC6zyn0NUJbIaGrHYx4DAikmTJeMO7sUWp4HiY=;
- b=vE9xRNyBU3iFIhAeFfkCvAZNzzTgfjPfSyA5OjFWlTNfnQlbXOe8SBen1pd6pXb8+XT0go
- UbUqrXLbBGOSUDBw==
+ bh=hiBPXntsQVrnHF1LhQZAwtlogP++hq9mCuBueWXtD/M=;
+ b=lucRdLVJQRZKa/rjD+Nb2m2xh9FH4fNoIjNcGl3G7h7X58Djf/nhwrJdflsCq40NN9kk1F
+ gMWSrb8T56gXPqAQ==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id A1C32A3B84;
+ by relay2.suse.de (Postfix) with ESMTP id 92540A3B87;
  Tue, 15 Feb 2022 13:27:59 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 2/3] ASoC: SOF: hda: Set max DMA segment size
-Date: Tue, 15 Feb 2022 14:27:55 +0100
-Message-Id: <20220215132756.31236-3-tiwai@suse.de>
+Subject: [PATCH 1/3] ALSA: hda: Set max DMA segment size
+Date: Tue, 15 Feb 2022 14:27:54 +0100
+Message-Id: <20220215132756.31236-2-tiwai@suse.de>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20220215132756.31236-1-tiwai@suse.de>
 References: <20220215132756.31236-1-tiwai@suse.de>
@@ -100,21 +100,21 @@ Cc: <stable@vger.kernel.org>
 BugLink: https://github.com/thesofproject/linux/issues/3430
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/sof/intel/hda.c | 1 +
+ sound/pci/hda/hda_intel.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index c8fb082209ce..1385695d7745 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -956,6 +956,7 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
- 		dev_dbg(sdev->dev, "DMA mask is 32 bit\n");
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 917ad9d375b1..572ff0d1fafe 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -1941,6 +1941,7 @@ static int azx_first_init(struct azx *chip)
+ 		dma_bits = 32;
+ 	if (dma_set_mask_and_coherent(&pci->dev, DMA_BIT_MASK(dma_bits)))
  		dma_set_mask_and_coherent(&pci->dev, DMA_BIT_MASK(32));
- 	}
 +	dma_set_max_seg_size(&pci->dev, UINT_MAX);
  
- 	/* init streams */
- 	ret = hda_dsp_stream_init(sdev);
+ 	/* read number of streams from GCAP register instead of using
+ 	 * hardcoded value
 -- 
 2.31.1
 
