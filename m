@@ -4,76 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 423EDC4332F
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Feb 2022 08:40:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A85CEC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Feb 2022 09:14:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 612881760;
-	Wed, 16 Feb 2022 09:39:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 612881760
+	by alsa0.perex.cz (Postfix) with ESMTPS id 22E2D1747;
+	Wed, 16 Feb 2022 10:13:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22E2D1747
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645000825;
-	bh=VPBgHu7rmw7l8P2PkQhwc9tPS8Zj1T3H6k4XpCdGg+s=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1645002885;
+	bh=2av6zyVJuaSOBu4t5FKYVHSTfH/CWp0FugMifPGS2o4=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=P3EsqJGMtCo+wNEELy4lGZPCXRixMv3mzQDq0zvZ8LNCwPutlWbBAsuuW/XVXUClQ
-	 tPwDurQ1vX3CYHtuhMWzqtdbGH41h2mlL8T6pUOAzMdzCgt9ptwwPhwZbTDIUYh6xj
-	 90YkbT9ee25WxPkzj6SUsecYpGS6YzPWap5AS22U=
+	b=qD91cJb5EmE9uhJzI8Jjv2fu/g6OlSikXC+QYT9oATGgNZElLMPAHtjt8Vo+km2x9
+	 Am3CYz3/OX5FzId8H2Z/Gstk3Asjp6JCqjmpPXFwx5KyAU7U7Pu0vbjLQ9C1E9cZlD
+	 uAcxvwWoqHBZITdCQhsVd2IIHfvURDZzPRgH26Ro=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 919E2F80245;
-	Wed, 16 Feb 2022 09:39:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B7094F8011C;
+	Wed, 16 Feb 2022 10:13:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6C3EBF800C0; Wed, 16 Feb 2022 09:38:58 +0100 (CET)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id D2D22F800D8; Wed, 16 Feb 2022 10:13:52 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5863AF800C0
- for <alsa-devel@alsa-project.org>; Wed, 16 Feb 2022 09:38:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5863AF800C0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 84F18F800D8
+ for <alsa-devel@alsa-project.org>; Wed, 16 Feb 2022 10:13:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84F18F800D8
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="RUUrHS1a"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1645000736; x=1676536736;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=VPBgHu7rmw7l8P2PkQhwc9tPS8Zj1T3H6k4XpCdGg+s=;
- b=RUUrHS1alyvPk9CFH3khffC4G2YyV2qiaLoN+1Sa4QtVkcFBkgKOLmM3
- otwdG7pV4WQfeGbd/FcY5MDsAaLzQCJiVpdtyifwhGUfP2htiyHp2uvSy
- kYWREq0BI6r36Nu5ICpbmV+kXZ2vkxArBGwIV25nntJClFzh3vy6hKM0V
- 8MmTRwean+eleORa/BNI9BqxCKE+DOJlv4IQGGJ6AFItQSYwgXGfI9AuE
- bHxD4ISuLDgvXD912s0J+wxAN/Wz3OtOstV+grv62kQvhhRJ/GNn1yNQI
- 2S5joS+3XeKU5FHUrwBWnxA3uLKpIe77l+y4pw0MQM8cT0AVW66redypr g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10259"; a="237958558"
-X-IronPort-AV: E=Sophos;i="5.88,373,1635231600"; d="scan'208";a="237958558"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Feb 2022 00:38:48 -0800
-X-IronPort-AV: E=Sophos;i="5.88,373,1635231600"; d="scan'208";a="544804369"
-Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.99.249.215])
- ([10.99.249.215])
- by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Feb 2022 00:38:46 -0800
-Message-ID: <68cbcd13-00dc-a3e3-244a-773c4fd4707d@linux.intel.com>
-Date: Wed, 16 Feb 2022 09:38:44 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.0
-Subject: Re: [PATCH] ALSA: hda/hdmi: add keep-alive support for ADL-P and DG2
-Content-Language: en-US
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>, alsa-devel@alsa-project.org, 
- tiwai@suse.de
-References: <20220215140118.3856001-1-kai.vehmanen@linux.intel.com>
-From: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="DA64aaoI"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="S7e/QkZa"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 5D04721114;
+ Wed, 16 Feb 2022 09:13:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1645002829; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=3/NEK//zg75eNeBvXkRZ3PhUuJBrpqnFL6rTu+rlaRE=;
+ b=DA64aaoI4jXTkmu8KFlh3S6bDgZ5mwns8OnwVyvuNz9fA5SV0ucD0Z5TAH5EjxMn89Xj2Z
+ 6pjOGit//szf52kBG+xwfKNV9uxe8HUE/pyJgBHc/hjphYA6ffPZSPJqgCXKhs35atkRPs
+ 1d+/9q3zE4zZT7G/poCYPGmsC6WtIfk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1645002829;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=3/NEK//zg75eNeBvXkRZ3PhUuJBrpqnFL6rTu+rlaRE=;
+ b=S7e/QkZah3PucbuhI01eZLps1lWzM9WRaE5V+R3dkpkmBwKhNYWtB2OrHktfeHV4hYXLzy
+ /11qkwcLSjWESGCw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 4CE33A3B87;
+ Wed, 16 Feb 2022 09:13:49 +0000 (UTC)
+Date: Wed, 16 Feb 2022 10:13:49 +0100
+Message-ID: <s5ha6erb2cy.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Amadeusz SX2awiX4ski
  <amadeuszx.slawinski@linux.intel.com>
-In-Reply-To: <20220215140118.3856001-1-kai.vehmanen@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Jyri Sarha <jyri.sarha@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ALSA: hda/hdmi: add keep-alive support for ADL-P and DG2
+In-Reply-To: <68cbcd13-00dc-a3e3-244a-773c4fd4707d@linux.intel.com>
+ <20220215140118.3856001-1-kai.vehmanen@linux.intel.com>
+References: <20220215140118.3856001-1-kai.vehmanen@linux.intel.com>
+ <68cbcd13-00dc-a3e3-244a-773c4fd4707d@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Jyri Sarha <jyri.sarha@intel.com>, alsa-devel@alsa-project.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,28 +92,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 2/15/2022 3:01 PM, Kai Vehmanen wrote:
+On Wed, 16 Feb 2022 09:38:44 +0100,
+Amadeusz SX2awiX4ski wrote:
+> 
+> On 2/15/2022 3:01 PM, Kai Vehmanen wrote:
+> 
+> >   static void silent_stream_disable(struct hda_codec *codec,
+> > @@ -1726,7 +1786,16 @@ static void silent_stream_disable(struct hda_codec *codec,
+> >   {
+> >   	struct hdmi_spec *spec = codec->spec;
+> >   	struct hdmi_spec_per_cvt *per_cvt;
+> > -	int cvt_idx;
+> > +	int cvt_idx, err;
+> > +
+> > +	err = snd_hda_power_up_pm(codec);
+> > +	if (err < 0 && err != -EACCES) {
+> > +		codec_err(codec,
+> > +			  "Failed to power up codec for silent stream disable ret=[%d]\n",
+> > +			  err);
+> > +		snd_hda_power_down_pm(codec);
+> 
+> If power up failed, do you need to power down?
 
->   static void silent_stream_disable(struct hda_codec *codec,
-> @@ -1726,7 +1786,16 @@ static void silent_stream_disable(struct hda_codec *codec,
->   {
->   	struct hdmi_spec *spec = codec->spec;
->   	struct hdmi_spec_per_cvt *per_cvt;
-> -	int cvt_idx;
-> +	int cvt_idx, err;
+Yes, it's essentially pm_runtime_get(), and you need to put down also
+at an error path.
+
+But, what I don't follow in the patch is about the part:
+
+>  static void silent_stream_enable(struct hda_codec *codec,
+>  				 struct hdmi_spec_per_pin *per_pin)
+>  {
+(snip)
+>   unlock_out:
+>  	mutex_unlock(&per_pin->lock);
 > +
-> +	err = snd_hda_power_up_pm(codec);
-> +	if (err < 0 && err != -EACCES) {
-> +		codec_err(codec,
-> +			  "Failed to power up codec for silent stream disable ret=[%d]\n",
-> +			  err);
+> +	if (err || !keep_power)
 > +		snd_hda_power_down_pm(codec);
 
-If power up failed, do you need to power down?
+So this may leave the power up.  But where is the corresponding part
+that turns it down?  The newly added snd_hda_power_up_pm() in
+silent_stream_disable() is paired with the one at the tail of that
+function, so it looks like a refcount unbalance.  Kai?
 
-> +		return;
-> +	}
->   
->   	mutex_lock(&per_pin->lock);
->   	if (!per_pin->silent_stream)
 
+thanks,
+
+Takashi
