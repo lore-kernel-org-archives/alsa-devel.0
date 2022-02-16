@@ -4,54 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68AB8C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Feb 2022 17:15:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29DABC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Feb 2022 17:15:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B6B831900;
-	Wed, 16 Feb 2022 18:14:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B6B831900
+	by alsa0.perex.cz (Postfix) with ESMTPS id B1ADA1910;
+	Wed, 16 Feb 2022 18:14:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B1ADA1910
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645031713;
-	bh=QqVvmlcoQFLSTQq2Lp6JlLwQZJHdBakGOKH9noge4Yg=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=LJV6dmLcQ042X3SxXWmA0gXH0RGEYWkrVgOHU5Hpyc0i8W/SSI0JfKyk8kNF3ZaZk
-	 b2GZcSUxWnhzS1f01TB7LicJ4yieHJ7c9aALc+8UA6xYAIoxlOjE+TVEEDpw8zBmP/
-	 T+N716tS0WMfdCc73fuJJOBmLN1WMNtGjh97d/7o=
+	s=default; t=1645031749;
+	bh=3/ZtY9vZpPq0kfIn2aZotpgx6r0R6suIH/KKSGTmJbo=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=kLt34z8eV/qmJr0qHlYh7OJs1q+WPaEt1d4OK2YHK2gF6AHp+ym2znORfG6mgmmE+
+	 FmquK4kcQW2W8uHlWz7x3yleL82Rz7iHlh8VDos7Dyoym5BCOGzRHxL0B03tw893Un
+	 AouM8mpioujA6hxRYswS2/mCE7B3f5E/iBFwLemE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3CD9AF8012E;
-	Wed, 16 Feb 2022 18:14:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 584B1F80134;
+	Wed, 16 Feb 2022 18:14:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F3679F8012E; Wed, 16 Feb 2022 18:14:19 +0100 (CET)
+ id 863A9F80256; Wed, 16 Feb 2022 18:14:23 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 34B29F800D8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5BABAF8011C
  for <alsa-devel@alsa-project.org>; Wed, 16 Feb 2022 18:14:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34B29F800D8
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5BABAF8011C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="pJi4VBgK"
+ header.b="C4FEsU/S"
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 21G6UxbD014900;
+ by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 21G6UxbE014900;
  Wed, 16 Feb 2022 11:14:15 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=jjPTk4ZNM3VL9GWOU4evMkLIxhVFu38hF4Z1QTq/6ak=;
- b=pJi4VBgKHeAI5hEQhnq+3j/gKTQqDCb30Kk1LVLe3Wkv+ivuWWh5b31pkI5Vac9jYxvN
- /yw1worN2Iau4LuN6Do8iSRb0jh+IGh3SBRS2e2qXo6PbK/dNvHN1xuM1RA2eX6iWxcv
- mw5nXxHZGFPjK7l/bpc4yQnDTuXXQfHWjY97IcnIEAvtxX7mfkXS60j9yDAgUWEL80mm
- iSuJusqDBUL1SOBG3i6qnkbt6pgTBUg7peRkfBjskrhrgDCzrnUdrei09BcUfbdNe1i5
- SN8Q374IRVUQ4ZB/SXDQ5Yjr/seGUpOcGOhktByAMSmxNPdym0IT0iEex3SJQ1Ffady2 Gw== 
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=Uh8AyLBAG4qIzsXNtiDc4oAV8d43DRpyK27/SmkxrXI=;
+ b=C4FEsU/SbZiEN/V7aec/JvBlpjAIru3LwG4yVGURFOzXtQJAnRpCohYRsW9GJhG8CHW3
+ kb59zC86EV44kf97PCU+0/6+CaR3WZu4l5lBl77JoYHEMEA5sSkFj3xzBdMGe4jsWRIB
+ 0gpPauDbWX69viYFia6ifoAi7auQCrxwxRm8Ztz68bTYDTAWmEAibiwsm/qy4rYaEx0f
+ 2QnXF4ytHDV/DA6kzqTlamotXaGZMBfrGEVxMncbBAWbV1A1ol1PK52X5zUn+vNnuL72
+ lKJt3bmmO6FLvNQPlAh1b2RRUJs3joKn0QeAHf4DFnk7elvA4MuybZBhp7PkxSxuHzaD Nw== 
 Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3e8nyd93rr-1
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3e8nyd93rr-2
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Wed, 16 Feb 2022 11:14:14 -0600
+ Wed, 16 Feb 2022 11:14:15 -0600
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Wed, 16 Feb
@@ -61,20 +62,23 @@ Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  Frontend Transport; Wed, 16 Feb 2022 17:14:13 +0000
 Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com
  [198.61.64.199])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2E81F459;
- Wed, 16 Feb 2022 17:14:12 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2B1E811DC;
+ Wed, 16 Feb 2022 17:14:13 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>, <robh+dt@kernel.org>,
  <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 0/2] ASoC: audio_graph_card2: Support variable slot widths
-Date: Wed, 16 Feb 2022 17:14:06 +0000
-Message-ID: <20220216171408.265605-1-rf@opensource.cirrus.com>
+Subject: [PATCH 1/2] ASoC: dt-bindings: audio-graph-port: Add
+ dai-tdm-slot-width-map
+Date: Wed, 16 Feb 2022 17:14:07 +0000
+Message-ID: <20220216171408.265605-2-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220216171408.265605-1-rf@opensource.cirrus.com>
+References: <20220216171408.265605-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: 8FYjxAhC1QBZfSXiwNknMgw_G92jTlow
-X-Proofpoint-ORIG-GUID: 8FYjxAhC1QBZfSXiwNknMgw_G92jTlow
+X-Proofpoint-GUID: ipEvqLdick702ohdfgV-Ews6s1a_3PFl
+X-Proofpoint-ORIG-GUID: ipEvqLdick702ohdfgV-Ews6s1a_3PFl
 X-Proofpoint-Spam-Reason: safe
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
  Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org,
@@ -94,36 +98,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This adds support for I2S/TDM links where the slot width varies
-depending on the sample width, in a way that cannot be guessed by
-component hw_params().
-
-A typical example is:
-
-- 16-bit samples use 16-bit slots
-- 24-bit samples use 32-bit slots
-
-There is no way for a component hw_params() to deduce from the information
-it is passed that 24-bit samples will be in 32-bit slots.
-
 Some audio hardware cannot support a fixed slot width or a slot width
 equal to the sample width in all cases. This is usually due either to
 limitations of the audio serial port or system clocking restrictions.
 
-These two patches add support for defining a mapping between sample widths
-and sample slots. This allows audio_graph_card2 to be used in these
-situations instead of having to write a custom machine driver.
+This property allows setting a mapping of sample widths and the
+corresponding tdm slot widths.
 
-Richard Fitzgerald (2):
-  ASoC: dt-bindings: audio-graph-port: Add dai-tdm-slot-width-map
-  ASoC: audio_graph_card2: Add support for variable slot widths
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+---
+ .../devicetree/bindings/sound/audio-graph-port.yaml        | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
- .../bindings/sound/audio-graph-port.yaml      |  7 ++
- include/sound/simple_card_utils.h             | 11 +++
- sound/soc/generic/audio-graph-card2.c         |  4 +
- sound/soc/generic/simple-card-utils.c         | 95 +++++++++++++++++++
- 4 files changed, 117 insertions(+)
-
+diff --git a/Documentation/devicetree/bindings/sound/audio-graph-port.yaml b/Documentation/devicetree/bindings/sound/audio-graph-port.yaml
+index 476dcb49ece6..420adad49382 100644
+--- a/Documentation/devicetree/bindings/sound/audio-graph-port.yaml
++++ b/Documentation/devicetree/bindings/sound/audio-graph-port.yaml
+@@ -71,4 +71,11 @@ patternProperties:
+         description: CPU to Codec rate channels.
+         $ref: /schemas/types.yaml#/definitions/uint32
+ 
++      dai-tdm-slot-width-map:
++        description: Mapping of sample widths to slot widths. For hardware that
++          cannot support a fixed slot width or a slot width equal to sample
++          width. An array containing one or more pairs of values. Each pair
++          of values is a sample_width and the corresponding slot_width.
++        $ref: /schemas/types.yaml#/definitions/uint32-array
++
+ additionalProperties: true
 -- 
 2.30.2
 
