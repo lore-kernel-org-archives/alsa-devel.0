@@ -4,76 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A21EC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Feb 2022 09:31:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C61F3C433FE
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Feb 2022 09:43:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8D8E61A75;
-	Wed, 16 Feb 2022 10:31:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D8E61A75
+	by alsa0.perex.cz (Postfix) with ESMTPS id 102A919E7;
+	Wed, 16 Feb 2022 10:43:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 102A919E7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645003914;
-	bh=TxinBC92AZGSa5J2VGyGRFzAC61NklN35XU93e0zdDE=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1645004631;
+	bh=y3XEUtb2qgjUP+dSjekDciUFNu6S2R0IjBNnHNfD92w=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kPpCkm+cjuZBraxSaS00eeGzE58LpTDx6EBkyoxYMYVq8DlM9/N6MpAzP/1oRAGeW
-	 /DHdoYlRBTmwXuFyNuFs5Qd/InjXh4FBjZjTddJ80snjH5BaZWocasgiGipXCCk9hV
-	 y1l7CmrFnCSqNku/etLkMz5tNM6faytVSDvHajmY=
+	b=VhJTWm4HkKB+SfkGxdBIyOMWuW5x68VsPaWaB+TMjZKXsCCb3+8cUQ3370jQtqoH8
+	 lFNiu37g265ZzDcS7PTW6YFu8xmHZMyrTAqejMKb+vixtrkqyKrFapoVUBs/txEufp
+	 piLaPaYMVSK1okzJIjWm3HNqboFWKfAkUG/Stuac=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0E56AF805A9;
-	Wed, 16 Feb 2022 10:25:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 998DDF800D8;
+	Wed, 16 Feb 2022 10:43:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7D568F80118; Wed, 16 Feb 2022 08:33:59 +0100 (CET)
-Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 1BA08F80128; Wed, 16 Feb 2022 10:42:59 +0100 (CET)
+Received: from alexa-out.qualcomm.com (alexa-out.qualcomm.com [129.46.98.28])
+ (using TLSv1.2 with cipher AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 647B2F80118
- for <alsa-devel@alsa-project.org>; Wed, 16 Feb 2022 08:33:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 647B2F80118
+ by alsa1.perex.cz (Postfix) with ESMTPS id BD8B6F800D8
+ for <alsa-devel@alsa-project.org>; Wed, 16 Feb 2022 10:42:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BD8B6F800D8
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kapsi.fi header.i=@kapsi.fi
- header.b="eL7Hr/lk"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
- s=20161220; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
- References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
- Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
- Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
- List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=YLqbvNAQ5McurwQxgQURUxYEK/101B81ffBYTWQOubQ=; b=eL7Hr/lkBZAvTbiBImym7WqBQv
- fFtLWY1zFgcvz0Y28ZdTef3hq5UPUDbyOdU9owOcUlMeUyuZ3oyA98+tA7VtWzh/V83PJpmahWg5r
- mvo8+O4dcwNzaE4UT8NttIU5Q9B24c2fgT7vTH888Bt6ebP3Ss7Na0xbwHiYPj0X9IyrjurNjA5eB
- ZWjzedHDsBYGuHo0wwQOWbdJJooJ46j4RrmUOFAYciKhQ5IxMuRrv2wAplC9c/d+YFiFj0HwvJvHq
- KNdq7ecLO91xqhxo3t7F2RmN2eLeyUJ6R9jJqyAbe7jDYAW+nOrk0ELj+fWkrABrJye0Ksa6W80gd
- A3UB8CtA==;
-Received: from 91-158-25-70.elisa-laajakaista.fi ([91.158.25.70]
- helo=[192.168.1.10])
- by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
- (Exim 4.89) (envelope-from <cyndis@kapsi.fi>)
- id 1nKEop-0001Qm-2c; Wed, 16 Feb 2022 09:33:43 +0200
-Message-ID: <f0eb82eb-dec6-0870-3896-0973758caebb@kapsi.fi>
-Date: Wed, 16 Feb 2022 09:33:42 +0200
+ dkim=pass (1024-bit key) header.d=quicinc.com header.i=@quicinc.com
+ header.b="lqfNOmhK"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+ t=1645004577; x=1676540577;
+ h=subject:to:cc:references:from:message-id:date:
+ mime-version:in-reply-to:content-transfer-encoding;
+ bh=ap7c6HArf6ubMaukcUPvaryjk1fDA0cMjE5uign7Jhs=;
+ b=lqfNOmhKCGNb7RSk07D1i+ZZCsjduNonQssjqBJF659gaOBvJGMvU1vS
+ Yn59efeV5zOmRSz64kDKazhbNBF3lCtNRjpIKPL3bvtcFUHmJonoxCb2C
+ 1nEg+SmBm+384IR+tm7FlXxB7CUx9GSiyFl6zfR2GEiZNo07DMYbFq7gR Q=;
+Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
+ by alexa-out.qualcomm.com with ESMTP; 16 Feb 2022 01:42:52 -0800
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+ by ironmsg07-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 16 Feb 2022 01:42:52 -0800
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.15; Wed, 16 Feb 2022 01:42:51 -0800
+Received: from [10.216.55.237] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Wed, 16 Feb
+ 2022 01:42:45 -0800
+Subject: Re: [RESEND v13 08/10] ASoC: qcom: Add lpass CPU driver for codec dma
+ control
+To: Stephen Boyd <swboyd@chromium.org>, <agross@kernel.org>,
+ <alsa-devel@alsa-project.org>, <bgoswami@codeaurora.org>,
+ <bjorn.andersson@linaro.org>, <broonie@kernel.org>,
+ <devicetree@vger.kernel.org>, <judyhsiao@chromium.org>,
+ <lgirdwood@gmail.com>, <linux-arm-msm@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <perex@perex.cz>, <quic_plai@quicinc.com>,
+ <robh+dt@kernel.org>, <rohitkr@codeaurora.org>,
+ <srinivas.kandagatla@linaro.org>, <tiwai@suse.com>
+References: <1644850708-11099-1-git-send-email-quic_srivasam@quicinc.com>
+ <1644850708-11099-9-git-send-email-quic_srivasam@quicinc.com>
+ <CAE-0n52jD_BvQm4CeTkiR723-3uKC9G4fFeynFbs5Ukg_S762g@mail.gmail.com>
+From: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+Organization: Qualcomm
+Message-ID: <d70291a6-7e3f-0406-2826-3a30f2d5650b@quicinc.com>
+Date: Wed, 16 Feb 2022 15:12:42 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.1
-Subject: Re: [PATCH v2 4/6] dt-bindings: Add HDA support for Tegra234
-Content-Language: en-US
-To: Mohan Kumar <mkumard@nvidia.com>, broonie@kernel.org,
- lgirdwood@gmail.com, robh+dt@kernel.org, thierry.reding@gmail.com,
- tiwai@suse.com, jonathanh@nvidia.com, spujar@nvidia.com
-References: <20220210065057.13555-1-mkumard@nvidia.com>
- <20220210065057.13555-5-mkumard@nvidia.com>
-From: Mikko Perttunen <cyndis@kapsi.fi>
-In-Reply-To: <20220210065057.13555-5-mkumard@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <CAE-0n52jD_BvQm4CeTkiR723-3uKC9G4fFeynFbs5Ukg_S762g@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 91.158.25.70
-X-SA-Exim-Mail-From: cyndis@kapsi.fi
-X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
-X-Mailman-Approved-At: Wed, 16 Feb 2022 10:25:43 +0100
-Cc: linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Language: en-US
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+Cc: Venkata Prasad Potturu <quic_potturu@quicinc.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,89 +101,345 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 2/10/22 08:50, Mohan Kumar wrote:
-> Add hda clocks, memory ,power and reset binding entries
-> for Tegra234.
-> 
-> Signed-off-by: Mohan Kumar <mkumard@nvidia.com>
-> ---
->   include/dt-bindings/clock/tegra234-clock.h     | 4 ++++
->   include/dt-bindings/memory/tegra234-mc.h       | 6 ++++++
->   include/dt-bindings/power/tegra234-powergate.h | 9 +++++++++
->   include/dt-bindings/reset/tegra234-reset.h     | 2 ++
->   4 files changed, 21 insertions(+)
->   create mode 100644 include/dt-bindings/power/tegra234-powergate.h
-> 
-> diff --git a/include/dt-bindings/clock/tegra234-clock.h b/include/dt-bindings/clock/tegra234-clock.h
-> index 8d7e66e1b6ef..c014269b7245 100644
-> --- a/include/dt-bindings/clock/tegra234-clock.h
-> +++ b/include/dt-bindings/clock/tegra234-clock.h
-> @@ -30,5 +30,9 @@
->   #define TEGRA234_CLK_PLLC4			237U
->   /** @brief 32K input clock provided by PMIC */
->   #define TEGRA234_CLK_CLK_32K			289U
-> +/** @brief CLK_RST_CONTROLLER_AZA2XBITCLK_OUT_SWITCH_DIVIDER switch divider output (aza_2xbitclk) */
-> +#define TEGRA234_CLK_AZA_2XBIT			457U
-> +/** @brief aza_2xbitclk / 2 (aza_bitclk) */
-> +#define TEGRA234_CLK_AZA_BIT			458U
->   
->   #endif
-> diff --git a/include/dt-bindings/memory/tegra234-mc.h b/include/dt-bindings/memory/tegra234-mc.h
-> index 2662f70c15c6..f538fc442cee 100644
-> --- a/include/dt-bindings/memory/tegra234-mc.h
-> +++ b/include/dt-bindings/memory/tegra234-mc.h
-> @@ -7,6 +7,8 @@
->   #define TEGRA234_SID_INVALID		0x00
->   #define TEGRA234_SID_PASSTHROUGH	0x7f
->   
-> +/* NISO0 SMMU STREAM IDs */
-> +#define TEGRA234_SID_NISO0_HDA		0x03
 
-Please follow the existing convention in this file.
-
-/* NISO0 stream IDs */
-#define TEGRA234_SID_HDA	0x03
-
->   
->   /* NISO1 stream IDs */
->   #define TEGRA234_SID_SDMMC4	0x02
-> @@ -16,6 +18,10 @@
->    * memory client IDs
->    */
->   
-> +/* High-definition audio (HDA) read clients */
-> +#define TEGRA234_MEMORY_CLIENT_HDAR 0x15
-> +/* High-definition audio (HDA) write clients */
-> +#define TEGRA234_MEMORY_CLIENT_HDAW 0x35
->   /* sdmmcd memory read client */
->   #define TEGRA234_MEMORY_CLIENT_SDMMCRAB 0x63
->   /* sdmmcd memory write client */
-> diff --git a/include/dt-bindings/power/tegra234-powergate.h b/include/dt-bindings/power/tegra234-powergate.h
-> new file mode 100644
-> index 000000000000..3c5575a51296
-> --- /dev/null
-> +++ b/include/dt-bindings/power/tegra234-powergate.h
-> @@ -0,0 +1,9 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/* Copyright (c) 2022, NVIDIA CORPORATION. All rights reserved. */
-> +
-> +#ifndef __ABI_MACH_T234_POWERGATE_T234_H_
-> +#define __ABI_MACH_T234_POWERGATE_T234_H_
-> +
-> +#define TEGRA234_POWER_DOMAIN_DISP	3U
-> +
-> +#endif
-> diff --git a/include/dt-bindings/reset/tegra234-reset.h b/include/dt-bindings/reset/tegra234-reset.h
-> index 50e13bced642..2ab61c69a3d9 100644
-> --- a/include/dt-bindings/reset/tegra234-reset.h
-> +++ b/include/dt-bindings/reset/tegra234-reset.h
-> @@ -10,6 +10,8 @@
->    * @brief Identifiers for Resets controllable by firmware
->    * @{
->    */
-> +#define TEGRA234_RESET_HDA			20U
-> +#define TEGRA234_RESET_HDACODEC			21U
->   #define TEGRA234_RESET_SDMMC4			85U
->   #define TEGRA234_RESET_UARTA			100U
->   
-
+On 2/15/2022 7:03 AM, Stephen Boyd wrote:
+Thanks for your time Stephen!!!
+> Quoting Srinivasa Rao Mandadapu (2022-02-14 06:58:26)
+>> diff --git a/sound/soc/qcom/lpass-cdc-dma.c b/sound/soc/qcom/lpass-cdc-dma.c
+>> new file mode 100644
+>> index 0000000..4a50baa
+>> --- /dev/null
+>> +++ b/sound/soc/qcom/lpass-cdc-dma.c
+>> @@ -0,0 +1,304 @@
+>> +// SPDX-License-Identifier: GPL-2.0-only
+>> +/*
+>> + * Copyright (c) 2021 The Linux Foundation. All rights reserved.
+>> + *
+>> + * lpass-cdc-dma.c -- ALSA SoC CDC DMA CPU DAI driver for QTi LPASS
+>> + */
+>> +
+>> +#include <linux/clk.h>
+>> +#include <linux/module.h>
+> export.h for EXPORT_SYMBOL usage.
+>
+>> +#include <sound/soc.h>
+>> +#include <sound/soc-dai.h>
+>> +
+>> +#include "lpass-lpaif-reg.h"
+>> +#include "lpass.h"
+>> +
+>> +#define CODEC_MEM_FREQ_NORMAL 153600000
+> Is this in Hz? CODEC_MEM_HZ_NORMAL?
+Okay. Will change accordingly.
+>
+>> +
+>> +enum codec_dma_interfaces {
+>> +       LPASS_CDC_DMA_INTERFACE1 = 1,
+>> +       LPASS_CDC_DMA_INTERFACE2,
+>> +       LPASS_CDC_DMA_INTERFACE3,
+>> +       LPASS_CDC_DMA_INTERFACE4,
+>> +       LPASS_CDC_DMA_INTERFACE5,
+>> +       LPASS_CDC_DMA_INTERFACE6,
+>> +       LPASS_CDC_DMA_INTERFACE7,
+>> +       LPASS_CDC_DMA_INTERFACE8,
+>> +       LPASS_CDC_DMA_INTERFACE9,
+>> +       LPASS_CDC_DMA_INTERFACE10,
+>> +};
+>> +
+>> +static void __lpass_get_dmactl_handle(struct snd_pcm_substream *substream, struct snd_soc_dai *dai,
+>> +                                     struct lpaif_dmactl **dmactl, int *id)
+>> +{
+>> +       struct snd_soc_pcm_runtime *soc_runtime = asoc_substream_to_rtd(substream);
+>> +       struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(soc_runtime, 0);
+>> +       struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
+>> +       struct snd_pcm_runtime *rt = substream->runtime;
+>> +       struct lpass_pcm_data *pcm_data = rt->private_data;
+>> +       struct lpass_variant *v = drvdata->variant;
+>> +       unsigned int dai_id = cpu_dai->driver->id;
+>> +
+>> +       switch (dai_id) {
+>> +       case LPASS_CDC_DMA_RX0 ... LPASS_CDC_DMA_RX9:
+>> +               *dmactl = drvdata->rxtx_rd_dmactl;
+>> +               *id = pcm_data->dma_ch;
+>> +               break;
+>> +       case LPASS_CDC_DMA_TX0 ... LPASS_CDC_DMA_TX8:
+>> +               *dmactl = drvdata->rxtx_wr_dmactl;
+>> +               *id = pcm_data->dma_ch - v->rxtx_wrdma_channel_start;
+>> +               break;
+>> +       case LPASS_CDC_DMA_VA_TX0 ... LPASS_CDC_DMA_VA_TX8:
+>> +               *dmactl = drvdata->va_wr_dmactl;
+>> +               *id = pcm_data->dma_ch - v->va_wrdma_channel_start;
+>> +               break;
+>> +       default:
+>> +               dev_err(soc_runtime->dev, "invalid dai id for dma ctl: %d\n", dai_id);
+>> +               break;
+>> +       }
+>> +}
+>> +
+>> +static int __lpass_get_codec_dma_intf_type(int dai_id)
+>> +{
+>> +       int ret;
+>> +
+>> +       switch (dai_id) {
+>> +       case LPASS_CDC_DMA_RX0:
+>> +       case LPASS_CDC_DMA_TX0:
+>> +       case LPASS_CDC_DMA_VA_TX0:
+>> +               ret = LPASS_CDC_DMA_INTERFACE1;
+>> +               break;
+>> +       case LPASS_CDC_DMA_RX1:
+>> +       case LPASS_CDC_DMA_TX1:
+>> +       case LPASS_CDC_DMA_VA_TX1:
+>> +               ret = LPASS_CDC_DMA_INTERFACE2;
+>> +               break;
+>> +       case LPASS_CDC_DMA_RX2:
+>> +       case LPASS_CDC_DMA_TX2:
+>> +       case LPASS_CDC_DMA_VA_TX2:
+>> +               ret = LPASS_CDC_DMA_INTERFACE3;
+>> +               break;
+>> +       case LPASS_CDC_DMA_RX3:
+>> +       case LPASS_CDC_DMA_TX3:
+>> +       case LPASS_CDC_DMA_VA_TX3:
+>> +               ret = LPASS_CDC_DMA_INTERFACE4;
+>> +               break;
+>> +       case LPASS_CDC_DMA_RX4:
+>> +       case LPASS_CDC_DMA_TX4:
+>> +       case LPASS_CDC_DMA_VA_TX4:
+>> +               ret = LPASS_CDC_DMA_INTERFACE5;
+>> +               break;
+>> +       case LPASS_CDC_DMA_RX5:
+>> +       case LPASS_CDC_DMA_TX5:
+>> +       case LPASS_CDC_DMA_VA_TX5:
+>> +               ret = LPASS_CDC_DMA_INTERFACE6;
+>> +               break;
+>> +       case LPASS_CDC_DMA_RX6:
+>> +       case LPASS_CDC_DMA_TX6:
+>> +       case LPASS_CDC_DMA_VA_TX6:
+>> +               ret = LPASS_CDC_DMA_INTERFACE7;
+>> +               break;
+>> +       case LPASS_CDC_DMA_RX7:
+>> +       case LPASS_CDC_DMA_TX7:
+>> +       case LPASS_CDC_DMA_VA_TX7:
+>> +               ret = LPASS_CDC_DMA_INTERFACE8;
+>> +               break;
+>> +       case LPASS_CDC_DMA_RX8:
+>> +       case LPASS_CDC_DMA_TX8:
+>> +       case LPASS_CDC_DMA_VA_TX8:
+>> +               ret = LPASS_CDC_DMA_INTERFACE9;
+>> +               break;
+>> +       case LPASS_CDC_DMA_RX9:
+>> +               ret  = LPASS_CDC_DMA_INTERFACE10;
+>> +               break;
+>> +       default:
+>> +               ret = -EINVAL;
+>> +               break;
+>> +       }
+>> +       return ret;
+>> +}
+>> +
+>> +static int __lpass_platform_codec_intf_init(struct snd_soc_dai *dai,
+>> +                                           struct snd_pcm_substream *substream)
+>> +{
+>> +       struct snd_soc_pcm_runtime *soc_runtime = asoc_substream_to_rtd(substream);
+>> +       struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(soc_runtime, 0);
+>> +       struct lpaif_dmactl *dmactl = NULL;
+>> +       struct device *dev = soc_runtime->dev;
+>> +       int ret, id, codec_intf;
+>> +       unsigned int dai_id = cpu_dai->driver->id;
+>> +
+>> +       codec_intf = __lpass_get_codec_dma_intf_type(dai_id);
+>> +       if (codec_intf < 0) {
+>> +               dev_err(dev, "failed to get codec_intf: %d\n", codec_intf);
+>> +               return codec_intf;
+>> +       }
+>> +
+>> +       __lpass_get_dmactl_handle(substream, dai, &dmactl, &id);
+>> +       if (!dmactl) {
+>> +               dev_err(dev, "failed to get dmactl handle for dai_id: %d\n", dai_id);
+>> +               return -EINVAL;
+>> +       }
+>> +
+>> +       ret = regmap_fields_write(dmactl->codec_intf, id, codec_intf);
+>> +       if (ret) {
+>> +               dev_err(dev, "error writing to dmactl codec_intf reg field: %d\n", ret);
+>> +               return ret;
+>> +       }
+>> +       ret = regmap_fields_write(dmactl->codec_fs_sel, id, 0x0);
+>> +       if (ret) {
+>> +               dev_err(dev, "error writing to dmactl codec_fs_sel reg field: %d\n", ret);
+>> +               return ret;
+>> +       }
+>> +       ret = regmap_fields_write(dmactl->codec_fs_delay, id, 0x0);
+>> +       if (ret) {
+>> +               dev_err(dev, "error writing to dmactl codec_fs_delay reg field: %d\n", ret);
+>> +               return ret;
+>> +       }
+>> +       ret = regmap_fields_write(dmactl->codec_pack, id, 0x1);
+>> +       if (ret) {
+>> +               dev_err(dev, "error writing to dmactl codec_pack reg field: %d\n", ret);
+>> +               return ret;
+>> +       }
+>> +       ret = regmap_fields_write(dmactl->codec_enable, id, LPAIF_DMACTL_ENABLE_ON);
+>> +       if (ret) {
+>> +               dev_err(dev, "error writing to dmactl codec_enable reg field: %d\n", ret);
+>> +               return ret;
+>> +       }
+>> +       return 0;
+>> +}
+>> +
+>> +static int lpass_cdc_dma_daiops_startup(struct snd_pcm_substream *substream,
+>> +                                   struct snd_soc_dai *dai)
+>> +{
+>> +       struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
+>> +       struct snd_soc_pcm_runtime *soc_runtime = asoc_substream_to_rtd(substream);
+>> +
+>> +       switch (dai->id) {
+>> +       case LPASS_CDC_DMA_RX0 ... LPASS_CDC_DMA_RX9:
+>> +       case LPASS_CDC_DMA_TX0 ... LPASS_CDC_DMA_TX8:
+>> +               clk_set_rate(drvdata->cdc_clks[2].clk, CODEC_MEM_FREQ_NORMAL);
+>> +               clk_prepare_enable(drvdata->cdc_clks[2].clk);
+> Where do '2' and '5' come from? Why are they part of the bulk clk array?
+> Why not get them separately and give them real named pointer values?
+Okay. will change to real named pointers.
+>
+>> +               break;
+>> +       case LPASS_CDC_DMA_VA_TX0 ... LPASS_CDC_DMA_VA_TX0:
+>> +               clk_set_rate(drvdata->cdc_clks[5].clk, CODEC_MEM_FREQ_NORMAL);
+>> +               clk_prepare_enable(drvdata->cdc_clks[5].clk);
+>> +               break;
+>> +       default:
+>> +               dev_err(soc_runtime->dev, "%s: invalid  interface: %d\n", __func__, dai->id);
+>> +               break;
+>> +       }
+>> +       return 0;
+>> +}
+>> +
+>> +static void lpass_cdc_dma_daiops_shutdown(struct snd_pcm_substream *substream,
+>> +                                     struct snd_soc_dai *dai)
+>> +{
+>> +       struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
+>> +       struct snd_soc_pcm_runtime *soc_runtime = asoc_substream_to_rtd(substream);
+>> +
+>> +       switch (dai->id) {
+>> +       case LPASS_CDC_DMA_RX0 ... LPASS_CDC_DMA_RX9:
+>> +       case LPASS_CDC_DMA_TX0 ... LPASS_CDC_DMA_TX8:
+>> +               clk_disable_unprepare(drvdata->cdc_clks[2].clk);
+>> +               break;
+>> +       case LPASS_CDC_DMA_VA_TX0 ... LPASS_CDC_DMA_VA_TX0:
+>> +               clk_disable_unprepare(drvdata->cdc_clks[5].clk);
+>> +               break;
+>> +       default:
+>> +               dev_err(soc_runtime->dev, "%s: invalid  interface: %d\n", __func__, dai->id);
+>> +               break;
+>> +       }
+>> +}
+>> +
+>> +static int lpass_cdc_dma_daiops_hw_params(struct snd_pcm_substream *substream,
+>> +                                     struct snd_pcm_hw_params *params,
+>> +                                     struct snd_soc_dai *dai)
+>> +{
+>> +       struct snd_soc_pcm_runtime *soc_runtime = asoc_substream_to_rtd(substream);
+>> +       struct lpaif_dmactl *dmactl = NULL;
+>> +       unsigned int ret, regval;
+>> +       unsigned int channels = params_channels(params);
+>> +       int id;
+>> +
+>> +       switch (channels) {
+>> +       case 1:
+>> +               regval = LPASS_CDC_DMA_INTF_ONE_CHANNEL;
+>> +               break;
+>> +       case 2:
+>> +               regval = LPASS_CDC_DMA_INTF_TWO_CHANNEL;
+>> +               break;
+>> +       case 4:
+>> +               regval = LPASS_CDC_DMA_INTF_FOUR_CHANNEL;
+>> +               break;
+>> +       case 6:
+>> +               regval = LPASS_CDC_DMA_INTF_SIX_CHANNEL;
+>> +               break;
+>> +       case 8:
+>> +               regval = LPASS_CDC_DMA_INTF_EIGHT_CHANNEL;
+>> +               break;
+>> +       default:
+>> +               dev_err(soc_runtime->dev, "invalid PCM config\n");
+>> +               return -EINVAL;
+>> +       }
+>> +
+>> +       __lpass_get_dmactl_handle(substream, dai, &dmactl, &id);
+>> +       if (!dmactl) {
+>> +               dev_err(soc_runtime->dev, "failed to get dmactl handle\n");
+>> +               return -EINVAL;
+>> +       }
+>> +       ret = regmap_fields_write(dmactl->codec_channel, id, regval);
+>> +       if (ret) {
+>> +               dev_err(soc_runtime->dev,
+>> +                       "error writing to dmactl codec_channel reg field: %d\n", ret);
+>> +               return ret;
+>> +       }
+>> +       return 0;
+>> +}
+>> +
+>> +static int lpass_cdc_dma_daiops_trigger(struct snd_pcm_substream *substream,
+>> +                                   int cmd, struct snd_soc_dai *dai)
+>> +{
+>> +       struct snd_soc_pcm_runtime *soc_runtime = asoc_substream_to_rtd(substream);
+>> +       struct lpaif_dmactl *dmactl;
+>> +       int ret = 0, id;
+>> +
+>> +       switch (cmd) {
+>> +       case SNDRV_PCM_TRIGGER_START:
+>> +       case SNDRV_PCM_TRIGGER_RESUME:
+>> +       case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+>> +               __lpass_platform_codec_intf_init(dai, substream);
+>> +               break;
+>> +       case SNDRV_PCM_TRIGGER_STOP:
+>> +       case SNDRV_PCM_TRIGGER_SUSPEND:
+>> +       case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+>> +               __lpass_get_dmactl_handle(substream, dai, &dmactl, &id);
+>> +               if (!dmactl) {
+>> +                       dev_err(soc_runtime->dev, "failed to get dmactl handle\n");
+> This same message is in many places. I really hope it never gets printed
+> because finding out which line it got printed at is going to be
+> impossible.
+Okay. Will add function name in each print.
+>
+>> +                       return -EINVAL;
+>> +               }
+>> +               ret = regmap_fields_write(dmactl->codec_enable, id, LPAIF_DMACTL_ENABLE_OFF);
+>> +               if (ret) {
+>> +                       dev_err(soc_runtime->dev,
+>> +                               "error writing to dmactl codec_enable reg: %d\n", ret);
+>> +                       return ret;
+>> +               }
+>> +               break;
+>> +       default:
+>> +               ret = -EINVAL;
+>> +               dev_err(soc_runtime->dev, "%s: invalid %d interface\n", __func__, cmd);
+>> +               break;
+>> +       }
+>> +       return ret;
+>> +}
+>> +
+>> +const struct snd_soc_dai_ops asoc_qcom_lpass_cdc_dma_dai_ops = {
+>> +       .startup        = lpass_cdc_dma_daiops_startup,
+>> +       .shutdown       = lpass_cdc_dma_daiops_shutdown,
+>> +       .hw_params      = lpass_cdc_dma_daiops_hw_params,
+>> +       .trigger        = lpass_cdc_dma_daiops_trigger,
+>> +};
+>> +EXPORT_SYMBOL_GPL(asoc_qcom_lpass_cdc_dma_dai_ops);
+>> +
+>> +MODULE_DESCRIPTION("QTi LPASS CDC DMA Driver");
+>> +MODULE_LICENSE("GPL");
+>> diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
+>> index e059c4a..d279a72 100644
+>> --- a/sound/soc/qcom/lpass.h
+>> +++ b/sound/soc/qcom/lpass.h
+>> @@ -410,5 +410,6 @@ int asoc_qcom_lpass_cpu_dai_probe(struct snd_soc_dai *dai);
+>>   extern const struct snd_soc_dai_ops asoc_qcom_lpass_cpu_dai_ops;
+>>   int lpass_cpu_pcm_new(struct snd_soc_pcm_runtime *rtd,
+>>                                  struct snd_soc_dai *dai);
+>> +extern const struct snd_soc_dai_ops asoc_qcom_lpass_cdc_dma_dai_ops;
+>>
+>>   #endif /* __LPASS_H__ */
+>> --
+>> 2.7.4
+>>
