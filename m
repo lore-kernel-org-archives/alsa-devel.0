@@ -4,73 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5512C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Feb 2022 16:38:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4D4DC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Feb 2022 16:47:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 94B701736;
-	Thu, 17 Feb 2022 17:37:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94B701736
+	by alsa0.perex.cz (Postfix) with ESMTPS id 621AC18E7;
+	Thu, 17 Feb 2022 17:47:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 621AC18E7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645115895;
-	bh=Uh7SxgDiyle9Pt/1uKaz13Cdta+fG3LaUxSIrP3UDS4=;
+	s=default; t=1645116470;
+	bh=YUNeMwnffWU/vzA+11lFMuMWe0+JjFTHVyeqME5xzxw=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=aZ09hpt4jur4oyZ5cWmPmbkZW4nCqscm7Ke7Vr5oSMSec0u0QoU1/CpK2falIsODq
-	 V9JUAKimgULLOzBjPyCx9+U5wvzUr1P2HJRywRrhLVg5SNvzf0tRbxKK2tpsFjz4K8
-	 lwhXZOqh3uFOU+TewAm+FWgeNBXmOmJYnseRMaa0=
+	b=MzXoUc0lQbsY1iByEAsZ0qkmlJyvAMNZlECHaLWjJh0m4Xl2P1tvo+naUxTCMYUfQ
+	 pkvcYtJPkvwWvrcgY8Vg6qCCbNqNAZ8NgGwdZ7e0wgyDkyLppQ3iHmK8ORDYVLhh9U
+	 NFaH4zt11qM25mPLIDg7gCOfOElPZmDdTKWrCji0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 246FBF8023B;
-	Thu, 17 Feb 2022 17:37:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F1E4AF800C0;
+	Thu, 17 Feb 2022 17:46:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6544DF80240; Thu, 17 Feb 2022 17:37:23 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id B11EEF80128; Wed, 16 Feb 2022 23:42:33 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EC99DF800C0;
- Thu, 17 Feb 2022 17:37:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC99DF800C0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 65982F8011B
+ for <alsa-devel@alsa-project.org>; Wed, 16 Feb 2022 23:42:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 65982F8011B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="oEfugztL"
+ header.b="RvhRgyEj"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id E330CB82372;
- Thu, 17 Feb 2022 16:37:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 790FAC340E8;
- Thu, 17 Feb 2022 16:37:16 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 01E7BB81ED6;
+ Wed, 16 Feb 2022 19:38:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28A69C004E1;
+ Wed, 16 Feb 2022 19:38:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1645115837;
- bh=Uh7SxgDiyle9Pt/1uKaz13Cdta+fG3LaUxSIrP3UDS4=;
+ s=k20201202; t=1645040312;
+ bh=YUNeMwnffWU/vzA+11lFMuMWe0+JjFTHVyeqME5xzxw=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=oEfugztLGZ7KhKwtqEn9223T5MTF3xJxhO3dM2rtP9knaPDX97ekj22/Z1Ab70pBN
- 4YNpm1mvWitXZ54ygxOgXm4QD0J1YXv3SX5zTMAws+LvFC99vaz3nRr3GjzFrsAqSZ
- /RpkNgGF8xxDs1g4J1ziT97ggzP23ySrpk5wwnGzl2eutVtCIZIDVyqvwyvfd6EuML
- TxPJ3n2XK3XEwexOe24bDRnFFV9jvNSNLPW8QiMAQiVG9KlwkTWiAsItK8E4chdWRH
- tzV+xyCwVuO1ULuUZkMv2495aU5ht22ip6UyTRrMOKgsp3VuD1nKzReRfrAqum4E9y
- pgosy2BeSWmeg==
-Date: Thu, 17 Feb 2022 10:44:58 -0600
+ b=RvhRgyEjawXUAql0FqCTCcTpqR6GYBvsqNC9EZPqI5ZukTe3YMkyAiJ+1YKBf+Rlr
+ sxewfhO7AtNd8GwQy/RQGGJ/AXgX1LgrWMnZTpDKZCiIl4MoI0X8P3b4yUkf4X3JeP
+ l7bOM+By1/829q8HEUDp0joAEckiMlN1bSJeEtmm9DT0v1cg0aKN9haMO+KRTEXTKx
+ BIawC1huC6S2hOqZ/gswPro0qF/Bzg0858Vu6QjTMbuvQTz7D1gR8uQt+HV6mEdhmv
+ BV4TgmRvjAQDxRzfAaigAGsmsMmR8Yj0ESiy1ZrH3LP0qLNGtaqg4OazRGKQ9Qu6L7
+ d13KOv1rLre5w==
+Date: Wed, 16 Feb 2022 13:46:09 -0600
 From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To: Stephen Kitt <steve@sk2.org>
-Subject: Re: [PATCH] ASoC: SOF: Replace zero-length array with flexible-array
- member
-Message-ID: <20220217164458.GA932472@embeddedor>
-References: <20220217132755.1786130-1-steve@sk2.org>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH][next] treewide: Replace zero-length arrays with
+ flexible-array members
+Message-ID: <20220216194609.GA903947@embeddedor>
+References: <20220215174743.GA878920@embeddedor>
+ <202202151016.C0471D6E@keescook>
+ <20220215192110.GA883653@embeddedor> <Ygv8wY75hNqS7zO6@unreal>
+ <20220215193221.GA884407@embeddedor>
+ <CAJZ5v0jpAnQk+Hub6ue6t712RW+W0YBjb_gAcZZbUeuYMGv7mg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220217132755.1786130-1-steve@sk2.org>
-Cc: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- linux-hardening@vger.kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Daniel Baluta <daniel.baluta@nxp.com>, sound-open-firmware@alsa-project.org
+In-Reply-To: <CAJZ5v0jpAnQk+Hub6ue6t712RW+W0YBjb_gAcZZbUeuYMGv7mg@mail.gmail.com>
+X-Mailman-Approved-At: Thu, 17 Feb 2022 17:46:58 +0100
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
+ <alsa-devel@alsa-project.org>, linux-ia64@vger.kernel.org,
+ Linux-sh list <linux-sh@vger.kernel.org>,
+ nouveau <nouveau@lists.freedesktop.org>,
+ dri-devel <dri-devel@lists.freedesktop.org>,
+ Linux Memory Management List <linux-mm@kvack.org>,
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>, target-devel@vger.kernel.org,
+ linux-hardening@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-i3c@lists.infradead.org, linux-arch <linux-arch@vger.kernel.org>,
+ linux-s390@vger.kernel.org, Leon Romanovsky <leon@kernel.org>,
+ "open list:BLUETOOTH DRIVERS" <linux-bluetooth@vger.kernel.org>,
+ linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
+ ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+ bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+ Ext4 Developers List <linux-ext4@vger.kernel.org>,
+ intel-gfx <intel-gfx@lists.freedesktop.org>, linux-xtensa@linux-xtensa.org,
+ Kees Cook <keescook@chromium.org>, mpi3mr-linuxdrv.pdl@broadcom.com,
+ coresight@lists.linaro.org, sparmaintainer@unisys.com,
+ linux-um@lists.infradead.org, greybus-dev@lists.linaro.org,
+ linux-rpi-kernel@lists.infradead.org,
+ Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ "open list:ACPI COMPONENT ARCHITECTURE \(ACPICA\)" <devel@acpica.org>,
+ linux-cifs@vger.kernel.org,
+ "open list:TARGET SUBSYSTEM" <linux-scsi@vger.kernel.org>,
+ netdev <netdev@vger.kernel.org>, samba-technical@lists.samba.org,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-perf-users@vger.kernel.org, GR-QLogic-Storage-Upstream@marvell.com,
+ Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+ linux-alpha@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,63 +114,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Feb 17, 2022 at 02:27:55PM +0100, Stephen Kitt wrote:
-> There is a regular need in the kernel to provide a way to declare having
-> a dynamically sized set of trailing elements in a structure. Kernel code
-> should always use "flexible array members"[1] for these cases. The older
-> style of one-element or zero-length arrays should no longer be used[2].
+On Wed, Feb 16, 2022 at 08:05:47PM +0100, Rafael J. Wysocki wrote:
+> On Tue, Feb 15, 2022 at 8:24 PM Gustavo A. R. Silva
+> <gustavoars@kernel.org> wrote:
 > 
-> This helps with the ongoing efforts to globally enable -Warray-bounds
-> and get us closer to being able to tighten the FORTIFY_SOURCE routines
-> on memcpy().
+> Can you also send the ACPI patch separately, please?
 > 
-> [1] https://en.wikipedia.org/wiki/Flexible_array_member
-> [2] https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays
-> 
-> Link: https://github.com/KSPP/linux/issues/78
-> Link: https://github.com/KSPP/linux/issues/180
-> Suggested-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> Signed-off-by: Stephen Kitt <steve@sk2.org>
+> We would like to route it through the upstream ACPICA code base.
 
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Yeah; no problem.
 
-Thanks!
+Thanks
 --
 Gustavo
-
-> ---
->  include/sound/sof/topology.h | 2 +-
->  sound/soc/sof/topology.c     | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/sound/sof/topology.h b/include/sound/sof/topology.h
-> index d12736e14b69..adee6afd1490 100644
-> --- a/include/sound/sof/topology.h
-> +++ b/include/sound/sof/topology.h
-> @@ -237,7 +237,7 @@ struct sof_ipc_comp_process {
->  	/* reserved for future use */
->  	uint32_t reserved[7];
->  
-> -	uint8_t data[0];
-> +	uint8_t data[];
->  } __packed;
->  
->  /* frees components, buffers and pipelines
-> diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-> index e72dcae5e7ee..1d119d1dd69d 100644
-> --- a/sound/soc/sof/topology.c
-> +++ b/sound/soc/sof/topology.c
-> @@ -2164,7 +2164,7 @@ static int sof_process_load(struct snd_soc_component *scomp, int index,
->  	 */
->  	if (ipc_data_size) {
->  		for (i = 0; i < widget->num_kcontrols; i++) {
-> -			memcpy(&process->data + offset,
-> +			memcpy(&process->data[offset],
->  			       wdata[i].pdata->data,
->  			       wdata[i].pdata->size);
->  			offset += wdata[i].pdata->size;
-> 
-> base-commit: f71077a4d84bbe8c7b91b7db7c4ef815755ac5e3
-> -- 
-> 2.27.0
-> 
