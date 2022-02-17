@@ -4,88 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC1FDC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Feb 2022 19:42:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F2ACC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Feb 2022 19:49:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 342D01811;
-	Thu, 17 Feb 2022 20:41:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 342D01811
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6FF211811;
+	Thu, 17 Feb 2022 20:48:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6FF211811
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645126932;
-	bh=W4Sqnd57BvaG9V8xqJZ6rNUlDewjsV5a/YNHGjITzyY=;
-	h=In-Reply-To:References:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1645127349;
+	bh=aaxSkQVousgo9mD1lX3qPH2hJ2uGtvOppUNnRDzJDOM=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tH4gY8xsy9C74prdQVEAfj0NMfl0Q8IQ8z3o9QACzcyvR5QjuKjottWdGpjGUfdIn
-	 tpF06fVOOf1/KA+T+lgFlUekdE5HuJ2nhgV5e2q92HlHduMl98KrT9zsBS8CdZn5gs
-	 +B5d95zo0yN6q0Y7/4lBZiSO/pDs/JJtTtIglvYo=
+	b=gXtvpqGstObfV5qBc8cmZvdHJbj9FpTm0ruyiAzPp0LCexDJFUceYm6aqQ/ZJ1U8r
+	 L9TknnKg/b1RQinLqwdV4ZiH3wJ23UOZLzVIl7V2tqniqze+yvcQBzX3eL6NGVN86y
+	 lcsx2R4QxViiORbMwDf1mBZE3/vbQy/A+MfV0A2Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AF33FF80118;
-	Thu, 17 Feb 2022 20:41:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EB1EFF8023B;
+	Thu, 17 Feb 2022 20:48:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E0AFDF80240; Thu, 17 Feb 2022 20:41:19 +0100 (CET)
-Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com
- [IPv6:2607:f8b0:4864:20::c2b])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 3829AF80118; Thu, 17 Feb 2022 20:48:18 +0100 (CET)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D2F54F800C0
- for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2022 20:41:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D2F54F800C0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 113ECF80118
+ for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2022 20:48:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 113ECF80118
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="JYLlipsv"
-Received: by mail-oo1-xc2b.google.com with SMTP id
- r41-20020a4a966c000000b0031bf85a4124so900483ooi.0
- for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2022 11:41:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=mime-version:in-reply-to:references:from:user-agent:date:message-id
- :subject:to:cc;
- bh=3wvP+CouT5s7ckbu1I32aqEIyb+Q3SaOSxhlymVyShY=;
- b=JYLlipsvhfV7sqXYVa9saWxp8b9zR4ENVos6xsFloI664t0SttD4jiRU6dK7Qx9iEt
- S61i1/8tNV3jUM9VR3ZG7wp64r5V9E5vQnsZaBANQYM82bvxAaQ8ox9L1jtOsfI5rKNU
- GTeaDejUOd6Xe6Z2bxX5z5J05qs9XflVLniFE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:in-reply-to:references:from
- :user-agent:date:message-id:subject:to:cc;
- bh=3wvP+CouT5s7ckbu1I32aqEIyb+Q3SaOSxhlymVyShY=;
- b=fZh6rSLivAk3cV3hP3TkHdSqX+ZCeUvkGM7j8g2KgIaG8IO//hwCsWfP0FM7h29EjM
- YaHLJPSM4qTDgvNjQHL/FDJpyjNflyc5OwtdMANq0aI2pjtEXuIsw2Y9I8PJB5dNejZk
- h9sLpXbXs1eo1Ipryh+PIwUvJeuhcdlTl9OJOLejuynv1JvpXU5Ht52mrVBDfs1+GBMk
- RV+H0N9jtDrRZL6vMfzJesWb6CUOsOnJPEUi5SdKdwnKv6dkKbmvefv2UrwAaHw/bxNE
- AxceBKVtZpTDobM6R9ZKIdXtgILX3i/d2ZV5jNMVLPY/rlhGQjACJPppomW6C9kXrQso
- Y7dg==
-X-Gm-Message-State: AOAM531UTTHJHigs6vxB6/A4bu240qOBb8e4x3CdIGOxGnQr0wy0lDTw
- AaW7TIuHxtP54vlXsNVDWQFa1XJHzPsKatJtBWqeeQ==
-X-Google-Smtp-Source: ABdhPJzxaar8ksZKNkxlbNXjnGcgtRXh0N8gzo3lIPEiGAozeBu5nup8a4c7u8qz9MRLb9V5pCHw9rvSl1uX+9jgK+s=
-X-Received: by 2002:a4a:d58b:0:b0:319:8746:ac3e with SMTP id
- z11-20020a4ad58b000000b003198746ac3emr1291325oos.1.1645126868547; Thu, 17 Feb
- 2022 11:41:08 -0800 (PST)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 17 Feb 2022 11:41:08 -0800
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="Wb8M3QP1"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1645127293; x=1676663293;
+ h=date:from:to:cc:subject:message-id:references:
+ mime-version:in-reply-to;
+ bh=aaxSkQVousgo9mD1lX3qPH2hJ2uGtvOppUNnRDzJDOM=;
+ b=Wb8M3QP1TRa//l3YsH19GLnxKL14ldWAZuPdzGkdnS2SdaNSMC2bn/uZ
+ LjIq1yLgnVucigLHYY9fJn8I6ao+zRpAUu7eBM3X6/SP991f6tPzvcvIP
+ W2WMyR+MNxRSA9IQpudJpzMo+OfKM6msY7dAGkMFLgq3xR+d0khtSjswG
+ A1l9Kqkdu4oHUK/wJYyJeRzlApR7uQUbhTgHXpc7OvrJNgf2kmvNLZqz9
+ XPFJomxbR+Sk17sVWqkZiglwos/TSXc2kCeCyp8ML8h13ueHqrru3cgbv
+ nyLBNqVefGl8URp1DZvFPcDI1DPZhPGMGDQ/Fvk7MiPe8FelhlXg7uYcw A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10261"; a="311703315"
+X-IronPort-AV: E=Sophos;i="5.88,376,1635231600"; d="scan'208";a="311703315"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 17 Feb 2022 11:48:06 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,376,1635231600"; d="scan'208";a="503216448"
+Received: from lkp-server01.sh.intel.com (HELO 6f05bf9e3301) ([10.239.97.150])
+ by orsmga006.jf.intel.com with ESMTP; 17 Feb 2022 11:48:01 -0800
+Received: from kbuild by 6f05bf9e3301 with local (Exim 4.92)
+ (envelope-from <lkp@intel.com>)
+ id 1nKmkz-0000XK-9r; Thu, 17 Feb 2022 19:48:01 +0000
+Date: Fri, 18 Feb 2022 03:47:15 +0800
+From: kernel test robot <lkp@intel.com>
+To: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>, agross@kernel.org,
+ bjorn.andersson@linaro.org, lgirdwood@gmail.com, broonie@kernel.org,
+ robh+dt@kernel.org, quic_plai@quicinc.com, bgoswami@codeaurora.org,
+ perex@perex.cz, tiwai@suse.com, srinivas.kandagatla@linaro.org,
+ rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
+ alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, swboyd@chromium.org, judyhsiao@chromium.org
+Subject: Re: [PATCH] ASoC: codecs: Add power domains support in digital macro
+ codecs
+Message-ID: <202202180220.7Z94ouak-lkp@intel.com>
+References: <1645108786-25990-1-git-send-email-quic_srivasam@quicinc.com>
 MIME-Version: 1.0
-In-Reply-To: <13007276-c827-0cc4-5db1-396c5184bb35@quicinc.com>
-References: <1644850708-11099-1-git-send-email-quic_srivasam@quicinc.com>
- <1644850708-11099-5-git-send-email-quic_srivasam@quicinc.com>
- <CAE-0n504R0avU9Ybj68jxqDRH-Ya5ro0hPo5GJ=2zC6p2SZ_=g@mail.gmail.com>
- <13007276-c827-0cc4-5db1-396c5184bb35@quicinc.com>
-From: Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.10
-Date: Thu, 17 Feb 2022 11:41:08 -0800
-Message-ID: <CAE-0n538Lhp7U=pEB_7R5EARG6LveeO=jvF+kE7HCCEXUEm-kQ@mail.gmail.com>
-Subject: Re: [RESEND v13 04/10] ASoC: qcom: Add helper function to get dma
- control and lpaif handle
-To: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>, agross@kernel.org, 
- alsa-devel@alsa-project.org, bgoswami@codeaurora.org, 
- bjorn.andersson@linaro.org, broonie@kernel.org, devicetree@vger.kernel.org, 
- judyhsiao@chromium.org, lgirdwood@gmail.com, linux-arm-msm@vger.kernel.org, 
- linux-kernel@vger.kernel.org, perex@perex.cz, quic_plai@quicinc.com, 
- robh+dt@kernel.org, rohitkr@codeaurora.org, srinivas.kandagatla@linaro.org, 
- tiwai@suse.com
-Content-Type: text/plain; charset="UTF-8"
-Cc: Venkata Prasad Potturu <quic_potturu@quicinc.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1645108786-25990-1-git-send-email-quic_srivasam@quicinc.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: Venkata Prasad Potturu <quic_potturu@quicinc.com>, kbuild-all@lists.01.org,
+ Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,77 +94,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Quoting Srinivasa Rao Mandadapu (2022-02-15 21:11:29)
->
-> On 2/15/2022 6:40 AM, Stephen Boyd wrote:
-> Thanks for your time Stephen!!!
-> > Quoting Srinivasa Rao Mandadapu (2022-02-14 06:58:22)
-> >> Add support function to get dma control and lpaif handle to avoid
-> >> repeated code in platform driver
-> >>
-> >> Signed-off-by: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
-> >> Co-developed-by: Venkata Prasad Potturu <quic_potturu@quicinc.com>
-> >> Signed-off-by: Venkata Prasad Potturu <quic_potturu@quicinc.com>
-> >> Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> >> ---
-> >>   sound/soc/qcom/lpass-platform.c | 113 +++++++++++++++++++++++-----------------
-> >>   1 file changed, 66 insertions(+), 47 deletions(-)
-> >>
-> >> diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
-> >> index a44162c..5d77240 100644
-> >> --- a/sound/soc/qcom/lpass-platform.c
-> >> +++ b/sound/soc/qcom/lpass-platform.c
-> >> @@ -177,6 +177,49 @@ static int lpass_platform_pcmops_close(struct snd_soc_component *component,
-> >>          return 0;
-> >>   }
-> >>
-> >> +static void __lpass_get_lpaif_handle(struct snd_pcm_substream *substream,
-> > const?
-> Okay. will add const to substream pointer.
-> >
-> >> +                                    struct snd_soc_component *component,
-> > const?
-> Here const is giving compilation errors in below code.
+Hi Srinivasa,
 
-Ok
+Thank you for the patch! Yet something to improve:
 
-> >
-> >> +                       l_id = pcm_data->dma_ch;
-> >> +                       l_dmactl = drvdata->rd_dmactl;
-> >> +               } else {
-> >> +                       l_dmactl = drvdata->wr_dmactl;
-> >> +                       l_id = pcm_data->dma_ch - v->wrdma_channel_start;
-> >> +               }
-> >> +               l_map = drvdata->lpaif_map;
-> >> +               break;
-> >> +       case LPASS_DP_RX:
-> >> +               l_id = pcm_data->dma_ch;
-> >> +               l_dmactl = drvdata->hdmi_rd_dmactl;
-> >> +               l_map = drvdata->hdmiif_map;
-> >> +               break;
-> >> +       default:
-> >> +               break;
-> >> +       }
-> >> +       if (dmactl)
-> >> +               *dmactl = l_dmactl;
-> >> +       if (id)
-> >> +               *id = l_id;
-> >> +       if (map)
-> >> +               *map = l_map;
-> > Why not 'return 0' here and return -EINVAL in the default case above? Then
-> > we can skip the checks for !map or !dmactl below and simply bail out if
-> > it failed with an error value.
->
-> Here the check is for input params. some users call for only damctl or
-> only map.
+[auto build test ERROR on broonie-sound/for-next]
+[also build test ERROR on next-20220217]
+[cannot apply to v5.17-rc4]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
-Yes the check is to make sure there's a pointer to store the value into.
-I get that. The users are all internal to this driver though because
-the function is static. If the function returned an error because it
-couldn't find something then we wouldn't have to test the resulting
-pointers for success, instead we could check for a return value.
-Similarly, it may be clearer to have a single get for each item and then
-return a pointer from the function vs. passing it in to extract
-something. It may duplicate some code but otherwise the code would be
-clearer because we're getting one thing and can pass an error value
-through the pointer with PTR_ERR().
+url:    https://github.com/0day-ci/linux/commits/Srinivasa-Rao-Mandadapu/ASoC-codecs-Add-power-domains-support-in-digital-macro-codecs/20220217-224032
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+config: csky-buildonly-randconfig-r001-20220217 (https://download.01.org/0day-ci/archive/20220218/202202180220.7Z94ouak-lkp@intel.com/config)
+compiler: csky-linux-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/0day-ci/linux/commit/a1e8b5e6a2baa8ce5b2373bfbdfce5a771132448
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review Srinivasa-Rao-Mandadapu/ASoC-codecs-Add-power-domains-support-in-digital-macro-codecs/20220217-224032
+        git checkout a1e8b5e6a2baa8ce5b2373bfbdfce5a771132448
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=csky SHELL=/bin/bash
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>, old ones prefixed by <<):
+
+>> ERROR: modpost: "lpass_macro_pds_exit" [sound/soc/codecs/snd-soc-lpass-rx-macro.ko] undefined!
+>> ERROR: modpost: "lpass_macro_pds_init" [sound/soc/codecs/snd-soc-lpass-rx-macro.ko] undefined!
+>> ERROR: modpost: "lpass_macro_pds_exit" [sound/soc/codecs/snd-soc-lpass-va-macro.ko] undefined!
+>> ERROR: modpost: "lpass_macro_pds_init" [sound/soc/codecs/snd-soc-lpass-va-macro.ko] undefined!
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
