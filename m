@@ -4,56 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0B46C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Feb 2022 13:54:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF078C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Feb 2022 14:01:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2EA411AD6;
-	Thu, 17 Feb 2022 14:53:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2EA411AD6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 64DFC1AB3;
+	Thu, 17 Feb 2022 15:00:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64DFC1AB3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645106048;
-	bh=74EOCaejs0HnBkIIQOPo4SvBnsGOmtiURdVAU6p9RJs=;
+	s=default; t=1645106479;
+	bh=wubUiqClI40QXc6MVVcu+O4s9yGDSJSJkDxMGa0mCM4=;
 	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IyXXDcbEKpl/r/2u4DhtlcfVh9h2RUqAvj5QZhpvVXWEoQaPrfgELEfksR6sVbKU7
-	 io3gupb5so6V2A2YlnP+SZnXT/4gu29ssunOvdLZgY2lpME6xW9V6ccq8+FrBKB7KL
-	 occgtVCXwH8sod5PFw0EFjq7tdZfJfeK/P0tOqsU=
+	b=WAgq00TT47mJi7Ma4s/85wiqRYj3yOnwcW+i8mptHwfyZrq7Lb/imAEV0EI4eAxn9
+	 jhybnJVoPCj+n5Yn/7Ib8Skdar1JfGDe/diKBne21mI+HbkkQNpL2WKYlofzEe5gct
+	 2d8KxPVmush5PfWVjQbWXkvSN/WXUlPu9wVI3x64=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C4CCEF8023B;
-	Thu, 17 Feb 2022 14:53:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EAEC8F80240;
+	Thu, 17 Feb 2022 15:00:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D7C08F800CE; Thu, 17 Feb 2022 14:53:16 +0100 (CET)
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+ id A188EF80246; Thu, 17 Feb 2022 15:00:27 +0100 (CET)
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EF83FF800CE
- for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2022 14:53:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF83FF800CE
-X-UUID: 7508a21f15cf42f68e8bd0d4720c2844-20220217
-X-UUID: 7508a21f15cf42f68e8bd0d4720c2844-20220217
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
- (envelope-from <jiaxin.yu@mediatek.com>)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 811D2F800C0
+ for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2022 15:00:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 811D2F800C0
+X-UUID: 334b4836794847bbb0e77f7a0a234c33-20220217
+X-UUID: 334b4836794847bbb0e77f7a0a234c33-20220217
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by
+ mailgw01.mediatek.com (envelope-from <jiaxin.yu@mediatek.com>)
  (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
- with ESMTP id 553058100; Thu, 17 Feb 2022 21:53:04 +0800
+ with ESMTP id 205135712; Thu, 17 Feb 2022 22:00:17 +0800
 Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3; 
- Thu, 17 Feb 2022 21:53:03 +0800
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 17 Feb 2022 22:00:16 +0800
 Received: from mhfsdcap04 (10.17.3.154) by mtkcas11.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 17 Feb 2022 21:53:02 +0800
-Message-ID: <4958e2ad25f4940a0c0bbbf23ea027e7bdaf5ac7.camel@mediatek.com>
-Subject: Re: [PATCH 10/15] ASoC: mediatek: mt8186: add platform driver
+ Transport; Thu, 17 Feb 2022 22:00:15 +0800
+Message-ID: <a912ed83c8d959fc3bb0a08f00b3fd036beee270.camel@mediatek.com>
+Subject: Re: [PATCH 09/15] ASoC: mediatek: mt8186: support tdm in platform
+ driver
 From: Jiaxin Yu <jiaxin.yu@mediatek.com>
 To: Mark Brown <broonie@kernel.org>
-Date: Thu, 17 Feb 2022 21:51:57 +0800
-In-Reply-To: <YgaK4hiRjEJi9wQ4@sirena.org.uk>
+Date: Thu, 17 Feb 2022 21:59:43 +0800
+In-Reply-To: <YgZ/pzrJqvcAuzmE@sirena.org.uk>
 References: <20220211103818.8266-1-jiaxin.yu@mediatek.com>
- <20220211103818.8266-11-jiaxin.yu@mediatek.com>
- <YgaK4hiRjEJi9wQ4@sirena.org.uk>
+ <20220211103818.8266-10-jiaxin.yu@mediatek.com>
+ <YgZ/pzrJqvcAuzmE@sirena.org.uk>
 Content-Type: text/plain; charset="UTF-8"
 X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
@@ -80,30 +80,65 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 2022-02-11 at 16:12 +0000, Mark Brown wrote:
-> On Fri, Feb 11, 2022 at 06:38:13PM +0800, Jiaxin Yu wrote:
+On Fri, 2022-02-11 at 15:24 +0000, Mark Brown wrote:
+> On Fri, Feb 11, 2022 at 06:38:12PM +0800, Jiaxin Yu wrote:
 > 
-> >  sound/soc/mediatek/Kconfig                    |   44 +
-> >  sound/soc/mediatek/Makefile                   |    1 +
-> >  sound/soc/mediatek/mt8186/Makefile            |   21 +
-> >  sound/soc/mediatek/mt8186/mt8186-afe-clk.c    |  719 ++++
-> >  sound/soc/mediatek/mt8186/mt8186-afe-clk.h    |  210 +
-> >  sound/soc/mediatek/mt8186/mt8186-afe-common.h |  245 ++
-> >  .../soc/mediatek/mt8186/mt8186-afe-control.c  |  262 ++
-> >  sound/soc/mediatek/mt8186/mt8186-afe-gpio.c   |  211 +
-> >  sound/soc/mediatek/mt8186/mt8186-afe-gpio.h   |   19 +
-> >  sound/soc/mediatek/mt8186/mt8186-afe-pcm.c    | 3030
-> > +++++++++++++++
-> >  .../mediatek/mt8186/mt8186-interconnection.h  |   69 +
-> >  .../soc/mediatek/mt8186/mt8186-misc-control.c | 1729 +++++++++
-> >  sound/soc/mediatek/mt8186/mt8186-reg.h        | 3433
-> > +++++++++++++++++
+> Again, mostly looks good just fairly small and easily fixable issues:
 > 
-> I know it's already a long series but perhaps the clock and GPIO bits
-> could be split out into separate patches?  This one patch is over
-> 300K
-> which is a bit much in one go, especially when it's not just all big
-> tables.
+> > +static int mtk_tdm_hd_en_event(struct snd_soc_dapm_widget *w,
+> > +			       struct snd_kcontrol *kcontrol,
+> > +			       int event)
+> > +{
+> > +	struct snd_soc_component *cmpnt = snd_soc_dapm_to_component(w-
+> > >dapm);
+> > +
+> > +	dev_info(cmpnt->dev, "%s(), name %s, event 0x%x\n",
+> > +		 __func__, w->name, event);
+> > +
+> > +	return 0;
+> > +}
+> 
+> This does nothing, you can just remove it.
 
-Ok, I see. I've split them out into separate patches in v2 version.
+Yes, this is readlly useless, removed it in the v2 version.
+
+> 
+> > +	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+> > +	case SND_SOC_DAIFMT_NB_NF:
+> > +		tdm_priv->bck_invert = TDM_BCK_NON_INV;
+> > +		tdm_priv->lck_invert = TDM_LCK_NON_INV;
+> > +		break;
+> > +	case SND_SOC_DAIFMT_NB_IF:
+> > +		tdm_priv->bck_invert = TDM_BCK_NON_INV;
+> > +		tdm_priv->lck_invert = TDM_LCK_INV;
+> > +		break;
+> > +	case SND_SOC_DAIFMT_IB_NF:
+> > +		tdm_priv->bck_invert = TDM_BCK_INV;
+> > +		tdm_priv->lck_invert = TDM_LCK_NON_INV;
+> > +		break;
+> > +	case SND_SOC_DAIFMT_IB_IF:
+> > +	default:
+> > +		tdm_priv->bck_invert = TDM_BCK_INV;
+> > +		tdm_priv->lck_invert = TDM_LCK_INV;
+> 
+> You should return an error in the default case rather than just
+> picking
+> one of the behaviours to help spot any configuration errors.
+
+Done in the v2 version.
+
+> 
+> > +	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+> > +	case SND_SOC_DAIFMT_CBM_CFM:
+> > +		tdm_priv->slave_mode = false;
+> > +		break;
+> > +	case SND_SOC_DAIFMT_CBS_CFS:
+> > +		tdm_priv->slave_mode = true;
+> 
+> We're trying to move away from these defines and the master/slave
+> terminology to talk about clock providers instead - the new defines
+> are
+> _PROVIDER_MASK, _DAIFMT_CBP_CFP and _DAIFMT_CBC_CFC.
+
+Done in the v2 version.
 
