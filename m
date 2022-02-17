@@ -4,75 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74729C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Feb 2022 08:48:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4F84C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Feb 2022 08:49:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DCF9418D5;
-	Thu, 17 Feb 2022 09:47:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DCF9418D5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 01D431914;
+	Thu, 17 Feb 2022 09:48:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 01D431914
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645087708;
-	bh=2GfcM76jfabGY38rLoJS2DDZ7LOjcO0zQDd1WRN07iI=;
+	s=default; t=1645087752;
+	bh=1liQVfA52oi2zl6jLv2Ir0GCdZH/tJYIxQorqY65bIc=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iF/KBj3QzdAu2QP6GOhAwBAwysu79KJgJJ+vJ+n/th4ql6HlWElQ24MM4q1Um+sVe
-	 M1Hyt1xOd/WwoBaJNKp+P6wYoBoISZbNC6mp7jtseg7Hb6MhQSUiqzxS2UgMEGkfiV
-	 +zMp+ASYmEWI///XBnCykRnCvNYJfqZu+/hEQDkc=
+	b=lm1Km4zruMTH39CKQwVWp0odc9jT25b6BP/KDku6eTWf7vI9oeVK5FRX/w0zRv14c
+	 Xh662S0WkbKVxxbak/40s20BCjhEJNssf6v31yTNsW317baWoHv2rihw4P2ytYEOSg
+	 xJkmJ3pizPxp9sZoiQvhfzU25XbRpd9BmSKnhV8I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3408CF800CE;
-	Thu, 17 Feb 2022 09:47:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3CEA0F80118;
+	Thu, 17 Feb 2022 09:48:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4BAC2F80240; Thu, 17 Feb 2022 09:47:36 +0100 (CET)
+ id CD03CF804CB; Thu, 17 Feb 2022 09:48:18 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 804E3F80118
- for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2022 09:47:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 804E3F80118
+ by alsa1.perex.cz (Postfix) with ESMTPS id B5501F80118
+ for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2022 09:48:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5501F80118
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="ft7e/HuQ"; 
+ header.b="iMcpaeHw"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="N0SY5u5k"
+ header.b="awqOAw35"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id EC0231FD41;
- Thu, 17 Feb 2022 08:47:29 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 7F07A1F383;
+ Thu, 17 Feb 2022 08:48:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1645087649; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1645087696; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=pdRrkXYY83BONm3qpazW5BVlPYy/N5ENckScVsDeAH8=;
- b=ft7e/HuQayO+Z8ctPMrEag4HKjQOAWjrC10ET+5P047UZgJwmhJ9/BPmrbqTYhDbVyNmuU
- A3OqSlIlTWHMydTIACXvaGpD2wHplF5G8OfFmk6GgOoUqvo6Xp7/+mzo8rE5j2lDkYCGNR
- VZ8HVGQWMKGSZv3pyvsWAjpsZfZ7leU=
+ bh=W6b59MBJ+eIkAVUeW2oZfJVdRXsFeh0x6NFpfRMpt0w=;
+ b=iMcpaeHwJXC/ZwLgjvHO0IgGOrWJtRUdAPWq+5WLBpzbtVekWwA1Xi583vIQibxDOXZEVf
+ Fkt1qjz/m0zeMAnJcLmZAMdNi4N4Q2UvBTafkklD0mal3HfyIOfaGYe78DRK3kAzRZ/ogn
+ TEtR0MtqJThPBhEl5YAkQgDYBfFD7kU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1645087649;
+ s=susede2_ed25519; t=1645087696;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=pdRrkXYY83BONm3qpazW5BVlPYy/N5ENckScVsDeAH8=;
- b=N0SY5u5kTL/fmWif6OIc/1SeAi1Jd8GGuccv8ruomHzsW+h0UIUGNufAhan2N+qzNfa1Ss
- Bu4+1za9v/DcRlBg==
+ bh=W6b59MBJ+eIkAVUeW2oZfJVdRXsFeh0x6NFpfRMpt0w=;
+ b=awqOAw353BoESO2nGh9peWK6FuDjVsbdrm+9vwK5GfjjcssxhPbztDs7Z6oOBdXlKhsmdR
+ 899W1Lh+RNeY7+AA==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 54A8AA3B94;
- Thu, 17 Feb 2022 08:47:25 +0000 (UTC)
-Date: Thu, 17 Feb 2022 09:47:29 +0100
-Message-ID: <s5hczjl98wu.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id CCBA2A3B84;
+ Thu, 17 Feb 2022 08:48:11 +0000 (UTC)
+Date: Thu, 17 Feb 2022 09:48:16 +0100
+Message-ID: <s5ha6ep98vj.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: Re: [PATCH v2] ALSA: hda/hdmi: add keep-alive support for ADL-P and
- DG2
-In-Reply-To: <20220216172405.3994959-1-kai.vehmanen@linux.intel.com>
-References: <20220216172405.3994959-1-kai.vehmanen@linux.intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Subject: Re: [PATCH 0/3] ALSA: Set max DMA segment size
+In-Reply-To: <20220215132756.31236-1-tiwai@suse.de>
+References: <20220215132756.31236-1-tiwai@suse.de>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: Jyri Sarha <jyri.sarha@intel.com>, alsa-devel@alsa-project.org,
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -89,29 +88,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 16 Feb 2022 18:24:05 +0100,
-Kai Vehmanen wrote:
+On Tue, 15 Feb 2022 14:27:53 +0100,
+Takashi Iwai wrote:
 > 
-> Implement HDA keep alive (KAE) support for Intel display codecs. When no
-> audio stream is active, the display codec will provide a continuous clock
-> and a valid but silent audio stream to any connected HDMI/DP receiver.
-> Without this, upon starting a new playback stream, initial samples may be
-> lost as many receivers require time to initialize for new clock.
+> Hi,
 > 
-> This is a new feature in Intel AlderLake-P display codec implementation
-> and replaces the Intel i915 silent-stream extension that has been used
-> on older hardware. Main benefit of the new method is that codec no longer
-> needs to be kept in D0 power state.
+> this is a oneliner patches to address the spurious kernel WARNING from
+> DMA debug code for the missing setup of DMA segment size for SG pages.
 > 
-> This patch depends on commit 112a87c48e83 ("drm/i915/display: program
-> audio CDCLK-TS for keepalives").
 > 
-> Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Reviewed-by: Jyri Sarha <jyri.sarha@intel.com>
+> Takashi
+> 
+> ===
+> 
+> Takashi Iwai (3):
+>   ALSA: hda: Set max DMA segment size
+>   ASoC: SOF: hda: Set max DMA segment size
+>   ASoC: intel: skylake: Set max DMA segment size
 
-Thanks, applied now with a minor coding-style fix the checkpatch
-warned.
+Merged now to for-linus branch.
 
 
 Takashi
