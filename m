@@ -4,72 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90580C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Feb 2022 18:13:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0D4EC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Feb 2022 23:47:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9205817DD;
-	Fri, 18 Feb 2022 19:12:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9205817DD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4239E1744;
+	Sat, 19 Feb 2022 00:46:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4239E1744
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645207984;
-	bh=qJpUQfCMiajF+akcXvNXCP6L2CbGn7TS+KQgaql4Uhw=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1645228044;
+	bh=Nf4QWHJQf6uMYeqUXDUKolXQIDg74FWqWkoKRg8EeRc=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GtdwvlyTmXG7lRxy3Hi9E/AaA8ghOxYRmkIU+wrkZZVDUYxTEj0pPB0Ht8n1TDtgk
-	 VKUnG4GuVZoLGiKB7cofetzZOzCWa5oHG+WaRSIxj6Ai2d/O2jOTY4NOIwT1wfsNdL
-	 VE7+CkecbIE1bPxk5mH+NCPmytDYvuamYIZbxNCM=
+	b=mWc6ephXafqhACKDKpKZAh5vwmqW8VgWRPxZBJ6YbaaphE1lgP774o/Xci3MgAsMt
+	 tyVjg5jBiFeDpK+i0hZkTlFsRUrNFQ/6QsNA8a4I5QNmMPh5DS4+hc1GjTaIRKVSDv
+	 mlcgu07RENckTiNt6NbnEu+mbPMJ+EFj5wZuEgSQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2FBA6F8012B;
-	Fri, 18 Feb 2022 19:12:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CDA8FF800CE;
+	Sat, 19 Feb 2022 00:46:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A2BEAF8013C; Fri, 18 Feb 2022 19:12:12 +0100 (CET)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ id 7A9DFF8013C; Sat, 19 Feb 2022 00:46:32 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3D93CF800CE
+ for <alsa-devel@alsa-project.org>; Sat, 19 Feb 2022 00:46:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3D93CF800CE
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="rz7jPVer"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8EE9CF800FF
- for <alsa-devel@alsa-project.org>; Fri, 18 Feb 2022 19:12:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8EE9CF800FF
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="WjjaQ73k"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1645207929; x=1676743929;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=qJpUQfCMiajF+akcXvNXCP6L2CbGn7TS+KQgaql4Uhw=;
- b=WjjaQ73k4tpYNs+wNAT0CORlBw5A58A4wMGRAXrqNkYJIqKzTMfkLKLe
- Jy7Tg90tc+eb++7NgyLnlNg2r+TkV+ahoFy3EhgRUqp0hGlc/XaeR1gD0
- dIOCuh3Uw8gqU+QwlgLuSYC6EnOhVgcSA0LOxghE5Zb6U4cS7xj3AZpAs
- mGCpXlWBLPxg59AzXgJupC1BLWCCEwhgmqSwz7FkU7bPeUOetr5V7DtTk
- EAmmNT3cFGnIv1EVj1ZDdJQNCuZNviW8aLQtoUBe1RmteXkCo9/0MBPKM
- R9GILCMPcJUQ/ir7bGajfr8Yu1GsSQXAk/zNolNFQC8Fj6y1sa/Ej4VQW A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10262"; a="231165055"
-X-IronPort-AV: E=Sophos;i="5.88,379,1635231600"; d="scan'208";a="231165055"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Feb 2022 10:12:01 -0800
-X-IronPort-AV: E=Sophos;i="5.88,379,1635231600"; d="scan'208";a="504080860"
-Received: from ryanflyn-mobl.amr.corp.intel.com (HELO [10.212.54.106])
- ([10.212.54.106])
- by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Feb 2022 10:11:59 -0800
-Message-ID: <c17173cb-290c-9ecd-54e3-b74f9d4e9061@linux.intel.com>
-Date: Fri, 18 Feb 2022 12:11:59 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.5.0
+ by ams.source.kernel.org (Postfix) with ESMTPS id 1F8E1B8272A;
+ Fri, 18 Feb 2022 23:46:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90654C340E9;
+ Fri, 18 Feb 2022 23:46:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1645227983;
+ bh=Nf4QWHJQf6uMYeqUXDUKolXQIDg74FWqWkoKRg8EeRc=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+ b=rz7jPVerk5V3ozJNYK+1G0lFwI7OHwQibB57qbd/3lYLBpf5zVMpECQ0OkN3v2gzs
+ PhbYL3SES+sxuboenAfJFiNcfjBlU54dVYWi2Wi4wLA4Vjy8KhhGDaZzDW20NnXVM4
+ d0lnj5b+wmWMYOSRWuyvAMBaZMBDELpldDT+I7zmomwHOx/cItN3fzjdKvc/Fu7wz2
+ I7cDcm6tBTlefJ77THO1X4X1m/kmIsOCI2tKBdnEmJVppeWPFsoOJ5Lt750EnKsP3j
+ e+ki2oHlkMdRb5zrwuEc5aX9RxQmK3j9LfcH4/2vn5xANxWlTQg5fTBIgR7AleZrP0
+ PSnZniAT+XGIg==
+Date: Sat, 19 Feb 2022 00:46:18 +0100
+From: Mauro Carvalho Chehab <mchehab@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown
+ <broonie@kernel.org>
 Subject: Re: [PATCH 0/1] sound: add quirk for Huawei D15
-Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>, Mauro Carvalho Chehab <mchehab@kernel.org>
+Message-ID: <20220219004618.07cb69a9@coco.lan>
+In-Reply-To: <c17173cb-290c-9ecd-54e3-b74f9d4e9061@linux.intel.com>
 References: <cover.1640351150.git.mchehab@kernel.org>
  <164519450743.1836505.3912962145996830275.b4-ty@kernel.org>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <164519450743.1836505.3912962145996830275.b4-ty@kernel.org>
-Content-Type: text/plain; charset=UTF-8
+ <c17173cb-290c-9ecd-54e3-b74f9d4e9061@linux.intel.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.31; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Cc: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
  tiwai@suse.de, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
@@ -89,36 +85,64 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Em Fri, 18 Feb 2022 12:11:59 -0600
+Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com> escreveu:
 
-
-On 2/18/22 08:28, Mark Brown wrote:
-> On Fri, 24 Dec 2021 14:09:48 +0100, Mauro Carvalho Chehab wrote:
->> Based on my tests, Huawei D15 (Intel) uses SSP0 on es8336.
->>
->> Add a quirk for it.
->>
->> Please notice that, currently, only the internal speaker is working.
->> The topology for the internal microphone and for the headphones
->> is wrong. Enabling/disabling the other two quirks (GPIO and/or DMIC)
->> doesn't cause any audible results, nor change the devices listed
->> on pavucontrol (tested with pipewire-pulse).
->>
->> [...]
+> On 2/18/22 08:28, Mark Brown wrote:
+> > On Fri, 24 Dec 2021 14:09:48 +0100, Mauro Carvalho Chehab wrote:  
+> >> Based on my tests, Huawei D15 (Intel) uses SSP0 on es8336.
+> >>
+> >> Add a quirk for it.
+> >>
+> >> Please notice that, currently, only the internal speaker is working.
+> >> The topology for the internal microphone and for the headphones
+> >> is wrong. Enabling/disabling the other two quirks (GPIO and/or DMIC)
+> >> doesn't cause any audible results, nor change the devices listed
+> >> on pavucontrol (tested with pipewire-pulse).
+> >>
+> >> [...]  
+> > 
+> > Applied to
+> > 
+> >    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+> > 
+> > Thanks!
+> > 
+> > [1/1] ASoC: Intel: sof_es8336: add quirk for Huawei D15 2021
+> >       commit: ce6a70bfce21bb4edb7c0f29ecfb0522fa34ab71  
 > 
-> Applied to
-> 
->    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-> 
-> Thanks!
-> 
-> [1/1] ASoC: Intel: sof_es8336: add quirk for Huawei D15 2021
->       commit: ce6a70bfce21bb4edb7c0f29ecfb0522fa34ab71
+> I'll probably revert this change in my next update [1], I have a set of
+> changes where we can detect which SSP is used by parsing the NHTL
+> information in platform firmware.
 
-I'll probably revert this change in my next update [1], I have a set of
-changes where we can detect which SSP is used by parsing the NHTL
-information in platform firmware.
+Mark,
 
-I am still trying to figure out how to detect which MCLK is used, and
-once this is done I'll send the patches upstream.
+Yeah, I tested Pierre-Louis pull request from:
 
-[1] https://github.com/thesofproject/linux/pull/3338
+	https://github.com/thesofproject/linux/pull/3338
+
+and indeed this quirk is not needed anymore for the speaker to work.
+
+So, once his new update gets merged upstream, feel free to revert
+this one.
+
+Pierre-Louis,
+
+When you submit your next update from PR#3338, feel free to add:
+
+Tested-by: Mauro Carvalho Chehab <mchehab@kernel.org>
+
+and my Acked-by at the revert patch:
+
+Acked-by: Mauro Carvalho Chehab <mchehab@kernel.org>
+
+> 
+> I am still trying to figure out how to detect which MCLK is used, and
+> once this is done I'll send the patches upstream.
+> 
+> [1] https://github.com/thesofproject/linux/pull/3338
+
+
+
+Thanks,
+Mauro
