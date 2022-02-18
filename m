@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8499BC433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Feb 2022 14:56:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6AA0C4167B
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Feb 2022 14:56:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9733017C8;
-	Fri, 18 Feb 2022 15:55:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9733017C8
+	by alsa0.perex.cz (Postfix) with ESMTPS id D93CD17DC;
+	Fri, 18 Feb 2022 15:55:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D93CD17DC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645196167;
-	bh=vszf1mxLCqbidpRVRQR/8NqjOMQR9G4uyJxNzOwk5/U=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1645196173;
+	bh=aJ3xIH2fN9ae3SbsE2VP6ml3rhW+Z3DMmyq7epfAAqc=;
+	h=Date:From:Subject:To:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nCmY4ESrW02rmJYS3yU0LL7/4ohNBdfsUYZLsA3aq2qJ6Es4+yuuFX+tdxD6CoGfh
-	 f3gporbhivXedJGFEyiByJjMwVCBFvXex7ImDaWwj6CIK4XyhvZAIjqjqKiyNJUa2A
-	 sGIhYtOgAj1covaNYBN3RMDzOxta4sRXvXrQhb50=
+	b=DAX52XdHJB7PGDIWd3HJG+3jxZwaoDhHkjpQrxwSbLBeh3bSGxs0UV95W5aXpQvdy
+	 /KFtfv6dycrfSMXJLR92zc1X6Eq+0y8YZmnRF6AGaVJSpNAhaZSdGqR8pTchgtTtSv
+	 MXhrQWZ5SYrFqv4S5GUSokRw+2wrEg+GyUMmcB5k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D4FF5F80519;
-	Fri, 18 Feb 2022 15:54:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 73E55F8051C;
+	Fri, 18 Feb 2022 15:54:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 51224F80519; Fri, 18 Feb 2022 15:54:29 +0100 (CET)
+ id 8C163F8051D; Fri, 18 Feb 2022 15:54:31 +0100 (CET)
 Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
  bits)) (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F2E84F8012B
- for <alsa-devel@alsa-project.org>; Fri, 18 Feb 2022 15:54:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2E84F8012B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9A1FDF8013C
+ for <alsa-devel@alsa-project.org>; Fri, 18 Feb 2022 15:54:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A1FDF8013C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com
- header.b="MMTU2098"
+ header.b="WErC1atF"
 Received: from [127.0.0.1] (localhost [127.0.0.1])
- (Authenticated sender: kholk11) with ESMTPSA id 6DC611F46B9E
+ (Authenticated sender: kholk11) with ESMTPSA id A26911F46BA2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
- s=mail; t=1645196056;
- bh=vszf1mxLCqbidpRVRQR/8NqjOMQR9G4uyJxNzOwk5/U=;
- h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
- b=MMTU2098qGRMayEFfduZx/jPWm/f+3QmzqTmb5DrZoMDiIWoXwS/pMsPnS9gHjrFK
- OJUyno+tT3OFo4fuinglRWna4mx2B5/0Q2EeukA7rDpB0w9lSthKttTOCDHvQHrQlB
- JcnSZtOpe7l/eWFc4bSFh4yMtJNIqsPSFXqqwh0CBEf7FQ4KL3xbSZ5MjMPtER7a+n
- Cgt2foHA6HnpOlxMcUX0BVTzhf0CjhUGx+vJnb1vvnJjaHo7+65ynVzzZb9Hb5mzjc
- k3+YwpDT9mRrmQRoGeMaH6m0SkjTXyhEOdK7H6QouBZET2w2yPdxGVqgWnwBYU6Pd2
- 8iTl+AqO+rAxg==
-Message-ID: <b8ada898-9374-72be-6c1d-a99706388a2a@collabora.com>
-Date: Fri, 18 Feb 2022 15:54:12 +0100
+ s=mail; t=1645196062;
+ bh=aJ3xIH2fN9ae3SbsE2VP6ml3rhW+Z3DMmyq7epfAAqc=;
+ h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
+ b=WErC1atFCUoRx9/I6wMe2kPsGiJj6UAjtjLC3qrBKFMFKqo5v8jb5sh1yS6p1mIbR
+ E4ThhBytCjU9fAMb9ZGmn6fuALC7GMtdvqXkFV/cKpvhntjFJON8WVVbVapC53dFof
+ fHQ2QFvRHH+4YG+71qSaFiRI81GS3ls7RXCCSIAkTyy12dL3CSQbfmuaTMrW8g0cgk
+ FN2bnL0sctrZ2Tw3hsg07b4ukcAWXgB6xrOOIbe3H8/e6Np9IzHT2DWHCXDqUXHTGo
+ 63dQ9Jp6ZqGxKoqNkCUdd5dT7Y+BeUq72dLV58RhItGoZ6WtZtjYbYGV9RTcXvGUHs
+ BuOcPl9mAQzrg==
+Message-ID: <a624679f-3b87-ff07-8983-982bbd983e94@collabora.com>
+Date: Fri, 18 Feb 2022 15:54:19 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.5.1
-Subject: Re: [v2 04/17] ASoC: mediatek: mt8186: support hostless in platform
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Subject: Re: [v2 05/17] ASoC: mediatek: mt8186: support hw gain in platform
  driver
-Content-Language: en-US
 To: Jiaxin Yu <jiaxin.yu@mediatek.com>, broonie@kernel.org
 References: <20220217134205.15400-1-jiaxin.yu@mediatek.com>
- <20220217134205.15400-5-jiaxin.yu@mediatek.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20220217134205.15400-5-jiaxin.yu@mediatek.com>
+ <20220217134205.15400-6-jiaxin.yu@mediatek.com>
+Content-Language: en-US
+In-Reply-To: <20220217134205.15400-6-jiaxin.yu@mediatek.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
@@ -84,118 +84,172 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Il 17/02/22 14:41, Jiaxin Yu ha scritto:
-> This patch adds mt8186 hostless dai driver.
+> This path adds mt8186 hw gain dai driver.
 > 
 > Signed-off-by: Jiaxin Yu <jiaxin.yu@mediatek.com>
 > ---
->   .../soc/mediatek/mt8186/mt8186-dai-hostless.c | 295 ++++++++++++++++++
->   1 file changed, 295 insertions(+)
->   create mode 100644 sound/soc/mediatek/mt8186/mt8186-dai-hostless.c
+>   .../soc/mediatek/mt8186/mt8186-dai-hw-gain.c  | 245 ++++++++++++++++++
+>   1 file changed, 245 insertions(+)
+>   create mode 100644 sound/soc/mediatek/mt8186/mt8186-dai-hw-gain.c
 > 
-> diff --git a/sound/soc/mediatek/mt8186/mt8186-dai-hostless.c b/sound/soc/mediatek/mt8186/mt8186-dai-hostless.c
+> diff --git a/sound/soc/mediatek/mt8186/mt8186-dai-hw-gain.c b/sound/soc/mediatek/mt8186/mt8186-dai-hw-gain.c
 > new file mode 100644
-> index 000000000000..37460a3acc93
+> index 000000000000..796878989727
 > --- /dev/null
-> +++ b/sound/soc/mediatek/mt8186/mt8186-dai-hostless.c
-> @@ -0,0 +1,295 @@
+> +++ b/sound/soc/mediatek/mt8186/mt8186-dai-hw-gain.c
+> @@ -0,0 +1,245 @@
 > +// SPDX-License-Identifier: GPL-2.0
 > +//
-> +// MediaTek ALSA SoC Audio DAI Hostless Control
+> +// MediaTek ALSA SoC Audio DAI HW Gain Control
 > +//
 > +// Copyright (c) 2022 MediaTek Inc.
 > +// Author: Jiaxin Yu <jiaxin.yu@mediatek.com>
 > +
+> +#include <linux/regmap.h>
 > +#include "mt8186-afe-common.h"
+> +#include "mt8186-interconnection.h"
 > +
-> +static const struct snd_pcm_hardware mt8186_hostless_hardware = {
-> +	.info = (SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_INTERLEAVED |
-> +		 SNDRV_PCM_INFO_MMAP_VALID),
-> +	.period_bytes_min = 256,
-> +	.period_bytes_max = 4 * 48 * 1024,
-> +	.periods_min = 2,
-> +	.periods_max = 256,
-> +	.buffer_bytes_max = 4 * 48 * 1024,
-> +	.fifo_size = 0,
-> +};
+> +#define HW_GAIN_1_EN_W_NAME "HW GAIN 1 Enable"
+> +#define HW_GAIN_2_EN_W_NAME "HW GAIN 2 Enable"
 > +
 > +/* dai component */
-> +static const struct snd_soc_dapm_route mtk_dai_hostless_routes[] = {
-> +	/* Hostless ADDA Loopback */
-> +	{"ADDA_DL_CH1", "ADDA_UL_CH1 Switch", "Hostless LPBK DL"},
-> +	{"ADDA_DL_CH1", "ADDA_UL_CH2 Switch", "Hostless LPBK DL"},
-> +	{"ADDA_DL_CH2", "ADDA_UL_CH1 Switch", "Hostless LPBK DL"},
-> +	{"ADDA_DL_CH2", "ADDA_UL_CH2 Switch", "Hostless LPBK DL"},
-> +	{"I2S1_CH1", "ADDA_UL_CH1 Switch", "Hostless LPBK DL"},
-> +	{"I2S1_CH2", "ADDA_UL_CH2 Switch", "Hostless LPBK DL"},
-> +	{"I2S3_CH1", "ADDA_UL_CH1 Switch", "Hostless LPBK DL"},
-> +	{"I2S3_CH1", "ADDA_UL_CH2 Switch", "Hostless LPBK DL"},
-> +	{"I2S3_CH2", "ADDA_UL_CH1 Switch", "Hostless LPBK DL"},
-> +	{"I2S3_CH2", "ADDA_UL_CH2 Switch", "Hostless LPBK DL"},
-> +	{"Hostless LPBK UL", NULL, "ADDA_UL_Mux"},
+> +static const struct snd_kcontrol_new mtk_hw_gain1_in_ch1_mix[] = {
+> +	SOC_DAPM_SINGLE_AUTODISABLE("CONNSYS_I2S_CH1 Switch", AFE_CONN13_1,
+> +				    I_CONNSYS_I2S_CH1, 1, 0),
+> +};
 > +
-> +	/* Hostelss FM */
-> +	/* connsys_i2s to hw gain 1*/
-> +	{"Hostless FM UL", NULL, "Connsys I2S"},
+> +static const struct snd_kcontrol_new mtk_hw_gain1_in_ch2_mix[] = {
+> +	SOC_DAPM_SINGLE_AUTODISABLE("CONNSYS_I2S_CH2 Switch", AFE_CONN14_1,
+> +				    I_CONNSYS_I2S_CH2, 1, 0),
+> +};
 > +
-> +	{"HW_GAIN1_IN_CH1", "CONNSYS_I2S_CH1 Switch", "Hostless FM DL"},
-> +	{"HW_GAIN1_IN_CH2", "CONNSYS_I2S_CH2 Switch", "Hostless FM DL"},
-> +	/* hw gain to adda dl */
-> +	{"Hostless FM UL", NULL, "HW Gain 1 Out"},
+> +static const struct snd_kcontrol_new mtk_hw_gain2_in_ch1_mix[] = {
+> +	SOC_DAPM_SINGLE_AUTODISABLE("ADDA_UL_CH1 Switch", AFE_CONN15,
+> +				    I_ADDA_UL_CH1, 1, 0),
+> +};
 > +
-> +	{"ADDA_DL_CH1", "GAIN1_OUT_CH1 Switch", "Hostless FM DL"},
-> +	{"ADDA_DL_CH2", "GAIN1_OUT_CH2 Switch", "Hostless FM DL"},
-> +	/* hw gain to i2s3 */
-> +	{"I2S3_CH1", "GAIN1_OUT_CH1 Switch", "Hostless FM DL"},
-> +	{"I2S3_CH2", "GAIN1_OUT_CH2 Switch", "Hostless FM DL"},
-> +	/* hw gain to i2s1 */
-> +	{"I2S1_CH1", "GAIN1_OUT_CH1 Switch", "Hostless FM DL"},
-> +	{"I2S1_CH2", "GAIN1_OUT_CH2 Switch", "Hostless FM DL"},
+> +static const struct snd_kcontrol_new mtk_hw_gain2_in_ch2_mix[] = {
+> +	SOC_DAPM_SINGLE_AUTODISABLE("ADDA_UL_CH2 Switch", AFE_CONN16,
+> +				    I_ADDA_UL_CH2, 1, 0),
+> +};
 > +
-> +	/* Hostless_SRC */
-> +	{"ADDA_DL_CH1", "SRC_1_OUT_CH1 Switch", "Hostless_SRC_1_DL"},
-> +	{"ADDA_DL_CH2", "SRC_1_OUT_CH2 Switch", "Hostless_SRC_1_DL"},
-> +	{"I2S1_CH1", "SRC_1_OUT_CH1 Switch", "Hostless_SRC_1_DL"},
-> +	{"I2S1_CH2", "SRC_1_OUT_CH2 Switch", "Hostless_SRC_1_DL"},
-> +	{"I2S3_CH1", "SRC_1_OUT_CH1 Switch", "Hostless_SRC_1_DL"},
-> +	{"I2S3_CH2", "SRC_1_OUT_CH2 Switch", "Hostless_SRC_1_DL"},
-> +	{"Hostless_SRC_1_UL", NULL, "HW_SRC_1_Out"},
+> +static int mtk_hw_gain_event(struct snd_soc_dapm_widget *w,
+> +			     struct snd_kcontrol *kcontrol,
+> +			     int event)
+> +{
+> +	struct snd_soc_component *cmpnt = snd_soc_dapm_to_component(w->dapm);
+> +	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(cmpnt);
+> +	unsigned int gain_cur;
+> +	unsigned int gain_con1;
 > +
-> +	/* Hostless_SRC_bargein */
-> +	{"HW_SRC_1_IN_CH1", "I2S0_CH1 Switch", "Hostless_SRC_Bargein_DL"},
-> +	{"HW_SRC_1_IN_CH2", "I2S0_CH2 Switch", "Hostless_SRC_Bargein_DL"},
-> +	{"Hostless_SRC_Bargein_UL", NULL, "I2S0"},
+> +	dev_dbg(cmpnt->dev, "%s(), name %s, event 0x%x\n",
+> +		__func__, w->name, event);
 > +
-> +	/* Hostless AAudio */
-> +	{"Hostless HW Gain AAudio In", NULL, "HW Gain 2 In"},
-> +	{"Hostless SRC AAudio UL", NULL, "HW Gain 2 Out"},
-> +	{"HW_SRC_2_IN_CH1", "HW_GAIN2_OUT_CH1 Switch", "Hostless SRC AAudio DL"},
-> +	{"HW_SRC_2_IN_CH2", "HW_GAIN2_OUT_CH2 Switch", "Hostless SRC AAudio DL"},
+> +	switch (event) {
+> +	case SND_SOC_DAPM_PRE_PMU:
+> +		if (strcmp(w->name, HW_GAIN_1_EN_W_NAME) == 0) {
+> +			gain_cur = AFE_GAIN1_CUR;
+> +			gain_con1 = AFE_GAIN1_CON1;
+> +		} else {
+> +			gain_cur = AFE_GAIN2_CUR;
+> +			gain_con1 = AFE_GAIN2_CON1;
+> +		}
+> +
+> +		/* let hw gain ramp up, set cur gain to 0 */
+> +		regmap_update_bits(afe->regmap,
+> +				   gain_cur,
+> +				   AFE_GAIN1_CUR_MASK_SFT,
+> +				   0);
+
+This fits in one line (86 columns is ok)
+
+> +
+> +		/* set target gain to 0 */
+> +		regmap_update_bits(afe->regmap,
+> +				   gain_con1,
+> +				   GAIN1_TARGET_MASK_SFT,
+> +				   0);
+
+Same here.
+
+> +		break;
+> +	default:
+> +		break;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct snd_soc_dapm_widget mtk_dai_hw_gain_widgets[] = {
+> +	/* inter-connections */
+> +	SND_SOC_DAPM_MIXER("HW_GAIN1_IN_CH1", SND_SOC_NOPM, 0, 0,
+> +			   mtk_hw_gain1_in_ch1_mix,
+> +			   ARRAY_SIZE(mtk_hw_gain1_in_ch1_mix)),
+> +	SND_SOC_DAPM_MIXER("HW_GAIN1_IN_CH2", SND_SOC_NOPM, 0, 0,
+> +			   mtk_hw_gain1_in_ch2_mix,
+> +			   ARRAY_SIZE(mtk_hw_gain1_in_ch2_mix)),
+> +	SND_SOC_DAPM_MIXER("HW_GAIN2_IN_CH1", SND_SOC_NOPM, 0, 0,
+> +			   mtk_hw_gain2_in_ch1_mix,
+> +			   ARRAY_SIZE(mtk_hw_gain2_in_ch1_mix)),
+> +	SND_SOC_DAPM_MIXER("HW_GAIN2_IN_CH2", SND_SOC_NOPM, 0, 0,
+> +			   mtk_hw_gain2_in_ch2_mix,
+> +			   ARRAY_SIZE(mtk_hw_gain2_in_ch2_mix)),
+> +
+> +	SND_SOC_DAPM_SUPPLY(HW_GAIN_1_EN_W_NAME,
+> +			    AFE_GAIN1_CON0, GAIN1_ON_SFT, 0,
+> +			    mtk_hw_gain_event,
+> +			    SND_SOC_DAPM_PRE_PMU),
+> +
+> +	SND_SOC_DAPM_SUPPLY(HW_GAIN_2_EN_W_NAME,
+> +			    AFE_GAIN2_CON0, GAIN2_ON_SFT, 0,
+> +			    mtk_hw_gain_event,
+> +			    SND_SOC_DAPM_PRE_PMU),
+> +
+> +	SND_SOC_DAPM_INPUT("HW Gain 1 Out Endpoint"),
+> +	SND_SOC_DAPM_INPUT("HW Gain 2 Out Endpoint"),
+> +	SND_SOC_DAPM_OUTPUT("HW Gain 1 In Endpoint"),
+> +};
+> +
+> +static const struct snd_soc_dapm_route mtk_dai_hw_gain_routes[] = {
+> +	{"HW Gain 1 In", NULL, "HW_GAIN1_IN_CH1"},
+> +	{"HW Gain 1 In", NULL, "HW_GAIN1_IN_CH2"},
+> +	{"HW Gain 2 In", NULL, "HW_GAIN2_IN_CH1"},
+> +	{"HW Gain 2 In", NULL, "HW_GAIN2_IN_CH2"},
+> +
+> +	{"HW Gain 1 In", NULL, HW_GAIN_1_EN_W_NAME},
+> +	{"HW Gain 1 Out", NULL, HW_GAIN_1_EN_W_NAME},
+> +	{"HW Gain 2 In", NULL, HW_GAIN_2_EN_W_NAME},
+> +	{"HW Gain 2 Out", NULL, HW_GAIN_2_EN_W_NAME},
+> +
+> +	{"HW Gain 1 In Endpoint", NULL, "HW Gain 1 In"},
+> +	{"HW Gain 1 Out", NULL, "HW Gain 1 Out Endpoint"},
+> +	{"HW Gain 2 Out", NULL, "HW Gain 2 Out Endpoint"},
+> +};
+> +
+> +static const struct snd_kcontrol_new mtk_hw_gain_controls[] = {
+> +	SOC_SINGLE("HW Gain 1 Volume", AFE_GAIN1_CON1,
+> +		   GAIN1_TARGET_SFT, GAIN1_TARGET_MASK, 0),
+> +	SOC_SINGLE("HW Gain 2 Volume", AFE_GAIN2_CON1,
+> +		   GAIN2_TARGET_SFT, GAIN2_TARGET_MASK, 0),
 > +};
 > +
 > +/* dai ops */
-> +static int mtk_dai_hostless_startup(struct snd_pcm_substream *substream,
-> +				    struct snd_soc_dai *dai)
+> +static int mtk_dai_gain_hw_params(struct snd_pcm_substream *substream,
+> +				  struct snd_pcm_hw_params *params,
+> +				  struct snd_soc_dai *dai)
 > +{
 > +	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
-> +	struct snd_pcm_runtime *runtime = substream->runtime;
-> +	int ret;
+> +	unsigned int rate = params_rate(params);
+> +	unsigned int rate_reg = mt8186_rate_transform(afe->dev, rate, dai->id);
 > +
-> +	snd_soc_set_runtime_hwparams(substream, &mt8186_hostless_hardware);
-> +
-> +	ret = snd_pcm_hw_constraint_integer(runtime,
-> +					    SNDRV_PCM_HW_PARAM_PERIODS);
-> +	if (ret < 0)
-> +		dev_info(afe->dev, "snd_pcm_hw_constraint_integer failed\n");
+> +	dev_info(afe->dev, "%s(), id %d, stream %d, rate %d\n",
+> +		 __func__,
+> +		 dai->id,
+> +		 substream->stream,
+> +		 rate);
 
-	if (ret < 0) {
-		dev_err(afe->dev, "setting constraints failed: %d\n", ret);
-		return ret;
-	}
+This should be:
+	dev_info(afe->dev, "%s(), id %d, stream %d, rate %d\n",
 
-	return 0;
-
-
-Thanks,
-Angelo
-
+		 __func__, dai->id, substream->stream, rate);
 
