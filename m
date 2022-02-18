@@ -4,64 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4D16C433FE
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Feb 2022 10:17:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00E87C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Feb 2022 14:29:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2B239176E;
-	Fri, 18 Feb 2022 11:16:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2B239176E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 524DE172C;
+	Fri, 18 Feb 2022 15:28:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 524DE172C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645179468;
-	bh=vB/oxhLbPFSazdtfRv1kBQtHtz0kwmzU+Dpi82GR/3w=;
-	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1645194576;
+	bh=QIhhSf+LNnFkR0oPqDauJgbg11+0+JGmV4ABpoWiHVg=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gqRgvl3Bvy3nnd+iHMN/1NgTWA9A4qFDCRzwi+0tuSVGJQl4nYO2yMHSeuiecnOvB
-	 FxkJ6O+bjel4blPH3TxuDCvp/l0zlm7VpDgXGA91ICDQMYscpHRSGnlR7lngnEKmtr
-	 mCz1mwrb2pHmq6quR0RWN9lnZiKd3Qe8JBxJdk6Y=
+	b=kVj7Cu0MNvOTbMGI9yTG9grX/n0wyUx15TbJE+kCmiVHd3L+V9Tn52NewL4gAlysU
+	 FG72qhxh1b/pPJBZuoe44L0+Fh6TxAPzJXE2l/mGEw97dVsrJ3wSem5oaqq91cAm1q
+	 7QaXdDkME+Fbn76Pzw6e4Mk99Rjq2oVAxuD0IUu4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BCCCAF8012B;
-	Fri, 18 Feb 2022 11:16:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EBC6AF8012B;
+	Fri, 18 Feb 2022 15:28:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5E112F800CE; Fri, 18 Feb 2022 11:16:56 +0100 (CET)
-Received: from smtp2.axis.com (smtp2.axis.com [195.60.68.18])
+ id 63C7FF8013C; Fri, 18 Feb 2022 15:28:42 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6A36DF80118
+ for <alsa-devel@alsa-project.org>; Fri, 18 Feb 2022 15:28:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A36DF80118
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="asICOcEc"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EAC64F800CE
- for <alsa-devel@alsa-project.org>; Fri, 18 Feb 2022 11:16:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EAC64F800CE
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=axis.com header.i=@axis.com
- header.b="DDzaYjvT"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=axis.com; q=dns/txt; s=axis-central1; t=1645179411;
- x=1676715411;
- h=date:from:to:subject:in-reply-to:message-id:references:
- mime-version:content-transfer-encoding;
- bh=Z7ad0RHZLp0Qzf/z75G6yqCU8dGhaKRvST7dWOSl5Ys=;
- b=DDzaYjvTrHMniDaKiTQC20/IDFqsqccAhI23L3rEd+dIWlIYuoazj9fC
- VuX3qi0OnYTPmajGFTpdKMLEn4CUCeqLyI1Yv+ugXO4Xy7v9rBDmrLEOo
- uZ75Z2YLl+Du2Ddk69OmVRweG8PIzoqKrW/EbfNZ/lp35f2b1lRJO33Zy
- qeTRqlwIOY6f2PdlDABCwfXRs88gFQTfQ9tFhGDkVfNfqT3IeHmV6pbjv
- +FYExS1BLFQtbXhkxJOT/bxkXOqore1NXN3kpaQdrmb7eRa10U524Nfkn
- bEAaKyNKU/y9hbL226/XLeTiYkIg6u11RyhRPNBryLloEuJDCVxZgrr0i w==;
-Date: Fri, 18 Feb 2022 11:16:42 +0100
-From: Ricard Wanderlof <ricardw@axis.com>
-X-X-Sender: ricardw@lnxricardw1.se.axis.com
-To: alsa-devel <alsa-devel@alsa-project.org>
-Subject: Re: Multiple codecs of the same type on the same card
-In-Reply-To: <alpine.DEB.2.21.2202161722560.17949@lnxricardw1.se.axis.com>
-Message-ID: <alpine.DEB.2.21.2202181113010.20061@lnxricardw1.se.axis.com>
-References: <alpine.DEB.2.21.2202161722560.17949@lnxricardw1.se.axis.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+ by ams.source.kernel.org (Postfix) with ESMTPS id DEF79B82657;
+ Fri, 18 Feb 2022 14:28:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5AE3C340E9;
+ Fri, 18 Feb 2022 14:28:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1645194509;
+ bh=QIhhSf+LNnFkR0oPqDauJgbg11+0+JGmV4ABpoWiHVg=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=asICOcEcJc0EYX8Pm0VJqHru/j2mEDfmmf7UF5lkNEREMyQ/KTtmNyg+E2jhCPTov
+ B8WZF4sfK9nrMFzv2niVzfyDHN8GG5nkvz0WqK1hfB+Km0SvYFwl3LPJfYb231Hpj/
+ NOfomnM6LHPJFB/BBOVc2uz69WIES5yKKfkkKXBz36nTPRmdWVGy4HW1bAG2kWMPUz
+ iI26wPcVWWW7qHggyxVmH3Vr/tiPG75Q1ETPq0rxU4Lq87FGtBzxOgbJDdzpN+9Y5u
+ EQvceqCUm3dhyKFk8oxCy0gdd52c/XxJHrq8cvKX1+qMY/TqHb5X5hjdrsgsj4NSJO
+ S9WGi/0uoyQRw==
+From: Mark Brown <broonie@kernel.org>
+To: Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <cover.1640351150.git.mchehab@kernel.org>
+References: <cover.1640351150.git.mchehab@kernel.org>
+Subject: Re: [PATCH 0/1] sound: add quirk for Huawei D15
+Message-Id: <164519450743.1836505.3912962145996830275.b4-ty@kernel.org>
+Date: Fri, 18 Feb 2022 14:28:27 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [10.0.5.60]
-X-ClientProxiedBy: se-mail01w.axis.com (10.20.40.7) To se-mail07w.axis.com
- (10.20.40.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ tiwai@suse.de, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+ Bard Liao <yung-chuan.liao@linux.intel.com>, Huajun Li <huajun.li@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,29 +81,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Fri, 24 Dec 2021 14:09:48 +0100, Mauro Carvalho Chehab wrote:
+> Based on my tests, Huawei D15 (Intel) uses SSP0 on es8336.
+> 
+> Add a quirk for it.
+> 
+> Please notice that, currently, only the internal speaker is working.
+> The topology for the internal microphone and for the headphones
+> is wrong. Enabling/disabling the other two quirks (GPIO and/or DMIC)
+> doesn't cause any audible results, nor change the devices listed
+> on pavucontrol (tested with pipewire-pulse).
+> 
+> [...]
 
-On Wed, 16 Feb 2022, Ricard Wanderlöf wrote:
+Applied to
 
-> When adding codecs to a card, all the controls of each individual codec
-> are visible as controls for the complete card. But how does one handle the
-> case of multiple codecs of the same type, for instance two identical
-> codecs being used in TDM mode to create a multi channel card? Is there
-> some method for resolving the fact that the control names naturally
-> conflict?
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-After not too much digging, I found the sound-name-prefix property which 
-when added to the actual codec device node resolves this issue.
+Thanks!
 
-However, I'm still failing to get the following configuration to work: 
+[1/1] ASoC: Intel: sof_es8336: add quirk for Huawei D15 2021
+      commit: ce6a70bfce21bb4edb7c0f29ecfb0522fa34ab71
 
-I've got two stereo codecs connected to the same DAI, in order to provide
-4 channel operation. Is this something that should be possible to 
-configure using simple-card, or do I need to write my own machine driver? 
-As I understand, the configuration as such is supported by ALSA since a 
-while back.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-/Ricard
--- 
-Ricard Wolf Wanderlof                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
