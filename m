@@ -4,81 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 168EBC433EF
-	for <alsa-devel@archiver.kernel.org>; Sat, 19 Feb 2022 03:04:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3561C433F5
+	for <alsa-devel@archiver.kernel.org>; Sat, 19 Feb 2022 18:21:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 37270175E;
-	Sat, 19 Feb 2022 04:03:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 37270175E
+	by alsa0.perex.cz (Postfix) with ESMTPS id B96D816A2;
+	Sat, 19 Feb 2022 19:20:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B96D816A2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645239877;
-	bh=gtAwaVE8vVvQvGJxAFH7ZkQCUY5F8USNIhZdfZvuuhQ=;
-	h=In-Reply-To:References:From:Date:Subject:To:List-Id:
+	s=default; t=1645294892;
+	bh=43FQQoiARr1oUUz161OUOBUs6C7jlfJSnj8zmZ358yI=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=L2K2sIDKRTCL8IouQImaWl5pHtcqRiS0a7pjykVMAQKHVbESnDTTHmtfIdb6IbKzg
-	 QkoehTRq/xo3NDdQf3c8sMnvDjm2cb0xJwPrUNySIhBdd8ciOWIJ7jXcZP7wz3gVh1
-	 bC4zV6/v/2meTaYwBP/CTAOUgayUpWtxaLdBs1Lg=
+	b=VmhSjkI8GOKvqxw7Vqtqb5hLVZlmHby1GfbvQsFxmwXvHatYkq9xaUPwzYGu980iw
+	 CKwsnvJcl368Zc+l7e0MlNhNW7FyojSMzzd2x/AbXG3LC9eL4ukyzleNibHFgNWOwm
+	 eW7gzCj3dWJi1uRm/AgHiLvqctxgBu62XzEGbWrk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CC861F80118;
-	Sat, 19 Feb 2022 04:03:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 53FDBF800AB;
+	Sat, 19 Feb 2022 19:20:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9D2DFF8016A; Sat, 19 Feb 2022 04:03:45 +0100 (CET)
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com
- [IPv6:2607:f8b0:4864:20::235])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 5BECCF80118; Sat, 19 Feb 2022 19:20:40 +0100 (CET)
+Received: from alexa-out.qualcomm.com (alexa-out.qualcomm.com [129.46.98.28])
+ (using TLSv1.2 with cipher AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 22169F80118
- for <alsa-devel@alsa-project.org>; Sat, 19 Feb 2022 04:03:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22169F80118
+ by alsa1.perex.cz (Postfix) with ESMTPS id D1ACCF80118
+ for <alsa-devel@alsa-project.org>; Sat, 19 Feb 2022 19:20:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1ACCF80118
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="J4SJ7j5u"
-Received: by mail-oi1-x235.google.com with SMTP id j2so5109196oie.7
- for <alsa-devel@alsa-project.org>; Fri, 18 Feb 2022 19:03:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=mime-version:in-reply-to:references:from:user-agent:date:message-id
- :subject:to; bh=zIB+88SZu/CTl47f1fdTeX2AI5RUdEbWO+4zjIrvIzM=;
- b=J4SJ7j5uTIF6325BNiAXQXv0efYxC/HzwgbEKT3PY/NqwzZU5+zH/6+Cd5iItGU9l2
- /eor0oEEJhiuQ8Dgq1+viv0K8pWJS24WfjjGNPeQU0LXv/Xsompp6ztvXrDE48I60fVG
- jIWiASD20CAYMHlNMfNi5CrEOEwnyC9sKZPvo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:in-reply-to:references:from
- :user-agent:date:message-id:subject:to;
- bh=zIB+88SZu/CTl47f1fdTeX2AI5RUdEbWO+4zjIrvIzM=;
- b=pC4G3BuBR2V4v/hFe3bncbBEvINFi1jSSjGzFhLcvnzx1opyR/2Ke8q9dpqAH8TBA/
- XkARDs7cMz8Ed8DqtAGc06S8gnXekYV7IcmeQHLxmdQP9S9O6255dOw6fNUpe3Xkn3v0
- UcjDvaALzHaMT+S0bt4wGKrCey8k3uDyGRUJrQkWQohCeG80TdVEawrO69gHSgvHgpEr
- AtXBcmjZPN9rQBvEhhepPWAt/JaBneOiAgY2O8PnoUQJS+OTX/ZViruHoSnC0EBgrPAr
- xdNmAZZdzwuxaGFGYtcAy2TgWfD0atHsHG2JoywwbHyXetjBq7Mjr/lbg/OIKGKyC9bJ
- SU3Q==
-X-Gm-Message-State: AOAM533pZhpU7G32Wmp9c6BNzKA+72gYP0T/PZt3oTTiOBb9NcOiePO2
- G8JWXoptjYMaNOhr9zBXZHJ9OpEkKIDQOtdLS/T9CA==
-X-Google-Smtp-Source: ABdhPJyTyySKaogGebiYw5qOlLQGTpdp3qqpV2Sh4WlZmZiT0rP6wCEw1BDRdNlhT/JVspPiNudlDVaQIpYcAmd99sw=
-X-Received: by 2002:a05:6808:f88:b0:2d4:c8c2:b898 with SMTP id
- o8-20020a0568080f8800b002d4c8c2b898mr626747oiw.112.1645239819056; Fri, 18 Feb
- 2022 19:03:39 -0800 (PST)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Fri, 18 Feb 2022 19:03:38 -0800
+ dkim=pass (1024-bit key) header.d=quicinc.com header.i=@quicinc.com
+ header.b="hBzjxRLg"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+ t=1645294835; x=1676830835;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=43FQQoiARr1oUUz161OUOBUs6C7jlfJSnj8zmZ358yI=;
+ b=hBzjxRLgSBdTXAmnBc0FaXxN7CYxoZWdO5zU1QEObi4UiOIui6pFJ8i6
+ CIokvIe2UL6GbmZsWTmW9ofmHJtcCMKwavSUmf9EGadDFm72ikHBgTwNQ
+ vXfGXVvzqB2XOc9nhilHw++AdGqrnGfbr1Ni3uDdVskcDCvFB7Ifhm3YN 4=;
+Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
+ by alexa-out.qualcomm.com with ESMTP; 19 Feb 2022 10:20:31 -0800
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+ by ironmsg07-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Feb 2022 10:20:30 -0800
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.15; Sat, 19 Feb 2022 10:20:30 -0800
+Received: from [10.216.20.52] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.15; Sat, 19 Feb
+ 2022 10:20:23 -0800
+Message-ID: <5a6e307d-f8b0-50b6-f295-fdf6ccd20232@quicinc.com>
+Date: Sat, 19 Feb 2022 23:50:19 +0530
 MIME-Version: 1.0
-In-Reply-To: <1645078066-9365-1-git-send-email-quic_srivasam@quicinc.com>
-References: <1645078066-9365-1-git-send-email-quic_srivasam@quicinc.com>
-From: Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.10
-Date: Fri, 18 Feb 2022 19:03:38 -0800
-Message-ID: <CAE-0n51j9x2-5ZBPOkhewih6ojvE=a-Ot3htQ7JPKYzBm32UJA@mail.gmail.com>
-Subject: Re: [PATCH v14 00/10] Add support for audio on SC7280 based targets
-To: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>, agross@kernel.org, 
- alsa-devel@alsa-project.org, bgoswami@codeaurora.org, 
- bjorn.andersson@linaro.org, broonie@kernel.org, devicetree@vger.kernel.org, 
- judyhsiao@chromium.org, lgirdwood@gmail.com, linux-arm-msm@vger.kernel.org, 
- linux-kernel@vger.kernel.org, perex@perex.cz, quic_plai@quicinc.com, 
- robh+dt@kernel.org, rohitkr@codeaurora.org, srinivas.kandagatla@linaro.org, 
- tiwai@suse.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.1
+Subject: Re: [PATCH v6 3/7] pinctrl: qcom: Update macro name to LPI specific
+Content-Language: en-US
+To: Stephen Boyd <swboyd@chromium.org>, Linus Walleij
+ <linus.walleij@linaro.org>, <agross@kernel.org>,
+ <alsa-devel@alsa-project.org>, <bgoswami@codeaurora.org>,
+ <bjorn.andersson@linaro.org>, <broonie@kernel.org>,
+ <devicetree@vger.kernel.org>, <judyhsiao@chromium.org>,
+ <lgirdwood@gmail.com>, <linux-arm-msm@vger.kernel.org>,
+ <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <perex@perex.cz>, <quic_plai@quicinc.com>, <robh+dt@kernel.org>,
+ <rohitkr@codeaurora.org>, <srinivas.kandagatla@linaro.org>, <tiwai@suse.com>
+References: <1644851994-22732-1-git-send-email-quic_srivasam@quicinc.com>
+ <1644851994-22732-4-git-send-email-quic_srivasam@quicinc.com>
+ <CAE-0n527fs5rfPG1HonW_9ZTugANnWNYSs_0+wts+zDK=zcZjA@mail.gmail.com>
+From: "Srinivasa Rao Mandadapu (Temp)" <quic_srivasam@quicinc.com>
+Organization: Qualcomm
+In-Reply-To: <CAE-0n527fs5rfPG1HonW_9ZTugANnWNYSs_0+wts+zDK=zcZjA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+Cc: Venkata Prasad Potturu <quic_potturu@quicinc.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,14 +101,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Quoting Srinivasa Rao Mandadapu (2022-02-16 22:07:36)
-> This patch set is to add support for Audio over wcd codec,
-> digital mics, through digital codecs and without ADSP.
->
-> Changes Since V13:
->     -- Change bulk cdc clock voting to individual clock voting.
->     -- Remove redundant code, conditional check and prints.
->     -- Fix typo errors.
 
-Seems we're still discussing on v13. Will you reply to the review
-comments or post v15?
+On 2/19/2022 8:06 AM, Stephen Boyd wrote:
+Thanks for Your time Stephen!!!
+> Quoting Srinivasa Rao Mandadapu (2022-02-14 07:19:50)
+>> Update NO_SLEW macro to LPI_NO_SLEW macro as this driver lpi specific.
+> Is this to avoid NO_SLEW somewhere else?
+The above comment addressed resent v7 patches.
+>
+>> Signed-off-by: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+>> Co-developed-by: Venkata Prasad Potturu <quic_potturu@quicinc.com>
+>> Signed-off-by: Venkata Prasad Potturu <quic_potturu@quicinc.com>
+>> ---
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
