@@ -4,53 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64643C433EF
-	for <alsa-devel@archiver.kernel.org>; Sun, 20 Feb 2022 00:18:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97DCDC433EF
+	for <alsa-devel@archiver.kernel.org>; Sun, 20 Feb 2022 00:20:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 595B416D3;
-	Sun, 20 Feb 2022 01:17:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 595B416D3
+	by alsa0.perex.cz (Postfix) with ESMTPS id DD89916B9;
+	Sun, 20 Feb 2022 01:19:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DD89916B9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645316286;
-	bh=AQxzrm+yFt8SDZja9UCZuCeXxA/RvyLL3YcqMPaLjEE=;
-	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=aNfIgAkiSyVEAjyHT3nDniJzmu/wr7OaYPYA4pfJKwhtnKFxGrD1e3C1B8pCwXGd7
-	 JUy7ZLJRaHNm7VVns14LU4PwXMFsPfo1TkIDLsttSWrM04JbQqe5WZAqsLbnmWqcLi
-	 yqRp7zxbkR0PiAzrbp9xCKTeYQTfX/T7lwF4lTDI=
+	s=default; t=1645316415;
+	bh=CjW1qSeHC9/OWs28PAMcgi7i8z5QAYnN2OeQMhwRnhQ=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=DfRONvukajKh159i7RWCXjQMVS7aOyiQWSJBcmT4Xhf3wJbDB+x0yz3NMILra6sCM
+	 0AtJneXcps7abJf6EOnB/JYYEluphWbvMIhDc21j0o0VKGUTrZFPboKE7c9Na8g49L
+	 4MubUyycPCx2DUxiQzgHA7MfXWfkWntJmltuN9g8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AFAC1F80520;
-	Sun, 20 Feb 2022 01:16:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 821A9F800EB;
+	Sun, 20 Feb 2022 01:19:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 16669F80520; Sun, 20 Feb 2022 01:16:20 +0100 (CET)
+ id CBB23F8016A; Sun, 20 Feb 2022 01:19:22 +0100 (CET)
 Received: from sender11-of-o51.zoho.eu (sender11-of-o51.zoho.eu
  [31.186.226.237])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D71A1F80511
- for <alsa-devel@alsa-project.org>; Sun, 20 Feb 2022 01:16:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D71A1F80511
-ARC-Seal: i=1; a=rsa-sha256; t=1645316164; cv=none; d=zohomail.eu; s=zohoarc; 
- b=GQUXnUfVFb+lJI89pARVaTkmxrrHzpirWaNhF186rebZDVPZ2LrA2w4mHv51BQ+h0yh+tNb7sHhKfnx7OLtPQkTG1Yc7zatSqwEBXudtGyKZU/QV9WBvrtyISPOFxB77LcAN5dva6dd2cPpzXWFNmNbLF5fVj5+RTGtWh7rm8Bw=
+ by alsa1.perex.cz (Postfix) with ESMTPS id B426FF800EB
+ for <alsa-devel@alsa-project.org>; Sun, 20 Feb 2022 01:19:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B426FF800EB
+ARC-Seal: i=1; a=rsa-sha256; t=1645316342; cv=none; d=zohomail.eu; s=zohoarc; 
+ b=ANJbQkDemwckzFSq+2xpdp8T2cyPG9vn8p476qj5LWOs51BQPu3EzGnJ92NVZTu21KcC/vByCKjifnFIglMzop/se9/LdkUBuLBnnaPEPB/5GGzhN/9jrXsZY/NTLtIetHi1SsLVPvvRwLyv2d0tCxDbBOk2pI/MkRNFTDDr7Ms=
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu;
- s=zohoarc; 
- t=1645316164; h=Cc:Date:From:Message-ID:Subject:To; 
- bh=qW+UNzqp9Isd5ma7U5fPqp+trQ8QY8pCXccwmXwzSpw=; 
- b=PTNr/OzpGZXEnJiIQISJ2hQKVWJ8XVmiRDX3PVVRY3SNGoslimTpLXNl5SPJuQBpd00Xa1898twZXME0vsFexXrCub5s+BQB6VyewoyIO9UhSusjX9fu7uwzzUZY0qedNXxEGBcVVAUycl/yv1237j6J4/Rblh83TPLJJwguiYI=
+ s=zohoarc; t=1645316342;
+ h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To;
+ bh=3HCff0o6L0WKF7HPzVEAjwajRGUlkG9L5kSxZwlqVrk=; 
+ b=fUbKkdkQ+biq2Ebzk9Cm94OeWoaFS3WVf0B1Ezkke+8HdDxD72n+uv/SV6qvAhfc71P23TgvMBKQWxhYmwWwZuQAgIb0E/xI749twmEWMxrUL4G8/LtVAZkK/jTsa4vr5s4U0YHcqkDIn8pgi0bVL3cjYnHDnb8EFZjpcmsxhCY=
 ARC-Authentication-Results: i=1; mx.zohomail.eu;
  spf=pass  smtp.mailfrom=philipp@uvos.xyz;
  dmarc=pass header.from=<philipp@uvos.xyz>
 Received: from UVOSLinux (ip-037-201-192-120.um10.pools.vodafone-ip.de
  [37.201.192.120]) by mx.zoho.eu
- with SMTPS id 164531616270238.25836167433181;
- Sun, 20 Feb 2022 01:16:02 +0100 (CET)
-Date: Sun, 20 Feb 2022 01:16:01 +0100
+ with SMTPS id 1645316339280515.4397359881773;
+ Sun, 20 Feb 2022 01:18:59 +0100 (CET)
+Date: Sun, 20 Feb 2022 01:18:58 +0100
 From: Carl Philipp Klemm <philipp@uvos.xyz>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Message-ID: <17f147c448f.39e900c2-265391827.-7512123469039839057@zoho.eu>
 Subject: [PATCH 6/6] Documentation: sound: audio-graph-card: update dts
+ bindings to add has-hp-jack
+Message-Id: <20220220011858.d07e957747d22299a1c37df8@uvos.xyz>
+In-Reply-To: <OS3PR01MB8426FD3FD1B45BB31C971A56D4509@OS3PR01MB8426.jpnprd01.prod.outlook.com>
+References: <20211228190931.df5d518220080a734532ebfd@uvos.xyz>
+ <87a6gawxpe.wl-kuninori.morimoto.gx@gmail.com>
+ <20220105101028.620b7f2cb7727eedfccd933e@uvos.xyz>
+ <87r19ld48v.wl-kuninori.morimoto.gx@gmail.com>
+ <20220108145749.f55500222b049f344415a5c3@uvos.xyz>
+ <OS3PR01MB8426FD3FD1B45BB31C971A56D4509@OS3PR01MB8426.jpnprd01.prod.outlook.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-unknown-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-ZohoMailClient: External
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
  "tony@atomide.com" <tony@atomide.com>,
@@ -72,20 +85,6 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
- bindings to add has-hp-jack
-Message-Id: <20220220011601.4424ad416d65b836e3165cfa@uvos.xyz>
-In-Reply-To: <OS3PR01MB8426FD3FD1B45BB31C971A56D4509@OS3PR01MB8426.jpnprd01.prod.outlook.com>
-References: <20211228190931.df5d518220080a734532ebfd@uvos.xyz>
-	<87a6gawxpe.wl-kuninori.morimoto.gx@gmail.com>
-	<20220105101028.620b7f2cb7727eedfccd933e@uvos.xyz>
-	<87r19ld48v.wl-kuninori.morimoto.gx@gmail.com>
-	<20220108145749.f55500222b049f344415a5c3@uvos.xyz>
-	<OS3PR01MB8426FD3FD1B45BB31C971A56D4509@OS3PR01MB8426.jpnprd01.prod.outlook.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-unknown-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-
 Signed-off-by: Carl Philipp Klemm <philipp@uvos.xyz>
 ---
  Documentation/devicetree/bindings/sound/audio-graph.yaml | 2 ++
@@ -106,3 +105,4 @@ index 4b46794e5153..5844b900789a 100644
    - dais
 -- 
 2.35.1
+
