@@ -4,72 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44D62C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Feb 2022 15:25:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65BEEC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Feb 2022 15:25:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EB4BE172C;
-	Mon, 21 Feb 2022 16:24:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB4BE172C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 721CC1746;
+	Mon, 21 Feb 2022 16:24:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 721CC1746
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645457118;
-	bh=61j2DG9XsjT6XMPvA8okjWZ5trrMT2Q8ZLz9fkWalkI=;
+	s=default; t=1645457143;
+	bh=MW2Yg1Kfyp2Pc04JtrMTt1mmSjFcqsfeEWHrq1tp5ZI=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nKkbiZ8m+uNjhySbn+QokIArIJFD3mvzAfSy1ohdzzIMMPRjW7M73Srrb/GeQZXf+
-	 z28SPaEW59nm1vtB+KxKIH4q+9R+uEh4UthPyBvz6Qm24lsXgz85VD5NWij0mQTIrQ
-	 cYuR7BGpxRtCO5FEahw8DJtSgwmJ3KHK7QqeUfmo=
+	b=OFkToSfXfif3l6a1VwlOGZANX+kZVA2xuLNI+2EPwQft1rX1tQeR4o0eqnVD3PM+P
+	 PyKSnqYS8NlwhusPHf1juXnJOavsMCxV51ODZmoPR1orlgf5eKxEGZicBSlbW48VIq
+	 3yGpoWApQcPdprQ7xkrHJjPg1qSGAoeTpmO58tNs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3DD2AF80166;
-	Mon, 21 Feb 2022 16:24:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 18EEAF80511;
+	Mon, 21 Feb 2022 16:24:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C17A0F8013D; Mon, 21 Feb 2022 16:24:24 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id CB08FF804AB; Mon, 21 Feb 2022 16:24:28 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 86791F800FA;
- Mon, 21 Feb 2022 16:24:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86791F800FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 468FAF8013D;
+ Mon, 21 Feb 2022 16:24:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 468FAF8013D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="rPXIGliS"
+ header.b="MvuEPI44"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id B3740B811F9;
- Mon, 21 Feb 2022 15:24:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DEDEC340E9;
- Mon, 21 Feb 2022 15:24:15 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 17A1E611B7;
+ Mon, 21 Feb 2022 15:24:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3748C340EC;
+ Mon, 21 Feb 2022 15:24:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1645457058;
- bh=61j2DG9XsjT6XMPvA8okjWZ5trrMT2Q8ZLz9fkWalkI=;
+ s=k20201202; t=1645457061;
+ bh=MW2Yg1Kfyp2Pc04JtrMTt1mmSjFcqsfeEWHrq1tp5ZI=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=rPXIGliSXsd2BgfOyQQQhlXqEN46OgFAjIs5HNM3FQl44c+7IB5PJdBOX2+a1rF51
- 547imM4xzdjobpmrsTtqnaDe5Hrm0OPoKbQWjFqTfED9FRnLSVPaHzYEw9vH4f6hsr
- enFX7ObBCDsUdKY9OwEnsyl57Tdsp/iOmX7UlpCNaZYnhPgP9jGn97TVIfrKxtyEe3
- 9w2IV1AdL8dL/7C5nfSjyTJaajh+6J5jznpUTT39IjOE03MmrscguWA6fH/HVRML9S
- HPlszUDLDPADY6PSOEz4K5gRcWRJf/NjQVQhPKBi8TwMM+yln/6K1pqY00wqMKc8kP
- gGXJgfPSjazjg==
+ b=MvuEPI44YNV4uqrNek4yRX2u1HAYJGNNWEu43R2dUulIfG5gN1QZHBsP6WqsvHAFT
+ 8Ae6IJu1Um68cL+p+W3fum2eTncELXcdvLN8/3sr0i2etvMD2EZ3nUMPgzfbUbGSpt
+ gbDmLBI/LdEXPECp06YZqtHhaba3kvvc8wssvL30qVZGCow+zUFl3WjTY9qJFX0kT9
+ CMjrBKeEc9MFXwOmCUA6fUpmXMbxcQqLqfzjBuGkCEvYsSO2mavrPu2hGDhQeVpVm0
+ iYZunii92i7zNygEvuFNPbBEYtLL4Lyl+LhQthU3KHDHQmFbRoSPEASU/xcTLtJRfO
+ 3cvw6U0n1hzBQ==
 From: Mark Brown <broonie@kernel.org>
 To: alsa-devel@alsa-project.org, Brent Lu <brent.lu@intel.com>
-In-Reply-To: <20220218082741.1707209-1-brent.lu@intel.com>
-References: <20220218082741.1707209-1-brent.lu@intel.com>
-Subject: Re: [PATCH] ASoC: SOF: Intel: Add topology overwrite for Felwinter
-Message-Id: <164545705583.730905.504549990237487794.b4-ty@kernel.org>
-Date: Mon, 21 Feb 2022 15:24:15 +0000
+In-Reply-To: <20220221064005.1752500-1-brent.lu@intel.com>
+References: <20220221064005.1752500-1-brent.lu@intel.com>
+Subject: Re: [PATCH v2] ASoC: SOF: Intel: Add topology overwrite for Felwinter
+Message-Id: <164545705858.730905.4275248547658138991.b4-ty@kernel.org>
+Date: Mon, 21 Feb 2022 15:24:18 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+Cc: Daniel Baluta <daniel.baluta@nxp.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
  Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
  Takashi Iwai <tiwai@suse.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Curtis Malainey <cujomalainey@chromium.org>,
  Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
- Daniel Baluta <daniel.baluta@nxp.com>, sound-open-firmware@alsa-project.org
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,7 +88,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 18 Feb 2022 16:27:41 +0800, Brent Lu wrote:
+On Mon, 21 Feb 2022 14:40:05 +0800, Brent Lu wrote:
 > From: Ajye Huang <ajye_huang@compal.corp-partner.google.com>
 > 
 > The Felwinter uses four max98360a amplifiers on corresponding CH0~CH3.
