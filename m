@@ -4,71 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4813FC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Feb 2022 15:39:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA031C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Feb 2022 16:08:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 667E51755;
-	Mon, 21 Feb 2022 16:38:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 667E51755
+	by alsa0.perex.cz (Postfix) with ESMTPS id 608EA171B;
+	Mon, 21 Feb 2022 17:08:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 608EA171B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645457976;
-	bh=vyhH6QDK2y/VOZf+VqbC/i41rAHGmnbQYzgPlCQvsDI=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1645459735;
+	bh=ftNJbufy22JBWdwV7j4SDRkRZ7SHDU/Qcg7mNW/OQFQ=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rEcOavV3tWiVz8GT315bGJ+JbKjh5dUVWkwaLJmTFLSpbWJ0tgAqiYKjbcBtnu9ve
-	 Wuro2/Q8f27in0MmklZA5ldqRVmhHsn/Qe9kI5ZXa+q9i9/FQRwcZrrQELYY/2svTT
-	 Z/u7OayjZsC97ByGKe3gEY1+BqYacOx7+3k8RzwU=
+	b=uwJI07KorH5FLBo3DYwlaAiqkLsn/6T00oVI/q2tmpPBbmw+03qI7hr9dXkhLkt8d
+	 oJymxNtlT1MRSnbxY5b8pQpPhMR0AiDPxyf5TSxMU5lM2pVJbeoTVHCUo6CEy0OELx
+	 6kxzNSXpXqMPJEokVmXao9AvlgkdVkAOvAIP1Q6Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DB6CCF8013D;
-	Mon, 21 Feb 2022 16:38:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EB262F800D1;
+	Mon, 21 Feb 2022 17:08:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AB577F8013D; Mon, 21 Feb 2022 16:38:44 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5C0E1F80139
- for <alsa-devel@alsa-project.org>; Mon, 21 Feb 2022 16:38:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C0E1F80139
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="XufoZflC"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 31FAB611B2;
- Mon, 21 Feb 2022 15:38:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7248C340E9;
- Mon, 21 Feb 2022 15:38:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1645457919;
- bh=vyhH6QDK2y/VOZf+VqbC/i41rAHGmnbQYzgPlCQvsDI=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=XufoZflCAf1o8fUH6RfrzWS6ni5BE4oZundMspjLGkd/3bvV0u6Rt1e7l3TMr2q1E
- egfaabk1izjL0TyBrLHFbHrvn40h/XWWIqlAHsBn6n7Vgfr2jnP75lOinHGkQo60Zi
- ScaxlQD0hqkp+MzHQkoVKM3Xk6qjo6AXMB1oqZcNMA7t2sx9HhB+FCd4pcC06rAH80
- neaVYCycYMsx+Ab/tu2uUXUATVZglWuSRE67bKE0M+ZttAxkRoUNzMc8mLl/DqgSfe
- mA6AnMXK2gCI8ehzf1kPCMQpo3CVLoCUUslOu4uZuKS63xqyC51FYgba2JrqPNbHk8
- fFYAh6RX976Sw==
-Date: Mon, 21 Feb 2022 15:38:34 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH 09/10] ASoC: codecs: tx-macro: setup soundwire clks
- correctly
-Message-ID: <YhOx+nQ/G+HNRXbq@sirena.org.uk>
-References: <20220221131037.8809-1-srinivas.kandagatla@linaro.org>
- <20220221131037.8809-10-srinivas.kandagatla@linaro.org>
+ id 88DC5F8013D; Mon, 21 Feb 2022 17:08:03 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 78033F800D1
+ for <alsa-devel@alsa-project.org>; Mon, 21 Feb 2022 17:07:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 78033F800D1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="yyHhfwr2MmYyQ0yO"
-Content-Disposition: inline
-In-Reply-To: <20220221131037.8809-10-srinivas.kandagatla@linaro.org>
-X-Cookie: I smell a wumpus.
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
- linux-kernel@vger.kernel.org, pierre-louis.bossart@linux.intel.com,
- tiwai@suse.com, quic_srivasam@quicinc.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1645459677030811071-webhooks-bot@alsa-project.org>
+References: <1645459677030811071-webhooks-bot@alsa-project.org>
+Subject: jack: implement pcm operation sw_params
+Message-Id: <20220221160803.88DC5F8013D@alsa1.perex.cz>
+Date: Mon, 21 Feb 2022 17:08:03 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,38 +55,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+alsa-project/alsa-plugins pull request #43 was opened from aditpape:
 
---yyHhfwr2MmYyQ0yO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+to reflect an updated avail_min value during runtime
 
-On Mon, Feb 21, 2022 at 01:10:36PM +0000, Srinivas Kandagatla wrote:
-> For SoundWire Frame sync to be generated correctly we need both MCLK
-> and MCLKx2 (npl). Without pm runtime enabled these two clocks will remain=
- on,
-> however after adding pm runtime support its possible that NPl clock could=
- be
-> turned off even when SoundWire controller is active.
->=20
-> Fix this by enabling mclk and npl clk when SoundWire clks are enabled.
+Signed-off-by: Andreas Pape <apape@de.adit-jv.com>
 
-A lot of these commit messages sound like earlier patches in the series
-introduced bugs which isn't going to be ideal for bisection.
-
---yyHhfwr2MmYyQ0yO
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmITsfoACgkQJNaLcl1U
-h9CGBwf/Rk/9rLx89vaRjZ9CYWDcfqgqNBJE0kJcU2Dk9g4BnJDHXJR8UxTFFWm7
-/6y50AXt6mAVMDoMj50Fv/L44E4GNu99KaUv0Honb0wd+9t4r81nNiJsZhGNL7E6
-C1DVpyc9HPICqqXUDX5KByX+UzIh5ddieRvpiB9HVRX90dOrVAy4XND78sTw7UV+
-3MUTyENBPgSCX6UiQnuAnZhvQX/5gNbhkedrk7gZ/akArzUL0IIMqO02/Yu/ngPi
-jk4f0SKxs+qXIBVDscyvfQZbFeidScPG9ytCsXDJTPB2JvGzlyzQKjg/PJk9iJ51
-EiJiSTGuW7Mn1PBPgvtd76jppvkKvg==
-=K0xZ
------END PGP SIGNATURE-----
-
---yyHhfwr2MmYyQ0yO--
+Request URL   : https://github.com/alsa-project/alsa-plugins/pull/43
+Patch URL     : https://github.com/alsa-project/alsa-plugins/pull/43.patch
+Repository URL: https://github.com/alsa-project/alsa-plugins
