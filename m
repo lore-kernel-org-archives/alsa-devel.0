@@ -4,79 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75DC3C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Feb 2022 10:00:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB705C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Feb 2022 10:08:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 81CC3167F;
-	Mon, 21 Feb 2022 11:00:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 81CC3167F
+	by alsa0.perex.cz (Postfix) with ESMTPS id B6F881630;
+	Mon, 21 Feb 2022 11:07:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B6F881630
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645437650;
-	bh=LOVJcepVUpm+7G5fE+oeKdKiNfAzvgoZGGB6yNUzzW8=;
+	s=default; t=1645438126;
+	bh=iUWxIP5GUWCieNeQH7bIFBd4JYLRV3SNF0a8wm9wQys=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XLvq93TnGZwlicBMa8Bi57pJzQy/BRgtmk8ajOwOvasbx1zuz+MqNGGydC1jldCh1
-	 GLsVxd0wN/QnOGxcnxi9sUx23zrr6G9fQOwRRrZO58/1jUKJ1clp0Ow3aOzOqbbJ/5
-	 H98IesDCh+tTHn1qn6s/8OeieZbSIB+GFs69GkuY=
+	b=mP4dC98CScX7D+8yTUWSoo5GcghzHiG5hGTvjAQvU7v6BeS7I/sEgd/g9Q+A8C3h9
+	 Yq09R/T1ekDVF1SYQfg+wqpJR1LyVJkjEveHszR6wGzrcYi5NxZ7oKbKLu/p5ApwNz
+	 ek4X6rXmDRhq86KozIOt9Klu3xWU6fFgQHtIesYs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1551BF80139;
-	Mon, 21 Feb 2022 11:00:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 45B92F80139;
+	Mon, 21 Feb 2022 11:07:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7489AF80118; Mon, 21 Feb 2022 10:59:58 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id DAD8AF8013D; Mon, 21 Feb 2022 11:07:54 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 88E33F80118
- for <alsa-devel@alsa-project.org>; Mon, 21 Feb 2022 10:59:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88E33F80118
+ by alsa1.perex.cz (Postfix) with ESMTPS id 94DD3F800FA
+ for <alsa-devel@alsa-project.org>; Mon, 21 Feb 2022 11:07:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94DD3F800FA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="WMckRs2o"; 
+ header.b="M9d/T8Dx"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="GloitVsi"
+ header.b="SCH7XSZM"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id DDE7B21109;
- Mon, 21 Feb 2022 09:59:49 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id D16421F38E;
+ Mon, 21 Feb 2022 10:07:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1645437589; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1645438071; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=fHL0JZPXyX1YIVnRK0AS+olhsoA5+HUzzw6KQSXtmAw=;
- b=WMckRs2ovKZQ2zqZfI9aewp2LSqa5hManvNPe090MnzBTNPRuhaJ8wH/xYP/O3I0WNhTkj
- q0NtJ1lUUi7ZK0Y08SYpUsh58n4f0SIwHgoki5ZViX1x1YQSfI3w3wDVEaOTyuETjAtDpO
- iULc36RcU8pW2PYr96frSeh5N/S4B7Q=
+ bh=BT+TInnDhxHuwYiGptQP8Zx6c0a1MWdfdZ8/yiPMU+M=;
+ b=M9d/T8DxiGhgu2MDt/xlY3FVmyjty5EaCJVWIDXM5Eg9KAbZrmMNc/r1NT8hWi0ht7CMhQ
+ 7pd7pfkzkDri7e5Eu3vX6BwGZemtUlWJC8bgMfecGuK3RgCDadTQpMOyYk5Hisx85gWE+S
+ C/OKnmvChnFrdXSQmkwY/oKIwRHgOR4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1645437589;
+ s=susede2_ed25519; t=1645438071;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=fHL0JZPXyX1YIVnRK0AS+olhsoA5+HUzzw6KQSXtmAw=;
- b=GloitVsiZK6acWdPu60/OPMK5WiLZ+Ot5zVxWOr78ZA6Dqi7OyBzxwAiJkoR8F8EdhrkfT
- wzTBeVfyQgNScVBA==
+ bh=BT+TInnDhxHuwYiGptQP8Zx6c0a1MWdfdZ8/yiPMU+M=;
+ b=SCH7XSZMdhiU4hQ6V6Fe4z/ozMA58TSTL1bDCeofy4aqfMwYqR2mUD4d2Vyn80+96zVyD4
+ 1QOZcVuYb8vu9lBw==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id CDFC1A3B9C;
- Mon, 21 Feb 2022 09:59:49 +0000 (UTC)
-Date: Mon, 21 Feb 2022 10:59:49 +0100
-Message-ID: <s5hy22435gq.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id A9D11A3B85;
+ Mon, 21 Feb 2022 10:07:51 +0000 (UTC)
+Date: Mon, 21 Feb 2022 11:07:51 +0100
+Message-ID: <s5hv8x8353c.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Thierry Reding <thierry.reding@gmail.com>
-Subject: Re: [PATCH v3 4/6] dt-bindings: Add HDA support for Tegra234
-In-Reply-To: <s5hr18295n7.wl-tiwai@suse.de>
-References: <20220216092240.26464-1-mkumard@nvidia.com>
- <20220216092240.26464-5-mkumard@nvidia.com>
- <Yg0aXq+T5/xsBHRG@orome> <s5hr18295n7.wl-tiwai@suse.de>
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: Re: [PATCH v2 0/4] ALSA: hda: Expose codec organization functions
+In-Reply-To: <daf5b3ae-18fb-2ab8-dd50-fc598c297b5b@intel.com>
+References: <20220214101404.4074026-1-cezary.rojewski@intel.com>
+ <daf5b3ae-18fb-2ab8-dd50-fc598c297b5b@intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- lgirdwood@gmail.com, linux-kernel@vger.kernel.org, spujar@nvidia.com,
- tiwai@suse.com, robh+dt@kernel.org, jonathanh@nvidia.com, broonie@kernel.org,
- linux-tegra@vger.kernel.org, Mohan Kumar <mkumard@nvidia.com>
+Cc: alsa-devel@alsa-project.org, upstream@semihalf.com, harshapriya.n@intel.com,
+ rad@semihalf.com, pierre-louis.bossart@linux.intel.com,
+ Takashi Iwai <tiwai@suse.com>, hdegoede@redhat.com, broonie@kernel.org,
+ amadeuszx.slawinski@linux.intel.com, cujomalainey@chromium.org,
+ lma@semihalf.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,35 +92,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 16 Feb 2022 16:45:48 +0100,
-Takashi Iwai wrote:
+On Mon, 21 Feb 2022 10:51:25 +0100,
+Cezary Rojewski wrote:
 > 
-> On Wed, 16 Feb 2022 16:38:06 +0100,
-> Thierry Reding wrote:
-> > 
-> > On Wed, Feb 16, 2022 at 02:52:38PM +0530, Mohan Kumar wrote:
-> > > Add hda clocks, memory ,power and reset binding entries
-> > > for Tegra234.
-> > > 
-> > > Signed-off-by: Mohan Kumar <mkumard@nvidia.com>
-> > > ---
-> > >  include/dt-bindings/clock/tegra234-clock.h     | 4 ++++
-> > >  include/dt-bindings/memory/tegra234-mc.h       | 6 ++++++
-> > >  include/dt-bindings/power/tegra234-powergate.h | 9 +++++++++
-> > >  include/dt-bindings/reset/tegra234-reset.h     | 2 ++
-> > >  4 files changed, 21 insertions(+)
-> > >  create mode 100644 include/dt-bindings/power/tegra234-powergate.h
-> > 
-> > Actually it looks like I may need to pick this up as well to satisfy the
-> > dependency from patch 6.
-> > 
-> > Takashi, any objections if I pick up patches 4 and 6 and you take the
-> > remainder through your tree? I don't think there are any dependencies on
-> > this patch 4 from patches 1-3 and 5.
+> On 2022-02-14 11:14 AM, Cezary Rojewski wrote:
+> > Changes expose several function that are currently unavailable for
+> > HDA-DSP drivers for use. Those functions are:
+> >
+> > snd_hda_codec_cleanup_for_unbind()
+> > snd_hda_codec_set_power_save()
+> > snd_hda_codec_register()
+> > snd_hda_codec_unregister()
+> > snd_hda_codec_device_init()
+> >
+> > This allows upcoming AVS driver [1] to re-use even mode of HDA related
+> > code that is currently available in sound/pci/hda and sound/hda and
+> > prevent any code duplication within avs-driver that would otherwise had
+> > to happen.
+> >
+> > Last patch in the series provides snd_hdac_ext_bus_link_at() - a helper
+> > function which allows for retrieval of HDA segment (link) based on codec
+> > address directly. This is simpler than parsing codec-name first to
+> > extract the address what is the case for snd_hdac_ext_bus_get_link().
+> > The latter function is updated to re-use newly added one so core logic
+> > is not duplicated after the addition.
+> >
+> >
+> > Changes v1 -> v2:
+> > - snd_hda_codec_new() now calls snd_hda_codec_device_new() with
+> >    'snddev_managed' param set to 'true', reported by Kai
 > 
-> Sure, I'm fine with it.
+> Hello Takashi,
+> 
+> Is there anything else I could help with or explain to help get this
+> series merged?
 
-Now I merged patches 1, 2, 3 and 5 to sound.git tree for-next branch.
+I merged all patches now to for-next branch.
 
 
 thanks,
