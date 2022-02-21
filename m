@@ -4,77 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72529C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Feb 2022 13:12:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60499C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Feb 2022 13:13:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4E5BB16EA;
-	Mon, 21 Feb 2022 14:12:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E5BB16EA
+	by alsa0.perex.cz (Postfix) with ESMTPS id AC87916E6;
+	Mon, 21 Feb 2022 14:12:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC87916E6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645449177;
-	bh=sf/C1D3uZu2irFWKc3hKP9pwQ55D0OiPpXYgIvqHxb4=;
+	s=default; t=1645449198;
+	bh=3IU/tRv0KjefSCVQHvgDaPsB1jiAkzW/LrK7ObF3uXc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UzSphbXZkjX4+IN9j+D7TyWTGsoFGUyJZByDJ7Byu5PQHZdA8UKy0zQQAPArgsd+8
-	 OIhD/dfo/ohi6xodANBrY966p4+y5jXF+FsPUQQDtwjZKiPPAyv8um+K++Pn//J7+n
-	 LW5jffGwMRIXKcr0Sc1oBJC119/im9j+z0FWu8t0=
+	b=SlIjpHgFUDVqRgX+IRseowLu5M6mcaza1oCVoAGesgCAppU/4LmohxWOb7TJJ1qX9
+	 5+oXWWPhhIurSWPtBP2+0uJ1pMZL9DJzmeAifivJ3nkrNz5mfCMsI9G9EozBDxAwf0
+	 z5MHSCX1riMJEurZuQLWuSsZ7AP2fORTRxTOXntM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B9716F80526;
-	Mon, 21 Feb 2022 14:10:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4CFD5F8052D;
+	Mon, 21 Feb 2022 14:11:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 298F8F80520; Mon, 21 Feb 2022 14:10:55 +0100 (CET)
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com
- [IPv6:2a00:1450:4864:20::42f])
+ id EC673F80527; Mon, 21 Feb 2022 14:10:56 +0100 (CET)
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com
+ [IPv6:2a00:1450:4864:20::32b])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F1BBDF8047C
- for <alsa-devel@alsa-project.org>; Mon, 21 Feb 2022 14:10:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1BBDF8047C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6189CF800D1
+ for <alsa-devel@alsa-project.org>; Mon, 21 Feb 2022 14:10:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6189CF800D1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="T5M6rVpQ"
-Received: by mail-wr1-x42f.google.com with SMTP id o24so27025825wro.3
- for <alsa-devel@alsa-project.org>; Mon, 21 Feb 2022 05:10:50 -0800 (PST)
+ header.b="WWR2i/oD"
+Received: by mail-wm1-x32b.google.com with SMTP id w13so9005849wmi.2
+ for <alsa-devel@alsa-project.org>; Mon, 21 Feb 2022 05:10:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=vyVwZE5kS8xGdR91o+WjovvMprsI53ZLyaYZnmErV2U=;
- b=T5M6rVpQg5CiNr0ALeXidXgJ27NA+ORiCY2Lluwps+MNSbQ6BG7XRz9qUUmz9jpiAk
- lO8F5HA6p6nn2XwUZ2QXVPvwzILoFklTOwYzQ8dj7F5STNqv3ZWHXR6BK/iyTsyfx/q1
- qtH7bL/pdBvtx40noEamhS+8PkOAm1+FOXNWMGzCUXt4ls3KcE8E6sEKlbKgoXHS2ygq
- fZFtH8gyBLWxsUoMTZ4g9ekdM4Lwxip+0iYdGeSZCqcdm867uR2YqICwSm9R/ih6nvvk
- E9h2iZT2/iZyOQjcSTxyVGT7WHaZaH6Bf7vvtdF/t0PBj4wTAFens0KXhPeOFwqL9/fB
- fz7g==
+ bh=u/873brHhZR6xm18sDiZdhD33uqz5ep38GtGCx69qMY=;
+ b=WWR2i/oD1/ImYmqzvGm+tSJJ7MlYn6oWxndq5vCHMn2AFVVnhZ/RRBzCsMw6c831ag
+ +5JoERRNMn0iyyrGiJxWZv6FFkwWZRl9yv32YVwUpqYgbh28p7CYJV7h+9P867hF010F
+ r9gP6OdjsJuWvEZ6BIxpy84WwiSP8clBu/odr+AgHbHNqlRYq3YZ8pTwaJtxSqY3HmGy
+ NG7tReTFSjSfIeBzXa7yaIxwjoZcEaaPtpo7mXeyubfh/lBjeNlLp5Z1qTozN0i9ub0R
+ dq0L6M1nwXV5wBuMnUEb9/zMUQdVainoXaQ9FZp2P6Py7yg7TWFfqdRqZ0S0EVI5kF2W
+ 6IQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=vyVwZE5kS8xGdR91o+WjovvMprsI53ZLyaYZnmErV2U=;
- b=HbuuJu2IIbrzgfv6LALnmYg5eQm5R6sYmlt8qf6rJXGmWSFNvz8BmZZXBfCPrsRUiO
- B0luHNONV7/vxBcieXjTnu/+ph0etBg1VaSU9skZw9XRz9Oft4GQ5oOwSBHkm+RP6uKZ
- yzXCGybUjG1byFVDXY7iBxSOyb7FxyPkNXTLd4WT6jb9lKMMW8ml9QV8n3h0Yi3vHAnt
- aL2s7H6ii9Zk9sCXFsb6K7wgVh+3y09kBzt+mzEYUGERud8jPgQixdAiofPSzUZm4zjl
- rTGanmo8zUxtgTYDkVupLvp4+lutAKoz+IOYYapZkE3iWsdEvv2jAX+vQuFVKcMGfX4N
- F3hQ==
-X-Gm-Message-State: AOAM532fDVeiH+Y9HXWj+tv8XV8xl/Rt8pgF5ucbHkzcepuTMyPP2f+1
- 1/oWEcfSVGClyptHsRIorvOWkw==
-X-Google-Smtp-Source: ABdhPJzoGZPyDMK/rd4UpWIt18POgV1l3Mt9/on0ljpwn4kVUcoE59SuHBLlq6qeR6BQ5cDdBUGS3A==
-X-Received: by 2002:a5d:6488:0:b0:1ea:7bfa:41e1 with SMTP id
- o8-20020a5d6488000000b001ea7bfa41e1mr394408wri.563.1645449048801; 
- Mon, 21 Feb 2022 05:10:48 -0800 (PST)
+ bh=u/873brHhZR6xm18sDiZdhD33uqz5ep38GtGCx69qMY=;
+ b=YM48upB9hg4OmTA4+poKhu9+sbJaNnA5agKMLgouOSzu0/0GbAD5JsU+7UldS9LR2g
+ JeRqibk2iA2DYPwXyQkXmKEJJ4++MTMdDhyQz7uEUP3dO7MUQmOxg4GZuC9DJEiplYcr
+ SkeYuD2QhapswFsP2SQaCGMCtDX0T/knTJDTt5QSSFq+1Xerr1v3/IeQ7yUEBlvzFoks
+ TlDCJ7Mk3koQZoe0CpUzHMm6mDI/39UHPsM2h+JfRWUbXILsVPPWqoahZvj+FjnX2WGP
+ ZdrdIkh7hRefLub2n3fW69RzIYrmr9A06lzGsIu5ILmdJSjg0Cpe6VSfaaVmi2nSrhLl
+ VJhQ==
+X-Gm-Message-State: AOAM530Jap0AvK+xwge9FvbEt7SLKzYYNH7uJe5eoqsBfUKSrp6SdFMo
+ DHd7WbCJWHBFNPqQFmwZl1IP2Q==
+X-Google-Smtp-Source: ABdhPJwsozEEOuF/0rPoouuPwDOTCYZ96rRUj9bR+ckw7xR4Yo/oO3Yc462V1ta/luwtz7dIWCoRHQ==
+X-Received: by 2002:a05:600c:384a:b0:37b:e8ac:851f with SMTP id
+ s10-20020a05600c384a00b0037be8ac851fmr9358623wmr.158.1645449045225; 
+ Mon, 21 Feb 2022 05:10:45 -0800 (PST)
 Received: from srini-hackbox.lan
  (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
- by smtp.gmail.com with ESMTPSA id 3sm49412801wrz.86.2022.02.21.05.10.47
+ by smtp.gmail.com with ESMTPSA id 3sm49412801wrz.86.2022.02.21.05.10.44
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 21 Feb 2022 05:10:48 -0800 (PST)
+ Mon, 21 Feb 2022 05:10:44 -0800 (PST)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH 07/10] ASoC: codecs: wcd-mbhc: add runtime pm support
-Date: Mon, 21 Feb 2022 13:10:34 +0000
-Message-Id: <20220221131037.8809-8-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 04/10] ASoC: codecs: tx-macro: add runtime pm support
+Date: Mon, 21 Feb 2022 13:10:31 +0000
+Message-Id: <20220221131037.8809-5-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20220221131037.8809-1-srinivas.kandagatla@linaro.org>
 References: <20220221131037.8809-1-srinivas.kandagatla@linaro.org>
@@ -99,83 +99,84 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-under low power state a SoundWire Wake IRQ could trigger MBHC interrupts
-so make sure that codec is not in suspended state when this happens.
-
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/codecs/wcd-mbhc-v2.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ sound/soc/codecs/lpass-tx-macro.c | 41 +++++++++++++++++++++++++++++++
+ 1 file changed, 41 insertions(+)
 
-diff --git a/sound/soc/codecs/wcd-mbhc-v2.c b/sound/soc/codecs/wcd-mbhc-v2.c
-index 7488a150a138..c53c2ef33e1a 100644
---- a/sound/soc/codecs/wcd-mbhc-v2.c
-+++ b/sound/soc/codecs/wcd-mbhc-v2.c
-@@ -5,6 +5,7 @@
- #include <linux/init.h>
- #include <linux/slab.h>
- #include <linux/device.h>
+diff --git a/sound/soc/codecs/lpass-tx-macro.c b/sound/soc/codecs/lpass-tx-macro.c
+index 7347d79a6329..1c0f0d27ed42 100644
+--- a/sound/soc/codecs/lpass-tx-macro.c
++++ b/sound/soc/codecs/lpass-tx-macro.c
+@@ -6,6 +6,7 @@
+ #include <linux/clk.h>
+ #include <linux/io.h>
+ #include <linux/platform_device.h>
 +#include <linux/pm_runtime.h>
- #include <linux/printk.h>
- #include <linux/delay.h>
- #include <linux/kernel.h>
-@@ -711,6 +712,16 @@ static irqreturn_t wcd_mbhc_hphr_ocp_irq(int irq, void *data)
- static int wcd_mbhc_initialise(struct wcd_mbhc *mbhc)
- {
- 	struct snd_soc_component *component = mbhc->component;
-+	int ret;
+ #include <linux/regmap.h>
+ #include <sound/soc.h>
+ #include <sound/soc-dapm.h>
+@@ -1844,6 +1845,13 @@ static int tx_macro_probe(struct platform_device *pdev)
+ 					      ARRAY_SIZE(tx_macro_dai));
+ 	if (ret)
+ 		goto err;
 +
-+	ret = pm_runtime_get_sync(component->dev);
-+	if (ret < 0 && ret != -EACCES) {
-+		dev_err_ratelimited(component->dev,
-+				    "pm_runtime_get_sync failed in %s, ret %d\n",
-+				    __func__, ret);
-+		pm_runtime_put_noidle(component->dev);
-+		return ret;
-+	}
- 
- 	mutex_lock(&mbhc->lock);
- 
-@@ -751,6 +762,9 @@ static int wcd_mbhc_initialise(struct wcd_mbhc *mbhc)
- 
- 	mutex_unlock(&mbhc->lock);
- 
-+	pm_runtime_mark_last_busy(component->dev);
-+	pm_runtime_put_autosuspend(component->dev);
++	pm_runtime_set_autosuspend_delay(dev, 3000);
++	pm_runtime_use_autosuspend(dev);
++	pm_runtime_mark_last_busy(dev);
++	pm_runtime_set_active(dev);
++	pm_runtime_enable(dev);
 +
+ 	return ret;
+ err:
+ 	clk_bulk_disable_unprepare(TX_NUM_CLKS_MAX, tx->clks);
+@@ -1862,6 +1870,38 @@ static int tx_macro_remove(struct platform_device *pdev)
  	return 0;
  }
  
-@@ -1078,10 +1092,19 @@ static void wcd_correct_swch_plug(struct work_struct *work)
- 	int output_mv, cross_conn, hs_threshold, try = 0, micbias_mv;
- 	bool is_spl_hs = false;
- 	bool is_pa_on;
-+	int ret;
- 
- 	mbhc = container_of(work, struct wcd_mbhc, correct_plug_swch);
- 	component = mbhc->component;
- 
-+	ret = pm_runtime_get_sync(component->dev);
-+	if (ret < 0 && ret != -EACCES) {
-+		dev_err_ratelimited(component->dev,
-+				    "pm_runtime_get_sync failed in %s, ret %d\n",
-+				    __func__, ret);
-+		pm_runtime_put_noidle(component->dev);
-+		return;
-+	}
- 	micbias_mv = wcd_mbhc_get_micbias(mbhc);
- 	hs_threshold = wcd_mbhc_adc_get_hs_thres(mbhc);
- 
-@@ -1232,6 +1255,9 @@ static void wcd_correct_swch_plug(struct work_struct *work)
- 
- 	if (mbhc->mbhc_cb->hph_pull_down_ctrl)
- 		mbhc->mbhc_cb->hph_pull_down_ctrl(component, true);
++static int __maybe_unused tx_macro_runtime_suspend(struct device *dev)
++{
++	struct tx_macro *tx = dev_get_drvdata(dev);
 +
-+	pm_runtime_mark_last_busy(component->dev);
-+	pm_runtime_put_autosuspend(component->dev);
- }
- 
- static irqreturn_t wcd_mbhc_adc_hs_rem_irq(int irq, void *data)
++	regcache_cache_only(tx->regmap, true);
++	regcache_mark_dirty(tx->regmap);
++
++	clk_disable_unprepare(tx->clks[2].clk);
++	clk_disable_unprepare(tx->clks[3].clk);
++	clk_disable_unprepare(tx->clks[4].clk);
++
++	return 0;
++}
++
++static int __maybe_unused tx_macro_runtime_resume(struct device *dev)
++{
++	struct tx_macro *tx = dev_get_drvdata(dev);
++
++	clk_prepare_enable(tx->clks[2].clk);
++	clk_prepare_enable(tx->clks[3].clk);
++	clk_prepare_enable(tx->clks[4].clk);
++	regcache_cache_only(tx->regmap, false);
++	regcache_sync(tx->regmap);
++	tx->reset_swr = true;
++
++	return 0;
++}
++
++static const struct dev_pm_ops tx_macro_pm_ops = {
++	SET_RUNTIME_PM_OPS(tx_macro_runtime_suspend, tx_macro_runtime_resume, NULL)
++};
++
+ static const struct of_device_id tx_macro_dt_match[] = {
+ 	{ .compatible = "qcom,sc7280-lpass-tx-macro" },
+ 	{ .compatible = "qcom,sm8250-lpass-tx-macro" },
+@@ -1873,6 +1913,7 @@ static struct platform_driver tx_macro_driver = {
+ 		.name = "tx_macro",
+ 		.of_match_table = tx_macro_dt_match,
+ 		.suppress_bind_attrs = true,
++		.pm = &tx_macro_pm_ops,
+ 	},
+ 	.probe = tx_macro_probe,
+ 	.remove = tx_macro_remove,
 -- 
 2.21.0
 
