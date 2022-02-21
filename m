@@ -4,77 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 396F3C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Feb 2022 13:14:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03817C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Feb 2022 13:14:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 70D5E16F3;
-	Mon, 21 Feb 2022 14:13:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70D5E16F3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4D21F16AB;
+	Mon, 21 Feb 2022 14:13:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4D21F16AB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645449263;
-	bh=btdLpXPIP8zOcSYHl6uCbcLtwqYMwyFdk1m7rbd6kMk=;
+	s=default; t=1645449279;
+	bh=jv2Gp/N67y1Ab3liSlzKJKiHePsfK1JgwEJOmyNnJBg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qBLAXLrPJu6cVPyoIv/ZrTl4YCys/4Z0MPpJH6oGFAct6ote60BQ8IG1DvX1n1Y8g
-	 PSDIQAn1p1GpIh9rIlvod6mXyQjPzDyXxM8UGrRALckpRZCYskRMXIgdlRlRjhtVa4
-	 IfcGlm7GyepIUz3b680AwwK/QRv8OVE2GYzRLM7A=
+	b=qEwj0g6QrywuaPGV2N/D2oncKky/a86GKrUUeLRvf8698gsTo3B3Ig9kS+1rnKqIk
+	 m7NwvxO5wRi7Fn8YTtbvVImL0pR8cZEledLSOCxK0fwGpTvx7w+BfS/YvOW9bR1aWU
+	 rbxIUoDlHqf6oJl/jooNzR5R4ep0ISYPkG+YVIn4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AF2F0F8053C;
-	Mon, 21 Feb 2022 14:11:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 357FAF80543;
+	Mon, 21 Feb 2022 14:11:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 34E40F80515; Mon, 21 Feb 2022 14:11:02 +0100 (CET)
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com
- [IPv6:2a00:1450:4864:20::42d])
+ id 4D9F0F80511; Mon, 21 Feb 2022 14:11:02 +0100 (CET)
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com
+ [IPv6:2a00:1450:4864:20::433])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E4736F8051C
- for <alsa-devel@alsa-project.org>; Mon, 21 Feb 2022 14:10:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4736F8051C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 47ADFF800D1
+ for <alsa-devel@alsa-project.org>; Mon, 21 Feb 2022 14:10:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47ADFF800D1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="mbzV2rMh"
-Received: by mail-wr1-x42d.google.com with SMTP id h6so26984010wrb.9
- for <alsa-devel@alsa-project.org>; Mon, 21 Feb 2022 05:10:52 -0800 (PST)
+ header.b="I+dOyBnJ"
+Received: by mail-wr1-x433.google.com with SMTP id d27so27016467wrc.6
+ for <alsa-devel@alsa-project.org>; Mon, 21 Feb 2022 05:10:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=to/0VQRxET3KlmX/g/6lkGwzP14Y4zFtNFsg8ymenlA=;
- b=mbzV2rMh2TIubzZRZpZTj5cmoESg5T8lu0MMvfc1S98Psy4yiSSn4zn54E+r2mQPJu
- vCSzoIucJ27el+jkSLan/J2VU8veKAGCYUQUEovYVIXeZ8CYklNabYfZILeOtgcfXS8F
- EUMSjGIkqebrpIiIyGifTRr1p2NqmschAolxTVT3np5RVssz03nz3ybbxEDUHzp4ecNu
- 2fQerpohucN1tYDjjF89HccRxQHoiYRQmEUhxbSAC7ClcQNrme0R1rEtqsd+p6efDXZE
- qkXvaPwMsBGNEWqdXarP1ItkvdRYcSLf1icCdmNNSJIjnx7SaJ0dYoI4p5YpqxeqHoiY
- bPFQ==
+ bh=2U8Gf3HJdH9syGZl9j1jogHOiAd7YSk+hDONNdww6Ps=;
+ b=I+dOyBnJS4SRSq5buGKlAzEiHETqO9p+g2O0IpuK8oBLKaHrXmg2U4VlsqIUFZOSxh
+ eHPrGLmQiOBf3HIoYDkTGaPN98bzznwbdXh4kZ5/JCdB6mvnKJgn1ezUlkZb3oV7igRG
+ PqQFGVEL5Hhb4lwtAAQxdhR2jV9yjt5aZAekEI14NocbkQ0RIFjHUmbks6YmAjmYEQLy
+ Z5pLb8tUjm+cV4AJvnsXVFhAWL8yEzVyaBLUqSizVaT0mLnTgq9kfHcUJwoAUJuIMjle
+ ISSAKQptuE+8xA4n0KYfUJF610tWF/rFE/gcGKYZSLplADKsGLMN+lV33IazUFyW8Zdv
+ eqhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=to/0VQRxET3KlmX/g/6lkGwzP14Y4zFtNFsg8ymenlA=;
- b=ptvx+x2PhHINen5etbgN+D1xWrhNSsqNcvFnV9Z0ltpt4z8Wdr4oah+UCMcfofKqLK
- 9YwR8Ss7qYjqr3ARJUEe5x7lo7h5mIpU2cSzWfG2zMmIcJD3oFNTaOyMfpuIQyysXO19
- ebKifzURCxgtZ0NUYhRqkFJK3cK+Ry7SRp3VuFGOof6z79sKYYGtT0mGAnoM2ke8m4Kv
- ZAF6vgpOvNmp4x0q2cxm6yJPjP0DGLQGYKZ7lPUMSJQ5vksZChMYWss7Z4UgLZsNJ/1Y
- 9yhZJLQTjG3iU+HZUkyYAm+874d0Lfh/yRpWcSHH5FHbLp75a66p55yu/7itcT7gAC/0
- q7BQ==
-X-Gm-Message-State: AOAM532CoN6dfx4iCpbZ0X0KYD0bdH2wBj3wzttF6lZQsBEqYnkbwp2U
- MZ7rWwggjgsdAlnhN/PZHhr/jg==
-X-Google-Smtp-Source: ABdhPJwVS2QIlSS1PXWjt7wJwFAbOL6vY5vnL/xglBpqQiKgDeFouZ3MoUiTvK6PusY2cD4HIY5CnA==
-X-Received: by 2002:a05:6000:1881:b0:1e8:f75c:591d with SMTP id
- a1-20020a056000188100b001e8f75c591dmr13975498wri.257.1645449050313; 
- Mon, 21 Feb 2022 05:10:50 -0800 (PST)
+ bh=2U8Gf3HJdH9syGZl9j1jogHOiAd7YSk+hDONNdww6Ps=;
+ b=NKYyYUpgOgy7VLDh8w3ruLgXcEUX6TNVfEEsZdaZ0vXzD5Gh7tGrS2wWVY2ovm4eo4
+ W/21/XeH4hfDA/cyKqzpsAma3BXqxKJiFwEv0nLy/ZcB6yaEBYbQldJp9245/SPJoAO/
+ ki/ZrGgvFv/AHaWqtyoaf0hTamOMtpOj3eldcjhRUiuE2MrWmz0ZxyICvGbpg4G1NpB4
+ L/mpuUSy+ie5oezIbny3qwaHdGPbhlUQh9VUzfuXSfjstppdbDTlA5SdGGTcfebHsGZE
+ Sci0tAqyW558hR5ptDPUe0ItMIU3G77u/9ShxyBQM8FlpR7mcdAQKaWJvTKQIMeSM4z6
+ 8n4Q==
+X-Gm-Message-State: AOAM530V/IWn0Uz9v8tKNBR8LAWNU7afHxpjzFTpgWrjxdfjKc3IM3jE
+ KwJW/QZfgW1amr3Ie/ZBxPauug==
+X-Google-Smtp-Source: ABdhPJwlbxv93gkUtu9c2GU5/Fcp1Mwcm0jj3wbGovTiBxEEh4DWuGiuIKoTxqB2wGyS9YPkIu9v0w==
+X-Received: by 2002:adf:e952:0:b0:1e3:39ed:d990 with SMTP id
+ m18-20020adfe952000000b001e339edd990mr15889802wrn.215.1645449052490; 
+ Mon, 21 Feb 2022 05:10:52 -0800 (PST)
 Received: from srini-hackbox.lan
  (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
- by smtp.gmail.com with ESMTPSA id 3sm49412801wrz.86.2022.02.21.05.10.48
+ by smtp.gmail.com with ESMTPSA id 3sm49412801wrz.86.2022.02.21.05.10.51
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 21 Feb 2022 05:10:49 -0800 (PST)
+ Mon, 21 Feb 2022 05:10:52 -0800 (PST)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH 08/10] ASoC: codecs: wsa-macro: setup soundwire clks correctly
-Date: Mon, 21 Feb 2022 13:10:35 +0000
-Message-Id: <20220221131037.8809-9-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 10/10] ASoC: codecs: rx-macro: setup soundwire clks correctly
+Date: Mon, 21 Feb 2022 13:10:37 +0000
+Message-Id: <20220221131037.8809-11-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20220221131037.8809-1-srinivas.kandagatla@linaro.org>
 References: <20220221131037.8809-1-srinivas.kandagatla@linaro.org>
@@ -108,35 +108,35 @@ Fix this by enabling mclk and npl clk when SoundWire clks are enabled.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/codecs/lpass-wsa-macro.c | 4 +++-
+ sound/soc/codecs/lpass-rx-macro.c | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/lpass-wsa-macro.c b/sound/soc/codecs/lpass-wsa-macro.c
-index a8d30f3b3fdf..d51d6acac28b 100644
---- a/sound/soc/codecs/lpass-wsa-macro.c
-+++ b/sound/soc/codecs/lpass-wsa-macro.c
-@@ -2257,6 +2257,7 @@ static int wsa_swrm_clock(struct wsa_macro *wsa, bool enable)
- 	struct regmap *regmap = wsa->regmap;
+diff --git a/sound/soc/codecs/lpass-rx-macro.c b/sound/soc/codecs/lpass-rx-macro.c
+index fb5d4bb8bd8b..9ce83cff3e1b 100644
+--- a/sound/soc/codecs/lpass-rx-macro.c
++++ b/sound/soc/codecs/lpass-rx-macro.c
+@@ -3428,6 +3428,7 @@ static int swclk_gate_enable(struct clk_hw *hw)
+ {
+ 	struct rx_macro *rx = to_rx_macro(hw);
  
- 	if (enable) {
-+		clk_prepare_enable(wsa->clks[2].clk);
- 		wsa_macro_mclk_enable(wsa, true);
++	clk_prepare_enable(rx->clks[2].clk);
+ 	rx_macro_mclk_enable(rx, true);
+ 	if (rx->reset_swr)
+ 		regmap_update_bits(rx->regmap, CDC_RX_CLK_RST_CTRL_SWR_CONTROL,
+@@ -3453,6 +3454,7 @@ static void swclk_gate_disable(struct clk_hw *hw)
+ 			   CDC_RX_SWR_CLK_EN_MASK, 0);
  
- 		/* reset swr ip */
-@@ -2281,6 +2282,7 @@ static int wsa_swrm_clock(struct wsa_macro *wsa, bool enable)
- 		regmap_update_bits(regmap, CDC_WSA_CLK_RST_CTRL_SWR_CONTROL,
- 				   CDC_WSA_SWR_CLK_EN_MASK, 0);
- 		wsa_macro_mclk_enable(wsa, false);
-+		clk_disable_unprepare(wsa->clks[2].clk);
- 	}
+ 	rx_macro_mclk_enable(rx, false);
++	clk_disable_unprepare(rx->clks[2].clk);
+ }
  
- 	return 0;
-@@ -2351,7 +2353,7 @@ static int wsa_macro_register_mclk_output(struct wsa_macro *wsa)
+ static int swclk_gate_is_enabled(struct clk_hw *hw)
+@@ -3490,7 +3492,7 @@ static struct clk *rx_macro_register_mclk_output(struct rx_macro *rx)
  	struct clk_init_data init;
  	int ret;
  
--	parent_clk_name = __clk_get_name(wsa->clks[2].clk);
-+	parent_clk_name = __clk_get_name(wsa->clks[3].clk);
+-	parent_clk_name = __clk_get_name(rx->clks[2].clk);
++	parent_clk_name = __clk_get_name(rx->clks[3].clk);
  
  	init.name = clk_name;
  	init.ops = &swclk_gate_ops;
