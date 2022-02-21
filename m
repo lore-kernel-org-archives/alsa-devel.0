@@ -4,58 +4,185 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 942FEC433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Feb 2022 05:58:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9487BC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Feb 2022 06:42:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F3F291675;
-	Mon, 21 Feb 2022 06:57:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F3F291675
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6F420167F;
+	Mon, 21 Feb 2022 07:42:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F420167F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645423110;
-	bh=dowOYlnJLhTc8t3x7ITeC0TIQo9mC6M0czdXpeErFRk=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=P8qdggMlW5JOilNS/13aZxZa70b1YMoHbWhmF0Frl+FgLbmbVGoj+/IpemXhbE9ql
-	 dh6klvJTAfYPMMvJljWwJVva7oss0nPHLu2rYbffr+y4XMMci9vvTbtQpWBWl8g15T
-	 WUNr63vZKx62PA/wy1BkfHmht/HBgDEdHHdE7BW0=
+	s=default; t=1645425776;
+	bh=NOdm07aEZ4LQ/x0f12O8dpCEiyByxY7Qo/HaNXMaA6M=;
+	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=stCMgwpaIIAq41qYcnvO/4B4sCqZrAB+5ULC++rRWse7C8450JfPgwHLN+fGGgdcn
+	 aHjAZCSYfMBmMgK9rhZqzLSoaQLoV3gEq7fp8jQMn1+pPfzYM3X6/WhTB3mTrI4xwU
+	 VWni2VXlfTzRgRnAGeXJddIvrNRwfPcyT7aTNinc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 79ABDF80139;
-	Mon, 21 Feb 2022 06:57:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9656DF80166;
+	Mon, 21 Feb 2022 07:42:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F0CA7F8013D; Mon, 21 Feb 2022 06:57:37 +0100 (CET)
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+ id 1AC89F8013D; Mon, 21 Feb 2022 07:42:02 +0100 (CET)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6A61EF80118
- for <alsa-devel@alsa-project.org>; Mon, 21 Feb 2022 06:57:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A61EF80118
-X-UUID: 8490de897e484d41a53be731ec7513ea-20220221
-X-UUID: 8490de897e484d41a53be731ec7513ea-20220221
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
- (envelope-from <trevor.wu@mediatek.com>)
- (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
- with ESMTP id 711862382; Mon, 21 Feb 2022 13:57:20 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 21 Feb 2022 13:57:19 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via
- Frontend Transport; Mon, 21 Feb 2022 13:57:19 +0800
-From: Trevor Wu <trevor.wu@mediatek.com>
-To: <broonie@kernel.org>, <tiwai@suse.com>, <matthias.bgg@gmail.com>
-Subject: [PATCH] ASoC: mediatek: mt8195: enable apll tuner
-Date: Mon, 21 Feb 2022 13:57:16 +0800
-Message-ID: <20220221055716.18580-1-trevor.wu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1412AF800FA;
+ Mon, 21 Feb 2022 07:41:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1412AF800FA
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="cg6RfyYk"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1645425716; x=1676961716;
+ h=from:to:cc:subject:date:message-id:references:
+ in-reply-to:content-transfer-encoding:mime-version;
+ bh=NOdm07aEZ4LQ/x0f12O8dpCEiyByxY7Qo/HaNXMaA6M=;
+ b=cg6RfyYk1U6hkf1aBUzyYyEnRf1uvB7g4Lcpx9IfpwnReH4ah93szaQc
+ ELMrGWQajnMdSRi5NMQzKmqBeYQ8GtnwSZrqHpiNNckjEC5SLmZvjmzgp
+ aAFIHex/0YyUgsr1RWLgOutzx35lKxtxdYxFLgP6pftkVSJd3vIuusy80
+ eqS8n5DQCelgO/oeyQyDiKr/BziiFdpHGHvUJYSb4SgUly8OJ7wgKkel8
+ eBV6B3zH4Fd5vPYutW66PArvRzKcFVhOBvd+r8a2XQTkBiUCWI98hDeDv
+ sf5Lk4VgFNgLlJxvBoHXpx5cBhJUT4B+z9ULx+AGzEQ4GOQXOxsM0fzt/ w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10264"; a="312189845"
+X-IronPort-AV: E=Sophos;i="5.88,385,1635231600"; d="scan'208";a="312189845"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 Feb 2022 22:41:46 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,385,1635231600"; d="scan'208";a="542519959"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+ by fmsmga007.fm.intel.com with ESMTP; 20 Feb 2022 22:41:42 -0800
+Received: from orsmsx608.amr.corp.intel.com (10.22.229.21) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Sun, 20 Feb 2022 22:41:38 -0800
+Received: from orsmsx607.amr.corp.intel.com (10.22.229.20) by
+ ORSMSX608.amr.corp.intel.com (10.22.229.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Sun, 20 Feb 2022 22:41:38 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx607.amr.corp.intel.com (10.22.229.20) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20 via Frontend Transport; Sun, 20 Feb 2022 22:41:38 -0800
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.172)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2308.20; Sun, 20 Feb 2022 22:41:37 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HGGLudpRCOOl8SbNFXL4KcpNsFObNOtqbzRczCkDvvxTGYrbXLGloVvbR5ou6vEhCimh8DXyj0GaDOzQPKvKUO3BvOL/aeMNrh+eJok7EOlqgDz4S8DGSYBOqZO7D9I7EAacr/nrZ0P3AByyIo8b2WqMS5xd69xdyz5B/4eswoY1g9kB0n3/7/jcgcKrkVyDoGYHGaEZp/Rcp6MEhlsA5V6TKbZ7tdHowHH9VmpsyeQleV80Ircs+nVENjGhH3MM+TRrL/jig18v2XoG614emBApw+Ry62U/otOqVGZ5W9PJ0r0knCYzBSjXTopwH+IRBPuNQ3zlSOh2elH/NLQU8w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=NOdm07aEZ4LQ/x0f12O8dpCEiyByxY7Qo/HaNXMaA6M=;
+ b=Nc2vkbW2wZ4Dd2VXgNm3moTUX9oBMtFek3HPRr3bIbuuDWxrEd/ROfBYeqwEUzub2lxgjL0nrqno1ysqAWXm7svM8Lf6hxZGPWKJIGjYM9E6bjGEnmLv1GrWH2yB8/7XbjyMjF0kamQi1+zToEK15OuBnCiyCEEq99U70nUmxg/XigzwjqoyqrTOG8uqfufnjF0RoSnYhdtVx0GMDoueVzvjhWwpc5yqMIgJ/nVq2/evfRsFiT1nf7rh22owY3le8WIzmMBcbpgBwK99Q4kQWVERTgqHrImqgVhdyQYGAdaCUYsqCANrYKZqphsm8YkhvrN+aOOCb56JJ1lQcWTVJw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from SA2PR11MB4891.namprd11.prod.outlook.com (2603:10b6:806:11e::18)
+ by MWHPR11MB2000.namprd11.prod.outlook.com (2603:10b6:300:2b::23)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4995.24; Mon, 21 Feb
+ 2022 06:41:36 +0000
+Received: from SA2PR11MB4891.namprd11.prod.outlook.com
+ ([fe80::f437:9b7d:d749:a7]) by SA2PR11MB4891.namprd11.prod.outlook.com
+ ([fe80::f437:9b7d:d749:a7%5]) with mapi id 15.20.4995.027; Mon, 21 Feb 2022
+ 06:41:36 +0000
+From: "Lu, Brent" <brent.lu@intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Subject: RE: [PATCH] ASoC: SOF: Intel: Add topology overwrite for Felwinter
+Thread-Topic: [PATCH] ASoC: SOF: Intel: Add topology overwrite for Felwinter
+Thread-Index: AQHYJKHaUwv5L/YC+U2p0OZj3Ae6BqyZm4eAgAP3LQA=
+Date: Mon, 21 Feb 2022 06:41:36 +0000
+Message-ID: <SA2PR11MB4891C99762A4D9DCB2E2D89F973A9@SA2PR11MB4891.namprd11.prod.outlook.com>
+References: <20220218082741.1707209-1-brent.lu@intel.com>
+ <2267504d-37cc-9a6e-5c4a-6051df95773c@linux.intel.com>
+In-Reply-To: <2267504d-37cc-9a6e-5c4a-6051df95773c@linux.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.6.200.16
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 0eac2ff2-2d23-434d-47e2-08d9f5053502
+x-ms-traffictypediagnostic: MWHPR11MB2000:EE_
+x-microsoft-antispam-prvs: <MWHPR11MB2000C6FF77EE527E40424B18973A9@MWHPR11MB2000.namprd11.prod.outlook.com>
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: gWFakfODLMAurqIqu+YYIOMA95J0a7zz9B2zCzlsHE5DC1UYvEWIUmhoZgALNy4LxyLu84O72hvylIyM8H3fTOAT9IzEKNqteRVgUPs19yMzm7/CFQ+9ytJCV90l/x+6n7zAODzs39mLODURZ/vwtQvA9KI7yGpOrssjy8y+9GONH3tgJ+UPhFfM8IDo1gncpflKmv7c62Z2v2licwzjfOK+t89d+Dx4egS6V9aMV33UNqyUOLJPmO0YsB27+Q+PUan+TSythRsrd60JpjNSAp8hciOv8eLuLs6Rjbam+xRfeJRIPcJBEe1mbe1LZ75LdpaHHKYMLXmT749BHtvgSsrxFrKjUpLzh1SPWXovsXX3q8Gs4eqk9x9DhJPKQW/JernMNxxaQugCZjYIukQjwQeGSUVJ2KRtNiPylNl8yQvArt2A12W44+CjfZrdVEuReO4D0GHtC+Q0l0mshwnmFjJE5ZPiGCTBmH6Hr5/GKAJt3gGAnMttUw6AAUGd+EMuQs/FPcHp7WtOnKfZ+HsfhGCUovXG+rGsy083iRhs0vLHqwKgSD2fs7+rG0+GVsIMNjZzacp1W+Zz8FjK55uM1If5S0Y6PIvHPGQjjcHWjnHrDz0RQ5E+fdldMZyd/ppVx+31rUOkJdXMvLJpinEXpSFBan7YGZAydRWn4e93d+3lA942f+fPf+9p4auRIusKrmshLjcgORe7KxTKsPpraKKSzXKgfOucyXqgM2cS5yw=
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:SA2PR11MB4891.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230001)(366004)(4326008)(38070700005)(38100700002)(558084003)(52536014)(7416002)(5660300002)(55016003)(2906002)(8936002)(33656002)(66476007)(110136005)(54906003)(8676002)(64756008)(6506007)(26005)(7696005)(186003)(66946007)(76116006)(9686003)(66556008)(122000001)(82960400001)(71200400001)(86362001)(508600001)(316002)(66446008)(11716005);
+ DIR:OUT; SFP:1102; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?YlRsbVZ1UkNRWTN6ZkVBSjZHV3l6dy9jWkpNdmVkNlUxY1JDU2hSMTY3YWxx?=
+ =?utf-8?B?UHd2WEVtQk5jY3VSQlpwRFc0bXFRb2E5VzFxK21uK1NHZUM3ZXlyWDVCbkRU?=
+ =?utf-8?B?TUdpNDZsNndTUlREL1FsbzUxR2pZSVhNaDVyY3dpMll5UEFWYXVvSGdXbkdz?=
+ =?utf-8?B?eGNUSEsrNStnSDFFZjdPeGh5djExTm9tSWNyT2pNZnJSWDEvd25XYjdCaUVQ?=
+ =?utf-8?B?TGZyQWdpL1hUaWRIdTJIVW91YWZmK1ExaUFMakZWUisrWnd5Q2I0Z0theURk?=
+ =?utf-8?B?aCtJcGcrY2RYSWNMT1BOWHZ1bm1yRUdlMVNHamo4K1V0MS9tb0ZqcjBmUGd4?=
+ =?utf-8?B?SnVWUEZzNWlXb29oc2pPdUFNZUIrNForK1VJUTBnakZHWm9vZEg5UTY3OU10?=
+ =?utf-8?B?TjdHdkpiOWpyRVBncWhqU0c2R2V6eXM2VUo4b2YycG9lZW5ZSHhuOWU0U0Nj?=
+ =?utf-8?B?RmxGeFlVYkpPbUhCM0hKNGU5VWNSNlBFVzJ1eUp4VVhrVGNrZjFLalllZUZJ?=
+ =?utf-8?B?ODZjcVB0cE1JQzNlMUdkRDFYU0xzbG1UTHFjdkRRRGszSGJOSm5GbDZLSnpq?=
+ =?utf-8?B?cnNMVXNSRTNROEQ3WWhGQXpUMWRSOWVQcW9WUHh6UU9ETnlmbUoxN0lnSHIw?=
+ =?utf-8?B?Sm15OExNaVVYL2tjSTJYQ0tYeVN5SnhRbm8yRFRhV2VxYlVubCtCK1h6WFNk?=
+ =?utf-8?B?cDZtWk42cjEydysyUUx0WkxjL1ZUR2lYNVpxWmhDTUxLbk1RaFd6L3ZRc3lp?=
+ =?utf-8?B?RWZsL29XeC9zWUc5d2JPblBES2toUVdrNEQzeURnZ0VTUU9rRmp1U1Jja0RM?=
+ =?utf-8?B?RTQ0MVVlQVhjQWYxeGwySHZtd2tNNitGNXpHdkpoYU9EY0xiU2pmVEROdzlx?=
+ =?utf-8?B?bVF5NmRMNWlta2lNS3pIMmpyVFFFS1pZWlVrTUhaZFhxN3orUzdBK2FsZ1pt?=
+ =?utf-8?B?d2RrQkhHd1dHMk4xc3V1eVU1Lyt2YlpzV01vWm4zWTYwS0dCblpxQ2ZUR2Jl?=
+ =?utf-8?B?bzF5SFF0NW9KVWJPdUtnSGJFSElqVjIzVkRBT3JDS3p6bWk4ZjJyYmcycDVP?=
+ =?utf-8?B?VTVzMzJpQUZYOU9VZllRdE5XWktwdVlBblNXUzlWdFJ5Z1pGZSsrSE1BMmpI?=
+ =?utf-8?B?SWkxNzhIU3N6R3lVc3A5WlNiblhGUm9RcTBmTGxGc210aFlINHJsN0l5ZWNP?=
+ =?utf-8?B?MFVPbkxxd21sQ2hsakZtVHUwckR0aGFyekt5ZU4rb3FhMThZeVBJYjNYWVhu?=
+ =?utf-8?B?YUdNNjk4MVc5SE1hM0NpMVhpSmNQc0ZLUmdkZm5XU0d1dnpsUkVHVkRNZVpK?=
+ =?utf-8?B?N3VVTUROSnVWVXRrL0RTcmJFT3JuLzdmNFRSZVVnaTZLR29aNjl1TzdweUF6?=
+ =?utf-8?B?L0dUNlN3cVR2Qng3UTRNUnQ0bGcxbHpyUzN0Uys1NjV3a0pGd1pGNmZ4S1A1?=
+ =?utf-8?B?djF3OVFabTJFc1dZdmI0SHNGREw1YnRlYnRVbWJ0R2VPdUFzN1FkTTlYMUVt?=
+ =?utf-8?B?d09WMGVoRmR6c0QrOG9YKzNwYmFZWmVZQWRuNllScWpneXVtOFNhUG9EV3FQ?=
+ =?utf-8?B?S3RkWk5vYkpreEZpTENqQ2E4Zm9tblIzcmZYc0NlOXY0bEJQaUNhWHRrSGx1?=
+ =?utf-8?B?elZqeXk2S2hqUnVmanEySk5oem0xc2dmTnM2QVlBMzZmMFc0NXNMRkRNY0tZ?=
+ =?utf-8?B?SHNJaUxTaWdybVptZEJTRlJRZEJzc21ZWjc0VG5GcUZjeHZuL3h6dEpKMngr?=
+ =?utf-8?B?eVR2TW9SeVVReks1cmdIUE9ZKzg1d0JreWtxbzg4VFV1YlRqdUxuaCtGa1Rq?=
+ =?utf-8?B?RkkwNWNWWjVnaEJLZGg0bFl5T091YndhNzJOYUNub0FXeVhHUkxpSXd3YTZW?=
+ =?utf-8?B?aDBTMklUSFlMYWFnckVpUk54cXBteVlNWkxRSzFJeFBOSjRkMitFcXg1aWxF?=
+ =?utf-8?B?MnJmMm04RFRCd3VVNUF4OE51TnRmT3BUd0plazdYS3ExckRhcVhrak5pa21v?=
+ =?utf-8?B?MzFKeVVVZE10V2RraTlicUVvdEVMa21zUGxmL3ozOXY0bGFOcnZxZytiNGlt?=
+ =?utf-8?B?bUJGL1NSeUJ5WTY0VEs0QmpoQ3A4eldOSldscEtyekxvV0VXMkxpU1BYYmdn?=
+ =?utf-8?B?ZmVvZWFOTGt2Z0ovNExHRXowa1QwNkQ0MzkrMVZHczU5Rm5ZMUcwaG9KbmJR?=
+ =?utf-8?B?UFE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK: N
-Cc: alsa-devel@alsa-project.org, bicycle.tsai@mediatek.com,
- linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
- trevor.wu@mediatek.com, yc.hung@mediatek.com,
- linux-arm-kernel@lists.infradead.org
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA2PR11MB4891.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0eac2ff2-2d23-434d-47e2-08d9f5053502
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Feb 2022 06:41:36.1994 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: WF8hLkeu2q/8SnbPOHBxWmZ/vMrbO4HVDtT0oMgvxjxaqxgPHiT1eWD2rXnm9i8Yy1b99BKL+w7Eerp0bTWAOg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB2000
+X-OriginatorOrg: intel.com
+Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Takashi Iwai <tiwai@suse.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>,
+ Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
+ Daniel Baluta <daniel.baluta@nxp.com>,
+ "sound-open-firmware@alsa-project.org" <sound-open-firmware@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -71,395 +198,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Normally, the clock source of audio module is either 26M or APLL1/APLL2,
-but APLL1/APLL2 are not the multiple of 26M.
-
-In the patch, APLL1 and APLL2 tuners are enabled to handle sample rate
-mismatch when the data path crosses two different clock domains.
-
-Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
----
- sound/soc/mediatek/mt8195/mt8195-afe-clk.c | 282 ++++++++++++++++++++-
- sound/soc/mediatek/mt8195/mt8195-afe-clk.h |  11 +
- sound/soc/mediatek/mt8195/mt8195-afe-pcm.c |   3 -
- 3 files changed, 292 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/mediatek/mt8195/mt8195-afe-clk.c b/sound/soc/mediatek/mt8195/mt8195-afe-clk.c
-index c2543f4cffb7..efd5cc364a35 100644
---- a/sound/soc/mediatek/mt8195/mt8195-afe-clk.c
-+++ b/sound/soc/mediatek/mt8195/mt8195-afe-clk.c
-@@ -40,6 +40,8 @@ static const char *aud_clks[MT8195_CLK_NUM] = {
- 	[MT8195_CLK_SCP_ADSP_AUDIODSP] = "scp_adsp_audiodsp",
- 	/* afe clock gate */
- 	[MT8195_CLK_AUD_AFE] = "aud_afe",
-+	[MT8195_CLK_AUD_APLL1_TUNER] = "aud_apll1_tuner",
-+	[MT8195_CLK_AUD_APLL2_TUNER] = "aud_apll2_tuner",
- 	[MT8195_CLK_AUD_APLL] = "aud_apll",
- 	[MT8195_CLK_AUD_APLL2] = "aud_apll2",
- 	[MT8195_CLK_AUD_DAC] = "aud_dac",
-@@ -77,6 +79,268 @@ static const char *aud_clks[MT8195_CLK_NUM] = {
- 	[MT8195_CLK_AUD_MEMIF_DL11] = "aud_memif_dl11",
- };
- 
-+struct mt8195_afe_tuner_cfg {
-+	unsigned int id;
-+	int apll_div_reg;
-+	unsigned int apll_div_shift;
-+	unsigned int apll_div_maskbit;
-+	unsigned int apll_div_default;
-+	int ref_ck_sel_reg;
-+	unsigned int ref_ck_sel_shift;
-+	unsigned int ref_ck_sel_maskbit;
-+	unsigned int ref_ck_sel_default;
-+	int tuner_en_reg;
-+	unsigned int tuner_en_shift;
-+	unsigned int tuner_en_maskbit;
-+	int upper_bound_reg;
-+	unsigned int upper_bound_shift;
-+	unsigned int upper_bound_maskbit;
-+	unsigned int upper_bound_default;
-+	spinlock_t ctrl_lock; /* lock for apll tuner ctrl*/
-+	int ref_cnt;
-+};
-+
-+static struct mt8195_afe_tuner_cfg mt8195_afe_tuner_cfgs[MT8195_AUD_PLL_NUM] = {
-+	[MT8195_AUD_PLL1] = {
-+		.id = MT8195_AUD_PLL1,
-+		.apll_div_reg = AFE_APLL_TUNER_CFG,
-+		.apll_div_shift = 4,
-+		.apll_div_maskbit = 0xf,
-+		.apll_div_default = 0x7,
-+		.ref_ck_sel_reg = AFE_APLL_TUNER_CFG,
-+		.ref_ck_sel_shift = 1,
-+		.ref_ck_sel_maskbit = 0x3,
-+		.ref_ck_sel_default = 0x2,
-+		.tuner_en_reg = AFE_APLL_TUNER_CFG,
-+		.tuner_en_shift = 0,
-+		.tuner_en_maskbit = 0x1,
-+		.upper_bound_reg = AFE_APLL_TUNER_CFG,
-+		.upper_bound_shift = 8,
-+		.upper_bound_maskbit = 0xff,
-+		.upper_bound_default = 0x2,
-+	},
-+	[MT8195_AUD_PLL2] = {
-+		.id = MT8195_AUD_PLL2,
-+		.apll_div_reg = AFE_APLL_TUNER_CFG1,
-+		.apll_div_shift = 4,
-+		.apll_div_maskbit = 0xf,
-+		.apll_div_default = 0x7,
-+		.ref_ck_sel_reg = AFE_APLL_TUNER_CFG1,
-+		.ref_ck_sel_shift = 1,
-+		.ref_ck_sel_maskbit = 0x3,
-+		.ref_ck_sel_default = 0x1,
-+		.tuner_en_reg = AFE_APLL_TUNER_CFG1,
-+		.tuner_en_shift = 0,
-+		.tuner_en_maskbit = 0x1,
-+		.upper_bound_reg = AFE_APLL_TUNER_CFG1,
-+		.upper_bound_shift = 8,
-+		.upper_bound_maskbit = 0xff,
-+		.upper_bound_default = 0x2,
-+	},
-+	[MT8195_AUD_PLL3] = {
-+		.id = MT8195_AUD_PLL3,
-+		.apll_div_reg = AFE_EARC_APLL_TUNER_CFG,
-+		.apll_div_shift = 4,
-+		.apll_div_maskbit = 0x3f,
-+		.apll_div_default = 0x3,
-+		.ref_ck_sel_reg = AFE_EARC_APLL_TUNER_CFG,
-+		.ref_ck_sel_shift = 24,
-+		.ref_ck_sel_maskbit = 0x3,
-+		.ref_ck_sel_default = 0x0,
-+		.tuner_en_reg = AFE_EARC_APLL_TUNER_CFG,
-+		.tuner_en_shift = 0,
-+		.tuner_en_maskbit = 0x1,
-+		.upper_bound_reg = AFE_EARC_APLL_TUNER_CFG,
-+		.upper_bound_shift = 12,
-+		.upper_bound_maskbit = 0xff,
-+		.upper_bound_default = 0x4,
-+	},
-+	[MT8195_AUD_PLL4] = {
-+		.id = MT8195_AUD_PLL4,
-+		.apll_div_reg = AFE_SPDIFIN_APLL_TUNER_CFG,
-+		.apll_div_shift = 4,
-+		.apll_div_maskbit = 0x3f,
-+		.apll_div_default = 0x7,
-+		.ref_ck_sel_reg = AFE_SPDIFIN_APLL_TUNER_CFG1,
-+		.ref_ck_sel_shift = 8,
-+		.ref_ck_sel_maskbit = 0x1,
-+		.ref_ck_sel_default = 0,
-+		.tuner_en_reg = AFE_SPDIFIN_APLL_TUNER_CFG,
-+		.tuner_en_shift = 0,
-+		.tuner_en_maskbit = 0x1,
-+		.upper_bound_reg = AFE_SPDIFIN_APLL_TUNER_CFG,
-+		.upper_bound_shift = 12,
-+		.upper_bound_maskbit = 0xff,
-+		.upper_bound_default = 0x4,
-+	},
-+	[MT8195_AUD_PLL5] = {
-+		.id = MT8195_AUD_PLL5,
-+		.apll_div_reg = AFE_LINEIN_APLL_TUNER_CFG,
-+		.apll_div_shift = 4,
-+		.apll_div_maskbit = 0x3f,
-+		.apll_div_default = 0x3,
-+		.ref_ck_sel_reg = AFE_LINEIN_APLL_TUNER_CFG,
-+		.ref_ck_sel_shift = 24,
-+		.ref_ck_sel_maskbit = 0x1,
-+		.ref_ck_sel_default = 0,
-+		.tuner_en_reg = AFE_LINEIN_APLL_TUNER_CFG,
-+		.tuner_en_shift = 0,
-+		.tuner_en_maskbit = 0x1,
-+		.upper_bound_reg = AFE_LINEIN_APLL_TUNER_CFG,
-+		.upper_bound_shift = 12,
-+		.upper_bound_maskbit = 0xff,
-+		.upper_bound_default = 0x4,
-+	},
-+};
-+
-+static struct mt8195_afe_tuner_cfg *mt8195_afe_found_apll_tuner(unsigned int id)
-+{
-+	if (id >= MT8195_AUD_PLL_NUM)
-+		return NULL;
-+
-+	return &mt8195_afe_tuner_cfgs[id];
-+}
-+
-+static int mt8195_afe_init_apll_tuner(unsigned int id)
-+{
-+	struct mt8195_afe_tuner_cfg *cfg = mt8195_afe_found_apll_tuner(id);
-+
-+	if (!cfg)
-+		return -EINVAL;
-+
-+	cfg->ref_cnt = 0;
-+	spin_lock_init(&cfg->ctrl_lock);
-+
-+	return 0;
-+}
-+
-+static int mt8195_afe_setup_apll_tuner(struct mtk_base_afe *afe,
-+				       unsigned int id)
-+{
-+	const struct mt8195_afe_tuner_cfg *cfg = mt8195_afe_found_apll_tuner(id);
-+
-+	if (!cfg)
-+		return -EINVAL;
-+
-+	regmap_update_bits(afe->regmap, cfg->apll_div_reg,
-+			   cfg->apll_div_maskbit << cfg->apll_div_shift,
-+			   cfg->apll_div_default << cfg->apll_div_shift);
-+
-+	regmap_update_bits(afe->regmap, cfg->ref_ck_sel_reg,
-+			   cfg->ref_ck_sel_maskbit << cfg->ref_ck_sel_shift,
-+			   cfg->ref_ck_sel_default << cfg->ref_ck_sel_shift);
-+
-+	regmap_update_bits(afe->regmap, cfg->upper_bound_reg,
-+			   cfg->upper_bound_maskbit << cfg->upper_bound_shift,
-+			   cfg->upper_bound_default << cfg->upper_bound_shift);
-+
-+	return 0;
-+}
-+
-+static int mt8195_afe_enable_tuner_clk(struct mtk_base_afe *afe,
-+				       unsigned int id)
-+{
-+	struct mt8195_afe_private *afe_priv = afe->platform_priv;
-+
-+	switch (id) {
-+	case MT8195_AUD_PLL1:
-+		mt8195_afe_enable_clk(afe, afe_priv->clk[MT8195_CLK_AUD_APLL]);
-+		mt8195_afe_enable_clk(afe, afe_priv->clk[MT8195_CLK_AUD_APLL1_TUNER]);
-+		break;
-+	case MT8195_AUD_PLL2:
-+		mt8195_afe_enable_clk(afe, afe_priv->clk[MT8195_CLK_AUD_APLL2]);
-+		mt8195_afe_enable_clk(afe, afe_priv->clk[MT8195_CLK_AUD_APLL2_TUNER]);
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int mt8195_afe_disable_tuner_clk(struct mtk_base_afe *afe,
-+					unsigned int id)
-+{
-+	struct mt8195_afe_private *afe_priv = afe->platform_priv;
-+
-+	switch (id) {
-+	case MT8195_AUD_PLL1:
-+		mt8195_afe_disable_clk(afe, afe_priv->clk[MT8195_CLK_AUD_APLL1_TUNER]);
-+		mt8195_afe_disable_clk(afe, afe_priv->clk[MT8195_CLK_AUD_APLL]);
-+		break;
-+	case MT8195_AUD_PLL2:
-+		mt8195_afe_disable_clk(afe, afe_priv->clk[MT8195_CLK_AUD_APLL2_TUNER]);
-+		mt8195_afe_disable_clk(afe, afe_priv->clk[MT8195_CLK_AUD_APLL2]);
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int mt8195_afe_enable_apll_tuner(struct mtk_base_afe *afe,
-+					unsigned int id)
-+{
-+	struct mt8195_afe_tuner_cfg *cfg = mt8195_afe_found_apll_tuner(id);
-+	unsigned long flags;
-+	int ret = 0;
-+
-+	if (!cfg)
-+		return -EINVAL;
-+
-+	ret = mt8195_afe_setup_apll_tuner(afe, id);
-+	if (ret)
-+		return ret;
-+
-+	ret = mt8195_afe_enable_tuner_clk(afe, id);
-+	if (ret)
-+		return ret;
-+
-+	spin_lock_irqsave(&cfg->ctrl_lock, flags);
-+
-+	cfg->ref_cnt++;
-+	if (cfg->ref_cnt == 1)
-+		regmap_update_bits(afe->regmap,
-+				   cfg->tuner_en_reg,
-+				   cfg->tuner_en_maskbit << cfg->tuner_en_shift,
-+				   1 << cfg->tuner_en_shift);
-+
-+	spin_unlock_irqrestore(&cfg->ctrl_lock, flags);
-+
-+	return ret;
-+}
-+
-+static int mt8195_afe_disable_apll_tuner(struct mtk_base_afe *afe,
-+					 unsigned int id)
-+{
-+	struct mt8195_afe_tuner_cfg *cfg = mt8195_afe_found_apll_tuner(id);
-+	unsigned long flags;
-+	int ret = 0;
-+
-+	if (!cfg)
-+		return -EINVAL;
-+
-+	spin_lock_irqsave(&cfg->ctrl_lock, flags);
-+
-+	cfg->ref_cnt--;
-+	if (cfg->ref_cnt == 0)
-+		regmap_update_bits(afe->regmap,
-+				   cfg->tuner_en_reg,
-+				   cfg->tuner_en_maskbit << cfg->tuner_en_shift,
-+				   0 << cfg->tuner_en_shift);
-+	else if (cfg->ref_cnt < 0)
-+		cfg->ref_cnt = 0;
-+
-+	spin_unlock_irqrestore(&cfg->ctrl_lock, flags);
-+
-+	ret = mt8195_afe_disable_tuner_clk(afe, id);
-+	if (ret)
-+		return ret;
-+
-+	return ret;
-+}
-+
- int mt8195_afe_get_mclk_source_clk_id(int sel)
- {
- 	switch (sel) {
-@@ -113,7 +377,7 @@ int mt8195_afe_get_default_mclk_source_by_rate(int rate)
- int mt8195_afe_init_clock(struct mtk_base_afe *afe)
- {
- 	struct mt8195_afe_private *afe_priv = afe->platform_priv;
--	int i;
-+	int i, ret;
- 
- 	mt8195_audsys_clk_register(afe);
- 
-@@ -133,6 +397,16 @@ int mt8195_afe_init_clock(struct mtk_base_afe *afe)
- 		}
- 	}
- 
-+	/* initial tuner */
-+	for (i = 0; i < MT8195_AUD_PLL_NUM; i++) {
-+		ret = mt8195_afe_init_apll_tuner(i);
-+		if (ret) {
-+			dev_dbg(afe->dev, "%s(), init apll_tuner%d failed",
-+				__func__, (i + 1));
-+			return -EINVAL;
-+		}
-+	}
-+
- 	return 0;
- }
- 
-@@ -428,11 +702,17 @@ int mt8195_afe_enable_main_clock(struct mtk_base_afe *afe)
- 
- 	mt8195_afe_enable_afe_on(afe);
- 
-+	mt8195_afe_enable_apll_tuner(afe, MT8195_AUD_PLL1);
-+	mt8195_afe_enable_apll_tuner(afe, MT8195_AUD_PLL2);
-+
- 	return 0;
- }
- 
- int mt8195_afe_disable_main_clock(struct mtk_base_afe *afe)
- {
-+	mt8195_afe_disable_apll_tuner(afe, MT8195_AUD_PLL2);
-+	mt8195_afe_disable_apll_tuner(afe, MT8195_AUD_PLL1);
-+
- 	mt8195_afe_disable_afe_on(afe);
- 
- 	mt8195_afe_disable_timing_sys(afe);
-diff --git a/sound/soc/mediatek/mt8195/mt8195-afe-clk.h b/sound/soc/mediatek/mt8195/mt8195-afe-clk.h
-index f8e6eeb29a89..40663e31becd 100644
---- a/sound/soc/mediatek/mt8195/mt8195-afe-clk.h
-+++ b/sound/soc/mediatek/mt8195/mt8195-afe-clk.h
-@@ -35,6 +35,8 @@ enum {
- 	MT8195_CLK_INFRA_AO_AUDIO_26M_B,
- 	MT8195_CLK_SCP_ADSP_AUDIODSP,
- 	MT8195_CLK_AUD_AFE,
-+	MT8195_CLK_AUD_APLL1_TUNER,
-+	MT8195_CLK_AUD_APLL2_TUNER,
- 	MT8195_CLK_AUD_APLL,
- 	MT8195_CLK_AUD_APLL2,
- 	MT8195_CLK_AUD_DAC,
-@@ -84,6 +86,15 @@ enum {
- 	MT8195_MCK_SEL_NUM,
- };
- 
-+enum {
-+	MT8195_AUD_PLL1,
-+	MT8195_AUD_PLL2,
-+	MT8195_AUD_PLL3,
-+	MT8195_AUD_PLL4,
-+	MT8195_AUD_PLL5,
-+	MT8195_AUD_PLL_NUM,
-+};
-+
- struct mtk_base_afe;
- 
- int mt8195_afe_get_mclk_source_clk_id(int sel);
-diff --git a/sound/soc/mediatek/mt8195/mt8195-afe-pcm.c b/sound/soc/mediatek/mt8195/mt8195-afe-pcm.c
-index e425f868476a..b77c2ba5a629 100644
---- a/sound/soc/mediatek/mt8195/mt8195-afe-pcm.c
-+++ b/sound/soc/mediatek/mt8195/mt8195-afe-pcm.c
-@@ -2583,8 +2583,6 @@ static bool mt8195_is_volatile_reg(struct device *dev, unsigned int reg)
- 	case AFE_IRQ3_CON_MON:
- 	case AFE_IRQ_MCU_MON2:
- 	case ADSP_IRQ_STATUS:
--	case AFE_APLL_TUNER_CFG:
--	case AFE_APLL_TUNER_CFG1:
- 	case AUDIO_TOP_STA0:
- 	case AUDIO_TOP_STA1:
- 	case AFE_GAIN1_CUR:
-@@ -2623,7 +2621,6 @@ static bool mt8195_is_volatile_reg(struct device *dev, unsigned int reg)
- 	case SPDIFIN_USERCODE10:
- 	case SPDIFIN_USERCODE11:
- 	case SPDIFIN_USERCODE12:
--	case AFE_SPDIFIN_APLL_TUNER_CFG:
- 	case AFE_LINEIN_APLL_TUNER_MON:
- 	case AFE_EARC_APLL_TUNER_MON:
- 	case AFE_CM0_MON:
--- 
-2.18.0
-
+PiANCj4gVGhpcyBwYXRjaCBpcyBhbHJlYWR5IGluIHRoZSBTT0YgdHJlZSBhbmQgZm9yIHNvbWUg
+cmVhc29uIEkgZGlkbid0IHNlbmQgaXQsIHNvcnJ5DQo+IGFib3V0IHRoZSBkZWxheS4NCj4gDQo+
+IEhlcmUgYXJlIHRoZSB0YWdzIHdlIGNvbGxlY3RlZCBkdXJpbmcgdGhlIHJldmlld3MuDQo+IA0K
+PiBSZXZpZXdlZC1ieTogQ3VydGlzIE1hbGFpbmV5IDxjdWpvbWFsYWluZXlAY2hyb21pdW0ub3Jn
+Pg0KPiBSZXZpZXdlZC1ieTogQmFyZCBMaWFvIDx5dW5nLWNodWFuLmxpYW9AbGludXguaW50ZWwu
+Y29tPg0KPiBSZXZpZXdlZC1ieTogUGllcnJlLUxvdWlzIEJvc3NhcnQgPHBpZXJyZS1sb3Vpcy5i
+b3NzYXJ0QGxpbnV4LmludGVsLmNvbT4NCj4gDQoNCk9rLiBMZXQgbWUgc2VuZCBhIHYyIHBhdGNo
+Lg0KDQpCcmVudA0KDQo=
