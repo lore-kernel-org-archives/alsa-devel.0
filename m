@@ -4,82 +4,122 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D36FC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Feb 2022 12:46:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82C47C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Feb 2022 12:46:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C75A31883;
-	Tue, 22 Feb 2022 13:45:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C75A31883
+	by alsa0.perex.cz (Postfix) with ESMTPS id B6F7F18A1;
+	Tue, 22 Feb 2022 13:45:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B6F7F18A1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645533959;
-	bh=D8g90I250HULVbGozgbHQtF3dI3sGsEwN79ajGHZGfU=;
-	h=Date:To:From:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=G8ovTIyuE3WSNa5Ycm1Mm5U9pQnDlXcIz+oGZKTDUTngwei/6QJXI1lMpchw1Sz6c
-	 epvUlfqVhNmu6qPeFwSDccjNeFn6LRTFx+u2tpaC45nDBsEEsQ1LqKa8gWLTvGm2W4
-	 VFpcHUvI9nGW9hOjI3l+zjkT34er28cW9nnEheuA=
+	s=default; t=1645533978;
+	bh=jOMDN0uQe23EKodm9qWNz14EOFNxB+W0KKWZtGFyq70=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=a3hRHdi+oSpEurBV7CLk9iYHGYC1hgZcIhuOT/Ubu254Nis+SH2rzN9csD38nrFdh
+	 fykPprx60T4s4UpJX4Buq6XJDzZxEMLtEPOnUjUAWJWHM1MSrYe5BHYXZEasN4gYoU
+	 MUiQ9aY49qu0dEoAYgIC2KnfFIXg3b237ex8u36g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CEA09F804FD;
-	Tue, 22 Feb 2022 13:44:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AA9C1F8051B;
+	Tue, 22 Feb 2022 13:44:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BB569F80508; Tue, 22 Feb 2022 13:44:33 +0100 (CET)
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com
- [IPv6:2a00:1450:4864:20::62f])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 485B4F8051C; Tue, 22 Feb 2022 13:44:43 +0100 (CET)
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com
+ (mail-dm6nam11on2061c.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:7eaa::61c])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5D85EF800F5
- for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2022 13:44:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D85EF800F5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 66158F8051A
+ for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2022 13:44:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66158F8051A
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="Er0i6Mp8"
-Received: by mail-ej1-x62f.google.com with SMTP id p15so42422413ejc.7
- for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2022 04:44:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=message-id:date:mime-version:user-agent:content-language:to:from
- :subject:content-transfer-encoding;
- bh=o28P5AnAmXgoz0YSgXUOswFKN8KrAyOVkkfKsZOTLgw=;
- b=Er0i6Mp8c4jC2NWApFgDB9PE82z5MmueJCRwyRyGMyRSjxGuADj1crRVxBof8esbIq
- oA7q66kEpAVJ1fcSZU/1ndDdnDTj8OPoQW8XtQiydbV801GQ8TODOtzQgfVgSwyNTOhd
- aGBPUm0xeG8Yfwe476vjUiPWcd9cBMZzW1fy5ctFCetqMLR5fN/6toKCey37mIaiXkfD
- sBWoOtTlPzSb509Fvh1dAdGcZT9YeFmtICEsku9Idawh4ix/90M4OuCgUx+D6Yqp0IPI
- cPkytZRmtcOADLPz/PkUz3UMzWid1nyqjPokfg5gztvHhpIK3IkZkpN6vncpxGxzDThZ
- jlHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent
- :content-language:to:from:subject:content-transfer-encoding;
- bh=o28P5AnAmXgoz0YSgXUOswFKN8KrAyOVkkfKsZOTLgw=;
- b=wU2T/UlPPUgQf5EKUxwjLftw9nOUxyIwOzOjWJXbPQXd7EKBMOvQkdOB/9n46dlxsp
- 9nPSJjKsd4/pmU+zjjlngowyMtCGxxfFR7UWHYt0nnd0sqqfKICM0wbViHmnmY0FO/xV
- xVnQqessX4e0V2ZhZ+icA2JgqHS8zzafwiC3JfBre5ySR9rZwQ1HkNt8G8vU+YW1gAiP
- J9Xh3L2/W9K/2SubCnBaPf7tyLQnTmX0XwpNN8vdxRb8UvdYyf0QCHToGi3dE8KKct1h
- tXtJlG8dfzUnPp45yjDvnFTEogExGMJ1pCi2h/5Tg5DeD2pgrijJbwyRwOHWzMGBOs5M
- TMnA==
-X-Gm-Message-State: AOAM5312xJVKPdatFHfPES/WJvJVrhcrhgN8OicUnBaIvTi2+2/+bsoT
- 39ugox48PBlcUZL03j178AjGtlW1yPl0HQ==
-X-Google-Smtp-Source: ABdhPJyjLQbPKfte+Oerdmwa8WlvcJyEKyFaRhQe/MxiUupSCb9/bX5gwcnDcmy8GyyxMoDZa0hMyw==
-X-Received: by 2002:a17:906:c59:b0:6b9:59d8:263e with SMTP id
- t25-20020a1709060c5900b006b959d8263emr19930081ejf.770.1645533868819; 
- Tue, 22 Feb 2022 04:44:28 -0800 (PST)
-Received: from [192.168.1.2] (net-2-37-79-164.cust.vodafonedsl.it.
- [2.37.79.164])
- by smtp.gmail.com with ESMTPSA id h7sm10209665ede.66.2022.02.22.04.44.27
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 22 Feb 2022 04:44:28 -0800 (PST)
-Message-ID: <d261d1b3-66fd-19b0-219b-85dbe1df341d@gmail.com>
-Date: Tue, 22 Feb 2022 13:44:27 +0100
+ dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com
+ header.b="Xb9hXEqL"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=i0YJ2PsoAi1lGnUKeCVte7hdIV85oKUI3WsnxLqqzF47MqmgIHcVfc5iFhSUkPlsoFWmwGyRZ9bhFom0841HDf8oLcgghJwlK2MqJOojLEIKV1TIMHdzk7Hs+mK7v683MyqSTCuoqF4/Oe3JwsPSDvI23dpZc8j4O1JV+xjHN060kTlIz7D97IkUM3WeRZyAUAVU7eWTvP7KgE/iyCPnHLSK7IkSKNEVIlnWVyz5xdFiPYKaoM1X+TSp3s1ZnItbKm+byPiedGlwnhe8zZNH7n5wfVQKPYDcnwDZFyX6JP5i//dZw4a05J6C1HnUS5t21PVxkPNmoE0u6n6wB8S9bg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=PATmXLvc3Q+FQnOdjZcycRPhY3x5Sa2/WlhajbUrivY=;
+ b=kQv/wtgZ8T1ZFW0rIs0BXDUkFxcQ2Hs1RARNAFcrf5lknpGUoCMlijPIDwBkSiA8mvRwpLQzTtkB0iNJZuwSNtZsjhqM0NeDmwNSR+cXFpq8B+PwsBWPimaJ/vLHWXWi+oY3+qXF3x4NrkFo2NHrrkTW56JpnHkllOcmy8P3P6QA3UkWgsIXcGGvMKxinUzYtZXOHNebTd3DY5bGDys0gxakrkgOdekxG7ycXeJnvHqDCW2hl+ibGsFP8mrx/tqyT5BN8Q7QTHZResR0z1eulYCH4dTnxaaJQJNxhWx+36QGi2A3cH6QOLBQmo8R0cnoPwihtrm3r6e1o9viaChtLw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1; 
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PATmXLvc3Q+FQnOdjZcycRPhY3x5Sa2/WlhajbUrivY=;
+ b=Xb9hXEqLVzSDPCejeyTQ0b0l+GfOVu4+XoN8Y1kc4+RHbzkIhPHHn4V3QGEO0mUluEIx1C6jEOF0s2whABENdI6pR0aXa3EP1t3xclGIC1rFSVVCI8SSqXKKgmbmRiP28rwTOjM64BsDjdEqBezSxs6nwuKHYrQv/qUTPJkJFas=
+Received: from MWHPR02CA0002.namprd02.prod.outlook.com (2603:10b6:300:4b::12)
+ by BYAPR12MB3031.namprd12.prod.outlook.com (2603:10b6:a03:d8::32)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4995.24; Tue, 22 Feb
+ 2022 12:44:29 +0000
+Received: from CO1NAM11FT012.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:300:4b:cafe::46) by MWHPR02CA0002.outlook.office365.com
+ (2603:10b6:300:4b::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4995.16 via Frontend
+ Transport; Tue, 22 Feb 2022 12:44:28 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1NAM11FT012.mail.protection.outlook.com (10.13.175.192) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4995.15 via Frontend Transport; Tue, 22 Feb 2022 12:44:28 +0000
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Tue, 22 Feb
+ 2022 06:44:27 -0600
+Received: from chrome.amd.com (10.180.168.240) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server id 15.1.2375.18 via Frontend
+ Transport; Tue, 22 Feb 2022 06:44:24 -0600
+From: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
+To: <broonie@kernel.org>, <alsa-devel@alsa-project.org>
+Subject: [PATCH v2 2/3] ASoC: amd: acp-legacy: Add legacy card support for new
+ machines
+Date: Tue, 22 Feb 2022 18:12:12 +0530
+Message-ID: <20220222124213.721224-3-AjitKumar.Pandey@amd.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220222124213.721224-1-AjitKumar.Pandey@amd.com>
+References: <20220222124213.721224-1-AjitKumar.Pandey@amd.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.1
-Content-Language: en-US
-To: broonie@kernel.org, alsa-devel@alsa-project.org
-From: Giacomo Guiduzzi <guiduzzi.giacomo@gmail.com>
-Subject: Asking for information about ALSA's kselftest
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 8936a50e-fd5c-4ff0-3b67-08d9f60110eb
+X-MS-TrafficTypeDiagnostic: BYAPR12MB3031:EE_
+X-Microsoft-Antispam-PRVS: <BYAPR12MB3031D3232E968C76F155C1FD823B9@BYAPR12MB3031.namprd12.prod.outlook.com>
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: GYw5+qiqCLrExmj8sCvE5JbQwn4amJoUDzWURIzS0zQfKkoQsPDEIu2mlW1m9hnvLR6hBgepVY0EeTL4aNVob3XPO0+2jmw1Avlolw53kAF1CIWDXAJL0IJvIjAdWF4Z01avzhqFidnYIDvjBNcBV8tkwL7l29anRewKCDXnuwGvv2XGWOUvf22vtXXJXV6pBXHz+oUlCZ5mz7aTgauyzRomB5OFLIVN4ayfXPnCyFueoJKkI1r5v0ci1l6C//NjiNPWQIsNSJNgnKysYIZ8mq58gXZWUwkIYfRiAUjcD2xjvYgqEOUAPUDzSOMXRmhHfWFBwTBsySgMKzuqCzGAnAGYcNL+FPRLRuO30bjPQroubbBEUBwDztuAWnT8F6fa3uDQ5Vzx3MMEsT17zaPyYqsR/q8C3o1ic+LrlkkG3y43FKR7ShlXV/TVh1doX3MYTUOyDBUAC5R8qANbJm1BOWijTO5l05GZQPBj6U/fTzExFgRxvzCKJqO1S7jw/kFXTkFTEpQAembwx51wrninyYEENR/SgZ7PBIAMcIehq+DTmlK8QB6gArVZTGvND7UOrDZHDL2PO+WRIIqeu5xN1i3CdhJDHWbBPnEwXheG//r6N/5mDlsdGbsJM1/GUmudwwc+8i6ZIu4hRwwO0yx/VHOcKimvaWqp1sa+0Q5JwJ7ORS/wAHNuQhOYLlT+5sMQ4xnJIpSlQSAgkEBtyXBnzg==
+X-Forefront-Antispam-Report: CIP:165.204.84.17; CTRY:US; LANG:en; SCL:1; SRV:;
+ IPV:CAL; SFV:NSPM; H:SATLEXMB04.amd.com; PTR:InfoDomainNonexistent; CAT:NONE;
+ SFS:(13230001)(4636009)(46966006)(40470700004)(36840700001)(36756003)(6666004)(40460700003)(2616005)(7696005)(508600001)(47076005)(2906002)(36860700001)(186003)(1076003)(5660300002)(110136005)(54906003)(8936002)(26005)(316002)(82310400004)(426003)(356005)(336012)(81166007)(70586007)(70206006)(8676002)(4326008)(86362001)(36900700001);
+ DIR:OUT; SFP:1101; 
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Feb 2022 12:44:28.7012 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8936a50e-fd5c-4ff0-3b67-08d9f60110eb
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d; Ip=[165.204.84.17];
+ Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT012.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB3031
+Cc: Sunil-kumar.Dommati@amd.com, kernel test robot <lkp@intel.com>, Ajit Kumar
+ Pandey <AjitKumar.Pandey@amd.com>, open list <linux-kernel@vger.kernel.org>,
+ Basavaraj.Hiregoudar@amd.com, Takashi Iwai <tiwai@suse.com>, Liam
+ Girdwood <lgirdwood@gmail.com>,
+ V sujith kumar Reddy <vsujithkumar.reddy@amd.com>, Vijendar.Mukunda@amd.com,
+ Alexander.Deucher@amd.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,65 +135,110 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-[RESENDING BECAUSE BOUNCED BY SPAMASSASSIN]
+We have newer renoir platforms with different codecs combinations.
+Add struct in legacy machine driver and add to list of supported
+renoir machine to support sound card registration on platform with
+rt5682s as primary headset codec and max98360 and rt1019 as speaker
+amp codec.
 
+This also fixes error reported by kernel robot:
+"error: 'EN_SPKR_GPIO_DW' undeclared here"
 
-Greetings Mr. Brown and users of the alsa-devel mailing list,
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
+---
+ sound/soc/amd/acp/acp-legacy-mach.c | 30 +++++++++++++++++++++++++++++
+ sound/soc/amd/acp/acp-renoir.c      | 17 ++++++++++++++++
+ 2 files changed, 47 insertions(+)
 
-I’m a student at the University of Modena and Reggio Emilia. I am 
-working on the Kernel Hacking course’s exam, a course kept by Paolo 
-Valente which introduces students to the world of the Linux kernel and 
-its magics. I was taking a look at the kernel’s kselftests from Linus 
-Torvald’s repository to find some test to fix for the exam and I 
-stumbled upon the ALSA’s selftest, which I’ve passed the last few days 
-on, debugging and exploring. During the execution the test goes as it 
-should except for two or three tests. Until now I’ve tried understanding 
-test 71, which sometimes succeeds and sometimes fails, and test 72. I 
-have no previous knowledge of how ALSA works and I’m completely new to 
-the kselftests and the kernel in general. Test 71 gives the following 
-output:
-
-
-# Surround Playback Volume.0 expected 0 but read 1, is_volatile 0
-# Surround Playback Volume.1 expected 1 but read 0, is_volatile 0
-not ok 71 write_default.0.22
-
-
-I wanted to ask you if it is normal or not that this test fails on my 
-hardware, and if not, what I could do to debug the problem and give you 
-useful information to help understand what the issue is. I am currently 
-testing on an Ubuntu Desktop VirtualBox VM on kernel 5.17.0-rc3. The 
-audio hardware (as the output of the lshw command, multimedia section) is:
-
-
-description: Multimedia audio controller
-product: 82801AA AC'97 Audio Controller
-vendor: Intel Corporation
-physical id: 5
-bus info: pci@0000:00:05.0
-version: 01
-width: 32 bits
-clock: 33MHz
-capabilities: bus_master
-configuration: driver=snd_intel8x0 latency=64
-resources: irq:21 ioport:d100(size=256) ioport:d200(size=64)
-
-
- From what I have seen until now it doesn’t look like a bug from the 
-test nor an issue from the kernel, so I’m not really sure where to look 
-at: I have compiled alsalib’s source code from the Git repo with debug 
-symbols and I’ve followed the execution of the test until I reached a 
-call to the ioctl syscall, which doesn’t return an error code so it 
-doesn’t look like the problem relies in the kernel; I’m no expert 
-though, I’ll let you confirm this or not.
-
-I am at your complete disposal to give you any further useful 
-information as I can’t do much more from my side alone.
-
-Thank you in advance, looking forward to your kind response.
-
-
-Best Regards,
-
-Giacomo Guiduzzi
+diff --git a/sound/soc/amd/acp/acp-legacy-mach.c b/sound/soc/amd/acp/acp-legacy-mach.c
+index 50a5aa4d6da9..5d276365d644 100644
+--- a/sound/soc/amd/acp/acp-legacy-mach.c
++++ b/sound/soc/amd/acp/acp-legacy-mach.c
+@@ -30,6 +30,26 @@ static struct acp_card_drvdata rt5682_rt1019_data = {
+ 	.gpio_spkr_en = EN_SPKR_GPIO_GB,
+ };
+ 
++static struct acp_card_drvdata rt5682s_max_data = {
++	.hs_cpu_id = I2S_SP,
++	.amp_cpu_id = I2S_SP,
++	.dmic_cpu_id = DMIC,
++	.hs_codec_id = RT5682S,
++	.amp_codec_id = MAX98360A,
++	.dmic_codec_id = DMIC,
++	.gpio_spkr_en = EN_SPKR_GPIO_NONE,
++};
++
++static struct acp_card_drvdata rt5682s_rt1019_data = {
++	.hs_cpu_id = I2S_SP,
++	.amp_cpu_id = I2S_SP,
++	.dmic_cpu_id = DMIC,
++	.hs_codec_id = RT5682S,
++	.amp_codec_id = RT1019,
++	.dmic_codec_id = DMIC,
++	.gpio_spkr_en = EN_SPKR_GPIO_NONE,
++};
++
+ static const struct snd_kcontrol_new acp_controls[] = {
+ 	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
+ 	SOC_DAPM_PIN_SWITCH("Headset Mic"),
+@@ -99,6 +119,14 @@ static const struct platform_device_id board_ids[] = {
+ 		.name = "acp3xalc56821019",
+ 		.driver_data = (kernel_ulong_t)&rt5682_rt1019_data,
+ 	},
++	{
++		.name = "acp3xalc5682sm98360",
++		.driver_data = (kernel_ulong_t)&rt5682s_max_data,
++	},
++	{
++		.name = "acp3xalc5682s1019",
++		.driver_data = (kernel_ulong_t)&rt5682s_rt1019_data,
++	},
+ 	{ }
+ };
+ static struct platform_driver acp_asoc_audio = {
+@@ -114,4 +142,6 @@ module_platform_driver(acp_asoc_audio);
+ MODULE_IMPORT_NS(SND_SOC_AMD_MACH);
+ MODULE_DESCRIPTION("ACP chrome audio support");
+ MODULE_ALIAS("platform:acp3xalc56821019");
++MODULE_ALIAS("platform:acp3xalc5682sm98360");
++MODULE_ALIAS("platform:acp3xalc5682s1019");
+ MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/amd/acp/acp-renoir.c b/sound/soc/amd/acp/acp-renoir.c
+index b8dc25a1d31d..35d66454e5a3 100644
+--- a/sound/soc/amd/acp/acp-renoir.c
++++ b/sound/soc/amd/acp/acp-renoir.c
+@@ -44,6 +44,11 @@ static struct snd_soc_acpi_codecs amp_rt1019 = {
+ 	.codecs = {"10EC1019"}
+ };
+ 
++static struct snd_soc_acpi_codecs amp_max = {
++	.num_codecs = 1,
++	.codecs = {"MX98360A"}
++};
++
+ static struct snd_soc_acpi_mach snd_soc_acpi_amd_acp_machines[] = {
+ 	{
+ 		.id = "10EC5682",
+@@ -51,6 +56,18 @@ static struct snd_soc_acpi_mach snd_soc_acpi_amd_acp_machines[] = {
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &amp_rt1019,
+ 	},
++	{
++		.id = "RTL5682",
++		.drv_name = "acp3xalc5682sm98360",
++		.machine_quirk = snd_soc_acpi_codec_list,
++		.quirk_data = &amp_max,
++	},
++	{
++		.id = "RTL5682",
++		.drv_name = "acp3xalc5682s1019",
++		.machine_quirk = snd_soc_acpi_codec_list,
++		.quirk_data = &amp_rt1019,
++	},
+ 	{
+ 		.id = "AMDI1019",
+ 		.drv_name = "renoir-acp",
+-- 
+2.25.1
 
