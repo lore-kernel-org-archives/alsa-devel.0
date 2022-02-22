@@ -4,78 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF1FFC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Feb 2022 12:01:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9DEF4C43219
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Feb 2022 12:02:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C13E3176E;
-	Tue, 22 Feb 2022 13:01:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C13E3176E
+	by alsa0.perex.cz (Postfix) with ESMTPS id C377F17C1;
+	Tue, 22 Feb 2022 13:01:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C377F17C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645531316;
-	bh=KeHoijlGPwYDj/ey1agbpqvcLCXSfxbw7neMyY12oAo=;
+	s=default; t=1645531329;
+	bh=3pyhuthwanfxS5nWWbTlgdbILpj0kyAne8vH/5EO01I=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rkn1YkkiyVZ5s02GreZTnga1ysQaexkFXo4bYM7IrHYMhH/RoNFgbKYm0pfKuxq6F
-	 ojlX3CFKoQnttx8nUmXctZrGHAXHaSHPsoMxKEwTi2DaUkTvInPZTxYgXcRbua0gEq
-	 dlu91J7qqhpC3p6VZZSUcvx+jpFbjplxoNMOpotI=
+	b=DpwmgY8eE2b2WJ0srJo9yiWxczTOqbKneUCvN6T81G7XwM34epb4z8Scdf4iNar95
+	 6Ed3Oo08tNJ8E2eHLkT3BjM969LB6ooZbYdv10CLxlQUzLrD54xyzubbXRpM4IZhow
+	 mahHuHmXylSTrt2K/GJtC/+OcxZ0cl271IyGlLK4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 25FB8F80518;
-	Tue, 22 Feb 2022 13:00:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B5E62F8051B;
+	Tue, 22 Feb 2022 13:00:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6C837F80516; Tue, 22 Feb 2022 13:00:00 +0100 (CET)
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com
- [IPv6:2a00:1450:4864:20::32a])
+ id EB9EBF80519; Tue, 22 Feb 2022 13:00:01 +0100 (CET)
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com
+ [IPv6:2a00:1450:4864:20::433])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EB0D7F8012C
- for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2022 12:59:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB0D7F8012C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 82027F80311
+ for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2022 12:59:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 82027F80311
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="hQhF2lYs"
-Received: by mail-wm1-x32a.google.com with SMTP id
- n18-20020a05600c4f9200b003806ce86c6dso1606881wmq.5
- for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2022 03:59:55 -0800 (PST)
+ header.b="YSKSCQX8"
+Received: by mail-wr1-x433.google.com with SMTP id j17so6035933wrc.0
+ for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2022 03:59:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=Gs0UQYeLXZEFiZSAa7cijQLwxToifauUEWbaq2HVPLo=;
- b=hQhF2lYshRddH8Qmwv6xe2HTRpj9tSjW0CaazwoE+mE1cgElLDzWzmHuTV4JXiPGBV
- AUCQ3FQZjP57GvQ/sZ+mowISk/cqEhdDw1pCl9dnIXJl2h0YmJVZH8FEMvRGK+Bp0jH9
- a3ll4LnZqjVMJeTYMDzK9pS24gsjGYrCqfo7gnOX93w9EYceBMXSKj//bdtpmuDrZlLA
- 5pKTIcQPPBLBxiNwOLzcTtlJL0zUTlATc34BKwdBlTN1vBPOyfahVVMyf907TFJAID4z
- 1WJ1NElr9prP+F+zAoLIxcCzvfJNyxWSZPliGfYddxe/hfyeA7s3mPhLGtl4kAXUi0n8
- M3Vg==
+ bh=ht2zsDCw6mTpQAlwd9QIJhSI+uSP7rAlJbSv+42FdW4=;
+ b=YSKSCQX8VLsIIuyC0rpsqZIVu8heWghUgpq9tyco/RlMfoMRfvL0TXTGRgj62ydrAC
+ C3WqlPBHcTZVpsg2EZlDVsJbq1d3AwyyqN2HLIoyroTXtH8hT09QEZVJJCA9dfOYWVvg
+ n0XHBDHlVGZGLjnue046qqwlgxFfVPHHjaRNX8lTueg2stxjhgOv0/5Q601rwSOfvtut
+ IZ2zecmhTYgxYuzifrlK06I/9FYAfiP8zhDIZR0M8MYpwKeyKTv0PqTr9+iAJwalaU4x
+ z+HWpXfi4FedctzjsaznTVd2Yv1nPrNU430A4MU3MvSeqkbG8O7zAHBYqUMaCXwOiIoW
+ CBYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=Gs0UQYeLXZEFiZSAa7cijQLwxToifauUEWbaq2HVPLo=;
- b=htdFl1uA9iZj2bBotZsxyBisFdC/R8ZLndeLivJL5DdfFgm5EYwBjNY7z4WX3VBk6k
- cUjyzw48y1Y8738XSORdG18zAyevxDP95s0tgyEbdGlKBGj5nhk3LLg7NFoM++E0ZgFt
- 8eX6RJCnyLGBVgENtm89ko8mspdgYiAy88xzSpcu+iY6/C0eFFIKhQj4/K3malqHqMQ8
- QxyV27OXZfCCuFm7sN4v108KC82TfuBOaIIAJgkbDLy2FsjoYIVKstsqgyUazfbYeAuk
- nl/itOcNdoQb3p2y2BSZgCn1A0RPydZP7cLubonDEeNIDJaW7REA2wL5RZ14YoJSm2Oa
- IpWg==
-X-Gm-Message-State: AOAM530zdP/410DHNNRYCLqHJ50ajaUFol6G0PVCrPpy/vGj7oiWjlQw
- iRpWADx3Cv5kQvMRUCP04ovreg==
-X-Google-Smtp-Source: ABdhPJyerxVrI5Q29+9f2FJy6PGgtGJNzvbGOEfw9WxIncxMV/L+KX65i3zEOZrwD0cL3u9DIN+fNw==
-X-Received: by 2002:a1c:4d09:0:b0:380:e340:bfba with SMTP id
- o9-20020a1c4d09000000b00380e340bfbamr888266wmh.80.1645531194962; 
- Tue, 22 Feb 2022 03:59:54 -0800 (PST)
+ bh=ht2zsDCw6mTpQAlwd9QIJhSI+uSP7rAlJbSv+42FdW4=;
+ b=fl/05Tw/mZHF+6risq3vfW11tRNmnCeanRIRsT+sxtWpO3Ebhkz1HUbkWCLZinHKqj
+ iRRqtbOJdAX9Yocr5b7oYGysFuHZuPQiIaXerHVggqB6oizLoeT8gXPJy6axKB5chict
+ NMMyX8UpkRIabXwulfzlBemkEW7cCyE4kFUVLChFzvUEOcOuzeRx3uAw2l+8DbjbLnoD
+ UP5Ct6WdkBSTzBcPnGzJvKBL2tWzuJmrw/68GV131gKr3vXXW/GDcCP38gk549/rkna/
+ MLsjKJJoUcsDUOPUNHZylBaNjkzBXKoIUO8MLnCfW4tT5PXf5K8k1zEw20UDB3iBYvgx
+ oPhQ==
+X-Gm-Message-State: AOAM531DSqE2286/A+4r3xGX7bviw2AnFuu2thl6DahOEeXrHOzLzyEI
+ H5qXE1NPBqrl8632sjFCCO3Rvw==
+X-Google-Smtp-Source: ABdhPJznEZqGfqmVrP+p0Vldxzh+Nd5LHUSodJxau7eBZeNvoTKPAn+XDsrnpIFSB15jtzso9lZVBQ==
+X-Received: by 2002:a05:6000:1ace:b0:1e8:cbe4:9920 with SMTP id
+ i14-20020a0560001ace00b001e8cbe49920mr19167947wry.121.1645531193943; 
+ Tue, 22 Feb 2022 03:59:53 -0800 (PST)
 Received: from srini-hackbox.lan
  (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
- by smtp.gmail.com with ESMTPSA id a18sm50014661wrg.13.2022.02.22.03.59.54
+ by smtp.gmail.com with ESMTPSA id a18sm50014661wrg.13.2022.02.22.03.59.52
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 22 Feb 2022 03:59:54 -0800 (PST)
+ Tue, 22 Feb 2022 03:59:53 -0800 (PST)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH 07/16] ASoC: codecs: wcd938x: fix kcontrol max values
-Date: Tue, 22 Feb 2022 11:59:24 +0000
-Message-Id: <20220222115933.9114-8-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 06/16] ASoC: codecs: wc938x: fix accessing array out of bounds
+ for enum type
+Date: Tue, 22 Feb 2022 11:59:23 +0000
+Message-Id: <20220222115933.9114-7-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20220222115933.9114-1-srinivas.kandagatla@linaro.org>
 References: <20220222115933.9114-1-srinivas.kandagatla@linaro.org>
@@ -100,40 +100,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-set "HPH Type" Kcontrol max value of WCD_MBHC_HPH_STEREO instead of UINT_MAX.
-set "HPHL/R Impedance" Kcontrols max value to INT_MAX instead of UINT_MAX as
-max field is integer type.
+Accessing enums using integer would result in array out of bounds access
+on platforms like aarch64 where sizeof(long) is 8 compared to enum size
+which is 4 bytes.
 
-Without this patch amixer for these controls will show -1 as max value to userspace.
+Fix this by using enumerated items instead of integers.
 
-Fixes: bcee7ed09b8e ("ASoC: codecs: wcd938x: add Multi Button Headset Control support")
+Fixes: e8ba1e05bdc0 ("ASoC: codecs: wcd938x: add basic controls")
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/codecs/wcd938x.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/wcd938x.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/codecs/wcd938x.c b/sound/soc/codecs/wcd938x.c
-index deecc83eb592..782877db8c3c 100644
+index cf61d23bfb1c..deecc83eb592 100644
 --- a/sound/soc/codecs/wcd938x.c
 +++ b/sound/soc/codecs/wcd938x.c
-@@ -3577,14 +3577,14 @@ static int wcd938x_hph_impedance_get(struct snd_kcontrol *kcontrol,
+@@ -2506,7 +2506,7 @@ static int wcd938x_tx_mode_get(struct snd_kcontrol *kcontrol,
+ 	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
+ 	int path = e->shift_l;
+ 
+-	ucontrol->value.integer.value[0] = wcd938x->tx_mode[path];
++	ucontrol->value.enumerated.item[0] = wcd938x->tx_mode[path];
+ 
+ 	return 0;
  }
+@@ -2530,7 +2530,7 @@ static int wcd938x_rx_hph_mode_get(struct snd_kcontrol *kcontrol,
+ 	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
+ 	struct wcd938x_priv *wcd938x = snd_soc_component_get_drvdata(component);
  
- static const struct snd_kcontrol_new hph_type_detect_controls[] = {
--	SOC_SINGLE_EXT("HPH Type", 0, 0, UINT_MAX, 0,
-+	SOC_SINGLE_EXT("HPH Type", 0, 0, WCD_MBHC_HPH_STEREO, 0,
- 		       wcd938x_get_hph_type, NULL),
- };
+-	ucontrol->value.integer.value[0] = wcd938x->hph_mode;
++	ucontrol->value.enumerated.item[0] = wcd938x->hph_mode;
  
- static const struct snd_kcontrol_new impedance_detect_controls[] = {
--	SOC_SINGLE_EXT("HPHL Impedance", 0, 0, UINT_MAX, 0,
-+	SOC_SINGLE_EXT("HPHL Impedance", 0, 0, INT_MAX, 0,
- 		       wcd938x_hph_impedance_get, NULL),
--	SOC_SINGLE_EXT("HPHR Impedance", 0, 1, UINT_MAX, 0,
-+	SOC_SINGLE_EXT("HPHR Impedance", 0, 1, INT_MAX, 0,
- 		       wcd938x_hph_impedance_get, NULL),
- };
- 
+ 	return 0;
+ }
 -- 
 2.21.0
 
