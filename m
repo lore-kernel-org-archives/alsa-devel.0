@@ -4,93 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D220CC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Feb 2022 18:23:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 628A6C433FE
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Feb 2022 18:33:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D9E1117EE;
-	Tue, 22 Feb 2022 19:22:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D9E1117EE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3105717E9;
+	Tue, 22 Feb 2022 19:32:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3105717E9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645554197;
-	bh=w2NZ5MJSnd7wcE/pj3nI1cLPgEQafc8i3WJPZx91KX4=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1645554804;
+	bh=LukVhENZJbYHOheXWdIeNlYDx8kWx/MZ6ONycZ+afKQ=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=udKrkTqHb+6iZofG12KA2DkyvdYh7BSUL1ojoPWlNP+cUJBOvcQ0F1OqHCh0VX3yt
-	 CKZs6m9YwOYAoVpzSvOURkzVErbONRZ8JPK4QFUcX/ahWLAiVw5VO5kPGxv1yI/JaH
-	 APyweSg4orBg7yf4OIQiE8WMKOWe3DR7pFEHQ7Qk=
+	b=nF5Trzg+HyNnasnvz5YQKyxtk4ACLcdzwFey/eluAd+HuIrMjpKuJ/1MHDikklU49
+	 mo7X1GWOt52I8rH4c7we1Fq7Rg9jodaFIv2bkg+ZQRq4Yr/rNrsY4MJTBVaA+wqGeF
+	 Me+fXSvCo3KX9S9OEkQxIZow8x765BS2MZUjFVCg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 20787F80224;
-	Tue, 22 Feb 2022 19:22:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 954E1F801F5;
+	Tue, 22 Feb 2022 19:32:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1A94FF80238; Tue, 22 Feb 2022 19:22:10 +0100 (CET)
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com
- [IPv6:2a00:1450:4864:20::431])
+ id 44898F801EC; Tue, 22 Feb 2022 19:32:31 +0100 (CET)
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com
+ [IPv6:2a00:1450:4864:20::42d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D5EA0F801EC
- for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2022 19:22:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5EA0F801EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 85F52F80118
+ for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2022 19:32:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85F52F80118
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="Yr9Z9Cou"
-Received: by mail-wr1-x431.google.com with SMTP id d17so189694wrc.9
- for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2022 10:22:06 -0800 (PST)
+ header.b="fa6fU0ur"
+Received: by mail-wr1-x42d.google.com with SMTP id f17so10241301wrh.7
+ for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2022 10:32:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=message-id:date:mime-version:user-agent:subject:content-language:to
- :cc:references:from:in-reply-to:content-transfer-encoding;
- bh=Lm5xUR/DeoScu2Jz9y/NvEglJoydN1Dlz6DnerF6En8=;
- b=Yr9Z9CouG7VqoWDydXm+zhbtMlkL21HITJFGmTwDaPEgKUvKCLoha8r0A1rln5zOZn
- ionS4p/SU9TGBy6kIe+2Z50ucKF6FzTr0yriehY8GgIE3CMyvxqVp6QtNcweT3HJTVP7
- 9zn63dQLX02VQud1Wxlp8NfflxCb7a3g05/geTnxASCZJ7BR5p2Y+ros3Lo5gX5u8P5O
- BAywmOnDn/N9jVi22FFJCYlYBfsUyIqDRk217CUBVCaYHtqOcIaMMO5Aodf4PsAxMYcb
- rHWt53MiULJrFWH0w5peIGcrPlycKHFIPaHhBvtywNEfUpNZvp5aAMmPi4elfJuL1Eug
- PptQ==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=a2IntjpP6aGlRoP92/2s3f+MRINe2OeBdydIabsC62Q=;
+ b=fa6fU0ur9L169TRYp27zAxmivEOazbzaB4rd/kLtLTMVeweV7BnaVM3VgK6MW3IYKc
+ +mLLQ5oUeYRHgNP1xo2p6QRJIg9q6yt9bo6AvhELaktVmDZpaQO2gRxEjoVYCb+mvT0e
+ iKvDJy/rTGkHwzIQJWsJOQlHG2uh6jMpSxF11PY7JuGG3NoFeE4oitT4nhAJYHo8cMqE
+ brCEUFzoCQBDtxLkWu/la0p+tn9eyvCEPujnYqPCH5pnq5YbbV1v8pbtrVnJ3keijSNj
+ 0Dho05wNjuKGci7QugL0DXnHBJYf0VONFAoJdGMbkIxpg7Fuq4LoV2OAKeWBfvhRC93C
+ uKKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
- :content-language:to:cc:references:from:in-reply-to
- :content-transfer-encoding;
- bh=Lm5xUR/DeoScu2Jz9y/NvEglJoydN1Dlz6DnerF6En8=;
- b=eYWGOH/lJlbGwUWcWrZ7oe40oWmZbVk06jIgt/jzZEcURjHXTtJ+NrF6vGpbL0kNJn
- GrWIzuroZhJjtdjZgh1G+qsoJDVH83Q6tcVxd7aMcPhL9pn0to0L5GCrJoUsyCglEiji
- 0hSSHWmVn8aMzeInrtkumRvbt2R3FaNXaVA1sydredUUR8YcVes14iSFCVLlWIU0/bQw
- COwSbXPBEsYEOm5RMeqoag0fUQKedl41Y8153fQqixI2AhJV/uuCvO3hAa936MQKvyhO
- P5Arxv3k8zUGc23O5m3YiYMhhgfuoXRP7W1/R0EPe5PWLTGXeazVxHTq/jw3KlDCmkm3
- /P2Q==
-X-Gm-Message-State: AOAM531EyhLlrW0x/M4CdMzJsI4Ut34PKzsheDKNBbs6OmEGNSMuxzwL
- V2SDE/cZrorDsCbcbl8D3D0Ahg==
-X-Google-Smtp-Source: ABdhPJyvMCX00Qpb+LFRV2vRfzwlImSa39Q4EaeongsPm28O8Tsy9ZtLaMMPxWuPyHnkrkNmWz2mtA==
-X-Received: by 2002:a5d:6d0d:0:b0:1e8:7b6a:38e7 with SMTP id
- e13-20020a5d6d0d000000b001e87b6a38e7mr20802901wrq.625.1645554125317; 
- Tue, 22 Feb 2022 10:22:05 -0800 (PST)
-Received: from [192.168.86.34]
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=a2IntjpP6aGlRoP92/2s3f+MRINe2OeBdydIabsC62Q=;
+ b=gFH1lyTSxuNkSjnJ7IM8IjUlBaPl+4KU91ZQnDXmv+tIe+AkQyTMp7jC12PKKGfOZb
+ uMnDP0MQF1wMF+Lt4hUUBktAcoIBpxBheFRA16On9R6AoWe1KvU+oHm8rCClu2NMZ/iN
+ YegrmY4RUUi4tJP1GenPLaR6nim4EXnhKgRQNYtMNEwYQ50/kvAaDkFt4Cj61IUwvfu8
+ i/czVoy8KvQc2xhNSUJkqnts1z7iiHGBwg25edJxAlNuAXlUDFddws2lk5EQr0DiUhxv
+ bmWHjFmVPYubo7AI+OOl7grYtzS8jB7AeKV9KGTQdOzB1ShPG3V8OrJDHvbZx0cOdEBc
+ kq6Q==
+X-Gm-Message-State: AOAM530/Y4si48uguuy1Ft81Ubksi+QMdsESPdG1RS5LGQknguezAa+g
+ J2z+hzJbZxhnNnLg7qfg/GdihA==
+X-Google-Smtp-Source: ABdhPJzkFkr4gCWqEerHsP3/wvheZekWZ2fcKAHOo/mOTIilwJkpleU3K3VsYUQJRRfUkpNNoUdvwQ==
+X-Received: by 2002:a5d:5988:0:b0:1e8:b518:ad7f with SMTP id
+ n8-20020a5d5988000000b001e8b518ad7fmr20021303wri.193.1645554747227; 
+ Tue, 22 Feb 2022 10:32:27 -0800 (PST)
+Received: from srini-hackbox.lan
  (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
- by smtp.googlemail.com with ESMTPSA id
- f10-20020a05600c154a00b0037bbbc15ca7sm4790779wmg.36.2022.02.22.10.22.04
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 22 Feb 2022 10:22:04 -0800 (PST)
-Message-ID: <246dce08-b8c7-4c96-9dd9-0c3246d007ed@linaro.org>
-Date: Tue, 22 Feb 2022 18:22:02 +0000
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH 09/16] ASoC: codecs: wcd934x: fix return value of
- wcd934x_rx_hph_mode_put
-Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>
-References: <20220222115933.9114-1-srinivas.kandagatla@linaro.org>
- <20220222115933.9114-10-srinivas.kandagatla@linaro.org>
- <YhUjW6B8LmoEWLRx@sirena.org.uk>
+ by smtp.gmail.com with ESMTPSA id l28sm57642165wrz.90.2022.02.22.10.32.26
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 22 Feb 2022 10:32:26 -0800 (PST)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <YhUjW6B8LmoEWLRx@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+To: broonie@kernel.org
+Subject: [PATCH v2 1/9] ASoC: codecs: rx-macro: fix accessing compander for aux
+Date: Tue, 22 Feb 2022 18:32:04 +0000
+Message-Id: <20220222183212.11580-2-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20220222183212.11580-1-srinivas.kandagatla@linaro.org>
+References: <20220222183212.11580-1-srinivas.kandagatla@linaro.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
  linux-kernel@vger.kernel.org, pierre-louis.bossart@linux.intel.com,
- tiwai@suse.com, quic_srivasam@quicinc.com
+ tiwai@suse.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ quic_srivasam@quicinc.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,21 +99,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+AUX interpolator does not have compander, so check before accessing
+compander data for this.
 
+Without this checkan array of out bounds access will be made in
+comp_enabled[] array.
 
-On 22/02/2022 17:54, Mark Brown wrote:
-> On Tue, Feb 22, 2022 at 11:59:26AM +0000, Srinivas Kandagatla wrote:
->> wcd934x_rx_hph_mode_put currently returns zero eventhough it changes the value.
->> Fix this, so that change notifications are sent correctly.
-> 
->> -	return 0;
->> +	return 1;
-> 
-> This now has the opposite issue where it will unconditionally flag a
-> change even if none occurred, that's less bad but still an issue.  It
-> should check to see if the value written is different to that already
-> set and report that.
-Thanks for spotting this, Yes, that is another issue, Will fix those in 
-next spin.
+Fixes: 4f692926f562 ("ASoC: codecs: lpass-rx-macro: add dapm widgets and route")
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ sound/soc/codecs/lpass-rx-macro.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
---srini
+diff --git a/sound/soc/codecs/lpass-rx-macro.c b/sound/soc/codecs/lpass-rx-macro.c
+index 2b272a82eabf..32e85d2e9b90 100644
+--- a/sound/soc/codecs/lpass-rx-macro.c
++++ b/sound/soc/codecs/lpass-rx-macro.c
+@@ -2039,6 +2039,10 @@ static int rx_macro_load_compander_coeff(struct snd_soc_component *component,
+ 	int i;
+ 	int hph_pwr_mode;
+ 
++	/* AUX does not have compander */
++	if (comp == INTERP_AUX)
++		return 0;
++
+ 	if (!rx->comp_enabled[comp])
+ 		return 0;
+ 
+-- 
+2.21.0
+
