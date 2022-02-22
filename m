@@ -4,76 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF720C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Feb 2022 19:57:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61DE9C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Feb 2022 19:57:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E87F7185B;
-	Tue, 22 Feb 2022 20:56:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E87F7185B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 99BC21863;
+	Tue, 22 Feb 2022 20:56:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99BC21863
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645559823;
-	bh=eE5Y6NJ98wT5byN8TvBoZ9imyKf4VK62w4kqwTGFROw=;
+	s=default; t=1645559843;
+	bh=Fb9LNxAZehNZGlRVuozFIeYkxpG6Ih/D1zN47x3V20E=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kgeWc8Ek2ykpFrrphXgAxm1n50osXV89kca+UD33AeKzMCBN7zeHmagQEX1EK0xgr
-	 GvHFw7qkWH9xbIXgSCCusX1SuVbamlramuLxoXEpHFq2fLCkA48QdlqlOH5KS8lkmU
-	 hWyu10N70ADycodovFw1LQ4IKgbwvD+eL0s3SKFE=
+	b=l8KW4vWNWOFR6IYc5WAiEXfOgrBEByOFCC3BNp9DnTRtfuedgNscP/ifotYKa8BdX
+	 YMa268okhh0xFNditUxpVkrdikYg2BvoLK3GX0tJodQjpWp8lC6tFnbat5ziskNMPn
+	 EYKJrbk9moV1V3JGeme/lMSCcKAFEC/EvM7Mzwuc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 35805F801EC;
+	by alsa1.perex.cz (Postfix) with ESMTP id ACDDFF804FD;
 	Tue, 22 Feb 2022 20:55:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E7437F801EC; Tue, 22 Feb 2022 20:55:41 +0100 (CET)
+ id 46FADF80238; Tue, 22 Feb 2022 20:55:48 +0100 (CET)
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 78B74F80118
- for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2022 20:55:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 78B74F80118
+ by alsa1.perex.cz (Postfix) with ESMTPS id 69DC0F8012C
+ for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2022 20:55:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69DC0F8012C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="csEntwW4"
+ header.b="ZczpFgiq"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1645559739; x=1677095739;
+ t=1645559742; x=1677095742;
  h=message-id:date:mime-version:subject:to:cc:references:
  from:in-reply-to:content-transfer-encoding;
- bh=eE5Y6NJ98wT5byN8TvBoZ9imyKf4VK62w4kqwTGFROw=;
- b=csEntwW41Hmob3q91BGjhssSq4EGVYRfOcXUPnQnlzKfFi8L1+ayCW8c
- Q5v1GJ04D4keaMxhQnjPqSaMZvvNV76UDHzNLzSRUBr+Mazm+Q4WrXod6
- tYNKpDwzYwO2AWKh4asVy88Nc5Wb/QNXU0fwkLZ/k2BZcIfPiPZHkYMd5
- plJtd2kDWDyv9Q9db8tBUAbYU4P/89goPqPsMa9E3B8nwrDJUGUheIYt0
- IoNF5An8xAoZHsgbEf820DxYP5o5DwISBiXULv8D291FQQAI/LGhaqyKb
- O63U5WeGv+8N4FnAOcM+anQLwINfn5DL/8Ul2VWSbHlgpV6W1D9WA0WKa A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10266"; a="232421593"
-X-IronPort-AV: E=Sophos;i="5.88,387,1635231600"; d="scan'208";a="232421593"
+ bh=Fb9LNxAZehNZGlRVuozFIeYkxpG6Ih/D1zN47x3V20E=;
+ b=ZczpFgiqFZ1fBJxoDAz/QFx7sPA7hM0Ynyz4v8el1EdG09RnmIg1wUjJ
+ DOPjRyZcw+VVpAwUls3cQP+ckeOEaA/IiqIg/ZlRTiPTeQQp6hgPX69uN
+ JYiGoAL2NWC9+/ZHV58MAUD/M09YWkWv1hfV01HP/4XmJSA6sGP37Z6yO
+ nzJL1mI05WehPKAGtDSqYwWk5TnnaesNtOTICdO9718LCln9DYwzPoByi
+ Gb45GOMvgt8gBXFXg8X+7Ck3KSdsZs170cn/VTF7N9gJBRUPHP/5fq+Gc
+ ybQCnNppIAKmSaLL1wFXVlck3UufGIFth4G8HTFx7UWj9b4TRTqHji7pK w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10266"; a="232421608"
+X-IronPort-AV: E=Sophos;i="5.88,387,1635231600"; d="scan'208";a="232421608"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Feb 2022 11:55:17 -0800
-X-IronPort-AV: E=Sophos;i="5.88,387,1635231600"; d="scan'208";a="639032047"
+ 22 Feb 2022 11:55:20 -0800
+X-IronPort-AV: E=Sophos;i="5.88,387,1635231600"; d="scan'208";a="639032076"
 Received: from mjpatel-mobl.amr.corp.intel.com (HELO [10.212.37.223])
  ([10.212.37.223])
  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Feb 2022 11:55:16 -0800
-Message-ID: <70db9c01-104e-e081-198e-0b6d8a1c17da@linux.intel.com>
-Date: Tue, 22 Feb 2022 13:15:06 -0600
+ 22 Feb 2022 11:55:19 -0800
+Message-ID: <a2a6f631-b1b6-e015-f6bd-0c3851fdaa83@linux.intel.com>
+Date: Tue, 22 Feb 2022 13:53:54 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Firefox/91.0 Thunderbird/91.5.0
-Subject: Re: [PATCH 1/3] soundwire: qcom: add runtime pm support
+Subject: Re: [PATCH 05/10] ASoC: codecs: wsa881x: add runtime pm support
 Content-Language: en-US
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, robh+dt@kernel.org, 
- vkoul@kernel.org, yung-chuan.liao@linux.intel.com
-References: <20220221104127.15670-1-srinivas.kandagatla@linaro.org>
- <20220221104127.15670-2-srinivas.kandagatla@linaro.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, broonie@kernel.org
+References: <20220221131037.8809-1-srinivas.kandagatla@linaro.org>
+ <20220221131037.8809-6-srinivas.kandagatla@linaro.org>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20220221104127.15670-2-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20220221131037.8809-6-srinivas.kandagatla@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, quic_srivasam@quicinc.com
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com, lgirdwood@gmail.com,
+ quic_srivasam@quicinc.com, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,33 +90,88 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 2/21/22 04:41, Srinivas Kandagatla wrote:
-> Add support to runtime PM using SoundWire clock stop on supported instances
-> and bus reset on instances that require full reset.
+On 2/21/22 07:10, Srinivas Kandagatla wrote:
+> WSA881x codecs can not cope up with clk stop and requires a full reset after suspend.
 
-This commit message and code are a bit confusing, e.g. you have a
-boolean state
+isn't clock stop mode0 a peripheral requirement in SoundWire 1.x? I
+don't see any permission to skip this mode, the only thing I see in the
+spec is the permission to implement an always-ready capability (SCSP_SM)
 
-ctrl->clk_stop_bus_reset = true;
+The current assumption is that ALL peripherals support that mode, but
+that Managers may or may not support clock stop.
 
-Does this mean bus reset on exiting clock stop? or just that clock stop
-is not supported and bus reset is required with complete re-enumeration.
+It wouldn't be a big deal to add a quirk, but IMHO this needs to be
+captured at the bus/manager level since the decision to enter this mode
+is made at that level.
 
-It would be good to try and explain using SoundWire 1.x terminology what
-actions are taken on resume.
-
-
-> @@ -1267,6 +1305,7 @@ static int qcom_swrm_probe(struct platform_device *pdev)
->  	ctrl->bus.ops = &qcom_swrm_ops;
->  	ctrl->bus.port_ops = &qcom_swrm_port_ops;
->  	ctrl->bus.compute_params = &qcom_swrm_compute_params;
-> +	ctrl->bus.clk_stop_timeout = 300;
+> 
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  sound/soc/codecs/wsa881x.c | 54 ++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 54 insertions(+)
+> 
+> diff --git a/sound/soc/codecs/wsa881x.c b/sound/soc/codecs/wsa881x.c
+> index 0222370ff95d..d851ba14fbdd 100644
+> --- a/sound/soc/codecs/wsa881x.c
+> +++ b/sound/soc/codecs/wsa881x.c
+> @@ -11,6 +11,7 @@
+>  #include <linux/of_gpio.h>
+>  #include <linux/regmap.h>
+>  #include <linux/slab.h>
+> +#include <linux/pm_runtime.h>
+>  #include <linux/soundwire/sdw.h>
+>  #include <linux/soundwire/sdw_registers.h>
+>  #include <linux/soundwire/sdw_type.h>
+> @@ -198,6 +199,7 @@
+>  #define WSA881X_OCP_CTL_TIMER_SEC 2
+>  #define WSA881X_OCP_CTL_TEMP_CELSIUS 25
+>  #define WSA881X_OCP_CTL_POLL_TIMER_SEC 60
+> +#define WSA881X_PROBE_TIMEOUT 1000
 >  
->  	ret = qcom_swrm_get_port_config(ctrl);
->  	if (ret)
-> @@ -1319,6 +1358,21 @@ static int qcom_swrm_probe(struct platform_device *pdev)
->  		 (ctrl->version >> 24) & 0xff, (ctrl->version >> 16) & 0xff,
->  		 ctrl->version & 0xffff);
+>  #define WSA881X_PA_GAIN_TLV(xname, reg, shift, max, invert, tlv_array) \
+>  {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
+> @@ -747,6 +749,12 @@ static int wsa881x_put_pa_gain(struct snd_kcontrol *kc,
+>  	unsigned int mask = (1 << fls(max)) - 1;
+>  	int val, ret, min_gain, max_gain;
+>  
+> +	ret = pm_runtime_get_sync(comp->dev);
+> +	if (ret < 0 && ret != -EACCES) {
+> +		pm_runtime_put_noidle(comp->dev);
+> +		return ret;
+> +	}
+> +
+>  	max_gain = (max - ucontrol->value.integer.value[0]) & mask;
+>  	/*
+>  	 * Gain has to set incrementally in 4 steps
+> @@ -773,6 +781,9 @@ static int wsa881x_put_pa_gain(struct snd_kcontrol *kc,
+>  		usleep_range(1000, 1010);
+>  	}
+>  
+> +	pm_runtime_mark_last_busy(comp->dev);
+> +	pm_runtime_put_autosuspend(comp->dev);
+> +
+>  	return 1;
+>  }
+>  
+> @@ -1101,6 +1112,7 @@ static int wsa881x_probe(struct sdw_slave *pdev,
+>  			 const struct sdw_device_id *id)
+>  {
+>  	struct wsa881x_priv *wsa881x;
+> +	struct device *dev = &pdev->dev;
+>  
+>  	wsa881x = devm_kzalloc(&pdev->dev, sizeof(*wsa881x), GFP_KERNEL);
+>  	if (!wsa881x)
+> @@ -1124,6 +1136,7 @@ static int wsa881x_probe(struct sdw_slave *pdev,
+>  	pdev->prop.sink_ports = GENMASK(WSA881X_MAX_SWR_PORTS, 0);
+>  	pdev->prop.sink_dpn_prop = wsa_sink_dpn_prop;
+>  	pdev->prop.scp_int1_mask = SDW_SCP_INT1_BUS_CLASH | SDW_SCP_INT1_PARITY;
+> +	pdev->prop.simple_clk_stop_capable = true;
+>  	gpiod_direction_output(wsa881x->sd_n, 1);
+>  
+>  	wsa881x->regmap = devm_regmap_init_sdw(pdev, &wsa881x_regmap_config);
+> @@ -1132,12 +1145,52 @@ static int wsa881x_probe(struct sdw_slave *pdev,
+>  		return PTR_ERR(wsa881x->regmap);
+>  	}
 >  
 > +	pm_runtime_set_autosuspend_delay(dev, 3000);
 > +	pm_runtime_use_autosuspend(dev);
@@ -125,107 +179,54 @@ actions are taken on resume.
 > +	pm_runtime_set_active(dev);
 > +	pm_runtime_enable(dev);
 > +
-> +	/* Clk stop is not supported on WSA Soundwire masters */
-> +	if (ctrl->version <= 0x01030000) {
-> +		ctrl->clk_stop_bus_reset = true;
-> +	} else {
-> +		ctrl->reg_read(ctrl, SWRM_COMP_MASTER_ID, &val);
-> +		if (val == MASTER_ID_WSA)
-> +			ctrl->clk_stop_bus_reset = true;
-> +	}
-
-I think this means clock_stop_not_supported?
-
-> +static int swrm_runtime_resume(struct device *dev)
+>  	return devm_snd_soc_register_component(&pdev->dev,
+>  					       &wsa881x_component_drv,
+>  					       wsa881x_dais,
+>  					       ARRAY_SIZE(wsa881x_dais));
+>  }
+>  
+> +static int __maybe_unused wsa881x_runtime_suspend(struct device *dev)
 > +{
-> +	struct qcom_swrm_ctrl *ctrl = dev_get_drvdata(dev);
-> +	int ret;
+> +	struct regmap *regmap = dev_get_regmap(dev, NULL);
+> +	struct wsa881x_priv *wsa881x = dev_get_drvdata(dev);
 > +
-> +	clk_prepare_enable(ctrl->hclk);
+> +	gpiod_direction_output(wsa881x->sd_n, 0);
 > +
-> +	if (ctrl->clk_stop_bus_reset) {
-> +		reinit_completion(&ctrl->enumeration);
-> +		ctrl->reg_write(ctrl, SWRM_COMP_SW_RESET, 0x01);
-> +		qcom_swrm_get_device_status(ctrl);
-
-don't you need some sort of delay before checking the controller and
-device status? The bus reset sequence takes 4096 bits, that's a non-zero
-time.
-
-> +		sdw_handle_slave_status(&ctrl->bus, ctrl->status);
-> +		qcom_swrm_init(ctrl);
-> +		wait_for_completion_timeout(&ctrl->enumeration,
-> +					    msecs_to_jiffies(TIMEOUT_MS));
-> +	} else {
-> +		ctrl->reg_write(ctrl, SWRM_MCP_BUS_CTRL, SWRM_MCP_BUS_CLK_START);
-> +		ctrl->reg_write(ctrl, SWRM_INTERRUPT_CLEAR,
-> +			SWRM_INTERRUPT_STATUS_MASTER_CLASH_DET);
-> +
-> +		ctrl->intr_mask |= SWRM_INTERRUPT_STATUS_MASTER_CLASH_DET;
-> +		ctrl->reg_write(ctrl, SWRM_INTERRUPT_MASK_ADDR, ctrl->intr_mask);
-> +		ctrl->reg_write(ctrl, SWRM_INTERRUPT_CPU_EN, ctrl->intr_mask);
-> +
-> +		usleep_range(100, 105);
-> +	}
-> +
-> +	if (!swrm_wait_for_frame_gen_enabled(ctrl))
-> +		dev_err(ctrl->dev, "link failed to connect\n");
-> +
-> +	usleep_range(300, 305);
-> +	ret = sdw_bus_exit_clk_stop(&ctrl->bus);
-> +	if (ret < 0)
-> +		dev_err(ctrl->dev, "bus failed to exit clock stop %d\n", ret);
+> +	regcache_cache_only(regmap, true);
+> +	regcache_mark_dirty(regmap);
 > +
 > +	return 0;
 > +}
 > +
-> +static int __maybe_unused swrm_runtime_suspend(struct device *dev)
+> +static int __maybe_unused wsa881x_runtime_resume(struct device *dev)
 > +{
-> +	struct qcom_swrm_ctrl *ctrl = dev_get_drvdata(dev);
-> +	int ret;
+> +	struct sdw_slave *slave = dev_to_sdw_dev(dev);
+> +	struct regmap *regmap = dev_get_regmap(dev, NULL);
+> +	struct wsa881x_priv *wsa881x = dev_get_drvdata(dev);
 > +
-> +	if (!ctrl->clk_stop_bus_reset) {
-> +		/* Mask bus clash interrupt */
-> +		ctrl->intr_mask &= ~SWRM_INTERRUPT_STATUS_MASTER_CLASH_DET;
-> +		ctrl->reg_write(ctrl, SWRM_INTERRUPT_MASK_ADDR, ctrl->intr_mask);
-> +		ctrl->reg_write(ctrl, SWRM_INTERRUPT_CPU_EN, ctrl->intr_mask);
-> +	}
-> +	/* Prepare slaves for clock stop */
-> +	ret = sdw_bus_prep_clk_stop(&ctrl->bus);
-> +	if (ret < 0) {
-
-if a device has lost sync and reports -ENODATA, you want still want to
-go ahead and not prevent the suspend operation from happening.
-
-> +		dev_err(dev, "prepare clock stop failed %d", ret);
-> +		return ret;
-> +	}
+> +	gpiod_direction_output(wsa881x->sd_n, 1);
 > +
-> +	ret = sdw_bus_clk_stop(&ctrl->bus);
-> +	if (ret < 0 && ret != -ENODATA) {
-> +		dev_err(dev, "bus clock stop failed %d", ret);
-> +		return ret;
-> +	}
+> +	wait_for_completion_timeout(&slave->initialization_complete,
+> +				    msecs_to_jiffies(WSA881X_PROBE_TIMEOUT));
 > +
-> +	clk_disable_unprepare(ctrl->hclk);
-> +
-> +	usleep_range(300, 305);
+> +	regcache_cache_only(regmap, false);
+> +	regcache_sync(regmap);
 > +
 > +	return 0;
 > +}
 > +
-> +static const struct dev_pm_ops swrm_dev_pm_ops = {
-> +	SET_RUNTIME_PM_OPS(swrm_runtime_suspend, swrm_runtime_resume, NULL)
+> +static const struct dev_pm_ops wsa881x_pm_ops = {
+> +	SET_RUNTIME_PM_OPS(wsa881x_runtime_suspend, wsa881x_runtime_resume, NULL)
 > +};
 > +
->  static const struct of_device_id qcom_swrm_of_match[] = {
->  	{ .compatible = "qcom,soundwire-v1.3.0", .data = &swrm_v1_3_data },
->  	{ .compatible = "qcom,soundwire-v1.5.1", .data = &swrm_v1_5_data },
-> @@ -1359,6 +1506,7 @@ static struct platform_driver qcom_swrm_driver = {
+>  static const struct sdw_device_id wsa881x_slave_id[] = {
+>  	SDW_SLAVE_ENTRY(0x0217, 0x2010, 0),
+>  	SDW_SLAVE_ENTRY(0x0217, 0x2110, 0),
+> @@ -1151,6 +1204,7 @@ static struct sdw_driver wsa881x_codec_driver = {
+>  	.id_table = wsa881x_slave_id,
 >  	.driver = {
->  		.name	= "qcom-soundwire",
->  		.of_match_table = qcom_swrm_of_match,
-> +		.pm = &swrm_dev_pm_ops,
+>  		.name	= "wsa881x-codec",
+> +		.pm = &wsa881x_pm_ops,
 >  	}
 >  };
->  module_platform_driver(qcom_swrm_driver);
+>  module_sdw_driver(wsa881x_codec_driver);
