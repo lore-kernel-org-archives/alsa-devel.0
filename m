@@ -4,72 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C04CAC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Feb 2022 11:55:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06BCCC433FE
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Feb 2022 12:00:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 11C25174D;
-	Tue, 22 Feb 2022 12:54:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 11C25174D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 86020175F;
+	Tue, 22 Feb 2022 12:59:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86020175F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645530913;
-	bh=iF9W9CsNZ+wpts2wJmuYc8MnWsu9X3zBAQY7EUGlcag=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=DYsQDgrJZpFQaLSTVlRXKQcBMWLrgJK8M5ohv/B+qpiAT7NAAxwE/fbp8pGp0h2mI
-	 JFfxA5U1E7Obt3kWm3Iy9bvm2b9jjrc1xqADQ+J3nI5kKBgwG19SG4M0+Amo21op/5
-	 +wpPx+i/pI9uGI2s7xuwR+UP8EeEqMkKcY9QgJRg=
+	s=default; t=1645531249;
+	bh=iZnLVqPhEdCoeqFRLaS0iaEnLO4STijD7zpqt3gEDfM=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=oW3MYdYiXp/JlH3F8/gO+Ce2f8GaISAIocwiUQqaDyIo1infpIuDLgqWRwDKgfJo7
+	 DGF2AC56BF6q0C2GQJl+Dk9W+22ZyAMNHPRO4Z3kkZ71YFbzx5llbe/TU/GcR0LYBF
+	 E/3obV+wQ6432giwlX/VaDIwEg+cfCtoVxRawmas=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 939E0F8012C;
-	Tue, 22 Feb 2022 12:54:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 59578F80238;
+	Tue, 22 Feb 2022 12:59:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 65BB6F80118; Tue, 22 Feb 2022 12:54:20 +0100 (CET)
-Received: from out162-62-57-64.mail.qq.com (out162-62-57-64.mail.qq.com
- [162.62.57.64])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id A041DF804FD; Tue, 22 Feb 2022 12:59:55 +0100 (CET)
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com
+ [IPv6:2a00:1450:4864:20::42f])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4F802F80118
- for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2022 12:54:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F802F80118
+ by alsa1.perex.cz (Postfix) with ESMTPS id CAD1EF8012C
+ for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2022 12:59:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CAD1EF8012C
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com
- header.b="wom2MThn"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
- s=s201512; t=1645530845;
- bh=5Rr06d3Yrk3kLF8gXcrflHOop0uoK/3urOWvnEtWmH4=;
- h=From:To:Cc:Subject:Date;
- b=wom2MThnW5HiF1vkfswGwEK+O/3fYEULtzLy4T+FcYODeqDZXCuIwtRYwNKhcYE2y
- cXmKRwntBz6WQdgQFfx4WtavIrIZ9W1UdzUz8aEFJe8cVzvdLK6FnVTKlX4NLQUdPd
- CDwnEX+SPmDIsIJFuPDqWClx6pGJngbACN2ijIqg=
-Received: from localhost.localdomain ([218.197.153.188])
- by newxmesmtplogicsvrsza7.qq.com (NewEsmtp) with SMTP
- id D828323E; Tue, 22 Feb 2022 19:54:02 +0800
-X-QQ-mid: xmsmtpt1645530842thq7la2s8
-Message-ID: <tencent_5F9F4223DC44A9ECBF02649AF934F786E305@qq.com>
-X-QQ-XMAILINFO: NO7nxmS7l766leqfrpUZ5sDiiO2Ci+eePA+fHyfgbhMFEv3iJBETm3aqlE5TeR
- k+vLbLRC0hPGfKZLatOPMfn83VBHBl0Crmu/Xwx/QzxAYxtqLCSFJnpdSGDAXy47GKgA3CmNPSTR
- jWDwQGvJXJodVs4cCc5lSwoaWwn66NXtHZkL/2dDmHaXMfS+5QeVbnkNIu9Qr1fALG/20oefUhXY
- LcJeFwX5x0U0TwExSqzaP9K7J7rhZJelir2YEf3wPxIv+PZan+RvMXc6XcspHQBV+GyXslg5B35/
- oFlz64F3CxpaprsuTZzgpAr3z1vsh9oqjJWk7sUNzGTO5iofsodVn86MXw/w9Y/+nbVANdKkGr5/
- aJSv23JTq9wtwPiw4Vj3TCmlnLrQdJx+SKoJwvwb3aPbak55Uu9kGlIR24p+AFVSikYAFCNzRvce
- 4xu2n5XHxjjFTAqcKOUOOiv9FDysjcVVSFL7EUIxvyzvVLu7ZoUp2GMS24kSi6Wy93KviJItfOYE
- Z+O9t1kiXVxydSbLzyOUWly8jzHNHT26Yifdb+UVPVfUpjS9t6D2670A17Hyr7GeZTaaHLzsduyk
- r336mDqgZJnOBrlU8W6he9+zhp0CMjtkbudzyo87cRsBwBfNu8BIaDmSNyW3fyNk4R5sdRsPBXAn
- FUTqHyotwoEvoRqdSafpX7wVn3JlDfwIBjboRSVlHrVUzqhtwEyw2SeDp8To8s91LmECDlI5NqTy
- qPignu+D4kAzsbSiS0ziCzooKrKv27aaU+MMsLZNjiaPjLbX2dxbZ2Y1+uKuDb+9Du+HF8ADa/gX
- Z4+PvR+N7YMnRc15TVDzLp1wzhiCJwa3XWoRpwkxzr4Mke4wX7qruA3Zpb5X6mNjzG8IKcMs3dFN
- C9UYJ815cC95aRU9mXnSMXJO6kHBw/xsMcC3tVY0sMmCECxYpABfs=
-From: xkernel.wang@foxmail.com
-To: tiwai@suse.com,
-	perex@perex.cz
-Subject: [PATCH] ASoC: samsung: i2s: check the return value of kstrdup()
-Date: Tue, 22 Feb 2022 19:53:32 +0800
-X-OQ-MSGID: <20220222115332.4084-1-xkernel.wang@foxmail.com>
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="UIYqOQ5C"
+Received: by mail-wr1-x42f.google.com with SMTP id j17so6035464wrc.0
+ for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2022 03:59:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=86hxaHzF3RhEyMf0w7EdDLKHhFRcTnHl9QY4411LC24=;
+ b=UIYqOQ5C+72BzCNoV0Ugv17YE9b5pOJ8j4O4j8v5N3W3spxXNFGYmh+JuMT6dyBZKb
+ LgYLALuS0ZRyW1ETyfWUoXYOnHNSlESqQGOuAtDPwGhyqehPgnuqkf2MRw35c5ojGyet
+ d+GFubJ4UQzpFdkmNknnaqkjCTknZYI4L01jiQ1kDjKNVKmkGPek9fNkR3DS4A6SKxqp
+ KwEdE9xqccsnhLTHECBq0N2JJMy7Z6sLOgz4asz9ckKRmkYEIkjNtX7EhALiFDUSxUlI
+ cnSrdT75XERF/adspig2vL09edaCtVQF3noFXpLboD2IJ1N2tuACnHavad6EqLbiVA5w
+ +DaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=86hxaHzF3RhEyMf0w7EdDLKHhFRcTnHl9QY4411LC24=;
+ b=5rdgx6Dj1LhL15QgDAiD8/AAKv6cpkgPCb5ePJlQuHMrWgj7/NyaaXS+4nvHpvssRg
+ 0gj+AUw5tlxvfRVwfS6B5/um6mCdKnNG153FCZCIUwZqsdUTtjfPt4ExmZ8gQ1EsIHsB
+ VVHq7uLvrVlzj2nrKA8NCU2BRfC03aResuEW+zM07/TPry6QdXlZD56Emp1RZhc20alN
+ ItmPWO8/NMalcDkQFZNDilJaNpRgBDgM0F7Y1RIKhaqSH8w5nFW5Huy8YA6smtCZKW5c
+ iMHP7RKkDgzkprsVdBPO3qIMpsrc6DbdPLgYkOMQX9yT+NyfMo6UyP94/rQTIEH7M+Zi
+ /QXw==
+X-Gm-Message-State: AOAM530TQPF+KPu2Xzk7FSHwC+dhJfadJ+TE5nKQQu9qKfliEGRTRoy+
+ g7bBiR1Xrj+fGGY0frDBnFI8GA==
+X-Google-Smtp-Source: ABdhPJzmGXWQa2fjf4E5qRANCuTFxziwaIr5wdxaoMdvMBH8nLxjraz5vVllu62TnUTDy9y72pbn3Q==
+X-Received: by 2002:a5d:5185:0:b0:1e5:78a3:7747 with SMTP id
+ k5-20020a5d5185000000b001e578a37747mr19520727wrv.470.1645531189570; 
+ Tue, 22 Feb 2022 03:59:49 -0800 (PST)
+Received: from srini-hackbox.lan
+ (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
+ by smtp.gmail.com with ESMTPSA id a18sm50014661wrg.13.2022.02.22.03.59.48
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 22 Feb 2022 03:59:49 -0800 (PST)
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: broonie@kernel.org
+Subject: [PATCH 02/16] ASoC: codecs: rx-macro: fix accessing array out of
+ bounds for enum type
+Date: Tue, 22 Feb 2022 11:59:19 +0000
+Message-Id: <20220222115933.9114-3-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20220222115933.9114-1-srinivas.kandagatla@linaro.org>
+References: <20220222115933.9114-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Xiaoke Wang <xkernel.wang@foxmail.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, krzysztof.kozlowski@canonical.com
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
+ linux-kernel@vger.kernel.org, pierre-louis.bossart@linux.intel.com,
+ tiwai@suse.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ quic_srivasam@quicinc.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,30 +100,56 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Xiaoke Wang <xkernel.wang@foxmail.com>
+Accessing enums using integer would result in array out of bounds access
+on platforms like aarch64 where sizeof(long) is 8 compared to enum size
+which is 4 bytes.
 
-kstrdup() is a memory allocation function which can return NULL when
-some internal memory errors happen. It is better to check the return
-value of it to catch the error in time.
-
-Signed-off-by: Xiaoke Wang <xkernel.wang@foxmail.com>
+Fixes: 4f692926f562 ("ASoC: codecs: lpass-rx-macro: add dapm widgets and route")
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/samsung/i2s.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/codecs/lpass-rx-macro.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-index 309badc..70c8271 100644
---- a/sound/soc/samsung/i2s.c
-+++ b/sound/soc/samsung/i2s.c
-@@ -1349,6 +1349,10 @@ static int i2s_create_secondary_device(struct samsung_i2s_priv *priv)
- 		return -ENOMEM;
+diff --git a/sound/soc/codecs/lpass-rx-macro.c b/sound/soc/codecs/lpass-rx-macro.c
+index a7f86b094a4f..058d8634ce40 100644
+--- a/sound/soc/codecs/lpass-rx-macro.c
++++ b/sound/soc/codecs/lpass-rx-macro.c
+@@ -2273,7 +2273,7 @@ static int rx_macro_mux_get(struct snd_kcontrol *kcontrol,
+ 	struct snd_soc_component *component = snd_soc_dapm_to_component(widget->dapm);
+ 	struct rx_macro *rx = snd_soc_component_get_drvdata(component);
  
- 	pdev_sec->driver_override = kstrdup("samsung-i2s", GFP_KERNEL);
-+	if (!pdev_sec->driver_override) {
-+		platform_device_put(pdev_sec);
-+		return -ENOMEM;
-+	}
+-	ucontrol->value.integer.value[0] =
++	ucontrol->value.enumerated.item[0] =
+ 			rx->rx_port_value[widget->shift];
+ 	return 0;
+ }
+@@ -2285,7 +2285,7 @@ static int rx_macro_mux_put(struct snd_kcontrol *kcontrol,
+ 	struct snd_soc_component *component = snd_soc_dapm_to_component(widget->dapm);
+ 	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
+ 	struct snd_soc_dapm_update *update = NULL;
+-	u32 rx_port_value = ucontrol->value.integer.value[0];
++	u32 rx_port_value = ucontrol->value.enumerated.item[0];
+ 	u32 aif_rst;
+ 	struct rx_macro *rx = snd_soc_component_get_drvdata(component);
  
- 	ret = platform_device_add(pdev_sec);
- 	if (ret < 0) {
+@@ -2397,7 +2397,7 @@ static int rx_macro_get_hph_pwr_mode(struct snd_kcontrol *kcontrol,
+ 	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
+ 	struct rx_macro *rx = snd_soc_component_get_drvdata(component);
+ 
+-	ucontrol->value.integer.value[0] = rx->hph_pwr_mode;
++	ucontrol->value.enumerated.item[0] = rx->hph_pwr_mode;
+ 	return 0;
+ }
+ 
+@@ -2407,7 +2407,7 @@ static int rx_macro_put_hph_pwr_mode(struct snd_kcontrol *kcontrol,
+ 	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
+ 	struct rx_macro *rx = snd_soc_component_get_drvdata(component);
+ 
+-	rx->hph_pwr_mode = ucontrol->value.integer.value[0];
++	rx->hph_pwr_mode = ucontrol->value.enumerated.item[0];
+ 	return 0;
+ }
+ 
 -- 
+2.21.0
+
