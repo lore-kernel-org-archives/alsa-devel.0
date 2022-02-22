@@ -4,86 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19A75C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Feb 2022 18:36:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5827C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Feb 2022 18:46:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 428C1181D;
-	Tue, 22 Feb 2022 19:35:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 428C1181D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 71C89183E;
+	Tue, 22 Feb 2022 19:45:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 71C89183E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645554974;
-	bh=OTqe7P6ZDt3BcL/rzHwWxH0caW7iOvtaHWapELEE1Oc=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1645555593;
+	bh=1C8QDrO2OtgLwZNTF58GfOVs6sAo8lISdzMgO8lSpDQ=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=C+RzDb52vwgTDj4vWfiNvr77W4HiekO7Nmoy6rfhpwDD1YyizzuBnnH2DPEchyjgD
-	 THp2muxZRmSIgGe0FETSe9CfqtrxKgXsYWnJZLkfmqjYJWPYZLrbHzomx8K9x7yRPA
-	 vQ6VQcR06CK3Ubu9h9GkDu2zYYi2L6WgbJ95IJBs=
+	b=WT5DYmfVV6c9q7RyZRUmiksgdH2vyzy6Gq/IJJLlUWdZgi8HVnIVl6VG57qJ8VnSf
+	 RC9DrdPMYhSlsrQTofc9CWuDHwfNIgP2WoepElsTBaQaPF3OBGu+2arBD92b2UScq0
+	 DxxlOkV4E1G0UEZI0Z266y6o2IiG54/9+nyhJZXE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 01A1DF8053C;
-	Tue, 22 Feb 2022 19:32:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F1AF8F8012C;
+	Tue, 22 Feb 2022 19:45:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7B689F80534; Tue, 22 Feb 2022 19:32:44 +0100 (CET)
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com
- [IPv6:2a00:1450:4864:20::42e])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 8438CF801EC; Tue, 22 Feb 2022 19:45:41 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 98A7CF804FD
- for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2022 19:32:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98A7CF804FD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4BD7EF80118
+ for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2022 19:45:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4BD7EF80118
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="sfphTkw+"
-Received: by mail-wr1-x42e.google.com with SMTP id u1so35073229wrg.11
- for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2022 10:32:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=9SOM2m1l2t9AVsCxObqTWKpNPnvoS4HHumlCtnLuW+M=;
- b=sfphTkw+TIFpSiVfPCDWpMWe0C1Hsg7TxDv/6tfs6owKtzUL1mTcl48e3eStB74Lry
- uIssrDlUyTqB/NWDuogXlOJicUGDIxOIRoOklIWCxm/G59moqOpR/KO2kpdJAvB9Dbjb
- OpNJsrrUggRFjN3EJ9mi+XzfPV36vrKFTxix6WBQRJGaphTeLj837GYeNQ+67NZZRZ33
- CzFcOzTK8yOoOIh8/noDccHBda9/RW/EpdSy7Lkoh7h9ohKJDcJzrlGWNx/N6TrPhC0p
- Nyon9yBws48hbyhjumRz7VOjjcOhMGNOShwsB/3BQnJYZCi+3FsHMYCACVW+rdSr7KNB
- 1p+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=9SOM2m1l2t9AVsCxObqTWKpNPnvoS4HHumlCtnLuW+M=;
- b=MPEeumZxIykFbBzaLR0lOrOUD6xqdihAvrNEb4Qpoq6AL81DpGLbYemjUXfZiLwJK7
- OZDRSX42hqaAiIH+Ro2VR6zE2rkiu0eqlftZrU+fGJYTLpC8GqpF3/9s+TUTeics8GNw
- qXVpHRs8q4vzsi06RQJ6vb54Fe3p97PRtnp95bFWmOzDEcdWZol29CUu2/PKq7AiobRd
- K9TfHpleVCEcsh4R67/Y+5P6qVPyqdU5utK8msfjRuRqIQ3rw1ywvUIDJGYXyoqH1y7W
- E6lYf3F9mU3c9zz0Df4nNQ8VzVJskqpAEwf0dmyi+YKzbSoDis7mv6zS5hW5bJreFtcu
- 17Yg==
-X-Gm-Message-State: AOAM533b/cMeFzzwC0H5vKQqXis79KpUYY5l/k/FY7CTOCZCgOIN5qZ7
- IBzY36+EYlBA49xwRMfMQmnQxQ==
-X-Google-Smtp-Source: ABdhPJzB9kZCiPNVRCRgOj5KpMPtb6jZTEiWIL2vVd2Ge5yGwr0q0OgrFnxxtDDpv23Msgbzlkcb2Q==
-X-Received: by 2002:a05:6000:3c6:b0:1e4:a380:bb53 with SMTP id
- b6-20020a05600003c600b001e4a380bb53mr20490779wrg.559.1645554754454; 
- Tue, 22 Feb 2022 10:32:34 -0800 (PST)
-Received: from srini-hackbox.lan
- (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
- by smtp.gmail.com with ESMTPSA id l28sm57642165wrz.90.2022.02.22.10.32.33
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 22 Feb 2022 10:32:34 -0800 (PST)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: broonie@kernel.org
-Subject: [PATCH v2 8/9] ASoC: codecs: wcd934x: fix kcontrol max values
-Date: Tue, 22 Feb 2022 18:32:11 +0000
-Message-Id: <20220222183212.11580-9-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20220222183212.11580-1-srinivas.kandagatla@linaro.org>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="kxTdUcfB"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id AC2036157F;
+ Tue, 22 Feb 2022 18:45:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5034EC340EF;
+ Tue, 22 Feb 2022 18:45:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1645555537;
+ bh=1C8QDrO2OtgLwZNTF58GfOVs6sAo8lISdzMgO8lSpDQ=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=kxTdUcfBN9saQxItgBeiesm0kmOdbDyQ635g22V0UnPDbnKibuF3JQcYi3sCBloTO
+ IvpdzFQV959IqT+nXxwe5qZmdqnJMMxSfgnbbUUxZ0tWU+ep1q0n7AKLCw5L2jlt0V
+ lhnQcjCDRAF0IdnsbCm18QJqNMvCj/dPG0RNSWrxLKX1b+YkI6arxd47zonFVEJGcf
+ XoA5u7A0Net0w5ZzQ+0GKxiQPnSXkb2FoEoaMbPm3Me2vdyYOYez1skLNPRstSl0+W
+ R2JYN26RCUjXwL6unwKicXVZXHKU4l9DA+aLjc8TDA8JYtuMVXQpMF2xEAeOOYDpQa
+ cxWmG2+PrBA1Q==
+Date: Tue, 22 Feb 2022 18:45:32 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v2 3/9] ASoC: codecs: tx-macro: fix accessing array out
+ of bounds for enum type
+Message-ID: <YhUvTF2QyL3Vh28k@sirena.org.uk>
 References: <20220222183212.11580-1-srinivas.kandagatla@linaro.org>
+ <20220222183212.11580-4-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="SgpHx0OWTw7XBEmR"
+Content-Disposition: inline
+In-Reply-To: <20220222183212.11580-4-srinivas.kandagatla@linaro.org>
+X-Cookie: I smell a wumpus.
 Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
  linux-kernel@vger.kernel.org, pierre-louis.bossart@linux.intel.com,
- tiwai@suse.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- quic_srivasam@quicinc.com
+ tiwai@suse.com, quic_srivasam@quicinc.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,40 +84,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-set "HPH Type" Kcontrol max value of WCD_MBHC_HPH_STEREO instead of UINT_MAX.
-set "HPHL/R Impedance" Kcontrols max value to INT_MAX instead of UINT_MAX as
-max field is integer type.
 
-Without this patch amixer for these controls will show -1 as max value to userspace.
+--SgpHx0OWTw7XBEmR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: 9fb9b1690f0b ("ASoC: codecs: wcd934x: add mbhc support")
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- sound/soc/codecs/wcd934x.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+On Tue, Feb 22, 2022 at 06:32:06PM +0000, Srinivas Kandagatla wrote:
 
-diff --git a/sound/soc/codecs/wcd934x.c b/sound/soc/codecs/wcd934x.c
-index 6c468527fec6..f2674905a4a7 100644
---- a/sound/soc/codecs/wcd934x.c
-+++ b/sound/soc/codecs/wcd934x.c
-@@ -3023,14 +3023,14 @@ static int wcd934x_hph_impedance_get(struct snd_kcontrol *kcontrol,
- 	return 0;
- }
- static const struct snd_kcontrol_new hph_type_detect_controls[] = {
--	SOC_SINGLE_EXT("HPH Type", 0, 0, UINT_MAX, 0,
-+	SOC_SINGLE_EXT("HPH Type", 0, 0, WCD_MBHC_HPH_STEREO, 0,
- 		       wcd934x_get_hph_type, NULL),
- };
- 
- static const struct snd_kcontrol_new impedance_detect_controls[] = {
--	SOC_SINGLE_EXT("HPHL Impedance", 0, 0, UINT_MAX, 0,
-+	SOC_SINGLE_EXT("HPHL Impedance", 0, 0, INT_MAX, 0,
- 		       wcd934x_hph_impedance_get, NULL),
--	SOC_SINGLE_EXT("HPHR Impedance", 0, 1, UINT_MAX, 0,
-+	SOC_SINGLE_EXT("HPHR Impedance", 0, 1, INT_MAX, 0,
- 		       wcd934x_hph_impedance_get, NULL),
- };
- 
--- 
-2.21.0
+> Also few return value of put functions, so that change notifications are
+> sent correctly.
 
+The unconditional change notifications are present in this patch and
+I'm guessing some others as well (they were there in a bunch
+previously):
+
+>  	tx->dec_mode[path] =3D value;
+> =20
+> -	return 0;
+> +	return 1;
+>  }
+
+--SgpHx0OWTw7XBEmR
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmIVL0sACgkQJNaLcl1U
+h9BsTAf/euoTBL81jRbI5q8ZW7c/81L9UaPVST8lko3u0csVls06FN1P/6PP2CAv
+WYokiT/HJhsWr1OgbjNFY+9wz6qy6cFctzEGeRbRU061v5y4CAvNeZJQ0S9Ke4pg
+C997Fmx1ZNcE/MlleGq/Is529oFo/Z6hJnMErGV7x5hSORQhLv8FnnIO6PHfmWsn
+0oF3mBft8Kylg3XozVTVC5CNK8XrJJUnxwgGx+Tx8J7lm/PLeARPQQznwumN4ZD2
+CdLs5abTrvAn68uXUF9XWNSMotLsQGWcWZA9zqFRapxCi8dAhlqEm+RqvhUBh8Iu
+9Gmsj4iEYOT7fLGh0nO2UzE1sXUvTQ==
+=zEWB
+-----END PGP SIGNATURE-----
+
+--SgpHx0OWTw7XBEmR--
