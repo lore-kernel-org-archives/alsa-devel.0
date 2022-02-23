@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 129A8C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Feb 2022 02:31:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B692C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Feb 2022 02:31:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 06773193E;
-	Wed, 23 Feb 2022 03:30:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 06773193E
+	by alsa0.perex.cz (Postfix) with ESMTPS id E6E2B191C;
+	Wed, 23 Feb 2022 03:30:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6E2B191C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645583459;
-	bh=mqQlBlOzmeSF6kjm5/81gVYISa9Xaknvi26FPi+wghc=;
+	s=default; t=1645583505;
+	bh=24e9zv3/2pnu4sddvdFSyWThtFIiSL5XIuishdghJHM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NnzzJUmNR1+wVNFtEpYPFU1WgzAl4O7eWNrNUJ/V8aFZgDqxrOiMGO7deLQiOh13x
-	 UwOOkBe6csQrJeE5On47gTzGCvCOy+DR1ctrT476FWQdEl8tdzLh4FAD4PEAaFjjV/
-	 pKcoC/hiv7K5hzLRwhyVjedQaRLrFUfQWoA/hoZc=
+	b=KFSkvoz/XGvlVFbW+xpRHBBnPe9ltovglZkoZpb4ciez3PCTMSK84pRFYpjkZSJJr
+	 oPLBj84jJwgnoVZeTZfhDrZOoa8MAzJOWoBN1jO2iM2Jfmak9onuxai0joc0Psb9be
+	 0RUdbaI+e8P17vOjQQrgs9x+qA8lx72RS0r5gnVo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DDBB5F8019D;
-	Wed, 23 Feb 2022 03:29:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 85879F80269;
+	Wed, 23 Feb 2022 03:30:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 11B86F800B6; Wed, 23 Feb 2022 03:29:48 +0100 (CET)
+ id 9980FF802A0; Wed, 23 Feb 2022 03:30:53 +0100 (CET)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6F7D3F800B6
- for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2022 03:29:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F7D3F800B6
+ by alsa1.perex.cz (Postfix) with ESMTPS id A83B6F800B6
+ for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2022 03:30:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A83B6F800B6
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="LOWwDV57"
+ header.b="gziOgmRa"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 7DE466150E;
- Wed, 23 Feb 2022 02:29:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DC62C36AE2;
- Wed, 23 Feb 2022 02:29:40 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id D68466155F;
+ Wed, 23 Feb 2022 02:30:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2DD6C340EB;
+ Wed, 23 Feb 2022 02:30:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1645583382;
- bh=mqQlBlOzmeSF6kjm5/81gVYISa9Xaknvi26FPi+wghc=;
+ s=k20201202; t=1645583447;
+ bh=24e9zv3/2pnu4sddvdFSyWThtFIiSL5XIuishdghJHM=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=LOWwDV57DJuhcSectMsEx8w8e1cBYZZHU/3nlyxKiwpZgNrxKKfUgcl/wQrBAaI4F
- a9onQJudcU/bETJWHTXtRkYXwt5uE7f1Z62/4ZhIgoQyaIgIfTMmVuGqcjb+oxxgsp
- +jc+2C0K72Xb4NBXGd3d3j6rNMljMyodMi9raIHNbYPG88RHVM7nl6aH8XvO+LAKQa
- uVwyeCVUJOspZVouY59dLu5TxQfJ4mxmcc8LpCcBlksP6G04FA5Q/CxXS2MD+wGOWJ
- Gcqp8QWhwzOJWVsR0rMaovKoHKXPeBBc6acQIazWBp3Nd99/mvzvTbjPxuEo+iLNc+
- IBOMMv3VHjfbw==
+ b=gziOgmRa9wgz9rdeGAjRZ/byUP2iqzXLN7Feet7ZpP1UB12XjYZG59ysncUKCEq6M
+ vomPn6cC2BZ8nFHtdMq6TeoHn5XOH2GyD6TqKhMXP1w0tBquMe17ONfQczYIkDtEaQ
+ rqFiQ5pUF6zh3/cfD6wy73aDrGVImQntVbZBwQNne2T0yMNoZ4vUus6f9joLswkE10
+ ++nxZEJo5sy7r9P+HqIo9TGLIxwymmFtqF2kxQRH9N6VDlQJ9Uj5kNKeU20gAOD6uf
+ eY/NhjCrfl3DCFnrHb6mBd2HsTocDiA8RwpeX1fKi1BViW6NOv90bD4OVSkJNr2Vwn
+ 47G00USImYaJA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 05/28] ASoC: rt5682: do not block workqueue if
+Subject: [PATCH AUTOSEL 5.10 05/18] ASoC: rt5682: do not block workqueue if
  card is unbound
-Date: Tue, 22 Feb 2022 21:29:06 -0500
-Message-Id: <20220223022929.241127-5-sashal@kernel.org>
+Date: Tue, 22 Feb 2022 21:30:22 -0500
+Message-Id: <20220223023035.241551-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220223022929.241127-1-sashal@kernel.org>
-References: <20220223022929.241127-1-sashal@kernel.org>
+In-Reply-To: <20220223023035.241551-1-sashal@kernel.org>
+References: <20220223023035.241551-1-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 X-stable: review
@@ -122,10 +122,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 7 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
-index 757d1362b5f48..6ad3159eceb98 100644
+index aaef76cc151fa..113ed00ddf1e5 100644
 --- a/sound/soc/codecs/rt5682.c
 +++ b/sound/soc/codecs/rt5682.c
-@@ -1090,11 +1090,13 @@ void rt5682_jack_detect_handler(struct work_struct *work)
+@@ -1081,11 +1081,13 @@ void rt5682_jack_detect_handler(struct work_struct *work)
  		container_of(work, struct rt5682_priv, jack_detect_work.work);
  	int val, btn_type;
  
