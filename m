@@ -4,75 +4,123 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1EB9DC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 13:12:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 004CAC4332F
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 13:12:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6A7251AE2;
-	Fri, 25 Feb 2022 14:11:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A7251AE2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1F4F01AA5;
+	Fri, 25 Feb 2022 14:11:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F4F01AA5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645794758;
-	bh=6QMGCe1tVgCWD9DttlicB92p2MGbXfXoMlHr7CzH/ho=;
+	s=default; t=1645794765;
+	bh=4OxoJPDPDcTmA1eXUj8BGHm/BCwIkobZ8rBlzjTEuZY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hM+poocMH4AD2UoBh4kXGaO6NaCRa0n/rv84lXJS96KwUWS2ovHxIjco0jiQQUte9
-	 n/Y4hHOBvfqRlbDVBiPvhQ1JhWIMzc95FWZL48zDnfLTkSruqY6lkHQB3LwvDRdek3
-	 AtdT/POhCwKauB4L17NRE9hEw1Hl/AcUjQpvvwu8=
+	b=iaqDdTaso2K/dQxR13zaeyY2vG4I36lLFoLgiPCL8AoFHDwldDalwk6InOoVyesX3
+	 +LeXph8priBWEpH5tuFxxm5OnqIByfxd92J1BfjA1LXbEFu8Lr/TZji+1Bq2WzIecV
+	 rkhFuXAyRf1JGmLby6rc9VTjZyRJLDgFydemsGoE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F25FBF80517;
-	Fri, 25 Feb 2022 14:11:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 84B85F8051B;
+	Fri, 25 Feb 2022 14:11:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9079FF800F5; Wed, 23 Feb 2022 13:55:45 +0100 (CET)
-Received: from alexa-out-sd-02.qualcomm.com (alexa-out-sd-02.qualcomm.com
- [199.106.114.39])
- (using TLSv1.2 with cipher AES256-SHA (256/256 bits))
+ id 50737F802E3; Wed, 23 Feb 2022 20:14:08 +0100 (CET)
+Received: from smtp-relay-internal-0.canonical.com
+ (smtp-relay-internal-0.canonical.com [185.125.188.122])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E6BF4F800F5
- for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2022 13:55:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6BF4F800F5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3D6A5F800B6
+ for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2022 20:14:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3D6A5F800B6
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=quicinc.com header.i=@quicinc.com
- header.b="aYY9SQEV"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
- t=1645620940; x=1677156940;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version;
- bh=xDllAEF46R317WHwvyU/EeytzHdwGiWyww3otsuSb90=;
- b=aYY9SQEVFzPCSID3oJqWDOm0xlsDWXdAF6rPnweYBhtAuI1qBSRYkBVu
- U9aZbot6rN8dGX23Y1zdX9SbC88k4ACirJcukDF/L2k2oi2HbgccLdmGS
- L72v8+MeouNGuhkv3yPHeg6yqRTR5mfZZ2LeVeAmrHbuL71Zx55SQzTJC k=;
-Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
- by alexa-out-sd-02.qualcomm.com with ESMTP; 23 Feb 2022 04:55:36 -0800
-X-QCInternal: smtphost
-Received: from unknown (HELO nasanex01a.na.qualcomm.com) ([10.52.223.231])
- by ironmsg04-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Feb 2022 04:55:37 -0800
-Received: from hu-rbankapu-blr.qualcomm.com (10.80.80.8) by
- nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.15; Wed, 23 Feb 2022 04:55:32 -0800
-From: Raghu Bankapur <quic_rbankapu@quicinc.com>
-To: Jaroslav Kysela <perex@perex.cz>, <linux-kernel@vger.kernel.org>, "Takashi
- Iwai" <tiwai@suse.com>, <alsa-devel@alsa-project.org>
-Subject: [PATCH V1 1/1] ASoC: compress: propagate the error code from the
- compress framework
-Date: Wed, 23 Feb 2022 18:22:50 +0530
-Message-ID: <eda8b6cdd53576c5487422e46af20bae1a5c864f.1645618332.git.quic_rbankapu@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1645618332.git.quic_rbankapu@quicinc.com>
-References: <cover.1645618332.git.quic_rbankapu@quicinc.com>
+ dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com
+ header.b="f+ceqsv4"
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 71CF33FCA9
+ for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2022 19:14:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+ s=20210705; t=1645643640;
+ bh=rf7a9EFQwPOyocENu81tYUT+5dnJvDmCZPPvLR/17AA=;
+ h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+ MIME-Version;
+ b=f+ceqsv4pvZHP257w8BdgIPI5o3FDlW8a6hbBjiz1RvtSa1juNWOviEgpaas82WXY
+ pdYGhLhD3k7/1wKJlAu7hEHaaWlL1VTMXHVZX0uW/kKjBGeTq4IUyyJbpvbI7nq78p
+ SUf546blbwfhXIayCslnSmqk3eqDi5t/c1XfzcDjsK5JkUAQMHjTmEBNB4EmwUuPMr
+ qhDfvhJ9nGm9fx5pypKlI8Vh7ALbwpeJrKRALaH/ppDR0iLi8RgeSimgWk/12ojpny
+ exvVH2BNB/TpMduToqj5lGJHVg0l98NdNwDnQgUwvuKtnR+nQRUcMr0lGLZWFVAC5d
+ wNKE3xrkwWhgQ==
+Received: by mail-ej1-f71.google.com with SMTP id
+ o22-20020a1709061d5600b006d1aa593787so3596386ejh.0
+ for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2022 11:14:00 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=rf7a9EFQwPOyocENu81tYUT+5dnJvDmCZPPvLR/17AA=;
+ b=7TB29jpmX2wqEHYIygWtrdzZDhjcgL5RGaX+0AHrX9rAVM0A0cNNjYlVjevddDb6PG
+ aJ+mdkdBo0V36rmR+gqXaMGQ9t58QRWQlSS2YcImh5sl7PMTTEQ49pr3bRHdm+ohJL2g
+ Ohf7dyBptvhUCyU0wjyHWiDgHukr/xho3RIS2i4dPyKPeBPis5V8LItAM+ajDtyDjvkk
+ eEXZUUndIAJcw97Ul0fygbrzkqhJhNdvRvbfDBSI9nXZ9WmplugAViFVAWy1YAfvSHjr
+ JpViE5UOREmLOGgp7bV31XBILi6n+qcsZIeR6rHiebwxAjQkoPU8QvGWVWHmSiaqdjOO
+ c2dA==
+X-Gm-Message-State: AOAM5317gg1rzOA2v+ppNwGpgPe43MwAYJZvM/ZiEUk3ppCcbQujlRft
+ Vb84aPxJWCf2yRlAqrlvrSVaxidE9jwiisxN4pCrEhT776udDddNUfrHaVPjaniQFrRFErT+yPw
+ xscWZmTR6ck67xvsIiLGMw754CYYgfq3ay51qAP/R
+X-Received: by 2002:a17:906:e244:b0:6cd:24e3:ab8b with SMTP id
+ gq4-20020a170906e24400b006cd24e3ab8bmr856426ejb.633.1645643640106; 
+ Wed, 23 Feb 2022 11:14:00 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyXgfLS9GHyX1kCvT/o1Mu24QLFIsYnwLPgsBOYcxKH/GiFu7jQtQB6sjAsK4TU39w3xnST4g==
+X-Received: by 2002:a17:906:e244:b0:6cd:24e3:ab8b with SMTP id
+ gq4-20020a170906e24400b006cd24e3ab8bmr856416ejb.633.1645643639914; 
+ Wed, 23 Feb 2022 11:13:59 -0800 (PST)
+Received: from localhost.localdomain (xdsl-188-155-181-108.adslplus.ch.
+ [188.155.181.108])
+ by smtp.gmail.com with ESMTPSA id q5sm212611ejc.115.2022.02.23.11.13.57
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 23 Feb 2022 11:13:58 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, Stuart Yoder <stuyoder@gmail.com>,
+ Laurentiu Tudor <laurentiu.tudor@nxp.com>, Abel Vesa <abel.vesa@nxp.com>,
+ Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>, "K. Y. Srinivasan" <kys@microsoft.com>,
+ Haiyang Zhang <haiyangz@microsoft.com>,
+ Stephen Hemminger <sthemmin@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+ Dexuan Cui <decui@microsoft.com>, Bjorn Helgaas <bhelgaas@google.com>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>,
+ Vineeth Vijayan <vneethv@linux.ibm.com>,
+ Peter Oberparleiter <oberpar@linux.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>, Andy Gross <agross@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Mark Brown <broonie@kernel.org>, "Michael S. Tsirkin" <mst@redhat.com>,
+ Jason Wang <jasowang@redhat.com>, linux-kernel@vger.kernel.org,
+ linux-clk@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>,
+ linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org,
+ linux-pci@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+ linux-s390@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-spi@vger.kernel.org,
+ virtualization@lists.linux-foundation.org,
+ Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH v2 05/11] pci: use helper for safer setting of driver_override
+Date: Wed, 23 Feb 2022 20:13:04 +0100
+Message-Id: <20220223191310.347669-6-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20220223191310.347669-1-krzysztof.kozlowski@canonical.com>
+References: <20220223191310.347669-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-Mailman-Approved-At: Fri, 25 Feb 2022 14:11:19 +0100
-Cc: Krishna Jha <kkishorj@codeaurora.org>,
- Raghu Bankapur <quic_rbankapu@quicinc.com>
+Content-Transfer-Encoding: 8bit
+X-Mailman-Approved-At: Fri, 25 Feb 2022 14:11:18 +0100
+Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,46 +136,54 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Propagate the error code from the compress framework for the timestamp
-query. This error code will be used by the client to handle the
-error case scenarios gracefully.
+Use a helper for seting driver_override to reduce amount of duplicated
+code.
 
-Signed-off-by: Raghu Bankapur <quic_rbankapu@quicinc.com>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- sound/core/compress_offload.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ drivers/pci/pci-sysfs.c | 24 ++++--------------------
+ 1 file changed, 4 insertions(+), 20 deletions(-)
 
-diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
-index de514ec8c83d..48aa87d08bdc 100644
---- a/sound/core/compress_offload.c
-+++ b/sound/core/compress_offload.c
-@@ -31,7 +31,11 @@
- #include <sound/info.h>
- #include <sound/compress_params.h>
- #include <sound/compress_offload.h>
--#include <sound/compress_driver.h>
-+#include <sound/compress_driver.h>ASoC: compress: propagate the error code from the compress framework
-+
-+Propagate the error code from the compress framework for the timestamp
-+query. This error code will be used by the client to handle the
-+error case scenarios gracefully.
- 
- /* struct snd_compr_codec_caps overflows the ioctl bit size for some
-  * architectures, so we need to disable the relevant ioctls.
-@@ -166,9 +170,12 @@ static int snd_compr_free(struct inode *inode, struct file *f)
- static int snd_compr_update_tstamp(struct snd_compr_stream *stream,
- 		struct snd_compr_tstamp *tstamp)
+diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+index 602f0fb0b007..16a163d4623e 100644
+--- a/drivers/pci/pci-sysfs.c
++++ b/drivers/pci/pci-sysfs.c
+@@ -567,31 +567,15 @@ static ssize_t driver_override_store(struct device *dev,
+ 				     const char *buf, size_t count)
  {
-+	int ret = 0;
- 	if (!stream->ops->pointer)
- 		return -ENOTSUPP;
--	stream->ops->pointer(stream, tstamp);
-+	ret = stream->ops->pointer(stream, tstamp);
+ 	struct pci_dev *pdev = to_pci_dev(dev);
+-	char *driver_override, *old, *cp;
++	int ret;
+ 
+ 	/* We need to keep extra room for a newline */
+ 	if (count >= (PAGE_SIZE - 1))
+ 		return -EINVAL;
+ 
+-	driver_override = kstrndup(buf, count, GFP_KERNEL);
+-	if (!driver_override)
+-		return -ENOMEM;
+-
+-	cp = strchr(driver_override, '\n');
+-	if (cp)
+-		*cp = '\0';
+-
+-	device_lock(dev);
+-	old = pdev->driver_override;
+-	if (strlen(driver_override)) {
+-		pdev->driver_override = driver_override;
+-	} else {
+-		kfree(driver_override);
+-		pdev->driver_override = NULL;
+-	}
+-	device_unlock(dev);
+-
+-	kfree(old);
++	ret = driver_set_override(dev, &pdev->driver_override, buf);
 +	if (ret)
 +		return ret;
- 	pr_debug("dsp consumed till %d total %d bytes\n",
- 		tstamp->byte_offset, tstamp->copied_total);
- 	if (stream->direction == SND_COMPRESS_PLAYBACK)
+ 
+ 	return count;
+ }
 -- 
-2.17.1
+2.32.0
 
