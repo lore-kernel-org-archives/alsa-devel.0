@@ -4,77 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EACCFC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Feb 2022 01:50:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA642C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Feb 2022 02:29:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3B6C6190F;
-	Wed, 23 Feb 2022 02:50:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B6C6190F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8FF8B1915;
+	Wed, 23 Feb 2022 03:28:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8FF8B1915
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645581055;
-	bh=gNnEZLNzVGjn9zsz1hYY56rJEUExMF3fuctvS2FB9jI=;
+	s=default; t=1645583377;
+	bh=fLqIYr3a11V/hiFrqChIvb88lZsImseqXDa0AusqyDY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=B4+S9HQ2L+L7y0V6iw3fyij8qaseNVG2nIzWtYfJduAHFB2n5jsSRDbtylUy7vOXC
-	 5iibq2Ov53XNHcIeErLrl5LW+kKNUS3PhYtTcEsJCye8D5zuUAuuVEJfXzc/RuIPIl
-	 kCpvhxGI5iwJXmXudotVXnXYonNaOnl3WcXObmj4=
+	b=YXUSKyfUb7RLA3cv4JVby2WY7HUhyTY8/MObJIlRpJqy1mmN0pdZMcZSh/1jbXYJ2
+	 fNSTqpLw3nAgialtQqC27Oj9ugZAIf+UbpWsnonbUbItB7MIVfSxh6ZxMc/oaLpSPa
+	 lo8LOnx5dMl3HLjJyQFKtmEhP53TIIEt3QcvxaeY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BA55EF80516;
-	Wed, 23 Feb 2022 02:49:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1BDCBF8019D;
+	Wed, 23 Feb 2022 03:28:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C064BF80517; Wed, 23 Feb 2022 02:49:02 +0100 (CET)
+ id 9D34AF80269; Wed, 23 Feb 2022 03:28:43 +0100 (CET)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 13F5FF804F2
- for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2022 02:48:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13F5FF804F2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0F71CF80118
+ for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2022 03:28:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F71CF80118
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Frw1SJ4l"
+ header.b="pBh0M6yy"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id C7FF3614C1;
- Wed, 23 Feb 2022 01:48:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEB63C340E8;
- Wed, 23 Feb 2022 01:48:53 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 6C8496150E;
+ Wed, 23 Feb 2022 02:28:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56FADC340F1;
+ Wed, 23 Feb 2022 02:28:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1645580934;
- bh=gNnEZLNzVGjn9zsz1hYY56rJEUExMF3fuctvS2FB9jI=;
+ s=k20201202; t=1645583312;
+ bh=fLqIYr3a11V/hiFrqChIvb88lZsImseqXDa0AusqyDY=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=Frw1SJ4lxuJ3emCqGuza1JBz8aTsLGBcmGyINuNx/PBOje4D2m1gNOrBGUBCBtc3N
- QGCS21SuFmVTiVDgzEszSyt80q3ujdt27I9KsLBuX0MCXKajTAmybgpsixwkEGri0x
- SGOoikVdBG8ra2cn/U88B4FpC6j5ifPa6kpQXmt7GjNzsAYYOBQMvyzPjZ+Q8/mzRn
- oggUysNHFbkQdFYc5qtT1cX1/gort83MBp/qMbZwGiiIxS+kZFPcfpQUPHYmv9WXRi
- 8V+rf/1h9l8D1CS4Zzqs79+YsU7BVzMHCC3WKLz/zW3poT66J6wwYzofVppXNH1t10
- RH56yoLUBGFYQ==
-From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH 3/4] ASoC: pcm3168a: Use modern ASoC DAI format terminology
-Date: Wed, 23 Feb 2022 01:48:45 +0000
-Message-Id: <20220223014846.2765382-3-broonie@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220223014846.2765382-1-broonie@kernel.org>
-References: <20220223014846.2765382-1-broonie@kernel.org>
+ b=pBh0M6yye3nGenRIogM5MzViqLCxzdrc2kAiBN7wzUXj9p/cyjREl5BX99uVJbUlq
+ ZT6tO8GG/QDyxmI9ZsY6y9I7YmPzMTqhUGyDjs18so6zd2oTHsELXACI5unq5ZGdY3
+ 40tWngmJmIeuqrf4keoONM/bhlfl3X3NePNQ0soLN9HfrSM6HffbcUVR2o2vOSptgR
+ atBcPVedzaz+8Agc1Ng3FLTAI7l8bbyRDkcnTyVItGxh/y9PO4PlIgv4oX2Wk5i8EF
+ Nn+INTi1bcbnIAiaH+RNPTNRWYf0M9Ke5l29WfPjM1i50qr9dC7LCXMoIy22Ri1HoK
+ CT90yGs9+8jkQ==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.16 05/30] ASoC: rt5682s: do not block workqueue if
+ card is unbound
+Date: Tue, 22 Feb 2022 21:27:54 -0500
+Message-Id: <20220223022820.240649-5-sashal@kernel.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220223022820.240649-1-sashal@kernel.org>
+References: <20220223022820.240649-1-sashal@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4012; h=from:subject;
- bh=gNnEZLNzVGjn9zsz1hYY56rJEUExMF3fuctvS2FB9jI=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBiFZJoU4VjJlMSoO1WMd1//jSrG2jbpJKKFJNgh+xy
- Ek599UGJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYhWSaAAKCRAk1otyXVSH0I4HB/
- 0UX09/DuSpf2LfHvzZhHdZsWQOpHmQqHPMKOFlS40ksILeIVkSPGGCWpJhCZel7xuWXtLpHC4D1UK9
- H5x15wQeMgL/O2fEDaZVLDmUzuPJwc34tYge3tocl7yb2qdMLlaJ/qK7WS1IDvwx68dDjiN6dUGS5d
- yuaFTwz65Gw1rlH0c0sx8clDVqh0Vm6LPN2f54VJ6RLdj6pC+IbMMiXDou0K6wQ3VSoCgQwSRSIy8d
- dcBPCayOKKEtO0oAsQ3wKciIzS2GHKUeB/YWrhx3ZNHSFtqp9/9Sikt081plhw/n10ywA+7FNGvolR
- bdMopamVgvOQLSFfyknm62JQ3xPwk1
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+Content-Type: text/plain; charset=UTF-8
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: Sasha Levin <sashal@kernel.org>, oder_chiou@realtek.com,
+ alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ lgirdwood@gmail.com, Bard Liao <yung-chuan.liao@linux.intel.com>,
+ tiwai@suse.com, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>, Shuming Fan <shumingf@realtek.com>,
+ =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,109 +90,61 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-As part of moving to remove the old style defines for the bus clocks update
-the pcm3168a driver to use more modern terminology for clocking.
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 
+[ Upstream commit d7b530fdc45e75a54914a194c4becd9672a4e24f ]
+
+The current rt5682s_jack_detect_handler() assumes the component
+and card will always show up and implements an infinite usleep
+loop waiting for them to show up.
+
+This does not hold true if a codec interrupt (or other
+event) occurs when the card is unbound. The codec driver's
+remove  or shutdown functions cannot cancel the workqueue due
+to the wait loop. As a result, code can either end up blocking
+the workqueue, or hit a kernel oops when the card is freed.
+
+Fix the issue by rescheduling the jack detect handler in
+case the card is not ready. In case card never shows up,
+the shutdown/remove/suspend calls can now cancel the detect
+task.
+
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Shuming Fan <shumingf@realtek.com>
+Link: https://lore.kernel.org/r/20220207153000.3452802-1-kai.vehmanen@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/pcm3168a.c | 34 +++++++++++++++++-----------------
- 1 file changed, 17 insertions(+), 17 deletions(-)
+ sound/soc/codecs/rt5682s.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/pcm3168a.c b/sound/soc/codecs/pcm3168a.c
-index 7417cf45d916..cf27f05dc46a 100644
---- a/sound/soc/codecs/pcm3168a.c
-+++ b/sound/soc/codecs/pcm3168a.c
-@@ -48,7 +48,7 @@ static const char *const pcm3168a_supply_names[] = {
+diff --git a/sound/soc/codecs/rt5682s.c b/sound/soc/codecs/rt5682s.c
+index d49a4f68566d2..d79b548d23fa4 100644
+--- a/sound/soc/codecs/rt5682s.c
++++ b/sound/soc/codecs/rt5682s.c
+@@ -824,11 +824,13 @@ static void rt5682s_jack_detect_handler(struct work_struct *work)
+ 		container_of(work, struct rt5682s_priv, jack_detect_work.work);
+ 	int val, btn_type;
  
- /* ADC/DAC side parameters */
- struct pcm3168a_io_params {
--	bool master_mode;
-+	bool provider_mode;
- 	unsigned int format;
- 	int tdm_slots;
- 	u32 tdm_mask;
-@@ -357,7 +357,7 @@ static int pcm3168a_set_dai_fmt(struct snd_soc_dai *dai, unsigned int format)
- 	struct snd_soc_component *component = dai->component;
- 	struct pcm3168a_priv *pcm3168a = snd_soc_component_get_drvdata(component);
- 	struct pcm3168a_io_params *io_params = &pcm3168a->io_params[dai->id];
--	bool master_mode;
-+	bool provider_mode;
+-	while (!rt5682s->component)
+-		usleep_range(10000, 15000);
+-
+-	while (!rt5682s->component->card->instantiated)
+-		usleep_range(10000, 15000);
++	if (!rt5682s->component || !rt5682s->component->card ||
++	    !rt5682s->component->card->instantiated) {
++		/* card not yet ready, try later */
++		mod_delayed_work(system_power_efficient_wq,
++				 &rt5682s->jack_detect_work, msecs_to_jiffies(15));
++		return;
++	}
  
- 	switch (format & SND_SOC_DAIFMT_FORMAT_MASK) {
- 	case SND_SOC_DAIFMT_LEFT_J:
-@@ -371,15 +371,15 @@ static int pcm3168a_set_dai_fmt(struct snd_soc_dai *dai, unsigned int format)
- 		return -EINVAL;
- 	}
- 
--	switch (format & SND_SOC_DAIFMT_MASTER_MASK) {
--	case SND_SOC_DAIFMT_CBS_CFS:
--		master_mode = false;
-+	switch (format & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
-+	case SND_SOC_DAIFMT_CBC_CFC:
-+		provider_mode = false;
- 		break;
--	case SND_SOC_DAIFMT_CBM_CFM:
--		master_mode = true;
-+	case SND_SOC_DAIFMT_CBP_CFP:
-+		provider_mode = true;
- 		break;
- 	default:
--		dev_err(component->dev, "unsupported master/slave mode\n");
-+		dev_err(component->dev, "unsupported provider mode\n");
- 		return -EINVAL;
- 	}
- 
-@@ -390,7 +390,7 @@ static int pcm3168a_set_dai_fmt(struct snd_soc_dai *dai, unsigned int format)
- 		return -EINVAL;
- 	}
- 
--	io_params->master_mode = master_mode;
-+	io_params->provider_mode = provider_mode;
- 	io_params->format = format & SND_SOC_DAIFMT_FORMAT_MASK;
- 
- 	pcm3168a_update_fixup_pcm_stream(dai);
-@@ -440,7 +440,7 @@ static int pcm3168a_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_component *component = dai->component;
- 	struct pcm3168a_priv *pcm3168a = snd_soc_component_get_drvdata(component);
- 	struct pcm3168a_io_params *io_params = &pcm3168a->io_params[dai->id];
--	bool master_mode, tdm_mode;
-+	bool provider_mode, tdm_mode;
- 	unsigned int format;
- 	unsigned int reg, mask, ms, ms_shift, fmt, fmt_shift, ratio, tdm_slots;
- 	int i, num_scki_ratios, slot_width;
-@@ -459,9 +459,9 @@ static int pcm3168a_hw_params(struct snd_pcm_substream *substream,
- 		fmt_shift = PCM3168A_ADC_FMTAD_SHIFT;
- 	}
- 
--	master_mode = io_params->master_mode;
-+	provider_mode = io_params->provider_mode;
- 
--	if (master_mode) {
-+	if (provider_mode) {
- 		ratio = pcm3168a->sysclk / params_rate(params);
- 
- 		for (i = 0; i < num_scki_ratios; i++) {
-@@ -488,15 +488,15 @@ static int pcm3168a_hw_params(struct snd_pcm_substream *substream,
- 
- 	switch (slot_width) {
- 	case 16:
--		if (master_mode || (format != SND_SOC_DAIFMT_RIGHT_J)) {
--			dev_err(component->dev, "16-bit slots are supported only for slave mode using right justified\n");
-+		if (provider_mode || (format != SND_SOC_DAIFMT_RIGHT_J)) {
-+			dev_err(component->dev, "16-bit slots are supported only for consumer mode using right justified\n");
- 			return -EINVAL;
- 		}
- 		break;
- 	case 24:
--		if (master_mode || (format == SND_SOC_DAIFMT_DSP_A) ||
--				   (format == SND_SOC_DAIFMT_DSP_B)) {
--			dev_err(component->dev, "24-bit slots not supported in master mode, or slave mode using DSP\n");
-+		if (provider_mode || (format == SND_SOC_DAIFMT_DSP_A) ||
-+		    		     (format == SND_SOC_DAIFMT_DSP_B)) {
-+			dev_err(component->dev, "24-bit slots not supported in provider mode, or consumer mode using DSP\n");
- 			return -EINVAL;
- 		}
- 		break;
+ 	mutex_lock(&rt5682s->jdet_mutex);
+ 	mutex_lock(&rt5682s->calibrate_mutex);
 -- 
-2.30.2
+2.34.1
 
