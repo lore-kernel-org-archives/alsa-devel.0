@@ -4,72 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1866C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Feb 2022 01:50:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2C2FC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Feb 2022 01:50:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 17F11191B;
-	Wed, 23 Feb 2022 02:49:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 17F11191B
+	by alsa0.perex.cz (Postfix) with ESMTPS id EDE3D1920;
+	Wed, 23 Feb 2022 02:49:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EDE3D1920
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645581019;
-	bh=y6+rH8hnFNVXdFmnZeLqwUTYKfP8z+x+kSI0RdsyXbQ=;
+	s=default; t=1645581039;
+	bh=FInZ8bgEh9fJf3xW469G5TLgkADkj5ZM4Ed11NC9Rqs=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AQY8CH9siVAtcu1kqC7FtxuXWclshFuDHv3P7IuECU3LSMlB7wx2aIgf4fqQKS8BF
-	 iJu1qs5QA/kcOBCD45TPCmRv64FF38Pq6XROpUTLBT1w2wQepAL/wVB57GgUcy4SgA
-	 L1pCYC4ZFSrsbTleg+BXO9IupU5llWA/mjZGfyQc=
+	b=vUxEuzjWY5shQWRfJSwTOfjj8VAGee5IIHRUxtVlljuukho9Ol3KsZn4lDnox0qvx
+	 J4FcZ9PIWuY1QPMPdtuW1b3Jb6XEa+chEkZorb8El06hBwb6FlowhCXJDv2S3m7L90
+	 Q+rQ6RAEP1wM2k+6uPCoULSURBJAfow65k8HlOmE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 92C6DF80238;
-	Wed, 23 Feb 2022 02:49:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2D93DF80508;
+	Wed, 23 Feb 2022 02:49:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BDAADF80311; Wed, 23 Feb 2022 02:48:58 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id DF915F8012C; Wed, 23 Feb 2022 02:49:00 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 676A7F800F5
- for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2022 02:48:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 676A7F800F5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 59BECF8012C
+ for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2022 02:48:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59BECF8012C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="bz8aoQCR"
+ header.b="TzhIuZLK"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id E93A3B81E01;
- Wed, 23 Feb 2022 01:48:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77676C340F1;
- Wed, 23 Feb 2022 01:48:52 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 7FDB86146B;
+ Wed, 23 Feb 2022 01:48:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14746C340E8;
+ Wed, 23 Feb 2022 01:48:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1645580933;
- bh=y6+rH8hnFNVXdFmnZeLqwUTYKfP8z+x+kSI0RdsyXbQ=;
+ s=k20201202; t=1645580935;
+ bh=FInZ8bgEh9fJf3xW469G5TLgkADkj5ZM4Ed11NC9Rqs=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=bz8aoQCRGGPch2ifjTVj8AHjjym/+zGRFaRGIZlLS5HD8c4IPQCGb9jSaubQvwOMw
- M+khyIWtQOFVSafE+KUa10lIPIPbDsJUFZF5yCbuWGZ0NUp6phUIoDpiAamQ7ixvxf
- NxBfixgRaiFrMNcHDU7gNQ72S0+dSGYu+RhAheHzVwM1ZlFHL+v6NKKYNfSsif16fT
- bbJrXQpCHTlD0ggcqYm0w4q4bnd+gb9vFbuphdFc/l76ikd5RNSzO69IYoV3g6cuzQ
- nfNomF3Bf9+OqQE0fLWzGvGUoWlmLGMiEcIfnoDoX2zL+QeMs+DVmdHemALhAdQRgO
- KVDTZwR7uCqgg==
+ b=TzhIuZLKpIi2RihYxBEEjSWY8aOXd4+b1IqD5jwXsEQLrUWlMWc+v1zQvvczx8TEW
+ YaRnPKwKfrm0Jr5k8LChbKPBXtoiEd5rQS0RKNKvR7kehzJt5YUjj67RR7mwFb8waB
+ 6a/6y5R7AYtRjrFZb5/xVMOgwO8SLPF3dKAZrUp6+s0a0oLTFczgCQEYIYlIv+Za4N
+ YA9O5eOnxrLgy6/Hkfn5IWTv0XQiMj9RIPg8LW8hkEnvDOlYYQPxntep2z1x28ICgN
+ n/0p+1F1/EsaPLDqVwhBKrjNMGyrgljqWi3zhwRUF7caD62wT1zMf8911getZZrK0D
+ wkkNdkxQL5Ubg==
 From: Mark Brown <broonie@kernel.org>
 To: Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH 2/4] ASoC: pcm186x: Use modern ASoC DAI format terminology
-Date: Wed, 23 Feb 2022 01:48:44 +0000
-Message-Id: <20220223014846.2765382-2-broonie@kernel.org>
+Subject: [PATCH 4/4] ASoC: pcm512x: Use modern ASoC DAI format terminology
+Date: Wed, 23 Feb 2022 01:48:46 +0000
+Message-Id: <20220223014846.2765382-4-broonie@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220223014846.2765382-1-broonie@kernel.org>
 References: <20220223014846.2765382-1-broonie@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2104; h=from:subject;
- bh=y6+rH8hnFNVXdFmnZeLqwUTYKfP8z+x+kSI0RdsyXbQ=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBiFZJnXYdGbHNjNJDQdYb9Y61BS0qHh6lZWaX5Yiry
- t92kcxGJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYhWSZwAKCRAk1otyXVSH0PjXB/
- 9zLH+58ST6vtK9d6oY1qwE8u41zpL6Lfzk5m89GQ43kOBnAGUPbuYL0HUKRTurd2LuaKGvpwJdElga
- tW/RBupkHDzlvc88cqhonkzPnCDEc4TqMA1SOHxPmUa7i2dhgAlTjerKsCXUQTni8kn7yDbN9WNC0d
- KsQKSOEAM1R3ivirCdLXBaWQLPbe2DuJIB1kYx5OKJ1TiN+quCa2G6fOLL1XCPpdCt5Ah8VzX4FcJq
- +zmNE2D+cK/22NVrquLRRDD+Z1wKT3qhXiDSY4EZIIszsQDacNjsEoP4G2w+4jLaT5kVBKTgM1fWz2
- /+29xo7KVAAsLULv566uBsKmrS2IF+
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2889; h=from:subject;
+ bh=FInZ8bgEh9fJf3xW469G5TLgkADkj5ZM4Ed11NC9Rqs=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBiFZJpualPKo39n0cEG+9UQfSHxVZEcxSXi5nts5v+
+ kB1KuS6JATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYhWSaQAKCRAk1otyXVSH0IG+B/
+ 9rmVaIZGNsQX8fBc1jUhtMGBiyMFnhVo4io2951bsbPXWNEPT+QpIJt4mM3r/RnloGC60H9JBHiT1l
+ ZpyFC6GibEnBvW+hl8LNzud719RU1/9guIdFDfj8Qq/2oxPqzvcLjvoqqWPRJHbnTo0Sh8yDMonw7J
+ CUU29Tz68VnAO86NYub5rDXZCVZSLKl62lOemRHnYcSqEnj5qg+AL8wNYT+mRPjzMrRehapgNKOKcv
+ 2WM0WsaHxi/ZqrIOEf9+rc1IpRp7Y8UZbEA4IX6lYkx/TueXvnpBR0ftqogv5VQ4lal0ud1K+EjOOi
+ p6PHFRxjMv4ZHiqogXeR27XEijEgk4
 X-Developer-Key: i=broonie@kernel.org; a=openpgp;
  fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 Content-Transfer-Encoding: 8bit
@@ -90,62 +90,87 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 As part of moving to remove the old style defines for the bus clocks update
-the pcm186x driver to use more modern terminology for clocking.
+the pcm512x driver to use more modern terminology for clocking.
 
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/pcm186x.c | 19 +++++++++----------
- 1 file changed, 9 insertions(+), 10 deletions(-)
+ sound/soc/codecs/pcm512x.c | 32 ++++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
 
-diff --git a/sound/soc/codecs/pcm186x.c b/sound/soc/codecs/pcm186x.c
-index b8845f45549e..2c78dccb3f62 100644
---- a/sound/soc/codecs/pcm186x.c
-+++ b/sound/soc/codecs/pcm186x.c
-@@ -39,7 +39,7 @@ struct pcm186x_priv {
- 	unsigned int sysclk;
- 	unsigned int tdm_offset;
- 	bool is_tdm_mode;
--	bool is_master_mode;
-+	bool is_provider_mode;
- };
+diff --git a/sound/soc/codecs/pcm512x.c b/sound/soc/codecs/pcm512x.c
+index 60dee41816dc..a3ff4a07aff7 100644
+--- a/sound/soc/codecs/pcm512x.c
++++ b/sound/soc/codecs/pcm512x.c
+@@ -652,12 +652,12 @@ static int pcm512x_dai_startup(struct snd_pcm_substream *substream,
+ 	struct snd_soc_component *component = dai->component;
+ 	struct pcm512x_priv *pcm512x = snd_soc_component_get_drvdata(component);
  
- static const DECLARE_TLV_DB_SCALE(pcm186x_pga_tlv, -1200, 50, 0);
-@@ -340,8 +340,8 @@ static int pcm186x_hw_params(struct snd_pcm_substream *substream,
- 				    PCM186X_PCM_CFG_TDM_LRCK_MODE);
+-	switch (pcm512x->fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+-	case SND_SOC_DAIFMT_CBM_CFM:
+-	case SND_SOC_DAIFMT_CBM_CFS:
++	switch (pcm512x->fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
++	case SND_SOC_DAIFMT_CBP_CFP:
++	case SND_SOC_DAIFMT_CBP_CFC:
+ 		return pcm512x_dai_startup_master(substream, dai);
+ 
+-	case SND_SOC_DAIFMT_CBS_CFS:
++	case SND_SOC_DAIFMT_CBC_CFC:
+ 		return pcm512x_dai_startup_slave(substream, dai);
+ 
+ 	default:
+@@ -1202,8 +1202,8 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
+ 		return ret;
  	}
  
--	/* Only configure clock dividers in master mode. */
--	if (priv->is_master_mode) {
-+	/* Only configure clock dividers in provider mode. */
-+	if (priv->is_provider_mode) {
- 		div_bck = priv->sysclk / (div_lrck * rate);
+-	if ((pcm512x->fmt & SND_SOC_DAIFMT_MASTER_MASK) ==
+-	    SND_SOC_DAIFMT_CBS_CFS) {
++	if ((pcm512x->fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) ==
++	    SND_SOC_DAIFMT_CBC_CFC) {
+ 		ret = regmap_update_bits(pcm512x->regmap, PCM512x_ERROR_DETECT,
+ 					 PCM512x_DCAS, 0);
+ 		if (ret != 0) {
+@@ -1340,21 +1340,21 @@ static int pcm512x_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	int afmt;
+ 	int offset = 0;
+ 	int clock_output;
+-	int master_mode;
++	int provider_mode;
+ 	int ret;
  
- 		dev_dbg(component->dev,
-@@ -364,18 +364,17 @@ static int pcm186x_set_fmt(struct snd_soc_dai *dai, unsigned int format)
- 
- 	dev_dbg(component->dev, "%s() format=0x%x\n", __func__, format);
- 
--	/* set master/slave audio interface */
--	switch (format & SND_SOC_DAIFMT_MASTER_MASK) {
--	case SND_SOC_DAIFMT_CBM_CFM:
-+	switch (format & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
-+	case SND_SOC_DAIFMT_CBP_CFP:
- 		if (!priv->sysclk) {
--			dev_err(component->dev, "operating in master mode requires sysclock to be configured\n");
-+			dev_err(component->dev, "operating in provider mode requires sysclock to be configured\n");
- 			return -EINVAL;
- 		}
- 		clk_ctrl |= PCM186X_CLK_CTRL_MST_MODE;
--		priv->is_master_mode = true;
-+		priv->is_provider_mode = true;
- 		break;
+-	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
 -	case SND_SOC_DAIFMT_CBS_CFS:
--		priv->is_master_mode = false;
++	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
 +	case SND_SOC_DAIFMT_CBC_CFC:
-+		priv->is_provider_mode = false;
+ 		clock_output = 0;
+-		master_mode = 0;
++		provider_mode = 0;
+ 		break;
+-	case SND_SOC_DAIFMT_CBM_CFM:
++	case SND_SOC_DAIFMT_CBP_CFP:
+ 		clock_output = PCM512x_BCKO | PCM512x_LRKO;
+-		master_mode = PCM512x_RLRK | PCM512x_RBCK;
++		provider_mode = PCM512x_RLRK | PCM512x_RBCK;
+ 		break;
+-	case SND_SOC_DAIFMT_CBM_CFS:
++	case SND_SOC_DAIFMT_CBP_CFC:
+ 		clock_output = PCM512x_BCKO;
+-		master_mode = PCM512x_RBCK;
++		provider_mode = PCM512x_RBCK;
  		break;
  	default:
- 		dev_err(component->dev, "Invalid DAI master/slave interface\n");
+ 		return -EINVAL;
+@@ -1370,9 +1370,9 @@ static int pcm512x_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 
+ 	ret = regmap_update_bits(pcm512x->regmap, PCM512x_MASTER_MODE,
+ 				 PCM512x_RLRK | PCM512x_RBCK,
+-				 master_mode);
++				 provider_mode);
+ 	if (ret != 0) {
+-		dev_err(component->dev, "Failed to enable master mode: %d\n", ret);
++		dev_err(component->dev, "Failed to enable provider mode: %d\n", ret);
+ 		return ret;
+ 	}
+ 
 -- 
 2.30.2
 
