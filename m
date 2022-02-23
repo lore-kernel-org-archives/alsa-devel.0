@@ -4,83 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A414C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 13:14:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72F5EC433FE
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 13:14:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 501B21AAF;
-	Fri, 25 Feb 2022 14:13:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 501B21AAF
+	by alsa0.perex.cz (Postfix) with ESMTPS id B0F561A8E;
+	Fri, 25 Feb 2022 14:13:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0F561A8E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645794841;
-	bh=aAilajr8KQhcuQdz5PlpOpvx6d0adrdXSDRjc8J4J+w=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=b3Z9gMvoTi6bLojEV065t8W1ka+hAA9yU6r+vUlkMfcqAfAjK0hlKfxTKLq0WwLNv
-	 7m/jXNbr+NMZfFBRqZSgz727dQvXzsmAlQ3bq87UKY+d0j7zLKhUYiUeuBRYjpByQN
-	 BWVdIBgQTK99xENyJCPpQHSLv/Js/fN50J71Hc6s=
+	s=default; t=1645794856;
+	bh=7L+JcV+ysh2qWj1VtK95Z2qKP6x8+b4ODE7HLSGbUkk=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=LWzhEBff4pEnWMBg85QQHgtLARm7ACc1ViyyZCCINgl3ovFeCciZVu9PtycbyBTc3
+	 ItWmEhHWKal7cEC1mOZip31GB/ZGcgR9M19GWd7hFbZt/ehGI4Ga7B88GYLodX2nPO
+	 71Ik++LT2nPVcj1oIMR2+ReZwFfwQv/0KDIbmNcc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9C8B9F80534;
-	Fri, 25 Feb 2022 14:11:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3F5C7F80538;
+	Fri, 25 Feb 2022 14:11:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9CB18F80237; Wed, 23 Feb 2022 20:14:10 +0100 (CET)
+ id D776AF80118; Wed, 23 Feb 2022 20:14:12 +0100 (CET)
 Received: from smtp-relay-internal-1.canonical.com
  (smtp-relay-internal-1.canonical.com [185.125.188.123])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 15CEBF8025D
- for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2022 20:14:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15CEBF8025D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 55DAEF8025D
+ for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2022 20:14:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55DAEF8025D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com
- header.b="APrfaR2T"
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69])
+ header.b="V7N3qndg"
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 4953F405F2
- for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2022 19:14:02 +0000 (UTC)
+ by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 000C23FCAF
+ for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2022 19:14:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
  s=20210705; t=1645643642;
- bh=7G3yQO1ggdyvs1MDXGTTghLlHGfX3RftlATUX++IZLE=;
- h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
- b=APrfaR2T3Yv7ozsc6wPixVJh7k8BgK5D2eR3MdEeuJUXHS/3w64oIyym5P6lsmyRB
- Eyi+cHKfefmRd9OpmVXskdsOV77L4l1CPMQ4O+qt0A+iN/KKOH+YqhOC87Mk50xuXt
- VZCSnXGhaxTWH26GAr9NLWWZP5JRAGu1o/TbBqF7fw/ydRknkVW1+n1wsp1lTsgxQp
- mfOoFV27o7c13s1HGMjfFG8mewUNeXIT7d9eRyR4KgwEEtRmRMIJkOJMQZyOJ7Ht72
- dwYl3uZKr4cC7cVfvq8WyWtw00dBOxVcP9AOMNSteJnYjViHbhowYpQ6gdV50jP5kR
- 7P0zRFogas5gg==
-Received: by mail-ej1-f69.google.com with SMTP id
- 13-20020a170906328d00b006982d0888a4so7427258ejw.9
- for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2022 11:14:02 -0800 (PST)
+ bh=6kmYalWKPfFv5VRw+oGSxmK6RPimpkHdVtl6uKB49Rw=;
+ h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+ MIME-Version;
+ b=V7N3qndgtP20tVoJCo3hoCNRSfBZXhftWTe0ajU8wLcyxofY4wzJbUOU1tFQhXkKV
+ WqFYA91EV1MOmO49oVGjZ6ne9t+zlHB4cBj8YCqs6Nwd2RMmRRlhv0HvEddIWwmeAA
+ Q7LbBJGxWIi4xqEgFUqPtBEKMRFgu3xG0isQr1b/DNVaEid+MUItfZNLXo+EElLA0G
+ jd3olVbbQtiofexUFX7EjuWUaVAPcHCpZRAG5DraWY7mejyEuXFoLZd4Rq7N1wS1uE
+ Ra25OlYGZfp9vHwOZwPIOgL9xvl7IWg0XJfHheQBYF81M0b5L0DafTa++KtXLIto5d
+ 77wQ3OLf9yHYQ==
+Received: by mail-ed1-f70.google.com with SMTP id
+ o5-20020a50c905000000b00410effbf65dso14047017edh.17
+ for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2022 11:14:01 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=7G3yQO1ggdyvs1MDXGTTghLlHGfX3RftlATUX++IZLE=;
- b=i1IQnrVZecOYBasMael9kbXRsXJ7cq8sAqzpH1DrmjmIoDG+bmK1VaBdBvs9a/rUfk
- +wktkgm8Dc5MPtl89Vg1jMr0Fhn734Ehk3dW2RaVTGHV//qDOfEVxnScv2afIl0I51Vv
- ZaXW5TgkdVGvyYbEW496uowQB4meWCsIa1BdlMYEA/BUlZpxkWb5zz5k0slZoqeWisgy
- l80ZI5TTmr0FisuWPgh0EcUT5XdoRzdNgspvO6jc/s9W7CdBw7pBDF6UK1LfF+VDJ/yY
- tRlszKqWYVCRro5rxDN6Wq1S6bPE8BLby7Kt3IHfa4V+Y4HtQMXfHyWmR9vFurAVL/7i
- eDDw==
-X-Gm-Message-State: AOAM533p4KIt0x0dS6yibqMO5zdmvAxLhGlBjhxvPwfgto8Gbotv7qHC
- 0NYJlHFoCb9kM2KM5h0RLzC9sSLLy3tutgGvALlj5IgzZUrvNLdthaqOthbnxVnr9NMxUpWhNm5
- +vY6CCxNs0eK8v5IPAYP/KDo60GjeEtOyEHxeDCKO
-X-Received: by 2002:a17:907:3e1d:b0:6d1:cb2e:a5f7 with SMTP id
- hp29-20020a1709073e1d00b006d1cb2ea5f7mr912406ejc.34.1645643627831; 
- Wed, 23 Feb 2022 11:13:47 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzGBRIhr5hXOOi9m1HuHlbXHVVNJ7NbK5fFuNrM/4KQXFCcM1cXqPM7bQRPgfLpUUwT4AX8Nw==
-X-Received: by 2002:a17:907:3e1d:b0:6d1:cb2e:a5f7 with SMTP id
- hp29-20020a1709073e1d00b006d1cb2ea5f7mr912389ejc.34.1645643627533; 
- Wed, 23 Feb 2022 11:13:47 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=6kmYalWKPfFv5VRw+oGSxmK6RPimpkHdVtl6uKB49Rw=;
+ b=alLUp8Yc5sLTVkBOR5ijEzVpetfiXnnnuMjjT/ZH9urJ8Oejv6VUXdRi1Ceu7ub5bL
+ ngudRtAH5IAXdisKWpHBI4MNYcjY334Iboq9RDFm0OwAYnE2NGRwSuIPXigNxhxVt1A8
+ w957nRQyh0zFQfAApnmtSYqLFVbnj+gpSxjDeb9ocg3Wkl+9d+S/hYTc4QSHVgdAOip4
+ XeWVNeqa2eaK3b0skHiQ9e5uM7+pi/hYVzWHBFmH2cHi2uh1vmnt261vtyBVU+7mxW0m
+ 8i8OPSBnSQ18VDer5HDnKOGO4j+WcRs3ambDjZX8aCrqoxBwJISXVVOxkdUZnBlqNGYr
+ SmrA==
+X-Gm-Message-State: AOAM532O8BcL9Uy2MR7M8FjR4R7231TYB+cvxef5hpk8PLq+EtbGpvtN
+ nGJhtriiE88Eot1bBCvUXdmp4ZPOgvAdqe2I2r+x1cgC2BHGnf+9y6J2cPsq0oEdWQFLt+gYg+x
+ yCKJF+Yx4aHabPGZrdEddlnz7h61MlEI1sPiBnwXn
+X-Received: by 2002:a17:906:8517:b0:6d0:1de8:cb6e with SMTP id
+ i23-20020a170906851700b006d01de8cb6emr879369ejx.686.1645643637567; 
+ Wed, 23 Feb 2022 11:13:57 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxB+J8rGAXqipxoP9wQ6myB7nB+zWmd6qpvw2I7Sb7Voa93sYSAIKWPaoRnjyaDxxppMxF7NQ==
+X-Received: by 2002:a17:906:8517:b0:6d0:1de8:cb6e with SMTP id
+ i23-20020a170906851700b006d01de8cb6emr879348ejx.686.1645643637394; 
+ Wed, 23 Feb 2022 11:13:57 -0800 (PST)
 Received: from localhost.localdomain (xdsl-188-155-181-108.adslplus.ch.
  [188.155.181.108])
- by smtp.gmail.com with ESMTPSA id q5sm212611ejc.115.2022.02.23.11.13.45
+ by smtp.gmail.com with ESMTPSA id q5sm212611ejc.115.2022.02.23.11.13.55
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 23 Feb 2022 11:13:47 -0800 (PST)
+ Wed, 23 Feb 2022 11:13:56 -0800 (PST)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  "Rafael J. Wysocki" <rafael@kernel.org>, Stuart Yoder <stuyoder@gmail.com>,
@@ -108,11 +110,13 @@ To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  alsa-devel@alsa-project.org, linux-spi@vger.kernel.org,
  virtualization@lists.linux-foundation.org,
  Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH v2 00/11] Fix broken usage of driver_override (and kfree of
- static memory)
-Date: Wed, 23 Feb 2022 20:12:59 +0100
-Message-Id: <20220223191310.347669-1-krzysztof.kozlowski@canonical.com>
+Subject: [PATCH v2 04/11] hv: vmbus: use helper for safer setting of
+ driver_override
+Date: Wed, 23 Feb 2022 20:13:03 +0100
+Message-Id: <20220223191310.347669-5-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20220223191310.347669-1-krzysztof.kozlowski@canonical.com>
+References: <20220223191310.347669-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Mailman-Approved-At: Fri, 25 Feb 2022 14:11:18 +0100
@@ -133,69 +137,54 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+Use a helper for seting driver_override to reduce amount of duplicated
+code.
 
-This is a continuation of my old patchset from 2019. [1]
-Back then, few drivers set driver_override wrong. I fixed Exynos
-in a different way after discussions. QCOM NGD was not fixed
-and a new user appeared - IMX SCU.
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+ drivers/hv/vmbus_drv.c | 24 ++++--------------------
+ 1 file changed, 4 insertions(+), 20 deletions(-)
 
-It seems "char *" in driver_override looks too consty, so we
-tend to make a mistake of storing there string literals.
-
-Changes of latest since v1 (not the old 2019 solution):
-=======================================================
-https://lore.kernel.org/all/708eabb1-7b35-d525-d4c3-451d4a3de84f@rasmusvillemoes.dk/
-1. Add helper for setting driver_override.
-2. Use the helper.
-
-Dependencies (and stable):
-==========================
-1. All patches, including last three fixes, depend on first patch
-   introducing the helper.
-2. The last three commits - fixes - are probably not backportable
-   directly, because of this dependency. I don't know how to express
-   it here, since stable-kernel-rules.rst mentions only commits as
-   possible dependencies.
-
-[1] https://lore.kernel.org/all/1550484960-2392-3-git-send-email-krzk@kernel.org/
-
-Best regards,
-Krzysztof
-
-Krzysztof Kozlowski (11):
-  driver: platform: add and use helper for safer setting of
-    driver_override
-  amba: use helper for safer setting of driver_override
-  fsl-mc: use helper for safer setting of driver_override
-  hv: vmbus: use helper for safer setting of driver_override
-  pci: use helper for safer setting of driver_override
-  s390: cio: use helper for safer setting of driver_override
-  spi: use helper for safer setting of driver_override
-  vdpa: use helper for safer setting of driver_override
-  clk: imx: scu: fix kfree() of static memory on setting driver_override
-  slimbus: qcom-ngd: fix kfree() of static memory on setting
-    driver_override
-  rpmsg: fix kfree() of static memory on setting driver_override
-
- drivers/amba/bus.c              | 24 +++---------------
- drivers/base/driver.c           | 44 +++++++++++++++++++++++++++++++++
- drivers/base/platform.c         | 24 +++---------------
- drivers/bus/fsl-mc/fsl-mc-bus.c | 22 +++--------------
- drivers/clk/imx/clk-scu.c       |  7 +++++-
- drivers/hv/vmbus_drv.c          | 24 +++---------------
- drivers/pci/pci-sysfs.c         | 24 +++---------------
- drivers/rpmsg/rpmsg_internal.h  | 13 ++++++++--
- drivers/rpmsg/rpmsg_ns.c        | 14 +++++++++--
- drivers/s390/cio/css.c          | 24 +++---------------
- drivers/slimbus/qcom-ngd-ctrl.c | 12 ++++++++-
- drivers/spi/spi.c               | 20 +++------------
- drivers/vdpa/vdpa.c             | 25 +++----------------
- include/linux/device/driver.h   |  1 +
- include/linux/platform_device.h |  6 ++++-
- include/linux/spi/spi.h         |  2 +-
- 16 files changed, 123 insertions(+), 163 deletions(-)
-
+diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
+index 12a2b37e87f3..f2435cc8b680 100644
+--- a/drivers/hv/vmbus_drv.c
++++ b/drivers/hv/vmbus_drv.c
+@@ -575,31 +575,15 @@ static ssize_t driver_override_store(struct device *dev,
+ 				     const char *buf, size_t count)
+ {
+ 	struct hv_device *hv_dev = device_to_hv_device(dev);
+-	char *driver_override, *old, *cp;
++	int ret;
+ 
+ 	/* We need to keep extra room for a newline */
+ 	if (count >= (PAGE_SIZE - 1))
+ 		return -EINVAL;
+ 
+-	driver_override = kstrndup(buf, count, GFP_KERNEL);
+-	if (!driver_override)
+-		return -ENOMEM;
+-
+-	cp = strchr(driver_override, '\n');
+-	if (cp)
+-		*cp = '\0';
+-
+-	device_lock(dev);
+-	old = hv_dev->driver_override;
+-	if (strlen(driver_override)) {
+-		hv_dev->driver_override = driver_override;
+-	} else {
+-		kfree(driver_override);
+-		hv_dev->driver_override = NULL;
+-	}
+-	device_unlock(dev);
+-
+-	kfree(old);
++	ret = driver_set_override(dev, &hv_dev->driver_override, buf);
++	if (ret)
++		return ret;
+ 
+ 	return count;
+ }
 -- 
 2.32.0
 
