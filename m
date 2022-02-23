@@ -4,62 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A240C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Feb 2022 02:30:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 129A8C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Feb 2022 02:31:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7CDA31916;
-	Wed, 23 Feb 2022 03:29:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CDA31916
+	by alsa0.perex.cz (Postfix) with ESMTPS id 06773193E;
+	Wed, 23 Feb 2022 03:30:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 06773193E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645583444;
-	bh=wZH01uOAO4UsGv9C+T2IqqCCfADRCqC0wjWMBt/crTc=;
+	s=default; t=1645583459;
+	bh=mqQlBlOzmeSF6kjm5/81gVYISa9Xaknvi26FPi+wghc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RhJylY7buBXkvOIYCRR0/E9c22qmt4qTT/tK1FB3j+V0QPsm0Xg3C54U1FOFrXmKl
-	 QuANXKqKcP2yauqa4scKRdseiEAlOYKcUzgvSn9ffgOWbmKUC6M7bAIF9/qTO8ZA1d
-	 4V000OPjdIk4MlUwtOgpJeyZhrqBvM2hyQvpqBEg=
+	b=NnzzJUmNR1+wVNFtEpYPFU1WgzAl4O7eWNrNUJ/V8aFZgDqxrOiMGO7deLQiOh13x
+	 UwOOkBe6csQrJeE5On47gTzGCvCOy+DR1ctrT476FWQdEl8tdzLh4FAD4PEAaFjjV/
+	 pKcoC/hiv7K5hzLRwhyVjedQaRLrFUfQWoA/hoZc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F2D5FF80516;
-	Wed, 23 Feb 2022 03:29:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DDBB5F8019D;
+	Wed, 23 Feb 2022 03:29:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 80AC9F80516; Wed, 23 Feb 2022 03:29:47 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 11B86F800B6; Wed, 23 Feb 2022 03:29:48 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8193FF8019D
- for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2022 03:29:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8193FF8019D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6F7D3F800B6
+ for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2022 03:29:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F7D3F800B6
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="W1yH16t/"
+ header.b="LOWwDV57"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 4656161518;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 7DE466150E;
+ Wed, 23 Feb 2022 02:29:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DC62C36AE2;
  Wed, 23 Feb 2022 02:29:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BBFEC36AE5;
- Wed, 23 Feb 2022 02:29:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1645583380;
- bh=wZH01uOAO4UsGv9C+T2IqqCCfADRCqC0wjWMBt/crTc=;
+ s=k20201202; t=1645583382;
+ bh=mqQlBlOzmeSF6kjm5/81gVYISa9Xaknvi26FPi+wghc=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=W1yH16t/wVIxlV/73ovByglOcgNu0kXBIhy+TLWXhOGcWH5zP9dyKERxcUaEhLH53
- w+Pw4qnxh2Sre5D+cx7PJ9A26ReIuYplWd6QeBBq4iT2k/YDMgrXvfhLpNpXOVYlUL
- ZJwSCRIqnD+OSQ+D4Iqcs6hM8euqCkl0TZNluvtAB1HHxjw89ekydzr/FZfe2hEB/6
- L299CMSTXSfGdk/zIUswT5DMGT84fZQqmoKq+RI+bDptbWu5F+5kMJdEdlsY+SVZIi
- mOhrWPe4pyIUS0ZBmxLbF+Ezn2xnjiDpQUwOMxzLUxiyHIL+PQewFDkjIF7TvsX3VQ
- vg7UcBwt7xuxg==
+ b=LOWwDV57DJuhcSectMsEx8w8e1cBYZZHU/3nlyxKiwpZgNrxKKfUgcl/wQrBAaI4F
+ a9onQJudcU/bETJWHTXtRkYXwt5uE7f1Z62/4ZhIgoQyaIgIfTMmVuGqcjb+oxxgsp
+ +jc+2C0K72Xb4NBXGd3d3j6rNMljMyodMi9raIHNbYPG88RHVM7nl6aH8XvO+LAKQa
+ uVwyeCVUJOspZVouY59dLu5TxQfJ4mxmcc8LpCcBlksP6G04FA5Q/CxXS2MD+wGOWJ
+ Gcqp8QWhwzOJWVsR0rMaovKoHKXPeBBc6acQIazWBp3Nd99/mvzvTbjPxuEo+iLNc+
+ IBOMMv3VHjfbw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 04/28] ASoC: rt5668: do not block workqueue if
+Subject: [PATCH AUTOSEL 5.15 05/28] ASoC: rt5682: do not block workqueue if
  card is unbound
-Date: Tue, 22 Feb 2022 21:29:05 -0500
-Message-Id: <20220223022929.241127-4-sashal@kernel.org>
+Date: Tue, 22 Feb 2022 21:29:06 -0500
+Message-Id: <20220223022929.241127-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220223022929.241127-1-sashal@kernel.org>
 References: <20220223022929.241127-1-sashal@kernel.org>
@@ -92,9 +91,9 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 
-[ Upstream commit a6d78661dc903d90a327892bbc34268f3a5f4b9c ]
+[ Upstream commit 4c33de0673ced9c7c37b3bbd9bfe0fda72340b2a ]
 
-The current rt5668_jack_detect_handler() assumes the component
+The current rt5682_jack_detect_handler() assumes the component
 and card will always show up and implements an infinite usleep
 loop waiting for them to show up.
 
@@ -115,35 +114,35 @@ Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Shuming Fan <shumingf@realtek.com>
-Link: https://lore.kernel.org/r/20220207153000.3452802-2-kai.vehmanen@linux.intel.com
+Link: https://lore.kernel.org/r/20220207153000.3452802-3-kai.vehmanen@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt5668.c | 12 +++++++-----
+ sound/soc/codecs/rt5682.c | 12 +++++++-----
  1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5668.c b/sound/soc/codecs/rt5668.c
-index 6ab1a8bc37352..1186ceb5a978e 100644
---- a/sound/soc/codecs/rt5668.c
-+++ b/sound/soc/codecs/rt5668.c
-@@ -1022,11 +1022,13 @@ static void rt5668_jack_detect_handler(struct work_struct *work)
- 		container_of(work, struct rt5668_priv, jack_detect_work.work);
+diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
+index 757d1362b5f48..6ad3159eceb98 100644
+--- a/sound/soc/codecs/rt5682.c
++++ b/sound/soc/codecs/rt5682.c
+@@ -1090,11 +1090,13 @@ void rt5682_jack_detect_handler(struct work_struct *work)
+ 		container_of(work, struct rt5682_priv, jack_detect_work.work);
  	int val, btn_type;
  
--	while (!rt5668->component)
+-	while (!rt5682->component)
 -		usleep_range(10000, 15000);
 -
--	while (!rt5668->component->card->instantiated)
+-	while (!rt5682->component->card->instantiated)
 -		usleep_range(10000, 15000);
-+	if (!rt5668->component || !rt5668->component->card ||
-+	    !rt5668->component->card->instantiated) {
++	if (!rt5682->component || !rt5682->component->card ||
++	    !rt5682->component->card->instantiated) {
 +		/* card not yet ready, try later */
 +		mod_delayed_work(system_power_efficient_wq,
-+				 &rt5668->jack_detect_work, msecs_to_jiffies(15));
++				 &rt5682->jack_detect_work, msecs_to_jiffies(15));
 +		return;
 +	}
  
- 	mutex_lock(&rt5668->calibrate_mutex);
+ 	mutex_lock(&rt5682->calibrate_mutex);
  
 -- 
 2.34.1
