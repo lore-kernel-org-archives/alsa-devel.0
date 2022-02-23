@@ -4,76 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A29CC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Feb 2022 16:31:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8AE70C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Feb 2022 16:33:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 53EF7193F;
-	Wed, 23 Feb 2022 17:31:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 53EF7193F
+	by alsa0.perex.cz (Postfix) with ESMTPS id D2FB01AE4;
+	Wed, 23 Feb 2022 17:32:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D2FB01AE4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645633915;
-	bh=cGU3CIIQE1Irr2fInyYQqrBgMX4IysWI+rsOi/NgXbc=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1645634003;
+	bh=kkXDWw5Ws312JHgwMVFdyKq3XYsYFAROXJIkaljA6c0=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NzuyLkUaphcAPsOKzAmERCIfW61tVRx4BW/58uRAU6uer+cwmYzg3w39aegigL0F2
-	 0a8BlxIU1Z2MFaNtcktZsdezoQUo0ptOOMGTxhO1gs+kGm27smgkAjK9yQqsOqR8Mq
-	 3ZpnBwY5h73ieihfp3Xd8DHheCHtopNtzhPnyB/w=
+	b=kuXlWOWvGYgsWHG+f5qKnpMljKSBNtlmkHPJUiyRUauK7OITu/O506CypDva7IgIl
+	 o0Y1/ROar+/IajWH3LfvddSs+a7ZvzbpPNTWUAg7w7N+ZtCLPW6Ug14aG2NsXIqP8g
+	 1zXKMWZbljp5VNtMOBxgbdndrpZxz4lq1pW8e0oU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C022BF8019D;
-	Wed, 23 Feb 2022 17:31:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 708C6F8019D;
+	Wed, 23 Feb 2022 17:32:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2B287F80237; Wed, 23 Feb 2022 17:31:02 +0100 (CET)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ id 8FF33F80237; Wed, 23 Feb 2022 17:32:31 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 18D5DF800B6
+ for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2022 17:32:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18D5DF800B6
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="hd5lBxoW"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 973C0F800F5
- for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2022 17:30:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 973C0F800F5
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="mY3REBFj"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1645633856; x=1677169856;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=cGU3CIIQE1Irr2fInyYQqrBgMX4IysWI+rsOi/NgXbc=;
- b=mY3REBFjLR1G6bn981/zoniCXxlhsNqNQz+ptkyJ4jlNz7DX9n4GZep/
- QDDLHUD6Di6TUygBEtxMwchXgksN++pic8an2wz2Y7oA2cDhRxDvOC7AK
- 2r64uC/BFtvOgqfkjP/+aJMp8oeBK8nLEZy9GY4svUNotOQCzY/L/cyce
- EgJ2Sy7Ad1ndtZOBVu8V5PxrebqWE3o8Z4COZ1pfHaILU/lRSbzgayvOK
- sQMZQ1hRi5ybt6L7fOb3n4ICEGZxDzxOXJGhLPY4xJfkO/GZOJgz/mZ+b
- q5pahwB16XXAUYHIyXgypZvG6CUpDirDSHYf3fnSQun3gQooBgNFFu973 g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10267"; a="252203539"
-X-IronPort-AV: E=Sophos;i="5.88,391,1635231600"; d="scan'208";a="252203539"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Feb 2022 08:16:13 -0800
-X-IronPort-AV: E=Sophos;i="5.88,391,1635231600"; d="scan'208";a="548317618"
-Received: from aacunaco-mobl1.amr.corp.intel.com (HELO [10.209.144.93])
- ([10.209.144.93])
- by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Feb 2022 08:16:12 -0800
-Message-ID: <438fa589-475b-9f0b-2366-773c81a98e70@linux.intel.com>
-Date: Wed, 23 Feb 2022 09:31:02 -0600
+ by ams.source.kernel.org (Postfix) with ESMTPS id 7978BB820C8;
+ Wed, 23 Feb 2022 16:32:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44A7FC340EB;
+ Wed, 23 Feb 2022 16:32:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1645633944;
+ bh=kkXDWw5Ws312JHgwMVFdyKq3XYsYFAROXJIkaljA6c0=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=hd5lBxoWASm7C9idlzoTFALSV/KdcWeDEC7fY8oz2NFtEkgUr4INWDQNUk8FnTmML
+ pKaYdhd8Os/QxmUZ9nJXx6UxP44hX8FkfbJn82GdGILGPtD2BMXoC9uxLZaLDHjRGT
+ QdLICOzUQuOn2xBogLZQeUW4OdfuY9Af9G919hHig3I0ssGmxHsj2o/RlwN+4RPwAu
+ /akVavXXDxaAdRUEfoIm+djBPW5Z5X0EiMc+Ns84wRFT3sLsFocMleGTtTq/Mof2j4
+ yOfRzimHSdfKCe1KWMqjpgzBIteFojeW0BHGgvEWsaPx/obP+qSCeQ8DkPrErSiG3q
+ tcbnSuY8ghHtw==
+Date: Wed, 23 Feb 2022 16:32:19 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Subject: Re: [PATCH] ASoC: ops: Shift tested values in snd_soc_put_volsw() by
+ +min
+Message-ID: <YhZhkz6gQYsK3Fwd@sirena.org.uk>
+References: <20220215130645.164025-1-marex@denx.de>
+ <s5hy221y6md.wl-tiwai@suse.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.5.0
-Subject: Re: [PATCH] ASoC: Intel: soc-acpi-byt: Add new WM5102 ACPI HID
-Content-Language: en-US
-To: Hans de Goede <hdegoede@redhat.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Jie Yang <yang.jie@linux.intel.com>,
- Mark Brown <broonie@kernel.org>
-References: <20220223135237.731638-1-hdegoede@redhat.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20220223135237.731638-1-hdegoede@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="K4+LhN6i3Z7XS3AP"
+Content-Disposition: inline
+In-Reply-To: <s5hy221y6md.wl-tiwai@suse.de>
+X-Cookie: I smell a wumpus.
+Cc: Marek Vasut <marex@denx.de>, alsa-devel@alsa-project.org,
+ stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,31 +84,46 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+--K4+LhN6i3Z7XS3AP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 2/23/22 07:52, Hans de Goede wrote:
-> The Lenovo Yoga Tablet 2 1050F/L tablets use an ACPI HID of "10WM5102"
-> for their wm5102 codec, add this to the list of HIDs for the wm5102 codec.
-> 
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+On Wed, Feb 23, 2022 at 03:55:54PM +0100, Takashi Iwai wrote:
+>=20
+> But, more reading the code, I suspect whether the function does work
+> correctly at all...  How is the mask calculation done in that way?
+>   unsigned int mask =3D (1U << (fls(min + max) - 1)) - 1;
+> What's the difference of this function with snd_soc_put_volsw()?
 
-Thanks Hans!
+Yeah, I'm not clear either - Marek mentioned _SX when he was doing the
+patch but I didn't get the bandwidth to figure out what it's doing
+properly yet.  At this point I'm not clear what _SX is supposed to do,
+I'm hoping it works well for the devices that use it but I don't have
+any of them.
 
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Furthermore, the mask calculation and usage in snd_soc_put_volsw()
+> isn't right, either, I'm afraid; if the range is [-10, 0], max=3D0, then
+> mask will 0, which will omit all values...
 
-> ---
->  sound/soc/intel/common/soc-acpi-intel-byt-match.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/intel/common/soc-acpi-intel-byt-match.c b/sound/soc/intel/common/soc-acpi-intel-byt-match.c
-> index 142000991813..c532529a3856 100644
-> --- a/sound/soc/intel/common/soc-acpi-intel-byt-match.c
-> +++ b/sound/soc/intel/common/soc-acpi-intel-byt-match.c
-> @@ -127,7 +127,7 @@ static const struct snd_soc_acpi_codecs rt5640_comp_ids = {
->  
->  static const struct snd_soc_acpi_codecs wm5102_comp_ids = {
->  	.num_codecs = 2,
-> -	.codecs = { "WM510204", "WM510205"},
-> +	.codecs = { "10WM5102", "WM510204", "WM510205"},
->  };
->  
->  static const struct snd_soc_acpi_codecs da7213_comp_ids = {
+Indeed, if anyone did that.  Fortunately I don't *think* that's an
+issue.  The whole way that code handles signed bitfields by remapping
+them into unsigned user visible controls is a landmine, it's not even
+obvious that they handle signed bitfields in the first place.
+
+--K4+LhN6i3Z7XS3AP
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmIWYZMACgkQJNaLcl1U
+h9ADZwf/Zzguub4Yl2PGwVZbKy+3Yyz5xv1y9d0rGtN8wkYdlXsSKholjgiNyjd1
+qP1aTg7VEFpkX96xLYth0Zpb+49xvQYV5MGvDs+lhXgGQ9Vi7WYE7kLIY1XtQt1L
+DShepF2VtcFgWSRiPP916BPFXvIPZSp1vAYlSiOpdvLtVy1FF/s4hqsYCShRFZQp
+rUMPLjTi4CYxqomIWPw3gyepInvXv5BaaJb/4W+0TEmkTtEx4j7gd+i3j0b4ezg+
+JB5IDi40XgR9NqLhz8nRcK9emSDtM4cIUIaP9pWKY151Q/CM3ua4cObX4ckP7KDM
+zho+HpW4zeQj5MG7UsMX6bR7qO2/KA==
+=ZXyI
+-----END PGP SIGNATURE-----
+
+--K4+LhN6i3Z7XS3AP--
