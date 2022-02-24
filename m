@@ -4,86 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6EEFC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Feb 2022 11:23:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60059C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Feb 2022 12:16:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2081C18BD;
-	Thu, 24 Feb 2022 12:22:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2081C18BD
+	by alsa0.perex.cz (Postfix) with ESMTPS id A0A35179B;
+	Thu, 24 Feb 2022 13:15:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A0A35179B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645701787;
-	bh=SoqPMdlX+r5GsWhurtYbOsZ9hPg72HtLQcLL2GkxPGI=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1645705008;
+	bh=9EYwuXUUNe4s56JSespRsmrf4WVo2K2M5a/Ux3TMvqs=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jgo6XikuhkBvlbuaKaznULdg/mK2VxYn1G+GhQ3pHBwmicahKjcVtqeP0L1QOr0ei
-	 O1W0Tamv3gt+XapYjdCqHW92ed8kMzEw5QLtVtaeCt2t0Efm5CKRa07k1hva/KSVvO
-	 HReE7jgF8uuciyiD9i28VqZCc4n8qHBqeJbKVqhI=
+	b=ED4k+fZEfbMr/avWuJrEfN9UAJxRUECYYH93dMsT3eW9esnWf0PikgO+MxX8OyLCw
+	 R7m0hHOh4gjL/rmQiz33ICckVqFyXoGh8sttsVWq2yK3BZXdA7T1C9rt0vDCEmXE42
+	 hWnhKXllunVJf69bzcJs1k2AW7Wx1Xyxi7vRTZM8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A59F4F80588;
-	Thu, 24 Feb 2022 12:17:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 401E6F80169;
+	Thu, 24 Feb 2022 13:15:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A4415F80551; Thu, 24 Feb 2022 12:17:50 +0100 (CET)
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com
- [IPv6:2a00:1450:4864:20::432])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id C8E44F80118; Thu, 24 Feb 2022 13:15:52 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 33BE6F804FC
- for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2022 12:17:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33BE6F804FC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5CF6AF80118
+ for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2022 13:15:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5CF6AF80118
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="RFQzpDwg"
-Received: by mail-wr1-x432.google.com with SMTP id p9so2411818wra.12
- for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2022 03:17:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=NBRWbGG3hXrowhqp61BdFvJmp09eFX4PXrA2EU5LRPo=;
- b=RFQzpDwgQRIX0yGLn4YfC6ANknqYHJ6rJ/TY2pD6gHlbityGXrfOMxGVYg340Ddr9k
- a6QwKq0nHHECWIAW5QTRZNZNpJYFjK7o8opbLHX656DjtzraCU0ZGg5aq1gzPliOQvou
- WhuVlsmrYWkUhqO4Ggd/ruelD0oB6U9elXIBgIhQeO839VxzGkAsuKe87pfbXmKp/u4i
- VRr9oNXWkSroGZfbeeR+XOEHHDbqzVGA9IF8kdVrUxWl20+s5o3cn9ZBHWkAh55WH0q+
- npod77c4D1IRi5B1UU0lRF04uM51uVVPFdEO+VaLC4gH1URjWIZonJQksJ/epWwcHjcU
- 0+fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=NBRWbGG3hXrowhqp61BdFvJmp09eFX4PXrA2EU5LRPo=;
- b=IYB+FmlFvdZg7QcNGqs4x+nyIx9t9017/+szH+0SQIb+XTVFgGE0zOAnm8MvCW4JUE
- ZaQu1OIvP6k5LxYtWluKEuN4Wh4796Omk+xhTa1WsMd5Dm0Yckez/5ROR8ySeuq8Of52
- bwuU1OboGhL41nKKrpSfoJhIAwlkecFHDwLDyzvIDGi/QhOkw3rrqLriSYM8kEeFNWjw
- a47ERrzVbpa7JQCyjfzfO/zTqmXncvY5D7yHfVbrS2v8aa+u04M5HQ97eKrs5YV4wft2
- jIuG1foPWz9Cv8Aj+0QPZEt6t2IAUaQ0v63gbEEpqO4zwuUgeTy9n3r0xjzNB8NM6O96
- PkJg==
-X-Gm-Message-State: AOAM532kHZDV53ybpFp43GjFYPEbIpLPioyf3iiA/5ogjcmGhOSyb3m5
- +w4OCY95LH9RDOVfS5DBu/UgBA2JT0xcwg==
-X-Google-Smtp-Source: ABdhPJx4PbfZIRdTPPLjfaKJk9COSJSQw2JAq202emZ0PODnzYAXfVQ3C/JVsLYSfYFLHFZjHMI+jA==
-X-Received: by 2002:a5d:64ce:0:b0:1e4:9b8d:4ccd with SMTP id
- f14-20020a5d64ce000000b001e49b8d4ccdmr1892266wri.37.1645701456920; 
- Thu, 24 Feb 2022 03:17:36 -0800 (PST)
-Received: from srini-hackbox.lan
- (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
- by smtp.gmail.com with ESMTPSA id t4sm2245737wmj.10.2022.02.24.03.17.36
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 24 Feb 2022 03:17:36 -0800 (PST)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: broonie@kernel.org
-Subject: [PATCH v2 13/16] ASoC: codecs: tx-macro: add runtime pm support
-Date: Thu, 24 Feb 2022 11:17:15 +0000
-Message-Id: <20220224111718.6264-14-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20220224111718.6264-1-srinivas.kandagatla@linaro.org>
-References: <20220224111718.6264-1-srinivas.kandagatla@linaro.org>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="EO20dRI6"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id EEBD3B8256D;
+ Thu, 24 Feb 2022 12:15:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8962C340E9;
+ Thu, 24 Feb 2022 12:15:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1645704943;
+ bh=9EYwuXUUNe4s56JSespRsmrf4WVo2K2M5a/Ux3TMvqs=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=EO20dRI6IsJOnpEYkrjAoI8Gfmbt38X+lccQKIlTplkGD+mQ39K3JwP5YURGYwyM+
+ bipJHv7pDLoOpYdsF9A4LJf5cwubCHeEtD8dGw9MLIL/sM9jfBbRKaide45qafv78J
+ I/SqNA0SLapUbLI9tNOp8kmck8xHVZW+p/khy9R2ri5yuhICOVMl38CDiVBxib9tnL
+ hyIM3Gguyjxmfx6/opYrxLAIw6xmGnYUUmy5Omjq4HQZU5zz3/LtVmORuo9g16IjSk
+ dmLGWDPW6VmWy4Ldc7h0vDUlv1LPE1/nRhAwEt+LMWm9RKjoSQ/4Mbkbdt0JWxpjzh
+ /aPqggDSVmVQQ==
+Date: Thu, 24 Feb 2022 12:15:36 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+Subject: Re: [PATCH v15 6/10] ASoC: qcom: Add regmap config support for codec
+ dma driver
+Message-ID: <Yhd26Cbe6ecbiVYH@sirena.org.uk>
+References: <1645630745-25051-1-git-send-email-quic_srivasam@quicinc.com>
+ <1645630745-25051-7-git-send-email-quic_srivasam@quicinc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
- linux-kernel@vger.kernel.org, pierre-louis.bossart@linux.intel.com,
- tiwai@suse.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- quic_srivasam@quicinc.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="FvdNv5j3qU77ttYL"
+Content-Disposition: inline
+In-Reply-To: <1645630745-25051-7-git-send-email-quic_srivasam@quicinc.com>
+X-Cookie: You will soon forget this.
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ bgoswami@codeaurora.org, Venkata Prasad Potturu <quic_potturu@quicinc.com>,
+ linux-arm-msm@vger.kernel.org, swboyd@chromium.org, tiwai@suse.com,
+ lgirdwood@gmail.com, robh+dt@kernel.org, bjorn.andersson@linaro.org,
+ rohitkr@codeaurora.org, agross@kernel.org, srinivas.kandagatla@linaro.org,
+ quic_plai@quicinc.com, judyhsiao@chromium.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,97 +87,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- sound/soc/codecs/lpass-tx-macro.c | 61 +++++++++++++++++++++++++++++++
- 1 file changed, 61 insertions(+)
 
-diff --git a/sound/soc/codecs/lpass-tx-macro.c b/sound/soc/codecs/lpass-tx-macro.c
-index b32235a9e1e5..2b2b93ddb4d6 100644
---- a/sound/soc/codecs/lpass-tx-macro.c
-+++ b/sound/soc/codecs/lpass-tx-macro.c
-@@ -1887,6 +1887,12 @@ static int tx_macro_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto err_clkout;
- 
-+	pm_runtime_set_autosuspend_delay(dev, 3000);
-+	pm_runtime_use_autosuspend(dev);
-+	pm_runtime_mark_last_busy(dev);
-+	pm_runtime_set_active(dev);
-+	pm_runtime_enable(dev);
-+
- 	return 0;
- 
- err_clkout:
-@@ -1916,6 +1922,60 @@ static int tx_macro_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static int __maybe_unused tx_macro_runtime_suspend(struct device *dev)
-+{
-+	struct tx_macro *tx = dev_get_drvdata(dev);
-+
-+	regcache_cache_only(tx->regmap, true);
-+	regcache_mark_dirty(tx->regmap);
-+
-+	clk_disable_unprepare(tx->mclk);
-+	clk_disable_unprepare(tx->npl);
-+	clk_disable_unprepare(tx->fsgen);
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused tx_macro_runtime_resume(struct device *dev)
-+{
-+	struct tx_macro *tx = dev_get_drvdata(dev);
-+	int ret;
-+
-+	ret = clk_prepare_enable(tx->mclk);
-+	if (ret) {
-+		dev_err(dev, "unable to prepare mclk\n");
-+		return ret;
-+	}
-+
-+	ret = clk_prepare_enable(tx->npl);
-+	if (ret) {
-+		dev_err(dev, "unable to prepare npl\n");
-+		goto err_npl;
-+	}
-+
-+	ret = clk_prepare_enable(tx->fsgen);
-+	if (ret) {
-+		dev_err(dev, "unable to prepare fsgen\n");
-+		goto err_fsgen;
-+	}
-+
-+	regcache_cache_only(tx->regmap, false);
-+	regcache_sync(tx->regmap);
-+	tx->reset_swr = true;
-+
-+	return 0;
-+err_fsgen:
-+	clk_disable_unprepare(tx->npl);
-+err_npl:
-+	clk_disable_unprepare(tx->mclk);
-+
-+	return ret;
-+}
-+
-+static const struct dev_pm_ops tx_macro_pm_ops = {
-+	SET_RUNTIME_PM_OPS(tx_macro_runtime_suspend, tx_macro_runtime_resume, NULL)
-+};
-+
- static const struct of_device_id tx_macro_dt_match[] = {
- 	{ .compatible = "qcom,sc7280-lpass-tx-macro" },
- 	{ .compatible = "qcom,sm8250-lpass-tx-macro" },
-@@ -1927,6 +1987,7 @@ static struct platform_driver tx_macro_driver = {
- 		.name = "tx_macro",
- 		.of_match_table = tx_macro_dt_match,
- 		.suppress_bind_attrs = true,
-+		.pm = &tx_macro_pm_ops,
- 	},
- 	.probe = tx_macro_probe,
- 	.remove = tx_macro_remove,
--- 
-2.21.0
+--FvdNv5j3qU77ttYL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Wed, Feb 23, 2022 at 09:09:01PM +0530, Srinivasa Rao Mandadapu wrote:
+> Update regmap configuration for supporting headset playback and
+> capture and DMIC capture using codec dma interface
+
+This breaks an x86 allmodconfig build:
+
+/mnt/kernel/sound/soc/qcom/lpass-cpu.c:976:29: error: 'lpass_va_regmap_config' defined but not used [-Werror=unused-variable]
+  976 | static struct regmap_config lpass_va_regmap_config = {
+      |                             ^~~~~~~~~~~~~~~~~~~~~~
+/mnt/kernel/sound/soc/qcom/lpass-cpu.c:966:29: error: 'lpass_rxtx_regmap_config' defined but not used [-Werror=unused-variable]
+  966 | static struct regmap_config lpass_rxtx_regmap_config = {
+      |                             ^~~~~~~~~~~~~~~~~~~~~~~~
+
+
+--FvdNv5j3qU77ttYL
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmIXdugACgkQJNaLcl1U
+h9DUDAf+O6sb93bAoBGhzMwOIQTlMCUY6RbjN6tCvv7xqIeI3FKZu9UXYMvTvRqr
+oozDPOY5L+qBqOgtN4YDhD5ocrIt7MD6P+vEiXxPZc7nSDJZiiu17gTIrQNAHkOJ
+aiTh9Ur/Kabr3RogUR0sKm2XwLrsxBvHNpfBKG+0cKTCKCP2gcmbeA6W0AJJMesI
+q+Nuh5wO0oOEA8gUyx3qAxS9JAunaHmTPrvlGx/wGoXyDJ3kx30ON/rMyrWIFCQp
+ZOEJ4wqTVfc52iIHPI/GssqOwAQRuhNt/wLiAMcla4rIMS2JAu4xjUK2z1KGoyHH
+f6iH6riNaGRSyCi2k2zz6Sfj9nXxeg==
+=jFE4
+-----END PGP SIGNATURE-----
+
+--FvdNv5j3qU77ttYL--
