@@ -4,74 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60059C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Feb 2022 12:16:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7696FC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Feb 2022 12:23:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A0A35179B;
-	Thu, 24 Feb 2022 13:15:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A0A35179B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 16B89175E;
+	Thu, 24 Feb 2022 13:22:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 16B89175E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645705008;
-	bh=9EYwuXUUNe4s56JSespRsmrf4WVo2K2M5a/Ux3TMvqs=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1645705394;
+	bh=ikkN2YoGGWogUak8Lx7mLrwtFejuueYGRl1XesvHbbc=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ED4k+fZEfbMr/avWuJrEfN9UAJxRUECYYH93dMsT3eW9esnWf0PikgO+MxX8OyLCw
-	 R7m0hHOh4gjL/rmQiz33ICckVqFyXoGh8sttsVWq2yK3BZXdA7T1C9rt0vDCEmXE42
-	 hWnhKXllunVJf69bzcJs1k2AW7Wx1Xyxi7vRTZM8=
+	b=ElHAREpAm/Jg4RjzDXsJYhsribqcpCqmZNGYSwDhS7Vi3e6V6MBauQTkHT4OiW9Jy
+	 nZSDl6UVraX8Gx5cW8aLcCOrh3Igu4jbjdmlOAEdwiPHb71pgorssyPMn9egY8rWcP
+	 OujkWuOOl5/FLxqT8xoU4AZVijIn3xp0bSbouH50=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 401E6F80169;
-	Thu, 24 Feb 2022 13:15:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 93D87F80169;
+	Thu, 24 Feb 2022 13:22:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C8E44F80118; Thu, 24 Feb 2022 13:15:52 +0100 (CET)
+ id 78BA2F8030F; Thu, 24 Feb 2022 13:22:22 +0100 (CET)
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5CF6AF80118
- for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2022 13:15:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5CF6AF80118
+ by alsa1.perex.cz (Postfix) with ESMTPS id 399DBF80118
+ for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2022 13:22:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 399DBF80118
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="EO20dRI6"
+ header.b="ZLSc7lw1"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id EEBD3B8256D;
- Thu, 24 Feb 2022 12:15:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8962C340E9;
- Thu, 24 Feb 2022 12:15:39 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 2B604B8256D;
+ Thu, 24 Feb 2022 12:22:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB28BC340EF;
+ Thu, 24 Feb 2022 12:22:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1645704943;
- bh=9EYwuXUUNe4s56JSespRsmrf4WVo2K2M5a/Ux3TMvqs=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=EO20dRI6IsJOnpEYkrjAoI8Gfmbt38X+lccQKIlTplkGD+mQ39K3JwP5YURGYwyM+
- bipJHv7pDLoOpYdsF9A4LJf5cwubCHeEtD8dGw9MLIL/sM9jfBbRKaide45qafv78J
- I/SqNA0SLapUbLI9tNOp8kmck8xHVZW+p/khy9R2ri5yuhICOVMl38CDiVBxib9tnL
- hyIM3Gguyjxmfx6/opYrxLAIw6xmGnYUUmy5Omjq4HQZU5zz3/LtVmORuo9g16IjSk
- dmLGWDPW6VmWy4Ldc7h0vDUlv1LPE1/nRhAwEt+LMWm9RKjoSQ/4Mbkbdt0JWxpjzh
- /aPqggDSVmVQQ==
-Date: Thu, 24 Feb 2022 12:15:36 +0000
+ s=k20201202; t=1645705337;
+ bh=ikkN2YoGGWogUak8Lx7mLrwtFejuueYGRl1XesvHbbc=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=ZLSc7lw1sTED5X1uFF6me+c7UIvKmPBVYfnyP0XKIOIMWpENY1OBOuMHinQEN1DiX
+ pjRy50SetB0w0agqTqCbu6nbpOZNQ2SkXaB30USdOvlxuyFeICy4NOxyHov48UWz3J
+ CbAto/2k9+71MNPcDOaTJV/e9rJok7KCThR1dp0R1TXBAOmjnUYbKt8OgvX/8znTl+
+ U7Ih39PVhN/bH41LVRz/W3GpKo2H2/VTJ34TAIcuXdicgXTpErCEryuGBNeKOL8bQa
+ WI/Kab1GNz3Nm9wlokGh6r+ekGFy2mc+qv7POI66yzTYt4O36YikEzpImm8UvEuSag
+ OrasTihSOMCEQ==
 From: Mark Brown <broonie@kernel.org>
-To: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
-Subject: Re: [PATCH v15 6/10] ASoC: qcom: Add regmap config support for codec
- dma driver
-Message-ID: <Yhd26Cbe6ecbiVYH@sirena.org.uk>
-References: <1645630745-25051-1-git-send-email-quic_srivasam@quicinc.com>
- <1645630745-25051-7-git-send-email-quic_srivasam@quicinc.com>
+To: alsa-devel@alsa-project.org, Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+In-Reply-To: <20220223071959.13539-1-Vijendar.Mukunda@amd.com>
+References: <20220223071959.13539-1-Vijendar.Mukunda@amd.com>
+Subject: Re: (subset) [PATCH 1/9] ASoC: amd: vg: fix for pm resume callback
+ sequence
+Message-Id: <164570533555.1194769.3668536221336070255.b4-ty@kernel.org>
+Date: Thu, 24 Feb 2022 12:22:15 +0000
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="FvdNv5j3qU77ttYL"
-Content-Disposition: inline
-In-Reply-To: <1645630745-25051-7-git-send-email-quic_srivasam@quicinc.com>
-X-Cookie: You will soon forget this.
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- bgoswami@codeaurora.org, Venkata Prasad Potturu <quic_potturu@quicinc.com>,
- linux-arm-msm@vger.kernel.org, swboyd@chromium.org, tiwai@suse.com,
- lgirdwood@gmail.com, robh+dt@kernel.org, bjorn.andersson@linaro.org,
- rohitkr@codeaurora.org, agross@kernel.org, srinivas.kandagatla@linaro.org,
- quic_plai@quicinc.com, judyhsiao@chromium.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Sunil-kumar.Dommati@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
+ wtli@nuvoton.com, open list <linux-kernel@vger.kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, Alexander.Deucher@amd.com,
+ krisman@collabora.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,38 +83,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Wed, 23 Feb 2022 12:49:30 +0530, Vijendar Mukunda wrote:
+> The previous condition is used to cross check only the active
+> stream status for I2S HS instance playback and capture use cases.
+> 
+> Modified logic to invoke sequence for two i2s controller instances.
+> 
+> 
 
---FvdNv5j3qU77ttYL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Applied to
 
-On Wed, Feb 23, 2022 at 09:09:01PM +0530, Srinivasa Rao Mandadapu wrote:
-> Update regmap configuration for supporting headset playback and
-> capture and DMIC capture using codec dma interface
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-linus
 
-This breaks an x86 allmodconfig build:
+Thanks!
 
-/mnt/kernel/sound/soc/qcom/lpass-cpu.c:976:29: error: 'lpass_va_regmap_config' defined but not used [-Werror=unused-variable]
-  976 | static struct regmap_config lpass_va_regmap_config = {
-      |                             ^~~~~~~~~~~~~~~~~~~~~~
-/mnt/kernel/sound/soc/qcom/lpass-cpu.c:966:29: error: 'lpass_rxtx_regmap_config' defined but not used [-Werror=unused-variable]
-  966 | static struct regmap_config lpass_rxtx_regmap_config = {
-      |                             ^~~~~~~~~~~~~~~~~~~~~~~~
+[1/9] ASoC: amd: vg: fix for pm resume callback sequence
+      (no commit info)
+[2/9] ASoC: amd: vangogh: refactor i2s master mode clock sequence code
+      commit: 5ca4cf2c83dac27768f1d7d3e2404f5a17830ca5
+[3/9] ASoC: nau8821: enable no_capture_mute flag
+      commit: aa9753a4677d0a2c53e7e46ca173c985a3f7b83e
+[4/9] ASoC: amd: vg: update platform clock control sequence
+      commit: 9a617f0e109cfba2017d76f807ebb3a00c47bdca
+[5/9] ASoC: amd: vg: apply sample bits pcm constraint
+      commit: 0c38cc1dd17e766eada0aa44be4c1a47bcbb7bc3
+[6/9] ASoC: amd: vg: update acp init and deinit sequence
+      commit: a9230ccc0c6f5fca0b94f57729dc61e0a6098a0a
 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
---FvdNv5j3qU77ttYL
-Content-Type: application/pgp-signature; name="signature.asc"
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
------BEGIN PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmIXdugACgkQJNaLcl1U
-h9DUDAf+O6sb93bAoBGhzMwOIQTlMCUY6RbjN6tCvv7xqIeI3FKZu9UXYMvTvRqr
-oozDPOY5L+qBqOgtN4YDhD5ocrIt7MD6P+vEiXxPZc7nSDJZiiu17gTIrQNAHkOJ
-aiTh9Ur/Kabr3RogUR0sKm2XwLrsxBvHNpfBKG+0cKTCKCP2gcmbeA6W0AJJMesI
-q+Nuh5wO0oOEA8gUyx3qAxS9JAunaHmTPrvlGx/wGoXyDJ3kx30ON/rMyrWIFCQp
-ZOEJ4wqTVfc52iIHPI/GssqOwAQRuhNt/wLiAMcla4rIMS2JAu4xjUK2z1KGoyHH
-f6iH6riNaGRSyCi2k2zz6Sfj9nXxeg==
-=jFE4
------END PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---FvdNv5j3qU77ttYL--
+Thanks,
+Mark
