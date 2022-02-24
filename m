@@ -4,69 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D3FDC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Feb 2022 13:39:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA92EC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Feb 2022 15:35:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B08DA1A2C;
-	Thu, 24 Feb 2022 14:38:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B08DA1A2C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2A30816DD;
+	Thu, 24 Feb 2022 16:34:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A30816DD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645709939;
-	bh=0G5aWNafto5Q7n1SSIKHiP058vj4CUaKyf3bYMPnjuE=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=o/4Dk1SiyNXqZs+Qw9hv19BaM4qVj8y239Qe7L4lpsa0spxfKbPwf8trMmR6v8MsH
-	 3/R78ux6g2ai+VsFxfwYpyISzXmKELFld7Bvle+aNXQAQ1Pb28aixu3hNqvE0H6Es4
-	 EN81f/knN04qQb5tWI5gHZhBGBO5sy7s3wcFk4PA=
+	s=default; t=1645716910;
+	bh=VaHh8yVxnNwjusUmzHdYQ2tp8ERIO/nj7DkjaUAclWg=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=J7RBMLRG9JzpDubdBBnbY2KMe58ReFbIalXhNFXSMQ8BNslO77JnDknMt7LATbmVM
+	 Qn32NJ92Eqdl8zusxvLSmD7dbEwy0XCWKc2M9DKYDshdbehTwyYA7S9za5sbNMtAzW
+	 0teZcO2CHDLECVdzc6PdpnUcNNa10fA/JW7SVlhc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B6C51F804FD;
-	Thu, 24 Feb 2022 14:38:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 805CAF800F3;
+	Thu, 24 Feb 2022 16:34:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4BAEDF80515; Thu, 24 Feb 2022 14:38:00 +0100 (CET)
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id C272CF8030F; Thu, 24 Feb 2022 16:34:15 +0100 (CET)
+Received: from alexa-out-sd-02.qualcomm.com (alexa-out-sd-02.qualcomm.com
+ [199.106.114.39])
+ (using TLSv1.2 with cipher AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 603DFF8030F;
- Thu, 24 Feb 2022 14:37:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 603DFF8030F
-X-UUID: 295498ae3c504253b442292d2f921202-20220224
-X-UUID: 295498ae3c504253b442292d2f921202-20220224
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by
- mailgw02.mediatek.com (envelope-from <allen-kh.cheng@mediatek.com>)
- (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
- with ESMTP id 601993701; Thu, 24 Feb 2022 21:37:43 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 24 Feb 2022 21:37:41 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via
- Frontend Transport; Thu, 24 Feb 2022 21:37:41 +0800
-From: Allen-KH Cheng <allen-kh.cheng@mediatek.com>
-To: Matthias Brugger <matthias.bgg@gmail.com>, Mark Brown <broonie@kernel.org>
-Subject: [RESEND v6 1/1] firmware: mediatek: add adsp ipc protocol interface
-Date: Thu, 24 Feb 2022 21:37:37 +0800
-Message-ID: <20220224133737.28056-2-allen-kh.cheng@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20220224133737.28056-1-allen-kh.cheng@mediatek.com>
-References: <20220224133737.28056-1-allen-kh.cheng@mediatek.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5AA99F800F3
+ for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2022 16:34:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5AA99F800F3
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=quicinc.com header.i=@quicinc.com
+ header.b="xGCMvtOF"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+ t=1645716853; x=1677252853;
+ h=from:to:cc:subject:date:message-id:mime-version;
+ bh=EpIXWae+G9lfElx7qaQlLyXt/zO4Kstfz079ACqe7Ik=;
+ b=xGCMvtOFTc7Vu9N96IzrF9+OmEtlovxazpO2J5xJw0G0aVvNqQsJ7j9U
+ W+7I8LhLecy6/QdtWBe3EIdKVwdY0ucOQprjpYigS7buqobSLCRYNaTZ1
+ DqzFTSYeTDq7lSQdHTeFncpM2R3WA6P9tZApPLnL0qpy8z/aHa2xGfhWf I=;
+Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
+ by alexa-out-sd-02.qualcomm.com with ESMTP; 24 Feb 2022 07:34:07 -0800
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+ by ironmsg05-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 24 Feb 2022 07:34:06 -0800
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.15; Thu, 24 Feb 2022 07:34:06 -0800
+Received: from hu-srivasam-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.15; Thu, 24 Feb 2022 07:34:01 -0800
+From: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+To: <agross@kernel.org>, <bjorn.andersson@linaro.org>, <lgirdwood@gmail.com>, 
+ <broonie@kernel.org>, <robh+dt@kernel.org>, <quic_plai@quicinc.com>,
+ <bgoswami@codeaurora.org>, <perex@perex.cz>, <tiwai@suse.com>,
+ <srinivas.kandagatla@linaro.org>, <rohitkr@codeaurora.org>,
+ <linux-arm-msm@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <swboyd@chromium.org>, <judyhsiao@chromium.org>
+Subject: [PATCH v16 0/9] Add support for audio on SC7280 based targets
+Date: Thu, 24 Feb 2022 21:03:39 +0530
+Message-ID: <1645716828-15305-1-git-send-email-quic_srivasam@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
 Content-Type: text/plain
-X-MTK: N
-Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
- Linux-ALSA <alsa-devel@alsa-project.org>,
- Allen-KH Cheng <allen-kh.cheng@mediatek.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, cujomalainey@google.com,
- Kevin Hilman <khilman@baylibre.com>, Takashi Iwai <tiwai@suse.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Project_Global_Chrome_Upstream_Group@mediatek.com, tzungbi@google.com,
- linux-mediatek@lists.infradead.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Chen-Yu Tsai <wenst@chromium.org>, Daniel Baluta <daniel.baluta@nxp.com>,
- linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+Cc: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,323 +90,92 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
+This patch set is to add support for Audio over wcd codec,
+digital mics, through digital codecs and without ADSP.
 
-Some of mediatek processors contain
-the Tensilica HiFix DSP for audio processing.
+Changes Since V15:
+    -- Bisect patches to avoid build failure in other architectures.
+    -- Remove redundant variables lpass variant structure.
+Changes Since V14:
+    -- Split common wrapper function to separate wrapper for each handle in platform driver.
+    -- Update cdc dma buffer handling with memremap with ioremap.    
+    -- Remove redundant error prints.
+    -- Update irq flag.
+Changes Since V13:
+    -- Change bulk cdc clock voting to individual clock voting.
+    -- Remove redundant code, conditional check and prints.
+    -- Fix typo errors.
+Changes Since V12:
+    -- Fix arguments type mismatch.
+Changes Since V11:
+    -- Fix kernel robot issue on arguments type mismatch.
+Changes Since V10:
+    -- Split bulk clock voting to individual clock voting as per use case in cdc-dma driver.
+    -- Add missing codec dma clocks.
+    -- Update rxtx lpm buffer size.
+Changes Since V9:
+    -- Change individual clock voting to bulk clock voting of lpass-sc7280 platform driver.
+    -- Remove redundant clocks in lpass variant structure.
+    -- Add mclk for MI2S based headset path.
+    -- Remove unused lpass variant structure members in lpass header.
+Changes Since V8:
+    -- Fix errors in sc7280 lpass cpu dt-bindings.
+    -- Move to quicinc domain email id's.
+Changes Since V7:
+    -- Fix indentation errors.
+    -- Bisect patches to avoid interdependency.
+Changes Since V6:
+    -- Split cdc dma regmap config macros.
+    -- Add write dma reg fields for i2s path.
+    -- Add helper function to distinguish rxtx and va dma ports.
+    -- Optimizing clock and reg name in cpu dt-bindings.
+    -- Update buffer management for cdc dma path.
+    -- Remove Kconfig fields of machine driver.
+Changes Since V5:
+    -- Include MI2S primary node to snd_soc_dai_driver in lpass-sc7280 platform driver.
+    -- Move dependency patch list to corresponding patch.
+    -- Add support for missing cdc-dma ports.
+    -- Change if/else conditional statements to switch cases.
+    -- Add missing error handlings.
+    -- Typo errors fix.
+Changes Since V4:
+    -- Remove unused variable in lpass-sc7280 platform driver.
+Changes Since V3:
+    -- Remove redundant power domain controls. As power domains can be configured from dtsi.
+Changes Since V2:
+    -- Split lpass sc7280 cpu driver patch and create regmap config patch.
+    -- Create patches based on latest kernel tip.
+    -- Add helper function to get dma control and lpaif handle.
+    -- Remove unused variables.
+Changes Since V1:
+    -- Typo errors fix
+    -- CPU driver readable/writable apis optimization.
+    -- Add Missing config patch
+    -- Add Common api for repeated dmactl initialization.
+Srinivasa Rao Mandadapu (9):
+  ASoC: qcom: Move lpass_pcm_data structure to lpass header
+  ASoC: qcom: lpass: Add dma fields for codec dma lpass interface
+  ASoC: qcom: Add helper function to get dma control and lpaif handle
+  ASoC: qcom: Add register definition for codec rddma and wrdma
+  ASoC: qcom: Add regmap config support for codec dma driver
+  ASoC: qcom: Add support for codec dma driver
+  ASoC: qcom: Add lpass CPU driver for codec dma control
+  ASoC: dt-bindings: Add SC7280 lpass cpu bindings
+  ASoC: qcom: lpass-sc7280: Add platform driver for lpass audio
 
-The communication between Host CPU and DSP firmware is
-taking place using a shared memory area for message passing.
+ .../devicetree/bindings/sound/qcom,lpass-cpu.yaml  |  75 ++-
+ sound/soc/qcom/Kconfig                             |  11 +
+ sound/soc/qcom/Makefile                            |   4 +
+ sound/soc/qcom/lpass-cdc-dma.c                     | 301 ++++++++++
+ sound/soc/qcom/lpass-cpu.c                         | 253 ++++++++-
+ sound/soc/qcom/lpass-lpaif-reg.h                   | 127 ++++-
+ sound/soc/qcom/lpass-platform.c                    | 628 ++++++++++++++++++---
+ sound/soc/qcom/lpass-sc7280.c                      | 438 ++++++++++++++
+ sound/soc/qcom/lpass.h                             | 141 +++++
+ 9 files changed, 1890 insertions(+), 88 deletions(-)
+ create mode 100644 sound/soc/qcom/lpass-cdc-dma.c
+ create mode 100644 sound/soc/qcom/lpass-sc7280.c
 
-ADSP IPC protocol offers (send/recv) interfaces using
-mediatek-mailbox APIs.
-
-We use two mbox channels to implement a request-reply protocol.
-
-Signed-off-by: Allen-KH Cheng <allen-kh.cheng@mediatek.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Curtis Malainey <cujomalainey@chromium.org>
-Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
-Reviewed-by: YC Hung <yc.hung@mediatek.com>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
- drivers/firmware/Kconfig                      |   1 +
- drivers/firmware/Makefile                     |   1 +
- drivers/firmware/mediatek/Kconfig             |   9 +
- drivers/firmware/mediatek/Makefile            |   2 +
- drivers/firmware/mediatek/mtk-adsp-ipc.c      | 161 ++++++++++++++++++
- .../linux/firmware/mediatek/mtk-adsp-ipc.h    |  65 +++++++
- 6 files changed, 239 insertions(+)
- create mode 100644 drivers/firmware/mediatek/Kconfig
- create mode 100644 drivers/firmware/mediatek/Makefile
- create mode 100644 drivers/firmware/mediatek/mtk-adsp-ipc.c
- create mode 100644 include/linux/firmware/mediatek/mtk-adsp-ipc.h
-
-diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
-index 75cb91055c17..f3578c60cff0 100644
---- a/drivers/firmware/Kconfig
-+++ b/drivers/firmware/Kconfig
-@@ -299,6 +299,7 @@ source "drivers/firmware/cirrus/Kconfig"
- source "drivers/firmware/google/Kconfig"
- source "drivers/firmware/efi/Kconfig"
- source "drivers/firmware/imx/Kconfig"
-+source "drivers/firmware/mediatek/Kconfig"
- source "drivers/firmware/meson/Kconfig"
- source "drivers/firmware/psci/Kconfig"
- source "drivers/firmware/smccc/Kconfig"
-diff --git a/drivers/firmware/Makefile b/drivers/firmware/Makefile
-index 4e58cb474a68..88fbdc110100 100644
---- a/drivers/firmware/Makefile
-+++ b/drivers/firmware/Makefile
-@@ -34,6 +34,7 @@ obj-$(CONFIG_GOOGLE_FIRMWARE)	+= google/
- obj-$(CONFIG_EFI)		+= efi/
- obj-$(CONFIG_UEFI_CPER)		+= efi/
- obj-y				+= imx/
-+obj-y				+= mediatek/
- obj-y				+= psci/
- obj-y				+= smccc/
- obj-y				+= tegra/
-diff --git a/drivers/firmware/mediatek/Kconfig b/drivers/firmware/mediatek/Kconfig
-new file mode 100644
-index 000000000000..6d1e580b967b
---- /dev/null
-+++ b/drivers/firmware/mediatek/Kconfig
-@@ -0,0 +1,9 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+config MTK_ADSP_IPC
-+	tristate "MTK ADSP IPC Protocol driver"
-+	depends on MTK_ADSP_MBOX
-+	help
-+	  Say yes here to add support for the MediaTek ADSP IPC
-+	  between host AP (Linux) and the firmware running on ADSP.
-+	  ADSP exists on some mtk processors.
-+	  Client might use shared memory to exchange information with ADSP side.
-diff --git a/drivers/firmware/mediatek/Makefile b/drivers/firmware/mediatek/Makefile
-new file mode 100644
-index 000000000000..4e840b65650d
---- /dev/null
-+++ b/drivers/firmware/mediatek/Makefile
-@@ -0,0 +1,2 @@
-+# SPDX-License-Identifier: GPL-2.0
-+obj-$(CONFIG_MTK_ADSP_IPC)		+= mtk-adsp-ipc.o
-diff --git a/drivers/firmware/mediatek/mtk-adsp-ipc.c b/drivers/firmware/mediatek/mtk-adsp-ipc.c
-new file mode 100644
-index 000000000000..9c535d2688d9
---- /dev/null
-+++ b/drivers/firmware/mediatek/mtk-adsp-ipc.c
-@@ -0,0 +1,161 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2022 MediaTek Corporation. All rights reserved.
-+ * Author: Allen-KH Cheng <allen-kh.cheng@mediatek.com>
-+ */
-+
-+#include <linux/firmware/mediatek/mtk-adsp-ipc.h>
-+#include <linux/kernel.h>
-+#include <linux/mailbox_client.h>
-+#include <linux/module.h>
-+#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+
-+/*
-+ * mtk_adsp_ipc_send - send ipc cmd to MTK ADSP
-+ *
-+ * @ipc: ADSP IPC handle
-+ * @idx: index of the mailbox channel
-+ * @msg: IPC cmd (reply or request)
-+ *
-+ * Returns zero for success from mbox_send_message
-+ * negative value for error
-+ */
-+int mtk_adsp_ipc_send(struct mtk_adsp_ipc *ipc, unsigned int idx, uint32_t msg)
-+{
-+	struct mtk_adsp_chan *adsp_chan;
-+	int ret;
-+
-+	if (idx >= MTK_ADSP_MBOX_NUM)
-+		return -EINVAL;
-+
-+	adsp_chan = &ipc->chans[idx];
-+	ret = mbox_send_message(adsp_chan->ch, &msg);
-+	if (ret < 0)
-+		return ret;
-+
-+	/*
-+	 * mbox_send_message returns non-negative value on success,
-+	 * return zero for success
-+	 */
-+	return 0;
-+}
-+EXPORT_SYMBOL(mtk_adsp_ipc_send);
-+
-+/*
-+ * mtk_adsp_ipc_recv - recv callback used by MTK ADSP mailbox
-+ *
-+ * @c: mbox client
-+ * @msg: message received
-+ *
-+ * Users of ADSP IPC will need to privde handle_reply and handle_request
-+ * callbacks.
-+ */
-+static void mtk_adsp_ipc_recv(struct mbox_client *c, void *msg)
-+{
-+	struct mtk_adsp_chan *chan = container_of(c, struct mtk_adsp_chan, cl);
-+	struct device *dev = c->dev;
-+
-+	switch (chan->idx) {
-+	case MTK_ADSP_MBOX_REPLY:
-+		chan->ipc->ops->handle_reply(chan->ipc);
-+		break;
-+	case MTK_ADSP_MBOX_REQUEST:
-+		chan->ipc->ops->handle_request(chan->ipc);
-+		break;
-+	default:
-+		dev_err(dev, "wrong mbox chan %d\n", chan->idx);
-+		break;
-+	}
-+}
-+
-+static int mtk_adsp_ipc_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct mtk_adsp_ipc *adsp_ipc;
-+	struct mtk_adsp_chan *adsp_chan;
-+	struct mbox_client *cl;
-+	char *chan_name;
-+	int ret;
-+	int i, j;
-+
-+	device_set_of_node_from_dev(&pdev->dev, pdev->dev.parent);
-+
-+	adsp_ipc = devm_kzalloc(dev, sizeof(*adsp_ipc), GFP_KERNEL);
-+	if (!adsp_ipc)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < MTK_ADSP_MBOX_NUM; i++) {
-+		chan_name = kasprintf(GFP_KERNEL, "mbox%d", i);
-+		if (!chan_name) {
-+			ret = -ENOMEM;
-+			goto out;
-+		}
-+
-+		adsp_chan = &adsp_ipc->chans[i];
-+		cl = &adsp_chan->cl;
-+		cl->dev = dev->parent;
-+		cl->tx_block = false;
-+		cl->knows_txdone = false;
-+		cl->tx_prepare = NULL;
-+		cl->rx_callback = mtk_adsp_ipc_recv;
-+
-+		adsp_chan->ipc = adsp_ipc;
-+		adsp_chan->idx = i;
-+		adsp_chan->ch = mbox_request_channel_byname(cl, chan_name);
-+		if (IS_ERR(adsp_chan->ch)) {
-+			ret = PTR_ERR(adsp_chan->ch);
-+			if (ret != -EPROBE_DEFER)
-+				dev_err(dev, "Failed to request mbox chan %d ret %d\n",
-+					i, ret);
-+			goto out_free;
-+		}
-+
-+		dev_dbg(dev, "request mbox chan %s\n", chan_name);
-+		kfree(chan_name);
-+	}
-+
-+	adsp_ipc->dev = dev;
-+	dev_set_drvdata(dev, adsp_ipc);
-+	dev_dbg(dev, "MTK ADSP IPC initialized\n");
-+
-+	return 0;
-+
-+out_free:
-+	kfree(chan_name);
-+out:
-+	for (j = 0; j < i; j++) {
-+		adsp_chan = &adsp_ipc->chans[j];
-+		mbox_free_channel(adsp_chan->ch);
-+	}
-+
-+	return ret;
-+}
-+
-+static int mtk_adsp_ipc_remove(struct platform_device *pdev)
-+{
-+	struct mtk_adsp_ipc *adsp_ipc = dev_get_drvdata(&pdev->dev);
-+	struct mtk_adsp_chan *adsp_chan;
-+	int i;
-+
-+	for (i = 0; i < MTK_ADSP_MBOX_NUM; i++) {
-+		adsp_chan = &adsp_ipc->chans[i];
-+		mbox_free_channel(adsp_chan->ch);
-+	}
-+
-+	return 0;
-+}
-+
-+static struct platform_driver mtk_adsp_ipc_driver = {
-+	.driver = {
-+		.name = "mtk-adsp-ipc",
-+	},
-+	.probe = mtk_adsp_ipc_probe,
-+	.remove = mtk_adsp_ipc_remove,
-+};
-+builtin_platform_driver(mtk_adsp_ipc_driver);
-+
-+MODULE_AUTHOR("Allen-KH Cheng <allen-kh.cheng@mediatek.com>");
-+MODULE_DESCRIPTION("MTK ADSP IPC Driver");
-+MODULE_LICENSE("GPL v2");
-diff --git a/include/linux/firmware/mediatek/mtk-adsp-ipc.h b/include/linux/firmware/mediatek/mtk-adsp-ipc.h
-new file mode 100644
-index 000000000000..28fd313340b8
---- /dev/null
-+++ b/include/linux/firmware/mediatek/mtk-adsp-ipc.h
-@@ -0,0 +1,65 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (c) 2022 MediaTek Inc.
-+ */
-+
-+#ifndef MTK_ADSP_IPC_H
-+#define MTK_ADSP_IPC_H
-+
-+#include <linux/device.h>
-+#include <linux/types.h>
-+#include <linux/mailbox_controller.h>
-+#include <linux/mailbox_client.h>
-+
-+#define MTK_ADSP_IPC_REQ 0
-+#define MTK_ADSP_IPC_RSP 1
-+#define MTK_ADSP_IPC_OP_REQ 0x1
-+#define MTK_ADSP_IPC_OP_RSP 0x2
-+
-+enum {
-+	MTK_ADSP_MBOX_REPLY,
-+	MTK_ADSP_MBOX_REQUEST,
-+	MTK_ADSP_MBOX_NUM,
-+};
-+
-+struct mtk_adsp_ipc;
-+
-+struct mtk_adsp_ipc_ops {
-+	void (*handle_reply)(struct mtk_adsp_ipc *ipc);
-+	void (*handle_request)(struct mtk_adsp_ipc *ipc);
-+};
-+
-+struct mtk_adsp_chan {
-+	struct mtk_adsp_ipc *ipc;
-+	struct mbox_client cl;
-+	struct mbox_chan *ch;
-+	char *name;
-+	int idx;
-+};
-+
-+struct mtk_adsp_ipc {
-+	struct mtk_adsp_chan chans[MTK_ADSP_MBOX_NUM];
-+	struct device *dev;
-+	struct mtk_adsp_ipc_ops *ops;
-+	void *private_data;
-+};
-+
-+static inline void mtk_adsp_ipc_set_data(struct mtk_adsp_ipc *ipc, void *data)
-+{
-+	if (!ipc)
-+		return;
-+
-+	ipc->private_data = data;
-+}
-+
-+static inline void *mtk_adsp_ipc_get_data(struct mtk_adsp_ipc *ipc)
-+{
-+	if (!ipc)
-+		return NULL;
-+
-+	return ipc->private_data;
-+}
-+
-+int mtk_adsp_ipc_send(struct mtk_adsp_ipc *ipc, unsigned int idx, uint32_t op);
-+
-+#endif /* MTK_ADSP_IPC_H */
 -- 
-2.18.0
+2.7.4
 
