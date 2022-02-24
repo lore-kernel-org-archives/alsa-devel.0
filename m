@@ -4,73 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1583AC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Feb 2022 19:51:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB5EEC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Feb 2022 20:21:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8A2101923;
-	Thu, 24 Feb 2022 20:50:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A2101923
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0621E1AD9;
+	Thu, 24 Feb 2022 21:20:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0621E1AD9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645732294;
-	bh=8xsZGWwjXv7cnRarGpQnyDw9mQoGNr7rSbI+e2asYPE=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1645734100;
+	bh=uTKwU6+YCQF+y9/bHte8UgFihCwOEO1tm9hwr/2u8c8=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=P23FmKCHDhn7tWnzhylcbxExCQYjeuT9ySFl305Lt58GK9qsbrRiZcufQwdgv7EjB
-	 kTqBaWi4VM3brHVJdYwoH78tIGUSahZL8FSYeVrmYRQjy3YvsaDDGsCoUbv2dEz6hg
-	 dIgldNu0JdYVZ+j93NrijPREcyyq/babQlMOgczM=
+	b=aSs7Wx39jXu6ncbIVmK8RSeUilWAeEuh4BJImmGH/Rl2GIhwA/VKOsGI1sJ8hG+ct
+	 CjgRhlCE+CY1k+ryWvdd0zVWrtVHI2zeqxgavX0ui9AREcw7Nu87br8IjHKba8e/sM
+	 LNDn4fRihqGEtBZQYx5KaBI65ucT6ZCKoxvEVS0Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 249B7F800F3;
-	Thu, 24 Feb 2022 20:50:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 98ECCF8030F;
+	Thu, 24 Feb 2022 21:20:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 91FFFF8030F; Thu, 24 Feb 2022 20:50:40 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id E51F1F80118; Thu, 24 Feb 2022 21:20:48 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2E175F800F3
- for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2022 20:50:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E175F800F3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 809F3F80118
+ for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2022 21:20:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 809F3F80118
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="D+7+mnur"
+ header.b="K6RTP5rY"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 564506170C;
- Thu, 24 Feb 2022 19:50:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50395C340E9;
- Thu, 24 Feb 2022 19:50:30 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 589D3B8292C;
+ Thu, 24 Feb 2022 20:20:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2775C340EF;
+ Thu, 24 Feb 2022 20:20:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1645732234;
- bh=8xsZGWwjXv7cnRarGpQnyDw9mQoGNr7rSbI+e2asYPE=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=D+7+mnurlkrzPUi/r78FbvehdnSEeF8WqcKgku78MYtyKCxkVSejeIRIC9sguz6qK
- zzENdoFMyCuSXm/2Yaf8b/Z0FJ1w2qGpH/8QMjfsuxlKBqxb+HR/mvAi7ubSJaxCvY
- W1omnMVv2zxFweonRgjVOB7b3crbLsQqK+0CzXQ7V4P+J9CdRwTL4QdHHSMO+5V5md
- YC+QzPPKvrEfl7NZ5yW5r0nT0HXMqPRvbOup9e1oPooYS4BRwN0foSSwxFDaET/gyq
- Q/JfWSy23nth1KCMjEJY6gZWYqF86wfXVsSZz8WncIMCtzAnB5iltaAS0NF2vEnftA
- rDNV7dQIaBZpQ==
-Date: Thu, 24 Feb 2022 19:50:26 +0000
+ s=k20201202; t=1645734038;
+ bh=uTKwU6+YCQF+y9/bHte8UgFihCwOEO1tm9hwr/2u8c8=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=K6RTP5rY7E2ChagQSUz7gFM4hNmDKjd3BZbggafJlHfrqAQIqGRMC/sYJyfSwLL7x
+ cWC6Q9LG2E8S3yAO4lK+7rol36GH4tHL0N2aqhfO6zEBmCsCQnHWt2WUsBddZYomGV
+ AiTlidPbvkncK+Nv6aqtbWMAziSQ8kTZTC2yV5ouzcrA96oLtnVE0x4h79L+ct7F2b
+ A7AJv9rPIvmi+v7SrhoFYWJOzLhQ9p0EUXA7du01bBhEZFQtesv0Z1lqJWlgpL2ZvA
+ 1lf3zOR43CfOekhtpEfWjxNF6qoxx+pXwURbm0/D+4kt/Nkte6S94GF+OSSP9dszT4
+ qmHulvKJqe3sQ==
 From: Mark Brown <broonie@kernel.org>
-To: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
-Subject: Re: [PATCH v3] ASoC: codecs: Add power domains support in digital
- macro codecs
-Message-ID: <Yhfhgrvl38WcNOFu@sirena.org.uk>
-References: <1645708759-8833-1-git-send-email-quic_srivasam@quicinc.com>
+To: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>, alsa-devel@alsa-project.org
+In-Reply-To: <20220222124213.721224-1-AjitKumar.Pandey@amd.com>
+References: <20220222124213.721224-1-AjitKumar.Pandey@amd.com>
+Subject: Re: [PATCH v2 0/3] ASoC: amd: acp: Add new machines and minor tweaks
+Message-Id: <164573403651.3139675.9186898819525573460.b4-ty@kernel.org>
+Date: Thu, 24 Feb 2022 20:20:36 +0000
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="7N28iCaW0tsV26lc"
-Content-Disposition: inline
-In-Reply-To: <1645708759-8833-1-git-send-email-quic_srivasam@quicinc.com>
-X-Cookie: I smell a wumpus.
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- bgoswami@codeaurora.org, Venkata Prasad Potturu <quic_potturu@quicinc.com>,
- linux-arm-msm@vger.kernel.org, swboyd@chromium.org, tiwai@suse.com,
- lgirdwood@gmail.com, robh+dt@kernel.org, bjorn.andersson@linaro.org,
- rohitkr@codeaurora.org, agross@kernel.org, srinivas.kandagatla@linaro.org,
- quic_plai@quicinc.com, judyhsiao@chromium.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: Alexander.Deucher@amd.com, Basavaraj.Hiregoudar@amd.com,
+ Sunil-kumar.Dommati@amd.com, Vijendar.Mukunda@amd.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,32 +80,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Tue, 22 Feb 2022 18:12:10 +0530, Ajit Kumar Pandey wrote:
+> changes since v1:
+> - Fixed error for undeclared variable.
+> 
+> Ajit Kumar Pandey (3):
+>   ASoC: amd: acp: Change card name for Guybrush Machine
+>   ASoC: amd: acp-legacy: Add legacy card support for new machines
+>   ASoC: amd: acp: Add DMIC machine driver ops
+> 
+> [...]
 
---7N28iCaW0tsV26lc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Applied to
 
-On Thu, Feb 24, 2022 at 06:49:19PM +0530, Srinivasa Rao Mandadapu wrote:
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-> +	l_pds->macro_pd = dev_pm_domain_attach_by_name(dev, "macro");
-> +	if (IS_ERR_OR_NULL(l_pds->macro_pd))
-> +		return NULL;
+Thanks!
 
-Shouldn't there also be a DT binding update for the users?
+[1/3] ASoC: amd: acp: Change card name for Guybrush Machine
+      commit: abdcf7282f390ae7b95de4bdf93b07ebabeb0f01
+[2/3] ASoC: amd: acp-legacy: Add legacy card support for new machines
+      commit: eee33bac9e7d71e6eb9ab5f863efdb9d44174e0a
+[3/3] ASoC: amd: acp: Add DMIC machine driver ops
+      commit: 1f197351b3af345b626735ed9cda43fa896c23d3
 
---7N28iCaW0tsV26lc
-Content-Type: application/pgp-signature; name="signature.asc"
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
------BEGIN PGP SIGNATURE-----
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmIX4YIACgkQJNaLcl1U
-h9Ar2gf+P1DXI3jrG/N8JSEhOsEnIRpZ3hzB1gV86SjrpMkT9QH9/z/RD5pyWp49
-EC4g6Qdwatg7wK62yEeqfrXP0VgbP5she7silonyEFCznDycxQgBTy8p3Twn4OXq
-nsaVoeEHQkvtKNaleckz7pgfDyNkLdM8HxiS/xldfVFGkpjq/whXEjOgQwGq2t/B
-SPbvRiYnEZDIxBEOjJXtmi5wTQe1MsbG/1aOxz6SQDfVECf6drS6FUwW71Li+Ggv
-Alv09mzQeaGRCDCSUlDSn2wR/UazmQ92TBngzBl17QKjLeiJ7BWQIKyCHG34vjvR
-VAIXMWWSCKxwmkHShmvqZbHd9SzNYQ==
-=qS1/
------END PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---7N28iCaW0tsV26lc--
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
