@@ -4,70 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8DE1C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Feb 2022 12:23:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54AB1C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Feb 2022 12:24:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E743817C5;
-	Thu, 24 Feb 2022 13:23:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E743817C5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8A6D018B5;
+	Thu, 24 Feb 2022 13:23:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A6D018B5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645705434;
-	bh=NjJEwmunyMuChTLzBx9Ed3jmV9nFpHwi4w4OJohVL+U=;
+	s=default; t=1645705441;
+	bh=5Q0siXaaNwrf7iH3McYzCVp+6p9LYGLMu46CcaXcPe8=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kmiRHxFGgzsJmCeHMIqlZTEK2AHNEWRZnDI5lMEqQv7S5Xia1L61ZcqB4u7n+vycV
-	 S82lSsLWj7nTGMe7o54kA6TEffDR0k6gG/1fZAcynEZk65GVIGZmbDR4oqtrMixs2k
-	 31MmHoDi+tOUMmgCpOBB8gG48yYepy+TiTLdB1nQ=
+	b=OdPR3CQSjKwxUyxwxSImrELo2ZwVp5y9ssNF2TGu8AGRerJany7KujjLJ83AiXZH6
+	 zYuoYU5Ya5TFijP8MqgJ9jceNcqOci5pxpYedlSWtOgg8E/MbBGX4O4ykw7gbQMQDn
+	 9VBYexsEGIWDdEjbKs7uL1IKWa/BnvNByFF/ZPNQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4DBBBF804CF;
-	Thu, 24 Feb 2022 13:22:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D68A8F80511;
+	Thu, 24 Feb 2022 13:22:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BDA18F804FD; Thu, 24 Feb 2022 13:22:25 +0100 (CET)
+ id 564F3F804D9; Thu, 24 Feb 2022 13:22:29 +0100 (CET)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 668F7F804CF
- for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2022 13:22:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 668F7F804CF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2D528F804D9
+ for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2022 13:22:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2D528F804D9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="GP3ckcpb"
+ header.b="lJk/SVCJ"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 1D701618F2;
- Thu, 24 Feb 2022 12:22:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51BEFC340E9;
- Thu, 24 Feb 2022 12:22:18 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id F16B26186B;
+ Thu, 24 Feb 2022 12:22:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1DBEC340E9;
+ Thu, 24 Feb 2022 12:22:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1645705339;
- bh=NjJEwmunyMuChTLzBx9Ed3jmV9nFpHwi4w4OJohVL+U=;
+ s=k20201202; t=1645705335;
+ bh=5Q0siXaaNwrf7iH3McYzCVp+6p9LYGLMu46CcaXcPe8=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=GP3ckcpbATBtEK4ya4ljypFdC7U2g3UFmapHtsH1T8l8Os8cw9E5hyhTwO5FhNNBz
- GeBTLTF0zHanj6khT1Gt5w3MZrLgEfEXozRI/JLOIPUWccmkmHJV8pMzGwJrJIAgJr
- YgdjtCoxOWblcNemTEQVzsJrlAcRg3f9vXuZZ9SDF514W4k6dL7qajND3FnRdL6/N6
- wzyuD35xzzRh0O5sMdwV0yQOD/AQ87AoJVmpM23Qq8lkvsgjbcqb3QgZ24CzUIVonw
- QErmZcYrX+KSGP+7gGBQaKDwgkfLpljiTxAFBtCGJgDJrCyVvhcoJEoB6n/ncjLe/o
- asnyPK/aTYxiA==
+ b=lJk/SVCJYiTbvnzWeAWtOTPXg8dFh057UFAUV3TPBtf0Hxh8FXL2uiDxnS5KFGFpQ
+ vj+KzVi2d02LEM38xdGQwIoWF8xP/XmDRdtIqrQZfQQrXPINttmvEDVHWKrJmC+H1J
+ TDl0HYqI52P5g9JzWTWEVpbtKST/EqI+FnqN//ND0LXzIfeXQmIe0hHq0pwEWJGyc2
+ fxKv6BDymqrVZD89+USR58upube+xWQZjwv4Sx9x7nyrVa+lZa+z3Gh57D8hYna/lI
+ bNxmZHELa+zTfKetokKufHtvUE/kvUuSeXClVwAWefMbKXBpEwir/LKk+Tm+ASTNgg
+ YgpGFGldksvfg==
 From: Mark Brown <broonie@kernel.org>
-To: Hans de Goede <hdegoede@redhat.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Jie Yang <yang.jie@linux.intel.com>
-In-Reply-To: <20220223135237.731638-1-hdegoede@redhat.com>
-References: <20220223135237.731638-1-hdegoede@redhat.com>
-Subject: Re: [PATCH] ASoC: Intel: soc-acpi-byt: Add new WM5102 ACPI HID
-Message-Id: <164570533806.1194769.288548639875856850.b4-ty@kernel.org>
-Date: Thu, 24 Feb 2022 12:22:18 +0000
+To: derek.fang@realtek.com, lgirdwood@gmail.com
+In-Reply-To: <20220223101450.4577-1-derek.fang@realtek.com>
+References: <20220223101450.4577-1-derek.fang@realtek.com>
+Subject: Re: [PATCH] ASoC: rt5682s: Fix the wrong jack type detected
+Message-Id: <164570533337.1194769.2622352254259019677.b4-ty@kernel.org>
+Date: Thu, 24 Feb 2022 12:22:13 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
+ lars@metafoo.de, albertchen@realtek.com, shumingf@realtek.com,
+ flove@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,11 +81,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 23 Feb 2022 14:52:37 +0100, Hans de Goede wrote:
-> The Lenovo Yoga Tablet 2 1050F/L tablets use an ACPI HID of "10WM5102"
-> for their wm5102 codec, add this to the list of HIDs for the wm5102 codec.
+On Wed, 23 Feb 2022 18:14:50 +0800, derek.fang@realtek.com wrote:
+> From: Derek Fang <derek.fang@realtek.com>
 > 
+> Some powers were changed during the jack insert detection and clk's
+> enable/disable in CCF.
+> If in parallel, the influence has a chance to detect the wrong jack
+> type.
 > 
+> [...]
 
 Applied to
 
@@ -95,8 +97,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Intel: soc-acpi-byt: Add new WM5102 ACPI HID
-      commit: 7e1d728a94ca78f8759ba14068932075ecdc562d
+[1/1] ASoC: rt5682s: Fix the wrong jack type detected
+      commit: c07ac3ee76e5e5506bca9c03fbbb15e40ab28430
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
