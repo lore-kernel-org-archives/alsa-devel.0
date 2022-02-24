@@ -4,75 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0715EC433FE
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Feb 2022 13:32:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7EC2C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Feb 2022 13:33:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4579418C9;
-	Thu, 24 Feb 2022 14:32:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4579418C9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0F87E18B3;
+	Thu, 24 Feb 2022 14:32:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F87E18B3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645709573;
-	bh=7Z/vf/C41qfX/tIhM4CKrTy3Gby/vne5bC9JNJyuqhY=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=YVr6QWT/zFAf4RBF/DarMbbNB/j6Xg9KlTStcY/doLfPOrX15qqhjqI/yqT75xac5
-	 WrINBg3oiYUPeFRIIZe4MqXUpkUpRiVduG35jw4PbC9seyMd7Rknka/e/1jFnQnQfW
-	 j+CDhhKDxEldbRRzvdgH8oFftCaCq89fwNP3/seA=
+	s=default; t=1645709589;
+	bh=gMpBBCQSR4XMNNzxk5CDXFSd5bzcqR4uEf3YGZSQ2/8=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=CG/1vDP/L6kHc4AEGztPNGErHm8eeUJeiJH0tRVS5JwvHCWr4P/Veb/L2swqGokjR
+	 wftAAm3cLb06ZuF1akMC1l9TgOH4HdhEKsWQhV4GPSlDJkltJM3XPP8j3rjhOn1ECV
+	 /G5E75Rnw0jYRccAn63cZFkUOKZR7qHd7tqz12iA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A3B2DF8051E;
-	Thu, 24 Feb 2022 14:31:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2D0F5F80520;
+	Thu, 24 Feb 2022 14:31:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E64E8F80508; Thu, 24 Feb 2022 14:31:25 +0100 (CET)
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 15EC6F80525; Thu, 24 Feb 2022 14:31:46 +0100 (CET)
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
+ [IPv6:2a00:1450:4864:20::434])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EEE5FF80169;
- Thu, 24 Feb 2022 14:31:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EEE5FF80169
-X-UUID: ff5219ca17794558bf9d6e13a2e86fe2-20220224
-X-UUID: ff5219ca17794558bf9d6e13a2e86fe2-20220224
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
- (envelope-from <allen-kh.cheng@mediatek.com>)
- (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
- with ESMTP id 1339800806; Thu, 24 Feb 2022 21:31:08 +0800
-Received: from mtkexhb02.mediatek.inc (172.21.101.103) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 24 Feb 2022 21:31:07 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by mtkexhb02.mediatek.inc
- (172.21.101.103) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
- Thu, 24 Feb 2022 21:31:07 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via
- Frontend Transport; Thu, 24 Feb 2022 21:31:06 +0800
-From: Allen-KH Cheng <allen-kh.cheng@mediatek.com>
-To: Jassi Brar <jaswinder.singh@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
- Matthias Brugger <matthias.bgg@gmail.com>
-Subject: [PATCH v17 1/2] dt-bindings: mailbox: mtk,
- adsp-mbox: add mtk adsp-mbox document
-Date: Thu, 24 Feb 2022 21:30:44 +0800
-Message-ID: <20220224133045.23903-2-allen-kh.cheng@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20220224133045.23903-1-allen-kh.cheng@mediatek.com>
-References: <20220224133045.23903-1-allen-kh.cheng@mediatek.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7420CF80169
+ for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2022 14:31:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7420CF80169
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="X+4hbVuu"
+Received: by mail-wr1-x434.google.com with SMTP id d3so3089645wrf.1
+ for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2022 05:31:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=UmVaZe5WSxDiTqf74Pc2xrLlr9buKqJFnFD7mGOeeZQ=;
+ b=X+4hbVuuPt44tTksNFwLknPj3qpjpjuhlAwO2hCrkvTD87j39VczB7GvnEIzthjT/e
+ WOdbn8iXn1qe0tGbWLvewZ/UezZ39LrTIwtnT1f7l7F00geI/ii4e+VtMj8dUO/rhu7s
+ /IgoenmAxZztegUykln+ZJHB6srH3RkMz2rRcrvuDPN2E7+NNwcwtDCeobU5bJldZ0ZX
+ /Oz98ktWfKU61kq1DQfZ6s5ZoQeiScjnu1IG8zMskHj2QlS5AvBHBVTZPmdcSvPYqCSi
+ ihQapqvmYJLweLPHEOO2lxc9bfnl85KgaAISDgIW/nUPH2Q6Sp9m5zsMvojK47xWkBpS
+ 7ZoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=UmVaZe5WSxDiTqf74Pc2xrLlr9buKqJFnFD7mGOeeZQ=;
+ b=3Cva/xBrDWAFHXbJQG0OmUk6UIgFXaJz10yPiK4/wwD0l4HsDT3gNt7rOrNewk7M5K
+ XDLbNoF8lUCKAZrlguFOh/YW8KgFSFme1Azlxugnq/aetvu57v2o27t5rGQxokTpKFXL
+ wB0sZ3kfUniEIaOKjpyZF8iaCtcF71ahdE9QRfac40xkw/XHZD3NCxvShqrpQRfcFT8b
+ Mc1oo9BqCiiwbE9nQJdgkQOkNGWlDlujBZ6m6LyElANW/ExbOggcoxcvGaDKEsvdgnwc
+ pwgOwGqNs6dNITvI4eySXZ2pLj5CpK/DS1poGSnO3zaMyI6x3Nm6JvC/JxYuOPGM7OFR
+ Ns8A==
+X-Gm-Message-State: AOAM530fbt1OlD2+a6IxAtsGn5kyFPZyDAyhOdZut9PWQxG/EIfl7J0L
+ wZFutwv07kofExj4Jwz6MoEeXg==
+X-Google-Smtp-Source: ABdhPJzGxwrAIaDsnmbLEemWdu2TqUsgbnEEJsfcoRpGlvqbPOOKjtAfW3tLr1uHErzQNUzrhyE1mw==
+X-Received: by 2002:a5d:46c9:0:b0:1ea:9cab:c2e4 with SMTP id
+ g9-20020a5d46c9000000b001ea9cabc2e4mr2173369wrs.1.1645709500156; 
+ Thu, 24 Feb 2022 05:31:40 -0800 (PST)
+Received: from srini-hackbox.lan
+ (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
+ by smtp.gmail.com with ESMTPSA id
+ e33-20020a05600c4ba100b003810c690ba2sm2019142wmp.3.2022.02.24.05.31.38
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 24 Feb 2022 05:31:39 -0800 (PST)
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: robh+dt@kernel.org,
+	vkoul@kernel.org,
+	yung-chuan.liao@linux.intel.com
+Subject: [PATCH v2 0/3] soundwire: qcom: add pm runtime support
+Date: Thu, 24 Feb 2022 13:31:22 +0000
+Message-Id: <20220224133125.6674-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK: N
-Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
- Linux-ALSA <alsa-devel@alsa-project.org>,
- Allen-KH Cheng <allen-kh.cheng@mediatek.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, cujomalainey@google.com,
- Kevin Hilman <khilman@baylibre.com>, Jassi Brar <jassisinghbrar@gmail.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Project_Global_Chrome_Upstream_Group@mediatek.com, tzungbi@google.com, Mark
- Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Chen-Yu Tsai <wenst@chromium.org>, Takashi Iwai <tiwai@suse.com>,
- Daniel Baluta <daniel.baluta@nxp.com>, linux-kernel@vger.kernel.org,
- sound-open-firmware@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ quic_srivasam@quicinc.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,75 +99,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
+This patchset adds pm runtime support to Qualcomm SounWire Controller using
+SoundWire Clock Stop and Wake up using Headset events on supported instances and
+instances like WSA which do not support clock stop a soft reset of controller
+along with full rest of slaves is done to resume from a low power state.
 
-This patch adds document for mediatek adsp mbox
+Tested it on SM8250 MTP and Dragon Board DB845c
 
-Signed-off-by: Allen-KH Cheng <allen-kh.cheng@mediatek.com>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
- .../bindings/mailbox/mtk,adsp-mbox.yaml       | 52 +++++++++++++++++++
- 1 file changed, 52 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mailbox/mtk,adsp-mbox.yaml
+--srini
 
-diff --git a/Documentation/devicetree/bindings/mailbox/mtk,adsp-mbox.yaml b/Documentation/devicetree/bindings/mailbox/mtk,adsp-mbox.yaml
-new file mode 100644
-index 000000000000..25756837797f
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mailbox/mtk,adsp-mbox.yaml
-@@ -0,0 +1,52 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mailbox/mtk,adsp-mbox.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Mediatek ADSP mailbox
-+
-+maintainers:
-+  - Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
-+
-+description: |
-+  The MTK ADSP mailbox Inter-Processor Communication (IPC) enables the SoC
-+  to ommunicate with ADSP by passing messages through two mailbox channels.
-+  The MTK ADSP mailbox IPC also provides the ability for one processor to
-+  signal the other processor using interrupts.
-+
-+properties:
-+  compatible:
-+    items:
-+      - const: mediatek,mt8195-adsp-mbox
-+
-+  "#mbox-cells":
-+    const: 0
-+
-+  reg:
-+    description:
-+      Physical address base for dsp mbox registers.
-+
-+  interrupts:
-+    description:
-+      adsp mbox interrupt
-+
-+required:
-+  - compatible
-+  - "#mbox-cells"
-+  - reg
-+  - interrupts
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    adsp_mailbox0:mailbox@10816000 {
-+        compatible = "mediatek,mt8195-adsp-mbox";
-+        #mbox-cells = <0>;
-+        reg = <0x10816000 0x1000>;
-+        interrupts = <GIC_SPI 702 IRQ_TYPE_LEVEL_HIGH 0>;
-+    };
+Changes since v1:
+ - updated wake irq to not deal with slave pm runtime directly.
+ - added delay after soft reset of SoundWire controller where clock stop is not supported
+
+
+Srinivas Kandagatla (3):
+  soundwire: qcom: add runtime pm support
+  dt-bindings: soundwire: qcom: document optional wake irq
+  soundwire: qcom: add in-band wake up interrupt support
+
+ .../bindings/soundwire/qcom,sdw.txt           |   2 +-
+ drivers/soundwire/qcom.c                      | 202 +++++++++++++++++-
+ 2 files changed, 202 insertions(+), 2 deletions(-)
+
 -- 
-2.18.0
+2.21.0
 
