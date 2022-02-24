@@ -4,75 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8FD63C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Feb 2022 15:46:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A278C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Feb 2022 15:46:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 93572186B;
-	Thu, 24 Feb 2022 16:45:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93572186B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 73CDA1AAB;
+	Thu, 24 Feb 2022 16:45:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73CDA1AAB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645717566;
-	bh=9+DVXx/isU6uWI6/XyBC0Lnisob2NuO5FXAXMzKIKQQ=;
+	s=default; t=1645717599;
+	bh=PzX96kduRIYE/gKPsTNuQPtzkDDYW6yJR2z6E96mZSY=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KmUFdUp6kJYQPaQ/UgVDbTVv1vjrq1C2mMU69OBVv44MVed1+DVRgGDrtmi6vG05o
-	 EqgtDFn/g+eS80giZGoMyxasd/eonrGKY/SW+eLflph5Q4xejBM/5OWnp61YHyP/1c
-	 eK1IaOGrjHBOoofv5ragy94/riKkV1KAg43hyZuY=
+	b=dEi6wd3s84bwmWzMCtJ2qbUuFWbJ7OYvhh3Jt1B3mB2WQ3LmGdpYqEuTLmYGOo1ys
+	 2Urihd9JYVzz3P8tw322E7A7YxC21ARqmD/IUD4i1kMXrV/pV1LN9976pUppV5trl9
+	 R6ic79EKy2ftd303s4mhRvEjOOCUiFXnZpOnUUCE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2DDE4F80118;
+	by alsa1.perex.cz (Postfix) with ESMTP id DCEFFF804D9;
 	Thu, 24 Feb 2022 16:45:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DFC90F804CF; Thu, 24 Feb 2022 16:45:14 +0100 (CET)
+ id EB88CF800F3; Thu, 24 Feb 2022 16:45:14 +0100 (CET)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 763D7F80118
- for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2022 16:45:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 763D7F80118
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7F367F800F3
+ for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2022 16:45:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F367F800F3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="U0YuBhKQ"
+ header.b="n1qJ+J5B"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
  t=1645717512; x=1677253512;
  h=message-id:date:mime-version:subject:to:cc:references:
  from:in-reply-to:content-transfer-encoding;
- bh=9+DVXx/isU6uWI6/XyBC0Lnisob2NuO5FXAXMzKIKQQ=;
- b=U0YuBhKQKH6TuU6U89qnsnM+tqU5xFzafL9pCu+zBotaBLCdx1cPP5EA
- NfN0X4vwDz3jVjJAcHojXahW2p+DJhV5OjU9C2lPq0rXs8IPBXbUkbmnt
- 4ocuBrflOsFzVOzPnfXrL8Eo3QvLvaqu/CT9VSAvH0w8He38pQG14Hwh5
- sfFGlOnnHG9PcjF4Dy8rqlPtMyQRVTOn4qtiEIG1eimVCpmHKqeElZboR
- 5YOQSYHO2nei77kncKwC98lYNgOwSoSWVuq6AsbSC7rx4p+Y1mYlbQ/XA
- pemBo3RhnIY1yMeoF+2kgYx6MEdKlxIq2qf9N5VauFwZPtnEJdrzSE04L A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10268"; a="276890957"
-X-IronPort-AV: E=Sophos;i="5.90,134,1643702400"; d="scan'208";a="276890957"
+ bh=PzX96kduRIYE/gKPsTNuQPtzkDDYW6yJR2z6E96mZSY=;
+ b=n1qJ+J5BKysnwMJN63cDu/slPxu0Xm6/9DlJ6741muKxAWAJ1ceJioQw
+ yYhln/i2tNb1dOTUnbdTaXs1hScjHc0E9R41duvnwNAa5kAoIebXud/bx
+ Gf2kEcr1J7I0TG0iHszrWKbagt/Z4VC+7fUGCilfYWKsWDCK/zKvYLsxp
+ COwj8GnIdEuYS3/G9rVno3QJGTu1xI4Gtgb5DW7fUMfGG/l4gomRAow0L
+ X3J9kp5SReoQy4rWbAid07Cjrz4gmSNP2dwfEaOec1ibyS1piQC9gab4a
+ nrv2hWYBzFKt/OtVeMXOP30+W9Egj/kwlQs9J+gB1XXV8+Zh9dQTb01D/ Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10268"; a="276890964"
+X-IronPort-AV: E=Sophos;i="5.90,134,1643702400"; d="scan'208";a="276890964"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Feb 2022 07:45:05 -0800
-X-IronPort-AV: E=Sophos;i="5.90,134,1643702400"; d="scan'208";a="533178468"
+ 24 Feb 2022 07:45:08 -0800
+X-IronPort-AV: E=Sophos;i="5.90,134,1643702400"; d="scan'208";a="533178518"
 Received: from ronakmeh-mobl1.amr.corp.intel.com (HELO [10.212.97.131])
  ([10.212.97.131])
  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Feb 2022 07:45:04 -0800
-Message-ID: <522ab282-ecc2-4186-2d77-f6241e255109@linux.intel.com>
-Date: Thu, 24 Feb 2022 09:29:25 -0600
+ 24 Feb 2022 07:45:07 -0800
+Message-ID: <87f434b5-0e99-d1d1-e4d1-248cf35cd05c@linux.intel.com>
+Date: Thu, 24 Feb 2022 09:44:23 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Firefox/91.0 Thunderbird/91.5.0
-Subject: Re: [PATCH v2 14/16] ASoC: codecs: wsa881x: add runtime pm support
+Subject: Re: [PATCH v2 3/3] soundwire: qcom: add in-band wake up interrupt
+ support
 Content-Language: en-US
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, broonie@kernel.org
-References: <20220224111718.6264-1-srinivas.kandagatla@linaro.org>
- <20220224111718.6264-15-srinivas.kandagatla@linaro.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, robh+dt@kernel.org, 
+ vkoul@kernel.org, yung-chuan.liao@linux.intel.com
+References: <20220224133125.6674-1-srinivas.kandagatla@linaro.org>
+ <20220224133125.6674-4-srinivas.kandagatla@linaro.org>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20220224111718.6264-15-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20220224133125.6674-4-srinivas.kandagatla@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
- linux-kernel@vger.kernel.org, tiwai@suse.com, quic_srivasam@quicinc.com
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, quic_srivasam@quicinc.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,19 +92,19 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 2/24/22 05:17, Srinivas Kandagatla wrote:
-> WSA881x codecs can not cope up with clk stop and requires a full reset after suspend.
-> WSA SoundWire Controller connected to this instances do a full soft reset on suspend.
+On 2/24/22 07:31, Srinivas Kandagatla wrote:
+> Some of the Qualcomm SoundWire Controller instances like the ones that are
+> connected to RX path along with Headset connections support Waking up
+> Controller from Low power clock stop state using SoundWire In-band interrupt.
+> SoundWire Slave on the bus would intiate this by pulling the data line high,
 
-is it the manager or peripheral that cannot cope with clock stop?
+typo: initiate
 
-> @@ -1124,6 +1136,7 @@ static int wsa881x_probe(struct sdw_slave *pdev,
->  	pdev->prop.sink_ports = GENMASK(WSA881X_MAX_SWR_PORTS, 0);
->  	pdev->prop.sink_dpn_prop = wsa_sink_dpn_prop;
->  	pdev->prop.scp_int1_mask = SDW_SCP_INT1_BUS_CLASH | SDW_SCP_INT1_PARITY;
-> +	pdev->prop.simple_clk_stop_capable = true;
+> during clock stop condition.
 
-here it's pretty clear the peripheral is capable of supporting clock
-stop, no?
+while the clock is stopped.
 
-Something's not clear between the commit message and the code.
+A peripheral cannot generate an interrupt after a successful completion
+of a write to the ClockStopNow bitfield.
+
+
