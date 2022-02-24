@@ -4,64 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 423AEC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 13:15:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30440C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 13:15:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5FB3E1B16;
-	Fri, 25 Feb 2022 14:14:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5FB3E1B16
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5DC411B10;
+	Fri, 25 Feb 2022 14:14:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5DC411B10
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645794907;
-	bh=soOvQYRaOyZB66UMOdZmvj155c4NjxblRTlsoz7NPWM=;
+	s=default; t=1645794921;
+	bh=zVAGv3GzIY0CmGHccO6MTpPuZ0cGji1luXzfksNlM2M=;
 	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=W+HXhp0xSWwthdHD4mo0RJ5M5awaf+kF3l1lObtZtiyDrANCKMNT9ZvZs0w34YONh
-	 a2SrfxAGOdeYqfEf0TxNrwGzE6mLe+EMa+NUB5y/Jrl2aOKE7im8J9d9j2sFRSPGHM
-	 AddzQOpaH0i4Bs3GzfsDGNmxzUHXhnepBMQYs5ms=
+	b=nRmYpJZKSQ7lCx2V29tluOAmjvMBCp1b3q/9XqV+sB1j/VSmELWqrpdEj/36Ob7Cy
+	 Rnacv0ycDTQCJ+/oEs0FyZ9ViN6Qn56N5I61DYLm/UzNM4SfDnwBc0YB17mujs69+d
+	 QHS480yGk6DmxdWCw1EtDqwYQzE/aDVvH4F+Wl6M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EFA7DF80544;
-	Fri, 25 Feb 2022 14:11:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 77616F80557;
+	Fri, 25 Feb 2022 14:11:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 757AEF80237; Wed, 23 Feb 2022 22:53:51 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id C8D4DF8030F; Fri, 25 Feb 2022 00:52:16 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 13C2DF800B6
- for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2022 22:53:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13C2DF800B6
+ by alsa1.perex.cz (Postfix) with ESMTPS id AB4C0F800B6
+ for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2022 00:52:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB4C0F800B6
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Rnac7ap9"
+ header.b="kCSNhdmj"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id B251261880;
- Wed, 23 Feb 2022 21:53:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA655C340E7;
- Wed, 23 Feb 2022 21:53:43 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 4D79BB828B7;
+ Thu, 24 Feb 2022 23:52:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD98FC340E9;
+ Thu, 24 Feb 2022 23:52:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1645653224;
- bh=soOvQYRaOyZB66UMOdZmvj155c4NjxblRTlsoz7NPWM=;
+ s=k20201202; t=1645746728;
+ bh=zVAGv3GzIY0CmGHccO6MTpPuZ0cGji1luXzfksNlM2M=;
  h=Date:From:To:Cc:Subject:In-Reply-To:From;
- b=Rnac7ap99w001yaIWWSDvCcMuzb4R6SAfj0LsDJC9di7qM+crR9k/cY2llxXgAVae
- QFGtb0ad4PBYVxi75RirP6dccAvb/YLEB2wy3JjHbeXOkaqKgZeRRtd6yVF0yDH2bX
- pz0IUI0hmSspHhbjKUCgtxSE6nrqvVWHeJgKFJeUrIJjpsFEqe/+RGrkNOuSHPKypb
- 0ZwdJk12cdt9PAP1ZL3LN2+KDUA7YOVUwFJcLv7Qfag5C0QESOZ5SuSUXjDU+v8/sC
- JSx3uLNr/O0Ox2z2I6BCIY2za2vtgmF4cDPdJ8NlSpe2wOyaPc+YlwVQ6ua50G6jz0
- auUVVFaAiFa0w==
-Date: Wed, 23 Feb 2022 15:53:42 -0600
+ b=kCSNhdmjCNFp4p3nEZo05DvtkYaTYatl89i6A6bnh2GoE1LafejZW2+LdT+xyn9p9
+ vFysfr3uU3CN1goYGDWRGNKLLknLWL4gwXq4LwSu/xs2AfSKORCBht3dm2YESZuJkC
+ QTihOOdWAM03oTBu5HCC9wQYShduFbcLphU9XZZOZ2w+HR8xeoLGBBRX0Da60zkFuO
+ Gw55uOtn72xOyN5dsOgPR66lVXrDqagidhgfw1lK88dhzevhVz/lXIRWDLrY+G2rDT
+ B2vC1ShfZifdcQml58IDHz2aBNdppV0ayqFTRcbx14EaEZyzuuUqWcpsrE30jKvDVw
+ +pVWnNSGt5bFQ==
+Date: Thu, 24 Feb 2022 17:52:06 -0600
 From: Bjorn Helgaas <helgaas@kernel.org>
 To: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: Re: [PATCH v2 01/11] driver: platform: add and use helper for safer
- setting of driver_override
-Message-ID: <20220223215342.GA155282@bhelgaas>
+Subject: Re: [PATCH v2 05/11] pci: use helper for safer setting of
+ driver_override
+Message-ID: <20220224235206.GA302751@bhelgaas>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220223191310.347669-2-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <f7347531-8aa4-c011-d405-dea93e29779f@canonical.com>
 X-Mailman-Approved-At: Fri, 25 Feb 2022 14:11:18 +0100
 Cc: linux-hyperv@vger.kernel.org, Stuart Yoder <stuyoder@gmail.com>,
  "Rafael J. Wysocki" <rafael@kernel.org>, linux-pci@vger.kernel.org,
@@ -105,27 +104,86 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Feb 23, 2022 at 08:13:00PM +0100, Krzysztof Kozlowski wrote:
-> Several core drivers and buses expect that driver_override is a
-> dynamically allocated memory thus later they can kfree() it.
-> ...
+On Thu, Feb 24, 2022 at 08:49:15AM +0100, Krzysztof Kozlowski wrote:
+> On 23/02/2022 22:51, Bjorn Helgaas wrote:
+> > In subject, to match drivers/pci/ convention, do something like:
+> > 
+> >   PCI: Use driver_set_override() instead of open-coding
+> > 
+> > On Wed, Feb 23, 2022 at 08:13:04PM +0100, Krzysztof Kozlowski wrote:
+> >> Use a helper for seting driver_override to reduce amount of duplicated
+> >> code.
+> >> @@ -567,31 +567,15 @@ static ssize_t driver_override_store(struct device *dev,
+> >>  				     const char *buf, size_t count)
+> >>  {
+> >>  	struct pci_dev *pdev = to_pci_dev(dev);
+> >> -	char *driver_override, *old, *cp;
+> >> +	int ret;
+> >>  
+> >>  	/* We need to keep extra room for a newline */
+> >>  	if (count >= (PAGE_SIZE - 1))
+> >>  		return -EINVAL;
+> > 
+> > This check makes no sense in the new function.  Michael alluded to
+> > this as well.
+> 
+> I am not sure if I got your comment properly. You mean here:
+> 1. Move this check to driver_set_override()?
+> 2. Remove the check entirely?
 
-> + * set_driver_override() - Helper to set or clear driver override.
+I was mistaken about the purpose of the comment and the check.  I
+thought it had to do with *this* function, and this function doesn't
+add a newline, and there's no obvious connection with PAGE_SIZE.
 
-Doesn't match actual function name.
+But looking closer, I think the "extra room for a newline" is really
+to make sure that *driver_override_show()* can add a newline and have
+it still fit within the PAGE_SIZE sysfs limit.
 
-> + * @dev: Device to change
-> + * @override: Address of string to change (e.g. &device->driver_override);
-> + *            The contents will be freed and hold newly allocated override.
-> + * @s: NULL terminated string, new driver name to force a match, pass empty
-> + *     string to clear it
-> + *
-> + * Helper to setr or clear driver override in a device, intended for the cases
-> + * when the driver_override field is allocated by driver/bus code.
+Most driver_override_*() functions have the same comment, so maybe
+this was obvious to everybody except me :)  I do see that spi.c adds
+"when displaying value" at the end, which helps a lot.
 
-s/setr/set/
+Sorry for the wild goose chase.
 
-> + * Returns: 0 on success or a negative error code on failure.
-> + */
-> +int driver_set_override(struct device *dev, char **override, const char *s)
-> +{
+> >> -	driver_override = kstrndup(buf, count, GFP_KERNEL);
+> >> -	if (!driver_override)
+> >> -		return -ENOMEM;
+> >> -
+> >> -	cp = strchr(driver_override, '\n');
+> >> -	if (cp)
+> >> -		*cp = '\0';
+> >> -
+> >> -	device_lock(dev);
+> >> -	old = pdev->driver_override;
+> >> -	if (strlen(driver_override)) {
+> >> -		pdev->driver_override = driver_override;
+> >> -	} else {
+> >> -		kfree(driver_override);
+> >> -		pdev->driver_override = NULL;
+> >> -	}
+> >> -	device_unlock(dev);
+> >> -
+> >> -	kfree(old);
+> >> +	ret = driver_set_override(dev, &pdev->driver_override, buf);
+> >> +	if (ret)
+> >> +		return ret;
+> >>  
+> >>  	return count;
+> >>  }
+> >> -- 
+> >> 2.32.0
+> >>
+> >>
+> >> _______________________________________________
+> >> linux-arm-kernel mailing list
+> >> linux-arm-kernel@lists.infradead.org
+> >> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
+> 
+> Best regards,
+> Krzysztof
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
