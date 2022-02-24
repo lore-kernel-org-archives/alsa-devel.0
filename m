@@ -4,80 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7EC2C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Feb 2022 13:33:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C21BEC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Feb 2022 13:33:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0F87E18B3;
-	Thu, 24 Feb 2022 14:32:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F87E18B3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0F3D31906;
+	Thu, 24 Feb 2022 14:32:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F3D31906
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645709589;
-	bh=gMpBBCQSR4XMNNzxk5CDXFSd5bzcqR4uEf3YGZSQ2/8=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=CG/1vDP/L6kHc4AEGztPNGErHm8eeUJeiJH0tRVS5JwvHCWr4P/Veb/L2swqGokjR
-	 wftAAm3cLb06ZuF1akMC1l9TgOH4HdhEKsWQhV4GPSlDJkltJM3XPP8j3rjhOn1ECV
-	 /G5E75Rnw0jYRccAn63cZFkUOKZR7qHd7tqz12iA=
+	s=default; t=1645709606;
+	bh=/HrfPYImxjh1yk+WzVw8yE0VmOENxTV4OENlPgorNtc=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=pN4Jt1VGiiAWhhg6EXrCH2JQs2G0AFpHWeYvuUlnhzsciF5P7Ur/3a9O8xYHumqYH
+	 fkl1o1QAgnvOQvjEhfOBeQwA+Wq0gX1EBvvJ1qEzfBbrnIycpb8ujZWviPhd4/oU2a
+	 +mqc1hK5FRapTNEBpisUgJFWZeuG3I1ruCHLDCRg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2D0F5F80520;
-	Thu, 24 Feb 2022 14:31:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C4907F80524;
+	Thu, 24 Feb 2022 14:31:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 15EC6F80525; Thu, 24 Feb 2022 14:31:46 +0100 (CET)
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
- [IPv6:2a00:1450:4864:20::434])
+ id 86B83F80524; Thu, 24 Feb 2022 14:31:47 +0100 (CET)
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com
+ [IPv6:2a00:1450:4864:20::42d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7420CF80169
- for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2022 14:31:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7420CF80169
+ by alsa1.perex.cz (Postfix) with ESMTPS id B3D5AF80430
+ for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2022 14:31:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3D5AF80430
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="X+4hbVuu"
-Received: by mail-wr1-x434.google.com with SMTP id d3so3089645wrf.1
- for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2022 05:31:41 -0800 (PST)
+ header.b="cveEpeC8"
+Received: by mail-wr1-x42d.google.com with SMTP id d28so3074242wra.4
+ for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2022 05:31:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=UmVaZe5WSxDiTqf74Pc2xrLlr9buKqJFnFD7mGOeeZQ=;
- b=X+4hbVuuPt44tTksNFwLknPj3qpjpjuhlAwO2hCrkvTD87j39VczB7GvnEIzthjT/e
- WOdbn8iXn1qe0tGbWLvewZ/UezZ39LrTIwtnT1f7l7F00geI/ii4e+VtMj8dUO/rhu7s
- /IgoenmAxZztegUykln+ZJHB6srH3RkMz2rRcrvuDPN2E7+NNwcwtDCeobU5bJldZ0ZX
- /Oz98ktWfKU61kq1DQfZ6s5ZoQeiScjnu1IG8zMskHj2QlS5AvBHBVTZPmdcSvPYqCSi
- ihQapqvmYJLweLPHEOO2lxc9bfnl85KgaAISDgIW/nUPH2Q6Sp9m5zsMvojK47xWkBpS
- 7ZoA==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=o+5vqkQXPirAu/1Sjt7YkAPFccDLqMMWnr+8F22imTk=;
+ b=cveEpeC81vvyATlkuSNHZClxmN73VpdpV7cvx4KhuPNSXWLkSePXj8HvRs4Hzk5Xmn
+ 4Osni1BnGxlG/kqDZ/3sSnNKKtA20bo6ofouvDh4jP/B8pBvek21tXUjHYJBbOvf00Zj
+ r6mvOQ9jEaxSzwJDpmHcYbPFUT24PJXftt0abfrKZnNScUbcDFowiikG0aS8qNi9iZvX
+ wv5AMMVVg/71236+PkpaTnBlCc+7tAdhj7bW5uyEtZI2CtkDCdZeas4eb2mjWMDghITx
+ dlW+57qXlU5uCPl5EfZH/R+5rKjlcb8Lwn5YX00zCpbG6goQmD+7WpDkAYX0qlT9xQho
+ reow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=UmVaZe5WSxDiTqf74Pc2xrLlr9buKqJFnFD7mGOeeZQ=;
- b=3Cva/xBrDWAFHXbJQG0OmUk6UIgFXaJz10yPiK4/wwD0l4HsDT3gNt7rOrNewk7M5K
- XDLbNoF8lUCKAZrlguFOh/YW8KgFSFme1Azlxugnq/aetvu57v2o27t5rGQxokTpKFXL
- wB0sZ3kfUniEIaOKjpyZF8iaCtcF71ahdE9QRfac40xkw/XHZD3NCxvShqrpQRfcFT8b
- Mc1oo9BqCiiwbE9nQJdgkQOkNGWlDlujBZ6m6LyElANW/ExbOggcoxcvGaDKEsvdgnwc
- pwgOwGqNs6dNITvI4eySXZ2pLj5CpK/DS1poGSnO3zaMyI6x3Nm6JvC/JxYuOPGM7OFR
- Ns8A==
-X-Gm-Message-State: AOAM530fbt1OlD2+a6IxAtsGn5kyFPZyDAyhOdZut9PWQxG/EIfl7J0L
- wZFutwv07kofExj4Jwz6MoEeXg==
-X-Google-Smtp-Source: ABdhPJzGxwrAIaDsnmbLEemWdu2TqUsgbnEEJsfcoRpGlvqbPOOKjtAfW3tLr1uHErzQNUzrhyE1mw==
-X-Received: by 2002:a5d:46c9:0:b0:1ea:9cab:c2e4 with SMTP id
- g9-20020a5d46c9000000b001ea9cabc2e4mr2173369wrs.1.1645709500156; 
- Thu, 24 Feb 2022 05:31:40 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=o+5vqkQXPirAu/1Sjt7YkAPFccDLqMMWnr+8F22imTk=;
+ b=okxYd5090l/FVuFuohb9LfkFvPCeHObRjo2a2N2DfPaQUrYTG1/sXHHze8H23yJLc4
+ FDdSHERaKqXvM5J8KtANdNI0aHInW/lnDq6O6LxPjbFMyajMtW+/IlQaxqzPMPbbsCEv
+ Dql41idR1tcjPpZz/dJhhKymSr75EYMt4tBsyWIYyECzDhlw/U1JsWSfNsPAiLqDbHcb
+ MTktOf9+2paHRkCh84sxJbw0EVjxcHv0aMJR1hYIKOyM4HDUOgZ1xc2cCXkaAWJHtJh/
+ RtlOnT4GawyPZHG3eS85Fh9pliVUe7yvOWkY4kLVZKDhjOnpGgmAUBRfiPMtnqczguVr
+ 8/oQ==
+X-Gm-Message-State: AOAM530+1LH7yj9TS5+dzjt2JSMuPyN/iVXS/sTZDAHxQsEoQam4Ueut
+ KW7hP13oaDtg0PY+tp3PGs5DociafZ1DRA==
+X-Google-Smtp-Source: ABdhPJy3Isxl3JRAACJsHIBGlKSiYremn17jHDKeNcB+aafXuJygUeIR+72g6AjkXfnX8baSTfP+Jg==
+X-Received: by 2002:a5d:5252:0:b0:1e3:7f5:8312 with SMTP id
+ k18-20020a5d5252000000b001e307f58312mr2313128wrc.89.1645709502639; 
+ Thu, 24 Feb 2022 05:31:42 -0800 (PST)
 Received: from srini-hackbox.lan
  (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
  by smtp.gmail.com with ESMTPSA id
- e33-20020a05600c4ba100b003810c690ba2sm2019142wmp.3.2022.02.24.05.31.38
+ e33-20020a05600c4ba100b003810c690ba2sm2019142wmp.3.2022.02.24.05.31.41
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 24 Feb 2022 05:31:39 -0800 (PST)
+ Thu, 24 Feb 2022 05:31:42 -0800 (PST)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: robh+dt@kernel.org,
 	vkoul@kernel.org,
 	yung-chuan.liao@linux.intel.com
-Subject: [PATCH v2 0/3] soundwire: qcom: add pm runtime support
-Date: Thu, 24 Feb 2022 13:31:22 +0000
-Message-Id: <20220224133125.6674-1-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 2/3] dt-bindings: soundwire: qcom: document optional wake
+ irq
+Date: Thu, 24 Feb 2022 13:31:24 +0000
+Message-Id: <20220224133125.6674-3-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20220224133125.6674-1-srinivas.kandagatla@linaro.org>
+References: <20220224133125.6674-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
@@ -99,29 +103,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patchset adds pm runtime support to Qualcomm SounWire Controller using
-SoundWire Clock Stop and Wake up using Headset events on supported instances and
-instances like WSA which do not support clock stop a soft reset of controller
-along with full rest of slaves is done to resume from a low power state.
+Wake IRQ is optional interrupt that can be wired up on SoundWire controller
+instances like RX path along with MBHC(Multi Button Headset connection).
+Document this in bindings.
 
-Tested it on SM8250 MTP and Dragon Board DB845c
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ Documentation/devicetree/bindings/soundwire/qcom,sdw.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---srini
-
-Changes since v1:
- - updated wake irq to not deal with slave pm runtime directly.
- - added delay after soft reset of SoundWire controller where clock stop is not supported
-
-
-Srinivas Kandagatla (3):
-  soundwire: qcom: add runtime pm support
-  dt-bindings: soundwire: qcom: document optional wake irq
-  soundwire: qcom: add in-band wake up interrupt support
-
- .../bindings/soundwire/qcom,sdw.txt           |   2 +-
- drivers/soundwire/qcom.c                      | 202 +++++++++++++++++-
- 2 files changed, 202 insertions(+), 2 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/soundwire/qcom,sdw.txt b/Documentation/devicetree/bindings/soundwire/qcom,sdw.txt
+index b93a2b3e029d..bade68f429b0 100644
+--- a/Documentation/devicetree/bindings/soundwire/qcom,sdw.txt
++++ b/Documentation/devicetree/bindings/soundwire/qcom,sdw.txt
+@@ -22,7 +22,7 @@ board specific bus parameters.
+ - interrupts:
+ 	Usage: required
+ 	Value type: <prop-encoded-array>
+-	Definition: should specify the SoundWire Controller IRQ
++	Definition: should specify the SoundWire Controller and optional wake IRQ
+ 
+ - clock-names:
+ 	Usage: required
 -- 
 2.21.0
 
