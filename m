@@ -4,73 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A662C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Feb 2022 15:46:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85A26C433FE
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Feb 2022 15:59:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3C4B81A74;
-	Thu, 24 Feb 2022 16:46:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C4B81A74
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4CB591AB5;
+	Thu, 24 Feb 2022 16:58:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4CB591AB5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645717617;
-	bh=zg871vrIEgDmnoahtU2xZXU7HgaRjVw+9Mzig81rIO0=;
+	s=default; t=1645718357;
+	bh=SvOwU+BP5TatpmYXSFRSqDkxLVZf1n4ALXQbU3cjpBY=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TjACU5lCQ/cMuoMURIdfNDQcWdqOjZNH5kUxnhloVAGOkTPksfrwhg0UVkXC7tAgI
-	 S3zBd+CKTasJ3ELP6dEzcQ2mzIrx6zv8Muk4ZHPMZ9ytMv+HWXlKrEn4+5e0XRlHD0
-	 G1pUXWJODTXiETGGT9EzPQkcWSwVb5PidDx8ueQE=
+	b=q+L6T+lNGmgTqSx7b/PrZWx7hGRL5LxlPGKQYpGBSzI10YdSEaMBVd0gnqhP6LFLH
+	 WJ9YXUsVB7/wKw99wPED5mYQydY7inusJFrZFDFx+oWCTL/6W886/KZhs+61qaeQ0h
+	 JA5x0hvr2teT0rrCC02jyvCRAMvBzgyrPPo2L4hc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6F174F8030F;
-	Thu, 24 Feb 2022 16:45:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E1D1EF80169;
+	Thu, 24 Feb 2022 16:58:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F0861F8030F; Thu, 24 Feb 2022 16:45:19 +0100 (CET)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id A6888F8030F; Thu, 24 Feb 2022 16:58:25 +0100 (CET)
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com
+ [IPv6:2a00:1450:4864:20::433])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6B916F8030F
- for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2022 16:45:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B916F8030F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 420C1F80118
+ for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2022 16:58:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 420C1F80118
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="U9ZT+nYV"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1645717514; x=1677253514;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=zg871vrIEgDmnoahtU2xZXU7HgaRjVw+9Mzig81rIO0=;
- b=U9ZT+nYV/xehni8ltYIiYZMundZvxBmwyUW7XjQ/mCIKqzf55RJzLJRj
- Q6V9kZmgdJlfGMAMhYADBL0UpwZfet5VCNq1QuGrp1apn7wedtgNEnErO
- /OGN7Uyq2HpUBEu+F58DhUm9lktyCI4ZeYP18VfzS2a4qnS/aOlbWMCvN
- 9ySBNq4ep5kVepmVJNz7wEcFV1sp/ic1jy/O5iP1exHJVB4kKFEnoADuP
- 5TBj3UGaEifUpR0igywR4NvTIqg02BxtScFm4w1zUkqLfSKwbI7AMIkdg
- Ei2v16XhOZR834FIgfFIMG0FA1yN9BysQSEUANsWLDvsHuo924KEm35oV w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10268"; a="276890961"
-X-IronPort-AV: E=Sophos;i="5.90,134,1643702400"; d="scan'208";a="276890961"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Feb 2022 07:45:07 -0800
-X-IronPort-AV: E=Sophos;i="5.90,134,1643702400"; d="scan'208";a="533178494"
-Received: from ronakmeh-mobl1.amr.corp.intel.com (HELO [10.212.97.131])
- ([10.212.97.131])
- by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Feb 2022 07:45:05 -0800
-Message-ID: <3dbed2f1-0c6d-9ba6-232f-db57ec9097ce@linux.intel.com>
-Date: Thu, 24 Feb 2022 09:41:35 -0600
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="uLqbKonl"
+Received: by mail-wr1-x433.google.com with SMTP id u1so315268wrg.11
+ for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2022 07:58:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=message-id:date:mime-version:user-agent:subject:content-language:to
+ :cc:references:from:in-reply-to:content-transfer-encoding;
+ bh=cHggUxZ2d6PFKqdQLzVPT8UbBPpze8bsOzv1kvrdrlo=;
+ b=uLqbKonlTeDMASK8EgJjQw1+cd5N+/lABIBHk1MxzHAA8xedvKecOXkanT+MpMCDK3
+ eGhDQZKUrTZu920ISxBr2+tWsr8lS8FbKyZdKUvefRAN6YNFzoaT81b3EeXKiRDHuPC3
+ l1EO3GOyA/9C10IfLSl4MoTC99veIjsaWNCrYfY438nN4/dDv2EWQK+FOYOpHd6fJR/n
+ AOo+3vdrXDzla6QR+RLClnVI8NIgpiH/liMgoqBYyNLgIJLTOO1j5Dop6cvv0PvImon3
+ p8WPmE1zElfiLAR4zGn+b+2/2DjzqRATz5PGci7lF5cHat+OQEd/S76f3wbadlMBnWyY
+ QiaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+ :content-language:to:cc:references:from:in-reply-to
+ :content-transfer-encoding;
+ bh=cHggUxZ2d6PFKqdQLzVPT8UbBPpze8bsOzv1kvrdrlo=;
+ b=Nec4gVGjm+H+aWC5RX6Z9kmXOiTK4mxv4E0zgfcxFWaYZNBbgX7tl9rj/T3MKZqnYd
+ 0P0BJ1u1VDFAmZdXCnku+T4bpldhz8qReFi8lTqGe6iY+tYgaN63mY2lVDbau7lbuFkY
+ ckgYMuYJi3ooicrDMEH8V9hwByoiZpiRDyu/NeNtVTw8E/vXh39vvUv/Z0+MN579PzVe
+ dYnRdRb9XOFWf1NH0HQHOC1LqVnivYIx7cnC24ssOGY6oJweXkUR5APmoA75yeUlyWs4
+ a7rIBvFlGrWtn0pmjusAdUVZkTwyVasSnj46mny6mipo3SYLLyQkmisHq/eeJIvx/Lc1
+ wkYQ==
+X-Gm-Message-State: AOAM532e8UfqNUrd7aXWQ91hQVr5ZNmH176QwmYBCgjX07iC0crKBCXS
+ MKX6Prqr9/yLfvMIoivjnA5Utw==
+X-Google-Smtp-Source: ABdhPJybbfb1DD6u3EohFr6j+SFN/2b6PczIRrH7DpwSghsm9siYp0NGbochHvlp1lJ++O8pqoiL1w==
+X-Received: by 2002:adf:f1ca:0:b0:1ed:e2d7:b5f3 with SMTP id
+ z10-20020adff1ca000000b001ede2d7b5f3mr2828386wro.75.1645718298367; 
+ Thu, 24 Feb 2022 07:58:18 -0800 (PST)
+Received: from [192.168.86.34]
+ (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
+ by smtp.googlemail.com with ESMTPSA id
+ n4-20020a7bc5c4000000b0037e0c62604fsm3007605wmk.14.2022.02.24.07.58.17
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Thu, 24 Feb 2022 07:58:17 -0800 (PST)
+Message-ID: <be9c99ac-ebdb-e0c1-669b-1257f630f267@linaro.org>
+Date: Thu, 24 Feb 2022 15:58:16 +0000
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.5.0
+ Thunderbird/91.5.0
 Subject: Re: [PATCH v2 1/3] soundwire: qcom: add runtime pm support
 Content-Language: en-US
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, robh+dt@kernel.org, 
- vkoul@kernel.org, yung-chuan.liao@linux.intel.com
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ robh+dt@kernel.org, vkoul@kernel.org, yung-chuan.liao@linux.intel.com
 References: <20220224133125.6674-1-srinivas.kandagatla@linaro.org>
  <20220224133125.6674-2-srinivas.kandagatla@linaro.org>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20220224133125.6674-2-srinivas.kandagatla@linaro.org>
-Content-Type: text/plain; charset=UTF-8
+ <3dbed2f1-0c6d-9ba6-232f-db57ec9097ce@linux.intel.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+In-Reply-To: <3dbed2f1-0c6d-9ba6-232f-db57ec9097ce@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org, quic_srivasam@quicinc.com
@@ -90,73 +106,87 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
->  static const struct snd_soc_dai_ops qcom_swrm_pdm_dai_ops = {
-> @@ -1197,12 +1224,23 @@ static int qcom_swrm_get_port_config(struct qcom_swrm_ctrl *ctrl)
->  static int swrm_reg_show(struct seq_file *s_file, void *data)
->  {
->  	struct qcom_swrm_ctrl *swrm = s_file->private;
-> -	int reg, reg_val;
-> +	int reg, reg_val, ret;
-> +
-> +	ret = pm_runtime_get_sync(swrm->dev);
-> +	if (ret < 0 && ret != -EACCES) {
-> +		dev_err_ratelimited(swrm->dev,
-> +				    "pm_runtime_get_sync failed in %s, ret %d\n",
-> +				    __func__, ret);
-> +		pm_runtime_put_noidle(swrm->dev);
-> +	}
->  
->  	for (reg = 0; reg <= SWR_MSTR_MAX_REG_ADDR; reg += 4) {
->  		swrm->reg_read(swrm, reg, &reg_val);
->  		seq_printf(s_file, "0x%.3x: 0x%.2x\n", reg, reg_val);
->  	}
-> +	pm_runtime_mark_last_busy(swrm->dev);
-> +	pm_runtime_put_autosuspend(swrm->dev);
-> +
 
-question: is there a reason why this specific set of reg_read() is
-surrounded pm_runtime stuff? Is this saying that in all other case where
-the callback is used, the controller is already resumed and fully
-operational? That's be worthy of a comment.
+On 24/02/2022 15:41, Pierre-Louis Bossart wrote:
+> 
+>>   static const struct snd_soc_dai_ops qcom_swrm_pdm_dai_ops = {
+>> @@ -1197,12 +1224,23 @@ static int qcom_swrm_get_port_config(struct qcom_swrm_ctrl *ctrl)
+>>   static int swrm_reg_show(struct seq_file *s_file, void *data)
+>>   {
+>>   	struct qcom_swrm_ctrl *swrm = s_file->private;
+>> -	int reg, reg_val;
+>> +	int reg, reg_val, ret;
+>> +
+>> +	ret = pm_runtime_get_sync(swrm->dev);
+>> +	if (ret < 0 && ret != -EACCES) {
+>> +		dev_err_ratelimited(swrm->dev,
+>> +				    "pm_runtime_get_sync failed in %s, ret %d\n",
+>> +				    __func__, ret);
+>> +		pm_runtime_put_noidle(swrm->dev);
+>> +	}
+>>   
+>>   	for (reg = 0; reg <= SWR_MSTR_MAX_REG_ADDR; reg += 4) {
+>>   		swrm->reg_read(swrm, reg, &reg_val);
+>>   		seq_printf(s_file, "0x%.3x: 0x%.2x\n", reg, reg_val);
+>>   	}
+>> +	pm_runtime_mark_last_busy(swrm->dev);
+>> +	pm_runtime_put_autosuspend(swrm->dev);
+>> +
+> 
+> question: is there a reason why this specific set of reg_read() is
+> surrounded pm_runtime stuff? Is this saying that in all other case where
+> the callback is used, the controller is already resumed and fully
+> operational? That's be worthy of a comment.
 
-> struct qcom_swrm_ctrl *swrm
-> struct qcom_swrm_ctrl *ctrl
+controller register reads require clk to be ON, which might not be 
+always ON. In suspended case we switch off the clocks.
 
-nit-pick: it helps reviewers when the same variable name is used
-consistently.
+Other places so far that I have seen is that controller is either 
+already resumed or clk is on (interrupt case) and resume case.
 
-> +static int __maybe_unused swrm_runtime_suspend(struct device *dev)
-> +{
-> +	struct qcom_swrm_ctrl *ctrl = dev_get_drvdata(dev);
-> +	int ret;
-> +
-> +	if (!ctrl->clock_stop_not_supported) {
-> +		/* Mask bus clash interrupt */
-> +		ctrl->intr_mask &= ~SWRM_INTERRUPT_STATUS_MASTER_CLASH_DET;
-> +		ctrl->reg_write(ctrl, SWRM_INTERRUPT_MASK_ADDR, ctrl->intr_mask);
-> +		ctrl->reg_write(ctrl, SWRM_INTERRUPT_CPU_EN, ctrl->intr_mask);
-> +	}
-> +	/* Prepare slaves for clock stop */
-> +	ret = sdw_bus_prep_clk_stop(&ctrl->bus);
-> +	if (ret < 0) {
 
-if (ret < 0 && ret != -ENODATA) {
 
-?
+>> struct qcom_swrm_ctrl *swrm
+>> struct qcom_swrm_ctrl *ctrl
+> 
+> nit-pick: it helps reviewers when the same variable name is used
+> consistently.
 
-> +		dev_err(dev, "prepare clock stop failed %d", ret);
-> +		return ret;
-> +	}
-> +
-> +	ret = sdw_bus_clk_stop(&ctrl->bus);
-> +	if (ret < 0 && ret != -ENODATA) {
-> +		dev_err(dev, "bus clock stop failed %d", ret);
-> +		return ret;
-> +	}
-> +
-> +	clk_disable_unprepare(ctrl->hclk);
-> +
-> +	usleep_range(300, 305);
-> +
-> +	return 0;
-> +}
+Yes, I did notice this, but for some reason I forgot to fix it.
+
+> 
+>> +static int __maybe_unused swrm_runtime_suspend(struct device *dev)
+>> +{
+>> +	struct qcom_swrm_ctrl *ctrl = dev_get_drvdata(dev);
+>> +	int ret;
+>> +
+>> +	if (!ctrl->clock_stop_not_supported) {
+>> +		/* Mask bus clash interrupt */
+>> +		ctrl->intr_mask &= ~SWRM_INTERRUPT_STATUS_MASTER_CLASH_DET;
+>> +		ctrl->reg_write(ctrl, SWRM_INTERRUPT_MASK_ADDR, ctrl->intr_mask);
+>> +		ctrl->reg_write(ctrl, SWRM_INTERRUPT_CPU_EN, ctrl->intr_mask);
+>> +	}
+>> +	/* Prepare slaves for clock stop */
+>> +	ret = sdw_bus_prep_clk_stop(&ctrl->bus);
+>> +	if (ret < 0) {
+> 
+> if (ret < 0 && ret != -ENODATA) {
+> 
+> ?
+> 
+>> +		dev_err(dev, "prepare clock stop failed %d", ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	ret = sdw_bus_clk_stop(&ctrl->bus);
+>> +	if (ret < 0 && ret != -ENODATA) {
+>> +		dev_err(dev, "bus clock stop failed %d", ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	clk_disable_unprepare(ctrl->hclk);
+>> +
+>> +	usleep_range(300, 305);
+>> +
+>> +	return 0;
+>> +}
