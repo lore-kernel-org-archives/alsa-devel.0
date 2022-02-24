@@ -4,77 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F109C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Feb 2022 11:22:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23652C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Feb 2022 11:22:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8750D18B2;
-	Thu, 24 Feb 2022 12:21:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8750D18B2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 57C38186C;
+	Thu, 24 Feb 2022 12:21:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57C38186C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645701719;
-	bh=e56jG/lyd6oGBZ52c9erwIAX8hNA9r6AzEtczhHWtZo=;
+	s=default; t=1645701735;
+	bh=sibmX9Elp88A36YjDgJchhVf7Cv0ue61UPJqj8YLK2I=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ogq+VmmS3XXtm580vqGIBzw1+PNpfK1dWEbAMjWMXVTNLXL999o/4Zyrk4A6WRBMc
-	 c6JjJ8aJ6/fYZGG/zLG9S8v56sMJoY/qv1x1AOzhjDImdRsO2H+ablZMLjIVLd2d7a
-	 1XaPRNB/vEDTT3JX6S2SdODcxEcCgWbjjB87EMXI=
+	b=NEzUj7fE4/7eLyEsqrYGjybMeNsEY2tB15Wwd2zon4Nq9jJeBtSEn0ez0cxpKGrHQ
+	 yaOmsLSojrqaA5+4Muex2o3F7ZlC73NP5/KLcJOV1+F0ZO1i8rlpiDG4Id9aEgDBdx
+	 96EBTBxUC+NRtww/x1XKSBb7di23vvWQRFUr42DY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2BB05F8055A;
+	by alsa1.perex.cz (Postfix) with ESMTP id C4233F80567;
 	Thu, 24 Feb 2022 12:17:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DCDA8F80539; Thu, 24 Feb 2022 12:17:46 +0100 (CET)
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
- [IPv6:2a00:1450:4864:20::331])
+ id CCE69F8053C; Thu, 24 Feb 2022 12:17:47 +0100 (CET)
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com
+ [IPv6:2a00:1450:4864:20::435])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C4CBCF80430
- for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2022 12:17:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4CBCF80430
+ by alsa1.perex.cz (Postfix) with ESMTPS id C028AF8052E
+ for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2022 12:17:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C028AF8052E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="r7/l65/1"
-Received: by mail-wm1-x331.google.com with SMTP id i20so897282wmc.3
- for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2022 03:17:40 -0800 (PST)
+ header.b="iHgn2n0X"
+Received: by mail-wr1-x435.google.com with SMTP id b5so1475796wrr.2
+ for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2022 03:17:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=LfKStxRvgTEmdqhNQGyq07ydIW9Hyz4sxw/jfz5hVYw=;
- b=r7/l65/1oIcrXfeQMVC71/5ogGArMOi/oLoSasc+FcBBcXlOrqSYFlPWedgjDjMnhb
- gJmBZPCFhf71QLIyP9+ilt7CBR2VUVRTLRCr26CThISQ0VBSERN11vsNDHWjlHRgxrkD
- iInDeLhpIy1O4W/EuP2sxdzBVIyuOM5FQ0JgZakch9wTfzx7N88xoJcfl3B1iPtNRmW0
- 3wuTRxjxYWr7DjdNt6Bde8ukt47mSQWK8R2m+BwzXpzoyejcUo2XAo02FPoOyMU9kpTM
- yaNA4iW3xIKaNLZ7S2vvWNQh9PLo7AFZ8cFCp2eZVC6mgT8D0uej0iayS4bTrbmCiIqA
- uclQ==
+ bh=QnhpDOk4CUU3lYsv0PpUfinJqZMQJnvxRMmJ0Ek2uv8=;
+ b=iHgn2n0Xbc0eS5i5rmuVlIhBnrk1T9JqOx4lAmr9MjuuLqLPefIrWkjeUB03q3UJdk
+ JcYDwzltbGzolGWroQQt8Gc6b1IoXLn8Agdj9/jJkDhkrcX5btQlkOFD8kmicnTI8mfw
+ kQC15wMyxH7qrfe74fHBcLB6eSioWOWbGVFFev0Xmd6HZz5zyQZGi/3fE9VvSQuNwVje
+ wugyuVvpNoeRhvzMmdW71VcyBtTpu8JnZgJOrRp9q9GkEf+8J2UhRtNGJ08Rn1bFqwW+
+ GLErTgSwojHatENPHxxIP7hCsR3UF1UFlXyJzy7Xd/wSy+F7YK8LNI/+8fYhBHVvqRxM
+ 6xPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=LfKStxRvgTEmdqhNQGyq07ydIW9Hyz4sxw/jfz5hVYw=;
- b=AanJMj0Qp+66HOQZcj1kZSMyl6rrE8iAxwwJF0nWCahSRlLvir61Bsou5M5Lg0u7bt
- KxqqyTKGmqf0e9kAmAhTp8ysdREds+mCAxun7SjAbYkRJKL+ux8bnfH5Ndzb1/JqbTnt
- 0uhECOGBktjymAFCKqoLqGb1mCPp9eQIyw07bSWG2s6wpioMwIYB5Hf6sULtiwp1pbMY
- KHept3aGQ+2kWLPDhtB5QbPMw9WNLntnREVuYIUUOTgpgZG4GXnXEGYbTYY5ieOxSCG5
- m66p2gMz4/Tx+klGd+c2DPysYtjHT+OEP3bkioWc0poKeTtGPtCwUf1B+hpWf8oJM387
- BKbg==
-X-Gm-Message-State: AOAM532xhhknUY+xaUcfRJhp1YI/mLk914qaPnHPso2ImvTv5hnCVRmh
- R8lsEJd7s19Wyr4gin2F2pTEYA==
-X-Google-Smtp-Source: ABdhPJzYjVTN9x+GL1LFM9oLjla4Nv5U4uIq7XL0Lqv3bedGcqZkNI5nSpYhXrImHNanSLu+5Isiog==
-X-Received: by 2002:a1c:a7ca:0:b0:380:e40f:c31a with SMTP id
- q193-20020a1ca7ca000000b00380e40fc31amr1874845wme.85.1645701459163; 
- Thu, 24 Feb 2022 03:17:39 -0800 (PST)
+ bh=QnhpDOk4CUU3lYsv0PpUfinJqZMQJnvxRMmJ0Ek2uv8=;
+ b=5kB/6Kb/jOvvJFTgADnKm0d4qfqiA+1a9kkIxdfzG/rWVH4Ndd5XFVf4uARv+CsdM6
+ LllawrEUjAwFXd820CSto4JsdgVFml4j/R7KbHU9Qg089eoDOHUIxmvsUzG9kTEtZimh
+ u86/5WIVcih+DdARzSp52ZR8yN6lKZr03EWy0buCSBbrlgeuXUuF6+WAMzjEvi3stB/l
+ 1QdUq3FAq46QQrPndJB8zzEEyqK3PixA6sa6ea9Bzatkm7X8SUNBmlFYdtnm/XnQg4Qm
+ BNQlkyDPTXKfgBNU7pIWt6c4aczpJOD19OHTOu4QvsCtCAt56MCRs5VJ0hXfVzTIW+Ey
+ ZWnQ==
+X-Gm-Message-State: AOAM532OZsKHItUbemnaSX4Z+D/FdpJAO+WHHDKYiQS8HHuP8xOoQOzA
+ OVCl3iW957Grpy+1G2ql+VEOXQ==
+X-Google-Smtp-Source: ABdhPJxGJ8YMd6U1ZvlIMkNGjumB115CP6WBkh2oFxGcgtmx9Xosrnqs/8pck2bBAImBOr/InU6k5A==
+X-Received: by 2002:a05:6000:178a:b0:1ea:7db1:3159 with SMTP id
+ e10-20020a056000178a00b001ea7db13159mr1819995wrg.9.1645701453670; 
+ Thu, 24 Feb 2022 03:17:33 -0800 (PST)
 Received: from srini-hackbox.lan
  (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
- by smtp.gmail.com with ESMTPSA id t4sm2245737wmj.10.2022.02.24.03.17.38
+ by smtp.gmail.com with ESMTPSA id t4sm2245737wmj.10.2022.02.24.03.17.32
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 24 Feb 2022 03:17:38 -0800 (PST)
+ Thu, 24 Feb 2022 03:17:33 -0800 (PST)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH v2 15/16] ASoC: codecs: wcd938x: add simple clk stop support
-Date: Thu, 24 Feb 2022 11:17:17 +0000
-Message-Id: <20220224111718.6264-16-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 10/16] ASoC: codecs: va-macro: add runtime pm support
+Date: Thu, 24 Feb 2022 11:17:12 +0000
+Message-Id: <20220224111718.6264-11-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20220224111718.6264-1-srinivas.kandagatla@linaro.org>
 References: <20220224111718.6264-1-srinivas.kandagatla@linaro.org>
@@ -99,25 +99,86 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-mark WCD938x as clock stop capable.
+Add pm runtime support to VA Macro.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/codecs/wcd938x-sdw.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/lpass-va-macro.c | 41 +++++++++++++++++++++++++++++++
+ 1 file changed, 41 insertions(+)
 
-diff --git a/sound/soc/codecs/wcd938x-sdw.c b/sound/soc/codecs/wcd938x-sdw.c
-index 1fa05ec7459a..1bf3c06a2b62 100644
---- a/sound/soc/codecs/wcd938x-sdw.c
-+++ b/sound/soc/codecs/wcd938x-sdw.c
-@@ -249,6 +249,7 @@ static int wcd9380_probe(struct sdw_slave *pdev,
- 					SDW_SCP_INT1_BUS_CLASH |
- 					SDW_SCP_INT1_PARITY;
- 	pdev->prop.lane_control_support = true;
-+	pdev->prop.simple_clk_stop_capable = true;
- 	if (wcd->is_tx) {
- 		pdev->prop.source_ports = GENMASK(WCD938X_MAX_SWR_PORTS, 0);
- 		pdev->prop.src_dpn_prop = wcd938x_dpn_prop;
+diff --git a/sound/soc/codecs/lpass-va-macro.c b/sound/soc/codecs/lpass-va-macro.c
+index ff8120886eca..34aeee50332a 100644
+--- a/sound/soc/codecs/lpass-va-macro.c
++++ b/sound/soc/codecs/lpass-va-macro.c
+@@ -9,6 +9,7 @@
+ #include <linux/of_clk.h>
+ #include <linux/of_platform.h>
+ #include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
+ #include <linux/regmap.h>
+ #include <linux/regulator/consumer.h>
+ #include <sound/soc.h>
+@@ -1469,6 +1470,12 @@ static int va_macro_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto err_clkout;
+ 
++	pm_runtime_set_autosuspend_delay(dev, 3000);
++	pm_runtime_use_autosuspend(dev);
++	pm_runtime_mark_last_busy(dev);
++	pm_runtime_set_active(dev);
++	pm_runtime_enable(dev);
++
+ 	return 0;
+ 
+ err_clkout:
+@@ -1492,6 +1499,39 @@ static int va_macro_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++static int __maybe_unused va_macro_runtime_suspend(struct device *dev)
++{
++	struct va_macro *va = dev_get_drvdata(dev);
++
++	regcache_cache_only(va->regmap, true);
++	regcache_mark_dirty(va->regmap);
++
++	clk_disable_unprepare(va->mclk);
++
++	return 0;
++}
++
++static int __maybe_unused va_macro_runtime_resume(struct device *dev)
++{
++	struct va_macro *va = dev_get_drvdata(dev);
++	int ret;
++
++	ret = clk_prepare_enable(va->mclk);
++	if (ret) {
++		dev_err(va->dev, "unable to prepare mclk\n");
++		return ret;
++	}
++
++	regcache_cache_only(va->regmap, false);
++	regcache_sync(va->regmap);
++	return 0;
++}
++
++
++static const struct dev_pm_ops va_macro_pm_ops = {
++	SET_RUNTIME_PM_OPS(va_macro_runtime_suspend, va_macro_runtime_resume, NULL)
++};
++
+ static const struct of_device_id va_macro_dt_match[] = {
+ 	{ .compatible = "qcom,sc7280-lpass-va-macro" },
+ 	{ .compatible = "qcom,sm8250-lpass-va-macro" },
+@@ -1504,6 +1544,7 @@ static struct platform_driver va_macro_driver = {
+ 		.name = "va_macro",
+ 		.of_match_table = va_macro_dt_match,
+ 		.suppress_bind_attrs = true,
++		.pm = &va_macro_pm_ops,
+ 	},
+ 	.probe = va_macro_probe,
+ 	.remove = va_macro_remove,
 -- 
 2.21.0
 
