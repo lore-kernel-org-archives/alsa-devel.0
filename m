@@ -4,86 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AEE76C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Feb 2022 15:38:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8FD63C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Feb 2022 15:46:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C2B0D1A90;
-	Thu, 24 Feb 2022 16:37:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C2B0D1A90
+	by alsa0.perex.cz (Postfix) with ESMTPS id 93572186B;
+	Thu, 24 Feb 2022 16:45:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93572186B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645717121;
-	bh=3fsQ5ASk5JzOl9Oihhbgf2HvtBFo/UuExocUAe8Q3UM=;
+	s=default; t=1645717566;
+	bh=9+DVXx/isU6uWI6/XyBC0Lnisob2NuO5FXAXMzKIKQQ=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LwdasDJ2oMBChST3gL++UTCmdK05xpUMtzmIz4JvV6YfP+cYl+5gPNccdRxNR428E
-	 /5KIinpvbsLOaXjxa7dj1SUtdqEc4mIGSYp/vUtIVWwqGXDEsBV0emrxR1LcQvjor4
-	 WL6Uo8BIXD0K0JoxNx7olUwJODzfr+T3WmT8voZQ=
+	b=KmUFdUp6kJYQPaQ/UgVDbTVv1vjrq1C2mMU69OBVv44MVed1+DVRgGDrtmi6vG05o
+	 EqgtDFn/g+eS80giZGoMyxasd/eonrGKY/SW+eLflph5Q4xejBM/5OWnp61YHyP/1c
+	 eK1IaOGrjHBOoofv5ragy94/riKkV1KAg43hyZuY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DD056F80169;
-	Thu, 24 Feb 2022 16:36:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2DDE4F80118;
+	Thu, 24 Feb 2022 16:45:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E6E63F804FC; Thu, 24 Feb 2022 16:36:53 +0100 (CET)
-Received: from alexa-out.qualcomm.com (alexa-out.qualcomm.com [129.46.98.28])
- (using TLSv1.2 with cipher AES256-SHA (256/256 bits))
+ id DFC90F804CF; Thu, 24 Feb 2022 16:45:14 +0100 (CET)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 572DAF80169
- for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2022 16:36:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 572DAF80169
+ by alsa1.perex.cz (Postfix) with ESMTPS id 763D7F80118
+ for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2022 16:45:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 763D7F80118
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=quicinc.com header.i=@quicinc.com
- header.b="QSygBXzk"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
- t=1645717012; x=1677253012;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="U0YuBhKQ"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1645717512; x=1677253512;
  h=message-id:date:mime-version:subject:to:cc:references:
  from:in-reply-to:content-transfer-encoding;
- bh=6iOO/xvEAZwa7uM8e2lemBPhR3SH5fevH9P0Xv6tYoc=;
- b=QSygBXzkFYe4FBM7u47SpxXnT56qpBUFZ1TtkScadwnTKxr8z1SO3u8O
- xpP+V4ekrMSck75dFY+CMMSvVnwM7w+eQcQGJ5vhyeEFd7bWxUirFNoo4
- 6UOKedCtgdOmDXlFBYWPp1DexIct+raxNeLPgqBn0HrShaH3lr4EV34Rb k=;
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
- by alexa-out.qualcomm.com with ESMTP; 24 Feb 2022 07:36:49 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
- by ironmsg09-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Feb 2022 07:36:49 -0800
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.15; Thu, 24 Feb 2022 07:36:49 -0800
-Received: from [10.216.20.63] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.15; Thu, 24 Feb
- 2022 07:36:43 -0800
-Message-ID: <1d433167-7768-9d10-7e92-74bca4bc8d39@quicinc.com>
-Date: Thu, 24 Feb 2022 21:06:41 +0530
+ bh=9+DVXx/isU6uWI6/XyBC0Lnisob2NuO5FXAXMzKIKQQ=;
+ b=U0YuBhKQKH6TuU6U89qnsnM+tqU5xFzafL9pCu+zBotaBLCdx1cPP5EA
+ NfN0X4vwDz3jVjJAcHojXahW2p+DJhV5OjU9C2lPq0rXs8IPBXbUkbmnt
+ 4ocuBrflOsFzVOzPnfXrL8Eo3QvLvaqu/CT9VSAvH0w8He38pQG14Hwh5
+ sfFGlOnnHG9PcjF4Dy8rqlPtMyQRVTOn4qtiEIG1eimVCpmHKqeElZboR
+ 5YOQSYHO2nei77kncKwC98lYNgOwSoSWVuq6AsbSC7rx4p+Y1mYlbQ/XA
+ pemBo3RhnIY1yMeoF+2kgYx6MEdKlxIq2qf9N5VauFwZPtnEJdrzSE04L A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10268"; a="276890957"
+X-IronPort-AV: E=Sophos;i="5.90,134,1643702400"; d="scan'208";a="276890957"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 24 Feb 2022 07:45:05 -0800
+X-IronPort-AV: E=Sophos;i="5.90,134,1643702400"; d="scan'208";a="533178468"
+Received: from ronakmeh-mobl1.amr.corp.intel.com (HELO [10.212.97.131])
+ ([10.212.97.131])
+ by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 24 Feb 2022 07:45:04 -0800
+Message-ID: <522ab282-ecc2-4186-2d77-f6241e255109@linux.intel.com>
+Date: Thu, 24 Feb 2022 09:29:25 -0600
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.1
-Subject: Re: [PATCH v15 6/10] ASoC: qcom: Add regmap config support for codec
- dma driver
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.5.0
+Subject: Re: [PATCH v2 14/16] ASoC: codecs: wsa881x: add runtime pm support
 Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>
-References: <1645630745-25051-1-git-send-email-quic_srivasam@quicinc.com>
- <1645630745-25051-7-git-send-email-quic_srivasam@quicinc.com>
- <Yhd26Cbe6ecbiVYH@sirena.org.uk>
-From: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
-Organization: Qualcomm
-In-Reply-To: <Yhd26Cbe6ecbiVYH@sirena.org.uk>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, broonie@kernel.org
+References: <20220224111718.6264-1-srinivas.kandagatla@linaro.org>
+ <20220224111718.6264-15-srinivas.kandagatla@linaro.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20220224111718.6264-15-srinivas.kandagatla@linaro.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- bgoswami@codeaurora.org, Venkata Prasad Potturu <quic_potturu@quicinc.com>,
- linux-arm-msm@vger.kernel.org, swboyd@chromium.org, tiwai@suse.com,
- lgirdwood@gmail.com, robh+dt@kernel.org, bjorn.andersson@linaro.org,
- rohitkr@codeaurora.org, agross@kernel.org, srinivas.kandagatla@linaro.org,
- quic_plai@quicinc.com, judyhsiao@chromium.org, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, quic_srivasam@quicinc.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,17 +89,20 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-On 2/24/2022 5:45 PM, Mark Brown wrote:
-Thanks for Your time Brown!!!
-> On Wed, Feb 23, 2022 at 09:09:01PM +0530, Srinivasa Rao Mandadapu wrote:
->> Update regmap configuration for supporting headset playback and
->> capture and DMIC capture using codec dma interface
-> This breaks an x86 allmodconfig build:
->
-> /mnt/kernel/sound/soc/qcom/lpass-cpu.c:976:29: error: 'lpass_va_regmap_config' defined but not used [-Werror=unused-variable]
->    976 | static struct regmap_config lpass_va_regmap_config = {
->        |                             ^~~~~~~~~~~~~~~~~~~~~~
-> /mnt/kernel/sound/soc/qcom/lpass-cpu.c:966:29: error: 'lpass_rxtx_regmap_config' defined but not used [-Werror=unused-variable]
->    966 | static struct regmap_config lpass_rxtx_regmap_config = {
->        |                             ^~~~~~~~~~~~~~~~~~~~~~~~
-Okay. Sent patch series with fix.
+
+On 2/24/22 05:17, Srinivas Kandagatla wrote:
+> WSA881x codecs can not cope up with clk stop and requires a full reset after suspend.
+> WSA SoundWire Controller connected to this instances do a full soft reset on suspend.
+
+is it the manager or peripheral that cannot cope with clock stop?
+
+> @@ -1124,6 +1136,7 @@ static int wsa881x_probe(struct sdw_slave *pdev,
+>  	pdev->prop.sink_ports = GENMASK(WSA881X_MAX_SWR_PORTS, 0);
+>  	pdev->prop.sink_dpn_prop = wsa_sink_dpn_prop;
+>  	pdev->prop.scp_int1_mask = SDW_SCP_INT1_BUS_CLASH | SDW_SCP_INT1_PARITY;
+> +	pdev->prop.simple_clk_stop_capable = true;
+
+here it's pretty clear the peripheral is capable of supporting clock
+stop, no?
+
+Something's not clear between the commit message and the code.
