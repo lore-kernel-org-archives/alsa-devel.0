@@ -4,78 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E48FC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Feb 2022 11:20:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38694C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Feb 2022 11:21:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4C0941866;
-	Thu, 24 Feb 2022 12:20:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4C0941866
+	by alsa0.perex.cz (Postfix) with ESMTPS id 67A131FA;
+	Thu, 24 Feb 2022 12:20:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 67A131FA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645701652;
-	bh=2RRtirZpeO3Ma6QoBWpYkUjAaB0QYFN2rYv5YSpi2Rg=;
+	s=default; t=1645701668;
+	bh=OaBHCimOLNaQGF5VAf0VI2zcJT2E3VuptCg0gSGr6Ew=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qPSenKXyPE5Fb0GejmUNCGeIzZ7okFTll1pMTmlHj+3JOfOvkFhDrlYt1Xi0Uxo0H
-	 oc/+v89iMFTiKw/pSU0d56Cfrb/Vrlk70PBWNJT/uEzxH+BLsMySbzolmdqWRsf1xb
-	 P/FtLfykokiO/x+tVKHQFNH/Zli3PfJyltyzCMJ8=
+	b=iDg5Hl/ECzjf8qzitR4okcKFwP82ntnJHxeQJLQ1bXraf1eB4qmB82qlkc+4+6oSz
+	 1UITlxhn3juCuiLrhtevq8s+HAmaDEEz0+ub77SYqD0lHAghBTy1zt/pWlWDq6qv9M
+	 p/lZam+K9bwhnOJVtoKymy1v5j5jQPyzIRkFOIRM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4B2C4F80539;
-	Thu, 24 Feb 2022 12:17:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1B373F8053D;
+	Thu, 24 Feb 2022 12:17:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B04AAF800F3; Thu, 24 Feb 2022 12:17:41 +0100 (CET)
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com
- [IPv6:2a00:1450:4864:20::429])
+ id 8DEF5F80537; Thu, 24 Feb 2022 12:17:43 +0100 (CET)
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
+ [IPv6:2a00:1450:4864:20::434])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B5E1DF80430
- for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2022 12:17:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5E1DF80430
+ by alsa1.perex.cz (Postfix) with ESMTPS id BC878F800B6
+ for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2022 12:17:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC878F800B6
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="z6JE71CN"
-Received: by mail-wr1-x429.google.com with SMTP id s13so2447107wrb.6
- for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2022 03:17:27 -0800 (PST)
+ header.b="y0wC2iSa"
+Received: by mail-wr1-x434.google.com with SMTP id j22so2402646wrb.13
+ for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2022 03:17:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=5S4jXtQt9zJ/FIRoN63CnQsA0xt3UoiFNydOwJT7zD0=;
- b=z6JE71CNpxeyixCb5JaVsSk+O1A7pELVFqhrIgDySs+Jcfd0zkkOszUfV0rIukSnQP
- 7adLbDNkyvEXin/k9GziX1kzVZns79F42T6OCz6xsFQ9BqZequUOkrCfl1lhvxra+iKm
- 9qs9nDExoCTnc9/8FKhCYGm/tIevqh2zFyda3kE9JHnPmTrCivpYrHCcmv7uPaYtwVSU
- QOxVlpD4R8JGiZoC7FMMP+NDAIndxsBVRCsqQ3t1uBe5ibckSDmbDuqWSJS+ShTEHUsN
- aiByH/S+88QMkusp2rOo7BN0z3RPNnPIccwcGKG//jxbviWMCPIA+LpyVjUef/D+0KPV
- ZJ/A==
+ bh=zE6/nZIDlJdrpc8fSPwZfEWaQMFLh+eWf0SbooVP2Cs=;
+ b=y0wC2iSaTfuMnX+xZjLGomf6N3YABPJaIUbLdMN9PI7FX2tlh9OC9gex041qeCWkbE
+ tkveBABwMnZVwGABeOznGoCqZv58ce7PD3oaDmsf9SX3QmE2it0VbRyMxID1sCLM7YSF
+ PenArZceaij7jQy2DdwKAaQGbPqplbjWiSQb5QzQ/x4CERjEaG1TSzJn5dsJohZT11rv
+ sgcZtn1mTdI3gUFuUJSUlGusNXqjl456Nnc1iRA5iq7AzR1cnxCh7pkjFue/Yj4A/Ux6
+ Kfk7OxE0R/ReiW34BRYX4Uds99Sn7KSPy1ZA5EKxGk9/IyDAxwG4O7JJfGypS8JMTLw+
+ tLbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=5S4jXtQt9zJ/FIRoN63CnQsA0xt3UoiFNydOwJT7zD0=;
- b=vF+zDUjlEILb5zA5YwU5Ef7b3fKiMrxsW6WnEjrtAi/6HNrcDEKEVWImtH7EOxflq+
- X3Qofp0XxCYW9svqkCLT+/7Iy9uNRy8KyC4NkkuZjbyn1/BPSk0a5w3oklyol9+GClh9
- ZrF4TAfgI3UZQ2ugxR4XKppkWHy+D8snHyesC/NXnuBGB5ZzGOEbp2H4nTTLEMPgNGIr
- 01ba9rjXs5nsXkp4G8jRir4kleoKDWSyjtQjvU+dqU9LEucq/fMooxukWSaKty7byLdM
- Qo9nDEnafRKCzGS+n0M0OoMLjfxcT9o9W+AuZGcUDOOCzmfmXEhFTMWqnsf9WIoZJD9r
- mDrg==
-X-Gm-Message-State: AOAM530Wcb6qEfv70EqKIFEqw2Fma44RvhXKT6LN2+zdHCGGA/FnyEYs
- ndTCy4cgalnhTh4gU3fmHov3Ag==
-X-Google-Smtp-Source: ABdhPJyaqVEQef4+d4t/15H05ZMObVdYcIsikILB5quawSWQpvCzVILcxu0ingwfWR6rQGI2Xm7WUA==
-X-Received: by 2002:a5d:44cf:0:b0:1ea:9cc3:504e with SMTP id
- z15-20020a5d44cf000000b001ea9cc3504emr1845612wrr.706.1645701446658; 
- Thu, 24 Feb 2022 03:17:26 -0800 (PST)
+ bh=zE6/nZIDlJdrpc8fSPwZfEWaQMFLh+eWf0SbooVP2Cs=;
+ b=TlLNIExBSyXtlSV3cF/rc4XPQJC7r+WKeQqF4WUPdu4G+EtQGsxqRl/4alNF0Yso8w
+ BemONrpM9/o4eq6YjL8c1WXQXOkK+pnHdx/DAvLnk/zKBcTv6ZKduDOb4DPQl9VhC/KU
+ H/PShJFIyYGWv8DeXtF+3ZE2hBkO4RNJ1aVruIoM0OeHrd6AAHCIlBPaBndN9m+f+iGh
+ mksD8QRAjYOTwYcjXVX6Hm/rQC4Xu+r5qstuJ7oaUkzZPIQea+eY4TIalPNPx//k7Y/L
+ 9yolmUF2KUsAS4GFYOsDsNNKQKwgzb9G0KMZYLyAoJ+TDMn/uiOGBjugMMiebiv29q4x
+ 8AKg==
+X-Gm-Message-State: AOAM533PZXwrcKE2ukHgQTx63ekFCDnNaLWcCH7fYgO0EMcd1j2NKBr4
+ Nj/yiKidP3OYOChcGIagYFMLVQ==
+X-Google-Smtp-Source: ABdhPJw3NfB3x04KEBXGRKtfaIopOFoSnpJaNQZBGPeNyhHXjJQxGlGlxdY1AzUUWu4ZgFrUhRwcgQ==
+X-Received: by 2002:adf:fb06:0:b0:1e6:8b27:f1ea with SMTP id
+ c6-20020adffb06000000b001e68b27f1eamr1803259wrr.353.1645701452462; 
+ Thu, 24 Feb 2022 03:17:32 -0800 (PST)
 Received: from srini-hackbox.lan
  (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
- by smtp.gmail.com with ESMTPSA id t4sm2245737wmj.10.2022.02.24.03.17.25
+ by smtp.gmail.com with ESMTPSA id t4sm2245737wmj.10.2022.02.24.03.17.31
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 24 Feb 2022 03:17:26 -0800 (PST)
+ Thu, 24 Feb 2022 03:17:31 -0800 (PST)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH v2 04/16] ASoC: codecs: rx-macro: move to individual clks from
- bulk
-Date: Thu, 24 Feb 2022 11:17:06 +0000
-Message-Id: <20220224111718.6264-5-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 09/16] ASoC: codecs: rx-macro: setup soundwire clks
+ correctly
+Date: Thu, 24 Feb 2022 11:17:11 +0000
+Message-Id: <20220224111718.6264-10-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20220224111718.6264-1-srinivas.kandagatla@linaro.org>
 References: <20220224111718.6264-1-srinivas.kandagatla@linaro.org>
@@ -100,153 +100,53 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Using bulk clocks and referencing them individually using array index is
-not great for readers.
-So move them to individual clocks handling and also remove some unnecessary
-error handling in the code.
+For SoundWire Frame sync to be generated correctly we need both MCLK
+and MCLKx2 (npl). Without pm runtime enabled these two clocks will remain on,
+however after adding pm runtime support its possible that NPl clock could be
+turned off even when SoundWire controller is active.
+
+Fix this by enabling mclk and npl clk when SoundWire clks are enabled.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/codecs/lpass-rx-macro.c | 85 +++++++++++++++++++++++--------
- 1 file changed, 64 insertions(+), 21 deletions(-)
+ sound/soc/codecs/lpass-rx-macro.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/lpass-rx-macro.c b/sound/soc/codecs/lpass-rx-macro.c
-index 6c61b4d35df9..83b570403c59 100644
+index 83b570403c59..a2f49a21678b 100644
 --- a/sound/soc/codecs/lpass-rx-macro.c
 +++ b/sound/soc/codecs/lpass-rx-macro.c
-@@ -608,7 +608,11 @@ struct rx_macro {
- 	int softclip_clk_users;
+@@ -3430,6 +3430,13 @@ static int rx_macro_component_probe(struct snd_soc_component *component)
+ static int swclk_gate_enable(struct clk_hw *hw)
+ {
+ 	struct rx_macro *rx = to_rx_macro(hw);
++	int ret;
++
++	ret = clk_prepare_enable(rx->mclk);
++	if (ret) {
++		dev_err(rx->dev, "unable to prepare mclk\n");
++		return ret;
++	}
  
- 	struct regmap *regmap;
--	struct clk_bulk_data clks[RX_NUM_CLKS_MAX];
-+	struct clk *mclk;
-+	struct clk *npl;
-+	struct clk *macro;
-+	struct clk *dcodec;
-+	struct clk *fsgen;
- 	struct clk_hw hw;
- };
- #define to_rx_macro(_hw) container_of(_hw, struct rx_macro, hw)
-@@ -3488,7 +3492,7 @@ static int rx_macro_register_mclk_output(struct rx_macro *rx)
+ 	rx_macro_mclk_enable(rx, true);
+ 	if (rx->reset_swr)
+@@ -3456,6 +3463,7 @@ static void swclk_gate_disable(struct clk_hw *hw)
+ 			   CDC_RX_SWR_CLK_EN_MASK, 0);
+ 
+ 	rx_macro_mclk_enable(rx, false);
++	clk_disable_unprepare(rx->mclk);
+ }
+ 
+ static int swclk_gate_is_enabled(struct clk_hw *hw)
+@@ -3492,7 +3500,7 @@ static int rx_macro_register_mclk_output(struct rx_macro *rx)
  	struct clk_init_data init;
  	int ret;
  
--	parent_clk_name = __clk_get_name(rx->clks[2].clk);
-+	parent_clk_name = __clk_get_name(rx->mclk);
+-	parent_clk_name = __clk_get_name(rx->mclk);
++	parent_clk_name = __clk_get_name(rx->npl);
  
  	init.name = clk_name;
  	init.ops = &swclk_gate_ops;
-@@ -3526,17 +3530,25 @@ static int rx_macro_probe(struct platform_device *pdev)
- 	if (!rx)
- 		return -ENOMEM;
- 
--	rx->clks[0].id = "macro";
--	rx->clks[1].id = "dcodec";
--	rx->clks[2].id = "mclk";
--	rx->clks[3].id = "npl";
--	rx->clks[4].id = "fsgen";
-+	rx->macro = devm_clk_get_optional(dev, "macro");
-+	if (IS_ERR(rx->macro))
-+		return PTR_ERR(rx->macro);
- 
--	ret = devm_clk_bulk_get_optional(dev, RX_NUM_CLKS_MAX, rx->clks);
--	if (ret) {
--		dev_err(dev, "Error getting RX Clocks (%d)\n", ret);
--		return ret;
--	}
-+	rx->dcodec = devm_clk_get_optional(dev, "dcodec");
-+	if (IS_ERR(rx->dcodec))
-+		return PTR_ERR(rx->dcodec);
-+
-+	rx->mclk = devm_clk_get(dev, "mclk");
-+	if (IS_ERR(rx->mclk))
-+		return PTR_ERR(rx->mclk);
-+
-+	rx->npl = devm_clk_get(dev, "npl");
-+	if (IS_ERR(rx->npl))
-+		return PTR_ERR(rx->npl);
-+
-+	rx->fsgen = devm_clk_get(dev, "fsgen");
-+	if (IS_ERR(rx->fsgen))
-+		return PTR_ERR(rx->fsgen);
- 
- 	base = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(base))
-@@ -3552,26 +3564,52 @@ static int rx_macro_probe(struct platform_device *pdev)
- 	rx->dev = dev;
- 
- 	/* set MCLK and NPL rates */
--	clk_set_rate(rx->clks[2].clk, MCLK_FREQ);
--	clk_set_rate(rx->clks[3].clk, 2 * MCLK_FREQ);
-+	clk_set_rate(rx->mclk, MCLK_FREQ);
-+	clk_set_rate(rx->npl, 2 * MCLK_FREQ);
- 
--	ret = clk_bulk_prepare_enable(RX_NUM_CLKS_MAX, rx->clks);
-+	ret = clk_prepare_enable(rx->macro);
- 	if (ret)
--		return ret;
-+		goto err;
-+
-+	ret = clk_prepare_enable(rx->dcodec);
-+	if (ret)
-+		goto err_dcodec;
-+
-+	ret = clk_prepare_enable(rx->mclk);
-+	if (ret)
-+		goto err_mclk;
-+
-+	ret = clk_prepare_enable(rx->npl);
-+	if (ret)
-+		goto err_npl;
-+
-+	ret = clk_prepare_enable(rx->fsgen);
-+	if (ret)
-+		goto err_fsgen;
- 
- 	ret = rx_macro_register_mclk_output(rx);
- 	if (ret)
--		goto err;
-+		goto err_clkout;
- 
- 	ret = devm_snd_soc_register_component(dev, &rx_macro_component_drv,
- 					      rx_macro_dai,
- 					      ARRAY_SIZE(rx_macro_dai));
- 	if (ret)
--		goto err;
-+		goto err_clkout;
- 
--	return ret;
-+	return 0;
-+
-+err_clkout:
-+	clk_disable_unprepare(rx->fsgen);
-+err_fsgen:
-+	clk_disable_unprepare(rx->npl);
-+err_npl:
-+	clk_disable_unprepare(rx->mclk);
-+err_mclk:
-+	clk_disable_unprepare(rx->dcodec);
-+err_dcodec:
-+	clk_disable_unprepare(rx->macro);
- err:
--	clk_bulk_disable_unprepare(RX_NUM_CLKS_MAX, rx->clks);
- 	return ret;
- }
- 
-@@ -3579,7 +3617,12 @@ static int rx_macro_remove(struct platform_device *pdev)
- {
- 	struct rx_macro *rx = dev_get_drvdata(&pdev->dev);
- 
--	clk_bulk_disable_unprepare(RX_NUM_CLKS_MAX, rx->clks);
-+	clk_disable_unprepare(rx->mclk);
-+	clk_disable_unprepare(rx->npl);
-+	clk_disable_unprepare(rx->fsgen);
-+	clk_disable_unprepare(rx->macro);
-+	clk_disable_unprepare(rx->dcodec);
-+
- 	return 0;
- }
- 
 -- 
 2.21.0
 
