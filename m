@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD2F9C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 02:41:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CFB3DC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 02:41:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D83C11A74;
-	Fri, 25 Feb 2022 03:40:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D83C11A74
+	by alsa0.perex.cz (Postfix) with ESMTPS id 23E8E1920;
+	Fri, 25 Feb 2022 03:40:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23E8E1920
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645756863;
-	bh=sHkugUYvFgOCtG28WVfIEVZteUNQ7C7G8TNYzqz/WDA=;
+	s=default; t=1645756878;
+	bh=vfXenIa2xeajxPYZ5qcsiU3HZFxGzB1pegqZTEHv5O4=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TmU5Pb/Gydu7Bgq14QAl1Q8iRlNFST+aryyZ/g+FkSGDPYsDbkUIliDSZ4XlBU5Hd
-	 htwoMoFcIodybLAr7/PHcJyKVGfrQ0MnOHhtELeVOEcUB3ymdQd98B5huk0EoBXdhb
-	 iuSNkvr2nCKMOBlSeaWK2RJG2VsjEFfsJujl1vf8=
+	b=sbH18dbIx16bdoLySCG/g2O78shir1hETamLftyy3GahXQox9CKmbYtNOr262B4xw
+	 Ar63ywh9MPU7yHssurH9X+rPxklwOnUs7aducQV5zWeQKaNAzhIOAykJ/i45F66XLV
+	 NorZtxUQf24MtPK6R921s6TaATOXQEfr/XDPRNw0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6ABF2F80508;
-	Fri, 25 Feb 2022 03:39:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 89E15F80516;
+	Fri, 25 Feb 2022 03:39:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4233FF80310; Fri, 25 Feb 2022 03:39:23 +0100 (CET)
+ id 5784EF804FD; Fri, 25 Feb 2022 03:39:25 +0100 (CET)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3E0F9F80169
- for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2022 03:39:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E0F9F80169
+ by alsa1.perex.cz (Postfix) with ESMTPS id C2E6EF80430
+ for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2022 03:39:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2E6EF80430
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="OBZJR3WA"
+ header.b="FeY9mIue"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1645756760; x=1677292760;
+ t=1645756762; x=1677292762;
  h=message-id:date:mime-version:subject:to:cc:references:
  from:in-reply-to:content-transfer-encoding;
- bh=sHkugUYvFgOCtG28WVfIEVZteUNQ7C7G8TNYzqz/WDA=;
- b=OBZJR3WAeCMo/j9Gkmi2Xqx++5EKsyOU7SG75SKLxxO45Uz2JIzDbHzN
- +7utoNaa+Uh5c7B/FkMfHD9Ny8gTn4BDjrMo/ityX1OcgxYYjfgmyB4tV
- jS1Nc4DZEhxT2vABqSn1uMTUbidL7k7tmij31s3GMo8ZvavWR36pAGdYA
- DT9e6y0qv0BcbI4BmBRzRZJsCLEY0lS6xj4AyGkfXIZTSbu6EheZDsLcE
- lKt19rx921pJirfWIM9qZdCeXcuxuG5xzzKAB8nBaoDZXoZ6Y9XMaaeRT
- jASBlU4hODwzoGRxOWCsE52h8/h2YzBeutwHmLreTfL74StTMvHWKesOE w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10268"; a="277036151"
-X-IronPort-AV: E=Sophos;i="5.90,134,1643702400"; d="scan'208";a="277036151"
+ bh=vfXenIa2xeajxPYZ5qcsiU3HZFxGzB1pegqZTEHv5O4=;
+ b=FeY9mIueGmBTyAWrHS2rGDNuTPduAXMcidLlRJqeqrpZdiLXUYOAWjJP
+ q/TX2ANdFafBMbECZVYSsuwE8OB5us3X+LzsirTEG3EQ7hl5/G+YOdaR1
+ tdIm2LnI0PPbzDbUygmaDdtFe7NxjcYycQDeUfMz1iVSe3YGQNrSFudn2
+ ujsnjk0omx+9/QYJzGPM0t61NWqyfZrl2xXXsuEFzoBWRiGCV1bk4dIAX
+ QVOFihpGbWI6TIQ+wWwXg6eXso0AkKSgo0fFhdKMUNl8gBTns+xc3pWl3
+ ma6blto03/UrVq2kvoJmgtyecCwt2Q8bEV84xt/I1B8NgkKLy22P0pR9j g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10268"; a="277036147"
+X-IronPort-AV: E=Sophos;i="5.90,134,1643702400"; d="scan'208";a="277036147"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Feb 2022 18:39:18 -0800
-X-IronPort-AV: E=Sophos;i="5.90,134,1643702400"; d="scan'208";a="491832638"
+ 24 Feb 2022 18:39:16 -0800
+X-IronPort-AV: E=Sophos;i="5.90,134,1643702400"; d="scan'208";a="491832630"
 Received: from jsegev-mobl1.ger.corp.intel.com (HELO [10.212.99.193])
  ([10.212.99.193])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Feb 2022 18:39:17 -0800
-Message-ID: <e63ad06a-a583-b9f0-de00-644cbe389888@linux.intel.com>
-Date: Thu, 24 Feb 2022 19:27:15 -0600
+ 24 Feb 2022 18:39:15 -0800
+Message-ID: <d2a94d30-cfee-7821-fcb8-7b7ba129e5e9@linux.intel.com>
+Date: Thu, 24 Feb 2022 19:11:40 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Firefox/91.0 Thunderbird/91.5.0
-Subject: Re: [PATCH 07/17] ASoC: Intel: avs: Add module management requests
+Subject: Re: [PATCH 06/17] ASoC: Intel: avs: Add pipeline management requests
 Content-Language: en-US
 To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
 References: <20220207122108.3780926-1-cezary.rojewski@intel.com>
- <20220207122108.3780926-8-cezary.rojewski@intel.com>
+ <20220207122108.3780926-7-cezary.rojewski@intel.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20220207122108.3780926-8-cezary.rojewski@intel.com>
+In-Reply-To: <20220207122108.3780926-7-cezary.rojewski@intel.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Cc: upstream@semihalf.com, harshapriya.n@intel.com, rad@semihalf.com,
@@ -92,117 +92,74 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-> +int avs_ipc_init_instance(struct avs_dev *adev, u16 module_id, u8 instance_id,
-> +			  u8 ppl_id, u8 core_id, u8 domain,
+On 2/7/22 06:20, Cezary Rojewski wrote:
+> A 'Pipeline' represents both a container of module instances, and a
+> scheduling entity. Multiple pipelines can be bound together to create an
+> audio graph. The Pipeline state machine is entirely controlled by IPCs
+> (creation, deletion and state changes).
 
-you should explain the relationship between ppl_id and core_id. It seems
-that in the same pipeline different modules instances can be pegged to
-different cores, which isn't very intuitive given the previous
-explanation that a pipeline is a scheduling unit.
+How are the module instances connected within a pipeline? You've said
+too much or too little here.
 
-The domain as a u8 is not very clear either, I was under the impression
-there were only two domains (LL and EDF)?
 
-> +			  void *param, u32 param_size)
+> +int avs_ipc_create_pipeline(struct avs_dev *adev, u16 req_size, u8 priority,
+> +			    u8 instance_id, bool lp, u16 attributes)
 > +{
-> +	union avs_module_msg msg = AVS_MODULE_REQUEST(INIT_INSTANCE);
-> +	struct avs_ipc_msg request;
-> +	int ret;
-> +
-> +	msg.module_id = module_id;
-> +	msg.instance_id = instance_id;
-> +	/* firmware expects size provided in dwords */
-> +	msg.ext.init_instance.param_block_size =
-> +			DIV_ROUND_UP(param_size, sizeof(u32));
-> +	msg.ext.init_instance.ppl_instance_id = ppl_id;
-> +	msg.ext.init_instance.core_id = core_id;
-> +	msg.ext.init_instance.proc_domain = domain;
-> +
-> +	request.header = msg.val;
-> +	request.data = param;
-> +	request.size = param_size;
-
-isn't there a need to check if the module can be initialized? there's
-got to be some dependency on pipeline state?
-
-> +
-> +	ret = avs_dsp_send_msg(adev, &request, NULL);
-> +	if (ret)
-> +		avs_ipc_err(adev, &request, "init instance", ret);
-> +
-> +	return ret;
-> +}
-> +
-> +int avs_ipc_delete_instance(struct avs_dev *adev, u16 module_id, u8 instance_id)
-> +{
-> +	union avs_module_msg msg = AVS_MODULE_REQUEST(DELETE_INSTANCE);
+> +	union avs_global_msg msg = AVS_GLOBAL_REQUEST(CREATE_PIPELINE);
 > +	struct avs_ipc_msg request = {0};
 > +	int ret;
 > +
-> +	msg.module_id = module_id;
-> +	msg.instance_id = instance_id;
+> +	msg.create_ppl.ppl_mem_size = req_size;
+> +	msg.create_ppl.ppl_priority = priority;
+> +	msg.create_ppl.instance_id = instance_id;
+> +	msg.ext.create_ppl.lp = lp;
+
+you may want to describe what the concepts of 'priority', 'lp' and
+'attributes' are and which entity defines the values (topology?)
+
+> +	msg.ext.create_ppl.attributes = attributes;
 > +	request.header = msg.val;
 > +
 > +	ret = avs_dsp_send_msg(adev, &request, NULL);
 > +	if (ret)
-> +		avs_ipc_err(adev, &request, "delete instance", ret);
-> +
-> +	return ret;
-
-same here, can this be used in any pipeline state?
-
-> +}
-> +
-> +int avs_ipc_bind(struct avs_dev *adev, u16 module_id, u8 instance_id,
-> +		 u16 dst_module_id, u8 dst_instance_id,
-> +		 u8 dst_queue, u8 src_queue)
-
-what does a queue represent?
-
-> +{
-> +	union avs_module_msg msg = AVS_MODULE_REQUEST(BIND);
-> +	struct avs_ipc_msg request = {0};
-> +	int ret;
-> +
-> +	msg.module_id = module_id;
-> +	msg.instance_id = instance_id;
-> +	msg.ext.bind_unbind.dst_module_id = dst_module_id;
-> +	msg.ext.bind_unbind.dst_instance_id = dst_instance_id;
-> +	msg.ext.bind_unbind.dst_queue = dst_queue;
-> +	msg.ext.bind_unbind.src_queue = src_queue;
-> +	request.header = msg.val;
-> +
-> +	ret = avs_dsp_send_msg(adev, &request, NULL);
-> +	if (ret)
-> +		avs_ipc_err(adev, &request, "bind modules", ret);
+> +		avs_ipc_err(adev, &request, "create pipeline", ret);
 > +
 > +	return ret;
 > +}
-> +
-> +int avs_ipc_unbind(struct avs_dev *adev, u16 module_id, u8 instance_id,
-> +		   u16 dst_module_id, u8 dst_instance_id,
-> +		   u8 dst_queue, u8 src_queue)
-> +{
-> +	union avs_module_msg msg = AVS_MODULE_REQUEST(UNBIND);
-> +	struct avs_ipc_msg request = {0};
-> +	int ret;
-> +
-> +	msg.module_id = module_id;
-> +	msg.instance_id = instance_id;
-> +	msg.ext.bind_unbind.dst_module_id = dst_module_id;
-> +	msg.ext.bind_unbind.dst_instance_id = dst_instance_id;
-> +	msg.ext.bind_unbind.dst_queue = dst_queue;
-> +	msg.ext.bind_unbind.src_queue = src_queue;
-> +	request.header = msg.val;
-> +
-> +	ret = avs_dsp_send_msg(adev, &request, NULL);
-> +	if (ret)
-> +		avs_ipc_err(adev, &request, "unbind modules", ret);
-> +
-> +	return ret;
 
-can this be merged with the bind in a helper, the code looks
-quasi-identical with just two lines different.
+>  			u32 val;
+> +			/* pipeline management */
+> +			struct {
+> +				u32 lp:1;
+> +				u32 rsvd:3;
+> +				u32 attributes:16;
+> +			} create_ppl;
+> +			struct {
+> +				u32 multi_ppl:1;
+> +				u32 sync_stop_start:1;
 
-> +}
+these two are not described at all?
 
+> +			} set_ppl_state;
+>  		} ext;
+>  	};
+>  } __packed;
+
+> +/* Pipeline management messages */
+> +enum avs_pipeline_state {
+> +	AVS_PPL_STATE_INVALID,
+> +	AVS_PPL_STATE_UNINITIALIZED,
+> +	AVS_PPL_STATE_RESET,
+> +	AVS_PPL_STATE_PAUSED,
+> +	AVS_PPL_STATE_RUNNING,
+> +	AVS_PPL_STATE_EOS,
+> +	AVS_PPL_STATE_ERROR_STOP,
+> +	AVS_PPL_STATE_SAVED,
+> +	AVS_PPL_STATE_RESTORED,
+
+can you describe that the last two enums might entail and what the
+purpose might be?
+
+I can see how the firmware state could be saved in IMR for faster
+suspend/resume, but save/restore at the pipeline level doesn't seem to
+have an obvious match for an ASoC driver?
