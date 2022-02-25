@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E258AC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 20:57:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE160C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 20:57:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1BBF71F8C;
-	Fri, 25 Feb 2022 21:56:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1BBF71F8C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 024C81FB5;
+	Fri, 25 Feb 2022 21:56:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 024C81FB5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645822625;
-	bh=/r79V8LRJIZ8JV7jUCgT2wosQNagEt4qS/0oP3F35ts=;
+	s=default; t=1645822641;
+	bh=VO2b7mZp1MmZe9GUeYmWjagvBg37++qhmnrAYwGd0mc=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=a4FVXCuMKrHnwTYn0TSOYWTOV7ikWPwc47+OE5Yb+CvWxQqfe/2iWkvtN9wCny8sE
-	 C4MAHXuUgTgkxZjX8WXoq7hZnwbbBa/PCqzrO+1d/XyfZGsJXKMZAuxH37wtj3ZQ4J
-	 aBLJ0/hm2TF69SH7Atel565oqv28cwCazuU3HwzU=
+	b=HVwJzZAm5okqkyN66mlfxwKK7ALXTIpN5+YGX5AAP7N3U5zG9dIOUGWteHCswB8ta
+	 XarIOqwlN/eG25GgrRYBWrznjIPeYK4W/fRXqeNfowwmouyLtsX2oufqgEmDt94Uvr
+	 NoJOzTEtQub4F93lymF4C3LP1FsXV+JTW2uV+MYg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 713E4F80551;
-	Fri, 25 Feb 2022 21:53:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 09258F8055B;
+	Fri, 25 Feb 2022 21:53:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E8710F80536; Fri, 25 Feb 2022 21:52:49 +0100 (CET)
+ id B9F1AF80529; Fri, 25 Feb 2022 21:52:51 +0100 (CET)
 Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CCC89F80526
- for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2022 21:52:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CCC89F80526
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7F1F0F80533
+ for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2022 21:52:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F1F0F80533
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="dmVYCqf2"
+ header.b="b1rWa+dY"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1645822366; x=1677358366;
+ t=1645822368; x=1677358368;
  h=message-id:date:mime-version:subject:to:cc:references:
  from:in-reply-to:content-transfer-encoding;
- bh=/r79V8LRJIZ8JV7jUCgT2wosQNagEt4qS/0oP3F35ts=;
- b=dmVYCqf2gf2yvKPsqbp5l8r8YukqQdy3vPeu2u5m5ZwLktg99smZLveP
- FTR1tb0rUM5Lpq5UHSeu9+/Pw+glsxGYszPqOpOddl7axpGzkYHRJeF8u
- 2h0IuaCxVpu35VQ+ilK2v0veUjhlh1quOSvT3vQS5tRedMmjDmCxNxk7Q
- j05VmtAjIMpUWdP03h+cJO/Ksy/TTG8/RaKoZyYjXeSZDTtK9PfD8hMta
- CZTn+AsfcX3gorynczZsVUOGRqDELBb3P1PmZJZu53rOPNxqk4ATZ4j5R
- K5NwRNK+VQKe4CVuQ2+jzmXFua26WcP+gfYowRCDExxUUApWd2/Dspkqg A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10269"; a="313296145"
-X-IronPort-AV: E=Sophos;i="5.90,137,1643702400"; d="scan'208";a="313296145"
+ bh=VO2b7mZp1MmZe9GUeYmWjagvBg37++qhmnrAYwGd0mc=;
+ b=b1rWa+dY0JPL5+0Y3A7tle1T/T2r5F97CWigyvngl+4hQl8SMVB7FcYd
+ y7p3YKTxNgRDCu9DrdX4LJiwWYt7YKDFAK1L7oWaVwbMoC52Fx5t0jhUF
+ y3kBraQYSzMx/FYIMAOegWfg4vxyBi2xPV1R295YFG2RheqsKMq9IFm+c
+ d39sbo/jfRha1ohmNlALwc5/gRmecOHczRqVKCYTU3z8FNSAhJkOypCYW
+ ryuZ2Ue9ibN7qsOtLjziT4l++eP4VYmOdv+iyhJXUpuClwo8tt3i1JnnT
+ rSceMRLM8yZlUoNTc02WsmzCxBwrwwTbgs82Sk1Jnq/iK6fSw0kE/aAcG w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10269"; a="313296150"
+X-IronPort-AV: E=Sophos;i="5.90,137,1643702400"; d="scan'208";a="313296150"
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Feb 2022 12:52:43 -0800
-X-IronPort-AV: E=Sophos;i="5.90,137,1643702400"; d="scan'208";a="777520599"
+ 25 Feb 2022 12:52:46 -0800
+X-IronPort-AV: E=Sophos;i="5.90,137,1643702400"; d="scan'208";a="777520609"
 Received: from nnwogbe-mobl1.amr.corp.intel.com (HELO [10.212.101.231])
  ([10.212.101.231])
  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Feb 2022 12:52:42 -0800
-Message-ID: <d41c3acf-09e4-3822-7b13-211d4f71d22e@linux.intel.com>
-Date: Fri, 25 Feb 2022 14:37:52 -0600
+ 25 Feb 2022 12:52:46 -0800
+Message-ID: <e33d7adf-3a99-c82c-c380-f65344e7cdbb@linux.intel.com>
+Date: Fri, 25 Feb 2022 14:44:31 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Firefox/91.0 Thunderbird/91.5.0
-Subject: Re: [PATCH 04/17] ASoC: Intel: avs: Inter process communication
+Subject: Re: [PATCH 07/17] ASoC: Intel: avs: Add module management requests
 Content-Language: en-US
 To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
 References: <20220207122108.3780926-1-cezary.rojewski@intel.com>
- <20220207122108.3780926-5-cezary.rojewski@intel.com>
- <c2f249df-0b3e-1032-6514-81fabb544b6f@linux.intel.com>
- <1a8c9196-0ae2-c25b-32de-15821c948185@intel.com>
+ <20220207122108.3780926-8-cezary.rojewski@intel.com>
+ <e63ad06a-a583-b9f0-de00-644cbe389888@linux.intel.com>
+ <d44240ee-822e-51ed-6aed-957ac9e6bf91@intel.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <1a8c9196-0ae2-c25b-32de-15821c948185@intel.com>
+In-Reply-To: <d44240ee-822e-51ed-6aed-957ac9e6bf91@intel.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Cc: upstream@semihalf.com, harshapriya.n@intel.com, rad@semihalf.com,
@@ -93,259 +93,142 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
->>> +static inline void avs_ipc_err(struct avs_dev *adev, struct
->>> avs_ipc_msg *tx,
->>> +                   const char *name, int error)
+
+On 2/25/22 12:50, Cezary Rojewski wrote:
+> On 2022-02-25 2:27 AM, Pierre-Louis Bossart wrote:
+>>> +int avs_ipc_init_instance(struct avs_dev *adev, u16 module_id, u8
+>>> instance_id,
+>>> +              u8 ppl_id, u8 core_id, u8 domain,
+>>
+>> you should explain the relationship between ppl_id and core_id. It seems
+>> that in the same pipeline different modules instances can be pegged to
+>> different cores, which isn't very intuitive given the previous
+>> explanation that a pipeline is a scheduling unit.
+>>
+>> The domain as a u8 is not very clear either, I was under the impression
+>> there were only two domains (LL and EDF)?
+> 
+> 
+> Hmm.. such explanations are supposed to be part of HW or FW
+> specifications. I don't believe kernel is a place for that. Fields found
+
+how do you expect people with no access to those specs to understand
+this code then?
+
+You have to describe the concepts in vague-enough terms that someone
+familiar with DSPs can understand.
+
+> here are needed to provide all the necessary information firmware
+> expects when requesting INIT_INSTANCE. What's possible and how's
+> everything handled internally is for firmware to decide and explain.
+> There are no if-statements in the driver's code that force
+> ppl_id/core_id relation so I don't see why reader would get an
+> impression there is some dependency. What's in the topology gets routed
+> to firmware with help of above function.
+> 
+> Just to confirm: yes, you can have multiple cores engaged in servicing
+> modules found in single pipelines.
+> 
+> In regard to field name/sizes: again, these match firmware equivalents
+> 1:1 so it's easy to switch back and forth.
+
+add comments then.
+
+> 
+>>> +              void *param, u32 param_size)
 >>> +{
->>> +    /*
->>> +     * If IPC channel is blocked e.g.: due to ongoing recovery,
->>> +     * -EPERM error code is expected and thus it's not an actual error.
->>> +     */
->>> +    if (error == -EPERM)
->>> +        dev_dbg(adev->dev, "%s 0x%08x 0x%08x failed: %d\n", name,
->>> +            tx->glb.primary, tx->glb.ext.val, error);
->>> +    else
->>> +        dev_err(adev->dev, "%s 0x%08x 0x%08x failed: %d\n", name,
->>> +            tx->glb.primary, tx->glb.ext.val, error);
->>> +}
->>
->> we've used such functions before and the feedback, e.g. from GregKH and
->> Mark Brown, has consistenly been that this is pushing the use of dev_dbg
->> too far.
-> 
-> 
-> In basically all cases the outcome is going to be dev_err(). dev_dbg()
-> is here to help keep DSP-recovery scenario viewer-friendly when checking
-> dmesg. Ideally, there should be no DSP-recoveries to begin with : )
-
-I will refer you to this thread:
-
-https://lore.kernel.org/alsa-devel/YGX5AUQi41z52xk8@kroah.com/
-
-> 
->>> +#define AVS_IPC_TIMEOUT_MS    300
->>
->> skl-sst-ipc.c:#define IPC_TIMEOUT_MSECS         3000
->>
->> that's one order of magniture lower. please add a comment or align.
->>
->>> +static void avs_dsp_receive_rx(struct avs_dev *adev, u64 header)
->>> +{
->>> +    struct avs_ipc *ipc = adev->ipc;
->>> +    union avs_reply_msg msg = AVS_MSG(header);
+>>> +    union avs_module_msg msg = AVS_MODULE_REQUEST(INIT_INSTANCE);
+>>> +    struct avs_ipc_msg request;
+>>> +    int ret;
 >>> +
->>> +    ipc->rx.header = header;
->>> +    if (!msg.status)
->>> +        memcpy_fromio(ipc->rx.data, avs_uplink_addr(adev),
->>> +                  ipc->rx.size);
->>
->> it wouldn't hurt to describe that the status determines whether
->> additional information can be read from a mailbox.
-> 
-> 
-> Isn't that consisted with the behaviour of typical API function? Do not
-> copy memory and return it to the caller if something went wrong along
-> the way?
-
-oh, I thought this was a case where the header contains all the
-information, and only in specific cases you need to read stuff from the
-mailbox.
-
-You definitively need to add a comment on whether this is an error
-handling or a feature.
-
-
->>> +void avs_dsp_process_response(struct avs_dev *adev, u64 header)
->>> +{
->>> +    struct avs_ipc *ipc = adev->ipc;
+>>> +    msg.module_id = module_id;
+>>> +    msg.instance_id = instance_id;
+>>> +    /* firmware expects size provided in dwords */
+>>> +    msg.ext.init_instance.param_block_size =
+>>> +            DIV_ROUND_UP(param_size, sizeof(u32));
+>>> +    msg.ext.init_instance.ppl_instance_id = ppl_id;
+>>> +    msg.ext.init_instance.core_id = core_id;
+>>> +    msg.ext.init_instance.proc_domain = domain;
 >>> +
->>> +    if (avs_msg_is_reply(header)) {
+>>> +    request.header = msg.val;
+>>> +    request.data = param;
+>>> +    request.size = param_size;
 >>
->> the naming is confusing, it's difficult for me to understand that a
->> 'response' could not be a 'reply'. The two terms are synonyms, aren't
->> they?
+>> isn't there a need to check if the module can be initialized? there's
+>> got to be some dependency on pipeline state?
 > 
 > 
-> Those two are not the same from the firmware's point of view and thus
-> they are not the same here. Response is either a reply or a
-> notification. Replies are solicited, a request has been sent beforehand.
-> Notifications are unsolicited, you are not sure when exactly and if at
-> all they arrive.
+> IPC handlers found in message.c have one and only one purpose only: send
+> a message. Firmware will return an error if arguments passed are invalid.
+> 
+> Also, note that ALSA/ASoC already have a working state machine for
+> streaming. There is no reason to re-implement it here.
 
 add a comment then.
 
-> Just so I'm not called a heretic later: yes, from English dictionary
-> point of view these two words are synonyms. In general, wording found in
-> this drivers matches firmware equivalents wherever possible to allow
-> developers to switch between these two worlds with minimal adaptation
-> period possible.
-
 > 
->>> +    /* DSP acked host's request */
->>> +    if (hipc_ack & spec->hipc_ack_done_mask) {
->>> +        /* mask done interrupt */
->>> +        snd_hdac_adsp_updatel(adev, spec->hipc_ctl_offset,
->>> +                      AVS_ADSP_HIPCCTL_DONE, 0);
 >>> +
->>> +        complete(&ipc->done_completion);
->>> +
->>> +        /* tell DSP it has our attention */
->>> +        snd_hdac_adsp_updatel(adev, spec->hipc_ack_offset,
->>> +                      spec->hipc_ack_done_mask,
->>> +                      spec->hipc_ack_done_mask);
->>> +        /* unmask done interrupt */
->>> +        snd_hdac_adsp_updatel(adev, spec->hipc_ctl_offset,
->>> +                      AVS_ADSP_HIPCCTL_DONE,
->>> +                      AVS_ADSP_HIPCCTL_DONE);
->>
->> does the order between the complete() and the next two register updates
->> matter?
->>
->> I would have updated the registers immediately and signal the completion
->> later.
->>
->> I am also not sure why it's necessary to mask the done interrupt then
->> unmask it. There is nothing that seems to require this masking?
->>
->> Or are you expecting the code blocked on wait_for_completion to be
->> handled with interrupts masked, which could be quite racy?
-> 
-> 
-> Given how the things turned out in cAVS, some steps are not always
-> required. Here, we have very strict implementation and so interrupt are
-> masked.
-> 
-> I'm unsure if relocating complete() to the bottom would bring any
-> consequences. And no, the code waiting_for_completion is not expecting
-> interrupts to be masked as there is no reply for ROM messages.
-
-it would be just fine to add that the masking is added as an extra
-precaution, the order does not matter and the code executed after the
-complete() does not assume any masking.
-
-> 
->>> +        ret = IRQ_HANDLED;
->>> +    }
->>> +
->>> +    /* DSP sent new response to process */
->>> +    if (hipc_rsp & spec->hipc_rsp_busy_mask) {
->>> +        /* mask busy interrupt */
->>> +        snd_hdac_adsp_updatel(adev, spec->hipc_ctl_offset,
->>> +                      AVS_ADSP_HIPCCTL_BUSY, 0);
->>> +
->>> +        ret = IRQ_WAKE_THREAD;
->>> +    }
+>>> +    ret = avs_dsp_send_msg(adev, &request, NULL);
+>>> +    if (ret)
+>>> +        avs_ipc_err(adev, &request, "init instance", ret);
 >>> +
 >>> +    return ret;
 >>> +}
->>
->>> +static int avs_ipc_wait_busy_completion(struct avs_ipc *ipc, int
->>> timeout)
+>>> +
+>>> +int avs_ipc_delete_instance(struct avs_dev *adev, u16 module_id, u8
+>>> instance_id)
 >>> +{
+>>> +    union avs_module_msg msg = AVS_MODULE_REQUEST(DELETE_INSTANCE);
+>>> +    struct avs_ipc_msg request = {0};
 >>> +    int ret;
 >>> +
->>> +again:
->>> +    ret = wait_for_completion_timeout(&ipc->busy_completion,
->>> +                      msecs_to_jiffies(timeout));
->>> +    /*
->>> +     * DSP could be unresponsive at this point e.g. manifested by
->>> +     * EXCEPTION_CAUGHT notification. If so, no point in continuing.
->>
->> EXCEPTION_CAUGHT doesn't seem to be described in this patchset, so not
->> sure what this comment might mean.
-> 
-> 
-> Comment describes the circumstances for the communication failures and
-> arrival of EXCEPTION_CAUGHT notification is one of them.
-
-that detail is unnecessary for reviewers.
-
-> 
->>> +     */
->>> +    if (!ipc->ready)
->>> +        return -EPERM;
+>>> +    msg.module_id = module_id;
+>>> +    msg.instance_id = instance_id;
+>>> +    request.header = msg.val;
 >>> +
->>> +    if (!ret) {
->>> +        if (!avs_ipc_is_busy(ipc))
->>> +            return -ETIMEDOUT;
->>> +        /*
->>> +         * Firmware did its job, either notification or reply
->>> +         * has been received - now wait until it's processed.
->>> +         */
->>> +        wait_for_completion_killable(&ipc->busy_completion);
->>
->> can you elaborate on why wait_for_completion() is not enough? I haven't
->> seen the 'killable' attribute been used by anyone in sound/
-> 
-> 
-> This is connected to how firmware handles messaging i.e. via queue. you
-> may get BUSY interrupt caused by a notification while waiting for the
-> reply for your request. Being 'disturbed' by a notification does not
-> mean firmware is dead, it's just busy and so we wait until previous
-> response is processed entirely.
-
-this does not clarify why 'killable' is necessary?
-
-> 
->>> +    }
+>>> +    ret = avs_dsp_send_msg(adev, &request, NULL);
+>>> +    if (ret)
+>>> +        avs_ipc_err(adev, &request, "delete instance", ret);
 >>> +
->>> +    /* Ongoing notification's bottom-half may cause early wakeup */
->>> +    spin_lock(&ipc->rx_lock);
->>> +    if (!ipc->rx_completed) {
->>> +        /* Reply delayed due to notification. */
->>> +        reinit_completion(&ipc->busy_completion);
->>> +        spin_unlock(&ipc->rx_lock);
->>> +        goto again;
+>>> +    return ret;
 >>
->> shouldn't there be some counter to avoid potential infinite loops here?
+>> same here, can this be used in any pipeline state?
 > 
 > 
-> This is not a bad idea although the counter is going to be high e.g.:
-> 128. With DEBUG-level logs enabled you can get ton of messages before
-> your reply gets finally sent.
-
-dev_dbg() in interrupts is usually not very helpful. we're trying to
-move to traces instead.
-
+> Ditto.
 > 
->>> +    }
->>> +
->>> +    spin_unlock(&ipc->rx_lock);
->>> +    return 0;
 >>> +}
+>>> +
+>>> +int avs_ipc_bind(struct avs_dev *adev, u16 module_id, u8 instance_id,
+>>> +         u16 dst_module_id, u8 dst_instance_id,
+>>> +         u8 dst_queue, u8 src_queue)
 >>
->>> +static int avs_dsp_do_send_msg(struct avs_dev *adev, struct
->>> avs_ipc_msg *request,
->>> +                   struct avs_ipc_msg *reply, int timeout)
+>> what does a queue represent?
+> 
+> 
+> In firmware's nomenclature pin/index/queue are synonyms when speaking
+> about module instances.
+
+well, that's worthy of a comment...
+
+> 
 >>> +{
->>> +    struct avs_ipc *ipc = adev->ipc;
+>>> +    union avs_module_msg msg = AVS_MODULE_REQUEST(BIND);
+>>> +    struct avs_ipc_msg request = {0};
 >>> +    int ret;
 >>> +
->>> +    if (!ipc->ready)
->>> +        return -EPERM;
+>>> +    msg.module_id = module_id;
+>>> +    msg.instance_id = instance_id;
+>>> +    msg.ext.bind_unbind.dst_module_id = dst_module_id;
+>>> +    msg.ext.bind_unbind.dst_instance_id = dst_instance_id;
+>>> +    msg.ext.bind_unbind.dst_queue = dst_queue;
+>>> +    msg.ext.bind_unbind.src_queue = src_queue;
+>>> +    request.header = msg.val;
 >>> +
->>> +    mutex_lock(&ipc->msg_mutex);
+>>> +    ret = avs_dsp_send_msg(adev, &request, NULL);
+>>> +    if (ret)
+>>> +        avs_ipc_err(adev, &request, "bind modules", ret);
 >>> +
->>> +    spin_lock(&ipc->rx_lock);
->>> +    avs_ipc_msg_init(ipc, reply);
->>> +    avs_dsp_send_tx(adev, request);
->>> +    spin_unlock(&ipc->rx_lock);
->>> +
->>> +    ret = avs_ipc_wait_busy_completion(ipc, timeout);
->>> +    if (ret) {
->>> +        if (ret == -ETIMEDOUT) {
->>> +            dev_crit(adev->dev, "communication severed: %d,
->>> rebooting dsp..\n",
->>> +                 ret);
->>
->> dev_crit() seems over the top if there is a recovery mechanism
-> 
-> 
-> There is just one dev_crit() within entire driver and it's there for a
-> reason - communication failure is critical and in practice, should never
-> occur in any scenario on the production hardware.
-
-git grep dev_crit shows mostly this being used for temperature and
-shorts in codec drivers. that seems more 'critical' than a communication
-failure that likely does not result in spontaneous combustion.
+>>> +    return ret;
+>>> +}
 
