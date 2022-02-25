@@ -4,76 +4,128 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A166C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 13:22:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D76BC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 13:22:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 517C518BA;
-	Fri, 25 Feb 2022 14:21:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 517C518BA
+	by alsa0.perex.cz (Postfix) with ESMTPS id CBF611B1E;
+	Fri, 25 Feb 2022 14:21:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CBF611B1E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645795338;
-	bh=FCgV7HQ6Sz7X4EcW0AHGQFLFZjP2p7gApc5nIKixJdk=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1645795354;
+	bh=QyktwxJ4I/HQbNDvEpnDeiScW3g+x+92desbsiyAylM=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=spKfcLCdqzgAiXg/S1jBeB2ACPOhRtJGiljH0MI9AUYZobyMgT664NoofImHjANZ0
-	 rV4h49V9pxP68uzpgD0UA9N1FVk1eX5w/qaZ9Lx+De00XK3ruH0Caea3qbhwt9GbD+
-	 +y6sQCFMYrxtFwQhRVO6/XzAnjxqrOYjKo9tvvEg=
+	b=e8iT0+LX60AcVb78CcoZwFylRfXUK95xIQeIqUfMbQom9ZQHJY2Z94k/fP6MP/EMg
+	 eYyXTRjf19Ml4M0nPJaZVuSFnPAls1XJK9c0Z0qNZrTKw59hM2V2E0lu5pXomJIdbp
+	 6jf59WnJlPAZiFZ7HA+pQXDw+YtdjeVRmHCV9/9E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 872E3F80602;
-	Fri, 25 Feb 2022 14:11:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1195CF80606;
+	Fri, 25 Feb 2022 14:11:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 25448F8030F; Thu, 24 Feb 2022 19:59:12 +0100 (CET)
-Received: from gnuweeb.org (gnuweeb.org [51.81.211.47])
+ id 6DC9AF80132; Fri, 25 Feb 2022 10:36:31 +0100 (CET)
+Received: from smtp-relay-internal-0.canonical.com
+ (smtp-relay-internal-0.canonical.com [185.125.188.122])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C8037F800B6;
- Thu, 24 Feb 2022 19:59:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8037F800B6
+ by alsa1.perex.cz (Postfix) with ESMTPS id ED4B4F800E1
+ for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2022 10:36:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED4B4F800E1
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gnuweeb.org header.i=@gnuweeb.org
- header.b="ll07GBV4"
-Received: from integral2.. (unknown [36.78.50.60])
- by gnuweeb.org (Postfix) with ESMTPSA id 81CFB7E2A3;
- Thu, 24 Feb 2022 18:58:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gnuweeb.org;
- s=default; t=1645729140;
- bh=FCgV7HQ6Sz7X4EcW0AHGQFLFZjP2p7gApc5nIKixJdk=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=ll07GBV4MJ5dFyQU6rmVP1mJAwWEhaWkrlN618dRWC4jaGKEnpf1i9SlQIDNK1r6q
- 2i2Aap4XKfirQn+9MbzRuYSNvBoAKAzAhif1KYa0J/YVm/c7PcANr2NSnVcqi9Cu+r
- 0DScWrfxF0rDJtS8CzB5oaGYzcgXvswWfyfu8GFnG5pjQpGYcryc1SlB5V+E+uGZLg
- EeiPBek0alz7Vfkc2KUKxQxMjwraQ0IE1tDI7gFrlmxlRS7bNAlfK50qVmEaYWJ5C/
- zEAdkGKX9GzYMJCKzBX06u12/ynxwbSP09K0IgWUOZttB/fXK2h9ZCYmZS5ipZ4mXE
- CfPdfKeyP8h+g==
-From: Ammar Faizi <ammarfaizi2@gnuweeb.org>
-To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH v4] ASoC: SOF: Intel: Fix NULL ptr dereference when ENOMEM
-Date: Fri, 25 Feb 2022 01:58:36 +0700
-Message-Id: <20220224185836.44907-1-ammarfaizi2@gnuweeb.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20220224182818.40301-1-ammarfaizi2@gnuweeb.org>
-References: <20220224145124.15985-1-ammarfaizi2@gnuweeb.org>
- <cfe9e583-e20a-f1d6-2a81-2538ca3ca054@linux.intel.com>
- <Yhe/3rELNfFOdU4L@sirena.org.uk>
- <04e79b9c-ccb1-119a-c2e2-34c8ca336215@linux.intel.com>
- <20220224180850.34592-1-ammarfaizi2@gnuweeb.org>
- <YhfLCWm0Ms3E+j4z@sirena.org.uk>
- <20220224182818.40301-1-ammarfaizi2@gnuweeb.org>
+ dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com
+ header.b="r9eAB7z4"
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 5E52B3FCA6
+ for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2022 09:36:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+ s=20210705; t=1645781783;
+ bh=mwBGuSv1vzWcEgYl2MgCXz9QnnQmXLrpGmSTa9ywwuI=;
+ h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+ In-Reply-To:Content-Type;
+ b=r9eAB7z4Au066qpDSZhT/9tLha4EycFEcDpSDYbGUKhKjIf6GqDyx0qOB4yMtdJ0g
+ 84ewarQUNcMrY1MhjENr9hz+gZwZhthQsFtTnD8l2MUdO2beuYmflKwP1Pn8smPDxq
+ ATilhUpWEAjVu80vT+V8eS3udpxyBM4152O0envOSLXto9+dUtvR1CNRWwYztBzb1O
+ wyxvFAljpddatUQCLUt3LTK8FXE0MoodphirVw10CK9HYuGFqRXyvBqmzy9+kbqXYP
+ RKSppOkDReF4VnmoAhKPnhqTr8mJl1Jdn05HngR7ByJe7btYmeRO/EdxDHyG0Hqlaq
+ OY6Od5OYf5hbA==
+Received: by mail-ej1-f69.google.com with SMTP id
+ k21-20020a1709063e1500b006d0777c06d6so2418913eji.1
+ for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2022 01:36:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+ :content-language:to:cc:references:from:in-reply-to
+ :content-transfer-encoding;
+ bh=mwBGuSv1vzWcEgYl2MgCXz9QnnQmXLrpGmSTa9ywwuI=;
+ b=PlMv9yzVFkCDkKVIH/I1GtWDhbc8Ijju45OdAG+P7FWq02oyy5fRpT2kDO0zn1mjvA
+ aHdHkedx+G474OTqeJ5FXJZusw2QOfuDt6AnFx45v4CsIT86iD4wrVCm7hxgV7f3N0J/
+ xhs26TW3DOHqO4/wBxr9n9Myv6thMUk/ux9n5ulU30SQoNIHVsnevtrdM5ZiAZZ3WN0T
+ 8MAhe1saRoIWGN8yHn5vCz++udt9G80b4f9IDfTnX405F8lZAFxJI/YLo1mPwhgHii9+
+ 4yfp5aeIGJSqlSD+OGLsxsn7SPWSuBw5divw1DIO1k8jJIpFPhkL8zOB4yH8sEOgfkCn
+ ctkQ==
+X-Gm-Message-State: AOAM531OQbqKs9XO2cPa99cFc5GO09N1px3uCklPGS9ehWACAQz0GlyN
+ r1ZRUkvOD0H/Jjxemo9RhfsUU5xkBt7pqWU0Lc9+KHlLGxuVca13VMm4QogfFsBKLXs4iucff6C
+ 78iC+WVIlLrfN9Vu8jA5/sbMmScUtSSznGW0Xn/OY
+X-Received: by 2002:a17:906:4cca:b0:6ce:6a06:bf7 with SMTP id
+ q10-20020a1709064cca00b006ce6a060bf7mr5644757ejt.109.1645781782638; 
+ Fri, 25 Feb 2022 01:36:22 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxvGXs5zpBbIxYfXArg3HJWTHPHMBjqJChT5RpHzF7M3/UrStNiNcxogS5o2fNS3FLp8Ip6Ag==
+X-Received: by 2002:a17:906:4cca:b0:6ce:6a06:bf7 with SMTP id
+ q10-20020a1709064cca00b006ce6a060bf7mr5644737ejt.109.1645781782424; 
+ Fri, 25 Feb 2022 01:36:22 -0800 (PST)
+Received: from [192.168.0.130] (xdsl-188-155-181-108.adslplus.ch.
+ [188.155.181.108]) by smtp.gmail.com with ESMTPSA id
+ bo9-20020a170906d04900b006ce6b8e05c1sm773655ejb.150.2022.02.25.01.36.20
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 25 Feb 2022 01:36:21 -0800 (PST)
+Message-ID: <0aff95ff-5b79-8ae9-48fd-720a9f27cbce@canonical.com>
+Date: Fri, 25 Feb 2022 10:36:20 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [PATCH v2 05/11] pci: use helper for safer setting of
+ driver_override
+Content-Language: en-US
+To: Bjorn Helgaas <helgaas@kernel.org>
+References: <20220224235206.GA302751@bhelgaas>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20220224235206.GA302751@bhelgaas>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Mailman-Approved-At: Fri, 25 Feb 2022 14:11:19 +0100
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Ammar Faizi <ammarfaizi2@gnuweeb.org>, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Keyon Jie <yang.jie@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>, stable@vger.kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Rander Wang <rander.wang@intel.com>, Daniel Baluta <daniel.baluta@nxp.com>,
- sound-open-firmware@alsa-project.org
+Cc: linux-hyperv@vger.kernel.org, Stuart Yoder <stuyoder@gmail.com>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, linux-pci@vger.kernel.org,
+ Jason Wang <jasowang@redhat.com>, linux-remoteproc@vger.kernel.org,
+ alsa-devel@alsa-project.org, Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Vineeth Vijayan <vneethv@linux.ibm.com>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ "K. Y. Srinivasan" <kys@microsoft.com>, Fabio Estevam <festevam@gmail.com>,
+ linux-clk@vger.kernel.org, linux-s390@vger.kernel.org,
+ Wei Liu <wei.liu@kernel.org>, Stephen Hemminger <sthemmin@microsoft.com>,
+ Abel Vesa <abel.vesa@nxp.com>, "Michael S. Tsirkin" <mst@redhat.com>,
+ Dexuan Cui <decui@microsoft.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>, Andy Gross <agross@kernel.org>,
+ NXP Linux Team <linux-imx@nxp.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ linux-arm-msm@vger.kernel.org, Sascha Hauer <s.hauer@pengutronix.de>,
+ linux-spi@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+ Bjorn Helgaas <bhelgaas@google.com>, virtualization@lists.linux-foundation.org,
+ linux-arm-kernel@lists.infradead.org,
+ Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Haiyang Zhang <haiyangz@microsoft.com>,
+ Peter Oberparleiter <oberpar@linux.ibm.com>, linux-kernel@vger.kernel.org,
+ Sven Schnelle <svens@linux.ibm.com>, Shawn Guo <shawnguo@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,120 +141,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Do not call snd_dma_free_pages() when snd_dma_alloc_pages() returns
--ENOMEM because it leads to a NULL pointer dereference bug.
+On 25/02/2022 00:52, Bjorn Helgaas wrote:
+> On Thu, Feb 24, 2022 at 08:49:15AM +0100, Krzysztof Kozlowski wrote:
+>> On 23/02/2022 22:51, Bjorn Helgaas wrote:
+>>> In subject, to match drivers/pci/ convention, do something like:
+>>>
+>>>   PCI: Use driver_set_override() instead of open-coding
+>>>
+>>> On Wed, Feb 23, 2022 at 08:13:04PM +0100, Krzysztof Kozlowski wrote:
+>>>> Use a helper for seting driver_override to reduce amount of duplicated
+>>>> code.
+>>>> @@ -567,31 +567,15 @@ static ssize_t driver_override_store(struct device *dev,
+>>>>  				     const char *buf, size_t count)
+>>>>  {
+>>>>  	struct pci_dev *pdev = to_pci_dev(dev);
+>>>> -	char *driver_override, *old, *cp;
+>>>> +	int ret;
+>>>>  
+>>>>  	/* We need to keep extra room for a newline */
+>>>>  	if (count >= (PAGE_SIZE - 1))
+>>>>  		return -EINVAL;
+>>>
+>>> This check makes no sense in the new function.  Michael alluded to
+>>> this as well.
+>>
+>> I am not sure if I got your comment properly. You mean here:
+>> 1. Move this check to driver_set_override()?
+>> 2. Remove the check entirely?
+> 
+> I was mistaken about the purpose of the comment and the check.  I
+> thought it had to do with *this* function, and this function doesn't
+> add a newline, and there's no obvious connection with PAGE_SIZE.
+> 
+> But looking closer, I think the "extra room for a newline" is really
+> to make sure that *driver_override_show()* can add a newline and have
+> it still fit within the PAGE_SIZE sysfs limit.
+> 
+> Most driver_override_*() functions have the same comment, so maybe
+> this was obvious to everybody except me :)  I do see that spi.c adds
+> "when displaying value" at the end, which helps a lot.
+> 
+> Sorry for the wild goose chase.
 
-The dmesg says:
+I think I will move this check anyway to driver_set_override() helper,
+because there is no particular benefit to have duplicated all over. The
+helper will receive "count" argument so can perform all checks.
 
-  [ T1387] sof-audio-pci-intel-tgl 0000:00:1f.3: error: memory alloc failed: -12
-  [ T1387] BUG: kernel NULL pointer dereference, address: 0000000000000000
-  [ T1387] #PF: supervisor read access in kernel mode
-  [ T1387] #PF: error_code(0x0000) - not-present page
-  [ T1387] PGD 0 P4D 0
-  [ T1387] Oops: 0000 [#1] PREEMPT SMP NOPTI
-  [ T1387] CPU: 6 PID: 1387 Comm: alsa-sink-HDA A Tainted: G        W         5.17.0-rc4-superb-owl-00055-g80d47f5de5e3
-  [ T1387] Hardware name: HP HP Laptop 14s-dq2xxx/87FD, BIOS F.15 09/15/2021
-  [ T1387] RIP: 0010:dma_free_noncontiguous+0x37/0x80
-  [ T1387] Code: [... snip ...]
-  [ T1387] RSP: 0000:ffffc90002b87770 EFLAGS: 00010246
-  [ T1387] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-  [ T1387] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff888101db30d0
-  [ T1387] RBP: 00000000fffffff4 R08: 0000000000000000 R09: 0000000000000000
-  [ T1387] R10: 0000000000000000 R11: ffffc90002b874d0 R12: 0000000000000001
-  [ T1387] R13: 0000000000058000 R14: ffff888105260c68 R15: ffff888105260828
-  [ T1387] FS:  00007f42e2ffd640(0000) GS:ffff888466b80000(0000) knlGS:0000000000000000
-  [ T1387] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  [ T1387] CR2: 0000000000000000 CR3: 000000014acf0003 CR4: 0000000000770ee0
-  [ T1387] PKRU: 55555554
-  [ T1387] Call Trace:
-  [ T1387]  <TASK>
-  [ T1387]  cl_stream_prepare+0x10a/0x120 [snd_sof_intel_hda_common 146addf995b9279ae7f509621078cccbe4f875e1]
-  [... snip ...]
-  [ T1387]  </TASK>
 
-Cc: Daniel Baluta <daniel.baluta@nxp.com>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Cc: Keyon Jie <yang.jie@linux.intel.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Rander Wang <rander.wang@intel.com>
-Cc: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: sound-open-firmware@alsa-project.org
-Cc: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org
-Cc: stable@vger.kernel.org # v5.2+
-Fixes: d16046ffa6de040bf580a64d5f4d0aa18258a854 ("ASoC: SOF: Intel: Add Intel specific HDA firmware loader")
-Link: https://lore.kernel.org/lkml/20220224145124.15985-1-ammarfaizi2@gnuweeb.org/ # v1
-Link: https://lore.kernel.org/lkml/20220224180850.34592-1-ammarfaizi2@gnuweeb.org/ # v2
-Link: https://lore.kernel.org/lkml/20220224182818.40301-1-ammarfaizi2@gnuweeb.org/ # v3
-Reviewed-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Ammar Faizi <ammarfaizi2@gnuweeb.org>
----
-
- v4:
-   - Remove 2 `Cc` tags after got the Reviewed-by tag from the CC'ed people
-     as they will be CC'ed anyway.
-   - Extra commit message cleanup.
-
- v3:
-   - Address comment from Mark Brown (strip not useful kernel log
-     from the commit message, again).
-
- v2:
-   - Append Reviewed-by tag from Peter Ujfalusi.
-   - Append Reviewed-by tag from Pierre-Louis Bossart.
-   - Address comment from Mark Brown (strip irrelevant kernel log
-     from the commit message).
-
- sound/soc/sof/intel/hda-loader.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
-
-diff --git a/sound/soc/sof/intel/hda-loader.c b/sound/soc/sof/intel/hda-loader.c
-index 33306d2023a7..9bbfdab8009d 100644
---- a/sound/soc/sof/intel/hda-loader.c
-+++ b/sound/soc/sof/intel/hda-loader.c
-@@ -47,7 +47,7 @@ static struct hdac_ext_stream *cl_stream_prepare(struct snd_sof_dev *sdev, unsig
- 	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV_SG, &pci->dev, size, dmab);
- 	if (ret < 0) {
- 		dev_err(sdev->dev, "error: memory alloc failed: %d\n", ret);
--		goto error;
-+		goto out_put;
- 	}
- 
- 	hstream->period_bytes = 0;/* initialize period_bytes */
-@@ -58,22 +58,23 @@ static struct hdac_ext_stream *cl_stream_prepare(struct snd_sof_dev *sdev, unsig
- 		ret = hda_dsp_iccmax_stream_hw_params(sdev, dsp_stream, dmab, NULL);
- 		if (ret < 0) {
- 			dev_err(sdev->dev, "error: iccmax stream prepare failed: %d\n", ret);
--			goto error;
-+			goto out_free;
- 		}
- 	} else {
- 		ret = hda_dsp_stream_hw_params(sdev, dsp_stream, dmab, NULL);
- 		if (ret < 0) {
- 			dev_err(sdev->dev, "error: hdac prepare failed: %d\n", ret);
--			goto error;
-+			goto out_free;
- 		}
- 		hda_dsp_stream_spib_config(sdev, dsp_stream, HDA_DSP_SPIB_ENABLE, size);
- 	}
- 
- 	return dsp_stream;
- 
--error:
--	hda_dsp_stream_put(sdev, direction, hstream->stream_tag);
-+out_free:
- 	snd_dma_free_pages(dmab);
-+out_put:
-+	hda_dsp_stream_put(sdev, direction, hstream->stream_tag);
- 	return ERR_PTR(ret);
- }
- 
-
-base-commit: 23d04328444a8fa0ca060c5e532220dac8e8bc26
--- 
-2.32.0
-
+Best regards,
+Krzysztof
