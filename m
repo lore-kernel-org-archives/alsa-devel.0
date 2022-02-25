@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CFB3DC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 02:41:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47897C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 02:41:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 23E8E1920;
-	Fri, 25 Feb 2022 03:40:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23E8E1920
+	by alsa0.perex.cz (Postfix) with ESMTPS id AE5DF1AF8;
+	Fri, 25 Feb 2022 03:40:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE5DF1AF8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645756878;
-	bh=vfXenIa2xeajxPYZ5qcsiU3HZFxGzB1pegqZTEHv5O4=;
+	s=default; t=1645756893;
+	bh=lawUbwxLS8pJsMMtnhHHoC0fMaHb4wwa9FSJKHy7rjI=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sbH18dbIx16bdoLySCG/g2O78shir1hETamLftyy3GahXQox9CKmbYtNOr262B4xw
-	 Ar63ywh9MPU7yHssurH9X+rPxklwOnUs7aducQV5zWeQKaNAzhIOAykJ/i45F66XLV
-	 NorZtxUQf24MtPK6R921s6TaATOXQEfr/XDPRNw0=
+	b=LNJIgDbx5iH1HZeOjNi4uO08ffekQC4I2iz1zfsTVqvmfp0bCzfQmskH/lbc7AkIm
+	 4wx0IIYeLcp/DTAkFHZuOhXDpMrASC1JR7jsbZFXvMgXV+pfyxHLDSarpWJyw9L7E1
+	 vSFTrdw/U0BtDwR9FbiSI+6i4tjF9JYHAy/nqSHI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 89E15F80516;
-	Fri, 25 Feb 2022 03:39:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 21286F8051A;
+	Fri, 25 Feb 2022 03:39:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5784EF804FD; Fri, 25 Feb 2022 03:39:25 +0100 (CET)
+ id C66B6F80430; Fri, 25 Feb 2022 03:39:25 +0100 (CET)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C2E6EF80430
- for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2022 03:39:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2E6EF80430
+ by alsa1.perex.cz (Postfix) with ESMTPS id E8BA4F800B6
+ for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2022 03:39:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8BA4F800B6
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="FeY9mIue"
+ header.b="gyV4pfPN"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1645756762; x=1677292762;
+ t=1645756761; x=1677292761;
  h=message-id:date:mime-version:subject:to:cc:references:
  from:in-reply-to:content-transfer-encoding;
- bh=vfXenIa2xeajxPYZ5qcsiU3HZFxGzB1pegqZTEHv5O4=;
- b=FeY9mIueGmBTyAWrHS2rGDNuTPduAXMcidLlRJqeqrpZdiLXUYOAWjJP
- q/TX2ANdFafBMbECZVYSsuwE8OB5us3X+LzsirTEG3EQ7hl5/G+YOdaR1
- tdIm2LnI0PPbzDbUygmaDdtFe7NxjcYycQDeUfMz1iVSe3YGQNrSFudn2
- ujsnjk0omx+9/QYJzGPM0t61NWqyfZrl2xXXsuEFzoBWRiGCV1bk4dIAX
- QVOFihpGbWI6TIQ+wWwXg6eXso0AkKSgo0fFhdKMUNl8gBTns+xc3pWl3
- ma6blto03/UrVq2kvoJmgtyecCwt2Q8bEV84xt/I1B8NgkKLy22P0pR9j g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10268"; a="277036147"
-X-IronPort-AV: E=Sophos;i="5.90,134,1643702400"; d="scan'208";a="277036147"
+ bh=lawUbwxLS8pJsMMtnhHHoC0fMaHb4wwa9FSJKHy7rjI=;
+ b=gyV4pfPNTeSL7S1A+dBWFp50cBkBxjAfbsEexcGd05IW/Gy7Oebyz6Uy
+ WG9/ZDHyczVBhnOC0a5LSDTuvvAKMU8t1Sno+coYgYKB/5SQvTwbLSuGN
+ AvswfDOOH5YJgLN5fk0AFju70SQdk5J4O0k6oQi9xcVbyfTO4tN7zR/Wz
+ LHa2kQ2uekYzdgj9ipA9yvfPRAZf/L7BV/JrcRfNCVWvi6Y4yTyX0krsa
+ QA7kWO8lGlvOPQ3NZx8jjgVhcbvXTbOwtnXHRZMd3E4IsbRO787tpgswa
+ uTd0OSNGn8xNiAa/amgR/VJMR9jPZUexpxwtMoxs+kRIMUzBAUZqadP9v w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10268"; a="277036141"
+X-IronPort-AV: E=Sophos;i="5.90,134,1643702400"; d="scan'208";a="277036141"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Feb 2022 18:39:16 -0800
-X-IronPort-AV: E=Sophos;i="5.90,134,1643702400"; d="scan'208";a="491832630"
+ 24 Feb 2022 18:39:13 -0800
+X-IronPort-AV: E=Sophos;i="5.90,134,1643702400"; d="scan'208";a="491832616"
 Received: from jsegev-mobl1.ger.corp.intel.com (HELO [10.212.99.193])
  ([10.212.99.193])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Feb 2022 18:39:15 -0800
-Message-ID: <d2a94d30-cfee-7821-fcb8-7b7ba129e5e9@linux.intel.com>
-Date: Thu, 24 Feb 2022 19:11:40 -0600
+ 24 Feb 2022 18:39:11 -0800
+Message-ID: <c2f249df-0b3e-1032-6514-81fabb544b6f@linux.intel.com>
+Date: Thu, 24 Feb 2022 18:56:40 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Firefox/91.0 Thunderbird/91.5.0
-Subject: Re: [PATCH 06/17] ASoC: Intel: avs: Add pipeline management requests
+Subject: Re: [PATCH 04/17] ASoC: Intel: avs: Inter process communication
 Content-Language: en-US
 To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
 References: <20220207122108.3780926-1-cezary.rojewski@intel.com>
- <20220207122108.3780926-7-cezary.rojewski@intel.com>
+ <20220207122108.3780926-5-cezary.rojewski@intel.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20220207122108.3780926-7-cezary.rojewski@intel.com>
+In-Reply-To: <20220207122108.3780926-5-cezary.rojewski@intel.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Cc: upstream@semihalf.com, harshapriya.n@intel.com, rad@semihalf.com,
@@ -92,74 +92,489 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 2/7/22 06:20, Cezary Rojewski wrote:
-> A 'Pipeline' represents both a container of module instances, and a
-> scheduling entity. Multiple pipelines can be bound together to create an
-> audio graph. The Pipeline state machine is entirely controlled by IPCs
-> (creation, deletion and state changes).
 
-How are the module instances connected within a pipeline? You've said
-too much or too little here.
+> The boot process involving ROM-code requires specific handling with
+> 'unstall' operations which are not required post-boot with normal IPC so
+> separate set of send-message handlers is added for each of the usecases.
+
+consider splitting this long sentence and use simpler logic. It's quite
+unclear how you went from boot to use cases.
 
 
-> +int avs_ipc_create_pipeline(struct avs_dev *adev, u16 req_size, u8 priority,
-> +			    u8 instance_id, bool lp, u16 attributes)
+> +#include "messages.h"
+
+avs_messages.h?
+
+>  
+>  struct avs_dev;
+>  
+> @@ -18,6 +19,9 @@ struct avs_dsp_ops {
+>  	int (* const power)(struct avs_dev *, u32, bool);
+>  	int (* const reset)(struct avs_dev *, u32, bool);
+>  	int (* const stall)(struct avs_dev *, u32, bool);
+> +	irqreturn_t (* const irq_handler)(int, void *);
+> +	irqreturn_t (* const irq_thread)(int, void *);
+> +	void (* const int_control)(struct avs_dev *, bool);
+
+kernel-doc or comments on what the last op might mean?
+
+>  };
+>  
+>  #define avs_dsp_op(adev, op, ...) \
+> @@ -34,6 +38,18 @@ struct avs_spec {
+>  
+>  	const u32 core_init_mask;	/* used during DSP boot */
+>  	const u64 attributes;		/* bitmask of AVS_PLATATTR_* */
+> +	const u32 sram_base_offset;
+> +	const u32 sram_window_size;
+> +
+> +	const u32 rom_status;
+> +	const u32 hipc_req_offset;
+> +	const u32 hipc_req_ext_offset;
+> +	const u32 hipc_req_busy_mask;
+> +	const u32 hipc_ack_offset;
+> +	const u32 hipc_ack_done_mask;
+> +	const u32 hipc_rsp_offset;
+> +	const u32 hipc_rsp_busy_mask;
+> +	const u32 hipc_ctl_offset;
+
+is this really desirable to describe the IPC registers, when we know
+there were 3 generations of Intel IPC registers. this is ipc-1.5 only.
+
+>  };
+>  
+>  struct avs_dev {
+> @@ -42,6 +58,9 @@ struct avs_dev {
+>  
+>  	void __iomem *adsp_ba;
+>  	const struct avs_spec *spec;
+> +	struct avs_ipc *ipc;
+> +
+> +	struct completion fw_ready;
+>  };
+>  
+>  /* from hda_bus to avs_dev */
+> @@ -61,4 +80,78 @@ int avs_dsp_core_stall(struct avs_dev *adev, u32 core_mask, bool stall);
+>  int avs_dsp_core_enable(struct avs_dev *adev, u32 core_mask);
+>  int avs_dsp_core_disable(struct avs_dev *adev, u32 core_mask);
+>  
+> +/* Inter Process Communication */
+> +
+> +struct avs_ipc_msg {
+> +	union {
+> +		u64 header;
+> +		union avs_global_msg glb;
+> +		union avs_reply_msg rsp;
+> +	};
+> +	void *data;
+> +	size_t size;
+> +};
+> +
+> +struct avs_ipc {
+> +	struct device *dev;
+> +
+> +	struct avs_ipc_msg rx;
+> +	u32 default_timeout_ms;
+> +	bool ready;
+
+ready for what? This should be described or documented.
+
+> +
+> +	bool rx_completed;
+> +	spinlock_t rx_lock;
+> +	struct mutex msg_mutex;
+
+checkpatch would tell you to add a comment for spinlock and mutex. it's
+quite unclear what they might describe and if they are related.
+
+> +	struct completion done_completion;
+> +	struct completion busy_completion;
+> +};
+> +
+> +#define AVS_EIPC	EREMOTEIO
+> +/*
+> + * IPC handlers may return positive value (firmware error code) what denotes
+> + * successful HOST <-> DSP communication yet failure to process specific request.
+> + *
+> + * Below macro converts returned value to linux kernel error code.
+> + * All IPC callers MUST use it as soon as firmware error code is consumed.
+> + */
+> +#define AVS_IPC_RET(ret) \
+> +	(((ret) <= 0) ? (ret) : -AVS_EIPC)
+
+why not use -EREMOTEIO directly? -AVS_EIPC is not very useful for the
+reader.
+
+And why -EREMOTEIO? I see that you used it in catpt but that's a very
+surprising code that no one else uses in sound/
+
+> +
+> +static inline void avs_ipc_err(struct avs_dev *adev, struct avs_ipc_msg *tx,
+> +			       const char *name, int error)
 > +{
-> +	union avs_global_msg msg = AVS_GLOBAL_REQUEST(CREATE_PIPELINE);
-> +	struct avs_ipc_msg request = {0};
-> +	int ret;
-> +
-> +	msg.create_ppl.ppl_mem_size = req_size;
-> +	msg.create_ppl.ppl_priority = priority;
-> +	msg.create_ppl.instance_id = instance_id;
-> +	msg.ext.create_ppl.lp = lp;
+> +	/*
+> +	 * If IPC channel is blocked e.g.: due to ongoing recovery,
+> +	 * -EPERM error code is expected and thus it's not an actual error.
+> +	 */
+> +	if (error == -EPERM)
+> +		dev_dbg(adev->dev, "%s 0x%08x 0x%08x failed: %d\n", name,
+> +			tx->glb.primary, tx->glb.ext.val, error);
+> +	else
+> +		dev_err(adev->dev, "%s 0x%08x 0x%08x failed: %d\n", name,
+> +			tx->glb.primary, tx->glb.ext.val, error);
+> +}
 
-you may want to describe what the concepts of 'priority', 'lp' and
-'attributes' are and which entity defines the values (topology?)
+we've used such functions before and the feedback, e.g. from GregKH and
+Mark Brown, has consistenly been that this is pushing the use of dev_dbg
+too far.
 
-> +	msg.ext.create_ppl.attributes = attributes;
-> +	request.header = msg.val;
+
+> +#define AVS_IPC_TIMEOUT_MS	300
+
+skl-sst-ipc.c:#define IPC_TIMEOUT_MSECS         3000
+
+that's one order of magniture lower. please add a comment or align.
+
+> +static void avs_dsp_receive_rx(struct avs_dev *adev, u64 header)
+> +{
+> +	struct avs_ipc *ipc = adev->ipc;
+> +	union avs_reply_msg msg = AVS_MSG(header);
 > +
-> +	ret = avs_dsp_send_msg(adev, &request, NULL);
-> +	if (ret)
-> +		avs_ipc_err(adev, &request, "create pipeline", ret);
+> +	ipc->rx.header = header;
+> +	if (!msg.status)
+> +		memcpy_fromio(ipc->rx.data, avs_uplink_addr(adev),
+> +			      ipc->rx.size);
+
+it wouldn't hurt to describe that the status determines whether
+additional information can be read from a mailbox.
+
+> +}
+> +
+> +static void avs_dsp_process_notification(struct avs_dev *adev, u64 header)
+> +{
+> +	struct avs_notify_mod_data mod_data;
+> +	union avs_notify_msg msg = AVS_MSG(header);
+> +	size_t data_size = 0;
+> +	void *data = NULL;
+> +
+> +	if (!adev->ipc->ready && msg.notify_msg_type != AVS_NOTIFY_FW_READY) {
+> +		dev_dbg(adev->dev, "FW not ready, skip notification: 0x%08x\n",
+> +			msg.primary);
+
+can this happen?
+
+you should add a comment on what could be sent before the first 'real'
+sign of life from the DSP.
+
+it's also unclear why this dev_dbg() when 'unknown notifications' below
+are handled as dev_warn()
+
+> +		return;
+> +	}
+> +
+> +	/* Calculate notification payload size. */
+> +	switch (msg.notify_msg_type) {
+> +	case AVS_NOTIFY_FW_READY:
+> +		break;
+> +
+> +	case AVS_NOTIFY_PHRASE_DETECTED:
+> +		data_size = sizeof(struct avs_notify_voice_data);
+> +		break;
+> +
+> +	case AVS_NOTIFY_RESOURCE_EVENT:
+> +		data_size = sizeof(struct avs_notify_res_data);
+> +		break;
+> +
+> +	case AVS_NOTIFY_MODULE_EVENT:
+> +		memcpy_fromio(&mod_data, avs_uplink_addr(adev), sizeof(mod_data));
+> +		data_size = sizeof(mod_data) + mod_data.data_size;
+
+it wouldn't hurt to describe the layout behing this formula.
+
+> +		break;
+> +
+> +	default:
+> +		dev_warn(adev->dev, "unknown notification: 0x%08x\n",
+> +			 msg.primary);
+> +		break;
+> +	}
+> +
+> +	if (data_size) {
+> +		data = kmalloc(data_size, GFP_KERNEL);
+> +		if (!data)
+> +			return;
+> +
+> +		memcpy_fromio(data, avs_uplink_addr(adev), data_size);
+> +	}
+> +
+> +	/* Perform notification-specific operations. */
+> +	switch (msg.notify_msg_type) {
+> +	case AVS_NOTIFY_FW_READY:
+> +		dev_dbg(adev->dev, "FW READY 0x%08x\n", msg.primary);
+> +		adev->ipc->ready = true;
+
+avs->ipc->fw_ready?
+
+> +		complete(&adev->fw_ready);> +		break;
+> +
+> +	default:
+> +		break;
+> +	}
+> +
+> +	kfree(data);
+> +}
+> +
+> +void avs_dsp_process_response(struct avs_dev *adev, u64 header)
+> +{
+> +	struct avs_ipc *ipc = adev->ipc;
+> +
+> +	if (avs_msg_is_reply(header)) {
+
+the naming is confusing, it's difficult for me to understand that a
+'response' could not be a 'reply'. The two terms are synonyms, aren't they?
+
+> +		/* Response processing is invoked from IRQ thread. */
+> +		spin_lock_irq(&ipc->rx_lock);
+> +		avs_dsp_receive_rx(adev, header);
+> +		ipc->rx_completed = true;
+> +		spin_unlock_irq(&ipc->rx_lock);
+> +	} else {
+> +		avs_dsp_process_notification(adev, header);
+> +	}
+> +
+> +	complete(&ipc->busy_completion);
+> +}
+> +
+> +irqreturn_t avs_dsp_irq_handler(int irq, void *dev_id)
+> +{
+> +	struct avs_dev *adev = dev_id;
+> +	struct avs_ipc *ipc = adev->ipc;
+> +	const struct avs_spec *const spec = adev->spec;
+> +	u32 adspis, hipc_rsp, hipc_ack;
+> +	irqreturn_t ret = IRQ_NONE;
+> +
+> +	adspis = snd_hdac_adsp_readl(adev, AVS_ADSP_REG_ADSPIS);
+> +	if (adspis == UINT_MAX || !(adspis & AVS_ADSP_ADSPIS_IPC))
+> +		return ret;
+> +
+> +	hipc_ack = snd_hdac_adsp_readl(adev, spec->hipc_ack_offset);
+> +	hipc_rsp = snd_hdac_adsp_readl(adev, spec->hipc_rsp_offset);
+> +
+> +	/* DSP acked host's request */
+> +	if (hipc_ack & spec->hipc_ack_done_mask) {
+> +		/* mask done interrupt */
+> +		snd_hdac_adsp_updatel(adev, spec->hipc_ctl_offset,
+> +				      AVS_ADSP_HIPCCTL_DONE, 0);
+> +
+> +		complete(&ipc->done_completion);
+> +
+> +		/* tell DSP it has our attention */
+> +		snd_hdac_adsp_updatel(adev, spec->hipc_ack_offset,
+> +				      spec->hipc_ack_done_mask,
+> +				      spec->hipc_ack_done_mask);
+> +		/* unmask done interrupt */
+> +		snd_hdac_adsp_updatel(adev, spec->hipc_ctl_offset,
+> +				      AVS_ADSP_HIPCCTL_DONE,
+> +				      AVS_ADSP_HIPCCTL_DONE);
+
+does the order between the complete() and the next two register updates
+matter?
+
+I would have updated the registers immediately and signal the completion
+later.
+
+I am also not sure why it's necessary to mask the done interrupt then
+unmask it. There is nothing that seems to require this masking?
+
+Or are you expecting the code blocked on wait_for_completion to be
+handled with interrupts masked, which could be quite racy?
+
+> +		ret = IRQ_HANDLED;
+> +	}
+> +
+> +	/* DSP sent new response to process */
+> +	if (hipc_rsp & spec->hipc_rsp_busy_mask) {
+> +		/* mask busy interrupt */
+> +		snd_hdac_adsp_updatel(adev, spec->hipc_ctl_offset,
+> +				      AVS_ADSP_HIPCCTL_BUSY, 0);
+> +
+> +		ret = IRQ_WAKE_THREAD;
+> +	}
 > +
 > +	return ret;
 > +}
 
->  			u32 val;
-> +			/* pipeline management */
-> +			struct {
-> +				u32 lp:1;
-> +				u32 rsvd:3;
-> +				u32 attributes:16;
-> +			} create_ppl;
-> +			struct {
-> +				u32 multi_ppl:1;
-> +				u32 sync_stop_start:1;
+> +static int avs_ipc_wait_busy_completion(struct avs_ipc *ipc, int timeout)
+> +{
+> +	int ret;
+> +
+> +again:
+> +	ret = wait_for_completion_timeout(&ipc->busy_completion,
+> +					  msecs_to_jiffies(timeout));
+> +	/*
+> +	 * DSP could be unresponsive at this point e.g. manifested by
+> +	 * EXCEPTION_CAUGHT notification. If so, no point in continuing.
 
-these two are not described at all?
+EXCEPTION_CAUGHT doesn't seem to be described in this patchset, so not
+sure what this comment might mean.
 
-> +			} set_ppl_state;
->  		} ext;
->  	};
->  } __packed;
+> +	 */
+> +	if (!ipc->ready)
+> +		return -EPERM;
+> +
+> +	if (!ret) {
+> +		if (!avs_ipc_is_busy(ipc))
+> +			return -ETIMEDOUT;
+> +		/*
+> +		 * Firmware did its job, either notification or reply
+> +		 * has been received - now wait until it's processed.
+> +		 */
+> +		wait_for_completion_killable(&ipc->busy_completion);
 
-> +/* Pipeline management messages */
-> +enum avs_pipeline_state {
-> +	AVS_PPL_STATE_INVALID,
-> +	AVS_PPL_STATE_UNINITIALIZED,
-> +	AVS_PPL_STATE_RESET,
-> +	AVS_PPL_STATE_PAUSED,
-> +	AVS_PPL_STATE_RUNNING,
-> +	AVS_PPL_STATE_EOS,
-> +	AVS_PPL_STATE_ERROR_STOP,
-> +	AVS_PPL_STATE_SAVED,
-> +	AVS_PPL_STATE_RESTORED,
+can you elaborate on why wait_for_completion() is not enough? I haven't
+seen the 'killable' attribute been used by anyone in sound/
 
-can you describe that the last two enums might entail and what the
-purpose might be?
+> +	}
+> +
+> +	/* Ongoing notification's bottom-half may cause early wakeup */
+> +	spin_lock(&ipc->rx_lock);
+> +	if (!ipc->rx_completed) {
+> +		/* Reply delayed due to notification. */
+> +		reinit_completion(&ipc->busy_completion);
+> +		spin_unlock(&ipc->rx_lock);
+> +		goto again;
 
-I can see how the firmware state could be saved in IMR for faster
-suspend/resume, but save/restore at the pipeline level doesn't seem to
-have an obvious match for an ASoC driver?
+shouldn't there be some counter to avoid potential infinite loops here?
+
+> +	}
+> +
+> +	spin_unlock(&ipc->rx_lock);
+> +	return 0;
+> +}
+
+> +static int avs_dsp_do_send_msg(struct avs_dev *adev, struct avs_ipc_msg *request,
+> +			       struct avs_ipc_msg *reply, int timeout)
+> +{
+> +	struct avs_ipc *ipc = adev->ipc;
+> +	int ret;
+> +
+> +	if (!ipc->ready)
+> +		return -EPERM;
+> +
+> +	mutex_lock(&ipc->msg_mutex);
+> +
+> +	spin_lock(&ipc->rx_lock);
+> +	avs_ipc_msg_init(ipc, reply);
+> +	avs_dsp_send_tx(adev, request);
+> +	spin_unlock(&ipc->rx_lock);
+> +
+> +	ret = avs_ipc_wait_busy_completion(ipc, timeout);
+> +	if (ret) {
+> +		if (ret == -ETIMEDOUT) {
+> +			dev_crit(adev->dev, "communication severed: %d, rebooting dsp..\n",
+> +				 ret);
+
+dev_crit() seems over the top if there is a recovery mechanism
+
+> +
+> +			avs_ipc_block(ipc);
+> +		}
+> +		goto exit;
+> +	}
+> +
+> +	ret = ipc->rx.rsp.status;
+> +	if (reply) {
+> +		reply->header = ipc->rx.header;
+> +		if (reply->data && ipc->rx.size)
+> +			memcpy(reply->data, ipc->rx.data, reply->size);
+> +	}
+> +
+> +exit:
+> +	mutex_unlock(&ipc->msg_mutex);
+> +	return ret;
+> +}
+> +
+> +static int avs_dsp_send_msg_sequence(struct avs_dev *adev,
+> +				     struct avs_ipc_msg *request,
+> +				     struct avs_ipc_msg *reply, int timeout,
+> +				     bool wake_d0i0, bool schedule_d0ix)
+
+the last two arguments are not used. is this intentional?
+
+> +{
+> +	return avs_dsp_do_send_msg(adev, request, reply, timeout);
+> +}
+> +
+> +int avs_dsp_send_msg_timeout(struct avs_dev *adev, struct avs_ipc_msg *request,
+> +			     struct avs_ipc_msg *reply, int timeout)
+> +{
+> +	return avs_dsp_send_msg_sequence(adev, request, reply, timeout,
+> +					 false, false);
+> +}
+> +
+> +int avs_dsp_send_msg(struct avs_dev *adev, struct avs_ipc_msg *request,
+> +		     struct avs_ipc_msg *reply)
+> +{
+> +	return avs_dsp_send_msg_timeout(adev, request, reply,
+> +					adev->ipc->default_timeout_ms);
+> +}
+
+is there really a 4-level nesting in your helpers?
+
+avs_dsp_send_msg
+  avs_dsp_send_msg_timeout
+     avs_dsp_send_msg_sequence
+           avs_dsp_do_send_msg
+
+this seems complicated, no?
+
+At the very least you should explain what a message and message sequence
+are, and why this is split this way.
+
+> +
+> +int avs_dsp_send_pm_msg_timeout(struct avs_dev *adev,
+> +				struct avs_ipc_msg *request,
+> +				struct avs_ipc_msg *reply, int timeout,
+> +				bool wake_d0i0)
+> +{
+> +	return avs_dsp_send_msg_sequence(adev, request, reply, timeout,
+> +					 wake_d0i0, false);
+> +}
+
+so the 'pm' means 'wake-d0i0'? that's far from intuitive.
+
+avs_dsp_send_d0i0_msg_timeout() would better describe what you are
+trying to do.
+
+In addition you need an explanation that d0i0 is a *firmware* concept
+without direct links to the *device* Dx status.
+
+> +int avs_dsp_send_pm_msg(struct avs_dev *adev,
+> +			struct avs_ipc_msg *request,
+> +			struct avs_ipc_msg *reply, bool wake_d0i0)
+> +{
+> +	return avs_dsp_send_pm_msg_timeout(adev, request, reply,
+> +					   adev->ipc->default_timeout_ms,
+> +					   wake_d0i0);
+> +}
+
+> +void avs_dsp_interrupt_control(struct avs_dev *adev, bool enable)
+> +{
+> +	const struct avs_spec *const spec = adev->spec;
+> +	u32 value;
+> +
+> +	value = enable ? AVS_ADSP_ADSPIC_IPC : 0;
+> +	snd_hdac_adsp_updatel(adev, AVS_ADSP_REG_ADSPIC,
+> +			      AVS_ADSP_ADSPIC_IPC, value);
+> +
+> +	value = enable ? AVS_ADSP_HIPCCTL_DONE : 0;
+> +	snd_hdac_adsp_updatel(adev, spec->hipc_ctl_offset,
+> +			      AVS_ADSP_HIPCCTL_DONE, value);
+> +
+> +	value = enable ? AVS_ADSP_HIPCCTL_BUSY : 0;
+> +	snd_hdac_adsp_updatel(adev, spec->hipc_ctl_offset,
+> +			      AVS_ADSP_HIPCCTL_BUSY, value);
+
+does the order matter? please add a comment.
+
+
