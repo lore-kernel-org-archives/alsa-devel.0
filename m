@@ -4,88 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92547C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 13:40:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5874C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 14:45:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B529F1F11;
-	Fri, 25 Feb 2022 14:40:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B529F1F11
+	by alsa0.perex.cz (Postfix) with ESMTPS id F397C1B61;
+	Fri, 25 Feb 2022 15:44:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F397C1B61
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645796452;
-	bh=+9xPAKBY1+l/E40bv3yeSBj6vpW4KT7NiXSyTLKVM1Y=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=jTMKoovllYA00J5Svu7xNOcYFZehLEEmFpXvRjzQ9uQpWCYeDgNhScRje8DJTJi0s
-	 Slj+ulQ41VVjMJjOpwnUeWGvqiFQQciei+QcVqWCimQ7Hyett91CiyxDuo8tf9QpE+
-	 kdfJ+xdlLD2XshkGGTAo+cQKuQSIefSKgRBHJZdI=
+	s=default; t=1645800347;
+	bh=BjD+45AIyWtSKp7iz+QdqB2GzFbZcMvDzi7ObqeYEC0=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=kES7ZS3CiW/Q6qeldDuvcX3Fb6zafUldVSQCh6BgMrPdwmYeUl0dNqVK1/OWaMsDo
+	 8ppErcJZg4d4SNGR3PjGMdJxs4wSLVtwHWaiMZpaRgbEFiXtk8DH/WpZ90HZJTzany
+	 YFYZiAxMOpCzFjZaAwbEbGegZZEzqUGGfakijCho=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 55E1EF800B6;
-	Fri, 25 Feb 2022 14:40:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 83645F8012F;
+	Fri, 25 Feb 2022 15:44:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9BC2EF800B6; Fri, 25 Feb 2022 14:40:00 +0100 (CET)
+ id 0C939F80132; Fri, 25 Feb 2022 15:44:51 +0100 (CET)
 Received: from alexa-out-sd-02.qualcomm.com (alexa-out-sd-02.qualcomm.com
  [199.106.114.39])
  (using TLSv1.2 with cipher AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1DD2AF800B6
- for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2022 14:39:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1DD2AF800B6
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7252BF80118
+ for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2022 15:44:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7252BF80118
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=quicinc.com header.i=@quicinc.com
- header.b="QFzTSwwy"
+ header.b="OCJFJTb9"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
- t=1645796395; x=1677332395;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=9OdzSD1XsrbczLLfCeXnsbqUptTDr7RDbwNE8J8aeuI=;
- b=QFzTSwwyulQfw6JST2rdYydq7cCtoYTZRHau/hn9oLL/AD6BMdS9l1dI
- BQTJcNfPZJocBquvgLywyNcj+Tkuer4G+NVLkuRgfv+RfhWc3GqbgcxKS
- 7lZVNY+fBqfgKnzwJkUGwXibwxZGoWN62NdbCRpkIUdirogDM3cAQErPU 0=;
-Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
- by alexa-out-sd-02.qualcomm.com with ESMTP; 25 Feb 2022 05:39:48 -0800
+ t=1645800285; x=1677336285;
+ h=from:to:cc:subject:date:message-id:mime-version;
+ bh=u4Jd9kNBAg8EIAfWuRUkFsMZH9ytNJSlFwtOXxXUdYg=;
+ b=OCJFJTb9WHdtNee+kP3PRxqvrrg4ymvd1BuM8edtAMajU3RTTy9i4jAc
+ +cWZtKa47XOcwlYspbrvfR0H1pjWjizmqQl5EiyuVjPUcI6xzzq2pVs0e
+ UG6fvBOMsMXVUCwoBnNx0OvNCTjnb0Jd+KwhmYevMW4eaRjwswomT2wV/ 8=;
+Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
+ by alexa-out-sd-02.qualcomm.com with ESMTP; 25 Feb 2022 06:44:39 -0800
 X-QCInternal: smtphost
 Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
- by ironmsg05-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Feb 2022 05:39:48 -0800
+ by ironmsg01-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Feb 2022 06:44:38 -0800
 Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
  nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.15; Fri, 25 Feb 2022 05:39:47 -0800
-Received: from [10.216.25.108] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.15; Fri, 25 Feb
- 2022 05:39:41 -0800
-Message-ID: <5f4a158f-d50a-0022-5a62-46ce84fec12c@quicinc.com>
-Date: Fri, 25 Feb 2022 19:09:38 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.1
-Subject: Re: [PATCH] soundwire: qcom: remove redundant wait for completion
-Content-Language: en-US
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, <agross@kernel.org>, 
- <bjorn.andersson@linaro.org>, <lgirdwood@gmail.com>, <broonie@kernel.org>, 
- <robh+dt@kernel.org>, <quic_plai@quicinc.com>, <bgoswami@codeaurora.org>, 
- <perex@perex.cz>, <tiwai@suse.com>, <rohitkr@codeaurora.org>,
+ 15.2.986.15; Fri, 25 Feb 2022 06:44:38 -0800
+Received: from hu-srivasam-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.15; Fri, 25 Feb 2022 06:44:32 -0800
+From: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+To: <agross@kernel.org>, <bjorn.andersson@linaro.org>, <lgirdwood@gmail.com>, 
+ <broonie@kernel.org>, <robh+dt@kernel.org>, <quic_plai@quicinc.com>,
+ <bgoswami@codeaurora.org>, <perex@perex.cz>, <tiwai@suse.com>,
+ <srinivas.kandagatla@linaro.org>, <rohitkr@codeaurora.org>,
  <linux-arm-msm@vger.kernel.org>, <alsa-devel@alsa-project.org>,
  <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <swboyd@chromium.org>, <judyhsiao@chromium.org>, <koul@kernel.org>,
+ <swboyd@chromium.org>, <judyhsiao@chromium.org>,
  <yung-chuan.liao@linux.intel.com>, <pierre-louis.bossart@linux.intel.com>,
  <sanyog.r.kale@intel.com>
-References: <1645795667-20176-1-git-send-email-quic_srivasam@quicinc.com>
- <861cd4c1-43a9-8175-7ad1-e7e51f5781b4@linaro.org>
-From: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
-Organization: Qualcomm
-In-Reply-To: <861cd4c1-43a9-8175-7ad1-e7e51f5781b4@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
+Subject: [PATCH v2] soundwire: qcom: remove redundant wait for completion
+Date: Fri, 25 Feb 2022 20:14:17 +0530
+Message-ID: <1645800257-27025-1-git-send-email-quic_srivasam@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+MIME-Version: 1.0
+Content-Type: text/plain
 X-Originating-IP: [10.80.80.8]
 X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nalasex01a.na.qualcomm.com (10.47.209.196)
-Cc: Venkata Prasad Potturu <quic_potturu@quicinc.com>
+Cc: Venkata Prasad Potturu <quic_potturu@quicinc.com>,
+ Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,46 +93,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Remove wait_for_completion_timeout from soundwire probe as it seems
+unnecessary and device enumeration is anyway not happening here,
+hence this api is blocking till it completes max wait time.
+Also, as device enumeration event is dependent on wcd938x probe to be
+completed, its of no use waiting here.
+Waiting here increasing the boot time almost 4 seconds and impacting
+other modules like touch screen.
 
-On 2/25/2022 7:07 PM, Srinivas Kandagatla wrote:
-Thanks for Your time Srini!!
->
-> On 25/02/2022 13:27, Srinivasa Rao Mandadapu wrote:
->> Remove wait_for_completion_timeout from soundwire probe
->> as it seems unnecessary and device enumeration is anyway not
->> happening here.
->
-> May be some details on the side effects of this wait would be good to 
-> add in the log.
-Okay. Will elaborate issue observed here.
->
->> Also, as device enumeration event is dependent on wcd938x probe to be
->> completed, its of no use waiting here.
->
-> fix tag is missing
->
-> Fixes: 06dd96738d618 ("soundwire: qcom: wait for enumeration to be 
-> complete in probe")
-Okay. Will add and re post.
->
->>
->> Signed-off-by: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
->> Co-developed-by: Venkata Prasad Potturu <quic_potturu@quicinc.com>
->> Signed-off-by: Venkata Prasad Potturu <quic_potturu@quicinc.com>
->> ---
->>   drivers/soundwire/qcom.c | 2 --
->>   1 file changed, 2 deletions(-)
->>
->> diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
->> index 5481341..9a32a24 100644
->> --- a/drivers/soundwire/qcom.c
->> +++ b/drivers/soundwire/qcom.c
->> @@ -1309,8 +1309,6 @@ static int qcom_swrm_probe(struct 
->> platform_device *pdev)
->>       }
->>         qcom_swrm_init(ctrl);
->> -    wait_for_completion_timeout(&ctrl->enumeration,
->> -                    msecs_to_jiffies(TIMEOUT_MS));
->>       ret = qcom_swrm_register_dais(ctrl);
->>       if (ret)
->>           goto err_master_add;
+Fixes: 06dd96738d618 ("soundwire: qcom: wait for enumeration to be complete in probe")
+
+Signed-off-by: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+Co-developed-by: Venkata Prasad Potturu <quic_potturu@quicinc.com>
+Signed-off-by: Venkata Prasad Potturu <quic_potturu@quicinc.com>
+---
+ drivers/soundwire/qcom.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+index 5481341..9a32a24 100644
+--- a/drivers/soundwire/qcom.c
++++ b/drivers/soundwire/qcom.c
+@@ -1309,8 +1309,6 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	qcom_swrm_init(ctrl);
+-	wait_for_completion_timeout(&ctrl->enumeration,
+-				    msecs_to_jiffies(TIMEOUT_MS));
+ 	ret = qcom_swrm_register_dais(ctrl);
+ 	if (ret)
+ 		goto err_master_add;
+-- 
+2.7.4
+
