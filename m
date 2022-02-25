@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 000C1C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 20:55:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EFD01C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 20:56:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1BBEE1F82;
-	Fri, 25 Feb 2022 21:54:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1BBEE1F82
+	by alsa0.perex.cz (Postfix) with ESMTPS id 330A41F72;
+	Fri, 25 Feb 2022 21:55:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 330A41F72
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645822538;
-	bh=n1WjNrXTDDJ1HlpfAhdDsNewfZtFBkLYWP+4hOiP0Hs=;
+	s=default; t=1645822560;
+	bh=/C5O+44swq7nXUgjieV9+8yLwXPVf09ux+gpONdw+vA=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lcuBovLFigyAugjxPO3bh2rvlNSNpT8jxrRK6DKFDq09aomezxDvkyAAGZtPfq1Mw
-	 GZw+bcbIDbu2hX00s6dBnGM3LMmr5Sfdd+JMcGPdI5SsLPc94vwBboaH7UJy7IZTlp
-	 8MqmR/MZvI/zCsQz0VYrbP/uVqEMFf9J2wkfRrRI=
+	b=XASUkc+uNPCOK+gVkWOa9yqcXTbQoVx+Sp7o1ZfT2d7jHm/BSSItAqucN3Z2O/RmS
+	 ArR+9/bgEWkW8fynU4jydAa/ewB9dfRq6kVsuJpvWhvctM1eJPcc61gpb7RGoYeZpK
+	 3IB0NlTvcjdFEuUBpr8txz3XSI6j6vU51c9S0FEs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EC57EF8052F;
-	Fri, 25 Feb 2022 21:52:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 34168F80538;
+	Fri, 25 Feb 2022 21:53:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1FEE5F80118; Fri, 25 Feb 2022 21:52:41 +0100 (CET)
+ id DFE27F80515; Fri, 25 Feb 2022 21:52:42 +0100 (CET)
 Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 295AEF80118
- for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2022 21:52:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 295AEF80118
+ by alsa1.perex.cz (Postfix) with ESMTPS id 99014F800B6
+ for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2022 21:52:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99014F800B6
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="aQ6eNisC"
+ header.b="ScwqxSJP"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1645822359; x=1677358359;
+ t=1645822360; x=1677358360;
  h=message-id:date:mime-version:subject:to:cc:references:
  from:in-reply-to:content-transfer-encoding;
- bh=n1WjNrXTDDJ1HlpfAhdDsNewfZtFBkLYWP+4hOiP0Hs=;
- b=aQ6eNisCtBDrNDa6mFFMfLCcviMRAcnZPKwGqUeLEq4FspB9V10SNvja
- s54FoGzBemyKoz2uws0WSTCv3rjEmUatf1a/znZK4Qdn5QufkTzMs3+yt
- qQwzClfrk0MHsMJq6mN4g/ei3gQxmX1Na6Zcc3ZaxarweT5yPBE8F2f1E
- ldaKLzEl2PqIDHb1cnlFwY+KxFk0by1NmWznWurZkTbSHMi7UPgriwhYU
- d9ijm0eEZ4zcaRnqD1sJhw10r7V1dRen5M0HJ4Deq5SlVCHat4oayi0IH
- 9YZ5NEDOV2i3wg7J5y+eNAl2eOsz+iGparJ6ved1N6y/SohcTfcpPNnAk Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10269"; a="313296133"
-X-IronPort-AV: E=Sophos;i="5.90,137,1643702400"; d="scan'208";a="313296133"
+ bh=/C5O+44swq7nXUgjieV9+8yLwXPVf09ux+gpONdw+vA=;
+ b=ScwqxSJPZljqZ7p+f79TSkm1CmTkjmZAOoMPpOqHLALKr5q3Q0pz/A32
+ bjMoQsD525c+NuVeFTDnSBaKYnK6e2xIHxBKFBJdDFO+1W/bllfr7LNpJ
+ llssir/iEP58F9a50G/RO6XXZRgZ2W/eebvGj3ztfMXDm2J545JlGOScK
+ xgUdGqqToil+98mg7frPfnyMM3UZvH8mMDO8r9fLFNg0RtZXfPDLT107n
+ RH776q2s7vF9stvPVRYdDzzP/9glEorPSZzLrxHeyrlPB+IqcfLJu0/wr
+ lWaXPLJOgz7MFv2/+UbvBl7tvA6GxUDL53UkLjw9LSyd9rS5drV2P/1k3 Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10269"; a="313296123"
+X-IronPort-AV: E=Sophos;i="5.90,137,1643702400"; d="scan'208";a="313296123"
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Feb 2022 12:52:37 -0800
-X-IronPort-AV: E=Sophos;i="5.90,137,1643702400"; d="scan'208";a="777520577"
+ 25 Feb 2022 12:52:29 -0800
+X-IronPort-AV: E=Sophos;i="5.90,137,1643702400"; d="scan'208";a="777520536"
 Received: from nnwogbe-mobl1.amr.corp.intel.com (HELO [10.212.101.231])
  ([10.212.101.231])
  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Feb 2022 12:52:36 -0800
-Message-ID: <2b6bc0f7-1e04-77b3-95d2-ff561b006ccb@linux.intel.com>
-Date: Fri, 25 Feb 2022 13:36:46 -0600
+ 25 Feb 2022 12:52:28 -0800
+Message-ID: <a32be4cf-3d33-4ffe-71ce-84cd500d520f@linux.intel.com>
+Date: Fri, 25 Feb 2022 11:40:19 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Firefox/91.0 Thunderbird/91.5.0
-Subject: Re: [RFC 09/13] ASoC: Intel: avs: Path creation and freeing
+Subject: Re: [RFC 04/13] ASoC: Intel: avs: Parse pplcfg and binding tuples
 Content-Language: en-US
 To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
 References: <20220207132532.3782412-1-cezary.rojewski@intel.com>
- <20220207132532.3782412-10-cezary.rojewski@intel.com>
+ <20220207132532.3782412-5-cezary.rojewski@intel.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20220207132532.3782412-10-cezary.rojewski@intel.com>
+In-Reply-To: <20220207132532.3782412-5-cezary.rojewski@intel.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Cc: upstream@semihalf.com, harshapriya.n@intel.com, rad@semihalf.com,
@@ -93,95 +93,86 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 On 2/7/22 07:25, Cezary Rojewski wrote:
-> To implement ASoC PCM operations, DSP path handling is needed. With path
-> template concept present, information carried by topology file can be
-> converted into runtime path representation. Each may be composed of
-> several pipelines and each pipeline can contain a number of processing
+> Stream on ADSP firmware is represented by one or more pipelines. Just
 
-it's not quite clear how you can have different pipelines with a single
-dma_is per path?
+I have a lot of questions on this one line...
 
-> modules inside. Number of templates and variants found within topology
-> may vastly outnumber the total amount of pipelines and modules supported
-> by AudioDSP firmware simultaneously (in runtime) so none of the IDs are
-> specified in the topology. These are assigned dynamically when needed
-> and account for limitations described by FIRMWARE_CONFIG and
-> HARDWARE_CONFIG basefw parameters.
+what is a 'stream'?
 
-It's already quite hard to create a topology using static IDs that will
-work, this dynamic creation adds an element of risk and validation,
-doesn't it?
+'stream' historically means 'direction' in ALSA.
 
-Can you clarify how you validated this dynamic capability?
+Then we have sdw_stream, which describes how source and sink ports are
+connected on a platform.
 
-> Paths are created on ->hw_params() and are freed on ->hw_free() ALSA PCM
-> operations. This choice is based on firmware expectations - need for
+We also have DPCM front-ends, visible mostly through the PCM device they
+expose to users.
 
-So a path seems to be completely tied to an FE then?
+In windows we have stream effects that are really meant to be on a
+single dedicated pipeline.
 
-That would mean that a 'dai pipeline' with 'mixin-dai-copier' would not
-be managed by an avs-path, and would somehow need to be autonomously
-created?
+other questions: can a stream represent data moving in different
+directions, e.g. in full-duplex mode.
 
-You really need to clarify how basic topologies with
-mixers/demux/loopbacks are handled.
+How would a loopback be described?
 
-> complete set of information when attempting to instantiate pipelines and
-> modules on AudioDSP side. With DMA and audio format provided, search
-> mechanism tests all path variants available in given path template until
-> a matching variant is found. Once found, information already available
-> is combined with all avs_tplg_* pieces pointed by matching path variant.
-> This finally allows to begin a cascade of IPCs which goes is to reserve
+What happens when a data path is split (demux) or merged (mixer)?
 
-this sentence makes no sense.
+How is a 'stream' different from a 'path template' that you referred to
+in Patch RFC 02/13
 
-did you mean 'which goals'?
+You would need at least 10 lines of plain English to make sure no one
+will misunderstand what 'stream' means.
 
-> resources and prepare DSP for upcoming audio streaming.
+> like modules, these are described by a config structure. Add parsing
+> helpers to support loading such information from the topology file.
+>
+> +/* Specifies path behaviour during PCM ->trigger(START) commnand. */
 
-> +static struct avs_tplg_path *
-> +avs_path_find_variant(struct avs_dev *adev,
-> +		      struct avs_tplg_path_template *template,
-> +		      struct snd_pcm_hw_params *fe_params,
-> +		      struct snd_pcm_hw_params *be_params)
-> +{
-> +	struct avs_tplg_path *variant;
+typo: command.
+
+> +enum avs_tplg_trigger {
+> +	AVS_TPLG_TRIGGER_AUTO = 0,
+> +	AVS_TPLG_TRIGGER_USERSPACE = 1, /* via sysfs */
+
+The feedback in previous versions was that we should not expose any
+sysfs interface that would interfere with decisions made by the driver.
+
+This is very controversial and a major hurdle to upstream any of this.
+
+Debugfs is fine, as suggested by Mark as well
+
+"
+If it's mainly used for debugging then it could be exposed through
+debugfs with less worry.
+"
+
+
+> +};
 > +
-> +	list_for_each_entry(variant, &template->path_list, node) {
-> +		dev_dbg(adev->dev, "check FE rate %d chn %d vbd %d bd %d\n",
-> +			variant->fe_fmt->sampling_freq, variant->fe_fmt->num_channels,
-> +			variant->fe_fmt->valid_bit_depth, variant->fe_fmt->bit_depth);
-> +		dev_dbg(adev->dev, "check BE rate %d chn %d vbd %d bd %d\n",
-> +			variant->be_fmt->sampling_freq, variant->be_fmt->num_channels,
-> +			variant->be_fmt->valid_bit_depth, variant->be_fmt->bit_depth);
+> +struct avs_tplg_pplcfg {
+> +	u16 req_size;
+
+what does this describe?
+
+> +	u8 priority;
+> +	bool lp;
+> +	u16 attributes;
+> +	enum avs_tplg_trigger trigger;
+> +};
 > +
-> +		if (variant->fe_fmt && avs_test_hw_params(fe_params, variant->fe_fmt) &&
-> +		    variant->be_fmt && avs_test_hw_params(be_params, variant->be_fmt))
-> +			return variant;
-> +	}
+> +struct avs_tplg_binding {
+> +	char target_tplg_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
+> +	u32 target_path_tmpl_id;
+> +	u32 target_ppl_id;
+> +	u32 target_mod_id;
+> +	u8 target_mod_pin;
 
-This matching between FE and BE formats is the key problem with this
-patchset IMHO.
+you really need to elaborate on what a template is, and how you use a
+template and a ppl id concurrently.
 
-We need the ability to reconfigure the BE based on constraint matching,
-not exact match with a fixed value!
-
+> +	u32 mod_id;
+> +	u8 mod_pin;
+> +	u8 is_sink;
+> +};
 > +
-> +	return NULL;
-> +}
-> +
-> +static void avs_path_module_free(struct avs_dev *adev, struct avs_path_module *mod)
-> +{
-> +	kfree(mod);
-> +}
-> +
-> +static struct avs_path_module *
-> +avs_path_module_create(struct avs_dev *adev,
-> +		       struct avs_path_pipeline *owner,
-> +		       struct avs_tplg_module *template)
-
-so you have templates for paths AND modules?
-
-Completely lost...
-
-I'll skip the rest of this patch.
+>  #endif
