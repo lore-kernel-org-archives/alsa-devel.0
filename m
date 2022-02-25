@@ -4,55 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16489C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 13:22:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4B40C433FE
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 13:23:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5912F1AA7;
-	Fri, 25 Feb 2022 14:22:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5912F1AA7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 09CEF1EDA;
+	Fri, 25 Feb 2022 14:22:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 09CEF1EDA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645795372;
-	bh=QeTqIQ3wQitzIsSCOXLCDNHXab6GX+uIIin2r2eyh44=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=MsVvGs6YDh2H2dOvk45lwgQs/I4oAWZh4hY6I04tISunJHjAWOvWWaoZyC8C9STxS
-	 xDkL5QxQzJHlsxDMBiSlSLsGgbLYZ2HcsBYfNI3W6puPqYihAPQVdeWe57vfPakU65
-	 ZmvR2ctDpMS9QP8JYVCqTjxzC6xMgZKSRdmfW0LM=
+	s=default; t=1645795388;
+	bh=GLzWDimUUvBsKksT8nNSyX03GWs62ynqiT2FPYF0Tto=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=GByC7h+Ba9WJQAID+pC8w8Cqa3m0G6jlBD3toDiGsYpR7oXLetwTjJzQ72gXom6p1
+	 EydmL+CNM28JR5BneMzMHJg3h4WfA3UTwBODFWdOjoW4zzjF8puCrabcY9PLZkDYTX
+	 p3Es45OEv+9j4hOYoax3ed6fxuvoXka3PDflV9Jg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 90639F8060A;
-	Fri, 25 Feb 2022 14:11:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 30E7AF8012F;
+	Fri, 25 Feb 2022 14:11:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9C6D5F80132; Fri, 25 Feb 2022 11:40:12 +0100 (CET)
-Received: from alexa-out-sd-02.qualcomm.com (alexa-out-sd-02.qualcomm.com
- [199.106.114.39])
+ id F0A1BF80132; Fri, 25 Feb 2022 11:40:20 +0100 (CET)
+Received: from alexa-out-sd-01.qualcomm.com (alexa-out-sd-01.qualcomm.com
+ [199.106.114.38])
  (using TLSv1.2 with cipher AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8D419F80118
- for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2022 11:40:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D419F80118
+ by alsa1.perex.cz (Postfix) with ESMTPS id 37387F800B6
+ for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2022 11:40:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 37387F800B6
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=quicinc.com header.i=@quicinc.com
- header.b="FD07+CAD"
+ header.b="Fly5+afl"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
- t=1645785610; x=1677321610;
- h=from:to:cc:subject:date:message-id:mime-version;
- bh=mudAdqXMqc4msOewE4p+yyZWAmcOkujoS1WyKCFB/IE=;
- b=FD07+CADg9ingyy2g/dAeE6Babvl++QmwTCsGZHNnAvrJxJZg1PvIK7z
- GFqqIBgUQjY/YlNaYaQOH5YwRcHYhSUuy5iEIoZcTFGZeGqBaSrKNVT8U
- 0kDf4TSsKlxBlKgsBcakzUkYkn7bNtlw61vdQBg0RHzmuCOcxplrAzOoC A=;
-Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
- by alexa-out-sd-02.qualcomm.com with ESMTP; 25 Feb 2022 02:40:04 -0800
+ t=1645785615; x=1677321615;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version;
+ bh=Lh99pIe6P2Nw6W6x79cUpkUeEAEuCSeab91A4DY0/c0=;
+ b=Fly5+aflUMTv3QB5nrN4Xy6m1U7dYLNHa+iNeb5leJs7eO2QaAu7KaOY
+ qqiEr/3A4bB9tog7EIPt+MpVt1wSl2/0GhehS94PGheuaBfNlouR1od87
+ NLHpVNI/dHAr0o5VdI4EbepT5tnb2OFvxKF/YPjbnkaOptRBTq4w8JDgL k=;
+Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
+ by alexa-out-sd-01.qualcomm.com with ESMTP; 25 Feb 2022 02:40:10 -0800
 X-QCInternal: smtphost
 Received: from unknown (HELO nasanex01a.na.qualcomm.com) ([10.52.223.231])
- by ironmsg01-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Feb 2022 02:40:03 -0800
+ by ironmsg05-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Feb 2022 02:40:10 -0800
 Received: from hu-rbankapu-blr.qualcomm.com (10.80.80.8) by
  nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.15; Fri, 25 Feb 2022 02:39:59 -0800
+ 15.2.986.15; Fri, 25 Feb 2022 02:40:06 -0800
 From: Raghu Bankapur <quic_rbankapu@quicinc.com>
 To: Vinod Koul <vkoul@kernel.org>, Jaroslav Kysela <perex@perex.cz>, "Takashi
  Iwai" <tiwai@suse.com>, ierre-Louis Bossart
@@ -62,10 +64,13 @@ To: Vinod Koul <vkoul@kernel.org>, Jaroslav Kysela <perex@perex.cz>, "Takashi
  <o-takashi@sakamocchi.jp>, Raghu Bankapur <quic_rbankapu@quicinc.com>,
  <alsa-devel@alsa-project.org>, Zubin Mithra <zsm@chromium.org>,
  <linux-kernel@vger.kernel.org>
-Subject: [PATCH V0 0/1] ALSA: pcm: fix blocking while loop in 
-Date: Fri, 25 Feb 2022 16:09:31 +0530
-Message-ID: <cover.1645784757.git.quic_rbankapu@quicinc.com>
+Subject: [PATCH V0 1/1] ALSA: pcm: fix blocking while loop in
+ snd_pcm_update_hw_ptr0()
+Date: Fri, 25 Feb 2022 16:09:32 +0530
+Message-ID: <4d8b1cb4b0db88c3e28207a81403fbf1e4a87bff.1645784757.git.quic_rbankapu@quicinc.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <cover.1645784757.git.quic_rbankapu@quicinc.com>
+References: <cover.1645784757.git.quic_rbankapu@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.80.80.8]
@@ -93,27 +98,25 @@ results in the machine locking up if runtime->hw_ptr_buffer_jiffies is 0.
 Validate runtime->hw_ptr_buffer_jiffies value before while loop to avoid
 delta check.
 
-
-when runtime->hw_ptr_buffer_jiffies is 0 then update of while condition 
-hdelta > xrun_threshold will be always true because hdelta will not
-change. This will lead to infinite loop causing lock-up
-
-This issue found during stability test, below log explains CPU lock-up on CPU1
-
-[ 922.249028] sched: RT throttling activated for rt_rq ffffffc0f9970778 (cpu 1)
-[ 922.249028] potential CPU hogs:
-[ 922.249028] **FastCapture (11426)
-[ 922.249105] ------------[ cut here ]---------
-
-To fix this lock-up issue, added new condition to check if runtime->
-hw_ptr_buffer_jiffies is ZERO or negative.
-
-Raghu Bankapur (1):
-  ALSA: pcm: fix blocking while loop in snd_pcm_update_hw_ptr0()
-
+Signed-off-by: Raghu Bankapur <quic_rbankapu@quicinc.com>
+---
  sound/core/pcm_lib.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index f2090025236b..bb9097f658be 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -352,7 +352,8 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
+ 		 * the elapsed time to detect xruns.
+ 		 */
+ 		jdelta = curr_jiffies - runtime->hw_ptr_jiffies;
+-		if (jdelta < runtime->hw_ptr_buffer_jiffies / 2)
++		if ((jdelta < runtime->hw_ptr_buffer_jiffies / 2) ||
++			(runtime->hw_ptr_buffer_jiffies <= 0))
+ 			goto no_delta_check;
+ 		hdelta = jdelta - delta * HZ / runtime->rate;
+ 		xrun_threshold = runtime->hw_ptr_buffer_jiffies / 2 + 1;
 -- 
 2.17.1
 
