@@ -4,73 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EFD01C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 20:56:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94520C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 20:56:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 330A41F72;
-	Fri, 25 Feb 2022 21:55:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 330A41F72
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6F25B1F7A;
+	Fri, 25 Feb 2022 21:55:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F25B1F7A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645822560;
-	bh=/C5O+44swq7nXUgjieV9+8yLwXPVf09ux+gpONdw+vA=;
+	s=default; t=1645822579;
+	bh=U+mxbqqdFb5KpuxmhqGId0cLOioJTxrJTteOK3WoFBM=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XASUkc+uNPCOK+gVkWOa9yqcXTbQoVx+Sp7o1ZfT2d7jHm/BSSItAqucN3Z2O/RmS
-	 ArR+9/bgEWkW8fynU4jydAa/ewB9dfRq6kVsuJpvWhvctM1eJPcc61gpb7RGoYeZpK
-	 3IB0NlTvcjdFEuUBpr8txz3XSI6j6vU51c9S0FEs=
+	b=CsAfUaOMWpuPvU8FhpRA/0D1DiYhxBmrqLJJQMJj1rrTDWAdL7S9wrWTxDSX/RF7Q
+	 wPQT7qLLCgA3P52jUkm3QcGQKRg5GD1BU7EHCp6IxacoWV/nthwWoNmTZ0TuNE0Tbu
+	 jzA+CGtS4sfzeBdSb8XKC0IKeZKhOPV+fQg5bcKs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 34168F80538;
+	by alsa1.perex.cz (Postfix) with ESMTP id B1E75F8053A;
 	Fri, 25 Feb 2022 21:53:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DFE27F80515; Fri, 25 Feb 2022 21:52:42 +0100 (CET)
+ id 8B528F80525; Fri, 25 Feb 2022 21:52:45 +0100 (CET)
 Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 99014F800B6
- for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2022 21:52:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99014F800B6
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3BAC8F80118
+ for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2022 21:52:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3BAC8F80118
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="ScwqxSJP"
+ header.b="Wl9jVhvw"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1645822360; x=1677358360;
+ t=1645822362; x=1677358362;
  h=message-id:date:mime-version:subject:to:cc:references:
  from:in-reply-to:content-transfer-encoding;
- bh=/C5O+44swq7nXUgjieV9+8yLwXPVf09ux+gpONdw+vA=;
- b=ScwqxSJPZljqZ7p+f79TSkm1CmTkjmZAOoMPpOqHLALKr5q3Q0pz/A32
- bjMoQsD525c+NuVeFTDnSBaKYnK6e2xIHxBKFBJdDFO+1W/bllfr7LNpJ
- llssir/iEP58F9a50G/RO6XXZRgZ2W/eebvGj3ztfMXDm2J545JlGOScK
- xgUdGqqToil+98mg7frPfnyMM3UZvH8mMDO8r9fLFNg0RtZXfPDLT107n
- RH776q2s7vF9stvPVRYdDzzP/9glEorPSZzLrxHeyrlPB+IqcfLJu0/wr
- lWaXPLJOgz7MFv2/+UbvBl7tvA6GxUDL53UkLjw9LSyd9rS5drV2P/1k3 Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10269"; a="313296123"
-X-IronPort-AV: E=Sophos;i="5.90,137,1643702400"; d="scan'208";a="313296123"
+ bh=U+mxbqqdFb5KpuxmhqGId0cLOioJTxrJTteOK3WoFBM=;
+ b=Wl9jVhvwHJtuB7lhlgVI2MxlmwSI/jr26/utE/H8hKvy2etcZ5Eu/Btx
+ Um7tjW1ZTT/XBC1jNhRGtlqa6rr3fS7nTdUCuLzgjkxoP9AyrkZ+1XeQ7
+ H7HcOWSN2REE7zkbUgPOXKf6iFpa2erGVp6FK7CpRwfPJAWpa1xLDChzx
+ kc8ktk7rlmodqU6lh4KIRCnpaq1or3EYupldz4QqvxzT6oc9ltNioNwCU
+ IQ5P3g66mxyJFuojHTJJ1/GS/xABFdOG3ED50naME9+aP8X1VItP/yeXj
+ vbWkZT7n3maSswHeDMMIR3PPM6z9PuE0YRqZkEYIjfMhAbufG7SnHch3K A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10269"; a="313296141"
+X-IronPort-AV: E=Sophos;i="5.90,137,1643702400"; d="scan'208";a="313296141"
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Feb 2022 12:52:29 -0800
-X-IronPort-AV: E=Sophos;i="5.90,137,1643702400"; d="scan'208";a="777520536"
+ 25 Feb 2022 12:52:40 -0800
+X-IronPort-AV: E=Sophos;i="5.90,137,1643702400"; d="scan'208";a="777520588"
 Received: from nnwogbe-mobl1.amr.corp.intel.com (HELO [10.212.101.231])
  ([10.212.101.231])
  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Feb 2022 12:52:28 -0800
-Message-ID: <a32be4cf-3d33-4ffe-71ce-84cd500d520f@linux.intel.com>
-Date: Fri, 25 Feb 2022 11:40:19 -0600
+ 25 Feb 2022 12:52:39 -0800
+Message-ID: <66c8d1f7-f181-03ae-d5b1-17ec60b2b798@linux.intel.com>
+Date: Fri, 25 Feb 2022 14:21:51 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Firefox/91.0 Thunderbird/91.5.0
-Subject: Re: [RFC 04/13] ASoC: Intel: avs: Parse pplcfg and binding tuples
+Subject: Re: [PATCH 13/17] ASoC: Intel: avs: Dynamic firmware resources
+ management
 Content-Language: en-US
 To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
-References: <20220207132532.3782412-1-cezary.rojewski@intel.com>
- <20220207132532.3782412-5-cezary.rojewski@intel.com>
+References: <20220207122108.3780926-1-cezary.rojewski@intel.com>
+ <20220207122108.3780926-14-cezary.rojewski@intel.com>
+ <c7a06bdf-5ad5-3d58-bd6b-4a533b8e7d8a@linux.intel.com>
+ <3e85850e-8e9b-757c-f640-498bf83996d8@intel.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20220207132532.3782412-5-cezary.rojewski@intel.com>
+In-Reply-To: <3e85850e-8e9b-757c-f640-498bf83996d8@intel.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Cc: upstream@semihalf.com, harshapriya.n@intel.com, rad@semihalf.com,
  tiwai@suse.com, hdegoede@redhat.com, broonie@kernel.org,
  amadeuszx.slawinski@linux.intel.com, cujomalainey@chromium.org,
@@ -92,87 +95,38 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 2/7/22 07:25, Cezary Rojewski wrote:
-> Stream on ADSP firmware is represented by one or more pipelines. Just
 
-I have a lot of questions on this one line...
+>>> +static int avs_dsp_enable(struct avs_dev *adev, u32 core_mask)
+>>> +{
+>>> +    u32 mask;
+>>> +    int ret;
+>>> +
+>>> +    ret = avs_dsp_core_enable(adev, core_mask);
+>>> +    if (ret < 0)
+>>> +        return ret;
+>>> +
+>>> +    mask = core_mask & ~AVS_MAIN_CORE_MASK;
+>>
+>> so here BIT(MAIN_CORE) is zero in mask
+> 
+> 
+> What's wrong with AVS_MAIN_CORE_MASK being used explicitly?
+> 
+>>> +    if (!mask)
+>>> +        /*
+>>> +         * without main core, fw is dead anyway
+>>> +         * so setting D0 for it is futile.
+>>
+>> I don't get the comment, you explicitly discarded the main core with
+>> your logical AND above, so this test means that all other non-main cores
+>> are disabled.
+> 
+> There is no setting D0 for MAIN_CORE as firmware is not operational
+> without it. Firmware needs to be notified about D3 -> D0 transitions
+> only in case of non-MAIN_COREs.
 
-what is a 'stream'?
+the comment was about 'without main core'.
 
-'stream' historically means 'direction' in ALSA.
-
-Then we have sdw_stream, which describes how source and sink ports are
-connected on a platform.
-
-We also have DPCM front-ends, visible mostly through the PCM device they
-expose to users.
-
-In windows we have stream effects that are really meant to be on a
-single dedicated pipeline.
-
-other questions: can a stream represent data moving in different
-directions, e.g. in full-duplex mode.
-
-How would a loopback be described?
-
-What happens when a data path is split (demux) or merged (mixer)?
-
-How is a 'stream' different from a 'path template' that you referred to
-in Patch RFC 02/13
-
-You would need at least 10 lines of plain English to make sure no one
-will misunderstand what 'stream' means.
-
-> like modules, these are described by a config structure. Add parsing
-> helpers to support loading such information from the topology file.
->
-> +/* Specifies path behaviour during PCM ->trigger(START) commnand. */
-
-typo: command.
-
-> +enum avs_tplg_trigger {
-> +	AVS_TPLG_TRIGGER_AUTO = 0,
-> +	AVS_TPLG_TRIGGER_USERSPACE = 1, /* via sysfs */
-
-The feedback in previous versions was that we should not expose any
-sysfs interface that would interfere with decisions made by the driver.
-
-This is very controversial and a major hurdle to upstream any of this.
-
-Debugfs is fine, as suggested by Mark as well
-
-"
-If it's mainly used for debugging then it could be exposed through
-debugfs with less worry.
-"
-
-
-> +};
-> +
-> +struct avs_tplg_pplcfg {
-> +	u16 req_size;
-
-what does this describe?
-
-> +	u8 priority;
-> +	bool lp;
-> +	u16 attributes;
-> +	enum avs_tplg_trigger trigger;
-> +};
-> +
-> +struct avs_tplg_binding {
-> +	char target_tplg_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
-> +	u32 target_path_tmpl_id;
-> +	u32 target_ppl_id;
-> +	u32 target_mod_id;
-> +	u8 target_mod_pin;
-
-you really need to elaborate on what a template is, and how you use a
-template and a ppl id concurrently.
-
-> +	u32 mod_id;
-> +	u8 mod_pin;
-> +	u8 is_sink;
-> +};
-> +
->  #endif
+This is difficult to follow, because you've discarded the main code in
+the if (!mask), so that's an always-true case, which makes the rest of
+the explanations not so clear.
