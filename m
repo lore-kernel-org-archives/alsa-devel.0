@@ -4,80 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4B40C433FE
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 13:23:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5BC41C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 13:23:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 09CEF1EDA;
-	Fri, 25 Feb 2022 14:22:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 09CEF1EDA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9AE3C1B54;
+	Fri, 25 Feb 2022 14:22:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9AE3C1B54
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645795388;
-	bh=GLzWDimUUvBsKksT8nNSyX03GWs62ynqiT2FPYF0Tto=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=GByC7h+Ba9WJQAID+pC8w8Cqa3m0G6jlBD3toDiGsYpR7oXLetwTjJzQ72gXom6p1
-	 EydmL+CNM28JR5BneMzMHJg3h4WfA3UTwBODFWdOjoW4zzjF8puCrabcY9PLZkDYTX
-	 p3Es45OEv+9j4hOYoax3ed6fxuvoXka3PDflV9Jg=
+	s=default; t=1645795404;
+	bh=tniIWU1QndGtacVBhKNUVG+10zbjpnJWTlLWjn/TGjQ=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=dSQWG9rsrIsrWp4AXKMrQxpVQvuEBM7hhUNyg/0z9jXy9HcHBoBNnFz9HEVx/lHk3
+	 19eSTj98zK+7lckr0SdchFVjJW/0FMaQCrnJLwOyD1gziQcb21n45DvC7ia/nThL4l
+	 RKkFbERY87cxo1t74qmP5yxh7ew/qgi2RUF5Hufc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 30E7AF8012F;
+	by alsa1.perex.cz (Postfix) with ESMTP id D6DEAF8060F;
 	Fri, 25 Feb 2022 14:11:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F0A1BF80132; Fri, 25 Feb 2022 11:40:20 +0100 (CET)
-Received: from alexa-out-sd-01.qualcomm.com (alexa-out-sd-01.qualcomm.com
- [199.106.114.38])
- (using TLSv1.2 with cipher AES256-SHA (256/256 bits))
+ id 51BDDF800B6; Fri, 25 Feb 2022 12:20:12 +0100 (CET)
+Received: from smtpbgsg1.qq.com (smtpbgsg1.qq.com [54.254.200.92])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 37387F800B6
- for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2022 11:40:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 37387F800B6
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=quicinc.com header.i=@quicinc.com
- header.b="Fly5+afl"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
- t=1645785615; x=1677321615;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version;
- bh=Lh99pIe6P2Nw6W6x79cUpkUeEAEuCSeab91A4DY0/c0=;
- b=Fly5+aflUMTv3QB5nrN4Xy6m1U7dYLNHa+iNeb5leJs7eO2QaAu7KaOY
- qqiEr/3A4bB9tog7EIPt+MpVt1wSl2/0GhehS94PGheuaBfNlouR1od87
- NLHpVNI/dHAr0o5VdI4EbepT5tnb2OFvxKF/YPjbnkaOptRBTq4w8JDgL k=;
-Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
- by alexa-out-sd-01.qualcomm.com with ESMTP; 25 Feb 2022 02:40:10 -0800
-X-QCInternal: smtphost
-Received: from unknown (HELO nasanex01a.na.qualcomm.com) ([10.52.223.231])
- by ironmsg05-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Feb 2022 02:40:10 -0800
-Received: from hu-rbankapu-blr.qualcomm.com (10.80.80.8) by
- nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.15; Fri, 25 Feb 2022 02:40:06 -0800
-From: Raghu Bankapur <quic_rbankapu@quicinc.com>
-To: Vinod Koul <vkoul@kernel.org>, Jaroslav Kysela <perex@perex.cz>, "Takashi
- Iwai" <tiwai@suse.com>, ierre-Louis Bossart
- <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>, "Kai
- Vehmanen" <kai.vehmanen@linux.intel.com>, Ranjani Sridharan
- <ranjani.sridharan@linux.intel.com>, Takashi Sakamoto
- <o-takashi@sakamocchi.jp>, Raghu Bankapur <quic_rbankapu@quicinc.com>,
- <alsa-devel@alsa-project.org>, Zubin Mithra <zsm@chromium.org>,
- <linux-kernel@vger.kernel.org>
-Subject: [PATCH V0 1/1] ALSA: pcm: fix blocking while loop in
- snd_pcm_update_hw_ptr0()
-Date: Fri, 25 Feb 2022 16:09:32 +0530
-Message-ID: <4d8b1cb4b0db88c3e28207a81403fbf1e4a87bff.1645784757.git.quic_rbankapu@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1645784757.git.quic_rbankapu@quicinc.com>
-References: <cover.1645784757.git.quic_rbankapu@quicinc.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7A680F800B6
+ for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2022 12:19:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A680F800B6
+X-QQ-mid: bizesmtp74t1645787977tb99bvk4
+Received: from localhost.localdomain (unknown [58.240.82.166])
+ by bizesmtp.qq.com (ESMTP) with 
+ id ; Fri, 25 Feb 2022 19:19:31 +0800 (CST)
+X-QQ-SSF: 01400000002000C0F000000A0000000
+X-QQ-FEAT: JRmPfD6HWhwtEx95bUE3TkDE0Zl0T/p5bw+l9Du6N8AbfR6XjS0YDNEzACYAx
+ IjtVDQf6ogeyNJNbXUefxDlGFp79P85xICFE3BGBqXvxNhTOhwZ7OBVIF5R5745EUA81A90
+ wdr6B/k31D97kERdVqHlr6COgAOzp0lSQmIFIXQWVjqFrNaLRsYVzx5nx/31HA3MuOCmqOp
+ oCkW7IIAilf12fRNwDuFT7UCYiZEnsed1W1QB9tJFgbSEXhM1WW77Q81BeXvqmbGrXvG3MP
+ xA9AZxoZ+Nt/54JB3VZkqSiP+1gpGIV2SgYgNFeshXA43FvbgjIwatMnaJBkEd6cJ+vhsH1
+ TuKAVs/hqP4yWB2otd3RenxbL6N8ELgQ9PgymW2SdsrfK4rsJA=
+X-QQ-GoodBg: 1
+From: Meng Tang <tangmeng@uniontech.com>
+To: perex@perex.cz,
+	tiwai@suse.com
+Subject: [PATCH] sound/mips: Use platform_get_irq() to get the interrupt
+Date: Fri, 25 Feb 2022 19:19:29 +0800
+Message-Id: <20220225111929.17194-1-tangmeng@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign1
+X-QQ-Bgrelay: 1
 X-Mailman-Approved-At: Fri, 25 Feb 2022 14:11:19 +0100
-Cc: Krishna Jha <quic_kkishorj@quicinc.com>
+Cc: Meng Tang <tangmeng@uniontech.com>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,30 +73,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When period interrupts are disabled, while loop in snd_pcm_update_hw_ptr0()
-results in the machine locking up if runtime->hw_ptr_buffer_jiffies is 0.
-Validate runtime->hw_ptr_buffer_jiffies value before while loop to avoid
-delta check.
+platform_get_resource(pdev, IORESOURCE_IRQ, ..) relies on static
+allocation of IRQ resources in DT core code, this causes an issue
+when using hierarchical interrupt domains using "interrupts" property
+in the node as this bypassed the hierarchical setup and messed up the
+irq chaining.
 
-Signed-off-by: Raghu Bankapur <quic_rbankapu@quicinc.com>
+In preparation for removal of static setup of IRQ resource from DT core
+code use platform_get_irq().
+
+Signed-off-by: Meng Tang <tangmeng@uniontech.com>
 ---
- sound/core/pcm_lib.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/mips/snd-n64.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index f2090025236b..bb9097f658be 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -352,7 +352,8 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
- 		 * the elapsed time to detect xruns.
- 		 */
- 		jdelta = curr_jiffies - runtime->hw_ptr_jiffies;
--		if (jdelta < runtime->hw_ptr_buffer_jiffies / 2)
-+		if ((jdelta < runtime->hw_ptr_buffer_jiffies / 2) ||
-+			(runtime->hw_ptr_buffer_jiffies <= 0))
- 			goto no_delta_check;
- 		hdelta = jdelta - delta * HZ / runtime->rate;
- 		xrun_threshold = runtime->hw_ptr_buffer_jiffies / 2 + 1;
+diff --git a/sound/mips/snd-n64.c b/sound/mips/snd-n64.c
+index 463a6fe589eb..bff6d85b8fe2 100644
+--- a/sound/mips/snd-n64.c
++++ b/sound/mips/snd-n64.c
+@@ -289,8 +289,7 @@ static int __init n64audio_probe(struct platform_device *pdev)
+ 	struct snd_card *card;
+ 	struct snd_pcm *pcm;
+ 	struct n64audio *priv;
+-	struct resource *res;
+-	int err;
++	int err, irq;
+ 
+ 	err = snd_card_new(&pdev->dev, SNDRV_DEFAULT_IDX1,
+ 			   SNDRV_DEFAULT_STR1,
+@@ -337,12 +336,12 @@ static int __init n64audio_probe(struct platform_device *pdev)
+ 	strcpy(card->shortname, "N64 Audio");
+ 	strcpy(card->longname, "N64 Audio");
+ 
+-	res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
+-	if (!res) {
++	irq = platform_get_irq(pdev, 0);
++	if (irq < 0) {
+ 		err = -EINVAL;
+ 		goto fail_dma_alloc;
+ 	}
+-	if (devm_request_irq(&pdev->dev, res->start, n64audio_isr,
++	if (devm_request_irq(&pdev->dev, irq, n64audio_isr,
+ 				IRQF_SHARED, "N64 Audio", priv)) {
+ 		err = -EBUSY;
+ 		goto fail_dma_alloc;
 -- 
-2.17.1
+2.20.1
+
+
 
