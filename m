@@ -4,73 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D903C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 02:42:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92FCBC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 02:42:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 542B61B09;
-	Fri, 25 Feb 2022 03:41:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 542B61B09
+	by alsa0.perex.cz (Postfix) with ESMTPS id C7BE91AFE;
+	Fri, 25 Feb 2022 03:41:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C7BE91AFE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645756944;
-	bh=AL9VDsiPPAXu5dMtTEY+ajzdC2eDsaPDw2OkYEKy6Xo=;
+	s=default; t=1645756961;
+	bh=TJpmQK1FhUpf2DVpogbMHbQBqvaWPDVsgtivF9qTdmQ=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DTlN5d/XOSEpPUPerZ3bDpsiMlCRK6e/Ivx6zL6DRql5k2AYG/YHWbgWfCyE7mQy4
-	 K9M5JfWtGuLBtfUm9KmJe5hDUGyMcn9nQZRe/hNh04rLhVSGDWKdVQVvoOMQHjG3Wd
-	 hnqNLSGBnFadQAUImHO+XEO+Bruwuc4U0wYkHgNU=
+	b=YUr7wMSVPfgeCHzEHKVgJBv4F8vmmbzKAn2bg+rKgJRghpOauftTTdMHG2G/pW/Ud
+	 6F03E+y46C7HY8Stc89MREf8Ty3zDOzlCV2uuyEtmUsyGNk5UAiqIV3dAMvfNIhINS
+	 J2lfdcKTi/+hNuWJJCYO6INDYNGiSLlAL/hzeSKc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 96EB0F80529;
-	Fri, 25 Feb 2022 03:39:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 55487F8052F;
+	Fri, 25 Feb 2022 03:39:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E8C8FF80169; Fri, 25 Feb 2022 03:39:28 +0100 (CET)
+ id D2159F80517; Fri, 25 Feb 2022 03:39:32 +0100 (CET)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 660EFF804D9
- for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2022 03:39:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 660EFF804D9
+ by alsa1.perex.cz (Postfix) with ESMTPS id A48F2F800B6
+ for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2022 03:39:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A48F2F800B6
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="VEwMLyrG"
+ header.b="ZB3PTCVl"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1645756762; x=1677292762;
+ t=1645756770; x=1677292770;
  h=message-id:date:mime-version:subject:to:cc:references:
  from:in-reply-to:content-transfer-encoding;
- bh=AL9VDsiPPAXu5dMtTEY+ajzdC2eDsaPDw2OkYEKy6Xo=;
- b=VEwMLyrGtLLqSy/MfDLIKizPeEYlPNfT6D5RScFKdva6T4TyR3CV8rET
- mqRo/fhoHeWGFYPh0APiHnu8oz/6HV9WWa0reGzHamUCpyL8nXmKK28/x
- SFHDaJtJ7hk9brmD56PqCUG0UvHrxZxiln07roPiM+fn1v+/zbPbagssJ
- SIrFs2oCmF+9xNER8dLo8xJ4BITkvVkkrZNw1ERw2RCMVpOIRSZVrwTLS
- Y4EEwDCo1VpbwpEHKoatC3m0H8479uXQXUtHEYpznwyQHKFboCEOT2TsQ
- zdkGyiMCF/xtwMW4xL0e5EE01ktl3qAA4Yszr1m4puarNWzzXVuWgQt03 w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10268"; a="277036157"
-X-IronPort-AV: E=Sophos;i="5.90,134,1643702400"; d="scan'208";a="277036157"
+ bh=TJpmQK1FhUpf2DVpogbMHbQBqvaWPDVsgtivF9qTdmQ=;
+ b=ZB3PTCVlcOW1obRYgJA32auivz+/U0enYt7ELYUCtIEndbcJ6uMv3N1D
+ wcvZgzeDNAXZKjZE0FrcvbpYz4IOueUnmsH8kIq1jVhCdFbdi7ULm9gLd
+ rh7+0y58kOPU0IAoIdzfPsqhKWOBrMOfQpcZTxhG9Hnhyz0Q3qxesILKM
+ IehBsJrDUsrW1XPQ5D4Wyf6wSFgYbh5sWJWPyWAJ+MAE8b7HK81xhy1St
+ bh+kcVUcs8gibRw5EcudjdluBFd7HfQFX5m6G5/ZhTh8767gFJajZcQs0
+ P1jCHn9MWQVbzqis0dwpQDN751443ucilAftC482wTtxpT9HekyxGCxrA g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10268"; a="277036175"
+X-IronPort-AV: E=Sophos;i="5.90,134,1643702400"; d="scan'208";a="277036175"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Feb 2022 18:39:20 -0800
-X-IronPort-AV: E=Sophos;i="5.90,134,1643702400"; d="scan'208";a="491832648"
+ 24 Feb 2022 18:39:27 -0800
+X-IronPort-AV: E=Sophos;i="5.90,134,1643702400"; d="scan'208";a="491832690"
 Received: from jsegev-mobl1.ger.corp.intel.com (HELO [10.212.99.193])
  ([10.212.99.193])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Feb 2022 18:39:19 -0800
-Message-ID: <24125d33-bcb6-050b-88fb-6b2ef549fbad@linux.intel.com>
-Date: Thu, 24 Feb 2022 19:37:37 -0600
+ 24 Feb 2022 18:39:25 -0800
+Message-ID: <c7a06bdf-5ad5-3d58-bd6b-4a533b8e7d8a@linux.intel.com>
+Date: Thu, 24 Feb 2022 20:02:52 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Firefox/91.0 Thunderbird/91.5.0
-Subject: Re: [PATCH 08/17] ASoC: Intel: avs: Add power management requests
+Subject: Re: [PATCH 13/17] ASoC: Intel: avs: Dynamic firmware resources
+ management
 Content-Language: en-US
 To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
 References: <20220207122108.3780926-1-cezary.rojewski@intel.com>
- <20220207122108.3780926-9-cezary.rojewski@intel.com>
+ <20220207122108.3780926-14-cezary.rojewski@intel.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20220207122108.3780926-9-cezary.rojewski@intel.com>
+In-Reply-To: <20220207122108.3780926-14-cezary.rojewski@intel.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Cc: upstream@semihalf.com, harshapriya.n@intel.com, rad@semihalf.com,
  tiwai@suse.com, hdegoede@redhat.com, broonie@kernel.org,
  amadeuszx.slawinski@linux.intel.com, cujomalainey@chromium.org,
@@ -91,133 +92,110 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-
-> Audio DSP supports low power states i.e.: transitions between D0 and D3
-> and D0-substates in form of D0i3. That process is a combination of core
-
-D0i0 and D0i3?
-
-> and IPC operations. Here, Dx and D0ix IPC handlers are added.
-> 
-> Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
-> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-> ---
->  sound/soc/intel/avs/messages.c | 43 ++++++++++++++++++++++++++++++++++
->  sound/soc/intel/avs/messages.h | 16 +++++++++++++
->  2 files changed, 59 insertions(+)
-> 
-> diff --git a/sound/soc/intel/avs/messages.c b/sound/soc/intel/avs/messages.c
-> index e870d5792a77..1b589689410f 100644
-> --- a/sound/soc/intel/avs/messages.c
-> +++ b/sound/soc/intel/avs/messages.c
-> @@ -347,3 +347,46 @@ int avs_ipc_get_large_config(struct avs_dev *adev, u16 module_id, u8 instance_id
->  
->  	return 0;
->  }
-> +
-> +int avs_ipc_set_dx(struct avs_dev *adev, u32 core_mask, bool powerup)
+> +static int avs_dsp_enable(struct avs_dev *adev, u32 core_mask)
 > +{
-> +	union avs_module_msg msg = AVS_MODULE_REQUEST(SET_DX);
-> +	struct avs_ipc_msg request;
-> +	struct avs_dxstate_info dx;
+> +	u32 mask;
 > +	int ret;
 > +
-> +	dx.core_mask = core_mask;
-> +	dx.dx_mask = powerup ? core_mask : 0;
-> +	request.header = msg.val;
-> +	request.data = &dx;
-> +	request.size = sizeof(dx);
+> +	ret = avs_dsp_core_enable(adev, core_mask);
+> +	if (ret < 0)
+> +		return ret;
 > +
-> +	/*
-> +	 * SET_D0 is sent for non-main cores only while SET_D3 is used to
-> +	 * suspend for all of them. Both cases prevent any D0I3 transitions.
+> +	mask = core_mask & ~AVS_MAIN_CORE_MASK;
 
-The asymmetry in the comment isn't clear. Did you mean that the main
-code is in D0 when powered?
+so here BIT(MAIN_CORE) is zero in mask
 
-> +	 */
-> +	ret = avs_dsp_send_pm_msg(adev, &request, NULL, true);
+> +	if (!mask)
+> +		/*
+> +		 * without main core, fw is dead anyway
+> +		 * so setting D0 for it is futile.
+
+I don't get the comment, you explicitly discarded the main core with
+your logical AND above, so this test means that all other non-main cores
+are disabled.
+
+> +		 */
+> +		return 0;
+> +
+> +	ret = avs_ipc_set_dx(adev, mask, true);
+> +	return AVS_IPC_RET(ret);
+> +}
+> +
+> +static int avs_dsp_disable(struct avs_dev *adev, u32 core_mask)
+> +{
+> +	int ret;
+> +
+> +	ret = avs_ipc_set_dx(adev, core_mask, false);
 > +	if (ret)
-> +		avs_ipc_err(adev, &request, "set dx", ret);
+> +		return AVS_IPC_RET(ret);
 > +
+> +	return avs_dsp_core_disable(adev, core_mask);
+> +}
+> +
+> +static int avs_dsp_get_core(struct avs_dev *adev, u32 core_id)
+> +{
+> +	u32 mask;
+> +	int ret;
+> +
+> +	mask = BIT_MASK(core_id);
+> +	if (mask == AVS_MAIN_CORE_MASK)
+> +		/* nothing to do for main core */
+> +		return 0;
+> +	if (core_id >= adev->hw_cfg.dsp_cores) {
+> +		ret = -EINVAL;
+> +		goto err;
+> +	}
+> +
+> +	adev->core_refs[core_id]++;
+> +	if (adev->core_refs[core_id] == 1) {
+> +		ret = avs_dsp_enable(adev, mask);
+> +		if (ret)
+> +			goto err_enable_dsp;
+> +	}
+> +
+> +	return 0;
+> +
+> +err_enable_dsp:
+> +	adev->core_refs[core_id]--;
+> +err:
+> +	dev_err(adev->dev, "get core failed: %d\n", ret);
+
+you should log which core could not be enabled
+
 > +	return ret;
 > +}
 > +
-> +int avs_ipc_set_d0ix(struct avs_dev *adev, bool enable_pg, bool streaming)
+> +static int avs_dsp_put_core(struct avs_dev *adev, u32 core_id)
 > +{
-> +	union avs_module_msg msg = AVS_MODULE_REQUEST(SET_D0IX);
-> +	struct avs_ipc_msg request = {0};
+> +	u32 mask;
 > +	int ret;
 > +
-> +	/* Wake & streaming for < cAVS 2.0 */
-
-I don't how anyone outside of Intel could understand this comment.
-Consider explaining what the two terms refer to.
-
-> +	msg.ext.set_d0ix.wake = enable_pg;
-
-simplify the argument? Not sure anyone could understand what wake and
-enable_pg mean.
-
-int avs_ipc_set_d0ix(struct avs_dev *adev, bool wake, bool streaming)
-
-> +	msg.ext.set_d0ix.streaming = streaming;
+> +	mask = BIT_MASK(core_id);
+> +	if (mask == AVS_MAIN_CORE_MASK)
+> +		/* nothing to do for main core */
+> +		return 0;
+> +	if (core_id >= adev->hw_cfg.dsp_cores) {
+> +		ret = -EINVAL;
+> +		goto err;
+> +	}
 > +
-> +	request.header = msg.val;
+> +	adev->core_refs[core_id]--;
+> +	if (!adev->core_refs[core_id]) {
+> +		ret = avs_dsp_disable(adev, mask);
+> +		if (ret)
+> +			goto err;
+> +	}
 > +
-> +	ret = avs_dsp_send_pm_msg(adev, &request, NULL, false);
-> +	if (ret)
-> +		avs_ipc_err(adev, &request, "set d0ix", ret);
-> +
+> +	return 0;
+> +err:
+> +	dev_err(adev->dev, "put core failed: %d\n", ret);
+
+put core %d
+
 > +	return ret;
 > +}
-> diff --git a/sound/soc/intel/avs/messages.h b/sound/soc/intel/avs/messages.h
-> index 1dabd1005327..bbdba4631b1f 100644
-> --- a/sound/soc/intel/avs/messages.h
-> +++ b/sound/soc/intel/avs/messages.h
-> @@ -101,6 +101,8 @@ enum avs_module_msg_type {
->  	AVS_MOD_LARGE_CONFIG_SET = 4,
->  	AVS_MOD_BIND = 5,
->  	AVS_MOD_UNBIND = 6,
-> +	AVS_MOD_SET_DX = 7,
-> +	AVS_MOD_SET_D0IX = 8,
->  	AVS_MOD_DELETE_INSTANCE = 11,
->  };
->  
-> @@ -137,6 +139,11 @@ union avs_module_msg {
->  				u32 dst_queue:3;
->  				u32 src_queue:3;
->  			} bind_unbind;
-> +			struct {
-> +				/* cAVS < 2.0 */
-> +				u32 wake:1;
-> +				u32 streaming:1;
 
-you probably want to explain how a 'streaming' flag is set at the module
-level? One would think all modules connected in a pipeline would need to
-use the same flag value.
+>  MODULE_LICENSE("GPL v2");
 
-> +			} set_d0ix;
->  		} ext;
->  	};
->  } __packed;
-> @@ -298,4 +305,13 @@ int avs_ipc_get_large_config(struct avs_dev *adev, u16 module_id, u8 instance_id
->  			     u8 param_id, u8 *request_data, size_t request_size,
->  			     u8 **reply_data, size_t *reply_size);
->  
-> +/* DSP cores and domains power management messages */
-> +struct avs_dxstate_info {
-> +	u32 core_mask;
-> +	u32 dx_mask;
+"GPL"
 
-what is the convention for D0 and D3 in the mask ? which one is 0 or 1?
-
-Is this also handled in a hierarchical way where only the bits set in
-core_mask matter?
-
-> +} __packed;
-> +
-> +int avs_ipc_set_dx(struct avs_dev *adev, u32 core_mask, bool powerup);
-> +int avs_ipc_set_d0ix(struct avs_dev *adev, bool enable_pg, bool streaming);
-> +
->  #endif /* __SOUND_SOC_INTEL_AVS_MSGS_H */
