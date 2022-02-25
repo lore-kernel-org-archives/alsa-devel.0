@@ -4,74 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94520C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 20:56:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 474B0C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 20:56:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6F25B1F7A;
-	Fri, 25 Feb 2022 21:55:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F25B1F7A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 617081F7D;
+	Fri, 25 Feb 2022 21:55:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 617081F7D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645822579;
-	bh=U+mxbqqdFb5KpuxmhqGId0cLOioJTxrJTteOK3WoFBM=;
+	s=default; t=1645822590;
+	bh=81YUSMtoE3CseyFJ+850t7/l7y2zBQ1FtsOSaHCnc+I=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CsAfUaOMWpuPvU8FhpRA/0D1DiYhxBmrqLJJQMJj1rrTDWAdL7S9wrWTxDSX/RF7Q
-	 wPQT7qLLCgA3P52jUkm3QcGQKRg5GD1BU7EHCp6IxacoWV/nthwWoNmTZ0TuNE0Tbu
-	 jzA+CGtS4sfzeBdSb8XKC0IKeZKhOPV+fQg5bcKs=
+	b=fUSpJsX1EpDkatlXddn46BXg2Ha5HgVKH90dkWTW7xrbWqXjqB+MisAGJHeonfog9
+	 e/BAUj+cdacI/KgMxAt2nkE7+Kd5OMXfmI1j8gQm+p92/E8spbwa8vVcOXVycCeLb7
+	 CY5g0PLcvd7Qo5uY+TRUyOBo2uBEH7fVr6aCJoRA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B1E75F8053A;
-	Fri, 25 Feb 2022 21:53:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4758AF80543;
+	Fri, 25 Feb 2022 21:53:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8B528F80525; Fri, 25 Feb 2022 21:52:45 +0100 (CET)
+ id 5BB06F80528; Fri, 25 Feb 2022 21:52:46 +0100 (CET)
 Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3BAC8F80118
- for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2022 21:52:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3BAC8F80118
+ by alsa1.perex.cz (Postfix) with ESMTPS id C4831F80132
+ for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2022 21:52:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4831F80132
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="Wl9jVhvw"
+ header.b="TTqY89Gy"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1645822362; x=1677358362;
+ t=1645822360; x=1677358360;
  h=message-id:date:mime-version:subject:to:cc:references:
  from:in-reply-to:content-transfer-encoding;
- bh=U+mxbqqdFb5KpuxmhqGId0cLOioJTxrJTteOK3WoFBM=;
- b=Wl9jVhvwHJtuB7lhlgVI2MxlmwSI/jr26/utE/H8hKvy2etcZ5Eu/Btx
- Um7tjW1ZTT/XBC1jNhRGtlqa6rr3fS7nTdUCuLzgjkxoP9AyrkZ+1XeQ7
- H7HcOWSN2REE7zkbUgPOXKf6iFpa2erGVp6FK7CpRwfPJAWpa1xLDChzx
- kc8ktk7rlmodqU6lh4KIRCnpaq1or3EYupldz4QqvxzT6oc9ltNioNwCU
- IQ5P3g66mxyJFuojHTJJ1/GS/xABFdOG3ED50naME9+aP8X1VItP/yeXj
- vbWkZT7n3maSswHeDMMIR3PPM6z9PuE0YRqZkEYIjfMhAbufG7SnHch3K A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10269"; a="313296141"
-X-IronPort-AV: E=Sophos;i="5.90,137,1643702400"; d="scan'208";a="313296141"
+ bh=81YUSMtoE3CseyFJ+850t7/l7y2zBQ1FtsOSaHCnc+I=;
+ b=TTqY89Gyb2o4IDCnMjDP5RDI7fVH5EnPvGB8tFQ2UruQM53NxhJnDQ/O
+ Op7ndlOyo5rAf+8U+H6+zPN5JoAXtO/O9QlO2psdpj1lDoTC4KFIWXY+S
+ x5J+moM7fa0N/u0BJMfjrVAmIX71GX7+WykL1wc4k2lelu8ucueF5LVVI
+ YBOwyd3IeyqBSLKtCM42mbx5U/uzuRGK+pJUuu9jiaUBhEieRVleMlXb+
+ Y9qh8jwrh4NzueQKNEYZmXvb1guefMPMwC7eyFc48RC6fD/DuF0Rpf/h5
+ ge6H7MQtvHrk61n11aLTX5PFJma86XUA0xJxqBl5hGKIUKuZ9+hypH7VC Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10269"; a="313296136"
+X-IronPort-AV: E=Sophos;i="5.90,137,1643702400"; d="scan'208";a="313296136"
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Feb 2022 12:52:40 -0800
-X-IronPort-AV: E=Sophos;i="5.90,137,1643702400"; d="scan'208";a="777520588"
+ 25 Feb 2022 12:52:39 -0800
+X-IronPort-AV: E=Sophos;i="5.90,137,1643702400"; d="scan'208";a="777520582"
 Received: from nnwogbe-mobl1.amr.corp.intel.com (HELO [10.212.101.231])
  ([10.212.101.231])
  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Feb 2022 12:52:39 -0800
-Message-ID: <66c8d1f7-f181-03ae-d5b1-17ec60b2b798@linux.intel.com>
-Date: Fri, 25 Feb 2022 14:21:51 -0600
+ 25 Feb 2022 12:52:38 -0800
+Message-ID: <49fcc185-f954-1811-729f-5969fcb68125@linux.intel.com>
+Date: Fri, 25 Feb 2022 13:42:00 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Firefox/91.0 Thunderbird/91.5.0
-Subject: Re: [PATCH 13/17] ASoC: Intel: avs: Dynamic firmware resources
- management
+Subject: Re: [RFC 10/13] ASoC: Intel: avs: Path state management
 Content-Language: en-US
 To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
-References: <20220207122108.3780926-1-cezary.rojewski@intel.com>
- <20220207122108.3780926-14-cezary.rojewski@intel.com>
- <c7a06bdf-5ad5-3d58-bd6b-4a533b8e7d8a@linux.intel.com>
- <3e85850e-8e9b-757c-f640-498bf83996d8@intel.com>
+References: <20220207132532.3782412-1-cezary.rojewski@intel.com>
+ <20220207132532.3782412-11-cezary.rojewski@intel.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <3e85850e-8e9b-757c-f640-498bf83996d8@intel.com>
+In-Reply-To: <20220207132532.3782412-11-cezary.rojewski@intel.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Cc: upstream@semihalf.com, harshapriya.n@intel.com, rad@semihalf.com,
@@ -95,38 +92,190 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
+On 2/7/22 07:25, Cezary Rojewski wrote:
+> Add functions to ease with state changing of all objects found in the
+> path. Each represents either a BIND/UNBIND or SET_PIPEPILE_STATE IPC.
 
->>> +static int avs_dsp_enable(struct avs_dev *adev, u32 core_mask)
->>> +{
->>> +    u32 mask;
->>> +    int ret;
->>> +
->>> +    ret = avs_dsp_core_enable(adev, core_mask);
->>> +    if (ret < 0)
->>> +        return ret;
->>> +
->>> +    mask = core_mask & ~AVS_MAIN_CORE_MASK;
->>
->> so here BIT(MAIN_CORE) is zero in mask
-> 
-> 
-> What's wrong with AVS_MAIN_CORE_MASK being used explicitly?
-> 
->>> +    if (!mask)
->>> +        /*
->>> +         * without main core, fw is dead anyway
->>> +         * so setting D0 for it is futile.
->>
->> I don't get the comment, you explicitly discarded the main core with
->> your logical AND above, so this test means that all other non-main cores
->> are disabled.
-> 
-> There is no setting D0 for MAIN_CORE as firmware is not operational
-> without it. Firmware needs to be notified about D3 -> D0 transitions
-> only in case of non-MAIN_COREs.
+SET_PIPELINE?
 
-the comment was about 'without main core'.
+> DSP pipelines follow simple state machine scheme:
+> CREATE -> RESET -> PAUSE -> RUNNING -> PAUSE -> RESET -> DELETE>
+> There is no STOP, PAUSE serves that purpose instead.
 
-This is difficult to follow, because you've discarded the main code in
-the if (!mask), so that's an always-true case, which makes the rest of
-the explanations not so clear.
+that's not fully correct, the STOP can be handled in two steps due to
+DMA programming flows.
+
+> Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+> ---
+>  sound/soc/intel/avs/path.c | 130 +++++++++++++++++++++++++++++++++++++
+>  sound/soc/intel/avs/path.h |   5 ++
+>  2 files changed, 135 insertions(+)
+> 
+> diff --git a/sound/soc/intel/avs/path.c b/sound/soc/intel/avs/path.c
+> index 272d868bedc9..c6db3f091e66 100644
+> --- a/sound/soc/intel/avs/path.c
+> +++ b/sound/soc/intel/avs/path.c
+> @@ -285,3 +285,133 @@ struct avs_path *avs_path_create(struct avs_dev *adev, u32 dma_id,
+>  
+>  	return path;
+>  }
+> +
+> +int avs_path_bind(struct avs_path *path)
+> +{
+> +	struct avs_path_pipeline *ppl;
+> +	struct avs_dev *adev = path->owner;
+> +	int ret;
+> +
+> +	list_for_each_entry(ppl, &path->ppl_list, node) {
+> +		struct avs_path_binding *binding;
+> +
+> +		list_for_each_entry(binding, &ppl->binding_list, node) {
+> +			struct avs_path_module *source, *sink;
+> +
+> +			source = binding->source;
+> +			sink = binding->sink;
+> +
+> +			ret = avs_ipc_bind(adev, source->module_id,
+> +					   source->instance_id, sink->module_id,
+> +					   sink->instance_id, binding->sink_pin,
+> +					   binding->source_pin);
+> +			if (ret) {
+> +				dev_err(adev->dev, "bind path failed: %d\n", ret);
+> +				return AVS_IPC_RET(ret);
+
+so what happens for all the previously bound path?
+
+Is there an error-unwinding loop somewhere?
+
+> +			}
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +int avs_path_unbind(struct avs_path *path)
+> +{
+> +	struct avs_path_pipeline *ppl;
+> +	struct avs_dev *adev = path->owner;
+> +	int ret;
+> +
+> +	list_for_each_entry(ppl, &path->ppl_list, node) {
+> +		struct avs_path_binding *binding;
+> +
+> +		list_for_each_entry(binding, &ppl->binding_list, node) {
+> +			struct avs_path_module *source, *sink;
+> +
+> +			source = binding->source;
+> +			sink = binding->sink;
+> +
+> +			ret = avs_ipc_unbind(adev, source->module_id,
+> +					     source->instance_id, sink->module_id,
+> +					     sink->instance_id, binding->sink_pin,
+> +					     binding->source_pin);
+> +			if (ret) {
+> +				dev_err(adev->dev, "unbind path failed: %d\n", ret);
+> +				return AVS_IPC_RET(ret);
+
+what happens then? reboot?
+
+> +			}
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +int avs_path_reset(struct avs_path *path)
+> +{
+> +	struct avs_path_pipeline *ppl;
+> +	struct avs_dev *adev = path->owner;
+> +	int ret;
+> +
+> +	if (path->state == AVS_PPL_STATE_RESET)
+> +		return 0;
+> +
+> +	list_for_each_entry(ppl, &path->ppl_list, node) {
+> +		ret = avs_ipc_set_pipeline_state(adev, ppl->instance_id,
+> +						 AVS_PPL_STATE_RESET);
+> +		if (ret) {
+> +			dev_err(adev->dev, "reset path failed: %d\n", ret);
+> +			path->state = AVS_PPL_STATE_INVALID;
+> +			return AVS_IPC_RET(ret);
+> +		}
+> +	}
+> +
+> +	path->state = AVS_PPL_STATE_RESET;
+> +	return 0;
+> +}
+> +
+> +int avs_path_pause(struct avs_path *path)
+> +{
+> +	struct avs_path_pipeline *ppl;
+> +	struct avs_dev *adev = path->owner;
+> +	int ret;
+> +
+> +	if (path->state == AVS_PPL_STATE_PAUSED)
+> +		return 0;
+> +
+> +	list_for_each_entry_reverse(ppl, &path->ppl_list, node) {
+
+does the order actually matter?
+
+> +		ret = avs_ipc_set_pipeline_state(adev, ppl->instance_id,
+> +						 AVS_PPL_STATE_PAUSED);
+> +		if (ret) {
+> +			dev_err(adev->dev, "pause path failed: %d\n", ret);
+> +			path->state = AVS_PPL_STATE_INVALID;
+> +			return AVS_IPC_RET(ret);
+> +		}
+> +	}
+> +
+> +	path->state = AVS_PPL_STATE_PAUSED;
+> +	return 0;
+> +}
+
+it looks like you could use a helper since the flows are identical.
+
+> +
+> +int avs_path_run(struct avs_path *path, int trigger)
+> +{
+> +	struct avs_path_pipeline *ppl;
+> +	struct avs_dev *adev = path->owner;
+> +	int ret;
+> +
+> +	if (path->state == AVS_PPL_STATE_RUNNING && trigger == AVS_TPLG_TRIGGER_AUTO)
+> +		return 0;
+> +
+> +	list_for_each_entry(ppl, &path->ppl_list, node) {
+> +		if (ppl->template->cfg->trigger != trigger)
+> +			continue;
+> +
+> +		ret = avs_ipc_set_pipeline_state(adev, ppl->instance_id,
+> +						 AVS_PPL_STATE_RUNNING);
+> +		if (ret) {
+> +			dev_err(adev->dev, "run path failed: %d\n", ret);
+> +			path->state = AVS_PPL_STATE_INVALID;
+> +			return AVS_IPC_RET(ret);
+> +		}
+> +	}
+> +
+> +	path->state = AVS_PPL_STATE_RUNNING;
+> +	return 0;
+> +}
+> diff --git a/sound/soc/intel/avs/path.h b/sound/soc/intel/avs/path.h
+> index 3843e5a062a1..04a06473f04b 100644
+> --- a/sound/soc/intel/avs/path.h
+> +++ b/sound/soc/intel/avs/path.h
+> @@ -62,5 +62,10 @@ struct avs_path *avs_path_create(struct avs_dev *adev, u32 dma_id,
+>  				 struct avs_tplg_path_template *template,
+>  				 struct snd_pcm_hw_params *fe_params,
+>  				 struct snd_pcm_hw_params *be_params);
+> +int avs_path_bind(struct avs_path *path);
+> +int avs_path_unbind(struct avs_path *path);
+> +int avs_path_reset(struct avs_path *path);
+> +int avs_path_pause(struct avs_path *path);
+> +int avs_path_run(struct avs_path *path, int trigger);
+>  
+>  #endif
