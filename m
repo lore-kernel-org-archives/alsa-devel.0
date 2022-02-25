@@ -4,73 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13405C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 20:41:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25283C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 20:53:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B533D1EDD;
-	Fri, 25 Feb 2022 21:40:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B533D1EDD
+	by alsa0.perex.cz (Postfix) with ESMTPS id D699C1F27;
+	Fri, 25 Feb 2022 21:52:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D699C1F27
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645821666;
-	bh=zxDATE5T4nAxC32Whq1+k2Ts5ipceAvf6DKKgR9mfUQ=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1645822405;
+	bh=meAKQIKXTx+ytg6qzgCzIuMrlNWk9WIiwy/GSH1+Lsw=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iGhtDeb45ilUAIVKkXOHT/Sk5/+hIbUyrcPDu+741HqRJWV+4JevCBUF9+kAPCSal
-	 AthcFSX+DJUpf3lClD9G4SGndHUGWYwMbU6G15tAUg0SNZKGTgWlpenUEQMo6XE8Mi
-	 z3Gxd4aK5Ly4GhLby/U5rOHK67jNnEwOyyMhDLWw=
+	b=FHcbf8iRGxJg1HuTrKFhb6jgqp5ZhXUcgOYJ1Avxsz7HWi7tywhE66hK/OR9pkC1W
+	 m1TXJMm+2vQCwGto+DTkqDBsj0WhF4Ba31sIsyLEynGIyi4XgKmHqDOh17cCIlf1dY
+	 411UQJuGz0RFHbcHv7ygjTs5tvDer5oHHfzynm7E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 479DEF800B6;
-	Fri, 25 Feb 2022 21:40:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 48471F80271;
+	Fri, 25 Feb 2022 21:52:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3B2FAF80132; Fri, 25 Feb 2022 21:40:15 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E2393F800B6
- for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2022 21:40:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2393F800B6
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="hrpQ7YwS"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 6CDF3F8020D; Fri, 25 Feb 2022 21:52:33 +0100 (CET)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 4497E6194B;
- Fri, 25 Feb 2022 20:40:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0684FC340E7;
- Fri, 25 Feb 2022 20:40:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1645821605;
- bh=zxDATE5T4nAxC32Whq1+k2Ts5ipceAvf6DKKgR9mfUQ=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=hrpQ7YwSeh5sscihYcV+TYDt1O1t3NgWkx5jOWu+WSlXp+Glrz/YlfV/x9AGEUQg6
- KW9W50yPmmkhpl2dCQJ0UDYT7ii7otMq7bmriBAqifVREs7SPVMS23+SEdHRrtZje3
- z9M2gTLBRQM8x7BKzkHa0SNpLuxLbHVHOp2TplWn22MqP2g5SVymEik2ZlDYeeaVWU
- Q7aIfqk04dAzRpjaf0i4035gtcx9EXtZF4e8pC0GxOyG57/2iwlZMdTioq4R+5bOOx
- JquN1ANWyZ5kGRSBF5Co235A8oZWLEDB+br1bEpCLNuZzPbjenRGpAOyp44sFk89Xr
- YzoaR6mZz0L4A==
-Date: Fri, 25 Feb 2022 20:40:00 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: Re: [PATCH V2 1/2] ASoC: dt-bindings: audio-graph-port: Add
- dai-tdm-slot-width-map
-Message-ID: <Yhk+oFJBMAqYNc6r@sirena.org.uk>
-References: <20220217134835.282389-1-rf@opensource.cirrus.com>
- <20220217134835.282389-2-rf@opensource.cirrus.com>
- <YhgCbKzfPXEVauwW@robh.at.kernel.org>
- <7d11f36e-4b56-8c17-a114-d024f76f3b9e@opensource.cirrus.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4533EF800B6
+ for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2022 21:52:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4533EF800B6
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="FH21fQ55"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1645822351; x=1677358351;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=meAKQIKXTx+ytg6qzgCzIuMrlNWk9WIiwy/GSH1+Lsw=;
+ b=FH21fQ553ZVF0kStqj5H5VP2czIVi84w5ta5kG1q3qj5L+CNshgcFN/B
+ SwxKity59IfGc3dkfzf99ehfgcqRGqN4KRHI7M4xoUgvx/4VAtx67O0Zu
+ 7mhkBojmkzFvjDacjNWAJ3gokifRyTKctlXLjDWlw5sFahGnE76e/w5lb
+ Zl/AYe/Egg/TKDwuZMzyJ8RguOb5TXdulAesdxoAOxsT3y29jrG4UoRTS
+ 17RyM4X+6x7VWwX+JZt6ZBPG712AcqmT7Y3NOCnpTwFXVx2fF7xqhlNkQ
+ d0HIcSa/AoLeGB0OQMTPoKKyOc2xAto9k9lMQtF4kLt9krUTFmOP9Rg4H Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10269"; a="313296115"
+X-IronPort-AV: E=Sophos;i="5.90,137,1643702400"; d="scan'208";a="313296115"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Feb 2022 12:52:25 -0800
+X-IronPort-AV: E=Sophos;i="5.90,137,1643702400"; d="scan'208";a="777520517"
+Received: from nnwogbe-mobl1.amr.corp.intel.com (HELO [10.212.101.231])
+ ([10.212.101.231])
+ by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Feb 2022 12:52:24 -0800
+Message-ID: <b829b32d-7488-78a4-9e50-b1c37851e108@linux.intel.com>
+Date: Fri, 25 Feb 2022 10:33:02 -0600
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="/T0XV2S4I1DB6qKN"
-Content-Disposition: inline
-In-Reply-To: <7d11f36e-4b56-8c17-a114-d024f76f3b9e@opensource.cirrus.com>
-X-Cookie: I smell a wumpus.
-Cc: Rob Herring <robh@kernel.org>, alsa-devel@alsa-project.org,
- kuninori.morimoto.gx@renesas.com, devicetree@vger.kernel.org,
- patches@opensource.cirrus.com, linux-kernel@vger.kernel.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.5.0
+Subject: Re: [PATCH 00/17] ASoC: Intel: AVS - Audio DSP for cAVS
+Content-Language: en-US
+To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
+References: <20220207122108.3780926-1-cezary.rojewski@intel.com>
+ <702df428-e972-fcdc-c250-c0a73c4d2ba8@linux.intel.com>
+ <eb26c043-f80a-d283-0b4f-299bc182a6fe@intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <eb26c043-f80a-d283-0b4f-299bc182a6fe@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: upstream@semihalf.com, harshapriya.n@intel.com, rad@semihalf.com,
+ tiwai@suse.com, hdegoede@redhat.com, broonie@kernel.org,
+ amadeuszx.slawinski@linux.intel.com, cujomalainey@chromium.org,
+ lma@semihalf.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,35 +92,58 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---/T0XV2S4I1DB6qKN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> The request was to split the initial series into smaller chunks and
+> separate the driver-specific stuff from parts that _could_ get
+> incorporated into the framework to level it up in regard to DSP
+> management. Series: "Intel: avs: Topology and path management" [1] has
+> been provided for such discussion.
+> 
+> Given the request, we are planning to upstream avs-driver in four chunks:
+> - IPC protocol and code loading (this one)
+> - Topology and path management [1]
+> - secondary flows e.g.: DSP recovery
+> - machine boards
+> 
+> 
+> In regard to DPCM FE/BE, ASoC already has DAI-link components: let codec
+> operations stay with codec component, leaving DSP related operations as
+> platform component responsibility. FE for DSP drivers typically comes
+> from topology and drives the HOST DMA part whereas BE deals with LINK
+> (hardware, data transfer interface such as PDM or I2S) side, including
+> its configuration.
 
-On Fri, Feb 25, 2022 at 12:08:00PM +0000, Richard Fitzgerald wrote:
-> On 24/02/2022 22:10, Rob Herring wrote:
+I respectfully disagree with your analysis, we cannot dissociate DSP and
+link management. The intersection between the BE dailink handling and
+the DSP management is the configuration of the cpu-dai on the host side.
 
-> > Is there a need for specifying where in the slot the data is?
+When the DSP firmware programs the DAI registers, as we do on the Intel
+side for SSP, DMIC and ALH/SoundWire, then the format information needs
+to be exposed back to the DSP platform driver so that the codec can be
+informed of the configuration. Most interfaces can support multiple
+formats, and currently we don't have a good way to know what the
+firmware changes and how to match PCM hw_params with link configuration.
 
-> I don't believe so, all the protocols I know of have the data bits
-> transmitted first followed by padding. There's no harm adding a
-> reserved field to allow for this info if it is ever needed, but it would
-> be unused at present as there's no kernel API to do this.
+The current work-around we use is to rely on the dailink fixup to force
+the dailink to operate at a rate consistent with the topology, but
+that's really not good at all. What would be needed is that all format
+changes through the DSP graph are propagated all the way to the DAI and
+used for the dailink configuration. That would also enable us to remove
+unnecessary SRCs or format conversions, which I believe is a capability
+at the heart of your AVS path proposal.
 
-It's part of the general format for the bus I'd say.
+That's really my point, you cannot really think of DSP management
+without factoring in DPCM.
 
---/T0XV2S4I1DB6qKN
-Content-Type: application/pgp-signature; name="signature.asc"
+It's not just me blabbering into the wind btw, others have voiced the
+need to improve FE->BE format handling and add constraints, see
 
------BEGIN PGP SIGNATURE-----
+https://lore.kernel.org/alsa-devel/20210323114327.3969072-1-codrin.ciubotariu@microchip.com/
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmIZPqAACgkQJNaLcl1U
-h9Ajhwf+J82kl/TOlVA+wFKSsRgst+nXorJvUGgpk40srNqnLsDbtFdEl0VhpVMb
-9dQGF5YwjfvOI52ERTvwRrlYrAcUZom76BY2nCDuPclvHmpKkL1WF9CVPfLPszpc
-NOcd8gYtM3M52wSSgroFI2crtlFuY6G+qCsrp9+p/7oMyzALrt4kjmrksAAmb4lv
-92Q974Uc2MX9t0meFmZFKUqYuJFsn7FzNlVjuFZbpPEM8i4GVbdjEfkMr3cMrQMy
-JaZmgPVoEdsM609PprJ4LxbUHwNrEVIXMecDZ1L/GU/SMVYYC6gKlxUEeJs3Arcv
-gfInPtVf4G9xCM6SdPWqFtTGzIcmtQ==
-=/qfj
------END PGP SIGNATURE-----
+> I'm happy to continue the discussion regarding "path" in the dedicated
+> series [1] as current series covers IPC protocol and code loading -only.
 
---/T0XV2S4I1DB6qKN--
+this RFC series was not mentioned in the cover letter for this patchset,
+so it wouldn't be surprising if others also missed the connection.
+
+> [1]:
+> https://lore.kernel.org/alsa-devel/20220207132532.3782412-1-cezary.rojewski@intel.com/T/#t
