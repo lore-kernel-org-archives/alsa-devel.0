@@ -4,77 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AEBF0C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 20:22:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2906C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 20:35:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 340231AEA;
-	Fri, 25 Feb 2022 21:21:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 340231AEA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 972DE1F14;
+	Fri, 25 Feb 2022 21:34:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 972DE1F14
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645820526;
-	bh=aDZZNxOIyVZZyJ1tcxuj5JFdDx1BCsfQi/D+2GBi7+U=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=mUu4KWKrHoTOH8qaDtPYAKd5zo+sBn7UGNGjvFQC7JJqDhjSqrBi+c2NiaDOYvX8B
-	 xVqvuuhcyLMC71Zrhr2hC44up67B1AO/uhswO5ToGL++NOFne6QI6CrV1shai9357X
-	 N08YV9GB/8EzAEZC/W94EYYeiLviFhN/u61lT80o=
+	s=default; t=1645821332;
+	bh=uoXQ1debS+H4xXZqIAR56nVJFXjinPrThr0EZu70S2U=;
+	h=Date:To:From:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Reply-To:From;
+	b=qNJ+OlHl+qjmcjA6SNekuoR8TIi2oz8CSkzqWxxlP84W2Fr/GOG9AXZ1HH7WnRfxQ
+	 FVkUH17zxIxXB0fc5f20kUj9Pfz7SfT1bCug+oFcUpeat89Ya3+rJPvJk8aBde+MWW
+	 IvXivnIT2wl79+DOCzANZrz1fUI18RDwc96BReIM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AC10AF8012F;
-	Fri, 25 Feb 2022 21:21:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 38875F8012F;
+	Fri, 25 Feb 2022 21:34:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 86B43F80132; Fri, 25 Feb 2022 21:21:13 +0100 (CET)
-Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com
- [209.85.161.48])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 30BE8F80132; Fri, 25 Feb 2022 21:34:40 +0100 (CET)
+Received: from mail-40141.protonmail.ch (mail-40141.protonmail.ch
+ [185.70.40.141])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 542A0F80118
- for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2022 21:21:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 542A0F80118
-Received: by mail-oo1-f48.google.com with SMTP id
- p206-20020a4a2fd7000000b0031bfec11983so7800787oop.13
- for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2022 12:21:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=cVQN4rhbQ0VOMwlW4HIOTs15wpfmF5Ue6t6aR8MNAkQ=;
- b=Tr5xvVbIFAwL1Jv6pAmf0x0NL5Vz2mwJjv3uSZYmyTXSuU4sAIfd3qZ5Q1olxYSwKO
- tE4PMtwfMZR2ny7J5ajoMOOPF1NiwCpPZxi/jpSb5BnqMQC6RZfYnYEB2Ke9adKQEtRy
- XPJtGQXiikn9Mo7bj5PWrY6nAE/74jFwITDQVvLq/IieEdWEZTkd1D1+1riFlXuH/2To
- OYowojKzRGgrquWL44zWoVpDbj95aFRcOvODIr2qDmmalpJEn8hIenHJFNEWeeTapP3V
- BbpPhaz4PtVmG8pM0q7YdjwvxLbn4PanQOC7B5zcWaMg8/gpvQoUIVfKxKXzz6rajtSk
- 3kKA==
-X-Gm-Message-State: AOAM533FmzoDsx9bhJaT3Oz7dVsyPVqYmU9qRAmODsLr5CXQ2PLncs6M
- MnVtsHlPwy0f9pG8DHZheQ==
-X-Google-Smtp-Source: ABdhPJx8Y+SLyadWMmRFoYqEtYcO0Fuazi2wPPSrB7KFEXUBA6VreCaYupIKMIMx/c3Yt/sE+8pjYg==
-X-Received: by 2002:a05:6870:494e:b0:d1:4708:9247 with SMTP id
- fl14-20020a056870494e00b000d147089247mr2143738oab.160.1645820464751; 
- Fri, 25 Feb 2022 12:21:04 -0800 (PST)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net.
- [66.90.148.213]) by smtp.gmail.com with ESMTPSA id
- l7-20020a9d4c07000000b005afa8981a42sm1578029otf.8.2022.02.25.12.21.03
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 25 Feb 2022 12:21:03 -0800 (PST)
-Received: (nullmailer pid 1367683 invoked by uid 1000);
- Fri, 25 Feb 2022 20:21:03 -0000
-Date: Fri, 25 Feb 2022 14:21:03 -0600
-From: Rob Herring <robh@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v2 2/3] dt-bindings: soundwire: qcom: document optional
- wake irq
-Message-ID: <Yhk6L+Z7cOs5z6hr@robh.at.kernel.org>
-References: <20220224133125.6674-1-srinivas.kandagatla@linaro.org>
- <20220224133125.6674-3-srinivas.kandagatla@linaro.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id BB29CF80118
+ for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2022 21:34:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB29CF80118
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com
+ header.b="QuF6Jbrz"
+Date: Fri, 25 Feb 2022 20:34:27 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+ s=protonmail3; t=1645821269;
+ bh=uoXQ1debS+H4xXZqIAR56nVJFXjinPrThr0EZu70S2U=;
+ h=Date:To:From:Reply-To:Subject:Message-ID:From:To:Cc:Date:Subject:
+ Reply-To:Feedback-ID:Message-ID;
+ b=QuF6JbrzzhCDEhLznOA0euWLX6CHoBMsawai8C2ptpt+aacYNlIkzYqJ9JJ/TlbiR
+ Z8G92u3q0Jgf5/tet+T49KQ3pRBstybt43C+g4S0l5lO4uYHjvh5KwKWR9hK9r9UAG
+ /MFYDUEQnyTQzTAvUf0Ey/NBQNlw8Ipt+ZNKjLfNi9XdEW+9A4g+0hQZO7kx+fSUGd
+ qOwh5Zfm8N7AsdZe8kBGQCaa2ePnQfc4zp3DOVfXJrJ7L8lSLiKe90IX34o/B9HvB7
+ CN1pSDyIji+Z+dqJSifV6vC7WH6WljFWUQrREbeR+JyY2AdR6rf5n+5zXj5W4fV4aw
+ g5Snzg+vNRVwQ==
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+From: Aidan MacDonald <amachronic@protonmail.com>
+Subject: Need help understanding DPCM
+Message-ID: <SvMkvfzxuNa8gYMrFFKa5NabdAfGl9KboEp0tD0D1u284QLgNObnyHcBkLONXpIlX8OC7OZ2yEkjrxUqlApZk4dWc_tbyKfUWRRi0CFx_dg=@protonmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220224133125.6674-3-srinivas.kandagatla@linaro.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
- vkoul@kernel.org, yung-chuan.liao@linux.intel.com, quic_srivasam@quicinc.com
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,36 +66,38 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Reply-To: Aidan MacDonald <amachronic@protonmail.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Feb 24, 2022 at 01:31:24PM +0000, Srinivas Kandagatla wrote:
-> Wake IRQ is optional interrupt that can be wired up on SoundWire controller
-> instances like RX path along with MBHC(Multi Button Headset connection).
-> Document this in bindings.
-> 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
->  Documentation/devicetree/bindings/soundwire/qcom,sdw.txt | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/soundwire/qcom,sdw.txt b/Documentation/devicetree/bindings/soundwire/qcom,sdw.txt
-> index b93a2b3e029d..bade68f429b0 100644
-> --- a/Documentation/devicetree/bindings/soundwire/qcom,sdw.txt
-> +++ b/Documentation/devicetree/bindings/soundwire/qcom,sdw.txt
-> @@ -22,7 +22,7 @@ board specific bus parameters.
->  - interrupts:
->  	Usage: required
->  	Value type: <prop-encoded-array>
-> -	Definition: should specify the SoundWire Controller IRQ
-> +	Definition: should specify the SoundWire Controller and optional wake IRQ
+Hi all. I want to extend an existing ASoC driver (jz4740-i2s) so it can be =
+used with an external (discrete) codec; currently it is hardcoded to use a =
+SoC internal codec. I'd like to be able to switch between the two codecs at=
+ runtime.
 
-What about 'wakeup-source' property?
+Switching between the internal and external codecs is done by toggling a bi=
+t in a register. The switch determines where the I2S signals get routed: to=
+ the internal codec or the external one. Because of this only one of the co=
+decs can be used at a time.
 
->  
->  - clock-names:
->  	Usage: required
-> -- 
-> 2.21.0
-> 
-> 
+It sounds like I need DPCM to handle this sort of thing - I have a single F=
+IFO on the CPU for audio data (an FE DAI?) and it can connect to one of two=
+ codecs (the BE DAIs?) via a switch. But most of the drivers I see using DP=
+CM look way more complicated: big DSP chips, and CPUs with a lot of DAIs. I=
+ am having a hard time separating out the essential bits from the overall "=
+mess." The documentation is not very helpful either.
+
+Could someone helpfully explain what a (presumably) very basic DPCM setup f=
+or this situation would look like? Or is DPCM overkill - should I be doing =
+something else entirely? I want to do this the "right" way so I can send pa=
+tches upstream.
+
+If possible, I'd like to use one of the 'generic' audio card drivers like s=
+imple-audio-card. BTW, what is the difference between simple-audio-card, au=
+dio-graph-card, and audio-graph-card2? They all seem to do very similar thi=
+ngs and share a lot of code.
+
+Thanks!
+
+Best regards,
+Aidan
