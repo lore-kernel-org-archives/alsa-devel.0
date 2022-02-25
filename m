@@ -4,67 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2C5EC433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 17:37:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9032BC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 17:37:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E13061E7B;
-	Fri, 25 Feb 2022 18:36:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E13061E7B
+	by alsa0.perex.cz (Postfix) with ESMTPS id CC0061ED8;
+	Fri, 25 Feb 2022 18:36:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC0061ED8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645810637;
-	bh=yVQLKQLnoKnhVc4ezrGEfHpRFSFDPimf5rhD3F4nZw8=;
+	s=default; t=1645810656;
+	bh=yn+4QGgrb+hRdHd7URm2rvtm9OKXT+OZKFqIplXZbrg=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=G9uCwJUsn8diA5ll52K2OmUHXUlJWMeV1ivn5p1CWvRudvZygtC6GRxBQOMU3iDyG
-	 3tGlN4TFhBudqvekmJnldQQp0CfPcrX6aH3IANKeHExwqAS8kUZE4LhUEWI+28sllB
-	 w7mXsx9zsU7fInZOiKulRSD4rjyaOW/BEx/DyiYM=
+	b=ZLNcsMSnRO/SZVGX+qK4mfDkbC2K6dbUGi9SrUyNKj3VOi4fl+rAF2vS2wgT8SFcN
+	 ySo+dyvXj1L/5Tl60mCYEgE9MC5TwrgfYam5k4mt30Glq3FCPpk3RMrZZPvVemUMUM
+	 ask0nDl0hNwe5OFctL7FS1OeytZFNI5SeI4x570g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 17C8FF804DF;
-	Fri, 25 Feb 2022 18:35:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CB82DF80517;
+	Fri, 25 Feb 2022 18:35:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 11B52F80132; Fri, 25 Feb 2022 18:35:52 +0100 (CET)
+ id 98A73F80511; Fri, 25 Feb 2022 18:35:55 +0100 (CET)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 268D6F800B6
- for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2022 18:35:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 268D6F800B6
+ by alsa1.perex.cz (Postfix) with ESMTPS id 13541F800E1
+ for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2022 18:35:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13541F800E1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="iA1a7oFH"
+ header.b="A/t86dbF"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 08D1461DC3;
- Fri, 25 Feb 2022 17:35:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C96FC340E7;
- Fri, 25 Feb 2022 17:35:44 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id B696461DC2;
+ Fri, 25 Feb 2022 17:35:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4110C340E7;
+ Fri, 25 Feb 2022 17:35:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1645810545;
- bh=yVQLKQLnoKnhVc4ezrGEfHpRFSFDPimf5rhD3F4nZw8=;
+ s=k20201202; t=1645810551;
+ bh=yn+4QGgrb+hRdHd7URm2rvtm9OKXT+OZKFqIplXZbrg=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=iA1a7oFHNe1g/rggWA/IKrr/hJBYi+it46e25chVfX6ikO1VSGULZcBHUU1HI2TPO
- 4Dup8FiEO6u/SX9Yy+U1ptGyX8l4QangLxDU41IIv1g8xvdOqcW0Sff8nG+1LZ+qTD
- 7wjA5sG9Ytfj/2mqZSUkTRuRfosLou6sG0vYrdLK0TQMNT5NUgduUiB2ZOUMg90FnA
- DYkdI+VmkVqDUEugCttyglZM9/VnODVkxMed3wHJURXZgamIQfLaePAzSslwvFN2ft
- OjIh5EGqMeJMntsFFfuQxKFLP+Gke9u9dKpXVvd7VnktWo6K6IdXJMvnoIuHqVf6Cf
- ECJbvABM8RV9A==
+ b=A/t86dbFxRwK/irOOihhpq+yEV02CjMZ05GfgR2oppe70ni7L+m0vCmyEMSrb6BaF
+ vLkbUGvwZQMX5hPnIp0lXgwiY5sM8rMUkw/y7Gm3QtJCoe3tU61jPwvcN0rUNDcMIr
+ 3fBEb2KseT2hBANbJUQb6a9LnigH3AipRorE50vWOZeeYnrPhbMNZmNnZHlKCjuTxe
+ NN2caP1MgF+n2LSAsmN9HB4FLFcWFk5qQDDnmJMiySfh3ITliOutmsHiNohPt5Y25t
+ TxHDwIgFaj5OFw5GafqC4pk5kKhLGfT86/LM0VlTmtq6FRnddQKl/NMVVPzv+/1Yt4
+ wn6eZCLx77eYg==
 From: Mark Brown <broonie@kernel.org>
-To: Meng Tang <tangmeng@uniontech.com>, perex@perex.cz, tiwai@suse.com
-In-Reply-To: <20220225112358.19403-1-tangmeng@uniontech.com>
-References: <20220225112358.19403-1-tangmeng@uniontech.com>
-Subject: Re: [PATCH] sound/soc/amd: Use platform_get_irq_byname() to get the
- interrupt
-Message-Id: <164581054397.2548431.5315227430767175484.b4-ty@kernel.org>
-Date: Fri, 25 Feb 2022 17:35:43 +0000
+To: lgirdwood@gmail.com, quic_plai@quicinc.com, robh+dt@kernel.org,
+ perex@perex.cz, linux-arm-msm@vger.kernel.org, srinivas.kandagatla@linaro.org,
+ devicetree@vger.kernel.org, tiwai@suse.com, linux-kernel@vger.kernel.org,
+ bjorn.andersson@linaro.org, agross@kernel.org, swboyd@chromium.org,
+ judyhsiao@chromium.org, rohitkr@codeaurora.org,
+ Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>,
+ alsa-devel@alsa-project.org, bgoswami@codeaurora.org
+In-Reply-To: <1645792943-24845-1-git-send-email-quic_srivasam@quicinc.com>
+References: <1645792943-24845-1-git-send-email-quic_srivasam@quicinc.com>
+Subject: Re: [PATCH] ASoC: qcom: lpass-platform: Update warning print to
+ control excess logging
+Message-Id: <164581054746.2548431.12085357818762890090.b4-ty@kernel.org>
+Date: Fri, 25 Feb 2022 17:35:47 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
- linux-kernel@vger.kernel.org
+Cc: Venkata Prasad Potturu <quic_potturu@quicinc.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,17 +85,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 25 Feb 2022 19:23:58 +0800, Meng Tang wrote:
-> platform_get_resource_byname(pdev, IORESOURCE_IRQ, ..) relies on static
-> allocation of IRQ resources in DT core code, this causes an issue
-> when using hierarchical interrupt domains using "interrupts" property
-> in the node as this bypasses the hierarchical setup and messes up the
-> irq chaining.
+On Fri, 25 Feb 2022 18:12:23 +0530, Srinivasa Rao Mandadapu wrote:
+> Update dev_warn to dev_warn_ratelimit to control excess xrun logging
+> in lpass platform driver.
 > 
-> In preparation for removal of static setup of IRQ resource from DT core
-> code use platform_get_irq_byname().
 > 
-> [...]
 
 Applied to
 
@@ -98,8 +97,8 @@ Applied to
 
 Thanks!
 
-[1/1] sound/soc/amd: Use platform_get_irq_byname() to get the interrupt
-      commit: 3304a242f45a501a5de69492e421a45c468c89ea
+[1/1] ASoC: qcom: lpass-platform: Update warning print to control excess logging
+      commit: 5a5d2316a5292222383d4e3589b8f5144f7c9b49
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
