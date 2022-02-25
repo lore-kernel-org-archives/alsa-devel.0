@@ -4,56 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2906C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 20:35:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13405C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 20:41:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 972DE1F14;
-	Fri, 25 Feb 2022 21:34:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 972DE1F14
+	by alsa0.perex.cz (Postfix) with ESMTPS id B533D1EDD;
+	Fri, 25 Feb 2022 21:40:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B533D1EDD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645821332;
-	bh=uoXQ1debS+H4xXZqIAR56nVJFXjinPrThr0EZu70S2U=;
-	h=Date:To:From:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:Reply-To:From;
-	b=qNJ+OlHl+qjmcjA6SNekuoR8TIi2oz8CSkzqWxxlP84W2Fr/GOG9AXZ1HH7WnRfxQ
-	 FVkUH17zxIxXB0fc5f20kUj9Pfz7SfT1bCug+oFcUpeat89Ya3+rJPvJk8aBde+MWW
-	 IvXivnIT2wl79+DOCzANZrz1fUI18RDwc96BReIM=
+	s=default; t=1645821666;
+	bh=zxDATE5T4nAxC32Whq1+k2Ts5ipceAvf6DKKgR9mfUQ=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=iGhtDeb45ilUAIVKkXOHT/Sk5/+hIbUyrcPDu+741HqRJWV+4JevCBUF9+kAPCSal
+	 AthcFSX+DJUpf3lClD9G4SGndHUGWYwMbU6G15tAUg0SNZKGTgWlpenUEQMo6XE8Mi
+	 z3Gxd4aK5Ly4GhLby/U5rOHK67jNnEwOyyMhDLWw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 38875F8012F;
-	Fri, 25 Feb 2022 21:34:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 479DEF800B6;
+	Fri, 25 Feb 2022 21:40:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 30BE8F80132; Fri, 25 Feb 2022 21:34:40 +0100 (CET)
-Received: from mail-40141.protonmail.ch (mail-40141.protonmail.ch
- [185.70.40.141])
+ id 3B2FAF80132; Fri, 25 Feb 2022 21:40:15 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E2393F800B6
+ for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2022 21:40:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2393F800B6
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="hrpQ7YwS"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BB29CF80118
- for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2022 21:34:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB29CF80118
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com
- header.b="QuF6Jbrz"
-Date: Fri, 25 Feb 2022 20:34:27 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
- s=protonmail3; t=1645821269;
- bh=uoXQ1debS+H4xXZqIAR56nVJFXjinPrThr0EZu70S2U=;
- h=Date:To:From:Reply-To:Subject:Message-ID:From:To:Cc:Date:Subject:
- Reply-To:Feedback-ID:Message-ID;
- b=QuF6JbrzzhCDEhLznOA0euWLX6CHoBMsawai8C2ptpt+aacYNlIkzYqJ9JJ/TlbiR
- Z8G92u3q0Jgf5/tet+T49KQ3pRBstybt43C+g4S0l5lO4uYHjvh5KwKWR9hK9r9UAG
- /MFYDUEQnyTQzTAvUf0Ey/NBQNlw8Ipt+ZNKjLfNi9XdEW+9A4g+0hQZO7kx+fSUGd
- qOwh5Zfm8N7AsdZe8kBGQCaa2ePnQfc4zp3DOVfXJrJ7L8lSLiKe90IX34o/B9HvB7
- CN1pSDyIji+Z+dqJSifV6vC7WH6WljFWUQrREbeR+JyY2AdR6rf5n+5zXj5W4fV4aw
- g5Snzg+vNRVwQ==
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-From: Aidan MacDonald <amachronic@protonmail.com>
-Subject: Need help understanding DPCM
-Message-ID: <SvMkvfzxuNa8gYMrFFKa5NabdAfGl9KboEp0tD0D1u284QLgNObnyHcBkLONXpIlX8OC7OZ2yEkjrxUqlApZk4dWc_tbyKfUWRRi0CFx_dg=@protonmail.com>
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 4497E6194B;
+ Fri, 25 Feb 2022 20:40:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0684FC340E7;
+ Fri, 25 Feb 2022 20:40:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1645821605;
+ bh=zxDATE5T4nAxC32Whq1+k2Ts5ipceAvf6DKKgR9mfUQ=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=hrpQ7YwSeh5sscihYcV+TYDt1O1t3NgWkx5jOWu+WSlXp+Glrz/YlfV/x9AGEUQg6
+ KW9W50yPmmkhpl2dCQJ0UDYT7ii7otMq7bmriBAqifVREs7SPVMS23+SEdHRrtZje3
+ z9M2gTLBRQM8x7BKzkHa0SNpLuxLbHVHOp2TplWn22MqP2g5SVymEik2ZlDYeeaVWU
+ Q7aIfqk04dAzRpjaf0i4035gtcx9EXtZF4e8pC0GxOyG57/2iwlZMdTioq4R+5bOOx
+ JquN1ANWyZ5kGRSBF5Co235A8oZWLEDB+br1bEpCLNuZzPbjenRGpAOyp44sFk89Xr
+ YzoaR6mZz0L4A==
+Date: Fri, 25 Feb 2022 20:40:00 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: Re: [PATCH V2 1/2] ASoC: dt-bindings: audio-graph-port: Add
+ dai-tdm-slot-width-map
+Message-ID: <Yhk+oFJBMAqYNc6r@sirena.org.uk>
+References: <20220217134835.282389-1-rf@opensource.cirrus.com>
+ <20220217134835.282389-2-rf@opensource.cirrus.com>
+ <YhgCbKzfPXEVauwW@robh.at.kernel.org>
+ <7d11f36e-4b56-8c17-a114-d024f76f3b9e@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="/T0XV2S4I1DB6qKN"
+Content-Disposition: inline
+In-Reply-To: <7d11f36e-4b56-8c17-a114-d024f76f3b9e@opensource.cirrus.com>
+X-Cookie: I smell a wumpus.
+Cc: Rob Herring <robh@kernel.org>, alsa-devel@alsa-project.org,
+ kuninori.morimoto.gx@renesas.com, devicetree@vger.kernel.org,
+ patches@opensource.cirrus.com, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -66,38 +83,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Reply-To: Aidan MacDonald <amachronic@protonmail.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi all. I want to extend an existing ASoC driver (jz4740-i2s) so it can be =
-used with an external (discrete) codec; currently it is hardcoded to use a =
-SoC internal codec. I'd like to be able to switch between the two codecs at=
- runtime.
 
-Switching between the internal and external codecs is done by toggling a bi=
-t in a register. The switch determines where the I2S signals get routed: to=
- the internal codec or the external one. Because of this only one of the co=
-decs can be used at a time.
+--/T0XV2S4I1DB6qKN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-It sounds like I need DPCM to handle this sort of thing - I have a single F=
-IFO on the CPU for audio data (an FE DAI?) and it can connect to one of two=
- codecs (the BE DAIs?) via a switch. But most of the drivers I see using DP=
-CM look way more complicated: big DSP chips, and CPUs with a lot of DAIs. I=
- am having a hard time separating out the essential bits from the overall "=
-mess." The documentation is not very helpful either.
+On Fri, Feb 25, 2022 at 12:08:00PM +0000, Richard Fitzgerald wrote:
+> On 24/02/2022 22:10, Rob Herring wrote:
 
-Could someone helpfully explain what a (presumably) very basic DPCM setup f=
-or this situation would look like? Or is DPCM overkill - should I be doing =
-something else entirely? I want to do this the "right" way so I can send pa=
-tches upstream.
+> > Is there a need for specifying where in the slot the data is?
 
-If possible, I'd like to use one of the 'generic' audio card drivers like s=
-imple-audio-card. BTW, what is the difference between simple-audio-card, au=
-dio-graph-card, and audio-graph-card2? They all seem to do very similar thi=
-ngs and share a lot of code.
+> I don't believe so, all the protocols I know of have the data bits
+> transmitted first followed by padding. There's no harm adding a
+> reserved field to allow for this info if it is ever needed, but it would
+> be unused at present as there's no kernel API to do this.
 
-Thanks!
+It's part of the general format for the bus I'd say.
 
-Best regards,
-Aidan
+--/T0XV2S4I1DB6qKN
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmIZPqAACgkQJNaLcl1U
+h9Ajhwf+J82kl/TOlVA+wFKSsRgst+nXorJvUGgpk40srNqnLsDbtFdEl0VhpVMb
+9dQGF5YwjfvOI52ERTvwRrlYrAcUZom76BY2nCDuPclvHmpKkL1WF9CVPfLPszpc
+NOcd8gYtM3M52wSSgroFI2crtlFuY6G+qCsrp9+p/7oMyzALrt4kjmrksAAmb4lv
+92Q974Uc2MX9t0meFmZFKUqYuJFsn7FzNlVjuFZbpPEM8i4GVbdjEfkMr3cMrQMy
+JaZmgPVoEdsM609PprJ4LxbUHwNrEVIXMecDZ1L/GU/SMVYYC6gKlxUEeJs3Arcv
+gfInPtVf4G9xCM6SdPWqFtTGzIcmtQ==
+=/qfj
+-----END PGP SIGNATURE-----
+
+--/T0XV2S4I1DB6qKN--
