@@ -4,80 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B7E2C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 13:25:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC603C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 13:26:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A03AF1F1B;
-	Fri, 25 Feb 2022 14:24:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A03AF1F1B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0AE081F32;
+	Fri, 25 Feb 2022 14:25:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0AE081F32
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645795540;
-	bh=9sj38r/7UA45IGeCojNi8Qm+h97XHRF7yre6PRUC4xE=;
+	s=default; t=1645795563;
+	bh=MfFMoDaWVPCt+eQkfFyIL0H3WuAZ5GlV+DKgU0j0w0M=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=C7yV+F9fPRO3ZUaC4hJwpgaS31hwXT4kdVQHuIkOnOUjoqwuC5SejHmFjTBTFl5KP
-	 V3IVUpWWH366CnFKf/bVZ0rq37vQ2YqW8wmGOSrSJFEZeGLtXsdndJFKA03dHWFZjb
-	 o4/oa5YpacsDVvZ2vsJynDrboRwwNb8Kg3CHdMzE=
+	b=vo1KVImQkQqJhAvjIcJ9Pgs16xYyiTTgczcvu9UfZA1B5ozBxhbyIqqICi8d9cRKV
+	 xt1Y61jxw1U/WnM238mPPZeCGL6IHPjmuX/YuVc7rcds2gcCrE5wDLU4MmBen1Eh4E
+	 6kSQQ67DtJiqz/nYNQ4sVUpR18DxZvKm8DCkqQwA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1F799F80519;
-	Fri, 25 Feb 2022 14:17:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 29792F804FD;
+	Fri, 25 Feb 2022 14:24:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EACD2F80511; Fri, 25 Feb 2022 14:17:19 +0100 (CET)
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com
- [IPv6:2a00:1450:4864:20::334])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 7B022F8020D; Fri, 25 Feb 2022 14:24:45 +0100 (CET)
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1C9D1F80515
- for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2022 14:17:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C9D1F80515
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="TilwzgfH"
-Received: by mail-wm1-x334.google.com with SMTP id
- p184-20020a1c29c1000000b0037f76d8b484so1661223wmp.5
- for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2022 05:17:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id;
- bh=XTcx6NA+RQ7MrRz6erOyIo9MPO/gFX50RVxH9xCKjl0=;
- b=TilwzgfHDxKOx/pX82iJYs6OJLFY4UDPTF+ZYP5IKGPFUaMDON+xOE0825j7T9YE8X
- a2R9Uxm1yhjJl5IG/6s0fvarQFcsIb4HW5dhmafsqg/OuXWuKy5X5xNiLWUIoe3kBHDx
- eVDb8sXoTuqdkn3fdcgNtHrvjBTXJq6+YNK8RHzhi8bRYJkNguNTDu6n7TO4pPQ0JyIL
- uMbw2Tijh0n2PvZqsZFkxG3Byg1nQpSdBkH5DlKN2sbGMyOgfjCU5v94XL5DDM9kgeJR
- y6H1M4dqSGcHjiIE4fSO9NiZakN559mhIgmE98QRnZtf6F77dQ/ubEYHDsWurek925wt
- FZyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id;
- bh=XTcx6NA+RQ7MrRz6erOyIo9MPO/gFX50RVxH9xCKjl0=;
- b=M/CcTruiQNPxC6EgravEXb+W8mueXf/JFQfFX979RzqPVV919oKqVFO3rnD/AJldJO
- 10Ur+qu96QWTml0CDJ6804IHMW4UlCRpNRhosHZ20akYJ4BAjgusiwsi1wsPdJtyHOko
- YN5IfWxCs3nCQZeDrHEQc2VU8KE7wC9xRhDlhWeh7A9GCKIucyhtgDugMl5q+iGl38Mf
- NrR6g8tPEiXBIKvNvqjU3CyIMjBKkfbS0tPDtzNyHVGBE+plr3JWDcWdeigq+vmoOBc+
- U2KMk7KTc7BWbMbuKfcqGZBGC77DW2LDMP/3ipQLhpeK/Pj+SQD+0OYPeGqD/9jt8pCz
- KWXQ==
-X-Gm-Message-State: AOAM533Riat95PylNdBrU0eyOyAKltVzCvFvFNLXaEJ+uOZ+Q22DLssL
- eVyZSnnw87m6nlm1b5ePvsE=
-X-Google-Smtp-Source: ABdhPJxAYkjJ40G8FdiQzxsRqYdXyS40BfhXptDhQECQEq3ENt/7NSjM/te1yvnNMfubRDVpAY9fPA==
-X-Received: by 2002:a7b:cd96:0:b0:381:201e:ba06 with SMTP id
- y22-20020a7bcd96000000b00381201eba06mr2739917wmj.78.1645795027288; 
- Fri, 25 Feb 2022 05:17:07 -0800 (PST)
-Received: from localhost.localdomain ([64.64.123.58])
- by smtp.gmail.com with ESMTPSA id
- o3-20020a1c7503000000b0038100e2a1adsm2399355wmc.47.2022.02.25.05.17.03
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 25 Feb 2022 05:17:06 -0800 (PST)
-From: Jia-Ju Bai <baijiaju1990@gmail.com>
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- AjitKumar.Pandey@amd.com, vsujithkumar.reddy@amd.com
-Subject: [PATCH] ALSA: acp: check the return value of devm_kzalloc() in
- acp_legacy_dai_links_create()
-Date: Fri, 25 Feb 2022 05:16:45 -0800
-Message-Id: <20220225131645.27556-1-baijiaju1990@gmail.com>
-X-Mailer: git-send-email 2.17.1
-Cc: alsa-devel@alsa-project.org, Jia-Ju Bai <baijiaju1990@gmail.com>,
- linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7DB0EF800B6;
+ Fri, 25 Feb 2022 14:24:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7DB0EF800B6
+X-UUID: 5796af6c76604c259a0218e8e4b11534-20220225
+X-UUID: 5796af6c76604c259a0218e8e4b11534-20220225
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by
+ mailgw02.mediatek.com (envelope-from <allen-kh.cheng@mediatek.com>)
+ (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+ with ESMTP id 698999412; Fri, 25 Feb 2022 21:24:30 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 25 Feb 2022 21:24:29 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via
+ Frontend Transport; Fri, 25 Feb 2022 21:24:28 +0800
+From: Allen-KH Cheng <allen-kh.cheng@mediatek.com>
+To: Jassi Brar <jaswinder.singh@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+ Matthias Brugger <matthias.bgg@gmail.com>
+Subject: [PATCH v18 0/2] mtk: add ADSP mailbox controller for MT8195
+Date: Fri, 25 Feb 2022 21:24:25 +0800
+Message-ID: <20220225132427.29152-1-allen-kh.cheng@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+MIME-Version: 1.0
+Content-Type: text/plain
+X-MTK: N
+Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+ Linux-ALSA <alsa-devel@alsa-project.org>,
+ Allen-KH Cheng <allen-kh.cheng@mediatek.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, cujomalainey@google.com,
+ Kevin Hilman <khilman@baylibre.com>, Jassi Brar <jassisinghbrar@gmail.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Project_Global_Chrome_Upstream_Group@mediatek.com, tzungbi@google.com,
+ Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Chen-Yu Tsai <wenst@chromium.org>, Takashi Iwai <tiwai@suse.com>,
+ Daniel Baluta <daniel.baluta@nxp.com>, linux-kernel@vger.kernel.org,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,29 +81,99 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The function devm_kzalloc() in acp_legacy_dai_links_create() can fail,
-so its return value should be checked.
+Mediatek ADSP IPC is used to send notification or short message 
+between processors with dsp.
+It will place the message to the share buffer and will access the
+ADSP mailbox registers to kick dsp. Two mailboxes used to send
+notification or short message between processors with dsp.
 
-Fixes: d4c750f2c7d4 ("ASoC: amd: acp: Add generic machine driver support for ACP cards")
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
----
- sound/soc/amd/acp/acp-mach-common.c | 2 ++
- 1 file changed, 2 insertions(+)
+This patchset was tested and confirmed on MT8195 cherry board.
+Based on tag: next-20220223, linux-next/master
 
-diff --git a/sound/soc/amd/acp/acp-mach-common.c b/sound/soc/amd/acp/acp-mach-common.c
-index cd05ee2802c9..5247015e8b31 100644
---- a/sound/soc/amd/acp/acp-mach-common.c
-+++ b/sound/soc/amd/acp/acp-mach-common.c
-@@ -556,6 +556,8 @@ int acp_legacy_dai_links_create(struct snd_soc_card *card)
- 		num_links++;
- 
- 	links = devm_kzalloc(dev, sizeof(struct snd_soc_dai_link) * num_links, GFP_KERNEL);
-+	if (!links)
-+		return -ENOMEM;
- 
- 	if (drv_data->hs_cpu_id == I2S_SP) {
- 		links[i].name = "acp-headset-codec";
+changes since v17:
+- remove description and add maxItems for reg and interrupts in
+  mtk,adsp-mbox.yaml
+
+changes since v16:
+- fix WARNING: modpost: missing MODULE_LICENSE() in drivers/mailbox
+  /mtk-adsp-mailbox.o. Add MODULE_LICENSE in the last line.
+- Due to WARNING: Missing or malformed SPDX-License-Identifier tag
+  in line 1 in checkpatch, we don't remove SPDX-License in line 1.
+
+changes since v15:
+- add paragraphs to describe the config symbols fully
+
+changes since v14:
+- add inline for get_mtk_adsp_mbox_priv
+
+changes since v13:
+- rebase on v5.16-rc8
+- add back ptr check from of_device_get_match_data
+
+changes since v12:
+- remove of_device_get_match_data ptr check:
+  of_device_get_match_data(dev) will never going to return NULL.
+  driver probe with compatible mediatek,mt8195-adsp-mbox.
+
+changes since v11:
+- remove useless MODULE_LICENSE
+
+changes since v10:
+- split up v9 into two separate submissions
+
+changes since v9:
+- rename adsp_mbox_chan_ops to mtk_adsp_mbox_chan_ops
+
+changes since v8:
+- remove struct adsp_mbox_ch_info
+- add get_mtk_adsp_mbox_priv
+- use mtk_adsp_mbox_priv va_mboxreg address in adsp mbox driver
+- add struct mtk_adsp_mbox_cfg for DSP mbox register offset
+- remove adsp mbox register offset hard code define
+- remove mtk-adsp-ipc.h reference in adsp mbox driver
+
+changes since v7:
+- add mtk prefix for adsp ipc functions
+- rename adsp_mbox_ch_info to mtk_adsp_mbox_ch_info
+- remove incorrect reviewers in commit message
+
+changes since v6:
+- dt-bindings: change example dtsi node.
+- rename config MTK_ADSP_IPC_MBOX to MTK_ADSP_MBOX
+- remove unused variable
+- add reviewers
+
+changes since v5:
+- remove some redundant code
+
+changes since v4:
+- use switch ... case in adsp_ipc_recv
+- add error handling path for chan_name pointer
+- refine some code to be concise
+
+changes since v3:
+- reorder MTK_ADSP_IPC_MBOX config
+- remove some redundant code
+- remove lock in mtk-adsp-mailbox
+
+changes since v2:
+- separate adsp_mailbox into two instances
+
+changes since v1:
+- fix dt_binding_check error
+
+Allen-KH Cheng (2):
+  dt-bindings: mailbox: mtk,adsp-mbox: add mtk adsp-mbox document
+  mailbox: mediatek: add support for adsp mailbox controller
+
+ .../bindings/mailbox/mtk,adsp-mbox.yaml       |  50 +++++
+ drivers/mailbox/Kconfig                       |   9 +
+ drivers/mailbox/Makefile                      |   2 +
+ drivers/mailbox/mtk-adsp-mailbox.c            | 176 ++++++++++++++++++
+ 4 files changed, 237 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mailbox/mtk,adsp-mbox.yaml
+ create mode 100644 drivers/mailbox/mtk-adsp-mailbox.c
+
 -- 
-2.17.1
+2.18.0
 
