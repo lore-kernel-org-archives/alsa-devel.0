@@ -4,69 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E0BBC433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 13:25:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C038C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Feb 2022 13:25:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CD17D1F16;
-	Fri, 25 Feb 2022 14:24:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD17D1F16
+	by alsa0.perex.cz (Postfix) with ESMTPS id 95DF81ED7;
+	Fri, 25 Feb 2022 14:24:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95DF81ED7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1645795505;
-	bh=Xwz9kLVHyWZsdxcrnoF/sDH7jLbV2c8FkOg5piNNcDw=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1645795510;
+	bh=cxqgUHzTNvy5TCeKspeRFnRB5oUXV7hv8n/x+HqHevw=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tGbRJ8lwYPOaT6htQu6m+N9rYcFvSdx6jnQVpMZSraOroAFDYkRr0zh4f05jFbCGC
-	 qMNzuXeKT62hJIWqNdM+cxXnxSeoCUulZJN4HrspNA7SsvctZceEITloWrt8McQOSn
-	 A3Idk2nkslznMiRbqAK4yRwA9BNiWb4kqJamFMrM=
+	b=c+IFIKDe7LnZFt6M4T0ad3jCC7iSDfi5VeWpVnT/Nl2WD3e9bFzKqwwepAkKgZI4W
+	 de7XCkzeQ2zTn5I6uf0038FLnqP8aGGK3EHByLjyRsYcS/prjrsElNJqiWZU4CN60J
+	 x/I5eQcjGXbxDwKTjWLeXSzYwUcFYwmijmym8Ns4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 50567F8051E;
-	Fri, 25 Feb 2022 14:12:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 32DCBF804DF;
+	Fri, 25 Feb 2022 14:17:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E869CF80673; Fri, 25 Feb 2022 14:12:29 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AFDF4F80159
- for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2022 14:12:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AFDF4F80159
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="CTFtdiB9"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id C24BDF80516; Fri, 25 Feb 2022 14:17:19 +0100 (CET)
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 4E3DC61C41;
- Fri, 25 Feb 2022 13:12:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5131EC340F1;
- Fri, 25 Feb 2022 13:12:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1645794742;
- bh=Xwz9kLVHyWZsdxcrnoF/sDH7jLbV2c8FkOg5piNNcDw=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=CTFtdiB9m3XjyyYr8JjVYHKb9pQ3sUnnAR1ggZoDV1hOgCnkZ85bbVT4OWVWvSVQy
- QqF8NxW16fMzL1vjsS7LF1elOCvJv9ax/XoBcre5bpmQlXQR7yxdczCTR5Ie5RxiNR
- 9VwuFLUg2xgTKPGoS436tRrTTbuB+99BQ32k1w8dBQqoc22Vc/VzV+KgEV5ePE4pKq
- 7v4yFGDmIE82udHcoP4QEIZr87D89BpDnDeak1+Z08Qrp9+0doivOcwfNcHjsUrx51
- Y57zCzUSAeeVGeJr86A6fpC4wc2cORjP8tpjnov680IfsJkSQZ2k1fCimue8Z0vNer
- JCPHgaZxY4ioQ==
-Date: Fri, 25 Feb 2022 13:12:18 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Meng Tang <tangmeng@uniontech.com>
-Subject: Re: [PATCH] sound/soc/amd: Use platform_get_irq_byname() to get the
- interrupt
-Message-ID: <YhjVssdVIP49T6uj@sirena.org.uk>
-References: <20220225112358.19403-1-tangmeng@uniontech.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5324DF80511;
+ Fri, 25 Feb 2022 14:17:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5324DF80511
+X-UUID: a5b987a552ce40baad5102d79b16cdf3-20220225
+X-UUID: a5b987a552ce40baad5102d79b16cdf3-20220225
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+ (envelope-from <allen-kh.cheng@mediatek.com>)
+ (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+ with ESMTP id 346981014; Fri, 25 Feb 2022 21:17:01 +0800
+Received: from mtkexhb01.mediatek.inc (172.21.101.102) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.792.15; Fri, 25 Feb 2022 21:17:00 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by mtkexhb01.mediatek.inc
+ (172.21.101.102) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+ Fri, 25 Feb 2022 21:16:59 +0800
+Received: from mtksdccf07 (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 25 Feb 2022 21:16:59 +0800
+Message-ID: <055296d32d218ccc3285351516b14b4fc8aba238.camel@mediatek.com>
+Subject: Re: [PATCH v17 1/2] dt-bindings: mailbox: mtk,adsp-mbox: add mtk
+ adsp-mbox document
+From: allen-kh.cheng <allen-kh.cheng@mediatek.com>
+To: Rob Herring <robh@kernel.org>
+Date: Fri, 25 Feb 2022 21:16:59 +0800
+In-Reply-To: <YheugpFub9ArHDyT@robh.at.kernel.org>
+References: <20220224133045.23903-1-allen-kh.cheng@mediatek.com>
+ <20220224133045.23903-2-allen-kh.cheng@mediatek.com>
+ <YheugpFub9ArHDyT@robh.at.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="Ni88dYQ52S44UoyN"
-Content-Disposition: inline
-In-Reply-To: <20220225112358.19403-1-tangmeng@uniontech.com>
-X-Cookie: I smell a wumpus.
-Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org, tiwai@suse.com,
- linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+X-MTK: N
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ sound-open-firmware@alsa-project.org, Kevin Hilman <khilman@baylibre.com>,
+ Jassi Brar <jassisinghbrar@gmail.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Project_Global_Chrome_Upstream_Group@mediatek.com, tzungbi@google.com,
+ Chen-Yu Tsai <wenst@chromium.org>, devicetree@vger.kernel.org,
+ Jassi Brar <jaswinder.singh@linaro.org>, Mark
+ Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org,
+ Matthias Brugger <matthias.bgg@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ Daniel Baluta <daniel.baluta@nxp.com>, linux-arm-kernel@lists.infradead.org,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, cujomalainey@google.com,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,37 +91,108 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Thu, 2022-02-24 at 10:12 -0600, Rob Herring wrote:
+> On Thu, Feb 24, 2022 at 09:30:44PM +0800, Allen-KH Cheng wrote:
+> > From: Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
+> > 
+> > This patch adds document for mediatek adsp mbox
+> > 
+> > Signed-off-by: Allen-KH Cheng <allen-kh.cheng@mediatek.com>
+> > Reviewed-by: AngeloGioacchino Del Regno <
+> > angelogioacchino.delregno@collabora.com>
+> > ---
+> >  .../bindings/mailbox/mtk,adsp-mbox.yaml       | 52
+> > +++++++++++++++++++
+> >  1 file changed, 52 insertions(+)
+> >  create mode 100644
+> > Documentation/devicetree/bindings/mailbox/mtk,adsp-mbox.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/mailbox/mtk,adsp-
+> > mbox.yaml b/Documentation/devicetree/bindings/mailbox/mtk,adsp-
+> > mbox.yaml
+> > new file mode 100644
+> > index 000000000000..25756837797f
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/mailbox/mtk,adsp-mbox.yaml
+> > @@ -0,0 +1,52 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: 
+> > https://urldefense.com/v3/__http://devicetree.org/schemas/mailbox/mtk,adsp-mbox.yaml*__;Iw!!CTRNKA9wMg0ARbw!1-w9zcYC59nNwgZh8GRqYCSfHVTtj2nHfLuwGaqiLdOeCxlBGUkwqcW50EVBYejpHXulQA$
+> >  
+> > +$schema: 
+> > https://urldefense.com/v3/__http://devicetree.org/meta-schemas/core.yaml*__;Iw!!CTRNKA9wMg0ARbw!1-w9zcYC59nNwgZh8GRqYCSfHVTtj2nHfLuwGaqiLdOeCxlBGUkwqcW50EVBYejjdYjzJw$
+> >  
+> > +
+> > +title: Mediatek ADSP mailbox
+> > +
+> > +maintainers:
+> > +  - Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
+> > +
+> > +description: |
+> > +  The MTK ADSP mailbox Inter-Processor Communication (IPC) enables
+> > the SoC
+> > +  to ommunicate with ADSP by passing messages through two mailbox
+> > channels.
+> > +  The MTK ADSP mailbox IPC also provides the ability for one
+> > processor to
+> > +  signal the other processor using interrupts.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    items:
+> > +      - const: mediatek,mt8195-adsp-mbox
+> > +
+> > +  "#mbox-cells":
+> > +    const: 0
+> > +
+> > +  reg:
+> > +    description:
+> > +      Physical address base for dsp mbox registers.
+> 
+> That's fairly obvious. Drop.
+> 
+> You need to define how many: 'maxItems: 1'
+> 
+Hi Rob,
 
---Ni88dYQ52S44UoyN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+thanks for your suggestions and comments.
 
-On Fri, Feb 25, 2022 at 07:23:58PM +0800, Meng Tang wrote:
-> platform_get_resource_byname(pdev, IORESOURCE_IRQ, ..) relies on static
-> allocation of IRQ resources in DT core code, this causes an issue
-> when using hierarchical interrupt domains using "interrupts" property
-> in the node as this bypasses the hierarchical setup and messes up the
-> irq chaining.
+I will add the number information for reg and interrupts.
 
-Please submit patches using subject lines reflecting the style for the
-subsystem, this makes it easier for people to identify relevant patches.
-Look at what existing commits in the area you're changing are doing and
-make sure your subject lines visually resemble what they're doing.
-There's no need to resubmit to fix this alone.
+Best Regards,
+Allen
 
---Ni88dYQ52S44UoyN
-Content-Type: application/pgp-signature; name="signature.asc"
+> > +
+> > +  interrupts:
+> > +    description:
+> > +      adsp mbox interrupt
+> 
+> Same here.
+> 
+> > +
+> > +required:
+> > +  - compatible
+> > +  - "#mbox-cells"
+> > +  - reg
+> > +  - interrupts
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> > +    #include <dt-bindings/interrupt-controller/irq.h>
+> > +
+> > +    adsp_mailbox0:mailbox@10816000 {
+> > +        compatible = "mediatek,mt8195-adsp-mbox";
+> > +        #mbox-cells = <0>;
+> > +        reg = <0x10816000 0x1000>;
+> > +        interrupts = <GIC_SPI 702 IRQ_TYPE_LEVEL_HIGH 0>;
+> > +    };
+> > -- 
+> > 2.18.0
+> > 
+> > 
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmIY1bEACgkQJNaLcl1U
-h9CMsgf9HCDinfY/9LwPrkDH7m1gZJCWHoophXU3Zw9m91QZ/bwR9Bet0Rnm2mQy
-8KCTy5XiW+h0GZ7SyHoHCoFMiKbWOupxRlOb7beVOP13RzlaP9r0DrpgCfva3grA
-F05FNqMTHslXk1K9iBWZ0B82flpp5XvxWfeQ7K8ZclNrZ/l5qf22/gLOLN5zE+qG
-rFT41o3+q4n5KD+4hwv4fcRh1/y73rkIDy+YY4enI4yU59voiPQ5B+jMxMU/beo7
-jfB4t7sAgys3W+LSvd9nCDuC9K8U2vsS286shhMUvkCtyzduyVeSMkCb+Ah+Ocia
-8SwFT8rD1dHuhvNDZrb3L2qNoIc8+g==
-=XUgy
------END PGP SIGNATURE-----
-
---Ni88dYQ52S44UoyN--
