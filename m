@@ -4,85 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4CEA7C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Mar 2022 08:37:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7A1CC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Mar 2022 08:37:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8AB271A4E;
-	Wed,  2 Mar 2022 09:36:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8AB271A4E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 178231A47;
+	Wed,  2 Mar 2022 09:36:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 178231A47
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646210218;
-	bh=3s2ZykJd8a7uW5FlGKYKvU5wNd5gtBX3udYjmuVDkrA=;
+	s=default; t=1646210234;
+	bh=JgZzkTfko9foLgfq2Vpx79Ep6D3Ru7Hj6CNrzuAED58=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HvW8eVy5hVFyhL/pGMtJBYrsllpVyw0hTf875O0MsTlrANoeoWakiD0tAF48ur63f
-	 DU7WZ0oHy5h9LH7OlG8vjE5TUIaWYZpJe2A9es/T7SweRz7dygMhNdAhrNDhFcf8AJ
-	 Ypdx2ZyjAdZHVLxtJDN8XUo5AQ+Qc8EZ3QAdcCNU=
+	b=q5HFbybK33rJPSpjlb3SqcChwndzVm2rdwiEUDz31xK3aIcz/kdO0z39vzC6bpdfX
+	 47UP0hPQHP8RKR+vhbfWIrRBX65QEqIzkqX5mZ3aWtOGutUMGcnR+eGFoZd4RRc+cQ
+	 DnKnko6tuh8WSw31lk13ivzGnN338EkN/Gjgx74U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C8013F80533;
-	Wed,  2 Mar 2022 09:33:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6392DF80539;
+	Wed,  2 Mar 2022 09:33:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2830AF80137; Sun, 27 Feb 2022 14:52:51 +0100 (CET)
+ id B8A78F80158; Sun, 27 Feb 2022 14:52:53 +0100 (CET)
 Received: from smtp-relay-internal-1.canonical.com
  (smtp-relay-internal-1.canonical.com [185.125.188.123])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 76FD1F80155
- for <alsa-devel@alsa-project.org>; Sun, 27 Feb 2022 14:52:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76FD1F80155
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6B574F80137
+ for <alsa-devel@alsa-project.org>; Sun, 27 Feb 2022 14:52:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B574F80137
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com
- header.b="l/moVZ6A"
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69])
+ header.b="fN2t5/EE"
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 86A4C4003C
- for <alsa-devel@alsa-project.org>; Sun, 27 Feb 2022 13:52:46 +0000 (UTC)
+ by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id E27264030C
+ for <alsa-devel@alsa-project.org>; Sun, 27 Feb 2022 13:52:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1645969966;
- bh=lHEHPtP6JAM6zCrRNeDTlRy/WZxSvWGZvNHgREr2xAI=;
+ s=20210705; t=1645969970;
+ bh=ovOgd1VJlKyRzMY+TlP34IMSMGHGw8uakjQlL885+iI=;
  h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
  MIME-Version;
- b=l/moVZ6Adk/hdbzboYehbKdUP0zfndgA9NPqvxV/yHMq7mpX6z4ipsrPvZbSC1j0E
- 60A1vcN0DzpAWynhwkHTY4bq8JrVU8YDs61x4r3gnroAnMScQr1aVV5XMbmV49dr2t
- iy8KDHfQExdy3p0m52/AfRekPOON6CXLos2b0KDCVYu51NcZvA+nzIn1vFiHwSlckb
- LErOt80htc/Hlm1UWfWWsjlR7epau66bh0KmqIYyXQEZA3I4xd0U/mKcTyJbvubtnY
- ZygbbzvclpidKXzlKTpT3l2I7FKofmZAv0EWD/UsepHTVS1OMorLWSe2DlPg3aAyOS
- MKx3bsFdmIvnA==
-Received: by mail-ed1-f69.google.com with SMTP id
- m11-20020a056402430b00b00410678d119eso4223432edc.21
- for <alsa-devel@alsa-project.org>; Sun, 27 Feb 2022 05:52:46 -0800 (PST)
+ b=fN2t5/EE2yhwXd0uArW+F/K+cHueu8APZJPBMtBVxrSBENxOvTULI4qFYk82aWCCO
+ RwF9mhHhUtr7RoOqNoXxdDAOzRpNF3+zgIYyHBVEsZuJ4tqDRbdb15GjJV2Jx2USRZ
+ fr7V489qhuLTKsO+/Z3M5XWyXDqDNVqpd7yyPIlWm2N2rT4busKiowhLeo3fkF1Xdl
+ 15gDTK6fxcKMkVY+8BdJsqeIDYRsIaIimLpuV8qWBgCG46oY2Jqy0vhDys/p7oTbVj
+ wMETxWlEsvzi7+DUhi8ZHuQbd7aa7+pDDaf1HZzygG0DuUOy/mrrvRex/RKXo6IqH+
+ psweF0VmAgKCg==
+Received: by mail-wm1-f70.google.com with SMTP id
+ az39-20020a05600c602700b00380e48f5994so4591296wmb.0
+ for <alsa-devel@alsa-project.org>; Sun, 27 Feb 2022 05:52:50 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=lHEHPtP6JAM6zCrRNeDTlRy/WZxSvWGZvNHgREr2xAI=;
- b=Es+PsDFCuOtvnmUBRpn9MOMcQAPvpk/A6f6ReGHiYoeu1TQD1k2UpA275g+DfCwJqF
- Mn70Ua3xuyULAXLBWKL+MJqHhEhUiAU8qdefyUxLwdFochlu6RywjpBzg/OCFZ/JG8eJ
- R8SIzoaCk9GkUYEYqY44DuicM8UnUkx7BBVz27xW7DMH38mjD0kBYE7I2hGVZZAcPa/3
- dJXbnfxi7PszRPlfX+06W0JpCgQL2ZDPtIO+7if6/LlJcQmMmcH/D/BvxgL9/Pji+6o2
- oxLtFiixnnvfzApX43rsai92TrkPsGuGcO3U/EvB0sU3/GJGWfsNREK2aPBIeHEPMpEV
- eu5Q==
-X-Gm-Message-State: AOAM530uRkFvUyQ5jnrc+xcIUAzBN0Kv54dupurXZ9EPANiFJOIpoWhN
- 909EhmTBSf2eNR1YE/sb0hpIooKdkVobvbCIQp8eYmmBI4a+jykRjoADI2PTV39yzgA8zOUDgGZ
- ufvhLt6JfrirCA789XxicVkKfAjfmfEDq7K72cgUO
-X-Received: by 2002:a17:906:d10c:b0:6cd:4aa2:cd62 with SMTP id
- b12-20020a170906d10c00b006cd4aa2cd62mr12751199ejz.229.1645969956001; 
- Sun, 27 Feb 2022 05:52:36 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyXq+ZARVgwx9GQqR/xqmr4FidvI0jbXs/SPWVteyhvLCXz3Udlc0TuaU2TzyIf2JoyZYkY6w==
-X-Received: by 2002:a17:906:d10c:b0:6cd:4aa2:cd62 with SMTP id
- b12-20020a170906d10c00b006cd4aa2cd62mr12751178ejz.229.1645969955744; 
- Sun, 27 Feb 2022 05:52:35 -0800 (PST)
+ bh=ovOgd1VJlKyRzMY+TlP34IMSMGHGw8uakjQlL885+iI=;
+ b=evCAKw8RQIBlwqrAavOjOA3iN1Vyt1IYljPBDS0nGyDeLJcNJorkgD/RRuNvRUnG/+
+ 3FyT7bsErhPukxipt/0Fx3lU92YNfmnx69EA4VZG6BVdK2Go9lXLQp9/gxsEb+pbEhQa
+ VQYx5MU8AYl9YfzXnXArMRZsLntV8eMcGtih+ENDG8pq6Btmei4JMkFYvk9x8VO+Ov9H
+ DujrmhwG/HSxnWPeL1l6kc84RJLsDK+I9D3yFJWgWAEE/e6+49prL2rGiWxbwAz6GDwZ
+ Ol9HlIqztzB6/+K+/IdaJwsdU83goPqEAak5UxO01DyPDHqwfbjcSOIHP3EUixlZvaMe
+ tMtw==
+X-Gm-Message-State: AOAM531O4F6AnTZDkrw4keEA7vUxbCHIQY1HY82O6EJuAJagNHHM1UbK
+ niElX+jmzDYSazU1yfgGqd7LMwDojXAx7OoIHd5d5jvt6lOoCUvYV2rYqxVyPgxEbCqblyOoe0b
+ eTgjMqvHCjuZPo+atCxQF8mABl8lNO/Cr106TLwwR
+X-Received: by 2002:a17:906:82cf:b0:6d0:3d6:8f27 with SMTP id
+ a15-20020a17090682cf00b006d003d68f27mr11873399ejy.236.1645969959556; 
+ Sun, 27 Feb 2022 05:52:39 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwaPeLTnbLCXr36eOWjnDy8E4LI71/jJS3zMt9CSPHhfhuyTLYqyLKvSg58uZ5j7Z3tq7CVSw==
+X-Received: by 2002:a17:906:82cf:b0:6d0:3d6:8f27 with SMTP id
+ a15-20020a17090682cf00b006d003d68f27mr11873353ejy.236.1645969959366; 
+ Sun, 27 Feb 2022 05:52:39 -0800 (PST)
 Received: from localhost.localdomain (xdsl-188-155-181-108.adslplus.ch.
  [188.155.181.108]) by smtp.gmail.com with ESMTPSA id
- r22-20020a17090638d600b006d584aaa9c9sm3393333ejd.133.2022.02.27.05.52.34
+ r22-20020a17090638d600b006d584aaa9c9sm3393333ejd.133.2022.02.27.05.52.37
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 27 Feb 2022 05:52:35 -0800 (PST)
+ Sun, 27 Feb 2022 05:52:38 -0800 (PST)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  "Rafael J. Wysocki" <rafael@kernel.org>, Stuart Yoder <stuyoder@gmail.com>,
@@ -110,10 +110,9 @@ To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  alsa-devel@alsa-project.org, linux-spi@vger.kernel.org,
  virtualization@lists.linux-foundation.org,
  Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH v3 03/11] fsl-mc: Use driver_set_override() instead of
- open-coding
-Date: Sun, 27 Feb 2022 14:52:06 +0100
-Message-Id: <20220227135214.145599-4-krzysztof.kozlowski@canonical.com>
+Subject: [PATCH v3 05/11] PCI: Use driver_set_override() instead of open-coding
+Date: Sun, 27 Feb 2022 14:52:08 +0100
+Message-Id: <20220227135214.145599-6-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20220227135214.145599-1-krzysztof.kozlowski@canonical.com>
 References: <20220227135214.145599-1-krzysztof.kozlowski@canonical.com>
@@ -143,25 +142,21 @@ modified by the core and it matches other subsystems.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- drivers/bus/fsl-mc/fsl-mc-bus.c | 25 ++++---------------------
- include/linux/fsl/mc.h          |  6 ++++--
- 2 files changed, 8 insertions(+), 23 deletions(-)
+ drivers/pci/pci-sysfs.c | 28 ++++------------------------
+ include/linux/pci.h     |  7 ++++++-
+ 2 files changed, 10 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/bus/fsl-mc/fsl-mc-bus.c b/drivers/bus/fsl-mc/fsl-mc-bus.c
-index 8fd4a356a86e..ba01c7f4de92 100644
---- a/drivers/bus/fsl-mc/fsl-mc-bus.c
-+++ b/drivers/bus/fsl-mc/fsl-mc-bus.c
-@@ -166,31 +166,14 @@ static ssize_t driver_override_store(struct device *dev,
+diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+index 602f0fb0b007..5c42965c32c2 100644
+--- a/drivers/pci/pci-sysfs.c
++++ b/drivers/pci/pci-sysfs.c
+@@ -567,31 +567,11 @@ static ssize_t driver_override_store(struct device *dev,
  				     const char *buf, size_t count)
  {
- 	struct fsl_mc_device *mc_dev = to_fsl_mc_device(dev);
--	char *driver_override, *old = mc_dev->driver_override;
--	char *cp;
-+	int ret;
- 
- 	if (WARN_ON(dev->bus != &fsl_mc_bus_type))
- 		return -EINVAL;
- 
+ 	struct pci_dev *pdev = to_pci_dev(dev);
+-	char *driver_override, *old, *cp;
+-
+-	/* We need to keep extra room for a newline */
 -	if (count >= (PAGE_SIZE - 1))
 -		return -EINVAL;
 -
@@ -173,44 +168,42 @@ index 8fd4a356a86e..ba01c7f4de92 100644
 -	if (cp)
 -		*cp = '\0';
 -
+-	device_lock(dev);
+-	old = pdev->driver_override;
 -	if (strlen(driver_override)) {
--		mc_dev->driver_override = driver_override;
+-		pdev->driver_override = driver_override;
 -	} else {
 -		kfree(driver_override);
--		mc_dev->driver_override = NULL;
+-		pdev->driver_override = NULL;
 -	}
--
+-	device_unlock(dev);
++	int ret;
+ 
 -	kfree(old);
-+	ret = driver_set_override(dev, &mc_dev->driver_override, buf, count);
++	ret = driver_set_override(dev, &pdev->driver_override, buf, count);
 +	if (ret)
 +		return ret;
  
  	return count;
  }
-diff --git a/include/linux/fsl/mc.h b/include/linux/fsl/mc.h
-index 7b6c42bfb660..7a87ab9eba99 100644
---- a/include/linux/fsl/mc.h
-+++ b/include/linux/fsl/mc.h
-@@ -170,7 +170,9 @@ struct fsl_mc_obj_desc {
-  * @regions: pointer to array of MMIO region entries
-  * @irqs: pointer to array of pointers to interrupts allocated to this device
-  * @resource: generic resource associated with this MC object device, if any.
-- * @driver_override: driver name to force a match
-+ * @driver_override: driver name to force a match; do not set directly,
-+ *                   because core frees it; use driver_set_override() to
-+ *                   set or clear it.
-  *
-  * Generic device object for MC object devices that are "attached" to a
-  * MC bus.
-@@ -204,7 +206,7 @@ struct fsl_mc_device {
- 	struct fsl_mc_device_irq **irqs;
- 	struct fsl_mc_resource *resource;
- 	struct device_link *consumer_link;
--	char   *driver_override;
-+	const char *driver_override;
- };
+diff --git a/include/linux/pci.h b/include/linux/pci.h
+index 8253a5413d7c..5c00a8aebdf9 100644
+--- a/include/linux/pci.h
++++ b/include/linux/pci.h
+@@ -516,7 +516,12 @@ struct pci_dev {
+ 	u16		acs_cap;	/* ACS Capability offset */
+ 	phys_addr_t	rom;		/* Physical address if not from BAR */
+ 	size_t		romlen;		/* Length if not from BAR */
+-	char		*driver_override; /* Driver name to force a match */
++	/*
++	 * Driver name to force a match.
++	 * Do not set directly, because core frees it.
++	 * Use driver_set_override() to set or clear it.
++	 */
++	const char	*driver_override;
  
- #define to_fsl_mc_device(_dev) \
+ 	unsigned long	priv_flags;	/* Private flags for the PCI driver */
+ 
 -- 
 2.32.0
 
