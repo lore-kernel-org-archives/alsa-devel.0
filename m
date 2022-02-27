@@ -4,155 +4,124 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 991A5C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Mar 2022 08:36:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4CEA7C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Mar 2022 08:37:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E6EC9193E;
-	Wed,  2 Mar 2022 09:35:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6EC9193E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8AB271A4E;
+	Wed,  2 Mar 2022 09:36:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8AB271A4E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646210199;
-	bh=4qKWs5h/jJHZkRn4zMPfWqRwLoCfLxIL/zCqnzdFEfg=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1646210218;
+	bh=3s2ZykJd8a7uW5FlGKYKvU5wNd5gtBX3udYjmuVDkrA=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FKDr64yqfoPPdB6AHFNtbnrX3QamE7JfYA53gRcYCA/IFyvowEqhGmvC6pZCh2XrA
-	 P1JIxB/TvWlo6Xxs22mvQZbe4+LqvuD+Ek7ghxdNZxNycCMQ24lGR0YXJnNPGCUWyK
-	 8onAAGL6WErV4R1vfLepwhuysxO902mZO3JRsku8=
+	b=HvW8eVy5hVFyhL/pGMtJBYrsllpVyw0hTf875O0MsTlrANoeoWakiD0tAF48ur63f
+	 DU7WZ0oHy5h9LH7OlG8vjE5TUIaWYZpJe2A9es/T7SweRz7dygMhNdAhrNDhFcf8AJ
+	 Ypdx2ZyjAdZHVLxtJDN8XUo5AQ+Qc8EZ3QAdcCNU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 50C76F8052E;
+	by alsa1.perex.cz (Postfix) with ESMTP id C8013F80533;
 	Wed,  2 Mar 2022 09:33:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5FA9FF801D5; Wed,  2 Mar 2022 08:30:26 +0100 (CET)
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+ id 2830AF80137; Sun, 27 Feb 2022 14:52:51 +0100 (CET)
+Received: from smtp-relay-internal-1.canonical.com
+ (smtp-relay-internal-1.canonical.com [185.125.188.123])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B4EA3F80054
- for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2022 08:30:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4EA3F80054
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
- id B8E6F1C0B81; Wed,  2 Mar 2022 08:30:18 +0100 (CET)
-Date: Wed, 2 Mar 2022 08:30:16 +0100
-From: Pavel Machek <pavel@ucw.cz>
-To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH 5/5] spi: make remove callback a void function
-Message-ID: <20220302073016.GB32222@amd>
-References: <20220123175201.34839-1-u.kleine-koenig@pengutronix.de>
- <20220123175201.34839-6-u.kleine-koenig@pengutronix.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 76FD1F80155
+ for <alsa-devel@alsa-project.org>; Sun, 27 Feb 2022 14:52:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76FD1F80155
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com
+ header.b="l/moVZ6A"
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 86A4C4003C
+ for <alsa-devel@alsa-project.org>; Sun, 27 Feb 2022 13:52:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+ s=20210705; t=1645969966;
+ bh=lHEHPtP6JAM6zCrRNeDTlRy/WZxSvWGZvNHgREr2xAI=;
+ h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+ MIME-Version;
+ b=l/moVZ6Adk/hdbzboYehbKdUP0zfndgA9NPqvxV/yHMq7mpX6z4ipsrPvZbSC1j0E
+ 60A1vcN0DzpAWynhwkHTY4bq8JrVU8YDs61x4r3gnroAnMScQr1aVV5XMbmV49dr2t
+ iy8KDHfQExdy3p0m52/AfRekPOON6CXLos2b0KDCVYu51NcZvA+nzIn1vFiHwSlckb
+ LErOt80htc/Hlm1UWfWWsjlR7epau66bh0KmqIYyXQEZA3I4xd0U/mKcTyJbvubtnY
+ ZygbbzvclpidKXzlKTpT3l2I7FKofmZAv0EWD/UsepHTVS1OMorLWSe2DlPg3aAyOS
+ MKx3bsFdmIvnA==
+Received: by mail-ed1-f69.google.com with SMTP id
+ m11-20020a056402430b00b00410678d119eso4223432edc.21
+ for <alsa-devel@alsa-project.org>; Sun, 27 Feb 2022 05:52:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=lHEHPtP6JAM6zCrRNeDTlRy/WZxSvWGZvNHgREr2xAI=;
+ b=Es+PsDFCuOtvnmUBRpn9MOMcQAPvpk/A6f6ReGHiYoeu1TQD1k2UpA275g+DfCwJqF
+ Mn70Ua3xuyULAXLBWKL+MJqHhEhUiAU8qdefyUxLwdFochlu6RywjpBzg/OCFZ/JG8eJ
+ R8SIzoaCk9GkUYEYqY44DuicM8UnUkx7BBVz27xW7DMH38mjD0kBYE7I2hGVZZAcPa/3
+ dJXbnfxi7PszRPlfX+06W0JpCgQL2ZDPtIO+7if6/LlJcQmMmcH/D/BvxgL9/Pji+6o2
+ oxLtFiixnnvfzApX43rsai92TrkPsGuGcO3U/EvB0sU3/GJGWfsNREK2aPBIeHEPMpEV
+ eu5Q==
+X-Gm-Message-State: AOAM530uRkFvUyQ5jnrc+xcIUAzBN0Kv54dupurXZ9EPANiFJOIpoWhN
+ 909EhmTBSf2eNR1YE/sb0hpIooKdkVobvbCIQp8eYmmBI4a+jykRjoADI2PTV39yzgA8zOUDgGZ
+ ufvhLt6JfrirCA789XxicVkKfAjfmfEDq7K72cgUO
+X-Received: by 2002:a17:906:d10c:b0:6cd:4aa2:cd62 with SMTP id
+ b12-20020a170906d10c00b006cd4aa2cd62mr12751199ejz.229.1645969956001; 
+ Sun, 27 Feb 2022 05:52:36 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyXq+ZARVgwx9GQqR/xqmr4FidvI0jbXs/SPWVteyhvLCXz3Udlc0TuaU2TzyIf2JoyZYkY6w==
+X-Received: by 2002:a17:906:d10c:b0:6cd:4aa2:cd62 with SMTP id
+ b12-20020a170906d10c00b006cd4aa2cd62mr12751178ejz.229.1645969955744; 
+ Sun, 27 Feb 2022 05:52:35 -0800 (PST)
+Received: from localhost.localdomain (xdsl-188-155-181-108.adslplus.ch.
+ [188.155.181.108]) by smtp.gmail.com with ESMTPSA id
+ r22-20020a17090638d600b006d584aaa9c9sm3393333ejd.133.2022.02.27.05.52.34
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sun, 27 Feb 2022 05:52:35 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, Stuart Yoder <stuyoder@gmail.com>,
+ Laurentiu Tudor <laurentiu.tudor@nxp.com>, Abel Vesa <abel.vesa@nxp.com>,
+ Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>, "K. Y. Srinivasan" <kys@microsoft.com>,
+ Haiyang Zhang <haiyangz@microsoft.com>,
+ Stephen Hemminger <sthemmin@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+ Dexuan Cui <decui@microsoft.com>, Bjorn Helgaas <bhelgaas@google.com>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>,
+ Vineeth Vijayan <vneethv@linux.ibm.com>,
+ Peter Oberparleiter <oberpar@linux.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>, Andy Gross <agross@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Mark Brown <broonie@kernel.org>, "Michael S. Tsirkin" <mst@redhat.com>,
+ Jason Wang <jasowang@redhat.com>, linux-kernel@vger.kernel.org,
+ linux-clk@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>,
+ linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org,
+ linux-pci@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+ linux-s390@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-spi@vger.kernel.org,
+ virtualization@lists.linux-foundation.org,
+ Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH v3 03/11] fsl-mc: Use driver_set_override() instead of
+ open-coding
+Date: Sun, 27 Feb 2022 14:52:06 +0100
+Message-Id: <20220227135214.145599-4-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20220227135214.145599-1-krzysztof.kozlowski@canonical.com>
+References: <20220227135214.145599-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="xXmbgvnjoT4axfJE"
-Content-Disposition: inline
-In-Reply-To: <20220123175201.34839-6-u.kleine-koenig@pengutronix.de>
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-Mailman-Approved-At: Wed, 02 Mar 2022 09:33:33 +0100
-Cc: Andrew Lunn <andrew@lunn.ch>, Gwendal Grignou <gwendal@chromium.org>,
- Yasunari Takiguchi <Yasunari.Takiguchi@sony.com>, Claudius Heine <ch@denx.de>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Nanyong Sun <sunnanyong@huawei.com>, Linus Walleij <linus.walleij@linaro.org>,
- dri-devel@lists.freedesktop.org,
- Frieder Schrempf <frieder.schrempf@kontron.de>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Christian Lamparter <chunkeey@googlemail.com>,
- Ajay Singh <ajay.kathat@microchip.com>, linux-clk@vger.kernel.org,
- Stefan Schmidt <stefan@datenfreihafen.org>, Sidong Yang <realwakka@gmail.com>,
- libertas-dev@lists.infradead.org, linux-omap@vger.kernel.org,
- Antti Palosaari <crope@iki.fi>, Guenter Roeck <linux@roeck-us.net>,
- Jean Delvare <jdelvare@suse.com>, linux-serial@vger.kernel.org,
- =?utf-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>,
- Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>,
- James Schulman <james.schulman@cirrus.com>,
- Kamlesh Gurudasani <kamlesh.gurudasani@gmail.com>,
- Jingoo Han <jingoohan1@gmail.com>, Zhang Qilong <zhangqilong3@huawei.com>,
- Randy Dunlap <rdunlap@infradead.org>, linux-stm32@st-md-mailman.stormreply.com,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
- Michael Walle <michael@walle.cc>,
- Noralf =?iso-8859-1?Q?Tr=F8nnes?= <noralf@tronnes.org>, kernel@pengutronix.de,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-mtd@lists.infradead.org,
- Andrew Morton <akpm@linux-foundation.org>, Vladimir Oltean <olteanv@gmail.com>,
- linux-wpan@vger.kernel.org, Claudiu Beznea <claudiu.beznea@microchip.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Dan Robertson <dan@dlrobertson.com>, Markuss Broks <markuss.broks@gmail.com>,
- Lucas Tanure <tanureal@opensource.cirrus.com>, David Airlie <airlied@linux.ie>,
- linux-wireless@vger.kernel.org, Marco Felsch <m.felsch@pengutronix.de>,
- David Rhodes <david.rhodes@cirrus.com>,
- Thierry Reding <thierry.reding@gmail.com>, Solomon Peachy <pizza@shaftnet.org>,
- Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
- Lars-Peter Clausen <lars@metafoo.de>,
- Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
- Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>,
- Jiri Slaby <jirislaby@kernel.org>, Helge Deller <deller@gmx.de>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Minghao Chi <chi.minghao@zte.com.cn>, Jon Hunter <jonathanh@nvidia.com>,
- dingsenjie <dingsenjie@yulong.com>, Heiko Schocher <hs@denx.de>,
- Wolfgang Grandegger <wg@grandegger.com>, Matt Kline <matt@bitbashing.io>,
- Woojung Huh <woojung.huh@microchip.com>,
- Charles Keepax <ckeepax@opensource.cirrus.com>,
- Michael Hennerich <Michael.Hennerich@analog.com>,
- Mike Looijmans <mike.looijmans@topic.nl>,
- Ronald =?iso-8859-1?Q?Tschal=E4r?= <ronald@innovation.ch>,
- Daniel Thompson <daniel.thompson@linaro.org>,
- Maxime Ripard <mripard@kernel.org>, linux-can@vger.kernel.org,
- linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- Hans de Goede <hdegoede@redhat.com>, Stephen Boyd <sboyd@kernel.org>,
- Davidlohr Bueso <dbueso@suse.de>, UNGLinuxDriver@microchip.com,
- Jarkko Sakkinen <jarkko@kernel.org>, linux-usb@vger.kernel.org,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>, linux-integrity@vger.kernel.org,
- Jonathan Cameron <jic23@kernel.org>, Heiner Kallweit <hkallweit1@gmail.com>,
- Ulf Hansson <ulf.hansson@linaro.org>, linux-staging@lists.linux.dev,
- linux-iio@vger.kernel.org, Michael Turquette <mturquette@baylibre.com>,
- alsa-devel@alsa-project.org, Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
- netdev@vger.kernel.org, Wei Yongjun <weiyongjun1@huawei.com>,
- Sam Ravnborg <sam@ravnborg.org>,
- =?iso-8859-1?B?Suly9G1l?= Pouiller <jerome.pouiller@silabs.com>,
- linux-rtc@vger.kernel.org, Marcus Folkesson <marcus.folkesson@gmail.com>,
- Florian Fainelli <f.fainelli@gmail.com>,
- Aditya Srivastava <yashsri421@gmail.com>,
- Varka Bhadram <varkabhadram@gmail.com>, wengjianfeng <wengjianfeng@yulong.com>,
- linux-input@vger.kernel.org, linux-media@vger.kernel.org,
- Arnd Bergmann <arnd@arndb.de>,
- Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
- Mark Greer <mgreer@animalcreek.com>, Mark Gross <markgross@kernel.org>,
- Richard Fitzgerald <rf@opensource.cirrus.com>, Mark Brown <broonie@kernel.org>,
- linux-fbdev@vger.kernel.org, Mauro Carvalho Chehab <mchehab@kernel.org>,
- Benson Leung <bleung@chromium.org>,
- Stefan =?iso-8859-1?Q?M=E4tje?= <stefan.maetje@esd.eu>,
- linux-hwmon@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
- Paulo Miguel Almeida <paulo.miguel.almeida.rodenas@gmail.com>,
- Support Opensource <support.opensource@diasemi.com>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-mmc@vger.kernel.org,
- Liam Girdwood <lgirdwood@gmail.com>, Julia Lawall <Julia.Lawall@inria.fr>,
- Yang Li <yang.lee@linux.alibaba.com>, Dan Carpenter <dan.carpenter@oracle.com>,
- patches@opensource.cirrus.com, Kent Gustavsson <kent@minoris.se>,
- "David S. Miller" <davem@davemloft.net>,
- Charles-Antoine Couret <charles-antoine.couret@nexvision.fr>,
- Alexander Aring <alex.aring@gmail.com>, Jiri Prchal <jiri.prchal@aksignal.cz>,
- Vignesh Raghavendra <vigneshr@ti.com>, Emma Anholt <emma@anholt.net>,
- Peter Zijlstra <peterz@infradead.org>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Alexandru Ardelean <ardeleanalex@gmail.com>,
- Antoniu Miclaus <antoniu.miclaus@analog.com>, Peter Huewe <peterhuewe@gmx.de>,
- Torin Cooper-Bennun <torin@maxiluxsystems.com>,
- Lee Jones <lee.jones@linaro.org>, linux-leds@vger.kernel.org,
- Eric Piel <eric.piel@tremplin-utc.net>, Stephan Gerhold <stephan@gerhold.net>,
- Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>,
- Jason Gunthorpe <jgg@ziepe.ca>, Thomas Kopp <thomas.kopp@microchip.com>,
- Jakub Kicinski <kuba@kernel.org>, Vivien Didelot <vivien.didelot@gmail.com>,
- platform-driver-x86@vger.kernel.org, Stefan Wahren <stefan.wahren@i2se.com>,
- Xue Liu <liuxuenetmail@gmail.com>, David Lechner <david@lechnology.com>,
- Will Deacon <will@kernel.org>, Manivannan Sadhasivam <mani@kernel.org>,
- Kalle Valo <kvalo@kernel.org>, Rui Miguel Silva <rmfrfs@gmail.com>,
- Marc Kleine-Budde <mkl@pengutronix.de>, Fabio Estevam <festevam@gmail.com>,
- Harry Morris <h.morris@cascoda.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
- Alessandro Zummo <a.zummo@towertech.it>, Yang Shen <shenyang39@huawei.com>,
- Thomas Zimmermann <tzimmermann@suse.de>, Takashi Iwai <tiwai@suse.com>,
- Cai Huoqing <caihuoqing@baidu.com>, Daniel Mack <daniel@zonque.org>,
- Daniel Vetter <daniel@ffwll.ch>, Colin Ian King <colin.king@intel.com>,
- Bartosz Golaszewski <brgl@bgdev.pl>, Alan Ott <alan@signal11.us>
+Content-Transfer-Encoding: 8bit
+X-Mailman-Approved-At: Wed, 02 Mar 2022 09:33:34 +0100
+Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -168,39 +137,80 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Use a helper for seting driver_override to reduce amount of duplicated
+code. Make the driver_override field const char, because it is not
+modified by the core and it matches other subsystems.
 
---xXmbgvnjoT4axfJE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+ drivers/bus/fsl-mc/fsl-mc-bus.c | 25 ++++---------------------
+ include/linux/fsl/mc.h          |  6 ++++--
+ 2 files changed, 8 insertions(+), 23 deletions(-)
 
-Hi!
+diff --git a/drivers/bus/fsl-mc/fsl-mc-bus.c b/drivers/bus/fsl-mc/fsl-mc-bus.c
+index 8fd4a356a86e..ba01c7f4de92 100644
+--- a/drivers/bus/fsl-mc/fsl-mc-bus.c
++++ b/drivers/bus/fsl-mc/fsl-mc-bus.c
+@@ -166,31 +166,14 @@ static ssize_t driver_override_store(struct device *dev,
+ 				     const char *buf, size_t count)
+ {
+ 	struct fsl_mc_device *mc_dev = to_fsl_mc_device(dev);
+-	char *driver_override, *old = mc_dev->driver_override;
+-	char *cp;
++	int ret;
+ 
+ 	if (WARN_ON(dev->bus != &fsl_mc_bus_type))
+ 		return -EINVAL;
+ 
+-	if (count >= (PAGE_SIZE - 1))
+-		return -EINVAL;
+-
+-	driver_override = kstrndup(buf, count, GFP_KERNEL);
+-	if (!driver_override)
+-		return -ENOMEM;
+-
+-	cp = strchr(driver_override, '\n');
+-	if (cp)
+-		*cp = '\0';
+-
+-	if (strlen(driver_override)) {
+-		mc_dev->driver_override = driver_override;
+-	} else {
+-		kfree(driver_override);
+-		mc_dev->driver_override = NULL;
+-	}
+-
+-	kfree(old);
++	ret = driver_set_override(dev, &mc_dev->driver_override, buf, count);
++	if (ret)
++		return ret;
+ 
+ 	return count;
+ }
+diff --git a/include/linux/fsl/mc.h b/include/linux/fsl/mc.h
+index 7b6c42bfb660..7a87ab9eba99 100644
+--- a/include/linux/fsl/mc.h
++++ b/include/linux/fsl/mc.h
+@@ -170,7 +170,9 @@ struct fsl_mc_obj_desc {
+  * @regions: pointer to array of MMIO region entries
+  * @irqs: pointer to array of pointers to interrupts allocated to this device
+  * @resource: generic resource associated with this MC object device, if any.
+- * @driver_override: driver name to force a match
++ * @driver_override: driver name to force a match; do not set directly,
++ *                   because core frees it; use driver_set_override() to
++ *                   set or clear it.
+  *
+  * Generic device object for MC object devices that are "attached" to a
+  * MC bus.
+@@ -204,7 +206,7 @@ struct fsl_mc_device {
+ 	struct fsl_mc_device_irq **irqs;
+ 	struct fsl_mc_resource *resource;
+ 	struct device_link *consumer_link;
+-	char   *driver_override;
++	const char *driver_override;
+ };
+ 
+ #define to_fsl_mc_device(_dev) \
+-- 
+2.32.0
 
-> The value returned by an spi driver's remove function is mostly ignored.
-> (Only an error message is printed if the value is non-zero that the
-> error is ignored.)
->=20
-> So change the prototype of the remove function to return no value. This
-> way driver authors are not tempted to assume that passing an error to
-> the upper layer is a good idea. All drivers are adapted accordingly.
-> There is no intended change of behaviour, all callbacks were prepared to
-> return 0 before.
-
-Acked-by: Pavel Machek <pavel@ucw.cz>
-									Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---xXmbgvnjoT4axfJE
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmIfHQgACgkQMOfwapXb+vLxcgCghFIMSLkgbmU4bCcL4+4sOBXY
-b1QAoKETSRxn6hbtUUF5RsaX43sun2ct
-=6C0C
------END PGP SIGNATURE-----
-
---xXmbgvnjoT4axfJE--
