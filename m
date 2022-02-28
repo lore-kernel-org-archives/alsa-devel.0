@@ -4,67 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 064EEC433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Feb 2022 19:23:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D0CCC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Feb 2022 19:23:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 41E6B190B;
-	Mon, 28 Feb 2022 20:22:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41E6B190B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3919E1925;
+	Mon, 28 Feb 2022 20:22:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3919E1925
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646076193;
-	bh=l+D4DA+CZw7donT9xNUc3FpiJEsDH0lvUyai6c5t7S0=;
+	s=default; t=1646076210;
+	bh=4ffxVFmIhfSz2RtkuWHLovxc6YbAAP8sRv97sOREYfc=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ANpb5FmAHqpx4AxyJFeucrDwOgwSjWb9qjQbONswxnoFNEjxoYlQA9rIRWxMCoCBn
-	 FzQRCFlVQT36UVs8X5HAbmv/cwk/IhLdHRDtP9oGvO1CIr3YIvMQZRiV6/RVZlk+sy
-	 WHz2c0k4OPB4WH6DOsK90emehZ1k2Ag0IV3HBx2o=
+	b=eq9oEIskZJDBuKbI4y/x9xITiNbSK2RAbIh0SzW5tXeY90XPTxyFpzZ5Rt2sIbjA5
+	 kIE7ptJFhgc+SIajrEMoy83czhtuyVlk/7IvPkdoJi5bMP32Il4A2NjSYoO4NMBRIs
+	 XEH1w+EUpzhF7pKFlpBTwEGAMJsGEBMNZnfmIGbg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 83246F805C8;
-	Mon, 28 Feb 2022 20:16:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2AE8DF805C9;
+	Mon, 28 Feb 2022 20:16:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2CA98F805A1; Mon, 28 Feb 2022 20:15:54 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 5465EF805A0; Mon, 28 Feb 2022 20:15:54 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 71706F805A0
- for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2022 20:15:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71706F805A0
+ by alsa1.perex.cz (Postfix) with ESMTPS id CF11CF8057D
+ for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2022 20:15:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF11CF8057D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="b72sLYPZ"
+ header.b="owGY+crF"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id C5AC5B81630;
- Mon, 28 Feb 2022 19:15:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87A86C340F2;
- Mon, 28 Feb 2022 19:15:46 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 47C87B81632;
+ Mon, 28 Feb 2022 19:15:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D61FAC340F4;
+ Mon, 28 Feb 2022 19:15:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1646075747;
- bh=l+D4DA+CZw7donT9xNUc3FpiJEsDH0lvUyai6c5t7S0=;
+ s=k20201202; t=1646075750;
+ bh=4ffxVFmIhfSz2RtkuWHLovxc6YbAAP8sRv97sOREYfc=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=b72sLYPZnAQkjSE6qKpqMrhDC/jxf7XrqSGFWhotA0q2ZB8vY3yHpCD4uViPWCU0G
- ftidlpx1wPrIwmo5gQF7YIOnyjtusYho0ROd7Sx2Os7w5BvOm5Z0lMV2yxIzgJtaGs
- Shw65AYEAriTmYpvIfveOwWH9hkpusx3UOvr/WouNlcro7ZU/FuXtzPnU8T7fHxPa2
- oLmuB3Wa8JtMx96PUQvy+s+r8Qha9xeYKRg1DgLAHvVgG5GL/lxO3PkdVpOD01rnVY
- uDV3BXos/20A95oR4nfVYyOdoRFp2Ii2kJfjEGbw8HbWJv1DQThvDFnd+Frq3/eU2z
- W+PJhwiS2hYDA==
+ b=owGY+crFVM3JpKfDcYPQnUzKuoDo1rTOE31vlN/spxk8l2WCA7mVrq1kAMb5fRTIW
+ 8g2XhjsJ35xlVBOUCrQBsCGGIedCKaXq991oEoAxr3d1nj16SpptakxkYcIG3CIAbZ
+ ZSs8J6oRO+jcMax2xMYxVMZ6QCzlzyEsZ10UcZrjqIJ84BXsdxSK8cuTSF7BZuDkST
+ oIEw66ubt95eP7K118GgZEnKcHsQ2HaddQWZkMsGQa/LQ8w29/EQ0YQjktMz0uRlA2
+ 1qr6YfaVnZFCfZrRB9ffjE6ju9IyWMM998IB+Kxbl/caFh/JkQaEGyPS/Ymukh50vs
+ pQ9EjwytV+xsQ==
 From: Mark Brown <broonie@kernel.org>
-To: Peter Ujfalusi <peter.ujfalusi@gmail.com>, Mark Brown <broonie@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>
-In-Reply-To: <20220223003046.1697784-1-broonie@kernel.org>
-References: <20220223003046.1697784-1-broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: twl4030: Use modern ASoC DAI format terminology
-Message-Id: <164607574627.3538791.2036746981293564502.b4-ty@kernel.org>
-Date: Mon, 28 Feb 2022 19:15:46 +0000
+To: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Biju Das <biju.das.jz@bp.renesas.com>, Rob Herring <robh+dt@kernel.org>,
+ devicetree@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+ Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+ linux-renesas-soc@vger.kernel.org
+In-Reply-To: <20220227225633.28829-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <20220227225633.28829-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: Re: [PATCH] ASoC: dt-bindings: renesas,rz-ssi: Document RZ/V2L SoC
+Message-Id: <164607574758.3538791.1940020429283173746.b4-ty@kernel.org>
+Date: Mon, 28 Feb 2022 19:15:47 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Prabhakar <prabhakar.csengg@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,9 +84,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 23 Feb 2022 00:30:46 +0000, Mark Brown wrote:
-> As part of moving to remove the old style defines for the bus clocks update
-> the twl4030 driver to use more modern terminology for clocking.
+On Sun, 27 Feb 2022 22:56:32 +0000, Lad Prabhakar wrote:
+> Document RZ/V2L SSI bindings. RZ/V2L SSI is identical to one found
+> on the RZ/G2L SoC. No driver changes are required as generic compatible
+> string "renesas,rz-ssi" will be used as a fallback.
 > 
 > 
 
@@ -92,8 +97,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: twl4030: Use modern ASoC DAI format terminology
-      commit: 7effe2cde907a5517489bf3927df7822c3acb13c
+[1/1] ASoC: dt-bindings: renesas,rz-ssi: Document RZ/V2L SoC
+      commit: 032959d880fd99a790607cf59cf6c00b77a32cef
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
