@@ -4,62 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11A04C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Feb 2022 19:17:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A0C6C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Feb 2022 19:17:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1EAAA1896;
-	Mon, 28 Feb 2022 20:16:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1EAAA1896
+	by alsa0.perex.cz (Postfix) with ESMTPS id A25B018B6;
+	Mon, 28 Feb 2022 20:17:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A25B018B6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646075853;
-	bh=aWYprn5Xty9RgNxgQZ7iQ4sNiL6rJeBsi12InO0YXM4=;
+	s=default; t=1646075872;
+	bh=5ST5V0Vj2q2elE0qMzBaA4FYo+7O1CZO2nFkEFeLsJQ=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=S7m8bEl2uNqh8ALg2mF3vuCWdZgehVs9v/mfWF8BRhUdcNTwpLJF+WgjzrbmFuiiU
-	 LyoR8r8UV+b9tbHfhw5X4qSRCzzxw3wJI/DjWu+IrxvprdpcdtJ7XcvuTIFnAvuSzr
-	 zym4LKhuiwr0kUwp/+ychByYlCx1uomB8LlXb6LE=
+	b=g8QR4ZMIyb8XgeR3UdxlnSJUasaWEd/RJ0vUi6PboVsr8+jTUc4qctQXuCDTdr0eb
+	 Z/Iv9lu56h3BICgNQg3D1HzQ4Nr9FrqPDtByPria0yKapO1emKY+DLO8PxInKKxn2U
+	 UxQubhmvAFVAM33x22MfNmxaHGrlQBormv5bny+o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2427DF8051C;
+	by alsa1.perex.cz (Postfix) with ESMTP id CDCA1F8051F;
 	Mon, 28 Feb 2022 20:15:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B4D89F804CA; Mon, 28 Feb 2022 20:15:22 +0100 (CET)
+ id 361F9F80128; Mon, 28 Feb 2022 20:15:24 +0100 (CET)
 Received: from ams.source.kernel.org (ams.source.kernel.org
  [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5ABAEF80128
- for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2022 20:15:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5ABAEF80128
+ by alsa1.perex.cz (Postfix) with ESMTPS id A7DA5F80125
+ for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2022 20:15:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7DA5F80125
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="fmF/8wVx"
+ header.b="pBF0/JuW"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 0CD84B8162C;
- Mon, 28 Feb 2022 19:15:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AE23C340F1;
- Mon, 28 Feb 2022 19:15:16 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 1492DB8162A;
+ Mon, 28 Feb 2022 19:15:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A888BC340FB;
+ Mon, 28 Feb 2022 19:15:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1646075717;
- bh=aWYprn5Xty9RgNxgQZ7iQ4sNiL6rJeBsi12InO0YXM4=;
+ s=k20201202; t=1646075720;
+ bh=5ST5V0Vj2q2elE0qMzBaA4FYo+7O1CZO2nFkEFeLsJQ=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=fmF/8wVxBQs9AIUX+Sd1DJwEcfSoJdNpWW4wR29Ve1DC6go29f2TiwuMUcUXOklwH
- NmgoCfYQPtUh/cN+Cfz1zOCuOwzuS9YT6V6aK7YsRFklrcKpymYR4dYXVttfn9B1Iy
- r4pDtWV/h2gaa3T1IDWLgxGzVWxYMb3rpWDroHfD9aTk2/hJjr9L52rXDcML4PNAlo
- aypl8m7Ka2eM+x99FMcIyABHO8Yfaw7iV4j2BPECPKhWo2Vzz2tLZc6CqHupvW2oC8
- PpCdEy6+44HEXuzoEvWVR8b1LRQbfzgo9+UvkmSy1YFRn6m64VYNyivGLq3iWpOF0F
- bsrDBQ+SWirLw==
+ b=pBF0/JuWVbX2yUdsuqNKgbbdp+tZkq3TqmDmAgEwvRPxjft4L1ajj6eWNNY9kGarW
+ P1+DiCFTd7QUdaBtEMWC8Qe+l5CF7LN22k/prH5iH4VP8ujb4laEYogM1x929kbn5H
+ fVk1NltHo9RWEv2nRhA1yZX5myZcaqNWbBMt8txNUuzXAaCQWGHB4Y3DEn1xuar7Mw
+ bUi0IVlenDet777ggVTemtOaXqQV2ZlfFUh9wPxLtwk/TT6Pyp44QNWdJhJv0EOhT8
+ 6wd0tZE4tjS1v9vXTRZbFJdXh75xxpEW/ERG/HUbN8ogPaD4c0GfR9xT/enit07PKi
+ P7rlMoGH/Vfqw==
 From: Mark Brown <broonie@kernel.org>
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-In-Reply-To: <20220222224816.3636987-1-broonie@kernel.org>
-References: <20220222224816.3636987-1-broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: inno_rk3036: Use modern ASoC DAI format terminology
-Message-Id: <164607571676.3538791.8884134421076404085.b4-ty@kernel.org>
-Date: Mon, 28 Feb 2022 19:15:16 +0000
+To: M R Swami Reddy <mr.swami.reddy@ti.com>, Mark Brown <broonie@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Vishwas A Deshpande <vishwas.a.deshpande@ti.com>
+In-Reply-To: <20220222225135.3726158-1-broonie@kernel.org>
+References: <20220222225135.3726158-1-broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: lm49453: Use modern ASoC DAI format terminology
+Message-Id: <164607571940.3538791.16737725052279725916.b4-ty@kernel.org>
+Date: Mon, 28 Feb 2022 19:15:19 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -79,9 +81,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 22 Feb 2022 22:48:16 +0000, Mark Brown wrote:
+On Tue, 22 Feb 2022 22:51:35 +0000, Mark Brown wrote:
 > As part of moving to remove the old style defines for the bus clocks update
-> the inno_rk3036 driver to use more modern terminology for clocking.
+> the lm49453 driver to use more modern terminology for clocking.
 > 
 > 
 
@@ -91,8 +93,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: inno_rk3036: Use modern ASoC DAI format terminology
-      commit: 58d858ae1c44e23ff48077b60b575359e81bb0ea
+[1/1] ASoC: lm49453: Use modern ASoC DAI format terminology
+      commit: 8e08a0c9225f15c7561938e700ae89612ed78afb
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
