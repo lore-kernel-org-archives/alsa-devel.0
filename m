@@ -4,56 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A582C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Feb 2022 03:07:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7C41C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Feb 2022 03:08:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5C51A16A6;
-	Mon, 28 Feb 2022 04:06:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C51A16A6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9422016FA;
+	Mon, 28 Feb 2022 04:07:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9422016FA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646017652;
-	bh=rllLhkUa8IrPzA0L702vG1vP/+501gLuASfcVLIezVk=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=IF9/oqlgRnaVWPAezbDaLULaQ/g9zrnAdx7nTLRMLHSTaRpTD6F79WjBW+/jaMAZ/
-	 Vq5vTu4Rux4HsbM3EOvIqFQaAQIUhb0xrF0WVb/Sk2JTbwdhlC3U3sxD0/vcR+COvT
-	 8e3DJM1ZkyORzWLk3qQW+baiNN6lWJi1EANwwLl8=
+	s=default; t=1646017683;
+	bh=FpX9z5b+OxYrK++zK+uXniUAhQeGh9Oho1tL1oHlPdk=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=AaWjpZVCI9zuOS70i7VoEvWXOBxSI1Vw9zoQ+D1Gy+9oBoZhh+otmvAsdFnO/qZw3
+	 72hTF/BqhRAK1/X+1zTXuhkHuIMqWMaFJIc4UNqGjN2ABRRpHxr7M3gJhzkKuneDtr
+	 bS62PG/HNaURcyZg5iap20H0YZROPxxde1j/ui3A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 328CBF80125;
-	Mon, 28 Feb 2022 04:06:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D04B7F80054;
+	Mon, 28 Feb 2022 04:06:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2F758F80154; Mon, 28 Feb 2022 04:06:39 +0100 (CET)
-Received: from smtpproxy21.qq.com (smtpbg701.qq.com [203.205.195.86])
+ id BFB68F8013C; Mon, 28 Feb 2022 04:06:40 +0100 (CET)
+Received: from smtpbguseast3.qq.com (smtpbguseast3.qq.com [54.243.244.52])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6E9BDF800F8
- for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2022 04:06:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6E9BDF800F8
-X-QQ-mid: bizesmtp71t1646017582t5w9yqju
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1FB30F80125
+ for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2022 04:06:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1FB30F80125
+X-QQ-mid: bizesmtp71t1646017585tf1kv1pq
 Received: from localhost.localdomain (unknown [58.240.82.166])
  by bizesmtp.qq.com (ESMTP) with 
- id ; Mon, 28 Feb 2022 11:06:16 +0800 (CST)
+ id ; Mon, 28 Feb 2022 11:06:23 +0800 (CST)
 X-QQ-SSF: 01400000002000C0G000000A0000000
-X-QQ-FEAT: sgqrBpdJ5GA6NKedtCLLViTvg/su6Kc9xUp65VOLHbzyY/xiAKX9qDQGVsS90
- vF72AV14Lh8NsfPH5V+MiKzUiUbRTq3kFi8p/94fJY6Bin5z7T5WIfQu8A/7NjaBEK2vwJ9
- fqiXcJ+VAu0snaEBNnUq3WYFWJEFdrX1aJLhKj28OKGCzi5dG9tcI/aJigt53jf6bWkAhJT
- o3MY46nhS05gPRVP+Ks38+cGVImzVmtASkqdZE8F85wqvbxff2HuFzHe+9jTZq+qoQ59S3Q
- uqZ0OKrhkEe7LYVHyZ2hRTHBC1v76Eni6qgjlTmAHus7+5HhornCzMT9Z0rtVQcVPS8woya
- 9ZGwTyCToRIGmVproCGytLjk10eLgEJO8Io0xGgBCYkJR/9BTU=
+X-QQ-FEAT: F3yR32iATbhMswa43cCXQHfEbNdpcZJqhgsZXmS4JMIo72f+8AuPrT0TAHQCl
+ 3y5g5/xie4JEhHs+aoXSf+l8rQkoNAHdopjLIhi+BgCH6KvsLyXQb/tzCZ62OYo9mBH8riq
+ t6UVCHTCbr4TZ+PZCGDHjfMW6GNWeEL7wTtXA5kPHnCR3uWIFncMVDkpXJ2jmNZFOmAEcpf
+ ar+WJgpSKDo3mtKdB1+LxC+pGIuF3JXcpT6dA8EU1aW7sesbM3cIq6pPe6fGGK9lJz14kga
+ xze6NaDfaendO/f5YXVbCkVwLW+XQHMgASwqi3oi/8VoHPz3FoLhnwfMCejmiuP6qWDSBGu
+ 3D6Qx4A5UjiALhhE/ItXBhN68JhKCltWb90MD5I
 X-QQ-GoodBg: 1
 From: Meng Tang <tangmeng@uniontech.com>
 To: perex@perex.cz,
 	tiwai@suse.com
-Subject: [PATCH v2 1/2] ALSA: core: remove initialise static variables to 0
-Date: Mon, 28 Feb 2022 11:06:13 +0800
-Message-Id: <20220228030614.10606-1-tangmeng@uniontech.com>
+Subject: [PATCH v2 2/2] ALSA: core: Remove redundant 'err' variable
+Date: Mon, 28 Feb 2022 11:06:14 +0800
+Message-Id: <20220228030614.10606-2-tangmeng@uniontech.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20220228030614.10606-1-tangmeng@uniontech.com>
+References: <20220228030614.10606-1-tangmeng@uniontech.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign6
+Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign2
 X-QQ-Bgrelay: 1
 Cc: Meng Tang <tangmeng@uniontech.com>, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org
@@ -72,45 +75,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Initializing the static variable to 0 causes the following error
-when exec checkpatch:
-
-ERROR: do not initialise statics to 0
-FILE: sound/sound_core.c:142:
-static int preclaim_oss = 0;
-
-In addition, considering the following way of writing
-139: #ifdef config_sound_oss_core_preclaim
-140: Static int preclaim_oss = 1;
-141: #ELSE
-142: Static int preclaim_oss = 0;
-143: #ENDIF
-We can optimize it by IS_ENABLED(CONFIG_SOUND_OSS_CORE_PRECLAIM),
-so modified it to
-static int preclaim_oss = IS_ENABLED(CONFIG_SOUND_OSS_CORE_PRECLAIM);
+Return the result from file->f_op->open() directly instead of
+taking this in another redundant variable.
 
 Signed-off-by: Meng Tang <tangmeng@uniontech.com>
 ---
- sound/sound_core.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ sound/sound_core.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/sound/sound_core.c b/sound/sound_core.c
-index 90d118cd9164..aa4a57e488e5 100644
+index aa4a57e488e5..3ac679ea31c7 100644
 --- a/sound/sound_core.c
 +++ b/sound/sound_core.c
-@@ -136,11 +136,7 @@ struct sound_unit
-  * All these clutters are scheduled to be removed along with
-  * sound-slot/service-* module aliases.
-  */
--#ifdef CONFIG_SOUND_OSS_CORE_PRECLAIM
--static int preclaim_oss = 1;
--#else
--static int preclaim_oss = 0;
--#endif
-+static int preclaim_oss = IS_ENABLED(CONFIG_SOUND_OSS_CORE_PRECLAIM);
+@@ -582,13 +582,12 @@ static int soundcore_open(struct inode *inode, struct file *file)
+ 		 * We rely upon the fact that we can't be unloaded while the
+ 		 * subdriver is there.
+ 		 */
+-		int err = 0;
+ 		replace_fops(file, new_fops);
  
- module_param(preclaim_oss, int, 0444);
+ 		if (file->f_op->open)
+-			err = file->f_op->open(inode,file);
++			return file->f_op->open(inode, file);
  
+-		return err;
++		return 0;
+ 	}
+ 	return -ENODEV;
+ }
 -- 
 2.20.1
 
