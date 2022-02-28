@@ -4,65 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0170C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Feb 2022 05:14:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC1A1C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Feb 2022 05:21:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 107791704;
-	Mon, 28 Feb 2022 06:13:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 107791704
+	by alsa0.perex.cz (Postfix) with ESMTPS id 62DBE1716;
+	Mon, 28 Feb 2022 06:21:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 62DBE1716
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646025248;
-	bh=wD1edJGKbLYLdFJA8YOZVTIh4R8NAnjn7evAZrw7roo=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1646025714;
+	bh=kF9K0Ea03SE1nhuRp7mQDB0qhxl5bpnKO3HTPaLL5Dg=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gSn59uHcP5pgVKvU9VLE8NNC76QBoeQao2jWoJ7ij78GD41Ytd0ugtw3GTEMM066C
-	 D0l/XHYpxU4oCON1KzP3m+sHDojpM53oGl2kPBE9z8Sy6Ot+7yEnLntAyxN9MYXvQn
-	 XdFTiOwpWKDzvce0Z0Gm2SWXwHjZs1a7RRJxBvaw=
+	b=PbA8R91kHDvlPjl2/Oj1oRbHTi3fbTuaqQCArnIrOivSWUX9kHVZdzLWBVVLXAzow
+	 UdWnkVBidIqDz5F/6kssLgr4/ZwjroQcHc/e5glKes0y5yLHzBIi+4YP/ARtDXM8hD
+	 LCOvmGTnN2TBDSXmaFGNC/vkpaC+e9f3rvuIRBJc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A59F1F80128;
-	Mon, 28 Feb 2022 06:13:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E637BF80128;
+	Mon, 28 Feb 2022 06:21:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 18BACF8013C; Mon, 28 Feb 2022 06:13:16 +0100 (CET)
-Received: from smtpproxy21.qq.com (smtpbg702.qq.com [203.205.195.102])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id BFE3DF80128; Mon, 28 Feb 2022 06:21:01 +0100 (CET)
+Received: from relay.hostedemail.com (relay.hostedemail.com [64.99.140.28])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 73DEAF80054
- for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2022 06:13:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73DEAF80054
-X-QQ-mid: bizesmtp75t1646025180tolhff6f
-Received: from [10.4.23.188] (unknown [58.240.82.166])
- by bizesmtp.qq.com (ESMTP) with 
- id ; Mon, 28 Feb 2022 13:12:59 +0800 (CST)
-X-QQ-SSF: 01400000002000C0F000B00A0000000
-X-QQ-FEAT: FXvDfBZI5O6ME0Y4Us0w7aoT9iOXbHaKWmIC2S5WEOuI9hg6EYPFk7+8CmLGj
- mlcj5c9eeqtttDZKgS1v7YCn9GSYTfL79DxKekWIzirnq27kfSXMteJg4TxxuIGZkYrzzu+
- JK9Mjo2EmYrEaUMWnfew5wsKccsurYjpXZwNtusuYLo2JQPIQcWhwKZKSkfkVpxe8eIa0cU
- N66nmOIhRGuqGM+ThjeqjSb5Bd7H6ZkTPVATfWzcUPxYYc0M9YfuVLWxA1DD7jSUu7mfLu6
- N3LH9RLoW4AUlSc52cIUFpekX/Gj5d9qfqlMnldmLjdyuN+LB6LDRAXAY5aR+/Pq5pDuDq8
- IpL0F2Yl5MWq6GH4Fu+DG37KoR/74i0CfWGcTNzL0Nl93Qhywg=
-X-QQ-GoodBg: 2
-Message-ID: <56927259-87b1-cbeb-2f85-dd3a5dd67c14@uniontech.com>+8EA17305E171470B
-Date: Mon, 28 Feb 2022 13:12:59 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.1
-Subject: Re: [PATCH v3 2/2] ALSA: core: Remove redundant variable and return
+ by alsa1.perex.cz (Postfix) with ESMTPS id 94F26F80125
+ for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2022 06:20:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94F26F80125
+Received: from omf03.hostedemail.com (a10.router.float.18 [10.200.18.1])
+ by unirelay10.hostedemail.com (Postfix) with ESMTP id F2F3FE15;
+ Mon, 28 Feb 2022 05:20:52 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by
+ omf03.hostedemail.com (Postfix) with ESMTPA id BECCA60010; 
+ Mon, 28 Feb 2022 05:20:13 +0000 (UTC)
+Message-ID: <e5c1ba2f7db29b78066d12dab812b7a1c0a37a81.camel@perches.com>
+Subject: Re: [PATCH v4 2/2] ALSA: core: Remove redundant variable and return
  the last statement
-To: perex@perex.cz, tiwai@suse.com
-References: <20220228050003.32509-1-tangmeng@uniontech.com>
- <20220228050003.32509-2-tangmeng@uniontech.com>
-From: tangmeng <tangmeng@uniontech.com>
-In-Reply-To: <20220228050003.32509-2-tangmeng@uniontech.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Joe Perches <joe@perches.com>
+To: Meng Tang <tangmeng@uniontech.com>, perex@perex.cz, tiwai@suse.com
+Date: Sun, 27 Feb 2022 21:20:45 -0800
+In-Reply-To: <20220228050253.1649-2-tangmeng@uniontech.com>
+References: <20220228050253.1649-1-tangmeng@uniontech.com>
+ <20220228050253.1649-2-tangmeng@uniontech.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.4-1ubuntu2 
+MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign2
-X-QQ-Bgrelay: 1
-Cc: JOE Perches <joe@perches.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+X-Rspamd-Server: rspamout08
+X-Rspamd-Queue-Id: BECCA60010
+X-Stat-Signature: hruc7nct77mkwtg4ah8jw8qrpgawattj
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX19B4PH4dJJF2uojux2T7euYun9bMLaYrIU=
+X-HE-Tag: 1646025613-188090
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,20 +73,65 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-On 2022/2/28 13:00, Meng Tang wrote:
+On Mon, 2022-02-28 at 13:02 +0800, Meng Tang wrote:
 > Return the result from file->f_op->open() directly instead of
 > taking this in another redundant variable. Make the typical
 > return the last statement, return early and reduce the indentation
 > too.
 > 
 > Signed-off-by: Meng Tang <tangmeng@uniontech.com>
-> Signed-off-by: JOE Perches <joe@perches.com>
-There is a problem with the Joe Perches signature, I have re-submit it 
-in the V4 patch.
+> Signed-off-by: Joe Perches <joe@perches.com>
 
-I am very sorry for the signature problem.
+Hi Meng Tang.
 
+For the next time: it's not necessary (or even good) to add a sign-off
+for another person unless they specifically authorize one.
+
+You wrote and are submitting these changes, I merely gave you simple
+suggestions as to how you could improve them.
+
+cheers, Joe
+
+> ---
+>  sound/sound_core.c | 24 ++++++++++++------------
+>  1 file changed, 12 insertions(+), 12 deletions(-)
+> 
+> diff --git a/sound/sound_core.c b/sound/sound_core.c
+> index aa4a57e488e5..3332fe321737 100644
+> --- a/sound/sound_core.c
+> +++ b/sound/sound_core.c
+> @@ -577,20 +577,20 @@ static int soundcore_open(struct inode *inode, struct file *file)
+>  			new_fops = fops_get(s->unit_fops);
+>  	}
+>  	spin_unlock(&sound_loader_lock);
+> -	if (new_fops) {
+> -		/*
+> -		 * We rely upon the fact that we can't be unloaded while the
+> -		 * subdriver is there.
+> -		 */
+> -		int err = 0;
+> -		replace_fops(file, new_fops);
+>  
+> -		if (file->f_op->open)
+> -			err = file->f_op->open(inode,file);
+> +	if (!new_fops)
+> +		return -ENODEV;
+>  
+> -		return err;
+> -	}
+> -	return -ENODEV;
+> +	/*
+> +	 * We rely upon the fact that we can't be unloaded while the
+> +	 * subdriver is there.
+> +	 */
+> +	replace_fops(file, new_fops);
+> +
+> +	if (!file->f_op->open)
+> +		return -ENODEV;
+> +
+> +	return file->f_op->open(inode, file);
+>  }
+>  
+>  MODULE_ALIAS_CHARDEV_MAJOR(SOUND_MAJOR);
 
 
