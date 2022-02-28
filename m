@@ -4,85 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97902C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Feb 2022 15:59:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EED40C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Feb 2022 16:00:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2E813175F;
-	Mon, 28 Feb 2022 16:58:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E813175F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 06DEA17F6;
+	Mon, 28 Feb 2022 17:00:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 06DEA17F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646063968;
-	bh=rkv1lpMe6X9ktcIYaNhH8ubS7/f40j7Pp9WP8Le5M3M=;
+	s=default; t=1646064051;
+	bh=33rzhpVFfVLdemyLo/4IWcZMkAJkJny/rscayjjWYqQ=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=A/asYFlLOoWJwSaRt0C13JTwmpuWHaHf8zmv3iDR/49eE7vXG8992oFUdEjJ6htVj
-	 qEj4gOHw5gzEhEfonDxCdvF3Emtm/8sKbWlQ1BSm4Zzbxbk9hCenbM9JjCAhI2/PY6
-	 HM2rANmnkYsckfU4Wj8n755QuTmFz/xVchnS2WO8=
+	b=S9BH1jJVfbDjLKnwQcmUtkGwdKF8IpxCH0q0TDENr1fAwh/0odRwyo4jBUWiNrXDm
+	 3XJOQhJZhy4KJTMKGmElXc5d2hBMBE+EOcg/fZDVoIAOGqHpZsNaiCgUYZphF8ikMc
+	 yAxyfhXXy9cjIJTqUOdh0xVM3IfHZbFseojP0LUE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AA251F80054;
-	Mon, 28 Feb 2022 16:58:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9D1CDF80054;
+	Mon, 28 Feb 2022 17:00:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0F8FEF8013C; Mon, 28 Feb 2022 16:58:36 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id B5311F8013C; Mon, 28 Feb 2022 16:59:59 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 97B1CF80054
- for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2022 16:58:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97B1CF80054
+ by alsa1.perex.cz (Postfix) with ESMTPS id A3681F80054
+ for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2022 16:59:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3681F80054
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="LX+K4s2b"; 
+ header.b="t421fAQR"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="gtpL5nrI"
+ header.b="Mbnf8RFG"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 383261F899;
- Mon, 28 Feb 2022 15:58:31 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 03AFE219A0;
+ Mon, 28 Feb 2022 15:59:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1646063911; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1646063993; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=m+rtOFWhDi8V6wphUcuxOzEfwBnHdV4f4I/SuPu6xcI=;
- b=LX+K4s2bnN0TZrGYKjuGyP5UUwpJhUOEe0xD3owpa3T86p9lry6No/WfwFIKWDSDsIi8hb
- wa0Xi03HcQ8qodmjLGvTS5uEObC8cAQZGAWwtI5nxA2EoPnKi8bS+mn8QLEC1Re/TuQtG7
- s4GBbptvLgnD+UwmNjLblLdWE+gPmIE=
+ bh=4z5vJyV4/iP6hL9tUw+uZShWWOaJ2WdBHqF5vMWnsl0=;
+ b=t421fAQRIMCU6rXhne9E1ev2+/G2cKFTMBTv+cDe0400kz4HynOd/z6ZLbZDoatQhMvz09
+ BaO9ndfTXt3Lar3+wOwaK7IVIyYfdNsn/VVLgvvlkIKEyp+ryxFPGT0atTrFg9jHozgua0
+ cbAa0VOqcpbnGG+1apEfDpW6ZX8oK5M=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1646063911;
+ s=susede2_ed25519; t=1646063993;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=m+rtOFWhDi8V6wphUcuxOzEfwBnHdV4f4I/SuPu6xcI=;
- b=gtpL5nrIf2snMGxQkf7AnZZsGNzoF8HADw4yJHGFFMKFcjUkcCvpPbh0WRn99NV7kTywAS
- VvyTOsmWdavXZ1Cg==
+ bh=4z5vJyV4/iP6hL9tUw+uZShWWOaJ2WdBHqF5vMWnsl0=;
+ b=Mbnf8RFGsd8hv49q/H0XNk2KP+lY8qRylxfaYWUlbba8NEPz5YwIYCyhqFwibg5enooJns
+ M3I1h4pgShrm1vCA==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id E6D29A3B84;
- Mon, 28 Feb 2022 15:58:30 +0000 (UTC)
-Date: Mon, 28 Feb 2022 16:58:30 +0100
-Message-ID: <s5hee3nrnix.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id E499DA3B93;
+ Mon, 28 Feb 2022 15:59:52 +0000 (UTC)
+Date: Mon, 28 Feb 2022 16:59:52 +0100
+Message-ID: <s5hczj7rngn.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Raghu Ballappa Bankapur <quic_rbankapu@quicinc.com>
-Subject: Re: [PATCH V0 1/1] ALSA: pcm: fix blocking while loop in
- snd_pcm_update_hw_ptr0()
-In-Reply-To: <35bfd332-891f-1323-8b61-9e4e2fc5cd1c@quicinc.com>
-References: <cover.1645784757.git.quic_rbankapu@quicinc.com>
- <4d8b1cb4b0db88c3e28207a81403fbf1e4a87bff.1645784757.git.quic_rbankapu@quicinc.com>
- <83e4b67d-91d3-dca9-4b1f-d209f927d517@perex.cz>
- <s5hee3rur42.wl-tiwai@suse.de>
- <35bfd332-891f-1323-8b61-9e4e2fc5cd1c@quicinc.com>
+To: Meng Tang <tangmeng@uniontech.com>
+Subject: Re: [PATCH] sound/mips: Use platform_get_irq() to get the interrupt
+In-Reply-To: <20220225111929.17194-1-tangmeng@uniontech.com>
+References: <20220225111929.17194-1-tangmeng@uniontech.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Zubin Mithra <zsm@chromium.org>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, linux-kernel@vger.kernel.org,
- ierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Takashi Iwai <tiwai@suse.com>, Vinod Koul <vkoul@kernel.org>,
- Mark Brown <broonie@kernel.org>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Krishna Jha <quic_kkishorj@quicinc.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,62 +87,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 25 Feb 2022 13:26:36 +0100,
-Raghu Ballappa Bankapur wrote:
+On Fri, 25 Feb 2022 12:19:29 +0100,
+Meng Tang wrote:
 > 
-> Hi Takashi,
+> platform_get_resource(pdev, IORESOURCE_IRQ, ..) relies on static
+> allocation of IRQ resources in DT core code, this causes an issue
+> when using hierarchical interrupt domains using "interrupts" property
+> in the node as this bypassed the hierarchical setup and messed up the
+> irq chaining.
 > 
-> Thanks for your feedback.
+> In preparation for removal of static setup of IRQ resource from DT core
+> code use platform_get_irq().
 > 
-> I see your below statement
-> 
-> But, having either this zero check or minimal hw_ptr_buffer_jiffies=1
-> would be good in anyway, even if we add more check for the hw_params
-> for no-period-wakeup case.
-> 
-> Please review if those changes are Ok
+> Signed-off-by: Meng Tang <tangmeng@uniontech.com>
 
-If you mean about your posted patch for "those changes", as Jaroslav
-suggested in the thread, we may take a different approach: just set
-the minimal hw_ptr_buffer_jiffies to 1.
+Thanks, applied now.
 
-Could you try this and submit the fix if that works for you?
-
-
-thanks,
 
 Takashi
-
-> 
-> Regards
-> Raghu
-> 
-> On 2/25/2022 4:53 PM, Takashi Iwai wrote:
-> 
->     On Fri, 25 Feb 2022 11:52:05 +0100,
->     Jaroslav Kysela wrote:
->     
->         On 25. 02. 22 11:39, Raghu Bankapur wrote:
->         
->             When period interrupts are disabled, while loop in snd_pcm_update_hw_ptr0()
->             results in the machine locking up if runtime->hw_ptr_buffer_jiffies is 0.
->             Validate runtime->hw_ptr_buffer_jiffies value before while loop to avoid
->             delta check.
->             
->         I would set hw_ptr_buffer_jiffies to 1 in this case in snd_pcm_post_start().
->         
->     I thought of it at the first glance, but after reading the code again,
->     I doubt whether it makes sense at all to allow this condition.
->     Since the buffer size is too small and the rate is too high, we can't
->     calculate the buffer crossing condition accurately under such
->     condition.
->     
->     But, having either this zero check or minimal hw_ptr_buffer_jiffies=1
->     would be good in anyway, even if we add more check for the hw_params
->     for no-period-wakeup case.
-> 
->     thanks,
->     
->     Takashi
-> 
-> 
