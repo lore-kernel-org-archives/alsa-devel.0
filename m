@@ -4,66 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BF01C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Mar 2022 08:35:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 730AEC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Mar 2022 08:36:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 67B4C1A46;
-	Wed,  2 Mar 2022 09:34:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 67B4C1A46
+	by alsa0.perex.cz (Postfix) with ESMTPS id A8B821A9C;
+	Wed,  2 Mar 2022 09:35:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A8B821A9C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646210148;
-	bh=WusUIISy6GS5MR6c6YZ4osdn91PeNTBc5Krc2/0FXIE=;
+	s=default; t=1646210168;
+	bh=HzISZrdQwENKzvnaKovfmEJ78/dHkj/46V9Q716etEI=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Bt4+cpychzSdH2NaMtjz3n5e9u+eFANruX6aWjFEa13weiDG0WSMAc60GuuUe3Dxw
-	 yTQHV+mM1ZuRi+IcZZYAFAb5Y/bOjJh74WRlOYkJemRm4cVlkryBtvzlxv2uosYYku
-	 MbQtb8NYFET7cBBfWL50PzwNwTecuhGfsdW3UAUw=
+	b=ioY1ZsYon7bwBcdfhka79rWv2DgLUgJIQNAsGRi8fQ/oBExWmd6Q4UBp3dFSK/ixk
+	 yb88tHQsMwj6F0FxF+kLo/arbokoIMOc2Xm7qdrn5kKwb+P9OeTlH84CCZLxKLf09v
+	 e0A/lS0C818er2in2/WEQIhgWsnVJo0hz3giU5ao=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ECDA0F8051C;
-	Wed,  2 Mar 2022 09:33:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 63030F80520;
+	Wed,  2 Mar 2022 09:33:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6F6FEF80125; Mon, 28 Feb 2022 21:16:44 +0100 (CET)
+ id 58D22F800F8; Tue,  1 Mar 2022 00:27:00 +0100 (CET)
 Received: from casper.infradead.org (casper.infradead.org
  [IPv6:2001:8b0:10b:1236::1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9346BF80125
- for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2022 21:16:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9346BF80125
+ by alsa1.perex.cz (Postfix) with ESMTPS id 16EB3F800F8
+ for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2022 00:26:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16EB3F800F8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
- header.b="HMc4MBy8"
+ header.b="nt03mWtT"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
  References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
  Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=Gzmb9gGTyCSEGFZjR7TUOSRZ1bWW/G5bAVEV+T9ChYA=; b=HMc4MBy8Vzw7Zw6bzwiCq0vper
- wGe8MnGgfy3P9tw37992OGwcjtB/nFZdz8dqNima3vpVALFvZyXZ3FLoo4RUIh3Ab9CrQCeBzKMqY
- Ctk97R68KJQlQYl84mgCzKSPEBlsm5unT7lh2/ssDfpaJ9kijdyJZ7M9Gq/AZ9YISpkY4qwyvfd22
- UNXuHqD0QUEzQlXJX3VELz7E5j90JJI15fiDqKM4f3XzpVoGyrKZNwsue1ODaw91KQCRdaBoqAoRS
- K+CsuK7iyfWO24fTeFRAPdlXgnD6RcCDMvrfP15+eL0CkbNFD8MwWSyqHmDh8nTOhNkj6bmyxGR8R
- ZvPOqL+g==;
+ bh=kySnWHttTi8Odl1WzgGLjQ1pb3b/AWH5qnYZSwnte50=; b=nt03mWtTaEB9qwsFMTflxzDbvW
+ aPSsVBeLr8i8UFwA1l3fNavsuYE231uUwb0yDTUi43cd3zIwbEaMZqro2u+rXbOt0KZriPQpyGi5J
+ +pW6oqM84XOoVppIQh3QNnM4ANpt9aIP3ShEwC0IGa2NKI/m2xxapQAyHhJG42Bevn7SuMSAnyA27
+ 7+3DFdmFFllbJzk1MHudhAJj7GPo/5RsA7npxrePVRbtGBQKbJeOUSye2chevgvDMrFkod2y0FmL7
+ JW29U+rs2LR5a0WX3s04bvbvXotX/UjRCpaaxaXPYROyoDfpDk5Wuy418QovroPX+qbpGelik5Tc/
+ I0FC9RZw==;
 Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red
- Hat Linux)) id 1nOmRT-008sRP-GZ; Mon, 28 Feb 2022 20:16:23 +0000
-Date: Mon, 28 Feb 2022 20:16:23 +0000
+ Hat Linux)) id 1nOpPe-0090gL-Ex; Mon, 28 Feb 2022 23:26:42 +0000
+Date: Mon, 28 Feb 2022 23:26:42 +0000
 From: Matthew Wilcox <willy@infradead.org>
 To: Linus Torvalds <torvalds@linux-foundation.org>
 Subject: Re: [PATCH 2/6] treewide: remove using list iterator after loop body
  as a ptr
-Message-ID: <Yh0tl3Lni4weIMkl@casper.infradead.org>
+Message-ID: <Yh1aMm3hFe/j9ZbI@casper.infradead.org>
 References: <20220228110822.491923-1-jakobkoschel@gmail.com>
  <20220228110822.491923-3-jakobkoschel@gmail.com>
  <2e4e95d6-f6c9-a188-e1cd-b1eae465562a@amd.com>
  <CAHk-=wgQps58DPEOe4y5cTh5oE9EdNTWRLXzgMiETc+mFX7jzw@mail.gmail.com>
  <CAHk-=wj8fkosQ7=bps5K+DDazBXk=ypfn49A0sEq+7-nZnyfXA@mail.gmail.com>
  <CAHk-=wiTCvLQkHcJ3y0hpqH7FEk9D28LDvZZogC6OVLk7naBww@mail.gmail.com>
+ <Yh0tl3Lni4weIMkl@casper.infradead.org>
+ <CAHk-=wgBfJ1-cPA2LTvFyyy8owpfmtCuyiZi4+um8DhFNe+CyA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wiTCvLQkHcJ3y0hpqH7FEk9D28LDvZZogC6OVLk7naBww@mail.gmail.com>
+In-Reply-To: <CAHk-=wgBfJ1-cPA2LTvFyyy8owpfmtCuyiZi4+um8DhFNe+CyA@mail.gmail.com>
 X-Mailman-Approved-At: Wed, 02 Mar 2022 09:33:33 +0100
 Cc: linux-wireless <linux-wireless@vger.kernel.org>,
  alsa-devel@alsa-project.org, KVM list <kvm@vger.kernel.org>,
@@ -117,19 +119,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Feb 28, 2022 at 12:10:24PM -0800, Linus Torvalds wrote:
-> We can do
+On Mon, Feb 28, 2022 at 12:37:15PM -0800, Linus Torvalds wrote:
+> On Mon, Feb 28, 2022 at 12:16 PM Matthew Wilcox <willy@infradead.org> wrote:
+> >
+> > Then we can never use -Wshadow ;-(  I'd love to be able to turn it on;
+> > it catches real bugs.
 > 
->         typeof(pos) pos
+> Oh, we already can never use -Wshadow regardless of things like this.
+> That bridge hasn't just been burned, it never existed in the first
+> place.
 > 
-> in the 'for ()' loop, and never use __iter at all.
+> The whole '-Wshadow' thing simply cannot work with local variables in
+> macros - something that we've used since day 1.
 > 
-> That means that inside the for-loop, we use a _different_ 'pos' than outside.
+> Try this (as a "p.c" file):
+> 
+>         #define min(a,b) ({                     \
+>                 typeof(a) __a = (a);            \
+>                 typeof(b) __b = (b);            \
+>                 __a < __b ? __a : __b; })
+> 
+>         int min3(int a, int b, int c)
+>         {
+>                 return min(a,min(b,c));
+>         }
+> 
+> and now do "gcc -O2 -S t.c".
+> 
+> Then try it with -Wshadow.
 
-Then we can never use -Wshadow ;-(  I'd love to be able to turn it on;
-it catches real bugs.
+#define ___PASTE(a, b)	a##b
+#define __PASTE(a, b) ___PASTE(a, b)
+#define _min(a, b, u) ({         \
+        typeof(a) __PASTE(__a,u) = (a);            \
+        typeof(b) __PASTE(__b,u) = (b);            \
+        __PASTE(__a,u) < __PASTE(__b,u) ? __PASTE(__a,u) : __PASTE(__b,u); })
 
-> +#define list_for_each_entry(pos, head, member)					\
-> +	for (typeof(pos) pos = list_first_entry(head, typeof(*pos), member);	\
-> +	     !list_entry_is_head(pos, head, member);	\
->  	     pos = list_next_entry(pos, member))
+#define min(a, b) _min(a, b, __COUNTER__)
+
+int min3(int a, int b, int c)
+{
+        return min(a,min(b,c));
+}
+
+(probably there's a more elegant way to do this)
