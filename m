@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A55F0C433FE
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Feb 2022 15:34:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9469BC433FE
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Feb 2022 15:34:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E173817C6;
-	Mon, 28 Feb 2022 16:33:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E173817C6
+	by alsa0.perex.cz (Postfix) with ESMTPS id DE5B2179B;
+	Mon, 28 Feb 2022 16:34:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE5B2179B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646062484;
-	bh=KiG7fJPN8QzEvoE3UOgCWZWEubAp/f0NapK78VR1Cx8=;
+	s=default; t=1646062496;
+	bh=4gxFp7tKPeDmEphrfA+lm3Vo02FqGB5XyWGZRxtNstY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VO/Cs7ulagbnCqelztog8DXbXd5Sh5h/Ch5kZl9BJ5DWUP3G2LkxlRFD87G68CxJi
-	 7rMHz7AQ7UswvN4Ee6WA9dvJhTFbE2raPnnBeMHihj9vVw1zcxLt0d1HuC1YHn3C4f
-	 cGltJFlgpYcup4YIAjVRJpxZk8CUyU5g2mhvvpbQ=
+	b=nneDoF1g3ILBhW+EP/Al+tcm/O+pPM7eT6TZfzi8nYlUJcXdqDDTT7hb99NMEuRAH
+	 vF5zlO1Nw/SvWJ6b93W6jKBfL1pL6BWmkkH9uuJ5n2trTPvBHdW92kH0vgQXsmNHDy
+	 6SFWfW4bS6sSo3FYDI+c/Cdd9Im3LsKJR/XfNomw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6D728F80534;
-	Mon, 28 Feb 2022 16:32:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 05027F8053A;
+	Mon, 28 Feb 2022 16:32:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E2ACAF80533; Mon, 28 Feb 2022 16:31:59 +0100 (CET)
+ id 42EE7F8053C; Mon, 28 Feb 2022 16:32:03 +0100 (CET)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CFEE1F80517
- for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2022 16:31:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CFEE1F80517
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0C992F800F8
+ for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2022 16:31:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C992F800F8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="TacVUO7t"
+ header.b="O4/7Xyvf"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1646062314; x=1677598314;
+ t=1646062321; x=1677598321;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=KiG7fJPN8QzEvoE3UOgCWZWEubAp/f0NapK78VR1Cx8=;
- b=TacVUO7t1ml/qOkFvij/UXdGlRoAWdjajzUg9OLgnpneSRkjH9EwbJwy
- EpqSj4trw2/jtVfRnjb88rnyRKfWUf1Vtc3x1pHE5PMNuy41Lsof/3/Uq
- CLzsoE1MjnmwEqPalI9fTV52xqJvQv77r6LIlwVfkQM5VC9iLXDHon3mV
- Zm9WtBd1v7ELev9q6+hOynVOxPsRoYF5NKDllREj21N6gjjPpePgIO2s9
- 5B+cMk1kwivcBS0N2VfTqspjGIUdtoiMZrZcUMvu0Iq/F2hwfgMkIHY3E
- CGwZpwmXqxdoVtH4mD8w2ixT+d01l0vHLSGz1HRBzsvvBicaMJKLPxiSi A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10271"; a="339342404"
-X-IronPort-AV: E=Sophos;i="5.90,142,1643702400"; d="scan'208";a="339342404"
+ bh=4gxFp7tKPeDmEphrfA+lm3Vo02FqGB5XyWGZRxtNstY=;
+ b=O4/7XyvfhQms1DKfdX2uUxaj5JYVGwtnly6NX4/zNjo3iJhvmqHauKbR
+ 2pHNURqe5bcaDdVojVfGV+AmcjH3uoa1iDsz/K3fpehECnr0N8dd3CQ5s
+ Bp/MMbT6r3/+w6bmi1YhIt8usrz731zoekecBETZu8hgXBccBC0RUnq47
+ ahTB20+Z5Cts4roA/3Q9i0M4/qQ3VjXeGAAnmKFCXZ3pUaZc8RAAMroxh
+ sb4h02SHUfP5QXORB8mZgYZfmuP7qcSx7PlyDctJwEmLMjTRvNBNG3Ams
+ y3/WzxmvNcCdVbi4zTpLcLbI6kL9jQVkiZu3zc9cbT8G//bvU1LRx/6zN g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10271"; a="339342421"
+X-IronPort-AV: E=Sophos;i="5.90,142,1643702400"; d="scan'208";a="339342421"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 28 Feb 2022 07:31:52 -0800
+ 28 Feb 2022 07:31:58 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,142,1643702400"; d="scan'208";a="629667231"
+X-IronPort-AV: E=Sophos;i="5.90,142,1643702400"; d="scan'208";a="629667247"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by FMSMGA003.fm.intel.com with ESMTP; 28 Feb 2022 07:31:49 -0800
+ by FMSMGA003.fm.intel.com with ESMTP; 28 Feb 2022 07:31:55 -0800
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 06/17] ASoC: Intel: avs: Add pipeline management requests
-Date: Mon, 28 Feb 2022 16:33:32 +0100
-Message-Id: <20220228153343.2263412-7-cezary.rojewski@intel.com>
+Subject: [PATCH v2 08/17] ASoC: Intel: avs: Add power management requests
+Date: Mon, 28 Feb 2022 16:33:34 +0100
+Message-Id: <20220228153343.2263412-9-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220228153343.2263412-1-cezary.rojewski@intel.com>
 References: <20220228153343.2263412-1-cezary.rojewski@intel.com>
@@ -87,184 +87,105 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Pipeline represents a scheduling entity. Their existence as well as
-their state machine is controlled through CREATE_PIPELINE,
-DELETE_PIPELINE and SET_PIPELINE_STATE IPCs.
+Audio DSP supports low power states i.e.: transitions between D0 and D3
+and D0-substates in form of D0i0 and D0i3. That process is a combination
+of core and IPC operations. Here, Dx and D0ix IPC handlers are added.
 
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/avs/messages.c | 76 ++++++++++++++++++++++++++++++++++
- sound/soc/intel/avs/messages.h | 48 +++++++++++++++++++++
- 2 files changed, 124 insertions(+)
+ sound/soc/intel/avs/messages.c | 44 ++++++++++++++++++++++++++++++++++
+ sound/soc/intel/avs/messages.h | 15 ++++++++++++
+ 2 files changed, 59 insertions(+)
 
 diff --git a/sound/soc/intel/avs/messages.c b/sound/soc/intel/avs/messages.c
-index 8dac946dd8dd..ab13fc7809fe 100644
+index e21139112ef7..46251e014215 100644
 --- a/sound/soc/intel/avs/messages.c
 +++ b/sound/soc/intel/avs/messages.c
-@@ -63,3 +63,79 @@ int avs_ipc_load_library(struct avs_dev *adev, u32 dma_id, u32 lib_id)
+@@ -401,3 +401,47 @@ int avs_ipc_get_large_config(struct avs_dev *adev, u16 module_id, u8 instance_id
  
- 	return ret;
+ 	return 0;
  }
 +
-+int avs_ipc_create_pipeline(struct avs_dev *adev, u16 req_size, u8 priority,
-+			    u8 instance_id, bool lp, u16 attributes)
++int avs_ipc_set_dx(struct avs_dev *adev, u32 core_mask, bool powerup)
 +{
-+	union avs_global_msg msg = AVS_GLOBAL_REQUEST(CREATE_PIPELINE);
-+	struct avs_ipc_msg request = {0};
++	union avs_module_msg msg = AVS_MODULE_REQUEST(SET_DX);
++	struct avs_ipc_msg request;
++	struct avs_dxstate_info dx;
 +	int ret;
 +
-+	msg.create_ppl.ppl_mem_size = req_size;
-+	msg.create_ppl.ppl_priority = priority;
-+	msg.create_ppl.instance_id = instance_id;
-+	msg.ext.create_ppl.lp = lp;
-+	msg.ext.create_ppl.attributes = attributes;
++	dx.core_mask = core_mask;
++	dx.dx_mask = powerup ? core_mask : 0;
 +	request.header = msg.val;
++	request.data = &dx;
++	request.size = sizeof(dx);
 +
 +	ret = avs_dsp_send_msg(adev, &request, NULL);
 +	if (ret)
-+		avs_ipc_err(adev, &request, "create pipeline", ret);
++		avs_ipc_err(adev, &request, "set dx", ret);
 +
 +	return ret;
 +}
 +
-+int avs_ipc_delete_pipeline(struct avs_dev *adev, u8 instance_id)
++/*
++ * avs_ipc_set_d0ix - Set power gating policy (entering D0IX substates)
++ *
++ * @enable_pg: Whether to enable or disable power gating
++ * @streaming: Whether a stream is running when transitioning
++ */
++int avs_ipc_set_d0ix(struct avs_dev *adev, bool enable_pg, bool streaming)
 +{
-+	union avs_global_msg msg = AVS_GLOBAL_REQUEST(DELETE_PIPELINE);
++	union avs_module_msg msg = AVS_MODULE_REQUEST(SET_D0IX);
 +	struct avs_ipc_msg request = {0};
 +	int ret;
 +
-+	msg.ppl.instance_id = instance_id;
++	msg.ext.set_d0ix.wake = enable_pg;
++	msg.ext.set_d0ix.streaming = streaming;
++
 +	request.header = msg.val;
 +
 +	ret = avs_dsp_send_msg(adev, &request, NULL);
 +	if (ret)
-+		avs_ipc_err(adev, &request, "delete pipeline", ret);
++		avs_ipc_err(adev, &request, "set d0ix", ret);
 +
-+	return ret;
-+}
-+
-+int avs_ipc_set_pipeline_state(struct avs_dev *adev, u8 instance_id,
-+			       enum avs_pipeline_state state)
-+{
-+	union avs_global_msg msg = AVS_GLOBAL_REQUEST(SET_PIPELINE_STATE);
-+	struct avs_ipc_msg request = {0};
-+	int ret;
-+
-+	msg.set_ppl_state.ppl_id = instance_id;
-+	msg.set_ppl_state.state = state;
-+	request.header = msg.val;
-+
-+	ret = avs_dsp_send_msg(adev, &request, NULL);
-+	if (ret)
-+		avs_ipc_err(adev, &request, "set pipeline state", ret);
-+
-+	return ret;
-+}
-+
-+int avs_ipc_get_pipeline_state(struct avs_dev *adev, u8 instance_id,
-+			       enum avs_pipeline_state *state)
-+{
-+	union avs_global_msg msg = AVS_GLOBAL_REQUEST(GET_PIPELINE_STATE);
-+	struct avs_ipc_msg request = {0};
-+	struct avs_ipc_msg reply = {0};
-+	int ret;
-+
-+	msg.get_ppl_state.ppl_id = instance_id;
-+	request.header = msg.val;
-+
-+	ret = avs_dsp_send_msg(adev, &request, &reply);
-+	if (ret) {
-+		avs_ipc_err(adev, &request, "get pipeline state", ret);
-+		return ret;
-+	}
-+
-+	*state = reply.rsp.ext.get_ppl_state.state;
 +	return ret;
 +}
 diff --git a/sound/soc/intel/avs/messages.h b/sound/soc/intel/avs/messages.h
-index b9ec1c64179b..c1bf1cff54d9 100644
+index e4b95b066d70..69920f5e802b 100644
 --- a/sound/soc/intel/avs/messages.h
 +++ b/sound/soc/intel/avs/messages.h
-@@ -26,6 +26,10 @@ enum avs_msg_direction {
- enum avs_global_msg_type {
- 	AVS_GLB_LOAD_MULTIPLE_MODULES = 15,
- 	AVS_GLB_UNLOAD_MULTIPLE_MODULES = 16,
-+	AVS_GLB_CREATE_PIPELINE = 17,
-+	AVS_GLB_DELETE_PIPELINE = 18,
-+	AVS_GLB_SET_PIPELINE_STATE = 19,
-+	AVS_GLB_GET_PIPELINE_STATE = 20,
- 	AVS_GLB_LOAD_LIBRARY = 24,
- 	AVS_GLB_NOTIFICATION = 27,
+@@ -97,6 +97,8 @@ enum avs_module_msg_type {
+ 	AVS_MOD_LARGE_CONFIG_SET = 4,
+ 	AVS_MOD_BIND = 5,
+ 	AVS_MOD_UNBIND = 6,
++	AVS_MOD_SET_DX = 7,
++	AVS_MOD_SET_D0IX = 8,
+ 	AVS_MOD_DELETE_INSTANCE = 11,
  };
-@@ -45,6 +49,23 @@ union avs_global_msg {
- 			struct {
- 				u32 mod_cnt:8;
- 			} load_multi_mods;
-+			/* pipeline management */
-+			struct {
-+				u32 ppl_mem_size:11;
-+				u32 ppl_priority:5;
-+				u32 instance_id:8;
-+			} create_ppl;
-+			struct {
-+				u32 rsvd:16;
-+				u32 instance_id:8;
-+			} ppl; /* generic ppl request */
-+			struct {
-+				u32 state:16;
-+				u32 ppl_id:8;
-+			} set_ppl_state;
-+			struct {
-+				u32 ppl_id:8;
-+			} get_ppl_state;
- 			/* library loading */
- 			struct {
- 				u32 dma_id:5;
-@@ -54,6 +75,12 @@ union avs_global_msg {
- 		};
- 		union {
- 			u32 val;
-+			/* pipeline management */
-+			struct {
-+				u32 lp:1; /* low power flag */
-+				u32 rsvd:3;
-+				u32 attributes:16; /* additional scheduling flags */
-+			} create_ppl;
- 		} ext;
- 	};
- } __packed;
-@@ -101,6 +128,10 @@ union avs_reply_msg {
- 			struct {
- 				u32 err_mod_id:16;
- 			} load_multi_mods;
-+			/* pipeline management */
-+			struct {
-+				u32 state:5;
-+			} get_ppl_state;
- 		} ext;
- 	};
- } __packed;
-@@ -189,4 +220,21 @@ int avs_ipc_load_modules(struct avs_dev *adev, u16 *mod_ids, u32 num_mod_ids);
- int avs_ipc_unload_modules(struct avs_dev *adev, u16 *mod_ids, u32 num_mod_ids);
- int avs_ipc_load_library(struct avs_dev *adev, u32 dma_id, u32 lib_id);
  
-+/* Pipeline management messages */
-+enum avs_pipeline_state {
-+	AVS_PPL_STATE_INVALID,
-+	AVS_PPL_STATE_UNINITIALIZED,
-+	AVS_PPL_STATE_RESET,
-+	AVS_PPL_STATE_PAUSED,
-+	AVS_PPL_STATE_RUNNING,
-+};
+@@ -133,6 +135,10 @@ union avs_module_msg {
+ 				u32 dst_queue:3;
+ 				u32 src_queue:3;
+ 			} bind_unbind;
++			struct {
++				u32 wake:1;
++				u32 streaming:1;
++			} set_d0ix;
+ 		} ext;
+ 	};
+ } __packed;
+@@ -290,4 +296,13 @@ int avs_ipc_get_large_config(struct avs_dev *adev, u16 module_id, u8 instance_id
+ 			     u8 param_id, u8 *request_data, size_t request_size,
+ 			     u8 **reply_data, size_t *reply_size);
+ 
++/* DSP cores and domains power management messages */
++struct avs_dxstate_info {
++	u32 core_mask;	/* which cores are subject for power transition */
++	u32 dx_mask;	/* bit[n]=1 core n goes to D0, bit[n]=0 it goes to D3 */
++} __packed;
 +
-+int avs_ipc_create_pipeline(struct avs_dev *adev, u16 req_size, u8 priority,
-+			    u8 instance_id, bool lp, u16 attributes);
-+int avs_ipc_delete_pipeline(struct avs_dev *adev, u8 instance_id);
-+int avs_ipc_set_pipeline_state(struct avs_dev *adev, u8 instance_id,
-+			       enum avs_pipeline_state state);
-+int avs_ipc_get_pipeline_state(struct avs_dev *adev, u8 instance_id,
-+			       enum avs_pipeline_state *state);
++int avs_ipc_set_dx(struct avs_dev *adev, u32 core_mask, bool powerup);
++int avs_ipc_set_d0ix(struct avs_dev *adev, bool enable_pg, bool streaming);
 +
  #endif /* __SOUND_SOC_INTEL_AVS_MSGS_H */
 -- 
