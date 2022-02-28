@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EED40C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Feb 2022 16:00:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0039C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Feb 2022 16:01:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 06DEA17F6;
-	Mon, 28 Feb 2022 17:00:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 06DEA17F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id AF4D7181F;
+	Mon, 28 Feb 2022 17:00:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF4D7181F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646064051;
-	bh=33rzhpVFfVLdemyLo/4IWcZMkAJkJny/rscayjjWYqQ=;
+	s=default; t=1646064101;
+	bh=AFygUjUmzuHUn7nAgKiYBbsMsaZookG6r7uOV0K9Y7o=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=S9BH1jJVfbDjLKnwQcmUtkGwdKF8IpxCH0q0TDENr1fAwh/0odRwyo4jBUWiNrXDm
-	 3XJOQhJZhy4KJTMKGmElXc5d2hBMBE+EOcg/fZDVoIAOGqHpZsNaiCgUYZphF8ikMc
-	 yAxyfhXXy9cjIJTqUOdh0xVM3IfHZbFseojP0LUE=
+	b=DXTVeXPn/oV4lFSPolB5tF8K3P4AntYAP1bLr+n7msWY3UIF7Xa3EfuaHJ2rM9HeC
+	 0pmCjK6Yearva6lyUHOzpA0YV6Ar9VSCJ3N6ISf6FAuW27+O4Kk0GupbkmWtncbzN/
+	 KHrcQfpfWMYcnKUxDDRO89rJPfEuuaC1X/7nWNtg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9D1CDF80054;
-	Mon, 28 Feb 2022 17:00:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4A3A1F800F8;
+	Mon, 28 Feb 2022 17:00:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B5311F8013C; Mon, 28 Feb 2022 16:59:59 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id 42690F8025C; Mon, 28 Feb 2022 17:00:49 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A3681F80054
- for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2022 16:59:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3681F80054
+ by alsa1.perex.cz (Postfix) with ESMTPS id 46925F800F8
+ for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2022 17:00:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46925F800F8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="t421fAQR"; 
+ header.b="RMvd4SO0"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="Mbnf8RFG"
+ header.b="APSnLcwk"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 03AFE219A0;
- Mon, 28 Feb 2022 15:59:53 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id BF9C71F899;
+ Mon, 28 Feb 2022 16:00:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1646063993; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1646064042; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=4z5vJyV4/iP6hL9tUw+uZShWWOaJ2WdBHqF5vMWnsl0=;
- b=t421fAQRIMCU6rXhne9E1ev2+/G2cKFTMBTv+cDe0400kz4HynOd/z6ZLbZDoatQhMvz09
- BaO9ndfTXt3Lar3+wOwaK7IVIyYfdNsn/VVLgvvlkIKEyp+ryxFPGT0atTrFg9jHozgua0
- cbAa0VOqcpbnGG+1apEfDpW6ZX8oK5M=
+ bh=hGTfvCQhrt/SMIRr7jr1rjKHBVEjBKSzMSd1EBTGR88=;
+ b=RMvd4SO0qA4gNblsvo/BvVPnjsN24PK4RvPQOQY8AK6xOT/hXGANnQ7ZmXDkK2cB1dOsck
+ KDSsggwYQrAJkdLxERW57Pmw55xaY/Rc/7n36ir4vCyDrkXAdgIu/1QstovxHQaT3gnkBT
+ XBOImZpd9Dh5H/9ecjmHh+rU5yBSNsg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1646063993;
+ s=susede2_ed25519; t=1646064042;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=4z5vJyV4/iP6hL9tUw+uZShWWOaJ2WdBHqF5vMWnsl0=;
- b=Mbnf8RFGsd8hv49q/H0XNk2KP+lY8qRylxfaYWUlbba8NEPz5YwIYCyhqFwibg5enooJns
- M3I1h4pgShrm1vCA==
+ bh=hGTfvCQhrt/SMIRr7jr1rjKHBVEjBKSzMSd1EBTGR88=;
+ b=APSnLcwkE7M8GOLjXPGfvSaWXD7tDuSRJtxTNoETQKr1j8ec9O9kFw6EqsPOqydjBG+8Q9
+ UTmDQ4c2cx4qEVBA==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id E499DA3B93;
- Mon, 28 Feb 2022 15:59:52 +0000 (UTC)
-Date: Mon, 28 Feb 2022 16:59:52 +0100
-Message-ID: <s5hczj7rngn.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id ADBE7A3B83;
+ Mon, 28 Feb 2022 16:00:42 +0000 (UTC)
+Date: Mon, 28 Feb 2022 17:00:42 +0100
+Message-ID: <s5hbkyrrnf9.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Meng Tang <tangmeng@uniontech.com>
-Subject: Re: [PATCH] sound/mips: Use platform_get_irq() to get the interrupt
-In-Reply-To: <20220225111929.17194-1-tangmeng@uniontech.com>
-References: <20220225111929.17194-1-tangmeng@uniontech.com>
+To: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Subject: Re: [PATCH] ALSA: spi: Add check for clk_enable()
+In-Reply-To: <20220228022839.3547266-1-jiasheng@iscas.ac.cn>
+References: <20220228022839.3547266-1-jiasheng@iscas.ac.cn>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -87,19 +87,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 25 Feb 2022 12:19:29 +0100,
-Meng Tang wrote:
+On Mon, 28 Feb 2022 03:28:39 +0100,
+Jiasheng Jiang wrote:
 > 
-> platform_get_resource(pdev, IORESOURCE_IRQ, ..) relies on static
-> allocation of IRQ resources in DT core code, this causes an issue
-> when using hierarchical interrupt domains using "interrupts" property
-> in the node as this bypassed the hierarchical setup and messed up the
-> irq chaining.
+> As the potential failure of the clk_enable(),
+> it should be better to check it and return error
+> if fails.
 > 
-> In preparation for removal of static setup of IRQ resource from DT core
-> code use platform_get_irq().
-> 
-> Signed-off-by: Meng Tang <tangmeng@uniontech.com>
+> Fixes: 3568459a5113 ("ALSA: at73c213: manage SSC clock")
+> Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
 
 Thanks, applied now.
 
