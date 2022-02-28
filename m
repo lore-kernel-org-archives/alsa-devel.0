@@ -4,76 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58E32C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Feb 2022 16:03:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BCDBC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Feb 2022 16:40:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7F53017F2;
-	Mon, 28 Feb 2022 17:03:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F53017F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2AC6C167D;
+	Mon, 28 Feb 2022 17:39:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2AC6C167D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646064232;
-	bh=G+PLDWq/eXUdY4L5ZnTPVK4l7tpAXq7IE5tod0zBxJ4=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1646066428;
+	bh=0+DE4Y4zkqTSqcuTcUgN91hRbSGG9ohuLmjbjc9w170=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bCNgHKZ9w1qeOOAlinqxv/G+zmDAQfihFBp8NFN70+v0KLnPWIyTohcSi6KKkaBlr
-	 gsJez74bKDwA/WJP7eX4LU82UBwqFT8Dh7akkmfLmFkzY0hJ1Ct1Uifi76Oh8qeA/A
-	 dKjGHplQyCOFHHTJ4ogiMw3N0qzvSO1wQ9Ydd3sc=
+	b=OSrLwb9Bxd97Yp/6f7c7Si7sf7ZLy5dXDLgqgw5Gsof79O0CNpD0UeGh13ZlHxrM/
+	 9TadVaj/l9tOsZ/GHFtn+PgAwJN3VHclZM/PKcCJ5KgqgQPG3IW891ufCvUTlw+Asb
+	 iqDXdGi+ZMBYx0uCckOhCTvcoLDvMi4EBAQILIFg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2A592F80128;
-	Mon, 28 Feb 2022 17:03:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A6EDEF800F8;
+	Mon, 28 Feb 2022 17:39:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 04AAEF800F8; Mon, 28 Feb 2022 17:03:01 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id C92B3F8013C; Mon, 28 Feb 2022 17:39:34 +0100 (CET)
+Received: from relay4.hostedemail.com (relay4.hostedemail.com [64.99.140.35])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 33635F800F8
- for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2022 17:02:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33635F800F8
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="wX0tSG3G"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="0osxI8By"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 017D81F3A3;
- Mon, 28 Feb 2022 16:02:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1646064175; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=wJaYb+JWizWqpLs2nbmXbz0b4Z0hIdwCg2krYTXjRlk=;
- b=wX0tSG3G7YSZtiWMHVSpB27s8jMykCuArN0nLk3O9hMIaosxk1NfX6VZd2Uij5e3lkxrAu
- 6lnzpZcbJClETo6vAa3/vyDtb9Ie8JNVdcc0vdwAP/PMpvrBo1m6mfOEjOPZEgNPrg58tH
- q++absDKmpVPh9umOucO1cRahczYWLs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1646064175;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=wJaYb+JWizWqpLs2nbmXbz0b4Z0hIdwCg2krYTXjRlk=;
- b=0osxI8ByW+9/LQdubg7oPeyw4GvsAvB7YEZp3Xsci4FPr6Y6yP3+WBjsC/7nrR64lj8HVW
- LcOJKnOWhY51diAQ==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id D65D4A3B89;
- Mon, 28 Feb 2022 16:02:54 +0000 (UTC)
-Date: Mon, 28 Feb 2022 17:02:54 +0100
-Message-ID: <s5ha6ebrnbl.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Joe Perches <joe@perches.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id B12FCF800F8
+ for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2022 17:39:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B12FCF800F8
+Received: from omf02.hostedemail.com (a10.router.float.18 [10.200.18.1])
+ by unirelay09.hostedemail.com (Postfix) with ESMTP id DC0A623715;
+ Mon, 28 Feb 2022 16:39:23 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by
+ omf02.hostedemail.com (Postfix) with ESMTPA id 5F7028000F; 
+ Mon, 28 Feb 2022 16:38:49 +0000 (UTC)
+Message-ID: <1760d9be590e18b5cccceef6e049651c69556c37.camel@perches.com>
 Subject: Re: [PATCH v4 2/2] ALSA: core: Remove redundant variable and return
  the last statement
-In-Reply-To: <e5c1ba2f7db29b78066d12dab812b7a1c0a37a81.camel@perches.com>
+From: Joe Perches <joe@perches.com>
+To: Takashi Iwai <tiwai@suse.de>
+Date: Mon, 28 Feb 2022 08:39:21 -0800
+In-Reply-To: <s5ha6ebrnbl.wl-tiwai@suse.de>
 References: <20220228050253.1649-1-tangmeng@uniontech.com>
  <20220228050253.1649-2-tangmeng@uniontech.com>
  <e5c1ba2f7db29b78066d12dab812b7a1c0a37a81.camel@perches.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
+ <s5ha6ebrnbl.wl-tiwai@suse.de>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.4-1ubuntu2 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Stat-Signature: dtaitigs3myn5hecefhi3rzmhzwsmi5t
+X-Rspamd-Server: rspamout03
+X-Rspamd-Queue-Id: 5F7028000F
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/cTFZr/pNsYnF7B693HsSfdXRXrxvc6LM=
+X-HE-Tag: 1646066329-978216
 Cc: Meng Tang <tangmeng@uniontech.com>, alsa-devel@alsa-project.org,
  tiwai@suse.com, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
@@ -91,30 +76,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 28 Feb 2022 06:20:45 +0100,
-Joe Perches wrote:
-> 
-> On Mon, 2022-02-28 at 13:02 +0800, Meng Tang wrote:
-> > Return the result from file->f_op->open() directly instead of
-> > taking this in another redundant variable. Make the typical
-> > return the last statement, return early and reduce the indentation
-> > too.
+On Mon, 2022-02-28 at 17:02 +0100, Takashi Iwai wrote:
+> On Mon, 28 Feb 2022 06:20:45 +0100, Joe Perches wrote:
+> > On Mon, 2022-02-28 at 13:02 +0800, Meng Tang wrote:
+> > > Return the result from file->f_op->open() directly instead of
+> > > taking this in another redundant variable. Make the typical
+> > > return the last statement, return early and reduce the indentation
+> > > too.
+> > > 
+> > > Signed-off-by: Meng Tang <tangmeng@uniontech.com>
+> > > Signed-off-by: Joe Perches <joe@perches.com>
 > > 
-> > Signed-off-by: Meng Tang <tangmeng@uniontech.com>
-> > Signed-off-by: Joe Perches <joe@perches.com>
+> > Hi Meng Tang.
+> > 
+> > For the next time: it's not necessary (or even good) to add a sign-off
+> > for another person unless they specifically authorize one.
+> > 
+> > You wrote and are submitting these changes, I merely gave you simple
+> > suggestions as to how you could improve them.
 > 
-> Hi Meng Tang.
+> Joe, would you like to drop your S-o-b lines from those two patches?
+> Or shall I keep them?
 > 
-> For the next time: it's not necessary (or even good) to add a sign-off
-> for another person unless they specifically authorize one.
+> thanks,
 > 
-> You wrote and are submitting these changes, I merely gave you simple
-> suggestions as to how you could improve them.
+> Takashi
 
-Joe, would you like to drop your S-o-b lines from those two patches?
-Or shall I keep them?
+Hi Takashi.
 
+Nominally, the sign-off-by chain shows who pushed these changes upstream
+and I did not and I am not an upstream aggregator.
 
-thanks,
+But whatever you choose is OK.
+It's not really a concern to me.
+I do think these changes are ok.
 
-Takashi
+cheers, Joe
+
