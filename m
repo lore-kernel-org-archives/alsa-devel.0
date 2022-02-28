@@ -4,80 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10FF0C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Feb 2022 16:58:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7DD2C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Feb 2022 17:26:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 50B2417ED;
-	Mon, 28 Feb 2022 17:58:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50B2417ED
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2016E17C5;
+	Mon, 28 Feb 2022 18:25:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2016E17C5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646067537;
-	bh=FIF3EvWBK78fcRAPtuAQoL5Ci/SQPK5xr60809KWfxM=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=trS8dxWj4z09U26DJE9ba8lULV67B+a4nf6cZxe1gM12Xwn4lwWB/ulr4ru3IFqi6
-	 j4QqYaXUvmXHevC+8CeIKVHGxuq5S4zTEFKENuZFWcIuPpGwEI+Zoc7+7NtLFcwySU
-	 OPGmwiJrDLUj4LPq2fpY/nV/jG+MMh4CAQYd8ZiI=
+	s=default; t=1646069196;
+	bh=KZGhzmV6F+eFGRADCE7ce4iXESi/VhZ4JczpDEPx8AE=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=OQnHAipiHZFIB3wKOE8koEx5XQrqScpM2OgSKodju0rLF38hpm6T0793hySgIfCcs
+	 o0+qa2ySr9MlW/Dd7LU0/J3CdNeuAgjIsWywPLugJwnJDrUFFwmZMxYi+fZVZyoCyE
+	 OHXVna+nJ73aFJcjX3+sYxsCtO2Ijj7zF749SQIk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DDD1CF80128;
-	Mon, 28 Feb 2022 17:58:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 65962F8013C;
+	Mon, 28 Feb 2022 18:25:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 90C04F8013C; Mon, 28 Feb 2022 17:58:05 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id CA4D4F80154; Mon, 28 Feb 2022 18:25:43 +0100 (CET)
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
+ [IPv6:2a00:1450:4864:20::336])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BB8D3F800F8
- for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2022 17:57:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB8D3F800F8
+ by alsa1.perex.cz (Postfix) with ESMTPS id D881FF80125
+ for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2022 18:25:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D881FF80125
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="ZPU88y8Z"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="nBQswWkp"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 083791F446;
- Mon, 28 Feb 2022 16:57:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1646067479; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=7SQezWrefdfyxYAuqsK1Ki9iYBM12AVThkoZEyjK+Zc=;
- b=ZPU88y8ZF6FXH0afyVvu6HAMJgRMsZF3hNWU2XICwxzXL/snhtsxGXhAVRF2gokDO9Gom+
- px+XSjFF7ndXCbfn1l5fBt8sbOzQlKzZKsalRzM6QSv1AXR9RbevP2iOkOEtYoRrJE3sLN
- YW/VZqwoL83En2w7OJgirSXFdUWizaA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1646067479;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=7SQezWrefdfyxYAuqsK1Ki9iYBM12AVThkoZEyjK+Zc=;
- b=nBQswWkpY13GEqau7Zffx2DBRTDruvMIeiXXZgmJknRXIVZW1tru+BRU7vtJLxNiMDhtrT
- 4AzaOm7mF03FIGCA==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id C745FA3B8B;
- Mon, 28 Feb 2022 16:57:58 +0000 (UTC)
-Date: Mon, 28 Feb 2022 17:57:58 +0100
-Message-ID: <s5hzgmbq67d.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Joe Perches <joe@perches.com>
-Subject: Re: [PATCH v4 2/2] ALSA: core: Remove redundant variable and return
- the last statement
-In-Reply-To: <1760d9be590e18b5cccceef6e049651c69556c37.camel@perches.com>
-References: <20220228050253.1649-1-tangmeng@uniontech.com>
- <20220228050253.1649-2-tangmeng@uniontech.com>
- <e5c1ba2f7db29b78066d12dab812b7a1c0a37a81.camel@perches.com>
- <s5ha6ebrnbl.wl-tiwai@suse.de>
- <1760d9be590e18b5cccceef6e049651c69556c37.camel@perches.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: Meng Tang <tangmeng@uniontech.com>, alsa-devel@alsa-project.org,
- tiwai@suse.com, linux-kernel@vger.kernel.org
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="Zgqher2o"
+Received: by mail-wm1-x336.google.com with SMTP id
+ l1-20020a7bcf01000000b0037f881182a8so6152842wmg.2
+ for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2022 09:25:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=notYzvLapgrWxhvzTWLvUQkyjm1+ISszqSAt8pZdOYI=;
+ b=Zgqher2oa92fGjqwuNd7AvQQL/prMgpwurC/1I0Q2XMCq12BsIydAK7Xbt2y6WEZ3d
+ O83ghC4YWK0y7SASC9sfrraEmmCPIDC2yLy8LRMQ322ADA+msYp3dut1AKFazt1n85qG
+ XAcHAU8f3A2PHmucP8HfrHUQW3D26YfuYfqnTBpTXna39MTgxw8uW0RpMvyPk3xXbryw
+ OExK2vEy5eszJh4APgr2NWDP16vNXCINoVIVFMusBl66Q0sGeLGqCFl8uIwQ71XQCC/3
+ /DD5nsu5Rn4vrpuvTBGcOQmGgf9w0hHWRJaKPGWbh8cOuLN4O78lW+e/LjUsMid3Fkdm
+ JceQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=notYzvLapgrWxhvzTWLvUQkyjm1+ISszqSAt8pZdOYI=;
+ b=HpL1SDNXoHLoaPu/aJyd8DVZfq7mth+ngEjQjw3HvA8JwVDfTHxn/ayKbuzck5cf3R
+ wH2fez23lergkRSL9S9vPMR1MTm5m2RX//6brKdIVSh1PjrW1Y9WTcfjnCy27eMX5suH
+ wg5qSAsANfoDeVQAKvmtXzwclJZNCNrKr2TU6QsGMHXBEBMSAFf3baKvAHjJCNFmtuz/
+ 3+88GuUuJ0lVZhGgA7hX2Kr/uRVhlXdPB+0kTKCmJ4El8lBNWMiZT1I8xq8rN0P1zhze
+ cxp7ejeS6SZziKqmjqMKyduUjwiYcuNuwuzIUzbYR9ONZv8nkGcaP0dUS7pOYiZB0Hfd
+ NX4g==
+X-Gm-Message-State: AOAM530L6tNIV6i5cucu+09BN0Ntmp6fuVvr+PgNsMJu5lhYq5VSAg6L
+ tPXC3EVahfxXIrLi/yMZsPKwFw==
+X-Google-Smtp-Source: ABdhPJwJ+NcsdjBxdhB1UyDeneF5rEqwUWcp9CAfrUzldwkhCgyJIZBroO5q5TvmPYAd8SU7IOWwyw==
+X-Received: by 2002:a7b:cc15:0:b0:381:3fb8:5f93 with SMTP id
+ f21-20020a7bcc15000000b003813fb85f93mr12592663wmh.106.1646069139944; 
+ Mon, 28 Feb 2022 09:25:39 -0800 (PST)
+Received: from srini-hackbox.lan
+ (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
+ by smtp.gmail.com with ESMTPSA id
+ f21-20020a7bcd15000000b0034efd01ee16sm11514124wmj.42.2022.02.28.09.25.38
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 28 Feb 2022 09:25:39 -0800 (PST)
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: robh+dt@kernel.org,
+	vkoul@kernel.org,
+	yung-chuan.liao@linux.intel.com
+Subject: [PATCH v3 0/3] soundwire: qcom: add pm runtime support
+Date: Mon, 28 Feb 2022 17:25:25 +0000
+Message-Id: <20220228172528.3489-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ quic_srivasam@quicinc.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,47 +100,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 28 Feb 2022 17:39:21 +0100,
-Joe Perches wrote:
-> 
-> On Mon, 2022-02-28 at 17:02 +0100, Takashi Iwai wrote:
-> > On Mon, 28 Feb 2022 06:20:45 +0100, Joe Perches wrote:
-> > > On Mon, 2022-02-28 at 13:02 +0800, Meng Tang wrote:
-> > > > Return the result from file->f_op->open() directly instead of
-> > > > taking this in another redundant variable. Make the typical
-> > > > return the last statement, return early and reduce the indentation
-> > > > too.
-> > > > 
-> > > > Signed-off-by: Meng Tang <tangmeng@uniontech.com>
-> > > > Signed-off-by: Joe Perches <joe@perches.com>
-> > > 
-> > > Hi Meng Tang.
-> > > 
-> > > For the next time: it's not necessary (or even good) to add a sign-off
-> > > for another person unless they specifically authorize one.
-> > > 
-> > > You wrote and are submitting these changes, I merely gave you simple
-> > > suggestions as to how you could improve them.
-> > 
-> > Joe, would you like to drop your S-o-b lines from those two patches?
-> > Or shall I keep them?
-> > 
-> > thanks,
-> > 
-> > Takashi
-> 
-> Hi Takashi.
-> 
-> Nominally, the sign-off-by chain shows who pushed these changes upstream
-> and I did not and I am not an upstream aggregator.
-> 
-> But whatever you choose is OK.
-> It's not really a concern to me.
-> I do think these changes are ok.
+This patchset adds pm runtime support to Qualcomm SounWire Controller using
+SoundWire Clock Stop and Wake up using Headset events on supported instances and
+instances like WSA which do not support clock stop a soft reset of controller
+along with full rest of slaves is done to resume from a low power state.
 
-OK, I dropped S-o-b lines and applied the patches now.
+Tested it on SM8250 MTP and Dragon Board DB845c
 
+Changes since v2:
+ - update log as suggested by Pierre
+ - removing handling clk stop for cases where the controller is soft reset.
+ - add more error checks when calling  sdw_bus_prep_clk_stop
+ - update dt-bindings with wakeup-source and interrupt-names properties.
 
-thanks,
+--srini
 
-Takashi
+Srinivas Kandagatla (3):
+  soundwire: qcom: add runtime pm support
+  dt-bindings: soundwire: qcom: document optional wake irq
+  soundwire: qcom: add in-band wake up interrupt support
+
+ .../bindings/soundwire/qcom,sdw.txt           |  14 +-
+ drivers/soundwire/qcom.c                      | 206 +++++++++++++++++-
+ 2 files changed, 218 insertions(+), 2 deletions(-)
+
+-- 
+2.21.0
+
