@@ -4,90 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1EE64C433FE
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Mar 2022 08:47:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 397FDC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Mar 2022 08:47:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 659F01DFE;
-	Wed,  2 Mar 2022 09:46:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 659F01DFE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7AA631EDA;
+	Wed,  2 Mar 2022 09:46:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7AA631EDA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646210823;
-	bh=0lzbVtk+imrXfi2cYiTyhRv0m5uKIiVhrltGFMvRR9c=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1646210839;
+	bh=8D6K9irMoJ4Er2vtKUwbHGmrldfJxqgsMDM8LKZKMQE=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YXuuxYPOcoUZimHZsv1zrzP/I4khWIh+B495TNQI3e/XitSWFwuP7jcpWz4UD08Bb
-	 ixXA3mBcRAuxai27vUJSaXBhjkoRx7Gf+OXf8cMYY/TU12jqBviq3k1VyB4qxhUT+X
-	 1UA47aArVRPJ0D5KK3Xsqy+QFV6bjA3Qmz3HT/s4=
+	b=Ng0gueKTMgsnEcj5xZsVfUcjJgMXZJWeScqnxrW/pgfZw1M5BfeE5dCgbZ+0N0aV4
+	 1PBeKzCpAcGGedxej7b3K51TEXb4KTKeV/8H/xgorE/FyHLwYc3OyP0kj1IMxACnIc
+	 sfWh7fnpRjaw+oAQ40oyr1vG4VMcgoz+7bvKlryU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3BB47F80622;
+	by alsa1.perex.cz (Postfix) with ESMTP id C106BF8062E;
 	Wed,  2 Mar 2022 09:34:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9A85CF8013C; Mon, 28 Feb 2022 21:17:11 +0100 (CET)
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com
- [IPv6:2a00:1450:4864:20::529])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 1F59FF80125; Mon, 28 Feb 2022 21:27:33 +0100 (CET)
+Received: from sipsolutions.net (s3.sipsolutions.net
+ [IPv6:2a01:4f8:191:4433::2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 19792F80054
- for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2022 21:17:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 19792F80054
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9C45EF80125
+ for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2022 21:27:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C45EF80125
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=linux-foundation.org
- header.i=@linux-foundation.org header.b="Jhdls+Dd"
-Received: by mail-ed1-x529.google.com with SMTP id w3so19185082edu.8
- for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2022 12:17:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=linux-foundation.org; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=LeZ8UzRXrDw4d1M4BG6ctt9COK0EF5j9qtOsLWtMfJg=;
- b=Jhdls+DdmLi+4DWS7o2GehQ/Yg8vWPth9HxY0ymuDsFhiEF5hlRLzgd1PV4wJ4dLVJ
- JdRWd6PhVxu3cPtesSY0XREEgjw/sVhI1zgx2ECNJUHRlykk7MmbqhfMtkifVM/LmgYS
- 6chNfwYqW0eu75y5MSRY9nnHOEZnFkvhMXNYc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=LeZ8UzRXrDw4d1M4BG6ctt9COK0EF5j9qtOsLWtMfJg=;
- b=AcRn9KSynBF7rLrhc8smb0ncf/wXsxYzGHNvCaZn6SCpCUjiY+bR8CAQxKMwB3h4wx
- 0V00odulC3LCe4Z+DBLYUO6Idvbz8wfqTNCK5J6hKR73wY2L+o9JjP6wvMX8CBB1fwT4
- noI+c12FMm4cpgFHjVlXkkmk5p2vKMJbis3IQJ9ogw/5MIjs9GamByXZEOeMh7UQ9vEg
- S2jk8MEevXWpe6wc4+qI4+AQWNhtph/7aDylNY+H72+ROdTJRlTGWp7kJs33ZUCM+GRD
- WghBfkAMc0uUV0pOonTcSjGrhlbqKTCH/FSx/f/XGRuRoDIbWau04OWc45Fmrjfi5ynP
- kBsg==
-X-Gm-Message-State: AOAM531StlrK8N+ojh4iYJM4yj9bn6DTeN61l7+OU3H1hGoz33BekgF3
- IrBNQabvPz86hnVb94SpDCurVrWIhCFQfKJWlLU=
-X-Google-Smtp-Source: ABdhPJyRXvTUlFK+b8Y6/WhVXwnpLfLFX9XKXT2I4p/JqdE3CREyDpiWupIXQtOc24+SZixMvNsGRg==
-X-Received: by 2002:a05:6402:38e:b0:410:c1a9:60aa with SMTP id
- o14-20020a056402038e00b00410c1a960aamr21464368edv.336.1646079420705; 
- Mon, 28 Feb 2022 12:17:00 -0800 (PST)
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com.
- [209.85.221.52]) by smtp.gmail.com with ESMTPSA id
- h12-20020a056402280c00b00412ca9508b7sm6548913ede.17.2022.02.28.12.17.00
- for <alsa-devel@alsa-project.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 28 Feb 2022 12:17:00 -0800 (PST)
-Received: by mail-wr1-f52.google.com with SMTP id d17so17189588wrc.9
- for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2022 12:17:00 -0800 (PST)
-X-Received: by 2002:ac2:4d91:0:b0:443:127b:558a with SMTP id
- g17-20020ac24d91000000b00443127b558amr14027806lfe.542.1646079041191; Mon, 28
- Feb 2022 12:10:41 -0800 (PST)
-MIME-Version: 1.0
+ dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net
+ header.b="g0XgTCSj"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+ Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+ :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+ Resent-Cc:Resent-Message-ID; bh=uTSgVBk5w89AJnv82I9bqMWvwbVIn7Apzl6uMNeIbWY=; 
+ t=1646080051; x=1647289651; b=g0XgTCSjlWlIWglBvRQZV502ZdKzdIempSR5V7GeUhGcjg6
+ Y9vRqlH+UtTMDFPlPkQoQwl1W94+I9qf/KzWCasMvCPo+cEs0Wnevipl0K8uyCTjXeT2n6ly0Pmyq
+ 6UBx07mTX5RcBL8z99+y3jN/rreKxfO3yA1iYYil+Q124trDW9/TpPsQtdiWZm2Bx8si6f+1UbWJd
+ glRmIc3QMKDlIFFdjmS9xZ44j8D+lY6kdvMLVVmvOLaVcVc+O9rBHI6MNvwX6jjbE3GbfycaxSLzL
+ woWf7Vqqv+L+DPNvZgwSdYSuDCpKOxlVA6vH+ROxR1PVKLS6PZlN1pV/yRJlZ7GA==;
+Received: by sipsolutions.net with esmtpsa
+ (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+ (Exim 4.95) (envelope-from <johannes@sipsolutions.net>)
+ id 1nOmc1-00716Q-Dh; Mon, 28 Feb 2022 21:27:17 +0100
+Message-ID: <e3bb7d0632f8ef60f18c19976d57330e1ef00584.camel@sipsolutions.net>
+Subject: Re: [PATCH 2/6] treewide: remove using list iterator after loop
+ body as a ptr
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Matthew Wilcox <willy@infradead.org>, Linus Torvalds
+ <torvalds@linux-foundation.org>
+Date: Mon, 28 Feb 2022 21:27:13 +0100
+In-Reply-To: <Yh0tl3Lni4weIMkl@casper.infradead.org>
 References: <20220228110822.491923-1-jakobkoschel@gmail.com>
  <20220228110822.491923-3-jakobkoschel@gmail.com>
  <2e4e95d6-f6c9-a188-e1cd-b1eae465562a@amd.com>
  <CAHk-=wgQps58DPEOe4y5cTh5oE9EdNTWRLXzgMiETc+mFX7jzw@mail.gmail.com>
  <CAHk-=wj8fkosQ7=bps5K+DDazBXk=ypfn49A0sEq+7-nZnyfXA@mail.gmail.com>
-In-Reply-To: <CAHk-=wj8fkosQ7=bps5K+DDazBXk=ypfn49A0sEq+7-nZnyfXA@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Mon, 28 Feb 2022 12:10:24 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiTCvLQkHcJ3y0hpqH7FEk9D28LDvZZogC6OVLk7naBww@mail.gmail.com>
-Message-ID: <CAHk-=wiTCvLQkHcJ3y0hpqH7FEk9D28LDvZZogC6OVLk7naBww@mail.gmail.com>
-Subject: Re: [PATCH 2/6] treewide: remove using list iterator after loop body
- as a ptr
-To: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: multipart/mixed; boundary="0000000000008601b205d919a4ad"
+ <CAHk-=wiTCvLQkHcJ3y0hpqH7FEk9D28LDvZZogC6OVLk7naBww@mail.gmail.com>
+ <Yh0tl3Lni4weIMkl@casper.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 (3.42.4-1.fc35) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-malware-bazaar: not-scanned
 X-Mailman-Approved-At: Wed, 02 Mar 2022 09:33:36 +0100
 Cc: linux-wireless <linux-wireless@vger.kernel.org>,
  alsa-devel@alsa-project.org, KVM list <kvm@vger.kernel.org>,
@@ -123,7 +105,9 @@ Cc: linux-wireless <linux-wireless@vger.kernel.org>,
  Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
  linux-fsdevel <linux-fsdevel@vger.kernel.org>,
  linux-mediatek@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
- linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, Mike Rapoport <rppt@kernel.org>
+ linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+ Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+ Mike Rapoport <rppt@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -139,76 +123,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
---0000000000008601b205d919a4ad
-Content-Type: text/plain; charset="UTF-8"
+On Mon, 2022-02-28 at 20:16 +0000, Matthew Wilcox wrote:
+> On Mon, Feb 28, 2022 at 12:10:24PM -0800, Linus Torvalds wrote:
+> > We can do
+> > 
+> >         typeof(pos) pos
+> > 
+> > in the 'for ()' loop, and never use __iter at all.
+> > 
+> > That means that inside the for-loop, we use a _different_ 'pos' than outside.
+> 
+> Then we can never use -Wshadow ;-(  I'd love to be able to turn it on;
+> it catches real bugs.
+> 
 
-On Mon, Feb 28, 2022 at 12:03 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> Side note: we do need *some* way to do it.
+I was just going to say the same thing...
 
-Ooh.
+If we're willing to change the API for the macro, we could do
 
-This patch is a work of art.
+  list_for_each_entry(type, pos, head, member)
 
-And I mean that in the worst possible way.
+and then actually take advantage of -Wshadow?
 
-We can do
-
-        typeof(pos) pos
-
-in the 'for ()' loop, and never use __iter at all.
-
-That means that inside the for-loop, we use a _different_ 'pos' than outside.
-
-And then the compiler will not see some "might be uninitialized", but
-the outer 'pos' *will* be uninitialized.
-
-Unless, of course, the outer 'pos' had that pointless explicit initializer.
-
-Here - can somebody poke holes in this "work of art" patch?
-
-                     Linus
-
---0000000000008601b205d919a4ad
-Content-Type: text/x-patch; charset="US-ASCII"; name="patch.diff"
-Content-Disposition: attachment; filename="patch.diff"
-Content-Transfer-Encoding: base64
-Content-ID: <f_l074y7ca0>
-X-Attachment-Id: f_l074y7ca0
-
-IE1ha2VmaWxlICAgICAgICAgICAgICAgICAgICAgICB8IDIgKy0KIGFyY2gveDg2L2tlcm5lbC9j
-cHUvc2d4L2VuY2wuYyB8IDIgKy0KIGluY2x1ZGUvbGludXgvbGlzdC5oICAgICAgICAgICB8IDYg
-KysrLS0tCiAzIGZpbGVzIGNoYW5nZWQsIDUgaW5zZXJ0aW9ucygrKSwgNSBkZWxldGlvbnMoLSkK
-CmRpZmYgLS1naXQgYS9NYWtlZmlsZSBiL01ha2VmaWxlCmluZGV4IGRhZWI1Yzg4YjUwYi4uY2M0
-YjBhMjY2YWYwIDEwMDY0NAotLS0gYS9NYWtlZmlsZQorKysgYi9NYWtlZmlsZQpAQCAtNTE1LDcg
-KzUxNSw3IEBAIEtCVUlMRF9DRkxBR1MgICA6PSAtV2FsbCAtV3VuZGVmIC1XZXJyb3I9c3RyaWN0
-LXByb3RvdHlwZXMgLVduby10cmlncmFwaHMgXAogCQkgICAtZm5vLXN0cmljdC1hbGlhc2luZyAt
-Zm5vLWNvbW1vbiAtZnNob3J0LXdjaGFyIC1mbm8tUElFIFwKIAkJICAgLVdlcnJvcj1pbXBsaWNp
-dC1mdW5jdGlvbi1kZWNsYXJhdGlvbiAtV2Vycm9yPWltcGxpY2l0LWludCBcCiAJCSAgIC1XZXJy
-b3I9cmV0dXJuLXR5cGUgLVduby1mb3JtYXQtc2VjdXJpdHkgXAotCQkgICAtc3RkPWdudTg5CisJ
-CSAgIC1zdGQ9Z251MTEKIEtCVUlMRF9DUFBGTEFHUyA6PSAtRF9fS0VSTkVMX18KIEtCVUlMRF9B
-RkxBR1NfS0VSTkVMIDo9CiBLQlVJTERfQ0ZMQUdTX0tFUk5FTCA6PQpkaWZmIC0tZ2l0IGEvYXJj
-aC94ODYva2VybmVsL2NwdS9zZ3gvZW5jbC5jIGIvYXJjaC94ODYva2VybmVsL2NwdS9zZ3gvZW5j
-bC5jCmluZGV4IDQ4YWZlOTZhZTBmMC4uODdkYjJmMzkzNmIwIDEwMDY0NAotLS0gYS9hcmNoL3g4
-Ni9rZXJuZWwvY3B1L3NneC9lbmNsLmMKKysrIGIvYXJjaC94ODYva2VybmVsL2NwdS9zZ3gvZW5j
-bC5jCkBAIC00NTAsNyArNDUwLDcgQEAgc3RhdGljIHZvaWQgc2d4X21tdV9ub3RpZmllcl9yZWxl
-YXNlKHN0cnVjdCBtbXVfbm90aWZpZXIgKm1uLAogCQkJCSAgICAgc3RydWN0IG1tX3N0cnVjdCAq
-bW0pCiB7CiAJc3RydWN0IHNneF9lbmNsX21tICplbmNsX21tID0gY29udGFpbmVyX29mKG1uLCBz
-dHJ1Y3Qgc2d4X2VuY2xfbW0sIG1tdV9ub3RpZmllcik7Ci0Jc3RydWN0IHNneF9lbmNsX21tICp0
-bXAgPSBOVUxMOworCXN0cnVjdCBzZ3hfZW5jbF9tbSAqdG1wOwogCiAJLyoKIAkgKiBUaGUgZW5j
-bGF2ZSBpdHNlbGYgY2FuIHJlbW92ZSBlbmNsX21tLiAgTm90ZSwgb2JqZWN0cyBjYW4ndCBiZSBt
-b3ZlZApkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9saXN0LmggYi9pbmNsdWRlL2xpbnV4L2xp
-c3QuaAppbmRleCBkZDZjMjA0MWQwOWMuLjcwODA3OGIyZjI0ZCAxMDA2NDQKLS0tIGEvaW5jbHVk
-ZS9saW51eC9saXN0LmgKKysrIGIvaW5jbHVkZS9saW51eC9saXN0LmgKQEAgLTYzNCw5ICs2MzQs
-OSBAQCBzdGF0aWMgaW5saW5lIHZvaWQgbGlzdF9zcGxpY2VfdGFpbF9pbml0KHN0cnVjdCBsaXN0
-X2hlYWQgKmxpc3QsCiAgKiBAaGVhZDoJdGhlIGhlYWQgZm9yIHlvdXIgbGlzdC4KICAqIEBtZW1i
-ZXI6CXRoZSBuYW1lIG9mIHRoZSBsaXN0X2hlYWQgd2l0aGluIHRoZSBzdHJ1Y3QuCiAgKi8KLSNk
-ZWZpbmUgbGlzdF9mb3JfZWFjaF9lbnRyeShwb3MsIGhlYWQsIG1lbWJlcikJCQkJXAotCWZvciAo
-cG9zID0gbGlzdF9maXJzdF9lbnRyeShoZWFkLCB0eXBlb2YoKnBvcyksIG1lbWJlcik7CVwKLQkg
-ICAgICFsaXN0X2VudHJ5X2lzX2hlYWQocG9zLCBoZWFkLCBtZW1iZXIpOwkJCVwKKyNkZWZpbmUg
-bGlzdF9mb3JfZWFjaF9lbnRyeShwb3MsIGhlYWQsIG1lbWJlcikJCQkJCVwKKwlmb3IgKHR5cGVv
-Zihwb3MpIHBvcyA9IGxpc3RfZmlyc3RfZW50cnkoaGVhZCwgdHlwZW9mKCpwb3MpLCBtZW1iZXIp
-OwlcCisJICAgICAhbGlzdF9lbnRyeV9pc19oZWFkKHBvcywgaGVhZCwgbWVtYmVyKTsJXAogCSAg
-ICAgcG9zID0gbGlzdF9uZXh0X2VudHJ5KHBvcywgbWVtYmVyKSkKIAogLyoqCg==
---0000000000008601b205d919a4ad--
+johannes
