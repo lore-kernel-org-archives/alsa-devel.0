@@ -4,174 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1C7CC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Mar 2022 14:23:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D192C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Mar 2022 15:46:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 86BD21AC9;
-	Tue,  1 Mar 2022 15:22:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86BD21AC9
+	by alsa0.perex.cz (Postfix) with ESMTPS id B8A581867;
+	Tue,  1 Mar 2022 16:45:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B8A581867
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646144615;
-	bh=KamdKM4N/BG6y2omn3pY1wbNro0hrwkqNsTxtkzl+T8=;
+	s=default; t=1646149578;
+	bh=CNhKdzYx7dBeNftKP0AOrcsjEyOEhSaW2jObrhIYaPo=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=W6qv01gK9lXCUMnwJ3rknT3y4CpgfwS+wDtGbBRps2RJN4uadZ6bxuQDGu9VMbKrE
-	 OdFV9AttYrCNSAg38/1k8yuw8nGAzkziH2Ix1y4rBNJynOWz4S+26I2nj5N7K28s3K
-	 uvDAT7rXPcQodbqbM9Vhty8tdkpbMIikigc1NPJM=
+	b=bool9RcKSU32lld5qmJCkKYK/qqo9ynZ4G3paMQ15lvpIt2Sgcujgm3XSV7/WAVkD
+	 U6Eilmm3A5MoLuehONJW8qgLqxoLOG5dAPBPwv94W97jRHbOgwH8KXwmInRacwjRas
+	 FTiIYVdPUq5eABZbuqTAodC3e2GIfw0ET4l0rsYg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1E544F801D8;
-	Tue,  1 Mar 2022 15:22:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5238FF801D8;
+	Tue,  1 Mar 2022 16:45:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 69155F80227; Tue,  1 Mar 2022 15:22:43 +0100 (CET)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id CC38EF80167; Tue,  1 Mar 2022 16:45:27 +0100 (CET)
+Received: from alexa-out-sd-01.qualcomm.com (alexa-out-sd-01.qualcomm.com
+ [199.106.114.38])
+ (using TLSv1.2 with cipher AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5D044F80167
- for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2022 15:22:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D044F80167
+ by alsa1.perex.cz (Postfix) with ESMTPS id 50627F80167
+ for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2022 16:45:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50627F80167
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="UNqzPVES"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1646144561; x=1677680561;
- h=message-id:date:subject:to:cc:references:from:
- in-reply-to:content-transfer-encoding:mime-version;
- bh=KamdKM4N/BG6y2omn3pY1wbNro0hrwkqNsTxtkzl+T8=;
- b=UNqzPVESv1xRmUmT8oeaFPH/SaDVmtQ9nqnL4Fdnl+K2nH0HwIKaua42
- 7XWHiNIw82ZJeXi2qa3yADZjT18P5RBZKIyG1Be45nLj8bO77lu+RRkkU
- teJA3PGTIwQI73L3vmi5uOTQo7bk/yFh/D7YlCh9Gh2A5IodUbyYgPe/4
- t0CD3k/SChkXWSBJJlaZ3cOttFplClfE0JoQHEh3W+HTuI8XHjen+drc+
- EBWfBjTvkiSHo6nhX4wesjYGQAdYFuIH+46p5EAEVGyScQOtLOvY6N9WE
- imTR/SH06s4nUs3QAwdUX3byu9JACa0yQzww2FJ0lQJnQRhwxCb+MECBG Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10272"; a="251969829"
-X-IronPort-AV: E=Sophos;i="5.90,146,1643702400"; d="scan'208";a="251969829"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Mar 2022 06:22:35 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,146,1643702400"; d="scan'208";a="575714417"
-Received: from orsmsx605.amr.corp.intel.com ([10.22.229.18])
- by orsmga001.jf.intel.com with ESMTP; 01 Mar 2022 06:22:34 -0800
-Received: from orsmsx606.amr.corp.intel.com (10.22.229.19) by
- ORSMSX605.amr.corp.intel.com (10.22.229.18) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Tue, 1 Mar 2022 06:22:34 -0800
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21 via Frontend Transport; Tue, 1 Mar 2022 06:22:34 -0800
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.171)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ dkim=pass (1024-bit key) header.d=quicinc.com header.i=@quicinc.com
+ header.b="JVLAVtn8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+ t=1646149522; x=1677685522;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=C/BjzGXxbcQNucZ4IX+eGwpvmWxMB4jt2HQM1WP1dbg=;
+ b=JVLAVtn8OkHCp1cdR2us095sXud0ShhIhPV7b/XvkG7fL7crgh/mwNfN
+ pRLTM0CTLSkUjdcg/RL3c7QG2I5ztwxVD5+ukgPNCVV4hiTT36n8GfNql
+ /UT/Xagu7ewewUMOeFeGu0kOODo04Y4G0S+WmimzIo5kFKOJkFsnDPhvA g=;
+Received: from unknown (HELO ironmsg03-sd.qualcomm.com) ([10.53.140.143])
+ by alexa-out-sd-01.qualcomm.com with ESMTP; 01 Mar 2022 07:45:17 -0800
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+ by ironmsg03-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 01 Mar 2022 07:45:07 -0800
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2308.20; Tue, 1 Mar 2022 06:22:33 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jgrkSi703hQHOrt51ft+x5zzQAf0ZmvoJWnBxxFgcM0NqwBpQgOTb5enzSVN8AFDykiksDH0uZuDd8eY4bte1Pa/yZL88lEdqURohXGuy2GLllW6cvRmr4EjHxxQunt/tctvphfiFbPTC2UKwDjRnLzHponqSZRQlSYIM1+IsaReYu50AQr5eyL8myuQNWU+o8XIuw6IQrMULNGk7HjVQdrzD0U5BXdx6QnSCknXsl45aiRpnTVUgyAGV25J22oCOoSDURBsCHip6twh/On3rkgPjcGatRyPLVvLMLATD0gSa4xLzYpvLZvEzaXjbINwQ+V/afUmZWwBQM08IlZlww==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ul4yDAMHk/dvCvh2ychmhZzfZEWqjBaynD+i979MXJs=;
- b=TbMZ3QF4aW1wQOh0gOJukt87rfY5iWzQ69nDo1WKSKb7KrpOMmW4Ky/SRPmAy1ffKZ9fX9LC1s/DQcaSW7he0AYhrnbK7iNYwK5cX+jREzOj9qGgU4YCBqupVd04BXr5c1p6fbBaqhWCPZJ0LJeKZ6m42P82OrO1V8vMVeTrDZhCcW7/+IzoXiFHNwBGj7bRI7et7mwvniV1yGqvvq0bVBcTlou9Ki9HN65hCAaTuqqf9ZFvIR0VcZJPZQGBgPk7g8ON1i5rx3XfqAZtNy2kLPfdoVUTiyO/tgMjYfD+0wO0lSglILQwk+mpugZs1U3AqcDHsy4UZTKqBN8hPeVnSw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from MWHPR1101MB2157.namprd11.prod.outlook.com
- (2603:10b6:301:51::10) by DM5PR1101MB2107.namprd11.prod.outlook.com
- (2603:10b6:4:5a::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5017.22; Tue, 1 Mar
- 2022 14:22:31 +0000
-Received: from MWHPR1101MB2157.namprd11.prod.outlook.com
- ([fe80::24c3:c14:92a4:22a6]) by MWHPR1101MB2157.namprd11.prod.outlook.com
- ([fe80::24c3:c14:92a4:22a6%5]) with mapi id 15.20.5017.027; Tue, 1 Mar 2022
- 14:22:31 +0000
-Message-ID: <3f0a80d2-bd9a-ff4c-80c7-b12e85fc40ac@intel.com>
-Date: Tue, 1 Mar 2022 15:22:23 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.6.0
-Subject: Re: [PATCH v2 00/17] ASoC: Intel: AVS - Audio DSP for cAVS
-Content-Language: en-US
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- <alsa-devel@alsa-project.org>
-References: <20220228153343.2263412-1-cezary.rojewski@intel.com>
- <00972101-2526-334e-c2ea-02558b93f5bf@linux.intel.com>
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-In-Reply-To: <00972101-2526-334e-c2ea-02558b93f5bf@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AS8PR04CA0088.eurprd04.prod.outlook.com
- (2603:10a6:20b:313::33) To MWHPR1101MB2157.namprd11.prod.outlook.com
- (2603:10b6:301:51::10)
+ 15.2.986.15; Tue, 1 Mar 2022 07:45:07 -0800
+Received: from [10.216.24.177] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.15; Tue, 1 Mar 2022
+ 07:45:00 -0800
+Message-ID: <134a64a9-abab-df25-a613-2d01ac7e5ee5@quicinc.com>
+Date: Tue, 1 Mar 2022 21:14:56 +0530
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2e605194-dae0-46c1-2d34-08d9fb8eebef
-X-MS-TrafficTypeDiagnostic: DM5PR1101MB2107:EE_
-X-Microsoft-Antispam-PRVS: <DM5PR1101MB2107565F52ECF91FDCADF805E3029@DM5PR1101MB2107.namprd11.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: U6p9HOCXVww+RIKMW8hdYuu+i0xCq1lAwxX+OkQbzeX7QpSG7Ywr4FpsrwmxUCZy2jCArsxxXANAhV80ihFQdne9D2HiC8qE2rJ/t9e+L4tOYjVWROVA0x760oLahiuf9Ml2oUIubgta6wOIA1E1QV+XUhtd6opUPU+M/eLrIO9dAzCkSUuwJJ22hpJYf5S512lll3ThMUyFyr4VCdeLgw11pUqqhAVtwZcka/4+Y+BpoOwAmDvBQ/ZH/DK1Qu09lw63SfWA6EqAlCvhbQIBntnawWQHlk9mvxj5QHPPaI43J+cAHSu6vKnZJdhxdLFyTXUAk6OUJ1CRARw/r4VOu8U+JmVkljSAcq862JdfMkSFZ9gMOEJsMHACniLnCfRKqAt1+gPvxh00kB79xjO39IBB5DtN10kESuC10D8K4XKVgYOPx5d2fBIAJIAyq1dabsZfays7vbf/HKblMWW87Jj1xPjGRPdtm4g0W3P/OrhpzRz+vHx8LABZYfsOTUBZfL+kimirVRMWxGql5BG+NVq8OULsc2w3HybysDzcQAEsTMI2C77JfleV+qQaxkvfh2UZz6QFXkRg7mc6JI3IU0tTBEFAqPFvbCHTnFqMZPh/jsyz65LIn4fTErojR8XLcP/sNF9HhpJJY9h352tfKXUe6doacmQYJeWP/UjwVzDEp5Nm78GYjN6O6Q6CHYGkIJrWrx7WgRNVjR+Gq95SsgA9u5Ah4A8OlC6tkjnxGcQ=
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:MWHPR1101MB2157.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230001)(366004)(6486002)(2906002)(66476007)(2616005)(6512007)(31686004)(44832011)(82960400001)(508600001)(316002)(8936002)(7416002)(53546011)(186003)(36756003)(6506007)(86362001)(26005)(6666004)(31696002)(38100700002)(66556008)(83380400001)(5660300002)(8676002)(66946007)(4326008)(45980500001)(43740500002);
- DIR:OUT; SFP:1102; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?M3Z2Nk55UWxMTVRSNlIvK29ZZ1luWFNoNERjL0FoQWpIREtlNWdHM3RWaUU3?=
- =?utf-8?B?Nm90cnc1R1ZQRXp1SzA2b2YwWFNBd0krNmFUYTdIYzFCbEwzd0dsbE52ajdm?=
- =?utf-8?B?OHVPRlE4VjBxR3BIMDlLb0dNemtNRTEvclFiSUJSTDRPLzQ0aG42NEM3VWtq?=
- =?utf-8?B?WGtNZmxkdmxQdS9SeU10V3NOZW9Ub1ZaOTU5eTQyM0c5QXVzeW5NWDIwMjRu?=
- =?utf-8?B?MnNnMGlCdXRYUlA5RVpJVzlMVjRUd0NiRlFqeVNOVklsK3NLNHpoK0FrZXl5?=
- =?utf-8?B?c0lQSUFHUTBOS3M5MTAwMGJHWXIrbWRJVkJaczcyanp5MytrSnVkVUNmYzNT?=
- =?utf-8?B?M2dwZWxYVUJ3UmZhc2NGU1B6Wm5yM29LUnlFSGh1dUZyNFM4ajcvTUZTeHJh?=
- =?utf-8?B?K2lqWVlmUjdBQWRZL1crWFBCWTBpUCtaOXZzU09nWDl2aWluUFdvSUdaSWpi?=
- =?utf-8?B?bEJCU0tNQjBMdVZYRVNsUWVqbHFZeFZnbVFBVG9rNFJoUzFtMFdUT01NSVhu?=
- =?utf-8?B?dXVNZGM3aVBQUUkxQTdHTVVKa2xqeFZpejhQampodG1DOFo2TE1IeG01bzdm?=
- =?utf-8?B?emQyWCtyRkpyYW0yc2xzQ2lBS2puNytya1NQVzZpRHY1Ui9qSSthenFaN24w?=
- =?utf-8?B?eFZGMmZEYkZUaDJPUTIyQk9oVDdoL2ZUMG9wM3dmWmRqbXI5cEFYS3VCOHJ2?=
- =?utf-8?B?dkRSdDBFSUZjTTdReHNWVHEzckVXNUorUXVobHd1SXpoN1cyV2R1VTFWZ1lt?=
- =?utf-8?B?TEFNYnRjRUpvcHN1VGxKekxZQ1JkbGdCWU81YXdnWlZLcWlTN0JxN0o0ZUMr?=
- =?utf-8?B?bUU0MnNkNE4xWXV1RWVEVVpnSjhhRzZzSS83SVk0RzkzVFc4V1JzeWlVMWRp?=
- =?utf-8?B?QUp2aHdDTXRqdU5nb0lONkd1SEVrZTNwSEdJTm1mY2pZS2gwTzhIaEgxWlVp?=
- =?utf-8?B?WDR0Skd3bzg0NGorZ09TemlyZ2hocmNEcGlCcDJvRE5zY1RNYVZBbEVLVDdv?=
- =?utf-8?B?WjMyRUIybmltdEFoN3g4eEQzZlNEM2kraVJiLzJMcktJUXJoZzZNcXFZNFlY?=
- =?utf-8?B?ak9ENWJaQTcxY1E1OSt5TThMMnFHNVlpWE9FcW5pZnFiU0p2RzdYZ0t6RlJ5?=
- =?utf-8?B?U0pNT0kxZVIvZmpuekNKS3c5UHZkS1Q1bFlPQk04UnZJb0N5NE9HV2h3azkw?=
- =?utf-8?B?VHRTZlVNNy9tU295dStjSlBkK3F6a1VLWXRJMEdyNWdXTHQxejBwaDkwQUxa?=
- =?utf-8?B?MkwwUW5yWmgvMlRNTkx4U0laNDRBdnV1QklEYWFEdlZYQ3ZHQkVlSXNkc2RB?=
- =?utf-8?B?MityazBrUkFHNGhSTS9TbVFETUIrOGhLSWUyTXdsRTJZMjNnUTViWTg5QW1N?=
- =?utf-8?B?YnhIcm54YkgxTGlneXVqeGZiSnh2cjl6cW96WHVXS1FoOXE4bHd4SDFkMm5j?=
- =?utf-8?B?bDROV1dmMEFrM09lN0FLcDZ4azZuOEdtaHk1Z0FSSW81T0J3U1VaczNnTUxG?=
- =?utf-8?B?RlhTNDNvaWdBdzZwODNnZ0pZYlVjRUhRMDBta2pBMnVtYS9adXBXdlpaMmwv?=
- =?utf-8?B?b2Ezdlk1ZmNSZmpJWlljYmhSbnVjdzZXeG8vYmJjQTFibW1BR2w5eVYyTFdk?=
- =?utf-8?B?cmlIOG5GODdvemEwdHBQUVc1bXR0WHJCVkVNK1B1cG1yUEU1d0wzU2pYZDFs?=
- =?utf-8?B?Wll2UVJpemNRL2J0UFNZRjdqak9xbDNzbEFyQkVWR21PN1lBbTdLQ2JrTVhi?=
- =?utf-8?B?MkFPWTk0VC9Zd0xWZXVlOE0wSmRwVWpWVGhqeGlsTVUyQjJzVW5ibDlXa3Fy?=
- =?utf-8?B?ekJpdnAyYXVmN2JadG5SWnE4WVF2VWxIeUJYa0xlSU4rbEcybkNlYXowbDBR?=
- =?utf-8?B?T1NqSFBZZlBXb2lFKzAvR2s0OVFrSkpvdllKWkVBQjdGQkovbTMxVW9BVi9v?=
- =?utf-8?B?SktlVnBtck83MklzWXhqOWRXdy8xcFNES01RcUhlMUhPWVV6M1hOVkRRY3Uv?=
- =?utf-8?B?N3hmTWMwV1o0anZ3bmFXKzF2aFl4QjFsQ3p5ditnSzRZTExJMEo0NmpzeEdF?=
- =?utf-8?B?OGoyMjlvbDgvSWtaVWJwU1EzaHpDdEwrNU1TaW5pWGs2OTVHNUk3aWMvdStw?=
- =?utf-8?B?VVMxWWxURkFMRlFQZ3A1bktoUklRaC9EV1gxT1ZMMGNKZlFtaDZuK3M1S2w2?=
- =?utf-8?B?eUJJc0lyaU15MWhMRWV0SHRHL1R5UmtndDB5Ymc1WGVvdlBpSE02ZjZNS245?=
- =?utf-8?B?c1UrY0RGSWJmU1lESVA3VjV5Z0RnPT0=?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2e605194-dae0-46c1-2d34-08d9fb8eebef
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1101MB2157.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Mar 2022 14:22:31.5165 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: nwOsVG01Sx1A5ti5bYw/ue2wfn5Pp8x/EiziqD+J0RVOpCikSsQsh8yboc2iEHjw1b84EM3VNGTRsa2qjYxoSzUc4LIqnSwUv50a2oET4QI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1101MB2107
-X-OriginatorOrg: intel.com
-Cc: upstream@semihalf.com, harshapriya.n@intel.com, rad@semihalf.com,
- tiwai@suse.com, hdegoede@redhat.com, broonie@kernel.org,
- amadeuszx.slawinski@linux.intel.com, cujomalainey@chromium.org,
- lma@semihalf.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.1
+Subject: Re: [PATCH v5 1/2] soundwire: qcom: Add compatible name for v1.6.0
+Content-Language: en-US
+To: Stephen Boyd <swboyd@chromium.org>, <agross@kernel.org>,
+ <alsa-devel@alsa-project.org>, <bgoswami@codeaurora.org>,
+ <bjorn.andersson@linaro.org>, <broonie@kernel.org>,
+ <devicetree@vger.kernel.org>, <judyhsiao@chromium.org>,
+ <lgirdwood@gmail.com>, <linux-arm-msm@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <perex@perex.cz>,
+ <pierre-louis.bossart@linux.intel.com>, <quic_plai@quicinc.com>,
+ <robh+dt@kernel.org>, <rohitkr@codeaurora.org>, <sanyog.r.kale@intel.com>,
+ <srinivas.kandagatla@linaro.org>, <tiwai@suse.com>,
+ <yung-chuan.liao@linux.intel.com>
+References: <1646030377-12092-1-git-send-email-quic_srivasam@quicinc.com>
+ <1646030377-12092-2-git-send-email-quic_srivasam@quicinc.com>
+ <CAE-0n53XVfXeVHFhokw7pwSOnL4MQAzDg-83OaH=FB=cB2gqdA@mail.gmail.com>
+From: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+Organization: Qualcomm
+In-Reply-To: <CAE-0n53XVfXeVHFhokw7pwSOnL4MQAzDg-83OaH=FB=cB2gqdA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+Cc: Venkata Prasad Potturu <quic_potturu@quicinc.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -187,31 +103,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 2022-02-28 6:23 PM, Pierre-Louis Bossart wrote:
->> Changes v2 -> v1:
->> Almost all updates here are thanks to feedback from Pierre.
-> 
-> Can I ask for a bit of mercy on reviewers and specifically my time? I
-> sent my comments on Friday, I haven't had time to look at the answers
-> and there's a new version already?
 
-
-Hello,
-
-With all due respect, the v1 version of the series has been sent on 7th 
-of Feb with most of its patches remaining rather unchanged since the RFC 
-available on the list since 8th of Dec last year. Prior to that, there 
-was also a period of time during which an internal review has been 
-conducted. As majority of recent feedback was related to explanations 
-and comments, I see no reason for not sending v2.
-
-Please note that the book is not finished with this chapter as the 
-series does not provide a complete driver. There are several changes yet 
-to come and code can, and probably will change in time. The team is not 
-fleeing the list once these patches get merged either - we have been 
-maintaining and supporting Intel solutions found in ASoC tree for a 
-while now, and plan to continue to do so for years to come.
-
-
-Kind regards,
-Czarek
+On 3/1/2022 2:32 AM, Stephen Boyd wrote:
+> Quoting Srinivasa Rao Mandadapu (2022-02-27 22:39:36)
+>> Update compatible string and master data information in soundwire driver
+>> to support v1.6.0 in lpass sc7280 based platform.
+>>
+>> Signed-off-by: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+>> Co-developed-by: Venkata Prasad Potturu <quic_potturu@quicinc.com>
+>> Signed-off-by: Venkata Prasad Potturu <quic_potturu@quicinc.com>
+>> ---
+>>   drivers/soundwire/qcom.c | 6 ++++++
+>>   1 file changed, 6 insertions(+)
+>>
+>> diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+>> index 9eb31ba..fb183bd 100644
+>> --- a/drivers/soundwire/qcom.c
+>> +++ b/drivers/soundwire/qcom.c
+>> @@ -175,6 +175,11 @@ static struct qcom_swrm_data swrm_v1_5_data = {
+>>          .default_cols = 16,
+>>   };
+>>
+>> +static struct qcom_swrm_data swrm_v1_6_data = {
+> Why not const?
+Okay.
+>
+>> +       .default_rows = 50,
+>> +       .default_cols = 16,
+> This is the same as swrm_v1_5_data so just use that struct again?
+Okay. Will use  swrm_v1_5_data.
+>
+>> +};
+>> +
+>>   #define to_qcom_sdw(b) container_of(b, struct qcom_swrm_ctrl, bus)
+>>
+>>   static int qcom_swrm_ahb_reg_read(struct qcom_swrm_ctrl *ctrl, int reg,
+>> @@ -1343,6 +1348,7 @@ static int qcom_swrm_remove(struct platform_device *pdev)
+>>   static const struct of_device_id qcom_swrm_of_match[] = {
+>>          { .compatible = "qcom,soundwire-v1.3.0", .data = &swrm_v1_3_data },
+>>          { .compatible = "qcom,soundwire-v1.5.1", .data = &swrm_v1_5_data },
+> These other structs for v1.5 and v1.3 could also be const.
+Okay. Will add const and re post.
+>
+>> +       { .compatible = "qcom,soundwire-v1.6.0", .data = &swrm_v1_6_data },
+>>          {/* sentinel */},
