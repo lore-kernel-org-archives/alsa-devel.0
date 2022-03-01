@@ -4,90 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D192C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Mar 2022 15:46:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F320EC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Mar 2022 16:18:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B8A581867;
-	Tue,  1 Mar 2022 16:45:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B8A581867
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5CD031922;
+	Tue,  1 Mar 2022 17:18:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5CD031922
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646149578;
-	bh=CNhKdzYx7dBeNftKP0AOrcsjEyOEhSaW2jObrhIYaPo=;
+	s=default; t=1646151532;
+	bh=Ic2cVNr/QuZ8LZWxFs/I0VO4RNQe/bRpOebdDp7iddI=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bool9RcKSU32lld5qmJCkKYK/qqo9ynZ4G3paMQ15lvpIt2Sgcujgm3XSV7/WAVkD
-	 U6Eilmm3A5MoLuehONJW8qgLqxoLOG5dAPBPwv94W97jRHbOgwH8KXwmInRacwjRas
-	 FTiIYVdPUq5eABZbuqTAodC3e2GIfw0ET4l0rsYg=
+	b=B3xqgw3gHaE+1ejKi6VX2X7rk3qPq1oVCH5E2Iypp6znMP4aPdvZR0lAxTE7pU3Be
+	 lbruWtWBboLpxhOu1exWqFsUKiEgcn6IFMgL0EDW8ttRJBh+Ksu4IZKnYpt1AfC83N
+	 fUUDInafMOLfXwREckOS3dprFuhPaaN9YPhe6WxU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5238FF801D8;
-	Tue,  1 Mar 2022 16:45:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D5BB9F802D2;
+	Tue,  1 Mar 2022 17:18:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CC38EF80167; Tue,  1 Mar 2022 16:45:27 +0100 (CET)
-Received: from alexa-out-sd-01.qualcomm.com (alexa-out-sd-01.qualcomm.com
- [199.106.114.38])
- (using TLSv1.2 with cipher AES256-SHA (256/256 bits))
+ id 72D27F802DB; Tue,  1 Mar 2022 17:18:00 +0100 (CET)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 50627F80167
- for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2022 16:45:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50627F80167
+ by alsa1.perex.cz (Postfix) with ESMTPS id DAC0BF80167
+ for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2022 17:17:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DAC0BF80167
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=quicinc.com header.i=@quicinc.com
- header.b="JVLAVtn8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
- t=1646149522; x=1677685522;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="k6uTd/Jd"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1646151478; x=1677687478;
  h=message-id:date:mime-version:subject:to:cc:references:
  from:in-reply-to:content-transfer-encoding;
- bh=C/BjzGXxbcQNucZ4IX+eGwpvmWxMB4jt2HQM1WP1dbg=;
- b=JVLAVtn8OkHCp1cdR2us095sXud0ShhIhPV7b/XvkG7fL7crgh/mwNfN
- pRLTM0CTLSkUjdcg/RL3c7QG2I5ztwxVD5+ukgPNCVV4hiTT36n8GfNql
- /UT/Xagu7ewewUMOeFeGu0kOODo04Y4G0S+WmimzIo5kFKOJkFsnDPhvA g=;
-Received: from unknown (HELO ironmsg03-sd.qualcomm.com) ([10.53.140.143])
- by alexa-out-sd-01.qualcomm.com with ESMTP; 01 Mar 2022 07:45:17 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
- by ironmsg03-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Mar 2022 07:45:07 -0800
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.15; Tue, 1 Mar 2022 07:45:07 -0800
-Received: from [10.216.24.177] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.15; Tue, 1 Mar 2022
- 07:45:00 -0800
-Message-ID: <134a64a9-abab-df25-a613-2d01ac7e5ee5@quicinc.com>
-Date: Tue, 1 Mar 2022 21:14:56 +0530
+ bh=Ic2cVNr/QuZ8LZWxFs/I0VO4RNQe/bRpOebdDp7iddI=;
+ b=k6uTd/JdfQ5vBDYpvt+p9vlgXOChEzO+0RGGxrv/vHhBWDyyAh+6rfnT
+ hQMSPRoN29Eh6+pTovm1lGMP7GihK3Kfgk5hgT5XhHUMCXnhuRFmZTovB
+ rIAeZUR5SSdSqDJiZbwF3L+fPGBydXGsVHnkcT+o7jCVMZIAM/Gg+HWvf
+ 8+qO15l4p4b6wkrW/mvVehXDx1uCCy7UttyxxV22/nJ1CUiyu51DMnBs2
+ xx/TUHFvHNSU5bUokw4+gp5KFlGwyEZf4jc3t2b1/C+pUzOplsk7E40bF
+ Bdka3iv75IQJkPxAhsmssr1LB5rCVv2QQALsleDK6W7+TqEfuMjvBdivU g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10272"; a="251998227"
+X-IronPort-AV: E=Sophos;i="5.90,146,1643702400"; d="scan'208";a="251998227"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 01 Mar 2022 08:17:46 -0800
+X-IronPort-AV: E=Sophos;i="5.90,146,1643702400"; d="scan'208";a="545146467"
+Received: from rbrosius-mobl.amr.corp.intel.com (HELO [10.209.131.146])
+ ([10.209.131.146])
+ by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 01 Mar 2022 08:17:45 -0800
+Message-ID: <01184946-ebdc-52f1-65d9-e2905be0474e@linux.intel.com>
+Date: Tue, 1 Mar 2022 07:51:22 -0600
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.1
-Subject: Re: [PATCH v5 1/2] soundwire: qcom: Add compatible name for v1.6.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.5.0
+Subject: Re: [PATCH v3 3/3] soundwire: qcom: add in-band wake up interrupt
+ support
 Content-Language: en-US
-To: Stephen Boyd <swboyd@chromium.org>, <agross@kernel.org>,
- <alsa-devel@alsa-project.org>, <bgoswami@codeaurora.org>,
- <bjorn.andersson@linaro.org>, <broonie@kernel.org>,
- <devicetree@vger.kernel.org>, <judyhsiao@chromium.org>,
- <lgirdwood@gmail.com>, <linux-arm-msm@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <perex@perex.cz>,
- <pierre-louis.bossart@linux.intel.com>, <quic_plai@quicinc.com>,
- <robh+dt@kernel.org>, <rohitkr@codeaurora.org>, <sanyog.r.kale@intel.com>,
- <srinivas.kandagatla@linaro.org>, <tiwai@suse.com>,
- <yung-chuan.liao@linux.intel.com>
-References: <1646030377-12092-1-git-send-email-quic_srivasam@quicinc.com>
- <1646030377-12092-2-git-send-email-quic_srivasam@quicinc.com>
- <CAE-0n53XVfXeVHFhokw7pwSOnL4MQAzDg-83OaH=FB=cB2gqdA@mail.gmail.com>
-From: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
-Organization: Qualcomm
-In-Reply-To: <CAE-0n53XVfXeVHFhokw7pwSOnL4MQAzDg-83OaH=FB=cB2gqdA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, robh+dt@kernel.org, 
+ vkoul@kernel.org, yung-chuan.liao@linux.intel.com
+References: <20220228172528.3489-1-srinivas.kandagatla@linaro.org>
+ <20220228172528.3489-4-srinivas.kandagatla@linaro.org>
+ <28a7aa9b-8322-54df-1cfa-275805e2b044@linux.intel.com>
+ <c6b0506a-24ed-d4fd-c74e-d95c6dca6fe6@linaro.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <c6b0506a-24ed-d4fd-c74e-d95c6dca6fe6@linaro.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-Cc: Venkata Prasad Potturu <quic_potturu@quicinc.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, quic_srivasam@quicinc.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -104,46 +93,52 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-On 3/1/2022 2:32 AM, Stephen Boyd wrote:
-> Quoting Srinivasa Rao Mandadapu (2022-02-27 22:39:36)
->> Update compatible string and master data information in soundwire driver
->> to support v1.6.0 in lpass sc7280 based platform.
+
+On 3/1/22 05:13, Srinivas Kandagatla wrote:
+> 
+> 
+> On 28/02/2022 18:01, Pierre-Louis Bossart wrote:
 >>
->> Signed-off-by: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
->> Co-developed-by: Venkata Prasad Potturu <quic_potturu@quicinc.com>
->> Signed-off-by: Venkata Prasad Potturu <quic_potturu@quicinc.com>
->> ---
->>   drivers/soundwire/qcom.c | 6 ++++++
->>   1 file changed, 6 insertions(+)
+>>> @@ -1424,6 +1464,11 @@ static int swrm_runtime_resume(struct device
+>>> *dev)
+>>>       struct qcom_swrm_ctrl *ctrl = dev_get_drvdata(dev);
+>>>       int ret;
+>>>   +    if (ctrl->wake_irq > 0) {
+>>> +        if (!irqd_irq_disabled(irq_get_irq_data(ctrl->wake_irq)))
+>>> +            disable_irq_nosync(ctrl->wake_irq);
+>>> +    }
+>>> +
+>>>       clk_prepare_enable(ctrl->hclk);
 >>
->> diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
->> index 9eb31ba..fb183bd 100644
->> --- a/drivers/soundwire/qcom.c
->> +++ b/drivers/soundwire/qcom.c
->> @@ -175,6 +175,11 @@ static struct qcom_swrm_data swrm_v1_5_data = {
->>          .default_cols = 16,
->>   };
+>> This one is quite interesting. If you disable the IRQ mechanism but
+>> haven't yet resumed the clock, that leaves a time window where the
+>> peripheral could attempt to drive the line high. what happens in that
+>> case?
+> 
+> 
+> We did call pm_runtime_get_sync() from Wake IRQ handler, which means
+> that resume should be finished as part of Wake IRQ handler. Any new
+> Interrupt conditions/status generated by slave in the meantime will be
+> cleared while handling SLAVE PEND interrupt.
+> 
 >>
->> +static struct qcom_swrm_data swrm_v1_6_data = {
-> Why not const?
-Okay.
->
->> +       .default_rows = 50,
->> +       .default_cols = 16,
-> This is the same as swrm_v1_5_data so just use that struct again?
-Okay. Will use  swrm_v1_5_data.
->
->> +};
->> +
->>   #define to_qcom_sdw(b) container_of(b, struct qcom_swrm_ctrl, bus)
+>>>         if (ctrl->clock_stop_not_supported) {
+>>> @@ -1491,6 +1536,11 @@ static int __maybe_unused
+>>> swrm_runtime_suspend(struct device *dev)
+>>>         usleep_range(300, 305);
+>>>   +    if (ctrl->wake_irq > 0) {
+>>> +        if (irqd_irq_disabled(irq_get_irq_data(ctrl->wake_irq)))
+>>> +            enable_irq(ctrl->wake_irq);
+>>> +    }
+>>> +
 >>
->>   static int qcom_swrm_ahb_reg_read(struct qcom_swrm_ctrl *ctrl, int reg,
->> @@ -1343,6 +1348,7 @@ static int qcom_swrm_remove(struct platform_device *pdev)
->>   static const struct of_device_id qcom_swrm_of_match[] = {
->>          { .compatible = "qcom,soundwire-v1.3.0", .data = &swrm_v1_3_data },
->>          { .compatible = "qcom,soundwire-v1.5.1", .data = &swrm_v1_5_data },
-> These other structs for v1.5 and v1.3 could also be const.
-Okay. Will add const and re post.
->
->> +       { .compatible = "qcom,soundwire-v1.6.0", .data = &swrm_v1_6_data },
->>          {/* sentinel */},
+>> and this one is similar, you could have a case where the peripheral
+>> signals a wake immediately after the ClockStopNow frame, but you may not
+>> yet have enabled the wake detection interrupt.
+>>
+>> Would that imply that the wake is missed?
+> Its Possible it might be missed at that instance, however as the Slave
+> interrupt source condition/status (Ex: button Press) is still not
+> cleared it should generate a Wake interrupt as soon as its enabled.
+
+ok, thanks for the answers - both make sense.
