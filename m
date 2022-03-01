@@ -4,72 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05944C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Mar 2022 12:43:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99740C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Mar 2022 12:45:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D9B801B1E;
-	Tue,  1 Mar 2022 13:43:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D9B801B1E
+	by alsa0.perex.cz (Postfix) with ESMTPS id D22D21ADC;
+	Tue,  1 Mar 2022 13:44:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D22D21ADC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646138632;
-	bh=d6sozcIg4ACbLA+8iUq/0BA4ApO/fe9Ut+dhSx5tY48=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1646138715;
+	bh=Dvmj37OjCzYRSD5lH+68CdPQAV0uvqJN0PHM1p+T0So=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=A/4sK0HzzORrkv3iUy5a/gHA4HQL3J1AkAP88MlUh55gyf08edJz3ZCtOqKn6pPUk
-	 FMnfa9rkWQDLtjrRil7/5fVCBKq38eU5W3Efgb8/kJVNmSv8r1RV1cFD6cLnvkDHiD
-	 AO5yJdKOH70cMCWvSkpuR22wG59wSI1tjBl3nK/0=
+	b=SEBGG3s3Mln8p/CIuiU5hwmQy5yp6+zGIroaICwf4N+6E3P4Hp1im0GfxVvHAgr/N
+	 VVYDzXtcVHeLStZPmi1lI9p11buFr0EeQxH6uPd3/uz6Lzpsm7psYRuWGiAuNoyd4K
+	 IaTcy9ALlmxEYbbNUZ/mL8HCedVGZOlPZdR2bY0I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A38C3F80518;
-	Tue,  1 Mar 2022 13:42:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7C58FF80167;
+	Tue,  1 Mar 2022 13:44:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A62C9F80167; Tue,  1 Mar 2022 13:42:17 +0100 (CET)
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de
- [85.215.255.54])
+ id D5FD4F80227; Tue,  1 Mar 2022 13:44:24 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8C983F80167
+ for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2022 13:44:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C983F80167
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="cvEy4Cel"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CD8C3F80167
- for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2022 13:42:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CD8C3F80167
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net
- header.b="CyupNifZ"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1646138525;
- s=strato-dkim-0002; d=gerhold.net;
- h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
- From:Subject:Sender;
- bh=Znlo/K3f7ZM1OI2X+Dlir6ob8K70SHoTC+P3PBMezhY=;
- b=CyupNifZJqC/kXZie75hhhlEl3cWhkxmsUOr3w6IQdoRhuYPYJhmuNIo0H5YQM/qZ3
- 6oHsHTMI42VmUO3IuvOuUi3JPO+qD6m+S6vBcpy8E1JIV2/obSjoh0rdhIVpdzKcXIBe
- 2xp7uyFLVHyDD+35snx4QEF9uRev1rcp1rl+K1uDZROZgoBIGKgDn56QetzNHvjgkskX
- MQVqrsE+MSr/4B1VDwHFL2HwbnbG7vQeImDaMi+VuW9//U27cl1VzHlec1XIEng17/i/
- M+f07d6Vw7Uq+Jn/p3r3FfCKfZdL4hfZnqj3KLLqmtcbqZrO0P1sCjmaqJ28WxhMJMHw
- SFUQ==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVORvLd4SsytBXQ7UOGqRde+a0fiL2ZP6Q"
-X-RZG-CLASS-ID: mo00
-Received: from droid.. by smtp.strato.de (RZmta 47.40.1 AUTH)
- with ESMTPSA id kdc58dy21Cg5a4n
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
- (Client did not present a certificate);
- Tue, 1 Mar 2022 13:42:05 +0100 (CET)
-From: Stephan Gerhold <stephan@gerhold.net>
-To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 1/2] ASoC: dt-bindings: Add schema for "awinic,aw8738"
-Date: Tue,  1 Mar 2022 13:37:41 +0100
-Message-Id: <20220301123742.72146-2-stephan@gerhold.net>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220301123742.72146-1-stephan@gerhold.net>
-References: <20220301123742.72146-1-stephan@gerhold.net>
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 58B9161229;
+ Tue,  1 Mar 2022 12:44:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D6ADC340EE;
+ Tue,  1 Mar 2022 12:44:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1646138659;
+ bh=Dvmj37OjCzYRSD5lH+68CdPQAV0uvqJN0PHM1p+T0So=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=cvEy4Celqtz56G+ZmoQDluWwekayBnfTCkFgpjXIFUH67plCHqLaSs3bbB243KlIR
+ c45wYDECEVf4LWJ00ZQiKAcyUSHL64BhIGFvma252WcK0UALkdGdrYGD/dqovDJKtR
+ nXEk3Ag/hwkYm5li4hxxk+HMio8KgibuwB4aX5v1Z2zZmHKVjrxL7cIQKNI/tiMITd
+ NkO+5zDQZmAzNeWpLD6uKGpNz/FoYh51Uy8J52cCMjZhmPH1IJKDOsrwcP7vK2YjZm
+ nonLZCYTS9eYAKYZRMI8CD96NDXVzp27Rt1yTEqCpDc6ETJVDQByLrDXXZXW/TIYGE
+ LR+shwwVPEBnw==
+Date: Tue, 1 Mar 2022 12:44:12 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Subject: Re: [PATCH] ASoC: fsi: Add check for clk_enable
+Message-ID: <Yh4VHFviMI/LbjVe@sirena.org.uk>
+References: <20220301073949.3678707-1-jiasheng@iscas.ac.cn>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Stephan Gerhold <stephan@gerhold.net>, Liam Girdwood <lgirdwood@gmail.com>,
- Rob Herring <robh+dt@kernel.org>, ~postmarketos/upstreaming@lists.sr.ht,
- Jonathan Albrieux <jonathan.albrieux@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="a4D1fYTki8ZRdcZe"
+Content-Disposition: inline
+In-Reply-To: <20220301073949.3678707-1-jiasheng@iscas.ac.cn>
+X-Cookie: You have a message from the operator.
+Cc: alsa-devel@alsa-project.org, songliubraving@fb.com, ast@kernel.org,
+ kuninori.morimoto.gx@renesas.com, daniel@iogearbox.net, lgirdwood@gmail.com,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org, john.fastabend@gmail.com,
+ andrii@kernel.org, tiwai@suse.com, netdev@vger.kernel.org, kpsingh@kernel.org,
+ yhs@fb.com, f.suligoi@asem.it, kafai@fb.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,70 +84,56 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add a DT schema for describing Awinic AW8738 audio amplifiers. They are
-fairly simple and controlled using a single GPIO. The number of pulses
-during power up selects one of a few pre-defined amplifier modes.
 
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
----
- .../bindings/sound/awinic,aw8738.yaml         | 48 +++++++++++++++++++
- 1 file changed, 48 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/awinic,aw8738.yaml
+--a4D1fYTki8ZRdcZe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/Documentation/devicetree/bindings/sound/awinic,aw8738.yaml b/Documentation/devicetree/bindings/sound/awinic,aw8738.yaml
-new file mode 100644
-index 000000000000..83934a835fd7
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/awinic,aw8738.yaml
-@@ -0,0 +1,48 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/awinic,aw8738.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Awinic AW8738 Audio Amplifier
-+
-+maintainers:
-+  - Stephan Gerhold <stephan@gerhold.net>
-+
-+description:
-+  The Awinic AW8738 is a simple audio amplifier using
-+  one-wire pulse control to set the amplifier mode.
-+
-+allOf:
-+  - $ref: name-prefix.yaml#
-+
-+properties:
-+  compatible:
-+    const: awinic,aw8738
-+
-+  enable-gpios:
-+    maxItems: 1
-+
-+  awinic,mode:
-+    description: Amplifier mode (number of pulses for one-wire pulse control)
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    minimum: 1
-+
-+  sound-name-prefix: true
-+
-+required:
-+  - compatible
-+  - enable-gpios
-+  - awinic,mode
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+    audio-amplifier {
-+        compatible = "awinic,aw8738";
-+        enable-gpios = <&msmgpio 114 GPIO_ACTIVE_HIGH>;
-+        awinic,mode = <5>;
-+        sound-name-prefix = "Speaker Amp";
-+    };
--- 
-2.35.1
+On Tue, Mar 01, 2022 at 03:39:49PM +0800, Jiasheng Jiang wrote:
+> As the potential failure of the clk_enable(),
+> it should be better to check it and return error
+> if fails.
 
+> -		clk_enable(clock->xck);
+> -		clk_enable(clock->ick);
+> -		clk_enable(clock->div);
+> +		ret =3D clk_enable(clock->xck);
+> +		if (ret)
+> +			goto err;
+> +		ret =3D clk_enable(clock->ick);
+> +		if (ret)
+> +			goto err;
+> +		ret =3D clk_enable(clock->div);
+> +		if (ret)
+> +			goto err;
+> =20
+>  		clock->count++;
+>  	}
+> =20
+>  	return ret;
+> +
+> +err:
+> +	clk_disable(clock->xck);
+> +	clk_disable(clock->ick);
+> +	clk_disable(clock->div);
+
+You need separate labels for each enable so that we don't end up
+disabling clocks we didn't enable, that would also be a bug.
+
+--a4D1fYTki8ZRdcZe
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmIeFRwACgkQJNaLcl1U
+h9DwBgf/bin2luVJoiauARSYcwKh6nAuT6t1+pRx4vZsv96asJBq6mHzg3Lde11Y
+m2QgosA3PwMCLdvAIk4gZc2OQfzLQ6r96lgNEFHE3fmZknc9qPeO5P8275sdgfRy
+xn7l5w0j4y/4QoGu6YpE9EidGOGlkLQMcMvVc3CcpIUQLexWdGIgYUoJDT8MaIrA
+NNlrI3R296GI6oToypsEEC+KnTcddRKhEqd/wlCTD75OP9WmbQdUkw84mXq4A29F
+yDHw4BIYC8Mhx+RvUUXSaBue6Ow0kk58x9hdeFIE7Zc2qRk8xuSTxnju+QXIPNZK
+djNrcWAUdWEufFhsSf26mOnIq6bsrQ==
+=LFkr
+-----END PGP SIGNATURE-----
+
+--a4D1fYTki8ZRdcZe--
