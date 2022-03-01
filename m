@@ -4,110 +4,131 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9237CC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Mar 2022 08:56:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47B66C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Mar 2022 08:57:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DEF6C1FE5;
-	Wed,  2 Mar 2022 09:56:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DEF6C1FE5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 842A31FBD;
+	Wed,  2 Mar 2022 09:56:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 842A31FBD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646211412;
-	bh=MtpcZIUr3vBAS7pr0HD1s9lnhGV9HRpj+Emyeag+DSU=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1646211429;
+	bh=T4p6dOI3iQ65EU9D7EtBvUOEeiH000zcmIMr0oMYLWY=;
+	h=Subject:From:In-Reply-To:Date:References:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EDc4dt5XkNiYVZ5gAnf7HMQIPP/37LEKYbMxDUGmFQgsQzd6ndA3HV42y95VY+48C
-	 4eqfxi6Cv3WLpQ/s7439tXAKEY7a0z3JjQAEu8Rr/EEOr10ZzY6WeraQPa3ufJBhR8
-	 0/fssjkYYFIUBRfw1pVNbILlnaempoG9i10huAfg=
+	b=HCaz92bIP0LELnZH/BISenUXUCVnV8bpvm4ryxodq6h1VBBnHQ2lFl531bpIH/1UH
+	 kusAd5fp4YarJ79A6hDanPGZQNkUjmIu1QWf7z4tMG7Z6mwmJINyob5r0l3O3aIxwf
+	 n8nL7tFVVazcsdtn82sEpkUU+Uyum9F4B7Gb337o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 08085F80797;
+	by alsa1.perex.cz (Postfix) with ESMTP id 88322F807A2;
 	Wed,  2 Mar 2022 09:34:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 32417F80154; Mon, 28 Feb 2022 12:09:02 +0100 (CET)
+ id 9F9B4F80227; Tue,  1 Mar 2022 12:28:26 +0100 (CET)
 Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com
  [IPv6:2a00:1450:4864:20::634])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 84FBAF80125
- for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2022 12:08:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84FBAF80125
+ by alsa1.perex.cz (Postfix) with ESMTPS id 29B48F80054
+ for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2022 12:28:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 29B48F80054
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="hjvTHeqA"
-Received: by mail-ej1-x634.google.com with SMTP id p14so23947501ejf.11
- for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2022 03:08:58 -0800 (PST)
+ header.b="ioxwEWwS"
+Received: by mail-ej1-x634.google.com with SMTP id a23so30831800eju.3
+ for <alsa-devel@alsa-project.org>; Tue, 01 Mar 2022 03:28:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=HpiN/zwO1wBD5W8vJ5qwHzWs2Mz8GYwVSPoaDyTc8jQ=;
- b=hjvTHeqAC17Nm2rqJFqOWVUlo+eMrb6KCGjEjnmUhT0UbOoSD99k2xAziOpWZa+Icu
- SPp4Zg1lqK8FLNpUHi/iGpToynAZh7AAx7I6BqkiBOWQWPIrLjejJ7mt0E6lp79jr43P
- Z8Tz3UxSCHK1qzDcri6ZY14M8lx9G0bi6GCGQHl0DVbHpgXti6eqzCprjBZYIcyI1uce
- Dn/lOukn9J64/ASqyssuY+hk5ExgHfhAh8xyytTN1bW2SLq53AUCqmHXOqxQHzvGm8yg
- Hb8Tr+NdyPNcInoLFcy82stmYANyPP1+b2zh81uncpq/hmnHTquj2t004aepXQhNWxPC
- QShA==
+ h=mime-version:subject:from:in-reply-to:date:cc
+ :content-transfer-encoding:message-id:references:to;
+ bh=rLPvv7mVdDwWU3WqqHUc/M/t9o2wkfNNz2uUSA/i/Q0=;
+ b=ioxwEWwSec2mkWoQpVaP+m+cuqfrILVMZy97DsxGJQFNwUj5vt0t9wo5G7myUpC8Gn
+ ea9oHHWNkcI1g0+ETzPDSekL4muwhDYsG3jrD0dPjJWnH1vW4gUq2ufbL8yBIo9ax2rC
+ LCc4peu3G2+oC3D/CoxTwxe0jKznErkS9hGO2cQ4rpTAmgLJ5M6BCvPaoqQObgiQcr6n
+ RKDduahlScES6wicQqME3eGzY8GUno55Oqx2eUsC/sQVyrcKAkNt4/DW8JZWJd6l/Vwp
+ mTTzA+edxLDCldwyXcUf3Jn0ErW39L5ba+PqRXF7jiU95w3jgcW/Rs/bUGAwA8mWZWkw
+ L2Ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=HpiN/zwO1wBD5W8vJ5qwHzWs2Mz8GYwVSPoaDyTc8jQ=;
- b=URN0ECquN2nJqLFDb3e1cPXiDaYL+3mgv/s12UgwzwaPunJMyNyU4YJFXTmZMiOV45
- 8irVEg0iVZyAugrPqcbX7o4OlmVXg+fLyCripAGwSoDS7QhC1gLHcou0VNkGxSdfXC5G
- E/ChLnH7Cm67TO39U1k3uGzJ/+K1VYrjBdPrUSECCjEN4lclO7gZ9sDPpsB1t69QR7U4
- uMdOhgC7U2lDEeN9LUqZxpMRmsUf83r1kXwDE65EAMJTW0H3cxcFK8IW2zBFdwdLrLoV
- 4DRh4SYdwJB7oFTngy5S3rOEk9CJujYzFBlXlcJSHQqmiLGXSxbuz2b5v05mjAcaDiMr
- 7NkQ==
-X-Gm-Message-State: AOAM533XfODSLaFJfdqZ4wGTCwVceOG/19eNLlNihk3rB4kmUFJde0VI
- gPnF9udDuu2J/8Pr7fxEfjo/J9oPQ33HJH/vqXobFw==
-X-Google-Smtp-Source: ABdhPJwIz1+OuMm91LqO5/9SwgL6U3RC8rZg6hPrO7zQUYJxh0T24GQzaSGRh+uNCyYPoPAvBQZaKw==
-X-Received: by 2002:a17:906:3803:b0:6cf:56b9:60a9 with SMTP id
- v3-20020a170906380300b006cf56b960a9mr14108161ejc.716.1646046537823; 
- Mon, 28 Feb 2022 03:08:57 -0800 (PST)
-Received: from localhost.localdomain (dhcp-077-250-038-153.chello.nl.
- [77.250.38.153]) by smtp.googlemail.com with ESMTPSA id
- z22-20020a17090655d600b006d229436793sm4209049ejp.223.2022.02.28.03.08.56
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 28 Feb 2022 03:08:57 -0800 (PST)
+ h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+ :content-transfer-encoding:message-id:references:to;
+ bh=rLPvv7mVdDwWU3WqqHUc/M/t9o2wkfNNz2uUSA/i/Q0=;
+ b=Y1PTOmICeycDGJJlI4AYCWzFyxhDeqKPmHsEV7QJr8a6rMGFSwr7CVeTvb4FP+W8uI
+ Q58N9x252oKTlD64XrirgfjSpMBEs/tU/ZZ7XU/4ymvt8NC8i/CCgpG3FB3f82FuzTLX
+ OZ21mMPhkdsIx40A4jIY6dgN0ATExz/L4zUcwx8s7j5x7MmPQPM42cima3ReQCGwc7iZ
+ 9kXOa2ONOS5Tv3Cb1sRcGzTpWtPDoKAeOzldRAncc2JxnTOeXSZKVl1IWQqG6b+KJgRQ
+ M+Ao7Ipl+moU8PZr643FLWmzd2YPJorlTliBmbhD3DKp8V7gSdmM5VT46Gr82n49SQJP
+ v5kg==
+X-Gm-Message-State: AOAM530awvJcFPk7gUv372UqjF+oY3E30OjV8y7spPbD8u6uMo7iO4zw
+ 6/RHpL0ZbP1CKCLmfHjznns=
+X-Google-Smtp-Source: ABdhPJykJwlP+KqTh6zSzndCpDSZzE2bN4aLh28OSmyBBaWLei6TdHv4i/sMtFtkO4GxsNuXK9LBkw==
+X-Received: by 2002:a17:906:68c2:b0:6b4:9f26:c099 with SMTP id
+ y2-20020a17090668c200b006b49f26c099mr18827008ejr.41.1646134097608; 
+ Tue, 01 Mar 2022 03:28:17 -0800 (PST)
+Received: from smtpclient.apple ([2a02:8109:9d80:3f6c:6db3:8d4c:747e:98ad])
+ by smtp.gmail.com with ESMTPSA id
+ a25-20020a50ff19000000b0040f84cd806csm7036870edu.59.2022.03.01.03.28.15
+ (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+ Tue, 01 Mar 2022 03:28:17 -0800 (PST)
+Content-Type: text/plain;
+	charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.60.0.1.1\))
+Subject: Re: [PATCH 2/6] treewide: remove using list iterator after loop body
+ as a ptr
 From: Jakob Koschel <jakobkoschel@gmail.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 3/6] treewide: fix incorrect use to determine if list is empty
-Date: Mon, 28 Feb 2022 12:08:19 +0100
-Message-Id: <20220228110822.491923-4-jakobkoschel@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220228110822.491923-1-jakobkoschel@gmail.com>
+In-Reply-To: <CAHk-=whLK11HyvpUtEftOjc3Gup2V77KpAQ2fycj3uai=qceHw@mail.gmail.com>
+Date: Tue, 1 Mar 2022 12:28:15 +0100
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <CEDAD0D9-56EE-4105-9107-72C2EAD940B0@gmail.com>
 References: <20220228110822.491923-1-jakobkoschel@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+ <20220228110822.491923-3-jakobkoschel@gmail.com>
+ <2e4e95d6-f6c9-a188-e1cd-b1eae465562a@amd.com>
+ <CAHk-=wgQps58DPEOe4y5cTh5oE9EdNTWRLXzgMiETc+mFX7jzw@mail.gmail.com>
+ <CAHk-=wj8fkosQ7=bps5K+DDazBXk=ypfn49A0sEq+7-nZnyfXA@mail.gmail.com>
+ <CAHk-=wiTCvLQkHcJ3y0hpqH7FEk9D28LDvZZogC6OVLk7naBww@mail.gmail.com>
+ <FC710A1A-524E-481B-A668-FC258F529A2E@gmail.com>
+ <CAHk-=whLK11HyvpUtEftOjc3Gup2V77KpAQ2fycj3uai=qceHw@mail.gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+X-Mailer: Apple Mail (2.3693.60.0.1.1)
 X-Mailman-Approved-At: Wed, 02 Mar 2022 09:33:34 +0100
-Cc: alsa-devel@alsa-project.org, linux-aspeed@lists.ozlabs.org,
+Cc: linux-wireless <linux-wireless@vger.kernel.org>,
+ alsa-devel@alsa-project.org, KVM list <kvm@vger.kernel.org>,
  "Gustavo A. R. Silva" <gustavo@embeddedor.com>, linux-iio@vger.kernel.org,
  nouveau@lists.freedesktop.org, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
- dri-devel@lists.freedesktop.org, Cristiano Giuffrida <c.giuffrida@vu.nl>,
- amd-gfx@lists.freedesktop.org, samba-technical@lists.samba.org,
+ dri-devel <dri-devel@lists.freedesktop.org>,
+ Cristiano Giuffrida <c.giuffrida@vu.nl>,
+ amd-gfx list <amd-gfx@lists.freedesktop.org>,
  linux1394-devel@lists.sourceforge.net, drbd-dev@lists.linbit.com,
- linux-arch <linux-arch@vger.kernel.org>, linux-cifs@vger.kernel.org,
- kvm@vger.kernel.org, linux-scsi@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-staging@lists.linux.dev, "Bos, H.J." <h.j.bos@vu.nl>,
- Jason Gunthorpe <jgg@ziepe.ca>, intel-wired-lan@lists.osuosl.org,
- kgdb-bugreport@lists.sourceforge.net, bcm-kernel-feedback-list@broadcom.com,
- Dan Carpenter <dan.carpenter@oracle.com>, linux-media@vger.kernel.org,
+ linux-arch <linux-arch@vger.kernel.org>, CIFS <linux-cifs@vger.kernel.org>,
+ linux-aspeed@lists.ozlabs.org, linux-scsi <linux-scsi@vger.kernel.org>,
+ linux-rdma <linux-rdma@vger.kernel.org>, linux-staging@lists.linux.dev, "Bos,
+ H.J." <h.j.bos@vu.nl>, Jason Gunthorpe <jgg@ziepe.ca>,
+ intel-wired-lan@lists.osuosl.org, kgdb-bugreport@lists.sourceforge.net,
+ bcm-kernel-feedback-list@broadcom.com,
+ Dan Carpenter <dan.carpenter@oracle.com>,
+ Linux Media Mailing List <linux-media@vger.kernel.org>,
  Kees Cook <keescook@chromium.org>, Arnd Bergman <arnd@arndb.de>,
- linux-pm@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+ Linux PM <linux-pm@vger.kernel.org>,
+ intel-gfx <intel-gfx@lists.freedesktop.org>,
  Brian Johannesmeyer <bjohannesmeyer@gmail.com>,
- Nathan Chancellor <nathan@kernel.org>, linux-fsdevel@vger.kernel.org,
+ Nathan Chancellor <nathan@kernel.org>, dma <dmaengine@vger.kernel.org>,
  Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
- Jakob Koschel <jakobkoschel@gmail.com>, v9fs-developer@lists.sourceforge.net,
- linux-tegra@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+ v9fs-developer@lists.sourceforge.net,
+ linux-tegra <linux-tegra@vger.kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>,
  Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- linux-arm-kernel@lists.infradead.org, linux-sgx@vger.kernel.org,
- linux-block@vger.kernel.org, netdev@vger.kernel.org, linux-usb@vger.kernel.org,
- linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, tipc-discussion@lists.sourceforge.net,
- linux-crypto@vger.kernel.org, dmaengine@vger.kernel.org,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>, linux-sgx@vger.kernel.org,
+ linux-block <linux-block@vger.kernel.org>, Netdev <netdev@vger.kernel.org>,
+ linux-usb@vger.kernel.org, samba-technical@lists.samba.org,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux F2FS Dev Mailing List <linux-f2fs-devel@lists.sourceforge.net>,
+ tipc-discussion@lists.sourceforge.net,
+ Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
  linux-mediatek@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
- linuxppc-dev@lists.ozlabs.org, Mike Rapoport <rppt@kernel.org>
+ linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+ =?utf-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Mike Rapoport <rppt@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -123,103 +144,137 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The list iterator value will *always* be set by list_for_each_entry().
-It is incorrect to assume that the iterator value will be NULL if the
-list is empty.
 
-Instead of checking the pointer it should be checked if
-the list is empty.
-In acpi_get_pmu_hw_inf() instead of setting the pointer to NULL
-on the break, it is set to the correct value and leaving it
-NULL if no element was found.
 
-Signed-off-by: Jakob Koschel <jakobkoschel@gmail.com>
----
- arch/powerpc/sysdev/fsl_gtm.c            |  4 ++--
- drivers/media/pci/saa7134/saa7134-alsa.c |  4 ++--
- drivers/perf/xgene_pmu.c                 | 13 +++++++------
- 3 files changed, 11 insertions(+), 10 deletions(-)
+> On 1. Mar 2022, at 01:41, Linus Torvalds =
+<torvalds@linux-foundation.org> wrote:
+>=20
+> On Mon, Feb 28, 2022 at 1:47 PM Jakob Koschel <jakobkoschel@gmail.com> =
+wrote:
+>>=20
+>> The goal of this is to get compiler warnings right? This would indeed =
+be great.
+>=20
+> Yes, so I don't mind having a one-time patch that has been gathered
+> using some automated checker tool, but I don't think that works from a
+> long-term maintenance perspective.
+>=20
+> So if we have the basic rule being "don't use the loop iterator after
+> the loop has finished, because it can cause all kinds of subtle
+> issues", then in _addition_ to fixing the existing code paths that
+> have this issue, I really would want to (a) get a compiler warning for
+> future cases and (b) make it not actually _work_ for future cases.
+>=20
+> Because otherwise it will just happen again.
+>=20
+>> Changing the list_for_each_entry() macro first will break all of =
+those cases
+>> (e.g. the ones using 'list_entry_is_head()).
+>=20
+> So I have no problems with breaking cases that we basically already
+> have a patch for due to  your automated tool. There were certainly
+> more than a handful, but it didn't look _too_ bad to just make the
+> rule be "don't use the iterator after the loop".
+>=20
+> Of course, that's just based on that patch of yours. Maybe there are a
+> ton of other cases that your patch didn't change, because they didn't
+> match your trigger case, so I may just be overly optimistic here.
 
-diff --git a/arch/powerpc/sysdev/fsl_gtm.c b/arch/powerpc/sysdev/fsl_gtm.c
-index 8963eaffb1b7..39186ad6b3c3 100644
---- a/arch/powerpc/sysdev/fsl_gtm.c
-+++ b/arch/powerpc/sysdev/fsl_gtm.c
-@@ -86,7 +86,7 @@ static LIST_HEAD(gtms);
-  */
- struct gtm_timer *gtm_get_timer16(void)
- {
--	struct gtm *gtm = NULL;
-+	struct gtm *gtm;
- 	int i;
+Based on the coccinelle script there are ~480 cases that need fixing
+in total. I'll now finish all of them and then split them by
+submodules as Greg suggested and repost a patch set per submodule.
+Sounds good?
 
- 	list_for_each_entry(gtm, &gtms, list_node) {
-@@ -103,7 +103,7 @@ struct gtm_timer *gtm_get_timer16(void)
- 		spin_unlock_irq(&gtm->lock);
- 	}
+>=20
+> But basically to _me_, the important part is that the end result is
+> maintainable longer-term. I'm more than happy to have a one-time patch
+> to fix a lot of dubious cases if we can then have clean rules going
+> forward.
+>=20
+>> I assumed it is better to fix those cases first and then have a =
+simple
+>> coccinelle script changing the macro + moving the iterator into the =
+scope
+>> of the macro.
+>=20
+> So that had been another plan of mine, until I actually looked at
+> changing the macro. In the one case I looked at, it was ugly beyond
+> belief.
+>=20
+> It turns out that just syntactically, it's really nice to give the
+> type of the iterator from outside the way we do now. Yeah, it may be a
+> bit odd, and maybe it's partly because I'm so used to the
+> "list_for_each_list_entry()" syntax, but moving the type into the loop
+> construct really made it nasty - either one very complex line, or
+> having to split it over two lines which was even worse.
+>=20
+> Maybe the place I looked at just happened to have a long typename, but
+> it's basically always going to be a struct, so it's never a _simple_
+> type. And it just looked very odd adn unnatural to have the type as
+> one of the "arguments" to that list_for_each_entry() macro.
+>=20
+> So yes, initially my idea had been to just move the iterator entirely
+> inside the macro. But specifying the type got so ugly that I think
+> that
+>=20
+>        typeof (pos) pos
+>=20
+> trick inside the macro really ends up giving us the best of all =
+worlds:
+>=20
+> (a) let's us keep the existing syntax and code for all the nice cases
+> that did everything inside the loop anyway
+>=20
+> (b) gives us a nice warning for any normal use-after-loop case
+> (unless you explicitly initialized it like that
+> sgx_mmu_notifier_release() function did for no good reason
+>=20
+> (c) also guarantees that even if you don't get a warning,
+> non-converted (or newly written) bad code won't actually _work_
+>=20
+> so you end up getting the new rules without any ambiguity or mistaken
+>=20
+>> With this you are no longer able to set the 'outer' pos within the =
+list
+>> iterator loop body or am I missing something?
+>=20
+> Correct. Any assignment inside the loop will be entirely just to the
+> local loop case. So any "break;" out of the loop will have to set
+> another variable - like your updated patch did.
+>=20
+>> I fail to see how this will make most of the changes in this
+>> patch obsolete (if that was the intention).
+>=20
+> I hope my explanation above clarifies my thinking: I do not dislike
+> your patch, and in fact your patch is indeed required to make the new
+> semantics work.
 
--	if (gtm)
-+	if (!list_empty(&gtms))
- 		return ERR_PTR(-EBUSY);
- 	return ERR_PTR(-ENODEV);
- }
-diff --git a/drivers/media/pci/saa7134/saa7134-alsa.c b/drivers/media/pci/saa7134/saa7134-alsa.c
-index fb24d2ed3621..d3cde05a6eba 100644
---- a/drivers/media/pci/saa7134/saa7134-alsa.c
-+++ b/drivers/media/pci/saa7134/saa7134-alsa.c
-@@ -1214,7 +1214,7 @@ static int alsa_device_exit(struct saa7134_dev *dev)
+ok it's all clear now, thanks for clarifying.
+I've defined all the 'tmp' iterator variables uninitialized so applying
+your patch on top of that later will just give the nice compiler warning=20=
 
- static int saa7134_alsa_init(void)
- {
--	struct saa7134_dev *dev = NULL;
-+	struct saa7134_dev *dev;
+if they are used past the loop body.
 
- 	saa7134_dmasound_init = alsa_device_init;
- 	saa7134_dmasound_exit = alsa_device_exit;
-@@ -1229,7 +1229,7 @@ static int saa7134_alsa_init(void)
- 			alsa_device_init(dev);
- 	}
+>=20
+> What I disliked was always the maintainability of your patch - making
+> the rules be something that isn't actually visible in the source code,
+> and letting the old semantics still work as well as they ever did, and
+> having to basically run some verification pass to find bad users.
 
--	if (dev == NULL)
-+	if (list_empty(&saa7134_devlist))
- 		pr_info("saa7134 ALSA: no saa7134 cards found\n");
+Since this patch is not a complete list of cases that need fixing (30%)
+I haven't included the actual change of moving the iterator variable
+into the loop and thought that would be a second step coming after this
+is merged.
 
- 	return 0;
-diff --git a/drivers/perf/xgene_pmu.c b/drivers/perf/xgene_pmu.c
-index 2b6d476bd213..e255f9e665d1 100644
---- a/drivers/perf/xgene_pmu.c
-+++ b/drivers/perf/xgene_pmu.c
-@@ -1460,7 +1460,8 @@ xgene_pmu_dev_ctx *acpi_get_pmu_hw_inf(struct xgene_pmu *xgene_pmu,
- 	struct hw_pmu_info *inf;
- 	void __iomem *dev_csr;
- 	struct resource res;
--	struct resource_entry *rentry;
-+	struct resource_entry *rentry = NULL;
-+	struct resource_entry *tmp;
- 	int enable_bit;
- 	int rc;
+With these changes alone, yes you still rely on manual verification =
+passes.
 
-@@ -1475,16 +1476,16 @@ xgene_pmu_dev_ctx *acpi_get_pmu_hw_inf(struct xgene_pmu *xgene_pmu,
- 		return NULL;
- 	}
+>=20
+> (I also disliked your original patch that mixed up the "CPU
+> speculation type safety" with the actual non-speculative problems, but
+> that was another issue).
+>=20
+>                Linus
 
--	list_for_each_entry(rentry, &resource_list, node) {
--		if (resource_type(rentry->res) == IORESOURCE_MEM) {
--			res = *rentry->res;
--			rentry = NULL;
-+	list_for_each_entry(tmp, &resource_list, node) {
-+		if (resource_type(tmp->res) == IORESOURCE_MEM) {
-+			res = *tmp->res;
-+			rentry = tmp;
- 			break;
- 		}
- 	}
- 	acpi_dev_free_resource_list(&resource_list);
-
--	if (rentry) {
-+	if (!rentry) {
- 		dev_err(dev, "PMU type %d: No memory resource found\n", type);
- 		return NULL;
- 	}
---
-2.25.1
+- Jakob
 
