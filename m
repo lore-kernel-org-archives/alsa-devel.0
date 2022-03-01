@@ -4,95 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1EF99C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Mar 2022 08:59:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3BE0CC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Mar 2022 08:59:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 53F272049;
-	Wed,  2 Mar 2022 09:58:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 53F272049
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7D27D20B0;
+	Wed,  2 Mar 2022 09:59:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D27D20B0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646211577;
-	bh=zCR9gf3HIAG85JliOWZi3a4EI6obxZJzCE+9lk48Yq4=;
+	s=default; t=1646211593;
+	bh=qFifPF35a27ig2L4/OyAUzqdq4TFybp9dI09iY2ELEY=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QUIi24PHR02oXhRDEC5FPeL22L1zqnkDFLxXQ7ABosXlkKCaeTx8liIcmCyzbS3kp
-	 xQZ0R5qOht3H9pepuwAY06YHEeykVN/StG8b9D78yN0NNU5jAbjNUIJpkU7+37s9Ry
-	 NTysJxHa/EGF9tPm66S4Kj5KHdjTsY+SxQ0HZYuk=
+	b=DVD4MqDT3MHwdFx3RL6D6819I8aPaNq9W9XBQrFmnl58Xp9uIlg419dUqBJlDMmz0
+	 9584pSfz+tuKhwmaMkzWbnvGJLXNK3MAV9BCLsCM36U+jguz+yKEmhVouZe0ZLFtwT
+	 E9ofEvW7oF0FMw0R2/6ySqtu8t+3k07nw5bP/qm8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4C309F80846;
+	by alsa1.perex.cz (Postfix) with ESMTP id D1C99F80852;
 	Wed,  2 Mar 2022 09:34:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9E5D9F80227; Tue,  1 Mar 2022 19:53:52 +0100 (CET)
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com
- [IPv6:2a00:1450:4864:20::12e])
+ id 73225F80227; Tue,  1 Mar 2022 20:07:16 +0100 (CET)
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com
+ [IPv6:2a00:1450:4864:20::12f])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5F244F80054
- for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2022 19:53:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F244F80054
+ by alsa1.perex.cz (Postfix) with ESMTPS id 43CE5F80054
+ for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2022 20:07:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43CE5F80054
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=linux-foundation.org
- header.i=@linux-foundation.org header.b="ZEWbFFu3"
-Received: by mail-lf1-x12e.google.com with SMTP id y24so28483318lfg.1
- for <alsa-devel@alsa-project.org>; Tue, 01 Mar 2022 10:53:44 -0800 (PST)
+ header.i=@linux-foundation.org header.b="NEmpYuhx"
+Received: by mail-lf1-x12f.google.com with SMTP id g39so28456923lfv.10
+ for <alsa-devel@alsa-project.org>; Tue, 01 Mar 2022 11:07:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=linux-foundation.org; s=google;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=JZw99KMpsKBs3Ab/LBNeIPMebXALTITXobBfJpN/EsI=;
- b=ZEWbFFu3eWrZxUgaaScwD4ZJ//Z7mV4SGMyACB20WwCKEMFGKIBMMEXVkM4kZXdOyd
- EokMKBVyAcoYChV/SvtOh5q5h0Yafm3wlsC3jCGOeoM0h4pn550KTbE+/sUn3z3m8p0V
- ZL0gG9ZTrYCOlyUURTCDAGrluijISoqXbB1wA=
+ :cc; bh=+FYbGAw6yxU17iUDUp61Ry7f+ZSO9wN0ehJ+hGfk2DQ=;
+ b=NEmpYuhxkY3jphhiKwB9rL7CFHETV0OarciDwH/Y25b8gogpFDGLbcsm2Hp5JlhbRM
+ fgLdNaX0z1k1bpDTdAa2T+xhPoQGBlkWInAyVtxomjmoWydKKz6S1Vw5P8QyPxUNcXPG
+ O8s4ZVUjpR1ZVkG2oqZOMI9ApgRXI/RsyC5iE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=JZw99KMpsKBs3Ab/LBNeIPMebXALTITXobBfJpN/EsI=;
- b=udTzpq7pb3ujprmxGhHCvt6oqVGXsc477S0TPH8ArGbZbhMnbzJ2QeEUk8Yg65jA6W
- +PECOLoMb4AUDhXtHa9OIraZyQp4wkqvkaUF8fIKCsVKrcmQWfG1GpN07IZEZEnTaZFu
- FYcf9+U+xhWRwDIyn2qu9MlFd8mKKEqxw0EFDm/er0GaUQoWGNFr8NKBs49vZaxJMv++
- lfgX6JqL0wcj+RuizMVb+rWlinLHQQBRI118zUG92CjqF1cGr4A6CJYGCOsdXDWxu0u0
- wInovI864jl9WDamNi9YlE7imrvf6fcDKkD0zdCIzvfnPWTLbfErTv7SsdTelKvxtL4X
- +wkQ==
-X-Gm-Message-State: AOAM532VRfLr8+F3jnizTmHBNWuD3KMVkNu1mya8o4k5V+Rh2OJpm6qk
- K/FrH5zhO4wTKlovJfvlTpS6I99h7AB2ZUjN6Hc=
-X-Google-Smtp-Source: ABdhPJyqAcbA+N2+2u2rctn1h9W/xKCZMgpleT7t8//dkufaMjEHta9altUhHE2XBF6oe58tuONeLA==
-X-Received: by 2002:a19:710a:0:b0:443:ad21:dcc0 with SMTP id
- m10-20020a19710a000000b00443ad21dcc0mr16434424lfc.688.1646160822428; 
- Tue, 01 Mar 2022 10:53:42 -0800 (PST)
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com.
- [209.85.208.178]) by smtp.gmail.com with ESMTPSA id
- p1-20020a05651238c100b004437b4e5034sm1620797lft.159.2022.03.01.10.53.42
+ bh=+FYbGAw6yxU17iUDUp61Ry7f+ZSO9wN0ehJ+hGfk2DQ=;
+ b=2oYmQdzevGIiXwsy2L+mbFpydowkyP5LewpSai2kAT/Sz8JytdUftU+8FgPyiSSYx7
+ l/lHZONrVM4XuNl/GjnFujAiKJRyktJ1c3obAjAjsrUUAaLCX7L4Y2RwLTnPYEVD6zDM
+ 9sqWpvw6A7SToNB7axO+CsmgQLV1/AX/55cVYEh4F5/wdef0fgXwqkBphmNgwIoqji2t
+ QKUrGl26T3eulfsyp9IpjdXbwQ8epcQ/dvpvpqLF9VfQ4r0iM6Mx/OR9KUkRI7v+Ednv
+ P4VxtBD7Muf/Hr0T6eBCFVEmSQfm074TKIfOQZVgO5O1uNwHT1KFO7nigbvgjJCDR9+o
+ fvsQ==
+X-Gm-Message-State: AOAM531nh8b9DEFULANLtljuJi/mvcnpkjXKWrZEYqwWmQ6kRTaY7vPf
+ JWHaX/4jzNvrfCEnGe+OYGUrBIB0CyZGMl0JozI=
+X-Google-Smtp-Source: ABdhPJxV08YAjaxn7D3DJk0qgbO0Hp51gVBB7ML9lObDBhX0QWcsdv6hpsNKp4vqH26TZCq+hSwI5w==
+X-Received: by 2002:a05:6512:287:b0:443:7f1d:e8ed with SMTP id
+ j7-20020a056512028700b004437f1de8edmr16272617lfp.321.1646161628098; 
+ Tue, 01 Mar 2022 11:07:08 -0800 (PST)
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com.
+ [209.85.208.180]) by smtp.gmail.com with ESMTPSA id
+ g13-20020a2ea4ad000000b0023382d8819esm2062841ljm.69.2022.03.01.11.07.02
  for <alsa-devel@alsa-project.org>
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 01 Mar 2022 10:53:42 -0800 (PST)
-Received: by mail-lj1-f178.google.com with SMTP id y24so4109629ljh.11
- for <alsa-devel@alsa-project.org>; Tue, 01 Mar 2022 10:53:42 -0800 (PST)
-X-Received: by 2002:a05:6512:2033:b0:443:3d49:dac with SMTP id
- s19-20020a056512203300b004433d490dacmr16440784lfs.52.1646160451271; Tue, 01
- Mar 2022 10:47:31 -0800 (PST)
+ Tue, 01 Mar 2022 11:07:04 -0800 (PST)
+Received: by mail-lj1-f180.google.com with SMTP id v28so23130301ljv.9
+ for <alsa-devel@alsa-project.org>; Tue, 01 Mar 2022 11:07:02 -0800 (PST)
+X-Received: by 2002:a2e:3013:0:b0:246:2ca9:365e with SMTP id
+ w19-20020a2e3013000000b002462ca9365emr17902580ljw.291.1646161622598; Tue, 01
+ Mar 2022 11:07:02 -0800 (PST)
 MIME-Version: 1.0
 References: <20220228110822.491923-1-jakobkoschel@gmail.com>
  <20220228110822.491923-3-jakobkoschel@gmail.com>
  <2e4e95d6-f6c9-a188-e1cd-b1eae465562a@amd.com>
  <CAHk-=wgQps58DPEOe4y5cTh5oE9EdNTWRLXzgMiETc+mFX7jzw@mail.gmail.com>
- <CAHk-=wj8fkosQ7=bps5K+DDazBXk=ypfn49A0sEq+7-nZnyfXA@mail.gmail.com>
- <CAHk-=wiTCvLQkHcJ3y0hpqH7FEk9D28LDvZZogC6OVLk7naBww@mail.gmail.com>
- <Yh0tl3Lni4weIMkl@casper.infradead.org>
- <CAHk-=wgBfJ1-cPA2LTvFyyy8owpfmtCuyiZi4+um8DhFNe+CyA@mail.gmail.com>
- <Yh1aMm3hFe/j9ZbI@casper.infradead.org>
- <CAHk-=wi0gSUMBr2SVF01Gy1xC1w1iGtJT5ztju9BPWYKjdh+NA@mail.gmail.com>
- <202203011008.AA0B5A2D@keescook>
-In-Reply-To: <202203011008.AA0B5A2D@keescook>
+ <282f0f8d-f491-26fc-6ae0-604b367a5a1a@amd.com>
+ <b2d20961dbb7533f380827a7fcc313ff849875c1.camel@HansenPartnership.com>
+ <7D0C2A5D-500E-4F38-AD0C-A76E132A390E@kernel.org>
+ <73fa82a20910c06784be2352a655acc59e9942ea.camel@HansenPartnership.com>
+In-Reply-To: <73fa82a20910c06784be2352a655acc59e9942ea.camel@HansenPartnership.com>
 From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Tue, 1 Mar 2022 10:47:14 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whccSm8HKANQbomYrF8cqBa1wUi1dvUEUc3Nf=WoX3WHQ@mail.gmail.com>
-Message-ID: <CAHk-=whccSm8HKANQbomYrF8cqBa1wUi1dvUEUc3Nf=WoX3WHQ@mail.gmail.com>
+Date: Tue, 1 Mar 2022 11:06:45 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wiT5HX6Kp0Qv4ZYK_rkq9t5fZ5zZ7vzvi6pub9kgp=72g@mail.gmail.com>
+Message-ID: <CAHk-=wiT5HX6Kp0Qv4ZYK_rkq9t5fZ5zZ7vzvi6pub9kgp=72g@mail.gmail.com>
 Subject: Re: [PATCH 2/6] treewide: remove using list iterator after loop body
  as a ptr
-To: Kees Cook <keescook@chromium.org>
+To: James Bottomley <James.Bottomley@hansenpartnership.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Mailman-Approved-At: Wed, 02 Mar 2022 09:33:36 +0100
 Cc: linux-wireless <linux-wireless@vger.kernel.org>,
@@ -100,10 +97,9 @@ Cc: linux-wireless <linux-wireless@vger.kernel.org>,
  "Gustavo A. R. Silva" <gustavo@embeddedor.com>, linux-iio@vger.kernel.org,
  nouveau@lists.freedesktop.org, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
  dri-devel <dri-devel@lists.freedesktop.org>,
- Cristiano Giuffrida <c.giuffrida@vu.nl>, Matthew Wilcox <willy@infradead.org>,
+ Cristiano Giuffrida <c.giuffrida@vu.nl>, "Bos, H.J." <h.j.bos@vu.nl>,
  linux1394-devel@lists.sourceforge.net, drbd-dev@lists.linbit.com,
  linux-arch <linux-arch@vger.kernel.org>, CIFS <linux-cifs@vger.kernel.org>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
  linux-aspeed@lists.ozlabs.org, linux-scsi <linux-scsi@vger.kernel.org>,
  linux-rdma <linux-rdma@vger.kernel.org>, linux-staging@lists.linux.dev,
  amd-gfx list <amd-gfx@lists.freedesktop.org>, Jason Gunthorpe <jgg@ziepe.ca>,
@@ -111,14 +107,16 @@ Cc: linux-wireless <linux-wireless@vger.kernel.org>,
  bcm-kernel-feedback-list@broadcom.com,
  Dan Carpenter <dan.carpenter@oracle.com>,
  Linux Media Mailing List <linux-media@vger.kernel.org>,
- Arnd Bergman <arnd@arndb.de>, Linux PM <linux-pm@vger.kernel.org>,
- intel-gfx <intel-gfx@lists.freedesktop.org>, "Bos, H.J." <h.j.bos@vu.nl>,
+ Kees Cook <keescook@chromium.org>, Arnd Bergman <arnd@arndb.de>,
+ Linux PM <linux-pm@vger.kernel.org>,
+ intel-gfx <intel-gfx@lists.freedesktop.org>,
+ Brian Johannesmeyer <bjohannesmeyer@gmail.com>,
  Nathan Chancellor <nathan@kernel.org>, dma <dmaengine@vger.kernel.org>,
  Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
  Jakob Koschel <jakobkoschel@gmail.com>, v9fs-developer@lists.sourceforge.net,
  linux-tegra <linux-tegra@vger.kernel.org>,
  Thomas Gleixner <tglx@linutronix.de>,
- Brian Johannesmeyer <bjohannesmeyer@gmail.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
  Linux ARM <linux-arm-kernel@lists.infradead.org>, linux-sgx@vger.kernel.org,
  linux-block <linux-block@vger.kernel.org>, Netdev <netdev@vger.kernel.org>,
  linux-usb@vger.kernel.org, samba-technical@lists.samba.org,
@@ -146,64 +144,54 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Mar 1, 2022 at 10:14 AM Kees Cook <keescook@chromium.org> wrote:
+On Mon, Feb 28, 2022 at 2:29 PM James Bottomley
+<James.Bottomley@hansenpartnership.com> wrote:
 >
-> The first big glitch with -Wshadow was with shadowed global variables.
-> GCC 4.8 fixed that, but it still yells about shadowed functions. What
-> _almost_ works is -Wshadow=local.
+> However, if the desire is really to poison the loop variable then we
+> can do
+>
+> #define list_for_each_entry(pos, head, member)                          \
+>         for (pos = list_first_entry(head, typeof(*pos), member);        \
+>              !list_entry_is_head(pos, head, member) && ((pos = NULL) == NULL;                   \
+>              pos = list_next_entry(pos, member))
+>
+> Which would at least set pos to NULL when the loop completes.
 
-Heh. Yeah, I just have long memories of "-Wshadow was a disaster". You
-looked into the details.
+That would actually have been excellent if we had done that
+originally. It would not only avoid the stale and incorrectly typed
+head entry left-over turd, it would also have made it very easy to
+test for "did I find an entry in the loop".
 
-> Another way to try to catch misused shadow variables is
-> -Wunused-but-set-varible, but it, too, has tons of false positives.
+But I don't much like it in the situation we are now.
 
-That on the face of it should be an easy warning to get technically
-right for a compiler.
+Why? Mainly because it basically changes the semantics of the loop
+_without_ any warnings about it.  And we don't actually get the
+advantage of the nicer semantics, because we can't actually make code
+do
 
-So I assume the "false positives" are simply because we end up having
-various variables that really don't end up being used - and
-"intentionally" so).
+        list_for_each_entry(entry, ....) {
+                ..
+        }
+        if (!entry)
+                return -ESRCH;
+        .. use the entry we found ..
 
-Or rather, they might only be used under some config option - perhaps
-the use is even syntactically there and parsed, but the compiler
-notices that it's turned off under some
+because that would be a disaster for back-porting, plus it would be a
+flag-day issue (ie we'd have to change the semantics of the loop at
+the same time we change every single user).
 
-        if (IS_ENABLED(..))
+So instead of that simple "if (!entry)", we'd effectively have to
+continue to use something that still works with the old world order
+(ie that "if (list_entry_is_head())" model).
 
-option? Because yeah, we have a lot of those.
+So we couldn't really take _advantage_ of the nicer semantics, and
+we'd not even get a warning if somebody does it wrong - the code would
+just silently do the wrong thing.
 
-I think that's a common theme with a lot of compiler warnings: on the
-face of it they sound "obviously sane" and nobody should ever write
-code like that.
+IOW: I don't think you are wrong about that patch: it would solve the
+problem that Jakob wants to solve, and it would have absolutely been
+much better if we had done this from the beginning. But I think that
+in our current situation, it's actually a really fragile solution to
+the "don't do that then" problem we have.
 
-A conditional that is always true? Sounds idiotic, and sounds like a
-reasonable thing for a compiler to warn about, since why would you
-have a conditional in the first place for that?
-
-But then you realize that maybe the conditional is a build config
-option, and "always true" suddenly makes sense. Or it's a test for
-something that is always true on _that_architecture_ but not in some
-general sense (ie testing "sizeof()"). Or it's a purely syntactic
-conditional, like "do { } while (0)".
-
-It's why I'm often so down on a lot of the odd warnings that are
-hiding under W=1 and friends. They all may make sense in the trivial
-case ("That is insane") but then in the end they happen for sane code.
-
-And yeah, -Wshadow has had tons of history with macro nesting, and
-just being badly done in the first place (eg "strlen" can be a
-perfectly fine local variable).
-
-That said, maybe people could ask the gcc and clan people for a way to
-_mark_ the places where we expect to validly see shadowing. For
-example, that "local variable in a macro expression statement" thing
-is absolutely horrendous to fix with preprocessor tricks to try to
-make for unique identifiers.
-
-But I think it would be much more syntactically reasonable to add (for
-example) a "shadow" attribute to such a variable exactly to tell the
-compiler "yeah, yeah, I know this identifier could shadow an outer
-one" and turn it off that way.
-
-               Linus
+              Linus
