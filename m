@@ -4,77 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44EC0C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Mar 2022 16:19:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E80BC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Mar 2022 17:12:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 021141AD6;
-	Tue,  1 Mar 2022 17:18:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 021141AD6
+	by alsa0.perex.cz (Postfix) with ESMTPS id DE9591A28;
+	Tue,  1 Mar 2022 18:12:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE9591A28
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646151583;
-	bh=oW7rCjucB/FAM9m562SoKysdtSc96jMNqsGkSaAFJyc=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=B2N8Bc6OPvAjVtXpPI1FDwSJy5aKegIGpKECU+UfCx1fiW4Y7ABPz9BLC0R0SlHnC
-	 QbgTrew323mIWcz7dwBWevarRQpoq9llpmDbDDxIrOliUJtYqtGSxiiP/Ql61b/9en
-	 k3Kpx774mwS/t92zCeRpLN+AGpIF3aAG18WcfHgM=
+	s=default; t=1646154774;
+	bh=sCZXFcBAwo2Vev/0iPuFwyhNDq/Nfeq2nktdBj4Aj/E=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=fmX3PfDYWZAtYXY4E6Qbs8hgeAa6TkKLkjd5nrIQfaMNzEWFRu7dPgsj1IsgDMzLs
+	 knIJrAIBNFTVytBLJuEESZAJeKv8uLA2N/wKN/klA/akmDihbH8zl1EIkfIN0iyVPz
+	 zFXrEAF5uv47LJIMlj6+UtbD6jn+Fd6yct3IkpVY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0FC48F80508;
-	Tue,  1 Mar 2022 17:18:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 75155F801D8;
+	Tue,  1 Mar 2022 18:12:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3515DF80511; Tue,  1 Mar 2022 17:18:06 +0100 (CET)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ id E171CF80227; Tue,  1 Mar 2022 18:12:01 +0100 (CET)
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2DB50F80227
- for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2022 17:17:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2DB50F80227
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="Yb47CnXv"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1646151480; x=1677687480;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=oW7rCjucB/FAM9m562SoKysdtSc96jMNqsGkSaAFJyc=;
- b=Yb47CnXvDi1CiKwfa0eSoGAWLIE+zhbgwenaWh3EOwe5OXuxkwnBMROu
- xJiao2TuXwrsuNR2nvm67TaqHqmuG78XMG9Ee/KXbLQCu7RCos0+4Ru6B
- XCcnOVxLps4R+kxdLL7Id4b1n2eyd3wQT2Ec8I1lLc3LUH94x7SeNe8Wv
- N3BOS7jbgDHUxrgLJIqb7R850lOJRXA3THwi9m/uoQebEb1cJS4/jkDi4
- 6ZC7TSpP9aH2pK94ba/kWSaakhEw2nELKys/68NcZ0W1M2cG5aE5caJ0E
- JaEfT499N8pjq49bmtwnlZRS83A3ZVuAK9Xzxnj0BNbvYP1mzFVBsLsKD A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10272"; a="251998243"
-X-IronPort-AV: E=Sophos;i="5.90,146,1643702400"; d="scan'208";a="251998243"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Mar 2022 08:17:49 -0800
-X-IronPort-AV: E=Sophos;i="5.90,146,1643702400"; d="scan'208";a="545146496"
-Received: from rbrosius-mobl.amr.corp.intel.com (HELO [10.209.131.146])
- ([10.209.131.146])
- by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Mar 2022 08:17:48 -0800
-Message-ID: <a3240a03-2e14-35e6-4915-41f994e365fc@linux.intel.com>
-Date: Tue, 1 Mar 2022 07:52:43 -0600
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7D81BF80167
+ for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2022 18:11:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D81BF80167
+X-UUID: 324a8ac07c6e4322b7abfc1e2e63fe3b-20220302
+X-UUID: 324a8ac07c6e4322b7abfc1e2e63fe3b-20220302
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
+ (envelope-from <jiaxin.yu@mediatek.com>)
+ (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+ with ESMTP id 953268586; Wed, 02 Mar 2022 01:11:48 +0800
+Received: from mtkexhb02.mediatek.inc (172.21.101.103) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.792.15; Wed, 2 Mar 2022 01:11:46 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by mtkexhb02.mediatek.inc
+ (172.21.101.103) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+ Wed, 2 Mar 2022 01:11:41 +0800
+Received: from localhost.localdomain (10.17.3.154) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 2 Mar 2022 01:11:40 +0800
+From: Jiaxin Yu <jiaxin.yu@mediatek.com>
+To: <broonie@kernel.org>
+Subject: [PATCH] ASoC: bt-sco: fix bt-sco-pcm-wb dai widget don't connect to
+ the endpoint
+Date: Wed, 2 Mar 2022 01:11:37 +0800
+Message-ID: <20220301171137.27442-1-jiaxin.yu@mediatek.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.5.0
-Subject: Re: [PATCH v3 3/3] soundwire: qcom: add in-band wake up interrupt
- support
-Content-Language: en-US
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, robh+dt@kernel.org, 
- vkoul@kernel.org, yung-chuan.liao@linux.intel.com
-References: <20220228172528.3489-1-srinivas.kandagatla@linaro.org>
- <20220228172528.3489-4-srinivas.kandagatla@linaro.org>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20220228172528.3489-4-srinivas.kandagatla@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK: N
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, quic_srivasam@quicinc.com
+ linux-kernel@vger.kernel.org, Jiaxin Yu <jiaxin.yu@mediatek.com>,
+ Project_Global_Chrome_Upstream_Group@mediatek.com, tzungbi@google.com,
+ linux-mediatek@lists.infradead.org, trevor.wu@mediatek.com,
+ matthias.bgg@gmail.com, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,118 +78,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+This patch fix the second dai driver's dai widget can't connect to the
+endpoint. Because "bt-sco-pcm" and "bt-sco-pcm-wb" dai driver have the
+same stream_name, so it will cause they have the same widget name.
+Therefor it will just create only one route when do snd_soc_dapm_add_route
+that only find the widget through the widget name.
 
+Signed-off-by: Jiaxin Yu <jiaxin.yu@mediatek.com>
+---
 
-On 2/28/22 11:25, Srinivas Kandagatla wrote:
-> Some of the Qualcomm SoundWire Controller instances like the ones that are
-> connected to RX path along with Headset connections support Waking up
-> Controller from Low power clock stop state using SoundWire In-band interrupt.
-> SoundWire Slave on the bus would initiate this by pulling the data line high,
-> while the clock is stopped.
-> 
-> Add support to this wake up interrupt.
-> 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Hi maintainter,
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+   Need your comments. The patch is the one that I think it makes the
+   mose sense. Maybe we can define the new stream_name for
+   "bt-sco-pcm-wb" and add the new route.
 
-> ---
->  drivers/soundwire/qcom.c | 50 ++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 50 insertions(+)
-> 
-> diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-> index 810232686196..e893aee1b057 100644
-> --- a/drivers/soundwire/qcom.c
-> +++ b/drivers/soundwire/qcom.c
-> @@ -14,6 +14,7 @@
->  #include <linux/pm_runtime.h>
->  #include <linux/regmap.h>
->  #include <linux/slab.h>
-> +#include <linux/pm_wakeirq.h>
->  #include <linux/slimbus.h>
->  #include <linux/soundwire/sdw.h>
->  #include <linux/soundwire/sdw_registers.h>
-> @@ -154,6 +155,7 @@ struct qcom_swrm_ctrl {
->  	u8 rd_cmd_id;
->  	int irq;
->  	unsigned int version;
-> +	int wake_irq;
->  	int num_din_ports;
->  	int num_dout_ports;
->  	int cols_index;
-> @@ -503,6 +505,31 @@ static int qcom_swrm_enumerate(struct sdw_bus *bus)
->  	return 0;
->  }
->  
-> +static irqreturn_t qcom_swrm_wake_irq_handler(int irq, void *dev_id)
-> +{
-> +	struct qcom_swrm_ctrl *swrm = dev_id;
-> +	int ret;
-> +
-> +	ret = pm_runtime_get_sync(swrm->dev);
-> +	if (ret < 0 && ret != -EACCES) {
-> +		dev_err_ratelimited(swrm->dev,
-> +				    "pm_runtime_get_sync failed in %s, ret %d\n",
-> +				    __func__, ret);
-> +		pm_runtime_put_noidle(swrm->dev);
-> +	}
-> +
-> +	if (swrm->wake_irq > 0) {
-> +		if (!irqd_irq_disabled(irq_get_irq_data(swrm->wake_irq)))
-> +			disable_irq_nosync(swrm->wake_irq);
-> +	}
-> +
-> +	pm_runtime_mark_last_busy(swrm->dev);
-> +	pm_runtime_put_autosuspend(swrm->dev);
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +
->  static irqreturn_t qcom_swrm_irq_handler(int irq, void *dev_id)
->  {
->  	struct qcom_swrm_ctrl *swrm = dev_id;
-> @@ -1340,6 +1367,19 @@ static int qcom_swrm_probe(struct platform_device *pdev)
->  		goto err_clk;
->  	}
->  
-> +	ctrl->wake_irq = of_irq_get(dev->of_node, 1);
-> +	if (ctrl->wake_irq > 0) {
-> +		ret = devm_request_threaded_irq(dev, ctrl->wake_irq, NULL,
-> +						qcom_swrm_wake_irq_handler,
-> +						IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
-> +						"swr_wake_irq", ctrl);
-> +		if (ret) {
-> +			dev_err(dev, "Failed to request soundwire wake irq\n");
-> +			goto err_init;
-> +		}
-> +	}
-> +
-> +
->  	ret = sdw_bus_master_add(&ctrl->bus, dev, dev->fwnode);
->  	if (ret) {
->  		dev_err(dev, "Failed to register Soundwire controller (%d)\n",
-> @@ -1424,6 +1464,11 @@ static int swrm_runtime_resume(struct device *dev)
->  	struct qcom_swrm_ctrl *ctrl = dev_get_drvdata(dev);
->  	int ret;
->  
-> +	if (ctrl->wake_irq > 0) {
-> +		if (!irqd_irq_disabled(irq_get_irq_data(ctrl->wake_irq)))
-> +			disable_irq_nosync(ctrl->wake_irq);
-> +	}
-> +
->  	clk_prepare_enable(ctrl->hclk);
->  
->  	if (ctrl->clock_stop_not_supported) {
-> @@ -1491,6 +1536,11 @@ static int __maybe_unused swrm_runtime_suspend(struct device *dev)
->  
->  	usleep_range(300, 305);
->  
-> +	if (ctrl->wake_irq > 0) {
-> +		if (irqd_irq_disabled(irq_get_irq_data(ctrl->wake_irq)))
-> +			enable_irq(ctrl->wake_irq);
-> +	}
-> +
->  	return 0;
->  }
->  
+ sound/soc/codecs/bt-sco.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/bt-sco.c b/sound/soc/codecs/bt-sco.c
+index 4d286844e3c8..578f9df2a25e 100644
+--- a/sound/soc/codecs/bt-sco.c
++++ b/sound/soc/codecs/bt-sco.c
+@@ -13,11 +13,16 @@
+ static const struct snd_soc_dapm_widget bt_sco_widgets[] = {
+ 	SND_SOC_DAPM_INPUT("RX"),
+ 	SND_SOC_DAPM_OUTPUT("TX"),
++	SND_SOC_DAPM_AIF_IN("BT_SCO_RX", "Playback", 0,
++			    SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_AIF_OUT("BT_SCO_TX", "Capture", 0,
++			     SND_SOC_NOPM, 0, 0),
+ };
+ 
+ static const struct snd_soc_dapm_route bt_sco_routes[] = {
+-	{ "Capture", NULL, "RX" },
+-	{ "TX", NULL, "Playback" },
++	{ "BT_SCO_TX", NULL, "RX" },
++	{ "TX", NULL, "BT_SCO_RX" },
++};
+ };
+ 
+ static struct snd_soc_dai_driver bt_sco_dai[] = {
+-- 
+2.25.1
+
