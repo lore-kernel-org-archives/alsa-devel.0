@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A09EC433FE
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Mar 2022 07:31:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CAC5C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Mar 2022 07:40:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6B27A1B18;
-	Tue,  1 Mar 2022 08:30:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B27A1B18
+	by alsa0.perex.cz (Postfix) with ESMTPS id E31371AE7;
+	Tue,  1 Mar 2022 08:40:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E31371AE7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646119882;
-	bh=yXdOZhmbEEaamEvL6lnaUrvlBtAPY/0Y2x37SZXiMnQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=nTtj4zutBPkzqZ0RHvwGMx993KC7SI3ZrEHh4HOlZHazhXTyiOhaMn0u7YbgahNj3
-	 vfRcP4eVN7oCZPasDjBKeORodhQpIYWV79/jLOVZ0s8NHJk8MSyVxBvfjhf7CfT6qP
-	 VJAzBbyeYsG6yZFlgMb2TFiZCIZ+iiz6fnbLA/08=
+	s=default; t=1646120456;
+	bh=+8VwSJ78Lj58lv+iom/RK+p+UlAVgI+zWrGNBgE0du4=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=TUeQHeLkYTav0FVa9PcTHy4fLp3RDyAXW4tjVdrGW0W26d5uZ5/lV9S5XFRKU+ob1
+	 stfwWKENIDz4TnGaugniXJF0Y0pELWlCbvBcngBK+cxshANA+ta5eEhvt/0v8K93xs
+	 lDQND2atwsGUIfn5gOweJU0/9GNffx7pSnDTPe44=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 52837F80516;
-	Tue,  1 Mar 2022 08:29:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 86F8CF801D8;
+	Tue,  1 Mar 2022 08:40:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A1EE9F80515; Tue,  1 Mar 2022 08:29:51 +0100 (CET)
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 00A6CF80515
- for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2022 08:29:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00A6CF80515
-X-UUID: cbf1a133f521477a8df964df6cdc99f0-20220301
-X-UUID: cbf1a133f521477a8df964df6cdc99f0-20220301
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by
- mailgw02.mediatek.com (envelope-from <jiaxin.yu@mediatek.com>)
- (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
- with ESMTP id 874667113; Tue, 01 Mar 2022 15:29:30 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.792.15; Tue, 1 Mar 2022 15:29:29 +0800
-Received: from localhost.localdomain (10.17.3.154) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 1 Mar 2022 15:29:28 +0800
-From: Jiaxin Yu <jiaxin.yu@mediatek.com>
-To: <broonie@kernel.org>
-Subject: [PATCH 1/2] ASoC: dt-bindings: mt8192-mt6359: add new compatible for
- using rt1015p and rt5682
-Date: Tue, 1 Mar 2022 15:29:23 +0800
-Message-ID: <20220301072924.24814-2-jiaxin.yu@mediatek.com>
+ id 621B1F80227; Tue,  1 Mar 2022 08:40:04 +0100 (CET)
+Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
+ by alsa1.perex.cz (Postfix) with ESMTP id 92E0AF80167
+ for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2022 08:39:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92E0AF80167
+Received: from localhost.localdomain (unknown [124.16.138.126])
+ by APP-05 (Coremail) with SMTP id zQCowAAH6vLHzR1il43WAQ--.23837S2;
+ Tue, 01 Mar 2022 15:39:51 +0800 (CST)
+From: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+ ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+ songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+ kpsingh@kernel.org, f.suligoi@asem.it, kuninori.morimoto.gx@renesas.com
+Subject: [PATCH] ASoC: fsi: Add check for clk_enable
+Date: Tue,  1 Mar 2022 15:39:49 +0800
+Message-Id: <20220301073949.3678707-1-jiasheng@iscas.ac.cn>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220301072924.24814-1-jiaxin.yu@mediatek.com>
-References: <20220301072924.24814-1-jiaxin.yu@mediatek.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-MTK: N
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Jiaxin Yu <jiaxin.yu@mediatek.com>,
- Project_Global_Chrome_Upstream_Group@mediatek.com, tzungbi@google.com,
- robh+dt@kernel.org, linux-mediatek@lists.infradead.org, trevor.wu@mediatek.com,
- matthias.bgg@gmail.com, Jiaxin Yu <jiaxin.yu@mediatek.corp-partner.google.com>,
- linux-arm-kernel@lists.infradead.org
+X-CM-TRANSID: zQCowAAH6vLHzR1il43WAQ--.23837S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7Xr47tF15uFW3uw4kKFW7Arb_yoWDCwb_Aa
+ yqg39xXa15urWfCF9rJr4DA34j9r42v3WUKry0qa1ftFWUJwnxur4UZ3sYvrn0qw1F93s3
+ Za1DAr4xAr43CjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+ 9fnUUIcSsGvfJTRUUUb38FF20E14v26ryj6rWUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+ 6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+ A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+ Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+ CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+ 2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+ W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+ Y2ka0xkIwI1lc2xSY4AK67AK6r4xMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
+ 1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
+ b7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
+ vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI
+ 42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWI
+ evJa73UjIFyTuYvjfUY-BMDUUUU
+X-Originating-IP: [124.16.138.126]
+X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
+Cc: netdev@vger.kernel.org, alsa-devel@alsa-project.org, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Jiasheng Jiang <jiasheng@iscas.ac.cn>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,28 +79,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Jiaxin Yu <jiaxin.yu@mediatek.corp-partner.google.com>
+As the potential failure of the clk_enable(),
+it should be better to check it and return error
+if fails.
 
-Adds new compatible string "mt8192_mt6359_rt1015p_rt5682s" for machines
-with rt1015p and rt5682s.
-
-Signed-off-by: Jiaxin Yu <jiaxin.yu@mediatek.com>
+Fixes: ab6f6d85210c ("ASoC: fsi: add master clock control functions")
+Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
 ---
- .../devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml   | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/sh/fsi.c | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml b/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml
-index a781e7aaaa38..4b0b0478018a 100644
---- a/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml
-+++ b/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml
-@@ -18,6 +18,7 @@ properties:
-     enum:
-       - mediatek,mt8192_mt6359_rt1015_rt5682
-       - mediatek,mt8192_mt6359_rt1015p_rt5682
-+      - mediatek,mt8192_mt6359_rt1015p_rt5682s
+diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
+index cdf3b7f69ba7..93cfa77b8b54 100644
+--- a/sound/soc/sh/fsi.c
++++ b/sound/soc/sh/fsi.c
+@@ -816,14 +816,26 @@ static int fsi_clk_enable(struct device *dev,
+ 			return ret;
+ 		}
  
-   mediatek,platform:
-     $ref: "/schemas/types.yaml#/definitions/phandle"
+-		clk_enable(clock->xck);
+-		clk_enable(clock->ick);
+-		clk_enable(clock->div);
++		ret = clk_enable(clock->xck);
++		if (ret)
++			goto err;
++		ret = clk_enable(clock->ick);
++		if (ret)
++			goto err;
++		ret = clk_enable(clock->div);
++		if (ret)
++			goto err;
+ 
+ 		clock->count++;
+ 	}
+ 
+ 	return ret;
++
++err:
++	clk_disable(clock->xck);
++	clk_disable(clock->ick);
++	clk_disable(clock->div);
++	return ret;
+ }
+ 
+ static int fsi_clk_disable(struct device *dev,
 -- 
-2.18.0
+2.25.1
 
