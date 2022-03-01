@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99740C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Mar 2022 12:45:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4DA48C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Mar 2022 12:47:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D22D21ADC;
-	Tue,  1 Mar 2022 13:44:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D22D21ADC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 818031B13;
+	Tue,  1 Mar 2022 13:46:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 818031B13
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646138715;
-	bh=Dvmj37OjCzYRSD5lH+68CdPQAV0uvqJN0PHM1p+T0So=;
+	s=default; t=1646138849;
+	bh=nxk6HmZ+oziOwd4/ZlWqyk2FF1Rck5kB6obmq+t2JxQ=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SEBGG3s3Mln8p/CIuiU5hwmQy5yp6+zGIroaICwf4N+6E3P4Hp1im0GfxVvHAgr/N
-	 VVYDzXtcVHeLStZPmi1lI9p11buFr0EeQxH6uPd3/uz6Lzpsm7psYRuWGiAuNoyd4K
-	 IaTcy9ALlmxEYbbNUZ/mL8HCedVGZOlPZdR2bY0I=
+	b=dZ5aUGEm9tfyFVOiBK8sLetEPpWSlY56Ot96lwxi0weBoAXzwCLr28NzOJf5wVlX7
+	 bMv2GwLFNb6eYfqW3Bp4SGp3OQ6m67FXszDkT0ciAAE0/EkoXtIVS5ogwvSmxB63/e
+	 ac6Rt4ajtJYX9LnV6Z3NDcsVj61Kr0M7rJY0XAY8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7C58FF80167;
-	Tue,  1 Mar 2022 13:44:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2DE95F801D8;
+	Tue,  1 Mar 2022 13:46:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D5FD4F80227; Tue,  1 Mar 2022 13:44:24 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id DF5DEF80227; Tue,  1 Mar 2022 13:46:37 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8C983F80167
- for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2022 13:44:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C983F80167
+ by alsa1.perex.cz (Postfix) with ESMTPS id D0E05F80095
+ for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2022 13:46:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0E05F80095
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="cvEy4Cel"
+ header.b="A9qS1Vry"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 58B9161229;
- Tue,  1 Mar 2022 12:44:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D6ADC340EE;
- Tue,  1 Mar 2022 12:44:15 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id EF52DB81869;
+ Tue,  1 Mar 2022 12:46:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57318C340EE;
+ Tue,  1 Mar 2022 12:46:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1646138659;
- bh=Dvmj37OjCzYRSD5lH+68CdPQAV0uvqJN0PHM1p+T0So=;
+ s=k20201202; t=1646138790;
+ bh=nxk6HmZ+oziOwd4/ZlWqyk2FF1Rck5kB6obmq+t2JxQ=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=cvEy4Celqtz56G+ZmoQDluWwekayBnfTCkFgpjXIFUH67plCHqLaSs3bbB243KlIR
- c45wYDECEVf4LWJ00ZQiKAcyUSHL64BhIGFvma252WcK0UALkdGdrYGD/dqovDJKtR
- nXEk3Ag/hwkYm5li4hxxk+HMio8KgibuwB4aX5v1Z2zZmHKVjrxL7cIQKNI/tiMITd
- NkO+5zDQZmAzNeWpLD6uKGpNz/FoYh51Uy8J52cCMjZhmPH1IJKDOsrwcP7vK2YjZm
- nonLZCYTS9eYAKYZRMI8CD96NDXVzp27Rt1yTEqCpDc6ETJVDQByLrDXXZXW/TIYGE
- LR+shwwVPEBnw==
-Date: Tue, 1 Mar 2022 12:44:12 +0000
+ b=A9qS1VryQH4aCd+igJlo2W9SYPDQ8QUQI/f9hD3h3KZ2yORYc+89/eeicK28W53GT
+ 3jyQIFNwIML/qzZyuT/hVubKT1RI5QbE7FHxNmNKWijHU0BAOW1w+NHBrGAb1rKMbP
+ Fbn0dKC2HC1a6ZJw8EwBCs0THbU6o1ng5m93+CsJh6itVTdkmWQzPsH1GZO5SUKais
+ 3JPYgg1G/TBoEhSuBccwLTcSIrrzR6Zml+C/+sgTwJ737FJoJV1QTXB4v/whfXTvGh
+ mHi+hTCgKqZ2YArogxUIwZ8qx5yA4VvMuaKArUf9iWy7B4b7ndeFuxvXyo+Rm62o6a
+ ZKPAk2UNb15qQ==
+Date: Tue, 1 Mar 2022 12:46:25 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Jiasheng Jiang <jiasheng@iscas.ac.cn>
-Subject: Re: [PATCH] ASoC: fsi: Add check for clk_enable
-Message-ID: <Yh4VHFviMI/LbjVe@sirena.org.uk>
-References: <20220301073949.3678707-1-jiasheng@iscas.ac.cn>
+To: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: Re: [PATCH] ASoC: atmel_ssc_dai: Handle errors for clk_enable
+Message-ID: <Yh4VoWfDxUOBGRBg@sirena.org.uk>
+References: <20220301090637.3776558-1-jiasheng@iscas.ac.cn>
+ <Yh4BCPqPngcsvER1@piout.net>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="a4D1fYTki8ZRdcZe"
+ protocol="application/pgp-signature"; boundary="T6jZRfUnVsfwpi4G"
 Content-Disposition: inline
-In-Reply-To: <20220301073949.3678707-1-jiasheng@iscas.ac.cn>
+In-Reply-To: <Yh4BCPqPngcsvER1@piout.net>
 X-Cookie: You have a message from the operator.
-Cc: alsa-devel@alsa-project.org, songliubraving@fb.com, ast@kernel.org,
- kuninori.morimoto.gx@renesas.com, daniel@iogearbox.net, lgirdwood@gmail.com,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org, john.fastabend@gmail.com,
- andrii@kernel.org, tiwai@suse.com, netdev@vger.kernel.org, kpsingh@kernel.org,
- yhs@fb.com, f.suligoi@asem.it, kafai@fb.com
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
+ linux-kernel@vger.kernel.org, Jiasheng Jiang <jiasheng@iscas.ac.cn>,
+ nicolas.ferre@microchip.com, tiwai@suse.com, codrin.ciubotariu@microchip.com,
+ claudiu.beznea@microchip.com, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,55 +85,34 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---a4D1fYTki8ZRdcZe
+--T6jZRfUnVsfwpi4G
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 01, 2022 at 03:39:49PM +0800, Jiasheng Jiang wrote:
-> As the potential failure of the clk_enable(),
-> it should be better to check it and return error
-> if fails.
+On Tue, Mar 01, 2022 at 12:18:32PM +0100, Alexandre Belloni wrote:
+> On 01/03/2022 17:06:37+0800, Jiasheng Jiang wrote:
+> > As the potential failure of the clk_enable(),
+> > it should be better to check it and return error if fals.
 
-> -		clk_enable(clock->xck);
-> -		clk_enable(clock->ick);
-> -		clk_enable(clock->div);
-> +		ret =3D clk_enable(clock->xck);
-> +		if (ret)
-> +			goto err;
-> +		ret =3D clk_enable(clock->ick);
-> +		if (ret)
-> +			goto err;
-> +		ret =3D clk_enable(clock->div);
-> +		if (ret)
-> +			goto err;
-> =20
->  		clock->count++;
->  	}
-> =20
->  	return ret;
-> +
-> +err:
-> +	clk_disable(clock->xck);
-> +	clk_disable(clock->ick);
-> +	clk_disable(clock->div);
+> As I already replied to an earlier patch, this will never, ever fail,
+> this patch doesn't fix anything.
 
-You need separate labels for each enable so that we don't end up
-disabling clocks we didn't enable, that would also be a bug.
+OTOH it doesn't do too much harm to have the error checking and it means
+people don't have to check if this is a case where it doesn't matter.
 
---a4D1fYTki8ZRdcZe
+--T6jZRfUnVsfwpi4G
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmIeFRwACgkQJNaLcl1U
-h9DwBgf/bin2luVJoiauARSYcwKh6nAuT6t1+pRx4vZsv96asJBq6mHzg3Lde11Y
-m2QgosA3PwMCLdvAIk4gZc2OQfzLQ6r96lgNEFHE3fmZknc9qPeO5P8275sdgfRy
-xn7l5w0j4y/4QoGu6YpE9EidGOGlkLQMcMvVc3CcpIUQLexWdGIgYUoJDT8MaIrA
-NNlrI3R296GI6oToypsEEC+KnTcddRKhEqd/wlCTD75OP9WmbQdUkw84mXq4A29F
-yDHw4BIYC8Mhx+RvUUXSaBue6Ow0kk58x9hdeFIE7Zc2qRk8xuSTxnju+QXIPNZK
-djNrcWAUdWEufFhsSf26mOnIq6bsrQ==
-=LFkr
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmIeFaAACgkQJNaLcl1U
+h9A12gf/Z2ih09vgW44eyJevr+GSx5BKo89juYbnargXWju4kIefBm99v9d/V/iV
+H72bbmH2hR1Ja5mbDlSKPvEnpQGknmuQl+CCcgMujjPOZ2xtnkriHaszCUkilvnq
+sRswa4l2SYSXGAsz440VEgUA+QDAbObEn02uTqBv0Nf+kudu2WHqioSR6A75xlZ5
+G3FTauzL+KDsFXhHQ36PydQUWb6W17kxYvvja/46qHvmNg2BejvbWCL/6T/j2myr
+lnSc+4rw5jD6lB4ItVuUCS87enl5fqKkTZ7E4W5FciqpenCP7SGA8OsjuLSJ3roB
+pRJmnX1i7THYcqMsjsjwAckc5MUE9g==
+=s96X
 -----END PGP SIGNATURE-----
 
---a4D1fYTki8ZRdcZe--
+--T6jZRfUnVsfwpi4G--
