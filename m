@@ -4,59 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3551EC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Mar 2022 10:01:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 798EDC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Mar 2022 10:05:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E0F951FEE;
-	Wed,  2 Mar 2022 11:00:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E0F951FEE
+	by alsa0.perex.cz (Postfix) with ESMTPS id A5B4B202B;
+	Wed,  2 Mar 2022 11:04:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5B4B202B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646215296;
-	bh=h39jAtAKq+dHL8Of/1MnEd7ooWF9tmieOZjKtIFqgbU=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=h4ZBFx8cIBfp2f3E5BiBeozmOqq7JqWXG9D04+hRTLyQOydPazPD/oIGDLx5xZq0F
-	 hqn2fVPx1as74NbNwBemWO3yWgiapPc2o1+G2owgQPXcTPFLjCsjVatalW+LzFceCD
-	 mY0pK5n3dJi/OiFnXK+dwn8R34gfjOBgnaH7lqfk=
+	s=default; t=1646215504;
+	bh=0w6CTOYZo87V5TtE2Iu4nVSpP1LBu5hbN2IX+GC2wns=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=JNgQXbNcXZjgslPKvfDqy0t8xmNnl0ZohMHu5RTRpk4kfXgFHwTp9EfrqUQnjDgbe
+	 9P0HomUM6RtgkMPQJyhKbRlU7D0Go3uIxRGDVc78R4zjPXYZF+3vpZG0cxa7cgvs+y
+	 TBe23WH9JOL8e9357qVQ2ZB9RW+IHR5cChSH6T1g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7DDC3F80171;
-	Wed,  2 Mar 2022 11:00:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 499ABF80171;
+	Wed,  2 Mar 2022 11:04:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 29559F801D5; Wed,  2 Mar 2022 11:00:45 +0100 (CET)
-Received: from smtpbgbr2.qq.com (smtpbgbr2.qq.com [54.207.22.56])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id C99BFF801D5; Wed,  2 Mar 2022 11:04:12 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D8CF2F80167
- for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2022 11:00:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8CF2F80167
-X-QQ-mid: bizesmtp77t1646215227tx88lfbo
-Received: from localhost.localdomain (unknown [58.240.82.166])
- by bizesmtp.qq.com (ESMTP) with 
- id ; Wed, 02 Mar 2022 18:00:22 +0800 (CST)
-X-QQ-SSF: 0140000000200060D000B00A0000000
-X-QQ-FEAT: HoyAXBWgskmYdSdyebFBiWjxCytgNey9Aae4l7NvKJrtYf/1UqQ8fM1QK4I+m
- CbnWyd2+7bCShdqhan+VzGSRt+cMuQ2hVE19BLeF2n45eNFGihIMAT+Sy7/thMyeEbKosPT
- IiZpZb1oudFqlhNFHxRlSdmvheplHNsHZQNEG/ogqtjB2cT0C2vJOFJ0282dCG77/IUJGl6
- Cs+io3wd/sccnIac73X2G26JYwDYkyvme7CbhDqZ9KasJDw0u0CS+0cWOyl+vx9yJVQq7YT
- puhiPsxy+48QtjG2NuaK9gkEnDdbaK/q/sthFOqyJPRcEqPfxHpS6ywrzpJT83xyh/4KI+d
- QD1RaflZwBBf1VSYEaJMwoIm8pNR1g/vYJ3cyTYn8kMbrE7yvc=
-X-QQ-GoodBg: 2
-From: Zhen Ni <nizhen@uniontech.com>
-To: frattaroli.nicolas@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
- tiwai@suse.com
-Subject: [PATCH] ASoC: rockchip: i2s_tdm: fix runtime pm imbalance on error
-Date: Wed,  2 Mar 2022 18:00:19 +0800
-Message-Id: <20220302100019.22891-1-nizhen@uniontech.com>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign2
-X-QQ-Bgrelay: 1
-Cc: Zhen Ni <nizhen@uniontech.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9F61CF80054
+ for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2022 11:04:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F61CF80054
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="OFrJHNio"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="rxG6Eeqk"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 2F4CD21997;
+ Wed,  2 Mar 2022 10:04:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1646215446; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=0UqB3yDUtjR1RM9tw+84pX8CfDY4K3FJ3p+AZkVtHJw=;
+ b=OFrJHNio1gs2aReQXoKhtYER9CyLiQLvXcosjdppD578PgPQLJ5OVIAUW0k4fTUXfUZ88F
+ FkJiSxBEkBEhXmMpGbB3qdKIFTNo3wUFZRvwuOzVvrP50/78POMr5BqArrX7ALWcPecPfv
+ ZAqMsATANAKOci4Ig7PUqjUuPqZ7Twk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1646215446;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=0UqB3yDUtjR1RM9tw+84pX8CfDY4K3FJ3p+AZkVtHJw=;
+ b=rxG6Eeqk8qJgRMuMlO6TS6CvYCBT+ne+bR7jsooRnBZqeM0dwf+FmKP4TqQZ2dY3kXM5PI
+ kaM6J0WWhz5BorBg==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 22A91A3B81;
+ Wed,  2 Mar 2022 10:04:06 +0000 (UTC)
+Date: Wed, 02 Mar 2022 11:04:06 +0100
+Message-ID: <s5hee3koell.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Zhen Ni <nizhen@uniontech.com>
+Subject: Re: [PATCH] ASoC: rockchip: i2s_tdm: fix runtime pm imbalance on error
+In-Reply-To: <20220302100019.22891-1-nizhen@uniontech.com>
+References: <20220302100019.22891-1-nizhen@uniontech.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com, linux-kernel@vger.kernel.org,
+ lgirdwood@gmail.com, frattaroli.nicolas@gmail.com, broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,33 +88,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-pm_runtime_get_sync() increments the runtime PM usage counter even the
-call returns an error code. Thus a pairing decrement is needed on the
-error handling path to keep the counter balanced.
+On Wed, 02 Mar 2022 11:00:19 +0100,
+Zhen Ni wrote:
+> 
+> pm_runtime_get_sync() increments the runtime PM usage counter even the
+> call returns an error code. Thus a pairing decrement is needed on the
+> error handling path to keep the counter balanced.
+> 
+> Signed-off-by: Zhen Ni <nizhen@uniontech.com>
 
-Signed-off-by: Zhen Ni <nizhen@uniontech.com>
----
- sound/soc/rockchip/rockchip_i2s_tdm.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/rockchip/rockchip_i2s_tdm.c b/sound/soc/rockchip/rockchip_i2s_tdm.c
-index 5f9cb5c4c7f0..4691a76b499d 100644
---- a/sound/soc/rockchip/rockchip_i2s_tdm.c
-+++ b/sound/soc/rockchip/rockchip_i2s_tdm.c
-@@ -1739,8 +1739,10 @@ static int __maybe_unused rockchip_i2s_tdm_resume(struct device *dev)
- 	int ret;
- 
- 	ret = pm_runtime_get_sync(dev);
--	if (ret < 0)
-+	if (ret < 0) {
-+		pm_runtime_put(dev);
- 		return ret;
-+	}
- 	ret = regcache_sync(i2s_tdm->regmap);
- 	pm_runtime_put(dev);
- 
--- 
-2.20.1
+Better to use a new function pm_runtime_resume_and_get().
 
 
+thanks,
 
+Takashi
+
+> ---
+>  sound/soc/rockchip/rockchip_i2s_tdm.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/rockchip/rockchip_i2s_tdm.c b/sound/soc/rockchip/rockchip_i2s_tdm.c
+> index 5f9cb5c4c7f0..4691a76b499d 100644
+> --- a/sound/soc/rockchip/rockchip_i2s_tdm.c
+> +++ b/sound/soc/rockchip/rockchip_i2s_tdm.c
+> @@ -1739,8 +1739,10 @@ static int __maybe_unused rockchip_i2s_tdm_resume(struct device *dev)
+>  	int ret;
+>  
+>  	ret = pm_runtime_get_sync(dev);
+> -	if (ret < 0)
+> +	if (ret < 0) {
+> +		pm_runtime_put(dev);
+>  		return ret;
+> +	}
+>  	ret = regcache_sync(i2s_tdm->regmap);
+>  	pm_runtime_put(dev);
+>  
+> -- 
+> 2.20.1
+> 
+> 
+> 
