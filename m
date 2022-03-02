@@ -4,68 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5062EC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Mar 2022 15:43:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73FDBC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Mar 2022 15:44:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 012D31F6A;
-	Wed,  2 Mar 2022 16:43:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 012D31F6A
+	by alsa0.perex.cz (Postfix) with ESMTPS id AD8F31F7A;
+	Wed,  2 Mar 2022 16:44:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD8F31F7A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646235833;
-	bh=7IYRL+GavLmgyLRpxHba+gbdrurgtbY4Z97aGoux0xQ=;
+	s=default; t=1646235893;
+	bh=TmvnxBsaIBUo1rh+HLkFLT9be6FT33TNEKEXBh+iG90=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HByTS0fvLxew/6QEYsrTyznG9enStFAHOYQ3mHFDTjveIJCO8nAaxstM+ieC92vw6
-	 ThEz6BPkmeaqmv0qcwR3bCAL0ufrQFrJzUn3XfnmXvhyS5dkW4KTRuGeBaeZbN2ewa
-	 Sxu66v0B4wWkcE0SPpkb/lXtOtOaAGbxk8Xd42uk=
+	b=sEq7U0z9qes7dg3GoNze3wH/RpqnJB/P2Q6QBzO6muABUUm0e9sKEvz57YWWVlSa7
+	 lmE/ASt4kesiqu2P0i8VWrfei9SlkEfxomDkCFJNFHft4H3PPXE2KUET/tqJgD/Sh2
+	 S3wLcL4a8dNgpj5eSosrtEUZ4zUn7vvnKESXi41Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8E5A0F80167;
-	Wed,  2 Mar 2022 16:43:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 55F72F801D5;
+	Wed,  2 Mar 2022 16:44:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 688FCF801D5; Wed,  2 Mar 2022 16:43:01 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 47E32F804AC; Wed,  2 Mar 2022 16:44:02 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2423DF80167
- for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2022 16:42:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2423DF80167
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3F065F80154
+ for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2022 16:43:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3F065F80154
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="C9bcaRPy"
+ header.b="g9XenydV"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 662646170B;
- Wed,  2 Mar 2022 15:42:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28DD4C004E1;
- Wed,  2 Mar 2022 15:42:52 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 8A19B61720;
+ Wed,  2 Mar 2022 15:43:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41036C004E1;
+ Wed,  2 Mar 2022 15:43:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1646235773;
- bh=7IYRL+GavLmgyLRpxHba+gbdrurgtbY4Z97aGoux0xQ=;
+ s=k20201202; t=1646235832;
+ bh=TmvnxBsaIBUo1rh+HLkFLT9be6FT33TNEKEXBh+iG90=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=C9bcaRPydA5rE7UiWO+AwDn8Dw2XEyrI7axyNYrCDDuYn6BTHy8G+NOeJWrOCyxOc
- pEeY7E2sPPS2gL2hbFbKbhuW4S2l50kkI5DhQAVX2nfFqpsQ4Kq3KEevr2/GLPUiw0
- mxlPRuHI569S7IQdon+YbCxs7++L6f1RrW4qLjxKtXoC+uFyxCITuANeGP0VeJrsy6
- VsJnrzwlcSOlS6Q4VLw6HnrXJesLUbGHkDQBr1vY6T9pr19KulOfAFch1z/G84TXtj
- NOegoTsBZrLhMNRMWK30XpekBE7sYDJh3VXwzTw81fO2yUUCayvYQArluvl3VAFBIa
- VreWrZefN5Lbw==
-Date: Wed, 2 Mar 2022 21:12:49 +0530
+ b=g9XenydVpDCJIsdnH4ohFLJpQ2tYFwYMF0Drkw2WwbRg+0YI2TX0ZlIq31meoJWsa
+ GpE5DLpRR5j3M6HVFeIEtehuq3Hl+gAr7DO9ANbFW91n3ixycocH+JoBq0+v26yJ8x
+ KeRVTf8sIn/+AuiAag89d7H18GLdy3yiLgzCV/qaIs85UzXxkRMHu6kDOtPDIe+4Rr
+ vjRGeGVC7B9Uik8GHw5JQ0E+czlurNS2qIHJuZRovBagTOme8qnnu7JTFqzn22HZ6g
+ m9ag0dvUDCXHLujMkOELkRl3sOTMxP8+dTd8VJnrfMWZJNgGxljDW1hE/ZES1JI0wM
+ sY04ndQpkGKVg==
+Date: Wed, 2 Mar 2022 21:13:47 +0530
 From: Vinod Koul <vkoul@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v3 0/3] soundwire: qcom: add pm runtime support
-Message-ID: <Yh+QeWEufbp2JLo+@matsya>
-References: <20220228172528.3489-1-srinivas.kandagatla@linaro.org>
+To: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+Subject: Re: [PATCH v6 1/3] soundwire: qcom: Add compatible name for v1.6.0
+Message-ID: <Yh+Qs6P3pm2mHDjJ@matsya>
+References: <1646224982-3361-1-git-send-email-quic_srivasam@quicinc.com>
+ <1646224982-3361-2-git-send-email-quic_srivasam@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220228172528.3489-1-srinivas.kandagatla@linaro.org>
+In-Reply-To: <1646224982-3361-2-git-send-email-quic_srivasam@quicinc.com>
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
- robh+dt@kernel.org, yung-chuan.liao@linux.intel.com, quic_srivasam@quicinc.com
+ bgoswami@codeaurora.org, yung-chuan.liao@linux.intel.com,
+ linux-arm-msm@vger.kernel.org, swboyd@chromium.org, tiwai@suse.com,
+ agross@kernel.org, robh+dt@kernel.org, lgirdwood@gmail.com,
+ pierre-louis.bossart@linux.intel.com, rohitkr@codeaurora.org,
+ broonie@kernel.org, srinivas.kandagatla@linaro.org, quic_plai@quicinc.com,
+ sanyog.r.kale@intel.com, bjorn.andersson@linaro.org, judyhsiao@chromium.org,
+ Venkata Prasad Potturu <quic_potturu@quicinc.com>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,15 +87,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 28-02-22, 17:25, Srinivas Kandagatla wrote:
-> This patchset adds pm runtime support to Qualcomm SounWire Controller using
-> SoundWire Clock Stop and Wake up using Headset events on supported instances and
-> instances like WSA which do not support clock stop a soft reset of controller
-> along with full rest of slaves is done to resume from a low power state.
-> 
-> Tested it on SM8250 MTP and Dragon Board DB845c
+On 02-03-22, 18:13, Srinivasa Rao Mandadapu wrote:
+> Update compatible string and master data information in soundwire driver
+> to support v1.6.0 in lpass sc7280 based platform.
 
-Applied, thanks
+Where is the documentation of this new compatible
+
+> 
+> Signed-off-by: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+> Co-developed-by: Venkata Prasad Potturu <quic_potturu@quicinc.com>
+> Signed-off-by: Venkata Prasad Potturu <quic_potturu@quicinc.com>
+> ---
+>  drivers/soundwire/qcom.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+> index 5481341..fc41210 100644
+> --- a/drivers/soundwire/qcom.c
+> +++ b/drivers/soundwire/qcom.c
+> @@ -1348,6 +1348,7 @@ static int qcom_swrm_remove(struct platform_device *pdev)
+>  static const struct of_device_id qcom_swrm_of_match[] = {
+>  	{ .compatible = "qcom,soundwire-v1.3.0", .data = &swrm_v1_3_data },
+>  	{ .compatible = "qcom,soundwire-v1.5.1", .data = &swrm_v1_5_data },
+> +	{ .compatible = "qcom,soundwire-v1.6.0", .data = &swrm_v1_5_data },
+>  	{/* sentinel */},
+>  };
+>  
+> -- 
+> 2.7.4
 
 -- 
 ~Vinod
