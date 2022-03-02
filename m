@@ -4,48 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4EC4C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Mar 2022 09:06:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97FC5C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Mar 2022 09:06:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F08F8171A;
-	Wed,  2 Mar 2022 10:05:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F08F8171A
+	by alsa0.perex.cz (Postfix) with ESMTPS id D387D2018;
+	Wed,  2 Mar 2022 10:05:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D387D2018
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646211976;
-	bh=ouIXwC9qujK9ZsYVE0EshP7YqCXxr7q8AgeXvijkEdk=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=lhWYcxxgO51zDaCtJYHwXrXLLpQ5FJzd4KdTynYcJCsatehmnkw0REb0CO7k/NYrB
-	 R+Jk242BRPI7Nr+4ktTmWlJfy1KRcCSruxcX1jPEuyy+jO1emSFzQxMM4PBP73ip08
-	 94qX6j2s27BIJBM0btEIKsUQdUsITEiLL07TWlKc=
+	s=default; t=1646211989;
+	bh=4kLvybi2kffivdG0ZzYly+g+kalfyehRlxKwtNg4X7g=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=gENGY45WRwByn12ELGMT0gMyyggBzwDJUr7n23bPLA2gjZrkU9VucaSoNx1bYNs6u
+	 GKFFloxrcNy/JAIVGtdd15H5fQ0tufZYfgWngndZvx2nsUNy5AYbdsb8ngUtm4ETDK
+	 iahRKjZyx5K4t8rbBvdOeyn4eWj39L18qghinM/M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A7846F80517;
-	Wed,  2 Mar 2022 09:35:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2CF2DF808BB;
+	Wed,  2 Mar 2022 09:35:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 57F87F804AC; Wed,  2 Mar 2022 09:35:35 +0100 (CET)
+ id 5B023F804CB; Wed,  2 Mar 2022 09:35:35 +0100 (CET)
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
  [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 88B33F80C51
- for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2022 09:34:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88B33F80C51
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7C6FAF808BB
+ for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2022 09:34:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C6FAF808BB
 Received: from dude02.hi.pengutronix.de ([2001:67c:670:100:1d::28])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1nPKRL-0005uR-9I; Wed, 02 Mar 2022 09:34:31 +0100
+ id 1nPKRL-0005uU-9W; Wed, 02 Mar 2022 09:34:31 +0100
 Received: from sha by dude02.hi.pengutronix.de with local (Exim 4.94.2)
  (envelope-from <sha@pengutronix.de>)
- id 1nPKRK-00FxnP-Bd; Wed, 02 Mar 2022 09:34:30 +0100
+ id 1nPKRK-00FxnX-DN; Wed, 02 Mar 2022 09:34:30 +0100
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 0/7] ASoC: fsl_sai: Cleanups and 1:1 bclk:mclk ratio support
-Date: Wed,  2 Mar 2022 09:34:21 +0100
-Message-Id: <20220302083428.3804687-1-s.hauer@pengutronix.de>
+Subject: [PATCH 3/7] ASoC: fsl_sai: simplify register poking in
+ fsl_sai_set_bclk
+Date: Wed,  2 Mar 2022 09:34:24 +0100
+Message-Id: <20220302083428.3804687-4-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220302083428.3804687-1-s.hauer@pengutronix.de>
+References: <20220302083428.3804687-1-s.hauer@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::28
@@ -53,9 +57,9 @@ X-SA-Exim-Mail-From: sha@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
  SAEximRunCond expanded to false
 X-PTX-Original-Recipient: alsa-devel@alsa-project.org
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>,
- Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@kernel.org>,
- kernel@pengutronix.de, Xiubo Li <Xiubo.Lee@gmail.com>
+Cc: Ahmad Fatoum <a.fatoum@pengutronix.de>, Xiubo Li <Xiubo.Lee@gmail.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Nicolin Chen <nicoleotsuka@gmail.com>,
+ Mark Brown <broonie@kernel.org>, kernel@pengutronix.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -71,26 +75,75 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This series has some updates for the fsl_sai driver: Some general
-cleanup patches, a bugfix in the ip revision checking and finally
-the mclk setting is made more accurate and support for 1:1 bclk:mclk
-setting is added.
+From: Ahmad Fatoum <a.fatoum@pengutronix.de>
 
-Ahmad Fatoum (2):
-  ASoC: fsl_sai: simplify register poking in fsl_sai_set_bclk
-  ASoC: fsl_sai: implement 1:1 bclk:mclk ratio support
+Depending on SAI synchronization mode, the same value is either
+written to FSL_SAI_TCR2 or FSL_SAI_RCR2 or nothing is written at all.
 
-Sascha Hauer (5):
-  ASoC: fsl_sai: Drop unnecessary defines
-  ASoC: fsl_sai: simplify irq return value
-  ASoC: fsl_sai: store full version instead of major/minor
-  ASoC: fsl_sai: Use better variable names
-  ASoC: fsl_sai: use DIV_ROUND_CLOSEST() to calculate divider
+As the computation is the same either way, factor it out to make it
+clearer what the difference is. No functional change.
 
- sound/soc/fsl/fsl_sai.c | 100 ++++++++++++++++++++--------------------
- sound/soc/fsl/fsl_sai.h |   9 +---
- 2 files changed, 52 insertions(+), 57 deletions(-)
+Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ sound/soc/fsl/fsl_sai.c | 29 +++++++++++++----------------
+ 1 file changed, 13 insertions(+), 16 deletions(-)
 
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index 56311a0f23b95..5f627ccd172b2 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -341,7 +341,7 @@ static int fsl_sai_set_dai_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
+ static int fsl_sai_set_bclk(struct snd_soc_dai *dai, bool tx, u32 freq)
+ {
+ 	struct fsl_sai *sai = snd_soc_dai_get_drvdata(dai);
+-	unsigned int ofs = sai->soc_data->reg_offset;
++	unsigned int reg, ofs = sai->soc_data->reg_offset;
+ 	unsigned long clk_rate;
+ 	u32 savediv = 0, ratio, savesub = freq;
+ 	int adir = tx ? RX : TX;
+@@ -401,6 +401,9 @@ static int fsl_sai_set_bclk(struct snd_soc_dai *dai, bool tx, u32 freq)
+ 		return -EINVAL;
+ 	}
+ 
++	dev_dbg(dai->dev, "best fit: clock id=%d, div=%d, deviation =%d\n",
++			sai->mclk_id[tx], savediv, savesub);
++
+ 	/*
+ 	 * 1) For Asynchronous mode, we must set RCR2 register for capture, and
+ 	 *    set TCR2 register for playback.
+@@ -411,22 +414,16 @@ static int fsl_sai_set_bclk(struct snd_soc_dai *dai, bool tx, u32 freq)
+ 	 * 4) For Tx and Rx are both Synchronous with another SAI, we just
+ 	 *    ignore it.
+ 	 */
+-	if (fsl_sai_dir_is_synced(sai, adir)) {
+-		regmap_update_bits(sai->regmap, FSL_SAI_xCR2(!tx, ofs),
+-				   FSL_SAI_CR2_MSEL_MASK,
+-				   FSL_SAI_CR2_MSEL(sai->mclk_id[tx]));
+-		regmap_update_bits(sai->regmap, FSL_SAI_xCR2(!tx, ofs),
+-				   FSL_SAI_CR2_DIV_MASK, savediv - 1);
+-	} else if (!sai->synchronous[dir]) {
+-		regmap_update_bits(sai->regmap, FSL_SAI_xCR2(tx, ofs),
+-				   FSL_SAI_CR2_MSEL_MASK,
+-				   FSL_SAI_CR2_MSEL(sai->mclk_id[tx]));
+-		regmap_update_bits(sai->regmap, FSL_SAI_xCR2(tx, ofs),
+-				   FSL_SAI_CR2_DIV_MASK, savediv - 1);
+-	}
++	if (fsl_sai_dir_is_synced(sai, adir))
++		reg = FSL_SAI_xCR2(!tx, ofs);
++	else if (!sai->synchronous[dir])
++		reg = FSL_SAI_xCR2(tx, ofs);
++	else
++		return 0;
+ 
+-	dev_dbg(dai->dev, "best fit: clock id=%d, div=%d, deviation =%d\n",
+-			sai->mclk_id[tx], savediv, savesub);
++	regmap_update_bits(sai->regmap, reg, FSL_SAI_CR2_MSEL_MASK,
++			   FSL_SAI_CR2_MSEL(sai->mclk_id[tx]));
++	regmap_update_bits(sai->regmap, reg, FSL_SAI_CR2_DIV_MASK, savediv - 1);
+ 
+ 	return 0;
+ }
 -- 
 2.30.2
 
