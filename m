@@ -4,51 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70285C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Mar 2022 09:06:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4EC4C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Mar 2022 09:06:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BAD06280A;
-	Wed,  2 Mar 2022 10:05:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BAD06280A
+	by alsa0.perex.cz (Postfix) with ESMTPS id F08F8171A;
+	Wed,  2 Mar 2022 10:05:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F08F8171A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646211958;
-	bh=AfUKihGzydu1DrGY5HHUcoj/7ebxwbArPJp6J0Y4YBM=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=rd9o284EQ5J9vc+cScTqvvpmZ+J00GWAucGIV4/cTOqq6rhOhv2NjuK9/8YOgFK0f
-	 FwpOqY7fCCoNEvCwvgULOAnhOYbQmJbCzdn6HxlE7URaRgNA60G7xThb9ktNCh/UD4
-	 BTAxOVqid/afdVmci/0s2uyR64nLDZmX5Gs7ro4E=
+	s=default; t=1646211976;
+	bh=ouIXwC9qujK9ZsYVE0EshP7YqCXxr7q8AgeXvijkEdk=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=lhWYcxxgO51zDaCtJYHwXrXLLpQ5FJzd4KdTynYcJCsatehmnkw0REb0CO7k/NYrB
+	 R+Jk242BRPI7Nr+4ktTmWlJfy1KRcCSruxcX1jPEuyy+jO1emSFzQxMM4PBP73ip08
+	 94qX6j2s27BIJBM0btEIKsUQdUsITEiLL07TWlKc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 30834F80054;
+	by alsa1.perex.cz (Postfix) with ESMTP id A7846F80517;
 	Wed,  2 Mar 2022 09:35:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 54997F80508; Wed,  2 Mar 2022 09:35:35 +0100 (CET)
+ id 57F87F804AC; Wed,  2 Mar 2022 09:35:35 +0100 (CET)
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
  [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C62FCF80C6D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 88B33F80C51
  for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2022 09:34:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C62FCF80C6D
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88B33F80C51
 Received: from dude02.hi.pengutronix.de ([2001:67c:670:100:1d::28])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1nPKRL-0005uW-9K; Wed, 02 Mar 2022 09:34:31 +0100
+ id 1nPKRL-0005uR-9I; Wed, 02 Mar 2022 09:34:31 +0100
 Received: from sha by dude02.hi.pengutronix.de with local (Exim 4.94.2)
  (envelope-from <sha@pengutronix.de>)
- id 1nPKRK-00Fxnd-ES; Wed, 02 Mar 2022 09:34:30 +0100
+ id 1nPKRK-00FxnP-Bd; Wed, 02 Mar 2022 09:34:30 +0100
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 5/7] ASoC: fsl_sai: Use better variable names
-Date: Wed,  2 Mar 2022 09:34:26 +0100
-Message-Id: <20220302083428.3804687-6-s.hauer@pengutronix.de>
+Subject: [PATCH 0/7] ASoC: fsl_sai: Cleanups and 1:1 bclk:mclk ratio support
+Date: Wed,  2 Mar 2022 09:34:21 +0100
+Message-Id: <20220302083428.3804687-1-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220302083428.3804687-1-s.hauer@pengutronix.de>
-References: <20220302083428.3804687-1-s.hauer@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::28
@@ -74,83 +71,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-"ret" is normally used as a variable name for return values. In
-fsl_sai_set_bclk() it stores the difference between the desired rate and
-the rate we can archieve, so rename it to "diff". Also rename "savesub"
-to "bestdiff" as that stores the best difference we have found.
+This series has some updates for the fsl_sai driver: Some general
+cleanup patches, a bugfix in the ip revision checking and finally
+the mclk setting is made more accurate and support for 1:1 bclk:mclk
+setting is added.
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
----
- sound/soc/fsl/fsl_sai.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+Ahmad Fatoum (2):
+  ASoC: fsl_sai: simplify register poking in fsl_sai_set_bclk
+  ASoC: fsl_sai: implement 1:1 bclk:mclk ratio support
 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index 2544fd363e24d..190f6206023fa 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -343,11 +343,10 @@ static int fsl_sai_set_bclk(struct snd_soc_dai *dai, bool tx, u32 freq)
- 	struct fsl_sai *sai = snd_soc_dai_get_drvdata(dai);
- 	unsigned int reg, ofs = sai->soc_data->reg_offset;
- 	unsigned long clk_rate;
--	u32 savediv = 0, ratio, savesub = freq;
-+	u32 savediv = 0, ratio, bestdiff = freq;
- 	int adir = tx ? RX : TX;
- 	int dir = tx ? TX : RX;
- 	u32 id;
--	int ret = 0;
- 
- 	/* Don't apply to consumer mode */
- 	if (sai->is_consumer_mode)
-@@ -361,19 +360,21 @@ static int fsl_sai_set_bclk(struct snd_soc_dai *dai, bool tx, u32 freq)
- 	id = sai->soc_data->mclk0_is_mclk1 ? 1 : 0;
- 
- 	for (; id < FSL_SAI_MCLK_MAX; id++) {
-+		int diff;
-+
- 		clk_rate = clk_get_rate(sai->mclk_clk[id]);
- 		if (!clk_rate)
- 			continue;
- 
- 		ratio = clk_rate / freq;
- 
--		ret = clk_rate - ratio * freq;
-+		diff = clk_rate - ratio * freq;
- 
- 		/*
- 		 * Drop the source that can not be
- 		 * divided into the required rate.
- 		 */
--		if (ret != 0 && clk_rate / ret < 1000)
-+		if (diff != 0 && clk_rate / diff < 1000)
- 			continue;
- 
- 		dev_dbg(dai->dev,
-@@ -385,13 +386,13 @@ static int fsl_sai_set_bclk(struct snd_soc_dai *dai, bool tx, u32 freq)
- 		else
- 			continue;
- 
--		if (ret < savesub) {
-+		if (diff < bestdiff) {
- 			savediv = ratio;
- 			sai->mclk_id[tx] = id;
--			savesub = ret;
-+			bestdiff = diff;
- 		}
- 
--		if (ret == 0)
-+		if (diff == 0)
- 			break;
- 	}
- 
-@@ -402,7 +403,7 @@ static int fsl_sai_set_bclk(struct snd_soc_dai *dai, bool tx, u32 freq)
- 	}
- 
- 	dev_dbg(dai->dev, "best fit: clock id=%d, div=%d, deviation =%d\n",
--			sai->mclk_id[tx], savediv, savesub);
-+			sai->mclk_id[tx], savediv, bestdiff);
- 
- 	/*
- 	 * 1) For Asynchronous mode, we must set RCR2 register for capture, and
+Sascha Hauer (5):
+  ASoC: fsl_sai: Drop unnecessary defines
+  ASoC: fsl_sai: simplify irq return value
+  ASoC: fsl_sai: store full version instead of major/minor
+  ASoC: fsl_sai: Use better variable names
+  ASoC: fsl_sai: use DIV_ROUND_CLOSEST() to calculate divider
+
+ sound/soc/fsl/fsl_sai.c | 100 ++++++++++++++++++++--------------------
+ sound/soc/fsl/fsl_sai.h |   9 +---
+ 2 files changed, 52 insertions(+), 57 deletions(-)
+
 -- 
 2.30.2
 
