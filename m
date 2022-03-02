@@ -4,58 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD837C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Mar 2022 09:45:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3551EC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Mar 2022 10:01:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1E6C520CA;
-	Wed,  2 Mar 2022 10:44:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E6C520CA
+	by alsa0.perex.cz (Postfix) with ESMTPS id E0F951FEE;
+	Wed,  2 Mar 2022 11:00:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E0F951FEE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646214309;
-	bh=Xs6VvHM/OmjELGzW4GEdMg801tRDhITkfXDOb4NK6Fc=;
+	s=default; t=1646215296;
+	bh=h39jAtAKq+dHL8Of/1MnEd7ooWF9tmieOZjKtIFqgbU=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=W3T2kFtqs8V+sC5Y5EEidJ7rn00NjRKUhtgZJzDSvOafGKBQJ/1os+4gWfZs9fs0U
-	 79gBNeVxyi9sO79Ws4zHGHQE7jvIYZbatLUnpepBN/HxHj9WA4Szyc38VWBfsHDdXy
-	 xIxzuztAADzniDlvcjEG2uWMXYk/dt3JmnyM9i9s=
+	b=h4ZBFx8cIBfp2f3E5BiBeozmOqq7JqWXG9D04+hRTLyQOydPazPD/oIGDLx5xZq0F
+	 hqn2fVPx1as74NbNwBemWO3yWgiapPc2o1+G2owgQPXcTPFLjCsjVatalW+LzFceCD
+	 mY0pK5n3dJi/OiFnXK+dwn8R34gfjOBgnaH7lqfk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ABED9F80171;
-	Wed,  2 Mar 2022 10:44:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7DDC3F80171;
+	Wed,  2 Mar 2022 11:00:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DC192F80171; Wed,  2 Mar 2022 10:44:16 +0100 (CET)
-Received: from smtpbgsg1.qq.com (smtpbgsg1.qq.com [54.254.200.92])
+ id 29559F801D5; Wed,  2 Mar 2022 11:00:45 +0100 (CET)
+Received: from smtpbgbr2.qq.com (smtpbgbr2.qq.com [54.207.22.56])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4ABABF80054
- for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2022 10:44:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4ABABF80054
-X-QQ-mid: bizesmtp77t1646214239t4q3lvu0
+ by alsa1.perex.cz (Postfix) with ESMTPS id D8CF2F80167
+ for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2022 11:00:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8CF2F80167
+X-QQ-mid: bizesmtp77t1646215227tx88lfbo
 Received: from localhost.localdomain (unknown [58.240.82.166])
  by bizesmtp.qq.com (ESMTP) with 
- id ; Wed, 02 Mar 2022 17:43:53 +0800 (CST)
-X-QQ-SSF: 01400000002000C0G000000A0000000
-X-QQ-FEAT: xyySF+ktKzc8o0sxazVfL1OaxjVY3Ht/nzDo91W+cec1vfOJK2+P94HZr5Ta2
- 2svAAD6EXCc6FpllvhLHSRkQZSWQLRbN9BXofmljew6Fqk71bOe0o3qhGINLhBHZLOKgs1f
- PItROfzgeQocrtvNjXK9FeMRFGC3aSm94bNhe0iuFpY8sC2+KvAzGFWUO4yCfBC78dknjp7
- 7jzOGJavoBZNNGBaK1PLhZ/Eu9SgloLY/UD4fouNLDcV8+o0A0iLmwentlUbnJfTo4bG3Lr
- Z7ee8MZMuCuzdZlY4bTSFCuRSoeBiaM6FT+mJRTES3g73bXsFJ3GrtP/6IvpkJmqYiO58AX
- A/9Paf8C8yoApWoQcUjU/QlLxKUwVYZNRBWC4BpRAHvpac8vJWPu8YSWYYvNg==
-X-QQ-GoodBg: 1
-From: Meng Tang <tangmeng@uniontech.com>
-To: perex@perex.cz, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org
-Subject: [PATCH] ASoC: hdac_hda: Avoid unexpected match when pcm_name is
- "Analog"
-Date: Wed,  2 Mar 2022 17:43:51 +0800
-Message-Id: <20220302094351.3487-1-tangmeng@uniontech.com>
+ id ; Wed, 02 Mar 2022 18:00:22 +0800 (CST)
+X-QQ-SSF: 0140000000200060D000B00A0000000
+X-QQ-FEAT: HoyAXBWgskmYdSdyebFBiWjxCytgNey9Aae4l7NvKJrtYf/1UqQ8fM1QK4I+m
+ CbnWyd2+7bCShdqhan+VzGSRt+cMuQ2hVE19BLeF2n45eNFGihIMAT+Sy7/thMyeEbKosPT
+ IiZpZb1oudFqlhNFHxRlSdmvheplHNsHZQNEG/ogqtjB2cT0C2vJOFJ0282dCG77/IUJGl6
+ Cs+io3wd/sccnIac73X2G26JYwDYkyvme7CbhDqZ9KasJDw0u0CS+0cWOyl+vx9yJVQq7YT
+ puhiPsxy+48QtjG2NuaK9gkEnDdbaK/q/sthFOqyJPRcEqPfxHpS6ywrzpJT83xyh/4KI+d
+ QD1RaflZwBBf1VSYEaJMwoIm8pNR1g/vYJ3cyTYn8kMbrE7yvc=
+X-QQ-GoodBg: 2
+From: Zhen Ni <nizhen@uniontech.com>
+To: frattaroli.nicolas@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+ tiwai@suse.com
+Subject: [PATCH] ASoC: rockchip: i2s_tdm: fix runtime pm imbalance on error
+Date: Wed,  2 Mar 2022 18:00:19 +0800
+Message-Id: <20220302100019.22891-1-nizhen@uniontech.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign6
+Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign2
 X-QQ-Bgrelay: 1
-Cc: Meng Tang <tangmeng@uniontech.com>, alsa-devel@alsa-project.org,
+Cc: Zhen Ni <nizhen@uniontech.com>, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -72,42 +72,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-pcm name can be "Analog" and "Alt Analog", cpcm->name can be
-"Analog Codec DAI" and "Alt Analog Codec DAI". When pcm_name
-is "Analog", "Analog Codec DAI" and "Alt Analog Codec DAI" are
-both satisfy the 'if (strstr(cpcm->name, pcm_name))' condition,
-which may cause the returned cpcm to be "Alt Analog Codec DAI".
+pm_runtime_get_sync() increments the runtime PM usage counter even the
+call returns an error code. Thus a pairing decrement is needed on the
+error handling path to keep the counter balanced.
 
-Even if we get the pcm name by id, and "Analog Codec DAI" goes
-into the loop before "Alt Analog Codec DAI", but I still think
-we'd better have multiple insurances against unexpected return
-values. After, we can correctly return the expected result
-even if other relevant places are changed.
-
-Signed-off-by: Meng Tang <tangmeng@uniontech.com>
+Signed-off-by: Zhen Ni <nizhen@uniontech.com>
 ---
- sound/soc/codecs/hdac_hda.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ sound/soc/rockchip/rockchip_i2s_tdm.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/hdac_hda.c b/sound/soc/codecs/hdac_hda.c
-index 667f3df239c7..a9f61c7e44ee 100644
---- a/sound/soc/codecs/hdac_hda.c
-+++ b/sound/soc/codecs/hdac_hda.c
-@@ -363,8 +363,13 @@ static struct hda_pcm *snd_soc_find_pcm_from_dai(struct hdac_hda_priv *hda_pvt,
- 	}
+diff --git a/sound/soc/rockchip/rockchip_i2s_tdm.c b/sound/soc/rockchip/rockchip_i2s_tdm.c
+index 5f9cb5c4c7f0..4691a76b499d 100644
+--- a/sound/soc/rockchip/rockchip_i2s_tdm.c
++++ b/sound/soc/rockchip/rockchip_i2s_tdm.c
+@@ -1739,8 +1739,10 @@ static int __maybe_unused rockchip_i2s_tdm_resume(struct device *dev)
+ 	int ret;
  
- 	list_for_each_entry(cpcm, &hcodec->pcm_list_head, list) {
--		if (strstr(cpcm->name, pcm_name))
-+		if (strstr(cpcm->name, pcm_name)) {
-+			if (strcmp(pcm_name, "Analog") == 0) {
-+				if (strstr(cpcm->name, "Alt Analog"))
-+					continue;
-+			}
- 			return cpcm;
-+		}
- 	}
+ 	ret = pm_runtime_get_sync(dev);
+-	if (ret < 0)
++	if (ret < 0) {
++		pm_runtime_put(dev);
+ 		return ret;
++	}
+ 	ret = regcache_sync(i2s_tdm->regmap);
+ 	pm_runtime_put(dev);
  
- 	dev_err(&hcodec->core.dev, "didn't find PCM for DAI %s\n", dai->name);
 -- 
 2.20.1
 
