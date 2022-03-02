@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82F29C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Mar 2022 09:02:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C58DC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Mar 2022 09:04:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D2EF21F7F;
-	Wed,  2 Mar 2022 10:01:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D2EF21F7F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9E12427F8;
+	Wed,  2 Mar 2022 10:03:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E12427F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646211757;
-	bh=2mmj0TWLm2W7cxuzBm4uSKeuTZ9NMMhXiXSJNbuiKKc=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=X6io3VjlASujEgCImV2KzY22Q1gKk5qOFfxpJfIo5AXD2XuQWt0JviIBA7vJNqPvW
-	 Hq38m/CpZiZsqLcVk/Dp8k1hZD/2YD7vPhQHBpmW8D9sXV3eCD4C7iZ9CG77Lc9mmK
-	 qYHfGk/ZHrWDd+Cc3fhN/9ZSPIhT7eqsTNqaQDp8=
+	s=default; t=1646211877;
+	bh=tZcFN+U1aEsOFCHiYypk3EadAd+qdc3u0qZvVBP0AnI=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=OaxUyS+0weLErPjR0CiGE+eslbzoLk2D+AM7DhwqNKCzEiMKoxzklAmFBF0J86wSY
+	 lOGPEHK8hgL8XFOmHQNey6gKJ8gQpm0DOxAZPRTmumai1LLCiKXnR/Qy547G0qUXf4
+	 0jUCivpSTjD7d2GH2rlvvq5uAFYy7hPCFydNq2Zg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B3FB7F80C0B;
-	Wed,  2 Mar 2022 09:34:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8220CF89636;
+	Wed,  2 Mar 2022 09:34:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0376FF80167; Wed,  2 Mar 2022 09:15:25 +0100 (CET)
-Received: from smtpbg151.qq.com (smtpbg151.qq.com [18.169.211.239])
+ id 147D8F80C41; Wed,  2 Mar 2022 09:34:40 +0100 (CET)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 872B2F80167
- for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2022 09:15:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 872B2F80167
-X-QQ-mid: bizesmtp77t1646208909tozdlr7p
-Received: from localhost.localdomain (unknown [58.240.82.166])
- by bizesmtp.qq.com (ESMTP) with 
- id ; Wed, 02 Mar 2022 16:15:04 +0800 (CST)
-X-QQ-SSF: 0140000000200060D000B00A0000000
-X-QQ-FEAT: 5MyhjOca6cU9yUHIx9no9FannyNiVghnXH98EgzPBbBOKRtYKGMkPzrxP6ZcP
- SfPZp5NObV+KqN/0JwIfl/Shg3ay3rpsjTqRMbdyT1839CS/uvOzRyZJI9wHHhPvFPWrBPL
- U31gkgtSJUxKsHEWOFuBgxtXzpCXay5/qIB0oSbTrxoZj8FDKGaJOO7iU5N3M0WUJEihT0+
- /sOpEzyeCJHI6PV2NKWwCmWm74aU5RgYWBOzr94xzWt6oQKA2RdkkGLvPNI4VXQrkMlEKFy
- xSpL+MRvgKiP1lFAYX1xXCcpNdPBdqWOlnM2Rgs8+17MW6hdcU97KK/RTRqBfIa0q4sLc47
- VvXuG5M1B5nOHOMHqCJeTYXduLYsS/fzbfmY9lY
-X-QQ-GoodBg: 2
-From: Zhen Ni <nizhen@uniontech.com>
-To: broonie@kernel.org,
-	perex@perex.cz,
-	tiwai@suse.com
-Subject: [PATCH] ASoC: amd: use asoc_substream_to_rtd()
-Date: Wed,  2 Mar 2022 16:15:02 +0800
-Message-Id: <20220302081502.25367-1-nizhen@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id D91EEF80878
+ for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2022 09:34:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D91EEF80878
+Received: from dude02.hi.pengutronix.de ([2001:67c:670:100:1d::28])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <sha@pengutronix.de>)
+ id 1nPKRL-0005uS-9H; Wed, 02 Mar 2022 09:34:31 +0100
+Received: from sha by dude02.hi.pengutronix.de with local (Exim 4.94.2)
+ (envelope-from <sha@pengutronix.de>)
+ id 1nPKRK-00FxnR-CB; Wed, 02 Mar 2022 09:34:30 +0100
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 1/7] ASoC: fsl_sai: Drop unnecessary defines
+Date: Wed,  2 Mar 2022 09:34:22 +0100
+Message-Id: <20220302083428.3804687-2-s.hauer@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220302083428.3804687-1-s.hauer@pengutronix.de>
+References: <20220302083428.3804687-1-s.hauer@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign6
-X-QQ-Bgrelay: 1
-X-Mailman-Approved-At: Wed, 02 Mar 2022 09:33:35 +0100
-Cc: Zhen Ni <nizhen@uniontech.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::28
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: alsa-devel@alsa-project.org
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@kernel.org>,
+ kernel@pengutronix.de, Xiubo Li <Xiubo.Lee@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,55 +74,95 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Uses asoc_substream_to_rtd() helper.
+The fsl_sai driver has FSL_FMT_TRANSMITTER and FSL_FMT_RECEIVER defines
+which are used in a single function only then are then only translated
+into a bool 'tx' variable. Drop the defines and pass the boolean value
+directly to fsl_sai_set_dai_sysclk_tr(). No functional change.
 
-Signed-off-by: Zhen Ni <nizhen@uniontech.com>
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- sound/soc/amd/vangogh/acp5x-mach.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/fsl/fsl_sai.c | 16 ++++++----------
+ sound/soc/fsl/fsl_sai.h |  3 ---
+ 2 files changed, 6 insertions(+), 13 deletions(-)
 
-diff --git a/sound/soc/amd/vangogh/acp5x-mach.c b/sound/soc/amd/vangogh/acp5x-mach.c
-index 14cf325e4b23..f2c32e5ed24f 100644
---- a/sound/soc/amd/vangogh/acp5x-mach.c
-+++ b/sound/soc/amd/vangogh/acp5x-mach.c
-@@ -101,7 +101,7 @@ static const struct snd_pcm_hw_constraint_list constraints_channels = {
- static int acp5x_8821_startup(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_card *card = rtd->card;
- 	struct acp5x_platform_info *machine = snd_soc_card_get_drvdata(card);
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index 10544fa27dc0b..d79cb7eb3b262 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -167,11 +167,10 @@ static int fsl_sai_set_dai_bclk_ratio(struct snd_soc_dai *dai,
+ }
  
-@@ -119,7 +119,7 @@ static int acp5x_8821_startup(struct snd_pcm_substream *substream)
- static int acp5x_nau8821_hw_params(struct snd_pcm_substream *substream,
- 				   struct snd_pcm_hw_params *params)
+ static int fsl_sai_set_dai_sysclk_tr(struct snd_soc_dai *cpu_dai,
+-		int clk_id, unsigned int freq, int fsl_dir)
++		int clk_id, unsigned int freq, bool tx)
  {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_card *card = rtd->card;
- 	struct snd_soc_dai *codec_dai =
- 			snd_soc_card_get_codec_dai(card,
-@@ -141,7 +141,7 @@ static int acp5x_nau8821_hw_params(struct snd_pcm_substream *substream,
- static int acp5x_cs35l41_startup(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_card *card = rtd->card;
- 	struct acp5x_platform_info *machine = snd_soc_card_get_drvdata(card);
+ 	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
+ 	unsigned int ofs = sai->soc_data->reg_offset;
+-	bool tx = fsl_dir == FSL_FMT_TRANSMITTER;
+ 	u32 val_cr2 = 0;
  
-@@ -158,7 +158,7 @@ static int acp5x_cs35l41_startup(struct snd_pcm_substream *substream)
- static int acp5x_cs35l41_hw_params(struct snd_pcm_substream *substream,
- 				   struct snd_pcm_hw_params *params)
+ 	switch (clk_id) {
+@@ -205,15 +204,13 @@ static int fsl_sai_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
+ 	if (dir == SND_SOC_CLOCK_IN)
+ 		return 0;
+ 
+-	ret = fsl_sai_set_dai_sysclk_tr(cpu_dai, clk_id, freq,
+-					FSL_FMT_TRANSMITTER);
++	ret = fsl_sai_set_dai_sysclk_tr(cpu_dai, clk_id, freq, true);
+ 	if (ret) {
+ 		dev_err(cpu_dai->dev, "Cannot set tx sysclk: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+-	ret = fsl_sai_set_dai_sysclk_tr(cpu_dai, clk_id, freq,
+-					FSL_FMT_RECEIVER);
++	ret = fsl_sai_set_dai_sysclk_tr(cpu_dai, clk_id, freq, false);
+ 	if (ret)
+ 		dev_err(cpu_dai->dev, "Cannot set rx sysclk: %d\n", ret);
+ 
+@@ -221,11 +218,10 @@ static int fsl_sai_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
+ }
+ 
+ static int fsl_sai_set_dai_fmt_tr(struct snd_soc_dai *cpu_dai,
+-				unsigned int fmt, int fsl_dir)
++				unsigned int fmt, bool tx)
  {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_card *card = rtd->card;
- 	struct snd_soc_dai *codec_dai;
- 	int ret, i;
+ 	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
+ 	unsigned int ofs = sai->soc_data->reg_offset;
+-	bool tx = fsl_dir == FSL_FMT_TRANSMITTER;
+ 	u32 val_cr2 = 0, val_cr4 = 0;
+ 
+ 	if (!sai->is_lsb_first)
+@@ -332,13 +328,13 @@ static int fsl_sai_set_dai_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
+ {
+ 	int ret;
+ 
+-	ret = fsl_sai_set_dai_fmt_tr(cpu_dai, fmt, FSL_FMT_TRANSMITTER);
++	ret = fsl_sai_set_dai_fmt_tr(cpu_dai, fmt, true);
+ 	if (ret) {
+ 		dev_err(cpu_dai->dev, "Cannot set tx format: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+-	ret = fsl_sai_set_dai_fmt_tr(cpu_dai, fmt, FSL_FMT_RECEIVER);
++	ret = fsl_sai_set_dai_fmt_tr(cpu_dai, fmt, false);
+ 	if (ret)
+ 		dev_err(cpu_dai->dev, "Cannot set rx format: %d\n", ret);
+ 
+diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
+index 9aaf231bc0244..4e76ae43d1968 100644
+--- a/sound/soc/fsl/fsl_sai.h
++++ b/sound/soc/fsl/fsl_sai.h
+@@ -201,9 +201,6 @@
+ #define FSL_SAI_REC_SYN		BIT(4)
+ #define FSL_SAI_USE_I2S_SLAVE	BIT(5)
+ 
+-#define FSL_FMT_TRANSMITTER	0
+-#define FSL_FMT_RECEIVER	1
+-
+ /* SAI clock sources */
+ #define FSL_SAI_CLK_BUS		0
+ #define FSL_SAI_CLK_MAST1	1
 -- 
-2.20.1
-
-
+2.30.2
 
