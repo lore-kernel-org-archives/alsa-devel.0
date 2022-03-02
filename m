@@ -4,75 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A992C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Mar 2022 15:55:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0093BC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Mar 2022 15:55:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 227F71AB3;
-	Wed,  2 Mar 2022 16:54:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 227F71AB3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1C9A01F80;
+	Wed,  2 Mar 2022 16:54:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C9A01F80
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646236504;
-	bh=mXMCLXjmtK6FSV22gB7pjRpMJFpSwkqsDKVea6f74N4=;
+	s=default; t=1646236535;
+	bh=J3QyWZ8upUtHgBDWTTYjjpCx2tok8/ohC3W1niBYtI0=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tG+Piue1db+6cC11dX09PtlSnCXfN6/ZML9Mzkx6jrAo0maSPrM2otOBFGpbebWGB
-	 Ti3somGD4V0jZiDXu9bBDCAlArOYlgrO18FaHbxA5OplquS4XA4VvbsQQ/duskeVk0
-	 LI+mQLYGqlgosjcZ12DEuzjAWB7dmRKDbAAQ+cRA=
+	b=jO6kxxVosconFg/+sQjdZqkbOzXUZAPbojRtwSsAXO8cfdrC4HUCTLrlnsSviZSOX
+	 iaJQnUvBQIXFb+rUs//dE2ZkVhf4pj2b0iWGE1ubcFpNnnpE9JSHzP0hwa1Kr37++r
+	 oJCUHrIbkulwPoCid2gnQD9ECB9PIzSwu97HLlvM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ADDF4F801D5;
-	Wed,  2 Mar 2022 16:54:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5F7D4F8027D;
+	Wed,  2 Mar 2022 16:54:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 43343F80154; Wed,  2 Mar 2022 16:54:12 +0100 (CET)
+ id 52170F80167; Wed,  2 Mar 2022 16:54:14 +0100 (CET)
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 70598F80154
- for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2022 16:54:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70598F80154
+ by alsa1.perex.cz (Postfix) with ESMTPS id 54EF3F80167
+ for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2022 16:54:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54EF3F80167
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="j0DozCEj"
+ header.b="DpfIsQCg"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1646236450; x=1677772450;
+ t=1646236452; x=1677772452;
  h=subject:to:cc:references:from:message-id:date:
  mime-version:in-reply-to:content-transfer-encoding;
- bh=mXMCLXjmtK6FSV22gB7pjRpMJFpSwkqsDKVea6f74N4=;
- b=j0DozCEj8aG7L80y0/cDMBwuIF71AYZoOsr4EPx8vLtgERug3WLcpcFV
- 6gXsQi6lsZXYcuKk/htdFpNJAs1CycnxgIXtMp0XkOXi6fM2pPQ3wiQT3
- 1uGJmR+3+Xu8FmexfSn2PVp50iXZLqmm0xncW06GroKUdConmXHhHclw3
- akJ8NsqkheAESuXkYIS7iYJBWoabd6p9HqasXRz/rQT7Ey8PhWdWT50VK
- M2LRoufQyJ8pDDk9wx+FM8vMvttINkEgoN9OH2USzHP0ahhX+C/eWf0KX
- QgfLfnCZ0NIpyoSC4IjdrbVKEdPFJ8CS1fa9Xy2WsZ7TfuWMk1FlEgRF+ A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10274"; a="234049411"
-X-IronPort-AV: E=Sophos;i="5.90,149,1643702400"; d="scan'208";a="234049411"
+ bh=J3QyWZ8upUtHgBDWTTYjjpCx2tok8/ohC3W1niBYtI0=;
+ b=DpfIsQCg0A0axv0VlzZLJEGGG+It1Ls0tWZEOoy0X5z4ZavIvDd+qz6w
+ Ggts9r4iog+Dx3onNPnPe8uc4I7SszEFQkil9c+hi25M5WHYSzUp16eXL
+ cCdikCCIsc9DAKpXvgrJA3Davd1yWkESCdZ20eClEjaqQ4hfXCo1/+qjc
+ 9hxq4WrjUqddMlmFs0PtZxCvVAx24P/LxFg8xupz3zZpbqu9frEtYaHbL
+ pQszqwxbQAJgejXoWNzvjsDHzUSoyZTxNskXc8ndQ2ImGKDOzA0vQ3Gjx
+ niU+hOzWlOYSZEZ4Fu29hbZ38dv5K0dw7VQKD9HIUGoglFMuwfXNfdt6Q g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10274"; a="234049412"
+X-IronPort-AV: E=Sophos;i="5.90,149,1643702400"; d="scan'208";a="234049412"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Mar 2022 07:54:05 -0800
-X-IronPort-AV: E=Sophos;i="5.90,149,1643702400"; d="scan'208";a="535435315"
+ 02 Mar 2022 07:54:06 -0800
+X-IronPort-AV: E=Sophos;i="5.90,149,1643702400"; d="scan'208";a="535435329"
 Received: from tpthomas-mobl2.amr.corp.intel.com (HELO [10.212.252.17])
  ([10.212.252.17])
  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Mar 2022 07:54:04 -0800
-Subject: Re: [PATCH 6/8] ASoC: Intel: cirrus-common: support cs35l41 amplifier
+ 02 Mar 2022 07:54:05 -0800
+Subject: Re: [PATCH 7/8] ASoC: Intel: sof_ssp_amp: rename driver and support
+ cs35l41 amplifier
 To: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>, alsa-devel@alsa-project.org
 References: <20220301194903.60859-1-pierre-louis.bossart@linux.intel.com>
- <20220301194903.60859-7-pierre-louis.bossart@linux.intel.com>
- <b03ca8eb-0ceb-6814-e947-baf3a15f7fe9@linux.intel.com>
+ <20220301194903.60859-8-pierre-louis.bossart@linux.intel.com>
+ <e597f364-96b6-08b1-3c88-436693c65b04@linux.intel.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <35a5435c-5d24-3957-1892-4b5c3c67a241@linux.intel.com>
-Date: Wed, 2 Mar 2022 09:46:22 -0600
+Message-ID: <33d27810-a023-f2f7-5218-e406fc7c13e5@linux.intel.com>
+Date: Wed, 2 Mar 2022 09:50:36 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Firefox/78.0 Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <b03ca8eb-0ceb-6814-e947-baf3a15f7fe9@linux.intel.com>
+In-Reply-To: <e597f364-96b6-08b1-3c88-436693c65b04@linux.intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Cc: tiwai@suse.de, broonie@kernel.org,
  Bard Liao <yung-chuan.liao@linux.intel.com>, Brent Lu <brent.lu@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
@@ -91,26 +92,32 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
->> +++ b/sound/soc/intel/boards/sof_cirrus_common.c
->> @@ -0,0 +1,163 @@
->> +// SPDX-License-Identifier: GPL-2.0-only
->> +/*
->> + * This file defines data structures and functions used in Machine
->> + * Driver for Intel platforms with Cirrus Logic Codecs.
->> + *
->> + * Copyright 2022 Intel Corporation.
+
+On 3/2/22 8:56 AM, Amadeusz Sławiński wrote:
+> On 3/1/2022 8:49 PM, Pierre-Louis Bossart wrote:
+>> From: Brent Lu <brent.lu@intel.com>
+>>
+>> Add support of CS35L41 amplifier to the machine driver, as well as
+>> the support of HDMI playback and BT offload DAI Link.
+>>
+>> Rename the driver to a generic name to support different amplifiers
+>> from different vendors.
+>>
+>> Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+>> Signed-off-by: Brent Lu <brent.lu@intel.com>
+>> Signed-off-by: Pierre-Louis Bossart 
+>> <pierre-louis.bossart@linux.intel.com>
+>> ---
 > 
-> (c) seems to be missing? All other boards have it in some form.
+> Eh... rename should happen in separate patch, as there seems to be some 
+> changes done to the file and it is quite hard to review it, when whole 
+> file is in diff due to being moved.
 
-Indeed that's a miss, will fix.
+that was a conscious decision on my side to keep the patches as is, 
+first add the initial contribution for the rt1308 amp from our embedded 
+Linux team, and show how it was extended to support another amplifier 
+for Chrome.
 
->> +++ b/sound/soc/intel/boards/sof_cirrus_common.h
->> @@ -0,0 +1,25 @@
->> +/* SPDX-License-Identifier: GPL-2.0-only */
->> +/*
->> + * This file defines data structures used in Machine Driver for Intel
->> + * platforms with Cirrus Logic Codecs.
->> + *
->> + * Copyright 2022 Intel Corporation.
-
-and here too.
+Indeed it leads to a bit of a tick-tock patch with the rename but it's 
+not that bad, is it? The alternative would lead to a much bigger patch 
+if I squash the whole thing.
