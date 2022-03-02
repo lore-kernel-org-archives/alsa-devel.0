@@ -4,64 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22FA7C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Mar 2022 17:02:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7CFE5C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Mar 2022 17:03:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C5BF61F42;
-	Wed,  2 Mar 2022 18:02:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C5BF61F42
+	by alsa0.perex.cz (Postfix) with ESMTPS id B0F6F1F4E;
+	Wed,  2 Mar 2022 18:02:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0F6F1F4E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646240574;
-	bh=MfDFBAyKZO8R+BnzZBCZPZLZ/sz34eRmK3kYoi78u3o=;
+	s=default; t=1646240593;
+	bh=5tZBPMx5BMT71ax6op9U51BLeLidIvFCtNHBOzWsyM4=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kXTLBIcJTgigs+P0EKGnayPDZCUQfcq1ez/7AFsy0kBbCg8WiQjAO5QoA+ip+yQbG
-	 NNAYqW5nIjCWKfIqtPha1uNfM9ax6ito2c0ITr6plUQZlPHpHpGcjEJ7emw9yjJh/S
-	 L6Aln1vmpXAnKe8vZWL2wv9AccrF5+jtnbXfeox0=
+	b=oJY6zOYyJC6OOBFQtt+DfjplkLRiOrgFUShSxYbxd4wuabZslNag/SbCY3Ir1seOM
+	 lpnf3la1AJPkbdkR17los2GqkG2DqNQBWRwFRcrirpgVO4YsPjCz5DHUdTp+lZcU6u
+	 Qnc/z8B0Ek3EEpeMeeBMDe4O/LEYdlSumfPAl+GQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 618E1F80519;
-	Wed,  2 Mar 2022 18:01:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CE197F80525;
+	Wed,  2 Mar 2022 18:01:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 269E2F80519; Wed,  2 Mar 2022 18:01:03 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id E7E5CF8051A; Wed,  2 Mar 2022 18:01:04 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 94976F80508
- for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2022 18:01:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94976F80508
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3C549F80508
+ for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2022 18:01:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3C549F80508
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="BJEjh3bL"
+ header.b="G2zrAx1W"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 4638761920;
- Wed,  2 Mar 2022 17:00:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48857C004E1;
- Wed,  2 Mar 2022 17:00:57 +0000 (UTC)
+ by sin.source.kernel.org (Postfix) with ESMTPS id 7E6ACCE2252;
+ Wed,  2 Mar 2022 17:00:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43A5DC340F2;
+ Wed,  2 Mar 2022 17:00:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1646240458;
- bh=MfDFBAyKZO8R+BnzZBCZPZLZ/sz34eRmK3kYoi78u3o=;
+ s=k20201202; t=1646240456;
+ bh=5tZBPMx5BMT71ax6op9U51BLeLidIvFCtNHBOzWsyM4=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=BJEjh3bLaS0dc3swhCdMxhIdLYODlOvGEs+1zBqVQ66qi9Mm/2WTNmeQzSPNrhFSr
- AeTlcYCPQ8RNTiSosUZC1IMQo7OmBGx1kF/tsPql49/54EDMrqy8wvsUcsZetY6GWV
- J9e+NqS0KMk7Ay52HsWjIISnnET1ESiSUNKdt8FExVSTcDoZCEQ1Un0qiYMgTZXSYn
- JqDrP34bw5nqSR15kdNT3WwShZHLPjTWBQ71RAtiuvBNWKravnJ5jTPYWdikHuHlFI
- emsY10enmP7yUxRTuyEwsr8D3EKoiJOVUw6I3zRGgy6iOd7O78o2Pe5tntsg0E9v/9
- JcdklurEh2jOg==
+ b=G2zrAx1WltNmVJHM/cDy0B/Hce9rxkBhDWGeljawipdKHrkjLj1FJOmjeEHTU0Lts
+ 5p/MdSbdY/OqH40/y8O/WlcW5YelC1DDvyWFrN+Xu2bsXdBiTwfXQr74e38skMmuGw
+ AxZFCzt0RAPzR1KnLA/CGWh+owGwFlvSwdKDQGqk58LfJEUASJ4c2It9BDpl3P1Koj
+ NmKTq6Sk84vFo+MApyiqn8yE7dDlsL9V5QmS0uayTkvd4iUPArd9LIYM1e2gn9ErW+
+ +SG/eldt2o9DZ68sNOwVXtQ6N1arcSIdoSUoT4dzPvea15RGGMTKyfQVlds2MenTtX
+ aemk39rg+IKDA==
 From: Mark Brown <broonie@kernel.org>
 To: lgirdwood@gmail.com, tiwai@suse.com, perex@perex.cz,
- Jiasheng Jiang <jiasheng@iscas.ac.cn>, vkoul@kernel.org
-In-Reply-To: <1634285633-529368-1-git-send-email-jiasheng@iscas.ac.cn>
-References: <1634285633-529368-1-git-send-email-jiasheng@iscas.ac.cn>
-Subject: Re: [PATCH v2] ASoC: soc-compress: prevent the potentially use of
- null pointer
-Message-Id: <164624045702.1145067.14385834637074739247.b4-ty@kernel.org>
-Date: Wed, 02 Mar 2022 17:00:57 +0000
+ yangyingliang@huawei.com, Jiasheng Jiang <jiasheng@iscas.ac.cn>,
+ robin.murphy@arm.com
+In-Reply-To: <20220301084742.3751939-1-jiasheng@iscas.ac.cn>
+References: <20220301084742.3751939-1-jiasheng@iscas.ac.cn>
+Subject: Re: [PATCH] ASoC: dwc-i2s: Handle errors for clk_enable
+Message-Id: <164624045500.1145067.2482712182081585715.b4-ty@kernel.org>
+Date: Wed, 02 Mar 2022 17:00:55 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -81,25 +80,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 15 Oct 2021 08:13:53 +0000, Jiasheng Jiang wrote:
-> There is one call trace that snd_soc_register_card()
-> ->snd_soc_bind_card()->soc_init_pcm_runtime()
-> ->snd_soc_dai_compress_new()->snd_soc_new_compress().
-> In the trace the 'codec_dai' transfers from card->dai_link,
-> and we can see from the snd_soc_add_pcm_runtime() in
-> snd_soc_bind_card() that, if value of card->dai_link->num_codecs
-> is 0, then 'codec_dai' could be null pointer caused
-> by index out of bound in 'asoc_rtd_to_codec(rtd, 0)'.
-> And snd_soc_register_card() is called by various platforms.
-> Therefore, it is better to add the check in the case of misusing.
-> And because 'cpu_dai' has already checked in soc_init_pcm_runtime(),
-> there is no need to check again.
-> Adding the check as follow, then if 'codec_dai' is null,
-> snd_soc_new_compress() will not pass through the check
-> 'if (playback + capture != 1)', avoiding the leftover use of
-> 'codec_dai'.
+On Tue, 1 Mar 2022 16:47:42 +0800, Jiasheng Jiang wrote:
+> As the potential failure of the clk_enable(),
+> it should be better to check it, as same as clk_prepare_enable().
 > 
-> [...]
+> 
 
 Applied to
 
@@ -107,8 +92,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: soc-compress: prevent the potentially use of null pointer
-      commit: de2c6f98817fa5decb9b7d3b3a8a3ab864c10588
+[1/1] ASoC: dwc-i2s: Handle errors for clk_enable
+      commit: 45ea97d74313bae681328b0c36fa348036777644
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
