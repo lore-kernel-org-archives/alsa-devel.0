@@ -4,78 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 046AAC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Mar 2022 14:57:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5062EC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Mar 2022 15:43:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9C16B1F1D;
-	Wed,  2 Mar 2022 15:56:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C16B1F1D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 012D31F6A;
+	Wed,  2 Mar 2022 16:43:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 012D31F6A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646233045;
-	bh=G5tPcw3JMbTMUFqmS1I82jzhfr5fG9MatTHRp3Klm6Q=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1646235833;
+	bh=7IYRL+GavLmgyLRpxHba+gbdrurgtbY4Z97aGoux0xQ=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Z9IkPaLHudfTw7sPGxewefH1m1OwxcJvAUPQ68pnMmj/gdij6cDp7fhdHVxkQ90Oa
-	 HXTMZK5LSaek5wEDAlEGrK0KMep+n2O2FZ3/wbxzWIa/3M7oBsCwDm4YM0sPRWdT0o
-	 Mb9SiORwC1xusU96XLF80x2ERTmPV5DmfHeIz60o=
+	b=HByTS0fvLxew/6QEYsrTyznG9enStFAHOYQ3mHFDTjveIJCO8nAaxstM+ieC92vw6
+	 ThEz6BPkmeaqmv0qcwR3bCAL0ufrQFrJzUn3XfnmXvhyS5dkW4KTRuGeBaeZbN2ewa
+	 Sxu66v0B4wWkcE0SPpkb/lXtOtOaAGbxk8Xd42uk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 40EECF80171;
-	Wed,  2 Mar 2022 15:56:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8E5A0F80167;
+	Wed,  2 Mar 2022 16:43:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A112DF80054; Wed,  2 Mar 2022 15:56:34 +0100 (CET)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ id 688FCF801D5; Wed,  2 Mar 2022 16:43:01 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2423DF80167
+ for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2022 16:42:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2423DF80167
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="C9bcaRPy"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B26E4F80054
- for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2022 15:56:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B26E4F80054
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="MhqB4Czw"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1646232988; x=1677768988;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=G5tPcw3JMbTMUFqmS1I82jzhfr5fG9MatTHRp3Klm6Q=;
- b=MhqB4CzwZko4N5LQzvREf7zI6dAegxHWOa+cA+VUpOa79OYn6rLwk7pa
- P5dN7iVw40Q/xWb31ouPT4oiUxMVEasCTuCcxNkXmonvZk6Vap3T668Qh
- gDpZ69N5C2szFc7IhApCKcI3Yb/a4TUJrrt4OHKSQMs2Hx8cY2kV+aj/B
- Y/gZUE5/t+dn/X+ROzBSHBGJrCZbbxKeV09vrGfyja8CWEjf+nmM5PCEg
- WTqBv+AGTNxId7lYTEcBWlaQwkd7ceV7BR7JqfQ4GTSDZiE42ARwfL2Uq
- qTbZgBXgjXVds1sEkW+LHc382nftQrckac1nmzp5pJVa6LXppshTz7Dpy w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10274"; a="250990371"
-X-IronPort-AV: E=Sophos;i="5.90,149,1643702400"; d="scan'208";a="250990371"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Mar 2022 06:56:23 -0800
-X-IronPort-AV: E=Sophos;i="5.90,149,1643702400"; d="scan'208";a="535414847"
-Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.99.241.26])
- ([10.99.241.26])
- by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Mar 2022 06:56:21 -0800
-Message-ID: <e597f364-96b6-08b1-3c88-436693c65b04@linux.intel.com>
-Date: Wed, 2 Mar 2022 15:56:19 +0100
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 662646170B;
+ Wed,  2 Mar 2022 15:42:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28DD4C004E1;
+ Wed,  2 Mar 2022 15:42:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1646235773;
+ bh=7IYRL+GavLmgyLRpxHba+gbdrurgtbY4Z97aGoux0xQ=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=C9bcaRPydA5rE7UiWO+AwDn8Dw2XEyrI7axyNYrCDDuYn6BTHy8G+NOeJWrOCyxOc
+ pEeY7E2sPPS2gL2hbFbKbhuW4S2l50kkI5DhQAVX2nfFqpsQ4Kq3KEevr2/GLPUiw0
+ mxlPRuHI569S7IQdon+YbCxs7++L6f1RrW4qLjxKtXoC+uFyxCITuANeGP0VeJrsy6
+ VsJnrzwlcSOlS6Q4VLw6HnrXJesLUbGHkDQBr1vY6T9pr19KulOfAFch1z/G84TXtj
+ NOegoTsBZrLhMNRMWK30XpekBE7sYDJh3VXwzTw81fO2yUUCayvYQArluvl3VAFBIa
+ VreWrZefN5Lbw==
+Date: Wed, 2 Mar 2022 21:12:49 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v3 0/3] soundwire: qcom: add pm runtime support
+Message-ID: <Yh+QeWEufbp2JLo+@matsya>
+References: <20220228172528.3489-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.1
-Subject: Re: [PATCH 7/8] ASoC: Intel: sof_ssp_amp: rename driver and support
- cs35l41 amplifier
-Content-Language: en-US
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org
-References: <20220301194903.60859-1-pierre-louis.bossart@linux.intel.com>
- <20220301194903.60859-8-pierre-louis.bossart@linux.intel.com>
-From: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-In-Reply-To: <20220301194903.60859-8-pierre-louis.bossart@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: tiwai@suse.de, broonie@kernel.org,
- Bard Liao <yung-chuan.liao@linux.intel.com>, Brent Lu <brent.lu@intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220228172528.3489-1-srinivas.kandagatla@linaro.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
+ robh+dt@kernel.org, yung-chuan.liao@linux.intel.com, quic_srivasam@quicinc.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,21 +81,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 3/1/2022 8:49 PM, Pierre-Louis Bossart wrote:
-> From: Brent Lu <brent.lu@intel.com>
+On 28-02-22, 17:25, Srinivas Kandagatla wrote:
+> This patchset adds pm runtime support to Qualcomm SounWire Controller using
+> SoundWire Clock Stop and Wake up using Headset events on supported instances and
+> instances like WSA which do not support clock stop a soft reset of controller
+> along with full rest of slaves is done to resume from a low power state.
 > 
-> Add support of CS35L41 amplifier to the machine driver, as well as
-> the support of HDMI playback and BT offload DAI Link.
-> 
-> Rename the driver to a generic name to support different amplifiers
-> from different vendors.
-> 
-> Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-> Signed-off-by: Brent Lu <brent.lu@intel.com>
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> ---
+> Tested it on SM8250 MTP and Dragon Board DB845c
 
-Eh... rename should happen in separate patch, as there seems to be some 
-changes done to the file and it is quite hard to review it, when whole 
-file is in diff due to being moved.
+Applied, thanks
 
+-- 
+~Vinod
