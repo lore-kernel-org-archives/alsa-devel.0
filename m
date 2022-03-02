@@ -4,49 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3F4AC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Mar 2022 09:05:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA72FC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Mar 2022 09:05:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2DC11280F;
-	Wed,  2 Mar 2022 10:04:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2DC11280F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 088C62227;
+	Wed,  2 Mar 2022 10:04:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 088C62227
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646211927;
-	bh=mH5N4bleI/7bj53K3gSf4MHbqmIiw2g+VJHbtuitZz0=;
+	s=default; t=1646211938;
+	bh=dnp/BB7YYzg9U2nptUa9uKvSwboYq30Fbt9HLKoYiPs=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oJpsA1EKsmcMlkQaUn3V8bcBGHvXQc7F8ALKxLlS/0ZaJVWp6wN8XsxiWHbQ1TO8w
-	 UmlXvdlydaqpZryRXAh0ViVT/Q+AFV7/tvQTuhmJM9WwCPGGrDfn4E08jxe0rVMaTn
-	 Tsmb2Fbm7n1MJ3fKOzaFNhuiq0NZUgkHNH2sJSxM=
+	b=mCX+vXTtzvM9eW3iEZcT2d1I/QbSZpRDCqWbAO4ehrE+Pq1A7fa6PiBrjQg7fQ4nK
+	 QHxi0/P8xBeVAFhs9Q/0NkLUWPi9lwKcAjPWif6Snwx8ERMmHBdF0Qj+VHZTg5pO92
+	 2JMS30GIWShxN+SA41sjqd7BEQUmQCXYMfBQAsQM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 034EFF896F6;
-	Wed,  2 Mar 2022 09:34:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 99D00F896E9;
+	Wed,  2 Mar 2022 09:35:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 771CCF896E8; Wed,  2 Mar 2022 09:34:55 +0100 (CET)
+ id 30EE6F896E9; Wed,  2 Mar 2022 09:34:55 +0100 (CET)
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
  [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A414FF8963E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 76ED9F89636
  for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2022 09:34:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A414FF8963E
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76ED9F89636
 Received: from dude02.hi.pengutronix.de ([2001:67c:670:100:1d::28])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1nPKRL-0005uX-9M; Wed, 02 Mar 2022 09:34:31 +0100
+ id 1nPKRL-0005uV-9R; Wed, 02 Mar 2022 09:34:31 +0100
 Received: from sha by dude02.hi.pengutronix.de with local (Exim 4.94.2)
  (envelope-from <sha@pengutronix.de>)
- id 1nPKRK-00Fxng-Eu; Wed, 02 Mar 2022 09:34:30 +0100
+ id 1nPKRK-00Fxna-Du; Wed, 02 Mar 2022 09:34:30 +0100
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 6/7] ASoC: fsl_sai: use DIV_ROUND_CLOSEST() to calculate
- divider
-Date: Wed,  2 Mar 2022 09:34:27 +0100
-Message-Id: <20220302083428.3804687-7-s.hauer@pengutronix.de>
+Subject: [PATCH 4/7] ASoC: fsl_sai: store full version instead of major/minor
+Date: Wed,  2 Mar 2022 09:34:25 +0100
+Message-Id: <20220302083428.3804687-5-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220302083428.3804687-1-s.hauer@pengutronix.de>
 References: <20220302083428.3804687-1-s.hauer@pengutronix.de>
@@ -75,54 +74,67 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-In fsl_sai_set_bclk() we want to calculate the divider that gets us
-closest to the desired frequency, so use DIV_ROUND_CLOSEST() instead of
-just doing a clk_rate/freq.
-Also discard invalid ratios earlier.
+The driver tests for the hardware revision being newer than 3.1
+with (sai->verid.major >= 3 && sai->verid.minor >= 1). The result
+is obviously wrong for hardware revision 4.0. Fix this by storing
+the full version in a single variable and comparing to that one.
+No practical change at the moment as there is no 4.0 ip version
+currently.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- sound/soc/fsl/fsl_sai.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ sound/soc/fsl/fsl_sai.c | 8 +++-----
+ sound/soc/fsl/fsl_sai.h | 6 ++----
+ 2 files changed, 5 insertions(+), 9 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index 190f6206023fa..818bb982427f8 100644
+index 5f627ccd172b2..2544fd363e24d 100644
 --- a/sound/soc/fsl/fsl_sai.c
 +++ b/sound/soc/fsl/fsl_sai.c
-@@ -366,9 +366,11 @@ static int fsl_sai_set_bclk(struct snd_soc_dai *dai, bool tx, u32 freq)
- 		if (!clk_rate)
- 			continue;
+@@ -958,10 +958,8 @@ static int fsl_sai_check_version(struct device *dev)
  
--		ratio = clk_rate / freq;
-+		ratio = DIV_ROUND_CLOSEST(clk_rate, freq);
-+		if (!ratio || ratio > 512 || ratio & 1)
-+			continue;
+ 	dev_dbg(dev, "VERID: 0x%016X\n", val);
  
--		diff = clk_rate - ratio * freq;
-+		diff = abs((long)clk_rate - ratio * freq);
+-	sai->verid.major = (val & FSL_SAI_VERID_MAJOR_MASK) >>
+-			   FSL_SAI_VERID_MAJOR_SHIFT;
+-	sai->verid.minor = (val & FSL_SAI_VERID_MINOR_MASK) >>
+-			   FSL_SAI_VERID_MINOR_SHIFT;
++	sai->verid.version = val &
++		(FSL_SAI_VERID_MAJOR_MASK | FSL_SAI_VERID_MINOR_MASK);
+ 	sai->verid.feature = val & FSL_SAI_VERID_FEATURE_MASK;
  
- 		/*
- 		 * Drop the source that can not be
-@@ -381,10 +383,6 @@ static int fsl_sai_set_bclk(struct snd_soc_dai *dai, bool tx, u32 freq)
- 			"ratio %d for freq %dHz based on clock %ldHz\n",
- 			ratio, freq, clk_rate);
+ 	ret = regmap_read(sai->regmap, FSL_SAI_PARAM, &val);
+@@ -1133,7 +1131,7 @@ static int fsl_sai_probe(struct platform_device *pdev)
  
--		if (ratio % 2 == 0 && ratio >= 2 && ratio <= 512)
--			ratio /= 2;
--		else
--			continue;
+ 	/* Select MCLK direction */
+ 	if (of_find_property(np, "fsl,sai-mclk-direction-output", NULL) &&
+-	    sai->verid.major >= 3 && sai->verid.minor >= 1) {
++	    sai->verid.version >= 0x0301) {
+ 		regmap_update_bits(sai->regmap, FSL_SAI_MCTL,
+ 				   FSL_SAI_MCTL_MCLK_EN, FSL_SAI_MCTL_MCLK_EN);
+ 	}
+diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
+index 4e76ae43d1968..8c315bf61564d 100644
+--- a/sound/soc/fsl/fsl_sai.h
++++ b/sound/soc/fsl/fsl_sai.h
+@@ -226,15 +226,13 @@ struct fsl_sai_soc_data {
  
- 		if (diff < bestdiff) {
- 			savediv = ratio;
-@@ -424,7 +422,7 @@ static int fsl_sai_set_bclk(struct snd_soc_dai *dai, bool tx, u32 freq)
+ /**
+  * struct fsl_sai_verid - version id data
+- * @major: major version number
+- * @minor: minor version number
++ * @version: version number
+  * @feature: feature specification number
+  *           0000000000000000b - Standard feature set
+  *           0000000000000000b - Standard feature set
+  */
+ struct fsl_sai_verid {
+-	u32 major;
+-	u32 minor;
++	u32 version;
+ 	u32 feature;
+ };
  
- 	regmap_update_bits(sai->regmap, reg, FSL_SAI_CR2_MSEL_MASK,
- 			   FSL_SAI_CR2_MSEL(sai->mclk_id[tx]));
--	regmap_update_bits(sai->regmap, reg, FSL_SAI_CR2_DIV_MASK, savediv - 1);
-+	regmap_update_bits(sai->regmap, reg, FSL_SAI_CR2_DIV_MASK, savediv / 2 - 1);
- 
- 	return 0;
- }
 -- 
 2.30.2
 
