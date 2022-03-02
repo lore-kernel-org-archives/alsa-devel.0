@@ -4,59 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B836DC433FE
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Mar 2022 03:10:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 267F9C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Mar 2022 03:12:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2010217DE;
-	Wed,  2 Mar 2022 04:09:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2010217DE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 60F6D1900;
+	Wed,  2 Mar 2022 04:12:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 60F6D1900
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646190608;
-	bh=cf59QRbFuVQvOE3eA4G7qqX0jLYNdZZGJMxAOIgIj3M=;
+	s=default; t=1646190770;
+	bh=KaDIx6XgH9Hw7GmQJm9T1djZI9vGYEmk5pY1QhIQYoQ=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=pyCgDrGHiKl9PtilAj6Z8OYSDzW5y0GTObDY8ec7q6zTaSrkekYGzsaf4u3TmuQ/q
-	 BrUiwIeQHgdEtMA7GD4Qx/lypCDP7SxD/LKvuqSnaP+Yo3zjIA0bOBQ9ZayIBZKJq2
-	 Mz5whl7wpr/7NMDNcI1hrTNv9jc+JY+23DFv+Bm0=
+	b=WB+XRCFba7kFNn08JIyvYBqDrUw6x0gN4JhJyGqfCfcsIWQPaY0cZdNkmz2rHrQZQ
+	 7TilFI2sC7AnIWWJ6svVucuSEaZwwyuhiUGFygt+vobnfuB+vPdwJSbT6sx+z0ct0Y
+	 Vet/Acx1aghqj65rwIKG81eMm65xgT2CcXcfwXQo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AFD87F80171;
-	Wed,  2 Mar 2022 04:09:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E62FAF80171;
+	Wed,  2 Mar 2022 04:11:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C1C58F801D5; Wed,  2 Mar 2022 04:09:16 +0100 (CET)
+ id 6866EF80167; Wed,  2 Mar 2022 04:11:59 +0100 (CET)
 Received: from cstnet.cn (smtp23.cstnet.cn [159.226.251.23])
- by alsa1.perex.cz (Postfix) with ESMTP id DA4B3F80154
- for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2022 04:09:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA4B3F80154
+ by alsa1.perex.cz (Postfix) with ESMTP id 8B288F80167
+ for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2022 04:11:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B288F80167
 Received: from localhost.localdomain (unknown [124.16.138.126])
- by APP-03 (Coremail) with SMTP id rQCowACXnsLO3x5iwKaQAQ--.25965S2;
- Wed, 02 Mar 2022 11:09:03 +0800 (CST)
+ by APP-03 (Coremail) with SMTP id rQCowADX35t24B5idqyQAQ--.22138S2;
+ Wed, 02 Mar 2022 11:11:50 +0800 (CST)
 From: Jiasheng Jiang <jiasheng@iscas.ac.cn>
 To: broonie@kernel.org
-Subject: [PATCH v2] ASoC: fsi: Add check for clk_enable
-Date: Wed,  2 Mar 2022 11:09:00 +0800
-Message-Id: <20220302030900.46341-1-jiasheng@iscas.ac.cn>
+Subject: Re: Re: [PATCH] ASoC: fsi: Add check for clk_enable
+Date: Wed,  2 Mar 2022 11:11:48 +0800
+Message-Id: <20220302031148.46395-1-jiasheng@iscas.ac.cn>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: rQCowACXnsLO3x5iwKaQAQ--.25965S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7Xr47tF15uFW3uw4kKFW7Arb_yoWkXwb_Aa
- 1jg39Iq3W5urWfCasrJr4UA34j9r47Za4UGryIq3Z3tayUJrs8ur48Z3sYvrn0qw1Y9as3
- Aa1DZr4xArW3CjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
- 9fnUUIcSsGvfJTRUUUbxAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
- 6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
- A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
- Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
- 0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
- 2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
- W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
- Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
- xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5
- MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
- 0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v2
- 6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0J
- UQvtAUUUUU=
+X-CM-TRANSID: rQCowADX35t24B5idqyQAQ--.22138S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+ VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYD7AC8VAFwI0_Xr0_Wr1l1xkIjI8I6I8E
+ 6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
+ kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8I
+ cVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z2
+ 80aVCY1x0267AKxVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+ w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMc
+ vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v
+ 4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc2xSY4AK67AK6r48MxAIw28IcxkI7VAKI48JMx
+ C20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAF
+ wI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20x
+ vE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v2
+ 0xvaj40_Zr0_Wr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI
+ 0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUg4SrUUUUU=
 X-Originating-IP: [124.16.138.126]
 X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
 Cc: alsa-devel@alsa-project.org, songliubraving@fb.com,
@@ -80,57 +78,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-As the potential failure of the clk_enable(),
-it should be better to check it and return error
-if fails.
+On Tue, Mar 01, 2022 at 08:44:12PM +0800, Mark Brown wrote:
+>> +err:
+>> +	clk_disable(clock->xck);
+>> +	clk_disable(clock->ick);
+>> +	clk_disable(clock->div);
+> 
+> You need separate labels for each enable so that we don't end up
+> disabling clocks we didn't enable, that would also be a bug.
 
-Fixes: ab6f6d85210c ("ASoC: fsi: add master clock control functions")
-Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
----
-Changelog:
+Thanks, I have submitted a v2 to fix it.
 
-v1 -> v2
-
-* Change 1. Seperate the error handler.
----
- sound/soc/sh/fsi.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
-index cdf3b7f69ba7..91050478844a 100644
---- a/sound/soc/sh/fsi.c
-+++ b/sound/soc/sh/fsi.c
-@@ -816,14 +816,27 @@ static int fsi_clk_enable(struct device *dev,
- 			return ret;
- 		}
- 
--		clk_enable(clock->xck);
--		clk_enable(clock->ick);
--		clk_enable(clock->div);
-+		ret = clk_enable(clock->xck);
-+		if (ret)
-+			goto err;
-+		ret = clk_enable(clock->ick);
-+		if (ret)
-+			goto disable_xck;
-+		ret = clk_enable(clock->div);
-+		if (ret)
-+			goto disable_ick;
- 
- 		clock->count++;
- 	}
- 
- 	return ret;
-+
-+disable_xck:
-+	clk_disable(clock->xck);
-+disable_ick:
-+	clk_disable(clock->ick);
-+err:
-+	return ret;
- }
- 
- static int fsi_clk_disable(struct device *dev,
--- 
-2.25.1
+Jiang
 
