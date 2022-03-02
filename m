@@ -4,79 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55710C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Mar 2022 20:44:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32AD3C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Mar 2022 01:18:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DBB191AC5;
-	Tue,  1 Mar 2022 21:43:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DBB191AC5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 79C581913;
+	Wed,  2 Mar 2022 02:17:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 79C581913
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646167474;
-	bh=j8hCtzK8/yGigjiI1ZMUVHJkmYhuD4SpFKIZnvhuUqs=;
+	s=default; t=1646183906;
+	bh=nIvvaem+k+6hnx/ohPtVgwNDvGvdINIt+iVn6LJ7TVU=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Aa9jYtmZkAD8k6doGhKmbiioN7mRw1V/3YRdsvA12OOhGFNuNqNTdSjmW8lGjTKcA
-	 EOT7uLKF5qiN+4DNaa02Rw66KD8kfMu2/70sVvl5e+L4gbN6jLc3+Tg9GWfxFngXbz
-	 Z4eDLUMr7OHuexhBsTUpN7diBfrBgo/8n2WzfUnM=
+	 Reply-To:From;
+	b=c61oZX8mjoOWTbgK0VvjfUmpCBcprmX0TNdKjKB3e7EF0QU/FSWQWsCVc7QszlVGT
+	 wncsmg7eryh+q2vjfeps/nndUdhfRip4+UlaJEX5uQ6YUZMvcS7eOCwlrB6IXSlwcS
+	 /jUFp1dUag3Piub4vmxP7jCCIiaXIQdn7anwMYfk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 79FF7F801D8;
-	Tue,  1 Mar 2022 21:43:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0D1FEF801D8;
+	Wed,  2 Mar 2022 02:17:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 60675F80227; Tue,  1 Mar 2022 21:43:42 +0100 (CET)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ id B7EA1F80227; Wed,  2 Mar 2022 02:17:34 +0100 (CET)
+Received: from out30-45.freemail.mail.aliyun.com
+ (out30-45.freemail.mail.aliyun.com [115.124.30.45])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6B20DF80167
- for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2022 21:43:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B20DF80167
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="Li0NgU8a"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1646167416; x=1677703416;
- h=date:from:to:cc:subject:message-id:references:
- mime-version:in-reply-to;
- bh=j8hCtzK8/yGigjiI1ZMUVHJkmYhuD4SpFKIZnvhuUqs=;
- b=Li0NgU8aodmdDoUsdVp1mercDZCJbe/i2l+gnYSgpL6Gff+2jRrJe6gI
- yFRJqBrRben2bl8gyDTCvWeviP1cxFmveVppgKYxXE5/chuuQlbl/Ydkf
- tELL5sezKW3xK2MEXi0NFZyGEsb4/C7LfSbTx/5Plnbvw8MgBChH/SPpu
- ZxM2QUZ5+nI99EhiEtJUxLIYI7vI06C477siXAxN3ojblc4aMheBX3s9E
- K6MD4kzEp7xcw42EZd9Kt0Iip+IXf2SdOpXTvZ8ZLr3D2DGtf39T58+9I
- MeUT5x7ktV4wI9g+hv1i2t8KOnXFR7IDlbWHDwPtHndG0fDq7gRiPTRpB A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10273"; a="253164602"
-X-IronPort-AV: E=Sophos;i="5.90,146,1643702400"; d="scan'208";a="253164602"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Mar 2022 12:43:27 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,146,1643702400"; d="scan'208";a="641414066"
-Received: from lkp-server01.sh.intel.com (HELO 2146afe809fb) ([10.239.97.150])
- by orsmga004.jf.intel.com with ESMTP; 01 Mar 2022 12:43:24 -0800
-Received: from kbuild by 2146afe809fb with local (Exim 4.92)
- (envelope-from <lkp@intel.com>)
- id 1nP9L9-0000zh-Bc; Tue, 01 Mar 2022 20:43:23 +0000
-Date: Wed, 2 Mar 2022 04:42:54 +0800
-From: kernel test robot <lkp@intel.com>
-To: Jiaxin Yu <jiaxin.yu@mediatek.com>, broonie@kernel.org
-Subject: Re: [PATCH] ASoC: bt-sco: fix bt-sco-pcm-wb dai widget don't connect
- to the endpoint
-Message-ID: <202203020422.oME8VbcM-lkp@intel.com>
-References: <20220301171137.27442-1-jiaxin.yu@mediatek.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 84825F80054
+ for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2022 02:17:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84825F80054
+X-Alimail-AntiSpam: AC=PASS; BC=-1|-1; BR=01201311R481e4; CH=green; DM=||false|;
+ DS=||; FP=0|-1|-1|-1|0|-1|-1|-1; HT=e01e04407; MF=yang.lee@linux.alibaba.com;
+ NM=1; PH=DW; RN=8; SR=0; TI=W4_0.1.10_DEFAULT_21281DB5_1646183748019_o7001c92l;
+Received: from WS-web
+ (yang.lee@linux.alibaba.com[W4_0.1.10_DEFAULT_21281DB5_1646183748019_o7001c92l])
+ by e01e07461.eu6 at Wed, 02 Mar 2022 09:17:21 +0800
+Date: Wed, 02 Mar 2022 09:17:21 +0800
+From: "Yang.Lee" <yang.lee@linux.alibaba.com>
+To: "Mark Brown" <broonie@kernel.org>
+Message-ID: <53306907-c963-4740-9a90-c1249ba0dff4.yang.lee@linux.alibaba.com>
+Subject: =?UTF-8?B?5Zue5aSN77yaW1BBVENIIC1uZXh0XSBBU29DOiBhbWQ6IEZpeCBhbiBpZ25vcmVkIGVycm9y?=
+ =?UTF-8?B?IHJldHVybiBmcm9tIHBsYXRmb3JtX2dldF9pcnFfYnluYW1lKCk=?=
+X-Mailer: [Alimail-Mailagent][W4_0.1.10][DEFAULT][Chrome]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220301171137.27442-1-jiaxin.yu@mediatek.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
- Jiaxin Yu <jiaxin.yu@mediatek.com>,
- Project_Global_Chrome_Upstream_Group@mediatek.com, tzungbi@google.com,
- linux-mediatek@lists.infradead.org, trevor.wu@mediatek.com,
- matthias.bgg@gmail.com, linux-arm-kernel@lists.infradead.org
+References: <20220301064920.37788-1-yang.lee@linux.alibaba.com>,
+ <Yh4UGGuspsc/gAyY@sirena.org.uk>
+x-aliyun-mail-creator: W4_0.1.10_DEFAULT_TCwTW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzkxLjAuNDQ3Mi4xMjQgU2FmYXJpLzUzNy4zNiBFZGcvOTEuMC44NjQuNjQ=FR
+In-Reply-To: <Yh4UGGuspsc/gAyY@sirena.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: alsa-devel <alsa-devel@alsa-project.org>, tangmeng <tangmeng@uniontech.com>,
+ Abaci Robot <abaci@linux.alibaba.com>, tiwai <tiwai@suse.com>,
+ lgirdwood <lgirdwood@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,54 +69,26 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Reply-To: "Yang.Lee" <yang.lee@linux.alibaba.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Jiaxin,
-
-Thank you for the patch! Yet something to improve:
-
-[auto build test ERROR on broonie-sound/for-next]
-[also build test ERROR on v5.17-rc6 next-20220301]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
-
-url:    https://github.com/0day-ci/linux/commits/Jiaxin-Yu/ASoC-bt-sco-fix-bt-sco-pcm-wb-dai-widget-don-t-connect-to-the-endpoint/20220302-011344
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-config: arm-randconfig-r014-20220301 (https://download.01.org/0day-ci/archive/20220302/202203020422.oME8VbcM-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/0day-ci/linux/commit/de4d22036c32b5b4be162ace0b3ce74c193c43c0
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Jiaxin-Yu/ASoC-bt-sco-fix-bt-sco-pcm-wb-dai-widget-don-t-connect-to-the-endpoint/20220302-011344
-        git checkout de4d22036c32b5b4be162ace0b3ce74c193c43c0
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=arm SHELL=/bin/bash sound/soc/codecs/
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All errors (new ones prefixed by >>):
-
->> sound/soc/codecs/bt-sco.c:26:1: error: expected identifier or '(' before '}' token
-      26 | };
-         | ^
-
-
-vim +26 sound/soc/codecs/bt-sco.c
-
-5195ca4902fe0b Mark Brown 2013-08-19  21  
-5195ca4902fe0b Mark Brown 2013-08-19  22  static const struct snd_soc_dapm_route bt_sco_routes[] = {
-de4d22036c32b5 Jiaxin Yu  2022-03-02  23  	{ "BT_SCO_TX", NULL, "RX" },
-de4d22036c32b5 Jiaxin Yu  2022-03-02  24  	{ "TX", NULL, "BT_SCO_RX" },
-de4d22036c32b5 Jiaxin Yu  2022-03-02  25  };
-5195ca4902fe0b Mark Brown 2013-08-19 @26  };
-5195ca4902fe0b Mark Brown 2013-08-19  27  
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+VGhlIGZ1bmN0aW9uIGRldl9lcnJfcHJvYmUoKSBpcyBjYWxsZWQgaW4gZnVuY3Rpb24gcGxhdGZv
+cm1fZ2V0X2lycV9ieW5hbWUoKSB0byBwcmludCB0aGUgZXJyb3IgY29kZS4KLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCuWP
+keS7tuS6uu+8mk1hcmsgQnJvd24gPGJyb29uaWVAa2VybmVsLm9yZz4K5Y+R6YCB5pe26Ze077ya
+MjAyMuW5tDPmnIgx5pelKOaYn+acn+S6jCkgMjA6NDAK5pS25Lu25Lq677yaWWFuZyBMaSA8eWFu
+Zy5sZWVAbGludXguYWxpYmFiYS5jb20+CuaKhOOAgOmAge+8mmxnaXJkd29vZCA8bGdpcmR3b29k
+QGdtYWlsLmNvbT47IHBlcmV4IDxwZXJleEBwZXJleC5jej47IHRpd2FpIDx0aXdhaUBzdXNlLmNv
+bT47IHRhbmdtZW5nIDx0YW5nbWVuZ0B1bmlvbnRlY2guY29tPjsgYWxzYS1kZXZlbCA8YWxzYS1k
+ZXZlbEBhbHNhLXByb2plY3Qub3JnPjsgbGludXgta2VybmVsIDxsaW51eC1rZXJuZWxAdmdlci5r
+ZXJuZWwub3JnPjsgQWJhY2kgUm9ib3QgPGFiYWNpQGxpbnV4LmFsaWJhYmEuY29tPgrkuLvjgIDp
+opjvvJpSZTogW1BBVENIIC1uZXh0XSBBU29DOiBhbWQ6IEZpeCBhbiBpZ25vcmVkIGVycm9yIHJl
+dHVybiBmcm9tIHBsYXRmb3JtX2dldF9pcnFfYnluYW1lKCkKCk9uIFR1ZSwgTWFyIDAxLCAyMDIy
+IGF0IDAyOjQ5OjIwUE0gKzA4MDAsIFlhbmcgTGkgd3JvdGU6Cgo+IC0gYWRhdGEtPmkyc19pcnEg
+PSBwbGF0Zm9ybV9nZXRfaXJxX2J5bmFtZShwZGV2LCAiYWNwX2RhaV9pcnEiKTsKPiAtIGlmIChh
+ZGF0YS0+aTJzX2lycSA8IDApCj4gKyBhZGF0YS0+aTJzX2lycSA9IHJldCA9IHBsYXRmb3JtX2dl
+dF9pcnFfYnluYW1lKHBkZXYsICJhY3BfZGFpX2lycSIpOwo+ICsgaWYgKHJldCA8IDApCj4gICAg
+cmV0dXJuIC1FTk9ERVY7CgpJZiBhbiBlcnJvciBjb2RlIGlzIGJlaW5nIHJldHVybmVkIHdlIHNo
+b3VsZCByZXBvcnQgdGhhdCBlcnJvciBjb2RlCnJhdGhlciB0aGFuIHNxdWFzaGluZyBpdCBkb3du
+IHRvIC1FTk9ERVYuCgo=
