@@ -4,61 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A73EC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Mar 2022 06:13:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 128F8C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Mar 2022 07:04:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EB2DE18D0;
-	Thu,  3 Mar 2022 07:12:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB2DE18D0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5AE0E181C;
+	Thu,  3 Mar 2022 08:03:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5AE0E181C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646287980;
-	bh=B891X/T++iCdhKZVWfZwbCRz4d1tNJomyASvGwntByE=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=InkXuslqIcZWmRZfjigVzgyYeVbPvh0slAKGXdJH74q+mudLF/RqQ586FNB6Z9M9h
-	 3neXcxetcPM63newHce102dYwBtsvHfqWTOmcbmWsAWYdbtT5eTSmVMPxSG0SbiSZu
-	 Nncz5aKTq7kNnI/gLAIm+yMy35s42fX+9mWGE3po=
+	s=default; t=1646291058;
+	bh=58dZXa0ZokPUes2vSzEMIGz+8OnB84dzmhSEatjLr+Q=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=FaO9QRuOUv8VWslbDeLP9enm3Tyu1ZN7lxIEkzqMyPL3CQKwJCoHfPQN3m8+VC8z8
+	 uGO17Um6QkOZRhKaJjhM1WITOk+qmuljOozk2Z9KbocT1z+l5cnfRBFhC3KA/IZc4P
+	 +Xo3OkTov0C5TOeg7cQCY7tlPgs8IQgOhs38T1/s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7405AF80149;
-	Thu,  3 Mar 2022 07:12:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E7829F8013D;
+	Thu,  3 Mar 2022 08:03:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6D476F8013D; Thu,  3 Mar 2022 07:12:07 +0100 (CET)
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 342F3F801D5; Wed,  2 Mar 2022 15:45:05 +0100 (CET)
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com
+ [IPv6:2607:f8b0:4864:20::b31])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 178A9F8013D
- for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2022 07:11:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 178A9F8013D
-X-UUID: b0b72e64f45740dd8f5966e79a688e64-20220303
-X-UUID: b0b72e64f45740dd8f5966e79a688e64-20220303
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
- (envelope-from <jiaxin.yu@mediatek.com>)
- (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
- with ESMTP id 1381862432; Thu, 03 Mar 2022 14:11:49 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 3 Mar 2022 14:11:49 +0800
-Received: from localhost.localdomain (10.17.3.154) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 3 Mar 2022 14:11:48 +0800
-From: Jiaxin Yu <jiaxin.yu@mediatek.com>
-To: <broonie@kernel.org>
-Subject: [PATCH] ASoC: mediatek: mt8183: support wb bt audio
-Date: Thu, 3 Mar 2022 14:11:47 +0800
-Message-ID: <20220303061147.5037-1-jiaxin.yu@mediatek.com>
-X-Mailer: git-send-email 2.25.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id EF71EF80154
+ for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2022 15:44:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF71EF80154
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="Cbi28qHc"
+Received: by mail-yb1-xb31.google.com with SMTP id x200so3786026ybe.6
+ for <alsa-devel@alsa-project.org>; Wed, 02 Mar 2022 06:44:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=xx/plLiU5lWP4yLHsKwQz3RwesxSeBlKSZW9uPIL7p4=;
+ b=Cbi28qHc0Zl4tnqnh+fuSsYmY2VqkS/m8kaQMAoZqHCQtA3j4x+KWw5L4W0mmOUEVj
+ e4JXQk9IlkZ8Q7PfrwNri4xqC4TF8K+zUmAf0QD1gX85lp5AykdZWhhHnr1nUZMC9E/c
+ lVVsYv9Q9bo3ZKXmadOUi8AjI+EAv939Nk9+io/vYguYW6oteEGNbgAFiuh6YDAyCTW1
+ zR9KlX+J351wuk27PDia+BkVMLvvddGn5WbVaDgHgKUUsDol3NFK7Pk81l3MkGSI66vf
+ WAmkxC/cWiTOlNElsbDBB64YbmaBVNeU9WJbb4EgeiyMzDEkTkyisAtGBWh29P9UzlZO
+ c8FQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=xx/plLiU5lWP4yLHsKwQz3RwesxSeBlKSZW9uPIL7p4=;
+ b=nKOwh4OkZFrOdWBpau8MDb3Uqt0x5nJx0w6hsy4q74YIOzz2Mt6EreyM7QyT5TIO7d
+ sE3V/lkWBYs/0kpgPfFDi1lfRrqyp3q44x2KsuWvTMy+RisepxUaLgfDbXQMkXBj1fs/
+ Yf62PIqncGBPwsGWaDnHMhb8GQa+SvEHVW1qwBUwW3OBOQFzJlozpL2n4gXCBqJc90EG
+ XSf+2XOy9Ger44tddzylgGFp8DMPpwZlE82BaA76WTlHtOpxBFBuGIQR7wjefGaCKA/P
+ RUAOkSf3IizfAJhl1oV+cUBIwzkMrnwu67eDn/bKI5kqLngf/Z6kY8sq/ke5w1AV0Rpt
+ oXcg==
+X-Gm-Message-State: AOAM5301dg90NZOofO/uHsXH79YV2i2JRhnNGqReMwHHSfTAQ/oJUBgz
+ kPmb3X0iJmokjPMN/vEdMCDry0l0okLwKyI2l8Q=
+X-Google-Smtp-Source: ABdhPJy6OOVeu80P1Z0Y8uJoS7+3KF02EioIcIgBLn5UG9QLHTsFfQN1GMNQWOoxfItrb0EAE5GlAYGr8Miv2yH6tXw=
+X-Received: by 2002:a25:6611:0:b0:621:cecb:f32b with SMTP id
+ a17-20020a256611000000b00621cecbf32bmr29071566ybc.367.1646232294970; Wed, 02
+ Mar 2022 06:44:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-MTK: N
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Jiaxin Yu <jiaxin.yu@mediatek.com>,
- Project_Global_Chrome_Upstream_Group@mediatek.com, tzungbi@google.com,
- linux-mediatek@lists.infradead.org, trevor.wu@mediatek.com,
- matthias.bgg@gmail.com, aaronyu@google.com,
- linux-arm-kernel@lists.infradead.org
+References: <20220302083428.3804687-1-s.hauer@pengutronix.de>
+In-Reply-To: <20220302083428.3804687-1-s.hauer@pengutronix.de>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Date: Wed, 2 Mar 2022 06:44:43 -0800
+Message-ID: <CAGoOwPRLk0Kb_QKNqhE8FfAy8eGOZX1WMBYa61RhX7MDJjfqTw@mail.gmail.com>
+Subject: Re: [PATCH 0/7] ASoC: fsl_sai: Cleanups and 1:1 bclk:mclk ratio
+ support
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailman-Approved-At: Thu, 03 Mar 2022 08:03:24 +0100
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ kernel@pengutronix.de, Xiubo Li <Xiubo.Lee@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,55 +92,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch use "bt-sco-pcm-wb" codec dai driver for wb bt audio.
+Hi Sascha,
 
-Signed-off-by: Jiaxin Yu <jiaxin.yu@mediatek.com>
----
+Can you add Reviewers too?
+R: Fabio Estevam <festevam@gmail.com>
+R: Shengjiu Wang <shengjiu.wang@gmail.com>
 
-This patch depends on:
-https://patchwork.kernel.org/project/alsa-devel/patch/20220302013533.29068-1-jiaxin.yu@mediatek.com/
+I haven't been working on FSL platforms lately -- will submit a patch
+to pass my "M:" to Shengjiu.
 
- sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+Thanks
+Nic
 
-diff --git a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-index b0ec5ebd4f2d..889f9e4a96aa 100644
---- a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-@@ -260,7 +260,7 @@ SND_SOC_DAILINK_DEFS(pcm2,
- 
- SND_SOC_DAILINK_DEFS(i2s0,
- 	DAILINK_COMP_ARRAY(COMP_CPU("I2S0")),
--	DAILINK_COMP_ARRAY(COMP_CODEC("bt-sco", "bt-sco-pcm")),
-+	DAILINK_COMP_ARRAY(COMP_CODEC("bt-sco", "bt-sco-pcm-wb")),
- 	DAILINK_COMP_ARRAY(COMP_EMPTY()));
- 
- SND_SOC_DAILINK_DEFS(i2s1,
-@@ -291,7 +291,7 @@ SND_SOC_DAILINK_DEFS(i2s3_rt1015p,
- 
- SND_SOC_DAILINK_DEFS(i2s5,
- 	DAILINK_COMP_ARRAY(COMP_CPU("I2S5")),
--	DAILINK_COMP_ARRAY(COMP_CODEC("bt-sco", "bt-sco-pcm")),
-+	DAILINK_COMP_ARRAY(COMP_CODEC("bt-sco", "bt-sco-pcm-wb")),
- 	DAILINK_COMP_ARRAY(COMP_EMPTY()));
- 
- SND_SOC_DAILINK_DEFS(tdm,
-@@ -508,7 +508,6 @@ static struct snd_soc_dai_link mt8183_mt6358_ts3a227_dai_links[] = {
- 		.no_pcm = 1,
- 		.dpcm_capture = 1,
- 		.ignore_suspend = 1,
--		.be_hw_params_fixup = mt8183_i2s_hw_params_fixup,
- 		.ops = &mt8183_mt6358_i2s_ops,
- 		SND_SOC_DAILINK_REG(i2s0),
- 	},
-@@ -541,7 +540,6 @@ static struct snd_soc_dai_link mt8183_mt6358_ts3a227_dai_links[] = {
- 		.no_pcm = 1,
- 		.dpcm_playback = 1,
- 		.ignore_suspend = 1,
--		.be_hw_params_fixup = mt8183_i2s_hw_params_fixup,
- 		.ops = &mt8183_mt6358_i2s_ops,
- 		SND_SOC_DAILINK_REG(i2s5),
- 	},
--- 
-2.25.1
-
+On Wed, Mar 2, 2022 at 12:34 AM Sascha Hauer <s.hauer@pengutronix.de> wrote:
+>
+> This series has some updates for the fsl_sai driver: Some general
+> cleanup patches, a bugfix in the ip revision checking and finally
+> the mclk setting is made more accurate and support for 1:1 bclk:mclk
+> setting is added.
+>
+> Ahmad Fatoum (2):
+>   ASoC: fsl_sai: simplify register poking in fsl_sai_set_bclk
+>   ASoC: fsl_sai: implement 1:1 bclk:mclk ratio support
+>
+> Sascha Hauer (5):
+>   ASoC: fsl_sai: Drop unnecessary defines
+>   ASoC: fsl_sai: simplify irq return value
+>   ASoC: fsl_sai: store full version instead of major/minor
+>   ASoC: fsl_sai: Use better variable names
+>   ASoC: fsl_sai: use DIV_ROUND_CLOSEST() to calculate divider
+>
+>  sound/soc/fsl/fsl_sai.c | 100 ++++++++++++++++++++--------------------
+>  sound/soc/fsl/fsl_sai.h |   9 +---
+>  2 files changed, 52 insertions(+), 57 deletions(-)
+>
+> --
+> 2.30.2
+>
