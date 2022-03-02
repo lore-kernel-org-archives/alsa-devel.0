@@ -4,108 +4,155 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75069C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Mar 2022 08:36:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 991A5C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Mar 2022 08:36:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B9F3E193B;
-	Wed,  2 Mar 2022 09:35:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9F3E193B
+	by alsa0.perex.cz (Postfix) with ESMTPS id E6EC9193E;
+	Wed,  2 Mar 2022 09:35:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6EC9193E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646210186;
-	bh=n+tYFtYOjeK2yzXQyKS9kk5ZKMOskwQF+kq+dWcYsmU=;
+	s=default; t=1646210199;
+	bh=4qKWs5h/jJHZkRn4zMPfWqRwLoCfLxIL/zCqnzdFEfg=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iDONlxp3gLBHrmPu1UrfrQEWK2u8cXZ3NQTlS55czLawJBzyKqowGMSJdwCbb+OIA
-	 ane5syNLRb2whiaD31AsRQEGtI0QxdNMzvfJrjDdHEerCsxOckknpVmM1G731v0rb8
-	 x0842HbkVWiLbi4y4SdCSGrpNad66j7OH2EUzHi0=
+	b=FKDr64yqfoPPdB6AHFNtbnrX3QamE7JfYA53gRcYCA/IFyvowEqhGmvC6pZCh2XrA
+	 P1JIxB/TvWlo6Xxs22mvQZbe4+LqvuD+Ek7ghxdNZxNycCMQ24lGR0YXJnNPGCUWyK
+	 8onAAGL6WErV4R1vfLepwhuysxO902mZO3JRsku8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DC9B4F80527;
-	Wed,  2 Mar 2022 09:33:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 50C76F8052E;
+	Wed,  2 Mar 2022 09:33:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0A853F80167; Tue,  1 Mar 2022 20:01:31 +0100 (CET)
-Received: from casper.infradead.org (casper.infradead.org
- [IPv6:2001:8b0:10b:1236::1])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 5FA9FF801D5; Wed,  2 Mar 2022 08:30:26 +0100 (CET)
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CFB09F80167
- for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2022 20:01:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CFB09F80167
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
- header.b="G2U9nPc+"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
- References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=/tBazeosVX7n1CPUUwf6PzIu6vjJVnHyHOkfjsv2zKo=; b=G2U9nPc+cKcx95Z9ga5OZXchNz
- blxZ0iNm1M+uKQvG5JCjwfBWD2Vqk/JNrOrkTtzRMLvR552E7A4wIdnYTrEx28aAxcIhZIBDk2OhJ
- 2mC2hcK77WGdKfwnLWC9xIRW2naQmlD6pg6blozExF50oYyrluLyuDKCR05dvj4lJCUJucJUHaufH
- 36UHt4On3fRFJ0YJCkBdWklX7NM/KDi/YeSecU8YxtgD7/WN7ClqH8GnFhU3JjJVUQnhYo8rNzSqS
- E0UBK85SGI9bRQfxw/IXmOle17eRFr0eUMCl1eNz3aBOX0q+MyaB3hvtdfAdZV9rP6eZ0vdNCYptA
- LfRWRgDg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red
- Hat Linux)) id 1nP7kD-009r7Z-Q4; Tue, 01 Mar 2022 19:01:09 +0000
-Date: Tue, 1 Mar 2022 19:01:09 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH 2/6] treewide: remove using list iterator after loop body
- as a ptr
-Message-ID: <Yh5tdcNNHw/z7VRZ@casper.infradead.org>
-References: <20220228110822.491923-3-jakobkoschel@gmail.com>
- <2e4e95d6-f6c9-a188-e1cd-b1eae465562a@amd.com>
- <CAHk-=wgQps58DPEOe4y5cTh5oE9EdNTWRLXzgMiETc+mFX7jzw@mail.gmail.com>
- <CAHk-=wj8fkosQ7=bps5K+DDazBXk=ypfn49A0sEq+7-nZnyfXA@mail.gmail.com>
- <CAHk-=wiTCvLQkHcJ3y0hpqH7FEk9D28LDvZZogC6OVLk7naBww@mail.gmail.com>
- <Yh0tl3Lni4weIMkl@casper.infradead.org>
- <CAHk-=wgBfJ1-cPA2LTvFyyy8owpfmtCuyiZi4+um8DhFNe+CyA@mail.gmail.com>
- <Yh1aMm3hFe/j9ZbI@casper.infradead.org>
- <CAHk-=wi0gSUMBr2SVF01Gy1xC1w1iGtJT5ztju9BPWYKjdh+NA@mail.gmail.com>
- <202203011008.AA0B5A2D@keescook>
+ by alsa1.perex.cz (Postfix) with ESMTPS id B4EA3F80054
+ for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2022 08:30:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4EA3F80054
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+ id B8E6F1C0B81; Wed,  2 Mar 2022 08:30:18 +0100 (CET)
+Date: Wed, 2 Mar 2022 08:30:16 +0100
+From: Pavel Machek <pavel@ucw.cz>
+To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH 5/5] spi: make remove callback a void function
+Message-ID: <20220302073016.GB32222@amd>
+References: <20220123175201.34839-1-u.kleine-koenig@pengutronix.de>
+ <20220123175201.34839-6-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="xXmbgvnjoT4axfJE"
 Content-Disposition: inline
-In-Reply-To: <202203011008.AA0B5A2D@keescook>
+In-Reply-To: <20220123175201.34839-6-u.kleine-koenig@pengutronix.de>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 X-Mailman-Approved-At: Wed, 02 Mar 2022 09:33:33 +0100
-Cc: linux-wireless <linux-wireless@vger.kernel.org>,
- alsa-devel@alsa-project.org, KVM list <kvm@vger.kernel.org>,
- "Gustavo A. R. Silva" <gustavo@embeddedor.com>, linux-iio@vger.kernel.org,
- nouveau@lists.freedesktop.org, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
- dri-devel <dri-devel@lists.freedesktop.org>,
- Cristiano Giuffrida <c.giuffrida@vu.nl>, "Bos, H.J." <h.j.bos@vu.nl>,
- linux1394-devel@lists.sourceforge.net, drbd-dev@lists.linbit.com,
- linux-arch <linux-arch@vger.kernel.org>, CIFS <linux-cifs@vger.kernel.org>,
- linux-aspeed@lists.ozlabs.org, linux-scsi <linux-scsi@vger.kernel.org>,
- linux-rdma <linux-rdma@vger.kernel.org>, linux-staging@lists.linux.dev,
- amd-gfx list <amd-gfx@lists.freedesktop.org>, Jason Gunthorpe <jgg@ziepe.ca>,
- intel-wired-lan@lists.osuosl.org, kgdb-bugreport@lists.sourceforge.net,
- bcm-kernel-feedback-list@broadcom.com,
- Dan Carpenter <dan.carpenter@oracle.com>,
- Linux Media Mailing List <linux-media@vger.kernel.org>,
- Arnd Bergman <arnd@arndb.de>, Linux PM <linux-pm@vger.kernel.org>,
- intel-gfx <intel-gfx@lists.freedesktop.org>,
- linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
- Brian Johannesmeyer <bjohannesmeyer@gmail.com>,
- Nathan Chancellor <nathan@kernel.org>, dma <dmaengine@vger.kernel.org>,
- Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
- Jakob Koschel <jakobkoschel@gmail.com>, v9fs-developer@lists.sourceforge.net,
- linux-tegra <linux-tegra@vger.kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>,
+Cc: Andrew Lunn <andrew@lunn.ch>, Gwendal Grignou <gwendal@chromium.org>,
+ Yasunari Takiguchi <Yasunari.Takiguchi@sony.com>, Claudius Heine <ch@denx.de>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Nanyong Sun <sunnanyong@huawei.com>, Linus Walleij <linus.walleij@linaro.org>,
+ dri-devel@lists.freedesktop.org,
+ Frieder Schrempf <frieder.schrempf@kontron.de>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Christian Lamparter <chunkeey@googlemail.com>,
+ Ajay Singh <ajay.kathat@microchip.com>, linux-clk@vger.kernel.org,
+ Stefan Schmidt <stefan@datenfreihafen.org>, Sidong Yang <realwakka@gmail.com>,
+ libertas-dev@lists.infradead.org, linux-omap@vger.kernel.org,
+ Antti Palosaari <crope@iki.fi>, Guenter Roeck <linux@roeck-us.net>,
+ Jean Delvare <jdelvare@suse.com>, linux-serial@vger.kernel.org,
+ =?utf-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>,
+ Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>,
+ James Schulman <james.schulman@cirrus.com>,
+ Kamlesh Gurudasani <kamlesh.gurudasani@gmail.com>,
+ Jingoo Han <jingoohan1@gmail.com>, Zhang Qilong <zhangqilong3@huawei.com>,
+ Randy Dunlap <rdunlap@infradead.org>, linux-stm32@st-md-mailman.stormreply.com,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+ Michael Walle <michael@walle.cc>,
+ Noralf =?iso-8859-1?Q?Tr=F8nnes?= <noralf@tronnes.org>, kernel@pengutronix.de,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-mtd@lists.infradead.org,
+ Andrew Morton <akpm@linux-foundation.org>, Vladimir Oltean <olteanv@gmail.com>,
+ linux-wpan@vger.kernel.org, Claudiu Beznea <claudiu.beznea@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Dan Robertson <dan@dlrobertson.com>, Markuss Broks <markuss.broks@gmail.com>,
+ Lucas Tanure <tanureal@opensource.cirrus.com>, David Airlie <airlied@linux.ie>,
+ linux-wireless@vger.kernel.org, Marco Felsch <m.felsch@pengutronix.de>,
+ David Rhodes <david.rhodes@cirrus.com>,
+ Thierry Reding <thierry.reding@gmail.com>, Solomon Peachy <pizza@shaftnet.org>,
+ Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+ Lars-Peter Clausen <lars@metafoo.de>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+ Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>,
+ Jiri Slaby <jirislaby@kernel.org>, Helge Deller <deller@gmx.de>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Minghao Chi <chi.minghao@zte.com.cn>, Jon Hunter <jonathanh@nvidia.com>,
+ dingsenjie <dingsenjie@yulong.com>, Heiko Schocher <hs@denx.de>,
+ Wolfgang Grandegger <wg@grandegger.com>, Matt Kline <matt@bitbashing.io>,
+ Woojung Huh <woojung.huh@microchip.com>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Michael Hennerich <Michael.Hennerich@analog.com>,
+ Mike Looijmans <mike.looijmans@topic.nl>,
+ Ronald =?iso-8859-1?Q?Tschal=E4r?= <ronald@innovation.ch>,
+ Daniel Thompson <daniel.thompson@linaro.org>,
+ Maxime Ripard <mripard@kernel.org>, linux-can@vger.kernel.org,
+ linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Hans de Goede <hdegoede@redhat.com>, Stephen Boyd <sboyd@kernel.org>,
+ Davidlohr Bueso <dbueso@suse.de>, UNGLinuxDriver@microchip.com,
+ Jarkko Sakkinen <jarkko@kernel.org>, linux-usb@vger.kernel.org,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>, linux-integrity@vger.kernel.org,
+ Jonathan Cameron <jic23@kernel.org>, Heiner Kallweit <hkallweit1@gmail.com>,
+ Ulf Hansson <ulf.hansson@linaro.org>, linux-staging@lists.linux.dev,
+ linux-iio@vger.kernel.org, Michael Turquette <mturquette@baylibre.com>,
+ alsa-devel@alsa-project.org, Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
+ netdev@vger.kernel.org, Wei Yongjun <weiyongjun1@huawei.com>,
+ Sam Ravnborg <sam@ravnborg.org>,
+ =?iso-8859-1?B?Suly9G1l?= Pouiller <jerome.pouiller@silabs.com>,
+ linux-rtc@vger.kernel.org, Marcus Folkesson <marcus.folkesson@gmail.com>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ Aditya Srivastava <yashsri421@gmail.com>,
+ Varka Bhadram <varkabhadram@gmail.com>, wengjianfeng <wengjianfeng@yulong.com>,
+ linux-input@vger.kernel.org, linux-media@vger.kernel.org,
+ Arnd Bergmann <arnd@arndb.de>,
+ Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
+ Mark Greer <mgreer@animalcreek.com>, Mark Gross <markgross@kernel.org>,
+ Richard Fitzgerald <rf@opensource.cirrus.com>, Mark Brown <broonie@kernel.org>,
+ linux-fbdev@vger.kernel.org, Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Benson Leung <bleung@chromium.org>,
+ Stefan =?iso-8859-1?Q?M=E4tje?= <stefan.maetje@esd.eu>,
+ linux-hwmon@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
+ Paulo Miguel Almeida <paulo.miguel.almeida.rodenas@gmail.com>,
+ Support Opensource <support.opensource@diasemi.com>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-mmc@vger.kernel.org,
+ Liam Girdwood <lgirdwood@gmail.com>, Julia Lawall <Julia.Lawall@inria.fr>,
+ Yang Li <yang.lee@linux.alibaba.com>, Dan Carpenter <dan.carpenter@oracle.com>,
+ patches@opensource.cirrus.com, Kent Gustavsson <kent@minoris.se>,
+ "David S. Miller" <davem@davemloft.net>,
+ Charles-Antoine Couret <charles-antoine.couret@nexvision.fr>,
+ Alexander Aring <alex.aring@gmail.com>, Jiri Prchal <jiri.prchal@aksignal.cz>,
+ Vignesh Raghavendra <vigneshr@ti.com>, Emma Anholt <emma@anholt.net>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Alexandru Ardelean <ardeleanalex@gmail.com>,
+ Antoniu Miclaus <antoniu.miclaus@analog.com>, Peter Huewe <peterhuewe@gmx.de>,
+ Torin Cooper-Bennun <torin@maxiluxsystems.com>,
+ Lee Jones <lee.jones@linaro.org>, linux-leds@vger.kernel.org,
+ Eric Piel <eric.piel@tremplin-utc.net>, Stephan Gerhold <stephan@gerhold.net>,
+ Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Thomas Kopp <thomas.kopp@microchip.com>,
+ Jakub Kicinski <kuba@kernel.org>, Vivien Didelot <vivien.didelot@gmail.com>,
+ platform-driver-x86@vger.kernel.org, Stefan Wahren <stefan.wahren@i2se.com>,
+ Xue Liu <liuxuenetmail@gmail.com>, David Lechner <david@lechnology.com>,
+ Will Deacon <will@kernel.org>, Manivannan Sadhasivam <mani@kernel.org>,
+ Kalle Valo <kvalo@kernel.org>, Rui Miguel Silva <rmfrfs@gmail.com>,
+ Marc Kleine-Budde <mkl@pengutronix.de>, Fabio Estevam <festevam@gmail.com>,
+ Harry Morris <h.morris@cascoda.com>,
  Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>, linux-sgx@vger.kernel.org,
- linux-block <linux-block@vger.kernel.org>, Netdev <netdev@vger.kernel.org>,
- linux-usb@vger.kernel.org, samba-technical@lists.samba.org,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Linux F2FS Dev Mailing List <linux-f2fs-devel@lists.sourceforge.net>,
- tipc-discussion@lists.sourceforge.net,
- Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- linux-mediatek@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
- Mike Rapoport <rppt@kernel.org>
+ Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+ Alessandro Zummo <a.zummo@towertech.it>, Yang Shen <shenyang39@huawei.com>,
+ Thomas Zimmermann <tzimmermann@suse.de>, Takashi Iwai <tiwai@suse.com>,
+ Cai Huoqing <caihuoqing@baidu.com>, Daniel Mack <daniel@zonque.org>,
+ Daniel Vetter <daniel@ffwll.ch>, Colin Ian King <colin.king@intel.com>,
+ Bartosz Golaszewski <brgl@bgdev.pl>, Alan Ott <alan@signal11.us>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -121,262 +168,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Mar 01, 2022 at 10:14:07AM -0800, Kees Cook wrote:
-> On Mon, Feb 28, 2022 at 04:45:11PM -0800, Linus Torvalds wrote:
-> > Really. The "-Wshadow doesn't work on the kernel" is not some new
-> > issue, because you have to do completely insane things to the source
-> > code to enable it.
-> 
-> The first big glitch with -Wshadow was with shadowed global variables.
-> GCC 4.8 fixed that, but it still yells about shadowed functions. What
-> _almost_ works is -Wshadow=local. At first glace, all the warnings
-> look solvable, but then one will eventually discover __wait_event()
-> and associated macros that mix when and how deeply it intentionally
-> shadows variables. :)
 
-Well, that's just disgusting.  Macros fundamentally shouldn't be
-referring to things that aren't in their arguments.  The first step to
-cleaning this up is ...
+--xXmbgvnjoT4axfJE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I'll take a look at the rest of cleaning this up soon.
+Hi!
 
-From 28ffe35d56223d4242b915832299e5acc926737e Mon Sep 17 00:00:00 2001
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Date: Tue, 1 Mar 2022 13:47:07 -0500
-Subject: [PATCH] wait: Parameterize the return variable to ___wait_event()
+> The value returned by an spi driver's remove function is mostly ignored.
+> (Only an error message is printed if the value is non-zero that the
+> error is ignored.)
+>=20
+> So change the prototype of the remove function to return no value. This
+> way driver authors are not tempted to assume that passing an error to
+> the upper layer is a good idea. All drivers are adapted accordingly.
+> There is no intended change of behaviour, all callbacks were prepared to
+> return 0 before.
 
-Macros should not refer to variables which aren't in their arguments.
-Pass the name from its callers.
+Acked-by: Pavel Machek <pavel@ucw.cz>
+									Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- include/linux/swait.h    | 12 ++++++------
- include/linux/wait.h     | 32 ++++++++++++++++----------------
- include/linux/wait_bit.h |  4 ++--
- 3 files changed, 24 insertions(+), 24 deletions(-)
+--xXmbgvnjoT4axfJE
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-diff --git a/include/linux/swait.h b/include/linux/swait.h
-index 6a8c22b8c2a5..5e8e9b13be2d 100644
---- a/include/linux/swait.h
-+++ b/include/linux/swait.h
-@@ -191,14 +191,14 @@ do {									\
- } while (0)
- 
- #define __swait_event_timeout(wq, condition, timeout)			\
--	___swait_event(wq, ___wait_cond_timeout(condition),		\
-+	___swait_event(wq, ___wait_cond_timeout(condition, __ret),	\
- 		      TASK_UNINTERRUPTIBLE, timeout,			\
- 		      __ret = schedule_timeout(__ret))
- 
- #define swait_event_timeout_exclusive(wq, condition, timeout)		\
- ({									\
- 	long __ret = timeout;						\
--	if (!___wait_cond_timeout(condition))				\
-+	if (!___wait_cond_timeout(condition, __ret))			\
- 		__ret = __swait_event_timeout(wq, condition, timeout);	\
- 	__ret;								\
- })
-@@ -216,14 +216,14 @@ do {									\
- })
- 
- #define __swait_event_interruptible_timeout(wq, condition, timeout)	\
--	___swait_event(wq, ___wait_cond_timeout(condition),		\
-+	___swait_event(wq, ___wait_cond_timeout(condition, __ret),	\
- 		      TASK_INTERRUPTIBLE, timeout,			\
- 		      __ret = schedule_timeout(__ret))
- 
- #define swait_event_interruptible_timeout_exclusive(wq, condition, timeout)\
- ({									\
- 	long __ret = timeout;						\
--	if (!___wait_cond_timeout(condition))				\
-+	if (!___wait_cond_timeout(condition, __ret))			\
- 		__ret = __swait_event_interruptible_timeout(wq,		\
- 						condition, timeout);	\
- 	__ret;								\
-@@ -252,7 +252,7 @@ do {									\
- } while (0)
- 
- #define __swait_event_idle_timeout(wq, condition, timeout)		\
--	___swait_event(wq, ___wait_cond_timeout(condition),		\
-+	___swait_event(wq, ___wait_cond_timeout(condition, __ret),	\
- 		       TASK_IDLE, timeout,				\
- 		       __ret = schedule_timeout(__ret))
- 
-@@ -278,7 +278,7 @@ do {									\
- #define swait_event_idle_timeout_exclusive(wq, condition, timeout)	\
- ({									\
- 	long __ret = timeout;						\
--	if (!___wait_cond_timeout(condition))				\
-+	if (!___wait_cond_timeout(condition, __ret))			\
- 		__ret = __swait_event_idle_timeout(wq,			\
- 						   condition, timeout);	\
- 	__ret;								\
-diff --git a/include/linux/wait.h b/include/linux/wait.h
-index 851e07da2583..890cce3c0f2e 100644
---- a/include/linux/wait.h
-+++ b/include/linux/wait.h
-@@ -271,7 +271,7 @@ static inline void wake_up_pollfree(struct wait_queue_head *wq_head)
- 		__wake_up_pollfree(wq_head);
- }
- 
--#define ___wait_cond_timeout(condition)						\
-+#define ___wait_cond_timeout(condition, __ret)					\
- ({										\
- 	bool __cond = (condition);						\
- 	if (__cond && !__ret)							\
-@@ -386,7 +386,7 @@ do {										\
- })
- 
- #define __wait_event_timeout(wq_head, condition, timeout)			\
--	___wait_event(wq_head, ___wait_cond_timeout(condition),			\
-+	___wait_event(wq_head, ___wait_cond_timeout(condition, __ret),		\
- 		      TASK_UNINTERRUPTIBLE, 0, timeout,				\
- 		      __ret = schedule_timeout(__ret))
- 
-@@ -413,13 +413,13 @@ do {										\
- ({										\
- 	long __ret = timeout;							\
- 	might_sleep();								\
--	if (!___wait_cond_timeout(condition))					\
-+	if (!___wait_cond_timeout(condition, __ret))				\
- 		__ret = __wait_event_timeout(wq_head, condition, timeout);	\
- 	__ret;									\
- })
- 
- #define __wait_event_freezable_timeout(wq_head, condition, timeout)		\
--	___wait_event(wq_head, ___wait_cond_timeout(condition),			\
-+	___wait_event(wq_head, ___wait_cond_timeout(condition, __ret),		\
- 		      TASK_INTERRUPTIBLE, 0, timeout,				\
- 		      __ret = freezable_schedule_timeout(__ret))
- 
-@@ -431,7 +431,7 @@ do {										\
- ({										\
- 	long __ret = timeout;							\
- 	might_sleep();								\
--	if (!___wait_cond_timeout(condition))					\
-+	if (!___wait_cond_timeout(condition, __ret))				\
- 		__ret = __wait_event_freezable_timeout(wq_head, condition, timeout); \
- 	__ret;									\
- })
-@@ -503,7 +503,7 @@ do {										\
- })
- 
- #define __wait_event_interruptible_timeout(wq_head, condition, timeout)		\
--	___wait_event(wq_head, ___wait_cond_timeout(condition),			\
-+	___wait_event(wq_head, ___wait_cond_timeout(condition, __ret),		\
- 		      TASK_INTERRUPTIBLE, 0, timeout,				\
- 		      __ret = schedule_timeout(__ret))
- 
-@@ -531,7 +531,7 @@ do {										\
- ({										\
- 	long __ret = timeout;							\
- 	might_sleep();								\
--	if (!___wait_cond_timeout(condition))					\
-+	if (!___wait_cond_timeout(condition, __ret))				\
- 		__ret = __wait_event_interruptible_timeout(wq_head,		\
- 						condition, timeout);		\
- 	__ret;									\
-@@ -698,7 +698,7 @@ do {										\
- } while (0)
- 
- #define __wait_event_idle_timeout(wq_head, condition, timeout)			\
--	___wait_event(wq_head, ___wait_cond_timeout(condition),			\
-+	___wait_event(wq_head, ___wait_cond_timeout(condition, __ret),		\
- 		      TASK_IDLE, 0, timeout,					\
- 		      __ret = schedule_timeout(__ret))
- 
-@@ -725,13 +725,13 @@ do {										\
- ({										\
- 	long __ret = timeout;							\
- 	might_sleep();								\
--	if (!___wait_cond_timeout(condition))					\
-+	if (!___wait_cond_timeout(condition, __ret))				\
- 		__ret = __wait_event_idle_timeout(wq_head, condition, timeout);	\
- 	__ret;									\
- })
- 
- #define __wait_event_idle_exclusive_timeout(wq_head, condition, timeout)	\
--	___wait_event(wq_head, ___wait_cond_timeout(condition),			\
-+	___wait_event(wq_head, ___wait_cond_timeout(condition, __ret),		\
- 		      TASK_IDLE, 1, timeout,					\
- 		      __ret = schedule_timeout(__ret))
- 
-@@ -762,7 +762,7 @@ do {										\
- ({										\
- 	long __ret = timeout;							\
- 	might_sleep();								\
--	if (!___wait_cond_timeout(condition))					\
-+	if (!___wait_cond_timeout(condition, __ret))				\
- 		__ret = __wait_event_idle_exclusive_timeout(wq_head, condition, timeout);\
- 	__ret;									\
- })
-@@ -932,7 +932,7 @@ extern int do_wait_intr_irq(wait_queue_head_t *, wait_queue_entry_t *);
- })
- 
- #define __wait_event_killable_timeout(wq_head, condition, timeout)		\
--	___wait_event(wq_head, ___wait_cond_timeout(condition),			\
-+	___wait_event(wq_head, ___wait_cond_timeout(condition, __ret),		\
- 		      TASK_KILLABLE, 0, timeout,				\
- 		      __ret = schedule_timeout(__ret))
- 
-@@ -962,7 +962,7 @@ extern int do_wait_intr_irq(wait_queue_head_t *, wait_queue_entry_t *);
- ({										\
- 	long __ret = timeout;							\
- 	might_sleep();								\
--	if (!___wait_cond_timeout(condition))					\
-+	if (!___wait_cond_timeout(condition, __ret))				\
- 		__ret = __wait_event_killable_timeout(wq_head,			\
- 						condition, timeout);		\
- 	__ret;									\
-@@ -1107,7 +1107,7 @@ do {										\
- })
- 
- #define __wait_event_lock_irq_timeout(wq_head, condition, lock, timeout, state)	\
--	___wait_event(wq_head, ___wait_cond_timeout(condition),			\
-+	___wait_event(wq_head, ___wait_cond_timeout(condition, __ret),		\
- 		      state, 0, timeout,					\
- 		      spin_unlock_irq(&lock);					\
- 		      __ret = schedule_timeout(__ret);				\
-@@ -1141,7 +1141,7 @@ do {										\
- 						  timeout)			\
- ({										\
- 	long __ret = timeout;							\
--	if (!___wait_cond_timeout(condition))					\
-+	if (!___wait_cond_timeout(condition, __ret))				\
- 		__ret = __wait_event_lock_irq_timeout(				\
- 					wq_head, condition, lock, timeout,	\
- 					TASK_INTERRUPTIBLE);			\
-@@ -1151,7 +1151,7 @@ do {										\
- #define wait_event_lock_irq_timeout(wq_head, condition, lock, timeout)		\
- ({										\
- 	long __ret = timeout;							\
--	if (!___wait_cond_timeout(condition))					\
-+	if (!___wait_cond_timeout(condition, __ret))				\
- 		__ret = __wait_event_lock_irq_timeout(				\
- 					wq_head, condition, lock, timeout,	\
- 					TASK_UNINTERRUPTIBLE);			\
-diff --git a/include/linux/wait_bit.h b/include/linux/wait_bit.h
-index 7dec36aecbd9..227e6a20a978 100644
---- a/include/linux/wait_bit.h
-+++ b/include/linux/wait_bit.h
-@@ -292,7 +292,7 @@ do {									\
- })
- 
- #define __wait_var_event_timeout(var, condition, timeout)		\
--	___wait_var_event(var, ___wait_cond_timeout(condition),		\
-+	___wait_var_event(var, ___wait_cond_timeout(condition, __ret),	\
- 			  TASK_UNINTERRUPTIBLE, 0, timeout,		\
- 			  __ret = schedule_timeout(__ret))
- 
-@@ -300,7 +300,7 @@ do {									\
- ({									\
- 	long __ret = timeout;						\
- 	might_sleep();							\
--	if (!___wait_cond_timeout(condition))				\
-+	if (!___wait_cond_timeout(condition, __ret))			\
- 		__ret = __wait_var_event_timeout(var, condition, timeout); \
- 	__ret;								\
- })
--- 
-2.34.1
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
 
+iEYEARECAAYFAmIfHQgACgkQMOfwapXb+vLxcgCghFIMSLkgbmU4bCcL4+4sOBXY
+b1QAoKETSRxn6hbtUUF5RsaX43sun2ct
+=6C0C
+-----END PGP SIGNATURE-----
+
+--xXmbgvnjoT4axfJE--
