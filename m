@@ -4,51 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AED8AC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Mar 2022 07:33:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6561C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Mar 2022 07:33:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 00CFE1AE8;
-	Thu,  3 Mar 2022 08:32:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00CFE1AE8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 39FF11AF1;
+	Thu,  3 Mar 2022 08:32:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 39FF11AF1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646292795;
-	bh=vIoWhShgkBYRtYHQulNCsW3bVTaja9uoB2F+un6sxO4=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=cDKxgUawhItszowxnINBZv2vObkIRyCIpniY7Dl4HegCfdudjnBpZXJg00IdRKbzx
-	 ApSATEg704yolmotnZqDuI5f4H8HFELZSdbNb3di9RbpUa9AMNkEGyzp/ObSIFh56Z
-	 FuYRPlUIQRDPPe69IjcfBBisyBKzr8Drr4uQaglQ=
+	s=default; t=1646292811;
+	bh=1WbnvaQ2U3R33Ie5nWRFeo2kj2N3dgSzMW01pHsQFfI=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=pOHHicWFfBlYWerx5lryvoFXOVc54mxBDELztpnam5QJTiq8PmnvLOrozYwnqyboX
+	 4raDt+q4QedLYpt2W54M8+ZuyNrFiBV+m1X2/1azarn2CVpNWIZ17sWitkrz30rFOy
+	 0Yh0gJSIgcIi3sNcfpgHXim1FlqntoKMCW4ZSn6o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A8EF8F80529;
-	Thu,  3 Mar 2022 08:30:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 36164F80533;
+	Thu,  3 Mar 2022 08:30:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BC2EFF80152; Thu,  3 Mar 2022 08:30:47 +0100 (CET)
+ id B8E68F80519; Thu,  3 Mar 2022 08:30:47 +0100 (CET)
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
  [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B208DF80515
- for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2022 08:30:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B208DF80515
+ by alsa1.perex.cz (Postfix) with ESMTPS id E89A5F80152
+ for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2022 08:30:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E89A5F80152
 Received: from dude02.hi.pengutronix.de ([2001:67c:670:100:1d::28])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1nPfux-0006PO-En; Thu, 03 Mar 2022 08:30:31 +0100
+ id 1nPfux-0006PM-Ek; Thu, 03 Mar 2022 08:30:31 +0100
 Received: from sha by dude02.hi.pengutronix.de with local (Exim 4.94.2)
  (envelope-from <sha@pengutronix.de>)
- id 1nPfuw-002UmZ-1Q; Thu, 03 Mar 2022 08:30:30 +0100
+ id 1nPfuw-002UmN-08; Thu, 03 Mar 2022 08:30:30 +0100
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 2/7] ASoC: fsl_sai: simplify irq return value
-Date: Thu,  3 Mar 2022 08:30:23 +0100
-Message-Id: <20220303073028.594183-3-s.hauer@pengutronix.de>
+Subject: [PATCH 0/7 resend] ASoC: fsl_sai: Cleanups and 1:1 bclk:mclk ratio
+ support
+Date: Thu,  3 Mar 2022 08:30:21 +0100
+Message-Id: <20220303073028.594183-1-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220303073028.594183-1-s.hauer@pengutronix.de>
-References: <20220303073028.594183-1-s.hauer@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::28
@@ -75,58 +73,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Instead of using a boolean "irq_none" to describe the interrupt
-handlers return value use a variable of type irqreturn_t and return
-it directly. No functional change.
+Resending this with the Cc: list expanded as Nicolin said he doesn't
+work on FSL platforms at the moment.
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
----
- sound/soc/fsl/fsl_sai.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+This series has some updates for the fsl_sai driver: Some general
+cleanup patches, a bugfix in the ip revision checking and finally
+the mclk setting is made more accurate and support for 1:1 bclk:mclk
+setting is added.
 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index d79cb7eb3b262..56311a0f23b95 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -62,7 +62,7 @@ static irqreturn_t fsl_sai_isr(int irq, void *devid)
- 	unsigned int ofs = sai->soc_data->reg_offset;
- 	struct device *dev = &sai->pdev->dev;
- 	u32 flags, xcsr, mask;
--	bool irq_none = true;
-+	irqreturn_t iret = IRQ_NONE;
- 
- 	/*
- 	 * Both IRQ status bits and IRQ mask bits are in the xCSR but
-@@ -76,7 +76,7 @@ static irqreturn_t fsl_sai_isr(int irq, void *devid)
- 	flags = xcsr & mask;
- 
- 	if (flags)
--		irq_none = false;
-+		iret = IRQ_HANDLED;
- 	else
- 		goto irq_rx;
- 
-@@ -110,7 +110,7 @@ static irqreturn_t fsl_sai_isr(int irq, void *devid)
- 	flags = xcsr & mask;
- 
- 	if (flags)
--		irq_none = false;
-+		iret = IRQ_HANDLED;
- 	else
- 		goto out;
- 
-@@ -139,10 +139,7 @@ static irqreturn_t fsl_sai_isr(int irq, void *devid)
- 		regmap_write(sai->regmap, FSL_SAI_RCSR(ofs), flags | xcsr);
- 
- out:
--	if (irq_none)
--		return IRQ_NONE;
--	else
--		return IRQ_HANDLED;
-+	return iret;
- }
- 
- static int fsl_sai_set_dai_tdm_slot(struct snd_soc_dai *cpu_dai, u32 tx_mask,
+Ahmad Fatoum (2):
+  ASoC: fsl_sai: simplify register poking in fsl_sai_set_bclk
+  ASoC: fsl_sai: implement 1:1 bclk:mclk ratio support
+
+Sascha Hauer (5):
+  ASoC: fsl_sai: Drop unnecessary defines
+  ASoC: fsl_sai: simplify irq return value
+  ASoC: fsl_sai: store full version instead of major/minor
+  ASoC: fsl_sai: Use better variable names
+  ASoC: fsl_sai: use DIV_ROUND_CLOSEST() to calculate divider
+
+ sound/soc/fsl/fsl_sai.c | 100 ++++++++++++++++++++--------------------
+ sound/soc/fsl/fsl_sai.h |   9 +---
+ 2 files changed, 52 insertions(+), 57 deletions(-)
+
 -- 
 2.30.2
 
