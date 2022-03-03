@@ -4,69 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3017C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Mar 2022 15:56:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66F57C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Mar 2022 15:58:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E65A7193B;
-	Thu,  3 Mar 2022 16:55:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E65A7193B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7F8A01A8E;
+	Thu,  3 Mar 2022 16:57:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F8A01A8E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646323010;
-	bh=InC9xaVPcWhBcn1swTSH2FFWicOR2y5qBtTa3QQr7uw=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1646323085;
+	bh=wVV683G32lWrWOQ/DHwVqiEhQrAcp8Gi7OZjZHylJYU=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=u4ybmtOBvVw2dtjQSBZ7nzFV20znLyW2VCImV3nStgOMqW/fbgwwgJcKugLS3H+sc
-	 AkSiwHNPzEvlzmMuroXHps8ma4FXTMOBe94aJurTTi3Bh9ply5/bBjYkfa/CXOwGkv
-	 Tr5tyootVUNcDmWK/4Y9HJzzvoknz1PcL7srl6/U=
+	b=J/sriUORAg4ekkjyXznda7n4mjX8W1ZA8NfQVunURH4tq+12ZYn+kb2oQM9thFz0i
+	 0yESTYZ+5CLL3ANfvflx+EO2jgAMS0jsWeiEsz52iOu+XCT9qWSXRemRwxtb8a6R1N
+	 tMDy9Zb1koyfRDRDMeFkwnajc1LkcIJyDHPSlZI0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7DD7FF8013D;
-	Thu,  3 Mar 2022 16:55:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2A3D9F80149;
+	Thu,  3 Mar 2022 16:57:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 40BDBF80152; Thu,  3 Mar 2022 16:55:58 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 64A40F80152; Thu,  3 Mar 2022 16:57:13 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1C3C2F8013D
- for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2022 16:55:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C3C2F8013D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2A3D7F80109
+ for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2022 16:57:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2A3D7F80109
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="hClBiL+L"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 45A3CB82624;
- Thu,  3 Mar 2022 15:55:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C8E0C004E1;
- Thu,  3 Mar 2022 15:55:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1646322954;
- bh=InC9xaVPcWhBcn1swTSH2FFWicOR2y5qBtTa3QQr7uw=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=hClBiL+Ltur/DgONFRhoVM3OfVvvCPyF0ICITY2WNLgTqvYz96QZ6lVWz+Qo99kbG
- u7hwyD/HcYK2ECx77U6JkCFttjTzZZShwyz/YRtDNYRdYz2nP6NgzupPw8HN6T4CJn
- SaJI4UjmXESWPF9LcPHF9XJixKu3qRZu7fx1OsAnhHJGjmERghjOHQnspL8RqnK/KO
- wKxpVwIm5omY6VxwXyfgwefu3ReEvBJTTMa1G3+SqLywkHHpbMYNn5PGLQoyyF+RAE
- I8ccgP3K7he+0RNDH2WrSBP9r9U3ryTKHCdeweHbjZ2OUKf4m+V8wE7QbLnVkPvfte
- oVbWJ5K7mTm8g==
-Date: Thu, 3 Mar 2022 21:25:49 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH] soundwire: qcom: fix build failures if CONFIG_PM=n
-Message-ID: <YiDlBevX3/BrXmwb@matsya>
-References: <20220303110321.23666-1-srinivas.kandagatla@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220303110321.23666-1-srinivas.kandagatla@linaro.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Stephen Rothwell <sfr@canb.auug.org.au>, pierre-louis.bossart@linux.intel.com,
- linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
- yung-chuan.liao@linux.intel.com, quic_srivasam@quicinc.com
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="a4s9TCdW"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="EwnAxxjL"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 2FEAA21997;
+ Thu,  3 Mar 2022 15:57:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1646323030; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hvZmFNZwfGxsY3SATvOq/0RvuhCsxHAsW+4kENTqBbo=;
+ b=a4s9TCdW/yzAYO1oRXysgx5dThhmhpxhs7Ghdq3kWQlXNLIzzqR1/BHZERfKfgtPykgv2q
+ lakGqqxxuOpZh7JfRBOE/ctpRimLHIMWm39pC/2zgbcuW6y9GFT+L5qQpPu5hC20lWAooX
+ Ks3S+2xUenUEzWgcfrLpAvcPxSeuM7g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1646323030;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hvZmFNZwfGxsY3SATvOq/0RvuhCsxHAsW+4kENTqBbo=;
+ b=EwnAxxjLRhdeF+cTQoUWPyKdBD7m+sJJID8xKkIK/0maMIruUOM50y8Y6KQbl39wBt+bhq
+ C/HX6idcEGy+J5Cw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 196BCA3B88;
+ Thu,  3 Mar 2022 15:57:10 +0000 (UTC)
+Date: Thu, 03 Mar 2022 16:57:10 +0100
+Message-ID: <s5hfsnzt4fd.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Shengjiu Wang <shengjiu.wang@gmail.com>
+Subject: Re: Issue in pcm_dsnoop.c in alsa-lib
+In-Reply-To: <CAA+D8AOfPuFfAS3OhEb0OupJfNGc9xwNrFrKPcCykfO_LQb_nQ@mail.gmail.com>
+References: <CAA+D8AOfPuFfAS3OhEb0OupJfNGc9xwNrFrKPcCykfO_LQb_nQ@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, chancel.liu@nxp.com,
+ Shengjiu Wang <shengjiu.wang@nxp.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,26 +88,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 03-03-22, 11:03, Srinivas Kandagatla wrote:
-> Fix below build failure
-> drivers/soundwire/qcom.c:1460:12: error: 'swrm_runtime_resume' defined
-> but not used [-Werror=unused-function]
-> by marking the resume swrm_runtime_resume() with  __maybe_unused attribute.
+On Tue, 01 Mar 2022 05:16:38 +0100,
+Shengjiu Wang wrote:
+> 
+> Hi Takashi Iwai, Jaroslav Kysela
+> 
+>     We encountered an issue in the pcm_dsnoop use case, could you please
+> help to have a look?
+> 
+>     *Issue description:*
+>     With two instances for dsnoop type device running in parallel, after
+> suspend/resume,  one of the instances will be hung in memcpy because the
+> very large copy size is obtained.
+> 
+> #3 0x0000ffffa78d5098 in snd_pcm_dsnoop_sync_ptr (pcm=0xaaab06563da0)
+> at pcm_dsnoop.c:158
+> dsnoop = 0xaaab06563c20
+> slave_hw_ptr = 64
+> old_slave_hw_ptr = 533120
+> avail = *187651522444320*
+> 
+>   * Reason analysis: *
+>    The root cause that I analysis is that after suspend/resume,  one
+> instance will get the SND_PCM_STATE_SUSPENDED state from slave pcm device,
+>   then it will do snd_pcm_prepare() and snd_pcm_start(),  which will reset
+> the dsnoop->slave_hw_ptr and the hw_ptr of slave pcm device,  then the
+> state of this instance is correct.  But another instance may not get
+> the SND_PCM_STATE_SUSPENDED state from slave pcm device because slave
+> device may have been recovered by first instance,  so
+> the dsnoop->slave_hw_ptr is not reset.  but because hw_ptr of slave pcm
+> device has been reset,  so there will be a very large "avail" size.
+> 
+>    *Solution:*
+>    I didn't come up with a fix for this issue,  seems there is no easy way
+> to let another instance know this case and reset the
+> dsnoop->slave_hw_ptr,  could you please help?
 
-A patch title should reflect the change and not the cause. So i have
-taken liberty to fix it as:
+Could you try topic/pcm-direct-resume branch on
+  https://github.com/tiwai/alsa-lib
 
-soundwire: qcom: use __maybe_unused for swrm_runtime_resume() 
- 
-swrm_runtime_resume() would not be defined when CONFIG_PM=n
- 
-This causes below build failure
-drivers/soundwire/qcom.c:1460:12: error: 'swrm_runtime_resume' defined
-but not used [-Werror=unused-function]
- 
-Mark the resume swrm_runtime_resume() with  __maybe_unused attribute.
+??
 
-With this i have applied
 
--- 
-~Vinod
+thanks,
+
+Takashi
+
