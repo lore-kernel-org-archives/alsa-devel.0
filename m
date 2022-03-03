@@ -4,91 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79DF6C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Mar 2022 11:28:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D951C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Mar 2022 13:34:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A4F42191A;
-	Thu,  3 Mar 2022 12:27:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A4F42191A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4B73A18FB;
+	Thu,  3 Mar 2022 14:33:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B73A18FB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646306881;
-	bh=tV/Ow5Jp4b3MHtm2QDHCd+vujg3ZfeZ36OEjSUEriUE=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1646314453;
+	bh=p2C7b5c/cUQV9McqiJLePU5w1eCpvl0FqwxxR66KW3c=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=T57Ic9zjPNlLJq2Iosk4a6LifbkyQWIE/0zQzO3lp65QlNDNvcZC8SJBuacDPqS3Q
-	 XgDJbpZSWOUeorNKMY4B2v0/GBqhHfsSG4JRLqpMO1R7ESUI/EQDI3zXzLpSnB2x82
-	 BgpByY9b0qI3c3Ye3/DAYmTnEbGXOkHFtz1Cnr30=
+	b=s/5ywenDG1sP09vU5Q/787iRbvGy2R438CDlYzZvvYnUKCCw4bsbOVZG6m+OM8hTR
+	 bx++Fg43dKCw5MtcoBUwP3DCyCBg374wu9utCaxVvmns3yz2xVyNxxyjZD/wjSgdzL
+	 tt1UPtduXHFkmpc+V/3y8u/DRqDPgDlrSNs9QVhU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3FB37F80109;
-	Thu,  3 Mar 2022 12:27:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CB51AF8013D;
+	Thu,  3 Mar 2022 14:33:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 396FCF80152; Thu,  3 Mar 2022 12:27:09 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id 1E85AF80152; Thu,  3 Mar 2022 14:33:20 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5D0B6F8013D
+ for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2022 14:33:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D0B6F8013D
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="Hfiz7Szl"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8877BF80109
- for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2022 12:27:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8877BF80109
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="C2vF6nFQ"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 223509Bm013880;
- Thu, 3 Mar 2022 05:27:02 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=EAVQ9BTgA44GRc27JLLgB99fSIgoFgOWBfBA7P8DU7o=;
- b=C2vF6nFQPlgkzR4J/aTvN3MgR2zWtIREBe87y4x18cu+Pmzi81wYPwU8NGyjvrIT4EmI
- nTzQ1CgeAlAi1BYbPZPLnsNoACB6SudKYC3lVY3KGsCrNRWXBMJT/Dj94nSYnOJw6hVF
- LZ5CbL7ahza0LYVpIGkAvbkrrvYr99o4h26m2AMWAOkLa/rNjmWU+Vif9m19pyn+0CRT
- OHHgiaWvw8RsLEqZGhYNAWeEGKYIaJgBlVsQXjplWHMTswPDy4FJA9B8ts2z9yYV3DRw
- 8dP5Rdru2/Hgz+3Pa/ESbCJE4K2PffPlZUqfKI7kdKkmDQF9RWy0E/wb5wFwTEWyoonS nw== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3ejncq8fv7-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 03 Mar 2022 05:27:02 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Thu, 3 Mar
- 2022 11:27:00 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.18 via
- Frontend Transport; Thu, 3 Mar 2022 11:27:00 +0000
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id CFAF42A1;
- Thu,  3 Mar 2022 11:27:00 +0000 (UTC)
-Date: Thu, 3 Mar 2022 11:27:00 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Martin Kepplinger <martin.kepplinger@puri.sm>
-Subject: Re: [PATCH] wm8962: add a simple DMIC enable control
-Message-ID: <20220303112700.GM38351@ediswmail.ad.cirrus.com>
-References: <20220203110518.GF18506@ediswmail.ad.cirrus.com>
- <7b3306d7a80f605973c932a0a4679bcac067ae8a.camel@puri.sm>
- <20220204172116.GG18506@ediswmail.ad.cirrus.com>
- <fca54f527f619e21c19918ed3165d9ec8f85f6f6.camel@puri.sm>
- <20220207142129.GB112838@ediswmail.ad.cirrus.com>
- <20220301134441.GK38351@ediswmail.ad.cirrus.com>
- <b867e8d576536907d383e66f85afee995074b53b.camel@puri.sm>
- <ebede30e994b8178c4a929814c7f85739656c621.camel@puri.sm>
- <20220302134017.GL38351@ediswmail.ad.cirrus.com>
- <1eecf3fec0b1e7a2f229f4b6cb6dea3955f19dff.camel@puri.sm>
+ by ams.source.kernel.org (Postfix) with ESMTPS id 486FDB8254C;
+ Thu,  3 Mar 2022 13:33:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EAC9C004E1;
+ Thu,  3 Mar 2022 13:33:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1646314391;
+ bh=p2C7b5c/cUQV9McqiJLePU5w1eCpvl0FqwxxR66KW3c=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=Hfiz7SzlXv23kTOu2VKGxKVgiYhP4fTT7098Cx4jimhp/UBzWjBSlsmpA4PwCP0BI
+ ZDn+4+G8eE+Iiin/G+HGlKI6JW89ENHtP3szsQLgOSJpIUUy5K/pMmyikLSpu5n+uo
+ FmBzmcY/4fnqIXvljAWbFHPO9duZuh4Eu92asbi6E0Ok1Q2k1rV1FNfj3DydPqGydM
+ LzbDei8LBdviYQKbIAqDRRTnXwVO0YP7vKSG0beUdQgR9lz7BV30dEfxK9bfzRBjRR
+ 4BOUrXs9w/KhHeeD6RZ4xWEsRaFwbg8sAZhSs3AY+RxNozi4NlZ9Im31Fupzl18zwG
+ Hb8uFwEI84NCg==
+From: Mark Brown <broonie@kernel.org>
+To: Jiaxin Yu <jiaxin.yu@mediatek.com>
+In-Reply-To: <20220302013533.29068-1-jiaxin.yu@mediatek.com>
+References: <20220302013533.29068-1-jiaxin.yu@mediatek.com>
+Subject: Re: [v2] ASoC: bt-sco: fix bt-sco-pcm-wb dai widget don't connect to
+ the endpoint
+Message-Id: <164631438805.1870788.7887428309950116158.b4-ty@kernel.org>
+Date: Thu, 03 Mar 2022 13:33:08 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1eecf3fec0b1e7a2f229f4b6cb6dea3955f19dff.camel@puri.sm>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-ORIG-GUID: SHAbAPGswAgFV9BjismtGd7wHEZpIs6w
-X-Proofpoint-GUID: SHAbAPGswAgFV9BjismtGd7wHEZpIs6w
-X-Proofpoint-Spam-Reason: safe
-Cc: alsa-devel@alsa-project.org, kernel@puri.sm, patches@opensource.cirrus.com,
- tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, geert@glider.be,
- daniel.baluta@nxp.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org,
+ Project_Global_Chrome_Upstream_Group@mediatek.com, tzungbi@google.com,
+ linux-mediatek@lists.infradead.org, trevor.wu@mediatek.com,
+ matthias.bgg@gmail.com, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -104,40 +84,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Mar 02, 2022 at 03:11:00PM +0100, Martin Kepplinger wrote:
-> Am Mittwoch, dem 02.03.2022 um 13:40 +0000 schrieb Charles Keepax:
-> > On Wed, Mar 02, 2022 at 12:48:28PM +0100, Martin Kepplinger wrote:
-> > > Am Dienstag, dem 01.03.2022 um 15:00 +0100 schrieb Martin
-> > > > Am Dienstag, dem 01.03.2022 um 13:44 +0000 schrieb Charles
-> > > > > On Mon, Feb 07, 2022 at 02:21:29PM +0000, Charles Keepax wrote:
-> > > > > > On Mon, Feb 07, 2022 at 11:49:32AM +0100, Martin Kepplinger
-> > > > > > > Am Freitag, dem 04.02.2022 um 17:21 +0000 schrieb Charles
-> > > > > > > > On Fri, Feb 04, 2022 at 10:43:53AM +0100, Martin
-> > Although your previous control dumps had that input set
-> > on. I suspect if you have both enabled you will get some slightly
-> > weird effects, there is probably a slightly phase delay through
-> > the PGA and there won't be on the direct path, so when they mix
-> > together it will likely sound weird.
+On Wed, 2 Mar 2022 09:35:33 +0800, Jiaxin Yu wrote:
+> This patch fix the second dai driver's dai widget can't connect to the
+> endpoint. Because "bt-sco-pcm" and "bt-sco-pcm-wb" dai driver have the
+> same stream_name, so it will cause they have the same widget name.
+> Therefor it will just create only one route when do snd_soc_dapm_add_route
+> that only find the widget through the widget name.
 > 
-> it was not that bad but with your changes, especially a recorded "s"
-> sounds indeed better now.
 > 
+> [...]
 
-Awesome hopefully that should be us getting pretty close.
+Applied to
 
-> > Hopefully that gets us to a clean signal. The settings described
-> > in your commit message give +9dB analogue gain which seems
-> > reasonable to me, and from the patch itself looks like you have
-> > +15dB digital gain, which feels a little high but not total
-> > unreasonable.
-> I left MIXINR PGA Volume at 1 and Capture Volume ("Input PGA Volume
-> Control") at 39 for now since I think it shouldn't be quieter than that
-> at least.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-I think we probably bump the PGA gain up another 3dB, maybe even
-6dB if you really need to, I would just be careful to test some
-very loud sound levels to make sure your not starting to clip the
-signal.
+Thanks!
+
+[1/1] ASoC: bt-sco: fix bt-sco-pcm-wb dai widget don't connect to the endpoint
+      commit: 8f2b025abc31bc15d38657d1286d7470bbbd5efa
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
 Thanks,
-Charles
+Mark
