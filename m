@@ -4,53 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1C51C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Mar 2022 15:17:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01885C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Mar 2022 15:18:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 01C0818C0;
-	Thu,  3 Mar 2022 16:17:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 01C0818C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id F31A81A41;
+	Thu,  3 Mar 2022 16:17:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F31A81A41
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646320678;
-	bh=rPfY0iOzdnUEX4SK7D/GmNSJK43ISBFiihoT/sBSO+o=;
+	s=default; t=1646320717;
+	bh=u4orQjuwdU2qoXpWXVihOiQT6aZ49NElDlHqP3ba5ns=;
 	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qe7rqoluclnhX/e9GbqICZZFUw35+xpFiazlRUpE5POiaN1t0a/FHg1WPfymGUwGJ
-	 D6Pt9QF3ILx0dyRcFCnCqQVb1qUoC5wZrIgz0JUcm58RpQoexJfK814T8pPvZbN0td
-	 VbrevvIbFiofgHpdf2F2UZ+jz61bh6fkUWywTOOs=
+	b=W+qJvIeIhk/btAxzTP8V7nb6+FWpJc37kGrDKD0OqXgGtyOR8mPmVgq9ylj9n0evJ
+	 mRGSHlAJLe25J5He7wrKuevl6HZjiJ2iBisgyUHvPDMULmbZ+KqQyyxKHxh1kheten
+	 DCfADEOFQbJUSVw+mPo/zT372DYIpjut1cTnq7Ps=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9B72CF80109;
-	Thu,  3 Mar 2022 16:17:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 986E6F80256;
+	Thu,  3 Mar 2022 16:17:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B65ADF80152; Thu,  3 Mar 2022 16:17:05 +0100 (CET)
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+ id 5D993F80167; Thu,  3 Mar 2022 16:17:45 +0100 (CET)
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0AF4DF80109
- for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2022 16:16:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0AF4DF80109
-X-UUID: 7b8c7df88d48468daf249bb20b8724b0-20220303
-X-UUID: 7b8c7df88d48468daf249bb20b8724b0-20220303
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id D6D8EF804BC
+ for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2022 16:17:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6D8EF804BC
+X-UUID: 246abe8959de44a7bad1a8cf6e97d532-20220303
+X-UUID: 246abe8959de44a7bad1a8cf6e97d532-20220303
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
  (envelope-from <jiaxin.yu@mediatek.com>)
  (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
- with ESMTP id 1251532998; Thu, 03 Mar 2022 23:16:43 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 3 Mar 2022 23:16:42 +0800
+ with ESMTP id 1460712382; Thu, 03 Mar 2022 23:17:26 +0800
+Received: from mtkexhb01.mediatek.inc (172.21.101.102) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.792.15; Thu, 3 Mar 2022 23:17:25 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by mtkexhb01.mediatek.inc
+ (172.21.101.102) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+ Thu, 3 Mar 2022 23:17:24 +0800
 Received: from mhfsdcap04 (10.17.3.154) by mtkcas11.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 3 Mar 2022 23:16:41 +0800
-Message-ID: <bab4302fbab4d2887e4ebd247c2da78128abaf21.camel@mediatek.com>
+ Transport; Thu, 3 Mar 2022 23:17:23 +0800
+Message-ID: <9c58c560ef0dffb3f9ab55fee483e721f660f382.camel@mediatek.com>
 Subject: Re: [v2 10/17] ASoC: mediatek: mt8186: support audio clock control
  in platform driver
 From: Jiaxin Yu <jiaxin.yu@mediatek.com>
 To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
  <broonie@kernel.org>
-Date: Thu, 3 Mar 2022 23:16:40 +0800
+Date: Thu, 3 Mar 2022 23:17:23 +0800
 In-Reply-To: <e2d28d1a-4bbc-931d-3534-776ee18369f4@collabora.com>
 References: <20220217134205.15400-1-jiaxin.yu@mediatek.com>
  <20220217134205.15400-11-jiaxin.yu@mediatek.com>
@@ -280,8 +284,6 @@ On Fri, 2022-02-18 at 15:54 +0100, AngeloGioacchino Del Regno wrote:
 > > +	return 0;
 > 
 > You're returning 0 even in error cases, this is wrong.
-Thanka for your careful review. I will fix this issue in next version.
-
 > 
 > > +}
 > > +
@@ -731,9 +733,6 @@ Thanka for your careful review. I will fix this issue in next version.
 > may not
 > ever be less than zero.
 > 
-Yes, your suggestion is very correct. But I will remove some member fo
-this strcut because they are not needed in audio driver.
-
 > 
 > > +};
 > > +
@@ -1009,8 +1008,6 @@ this strcut because they are not needed in audio driver.
 > 
 > #define CLK_AUD_INTBUS_SEL_MASK_SFT		GENMASK(23, 22)
 > 
-I will remove these define because they are not used in audio driver.
-
 > > +
 > > +/* CLK_AUDDIV_0 */
 > > +#define APLL12_DIV0_PDN_SFT                0
@@ -1018,8 +1015,6 @@ I will remove these define because they are not used in audio driver.
 > > +#define APLL12_DIV0_PDN_MASK_SFT           (0x1 << 0)
 > 
 > BIT() macro please
-same
-
 > 
 > #define APLL12_DIV0_PDN_MASK_SFT		BIT(0)
 > 
@@ -1030,8 +1025,6 @@ same
 > > +#define APLL12_DIV1_PDN_MASK_SFT           (0x1 << 1)
 > 
 > Of course, BIT() macro again, here and everywhere else applicable.
-Yes, you are right.
-
 > 
 > > +#define APLL12_DIV2_PDN_SFT                2
 > > +#define APLL12_DIV2_PDN_MASK               0x1
