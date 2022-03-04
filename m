@@ -4,77 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBE39C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Mar 2022 08:52:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A625C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Mar 2022 08:52:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BD39718C5;
-	Fri,  4 Mar 2022 09:51:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD39718C5
+	by alsa0.perex.cz (Postfix) with ESMTPS id AA0D718D6;
+	Fri,  4 Mar 2022 09:52:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA0D718D6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646383940;
-	bh=a3Wl5Wt21qNRcTkkVDgPqnpY2YMRLkaf7gonM+DZPC4=;
+	s=default; t=1646383972;
+	bh=qm8Et4EkSUVaLdB7EACBEULLq59LenMy6GJ2thSaeL8=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dCIi8pmyi9bSIZHGFmw7DoBARAcVjQcGAWDNTUmHHmC+5sgLnKpsOqMmZxWqmAAqR
-	 cUcO15eEYMzqnDlQ9bd0WsWw+lgMXWulmX3pRTPlulkiJrgszJ+aW7gGUYGqlnIQp4
-	 IiSWFOhaiQPttCdgX4ApfpDsEcBCgf49cpJRH9Tc=
+	b=e9Jt/NzA5LRn7KFj/2UZT0dzKZGDPYWc1UajKQppZ5EqwVZegBItualpdgpP6qrmR
+	 SRUTMERWWFouOi2OK+eJwqtp83omnLVazmKgOZqjx6+7eh38F62lbuEsbBnaDiG0BE
+	 IbvSot+WvoagQ1x4KNmuARF/y93KPY3q3J5Kjv28=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 595EEF80139;
-	Fri,  4 Mar 2022 09:51:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E8F83F800F2;
+	Fri,  4 Mar 2022 09:51:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 95A64F801EC; Fri,  4 Mar 2022 09:51:28 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id F0E9CF800F2; Fri,  4 Mar 2022 09:51:53 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3041BF800F0
- for <alsa-devel@alsa-project.org>; Fri,  4 Mar 2022 09:51:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3041BF800F0
+ by alsa1.perex.cz (Postfix) with ESMTPS id E7518F800F2
+ for <alsa-devel@alsa-project.org>; Fri,  4 Mar 2022 09:51:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7518F800F2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="CJjoqG1K"; 
+ header.b="taZZt/tD"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="nGdOjxJi"
+ header.b="jdPn+QcJ"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id A4C8E21136;
- Fri,  4 Mar 2022 08:51:25 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 4D1851F384;
+ Fri,  4 Mar 2022 08:51:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1646383885; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1646383907; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=slqWuDwOoH/Q5XlOhkioyiGZ0ilW0OBu5hUs4LHxwxA=;
- b=CJjoqG1Kh563odELWTDZkXLiqEDm+WjyISHd5xwzsNAhGqqw/VajH3xLlE9tlJxkcLbASy
- ReDQ5Jayk8E+eQfPurL4RYjuWWXJm+lEhQPdHFVW96qv4olsmKsHXsbbP38hziUezy3BCc
- HiCbWHBhoIqdWwJ5myzr10lydClipoY=
+ bh=ZODsXE6ddBfzoieQYI7aVrk0E2hJEr5ZTnIuJ9WILSs=;
+ b=taZZt/tDabNCtLvv9DOn+enqzNczyiV9Az3YvWCKoEMkbc0sQsyCMY46uftmA52yEM2OGS
+ 0ICQxUBb3S/XcCh8UBPl7PperVRb9qiIWX4xI78/qKZh4E6M49w2qzxfqbvqfd9bUYtYQb
+ 5bg7l/mdfqqiY7fbhPYbAwm1RVKk0lg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1646383885;
+ s=susede2_ed25519; t=1646383907;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=slqWuDwOoH/Q5XlOhkioyiGZ0ilW0OBu5hUs4LHxwxA=;
- b=nGdOjxJiB8ElSvqgH5B1ZDOIKsxBc3K6YbRTDuh+qkY2fD/s98hl908MXPlc1WKYs2oj1s
- X7HLpiTPpHQZntCA==
+ bh=ZODsXE6ddBfzoieQYI7aVrk0E2hJEr5ZTnIuJ9WILSs=;
+ b=jdPn+QcJR6h79AZCQwxl+xXp0afdG3jW8ShgOmG+rfv9jWX4vkXlkA48MpFrNi9QAD3CwH
+ WmNEKTzpYoq6OqBw==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 877EAA3B83;
- Fri,  4 Mar 2022 08:51:25 +0000 (UTC)
-Date: Fri, 04 Mar 2022 09:51:25 +0100
-Message-ID: <s5hsfryrtgy.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id 3CDD6A3B8C;
+ Fri,  4 Mar 2022 08:51:47 +0000 (UTC)
+Date: Fri, 04 Mar 2022 09:51:47 +0100
+Message-ID: <s5hr17irtgc.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Colin Ian King <colin.i.king@gmail.com>
-Subject: Re: [PATCH] ALSA: echoaudio: remove redundant assignment to variable
- bytes
-In-Reply-To: <20220302170728.1094633-1-colin.i.king@gmail.com>
-References: <20220302170728.1094633-1-colin.i.king@gmail.com>
+To: xkernel.wang@foxmail.com
+Subject: Re: [PATCH] ALSA: lola: add a check for the return of vmalloc()
+In-Reply-To: <tencent_4221FC4089F6DF01C48F192E5784038BA205@qq.com>
+References: <tencent_4221FC4089F6DF01C48F192E5784038BA205@qq.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, llvm@lists.linux.dev,
- kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,19 +87,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 02 Mar 2022 18:07:28 +0100,
-Colin Ian King wrote:
+On Fri, 04 Mar 2022 09:38:20 +0100,
+xkernel.wang@foxmail.com wrote:
 > 
-> The variable bytes is being assigned a value that is never read, it
-> is being re-assigned inside a following if block. The assignment is
-> redundant and can be removed.
+> From: Xiaoke Wang <xkernel.wang@foxmail.com>
 > 
-> Cleans up clang scan build warning:
-> sound/pci/echoaudio/midi.c:211:9: warning: Although the value stored
-> to 'bytes' is used in the enclosing expression, the value is never
-> actually read from 'bytes' [deadcode.DeadStores]
+> vmalloc() is a memory allocation function which can return NULL when
+> some internal memory errors happen. So it is better to check the return
+> of it to catch the error in time.
 > 
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+> Signed-off-by: Xiaoke Wang <xkernel.wang@foxmail.com>
 
 Thanks, applied.
 
