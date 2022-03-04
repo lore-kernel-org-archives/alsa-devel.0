@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8BCFCC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Mar 2022 21:00:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EAA92C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Mar 2022 21:01:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D41331ED7;
-	Fri,  4 Mar 2022 22:00:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D41331ED7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 329491F8B;
+	Fri,  4 Mar 2022 22:00:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 329491F8B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646427653;
-	bh=LrmxOQiORsVt5ClH42Uf0eTVBg/+TCwYW3p4TbK4Fs8=;
+	s=default; t=1646427673;
+	bh=GpGb6XGYSFak51cPRJ81OCjkpIJLIgCTh3m6S1l/VzM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TFKBLAkPdhcO8uEE08/niOTwJ/WbHwYPitRJXwQlIMlAHBgZ2pb867Nt/4MRzCRiP
-	 N8j99xU5xoCsWCd/aLJ71MoYWqLw9YTk/dRlqp+8DbGFeVO2OrakAb+p1OdzJ6dbUr
-	 UdhyPGc1InKvcCfngwgcXto91ABZvcbiZIxUgn4s=
+	b=dzyfYA0pkGPiqsWqQAoXaT9CQ0Z6TjuLmJ+sDL/sf87qNOdqnikZQEB40KoXQvpP5
+	 BhCLZFypK9KnSbjfL9qjVDT5N+0HdGUFgSeGlKHd5yxTPX/wMApSpra4lNRCsGbSFq
+	 vXnZ8SKPeNRBzx+nYpL/WJEL4YGM3V/PibIWMkN4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E1611F80529;
-	Fri,  4 Mar 2022 21:57:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 94383F80535;
+	Fri,  4 Mar 2022 21:58:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E7062F8051E; Fri,  4 Mar 2022 21:57:55 +0100 (CET)
+ id 8E14EF8051F; Fri,  4 Mar 2022 21:57:56 +0100 (CET)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4109CF800FA
- for <alsa-devel@alsa-project.org>; Fri,  4 Mar 2022 21:57:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4109CF800FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 22E29F801F5
+ for <alsa-devel@alsa-project.org>; Fri,  4 Mar 2022 21:57:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22E29F801F5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="bGuRC9wv"
+ header.b="QbS1NjeJ"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1646427468; x=1677963468;
+ t=1646427470; x=1677963470;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=LrmxOQiORsVt5ClH42Uf0eTVBg/+TCwYW3p4TbK4Fs8=;
- b=bGuRC9wvnFAn9mKcSgMuSFwziJvg54eIJQ//hatYGN5vcBIKvXqNxP6C
- xcpm1iMnlEYxHoGCHn0rSI5jLippYaBukwvErW1o3JRlnSZrY5YlQlDrd
- PNnoh3sci5jM5gYoDJzDNUPH30TR0v+iJQgx77EooMFb4+XvSWTOeetNU
- 0A90yjtYM6xr4upRmUZi9iNyh4CbmVOiK5tlwWqLpioEbDzXUzSZBucOZ
- Y3fY07qrg79XJYSqf2sUVKywrEBipe+QECP44cR1Ajpbte8apjOiWDeaS
- UHEJ0Ot6h0mIEFPCq6+PSng/tOST/6xFByrsZen/KwU8mc3I4GWvL35aw Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10276"; a="340492550"
-X-IronPort-AV: E=Sophos;i="5.90,156,1643702400"; d="scan'208";a="340492550"
+ bh=GpGb6XGYSFak51cPRJ81OCjkpIJLIgCTh3m6S1l/VzM=;
+ b=QbS1NjeJ+IsWtzHZcWO+FQ24NWtCRZq2DgTqG6eU2/KmVeNMK+Ii5cYR
+ tEGkAPRPvMUlzKclmEP8WMttaFq0cB4eS6JZSK7tHfRFuMg0T6fGtylGM
+ cNLKH2/eHa/8X3ySKBgtKGpBJCVW6ksmkU1wsPaii6+H45vZ/ADkbdvhS
+ e21swDnb361eS5iNW9d751DSTz/NaytANuSewVaB0SNQb2rBs2kLXdfud
+ 9ZX7wWcVGo9mxcN8r+c2BUTNKH0JNq2AS35xSklxpIsHHFjSprSFxFCxx
+ VyXbhaKA24UqJ+wEXdb8b0wjxt/PrL0yGxJeC89lERQT03NnLodj1PiXK g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10276"; a="340492552"
+X-IronPort-AV: E=Sophos;i="5.90,156,1643702400"; d="scan'208";a="340492552"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Mar 2022 12:57:44 -0800
-X-IronPort-AV: E=Sophos;i="5.90,156,1643702400"; d="scan'208";a="631271288"
+ 04 Mar 2022 12:57:45 -0800
+X-IronPort-AV: E=Sophos;i="5.90,156,1643702400"; d="scan'208";a="631271292"
 Received: from grmundad-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.209.115.48])
  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Mar 2022 12:57:43 -0800
+ 04 Mar 2022 12:57:45 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 04/10] ASoC: SOF: amd: Flush cache after ATU_BASE_ADDR_GRP
- register update
-Date: Fri,  4 Mar 2022 14:57:27 -0600
-Message-Id: <20220304205733.62233-5-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 06/10] ASoC: SOF: amd: Move group register configuration to
+ acp-loader
+Date: Fri,  4 Mar 2022 14:57:29 -0600
+Message-Id: <20220304205733.62233-7-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220304205733.62233-1-pierre-louis.bossart@linux.intel.com>
 References: <20220304205733.62233-1-pierre-louis.bossart@linux.intel.com>
@@ -89,31 +89,83 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
 
-ACP_SRAM_PTE block has cache that needs to be flushed after every
-PTE updates. This patch updates ACPAXI2AXI_ATU_CTRL register to
-flush cache after updating PTE with stream physical address.
+We are using PTE_GRP1 for DMA operations to load firmware binaries
+but we are enabling PTE_GRP and flushing ATU cache much before in
+probe callbacks. This can cause issue if we try to load firmware
+runtime during system resume as probe callback will not be invoked
+hence PTE_GRP will not be enabled. Moreover it makes more sense to
+flush the cache after register configuration.
+
+Move PTE group register configuration to acp-loader within pre_fw_run
+callback to avoid such issue.
 
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/amd/acp-stream.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/sof/amd/acp-loader.c |  9 +++++++++
+ sound/soc/sof/amd/acp.c        | 14 --------------
+ 2 files changed, 9 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/sof/amd/acp-stream.c b/sound/soc/sof/amd/acp-stream.c
-index f2837bfbdb20..b3ca4a90dbf8 100644
---- a/sound/soc/sof/amd/acp-stream.c
-+++ b/sound/soc/sof/amd/acp-stream.c
-@@ -115,6 +115,9 @@ int acp_dsp_stream_config(struct snd_sof_dev *sdev, struct acp_dsp_stream *strea
- 		offset += 8;
+diff --git a/sound/soc/sof/amd/acp-loader.c b/sound/soc/sof/amd/acp-loader.c
+index 2dc15ae38155..7ca51e0f3b1b 100644
+--- a/sound/soc/sof/amd/acp-loader.c
++++ b/sound/soc/sof/amd/acp-loader.c
+@@ -127,6 +127,12 @@ static void configure_pte_for_fw_loading(int type, int num_pages, struct acp_dev
+ 		return;
  	}
  
++	/* Group Enable */
++	snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACPAXI2AXI_ATU_BASE_ADDR_GRP_1,
++			  ACP_SRAM_PTE_OFFSET | BIT(31));
++	snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACPAXI2AXI_ATU_PAGE_SIZE_GRP_1,
++			  PAGE_SIZE_4K_ENABLE);
++
+ 	for (page_idx = 0; page_idx < num_pages; page_idx++) {
+ 		low = lower_32_bits(addr);
+ 		high = upper_32_bits(addr);
+@@ -136,6 +142,9 @@ static void configure_pte_for_fw_loading(int type, int num_pages, struct acp_dev
+ 		offset += 8;
+ 		addr += PAGE_SIZE;
+ 	}
++
 +	/* Flush ATU Cache after PTE Update */
 +	snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACPAXI2AXI_ATU_CTRL, ACP_ATU_CACHE_INVALID);
-+
+ }
+ 
+ /* pre fw run operations */
+diff --git a/sound/soc/sof/amd/acp.c b/sound/soc/sof/amd/acp.c
+index ba8b6427b59f..66ca05545be2 100644
+--- a/sound/soc/sof/amd/acp.c
++++ b/sound/soc/sof/amd/acp.c
+@@ -36,19 +36,6 @@ static int smn_read(struct pci_dev *dev, u32 smn_addr, u32 *data)
  	return 0;
  }
  
+-static void configure_acp_groupregisters(struct acp_dev_data *adata)
+-{
+-	struct snd_sof_dev *sdev = adata->dev;
+-
+-	/* Group Enable */
+-	snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACPAXI2AXI_ATU_BASE_ADDR_GRP_1,
+-			  ACP_SRAM_PTE_OFFSET | BIT(31));
+-	snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACPAXI2AXI_ATU_PAGE_SIZE_GRP_1,
+-			  PAGE_SIZE_4K_ENABLE);
+-
+-	snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACPAXI2AXI_ATU_CTRL, ACP_ATU_CACHE_INVALID);
+-}
+-
+ static void init_dma_descriptor(struct acp_dev_data *adata)
+ {
+ 	struct snd_sof_dev *sdev = adata->dev;
+@@ -264,7 +251,6 @@ static int acp_memory_init(struct snd_sof_dev *sdev)
+ 
+ 	snd_sof_dsp_update_bits(sdev, ACP_DSP_BAR, ACP_DSP_SW_INTR_CNTL,
+ 				ACP_DSP_INTR_EN_MASK, ACP_DSP_INTR_EN_MASK);
+-	configure_acp_groupregisters(adata);
+ 	init_dma_descriptor(adata);
+ 
+ 	return 0;
 -- 
 2.30.2
 
