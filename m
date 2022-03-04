@@ -4,75 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19073C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Mar 2022 20:59:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9073C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Mar 2022 20:59:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 557861F54;
-	Fri,  4 Mar 2022 21:58:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 557861F54
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2700B1F13;
+	Fri,  4 Mar 2022 21:59:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2700B1F13
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646427572;
-	bh=HFP7acc4WMx4H8pGUYOMyQgh8OidJg3D9atKa+1UoLY=;
+	s=default; t=1646427590;
+	bh=/CrtTBpUSmCpKf1lL978G3wDpXv6ly7B9bzjmrbaO9Y=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BdT9mRII3TWEpAN/xxS6zaSQrgZ/O1s2K8SA6V4QBUermVZUawSGtoXasWW2eD/9m
-	 lPWf1ZR3Ex+UrTPMkjsTS9ZSPhOGlFYkIrUrfvYRxoAn28vSPkJjVqEGbkpDJWXUk2
-	 tjRqp1qc5hoOBjUG2NcA9I9a4UqybmVA0TtCyKFc=
+	b=VFTwZVc3aJ3Wn2+itDTtYNyUPLChgWiI6rXu0Al25c1PpUbyuuS8EQw4sPI7ahlea
+	 qRZqZcN0awqWMeRKIP5Hkph/pL8cNtDVKc0qeNibofXZFlOcaburh9/KEDsldNCjJI
+	 hWMBUqsYgAKx7J+e+AhkHbD2FGCtFDOLNiY4tLTw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8782DF80516;
-	Fri,  4 Mar 2022 21:57:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 05856F800FA;
+	Fri,  4 Mar 2022 21:57:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 71CADF801EC; Fri,  4 Mar 2022 21:57:50 +0100 (CET)
+ id BEBA2F8051C; Fri,  4 Mar 2022 21:57:52 +0100 (CET)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 36629F800F2
- for <alsa-devel@alsa-project.org>; Fri,  4 Mar 2022 21:57:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36629F800F2
+ by alsa1.perex.cz (Postfix) with ESMTPS id E05B0F80139
+ for <alsa-devel@alsa-project.org>; Fri,  4 Mar 2022 21:57:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E05B0F80139
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="UcaHE3lZ"
+ header.b="ZRZ6GPHR"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1646427468; x=1677963468;
+ t=1646427470; x=1677963470;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=HFP7acc4WMx4H8pGUYOMyQgh8OidJg3D9atKa+1UoLY=;
- b=UcaHE3lZRNxgI9HLQfCAwIFMahxbEMDN8ji2VdLRhMOa58UfuP5oF08A
- Ya9jzaY8kfhTk26POKXGE0i9wMKfHTJFl2OJpo8N33a+iq4cI8Kq4kokM
- bYjTEeoRivrdObycZ39Mm6xVWXWACjF5QohQeu8uV/xxwR16ae0PmcUQI
- IsGXgAXr348UExWwbmflNG5VBIeHkVZYZ8SAZel5QGOkK4ew9iVUzgkbb
- lhQ/DALaWlJ6IpqWPu3oEEXIgFfz/XlRclMIctIw+qiUeabSWgSg0Eyjb
- uw5OwBseJB6BDr/g/UMRtgz1pT6KGUddjH7NwwdUSfK3dz6NT+582A7V0 Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10276"; a="340492549"
-X-IronPort-AV: E=Sophos;i="5.90,156,1643702400"; d="scan'208";a="340492549"
+ bh=/CrtTBpUSmCpKf1lL978G3wDpXv6ly7B9bzjmrbaO9Y=;
+ b=ZRZ6GPHRRq73lcawd8HUpOZg0zzpaEOb21JuDRGpn4ghpWgeE5T5rQEV
+ IlVhIAuKGOXs+b947T+xZWCepmr0JcrS883o8dlDrqHN0V97ub5c3bkzj
+ 0kv43ha1JgsxN2kUXTXeNZtDR2mcmn0yOoC4X4JnSrj457F2l1dmcwVd2
+ jMtBVBzdvjKjfLvVJEg98HyKuRtfZdBZvfamhzfOuqYoHWnlsMrz244jH
+ mc82+LYVUlqQPEDKada77m2X5cWCmKFQjUiJ7bjpKvthCw9psr4T4qVaG
+ H0an0RdAm9kHFKeEJxAMm6NhPnsA14YvfLHOgZXpxOSMZ8d4Q1F+VI2KR A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10276"; a="340492551"
+X-IronPort-AV: E=Sophos;i="5.90,156,1643702400"; d="scan'208";a="340492551"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Mar 2022 12:57:43 -0800
-X-IronPort-AV: E=Sophos;i="5.90,156,1643702400"; d="scan'208";a="631271287"
+ 04 Mar 2022 12:57:44 -0800
+X-IronPort-AV: E=Sophos;i="5.90,156,1643702400"; d="scan'208";a="631271290"
 Received: from grmundad-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.209.115.48])
  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Mar 2022 12:57:42 -0800
+ 04 Mar 2022 12:57:44 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 03/10] ASoC: SOF: amd: Do not set ipc_pcm_params ops as it is
- optional
-Date: Fri,  4 Mar 2022 14:57:26 -0600
-Message-Id: <20220304205733.62233-4-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 05/10] ASoC: SOF: amd: Use semaphore register to synchronize
+ ipc's irq
+Date: Fri,  4 Mar 2022 14:57:28 -0600
+Message-Id: <20220304205733.62233-6-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220304205733.62233-1-pierre-louis.bossart@linux.intel.com>
 References: <20220304205733.62233-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, tiwai@suse.de,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+Cc: tiwai@suse.de, broonie@kernel.org,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Rander Wang <rander.wang@intel.com>, broonie@kernel.org,
- Daniel Baluta <daniel.baluta@nxp.com>
+ Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,67 +87,115 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+From: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
 
-The ipc_pcm_params() ops implementation for AMD is a NOP and since the
-callback is marked now as optional, it can be dropped along with the
-empty function.
+Add lock and unlock around ipc irq handling code using hw semaphore
+register that exhibit special property for register read calls. As
+host and DSP firmware uses few shared registers, there is a possible
+race condition around those shared registers values. This lock ensure
+synchronization between Firmware and host ipc interrupts.
 
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Signed-off-by: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/amd/acp-ipc.c | 8 --------
- sound/soc/sof/amd/acp.h     | 2 --
- sound/soc/sof/amd/renoir.c  | 1 -
- 3 files changed, 11 deletions(-)
+ sound/soc/sof/amd/acp-dsp-offset.h |  1 +
+ sound/soc/sof/amd/acp-ipc.c        | 14 ++++++++++++++
+ sound/soc/sof/amd/acp.c            | 15 ++++++++++++++-
+ sound/soc/sof/amd/acp.h            |  1 +
+ 4 files changed, 30 insertions(+), 1 deletion(-)
 
+diff --git a/sound/soc/sof/amd/acp-dsp-offset.h b/sound/soc/sof/amd/acp-dsp-offset.h
+index 63f13c111b24..40fbf11facba 100644
+--- a/sound/soc/sof/amd/acp-dsp-offset.h
++++ b/sound/soc/sof/amd/acp-dsp-offset.h
+@@ -61,6 +61,7 @@
+ #define ACP_DSP_SW_INTR_STAT                    0x1818
+ #define ACP_SW_INTR_TRIG                        0x181C
+ #define ACP_ERROR_STATUS			0x18C4
++#define ACP_AXI2DAGB_SEM_0			0x1880
+ 
+ /* Registers from ACP_SHA block */
+ #define ACP_SHA_DSP_FW_QUALIFIER		0x1C70
 diff --git a/sound/soc/sof/amd/acp-ipc.c b/sound/soc/sof/amd/acp-ipc.c
-index e132223b4c66..cd5af3d85002 100644
+index cd5af3d85002..9fcd2535fd3b 100644
 --- a/sound/soc/sof/amd/acp-ipc.c
 +++ b/sound/soc/sof/amd/acp-ipc.c
-@@ -170,14 +170,6 @@ int acp_sof_ipc_msg_data(struct snd_sof_dev *sdev, struct snd_pcm_substream *sub
- }
- EXPORT_SYMBOL_NS(acp_sof_ipc_msg_data, SND_SOC_SOF_AMD_COMMON);
- 
--int acp_sof_ipc_pcm_params(struct snd_sof_dev *sdev, struct snd_pcm_substream *substream,
--			   const struct sof_ipc_pcm_params_reply *reply)
--{
--	/* TODO: Implement stream hw params to validate stream offset */
--	return 0;
--}
--EXPORT_SYMBOL_NS(acp_sof_ipc_pcm_params, SND_SOC_SOF_AMD_COMMON);
--
- int acp_sof_ipc_get_mailbox_offset(struct snd_sof_dev *sdev)
+@@ -62,12 +62,26 @@ int acp_sof_ipc_send_msg(struct snd_sof_dev *sdev, struct snd_sof_ipc_msg *msg)
  {
- 	return ACP_SCRATCH_MEMORY_ADDRESS;
+ 	struct acp_dev_data *adata = sdev->pdata->hw_pdata;
+ 	unsigned int offset = offsetof(struct scratch_ipc_conf, sof_in_box);
++	unsigned int count = ACP_HW_SEM_RETRY_COUNT;
++
++	while (snd_sof_dsp_read(sdev, ACP_DSP_BAR, ACP_AXI2DAGB_SEM_0)) {
++		/* Wait until acquired HW Semaphore Lock or timeout*/
++		count--;
++		if (!count) {
++			dev_err(sdev->dev, "%s: Failed to acquire HW lock\n", __func__);
++			return -EINVAL;
++		}
++	};
+ 
+ 	acp_mailbox_write(sdev, offset, msg->msg_data, msg->msg_size);
+ 	acp_ipc_host_msg_set(sdev);
+ 
+ 	/* Trigger host to dsp interrupt for the msg */
+ 	acpbus_trigger_host_to_dsp_swintr(adata);
++
++	/* Unlock or Release HW Semaphore */
++	snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACP_AXI2DAGB_SEM_0, 0x0);
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL_NS(acp_sof_ipc_send_msg, SND_SOC_SOF_AMD_COMMON);
+diff --git a/sound/soc/sof/amd/acp.c b/sound/soc/sof/amd/acp.c
+index fe9b7dc5bc86..ba8b6427b59f 100644
+--- a/sound/soc/sof/amd/acp.c
++++ b/sound/soc/sof/amd/acp.c
+@@ -273,7 +273,7 @@ static int acp_memory_init(struct snd_sof_dev *sdev)
+ static irqreturn_t acp_irq_thread(int irq, void *context)
+ {
+ 	struct snd_sof_dev *sdev = context;
+-	unsigned int val;
++	unsigned int val, count = ACP_HW_SEM_RETRY_COUNT;
+ 
+ 	val = snd_sof_dsp_read(sdev, ACP_DSP_BAR, ACP_EXTERNAL_INTR_STAT);
+ 	if (val & ACP_SHA_STAT) {
+@@ -284,9 +284,22 @@ static irqreturn_t acp_irq_thread(int irq, void *context)
+ 
+ 	val = snd_sof_dsp_read(sdev, ACP_DSP_BAR, ACP_DSP_SW_INTR_STAT);
+ 	if (val & ACP_DSP_TO_HOST_IRQ) {
++		while (snd_sof_dsp_read(sdev, ACP_DSP_BAR, ACP_AXI2DAGB_SEM_0)) {
++			/* Wait until acquired HW Semaphore lock or timeout */
++			count--;
++			if (!count) {
++				dev_err(sdev->dev, "%s: Failed to acquire HW lock\n", __func__);
++				return IRQ_NONE;
++			}
++		};
++
+ 		sof_ops(sdev)->irq_thread(irq, sdev);
+ 		val |= ACP_DSP_TO_HOST_IRQ;
+ 		snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACP_DSP_SW_INTR_STAT, val);
++
++		/* Unlock or Release HW Semaphore */
++		snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACP_AXI2DAGB_SEM_0, 0x0);
++
+ 		return IRQ_HANDLED;
+ 	}
+ 
 diff --git a/sound/soc/sof/amd/acp.h b/sound/soc/sof/amd/acp.h
-index 7ceb8bee0d8f..8ed4e338467f 100644
+index 8ed4e338467f..db1030d36811 100644
 --- a/sound/soc/sof/amd/acp.h
 +++ b/sound/soc/sof/amd/acp.h
-@@ -185,8 +185,6 @@ int acp_sof_ipc_send_msg(struct snd_sof_dev *sdev,
- 			 struct snd_sof_ipc_msg *msg);
- int acp_sof_ipc_get_mailbox_offset(struct snd_sof_dev *sdev);
- int acp_sof_ipc_get_window_offset(struct snd_sof_dev *sdev, u32 id);
--int acp_sof_ipc_pcm_params(struct snd_sof_dev *sdev, struct snd_pcm_substream *substream,
--			   const struct sof_ipc_pcm_params_reply *reply);
- void acp_mailbox_write(struct snd_sof_dev *sdev, u32 offset, void *message, size_t bytes);
- void acp_mailbox_read(struct snd_sof_dev *sdev, u32 offset, void *message, size_t bytes);
+@@ -17,6 +17,7 @@
  
-diff --git a/sound/soc/sof/amd/renoir.c b/sound/soc/sof/amd/renoir.c
-index c3ecb9e9d5ba..409fd57448b8 100644
---- a/sound/soc/sof/amd/renoir.c
-+++ b/sound/soc/sof/amd/renoir.c
-@@ -150,7 +150,6 @@ const struct snd_sof_dsp_ops sof_renoir_ops = {
- 	/*IPC */
- 	.send_msg		= acp_sof_ipc_send_msg,
- 	.ipc_msg_data		= acp_sof_ipc_msg_data,
--	.ipc_pcm_params		= acp_sof_ipc_pcm_params,
- 	.get_mailbox_offset	= acp_sof_ipc_get_mailbox_offset,
- 	.irq_thread		= acp_sof_ipc_irq_thread,
- 	.fw_ready		= sof_fw_ready,
+ #define ACP_DSP_BAR	0
+ 
++#define ACP_HW_SEM_RETRY_COUNT			10
+ #define ACP_REG_POLL_INTERVAL                   500
+ #define ACP_REG_POLL_TIMEOUT_US                 2000
+ #define ACP_DMA_COMPLETE_TIMEOUT_US		5000
 -- 
 2.30.2
 
