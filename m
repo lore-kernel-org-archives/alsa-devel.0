@@ -4,87 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D04AAC433F5
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Mar 2022 15:06:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61898C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Mar 2022 15:08:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1FBD81AD7;
-	Fri,  4 Mar 2022 16:06:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1FBD81AD7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3C1E81AE8;
+	Fri,  4 Mar 2022 16:07:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C1E81AE8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646406415;
-	bh=wYmhrKY9ME4ch4c++D9q/6Pb0CkAf4cJnCgi5GqL+U8=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=LD+6uSFtXhX3pAzgP5DFbEnwF5dlAIZbMz03q0EmlyiiP9+tuSDRWXB8XoIwBbVdk
-	 8M/NN94JDXHyIzUsIUrjHLUyJYRL5yMj0uupHh8NwstVfV5iGaleBxxpafm/l+9QSd
-	 mqFd0x3vm2gxCyO4nauIHZnyadJrC+hRYpOzm9JE=
+	s=default; t=1646406505;
+	bh=OdZYYssmo6c3Mb8xzOcqNZaS3P1T+ZOfW8NYzLJeuaM=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=gkmSumWPmjOsNgEW665pcIkOcPwt/QLRGO4iz6DNlRvTwHqbQDToKE4OATJfX6bLT
+	 TMQFEURlPPryBjnKAQfsIae6b/cFcQbCBgWhrDAiXDZS5U9TZMHbTXFN5LrjcuC36v
+	 l0MVDHmFWibMMo8tsQ7W7X06FLRDCwrnyey901Fs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9E4ECF800F2;
-	Fri,  4 Mar 2022 16:06:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 64C7FF80516;
+	Fri,  4 Mar 2022 16:07:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CB057F801F5; Fri,  4 Mar 2022 16:06:02 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id 1CBAEF80515; Fri,  4 Mar 2022 16:07:33 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 41B8EF80139
- for <alsa-devel@alsa-project.org>; Fri,  4 Mar 2022 16:05:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41B8EF80139
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3AC65F80139
+ for <alsa-devel@alsa-project.org>; Fri,  4 Mar 2022 16:07:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3AC65F80139
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="IsJ8rhNc"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 2247SMLb025160;
- Fri, 4 Mar 2022 09:05:57 -0600
+ header.b="nthAdfW/"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 2248TInB019088;
+ Fri, 4 Mar 2022 09:07:25 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=PODMain02222019;
- bh=hHITQXFDQDnRVWlkIt1+iWr/oKBoaKdy+qjH2sz4sAM=;
- b=IsJ8rhNcxyRTNptJtHGf/XKlRes2VmKvXjN4MiC3hXgjc+SCQAGlcP7wFPe5Qiu/cI/d
- lLT+tZo+wdUn+yZM8sTE0XtZBI71J5pJVBNUoIvQhgwFZAOFDZ0y6g0XLn7Nox3FWbsE
- 4sDx6JOQH4xHyBsiUYnoKsyMK2yu9A+h41AcllIp3YGJDFC7AiVOOmYFMRJhO+BN/skR
- 1f7XFo4WlzsCgJeC+Syi4Wt1UyNLeQBGYlAkTqjNMEkZoqyE5Z/526UyTGgQqfXw9ed7
- ZO5EewpTc/AlXUh3V7gE+UzYM6R7mbdAUB36kKMt1upplO/JrjgKJ3z+UhVIzgZUpAqw Dw== 
+ h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=o/svsH3mKdQh2w7l93HqT3MWcfDGsdP0tpIyvmUqC4M=;
+ b=nthAdfW/pHfh/griJOYc4x7Zctg2Xl04KxrLrkfbMFeuQCkMKwxp8Plpu3rkXnPjvYOo
+ 9jSlhZUf9i2XNVF1Ya26Zup0qXM0y+gEIaFQcJeSWEBF2KoWGI+OvaTTgmSWIAEbAWcb
+ sON3CPUbHcVj1CNlgs+Re+h1aKICOkxn6znnNuHIninxScyna7rH4L7sUO3Vh75JI1Gc
+ iKhKPFmymlJ+Euh82t63J69T8kI6ql0OgLtFVNa7h4MxLCCSj7chNvtwJYNKKCUBnjUr
+ ZcyWUmtQJ5vKb31J5YplxwnUMad1eU+xxpEL4iU6JBUfPrkGduxgxvVeWvpsCjl73li2 rg== 
 Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3ek4j1s3c6-1
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3ek4j3h413-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Fri, 04 Mar 2022 09:05:57 -0600
+ Fri, 04 Mar 2022 09:07:25 -0600
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Fri, 4 Mar
- 2022 15:05:55 +0000
+ 2022 15:07:23 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.18 via
- Frontend Transport; Fri, 4 Mar 2022 15:05:55 +0000
-Received: from [198.61.65.198] (unknown [198.61.65.198])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 27CBE7C;
- Fri,  4 Mar 2022 15:05:55 +0000 (UTC)
-Message-ID: <f4e04900-1451-0b6a-e4c1-cc51cafe9309@opensource.cirrus.com>
-Date: Fri, 4 Mar 2022 15:05:54 +0000
+ Frontend Transport; Fri, 4 Mar 2022 15:07:23 +0000
+Received: from aryzen.ad.cirrus.com (unknown [198.61.65.198])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 52417B06;
+ Fri,  4 Mar 2022 15:07:23 +0000 (UTC)
+From: Lucas Tanure <tanureal@opensource.cirrus.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob
+ Herring <robh+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH v2 00/20] Support external boost at CS35l41 ASoC driver
+Date: Fri, 4 Mar 2022 15:07:01 +0000
+Message-ID: <20220304150721.3802-1-tanureal@opensource.cirrus.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.1
-Subject: Re: [PATCH 15/20] hda: cs35l41: Remove unnecessary log
-Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>
-References: <20220303173059.269657-1-tanureal@opensource.cirrus.com>
- <20220303173059.269657-16-tanureal@opensource.cirrus.com>
- <YiD/0ZMcSGVRTZxx@sirena.org.uk>
-From: Lucas tanure <tanureal@opensource.cirrus.com>
-In-Reply-To: <YiD/0ZMcSGVRTZxx@sirena.org.uk>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-GUID: g_vDq3ATg4q1fK_fIDlsb4DJAWr8jJmS
-X-Proofpoint-ORIG-GUID: g_vDq3ATg4q1fK_fIDlsb4DJAWr8jJmS
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: ehVGpwv1bl5E8i1YZkXmXSNJ6dLE_oD6
+X-Proofpoint-ORIG-GUID: ehVGpwv1bl5E8i1YZkXmXSNJ6dLE_oD6
 X-Proofpoint-Spam-Reason: safe
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- patches@opensource.cirrus.com, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- linux-kernel@vger.kernel.org
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Lucas Tanure <tanureal@opensource.cirrus.com>,
+ devicetree@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,12 +94,57 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 3/3/22 17:50, Mark Brown wrote:
-> On Thu, Mar 03, 2022 at 05:30:54PM +0000, Lucas Tanure wrote:
-> 
->> If regmap fails would fail during probe of the device.
-> 
-> I'm pretty sure circumstances could arise which would break things at
-> runtime.
-Yes, so instead of not logging that, we can log the last regmap access 
-per switch case, instead of all of them.
+Move the support for CS35L41 external boost to its shared library
+for ASoC use.
+This move resulted in cs35l41_hda_reg_sequence being removed,
+and its steps were broken down into regmap writes or functions
+from the library. And hardware configuration struct was unified
+for its use in the shared lib.
+While at it, some minor bugs were found and fixed it.
+
+v2 changelog:
+ - Instead of removing the log, playback actions will log the last regmap access.
+ - Documentation patch with the correct subject line and fixed bug reported by Rob Herring on the
+ provided example.
+
+Previous versions:
+ v1: https://lkml.org/lkml/2022/3/3/759
+
+David Rhodes (2):
+  ASoC: cs35l41: Fix GPIO2 configuration
+  ASoC: cs35l41: Document CS35l41 External Boost
+
+Lucas Tanure (18):
+  ASoC: cs35l41: Fix max number of TX channels
+  ASoC: cs35l41: Fix DSP mbox start command and global enable order
+  ASoC: cs35l41: Remove unnecessary param
+  sound: cs35l41: Unify hardware configuration
+  sound: cs35l41: Check hw_config before using it
+  sound: cs35l41: Move cs35l41_gpio_config to shared lib
+  hda: cs35l41: Fix I2S params comments
+  hda: cs35l41: Always configure the DAI
+  hda: cs35l41: Add Boost type flag
+  hda: cs35l41: Put the device into safe mode for external boost
+  hda: cs35l41: Mute the device before shutdown
+  sound: cs35l41: Enable Internal Boost in shared lib
+  hda: cs35l41: Move boost config to initialization code
+  hda: cs35l41: Remove cs35l41_hda_reg_sequence struct
+  hda: cs35l41: Reorganize log for playback actions
+  hda: cs35l41: Handle all external boost setups the same way
+  hda: cs35l41: Move external boost handling to lib for ASoC use
+  ASoC: cs35l41: Support external boost
+
+ .../bindings/sound/cirrus,cs35l41.yaml        |  44 ++-
+ include/sound/cs35l41.h                       |  53 +++-
+ sound/pci/hda/cs35l41_hda.c                   | 295 ++++++------------
+ sound/pci/hda/cs35l41_hda.h                   |  27 +-
+ sound/soc/codecs/cs35l41-i2c.c                |   4 +-
+ sound/soc/codecs/cs35l41-lib.c                | 190 ++++++++++-
+ sound/soc/codecs/cs35l41-spi.c                |   4 +-
+ sound/soc/codecs/cs35l41.c                    | 174 +++++------
+ sound/soc/codecs/cs35l41.h                    |   5 +-
+ 9 files changed, 440 insertions(+), 356 deletions(-)
+
+-- 
+2.35.1
+
