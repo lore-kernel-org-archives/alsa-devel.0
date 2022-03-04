@@ -4,85 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE374C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Mar 2022 15:09:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52871C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Mar 2022 15:09:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 26E6D1B59;
-	Fri,  4 Mar 2022 16:08:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 26E6D1B59
+	by alsa0.perex.cz (Postfix) with ESMTPS id 983051E81;
+	Fri,  4 Mar 2022 16:08:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 983051E81
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646406574;
-	bh=ZlZ1v9aWtxAnSaUCJBnY7OsIPnkfQakO1u4RMIdGHxE=;
+	s=default; t=1646406587;
+	bh=PJBPb8uB8qnQ8z8PeyyQRtMt1sdTQiFHr2xieNX0ek0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CeAByApBGTziXX9SJwVxTmQh+m35MwYV/AhAJYiGqSsMngSiyFeC+HykBC/Oufiwk
-	 EzirpMU7iw1AUe4TtbTI5QQ+eiWVF8e4lP3RURyxTG9rL4ppgosx+elc4Qxh5sfyw7
-	 lT/+3Y9rJgAPazBEemCvZ08AwWXmkRwOWgIsO2yo=
+	b=toQy71GTrwnBvstfrTxyUFw5K46k1PyTg1R63+cpFner5+qmBwVqI7OjrO1Acomq3
+	 0PuowWvgA3vjAd//+L+FT9Jl64h/C1pSqXSwUFjPNtTbY9CNEb9Lw9lnN7QdmDxoIf
+	 eHXdjywldAgKewYtxKS7DBqb44KCBTh3/L7LE5eI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 54B6BF80528;
-	Fri,  4 Mar 2022 16:07:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1E3D4F80311;
+	Fri,  4 Mar 2022 16:07:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 95092F80526; Fri,  4 Mar 2022 16:07:39 +0100 (CET)
+ id D3DE8F80527; Fri,  4 Mar 2022 16:07:39 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 948A8F80507
- for <alsa-devel@alsa-project.org>; Fri,  4 Mar 2022 16:07:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 948A8F80507
+ by alsa1.perex.cz (Postfix) with ESMTPS id C3D11F80224
+ for <alsa-devel@alsa-project.org>; Fri,  4 Mar 2022 16:07:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C3D11F80224
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="S54ucqtk"
+ header.b="GXMmKAcE"
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 2244w2hJ013723;
- Fri, 4 Mar 2022 09:07:30 -0600
+ by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 2244w2hH013723;
+ Fri, 4 Mar 2022 09:07:28 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=jPt/cfXYkcSIdY91R4XLOOF/Ab/YvNIlCw06bl45M0w=;
- b=S54ucqtkvSio2PNR/zfTL0kI9hMtK/XRJHdFEGfG2jnZTO18CCToOE+aqHfeXV0KtCiZ
- 1T4udIZorNqV1Y7ZrHTUFzj3aOsjGsavOTdSc6LNTnVVABzM5yxWDLp0VmqvVzJX076Z
- Dst+Pzc6e/NaMrYZdVYtynz/sbo+zM5q5UMFkWaX3mADqHZ+aGvk9A3RycysY7kBlOBG
- Sp8FHkQxoWt4DykVM+U1Lz/UXtHlgLOyZIncF9G3rk4DhUp+iySvVnTaNAM9tUhBDXpM
- vnps+R4Ap0FEibj+ADOgbZldot2EHg5cWAAiPqsse6+PWx9uYD7mcr1IYwMbE03RSOnp cQ== 
+ bh=xtsITB9MtsbQbh9Pg7CKoJN9r/LR7G1l1Q0NK9S3HWk=;
+ b=GXMmKAcEDKZz9m79azSLkQtB74mgqlRr7NZ7HERWK4cmmQXnDmREiJF9P3sbRvIyrPmr
+ lmizC8wgKrgK9SQq9nLHRvyrpuiWS68PjIoM5jPxBSniGR4Hh2bWW+nP77mooB2uhEla
+ 63jRGBMxUt394hMb9tpSJ48oCV6wVZzwLutuC/csflrLX6o2wNez6E0RlSp8Ui2jg0QZ
+ UGZmIa+PvOlGsEbMhHaIfdfOXctDywUUor1Dg45jErHDgH1ZV7BW7/nHOYLVusk7peEy
+ UzbBktdBDaznF/8elbTwim/jN4cXL0JNY5CJCasM7Hd7F32yqd6/BhgTlyokK6wQNfnF oA== 
 Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3ek4j3h414-5
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3ek4j3h414-3
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Fri, 04 Mar 2022 09:07:30 -0600
+ Fri, 04 Mar 2022 09:07:28 -0600
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Fri, 4 Mar
- 2022 15:07:27 +0000
+ 2022 15:07:24 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.18 via
- Frontend Transport; Fri, 4 Mar 2022 15:07:27 +0000
+ Frontend Transport; Fri, 4 Mar 2022 15:07:24 +0000
 Received: from aryzen.ad.cirrus.com (unknown [198.61.65.198])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 79C6A11D1;
- Fri,  4 Mar 2022 15:07:27 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 7A8727C;
+ Fri,  4 Mar 2022 15:07:24 +0000 (UTC)
 From: Lucas Tanure <tanureal@opensource.cirrus.com>
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob
  Herring <robh+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
  Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v2 11/20] hda: cs35l41: Put the device into safe mode for
- external boost
-Date: Fri, 4 Mar 2022 15:07:12 +0000
-Message-ID: <20220304150721.3802-12-tanureal@opensource.cirrus.com>
+Subject: [PATCH v2 03/20] ASoC: cs35l41: Fix DSP mbox start command and global
+ enable order
+Date: Fri, 4 Mar 2022 15:07:04 +0000
+Message-ID: <20220304150721.3802-4-tanureal@opensource.cirrus.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220304150721.3802-1-tanureal@opensource.cirrus.com>
 References: <20220304150721.3802-1-tanureal@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: z4yCgEpUNYltcpj7-f0JCEPAVdJh3LFw
-X-Proofpoint-ORIG-GUID: z4yCgEpUNYltcpj7-f0JCEPAVdJh3LFw
+X-Proofpoint-GUID: v53xgvSt1xnUz19cGb4h6JaH_adorjaA
+X-Proofpoint-ORIG-GUID: v53xgvSt1xnUz19cGb4h6JaH_adorjaA
 X-Proofpoint-Spam-Reason: safe
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Lucas Tanure <tanureal@opensource.cirrus.com>,
- devicetree@vger.kernel.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Lucas Tanure <tanureal@opensource.cirrus.com>, patches@opensource.cirrus.com,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,45 +99,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-All external boost setups should be put into safe mode.
+Global enable must happen before CSPL_MBOX_CMD_RESUME command
+is sent. Move it to PRE_PMU as both events use
+SND_SOC_DAPM_OUT_DRV_E macro.
 
 Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/pci/hda/cs35l41_hda.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ sound/soc/codecs/cs35l41.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
-index 17660ce71f93..3b9515ed871d 100644
---- a/sound/pci/hda/cs35l41_hda.c
-+++ b/sound/pci/hda/cs35l41_hda.c
-@@ -109,8 +109,6 @@ static const struct reg_sequence cs35l41_reset_to_safe[] = {
- };
+diff --git a/sound/soc/codecs/cs35l41.c b/sound/soc/codecs/cs35l41.c
+index f3787d77f892..05de94fd2e55 100644
+--- a/sound/soc/codecs/cs35l41.c
++++ b/sound/soc/codecs/cs35l41.c
+@@ -573,7 +573,7 @@ static int cs35l41_main_amp_event(struct snd_soc_dapm_widget *w,
+ 	int ret = 0;
  
- static const struct cs35l41_hda_reg_sequence cs35l41_hda_reg_seq_no_bst = {
--	.probe		= cs35l41_reset_to_safe,
--	.num_probe	= ARRAY_SIZE(cs35l41_reset_to_safe),
- 	.prepare	= cs35l41_safe_to_active,
- 	.num_prepare	= ARRAY_SIZE(cs35l41_safe_to_active),
- 	.cleanup	= cs35l41_active_to_safe,
-@@ -224,10 +222,15 @@ static int cs35l41_hda_apply_properties(struct cs35l41_hda *cs35l41)
- 			return ret;
- 		break;
- 	case CS35L41_EXT_BOOST:
--		cs35l41->reg_seq = &cs35l41_hda_reg_seq_ext_bst;
--		break;
- 	case CS35L41_EXT_BOOST_NO_VSPK_SWITCH:
--		cs35l41->reg_seq = &cs35l41_hda_reg_seq_no_bst;
-+		if (hw_cfg->bst_type == CS35L41_EXT_BOOST)
-+			cs35l41->reg_seq = &cs35l41_hda_reg_seq_ext_bst;
-+		else
-+			cs35l41->reg_seq = &cs35l41_hda_reg_seq_no_bst;
-+		ret = regmap_multi_reg_write(cs35l41->regmap, cs35l41_reset_to_safe,
-+					     ARRAY_SIZE(cs35l41_reset_to_safe));
-+		if (ret)
-+			return ret;
- 		break;
- 	default:
- 		dev_err(cs35l41->dev, "Boost type %d not supported\n", hw_cfg->bst_type);
+ 	switch (event) {
+-	case SND_SOC_DAPM_POST_PMU:
++	case SND_SOC_DAPM_PRE_PMU:
+ 		regmap_multi_reg_write_bypassed(cs35l41->regmap,
+ 						cs35l41_pup_patch,
+ 						ARRAY_SIZE(cs35l41_pup_patch));
+@@ -649,7 +649,7 @@ static const struct snd_soc_dapm_widget cs35l41_dapm_widgets[] = {
+ 
+ 	SND_SOC_DAPM_OUT_DRV_E("Main AMP", CS35L41_PWR_CTRL2, 0, 0, NULL, 0,
+ 			       cs35l41_main_amp_event,
+-			       SND_SOC_DAPM_POST_PMD |	SND_SOC_DAPM_POST_PMU),
++			       SND_SOC_DAPM_POST_PMD |	SND_SOC_DAPM_PRE_PMU),
+ 
+ 	SND_SOC_DAPM_MUX("ASP TX1 Source", SND_SOC_NOPM, 0, 0, &asp_tx1_mux),
+ 	SND_SOC_DAPM_MUX("ASP TX2 Source", SND_SOC_NOPM, 0, 0, &asp_tx2_mux),
 -- 
 2.35.1
 
