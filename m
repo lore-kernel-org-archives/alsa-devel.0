@@ -4,74 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8AF58C433F5
-	for <alsa-devel@archiver.kernel.org>; Sat,  5 Mar 2022 08:28:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2607C433EF
+	for <alsa-devel@archiver.kernel.org>; Sat,  5 Mar 2022 08:28:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C08D01863;
-	Sat,  5 Mar 2022 09:27:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C08D01863
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8C3CF1ABE;
+	Sat,  5 Mar 2022 09:27:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C3CF1ABE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646468876;
-	bh=4RhRIeH7vwYhlHgZGLACowgp6mCp9YkkY23tDDMdymg=;
+	s=default; t=1646468920;
+	bh=XDbjlGMWH431BBgwN7TdrMuled7+042L3IkN2NcrmSI=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CnOZAyD6wffd5v7s2fcvnlatWX1XfSdTNVM3iEW6PBoi4nYOlqk9iiB9PJN495tHq
-	 iE9jtE2Lk42uZIzpvlQ4dL4N5BGJZUyF5ECDtd88Ki7T5Vks7w5JrLbYbt8GjPLxsh
-	 SKpRJHIC/2zlW+xYau8X3xJJggx6JbqjCBb86XFA=
+	b=UDQ31G6TPF29kLF+JfsmFOQMJnI2lVcS5WbMNXwLICJ0g3hzPZgpNzI5XKFsI+vcU
+	 cUx4aZwYK5mghGbE+tbSd8M7QPFZ1yAw4j0mnyI73lmiWc+fB2DUR9x9KXQZW+F9j+
+	 cbewYjSuZe24gseEuRjRSrUBr+iLQ8w6+cclpTFU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6047DF800F0;
-	Sat,  5 Mar 2022 09:27:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1C36CF80269;
+	Sat,  5 Mar 2022 09:27:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C43C1F80237; Sat,  5 Mar 2022 09:27:04 +0100 (CET)
+ id 04F81F802A0; Sat,  5 Mar 2022 09:27:49 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B9B83F800E4
- for <alsa-devel@alsa-project.org>; Sat,  5 Mar 2022 09:26:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9B83F800E4
+ by alsa1.perex.cz (Postfix) with ESMTPS id B0966F8025D
+ for <alsa-devel@alsa-project.org>; Sat,  5 Mar 2022 09:27:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0966F8025D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="rs6mnKdc"; 
+ header.b="IFch4D4W"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="NvRrG0xI"
+ header.b="TIiH2LOk"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id F35C821126;
- Sat,  5 Mar 2022 08:26:55 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 5F0752111A;
+ Sat,  5 Mar 2022 08:27:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1646468815; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1646468866; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=kampfhXrJt9MIYTM8pduTECuaqZIxLEg2z7o+1ZipsM=;
- b=rs6mnKdcwmQQ9lTxvKWToXVcjIAZ/utBEMwLi8+OGRkN6OIOxr1luIZqEyqo8Xf497lOam
- nPt6hG0obUgqiWIw6lPOANxnZE+AT5gn36OUT3eAml9R8XrIVjznWMNomjzVwWBN8stAm5
- cpB9OLPYH/9+rfjZ3w11KHB5DOXVxK4=
+ bh=Ath/HTA9DPWzskqdpnHMSfIPs8MPTalOqubbz5A1G/g=;
+ b=IFch4D4W8r5pR+5zk1aM1p6oa6ApNHp9x0yOI6DzdvQivtJ6wsBk633hrGQpEiSLmKnRku
+ gRHqtFIDHMWd1nsQ02QVX3GbEFPuUTkkxvgbZaf/ZjX9w64scmXU6Vpiv7BRvX+iVaHAmz
+ NKp5kUwG/OVVHE7y66xNNEBedO+hfys=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1646468815;
+ s=susede2_ed25519; t=1646468866;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=kampfhXrJt9MIYTM8pduTECuaqZIxLEg2z7o+1ZipsM=;
- b=NvRrG0xIlbx/Td8jiI92IuMGq9YbVmCiXX/ZNYLeIlzQPdPt/bHB7vHM+tETKqxg1tyv/2
- dP+5zvuhsFpZZMCA==
+ bh=Ath/HTA9DPWzskqdpnHMSfIPs8MPTalOqubbz5A1G/g=;
+ b=TIiH2LOkWPbtwJJbpt447Kf4rgI0qupxi4Nwrgl4n9o1kuxqK/ZjkfRDS9hUFq628NLz15
+ BZuj187hNuhWXlDw==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id DC8DEA3B89;
- Sat,  5 Mar 2022 08:26:55 +0000 (UTC)
-Date: Sat, 05 Mar 2022 09:26:55 +0100
-Message-ID: <s5hfsnwrei8.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id 4772DA3B83;
+ Sat,  5 Mar 2022 08:27:46 +0000 (UTC)
+Date: Sat, 05 Mar 2022 09:27:46 +0100
+Message-ID: <s5hee3gregt.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Tim Crawford <tcrawford@system76.com>
-Subject: Re: [PATCH] ALSA: hda/realtek: Add quirk for Clevo NP70PNJ
-In-Reply-To: <20220304170840.3351-1-tcrawford@system76.com>
-References: <20220304170840.3351-1-tcrawford@system76.com>
+To: Reza Jahanbakhshi <reza.jahanbakhshi@gmail.com>
+Subject: Re: [PATCH] ALSA: usb-audio: add mapping for new Corsair Virtuoso SE
+In-Reply-To: <20220304212303.195949-1-reza.jahanbakhshi@gmail.com>
+References: <20220304212303.195949-1-reza.jahanbakhshi@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: productdev@system76.com, alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Johannes Schickel <lordhoto@gmail.com>,
+ Timo Gurr <timo.gurr@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,12 +89,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 04 Mar 2022 18:08:40 +0100,
-Tim Crawford wrote:
+On Fri, 04 Mar 2022 22:23:02 +0100,
+Reza Jahanbakhshi wrote:
 > 
-> Fixes headset detection on Clevo NP70PNJ.
+> New device id for Corsair Virtuoso SE RGB Wireless that currently is not
+> in the mixer_map. This entry in the mixer_map is necessary in order to
+> label its mixer appropriately and allow userspace to pick the correct
+> volume controls. For instance, my own Corsair Virtuoso SE RGB Wireless
+> headset has this new ID and consequently, the sidetone and volume are not
+>  working correctly without this change.
+> > sudo lsusb -v | grep -i corsair
+> Bus 007 Device 011: ID 1b1c:0a40 Corsair CORSAIR VIRTUOSO SE Wireless Gam
+>   idVendor           0x1b1c Corsair
+>   iManufacturer           1 Corsair
+>   iProduct                2 CORSAIR VIRTUOSO SE Wireless Gaming Headset
 > 
-> Signed-off-by: Tim Crawford <tcrawford@system76.com>
+> Signed-off-by: Reza Jahanbakhshi <reza.jahanbakhshi@gmail.com>
 
 Thanks, applied now with Cc-to-stable.
 
