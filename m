@@ -4,55 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C03FC433EF
-	for <alsa-devel@archiver.kernel.org>; Sat,  5 Mar 2022 12:36:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04F38C433F5
+	for <alsa-devel@archiver.kernel.org>; Sat,  5 Mar 2022 12:37:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7A9021943;
-	Sat,  5 Mar 2022 13:36:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A9021943
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2CCB41A46;
+	Sat,  5 Mar 2022 13:36:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2CCB41A46
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646483812;
-	bh=4MmrkZcyuhaHp6ojfjQwk+Ht0UeGbPGrGmKrrIJFq/4=;
+	s=default; t=1646483857;
+	bh=Dq1DQaKY5MPfM3yA9Fcdnbitjbfho+6aCqZlT626nI4=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=AsHzR+WMTb0TbhYQqpR33plcvo9SgSgLsSSRHIlngbBiiPasebo7pps/JmX/yXRpy
-	 zey//tGY2mJ1ASQm01FbKhOsG8Epjd9rFvVqG26EumEqFOpY+eynd/j7Xa+c3tjskL
-	 JK0gz8Ban+lQd13rk2jBcyYxW8xDyEQiscBwO6u4=
+	b=hUCCM/U5nLPV7QD+kCXcTAkFNII55tEvv7XjpJVifndrLrONIWKromXHBF0gpXl3g
+	 EMYZqAb8XyxCJ666gQa0SnOBmrTFwJd3wlOqImazIAesOi3U7Njr5imdiQ1mMk8g5A
+	 Q+8BwYwEbUTppIuAVfaaCxbSMbt/a93m/7hflil8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EEAEAF800F0;
-	Sat,  5 Mar 2022 13:36:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B7854F80269;
+	Sat,  5 Mar 2022 13:36:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4E099F80237; Sat,  5 Mar 2022 13:35:59 +0100 (CET)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+ id 4ECD2F802A0; Sat,  5 Mar 2022 13:36:45 +0100 (CET)
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 27490F800E4
- for <alsa-devel@alsa-project.org>; Sat,  5 Mar 2022 13:35:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27490F800E4
-Received: from canpemm500007.china.huawei.com (unknown [172.30.72.54])
- by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4K9kft1Gv6zBrl9;
- Sat,  5 Mar 2022 20:33:58 +0800 (CST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 64337F800D1
+ for <alsa-devel@alsa-project.org>; Sat,  5 Mar 2022 13:36:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64337F800D1
+Received: from canpemm500007.china.huawei.com (unknown [172.30.72.55])
+ by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4K9kcR43bZz1GCSF;
+ Sat,  5 Mar 2022 20:31:51 +0800 (CST)
 Received: from localhost (10.174.179.215) by canpemm500007.china.huawei.com
  (7.192.104.62) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.21; Sat, 5 Mar
- 2022 20:35:50 +0800
+ 2022 20:36:35 +0800
 From: YueHaibing <yuehaibing@huawei.com>
 To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
- <tiwai@suse.com>, <AjitKumar.Pandey@amd.com>, <tangmeng@uniontech.com>
-Subject: [PATCH -next] ASoC: amd: acp: signedness bug in acp-renoir
-Date: Sat, 5 Mar 2022 20:35:19 +0800
-Message-ID: <20220305123519.26788-1-yuehaibing@huawei.com>
+ <tiwai@suse.com>, <yuehaibing@huawei.com>, <tangmeng@uniontech.com>
+Subject: [PATCH -next] ASoC: amd: acp3x: Fix signedness bug in acp3x
+Date: Sat, 5 Mar 2022 20:36:13 +0800
+Message-ID: <20220305123613.6324-1-yuehaibing@huawei.com>
 X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
  canpemm500007.china.huawei.com (7.192.104.62)
 X-CFilter-Loop: Reflected
-Cc: alsa-devel@alsa-project.org, YueHaibing <yuehaibing@huawei.com>,
- linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,28 +67,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-In renoir_audio_probe() platform_get_irq_byname() may return error,
-but i2s_irq now is unsigned int so the error handling is never triggered.
+In acp3x_audio_probe() platform_get_irq() may return error, but i2s_irq now
+is unsigned int so the error handling is never triggered.
 
-Fixes: 3304a242f45a ("ASoC: amd: Use platform_get_irq_byname() to get the interrupt")
+Fixes: 87d71a128771 ("ASoC: amd: pcm-dma: Use platform_get_irq() to get the interrupt")
 Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- sound/soc/amd/acp/amd.h | 2 +-
+ sound/soc/amd/raven/acp3x.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/amd/acp/amd.h b/sound/soc/amd/acp/amd.h
-index 8fd38bf4d3bd..acb50d9fca58 100644
---- a/sound/soc/amd/acp/amd.h
-+++ b/sound/soc/amd/acp/amd.h
-@@ -96,7 +96,7 @@ struct acp_dev_data {
- 	char *name;
- 	struct device *dev;
- 	void __iomem *acp_base;
+diff --git a/sound/soc/amd/raven/acp3x.h b/sound/soc/amd/raven/acp3x.h
+index c3f0c8b7545d..7702f628ecd6 100644
+--- a/sound/soc/amd/raven/acp3x.h
++++ b/sound/soc/amd/raven/acp3x.h
+@@ -87,7 +87,7 @@ struct acp3x_platform_info {
+ 
+ struct i2s_dev_data {
+ 	bool tdm_mode;
 -	unsigned int i2s_irq;
 +	int i2s_irq;
- 
- 	/* SOC specific dais */
- 	struct snd_soc_dai_driver *dai_driver;
+ 	u16 i2s_instance;
+ 	u32 tdm_fmt;
+ 	u32 substream_type;
 -- 
 2.17.1
 
