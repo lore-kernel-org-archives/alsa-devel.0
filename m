@@ -4,65 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39B4DC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Mar 2022 07:56:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4321C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Mar 2022 08:01:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4D1721712;
-	Mon,  7 Mar 2022 08:55:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4D1721712
+	by alsa0.perex.cz (Postfix) with ESMTPS id 779291711;
+	Mon,  7 Mar 2022 09:00:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 779291711
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646639779;
-	bh=ftjiV6vEKk1X9wO1Fyhk7bmaXl5AeD+Ymy6D0UqL6JU=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=UqUnjQdwtAqwGV9S1k5hBW9rSajalVNrbqcV6QxlA1b7fRFLAXCzEMx0Y/fDuq9dV
-	 O4MTm9ej79kRjtEDP4e8ZHxklKwzdZtbTRZUf0zjrC4hp/qViSAFXgRB/wiNRTRErT
-	 CDtUMuk/0eX+PAz5ckzdyccoWG+60jBoDwtjOrbU=
+	s=default; t=1646640059;
+	bh=q/NzmywQOjZmGS9Wryb56KK9ZpOHfq5wvsJc+MQijW0=;
+	h=Date:From:To:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=mUZLi012z9gO0IewF7gTlbgO45BOUzl+3zlg+/WuZ0wRVLWcNH6A/m4UTqExzn7sQ
+	 yvf48jEi354U5dRBwq6gtkWxifjD1TqZ/N1CtU8YETz1U+Yj1FEX7cpktacuc0n0J7
+	 mycHex32Ua2vyC5ztyF1JZByqeFJ5yQWsGKt4GCI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E5455F80159;
-	Mon,  7 Mar 2022 08:55:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 05BEFF80132;
+	Mon,  7 Mar 2022 09:00:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E21FDF800E9; Mon,  7 Mar 2022 08:55:26 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 8C12BF8019D; Sun,  6 Mar 2022 23:18:20 +0100 (CET)
+Received: from mailout08.hostingdiscounter.nl (mailout08.hostingdiscounter.nl
+ [IPv6:2a00:1478:200:0:f:1099:0:1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A7507F800E9
- for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2022 08:55:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7507F800E9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2E340F800E9
+ for <alsa-devel@alsa-project.org>; Sun,  6 Mar 2022 23:18:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E340F800E9
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=linuxfoundation.org
- header.i=@linuxfoundation.org header.b="zqL/pDKC"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 1681BB81028;
- Mon,  7 Mar 2022 07:55:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 698C0C340F3;
- Mon,  7 Mar 2022 07:55:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1646639722;
- bh=ftjiV6vEKk1X9wO1Fyhk7bmaXl5AeD+Ymy6D0UqL6JU=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=zqL/pDKCeEvQ7qn1CKZllOJe/IJ2nUaGyioCKS6SSL4wRtU16ZzT7DfT8LYWSyrAy
- TqaUYj+b9YPi1kCyhX5rpP3dSGlR4EEjHR4JJuIw+XnRbmKcRMdBRfvbR3uEaCqK4K
- 6jJJcGJT5cBn9H4GI9xAG4XmLS1BPQQOILLhyw0o=
-Date: Mon, 7 Mar 2022 08:55:18 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Oh Eomji <eomji.oh@samsung.com>
-Subject: Re: [PATCH 1/2] sound: usb: Add vendor's hooking interface
-Message-ID: <YiW6ZqnINsOSyN+z@kroah.com>
-References: <CGME20220307022409epcas2p4a2955a746c87d66564556e18ab94845f@epcas2p4.samsung.com>
- <1646619720-97113-1-git-send-email-eomji.oh@samsung.com>
+ dkim=pass (2048-bit key) header.d=veniogames.com header.i=@veniogames.com
+ header.b="Uy36EdMk"
+Received: from localhost (localhost [127.0.0.1])
+ by mailout08.hostingdiscounter.nl (Postfix) with ESMTP id DB2A870A
+ for <alsa-devel@alsa-project.org>; Sun,  6 Mar 2022 23:18:10 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at mailout08.hostingdiscounter.nl
+Received: from mailout08.hostingdiscounter.nl ([127.0.0.1])
+ by localhost (mailout08.hostingdiscounter.nl [127.0.0.1]) (amavisd-new,
+ port 10024)
+ with ESMTP id uieTX9Jc7a7X for <alsa-devel@alsa-project.org>;
+ Sun,  6 Mar 2022 23:18:05 +0100 (CET)
+Received: from mail201.hostingdiscounter.nl (mail201.hostingdiscounter.nl
+ [IPv6:2a00:1478:20:0:5:18:0:1])
+ by mailout08.hostingdiscounter.nl (Postfix) with ESMTPS
+ for <alsa-devel@alsa-project.org>; Sun,  6 Mar 2022 23:18:05 +0100 (CET)
+Received: from [192.168.1.104] (42-170-250-62.ftth.glasoperator.nl
+ [62.250.170.42])
+ by mail201.hostingdiscounter.nl (Postfix) with ESMTPSA id 1FD683F8EA
+ for <alsa-devel@alsa-project.org>; Sun,  6 Mar 2022 23:18:05 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=veniogames.com;
+ s=default; t=1646605085;
+ bh=9rnv5+r0WAoLlkdm8seL2jpjWIWr0urTwV/ukfa9bok=;
+ h=Date:From:To:Subject:From;
+ b=Uy36EdMk6chhy4F0N5fWGBd8Dbb+deFoMhOAqHppb+0YZh5Xxqy30mflyCmnEWNyD
+ qFOlaOZtzqcQNSsJbm86Y9z2OrnmlWZB/2BIhxDAq/0El4qRhoja8gq4dL6C2B9ulP
+ 1hhyEZat1TEMnUT60K6NzEpAIENpIkd27VwBLv7MbMVG3XGJfubQGSmSDiLg6pcCTm
+ FmHfF4NQS4WCJjwsjahV+0I2mjnfZb4zffQvH9c2Y9NtnAGfzzaSJIiW8TgUU7MW/y
+ utV7Pma+OcE3lHe9V8lYl4XhsG5KakyR8H2SzX3BHQXN+QXl4bqdlYACtu8PIPvTPX
+ m0AyALENmDBzg==
+Message-ID: <4e509aea-e563-e592-e652-ba44af6733fe@veniogames.com>
+Date: Sun, 6 Mar 2022 23:18:04 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1646619720-97113-1-git-send-email-eomji.oh@samsung.com>
-Cc: alsa-devel@alsa-project.org, JaeHun Jung <jh0801.jung@samsung.com>,
- Leon Romanovsky <leon@kernel.org>, Pavel Skripkin <paskripkin@gmail.com>,
- open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.1
+Content-Language: en-US
+From: Ruud van Asseldonk <ruud@veniogames.com>
+To: alsa-devel@alsa-project.org
+Subject: Regression playing 24bit/96kHz audio on USB audio interface between
+ 5.10.94 and 5.15.21
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Mailman-Approved-At: Mon, 07 Mar 2022 09:00:08 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,32 +90,65 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Mar 07, 2022 at 11:21:59AM +0900, Oh Eomji wrote:
-> In mobile, a co-processor can be used with USB audio to improve power
-> consumption.  To support this type of hardware, hooks need to be added
-> to the USB audio subsystem to be able to call into the hardware when
-> needed.
-> 
-> The main operation of the call-backs are:
->   - Initialize the co-processor by transmitting data when initializing.
->   - Change the co-processor setting value through the interface
->     function.
->   - Configure sampling rate
->   - pcm open/close
->   - other housekeeping
-> 
-> Known issues:
->   - This only supports one set of callback hooks, meaning that this only
->     works if there is one type of USB controller in the system.  This
->     should be changed to be a per-host-controller interface instead of
->     one global set of callbacks.
+Hi,
 
-Also, this is a non-starter, and not going to work at all, sorry.  Most
-devices have more than one USB controller in the system, and we can
-never accept changes that break that model.
+I have a program that configures a Behringer UMC404HD 192k USB audio 
+interface for playback as follows (pseudocode):
 
-Nor would you want us to, as it would break many Samsung devices...
+   snd_pcm_hw_params_set_channels(pcm, hwp, 2);
+   snd_pcm_hw_params_set_format(pcm, hwp, SND_PCM_FORMAT_S24_3LE);
+   snd_pcm_hw_params_set_access(pcm, hwp, SND_PCM_ACCESS_MMAP_INTERLEAVED);
+   snd_pcm_hw_params_set_rate(pcm, hwp, val=96000, dir=0);
+   snd_pcm_hw_params_set_period_size_near(pcm, hwp, val=513, dir=0);
+   // If I confirm at this point with snd_pcm_hw_params_get_period_size,
+   // I get back 513.
+   snd_pcm_hw_params_set_buffer_size_near(pcm, hwp, val=2052);
+   snd_pcm_hw_params(pcm, hwp);
+   // If I confirm with snd_pcm_hw_params_get_buffer_size,
+   // I get back 2052.
 
-thanks,
+On Linux 5.10.94 (specifically Arch Linux ARM package 
+linux-rpi-5.10.94-1), this succeeds, and I can play back audio just 
+fine. On 5.15.21 (specifically linux-rpi-5.15.21-3), all the calls 
+succeed apart from the last one, which returns EINVAL.
 
-greg k-h
+(My actual program is written in Rust and uses a Rust wrapper library 
+for libasound, https://docs.rs/alsa/0.6.0/alsa/, but the calls should be 
+the ones listed.)
+
+I confirmed with snd_pcm_hw_params_test_format that the S24_3LE format 
+is supported. On both kernels it is successful. I confirmed with 
+snd_pcm_hw_params_test_rate that 96 kHz is supported. On both kernels it 
+is successful. There are differences though. When I query these:
+
+   snd_pcm_hw_params_get_period_size_min
+   snd_pcm_hw_params_get_period_size_max
+   snd_pcm_hw_params_get_buffer_size_min
+   snd_pcm_hw_params_get_buffer_size_max
+
+Then on 5.10.94 (the good version), I get:
+
+   period size min/max: 12/32768, buffer size min/max: 24/65536
+
+But on 5.15.21 (the bad version), I get:
+
+   period size min/max: 13/71332, buffer size min/max: 26/142663
+
+Also, after I set the period size to 513, if I then query the buffer 
+size min/max, on 5.10.94 I get:
+
+   buffer size min/max: 1026/65536
+
+But on 5.15.21 I get:
+
+   buffer size min/max: 1027/142663
+
+In lsmod, snd_usb_audio shows up, and from lsusb -v, the UMC404HD 
+appears to be a standard USB audio interface. The lsusb output is 
+identical on both kernels.
+
+Please let me know if there is anything I can do to help further 
+diagnose the issue, or if I should report this elsewhere.
+
+Kind regards,
+Ruud van Asseldonk
