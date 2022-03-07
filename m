@@ -4,78 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F027DC433FE
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Mar 2022 12:25:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57551C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Mar 2022 12:41:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0BF7F16FB;
-	Mon,  7 Mar 2022 13:24:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0BF7F16FB
+	by alsa0.perex.cz (Postfix) with ESMTPS id E495C16FD;
+	Mon,  7 Mar 2022 13:40:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E495C16FD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646655939;
-	bh=yhcV1xA/GCoaV0qxID8U5MSYsK0/vgW50L/YM9WNuBw=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1646656877;
+	bh=7b1ai/DLaoMwWypU8/jHGkgvIV0Cz5+Yuo+N0X/U11Q=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lqJaJC/1q51NHqyHzc/Qhen7eXU4JcRXhFnVQ94q6W8LnvJrMcJHhgOWvBj+MDLKQ
-	 d/39cfT+M1Rejx1PERArPotZsbI6II6zZ4Yhujbo1wd67dPfhTkdy/nphDu0Ky0SvA
-	 56LEEThQvw3MhBbZKbhAxtT1FmuzYdpwsELvSNME=
+	b=u0y20Gg2IV4MfSvgj0dt4R6nRuqOPDbeennq1d8PenT9qEYuaRH0GLT5xVk6xDMWm
+	 3SYmzJyesfoSCtA5Pg8/E5Mnz9aWJgRUYe35+7RqZkdWGidr6n1bCXUTuipwnQE8PC
+	 Yxbj/OSz2Sh3yVzq/S4SQXuSOeKguBP4m7/K+Cys=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 29E8AF80537;
-	Mon,  7 Mar 2022 13:23:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7E68BF80132;
+	Mon,  7 Mar 2022 13:40:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5156AF8052E; Mon,  7 Mar 2022 13:23:06 +0100 (CET)
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com
- [68.232.153.233])
+ id 9F540F8013F; Mon,  7 Mar 2022 13:40:25 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5A9B2F800D1
+ for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2022 13:40:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5A9B2F800D1
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="SlNQh+jB"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 93764F80527
- for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2022 13:23:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93764F80527
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com
- header.b="PasPracI"
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1646655785; x=1678191785;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=yhcV1xA/GCoaV0qxID8U5MSYsK0/vgW50L/YM9WNuBw=;
- b=PasPracIXRjGXAZzDY60Cp6rkHp0VUeJLtJrjxx8cceFppyDQAN8meui
- W+2xRSjPRzT+uh7XYePvvM+B11RgZkW8flh8Rv3sANGYxbFXzwmi0Ss3F
- efnNbcgYbbsvaMHOXayPNFqWHOziNmT3hHvQkH2+jWda05xqBLuzsN9wm
- H0YPJJecY4uQ71yoGTtHroluYOIEj7pnPvf6022Lf0FkwdWey3m8MggSs
- B+7mFxH5gaMi82iYcpWofSn/WeIiO4amuELVh5sSAeLWtJFFiSxnLzsyt
- hBAF5h+XpY700iynU3z8+wHeJ/vVc8sAUFgcW2EzScz+ZKcs4Xski+97F g==;
-X-IronPort-AV: E=Sophos;i="5.90,162,1643698800"; d="scan'208";a="155487952"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 07 Mar 2022 05:23:02 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.17; Mon, 7 Mar 2022 05:23:00 -0700
-Received: from rob-ult-m19940.amer.actel.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2375.17 via Frontend Transport; Mon, 7 Mar 2022 05:22:58 -0700
-From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-To: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
- <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH v3 6/6] ARM: configs: at91: sama7_defconfig: add MCHP PDMC and
- DMIC drivers
-Date: Mon, 7 Mar 2022 14:22:02 +0200
-Message-ID: <20220307122202.2251639-7-codrin.ciubotariu@microchip.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20220307122202.2251639-1-codrin.ciubotariu@microchip.com>
-References: <20220307122202.2251639-1-codrin.ciubotariu@microchip.com>
+ by dfw.source.kernel.org (Postfix) with ESMTPS id A5ED261169;
+ Mon,  7 Mar 2022 12:40:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6A12C340F3;
+ Mon,  7 Mar 2022 12:40:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1646656819;
+ bh=7b1ai/DLaoMwWypU8/jHGkgvIV0Cz5+Yuo+N0X/U11Q=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=SlNQh+jBd/QVag3+y5/nDYbxuAOc8AgW3WHCDAo0wlwLeJjdMJfFv6h4bixOEF+sV
+ Y4QfKCvJwIjxcLMRu4DU7GasEtSXuriu8RrK5rRl6jzm/MScW5NXjW4zgUx7ClJ4s/
+ Q72SXBIK2rqI0b7DmzAHEYr3RjW4UEF6P4zierWHBZzlX38vgO1IB9rL47xpfymf0g
+ OzzD0px6U01YA89igIipbc9YbSme3QQwa3Ky5vzhHVQLxTOXvTDZLt1enNDfohOlWX
+ Ih1XlU6hDv4fwSJUSaHRRB3zr4ubHqJJBp1rita+5qjbdAxDf1hvW79nx/5oR+7UFs
+ PMF6ZrN2ex58Q==
+Date: Mon, 7 Mar 2022 12:40:10 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH 1/4] ASoC: amd: vg: fix signedness bug in
+ acp5x_audio_probe()
+Message-ID: <YiX9Kp9AFYNiqJcL@sirena.org.uk>
+References: <20220304131256.GA28739@kili>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-Cc: lars@metafoo.de, nicolas.ferre@microchip.com, robh+dt@kernel.org,
- tiwai@suse.com, broonie@kernel.org,
- Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="Czo/FV3lhKwL15bG"
+Content-Disposition: inline
+In-Reply-To: <20220304131256.GA28739@kili>
+X-Cookie: Whatever became of eternal truth?
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
+ Meng Tang <tangmeng@uniontech.com>, kernel-janitors@vger.kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.com>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,30 +84,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Enable drivers needed for Microchip's PDMC and PDM microphones.
 
-Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
----
+--Czo/FV3lhKwL15bG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Changes in v2,v3:
- - none;
+On Fri, Mar 04, 2022 at 04:12:56PM +0300, Dan Carpenter wrote:
+> The "adata->i2s_irq" variable is unsigned so the error handling
+> will not work.
 
- arch/arm/configs/sama7_defconfig | 2 ++
- 1 file changed, 2 insertions(+)
+This series has a 1/4 and a 1/3 but no 3/4.
 
-diff --git a/arch/arm/configs/sama7_defconfig b/arch/arm/configs/sama7_defconfig
-index 0368068e04d9..bc29badab890 100644
---- a/arch/arm/configs/sama7_defconfig
-+++ b/arch/arm/configs/sama7_defconfig
-@@ -138,6 +138,8 @@ CONFIG_SND_SOC_MIKROE_PROTO=m
- CONFIG_SND_MCHP_SOC_I2S_MCC=y
- CONFIG_SND_MCHP_SOC_SPDIFTX=y
- CONFIG_SND_MCHP_SOC_SPDIFRX=y
-+CONFIG_SND_MCHP_SOC_PDMC=y
-+CONFIG_SND_SOC_DMIC=y
- CONFIG_SND_SOC_PCM5102A=y
- CONFIG_SND_SOC_SPDIF=y
- CONFIG_SND_SIMPLE_CARD=y
--- 
-2.32.0
+--Czo/FV3lhKwL15bG
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmIl/SkACgkQJNaLcl1U
+h9Dk8Qf/b60qYtpv/9beRu/xqunawztZFok9vyGOKB0Yr4shMKqB6xPbozNFZ32p
+/uFfcCSuL+7eExwYpzWeCOMzt215eTGTdKu0is9CHRyjOGI1YX1DEbaT5Ph3418l
+c6VbA0aeSSxCA/mIYSSZjP3KH6f6t+O8qbEKczr8gkCzTRny6oXc7IkO21AICYex
+FPFEDbvlY2JfT7VJjL7dDRZQZW3a03ciP6Cr1frN5Swniqn7kZ8sMO90xtlIcMJz
+keodhwXvmXXuxpD9OR4MBQNKXc7uGQEr+BaJnvsR3yiUVp3Nu5v+N6pnWISCX0zu
+8UjMu8p5q1DkydOKoSdByy8wADqDYA==
+=zG8U
+-----END PGP SIGNATURE-----
+
+--Czo/FV3lhKwL15bG--
