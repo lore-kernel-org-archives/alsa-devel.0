@@ -4,67 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6277DC433F5
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Mar 2022 20:42:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7D16C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Mar 2022 20:43:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6A3531732;
-	Mon,  7 Mar 2022 21:41:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A3531732
+	by alsa0.perex.cz (Postfix) with ESMTPS id E845C1720;
+	Mon,  7 Mar 2022 21:42:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E845C1720
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646685763;
-	bh=0Cv5vxXicRFXtF41SUF86JorRsvlrBPG16Z1OipQCFY=;
+	s=default; t=1646685780;
+	bh=PgNLGlvhfPV7rDinWlfM7rjW5xU/fveG5kKm6pxlizU=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uTZhBIBMruZ3cmUKmoxvZwUCC7mKw22NuMwo9H1c8h+v6ft3ZMLqHAqnZtSRs49ym
-	 fFG2tENU9AzDjhowB4EiZ8ObBoplJEPr1jw5QASBA1kzDrcDbs/M70ELg5WJF9wVNH
-	 8ER9NS5aaan/+yv4P375aXlEM2Zxwi4NgMz3vrsk=
+	b=d++AY1zOpEf7cQxFgkalPHy/iaS9VePjKCzbX9+Sz9VG0zXsdLmPN/VuqyZzpxEcD
+	 3lJpvP9gI8nUAEyxSc44IJc/SKwXfIDNtmSt6zPa05dhJlhFwdc78akHcILzepn/Qf
+	 NsgO7PLkALQMGNrpFkRh0JxrgBVHtCfQB8C1QihA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 80EB5F8053E;
-	Mon,  7 Mar 2022 21:39:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6F95CF80549;
+	Mon,  7 Mar 2022 21:39:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5C858F8053B; Mon,  7 Mar 2022 21:39:21 +0100 (CET)
+ id 6E7C2F80543; Mon,  7 Mar 2022 21:39:23 +0100 (CET)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B84B1F80534
- for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2022 21:39:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B84B1F80534
+ by alsa1.perex.cz (Postfix) with ESMTPS id 715D0F80534
+ for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2022 21:39:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 715D0F80534
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="GXICFvko"
+ header.b="i8SLRtFG"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 6A318614C1;
- Mon,  7 Mar 2022 20:39:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 015F6C36AEB;
- Mon,  7 Mar 2022 20:39:15 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 2D5B4614C1;
+ Mon,  7 Mar 2022 20:39:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 520DFC36AE2;
+ Mon,  7 Mar 2022 20:39:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1646685556;
- bh=0Cv5vxXicRFXtF41SUF86JorRsvlrBPG16Z1OipQCFY=;
+ s=k20201202; t=1646685560;
+ bh=PgNLGlvhfPV7rDinWlfM7rjW5xU/fveG5kKm6pxlizU=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=GXICFvko+7lCN6j/JEWFGf/TCOSFpNoXmvZFEL4W8HNoeng2ozIrEjxEOzpgBKAmZ
- SYnEaNSHfOtfw8nitbgpigzL6rQWb/CMHG8RHxX2K6XLKNtCMNEmubD5by/K6RFlJQ
- lPKTDiXx0spXrhKYUvjP2UrOheNacI7Po4C9p9cxZGCB0HEFV1kRyj9xYpyFM+Zp1i
- 63ySRHC3bMDqwSviMmNe85L5QdMkmJl9+2vakW1441KUh7q1IBHksx6ucgUnnQPBr3
- S0L2ii6LG83hQNlBUshk785Y7A6Lsam20y3Gv6DcuNZzDcS59VtzxRJzAP/HVAxgne
- fbDXz0mfflt5g==
+ b=i8SLRtFGjzRCDKkGrKwSku5p2JVXw5BczkH2J6M/8nCssqQClooWWlzhqIozGV5Me
+ LOWviFDFS0c4LhCMBEoq8qAxUqZSrkHG2YcWHBVfSH6/ipdpWgfDFqbSz1OynvwP9f
+ g8l7uBuvPtcE11VBawavCDMIahqNjYUNpfvvyYIK81BoPyzCOQOVhiMl3y4PCjAwDW
+ WlF0kC6N0SRHjajUZOmR3MdxvTn4u2eGfpWfP4ackEbfOFhCKNaQnVwZEXhI6eN2Tt
+ NN64ecEtC4ujaXQV/S49bKFklCyxY44BHd2SHsoClnAQqZbthKppcKXQw38KDLu2/5
+ gkq31V2Z7M6mQ==
 From: Mark Brown <broonie@kernel.org>
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-In-Reply-To: <20220304144015.398656-1-rf@opensource.cirrus.com>
-References: <20220304144015.398656-1-rf@opensource.cirrus.com>
-Subject: Re: [PATCH] ASoC: cs42l42: Add warnings about DETECT_MODE and
- PLL_START
-Message-Id: <164668555573.3137316.14425492431771518376.b4-ty@kernel.org>
-Date: Mon, 07 Mar 2022 20:39:15 +0000
+To: alsa-devel@alsa-project.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20220304204532.54675-1-pierre-louis.bossart@linux.intel.com>
+References: <20220304204532.54675-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/3] ASoC: Intel: boards: cleanups for 5.18
+Message-Id: <164668555906.3137316.317655084656581414.b4-ty@kernel.org>
+Date: Mon, 07 Mar 2022 20:39:19 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+Cc: tiwai@suse.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,14 +79,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 4 Mar 2022 14:40:15 +0000, Richard Fitzgerald wrote:
-> DETECT_MODE and PLL_START must be zero while HP_PDN and ADC_PDN are
-> both 1. If this condition is broken it can discharge FILT+ and it
-> can then take up to 1 second for FILT+ to recharge.
+On Fri, 4 Mar 2022 14:45:29 -0600, Pierre-Louis Bossart wrote:
+> Updates to clean-up the GPIOLIB dependency and a quirk for HP
+> SoundWire devices.
 > 
-> There is no workaround required for this, simply avoiding settings
-> and sequences that would break the requirement. The driver already
-> meets the requirement.
+> Anthony I Gilea (1):
+>   ASoC: Intel: sof_sdw: fix quirks for 2022 HP Spectre x360 13"
+> 
+> Pierre-Louis Bossart (2):
+>   ASoC: Intel: boards: remove explicit dependency on GPIOLIB when DMIC
+>     is used"
+>   ASoC: Intel: boards: add GPIOLIB dependency where missed
 > 
 > [...]
 
@@ -97,8 +99,12 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: cs42l42: Add warnings about DETECT_MODE and PLL_START
-      commit: 71a6254c8b8aa3dcac3a5cb1d1cc2a2d3a840bfb
+[1/3] ASoC: Intel: boards: remove explicit dependency on GPIOLIB when DMIC is used"
+      commit: 32666b866f55a224d2f07f83594fcf37a922b6c9
+[2/3] ASoC: Intel: boards: add GPIOLIB dependency where missed
+      commit: bdfc385948bf8e73629b3580941c9d810711713b
+[3/3] ASoC: Intel: sof_sdw: fix quirks for 2022 HP Spectre x360 13"
+      commit: ce73ef6ec67104d1fcc4c5911d77ce83288a0998
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
