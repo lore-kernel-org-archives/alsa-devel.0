@@ -4,76 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43386C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Mar 2022 16:00:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10E33C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Mar 2022 16:17:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BC48D16DC;
-	Mon,  7 Mar 2022 16:59:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC48D16DC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 987A916E4;
+	Mon,  7 Mar 2022 17:16:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 987A916E4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646668815;
-	bh=UIQ205em1WrlnAoEopCeQjugklgipYmQxrXTFmaWBqc=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1646669821;
+	bh=PVx3pz+Cc/1vvF/O9ZwC1847s5h2idC450Ea+aIu9Ho=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mV8ItRfzvOv4CNYj9O9gpVO2k/DAVs26APLt5fDIsztxt1xRL8nzSxLz6+NrlHOIU
-	 scL5TopGmlpPk+aCOQsiiS0g5xogJ1VflB+M4m56/JX+8Ix7/Thbt+pklq17Gs+CdI
-	 93JddkFv/NMr7/aanjqBPAc4rkz8djYgrb4C/n24=
+	b=QZ8yajBmn4EIRavdtbBcw3dNw7LlYmhBkUcE8xlL7r1ADjjx6uG6McXe1w6pxIGSm
+	 iQf6L9gwILBZh0bvNgSFXNBDm2J+0IiRK/CMj1OWFqTfWa2/EkY/RIwA9tWfEHLVZY
+	 UEc2lLMTUz3veuehYb/RbzIF5mfjcbFJvC951mh0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 55FA5F80132;
-	Mon,  7 Mar 2022 16:59:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2BA6DF80124;
+	Mon,  7 Mar 2022 17:16:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9B447F8013F; Mon,  7 Mar 2022 16:59:24 +0100 (CET)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ id D4870F8013F; Mon,  7 Mar 2022 17:16:09 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5B149F80124
- for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2022 16:59:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B149F80124
+ by alsa1.perex.cz (Postfix) with ESMTPS id AF8E7F80124
+ for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2022 17:16:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF8E7F80124
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="ZppUW8v/"
+ header.b="BuLGQoNR"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1646668762; x=1678204762;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=UIQ205em1WrlnAoEopCeQjugklgipYmQxrXTFmaWBqc=;
- b=ZppUW8v/JCkEfzHtTPrgS8bBC29x/fYh6isFNjUk+SZkrg4YhE71Ym8e
- CVYjqgFlKtGXeaEhYE/fr1KGEgVldDurbsKV8xOUvH3JbyCDUKYhy+yGP
- xj5JgrAYH1L+5Fl/gTSqDLfKQNgCEymVfI/JPTMtMPPzWICpSv8NHnC5j
- 8NrJ95WmJCJbOWiiHGPZLt2wul62z2iBpebn+0wU6w1nfeATqaMdRRT+9
- ycCGzun6PUnzpKNc5xPpPTnS+nAMNilL06ObzwRZ6+oc6RgbHrr3rcqaE
- vV4Y/dWv0GRfgNDFWuImBkUI5NWFMNZW1ocUDi2rlQNJMXIuzPhM0Qcaz A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10279"; a="241857483"
-X-IronPort-AV: E=Sophos;i="5.90,162,1643702400"; d="scan'208";a="241857483"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Mar 2022 07:59:17 -0800
-X-IronPort-AV: E=Sophos;i="5.90,162,1643702400"; d="scan'208";a="643292226"
-Received: from rhack-mobl1.amr.corp.intel.com (HELO [10.209.14.71])
- ([10.209.14.71])
- by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Mar 2022 07:59:17 -0800
-Message-ID: <def6807f-5d5d-5d08-7705-70c907b23805@linux.intel.com>
-Date: Mon, 7 Mar 2022 09:24:03 -0600
+ t=1646669767; x=1678205767;
+ h=message-id:subject:from:to:cc:date:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=PVx3pz+Cc/1vvF/O9ZwC1847s5h2idC450Ea+aIu9Ho=;
+ b=BuLGQoNRRUTYzpwdR0EGmo2tyK2SwQBYBhfSFOZKGXT3Aus8Xv89hR/i
+ 1aL0r3ugKzFa0m7ZqPVeQ21T9UTfvvMtrtZS0rOB/VubIkoBfSugNMUcG
+ tV53MTIPcFM3ZPwcgdbptO6k+7c2RJ/OiR/4twTJc/frOLpfAOSDTi22H
+ YQfOGCZk84Ajx6hKRnokX1F4zFDAcSu224HWm7DSQaY9HP2u5M8kOHXwD
+ q0etaWhvv6DpfbDwqZ7hrFAKccbirh26qUdNF14h3PkQ2B90DebQo+2kP
+ oDaGAtFrAPSb+/jZ1hfm+dUB/kKNaoTYl62FWJbwFaciYUDMRzBLY0dVM g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10279"; a="254618913"
+X-IronPort-AV: E=Sophos;i="5.90,162,1643702400"; d="scan'208";a="254618913"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Mar 2022 08:15:59 -0800
+X-IronPort-AV: E=Sophos;i="5.90,162,1643702400"; d="scan'208";a="631890938"
+Received: from zhaojohn-mobl1.amr.corp.intel.com ([10.254.24.100])
+ by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Mar 2022 08:15:58 -0800
+Message-ID: <3bce930519d6211499948cb219294560b9c8786c.camel@linux.intel.com>
+Subject: Re: [PATCH v3 04/17] ASoC: Intel: avs: Inter process communication
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
+Date: Mon, 07 Mar 2022 08:15:58 -0800
+In-Reply-To: <9a536988-4d21-256a-254a-d5b422eceb42@intel.com>
+References: <20220304145755.2844173-1-cezary.rojewski@intel.com>
+ <20220304145755.2844173-5-cezary.rojewski@intel.com>
+ <3a4bd57f06b9dddca6b7726c462bd0ccaaa508ff.camel@linux.intel.com>
+ <9a536988-4d21-256a-254a-d5b422eceb42@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3-0ubuntu1 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.5.0
-Subject: Re: [PATCH -next] soundwire: stream: Fix error return code in
- do_bank_switch()
-Content-Language: en-US
-To: Wang Wensheng <wangwensheng4@huawei.com>, vkoul@kernel.org,
- yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-References: <20220307074039.117488-1-wangwensheng4@huawei.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20220307074039.117488-1-wangwensheng4@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: xuqiang36@huawei.com
+Cc: upstream@semihalf.com, harshapriya.n@intel.com, rad@semihalf.com,
+ tiwai@suse.com, pierre-louis.bossart@linux.intel.com, hdegoede@redhat.com,
+ broonie@kernel.org, amadeuszx.slawinski@linux.intel.com,
+ cujomalainey@chromium.org, lma@semihalf.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,31 +89,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-On 3/7/22 01:40, Wang Wensheng wrote:
-> Fix to return a negative error code from the error handling case instead
-> of 0, as done elsewhere in this function.
+On Fri, 2022-03-04 at 18:11 +0100, Cezary Rojewski wrote:
+> > > +     * -EPERM error code is expected and thus it's not an actual
+> > > error.
+> > And what happens in this case? do you retry the IPC after recovery?
 > 
-> Signed-off-by: Wang Wensheng <wangwensheng4@huawei.com>
-
-Thanks for the patch, sounds good to me.
-
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-> ---
->   drivers/soundwire/stream.c | 1 +
->   1 file changed, 1 insertion(+)
 > 
-> diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
-> index 980f26d49b66..553131597af6 100644
-> --- a/drivers/soundwire/stream.c
-> +++ b/drivers/soundwire/stream.c
-> @@ -822,6 +822,7 @@ static int do_bank_switch(struct sdw_stream_runtime *stream)
->   		} else if (multi_link) {
->   			dev_err(bus->dev,
->   				"Post bank switch ops not implemented\n");
-> +			ret = -EINVAL;
->   			goto error;
->   		}
->   
+> 
+> 
+> Not at all. Why would you want retry IPC after recovery in the first
+> place?
+So what happens after FW recovery? Will this lead to an xrun and cause
+usersapce to restart the stream?
+
+Thanks,Ranjani
+
