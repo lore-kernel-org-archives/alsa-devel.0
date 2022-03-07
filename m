@@ -4,68 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F375C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Mar 2022 20:44:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51EE0C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Mar 2022 20:44:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 51893181C;
-	Mon,  7 Mar 2022 21:43:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 51893181C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8B1C717EE;
+	Mon,  7 Mar 2022 21:43:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8B1C717EE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646685848;
-	bh=5S61BsIR/H5cTwmksDis/IvC7kKtQMQg9m+Qpo3d+Ec=;
+	s=default; t=1646685864;
+	bh=KPjTrbSp37sg80WJ3I6fvznHmg6f5wif6U21+HUCBmk=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gWmZnx3CIfH7TpS3ttBKtmLbQX5NO3HgCwpOfyf2FfaXlbWgRBGlDWiaERf+J+qai
-	 +d3W3smZi8x/mpTUGmg7z/dzZqdPf1LJ87/iCuiQgNHhtwkXs8gOitlhgUq/qq7mWJ
-	 89YirqTOxWQ2L288n5AmiBUhNsG7YmqvgwtDztcM=
+	b=PHIWQ9HYRr/B+NQ2cYENpADUTpdP3JZGXEFbz2k9C96MEytaUGLQfjtXRKHCS2U1e
+	 INvjq3ddKah8k1ISNqqgLd0Oz8w9LQazU4Kr14xMU9FOk4PPq3cVDqySSWrlOwH9US
+	 67u/aPyo9pqkC40+qpBgNkzpbKzMkTYHUWfCEBaU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D1A52F80579;
-	Mon,  7 Mar 2022 21:39:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5AD09F80552;
+	Mon,  7 Mar 2022 21:39:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 189ACF80579; Mon,  7 Mar 2022 21:39:32 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id BAB65F8057C; Mon,  7 Mar 2022 21:39:33 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DB1E2F80579
- for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2022 21:39:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DB1E2F80579
+ by alsa1.perex.cz (Postfix) with ESMTPS id A1601F80552
+ for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2022 21:39:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1601F80552
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="p9raRPCG"
+ header.b="NmjAQCvU"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 5D125B8170A;
- Mon,  7 Mar 2022 20:39:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AB4BC340EF;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 8C02D6150C;
  Mon,  7 Mar 2022 20:39:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E624C340EB;
+ Mon,  7 Mar 2022 20:39:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1646685568;
- bh=5S61BsIR/H5cTwmksDis/IvC7kKtQMQg9m+Qpo3d+Ec=;
+ s=k20201202; t=1646685566;
+ bh=KPjTrbSp37sg80WJ3I6fvznHmg6f5wif6U21+HUCBmk=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=p9raRPCGJzmCKsABw/ZELXBixP1/POtjWYHK475CrsVbx6JkYMQUUkh+jekzbICww
- ZVfhD+cpegaowbL/ayaRB1u+bVwcdM/PR5tCdWE6mQ+/j+KzvSmPsWPi7ZhkorQCan
- BlXnV+IYfvtU7DZcSxci/SHezivnSR4Lxn4T2oPiFIQrNeKaCnBw4v65qco0BT8lcz
- aPNpeHSl1PsBgopMb2LABt/I9iKh6CktUxDejWVweqEdHJEuPn8iiixVhKx0DRBX1W
- qgDj4korCJYmwqOL9Tt1H64xNJI8HZgh30UTs29uJbJm9YwqX1M7yZBRnckUafioNC
- 6n8OqYxGy7h1Q==
+ b=NmjAQCvUN8VKi9AGyy2RzMWEFQp+q8Zx/sg49qprXVJFCt6tSK2r6RpdDdGOOPBHU
+ 3u9jj3OeMPlwNFx/OJ/05m8XsMv8l82br7GK+3RZt+t5NlvtVRUcWEcbTpq7P+Ufk7
+ aQryuGm9nmL93K24Mv13SoGkPxuZED/0l0UmZKBtb9r/nLFt0oZV3hmXsFGbphDGFL
+ swwylnJb23A3VHpKTDWvN5Ni3s5lr2KE27FugEyDE4ZBtz7zVgHM4LORjf1evYxAZ2
+ jvZpU6tAhK89xnES9ZI6FcfBMEitJjoZJQKcWqdSHX7gXg91U4QcErZWXG+fb/C7ZG
+ 0wHm743P4zkUQ==
 From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <20220304160934.32010-1-srinivas.kandagatla@linaro.org>
-References: <20220304160934.32010-1-srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH] ASoC: qcom: select correct WCD938X config for SC7280
-Message-Id: <164668556615.3137316.2971642861768642189.b4-ty@kernel.org>
-Date: Mon, 07 Mar 2022 20:39:26 +0000
+To: lgirdwood@gmail.com, derek.fang@realtek.com
+In-Reply-To: <20220307102154.26065-1-derek.fang@realtek.com>
+References: <20220307102154.26065-1-derek.fang@realtek.com>
+Subject: Re: [PATCH] ASoC: rt5682s: Stabilize the combo jack detection
+Message-Id: <164668556398.3137316.401333742593254454.b4-ty@kernel.org>
+Date: Mon, 07 Mar 2022 20:39:23 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
- lgirdwood@gmail.com, Randy Dunlap <rdunlap@infradead.org>,
- linux-kernel@vger.kernel.org, tiwai@suse.com, quic_srivasam@quicinc.com
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
+ lars@metafoo.de, albertchen@realtek.com, shumingf@realtek.com,
+ flove@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,18 +80,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 4 Mar 2022 16:09:34 +0000, Srinivas Kandagatla wrote:
-> SC7280 config selected WCD938X instead of WCD938X_SDW Soundwire codecs.
-> WCD938X_SDW actually selects WCD938X, so directly selecting WCD938X results
-> in unmet dependencies and below warning
+On Mon, 7 Mar 2022 18:21:54 +0800, derek.fang@realtek.com wrote:
+> From: Derek Fang <derek.fang@realtek.com>
 > 
-> WARNING: unmet direct dependencies detected for SND_SOC_WCD938X
->   Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=m]
->  && SND_SOC_WCD938X_SDW [=n] && (SOUNDWIRE [=n] || !SOUNDWIRE [=n])
->   Selected by [m]:
->   - SND_SOC_SC7280 [=m] && SOUND [=y] && !UML && SND [=y]
->  && SND_SOC [=m] && SND_SOC_QCOM [=m] && (I2C [=y] && SOUNDWIRE [=n] ||
->  COMPILE_TEST [=y])
+> Changes:
+> 1. Revise rt5682s_sar_power_mode and rt5682s_headset_detect to be more
+>    rational.
+> 2. Manually set to the jack-unplugging state via rt5682s_headset_detect
+>    during going to suspend. Close unnecessary powers and prepare for
+>    re-detecting the CBJ during resuming.
+> 3. Simplize rt5682s_resume.
 > 
 > [...]
 
@@ -102,8 +99,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: qcom: select correct WCD938X config for SC7280
-      commit: 6ed5dbba6c971fe644f5c2b4aae436b39da99f18
+[1/1] ASoC: rt5682s: Stabilize the combo jack detection
+      commit: b41d6195b2f0c5d5df009aa518958f3c46e66d9a
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
