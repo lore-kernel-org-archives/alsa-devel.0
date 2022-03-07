@@ -4,76 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1A8CC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Mar 2022 18:17:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9788AC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Mar 2022 18:56:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0FC5F1831;
-	Mon,  7 Mar 2022 19:16:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FC5F1831
+	by alsa0.perex.cz (Postfix) with ESMTPS id 306751720;
+	Mon,  7 Mar 2022 19:55:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 306751720
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646677063;
-	bh=scbGiTy6fmadYaIGjLgmz4sDbgfeN2rLNb6RB+CCOEg=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1646679396;
+	bh=rxoAFf/UsBaDwU006xdRViCEGY/3wBIPVLAxH+tsdcg=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BSZtXrSZp5osLlPmddzNK9mMkFaGidKZ56r6vzNhqjV9bOyP7Rxm9xE+DY7jIvWfu
-	 qpXRodHhPQaLIrb3oMCjiB1jEP14PnzEk9s63QP8cd6BYzdbT2AFHbOvqRNXAJ/om6
-	 5yd2iQmwD3W1jpb4M/jHon3e5kapjIpHsIWSLax4=
+	b=FeVhl489Uf+ZNHXKRgUd1Qjg19rYRF7CMyT6nrCP1tk+7p2qsc3QctZnWHGV42NNv
+	 bHq3eMP1YpWSQz5r53FfbSxC/brvH3dN9ZxPhGImCqk6KQTzrDc1yg9YaAyYGLce9e
+	 eTx85pXMRQTSehmV/ydlcIe40JcTrjzmw54hqRNQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 02E4EF805BA;
-	Mon,  7 Mar 2022 19:11:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BE510F80132;
+	Mon,  7 Mar 2022 19:55:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 678ABF80566; Mon,  7 Mar 2022 19:11:53 +0100 (CET)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ id D8219F8013F; Mon,  7 Mar 2022 19:55:44 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 94FC1F80515
- for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2022 19:11:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94FC1F80515
+ by alsa1.perex.cz (Postfix) with ESMTPS id 99A34F800E9
+ for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2022 19:55:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99A34F800E9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="Jvp27R3U"
+ header.b="PMRQ6Xos"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1646676703; x=1678212703;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=scbGiTy6fmadYaIGjLgmz4sDbgfeN2rLNb6RB+CCOEg=;
- b=Jvp27R3UYRQ/OxXsEepAG+TjjPSnkHtAEByLzZCzl6fXg9tHnJsrvOps
- frU/9+tAcz3kl2zsmOLJpcMBvdn6mkeq+CIn+wCwpauMKKyMb4Wusbud9
- Op8Ug2LADdSXw4BO3Civ1dRYXxbXtjMUFAH6XEH/WK9t1jjl8RJyirnjd
- Z3i6/38eMb/EHuojmLXvkILA6uL/tUZRPmrigQo6bZAt/EUOJP/YEjb41
- EG107tzpWVyFbGCtb5ndG1xWFwYmcUOPBUPjlGDG4uK6e6bkrHmYDYWQj
- TiLU3RcIyBQE+cn3Tw5ztnwkYRmcU8TCw5SOtuYlgsOP4OGqFyMLC6GJU g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10279"; a="254401356"
-X-IronPort-AV: E=Sophos;i="5.90,162,1643702400"; d="scan'208";a="254401356"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Mar 2022 10:11:30 -0800
-X-IronPort-AV: E=Sophos;i="5.90,162,1643702400"; d="scan'208";a="495146687"
-Received: from echun1-mobl.amr.corp.intel.com (HELO rsridh2-mobl1.localdomain)
- ([10.251.130.219])
- by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Mar 2022 10:11:29 -0800
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 16/18] ASoC: SOF: topology: Rename arguments in
- sof_parse_tokens()
-Date: Mon,  7 Mar 2022 10:11:09 -0800
-Message-Id: <20220307181111.49392-17-ranjani.sridharan@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220307181111.49392-1-ranjani.sridharan@linux.intel.com>
-References: <20220307181111.49392-1-ranjani.sridharan@linux.intel.com>
+ t=1646679342; x=1678215342;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=rxoAFf/UsBaDwU006xdRViCEGY/3wBIPVLAxH+tsdcg=;
+ b=PMRQ6Xoskm7vIHoGRyfvJHHJVpvAiY8iN1C9Ha3edx/Tg21AZqQ2n7RA
+ I2jhlHRxcsX64fOAdvTT5NDN7yTO5XYqjpuF0/otEM9++maQG6t1oLNAH
+ WH+H08t4zLFSVcCBtaD8jEe3wr6yk3j4/n8jtcNfjqXFkDRGTEw4MAG4b
+ Nsk8LLL2T949/1MSSmmu+d8I9+omXqf2hJtt1U/5PtSn+WzUwG/SQDK5W
+ ZOTqeapJTZLxg4BvruZmRynK++q/fgP/LCQBYyMzVcacluMOWdg4kt9kY
+ he5M1KkeO/fUC6iyZ3ehFtUXC+sAEx9vPosQU1GLo7fSGUemDJ6Xh18wb g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10279"; a="254202188"
+X-IronPort-AV: E=Sophos;i="5.90,163,1643702400"; d="scan'208";a="254202188"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Mar 2022 10:55:36 -0800
+X-IronPort-AV: E=Sophos;i="5.90,163,1643702400"; d="scan'208";a="553281244"
+Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.99.249.205])
+ ([10.99.249.205])
+ by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Mar 2022 10:55:34 -0800
+Message-ID: <cb8673b3-2306-9582-1434-7b173a5d6c30@linux.intel.com>
+Date: Mon, 7 Mar 2022 19:55:31 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.1
+Subject: Re: [PATCH 11/18] ASoC: SOF: make struct snd_sof_widget IPC agnostic
+Content-Language: en-US
+To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ alsa-devel@alsa-project.org
+References: <20220307181111.49392-1-ranjani.sridharan@linux.intel.com>
+ <20220307181111.49392-12-ranjani.sridharan@linux.intel.com>
+From: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+In-Reply-To: <20220307181111.49392-12-ranjani.sridharan@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- broonie@kernel.org,
- =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>
+Cc: tiwai@suse.de,
+ =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+ broonie@kernel.org, Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,61 +92,113 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Rename the count and priv_size arguments in sof_parse_tokens() and add
-comments to clarify the arguments.
+On 3/7/2022 7:11 PM, Ranjani Sridharan wrote:
+> Parse the UUID token and save it in the new uuid field in struct
+> snd_sof_widget. struct sof_ipc_comp_ext is no longer needed. So remove
+> it too.
+> 
+> Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+> Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> ---
+>   include/sound/sof/topology.h |  5 -----
+>   sound/soc/sof/sof-audio.h    |  3 +--
+>   sound/soc/sof/topology.c     | 20 ++++++++++----------
+>   3 files changed, 11 insertions(+), 17 deletions(-)
+> 
+> diff --git a/include/sound/sof/topology.h b/include/sound/sof/topology.h
+> index adee6afd1490..33bd9eaffd50 100644
+> --- a/include/sound/sof/topology.h
+> +++ b/include/sound/sof/topology.h
+> @@ -303,9 +303,4 @@ enum sof_event_types {
+>   	SOF_KEYWORD_DETECT_DAPM_EVENT,
+>   };
+>   
+> -/* extended data struct for UUID components */
+> -struct sof_ipc_comp_ext {
+> -	uint8_t uuid[SOF_UUID_SIZE];
+> -}  __packed;
+> -
+>   #endif
+> diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
+> index a8eeffc12b24..5c10df500ffb 100644
+> --- a/sound/soc/sof/sof-audio.h
+> +++ b/sound/soc/sof/sof-audio.h
+> @@ -110,8 +110,7 @@ struct snd_sof_widget {
+>   	struct list_head list;	/* list in sdev widget list */
+>   	struct snd_sof_widget *pipe_widget;
+>   
+> -	/* extended data for UUID components */
+> -	struct sof_ipc_comp_ext comp_ext;
+> +	u8 uuid[SOF_UUID_SIZE];
 
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/sof/topology.c | 25 ++++++++++++++++++-------
- 1 file changed, 18 insertions(+), 7 deletions(-)
+Can this be uuid_t perhaps?
 
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index b96ecef43284..71de61255779 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -1024,12 +1024,23 @@ static int sof_parse_token_sets(struct snd_soc_component *scomp,
- 	return 0;
- }
- 
--static int sof_parse_tokens(struct snd_soc_component *scomp,
--			    void *object,
--			    const struct sof_topology_token *tokens,
--			    int count,
-+/**
-+ * sof_parse_tokens - Parse one set of tokens
-+ * @scomp: pointer to soc component
-+ * @object: target ipc struct for parsed values
-+ * @tokens: token definition array describing what tokens to parse
-+ * @num_tokens: number of tokens in definition array
-+ * @array: source pointer to consecutive vendor arrays in topology
-+ * @array_size: total size of @array
-+ *
-+ * This function parses a single set of tokens in vendor arrays into
-+ * consecutive ipc structs.
-+ */
-+static int sof_parse_tokens(struct snd_soc_component *scomp,  void *object,
-+			    const struct sof_topology_token *tokens, int num_tokens,
- 			    struct snd_soc_tplg_vendor_array *array,
--			    int priv_size)
-+			    int array_size)
-+
- {
- 	/*
- 	 * sof_parse_tokens is used when topology contains only a single set of
-@@ -1037,8 +1048,8 @@ static int sof_parse_tokens(struct snd_soc_component *scomp,
- 	 * sof_parse_token_sets are sets = 1 (only 1 set) and
- 	 * object_size = 0 (irrelevant).
- 	 */
--	return sof_parse_token_sets(scomp, object, tokens, count, array,
--				    priv_size, 1, 0);
-+	return sof_parse_token_sets(scomp, object, tokens, num_tokens, array,
-+				    array_size, 1, 0);
- }
- 
- static void sof_dbg_comp_config(struct snd_soc_component *scomp,
--- 
-2.25.1
+>   
+>   	void *private;		/* core does not touch this */
+>   };
+> diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+> index 41927e99ace2..45bac1ac9fdd 100644
+> --- a/sound/soc/sof/topology.c
+> +++ b/sound/soc/sof/topology.c
+> @@ -743,7 +743,7 @@ static const struct sof_topology_token core_tokens[] = {
+>   static const struct sof_topology_token comp_ext_tokens[] = {
+>   	{SOF_TKN_COMP_UUID,
+>   		SND_SOC_TPLG_TUPLE_TYPE_UUID, get_token_uuid,
+> -		offsetof(struct sof_ipc_comp_ext, uuid)},
+> +		offsetof(struct snd_sof_widget, uuid)},
+>   };
+>   
+>   /*
+> @@ -1419,16 +1419,17 @@ static int sof_connect_dai_widget(struct snd_soc_component *scomp,
+>    *
+>    * Return: The pointer to the new allocated component, NULL if failed.
+>    */
+> -static struct sof_ipc_comp *sof_comp_alloc(struct snd_sof_widget *swidget,
+> -					   size_t *ipc_size, int index)
+> +static struct sof_ipc_comp *sof_comp_alloc(struct snd_sof_widget *swidget, size_t *ipc_size,
+> +					   int index)
+>   {
+>   	u8 nil_uuid[SOF_UUID_SIZE] = {0};
+>   	struct sof_ipc_comp *comp;
+>   	size_t total_size = *ipc_size;
+> +	size_t ext_size = sizeof(swidget->uuid);
+>   
+>   	/* only non-zero UUID is valid */
+> -	if (memcmp(&swidget->comp_ext, nil_uuid, SOF_UUID_SIZE))
+> -		total_size += sizeof(swidget->comp_ext);
+> +	if (memcmp(swidget->uuid, nil_uuid, SOF_UUID_SIZE))
+> +		total_size += ext_size;
+
+And if you change type above then uuid_is_null(swidget->uuid) here?
+
+>   
+>   	comp = kzalloc(total_size, GFP_KERNEL);
+>   	if (!comp)
+> @@ -1444,8 +1445,8 @@ static struct sof_ipc_comp *sof_comp_alloc(struct snd_sof_widget *swidget,
+>   	/* handle the extended data if needed */
+>   	if (total_size > *ipc_size) {
+>   		/* append extended data to the end of the component */
+> -		memcpy((u8 *)comp + *ipc_size, &swidget->comp_ext, sizeof(swidget->comp_ext));
+> -		comp->ext_data_length = sizeof(swidget->comp_ext);
+> +		memcpy((u8 *)comp + *ipc_size, swidget->uuid, ext_size);
+and uuid_copy() here?
+
+> +		comp->ext_data_length = ext_size;
+>   	}
+>   
+>   	/* update ipc_size and return */
+> @@ -2276,9 +2277,8 @@ static int sof_widget_ready(struct snd_soc_component *scomp, int index,
+>   
+>   	swidget->core = comp.core;
+>   
+> -	ret = sof_parse_tokens(scomp, &swidget->comp_ext, comp_ext_tokens,
+> -			       ARRAY_SIZE(comp_ext_tokens), tw->priv.array,
+> -			       le32_to_cpu(tw->priv.size));
+> +	ret = sof_parse_tokens(scomp, swidget, comp_ext_tokens, ARRAY_SIZE(comp_ext_tokens),
+> +			       tw->priv.array, le32_to_cpu(tw->priv.size));
+>   	if (ret != 0) {
+>   		dev_err(scomp->dev, "error: parsing comp_ext_tokens failed %d\n",
+>   			ret);
 
