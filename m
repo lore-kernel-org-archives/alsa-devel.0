@@ -4,69 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F1ACC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Mar 2022 10:08:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9F67C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Mar 2022 10:08:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 906A116EB;
-	Mon,  7 Mar 2022 11:07:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 906A116EB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1854516FE;
+	Mon,  7 Mar 2022 11:07:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1854516FE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646647686;
-	bh=j8rdnFqQGxQj/EbhdN6CdN2Os+QFREnEIYaYmc4cc+g=;
+	s=default; t=1646647711;
+	bh=3VKXO9vL9OlCgl5v6BC6SLD+HFFz5DTpmHGxTxgva/Q=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vl2Gp8+IdoozgCx4kqjo6W/Li87mfCQFqIb+sNGmqE1d/sqBWD4rfBuyASY8vjh/r
-	 VeGacvKjw5XEldYyfkeuIMA6+RaiDbxc9CtFvjv2SWfiMqOI5BqzH/kWCXOgvRiw8M
-	 RTZGATqvBk1+siFYBNeXi3dtHUROC1F53uNi4jJo=
+	b=HpofVPJaQITQUMIoui2Upn939L81hwH7wTJFPo9HxXFYYYJj4XMvIyNwZxb6x88HY
+	 iMI7UWstX7oQReJC+6VZm4T1ZIXRFrHC+CuETT5udUfuu84iDRJHvQ9OhMnLYMqx9t
+	 oY7WB1lTHyespZq/ISIAm5RdOkGo45rPkCrLm7dA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 600B4F80528;
-	Mon,  7 Mar 2022 11:06:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 01F8EF80518;
+	Mon,  7 Mar 2022 11:06:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3EC5AF8051F; Mon,  7 Mar 2022 11:06:21 +0100 (CET)
+ id 8601FF8020D; Mon,  7 Mar 2022 11:06:26 +0100 (CET)
 Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com
  [68.232.154.123])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 62C06F80132
- for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2022 11:06:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62C06F80132
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8FC5BF8020D
+ for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2022 11:06:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8FC5BF8020D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com
- header.b="zmQnrY40"
+ header.b="Xu5LN5lT"
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
  t=1646647576; x=1678183576;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=j8rdnFqQGxQj/EbhdN6CdN2Os+QFREnEIYaYmc4cc+g=;
- b=zmQnrY40hm0Z0hN+DzBB8qd4FVbAEMsjhmIJgcvAqI4XrostORcCcmPl
- DQCi7j04UEYMTltp5/zORflKhtgaZS2wGJP1mp5B/iUUUE/QeYkdR+fL0
- ORMC7eE44QPfjMGTHH6aBJm4KRtjWXpqM50uAtMAdocigJtCdJJbriiBa
- CWOa6uni52xLXS8Ha7KuoylTE4y4XRfmCWGP3J06ODF+OkUmS9E5fmrhC
- x18QI5VMKjWXcu8nz6DBuHRoxv0qU3JSjIgpmJ8edGcMQwldHRKenrlhR
- QJlgz8xrsUc++8zm5J43x5OpVDzXyoG31vbgcHdIKBxpExIbJ/3K4IbRX A==;
-X-IronPort-AV: E=Sophos;i="5.90,161,1643698800"; d="scan'208";a="88045515"
+ bh=3VKXO9vL9OlCgl5v6BC6SLD+HFFz5DTpmHGxTxgva/Q=;
+ b=Xu5LN5lTibsIeYm8nF7vEJpppzus0yCAWxv07DMX1efAicsaoZDQuhlW
+ iRDHFDKk8Em4MVYvZ5gIJCPsWkCg7cu29QKIk4RXw+hwAHB9gHjFuXImK
+ D5bxKOhHr2zsotvqGziECa1xKbmNuA659FK5Kp7Lu5A91dpMn3aYfoTah
+ J85tmzJUwFleGJssG3ojOCPFikroV8jXrTAowTS6hgvQ72l8QYoeeFPOE
+ HvF/vwz1oj6lAWVx9p1LIWTw1QbNNyJlSdBola0/svZTzXQ11zeLBd7tJ
+ RfsXncVDLKYjVZPPB5OcztlorkpNsA9ZDUTnqzmM6oRAifYKZ6bw9clge w==;
+X-IronPort-AV: E=Sophos;i="5.90,161,1643698800"; d="scan'208";a="88045549"
 Received: from smtpout.microchip.com (HELO email.microchip.com)
  ([198.175.253.82])
  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 07 Mar 2022 03:06:07 -0700
+ 07 Mar 2022 03:06:12 -0700
 Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
  chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.17; Mon, 7 Mar 2022 03:05:59 -0700
+ 15.1.2375.17; Mon, 7 Mar 2022 03:06:09 -0700
 Received: from rob-ult-m19940.amer.actel.com (10.10.115.15) by
  chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2375.17 via Frontend Transport; Mon, 7 Mar 2022 03:05:56 -0700
+ 15.1.2375.17 via Frontend Transport; Mon, 7 Mar 2022 03:06:06 -0700
 From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 To: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
  <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH v2 1/6] ASoC: dmaengine: do not use a NULL
- prepare_slave_config() callback
-Date: Mon, 7 Mar 2022 12:04:23 +0200
-Message-ID: <20220307100428.2227511-2-codrin.ciubotariu@microchip.com>
+Subject: [PATCH v2 4/6] ARM: dts: at91: sama7g5: add nodes for PDMC
+Date: Mon, 7 Mar 2022 12:04:26 +0200
+Message-ID: <20220307100428.2227511-5-codrin.ciubotariu@microchip.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20220307100428.2227511-1-codrin.ciubotariu@microchip.com>
 References: <20220307100428.2227511-1-codrin.ciubotariu@microchip.com>
@@ -91,37 +90,53 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Even if struct snd_dmaengine_pcm_config is used, prepare_slave_config()
-callback might not be set. Check if this callback is set before using it.
+Microchip's SAMA7G5 embeds two PDMCs. The PDMCs can be used to connect 2x4
+PDM microphones.
 
-Fixes: fa654e085300 ("ASoC: dmaengine-pcm: Provide default config")
 Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 ---
 
 Changes in v2:
- - none
+ - set 'sound' as nodes' name
 
- sound/soc/soc-generic-dmaengine-pcm.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/arm/boot/dts/sama7g5.dtsi | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
-index 285441d6aeed..2ab2ddc1294d 100644
---- a/sound/soc/soc-generic-dmaengine-pcm.c
-+++ b/sound/soc/soc-generic-dmaengine-pcm.c
-@@ -86,10 +86,10 @@ static int dmaengine_pcm_hw_params(struct snd_soc_component *component,
+diff --git a/arch/arm/boot/dts/sama7g5.dtsi b/arch/arm/boot/dts/sama7g5.dtsi
+index eddcfbf4d223..70e86444194f 100644
+--- a/arch/arm/boot/dts/sama7g5.dtsi
++++ b/arch/arm/boot/dts/sama7g5.dtsi
+@@ -275,6 +275,30 @@ pwm: pwm@e1604000 {
+ 			status = "disabled";
+ 		};
  
- 	memset(&slave_config, 0, sizeof(slave_config));
- 
--	if (!pcm->config)
--		prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config;
--	else
-+	if (pcm->config && pcm->config->prepare_slave_config)
- 		prepare_slave_config = pcm->config->prepare_slave_config;
-+	else
-+		prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config;
- 
- 	if (prepare_slave_config) {
- 		int ret = prepare_slave_config(substream, params, &slave_config);
++		pdmc0: sound@e1608000 {
++			compatible = "microchip,sama7g5-pdmc";
++			reg = <0xe1608000 0x1000>;
++			interrupts = <GIC_SPI 68 IRQ_TYPE_LEVEL_HIGH>;
++			#sound-dai-cells = <0>;
++			dmas = <&dma0 AT91_XDMAC_DT_PERID(37)>;
++			dma-names = "rx";
++			clocks = <&pmc PMC_TYPE_PERIPHERAL 68>, <&pmc PMC_TYPE_GCK 68>;
++			clock-names = "pclk", "gclk";
++			status = "disabled";
++		};
++
++		pdmc1: sound@e160c000 {
++			compatible = "microchip,sama7g5-pdmc";
++			reg = <0xe160c000 0x1000>;
++			interrupts = <GIC_SPI 69 IRQ_TYPE_LEVEL_HIGH>;
++			#sound-dai-cells = <0>;
++			dmas = <&dma0 AT91_XDMAC_DT_PERID(38)>;
++			dma-names = "rx";
++			clocks = <&pmc PMC_TYPE_PERIPHERAL 69>, <&pmc PMC_TYPE_GCK 69>;
++			clock-names = "pclk", "gclk";
++			status = "disabled";
++		};
++
+ 		spdifrx: spdifrx@e1614000 {
+ 			#sound-dai-cells = <0>;
+ 			compatible = "microchip,sama7g5-spdifrx";
 -- 
 2.32.0
 
