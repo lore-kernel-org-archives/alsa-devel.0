@@ -4,73 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44909C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Mar 2022 18:13:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2EF26C433FE
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Mar 2022 18:13:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 95195174C;
-	Mon,  7 Mar 2022 19:12:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95195174C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8E621175D;
+	Mon,  7 Mar 2022 19:12:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E621175D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646676792;
-	bh=+swSm3wPEFZSVw9Cfp5+ZQJFB6mQEStIMYUvZ9tTVNk=;
+	s=default; t=1646676798;
+	bh=OdwpZhnkH3fsn24S2qyNFERuNq4To+pJrSgKfRredho=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MkehiUaSFibrZ8oaYMErELLjwupn83QcRwWkdcZ9v5kPjDaVVHUWztywax17pvyzN
-	 fU+f4Bp7x/j3SueHbfmL1+6hNA0grxd0FpqiU+yXwemitsn5SoDoFM/1BGLqlJ5Y+j
-	 v9Dhou7P2HrpE0J98ueBPUQufypmcFhC8cm3jLIE=
+	b=nIk86Hli/CkIsurIGS10zgYoa72P1aSgjWrrqB27hdMJ25zg9fKJGBWIvIMDCTW71
+	 Pzkk6zGVFRgetzevgqJPMNdcbh0+Hro4TgT8vZNhzLKbxjM9MEUxh0excR55AE3x8O
+	 AIJObkUBYwPLdo9v8k5usNz+SdKhjWdp4gIwNwJg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 11EA6F80526;
-	Mon,  7 Mar 2022 19:11:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6AE2FF8052E;
+	Mon,  7 Mar 2022 19:11:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 64BC3F80518; Mon,  7 Mar 2022 19:11:35 +0100 (CET)
+ id 53442F80529; Mon,  7 Mar 2022 19:11:38 +0100 (CET)
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E954AF80124
- for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2022 19:11:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E954AF80124
+ by alsa1.perex.cz (Postfix) with ESMTPS id B68C9F802DF
+ for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2022 19:11:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B68C9F802DF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="GWM7xj89"
+ header.b="hefbRIKn"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1646676689; x=1678212689;
+ t=1646676693; x=1678212693;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=+swSm3wPEFZSVw9Cfp5+ZQJFB6mQEStIMYUvZ9tTVNk=;
- b=GWM7xj89AgudCQRHxgtboNm+W+R0+M+4x6Ly/fFWH69AJ8eV8Xtc/E8S
- nTmqhsaS/oE0UMRyWMnAeJ7GxJe5yShwXItQOf/1SBhpnYs8BNBrVAnMM
- Zp683AfMyjIdeRuoEMKdbMfFpbvCwudTH18Yx1MPff0NmDtiNbM8wOIWF
- BrAUORuOcJZy5K84F0sXUQGZZVvKJqr0yE2NRQpumdp/YbQN6V15/KoLp
- lFn6kyv6E5dzrrU++kb9ur3qF03Rh1+x35xZ/fBoignIwpt143WfqM6yR
- Nj77Vdsq4WVJIfssDX9XtlrVMbednZv7iJ+wkKT1rt9w5aIj6ULpiz2Y0 g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10279"; a="254401311"
-X-IronPort-AV: E=Sophos;i="5.90,162,1643702400"; d="scan'208";a="254401311"
+ bh=OdwpZhnkH3fsn24S2qyNFERuNq4To+pJrSgKfRredho=;
+ b=hefbRIKnk9VkHGjLZx7nTI+Fmu7EaMJInqGFJ0Bo0L4hSX+bEU058Awe
+ twGeGXcbe7a0Fvenygq4LEpivdKD9RI7fL8iVWJKIlLmmdstLvcokCpCd
+ ZO1kl81SANqIOuq7IWuQyPb6iuP6uT5lwNhVPjjlzbkfnfeaDHbpKNMXo
+ YKUbdnuEfRzMex6fKQhQX2/UmZDnJLOZuzU4aYmAE/q8LGgAoaTLlK3QN
+ B7YKedV3a9QlI6+BiNYWYMAKCaj5+Ri1lbCbrAiyIxiRZe9eEmFrMNTS/
+ OBRvjQapnwWU2wKw5+tv/LZxxco0jbQBupsq4cx/hy0rHcDt91nvJUrUl A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10279"; a="254401321"
+X-IronPort-AV: E=Sophos;i="5.90,162,1643702400"; d="scan'208";a="254401321"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Mar 2022 10:11:25 -0800
-X-IronPort-AV: E=Sophos;i="5.90,162,1643702400"; d="scan'208";a="495146656"
+ 07 Mar 2022 10:11:27 -0800
+X-IronPort-AV: E=Sophos;i="5.90,162,1643702400"; d="scan'208";a="495146669"
 Received: from echun1-mobl.amr.corp.intel.com (HELO rsridh2-mobl1.localdomain)
  ([10.251.130.219])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Mar 2022 10:11:25 -0800
+ 07 Mar 2022 10:11:27 -0800
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 02/18] ASoC: SOF: simplify snd_sof_device_remove()
-Date: Mon,  7 Mar 2022 10:10:55 -0800
-Message-Id: <20220307181111.49392-3-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 08/18] ASoC: SOF: topology: Modify the get_token op for string
+ tokens
+Date: Mon,  7 Mar 2022 10:11:01 -0800
+Message-Id: <20220307181111.49392-9-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220307181111.49392-1-ranjani.sridharan@linux.intel.com>
 References: <20220307181111.49392-1-ranjani.sridharan@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, broonie@kernel.org,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
+Cc: tiwai@suse.de, Bard Liao <yung-chuan.liao@linux.intel.com>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ broonie@kernel.org,
+ =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,40 +89,63 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The commit "ASoC: SOF: core: Unregister machine driver before IPC and
-debugfs" moved the call to unregister the machine driver to be done
-before freeing the IPC. With this change, we can safely move the call to
-snd_sof_remove() inside the same if() block just above.
+Modify the get_token op for string type tokens to pass the string as the
+argument instead of a pointer to struct snd_soc_tplg_vendor_string_elem.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/core.c | 10 +---------
- 1 file changed, 1 insertion(+), 9 deletions(-)
+ sound/soc/sof/topology.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
-index 2a35d8ddf43e..95a845d26f6e 100644
---- a/sound/soc/sof/core.c
-+++ b/sound/soc/sof/core.c
-@@ -442,16 +442,8 @@ int snd_sof_device_remove(struct device *dev)
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index 7280e14c13bc..4ba46ea73c8a 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -507,28 +507,25 @@ static int get_token_uuid(void *elem, void *object, u32 offset)
  
- 		snd_sof_ipc_free(sdev);
- 		snd_sof_free_debug(sdev);
--	}
--
--	/*
--	 * Unregistering the machine driver results in unloading the topology.
--	 * Some widgets, ex: scheduler, attempt to power down the core they are
--	 * scheduled on, when they are unloaded. Therefore, the DSP must be
--	 * removed only after the topology has been unloaded.
--	 */
--	if (sdev->fw_state > SOF_FW_BOOT_NOT_STARTED)
- 		snd_sof_remove(sdev);
-+	}
+ static int get_token_comp_format(void *elem, void *object, u32 offset)
+ {
+-	struct snd_soc_tplg_vendor_string_elem *velem = elem;
+ 	u32 *val = (u32 *)((u8 *)object + offset);
  
- 	/* release firmware */
- 	snd_sof_fw_unload(sdev);
+-	*val = find_format(velem->string);
++	*val = find_format((const char *)elem);
+ 	return 0;
+ }
+ 
+ static int get_token_dai_type(void *elem, void *object, u32 offset)
+ {
+-	struct snd_soc_tplg_vendor_string_elem *velem = elem;
+ 	u32 *val = (u32 *)((u8 *)object + offset);
+ 
+-	*val = find_dai(velem->string);
++	*val = find_dai((const char *)elem);
+ 	return 0;
+ }
+ 
+ static int get_token_process_type(void *elem, void *object, u32 offset)
+ {
+-	struct snd_soc_tplg_vendor_string_elem *velem = elem;
+ 	u32 *val = (u32 *)((u8 *)object + offset);
+ 
+-	*val = find_process(velem->string);
++	*val = find_process((const char *)elem);
+ 	return 0;
+ }
+ 
+@@ -872,8 +869,7 @@ static int sof_parse_string_tokens(struct snd_soc_component *scomp,
+ 				continue;
+ 
+ 			/* matched - now load token */
+-			tokens[j].get_token(elem, object,
+-					    offset + tokens[j].offset);
++			tokens[j].get_token(elem->string, object, offset + tokens[j].offset);
+ 
+ 			found++;
+ 		}
 -- 
 2.25.1
 
