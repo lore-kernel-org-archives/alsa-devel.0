@@ -4,66 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7D16C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Mar 2022 20:43:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2AAFC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Mar 2022 20:43:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E845C1720;
-	Mon,  7 Mar 2022 21:42:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E845C1720
+	by alsa0.perex.cz (Postfix) with ESMTPS id 377FE1775;
+	Mon,  7 Mar 2022 21:42:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 377FE1775
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646685780;
-	bh=PgNLGlvhfPV7rDinWlfM7rjW5xU/fveG5kKm6pxlizU=;
+	s=default; t=1646685796;
+	bh=kfRKFupuLhzforhTOfYrOlnEcnMRt1cRf4Jr2UuaEzk=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=d++AY1zOpEf7cQxFgkalPHy/iaS9VePjKCzbX9+Sz9VG0zXsdLmPN/VuqyZzpxEcD
-	 3lJpvP9gI8nUAEyxSc44IJc/SKwXfIDNtmSt6zPa05dhJlhFwdc78akHcILzepn/Qf
-	 NsgO7PLkALQMGNrpFkRh0JxrgBVHtCfQB8C1QihA=
+	b=UqjXU5zIiK3QiJK/CoquitF5KKSmosVPAOeE8pjbiFP+5wdaGSbR6QGwKzJM459q6
+	 +r/vg+4ilFh+sFoPBAnt0njv0dRqn1QPV2QXVNT3jwM+hYPsrU5+k0OSdQms6hJ0HR
+	 752TIodxsim1MsQS8xP0MivvUirMcJSqAsOudwPs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6F95CF80549;
-	Mon,  7 Mar 2022 21:39:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 512F6F80553;
+	Mon,  7 Mar 2022 21:39:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6E7C2F80543; Mon,  7 Mar 2022 21:39:23 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id CA92DF80542; Mon,  7 Mar 2022 21:39:23 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 715D0F80534
+ by alsa1.perex.cz (Postfix) with ESMTPS id 43FFEF8053E
  for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2022 21:39:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 715D0F80534
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43FFEF8053E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="i8SLRtFG"
+ header.b="k9vaLGfp"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 2D5B4614C1;
- Mon,  7 Mar 2022 20:39:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 520DFC36AE2;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id B12E56151F;
  Mon,  7 Mar 2022 20:39:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51622C340E9;
+ Mon,  7 Mar 2022 20:39:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1646685560;
- bh=PgNLGlvhfPV7rDinWlfM7rjW5xU/fveG5kKm6pxlizU=;
+ s=k20201202; t=1646685558;
+ bh=kfRKFupuLhzforhTOfYrOlnEcnMRt1cRf4Jr2UuaEzk=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=i8SLRtFGjzRCDKkGrKwSku5p2JVXw5BczkH2J6M/8nCssqQClooWWlzhqIozGV5Me
- LOWviFDFS0c4LhCMBEoq8qAxUqZSrkHG2YcWHBVfSH6/ipdpWgfDFqbSz1OynvwP9f
- g8l7uBuvPtcE11VBawavCDMIahqNjYUNpfvvyYIK81BoPyzCOQOVhiMl3y4PCjAwDW
- WlF0kC6N0SRHjajUZOmR3MdxvTn4u2eGfpWfP4ackEbfOFhCKNaQnVwZEXhI6eN2Tt
- NN64ecEtC4ujaXQV/S49bKFklCyxY44BHd2SHsoClnAQqZbthKppcKXQw38KDLu2/5
- gkq31V2Z7M6mQ==
+ b=k9vaLGfp6eL7dBGmy0wsTzzeZk52nprOXcKgBXka3S6jh7jC51F85NRzpEf9BQhnb
+ cjFsfy0Q28gZfGYLPAGeaU+TJQH+d5gJWZB8yE9TyBdKL3NY49ZicG0j1bv7CcI9SF
+ wgHoh6i+vWovxkX/g9Iu08Jcmv7bFoWPLBelLLEhYcg9XPV7POwWLdVXx4lgQu0J+E
+ PAsEyMc9qxJW7wC4eI/hY6OwbjhQBtxKEUEG+uvUsf7FN2CyvFLDJvMQ8qMxfKtSRA
+ we8tX9pvjFApmaSMIouM3toICelnY3tAxQftCR+8ZTc/u0GIopXVvppghy/GCF7SF3
+ il6YO4L+FmTHA==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20220304204532.54675-1-pierre-louis.bossart@linux.intel.com>
-References: <20220304204532.54675-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/3] ASoC: Intel: boards: cleanups for 5.18
-Message-Id: <164668555906.3137316.317655084656581414.b4-ty@kernel.org>
-Date: Mon, 07 Mar 2022 20:39:19 +0000
+To: Liam Girdwood <lgirdwood@gmail.com>,
+ Dan Carpenter <dan.carpenter@oracle.com>, Meng Tang <tangmeng@uniontech.com>
+In-Reply-To: <20220304131449.GC28739@kili>
+References: <20220304131449.GC28739@kili>
+Subject: Re: [PATCH 1/3] ASoC: amd: acp: Fix signedness bug in
+ renoir_audio_probe()
+Message-Id: <164668555706.3137316.278603309577942240.b4-ty@kernel.org>
+Date: Mon, 07 Mar 2022 20:39:17 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,19 +82,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 4 Mar 2022 14:45:29 -0600, Pierre-Louis Bossart wrote:
-> Updates to clean-up the GPIOLIB dependency and a quirk for HP
-> SoundWire devices.
+On Fri, 4 Mar 2022 16:14:49 +0300, Dan Carpenter wrote:
+> The "adata->i2s_irq" is unsigned so this error handling will not
+> work.
 > 
-> Anthony I Gilea (1):
->   ASoC: Intel: sof_sdw: fix quirks for 2022 HP Spectre x360 13"
 > 
-> Pierre-Louis Bossart (2):
->   ASoC: Intel: boards: remove explicit dependency on GPIOLIB when DMIC
->     is used"
->   ASoC: Intel: boards: add GPIOLIB dependency where missed
-> 
-> [...]
 
 Applied to
 
@@ -99,12 +94,12 @@ Applied to
 
 Thanks!
 
-[1/3] ASoC: Intel: boards: remove explicit dependency on GPIOLIB when DMIC is used"
-      commit: 32666b866f55a224d2f07f83594fcf37a922b6c9
-[2/3] ASoC: Intel: boards: add GPIOLIB dependency where missed
-      commit: bdfc385948bf8e73629b3580941c9d810711713b
-[3/3] ASoC: Intel: sof_sdw: fix quirks for 2022 HP Spectre x360 13"
-      commit: ce73ef6ec67104d1fcc4c5911d77ce83288a0998
+[1/3] ASoC: amd: acp: Fix signedness bug in renoir_audio_probe()
+      commit: 899a9a7f624b5a9d100c9ac6b3f0960981f0e4c5
+[2/4] ASoC: amd: pcm-dma: Fix signedness bug in acp_pdm_audio_probe()
+      commit: 00925272f166db31fed73f3c00c151eb5f7ce1d8
+[4/4] ASoC: amd: pcm-dma: Fix signedness bug in acp3x_audio_probe()
+      commit: 9a33f5632ca573e512c49fa46cc7131cbc83d4c9
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
