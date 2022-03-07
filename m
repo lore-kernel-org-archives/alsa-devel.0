@@ -4,67 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DD69C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Mar 2022 20:41:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32435C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Mar 2022 20:42:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 988301774;
-	Mon,  7 Mar 2022 21:41:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 988301774
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7490C17DB;
+	Mon,  7 Mar 2022 21:41:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7490C17DB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646685711;
-	bh=y3xTSCOAcDKIY8/TSo/4DU7Lm7NXIZjNrsfIiWP4fcQ=;
+	s=default; t=1646685729;
+	bh=RH4jSxBsE3z8+OBS4M+nam095nn+1JwbTE+qnLWrtBc=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HtRdJVazxFEtppvcb+rYjgRfcW7hXTqOU/0W/+Mree0tSjDP9iDw5cyNHs7v4yhiI
-	 JH69FMbC0dRLzbe519GvF6E5yx3gpiQlf2LZkjcahtePzTzkQWYz2tF09owfF+6cEp
-	 TS8YaMDR2YRn9dHCV32f5KMFcASqYXL2l05bQ9xY=
+	b=hBQpDnVLDJPQa0qx+oNvNeM7WB0SfJ4aPqts6Myfhot1K5hhPAMuG0AlQZTaDxJxs
+	 OK/cKGU42jQL/8jsBeB7SwNonktC89rx75NrOmD21lP4t2mq5lp2Qnah6dZycSqVNZ
+	 nj8y+ZkGy9UIix9A2V3PFSQ3d5gX/e8vTplDtY8w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 278C1F80527;
-	Mon,  7 Mar 2022 21:39:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C53AFF80537;
+	Mon,  7 Mar 2022 21:39:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7B6D5F80524; Mon,  7 Mar 2022 21:39:15 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 68CD2F80524; Mon,  7 Mar 2022 21:39:17 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8F98AF8051E
- for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2022 21:39:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F98AF8051E
+ by alsa1.perex.cz (Postfix) with ESMTPS id F0640F8051D
+ for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2022 21:39:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0640F8051D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="uNAzrzla"
+ header.b="kgSbKeo/"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 1C65DB81719;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id D4C3D614C1;
+ Mon,  7 Mar 2022 20:39:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60646C340E9;
  Mon,  7 Mar 2022 20:39:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A5B7C340EF;
- Mon,  7 Mar 2022 20:39:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1646685550;
- bh=y3xTSCOAcDKIY8/TSo/4DU7Lm7NXIZjNrsfIiWP4fcQ=;
+ s=k20201202; t=1646685553;
+ bh=RH4jSxBsE3z8+OBS4M+nam095nn+1JwbTE+qnLWrtBc=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=uNAzrzlaVuyW8l2r13Ja+vlzcJJsmeJf/xihcqojGkyG+IUB+eV7tsB5MXlVIyGK1
- ZfXZLiiCjZucWolj7Hz/ZPXnrlLNGN5TU62kX0KnMZZjmt9rwa1IgOzti7Sv8y5bF2
- e7yxT0M1CdLCb8zeu+FifurlaXkomVsWv7YaDK/lmm/nz3Yk2SNCgfagV/yIExoPvn
- FgwkFfvBTjo2FNf5faaR5R5xrgtiFZrimq3zywDZSQiHUEZEzmCj/l3wXN8v9KHkRi
- /c4nH99RslKJOvrbqasVsiO5+mxdRIljkhNqmCKA8NsH2AqDlz0JMeBdcAD8L/fiAx
- 3pZ5PpxbpQRrA==
+ b=kgSbKeo/a+DcIvwfAfn/WAXKPVU7RWhdibA3C9HDTylBQuI5HDFF3Xm3EuqrRnBOJ
+ BiV3kS+AG/5K2mGOhAb98A71frTqV8V6fUNkgyEDySXeg1Db78z0iptE3qEsHZz6xI
+ n79K9K6BITSgyodXCtsZY2NlLi6azu17wd3+bDCJuOghwqL7Si/c2Shw7ZJYPnX2TU
+ JJi6uvixgNCgvOU8SFbRyDOt4cAHvCyLzehN2TJjeZ3pYBhZSZFawWTg+rfuTvu1Ll
+ hqg4S/0cwTtAlMG0aGRG6Z7fxLFxmOmWTDdkfvknkK/7MdhpR53RzfAt92aGjGWifS
+ bgBlhCsJUS4kQ==
 From: Mark Brown <broonie@kernel.org>
-To: Simon Trimmer <simont@opensource.cirrus.com>
-In-Reply-To: <20220303155016.122125-1-simont@opensource.cirrus.com>
-References: <20220303155016.122125-1-simont@opensource.cirrus.com>
-Subject: Re: [PATCH] ASoC: wm_adsp: Expand firmware loading search options
-Message-Id: <164668554896.3137316.16631599995013598455.b4-ty@kernel.org>
-Date: Mon, 07 Mar 2022 20:39:08 +0000
+To: Stephan Gerhold <stephan@gerhold.net>
+In-Reply-To: <20220304102452.26856-1-stephan@gerhold.net>
+References: <20220304102452.26856-1-stephan@gerhold.net>
+Subject: Re: [PATCH v2 0/2] ASoC: codecs: Add Awinic AW8738 audio amplifier
+ driver
+Message-Id: <164668555106.3137316.5314190084666294576.b4-ty@kernel.org>
+Date: Mon, 07 Mar 2022 20:39:11 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ ~postmarketos/upstreaming@lists.sr.ht,
+ Jonathan Albrieux <jonathan.albrieux@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,14 +82,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 3 Mar 2022 15:50:16 +0000, Simon Trimmer wrote:
-> The parts supported by this driver can have product-specific
-> firmware and tunings files. Typically these have been used on
-> embedded systems where the manufacturer is responsible for
-> installing the correct product-specific firmware files into
-> /lib/firmware. However, the linux-firmware repository places all
-> available firmwares into /lib/firmware and it is up to the driver to
-> select the correct product-specific firmware from that directory.
+On Fri, 4 Mar 2022 11:24:50 +0100, Stephan Gerhold wrote:
+> This series adds a simple driver and DT schema for the Awinic AW8738
+> audio amplifier. It's fairly simple - the main difference to
+> simple-amplifier is that there is a "one-wire pulse control" that
+> allows configuring the amplifier to one of a few pre-defined modes.
+> This can be used to configure the speaker-guard function (primarily
+> the power limit for the amplifier).
 > 
 > [...]
 
@@ -97,8 +98,10 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: wm_adsp: Expand firmware loading search options
-      commit: b6b62d942bbc4d926bcf3799ea3bcaeb105fd04f
+[1/2] ASoC: dt-bindings: Add schema for "awinic,aw8738"
+      commit: b3284430615c27ca441967f99fbde957b434e092
+[2/2] ASoC: codecs: Add Awinic AW8738 audio amplifier driver
+      commit: fc14fac286a05d36202f8114d00a9935ca2e0756
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
