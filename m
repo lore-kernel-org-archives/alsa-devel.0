@@ -4,69 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2AAFC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Mar 2022 20:43:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00E42C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Mar 2022 20:43:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 377FE1775;
-	Mon,  7 Mar 2022 21:42:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 377FE1775
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1711F1774;
+	Mon,  7 Mar 2022 21:42:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1711F1774
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646685796;
-	bh=kfRKFupuLhzforhTOfYrOlnEcnMRt1cRf4Jr2UuaEzk=;
+	s=default; t=1646685814;
+	bh=djKpErc6UQb7reTdBr8nR5bnnVR0FP+c+KKKeCJE7HQ=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UqjXU5zIiK3QiJK/CoquitF5KKSmosVPAOeE8pjbiFP+5wdaGSbR6QGwKzJM459q6
-	 +r/vg+4ilFh+sFoPBAnt0njv0dRqn1QPV2QXVNT3jwM+hYPsrU5+k0OSdQms6hJ0HR
-	 752TIodxsim1MsQS8xP0MivvUirMcJSqAsOudwPs=
+	b=bZyfeenLaqF3b+93oDcnANP4wULPbHDMLGwL/RtElc5P40QsS59V4pFNOaAkuCC2B
+	 yoR6QbwBVfe9aLyOoBokgGVxrDTnCU3To0H44Q2pUaDgB9kVzgK8mxBq84cPtD1lHm
+	 DkJ+3G2x+6rdirmoNhMEzLyYoSVWh7j7WwAQZzWc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 512F6F80553;
-	Mon,  7 Mar 2022 21:39:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 416F0F8055A;
+	Mon,  7 Mar 2022 21:39:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CA92DF80542; Mon,  7 Mar 2022 21:39:23 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 68EEFF80549; Mon,  7 Mar 2022 21:39:25 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 43FFEF8053E
- for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2022 21:39:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43FFEF8053E
+ by alsa1.perex.cz (Postfix) with ESMTPS id E86DEF80534
+ for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2022 21:39:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E86DEF80534
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="k9vaLGfp"
+ header.b="LwD2P4a0"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id B12E56151F;
- Mon,  7 Mar 2022 20:39:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51622C340E9;
- Mon,  7 Mar 2022 20:39:17 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 6BA55B81706;
+ Mon,  7 Mar 2022 20:39:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B696C340EB;
+ Mon,  7 Mar 2022 20:39:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1646685558;
- bh=kfRKFupuLhzforhTOfYrOlnEcnMRt1cRf4Jr2UuaEzk=;
+ s=k20201202; t=1646685561;
+ bh=djKpErc6UQb7reTdBr8nR5bnnVR0FP+c+KKKeCJE7HQ=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=k9vaLGfp6eL7dBGmy0wsTzzeZk52nprOXcKgBXka3S6jh7jC51F85NRzpEf9BQhnb
- cjFsfy0Q28gZfGYLPAGeaU+TJQH+d5gJWZB8yE9TyBdKL3NY49ZicG0j1bv7CcI9SF
- wgHoh6i+vWovxkX/g9Iu08Jcmv7bFoWPLBelLLEhYcg9XPV7POwWLdVXx4lgQu0J+E
- PAsEyMc9qxJW7wC4eI/hY6OwbjhQBtxKEUEG+uvUsf7FN2CyvFLDJvMQ8qMxfKtSRA
- we8tX9pvjFApmaSMIouM3toICelnY3tAxQftCR+8ZTc/u0GIopXVvppghy/GCF7SF3
- il6YO4L+FmTHA==
+ b=LwD2P4a0dvMOx/gRI2qQAHmtyt47pmRnVmYh2cJe2iZ+c3VaaZH80morks5M8Lb79
+ bofJQO/MqrnPhnrHc8u37B/6hl9VIRGfS1MYr8Km5YNry6u0fKT719kzvSOOCeQc7K
+ QqNGjcX1JcHdrt0bNhog0h86pHiXdVbm+NdXhxTM5HqU69XoH4lfUnAx+FXmk/PRF4
+ j9oAjToxSkV7GUoWyJxgVs37fu/JMBlq14nvNo+NBzL1UL3qGg2U5NJ2BeNJywL6Gk
+ chSTL/J90bTWcvclIdGVncYl+li/BdwShPYhH5L6mL7oBJrzWnGaFUCoQezgl/ae7G
+ Mw2VWgmK86tNQ==
 From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>,
- Dan Carpenter <dan.carpenter@oracle.com>, Meng Tang <tangmeng@uniontech.com>
-In-Reply-To: <20220304131449.GC28739@kili>
-References: <20220304131449.GC28739@kili>
-Subject: Re: [PATCH 1/3] ASoC: amd: acp: Fix signedness bug in
- renoir_audio_probe()
-Message-Id: <164668555706.3137316.278603309577942240.b4-ty@kernel.org>
-Date: Mon, 07 Mar 2022 20:39:17 +0000
+To: alsa-devel@alsa-project.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20220304205733.62233-1-pierre-louis.bossart@linux.intel.com>
+References: <20220304205733.62233-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 00/10] ASoC: SOF: updates for 5.18
+Message-Id: <164668556017.3137316.12327982803432015261.b4-ty@kernel.org>
+Date: Mon, 07 Mar 2022 20:39:20 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
+Cc: tiwai@suse.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,11 +79,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 4 Mar 2022 16:14:49 +0300, Dan Carpenter wrote:
-> The "adata->i2s_irq" is unsigned so this error handling will not
-> work.
+On Fri, 4 Mar 2022 14:57:23 -0600, Pierre-Louis Bossart wrote:
+> A couple of updates for Intel and AMD hardware, along with minor
+> cleanups
 > 
+> Ajit Kumar Pandey (4):
+>   ASoC: SOF: amd: Flush cache after ATU_BASE_ADDR_GRP register update
+>   ASoC: SOF: amd: Use semaphore register to synchronize ipc's irq
+>   ASoC: SOF: amd: Move group register configuration to acp-loader
+>   ASoC: SOF: amd: Increase ACP_HW_SEM_RETRY_COUNT value
 > 
+> [...]
 
 Applied to
 
@@ -94,12 +97,26 @@ Applied to
 
 Thanks!
 
-[1/3] ASoC: amd: acp: Fix signedness bug in renoir_audio_probe()
-      commit: 899a9a7f624b5a9d100c9ac6b3f0960981f0e4c5
-[2/4] ASoC: amd: pcm-dma: Fix signedness bug in acp_pdm_audio_probe()
-      commit: 00925272f166db31fed73f3c00c151eb5f7ce1d8
-[4/4] ASoC: amd: pcm-dma: Fix signedness bug in acp3x_audio_probe()
-      commit: 9a33f5632ca573e512c49fa46cc7131cbc83d4c9
+[01/10] ASoC: SOF: Intel: pci-tgl: add RPL-S support
+        commit: d66c57c5ff8a24859fe7506d290d0b705c2576c0
+[02/10] ASoC: SOF: amd: acp-pcm: Take buffer information directly from runtime
+        commit: edca0623f6d7928b312780d4e885258ca9e562fe
+[03/10] ASoC: SOF: amd: Do not set ipc_pcm_params ops as it is optional
+        commit: 9c2611b2a620f90219f85e4b40bbe3e26ab81e2c
+[04/10] ASoC: SOF: amd: Flush cache after ATU_BASE_ADDR_GRP register update
+        commit: b7485ec850591ad62fde0526bd7fdc56cdc04efd
+[05/10] ASoC: SOF: amd: Use semaphore register to synchronize ipc's irq
+        commit: dc0d4ed26dd2166b47c29d6a9829ac798e62a0fc
+[06/10] ASoC: SOF: amd: Move group register configuration to acp-loader
+        commit: 7cf467ac9cf33f0975095f080a79f6ec6d9be5b6
+[07/10] ASoC: SOF: amd: Increase ACP_HW_SEM_RETRY_COUNT value
+        commit: 8e85cab858562734b9d323f392ba9956bbdc133c
+[08/10] ASoC: SOF: fix 32 signed bit overflow
+        commit: 4aaa06b227f737da5c10feb93a6b203920d5a1e7
+[09/10] ASoC: SOF: debug: clarify operator precedence
+        commit: 9188812539d1d9a13dac690c95ec657259859ba4
+[10/10] ASoC: SOF: Intel: hda: clarify operator precedence
+        commit: 0f33105bb2f77c870542d5bc08cf94b8c4e26f36
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
