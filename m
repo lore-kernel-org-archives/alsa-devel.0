@@ -4,69 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9485C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Mar 2022 20:41:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DD69C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Mar 2022 20:41:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2FC461785;
-	Mon,  7 Mar 2022 21:40:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2FC461785
+	by alsa0.perex.cz (Postfix) with ESMTPS id 988301774;
+	Mon,  7 Mar 2022 21:41:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 988301774
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646685694;
-	bh=2AJXQfaXAVGMfsXh7g2oy6EAKDefCtmzA26vSc+eQ2E=;
+	s=default; t=1646685711;
+	bh=y3xTSCOAcDKIY8/TSo/4DU7Lm7NXIZjNrsfIiWP4fcQ=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=u5SwE8X9AUUbbWpJw9K2jrvVW5NR96mjmLnaqyN+OItPzXzsIK5lpJtfIFn0aNyUo
-	 7ZP27GpGjvy/jAU/xHdRN2YRZbQ7V2xtAv4P+X1rJApsvO2RXyhjGFrtZTOoemeLvM
-	 m7trHY38fBHruJmaYMwu0fDBr17r2pCbs/2uI43Q=
+	b=HtRdJVazxFEtppvcb+rYjgRfcW7hXTqOU/0W/+Mree0tSjDP9iDw5cyNHs7v4yhiI
+	 JH69FMbC0dRLzbe519GvF6E5yx3gpiQlf2LZkjcahtePzTzkQWYz2tF09owfF+6cEp
+	 TS8YaMDR2YRn9dHCV32f5KMFcASqYXL2l05bQ9xY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9EB3DF80520;
-	Mon,  7 Mar 2022 21:39:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 278C1F80527;
+	Mon,  7 Mar 2022 21:39:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D5FACF80525; Mon,  7 Mar 2022 21:39:14 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 7B6D5F80524; Mon,  7 Mar 2022 21:39:15 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1D563F8051D
- for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2022 21:39:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D563F8051D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8F98AF8051E
+ for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2022 21:39:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F98AF8051E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="dpuYYw1i"
+ header.b="uNAzrzla"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 77F85B8170E;
+ by ams.source.kernel.org (Postfix) with ESMTPS id 1C65DB81719;
+ Mon,  7 Mar 2022 20:39:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A5B7C340EF;
  Mon,  7 Mar 2022 20:39:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B852C340FF;
- Mon,  7 Mar 2022 20:39:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1646685548;
- bh=2AJXQfaXAVGMfsXh7g2oy6EAKDefCtmzA26vSc+eQ2E=;
+ s=k20201202; t=1646685550;
+ bh=y3xTSCOAcDKIY8/TSo/4DU7Lm7NXIZjNrsfIiWP4fcQ=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=dpuYYw1i4ooZDW0rFRlF7JnE6b/MvLRIK6HG6LsUQ1FvxFdwzOXmCi8mB4FRhZd/b
- 44CiaGrvcl273QzJilYHOJPErc+iWys3knkYpuoXZ4JaMqMyJyM8twGOQtgm+He+dx
- EeU57aROywzhEu2YrOiWMOnGHQjQs+g2rDYPiAfKG0RawHqUI2mpu9cqxMlSbANswh
- 81ebZrZ4OYNOyMvbIVwzcPDtpveoPaJ985h9NGgUtYQM9eLDgnIGM43r9KdTd2kp+m
- fmbtOgqdwejdVpsSXM2onxr2j+lYppHU+JOB1WKD0yrsiUHNMiwnV+5tqQ5xL2qp6U
- Ec5CewIrT2hFg==
+ b=uNAzrzlaVuyW8l2r13Ja+vlzcJJsmeJf/xihcqojGkyG+IUB+eV7tsB5MXlVIyGK1
+ ZfXZLiiCjZucWolj7Hz/ZPXnrlLNGN5TU62kX0KnMZZjmt9rwa1IgOzti7Sv8y5bF2
+ e7yxT0M1CdLCb8zeu+FifurlaXkomVsWv7YaDK/lmm/nz3Yk2SNCgfagV/yIExoPvn
+ FgwkFfvBTjo2FNf5faaR5R5xrgtiFZrimq3zywDZSQiHUEZEzmCj/l3wXN8v9KHkRi
+ /c4nH99RslKJOvrbqasVsiO5+mxdRIljkhNqmCKA8NsH2AqDlz0JMeBdcAD8L/fiAx
+ 3pZ5PpxbpQRrA==
 From: Mark Brown <broonie@kernel.org>
-To: Jiasheng Jiang <jiasheng@iscas.ac.cn>, kuninori.morimoto.gx@renesas.com
-In-Reply-To: <20220302062844.46869-1-jiasheng@iscas.ac.cn>
-References: <20220302062844.46869-1-jiasheng@iscas.ac.cn>
-Subject: Re: [PATCH v3] ASoC: fsi: Add check for clk_enable
-Message-Id: <164668554489.3137316.16865303001337424021.b4-ty@kernel.org>
-Date: Mon, 07 Mar 2022 20:39:04 +0000
+To: Simon Trimmer <simont@opensource.cirrus.com>
+In-Reply-To: <20220303155016.122125-1-simont@opensource.cirrus.com>
+References: <20220303155016.122125-1-simont@opensource.cirrus.com>
+Subject: Re: [PATCH] ASoC: wm_adsp: Expand firmware loading search options
+Message-Id: <164668554896.3137316.16631599995013598455.b4-ty@kernel.org>
+Date: Mon, 07 Mar 2022 20:39:08 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: songliubraving@fb.com, daniel@iogearbox.net, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, tiwai@suse.com, john.fastabend@gmail.com,
- lgirdwood@gmail.com, ast@kernel.org, andrii@kernel.org, bpf@vger.kernel.org,
- netdev@vger.kernel.org, kpsingh@kernel.org, yhs@fb.com, f.suligoi@asem.it,
- kafai@fb.com
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,12 +80,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 2 Mar 2022 14:28:44 +0800, Jiasheng Jiang wrote:
-> As the potential failure of the clk_enable(),
-> it should be better to check it and return error
-> if fails.
+On Thu, 3 Mar 2022 15:50:16 +0000, Simon Trimmer wrote:
+> The parts supported by this driver can have product-specific
+> firmware and tunings files. Typically these have been used on
+> embedded systems where the manufacturer is responsible for
+> installing the correct product-specific firmware files into
+> /lib/firmware. However, the linux-firmware repository places all
+> available firmwares into /lib/firmware and it is up to the driver to
+> select the correct product-specific firmware from that directory.
 > 
-> 
+> [...]
 
 Applied to
 
@@ -95,8 +97,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: fsi: Add check for clk_enable
-      commit: 405afed8a728f23cfaa02f75bbc8bdd6b7322123
+[1/1] ASoC: wm_adsp: Expand firmware loading search options
+      commit: b6b62d942bbc4d926bcf3799ea3bcaeb105fd04f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
