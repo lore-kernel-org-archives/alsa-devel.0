@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CDCE9C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 19:31:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7704C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 19:31:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 02E831878;
-	Tue,  8 Mar 2022 20:30:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 02E831878
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3D104189B;
+	Tue,  8 Mar 2022 20:30:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D104189B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646767892;
-	bh=95XKRGm6/kKmQe/wqP6iZkA3xkm1a2LczjRX2vk/TUU=;
+	s=default; t=1646767909;
+	bh=8zIQC6m/5CEOfVNhv5FzEK39VPQUjxTftYka9j2qs5c=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sdTVJmCHGS6Eei6krtpPNuW+Rnj8tLnhg7rdRlSfcIjcdxpMqVx/r6Sa3AXJ+fEmC
-	 DQeI5oaP7z9C+PDjNmVe40W3u1QlsZ5zrZEP45rP0T+dtyEDW0c5GNjT1tL6P2k1sP
-	 xYqw8pXZBTTBfLdJI7qFpz1FFbVRsy2vfR2Z84fI=
+	b=Hq10G1I6F3GXRm7S+s3kWEpUJ5MUjGHqaF5WUttKI350EjZ2AP0iiIfGc1jXnlEUD
+	 nc2wLRv8Ho7WTStTX56bxKPtfwtZ318q1jOxeC2t7/8V+TnYfNBsPOAKbSh+J/8zA8
+	 MGjV6Sbz5XeHnV2MyfO1vl3KC7B33KyCTVw6kwVo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 279E9F80564;
+	by alsa1.perex.cz (Postfix) with ESMTP id 95A69F8056F;
 	Tue,  8 Mar 2022 20:27:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 015FEF80552; Tue,  8 Mar 2022 20:27:01 +0100 (CET)
+ id DB281F80517; Tue,  8 Mar 2022 20:27:02 +0100 (CET)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DFD08F80517
- for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2022 20:26:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DFD08F80517
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9B7A1F80520
+ for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2022 20:26:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B7A1F80520
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="QVCve4uA"
+ header.b="iMh2oXYB"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1646767609; x=1678303609;
+ t=1646767612; x=1678303612;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=95XKRGm6/kKmQe/wqP6iZkA3xkm1a2LczjRX2vk/TUU=;
- b=QVCve4uAbXKL8gI+7JCCA8Nu14CHZO1quPAvOoSe5DjqcK7ZRbcpqNou
- hECGMJv7B8OHRStnFi1o7JNIreQu3irGinvI/ueKqj5A7+g2I9xzsv02v
- w7WqcmbIzF5OmBgHcfERrjFxB6eH3H9H0VXN05PW120xRIYEDgTRmTNUb
- z0JMTSHuRdaW55WcPUrBWwHd6xpfvjIFkxiVbszbN44HsQEtcjOcQqjlj
- HiPagWq0+JVt5/GZwXbfRAdX5YWT48QvYGCWtw9NtRBOvGJPC6U6F0kbq
- SBDbn++6q8Zyeapg4q2MDSRD/rTRncZ/On32BvJmoPSZruIO6GB9bjkI+ A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10280"; a="252363713"
-X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="252363713"
+ bh=8zIQC6m/5CEOfVNhv5FzEK39VPQUjxTftYka9j2qs5c=;
+ b=iMh2oXYB/V+urMDhDkYb2cO8sxQMzmlY34u375La6VawhEcCL3fFELj5
+ 8a2bf1VJDlfhM3IzBO+OUYq+EZEa0jFIaw/M2I82bfxN2ml5fFOgJ9La2
+ MdmngN/v+kAn6EXoIWDFOsVxr08c5J3r/i+633fGD70+SH7ZY3ZQ3FMWr
+ SQwS5I6zN9IzhxLOxKaJKeLDvEgwl8wSpis4cg1jjuiE+HfSYt5fU7+WX
+ fGoaLGApRCCniLQ3FyU0EpHIc5uTLGx+E6/shoFNwXjZlIKz0atobyvPZ
+ T3TdaPeAIuQ8vTZVgy1VJKMs+WyJHgLR2L3gjfH1sCAg2xAw/Y+ymjEET Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10280"; a="252363734"
+X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="252363734"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Mar 2022 11:26:46 -0800
-X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="495573965"
+ 08 Mar 2022 11:26:49 -0800
+X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="495573981"
 Received: from jhaskins-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.209.53.149])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Mar 2022 11:26:45 -0800
+ 08 Mar 2022 11:26:48 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 10/20] ASoC: Intel: soc-acpi: add ESSX8336 support on Cannon
- Lake machines
-Date: Tue,  8 Mar 2022 13:26:00 -0600
-Message-Id: <20220308192610.392950-11-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 14/20] ASoC: Intel: sof_es8336: use NHLT information to set
+ dmic and SSP
+Date: Tue,  8 Mar 2022 13:26:04 -0600
+Message-Id: <20220308192610.392950-15-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220308192610.392950-1-pierre-louis.bossart@linux.intel.com>
 References: <20220308192610.392950-1-pierre-louis.bossart@linux.intel.com>
@@ -91,50 +91,117 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Nikolai Kostrigin <nickel@altlinux.org>
+Since we see a proliferation of devices with various configurations,
+we want to automatically set the DMIC and SSP information. This patch
+relies on the information extracted from NHLT and partially reverts
+existing DMI quirks added by commit a164137ce91a ("ASoC: Intel: add
+machine driver for SOF+ES8336")
 
-Add the support for all ES83x6 devices
+Note that NHLT can report multiple SSPs, choosing from the
+ssp_link_mask in an MSB-first manner was found experimentally to work
+fine.
 
-Signed-off-by: Nikolai Kostrigin <nickel@altlinux.org>
+The only thing that cannot be detected is the GPIO type, and users may
+want to use the quirk override parameter if the 'wrong' solution is
+provided.
+
+Tested-by: Mauro Carvalho Chehab <mchehab@kernel.org>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/intel/common/soc-acpi-intel-cnl-match.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ sound/soc/intel/boards/sof_es8336.c | 56 +++++++++++++++++++++--------
+ 1 file changed, 41 insertions(+), 15 deletions(-)
 
-diff --git a/sound/soc/intel/common/soc-acpi-intel-cnl-match.c b/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
-index 8d3e8c3b589b..3df89e4511da 100644
---- a/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
-@@ -11,6 +11,11 @@
- #include "../skylake/skl.h"
- #include "soc-acpi-intel-sdw-mockup-match.h"
+diff --git a/sound/soc/intel/boards/sof_es8336.c b/sound/soc/intel/boards/sof_es8336.c
+index 3376bd360a03..1a8680470577 100644
+--- a/sound/soc/intel/boards/sof_es8336.c
++++ b/sound/soc/intel/boards/sof_es8336.c
+@@ -228,24 +228,25 @@ static int sof_es8336_quirk_cb(const struct dmi_system_id *id)
+ 	return 1;
+ }
  
-+static const struct snd_soc_acpi_codecs essx_83x6 = {
-+	.num_codecs = 3,
-+	.codecs = { "ESSX8316", "ESSX8326", "ESSX8336"},
-+};
-+
- static struct skl_machine_pdata cnl_pdata = {
- 	.use_tplg_pcm = true,
- };
-@@ -23,6 +28,15 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_cnl_machines[] = {
- 		.pdata = &cnl_pdata,
- 		.sof_tplg_filename = "sof-cnl-rt274.tplg",
++/*
++ * this table should only be used to add GPIO or jack-detection quirks
++ * that cannot be detected from ACPI tables. The SSP and DMIC
++ * information are providing by the platform driver and are aligned
++ * with the topology used.
++ *
++ * If the GPIO support is missing, the quirk parameter can be used to
++ * enable speakers. In that case it's recommended to keep the SSP and DMIC
++ * information consistent, overriding the SSP and DMIC can only be done
++ * if the topology file is modified as well.
++ */
+ static const struct dmi_system_id sof_es8336_quirk_table[] = {
+-	{
+-		.callback = sof_es8336_quirk_cb,
+-		.matches = {
+-			DMI_MATCH(DMI_SYS_VENDOR, "CHUWI Innovation And Technology"),
+-			DMI_MATCH(DMI_BOARD_NAME, "Hi10 X"),
+-		},
+-		.driver_data = (void *)SOF_ES8336_SSP_CODEC(2)
+-	},
+ 	{
+ 		.callback = sof_es8336_quirk_cb,
+ 		.matches = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "IP3 tech"),
+ 			DMI_MATCH(DMI_BOARD_NAME, "WN1"),
+ 		},
+-		.driver_data = (void *)(SOF_ES8336_SSP_CODEC(0) |
+-					SOF_ES8336_TGL_GPIO_QUIRK |
+-					SOF_ES8336_ENABLE_DMIC)
++		.driver_data = (void *)(SOF_ES8336_TGL_GPIO_QUIRK)
  	},
-+	{
-+		.comp_ids = &essx_83x6,
-+		.drv_name = "sof-essx8336",
-+		/* cnl and cml are identical */
-+		.sof_tplg_filename = "sof-cml-es8336", /* the tplg suffix is added at run time */
-+		.tplg_quirk_mask = SND_SOC_ACPI_TPLG_INTEL_SSP_NUMBER |
-+					SND_SOC_ACPI_TPLG_INTEL_SSP_MSB |
-+					SND_SOC_ACPI_TPLG_INTEL_DMIC_NUMBER,
-+	},
- 	{},
+ 	{}
  };
- EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_cnl_machines);
+@@ -470,11 +471,33 @@ static int sof_es8336_probe(struct platform_device *pdev)
+ 	card = &sof_es8336_card;
+ 	card->dev = dev;
+ 
+-	if (!dmi_check_system(sof_es8336_quirk_table))
+-		quirk = SOF_ES8336_SSP_CODEC(2);
++	/* check GPIO DMI quirks */
++	dmi_check_system(sof_es8336_quirk_table);
+ 
+-	if (quirk & SOF_ES8336_ENABLE_DMIC)
+-		dmic_be_num = 2;
++	if (!mach->mach_params.i2s_link_mask) {
++		dev_warn(dev, "No I2S link information provided, using SSP0. This may need to be modified with the quirk module parameter\n");
++	} else {
++		/*
++		 * Set configuration based on platform NHLT.
++		 * In this machine driver, we can only support one SSP for the
++		 * ES8336 link, the else-if below are intentional.
++		 * In some cases multiple SSPs can be reported by NHLT, starting MSB-first
++		 * seems to pick the right connection.
++		 */
++		unsigned long ssp = 0;
++
++		if (mach->mach_params.i2s_link_mask & BIT(2))
++			ssp = SOF_ES8336_SSP_CODEC(2);
++		else if (mach->mach_params.i2s_link_mask & BIT(1))
++			ssp = SOF_ES8336_SSP_CODEC(1);
++		else  if (mach->mach_params.i2s_link_mask & BIT(0))
++			ssp = SOF_ES8336_SSP_CODEC(0);
++
++		quirk |= ssp;
++	}
++
++	if (mach->mach_params.dmic_num)
++		quirk |= SOF_ES8336_ENABLE_DMIC;
+ 
+ 	if (quirk_override != -1) {
+ 		dev_info(dev, "Overriding quirk 0x%lx => 0x%x\n",
+@@ -483,6 +506,9 @@ static int sof_es8336_probe(struct platform_device *pdev)
+ 	}
+ 	log_quirks(dev);
+ 
++	if (quirk & SOF_ES8336_ENABLE_DMIC)
++		dmic_be_num = 2;
++
+ 	sof_es8336_card.num_links += dmic_be_num + hdmi_num;
+ 	dai_links = sof_card_dai_links_create(dev,
+ 					      SOF_ES8336_SSP_CODEC(quirk),
 -- 
 2.30.2
 
