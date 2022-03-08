@@ -4,70 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83577C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 17:26:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD1A3C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 17:26:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B0F3E18EE;
-	Tue,  8 Mar 2022 18:25:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0F3E18EE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2186318F8;
+	Tue,  8 Mar 2022 18:26:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2186318F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646760397;
-	bh=r0phUWwXuodlZB9g376p0WnbRKfdUHRWw2XOE/O6cE8=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1646760414;
+	bh=YzDVRHHe4KzIf6sXoA5Jjdffip2Zv92DuhYkKW62tqo=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=L3CHzF/lRcnZCnV9xOCGExlYUulJtsHdEgRRX97TttCNg9DBYQbC9oTOt6VkXI8rc
-	 M60tDefHzlyyjdTi9Mfdmc8WQBgYSn3bURt88YwPYlExLGDcpk47jp+3VuKcycH4JS
-	 DOIG7HztyMq57Q1vLFHw20uMHbuED0fp54HCIi98=
+	b=Le2d7/8XWbolM5X8kTDZohURylCVQYqLo7SWUlzzwxdwqJyWlILkGx4N/7tttMGAd
+	 t4uoh3sAsnNd+OCtP84iRptnPj9qxGStjKnJuY4Rx9DJslTkE+QhNabZtHSPBaHjOz
+	 UpgYOqpNZ+2UfWQ8Tm/LqegGqe8jJznHOJwWXLaY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 589DDF805BD;
-	Tue,  8 Mar 2022 18:21:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0A9B2F805BE;
+	Tue,  8 Mar 2022 18:21:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 00A12F805B6; Tue,  8 Mar 2022 18:21:21 +0100 (CET)
+ id 44127F805B5; Tue,  8 Mar 2022 18:21:22 +0100 (CET)
 Received: from ams.source.kernel.org (ams.source.kernel.org
  [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 02EADF80508
- for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2022 18:21:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02EADF80508
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1FBD0F80553
+ for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2022 18:21:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1FBD0F80553
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="mNdns1GK"
+ header.b="EvLSWYVI"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 73E65B81BA7;
- Tue,  8 Mar 2022 17:21:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 495B4C340F4;
- Tue,  8 Mar 2022 17:21:15 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 8375EB81BB1;
+ Tue,  8 Mar 2022 17:21:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10F08C340EB;
+ Tue,  8 Mar 2022 17:21:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1646760077;
- bh=r0phUWwXuodlZB9g376p0WnbRKfdUHRWw2XOE/O6cE8=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=mNdns1GKRgyX9nw4gEM7EBaXTiHkW0e9F9nrn4BQ33AO3t7Ze/yUrAFKy3ii0uYdu
- tIsOi5nASBmnmjMNhzPWx9YLgxqSWD6V3Sk2rq7vcxpgVs4wLIXG1P/A3Oexp28/b+
- fR76HmJs9PZVv10MZA0TTUm228WWE+jnK/xQX3JDjGEz0n7x7MlKQboT3KrtuUMs2o
- j4UsyGBDZTqiS8TtEVG0QBXgctLu4UAGaJiqeLCYgKPpANHOUE/beFeTHatFHiQfuf
- AmZYZPZ6pH1WA776ASoVFQs/GElnyl0mlj/HiYwZW63f8TaaD7Cwp+Q3wUzlfErscn
- Nwdiyt8rGCvAg==
+ s=k20201202; t=1646760074;
+ bh=YzDVRHHe4KzIf6sXoA5Jjdffip2Zv92DuhYkKW62tqo=;
+ h=From:To:In-Reply-To:References:Subject:Date:From;
+ b=EvLSWYVIL9zy84zHJXvJHR6qwowDJYxdmUl1KmGK8Zl+1Ve1KT11oG6GYDPPD+YZ3
+ CPgSdPx2EGvltyY6moIgaWk1gj7GSBAjVi/eFlPXTN52ec2wTKfjWutVsMNPD5kDe1
+ 1Xf0eDyS5dQG3ALvR6VLhciHatZPRUf6LTaWgPhKBg+1eyJqBwyat7c55d2A0l7iUG
+ wtgNwE5psvgV9Xfz3sFCrsT4iPTYqg5vpz3+J5qweW86JR8q+XlLufld5CrD5Gka1x
+ kgr4NC7xLVOoTOQMYvcRXjixWJJ4vvM22r9jOFHXUSteeAPnr6UX6cs5xkq1GhwnaS
+ YfFzsx0/VG5cQ==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
- devicetree@vger.kernel.org
-In-Reply-To: <20220307122202.2251639-1-codrin.ciubotariu@microchip.com>
-References: <20220307122202.2251639-1-codrin.ciubotariu@microchip.com>
-Subject: Re: (subset) [PATCH v3 0/6] Add driver for SAMA7G5's PDMC
-Message-Id: <164676007501.54315.7100142758313239597.b4-ty@kernel.org>
-Date: Tue, 08 Mar 2022 17:21:15 +0000
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org,
+ Miaoqian Lin <linmq006@gmail.com>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Shawn Guo <shawnguo@kernel.org>, NXP Linux Team <linux-imx@nxp.com>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>
+In-Reply-To: <20220308020146.26496-1-linmq006@gmail.com>
+References: <20220308020146.26496-1-linmq006@gmail.com>
+Subject: Re: [PATCH] ASoC: mxs: Fix error handling in mxs_sgtl5000_probe
+Message-Id: <164676007157.54315.10226994232050384296.b4-ty@kernel.org>
+Date: Tue, 08 Mar 2022 17:21:11 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.com, robh+dt@kernel.org, nicolas.ferre@microchip.com,
- lars@metafoo.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,15 +85,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 7 Mar 2022 14:21:56 +0200, Codrin Ciubotariu wrote:
-> This patch series adds support for Pulse Density Microphone Controller
-> (PDMC), present on Microchip's SAMA7G5.
-> The PDMC interfaces up to 4 digital microphones having Pulse Density
-> Modulated (PDM) outputs. It generates a single clock line and samples 1 or
-> 2 data lines. The signal path includes an audio grade programmable
-> decimation filter and outputs 24-bit audio words.
-> The source of each channel can be independently defined as PDMC_DS0 or
-> PDMC_DS1, sampled at the rising or falling edge of PDMC_CLK.
+On Tue, 8 Mar 2022 02:01:44 +0000, Miaoqian Lin wrote:
+> This function only calls of_node_put() in the regular path.
+> And it will cause refcount leak in error paths.
+> For example, when codec_np is NULL, saif_np[0] and saif_np[1]
+> are not NULL, it will cause leaks.
+> 
+> of_node_put() will check if the node pointer is NULL, so we can
+> call it directly to release the refcount of regular pointers.
 > 
 > [...]
 
@@ -101,12 +102,8 @@ Applied to
 
 Thanks!
 
-[1/6] ASoC: dmaengine: do not use a NULL prepare_slave_config() callback
-      commit: 9a1e13440a4f2e7566fd4c5eae6a53e6400e08a4
-[2/6] ASoC: dt-bindings: Document Microchip's PDMC
-      commit: 015044e9610c8523794ea6cb55d5388bc00ba96a
-[3/6] ASoC: atmel: mchp-pdmc: add PDMC driver
-      commit: 50291652af5269813baa6024eb0e81b5f0bbb451
+[1/1] ASoC: mxs: Fix error handling in mxs_sgtl5000_probe
+      commit: 6ae0a4d8fec551ec581d620f0eb1fe31f755551c
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
