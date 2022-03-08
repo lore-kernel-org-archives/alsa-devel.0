@@ -4,75 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B26DC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 16:45:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07EADC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 16:46:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AEC3617F0;
-	Tue,  8 Mar 2022 17:45:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AEC3617F0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 216AA1831;
+	Tue,  8 Mar 2022 17:45:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 216AA1831
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646757953;
-	bh=JlVsEVtv+stKt8+Fm7133LjYVCeaSqakvtfe/gKYSn4=;
+	s=default; t=1646757959;
+	bh=fXcFULdqt+D/S6yF+zMVLy1Q5LKKkVcSWG3r1TH3Ing=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JuWVomPVGbemCeAWdysLIRw0MAXyGi09GNDcHRtKhCA87wO/PWMh9QRW/51Fo2Ula
-	 nENnhAjCm0SKHMedeGe5Z2Ac5eeCFRHfkC80KYvp5MIGHOM90m/LxjccWfVhvxeT+g
-	 VePVX44MrznR0GGa0DFd1HXDsWoLTjfFZ+RRvdV8=
+	b=VHzkSKsmdXLgQcl62+eZ6gNohAMq4pKlRuZDZk6j4Te8KXd3+ugEIzsQpp1+A5ZZg
+	 M0ZVWlPfJx6FKIdiZ4ifEjZwmYxsHJHzlOvB1vE54bfkFmkHeXUVsOXU1CFMvQzRlF
+	 g6wVEdkhiOhH0xb4NDvKTo5+YMpQiOSgpL7C11MI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1890FF80520;
-	Tue,  8 Mar 2022 17:44:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EA158F8052D;
+	Tue,  8 Mar 2022 17:44:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5BB96F80520; Tue,  8 Mar 2022 17:44:13 +0100 (CET)
+ id DD060F80527; Tue,  8 Mar 2022 17:44:13 +0100 (CET)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 322F7F80272
- for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2022 17:44:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 322F7F80272
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1F8FFF8026A
+ for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2022 17:44:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F8FFF8026A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="Po5SAvQT"
+ header.b="ezL9+l2c"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1646757849; x=1678293849;
+ t=1646757845; x=1678293845;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=JlVsEVtv+stKt8+Fm7133LjYVCeaSqakvtfe/gKYSn4=;
- b=Po5SAvQT+fHd2108VTCU1N+rF5wUrBfac5AvW56H0601pE5Mo9AuYbbJ
- ufmXFNWo9mUCN68YwG252k1KFaD3iSUOE6q2jhaKuq6+KVnzP1T8NCynQ
- aXoAixzOrgqbJp5bxR1v93fKfGo8eJtaCSP4inmqa3yecjHBlG0Le0shY
- 6U3RJW+GJsb6gn0EHTWWvQBbUTNpS29oElwr1VBd7D6ezWPH86paoSgDg
- SjIBAz6MH90CSRCaga/QxaS/tTFhpE8mQTeRV3Tq/F/hEpb+kB/6devQD
- P1Y7+UrSUKAHKHEC+koOAyRWv6zAyDYWQBFsY9XxVTMXqA72BqU6br4vc w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10280"; a="341166851"
-X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="341166851"
+ bh=fXcFULdqt+D/S6yF+zMVLy1Q5LKKkVcSWG3r1TH3Ing=;
+ b=ezL9+l2c/pfylwWHEtcOJeTK6hJ5GHc2QL4NAOsz3/58B+He2mLleKeg
+ IlB3+G1wBCB9CJoX+gZUEvyz4rZCsrajO5Kc6GINNnuOhpN2OUaXT/1oR
+ xHUe5SvkA/s9tLFYqF/IwwVyMheAPlfChQP1lQzj+aMkCMR/Okk+zzc9A
+ KwZUegSaX6K52HkQB+MD9iaNIMgH2ISA8P8HkK2S6PXF84Vb072OQ6YWO
+ 9d7R8/wouwPod5+9qw6NHAxKVlqis4NMsZ8PaKf0f6X95LvN3vWPIvqye
+ 7Dj0mromLpbObrkHV9wEVfV5OXJud7LNzwQ2ffKA9+Km/JeKB00V0RD9M g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10280"; a="341166847"
+X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="341166847"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Mar 2022 08:44:00 -0800
-X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="537633287"
+ 08 Mar 2022 08:43:58 -0800
+X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="537633272"
 Received: from bustam3x-mobl.amr.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.251.130.225])
  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Mar 2022 08:43:59 -0800
+ 08 Mar 2022 08:43:58 -0800
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 18/18] ASoC: SOF: move definition of snd_sof_ipc to header
- file
-Date: Tue,  8 Mar 2022 08:43:44 -0800
-Message-Id: <20220308164344.577647-19-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH v2 15/18] ASoC: SOF: topology: Rename arguments in
+ sof_parse_token_sets()
+Date: Tue,  8 Mar 2022 08:43:41 -0800
+Message-Id: <20220308164344.577647-16-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220308164344.577647-1-ranjani.sridharan@linux.intel.com>
 References: <20220308164344.577647-1-ranjani.sridharan@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Rander Wang <rander.wang@intel.com>, broonie@kernel.org,
+Cc: tiwai@suse.de, Bard Liao <yung-chuan.liao@linux.intel.com>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- amadeuszx.slawinski@linux.intel.com,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ broonie@kernel.org, amadeuszx.slawinski@linux.intel.com,
  =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -89,66 +89,68 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Rander Wang <rander.wang@intel.com>
+Rename the priv_size arg to array_size and clarify the arguments in the
+comments.
 
-Move definition of struct snd_sof_ipc to the header file so it can be
-shared with new IPC versions.
-
-Signed-off-by: Rander Wang <rander.wang@intel.com>
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/ipc.c      | 12 ------------
- sound/soc/sof/sof-priv.h | 12 ++++++++++++
- 2 files changed, 12 insertions(+), 12 deletions(-)
+ sound/soc/sof/topology.c | 21 ++++++++++-----------
+ 1 file changed, 10 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
-index c729bb7bf8c8..34084e0008f1 100644
---- a/sound/soc/sof/ipc.c
-+++ b/sound/soc/sof/ipc.c
-@@ -27,18 +27,6 @@ static void ipc_stream_message(struct snd_sof_dev *sdev, void *msg_buf);
-  * IPC message Tx/Rx message handling.
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index 8b2c01f45b72..0683b7d812eb 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -949,27 +949,26 @@ static int sof_parse_word_tokens(struct snd_soc_component *scomp,
+  * @object: target ipc struct for parsed values
+  * @tokens: token definition array describing what tokens to parse
+  * @count: number of tokens in definition array
+- * @array: source pointer to consecutive vendor arrays to be parsed
+- * @priv_size: total size of the consecutive source arrays
+- * @sets: number of similar token sets to be parsed, 1 set has count elements
++ * @array: source pointer to consecutive vendor arrays in topology
++ * @array_size: total size of @array
++ * @token_instance_num: number of times the same tokens needs to be parsed i.e. the function
++ *			looks for @token_instance_num of each token in the @tokens
+  * @object_size: offset to next target ipc struct with multiple sets
+  *
+  * This function parses multiple sets of tokens in vendor arrays into
+  * consecutive ipc structs.
   */
+ static int sof_parse_token_sets(struct snd_soc_component *scomp,
+-				void *object,
+-				const struct sof_topology_token *tokens,
+-				int count,
+-				struct snd_soc_tplg_vendor_array *array,
+-				int priv_size, int sets, size_t object_size)
++				void *object, const struct sof_topology_token *tokens,
++				int count, struct snd_soc_tplg_vendor_array *array,
++				int array_size, int token_instance_num, size_t object_size)
+ {
+ 	size_t offset = 0;
+ 	int found = 0;
+ 	int total = 0;
+ 	int asize;
  
--/* SOF generic IPC data */
--struct snd_sof_ipc {
--	struct snd_sof_dev *sdev;
--
--	/* protects messages and the disable flag */
--	struct mutex tx_mutex;
--	/* disables further sending of ipc's */
--	bool disable_ipc_tx;
--
--	struct snd_sof_ipc_msg msg;
--};
--
- struct sof_ipc_ctrl_data_params {
- 	size_t msg_bytes;
- 	size_t hdr_bytes;
-diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index 2e19ac619ad5..7f0514db4d06 100644
---- a/sound/soc/sof/sof-priv.h
-+++ b/sound/soc/sof/sof-priv.h
-@@ -345,6 +345,18 @@ struct snd_sof_ipc_msg {
- 	bool ipc_complete;
- };
+-	while (priv_size > 0 && total < count * sets) {
++	while (array_size > 0 && total < count * token_instance_num) {
+ 		asize = le32_to_cpu(array->size);
  
-+/* SOF generic IPC data */
-+struct snd_sof_ipc {
-+	struct snd_sof_dev *sdev;
-+
-+	/* protects messages and the disable flag */
-+	struct mutex tx_mutex;
-+	/* disables further sending of ipc's */
-+	bool disable_ipc_tx;
-+
-+	struct snd_sof_ipc_msg msg;
-+};
-+
- /*
-  * SOF Device Level.
-  */
+ 		/* validate asize */
+@@ -980,8 +979,8 @@ static int sof_parse_token_sets(struct snd_soc_component *scomp,
+ 		}
+ 
+ 		/* make sure there is enough data before parsing */
+-		priv_size -= asize;
+-		if (priv_size < 0) {
++		array_size -= asize;
++		if (array_size < 0) {
+ 			dev_err(scomp->dev, "error: invalid array size 0x%x\n",
+ 				asize);
+ 			return -EINVAL;
 -- 
 2.25.1
 
