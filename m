@@ -4,71 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F125C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 16:48:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0FB6C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 16:48:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5D6A11841;
-	Tue,  8 Mar 2022 17:47:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D6A11841
+	by alsa0.perex.cz (Postfix) with ESMTPS id F1E3B1866;
+	Tue,  8 Mar 2022 17:48:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F1E3B1866
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646758126;
-	bh=fdusk4mIRY3Gj3t70NFmlai8JLzeG3FfDwKkbbLpTi8=;
+	s=default; t=1646758137;
+	bh=UVmT4vGTjHXhvY2uwKjrUYIq7VIV4m+y5CyPjaSCAus=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lTkDI2rSWdErM7SOZjSHxTZs0bI9bDFyoM/WXc8L2DGgWsAjC5xSB1DHx0KDV++H2
-	 1bgWGal6qv5RcuZB9TohZZNQN7tyLBlU/k58w8dclYVAlqkIp9DJ+ULD2zRSYHT8pg
-	 A2yRSo7VSVJ0ZQ6PqVvVcmLiie0l9ciz3MqMtduU=
+	b=Lc0EF/rsKj0LPaWj7N0W0Mq9PQAko2jgdfPVSarnDtDt38Rkc6Hbsow6ftCiT47yD
+	 a89Jw1fDv64l1XQkLmBrz/KNA0tIvkgbTBQTcHqszomgPyIvnTZV5yQXf4oYzNgOt+
+	 3mTnfFUWLSCgaFBajwP6L1yYx9feFdRDqIhoZKpY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CE39FF80570;
-	Tue,  8 Mar 2022 17:44:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5E692F8057A;
+	Tue,  8 Mar 2022 17:44:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5E7F6F8053D; Tue,  8 Mar 2022 17:44:23 +0100 (CET)
+ id 87EBBF8053C; Tue,  8 Mar 2022 17:44:23 +0100 (CET)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0BC42F80515
- for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2022 17:44:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0BC42F80515
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2DA88F80527
+ for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2022 17:44:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2DA88F80527
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="PKJAI5WL"
+ header.b="ffmqEv5f"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1646757852; x=1678293852;
+ t=1646757855; x=1678293855;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=fdusk4mIRY3Gj3t70NFmlai8JLzeG3FfDwKkbbLpTi8=;
- b=PKJAI5WLR03A5MetMXf4KGtcy3xcJMZgjzzCu//3FUzhintXIKYlHqo6
- z7blFEu9n2rTjWi28RIH4Q0rH2WgSnDDjZcDtAr+PlesF8UoiZ8/kpszJ
- LKe/BqruIkmPZX+1JkJ+YK0j4uN7zrQAgJXmU2BTsLDFKzaLzs358R7zh
- Nos8irOKFkRAfopoRu6l9H0tL93jr1aazt2M8Vekdzf//bGFWlbxdxgl3
- /2dL3iJVoVb6BNbHwIwFw5zfmxVPaLEUOdXeUSlMl2I5oSdTl3KaPmlTw
- LT3m1OC28/tgtieC3PkZ7xdY+TBGUrfpzQPjvm+psgsRd6MFz/wsaxgN4 g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10280"; a="252307215"
-X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="252307215"
+ bh=UVmT4vGTjHXhvY2uwKjrUYIq7VIV4m+y5CyPjaSCAus=;
+ b=ffmqEv5f4fDJN4HgfntRlBjWtgtPxYcT5qQBJJOoMbp9iDqdzzLK7zuM
+ vSUNECvdzDRQRDGzdCztqCKhWXeWImpqQYx0xjEGOyhub+ZOubSM9DsSk
+ Jymyn2d802iSovvbSQHyU87uD0I/9rmFaaBV2pAbN/uuIJgITm+lqsAcy
+ x/HMQP8Bxe+nEN+2+rMiAktsciKtbjhy/mkvSEgh551JU3flda3XRIb+8
+ 1CKJodP6iWbgtx8vqE4YbxCeFuEn7jLjvKqbizZFg9iE5eK+n/kU96VoK
+ w33xxnjPuopC9OF84GbTdmajwLiEFjMfU1JXd0q2GHnGHX02ZfmZN76n2 g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10280"; a="252307230"
+X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="252307230"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Mar 2022 08:43:53 -0800
-X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="537633232"
+ 08 Mar 2022 08:43:56 -0800
+X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="537633259"
 Received: from bustam3x-mobl.amr.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.251.130.225])
  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Mar 2022 08:43:53 -0800
+ 08 Mar 2022 08:43:55 -0800
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 04/18] ASoC: SOF: sof-audio: removed unused function
-Date: Tue,  8 Mar 2022 08:43:30 -0800
-Message-Id: <20220308164344.577647-5-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH v2 09/18] ASoC: SOF: topology: expose some get_token ops
+Date: Tue,  8 Mar 2022 08:43:35 -0800
+Message-Id: <20220308164344.577647-10-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220308164344.577647-1-ranjani.sridharan@linux.intel.com>
 References: <20220308164344.577647-1-ranjani.sridharan@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, Ranjani Sridharan <ranjani.sridharan@intel.com>,
+Cc: tiwai@suse.de, Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  broonie@kernel.org, amadeuszx.slawinski@linux.intel.com,
  =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>
@@ -87,58 +88,79 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+These will be used later on by IPC-specific code.
 
-cppcheck warning:
-
-sound/soc/sof/sof-audio.c:884:0: style: The function
-'snd_sof_find_spcm_pcm_id' is never used. [unusedFunction]
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/sof-audio.c | 14 --------------
- sound/soc/sof/sof-audio.h |  2 --
- 2 files changed, 16 deletions(-)
+ sound/soc/sof/sof-audio.h |  5 +++++
+ sound/soc/sof/topology.c  | 10 +++++-----
+ 2 files changed, 10 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
-index 4816473cfd7d..e39f18e824b4 100644
---- a/sound/soc/sof/sof-audio.c
-+++ b/sound/soc/sof/sof-audio.c
-@@ -866,20 +866,6 @@ struct snd_sof_pcm *snd_sof_find_spcm_comp(struct snd_soc_component *scomp,
- 	return NULL;
- }
- 
--struct snd_sof_pcm *snd_sof_find_spcm_pcm_id(struct snd_soc_component *scomp,
--					     unsigned int pcm_id)
--{
--	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
--	struct snd_sof_pcm *spcm;
--
--	list_for_each_entry(spcm, &sdev->pcm_list, list) {
--		if (le32_to_cpu(spcm->pcm.pcm_id) == pcm_id)
--			return spcm;
--	}
--
--	return NULL;
--}
--
- struct snd_sof_widget *snd_sof_find_swidget(struct snd_soc_component *scomp,
- 					    const char *name)
- {
 diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
-index 107e0ef93e16..f2f32f2065d3 100644
+index f2f32f2065d3..feda5793b589 100644
 --- a/sound/soc/sof/sof-audio.h
 +++ b/sound/soc/sof/sof-audio.h
-@@ -220,8 +220,6 @@ struct snd_sof_pcm *snd_sof_find_spcm_name(struct snd_soc_component *scomp,
- struct snd_sof_pcm *snd_sof_find_spcm_comp(struct snd_soc_component *scomp,
- 					   unsigned int comp_id,
- 					   int *direction);
--struct snd_sof_pcm *snd_sof_find_spcm_pcm_id(struct snd_soc_component *scomp,
--					     unsigned int pcm_id);
- void snd_sof_pcm_period_elapsed(struct snd_pcm_substream *substream);
- void snd_sof_pcm_init_elapsed_work(struct work_struct *work);
+@@ -260,4 +260,9 @@ int sof_pcm_dsp_pcm_free(struct snd_pcm_substream *substream, struct snd_sof_dev
+ 			 struct snd_sof_pcm *spcm);
+ int sof_pcm_stream_free(struct snd_sof_dev *sdev, struct snd_pcm_substream *substream,
+ 			struct snd_sof_pcm *spcm, int dir, bool free_widget_list);
++int get_token_u32(void *elem, void *object, u32 offset);
++int get_token_u16(void *elem, void *object, u32 offset);
++int get_token_comp_format(void *elem, void *object, u32 offset);
++int get_token_dai_type(void *elem, void *object, u32 offset);
++int get_token_uuid(void *elem, void *object, u32 offset);
+ #endif
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index 4ba46ea73c8a..dd1cc6e26686 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -477,7 +477,7 @@ struct sof_topology_token {
+ 	u32 offset;
+ };
+ 
+-static int get_token_u32(void *elem, void *object, u32 offset)
++int get_token_u32(void *elem, void *object, u32 offset)
+ {
+ 	struct snd_soc_tplg_vendor_value_elem *velem = elem;
+ 	u32 *val = (u32 *)((u8 *)object + offset);
+@@ -486,7 +486,7 @@ static int get_token_u32(void *elem, void *object, u32 offset)
+ 	return 0;
+ }
+ 
+-static int get_token_u16(void *elem, void *object, u32 offset)
++int get_token_u16(void *elem, void *object, u32 offset)
+ {
+ 	struct snd_soc_tplg_vendor_value_elem *velem = elem;
+ 	u16 *val = (u16 *)((u8 *)object + offset);
+@@ -495,7 +495,7 @@ static int get_token_u16(void *elem, void *object, u32 offset)
+ 	return 0;
+ }
+ 
+-static int get_token_uuid(void *elem, void *object, u32 offset)
++int get_token_uuid(void *elem, void *object, u32 offset)
+ {
+ 	struct snd_soc_tplg_vendor_uuid_elem *velem = elem;
+ 	u8 *dst = (u8 *)object + offset;
+@@ -505,7 +505,7 @@ static int get_token_uuid(void *elem, void *object, u32 offset)
+ 	return 0;
+ }
+ 
+-static int get_token_comp_format(void *elem, void *object, u32 offset)
++int get_token_comp_format(void *elem, void *object, u32 offset)
+ {
+ 	u32 *val = (u32 *)((u8 *)object + offset);
+ 
+@@ -513,7 +513,7 @@ static int get_token_comp_format(void *elem, void *object, u32 offset)
+ 	return 0;
+ }
+ 
+-static int get_token_dai_type(void *elem, void *object, u32 offset)
++int get_token_dai_type(void *elem, void *object, u32 offset)
+ {
+ 	u32 *val = (u32 *)((u8 *)object + offset);
  
 -- 
 2.25.1
