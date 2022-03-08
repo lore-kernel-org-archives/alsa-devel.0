@@ -4,73 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E185BC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 19:30:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A914C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 19:30:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2D7AA18B3;
-	Tue,  8 Mar 2022 20:29:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D7AA18B3
+	by alsa0.perex.cz (Postfix) with ESMTPS id A815B18BD;
+	Tue,  8 Mar 2022 20:29:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A815B18BD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646767810;
-	bh=Vn7BTkRmCB+5HTp0H2Ol2MmJoluHbvIF/WxZqYGNVFo=;
+	s=default; t=1646767826;
+	bh=gIPidTCkt+hMG05SigVPkwXfKWSt3ku7znRlY3Y8WbE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Llki5uNchztMqFMpbSvWGSACc9CFAYhzXOoPEqMdDNBR6K+ibJJxwM/nTDa3qJTiZ
-	 rsMoyccdhoXFK5PT/jBtbG1BIiLVkDC9hWX31FTjTRsd7pDjQZ6yzyMX4nUUuTl242
-	 OAUeG7uEkL+ead7VADKOjiXIhiUykFtP8juZs+Cs=
+	b=G+qxTZwTAmvwm54O7QJl1MK77uRx5DJnmt0HuMoCz8+E+hGEoQi8P/MBVefG6Oa2j
+	 uOjhkHm6HGCoWYBR85JdJqHX33h0ezut994GZOPhTWe8Cq7tJDo4AqYuC59GBQes5u
+	 tP9sr9p7V1SFif6vbWviIpsKqFMSftL1/Z0UM3uI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 03D7FF80543;
-	Tue,  8 Mar 2022 20:27:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DB36FF80520;
+	Tue,  8 Mar 2022 20:27:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3FE84F80534; Tue,  8 Mar 2022 20:26:56 +0100 (CET)
+ id 6EB90F8053C; Tue,  8 Mar 2022 20:26:58 +0100 (CET)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 02536F80516
- for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2022 20:26:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02536F80516
+ by alsa1.perex.cz (Postfix) with ESMTPS id A5D92F8051A
+ for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2022 20:26:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5D92F8051A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="V/6D3Nan"
+ header.b="cpGaZN5O"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1646767607; x=1678303607;
+ t=1646767610; x=1678303610;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=Vn7BTkRmCB+5HTp0H2Ol2MmJoluHbvIF/WxZqYGNVFo=;
- b=V/6D3Nanc3V698X5eF571hoyFtqGplziM/+2NS86Yfq2lgsNLmnG15X3
- /Scoa0ZnuYMWwRjmCD4NbM9ruD3FKbhsLEIP/bkq0zEAuD1UrRTy7SgJt
- ybG7APZtnDBBsXUdAEczVfF3l7g1KB7rdEvQWMfsx5qn2x1CJ0jSPFSK+
- G7dDws2m9fOB9Rm1aEAIcu3vGe3A7K92fYDGqa1pGwBLk87wimepJZDBW
- XVstv+1KoY+DoK06sbG8fh95cClvjtyUXHybT1kezW2+7VQ9IVJce/Yaw
- XTlk2t5T6cUvSLEzYcp+snoUkWjCNSsRjafLF6gEgrI/Y90s3VlTqwEMX g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10280"; a="252363698"
-X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="252363698"
+ bh=gIPidTCkt+hMG05SigVPkwXfKWSt3ku7znRlY3Y8WbE=;
+ b=cpGaZN5O6XTSkdjIqFJP02/eYCQuI/bS4WaNUsCv3Mw+6NHFGod7+iAd
+ 8j51OG66tL5oio/Bn6/MWEsFCetP+85j/yjlD5NJYxDE4dmSucM1jM2D0
+ a2R07kC9RVfi3apkPkz53Atb5WCjGfOPsP1xXsgw/4d4KhXIvxzwFC/Mc
+ Hsxt6kKh/ulnfI+GD9eF9hQPvsO820BkjvJDjDTZBM/3MjG5VwQoxbDAf
+ 4PZH98vcNRh/ouxk1yTP9KeCyvKFHn3kELC3Eb5fglidehSFCcP39uZ6F
+ KZ1B8+565xfrjKXZAUQe/XTyi16CvUcMazcidhAEV9Mf8aMuDh8fpT/lt Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10280"; a="252363719"
+X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="252363719"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Mar 2022 11:26:43 -0800
-X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="495573953"
+ 08 Mar 2022 11:26:46 -0800
+X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="495573969"
 Received: from jhaskins-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.209.53.149])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Mar 2022 11:26:42 -0800
+ 08 Mar 2022 11:26:46 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 07/20] ALSA: intel-dsp-config: add more ACPI HIDs for ES83x6
- devices
-Date: Tue,  8 Mar 2022 13:25:57 -0600
-Message-Id: <20220308192610.392950-8-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 11/20] ASoC: Intel: sof_es8336: make gpio optional
+Date: Tue,  8 Mar 2022 13:26:01 -0600
+Message-Id: <20220308192610.392950-12-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220308192610.392950-1-pierre-louis.bossart@linux.intel.com>
 References: <20220308192610.392950-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- anthony tonitch <d.tonitch@gmail.com>, tiwai@suse.de,
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, tiwai@suse.de,
  =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
  Huajun Li <huajun.li@intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
@@ -92,116 +90,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We only saw ESSX8336 so far, but now with reports of 'ESSX8326' we
-need to expand to a full list. Let's reuse the 'snd_soc_acpi_codecs'
-structure to store the information.
+Do not fail if the GPIO used for speakers is not present, at least the
+headphone, headset and internal mics should work.
 
-Reported-by: anthony tonitch <d.tonitch@gmail.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/hda/intel-dsp-config.c | 31 ++++++++++++++++++++++---------
- 1 file changed, 22 insertions(+), 9 deletions(-)
+ sound/soc/intel/boards/sof_es8336.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
-index 4fb90ceb4053..b9b7bf5a5553 100644
---- a/sound/hda/intel-dsp-config.c
-+++ b/sound/hda/intel-dsp-config.c
-@@ -11,6 +11,7 @@
- #include <sound/core.h>
- #include <sound/intel-dsp-config.h>
- #include <sound/intel-nhlt.h>
-+#include <sound/soc-acpi.h>
+diff --git a/sound/soc/intel/boards/sof_es8336.c b/sound/soc/intel/boards/sof_es8336.c
+index e6d599f0cd26..eb792bd911fa 100644
+--- a/sound/soc/intel/boards/sof_es8336.c
++++ b/sound/soc/intel/boards/sof_es8336.c
+@@ -523,11 +523,10 @@ static int sof_es8336_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		dev_warn(codec_dev, "unable to add GPIO mapping table\n");
  
- static int dsp_driver;
- 
-@@ -31,7 +32,12 @@ struct config_entry {
- 	u16 device;
- 	u8 acpi_hid[ACPI_ID_LEN];
- 	const struct dmi_system_id *dmi_table;
--	u8 codec_hid[ACPI_ID_LEN];
-+	const struct snd_soc_acpi_codecs *codec_hid;
-+};
-+
-+static const struct snd_soc_acpi_codecs __maybe_unused essx_83x6 = {
-+	.num_codecs = 3,
-+	.codecs = { "ESSX8316", "ESSX8326", "ESSX8336"},
- };
- 
- /*
-@@ -77,7 +83,7 @@ static const struct config_entry config_table[] = {
- 	{
- 		.flags = FLAG_SOF,
- 		.device = 0x5a98,
--		.codec_hid = "ESSX8336",
-+		.codec_hid =  &essx_83x6,
- 	},
- #endif
- #if IS_ENABLED(CONFIG_SND_SOC_INTEL_APL)
-@@ -163,7 +169,7 @@ static const struct config_entry config_table[] = {
- 	{
- 		.flags = FLAG_SOF,
- 		.device = 0x3198,
--		.codec_hid = "ESSX8336",
-+		.codec_hid =  &essx_83x6,
- 	},
- #endif
- 
-@@ -251,7 +257,7 @@ static const struct config_entry config_table[] = {
- 	{
- 		.flags = FLAG_SOF,
- 		.device = 0x02c8,
--		.codec_hid = "ESSX8336",
-+		.codec_hid =  &essx_83x6,
- 	},
- 	{
- 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
-@@ -280,7 +286,7 @@ static const struct config_entry config_table[] = {
- 	{
- 		.flags = FLAG_SOF,
- 		.device = 0x06c8,
--		.codec_hid = "ESSX8336",
-+		.codec_hid =  &essx_83x6,
- 	},
- 	{
- 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
-@@ -327,7 +333,7 @@ static const struct config_entry config_table[] = {
- 	{
- 		.flags = FLAG_SOF,
- 		.device = 0x4dc8,
--		.codec_hid = "ESSX8336",
-+		.codec_hid =  &essx_83x6,
- 	},
- 	{
- 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC,
-@@ -353,7 +359,7 @@ static const struct config_entry config_table[] = {
- 	{
- 		.flags = FLAG_SOF,
- 		.device = 0xa0c8,
--		.codec_hid = "ESSX8336",
-+		.codec_hid =  &essx_83x6,
- 	},
- 	{
- 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
-@@ -414,8 +420,15 @@ static const struct config_entry *snd_intel_dsp_find_config
- 			continue;
- 		if (table->dmi_table && !dmi_check_system(table->dmi_table))
- 			continue;
--		if (table->codec_hid[0] && !acpi_dev_present(table->codec_hid, NULL, -1))
--			continue;
-+		if (table->codec_hid) {
-+			int i;
-+
-+			for (i = 0; i < table->codec_hid->num_codecs; i++)
-+				if (acpi_dev_present(table->codec_hid->codecs[i], NULL, -1))
-+					break;
-+			if (i == table->codec_hid->num_codecs)
-+				continue;
-+		}
- 		return table;
+-	priv->gpio_pa = gpiod_get(codec_dev, "pa-enable", GPIOD_OUT_LOW);
++	priv->gpio_pa = gpiod_get_optional(codec_dev, "pa-enable", GPIOD_OUT_LOW);
+ 	if (IS_ERR(priv->gpio_pa)) {
+-		ret = PTR_ERR(priv->gpio_pa);
+-		dev_err(codec_dev, "%s, could not get pa-enable: %d\n",
+-			__func__, ret);
++		ret = dev_err_probe(dev, PTR_ERR(priv->gpio_pa),
++				    "could not get pa-enable GPIO\n");
+ 		goto err;
  	}
- 	return NULL;
+ 
 -- 
 2.30.2
 
