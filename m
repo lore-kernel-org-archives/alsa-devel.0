@@ -4,64 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B119C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 19:32:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C850C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 19:32:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 76F5318BD;
-	Tue,  8 Mar 2022 20:31:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 76F5318BD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 958D018D5;
+	Tue,  8 Mar 2022 20:31:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 958D018D5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646767923;
-	bh=YMV9ndX1LvuBj2L34J3+8VJ3DD2EBrcKOBA271heEjk=;
+	s=default; t=1646767940;
+	bh=KV/8Ns2IlUyCE5aKhFXP59hsVbtria4qp0JsZ5Jlq+g=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eZSggNuRKNxhcLaRznSvkib4Wowisg8ZZx3TbnDmg/DDbfRmWoQTzUuFFTUHJAkom
-	 9kVc/FnH8wLxDZDwUd5QhGro4a7RaJs7QW+R1rX9UpIZDedOUja27DySIkQ4JGddw9
-	 xP/VyFBptvkRJnoJK1nRpf25slf+Pic4ja7yV8Fw=
+	b=LklbsnSNff7i5QY7TEqIR9gLeVeDZnV7fG6oXNgdOMi8PSbGoBn8E5xD/tK4NcyRB
+	 tvunXHA80a2lQxJBXunN2c3B7E880jWf6Aka6JNowkibEf6AKE3vDT62tc38Nk+GSF
+	 zVid7jAIxMH1QV+XbCfE4I171Kvvi3kBO+hozM0k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 45C35F80571;
+	by alsa1.perex.cz (Postfix) with ESMTP id D13FFF8057C;
 	Tue,  8 Mar 2022 20:27:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CDB78F80551; Tue,  8 Mar 2022 20:27:02 +0100 (CET)
+ id 9AB6BF80520; Tue,  8 Mar 2022 20:27:04 +0100 (CET)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A27ABF8051E
- for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2022 20:26:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A27ABF8051E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 90104F8052D
+ for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2022 20:26:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90104F8052D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="JO2gfGGN"
+ header.b="AuuLX1DY"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1646767612; x=1678303612;
+ t=1646767614; x=1678303614;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=YMV9ndX1LvuBj2L34J3+8VJ3DD2EBrcKOBA271heEjk=;
- b=JO2gfGGN0cPNjqRg7I8TZ7P5/8k8ItSWCYpucPZARc14JD6nWTWbgPik
- /+tO1ZVWssUWKbN7sKEa13JnH7oPYRnxNNdICtCFDDaLr8brmlUNUnxIk
- gAL5i/8Cno7plSD9yB8NHrounwauLpLMF4UBNRJC5/qcv2Zt9phngU/Mx
- pxoFcosx9PCXam3vW6mcQB/cpOHuCOau2VQAsO8SsrtSCtZJw6fKwjOqn
- IIpBIcYPuCLnOl2/m6lAO+SQvl8o4ulemmduBwaXCWfd2kHt/OFGW8WbA
- iomZAsXDvgMvIrUetVRODo4ixf5JOWowWMrjnn/4qZ7ZYTsjDAHWdP9vN Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10280"; a="252363740"
-X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="252363740"
+ bh=KV/8Ns2IlUyCE5aKhFXP59hsVbtria4qp0JsZ5Jlq+g=;
+ b=AuuLX1DYkvMuMB2BXJh5xYIK6DHcsFRIEvCikRg9Hkc1Ld7p8nxpwGWg
+ iMgREuPCHs950NuW7piT3yxiHkYTtZEe2wnlW1jm+SbEuRSwDJmt+odWc
+ Rj1JZevErMNh56IYice2ALz6rxq9KAVd4fhu5sKFq5YX/2Af7o9PSEKuK
+ +Gz3dk9jzZPzOBJIbccmCSWnx+X8mOidn91NTAr9yjYjfTWbB/3ddoE9l
+ Ic5JZnVAVrA+PblczAVx6JnFoesk8wxNRo+BbkOYwjnA0uXcD6Y4ok0CF
+ oilIaWKmK5oxGk/JJvPVlj8Lmd8fPb0aD7E8WGWHuUHFBhY/8cr5sYMnn Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10280"; a="252363757"
+X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="252363757"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Mar 2022 11:26:50 -0800
-X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="495573986"
+ 08 Mar 2022 11:26:53 -0800
+X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="495573997"
 Received: from jhaskins-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.209.53.149])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Mar 2022 11:26:49 -0800
+ 08 Mar 2022 11:26:52 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 15/20] ASoC: Intel: sof_es8336: log all quirks
-Date: Tue,  8 Mar 2022 13:26:05 -0600
-Message-Id: <20220308192610.392950-16-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 18/20] ASoC: Intel: sof_es8336: extend machine driver to
+ support ES8326 codec
+Date: Tue,  8 Mar 2022 13:26:08 -0600
+Message-Id: <20220308192610.392950-19-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220308192610.392950-1-pierre-louis.bossart@linux.intel.com>
 References: <20220308192610.392950-1-pierre-louis.bossart@linux.intel.com>
@@ -90,34 +91,74 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We only logged the SSP quirk, make sure the GPIO and DMIC quirks are
-exposed.
+The ES8326 requires a different codec driver than ES8316/8336, fixup
+the codec name and dai name depending on the ACPI _HID exposed in the
+DSDT.
+
+Also add the select in Kconfig
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_es8336.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ sound/soc/intel/boards/Kconfig      |  3 ++-
+ sound/soc/intel/boards/sof_es8336.c | 10 +++++++---
+ 2 files changed, 9 insertions(+), 4 deletions(-)
 
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index 6884ddf9edad..a62785893bec 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -530,12 +530,13 @@ config SND_SOC_INTEL_SOF_PCM512x_MACH
+ 	  If unsure select "N".
+ 
+ config SND_SOC_INTEL_SOF_ES8336_MACH
+-	tristate "SOF with ES8336 codec in I2S mode"
++	tristate "SOF with ES8336 or ES8326 codec in I2S mode"
+ 	depends on I2C && ACPI
+ 	depends on MFD_INTEL_LPSS || COMPILE_TEST
+ 	depends on GPIOLIB || COMPILE_TEST
+ 	depends on SND_HDA_CODEC_HDMI && SND_SOC_SOF_HDA_AUDIO_CODEC
+ 	select SND_SOC_ES8316
++	select SND_SOC_ES8326
+ 	select SND_SOC_DMIC
+ 	select SND_SOC_INTEL_HDA_DSP_COMMON
+ 	help
 diff --git a/sound/soc/intel/boards/sof_es8336.c b/sound/soc/intel/boards/sof_es8336.c
-index 1a8680470577..e2daa57902af 100644
+index 932a80e62bc8..32f5303041b8 100644
 --- a/sound/soc/intel/boards/sof_es8336.c
 +++ b/sound/soc/intel/boards/sof_es8336.c
-@@ -63,7 +63,12 @@ static const struct acpi_gpio_mapping *gpio_mapping = acpi_es8336_gpios;
+@@ -292,7 +292,7 @@ static struct snd_soc_dai_link_component platform_component[] = {
+ 	}
+ };
  
- static void log_quirks(struct device *dev)
- {
--	dev_info(dev, "quirk SSP%ld",  SOF_ES8336_SSP_CODEC(quirk));
-+	dev_info(dev, "quirk mask %#lx\n", quirk);
-+	dev_info(dev, "quirk SSP%ld\n",  SOF_ES8336_SSP_CODEC(quirk));
-+	if (quirk & SOF_ES8336_ENABLE_DMIC)
-+		dev_info(dev, "quirk DMIC enabled\n");
-+	if (quirk & SOF_ES8336_TGL_GPIO_QUIRK)
-+		dev_info(dev, "quirk TGL GPIO enabled\n");
- }
+-SND_SOC_DAILINK_DEF(ssp1_codec,
++SND_SOC_DAILINK_DEF(es8336_codec,
+ 	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-ESSX8336:00", "ES8316 HiFi")));
  
- static int sof_es8316_speaker_power_event(struct snd_soc_dapm_widget *w,
+ static struct snd_soc_dai_link_component dmic_component[] = {
+@@ -356,8 +356,8 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
+ 		goto devm_err;
+ 
+ 	links[id].id = id;
+-	links[id].codecs = ssp1_codec;
+-	links[id].num_codecs = ARRAY_SIZE(ssp1_codec);
++	links[id].codecs = es8336_codec;
++	links[id].num_codecs = ARRAY_SIZE(es8336_codec);
+ 	links[id].platforms = platform_component;
+ 	links[id].num_platforms = ARRAY_SIZE(platform_component);
+ 	links[id].init = sof_es8316_init;
+@@ -539,6 +539,10 @@ static int sof_es8336_probe(struct platform_device *pdev)
+ 			 "i2c-%s", acpi_dev_name(adev));
+ 		put_device(&adev->dev);
+ 		dai_links[0].codecs->name = codec_name;
++
++		/* also fixup codec dai name if relevant */
++		if (!strncmp(mach->id, "ESSX8326", SND_ACPI_I2C_ID_LEN))
++			dai_links[0].codecs->dai_name = "ES8326 HiFi";
+ 	} else {
+ 		dev_err(dev, "Error cannot find '%s' dev\n", mach->id);
+ 		return -ENXIO;
 -- 
 2.30.2
 
