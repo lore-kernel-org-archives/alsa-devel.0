@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E665CC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 16:46:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 449C4C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 16:47:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0B21717F6;
-	Tue,  8 Mar 2022 17:46:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B21717F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7C9FF1779;
+	Tue,  8 Mar 2022 17:46:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7C9FF1779
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646758011;
-	bh=+swSm3wPEFZSVw9Cfp5+ZQJFB6mQEStIMYUvZ9tTVNk=;
+	s=default; t=1646758032;
+	bh=GvwRtUM5etc5jOpQmyBLezTHk4i8Qjvpq6in2Y5Q8Bk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=e+yCySAba5SEiK2RHozK7hqyi0YloHJwnLpdMHitTQZ4vehYMZ6PQYlkBuClf7n8u
-	 7+busI0NMYyy5s7NBkelqwaStKAVuuZ+EqgJ3sF11m8X3G9WkuDCTYeufCT4tR/m4i
-	 s/fSADcEKhH7cYv3lu5U6J7bM+NzSJylVdJsPYfA=
+	b=fuTSL8WNzVXnjO1kzF3SbcXbF5grYkmDUMks6ev63brkrRhJE/zE9vIoXWbzhDq3Y
+	 a7/mhF2obKJxYK3kgGs8VfRoxo3TEZHSZyDcJUA1N2W7Kpi0WkJccWVQajRrMlfdLl
+	 ToAV5UL28dhyXmbYLymeDgTn9remOzpW74q9k2g4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 33B53F80536;
-	Tue,  8 Mar 2022 17:44:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C383AF80539;
+	Tue,  8 Mar 2022 17:44:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 23188F8052E; Tue,  8 Mar 2022 17:44:16 +0100 (CET)
+ id E0058F8052D; Tue,  8 Mar 2022 17:44:16 +0100 (CET)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EAD8BF8025E
- for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2022 17:44:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EAD8BF8025E
+ by alsa1.perex.cz (Postfix) with ESMTPS id A98FCF8026D
+ for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2022 17:44:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A98FCF8026D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="IRvxnOav"
+ header.b="ac9Lkz6/"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1646757850; x=1678293850;
+ t=1646757848; x=1678293848;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=+swSm3wPEFZSVw9Cfp5+ZQJFB6mQEStIMYUvZ9tTVNk=;
- b=IRvxnOavfWHsi78B4PY8VmKU+g9iXFUjZyOwsk7H8VzbHGdQmgHVY19s
- CT7U9MMqL2Q8STIGnjjZfkdLBmk7a7i7GuhfN/UFsfXUF5mDrIOjl7Z6c
- JuIeOgnjVW1HkwYKA/bLRvi/YjnUqwB9V6F+AxT3PXa8DfObECKD3ATM6
- 7idADyYlWF0w8p/Ic1KNCyAOzZh7ptO8Lw13vIdR8fY5B0zMyiGNvWMxm
- 5y9a3RMFOElJKuY9BIRSa5HzydPBzViQ62JgEuDbbjO0Pl2JFEuk0Uml+
- bDbWSBPVlMqQj3G+/OX8DFCWJp4l+laCitacJKUrbtBqy93Bnjr/DExIe A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10280"; a="252307205"
-X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="252307205"
+ bh=GvwRtUM5etc5jOpQmyBLezTHk4i8Qjvpq6in2Y5Q8Bk=;
+ b=ac9Lkz6/Ie/m+O1RAqwe/oAjTwrD/nRrXqichMrFIHcX2NVGBwJue24x
+ 2zMca5/IkJaGOPNRgqANwopI5X1LcucamvWRb2LklV9tdH+mJQg72y/A8
+ BgMgXmARSFup2cdeO3VQhTdXis1Nz2aZ7XG2eAP7MvoRdKWaA7CpSsStB
+ O6kp16IttJhSbDcM64H7PgOGU+CjZYO+tL4Bh4TZJmGC7Ta5mG1jKa5Lj
+ YF8W0MPBQNv7Vx4YM0StYgdU59WAaBTnKYTfXk29bSfiThYpd+CarGaA/
+ PpnWrnspjXI3r+H1KYjd2fe/3m1forgrxIBZBHnFJaPCpeyAzBpsFkhYk g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10280"; a="252307203"
+X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="252307203"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  08 Mar 2022 08:43:52 -0800
-X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="537633211"
+X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="537633205"
 Received: from bustam3x-mobl.amr.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.251.130.225])
  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Mar 2022 08:43:52 -0800
+ 08 Mar 2022 08:43:51 -0800
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 02/18] ASoC: SOF: simplify snd_sof_device_remove()
-Date: Tue,  8 Mar 2022 08:43:28 -0800
-Message-Id: <20220308164344.577647-3-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH v2 01/18] ASoC: SOF: remove snd_sof_pipeline_find()
+Date: Tue,  8 Mar 2022 08:43:27 -0800
+Message-Id: <20220308164344.577647-2-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220308164344.577647-1-ranjani.sridharan@linux.intel.com>
 References: <20220308164344.577647-1-ranjani.sridharan@linux.intel.com>
@@ -86,40 +86,56 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The commit "ASoC: SOF: core: Unregister machine driver before IPC and
-debugfs" moved the call to unregister the machine driver to be done
-before freeing the IPC. With this change, we can safely move the call to
-snd_sof_remove() inside the same if() block just above.
+It is not used.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/core.c | 10 +---------
- 1 file changed, 1 insertion(+), 9 deletions(-)
+ sound/soc/sof/sof-audio.c | 16 ----------------
+ sound/soc/sof/sof-audio.h |  2 --
+ 2 files changed, 18 deletions(-)
 
-diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
-index 2a35d8ddf43e..95a845d26f6e 100644
---- a/sound/soc/sof/core.c
-+++ b/sound/soc/sof/core.c
-@@ -442,16 +442,8 @@ int snd_sof_device_remove(struct device *dev)
+diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
+index 9e76b796502f..ac1edb4a082d 100644
+--- a/sound/soc/sof/sof-audio.c
++++ b/sound/soc/sof/sof-audio.c
+@@ -624,22 +624,6 @@ int sof_set_hw_params_upon_resume(struct device *dev)
+ 	return snd_sof_dsp_hw_params_upon_resume(sdev);
+ }
  
- 		snd_sof_ipc_free(sdev);
- 		snd_sof_free_debug(sdev);
--	}
+-const struct sof_ipc_pipe_new *snd_sof_pipeline_find(struct snd_sof_dev *sdev,
+-						     int pipeline_id)
+-{
+-	const struct snd_sof_widget *swidget;
 -
--	/*
--	 * Unregistering the machine driver results in unloading the topology.
--	 * Some widgets, ex: scheduler, attempt to power down the core they are
--	 * scheduled on, when they are unloaded. Therefore, the DSP must be
--	 * removed only after the topology has been unloaded.
--	 */
--	if (sdev->fw_state > SOF_FW_BOOT_NOT_STARTED)
- 		snd_sof_remove(sdev);
-+	}
+-	list_for_each_entry(swidget, &sdev->widget_list, list)
+-		if (swidget->id == snd_soc_dapm_scheduler) {
+-			const struct sof_ipc_pipe_new *pipeline =
+-				swidget->private;
+-			if (pipeline->pipeline_id == pipeline_id)
+-				return pipeline;
+-		}
+-
+-	return NULL;
+-}
+-
+ int sof_set_up_pipelines(struct snd_sof_dev *sdev, bool verify)
+ {
+ 	struct sof_ipc_fw_version *v = &sdev->fw_ready.version;
+diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
+index f3009e6b91a1..107e0ef93e16 100644
+--- a/sound/soc/sof/sof-audio.h
++++ b/sound/soc/sof/sof-audio.h
+@@ -222,8 +222,6 @@ struct snd_sof_pcm *snd_sof_find_spcm_comp(struct snd_soc_component *scomp,
+ 					   int *direction);
+ struct snd_sof_pcm *snd_sof_find_spcm_pcm_id(struct snd_soc_component *scomp,
+ 					     unsigned int pcm_id);
+-const struct sof_ipc_pipe_new *snd_sof_pipeline_find(struct snd_sof_dev *sdev,
+-						     int pipeline_id);
+ void snd_sof_pcm_period_elapsed(struct snd_pcm_substream *substream);
+ void snd_sof_pcm_init_elapsed_work(struct work_struct *work);
  
- 	/* release firmware */
- 	snd_sof_fw_unload(sdev);
 -- 
 2.25.1
 
