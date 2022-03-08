@@ -4,90 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02507C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 17:45:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0649C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 17:46:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 07D2418A7;
-	Tue,  8 Mar 2022 18:44:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 07D2418A7
+	by alsa0.perex.cz (Postfix) with ESMTPS id A3EFB18C5;
+	Tue,  8 Mar 2022 18:46:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3EFB18C5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646761529;
-	bh=ZQbJk+/HybidIIGcNgZtUu4hCJhZl/gp7AZauV6Pd7E=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=l9vV1Dfd1/27U/SUjWiAhDJnmsU9dr5kDzh3bCuNS2GM+vpeW/hwTnSp59mnQsJbH
-	 4avovcZVTsU4r79lG8lo73+02KRjRH3ADajO2DCFTMfySVRmQV5zxg4SqOFa31Ba+Q
-	 VcVwMQypsRcjg2/VNuG7nEh8lhYjwyWgQ00OXZxs=
+	s=default; t=1646761615;
+	bh=kRUgUYX7nSK1Pz7datAgqAM8AShHcJ606PqwoOaNhhU=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=k0Wqm1c7Fkh/wLALZbADDzxAj+eIhu0Z2IibvMpz7CQk0L5wa3i6UwvKY5pe2qtyM
+	 kSNy7Jeog8cEBqARmDK6N9SvE9RFwBMV0NuI8bO8DyWMmeazKiHD53rd6Nw8VRHm0p
+	 k3xjaaY2ieuKyHxjIlDR/vPOZKDgudLGUhYnfdWc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 768F4F80121;
-	Tue,  8 Mar 2022 18:44:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4FFC2F8025E;
+	Tue,  8 Mar 2022 18:46:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 94ABEF80121; Tue,  8 Mar 2022 18:44:36 +0100 (CET)
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com
- [IPv6:2607:f8b0:4864:20::234])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id E0C9BF8026A; Tue,  8 Mar 2022 18:46:03 +0100 (CET)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 93E9CF80121
- for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2022 18:44:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93E9CF80121
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8F438F80121
+ for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2022 18:45:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F438F80121
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="aDCxkrA6"
-Received: by mail-oi1-x234.google.com with SMTP id x193so60352oix.0
- for <alsa-devel@alsa-project.org>; Tue, 08 Mar 2022 09:44:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to;
- bh=LWBHo8zyRbtdgwtvZ69Wg4Ge808fFLN2tC6X5Zn9ZkA=;
- b=aDCxkrA6yFPydxBcxmDwIW0PjIDqrTBzHkAdiRd9zZtESMHM6/XNtBZ2HVZV1HjtZr
- iu/5YMOzeJBcov436XH1FbQ6ShbJGMgIeiTEI8Hg6WPEAII6pCfcLL695yjiR2WoZSBe
- PmK5cwoG3mPRN/vBYNW7DTw8YI/Xc0AGHfHA7wpaqcVQzeUNMxbkYViIjoyH8cliUXz0
- IpIpyGWV6eN0YYbxtq2bmhmlbfsgterUKbHbYPPWCK9Ryl8+5/2Ss9JTibdIxOcT1hQy
- jXZ3Om/LFm+g95bwfVQ8DhdPDr/3VwR/NY35q/FymjdgvjUtSWp11xARAQHlwrjP113c
- OcLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=LWBHo8zyRbtdgwtvZ69Wg4Ge808fFLN2tC6X5Zn9ZkA=;
- b=jCEGjzGjyqZHm9H5DnAOq+7lO2Mecl4dW96/9QpRSvf9cMAcjWYYLlHxmJf09+ZxGJ
- YM2B7846D7mufdpH/mSpPEr1n9fTxD77dl82sBub+POrA2fEkVOeaf1n40qM71q2mdW8
- G8M2PeYKCGEWieZWYKzA4UVz9QUu30WjffzwiQu87gJnK6/Q7pNS0WaujceSjydEutd6
- aPBHfbVOMlSB3t2449n+YCOCA/zBQ9YRQHi9seFaFFob18shLq2vmfMzTWE/ilI0+AHS
- mBvW19kZz8tyf7dtiRfXEsEo6tYV+ZRbJdJpES7jwZ6YNz+JJk4vAP7FI2+FPavZmttU
- +v4g==
-X-Gm-Message-State: AOAM533Jv5bOKGVPT7hH2p7rAYwjdtbRViQE+n9PA1bAfsYfho7qhWRp
- ApK7sLEDxxppAfCV73gsL6wJlA==
-X-Google-Smtp-Source: ABdhPJwAg6e9dMfVsqqM7of4Q4JH4WF/O8PgvyZH6AwlM7Xy7iK9Wv14Io5Dt/gTtcDvPi7FPeA2Hg==
-X-Received: by 2002:a05:6808:10c8:b0:2d4:a070:d20b with SMTP id
- s8-20020a05680810c800b002d4a070d20bmr3370323ois.88.1646761467535; 
- Tue, 08 Mar 2022 09:44:27 -0800 (PST)
-Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
- by smtp.gmail.com with ESMTPSA id
- r4-20020a9d5cc4000000b005af6f4ff5e2sm7982132oti.61.2022.03.08.09.44.26
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 08 Mar 2022 09:44:27 -0800 (PST)
-Date: Tue, 8 Mar 2022 09:46:10 -0800
-From: Bjorn Andersson <bjorn.andersson@linaro.org>
-To: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
-Subject: Re: [PATCH v10 3/7] pinctrl: qcom: Update macro name to LPI specific
-Message-ID: <YieWYtK5gCCIaPA+@ripper>
-References: <1646737394-4740-1-git-send-email-quic_srivasam@quicinc.com>
- <1646737394-4740-4-git-send-email-quic_srivasam@quicinc.com>
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="XAWNXEWN"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1646761561; x=1678297561;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=kRUgUYX7nSK1Pz7datAgqAM8AShHcJ606PqwoOaNhhU=;
+ b=XAWNXEWNTDV34uEjR2QXKyEw8PYe4ecL12qwF+tT4OfUP7RZ/GKHRyG2
+ XnVrN/WJ315aws8tm+/Opim3NUTIocsptjPv5VZoufsynnKYuAqTkUinE
+ VRqXWGKgWUkWvccbLXZiPl+VgMX2gf3rJm3kBkEZMq748n/i72iGzZitk
+ ikU2BL9iGqmSXPboFLvlXs1QFKUioiJQFztzBlcUS4hYcoLJS7lIaFicE
+ V6wVGsbluMSGL2YH1VyiqdB/9hIf734Ik++QLVSy5WNCz2rGzvP16cr20
+ SnLYjtrwrZCVQxPmBJDhxGuhdmHLzsQxNEA8dmZj4EbH1ws+Vf0tiJtIr w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10280"; a="317990073"
+X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="317990073"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+ by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 08 Mar 2022 09:37:02 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="513196477"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+ by orsmga006.jf.intel.com with ESMTP; 08 Mar 2022 09:37:00 -0800
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+To: alsa-devel@alsa-project.org,
+	tiwai@suse.de
+Subject: [PATCH v2] ALSA: hda/i915 - avoid hung task timeout in i915 wait
+Date: Tue,  8 Mar 2022 19:27:59 +0200
+Message-Id: <20220308172759.920551-1-kai.vehmanen@linux.intel.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1646737394-4740-4-git-send-email-quic_srivasam@quicinc.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- bgoswami@codeaurora.org, Venkata Prasad Potturu <quic_potturu@quicinc.com>,
- linux-arm-msm@vger.kernel.org, swboyd@chromium.org, tiwai@suse.com,
- agross@kernel.org, robh+dt@kernel.org, lgirdwood@gmail.com,
- linux-gpio@vger.kernel.org, rohitkr@codeaurora.org, broonie@kernel.org,
- srinivas.kandagatla@linaro.org, quic_plai@quicinc.com, judyhsiao@chromium.org,
- Linus Walleij <linus.walleij@linaro.org>, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Cc: Ramalingam C <ramalingam.c@intel.com>, intel-gfx@lists.freedesktop.org,
+ Lucas De Marchi <lucas.demarchi@intel.com>, kai.vehmanen@linux.intel.com,
+ amadeuszx.slawinski@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -103,67 +82,55 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue 08 Mar 03:03 PST 2022, Srinivasa Rao Mandadapu wrote:
+If kernel is built with hung task detection enabled and
+CONFIG_DEFAULT_HUNG_TASK_TIMEOUT set to less than 60 seconds,
+snd_hdac_i915_init() will trigger the hung task timeout in case i915 is
+not available and taint the kernel.
 
-> Update NO_SLEW macro to LPI_NO_SLEW macro as this driver lpi specific.
-> 
-> Signed-off-by: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
-> Co-developed-by: Venkata Prasad Potturu <quic_potturu@quicinc.com>
-> Signed-off-by: Venkata Prasad Potturu <quic_potturu@quicinc.com>
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Split the 60sec wait into a loop of smaller waits to avoid this.
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Reviewed-by: Lucas De Marchi <lucas.demarchi@intel.com>
+Co-developed-by: Ramalingam C <ramalingam.c@intel.com>
+Signed-off-by: Ramalingam C <ramalingam.c@intel.com>
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+---
+ sound/hda/hdac_i915.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-Regards,
-Bjorn
+Changes V1->V2:
+ - address local variable naming issue raised by Amadeusz
+   and use Takashi's proposal
 
-> ---
->  drivers/pinctrl/qcom/pinctrl-lpass-lpi.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c b/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
-> index 2f19ab4..3c15f80 100644
-> --- a/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
-> +++ b/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
-> @@ -40,7 +40,7 @@
->  #define LPI_GPIO_KEEPER			0x2
->  #define LPI_GPIO_PULL_UP		0x3
->  #define LPI_GPIO_DS_TO_VAL(v)		(v / 2 - 1)
-> -#define NO_SLEW				-1
-> +#define LPI_NO_SLEW				-1
->  
->  #define LPI_FUNCTION(fname)			                \
->  	[LPI_MUX_##fname] = {		                \
-> @@ -193,14 +193,14 @@ static const struct lpi_pingroup sm8250_groups[] = {
->  	LPI_PINGROUP(3, 8, swr_rx_clk, qua_mi2s_data, _, _),
->  	LPI_PINGROUP(4, 10, swr_rx_data, qua_mi2s_data, _, _),
->  	LPI_PINGROUP(5, 12, swr_tx_data, swr_rx_data, _, _),
-> -	LPI_PINGROUP(6, NO_SLEW, dmic1_clk, i2s1_clk, _,  _),
-> -	LPI_PINGROUP(7, NO_SLEW, dmic1_data, i2s1_ws, _, _),
-> -	LPI_PINGROUP(8, NO_SLEW, dmic2_clk, i2s1_data, _, _),
-> -	LPI_PINGROUP(9, NO_SLEW, dmic2_data, i2s1_data, _, _),
-> +	LPI_PINGROUP(6, LPI_NO_SLEW, dmic1_clk, i2s1_clk, _,  _),
-> +	LPI_PINGROUP(7, LPI_NO_SLEW, dmic1_data, i2s1_ws, _, _),
-> +	LPI_PINGROUP(8, LPI_NO_SLEW, dmic2_clk, i2s1_data, _, _),
-> +	LPI_PINGROUP(9, LPI_NO_SLEW, dmic2_data, i2s1_data, _, _),
->  	LPI_PINGROUP(10, 16, i2s2_clk, wsa_swr_clk, _, _),
->  	LPI_PINGROUP(11, 18, i2s2_ws, wsa_swr_data, _, _),
-> -	LPI_PINGROUP(12, NO_SLEW, dmic3_clk, i2s2_data, _, _),
-> -	LPI_PINGROUP(13, NO_SLEW, dmic3_data, i2s2_data, _, _),
-> +	LPI_PINGROUP(12, LPI_NO_SLEW, dmic3_clk, i2s2_data, _, _),
-> +	LPI_PINGROUP(13, LPI_NO_SLEW, dmic3_data, i2s2_data, _, _),
->  };
->  
->  static const struct lpi_function sm8250_functions[] = {
-> @@ -435,7 +435,7 @@ static int lpi_config_set(struct pinctrl_dev *pctldev, unsigned int group,
->  			}
->  
->  			slew_offset = g->slew_offset;
-> -			if (slew_offset == NO_SLEW)
-> +			if (slew_offset == LPI_NO_SLEW)
->  				break;
->  
->  			mutex_lock(&pctrl->slew_access_lock);
-> -- 
-> 2.7.4
-> 
+diff --git a/sound/hda/hdac_i915.c b/sound/hda/hdac_i915.c
+index 454474ac5716..aa48bed7baf7 100644
+--- a/sound/hda/hdac_i915.c
++++ b/sound/hda/hdac_i915.c
+@@ -143,7 +143,7 @@ static bool i915_gfx_present(void)
+ int snd_hdac_i915_init(struct hdac_bus *bus)
+ {
+ 	struct drm_audio_component *acomp;
+-	int err;
++	int err, i;
+ 
+ 	if (!i915_gfx_present())
+ 		return -ENODEV;
+@@ -159,9 +159,11 @@ int snd_hdac_i915_init(struct hdac_bus *bus)
+ 	if (!acomp->ops) {
+ 		if (!IS_ENABLED(CONFIG_MODULES) ||
+ 		    !request_module("i915")) {
+-			/* 60s timeout */
+-			wait_for_completion_timeout(&acomp->master_bind_complete,
+-						    msecs_to_jiffies(60 * 1000));
++			/* max 60s timeout */
++			for (i = 0; i < 60; i++)
++				if (wait_for_completion_timeout(&acomp->master_bind_complete,
++								msecs_to_jiffies(1000)))
++					break;
+ 		}
+ 	}
+ 	if (!acomp->ops) {
+
+base-commit: fd7698cf0858f8c5e659b655109cd93c2f15cdd3
+-- 
+2.35.1
+
