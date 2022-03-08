@@ -4,65 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11A9CC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 16:49:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97AECC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 16:49:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 410011849;
-	Tue,  8 Mar 2022 17:48:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 410011849
+	by alsa0.perex.cz (Postfix) with ESMTPS id D03381887;
+	Tue,  8 Mar 2022 17:48:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D03381887
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646758174;
-	bh=OdwpZhnkH3fsn24S2qyNFERuNq4To+pJrSgKfRredho=;
+	s=default; t=1646758188;
+	bh=qpTry2xtJme7DtNAhhYtM85udfZjqGT4pX9G4Qusr+c=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=k2zN1wy3BDuefTCW+JFuHZonCbBsCSSWq29PUjHj/S5I8cR//DF8pybujgN4k04D2
-	 Q9OAkd8b38eKOlcjBLIS2aXvwhbf9MJ4leeOcBODWOgc1ifErku4cO31ncqYvLaxs9
-	 COEecqvLSKj+clIghcp+0v5INfN2qs4JtqJ6tQM8=
+	b=FRMR5jPalvIGqWeiKCqaKYEXmV+UHn4lzSOXCRn+LNAaz6zl0OrCHXM+Q2wThnGpH
+	 Gu+f1LW4icNK3TjwtrqyDpfWlgQ9Vmm/waaM5JYpi1wdUCO9TDeFj5OkxRX1b37FxX
+	 7bVEJ+DqDOkklEOTGYayVPxxcYLprntXKAd4P4hY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 81AD1F8059F;
-	Tue,  8 Mar 2022 17:44:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 16D97F805A9;
+	Tue,  8 Mar 2022 17:44:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A8BE8F80544; Tue,  8 Mar 2022 17:44:25 +0100 (CET)
+ id A8431F80544; Tue,  8 Mar 2022 17:44:26 +0100 (CET)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 81C9FF80529
- for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2022 17:44:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81C9FF80529
+ by alsa1.perex.cz (Postfix) with ESMTPS id 56EFFF800D2
+ for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2022 17:44:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56EFFF800D2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="BVU5Mt3w"
+ header.b="Ox/ozRGk"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1646757855; x=1678293855;
+ t=1646757857; x=1678293857;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=OdwpZhnkH3fsn24S2qyNFERuNq4To+pJrSgKfRredho=;
- b=BVU5Mt3wU13TO5TAMrdRotkeQYJWu/LVG526GJPIpk8TIhULNQ6MPMRW
- 2jayojTsFFF1r6019rrU4nlRY165Y2ubNecmsvxI8zlMTO5fEvyUOAmD8
- uj8vFst5XlLBwAXGyOi2c/iSCjIJMiP0NrlPM6JNScGTI/yGfDDODW4GG
- AqKGrjaiAYu4MsgwaleWVKLBH7cq69SZmAef7zhkVfZL2vuoxHgSBRjBN
- mjXY6Nh6ZruoBieFAzlBMfCnX3alCU95+sRaXFsJg48pKi8cNQ1mbDb+T
- ohh2XoR/O2TLia4edwqXl5B3xi0j9FDnfJ/srXpTzGmrKAUecW4k69Vyc A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10280"; a="252307228"
-X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="252307228"
+ bh=qpTry2xtJme7DtNAhhYtM85udfZjqGT4pX9G4Qusr+c=;
+ b=Ox/ozRGk8NclTogwJUmbn/IAApWYJIWxqh4JvGcyCgf2220jKnqkdtBn
+ Kxjtk8kMSo+8zeTUJA8TOGEXd44mqTeudQ6faDYF6BtUJF+HQGqQcZpg3
+ htLC3DupH6LpbYcwWOjc3ev0iSKeMuM28uRP+d3+p8CXLmH1myF/UMBGL
+ BncW4TmOWoFb8nYgjMxhCyDs6kUZvt6mg5xvooyiPgSL/dIofP0btKmC7
+ t9NRlB4Kc/PEfM8/FJPEflP/b6FbFQduewJpcoVNKEiz6fZVDXfD0Lc1T
+ Oj3McpOoaHuaat4pgmlEIbXD5Q6rUAPikfK6BN+nC0mrdgkPVKoRk9Mw5 g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10280"; a="252307237"
+X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="252307237"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Mar 2022 08:43:55 -0800
-X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="537633253"
+ 08 Mar 2022 08:43:57 -0800
+X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="537633262"
 Received: from bustam3x-mobl.amr.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.251.130.225])
  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Mar 2022 08:43:55 -0800
+ 08 Mar 2022 08:43:56 -0800
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 08/18] ASoC: SOF: topology: Modify the get_token op for
- string tokens
-Date: Tue,  8 Mar 2022 08:43:34 -0800
-Message-Id: <20220308164344.577647-9-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH v2 11/18] ASoC: SOF: make struct snd_sof_widget IPC agnostic
+Date: Tue,  8 Mar 2022 08:43:37 -0800
+Message-Id: <20220308164344.577647-12-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220308164344.577647-1-ranjani.sridharan@linux.intel.com>
 References: <20220308164344.577647-1-ranjani.sridharan@linux.intel.com>
@@ -89,63 +88,116 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Modify the get_token op for string type tokens to pass the string as the
-argument instead of a pointer to struct snd_soc_tplg_vendor_string_elem.
+Parse the UUID token and save it in the new uuid field in struct
+snd_sof_widget. struct sof_ipc_comp_ext is no longer needed. So remove
+it too.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/topology.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+ include/sound/sof/topology.h |  8 --------
+ sound/soc/sof/sof-audio.h    |  3 +--
+ sound/soc/sof/topology.c     | 21 ++++++++++-----------
+ 3 files changed, 11 insertions(+), 21 deletions(-)
 
+diff --git a/include/sound/sof/topology.h b/include/sound/sof/topology.h
+index adee6afd1490..88560281d420 100644
+--- a/include/sound/sof/topology.h
++++ b/include/sound/sof/topology.h
+@@ -87,9 +87,6 @@ struct sof_ipc_comp {
+  */
+ #define SOF_BUF_UNDERRUN_PERMITTED	BIT(1)
+ 
+-/* the UUID size in bytes, shared between FW and host */
+-#define SOF_UUID_SIZE	16
+-
+ /* create new component buffer - SOF_IPC_TPLG_BUFFER_NEW */
+ struct sof_ipc_buffer {
+ 	struct sof_ipc_comp comp;
+@@ -303,9 +300,4 @@ enum sof_event_types {
+ 	SOF_KEYWORD_DETECT_DAPM_EVENT,
+ };
+ 
+-/* extended data struct for UUID components */
+-struct sof_ipc_comp_ext {
+-	uint8_t uuid[SOF_UUID_SIZE];
+-}  __packed;
+-
+ #endif
+diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
+index a8eeffc12b24..10330d826d40 100644
+--- a/sound/soc/sof/sof-audio.h
++++ b/sound/soc/sof/sof-audio.h
+@@ -110,8 +110,7 @@ struct snd_sof_widget {
+ 	struct list_head list;	/* list in sdev widget list */
+ 	struct snd_sof_widget *pipe_widget;
+ 
+-	/* extended data for UUID components */
+-	struct sof_ipc_comp_ext comp_ext;
++	const guid_t uuid;
+ 
+ 	void *private;		/* core does not touch this */
+ };
 diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index 7280e14c13bc..4ba46ea73c8a 100644
+index 41927e99ace2..111ff0f77be4 100644
 --- a/sound/soc/sof/topology.c
 +++ b/sound/soc/sof/topology.c
-@@ -507,28 +507,25 @@ static int get_token_uuid(void *elem, void *object, u32 offset)
+@@ -743,7 +743,7 @@ static const struct sof_topology_token core_tokens[] = {
+ static const struct sof_topology_token comp_ext_tokens[] = {
+ 	{SOF_TKN_COMP_UUID,
+ 		SND_SOC_TPLG_TUPLE_TYPE_UUID, get_token_uuid,
+-		offsetof(struct sof_ipc_comp_ext, uuid)},
++		offsetof(struct snd_sof_widget, uuid)},
+ };
  
- static int get_token_comp_format(void *elem, void *object, u32 offset)
+ /*
+@@ -1419,16 +1419,16 @@ static int sof_connect_dai_widget(struct snd_soc_component *scomp,
+  *
+  * Return: The pointer to the new allocated component, NULL if failed.
+  */
+-static struct sof_ipc_comp *sof_comp_alloc(struct snd_sof_widget *swidget,
+-					   size_t *ipc_size, int index)
++static struct sof_ipc_comp *sof_comp_alloc(struct snd_sof_widget *swidget, size_t *ipc_size,
++					   int index)
  {
--	struct snd_soc_tplg_vendor_string_elem *velem = elem;
- 	u32 *val = (u32 *)((u8 *)object + offset);
+-	u8 nil_uuid[SOF_UUID_SIZE] = {0};
+ 	struct sof_ipc_comp *comp;
+ 	size_t total_size = *ipc_size;
++	size_t ext_size = sizeof(swidget->uuid);
  
--	*val = find_format(velem->string);
-+	*val = find_format((const char *)elem);
- 	return 0;
- }
+ 	/* only non-zero UUID is valid */
+-	if (memcmp(&swidget->comp_ext, nil_uuid, SOF_UUID_SIZE))
+-		total_size += sizeof(swidget->comp_ext);
++	if (!guid_is_null(&swidget->uuid))
++		total_size += ext_size;
  
- static int get_token_dai_type(void *elem, void *object, u32 offset)
- {
--	struct snd_soc_tplg_vendor_string_elem *velem = elem;
- 	u32 *val = (u32 *)((u8 *)object + offset);
+ 	comp = kzalloc(total_size, GFP_KERNEL);
+ 	if (!comp)
+@@ -1444,8 +1444,8 @@ static struct sof_ipc_comp *sof_comp_alloc(struct snd_sof_widget *swidget,
+ 	/* handle the extended data if needed */
+ 	if (total_size > *ipc_size) {
+ 		/* append extended data to the end of the component */
+-		memcpy((u8 *)comp + *ipc_size, &swidget->comp_ext, sizeof(swidget->comp_ext));
+-		comp->ext_data_length = sizeof(swidget->comp_ext);
++		memcpy((u8 *)comp + *ipc_size, &swidget->uuid, ext_size);
++		comp->ext_data_length = ext_size;
+ 	}
  
--	*val = find_dai(velem->string);
-+	*val = find_dai((const char *)elem);
- 	return 0;
- }
+ 	/* update ipc_size and return */
+@@ -2276,9 +2276,8 @@ static int sof_widget_ready(struct snd_soc_component *scomp, int index,
  
- static int get_token_process_type(void *elem, void *object, u32 offset)
- {
--	struct snd_soc_tplg_vendor_string_elem *velem = elem;
- 	u32 *val = (u32 *)((u8 *)object + offset);
+ 	swidget->core = comp.core;
  
--	*val = find_process(velem->string);
-+	*val = find_process((const char *)elem);
- 	return 0;
- }
- 
-@@ -872,8 +869,7 @@ static int sof_parse_string_tokens(struct snd_soc_component *scomp,
- 				continue;
- 
- 			/* matched - now load token */
--			tokens[j].get_token(elem, object,
--					    offset + tokens[j].offset);
-+			tokens[j].get_token(elem->string, object, offset + tokens[j].offset);
- 
- 			found++;
- 		}
+-	ret = sof_parse_tokens(scomp, &swidget->comp_ext, comp_ext_tokens,
+-			       ARRAY_SIZE(comp_ext_tokens), tw->priv.array,
+-			       le32_to_cpu(tw->priv.size));
++	ret = sof_parse_tokens(scomp, swidget, comp_ext_tokens, ARRAY_SIZE(comp_ext_tokens),
++			       tw->priv.array, le32_to_cpu(tw->priv.size));
+ 	if (ret != 0) {
+ 		dev_err(scomp->dev, "error: parsing comp_ext_tokens failed %d\n",
+ 			ret);
 -- 
 2.25.1
 
