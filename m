@@ -4,72 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 272B4C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 17:26:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83577C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 17:26:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5BBF918E3;
-	Tue,  8 Mar 2022 18:25:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5BBF918E3
+	by alsa0.perex.cz (Postfix) with ESMTPS id B0F3E18EE;
+	Tue,  8 Mar 2022 18:25:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0F3E18EE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646760380;
-	bh=KcfkXy/XtgCaDpCkwBnAMw9fV0DSG7bx2EbbSAQULKA=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1646760397;
+	bh=r0phUWwXuodlZB9g376p0WnbRKfdUHRWw2XOE/O6cE8=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uSaeD/9F1T43j2XjTgK+PHZgOHjP+vmWI00JDUY47isOH9o0XsEAGrDDvkTgHC7sN
-	 XM71/WTK+oJrNQWSg4qyDe3ES1M0aK41MFhwiQQYqO5b7wkjveiPUT0HNpHP3oNsFa
-	 puTuXOhX4t79vTvzOr9OH4QAcWmXJzrZMQyBB5f0=
+	b=L3CHzF/lRcnZCnV9xOCGExlYUulJtsHdEgRRX97TttCNg9DBYQbC9oTOt6VkXI8rc
+	 M60tDefHzlyyjdTi9Mfdmc8WQBgYSn3bURt88YwPYlExLGDcpk47jp+3VuKcycH4JS
+	 DOIG7HztyMq57Q1vLFHw20uMHbuED0fp54HCIi98=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 38A6BF80564;
-	Tue,  8 Mar 2022 18:21:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 589DDF805BD;
+	Tue,  8 Mar 2022 18:21:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DB92FF805B0; Tue,  8 Mar 2022 18:21:19 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 00A12F805B6; Tue,  8 Mar 2022 18:21:21 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 46D82F80564
- for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2022 18:21:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46D82F80564
+ by alsa1.perex.cz (Postfix) with ESMTPS id 02EADF80508
+ for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2022 18:21:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02EADF80508
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="pumk/87B"
+ header.b="mNdns1GK"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id A0FFBB81BA9;
- Tue,  8 Mar 2022 17:21:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FDF9C36AE2;
- Tue,  8 Mar 2022 17:21:08 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 73E65B81BA7;
+ Tue,  8 Mar 2022 17:21:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 495B4C340F4;
+ Tue,  8 Mar 2022 17:21:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1646760071;
- bh=KcfkXy/XtgCaDpCkwBnAMw9fV0DSG7bx2EbbSAQULKA=;
- h=From:To:In-Reply-To:References:Subject:Date:From;
- b=pumk/87BQOBLkI5whDHBsNTP1uK8sEhC0NK+Q4uQuDGs3XYMnKgg8YpdXfsDUFWcu
- 3H2U7jZWnMCL4NlCTPIYCFrnHYtjkVe+xtpaXEEmk3wv3EqXH6Ku9aFOsf1Vbg6Tlh
- sxEI2E4R7QhhnfWZNI72H7DweXBHhRjsC7TcAvz+LYu/2TIdVg5aH/sRdTDWhf2k7N
- Sc2BjqZst42r1Wkk++YNjLMSDU6QqMxd8sokYJ2N4POiNXmadsJshOURCPkG/6Kcnw
- +K69ATs7r94a4NC0rMUIUHv7iA2D7SJfVbMSzGlEyZMd0mhgYQ0U8mCk5knz2fnrnC
- xIW1IOqXxmZNg==
+ s=k20201202; t=1646760077;
+ bh=r0phUWwXuodlZB9g376p0WnbRKfdUHRWw2XOE/O6cE8=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=mNdns1GKRgyX9nw4gEM7EBaXTiHkW0e9F9nrn4BQ33AO3t7Ze/yUrAFKy3ii0uYdu
+ tIsOi5nASBmnmjMNhzPWx9YLgxqSWD6V3Sk2rq7vcxpgVs4wLIXG1P/A3Oexp28/b+
+ fR76HmJs9PZVv10MZA0TTUm228WWE+jnK/xQX3JDjGEz0n7x7MlKQboT3KrtuUMs2o
+ j4UsyGBDZTqiS8TtEVG0QBXgctLu4UAGaJiqeLCYgKPpANHOUE/beFeTHatFHiQfuf
+ AmZYZPZ6pH1WA776ASoVFQs/GElnyl0mlj/HiYwZW63f8TaaD7Cwp+Q3wUzlfErscn
+ Nwdiyt8rGCvAg==
 From: Mark Brown <broonie@kernel.org>
-To: Jaroslav Kysela <perex@perex.cz>,
- Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, alsa-devel@alsa-project.org,
- Miaoqian Lin <linmq006@gmail.com>, Lee Jones <lee.jones@linaro.org>,
- Chris Morgan <macromorgan@hotmail.com>, Takashi Iwai <tiwai@suse.com>,
- linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
- Wei Yongjun <weiyongjun1@huawei.com>,
- Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
- Colin Ian King <colin.king@intel.com>
-In-Reply-To: <20220307090146.4104-1-linmq006@gmail.com>
-References: <20220307090146.4104-1-linmq006@gmail.com>
-Subject: Re: [PATCH] ASoC: rk817: Fix missing clk_disable_unprepare() in
- rk817_platform_probe
-Message-Id: <164676006795.54315.3795247515426909342.b4-ty@kernel.org>
-Date: Tue, 08 Mar 2022 17:21:07 +0000
+To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+ devicetree@vger.kernel.org
+In-Reply-To: <20220307122202.2251639-1-codrin.ciubotariu@microchip.com>
+References: <20220307122202.2251639-1-codrin.ciubotariu@microchip.com>
+Subject: Re: (subset) [PATCH v3 0/6] Add driver for SAMA7G5's PDMC
+Message-Id: <164676007501.54315.7100142758313239597.b4-ty@kernel.org>
+Date: Tue, 08 Mar 2022 17:21:15 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Cc: tiwai@suse.com, robh+dt@kernel.org, nicolas.ferre@microchip.com,
+ lars@metafoo.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,11 +83,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 7 Mar 2022 09:01:30 +0000, Miaoqian Lin wrote:
-> Fix the missing clk_disable_unprepare() before return
-> from rk817_platform_probe() in the error handling case.
+On Mon, 7 Mar 2022 14:21:56 +0200, Codrin Ciubotariu wrote:
+> This patch series adds support for Pulse Density Microphone Controller
+> (PDMC), present on Microchip's SAMA7G5.
+> The PDMC interfaces up to 4 digital microphones having Pulse Density
+> Modulated (PDM) outputs. It generates a single clock line and samples 1 or
+> 2 data lines. The signal path includes an audio grade programmable
+> decimation filter and outputs 24-bit audio words.
+> The source of each channel can be independently defined as PDMC_DS0 or
+> PDMC_DS1, sampled at the rising or falling edge of PDMC_CLK.
 > 
-> 
+> [...]
 
 Applied to
 
@@ -97,8 +101,12 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: rk817: Fix missing clk_disable_unprepare() in rk817_platform_probe
-      commit: a6b44a2518a08348bd0f0401e4d2b99233bbabc2
+[1/6] ASoC: dmaengine: do not use a NULL prepare_slave_config() callback
+      commit: 9a1e13440a4f2e7566fd4c5eae6a53e6400e08a4
+[2/6] ASoC: dt-bindings: Document Microchip's PDMC
+      commit: 015044e9610c8523794ea6cb55d5388bc00ba96a
+[3/6] ASoC: atmel: mchp-pdmc: add PDMC driver
+      commit: 50291652af5269813baa6024eb0e81b5f0bbb451
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
