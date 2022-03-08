@@ -4,64 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16C22C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 19:28:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60D01C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 19:29:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2622F1878;
-	Tue,  8 Mar 2022 20:27:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2622F1878
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9A3401899;
+	Tue,  8 Mar 2022 20:28:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9A3401899
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646767724;
-	bh=7aEi+ev1LAZnnatkTM38uBcSHka2wqOlb1eNtSgSHCg=;
+	s=default; t=1646767738;
+	bh=IobSk3F+STlIDLS2O75yeurr2/eBvU5LL2S2mVAIBMQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GQTr3QK2YCZDg+Jn2osAZf/s8ah48cpZxrYryUI9LiovZAog/o1FXr8cy8y9og9oA
-	 FA5pH+ikxfxBsCPKctr1c9zkZzaxDSjmdVrz1ukvKOXXSMFceXhD8sjuf6FftpmPo/
-	 fDX1xxpUDDc77GVZ+n0ORGxFxX5JjZ842AQogT58=
+	b=Tj6axNRAXc+TTOFvLCIlnpfKuiCinx6iJYJyHWALY8hfuenW18ERozK7a2DNK/pd8
+	 TjZQ5Eexl2kijxIudsGi+aQ7I1WT8ksZ233NaA+/D/ihoY6TXsnJUjAFI2RSdWB6GC
+	 lqDtuT2f8cWnPJ7Em6peZUa37UF2LfPk0yjOuJ0o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7BAF4F8025E;
-	Tue,  8 Mar 2022 20:26:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 74DEBF8052F;
+	Tue,  8 Mar 2022 20:26:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0C4CEF80518; Tue,  8 Mar 2022 20:26:52 +0100 (CET)
+ id 08802F80528; Tue,  8 Mar 2022 20:26:54 +0100 (CET)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 805A9F8026D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 89941F8025E
  for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2022 20:26:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 805A9F8026D
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89941F8025E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="WLNkHnD3"
+ header.b="kNDjYnk/"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
  t=1646767604; x=1678303604;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=7aEi+ev1LAZnnatkTM38uBcSHka2wqOlb1eNtSgSHCg=;
- b=WLNkHnD3rMWsUccatVJJmp1VK7oo7SrDb5i6yU82TqfsZqiNqn03Qlxe
- WFbgj6n7va/zx0hJPS7PIobVy7wWQUzPo58ofqD9jynO4UqcGPbmAeFTD
- rRJ+63TqbhfKEmopq86eA8ve/0TQIIaGj1Tt8qTZPd1bSXuWNqfa0df3b
- xBmmtn0GHoF8MCFJaVziPMtOdIymA7ez6jijaQ9sQDCWz+ALvvt01Tif+
- 2M+SjvA4+XNBT1k4LWV1FMTrGgXaHe/3qVdtjJXFBYmRIxAnHVwXN3gtX
- MKSQPNo4sSgC7XmJiGGCnCzNE34g2mQkYvqjclh3FgTr6fwOkP9A7duOl g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10280"; a="252363683"
-X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="252363683"
+ bh=IobSk3F+STlIDLS2O75yeurr2/eBvU5LL2S2mVAIBMQ=;
+ b=kNDjYnk/mxXdLDBBcD/BSsiXNNudIR9Ns3CpA/A5DkBUmoq8yLaAom9Z
+ v/xjLG3xmfkUSK8w02lQyFT2PgnruN6eFhCkX9kNfyuFIHZox86thremC
+ 6CX8OPXEiQG6WAKHVZZr9vk7bt+JOIFZmM7fD7+N5zuuqj6PX3KCEuYYe
+ mO/ta2mC5fWfORUKKgjVBK0Jy1r0e4HlIiC6KR3Qky9lj2fNFaMEManGQ
+ 306sjvLM1fHJSUcGIGAdAQprLhVeZmk0g6u3feNEsIlr8PcvKME0QeVar
+ XlTxSuXE7I20DQ/h1+PgQpxXiKtjpb3y1rVUTKGeh+r5aB2VRoKcALgDx g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10280"; a="252363680"
+X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="252363680"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Mar 2022 11:26:40 -0800
-X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="495573943"
+ 08 Mar 2022 11:26:39 -0800
+X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="495573938"
 Received: from jhaskins-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.209.53.149])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Mar 2022 11:26:39 -0800
+ 08 Mar 2022 11:26:38 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 04/20] ALSA: intel-nhlt: add helper to detect SSP link mask
-Date: Tue,  8 Mar 2022 13:25:54 -0600
-Message-Id: <20220308192610.392950-5-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 03/20] ASoC: SOF: Intel: hda: retrieve DMIC number for I2S
+ boards
+Date: Tue,  8 Mar 2022 13:25:53 -0600
+Message-Id: <20220308192610.392950-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220308192610.392950-1-pierre-louis.bossart@linux.intel.com>
 References: <20220308192610.392950-1-pierre-louis.bossart@linux.intel.com>
@@ -90,117 +91,108 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The NHLT information can be used to figure out which SSPs are enabled
-in a platform.
-
-The 'SSP' link type is too broad for machine drivers, since it can
-cover the Bluetooth sideband and the analog audio codec connections,
-so this helper exposes a parameter to filter with the device
-type (DEVICE_I2S refers to analog audio codec in NHLT parlance).
-
-The helper returns a mask, since more than one SSP may be used for
-analog audio, e.g. the NHLT spec describes the use of SSP0 for
-amplifiers and SSP1 for headset codec. Note that if more than one bit
-is set, it's impossible to determine which SSP is connected to what
-external component. Additional platform-specific information based on
-e.g. DMI quirks would still be required in the machine driver to
-configure the relevant dailinks.
+We currently extract the DMIC number only for HDaudio or SoundWire
+platforms. For I2S/TDM platforms, this wasn't necessary until now, but
+with devices with ES8336 we need to find a solution to detect dmics
+more reliably than with a DMI quirk.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- include/sound/intel-nhlt.h | 22 +++++++++++++++-------
- sound/hda/intel-nhlt.c     | 22 ++++++++++++++++++++++
- 2 files changed, 37 insertions(+), 7 deletions(-)
+ sound/soc/sof/intel/hda.c | 46 +++++++++++++++++++++------------------
+ 1 file changed, 25 insertions(+), 21 deletions(-)
 
-diff --git a/include/sound/intel-nhlt.h b/include/sound/intel-nhlt.h
-index 089a760d36eb..6fb2d5e378fd 100644
---- a/include/sound/intel-nhlt.h
-+++ b/include/sound/intel-nhlt.h
-@@ -18,6 +18,13 @@ enum nhlt_link_type {
- 	NHLT_LINK_INVALID
- };
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index a99e6608f0b6..711d14a821bb 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -432,11 +432,9 @@ static char *hda_model;
+ module_param(hda_model, charp, 0444);
+ MODULE_PARM_DESC(hda_model, "Use the given HDA board model.");
  
-+enum nhlt_device_type {
-+	NHLT_DEVICE_BT = 0,
-+	NHLT_DEVICE_DMIC = 1,
-+	NHLT_DEVICE_I2S = 4,
-+	NHLT_DEVICE_INVALID
-+};
-+
- #if IS_ENABLED(CONFIG_ACPI) && IS_ENABLED(CONFIG_SND_INTEL_NHLT)
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA) || IS_ENABLED(CONFIG_SND_SOC_SOF_INTEL_SOUNDWIRE)
+-static int hda_dmic_num = -1;
+-module_param_named(dmic_num, hda_dmic_num, int, 0444);
++static int dmic_num_override = -1;
++module_param_named(dmic_num, dmic_num_override, int, 0444);
+ MODULE_PARM_DESC(dmic_num, "SOF HDA DMIC number");
+-#endif
  
- struct wav_fmt {
-@@ -41,13 +48,6 @@ struct wav_fmt_ext {
- 	u8 sub_fmt[16];
- } __packed;
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
+ static bool hda_codec_use_common_hdmi = IS_ENABLED(CONFIG_SND_HDA_CODEC_HDMI);
+@@ -644,24 +642,35 @@ static int hda_init(struct snd_sof_dev *sdev)
+ 	return ret;
+ }
  
--enum nhlt_device_type {
--	NHLT_DEVICE_BT = 0,
--	NHLT_DEVICE_DMIC = 1,
--	NHLT_DEVICE_I2S = 4,
--	NHLT_DEVICE_INVALID
--};
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA) || IS_ENABLED(CONFIG_SND_SOC_SOF_INTEL_SOUNDWIRE)
 -
- struct nhlt_specific_cfg {
- 	u32 size;
- 	u8 caps[];
-@@ -133,6 +133,9 @@ void intel_nhlt_free(struct nhlt_acpi_table *addr);
- int intel_nhlt_get_dmic_geo(struct device *dev, struct nhlt_acpi_table *nhlt);
+-static int check_nhlt_dmic(struct snd_sof_dev *sdev)
++static int check_dmic_num(struct snd_sof_dev *sdev)
+ {
+ 	struct nhlt_acpi_table *nhlt;
+-	int dmic_num;
++	int dmic_num = 0;
  
- bool intel_nhlt_has_endpoint_type(struct nhlt_acpi_table *nhlt, u8 link_type);
-+
-+int intel_nhlt_ssp_endpoint_mask(struct nhlt_acpi_table *nhlt, u8 device_type);
-+
- struct nhlt_specific_cfg *
- intel_nhlt_get_endpoint_blob(struct device *dev, struct nhlt_acpi_table *nhlt,
- 			     u32 bus_id, u8 link_type, u8 vbps, u8 bps,
-@@ -163,6 +166,11 @@ static inline bool intel_nhlt_has_endpoint_type(struct nhlt_acpi_table *nhlt,
- 	return false;
- }
+ 	nhlt = intel_nhlt_init(sdev->dev);
+ 	if (nhlt) {
+ 		dmic_num = intel_nhlt_get_dmic_geo(sdev->dev, nhlt);
+ 		intel_nhlt_free(nhlt);
+-		if (dmic_num >= 1 && dmic_num <= 4)
+-			return dmic_num;
+ 	}
  
-+static inline int intel_nhlt_ssp_endpoint_mask(struct nhlt_acpi_table *nhlt, u8 device_type)
-+{
-+	return 0;
-+}
-+
- static inline struct nhlt_specific_cfg *
- intel_nhlt_get_endpoint_blob(struct device *dev, struct nhlt_acpi_table *nhlt,
- 			     u32 bus_id, u8 link_type, u8 vbps, u8 bps,
-diff --git a/sound/hda/intel-nhlt.c b/sound/hda/intel-nhlt.c
-index 128476aa7c61..4063da378283 100644
---- a/sound/hda/intel-nhlt.c
-+++ b/sound/hda/intel-nhlt.c
-@@ -130,6 +130,28 @@ bool intel_nhlt_has_endpoint_type(struct nhlt_acpi_table *nhlt, u8 link_type)
- }
- EXPORT_SYMBOL(intel_nhlt_has_endpoint_type);
- 
-+int intel_nhlt_ssp_endpoint_mask(struct nhlt_acpi_table *nhlt, u8 device_type)
-+{
-+	struct nhlt_endpoint *epnt;
-+	int ssp_mask = 0;
-+	int i;
-+
-+	if (!nhlt || (device_type != NHLT_DEVICE_BT && device_type != NHLT_DEVICE_I2S))
-+		return 0;
-+
-+	epnt = (struct nhlt_endpoint *)nhlt->desc;
-+	for (i = 0; i < nhlt->endpoint_count; i++) {
-+		if (epnt->linktype == NHLT_LINK_SSP && epnt->device_type == device_type) {
-+			/* for SSP the virtual bus id is the SSP port */
-+			ssp_mask |= BIT(epnt->virtual_bus_id);
-+		}
-+		epnt = (struct nhlt_endpoint *)((u8 *)epnt + epnt->length);
+-	return 0;
++	/* allow for module parameter override */
++	if (dmic_num_override != -1) {
++		dev_dbg(sdev->dev,
++			"overriding DMICs detected in NHLT tables %d by kernel param %d\n",
++			dmic_num, dmic_num_override);
++		dmic_num = dmic_num_override;
 +	}
 +
-+	return ssp_mask;
-+}
-+EXPORT_SYMBOL(intel_nhlt_ssp_endpoint_mask);
++	if (dmic_num < 0 || dmic_num > 4) {
++		dev_dbg(sdev->dev, "invalid dmic_number %d\n", dmic_num);
++		dmic_num = 0;
++	}
 +
- static struct nhlt_specific_cfg *
- nhlt_get_specific_cfg(struct device *dev, struct nhlt_fmt *fmt, u8 num_ch,
- 		      u32 rate, u8 vbps, u8 bps)
++	return dmic_num;
+ }
+ 
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA) || IS_ENABLED(CONFIG_SND_SOC_SOF_INTEL_SOUNDWIRE)
++
+ static const char *fixup_tplg_name(struct snd_sof_dev *sdev,
+ 				   const char *sof_tplg_filename,
+ 				   const char *idisp_str,
+@@ -697,16 +706,8 @@ static int dmic_topology_fixup(struct snd_sof_dev *sdev,
+ 	const char *dmic_str;
+ 	int dmic_num;
+ 
+-	/* first check NHLT for DMICs */
+-	dmic_num = check_nhlt_dmic(sdev);
+-
+-	/* allow for module parameter override */
+-	if (hda_dmic_num != -1) {
+-		dev_dbg(sdev->dev,
+-			"overriding DMICs detected in NHLT tables %d by kernel param %d\n",
+-			dmic_num, hda_dmic_num);
+-		dmic_num = hda_dmic_num;
+-	}
++	/* first check for DMICs (using NHLT or module parameter) */
++	dmic_num = check_dmic_num(sdev);
+ 
+ 	switch (dmic_num) {
+ 	case 1:
+@@ -1383,6 +1384,9 @@ struct snd_soc_acpi_mach *hda_machine_select(struct snd_sof_dev *sdev)
+ 		if (!sof_pdata->tplg_filename)
+ 			sof_pdata->tplg_filename = mach->sof_tplg_filename;
+ 
++		/* report to machine driver if any DMICs are found */
++		mach->mach_params.dmic_num = check_dmic_num(sdev);
++
+ 		if (mach->link_mask) {
+ 			mach->mach_params.links = mach->links;
+ 			mach->mach_params.link_mask = mach->link_mask;
 -- 
 2.30.2
 
