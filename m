@@ -4,81 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12D90C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 17:36:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02507C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 17:45:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A7AAC18C7;
-	Tue,  8 Mar 2022 18:35:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A7AAC18C7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 07D2418A7;
+	Tue,  8 Mar 2022 18:44:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 07D2418A7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646761009;
-	bh=thOvARg1UtVlOLotQd7Li3cy7FNbJPL8X9+8eAjIcd4=;
-	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1646761529;
+	bh=ZQbJk+/HybidIIGcNgZtUu4hCJhZl/gp7AZauV6Pd7E=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=owHCCtBmkmS3TdQrUCHwT3xCYhJLeUgl+MaIwxMXc7he7WCnRKNudU06iPplp2ysy
-	 a5Bh7nQkUZN666wumnHgNQ4Cdq4i3+2euRKKnCen+QhT5j1oGXIJe1kISx4NUYyhmv
-	 IY5R7iSCoaqBYICXEHT09SWS2zTav6QHKHPfjXTE=
+	b=l9vV1Dfd1/27U/SUjWiAhDJnmsU9dr5kDzh3bCuNS2GM+vpeW/hwTnSp59mnQsJbH
+	 4avovcZVTsU4r79lG8lo73+02KRjRH3ADajO2DCFTMfySVRmQV5zxg4SqOFa31Ba+Q
+	 VcVwMQypsRcjg2/VNuG7nEh8lhYjwyWgQ00OXZxs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2E31AF8025E;
-	Tue,  8 Mar 2022 18:35:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 768F4F80121;
+	Tue,  8 Mar 2022 18:44:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4CB47F8026A; Tue,  8 Mar 2022 18:35:58 +0100 (CET)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 94ABEF80121; Tue,  8 Mar 2022 18:44:36 +0100 (CET)
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com
+ [IPv6:2607:f8b0:4864:20::234])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D617DF800D2
- for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2022 18:35:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D617DF800D2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 93E9CF80121
+ for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2022 18:44:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93E9CF80121
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="Tj4dwiIE"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1646760956; x=1678296956;
- h=message-id:subject:from:to:cc:date:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=thOvARg1UtVlOLotQd7Li3cy7FNbJPL8X9+8eAjIcd4=;
- b=Tj4dwiIEPU7Zg0ny8iiVK3vXf4eOXeYwqmF830+Nic+vYHN9x0AAPKGz
- UYXVfCD3a6uDn+1tWedPLSnRNfo0yzfY+r6Fji2SzYqbDuKPgAR51b5UG
- Xx7LI3ZscTFHPWzw2AgMaUBv5hhekR5KuUalqZAuGHb4o2IJqIF03kMla
- Xo9SmSTzutM9MhjzI/sR2sBUahmxeLKtt3hR+0TZLX9Jriy7zHzd2BS+G
- 1ccbgXDc73gVG6OO2b0Bod+3dXbQv5kKePl7uwX40f26u9hQkxR1PUGeV
- HtTUadlPlqCzIR9a40/PI6CgjrbiGwAkbxlaOoH25yKlK2WY6SVST4yFy Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10280"; a="254488139"
-X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="254488139"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Mar 2022 09:22:55 -0800
-X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="537649598"
-Received: from bustam3x-mobl.amr.corp.intel.com ([10.251.130.225])
- by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Mar 2022 09:22:54 -0800
-Message-ID: <3c79c158757bfd542747bcf7b4de73e4529ac4d5.camel@linux.intel.com>
-Subject: Re: [PATCH v3 11/17] ASoC: Intel: avs: Firmware resources
- management utilities
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
-Date: Tue, 08 Mar 2022 09:22:54 -0800
-In-Reply-To: <4691b216-92f6-8d46-d3db-e302f5f21c34@intel.com>
-References: <20220304145755.2844173-1-cezary.rojewski@intel.com>
- <20220304145755.2844173-12-cezary.rojewski@intel.com>
- <66e20563567955124488eb9f9b53ea6a2bc5d744.camel@linux.intel.com>
- <d7676598-27bc-fe5d-1167-c82795e533f7@intel.com>
- <a571f334944f3ae7762068572003299c34fd187a.camel@linux.intel.com>
- <f70be289-ee9c-51b5-4003-7bc567e87a54@intel.com>
- <9f4cbf5a720aa66d6a540092187ad88b3adb5525.camel@linux.intel.com>
- <4691b216-92f6-8d46-d3db-e302f5f21c34@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3-0ubuntu1 
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="aDCxkrA6"
+Received: by mail-oi1-x234.google.com with SMTP id x193so60352oix.0
+ for <alsa-devel@alsa-project.org>; Tue, 08 Mar 2022 09:44:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to;
+ bh=LWBHo8zyRbtdgwtvZ69Wg4Ge808fFLN2tC6X5Zn9ZkA=;
+ b=aDCxkrA6yFPydxBcxmDwIW0PjIDqrTBzHkAdiRd9zZtESMHM6/XNtBZ2HVZV1HjtZr
+ iu/5YMOzeJBcov436XH1FbQ6ShbJGMgIeiTEI8Hg6WPEAII6pCfcLL695yjiR2WoZSBe
+ PmK5cwoG3mPRN/vBYNW7DTw8YI/Xc0AGHfHA7wpaqcVQzeUNMxbkYViIjoyH8cliUXz0
+ IpIpyGWV6eN0YYbxtq2bmhmlbfsgterUKbHbYPPWCK9Ryl8+5/2Ss9JTibdIxOcT1hQy
+ jXZ3Om/LFm+g95bwfVQ8DhdPDr/3VwR/NY35q/FymjdgvjUtSWp11xARAQHlwrjP113c
+ OcLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=LWBHo8zyRbtdgwtvZ69Wg4Ge808fFLN2tC6X5Zn9ZkA=;
+ b=jCEGjzGjyqZHm9H5DnAOq+7lO2Mecl4dW96/9QpRSvf9cMAcjWYYLlHxmJf09+ZxGJ
+ YM2B7846D7mufdpH/mSpPEr1n9fTxD77dl82sBub+POrA2fEkVOeaf1n40qM71q2mdW8
+ G8M2PeYKCGEWieZWYKzA4UVz9QUu30WjffzwiQu87gJnK6/Q7pNS0WaujceSjydEutd6
+ aPBHfbVOMlSB3t2449n+YCOCA/zBQ9YRQHi9seFaFFob18shLq2vmfMzTWE/ilI0+AHS
+ mBvW19kZz8tyf7dtiRfXEsEo6tYV+ZRbJdJpES7jwZ6YNz+JJk4vAP7FI2+FPavZmttU
+ +v4g==
+X-Gm-Message-State: AOAM533Jv5bOKGVPT7hH2p7rAYwjdtbRViQE+n9PA1bAfsYfho7qhWRp
+ ApK7sLEDxxppAfCV73gsL6wJlA==
+X-Google-Smtp-Source: ABdhPJwAg6e9dMfVsqqM7of4Q4JH4WF/O8PgvyZH6AwlM7Xy7iK9Wv14Io5Dt/gTtcDvPi7FPeA2Hg==
+X-Received: by 2002:a05:6808:10c8:b0:2d4:a070:d20b with SMTP id
+ s8-20020a05680810c800b002d4a070d20bmr3370323ois.88.1646761467535; 
+ Tue, 08 Mar 2022 09:44:27 -0800 (PST)
+Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
+ by smtp.gmail.com with ESMTPSA id
+ r4-20020a9d5cc4000000b005af6f4ff5e2sm7982132oti.61.2022.03.08.09.44.26
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 08 Mar 2022 09:44:27 -0800 (PST)
+Date: Tue, 8 Mar 2022 09:46:10 -0800
+From: Bjorn Andersson <bjorn.andersson@linaro.org>
+To: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+Subject: Re: [PATCH v10 3/7] pinctrl: qcom: Update macro name to LPI specific
+Message-ID: <YieWYtK5gCCIaPA+@ripper>
+References: <1646737394-4740-1-git-send-email-quic_srivasam@quicinc.com>
+ <1646737394-4740-4-git-send-email-quic_srivasam@quicinc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: upstream@semihalf.com, harshapriya.n@intel.com, rad@semihalf.com,
- tiwai@suse.com, pierre-louis.bossart@linux.intel.com, hdegoede@redhat.com,
- broonie@kernel.org, amadeuszx.slawinski@linux.intel.com,
- cujomalainey@chromium.org, lma@semihalf.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1646737394-4740-4-git-send-email-quic_srivasam@quicinc.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ bgoswami@codeaurora.org, Venkata Prasad Potturu <quic_potturu@quicinc.com>,
+ linux-arm-msm@vger.kernel.org, swboyd@chromium.org, tiwai@suse.com,
+ agross@kernel.org, robh+dt@kernel.org, lgirdwood@gmail.com,
+ linux-gpio@vger.kernel.org, rohitkr@codeaurora.org, broonie@kernel.org,
+ srinivas.kandagatla@linaro.org, quic_plai@quicinc.com, judyhsiao@chromium.org,
+ Linus Walleij <linus.walleij@linaro.org>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,35 +103,67 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 2022-03-08 at 17:57 +0100, Cezary Rojewski wrote:
-> Scenario you describe is correct and does not prompt the need for the
-> mutex.
-> 
-> 
-> 
-> However, ->mods_info is accessed through getters found in utils.c
-> (this 
-> 
-> very patch) during stream creation too. That fragment is part of
-> path 
-> 
-> management series though - it was requested to split those bits away.
-> 
-> 
-> 
-> So, there is a possibility for a platform-soc-component to have its 
-> 
-> ->probe() called - and thus triggering ->mods_info update - while a 
-> 
-> stream is being opened on a different sound card simultaneously. To 
-> 
-> avoid unwanted behavior e.g.: looping through ->mods_info while it's 
-> 
-> being updated in separate thread, we lock the array.
+On Tue 08 Mar 03:03 PST 2022, Srinivasa Rao Mandadapu wrote:
 
-Keeping in mind that this driver is meant for older platforms, how
-likely are you to support multiple sound cards with those topologies?
+> Update NO_SLEW macro to LPI_NO_SLEW macro as this driver lpi specific.
+> 
+> Signed-off-by: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+> Co-developed-by: Venkata Prasad Potturu <quic_potturu@quicinc.com>
+> Signed-off-by: Venkata Prasad Potturu <quic_potturu@quicinc.com>
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
 
-Thanks,
-Ranjani
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
+Regards,
+Bjorn
+
+> ---
+>  drivers/pinctrl/qcom/pinctrl-lpass-lpi.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c b/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
+> index 2f19ab4..3c15f80 100644
+> --- a/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
+> +++ b/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
+> @@ -40,7 +40,7 @@
+>  #define LPI_GPIO_KEEPER			0x2
+>  #define LPI_GPIO_PULL_UP		0x3
+>  #define LPI_GPIO_DS_TO_VAL(v)		(v / 2 - 1)
+> -#define NO_SLEW				-1
+> +#define LPI_NO_SLEW				-1
+>  
+>  #define LPI_FUNCTION(fname)			                \
+>  	[LPI_MUX_##fname] = {		                \
+> @@ -193,14 +193,14 @@ static const struct lpi_pingroup sm8250_groups[] = {
+>  	LPI_PINGROUP(3, 8, swr_rx_clk, qua_mi2s_data, _, _),
+>  	LPI_PINGROUP(4, 10, swr_rx_data, qua_mi2s_data, _, _),
+>  	LPI_PINGROUP(5, 12, swr_tx_data, swr_rx_data, _, _),
+> -	LPI_PINGROUP(6, NO_SLEW, dmic1_clk, i2s1_clk, _,  _),
+> -	LPI_PINGROUP(7, NO_SLEW, dmic1_data, i2s1_ws, _, _),
+> -	LPI_PINGROUP(8, NO_SLEW, dmic2_clk, i2s1_data, _, _),
+> -	LPI_PINGROUP(9, NO_SLEW, dmic2_data, i2s1_data, _, _),
+> +	LPI_PINGROUP(6, LPI_NO_SLEW, dmic1_clk, i2s1_clk, _,  _),
+> +	LPI_PINGROUP(7, LPI_NO_SLEW, dmic1_data, i2s1_ws, _, _),
+> +	LPI_PINGROUP(8, LPI_NO_SLEW, dmic2_clk, i2s1_data, _, _),
+> +	LPI_PINGROUP(9, LPI_NO_SLEW, dmic2_data, i2s1_data, _, _),
+>  	LPI_PINGROUP(10, 16, i2s2_clk, wsa_swr_clk, _, _),
+>  	LPI_PINGROUP(11, 18, i2s2_ws, wsa_swr_data, _, _),
+> -	LPI_PINGROUP(12, NO_SLEW, dmic3_clk, i2s2_data, _, _),
+> -	LPI_PINGROUP(13, NO_SLEW, dmic3_data, i2s2_data, _, _),
+> +	LPI_PINGROUP(12, LPI_NO_SLEW, dmic3_clk, i2s2_data, _, _),
+> +	LPI_PINGROUP(13, LPI_NO_SLEW, dmic3_data, i2s2_data, _, _),
+>  };
+>  
+>  static const struct lpi_function sm8250_functions[] = {
+> @@ -435,7 +435,7 @@ static int lpi_config_set(struct pinctrl_dev *pctldev, unsigned int group,
+>  			}
+>  
+>  			slew_offset = g->slew_offset;
+> -			if (slew_offset == NO_SLEW)
+> +			if (slew_offset == LPI_NO_SLEW)
+>  				break;
+>  
+>  			mutex_lock(&pctrl->slew_access_lock);
+> -- 
+> 2.7.4
+> 
