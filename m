@@ -4,69 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B0FEC433FE
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 17:24:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0E93C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 17:24:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6FB2218B9;
-	Tue,  8 Mar 2022 18:23:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6FB2218B9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2652216E8;
+	Tue,  8 Mar 2022 18:23:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2652216E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646760240;
-	bh=OTBvjPDi+isTMADoBJKHUAl7J8WbruRWlXA5d3Qair0=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1646760257;
+	bh=tvhfJPi0JmcP0R6mjk8i1krTBkEIDDxpDLNaiuGZXAg=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KdvQqP6JZdkVpVWO3w4XhMAv9ulU7HMeawc/fHdLEFSOR0ts0iKK99sZO4WfLqgft
-	 zxZP++uHX/SyWyU1xP0LmgORCAUGChb1Ueu+icFeDlyfIg0vRBYZBg8HCzln5SXbYd
-	 +f2RumACWCT3p4gR6mVxcSYy2fS46nFr3iTCQkmc=
+	b=sHFzLDhWPfeNWVRpGvHfa1sg2Mq1BiT4gevNrqkuKAYm7ClfqKiJ5Wigi1fc4O4by
+	 nPKIibdCgB067kbivfmi6vLTVpFkTniEA9EQtw/igAaV6PocaWhQbjvOG355A7L9xC
+	 qbixb1jailxvzFn503KYF2+gjjecc6jscnEwt36A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0E7F4F80279;
-	Tue,  8 Mar 2022 18:20:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 201B2F80517;
+	Tue,  8 Mar 2022 18:20:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 181C8F80271; Tue,  8 Mar 2022 18:20:56 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 6C997F80279; Tue,  8 Mar 2022 18:20:56 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B45BAF80271
- for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2022 18:20:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B45BAF80271
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1342BF8026D
+ for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2022 18:20:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1342BF8026D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="h+9lSc42"
+ header.b="A2CddHZy"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 92A6361093;
- Tue,  8 Mar 2022 17:20:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1471FC340EF;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id C4B6F6123C;
  Tue,  8 Mar 2022 17:20:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D19F2C340EB;
+ Tue,  8 Mar 2022 17:20:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1646760050;
- bh=OTBvjPDi+isTMADoBJKHUAl7J8WbruRWlXA5d3Qair0=;
- h=From:To:In-Reply-To:References:Subject:Date:From;
- b=h+9lSc42lHWYcPr8dH9nm8eA1GZza7+G7Amy5YzWHbBP5WFKhjLghncJ+7zerIBSa
- CeFMl2t0J3fmb982ZU1FSL0knrWyJB1GKmgs0zd6x/+pkqDI9kicM9Adtzd0GJ/8KC
- GdE5NeOr/Nr/APVNkh5RUFSUTcFWIjLkuCRoDyii5cM7C7hicAlT812Q6aVlCour+j
- V1mfVnnXjpGBLujey+3UDyvbe9AEd9/ADUG4p076i/rfkFNZ6d9CSfPfpKZiAtIJ3Z
- Td+60L2vllqUOqMBYTYv/Hp//xHUMbAvQvC6LVOvxoVYm79T7sV0fTdMujx87FlQ+0
- Y7BTMEY7+RBxw==
+ s=k20201202; t=1646760047;
+ bh=tvhfJPi0JmcP0R6mjk8i1krTBkEIDDxpDLNaiuGZXAg=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=A2CddHZy94LgbRB8wjPn4KVlKWYk1NDrVhKp0CIX/+QAwBncvNRbwmdNwaO+WHDZ+
+ fdKdOr8DXoDjh6w1EKb7IYzeAvtRsm7Fd+fv/ECFQTCMaKAoIWVnlLed8oh7X32hmz
+ YbBZFeXtJ/P9ISZfpeWhaRCQRcl3dDiTUoQYUAa+waYwvX0QQOKBHw4NQCW5kLRJ1n
+ NfihRcGXeY9tZI33DudkI+Otibn5UO5QtJASoERVTP3w7dAjVQRUp1epcd6cAN3Gjc
+ 9BUkoP4b10ghjC0cJ9B6dXZhXdbdebwEDrkiiUy1Jg4v2w4jYRu87BAzyZBl3Zmq/O
+ 8us52rkdvwiAA==
 From: Mark Brown <broonie@kernel.org>
-To: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org,
- linux-rockchip@lists.infradead.org, Takashi Iwai <tiwai@suse.com>,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- Heiko Stuebner <heiko@sntech.de>, Jianqun <jay.xu@rock-chips.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Miaoqian Lin <linmq006@gmail.com>
-In-Reply-To: <20220307083553.26009-1-linmq006@gmail.com>
-References: <20220307083553.26009-1-linmq006@gmail.com>
-Subject: Re: [PATCH] ASoC: rockchip: i2s: Fix missing clk_disable_unprepare()
- in rockchip_i2s_probe
-Message-Id: <164676004779.54315.18423520292577645597.b4-ty@kernel.org>
-Date: Tue, 08 Mar 2022 17:20:47 +0000
+To: tiwai@suse.com, perex@perex.cz, tangmeng@uniontech.com,
+ YueHaibing <yuehaibing@huawei.com>, lgirdwood@gmail.com,
+ Vijendar.Mukunda@amd.com, pierre-louis.bossart@linux.intel.com
+In-Reply-To: <20220305123705.3708-1-yuehaibing@huawei.com>
+References: <20220305123705.3708-1-yuehaibing@huawei.com>
+Subject: Re: [PATCH -next] ASoC: amd: acp5x-pcm-dma: Fix signedness bug
+Message-Id: <164676004557.54315.464423816098781060.b4-ty@kernel.org>
+Date: Tue, 08 Mar 2022 17:20:45 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,9 +81,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 7 Mar 2022 08:35:52 +0000, Miaoqian Lin wrote:
-> Fix the missing clk_disable_unprepare() before return
-> from rockchip_i2s_probe() in the error handling case.
+On Sat, 5 Mar 2022 20:37:05 +0800, YueHaibing wrote:
+> In acp5x_audio_probe() platform_get_irq() may return error, but i2s_irq now
+> is unsigned int so the error handling is never triggered.
 > 
 > 
 
@@ -94,8 +93,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: rockchip: i2s: Fix missing clk_disable_unprepare() in rockchip_i2s_probe
-      commit: f725d20579807a68afbe5dba69e78b8fa05f5ef0
+[1/1] ASoC: amd: acp5x-pcm-dma: Fix signedness bug
+      commit: 954e615497cc95cd918bdfe6590abdfbaa068842
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
