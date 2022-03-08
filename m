@@ -4,54 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE10EC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 07:26:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C81B8C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 07:26:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 110F415C3;
-	Tue,  8 Mar 2022 08:25:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 110F415C3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 20E361775;
+	Tue,  8 Mar 2022 08:25:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20E361775
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646724384;
-	bh=s/hOYx6Nxlk8ZgZiSVpuz+464uxKPl5RqyNVv+T8Uk4=;
+	s=default; t=1646724402;
+	bh=LCVwfkph2hdPV44d49dyKTvGbI5k5U38EU5ldEYPEK8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Wkth3FS/xJUoHaps9Duioe4mOr1zPKPrSbe/HeQQjNcQfl7p1da9OrpgUzofvY5+t
-	 2Qc3Nm7GAxHUcA+cwQMJvKBc6akwxxEV/dOrzPL5WbXhPBBluz8vVFh+ZnWIx9zQMM
-	 JPqdMerKo0DB0axJ/O0ulw+HvfGeqFQ5msScH0C8=
+	b=EqbBpEnYnq9im18m3gxSigrKrz4DKtOdjz7Yz0M/V3oEPOcUCNEDapaJHA1OL5f7r
+	 TJrElKvMlBZugz+bJoY+mtNG8dEdAJA+V+ljZHvH7QDWWgold2km85VTqqgSS3qvIO
+	 EzBfjoWnI5+hj2D3zfgZbZ8D5/QOz+iNcpFi0qq8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2580FF804F3;
-	Tue,  8 Mar 2022 08:25:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1A46EF8026A;
+	Tue,  8 Mar 2022 08:25:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8A25BF80515; Tue,  8 Mar 2022 08:25:02 +0100 (CET)
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+ id 4F8D2F8026A; Tue,  8 Mar 2022 08:25:48 +0100 (CET)
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 37FD2F8025E
- for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2022 08:24:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 37FD2F8025E
-X-UUID: 210bfb5b9a47439b8a353621811e02cf-20220308
-X-UUID: 210bfb5b9a47439b8a353621811e02cf-20220308
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
- (envelope-from <trevor.wu@mediatek.com>)
- (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
- with ESMTP id 1706165390; Tue, 08 Mar 2022 15:24:42 +0800
+ by alsa1.perex.cz (Postfix) with ESMTPS id 50AAEF80271
+ for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2022 08:24:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50AAEF80271
+X-UUID: 75a2ed2172be4bac9292d31a23072b10-20220308
+X-UUID: 75a2ed2172be4bac9292d31a23072b10-20220308
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by
+ mailgw02.mediatek.com (envelope-from <trevor.wu@mediatek.com>)
+ (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+ with ESMTP id 635396971; Tue, 08 Mar 2022 15:24:42 +0800
 Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.792.15; Tue, 8 Mar 2022 15:24:42 +0800
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 8 Mar 2022 15:24:41 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via
  Frontend Transport; Tue, 8 Mar 2022 15:24:41 +0800
 From: Trevor Wu <trevor.wu@mediatek.com>
 To: <broonie@kernel.org>, <tiwai@suse.com>, <robh+dt@kernel.org>,
  <matthias.bgg@gmail.com>
-Subject: [PATCH 5/5] dt-bindings: mediatek: mt8195: add
- mt8195-mt6359-max98390-rt5682 document
-Date: Tue, 8 Mar 2022 15:24:35 +0800
-Message-ID: <20220308072435.22460-6-trevor.wu@mediatek.com>
+Subject: [PATCH 2/5] dt-bindings: mediatek: mt8195: add reset property
+Date: Tue, 8 Mar 2022 15:24:32 +0800
+Message-ID: <20220308072435.22460-3-trevor.wu@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20220308072435.22460-1-trevor.wu@mediatek.com>
 References: <20220308072435.22460-1-trevor.wu@mediatek.com>
@@ -77,82 +75,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch adds document for mt8195 board with mt6359, max98390 and
-rt5682.
+Add required properties "resets" and "reset_names", which are used to
+specify audiosys hw reset for mt8195 afe driver.
 
 Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
 ---
- .../sound/mt8195-mt6359-max98390-rt5682.yaml  | 61 +++++++++++++++++++
- 1 file changed, 61 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/mt8195-mt6359-max98390-rt5682.yaml
+ .../devicetree/bindings/sound/mt8195-afe-pcm.yaml      | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/mt8195-mt6359-max98390-rt5682.yaml b/Documentation/devicetree/bindings/sound/mt8195-mt6359-max98390-rt5682.yaml
-new file mode 100644
-index 000000000000..7ec14d61b109
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/mt8195-mt6359-max98390-rt5682.yaml
-@@ -0,0 +1,61 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/mt8195-mt6359-max98390-rt5682.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/Documentation/devicetree/bindings/sound/mt8195-afe-pcm.yaml b/Documentation/devicetree/bindings/sound/mt8195-afe-pcm.yaml
+index 6d0975b33d15..4452a4070eff 100644
+--- a/Documentation/devicetree/bindings/sound/mt8195-afe-pcm.yaml
++++ b/Documentation/devicetree/bindings/sound/mt8195-afe-pcm.yaml
+@@ -19,6 +19,12 @@ properties:
+   interrupts:
+     maxItems: 1
+ 
++  resets:
++    maxItems: 1
 +
-+title: Mediatek MT8195 with MT6359, MAX98390 and RT5682 ASoC sound card driver
++  reset-names:
++    const: audiosys
 +
-+maintainers:
-+  - Trevor Wu <trevor.wu@mediatek.com>
-+
-+description:
-+  This binding describes the MT8195 sound card.
-+
-+properties:
-+  compatible:
-+    const: mediatek,mt8195_mt6359_max98390_rt5682
-+
-+  model:
-+    $ref: /schemas/types.yaml#/definitions/string
-+    description: User specified audio sound card name
-+
-+  mediatek,platform:
-+    $ref: "/schemas/types.yaml#/definitions/phandle"
-+    description: The phandle of MT8195 ASoC platform.
-+
-+  mediatek,dptx-codec:
-+    $ref: "/schemas/types.yaml#/definitions/phandle"
-+    description: The phandle of MT8195 Display Port Tx codec node.
-+
-+  mediatek,hdmi-codec:
-+    $ref: "/schemas/types.yaml#/definitions/phandle"
-+    description: The phandle of MT8195 HDMI codec node.
-+
-+  mediatek,adsp:
-+    $ref: "/schemas/types.yaml#/definitions/phandle"
-+    description: The phandle of MT8195 ADSP platform.
-+
-+  mediatek,dai-link:
-+    $ref: /schemas/types.yaml#/definitions/string-array
-+    description:
-+      A list of the desired dai-links in the sound card. Each entry is a
-+      name defined in the machine driver.
-+
-+additionalProperties: false
-+
-+required:
-+  - compatible
-+  - mediatek,platform
-+
-+examples:
-+  - |
-+
-+    sound: mt8195-sound {
-+        compatible = "mediatek,mt8195_mt6359_max98390_rt5682";
-+        mediatek,platform = <&afe>;
-+        pinctrl-names = "default";
-+        pinctrl-0 = <&aud_pins_default>;
-+    };
-+
-+...
+   memory-region:
+     maxItems: 1
+     description: |
+@@ -127,6 +133,8 @@ required:
+   - compatible
+   - reg
+   - interrupts
++  - resets
++  - reset-names
+   - mediatek,topckgen
+   - power-domains
+   - clocks
+@@ -144,6 +152,8 @@ examples:
+         compatible = "mediatek,mt8195-audio";
+         reg = <0x10890000 0x10000>;
+         interrupts = <GIC_SPI 822 IRQ_TYPE_LEVEL_HIGH 0>;
++        resets = <&watchdog 14>;
++        reset-names = "audiosys";
+         mediatek,topckgen = <&topckgen>;
+         power-domains = <&spm 7>; //MT8195_POWER_DOMAIN_AUDIO
+         memory-region = <&snd_dma_mem_reserved>;
 -- 
 2.18.0
 
