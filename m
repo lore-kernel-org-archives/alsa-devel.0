@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BFF5AC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 17:24:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6EF6AC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 17:25:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 09C9B18C9;
-	Tue,  8 Mar 2022 18:24:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 09C9B18C9
+	by alsa0.perex.cz (Postfix) with ESMTPS id AF6C518BB;
+	Tue,  8 Mar 2022 18:24:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF6C518BB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646760294;
-	bh=Lg5l+lVaiRIYO+OoxUwg4IcaNNcQpd0IYxoVQ9lTYyc=;
+	s=default; t=1646760310;
+	bh=wSgfdJeBnQuD5Tw0f9riM3mLX4grfj+Fq6bUvc86P64=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=X42Wqg3EPknsV+Y0LTSFna+d9aKSfKT6NnSPR3wqguDhXT6d46rmC1mjiOf6KFGZa
-	 JL9RBJNb6uE7/6Q7RtPsGDqUYkIxwRxLqtzrfnzNnVqF8YAF2kBzgP/6kY8LBBS9cB
-	 /4y64zRf7mU7hp+u13T39EIjKrFG/tn6IwgSswoc=
+	b=B018yyRPp61SPN3ZrebKQOTWqfgQLWBdQdm8PvxSsC5yPzA0VLCcoZxGMOXZ3VCHv
+	 PnmjfNYPXF5LenkNLIsyBcvdAY0gjULZyj16fyRPC8C09bZUaDBuo7+WU+tngVXPV1
+	 gwQuGAehq06izOMP2H3Pv2Jj54Lcy0vWkw3ivfMU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6CD4EF80529;
-	Tue,  8 Mar 2022 18:21:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2CC79F80533;
+	Tue,  8 Mar 2022 18:21:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 590A1F80519; Tue,  8 Mar 2022 18:20:59 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 4E98EF8052F; Tue,  8 Mar 2022 18:21:05 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 83DC0F80508
- for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2022 18:20:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83DC0F80508
+ by alsa1.perex.cz (Postfix) with ESMTPS id C4708F8052F
+ for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2022 18:20:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4708F8052F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="P5jpwNri"
+ header.b="OCeTIOQh"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 64E9061248;
- Tue,  8 Mar 2022 17:20:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 739ACC36AF4;
- Tue,  8 Mar 2022 17:20:50 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 977C160F89;
+ Tue,  8 Mar 2022 17:20:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA83DC340EF;
+ Tue,  8 Mar 2022 17:20:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1646760052;
- bh=Lg5l+lVaiRIYO+OoxUwg4IcaNNcQpd0IYxoVQ9lTYyc=;
+ s=k20201202; t=1646760058;
+ bh=wSgfdJeBnQuD5Tw0f9riM3mLX4grfj+Fq6bUvc86P64=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=P5jpwNriCQnrkXZfgZbGJA+O8dFA/CLORZmFnDVhwGnFmh45csUJUDeISFA2z79zF
- eYOyLl9YBPhKUA6NJwP4XONz2NqEkqipQuCKIIc+LDAQ1M4TBYZ1eDZHkgGqbZJBy9
- c8IG6ilWDCFtSBJQ5Y/3OnUwWWnoV6cXQxYa95+XFbk+R8nkrkKv3DqBKVKp+a/P7M
- fkSLWYTI9jO2Abbxhv5NA/OrN7N1OniOcrx/JRJWrzdhsOUh1TQ30L5e7+xATOQ4Ba
- hX6qC+LhswHYrVob3V9yWC6w26K4NtNEPXDiOa5trmYOAh8BowOC1l7K5EtM5B+W1m
- mH19YylPEprjg==
+ b=OCeTIOQh9qpUvmWZfWOIAHCl07UBaqndWDIed2WZLKCEj6mM+IAu2/OlhJ/IH590C
+ LpcWjyKkTwoDt7u2nBbe4ZeBMRTANTgGV3HkoH+vLArzFNOfSs+rNX8Qz0Numr2JkT
+ b/LWAdoFLatB4+ZAoUxXHipZX1Y5Lo69Xx6xu/ebiAwlUu6JGnRABEBqF5epD0APUm
+ 8txfRgGU+zsu+02WBuxVu8dxvE3QozWxKbKaXI6nWMDN8gepdgRtDcbqk9dsE//RC4
+ 5eEtaNCoEjamqaakfjzWwRcbp3LiqKstoY++yeAfDkS64QrlH2MnLi/AA4FBnQglrp
+ TK9zbhdiwpTBg==
 From: Mark Brown <broonie@kernel.org>
-To: Jaroslav Kysela <perex@perex.cz>,
- Lianjie Zhang <zhanglianjie@uniontech.com>
-In-Reply-To: <20220307151939.32870-1-zhanglianjie@uniontech.com>
-References: <20220307151939.32870-1-zhanglianjie@uniontech.com>
-Subject: Re: [PATCH v2] ASoC: Intel: catpt: use asoc_substream_to_rtd()
-Message-Id: <164676005019.54315.15405377603345473367.b4-ty@kernel.org>
-Date: Tue, 08 Mar 2022 17:20:50 +0000
+To: Jiaxin Yu <jiaxin.yu@mediatek.com>
+In-Reply-To: <20220307033056.11463-1-jiaxin.yu@mediatek.com>
+References: <20220307033056.11463-1-jiaxin.yu@mediatek.com>
+Subject: Re: [v2] ASoC: mediatek: mt8183: support wb bt audio
+Message-Id: <164676005561.54315.8574406268011125156.b4-ty@kernel.org>
+Date: Tue, 08 Mar 2022 17:20:55 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Jie Yang <yang.jie@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
+ Project_Global_Chrome_Upstream_Group@mediatek.com, tzungbi@google.com,
+ linux-mediatek@lists.infradead.org, trevor.wu@mediatek.com,
+ Tzung-Bi Shih <tzungbi@kernel.org>, matthias.bgg@gmail.com,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,9 +83,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 7 Mar 2022 23:19:39 +0800, Lianjie Zhang wrote:
-> Now we can use asoc_substream_to_rtd() macro,
-> let's use it.
+On Mon, 7 Mar 2022 11:30:56 +0800, Jiaxin Yu wrote:
+> Use "bt-sco-pcm-wb" codec dai driver for wb bt audio.
 > 
 > 
 
@@ -95,8 +94,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Intel: catpt: use asoc_substream_to_rtd()
-      commit: 51996ca26fc7b5dbeea80eddba0e8a4ece6af459
+[1/1] ASoC: mediatek: mt8183: support wb bt audio
+      commit: 5ea14bf62ef4501c13f56fce75f6752cf643748f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
