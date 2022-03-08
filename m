@@ -4,68 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A30DBC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 20:24:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57888C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 21:06:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 39DB0184E;
-	Tue,  8 Mar 2022 21:23:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 39DB0184E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 995041899;
+	Tue,  8 Mar 2022 22:05:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 995041899
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646771087;
-	bh=Q3bjpe2on4mZCKxMvqTUessEuRTc3oSUUzcLD4Jfuh8=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=RdtwXZwoR7JdxqE3ssGz/X+DTj50TBFLzEX5JXAh+okHqjmRIOItPV+FyCV92nVni
-	 XxSAjuli7EvRyLhoCvHvtNLY/zBmpjGYOgDCI3ED9oMs8WgD4sp8BtX7ciHceRONo+
-	 gJrtwNJm6R744WUbAvGotQWYFe1TxwILuY7J1gRU=
+	s=default; t=1646773576;
+	bh=QMWQCWV1q0cVyGexlV6EMwL7zWzglGPEwxigZVHILVM=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=M4qjpJD4/htPzH59a3Ly8VQNg8vsYTNqia8J0Gg3w3itWD+veMy2K5zxBPyaTQ52U
+	 qtdkeXKSVFjVe6uxVm23fjcQKwn+lxfvYf+egLsjZ9hHCB0QWR1o+iOxmqEUpmL9L4
+	 JeyOpSEvgYDa4helr71zxjsut9l3TRnEocQ9E0/s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B94D3F8025E;
-	Tue,  8 Mar 2022 21:23:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2F6F5F800D1;
+	Tue,  8 Mar 2022 22:05:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 96A44F8026A; Tue,  8 Mar 2022 21:23:54 +0100 (CET)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ id 5B5AAF8026A; Tue,  8 Mar 2022 22:05:24 +0100 (CET)
+Received: from casper.infradead.org (casper.infradead.org
+ [IPv6:2001:8b0:10b:1236::1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EC1AEF80121
- for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2022 21:23:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC1AEF80121
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4B6E7F800D1
+ for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2022 22:05:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B6E7F800D1
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="GoemlVsc"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1646771029; x=1678307029;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=Q3bjpe2on4mZCKxMvqTUessEuRTc3oSUUzcLD4Jfuh8=;
- b=GoemlVscQVtmTHMSvCAAQi2iJApugd+2mB247G88nxMu+wArNKXmaDKJ
- yJcDYbxG77+f/J5fhquNuJKgnO5TOogFtZ6zornLMlwXokB6zla+afXCq
- VNB2d92wKGQx2YsTe48Ys98jN3C6sJCdM6FBGIe2m6j7fF8kd4dSEEuQU
- N/R9l/mjFd9L2rE0zxUNY/oXlhc9WXeanlatb3bkKsLWp8SwTqEYYs07W
- P/S41kG7Vqtibiwy2u6+BFGT0UBfdqKJgSvLcEMmQbdhab3sF4XnSiutU
- yLh6ZZU2huKtthJUMa3T+y6Q9jP6YPZiTX7equkpw/N9Up0f07gL7vfgf Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10280"; a="254994144"
-X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="254994144"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Mar 2022 12:23:39 -0800
-X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="711673793"
-Received: from jhaskins-mobl.amr.corp.intel.com (HELO
- pbossart-mobl3.amr.corp.intel.com) ([10.209.53.149])
- by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Mar 2022 12:23:38 -0800
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: Intel: boards: fix randconfig issue
-Date: Tue,  8 Mar 2022 14:23:18 -0600
-Message-Id: <20220308202318.401358-1-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+ dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
+ header.b="PqLvd2pJ"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+ In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+ :Reply-To:Content-ID:Content-Description;
+ bh=aghJjQ/TxIEM63SbYMSSg0+NF0Cmq0zVo1nfIfNkssw=; b=PqLvd2pJRv+fY3NhcB9E77MjSu
+ fRb1FyfGUbCWaTR/Ow7MiMidTcEy+patfqvEeKffSuAYwIYS3D5ksh7CUzumX0uyJZvQNZ4sjMiEL
+ g5byy1fY2oU5UjcODjMuMbP5sFF1H4ZsFH+jxGuCD4Wcwz+R6zGvyAJpWxHa/qvMENuMLxd+MQiv8
+ AledxCWnMP0Q/trAIMb8roOHaigeicCSM7BjFi/YXQh77CBU8dP0yXiGAxoBlI2AU0O9U6131ugHQ
+ GUXrvelwkUcdKk6VQwOo+HfO0OSN0PS13Yi7DvXumd+WPdmc5whHPopFG3HuhceJ4jigxjRK61Z+F
+ jfNp3a7Q==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+ by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nRh18-00GXKC-Hl; Tue, 08 Mar 2022 21:05:14 +0000
+Message-ID: <27360976-8820-cdbb-cc17-52ea0ccb3b55@infradead.org>
+Date: Tue, 8 Mar 2022 13:05:09 -0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, broonie@kernel.org, Randy Dunlap <rdunlap@infradead.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.2
+Subject: Re: [PATCH] ASoC: Intel: boards: fix randconfig issue
+Content-Language: en-US
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org
+References: <20220308202318.401358-1-pierre-louis.bossart@linux.intel.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20220308202318.401358-1-pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: tiwai@suse.de, broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,47 +79,56 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-on x86_64:
 
-ERROR: modpost: "sof_dai_get_bclk"
-[sound/soc/intel/boards/snd-soc-intel-sof-cirrus-common.ko] undefined!
 
-ERROR: modpost: "sof_dai_get_mclk"
-[sound/soc/intel/boards/snd-soc-intel-sof-realtek-common.ko]
-undefined!
+On 3/8/22 12:23, Pierre-Louis Bossart wrote:
+> on x86_64:
+> 
+> ERROR: modpost: "sof_dai_get_bclk"
+> [sound/soc/intel/boards/snd-soc-intel-sof-cirrus-common.ko] undefined!
+> 
+> ERROR: modpost: "sof_dai_get_mclk"
+> [sound/soc/intel/boards/snd-soc-intel-sof-realtek-common.ko]
+> undefined!
+> 
+> This comes from a missing dependency on at least ONE SOF platform
+> being selected. This dependency exists for all other machine drivers,
+> this was missed in the earlier reviews.
+> 
+> Fixes: 2fe14ff61bd6 ("ASoC: Intel: sof_ssp_amp: rename driver and support cs35l41 amplifier")
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-This comes from a missing dependency on at least ONE SOF platform
-being selected. This dependency exists for all other machine drivers,
-this was missed in the earlier reviews.
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Tested-by: Randy Dunlap <rdunlap@infradead.org>
 
-Fixes: 2fe14ff61bd6 ("ASoC: Intel: sof_ssp_amp: rename driver and support cs35l41 amplifier")
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/intel/boards/Kconfig | 3 +++
- 1 file changed, 3 insertions(+)
+Thanks.
 
-diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index a62785893bec..f3873b5bea87 100644
---- a/sound/soc/intel/boards/Kconfig
-+++ b/sound/soc/intel/boards/Kconfig
-@@ -616,6 +616,8 @@ config SND_SOC_INTEL_SOF_DA7219_MAX98373_MACH
- 
- endif ## SND_SOC_SOF_JASPERLAKE
- 
-+if SND_SOC_SOF_HDA_LINK
-+
- config SND_SOC_INTEL_SOF_SSP_AMP_MACH
- 	tristate "SOF with amplifiers in I2S Mode"
- 	depends on I2C && ACPI
-@@ -632,6 +634,7 @@ config SND_SOC_INTEL_SOF_SSP_AMP_MACH
- 	   with RT1308/CS35L41 I2S audio codec.
- 	   Say Y if you have such a device.
- 	   If unsure select "N".
-+endif ## SND_SOC_SOF_HDA_LINK
- 
- if SND_SOC_SOF_ELKHARTLAKE
- 
+> ---
+>  sound/soc/intel/boards/Kconfig | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+> index a62785893bec..f3873b5bea87 100644
+> --- a/sound/soc/intel/boards/Kconfig
+> +++ b/sound/soc/intel/boards/Kconfig
+> @@ -616,6 +616,8 @@ config SND_SOC_INTEL_SOF_DA7219_MAX98373_MACH
+>  
+>  endif ## SND_SOC_SOF_JASPERLAKE
+>  
+> +if SND_SOC_SOF_HDA_LINK
+> +
+>  config SND_SOC_INTEL_SOF_SSP_AMP_MACH
+>  	tristate "SOF with amplifiers in I2S Mode"
+>  	depends on I2C && ACPI
+> @@ -632,6 +634,7 @@ config SND_SOC_INTEL_SOF_SSP_AMP_MACH
+>  	   with RT1308/CS35L41 I2S audio codec.
+>  	   Say Y if you have such a device.
+>  	   If unsure select "N".
+> +endif ## SND_SOC_SOF_HDA_LINK
+>  
+>  if SND_SOC_SOF_ELKHARTLAKE
+>  
+
 -- 
-2.30.2
-
+~Randy
