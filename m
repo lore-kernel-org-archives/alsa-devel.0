@@ -4,75 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96D3DC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 16:45:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B26DC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 16:45:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B28E2181C;
-	Tue,  8 Mar 2022 17:44:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B28E2181C
+	by alsa0.perex.cz (Postfix) with ESMTPS id AEC3617F0;
+	Tue,  8 Mar 2022 17:45:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AEC3617F0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646757933;
-	bh=BloCR7IgHwGqVaKqlil5nTnQMYwWqLtZl3zLrRzF46c=;
+	s=default; t=1646757953;
+	bh=JlVsEVtv+stKt8+Fm7133LjYVCeaSqakvtfe/gKYSn4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EDxZWDufJ0AX1MpBYhrUS4IziWm9J+GOzcFtV5cv96xXee3lzL8vRFcjAC1Do1v4N
-	 fMlHqNwJNOUNnylMKQHr15IJtnbAk1kTto8J35xeeoGhp6x1TUuSCzzQPJ0kwD9st8
-	 KkyOYGJcM9SnktpH7H8e3F29txC6VStUEWWbMU0M=
+	b=JuWVomPVGbemCeAWdysLIRw0MAXyGi09GNDcHRtKhCA87wO/PWMh9QRW/51Fo2Ula
+	 nENnhAjCm0SKHMedeGe5Z2Ac5eeCFRHfkC80KYvp5MIGHOM90m/LxjccWfVhvxeT+g
+	 VePVX44MrznR0GGa0DFd1HXDsWoLTjfFZ+RRvdV8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 231DCF80519;
-	Tue,  8 Mar 2022 17:44:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1890FF80520;
+	Tue,  8 Mar 2022 17:44:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 51BC1F804F3; Tue,  8 Mar 2022 17:44:09 +0100 (CET)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ id 5BB96F80520; Tue,  8 Mar 2022 17:44:13 +0100 (CET)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 61617F8025E
- for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2022 17:44:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 61617F8025E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 322F7F80272
+ for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2022 17:44:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 322F7F80272
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="ZL70IIEh"
+ header.b="Po5SAvQT"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1646757843; x=1678293843;
+ t=1646757849; x=1678293849;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=BloCR7IgHwGqVaKqlil5nTnQMYwWqLtZl3zLrRzF46c=;
- b=ZL70IIEht+h4B8xPGKZKjv2lLaf3RjMCK5s5Qnj3gTDBMjVdqE5x56Vn
- 4tVj2aOqEup3aKGoD1SZA+N9IGoPImFXkyr5eoevMxQGgPKkhYLyP+KNV
- XTah4FzKzBgDInKwuzL3OEdRDG0hWV9OrbJY81zFbv221vyxij2p2Erpi
- fWIPdZxWUJPZfN4bQmLFbbYNtyr4DsCNQqtJvhOgYSncWjsFL9ZDUp3YI
- /7EzbuTUaiJ2j6DZczViR6zGVF6MHJu9m51YksCL/RN3Y9g90t+fZbjJ0
- Vm0S4JfQjPLZZra/9xj7r3HCgsK1tdd6QAJIVYiYsiMGjh84ba1eZzjTD A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10280"; a="317964769"
-X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="317964769"
+ bh=JlVsEVtv+stKt8+Fm7133LjYVCeaSqakvtfe/gKYSn4=;
+ b=Po5SAvQT+fHd2108VTCU1N+rF5wUrBfac5AvW56H0601pE5Mo9AuYbbJ
+ ufmXFNWo9mUCN68YwG252k1KFaD3iSUOE6q2jhaKuq6+KVnzP1T8NCynQ
+ aXoAixzOrgqbJp5bxR1v93fKfGo8eJtaCSP4inmqa3yecjHBlG0Le0shY
+ 6U3RJW+GJsb6gn0EHTWWvQBbUTNpS29oElwr1VBd7D6ezWPH86paoSgDg
+ SjIBAz6MH90CSRCaga/QxaS/tTFhpE8mQTeRV3Tq/F/hEpb+kB/6devQD
+ P1Y7+UrSUKAHKHEC+koOAyRWv6zAyDYWQBFsY9XxVTMXqA72BqU6br4vc w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10280"; a="341166851"
+X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="341166851"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Mar 2022 08:43:58 -0800
-X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="537633268"
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 08 Mar 2022 08:44:00 -0800
+X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="537633287"
 Received: from bustam3x-mobl.amr.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.251.130.225])
  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Mar 2022 08:43:57 -0800
+ 08 Mar 2022 08:43:59 -0800
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 13/18] ASoC: SOF: Add a tuples array to struct
- snd_sof_widget
-Date: Tue,  8 Mar 2022 08:43:39 -0800
-Message-Id: <20220308164344.577647-14-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH v2 18/18] ASoC: SOF: move definition of snd_sof_ipc to header
+ file
+Date: Tue,  8 Mar 2022 08:43:44 -0800
+Message-Id: <20220308164344.577647-19-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220308164344.577647-1-ranjani.sridharan@linux.intel.com>
 References: <20220308164344.577647-1-ranjani.sridharan@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, Bard Liao <yung-chuan.liao@linux.intel.com>,
+Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Rander Wang <rander.wang@intel.com>, broonie@kernel.org,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- broonie@kernel.org, amadeuszx.slawinski@linux.intel.com,
+ amadeuszx.slawinski@linux.intel.com,
  =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -89,53 +89,66 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add 2 new fields to snd_sof_widget to store an array of tuples
-defined by struct snd_sof_tuple and the number of tuples. When the
-topology gets parsed, the tuples associated with a widget will be stored
-in this array and will be used to construct the IPC structure
-depending on the IPC version.
+From: Rander Wang <rander.wang@intel.com>
 
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Move definition of struct snd_sof_ipc to the header file so it can be
+shared with new IPC versions.
+
+Signed-off-by: Rander Wang <rander.wang@intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/sof-audio.h | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ sound/soc/sof/ipc.c      | 12 ------------
+ sound/soc/sof/sof-priv.h | 12 ++++++++++++
+ 2 files changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
-index 10330d826d40..2a1da9e13279 100644
---- a/sound/soc/sof/sof-audio.h
-+++ b/sound/soc/sof/sof-audio.h
-@@ -30,6 +30,18 @@
+diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
+index c729bb7bf8c8..34084e0008f1 100644
+--- a/sound/soc/sof/ipc.c
++++ b/sound/soc/sof/ipc.c
+@@ -27,18 +27,6 @@ static void ipc_stream_message(struct snd_sof_dev *sdev, void *msg_buf);
+  * IPC message Tx/Rx message handling.
+  */
  
- #define WIDGET_IS_DAI(id) ((id) == snd_soc_dapm_dai_in || (id) == snd_soc_dapm_dai_out)
- 
-+/** struct snd_sof_tuple - Tuple info
-+ * @token:	Token ID
-+ * @value:	union of a string or a u32 values
-+ */
-+struct snd_sof_tuple {
-+	u32 token;
-+	union {
-+		u32 v;
-+		const char *s;
-+	} value;
-+};
-+
- /* PCM stream, mapped to FW component  */
- struct snd_sof_pcm_stream {
- 	u32 comp_id;
-@@ -112,6 +124,9 @@ struct snd_sof_widget {
- 
- 	const guid_t uuid;
- 
-+	int num_tuples;
-+	struct snd_sof_tuple *tuples;
-+
- 	void *private;		/* core does not touch this */
+-/* SOF generic IPC data */
+-struct snd_sof_ipc {
+-	struct snd_sof_dev *sdev;
+-
+-	/* protects messages and the disable flag */
+-	struct mutex tx_mutex;
+-	/* disables further sending of ipc's */
+-	bool disable_ipc_tx;
+-
+-	struct snd_sof_ipc_msg msg;
+-};
+-
+ struct sof_ipc_ctrl_data_params {
+ 	size_t msg_bytes;
+ 	size_t hdr_bytes;
+diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
+index 2e19ac619ad5..7f0514db4d06 100644
+--- a/sound/soc/sof/sof-priv.h
++++ b/sound/soc/sof/sof-priv.h
+@@ -345,6 +345,18 @@ struct snd_sof_ipc_msg {
+ 	bool ipc_complete;
  };
  
++/* SOF generic IPC data */
++struct snd_sof_ipc {
++	struct snd_sof_dev *sdev;
++
++	/* protects messages and the disable flag */
++	struct mutex tx_mutex;
++	/* disables further sending of ipc's */
++	bool disable_ipc_tx;
++
++	struct snd_sof_ipc_msg msg;
++};
++
+ /*
+  * SOF Device Level.
+  */
 -- 
 2.25.1
 
