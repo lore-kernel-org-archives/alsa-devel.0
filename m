@@ -4,84 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23EECC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 11:31:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64420C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 14:21:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8C8DE172B;
-	Tue,  8 Mar 2022 12:30:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C8DE172B
+	by alsa0.perex.cz (Postfix) with ESMTPS id E42511720;
+	Tue,  8 Mar 2022 15:20:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E42511720
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646739102;
-	bh=FfySqN0vQa4ttzZHSXEhhQ3ALTvA9lNDII7nXpWIblk=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=ne9VQJQhS76uIO8/eo1JUQBGEgjaF+0PFJIKGeilbO9tDXPlsLIiED71mJLi2gw8/
-	 hldWiwVgZDMJpTmIzcF1wTL9jaxk5J1u+Sa8vovCNVA1XkkdJYjAh2n1NjZD4LmNvW
-	 6Y0EN2D9DRkbMIOvqL0//CBdmpc+xiqdrrYvXfN0=
+	s=default; t=1646749259;
+	bh=aanfOJV7AC23VfwF3CLjCBUOEEseCGvDAuZZLOIGs2c=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=s3wFpkMMtn3M4gfnbEvXmVZ18LqH9zbkjI9U7ZXzg3YYHQhc7yUNsZMb1+HcwZDSy
+	 UObxHjlnl5zpCkooxvJzl/+xT0gm3BhI/LAF9Yy7Vrr0gjlLfvbl/3SejsQsF5LU1t
+	 sA6VXYVT/clr+JeKXZZIEAhBUbYnMIV623RozD6Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1FE9CF8025E;
-	Tue,  8 Mar 2022 12:30:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 70F9BF8025E;
+	Tue,  8 Mar 2022 15:20:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 91C93F8026A; Tue,  8 Mar 2022 12:30:49 +0100 (CET)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ id 88298F8026A; Tue,  8 Mar 2022 15:20:06 +0100 (CET)
+Received: from smtpbg151.qq.com (smtpbg151.qq.com [18.169.211.239])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 19AA0F800D2;
- Tue,  8 Mar 2022 12:30:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 19AA0F800D2
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="ETZ96CB/"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1646739043; x=1678275043;
- h=message-id:date:mime-version:subject:to:references:from:
- in-reply-to:content-transfer-encoding;
- bh=FfySqN0vQa4ttzZHSXEhhQ3ALTvA9lNDII7nXpWIblk=;
- b=ETZ96CB/1Kf0JgMPc2Osp9OPLFmjsJE1PzvF5/Gz1s+Y9ofvb6yARKKA
- nWJ3qeOvfYDkRI2I8E7TyIJhiluVTYov0mL5KRQEkRLDSzpfaexkOoj5i
- hse70FVOMD+AJkbPiM3lxpFr9BDz/KI+qUPOK4XNK9ZNNVd3WW9F0IU1J
- XLCnGrmegfgcuQ2t38s6/QMPLILfV7QENhfK76G0Yn+b2kJJaSd3fdK12
- 2vPstJRpD9ofgI4n84gKyDSqqjQwb/m6JWLktM4+MIR9kj0HeCNQp7VF8
- kgb4bzVJwPLAWIa5xKfPfgmWmSKc4TDNcv+q29ab0MLkZHqZAvrEGGGbd Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10279"; a="341093267"
-X-IronPort-AV: E=Sophos;i="5.90,164,1643702400"; d="scan'208";a="341093267"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Mar 2022 03:30:37 -0800
-X-IronPort-AV: E=Sophos;i="5.90,164,1643702400"; d="scan'208";a="687893094"
-Received: from nsedoc-mobl.ger.corp.intel.com (HELO [10.251.218.162])
- ([10.251.218.162])
- by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Mar 2022 03:30:33 -0800
-Message-ID: <886a7712-ffdc-4d0c-fde5-5498b84e416c@linux.intel.com>
-Date: Tue, 8 Mar 2022 13:30:41 +0200
+ by alsa1.perex.cz (Postfix) with ESMTPS id 03551F800D1
+ for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2022 15:19:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03551F800D1
+X-QQ-mid: bizesmtp72t1646749192tnj1p904
+Received: from localhost.localdomain ( [114.222.120.105])
+ by bizesmtp.qq.com (ESMTP) with 
+ id ; Tue, 08 Mar 2022 22:19:45 +0800 (CST)
+X-QQ-SSF: 01400000002000C0I000B00A0000000
+X-QQ-FEAT: +frVms9LjlpphZQq1TQE4txJeZ4Ct3/bYc4jxNrpvjoCjzk7SUf7NebxCA01P
+ SqFfMPXogaxMZBgwBM8mMxzg+qMKLZ1qcUesjS1rHrAHR731GMzCzQKkYxUgO59vdmQu4Ar
+ PE91n0RUgDJpdi27EZ3cT5H2AswkNKZXnFE9lmWNBD2ELxAOO8lXE5Td5wfovy9ADqHEwJt
+ eAaYj5K1fWAKnlPOR7B/cid/ne7kPk5PwZf7n3jW9xWmZGPoeqToL2BJQ8xJa+qP50eQ3Ze
+ 7iHHyi4SIeizTq+WIcgY59NN1Y6mhMjXJVXjMJkqGVLEzGcAyIRXTW+khgiwKF1MgWLNfVG
+ 7/TPmgklf/tTU3QG1FjuMVyotqLhgiWFQm+0FPg
+X-QQ-GoodBg: 2
+From: Lianjie Zhang <zhanglianjie@uniontech.com>
+To: Jaroslav Kysela <perex@perex.cz>
+Subject: [PATCH v3] ASoC: Intel: catpt: use asoc_substream_to_rtd()
+Date: Tue,  8 Mar 2022 22:19:36 +0800
+Message-Id: <20220308141936.59331-1-zhanglianjie@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.1
-Subject: Re: [PATCH] ASoC: SOF: Add missing of_node_put() in imx8m_probe
-Content-Language: en-US
-To: Miaoqian Lin <linmq006@gmail.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Daniel Baluta <daniel.baluta@nxp.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
- Viorel Suman <viorel.suman@nxp.com>, sound-open-firmware@alsa-project.org,
- alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20220308023325.31702-1-linmq006@gmail.com>
-From: =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <20220308023325.31702-1-linmq006@gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign2
+X-QQ-Bgrelay: 1
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Jie Yang <yang.jie@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>, Lianjie Zhang <zhanglianjie@uniontech.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,32 +74,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Now we can use asoc_substream_to_rtd() macro,
+let's use it.
+
+Signed-off-by: Lianjie Zhang <zhanglianjie@uniontech.com>
+
+diff --git a/sound/soc/intel/catpt/pcm.c b/sound/soc/intel/catpt/pcm.c
+index 939a9b801dec..a26000cd5ceb 100644
+--- a/sound/soc/intel/catpt/pcm.c
++++ b/sound/soc/intel/catpt/pcm.c
+@@ -74,7 +74,7 @@ static struct catpt_stream_template *catpt_topology[] = {
+ static struct catpt_stream_template *
+ catpt_get_stream_template(struct snd_pcm_substream *substream)
+ {
+-	struct snd_soc_pcm_runtime *rtm = substream->private_data;
++	struct snd_soc_pcm_runtime *rtm = asoc_substream_to_rtd(substream);
+ 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtm, 0);
+ 	enum catpt_stream_type type;
+
+@@ -593,7 +593,7 @@ static int catpt_component_pcm_construct(struct snd_soc_component *component,
+ static int catpt_component_open(struct snd_soc_component *component,
+ 				struct snd_pcm_substream *substream)
+ {
+-	struct snd_soc_pcm_runtime *rtm = substream->private_data;
++	struct snd_soc_pcm_runtime *rtm = asoc_substream_to_rtd(substream);
+
+ 	if (!rtm->dai_link->no_pcm)
+ 		snd_soc_set_runtime_hwparams(substream, &catpt_pcm_hardware);
+@@ -604,7 +604,7 @@ static snd_pcm_uframes_t
+ catpt_component_pointer(struct snd_soc_component *component,
+ 			struct snd_pcm_substream *substream)
+ {
+-	struct snd_soc_pcm_runtime *rtm = substream->private_data;
++	struct snd_soc_pcm_runtime *rtm = asoc_substream_to_rtd(substream);
+ 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtm, 0);
+ 	struct catpt_stream_runtime *stream;
+ 	struct catpt_dev *cdev = dev_get_drvdata(component->dev);
+--
+2.20.1
 
 
-On 08/03/2022 04:33, Miaoqian Lin wrote:
-> The device_node pointer is returned by of_parse_phandle()  with refcount
-> incremented. We should use of_node_put() on it when done.
 
-Reviewed-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-
-> Fixes: afb93d716533 ("ASoC: SOF: imx: Add i.MX8M HW support")
-> Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
-> ---
->  sound/soc/sof/imx/imx8m.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/sound/soc/sof/imx/imx8m.c b/sound/soc/sof/imx/imx8m.c
-> index 788e77bcb603..60251486b24b 100644
-> --- a/sound/soc/sof/imx/imx8m.c
-> +++ b/sound/soc/sof/imx/imx8m.c
-> @@ -224,6 +224,7 @@ static int imx8m_probe(struct snd_sof_dev *sdev)
->  	}
->  
->  	ret = of_address_to_resource(res_node, 0, &res);
-> +	of_node_put(res_node);
->  	if (ret) {
->  		dev_err(&pdev->dev, "failed to get reserved region address\n");
->  		goto exit_pdev_unregister;
-
--- 
-Péter
