@@ -4,73 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F002C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 19:29:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D68D0C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 19:29:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DCF9018B8;
-	Tue,  8 Mar 2022 20:28:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DCF9018B8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0BA21189F;
+	Tue,  8 Mar 2022 20:28:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0BA21189F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646767759;
-	bh=BPRAnuh+l541aSDHdWMkJ+0rN71ZzjLde+JGhn4drp8=;
+	s=default; t=1646767776;
+	bh=DSwnvYylFpt6OjgGrsNGm5Y7gxtMzOIQAeKa18Oi+GE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=i01gypIwAjyBnlNqHJ4+WZUip5NOn0LrBRZmXbUTMLETFxVtwgEGhOSYyNX2ifqVs
-	 i9c/8lfoYWzLP8T87qw3eyI4QxeLQab82RC03P5vKtg+fUfWjrMPzdfHob6nNZHoUV
-	 DU+THX3AurPuqtqbNK4nONAhS32zJ/oVgYsvYP5k=
+	b=gsIpKagND+VQwmP9acdfDhodSLfICQL7FXDJrb965V4d7tJ8+JMuYvJF++FAr14m1
+	 lXR3iuVivrAGGJAM6EjBKImUI9uAG1A1rWoKOW/I/JabGZ+hO9ha2OqJhrwkiXZfzd
+	 fdY4xCM7x8Q3oBfLKRDs22Q7ZK3B8/UnAZb/LV+c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 657B3F80538;
-	Tue,  8 Mar 2022 20:26:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 558CCF8053B;
+	Tue,  8 Mar 2022 20:26:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AAD48F80533; Tue,  8 Mar 2022 20:26:54 +0100 (CET)
+ id 92C20F8052E; Tue,  8 Mar 2022 20:26:54 +0100 (CET)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A4FA7F80272
- for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2022 20:26:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4FA7F80272
+ by alsa1.perex.cz (Postfix) with ESMTPS id 903FDF80279
+ for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2022 20:26:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 903FDF80279
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="l5qZLXhR"
+ header.b="AotMZIyY"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1646767608; x=1678303608;
+ t=1646767606; x=1678303606;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=BPRAnuh+l541aSDHdWMkJ+0rN71ZzjLde+JGhn4drp8=;
- b=l5qZLXhRpGDBkOYOXjUbJ+1PC6l9eJ9kjeYlEH4g5RGJuNn1E2FqygMr
- MWlTWfRFa3L84UKnmU2q8NjUs42MFx7tOhzTNqlWyuNnBisM3CG0e6CRy
- auyddNLpO12H8Zd+vU3lywWjBbA7uMedk5onOpA3KcrSRU6AOdjUi3QlJ
- qMraiB7fyh5e6P8WOlllQrKKlgZ0lnRzd186MqwkU7gDopiMCO8YO8zBm
- DhAcjGrGnMGaudmE9Wi2qzuGd4EAgqSNg3rxDwTjuVlQ7JRAjT43CYHEc
- 8ND/Z7JUPNggTg77CFAMR56U8/O5NhZa3LBrjQnuM422O1ANCRIFvCv/I w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10280"; a="252363703"
-X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="252363703"
+ bh=DSwnvYylFpt6OjgGrsNGm5Y7gxtMzOIQAeKa18Oi+GE=;
+ b=AotMZIyYDmMLycjPr1dX0FPvhoCHfdBaL00ZT1bYobEY+LRHxe+zEXCP
+ hV3HgC0DcdYpjdC8LXN0GKGSYOKe34pyJXyMO/SMG6Nny5oPtw3OVPvOX
+ LAAbVGfZBJSWUqe0eBEc42zBGOUaPvOX4iZqaJxS6cCJiOHvJTtpKqioF
+ BvyS/eawLhPFsh1MPeO+bMk20jXB28VVXLLYPWZe+9++HLv9bMDcxXOx4
+ mYJHgyFLz9LQsTC+mt99f3SYH4EWsVXD2Ojr7LnC1tLYRiUS2irDD6XCY
+ q3Vnb3kpBOvYBwbt0jLqgM9xP3daKLlquSwFxh3dcquic19oXC2RPK4ei w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10280"; a="252363694"
+X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="252363694"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Mar 2022 11:26:44 -0800
-X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="495573957"
+ 08 Mar 2022 11:26:42 -0800
+X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="495573950"
 Received: from jhaskins-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.209.53.149])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Mar 2022 11:26:43 -0800
+ 08 Mar 2022 11:26:41 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 08/20] ASoC: Intel: soc-acpi: add more ACPI HIDs for ES83x6
- devices
-Date: Tue,  8 Mar 2022 13:25:58 -0600
-Message-Id: <20220308192610.392950-9-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 06/20] ASoC: Intel: soc-acpi: quirk topology filename
+ dynamically
+Date: Tue,  8 Mar 2022 13:25:56 -0600
+Message-Id: <20220308192610.392950-7-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220308192610.392950-1-pierre-louis.bossart@linux.intel.com>
 References: <20220308192610.392950-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- anthony tonitch <d.tonitch@gmail.com>, tiwai@suse.de,
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, tiwai@suse.de,
  =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
  Huajun Li <huajun.li@intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
@@ -92,150 +91,239 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We only saw ESSX8336 so far, but now with reports of 'ESSX8326' we
-need to expand to a full list. Let's reuse the 'snd_soc_acpi_codecs'
-structure to store the information.
+Different topology filenames may be required depending on which SSP is
+used, and whether or not digital mics are present.
 
-Note that ES8326 will need a dedicated codec driver, but the plan is
-to use the same machine driver for all Everest Audio devices.
+This patch adds a tplg_quirk_mask and in the case of the SOF driver
+adds the relevant configurations.
 
-Reported-by: anthony tonitch <d.tonitch@gmail.com>
+This is a short-term solution to the ES8336 support issues.
+
+In a long-term solution, we would need an interface where the machine
+driver or platform driver have the ability to alter the topology
+hard-coded low-level hardware support, e.g. by substituting an
+interface for another, or disabling an interface that is not supported
+on a given skew.
+
+BugLink: https://github.com/thesofproject/linux/issues/3248
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/intel/common/soc-acpi-intel-bxt-match.c | 7 ++++++-
- sound/soc/intel/common/soc-acpi-intel-cml-match.c | 7 ++++++-
- sound/soc/intel/common/soc-acpi-intel-glk-match.c | 7 ++++++-
- sound/soc/intel/common/soc-acpi-intel-jsl-match.c | 7 ++++++-
- sound/soc/intel/common/soc-acpi-intel-tgl-match.c | 7 ++++++-
- 5 files changed, 30 insertions(+), 5 deletions(-)
+ include/sound/soc-acpi.h                      | 20 +++++++
+ .../intel/common/soc-acpi-intel-bxt-match.c   |  5 +-
+ .../intel/common/soc-acpi-intel-cml-match.c   |  5 +-
+ .../intel/common/soc-acpi-intel-glk-match.c   |  5 +-
+ .../intel/common/soc-acpi-intel-jsl-match.c   |  5 +-
+ .../intel/common/soc-acpi-intel-tgl-match.c   |  5 +-
+ sound/soc/sof/intel/hda.c                     | 52 +++++++++++++++++++
+ 7 files changed, 92 insertions(+), 5 deletions(-)
 
+diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
+index 093bbe7f0e1f..d33cf8df14b1 100644
+--- a/include/sound/soc-acpi.h
++++ b/include/sound/soc-acpi.h
+@@ -125,6 +125,24 @@ struct snd_soc_acpi_link_adr {
+ 	const struct snd_soc_acpi_adr_device *adr_d;
+ };
+ 
++/*
++ * when set the topology uses the -ssp<N> suffix, where N is determined based on
++ * BIOS or DMI information
++ */
++#define SND_SOC_ACPI_TPLG_INTEL_SSP_NUMBER BIT(0)
++
++/*
++ * when more than one SSP is reported in the link mask, use the most significant.
++ * This choice was found to be valid on platforms with ES8336 codecs.
++ */
++#define SND_SOC_ACPI_TPLG_INTEL_SSP_MSB BIT(1)
++
++/*
++ * when set the topology uses the -dmic<N>ch suffix, where N is determined based on
++ * BIOS or DMI information
++ */
++#define SND_SOC_ACPI_TPLG_INTEL_DMIC_NUMBER BIT(2)
++
+ /**
+  * snd_soc_acpi_mach: ACPI-based machine descriptor. Most of the fields are
+  * related to the hardware, except for the firmware and topology file names.
+@@ -146,6 +164,7 @@ struct snd_soc_acpi_link_adr {
+  * @pdata: intended for platform data or machine specific-ops. This structure
+  *  is not constant since this field may be updated at run-time
+  * @sof_tplg_filename: Sound Open Firmware topology file name, if enabled
++ * @tplg_quirk_mask: quirks to select different topology files dynamically
+  */
+ /* Descriptor for SST ASoC machine driver */
+ struct snd_soc_acpi_mach {
+@@ -161,6 +180,7 @@ struct snd_soc_acpi_mach {
+ 	void *pdata;
+ 	struct snd_soc_acpi_mach_params mach_params;
+ 	const char *sof_tplg_filename;
++	const u32 tplg_quirk_mask;
+ };
+ 
+ #define SND_SOC_ACPI_MAX_CODECS 3
 diff --git a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
-index 0a2d0874dc4f..f99cf6c794dc 100644
+index 718947068956..0a2d0874dc4f 100644
 --- a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
 +++ b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
-@@ -41,6 +41,11 @@ static struct snd_soc_acpi_mach *apl_quirk(void *arg)
- 	return mach;
- }
- 
-+static const struct snd_soc_acpi_codecs essx_83x6 = {
-+	.num_codecs = 3,
-+	.codecs = { "ESSX8316", "ESSX8326", "ESSX8336"},
-+};
-+
- static const struct snd_soc_acpi_codecs bxt_codecs = {
- 	.num_codecs = 1,
- 	.codecs = {"MX98357A"}
-@@ -78,7 +83,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_bxt_machines[] = {
- 		.sof_tplg_filename = "sof-apl-tdf8532.tplg",
- 	},
+@@ -80,7 +80,10 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_bxt_machines[] = {
  	{
--		.id = "ESSX8336",
-+		.comp_ids = &essx_83x6,
+ 		.id = "ESSX8336",
  		.drv_name = "sof-essx8336",
- 		.sof_tplg_filename = "sof-apl-es8336", /* the tplg suffix is added at run time */
- 		.tplg_quirk_mask = SND_SOC_ACPI_TPLG_INTEL_SSP_NUMBER |
+-		.sof_tplg_filename = "sof-apl-es8336.tplg",
++		.sof_tplg_filename = "sof-apl-es8336", /* the tplg suffix is added at run time */
++		.tplg_quirk_mask = SND_SOC_ACPI_TPLG_INTEL_SSP_NUMBER |
++					SND_SOC_ACPI_TPLG_INTEL_SSP_MSB |
++					SND_SOC_ACPI_TPLG_INTEL_DMIC_NUMBER,
+ 	},
+ 	{},
+ };
 diff --git a/sound/soc/intel/common/soc-acpi-intel-cml-match.c b/sound/soc/intel/common/soc-acpi-intel-cml-match.c
-index f75fa1b551d7..5eab17820532 100644
+index d033474f8768..f75fa1b551d7 100644
 --- a/sound/soc/intel/common/soc-acpi-intel-cml-match.c
 +++ b/sound/soc/intel/common/soc-acpi-intel-cml-match.c
-@@ -9,6 +9,11 @@
- #include <sound/soc-acpi.h>
- #include <sound/soc-acpi-intel-match.h>
- 
-+static const struct snd_soc_acpi_codecs essx_83x6 = {
-+	.num_codecs = 3,
-+	.codecs = { "ESSX8316", "ESSX8326", "ESSX8336"},
-+};
-+
- static const struct snd_soc_acpi_codecs rt1011_spk_codecs = {
- 	.num_codecs = 1,
- 	.codecs = {"10EC1011"}
-@@ -76,7 +81,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_cml_machines[] = {
- 		.sof_tplg_filename = "sof-cml-da7219-max98390.tplg",
- 	},
+@@ -78,7 +78,10 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_cml_machines[] = {
  	{
--		.id = "ESSX8336",
-+		.comp_ids = &essx_83x6,
+ 		.id = "ESSX8336",
  		.drv_name = "sof-essx8336",
- 		.sof_tplg_filename = "sof-cml-es8336", /* the tplg suffix is added at run time */
- 		.tplg_quirk_mask = SND_SOC_ACPI_TPLG_INTEL_SSP_NUMBER |
+-		.sof_tplg_filename = "sof-cml-es8336.tplg",
++		.sof_tplg_filename = "sof-cml-es8336", /* the tplg suffix is added at run time */
++		.tplg_quirk_mask = SND_SOC_ACPI_TPLG_INTEL_SSP_NUMBER |
++					SND_SOC_ACPI_TPLG_INTEL_SSP_MSB |
++					SND_SOC_ACPI_TPLG_INTEL_DMIC_NUMBER,
+ 	},
+ 	{},
+ };
 diff --git a/sound/soc/intel/common/soc-acpi-intel-glk-match.c b/sound/soc/intel/common/soc-acpi-intel-glk-match.c
-index d494860b8190..387e73100884 100644
+index c5ca077c7ac9..d494860b8190 100644
 --- a/sound/soc/intel/common/soc-acpi-intel-glk-match.c
 +++ b/sound/soc/intel/common/soc-acpi-intel-glk-match.c
-@@ -9,6 +9,11 @@
- #include <sound/soc-acpi.h>
- #include <sound/soc-acpi-intel-match.h>
- 
-+static const struct snd_soc_acpi_codecs essx_83x6 = {
-+	.num_codecs = 3,
-+	.codecs = { "ESSX8316", "ESSX8326", "ESSX8336"},
-+};
-+
- static const struct snd_soc_acpi_codecs glk_codecs = {
- 	.num_codecs = 1,
- 	.codecs = {"MX98357A"}
-@@ -53,7 +58,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_glk_machines[] = {
- 		.sof_tplg_filename = "sof-glk-cs42l42.tplg",
- 	},
+@@ -55,7 +55,10 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_glk_machines[] = {
  	{
--		.id = "ESSX8336",
-+		.comp_ids = &essx_83x6,
+ 		.id = "ESSX8336",
  		.drv_name = "sof-essx8336",
- 		.sof_tplg_filename = "sof-glk-es8336", /* the tplg suffix is added at run time */
- 		.tplg_quirk_mask = SND_SOC_ACPI_TPLG_INTEL_SSP_NUMBER |
+-		.sof_tplg_filename = "sof-glk-es8336.tplg",
++		.sof_tplg_filename = "sof-glk-es8336", /* the tplg suffix is added at run time */
++		.tplg_quirk_mask = SND_SOC_ACPI_TPLG_INTEL_SSP_NUMBER |
++					SND_SOC_ACPI_TPLG_INTEL_SSP_MSB |
++					SND_SOC_ACPI_TPLG_INTEL_DMIC_NUMBER,
+ 	},
+ 	{},
+ };
 diff --git a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
-index 53c42a4e1694..b95c4b2cda94 100644
+index a2da5cad520c..53c42a4e1694 100644
 --- a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
 +++ b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
-@@ -9,6 +9,11 @@
- #include <sound/soc-acpi.h>
- #include <sound/soc-acpi-intel-match.h>
- 
-+static const struct snd_soc_acpi_codecs essx_83x6 = {
-+	.num_codecs = 3,
-+	.codecs = { "ESSX8316", "ESSX8326", "ESSX8336"},
-+};
-+
- static const struct snd_soc_acpi_codecs jsl_7219_98373_codecs = {
- 	.num_codecs = 1,
- 	.codecs = {"MX98373"}
-@@ -81,7 +86,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_jsl_machines[] = {
- 		.sof_tplg_filename = "sof-jsl-cs42l42-mx98360a.tplg",
- 	},
+@@ -83,7 +83,10 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_jsl_machines[] = {
  	{
--		.id = "ESSX8336",
-+		.comp_ids = &essx_83x6,
+ 		.id = "ESSX8336",
  		.drv_name = "sof-essx8336",
- 		.sof_tplg_filename = "sof-jsl-es8336", /* the tplg suffix is added at run time */
- 		.tplg_quirk_mask = SND_SOC_ACPI_TPLG_INTEL_SSP_NUMBER |
+-		.sof_tplg_filename = "sof-jsl-es8336.tplg",
++		.sof_tplg_filename = "sof-jsl-es8336", /* the tplg suffix is added at run time */
++		.tplg_quirk_mask = SND_SOC_ACPI_TPLG_INTEL_SSP_NUMBER |
++					SND_SOC_ACPI_TPLG_INTEL_SSP_MSB |
++					SND_SOC_ACPI_TPLG_INTEL_DMIC_NUMBER,
+ 	},
+ 	{},
+ };
 diff --git a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
-index 8bf14295deb0..6edc9b7108cd 100644
+index 224b54d35c7a..8bf14295deb0 100644
 --- a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
 +++ b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
-@@ -10,6 +10,11 @@
- #include <sound/soc-acpi-intel-match.h>
- #include "soc-acpi-intel-sdw-mockup-match.h"
- 
-+static const struct snd_soc_acpi_codecs essx_83x6 = {
-+	.num_codecs = 3,
-+	.codecs = { "ESSX8316", "ESSX8326", "ESSX8336"},
-+};
-+
- static const struct snd_soc_acpi_codecs tgl_codecs = {
- 	.num_codecs = 1,
- 	.codecs = {"MX98357A"}
-@@ -391,7 +396,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_machines[] = {
- 		.sof_tplg_filename = "sof-tgl-rt1011-rt5682.tplg",
+@@ -393,7 +393,10 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_machines[] = {
+ 	{
+ 		.id = "ESSX8336",
+ 		.drv_name = "sof-essx8336",
+-		.sof_tplg_filename = "sof-tgl-es8336.tplg",
++		.sof_tplg_filename = "sof-tgl-es8336", /* the tplg suffix is added at run time */
++		.tplg_quirk_mask = SND_SOC_ACPI_TPLG_INTEL_SSP_NUMBER |
++					SND_SOC_ACPI_TPLG_INTEL_SSP_MSB |
++					SND_SOC_ACPI_TPLG_INTEL_DMIC_NUMBER,
  	},
  	{
--		.id = "ESSX8336",
-+		.comp_ids = &essx_83x6,
- 		.drv_name = "sof-essx8336",
- 		.sof_tplg_filename = "sof-tgl-es8336", /* the tplg suffix is added at run time */
- 		.tplg_quirk_mask = SND_SOC_ACPI_TPLG_INTEL_SSP_NUMBER |
+ 		.id = "10EC1308",
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index eebb3b318d79..07d8686632a5 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -1393,9 +1393,12 @@ struct snd_soc_acpi_mach *hda_machine_select(struct snd_sof_dev *sdev)
+ 	struct snd_sof_pdata *sof_pdata = sdev->pdata;
+ 	const struct sof_dev_desc *desc = sof_pdata->desc;
+ 	struct snd_soc_acpi_mach *mach;
++	const char *tplg_filename;
+ 
+ 	mach = snd_soc_acpi_find_machine(desc->machines);
+ 	if (mach) {
++		bool add_extension = false;
++
+ 		/*
+ 		 * If tplg file name is overridden, use it instead of
+ 		 * the one set in mach table
+@@ -1406,6 +1409,21 @@ struct snd_soc_acpi_mach *hda_machine_select(struct snd_sof_dev *sdev)
+ 		/* report to machine driver if any DMICs are found */
+ 		mach->mach_params.dmic_num = check_dmic_num(sdev);
+ 
++		if (mach->tplg_quirk_mask & SND_SOC_ACPI_TPLG_INTEL_DMIC_NUMBER &&
++		    mach->mach_params.dmic_num) {
++			tplg_filename = devm_kasprintf(sdev->dev, GFP_KERNEL,
++						       "%s%s%d%s",
++						       sof_pdata->tplg_filename,
++						       "-dmic",
++						       mach->mach_params.dmic_num,
++						       "ch");
++			if (!tplg_filename)
++				return NULL;
++
++			sof_pdata->tplg_filename = tplg_filename;
++			add_extension = true;
++		}
++
+ 		if (mach->link_mask) {
+ 			mach->mach_params.links = mach->links;
+ 			mach->mach_params.link_mask = mach->link_mask;
+@@ -1413,6 +1431,40 @@ struct snd_soc_acpi_mach *hda_machine_select(struct snd_sof_dev *sdev)
+ 
+ 		/* report SSP link mask to machine driver */
+ 		mach->mach_params.i2s_link_mask = check_nhlt_ssp_mask(sdev);
++
++		if (mach->tplg_quirk_mask & SND_SOC_ACPI_TPLG_INTEL_SSP_NUMBER &&
++		    mach->mach_params.i2s_link_mask) {
++			int ssp_num;
++
++			if (hweight_long(mach->mach_params.i2s_link_mask) > 1 &&
++			    !(mach->tplg_quirk_mask & SND_SOC_ACPI_TPLG_INTEL_SSP_MSB))
++				dev_warn(sdev->dev, "More than one SSP exposed by NHLT, choosing MSB\n");
++
++			/* fls returns 1-based results, SSPs indices are 0-based */
++			ssp_num = fls(mach->mach_params.i2s_link_mask) - 1;
++
++			tplg_filename = devm_kasprintf(sdev->dev, GFP_KERNEL,
++						       "%s%s%d",
++						       sof_pdata->tplg_filename,
++						       "-ssp",
++						       ssp_num);
++			if (!tplg_filename)
++				return NULL;
++
++			sof_pdata->tplg_filename = tplg_filename;
++			add_extension = true;
++		}
++
++		if (add_extension) {
++			tplg_filename = devm_kasprintf(sdev->dev, GFP_KERNEL,
++						       "%s%s",
++						       sof_pdata->tplg_filename,
++						       ".tplg");
++			if (!tplg_filename)
++				return NULL;
++
++			sof_pdata->tplg_filename = tplg_filename;
++		}
+ 	}
+ 
+ 	/*
 -- 
 2.30.2
 
