@@ -4,65 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63406C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 19:31:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6734EC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Mar 2022 19:31:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A763F18C7;
-	Tue,  8 Mar 2022 20:30:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A763F18C7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7D5E618A0;
+	Tue,  8 Mar 2022 20:30:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D5E618A0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646767860;
-	bh=uWItZkRqqviTpQrMpMtzGGHDPLKSKI2z3JIUMcQxR18=;
+	s=default; t=1646767876;
+	bh=Th4tNXpIGaK2NjoVHOYuvKrkMVZaD3Yop7yozWsbWik=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lDO6FIJspPOFBepMFTcI+58aHPuDrP5wTudavCcaRrKhEfVDufj8/T8rlzf8m9tDZ
-	 ptMgndMjD6PqKp4WrAayU+wYZh326L/vZqG6F64Bo8cFEFvOZFDRnpiPjGxjsRqNGv
-	 mb0AfDpD8p3AvQguWgMC+OA6NvbSa8SpLlKroNuI=
+	b=qp/Coz7isrWk0GCxXFkDzxL5iG9tu1cuwxgPvvMmyRII8XaOm/VjJHntlJlhwTKPd
+	 c3vFwMfTlAtDuB8FIEEWvpArte1PEL5+oUNRAmc+jps4LJBcsME2UvcWl3Hrn33gY2
+	 G+JWQ3VyBy2ZEBYaWdeJyvyOsyjr4NPoiJzWq9PE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 04B2EF80553;
+	by alsa1.perex.cz (Postfix) with ESMTP id 8CA09F8055A;
 	Tue,  8 Mar 2022 20:27:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ED929F80519; Tue,  8 Mar 2022 20:26:58 +0100 (CET)
+ id E3F67F80549; Tue,  8 Mar 2022 20:27:00 +0100 (CET)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A5EEDF8051B
- for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2022 20:26:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5EEDF8051B
+ by alsa1.perex.cz (Postfix) with ESMTPS id AF098F80515
+ for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2022 20:26:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF098F80515
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="NFWg5JZ9"
+ header.b="AlPgsYPG"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1646767610; x=1678303610;
+ t=1646767608; x=1678303608;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=uWItZkRqqviTpQrMpMtzGGHDPLKSKI2z3JIUMcQxR18=;
- b=NFWg5JZ91nJNbFgrwK6RA52tHzrEsO5hTHpxHxtF8EGgbgLq+McWhOwy
- 809EmF1hCOnihSzZFVAp+KLas5nTA68NCt6pp7AyeZEGM79/BO8JSNCbU
- rL5YvD/NrfbGIDhOZPJ/1AfokxhWgTnBauHKA6tbprcCJYd//VmwgY4Ta
- Uf5NuxweDtTlWTrzNLFeRoOk3JV3xtajBlWdD7deFd116vBELIBURo70t
- KHr0FgB4L9l6aaOL8BDkeAUd8ycFPrjsJJjIi2xyDkT7fnGpyYylszjIe
- LeHjp1toQHxYp26W/K7z9syLviISXp/TAQ+8/4d3nbxLsblmwc1KCk7Bp A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10280"; a="252363722"
-X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="252363722"
+ bh=Th4tNXpIGaK2NjoVHOYuvKrkMVZaD3Yop7yozWsbWik=;
+ b=AlPgsYPGonTI+755GUaGNfsa2Jgm5iTHTkpgNvnlcqg8rEmKXmZG5e3B
+ 2hFi4ozYeP30vhUFyZL6HzA6vj/YNwr5wuKfUtnOpETuNkQsJYmbaVjzh
+ B9LWautFQeSZU1SU6HSxal2zBAib1Il9Pkq11b2oRkQhw5aSATPf+S5Wa
+ Wdl2hUyE0S98zHZz4l9Sl1CTK8KeqSe1aWPqEwN1tDZ1AVqynEY3K3j2g
+ /TOBTUtSbzdep2yKl4fr8f6Ep87gwPYlSiAhitPRZe0wWdCaNpikvbpzY
+ Bq00sYklZuShXNTdS7cAMt21i3anQkELiXNNpIgfif9UEi+WqtFZYDJP3 Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10280"; a="252363708"
+X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="252363708"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Mar 2022 11:26:47 -0800
-X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="495573973"
+ 08 Mar 2022 11:26:45 -0800
+X-IronPort-AV: E=Sophos;i="5.90,165,1643702400"; d="scan'208";a="495573961"
 Received: from jhaskins-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.209.53.149])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Mar 2022 11:26:46 -0800
+ 08 Mar 2022 11:26:44 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 12/20] ASoC: Intel: sof_es8336: get codec device with ACPI
- instead of bus search
-Date: Tue,  8 Mar 2022 13:26:02 -0600
-Message-Id: <20220308192610.392950-13-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 09/20] ALSA: intel-dspconfig: add ES8336 support for CNL
+Date: Tue,  8 Mar 2022 13:25:59 -0600
+Message-Id: <20220308192610.392950-10-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220308192610.392950-1-pierre-louis.bossart@linux.intel.com>
 References: <20220308192610.392950-1-pierre-louis.bossart@linux.intel.com>
@@ -91,43 +90,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We have an existing 'adev' handle from which we can find the codec
-device, no need for an I2C bus search.
+We're missing this check for the CNL PCI id
 
-This change aligns this driver will all other I2S-based machine
-drivers.
-
+Reported-by: Nikolai Kostrigin <nickel@altlinux.org>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_es8336.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/hda/intel-dsp-config.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/intel/boards/sof_es8336.c b/sound/soc/intel/boards/sof_es8336.c
-index eb792bd911fa..bb4a3491d71c 100644
---- a/sound/soc/intel/boards/sof_es8336.c
-+++ b/sound/soc/intel/boards/sof_es8336.c
-@@ -515,9 +515,10 @@ static int sof_es8336_probe(struct platform_device *pdev)
- 		return ret;
- 
- 	/* get speaker enable GPIO */
--	codec_dev = bus_find_device_by_name(&i2c_bus_type, NULL, codec_name);
-+	codec_dev = acpi_get_first_physical_node(adev);
- 	if (!codec_dev)
- 		return -EPROBE_DEFER;
-+	priv->codec_dev = get_device(codec_dev);
- 
- 	ret = devm_acpi_dev_add_driver_gpios(codec_dev, gpio_mapping);
- 	if (ret)
-@@ -530,7 +531,6 @@ static int sof_es8336_probe(struct platform_device *pdev)
- 		goto err;
- 	}
- 
--	priv->codec_dev = codec_dev;
- 	INIT_LIST_HEAD(&priv->hdmi_pcm_list);
- 
- 	snd_soc_card_set_drvdata(card, priv);
+diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
+index b9b7bf5a5553..70fd8b13938e 100644
+--- a/sound/hda/intel-dsp-config.c
++++ b/sound/hda/intel-dsp-config.c
+@@ -199,6 +199,11 @@ static const struct config_entry config_table[] = {
+ 			{}
+ 		}
+ 	},
++	{
++		.flags = FLAG_SOF,
++		.device = 0x09dc8,
++		.codec_hid =  &essx_83x6,
++	},
+ 	{
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+ 		.device = 0x9dc8,
 -- 
 2.30.2
 
