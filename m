@@ -4,54 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 550D4C43219
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Mar 2022 09:28:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F32FBC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Mar 2022 09:29:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4B76516FD;
-	Wed,  9 Mar 2022 10:27:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B76516FD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3539C1779;
+	Wed,  9 Mar 2022 10:28:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3539C1779
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646818126;
-	bh=n2d4sj86TOGvwk15A2VP4zHszqFxrGBTNr7jrFpfczA=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=I39uSFk9kCxC4Cl+zuy4CL3pHxjQIliTXEk46TBKAiHTmtU2D4wHYb+937+HXrn6m
-	 wxi1viFRtwfnk7ImwJMo1S1jWjvHRE07SkBZ2v9B3ZuzsHjqVQmqpqLYyUI0ghSOQY
-	 HtJGx2kRkjSasIPzlZvu5/OYSOKz8HWbsv1PurCk=
+	s=default; t=1646818182;
+	bh=Fs0ThjMSJZQU36NqETn2nuCDbo1mizSwp+NMB8s3xKI=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=EQ0PPIrBqQbvhHeghEBuoxctht1HiFJ3D9Xk6CaVyesjLOPTjPpo/Xm/sn8qkyi4J
+	 btGVczq17BUltdNmQgern656HFQYb/+TRyk47PG4ViWJaED67StSCjGOdoSfURLy4p
+	 tAqSPrHTUvZnb6sAu8HClvB9oMbrbE691tl/e8Tw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CC8E3F80158;
-	Wed,  9 Mar 2022 10:27:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BBF09F80236;
+	Wed,  9 Mar 2022 10:28:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9408AF8012F; Wed,  9 Mar 2022 10:27:54 +0100 (CET)
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+ id DF807F80236; Wed,  9 Mar 2022 10:28:48 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9AD5AF8012F
- for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2022 10:27:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9AD5AF8012F
-Received: from inva021.nxp.com (localhost [127.0.0.1])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id A9FEA2028D7;
- Wed,  9 Mar 2022 10:27:47 +0100 (CET)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com
- (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 468B92027BD;
- Wed,  9 Mar 2022 10:27:47 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id C23CD183AC94;
- Wed,  9 Mar 2022 17:27:45 +0800 (+08)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
- shengjiu.wang@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
- perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: fsl_spdif: keep all TxClk sources by txclk array
-Date: Wed,  9 Mar 2022 17:18:43 +0800
-Message-Id: <1646817523-26800-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5B772F800D2
+ for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2022 10:28:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B772F800D2
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="qEDhi0fD"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 2297dkET010366;
+ Wed, 9 Mar 2022 03:28:40 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=PODMain02222019;
+ bh=cnOds1P2HYMESzPFz39oF0gCUJHlgInu9tI0YBb37ME=;
+ b=qEDhi0fDzrUDTtw6O9p55Ji32CEH4LBZ03lH9Jz3DuQq31Jm7rsOWLy+nkQqSnUeFRmz
+ VQgPcnQZtrPHkugyrkCpKrG+Mp5gll9U+KbxCl+qHqy2D6NoExgzNjniS8oV2UJLVz/q
+ eSMH1nTgu+9fals4bIxfEerV+sMe4jgU5MKeUyS2xO1kqt/0qk+Bv0hCxcD6SlRTVPHT
+ nSz/JAGslfCSt3i8dft2XmDUa00PrKEU84XioTFrF8bkil49UOFBxXUKkTdSVsJ+jP1y
+ 7ecQ6rg7DlT3jNOrPnn2UTxBUqfkqjqyaaF5aQKr8TxzU15q4Igulv5e5ftNPIemkN0N Ig== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3em55swdv0-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Wed, 09 Mar 2022 03:28:40 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Wed, 9 Mar
+ 2022 09:28:38 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.18 via
+ Frontend Transport; Wed, 9 Mar 2022 09:28:38 +0000
+Received: from [198.61.65.38] (unknown [198.61.65.38])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 5956546C;
+ Wed,  9 Mar 2022 09:28:38 +0000 (UTC)
+Message-ID: <a5fe73dc-1126-0f46-cbc0-1ab864843ea6@opensource.cirrus.com>
+Date: Wed, 9 Mar 2022 09:28:38 +0000
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.1
+Subject: Re: [PATCH v3 15/16] ASoC: dt-bindings: cs35l41: Document CS35l41
+ External Boost
+Content-Language: en-US
+To: Rob Herring <robh@kernel.org>
+References: <20220308171730.454587-1-tanureal@opensource.cirrus.com>
+ <20220308171730.454587-16-tanureal@opensource.cirrus.com>
+ <20220309012043.GA1694603@robh.at.kernel.org>
+From: Lucas tanure <tanureal@opensource.cirrus.com>
+In-Reply-To: <20220309012043.GA1694603@robh.at.kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-ORIG-GUID: howsFYvVvDI4cucQBfeq_h8T-Enuu5Fn
+X-Proofpoint-GUID: howsFYvVvDI4cucQBfeq_h8T-Enuu5Fn
+X-Proofpoint-Spam-Reason: safe
+Cc: David Rhodes <drhodes@opensource.cirrus.com>, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -67,160 +101,112 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Viorel Suman <viorel.suman@nxp.com>
+On 3/9/22 01:20, Rob Herring wrote:
+> On Tue, Mar 08, 2022 at 05:17:29PM +0000, Lucas Tanure wrote:
+>> From: David Rhodes <drhodes@opensource.cirrus.com>
+>>
+>> Document internal and external boost feature for ASoC CS35L41.
+>> For internal boost the following properties are required:
+>> - cirrus,boost-peak-milliamp
+>> - cirrus,boost-ind-nanohenry
+>> - cirrus,boost-cap-microfarad
+>>
+>> For external boost, the GPIO1 must be configured as output,
+>> so the following properties are required:
+>> - cirrus,gpio1-src-select = <1>
+>> - cirrus,gpio1-output-enable
+>>
+>> Signed-off-by: David Rhodes <drhodes@opensource.cirrus.com>
+>> Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
+>> ---
+>>   .../bindings/sound/cirrus,cs35l41.yaml        | 44 +++++++++++++++++--
+>>   1 file changed, 41 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/sound/cirrus,cs35l41.yaml b/Documentation/devicetree/bindings/sound/cirrus,cs35l41.yaml
+>> index 3235702ce402..09b515924c59 100644
+>> --- a/Documentation/devicetree/bindings/sound/cirrus,cs35l41.yaml
+>> +++ b/Documentation/devicetree/bindings/sound/cirrus,cs35l41.yaml
+>> @@ -75,6 +75,19 @@ properties:
+>>       maximum: 3
+>>       default: 2
+>>   
+>> +  cirrus,boost-type:
+>> +    description:
+>> +      Configures the type of Boost being used.
+>> +      Internal boost requires boost-peak-milliamp, boost-ind-nanohenry and
+>> +      boost-cap-microfarad.
+>> +      External Boost must have GPIO1 as GPIO output. GPIO1 will be set high to
+>> +      enable boost voltage.
+>> +      0 = Internal Boost
+>> +      1 = External Boost
+>> +    $ref: "/schemas/types.yaml#/definitions/uint32"
+>> +    minimum: 0
+>> +    maximum: 1
+> 
+> What does not present mean? Might be better to make this boolean depending
+> on what you are trying to accomplish.
+Not present means Internal boost. There will be other types of boost in 
+the future, so I would like to keep it as is.
 
-Use txclk array to keep all TxClk sources instead of keeping
-clocks per rate - need to do this in order to avoid multiple
-prepare_enable/disable_unprepare of the same clock during
-suspend/resume.
+> 
+>> +
+>>     cirrus,gpio1-polarity-invert:
+>>       description:
+>>         Boolean which specifies whether the GPIO1
+>> @@ -131,9 +144,32 @@ required:
+>>     - compatible
+>>     - reg
+>>     - "#sound-dai-cells"
+>> -  - cirrus,boost-peak-milliamp
+>> -  - cirrus,boost-ind-nanohenry
+>> -  - cirrus,boost-cap-microfarad
+>> +
+>> +allOf:
+>> +  - if:
+>> +      properties:
+>> +        cirrus,boost-type:
+>> +            const: 0
+> 
+> Note that this will be true if cirrus,boost-type is not present. You
+> probably want to add 'required'.
+Yes, that's expected. We want to continue to support old device trees 
+without boost type, and for that case it sets to internal boost.
 
-Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/fsl/fsl_spdif.c | 41 +++++++++++++++++++--------------------
- 1 file changed, 20 insertions(+), 21 deletions(-)
-
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index 57c41b2f7d17..e0acce6b2213 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -125,7 +125,7 @@ struct fsl_spdif_priv {
- 	u16 sysclk_df[SPDIF_TXRATE_MAX];
- 	u8 txclk_src[SPDIF_TXRATE_MAX];
- 	u8 rxclk_src;
--	struct clk *txclk[SPDIF_TXRATE_MAX];
-+	struct clk *txclk[STC_TXCLK_SRC_MAX];
- 	struct clk *rxclk;
- 	struct clk *coreclk;
- 	struct clk *sysclk;
-@@ -526,7 +526,7 @@ static int spdif_set_sample_rate(struct snd_pcm_substream *substream,
- 		goto clk_set_bypass;
- 
- 	/* The S/PDIF block needs a clock of 64 * fs * txclk_df */
--	ret = clk_set_rate(spdif_priv->txclk[rate],
-+	ret = clk_set_rate(spdif_priv->txclk[clk],
- 			   64 * sample_rate * txclk_df);
- 	if (ret) {
- 		dev_err(&pdev->dev, "failed to set tx clock rate\n");
-@@ -537,7 +537,7 @@ static int spdif_set_sample_rate(struct snd_pcm_substream *substream,
- 	dev_dbg(&pdev->dev, "expected clock rate = %d\n",
- 			(64 * sample_rate * txclk_df * sysclk_df));
- 	dev_dbg(&pdev->dev, "actual clock rate = %ld\n",
--			clk_get_rate(spdif_priv->txclk[rate]));
-+			clk_get_rate(spdif_priv->txclk[clk]));
- 
- 	/* set fs field in consumer channel status */
- 	spdif_set_cstatus(ctrl, IEC958_AES3_CON_FS, csfs);
-@@ -1376,12 +1376,10 @@ static int fsl_spdif_probe_txclk(struct fsl_spdif_priv *spdif_priv,
- 	struct device *dev = &pdev->dev;
- 	u64 savesub = 100000, ret;
- 	struct clk *clk;
--	char tmp[16];
- 	int i;
- 
- 	for (i = 0; i < STC_TXCLK_SRC_MAX; i++) {
--		sprintf(tmp, "rxtx%d", i);
--		clk = devm_clk_get(dev, tmp);
-+		clk = spdif_priv->txclk[i];
- 		if (IS_ERR(clk)) {
- 			dev_err(dev, "no rxtx%d clock in devicetree\n", i);
- 			return PTR_ERR(clk);
-@@ -1395,7 +1393,6 @@ static int fsl_spdif_probe_txclk(struct fsl_spdif_priv *spdif_priv,
- 			continue;
- 
- 		savesub = ret;
--		spdif_priv->txclk[index] = clk;
- 		spdif_priv->txclk_src[index] = i;
- 
- 		/* To quick catch a divisor, we allow a 0.1% deviation */
-@@ -1407,7 +1404,7 @@ static int fsl_spdif_probe_txclk(struct fsl_spdif_priv *spdif_priv,
- 			spdif_priv->txclk_src[index], rate[index]);
- 	dev_dbg(dev, "use txclk df %d for %dHz sample rate\n",
- 			spdif_priv->txclk_df[index], rate[index]);
--	if (clk_is_match(spdif_priv->txclk[index], spdif_priv->sysclk))
-+	if (clk_is_match(spdif_priv->txclk[spdif_priv->txclk_src[index]], spdif_priv->sysclk))
- 		dev_dbg(dev, "use sysclk df %d for %dHz sample rate\n",
- 				spdif_priv->sysclk_df[index], rate[index]);
- 	dev_dbg(dev, "the best rate for %dHz sample rate is %dHz\n",
-@@ -1423,6 +1420,7 @@ static int fsl_spdif_probe(struct platform_device *pdev)
- 	struct resource *res;
- 	void __iomem *regs;
- 	int irq, ret, i;
-+	char tmp[16];
- 
- 	spdif_priv = devm_kzalloc(&pdev->dev, sizeof(*spdif_priv), GFP_KERNEL);
- 	if (!spdif_priv)
-@@ -1462,8 +1460,17 @@ static int fsl_spdif_probe(struct platform_device *pdev)
- 		}
- 	}
- 
-+	for (i = 0; i < STC_TXCLK_SRC_MAX; i++) {
-+		sprintf(tmp, "rxtx%d", i);
-+		spdif_priv->txclk[i] = devm_clk_get(&pdev->dev, tmp);
-+		if (IS_ERR(spdif_priv->txclk[i])) {
-+			dev_err(&pdev->dev, "no rxtx%d clock in devicetree\n", i);
-+			return PTR_ERR(spdif_priv->txclk[i]);
-+		}
-+	}
-+
- 	/* Get system clock for rx clock rate calculation */
--	spdif_priv->sysclk = devm_clk_get(&pdev->dev, "rxtx5");
-+	spdif_priv->sysclk = spdif_priv->txclk[5];
- 	if (IS_ERR(spdif_priv->sysclk)) {
- 		dev_err(&pdev->dev, "no sys clock (rxtx5) in devicetree\n");
- 		return PTR_ERR(spdif_priv->sysclk);
-@@ -1481,7 +1488,7 @@ static int fsl_spdif_probe(struct platform_device *pdev)
- 		dev_warn(&pdev->dev, "no spba clock in devicetree\n");
- 
- 	/* Select clock source for rx/tx clock */
--	spdif_priv->rxclk = devm_clk_get(&pdev->dev, "rxtx1");
-+	spdif_priv->rxclk = spdif_priv->txclk[1];
- 	if (IS_ERR(spdif_priv->rxclk)) {
- 		dev_err(&pdev->dev, "no rxtx1 clock in devicetree\n");
- 		return PTR_ERR(spdif_priv->rxclk);
-@@ -1562,9 +1569,7 @@ static int fsl_spdif_runtime_suspend(struct device *dev)
- 			&spdif_priv->regcache_srpc);
- 	regcache_cache_only(spdif_priv->regmap, true);
- 
--	clk_disable_unprepare(spdif_priv->rxclk);
--
--	for (i = 0; i < SPDIF_TXRATE_MAX; i++)
-+	for (i = 0; i < STC_TXCLK_SRC_MAX; i++)
- 		clk_disable_unprepare(spdif_priv->txclk[i]);
- 
- 	if (!IS_ERR(spdif_priv->spbaclk))
-@@ -1594,16 +1599,12 @@ static int fsl_spdif_runtime_resume(struct device *dev)
- 		}
- 	}
- 
--	for (i = 0; i < SPDIF_TXRATE_MAX; i++) {
-+	for (i = 0; i < STC_TXCLK_SRC_MAX; i++) {
- 		ret = clk_prepare_enable(spdif_priv->txclk[i]);
- 		if (ret)
- 			goto disable_tx_clk;
- 	}
- 
--	ret = clk_prepare_enable(spdif_priv->rxclk);
--	if (ret)
--		goto disable_tx_clk;
--
- 	regcache_cache_only(spdif_priv->regmap, false);
- 	regcache_mark_dirty(spdif_priv->regmap);
- 
-@@ -1613,12 +1614,10 @@ static int fsl_spdif_runtime_resume(struct device *dev)
- 
- 	ret = regcache_sync(spdif_priv->regmap);
- 	if (ret)
--		goto disable_rx_clk;
-+		goto disable_tx_clk;
- 
- 	return 0;
- 
--disable_rx_clk:
--	clk_disable_unprepare(spdif_priv->rxclk);
- disable_tx_clk:
- 	for (i--; i >= 0; i--)
- 		clk_disable_unprepare(spdif_priv->txclk[i]);
--- 
-2.17.1
+> 
+>> +    then:
+>> +      required:
+>> +        - cirrus,boost-peak-milliamp
+>> +        - cirrus,boost-ind-nanohenry
+>> +        - cirrus,boost-cap-microfarad
+>> +    else:
+>> +      if:
+>> +        properties:
+>> +          cirrus,boost-type:
+>> +            const: 1
+>> +      then:
+>> +        required:
+>> +          - cirrus,gpio1-output-enable
+>> +          - cirrus,gpio1-src-select
+>> +        properties:
+>> +          cirrus,boost-peak-milliamp: false
+>> +          cirrus,boost-ind-nanohenry: false
+>> +          cirrus,boost-cap-microfarad: false
+>> +          cirrus,gpio1-src-select:
+>> +            enum: [1]
+>>   
+>>   additionalProperties: false
+>>   
+>> @@ -150,6 +186,8 @@ examples:
+>>             VA-supply = <&dummy_vreg>;
+>>             VP-supply = <&dummy_vreg>;
+>>             reset-gpios = <&gpio 110 0>;
+>> +
+>> +          cirrus,boost-type = <0>;
+>>             cirrus,boost-peak-milliamp = <4500>;
+>>             cirrus,boost-ind-nanohenry = <1000>;
+>>             cirrus,boost-cap-microfarad = <15>;
+>> -- 
+>> 2.35.1
+>>
+>>
 
