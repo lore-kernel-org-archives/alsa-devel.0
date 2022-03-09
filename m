@@ -4,78 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C18A2C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Mar 2022 09:03:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0904CC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Mar 2022 09:24:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E4A8B16D4;
-	Wed,  9 Mar 2022 10:02:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4A8B16D4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 522D916EE;
+	Wed,  9 Mar 2022 10:24:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 522D916EE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646816601;
-	bh=DLoF1DtyJHn/9ajgfHumaK2FEROPRRTAqJhi759co5c=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1646817890;
+	bh=HLvLCjJ5AeIHLUro00wkd6ZtuhRwUZXgKmMsJZYGYUg=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=C/eKxm1Xp+0RlkthFkErPfD3kohpb4VFXismAiaPPAEOL6rKizDa4H9nVFC5RxBEr
-	 fbZqf2WJxjV38jLUidQhP+MGzvEkZQQr0y7+NYHGx+sUUbGfmAG6/lxlRGmA1h/gLm
-	 YiyTV6QgddCSOCc01whSlDEgpWvjQwPmQyRyadBk=
+	b=tJ3/hjdnjE/aPMNpkWCR4qErk/oMgfgHEn4RgfFBGshboKUBe2tdDVWsJfUjtOrBg
+	 yHP3KquUVOiBz8MuxB3v3LQ6GF3AuyCJE7BKuExMZn2HRN4Rl6QlXTK/y05GpRkgdn
+	 PDfKgPOi3MsxAq8uzHytG3j1XIksp7Jb2ELAqf7Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 888DEF80158;
-	Wed,  9 Mar 2022 10:02:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E22F0F80158;
+	Wed,  9 Mar 2022 10:23:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DEB08F8016C; Wed,  9 Mar 2022 10:02:28 +0100 (CET)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 90295F8012F; Wed,  9 Mar 2022 10:23:53 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3BF5AF8012F
- for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2022 10:02:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3BF5AF8012F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7D2E2F8012F
+ for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2022 10:23:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D2E2F8012F
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="KXwYUhLK"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1646816543; x=1678352543;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=DLoF1DtyJHn/9ajgfHumaK2FEROPRRTAqJhi759co5c=;
- b=KXwYUhLKAfDC8L9Ym3C694xV001vz3+h8MA+qQFiQcwWfsqpKq74bT4h
- I8hl13gECD2RDCUX9IkYmsjrV2zm9w3uON2PwOZ+xRhgpljVj+Fxqbf+E
- JQheEUqJpLZQk0dmO1mGjGYPGasVpKU80BAElt+8uo+OJ+wIYFyyCoTTr
- E1ZukR9FWqyTHgFwG6rFUQe0DXwXHvNeyI9y4jfmSi02tQlYQ1OJixJ+g
- QRemlhik49pxJTtClsp25SX5XAVXhgjQvNlAKOTyOdTWV2jew2FoJpQdS
- 7Q5uU77oXovxUjaBb+5vJGvIwZa/llS3TFAKrkwlH2X0LDrgDZx2Ol1aR Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10280"; a="255116625"
-X-IronPort-AV: E=Sophos;i="5.90,167,1643702400"; d="scan'208";a="255116625"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Mar 2022 01:02:17 -0800
-X-IronPort-AV: E=Sophos;i="5.90,167,1643702400"; d="scan'208";a="642080242"
-Received: from hedwards-mobl1.ger.corp.intel.com (HELO [10.213.198.86])
- ([10.213.198.86])
- by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Mar 2022 01:02:16 -0800
-Message-ID: <9dabb68b-f2af-ae97-0fb2-869367c496bf@linux.intel.com>
-Date: Wed, 9 Mar 2022 09:02:13 +0000
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="NllDu40m"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="fXNzZC1k"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 811821F380;
+ Wed,  9 Mar 2022 09:23:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1646817825; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=bNW+70U5LP5iCBzWz/OWV8fqcN5RRfdjcA9KHjgqJnk=;
+ b=NllDu40mPhchz4gTwRYoEDMieAxZfP74Z5Iknb7suuxs3QB/oXbx8nLyf5GHhNy/y+9g7K
+ sXOgCheyW1u4q4zoik+EY92jz713Ec7a58enLsmGQ7JFH5lYx0Am0YriczKMJy1asuYmX7
+ EFak5Q9aFUqKwQm6lDhbDF//wNHt5+k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1646817825;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=bNW+70U5LP5iCBzWz/OWV8fqcN5RRfdjcA9KHjgqJnk=;
+ b=fXNzZC1kJ4nYvCspHPPmqsBHlOEuLuOFOGU0t3Z8zcLiTafRqxgA0bDR31vMxc62ioiIKo
+ wJmD3q2qHTTsNoBQ==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 7360CA3B83;
+ Wed,  9 Mar 2022 09:23:45 +0000 (UTC)
+Date: Wed, 09 Mar 2022 10:23:45 +0100
+Message-ID: <s5h5yonjx7i.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
 Subject: Re: [Intel-gfx] [PATCH v2] ALSA: hda/i915 - avoid hung task timeout
  in i915 wait
-Content-Language: en-US
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+In-Reply-To: <9dabb68b-f2af-ae97-0fb2-869367c496bf@linux.intel.com>
 References: <20220308172759.920551-1-kai.vehmanen@linux.intel.com>
  <f9f6f831-a05d-2d20-8ade-ab717f342ba5@linux.intel.com>
  <alpine.DEB.2.22.394.2203091035350.3088432@eliteleevi.tm.intel.com>
-From: Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-Organization: Intel Corporation UK Plc
-In-Reply-To: <alpine.DEB.2.22.394.2203091035350.3088432@eliteleevi.tm.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+ <9dabb68b-f2af-ae97-0fb2-869367c496bf@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Cc: alsa-devel@alsa-project.org, Paul Menzel <pmenzel+alsa-devel@molgen.mpg.de>,
- Takashi Iwai <tiwai@suse.de>, intel-gfx@lists.freedesktop.org,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, intel-gfx@lists.freedesktop.org,
  Lucas De Marchi <lucas.demarchi@intel.com>,
  amadeuszx.slawinski@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
@@ -93,35 +94,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-On 09/03/2022 08:39, Kai Vehmanen wrote:
-> Hi,
+On Wed, 09 Mar 2022 10:02:13 +0100,
+Tvrtko Ursulin wrote:
 > 
-> On Wed, 9 Mar 2022, Tvrtko Ursulin wrote:
 > 
->>> -			/* 60s timeout */
->>
->> Where does this 60s come from and why is the fix to work around
->> DEFAULT_HUNG_TASK_TIMEOUT in a hacky way deemed okay? For instance would
->> limiting the wait here to whatever the kconfig is set to be an option?
+> On 09/03/2022 08:39, Kai Vehmanen wrote:
+> > Hi,
+> >
+> > On Wed, 9 Mar 2022, Tvrtko Ursulin wrote:
+> >
+> >>> -			/* 60s timeout */
+> >>
+> >> Where does this 60s come from and why is the fix to work around
+> >> DEFAULT_HUNG_TASK_TIMEOUT in a hacky way deemed okay? For instance would
+> >> limiting the wait here to whatever the kconfig is set to be an option?
+> >
+> > this was discussed in
+> > https://lists.freedesktop.org/archives/intel-gfx/2022-February/290821.html
+> > ... and that thread concluded it's cleaner to split the wait than try
+> > to figure out hung-task configuration from middle of audio driver.
+> >
+> > The 60sec timeout comes from 2019 patch "ALSA: hda: Extend i915 component
+> > bind timeout" to fix an issue reported by Paul Menzel (cc'ed).
+> >
+> > This patch keeps the timeout intact.
 > 
-> this was discussed in
-> https://lists.freedesktop.org/archives/intel-gfx/2022-February/290821.html
-> ... and that thread concluded it's cleaner to split the wait than try
-> to figure out hung-task configuration from middle of audio driver.
+> I did not spot discussion touching on the point I raised.
 > 
-> The 60sec timeout comes from 2019 patch "ALSA: hda: Extend i915 component
-> bind timeout" to fix an issue reported by Paul Menzel (cc'ed).
-> 
-> This patch keeps the timeout intact.
+> How about not fight the hung task detector but mark your wait context
+> as "I really know what I'm doing - not stuck trust me".
 
-I did not spot discussion touching on the point I raised.
+The question is how often this problem hits.  Basically it's a very
+corner case, and I even think we may leave as is; that's a matter of
+configuration, and lowering such a bar should expect some
+side-effect. OTOH, if the problem happens in many cases, it's
+beneficial to fix in the core part, indeed.
 
-How about not fight the hung task detector but mark your wait context as 
-"I really know what I'm doing - not stuck trust me". Maybe using 
-wait_for_completion_killable_timeout would do it since 
-snd_hdac_i915_init is allowed to fail with an error already?
+> Maybe using
+> wait_for_completion_killable_timeout would do it since
+> snd_hdac_i915_init is allowed to fail with an error already?
 
-Regards,
+It makes it killable -- which is a complete behavior change.
 
-Tvrtko
+
+Takashi
