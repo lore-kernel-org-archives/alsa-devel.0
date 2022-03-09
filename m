@@ -4,71 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3AFEEC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Mar 2022 15:56:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A48B0C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Mar 2022 15:57:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 359DD1663;
-	Wed,  9 Mar 2022 16:55:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 359DD1663
+	by alsa0.perex.cz (Postfix) with ESMTPS id CDCBB163A;
+	Wed,  9 Mar 2022 16:56:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CDCBB163A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646841384;
-	bh=F13/4Bt3hYx0TgnARvX9PdNzkMy26a1mQJXrehce2eA=;
-	h=Subject:From:To:In-Reply-To:References:Date:Cc:List-Id:
+	s=default; t=1646841434;
+	bh=KVzxjGUGk6NYXxcaOKH+zrJvN87Ms5WfMwZNi9pdTgI=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ljqzzq4VUImfuQB5rCFNRXl4gQvvvyweZgeIXXUGBI6O/IbDAMhYAKzDttkrkEgiC
-	 gLw3sxeGyU/2qSXkHLdsdlSq4p0H1lCjKbDBXwrgEyZvk4AqUEvm4WwzGH807U9C+U
-	 2JI0yX2CpS6WUGVAqaAgP1Hwhg9jHkOgDYAssd04=
+	b=Kb1fNRQC5YMUlQbvH9yXNBFmWRmvDpoh4v1VekIClhVAaDz+M/8l3LjyS7ei0RZTR
+	 qK6ejmW9XBhaONI5BR5W6K7tq4cmj/eEShuPiUlV/WRxgk+DyKyHgX5RU04/8YwATI
+	 xj+WCQG/fwn/+Exmcwz2MnSla6mYSsc/Q6WlC9lc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BEC54F8012F;
-	Wed,  9 Mar 2022 16:55:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 77EB4F8012F;
+	Wed,  9 Mar 2022 16:56:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 29505F800D2; Wed,  9 Mar 2022 16:55:32 +0100 (CET)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ id C7C8CF800D2; Wed,  9 Mar 2022 16:56:23 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 81BEBF80236
+ for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2022 16:56:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81BEBF80236
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="lTwJVvmh"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5CC33F800D2
- for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2022 16:55:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5CC33F800D2
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="LunD1ND4"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1646841330; x=1678377330;
- h=message-id:subject:from:to:cc:in-reply-to:references:
- mime-version:date:content-transfer-encoding;
- bh=F13/4Bt3hYx0TgnARvX9PdNzkMy26a1mQJXrehce2eA=;
- b=LunD1ND49HVEcCjBb7L1kOqzYF8yLIgQvUPiIk5OgFxedbEju+x1EhEf
- abcoFRDlLeE+zAW7ppRwV3xsVQPTYmC+fzb15mGpTPBk5Ruy3xSPmAMNN
- Tgr4kgUATHDRAUC0GzA1VFwhHmVczpJZeQBVvnisarXWI9JfhoG1bbo3d
- UqNjTVoJJqXllOE9JW/fULzaK8ainRyWi3GZuf5xqVzHfWtkuaV2kdiHi
- nsEopVsfzD36Hn/CJzWfl9stAo1OdL912+Jjix0RMo3DZo453hDr/LYPr
- 2yqQI7bKbxrN7PvuvrczDiM21hDmgagODK2achbDVAMChwK1sS2r2fq6E A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10281"; a="253834741"
-X-IronPort-AV: E=Sophos;i="5.90,167,1643702400"; d="scan'208";a="253834741"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Mar 2022 07:55:26 -0800
-X-IronPort-AV: E=Sophos;i="5.90,167,1643702400"; d="scan'208";a="495877668"
-Received: from skawthek-mobl.amr.corp.intel.com ([10.254.24.79])
- by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Mar 2022 07:55:26 -0800
-Message-ID: <98f16493cc291ee621f3ef5cfcaebd5cc7f15ebc.camel@linux.intel.com>
-Subject: Re: [PATCH v2 00/18] Clean ups and preparation for IPC abstraction
- in the SOF driver
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <20220308164344.577647-1-ranjani.sridharan@linux.intel.com>
-References: <20220308164344.577647-1-ranjani.sridharan@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+ by ams.source.kernel.org (Postfix) with ESMTPS id 25B8EB82201;
+ Wed,  9 Mar 2022 15:56:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4EFFBC340E8;
+ Wed,  9 Mar 2022 15:56:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1646841377;
+ bh=KVzxjGUGk6NYXxcaOKH+zrJvN87Ms5WfMwZNi9pdTgI=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=lTwJVvmhuOCIPhLdib/xFfeu5wi7sqMuanevPJ4/ayYDsCQYPfIEAKx7/IaHxxxfS
+ RVcXrBlrawgTrF6GhJCuMOJfWG3Bdc/sdC977qjsJZs5LrMbQc/DLeVN2cJsizkkXo
+ 08HTuDgMF1aG5h28lI021rZ+U8Ozsr1zCkKl0qDDZM3yY6mEwIs48pRvHaD5kd8TUY
+ QUxa/xaQWqt6KsBKyLblz233oPOocOEOZVAc80rUEM4Rllz77FKy/tnKJqpqUhNpTA
+ JOBsoCjOxi470qagokchg0EOmDKUAc7QEpQ5ZOjok/eXfAS4lof8CNYA18tNkGycHG
+ 5mtllOqTdiiqQ==
+Date: Wed, 9 Mar 2022 15:56:12 +0000
+From: Mark Brown <broonie@kernel.org>
+To: John Keeping <john@metanate.com>
+Subject: Re: [PATCH v2] ASoC: tas5805m: fix pdn polarity
+Message-ID: <YijOHNT0eqDyoviP@sirena.org.uk>
+References: <20220309135649.195277-1-john@metanate.com>
 MIME-Version: 1.0
-Date: Wed, 09 Mar 2022 07:44:31 -0800
-User-Agent: Evolution 3.36.3-0ubuntu1 
-Content-Transfer-Encoding: 7bit
-Cc: tiwai@suse.de, broonie@kernel.org, amadeuszx.slawinski@linux.intel.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="saKSD0Ud0ux1qrCM"
+Content-Disposition: inline
+In-Reply-To: <20220309135649.195277-1-john@metanate.com>
+X-Cookie: You will inherit millions of dollars.
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Daniel Beer <daniel.beer@igorinstitute.com>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,25 +83,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 2022-03-08 at 08:43 -0800, Ranjani Sridharan wrote:
-> In preparation for adding support for the new IPC version that has
-> been
-> introduced in the SOF firmware, this patch set includes some clean
-> ups
-> and necessary modifications to commonly used functions that will be
-> re-used across different IPC-specific code.
-> 
-> Changes in v2:
-> - Use guid_t instead of u8 array for uuid and the helper
-> guid_is_null()
-Hi Mark,
 
-I see that you have applied the v1 of this series. Please disregard
-this series and I will send the changes in v2 as a separate patch.
-Also, I noticed that your for-next and for-5.18 branches only contain
-12 of the 18 patches in this series. Should I resend the ones that got
-missed?
+--saKSD0Ud0ux1qrCM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks,
-Ranjani
+On Wed, Mar 09, 2022 at 01:56:49PM +0000, John Keeping wrote:
 
+> The binding defines the GPIO as "pdn-gpios" so when the GPIO is active
+> the expectation is that the power down signal is asserted and this is
+> how all other drivers using this GPIO name interpret the value.
+
+> But the tas5805m driver inverts the sense from the normal expectation so
+> when the powerdown GPIO is logically asserted the chip is running.
+
+> This is a new driver that is not yet in a released kernel and has no
+> in-tree users of the binding so fix the sense of the GPIO so that
+> logically asserted means that the device is powered down.
+
+> - Rewrite commit message to make it more obvious that this is a change
+>   to the interpretation of the GPIO in the binding
+
+I'm still not seeing the functional change here.  The actual state of
+the GPIO is identical in both cases, all that's changing is the logical
+view internally to the kernel.
+
+--saKSD0Ud0ux1qrCM
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmIozhwACgkQJNaLcl1U
+h9ADgwf7BXCNab9gHFTGN3ia4g62mvxnNpcUe9ztentajumfMLfdgzTZ8r2PyHSs
+WQIrsZYfpnLxqerHODGQJX8WkdujBIPI2RJCt2tsaY334Ufc5nw3kc1r1a2rHODA
++0ZRJo5C9ddTXWW4hvV0FUzAc0pv6pG/vgh8uqpFakTH6xjmDI05o8Wv3kP0yQOv
+LalAGP5T59IH6yOsVaJt/2RaVAl6DngbjwIsdNTZl2kpOMaoBkYhmYcElAAefvUP
+iIBo1kq4bshF3B5s7rKKKDsVAonifhAqlAqsCWJMxK81wbIooEXA4xw/y/kmEzRM
+/71nhJZt/xkQWeIGyJs1X4dM2J0tFQ==
+=hDq2
+-----END PGP SIGNATURE-----
+
+--saKSD0Ud0ux1qrCM--
