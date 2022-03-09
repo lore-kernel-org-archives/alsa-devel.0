@@ -4,77 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0AB2DC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Mar 2022 22:19:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42ACDC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Mar 2022 22:38:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B30491728;
-	Wed,  9 Mar 2022 23:18:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B30491728
+	by alsa0.perex.cz (Postfix) with ESMTPS id E7E97173A;
+	Wed,  9 Mar 2022 23:37:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E7E97173A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646864380;
-	bh=zehQ3kdJ3E/dxPKf/DnEfn6NdkY1zXH6CPpFNHXdb6k=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1646865502;
+	bh=1xLGxn/aKA5XU7uaWHUpJjYehgqQcd0KJ7IwLGR/J4o=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MPIrZZIUZzfE1FOwtVZMeAGFRh/ThmBiB2SfLxsJoa+G6frloFhg84hFt0EMo8G9H
-	 2dTzLgnja/InvGeDwtq925QyWT1WtI+avICJb+jCKQ7Yx7HAYXxvT12/q4UzrTR4d8
-	 SoU12ka57NbUtohoztHxFu/M9PBK5UGvQPDNrFFI=
+	b=MJbYMagZlL5f0rIJXg/T1//rGZVDI+F9Hn7Hue/un3B+BS/CYyH28PbgLF84XN+XL
+	 mhg9skpeJzIIkeozibeCC3tjSGfBihZxhlm5A9kjzrfTmH7dq5cIyRLlxrsW32VYtH
+	 55sglA96sWA1jW09kzQ8IXJq/C9rxZILVx4G6VOY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 49640F80158;
-	Wed,  9 Mar 2022 23:18:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 73F1CF8016C;
+	Wed,  9 Mar 2022 23:37:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6C673F80155; Wed,  9 Mar 2022 23:18:47 +0100 (CET)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ id 7F3C5F800D2; Wed,  9 Mar 2022 23:37:30 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1A452F80155
- for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2022 23:18:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A452F80155
+ by alsa1.perex.cz (Postfix) with ESMTPS id BC5ACF800D2
+ for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2022 23:37:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC5ACF800D2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="CGPkBHVk"
+ header.b="KfzaMPo7"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1646864324; x=1678400324;
- h=date:from:to:cc:subject:message-id:references:
- mime-version:in-reply-to;
- bh=zehQ3kdJ3E/dxPKf/DnEfn6NdkY1zXH6CPpFNHXdb6k=;
- b=CGPkBHVkl9f1WM/tLfNh3Y/nb+w6NrMhkYT7MQguHVuqqCI2/4d5B/kU
- dD4OXDItN3FNrHCOh4Rt2W1qp4nQKJDWFjLuZmW5jKP28tXB3NocvhDM3
- XlISdNM2W63rSiasweSiAD35uQEgiRANqCLkxZkOz7XSUYodQh43fEvaQ
- /PWezirX0ng0BRPBdPkD2cDfwZqQutNd9L9GW3mPtWCB2cOPB9glBllAN
- Hq0T1S7qL57teyCyFx8V0d69Hl/EuiD35mOA10qn2KM1tmurBbHPIjMuR
- KQCkmCjY1e3SFbgz+kZPW9Og7JcSBPpSCjpl4XLfVb6IHV/cCD27cOmTJ w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10281"; a="318328651"
-X-IronPort-AV: E=Sophos;i="5.90,168,1643702400"; d="scan'208";a="318328651"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Mar 2022 14:18:38 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,168,1643702400"; d="scan'208";a="712116256"
-Received: from lkp-server02.sh.intel.com (HELO 89b41b6ae01c) ([10.239.97.151])
- by orsmga005.jf.intel.com with ESMTP; 09 Mar 2022 14:18:36 -0800
-Received: from kbuild by 89b41b6ae01c with local (Exim 4.92)
- (envelope-from <lkp@intel.com>)
- id 1nS4df-0003tG-CU; Wed, 09 Mar 2022 22:18:35 +0000
-Date: Thu, 10 Mar 2022 06:17:35 +0800
-From: kernel test robot <lkp@intel.com>
-To: Raghu Bankapur <quic_rbankapu@quicinc.com>,
- Vinod Koul <vkoul@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V0 1/1] ASoC: msm: fix integer overflow for long duration
- offload playback
-Message-ID: <202203100601.sczPjPL5-lkp@intel.com>
-References: <b906dbaf772d0152a3af52d639b090d15fe8c362.1646835508.git.quic_rbankapu@quicinc.com>
+ t=1646865447; x=1678401447;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=1xLGxn/aKA5XU7uaWHUpJjYehgqQcd0KJ7IwLGR/J4o=;
+ b=KfzaMPo7frXdyzBEEQ7rtfEUo+ZCkMqEgxh/1FignpwxxWkQVTVIS9Du
+ yGC8HOG8u09feLFRxyxPswbNjBVaEq84+filzBwWj+ihwhoHLHslq+M+8
+ 36oSgtEwC9/gF8yrgqGJ9sQYlB7Wrbjixm1hR2McFqZ21uIl7CD65/O4/
+ wZorrDIs9Jx+EPkSN+omyjORgjDpwWC/xVw2h2J6HFYJUtmupx1Lyf9X+
+ KUBKt6DbRJZQfBgKgAmkjvE1ozJKltyJ+FRh84CjzUpe6XskIW+O6b2zC
+ eia9pKSgBcGZCx3UiEHkOZhwusZjHXGW6TmmZDlhqF5iX3yn2v2sqcgv2 w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10281"; a="252677388"
+X-IronPort-AV: E=Sophos;i="5.90,168,1643702400"; d="scan'208";a="252677388"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Mar 2022 14:37:24 -0800
+X-IronPort-AV: E=Sophos;i="5.90,168,1643702400"; d="scan'208";a="688449478"
+Received: from nhaouati-mobl2.amr.corp.intel.com (HELO [10.212.216.252])
+ ([10.212.216.252])
+ by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Mar 2022 14:37:22 -0800
+Message-ID: <e0f4bc39-91e6-aead-a6c4-90251298d37d@linux.intel.com>
+Date: Wed, 9 Mar 2022 16:10:33 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b906dbaf772d0152a3af52d639b090d15fe8c362.1646835508.git.quic_rbankapu@quicinc.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: kbuild-all@lists.01.org, Krishna Jha <quic_kkishorj@quicinc.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.5.0
+Subject: Re: [PATCH v4 04/17] ASoC: Intel: avs: Inter process communication
+Content-Language: en-US
+To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
+References: <20220309204029.89040-1-cezary.rojewski@intel.com>
+ <20220309204029.89040-5-cezary.rojewski@intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20220309204029.89040-5-cezary.rojewski@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: upstream@semihalf.com, harshapriya.n@intel.com, rad@semihalf.com,
+ tiwai@suse.com, hdegoede@redhat.com, broonie@kernel.org,
+ ranjani.sridharan@linux.intel.com, amadeuszx.slawinski@linux.intel.com,
+ cujomalainey@chromium.org, lma@semihalf.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,67 +90,161 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Raghu,
 
-Thank you for the patch! Yet something to improve:
+> +/*
+> + * struct avs_dsp_ops - Platform-specific DSP operations
+> + *
+> + * @power: Power on or off DSP cores
+> + * @reset: Enter or exit reset state on DSP cores
+> + * @stall: Stall or run DSP cores
 
-[auto build test ERROR on tiwai-sound/for-next]
-[also build test ERROR on vkoul-dmaengine/next broonie-sound/for-next v5.17-rc7 next-20220309]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+nit-pick: the description sounds like boolean states. add "callback to"
 
-url:    https://github.com/0day-ci/linux/commits/Raghu-Bankapur/ASoC-msm-fix-integer-overflow-for-long-duration-compress-offload-playback/20220309-222520
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-next
-config: i386-randconfig-c001 (https://download.01.org/0day-ci/archive/20220310/202203100601.sczPjPL5-lkp@intel.com/config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce (this is a W=1 build):
-        # https://github.com/0day-ci/linux/commit/9020c5c2e38ba210a8d822d20e32bed85a4ffcab
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Raghu-Bankapur/ASoC-msm-fix-integer-overflow-for-long-duration-compress-offload-playback/20220309-222520
-        git checkout 9020c5c2e38ba210a8d822d20e32bed85a4ffcab
-        # save the config file to linux build tree
-        mkdir build_dir
-        make W=1 O=build_dir ARCH=i386 SHELL=/bin/bash
+> + * @irq_handler: Top half of IPC servicing
+> + * @irq_thread: Bottom half of IPC servicing
+> + * @int_control: Enable or disable IPC interrupts
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+callback to ...
 
-All error/warnings (new ones prefixed by >>, old ones prefixed by <<):
+> + */
+>   struct avs_dsp_ops {
+>   	int (* const power)(struct avs_dev *, u32, bool);
+>   	int (* const reset)(struct avs_dev *, u32, bool);
+>   	int (* const stall)(struct avs_dev *, u32, bool);
+> +	irqreturn_t (* const irq_handler)(int, void *);
+> +	irqreturn_t (* const irq_thread)(int, void *);
+> +	void (* const int_control)(struct avs_dev *, bool);
+>   };
 
-In file included from include/linux/printk.h:555,
-from include/linux/kernel.h:29,
-from arch/x86/include/asm/percpu.h:27,
-from arch/x86/include/asm/current.h:6,
-from include/linux/sched.h:12,
-from include/linux/delay.h:23,
-from sound/soc/intel/atom/sst/sst_drv_interface.c:13:
-sound/soc/intel/atom/sst/sst_drv_interface.c: In function 'sst_cdev_tstamp':
->> sound/soc/intel/atom/sst/sst_drv_interface.c:369:15: warning: format '%d' expects argument of type 'int', but argument 5 has type '__u64' {aka 'long long unsigned int'} [-Wformat=]
-369 |  dev_dbg(dev, "Ptr Query on strid = %d  copied_total %d, decodec %dn",
-|               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-include/linux/dynamic_debug.h:134:15: note: in definition of macro '__dynamic_func_call'
-134 |   func(&id, ##__VA_ARGS__);           |               ^~~~~~~~~~~
-include/linux/dynamic_debug.h:166:2: note: in expansion of macro '_dynamic_func_call'
-166 |  _dynamic_func_call(fmt,__dynamic_dev_dbg,            |  ^~~~~~~~~~~~~~~~~~
-include/linux/dev_printk.h:155:2: note: in expansion of macro 'dynamic_dev_dbg'
-155 |  dynamic_dev_dbg(dev, dev_fmt(fmt), ##__VA_ARGS__)
-|  ^~~~~~~~~~~~~~~
-include/linux/dev_printk.h:155:23: note: in expansion of macro 'dev_fmt'
-155 |  dynamic_dev_dbg(dev, dev_fmt(fmt), ##__VA_ARGS__)
-|                       ^~~~~~~
-sound/soc/intel/atom/sst/sst_drv_interface.c:369:2: note: in expansion of macro 'dev_dbg'
-369 |  dev_dbg(dev, "Ptr Query on strid = %d  copied_total %d, decodec %dn",
-|  ^~~~~~~
-sound/soc/intel/atom/sst/sst_drv_interface.c:369:55: note: format string is defined here
-369 |  dev_dbg(dev, "Ptr Query on strid = %d  copied_total %d, decodec %dn",
-|                                                      ~^
-|                                                       |
-|                                                       int
-|                                                      %lld
---
->> ERROR: modpost: "__umoddi3" [sound/soc/intel/atom/snd-soc-sst-atom-hifi2-platform.ko] undefined!
+> +/*
+> + * struct avs_ipc - DSP IPC context
+> + *
+> + * @dev: PCI device
+> + * @rx: Reply message cache
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+cache? I find this confusing, what are you trying to say here?
+
+> + * @default_timeout_ms: default message timeout in MS
+> + * @ready: whether firmware is ready and communication is open
+> + * @rx_completed: whether RX for previously sent TX has been received
+> + * @rx_lock: for serializating manipulation of rx_* fields
+
+typo: serializing
+
+> + * @msg_lock: for synchronizing request handling
+> + * @done_completion: DONE-part of IPC i.e. ROM and ACKs from FW
+> + * @busy_completion: BUSY-part of IPC i.e. receiving responses from FW
+> + */
+> +struct avs_ipc {
+> +	struct device *dev;
+> +
+> +	struct avs_ipc_msg rx;
+> +	u32 default_timeout_ms;
+> +	bool ready;
+> +
+> +	bool rx_completed;
+> +	spinlock_t rx_lock;
+> +	struct mutex msg_mutex;
+> +	struct completion done_completion;
+> +	struct completion busy_completion;
+> +};
+> +
+> +#define AVS_EIPC	EREMOTEIO
+
+I don't recall if I already mentioned this but I don't see the need for 
+an intermediate redefinition of a Linux error code.
+
+> +/*
+> + * IPC handlers may return positive value (firmware error code) what denotes
+> + * successful HOST <-> DSP communication yet failure to process specific request.
+> + *
+> + * Below macro converts returned value to linux kernel error code.
+> + * All IPC callers MUST use it as soon as firmware error code is consumed.
+> + */
+> +#define AVS_IPC_RET(ret) \
+> +	(((ret) <= 0) ? (ret) : -AVS_EIPC)
+> +
+> +static inline void avs_ipc_err(struct avs_dev *adev, struct avs_ipc_msg *tx,
+> +			       const char *name, int error)
+> +{
+> +	/*
+> +	 * If IPC channel is blocked e.g.: due to ongoing recovery,
+> +	 * -EPERM error code is expected and thus it's not an actual error.
+> +	 */
+> +	if (error == -EPERM)
+> +		dev_dbg(adev->dev, "%s 0x%08x 0x%08x failed: %d\n", name,
+
+%# adds the 0x for you.
+
+> +			tx->glb.primary, tx->glb.ext.val, error);
+> +	else
+> +		dev_err(adev->dev, "%s 0x%08x 0x%08x failed: %d\n", name,
+> +			tx->glb.primary, tx->glb.ext.val, error);
+> +}
+
+> +static void avs_dsp_process_notification(struct avs_dev *adev, u64 header)
+> +{
+> +	struct avs_notify_mod_data mod_data;
+> +	union avs_notify_msg msg = AVS_MSG(header);
+> +	size_t data_size = 0;
+> +	void *data = NULL;
+> +
+> +	/* Ignore spurious notifications until handshake is established. */
+
+there's no handshake here, just an initial notification after which the 
+IPC protocol can start?
+
+> +	if (!adev->ipc->ready && msg.notify_msg_type != AVS_NOTIFY_FW_READY) {
+> +		dev_dbg(adev->dev, "FW not ready, skip notification: 0x%08x\n",
+> +			msg.primary);
+> +		return;
+> +	}
+> +
+> +	/* Calculate notification payload size. */
+> +	switch (msg.notify_msg_type) {
+> +	case AVS_NOTIFY_FW_READY:
+> +		break;
+> +
+> +	case AVS_NOTIFY_PHRASE_DETECTED:
+> +		data_size = sizeof(struct avs_notify_voice_data);
+> +		break;
+> +
+> +	case AVS_NOTIFY_RESOURCE_EVENT:
+> +		data_size = sizeof(struct avs_notify_res_data);
+> +		break;
+> +
+> +	case AVS_NOTIFY_MODULE_EVENT:
+> +		/* To know the total payload size, header needs to be read first. */
+> +		memcpy_fromio(&mod_data, avs_uplink_addr(adev), sizeof(mod_data));
+> +		data_size = sizeof(mod_data) + mod_data.data_size;
+> +		break;
+> +
+> +	default:
+> +		dev_info(adev->dev, "unknown notification: 0x%08x\n",
+> +			 msg.primary);
+> +		break;
+> +	}
+> +
+> +	if (data_size) {
+> +		data = kmalloc(data_size, GFP_KERNEL);
+> +		if (!data)
+> +			return;
+> +
+> +		memcpy_fromio(data, avs_uplink_addr(adev), data_size);
+> +	}
+> +
+> +	/* Perform notification-specific operations. */
+> +	switch (msg.notify_msg_type) {
+> +	case AVS_NOTIFY_FW_READY:
+> +		dev_dbg(adev->dev, "FW READY 0x%08x\n", msg.primary);
+> +		adev->ipc->ready = true;
+> +		complete(&adev->fw_ready);
+> +		break;
+> +
+> +	default:
+> +		break;
+> +	}
+> +
+> +	kfree(data);
+> +}
+
