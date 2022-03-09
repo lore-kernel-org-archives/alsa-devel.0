@@ -4,71 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6910BC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Mar 2022 22:39:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 365C3C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Mar 2022 22:39:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AD0C617B7;
-	Wed,  9 Mar 2022 23:38:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD0C617B7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6DA0B1813;
+	Wed,  9 Mar 2022 23:38:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6DA0B1813
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646865552;
-	bh=Pt3G+LMoguhb3zRVdOjdVLDjxYvvEm5wjOk/yg1D2ro=;
+	s=default; t=1646865571;
+	bh=F1ORqsSBTY+1LQNr8cu8lVyGyYsJ6CPM179wwDZkg2g=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pqiLc7g7hSQrwYGekiQClcj18HOKmsb9PX0Ne6V2d4tCAPUjfRmIc7pI5k2uuvIDd
-	 aXVr5MhLX0fJ2H2gsJPYgXvsolTUV3Mf6XSLgJqGKtXOwUrbtag5TLpxbNqks/KUkt
-	 aLUIYgY6OPqz+YaSrWuWc4i57rnS66xJnD0iRtIw=
+	b=GkVj8xXXplhuzw6wQxtzIBwEMKW6xG2LBlzZwtEaZ2VWtYcH3ZhaM9iLWhBcsqb3K
+	 L3LLZluq1rsSKiNJaIwE+Y77CaGTcM2+3X9rx9ZMstqPxyaCWO3Ii38qHEPswwV297
+	 ztQZcpdjKEfjajNdD+iLmsT6YwdHLgv5pM01IdB8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E608CF80236;
-	Wed,  9 Mar 2022 23:37:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 02964F8051D;
+	Wed,  9 Mar 2022 23:37:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 70E0BF80236; Wed,  9 Mar 2022 23:37:37 +0100 (CET)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ id 83A96F80516; Wed,  9 Mar 2022 23:37:38 +0100 (CET)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8C07AF80236
- for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2022 23:37:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C07AF80236
+ by alsa1.perex.cz (Postfix) with ESMTPS id 18581F8028D
+ for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2022 23:37:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18581F8028D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="fh/c1HC+"
+ header.b="GeMaR2L9"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1646865451; x=1678401451;
+ t=1646865456; x=1678401456;
  h=message-id:date:mime-version:subject:to:cc:references:
  from:in-reply-to:content-transfer-encoding;
- bh=Pt3G+LMoguhb3zRVdOjdVLDjxYvvEm5wjOk/yg1D2ro=;
- b=fh/c1HC+UfC6x1vDAvnadj7TP3YBafI/Q9Dw/aEAvtNGepF1dk/SRknP
- b8RPJSSiqmZrYoNj5dBuxnnZH/Mn1n+joS2sLOxi9RZBSIaa3ZBTKpzoO
- pT91mlgiP75BvjJ18ca/RM/SRCuliGtDO3hgwnLQmu3KGYBo1GjIKAbL2
- uBvwYZtMqFm0DYIklWjO/W0iJJhQPLn7cmQx8Iwh1b5hIs0svvVMYdlo2
- SklxYP9GFsKF7/eviBQKEFd7QqLWYuuj/JnnX9weW2az+mhk4FQqiGXOo
- ERoUj+oVymf77L2U/J74H2izVpy/SllfmrEKRwPeqnyzDwLE9/WfK/f7I Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10281"; a="252677393"
-X-IronPort-AV: E=Sophos;i="5.90,168,1643702400"; d="scan'208";a="252677393"
+ bh=F1ORqsSBTY+1LQNr8cu8lVyGyYsJ6CPM179wwDZkg2g=;
+ b=GeMaR2L9r3N0vmZd4Yacrco40ptgNGAkT7pmVY3XxUCfClKts2m1I5U/
+ 9/gkcavR44gGophJA4jcDGezQVNu1UNH6mfTUXOdwWWtM9SMuXYOlSIOa
+ gF8EPrzWyRQUIPb7X1BvKU/dExLVf2UofMK7dmKLHjMh593Kv9twiOegX
+ s4fVvbNZGgHfhnpU85G8WE9/Csf7v2mQvKcODVbsXj5iiXvsMPuvx3UdC
+ xeXNKfzQvaQZ8ZrrrYyDDhHK9sEjMjXfJIzir7Ld9a9eQAhIcA5djUZvm
+ 95QXAJKGTUKifvMXHYele/lohZwY4d5FJ7RBudFoNO3L+G5ubKHIthD2P w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10281"; a="279840333"
+X-IronPort-AV: E=Sophos;i="5.90,168,1643702400"; d="scan'208";a="279840333"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
- by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Mar 2022 14:37:26 -0800
-X-IronPort-AV: E=Sophos;i="5.90,168,1643702400"; d="scan'208";a="688449494"
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Mar 2022 14:37:31 -0800
+X-IronPort-AV: E=Sophos;i="5.90,168,1643702400"; d="scan'208";a="688449523"
 Received: from nhaouati-mobl2.amr.corp.intel.com (HELO [10.212.216.252])
  ([10.212.216.252])
  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Mar 2022 14:37:25 -0800
-Message-ID: <0ec3041d-1e67-e1bf-03b7-688cdd6fd51d@linux.intel.com>
-Date: Wed, 9 Mar 2022 16:16:19 -0600
+ 09 Mar 2022 14:37:29 -0800
+Message-ID: <5e47e4dd-bef1-8c3c-ba28-d651fc2dae9a@linux.intel.com>
+Date: Wed, 9 Mar 2022 16:36:06 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Firefox/91.0 Thunderbird/91.5.0
-Subject: Re: [PATCH v4 07/17] ASoC: Intel: avs: Add module management requests
+Subject: Re: [PATCH v4 11/17] ASoC: Intel: avs: Firmware resources management
+ utilities
 Content-Language: en-US
 To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
 References: <20220309204029.89040-1-cezary.rojewski@intel.com>
- <20220309204029.89040-8-cezary.rojewski@intel.com>
+ <20220309204029.89040-12-cezary.rojewski@intel.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20220309204029.89040-8-cezary.rojewski@intel.com>
+In-Reply-To: <20220309204029.89040-12-cezary.rojewski@intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: upstream@semihalf.com, harshapriya.n@intel.com, rad@semihalf.com,
@@ -91,39 +92,137 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-> +/*
-> + * avs_ipc_delete_instance - Delete module instance
-> + *
-> + * @adev: Driver context
-> + * @module_id: Module-type id
-> + * @instance_id: Unique module instance id
-> + *
-> + * Argument verification, as well as pipeline state checks are done by the
-> + * firmware.
-> + *
-> + * Note: only standalone modules i.e. without a parent pipeline shall be
-> + * deleted using this IPC message. In all other cases, pipeline owning the
-> + * modules peforms cleanup automatically when it is deleted.
+>   /*
+>    * struct avs_dev - Intel HD-Audio driver data
+>    *
+>    * @dev: PCI device
+>    * @dsp_ba: DSP bar address
+>    * @spec: platform-specific descriptor
+> + * @fw_cfg: Firmware configuration, obtained through FW_CONFIG message
+> + * @hw_cfg: Hardware configuration, obtained through HW_CONFIG message
+> + * @mods_info: Available module-types, obtained through MODULES_INFO message
 
-typo: performs
+is this just for the base firmware? If this includes the extensions, how 
+are the module types defined?
 
-checkpatch.pl --strict --codespell would detect all this for you.
+> + * @mod_idas: Module instance ID pool, one per module-type
+> + * @modres_mutex: For synchronizing any @mods_info updates
+> + * @ppl_ida: Pipeline instance ID pool
+> + * @fw_list: List of libraries loaded, including base firmware
+>    */
+>   struct avs_dev {
+>   	struct hda_bus base;
+> @@ -68,6 +82,14 @@ struct avs_dev {
+>   	const struct avs_spec *spec;
+>   	struct avs_ipc *ipc;
+>   
+> +	struct avs_fw_cfg fw_cfg;
+> +	struct avs_hw_cfg hw_cfg;
+> +	struct avs_mods_info *mods_info;
+> +	struct ida **mod_idas;
+> +	struct mutex modres_mutex;
+> +	struct ida ppl_ida;
+> +	struct list_head fw_list;
+> +
+>   	struct completion fw_ready;
+>   };
 
-> + */
-> +int avs_ipc_delete_instance(struct avs_dev *adev, u16 module_id, u8 instance_id)
+> +/* Caller responsible for holding adev->modres_mutex. */
+> +static int
+> +avs_module_ida_alloc(struct avs_dev *adev, struct avs_mods_info *newinfo, bool purge)
 > +{
-> +	union avs_module_msg msg = AVS_MODULE_REQUEST(DELETE_INSTANCE);
-> +	struct avs_ipc_msg request = {{0}};
-> +	int ret;
+> +	struct avs_mods_info *oldinfo = adev->mods_info;
+> +	struct ida **ida_ptrs;
+> +	u32 tocopy_count = 0;
+> +	int i;
 > +
-> +	msg.module_id = module_id;
-> +	msg.instance_id = instance_id;
-> +	request.header = msg.val;
+> +	if (!purge && oldinfo) {
+> +		if (oldinfo->count >= newinfo->count)
+> +			dev_warn(adev->dev, "refreshing %d modules info with %d\n",
+> +				 oldinfo->count, newinfo->count);
+> +		tocopy_count = oldinfo->count;
+> +	}
 > +
-> +	ret = avs_dsp_send_msg(adev, &request, NULL);
-> +	if (ret)
-> +		avs_ipc_err(adev, &request, "delete instance", ret);
+> +	ida_ptrs = kcalloc(newinfo->count, sizeof(*ida_ptrs), GFP_KERNEL);
+> +	if (!ida_ptrs)
+> +		return -ENOMEM;
 > +
-> +	return ret;
+> +	if (tocopy_count)
+> +		memcpy(ida_ptrs, adev->mod_idas, tocopy_count * sizeof(*ida_ptrs));
+> +
+> +	for (i = tocopy_count; i < newinfo->count; i++) {
+> +		ida_ptrs[i] = kzalloc(sizeof(**ida_ptrs), GFP_KERNEL);
+> +		if (!ida_ptrs[i]) {
+> +			while (i--)
+> +				kfree(ida_ptrs[i]);
+
+it's a bit hairy to play with the loop counter, I would jump to an error 
+handling label to make it clearer.
+> +
+> +			kfree(ida_ptrs);
+> +			return -ENOMEM;
+> +		}
+> +
+> +		ida_init(ida_ptrs[i]);
+> +	}
+> +
+> +	/* If old elements have been reused, don't wipe them. */
+
+the comment is very odd, there's either a free() or a destroy() 
+happening below...
+
+> +	if (tocopy_count)
+> +		kfree(adev->mod_idas);
+> +	else
+> +		avs_module_ida_destroy(adev);
+> +
+> +	adev->mod_idas = ida_ptrs;
+> +	return 0;
 > +}
 
+> +int avs_module_id_alloc(struct avs_dev *adev, u16 module_id)
+> +{
+> +	int ret, idx, max_id;
+> +
+> +	mutex_lock(&adev->modres_mutex);
+> +
+> +	idx = avs_module_id_entry_index(adev, module_id);
+> +	if (idx == -ENOENT) {
+> +		WARN(1, "invalid module id: %d", module_id);
+
+dev_err() seems to be more than enough, why would you add a complete 
+call trace?
+
+> +		ret = -EINVAL;
+> +		goto exit;
+> +	}
+> +	max_id = adev->mods_info->entries[idx].instance_max_count - 1;
+> +	ret = ida_alloc_max(adev->mod_idas[idx], max_id, GFP_KERNEL);
+> +exit:
+> +	mutex_unlock(&adev->modres_mutex);
+> +	return ret;
+> +}
+> +
+> +void avs_module_id_free(struct avs_dev *adev, u16 module_id, u8 instance_id)
+> +{
+> +	int idx;
+> +
+> +	mutex_lock(&adev->modres_mutex);
+> +
+> +	idx = avs_module_id_entry_index(adev, module_id);
+> +	if (idx == -ENOENT) {
+> +		WARN(1, "invalid module id: %d", module_id);
+
+same WARN is over-engineered.
+
+> +		goto exit;
+> +	}
+> +
+> +	ida_free(adev->mod_idas[idx], instance_id);
+> +exit:
+> +	mutex_unlock(&adev->modres_mutex);
+> +}
+> +
+> +/*
+
+I am running out of time and will resume this review next week.
