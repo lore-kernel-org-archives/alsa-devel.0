@@ -4,54 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 269BEC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Mar 2022 10:48:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8ED2BC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Mar 2022 11:02:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5189C1702;
-	Wed,  9 Mar 2022 11:47:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5189C1702
+	by alsa0.perex.cz (Postfix) with ESMTPS id 67BF81728;
+	Wed,  9 Mar 2022 12:01:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 67BF81728
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646822899;
-	bh=Z/MGpOGc/1yv40qqCi1+JVkgCwhl9gnX0+dzrJN/vcA=;
+	s=default; t=1646823723;
+	bh=YMkzaEErX6AgAuAdDcSEKVs9osKSTDiB9RLL7v6C3kY=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=qcYcw52J7j5BMyo9blWZTAsi/3yqntuCaGLwiwvue0aqENE7n6GRdsYWJRSMBWIyx
-	 NDMmsgLWna9GdC/Ev/PxgVECZNpEgqyzrdwBxDEIl639SvCOBnC92uRmwtnlPlugdq
-	 H2nwPXr4wH0xr+tGqutjc4pZAN0SYkpiRWIn7SBs=
+	b=JHmG/rwe4TcwNdMql8nIcbqdErgix95Nm4lmFqypa5HrXSN56FZ0dJwoN4OM2DoM9
+	 U1Y2gCaZhY9xElvOHto0ExcBTjrHqxVOW6E6HtqBI26ev8dgdAh5dgBbkssnWvOW9l
+	 MJfsvgA2EzjVZPlX56opXb5AZi3tURMU34IJhR/o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DF025F80158;
-	Wed,  9 Mar 2022 11:47:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F1233F80158;
+	Wed,  9 Mar 2022 12:01:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 81436F80155; Wed,  9 Mar 2022 11:47:27 +0100 (CET)
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+ id 12276F80155; Wed,  9 Mar 2022 12:01:11 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 77C1FF80155
- for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2022 11:47:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77C1FF80155
-Received: from inva021.nxp.com (localhost [127.0.0.1])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id BA5E9201254;
- Wed,  9 Mar 2022 11:47:20 +0100 (CET)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com
- (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 820E420090D;
- Wed,  9 Mar 2022 11:47:20 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id F2A26183ACDE;
- Wed,  9 Mar 2022 18:47:18 +0800 (+08)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
- shengjiu.wang@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
- perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: fsl_rpmsg: Remove SET_SYSTEM_SLEEP_PM_OPS callback
-Date: Wed,  9 Mar 2022 18:38:13 +0800
-Message-Id: <1646822293-26965-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3203DF80155
+ for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2022 12:01:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3203DF80155
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="fOV0Vnb/"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1646823665; x=1678359665;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=YMkzaEErX6AgAuAdDcSEKVs9osKSTDiB9RLL7v6C3kY=;
+ b=fOV0Vnb/ttxyQG+tgTtS/pXWtnI+ZYoxtHfG7z2BMf0B8pFi9NuYdpBg
+ ix8sqUGkW7QUUI2NxxZ+Y61rv7LCoq6LNbwnOPWCEmZ1B0xvIT+x0YtQM
+ 1QUfTQt16oVfgHBjgJDhzGl57SvlQHFP72+mpuL7PdDttEWN9buhiiWTm
+ pzTpSMWPwQDCL0DI+8DcWoy1ebvphTk0Wg5FllbRNX2Y8v42RxxMHkqxF
+ xDIpLTlWII2/7HDot7vG0xMPnRscfC+bh6MI2KUKR3oEWjadWQsHy0KEy
+ A7P900Tl+aMtng+bdM3eECn5pjeOFtos//qx5s5LPzZLNxK38d222wc6y g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10280"; a="255138201"
+X-IronPort-AV: E=Sophos;i="5.90,167,1643702400"; d="scan'208";a="255138201"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Mar 2022 03:00:58 -0800
+X-IronPort-AV: E=Sophos;i="5.90,167,1643702400"; d="scan'208";a="554073542"
+Received: from mweingar-mobl1.ger.corp.intel.com (HELO
+ pujfalus-desk.ger.corp.intel.com) ([10.251.219.87])
+ by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Mar 2022 03:00:56 -0800
+From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+To: lgirdwood@gmail.com, broonie@kernel.org,
+ pierre-louis.bossart@linux.intel.com
+Subject: [PATCH] ASoC: SOF: ipc-msg-injector: Use devm_kzalloc() for the
+ rx_buffer
+Date: Wed,  9 Mar 2022 13:01:04 +0200
+Message-Id: <20220309110104.18370-1-peter.ujfalusi@linux.intel.com>
+X-Mailer: git-send-email 2.35.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, yung-chuan.liao@linux.intel.com,
+ ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -67,28 +83,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-For sound need to be continuously output at suspend with rpmsg
-sound card, so need to keep the clock always on at suspend,
-then suspend & resume callback is not needed.
+The rx_buffer is cleared before sending an IPC to make sure that when the
+/sys/kernel/debug/sof/ipc_msg_inject file is read we will have correct
+information in the buffer (no random or stale data).
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+But if the user reads the file before sending any message the buffer might
+contain garbage which should not be interpreted.
+
+To prevent this, clear the rx_buffer on allocation.
+
+Fixes: cac0b0887e53 ("ASoC: SOF: Convert the generic IPC message injector into SOF client")
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/fsl/fsl_rpmsg.c | 2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/sof/sof-client-ipc-msg-injector.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl_rpmsg.c b/sound/soc/fsl/fsl_rpmsg.c
-index 8508bc7f239d..19fd31250883 100644
---- a/sound/soc/fsl/fsl_rpmsg.c
-+++ b/sound/soc/fsl/fsl_rpmsg.c
-@@ -297,8 +297,6 @@ static const struct dev_pm_ops fsl_rpmsg_pm_ops = {
- 	SET_RUNTIME_PM_OPS(fsl_rpmsg_runtime_suspend,
- 			   fsl_rpmsg_runtime_resume,
- 			   NULL)
--	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
--				pm_runtime_force_resume)
- };
+diff --git a/sound/soc/sof/sof-client-ipc-msg-injector.c b/sound/soc/sof/sof-client-ipc-msg-injector.c
+index bce103da4c49..dba6cfd7db09 100644
+--- a/sound/soc/sof/sof-client-ipc-msg-injector.c
++++ b/sound/soc/sof/sof-client-ipc-msg-injector.c
+@@ -137,7 +137,7 @@ static int sof_msg_inject_probe(struct auxiliary_device *auxdev,
+ 		return -ENOMEM;
  
- static struct platform_driver fsl_rpmsg_driver = {
+ 	priv->tx_buffer = devm_kmalloc(dev, SOF_IPC_MSG_MAX_SIZE, GFP_KERNEL);
+-	priv->rx_buffer = devm_kmalloc(dev, SOF_IPC_MSG_MAX_SIZE, GFP_KERNEL);
++	priv->rx_buffer = devm_kzalloc(dev, SOF_IPC_MSG_MAX_SIZE, GFP_KERNEL);
+ 	if (!priv->tx_buffer || !priv->rx_buffer)
+ 		return -ENOMEM;
+ 
 -- 
-2.17.1
+2.35.1
 
