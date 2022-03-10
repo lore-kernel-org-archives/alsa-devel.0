@@ -4,66 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04FC9C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Mar 2022 10:02:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86B1DC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Mar 2022 10:17:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4AA73185F;
-	Thu, 10 Mar 2022 11:02:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4AA73185F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6F5431867;
+	Thu, 10 Mar 2022 11:16:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F5431867
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646906577;
-	bh=kCzNPSwBFUuFadK9QRN3ClPIwgropEinjgLt3i9UEWI=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=ioJ7y8QfxnuBd/bbF9mbzgSEU6psJ2bACZNPWieMlIn7Eg39997w8uzfDi5704CWK
-	 5WuhDkAaQaa8mledmTekFpI9KeHX907Bu2iBXjpH63suZyK2sRI7SxBfthaR5PiUdr
-	 J4cnwhqCnpAA9081bw88UX55qORttG5bIz34yMeM=
+	s=default; t=1646907437;
+	bh=EXxsU7bb4p75pfO8sLSCyCd/AXaDqiKA9HqIvRAA9hc=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=pGG1cum9Ym0rlcrmxE/ufjkyNHWhNuwq+0qwmOrV8PGQClUmmIg4sEaOYU9Yd2ph3
+	 B1rK8qetul2R28eOYmgV1EHpaEHFK/jHc4vz6KcaULxOYSC6lhJXK40z+qHnFyEQF9
+	 Xn4l8igyH4vzfmmcaNlrkBXtj6rjvuQ5CWIfUt70=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DCE66F8012F;
-	Thu, 10 Mar 2022 11:02:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 130CAF8012F;
+	Thu, 10 Mar 2022 11:16:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D39DEF80137; Thu, 10 Mar 2022 11:02:04 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id 5A275F80137; Thu, 10 Mar 2022 11:16:25 +0100 (CET)
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com
+ [IPv6:2a00:1450:4864:20::32f])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CE94FF800D2
- for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2022 11:00:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CE94FF800D2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 55878F800D2
+ for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2022 11:16:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55878F800D2
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="vPIQiSAG"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="Uf6rwFlx"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 4867F1F442
- for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2022 10:00:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1646906420; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=+BVXA2J1VQNo7/arswMX9Tfy8uNymZwrQnW7iDEiUOk=;
- b=vPIQiSAGVQzLh3XMQFAtZzbCXSjJSKS4N2jzAxCU4OPxBpwNju4nfIDyqixVPC6/r+Grhj
- EgY8NapmONQG7oiWhW8K8MPIugIze9kQIQjhX4fpqSu+FIF03Ij1x75U9Ys5wx5x4Jh8Zq
- RYV6idwIMps4CUsM6PkZOlch/yjIQt4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1646906420;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=+BVXA2J1VQNo7/arswMX9Tfy8uNymZwrQnW7iDEiUOk=;
- b=Uf6rwFlxVfEZqyauexBBhLxQHyWP+GuPRF+Y52WSSgMQvZb13uX8dfjcXaApCNyhwN9FF4
- +xcag8S8834S8kDA==
-Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 37A2AA3B96;
- Thu, 10 Mar 2022 10:00:20 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH alsa-lib v2 1/3] pcm: direct: Improved suspend/resume support
-Date: Thu, 10 Mar 2022 11:00:16 +0100
-Message-Id: <20220310100018.10038-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.31.1
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="Zd+TYWLs"
+Received: by mail-wm1-x32f.google.com with SMTP id
+ n31-20020a05600c3b9f00b003898fc06f1eso5113849wms.1
+ for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2022 02:16:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=message-id:date:mime-version:user-agent:subject:content-language:to
+ :cc:references:from:in-reply-to:content-transfer-encoding;
+ bh=04ryZIvTRUDhoUYmcvNQt9Swok7h0slWygeHVa8vqiY=;
+ b=Zd+TYWLsSoSNZ4+/oqHc8x5LYljlVmF7e5FaMcx556ItTvBHOLjGkpe92tMUlHeg84
+ X2TJbDLtMC75+dpMRAH3b0To67/E5an/De1MrzB0ANAFWByKf1MDsjrwZHLQdJgL/PCl
+ mfdgGLZuCT0FL3SnDYD5obVjh0eEykCQwtBWxEQXywF77qF6hpGivHmJ3ibcr5EedMYh
+ CzJmC3TRzjVh+D6G1Rz87t+jjp8bQZkrUZTBeFWjPn+PaOL7h0hghF+tk0xVtakvyo6u
+ aO95fA5W/7bY8YxsNe/4GByhqCmWH5Ad9Nyyih9514EE8DbPhKoN9epwwmS47fWrGnj7
+ gwQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+ :content-language:to:cc:references:from:in-reply-to
+ :content-transfer-encoding;
+ bh=04ryZIvTRUDhoUYmcvNQt9Swok7h0slWygeHVa8vqiY=;
+ b=aSu+N6UVkLA628jsxXmASM6XNW7uHPCXjEdUL4gLOq5BsvnbFZcT4efVeEJcYwtYn+
+ pp5U6w/y31L6Gv+zw/1hOFmU5FV1EB3WgxmV5i8UrGTMc6ALlh7IthLIIJ6QZ+9sHXi4
+ rsdmUkUT+DaYwBWLu+kYaA9PT5wIH4HRw7SRZnzvYWXs9HjogHs3VkPKG36gGMaKTYQn
+ i0e3pCXNqU50Nof6bmqJ1V7IJq66c/fZbu2tV+LPH8xDkI5owhxEupGZfFtoJ8Hgxt4z
+ 25FGDlJQTqmxbE1v2brfaBHzy5zDN/EOiC2h6PABAb21wjoRqzccirzIGiOV1CSkG1zC
+ L2ig==
+X-Gm-Message-State: AOAM531zTuZLApCX5I10JRiqqIFsrLLOD1unFVbjyAn85LDZcO9elpga
+ AMYtxvOMzsNQFsRpZBYRmsSyIA==
+X-Google-Smtp-Source: ABdhPJyywi34YHOHVhNPxnoUPjmKH7B/IOtSTulhMR1UULi9LtjP9plyHy6KFFq/cJtVWwQ6br/aJA==
+X-Received: by 2002:a05:600c:1f15:b0:389:ab64:fe80 with SMTP id
+ bd21-20020a05600c1f1500b00389ab64fe80mr11070007wmb.141.1646907378180; 
+ Thu, 10 Mar 2022 02:16:18 -0800 (PST)
+Received: from [192.168.86.34]
+ (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
+ by smtp.googlemail.com with ESMTPSA id
+ k10-20020adfe3ca000000b001f0329ba94csm5594508wrm.18.2022.03.10.02.16.17
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Thu, 10 Mar 2022 02:16:17 -0800 (PST)
+Message-ID: <c5ea7235-8642-6a89-f4ce-bd0861b6e4aa@linaro.org>
+Date: Thu, 10 Mar 2022 10:16:16 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [PATCH] slimbus: qcom-ngd-ctrl: Use platform_get_irq() to get the
+ interrupt
+Content-Language: en-US
+To: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+ linux-kernel@vger.kernel.org, Andy Gross <agross@kernel.org>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>
+References: <20211224161334.31123-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20211224161334.31123-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+In-Reply-To: <20211224161334.31123-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-arm-msm@vger.kernel.org, Prabhakar <prabhakar.csengg@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,299 +107,67 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The current resume handling in PCM direct plugins don't treat multiple
-clients properly: once after the slave PCM gets resumed by one
-client, the access from others at a later point is seen as already
-running although the internal state isn't updated and becomes
-inconsistent.  This may end up a negative size, which eventually hangs
-up.
 
-This patch is an attempt to improve the handling for resume.  Now the
-suspended state is treated similarly like XRUN; namely, we keep the
-slave PCM "recoveries" count that is modified at each time the slave
-PCM XRUN happens, so that we can check the inconsistency against the
-client's state.  As a differentiation to XRUN, we set the highest bit
-of recoveries count when the slave stream hits SUSPENDED state.  This
-bit is referred at comparing with clients, and the client's state is
-updated to either XRUN or SUSPENDED depending on this bit.
 
-Along with this change, the actual resume is done in
-snd_pcm_direct_slave_recover(), and snd_pcm_direct_resume() rather
-calls this internally.
+On 24/12/2021 16:13, Lad Prabhakar wrote:
+> platform_get_resource(pdev, IORESOURCE_IRQ, ..) relies on static
+> allocation of IRQ resources in DT core code, this causes an issue
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- src/pcm/pcm_direct.c | 72 ++++++++++++++++++++++++++------------------
- src/pcm/pcm_dmix.c   |  6 ++--
- src/pcm/pcm_dshare.c |  6 ++--
- src/pcm/pcm_dsnoop.c |  6 ++--
- 4 files changed, 52 insertions(+), 38 deletions(-)
+Are you saying that we should not be using platform_get_resource(pdev, 
+IORESOURCE_IRQ, ...) on drivers that support DT?
 
-diff --git a/src/pcm/pcm_direct.c b/src/pcm/pcm_direct.c
-index 193dc3e76d49..1ca3b76306b1 100644
---- a/src/pcm/pcm_direct.c
-+++ b/src/pcm/pcm_direct.c
-@@ -560,8 +560,11 @@ int snd_pcm_direct_timer_stop(snd_pcm_direct_t *dmix)
- 	return 0;
- }
- 
-+#define RECOVERIES_FLAG_SUSPENDED	(1U << 31)
-+#define RECOVERIES_MASK			((1U << 31) - 1)
-+
- /*
-- * Recover slave on XRUN.
-+ * Recover slave on XRUN or SUSPENDED.
-  * Even if direct plugins disable xrun detection, there might be an xrun
-  * raised directly by some drivers.
-  * The first client recovers slave pcm.
-@@ -569,6 +572,8 @@ int snd_pcm_direct_timer_stop(snd_pcm_direct_t *dmix)
-  */
- int snd_pcm_direct_slave_recover(snd_pcm_direct_t *direct)
- {
-+	unsigned int recoveries;
-+	int state;
- 	int ret;
- 	int semerr;
- 
-@@ -579,7 +584,8 @@ int snd_pcm_direct_slave_recover(snd_pcm_direct_t *direct)
- 		return semerr;
- 	}
- 
--	if (snd_pcm_state(direct->spcm) != SND_PCM_STATE_XRUN) {
-+	state = snd_pcm_state(direct->spcm);
-+	if (state != SND_PCM_STATE_XRUN && state != SND_PCM_STATE_SUSPENDED) {
- 		/* ignore... someone else already did recovery */
- 		semerr = snd_pcm_direct_semaphore_up(direct,
- 						     DIRECT_IPC_SEM_CLIENT);
-@@ -590,6 +596,24 @@ int snd_pcm_direct_slave_recover(snd_pcm_direct_t *direct)
- 		return 0;
- 	}
- 
-+	recoveries = direct->shmptr->s.recoveries;
-+	recoveries = (recoveries + 1) & RECOVERIES_MASK;
-+	if (state == SND_PCM_STATE_SUSPENDED)
-+		recoveries |= RECOVERIES_FLAG_SUSPENDED;
-+	direct->shmptr->s.recoveries = recoveries;
-+
-+	/* some buggy drivers require the device resumed before prepared;
-+	 * when a device has RESUME flag and is in SUSPENDED state, resume
-+	 * here but immediately drop to bring it to a sane active state.
-+	 */
-+	if (state == SND_PCM_STATE_SUSPENDED &&
-+	    (direct->spcm->info & SND_PCM_INFO_RESUME)) {
-+		snd_pcm_resume(direct->spcm);
-+		snd_pcm_drop(direct->spcm);
-+		snd_pcm_direct_timer_stop(direct);
-+		snd_pcm_direct_clear_timer_queue(direct);
-+	}
-+
- 	ret = snd_pcm_prepare(direct->spcm);
- 	if (ret < 0) {
- 		SNDERR("recover: unable to prepare slave");
-@@ -621,7 +645,6 @@ int snd_pcm_direct_slave_recover(snd_pcm_direct_t *direct)
- 		}
- 		return ret;
- 	}
--	direct->shmptr->s.recoveries++;
- 	semerr = snd_pcm_direct_semaphore_up(direct,
- 						 DIRECT_IPC_SEM_CLIENT);
- 	if (semerr < 0) {
-@@ -632,11 +655,15 @@ int snd_pcm_direct_slave_recover(snd_pcm_direct_t *direct)
- }
- 
- /*
-- * enter xrun state, if slave xrun occurred
-- * @return: 0 for no xrun or a negative error code for xrun
-+ * enter xrun or suspended state, if slave xrun occurred or suspended
-+ * @return: 0 for no xrun/suspend or a negative error code for xrun/suspend
-  */
- int snd_pcm_direct_client_chk_xrun(snd_pcm_direct_t *direct, snd_pcm_t *pcm)
- {
-+	if (direct->state == SND_PCM_STATE_XRUN)
-+		return -EPIPE;
-+	else if (direct->state == SND_PCM_STATE_SUSPENDED)
-+		return -ESTRPIPE;
- 	if (direct->shmptr->s.recoveries != direct->recoveries) {
- 		/* no matter how many xruns we missed -
- 		 * so don't increment but just update to actual counter
-@@ -649,10 +676,14 @@ int snd_pcm_direct_client_chk_xrun(snd_pcm_direct_t *direct, snd_pcm_t *pcm)
- 		 * if slave already entered xrun again the event is lost.
- 		 * snd_pcm_direct_clear_timer_queue(direct);
- 		 */
--		direct->state = SND_PCM_STATE_XRUN;
-+		if (direct->recoveries & RECOVERIES_FLAG_SUSPENDED) {
-+			direct->state = SND_PCM_STATE_SUSPENDED;
-+			return -ESTRPIPE;
-+		} else {
-+			direct->state = SND_PCM_STATE_XRUN;
-+			return -EPIPE;
-+		}
- 	}
--	if (direct->state == SND_PCM_STATE_XRUN)
--		return -EPIPE;
- 	return 0;
- }
- 
-@@ -721,13 +752,13 @@ timer_changed:
- 	}
- 	switch (snd_pcm_state(dmix->spcm)) {
- 	case SND_PCM_STATE_XRUN:
-+	case SND_PCM_STATE_SUSPENDED:
- 		/* recover slave and update client state to xrun
- 		 * before returning POLLERR
- 		 */
- 		snd_pcm_direct_slave_recover(dmix);
- 		snd_pcm_direct_client_chk_xrun(dmix, pcm);
- 		/* fallthrough */
--	case SND_PCM_STATE_SUSPENDED:
- 	case SND_PCM_STATE_SETUP:
- 		events |= POLLERR;
- 		break;
-@@ -1074,27 +1105,10 @@ int snd_pcm_direct_prepare(snd_pcm_t *pcm)
- int snd_pcm_direct_resume(snd_pcm_t *pcm)
- {
- 	snd_pcm_direct_t *dmix = pcm->private_data;
--	snd_pcm_t *spcm = dmix->spcm;
-+	int err;
- 
--	snd_pcm_direct_semaphore_down(dmix, DIRECT_IPC_SEM_CLIENT);
--	/* some buggy drivers require the device resumed before prepared;
--	 * when a device has RESUME flag and is in SUSPENDED state, resume
--	 * here but immediately drop to bring it to a sane active state.
--	 */
--	if ((spcm->info & SND_PCM_INFO_RESUME) &&
--	    snd_pcm_state(spcm) == SND_PCM_STATE_SUSPENDED) {
--		snd_pcm_resume(spcm);
--		snd_pcm_drop(spcm);
--		snd_pcm_direct_timer_stop(dmix);
--		snd_pcm_direct_clear_timer_queue(dmix);
--		snd_pcm_areas_silence(snd_pcm_mmap_areas(spcm), 0,
--				      spcm->channels, spcm->buffer_size,
--				      spcm->format);
--		snd_pcm_prepare(spcm);
--		snd_pcm_start(spcm);
--	}
--	snd_pcm_direct_semaphore_up(dmix, DIRECT_IPC_SEM_CLIENT);
--	return -ENOSYS;
-+	err = snd_pcm_direct_slave_recover(dmix);
-+	return err < 0 ? err : -ENOSYS;
- }
- 
- #define COPY_SLAVE(field) (dmix->shmptr->s.field = spcm->field)
-diff --git a/src/pcm/pcm_dmix.c b/src/pcm/pcm_dmix.c
-index dfff18b992c5..e3bf49269f0c 100644
---- a/src/pcm/pcm_dmix.c
-+++ b/src/pcm/pcm_dmix.c
-@@ -431,6 +431,7 @@ static int snd_pcm_dmix_sync_ptr(snd_pcm_t *pcm)
- 		dmix->state = SND_PCM_STATE_DISCONNECTED;
- 		return -ENODEV;
- 	case SND_PCM_STATE_XRUN:
-+	case SND_PCM_STATE_SUSPENDED:
- 		if ((err = snd_pcm_direct_slave_recover(dmix)) < 0)
- 			return err;
- 		break;
-@@ -457,11 +458,11 @@ static snd_pcm_state_t snd_pcm_dmix_state(snd_pcm_t *pcm)
- 	snd_pcm_state_t state;
- 	state = snd_pcm_state(dmix->spcm);
- 	switch (state) {
--	case SND_PCM_STATE_SUSPENDED:
- 	case SND_PCM_STATE_DISCONNECTED:
- 		dmix->state = state;
- 		return state;
- 	case SND_PCM_STATE_XRUN:
-+	case SND_PCM_STATE_SUSPENDED:
- 		if ((err = snd_pcm_direct_slave_recover(dmix)) < 0)
- 			return err;
- 		break;
-@@ -833,11 +834,10 @@ static snd_pcm_sframes_t snd_pcm_dmix_mmap_commit(snd_pcm_t *pcm,
- 
- 	switch (snd_pcm_state(dmix->spcm)) {
- 	case SND_PCM_STATE_XRUN:
-+	case SND_PCM_STATE_SUSPENDED:
- 		if ((err = snd_pcm_direct_slave_recover(dmix)) < 0)
- 			return err;
- 		break;
--	case SND_PCM_STATE_SUSPENDED:
--		return -ESTRPIPE;
- 	default:
- 		break;
- 	}
-diff --git a/src/pcm/pcm_dshare.c b/src/pcm/pcm_dshare.c
-index d63c86bd4044..5a52ae9173be 100644
---- a/src/pcm/pcm_dshare.c
-+++ b/src/pcm/pcm_dshare.c
-@@ -206,6 +206,7 @@ static int snd_pcm_dshare_sync_ptr(snd_pcm_t *pcm)
- 		dshare->state = SNDRV_PCM_STATE_DISCONNECTED;
- 		return -ENODEV;
- 	case SND_PCM_STATE_XRUN:
-+	case SND_PCM_STATE_SUSPENDED:
- 		if ((err = snd_pcm_direct_slave_recover(dshare)) < 0)
- 			return err;
- 		break;
-@@ -260,11 +261,11 @@ static snd_pcm_state_t snd_pcm_dshare_state(snd_pcm_t *pcm)
- 	snd_pcm_state_t state;
- 	state = snd_pcm_state(dshare->spcm);
- 	switch (state) {
--	case SND_PCM_STATE_SUSPENDED:
- 	case SND_PCM_STATE_DISCONNECTED:
- 		dshare->state = state;
- 		return state;
- 	case SND_PCM_STATE_XRUN:
-+	case SND_PCM_STATE_SUSPENDED:
- 		if ((err = snd_pcm_direct_slave_recover(dshare)) < 0)
- 			return err;
- 		break;
-@@ -532,11 +533,10 @@ static snd_pcm_sframes_t snd_pcm_dshare_mmap_commit(snd_pcm_t *pcm,
- 
- 	switch (snd_pcm_state(dshare->spcm)) {
- 	case SND_PCM_STATE_XRUN:
-+	case SND_PCM_STATE_SUSPENDED:
- 		if ((err = snd_pcm_direct_slave_recover(dshare)) < 0)
- 			return err;
- 		break;
--	case SND_PCM_STATE_SUSPENDED:
--		return -ESTRPIPE;
- 	default:
- 		break;
- 	}
-diff --git a/src/pcm/pcm_dsnoop.c b/src/pcm/pcm_dsnoop.c
-index 77ffbada931f..1653f6fba86c 100644
---- a/src/pcm/pcm_dsnoop.c
-+++ b/src/pcm/pcm_dsnoop.c
-@@ -139,6 +139,7 @@ static int snd_pcm_dsnoop_sync_ptr(snd_pcm_t *pcm)
- 		dsnoop->state = SNDRV_PCM_STATE_DISCONNECTED;
- 		return -ENODEV;
- 	case SND_PCM_STATE_XRUN:
-+	case SND_PCM_STATE_SUSPENDED:
- 		if ((err = snd_pcm_direct_slave_recover(dsnoop)) < 0)
- 			return err;
- 		break;
-@@ -211,11 +212,11 @@ static snd_pcm_state_t snd_pcm_dsnoop_state(snd_pcm_t *pcm)
- 	snd_pcm_state_t state;
- 	state = snd_pcm_state(dsnoop->spcm);
- 	switch (state) {
--	case SND_PCM_STATE_SUSPENDED:
- 	case SND_PCM_STATE_DISCONNECTED:
- 		dsnoop->state = state;
- 		return state;
- 	case SND_PCM_STATE_XRUN:
-+	case SND_PCM_STATE_SUSPENDED:
- 		if ((err = snd_pcm_direct_slave_recover(dsnoop)) < 0)
- 			return err;
- 		break;
-@@ -423,11 +424,10 @@ static snd_pcm_sframes_t snd_pcm_dsnoop_mmap_commit(snd_pcm_t *pcm,
- 
- 	switch (snd_pcm_state(dsnoop->spcm)) {
- 	case SND_PCM_STATE_XRUN:
-+	case SND_PCM_STATE_SUSPENDED:
- 		if ((err = snd_pcm_direct_slave_recover(dsnoop)) < 0)
- 			return err;
- 		break;
--	case SND_PCM_STATE_SUSPENDED:
--		return -ESTRPIPE;
- 	default:
- 		break;
- 	}
--- 
-2.34.1
+> when using hierarchical interrupt domains using "interrupts" property
+> in the node as this bypasses the hierarchical setup and messes up the
+> irq chaining.
 
+Should this not be fixed in the DT core itself?
+
+> 
+> In preparation for removal of static setup of IRQ resource from DT core
+> code use platform_get_irq().
+
+I would prefer this patch to be part of the series that removes IRQ 
+resource handling from DT core.
+
+
+--srini
+
+> 
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> ---
+> Hi,
+> 
+> Dropping usage of platform_get_resource() was agreed based on
+> the discussion [0].
+> 
+> [0] https://patchwork.kernel.org/project/linux-renesas-soc/
+> patch/20211209001056.29774-1-prabhakar.mahadev-lad.rj@bp.renesas.com/
+> 
+> Cheers,
+> Prabhakar
+> ---
+>   drivers/slimbus/qcom-ngd-ctrl.c | 10 ++++------
+>   1 file changed, 4 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/slimbus/qcom-ngd-ctrl.c b/drivers/slimbus/qcom-ngd-ctrl.c
+> index 7040293c2ee8..0f29a08b4c09 100644
+> --- a/drivers/slimbus/qcom-ngd-ctrl.c
+> +++ b/drivers/slimbus/qcom-ngd-ctrl.c
+> @@ -1526,13 +1526,11 @@ static int qcom_slim_ngd_ctrl_probe(struct platform_device *pdev)
+>   	if (IS_ERR(ctrl->base))
+>   		return PTR_ERR(ctrl->base);
+>   
+> -	res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
+> -	if (!res) {
+> -		dev_err(&pdev->dev, "no slimbus IRQ resource\n");
+> -		return -ENODEV;
+> -	}
+> +	ret = platform_get_irq(pdev, 0);
+> +	if (ret < 0)
+> +		return ret;
+>   
+> -	ret = devm_request_irq(dev, res->start, qcom_slim_ngd_interrupt,
+> +	ret = devm_request_irq(dev, ret, qcom_slim_ngd_interrupt,
+>   			       IRQF_TRIGGER_HIGH, "slim-ngd", ctrl);
+>   	if (ret) {
+>   		dev_err(&pdev->dev, "request IRQ failed\n");
