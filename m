@@ -4,74 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39D1EC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Mar 2022 06:54:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9DFBBC4332F
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Mar 2022 06:59:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 237B516DC;
-	Mon, 14 Mar 2022 07:53:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 237B516DC
+	by alsa0.perex.cz (Postfix) with ESMTPS id CFF2316D5;
+	Mon, 14 Mar 2022 07:58:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CFF2316D5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647240875;
-	bh=AyrEZxP9zwJ5qr992l3oYZhjAibXdOk84oKci/5qVb8=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=MihfWZUQ3NAk7RTFzLrbdMCvir95y/2m09AUlfnypU/5EmxpvonXrGJnv1ji6uUEw
-	 dcB0m+qY44cn3VWbfG8e3gCCv19bqceuE8blZ07rET7SiwI8W00RIN8dH3stWgAnMq
-	 EbDVBvKg9aprRXVuBb2VJcNllpeD2xLAjCN4c+Lc=
+	s=default; t=1647241184;
+	bh=2IRaH/n8k7QrZ1lJeEoUzQCSsZ7NJCpArTCQdx1lCRg=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=otN83lYqG5i4lxyUxwcbkWTE2qCrokrJng2k6NOaZfpH10rw1TigKaocDHyiq+7lm
+	 z+ZKZUGdfXNdK53HNPB58dylMunp6SY9DcF9Ck8BE0+VkDFaTcDmEKwl9YwBKeGUZ5
+	 N/tegLH0n+zdUHozFtJSpaQDYbH+lGXYzgfmhY/s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B2D9AF80139;
-	Mon, 14 Mar 2022 07:53:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6C196F80100;
+	Mon, 14 Mar 2022 07:58:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 17A35F80139; Mon, 14 Mar 2022 07:53:43 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id E27F9F80137; Thu, 10 Mar 2022 09:16:12 +0100 (CET)
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com
+ [IPv6:2607:f8b0:4864:20::1043])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DBCC0F8011C
- for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2022 07:53:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DBCC0F8011C
+ by alsa1.perex.cz (Postfix) with ESMTPS id E5CFAF800D2
+ for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2022 09:16:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5CFAF800D2
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="Ypb3sD06"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="iTuwTUR6"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 795FB212C6;
- Mon, 14 Mar 2022 06:53:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1647240820; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ZQ1RcgOkGnhi1txuQRcGQ+jxwUwkiEPikbAdoFSPFT4=;
- b=Ypb3sD06FDMrG9dfnyyFWJYs24+DT4+yqoCz895WEtTBWMEJ1abNcPNvxhQrft6CtrYXEU
- uG88HPNKMrxgKC05mL/NaOsgebWyZMfkvDy1yYNAtlMXE6JPkBb0aTzfqRAhozJ5rodPLi
- NOyqWi/4Kx8Z97lijvihPxeUoC3dO0g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1647240820;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ZQ1RcgOkGnhi1txuQRcGQ+jxwUwkiEPikbAdoFSPFT4=;
- b=iTuwTUR6hcJlVhGQCEPEDsDEMvpUB69yQcmdaBIfDQyZDNx8nqehk4aCGcUwJywm6PV1rt
- JXkWj2rita5VyRDQ==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 68C16A3B83;
- Mon, 14 Mar 2022 06:53:40 +0000 (UTC)
-Date: Mon, 14 Mar 2022 07:53:40 +0100
-Message-ID: <s5h35jlc9e3.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Jonathan Teh <jonathan.teh@outlook.com>
-Subject: Re: [PATCH] ALSA: cmipci: Restore aux vol on suspend/resume
-In-Reply-To: <DBAPR04MB7366CB3EA9C8521C35C56E8B920E9@DBAPR04MB7366.eurprd04.prod.outlook.com>
-References: <DBAPR04MB7366CB3EA9C8521C35C56E8B920E9@DBAPR04MB7366.eurprd04.prod.outlook.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="FSykQPtD"
+Received: by mail-pj1-x1043.google.com with SMTP id
+ m11-20020a17090a7f8b00b001beef6143a8so4546620pjl.4
+ for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2022 00:16:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id;
+ bh=UqlG/qlH51JzZZsCgyFBRJweMGZD26FahP+uwp4r9BQ=;
+ b=FSykQPtDCQ1wMMLVzooyDgNeZvg0vebosc8YpUWUKsz0xMGoHdez5Xrx+9YJDKnn+i
+ rD3Xmudvj5gGZ3vlviX0TbDh/pwPZSic27LxDN1LUg7XX5NneYzM4QgwtA7ncuVzSU/w
+ 6uJ/5RDzmnKepU4FdBxQw3ZKXBZbM19S1BVWvAHXx8e9Kv/faT43TvyHEaozwqwUb78b
+ jjxirwC/D84rrn03DOKiYMjYmjsyFIDm6Fm+KBaFHWogt3sph4RL+FJHK9DMQT7adsZs
+ N0/Fz1JPrd30+TkezrquUviXm3ls1n2RDbOvZNXcg+0RnQy96wxXfqE1RHYZUF/Um+s4
+ vocA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id;
+ bh=UqlG/qlH51JzZZsCgyFBRJweMGZD26FahP+uwp4r9BQ=;
+ b=6moP20xAmdIFQGTpgIPI9eCY7rfjDKKzYgwBD4pm8YXtLg65wutCXVN0HKE2TncWM4
+ be+PJVfVwL5aev4zJp8sAYdFYbNM/+EsBwuLDsL2DYLyZNp6xqVrAaG1c+PgPoyjD/Yi
+ Xd3CRgEFkoUahSnhsp7UDHsk1KBgMh4IPvW723DMBKDxMI1qWQgVS+p4jtEf5XMmDGjk
+ C8lpft5ERSm958AP/qjDUy57UahRBAJA7t3gL2C7wErPctkBnExTgqkdIF8wpCKn1D/o
+ 6C/9YrQeI7VHKqyC0YeUNdQycOHEpOtC/PT/gZYS+DSAzRbDvnEzASuDREBktyWBlAe3
+ fqbA==
+X-Gm-Message-State: AOAM533dgu4nNCV4rz/2pmBlJKafTKR10x80y2TdKnFXrdHVPgFQEJQl
+ /KS7U91FZYKTB7/ufqInIP8=
+X-Google-Smtp-Source: ABdhPJy00iGjkiSnCAWiH3WRRptw5KPM3DJ86R40tXtln3/EFo+qhm9Ikg+kT6B002zR9EzRfyoDlw==
+X-Received: by 2002:a17:902:d4c9:b0:151:d074:cbe8 with SMTP id
+ o9-20020a170902d4c900b00151d074cbe8mr3840413plg.102.1646900163675; 
+ Thu, 10 Mar 2022 00:16:03 -0800 (PST)
+Received: from localhost.localdomain ([211.212.143.131])
+ by smtp.gmail.com with ESMTPSA id
+ q11-20020a056a00084b00b004f73e6c26b8sm5976727pfk.25.2022.03.10.00.15.59
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 10 Mar 2022 00:16:03 -0800 (PST)
+From: Steve Lee <steve.lee.analog@gmail.com>
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+ ckeepax@opensource.cirrus.com, geert@linux-m68k.org,
+ rf@opensource.wolfsonmicro.com, shumingf@realtek.com,
+ srinivas.kandagatla@linaro.org, krzk@kernel.org, dmurphy@ti.com,
+ jack.yu@realtek.com, nuno.sa@analog.com, steves.lee@maximintegrated.com,
+ linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: [PATCH] ASoC: max98390: Add reset gpio control
+Date: Thu, 10 Mar 2022 17:15:48 +0900
+Message-Id: <20220310081548.31846-1-steve.lee.analog@gmail.com>
+X-Mailer: git-send-email 2.17.1
+X-Mailman-Approved-At: Mon, 14 Mar 2022 07:58:50 +0100
+Cc: Steve Lee <steve.lee.analog@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,18 +96,55 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 13 Mar 2022 20:56:17 +0100,
-Jonathan Teh wrote:
-> 
-> Save and restore CM_REG_AUX_VOL instead of register 0x24 twice on
-> suspend/resume.
-> 
-> Tested on CMI8738LX.
-> 
-> Fixes: cb60e5f5b2b1 ("[ALSA] cmipci - Add PM support")
-> Signed-off-by: Jonathan Teh <jonathan.teh@outlook.com>
+ Add reset gpio control to support RESET PIN connected to gpio.
 
-Thanks, applied now.
+Signed-off-by: Steve Lee <steve.lee.analog@gmail.com>
+---
+ sound/soc/codecs/max98390.c | 18 ++++++++++++++++++
+ sound/soc/codecs/max98390.h |  1 +
+ 2 files changed, 19 insertions(+)
 
+diff --git a/sound/soc/codecs/max98390.c b/sound/soc/codecs/max98390.c
+index b392567c2b3e..574d8d5f1119 100644
+--- a/sound/soc/codecs/max98390.c
++++ b/sound/soc/codecs/max98390.c
+@@ -1073,6 +1073,24 @@ static int max98390_i2c_probe(struct i2c_client *i2c,
+ 		return ret;
+ 	}
+ 
++	max98390->reset_gpio = of_get_named_gpio(i2c->dev.of_node,
++						"maxim,reset-gpios", 0);
++
++	/* Power on device */
++	if (gpio_is_valid(max98390->reset_gpio)) {
++		ret = devm_gpio_request(&i2c->dev, max98390->reset_gpio,
++					"MAX98390_RESET");
++		if (ret) {
++			dev_err(&i2c->dev, "%s: Failed to request gpio %d\n",
++				__func__, max98390->reset_gpio);
++			return -EINVAL;
++		}
++		gpio_direction_output(max98390->reset_gpio, 0);
++		usleep_range(1000, 2000);
++		gpio_direction_output(max98390->reset_gpio, 1);
++		usleep_range(1000, 2000);
++	}
++
+ 	/* Check Revision ID */
+ 	ret = regmap_read(max98390->regmap,
+ 		MAX98390_R24FF_REV_ID, &reg);
+diff --git a/sound/soc/codecs/max98390.h b/sound/soc/codecs/max98390.h
+index c250740f73a2..5518f2340247 100644
+--- a/sound/soc/codecs/max98390.h
++++ b/sound/soc/codecs/max98390.h
+@@ -655,6 +655,7 @@
+ 
+ struct max98390_priv {
+ 	struct regmap *regmap;
++	int reset_gpio;
+ 	unsigned int sysclk;
+ 	unsigned int master;
+ 	unsigned int tdm_mode;
+-- 
+2.17.1
 
-Takashi
