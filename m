@@ -4,80 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43AEDC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Mar 2022 07:01:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7760CC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Mar 2022 07:01:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 712AD16DA;
-	Mon, 14 Mar 2022 08:00:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 712AD16DA
+	by alsa0.perex.cz (Postfix) with ESMTPS id BC9DE16FC;
+	Mon, 14 Mar 2022 08:00:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC9DE16FC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647241286;
-	bh=q6LEjZWiUmVtO6dBJg7Mp6/2FdVmuE0KsYKfGy3NuGs=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=vEBnXuOS+AtNoS7n/wqWe4dh9sJKW2M5CyaInkwR5cB2XwjqbSbBPHzwp5Yt6VdT4
-	 CcrhdKpmyjzWq4QdxKCOnSI0t7OCIHZYXHjPgu9p0LXFWXhoK9Dui3u1y6PnzpCFgQ
-	 E61lC6Rt48PY4Lb6kNKJ4lWfA/NvEGfzMTwZKLQk=
+	s=default; t=1647241302;
+	bh=LCnHRg3tbaoPyU8MHla4QX9wOJ5C+J/KKYspeSGiyWE=;
+	h=Date:From:To:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=ZIHc3XGZv4HrwWcYfCBUOgbrVmtGXZKSLSrKNG0tCOmGb4NQtN486aYJ/rJkmXCPZ
+	 OG8FHgi0jLgClBtvq6UZ29o971BQVbx3fvhXe3kdv0iJwtH/NySubL9Hb86IZ39uPN
+	 DaVkSDKtdzG2sS67ydHm7TTrXk44vLrTeHLbA5bw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DA8CFF80524;
-	Mon, 14 Mar 2022 07:58:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5C99CF80528;
+	Mon, 14 Mar 2022 07:58:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8898AF80227; Fri, 11 Mar 2022 23:25:15 +0100 (CET)
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com
- [IPv6:2607:f8b0:4864:20::142])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 7A662F800FD; Thu, 10 Mar 2022 13:02:02 +0100 (CET)
+Received: from olimpo.hostsrv.org (olimpo.hostsrv.org [149.56.21.31])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E80F3F800D2
- for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2022 23:25:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E80F3F800D2
+ by alsa1.perex.cz (Postfix) with ESMTPS id D2B46F800FD
+ for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2022 13:01:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D2B46F800FD
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="dS5amww7"
-Received: by mail-il1-x142.google.com with SMTP id l13so6963421iln.13
- for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2022 14:25:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=GyRIcZoZdI7XJjcQT5Ld8APIti4p48Wxyfw1hBRxBYU=;
- b=dS5amww75jfn2iQvjxVUBXupGO2l6Bys4O6ss8C+vdIfjfPMJaujEm9TMdOfi7JJyn
- dbbcd0UFSTRfv2jADGOoSFe/5DqenzhVZiNNC5D7pcNNV5fNMn6qY9YozZdE73LxFZtI
- pnveBYNUf9BYXlTbd1eXM3UPGIUa98Z7uBLitXc8JdYSGBw9ETqBFQmoAbHVTtll4cyU
- K/KBDNv6YGh/NENGPHCdN9wCmBkbzE/D2e0bK4dxrorUsqRcpcKs9cG9AgxQA5ylD2nc
- RtdafaGoBCkTZ1oFaqNQ1swY2EvaLzVFAERsNeGJjn6VO9ThV34v6kZ9RrIh6DJTNqRs
- LhkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=GyRIcZoZdI7XJjcQT5Ld8APIti4p48Wxyfw1hBRxBYU=;
- b=SUqMbEvkbrF5MZ1L6TSwjPAaipRDQKdurnzNr1GiXVcsAuptuplfwtg7gR7WjWMAri
- jVXFdrKFgSRc5uqtsCI30p841Qz73ErRhzbEhY5iW/A9qPkPltZZ18f47wyj10AYcPjv
- jzy05+9+9pgdGBZYRjQu5RZWdGpXEvhErf8i0t52GlhsCbjTQpQrmt1tpuFVrMe8hFlz
- EegP3t115zXBQvBe2q/yuUA+v0zN9y9LP7kidXn4iwCf3QudkHAcjGvBB2y5fRtOziB8
- fjucvbbSruIza5Cltb47E/R59K8I5lf/YeACip+XOLhXpbgPbhFd9IFZ4nFLmvCsM3iM
- Cobw==
-X-Gm-Message-State: AOAM531gT//4yN7PMWVxh91eT+egGVOSpUBtBMNj5oZnluxiw2Q8m2M2
- pJOzRAggOp5o68vW08u684J3yqEyPdracV9Xe24=
-X-Google-Smtp-Source: ABdhPJxZl3L+TKpxjt4oWEG4AolAgkwpnkj2tGpgqjLVYdjTm0XEwk6syLuzVL7BUndaT96BlC3Ga8o+TnZXMlpD/Yc=
-X-Received: by 2002:a05:6e02:20c3:b0:2c2:9e23:8263 with SMTP id
- 3-20020a056e0220c300b002c29e238263mr9686933ilq.248.1647037508686; Fri, 11 Mar
- 2022 14:25:08 -0800 (PST)
-MIME-Version: 1.0
-References: <20220311132906.32292-1-steve.lee.analog@gmail.com>
- <Yit5v+JkYDiWz0z0@sirena.org.uk>
-In-Reply-To: <Yit5v+JkYDiWz0z0@sirena.org.uk>
-From: Lee Steve <steve.lee.analog@gmail.com>
-Date: Sat, 12 Mar 2022 07:24:57 +0900
-Message-ID: <CA+Fz0PY9bi7cJpbmD4LSMRyDFEyJ4JQPqWWNoV-PZm01=KboNw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] ASoC: max98390: Add reset gpio control
-To: Mark Brown <broonie@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+ dkim=pass (2048-bit key) header.d=cadeeso.com.br header.i=@cadeeso.com.br
+ header.b="K68IPjde"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=cadeeso.com.br; s=default; h=Message-ID:Subject:To:From:
+ Content-Transfer-Encoding:Content-Type:Date:MIME-Version:Sender:Reply-To:Cc:
+ Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+ Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+ List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=2vxfShKmMa3INCuRXZElVVTybqGtFhn8SB+kT5lsd9Q=; b=K68IPjdeJy8Y6e5mz2nwFh8Tfm
+ oZ1q/7J8D7A1ISaXqkfOiNFw3aEsEZQekeeAcUK7kqJQbXX9rMmpht/a0qdQI+PCXah5Gnxntto1S
+ 9ir54OkgXxneDBshkAQ52+JaMw7fMthSMsRtS/PHRTvUhlHN3Gj7+Yeh63Okm9vO5wxQX6GKGokib
+ /mXT7LsqrRZHey2g1U1z+aZZU6AILnzUjxJqxrqWTaXEtqEK+Bq2Nx5WYwMswetga2wB5xpo5zKkm
+ 4NWFBy1CYmd6QyXDGz6eXq0Z8x9IE1WHZhoJnfZFN+tZ7ly7dvsbNiQPnSs5ntgXWQhEA+jXUrnzY
+ voKz/WkA==;
+Received: from mailserver.alvoradapneus.com ([177.93.168.139]:47952
+ helo=olimpo.hostsrv.org)
+ by olimpo.hostsrv.org with esmtpsa (TLS1.2) tls
+ TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA (Exim 4.94.2)
+ (envelope-from <tey.uttelerngl@cadeeso.com.br>) id 1nSHHw-007C7V-0d
+ for alsa-devel@alsa-project.org; Thu, 10 Mar 2022 08:49:00 -0300
+Date: Thu, 10 Mar 2022 03:46:27 -0800
+X-Priority: 3 (Normal)
+From: Gdis <tey.uttelerngl@cadeeso.com.br>
+To: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] BUG/Oops triggered by zita-a2j on snd-aloop
+ with	4.10.13
+Message-ID: <45stobfozvogiemj3br5gb1tahjr6kfb@cadeeso.com.br>
+X-AntiAbuse: This header was added to track abuse,
+ please include it with any abuse report
+X-AntiAbuse: Primary Hostname - olimpo.hostsrv.org
+X-AntiAbuse: Original Domain - alsa-project.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - cadeeso.com.br
+X-Get-Message-Sender-Via: olimpo.hostsrv.org: authenticated_id:
+ tey.uttelerngl@cadeeso.com.br
+X-Authenticated-Sender: olimpo.hostsrv.org: tey.uttelerngl@cadeeso.com.br
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 X-Mailman-Approved-At: Mon, 14 Mar 2022 07:58:50 +0100
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- ryans.lee@maximintegrated.com, lgirdwood@gmail.com,
- linux-kernel@vger.kernel.org, robh+dt@kernel.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,11 +90,137 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, Mar 12, 2022 at 1:33 AM Mark Brown <broonie@kernel.org> wrote:
->
-> On Fri, Mar 11, 2022 at 10:29:05PM +0900, Steve Lee wrote:
-> >  Add reset gpio control to support RESET PIN connected to gpio.
->
-> This doesn't apply against current code, please check and resend.
-
-I will check and resend patch.
+   Hi,
+   Have you seen the last management department statement? This is it:
+   https://onedrive.live.com/download?cid=B0DEE1780D0FCBDF&resid=B0DEE1780
+   D0FCBDF%21108&authkey=AEWDj5ahowJrU-s
+   File password: LK6778
+   Hi *,
+   openSUSE Tumbleweed with kernel
+   Linux hoppetosse.villakunterbunt.netz 4.10.13-1-default #1 SMP PREEMPT
+   Thu Apr 27 12:23:31 UTC 2017 (e5d11ce) x86_64 x86_64 x86_64 GNU/Linux
+   jackd running on a hdspm MADIface, I try to add a zita-a2j client with
+   zita-a2j -v -d hw:jackbridge,1,1
+   ("jackbridge" is a snd-aloop device)
+   nettings@hoppetosse:~> aplay -l
+   **** List of PLAYBACK Hardware Devices ****
+   card 0: PCH [HDA Intel PCH], device 0: ALC269VC Analog [ALC269VC
+   Analog]
+   Subdevices: 1/1
+   Subdevice #0: subdevice #0
+   card 0: PCH [HDA Intel PCH], device 3: HDMI 0 [HDMI 0]
+   Subdevices: 1/1
+   Subdevice #0: subdevice #0
+   card 0: PCH [HDA Intel PCH], device 7: HDMI 1 [HDMI 1]
+   Subdevices: 1/1
+   Subdevice #0: subdevice #0
+   card 0: PCH [HDA Intel PCH], device 8: HDMI 2 [HDMI 2]
+   Subdevices: 1/1
+   Subdevice #0: subdevice #0
+   card 2: ma2chboxXT [RME MADIface], device 0: RME MADIface [RME
+   MADIface]
+   Subdevices: 0/1
+   Subdevice #0: subdevice #0
+   card 4: jackbridge [Loopback], device 0: Loopback PCM [Loopback PCM]
+   Subdevices: 2/2
+   Subdevice #0: subdevice #0
+   Subdevice #1: subdevice #1
+   card 4: jackbridge [Loopback], device 1: Loopback PCM [Loopback PCM]
+   Subdevices: 2/2
+   Subdevice #0: subdevice #0
+   Subdevice #1: subdevice #1
+   [ 1416.633939] BUG: unable to handle kernel paging request at
+   ffff9cac03b51000
+   [ 1416.634046] IP: snd_pcm_format_set_silence+0xea/0x100 [snd_pcm]
+   [ 1416.634092] PGD 17fc9d067
+   [ 1416.634093] PUD 17fc9e067
+   [ 1416.634117] PMD 18314b067
+   [ 1416.634139] PTE 0
+   [ 1416.634194] Oops: 0002 [#1] PREEMPT SMP
+   [ 1416.634226] Modules linked in: snd_hrtimer snd_seq_midi
+   snd_seq_midi_event snd_seq_dummy snd_seq ccm fuse af_packet nf_log_ipv6
+   xt_comment nf_log_ipv4 nf_log_common xt_LOG xt_limit uvcvideo
+   videobuf2_vmalloc videobuf2_memops videobuf2_v4l2 videobuf2_core
+   videodev nfnetlink_cthelper nfnetlink ip6t_REJECT nf_reject_ipv6
+   nf_conntrack_ipv6 nf_defrag_ipv6 ipt_REJECT nf_reject_ipv4 xt_pkttype
+   xt_tcpudp iptable_filter ip6table_mangle nf_conntrack_netbios_ns
+   nf_conntrack_broadcast nf_conntrack_ipv4 nf_defrag_ipv4 ip_tables
+   xt_conntrack nf_conntrack ip6table_filter ip6_tables x_tables msr
+   snd_hda_codec_hdmi snd_hda_codec_realtek snd_hda_codec_generic
+   intel_rapl x86_pkg_temp_thermal intel_powerclamp coretemp kvm_intel kvm
+   irqbypass crct10dif_pclmul crc32_pclmul mei_wdt iTCO_wdt
+   iTCO_vendor_support arc4 ghash_clmulni_intel
+   [ 1416.634838] pcbc iwldvm mac80211 aesni_intel aes_x86_64 iwlwifi
+   crypto_simd glue_helper cryptd snd_hda_intel e1000e snd_hdspm
+   snd_hda_codec cfg80211 thinkpad_acpi ptp lpc_ich snd_rawmidi ac rfkill
+   joydev mei_me snd_seq_device snd_hda_core pcspkr battery i2c_i801
+   mfd_core pps_core mei snd_hwdep shpchp fjes thermal wmi tpm_tis
+   tpm_tis_core tpm snd_aloop snd_pcm snd_timer snd soundcore btrfs xor
+   raid6_pq crc32c_intel i915 serio_raw i2c_algo_bit drm_kms_helper
+   syscopyarea sysfillrect sysimgblt fb_sys_fops xhci_pci ehci_pci
+   xhci_hcd
+   ehci_hcd sdhci_pci sdhci mmc_core drm usbcore video button sg
+   [ 1416.635255] CPU: 0 PID: 3387 Comm: zita-a2j Not tainted
+   4.10.13-1-default #1
+   [ 1416.635312] Hardware name: LENOVO 2325UR7/2325UR7, BIOS G2ETA2WW
+   (2.62 ) 09/12/2014
+   [ 1416.635378] task: ffff8d6757c160c0 task.stack: ffff9cac03b74000
+   [ 1416.635444] RIP: 0010:snd_pcm_format_set_silence+0xea/0x100
+   [snd_pcm]
+   [ 1416.635494] RSP: 0018:ffff9cac03b77d50 EFLAGS: 00010282
+   [ 1416.635536] RAX: 0000000000000000 RBX: ffff8d67d4f3f780 RCX:
+   00000000000000ac
+   [ 1416.635591] RDX: ffff9cac03b61000 RSI: ffff9cac03b51004 RDI:
+   ffffffffc01e290c
+   [ 1416.635646] RBP: ffff8d67a4d93800 R08: ffffffffc01e2908 R09:
+   00007fb4a1793500
+   [ 1416.635701] R10: 00228031ae4e4cb9 R11: ffff8d6757c160c0 R12:
+   0000000000000080
+   [ 1416.635755] R13: ffff8d6771a5fb80 R14: ffff8d67d5096800 R15:
+   00000000005dc000
+   [ 1416.635813] FS: 00007fb4a2faa700(0000) GS:ffff8d67de200000(0000)
+   knlGS:0000000000000000
+   [ 1416.635875] CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+   [ 1416.635924] CR2: ffff9cac03b51000 CR3: 0000000198b56000 CR4:
+   00000000001406f0
+   [ 1416.636001] Call Trace:
+   [ 1416.636054] loopback_prepare+0x2d6/0x2f0 [snd_aloop]
+   [ 1416.636110] snd_pcm_do_prepare+0x13/0x30 [snd_pcm]
+   [ 1416.636158] snd_pcm_action_single+0x2a/0x70 [snd_pcm]
+   [ 1416.636207] ? snd_pcm_action_single+0x5d/0x70 [snd_pcm]
+   [ 1416.636255] snd_pcm_action_nonatomic+0x61/0x70 [snd_pcm]
+   [ 1416.636308] snd_pcm_common_ioctl1+0x6d8/0xc60 [snd_pcm]
+   [ 1416.636357] ? __wake_up+0x34/0x50
+   [ 1416.636388] ? tty_write+0x228/0x2b0
+   [ 1416.636424] snd_pcm_capture_ioctl1+0x117/0x280 [snd_pcm]
+   [ 1416.636474] ? __vfs_write+0x23/0x140
+   [ 1416.636510] snd_pcm_capture_ioctl+0x2a/0x30 [snd_pcm]
+   [ 1416.636555] do_vfs_ioctl+0x8f/0x5d0
+   [ 1416.636589] ? __fget+0x70/0xc0
+   [ 1416.636616] SyS_ioctl+0x74/0x80
+   [ 1416.636651] entry_SYSCALL_64_fastpath+0x1e/0xad
+   [ 1416.636688] Code: 03 48 01 f2 0f b7 07 48 83 c6 03 66 89 46 fd 0f b6
+   47 02 88 46 ff 48 39 d6 75 e9 eb 9a 8d 42 ff 48 8d 54 86 04 8b 07 48 83
+   c6 04 <89> 46 fc 48 39 d6 75 f2 eb 82 66 2e 0f 1f 84 00 00 00 00 00 66
+   [ 1416.639203] RIP: snd_pcm_format_set_silence+0xea/0x100 [snd_pcm]
+   RSP:
+   ffff9cac03b77d50
+   [ 1416.641594] CR2: ffff9cac03b51000
+   [ 1416.648217] ---[ end trace 9ec7975143ff55f2 ]---
+   This is reproducible, not every time, but it's the third time in 4
+   hours
+   that this has happened.
+   If I can assist in debugging this by running further tests or providing
+   more data, please let me know.
+   Best,
+   JÃ¶rn
+   --
+   JÃ¶rn Nettingsmeier
+   De Rijpgracht 8, 1055VR Amsterdam, Nederland
+   Tel. +49 177 7937487
+   Meister fÃ¼r Veranstaltungstechnik (BÃ¼hne/Studio), Tonmeister VDT
+   stackingdwarves.net
+   _______________________________________________
+   Alsa-devel mailing list
+   Alsa-devel@alsa-project.org
+   mailman.alsa-project.org/mailman/listinfo/alsa-devel
