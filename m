@@ -4,76 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 816CEC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Mar 2022 13:17:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4DFA9C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Mar 2022 13:30:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F336018EA;
-	Thu, 10 Mar 2022 14:16:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F336018EA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 01ADD190C;
+	Thu, 10 Mar 2022 14:30:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 01ADD190C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646918220;
-	bh=LO8u2Afk182eT+azNF0XyZj9u2g4BjVD1xWRqwk+HHU=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1646919055;
+	bh=O0tJs+it21o/2aLM6+nLsXkd1nRiKeI3cP7ZQY9o7xU=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UC81WMDH0S0D9tamkw0C5fACSouq7zi4q9O5U8WaRSz5u2RVjmu00WQ2IUqLEFz1E
-	 N+RTc1u0ZS9trL3CXokjNdauA1/L0/0Dy/3aNRbJKCor9lH0It7max0I7Q2Mt5x3Oh
-	 +gcsBZQMckIx7T7eXZF0aXrjvcI4atk1Oa9B8rsA=
+	b=LI6oC96ejv8+HufpOd2T2vTAAVKg6DhfTDAV3w1nwxTj+RadhuQ3co1zUCPRJofFa
+	 o/LxgtVv/xQq+s/2G1y+utd1PzMqkWTSbN2TNczzDqShDFsrnTy8Z3TKCb1I6imird
+	 nTuLGpl+BKf61pmNZ63seJZnCq4ktMnCklm6V9gE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A3280F8012F;
-	Thu, 10 Mar 2022 14:16:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 849F5F8012F;
+	Thu, 10 Mar 2022 14:30:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CDCA5F80137; Thu, 10 Mar 2022 14:16:07 +0100 (CET)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id E7572F80137; Thu, 10 Mar 2022 14:30:00 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 44399F8012C
- for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2022 14:15:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44399F8012C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 62807F800D2
+ for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2022 14:29:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62807F800D2
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="IQ4eFtXs"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1646918162; x=1678454162;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=LO8u2Afk182eT+azNF0XyZj9u2g4BjVD1xWRqwk+HHU=;
- b=IQ4eFtXsEcC4XMtb5Qy5P2TOT8t7rW2wgcMaTBZavaJdqC9f+v9m7ZAv
- CFGJ1SOO7sGMcnQH6HHYIqfY29nKjXhMcjcbqGQTV0EXksu4rhdfVDk+9
- dSzjMHV1mHjZCGL2nJZnTx3dszQRTrB/9vb7zszJ93uWpyfDarRyKTYqo
- bo7pwYMXYQFJvCe5+ZCJgLSpeHwi72BWzO3SqltHVNdwzl/9IgrBbMWyl
- YnMEVhiNnCKEqXVx/OKWeQXzdgpaqT7gZC9/IvZuyha3grJe8mzYKCbah
- GlRqF412Vr2TEt39eZxPgkZLRS/t3eBpLth3sz+yQet2UXRpIakGQYQtp A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10281"; a="254075036"
-X-IronPort-AV: E=Sophos;i="5.90,170,1643702400"; d="scan'208";a="254075036"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Mar 2022 05:15:57 -0800
-X-IronPort-AV: E=Sophos;i="5.90,170,1643702400"; d="scan'208";a="548007889"
-Received: from npalmass-mobl1.amr.corp.intel.com (HELO [10.213.186.207])
- ([10.213.186.207])
- by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Mar 2022 05:15:56 -0800
-Message-ID: <9cb04727-971d-842f-db79-dcc10d70532b@linux.intel.com>
-Date: Thu, 10 Mar 2022 13:15:53 +0000
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH v3] ALSA: hda/i915 - avoid hung task timeout in i915 wait
-Content-Language: en-US
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>, alsa-devel@alsa-project.org, 
- tiwai@suse.de
-References: <20220309182439.1053856-1-kai.vehmanen@linux.intel.com>
-From: Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-Organization: Intel Corporation UK Plc
-In-Reply-To: <20220309182439.1053856-1-kai.vehmanen@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Ramalingam C <ramalingam.c@intel.com>, intel-gfx@lists.freedesktop.org,
- lucas.demarchi@intel.com, amadeuszx.slawinski@linux.intel.com
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="uwM/3fmS"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="k1pHIieT"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 79BA61F381;
+ Thu, 10 Mar 2022 13:29:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1646918991; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=p+BwOJv9TrkOBx6KAoXGGCOccfxsJ7PRbs724DyoEp8=;
+ b=uwM/3fmSXvKY+Y9VgLnmTBZrCkcyUV0lyDO7Uvn35myQ+ZnYD+0j2A4SQDOx6YYB8l1ww6
+ pzIDPxcA9fK39RKuNNV+Y02rhQwLnUC59H+zsvarGs5HAYBIOe/VGBeVXpOJUxBTgoKUXf
+ XOD09JVtJ98hF2G475XFORRUCVJIc4s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1646918991;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=p+BwOJv9TrkOBx6KAoXGGCOccfxsJ7PRbs724DyoEp8=;
+ b=k1pHIieTXWKiyI8BKoqkk+7qvSB+TsV7IO8Rmu2PjRSmNXRoHuEgH96OzGQzBDy609VO87
+ 0bWW7t5qSrJXt5Bg==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 0477BA3B88;
+ Thu, 10 Mar 2022 13:29:50 +0000 (UTC)
+Date: Thu, 10 Mar 2022 14:29:50 +0100
+Message-ID: <s5hilsmey0h.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: huangwenhui <huangwenhuia@uniontech.com>
+Subject: Re: [PATCH] ALSA: hda/realtek - Fix headset mic problem for a HP
+ machine with alc671
+In-Reply-To: <20220310130301.22827-1-huangwenhuia@uniontech.com>
+References: <20220310130301.22827-1-huangwenhuia@uniontech.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, kailang@realtek.com,
+ tanureal@opensource.cirrus.com, jeremy.szu@canonical.com,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, wse@tuxedocomputers.com,
+ hui.wang@canonical.com, sami@loone.fi, cam@neo-zeon.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,51 +91,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-On 09/03/2022 18:24, Kai Vehmanen wrote:
-> If kernel is built with hung task detection enabled and
-> CONFIG_DEFAULT_HUNG_TASK_TIMEOUT set to less than 60 seconds,
-> snd_hdac_i915_init() will trigger the hung task timeout in case i915 is
-> not available and taint the kernel.
+On Thu, 10 Mar 2022 14:03:01 +0100,
+huangwenhui wrote:
 > 
-> Use wait_for_completion_killable_timeout() for the wait to
-> avoid this problem.
+> On a HP 288 Pro G8, the front Mic could not be detected.
 > 
-> Co-developed-by: Ramalingam C <ramalingam.c@intel.com>
-> Signed-off-by: Ramalingam C <ramalingam.c@intel.com>
-> Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-> ---
->   sound/hda/hdac_i915.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> Changes V2->V3:
->   - drop the loop and just use
->     wait_for_completion_killable_timeout() (feedback from Tvrtko Ursulin)
->   - new approach, so dropped the previous reviewed-by tags
-> 
-> diff --git a/sound/hda/hdac_i915.c b/sound/hda/hdac_i915.c
-> index 454474ac5716..efe810af28c5 100644
-> --- a/sound/hda/hdac_i915.c
-> +++ b/sound/hda/hdac_i915.c
-> @@ -160,8 +160,8 @@ int snd_hdac_i915_init(struct hdac_bus *bus)
->   		if (!IS_ENABLED(CONFIG_MODULES) ||
->   		    !request_module("i915")) {
->   			/* 60s timeout */
-> -			wait_for_completion_timeout(&acomp->master_bind_complete,
-> -						    msecs_to_jiffies(60 * 1000));
-> +			wait_for_completion_killable_timeout(&acomp->master_bind_complete,
-> +							     msecs_to_jiffies(60 * 1000));
->   		}
->   	}
->   	if (!acomp->ops) {
+> Signed-off-by: huangwenhui <huangwenhuia@uniontech.com>
 
-Works for me, as discussed I think this is more correct.
+Thanks for the patch.  Most of the changes look OK, but one thing I
+still don't get:
 
-Acked-by: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+> +	case HDA_FIXUP_ACT_INIT:
+> +		alc_write_coef_idx(codec, 0x19, 0xa054);
+> +		msleep(80);
+> +		snd_hda_codec_write(codec, hp_pin, 0,
+> +			    AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE);
 
-Regards,
+Why this unconditional unmute is required for fixing the mic problem?
 
-Tvrtko
 
-> 
-> base-commit: 3a0099a1909dea6022690b0ae496938dd2e5771c
+Takashi
