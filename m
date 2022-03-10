@@ -4,194 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49DA7C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Mar 2022 08:49:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C819EC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Mar 2022 09:15:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A13641753;
-	Thu, 10 Mar 2022 09:48:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A13641753
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3292A17D6;
+	Thu, 10 Mar 2022 10:14:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3292A17D6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646902156;
-	bh=t4QWpiSTqf8my/+OlUvYTxYhDjb1HwaeULGXwBzTSEc=;
-	h=From:To:Subject:Date:References:In-Reply-To:List-Id:
+	s=default; t=1646903721;
+	bh=oRaMzcOh9rJ4WgQEyP7jCP/sWr9gsy7yrax4Ew44fYY=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LBx1TnMQ9wNeyqahXPAbQLuZKR/1doLonkvfZQiy0tJEmdmIY7U7eR0aPqpf+XiX6
-	 BZOrAN77MOzuLyyv6UK3CPsPLcNbMkla9spz7D1L+pP/wyJSS8epeeva5mHtkabizy
-	 MhnGCNBuduDcSqcssndLnSjK1gx0YHOmv/S1AwPY=
+	b=FW2U2GzZHDPWUzRB2nGWh9N+ibtctVBIpMRWM1jYPlZb4keQwskXFMXGFxbwB8NFJ
+	 5ceugdP0eLMFpAR2WihJMiH53fFpnJnXqupilrOX6kXSkQDYXuVZCJTjgK4uPkjqZy
+	 SQh5g2g2cxhJNEFLMb9icRxHZk5DzyzY8ax0BNuw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3D2BAF8012F;
-	Thu, 10 Mar 2022 09:48:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AAFB3F8012F;
+	Thu, 10 Mar 2022 10:14:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 06A86F80137; Thu, 10 Mar 2022 09:48:25 +0100 (CET)
-Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com
- [148.163.135.77])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 29D98F8015B; Thu, 10 Mar 2022 10:14:28 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 454B5F800FD
- for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2022 09:48:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 454B5F800FD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1DF1DF800D2
+ for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2022 10:14:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1DF1DF800D2
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=analog.onmicrosoft.com
- header.i=@analog.onmicrosoft.com header.b="kT4M+Veh"
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
- by mx0a-00128a01.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 22A1XW5O020681;
- Thu, 10 Mar 2022 03:48:15 -0500
-Received: from pps.reinject (localhost [127.0.0.1])
- by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3em2ka958x-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 10 Mar 2022 03:48:15 -0500
-Received: from m0167088.ppops.net (m0167088.ppops.net [127.0.0.1])
- by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 22A8j6ga003539;
- Thu, 10 Mar 2022 03:48:14 -0500
-Received: from nam12-dm6-obe.outbound.protection.outlook.com
- (mail-dm6nam12lp2169.outbound.protection.outlook.com [104.47.59.169])
- by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3em2ka958s-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 10 Mar 2022 03:48:14 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=n86qD9fkv6ut6Ycd4xJ/sQI4+cOTFCBGPrkv3bnqb8txn262Lb59lC+Mr5CMENZt3O7YI0S/V13r1uYa2rX8+U2C9a7b1+dKQSaWz0M6fZCK2ttfSxjNi9wWwUb1fagPEdr2IxN6GbY/KJpUlNfmQhIDnbramDiNvmYNc94g+ePwGJAah2Rr1bKYSwx/4v6Byn7RSeM5m2k83e0MMROa3546b2cgg70MLTdgES5oGMqZ91coCaHlfXRb5PWFMhdqDsRqKkdITdivP637zOdEC0CMqanVETe8hnnITe8rNMDjpSsb/c2LznbSacUzG/GrV33xwwJB1dUXg2kMDYsxHg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fanJ5ll1sfX4RC31nPguBGJk/WCWyF+ucfE4eUpokQw=;
- b=mYAGh1Ko5zbWIUAHoZzSWGuz3pulSZfNeLcHWmwT5kt1yelLMH2b5ysnnSkITOj5zoE3voVltlx01vV0jP+uG3cTLZ3d+UwvJAfGDdvT4hadvRNQFa5HPh4aCGhAeHl/uGITxuaG5A++BCKAxKK1EcRARNxLunkorVScBAfQ9HrgVElLCvhNztLhZh9kJIs2nWpkAJP9HvoVK8VEwdSNrKJ4vjI6dSLNqhjNkZe5HeNnMJjYbctfikGpw8w0ulxzOaPRorKvJbmeQiid1h4eQ9/XEiv7U7yAIXVu3TCSYcZjcg9z6aLX829grGr73aV8OwE7rbXfz9kHC5vDGj/RUQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=analog.com; dmarc=pass action=none header.from=analog.com;
- dkim=pass header.d=analog.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=analog.onmicrosoft.com; s=selector2-analog-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fanJ5ll1sfX4RC31nPguBGJk/WCWyF+ucfE4eUpokQw=;
- b=kT4M+VehgN8zJ6aZkK36WaWJFNt4bUlsmyu4mfn1Z36A8mTzSZlYzQR9P1tIkc5LNC+ySN3l8P15n5PHFfnY6a8BRYLabz0lFlbjgaYq+bxzEOEvA0vMNpeozNcMHVfkugL6J1e6p5N/VjHH/tFyB0iZBDofRSNq+zhEG6gq5kA=
-Received: from SJ0PR03MB6779.namprd03.prod.outlook.com (2603:10b6:a03:40e::5)
- by MN2PR03MB5021.namprd03.prod.outlook.com (2603:10b6:208:1a8::16)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5038.14; Thu, 10 Mar
- 2022 08:48:10 +0000
-Received: from SJ0PR03MB6779.namprd03.prod.outlook.com
- ([fe80::148f:e07d:a5f2:c71e]) by SJ0PR03MB6779.namprd03.prod.outlook.com
- ([fe80::148f:e07d:a5f2:c71e%7]) with mapi id 15.20.5038.029; Thu, 10 Mar 2022
- 08:48:10 +0000
-From: "Sa, Nuno" <Nuno.Sa@analog.com>
-To: Steve Lee <steve.lee.analog@gmail.com>, "lgirdwood@gmail.com"
- <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>,
- "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>,
- "ckeepax@opensource.cirrus.com" <ckeepax@opensource.cirrus.com>,
- "geert@linux-m68k.org" <geert@linux-m68k.org>,
- "rf@opensource.wolfsonmicro.com" <rf@opensource.wolfsonmicro.com>,
- "shumingf@realtek.com" <shumingf@realtek.com>,
- "srinivas.kandagatla@linaro.org" <srinivas.kandagatla@linaro.org>,
- "krzk@kernel.org" <krzk@kernel.org>, "dmurphy@ti.com" <dmurphy@ti.com>,
- "jack.yu@realtek.com" <jack.yu@realtek.com>,
- "steves.lee@maximintegrated.com" <steves.lee@maximintegrated.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Subject: RE: [PATCH] ASoC: max98390: Add reset gpio control
-Thread-Topic: [PATCH] ASoC: max98390: Add reset gpio control
-Thread-Index: AQHYNFccgr40UHo4NUKAxl3T8tSFjay4TIUA
-Date: Thu, 10 Mar 2022 08:48:09 +0000
-Message-ID: <SJ0PR03MB67794358405FA661992A206D990B9@SJ0PR03MB6779.namprd03.prod.outlook.com>
-References: <20220310081548.31846-1-steve.lee.analog@gmail.com>
-In-Reply-To: <20220310081548.31846-1-steve.lee.analog@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-dg-ref: =?iso-8859-1?Q?PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcbnNhXGFwcG?=
- =?iso-8859-1?Q?RhdGFccm9hbWluZ1wwOWQ4NDliNi0zMmQzLTRhNDAtODVlZS02Yjg0YmEy?=
- =?iso-8859-1?Q?OWUzNWJcbXNnc1xtc2ctY2UzNmU3YzctYTA0ZS0xMWVjLThiYzgtZmM3Nz?=
- =?iso-8859-1?Q?c0MjFmY2FiXGFtZS10ZXN0XGNlMzZlN2M5LWEwNGUtMTFlYy04YmM4LWZj?=
- =?iso-8859-1?Q?Nzc3NDIxZmNhYmJvZHkudHh0IiBzej0iMjAzMCIgdD0iMTMyOTEzNzU2OD?=
- =?iso-8859-1?Q?c5Mzk2MjIxIiBoPSJybnlBNVd0alFLSHlRWXc5NjRYWURJMEZtdVk9IiBp?=
- =?iso-8859-1?Q?ZD0iIiBibD0iMCIgYm89IjEiIGNpPSJjQUFBQUVSSFUxUlNSVUZOQ2dVQU?=
- =?iso-8859-1?Q?FFb0NBQUI5SFkrUVd6VFlBWUNJR3RkaUdjbW1nSWdhMTJJWnlhWURBQUFB?=
- =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBSEFBQUFEYUFRQUFBQUFBQUFBQUFBQU?=
- =?iso-8859-1?Q?FBQUFBQUFBQUFBRUFBUUFCQUFBQVZJRXZvUUFBQUFBQUFBQUFBQUFBQUo0?=
- =?iso-8859-1?Q?QUFBQmhBR1FBYVFCZkFITUFaUUJqQUhVQWNnQmxBRjhBY0FCeUFHOEFhZ0?=
- =?iso-8859-1?Q?JsQUdNQWRBQnpBRjhBWmdCaEFHd0Fjd0JsQUY4QVpnQnZBSE1BYVFCMEFH?=
- =?iso-8859-1?Q?a0FkZ0JsQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
- =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFFQUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUdFQV?=
- =?iso-8859-1?Q?pBQnBBRjhBY3dCbEFHTUFkUUJ5QUdVQVh3QndBSElBYndCcUFHVUFZd0Iw?=
- =?iso-8859-1?Q?QUhNQVh3QjBBR2tBWlFCeUFERUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
- =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
- =?iso-8859-1?Q?FBQUFBQUFBQUFBUUFBQUFBQUFBQUNBQUFBQUFDZUFBQUFZUUJrQUdrQVh3?=
- =?iso-8859-1?Q?QnpBR1VBWXdCMUFISUFaUUJmQUhBQWNnQnZBR29BWlFCakFIUUFjd0JmQU?=
- =?iso-8859-1?Q?hRQWFRQmxBSElBTWdBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
- =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?iso-8859-1?Q?QUFBQkFBQUFBQUFBQUFJQUFBQUFBQT09Ii8+PC9tZXRhPg=3D=3D?=
-x-dg-rorf: true
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 34d428cc-be68-4763-2de9-08da0272b45c
-x-ms-traffictypediagnostic: MN2PR03MB5021:EE_
-x-microsoft-antispam-prvs: <MN2PR03MB5021283FD93030E3D591D616990B9@MN2PR03MB5021.namprd03.prod.outlook.com>
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: E4NGYB0kokf5WVgWRMm9Ul5KZiEU9wV2ybCJ3zNv4z6R8dCHI4udsaAb4LhDufiukZvr4Ro2eYtaSoiov7Rb6cO7HksS2HcYlTLCjz68DbpvGl//3Jj4wdeHQq/hnIpfva+9WMJy8yI1cihvwBgX6Li4cot8sXWm6/D0kIud3uUlsdRoAzKRPDflD9CtKXqD6CspLYe6k6fEECZxEU5grFAalHrJtsiVCwPIR+PBBqSPnMo9Q1D54TquMP4qEBK9EspU2M6UmW9Sf9TabFSAbV/bxeGZ4laqeVUUgvzNHgJHf1tqJ80rR0PV9EzHqHwH8F6dW02onu+C/DdnPsXW2ehBVjMhDdqDsLgP8qUfvQnlM6eaCQdqkc3/qKN42mbba94WYJlFhcny+3PkcKJAWA9SLuC5R3xuYOABCV2xfLW5k6gXQw/r1vx+FQ65edjFjyc+r/cSw9B0a5h/21I8WDPHNSe3CE5ttdP6P8fT/4pF+FPYOOev0B2W5G1463HXykvdx05/pMJhbneaPCY4PoVm20nuEY0EaVkEBcUU/GCHbPAy+WMxwQOjcFI7HvNgp5+U84aPkcx8J23VtWtiUoOWViLfsZmHHVys6gPGC909N09bskqvhSMvKPwHN67zO9ul01rpo85VPhYHLJho0tBDrr6ZmNKOfQfFoMFIa19lfNxiJVEcbhwSjyEj5vgUw+CiDC23F87235bIeuD/YhSRwk6euYschonzgxrHlKE=
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:SJ0PR03MB6779.namprd03.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230001)(4636009)(366004)(7416002)(316002)(122000001)(38100700002)(921005)(52536014)(508600001)(2906002)(66556008)(64756008)(8676002)(66446008)(33656002)(66946007)(7696005)(66476007)(6506007)(53546011)(5660300002)(9686003)(76116006)(110136005)(38070700005)(55016003)(8936002)(83380400001)(26005)(86362001)(186003)(71200400001);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?oCRQDjaD4zBkWdx1IBT8xqRhlB03qffoV1wQZ9wuWo+qzyhVnwwSp8d4Tl?=
- =?iso-8859-1?Q?MSoPmuf3HN8+2Zj4Yq7ielacmdoXfdKfEHNTKJGVF8NZ0ajosDkLTrAFw/?=
- =?iso-8859-1?Q?ZQf6ecxNlVkBzxIOkEg79DEmg3nXB0w39VWZEeLFAiw4eolPw1JIY6D+z6?=
- =?iso-8859-1?Q?0LD6+7ZK4lTlMGJ/5YDJ4ZE6ft1ze1S2RWGE31fY5jC4Ovbq/CPBL3aLWh?=
- =?iso-8859-1?Q?hCJejcosngOGmsAAG/B8bgKK9cxFdcVxUVKDmVUUQ/J77lz3FozvXgwbWG?=
- =?iso-8859-1?Q?omTCVqPTLcSubXD/Zq3QlXHn6LamOT+VbqU9muan8a3E6x8HO0nzzxHVfw?=
- =?iso-8859-1?Q?Sp72ac5+2/6NJh0RaHyJGYo8Bpsmu8PiQAf60rvmRq9C0MJYjFUhMC+ytv?=
- =?iso-8859-1?Q?BgO1nI0Xmixjehe2u/3S6EV5nxJSPQ7Jd+vyZBnGX+fi6T7wJVnnSi/QG4?=
- =?iso-8859-1?Q?io95yUi1xS0i7RCLKXF9hfdqnhYJsZk+tSI6AHkVQhOBnISHLtOf9EWBPz?=
- =?iso-8859-1?Q?oRNWqvtvdj8L58WsFDAFba69fejObdLO8qki7wTwpWQ8hC5zyg2RbImeJo?=
- =?iso-8859-1?Q?qA7h/3qs8Qr0vOigiFgTJcArz43bi9HqkQx/OmvhWiZJAeOCUgdGBKsFhL?=
- =?iso-8859-1?Q?9mxZXDKLhmptU07mntM3SA43uGrZnBcQ1tDDGcsJHqAFAWuwChOCAUMswB?=
- =?iso-8859-1?Q?2T0I9oqDkOVU/DxiuiCEPEVD+pkwfLdXilkPkbYfwbp5q+n/6FHkyT5K6f?=
- =?iso-8859-1?Q?LR9YK+K1z9iBcEARRTxE42++rCbo6HtDg7VjEykVoT4aVjIMg3BVXwFFp/?=
- =?iso-8859-1?Q?RrbM1wdWZZhLnr4mCyqLw3N1/bBGnk/RYaQxjQNjV0yLhFnZF+2Z5nAJ2e?=
- =?iso-8859-1?Q?YJxCzHGZqqf0cJXyFtk1DsRfw+RayUJjU2mNCcoPXDADK5Y+9El+5Q2Oqf?=
- =?iso-8859-1?Q?nSQSeKeux+k54eGTzdomAxlw4dnP1V1mFm8VPMCm1FXzjgvSu+1B/rj/9c?=
- =?iso-8859-1?Q?Q4gb/5WgjlRwtJuQ8ITqQ3QXC40iOc2PgCmtPz0Ou/z9Cyv/8Eud/232HG?=
- =?iso-8859-1?Q?w2V8K0dv6IkKPpYptylzYp8KePg5WgZvYrl89Zz7v0A+eOj9GZ+n6GvEH8?=
- =?iso-8859-1?Q?Ft/KfqK+G+2Kv5xLb0BT+m0rskVnH9tiWWwP3zpBnHi+fH6LrI7fWiOF+E?=
- =?iso-8859-1?Q?4VG7d0mdsCE+XvGMWl0SM7gycsJYmT6AlXyioBA8eaaqba21rE9rmJMBOv?=
- =?iso-8859-1?Q?pk0MsHWDI16X9dB/PByR4nyUngmhiwQpfYlQLr3rbEuJ9+iurjPxKcuc1n?=
- =?iso-8859-1?Q?mIQ+LiqfiRXExE9pT+/XPIKLGhgYOe8aIlM6vKxX7c7KFjhnM2kTzPf/4z?=
- =?iso-8859-1?Q?kJcUpArxf2ylqVxNTH4fG63bhfCC1toFbaTn0Dd6Xk7wNrMpWaZZ/lmSEJ?=
- =?iso-8859-1?Q?5lIdnUSp2Extf57MZEbqEy2hvbw0SEC3+tKdT5XJepRR+dCLOREhPwKVca?=
- =?iso-8859-1?Q?uXIdXAWXPZ0EdgU7c1nqpePFF4nPATbd8oGKKhwZVaMRnsCpSYjTWqQEqD?=
- =?iso-8859-1?Q?PGDTfIcUuXjSxnvnvFj4+QKZD/E8XtJ09bLQvYCG4my+xXLzP89MJ5w/lc?=
- =?iso-8859-1?Q?UVX3z1WdIU3uGh/Hxj1AIByfUvdgHJEiu7LUdPced4mnCXMC7CehevXQ?=
- =?iso-8859-1?Q?=3D=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="0wA7XufR"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="03xRZO5U"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id F35B61F442
+ for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2022 09:14:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1646903661; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=IILEMp/lj25UrsVwunNUjmzD09rDI/aZR1suYMneNk0=;
+ b=0wA7XufR78iJ+pWgSiWSaC2TPgJD2eAdXEKWzWbJLv3i7qQmK0Uboq0el8IkjH7+rBei2e
+ qkzxBuuAwQ26+yIHADlop1HVhwPcNOb6VZyvYupPtkj26oPQGirq4uPK3HtvWgaad3/wKz
+ oyvgMdkBV80fTkvTWZbyeZuh46UPRSI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1646903661;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=IILEMp/lj25UrsVwunNUjmzD09rDI/aZR1suYMneNk0=;
+ b=03xRZO5Uu3x5x5fJFig7R+00W+Z7gbfHmRBl2YuPow0LxIPqDiklUc8UGEM2NJDrwPG1ho
+ Ik+triHrKUcj0ZDA==
+Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id E2A41A3B83;
+ Thu, 10 Mar 2022 09:14:20 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH alsa-lib 2/3] pcm: direct: Move slave PCM state checks into
+ XRUN check helper
+Date: Thu, 10 Mar 2022 10:14:17 +0100
+Message-Id: <20220310091418.1150-2-tiwai@suse.de>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20220310091418.1150-1-tiwai@suse.de>
+References: <20220310091418.1150-1-tiwai@suse.de>
 MIME-Version: 1.0
-X-OriginatorOrg: analog.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR03MB6779.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 34d428cc-be68-4763-2de9-08da0272b45c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Mar 2022 08:48:10.0563 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: eaa689b4-8f87-40e0-9c6f-7228de4d754a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: aYAwg32Fvt0kzIqyoQy5RGjE+qyFoIb9edaRk4CF0LImeSf/eejFNO2qD+DHA/d8OH9gMvAtlPRe2ReXQu5ekA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR03MB5021
-X-Proofpoint-GUID: krt4iCSzukgnmeIMsrRJ9tXWXfnHTam5
-X-Proofpoint-ORIG-GUID: rLg2IVzfTRFW5s_ZYVg-aG-lVxJ2C_dV
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-03-10_03,2022-03-09_01,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- spamscore=0 mlxscore=0
- suspectscore=0 malwarescore=0 clxscore=1011 adultscore=0
- priorityscore=1501 impostorscore=0 phishscore=0 bulkscore=0
- mlxlogscore=999 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2202240000 definitions=main-2203100045
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -207,62 +87,298 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Steve,
+The check of slave PCM state is always done before the client's
+recoveries count check, so let's merge them to the common helper.
+Also rename the helper function to snd_pcm_direct_check_xrun() as it's
+checking both slave and client states now.
 
-> From: Steve Lee <steve.lee.analog@gmail.com>
-> Sent: Thursday, March 10, 2022 9:16 AM
-> To: lgirdwood@gmail.com; broonie@kernel.org; perex@perex.cz;
-> tiwai@suse.com; ckeepax@opensource.cirrus.com; geert@linux-
-> m68k.org; rf@opensource.wolfsonmicro.com; shumingf@realtek.com;
-> srinivas.kandagatla@linaro.org; krzk@kernel.org; dmurphy@ti.com;
-> jack.yu@realtek.com; Sa, Nuno <Nuno.Sa@analog.com>;
-> steves.lee@maximintegrated.com; linux-kernel@vger.kernel.org;
-> alsa-devel@alsa-project.org
-> Cc: Steve Lee <steve.lee.analog@gmail.com>
-> Subject: [PATCH] ASoC: max98390: Add reset gpio control
->=20
-> [External]
->=20
->  Add reset gpio control to support RESET PIN connected to gpio.
->=20
-> Signed-off-by: Steve Lee <steve.lee.analog@gmail.com>
-> ---
->  sound/soc/codecs/max98390.c | 18 ++++++++++++++++++
->  sound/soc/codecs/max98390.h |  1 +
->  2 files changed, 19 insertions(+)
->=20
-> diff --git a/sound/soc/codecs/max98390.c
-> b/sound/soc/codecs/max98390.c
-> index b392567c2b3e..574d8d5f1119 100644
-> --- a/sound/soc/codecs/max98390.c
-> +++ b/sound/soc/codecs/max98390.c
-> @@ -1073,6 +1073,24 @@ static int max98390_i2c_probe(struct
-> i2c_client *i2c,
->  		return ret;
->  	}
->=20
-> +	max98390->reset_gpio =3D of_get_named_gpio(i2c-
-> >dev.of_node,
-> +						"maxim,reset-gpios", 0);
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ src/pcm/pcm_direct.c | 34 ++++++++++++++++++++--------------
+ src/pcm/pcm_direct.h |  2 +-
+ src/pcm/pcm_dmix.c   | 43 ++++---------------------------------------
+ src/pcm/pcm_dshare.c | 43 ++++---------------------------------------
+ src/pcm/pcm_dsnoop.c | 43 ++++---------------------------------------
+ 5 files changed, 33 insertions(+), 132 deletions(-)
 
-Why not using devm_gpiod_get_optional()? We could request the pin
-already in the asserted state and make the code slightly better...
-
-/* I guess there's no need to save it in our struct as we only use it here?=
- */
-struct gpio_desc *reset_gpio;=20
-
-reset_gpio =3D devm_gpiod_get_optional(&i2c->dev, "reset", GPIOD_OUT_HIGH);
-if (reset_gpio) {
-      usleep_range(1000, 2000);
-     /* bring out of reset */
-      gpio_direction_output(max98390->reset_gpio, 0);
-      usleep_range(1000, 2000);
-}
-
-Also, do we have this on the bindings doc? If not, it should be done on a s=
-econd
-patch on this series...
-
-- Nuno S=E1
+diff --git a/src/pcm/pcm_direct.c b/src/pcm/pcm_direct.c
+index 1ca3b76306b1..060bcd5a0f7b 100644
+--- a/src/pcm/pcm_direct.c
++++ b/src/pcm/pcm_direct.c
+@@ -658,8 +658,23 @@ int snd_pcm_direct_slave_recover(snd_pcm_direct_t *direct)
+  * enter xrun or suspended state, if slave xrun occurred or suspended
+  * @return: 0 for no xrun/suspend or a negative error code for xrun/suspend
+  */
+-int snd_pcm_direct_client_chk_xrun(snd_pcm_direct_t *direct, snd_pcm_t *pcm)
++int snd_pcm_direct_check_xrun(snd_pcm_direct_t *direct, snd_pcm_t *pcm)
+ {
++	int err;
++
++	switch (snd_pcm_state(direct->spcm)) {
++	case SND_PCM_STATE_DISCONNECTED:
++		direct->state = SNDRV_PCM_STATE_DISCONNECTED;
++		return -ENODEV;
++	case SND_PCM_STATE_XRUN:
++	case SND_PCM_STATE_SUSPENDED:
++		if ((err = snd_pcm_direct_slave_recover(direct)) < 0)
++			return err;
++		break;
++	default:
++		break;
++	}
++
+ 	if (direct->state == SND_PCM_STATE_XRUN)
+ 		return -EPIPE;
+ 	else if (direct->state == SND_PCM_STATE_SUSPENDED)
+@@ -750,19 +765,11 @@ timer_changed:
+ 		}
+ 		empty = avail < pcm->avail_min;
+ 	}
+-	switch (snd_pcm_state(dmix->spcm)) {
+-	case SND_PCM_STATE_XRUN:
+-	case SND_PCM_STATE_SUSPENDED:
+-		/* recover slave and update client state to xrun
+-		 * before returning POLLERR
+-		 */
+-		snd_pcm_direct_slave_recover(dmix);
+-		snd_pcm_direct_client_chk_xrun(dmix, pcm);
+-		/* fallthrough */
+-	case SND_PCM_STATE_SETUP:
++
++	if (snd_pcm_direct_check_xrun(dmix, pcm) < 0 ||
++	    snd_pcm_state(dmix->spcm) == SND_PCM_STATE_SETUP) {
+ 		events |= POLLERR;
+-		break;
+-	default:
++	} else {
+ 		if (empty) {
+ 			/* here we have a race condition:
+ 			 * if period event arrived after the avail_update call
+@@ -786,7 +793,6 @@ timer_changed:
+ 				break;
+ 			}
+ 		}
+-		break;
+ 	}
+ 	*revents = events;
+ 	return 0;
+diff --git a/src/pcm/pcm_direct.h b/src/pcm/pcm_direct.h
+index fb013a6666c2..3e0c8bfcc9bc 100644
+--- a/src/pcm/pcm_direct.h
++++ b/src/pcm/pcm_direct.h
+@@ -345,7 +345,7 @@ snd_pcm_chmap_query_t **snd_pcm_direct_query_chmaps(snd_pcm_t *pcm);
+ snd_pcm_chmap_t *snd_pcm_direct_get_chmap(snd_pcm_t *pcm);
+ int snd_pcm_direct_set_chmap(snd_pcm_t *pcm, const snd_pcm_chmap_t *map);
+ int snd_pcm_direct_slave_recover(snd_pcm_direct_t *direct);
+-int snd_pcm_direct_client_chk_xrun(snd_pcm_direct_t *direct, snd_pcm_t *pcm);
++int snd_pcm_direct_check_xrun(snd_pcm_direct_t *direct, snd_pcm_t *pcm);
+ int snd_timer_async(snd_timer_t *timer, int sig, pid_t pid);
+ struct timespec snd_pcm_hw_fast_tstamp(snd_pcm_t *pcm);
+ void snd_pcm_direct_reset_slave_ptr(snd_pcm_t *pcm, snd_pcm_direct_t *dmix);
+diff --git a/src/pcm/pcm_dmix.c b/src/pcm/pcm_dmix.c
+index e3bf49269f0c..d00d53bef604 100644
+--- a/src/pcm/pcm_dmix.c
++++ b/src/pcm/pcm_dmix.c
+@@ -426,19 +426,7 @@ static int snd_pcm_dmix_sync_ptr(snd_pcm_t *pcm)
+ 	snd_pcm_direct_t *dmix = pcm->private_data;
+ 	int err;
+ 
+-	switch (snd_pcm_state(dmix->spcm)) {
+-	case SND_PCM_STATE_DISCONNECTED:
+-		dmix->state = SND_PCM_STATE_DISCONNECTED;
+-		return -ENODEV;
+-	case SND_PCM_STATE_XRUN:
+-	case SND_PCM_STATE_SUSPENDED:
+-		if ((err = snd_pcm_direct_slave_recover(dmix)) < 0)
+-			return err;
+-		break;
+-	default:
+-		break;
+-	}
+-	err = snd_pcm_direct_client_chk_xrun(dmix, pcm);
++	err = snd_pcm_direct_check_xrun(dmix, pcm);
+ 	if (err < 0)
+ 		return err;
+ 	if (dmix->slowptr)
+@@ -454,22 +442,8 @@ static int snd_pcm_dmix_sync_ptr(snd_pcm_t *pcm)
+ static snd_pcm_state_t snd_pcm_dmix_state(snd_pcm_t *pcm)
+ {
+ 	snd_pcm_direct_t *dmix = pcm->private_data;
+-	int err;
+-	snd_pcm_state_t state;
+-	state = snd_pcm_state(dmix->spcm);
+-	switch (state) {
+-	case SND_PCM_STATE_DISCONNECTED:
+-		dmix->state = state;
+-		return state;
+-	case SND_PCM_STATE_XRUN:
+-	case SND_PCM_STATE_SUSPENDED:
+-		if ((err = snd_pcm_direct_slave_recover(dmix)) < 0)
+-			return err;
+-		break;
+-	default:
+-		break;
+-	}
+-	snd_pcm_direct_client_chk_xrun(dmix, pcm);
++
++	snd_pcm_direct_check_xrun(dmix, pcm);
+ 	if (dmix->state == STATE_RUN_PENDING)
+ 		return SNDRV_PCM_STATE_RUNNING;
+ 	return dmix->state;
+@@ -832,16 +806,7 @@ static snd_pcm_sframes_t snd_pcm_dmix_mmap_commit(snd_pcm_t *pcm,
+ 	snd_pcm_direct_t *dmix = pcm->private_data;
+ 	int err;
+ 
+-	switch (snd_pcm_state(dmix->spcm)) {
+-	case SND_PCM_STATE_XRUN:
+-	case SND_PCM_STATE_SUSPENDED:
+-		if ((err = snd_pcm_direct_slave_recover(dmix)) < 0)
+-			return err;
+-		break;
+-	default:
+-		break;
+-	}
+-	err = snd_pcm_direct_client_chk_xrun(dmix, pcm);
++	err = snd_pcm_direct_check_xrun(dmix, pcm);
+ 	if (err < 0)
+ 		return err;
+ 	if (! size)
+diff --git a/src/pcm/pcm_dshare.c b/src/pcm/pcm_dshare.c
+index 5a52ae9173be..0ff43a90d270 100644
+--- a/src/pcm/pcm_dshare.c
++++ b/src/pcm/pcm_dshare.c
+@@ -201,19 +201,7 @@ static int snd_pcm_dshare_sync_ptr(snd_pcm_t *pcm)
+ 	snd_pcm_direct_t *dshare = pcm->private_data;
+ 	int err;
+ 
+-	switch (snd_pcm_state(dshare->spcm)) {
+-	case SND_PCM_STATE_DISCONNECTED:
+-		dshare->state = SNDRV_PCM_STATE_DISCONNECTED;
+-		return -ENODEV;
+-	case SND_PCM_STATE_XRUN:
+-	case SND_PCM_STATE_SUSPENDED:
+-		if ((err = snd_pcm_direct_slave_recover(dshare)) < 0)
+-			return err;
+-		break;
+-	default:
+-		break;
+-	}
+-	err = snd_pcm_direct_client_chk_xrun(dshare, pcm);
++	err = snd_pcm_direct_check_xrun(dshare, pcm);
+ 	if (err < 0)
+ 		return err;
+ 	if (dshare->slowptr)
+@@ -257,22 +245,8 @@ static int snd_pcm_dshare_status(snd_pcm_t *pcm, snd_pcm_status_t * status)
+ static snd_pcm_state_t snd_pcm_dshare_state(snd_pcm_t *pcm)
+ {
+ 	snd_pcm_direct_t *dshare = pcm->private_data;
+-	int err;
+-	snd_pcm_state_t state;
+-	state = snd_pcm_state(dshare->spcm);
+-	switch (state) {
+-	case SND_PCM_STATE_DISCONNECTED:
+-		dshare->state = state;
+-		return state;
+-	case SND_PCM_STATE_XRUN:
+-	case SND_PCM_STATE_SUSPENDED:
+-		if ((err = snd_pcm_direct_slave_recover(dshare)) < 0)
+-			return err;
+-		break;
+-	default:
+-		break;
+-	}
+-	snd_pcm_direct_client_chk_xrun(dshare, pcm);
++
++	snd_pcm_direct_check_xrun(dshare, pcm);
+ 	if (dshare->state == STATE_RUN_PENDING)
+ 		return SNDRV_PCM_STATE_RUNNING;
+ 	return dshare->state;
+@@ -531,16 +505,7 @@ static snd_pcm_sframes_t snd_pcm_dshare_mmap_commit(snd_pcm_t *pcm,
+ 	snd_pcm_direct_t *dshare = pcm->private_data;
+ 	int err;
+ 
+-	switch (snd_pcm_state(dshare->spcm)) {
+-	case SND_PCM_STATE_XRUN:
+-	case SND_PCM_STATE_SUSPENDED:
+-		if ((err = snd_pcm_direct_slave_recover(dshare)) < 0)
+-			return err;
+-		break;
+-	default:
+-		break;
+-	}
+-	err = snd_pcm_direct_client_chk_xrun(dshare, pcm);
++	err = snd_pcm_direct_check_xrun(dshare, pcm);
+ 	if (err < 0)
+ 		return err;
+ 	if (! size)
+diff --git a/src/pcm/pcm_dsnoop.c b/src/pcm/pcm_dsnoop.c
+index 1653f6fba86c..729ff447b41f 100644
+--- a/src/pcm/pcm_dsnoop.c
++++ b/src/pcm/pcm_dsnoop.c
+@@ -134,19 +134,7 @@ static int snd_pcm_dsnoop_sync_ptr(snd_pcm_t *pcm)
+ 	snd_pcm_sframes_t diff;
+ 	int err;
+ 
+-	switch (snd_pcm_state(dsnoop->spcm)) {
+-	case SND_PCM_STATE_DISCONNECTED:
+-		dsnoop->state = SNDRV_PCM_STATE_DISCONNECTED;
+-		return -ENODEV;
+-	case SND_PCM_STATE_XRUN:
+-	case SND_PCM_STATE_SUSPENDED:
+-		if ((err = snd_pcm_direct_slave_recover(dsnoop)) < 0)
+-			return err;
+-		break;
+-	default:
+-		break;
+-	}
+-	err = snd_pcm_direct_client_chk_xrun(dsnoop, pcm);
++	err = snd_pcm_direct_check_xrun(dsnoop, pcm);
+ 	if (err < 0)
+ 		return err;
+ 	if (dsnoop->slowptr)
+@@ -208,22 +196,8 @@ static int snd_pcm_dsnoop_status(snd_pcm_t *pcm, snd_pcm_status_t * status)
+ static snd_pcm_state_t snd_pcm_dsnoop_state(snd_pcm_t *pcm)
+ {
+ 	snd_pcm_direct_t *dsnoop = pcm->private_data;
+-	int err;
+-	snd_pcm_state_t state;
+-	state = snd_pcm_state(dsnoop->spcm);
+-	switch (state) {
+-	case SND_PCM_STATE_DISCONNECTED:
+-		dsnoop->state = state;
+-		return state;
+-	case SND_PCM_STATE_XRUN:
+-	case SND_PCM_STATE_SUSPENDED:
+-		if ((err = snd_pcm_direct_slave_recover(dsnoop)) < 0)
+-			return err;
+-		break;
+-	default:
+-		break;
+-	}
+-	snd_pcm_direct_client_chk_xrun(dsnoop, pcm);
++
++	snd_pcm_direct_check_xrun(dsnoop, pcm);
+ 	return dsnoop->state;
+ }
+ 
+@@ -422,16 +396,7 @@ static snd_pcm_sframes_t snd_pcm_dsnoop_mmap_commit(snd_pcm_t *pcm,
+ 	snd_pcm_direct_t *dsnoop = pcm->private_data;
+ 	int err;
+ 
+-	switch (snd_pcm_state(dsnoop->spcm)) {
+-	case SND_PCM_STATE_XRUN:
+-	case SND_PCM_STATE_SUSPENDED:
+-		if ((err = snd_pcm_direct_slave_recover(dsnoop)) < 0)
+-			return err;
+-		break;
+-	default:
+-		break;
+-	}
+-	err = snd_pcm_direct_client_chk_xrun(dsnoop, pcm);
++	err = snd_pcm_direct_check_xrun(dsnoop, pcm);
+ 	if (err < 0)
+ 		return err;
+ 	if (dsnoop->state == SND_PCM_STATE_RUNNING) {
+-- 
+2.34.1
 
