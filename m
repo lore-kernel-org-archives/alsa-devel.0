@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 159FEC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Mar 2022 04:31:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD095C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Mar 2022 04:31:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F239D17C5;
-	Thu, 10 Mar 2022 05:30:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F239D17C5
+	by alsa0.perex.cz (Postfix) with ESMTPS id E5E351836;
+	Thu, 10 Mar 2022 05:30:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E5E351836
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646886673;
-	bh=7OHrCJ0NJ0ZJTKjh3p8jbkOOXaaZSfn/roJlICXpeyo=;
+	s=default; t=1646886695;
+	bh=HaBgjpbZfVTtTKNjir1EsTFf8XFL+KnirMv1xWARbWI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CNQNCJ5emA/c1JGB6tfBb48puR5AnDUEHkKi9y51FalP3lN0+b8USeV5hO72wHB3n
-	 AaFwGSeWCdNscYB7SHXXYpjSfFXXmia/Bzz+BZdg/2Dh/ARLX6l3SLHMmQ5w8YdBsB
-	 jvAyW+/mDWREac28hswK0U1dyRBGmfkPVUXMxQyo=
+	b=FadZjbP4XhMs7mMw6XppImEeQtcCFVoxHzHkrDjmEL2wEUIAMxl/2Et8OhbqCNx3H
+	 6o4WXuCOOqxbSn97s8PdKftoy7P1Kpf79OOH/G424BtSNCbuW9Fbv3WVPf2bVYrvBk
+	 c4lpGaYcajqQvhOyKYhvN/HjfEkVFq7ICijKeuLs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8D497F80537;
-	Thu, 10 Mar 2022 05:28:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 593D3F80549;
+	Thu, 10 Mar 2022 05:28:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 00EB6F80525; Thu, 10 Mar 2022 05:27:56 +0100 (CET)
+ id CB48EF8052D; Thu, 10 Mar 2022 05:28:00 +0100 (CET)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 355E0F8012F
- for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2022 05:27:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 355E0F8012F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8D83BF80519
+ for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2022 05:27:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D83BF80519
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="lk9XChS7"
+ header.b="CgqNN2qx"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1646886469; x=1678422469;
+ t=1646886470; x=1678422470;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=7OHrCJ0NJ0ZJTKjh3p8jbkOOXaaZSfn/roJlICXpeyo=;
- b=lk9XChS7bboNHS9UiazSG74q8oknZh1OZLemOjLTNKXx6lQtfPhK0dpk
- Q2snN5erQfYn0h+/38kgKc/DuF68aS4hbnPZghSjtVEaRWIlNwMExQTYY
- xWgzDLfbO0Dyt+8FSMIukAKe3Z5Vn6CXQQ+UueRnV1d8L+/Q3/pWSG3UM
- BFuI3MNsVGtjdnk4tK6Rsr5AsJuUYCehSPzt3iYHltLMZmF9ZIQ54P2U/
- gOtWfxf7+lcq/naFuRda8RoO9EhyQDyw8bhsNUeJJgqNywFRFKjy09ATx
- zi1s1Wifu4+ZEPV5T0PRKOgiwn1NtNupWaJKsO4KZRXLm+u5yIJjt9y3d w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10281"; a="318380895"
-X-IronPort-AV: E=Sophos;i="5.90,169,1643702400"; d="scan'208";a="318380895"
+ bh=HaBgjpbZfVTtTKNjir1EsTFf8XFL+KnirMv1xWARbWI=;
+ b=CgqNN2qxsbZ4IgKGs5IC6NrHmV3VJqolf7z1vmB5uZ6X/JPcyzmmUNmu
+ 5kZhLasgIWx3wRXI9NIkCReFF2+ORh9WLrmRITR6OF7w3w2fmtF3UwnXt
+ OLEdlS4u0i/nN0nQcyFnkwAr+L8rbNVvsu+71hZKwevo1drz59E3x9c1N
+ lPALoznziCzn8GvfPIUlURW1pUz3l4SFH7hvN4ngZpMU+lzICwT5zCXjv
+ 5RwDb50frFyXH+4J5LU0o1Bk+28iFMrT0A83q+wlbeKtgHbVIyk6uVG00
+ /qCwae0w6sEbQJPzbGNRLkCM+AyPoqDymxXws9OePL2qZRxe+WNk+pAjB g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10281"; a="318380899"
+X-IronPort-AV: E=Sophos;i="5.90,169,1643702400"; d="scan'208";a="318380899"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  09 Mar 2022 20:27:32 -0800
-X-IronPort-AV: E=Sophos;i="5.90,169,1643702400"; d="scan'208";a="547884689"
+X-IronPort-AV: E=Sophos;i="5.90,169,1643702400"; d="scan'208";a="547884695"
 Received: from ttahmed-mobl2.amr.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.254.50.225])
  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  09 Mar 2022 20:27:32 -0800
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 07/10] ASoC: SOF: Intel: hda-ipc: Add
- hda_set_stream_data_offset()
-Date: Wed,  9 Mar 2022 20:27:17 -0800
-Message-Id: <20220310042720.976809-8-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 09/10] ASoC: SOF: imx: Convert to use the generic
+ set_stream_data_offset ops
+Date: Wed,  9 Mar 2022 20:27:19 -0800
+Message-Id: <20220310042720.976809-10-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220310042720.976809-1-ranjani.sridharan@linux.intel.com>
 References: <20220310042720.976809-1-ranjani.sridharan@linux.intel.com>
@@ -90,10 +90,8 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 
-Add implementation for the generic set_stream_data_offset() callback to be
-used by HDA platforms.
-
-Convert the hda_ipc_pcm_params() to a wrapper for the new function.
+Switch from the IPC dependent ipc_pcm_params() ops to the IPC neutral
+set_stream_data_offset().
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
@@ -101,57 +99,45 @@ Reviewed-by: Rander Wang <rander.wang@intel.com>
 Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-ipc.c | 15 ++++++++++-----
- sound/soc/sof/intel/hda.h     |  3 +++
- 2 files changed, 13 insertions(+), 5 deletions(-)
+ sound/soc/sof/imx/imx8.c  | 4 ++--
+ sound/soc/sof/imx/imx8m.c | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda-ipc.c b/sound/soc/sof/intel/hda-ipc.c
-index a8c452144168..317c3ab7e768 100644
---- a/sound/soc/sof/intel/hda-ipc.c
-+++ b/sound/soc/sof/intel/hda-ipc.c
-@@ -267,14 +267,12 @@ int hda_ipc_msg_data(struct snd_sof_dev *sdev,
- 	return 0;
- }
+diff --git a/sound/soc/sof/imx/imx8.c b/sound/soc/sof/imx/imx8.c
+index f6baecbb57fb..825bd2b9b7a1 100644
+--- a/sound/soc/sof/imx/imx8.c
++++ b/sound/soc/sof/imx/imx8.c
+@@ -509,7 +509,7 @@ static const struct snd_sof_dsp_ops sof_imx8_ops = {
+ 	.get_window_offset	= imx8_get_window_offset,
  
--int hda_ipc_pcm_params(struct snd_sof_dev *sdev,
--		       struct snd_pcm_substream *substream,
--		       const struct sof_ipc_pcm_params_reply *reply)
-+int hda_set_stream_data_offset(struct snd_sof_dev *sdev,
-+			       struct snd_pcm_substream *substream,
-+			       size_t posn_offset)
- {
- 	struct hdac_stream *hstream = substream->runtime->private_data;
- 	struct sof_intel_hda_stream *hda_stream;
--	/* validate offset */
--	size_t posn_offset = reply->posn_offset;
+ 	.ipc_msg_data	= sof_ipc_msg_data,
+-	.ipc_pcm_params	= sof_ipc_pcm_params,
++	.set_stream_data_offset = sof_set_stream_data_offset,
  
- 	hda_stream = container_of(hstream, struct sof_intel_hda_stream,
- 				  hext_stream.hstream);
-@@ -291,3 +289,10 @@ int hda_ipc_pcm_params(struct snd_sof_dev *sdev,
+ 	/* module loading */
+ 	.load_module	= snd_sof_parse_module_memcpy,
+@@ -572,7 +572,7 @@ static const struct snd_sof_dsp_ops sof_imx8x_ops = {
+ 	.get_window_offset	= imx8_get_window_offset,
  
- 	return 0;
- }
-+
-+int hda_ipc_pcm_params(struct snd_sof_dev *sdev,
-+		       struct snd_pcm_substream *substream,
-+		       const struct sof_ipc_pcm_params_reply *reply)
-+{
-+	return hda_set_stream_data_offset(sdev, substream, reply->posn_offset);
-+}
-diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index 46641d31e9c5..1e0a6d7bde17 100644
---- a/sound/soc/sof/intel/hda.h
-+++ b/sound/soc/sof/intel/hda.h
-@@ -569,6 +569,9 @@ int hda_ipc_msg_data(struct snd_sof_dev *sdev,
- int hda_ipc_pcm_params(struct snd_sof_dev *sdev,
- 		       struct snd_pcm_substream *substream,
- 		       const struct sof_ipc_pcm_params_reply *reply);
-+int hda_set_stream_data_offset(struct snd_sof_dev *sdev,
-+			       struct snd_pcm_substream *substream,
-+			       size_t posn_offset);
+ 	.ipc_msg_data	= sof_ipc_msg_data,
+-	.ipc_pcm_params	= sof_ipc_pcm_params,
++	.set_stream_data_offset = sof_set_stream_data_offset,
  
- /*
-  * DSP IPC Operations.
+ 	/* module loading */
+ 	.load_module	= snd_sof_parse_module_memcpy,
+diff --git a/sound/soc/sof/imx/imx8m.c b/sound/soc/sof/imx/imx8m.c
+index 60251486b24b..803d6be6b4fb 100644
+--- a/sound/soc/sof/imx/imx8m.c
++++ b/sound/soc/sof/imx/imx8m.c
+@@ -435,7 +435,7 @@ static const struct snd_sof_dsp_ops sof_imx8m_ops = {
+ 	.get_window_offset	= imx8m_get_window_offset,
+ 
+ 	.ipc_msg_data	= sof_ipc_msg_data,
+-	.ipc_pcm_params	= sof_ipc_pcm_params,
++	.set_stream_data_offset = sof_set_stream_data_offset,
+ 
+ 	/* module loading */
+ 	.load_module	= snd_sof_parse_module_memcpy,
 -- 
 2.25.1
 
