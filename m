@@ -4,78 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64CD5C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Mar 2022 22:39:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E222FC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Mar 2022 00:23:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7F2611836;
-	Wed,  9 Mar 2022 23:38:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F2611836
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2A2911700;
+	Thu, 10 Mar 2022 01:22:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A2911700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646865586;
-	bh=IfVPdKhS4QZ5fdjxK7CDIclXFb1vUgQyUNprq6qyH7w=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=iikvWXIk6V0JeQCOIJjZXENZGXQsqcbjtHPNgrneFcS4oc/4/JiyCZyg1jRwH/3S/
-	 4b2c2B2JhhEpnVShJLFRY7UxDZAMy7V0CqVLhw3zK5GMPHmq4CYllrwbMrc2J2XKu0
-	 D+8cTDrPpY5NmFvBLdBu9ELbwsPVfbm5ue/X7EK8=
+	s=default; t=1646871810;
+	bh=8EprTBloY5wX+0dvmTtdtICjwBIW5rqEwnKe+W3FjJQ=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=l5LFfaIibDnSheim0NXVpqujaauFSJ5WONK4p400IC0fWbG98YftusBEV1DAUeaEz
+	 puR3tnrKwDtkirLIvVs0Er4dIWWHel6sxfwalizNl9UHueyAf06Y3S0KoI5C2P9GSN
+	 otx7yJktj4CK+s8gREB2x+HUX78RHkyiGR3ukgfQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 463C0F80524;
-	Wed,  9 Mar 2022 23:37:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AD5ADF80158;
+	Thu, 10 Mar 2022 01:22:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F250BF8051E; Wed,  9 Mar 2022 23:37:39 +0100 (CET)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ id E0E86F8016C; Thu, 10 Mar 2022 01:22:37 +0100 (CET)
+Received: from out30-43.freemail.mail.aliyun.com
+ (out30-43.freemail.mail.aliyun.com [115.124.30.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0F846F80508
- for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2022 23:37:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F846F80508
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="fsR0mWKz"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1646865458; x=1678401458;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=IfVPdKhS4QZ5fdjxK7CDIclXFb1vUgQyUNprq6qyH7w=;
- b=fsR0mWKzppybs+NBYbqG2Y8v8O+EYKyQ8QTFxh+6mGzfmICkJjnlcwJo
- cjGKEBPEmsuGYsGnYost559lXgRUbh4S8cyagaT8NW2FefRhCe1KBcL3t
- GWnF5d6YYTkc3f+qTUg4iQ1aqavRVwEBvqaMz5Y7L2ZwulBlCzR9o1ORM
- /BKDJPyt1IzUCuYXlP5CBZkZEl+6zBr5dNG/R+rnS+qIL//Tpv9+UKmhx
- BBJ5vTJbu38A0H3vO/mQXqX9Ub1oO5azt0rcXlpSKQs7bJAh2EiR9tBq+
- 2/x94EHgdC6v+C2vj6Bxi4PWLiDlfMorL7w5dzvaLIF+oT/HQwh7hZEVl A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10281"; a="279840331"
-X-IronPort-AV: E=Sophos;i="5.90,168,1643702400"; d="scan'208";a="279840331"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Mar 2022 14:37:31 -0800
-X-IronPort-AV: E=Sophos;i="5.90,168,1643702400"; d="scan'208";a="688449514"
-Received: from nhaouati-mobl2.amr.corp.intel.com (HELO [10.212.216.252])
- ([10.212.216.252])
- by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Mar 2022 14:37:27 -0800
-Message-ID: <21355731-115b-5b8b-fe19-51e82cc6ae2a@linux.intel.com>
-Date: Wed, 9 Mar 2022 16:20:26 -0600
+ by alsa1.perex.cz (Postfix) with ESMTPS id E0FFCF80155
+ for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2022 01:22:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0FFCF80155
+X-Alimail-AntiSpam: AC=PASS; BC=-1|-1; BR=01201311R361e4; CH=green; DM=||false|;
+ DS=||; FP=0|-1|-1|-1|0|-1|-1|-1; HT=e01e04395;
+ MF=jiapeng.chong@linux.alibaba.com; NM=1; PH=DS; RN=13; SR=0;
+ TI=SMTPD_---0V6m-sN5_1646871744; 
+Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com
+ fp:SMTPD_---0V6m-sN5_1646871744) by smtp.aliyun-inc.com(127.0.0.1);
+ Thu, 10 Mar 2022 08:22:30 +0800
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To: codrin.ciubotariu@microchip.com
+Subject: [PATCH] ASoC: atmel: mchp-pdmc: Remove unnecessary print function
+ dev_err()
+Date: Thu, 10 Mar 2022 08:22:21 +0800
+Message-Id: <20220310002221.125448-1-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.5.0
-Subject: Re: [PATCH v4 10/17] ASoC: Intel: avs: Add basefw runtime-parameter
- requests
-Content-Language: en-US
-To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
-References: <20220309204029.89040-1-cezary.rojewski@intel.com>
- <20220309204029.89040-11-cezary.rojewski@intel.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20220309204029.89040-11-cezary.rojewski@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: upstream@semihalf.com, harshapriya.n@intel.com, rad@semihalf.com,
- tiwai@suse.com, hdegoede@redhat.com, broonie@kernel.org,
- ranjani.sridharan@linux.intel.com, amadeuszx.slawinski@linux.intel.com,
- cujomalainey@chromium.org, lma@semihalf.com
+Content-Transfer-Encoding: 8bit
+Cc: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+ alexandre.belloni@bootlin.com, alsa-devel@alsa-project.org,
+ lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
+ Abaci Robot <abaci@linux.alibaba.com>, nicolas.ferre@microchip.com,
+ tiwai@suse.com, broonie@kernel.org, claudiu.beznea@microchip.com,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,16 +69,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+The print function dev_err() is redundant because
+platform_get_irq() already prints an error.
 
+Eliminate the follow coccicheck warning:
+./sound/soc/atmel/mchp-pdmc.c:991:2-9: line 991 is redundant because
+platform_get_irq() already prints an error.
 
-> +enum avs_i2s_version {
-> +	AVS_I2S_VER_15_SKYLAKE   = 0x00000,
-> +	AVS_I2S_VER_15_BROXTON   = 0x10000,
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ sound/soc/atmel/mchp-pdmc.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-I would add a comment that this is added for completeness but not 
-tested/supported.
-
-> +	AVS_I2S_VER_15_BROXTON_P = 0x20000,
-> +	AVS_I2S_VER_18_KBL_CNL   = 0x30000,
-> +};
+diff --git a/sound/soc/atmel/mchp-pdmc.c b/sound/soc/atmel/mchp-pdmc.c
+index c44636f6207d..2b48bd3434c7 100644
+--- a/sound/soc/atmel/mchp-pdmc.c
++++ b/sound/soc/atmel/mchp-pdmc.c
+@@ -988,7 +988,6 @@ static int mchp_pdmc_probe(struct platform_device *pdev)
+ 
+ 	irq = platform_get_irq(pdev, 0);
+ 	if (irq < 0) {
+-		dev_err(dev, "failed to get irq: %d\n", irq);
+ 		return irq;
+ 	}
+ 
+-- 
+2.20.1.7.g153144c
 
