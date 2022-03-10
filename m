@@ -4,74 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B64DC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Mar 2022 13:36:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65F6EC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Mar 2022 13:37:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1E26D190A;
-	Thu, 10 Mar 2022 14:35:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E26D190A
+	by alsa0.perex.cz (Postfix) with ESMTPS id A61E9189E;
+	Thu, 10 Mar 2022 14:36:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A61E9189E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646919376;
-	bh=7t1vxZz+L21a9NeHQrJsaK/nOS6yEmEWTVJS4Pnps2Y=;
+	s=default; t=1646919431;
+	bh=IzCKSP06ZyCQdiyV6Oey8jDEMQh3drwg5TOknGuT+A0=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=aziQHNUCMotpjiTwPW9zTit8T1DmBnxAZ3Pj6LAFiGJy2leFDAV11b/FcVKLX7pwe
-	 pGqzVengJH3OqUNsbZpJp3O1H0G7VEr+voUzvlNRvB8FvMbgGMwqm5cr8iXRpg+CHW
-	 BbTpkZVRdHpGB5qhcE0rRQG1kfRpOUwFaQHq3upU=
+	b=fFHLEnUR94hs2nc6wod4nTcsrfWogvU3XqZBa/S0yOP58gCeUF8Y1Lxf5D/R+IG9P
+	 r09ke4HTQ0QI/eJfH0wJ96U9xkOVBE2JhfGDJrv3jZ+Tv2aWYZ4A/vqXuJTml/QBTP
+	 7TCCAucQDmkUC82VktuX+IgXzw87he76Suqn7xeg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A1E60F8012C;
-	Thu, 10 Mar 2022 14:35:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4F374F8012C;
+	Thu, 10 Mar 2022 14:36:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2F95AF8012F; Thu, 10 Mar 2022 14:35:24 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id 31D25F8012F; Thu, 10 Mar 2022 14:36:20 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B9471F800D2
- for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2022 14:35:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9471F800D2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2B4A6F800FD
+ for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2022 14:36:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B4A6F800FD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="VeQPCj6Z"; 
+ header.b="cdsB/aaq"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="8r+wMpt3"
+ header.b="GuNde0YD"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 5148C210E3;
- Thu, 10 Mar 2022 13:35:21 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id B27491F385;
+ Thu, 10 Mar 2022 13:36:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1646919321; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1646919371; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=EzfMmIYF/5eXMdRBDxIq6j3HIenGW61SBBRiBlTAZDo=;
- b=VeQPCj6ZyIObrVuB18pL8WhhTWVASsOvC4/ArEK/OJOZr9AEATVlwx87iaAyUf3UWa06T9
- VhjsdX/hGLGhG1MH5rtK+5DUbpERS57V3fHqtboFApSgf+DX+4wxgj1Wc5d1PzKdQLeAFe
- sMOmXe7cuMma0QQ2Sp/njEkoSWGnrvU=
+ bh=eg1lHQJNdKst+PLRqkjA9oK9gtUXO0XsptMPNcYy+BQ=;
+ b=cdsB/aaq8JVS41GFrznrGScENTV5gGqtNORzY/8S5IQp+ZPeDQrKIxFDrDWejBsuoVGA2D
+ DekSPxSrvaa7XkmmkJ0xKIbND44OoXdcjogHFk7+M2rPWT7WG729RAqyn3PWDDy04CsKhF
+ WbU6cycxHgZLYJHPYe39OZ/XgiUI+ys=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1646919321;
+ s=susede2_ed25519; t=1646919371;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=EzfMmIYF/5eXMdRBDxIq6j3HIenGW61SBBRiBlTAZDo=;
- b=8r+wMpt3sD/N+4iiyn1EVxeRQiQIZv1MiGcI4IeUFHEfUBbZ0FF9lbCajOTIQjzMChVcHO
- V8H96D4H0H/DmQAg==
+ bh=eg1lHQJNdKst+PLRqkjA9oK9gtUXO0XsptMPNcYy+BQ=;
+ b=GuNde0YD7HILHG9qKO4QNhTtCngfVZxl6Rn3cXQP7cN5/JQa1W5VTmOyMKUBXOyHVTv1A2
+ xXunq99psGC8BEDg==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 4B2B4A3B87;
- Thu, 10 Mar 2022 13:35:21 +0000 (UTC)
-Date: Thu, 10 Mar 2022 14:35:21 +0100
-Message-ID: <s5hfsnqexra.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id AB12FA3B96;
+ Thu, 10 Mar 2022 13:36:11 +0000 (UTC)
+Date: Thu, 10 Mar 2022 14:36:11 +0100
+Message-ID: <s5hee3aexpw.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [GIT PULL] ASoC fixes for v5.17-rc7
-In-Reply-To: <20220310121304.2F301C340EB@smtp.kernel.org>
-References: <20220310121304.2F301C340EB@smtp.kernel.org>
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH v3] ALSA: hda/i915 - avoid hung task timeout in i915 wait
+In-Reply-To: <20220309182439.1053856-1-kai.vehmanen@linux.intel.com>
+References: <20220309182439.1053856-1-kai.vehmanen@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Cc: tvrtko.ursulin@linux.intel.com, alsa-devel@alsa-project.org,
+ Ramalingam C <ramalingam.c@intel.com>, intel-gfx@lists.freedesktop.org,
+ lucas.demarchi@intel.com, amadeuszx.slawinski@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,38 +89,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 10 Mar 2022 13:12:55 +0100,
-Mark Brown wrote:
+On Wed, 09 Mar 2022 19:24:39 +0100,
+Kai Vehmanen wrote:
 > 
-> The following changes since commit c5487b9cdea5c1ede38a7ec94db0fc59963c8e86:
+> If kernel is built with hung task detection enabled and
+> CONFIG_DEFAULT_HUNG_TASK_TIMEOUT set to less than 60 seconds,
+> snd_hdac_i915_init() will trigger the hung task timeout in case i915 is
+> not available and taint the kernel.
 > 
->   ASoC: cs4265: Fix the duplicated control name (2022-02-16 16:34:16 +0000)
+> Use wait_for_completion_killable_timeout() for the wait to
+> avoid this problem.
 > 
-> are available in the Git repository at:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v5.17-rc7
-> 
-> for you to fetch changes up to 5e02fb590e83684f63217f93a9cdeabd6a925f9c:
-> 
->   ASoC: cs35l41: Fix DSP mbox start command and global enable order (2022-03-07 13:12:38 +0000)
-> 
-> ----------------------------------------------------------------
-> ASoC: Potential fixes for v5.17
-> 
-> Rather more fixes here than I'm comfortable with, we've had several
-> vendors noticing issues late in the release cycle all of which are valid
-> and reasonable fixes but it adds up to a much larger change set than I'd
-> like.  Several of the AMD fixes look like cleanups from the subject
-> lines but are actually fixing user visible problems as well.
-> 
-> If you were to merge this for 5.18 rather than 5.17 it wouldn't be the
-> end of the world, stable will probably backport everything anyway.
+> Co-developed-by: Ramalingam C <ramalingam.c@intel.com>
+> Signed-off-by: Ramalingam C <ramalingam.c@intel.com>
+> Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 
-Thanks, pulled now.
-
-I had a few pending fixes but thought to push for 5.18, as those
-weren't urgent.  This PR also looks like non-urgent fixes, so I'm
-inclined to wait for 5.18 merge for now.  Let's see.
+Applied now.  Thanks.
 
 
 Takashi
