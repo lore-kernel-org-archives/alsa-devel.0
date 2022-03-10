@@ -4,88 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD3B1C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Mar 2022 12:30:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CFF1CC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Mar 2022 13:14:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5B7FE18E2;
-	Thu, 10 Mar 2022 13:29:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5B7FE18E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id CCCBC18D7;
+	Thu, 10 Mar 2022 14:13:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CCCBC18D7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646915439;
-	bh=CZ+98rfIUbuxEfMNh49aT6L/21Pxtpljcv4bPyBYh5c=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1646918086;
+	bh=hLAwTLXVIMcSoOs+DZE5AFrkLCUXZidEtWnQvIrw/tU=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OC5kMd3DI8GXWWjNi9vPvS5z/xuR3lBh0STOZ7nY02dcf/nVzx0LATd+TxHtOhqpF
-	 Sdd4SdozTN+OzaJFkBZkfdMfZ1tKW979K3WdZQ20n5PZ/Vu/3F79JtObJdDuB+3JGJ
-	 ezUwFIlenJ3/VUdPE0Ne1FEl+XhtmmDWreH1eA1M=
+	b=Y5yvIEvKu+9WVEIr9dXhJxeQJdMISuA3/XtbI3/a74QlEix4X1jAIYZMaDeS3WvF6
+	 dLl3tPBpi01nRAYYEg++v3Up58nffafTGnVmgguh2Hm5EMlriVfFUXhpszz7NkwmDq
+	 3DVEJ6+0NPZD9Ga3kga4ldRQz7MkyyPUqVsBz7i8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E8785F8012F;
-	Thu, 10 Mar 2022 13:29:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 514D0F8012F;
+	Thu, 10 Mar 2022 14:13:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9822DF80137; Thu, 10 Mar 2022 13:29:45 +0100 (CET)
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com
- [IPv6:2a00:1450:4864:20::633])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id D9CFBF80137; Thu, 10 Mar 2022 14:13:54 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DC3DCF8012C
- for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2022 13:29:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC3DCF8012C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 89658F8012C
+ for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2022 14:13:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89658F8012C
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="SrcrDgBh"
-Received: by mail-ej1-x633.google.com with SMTP id qa43so11593457ejc.12
- for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2022 04:29:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=bvM9bpVqadFGT6cTj1FgeTbHx/untvfyWRFVU5A7JsI=;
- b=SrcrDgBhBKn4+VnFUMlAEETG43sIlaSqOgAHopzDVTrptjvyakX8mQdXxW99D7Cadp
- uRjTTytvfVQ9+vjrrvmMI1Pud2XIytkDFyt8JxDpnuOgMLp1BjClFjlIeQ8mqv0OSNNh
- lCTYmoGDqb6IwjPPP0Sfuv/n6nkZl1qvMc7DiViPcxx9l7s4CjlVAzxPDXc1hCaT4Gx8
- LuJ1l5J4CGaiLwZ+tdk+PMTsvTPk37GwP5G/i/DqRjnBg3DuQS2S+DxWriW2Kv1gujZP
- BhZmwOoz0EQSed0flzuxhxqqP4fTNxIcwiWgPtjRyO1iU7Mv4dS+jEoRxpJWLTnli2oT
- W0nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=bvM9bpVqadFGT6cTj1FgeTbHx/untvfyWRFVU5A7JsI=;
- b=L9feW1pgmxG2sd/4Lxw58oiI5bxxOjkfQYMtnM/jJlywDBl6q8r5s1K7SV7xuCEHLo
- 3nQV0lIa269wx9/EqgSDhu1kY1iyCSq9jUS5D6UPbsiBb4NH4slBRO8NUJKxJiEq1ZZM
- wMLYQXntvhjHp74IjxYNXDv+N+K9fCVMNmbIbssLR0ba0HulPiHJgFE9x7DQC6tjk0At
- /9qcd16C50U5KcSFkdDMIGKnVfway6iLln5JIH0CxB0Jc/PHd/FEOwAh+Zw5TQ7HWXFI
- sN4yBtf7oDVoGTPPSujnUbN4p5+rV5RwNv031DIGqomi3pkD6/haRtz7c21I+WMrildr
- WLWw==
-X-Gm-Message-State: AOAM533SbC+n/hrIKv5t0Kc06aXswf7NSsV0hlGEpwq+XNJrqqnddaA/
- /j3E+r8S0r+T0ZLWlNr33QUc8413RqYx2YKYH1ZjjUGZ
-X-Google-Smtp-Source: ABdhPJwbtiAMQz9G/jYe3ISah8jTsiGU5IhD7/7DVnW8LV+hNJXY6XvlTpAK2teBoBh7TYw/ra5mYNoltIFfd2cu8dA=
-X-Received: by 2002:a17:907:7f06:b0:6d6:f8f7:2655 with SMTP id
- qf6-20020a1709077f0600b006d6f8f72655mr4010142ejc.658.1646915374966; Thu, 10
- Mar 2022 04:29:34 -0800 (PST)
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="n6ZAn42u"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id EAEE1619E9;
+ Thu, 10 Mar 2022 13:13:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DDAAC340E8;
+ Thu, 10 Mar 2022 13:13:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1646918028;
+ bh=hLAwTLXVIMcSoOs+DZE5AFrkLCUXZidEtWnQvIrw/tU=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=n6ZAn42uSq803NRWqlQCNO1MoJy7a11DC3hZHbv1j6suwf4QD3Ye56cQcpFoikUtt
+ vkWv2HNPhmZ0FZEnvA5Tkd2QGAVXCunRFU23qWBEDXEoH9Noi5r/29OPlrZ+KK4Y/m
+ shqQA4BDUnllAv7q6k48yn/G/KG6zvyi20Ot4lL3GwuT2rYnvd/9PcxckR9WZRJ1cZ
+ 1hrUqAOhTn2SlOnP0xNqI3s4DNyLkwA4rOpOb5V2a5AxBlLsRZhGsxOw4JFz3kPxPi
+ 3j1IReqmSFNZyfz56xywDTUA9CY/Vmxp2L3d82UZgMIXELuTTO2Si9Hr52vbfkCs2H
+ rrrtQTMzSlwHQ==
+From: Mark Brown <broonie@kernel.org>
+To: Colin Ian King <colin.i.king@gmail.com>, alsa-devel@alsa-project.org,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
+ Claudiu Beznea <claudiu.beznea@microchip.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+ linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20220309164116.178685-1-colin.i.king@gmail.com>
+References: <20220309164116.178685-1-colin.i.king@gmail.com>
+Subject: Re: [PATCH][next] ASoC: atmel: mchp-pdmc: Fix spelling mistake
+ "microchopnes" -> "microphones"
+Message-Id: <164691802584.2018412.7073594890516356081.b4-ty@kernel.org>
+Date: Thu, 10 Mar 2022 13:13:45 +0000
 MIME-Version: 1.0
-References: <20220210134049.32576-1-ariel.dalessandro@collabora.com>
- <20220210134049.32576-2-ariel.dalessandro@collabora.com>
-In-Reply-To: <20220210134049.32576-2-ariel.dalessandro@collabora.com>
-From: Fabio Estevam <festevam@gmail.com>
-Date: Thu, 10 Mar 2022 09:29:23 -0300
-Message-ID: <CAOMZO5DuB4d1243H46d1=heiNiz+pQVkjrGU+zV_r3GFKRTZfQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] arm64: dts: imx8mn-bsh-smm-s2pro: Add
- tlv320aic31xx audio card node
-To: "Ariel D'Alessandro" <ariel.dalessandro@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-Cc: "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- linux-kernel <linux-kernel@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- NXP Linux Team <linux-imx@nxp.com>, Sascha Hauer <kernel@pengutronix.de>,
- Michael Trimarchi <michael@amarulasolutions.com>,
- Shawn Guo <shawnguo@kernel.org>,
- "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE"
- <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,39 +86,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Ariel,
+On Wed, 9 Mar 2022 16:41:16 +0000, Colin Ian King wrote:
+> There is a spelling mistake in a dev_info message. Fix it.
+> 
+> 
 
-On Thu, Feb 10, 2022 at 10:41 AM Ariel D'Alessandro
-<ariel.dalessandro@collabora.com> wrote:
+Applied to
 
-> +&i2c2 {
-> +       clock-frequency = <400000>;
-> +       pinctrl-names = "default";
-> +       pinctrl-0 = <&pinctrl_i2c2>;
-> +       status = "okay";
-> +
-> +       codec: tlv320dac3101@18 {
-> +               #sound-dai-cells = <0>;
-> +               compatible = "ti,tlv320dac3101";
-> +               pinctrl-names = "default";
-> +               pinctrl-0 = <&pinctrl_dac_rst>;
-> +               reg = <0x18>;
-> +
-> +               ai31xx-micbias-vg = <MICBIAS_AVDDV>;
-> +
-> +               HPVDD-supply = <&buck4_reg>;
-> +               SPRVDD-supply = <&vdd_input>;
-> +               SPLVDD-supply = <&vdd_input>;
-> +               AVDD-supply = <&buck4_reg>;
-> +               IOVDD-supply = <&buck4_reg>;
-> +               DVDD-supply = <&buck5_reg>;
-> +               reset-gpios = <&gpio1 6 GPIO_ACTIVE_LOW>;
-> +
-> +               clocks = <&clk IMX8MN_CLK_SAI3_ROOT>;
-> +               clock-names = "mclk";
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-The clocks and clock-names properties are not documented in the codec bindings.
+Thanks!
 
-Also, the driver does not use call clk_get() on this mclk clock.
+[1/1] ASoC: atmel: mchp-pdmc: Fix spelling mistake "microchopnes" -> "microphones"
+      commit: 6b6bb5e26222021abe1c5360f43b4c2ff1dd012f
 
-You should drop the clocks and clock-names properties.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
