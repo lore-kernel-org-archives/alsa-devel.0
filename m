@@ -4,64 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D56A8C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Mar 2022 07:02:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D076BC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Mar 2022 07:02:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 16C721716;
-	Mon, 14 Mar 2022 08:01:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 16C721716
+	by alsa0.perex.cz (Postfix) with ESMTPS id 232E0171A;
+	Mon, 14 Mar 2022 08:01:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 232E0171A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647241320;
-	bh=wBT1fyXqyc2nKO7FLXBo5NMt47Y7zbil6MH8lVVYpjk=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=i+QbJr4UY/m6ZW4ZaB/dJS5HDdFuKb5KoargdLwL5UdTYtZWCcskboRe36WD6+zyP
-	 i14Sb5MZZMpJoD730aLbC7ircPiMI18trqKy0ch/GEfZwxEyfNXTXJ7VZH5MgVPPCf
-	 +hh2Jp+8Zi/Q7dKGXXK0hTmhf7eDIHfGjcTD9Dd4=
+	s=default; t=1647241337;
+	bh=JoWJ+VZjFP0p1tjf+PQ8sEJgAu1IJt2vG6WsuzRznH4=;
+	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=YYzYdn8x7U0Vcp+WobGwx5+d/mUnj7M8NvAt3GQFWD/kzWLZntrnI6PCxnP461z0O
+	 crpnQsefyRy3ehgp2FjtMFh3iep9k9RrRG7bVNSxwQk7M83Huuh5Q7bGCI1o3/UhQs
+	 waASX2H6LeSsjqSDj5WVD9WjlyyTe4I7bhnfOWuY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3CFF4F8052D;
+	by alsa1.perex.cz (Postfix) with ESMTP id BFD5EF80536;
 	Mon, 14 Mar 2022 07:58:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D2999F800D2; Thu, 10 Mar 2022 14:03:20 +0100 (CET)
-Received: from smtpbg153.qq.com (smtpbg153.qq.com [13.245.218.24])
+ id 8467BF8012F; Thu, 10 Mar 2022 14:58:54 +0100 (CET)
+Received: from smtpproxy21.qq.com (smtpbg703.qq.com [203.205.195.89])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 193E0F800D2
- for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2022 14:03:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 193E0F800D2
-X-QQ-mid: bizesmtp78t1646917384tdsqalkf
-Received: from localhost.localdomain ( [113.57.152.160])
- by bizesmtp.qq.com (ESMTP) with 
- id ; Thu, 10 Mar 2022 21:03:03 +0800 (CST)
-X-QQ-SSF: 01400000002000B0C000B00A0000000
-X-QQ-FEAT: hAQ2xUxVESwZEQadtxikZbscZLrGOFgmNn+CeTtX4AR5qtfkmOVoFOHtsHJad
- G3G4uvIAGBdITa72ZM2D/poSJOHwAy34zaXbnYquS5owIxyXuhOkenVy/NNKnVOQY9LEHdr
- A47rhkY13bprr5ZopJn/Qs0h/sW6tGH8FhY6jYIRavc+YVEWqCn3M23PDLTqE6YoI4HlR6D
- p3XoavG5oiFwI6BMHp0fcG9T2kEXatWgBOrisD/1sfUz5NSO2tU6561qBlixpsY087HuOEI
- q/uLWO1zBM0js8+I2mDODwA9C+H6Z6VRoxwRRoYjGF68Yq14+lMOJG+LbQIJPTA8Xa204AG
- sxaWAL0
-X-QQ-GoodBg: 2
-From: huangwenhui <huangwenhuia@uniontech.com>
-To: perex@perex.cz,
-	tiwai@suse.com
-Subject: [PATCH] ALSA: hda/realtek - Fix headset mic problem for a HP machine
- with alc671
-Date: Thu, 10 Mar 2022 21:03:01 +0800
-Message-Id: <20220310130301.22827-1-huangwenhuia@uniontech.com>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8BD6FF800D2
+ for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2022 14:58:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8BD6FF800D2
+X-QQ-GoodBg: 1
+X-QQ-SSF: 00400000000000F0
+X-QQ-FEAT: aBJFcW+uBGZtMdU2jXYo9GYv2zfrGyi3uhCVd4og/Dx+C7sjh3iSrQ7b3Imn2
+ 7y3nJM9PIyeoFGNESKUnFPAHZfbwYvHr5bmj+aNAYSqXTXjcOvhC5OX3MqR3kQ/FMHw4/lS
+ dfD3YYOV1cHLot9y+5o4jB8qiKf8sgeEJCvF1oVEbpIImYcjo/eIgMy4wCX2Fw0b9Ce962P
+ x6XZTEc2XVxHrnTDfg1ywTvtxGpB51yxedMznkuq4RWkqiim1+BJ+AdQrlq4dizpzFG3ZDR
+ AiU5NZdWxUFAbSSvlJrHkZz4Wna6SvHZc0fQkUJiStKOeirSoo62K4cXkU8C8mEoIjyx5Cc
+ lo4KScVvdX/svZgm3AKu0wJksmyZZyA2p9/LYzB8TuzlTJO37eHGEdyiV8hdi2QxUJvJMXH
+ EBmKhixI4324gwVcaAA3Pw==
+X-QQ-BUSINESS-ORIGIN: 2
+X-Originating-IP: 113.57.13.187
+X-QQ-STYLE: 
+X-QQ-mid: logic634t1646920716t9276204
+From: "=?utf-8?B?6buE5paH6L6J?=" <huangwenhuia@uniontech.com>
+To: "=?utf-8?B?VGFrYXNoaSBJd2Fp?=" <tiwai@suse.de>
+Subject: Re: [PATCH] ALSA: hda/realtek - Fix headset mic problem for a HP
+ machine with alc671
+Mime-Version: 1.0
+Date: Thu, 10 Mar 2022 21:58:36 +0800
+X-Priority: 3
+Message-ID: <tencent_0D06988048F675F173385A1F@qq.com>
+X-QQ-MIME: TCMime 1.0 by Tencent
+X-Mailer: QQMail 2.x
+X-QQ-Mailer: QQMail 2.x
+References: <20220310130301.22827-1-huangwenhuia@uniontech.com>
+ <s5hilsmey0h.wl-tiwai@suse.de>
+In-Reply-To: <s5hilsmey0h.wl-tiwai@suse.de>
+X-QQ-ReplyHash: 3440138445
 X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign2
+Received: from qq.com (unknown [127.0.0.1]) by smtp.qq.com (ESMTP) with SMTP
+ id ; Thu, 10 Mar 2022 21:58:37 +0800 (CST)
+Feedback-ID: logic:uniontech.com:qybgforeign:qybgforeign2
 X-QQ-Bgrelay: 1
 X-Mailman-Approved-At: Mon, 14 Mar 2022 07:58:50 +0100
-Cc: alsa-devel@alsa-project.org, kailang@realtek.com,
- tanureal@opensource.cirrus.com, jeremy.szu@canonical.com,
- linux-kernel@vger.kernel.org, wse@tuxedocomputers.com,
- huangwenhui <huangwenhuia@uniontech.com>, hui.wang@canonical.com,
- sami@loone.fi, cam@neo-zeon.de
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: =?utf-8?B?YWxzYS1kZXZlbA==?= <alsa-devel@alsa-project.org>,
+ =?utf-8?B?a2FpbGFuZw==?= <kailang@realtek.com>,
+ =?utf-8?B?dGFudXJlYWw=?= <tanureal@opensource.cirrus.com>,
+ =?utf-8?B?amVyZW15LnN6dQ==?= <jeremy.szu@canonical.com>,
+ =?utf-8?B?bGludXgta2VybmVs?= <linux-kernel@vger.kernel.org>,
+ =?utf-8?B?dGl3YWk=?= <tiwai@suse.com>,
+ =?utf-8?B?d3Nl?= <wse@tuxedocomputers.com>,
+ =?utf-8?B?aHVpLndhbmc=?= <hui.wang@canonical.com>,
+ =?utf-8?B?c2FtaQ==?= <sami@loone.fi>, =?utf-8?B?Y2Ft?= <cam@neo-zeon.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,84 +94,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On a HP 288 Pro G8, the front Mic could not be detected.
-
-Signed-off-by: huangwenhui <huangwenhuia@uniontech.com>
----
- sound/pci/hda/patch_realtek.c | 37 +++++++++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 3a42457984e9..bcd56cdc07af 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -10519,6 +10519,37 @@ static void alc671_fixup_hp_headset_mic2(struct hda_codec *codec,
- 	}
- }
- 
-+static void alc671_fixup_hp288_headset_mic2(struct hda_codec *codec,
-+					     const struct hda_fixup *fix, int action)
-+{
-+	struct alc_spec *spec = codec->spec;
-+	hda_nid_t hp_pin = alc_get_hp_pin(spec);
-+
-+	static const struct hda_pintbl pincfgs[] = {
-+		{ 0x19, 0x02a11040 }, /* use as headset mic, with its own jack detect */
-+		{ 0x1b, 0x0181304f },
-+		{ }
-+	};
-+
-+	if (!hp_pin)
-+		hp_pin = 0x21;
-+
-+	switch (action) {
-+	case HDA_FIXUP_ACT_PRE_PROBE:
-+		spec->gen.mixer_nid = 0;
-+		spec->parse_flags |= HDA_PINCFG_HEADSET_MIC;
-+		snd_hda_apply_pincfgs(codec, pincfgs);
-+		break;
-+	case HDA_FIXUP_ACT_INIT:
-+		alc_write_coef_idx(codec, 0x19, 0xa054);
-+		msleep(80);
-+		snd_hda_codec_write(codec, hp_pin, 0,
-+			    AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE);
-+		msleep(100);
-+		break;
-+	}
-+}
-+
- static void alc897_hp_automute_hook(struct hda_codec *codec,
- 					 struct hda_jack_callback *jack)
- {
-@@ -10615,6 +10646,7 @@ enum {
- 	ALC669_FIXUP_ACER_ASPIRE_ETHOS,
- 	ALC669_FIXUP_ACER_ASPIRE_ETHOS_HEADSET,
- 	ALC671_FIXUP_HP_HEADSET_MIC2,
-+	ALC671_FIXUP_HP288_HEADSET_MIC2,
- 	ALC662_FIXUP_ACER_X2660G_HEADSET_MODE,
- 	ALC662_FIXUP_ACER_NITRO_HEADSET_MODE,
- 	ALC668_FIXUP_ASUS_NO_HEADSET_MIC,
-@@ -10986,6 +11018,10 @@ static const struct hda_fixup alc662_fixups[] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc671_fixup_hp_headset_mic2,
- 	},
-+	[ALC671_FIXUP_HP288_HEADSET_MIC2] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc671_fixup_hp288_headset_mic2,
-+	},
- 	[ALC662_FIXUP_ACER_X2660G_HEADSET_MODE] = {
- 		.type = HDA_FIXUP_PINS,
- 		.v.pins = (const struct hda_pintbl[]) {
-@@ -11067,6 +11103,7 @@ static const struct snd_pci_quirk alc662_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1028, 0x069f, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x103c, 0x1632, "HP RP5800", ALC662_FIXUP_HP_RP5800),
- 	SND_PCI_QUIRK(0x103c, 0x873e, "HP", ALC671_FIXUP_HP_HEADSET_MIC2),
-+	SND_PCI_QUIRK(0x103c, 0x885f, "HP 288 Pro G8", ALC671_FIXUP_HP288_HEADSET_MIC2),
- 	SND_PCI_QUIRK(0x1043, 0x1080, "Asus UX501VW", ALC668_FIXUP_HEADSET_MODE),
- 	SND_PCI_QUIRK(0x1043, 0x11cd, "Asus N550", ALC662_FIXUP_ASUS_Nx50),
- 	SND_PCI_QUIRK(0x1043, 0x129d, "Asus N750", ALC662_FIXUP_ASUS_Nx50),
--- 
-2.20.1
-
-
-
+SGkmbmJzcDsgVGFrYXNoaSwNCg0KDQpUaGFuayB5b3UgZm9yIHlvdXIgcmVwbHkuDQoNCg0K
+V2hlbiBib290aW5nIHdpdGggcGx1Z2dlZCBoZWFkc2V0LCB0aGUgaGVhZHBob25lIHdpbGwg
+YmUgbXV0ZWQuDQoNCg0KVGhhbmtzLg0KJm5ic3A7DQotLS0tLS0tLS0tLS0tLS0tLS0mbmJz
+cDtPcmlnaW5hbCZuYnNwOy0tLS0tLS0tLS0tLS0tLS0tLQ0KRnJvbTogJm5ic3A7IlRha2Fz
+aGkmbmJzcDtJd2FpIjx0aXdhaUBzdXNlLmRlJmd0OzsNCkRhdGU6ICZuYnNwO1RodSwgTWFy
+IDEwLCAyMDIyIDA5OjI5IFBNDQpUbzogJm5ic3A7Imh1YW5nd2VuaHVpIjxodWFuZ3dlbmh1
+aWFAdW5pb250ZWNoLmNvbSZndDs7IA0KQ2M6ICZuYnNwOyJwZXJleCI8cGVyZXhAcGVyZXgu
+Y3omZ3Q7OyAidGl3YWkiPHRpd2FpQHN1c2UuY29tJmd0OzsgImplcmVteS5zenUiPGplcmVt
+eS5zenVAY2Fub25pY2FsLmNvbSZndDs7ICJodWkud2FuZyI8aHVpLndhbmdAY2Fub25pY2Fs
+LmNvbSZndDs7ICJ3c2UiPHdzZUB0dXhlZG9jb21wdXRlcnMuY29tJmd0OzsgImNhbSI8Y2Ft
+QG5lby16ZW9uLmRlJmd0OzsgImthaWxhbmciPGthaWxhbmdAcmVhbHRlay5jb20mZ3Q7OyAi
+dGFudXJlYWwiPHRhbnVyZWFsQG9wZW5zb3VyY2UuY2lycnVzLmNvbSZndDs7ICJzYW1pIjxz
+YW1pQGxvb25lLmZpJmd0OzsgImFsc2EtZGV2ZWwiPGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
+Lm9yZyZndDs7ICJsaW51eC1rZXJuZWwiPGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcm
+Z3Q7OyANClN1YmplY3Q6ICZuYnNwO1JlOiBbUEFUQ0hdIEFMU0E6IGhkYS9yZWFsdGVrIC0g
+Rml4IGhlYWRzZXQgbWljIHByb2JsZW0gZm9yIGEgSFAgbWFjaGluZSB3aXRoIGFsYzY3MQ0K
+DQombmJzcDsNCg0KT24gVGh1LCAxMCBNYXIgMjAyMiAxNDowMzowMSArMDEwMCwNCmh1YW5n
+d2VuaHVpIHdyb3RlOg0KJmd0OyANCiZndDsgT24gYSBIUCAyODggUHJvIEc4LCB0aGUgZnJv
+bnQgTWljIGNvdWxkIG5vdCBiZSBkZXRlY3RlZC4NCiZndDsgDQomZ3Q7IFNpZ25lZC1vZmYt
+Ynk6IGh1YW5nd2VuaHVpIDxodWFuZ3dlbmh1aWFAdW5pb250ZWNoLmNvbSZndDsNCg0KVGhh
+bmtzIGZvciB0aGUgcGF0Y2guJm5ic3A7IE1vc3Qgb2YgdGhlIGNoYW5nZXMgbG9vayBPSywg
+YnV0IG9uZSB0aGluZyBJDQpzdGlsbCBkb24ndCBnZXQ6DQoNCiZndDsgKwljYXNlIEhEQV9G
+SVhVUF9BQ1RfSU5JVDoNCiZndDsgKwkJYWxjX3dyaXRlX2NvZWZfaWR4KGNvZGVjLCAweDE5
+LCAweGEwNTQpOw0KJmd0OyArCQltc2xlZXAoODApOw0KJmd0OyArCQlzbmRfaGRhX2NvZGVj
+X3dyaXRlKGNvZGVjLCBocF9waW4sIDAsDQomZ3Q7ICsJCQkmbmJzcDsmbmJzcDsmbmJzcDsg
+QUNfVkVSQl9TRVRfQU1QX0dBSU5fTVVURSwgQU1QX09VVF9VTk1VVEUpOw0KDQpXaHkgdGhp
+cyB1bmNvbmRpdGlvbmFsIHVubXV0ZSBpcyByZXF1aXJlZCBmb3IgZml4aW5nIHRoZSBtaWMg
+cHJvYmxlbT8NCg0KDQpUYWthc2hp
