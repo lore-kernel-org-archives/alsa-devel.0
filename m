@@ -4,62 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F580C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Mar 2022 02:17:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A717C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Mar 2022 08:31:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2DD1B18E8;
-	Fri, 11 Mar 2022 03:16:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2DD1B18E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id AC4B11845;
+	Fri, 11 Mar 2022 09:31:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC4B11845
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646965037;
-	bh=zRJz7UhGbB2i0o+v4kMSahmBPNLdzOiEnKNrhbZP1e0=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=pXDIljTF/gRrrZJ2KVaM8nAPV8iQAv73WtUnD/yTcaFTZYUk+hW5q8lcdunWnARho
-	 IoB9mtJeCHEec8acRg1zpBx3kI4NH3kVhDRBDjKZyGSx3WySPTowFocTRHbW+IOfWW
-	 RdPIGi0q1EPd7hhFvslXJiX7DPFUYdnLe0SuabJA=
+	s=default; t=1646987510;
+	bh=L+96nSdfyhlOe1Ls62aQL/baNKdlBJzs9a1pW3RT1bc=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=pOEOsLdrW32gkvs/kq5MkZRpY7bI4u3QhXoJgkH/I+4vX4+av+IXgYMywshD95iAI
+	 Ge+j69/NVvD37seNDlVoV7qs1sKoj4g/JUP1y8iFy7rCBiTls7ZnTdUdbzX4x+GRQY
+	 yS3NbiHRf5eJXBGFFi3GHpHU1pSILJAPX/exjFBQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6DBD5F804CA;
-	Fri, 11 Mar 2022 03:15:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 42C1CF801D8;
+	Fri, 11 Mar 2022 09:31:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 51F95F8012F; Fri, 11 Mar 2022 03:15:35 +0100 (CET)
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 699E3F80227; Fri, 11 Mar 2022 09:30:58 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 93F25F80137
- for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2022 03:15:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93F25F80137
-X-UUID: c3ff8d614a35446e8f6ac851d2fa3467-20220311
-X-UUID: c3ff8d614a35446e8f6ac851d2fa3467-20220311
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by
- mailgw02.mediatek.com (envelope-from <jiaxin.yu@mediatek.com>)
- (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
- with ESMTP id 333112247; Fri, 11 Mar 2022 10:15:12 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 11 Mar 2022 10:15:11 +0800
-Received: from localhost.localdomain (10.17.3.154) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 11 Mar 2022 10:15:10 +0800
-From: Jiaxin Yu <jiaxin.yu@mediatek.com>
-To: <broonie@kernel.org>, <robh+dt@kernel.org>
-Subject: [v3 0/2] ASoC: mediatek: mt8192: support rt1015p_rt5682s
-Date: Fri, 11 Mar 2022 10:15:07 +0800
-Message-ID: <20220311021509.31669-1-jiaxin.yu@mediatek.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 768CFF800D2
+ for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2022 09:30:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 768CFF800D2
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="VN+qHiXE"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="hYQytmMr"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 2B7E41F441;
+ Fri, 11 Mar 2022 08:30:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1646987450; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=dzGcwM7v+f34q9OHR146SuStt4YJu5AWHYm6yTSEKbU=;
+ b=VN+qHiXECN9MeWHI6qSXge+yel8gPdwl2Vp8yAg/VuNjvwOdqDdSepXjm9VAgjlgEg2/XV
+ whFUy28AcFcgi8Or3j1P/VBicHdar4zDrEq2C+nE/8YkdNTcpYtNGfMI2QQVEcR3+Jfl19
+ nMS23lpKQCBdCI9JHkkBcSv99h1E4VA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1646987450;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=dzGcwM7v+f34q9OHR146SuStt4YJu5AWHYm6yTSEKbU=;
+ b=hYQytmMrUrlQ/l8hINoIKeISYAqXeTfzMjJZc1EwUnqwjrKQOgjSwI/p46vgpzEUcSdlzM
+ 8113T2KyKJ4nRXBQ==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 77DECA3B93;
+ Fri, 11 Mar 2022 08:30:49 +0000 (UTC)
+Date: Fri, 11 Mar 2022 09:30:49 +0100
+Message-ID: <s5ho82cevra.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: "huangwenhui" <huangwenhuia@uniontech.com>
+Subject: Re: [PATCH] ALSA: hda/realtek - Fix headset mic problem for a HP
+ machine with alc671
+In-Reply-To: <tencent_080B040F1CE2D7D83D6FD0C8@qq.com>
+References: <tencent_080B040F1CE2D7D83D6FD0C8@qq.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-MTK: N
-Cc: devicetree@vger.kernel.org, linmq006@gmail.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org,
- Project_Global_Chrome_Upstream_Group@mediatek.com, tzungbi@google.com,
- linux-mediatek@lists.infradead.org, trevor.wu@mediatek.com,
- matthias.bgg@gmail.com, aaronyu@google.com,
- Jiaxin Yu <jiaxin.yu@mediatek.corp-partner.google.com>,
- linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel <alsa-devel@alsa-project.org>, kailang <kailang@realtek.com>,
+ tanureal <tanureal@opensource.cirrus.com>,
+ "jeremy.szu" <jeremy.szu@canonical.com>,
+ linux-kernel <linux-kernel@vger.kernel.org>, tiwai <tiwai@suse.com>,
+ wse <wse@tuxedocomputers.com>, "hui.wang" <hui.wang@canonical.com>,
+ sami <sami@loone.fi>, cam <cam@neo-zeon.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,29 +96,92 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Jiaxin Yu <jiaxin.yu@mediatek.corp-partner.google.com>
+On Fri, 11 Mar 2022 02:20:42 +0100,
+huangwenhui wrote:
+> 
+> Hi  Takashi,
+> 
+> if adjusting the mixer element or replugging the headset, the headphone would
+> be unmuted.
+> But most users hope that the default state is unmuted.
+> Should this unconditional unmute be required?
 
-The series reuses mt8192-mt6359-rt10150rt5682.c for supporting machine
-driver with rt1015p speaker amplifier and rt5682s headset codec.
+It's the standard behavior for most of ALSA drivers.
 
-Changes from v2:
-  - fix build warnings such as "data argument not used by format string"
+The initial mute state is rather controlled via alsactl, restoring the
+previous state.  Also, the sound server like PulseAudio or pipewire
+does unmute automatically.  If this doesn't work as expected, that's a
+more problem to diagnose.
 
-Changes from v1:
-  - uses the snd_soc_of_get_dai_link_codecs to complete the
-  configuration of dai_link's codecs
-  - uses definitions to simplifies card name and compatible name
 
-Jiaxin Yu (2):
-  ASoC: dt-bindings: mt8192-mt6359: add new compatible for using rt1015p
-    and rt5682
-  ASoC: mediatek: mt8192: support rt1015p_rt5682s
+Takashi
 
- .../sound/mt8192-mt6359-rt1015-rt5682.yaml    |   1 +
- sound/soc/mediatek/Kconfig                    |   1 +
- .../mt8192/mt8192-mt6359-rt1015-rt5682.c      | 204 +++++++++++-------
- 3 files changed, 129 insertions(+), 77 deletions(-)
-
--- 
-2.18.0
-
+> 
+> Thanks.
+> 
+> ------------------ Original ------------------
+> From:  "Takashi Iwai"<tiwai@suse.de>;
+> Date:  Thu, Mar 10, 2022 10:03 PM
+> To:  "黄文辉"<huangwenhuia@uniontech.com>;
+> Cc:  "perex"<perex@perex.cz>; "tiwai"<tiwai@suse.com>; "jeremy.szu"
+> <jeremy.szu@canonical.com>; "hui.wang"<hui.wang@canonical.com>; "wse"
+> <wse@tuxedocomputers.com>; "cam"<cam@neo-zeon.de>; "kailang"
+> <kailang@realtek.com>; "tanureal"<tanureal@opensource.cirrus.com>; "sami"
+> <sami@loone.fi>; "alsa-devel"<alsa-devel@alsa-project.org>; "linux-kernel"
+> <linux-kernel@vger.kernel.org>;
+> Subject:  Re: [PATCH] ALSA: hda/realtek - Fix headset mic problem for a HP
+> machine with alc671
+>  
+> On Thu, 10 Mar 2022 14:58:36 +0100,
+> huangwenhui wrote:
+> >
+> > Hi  Takashi,
+> >
+> > Thank you for your reply.
+> >
+> > When booting with plugged headset, the headphone will be muted.
+> 
+> The muted state is the default behavior.  Wouldn't it be unmuted if
+> you adjust the corresponding mixer element?
+> 
+> Takashi
+> 
+> >
+> > Thanks.
+> > 
+> > ------------------ Original ------------------
+> > From:  "Takashi Iwai"<tiwai@suse.de>;
+> > Date:  Thu, Mar 10, 2022 09:29 PM
+> > To:  "huangwenhui"<huangwenhuia@uniontech.com>;
+> > Cc:  "perex"<perex@perex.cz>; "tiwai"<tiwai@suse.com>; "jeremy.szu"
+> > <jeremy.szu@canonical.com>; "hui.wang"<hui.wang@canonical.com>; "wse"
+> > <wse@tuxedocomputers.com>; "cam"<cam@neo-zeon.de>; "kailang"
+> > <kailang@realtek.com>; "tanureal"<tanureal@opensource.cirrus.com>; "sami"
+> > <sami@loone.fi>; "alsa-devel"<alsa-devel@alsa-project.org>; "linux-kernel"
+> > <linux-kernel@vger.kernel.org>;
+> > Subject:  Re: [PATCH] ALSA: hda/realtek - Fix headset mic problem for a HP
+> > machine with alc671
+> > 
+> > On Thu, 10 Mar 2022 14:03:01 +0100,
+> > huangwenhui wrote:
+> > >
+> > > On a HP 288 Pro G8, the front Mic could not be detected.
+> > >
+> > > Signed-off-by: huangwenhui <huangwenhuia@uniontech.com>
+> >
+> > Thanks for the patch.  Most of the changes look OK, but one thing I
+> > still don't get:
+> >
+> > > + case HDA_FIXUP_ACT_INIT:
+> > > + alc_write_coef_idx(codec, 0x19, 0xa054);
+> > > + msleep(80);
+> > > + snd_hda_codec_write(codec, hp_pin, 0,
+> > > +     AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE);
+> >
+> > Why this unconditional unmute is required for fixing the mic problem?
+> >
+> > Takashi
+> >
+> >
+> 
+> 
