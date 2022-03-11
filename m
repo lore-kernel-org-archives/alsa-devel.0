@@ -4,63 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92792C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Mar 2022 20:24:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EB1CC433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Mar 2022 20:24:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CAC9B190A;
-	Fri, 11 Mar 2022 21:23:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CAC9B190A
+	by alsa0.perex.cz (Postfix) with ESMTPS id B0FBF1928;
+	Fri, 11 Mar 2022 21:23:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0FBF1928
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647030248;
-	bh=GxpEd1eRUSiywTmeHjpnQsf8euG4TcT6pAjlnGRoMus=;
+	s=default; t=1647030265;
+	bh=IOZV1tT8bDn5sLauJsxEERmTewue+CrSNNHxQuwAP4c=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lBDGLcG3yuUqi7GxsDY86sCcE00qclBWRNd8GJ79Dmd/L0TOGpGprwkw7S9Up4ROb
-	 WrHGtsHDMeHb3DwnHqZGTQA+XxG4WEpJaGFhfXfbTDx5M/raJLYkbzhME6qrKb0hCS
-	 TiJHnT03STdaF4vfQn1NXCkHrdoqz8OiyzyiPU9U=
-Received: from vmi242170.contaboserver.net (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 21A1DF80085;
+	b=dos6jeTObYlGsKEpfwBSznQbFLas7zwxOIJa9ValKItRIFvY5KkHFZB9gRW0xBwk2
+	 bUX8u8NP1gmWnRJi/VpEEd92r6LH1u+qkC9cep9LMbIubcnMw8F25fXAh9pucLrjTF
+	 lv99Oebwt7VDL8TwSnArXILdJgukc+0lOH10fKmQ=
+Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
+	by alsa1.perex.cz (Postfix) with ESMTP id 905D8F80507;
 	Fri, 11 Mar 2022 21:22:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3D738F80238; Fri, 11 Mar 2022 21:22:44 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id AEF45F804CC; Fri, 11 Mar 2022 21:22:45 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4A5E7F8012C
- for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2022 21:22:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4A5E7F8012C
+ by alsa1.perex.cz (Postfix) with ESMTPS id EEE9AF801D8
+ for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2022 21:22:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EEE9AF801D8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="hUhuaF7C"
+ header.b="tnpo4N1a"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id A119661F6E;
- Fri, 11 Mar 2022 20:22:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 631C5C340E9;
- Fri, 11 Mar 2022 20:22:35 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id F2E73B82CF3;
+ Fri, 11 Mar 2022 20:22:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 115C5C340F3;
+ Fri, 11 Mar 2022 20:22:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1647030156;
- bh=GxpEd1eRUSiywTmeHjpnQsf8euG4TcT6pAjlnGRoMus=;
+ s=k20201202; t=1647030159;
+ bh=IOZV1tT8bDn5sLauJsxEERmTewue+CrSNNHxQuwAP4c=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=hUhuaF7CykyFgDLsz2tykoAKCx9LMDxLHJGDW2TkkiBfrWnYaLdVW0rU5sBWzEPvq
- KBu+dUJbj1chIzoFYu3g3XxnYwQ5f1jZxpkEtvf44Y0oZyRCw/Iv0NYRCz/kwLRll6
- sNe3SA4S5H0uzeCchCI/sLvFsxihV3s41NuEZLRQxc1SU8k4t+vsxEpldaFigoRGWs
- TjXIxJK2tT7IEx0Zn227bRiGugs/nPHa0KFryuHH32lZ2vXszR9trLHE9HFxAtH56C
- 6gtDpEaMMZm7s0hAhHYmKvC3trLBpiZmY9udv9/evPOpvw2dRVcHR21xxLKsNfGppX
- CEEDEaM1QZV6A==
+ b=tnpo4N1a5/EIXGo45pTu8ybqrW9B6lNu0APFslHxbeB59/WEoYlKkzAgYFvyvkHaW
+ aXu5Y7mnKkA4jIoDFTjI6okrMFuvb90jLW4Rb0bLOFPud7x40f406N5GfZy+V2y9mz
+ nGWkVMgg+p8c3T9cfdlEmrR0Gk2sgFUSvtRk3gWlnrOWM/hdIU6dUrQ3BF4peHh2R2
+ 06u7Aow/Mi4CQePjyGf3CYIhu9sShG94464X29aO2jcs1rt+h1c8/6AWgd44SYjWvH
+ gaUL0RKS/6m128Lg3E4E3KDXjcveWUkgAsrXR/wJsdi/cnc3mUs443QbbiimECBHPX
+ kX2BsPCh/JXIA==
 From: Mark Brown <broonie@kernel.org>
 To: alsa-devel@alsa-project.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-In-Reply-To: <20220310042720.976809-1-ranjani.sridharan@linux.intel.com>
-References: <20220310042720.976809-1-ranjani.sridharan@linux.intel.com>
-Subject: Re: [PATCH 00/10] Make the SOF pcm_hw_params DSP op IPC agnostic
-Message-Id: <164703015511.264137.5399182478107568712.b4-ty@kernel.org>
-Date: Fri, 11 Mar 2022 20:22:35 +0000
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20220310171651.249385-1-pierre-louis.bossart@linux.intel.com>
+References: <20220310171651.249385-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/5] ASoC: SOF/Intel: small fixes and updates for 5.18
+Message-Id: <164703015879.264137.14919539287740853551.b4-ty@kernel.org>
+Date: Fri, 11 Mar 2022 20:22:38 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -80,24 +79,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 9 Mar 2022 20:27:10 -0800, Ranjani Sridharan wrote:
-> In preparation for supporting the newly introduced IPC version in the SOF
-> firmware, this patchset adds the changes required to make the
-> pcm_hw_params DSP op IPC agnostic.
+On Thu, 10 Mar 2022 11:16:46 -0600, Pierre-Louis Bossart wrote:
+> One important fix from Kai to restore DM1 L1 functionality, one
+> important update from Peter to use DMA trace buffers as capture-only
+> and sync them and a couple of minor updates for Intel/SOF platforms.
 > 
-> Peter Ujfalusi (10):
->   ASoC: SOF: sof-priv: Remove stale snd_sof_ipc_stream_pcm_params()
->     declaration
->   ASoC: SOF: Make pcm_hw_params snd_sof_dsp_ops callback IPC neutral
->   ASoC: SOF: pcm: Remove sof_pcm_dsp_params() wrapper
->   ASoC: SOF: Introduce optional callback to configure stream data offset
->   ASoC: SOF: Mark snd_sof_dsp_ops.ipc_pcm_params() callback optional
->   ASoC: SOF: stream-ipc: Add sof_set_stream_data_offset()
->   ASoC: SOF: Intel: hda-ipc: Add hda_set_stream_data_offset()
->   ASoC: SOF: Intel: Convert to use the generic set_stream_data_offset
->     ops
->   ASoC: SOF: imx: Convert to use the generic set_stream_data_offset ops
->   ASoC: SOF: Remove ipc_pcm_params() ops
+> Brent Lu (1):
+>   ASoC: SOF: Intel: add topology overwrite for Taniks
 > 
 > [...]
 
@@ -107,26 +95,16 @@ Applied to
 
 Thanks!
 
-[01/10] ASoC: SOF: sof-priv: Remove stale snd_sof_ipc_stream_pcm_params() declaration
-        commit: d7bc6ddef016d851cb0ff97ae16ac98d5f3c85ee
-[02/10] ASoC: SOF: Make pcm_hw_params snd_sof_dsp_ops callback IPC neutral
-        commit: 31f60a0c943d6a7e84b06686b1ed86ddadf484fa
-[03/10] ASoC: SOF: pcm: Remove sof_pcm_dsp_params() wrapper
-        commit: d1b1146fc708eff661c2becb9bf78374adde6db7
-[04/10] ASoC: SOF: Introduce optional callback to configure stream data offset
-        commit: 757ce8103c9e5b83cf18a669fe38484b0be3cfaf
-[05/10] ASoC: SOF: Mark snd_sof_dsp_ops.ipc_pcm_params() callback optional
-        commit: a6db22a68b0b2183184659d27c0a74df96f0d6d0
-[06/10] ASoC: SOF: stream-ipc: Add sof_set_stream_data_offset()
-        commit: 9a0a809a5aaeb09458c5f0d26fac63c213b0adb6
-[07/10] ASoC: SOF: Intel: hda-ipc: Add hda_set_stream_data_offset()
-        commit: 29e3aa0bb934e44c6ec0127cbe96983dc9b82b0e
-[08/10] ASoC: SOF: Intel: Convert to use the generic set_stream_data_offset ops
-        commit: cf73363e4a55579e3131f5de38c3b7b70bb4d639
-[09/10] ASoC: SOF: imx: Convert to use the generic set_stream_data_offset ops
-        commit: f0383aded3c6e61e044b90662bf99b3d850c5d90
-[10/10] ASoC: SOF: Remove ipc_pcm_params() ops
-        commit: 00f19253633710877880ad062d6cee3c13deb9a5
+[1/5] ASoC: SOF: Intel: enable DMI L1 for playback streams
+      commit: a174e72e2355b9025205b4b6727bf43047eac6c6
+[2/5] ASoC: SOF: compress: fix null check after dereference
+      commit: 7e4bfcf10a03981cb3056d723bb2f92eead5c0bb
+[3/5] ASoC: SOF: trace: Use proper DMA direction for the trace data buffer
+      commit: d8b502a7c353a63269d5ac3cfa7e5a04308df6a1
+[4/5] ASoC: SOF: Intel: add topology overwrite for Taniks
+      commit: 24320c55566138426ee0f9ec866dd3d656071799
+[5/5] ASoC: Intel: soc-acpi: Add entry for rt711-sdca-sdw in ADL match table
+      commit: d7be9e33c4ad71c299fd58c5d46d4407c0b42d86
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
