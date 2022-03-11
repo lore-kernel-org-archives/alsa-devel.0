@@ -4,42 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9723EC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Mar 2022 00:25:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E2AAC433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Mar 2022 02:16:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E3F1018A1;
-	Fri, 11 Mar 2022 01:24:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3F1018A1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3323F83E;
+	Fri, 11 Mar 2022 03:15:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3323F83E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1646958327;
-	bh=hfRBmwVghNbcVI9cBhUy/gGposRjrhs72wQ5qRBn244=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1646964986;
+	bh=jNo71ZcNpEzuZfRBlotlCig0YCfOgJsI+EUAo+HtJ1Y=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DPJdG2/jYSapZgR3wfTos5rC8K1X5c01MqCZtWhK3X+zB0MabZvEkd7cIV0jaDGSE
-	 4BLa/9iJ4s8MmxQd5zPESJRnqmE1/NxI4uoev5Jt988S1DJIpzn1NQXidCPCLt/sRj
-	 ynCrKd4tAmoroVsRQME/WxEg2D5zvG1TAObm7zfE=
+	b=GryIlbubRY8pQp/C6gSqZ6ayuCGqppBSSqyAsT2zOfokp7OlCUEnljsH2mHbbFe26
+	 U53UmhyYx/ktBWXkD/NvikZQc2F5/vABLG7mhguCY+pD/anqpKszhqv9PnXDttpxNC
+	 VHMjV4pjLlWK69TUUr4t5SmL0HKN4nbkd2LLsjoY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5CE31F8012F;
-	Fri, 11 Mar 2022 01:24:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9649EF80137;
+	Fri, 11 Mar 2022 03:15:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0C02CF80137; Fri, 11 Mar 2022 01:24:35 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 7BA3AF800FD
- for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2022 01:24:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7BA3AF800FD
+ id 99308F8015B; Fri, 11 Mar 2022 03:15:33 +0100 (CET)
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2AAB0F8012C
+ for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2022 03:15:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2AAB0F8012C
+X-UUID: f08e9d205f0e4eefbdc4eea1ee1ec231-20220311
+X-UUID: f08e9d205f0e4eefbdc4eea1ee1ec231-20220311
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+ (envelope-from <jiaxin.yu@mediatek.com>)
+ (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+ with ESMTP id 1571544356; Fri, 11 Mar 2022 10:15:14 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.792.15; Fri, 11 Mar 2022 10:15:12 +0800
+Received: from localhost.localdomain (10.17.3.154) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 11 Mar 2022 10:15:11 +0800
+From: Jiaxin Yu <jiaxin.yu@mediatek.com>
+To: <broonie@kernel.org>, <robh+dt@kernel.org>
+Subject: [v3 1/2] ASoC: dt-bindings: mt8192-mt6359: add new compatible for
+ using rt1015p and rt5682
+Date: Fri, 11 Mar 2022 10:15:08 +0800
+Message-ID: <20220311021509.31669-2-jiaxin.yu@mediatek.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220311021509.31669-1-jiaxin.yu@mediatek.com>
+References: <20220311021509.31669-1-jiaxin.yu@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1646958271190315962-webhooks-bot@alsa-project.org>
-References: <1646958271190315962-webhooks-bot@alsa-project.org>
-Subject: Presence of "default" device name crashes unity3d games
-Message-Id: <20220311002435.0C02CF80137@alsa1.perex.cz>
-Date: Fri, 11 Mar 2022 01:24:35 +0100 (CET)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK: N
+Cc: devicetree@vger.kernel.org, linmq006@gmail.com,
+ Rob Herring <robh@kernel.org>, alsa-devel@alsa-project.org,
+ Jiaxin Yu <jiaxin.yu@mediatek.com>, linux-kernel@vger.kernel.org,
+ Project_Global_Chrome_Upstream_Group@mediatek.com, tzungbi@google.com,
+ linux-mediatek@lists.infradead.org, trevor.wu@mediatek.com,
+ matthias.bgg@gmail.com, aaronyu@google.com,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -55,29 +80,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #214 was opened from the3dfxdude:
+Adds new compatible string "mt8192_mt6359_rt1015p_rt5682s" for machines
+with rt1015p and rt5682s.
 
-In a recent Slackware 15.0 distro release, the alsa-lib version is now 1.2.5.1. This causes a crash in Kerbal Space Program similar to issue #27. A change was made to close issue #27 in alsa-lib 1.2.3. That change did not correct the crash however in 1.2.3 or 1.2.5.1 in my case.
+Signed-off-by: Jiaxin Yu <jiaxin.yu@mediatek.com>
+Acked-by: Rob Herring <robh@kernel.org>
+---
+ .../devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml   | 1 +
+ 1 file changed, 1 insertion(+)
 
-This is the noted difference for "aplay -L" between 1.2.3 and 1.2.1:
---- dump_1_2_1	2022-03-10 12:38:16.991433004 -0700
-+++ dump_1_2_3	2022-03-10 12:37:53.467443226 -0700
-@@ -1,5 +1,9 @@
- null
-     Discard all samples (playback) or generate zero samples (capture)
-+default
-+    Default Audio Device
-+sysdefault
-+    Default Audio Device
- default:CARD=IXP
-     ATI IXP, ATI IXP AC97
-     Default Audio Device
+diff --git a/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml b/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml
+index a781e7aaaa38..4b0b0478018a 100644
+--- a/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml
++++ b/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml
+@@ -18,6 +18,7 @@ properties:
+     enum:
+       - mediatek,mt8192_mt6359_rt1015_rt5682
+       - mediatek,mt8192_mt6359_rt1015p_rt5682
++      - mediatek,mt8192_mt6359_rt1015p_rt5682s
+ 
+   mediatek,platform:
+     $ref: "/schemas/types.yaml#/definitions/phandle"
+-- 
+2.18.0
 
-Removing this "default" device entry fixes the issue on this system. You may remove the default device name by editing src/conf/pcm/default.conf and adding under the hint section "omit_noargs true".
-
-Unity must be parsing the device name, and with certain device names, if there is no ':' doing something bad, as there is a pattern here on what it trips on. I have no idea how to get them to correct this, so opening the issue here at least for the record if anyone else has an issue with this.
-
-Also, I am not sure what triggers "default" to show. I did a survey and 3 out of 5 of my slackware 15.0 systems have it. And 2 do not. Does this have something to do with parsing the system alsa config and the available sound devices in the system? I don't define any asound.conf for any of these, so these are almost 100% stock slackware systems, there should otherwise be no difference.
-
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/214
-Repository URL: https://github.com/alsa-project/alsa-lib
