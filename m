@@ -4,68 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA3A6C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Mar 2022 20:24:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B19AC433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Mar 2022 20:25:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E0B671948;
-	Fri, 11 Mar 2022 21:23:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E0B671948
+	by alsa0.perex.cz (Postfix) with ESMTPS id 842A11A5F;
+	Fri, 11 Mar 2022 21:24:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 842A11A5F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647030282;
-	bh=YsBWt/1b/coRAuiW5Ll4OeIE+LbscJPmSqzzxWr+rrU=;
+	s=default; t=1647030298;
+	bh=0Q2U7gB1v+g5WWvIldVX0hUeSGrWPkJ2QT7hjn6A0Yo=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rfZZnqP6zahrtwWd75efEnE5rJy91ybDvLZjVkcSI6RKKCiOqE5PvKYcO0ddrVZac
-	 wUB45n43zbzxdNuXC1x+M5YCwwKIr34Y5F+09O7075EZvPjvBN5CgkEVHdCM78eeq4
-	 IFvOuLkwqGWLXaJ2UwhhwyRuz6gbG6RfcJtBX4xI=
+	b=OQVcnxKXq9e6FwBsy8csUvPzxMIszRCcp1zJ8FKUjK6I7CxxV3QV6dd3v5QwwT9jT
+	 nnZ4yVuwjzLx5BnNSSqCt6VRj50WeOtJrxirsPahqoIO/OZSA56eDyFR7tqzNVozvv
+	 pKSMimLqjwpWKOikQUGSsdxYd9r1SiiK9k0AdMuk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 09A0AF80518;
+	by alsa1.perex.cz (Postfix) with ESMTP id 84BD6F8051D;
 	Fri, 11 Mar 2022 21:22:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9E805F80238; Fri, 11 Mar 2022 21:22:46 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 31D23F80085; Fri, 11 Mar 2022 21:22:49 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 209EFF80238
- for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2022 21:22:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 209EFF80238
+ by alsa1.perex.cz (Postfix) with ESMTPS id C51B9F80085
+ for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2022 21:22:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C51B9F80085
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="O9CsUPvj"
+ header.b="QrVweqGe"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 269EBB82CF7;
- Fri, 11 Mar 2022 20:22:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CA2FC340E9;
- Fri, 11 Mar 2022 20:22:40 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 255CCB82CFB;
+ Fri, 11 Mar 2022 20:22:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 550CCC340EC;
+ Fri, 11 Mar 2022 20:22:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1647030161;
- bh=YsBWt/1b/coRAuiW5Ll4OeIE+LbscJPmSqzzxWr+rrU=;
+ s=k20201202; t=1647030164;
+ bh=0Q2U7gB1v+g5WWvIldVX0hUeSGrWPkJ2QT7hjn6A0Yo=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=O9CsUPvjz4zuDnPlbI3VSsZvEPqDx0EXOWENHempxe6HEPAZ9WK3J+b8Toboe1bWZ
- XZNUmWjHHiJFPJgdHVFjpdQ8WWYkHd7ebhZHkx/5IzNDO99ocMO/jrTFSwyqB3Z/Bu
- C3iD5ZjwPENr+eHpjfPt7QtX6pR6pmqqx3NA6tlPfZGwy497Obm/z9NhhMuMKc3XvS
- 4Pg+HQxkn/5kH0gGnveRSsJt3ryyudUCzXo+5O9rb8kw2FFrsKV997CDuA8ZEn2FuN
- VNhgy2UdwhFSPQ6adIrKN6n4EG7gDvG2PV072pmgtqlV/3w2EECB0rg05XCj2Y6Qzm
- NJgwOoRq7FPJw==
+ b=QrVweqGe+GyInwxsZiO6a4v37m+fStgNRwpgwYYe+wdYOpr1QEr16v3JBShPhcu5W
+ p5gWAnI70O7KmRuOEcFUAwUyAdWVHSPo55JRgeKkPx8o+192p2lGZzVufBe6r3oxx+
+ Kne4VEGgJsx0iz9PaGLGyiWFoBSplemkoNSdyQRy5DUauhKU3PS/GWroxfJ9eJOSqp
+ QPV1tOfIGrfYFouBVYCnwcg0QKAALVZRhJEEh15pIS39J/inyGYGt+JqSMAncpeZ+y
+ 4SnLMiQJapma1nhXZj2Z2Av+xjEY1L13ioaoICTX2PxFF5grbbXdfkTKakC8JWapVc
+ Jb2xQlBUVGPlQ==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, tiwai@suse.com, perex@perex.cz,
- Sameer Pujar <spujar@nvidia.com>
-In-Reply-To: <1646910999-2501-1-git-send-email-spujar@nvidia.com>
-References: <1646910999-2501-1-git-send-email-spujar@nvidia.com>
-Subject: Re: [PATCH] ASoC: simple-card-utils: Don't reset clock of active DAI
-Message-Id: <164703015990.264137.12664948520166474876.b4-ty@kernel.org>
-Date: Fri, 11 Mar 2022 20:22:39 +0000
+To: perex@perex.cz, ludovic.desroches@microchip.com, tiwai@suse.com,
+ alexandre.belloni@bootlin.com, lgirdwood@gmail.com,
+ nicolas.ferre@microchip.com, Claudiu Beznea <claudiu.beznea@microchip.com>,
+ codrin.ciubotariu@microchip.com
+In-Reply-To: <20220311112818.1482372-1-claudiu.beznea@microchip.com>
+References: <20220311112818.1482372-1-claudiu.beznea@microchip.com>
+Subject: Re: [PATCH] ASoC: mchp-spdifrx: fix typo
+Message-Id: <164703016207.264137.16463689754378807280.b4-ty@kernel.org>
+Date: Fri, 11 Mar 2022 20:22:42 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: robert.hancock@calian.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, stephan@gerhold.net,
- kuninori.morimoto.gx@renesas.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,17 +83,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 10 Mar 2022 16:46:39 +0530, Sameer Pujar wrote:
-> Playback or capture errors are seen when clock is reset during an active
-> stage of DAI. Presently this scenario happens when DAI has both playback
-> and capture sessions running and one of these finishes first which will
-> be followed by clock rate reset. The remaining active session will be
-> affected in such case.
+On Fri, 11 Mar 2022 13:28:18 +0200, Claudiu Beznea wrote:
+> Fix typo in log describing failure of devm_snd_dmaengine_pcm_register().
 > 
-> Address this problem by allowing clock rate reset to happen only when
-> the DAI is no more active.
 > 
-> [...]
 
 Applied to
 
@@ -99,8 +94,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: simple-card-utils: Don't reset clock of active DAI
-      commit: 5bbe2918acccfa60de1c1a2139de9cc5441d5796
+[1/1] ASoC: mchp-spdifrx: fix typo
+      commit: 886e09c77d2b48559d26928a5705a20ef3ac117d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
