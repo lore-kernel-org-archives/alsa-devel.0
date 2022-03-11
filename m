@@ -4,75 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15072C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Mar 2022 15:52:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C33D1C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Mar 2022 15:54:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2533218C8;
-	Fri, 11 Mar 2022 16:51:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2533218C8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 49FD919FF;
+	Fri, 11 Mar 2022 16:53:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 49FD919FF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647013962;
-	bh=JmxFiE1YuRlulTG1wzs3sPPp3iEQ87GH49TOz5RZZkE=;
+	s=default; t=1647014057;
+	bh=mcDxrSm67BgJU56d4TaKJszZEiHbo00hxzz5O48m4d4=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=L5eFnaDSPorCKxm5MGnTHB2kxl9EYY4nTZIKN12T3CeH7BaclQZvahiwVAgyq1EWn
-	 a/wzJujMcs2b9hbbqLH0RcmwFRwkqV+pjtBEdkOAg4gyqyJf1f+99J/z3QJ+ioZVbI
-	 aEV9HdIZl9S5A2NUlWD6zkmtqUqgKimFr63HZfjU=
+	b=lEygqi6a+vWxjwjt4zXYgkeGfXzsh5kKd3IEmfDMuE+LAO3MJfbn9tD3Sxd0Bgg+7
+	 3BNn4kzPoSPeFeXdoUVcQcTqDeqMWh+AkdC1Z82JfR8RcL/bphXhux5i1HIWy8H44r
+	 WTXrLHCJ2I8R1mQqjLEeIFKGmXNpZe/a590DFz98=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B901BF8012C;
-	Fri, 11 Mar 2022 16:51:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E1457F8012C;
+	Fri, 11 Mar 2022 16:53:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D8D5BF80227; Fri, 11 Mar 2022 16:51:50 +0100 (CET)
-Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com
- [209.85.167.181])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id C78EDF80085; Fri, 11 Mar 2022 16:53:25 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 62AD4F800D2
- for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2022 16:51:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62AD4F800D2
-Received: by mail-oi1-f181.google.com with SMTP id b188so9700559oia.13
- for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2022 07:51:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=aFQmY8Q3Xcs50vqeMZuNuMuDo4MjkwmEEkUJ4NeBy6w=;
- b=IYk1t774s96ffONPke+OakjV3+Y2cDtN/TFNBz8bK4+zEKQn70rALogBOuJCT9YdA7
- JPoMdJpCBBwDseg4Gba+nZQuC+qYKalDf3dmJNZdR/tz0NIQ8sXmcStDc/BnWyKH7Y1F
- MCXLSwLg3INWsBlUN/gEg4ikRJ2d3msixHjulCVle9CsjV2Ue3pzalMZb0xYWw7lAvL3
- ivSvcCx1HxOp11lapXU1H9ybT9IskuTowYfQrNoghlycHQ5B71HhFOKAIM1VRoSDcXIV
- /khduKBD/yfgueHLRb4LSntoqcD/H5GECMsQodFUSSzty2J7YjhpsvO3L1hNU/u4BPoN
- +ZDA==
-X-Gm-Message-State: AOAM5334AaqKSW4ipqGQPi37FjB1zEVAIXcuwTq43rKB+tP5GDmSD2AH
- ZFfSs8XLYPaF/IwHRwRpfg==
-X-Google-Smtp-Source: ABdhPJxOckzuMfoeKLRh2uMhfA7547OHTQ+38S+0GQ+35G6dShSqk8U+eYRPpxG5WGYqgKkP1XXYIg==
-X-Received: by 2002:a05:6808:218b:b0:2da:5fd1:a85b with SMTP id
- be11-20020a056808218b00b002da5fd1a85bmr5388120oib.71.1647013902733; 
- Fri, 11 Mar 2022 07:51:42 -0800 (PST)
-Received: from robh.at.kernel.org (66-90-144-107.dyn.grandenetworks.net.
- [66.90.144.107]) by smtp.gmail.com with ESMTPSA id
- r21-20020a05683002f500b005b249ffa43fsm3856004ote.22.2022.03.11.07.51.41
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 11 Mar 2022 07:51:42 -0800 (PST)
-Received: (nullmailer pid 3868935 invoked by uid 1000);
- Fri, 11 Mar 2022 15:51:41 -0000
-Date: Fri, 11 Mar 2022 09:51:41 -0600
-From: Rob Herring <robh@kernel.org>
-To: Steve Lee <steve.lee.analog@gmail.com>
-Subject: Re: [V2 2/2] ASoC: dt-bindings: max98390: add reset gpio bindings
-Message-ID: <YitwDaQcXUApGKW4@robh.at.kernel.org>
-References: <20220311132906.32292-1-steve.lee.analog@gmail.com>
- <20220311132906.32292-2-steve.lee.analog@gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id D454FF80085
+ for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2022 16:53:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D454FF80085
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="Dgzd+bcR"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 22BEUCEe002318;
+ Fri, 11 Mar 2022 09:53:17 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=b4QiXZG/thFbq+m+ebbSVj3W8CFNFrkYYo6odJwuMpU=;
+ b=Dgzd+bcRFHeUaVhrEEADbqve57F45PV/SeoPl8kkk1j98OTVkeDXWX/2YJSN9r6z6jMs
+ IUlq2UqLux+UcrgWamyy+CIvk7IzahF7OdyO/9bZqDzJExcgeg5hDEOaZ2wIgHCygDD8
+ S0pmXuKwXU2DPzjoLAerSJYEXMU2Z2ILqacDh3J02LH2yVo6jdVX16dT/uNHSfaUr3P7
+ eJ2kZzcv5kFd4Jg/zQktr1C+f8MT2JUDnbzXGneM1nmmiPDB5blOLaRcCuaZa83477MU
+ IgJWIVz2KCHijgeYHvZzGk7VnRTEpEHWWRA9AIXKVAXE9BoSAS0VKen8qUN5KgJRLX2v uw== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3em656rq8w-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Fri, 11 Mar 2022 09:53:16 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Fri, 11 Mar
+ 2022 15:53:15 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.18 via
+ Frontend Transport; Fri, 11 Mar 2022 15:53:14 +0000
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id E5451B1A;
+ Fri, 11 Mar 2022 15:53:14 +0000 (UTC)
+Date: Fri, 11 Mar 2022 15:53:14 +0000
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Subject: Re: [PATCH] ASoC: soc-compress: Change the check for codec_dai
+Message-ID: <20220311155314.GK38351@ediswmail.ad.cirrus.com>
+References: <20220310030041.1556323-1-jiasheng@iscas.ac.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20220311132906.32292-2-steve.lee.analog@gmail.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- ryans.lee@maximintegrated.com, broonie@kernel.org,
- linux-kernel@vger.kernel.org, lgirdwood@gmail.com, robh+dt@kernel.org
+In-Reply-To: <20220310030041.1556323-1-jiasheng@iscas.ac.cn>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-ORIG-GUID: k6M34B6HZjYCISxFO619goEskfvufoYP
+X-Proofpoint-GUID: k6M34B6HZjYCISxFO619goEskfvufoYP
+X-Proofpoint-Spam-Reason: safe
+Cc: alsa-devel@alsa-project.org, kernel test robot <lkp@intel.com>,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com,
+ vkoul@kernel.org, broonie@kernel.org, dan.carpenter@oracle.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,13 +95,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 11 Mar 2022 22:29:06 +0900, Steve Lee wrote:
->  This adds support for the reset gpio binding.
+On Thu, Mar 10, 2022 at 11:00:41AM +0800, Jiasheng Jiang wrote:
+> It should be better to reverse the check on codec_dai
+> and returned early in order to be easier to understand.
 > 
-> Signed-off-by: Steve Lee <steve.lee.analog@gmail.com>
+> Fixes: de2c6f98817f ("ASoC: soc-compress: prevent the potentially use of null pointer")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
 > ---
->  Documentation/devicetree/bindings/sound/maxim,max98390.yaml | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
 
-Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+
+Thanks,
+Charles
