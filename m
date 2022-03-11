@@ -4,70 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2858C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Mar 2022 16:34:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1E95C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Mar 2022 16:41:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DD9031A23;
-	Fri, 11 Mar 2022 17:33:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DD9031A23
+	by alsa0.perex.cz (Postfix) with ESMTPS id B691F16A6;
+	Fri, 11 Mar 2022 17:40:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B691F16A6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647016478;
-	bh=nXDTLmoC8BE8JKKBt3JG2w6GdigCA+dZrYuxemDr/RA=;
+	s=default; t=1647016862;
+	bh=uE49kQ/uxD3OY0VmbZybvo2c2BzV2pt0y/AUIzscw+w=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PF3CVBT+6rosbDDcjhpi+DIwqC+/EnRGIgnyYh6jxia8p0+KooCyTzXGB8FjdMQ4s
-	 I8WFbpzxUeuQpnlfegf1xi9F4g5jA3aon6G4IAUJKYG6dImhhDckxMGir0lZ9W7LOt
-	 2t/aOgE/XlhuUI0pqBtl96PT3wJBI0ueV3hEykcs=
+	b=i1+SUsx2OR7UYzfkBPmDnywl/eWtYz7mdz/T0Yijfhygzwdh6nZX1xmz5XIQ7FgLu
+	 0iR+Y7QJUpssydLuifsGgtnIN8CfksMObjcAK4V2yXbNHN6g0ux63Ebnem1QKb1b/V
+	 HNUmJ9t4B9On8aiJoJq8/cyk3sJao6ACztKRa0q4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5286DF802D2;
-	Fri, 11 Mar 2022 17:33:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4E7E7F801D8;
+	Fri, 11 Mar 2022 17:40:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 52E5AF80227; Fri, 11 Mar 2022 17:33:13 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id BE753F80227; Fri, 11 Mar 2022 17:40:10 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1095BF800D2
- for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2022 17:33:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1095BF800D2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4092FF800D2
+ for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2022 17:40:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4092FF800D2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="MF8AUhNJ"
+ header.b="LlFssjff"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id E637AB80EA6;
- Fri, 11 Mar 2022 16:33:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86A90C340E9;
- Fri, 11 Mar 2022 16:33:06 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 2057361D08;
+ Fri, 11 Mar 2022 16:40:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83A59C340F4;
+ Fri, 11 Mar 2022 16:40:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1647016388;
- bh=nXDTLmoC8BE8JKKBt3JG2w6GdigCA+dZrYuxemDr/RA=;
+ s=k20201202; t=1647016801;
+ bh=uE49kQ/uxD3OY0VmbZybvo2c2BzV2pt0y/AUIzscw+w=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=MF8AUhNJgIyAMKvB8bhzDjWZCsJ/dP3bDYqhk7WCBov07ZQLBkt6L9BlQYl8bIe1Q
- d4wiFcOmNf33i5oiQRJgWf/3lc2UvSnH3Bp2+c4IB97F9YQyaehHoHA3vxTFJ7ev+5
- RCDkV284k38yfSZzcmBI238YSLnNLeQviYfHBdivOpo4EICAlPCjURJKZHiNRvS4Cs
- dfv0zdAKQ2bilNkqFG22v+o1U6zLCTbIm1TKkv5fXswm49lIFuKBvIkmLft2NiqTiw
- zXfnn55BCca9PGALC+h5xpfcp1g4ntewrpzAdpwZTOxXuMHmMS2i4dvZcOlEMPIZoR
- Q5BixrLnOUd8Q==
-Date: Fri, 11 Mar 2022 16:33:03 +0000
+ b=LlFssjff/7YsNtTj6agi6u4KcGJIqHGWJETI/eHy5Zp1CzNee9yJGqZd2F8nmUU+i
+ 47Ry7KjgHfPdyHWuBzFaO51yQwgujTrCNVODyYcSXOZYeM7/AeFvm0XBVjfXBUknGy
+ wrbcr2xoO4GAEUH+QqK1WRLFX1++mEDjD4/TBf9KJQG0dcuXR8h05a0so9h0pkRGV7
+ Zl/dfpk4egOkr+g+ZgsDvwn3QrzdlV/51GF/uCGTEDEJqFg+0Y0VZI7KthP+SVQ4RB
+ 7PmjczNVPtc/IuitVU3Rv3Q7T2wO48K9wwtOJL/p6LBhsNC7B9rGEro5DzGdT6PuTM
+ qev1wgDEXWabw==
+Date: Fri, 11 Mar 2022 16:39:57 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Steve Lee <steve.lee.analog@gmail.com>
-Subject: Re: [PATCH v2 1/2] ASoC: max98390: Add reset gpio control
-Message-ID: <Yit5v+JkYDiWz0z0@sirena.org.uk>
-References: <20220311132906.32292-1-steve.lee.analog@gmail.com>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH] ASoC: core: Add new SOC_DOUBLE_SX_TLV macro
+Message-ID: <Yit7XQaVm+QY/iJ5@sirena.org.uk>
+References: <20220311163258.175627-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="apjVmizt8XulXsfJ"
+ protocol="application/pgp-signature"; boundary="X30CwsilUipfmKq1"
 Content-Disposition: inline
-In-Reply-To: <20220311132906.32292-1-steve.lee.analog@gmail.com>
-X-Cookie: The Moral Majority is neither.
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- ryans.lee@maximintegrated.com, lgirdwood@gmail.com,
- linux-kernel@vger.kernel.org, robh+dt@kernel.org
+In-Reply-To: <20220311163258.175627-1-ckeepax@opensource.cirrus.com>
+X-Cookie: A fool and his money are soon popular.
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,28 +82,32 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---apjVmizt8XulXsfJ
+--X30CwsilUipfmKq1
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Mar 11, 2022 at 10:29:05PM +0900, Steve Lee wrote:
->  Add reset gpio control to support RESET PIN connected to gpio.
+On Fri, Mar 11, 2022 at 04:32:58PM +0000, Charles Keepax wrote:
+> Currently macros only exist for SX style (implicit sign bit 2's
+> compliment) volume controls where the volumes for left and right
+> are in separate registers. Some future Cirrus devices will have
+> both volumes in the same register, as such add a new macro to
+> support this.
 
-This doesn't apply against current code, please check and resend.
+Have you tested the bounds checking on _SX controls with mixer-test?
 
---apjVmizt8XulXsfJ
+--X30CwsilUipfmKq1
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmIreb4ACgkQJNaLcl1U
-h9AYZQf9EamrxEyS8lwo4jJYqN1cJ9ICPCbndKpPkymTnb9WG+afnigV3k2hQAjQ
-m1XlnL0pkJu1ICTu4vMwRrIQ2jHG7dn3jLkEqMbzKwgBn4nyCLjijoeUwwPJDZLo
-eI40VY3F5EnHz5I3bWCZD3N/aSYS3ZrGAbYLTZaYLOqOTrm4aatzY1Roz+hhVpgT
-qwUQhy5tyXZtNEQDG2i9A7yGZdDgPQtaCdjwipk3ER72rQbcpmvrQE89fqCf9R0h
-f6sc7V2m+LUSmswOLqNHPapOtRlwQZC2frn/DSwMcr9rBiOfc0i1Ut1wVNfY2Jx+
-eYToDX/nA/2tpmVyALEA31UdBKN7/Q==
-=okX0
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmIre1wACgkQJNaLcl1U
+h9DTpwf/eNTSCFgpBZfFqcRBfuUV8e1LEbfTVIPReTJ/SK+q9Gs0jT6FR6fnzsjS
+zznCnOy6kgeGj5f5I/lYE9mrPTBevkcpKYD8jH98Loigivq8aPDhXIU5Pzg7H208
+14sO29u2fljYEq+EgiCyzlQ9n6atWivQb8CXZXqB/ndZ48GhJcoThMDZxVB6xG05
+n5l6/P+qqt+scK8yewUJtTUb31uyXPWDZz2xn47UucjnlfzGjBezHiBbkXIi5K2w
+1/tiGh5PGV5qYikedDdOU7Ymioj6Fv3ZBGQEv5LPgUOMDbF94DFdncqiL13Tt+dS
+wxM2RCRyTUN9dmk/cMW/Jz+Qw4WX4A==
+=TQ4E
 -----END PGP SIGNATURE-----
 
---apjVmizt8XulXsfJ--
+--X30CwsilUipfmKq1--
