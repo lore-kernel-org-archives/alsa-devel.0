@@ -4,69 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01182C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Mar 2022 20:16:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2DE4C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Mar 2022 20:23:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 782121772;
-	Fri, 11 Mar 2022 21:15:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 782121772
+	by alsa0.perex.cz (Postfix) with ESMTPS id E2E4F18E8;
+	Fri, 11 Mar 2022 21:22:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E2E4F18E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647029758;
-	bh=yr0wqfz/5omDgz5A56JPzaEkc41VyITYQncs1Q50cpA=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=jILLfdl81Li34MMnFrCK3hF/izDS0FDSUaK7FL7NvGvBDIeykrFoQXQ9qBJnlrpAD
-	 L7FM1Mkc0PSNWqcblbY/NlRgKi3w2T6Gm5hYfs0gGQ3KUQM5tf1zeHl5ojK0nfisGc
-	 7yNxB7dpdYKbglUHmrYtQwHtsS2Sl/M6xXaKDpCI=
+	s=default; t=1647030215;
+	bh=ij5VNrvsFSwVimJAGBzflRTGoXGWzMpxgzmX4BZ5YPM=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=hCdHGho7l5M85CMF2ZqWIunZ+nfGWzbTNLcho+cB1RNy1TAxt+2w1eLSByxIdUH9x
+	 uTPdWfs7d+4kqh5SxAHLQI7/AKT5hrGS8LzHZ3eJ62ohL53CBOZd4f+VLrEXELjcNA
+	 Kg+/mpKqV+pUtQMBLqjKt/MEtddMggCM2rV2SPmY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0BF1DF801D8;
-	Fri, 11 Mar 2022 21:15:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 743B2F80227;
+	Fri, 11 Mar 2022 21:22:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 351E9F80227; Fri, 11 Mar 2022 21:15:05 +0100 (CET)
-Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
+ id 5CC8EF80238; Fri, 11 Mar 2022 21:22:43 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id BCFD8F80085
+ for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2022 21:22:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BCFD8F80085
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="HHNaw7dT"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3DB2CF8012C
- for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2022 21:14:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3DB2CF8012C
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=metafoo.de header.i=@metafoo.de
- header.b="WAB6QQHu"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de; 
- s=default2002;
- h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:
- Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
- Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
- :Resent-Message-ID:In-Reply-To:References;
- bh=ZVDcCpO/0E/ykbsgbIMmswF2OSPMyLGBt9qq4Nypk3E=; b=WAB6QQHuW25VP+/UWuc8tdgmDk
- LPAvPPpfZOniDjPwyj5nkNFPLBv+oruf65DsAB0FT8N9zTjQSFbWgJNw7I5J9oGL/46K3xNMR53KQ
- Jdt9H53RRTj6vb0BvSnRJg3bfwIF/6UrxJ1ljBhWSMF1Zy7prYBmi6bfHMsrHnbQaSlubbA74C1Rl
- IRCoYPz0jVJA4iml/osSYfI9YILwO25bgMGuz8+xiEqLbxh5CMr9xJUCRInxLU7CzLRKLC8gcdKdY
- QWhAUM7fmLhuF8m8NTBTVlb056CsTNj5xFGGcD+Rxefp6xIJ0GicE8ymqkPyUe/pZ/ivmtkuits4y
- Ocl2PAnw==;
-Received: from sslproxy06.your-server.de ([78.46.172.3])
- by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
- (Exim 4.92.3) (envelope-from <lars@metafoo.de>)
- id 1nSlf7-0009yI-Sg; Fri, 11 Mar 2022 21:14:57 +0100
-Received: from [2001:a61:2b4b:5001:9e5c:8eff:fe01:8578]
- (helo=lars-desktop.fritz.box)
- by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
- (Exim 4.92) (envelope-from <lars@metafoo.de>)
- id 1nSlf7-000VS9-ND; Fri, 11 Mar 2022 21:14:57 +0100
-From: Lars-Peter Clausen <lars@metafoo.de>
-To: Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH] ALSA: usb-audio: Add mute TLV for playback volumes on RODE
- NT-USB
-Date: Fri, 11 Mar 2022 21:14:00 +0100
-Message-Id: <20220311201400.235892-1-lars@metafoo.de>
-X-Mailer: git-send-email 2.30.2
+ by ams.source.kernel.org (Postfix) with ESMTPS id D4024B82CF4;
+ Fri, 11 Mar 2022 20:22:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E7A0C340EC;
+ Fri, 11 Mar 2022 20:22:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1647030158;
+ bh=ij5VNrvsFSwVimJAGBzflRTGoXGWzMpxgzmX4BZ5YPM=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=HHNaw7dTrZhU8k9UkXkpKfOG0tJZfuBuqv9Cnw/jdFmXn7Roa1c5D0seA0jWQQE3+
+ PPperXekmJv4dIX8v++kZu5+di4c56v490qAun1wq/d2+gvDWT42ko/5Hck3Ac9VF3
+ 5hroXOwdq3hyDD+PpEvHbgi7iDGJea/QZ2BPhuxIHTAhiTRPVQchCF3adPou0k2X0d
+ KCaRlbsFteozlEa0juMWWUChr1gWNL0Py1EA5ReWQuqsP5ireRzSV4ZvjOe5Ka6+e9
+ pby/qGRugO9UdzPT6P3j4XCQnHSejOORcX8XORNW+iuIhmeMhyQW5JafYtRWmCx4rr
+ 9NnHSLA9zMqYg==
+From: Mark Brown <broonie@kernel.org>
+To: Trevor Wu <trevor.wu@mediatek.com>, tiwai@suse.com, matthias.bgg@gmail.com,
+ robh+dt@kernel.org
+In-Reply-To: <20220308072435.22460-1-trevor.wu@mediatek.com>
+References: <20220308072435.22460-1-trevor.wu@mediatek.com>
+Subject: Re: (subset) [PATCH 0/5] ASoC: mediatek: Add support for MT8195 sound
+ card with max98390 and rt5682
+Message-Id: <164703015624.264137.9730451216130586080.b4-ty@kernel.org>
+Date: Fri, 11 Mar 2022 20:22:36 +0000
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.103.5/26478/Fri Mar 11 10:27:25 2022)
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+ yc.hung@mediatek.com, aaronyu@google.com, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,36 +83,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-For the RODE NT-USB the lowest Playback mixer volume setting mutes the
-audio output. But it is not reported as such causing e.g. PulseAudio to
-accidentally mute the device when selecting a low volume.
+On Tue, 8 Mar 2022 15:24:30 +0800, Trevor Wu wrote:
+> This series of patches adds support for mt8195 board with mt6359, max98390
+> and rt5682.
+> 
+> Reset controller is included because mt8195 etdm is used to play sound via
+> max98390 before kernel boot.
+> 
+> In addition, the common part of machine driver is extracted for
+> simplification.
+> 
+> [...]
 
-Fix this by applying the existing quirk for this kind of issue when the
-device is detected.
+Applied to
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/usb/mixer_quirks.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
-index e447ddd6854c..d35cf54cab33 100644
---- a/sound/usb/mixer_quirks.c
-+++ b/sound/usb/mixer_quirks.c
-@@ -3360,9 +3360,10 @@ void snd_usb_mixer_fu_apply_quirk(struct usb_mixer_interface *mixer,
- 		if (unitid == 7 && cval->control == UAC_FU_VOLUME)
- 			snd_dragonfly_quirk_db_scale(mixer, cval, kctl);
- 		break;
--	/* lowest playback value is muted on C-Media devices */
--	case USB_ID(0x0d8c, 0x000c):
--	case USB_ID(0x0d8c, 0x0014):
-+	/* lowest playback value is muted on some devices */
-+	case USB_ID(0x0d8c, 0x000c): /* C-Media */
-+	case USB_ID(0x0d8c, 0x0014): /* C-Media */
-+	case USB_ID(0x19f7, 0x0003): /* RODE NT-USB */
- 		if (strstr(kctl->id.name, "Playback"))
- 			cval->min_mute = 1;
- 		break;
--- 
-2.30.2
+Thanks!
 
+[1/5] ASoC: mediatek: mt8195: add reset controller
+      commit: f67084148dac015d059c64f25e57abd0ab18946c
+[2/5] dt-bindings: mediatek: mt8195: add reset property
+      commit: ee7f79a81a27c47088fe0af95788621644826d91
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
