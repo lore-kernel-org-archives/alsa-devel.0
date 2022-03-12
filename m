@@ -4,92 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 007D0C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Mar 2022 07:06:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D97FC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Mar 2022 07:06:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 46FB417B2;
-	Mon, 14 Mar 2022 08:05:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 46FB417B2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4F35B182B;
+	Mon, 14 Mar 2022 08:05:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F35B182B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647241565;
-	bh=+8rpeGk2uecRzz7AaVAGQuAyzyj/iNyvhVku6fu9XLk=;
+	s=default; t=1647241583;
+	bh=rLnr/gGzPIfVlv5ijCM1TSxhf7l+LPM/p7eMgVEbk/I=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Bj9TvSXz5FLR6wX5LNRfXKjeAf6VGrCo6SK33GSakiEtelkQOT9eDY5T0MNkc/52r
-	 rXgfLPX+EWWpi8lGPf4R97r1fvs9et/eRgk8iRlylgya+15POLV6C0l0CeUAK7Whwn
-	 rTNKiC7BPIIi8B+B0c3QSgV3qEMgjjU4yb9UfuGo=
+	b=cRwzvAWKDVMET2ScXMejkS3vRBDxeU8/dIzwO4PVnIM8cJUAwNl6YzatTBXSe+GJU
+	 Hw11tNPWtHg1N9X4SoyZXWloEMvTAq6hUbEMy/KTw57u8Hx0u/vAMpeovu46Wkx8v5
+	 3BdQ+n6QDi5GhX3onDQUpnx7EkwU1rqJ6cMYfCy0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 41B64F805B6;
+	by alsa1.perex.cz (Postfix) with ESMTP id CE7AFF805BE;
 	Mon, 14 Mar 2022 07:59:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 191FDF80171; Sat, 12 Mar 2022 14:29:28 +0100 (CET)
+ id D0C24F8027D; Sat, 12 Mar 2022 14:29:27 +0100 (CET)
 Received: from smtp-relay-internal-0.canonical.com
  (smtp-relay-internal-0.canonical.com [185.125.188.122])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C8423F800D2
- for <alsa-devel@alsa-project.org>; Sat, 12 Mar 2022 14:29:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8423F800D2
+ by alsa1.perex.cz (Postfix) with ESMTPS id F0836F801D5
+ for <alsa-devel@alsa-project.org>; Sat, 12 Mar 2022 14:29:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0836F801D5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com
- header.b="riQs3aOy"
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70])
+ header.b="nMIrOf5w"
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 5F5E140826
- for <alsa-devel@alsa-project.org>; Sat, 12 Mar 2022 13:29:17 +0000 (UTC)
+ by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 66568405B3
+ for <alsa-devel@alsa-project.org>; Sat, 12 Mar 2022 13:29:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1647091757;
- bh=omHdnhYiVzDdXVNfQeQ6+CS2gK0y2vQxkHVBCoxIVic=;
+ s=20210705; t=1647091764;
+ bh=Z+Z1CBBLpVo7KqzVCsMaZv4r7Tw7oQzghpWsDjTy8tg=;
  h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
  MIME-Version;
- b=riQs3aOyr5F7izurCZgv4oj94XANlFy/Qrnr7mcfU1U5RCfUAaR8oDFeKjIWE4stW
- OYG9f8vO57nzQkWYu6UhEnTWulomHWZf6I78MKvC+oPNvwjrC/DAaduPDY8dBfzVsb
- IMZLQpDAGJn+Ol+JeuWPUYpfN+gJshJ/aEUL6BXr477ibC5SiC8SJIrbAmZShdgjSN
- xHKFZw32eInYbYqOoe15ah5n9ToD2H6p8XvV81GavXju9kJ2hhesjqnpVCy8kWR+cS
- 5iBocKa7VWdX0Gbqgd9OyoraJMDetZXSiC5/WEI64jpLwyB5dEUG9s37WlTJXsbnUn
- CEQC6f6fOWkfw==
-Received: by mail-wm1-f70.google.com with SMTP id
- q189-20020a1c43c6000000b003898de01de4so1318156wma.7
- for <alsa-devel@alsa-project.org>; Sat, 12 Mar 2022 05:29:17 -0800 (PST)
+ b=nMIrOf5wOadSMpx8GWi5HCYhXdR/gIZO6sADDSC/qQsq6X9Lyaou5S2aZVsJC7kcc
+ EFk5j7ojLHRkoKeGj8eumkdUiGFxD092SIP7vPPdxqGmRvsmKGfZ8tDgWSa1LET+vI
+ gCKUzqpeqIhzFckqT2Ks9smL3orTdFPihnWnDuzXU4kbPnF+hNEy3dYpiNf7SfdhCb
+ yjj/q6kTHXLoPWhiysxuG1sKCHRF8yVdHGNex9VKGumGdLEivf/wIDDIi8QxoO/5xN
+ 8X8TnuJNrZy7VpizTayNkhbZqITnZRLwXBgZ9Ue7ErDmg98Miie6ud0V5J5QZhOB/i
+ ukAko+zAF0Mow==
+Received: by mail-wm1-f72.google.com with SMTP id
+ f189-20020a1c38c6000000b0037d1bee4847so6884746wma.9
+ for <alsa-devel@alsa-project.org>; Sat, 12 Mar 2022 05:29:24 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=omHdnhYiVzDdXVNfQeQ6+CS2gK0y2vQxkHVBCoxIVic=;
- b=zmyQcghjK9wPDjDkMZ6wNJoVEkC8kSIeRXPyQhAxHlyu3dcFdOPWQWgOc8y19y1TF6
- OsT5FHrrAZAlLHFG8cJNIMsrpJ4stezt3i5d5qeh87ESEEJ+DlwpXpZ7IMfmXrjvKQJ8
- U/XGkNIhAa383WcBNRK4p6napc69I1Ioh0+G0rubWZxR63NfdTffSA8jg8IpdPRl55gL
- CiaWj/7Fr8TepOZA8yNfQ9rhXkoRg1uJx9a8ctwvkq4xcTglQW4Z03tRvPu9Zks+rd7v
- QeaBdCqSlcT3J4oDME4amEGYTAHGGq6kVsi6YJ6SMYzLTbav3wQNWUeTWhbXNAwGkCSF
- KuNg==
-X-Gm-Message-State: AOAM531pF44iB/pxTKal5GoSx+4zUIZFBOsYF0BCrvkuxLoX9kiSAVez
- hxEQ/b2gXo3ETCWkNBlAi4omf0iLiGcmBVFnzQmFDTMlpdW7K0UThvm89tKjFkACC/V1713ksPo
- XfNTDwvKvmsDQi/DuU7bxpI+UH56m1XtZdPJopcSG
-X-Received: by 2002:adf:f44d:0:b0:1f0:49bb:fead with SMTP id
- f13-20020adff44d000000b001f049bbfeadmr10583036wrp.586.1647091756882; 
- Sat, 12 Mar 2022 05:29:16 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy/VzmVA5JNvsX6TR5L7X8QpqfI/POyM5THNfZEIE7XxPWAZ/IgTk7OADHiVtKc+QUuykZL9Q==
-X-Received: by 2002:adf:f44d:0:b0:1f0:49bb:fead with SMTP id
- f13-20020adff44d000000b001f049bbfeadmr10583014wrp.586.1647091756718; 
- Sat, 12 Mar 2022 05:29:16 -0800 (PST)
+ bh=Z+Z1CBBLpVo7KqzVCsMaZv4r7Tw7oQzghpWsDjTy8tg=;
+ b=G/MDL5TNPazJc9BouiRuCXfJTrhrpUGiVphN/kGScm1zbU/bJIXDjbrdJrshQ//cqq
+ 1mZQaavP3WwSqg7WQ2amD80fVHtZEUmNI+Dk+ZyCWbbaOuUEb7NCxLUO96rKt6Hl4fpi
+ CaNA6uhoN/01i2v9X9TYTjYmQ7jalv7dNGBD35cyXdqj3VySmYq4X+wjqoM76AGSULag
+ hRib66mbs6dUmPMd4MQ9M0ksy7k0QOltXWesQI3wPZ2yrLiv+G9hxNZNFUDu6UswXsDs
+ WMbqWr/n3y+aqO2vEgy3WSWNNGfe3Z9tXD/WuQ29KBcVwAcfWcoZTUYi31Jx+OFhkiqC
+ dsQA==
+X-Gm-Message-State: AOAM532N/QZ1sosqdf6H8bfAG0tsFhfjNUHcIgRP9aAHAaGZaBBeTSoP
+ WPClRC+CunNCH0ww1WF/lKPrhZDoSPIeRZ5JkbQJK2AmBxzdMop4MZ0eHaIkeJH+V58tTdGXlah
+ 775Nv0yy197a4ih1+yUHg/QSnp/528uULL3/yKQOU
+X-Received: by 2002:a05:6000:1a8e:b0:202:8714:d312 with SMTP id
+ f14-20020a0560001a8e00b002028714d312mr10815828wry.683.1647091763732; 
+ Sat, 12 Mar 2022 05:29:23 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwjYZfFJ+GUQwy/f/MdbbiQp6L99Sn+ofXO+Q8l7XBFVGS1E/0dNsBqx+eOeH3/7jrINWLOsQ==
+X-Received: by 2002:a05:6000:1a8e:b0:202:8714:d312 with SMTP id
+ f14-20020a0560001a8e00b002028714d312mr10815805wry.683.1647091763553; 
+ Sat, 12 Mar 2022 05:29:23 -0800 (PST)
 Received: from localhost.localdomain (xdsl-188-155-174-239.adslplus.ch.
  [188.155.174.239]) by smtp.gmail.com with ESMTPSA id
- p22-20020a1c5456000000b00389e7e62800sm5751550wmi.8.2022.03.12.05.29.15
+ p22-20020a1c5456000000b00389e7e62800sm5751550wmi.8.2022.03.12.05.29.22
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 12 Mar 2022 05:29:16 -0800 (PST)
+ Sat, 12 Mar 2022 05:29:23 -0800 (PST)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: [PATCH v4 02/11] amba: Use driver_set_override() instead of
+Subject: [PATCH v4 06/11] s390/cio: Use driver_set_override() instead of
  open-coding
-Date: Sat, 12 Mar 2022 14:28:47 +0100
-Message-Id: <20220312132856.65163-3-krzysztof.kozlowski@canonical.com>
+Date: Sat, 12 Mar 2022 14:28:51 +0100
+Message-Id: <20220312132856.65163-7-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20220312132856.65163-1-krzysztof.kozlowski@canonical.com>
 References: <20220312132856.65163-1-krzysztof.kozlowski@canonical.com>
@@ -143,19 +143,37 @@ Make the driver_override field const char, because it is not modified by
 the core and it matches other subsystems.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Acked-by: Vineeth Vijayan <vneethv@linux.ibm.com>
 ---
- drivers/amba/bus.c       | 28 ++++------------------------
- include/linux/amba/bus.h |  6 +++++-
+ drivers/s390/cio/cio.h |  6 +++++-
+ drivers/s390/cio/css.c | 28 ++++------------------------
  2 files changed, 9 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/amba/bus.c b/drivers/amba/bus.c
-index d3bd14aaabf6..f3d26d698b77 100644
---- a/drivers/amba/bus.c
-+++ b/drivers/amba/bus.c
-@@ -94,31 +94,11 @@ static ssize_t driver_override_store(struct device *_dev,
+diff --git a/drivers/s390/cio/cio.h b/drivers/s390/cio/cio.h
+index 1cb9daf9c645..fa8df50bb49e 100644
+--- a/drivers/s390/cio/cio.h
++++ b/drivers/s390/cio/cio.h
+@@ -103,7 +103,11 @@ struct subchannel {
+ 	struct work_struct todo_work;
+ 	struct schib_config config;
+ 	u64 dma_mask;
+-	char *driver_override; /* Driver name to force a match */
++	/*
++	 * Driver name to force a match.  Do not set directly, because core
++	 * frees it.  Use driver_set_override() to set or clear it.
++	 */
++	const char *driver_override;
+ } __attribute__ ((aligned(8)));
+ 
+ DECLARE_PER_CPU_ALIGNED(struct irb, cio_irb);
+diff --git a/drivers/s390/cio/css.c b/drivers/s390/cio/css.c
+index fa8293335077..913b6ddd040b 100644
+--- a/drivers/s390/cio/css.c
++++ b/drivers/s390/cio/css.c
+@@ -338,31 +338,11 @@ static ssize_t driver_override_store(struct device *dev,
  				     const char *buf, size_t count)
  {
- 	struct amba_device *dev = to_amba_device(_dev);
+ 	struct subchannel *sch = to_subchannel(dev);
 -	char *driver_override, *old, *cp;
 -
 -	/* We need to keep extra room for a newline */
@@ -170,41 +188,24 @@ index d3bd14aaabf6..f3d26d698b77 100644
 -	if (cp)
 -		*cp = '\0';
 -
--	device_lock(_dev);
--	old = dev->driver_override;
+-	device_lock(dev);
+-	old = sch->driver_override;
 -	if (strlen(driver_override)) {
--		dev->driver_override = driver_override;
+-		sch->driver_override = driver_override;
 -	} else {
 -		kfree(driver_override);
--		dev->driver_override = NULL;
+-		sch->driver_override = NULL;
 -	}
--	device_unlock(_dev);
+-	device_unlock(dev);
 +	int ret;
  
 -	kfree(old);
-+	ret = driver_set_override(_dev, &dev->driver_override, buf, count);
++	ret = driver_set_override(dev, &sch->driver_override, buf, count);
 +	if (ret)
 +		return ret;
  
  	return count;
  }
-diff --git a/include/linux/amba/bus.h b/include/linux/amba/bus.h
-index 6562f543c3e0..93799a72ff82 100644
---- a/include/linux/amba/bus.h
-+++ b/include/linux/amba/bus.h
-@@ -70,7 +70,11 @@ struct amba_device {
- 	unsigned int		cid;
- 	struct amba_cs_uci_id	uci;
- 	unsigned int		irq[AMBA_NR_IRQS];
--	char			*driver_override;
-+	/*
-+	 * Driver name to force a match.  Do not set directly, because core
-+	 * frees it.  Use driver_set_override() to set or clear it.
-+	 */
-+	const char		*driver_override;
- };
- 
- struct amba_driver {
 -- 
 2.32.0
 
