@@ -4,66 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1ABBDC433F5
-	for <alsa-devel@archiver.kernel.org>; Sat, 12 Mar 2022 16:19:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21C39C433EF
+	for <alsa-devel@archiver.kernel.org>; Sat, 12 Mar 2022 21:44:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4A3F1172F;
-	Sat, 12 Mar 2022 17:18:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A3F1172F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6C47F16CA;
+	Sat, 12 Mar 2022 22:44:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C47F16CA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647101988;
-	bh=YbYHhsm0Wj5um7qmQVflkxyp45Ii/WjNyXEKbXosnk0=;
+	s=default; t=1647121492;
+	bh=Lj7+gauN+noi8Kh/rt0Gv5ORitb5XT3mvdoLJLpk4DE=;
 	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dIpucdDBXjkixGN43tiE3dM0X9jA9nO2nNZF9dmeJDhYyZCsYAzVR5Ws7sQ9uY8oS
-	 BoS4wyiFma3rLFP2hL1FS0kSQ6aFyB+bsiwf2Ja4coi0XGro6i/sWtjE8EVb846+S5
-	 Su60C0nqETiMNcPgbFKhEeYk+6c/ljvfDwCr8/4A=
+	b=NLTjM2/JkyPRtotHy/CUtlFYyqSXRWIQfsXpE5A0KjXIpXA9c3GaYDNJIQUWmf2He
+	 KUlIQDq/zcBSfI6dH30toYnAA9Tl/9ShExRJQhSXGXwV99x8HS/w/5iCrPneRyRYim
+	 M2SSPR3UmLNm0OtkDa4J3m0sZcXR8KZStCBLjDBQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CED37F80171;
-	Sat, 12 Mar 2022 17:18:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EB889F80171;
+	Sat, 12 Mar 2022 22:44:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2DDE4F800D2; Sat, 12 Mar 2022 17:18:56 +0100 (CET)
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 044A1F800B0; Sat, 12 Mar 2022 22:44:01 +0100 (CET)
+Received: from relay4.hostedemail.com (relay4.hostedemail.com [64.99.140.35])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6AC12F800D2
- for <alsa-devel@alsa-project.org>; Sat, 12 Mar 2022 17:18:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6AC12F800D2
-X-UUID: aee794b93a184520b26ddf324e04e89d-20220313
-X-UUID: aee794b93a184520b26ddf324e04e89d-20220313
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by
- mailgw02.mediatek.com (envelope-from <trevor.wu@mediatek.com>)
- (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
- with ESMTP id 399267673; Sun, 13 Mar 2022 00:18:35 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Sun, 13 Mar 2022 00:18:34 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sun, 13 Mar 2022 00:18:34 +0800
-Message-ID: <5fafa7d8a23fbdce82272529d817816f42c4ac37.camel@mediatek.com>
-Subject: Re: [PATCH 4/5] ASoC: mediatek: mt8195: add machine driver with
- mt6359, max98390 and rt5682
-From: Trevor Wu <trevor.wu@mediatek.com>
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- <broonie@kernel.org>, <tiwai@suse.com>, <robh+dt@kernel.org>,
- <matthias.bgg@gmail.com>
-Date: Sun, 13 Mar 2022 00:18:34 +0800
-In-Reply-To: <e812796f-6b9b-fe9d-50a7-b681d7b174fd@collabora.com>
-References: <20220308072435.22460-1-trevor.wu@mediatek.com>
- <20220308072435.22460-5-trevor.wu@mediatek.com>
- <e812796f-6b9b-fe9d-50a7-b681d7b174fd@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0B841F800D2
+ for <alsa-devel@alsa-project.org>; Sat, 12 Mar 2022 22:43:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B841F800D2
+Received: from omf20.hostedemail.com (a10.router.float.18 [10.200.18.1])
+ by unirelay02.hostedemail.com (Postfix) with ESMTP id 9E35F23501;
+ Sat, 12 Mar 2022 21:43:54 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by
+ omf20.hostedemail.com (Postfix) with ESMTPA id 5FE732002B; 
+ Sat, 12 Mar 2022 21:43:53 +0000 (UTC)
+Message-ID: <2422fcc6d9a1e03e4dde90ea91327764ab5ee4b5.camel@perches.com>
+Subject: Re: [PATCH 3/6] ALSA: seq: oss: use kzalloc
+From: Joe Perches <joe@perches.com>
+To: Julia Lawall <Julia.Lawall@inria.fr>, Jaroslav Kysela <perex@perex.cz>
+Date: Sat, 12 Mar 2022 13:43:52 -0800
+In-Reply-To: <20220312102705.71413-4-Julia.Lawall@inria.fr>
+References: <20220312102705.71413-1-Julia.Lawall@inria.fr>
+ <20220312102705.71413-4-Julia.Lawall@inria.fr>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.4-1ubuntu2 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-X-MTK: N
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
- yc.hung@mediatek.com, aaronyu@google.com, linux-arm-kernel@lists.infradead.org
+X-Rspamd-Queue-Id: 5FE732002B
+X-Stat-Signature: rmt9obkyouuykyseiymery8o93ewmsek
+X-Rspamd-Server: rspamout01
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+wmoUH95/RP/dF0B8Uoo7RJ+6BRXnnwI0=
+X-HE-Tag: 1647121433-91170
+Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,93 +73,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 2022-03-10 at 16:21 +0100, AngeloGioacchino Del Regno wrote:
-> Il 08/03/22 08:24, Trevor Wu ha scritto:
-> > This patch adds support for mt8195 board with mt6359, max98390 and
-> > rt5682.
-> > 
-> > Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
-> 
-> Hello Trevor,
-> thanks for the patch! However, there's something to improve...
-> 
-> > ---
-> >   sound/soc/mediatek/Kconfig                    |   16 +
-> >   sound/soc/mediatek/mt8195/Makefile            |    5 +
-> >   .../mt8195/mt8195-mt6359-max98390-rt5682.c    | 1058
-> > +++++++++++++++++
-> >   3 files changed, 1079 insertions(+)
-> >   create mode 100644 sound/soc/mediatek/mt8195/mt8195-mt6359-
-> > max98390-rt5682.c
-> >   
-> > 
+On Sat, 2022-03-12 at 11:27 +0100, Julia Lawall wrote:
+> Use kzalloc instead of kmalloc + memset.
+[]
+> diff --git a/sound/core/seq/oss/seq_oss_init.c b/sound/core/seq/oss/seq_oss_init.c
+[]
+> @@ -81,7 +81,6 @@ snd_seq_oss_create_client(void)
+>  	system_client = rc;
+>  
+>  	/* create annoucement receiver port */
 
-[...]
-> > +
-> > +static const struct snd_soc_dapm_widget
-> > +	mt8195_mt6359_max98390_rt5682_widgets[] = {
-> > +	SND_SOC_DAPM_SPK("Left Speaker", NULL),
-> > +	SND_SOC_DAPM_SPK("Right Speaker", NULL),
-> > +	SND_SOC_DAPM_HP("Headphone Jack", NULL),
-> 
-> We can at least partially reuse existing UCM2 configuration if you
-> slightly change the names for these controls.
+unrelated trivia: typo of announcement above
+
+> -	memset(port, 0, sizeof(*port));
+>  	strcpy(port->name, "Receiver");
+>  	port->addr.client = system_client;
+>  	port->capability = SNDRV_SEQ_PORT_CAP_WRITE; /* receive only */
 > 
 
-I don't know what the UCM2 configuration means.
-Could you give me more information?
-
-
-> Specifically, MAX98090 (yes I know it's a different codec) has names
-> "Speaker Left", "Speaker Right" instead, we will be able to at least
-> partially reuse these (or get uniform naming, which is still good).
-> As for the "Headphone Jack", it's simply "Headphone".
-> 
-> Please note that the actual control names in userspace will be,
-> exactly,
-> 
-> "Speaker Left Switch", "Speaker Right Switch",
-> "Headphone Left Switch", "Headphone Right Switch"...
-> 
-> ....where "Switch" gets automatically appended because of the control
-> type.
-> 
-> > +	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-> 
-> This "Headset Mic" name is fine.
-> 
-> > +	SND_SOC_DAPM_MIXER(SOF_DMA_DL2, SND_SOC_NOPM, 0, 0, NULL, 0),
-> > +	SND_SOC_DAPM_MIXER(SOF_DMA_DL3, SND_SOC_NOPM, 0, 0, NULL, 0),
-> > +	SND_SOC_DAPM_MIXER(SOF_DMA_UL4, SND_SOC_NOPM, 0, 0, NULL, 0),
-> > +	SND_SOC_DAPM_MIXER(SOF_DMA_UL5, SND_SOC_NOPM, 0, 0, NULL, 0),
-> > +};
-> > +
-[...]
-> > +
-> > +static struct snd_soc_dai_link
-> > mt8195_mt6359_max98390_rt5682_dai_links[] = {
-> 
-> 
-> ... again, different name, same contents ...
-> 
-> 
-> And I won't go on repeating the same thing over and over again.
-> I think that the best idea here is to either create a mt8195-mt6359-
-> rt5682-common.c
-> file, or to rename the others to something else and get them all in
-> the same file.
-> 
-> 
-> Regards,
-> Angelo
-
-Hi Angelo,
-
-Thanks for your review.
-Please forgive me for deleting some comments above.
-I totally agree that most code can be reused.
-I will try revising and merging all mt8195 machine drivers in a file.
-
-Thanks,
-Trevor
 
