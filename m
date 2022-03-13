@@ -4,83 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B35BFC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Mar 2022 07:09:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 000B2C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Mar 2022 07:09:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F0B211887;
-	Mon, 14 Mar 2022 08:08:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F0B211887
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1FD6018A7;
+	Mon, 14 Mar 2022 08:08:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1FD6018A7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647241746;
-	bh=dOW1pzjrTFl2vvOF5B9bAHZONX/CLbQ2gBJepXaAskY=;
+	s=default; t=1647241762;
+	bh=BxrdF7+pjZIA4s7HZhixZnl4QP+gphepUj5sU1G4nFs=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=epJNNF5rYdgePL9QpQWqCa8o7zbeKajxCErBtHFBK6QNMj/6K/dJwca7ts1WpIWyj
-	 64NUG18N7Vn7Fk5FUJwNg07+OkFwDgzgq9xVR3WLKLejtKAPMRphfGE6fzB35Q2b5X
-	 eSPAUe33g4lY56Epl3BeCwn0RFo67FX1UaJEFfP8=
+	b=TnGWw8C11IvOMB4w7tyMoocprtHnuHEdsVpbKn8m3qdBLyeloXjLBKj5D+Vh6ZaYE
+	 Pqky1Qq6jZ8+UxDmGXMYqkNpjUSazODrT8VjKBZ3Lg3D8wwHZKNl+uBZ89k1rhyIfy
+	 gojX1MVijVtJNhQp4LYHRqlurjH9wq6ALg8Laljs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8A0DDF805F3;
-	Mon, 14 Mar 2022 07:59:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 34158F805F6;
+	Mon, 14 Mar 2022 07:59:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 61100F8011C; Sun, 13 Mar 2022 06:41:07 +0100 (CET)
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com
- [IPv6:2607:f8b0:4864:20::d43])
+ id 37E8FF80310; Sun, 13 Mar 2022 06:43:06 +0100 (CET)
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com
+ [IPv6:2607:f8b0:4864:20::141])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F035BF8011C
- for <alsa-devel@alsa-project.org>; Sun, 13 Mar 2022 06:41:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F035BF8011C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 83937F80095
+ for <alsa-devel@alsa-project.org>; Sun, 13 Mar 2022 06:43:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83937F80095
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="YKGzICi3"
-Received: by mail-io1-xd43.google.com with SMTP id b16so14716719ioz.3
- for <alsa-devel@alsa-project.org>; Sat, 12 Mar 2022 21:41:03 -0800 (PST)
+ header.b="d15j8gZE"
+Received: by mail-il1-x141.google.com with SMTP id l13so8778069iln.13
+ for <alsa-devel@alsa-project.org>; Sat, 12 Mar 2022 21:43:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=GSJXVOht+hxS+hKjGxwt1A2kwmz24g3we9uVLX8KopE=;
- b=YKGzICi38ZdGllMCcDcm5P019Hzk9qjMGjdUtEOTG6PrbMVwtdJED138/+dcUNJW37
- M4YDt8UYxW0rGnnszHqbINRl77Hy57S1GXAeN2NANfA12J3+gfXP8O4fazpmxCCkTOFM
- HcaMKQbX0E0+Jk14W7fQEaLurkevYy7+ez4GFFBwQ5QNZ7Mr9gnNEAIgw0eUdhWUc6mX
- vbpVvf6+7acpdDUkGFWnMdhwCP15pnvL3YFI3WuN02hmF6Y7cghfZr4ejvTHduHlte0q
- h9wKR8u3YcHJpGf2lw3JtCj1KIXj+bwHr0F65o0dzhMxNIoswE7zCM9peC4iNGbk28kw
- DgYQ==
+ :cc:content-transfer-encoding;
+ bh=yeehAnwXiFpjq47LCkJzC+vZeMh+kdhUAc1wvTjLTKQ=;
+ b=d15j8gZEJQ2cUKh8lIyS1UGKxT0GQRDadj6U6b5zp/zFIkaK8rHI0s8XZuz4eqi8ob
+ I3K6xhmzr5iV/ZIk+GweWX06qMX0wTcI41QSx+nyDNUrsaSHf4KK9ipFE2F9udgT4r1/
+ bMRzGQrpRmnoWIS+vkfBy3Uku9G+ZJzXECwUIcznZ1g25LQtEeIIspETWyFJr/lUj85F
+ oCGYCLmFGRNpviEw5oYvW/gDFKnBJ8waBRZjdNRb+e9mQEYuTZln7NGY7ZBd4ZKcOyr5
+ gPw554sJanMM/5vvrGRKQWpsXIDM7yBzFMu1YXvqqftKcvu/HCfQVgOMJMvpd8oJPG+8
+ cWdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=GSJXVOht+hxS+hKjGxwt1A2kwmz24g3we9uVLX8KopE=;
- b=udkBV0zA0XX4Tv0PDCeBK+5HismS0IZNZXoyLJLg1rYdzeORz5Go7lVZWqOcPfYD5B
- T4X9JztKwglZNOLNl80qc/hiwx2w5Fbu4Z+1Ao4QbVC11yo+xMY9uqIlwkiLrxvWzuba
- GtRrygAqSiBvJ4NmwdTW1OEMZmkREeg+iNHJLTnFJCjih0UdnKN379lIf9PRJ70I/N5m
- e/KaKovGObrux1z6i4Nl3BVjQLZruacYOMGv4MqvKMraf8eGVhD+Hrf5VPm2GMjOrltr
- Kuwu50/le12sj9fozZaCtjopkdNYct/Pz1SIaHyf2fRflT9hFnniUrE7MRAVlnjd1CGw
- o7ag==
-X-Gm-Message-State: AOAM532uck3fqp77ux0lQUfUJTk+WD0rG5uXW48fCa5EwwAycGss5rR0
- frpHX9OgIm/xVzuqRGtFol1Npm4fPaSp6XTM0fw=
-X-Google-Smtp-Source: ABdhPJxu7ye+5lUKnrkn1bUsxZOh3PujZfDdrVrbl47wn8G69XzlTWbp5OhrlNhDuwFwRjkewn9FUbk/Ra5fo2kWG+0=
-X-Received: by 2002:a05:6602:1341:b0:637:d4dc:6f85 with SMTP id
- i1-20020a056602134100b00637d4dc6f85mr13993251iov.155.1647150058869; Sat, 12
- Mar 2022 21:40:58 -0800 (PST)
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=yeehAnwXiFpjq47LCkJzC+vZeMh+kdhUAc1wvTjLTKQ=;
+ b=Oz99v9ZpwvYTLxw0koFBEpmGnwA8GAsOS9uiNfvNfUFa5uArYO8R1it5RXUMn8tpnu
+ lTOnwEHwLHASEYQcRA07crkgKyvxLruRwli8fCJzvD0QQBakw3v86Y0HfyPO2jQJlKul
+ mitwE6vCixfNJxQlRtev9Wmy/Eu8XY2SqMEpvc/xF24EDhVnz8+K7xzEarLzLV7vi8y3
+ NS2HAxWT/O6wQFWr26aGRyzKFM8ahkkWjPjTCEJf/AnQ2Z9kYSKg1/96hdokG8Mnzx9r
+ +NZcX9uJi0+nhMvAfj8f6SYVDtnQJWOu/M5gM/yotfI1b6q3ttG22zCCG3royNP7Rn18
+ MRsg==
+X-Gm-Message-State: AOAM533/HqRIQMxEzKKJvbvKSF+438sB7gZxoRi8A1fKhLJMOSnoiGOJ
+ l2H2TWSR0TeSmc/4Eyd9h0Yuz+/NogBLw3OyUgk=
+X-Google-Smtp-Source: ABdhPJyLTEK5UR27XDcIpYknILzSaUN8Y3JJAFOiT/4220BDdd+8py7fiGMLjHgDdFYZ9jhehUyR6JKiC7uNev8Uebs=
+X-Received: by 2002:a92:cdad:0:b0:2c6:7b76:a086 with SMTP id
+ g13-20020a92cdad000000b002c67b76a086mr14632088ild.5.1647150181750; Sat, 12
+ Mar 2022 21:43:01 -0800 (PST)
 MIME-Version: 1.0
 References: <20220312002429.16175-1-steve.lee.analog@gmail.com>
- <009acb4c-d59c-c1ad-60b0-cc85fe7ad73d@kernel.org>
-In-Reply-To: <009acb4c-d59c-c1ad-60b0-cc85fe7ad73d@kernel.org>
+ <8f4a088ffc0fc1d4aa14aa1d0adf575cdc94291b.camel@gmail.com>
+In-Reply-To: <8f4a088ffc0fc1d4aa14aa1d0adf575cdc94291b.camel@gmail.com>
 From: Lee Steve <steve.lee.analog@gmail.com>
-Date: Sun, 13 Mar 2022 14:40:48 +0900
-Message-ID: <CA+Fz0PZ0+Fn3_X8vtcL52pQFn3kQCnU1cBFNwif3XkP76HYXYA@mail.gmail.com>
+Date: Sun, 13 Mar 2022 14:42:50 +0900
+Message-ID: <CA+Fz0PaRM7zCShHsK1WDAaFGwz1D2dV5LrvRqnYXkiB5i=rFPQ@mail.gmail.com>
 Subject: Re: [RESEND V2] ASoC: max98390: Add reset gpio control
-To: Krzysztof Kozlowski <krzk@kernel.org>
+To: =?UTF-8?B?TnVubyBTw6E=?= <noname.nuno@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Mailman-Approved-At: Mon, 14 Mar 2022 07:58:50 +0100
 Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org,
  ckeepax@opensource.cirrus.com, ryans.lee@maximintegrated.com,
- linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, "Sa,
- Nuno" <nuno.sa@analog.com>, Mark Brown <broonie@kernel.org>,
- geert@linux-m68k.org, shumingf@realtek.com, srinivas.kandagatla@linaro.org,
- rf@opensource.wolfsonmicro.com
+ linux-kernel@vger.kernel.org, tiwai@suse.com, krzk@kernel.org,
+ lgirdwood@gmail.com, "Sa, Nuno" <nuno.sa@analog.com>,
+ Mark Brown <broonie@kernel.org>, geert@linux-m68k.org, shumingf@realtek.com,
+ srinivas.kandagatla@linaro.org, rf@opensource.wolfsonmicro.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,9 +98,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, Mar 12, 2022 at 7:40 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+On Sat, Mar 12, 2022 at 9:58 PM Nuno S=C3=A1 <noname.nuno@gmail.com> wrote:
 >
-> On 12/03/2022 01:24, Steve Lee wrote:
+> On Sat, 2022-03-12 at 09:24 +0900, Steve Lee wrote:
 > >  Add reset gpio control to support RESET PIN connected to gpio.
 > >
 > > Signed-off-by: Steve Lee <steve.lee.analog@gmail.com>
@@ -106,32 +108,39 @@ On Sat, Mar 12, 2022 at 7:40 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
 > >  sound/soc/codecs/max98390.c | 12 ++++++++++++
 > >  1 file changed, 12 insertions(+)
 > >
-> > diff --git a/sound/soc/codecs/max98390.c b/sound/soc/codecs/max98390.c
+> > diff --git a/sound/soc/codecs/max98390.c
+> > b/sound/soc/codecs/max98390.c
 > > index 40fd6f363f35..9a9299e5cc5a 100644
 > > --- a/sound/soc/codecs/max98390.c
 > > +++ b/sound/soc/codecs/max98390.c
-> > @@ -1022,6 +1022,7 @@ static int max98390_i2c_probe(struct i2c_client *i2c,
+> > @@ -1022,6 +1022,7 @@ static int max98390_i2c_probe(struct i2c_client
+> > *i2c,
 > >
-> >       struct max98390_priv *max98390 = NULL;
-> >       struct i2c_adapter *adapter = i2c->adapter;
-> > +     struct gpio_desc *reset_gpio;
+> >         struct max98390_priv *max98390 =3D NULL;
+> >         struct i2c_adapter *adapter =3D i2c->adapter;
+> > +       struct gpio_desc *reset_gpio;
 > >
-> >       ret = i2c_check_functionality(adapter,
-> >               I2C_FUNC_SMBUS_BYTE
-> > @@ -1073,6 +1074,17 @@ static int max98390_i2c_probe(struct i2c_client *i2c,
-> >               return ret;
-> >       }
+> >         ret =3D i2c_check_functionality(adapter,
+> >                 I2C_FUNC_SMBUS_BYTE
+> > @@ -1073,6 +1074,17 @@ static int max98390_i2c_probe(struct
+> > i2c_client *i2c,
+> >                 return ret;
+> >         }
 > >
-> > +     reset_gpio = devm_gpiod_get_optional(&i2c->dev,
-> > +                                          "maxim,reset-gpios", GPIOD_OUT_LOW);
-> > +
+> > +       reset_gpio =3D devm_gpiod_get_optional(&i2c->dev,
+> > +                                            "maxim,reset-gpios",
+> > GPIOD_OUT_LOW);
 >
-> I don't know why did you CC me, but since I am looking at this - you
-> have to update bindings.
+> A reset GPIO is a standard property so there's no need for a vendor
+> prefix. This should be devm_gpiod_get_optional(&i2c->dev, "reset",
+> ...). And, as said before, you need to add a reset-gpios property to
+> the bindings in a different patch.
 >
-> Do not add random properties to drivers without updating bindings.
+> I'm also not sure why you have this as RESEND...
 >
-> Best regards,
-> Krzysztof
+> - Nuno S=C3=A1
+> >
+>
 
-Thanks for comment. Yes, I update bingding too.
+I forgot to add another patch mail. I will check it before sending patch ag=
+ain.
