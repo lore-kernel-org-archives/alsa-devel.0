@@ -4,60 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21C39C433EF
-	for <alsa-devel@archiver.kernel.org>; Sat, 12 Mar 2022 21:44:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A70BC433F5
+	for <alsa-devel@archiver.kernel.org>; Sun, 13 Mar 2022 08:10:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6C47F16CA;
-	Sat, 12 Mar 2022 22:44:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C47F16CA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 73A8116CD;
+	Sun, 13 Mar 2022 09:10:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73A8116CD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647121492;
-	bh=Lj7+gauN+noi8Kh/rt0Gv5ORitb5XT3mvdoLJLpk4DE=;
-	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1647159053;
+	bh=VdBeSoLUr/9sB2lqy6G9Flnp3AwBVf790ixuGnanhk8=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NLTjM2/JkyPRtotHy/CUtlFYyqSXRWIQfsXpE5A0KjXIpXA9c3GaYDNJIQUWmf2He
-	 KUlIQDq/zcBSfI6dH30toYnAA9Tl/9ShExRJQhSXGXwV99x8HS/w/5iCrPneRyRYim
-	 M2SSPR3UmLNm0OtkDa4J3m0sZcXR8KZStCBLjDBQ=
+	b=nofDSGfYBRcipQHsPW4WMpjI60HjwUmAc0ocTGVUJJVqFNQOP9gqpMetBrjdETjCe
+	 0GrDmQJp5dSt9lYgGySzJ8klF+pIf3ovCP2eNgZsfBIoS+oHcNxBcdoFPtW7PXZ7wu
+	 AEZmmso+tVfZS5fAJZAv1LcFGhWduUjct7YXcwA8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EB889F80171;
-	Sat, 12 Mar 2022 22:44:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 08D41F80165;
+	Sun, 13 Mar 2022 09:10:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 044A1F800B0; Sat, 12 Mar 2022 22:44:01 +0100 (CET)
-Received: from relay4.hostedemail.com (relay4.hostedemail.com [64.99.140.35])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 702C7F80310; Sun, 13 Mar 2022 09:10:00 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0B841F800D2
- for <alsa-devel@alsa-project.org>; Sat, 12 Mar 2022 22:43:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B841F800D2
-Received: from omf20.hostedemail.com (a10.router.float.18 [10.200.18.1])
- by unirelay02.hostedemail.com (Postfix) with ESMTP id 9E35F23501;
- Sat, 12 Mar 2022 21:43:54 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by
- omf20.hostedemail.com (Postfix) with ESMTPA id 5FE732002B; 
- Sat, 12 Mar 2022 21:43:53 +0000 (UTC)
-Message-ID: <2422fcc6d9a1e03e4dde90ea91327764ab5ee4b5.camel@perches.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5C353F80154
+ for <alsa-devel@alsa-project.org>; Sun, 13 Mar 2022 09:09:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C353F80154
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="koBY2n6P"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="mV2u/8Bs"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 9CC38212C6;
+ Sun, 13 Mar 2022 08:09:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1647158993; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=NeSB+jHq6YcFTSHppR+CSlD97vyl7qDeXaqfoy6cbFY=;
+ b=koBY2n6PTzkyxuUgBZjixpgA31crlNAju/YLchRDI/d04UYCWGTuqZvp06cG3k63B+u8Os
+ 4EnqzNLPdboenPOWfz4VW+/y/ccUdoZpvPDBIisf11sGj2ZiixiuI5Zk8GsvJvymAgRbto
+ K2VwqSxngDIwh5HoqpZGDmX93GJV5/0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1647158993;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=NeSB+jHq6YcFTSHppR+CSlD97vyl7qDeXaqfoy6cbFY=;
+ b=mV2u/8Bsw8T7bo/NI3rX+R+NmmrQ5gcs4N5yhpFbccCHHzonw7soJfxbDZgSorQDEmJ9Io
+ mUs1sEzPIq7+2dBA==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 83175A3B8A;
+ Sun, 13 Mar 2022 08:09:53 +0000 (UTC)
+Date: Sun, 13 Mar 2022 09:09:53 +0100
+Message-ID: <s5h8rteclym.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Julia Lawall <Julia.Lawall@inria.fr>
 Subject: Re: [PATCH 3/6] ALSA: seq: oss: use kzalloc
-From: Joe Perches <joe@perches.com>
-To: Julia Lawall <Julia.Lawall@inria.fr>, Jaroslav Kysela <perex@perex.cz>
-Date: Sat, 12 Mar 2022 13:43:52 -0800
 In-Reply-To: <20220312102705.71413-4-Julia.Lawall@inria.fr>
 References: <20220312102705.71413-1-Julia.Lawall@inria.fr>
  <20220312102705.71413-4-Julia.Lawall@inria.fr>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.4-1ubuntu2 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 5FE732002B
-X-Stat-Signature: rmt9obkyouuykyseiymery8o93ewmsek
-X-Rspamd-Server: rspamout01
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+wmoUH95/RP/dF0B8Uoo7RJ+6BRXnnwI0=
-X-HE-Tag: 1647121433-91170
-Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -73,22 +89,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 2022-03-12 at 11:27 +0100, Julia Lawall wrote:
-> Use kzalloc instead of kmalloc + memset.
-[]
-> diff --git a/sound/core/seq/oss/seq_oss_init.c b/sound/core/seq/oss/seq_oss_init.c
-[]
-> @@ -81,7 +81,6 @@ snd_seq_oss_create_client(void)
->  	system_client = rc;
->  
->  	/* create annoucement receiver port */
-
-unrelated trivia: typo of announcement above
-
-> -	memset(port, 0, sizeof(*port));
->  	strcpy(port->name, "Receiver");
->  	port->addr.client = system_client;
->  	port->capability = SNDRV_SEQ_PORT_CAP_WRITE; /* receive only */
+On Sat, 12 Mar 2022 11:27:02 +0100,
+Julia Lawall wrote:
 > 
+> Use kzalloc instead of kmalloc + memset.
+> 
+> The semantic patch that makes this change is:
+> (https://coccinelle.gitlabpages.inria.fr/website/)
+> 
+> //<smpl>
+> @@
+> expression res, size, flag;
+> @@
+> - res = kmalloc(size, flag);
+> + res = kzalloc(size, flag);
+>   ...
+> - memset(res, 0, size);
+> //</smpl>
+> 
+> Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+
+Applied, thanks.
 
 
+Takashi
