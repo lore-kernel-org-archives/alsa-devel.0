@@ -4,66 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C3A5C4332F
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Mar 2022 10:27:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7974C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Mar 2022 10:29:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D002918A8;
-	Mon, 14 Mar 2022 11:26:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D002918A8
+	by alsa0.perex.cz (Postfix) with ESMTPS id AD8531896;
+	Mon, 14 Mar 2022 11:29:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD8531896
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647253645;
-	bh=tyJL5hF65QyMph+7DtjWZYFL2Qzea5pUr0xp38Yx7bo=;
+	s=default; t=1647253791;
+	bh=bwHJoPxyu/AsruLxj2fvTwgEqOZ11tvgaKSJ2SduNvU=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Q6oh3HM9rGIaGePVjXc7H7zaljE8oi7p3prpW45DuKlQ69hkg8ylxuMHoce+ZJ5Rf
-	 8tok4++QG0F+4y+WgDXVPvRFk5baZFXnQsTfLyGrNuCdKLdLZbOa/1K32VVisNDpek
-	 NLftc25Vx94Xt2oIJT0TMZ+9/s1udxWc3GbB9UxA=
+	b=DYn9VnvkMUajKG/BS/WLAfiFFlNhacgSsUFNRXj6yQ6V8e+yqX4fRLzwN2VK2BWbW
+	 zduhZopLDZdFofSiKkoJZk12L2wXjwi0wwuX5thnRrpQfw0+yjFmjlUJA5VgOHPEMQ
+	 daD/hX1b5vYRwWMBbV/Y0wTpguKQKg4eDsvpYDGk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2F742F80518;
-	Mon, 14 Mar 2022 11:25:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4ABB3F8012C;
+	Mon, 14 Mar 2022 11:29:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1FFBDF80224; Mon, 14 Mar 2022 11:25:30 +0100 (CET)
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk
- [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C28D1F80139
- for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2022 11:25:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C28D1F80139
+ id 6C781F80139; Mon, 14 Mar 2022 11:28:57 +0100 (CET)
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A63E7F80100
+ for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2022 11:28:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A63E7F80100
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com
- header.b="V5Yw7/ep"
+ header.b="C7Pxy4F/"
 Received: from [127.0.0.1] (localhost [127.0.0.1])
- (Authenticated sender: kholk11) with ESMTPSA id 489EC1F43511
+ (Authenticated sender: kholk11) with ESMTPSA id C73B91F4354F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
- s=mail; t=1647253524;
- bh=tyJL5hF65QyMph+7DtjWZYFL2Qzea5pUr0xp38Yx7bo=;
+ s=mail; t=1647253729;
+ bh=bwHJoPxyu/AsruLxj2fvTwgEqOZ11tvgaKSJ2SduNvU=;
  h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
- b=V5Yw7/epWa0vrRb9G9PpmchU0FQS3UJZEMSFlkQ7E00UWWSNLN4lPorRW9TM2ocGN
- uVREdeLNVzGlQ/4jcIgogV0YLO1c7Gq0P/Sop1BW+tj2o6ChKUh3P3IuMxRQziIMcw
- 2JuhmTnipYck0SlM4Lqxyj21lmX/Hkz66nk5TeYulwWV0E6U7CCkts6hQw2g5geiaW
- XlY7XEAyoqXVCNBy9aoH+rTUqHf/zIvBJE/cszbI32FtWdVxqog3eqJgCorgfNQ84M
- d2UdP7OmBTFGOyaTxt6pMHGORHjmNuFz15VmVMLdqbl0ykfRxyoSWmJY4iejHGiqAU
- XLJHe/VM9FhEQ==
-Message-ID: <aaa158d8-767b-8a6e-b708-4bfe60dcb67b@collabora.com>
-Date: Mon, 14 Mar 2022 11:25:21 +0100
+ b=C7Pxy4F/H7J0euO4lGClMCo9eeB6EsBAqQe2Cwxtqs/Rj+fZfImezffwz8imhnSUS
+ PXw0pBauG13We073OAWMG8HwjQIqgNSMWPxi44sV8xQDZBtIxNjvmSR4RvoVuCApCG
+ j4aO7+o67W8/NbD9orC2PYd1bXVjE3R28VC9Vvb5OlCg1lHufKIa6XygCH8F+RLJac
+ BbnJa/Cb5mbFm4g0JObcD20Zw2QxqHkV3Mp4yL1UQUAOqsZiP+QMLEqF+C/7sVdXee
+ gLfi5vzapDWRvbLc+r/I7kOtDmjp5G/sp4vKMilLGvN9Bu7ZjALK9AMNaA28x+MZ9Q
+ tjvCVw2taCy3A==
+Message-ID: <2cdd1e7b-d1e0-7cfd-ff24-18320dbe2a51@collabora.com>
+Date: Mon, 14 Mar 2022 11:28:46 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.5.1
-Subject: Re: [v3 14/19] dt-bindings: mediatek: mt8186: add audio afe document
+Subject: Re: [v3 07/19] ASoC: mediatek: mt8186: support i2s in platform driver
 Content-Language: en-US
 To: Jiaxin Yu <jiaxin.yu@mediatek.com>, broonie@kernel.org, robh+dt@kernel.org
 References: <20220313151023.21229-1-jiaxin.yu@mediatek.com>
- <20220313151023.21229-15-jiaxin.yu@mediatek.com>
+ <20220313151023.21229-8-jiaxin.yu@mediatek.com>
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20220313151023.21229-15-jiaxin.yu@mediatek.com>
+In-Reply-To: <20220313151023.21229-8-jiaxin.yu@mediatek.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
  Project_Global_Chrome_Upstream_Group@mediatek.com, tzungbi@google.com,
  linux-mediatek@lists.infradead.org, trevor.wu@mediatek.com,
  matthias.bgg@gmail.com, aaronyu@google.com, julianbraha@gmail.com,
@@ -84,17 +83,15 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Il 13/03/22 16:10, Jiaxin Yu ha scritto:
-> Add mt8186 audio afe document.
+> Add mt8186 i2s dai driver.
 > 
 > Signed-off-by: Jiaxin Yu <jiaxin.yu@mediatek.com>
-> Reviewed-by: Rob Herring <robh@kernel.org>
 
 Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
 > ---
->   .../bindings/sound/mt8186-afe-pcm.yaml        | 175 ++++++++++++++++++
->   1 file changed, 175 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/sound/mt8186-afe-pcm.yaml
+>   sound/soc/mediatek/mt8186/mt8186-dai-i2s.c | 1355 ++++++++++++++++++++
+>   1 file changed, 1355 insertions(+)
+>   create mode 100644 sound/soc/mediatek/mt8186/mt8186-dai-i2s.c
 > 
-
 
