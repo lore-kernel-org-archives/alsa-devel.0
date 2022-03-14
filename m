@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76285C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Mar 2022 20:10:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 199BCC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Mar 2022 20:10:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A649B18A4;
-	Mon, 14 Mar 2022 21:09:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A649B18A4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 410A6182B;
+	Mon, 14 Mar 2022 21:09:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 410A6182B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647288598;
-	bh=17+3Br/SQ9CshebSb6xP8u3yof0W7n5/3ytw0k2NAas=;
+	s=default; t=1647288615;
+	bh=iaRoFYy4FnEZ37BwiDr88p/xxJXd7c3vK+pQm98Kt8E=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sfxvJBtyjRT9JwB4MmH2G4NhiSxT1vSt9xmDcZdvgyAAxXnUcU63BoIzsvGLK/B9s
-	 3lz2EzGDXundFYw2+85RAjdEYe/PwYvsg7Jbz++M+P5d1aRuhBBtWAFbw2gXq1fiRb
-	 oIMTT03+pOVG8gKhMHA8BoUf30FKqfsw1WHYR67U=
+	b=Cd/1qCII7xiji3LMIu9smAv0qxvpUMkHIzhqIWQBUTYvOJfRLu1Mpp/DxIVccCE1y
+	 EwfV/5Fca/Hq/fdXexf6XiDHdymwgyEhoB+uwWzgpaaLur7KupJ2mICqeKY4xas2/R
+	 uXQSxdQc+phS6DJd29jerKhtoIlOEijfG0WKkbug=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 179EFF8055B;
+	by alsa1.perex.cz (Postfix) with ESMTP id D9701F80566;
 	Mon, 14 Mar 2022 21:06:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7D371F80537; Mon, 14 Mar 2022 21:05:57 +0100 (CET)
+ id 9B9ABF8051D; Mon, 14 Mar 2022 21:05:58 +0100 (CET)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 21AD8F80518
- for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2022 21:05:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21AD8F80518
+ by alsa1.perex.cz (Postfix) with ESMTPS id C9903F8051B
+ for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2022 21:05:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9903F8051B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="M+5E+MQU"
+ header.b="TaIQQ3He"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1647288347; x=1678824347;
+ t=1647288348; x=1678824348;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=17+3Br/SQ9CshebSb6xP8u3yof0W7n5/3ytw0k2NAas=;
- b=M+5E+MQUBeq+Ob4rb4vBKonWlMHWuVaKp6NqVpvrMSNTcqYumiAkmjpI
- /GSpS34AAmB6uaEF/mKKwhFr/+Q5pLue+1jWlqFRS2VntDcEeQGWh8Vqj
- zWZKzwgmrE1Mv63Hv38OCjxbT4R/neY3LzyLOD9J6AQxJemaSpiCU3yUh
- qO6PAgdclhjYsAB5Jk74bnwmjZ8wv9vtU09sNujJ0ojODR0Cmw4nC1wx1
- iimOEprTziiuHCSLrYOqqSjcGcGGWBbPyuqIeTUHhlz1QUh2219OH1lZA
- YmxpZtKqJhnA0ArnTBmWlp/8YwGmrVyKtfpw4O7/+j43QuNJs6ku6sGqd w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10286"; a="342563476"
-X-IronPort-AV: E=Sophos;i="5.90,181,1643702400"; d="scan'208";a="342563476"
+ bh=iaRoFYy4FnEZ37BwiDr88p/xxJXd7c3vK+pQm98Kt8E=;
+ b=TaIQQ3Her/+aQZWEhK337ijJLUtEvEnyNx+FSLAofA9p7SGp5FSMX9wW
+ RzBkqFVI3tB1u++D09EvHT9fMLySuOuQB2uYCvlVc+5QYU9OudrFBOBaC
+ qfGirStXooKGQF9tHZLadZh/1s42KjfIVvID6x8FMQ7HPojeAJ52NTH1G
+ SbGr5oL//Zwoiy1S4z5NDGjfshYT7/K1ArYj3df8l8z8Wmxwyks9tIv0A
+ MQpB5vU+qSu4UtmyYGuQzQBlrRfC8Kh3E3ML+AM1M3veHwrqh2aL51/Zq
+ th5utBJqUQQ0ATuzxFgUKPvvCbcIjlF7L/MdE1FoWYavGD+GQzS/vsC9N w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10286"; a="342563478"
+X-IronPort-AV: E=Sophos;i="5.90,181,1643702400"; d="scan'208";a="342563478"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  14 Mar 2022 13:05:33 -0700
-X-IronPort-AV: E=Sophos;i="5.90,181,1643702400"; d="scan'208";a="634339896"
+X-IronPort-AV: E=Sophos;i="5.90,181,1643702400"; d="scan'208";a="634339898"
 Received: from pmishr1-mobl1.amr.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.254.25.117])
  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  14 Mar 2022 13:05:33 -0700
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 09/18] ASoC: SOF: topology: Make mux/demux widget parsing IPC
+Subject: [PATCH 11/18] ASoC: SOF: topology: Make asrc widget parsing IPC
  agnostic
-Date: Mon, 14 Mar 2022 13:05:11 -0700
-Message-Id: <20220314200520.1233427-11-ranjani.sridharan@linux.intel.com>
+Date: Mon, 14 Mar 2022 13:05:13 -0700
+Message-Id: <20220314200520.1233427-13-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220314200520.1233427-1-ranjani.sridharan@linux.intel.com>
 References: <20220314200520.1233427-1-ranjani.sridharan@linux.intel.com>
@@ -89,147 +89,225 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Define the list of tokens pertaining to the mux/demux widgets, parse and
+Define the list of tokens pertaining to the asrc widgets, parse and
 save them as part of the swidget tuples array. Once topology parsing is
 complete, these tokens will be applied to create the IPC structure for the
-mux/demux component based on the topology widget_setup op in ipc3_tplg_ops.
+asrc component based on the topology widget_setup op in ipc3_tplg_ops.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/ipc3-topology.c | 40 +++++++++++++++++++++++++++++++
- sound/soc/sof/topology.c      | 44 ++---------------------------------
- 2 files changed, 42 insertions(+), 42 deletions(-)
+ sound/soc/sof/ipc3-topology.c | 65 +++++++++++++++++++++++++++++++
+ sound/soc/sof/topology.c      | 72 +----------------------------------
+ 2 files changed, 66 insertions(+), 71 deletions(-)
 
 diff --git a/sound/soc/sof/ipc3-topology.c b/sound/soc/sof/ipc3-topology.c
-index d8a91f461bf9..5501a18babaf 100644
+index 44ba3190e570..7dc6530efdba 100644
 --- a/sound/soc/sof/ipc3-topology.c
 +++ b/sound/soc/sof/ipc3-topology.c
-@@ -324,6 +324,41 @@ static int sof_ipc3_widget_setup_comp_buffer(struct snd_sof_widget *swidget)
- 	return 0;
+@@ -59,6 +59,18 @@ static const struct sof_topology_token src_tokens[] = {
+ 		offsetof(struct sof_ipc_comp_src, sink_rate)},
+ };
+ 
++/* ASRC */
++static const struct sof_topology_token asrc_tokens[] = {
++	{SOF_TKN_ASRC_RATE_IN, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
++		offsetof(struct sof_ipc_comp_asrc, source_rate)},
++	{SOF_TKN_ASRC_RATE_OUT, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
++		offsetof(struct sof_ipc_comp_asrc, sink_rate)},
++	{SOF_TKN_ASRC_ASYNCHRONOUS_MODE, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
++		offsetof(struct sof_ipc_comp_asrc, asynchronous_mode)},
++	{SOF_TKN_ASRC_OPERATION_MODE, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
++		offsetof(struct sof_ipc_comp_asrc, operation_mode)},
++};
++
+ /* PCM */
+ static const struct sof_topology_token pcm_tokens[] = {
+ 	{SOF_TKN_PCM_DMAC_CONFIG, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
+@@ -98,6 +110,7 @@ static const struct sof_token_info ipc3_token_list[SOF_TOKEN_COUNT] = {
+ 	[SOF_BUFFER_TOKENS] = {"Buffer tokens", buffer_tokens, ARRAY_SIZE(buffer_tokens)},
+ 	[SOF_VOLUME_TOKENS] = {"Volume tokens", volume_tokens, ARRAY_SIZE(volume_tokens)},
+ 	[SOF_SRC_TOKENS] = {"SRC tokens", src_tokens, ARRAY_SIZE(src_tokens)},
++	[SOF_ASRC_TOKENS] = {"ASRC tokens", asrc_tokens, ARRAY_SIZE(asrc_tokens)},
+ };
+ 
+ /**
+@@ -374,6 +387,49 @@ static int sof_ipc3_widget_setup_comp_src(struct snd_sof_widget *swidget)
+ 	return ret;
  }
  
-+/*
-+ * Mux topology
-+ */
-+static int sof_ipc3_widget_setup_comp_mux(struct snd_sof_widget *swidget)
++static int sof_ipc3_widget_setup_comp_asrc(struct snd_sof_widget *swidget)
 +{
 +	struct snd_soc_component *scomp = swidget->scomp;
-+	struct sof_ipc_comp_mux *mux;
-+	size_t ipc_size = sizeof(*mux);
++	struct sof_ipc_comp_asrc *asrc;
++	size_t ipc_size = sizeof(*asrc);
 +	int ret;
 +
-+	mux = sof_comp_alloc(swidget, &ipc_size, swidget->pipeline_id);
-+	if (!mux)
++	asrc = sof_comp_alloc(swidget, &ipc_size, swidget->pipeline_id);
++	if (!asrc)
 +		return -ENOMEM;
 +
-+	swidget->private = mux;
++	swidget->private = asrc;
 +
-+	/* configure mux IPC message */
-+	mux->comp.type = SOF_COMP_MUX;
-+	mux->config.hdr.size = sizeof(mux->config);
++	/* configure ASRC IPC message */
++	asrc->comp.type = SOF_COMP_ASRC;
++	asrc->config.hdr.size = sizeof(asrc->config);
++
++	/* parse one set of asrc tokens */
++	ret = sof_update_ipc_object(scomp, asrc, SOF_ASRC_TOKENS, swidget->tuples,
++				    swidget->num_tuples, sizeof(*asrc), 1);
++	if (ret < 0)
++		goto err;
 +
 +	/* parse one set of comp tokens */
-+	ret = sof_update_ipc_object(scomp, &mux->config, SOF_COMP_TOKENS,
-+				    swidget->tuples, swidget->num_tuples, sizeof(mux->config), 1);
-+	if (ret < 0) {
-+		kfree(swidget->private);
-+		swidget->private = NULL;
-+		return ret;
-+	}
++	ret = sof_update_ipc_object(scomp, &asrc->config, SOF_COMP_TOKENS,
++				    swidget->tuples, swidget->num_tuples, sizeof(asrc->config), 1);
++	if (ret < 0)
++		goto err;
 +
-+	dev_dbg(scomp->dev, "loaded mux %s\n", swidget->widget->name);
-+	sof_dbg_comp_config(scomp, &mux->config);
++	dev_dbg(scomp->dev, "asrc %s: source rate %d sink rate %d asynch %d operation %d\n",
++		swidget->widget->name, asrc->source_rate, asrc->sink_rate,
++		asrc->asynchronous_mode, asrc->operation_mode);
++
++	sof_dbg_comp_config(scomp, &asrc->config);
 +
 +	return 0;
++err:
++	kfree(swidget->private);
++	swidget->private = NULL;
++
++	return ret;
 +}
 +
  /*
-  * PGA Topology
+  * Mux topology
   */
-@@ -430,6 +465,11 @@ static const struct sof_ipc_tplg_widget_ops tplg_ipc3_widget_ops[SND_SOC_DAPM_TY
- 				    pipeline_token_list, ARRAY_SIZE(pipeline_token_list), NULL},
- 	[snd_soc_dapm_pga] = {sof_ipc3_widget_setup_comp_pga, sof_ipc3_widget_free_comp,
- 			      pga_token_list, ARRAY_SIZE(pga_token_list), NULL},
-+	[snd_soc_dapm_mux] = {sof_ipc3_widget_setup_comp_mux, sof_ipc3_widget_free_comp,
-+			      comp_generic_token_list, ARRAY_SIZE(comp_generic_token_list), NULL},
-+	[snd_soc_dapm_demux] = {sof_ipc3_widget_setup_comp_mux, sof_ipc3_widget_free_comp,
-+				 comp_generic_token_list, ARRAY_SIZE(comp_generic_token_list),
-+				 NULL},
+@@ -494,6 +550,13 @@ static enum sof_tokens pipeline_token_list[] = {
+ 	SOF_SCHED_TOKENS,
  };
  
- static const struct sof_ipc_tplg_ops ipc3_tplg_ops = {
++static enum sof_tokens asrc_token_list[] = {
++	SOF_CORE_TOKENS,
++	SOF_COMP_EXT_TOKENS,
++	SOF_ASRC_TOKENS,
++	SOF_COMP_TOKENS,
++};
++
+ static enum sof_tokens src_token_list[] = {
+ 	SOF_CORE_TOKENS,
+ 	SOF_COMP_EXT_TOKENS,
+@@ -520,6 +583,8 @@ static const struct sof_ipc_tplg_widget_ops tplg_ipc3_widget_ops[SND_SOC_DAPM_TY
+ 				NULL},
+ 	[snd_soc_dapm_src] = {sof_ipc3_widget_setup_comp_src, sof_ipc3_widget_free_comp,
+ 			      src_token_list, ARRAY_SIZE(src_token_list), NULL},
++	[snd_soc_dapm_asrc] = {sof_ipc3_widget_setup_comp_asrc, sof_ipc3_widget_free_comp,
++			       asrc_token_list, ARRAY_SIZE(asrc_token_list), NULL},
+ 	[snd_soc_dapm_scheduler] = {sof_ipc3_widget_setup_comp_pipeline, sof_ipc3_widget_free_comp,
+ 				    pipeline_token_list, ARRAY_SIZE(pipeline_token_list), NULL},
+ 	[snd_soc_dapm_pga] = {sof_ipc3_widget_setup_comp_pga, sof_ipc3_widget_free_comp,
 diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index 9e9a41018458..42da7b8e7180 100644
+index f41bf7dfbd02..94449ed370af 100644
 --- a/sound/soc/sof/topology.c
 +++ b/sound/soc/sof/topology.c
-@@ -1792,44 +1792,6 @@ static int sof_widget_parse_tokens(struct snd_soc_component *scomp, struct snd_s
+@@ -629,20 +629,6 @@ static const struct sof_topology_token dai_link_tokens[] = {
+ 		offsetof(struct sof_ipc_dai_config, dai_index)},
+ };
+ 
+-/* ASRC */
+-static const struct sof_topology_token asrc_tokens[] = {
+-	{SOF_TKN_ASRC_RATE_IN, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
+-		offsetof(struct sof_ipc_comp_asrc, source_rate)},
+-	{SOF_TKN_ASRC_RATE_OUT, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
+-		offsetof(struct sof_ipc_comp_asrc, sink_rate)},
+-	{SOF_TKN_ASRC_ASYNCHRONOUS_MODE, SND_SOC_TPLG_TUPLE_TYPE_WORD,
+-		get_token_u32,
+-		offsetof(struct sof_ipc_comp_asrc, asynchronous_mode)},
+-	{SOF_TKN_ASRC_OPERATION_MODE, SND_SOC_TPLG_TUPLE_TYPE_WORD,
+-		get_token_u32,
+-		offsetof(struct sof_ipc_comp_asrc, operation_mode)},
+-};
+-
+ /* Tone */
+ static const struct sof_topology_token tone_tokens[] = {
+ };
+@@ -1784,60 +1770,6 @@ static int sof_widget_parse_tokens(struct snd_soc_component *scomp, struct snd_s
  	return ret;
  }
  
 -/*
-- * Mux topology
+- * ASRC Topology
 - */
--static int sof_widget_load_mux(struct snd_soc_component *scomp, int index,
--			       struct snd_sof_widget *swidget,
--			       struct snd_soc_tplg_dapm_widget *tw)
+-
+-static int sof_widget_load_asrc(struct snd_soc_component *scomp, int index,
+-				struct snd_sof_widget *swidget,
+-				struct snd_soc_tplg_dapm_widget *tw)
 -{
 -	struct snd_soc_tplg_private *private = &tw->priv;
--	struct sof_ipc_comp_mux *mux;
--	size_t ipc_size = sizeof(*mux);
+-	struct sof_ipc_comp_asrc *asrc;
+-	size_t ipc_size = sizeof(*asrc);
 -	int ret;
 -
--	mux = (struct sof_ipc_comp_mux *)
--	      sof_comp_alloc(swidget, &ipc_size, index);
--	if (!mux)
+-	asrc = (struct sof_ipc_comp_asrc *)
+-	       sof_comp_alloc(swidget, &ipc_size, index);
+-	if (!asrc)
 -		return -ENOMEM;
 -
--	/* configure mux IPC message */
--	mux->comp.type = SOF_COMP_MUX;
--	mux->config.hdr.size = sizeof(mux->config);
+-	/* configure ASRC IPC message */
+-	asrc->comp.type = SOF_COMP_ASRC;
+-	asrc->config.hdr.size = sizeof(asrc->config);
 -
--	ret = sof_parse_tokens(scomp, &mux->config, comp_tokens,
+-	ret = sof_parse_tokens(scomp, asrc, asrc_tokens,
+-			       ARRAY_SIZE(asrc_tokens), private->array,
+-			       le32_to_cpu(private->size));
+-	if (ret != 0) {
+-		dev_err(scomp->dev, "error: parse asrc tokens failed %d\n",
+-			private->size);
+-		goto err;
+-	}
+-
+-	ret = sof_parse_tokens(scomp, &asrc->config, comp_tokens,
 -			       ARRAY_SIZE(comp_tokens), private->array,
 -			       le32_to_cpu(private->size));
 -	if (ret != 0) {
--		dev_err(scomp->dev, "error: parse mux.cfg tokens failed %d\n",
--			private->size);
--		kfree(mux);
--		return ret;
+-		dev_err(scomp->dev, "error: parse asrc.cfg tokens failed %d\n",
+-			le32_to_cpu(private->size));
+-		goto err;
 -	}
 -
--	sof_dbg_comp_config(scomp, &mux->config);
+-	dev_dbg(scomp->dev, "asrc %s: source rate %d sink rate %d "
+-		"asynch %d operation %d\n",
+-		swidget->widget->name, asrc->source_rate, asrc->sink_rate,
+-		asrc->asynchronous_mode, asrc->operation_mode);
+-	sof_dbg_comp_config(scomp, &asrc->config);
 -
--	swidget->private = mux;
+-	swidget->private = asrc;
 -
 -	return 0;
+-err:
+-	kfree(asrc);
+-	return ret;
 -}
 -
  /*
-  * SRC Topology
+  * Signal Generator Topology
   */
-@@ -2316,6 +2278,8 @@ static int sof_widget_ready(struct snd_soc_component *scomp, int index,
- 	case snd_soc_dapm_scheduler:
+@@ -2219,13 +2151,11 @@ static int sof_widget_ready(struct snd_soc_component *scomp, int index,
  	case snd_soc_dapm_aif_out:
  	case snd_soc_dapm_aif_in:
-+	case snd_soc_dapm_mux:
-+	case snd_soc_dapm_demux:
+ 	case snd_soc_dapm_src:
++	case snd_soc_dapm_asrc:
+ 	case snd_soc_dapm_mux:
+ 	case snd_soc_dapm_demux:
  		ret = sof_widget_parse_tokens(scomp, swidget, tw,  token_list, token_list_size);
  		break;
- 	case snd_soc_dapm_src:
-@@ -2330,10 +2294,6 @@ static int sof_widget_ready(struct snd_soc_component *scomp, int index,
- 	case snd_soc_dapm_effect:
- 		ret = sof_widget_load_process(scomp, index, swidget, tw);
- 		break;
--	case snd_soc_dapm_mux:
--	case snd_soc_dapm_demux:
--		ret = sof_widget_load_mux(scomp, index, swidget, tw);
+-	case snd_soc_dapm_asrc:
+-		ret = sof_widget_load_asrc(scomp, index, swidget, tw);
 -		break;
- 	case snd_soc_dapm_switch:
- 	case snd_soc_dapm_dai_link:
- 	case snd_soc_dapm_kcontrol:
+ 	case snd_soc_dapm_siggen:
+ 		ret = sof_widget_load_siggen(scomp, index, swidget, tw);
+ 		break;
 -- 
 2.25.1
 
