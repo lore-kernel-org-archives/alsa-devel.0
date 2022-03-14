@@ -4,63 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 482D1C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Mar 2022 03:38:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BCE10C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Mar 2022 05:47:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E7FAE16C2;
-	Mon, 14 Mar 2022 04:37:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E7FAE16C2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 21C771696;
+	Mon, 14 Mar 2022 06:46:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 21C771696
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647229110;
-	bh=L88JYTQK3RSTBXj7ntmxL1R1P44GB1OGBuZ1Hz9SWJI=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=AzkSnF2NBvUtSjwP5tU3X4XbzT6TEjsDupwIZqwErhXcZg3VkzO6cani6Ky0Tf+1z
-	 piwP6doVj1g7Gy5Bg7VU6jpR0RUEQS3+dbnUzvKuWpEnhJcNiCl3il6RWbQzkKv72c
-	 SDf974WgP0yLCLIcqiwZ1RfZyFzhWE/xK6VJcQ8U=
+	s=default; t=1647236857;
+	bh=VgYdOZBZufX/I9WQ0v33g4iqgeSkQUbXC8tJSC4t35o=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=qv7SyiySJ7Ur3849KZDaO6WLChLrm10KBfbY4wsDyy77Hs8YF2pM++fpWkj3PPMmR
+	 JMIx6DkEbCgvy9nWORKvpOmVuiz2ftqPYPYAyTw66/8Xt0Ezf8ZIjeG95FEnwS5uPF
+	 3EkD9J9eK2GtSs8lbZRp5j5kScHIhb4Ah4Uz+fdQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5EFB8F8012C;
-	Mon, 14 Mar 2022 04:37:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A1C83F8012C;
+	Mon, 14 Mar 2022 06:46:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D395FF80139; Mon, 14 Mar 2022 04:37:37 +0100 (CET)
-Received: from smtpbg154.qq.com (smtpbg154.qq.com [15.184.224.54])
+ id 93449F80139; Mon, 14 Mar 2022 06:46:44 +0100 (CET)
+Received: from smtpbg511.qq.com (smtpbg511.qq.com [203.205.250.109])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DA556F80095
- for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2022 04:37:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA556F80095
-X-QQ-mid: bizesmtp67t1647229045tcanqqio
-Received: from [10.4.23.86] ( [58.240.82.166]) by bizesmtp.qq.com (ESMTP) with 
- id ; Mon, 14 Mar 2022 11:37:24 +0800 (CST)
-X-QQ-SSF: 0040000000200070E000B00A0000000
-X-QQ-FEAT: ALI+OuUAduwySuSoz0J/AbDOxQQT0vTvLZNbIJEQHMAOghGWxyaub7APE5GHw
- B76WsdtwKsAE4JRDibDtbFAvawvqhper4VqF3WypHMjFQbnxJ5iKJDB03FWu2QG2v4s7dEa
- u5jiytiKcLfnRm40mqq8dxc3fmb2jaiTM86YeYl8C0ny5Wmuhz5bLpKWHkbI4VoDQRynEAi
- jO4J+ru489Ru6pIuW19N0Ss5t5lNheVRTsICEc6w6ADNr5Olqf3l6vEvainvZrEZIksnO/N
- HmWlspb6W3rllZ/tRoaUK2QV88dHEIj2hNOdfjnDsFrwM/U35oMSWZXoBdAL620rEUIbh8X
- rTdlkeLFo01fxkU1pg=
+ by alsa1.perex.cz (Postfix) with ESMTPS id 70F1AF80100
+ for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2022 06:46:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70F1AF80100
+X-QQ-mid: bizesmtp67t1647236789tdocdkcc
+Received: from localhost.localdomain ( [58.240.82.166])
+ by bizesmtp.qq.com (ESMTP) with 
+ id ; Mon, 14 Mar 2022 13:46:24 +0800 (CST)
+X-QQ-SSF: 0140000000200070E000B00A0000000
+X-QQ-FEAT: UldK9Jsj7VMaphog27S4lw8S9PU+rNC28DUg751c7z6NeXGelP3fAJx6SMVLa
+ l20Xt/iZS2Bdt+ynmnbguGsw+2WSBXglsIc3mBtubwdLLamJGGnqKIy1ACfHGxyYWhgQiE4
+ ftWYOQ+ldrZpFHYP65yZgPk48WWeX9EzqpEVUIgKyJWmW+tPQt4y7QJj0PyFafPrJ4kV7FN
+ KEYzH332IPtsEuODzKYDF/dq2zWvcU1207Y1kwTyKOhNUBeT3ROo/FZUxUwwNwVARnezjok
+ oew/bMle8pepnV5L2HS5dMgZcE2rZC41HNALNQkfKsQ3T8P+FuNC2a0BmYrRTRNmZJjdMFr
+ 2M/M2M8OPDU5FDr+JkxNPE9mbui6tl+ZN3HmM/Q
 X-QQ-GoodBg: 2
-Message-ID: <bd07817c-9704-a223-9f0b-3c582be2c21b@uniontech.com>+03B81180ECD5C83E
-Date: Mon, 14 Mar 2022 11:37:24 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.1
-Subject: Re: [PATCH] ASoC: Intel: boards: Use temporary variable for struct
+From: Zhen Ni <nizhen@uniontech.com>
+To: broonie@kernel.org,
+	tiwai@suse.com,
+	perex@perex.cz
+Subject: [PATCH v2] ASoC: Intel: boards: Use temporary variable for struct
  device
-To: Mark Brown <broonie@kernel.org>
-References: <20220310065354.14493-1-nizhen@uniontech.com>
- <YitRs1YveURmYtJ/@sirena.org.uk>
-From: =?UTF-8?B?5YCq5oyv?= <nizhen@uniontech.com>
-In-Reply-To: <YitRs1YveURmYtJ/@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Date: Mon, 14 Mar 2022 13:46:21 +0800
+Message-Id: <20220314054621.14694-1-nizhen@uniontech.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-QQ-SENDSIZE: 520
 Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign7
 X-QQ-Bgrelay: 1
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
+Cc: Zhen Ni <nizhen@uniontech.com>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,15 +74,78 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Use temporary variable for struct device to make code neater.
 
+Signed-off-by: Zhen Ni <nizhen@uniontech.com>
+---
+ sound/soc/intel/boards/cht_bsw_max98090_ti.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-在 2022/3/11 21:42, Mark Brown 写道:
-> On Thu, Mar 10, 2022 at 02:53:54PM +0800, Zhen Ni wrote:
->> Use temporary variable for struct device to make code neater.
-> 
-> This doesn't apply against current code, please check and resend.
-
-I will resend a v2 soon.
+diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+index b3d7a0725ef2..183edd0fd446 100644
+--- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
++++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+@@ -538,7 +538,7 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 	const char *platform_name;
+ 	bool sof_parent;
+ 
+-	drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_KERNEL);
++	drv = devm_kzalloc(dev, sizeof(*drv), GFP_KERNEL);
+ 	if (!drv)
+ 		return -ENOMEM;
+ 
+@@ -559,8 +559,8 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	/* override platform name, if required */
+-	snd_soc_card_cht.dev = &pdev->dev;
+-	mach = pdev->dev.platform_data;
++	snd_soc_card_cht.dev = dev;
++	mach = dev->platform_data;
+ 	platform_name = mach->mach_params.platform;
+ 
+ 	ret_val = snd_soc_fixup_dai_links_platform_name(&snd_soc_card_cht,
+@@ -576,9 +576,9 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 	else
+ 		mclk_name = "pmc_plt_clk_3";
+ 
+-	drv->mclk = devm_clk_get(&pdev->dev, mclk_name);
++	drv->mclk = devm_clk_get(dev, mclk_name);
+ 	if (IS_ERR(drv->mclk)) {
+-		dev_err(&pdev->dev,
++		dev_err(dev,
+ 			"Failed to get MCLK from %s: %ld\n",
+ 			mclk_name, PTR_ERR(drv->mclk));
+ 		return PTR_ERR(drv->mclk);
+@@ -594,12 +594,12 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 	if (drv->quirks & QUIRK_PMC_PLT_CLK_0) {
+ 		ret_val = clk_prepare_enable(drv->mclk);
+ 		if (ret_val < 0) {
+-			dev_err(&pdev->dev, "MCLK enable error: %d\n", ret_val);
++			dev_err(dev, "MCLK enable error: %d\n", ret_val);
+ 			return ret_val;
+ 		}
+ 	}
+ 
+-	sof_parent = snd_soc_acpi_sof_parent(&pdev->dev);
++	sof_parent = snd_soc_acpi_sof_parent(dev);
+ 
+ 	/* set card and driver name */
+ 	if (sof_parent) {
+@@ -614,9 +614,9 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 	if (sof_parent)
+ 		dev->driver->pm = &snd_soc_pm_ops;
+ 
+-	ret_val = devm_snd_soc_register_card(&pdev->dev, &snd_soc_card_cht);
++	ret_val = devm_snd_soc_register_card(dev, &snd_soc_card_cht);
+ 	if (ret_val) {
+-		dev_err(&pdev->dev,
++		dev_err(dev,
+ 			"snd_soc_register_card failed %d\n", ret_val);
+ 		return ret_val;
+ 	}
+-- 
+2.20.1
 
 
 
