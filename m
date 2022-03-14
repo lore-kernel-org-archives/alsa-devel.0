@@ -4,71 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7617EC433EF
-	for <alsa-devel@archiver.kernel.org>; Sun, 13 Mar 2022 19:09:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB804C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Mar 2022 00:11:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8C60716D5;
-	Sun, 13 Mar 2022 20:08:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C60716D5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1310316A2;
+	Mon, 14 Mar 2022 01:11:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1310316A2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647198544;
-	bh=S85F7ZrTXTrFfys0rJRseAMPLnZqh6VsxjYx3rCW0qE=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1647216710;
+	bh=xUYs/BzvyWWFZdilJKX+4nDMKP2LjDNmh58ErHGR+y8=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hiWXtmh2N/EJwDIVEljCavlbe/LtO7KzZUslyFcDm3+50Q8E1zOOD/SEHRH1iJ1yi
-	 kGhABOWvTdjKRUGmpxsMYGTlWdi2oJnemeseZlvWQFnIzECCXBo+9aXNnDJY0xK4uN
-	 aCsdwxgEVINKqduUzGSjtDPfgGeXWNlKNBkShPiQ=
+	b=Dc4hnYqSid6j+QwZZNMHu69qD7mduO1AoycLeoYHkFH5lvjJKmdQlgxfcPUtRKR6Z
+	 iZCx9Mgua0UY4KmRq1Hmny6LUoHDMVV6Kjvi3NsKgStR2o8y/DV2oUwrUbHqZzO05Y
+	 jMnf/2mLtu1emkK7Jd59WA/u3dtIoXsyVi486Cqg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2ED8FF80165;
-	Sun, 13 Mar 2022 20:08:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 99562F80165;
+	Mon, 14 Mar 2022 01:10:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 79C44F80310; Sun, 13 Mar 2022 20:08:11 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 371A7F8011C
- for <alsa-devel@alsa-project.org>; Sun, 13 Mar 2022 20:08:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 371A7F8011C
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="dmNaUYla"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 28C47604F5;
- Sun, 13 Mar 2022 19:08:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8AA7C340E8;
- Sun, 13 Mar 2022 19:07:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1647198481;
- bh=S85F7ZrTXTrFfys0rJRseAMPLnZqh6VsxjYx3rCW0qE=;
- h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=dmNaUYlaZzqRi5HFPSpsaDKlblQ3p5MVwueWdtZ27nwr8sXgDKGi2zeY/AjXhia3r
- t3niMVPVw7ZMGjht2uPQpdIjDG4Xhh9RGBhkGpYYOvaUeyV1uyl7/Ooe5SRkYIpGeX
- nPRzgYBl7I9TulXE9lJimj0/y8WedW4Wi+roZ8v+CzAwespYPgVioTi8rInofHYnIy
- 491oP//dd5FdrR2OaOwIhThTPNfNsfaRZeZ3HQhK2GC9Kcx+ke0YN8MaSRvnFceHGK
- pt91NFQbpkfyZg/QEihqmYtQ09K3FaejAvhCvgIlhJQH+gCJk9QSEoxFWap65S3vAZ
- MpeygeZQ1qMyA==
-Date: Sun, 13 Mar 2022 20:07:55 +0100
-From: Mauro Carvalho Chehab <mchehab@kernel.org>
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH] media: Kconfig: cleanup VIDEO_DEV dependencies
-Message-ID: <20220313200755.0873537c@coco.lan>
-In-Reply-To: <Yi3ciCTbHrxYUatX@pendragon.ideasonboard.com>
-References: <42ae3d28d4d822f3e14db76b99f2f4c41688ae3e.1647155467.git.mchehab@kernel.org>
- <Yi3ciCTbHrxYUatX@pendragon.ideasonboard.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.31; x86_64-redhat-linux-gnu)
+ id 754D4F80310; Mon, 14 Mar 2022 01:10:57 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 9EBFCF8011C
+ for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2022 01:10:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9EBFCF8011C
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org,
- linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
- linux-input@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-media@vger.kernel.org
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1647216653874943972-webhooks-bot@alsa-project.org>
+References: <1647216653874943972-webhooks-bot@alsa-project.org>
+Subject: USB audio not detected with kernels 5.15.02 and 5.16.0;
+ snd_usb_audio and snd_usbmidi_lib not loaded.
+Message-Id: <20220314001057.754D4F80310@alsa1.perex.cz>
+Date: Mon, 14 Mar 2022 01:10:57 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,104 +56,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Em Sun, 13 Mar 2022 13:59:04 +0200
-Laurent Pinchart <laurent.pinchart@ideasonboard.com> escreveu:
+alsa-project/alsa-lib issue #216 was opened from stevesr0:
 
-> Hi Mauro,
-> 
-> Thank you for the patch.
-> 
-> Trimming the CC list to keep a few mailing lists only.
-> 
-> On Sun, Mar 13, 2022 at 08:12:05AM +0100, Mauro Carvalho Chehab wrote:
-> > media Kconfig has two entries associated to V4L API:
-> > VIDEO_DEV and VIDEO_V4L2.
-> > 
-> > On Kernel 2.6.x, there were two V4L APIs, each one with its own flag.
-> > VIDEO_DEV were meant to:
-> > 	1) enable Video4Linux and make its Kconfig options to appear;
-> > 	2) it makes the Kernel build the V4L core.
-> > 
-> > while VIDEO_V4L2 where used to distinguish between drivers that
-> > implement the newer API and drivers that implemented the former one.
-> > 
-> > With time, such meaning changed, specially after the removal of
-> > all V4L version 1 drivers.
-> > 
-> > At the current implementation, VIDEO_DEV only does (1): it enables
-> > the media options related to V4L, that now has:
-> > 
-> > 	menu "Video4Linux options"
-> > 		visible if VIDEO_DEV
-> > 
-> > 	source "drivers/media/v4l2-core/Kconfig"
-> > 	endmenu
-> > 
-> > but it doesn't affect anymore the V4L core drivers.
-> > 
-> > The rationale is that the V4L2 core has a "soft" dependency
-> > at the I2C bus, and now requires to select a number of other
-> > Kconfig options:
-> > 
-> > 	config VIDEO_V4L2
-> > 		tristate
-> > 		depends on (I2C || I2C=n) && VIDEO_DEV
-> > 		select RATIONAL
-> > 		select VIDEOBUF2_V4L2 if VIDEOBUF2_CORE
-> > 		default (I2C || I2C=n) && VIDEO_DEV
-> > 
-> > In the past, merging them would be tricky, but it seems that it is now
-> > possible to merge those symbols, in order to simplify V4L dependencies.
-> > 
-> > Let's keep VIDEO_DEV, as this one is used on some make *defconfig
-> > configurations.  
-> 
-> I would have gone for VIDEO_V4L2, but if it makes configuration changes
-> easier to handle, VIDEO_DEV is fine with me too.
+System running antiX linux Sid version (based on antiX-19).
 
-That was actually my first option ;-) VIDEO_V4L2 (or VIDEO_V4L) is a much
-better name. From my side, I'm fine either way.
+Using Pipewire on top of ALSA, both internal card and usb headset detected and play with kernel 5.10.88 (antiX nosystemd kernel).
 
-As a plus, using VIDEO_V4L2 would produce a much smaller patch that won't be
-rejected by some ML servers, but maybe it would require distros and people 
-who have their own .config files stored somewhere to re-configure their
-Kernels.
+With Debian 5.15.5 and 5.16.0 kernels, the usb card is not noted in aplay -l or with /proc/asound/cards.
 
-> [snip]
-> 
-> > diff --git a/drivers/media/pci/tw5864/Kconfig b/drivers/media/pci/tw5864/Kconfig
-> > index d376d4ed65b9..0a0f3191f238 100644
-> > --- a/drivers/media/pci/tw5864/Kconfig
-> > +++ b/drivers/media/pci/tw5864/Kconfig
-> > @@ -1,7 +1,7 @@
-> >  # SPDX-License-Identifier: GPL-2.0-only
-> >  config VIDEO_TW5864
-> >  	tristate "Techwell TW5864 video/audio grabber and encoder"
-> > -	depends on VIDEO_DEV && PCI && VIDEO_V4L2
-> > +	depends on VIDEO_DEV && PCI && VIDEO_DEV  
-> 
-> You can drop the second VIDEO_DEV.
-> 
-> >  	select VIDEOBUF2_DMA_CONTIG
-> >  	help
-> >  	  Support for boards based on Techwell TW5864 chip which provides
-> > diff --git a/drivers/media/pci/tw68/Kconfig b/drivers/media/pci/tw68/Kconfig
-> > index af0cb60337bb..ef29be7db493 100644
-> > --- a/drivers/media/pci/tw68/Kconfig
-> > +++ b/drivers/media/pci/tw68/Kconfig
-> > @@ -1,7 +1,7 @@
-> >  # SPDX-License-Identifier: GPL-2.0-only
-> >  config VIDEO_TW68
-> >  	tristate "Techwell tw68x Video For Linux"
-> > -	depends on VIDEO_DEV && PCI && VIDEO_V4L2
-> > +	depends on VIDEO_DEV && PCI && VIDEO_DEV  
-> 
-> Here too.
-> 
-> Apart from that, the patch looks good to me.
-> 
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Comparison of loaded modules for working kernel and non working kernel: 
+      --Working kernel has both snd_usb_audio and snd_usbmidi_lib loaded.
+      --Non working kernel has NEITHER of these.  Instead usbcore and usb_common are loaded.
 
-Thanks!
+I am seeking advice about fixing the nonworking kernels.  Not sure if this is a bug in the kernels, but both nonworking kernels have identical outputs in /proc/asound/cards and pactl list cards.
 
-Mauro
+Thanks.
+
+Happy to provide files as suggested; not sure what data would be useful.
+
+Steve Rinsler
+
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/216
+Repository URL: https://github.com/alsa-project/alsa-lib
