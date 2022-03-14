@@ -4,65 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC108C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Mar 2022 20:11:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30B13C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Mar 2022 20:11:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 32B8C18C5;
-	Mon, 14 Mar 2022 21:10:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32B8C18C5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 756A418CC;
+	Mon, 14 Mar 2022 21:10:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 756A418CC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647288660;
-	bh=w3S9W6gWT3L+wropLpgQA8Tcj43Qg57AAWLS9JoRIAc=;
+	s=default; t=1647288670;
+	bh=YqBw2e1h0zdtpzGSw1IPJ/rOT/2dwUW7NYgdmzDgSfE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jKTIyunZNuhAtk3WzUBm/36KtHGfpgAIVa8dGADilcQ17Dok/tfMI6XU6S6OSZAA0
-	 8yZMtSpgK0Ata/vWs44bPqT/Xza630h5s2jPdyihMRI8X2/8pH0aAlLNQfnTVNFLJ6
-	 3Bu7N380lQ/opVtPTWEg3uBU6ntgzfuR8tzSZo3I=
+	b=Ou0qqDRcSs7alEIxgVNQXOs4XifYcgt5xmHIB7bp5g+HSb7qJ7YhMUNiudAMzA1T2
+	 c3Q2pi9XY42SizAUiYNr6Vpmiqm1pHXeSfhb5NhiPMkLDDAT+VeiMx1SekNLqtTbuz
+	 Hc8JeUvWjuRx3QPYqzaZXxTtPefbBG9eoToA9GvQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C924BF805A0;
-	Mon, 14 Mar 2022 21:06:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 40730F805A8;
+	Mon, 14 Mar 2022 21:06:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6B977F8053E; Mon, 14 Mar 2022 21:06:01 +0100 (CET)
+ id CFC97F80553; Mon, 14 Mar 2022 21:06:03 +0100 (CET)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2ED3FF80528
+ by alsa1.perex.cz (Postfix) with ESMTPS id BA23AF80475
  for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2022 21:05:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2ED3FF80528
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA23AF80475
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="HqO69I53"
+ header.b="Lu0RCkDN"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1647288349; x=1678824349;
+ t=1647288350; x=1678824350;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=w3S9W6gWT3L+wropLpgQA8Tcj43Qg57AAWLS9JoRIAc=;
- b=HqO69I53vh0MZdKarBKf+P5LGHq/hZrCwyej+oXuq5/jjXeN1mH38iVa
- UsMFWvWrKb+5We2RWZzME4DnKFWZ5h1QGll/C6VQGpnwjPC0q42b/+joT
- qJpgNrxPwLOV9tH1Y2GVt9n8eQDn2s8E0Zi+PHWO7sWjij7JLLV053df+
- qWXYGRXYBc6CFC241krNrr83PWa3WZ4/i1ymJCqYkHA37MWboaWVNMYo1
- pnejlRd0IOU3GB7btEn8A6Eu6IJ4FE1tpbT0OhxgZ/dS3ZsWwi6vb7XE3
- TPVMAL24Dgh75I8dq988zZakANFcBEcCGDb3aDFnJe4hokMrGPBbMG9wy Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10286"; a="342563479"
-X-IronPort-AV: E=Sophos;i="5.90,181,1643702400"; d="scan'208";a="342563479"
+ bh=YqBw2e1h0zdtpzGSw1IPJ/rOT/2dwUW7NYgdmzDgSfE=;
+ b=Lu0RCkDNUJtO7xfT/U+GKnFq51Kx9zcevTzPoMPZDd/ICRY+PDUDUgKT
+ Wcuov4hOTTPFkYrqbNbC5+suM6buWoDlMiJdE/0Cd3Q96lrjkeT/SUIA1
+ xF75llm3EkVf6aVxSaJi0sKRZXXqt+4SqvvJtgcQrPKqKVpqvnQHWI1DH
+ BbKoPKUmMoA4vO9heHWIaBIIoyOP1wSxMC13CVzM6xIDECPHVFBPi+sCn
+ /Vmy2DILgoLTXLjONOzW3niV8FA4SiQV8yyqb7OQOuJLVZPAbXDFCyH3A
+ Ofdxd1EwNdnL+axb+t+DTFQoLSXORpf1624Ns6NI264mRT++P6THj6sE8 g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10286"; a="342563482"
+X-IronPort-AV: E=Sophos;i="5.90,181,1643702400"; d="scan'208";a="342563482"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Mar 2022 13:05:33 -0700
-X-IronPort-AV: E=Sophos;i="5.90,181,1643702400"; d="scan'208";a="634339899"
+ 14 Mar 2022 13:05:34 -0700
+X-IronPort-AV: E=Sophos;i="5.90,181,1643702400"; d="scan'208";a="634339902"
 Received: from pmishr1-mobl1.amr.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.254.25.117])
  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  14 Mar 2022 13:05:33 -0700
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 12/18] ASoC: SOF: topology: Make siggen widget parsing IPC
- agnostic
-Date: Mon, 14 Mar 2022 13:05:14 -0700
-Message-Id: <20220314200520.1233427-14-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 14/18] ASoC: SOF: topology: Make route setup IPC agnostic
+Date: Mon, 14 Mar 2022 13:05:16 -0700
+Message-Id: <20220314200520.1233427-16-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220314200520.1233427-1-ranjani.sridharan@linux.intel.com>
 References: <20220314200520.1233427-1-ranjani.sridharan@linux.intel.com>
@@ -89,163 +88,149 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Define the list of tokens pertaining to the siggen widgets, parse and
-save them as part of the swidget tuples array. Once topology parsing is
-complete, these tokens will be applied to create the IPC structure for the
-tone component based on the topology widget_setup op in ipc3_tplg_ops.
+Define and set the route_setup op for IPC3 topology ops and use it for
+setting up routes.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/ipc3-topology.c | 36 +++++++++++++++++++++
- sound/soc/sof/topology.c      | 60 +----------------------------------
- 2 files changed, 37 insertions(+), 59 deletions(-)
+ sound/soc/sof/ipc3-topology.c | 26 +++++++++++++++++++
+ sound/soc/sof/sof-audio.c     | 48 ++++++++++-------------------------
+ 2 files changed, 40 insertions(+), 34 deletions(-)
 
 diff --git a/sound/soc/sof/ipc3-topology.c b/sound/soc/sof/ipc3-topology.c
-index 7dc6530efdba..6fef96fee5f2 100644
+index b710129374c8..a9d55c1d1f84 100644
 --- a/sound/soc/sof/ipc3-topology.c
 +++ b/sound/soc/sof/ipc3-topology.c
-@@ -212,6 +212,39 @@ static void sof_ipc3_widget_free_comp(struct snd_sof_widget *swidget)
- 	kfree(swidget->private);
+@@ -797,6 +797,31 @@ static int sof_widget_update_ipc_comp_process(struct snd_sof_widget *swidget)
+ 	return sof_process_load(scomp, swidget, find_process_comp_type(config.type));
  }
  
-+static int sof_ipc3_widget_setup_comp_tone(struct snd_sof_widget *swidget)
++static int sof_ipc3_route_setup(struct snd_sof_dev *sdev, struct snd_sof_route *sroute)
 +{
-+	struct snd_soc_component *scomp = swidget->scomp;
-+	struct sof_ipc_comp_tone *tone;
-+	size_t ipc_size = sizeof(*tone);
++	struct sof_ipc_pipe_comp_connect connect;
++	struct sof_ipc_reply reply;
 +	int ret;
 +
-+	tone = sof_comp_alloc(swidget, &ipc_size, swidget->pipeline_id);
-+	if (!tone)
-+		return -ENOMEM;
++	connect.hdr.size = sizeof(connect);
++	connect.hdr.cmd = SOF_IPC_GLB_TPLG_MSG | SOF_IPC_TPLG_COMP_CONNECT;
++	connect.source_id = sroute->src_widget->comp_id;
++	connect.sink_id = sroute->sink_widget->comp_id;
 +
-+	swidget->private = tone;
++	dev_dbg(sdev->dev, "setting up route %s -> %s\n",
++		sroute->src_widget->widget->name,
++		sroute->sink_widget->widget->name);
 +
-+	/* configure siggen IPC message */
-+	tone->comp.type = SOF_COMP_TONE;
-+	tone->config.hdr.size = sizeof(tone->config);
++	/* send ipc */
++	ret = sof_ipc_tx_message(sdev->ipc, connect.hdr.cmd, &connect, sizeof(connect),
++				 &reply, sizeof(reply));
++	if (ret < 0)
++		dev_err(sdev->dev, "%s: route %s -> %s failed\n", __func__,
++			sroute->src_widget->widget->name, sroute->sink_widget->widget->name);
 +
-+	/* parse one set of comp tokens */
-+	ret = sof_update_ipc_object(scomp, &tone->config, SOF_COMP_TOKENS, swidget->tuples,
-+				    swidget->num_tuples, sizeof(tone->config), 1);
-+	if (ret < 0) {
-+		kfree(swidget->private);
-+		swidget->private = NULL;
-+		return ret;
-+	}
-+
-+	dev_dbg(scomp->dev, "tone %s: frequency %d amplitude %d\n",
-+		swidget->widget->name, tone->frequency, tone->amplitude);
-+	sof_dbg_comp_config(scomp, &tone->config);
-+
-+	return 0;
++	return ret;
 +}
 +
- static int sof_ipc3_widget_setup_comp_mixer(struct snd_sof_widget *swidget)
- {
- 	struct snd_soc_component *scomp = swidget->scomp;
-@@ -585,6 +618,9 @@ static const struct sof_ipc_tplg_widget_ops tplg_ipc3_widget_ops[SND_SOC_DAPM_TY
- 			      src_token_list, ARRAY_SIZE(src_token_list), NULL},
- 	[snd_soc_dapm_asrc] = {sof_ipc3_widget_setup_comp_asrc, sof_ipc3_widget_free_comp,
- 			       asrc_token_list, ARRAY_SIZE(asrc_token_list), NULL},
-+	[snd_soc_dapm_siggen] = {sof_ipc3_widget_setup_comp_tone, sof_ipc3_widget_free_comp,
-+				 comp_generic_token_list, ARRAY_SIZE(comp_generic_token_list),
-+				 NULL},
- 	[snd_soc_dapm_scheduler] = {sof_ipc3_widget_setup_comp_pipeline, sof_ipc3_widget_free_comp,
- 				    pipeline_token_list, ARRAY_SIZE(pipeline_token_list), NULL},
- 	[snd_soc_dapm_pga] = {sof_ipc3_widget_setup_comp_pga, sof_ipc3_widget_free_comp,
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index 94449ed370af..f5b25ffee5b7 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -629,10 +629,6 @@ static const struct sof_topology_token dai_link_tokens[] = {
- 		offsetof(struct sof_ipc_dai_config, dai_index)},
+ /* token list for each topology object */
+ static enum sof_tokens host_token_list[] = {
+ 	SOF_CORE_TOKENS,
+@@ -882,6 +907,7 @@ static const struct sof_ipc_tplg_widget_ops tplg_ipc3_widget_ops[SND_SOC_DAPM_TY
+ 
+ static const struct sof_ipc_tplg_ops ipc3_tplg_ops = {
+ 	.widget = tplg_ipc3_widget_ops,
++	.route_setup = sof_ipc3_route_setup,
+ 	.token_list = ipc3_token_list,
  };
  
--/* Tone */
--static const struct sof_topology_token tone_tokens[] = {
--};
--
- /* EFFECT */
- static const struct sof_topology_token process_tokens[] = {
- 	{SOF_TKN_PROCESS_TYPE, SND_SOC_TPLG_TUPLE_TYPE_STRING,
-@@ -1770,58 +1766,6 @@ static int sof_widget_parse_tokens(struct snd_soc_component *scomp, struct snd_s
- 	return ret;
+diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
+index 15c36a51f89f..c02dcad03b23 100644
+--- a/sound/soc/sof/sof-audio.c
++++ b/sound/soc/sof/sof-audio.c
+@@ -263,45 +263,15 @@ int sof_widget_setup(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget)
  }
+ EXPORT_SYMBOL(sof_widget_setup);
  
--/*
-- * Signal Generator Topology
-- */
--
--static int sof_widget_load_siggen(struct snd_soc_component *scomp, int index,
--				  struct snd_sof_widget *swidget,
--				  struct snd_soc_tplg_dapm_widget *tw)
+-static int sof_route_setup_ipc(struct snd_sof_dev *sdev, struct snd_sof_route *sroute)
 -{
--	struct snd_soc_tplg_private *private = &tw->priv;
--	struct sof_ipc_comp_tone *tone;
--	size_t ipc_size = sizeof(*tone);
+-	struct sof_ipc_pipe_comp_connect connect;
+-	struct sof_ipc_reply reply;
 -	int ret;
 -
--	tone = (struct sof_ipc_comp_tone *)
--	       sof_comp_alloc(swidget, &ipc_size, index);
--	if (!tone)
--		return -ENOMEM;
+-	/* nothing to do if route is already set up */
+-	if (sroute->setup)
+-		return 0;
 -
--	/* configure siggen IPC message */
--	tone->comp.type = SOF_COMP_TONE;
--	tone->config.hdr.size = sizeof(tone->config);
+-	connect.hdr.size = sizeof(connect);
+-	connect.hdr.cmd = SOF_IPC_GLB_TPLG_MSG | SOF_IPC_TPLG_COMP_CONNECT;
+-	connect.source_id = sroute->src_widget->comp_id;
+-	connect.sink_id = sroute->sink_widget->comp_id;
 -
--	ret = sof_parse_tokens(scomp, tone, tone_tokens,
--			       ARRAY_SIZE(tone_tokens), private->array,
--			       le32_to_cpu(private->size));
--	if (ret != 0) {
--		dev_err(scomp->dev, "error: parse tone tokens failed %d\n",
--			le32_to_cpu(private->size));
--		goto err;
+-	dev_dbg(sdev->dev, "setting up route %s -> %s\n",
+-		sroute->src_widget->widget->name,
+-		sroute->sink_widget->widget->name);
+-
+-	/* send ipc */
+-	ret = sof_ipc_tx_message(sdev->ipc, connect.hdr.cmd, &connect, sizeof(connect),
+-				 &reply, sizeof(reply));
+-	if (ret < 0) {
+-		dev_err(sdev->dev, "%s: route setup failed %d\n", __func__, ret);
+-		return ret;
 -	}
 -
--	ret = sof_parse_tokens(scomp, &tone->config, comp_tokens,
--			       ARRAY_SIZE(comp_tokens), private->array,
--			       le32_to_cpu(private->size));
--	if (ret != 0) {
--		dev_err(scomp->dev, "error: parse tone.cfg tokens failed %d\n",
--			le32_to_cpu(private->size));
--		goto err;
--	}
--
--	dev_dbg(scomp->dev, "tone %s: frequency %d amplitude %d\n",
--		swidget->widget->name, tone->frequency, tone->amplitude);
--	sof_dbg_comp_config(scomp, &tone->config);
--
--	swidget->private = tone;
+-	sroute->setup = true;
 -
 -	return 0;
--err:
--	kfree(tone);
--	return ret;
 -}
 -
- static int sof_get_control_data(struct snd_soc_component *scomp,
- 				struct snd_soc_dapm_widget *widget,
- 				struct sof_widget_data *wdata,
-@@ -2152,13 +2096,11 @@ static int sof_widget_ready(struct snd_soc_component *scomp, int index,
- 	case snd_soc_dapm_aif_in:
- 	case snd_soc_dapm_src:
- 	case snd_soc_dapm_asrc:
-+	case snd_soc_dapm_siggen:
- 	case snd_soc_dapm_mux:
- 	case snd_soc_dapm_demux:
- 		ret = sof_widget_parse_tokens(scomp, swidget, tw,  token_list, token_list_size);
- 		break;
--	case snd_soc_dapm_siggen:
--		ret = sof_widget_load_siggen(scomp, index, swidget, tw);
--		break;
- 	case snd_soc_dapm_effect:
- 		ret = sof_widget_load_process(scomp, index, swidget, tw);
- 		break;
+ static int sof_route_setup(struct snd_sof_dev *sdev, struct snd_soc_dapm_widget *wsource,
+ 			   struct snd_soc_dapm_widget *wsink)
+ {
++	const struct sof_ipc_tplg_ops *ipc_tplg_ops = sdev->ipc->ops->tplg;
+ 	struct snd_sof_widget *src_widget = wsource->dobj.private;
+ 	struct snd_sof_widget *sink_widget = wsink->dobj.private;
+ 	struct snd_sof_route *sroute;
+ 	bool route_found = false;
++	int ret;
+ 
+ 	/* ignore routes involving virtual widgets in topology */
+ 	switch (src_widget->id) {
+@@ -335,7 +305,16 @@ static int sof_route_setup(struct snd_sof_dev *sdev, struct snd_soc_dapm_widget
+ 		return -EINVAL;
+ 	}
+ 
+-	return sof_route_setup_ipc(sdev, sroute);
++	/* nothing to do if route is already set up */
++	if (sroute->setup)
++		return 0;
++
++	ret = ipc_tplg_ops->route_setup(sdev, sroute);
++	if (ret < 0)
++		return ret;
++
++	sroute->setup = true;
++	return 0;
+ }
+ 
+ static int sof_setup_pipeline_connections(struct snd_sof_dev *sdev,
+@@ -604,6 +583,7 @@ int sof_set_hw_params_upon_resume(struct device *dev)
+ 
+ int sof_set_up_pipelines(struct snd_sof_dev *sdev, bool verify)
+ {
++	const struct sof_ipc_tplg_ops *ipc_tplg_ops = sdev->ipc->ops->tplg;
+ 	struct sof_ipc_fw_version *v = &sdev->fw_ready.version;
+ 	struct snd_sof_widget *swidget;
+ 	struct snd_sof_route *sroute;
+@@ -656,7 +636,7 @@ int sof_set_up_pipelines(struct snd_sof_dev *sdev, bool verify)
+ 				sroute->sink_widget->dynamic_pipeline_widget))
+ 			continue;
+ 
+-		ret = sof_route_setup_ipc(sdev, sroute);
++		ret = ipc_tplg_ops->route_setup(sdev, sroute);
+ 		if (ret < 0) {
+ 			dev_err(sdev->dev, "%s: restore pipeline connections failed\n", __func__);
+ 			return ret;
 -- 
 2.25.1
 
