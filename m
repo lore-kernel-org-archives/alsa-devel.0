@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38E5AC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Mar 2022 20:08:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00297C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Mar 2022 20:08:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7720F176C;
-	Mon, 14 Mar 2022 21:07:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7720F176C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3DE021845;
+	Mon, 14 Mar 2022 21:08:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3DE021845
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647288511;
-	bh=US4rwkr+I2e0yF2bgNFrnpAGavSAAIg7krwfslCO3ko=;
+	s=default; t=1647288537;
+	bh=MF/NrejJ9f0K+Zj2qwVH2Hg8IO/qPb32lo2W44pYOtE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=aYe1RblRc7FNDnWpd5FXfitH11PdZ+6+VBI5p6ccvxjeIXFBfHvNlHe7AuI8pIy2B
-	 UPAYl/x+fb/jeszApbNOrooxxoRdEc/OY0xfea+iPaSIX5tB28YxvrwWLciz3MWMrC
-	 dCLLsWghEML6PW4gtFd45/Ko4BYkOCFi1BdqQ6bM=
+	b=IWgCaHuEnZbnfiHAXaZZehUXdt4WmA9GzuFePM+YlGlZMTh2CNO0a7zdsIYoIQQoa
+	 n8x1Mz+z4A7DadwOB4yauwucyVosuCrQGWk+rRPSMJa/nfTaCICJkh1ggQPxpYM6AK
+	 duQUxpyQcYqhbnKhqW+s5FSOta3nPqbpnbzofDJs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5C715F80538;
-	Mon, 14 Mar 2022 21:05:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 000C3F80528;
+	Mon, 14 Mar 2022 21:06:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BE8C6F80529; Mon, 14 Mar 2022 21:05:50 +0100 (CET)
+ id 61FA7F80533; Mon, 14 Mar 2022 21:05:52 +0100 (CET)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6F9D6F80516
- for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2022 21:05:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F9D6F80516
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1097BF8012C
+ for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2022 21:05:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1097BF8012C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="I520NWmo"
+ header.b="FMUFdEMW"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1647288343; x=1678824343;
+ t=1647288345; x=1678824345;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=US4rwkr+I2e0yF2bgNFrnpAGavSAAIg7krwfslCO3ko=;
- b=I520NWmo19198/a3pX9tTWjfnxMaYaqTGsdOPtpndqVxtoMYtMJyScVy
- ZkmNbjZatWSE9OulO63BKjyQ2N4Gm38R0BKvTbnjLc3KfL8rL6DA1CHy/
- UVy2RrzxfvEDY0CN9n4Zk0qzIXbAxrzdwzi8CqNMFWAkloCl7AJbR7863
- 0eeeBMprbhngSB/duozL3RjJClaOlRoPtZRWEQId8rPOYJ2dSy6uIciZp
- 9tXfqxvMFGrarjjDhWKaKyGDCsIc4mSQvpymwCu1dbjzN9kTgJAOfKiLm
- ynmY8E3/TXO3AlHgUiN8uIIdUwQ/lU2x9WIkYnIW2WcDIEWL7lpeGhXLG g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10286"; a="342563472"
-X-IronPort-AV: E=Sophos;i="5.90,181,1643702400"; d="scan'208";a="342563472"
+ bh=MF/NrejJ9f0K+Zj2qwVH2Hg8IO/qPb32lo2W44pYOtE=;
+ b=FMUFdEMWY6UOakuYYxHjw8hLclHIx5ko99f1yw0QFThg+FvO+UGqrH1P
+ YegjbRdtk+RfLsRBOQd3ACUYVEB9W/qRVplcYjktQBi/7EBRQaxYaML6M
+ a4V1l8SyLsX7Kh0vjLd/1d+JLYyXf1cyHjTuhgINMgPMh1Tr3ovgakmkB
+ B+ewcBvs+LPxZCN5Mh41fyM+jg8A0g3xUilGnjvVNP8ZOvFPKT8E9OJ5q
+ AB9hZ6sZY9BkX2wJbBalwR6XZy4PIGCyXK1NxmQoQGZ+LL9LeV9HkJ2qJ
+ ZG+UV3Q3oDp/wy96nU0YiKCjF+1q8q42q2OM3xLA6fyIZ5yQ9Dx86lAu+ g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10286"; a="342563474"
+X-IronPort-AV: E=Sophos;i="5.90,181,1643702400"; d="scan'208";a="342563474"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Mar 2022 13:05:32 -0700
-X-IronPort-AV: E=Sophos;i="5.90,181,1643702400"; d="scan'208";a="634339890"
+ 14 Mar 2022 13:05:33 -0700
+X-IronPort-AV: E=Sophos;i="5.90,181,1643702400"; d="scan'208";a="634339894"
 Received: from pmishr1-mobl1.amr.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.254.25.117])
  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Mar 2022 13:05:32 -0700
+ 14 Mar 2022 13:05:33 -0700
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 05/18] ASoC: SOF: topology: Make scheduler widget parsing IPC
+Subject: [PATCH 07/18] ASoC: SOF: topology: Make pga widget parsing IPC
  agnostic
-Date: Mon, 14 Mar 2022 13:05:07 -0700
-Message-Id: <20220314200520.1233427-7-ranjani.sridharan@linux.intel.com>
+Date: Mon, 14 Mar 2022 13:05:09 -0700
+Message-Id: <20220314200520.1233427-9-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220314200520.1233427-1-ranjani.sridharan@linux.intel.com>
 References: <20220314200520.1233427-1-ranjani.sridharan@linux.intel.com>
@@ -89,124 +89,104 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Define the list of tokens pertaining to the scheduler widgets, parse and
+Define the list of tokens pertaining to the pga type widgets, parse and
 save them as part of the swidget tuples array. Once topology parsing is
 complete, these tokens will be applied to create the IPC structure for the
-pipeline component based on the topology widget_setup op in ipc3_tplg_ops.
+pga component based on the topology widget_setup op in ipc3_tplg_ops.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/ipc3-topology.c | 98 ++++++++++++++++++++++++++++++++++
- sound/soc/sof/topology.c      | 99 -----------------------------------
- 2 files changed, 98 insertions(+), 99 deletions(-)
+ sound/soc/sof/ipc3-topology.c | 78 ++++++++++++++++++++++++++++++
+ sound/soc/sof/topology.c      | 91 +++--------------------------------
+ 2 files changed, 86 insertions(+), 83 deletions(-)
 
 diff --git a/sound/soc/sof/ipc3-topology.c b/sound/soc/sof/ipc3-topology.c
-index 33d07b0df640..15299ffb7b15 100644
+index e05d6b816fac..517ba84eb4c4 100644
 --- a/sound/soc/sof/ipc3-topology.c
 +++ b/sound/soc/sof/ipc3-topology.c
-@@ -13,6 +13,28 @@
- #include "sof-audio.h"
- #include "ops.h"
+@@ -43,6 +43,14 @@ static const struct sof_topology_token pipeline_tokens[] = {
  
-+/* scheduling */
-+static const struct sof_topology_token sched_tokens[] = {
-+	{SOF_TKN_SCHED_PERIOD, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
-+		offsetof(struct sof_ipc_pipe_new, period)},
-+	{SOF_TKN_SCHED_PRIORITY, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
-+		offsetof(struct sof_ipc_pipe_new, priority)},
-+	{SOF_TKN_SCHED_MIPS, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
-+		offsetof(struct sof_ipc_pipe_new, period_mips)},
-+	{SOF_TKN_SCHED_CORE, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
-+		offsetof(struct sof_ipc_pipe_new, core)},
-+	{SOF_TKN_SCHED_FRAMES, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
-+		offsetof(struct sof_ipc_pipe_new, frames_per_sched)},
-+	{SOF_TKN_SCHED_TIME_DOMAIN, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
-+		offsetof(struct sof_ipc_pipe_new, time_domain)},
-+};
-+
-+static const struct sof_topology_token pipeline_tokens[] = {
-+	{SOF_TKN_SCHED_DYNAMIC_PIPELINE, SND_SOC_TPLG_TUPLE_TYPE_BOOL, get_token_u16,
-+		offsetof(struct snd_sof_widget, dynamic_pipeline_widget)},
-+
+ };
+ 
++/* volume */
++static const struct sof_topology_token volume_tokens[] = {
++	{SOF_TKN_VOLUME_RAMP_STEP_TYPE, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
++		offsetof(struct sof_ipc_comp_volume, ramp)},
++	{SOF_TKN_VOLUME_RAMP_STEP_MS, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
++		offsetof(struct sof_ipc_comp_volume, initial_ramp)},
 +};
 +
  /* PCM */
  static const struct sof_topology_token pcm_tokens[] = {
  	{SOF_TKN_PCM_DMAC_CONFIG, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
-@@ -44,6 +66,8 @@ static const struct sof_topology_token comp_ext_tokens[] = {
- 
- static const struct sof_token_info ipc3_token_list[SOF_TOKEN_COUNT] = {
- 	[SOF_PCM_TOKENS] = {"PCM tokens", pcm_tokens, ARRAY_SIZE(pcm_tokens)},
-+	[SOF_PIPELINE_TOKENS] = {"Pipeline tokens", pipeline_tokens, ARRAY_SIZE(pipeline_tokens)},
-+	[SOF_SCHED_TOKENS] = {"Scheduler tokens", sched_tokens, ARRAY_SIZE(sched_tokens)},
- 	[SOF_COMP_TOKENS] = {"Comp tokens", comp_tokens, ARRAY_SIZE(comp_tokens)},
+@@ -80,6 +88,7 @@ static const struct sof_token_info ipc3_token_list[SOF_TOKEN_COUNT] = {
  	[SOF_CORE_TOKENS] = {"Core tokens", core_tokens, ARRAY_SIZE(core_tokens)},
  	[SOF_COMP_EXT_TOKENS] = {"AFE tokens", comp_ext_tokens, ARRAY_SIZE(comp_ext_tokens)},
-@@ -148,6 +172,71 @@ static void sof_ipc3_widget_free_comp(struct snd_sof_widget *swidget)
- 	kfree(swidget->private);
+ 	[SOF_BUFFER_TOKENS] = {"Buffer tokens", buffer_tokens, ARRAY_SIZE(buffer_tokens)},
++	[SOF_VOLUME_TOKENS] = {"Volume tokens", volume_tokens, ARRAY_SIZE(volume_tokens)},
+ };
+ 
+ /**
+@@ -281,6 +290,66 @@ static int sof_ipc3_widget_setup_comp_buffer(struct snd_sof_widget *swidget)
+ 	return 0;
  }
  
-+static int sof_ipc3_widget_setup_comp_pipeline(struct snd_sof_widget *swidget)
++/*
++ * PGA Topology
++ */
++
++static int sof_ipc3_widget_setup_comp_pga(struct snd_sof_widget *swidget)
 +{
 +	struct snd_soc_component *scomp = swidget->scomp;
-+	struct sof_ipc_pipe_new *pipeline;
-+	struct snd_sof_widget *comp_swidget;
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	struct sof_ipc_comp_volume *volume;
++	struct snd_sof_control *scontrol;
++	size_t ipc_size = sizeof(*volume);
++	int min_step, max_step;
 +	int ret;
 +
-+	pipeline = kzalloc(sizeof(*pipeline), GFP_KERNEL);
-+	if (!pipeline)
++	volume = sof_comp_alloc(swidget, &ipc_size, swidget->pipeline_id);
++	if (!volume)
 +		return -ENOMEM;
 +
-+	/* configure pipeline IPC message */
-+	pipeline->hdr.size = sizeof(*pipeline);
-+	pipeline->hdr.cmd = SOF_IPC_GLB_TPLG_MSG | SOF_IPC_TPLG_PIPE_NEW;
-+	pipeline->pipeline_id = swidget->pipeline_id;
-+	pipeline->comp_id = swidget->comp_id;
++	swidget->private = volume;
 +
-+	swidget->private = pipeline;
++	/* configure volume IPC message */
++	volume->comp.type = SOF_COMP_VOLUME;
++	volume->config.hdr.size = sizeof(volume->config);
 +
-+	/* component at start of pipeline is our stream id */
-+	comp_swidget = snd_sof_find_swidget(scomp, swidget->widget->sname);
-+	if (!comp_swidget) {
-+		dev_err(scomp->dev, "scheduler %s refers to non existent widget %s\n",
-+			swidget->widget->name, swidget->widget->sname);
-+		ret = -EINVAL;
++	/* parse one set of volume tokens */
++	ret = sof_update_ipc_object(scomp, volume, SOF_VOLUME_TOKENS, swidget->tuples,
++				    swidget->num_tuples, sizeof(*volume), 1);
++	if (ret < 0)
 +		goto err;
++
++	/* parse one set of comp tokens */
++	ret = sof_update_ipc_object(scomp, &volume->config, SOF_COMP_TOKENS,
++				    swidget->tuples, swidget->num_tuples,
++				    sizeof(volume->config), 1);
++	if (ret < 0)
++		goto err;
++
++	dev_dbg(scomp->dev, "loaded PGA %s\n", swidget->widget->name);
++	sof_dbg_comp_config(scomp, &volume->config);
++
++	list_for_each_entry(scontrol, &sdev->kcontrol_list, list) {
++		if (scontrol->comp_id == swidget->comp_id &&
++		    scontrol->volume_table) {
++			min_step = scontrol->min_volume_step;
++			max_step = scontrol->max_volume_step;
++			volume->min_value = scontrol->volume_table[min_step];
++			volume->max_value = scontrol->volume_table[max_step];
++			volume->channels = scontrol->num_channels;
++			break;
++		}
 +	}
 +
-+	pipeline->sched_id = comp_swidget->comp_id;
-+
-+	/* parse one set of scheduler tokens */
-+	ret = sof_update_ipc_object(scomp, pipeline, SOF_SCHED_TOKENS, swidget->tuples,
-+				    swidget->num_tuples, sizeof(*pipeline), 1);
-+	if (ret < 0)
-+		goto err;
-+
-+	/* parse one set of pipeline tokens */
-+	ret = sof_update_ipc_object(scomp, swidget, SOF_PIPELINE_TOKENS, swidget->tuples,
-+				    swidget->num_tuples, sizeof(*swidget), 1);
-+	if (ret < 0)
-+		goto err;
-+
-+	if (sof_debug_check_flag(SOF_DBG_DISABLE_MULTICORE))
-+		pipeline->core = SOF_DSP_PRIMARY_CORE;
-+
-+	if (sof_debug_check_flag(SOF_DBG_DYNAMIC_PIPELINES_OVERRIDE))
-+		swidget->dynamic_pipeline_widget =
-+			sof_debug_check_flag(SOF_DBG_DYNAMIC_PIPELINES_ENABLE);
-+
-+	dev_dbg(scomp->dev, "pipeline %s: period %d pri %d mips %d core %d frames %d dynamic %d\n",
-+		swidget->widget->name, pipeline->period, pipeline->priority,
-+		pipeline->period_mips, pipeline->core, pipeline->frames_per_sched,
-+		swidget->dynamic_pipeline_widget);
-+
-+	swidget->core = pipeline->core;
-+
 +	return 0;
-+
 +err:
 +	kfree(swidget->private);
 +	swidget->private = NULL;
@@ -217,151 +197,145 @@ index 33d07b0df640..15299ffb7b15 100644
  /* token list for each topology object */
  static enum sof_tokens host_token_list[] = {
  	SOF_CORE_TOKENS,
-@@ -156,11 +245,20 @@ static enum sof_tokens host_token_list[] = {
- 	SOF_COMP_TOKENS,
+@@ -300,6 +369,13 @@ static enum sof_tokens pipeline_token_list[] = {
+ 	SOF_SCHED_TOKENS,
  };
  
-+static enum sof_tokens pipeline_token_list[] = {
++static enum sof_tokens pga_token_list[] = {
 +	SOF_CORE_TOKENS,
 +	SOF_COMP_EXT_TOKENS,
-+	SOF_PIPELINE_TOKENS,
-+	SOF_SCHED_TOKENS,
++	SOF_VOLUME_TOKENS,
++	SOF_COMP_TOKENS,
 +};
 +
  static const struct sof_ipc_tplg_widget_ops tplg_ipc3_widget_ops[SND_SOC_DAPM_TYPE_COUNT] = {
  	[snd_soc_dapm_aif_in] =  {sof_ipc3_widget_setup_comp_host, sof_ipc3_widget_free_comp,
  				  host_token_list, ARRAY_SIZE(host_token_list), NULL},
- 	[snd_soc_dapm_aif_out] = {sof_ipc3_widget_setup_comp_host, sof_ipc3_widget_free_comp,
- 				  host_token_list, ARRAY_SIZE(host_token_list), NULL},
-+	[snd_soc_dapm_scheduler] = {sof_ipc3_widget_setup_comp_pipeline, sof_ipc3_widget_free_comp,
-+				    pipeline_token_list, ARRAY_SIZE(pipeline_token_list), NULL},
+@@ -309,6 +385,8 @@ static const struct sof_ipc_tplg_widget_ops tplg_ipc3_widget_ops[SND_SOC_DAPM_TY
+ 				 buffer_token_list, ARRAY_SIZE(buffer_token_list), NULL},
+ 	[snd_soc_dapm_scheduler] = {sof_ipc3_widget_setup_comp_pipeline, sof_ipc3_widget_free_comp,
+ 				    pipeline_token_list, ARRAY_SIZE(pipeline_token_list), NULL},
++	[snd_soc_dapm_pga] = {sof_ipc3_widget_setup_comp_pga, sof_ipc3_widget_free_comp,
++			      pga_token_list, ARRAY_SIZE(pga_token_list), NULL},
  };
  
  static const struct sof_ipc_tplg_ops ipc3_tplg_ops = {
 diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index 2258317d7f57..4dd4e98e87cf 100644
+index 88214ec2df5a..bd62658629f5 100644
 --- a/sound/soc/sof/topology.c
 +++ b/sound/soc/sof/topology.c
-@@ -637,28 +637,6 @@ static const struct sof_topology_token dai_link_tokens[] = {
+@@ -629,15 +629,6 @@ static const struct sof_topology_token dai_link_tokens[] = {
  		offsetof(struct sof_ipc_dai_config, dai_index)},
  };
  
--/* scheduling */
--static const struct sof_topology_token sched_tokens[] = {
--	{SOF_TKN_SCHED_PERIOD, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
--		offsetof(struct sof_ipc_pipe_new, period)},
--	{SOF_TKN_SCHED_PRIORITY, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
--		offsetof(struct sof_ipc_pipe_new, priority)},
--	{SOF_TKN_SCHED_MIPS, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
--		offsetof(struct sof_ipc_pipe_new, period_mips)},
--	{SOF_TKN_SCHED_CORE, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
--		offsetof(struct sof_ipc_pipe_new, core)},
--	{SOF_TKN_SCHED_FRAMES, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
--		offsetof(struct sof_ipc_pipe_new, frames_per_sched)},
--	{SOF_TKN_SCHED_TIME_DOMAIN, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
--		offsetof(struct sof_ipc_pipe_new, time_domain)},
+-/* volume */
+-static const struct sof_topology_token volume_tokens[] = {
+-	{SOF_TKN_VOLUME_RAMP_STEP_TYPE, SND_SOC_TPLG_TUPLE_TYPE_WORD,
+-		get_token_u32, offsetof(struct sof_ipc_comp_volume, ramp)},
+-	{SOF_TKN_VOLUME_RAMP_STEP_MS,
+-		SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
+-		offsetof(struct sof_ipc_comp_volume, initial_ramp)},
 -};
 -
--static const struct sof_topology_token pipeline_tokens[] = {
--	{SOF_TKN_SCHED_DYNAMIC_PIPELINE, SND_SOC_TPLG_TUPLE_TYPE_BOOL, get_token_u16,
--		offsetof(struct snd_sof_widget, dynamic_pipeline_widget)},
--
--};
--
- /* volume */
- static const struct sof_topology_token volume_tokens[] = {
- 	{SOF_TKN_VOLUME_RAMP_STEP_TYPE, SND_SOC_TPLG_TUPLE_TYPE_WORD,
-@@ -1873,81 +1851,6 @@ static int sof_widget_parse_tokens(struct snd_soc_component *scomp, struct snd_s
- 	return ret;
+ /* SRC */
+ static const struct sof_topology_token src_tokens[] = {
+ 	{SOF_TKN_SRC_RATE_IN, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
+@@ -1878,78 +1869,6 @@ static int sof_widget_load_mux(struct snd_soc_component *scomp, int index,
+ 	return 0;
  }
  
 -/*
-- * Pipeline Topology
+- * PGA Topology
 - */
--static int sof_widget_load_pipeline(struct snd_soc_component *scomp, int index,
--				    struct snd_sof_widget *swidget,
--				    struct snd_soc_tplg_dapm_widget *tw)
+-
+-static int sof_widget_load_pga(struct snd_soc_component *scomp, int index,
+-			       struct snd_sof_widget *swidget,
+-			       struct snd_soc_tplg_dapm_widget *tw)
 -{
+-	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
 -	struct snd_soc_tplg_private *private = &tw->priv;
--	struct sof_ipc_pipe_new *pipeline;
--	struct snd_sof_widget *comp_swidget;
+-	struct sof_ipc_comp_volume *volume;
+-	struct snd_sof_control *scontrol;
+-	size_t ipc_size = sizeof(*volume);
+-	int min_step;
+-	int max_step;
 -	int ret;
 -
--	pipeline = kzalloc(sizeof(*pipeline), GFP_KERNEL);
--	if (!pipeline)
+-	volume = (struct sof_ipc_comp_volume *)
+-		 sof_comp_alloc(swidget, &ipc_size, index);
+-	if (!volume)
 -		return -ENOMEM;
 -
--	/* configure dai IPC message */
--	pipeline->hdr.size = sizeof(*pipeline);
--	pipeline->hdr.cmd = SOF_IPC_GLB_TPLG_MSG | SOF_IPC_TPLG_PIPE_NEW;
--	pipeline->pipeline_id = index;
--	pipeline->comp_id = swidget->comp_id;
--
--	/* component at start of pipeline is our stream id */
--	comp_swidget = snd_sof_find_swidget(scomp, tw->sname);
--	if (!comp_swidget) {
--		dev_err(scomp->dev, "error: widget %s refers to non existent widget %s\n",
--			tw->name, tw->sname);
+-	if (!le32_to_cpu(tw->num_kcontrols)) {
+-		dev_err(scomp->dev, "error: invalid kcontrol count %d for volume\n",
+-			tw->num_kcontrols);
 -		ret = -EINVAL;
 -		goto err;
 -	}
 -
--	pipeline->sched_id = comp_swidget->comp_id;
+-	/* configure volume IPC message */
+-	volume->comp.type = SOF_COMP_VOLUME;
+-	volume->config.hdr.size = sizeof(volume->config);
 -
--	dev_dbg(scomp->dev, "tplg: pipeline id %d comp %d scheduling comp id %d\n",
--		pipeline->pipeline_id, pipeline->comp_id, pipeline->sched_id);
--
--	ret = sof_parse_tokens(scomp, pipeline, sched_tokens,
--			       ARRAY_SIZE(sched_tokens), private->array,
+-	ret = sof_parse_tokens(scomp, volume, volume_tokens,
+-			       ARRAY_SIZE(volume_tokens), private->array,
 -			       le32_to_cpu(private->size));
 -	if (ret != 0) {
--		dev_err(scomp->dev, "error: parse pipeline tokens failed %d\n",
+-		dev_err(scomp->dev, "error: parse volume tokens failed %d\n",
 -			private->size);
 -		goto err;
 -	}
--
--	ret = sof_parse_tokens(scomp, swidget, pipeline_tokens,
--			       ARRAY_SIZE(pipeline_tokens), private->array,
+-	ret = sof_parse_tokens(scomp, &volume->config, comp_tokens,
+-			       ARRAY_SIZE(comp_tokens), private->array,
 -			       le32_to_cpu(private->size));
 -	if (ret != 0) {
--		dev_err(scomp->dev, "error: parse dynamic pipeline token failed %d\n",
--			private->size);
+-		dev_err(scomp->dev, "error: parse volume.cfg tokens failed %d\n",
+-			le32_to_cpu(private->size));
 -		goto err;
 -	}
 -
--	if (sof_debug_check_flag(SOF_DBG_DISABLE_MULTICORE))
--		pipeline->core = SOF_DSP_PRIMARY_CORE;
+-	sof_dbg_comp_config(scomp, &volume->config);
 -
--	if (sof_debug_check_flag(SOF_DBG_DYNAMIC_PIPELINES_OVERRIDE))
--		swidget->dynamic_pipeline_widget =
--			sof_debug_check_flag(SOF_DBG_DYNAMIC_PIPELINES_ENABLE);
+-	swidget->private = volume;
 -
--	dev_dbg(scomp->dev, "pipeline %s: period %d pri %d mips %d core %d frames %d dynamic %d\n",
--		swidget->widget->name, pipeline->period, pipeline->priority,
--		pipeline->period_mips, pipeline->core, pipeline->frames_per_sched,
--		swidget->dynamic_pipeline_widget);
--
--	swidget->core = pipeline->core;
--	swidget->private = pipeline;
+-	list_for_each_entry(scontrol, &sdev->kcontrol_list, list) {
+-		if (scontrol->comp_id == swidget->comp_id &&
+-		    scontrol->volume_table) {
+-			min_step = scontrol->min_volume_step;
+-			max_step = scontrol->max_volume_step;
+-			volume->min_value = scontrol->volume_table[min_step];
+-			volume->max_value = scontrol->volume_table[max_step];
+-			volume->channels = scontrol->num_channels;
+-			break;
+-		}
+-	}
 -
 -	return 0;
 -err:
--	kfree(pipeline);
+-	kfree(volume);
 -	return ret;
 -}
 -
  /*
-  * Mixer topology
+  * SRC Topology
   */
-@@ -2579,8 +2482,6 @@ static int sof_widget_ready(struct snd_soc_component *scomp, int index,
- 		ret = sof_widget_load_buffer(scomp, index, swidget, tw);
+@@ -2426,8 +2345,14 @@ static int sof_widget_ready(struct snd_soc_component *scomp, int index,
+ 		ret = sof_widget_load_mixer(scomp, index, swidget, tw);
  		break;
- 	case snd_soc_dapm_scheduler:
--		ret = sof_widget_load_pipeline(scomp, index, swidget, tw);
+ 	case snd_soc_dapm_pga:
+-		ret = sof_widget_load_pga(scomp, index, swidget, tw);
 -		break;
++		if (!le32_to_cpu(tw->num_kcontrols)) {
++			dev_err(scomp->dev, "invalid kcontrol count %d for volume\n",
++				tw->num_kcontrols);
++			ret = -EINVAL;
++			break;
++		}
++
++		fallthrough;
+ 	case snd_soc_dapm_buffer:
+ 	case snd_soc_dapm_scheduler:
  	case snd_soc_dapm_aif_out:
- 	case snd_soc_dapm_aif_in:
- 		ret = sof_widget_parse_tokens(scomp, swidget, tw,  token_list, token_list_size);
 -- 
 2.25.1
 
