@@ -4,61 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9ECF1C43217
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Mar 2022 19:51:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04A44C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Mar 2022 19:51:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2234616E4;
-	Mon, 14 Mar 2022 20:50:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2234616E4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 16B5E1738;
+	Mon, 14 Mar 2022 20:51:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 16B5E1738
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647287476;
-	bh=kMPXQdSDTqPZw7TxTqFO8+ozgcvhKk61vNuNGq6NqZ4=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=CK38P4csV4e1wkxZd26fgNyQBfAQiuhOVEC0AsHCQHxta0sq2lLg7xCHf89rrwHiz
-	 ywc1X67ybDOV1C1H1SMtdfLMPsoH3gRwF1WtOkJTxEI78yhQ7Mq+p0yJdCI99jaZQG
-	 rT+j81EsH+JvThDhTb4dew+6YdxWcTB564NqCzgU=
+	s=default; t=1647287512;
+	bh=pyw+uUsWl3RVdP8v6qowJOWyQJdm2VaPP/Bj2TK1ByM=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=eYUvDgOTl1tvibKQPShsu/JI0Ak6fkSGwq/KGnyQAx9VI4HK1w2xaQXw3nUkX7136
+	 YlC3kg7/BvFCJXpnb7evKUwoEA1K/xqzf9T24dW886eiROFZM2dL8FVS/fLxhBGv4E
+	 fvhcMnejoIgjPYivyg3SkvEDhAEB7ICVHs3ZpPwE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 768F4F801EC;
-	Mon, 14 Mar 2022 20:50:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 56C5EF80475;
+	Mon, 14 Mar 2022 20:50:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EC22BF80139; Mon, 14 Mar 2022 20:50:22 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 17854F804E4; Mon, 14 Mar 2022 20:50:26 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 384E0F80095
- for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2022 20:50:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 384E0F80095
+ by alsa1.perex.cz (Postfix) with ESMTPS id E60D0F8012C
+ for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2022 20:50:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E60D0F8012C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="aBYW5qr3"
+ header.b="V35xPzC0"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id E279B611DC;
- Mon, 14 Mar 2022 19:50:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0768CC340E9;
- Mon, 14 Mar 2022 19:50:16 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 5105C6116D;
+ Mon, 14 Mar 2022 19:50:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AF52C340EE;
+ Mon, 14 Mar 2022 19:50:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1647287417;
- bh=kMPXQdSDTqPZw7TxTqFO8+ozgcvhKk61vNuNGq6NqZ4=;
- h=From:To:Cc:Subject:Date:From;
- b=aBYW5qr3K6D3J3laM6P3okKIixNitcz6eBEnEBls1QbCSU3MFvseZZdwZWbWqzmPZ
- T1xfXLDSYrcnDo3BO1UPC9Apfgj6XXgSHSdI+/fEImHikC2tXcSd6mK2gPVFvHZjSE
- ejnPBgt4ksCpDHJuo2kfZTRRuUltdiLxmObD5soPqUtzC5wglgwm9SqpwzlwWtB80K
- UKokgPWfw8A0jf/rK0SQMW9LTSQ7Qr34QOqFuPbN4MFfRAcMAARgCgSUuctH384LSm
- z/FTZFxvo1dXxy9MW9Q+Kn1E/rBwfk9A5DQ8XDyPQVJJyyAa6voZsrCOY4AIxI7eE4
- p/ZVemtnuIHvg==
+ s=k20201202; t=1647287421;
+ bh=pyw+uUsWl3RVdP8v6qowJOWyQJdm2VaPP/Bj2TK1ByM=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=V35xPzC0SANL4OOpntptnxwfH3nLIYI5VEaA9BrwfwAu8bvPOHyAqVUw21vYwVrAk
+ BE5/t7c15HReRasVusQQv81fElEBG3vFWSvir6e8NJI0FHrAmInGhKkxkr64Ge2tSt
+ 3Y5mzD6EWbBR2HGUd2PvFkmH64XSZ6Ije2djTBcdzpvhRp/Y+bGCgBRz4Q0WVx9TqW
+ O4H6xttVahB95D7TRtPhoEdwKcjVctFHjWNYaQazpf9nZQlppkShxTpdFuo2PA2xNb
+ FmQWRJtWbFVp4Pz8M8/ZiWhPityGzRb61SWCJO6KTXLpHDReAXGSpmLEadGt/jWb01
+ VkyTxadUGALpQ==
 From: Nathan Chancellor <nathan@kernel.org>
 To: Peter Zijlstra <peterz@infradead.org>,
 	x86@kernel.org
-Subject: [PATCH 0/2] x86: Avoid CONFIG_X86_X32_ABI=y with llvm-objcopy
-Date: Mon, 14 Mar 2022 12:48:40 -0700
-Message-Id: <20220314194842.3452-1-nathan@kernel.org>
+Subject: [PATCH 2/2] x86/Kconfig: Do not allow CONFIG_X86_X32_ABI=y with
+ llvm-objcopy
+Date: Mon, 14 Mar 2022 12:48:42 -0700
+Message-Id: <20220314194842.3452-3-nathan@kernel.org>
 X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220314194842.3452-1-nathan@kernel.org>
+References: <20220314194842.3452-1-nathan@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: Nathan Chancellor <nathan@kernel.org>, alsa-devel@alsa-project.org,
@@ -81,54 +84,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This series disables CONFIG_X86_X32_ABI=y with llvm-objcopy, which has
-had two outstanding issues, which are further outlined in the second
-patch:
+There are two outstanding issues with CONFIG_X86_X32_ABI and
+llvm-objcopy, with similar root causes:
 
-https://github.com/ClangBuiltLinux/linux/issues/514
-https://github.com/ClangBuiltLinux/linux/issues/1141
+1. llvm-objcopy does not properly convert .note.gnu.property when going
+   from x86_64 to x86_x32, resulting in a corrupted section when
+   linking:
 
-The first patch is from Masahiro, which moves the CONFIG_X86_X32_ABI
-back into Kconfig proper. It was initially pushed as an RFC:
+   https://github.com/ClangBuiltLinux/linux/issues/1141
 
-https://lore.kernel.org/r/20210227183910.221873-1-masahiroy@kernel.org/
+2. llvm-objcopy produces corrupted compressed debug sections when going
+   from x86_64 to x86_x32, also resulting in an error when linking:
 
-The conclusion of that thread was that the check was still needed
-because of the two issues above. However, with the introduction of
-IBT, specifically commit 41c5ef31ad71 ("x86/ibt: Base IBT bits"), the
-second issue linked above becomes visible with allmodconfig, which
-heavily impacts automated testing.
+   https://github.com/ClangBuiltLinux/linux/issues/514
 
-The second patch builds on the first by just universally disabling
-CONFIG_X86_X32_ABI when using llvm-objcopy at configuration time so that
-neither issue is visible.
+After commit 41c5ef31ad71 ("x86/ibt: Base IBT bits"), the
+.note.gnu.property section is always generated when
+CONFIG_X86_KERNEL_IBT is enabled, which causes the first issue to become
+visible with an allmodconfig build:
 
-While it is unlikely that these issues will be fixed in LLVM, this could
-eventually become a version check.
+  ld.lld: error: arch/x86/entry/vdso/vclock_gettime-x32.o:(.note.gnu.property+0x1c): program property is too short
 
-This is based on -tip x86/core and I would like for both patches to go
-with the IBT changes so that there is no build breakage.
+To avoid this error, do not allow CONFIG_X86_X32_ABI to be selected when
+using llvm-objcopy. If the two issues ever get fixed in llvm-objcopy,
+this can be turned into a feature check.
 
-Masahiro Yamada (1):
-  x86: Remove toolchain check for X32 ABI capability
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+---
+ arch/x86/Kconfig | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Nathan Chancellor (1):
-  x86/Kconfig: Do not allow CONFIG_X86_X32_ABI=y with llvm-objcopy
-
- arch/x86/Kconfig                       | 13 +++++++------
- arch/x86/Makefile                      | 16 ----------------
- arch/x86/entry/syscalls/Makefile       |  2 +-
- arch/x86/include/asm/syscall_wrapper.h |  6 +++---
- arch/x86/include/asm/vdso.h            |  2 +-
- arch/x86/kernel/process_64.c           |  2 +-
- fs/fuse/ioctl.c                        |  2 +-
- fs/xfs/xfs_ioctl32.c                   |  2 +-
- sound/core/control_compat.c            | 16 ++++++++--------
- sound/core/pcm_compat.c                | 20 ++++++++++----------
- 10 files changed, 33 insertions(+), 48 deletions(-)
-
-
-base-commit: f8afc9d88e65d189653f363eacc1f3131216ef7c
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index b903bfcd713c..0f0672d2c816 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -2864,6 +2864,11 @@ config IA32_AOUT
+ config X86_X32_ABI
+ 	bool "x32 ABI for 64-bit mode"
+ 	depends on X86_64
++	# llvm-objcopy does not convert x86_64 .note.gnu.property or
++	# compressed debug sections to x86_x32 properly:
++	# https://github.com/ClangBuiltLinux/linux/issues/514
++	# https://github.com/ClangBuiltLinux/linux/issues/1141
++	depends on $(success,$(OBJCOPY) --version | head -n1 | grep -qv llvm)
+ 	help
+ 	  Include code to run binaries for the x32 native 32-bit ABI
+ 	  for 64-bit processors.  An x32 process gets access to the
 -- 
 2.35.1
 
