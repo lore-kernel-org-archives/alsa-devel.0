@@ -4,64 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 979A3C433FE
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Mar 2022 20:07:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9EA76C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Mar 2022 20:08:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BD2101741;
-	Mon, 14 Mar 2022 21:06:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD2101741
+	by alsa0.perex.cz (Postfix) with ESMTPS id ACA7D17CF;
+	Mon, 14 Mar 2022 21:07:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ACA7D17CF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647288460;
-	bh=KyGFR7GQKbIjELhAeh95O3NZ/wi/fjlySV1ylTb+DGc=;
+	s=default; t=1647288478;
+	bh=u3bwTvbNX9x0xvyI0+4ZlXRcVsxh2WQH7lYr92L3+U4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fl9ZEo8Myc5jUIuvwjVABy5RzXITZZLW5dRS2V7wVKf5W3wRCJ4ZrPcNR8WEkB0Fh
-	 8qjI8z4MOB2kTy3sBPZJ3rysqBTMLqJk9lqoYgwMd8wv+qL9lzEmXQTetFZ1iw6b9h
-	 M6RZ0T2Z0kNjGvDt75BhVTczxRx9H9rdH5ZrtzYU=
+	b=RptKktWufp5SbYNNEw+Z5Z4BvF2726DNVYbtdNZts6uuhnkdfd0y+kU6Py1cMkK+k
+	 zVN5F+kdGTj1Md+n6rI2POHzWFcaJlKiz9rhPiB1x7IHrQe/WqbeJgMeEgNm1c1C6f
+	 yqZ55SuF1ECyZ/vIJEkbrvCxSuv5enEao9LfCsdE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E23A9F80524;
-	Mon, 14 Mar 2022 21:05:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EA9A6F8052E;
+	Mon, 14 Mar 2022 21:05:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B2845F80510; Mon, 14 Mar 2022 21:05:44 +0100 (CET)
+ id 83C67F8052D; Mon, 14 Mar 2022 21:05:49 +0100 (CET)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E1028F8011C
- for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2022 21:05:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1028F8011C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1D709F80475
+ for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2022 21:05:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D709F80475
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="BbHWsfzs"
+ header.b="Dz0+ujyu"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1647288339; x=1678824339;
+ t=1647288343; x=1678824343;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=KyGFR7GQKbIjELhAeh95O3NZ/wi/fjlySV1ylTb+DGc=;
- b=BbHWsfzsImGjSVandBtKo7d9xAHBjqDqa0E1uJ3dshr66F+EbYVSe6ky
- Nb0oT9oZfHDZDN511bjwve3oA+adSbIWNRq9Dksa2kNot6s5piFA71jgA
- UM72Bp2DV/6EoM3hTt2yknEWkkj6QwRhzj1Mg1ZgVryjcOs9a41hu/yUS
- ZGT2gvgZP/ZBO6mxGiwG+u8H3KyoSxiUMRpzdH2CVKRwlGYx+wr/hIT13
- mq5R63QNgcSib8nbK4nFyxq0t0OCXNm7qk/qo13bgRgc8PFoI3QqjegoW
- ex3WcedDgHqG2K/Vh+WIbqr9o6Fh/UQxJiNKlb/rYuzgzXyhSkRmUBJgA w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10286"; a="342563466"
-X-IronPort-AV: E=Sophos;i="5.90,181,1643702400"; d="scan'208";a="342563466"
+ bh=u3bwTvbNX9x0xvyI0+4ZlXRcVsxh2WQH7lYr92L3+U4=;
+ b=Dz0+ujyuEl741WLkFDGqeQKfMkgEiLk4BoXCpufBnPqFFkqHMhfl5rGZ
+ lwJI80AckV24gwjBpk322S/B4cGB0DWWlTEsC3RA7vO/dFzmeUQp/b5Bs
+ HLr0dAI9RxT/lsHyedECFBAX+lB9J4yw37iOQ99oclOmHSJM25eGVQ0bI
+ MWN0gw6D10doQCSJCc9rs0wQBbp8dABzamsLkOjewZdp1RsBAx+LPa//b
+ PQk6kFfM1M9/KTCy3WeLRyWlnCLo52SqBY2gYw9gCO7giUnFSyv8E/8kq
+ hStaO0LgDLap6Pbfek2cLHTzwXjq/XxlkbMs8+ItTLNzuc+tSwyoK9DJy w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10286"; a="342563470"
+X-IronPort-AV: E=Sophos;i="5.90,181,1643702400"; d="scan'208";a="342563470"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  14 Mar 2022 13:05:32 -0700
-X-IronPort-AV: E=Sophos;i="5.90,181,1643702400"; d="scan'208";a="634339883"
+X-IronPort-AV: E=Sophos;i="5.90,181,1643702400"; d="scan'208";a="634339888"
 Received: from pmishr1-mobl1.amr.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.254.25.117])
  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  14 Mar 2022 13:05:32 -0700
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 01/18] ASoC: SOF: Introduce struct snd_sof_dai_link
-Date: Mon, 14 Mar 2022 13:05:02 -0700
-Message-Id: <20220314200520.1233427-2-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 03/18] ASoC: SOF: topology: Add helper function for processing
+ tuple arrays
+Date: Mon, 14 Mar 2022 13:05:05 -0700
+Message-Id: <20220314200520.1233427-5-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220314200520.1233427-1-ranjani.sridharan@linux.intel.com>
 References: <20220314200520.1233427-1-ranjani.sridharan@linux.intel.com>
@@ -88,76 +89,217 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Introduce a new struct for DAI links to save the DAI link information
-parsed from topology. Also add a list of dai_links to struct snd_sof_dev
-that will be populated during topology parsing.
+Add a helper function for processing tuple arrays and populating the
+IPC structure objects based on the token ID passed.
+
+Introduce a new enum representing token ID for the tokens
+currently used in the topology parse and a new struct sof_token_info
+to store the information about a token set. Finally, expose the struct
+snd_sof_topology token as it will be used by IPC-specific code.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/core.c      |  1 +
- sound/soc/sof/sof-audio.h | 21 ++++++++++++++++++++-
- sound/soc/sof/sof-priv.h  |  1 +
- 3 files changed, 22 insertions(+), 1 deletion(-)
+ sound/soc/sof/sof-audio.h |  54 +++++++++++++++++++
+ sound/soc/sof/topology.c  | 106 +++++++++++++++++++++++++++++++++-----
+ 2 files changed, 148 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
-index 9217644e2eab..e91631618bff 100644
---- a/sound/soc/sof/core.c
-+++ b/sound/soc/sof/core.c
-@@ -370,6 +370,7 @@ int snd_sof_device_probe(struct device *dev, struct snd_sof_pdata *plat_data)
- 	INIT_LIST_HEAD(&sdev->kcontrol_list);
- 	INIT_LIST_HEAD(&sdev->widget_list);
- 	INIT_LIST_HEAD(&sdev->dai_list);
-+	INIT_LIST_HEAD(&sdev->dai_link_list);
- 	INIT_LIST_HEAD(&sdev->route_list);
- 	INIT_LIST_HEAD(&sdev->ipc_client_list);
- 	INIT_LIST_HEAD(&sdev->ipc_rx_handler_list);
 diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
-index 450ee9977c55..548d443e83b0 100644
+index 79041622987f..bde86e078e08 100644
 --- a/sound/soc/sof/sof-audio.h
 +++ b/sound/soc/sof/sof-audio.h
-@@ -96,7 +96,26 @@ struct snd_sof_control {
- 	bool comp_data_dirty;
+@@ -78,6 +78,57 @@ struct snd_sof_tuple {
+ 	} value;
  };
  
--struct snd_sof_widget;
-+/** struct snd_sof_dai_link - DAI link info
-+ * @tuples: array of parsed tuples
-+ * @num_tuples: number of tuples in the tuples array
-+ * @link: Pointer to snd_soc_dai_link
-+ * @hw_configs: Pointer to hw configs in topology
-+ * @num_hw_configs: Number of hw configs in topology
-+ * @default_hw_cfg_id: Default hw config ID
-+ * @type: DAI type
-+ * @list: item in snd_sof_dev dai_link list
++/*
++ * List of SOF token ID's. The order of ID's does not matter as token arrays are looked up based on
++ * the ID.
 + */
-+struct snd_sof_dai_link {
-+	struct snd_sof_tuple *tuples;
-+	int num_tuples;
-+	struct snd_soc_dai_link *link;
-+	struct snd_soc_tplg_hw_config *hw_configs;
-+	int num_hw_configs;
-+	int default_hw_cfg_id;
-+	int type;
-+	struct list_head list;
++enum sof_tokens {
++	SOF_PCM_TOKENS,
++	SOF_PIPELINE_TOKENS,
++	SOF_SCHED_TOKENS,
++	SOF_ASRC_TOKENS,
++	SOF_SRC_TOKENS,
++	SOF_COMP_TOKENS,
++	SOF_BUFFER_TOKENS,
++	SOF_VOLUME_TOKENS,
++	SOF_PROCESS_TOKENS,
++	SOF_DAI_TOKENS,
++	SOF_DAI_LINK_TOKENS,
++	SOF_HDA_TOKENS,
++	SOF_SSP_TOKENS,
++	SOF_ALH_TOKENS,
++	SOF_DMIC_TOKENS,
++	SOF_DMIC_PDM_TOKENS,
++	SOF_ESAI_TOKENS,
++	SOF_SAI_TOKENS,
++	SOF_AFE_TOKENS,
++	SOF_CORE_TOKENS,
++	SOF_COMP_EXT_TOKENS,
++
++	/* this should be the last */
++	SOF_TOKEN_COUNT,
 +};
++
++/**
++ * struct sof_topology_token - SOF topology token definition
++ * @token:		Token number
++ * @type:		Token type
++ * @get_token:		Function pointer to parse the token value and save it in a object
++ * @offset:		Offset within an object to save the token value into
++ */
++struct sof_topology_token {
++	u32 token;
++	u32 type;
++	int (*get_token)(void *elem, void *object, u32 offset);
++	u32 offset;
++};
++
++struct sof_token_info {
++	const char *name;
++	const struct sof_topology_token *tokens;
++	int count;
++};
++
+ /* PCM stream, mapped to FW component  */
+ struct snd_sof_pcm_stream {
+ 	u32 comp_id;
+@@ -333,4 +384,7 @@ int get_token_u16(void *elem, void *object, u32 offset);
+ int get_token_comp_format(void *elem, void *object, u32 offset);
+ int get_token_dai_type(void *elem, void *object, u32 offset);
+ int get_token_uuid(void *elem, void *object, u32 offset);
++int sof_update_ipc_object(struct snd_soc_component *scomp, void *object, enum sof_tokens token_id,
++			  struct snd_sof_tuple *tuples, int num_tuples,
++			  size_t object_size, int token_instance_num);
+ #endif
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index afd9eda67631..a127d3d2eab7 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -47,6 +47,100 @@
+ /* size of tplg abi in byte */
+ #define SOF_TPLG_ABI_SIZE 3
  
- /* ASoC SOF DAPM widget */
- struct snd_sof_widget {
-diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index ef5a2adae5c7..28d3f1ac8be8 100644
---- a/sound/soc/sof/sof-priv.h
-+++ b/sound/soc/sof/sof-priv.h
-@@ -441,6 +441,7 @@ struct snd_sof_dev {
- 	struct list_head kcontrol_list;
- 	struct list_head widget_list;
- 	struct list_head dai_list;
-+	struct list_head dai_link_list;
- 	struct list_head route_list;
- 	struct snd_soc_component *component;
- 	u32 enabled_cores_mask; /* keep track of enabled cores */
++/**
++ * sof_update_ipc_object - Parse multiple sets of tokens within the token array associated with the
++ *			    token ID.
++ * @scomp: pointer to SOC component
++ * @object: target IPC struct to save the parsed values
++ * @token_id: token ID for the token array to be searched
++ * @tuples: pointer to the tuples array
++ * @num_tuples: number of tuples in the tuples array
++ * @object_size: size of the object
++ * @token_instance_num: number of times the same @token_id needs to be parsed i.e. the function
++ *			looks for @token_instance_num of each token in the token array associated
++ *			with the @token_id
++ */
++int sof_update_ipc_object(struct snd_soc_component *scomp, void *object, enum sof_tokens token_id,
++			  struct snd_sof_tuple *tuples, int num_tuples,
++			  size_t object_size, int token_instance_num)
++{
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	const struct sof_ipc_tplg_ops *ipc_tplg_ops = sdev->ipc->ops->tplg;
++	const struct sof_token_info *token_list = ipc_tplg_ops->token_list;
++	const struct sof_topology_token *tokens;
++	int i, j;
++
++	if (token_list[token_id].count < 0) {
++		dev_err(scomp->dev, "Invalid token count for token ID: %d\n", token_id);
++		return -EINVAL;
++	}
++
++	/* No tokens to match */
++	if (!token_list[token_id].count)
++		return 0;
++
++	tokens = token_list[token_id].tokens;
++	if (!tokens) {
++		dev_err(scomp->dev, "Invalid tokens for token id: %d\n", token_id);
++		return -EINVAL;
++	}
++
++	for (i = 0; i < token_list[token_id].count; i++) {
++		int offset = 0;
++		int num_tokens_matched = 0;
++
++		for (j = 0; j < num_tuples; j++) {
++			if (tokens[i].token == tuples[j].token) {
++				switch (tokens[i].type) {
++				case SND_SOC_TPLG_TUPLE_TYPE_WORD:
++				{
++					u32 *val = (u32 *)((u8 *)object + tokens[i].offset +
++							   offset);
++
++					*val = tuples[j].value.v;
++					break;
++				}
++				case SND_SOC_TPLG_TUPLE_TYPE_SHORT:
++				case SND_SOC_TPLG_TUPLE_TYPE_BOOL:
++				{
++					u16 *val = (u16 *)((u8 *)object + tokens[i].offset +
++							    offset);
++
++					*val = (u16)tuples[j].value.v;
++					break;
++				}
++				case SND_SOC_TPLG_TUPLE_TYPE_STRING:
++				{
++					if (!tokens[i].get_token) {
++						dev_err(scomp->dev,
++							"get_token not defined for token %d in %s\n",
++							tokens[i].token, token_list[token_id].name);
++						return -EINVAL;
++					}
++
++					tokens[i].get_token((void *)tuples[j].value.s, object,
++							    tokens[i].offset + offset);
++					break;
++				}
++				default:
++					break;
++				}
++
++				num_tokens_matched++;
++
++				/* found all required sets of current token. Move to the next one */
++				if (!(num_tokens_matched % token_instance_num))
++					break;
++
++				/* move to the next object */
++				offset += object_size;
++			}
++		}
++	}
++
++	return 0;
++}
++
+ struct sof_widget_data {
+ 	int ctrl_type;
+ 	int ipc_cmd;
+@@ -465,18 +559,6 @@ static enum sof_comp_type find_process_comp_type(enum sof_ipc_process_type type)
+ 	return SOF_COMP_NONE;
+ }
+ 
+-/*
+- * Topology Token Parsing.
+- * New tokens should be added to headers and parsing tables below.
+- */
+-
+-struct sof_topology_token {
+-	u32 token;
+-	u32 type;
+-	int (*get_token)(void *elem, void *object, u32 offset);
+-	u32 offset;
+-};
+-
+ int get_token_u32(void *elem, void *object, u32 offset)
+ {
+ 	struct snd_soc_tplg_vendor_value_elem *velem = elem;
 -- 
 2.25.1
 
