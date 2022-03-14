@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71F2DC433FE
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Mar 2022 20:09:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C1FAC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Mar 2022 20:09:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A0D791841;
-	Mon, 14 Mar 2022 21:08:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A0D791841
+	by alsa0.perex.cz (Postfix) with ESMTPS id 60C8C1856;
+	Mon, 14 Mar 2022 21:08:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 60C8C1856
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647288546;
-	bh=DLVbX390zjtwOfniwOrd6dypSejIyzp13WbbBNKN9Oc=;
+	s=default; t=1647288563;
+	bh=P+BzivRfqWu4OiXUzHCbevL7Fg+IUHhO4d6QAvee0Zo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UdRn83pS9qmM6v7OKa4iqWpTCMbIHezJn8LPvxa7Bk/uR5yg9lgsUAjf7E4uZRd60
-	 nz/69tz8h2QhXY/iDCXPipbKwMkjwAmcfC3ArQ1vwR3lQ7AP8w5tqNMCXse6K2RdRh
-	 7vZmZXM55Y93sT3K5nGofJdfEQNUT+gcbTuWGaGo=
+	b=VdqkNdgTwaVPZq++MMLhJc0qRcW7tB7JGExoin/4l5g1zm7hQXyUP3EuLiaG7C7eb
+	 mL+aWgfpjVSxfKTHsWXjegeeUE2syZdKnI71PCTnvyqAh+/S9M1JDhtwwaRlSqsRDS
+	 T5V58qz4BtgEqO1DqMyCs9AKXg5WJzgyDkyL3CyA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B1703F8054A;
-	Mon, 14 Mar 2022 21:06:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DDBD9F80475;
+	Mon, 14 Mar 2022 21:06:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DB815F80535; Mon, 14 Mar 2022 21:05:53 +0100 (CET)
+ id D6AFCF8053B; Mon, 14 Mar 2022 21:05:55 +0100 (CET)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B3848F801EC
- for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2022 21:05:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3848F801EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0CB6EF8011C
+ for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2022 21:05:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0CB6EF8011C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="AaWMVAxu"
+ header.b="PDiKwUey"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1647288346; x=1678824346;
+ t=1647288345; x=1678824345;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=DLVbX390zjtwOfniwOrd6dypSejIyzp13WbbBNKN9Oc=;
- b=AaWMVAxuzwCAaJfRstxHxozaT0dZrNhXUPIjjSmAc21WLVFBQ9gi03RO
- XATXu4zr/JAk/mxh1VFgVjTSOKzKpFjZTd/J9TaZwPhhxGwQ0gdF4s3mx
- TqBAfKtziooFTsRDP/Qe2vu4/cmoHpsLUboU4W7Y9DApavcEEVOR0v/WV
- kfOXpZkA/kC5MVfV3OeaGTmbzEm2akZqO0uelfR1wrz+3HwKQeNcOh7mU
- DxSijeGmxfJON4IhhyQGtqxRHkFPP2tutNlWpERWDO6HLHHwBE53Pjayj
- l66lL9JY7T4yaxGW/OgFIBlisDYLeAlF3H5UErg6SXvhtKzSJ8UGvTYYz g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10286"; a="342563475"
-X-IronPort-AV: E=Sophos;i="5.90,181,1643702400"; d="scan'208";a="342563475"
+ bh=P+BzivRfqWu4OiXUzHCbevL7Fg+IUHhO4d6QAvee0Zo=;
+ b=PDiKwUey0RYzRMJohWUCxUpvrqzT4PUYYjiOzKwJn+SfgzWLvY9waob2
+ slE1gseoRnnNE4JcXmMT1d4r5UKR7JjRYlF4alyqM9XMu9D6gv3FGDK83
+ +wALvuKdZY43c1c3PcGKpvFkCESKg9eMcjq1EnbqN5/WYe9RS441Q47xB
+ AhenyMcqVUROWB47xgrArQ3jXAGRFE8EW8sIhfgK3NRj4sBmRci7/EBP+
+ I+Il6kVwkTWyCaLUMDzQ0qQ09ShLGoGwHu07UovaYbr6q8KbTq9lc3ZN+
+ 0VQo1SdRFaua6hkJVNObe8rXOHzZSIs9JCj0vimPfZE3pshZtwl8ft8FD A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10286"; a="342563473"
+X-IronPort-AV: E=Sophos;i="5.90,181,1643702400"; d="scan'208";a="342563473"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  14 Mar 2022 13:05:33 -0700
-X-IronPort-AV: E=Sophos;i="5.90,181,1643702400"; d="scan'208";a="634339895"
+X-IronPort-AV: E=Sophos;i="5.90,181,1643702400"; d="scan'208";a="634339893"
 Received: from pmishr1-mobl1.amr.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.254.25.117])
  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Mar 2022 13:05:33 -0700
+ 14 Mar 2022 13:05:32 -0700
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 08/18] ASoC: SOF: topology: Make mixer widget parsing IPC
+Subject: [PATCH 06/18] ASoC: SOF: topology: Make buffer widget parsing IPC
  agnostic
-Date: Mon, 14 Mar 2022 13:05:10 -0700
-Message-Id: <20220314200520.1233427-10-ranjani.sridharan@linux.intel.com>
+Date: Mon, 14 Mar 2022 13:05:08 -0700
+Message-Id: <20220314200520.1233427-8-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220314200520.1233427-1-ranjani.sridharan@linux.intel.com>
 References: <20220314200520.1233427-1-ranjani.sridharan@linux.intel.com>
@@ -89,156 +89,186 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Define the list of tokens pertaining to the mixer widgets, parse and
+Define the list of tokens pertaining to the buffer widgets, parse and
 save them as part of the swidget tuples array. Once topology parsing is
 complete, these tokens will be applied to create the IPC structure for the
-mixer component based on the topology widget_setup op in ipc3_tplg_ops.
+buffer component based on the topology widget_setup op in ipc3_tplg_ops.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/ipc3-topology.c | 43 +++++++++++++++++++++++++++++++++++
- sound/soc/sof/topology.c      | 43 +----------------------------------
- 2 files changed, 44 insertions(+), 42 deletions(-)
+ sound/soc/sof/ipc3-topology.c | 50 +++++++++++++++++++++++++++++++++
+ sound/soc/sof/topology.c      | 52 -----------------------------------
+ 2 files changed, 50 insertions(+), 52 deletions(-)
 
 diff --git a/sound/soc/sof/ipc3-topology.c b/sound/soc/sof/ipc3-topology.c
-index 517ba84eb4c4..d8a91f461bf9 100644
+index 15299ffb7b15..e05d6b816fac 100644
 --- a/sound/soc/sof/ipc3-topology.c
 +++ b/sound/soc/sof/ipc3-topology.c
-@@ -190,6 +190,40 @@ static void sof_ipc3_widget_free_comp(struct snd_sof_widget *swidget)
- 	kfree(swidget->private);
+@@ -13,6 +13,14 @@
+ #include "sof-audio.h"
+ #include "ops.h"
+ 
++/* Buffers */
++static const struct sof_topology_token buffer_tokens[] = {
++	{SOF_TKN_BUF_SIZE, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
++		offsetof(struct sof_ipc_buffer, size)},
++	{SOF_TKN_BUF_CAPS, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
++		offsetof(struct sof_ipc_buffer, caps)},
++};
++
+ /* scheduling */
+ static const struct sof_topology_token sched_tokens[] = {
+ 	{SOF_TKN_SCHED_PERIOD, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
+@@ -71,6 +79,7 @@ static const struct sof_token_info ipc3_token_list[SOF_TOKEN_COUNT] = {
+ 	[SOF_COMP_TOKENS] = {"Comp tokens", comp_tokens, ARRAY_SIZE(comp_tokens)},
+ 	[SOF_CORE_TOKENS] = {"Core tokens", core_tokens, ARRAY_SIZE(core_tokens)},
+ 	[SOF_COMP_EXT_TOKENS] = {"AFE tokens", comp_ext_tokens, ARRAY_SIZE(comp_ext_tokens)},
++	[SOF_BUFFER_TOKENS] = {"Buffer tokens", buffer_tokens, ARRAY_SIZE(buffer_tokens)},
+ };
+ 
+ /**
+@@ -237,6 +246,41 @@ static int sof_ipc3_widget_setup_comp_pipeline(struct snd_sof_widget *swidget)
+ 	return ret;
  }
  
-+static int sof_ipc3_widget_setup_comp_mixer(struct snd_sof_widget *swidget)
++static int sof_ipc3_widget_setup_comp_buffer(struct snd_sof_widget *swidget)
 +{
 +	struct snd_soc_component *scomp = swidget->scomp;
-+	struct sof_ipc_comp_mixer *mixer;
-+	size_t ipc_size = sizeof(*mixer);
++	struct sof_ipc_buffer *buffer;
 +	int ret;
 +
-+	mixer = sof_comp_alloc(swidget, &ipc_size, swidget->pipeline_id);
-+	if (!mixer)
++	buffer = kzalloc(sizeof(*buffer), GFP_KERNEL);
++	if (!buffer)
 +		return -ENOMEM;
 +
-+	swidget->private = mixer;
++	swidget->private = buffer;
 +
-+	/* configure mixer IPC message */
-+	mixer->comp.type = SOF_COMP_MIXER;
-+	mixer->config.hdr.size = sizeof(mixer->config);
++	/* configure dai IPC message */
++	buffer->comp.hdr.size = sizeof(*buffer);
++	buffer->comp.hdr.cmd = SOF_IPC_GLB_TPLG_MSG | SOF_IPC_TPLG_BUFFER_NEW;
++	buffer->comp.id = swidget->comp_id;
++	buffer->comp.type = SOF_COMP_BUFFER;
++	buffer->comp.pipeline_id = swidget->pipeline_id;
++	buffer->comp.core = swidget->core;
 +
-+	/* parse one set of comp tokens */
-+	ret = sof_update_ipc_object(scomp, &mixer->config, SOF_COMP_TOKENS,
-+				    swidget->tuples, swidget->num_tuples,
-+				    sizeof(mixer->config), 1);
++	/* parse one set of buffer tokens */
++	ret = sof_update_ipc_object(scomp, buffer, SOF_BUFFER_TOKENS, swidget->tuples,
++				    swidget->num_tuples, sizeof(*buffer), 1);
 +	if (ret < 0) {
 +		kfree(swidget->private);
 +		swidget->private = NULL;
-+
 +		return ret;
 +	}
 +
-+	dev_dbg(scomp->dev, "loaded mixer %s\n", swidget->widget->name);
-+	sof_dbg_comp_config(scomp, &mixer->config);
++	dev_dbg(scomp->dev, "buffer %s: size %d caps 0x%x\n",
++		swidget->widget->name, buffer->size, buffer->caps);
 +
 +	return 0;
 +}
 +
- static int sof_ipc3_widget_setup_comp_pipeline(struct snd_sof_widget *swidget)
- {
- 	struct snd_soc_component *scomp = swidget->scomp;
-@@ -358,6 +392,12 @@ static enum sof_tokens host_token_list[] = {
+ /* token list for each topology object */
+ static enum sof_tokens host_token_list[] = {
+ 	SOF_CORE_TOKENS,
+@@ -245,6 +289,10 @@ static enum sof_tokens host_token_list[] = {
  	SOF_COMP_TOKENS,
  };
  
-+static enum sof_tokens comp_generic_token_list[] = {
-+	SOF_CORE_TOKENS,
-+	SOF_COMP_EXT_TOKENS,
-+	SOF_COMP_TOKENS,
++static enum sof_tokens buffer_token_list[] = {
++	SOF_BUFFER_TOKENS,
 +};
 +
- static enum sof_tokens buffer_token_list[] = {
- 	SOF_BUFFER_TOKENS,
- };
-@@ -383,6 +423,9 @@ static const struct sof_ipc_tplg_widget_ops tplg_ipc3_widget_ops[SND_SOC_DAPM_TY
+ static enum sof_tokens pipeline_token_list[] = {
+ 	SOF_CORE_TOKENS,
+ 	SOF_COMP_EXT_TOKENS,
+@@ -257,6 +305,8 @@ static const struct sof_ipc_tplg_widget_ops tplg_ipc3_widget_ops[SND_SOC_DAPM_TY
  				  host_token_list, ARRAY_SIZE(host_token_list), NULL},
- 	[snd_soc_dapm_buffer] = {sof_ipc3_widget_setup_comp_buffer, sof_ipc3_widget_free_comp,
- 				 buffer_token_list, ARRAY_SIZE(buffer_token_list), NULL},
-+	[snd_soc_dapm_mixer] = {sof_ipc3_widget_setup_comp_mixer, sof_ipc3_widget_free_comp,
-+				comp_generic_token_list, ARRAY_SIZE(comp_generic_token_list),
-+				NULL},
+ 	[snd_soc_dapm_aif_out] = {sof_ipc3_widget_setup_comp_host, sof_ipc3_widget_free_comp,
+ 				  host_token_list, ARRAY_SIZE(host_token_list), NULL},
++	[snd_soc_dapm_buffer] = {sof_ipc3_widget_setup_comp_buffer, sof_ipc3_widget_free_comp,
++				 buffer_token_list, ARRAY_SIZE(buffer_token_list), NULL},
  	[snd_soc_dapm_scheduler] = {sof_ipc3_widget_setup_comp_pipeline, sof_ipc3_widget_free_comp,
  				    pipeline_token_list, ARRAY_SIZE(pipeline_token_list), NULL},
- 	[snd_soc_dapm_pga] = {sof_ipc3_widget_setup_comp_pga, sof_ipc3_widget_free_comp,
+ };
 diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index bd62658629f5..9e9a41018458 100644
+index 4dd4e98e87cf..88214ec2df5a 100644
 --- a/sound/soc/sof/topology.c
 +++ b/sound/soc/sof/topology.c
-@@ -1792,45 +1792,6 @@ static int sof_widget_parse_tokens(struct snd_soc_component *scomp, struct snd_s
+@@ -611,14 +611,6 @@ static int get_token_process_type(void *elem, void *object, u32 offset)
+ 	return 0;
+ }
+ 
+-/* Buffers */
+-static const struct sof_topology_token buffer_tokens[] = {
+-	{SOF_TKN_BUF_SIZE, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
+-		offsetof(struct sof_ipc_buffer, size)},
+-	{SOF_TKN_BUF_CAPS, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
+-		offsetof(struct sof_ipc_buffer, caps)},
+-};
+-
+ /* DAI */
+ static const struct sof_topology_token dai_tokens[] = {
+ 	{SOF_TKN_DAI_TYPE, SND_SOC_TPLG_TUPLE_TYPE_STRING, get_token_dai_type,
+@@ -1721,48 +1713,6 @@ static int sof_widget_load_dai(struct snd_soc_component *scomp, int index,
  	return ret;
  }
  
 -/*
-- * Mixer topology
+- * Buffer topology
 - */
 -
--static int sof_widget_load_mixer(struct snd_soc_component *scomp, int index,
--				 struct snd_sof_widget *swidget,
--				 struct snd_soc_tplg_dapm_widget *tw)
+-static int sof_widget_load_buffer(struct snd_soc_component *scomp, int index,
+-				  struct snd_sof_widget *swidget,
+-				  struct snd_soc_tplg_dapm_widget *tw)
 -{
 -	struct snd_soc_tplg_private *private = &tw->priv;
--	struct sof_ipc_comp_mixer *mixer;
--	size_t ipc_size = sizeof(*mixer);
+-	struct sof_ipc_buffer *buffer;
 -	int ret;
 -
--	mixer = (struct sof_ipc_comp_mixer *)
--		sof_comp_alloc(swidget, &ipc_size, index);
--	if (!mixer)
+-	buffer = kzalloc(sizeof(*buffer), GFP_KERNEL);
+-	if (!buffer)
 -		return -ENOMEM;
 -
--	/* configure mixer IPC message */
--	mixer->comp.type = SOF_COMP_MIXER;
--	mixer->config.hdr.size = sizeof(mixer->config);
+-	/* configure dai IPC message */
+-	buffer->comp.hdr.size = sizeof(*buffer);
+-	buffer->comp.hdr.cmd = SOF_IPC_GLB_TPLG_MSG | SOF_IPC_TPLG_BUFFER_NEW;
+-	buffer->comp.id = swidget->comp_id;
+-	buffer->comp.type = SOF_COMP_BUFFER;
+-	buffer->comp.pipeline_id = index;
+-	buffer->comp.core = swidget->core;
 -
--	ret = sof_parse_tokens(scomp, &mixer->config, comp_tokens,
--			       ARRAY_SIZE(comp_tokens), private->array,
+-	ret = sof_parse_tokens(scomp, buffer, buffer_tokens,
+-			       ARRAY_SIZE(buffer_tokens), private->array,
 -			       le32_to_cpu(private->size));
 -	if (ret != 0) {
--		dev_err(scomp->dev, "error: parse mixer.cfg tokens failed %d\n",
+-		dev_err(scomp->dev, "error: parse buffer tokens failed %d\n",
 -			private->size);
--		kfree(mixer);
+-		kfree(buffer);
 -		return ret;
 -	}
 -
--	sof_dbg_comp_config(scomp, &mixer->config);
+-	dev_dbg(scomp->dev, "buffer %s: size %d caps 0x%x\n",
+-		swidget->widget->name, buffer->size, buffer->caps);
 -
--	swidget->private = mixer;
+-	swidget->private = buffer;
 -
 -	return 0;
 -}
 -
- /*
-  * Mux topology
-  */
-@@ -2341,9 +2302,6 @@ static int sof_widget_ready(struct snd_soc_component *scomp, int index,
- 		list_add(&dai->list, &sdev->dai_list);
- 		swidget->private = dai;
+ /* bind PCM ID to host component ID */
+ static int spcm_bind(struct snd_soc_component *scomp, struct snd_sof_pcm *spcm,
+ 		     int dir)
+@@ -2479,8 +2429,6 @@ static int sof_widget_ready(struct snd_soc_component *scomp, int index,
+ 		ret = sof_widget_load_pga(scomp, index, swidget, tw);
  		break;
--	case snd_soc_dapm_mixer:
--		ret = sof_widget_load_mixer(scomp, index, swidget, tw);
--		break;
- 	case snd_soc_dapm_pga:
- 		if (!le32_to_cpu(tw->num_kcontrols)) {
- 			dev_err(scomp->dev, "invalid kcontrol count %d for volume\n",
-@@ -2353,6 +2311,7 @@ static int sof_widget_ready(struct snd_soc_component *scomp, int index,
- 		}
- 
- 		fallthrough;
-+	case snd_soc_dapm_mixer:
  	case snd_soc_dapm_buffer:
+-		ret = sof_widget_load_buffer(scomp, index, swidget, tw);
+-		break;
  	case snd_soc_dapm_scheduler:
  	case snd_soc_dapm_aif_out:
+ 	case snd_soc_dapm_aif_in:
 -- 
 2.25.1
 
