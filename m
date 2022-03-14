@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7886CC433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Mar 2022 20:11:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53A46C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Mar 2022 20:11:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A48C31884;
-	Mon, 14 Mar 2022 21:10:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A48C31884
+	by alsa0.perex.cz (Postfix) with ESMTPS id 95CC118D2;
+	Mon, 14 Mar 2022 21:10:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95CC118D2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647288689;
-	bh=D4oK3/Yt88ByafrlpUL4x3bzy7SU57aD3JwElD4+SuQ=;
+	s=default; t=1647288708;
+	bh=eQ0F73q5x+cYEqTjfiXAvssGk9YEa8QeRTdoWQa1dpc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HnyiVgLitG42ehlhcUGzOIp52UiMQicHMJXWtDAjpGuiuBV+Ih4ysNN1Mu7zmrTEQ
-	 EaB/IAKVL82SK4PmPd7+14PABR4qJ8FFxRdkRT65edLPukq+LR9Fy5QfDlPt6azTUi
-	 XR3uibhkG8SslGSQP4qt0uPdX38dO2gI1oZ5c/mc=
+	b=Rl2s7GvJwRN55v2cBBDUrEszdkPK2Qy0cgCvt6vOFs9n21lKX4hZXYnbWbyMM7Qhs
+	 F7AHsSjLlP68Sv0Q6kcQvIaLyOspxlOcNkiInERkh5pnEkt5+WnFEMi/zRl/hO8PuB
+	 dy1usKH4YHl6gNXxXmVXjcuNrYY1MP6FjDm5I58A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AD8B4F805B1;
-	Mon, 14 Mar 2022 21:06:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2D31AF805B5;
+	Mon, 14 Mar 2022 21:06:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 24AD7F8055C; Mon, 14 Mar 2022 21:06:05 +0100 (CET)
+ id 38BCAF80566; Mon, 14 Mar 2022 21:06:06 +0100 (CET)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 49068F8052F
- for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2022 21:05:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49068F8052F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 32ECDF80525
+ for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2022 21:05:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32ECDF80525
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="DyW5xWt+"
+ header.b="GvtV/CP3"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1647288353; x=1678824353;
+ t=1647288351; x=1678824351;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=D4oK3/Yt88ByafrlpUL4x3bzy7SU57aD3JwElD4+SuQ=;
- b=DyW5xWt+xV6SuyLBJKfzd2Ti8/us+9ul+mpr0t8vCgJB3UZpKWjDxOZ0
- hNWrMAksHX6157rKMnoU/o2NJdoAMUWndWjGkerOjuuHmhSoeSYeIlVfZ
- yz6sfevzX6K4Mkg8vucf9fE9/KCNHRNHwbYajwZLO5O8H6tQEuNdMbAog
- gVmJhmljf7oVMK9n9jtCMyekjr6iw83SjjgD5tptc2n74UhleAmLazWho
- LCh6I7xMsLKdVRKDJKifGk/vqW0yz94e5K4M3AVBkVD2VtQpAsf3j0Jaj
- /cExwthx2juLZll5bih4YF+Fu2rUNmtBypO6cecYY6tHEiqyAqnzzs6fm Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10286"; a="342563489"
-X-IronPort-AV: E=Sophos;i="5.90,181,1643702400"; d="scan'208";a="342563489"
+ bh=eQ0F73q5x+cYEqTjfiXAvssGk9YEa8QeRTdoWQa1dpc=;
+ b=GvtV/CP3BIiCkMBwi/ErUjoak2dDLyVjZCDihzW/6yiMqxIDpZEXDnAt
+ nNOC/8oKvai+0L34xAUDikPF1TxoxYk6LGdvZOPMGLKQFO+8e3HUCDPhg
+ WnanOc72/Ve0rqCU40FSYPqaWxTnCA1AF44c053j3r84IiBFtZoG2Ps9F
+ V+vYNJggzr5zKyO6Exrg4a5dxAiSLZD+Rk7cjNTbd1k70D9Io68n1+HXh
+ dg9PUgMAX9gHi90CclVbxBrfBN5HZPJ+APymRZefJI+DC1eWrR6rK5ppN
+ zzo7CjpZrqY6ByEwJ3803QCiO3y4THdNor8AJu1d6UcglJnVRxtymN34O g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10286"; a="342563487"
+X-IronPort-AV: E=Sophos;i="5.90,181,1643702400"; d="scan'208";a="342563487"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  14 Mar 2022 13:05:34 -0700
-X-IronPort-AV: E=Sophos;i="5.90,181,1643702400"; d="scan'208";a="634339917"
+X-IronPort-AV: E=Sophos;i="5.90,181,1643702400"; d="scan'208";a="634339912"
 Received: from pmishr1-mobl1.amr.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.254.25.117])
  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  14 Mar 2022 13:05:34 -0700
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 18/18] ASoC: SOF: topology: remove snd_sof_complete_pipeline()
-Date: Mon, 14 Mar 2022 13:05:20 -0700
-Message-Id: <20220314200520.1233427-20-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 16/18] ASoC: SOF: topology: Make control parsing IPC agnostic
+Date: Mon, 14 Mar 2022 13:05:18 -0700
+Message-Id: <20220314200520.1233427-18-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220314200520.1233427-1-ranjani.sridharan@linux.intel.com>
 References: <20220314200520.1233427-1-ranjani.sridharan@linux.intel.com>
@@ -88,169 +88,726 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add a new topology IPC op, pipeline_complete in struct ipc_tplg_ops
-and set the op for IPC3. Replace the calls to
-snd_sof_complete_pipeline() with the calls to the topology IPC
-pipeline_complete op.
+Make the control parser in topology IPC agnostic by introducing 2 new
+topology IPC ops, control_setup and control_free. These ops handle
+setting up/freeing the control data in the IPC format based on the IPC
+version.
+
+Along with this, modify the struct snd_sof_control to remove the
+IPC-specific field, control_data and replace it with the void pointer to
+ipc_control_data. Also, add a few new fields to store all the
+information parsed from topology.
+
+Finally, define and set the control setup/free ops for IPC3.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/ipc3-topology.c | 23 +++++++++++++++++++++++
- sound/soc/sof/sof-audio.c     | 18 ++++++++++++------
- sound/soc/sof/sof-audio.h     |  4 ++--
- sound/soc/sof/topology.c      | 23 -----------------------
- 4 files changed, 37 insertions(+), 31 deletions(-)
+ sound/soc/sof/control.c       |  26 ++---
+ sound/soc/sof/ipc.c           |   2 +-
+ sound/soc/sof/ipc3-topology.c | 151 ++++++++++++++++++++++++++++-
+ sound/soc/sof/sof-audio.h     |  20 +++-
+ sound/soc/sof/topology.c      | 177 ++++++++++------------------------
+ 5 files changed, 235 insertions(+), 141 deletions(-)
 
+diff --git a/sound/soc/sof/control.c b/sound/soc/sof/control.c
+index ef61936dad59..21ee0545945d 100644
+--- a/sound/soc/sof/control.c
++++ b/sound/soc/sof/control.c
+@@ -67,7 +67,7 @@ static inline u32 ipc_to_mixer(u32 value, u32 *volume_map, int size)
+ 
+ static void snd_sof_refresh_control(struct snd_sof_control *scontrol)
+ {
+-	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
++	struct sof_ipc_ctrl_data *cdata = scontrol->ipc_control_data;
+ 	struct snd_soc_component *scomp = scontrol->scomp;
+ 	int ret;
+ 
+@@ -97,7 +97,7 @@ int snd_sof_volume_get(struct snd_kcontrol *kcontrol,
+ 	struct soc_mixer_control *sm =
+ 		(struct soc_mixer_control *)kcontrol->private_value;
+ 	struct snd_sof_control *scontrol = sm->dobj.private;
+-	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
++	struct sof_ipc_ctrl_data *cdata = scontrol->ipc_control_data;
+ 	unsigned int i, channels = scontrol->num_channels;
+ 
+ 	snd_sof_refresh_control(scontrol);
+@@ -118,7 +118,7 @@ int snd_sof_volume_put(struct snd_kcontrol *kcontrol,
+ 		(struct soc_mixer_control *)kcontrol->private_value;
+ 	struct snd_sof_control *scontrol = sm->dobj.private;
+ 	struct snd_soc_component *scomp = scontrol->scomp;
+-	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
++	struct sof_ipc_ctrl_data *cdata = scontrol->ipc_control_data;
+ 	unsigned int i, channels = scontrol->num_channels;
+ 	bool change = false;
+ 	u32 value;
+@@ -166,7 +166,7 @@ int snd_sof_switch_get(struct snd_kcontrol *kcontrol,
+ 	struct soc_mixer_control *sm =
+ 		(struct soc_mixer_control *)kcontrol->private_value;
+ 	struct snd_sof_control *scontrol = sm->dobj.private;
+-	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
++	struct sof_ipc_ctrl_data *cdata = scontrol->ipc_control_data;
+ 	unsigned int i, channels = scontrol->num_channels;
+ 
+ 	snd_sof_refresh_control(scontrol);
+@@ -185,7 +185,7 @@ int snd_sof_switch_put(struct snd_kcontrol *kcontrol,
+ 		(struct soc_mixer_control *)kcontrol->private_value;
+ 	struct snd_sof_control *scontrol = sm->dobj.private;
+ 	struct snd_soc_component *scomp = scontrol->scomp;
+-	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
++	struct sof_ipc_ctrl_data *cdata = scontrol->ipc_control_data;
+ 	unsigned int i, channels = scontrol->num_channels;
+ 	bool change = false;
+ 	u32 value;
+@@ -214,7 +214,7 @@ int snd_sof_enum_get(struct snd_kcontrol *kcontrol,
+ 	struct soc_enum *se =
+ 		(struct soc_enum *)kcontrol->private_value;
+ 	struct snd_sof_control *scontrol = se->dobj.private;
+-	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
++	struct sof_ipc_ctrl_data *cdata = scontrol->ipc_control_data;
+ 	unsigned int i, channels = scontrol->num_channels;
+ 
+ 	snd_sof_refresh_control(scontrol);
+@@ -233,7 +233,7 @@ int snd_sof_enum_put(struct snd_kcontrol *kcontrol,
+ 		(struct soc_enum *)kcontrol->private_value;
+ 	struct snd_sof_control *scontrol = se->dobj.private;
+ 	struct snd_soc_component *scomp = scontrol->scomp;
+-	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
++	struct sof_ipc_ctrl_data *cdata = scontrol->ipc_control_data;
+ 	unsigned int i, channels = scontrol->num_channels;
+ 	bool change = false;
+ 	u32 value;
+@@ -260,7 +260,7 @@ int snd_sof_bytes_get(struct snd_kcontrol *kcontrol,
+ 		(struct soc_bytes_ext *)kcontrol->private_value;
+ 	struct snd_sof_control *scontrol = be->dobj.private;
+ 	struct snd_soc_component *scomp = scontrol->scomp;
+-	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
++	struct sof_ipc_ctrl_data *cdata = scontrol->ipc_control_data;
+ 	struct sof_abi_hdr *data = cdata->data;
+ 	size_t size;
+ 
+@@ -296,7 +296,7 @@ int snd_sof_bytes_put(struct snd_kcontrol *kcontrol,
+ 		(struct soc_bytes_ext *)kcontrol->private_value;
+ 	struct snd_sof_control *scontrol = be->dobj.private;
+ 	struct snd_soc_component *scomp = scontrol->scomp;
+-	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
++	struct sof_ipc_ctrl_data *cdata = scontrol->ipc_control_data;
+ 	struct sof_abi_hdr *data = cdata->data;
+ 	size_t size;
+ 
+@@ -335,7 +335,7 @@ int snd_sof_bytes_ext_put(struct snd_kcontrol *kcontrol,
+ 		(struct soc_bytes_ext *)kcontrol->private_value;
+ 	struct snd_sof_control *scontrol = be->dobj.private;
+ 	struct snd_soc_component *scomp = scontrol->scomp;
+-	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
++	struct sof_ipc_ctrl_data *cdata = scontrol->ipc_control_data;
+ 	struct snd_ctl_tlv header;
+ 	const struct snd_ctl_tlv __user *tlvd =
+ 		(const struct snd_ctl_tlv __user *)binary_data;
+@@ -409,7 +409,7 @@ int snd_sof_bytes_ext_volatile_get(struct snd_kcontrol *kcontrol, unsigned int _
+ 	struct soc_bytes_ext *be = (struct soc_bytes_ext *)kcontrol->private_value;
+ 	struct snd_sof_control *scontrol = be->dobj.private;
+ 	struct snd_soc_component *scomp = scontrol->scomp;
+-	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
++	struct sof_ipc_ctrl_data *cdata = scontrol->ipc_control_data;
+ 	struct snd_ctl_tlv header;
+ 	struct snd_ctl_tlv __user *tlvd = (struct snd_ctl_tlv __user *)binary_data;
+ 	size_t data_size;
+@@ -482,7 +482,7 @@ int snd_sof_bytes_ext_get(struct snd_kcontrol *kcontrol,
+ 		(struct soc_bytes_ext *)kcontrol->private_value;
+ 	struct snd_sof_control *scontrol = be->dobj.private;
+ 	struct snd_soc_component *scomp = scontrol->scomp;
+-	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
++	struct sof_ipc_ctrl_data *cdata = scontrol->ipc_control_data;
+ 	struct snd_ctl_tlv header;
+ 	struct snd_ctl_tlv __user *tlvd =
+ 		(struct snd_ctl_tlv __user *)binary_data;
+@@ -534,7 +534,7 @@ static void snd_sof_update_control(struct snd_sof_control *scontrol,
+ 	struct sof_ipc_ctrl_data *local_cdata;
+ 	int i;
+ 
+-	local_cdata = scontrol->control_data;
++	local_cdata = scontrol->ipc_control_data;
+ 
+ 	if (cdata->cmd == SOF_CTRL_CMD_BINARY) {
+ 		if (cdata->num_elems != local_cdata->data->size) {
+diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
+index cf892859355a..19a294cbbb8d 100644
+--- a/sound/soc/sof/ipc.c
++++ b/sound/soc/sof/ipc.c
+@@ -812,7 +812,7 @@ static int sof_set_get_large_ctrl_data(struct snd_sof_dev *sdev,
+ int snd_sof_ipc_set_get_comp_data(struct snd_sof_control *scontrol, bool set)
+ {
+ 	struct snd_soc_component *scomp = scontrol->scomp;
+-	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
++	struct sof_ipc_ctrl_data *cdata = scontrol->ipc_control_data;
+ 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
+ 	struct sof_ipc_fw_ready *ready = &sdev->fw_ready;
+ 	struct sof_ipc_fw_version *v = &ready->version;
 diff --git a/sound/soc/sof/ipc3-topology.c b/sound/soc/sof/ipc3-topology.c
-index ea1311192877..fe1d5a56080a 100644
+index e6aa78d492ea..96553d103c85 100644
 --- a/sound/soc/sof/ipc3-topology.c
 +++ b/sound/soc/sof/ipc3-topology.c
-@@ -1887,6 +1887,28 @@ static int sof_ipc3_widget_bind_event(struct snd_soc_component *scomp,
- 	return -EINVAL;
+@@ -12,6 +12,9 @@
+ #include "sof-audio.h"
+ #include "ops.h"
+ 
++/* Full volume for default values */
++#define VOL_ZERO_DB	BIT(VOLUME_FWL)
++
+ struct sof_widget_data {
+ 	int ctrl_type;
+ 	int ipc_cmd;
+@@ -743,6 +746,7 @@ static int sof_get_control_data(struct snd_soc_component *scomp,
+ 				struct sof_widget_data *wdata, size_t *size)
+ {
+ 	const struct snd_kcontrol_new *kc;
++	struct sof_ipc_ctrl_data *cdata;
+ 	struct soc_mixer_control *sm;
+ 	struct soc_bytes_ext *sbe;
+ 	struct soc_enum *se;
+@@ -777,7 +781,8 @@ static int sof_get_control_data(struct snd_soc_component *scomp,
+ 			return -EINVAL;
+ 		}
+ 
+-		wdata[i].pdata = wdata[i].control->control_data->data;
++		cdata = wdata[i].control->ipc_control_data;
++		wdata[i].pdata = cdata->data;
+ 		if (!wdata[i].pdata)
+ 			return -EINVAL;
+ 
+@@ -789,7 +794,7 @@ static int sof_get_control_data(struct snd_soc_component *scomp,
+ 		*size += wdata[i].pdata->size;
+ 
+ 		/* get data type */
+-		switch (wdata[i].control->control_data->cmd) {
++		switch (cdata->cmd) {
+ 		case SOF_CTRL_CMD_VOLUME:
+ 		case SOF_CTRL_CMD_ENUM:
+ 		case SOF_CTRL_CMD_SWITCH:
+@@ -1553,6 +1558,146 @@ static int sof_ipc3_route_setup(struct snd_sof_dev *sdev, struct snd_sof_route *
+ 	return ret;
  }
  
-+static int sof_ipc3_complete_pipeline(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget)
++static int sof_ipc3_control_load_bytes(struct snd_sof_dev *sdev, struct snd_sof_control *scontrol)
 +{
-+	struct sof_ipc_pipe_ready ready;
-+	struct sof_ipc_reply reply;
++	struct sof_ipc_ctrl_data *cdata;
 +	int ret;
 +
-+	dev_dbg(sdev->dev, "tplg: complete pipeline %s id %d\n",
-+		swidget->widget->name, swidget->comp_id);
++	scontrol->ipc_control_data = kzalloc(scontrol->max_size, GFP_KERNEL);
++	if (!scontrol->ipc_control_data)
++		return -ENOMEM;
 +
-+	memset(&ready, 0, sizeof(ready));
-+	ready.hdr.size = sizeof(ready);
-+	ready.hdr.cmd = SOF_IPC_GLB_TPLG_MSG | SOF_IPC_TPLG_PIPE_COMPLETE;
-+	ready.comp_id = swidget->comp_id;
++	if (scontrol->max_size < sizeof(*cdata) ||
++	    scontrol->max_size < sizeof(struct sof_abi_hdr)) {
++		ret = -EINVAL;
++		goto err;
++	}
 +
-+	ret = sof_ipc_tx_message(sdev->ipc, ready.hdr.cmd, &ready, sizeof(ready), &reply,
-+				 sizeof(reply));
-+	if (ret < 0)
-+		return ret;
++	/* init the get/put bytes data */
++	if (scontrol->priv_size > scontrol->max_size - sizeof(*cdata)) {
++		dev_err(sdev->dev, "err: bytes data size %zu exceeds max %zu.\n",
++			scontrol->priv_size, scontrol->max_size - sizeof(*cdata));
++		ret = -EINVAL;
++		goto err;
++	}
 +
-+	return 1;
++	scontrol->size = sizeof(struct sof_ipc_ctrl_data) + scontrol->priv_size;
++
++	cdata = scontrol->ipc_control_data;
++	cdata->cmd = SOF_CTRL_CMD_BINARY;
++	cdata->index = scontrol->index;
++
++	if (scontrol->priv_size > 0) {
++		memcpy(cdata->data, scontrol->priv, scontrol->priv_size);
++		kfree(scontrol->priv);
++
++		if (cdata->data->magic != SOF_ABI_MAGIC) {
++			dev_err(sdev->dev, "Wrong ABI magic 0x%08x.\n", cdata->data->magic);
++			ret = -EINVAL;
++			goto err;
++		}
++
++		if (SOF_ABI_VERSION_INCOMPATIBLE(SOF_ABI_VERSION, cdata->data->abi)) {
++			dev_err(sdev->dev, "Incompatible ABI version 0x%08x.\n",
++				cdata->data->abi);
++			ret = -EINVAL;
++			goto err;
++		}
++
++		if (cdata->data->size + sizeof(struct sof_abi_hdr) != scontrol->priv_size) {
++			dev_err(sdev->dev, "Conflict in bytes vs. priv size.\n");
++			ret = -EINVAL;
++			goto err;
++		}
++	}
++
++	return 0;
++err:
++	kfree(scontrol->ipc_control_data);
++	return ret;
++}
++
++static int sof_ipc3_control_load_volume(struct snd_sof_dev *sdev, struct snd_sof_control *scontrol)
++{
++	struct sof_ipc_ctrl_data *cdata;
++	int i;
++
++	/* init the volume get/put data */
++	scontrol->size = struct_size(cdata, chanv, scontrol->num_channels);
++
++	scontrol->ipc_control_data = kzalloc(scontrol->size, GFP_KERNEL);
++	if (!scontrol->ipc_control_data)
++		return -ENOMEM;
++
++	cdata = scontrol->ipc_control_data;
++	cdata->index = scontrol->index;
++
++	/* set cmd for mixer control */
++	if (scontrol->max == 1) {
++		cdata->cmd = SOF_CTRL_CMD_SWITCH;
++		return 0;
++	}
++
++	cdata->cmd = SOF_CTRL_CMD_VOLUME;
++
++	/* set default volume values to 0dB in control */
++	for (i = 0; i < scontrol->num_channels; i++) {
++		cdata->chanv[i].channel = i;
++		cdata->chanv[i].value = VOL_ZERO_DB;
++	}
++
++	return 0;
++}
++
++static int sof_ipc3_control_load_enum(struct snd_sof_dev *sdev, struct snd_sof_control *scontrol)
++{
++	struct sof_ipc_ctrl_data *cdata;
++
++	/* init the enum get/put data */
++	scontrol->size = struct_size(cdata, chanv, scontrol->num_channels);
++
++	scontrol->ipc_control_data = kzalloc(scontrol->size, GFP_KERNEL);
++	if (!scontrol->ipc_control_data)
++		return -ENOMEM;
++
++	cdata = scontrol->ipc_control_data;
++	cdata->index = scontrol->index;
++	cdata->cmd = SOF_CTRL_CMD_ENUM;
++
++	return 0;
++}
++
++static int sof_ipc3_control_setup(struct snd_sof_dev *sdev, struct snd_sof_control *scontrol)
++{
++	switch (scontrol->info_type) {
++	case SND_SOC_TPLG_CTL_VOLSW:
++	case SND_SOC_TPLG_CTL_VOLSW_SX:
++	case SND_SOC_TPLG_CTL_VOLSW_XR_SX:
++		return sof_ipc3_control_load_volume(sdev, scontrol);
++	case SND_SOC_TPLG_CTL_BYTES:
++		return sof_ipc3_control_load_bytes(sdev, scontrol);
++	case SND_SOC_TPLG_CTL_ENUM:
++	case SND_SOC_TPLG_CTL_ENUM_VALUE:
++		return sof_ipc3_control_load_enum(sdev, scontrol);
++	default:
++		break;
++	}
++
++	return 0;
++}
++
++static int sof_ipc3_control_free(struct snd_sof_dev *sdev, struct snd_sof_control *scontrol)
++{
++	struct sof_ipc_free fcomp;
++
++	fcomp.hdr.cmd = SOF_IPC_GLB_TPLG_MSG | SOF_IPC_TPLG_COMP_FREE;
++	fcomp.hdr.size = sizeof(fcomp);
++	fcomp.id = scontrol->comp_id;
++
++	/* send IPC to the DSP */
++	return sof_ipc_tx_message(sdev->ipc, fcomp.hdr.cmd, &fcomp, sizeof(fcomp), NULL, 0);
 +}
 +
  /* token list for each topology object */
  static enum sof_tokens host_token_list[] = {
  	SOF_CORE_TOKENS,
-@@ -1988,6 +2010,7 @@ static const struct sof_ipc_tplg_ops ipc3_tplg_ops = {
+@@ -1651,6 +1796,8 @@ static const struct sof_ipc_tplg_widget_ops tplg_ipc3_widget_ops[SND_SOC_DAPM_TY
+ static const struct sof_ipc_tplg_ops ipc3_tplg_ops = {
+ 	.widget = tplg_ipc3_widget_ops,
  	.route_setup = sof_ipc3_route_setup,
- 	.control_setup = sof_ipc3_control_setup,
- 	.control_free = sof_ipc3_control_free,
-+	.pipeline_complete = sof_ipc3_complete_pipeline,
++	.control_setup = sof_ipc3_control_setup,
++	.control_free = sof_ipc3_control_free,
  	.token_list = ipc3_token_list,
  };
  
-diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
-index c02dcad03b23..683c290bb69a 100644
---- a/sound/soc/sof/sof-audio.c
-+++ b/sound/soc/sof/sof-audio.c
-@@ -362,6 +362,7 @@ static int sof_setup_pipeline_connections(struct snd_sof_dev *sdev,
- 
- int sof_widget_list_setup(struct snd_sof_dev *sdev, struct snd_sof_pcm *spcm, int dir)
- {
-+	const struct sof_ipc_tplg_ops *ipc_tplg_ops = sdev->ipc->ops->tplg;
- 	struct snd_soc_dapm_widget_list *list = spcm->stream[dir].list;
- 	struct snd_soc_dapm_widget *widget;
- 	int i, ret, num_widgets;
-@@ -432,10 +433,12 @@ int sof_widget_list_setup(struct snd_sof_dev *sdev, struct snd_sof_pcm *spcm, in
- 		if (pipe_widget->complete)
- 			continue;
- 
--		pipe_widget->complete = snd_sof_complete_pipeline(sdev, pipe_widget);
--		if (pipe_widget->complete < 0) {
--			ret = pipe_widget->complete;
--			goto widget_free;
-+		if (ipc_tplg_ops->pipeline_complete) {
-+			pipe_widget->complete = ipc_tplg_ops->pipeline_complete(sdev, pipe_widget);
-+			if (pipe_widget->complete < 0) {
-+				ret = pipe_widget->complete;
-+				goto widget_free;
-+			}
- 		}
- 	}
- 
-@@ -657,8 +660,11 @@ int sof_set_up_pipelines(struct snd_sof_dev *sdev, bool verify)
- 					return ret;
- 			}
- 
--			swidget->complete =
--				snd_sof_complete_pipeline(sdev, swidget);
-+			if (ipc_tplg_ops->pipeline_complete) {
-+				swidget->complete = ipc_tplg_ops->pipeline_complete(sdev, swidget);
-+				if (swidget->complete < 0)
-+					return swidget->complete;
-+			}
- 			break;
- 		default:
- 			break;
 diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
-index a14b872ea261..622d43707b27 100644
+index bde86e078e08..a14b872ea261 100644
 --- a/sound/soc/sof/sof-audio.h
 +++ b/sound/soc/sof/sof-audio.h
-@@ -68,6 +68,7 @@ struct sof_ipc_tplg_widget_ops {
+@@ -30,8 +30,15 @@
+ 
+ #define WIDGET_IS_DAI(id) ((id) == snd_soc_dapm_dai_in || (id) == snd_soc_dapm_dai_out)
+ 
++/*
++ * Volume fractional word length define to 16 sets
++ * the volume linear gain value to use Qx.16 format
++ */
++#define VOLUME_FWL	16
++
+ struct snd_sof_widget;
+ struct snd_sof_route;
++struct snd_sof_control;
+ 
+ /**
+  * struct sof_ipc_tplg_widget_ops - IPC-specific ops for topology widgets
+@@ -59,11 +66,15 @@ struct sof_ipc_tplg_widget_ops {
+  * @token_list: List of all tokens supported by the IPC version. The size of the token_list
+  *		array should be SOF_TOKEN_COUNT. The unused elements in the array will be
   *		initialized to 0.
-  * @control_setup: Function pointer for setting up kcontrol IPC-specific data
-  * @control_free: Function pointer for freeing kcontrol IPC-specific data
-+ * @pipeline_complete: Function pointer for pipeline complete IPC
++ * @control_setup: Function pointer for setting up kcontrol IPC-specific data
++ * @control_free: Function pointer for freeing kcontrol IPC-specific data
   */
  struct sof_ipc_tplg_ops {
  	const struct sof_ipc_tplg_widget_ops *widget;
-@@ -75,6 +76,7 @@ struct sof_ipc_tplg_ops {
+ 	int (*route_setup)(struct snd_sof_dev *sdev, struct snd_sof_route *sroute);
  	const struct sof_token_info *token_list;
- 	int (*control_setup)(struct snd_sof_dev *sdev, struct snd_sof_control *scontrol);
- 	int (*control_free)(struct snd_sof_dev *sdev, struct snd_sof_control *scontrol);
-+	int (*pipeline_complete)(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget);
++	int (*control_setup)(struct snd_sof_dev *sdev, struct snd_sof_control *scontrol);
++	int (*control_free)(struct snd_sof_dev *sdev, struct snd_sof_control *scontrol);
  };
  
  /** struct snd_sof_tuple - Tuple info
-@@ -318,8 +320,6 @@ void snd_sof_control_notify(struct snd_sof_dev *sdev,
-  * be freed by snd_soc_unregister_component,
-  */
- int snd_sof_load_topology(struct snd_soc_component *scomp, const char *file);
--int snd_sof_complete_pipeline(struct snd_sof_dev *sdev,
--			      struct snd_sof_widget *swidget);
+@@ -165,13 +176,20 @@ struct snd_sof_led_control {
+ /* ALSA SOF Kcontrol device */
+ struct snd_sof_control {
+ 	struct snd_soc_component *scomp;
++	const char *name;
+ 	int comp_id;
+ 	int min_volume_step; /* min volume step for volume_table */
+ 	int max_volume_step; /* max volume step for volume_table */
+ 	int num_channels;
+ 	unsigned int access;
+ 	u32 readback_offset; /* offset to mmapped data if used */
+-	struct sof_ipc_ctrl_data *control_data;
++	int info_type;
++	int index; /* pipeline ID */
++	void *priv; /* private data copied from topology */
++	size_t priv_size; /* size of private data */
++	size_t max_size;
++	void *ipc_control_data;
++	int max; /* applicable to volume controls */
+ 	u32 size;	/* cdata size */
+ 	u32 *volume_table; /* volume table computed from tlv data*/
  
- /*
-  * Stream IPC
 diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index 70677a36c304..367fbe2d5b31 100644
+index c9c72e94f696..f7adf058a768 100644
 --- a/sound/soc/sof/topology.c
 +++ b/sound/soc/sof/topology.c
-@@ -1825,29 +1825,6 @@ static int sof_route_load(struct snd_soc_component *scomp, int index,
+@@ -28,15 +28,9 @@
+ #define VOL_TWENTIETH_ROOT_OF_TEN	73533
+ /* 40th root of 10 in Q1.16 fixed-point notation*/
+ #define VOL_FORTIETH_ROOT_OF_TEN	69419
+-/*
+- * Volume fractional word length define to 16 sets
+- * the volume linear gain value to use Qx.16 format
+- */
+-#define VOLUME_FWL	16
++
+ /* 0.5 dB step value in topology TLV */
+ #define VOL_HALF_DB_STEP	50
+-/* Full volume for default values */
+-#define VOL_ZERO_DB	BIT(VOLUME_FWL)
+ 
+ /* TLV data items */
+ #define TLV_ITEMS	3
+@@ -944,16 +938,12 @@ static int sof_control_load_volume(struct snd_soc_component *scomp,
+ 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
+ 	struct snd_soc_tplg_mixer_control *mc =
+ 		container_of(hdr, struct snd_soc_tplg_mixer_control, hdr);
+-	struct sof_ipc_ctrl_data *cdata;
+ 	int tlv[TLV_ITEMS];
+-	unsigned int i;
+ 	int ret;
+ 
+ 	/* validate topology data */
+-	if (le32_to_cpu(mc->num_channels) > SND_SOC_TPLG_MAX_CHAN) {
+-		ret = -EINVAL;
+-		goto out;
+-	}
++	if (le32_to_cpu(mc->num_channels) > SND_SOC_TPLG_MAX_CHAN)
++		return -EINVAL;
+ 
+ 	/*
+ 	 * If control has more than 2 channels we need to override the info. This is because even if
+@@ -964,48 +954,26 @@ static int sof_control_load_volume(struct snd_soc_component *scomp,
+ 	if (le32_to_cpu(mc->num_channels) > 2)
+ 		kc->info = snd_sof_volume_info;
+ 
+-	/* init the volume get/put data */
+-	scontrol->size = struct_size(scontrol->control_data, chanv,
+-				     le32_to_cpu(mc->num_channels));
+-	scontrol->control_data = kzalloc(scontrol->size, GFP_KERNEL);
+-	if (!scontrol->control_data) {
+-		ret = -ENOMEM;
+-		goto out;
+-	}
+-
+ 	scontrol->comp_id = sdev->next_comp_id;
+ 	scontrol->min_volume_step = le32_to_cpu(mc->min);
+ 	scontrol->max_volume_step = le32_to_cpu(mc->max);
+ 	scontrol->num_channels = le32_to_cpu(mc->num_channels);
+-	scontrol->control_data->index = kc->index;
+ 
+-	/* set cmd for mixer control */
+-	if (le32_to_cpu(mc->max) == 1) {
+-		scontrol->control_data->cmd = SOF_CTRL_CMD_SWITCH;
++	scontrol->max = le32_to_cpu(mc->max);
++	if (le32_to_cpu(mc->max) == 1)
+ 		goto skip;
+-	}
+-
+-	scontrol->control_data->cmd = SOF_CTRL_CMD_VOLUME;
+ 
+ 	/* extract tlv data */
+ 	if (!kc->tlv.p || get_tlv_data(kc->tlv.p, tlv) < 0) {
+ 		dev_err(scomp->dev, "error: invalid TLV data\n");
+-		ret = -EINVAL;
+-		goto out_free;
++		return -EINVAL;
+ 	}
+ 
+ 	/* set up volume table */
+ 	ret = set_up_volume_table(scontrol, tlv, le32_to_cpu(mc->max) + 1);
+ 	if (ret < 0) {
+ 		dev_err(scomp->dev, "error: setting up volume table\n");
+-		goto out_free;
+-	}
+-
+-	/* set default volume values to 0dB in control */
+-	cdata = scontrol->control_data;
+-	for (i = 0; i < scontrol->num_channels; i++) {
+-		cdata->chanv[i].channel = i;
+-		cdata->chanv[i].value = VOL_ZERO_DB;
++		return ret;
+ 	}
+ 
+ skip:
+@@ -1016,7 +984,7 @@ static int sof_control_load_volume(struct snd_soc_component *scomp,
+ 	if (ret != 0) {
+ 		dev_err(scomp->dev, "error: parse led tokens failed %d\n",
+ 			le32_to_cpu(mc->priv.size));
+-		goto out_free_table;
++		goto err;
+ 	}
+ 
+ 	dev_dbg(scomp->dev, "tplg: load kcontrol index %d chans %d\n",
+@@ -1024,12 +992,10 @@ static int sof_control_load_volume(struct snd_soc_component *scomp,
+ 
+ 	return 0;
+ 
+-out_free_table:
++err:
+ 	if (le32_to_cpu(mc->max) > 1)
+ 		kfree(scontrol->volume_table);
+-out_free:
+-	kfree(scontrol->control_data);
+-out:
++
  	return ret;
  }
  
--int snd_sof_complete_pipeline(struct snd_sof_dev *sdev,
--			      struct snd_sof_widget *swidget)
--{
--	struct sof_ipc_pipe_ready ready;
--	struct sof_ipc_reply reply;
+@@ -1046,17 +1012,8 @@ static int sof_control_load_enum(struct snd_soc_component *scomp,
+ 	if (le32_to_cpu(ec->num_channels) > SND_SOC_TPLG_MAX_CHAN)
+ 		return -EINVAL;
+ 
+-	/* init the enum get/put data */
+-	scontrol->size = struct_size(scontrol->control_data, chanv,
+-				     le32_to_cpu(ec->num_channels));
+-	scontrol->control_data = kzalloc(scontrol->size, GFP_KERNEL);
+-	if (!scontrol->control_data)
+-		return -ENOMEM;
+-
+ 	scontrol->comp_id = sdev->next_comp_id;
+ 	scontrol->num_channels = le32_to_cpu(ec->num_channels);
+-	scontrol->control_data->index = kc->index;
+-	scontrol->control_data->cmd = SOF_CTRL_CMD_ENUM;
+ 
+ 	dev_dbg(scomp->dev, "tplg: load kcontrol index %d chans %d comp_id %d\n",
+ 		scontrol->comp_id, scontrol->num_channels, scontrol->comp_id);
+@@ -1070,77 +1027,27 @@ static int sof_control_load_bytes(struct snd_soc_component *scomp,
+ 				  struct snd_soc_tplg_ctl_hdr *hdr)
+ {
+ 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
+-	struct sof_ipc_ctrl_data *cdata;
+ 	struct snd_soc_tplg_bytes_control *control =
+ 		container_of(hdr, struct snd_soc_tplg_bytes_control, hdr);
+ 	struct soc_bytes_ext *sbe = (struct soc_bytes_ext *)kc->private_value;
+-	size_t max_size = sbe->max;
+ 	size_t priv_size = le32_to_cpu(control->priv.size);
 -	int ret;
 -
--	dev_dbg(sdev->dev, "tplg: complete pipeline %s id %d\n",
--		swidget->widget->name, swidget->comp_id);
+-	if (max_size < sizeof(struct sof_ipc_ctrl_data) ||
+-	    max_size < sizeof(struct sof_abi_hdr)) {
+-		ret = -EINVAL;
+-		goto out;
+-	}
 -
--	memset(&ready, 0, sizeof(ready));
--	ready.hdr.size = sizeof(ready);
--	ready.hdr.cmd = SOF_IPC_GLB_TPLG_MSG | SOF_IPC_TPLG_PIPE_COMPLETE;
--	ready.comp_id = swidget->comp_id;
+-	/* init the get/put bytes data */
+-	if (priv_size > max_size - sizeof(struct sof_ipc_ctrl_data)) {
+-		dev_err(scomp->dev, "err: bytes data size %zu exceeds max %zu.\n",
+-			priv_size, max_size - sizeof(struct sof_ipc_ctrl_data));
+-		ret = -EINVAL;
+-		goto out;
+-	}
 -
--	ret = sof_ipc_tx_message(sdev->ipc,
--				 ready.hdr.cmd, &ready, sizeof(ready), &reply,
--				 sizeof(reply));
--	if (ret < 0)
--		return ret;
--	return 1;
--}
+-	scontrol->size = sizeof(struct sof_ipc_ctrl_data) + priv_size;
 -
- /**
-  * sof_set_pipe_widget - Set pipe_widget for a component
-  * @sdev: pointer to struct snd_sof_dev
+-	scontrol->control_data = kzalloc(max_size, GFP_KERNEL);
+-	cdata = scontrol->control_data;
+-	if (!scontrol->control_data) {
+-		ret = -ENOMEM;
+-		goto out;
+-	}
+ 
++	scontrol->max_size = sbe->max;
+ 	scontrol->comp_id = sdev->next_comp_id;
+-	scontrol->control_data->cmd = SOF_CTRL_CMD_BINARY;
+-	scontrol->control_data->index = kc->index;
+ 
+-	dev_dbg(scomp->dev, "tplg: load kcontrol index %d chans %d\n",
+-		scontrol->comp_id, scontrol->num_channels);
++	dev_dbg(scomp->dev, "tplg: load kcontrol index %d\n", scontrol->comp_id);
+ 
+-	if (le32_to_cpu(control->priv.size) > 0) {
+-		memcpy(cdata->data, control->priv.data,
+-		       le32_to_cpu(control->priv.size));
++	/* copy the private data */
++	if (priv_size > 0) {
++		scontrol->priv = kzalloc(priv_size, GFP_KERNEL);
++		if (!scontrol->priv)
++			return -ENOMEM;
+ 
+-		if (cdata->data->magic != SOF_ABI_MAGIC) {
+-			dev_err(scomp->dev, "error: Wrong ABI magic 0x%08x.\n",
+-				cdata->data->magic);
+-			ret = -EINVAL;
+-			goto out_free;
+-		}
+-		if (SOF_ABI_VERSION_INCOMPATIBLE(SOF_ABI_VERSION,
+-						 cdata->data->abi)) {
+-			dev_err(scomp->dev,
+-				"error: Incompatible ABI version 0x%08x.\n",
+-				cdata->data->abi);
+-			ret = -EINVAL;
+-			goto out_free;
+-		}
+-		if (cdata->data->size + sizeof(struct sof_abi_hdr) !=
+-		    le32_to_cpu(control->priv.size)) {
+-			dev_err(scomp->dev,
+-				"error: Conflict in bytes vs. priv size.\n");
+-			ret = -EINVAL;
+-			goto out_free;
+-		}
++		memcpy(scontrol->priv, control->priv.data, priv_size);
++		scontrol->priv_size = priv_size;
+ 	}
+ 
+ 	return 0;
+-
+-out_free:
+-	kfree(scontrol->control_data);
+-out:
+-	return ret;
+ }
+ 
+ /* external kcontrol init - used for any driver specific init */
+@@ -1163,8 +1070,14 @@ static int sof_control_load(struct snd_soc_component *scomp, int index,
+ 	if (!scontrol)
+ 		return -ENOMEM;
+ 
++	scontrol->name = kstrdup(hdr->name, GFP_KERNEL);
++	if (!scontrol->name)
++		return -ENOMEM;
++
+ 	scontrol->scomp = scomp;
+ 	scontrol->access = kc->access;
++	scontrol->info_type = le32_to_cpu(hdr->ops.info);
++	scontrol->index = kc->index;
+ 
+ 	switch (le32_to_cpu(hdr->ops.info)) {
+ 	case SND_SOC_TPLG_CTL_VOLSW:
+@@ -1215,22 +1128,26 @@ static int sof_control_unload(struct snd_soc_component *scomp,
+ 			      struct snd_soc_dobj *dobj)
+ {
+ 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
+-	struct sof_ipc_free fcomp;
++	const struct sof_ipc_tplg_ops *ipc_tplg_ops = sdev->ipc->ops->tplg;
+ 	struct snd_sof_control *scontrol = dobj->private;
++	int ret = 0;
+ 
+-	dev_dbg(scomp->dev, "tplg: unload control name : %s\n", scomp->name);
++	dev_dbg(scomp->dev, "tplg: unload control name : %s\n", scontrol->name);
+ 
+-	fcomp.hdr.cmd = SOF_IPC_GLB_TPLG_MSG | SOF_IPC_TPLG_COMP_FREE;
+-	fcomp.hdr.size = sizeof(fcomp);
+-	fcomp.id = scontrol->comp_id;
++	if (ipc_tplg_ops->control_free) {
++		ret = ipc_tplg_ops->control_free(sdev, scontrol);
++		if (ret < 0)
++			dev_err(scomp->dev, "failed to free control: %s\n", scontrol->name);
++	}
+ 
+-	kfree(scontrol->control_data);
++	/* free all data before returning in case of error too */
++	kfree(scontrol->ipc_control_data);
++	kfree(scontrol->priv);
++	kfree(scontrol->name);
+ 	list_del(&scontrol->list);
+ 	kfree(scontrol);
+-	/* send IPC to the DSP */
+-	return sof_ipc_tx_message(sdev->ipc,
+-				  fcomp.hdr.cmd, &fcomp, sizeof(fcomp),
+-				  NULL, 0);
++
++	return ret;
+ }
+ 
+ /*
+@@ -1657,7 +1574,7 @@ static int sof_widget_unload(struct snd_soc_component *scomp,
+ 			dev_warn(scomp->dev, "unsupported kcontrol_type\n");
+ 			goto out;
+ 		}
+-		kfree(scontrol->control_data);
++		kfree(scontrol->ipc_control_data);
+ 		list_del(&scontrol->list);
+ 		kfree(scontrol);
+ 	}
+@@ -2167,10 +2084,22 @@ static int sof_complete(struct snd_soc_component *scomp)
+ 	struct snd_sof_widget *swidget, *comp_swidget;
+ 	const struct sof_ipc_tplg_ops *ipc_tplg_ops = sdev->ipc->ops->tplg;
+ 	const struct sof_ipc_tplg_widget_ops *widget_ops = ipc_tplg_ops->widget;
++	struct snd_sof_control *scontrol;
+ 	int ret;
+ 
++	/* first update all control IPC structures based on the IPC version */
++	if (ipc_tplg_ops->control_setup)
++		list_for_each_entry(scontrol, &sdev->kcontrol_list, list) {
++			ret = ipc_tplg_ops->control_setup(sdev, scontrol);
++			if (ret < 0) {
++				dev_err(sdev->dev, "failed updating IPC struct for control %s\n",
++					scontrol->name);
++				return ret;
++			}
++		}
++
+ 	/*
+-	 * now update all widget IPC structures. If any of the ipc_setup callbacks fail, the
++	 * then update all widget IPC structures. If any of the ipc_setup callbacks fail, the
+ 	 * topology will be removed and all widgets will be unloaded resulting in freeing all
+ 	 * associated memories.
+ 	 */
 -- 
 2.25.1
 
