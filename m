@@ -4,84 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A861EC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Mar 2022 16:59:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1FEC6C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Mar 2022 23:09:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9CF9B1915;
-	Tue, 15 Mar 2022 17:58:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CF9B1915
+	by alsa0.perex.cz (Postfix) with ESMTPS id ADBCA1720;
+	Wed, 16 Mar 2022 00:08:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ADBCA1720
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647363566;
-	bh=zM0lubq46pAS3qfMjZ/ip7toEV0EVU15WBDNObOZH1A=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=aPgPbXcNBqZ2aevATKvBLv+uuv/VSi+JnUbmymX8Zf5r87OzzSaf2tPwj/8KH+JIV
-	 R1+35NsH1xOst+iZ9WMSl+8usQkAkIyS48ibUGy6lFXGV/+r6JsnkQ6opvH/mKEq+R
-	 ecZrljbTHk6nqgd4dSWoVhQqoQJJ0LEmW68JdLwo=
+	s=default; t=1647385755;
+	bh=SwyxCuranURw7tTRUUtas+VyRImoaP6B201U1CG7Dg0=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=RbAYvrOgTFuAUgLg+MjoTMq6qCCeugYx6HYCyC3jQEXr2wMPPci9kjC021rULFisp
+	 Ci3JKWE4v4477yeAN8n0qHEf9EQSL3iaEYRkUvUgN1uzXgAnBn1S0HZk6iFrR6+t+y
+	 8610DXBWTRFoBqAl44u1A/MvI1kZLpUhf8Fzo/1g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3CB9BF8012C;
-	Tue, 15 Mar 2022 17:58:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4A82FF80095;
+	Wed, 16 Mar 2022 00:08:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9E5C2F80212; Tue, 15 Mar 2022 17:58:34 +0100 (CET)
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id DE39EF80162; Wed, 16 Mar 2022 00:08:23 +0100 (CET)
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com
+ [IPv6:2a00:1450:4864:20::42e])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A6C01F8012C
- for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2022 17:58:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6C01F8012C
+ by alsa1.perex.cz (Postfix) with ESMTPS id ED9B6F80095
+ for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2022 00:08:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED9B6F80095
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com
- header.b="1nlh45Ik"
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
- by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 22FFqNIg026979;
- Tue, 15 Mar 2022 17:58:26 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
- h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=caahflL2f4uKgikEHbofBQ5amNr4llMFHImCxFrJh4s=;
- b=1nlh45Ik5bA2fFamcqJbVMDTgFXVklS/wYIU6TGQzgvNU7t2icEOLcGQe8IbvQ3L7Efr
- xHBhdxb87w5PTw/Qgo6w61BGrSbG+/bUbsmJ/mtyKaMcZzrt2Hp/ffeJio/wNvISPLmb
- hf1Za0xXuuqhOiOksGPnq/qCKb2IaAp1jwlUbBCmSxypYrjhRaiMqFGjiBSUzGKAq/t/
- U1fRyioOLLnvEgyFYjxL33L7ghaLXqrSOq1Dvtb0L/Ma4JJ3f5zsJCYnDEYtMIPlkQOs
- 3Biu6rgTB/1UmVtkc9JVhx0xdrF13IwHaDJHo9LoiLifkv+VLvlKzi49vLjuRBRBxojV hA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
- by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3etj2amhhe-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 15 Mar 2022 17:58:26 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
- by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 05716100034;
- Tue, 15 Mar 2022 17:58:22 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
- by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id F1F95231DDF;
- Tue, 15 Mar 2022 17:58:21 +0100 (CET)
-Received: from [10.211.6.120] (10.75.127.49) by SFHDAG2NODE2.st.com
- (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.26; Tue, 15 Mar
- 2022 17:58:21 +0100
-Message-ID: <fceeff3f-7b70-15ad-1833-9d6ae9aa2776@foss.st.com>
-Date: Tue, 15 Mar 2022 17:58:20 +0100
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="bRH/YUTY"
+Received: by mail-wr1-x42e.google.com with SMTP id x13so625431wrg.4
+ for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2022 16:08:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=PtiiQiHIQhMd0RX5LgSCyiXCNdoSA3NRLMvs3SxeOlk=;
+ b=bRH/YUTYKsj+spCdxxuad96aeBIsG8spLEf/MkQeInQYkYHSr+hzJUl7Zbt+zxn4Jg
+ PioY0FGaD3vrODJrsJSeDMRnaUdXW0TPVhAtBBMZ7vuKj26uTkxi3ZEkLa6q1euuEvIy
+ 4DtTKOEJQqOpME+2lg0oCIjsmcjV6YkjLS+4AVZ//KXyqKr4HJpUWvO2AKqT2HaCQAnS
+ A+oTlqzp7dsQIvmDQQvgOD/khTIQ6X8F7GEW9PN/9wp31UIrpX1S+tlxs+IedLgOppNe
+ S+crJLickDvVNsMJouBBSaI04tc/mZ2sGRXULam+PwR+j04s+OVOgIYabvBaGddsOi+K
+ 1msg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=PtiiQiHIQhMd0RX5LgSCyiXCNdoSA3NRLMvs3SxeOlk=;
+ b=fx/+ToQOwXHsI3/9EpXVRsmKod/bC87/YV9J8rxt24jf/vf/H/AmbhsUtihOwnB+g4
+ G8doSNtDjNEOIedfBroOphZ30iX4XSaO1wZWa4QVVWqqF5RQlEnBMlW2SE+Y+B3G8Mly
+ p+TJsPs47F8UHfQBa0nFiNYnx2T3WHgEfkyS95rFEqqQ47x79q+vC1cTTD/Hm9R6eC1K
+ VZj93ISGcnWq5QRNUqfFniGkJfvlGdysE3AkQr7XbCChI13FANB8FlD3/qZ4QJiyTtmO
+ kql75m98+KJGg+c2bw8zv0uZZgyMl1UKAVaLnTvqe4Sj32RV4Qw3YenAUlkl7SmlcygY
+ vEfQ==
+X-Gm-Message-State: AOAM532j0i34kDsxPuhs8pgWvPQVGXz+O8jZyNW/jjW47k+ykKi4iLy2
+ 7WVGdk45y4gLVwiBkxxrFAw=
+X-Google-Smtp-Source: ABdhPJxAS0Dpw20sHS3bnj03ua9LMF6Pwm3AdOStfhwGjbYJsj0FDhC5+tHEvjtv63EkMGk7XL27CA==
+X-Received: by 2002:adf:f943:0:b0:203:b456:c71d with SMTP id
+ q3-20020adff943000000b00203b456c71dmr9864142wrr.568.1647385697822; 
+ Tue, 15 Mar 2022 16:08:17 -0700 (PDT)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net.
+ [80.193.200.194]) by smtp.gmail.com with ESMTPSA id
+ d25-20020adfa419000000b001f04b3a4b46sm196649wra.94.2022.03.15.16.08.17
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 15 Mar 2022 16:08:17 -0700 (PDT)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+ Jarkko Nikula <jarkko.nikula@bitmer.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+Subject: [PATCH] ASoC: ti: Fix spelling mistake "cant" -> "can't"
+Date: Tue, 15 Mar 2022 23:08:16 +0000
+Message-Id: <20220315230816.2964577-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH] ASoC: sti: Fix deadlock via snd_pcm_stop_xrun() call
-Content-Language: en-US
-To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
-References: <20220315164158.19804-1-tiwai@suse.de>
-From: Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-In-Reply-To: <20220315164158.19804-1-tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.850,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-03-15_08,2022-03-15_01,2022-02-23_01
-Cc: alsa-devel@alsa-project.org, Daniel Palmer <daniel@0x0f.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,79 +98,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+There is a spelling mistake in a dev_err message. Fix it.
 
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ sound/soc/ti/omap-dmic.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 3/15/22 17:41, Takashi Iwai wrote:
-> This is essentially a revert of the commit dc865fb9e7c2 ("ASoC: sti:
-> Use snd_pcm_stop_xrun() helper"), which converted the manual
-> snd_pcm_stop() calls with snd_pcm_stop_xrun().
-> 
-> The commit above introduced a deadlock as snd_pcm_stop_xrun() itself
-> takes the PCM stream lock while the caller already holds it.  Since
-> the conversion was done only for consistency reason and the open-call
-> with snd_pcm_stop() to the XRUN state is a correct usage, let's revert
-> the commit back as the fix.
-> 
-> Fixes: dc865fb9e7c2 ("ASoC: sti: Use snd_pcm_stop_xrun() helper")
-> Reported-by: Daniel Palmer <daniel@0x0f.com>
-> Cc: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-> Cc: <stable@vger.kernel.org>
-> Link: https://lore.kernel.org/r/20220315091319.3351522-1-daniel@0x0f.com
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+diff --git a/sound/soc/ti/omap-dmic.c b/sound/soc/ti/omap-dmic.c
+index a26588e9c3bc..f3eed20611a3 100644
+--- a/sound/soc/ti/omap-dmic.c
++++ b/sound/soc/ti/omap-dmic.c
+@@ -474,7 +474,7 @@ static int asoc_dmic_probe(struct platform_device *pdev)
+ 
+ 	dmic->fclk = devm_clk_get(dmic->dev, "fck");
+ 	if (IS_ERR(dmic->fclk)) {
+-		dev_err(dmic->dev, "cant get fck\n");
++		dev_err(dmic->dev, "can't get fck\n");
+ 		return -ENODEV;
+ 	}
+ 
+-- 
+2.35.1
 
-Thanks for the fix!
-
-Reviewed-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-
-Regards,
-Arnaud
-
-> ---
->  sound/soc/sti/uniperif_player.c | 6 +++---
->  sound/soc/sti/uniperif_reader.c | 2 +-
->  2 files changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
-> index 2ed92c990b97..dd9013c47664 100644
-> --- a/sound/soc/sti/uniperif_player.c
-> +++ b/sound/soc/sti/uniperif_player.c
-> @@ -91,7 +91,7 @@ static irqreturn_t uni_player_irq_handler(int irq, void *dev_id)
->  			SET_UNIPERIF_ITM_BCLR_FIFO_ERROR(player);
->  
->  			/* Stop the player */
-> -			snd_pcm_stop_xrun(player->substream);
-> +			snd_pcm_stop(player->substream, SNDRV_PCM_STATE_XRUN);
->  		}
->  
->  		ret = IRQ_HANDLED;
-> @@ -105,7 +105,7 @@ static irqreturn_t uni_player_irq_handler(int irq, void *dev_id)
->  		SET_UNIPERIF_ITM_BCLR_DMA_ERROR(player);
->  
->  		/* Stop the player */
-> -		snd_pcm_stop_xrun(player->substream);
-> +		snd_pcm_stop(player->substream, SNDRV_PCM_STATE_XRUN);
->  
->  		ret = IRQ_HANDLED;
->  	}
-> @@ -138,7 +138,7 @@ static irqreturn_t uni_player_irq_handler(int irq, void *dev_id)
->  		dev_err(player->dev, "Underflow recovery failed\n");
->  
->  		/* Stop the player */
-> -		snd_pcm_stop_xrun(player->substream);
-> +		snd_pcm_stop(player->substream, SNDRV_PCM_STATE_XRUN);
->  
->  		ret = IRQ_HANDLED;
->  	}
-> diff --git a/sound/soc/sti/uniperif_reader.c b/sound/soc/sti/uniperif_reader.c
-> index 136059331211..065c5f0d1f5f 100644
-> --- a/sound/soc/sti/uniperif_reader.c
-> +++ b/sound/soc/sti/uniperif_reader.c
-> @@ -65,7 +65,7 @@ static irqreturn_t uni_reader_irq_handler(int irq, void *dev_id)
->  	if (unlikely(status & UNIPERIF_ITS_FIFO_ERROR_MASK(reader))) {
->  		dev_err(reader->dev, "FIFO error detected\n");
->  
-> -		snd_pcm_stop_xrun(reader->substream);
-> +		snd_pcm_stop(reader->substream, SNDRV_PCM_STATE_XRUN);
->  
->  		ret = IRQ_HANDLED;
->  	}
