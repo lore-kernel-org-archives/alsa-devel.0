@@ -4,120 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20100C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Mar 2022 07:03:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 656E2C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Mar 2022 07:04:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5D32418DA;
-	Thu, 17 Mar 2022 08:03:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D32418DA
+	by alsa0.perex.cz (Postfix) with ESMTPS id B0DF518D6;
+	Thu, 17 Mar 2022 08:03:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0DF518D6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647500633;
-	bh=C/vVNBgOEB/ntr2rCnoyA3P03iIAtHlsxksudRb/fyk=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1647500648;
+	bh=TSNR/AVXv0z8By2JiHvGWs2VPTR7+C1JzIsgvTWWeaQ=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GvLnj5kwrGPFHmYrbTbBcoG6K6bhzcRvdOmMl64d3m5KcRsyQn/gmspRYgfufdCt7
-	 taI4iPFCibY7r5WAJ5fBxbU9CJmjDPmoYPfsyVD0J4jwDc2rubUT/HSURHIJJL3C8D
-	 uFOqJWT3IVvnXmu9IcYk7onnMzatSrkOaTm3v2YI=
+	b=U8rkebIEvSXPI73LGqUi1XQQzJtCi47nqrQdfyKd3Wf1CA0P399t3FBgxSTxaVJrV
+	 lmzG7vosdLoMQq5Ufgs5dVQ/0VWMHZZAgdi28gFexuNIlLIqIoKDMllO4ObYwzFNqG
+	 G63gr7cjOT8wArh9LQkUdD20KNvsaG2wwmiqqEGY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7E0D8F805E9;
-	Thu, 17 Mar 2022 07:55:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2088EF805ED;
+	Thu, 17 Mar 2022 07:55:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7517BF8019D; Wed, 16 Mar 2022 16:09:21 +0100 (CET)
-Received: from smtp-relay-internal-0.canonical.com
- (smtp-relay-internal-0.canonical.com [185.125.188.122])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 0D8B8F80084; Wed, 16 Mar 2022 16:55:26 +0100 (CET)
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com
+ [IPv6:2a00:1450:4864:20::631])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1084FF80087
- for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2022 16:09:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1084FF80087
+ by alsa1.perex.cz (Postfix) with ESMTPS id BE19AF80087
+ for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2022 16:55:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE19AF80087
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com
- header.b="jyHht3XC"
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id E6D7E3F625
- for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2022 15:09:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1647443352;
- bh=0TkaUHsdiaalOGmdOdYbrrLuoBcQ76N1kyxAw52pHyQ=;
- h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
- MIME-Version;
- b=jyHht3XCLNr8VV2B/uTpzBkSInAMbmI/OgaxwuNmMa3xzDLPvAgITmvgRbvbAXnCa
- CaP/7VEhfYJWX+DtRZdBZ64KUBKWE1vAwJSWpqXxFXw6lFdFjmd3CCKEZ3UUQ7mAqG
- LphkR5ZMxUp3ep/FzIqHqol6T1yalNIFlqJzB0xMos5H70hWwhe5VgAYXG8ATxB5w2
- o/vzY7Z3+bIQwQGI5Yer4V1vNAurqUcNpUCQqXpFYgbJpK1GhBM75dch+CId9Pr79a
- yopE++kbJngLbpOU/WNUH+pXUOwW8f1PAGwzsWGLd2vIw9d8IeX1cs9hWy/1Yza19r
- zu3mbXUZ8FsHQ==
-Received: by mail-ej1-f72.google.com with SMTP id
- y5-20020a1709060a8500b006da9258a34cso1309409ejf.21
- for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2022 08:09:12 -0700 (PDT)
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="ThLCeQCL"
+Received: by mail-ej1-x631.google.com with SMTP id bg10so5149159ejb.4
+ for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2022 08:55:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=Xrv4PFSyhAtwnCAL/pjWyzmn6e9Q3pw3qGeeMjVLkWc=;
+ b=ThLCeQCLe60XloIENcKZTLtoa92AsszbMGtlE1VP85Nj8ONYeGAtPtd3THFkwuE1R4
+ Rb+p8levz1Kkk/esESpsWOOce4y/GAs3zE/h/Iq8JTZadMNMhSzoXuCsi65zQcSj9uj9
+ roUu7BL6G2KSrbQdMUcXxa1eBfn7GLPhFdgtrRtKQ1B6XjhvDCk1M6WlSKyn57HnuVDa
+ 81Zd+YwZwjEFy9IgsZIWqi9+OJ0hcLCs/C3anzU5mAn4GgUA+5ei9x+U8aPDc4PlCURW
+ 8DQSGQ08z9c9bhp4uK79m+ecf2bqZ6sdte5Pd0FZyKDC2WwgAQ/cfFk5gcysCgAmWYjH
+ wmBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=0TkaUHsdiaalOGmdOdYbrrLuoBcQ76N1kyxAw52pHyQ=;
- b=59m6e+eB8LGRggMEQkAGq5SMErYawZB0IXyW6jCUhkNfUTy/p2esj1L8O13ykJjYNy
- bhsTlFRtGmOuaYKipQsey24WNsEy5FlgJjypDrKEAwIh5ppIM2UJbmWdsoXjZrNCXNMf
- 3eDB57stXtz2zeFMwP/qTSt1RZhs/5zJrzjFZTwHjbwVsbpp2hu6pKGfReqQscJBqZ/+
- kaaoXBd01PUcFySaeKEURXtSl3znFkY53+a8yFRFBV14qbrFXgUN46liFYpFyx/SJyV7
- vS6jX5T7TjF98WvI2P3hgv55phIDPHGpAW4/Q7ko7jRGG90JmguHfHz0lONzLyZkUTYH
- NthA==
-X-Gm-Message-State: AOAM531mxnrhZ6pPIbVyFoo2/9E4P5XIC0F7BUSEWqcGJrHF9pk1+aiE
- xWIotz13pASUnnqb1SmJXeQ1qK78dU9+evtMpHjr5GtAw3NcavRnPpvIu3xx+Kg5sQWY1oo8Uuo
- QhSUmq/CdDdaEXZayyYFmCGuKeslEmt02hreijC9D
-X-Received: by 2002:a5d:6442:0:b0:203:dff2:866c with SMTP id
- d2-20020a5d6442000000b00203dff2866cmr272597wrw.465.1647443340522; 
- Wed, 16 Mar 2022 08:09:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwnOg2aSuuzk/AN13SVnFGjUvC/KtTXL980cTeRfOeIj0D4M/X0M0ZN717fC4+xLvcCtZ4GNg==
-X-Received: by 2002:a5d:6442:0:b0:203:dff2:866c with SMTP id
- d2-20020a5d6442000000b00203dff2866cmr272574wrw.465.1647443340291; 
- Wed, 16 Mar 2022 08:09:00 -0700 (PDT)
-Received: from localhost.localdomain (78-11-189-27.static.ip.netia.com.pl.
- [78.11.189.27]) by smtp.gmail.com with ESMTPSA id
- u18-20020adfdd52000000b001f04e9f215fsm1895105wrm.53.2022.03.16.08.08.57
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 16 Mar 2022 08:08:59 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: [PATCH v5 09/11] clk: imx: scu: Fix kfree() of static memory on
- setting driver_override
-Date: Wed, 16 Mar 2022 16:08:01 +0100
-Message-Id: <20220316150803.421897-3-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20220316150533.421349-1-krzysztof.kozlowski@canonical.com>
-References: <20220316150533.421349-1-krzysztof.kozlowski@canonical.com>
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=Xrv4PFSyhAtwnCAL/pjWyzmn6e9Q3pw3qGeeMjVLkWc=;
+ b=VqJouvyKP4mC3Y9fPmhKM/XyUfIruey4OZDD1gRfUoEtoeWly3VkVI6YZoo9oVka02
+ lhNo3A4yC6wEdYHSdpR7Yvs0PFWnYQqeu9MGTTD6/1vAZ+a4wgaWyKSTk9r8yP+/XmWY
+ r8mA/o2iBObl9b645WnSm3q3bdOJScJD2w4VfA63mqNvmeuboq8a2LEalzStjgjgdAEW
+ gwLTgvc1rOys7tNnJC/bruafKJLcFFz+kosqbO4eO9OvLxLr3vOVdSHg1EzesnJrIpru
+ rA6kl18al0VU9qnMBh2dqYIoVUUSl/pzrmKF5p7xlDynYUkTP30t9TMi4dNOKZuA0Fi2
+ 04Eg==
+X-Gm-Message-State: AOAM533ey6IseI9pIQf/hQMqzBGP30s/B/LyRGy2kKPGUiAwD0TAMDs9
+ 9DAQq38/P/IRy0FJvndPhTsq33prwHiiLw0mUbVmAS6gD+19/w==
+X-Google-Smtp-Source: ABdhPJx7tfhflG1OGwg4hJv+lc6fCCCsMyBIcaeP4g7aVOZtvesN3U3Aevmj9sLhxYjH7UWlro+fkCpgMa2F3+GK74E=
+X-Received: by 2002:a17:907:6e01:b0:6d0:562c:e389 with SMTP id
+ sd1-20020a1709076e0100b006d0562ce389mr499870ejc.497.1647446118072; Wed, 16
+ Mar 2022 08:55:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20220316150533.421349-1-krzysztof.kozlowski@canonical.com>
+ <20220316150533.421349-2-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20220316150533.421349-2-krzysztof.kozlowski@canonical.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Wed, 16 Mar 2022 17:54:04 +0200
+Message-ID: <CAHp75VeaQdzUKJSKzH9FjbmON5asqH799AS8OzHGoDiRnJifNw@mail.gmail.com>
+Subject: Re: [PATCH v5 01/11] driver: platform: Add helper for safer setting
+ of driver_override
+To: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Mailman-Approved-At: Thu, 17 Mar 2022 07:55:05 +0100
-Cc: linux-hyperv@vger.kernel.org, Stuart Yoder <stuyoder@gmail.com>,
- linux-pci@vger.kernel.org, linux-remoteproc@vger.kernel.org,
- alsa-devel@alsa-project.org, Peter Oberparleiter <oberpar@linux.ibm.com>,
+Cc: Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+ Stuart Yoder <stuyoder@gmail.com>, "Rafael J. Wysocki" <rafael@kernel.org>,
+ linux-pci <linux-pci@vger.kernel.org>, linux-remoteproc@vger.kernel.org,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
  Vineeth Vijayan <vneethv@linux.ibm.com>,
  Alexander Gordeev <agordeev@linux.ibm.com>,
- "K. Y. Srinivasan" <kys@microsoft.com>, linux-clk@vger.kernel.org,
+ "K. Y. Srinivasan" <kys@microsoft.com>, linux-clk <linux-clk@vger.kernel.org>,
  linux-s390@vger.kernel.org, Wei Liu <wei.liu@kernel.org>,
- Stephen Hemminger <sthemmin@microsoft.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
- Dexuan Cui <decui@microsoft.com>, Andy Shevchenko <andy.shevchenko@gmail.com>,
+ Stephen Hemminger <sthemmin@microsoft.com>, Dexuan Cui <decui@microsoft.com>,
  Andy Gross <agross@kernel.org>, NXP Linux Team <linux-imx@nxp.com>,
  Christian Borntraeger <borntraeger@linux.ibm.com>,
- virtualization@lists.linux-foundation.org, Heiko Carstens <hca@linux.ibm.com>,
- Vasily Gorbik <gor@linux.ibm.com>, linux-arm-msm@vger.kernel.org,
- Haiyang Zhang <haiyangz@microsoft.com>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ linux-arm-msm@vger.kernel.org, Haiyang Zhang <haiyangz@microsoft.com>,
+ linux-spi <linux-spi@vger.kernel.org>,
  Rasmus Villemoes <linux@rasmusvillemoes.dk>,
- Bjorn Helgaas <bhelgaas@google.com>,
- Bjorn Andersson <bjorn.andersson@linaro.org>,
- linux-arm-kernel@lists.infradead.org,
- Mathieu Poirier <mathieu.poirier@linaro.org>, Stephen Boyd <sboyd@kernel.org>,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org,
- linux-spi@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>,
+ Bjorn Helgaas <bhelgaas@google.com>, virtualization@lists.linux-foundation.org,
+ linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Peter Oberparleiter <oberpar@linux.ibm.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Sven Schnelle <svens@linux.ibm.com>,
  Linus Torvalds <torvalds@linux-foundation.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -134,38 +115,72 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The driver_override field from platform driver should not be initialized
-from static memory (string literal) because the core later kfree() it,
-for example when driver_override is set via sysfs.
+On Wed, Mar 16, 2022 at 5:06 PM Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
 
-Use dedicated helper to set driver_override properly.
+...
 
-Fixes: 77d8f3068c63 ("clk: imx: scu: add two cells binding support")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Acked-by: Stephen Boyd <sboyd@kernel.org>
----
- drivers/clk/imx/clk-scu.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+> +int driver_set_override(struct device *dev, const char **override,
+> +                       const char *s, size_t len)
+> +{
+> +       const char *new, *old;
+> +       char *cp;
 
-diff --git a/drivers/clk/imx/clk-scu.c b/drivers/clk/imx/clk-scu.c
-index 083da31dc3ea..4b2268b7d0d0 100644
---- a/drivers/clk/imx/clk-scu.c
-+++ b/drivers/clk/imx/clk-scu.c
-@@ -683,7 +683,12 @@ struct clk_hw *imx_clk_scu_alloc_dev(const char *name,
- 		return ERR_PTR(ret);
- 	}
- 
--	pdev->driver_override = "imx-scu-clk";
-+	ret = driver_set_override(&pdev->dev, &pdev->driver_override,
-+				  "imx-scu-clk", strlen("imx-scu-clk"));
-+	if (ret) {
-+		platform_device_put(pdev);
-+		return ERR_PTR(ret);
-+	}
- 
- 	ret = imx_clk_scu_attach_pd(&pdev->dev, rsrc_id);
- 	if (ret)
+> +       if (!dev || !override || !s)
+> +               return -EINVAL;
+
+Sorry, I didn't pay much attention on this. First of all, I would drop
+dev checks and simply require that dev should be valid. Do you expect
+this can be called when dev is invalid? I would like to hear if it's
+anything but theoretical. Second one, is the !s requirement. Do I
+understand correctly that the string must be always present? But then
+how we NULify the override? Is it possible? Third one is absence of
+len check. See below.
+
+> +       /*
+> +        * The stored value will be used in sysfs show callback (sysfs_emit()),
+> +        * which has a length limit of PAGE_SIZE and adds a trailing newline.
+> +        * Thus we can store one character less to avoid truncation during sysfs
+> +        * show.
+> +        */
+> +       if (len >= (PAGE_SIZE - 1))
+> +               return -EINVAL;
+
+I would relax this to make sure we can use it if \n is within this limit.
+
+> +       cp = strnchr(s, len, '\n');
+> +       if (cp)
+> +               len = cp - s;
+> +
+> +       new = kstrndup(s, len, GFP_KERNEL);
+
+Here is a word about the len check.
+
+> +       if (!new)
+
+If len == 0, this won't trigger and you have something very
+interesting as a result.
+
+One way is to use ZERO_PTR_OR_NULL() another is explicitly check for 0
+and issue a (different?) error code.
+
+> +               return -ENOMEM;
+> +
+> +       device_lock(dev);
+> +       old = *override;
+> +       if (cp != s) {
+> +               *override = new;
+> +       } else {
+> +               kfree(new);
+> +               *override = NULL;
+> +       }
+> +       device_unlock(dev);
+> +
+> +       kfree(old);
+> +
+> +       return 0;
+> +}
+
 -- 
-2.32.0
-
+With Best Regards,
+Andy Shevchenko
