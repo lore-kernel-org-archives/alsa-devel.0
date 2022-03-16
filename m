@@ -4,71 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62E33C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Mar 2022 20:39:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86F42C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Mar 2022 20:39:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9EFDA1760;
-	Wed, 16 Mar 2022 21:38:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9EFDA1760
+	by alsa0.perex.cz (Postfix) with ESMTPS id D35B817C8;
+	Wed, 16 Mar 2022 21:38:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D35B817C8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647463169;
-	bh=AG1wtDx7BWSkmwerI9/9JsW5Jg7gueu8xBwV1c9teE0=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1647463185;
+	bh=77CmR3PRSwOpZa9z7OgyvODafo7b24EZUQZHs/ST0ng=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=j1dY/bBKPzn5XwWYnA1S/cbAHiKq3WGu+sD0XHRadonjKBEks94QKS0oBQmvwrPJV
-	 JNK3ldFOLRCxBp0OmtdrIapHYbQde/JSNkhbVyEEShLJUV4BLa34iwnml9DKmirkZ5
-	 Wa2Byk6mUU8GOUs7dUmkot1QKp2CldP/Qcey1KFw=
+	b=rCdkcd5s4mbwVHmMVZl5lM0UhNpdtO1y0pHupXDpuc8EboV4rbH+E5KC8r72Y1u9c
+	 NZ1EU5Bgbi+VAk29pc9lOsY258dhRaYQJ7r9NwVy58H6BmPD3s3ywrpgLXd5b+lor+
+	 xkI+nzAb7qpfRHpCWXsSk+pMokIEeSrdZDDgEqrA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CA8F1F8053C;
-	Wed, 16 Mar 2022 21:36:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4F8D0F80548;
+	Wed, 16 Mar 2022 21:36:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 74620F8053C; Wed, 16 Mar 2022 21:36:08 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 6AA87F8053C; Wed, 16 Mar 2022 21:36:09 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 79EE2F80538
- for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2022 21:36:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79EE2F80538
+ by alsa1.perex.cz (Postfix) with ESMTPS id 72418F8053B
+ for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2022 21:36:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72418F8053B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="QJX+NWof"
+ header.b="UTtcv3eY"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 4A21DB81D47;
- Wed, 16 Mar 2022 20:36:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 275B9C340E9;
- Wed, 16 Mar 2022 20:35:56 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 597EE6141B;
+ Wed, 16 Mar 2022 20:36:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91D87C340E9;
+ Wed, 16 Mar 2022 20:36:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1647462958;
- bh=AG1wtDx7BWSkmwerI9/9JsW5Jg7gueu8xBwV1c9teE0=;
- h=From:To:In-Reply-To:References:Subject:Date:From;
- b=QJX+NWofTH7Ok9sdiFlR8DEYOvBVyM+xeaC/RQfoT8TfaB6Mv3zb3qDz3wDAIeHKL
- obgPL9L6k598FlLUzEfdbY69Fakin3pC11JZrfnY1m9Hh06Sdi/oDmid/W2gTQ1pom
- 8NltZFnAnDE0Ijo0Og7zcX/cwDWqgQj42QwhZacmKH1BCVNTVzbMGSHZj+kmzNXZEe
- NcOaSOAXcLYOyJ4SpCIKrwOaiHcUdiXUBaOZMdh4kP3CDs5h309NQ+7t+16+JYfUCS
- AlElBsQdO+nczG01jxfm5IRb/U+xv0Ehgl/Uqvk/nippeGLh0vLd+kYmahV8J76z/v
- 5qNfYmk2iuoSA==
+ s=k20201202; t=1647462964;
+ bh=77CmR3PRSwOpZa9z7OgyvODafo7b24EZUQZHs/ST0ng=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=UTtcv3eY8E4C0fvZnR+ahydqPhx746oNIIajfmRyjKxWB6o1ntmXUEEnW5lQascjJ
+ M/zUbqvteX9kodh6f08YNHCKyEqdmMTXszuE+b0ktl3EqDYuMtJQG1IcT66+fngLso
+ rCfiI6QqkOMQqD0GZlgEtSt7BJ39QK5oWLaHUnaMpFBlztAapmY9mU92wfpdXWy30l
+ bD6gf2Cvr1ejg9Iu+yYq8zJEpokFiA8rBefU32SZU7YKmo/vsOjRPmI3v72R9WmsJC
+ D6eReQ1PaYAOfejFDR6yaN1gQNainZrXMnJp2b7NcPs33k2BRgqYW1d125pD0C6ORN
+ cxYM+6w3RTDjQ==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
- Miaoqian Lin <linmq006@gmail.com>, Banajit Goswami <bgoswami@codeaurora.org>,
- linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Takashi Iwai <tiwai@suse.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20220316083631.14103-1-linmq006@gmail.com>
-References: <20220316083631.14103-1-linmq006@gmail.com>
-Subject: Re: [PATCH] ASoC: codecs: wcd934x: Add missing of_node_put() in
- wcd934x_codec_parse_data
-Message-Id: <164746295687.1220201.2304000170447062243.b4-ty@kernel.org>
-Date: Wed, 16 Mar 2022 20:35:56 +0000
+To: tiwai@suse.com, perex@perex.cz, Vijendar.Mukunda@amd.com,
+ lgirdwood@gmail.com, Meng Tang <tangmeng@uniontech.com>
+In-Reply-To: <20220316091303.9745-1-tangmeng@uniontech.com>
+References: <20220316091303.9745-1-tangmeng@uniontech.com>
+Subject: Re: [PATCH] ASoC: amd: Fix reference to PCM buffer address
+Message-Id: <164746296229.1220201.5798586348184991333.b4-ty@kernel.org>
+Date: Wed, 16 Mar 2022 20:36:02 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,13 +80,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 16 Mar 2022 08:36:31 +0000, Miaoqian Lin wrote:
-> The device_node pointer is returned by of_parse_phandle()  with refcount
-> incremented. We should use of_node_put() on it when done.
-> This is similar to commit 64b92de9603f
-> ("ASoC: wcd9335: fix a leaked reference by adding missing of_node_put")
+On Wed, 16 Mar 2022 17:13:03 +0800, Meng Tang wrote:
+> PCM buffers might be allocated dynamically when the buffer
+> preallocation failed or a larger buffer is requested, and it's not
+> guaranteed that substream->dma_buffer points to the actually used
+> buffer.  The driver needs to refer to substream->runtime->dma_addr
+> instead for the buffer address.
 > 
 > 
+> [...]
 
 Applied to
 
@@ -98,8 +96,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: codecs: wcd934x: Add missing of_node_put() in wcd934x_codec_parse_data
-      commit: 9531a631379169d57756b2411178c6238655df88
+[1/1] ASoC: amd: Fix reference to PCM buffer address
+      commit: 54e1bf9f6177a3ffbd920474f4481a25361163aa
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
