@@ -4,73 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECC9FC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Mar 2022 02:33:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F8A8C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Mar 2022 04:20:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 813BB1710;
-	Wed, 16 Mar 2022 03:32:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 813BB1710
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7CFFB1712;
+	Wed, 16 Mar 2022 05:19:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CFFB1712
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647398001;
-	bh=JlWuwsVAf8tixVVfAj7k3At1hsOc2H52eSxmDWkWpNE=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Qayc/hECVC7ybPE4uZtlPbSbJxFAifM47vobUihiTxHbu546x4tckxfDtOfD+HImE
-	 czMLxamZO0S2Gzqd+Pf8uyiNOxMcivtdYCPoMoh/wDEka3LK2boDu4gucx5o45na9c
-	 zjzq2fiqo+q/num0UGbSw5xC5FXFjRdq8Fe9G/Qc=
+	s=default; t=1647404431;
+	bh=2uVgMb3gvwBQGnedPF+h1WbTRCm/caBE3Alj6dve9MA=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=LlNWVde1Jl+NZQIiMlJr7fCGCKsIB+YjrwJeDiHPLPDWXYMlEUafkBu4Dd1gv+9W+
+	 HH+ampyiXlSUaWyNTXGloTLH+rNE/crUvPweSsN1MZb3Wr5gCOZXUi8dILt8CCEq+j
+	 U21OSrf9Nj8BebJ7o+fvLG8VDNss+utLBoMPEJ60=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 18B2EF8012C;
-	Wed, 16 Mar 2022 03:32:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 04139F80087;
+	Wed, 16 Mar 2022 05:19:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0E6D8F80162; Wed, 16 Mar 2022 03:32:29 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 6245BF80084; Wed, 16 Mar 2022 05:19:38 +0100 (CET)
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com
+ [IPv6:2607:f8b0:4864:20::1036])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B8059F800FF
- for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2022 03:32:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8059F800FF
+ by alsa1.perex.cz (Postfix) with ESMTPS id AF089F80084
+ for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2022 05:19:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF089F80084
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="qi4zpYKr"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id E98B1B819DE;
- Wed, 16 Mar 2022 02:32:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E3CBC340E8;
- Wed, 16 Mar 2022 02:32:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1647397940;
- bh=JlWuwsVAf8tixVVfAj7k3At1hsOc2H52eSxmDWkWpNE=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=qi4zpYKrUUrbZLKM+Xl0nS5aG1eZ4vTX/qCHb5xZQd4h2K4CZaJPT1O3J8f4cuQmO
- ikj643PaI0do9JOx4U2u20nixZmCCxYuFzyRXN69OlhnqPurTuTfA9dQQW1ARw+Aol
- KrNmCKUUJhcFAdjc+xxLaBYPXIsPsze9agB9ApcFHB3/35FGDi8F3WHpVM3l1sIbw5
- RijlwULauuXFxRWs85GucfaVVoAI8vfxYmrlpklI3lk3kptoCMXwPZhbtiBcFUrXB9
- ykvLNpzHC1kX8zWNLMV3btNhs/7fH8zY80RnvNRhH9j6CWIaJi55cHaRMGGDpeUXRU
- 7BCfWIauqWRBg==
-Date: Wed, 16 Mar 2022 10:32:16 +0800
-From: Tzung-Bi Shih <tzungbi@kernel.org>
-To: Miaoqian Lin <linmq006@gmail.com>
-Subject: Re: [PATCH v2] ASoC: mediatek: Fix error handling in
- mt8183_da7219_max98357_dev_probe
-Message-ID: <YjFMMEniUVlb1QsX@google.com>
-References: <Yia5XgkGyLbIRc1f@google.com>
- <20220316014059.19292-1-linmq006@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220316014059.19292-1-linmq006@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Jiaxin Yu <jiaxin.yu@mediatek.com>,
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="b+dYa58/"
+Received: by mail-pj1-x1036.google.com with SMTP id
+ fs4-20020a17090af28400b001bf5624c0aaso1364311pjb.0
+ for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2022 21:19:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id;
+ bh=h/SuuPKRw7w24vf7OzPoNR8TbkFgl2CQUOn+EDnO+xw=;
+ b=b+dYa58/Y/mBWqhfqAC4Zm+qdz/l4wkArDE84Y2K6IoBDXbcG6AJmZ8jg1sZyu0VVr
+ ko8Ki77J4O2Aday6J1xofFrZtoZpGa9ZARleXA9cPsPok4UQ/uQMrkvtaLkIIfGYww6h
+ 9aAAO0BTukW5rtXtmkDS0EA/7qlZpQvEenW6B+7ah0Aa2iJ8qL5JJm4ZFculslZoZ/rA
+ Q8jvTc/V0K3jcD18IIoslXo3QNTbKVgR/zzS9lqvJ62hveC8g5c/lTndF2PX1w2rjijz
+ Qzfh2pWIYzpD5lBDPscWIxJMBTpw5tnilqBGHX6M5IHkYrnsuxBiwiFZ5pvyzB2Xsh2i
+ W81w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id;
+ bh=h/SuuPKRw7w24vf7OzPoNR8TbkFgl2CQUOn+EDnO+xw=;
+ b=LwWY2cYNQG2R0fAPDwnuH+Zs0zB6onc8n0kpRSc3gpsriJPXRWJL18S+6eYI3MKFAS
+ KOBa9NH9Iq/8Uf1Xstzs96O8Ob/62qtdz/+Ux/oqunFGLb5BQCzpvHk68SCLyKjAK1q6
+ m+2NSRb4mofRtBqE/yYwbyDuFoqLM6YOJUjvw2p0CD/bZzkOk3rs8i+IJn2OqDaZyr9A
+ xw/yQFXqDCCLa7tKcUqu7mf//yqJ2M2s5+Xq8HbmSkiW3aLnRD4DByBsZ0FwsU2t4GOf
+ nD7Tj3rFPIE9VFTGLzK7UKW0OK4ayLrloQTqjHWgfRyfX3l2/FhopJ18s/iyX2QFVsNt
+ i0Ig==
+X-Gm-Message-State: AOAM5338zsVCzivtRdrKmp3DRkVwDQIoHjACN4Bn5fX5Rixtq+jIeUmn
+ jpGo410+EtpceqXlATAFAMk=
+X-Google-Smtp-Source: ABdhPJzDSyxdyR405aaXQ572+WpSnGuXpBx5bgw+mkMJqEpnBrS0Kp8BwXkoGY24sqOoP+f9qNP86w==
+X-Received: by 2002:a17:902:e949:b0:14b:1f32:e926 with SMTP id
+ b9-20020a170902e94900b0014b1f32e926mr31673690pll.170.1647404370056; 
+ Tue, 15 Mar 2022 21:19:30 -0700 (PDT)
+Received: from localhost.localdomain ([159.226.95.43])
+ by smtp.googlemail.com with ESMTPSA id
+ 2-20020a17090a034200b001bfc572d018sm722839pjf.48.2022.03.15.21.19.27
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 15 Mar 2022 21:19:29 -0700 (PDT)
+From: Miaoqian Lin <linmq006@gmail.com>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@codeaurora.org>,
  Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- linux-mediatek@lists.infradead.org, Shunli Wang <shunli.wang@mediatek.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- linux-arm-kernel@lists.infradead.org
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: msm8916-wcd-analog: Fix error handling in
+ pm8916_wcd_analog_spmi_probe
+Date: Wed, 16 Mar 2022 04:19:24 +0000
+Message-Id: <20220316041924.17560-1-linmq006@gmail.com>
+X-Mailer: git-send-email 2.17.1
+Cc: linmq006@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,31 +95,70 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Mar 16, 2022 at 01:40:57AM +0000, Miaoqian Lin wrote:
-> The device_node pointer is returned by of_parse_phandle()  with refcount
-> incremented. We should use of_node_put() on it when done.
-> 
-> This function only calls of_node_put() in the regular path.
-> And it will cause refcount leak in error paths.
-> Fix this by calling of_node_put() in error handling too.
-> 
-> Fixes: 5bdbe9771177 ("ASoC: mediatek: mt8183-da7219: use hdmi-codec")
-> Fixes: ebbddc75bbe8 ("ASoC: Mediatek: MT8183: Add machine driver with DA7219")
+In the error handling path, the clk_prepare_enable() function
+call should be balanced by a corresponding 'clk_disable_unprepare()'
+call , as already done in the remove function.
 
-Again, I am not sure if the Fixes tag makes sense.  Although the issue was
-there when the driver birth, there are some more commits after then.
+Fixes: de66b3455023 ("ASoC: codecs: msm8916-wcd-analog: add MBHC support")
+Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
+---
+ sound/soc/codecs/msm8916-wcd-analog.c | 22 ++++++++++++++++------
+ 1 file changed, 16 insertions(+), 6 deletions(-)
 
-Given that:
-- The patch is a minor fix (see [1][2]).
-- There is no specific commit the patch aims to fix.
-I prefer to drop the Fixes tags.  In any case, I don't think the tags would be
-helpful.
+diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
+index 485cda46dbb9..e52a559c52d6 100644
+--- a/sound/soc/codecs/msm8916-wcd-analog.c
++++ b/sound/soc/codecs/msm8916-wcd-analog.c
+@@ -1222,8 +1222,10 @@ static int pm8916_wcd_analog_spmi_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	irq = platform_get_irq_byname(pdev, "mbhc_switch_int");
+-	if (irq < 0)
+-		return irq;
++	if (irq < 0) {
++		ret = irq;
++		goto err_disable_clk;
++	}
+ 
+ 	ret = devm_request_threaded_irq(dev, irq, NULL,
+ 			       pm8916_mbhc_switch_irq_handler,
+@@ -1235,8 +1237,10 @@ static int pm8916_wcd_analog_spmi_probe(struct platform_device *pdev)
+ 
+ 	if (priv->mbhc_btn_enabled) {
+ 		irq = platform_get_irq_byname(pdev, "mbhc_but_press_det");
+-		if (irq < 0)
+-			return irq;
++		if (irq < 0) {
++			ret = irq;
++			goto err_disable_clk;
++		}
+ 
+ 		ret = devm_request_threaded_irq(dev, irq, NULL,
+ 				       mbhc_btn_press_irq_handler,
+@@ -1247,8 +1251,10 @@ static int pm8916_wcd_analog_spmi_probe(struct platform_device *pdev)
+ 			dev_err(dev, "cannot request mbhc button press irq\n");
+ 
+ 		irq = platform_get_irq_byname(pdev, "mbhc_but_rel_det");
+-		if (irq < 0)
+-			return irq;
++		if (irq < 0) {
++			ret = irq;
++			goto err_disable_clk;
++		}
+ 
+ 		ret = devm_request_threaded_irq(dev, irq, NULL,
+ 				       mbhc_btn_release_irq_handler,
+@@ -1265,6 +1271,10 @@ static int pm8916_wcd_analog_spmi_probe(struct platform_device *pdev)
+ 	return devm_snd_soc_register_component(dev, &pm8916_wcd_analog,
+ 				      pm8916_wcd_analog_dai,
+ 				      ARRAY_SIZE(pm8916_wcd_analog_dai));
++
++err_disable_clk:
++	clk_disable_unprepare(priv->mclk);
++	return ret;
+ }
+ 
+ static int pm8916_wcd_analog_spmi_remove(struct platform_device *pdev)
+-- 
+2.17.1
 
-I would defer to Mark.
-
-[1]: https://elixir.bootlin.com/linux/v5.17-rc8/source/include/linux/of.h#L129
-[2]: https://elixir.bootlin.com/linux/v5.17-rc8/source/drivers/of/Kconfig#L55
-
-> Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
-
-Reviewed-by: Tzung-Bi Shih <tzungbi@kernel.org>
