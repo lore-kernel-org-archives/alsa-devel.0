@@ -4,70 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B0D4C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Mar 2022 20:39:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62E33C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Mar 2022 20:39:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2F8761833;
-	Wed, 16 Mar 2022 21:38:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F8761833
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9EFDA1760;
+	Wed, 16 Mar 2022 21:38:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9EFDA1760
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647463152;
-	bh=ckBpUYs7lGZ5xVv8erHYOiifWXqrkP05DbKl6A1MzhM=;
+	s=default; t=1647463169;
+	bh=AG1wtDx7BWSkmwerI9/9JsW5Jg7gueu8xBwV1c9teE0=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Dbp0TdDD8opueKMB2e5Dxln8OLeCWYWSYrVu9Qjok71aa8Kio0X8QX2GfaHg2LnHT
-	 1Oa8luqCKtopYcF/90f8+/lnGOkPQReqqscw2NHwo9bhZZIFJswss+8fl9G9UpdYvo
-	 9ERpgFZZN5o1nBOgmf0/sGoSReENQWyJS1+VidrA=
+	b=j1dY/bBKPzn5XwWYnA1S/cbAHiKq3WGu+sD0XHRadonjKBEks94QKS0oBQmvwrPJV
+	 JNK3ldFOLRCxBp0OmtdrIapHYbQde/JSNkhbVyEEShLJUV4BLa34iwnml9DKmirkZ5
+	 Wa2Byk6mUU8GOUs7dUmkot1QKp2CldP/Qcey1KFw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 58F2AF8053A;
+	by alsa1.perex.cz (Postfix) with ESMTP id CA8F1F8053C;
 	Wed, 16 Mar 2022 21:36:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 214CCF8053D; Wed, 16 Mar 2022 21:36:08 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 74620F8053C; Wed, 16 Mar 2022 21:36:08 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3A93FF80535
- for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2022 21:36:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3A93FF80535
+ by alsa1.perex.cz (Postfix) with ESMTPS id 79EE2F80538
+ for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2022 21:36:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79EE2F80538
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="JlAvFFQ6"
+ header.b="QJX+NWof"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 9A30261470;
- Wed, 16 Mar 2022 20:36:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65CE3C340EC;
- Wed, 16 Mar 2022 20:35:59 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 4A21DB81D47;
+ Wed, 16 Mar 2022 20:36:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 275B9C340E9;
+ Wed, 16 Mar 2022 20:35:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1647462962;
- bh=ckBpUYs7lGZ5xVv8erHYOiifWXqrkP05DbKl6A1MzhM=;
+ s=k20201202; t=1647462958;
+ bh=AG1wtDx7BWSkmwerI9/9JsW5Jg7gueu8xBwV1c9teE0=;
  h=From:To:In-Reply-To:References:Subject:Date:From;
- b=JlAvFFQ614+Y/9z+uHoovLZ2D34RImM7vhHicpisrn9mUPgCs9dCoMeHHKvh16Bu/
- DkENs9F6KIeRQE3xK6lpuU3jupIggS3otE8qqEkaGREzYqXv7w6QvSjVzuixD9LSnn
- IJTyofcFBkLLVJ/qbQn/vab/ZPvr65w4lLKBSINAtFORVtwofyzJuU+BQ1Sk9STkBf
- QFBbQOXVKU4KKanwvPOJrHRCQ6FmRvK5+WEHgkC8ZhY8hcRcCLHb3O2N9R3jVcw2LI
- LRjolW9TpyjYCVjyKy6Mzi6VBL9liP3znV7LQiWMci4I3gpL+/pGmRtdbaMm2Hl2Uw
- Q855HmIPnIyyw==
+ b=QJX+NWofTH7Ok9sdiFlR8DEYOvBVyM+xeaC/RQfoT8TfaB6Mv3zb3qDz3wDAIeHKL
+ obgPL9L6k598FlLUzEfdbY69Fakin3pC11JZrfnY1m9Hh06Sdi/oDmid/W2gTQ1pom
+ 8NltZFnAnDE0Ijo0Og7zcX/cwDWqgQj42QwhZacmKH1BCVNTVzbMGSHZj+kmzNXZEe
+ NcOaSOAXcLYOyJ4SpCIKrwOaiHcUdiXUBaOZMdh4kP3CDs5h309NQ+7t+16+JYfUCS
+ AlElBsQdO+nczG01jxfm5IRb/U+xv0Ehgl/Uqvk/nippeGLh0vLd+kYmahV8J76z/v
+ 5qNfYmk2iuoSA==
 From: Mark Brown <broonie@kernel.org>
-To: Rikard Falkeborn <rikard.falkeborn@gmail.com>,
- Bixuan Cui <cuibixuan@huawei.com>, YC Hung <yc.hung@mediatek.com>,
- alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
- Trevor Wu <trevor.wu@mediatek.com>, Miaoqian Lin <linmq006@gmail.com>,
- linux-kernel@vger.kernel.org, Tzung-Bi Shih <tzungbi@google.com>,
- Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, Matthias Brugger <matthias.bgg@gmail.com>,
- Takashi Iwai <tiwai@suse.com>
-In-Reply-To: <20220316084623.24238-1-linmq006@gmail.com>
-References: <20220316084623.24238-1-linmq006@gmail.com>
-Subject: Re: [PATCH] ASoC: mediatek: mt8195: Fix error handling in
- mt8195_mt6359_rt1019_rt5682_dev_probe
-Message-Id: <164746295912.1220201.14496447901680691673.b4-ty@kernel.org>
-Date: Wed, 16 Mar 2022 20:35:59 +0000
+To: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
+ Miaoqian Lin <linmq006@gmail.com>, Banajit Goswami <bgoswami@codeaurora.org>,
+ linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Takashi Iwai <tiwai@suse.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20220316083631.14103-1-linmq006@gmail.com>
+References: <20220316083631.14103-1-linmq006@gmail.com>
+Subject: Re: [PATCH] ASoC: codecs: wcd934x: Add missing of_node_put() in
+ wcd934x_codec_parse_data
+Message-Id: <164746295687.1220201.2304000170447062243.b4-ty@kernel.org>
+Date: Wed, 16 Mar 2022 20:35:56 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -86,15 +84,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 16 Mar 2022 08:46:15 +0000, Miaoqian Lin wrote:
+On Wed, 16 Mar 2022 08:36:31 +0000, Miaoqian Lin wrote:
 > The device_node pointer is returned by of_parse_phandle()  with refcount
 > incremented. We should use of_node_put() on it when done.
+> This is similar to commit 64b92de9603f
+> ("ASoC: wcd9335: fix a leaked reference by adding missing of_node_put")
 > 
-> This function only calls of_node_put() in the regular path.
-> And it will cause refcount leak in error path.
 > 
-> 
-> [...]
 
 Applied to
 
@@ -102,8 +98,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: mediatek: mt8195: Fix error handling in mt8195_mt6359_rt1019_rt5682_dev_probe
-      commit: c4b7174fe5bb875a09a78674a14a1589d1a672f3
+[1/1] ASoC: codecs: wcd934x: Add missing of_node_put() in wcd934x_codec_parse_data
+      commit: 9531a631379169d57756b2411178c6238655df88
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
