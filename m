@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3035C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Mar 2022 17:54:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C85A1C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Mar 2022 17:54:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 446B317B2;
-	Thu, 17 Mar 2022 18:53:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 446B317B2
+	by alsa0.perex.cz (Postfix) with ESMTPS id E814B18BD;
+	Thu, 17 Mar 2022 18:53:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E814B18BD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647539658;
-	bh=9unt2N52EbKS2HF2tphkjJLDhjfQqpdmrEjnrjDszUo=;
+	s=default; t=1647539675;
+	bh=icr7OkwnHEwr801hagV2X9F7RXGHcVlRXX/SRsTK6Rc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GL6W4ixftSzwUDwmlYw9bPAd23o/lvTnbOVZRathZX1suRdsxrkV7FZycT1PCF1sk
-	 2Ommnv5YuARJxNJqWCOqEb+/jkoot6Qs/KwVkQ1Tmr/c8J+C/cp7bFfSZmDQTwMqTH
-	 GUVYqCavydUuGrY+fXvFrKmTgbEC8Teo+bQljM5Y=
+	b=bkUB0J/Y5NgeCT5wvfFuOgn/iZ8dpU1VMm9ZgOIoQxJX/SEFlYgeSlUsU9xpfHT3K
+	 cnORGRNqb9berauH/24zBHh9TmExI9gZQ5jIOciEkLLwDFQlWmyjd290GvaZE0Tw3I
+	 JffeUwXuh6jghaatG6tcyXfCgUdca+wTn3mm9CRg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 49008F80535;
-	Thu, 17 Mar 2022 18:52:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 582BFF80519;
+	Thu, 17 Mar 2022 18:52:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1B466F802DF; Thu, 17 Mar 2022 18:51:56 +0100 (CET)
+ id 653C0F80526; Thu, 17 Mar 2022 18:51:57 +0100 (CET)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 73E5EF80124
- for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2022 18:51:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73E5EF80124
+ by alsa1.perex.cz (Postfix) with ESMTPS id 209A9F8020D
+ for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2022 18:51:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 209A9F8020D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="AVRrgyAa"
+ header.b="UxG59dZc"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1647539508; x=1679075508;
+ t=1647539511; x=1679075511;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=9unt2N52EbKS2HF2tphkjJLDhjfQqpdmrEjnrjDszUo=;
- b=AVRrgyAa4DuVN8v8mum76T8lEI+QIv2zp01Klt1awB03SKzuB6yCuaaN
- K2ObjSCZ53tfSH3xHAg0UCuX+TK384XSa88ybePqwnniK072u18CY28XD
- rbAmsyUGKPBjVA5NqJci3pGM7W/+l6MC1UKwtOQPV6ax6cwoTJxYdgrf5
- XnN4L3rwmoTw5qv7oMsMPL7zM1Zjpo0gCY90ni4OtANom+GvH592yIeX3
- oedLet96MV6k5epO1o1dfqKbT3d/IfSsFnrhVPDGLezzmApR8EQP4Dx24
- T2EGT9Xinj4PKsptmjQSfu8aYCu4okiSOrmSn21HB8dqGtinECLKLwFIS A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10289"; a="254492905"
-X-IronPort-AV: E=Sophos;i="5.90,188,1643702400"; d="scan'208";a="254492905"
+ bh=icr7OkwnHEwr801hagV2X9F7RXGHcVlRXX/SRsTK6Rc=;
+ b=UxG59dZcrpivfAxkrXKU4Rpzw3Pd08Bc0TKpkRZkZx6i8w0GxTcAofgP
+ OBN3Ts6D9osYBa1TICW3ueVknmEGVXGU/2EcCOfz+JZqZW2rEcpbplI4C
+ uh1k+GCAj/awzzH03p3NzRT07IczvLyUb6eCZIj6Ycvhf9LRzavxDKdT9
+ 7zYZeAj9EMhkjtJzLwgBmcsXDfARzEP678iBjo5GJK6452Lf8igmN7sDD
+ 6uuZ9WkmniZe1I4GEjz5sSaB7QpoQBy7xkFKKkGx3KLpP29fx1+pQXiW6
+ b2FfBvYehysndSXtzbJk9Vbz0rGvOkF2VJlP1oZVRYg5R6LasKSWqS9tJ Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10289"; a="254492913"
+X-IronPort-AV: E=Sophos;i="5.90,188,1643702400"; d="scan'208";a="254492913"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  17 Mar 2022 10:51:22 -0700
-X-IronPort-AV: E=Sophos;i="5.90,188,1643702400"; d="scan'208";a="550431122"
+X-IronPort-AV: E=Sophos;i="5.90,188,1643702400"; d="scan'208";a="550431129"
 Received: from jfbonin1-mobl6.amr.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.255.92.163])
  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  17 Mar 2022 10:51:22 -0700
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 05/19] ASoC: SOF: Add IPC3 topology control ops
-Date: Thu, 17 Mar 2022 10:50:30 -0700
-Message-Id: <20220317175044.1752400-6-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 08/19] ASoC: SOF: Add enum_get/put control ops for IPC3
+Date: Thu, 17 Mar 2022 10:50:33 -0700
+Message-Id: <20220317175044.1752400-9-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220317175044.1752400-1-ranjani.sridharan@linux.intel.com>
 References: <20220317175044.1752400-1-ranjani.sridharan@linux.intel.com>
@@ -87,429 +87,146 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Define the topology control IPC ops for IPC3, implement the
-control_notify op and use it.
+Define and set the enum_get/put control IPC ops for IPC3.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/Makefile        |   2 +-
- sound/soc/sof/control.c       | 144 -------------------------------
- sound/soc/sof/ipc.c           |   6 +-
- sound/soc/sof/ipc3-control.c  | 156 ++++++++++++++++++++++++++++++++++
- sound/soc/sof/ipc3-ops.h      |   1 +
- sound/soc/sof/ipc3-topology.c |   1 +
- sound/soc/sof/sof-audio.h     |   6 +-
- 7 files changed, 166 insertions(+), 150 deletions(-)
- create mode 100644 sound/soc/sof/ipc3-control.c
+ sound/soc/sof/control.c      | 39 +++++++++-------------------
+ sound/soc/sof/ipc3-control.c | 50 ++++++++++++++++++++++++++++++++++++
+ 2 files changed, 62 insertions(+), 27 deletions(-)
 
-diff --git a/sound/soc/sof/Makefile b/sound/soc/sof/Makefile
-index 59482903a243..f6d68a3096d9 100644
---- a/sound/soc/sof/Makefile
-+++ b/sound/soc/sof/Makefile
-@@ -2,7 +2,7 @@
- 
- snd-sof-objs := core.o ops.o loader.o ipc.o pcm.o pm.o debug.o topology.o\
- 		control.o trace.o iomem-utils.o sof-audio.o stream-ipc.o\
--		ipc3-topology.o ipc3.o
-+		ipc3-topology.o ipc3.o ipc3-control.o
- ifneq ($(CONFIG_SND_SOC_SOF_CLIENT),)
- snd-sof-objs += sof-client.o
- endif
 diff --git a/sound/soc/sof/control.c b/sound/soc/sof/control.c
-index 21ee0545945d..fb2311d880d3 100644
+index f9f8bd37b480..499d426c5d38 100644
 --- a/sound/soc/sof/control.c
 +++ b/sound/soc/sof/control.c
-@@ -526,147 +526,3 @@ int snd_sof_bytes_ext_get(struct snd_kcontrol *kcontrol,
+@@ -160,17 +160,14 @@ int snd_sof_switch_put(struct snd_kcontrol *kcontrol,
+ int snd_sof_enum_get(struct snd_kcontrol *kcontrol,
+ 		     struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct soc_enum *se =
+-		(struct soc_enum *)kcontrol->private_value;
++	struct soc_enum *se = (struct soc_enum *)kcontrol->private_value;
+ 	struct snd_sof_control *scontrol = se->dobj.private;
+-	struct sof_ipc_ctrl_data *cdata = scontrol->ipc_control_data;
+-	unsigned int i, channels = scontrol->num_channels;
+-
+-	snd_sof_refresh_control(scontrol);
++	struct snd_soc_component *scomp = scontrol->scomp;
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	const struct sof_ipc_tplg_ops *tplg_ops = sdev->ipc->ops->tplg;
+ 
+-	/* read back each channel */
+-	for (i = 0; i < channels; i++)
+-		ucontrol->value.enumerated.item[i] = cdata->chanv[i].value;
++	if (tplg_ops->control->enum_get)
++		return tplg_ops->control->enum_get(scontrol, ucontrol);
  
  	return 0;
  }
--
--static void snd_sof_update_control(struct snd_sof_control *scontrol,
--				   struct sof_ipc_ctrl_data *cdata)
--{
--	struct snd_soc_component *scomp = scontrol->scomp;
--	struct sof_ipc_ctrl_data *local_cdata;
--	int i;
--
--	local_cdata = scontrol->ipc_control_data;
--
--	if (cdata->cmd == SOF_CTRL_CMD_BINARY) {
--		if (cdata->num_elems != local_cdata->data->size) {
--			dev_err(scomp->dev,
--				"error: cdata binary size mismatch %u - %u\n",
--				cdata->num_elems, local_cdata->data->size);
--			return;
--		}
--
--		/* copy the new binary data */
--		memcpy(local_cdata->data, cdata->data, cdata->num_elems);
--	} else if (cdata->num_elems != scontrol->num_channels) {
--		dev_err(scomp->dev,
--			"error: cdata channel count mismatch %u - %d\n",
--			cdata->num_elems, scontrol->num_channels);
--	} else {
--		/* copy the new values */
--		for (i = 0; i < cdata->num_elems; i++)
--			local_cdata->chanv[i].value = cdata->chanv[i].value;
--	}
--}
--
--void snd_sof_control_notify(struct snd_sof_dev *sdev,
--			    struct sof_ipc_ctrl_data *cdata)
--{
--	struct snd_soc_dapm_widget *widget;
--	struct snd_sof_control *scontrol;
--	struct snd_sof_widget *swidget;
--	struct snd_kcontrol *kc = NULL;
--	struct soc_mixer_control *sm;
--	struct soc_bytes_ext *be;
--	size_t expected_size;
--	struct soc_enum *se;
--	bool found = false;
--	int i, type;
--
--	if (cdata->type == SOF_CTRL_TYPE_VALUE_COMP_GET ||
--	    cdata->type == SOF_CTRL_TYPE_VALUE_COMP_SET) {
--		dev_err(sdev->dev,
--			"Component data is not supported in control notification\n");
--		return;
--	}
--
--	/* Find the swidget first */
--	list_for_each_entry(swidget, &sdev->widget_list, list) {
--		if (swidget->comp_id == cdata->comp_id) {
--			found = true;
--			break;
--		}
--	}
--
--	if (!found)
--		return;
--
--	/* Translate SOF cmd to TPLG type */
--	switch (cdata->cmd) {
--	case SOF_CTRL_CMD_VOLUME:
--	case SOF_CTRL_CMD_SWITCH:
--		type = SND_SOC_TPLG_TYPE_MIXER;
--		break;
--	case SOF_CTRL_CMD_BINARY:
--		type = SND_SOC_TPLG_TYPE_BYTES;
--		break;
--	case SOF_CTRL_CMD_ENUM:
--		type = SND_SOC_TPLG_TYPE_ENUM;
--		break;
--	default:
--		dev_err(sdev->dev, "error: unknown cmd %u\n", cdata->cmd);
--		return;
--	}
--
--	widget = swidget->widget;
--	for (i = 0; i < widget->num_kcontrols; i++) {
--		/* skip non matching types or non matching indexes within type */
--		if (widget->dobj.widget.kcontrol_type[i] == type &&
--		    widget->kcontrol_news[i].index == cdata->index) {
--			kc = widget->kcontrols[i];
--			break;
--		}
--	}
--
--	if (!kc)
--		return;
--
--	switch (cdata->cmd) {
--	case SOF_CTRL_CMD_VOLUME:
--	case SOF_CTRL_CMD_SWITCH:
--		sm = (struct soc_mixer_control *)kc->private_value;
--		scontrol = sm->dobj.private;
--		break;
--	case SOF_CTRL_CMD_BINARY:
--		be = (struct soc_bytes_ext *)kc->private_value;
--		scontrol = be->dobj.private;
--		break;
--	case SOF_CTRL_CMD_ENUM:
--		se = (struct soc_enum *)kc->private_value;
--		scontrol = se->dobj.private;
--		break;
--	default:
--		return;
--	}
--
--	expected_size = sizeof(struct sof_ipc_ctrl_data);
--	switch (cdata->type) {
--	case SOF_CTRL_TYPE_VALUE_CHAN_GET:
--	case SOF_CTRL_TYPE_VALUE_CHAN_SET:
--		expected_size += cdata->num_elems *
--				 sizeof(struct sof_ipc_ctrl_value_chan);
--		break;
--	case SOF_CTRL_TYPE_DATA_GET:
--	case SOF_CTRL_TYPE_DATA_SET:
--		expected_size += cdata->num_elems + sizeof(struct sof_abi_hdr);
--		break;
--	default:
--		return;
--	}
--
--	if (cdata->rhdr.hdr.size != expected_size) {
--		dev_err(sdev->dev, "error: component notification size mismatch\n");
--		return;
--	}
--
--	if (cdata->num_elems)
--		/*
--		 * The message includes the updated value/data, update the
--		 * control's local cache using the received notification
--		 */
--		snd_sof_update_control(scontrol, cdata);
--	else
--		/* Mark the scontrol that the value/data is changed in SOF */
--		scontrol->comp_data_dirty = true;
--
--	snd_ctl_notify_one(swidget->scomp->card->snd_card,
--			   SNDRV_CTL_EVENT_MASK_VALUE, kc, 0);
--}
-diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
-index 46a989be9a82..af0ae137842b 100644
---- a/sound/soc/sof/ipc.c
-+++ b/sound/soc/sof/ipc.c
-@@ -470,6 +470,7 @@ EXPORT_SYMBOL(snd_sof_ipc_reply);
- 
- static void ipc_comp_notification(struct snd_sof_dev *sdev, void *msg_buf)
+@@ -178,28 +175,16 @@ int snd_sof_enum_get(struct snd_kcontrol *kcontrol,
+ int snd_sof_enum_put(struct snd_kcontrol *kcontrol,
+ 		     struct snd_ctl_elem_value *ucontrol)
  {
+-	struct soc_enum *se =
+-		(struct soc_enum *)kcontrol->private_value;
++	struct soc_enum *se = (struct soc_enum *)kcontrol->private_value;
+ 	struct snd_sof_control *scontrol = se->dobj.private;
+ 	struct snd_soc_component *scomp = scontrol->scomp;
+-	struct sof_ipc_ctrl_data *cdata = scontrol->ipc_control_data;
+-	unsigned int i, channels = scontrol->num_channels;
+-	bool change = false;
+-	u32 value;
+-
+-	/* update each channel */
+-	for (i = 0; i < channels; i++) {
+-		value = ucontrol->value.enumerated.item[i];
+-		change = change || (value != cdata->chanv[i].value);
+-		cdata->chanv[i].channel = i;
+-		cdata->chanv[i].value = value;
+-	}
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
 +	const struct sof_ipc_tplg_ops *tplg_ops = sdev->ipc->ops->tplg;
- 	struct sof_ipc_cmd_hdr *hdr = msg_buf;
- 	u32 msg_type = hdr->cmd & SOF_CMD_TYPE_MASK;
  
-@@ -482,7 +483,8 @@ static void ipc_comp_notification(struct snd_sof_dev *sdev, void *msg_buf)
- 		return;
- 	}
+-	/* notify DSP of enum updates */
+-	if (pm_runtime_active(scomp->dev))
+-		snd_sof_ipc_set_get_comp_data(scontrol, true);
++	if (tplg_ops->control->enum_put)
++		return tplg_ops->control->enum_put(scontrol, ucontrol);
  
--	snd_sof_control_notify(sdev, msg_buf);
-+	if (tplg_ops->control->update)
-+		tplg_ops->control->update(sdev, msg_buf);
+-	return change;
++	return false;
  }
  
- /* DSP firmware has sent host a message  */
-@@ -1031,7 +1033,7 @@ struct snd_sof_ipc *snd_sof_ipc_init(struct snd_sof_dev *sdev)
- 	ipc->ops = &ipc3_ops;
- 
- 	/* check for mandatory ops */
--	if (!ipc->ops->tplg || !ipc->ops->tplg->widget) {
-+	if (!ipc->ops->tplg || !ipc->ops->tplg->widget || !ipc->ops->tplg->control) {
- 		dev_err(sdev->dev, "Invalid topology IPC ops\n");
- 		return NULL;
- 	}
+ int snd_sof_bytes_get(struct snd_kcontrol *kcontrol,
 diff --git a/sound/soc/sof/ipc3-control.c b/sound/soc/sof/ipc3-control.c
-new file mode 100644
-index 000000000000..d4086e805c18
---- /dev/null
+index ba9cde011b5a..03948f8f7eb0 100644
+--- a/sound/soc/sof/ipc3-control.c
 +++ b/sound/soc/sof/ipc3-control.c
-@@ -0,0 +1,156 @@
-+// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
-+//
-+// This file is provided under a dual BSD/GPLv2 license.  When using or
-+// redistributing this file, you may do so under either license.
-+//
-+// Copyright(c) 2021 Intel Corporation. All rights reserved.
-+//
-+//
-+
-+#include "sof-priv.h"
-+#include "sof-audio.h"
-+#include "ipc3-ops.h"
-+
-+static void snd_sof_update_control(struct snd_sof_control *scontrol,
-+				   struct sof_ipc_ctrl_data *cdata)
+@@ -157,6 +157,54 @@ static bool sof_ipc3_switch_put(struct snd_sof_control *scontrol,
+ 	return change;
+ }
+ 
++static int sof_ipc3_enum_get(struct snd_sof_control *scontrol,
++			     struct snd_ctl_elem_value *ucontrol)
 +{
++	struct sof_ipc_ctrl_data *cdata = scontrol->ipc_control_data;
++	unsigned int channels = scontrol->num_channels;
++	unsigned int i;
++
++	snd_sof_refresh_control(scontrol);
++
++	/* read back each channel */
++	for (i = 0; i < channels; i++)
++		ucontrol->value.enumerated.item[i] = cdata->chanv[i].value;
++
++	return 0;
++}
++
++static bool sof_ipc3_enum_put(struct snd_sof_control *scontrol,
++			      struct snd_ctl_elem_value *ucontrol)
++{
++	struct sof_ipc_ctrl_data *cdata = scontrol->ipc_control_data;
 +	struct snd_soc_component *scomp = scontrol->scomp;
-+	struct sof_ipc_ctrl_data *local_cdata;
-+	int i;
++	unsigned int channels = scontrol->num_channels;
++	unsigned int i;
++	bool change = false;
++	u32 value;
 +
-+	local_cdata = scontrol->ipc_control_data;
-+
-+	if (cdata->cmd == SOF_CTRL_CMD_BINARY) {
-+		if (cdata->num_elems != local_cdata->data->size) {
-+			dev_err(scomp->dev, "cdata binary size mismatch %u - %u\n",
-+				cdata->num_elems, local_cdata->data->size);
-+			return;
-+		}
-+
-+		/* copy the new binary data */
-+		memcpy(local_cdata->data, cdata->data, cdata->num_elems);
-+	} else if (cdata->num_elems != scontrol->num_channels) {
-+		dev_err(scomp->dev, "cdata channel count mismatch %u - %d\n",
-+			cdata->num_elems, scontrol->num_channels);
-+	} else {
-+		/* copy the new values */
-+		for (i = 0; i < cdata->num_elems; i++)
-+			local_cdata->chanv[i].value = cdata->chanv[i].value;
++	/* update each channel */
++	for (i = 0; i < channels; i++) {
++		value = ucontrol->value.enumerated.item[i];
++		change = change || (value != cdata->chanv[i].value);
++		cdata->chanv[i].channel = i;
++		cdata->chanv[i].value = value;
 +	}
++
++	/* notify DSP of enum updates */
++	if (pm_runtime_active(scomp->dev)) {
++		int ret = snd_sof_ipc_set_get_comp_data(scontrol, true);
++
++		if (ret < 0) {
++			dev_err(scomp->dev, "Failed to set enum updates for %s\n",
++				scontrol->name);
++			return false;
++		}
++	}
++
++	return change;
 +}
 +
-+static void sof_ipc3_control_update(struct snd_sof_dev *sdev, void *ipc_control_message)
-+{
-+	struct sof_ipc_ctrl_data *cdata = ipc_control_message;
-+	struct snd_soc_dapm_widget *widget;
-+	struct snd_sof_control *scontrol;
-+	struct snd_sof_widget *swidget;
-+	struct snd_kcontrol *kc = NULL;
-+	struct soc_mixer_control *sm;
-+	struct soc_bytes_ext *be;
-+	size_t expected_size;
-+	struct soc_enum *se;
-+	bool found = false;
-+	int i, type;
-+
-+	if (cdata->type == SOF_CTRL_TYPE_VALUE_COMP_GET ||
-+	    cdata->type == SOF_CTRL_TYPE_VALUE_COMP_SET) {
-+		dev_err(sdev->dev, "Component data is not supported in control notification\n");
-+		return;
-+	}
-+
-+	/* Find the swidget first */
-+	list_for_each_entry(swidget, &sdev->widget_list, list) {
-+		if (swidget->comp_id == cdata->comp_id) {
-+			found = true;
-+			break;
-+		}
-+	}
-+
-+	if (!found)
-+		return;
-+
-+	/* Translate SOF cmd to TPLG type */
-+	switch (cdata->cmd) {
-+	case SOF_CTRL_CMD_VOLUME:
-+	case SOF_CTRL_CMD_SWITCH:
-+		type = SND_SOC_TPLG_TYPE_MIXER;
-+		break;
-+	case SOF_CTRL_CMD_BINARY:
-+		type = SND_SOC_TPLG_TYPE_BYTES;
-+		break;
-+	case SOF_CTRL_CMD_ENUM:
-+		type = SND_SOC_TPLG_TYPE_ENUM;
-+		break;
-+	default:
-+		dev_err(sdev->dev, "Unknown cmd %u in %s\n", cdata->cmd, __func__);
-+		return;
-+	}
-+
-+	widget = swidget->widget;
-+	for (i = 0; i < widget->num_kcontrols; i++) {
-+		/* skip non matching types or non matching indexes within type */
-+		if (widget->dobj.widget.kcontrol_type[i] == type &&
-+		    widget->kcontrol_news[i].index == cdata->index) {
-+			kc = widget->kcontrols[i];
-+			break;
-+		}
-+	}
-+
-+	if (!kc)
-+		return;
-+
-+	switch (cdata->cmd) {
-+	case SOF_CTRL_CMD_VOLUME:
-+	case SOF_CTRL_CMD_SWITCH:
-+		sm = (struct soc_mixer_control *)kc->private_value;
-+		scontrol = sm->dobj.private;
-+		break;
-+	case SOF_CTRL_CMD_BINARY:
-+		be = (struct soc_bytes_ext *)kc->private_value;
-+		scontrol = be->dobj.private;
-+		break;
-+	case SOF_CTRL_CMD_ENUM:
-+		se = (struct soc_enum *)kc->private_value;
-+		scontrol = se->dobj.private;
-+		break;
-+	default:
-+		return;
-+	}
-+
-+	expected_size = sizeof(struct sof_ipc_ctrl_data);
-+	switch (cdata->type) {
-+	case SOF_CTRL_TYPE_VALUE_CHAN_GET:
-+	case SOF_CTRL_TYPE_VALUE_CHAN_SET:
-+		expected_size += cdata->num_elems *
-+				 sizeof(struct sof_ipc_ctrl_value_chan);
-+		break;
-+	case SOF_CTRL_TYPE_DATA_GET:
-+	case SOF_CTRL_TYPE_DATA_SET:
-+		expected_size += cdata->num_elems + sizeof(struct sof_abi_hdr);
-+		break;
-+	default:
-+		return;
-+	}
-+
-+	if (cdata->rhdr.hdr.size != expected_size) {
-+		dev_err(sdev->dev, "Component notification size mismatch\n");
-+		return;
-+	}
-+
-+	if (cdata->num_elems)
-+		/*
-+		 * The message includes the updated value/data, update the
-+		 * control's local cache using the received notification
-+		 */
-+		snd_sof_update_control(scontrol, cdata);
-+	else
-+		/* Mark the scontrol that the value/data is changed in SOF */
-+		scontrol->comp_data_dirty = true;
-+
-+	snd_ctl_notify_one(swidget->scomp->card->snd_card, SNDRV_CTL_EVENT_MASK_VALUE, kc, 0);
-+}
-+
-+const struct sof_ipc_tplg_control_ops tplg_ipc3_control_ops = {
-+	.update = sof_ipc3_control_update,
-+};
-diff --git a/sound/soc/sof/ipc3-ops.h b/sound/soc/sof/ipc3-ops.h
-index 5d8cab92c1a4..f3d6010d0b77 100644
---- a/sound/soc/sof/ipc3-ops.h
-+++ b/sound/soc/sof/ipc3-ops.h
-@@ -15,5 +15,6 @@
- 
- extern const struct sof_ipc_tplg_ops ipc3_tplg_ops;
- extern const struct sof_ipc_ops ipc3_ops;
-+extern const struct sof_ipc_tplg_control_ops tplg_ipc3_control_ops;
- 
- #endif
-diff --git a/sound/soc/sof/ipc3-topology.c b/sound/soc/sof/ipc3-topology.c
-index bf0cf38f4524..55be97ee816b 100644
---- a/sound/soc/sof/ipc3-topology.c
-+++ b/sound/soc/sof/ipc3-topology.c
-@@ -2155,6 +2155,7 @@ static const struct sof_ipc_tplg_widget_ops tplg_ipc3_widget_ops[SND_SOC_DAPM_TY
- 
- const struct sof_ipc_tplg_ops ipc3_tplg_ops = {
- 	.widget = tplg_ipc3_widget_ops,
-+	.control = &tplg_ipc3_control_ops,
- 	.route_setup = sof_ipc3_route_setup,
- 	.control_setup = sof_ipc3_control_setup,
- 	.control_free = sof_ipc3_control_free,
-diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
-index d241dd84e708..bcd38c882078 100644
---- a/sound/soc/sof/sof-audio.h
-+++ b/sound/soc/sof/sof-audio.h
-@@ -46,9 +46,9 @@ struct snd_sof_dai_config_data {
+ static void snd_sof_update_control(struct snd_sof_control *scontrol,
+ 				   struct sof_ipc_ctrl_data *cdata)
+ {
+@@ -302,5 +350,7 @@ const struct sof_ipc_tplg_control_ops tplg_ipc3_control_ops = {
+ 	.volume_get = sof_ipc3_volume_get,
+ 	.switch_put = sof_ipc3_switch_put,
+ 	.switch_get = sof_ipc3_switch_get,
++	.enum_put = sof_ipc3_enum_put,
++	.enum_get = sof_ipc3_enum_get,
+ 	.update = sof_ipc3_control_update,
  };
- 
- /**
-- * struct ipc_tplg_control_ops - IPC-specific ops for topology kcontrol IO
-+ * struct sof_ipc_tplg_control_ops - IPC-specific ops for topology kcontrol IO
-  */
--struct ipc_tplg_control_ops {
-+struct sof_ipc_tplg_control_ops {
- 	bool (*volume_put)(struct snd_sof_control *scontrol, struct snd_ctl_elem_value *ucontrol);
- 	int (*volume_get)(struct snd_sof_control *scontrol, struct snd_ctl_elem_value *ucontrol);
- 	bool (*switch_put)(struct snd_sof_control *scontrol, struct snd_ctl_elem_value *ucontrol);
-@@ -103,7 +103,7 @@ struct sof_ipc_tplg_widget_ops {
-  */
- struct sof_ipc_tplg_ops {
- 	const struct sof_ipc_tplg_widget_ops *widget;
--	const struct ipc_tplg_control_ops *control;
-+	const struct sof_ipc_tplg_control_ops *control;
- 	int (*route_setup)(struct snd_sof_dev *sdev, struct snd_sof_route *sroute);
- 	const struct sof_token_info *token_list;
- 	int (*control_setup)(struct snd_sof_dev *sdev, struct snd_sof_control *scontrol);
 -- 
 2.25.1
 
