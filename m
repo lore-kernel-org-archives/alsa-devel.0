@@ -4,69 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03BCBC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Mar 2022 17:52:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B310C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Mar 2022 17:53:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4EA4E1765;
-	Thu, 17 Mar 2022 18:51:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4EA4E1765
+	by alsa0.perex.cz (Postfix) with ESMTPS id 48D1918CF;
+	Thu, 17 Mar 2022 18:52:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 48D1918CF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647539556;
-	bh=P/lzESzr2NqhkLIo16KPLJAjz8LvdBrbwwKy5cIJhg8=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=HTimGGRCeNnSIW8UOhnvpMVFgrc6JdunSVDEjsDb/rsVN85Vxq1h9D/Ul+vwHIXU0
-	 XoMEp4WdiYWbJviIwvfu3tr3eEJehtRjWPkB81wX1WyaQUnweuHXVb8rSwX7oN37PZ
-	 fQ4H2UH+Pt1b/Vc16FOXCWrdRTBqF1IR29lelp40=
+	s=default; t=1647539590;
+	bh=Tptf8VyQob+r1azRJ8hK+4qcr+k5LUpR31+UaaqCeag=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=MtjhekSiQUPyJGXJ5/1iOzsqF7gHpnogg2C3kvOjmm1HvWnjqlWsVMnSO+Vv6bLW5
+	 cUbDYCg8G7j7hsl/hbK8cJnrAobPtgtm1xIJuWHuCzg0zlJYeuMJJq9bvyqqdqCFJa
+	 BKjRfpxSHBfpvfAgVPbFMRxrPZ8m1lSs1SL41Jyw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D1369F8013F;
-	Thu, 17 Mar 2022 18:51:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B718EF80515;
+	Thu, 17 Mar 2022 18:51:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7B2C5F80125; Thu, 17 Mar 2022 18:51:44 +0100 (CET)
+ id 1DBE3F80132; Thu, 17 Mar 2022 18:51:50 +0100 (CET)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 12D77F80125
- for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2022 18:51:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 12D77F80125
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6C71FF80159
+ for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2022 18:51:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C71FF80159
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="FBqtfV6T"
+ header.b="jm5vjAL4"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1647539502; x=1679075502;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=P/lzESzr2NqhkLIo16KPLJAjz8LvdBrbwwKy5cIJhg8=;
- b=FBqtfV6Tsug6tqo3Mk32tqaIWmQ9wh+smC9v8Z3BUdvlND3vJVhbdtLm
- mChgLfLE3QBZECeu6f+isbilFcysO81mlA8pjAhuvEoc7bljxHozOZme9
- Js4qto9yQ0Hi3O2wilyfIRT479Y0C49swYsJnrhqRhh8KIEkyHBeiW8PJ
- tyGl5I6zuo/UJTX+kSWNRt8lJUIuFiVgDhhXBRdEiabaZmdkOdBRNZCMI
- XQGyToD4lOgmWvQioG7AWXT75mZHGHFrA0E5i2NiP1YiZFWiNj8dNY7Fo
- Mqy2kt6/gfc0qh3KERWnOvk9MEc0KKKzaPHCJyXM3er5Y6NbRTn3TuwpF w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10289"; a="254492895"
-X-IronPort-AV: E=Sophos;i="5.90,188,1643702400"; d="scan'208";a="254492895"
+ t=1647539506; x=1679075506;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=Tptf8VyQob+r1azRJ8hK+4qcr+k5LUpR31+UaaqCeag=;
+ b=jm5vjAL4zLDoDRDqCmBYScn26QbqvfyuBZw6z/QGh8V2XC8ONI6zSSFW
+ yeFqtNPFG24r7rmydQl3W6S8KQ5bf/TiCEws7rm7sSuHs5D6vKMX9m5De
+ AhNUs9hIOi52y5ueX6gZdXfw2sfsgPaPfrXJy3X+zietaz/i28VywSb2L
+ 2AUHuNfWfXOOMwHY43qipxl+pP+GOdx2/j2Rt5yeWI3XiDrstccy786p7
+ PGAIHHfaLMfelFOE4hi8EhuLgoydcsVps6WfNJq6/1kkydYb9YAQiv7ug
+ 1nX2OZAtv7cKutK6jBW58dQjm+/dnfj6GGKyuMxMO034wIgAjhLYe+wam g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10289"; a="254492903"
+X-IronPort-AV: E=Sophos;i="5.90,188,1643702400"; d="scan'208";a="254492903"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Mar 2022 10:51:21 -0700
-X-IronPort-AV: E=Sophos;i="5.90,188,1643702400"; d="scan'208";a="550431102"
+ 17 Mar 2022 10:51:22 -0700
+X-IronPort-AV: E=Sophos;i="5.90,188,1643702400"; d="scan'208";a="550431116"
 Received: from jfbonin1-mobl6.amr.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.255.92.163])
  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  17 Mar 2022 10:51:21 -0700
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 00/19] Make the SOF control, PCM and PM code IPC agnostic
-Date: Thu, 17 Mar 2022 10:50:25 -0700
-Message-Id: <20220317175044.1752400-1-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 04/19] ASoC: SOF: Introduce IPC ops for kcontrol IO
+Date: Thu, 17 Mar 2022 10:50:29 -0700
+Message-Id: <20220317175044.1752400-5-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220317175044.1752400-1-ranjani.sridharan@linux.intel.com>
+References: <20220317175044.1752400-1-ranjani.sridharan@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Cc: tiwai@suse.de, broonie@kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+ =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,57 +87,64 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This series is a continuation to the SOF IPC abstraction work to support
-the new IPC version introduced in the SOF firmware. It makes the top-level
-control IO, PCM and PM code IPC-agnostic. Other than the first patch,
-the rest are purely for abstraction and include no changes in
-functionality.
+Introduce IPC-specific ops for kcontrol IO in struct ipc_tplg_ops.
 
-Ranjani Sridharan (19):
-  ASoC: SOF: set up scheduler widget before all other widgets in the
-    pipeline
-  ASoC: SOF: Make sof_widget_setup/free IPC agnostic
-  ASoC: SOF: Make sof_suspend/resume IPC agnostic
-  ASoC: SOF: Introduce IPC ops for kcontrol IO
-  ASoC: SOF: Add IPC3 topology control ops
-  ASoC: SOF: Add volume_get/put IPC3 ops
-  ASoC: SOF: Add switch get/put IPC3 ops
-  ASoC: SOF: Add enum_get/put control ops for IPC3
-  ASoC: SOF: Add bytes_get/put control IPC ops for IPC3
-  ASoC: SOF: Add bytes_ext control IPC ops for IPC3
-  ASoC: SOF: Introduce IPC-specific PCM ops
-  ASoC: SOF: pcm: expose the sof_pcm_setup_connected_widgets() function
-  ASoC: SOF: Introduce IPC3 PCM hw_free op
-  ASoC: SOF: Define hw_params PCM op for IPC3
-  ASoC: SOF: Add trigger PCM op for IPC3
-  ASoC: SOF: Add dai_link_fixup PCM op for IPC3
-  ASoC: SOF: expose sof_route_setup()
-  ASoC: SOF: topology: Add ops for setting up and tearing down pipelines
-  ASoC: SOF: Add a new dai_get_clk topology IPC op
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/sof/sof-audio.h | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
- sound/soc/sof/Makefile        |   2 +-
- sound/soc/sof/control.c       | 545 ++++---------------------------
- sound/soc/sof/intel/hda-dai.c |  97 +-----
- sound/soc/sof/intel/hda.c     | 169 +++-------
- sound/soc/sof/intel/hda.h     |   7 +-
- sound/soc/sof/ipc.c           |  10 +-
- sound/soc/sof/ipc3-control.c  | 594 ++++++++++++++++++++++++++++++++++
- sound/soc/sof/ipc3-ops.h      |  21 ++
- sound/soc/sof/ipc3-pcm.c      | 372 +++++++++++++++++++++
- sound/soc/sof/ipc3-topology.c | 384 +++++++++++++++++++++-
- sound/soc/sof/ipc3.c          |  45 +++
- sound/soc/sof/pcm.c           | 354 +++-----------------
- sound/soc/sof/pm.c            |  80 ++---
- sound/soc/sof/sof-audio.c     | 442 +++++--------------------
- sound/soc/sof/sof-audio.h     |  70 +++-
- sound/soc/sof/sof-priv.h      |  17 +-
- sound/soc/sof/topology.c      |  55 ++--
- 17 files changed, 1805 insertions(+), 1459 deletions(-)
- create mode 100644 sound/soc/sof/ipc3-control.c
- create mode 100644 sound/soc/sof/ipc3-ops.h
- create mode 100644 sound/soc/sof/ipc3-pcm.c
- create mode 100644 sound/soc/sof/ipc3.c
-
+diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
+index 19386184d8f3..d241dd84e708 100644
+--- a/sound/soc/sof/sof-audio.h
++++ b/sound/soc/sof/sof-audio.h
+@@ -45,6 +45,28 @@ struct snd_sof_dai_config_data {
+ 	int dai_data; /* contains DAI-specific information */
+ };
+ 
++/**
++ * struct ipc_tplg_control_ops - IPC-specific ops for topology kcontrol IO
++ */
++struct ipc_tplg_control_ops {
++	bool (*volume_put)(struct snd_sof_control *scontrol, struct snd_ctl_elem_value *ucontrol);
++	int (*volume_get)(struct snd_sof_control *scontrol, struct snd_ctl_elem_value *ucontrol);
++	bool (*switch_put)(struct snd_sof_control *scontrol, struct snd_ctl_elem_value *ucontrol);
++	int (*switch_get)(struct snd_sof_control *scontrol, struct snd_ctl_elem_value *ucontrol);
++	bool (*enum_put)(struct snd_sof_control *scontrol, struct snd_ctl_elem_value *ucontrol);
++	int (*enum_get)(struct snd_sof_control *scontrol, struct snd_ctl_elem_value *ucontrol);
++	int (*bytes_put)(struct snd_sof_control *scontrol, struct snd_ctl_elem_value *ucontrol);
++	int (*bytes_get)(struct snd_sof_control *scontrol, struct snd_ctl_elem_value *ucontrol);
++	int (*bytes_ext_get)(struct snd_sof_control *scontrol,
++			     const unsigned int __user *binary_data, unsigned int size);
++	int (*bytes_ext_volatile_get)(struct snd_sof_control *scontrol,
++				      const unsigned int __user *binary_data, unsigned int size);
++	int (*bytes_ext_put)(struct snd_sof_control *scontrol,
++			     const unsigned int __user *binary_data, unsigned int size);
++	/* update control data based on notification from the DSP */
++	void (*update)(struct snd_sof_dev *sdev, void *ipc_control_message);
++};
++
+ /**
+  * struct sof_ipc_tplg_widget_ops - IPC-specific ops for topology widgets
+  * @ipc_setup: Function pointer for setting up widget IPC params
+@@ -67,6 +89,7 @@ struct sof_ipc_tplg_widget_ops {
+  * @widget: Array of pointers to IPC-specific ops for widgets. This should always be of size
+  *	    SND_SOF_DAPM_TYPE_COUNT i.e one per widget type. Unsupported widget types will be
+  *	    initialized to 0.
++ * @control: Pointer to the IPC-specific ops for topology kcontrol IO
+  * @route_setup: Function pointer for setting up pipeline connections
+  * @token_list: List of all tokens supported by the IPC version. The size of the token_list
+  *		array should be SOF_TOKEN_COUNT. The unused elements in the array will be
+@@ -80,6 +103,7 @@ struct sof_ipc_tplg_widget_ops {
+  */
+ struct sof_ipc_tplg_ops {
+ 	const struct sof_ipc_tplg_widget_ops *widget;
++	const struct ipc_tplg_control_ops *control;
+ 	int (*route_setup)(struct snd_sof_dev *sdev, struct snd_sof_route *sroute);
+ 	const struct sof_token_info *token_list;
+ 	int (*control_setup)(struct snd_sof_dev *sdev, struct snd_sof_control *scontrol);
 -- 
 2.25.1
 
