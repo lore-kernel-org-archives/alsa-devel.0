@@ -4,65 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CFF89C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Mar 2022 17:53:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D72FC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Mar 2022 17:53:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F2D4818BB;
-	Thu, 17 Mar 2022 18:52:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F2D4818BB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5E74C189F;
+	Thu, 17 Mar 2022 18:52:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5E74C189F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647539607;
-	bh=Px5WUh7+GYyzaDBhCLmS0KV1WQ96drJzbOBM7gBMx2w=;
+	s=default; t=1647539624;
+	bh=iA84qKSwThV4/LPQbLW0cH6iio1/WonLJ719lT3zsf4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CyNdqf4orpxEVMjt5Uhc51Mn3Cpk1IAyrEZJHd5fog/c4csY8OU3PJOwFMax6iC0y
-	 yr+8CIG+UbxS1Hu6kjZZ04N2RFC4U9yeQElFPZtwTVcfixritf14KRoZtQcBtyg0/J
-	 ogSe+u3/TuD+Cq0U1QTa/h4+scY3gqyByif6VJwk=
+	b=fRsYKpn88Fju0CWW8Pc1v09kuWd+hTSX/UIoKpESa8Qqxfbwhf8AWx1pUv5FZ0eVo
+	 zLJbKZHKZIN3Zrf7+UqKWWmZo5iIvwhMz1SIuoYoxsOX0zwr3Oy5VuUq2bi8eo8Kt3
+	 ezMhHLv65DDnRiI/OqTRFDHTmUj9hBDzf+jiZ1Z8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BE5B0F8051A;
-	Thu, 17 Mar 2022 18:51:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2078EF80524;
+	Thu, 17 Mar 2022 18:51:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1617DF80516; Thu, 17 Mar 2022 18:51:50 +0100 (CET)
+ id C89CAF80524; Thu, 17 Mar 2022 18:51:54 +0100 (CET)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 25EABF80132
- for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2022 18:51:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 25EABF80132
+ by alsa1.perex.cz (Postfix) with ESMTPS id C2F24F8023A
+ for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2022 18:51:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2F24F8023A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="b2vHk6Dg"
+ header.b="DaGsNf7R"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1647539504; x=1679075504;
+ t=1647539507; x=1679075507;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=Px5WUh7+GYyzaDBhCLmS0KV1WQ96drJzbOBM7gBMx2w=;
- b=b2vHk6DgszM5nOVij/4tVVOEg1epxHmStxCl9rE01G5jDbIMiwoQ1nLb
- LhLBIvt8OykT7v19WosWvWzU8aH60fFTlkRxvgW93lFLQHIfUFR0SN5Ln
- n7r7fl1LAZ1lzI+hm6XLz+bdYeXPavKp/PLIfWqZXCdVCFgNF0gqmy2N2
- ySbjlLxHhJPgiz38yRl6a4HQ+7zgWwXKPL7iMpz4J3Kx+9GyaaXTSLVHV
- NwjCR0F+0+qRqnGFzqKkmB7wjNeBksjxgN0edxqOCBu9qoOqqp+029B3d
- NUYx6zB9ffgMUJvvBmRcDNmCSxICNwE/mVUKD1O7ADC7vsOHz/XmWpx0X Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10289"; a="254492896"
-X-IronPort-AV: E=Sophos;i="5.90,188,1643702400"; d="scan'208";a="254492896"
+ bh=iA84qKSwThV4/LPQbLW0cH6iio1/WonLJ719lT3zsf4=;
+ b=DaGsNf7R84wx05CSes6PjOVo4mTfU+tZL7sZNEKUfmx9hOFDPcPzOnN1
+ VuxJG7WeMv7bXzw/RmOcmWJKgS+x6+uqrFO59dvF985gG5ktsQDoX5gki
+ Umuy0Ghv65y9ngLnhHcQ+q+wQb8+cEBJd8+Y83FwUpo3SL5NZvReIznpU
+ 36vDfBEEg3EcS6Qc6MAxREzxCX3RD2MQbziUN5ftEGp+0BcjSLj88Dhuj
+ ttm2cK8Aj6KnkC+33J3H0Co563SSCGf/SFl8GsnsW5RykVTUBiHUDMhiD
+ Yn3dTMlMBD5qrvHvGAcPoPL+0uxMO97mkWlByxHxW7Op5Je1Glxel5bWT A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10289"; a="254492900"
+X-IronPort-AV: E=Sophos;i="5.90,188,1643702400"; d="scan'208";a="254492900"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  17 Mar 2022 10:51:21 -0700
-X-IronPort-AV: E=Sophos;i="5.90,188,1643702400"; d="scan'208";a="550431106"
+X-IronPort-AV: E=Sophos;i="5.90,188,1643702400"; d="scan'208";a="550431113"
 Received: from jfbonin1-mobl6.amr.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.255.92.163])
  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  17 Mar 2022 10:51:21 -0700
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 01/19] ASoC: SOF: set up scheduler widget before all other
- widgets in the pipeline
-Date: Thu, 17 Mar 2022 10:50:26 -0700
-Message-Id: <20220317175044.1752400-2-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 03/19] ASoC: SOF: Make sof_suspend/resume IPC agnostic
+Date: Thu, 17 Mar 2022 10:50:28 -0700
+Message-Id: <20220317175044.1752400-4-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220317175044.1752400-1-ranjani.sridharan@linux.intel.com>
 References: <20220317175044.1752400-1-ranjani.sridharan@linux.intel.com>
@@ -88,186 +87,298 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-For dynamic pipelines, We set up the DAI widget during BE DAI hw_params
-and this results in it getting set up before the scheduler widget for the
-pipeline it belongs to is set up. Move the scheduler widget set up into
-sof_widget_setup() to ensure that the scheduler widget is always the first
-widget in a pipeline to be set up and the last one to get freed after all
-the other widgets have been freed.
-
-Fixes: 5fcdbb2d45df ('ASoC: SOF: Add support for dynamic pipelines')
+Add a new set of IPC ops for PM with the ctx_save and ctx_restore ops
+for suspend/resume and implement the ops for IPC3.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/sof-audio.c | 82 +++++++++++++++++++++------------------
- 1 file changed, 44 insertions(+), 38 deletions(-)
+ sound/soc/sof/Makefile        |  2 +-
+ sound/soc/sof/ipc.c           |  1 +
+ sound/soc/sof/ipc3-ops.h      | 19 +++++++++++
+ sound/soc/sof/ipc3-topology.c |  7 ++--
+ sound/soc/sof/ipc3.c          | 44 ++++++++++++++++++++++++
+ sound/soc/sof/pm.c            | 63 ++++++++++++++---------------------
+ sound/soc/sof/sof-priv.h      | 14 ++++++--
+ 7 files changed, 104 insertions(+), 46 deletions(-)
+ create mode 100644 sound/soc/sof/ipc3-ops.h
+ create mode 100644 sound/soc/sof/ipc3.c
 
-diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
-index 683c290bb69a..cc0d647a2d0d 100644
---- a/sound/soc/sof/sof-audio.c
-+++ b/sound/soc/sof/sof-audio.c
-@@ -104,7 +104,7 @@ int sof_widget_free(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget)
- 		.id = swidget->comp_id,
- 	};
- 	struct sof_ipc_reply reply;
--	int ret, ret1;
-+	int ret, err;
+diff --git a/sound/soc/sof/Makefile b/sound/soc/sof/Makefile
+index e13dab59764c..59482903a243 100644
+--- a/sound/soc/sof/Makefile
++++ b/sound/soc/sof/Makefile
+@@ -2,7 +2,7 @@
  
- 	if (!swidget->private)
- 		return 0;
-@@ -136,31 +136,41 @@ int sof_widget_free(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget)
- 	}
+ snd-sof-objs := core.o ops.o loader.o ipc.o pcm.o pm.o debug.o topology.o\
+ 		control.o trace.o iomem-utils.o sof-audio.o stream-ipc.o\
+-		ipc3-topology.o
++		ipc3-topology.o ipc3.o
+ ifneq ($(CONFIG_SND_SOC_SOF_CLIENT),)
+ snd-sof-objs += sof-client.o
+ endif
+diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
+index 19a294cbbb8d..46a989be9a82 100644
+--- a/sound/soc/sof/ipc.c
++++ b/sound/soc/sof/ipc.c
+@@ -17,6 +17,7 @@
+ #include "sof-priv.h"
+ #include "sof-audio.h"
+ #include "ops.h"
++#include "ipc3-ops.h"
  
- 	/* continue to disable core even if IPC fails */
--	ret = sof_ipc_tx_message(sdev->ipc, ipc_free.hdr.cmd, &ipc_free, sizeof(ipc_free),
-+	err = sof_ipc_tx_message(sdev->ipc, ipc_free.hdr.cmd, &ipc_free, sizeof(ipc_free),
- 				 &reply, sizeof(reply));
--	if (ret < 0)
-+	if (err < 0)
- 		dev_err(sdev->dev, "error: failed to free widget %s\n", swidget->widget->name);
+ typedef void (*ipc_rx_callback)(struct snd_sof_dev *sdev, void *msg_buf);
  
- 	/*
- 	 * disable widget core. continue to route setup status and complete flag
- 	 * even if this fails and return the appropriate error
- 	 */
--	ret1 = snd_sof_dsp_core_put(sdev, swidget->core);
--	if (ret1 < 0) {
-+	ret = snd_sof_dsp_core_put(sdev, swidget->core);
-+	if (ret < 0) {
- 		dev_err(sdev->dev, "error: failed to disable target core: %d for widget %s\n",
- 			swidget->core, swidget->widget->name);
--		if (!ret)
--			ret = ret1;
-+		if (!err)
-+			err = ret;
- 	}
- 
- 	/* reset route setup status for all routes that contain this widget */
- 	sof_reset_route_setup_status(sdev, swidget);
- 	swidget->complete = 0;
- 
--	if (!ret)
-+	/*
-+	 * free the scheduler widget (same as pipe_widget) associated with the current swidget.
-+	 * skip for static pipelines
-+	 */
-+	if (swidget->dynamic_pipeline_widget && swidget->id != snd_soc_dapm_scheduler) {
-+		ret = sof_widget_free(sdev, swidget->pipe_widget);
-+		if (ret < 0 && !err)
-+			err = ret;
-+	}
+diff --git a/sound/soc/sof/ipc3-ops.h b/sound/soc/sof/ipc3-ops.h
+new file mode 100644
+index 000000000000..5d8cab92c1a4
+--- /dev/null
++++ b/sound/soc/sof/ipc3-ops.h
+@@ -0,0 +1,19 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
++/*
++ * This file is provided under a dual BSD/GPLv2 license.  When using or
++ * redistributing this file, you may do so under either license.
++ *
++ * Copyright(c) 2021 Intel Corporation. All rights reserved.
++ *
++ * Author: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
++ */
 +
-+	if (!err)
- 		dev_dbg(sdev->dev, "widget %s freed\n", swidget->widget->name);
++#ifndef __SOUND_SOC_SOF_IPC3_OPS_H
++#define __SOUND_SOC_SOF_IPC3_OPS_H
++
++#include "sof-priv.h"
++
++extern const struct sof_ipc_tplg_ops ipc3_tplg_ops;
++extern const struct sof_ipc_ops ipc3_ops;
++
++#endif
+diff --git a/sound/soc/sof/ipc3-topology.c b/sound/soc/sof/ipc3-topology.c
+index 8d08ffb37008..bf0cf38f4524 100644
+--- a/sound/soc/sof/ipc3-topology.c
++++ b/sound/soc/sof/ipc3-topology.c
+@@ -11,6 +11,7 @@
+ #include <sound/pcm_params.h>
+ #include "sof-priv.h"
+ #include "sof-audio.h"
++#include "ipc3-ops.h"
+ #include "ops.h"
  
--	return ret;
-+	return err;
+ /* Full volume for default values */
+@@ -2152,7 +2153,7 @@ static const struct sof_ipc_tplg_widget_ops tplg_ipc3_widget_ops[SND_SOC_DAPM_TY
+ 				 sof_ipc3_widget_bind_event},
+ };
+ 
+-static const struct sof_ipc_tplg_ops ipc3_tplg_ops = {
++const struct sof_ipc_tplg_ops ipc3_tplg_ops = {
+ 	.widget = tplg_ipc3_widget_ops,
+ 	.route_setup = sof_ipc3_route_setup,
+ 	.control_setup = sof_ipc3_control_setup,
+@@ -2163,7 +2164,3 @@ static const struct sof_ipc_tplg_ops ipc3_tplg_ops = {
+ 	.widget_setup = sof_ipc3_widget_setup,
+ 	.dai_config = sof_ipc3_dai_config,
+ };
+-
+-const struct sof_ipc_ops ipc3_ops = {
+-	.tplg = &ipc3_tplg_ops,
+-};
+diff --git a/sound/soc/sof/ipc3.c b/sound/soc/sof/ipc3.c
+new file mode 100644
+index 000000000000..e71cf30908c6
+--- /dev/null
++++ b/sound/soc/sof/ipc3.c
+@@ -0,0 +1,44 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
++//
++// This file is provided under a dual BSD/GPLv2 license.  When using or
++// redistributing this file, you may do so under either license.
++//
++// Copyright(c) 2021 Intel Corporation. All rights reserved.
++//
++//
++
++#include "sof-priv.h"
++#include "ipc3-ops.h"
++
++static int sof_ipc3_ctx_ipc(struct snd_sof_dev *sdev, int cmd)
++{
++	struct sof_ipc_pm_ctx pm_ctx = {
++		.hdr.size = sizeof(pm_ctx),
++		.hdr.cmd = SOF_IPC_GLB_PM_MSG | cmd,
++	};
++	struct sof_ipc_reply reply;
++
++	/* send ctx save ipc to dsp */
++	return sof_ipc_tx_message(sdev->ipc, pm_ctx.hdr.cmd, &pm_ctx,
++				  sizeof(pm_ctx), &reply, sizeof(reply));
++}
++
++static int sof_ipc3_ctx_save(struct snd_sof_dev *sdev)
++{
++	return sof_ipc3_ctx_ipc(sdev, SOF_IPC_PM_CTX_SAVE);
++}
++
++static int sof_ipc3_ctx_restore(struct snd_sof_dev *sdev)
++{
++	return sof_ipc3_ctx_ipc(sdev, SOF_IPC_PM_CTX_RESTORE);
++}
++
++static const struct sof_ipc_pm_ops ipc3_pm_ops = {
++	.ctx_save = sof_ipc3_ctx_save,
++	.ctx_restore = sof_ipc3_ctx_restore,
++};
++
++const struct sof_ipc_ops ipc3_ops = {
++	.tplg = &ipc3_tplg_ops,
++	.pm = &ipc3_pm_ops,
++};
+diff --git a/sound/soc/sof/pm.c b/sound/soc/sof/pm.c
+index 7300ecadabd9..10adbbd0a9cd 100644
+--- a/sound/soc/sof/pm.c
++++ b/sound/soc/sof/pm.c
+@@ -48,22 +48,6 @@ static u32 snd_sof_dsp_power_target(struct snd_sof_dev *sdev)
+ 	return target_dsp_state;
  }
- EXPORT_SYMBOL(sof_widget_free);
  
-@@ -181,12 +191,32 @@ int sof_widget_setup(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget)
- 	if (++swidget->use_count > 1)
- 		return 0;
+-static int sof_send_pm_ctx_ipc(struct snd_sof_dev *sdev, int cmd)
+-{
+-	struct sof_ipc_pm_ctx pm_ctx;
+-	struct sof_ipc_reply reply;
+-
+-	memset(&pm_ctx, 0, sizeof(pm_ctx));
+-
+-	/* configure ctx save ipc message */
+-	pm_ctx.hdr.size = sizeof(pm_ctx);
+-	pm_ctx.hdr.cmd = SOF_IPC_GLB_PM_MSG | cmd;
+-
+-	/* send ctx save ipc to dsp */
+-	return sof_ipc_tx_message(sdev->ipc, pm_ctx.hdr.cmd, &pm_ctx,
+-				 sizeof(pm_ctx), &reply, sizeof(reply));
+-}
+-
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_ENABLE_DEBUGFS_CACHE)
+ static void sof_cache_debugfs(struct snd_sof_dev *sdev)
+ {
+@@ -86,6 +70,7 @@ static void sof_cache_debugfs(struct snd_sof_dev *sdev)
+ static int sof_resume(struct device *dev, bool runtime_resume)
+ {
+ 	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
++	const struct sof_ipc_pm_ops *pm_ops = sdev->ipc->ops->pm;
+ 	u32 old_state = sdev->dsp_power_state.state;
+ 	int ret;
  
-+	/*
-+	 * The scheduler widget for a pipeline is not part of the connected DAPM
-+	 * widget list and it needs to be set up before the widgets in the pipeline
-+	 * are set up. The use_count for the scheduler widget is incremented for every
-+	 * widget in a given pipeline to ensure that it is freed only after the last
-+	 * widget in the pipeline is freed. Skip setting up scheduler widget for static pipelines.
-+	 */
-+	if (swidget->dynamic_pipeline_widget && swidget->id != snd_soc_dapm_scheduler) {
-+		if (!swidget->pipe_widget) {
-+			dev_err(sdev->dev, "No scheduler widget set for %s\n",
-+				swidget->widget->name);
-+			ret = -EINVAL;
-+			goto use_count_dec;
-+		}
-+
-+		ret = sof_widget_setup(sdev, swidget->pipe_widget);
+@@ -171,11 +156,11 @@ static int sof_resume(struct device *dev, bool runtime_resume)
+ 	sof_resume_clients(sdev);
+ 
+ 	/* notify DSP of system resume */
+-	ret = sof_send_pm_ctx_ipc(sdev, SOF_IPC_PM_CTX_RESTORE);
+-	if (ret < 0)
+-		dev_err(sdev->dev,
+-			"error: ctx_restore ipc error during resume %d\n",
+-			ret);
++	if (pm_ops && pm_ops->ctx_restore) {
++		ret = pm_ops->ctx_restore(sdev);
 +		if (ret < 0)
-+			goto use_count_dec;
++			dev_err(sdev->dev, "ctx_restore IPC error during resume: %d\n", ret);
 +	}
-+
- 	/* enable widget core */
- 	ret = snd_sof_dsp_core_get(sdev, swidget->core);
- 	if (ret < 0) {
- 		dev_err(sdev->dev, "error: failed to enable target core for widget %s\n",
- 			swidget->widget->name);
--		goto use_count_dec;
-+		goto pipe_widget_free;
- 	}
  
- 	switch (swidget->id) {
-@@ -257,6 +287,9 @@ int sof_widget_setup(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget)
- 
- core_put:
- 	snd_sof_dsp_core_put(sdev, swidget->core);
-+pipe_widget_free:
-+	if (swidget->id != snd_soc_dapm_scheduler)
-+		sof_widget_free(sdev, swidget->pipe_widget);
- use_count_dec:
- 	swidget->use_count--;
  	return ret;
-@@ -374,36 +407,14 @@ int sof_widget_list_setup(struct snd_sof_dev *sdev, struct snd_sof_pcm *spcm, in
- 	/* set up widgets in the list */
- 	for_each_dapm_widgets(list, num_widgets, widget) {
- 		struct snd_sof_widget *swidget = widget->dobj.private;
--		struct snd_sof_widget *pipe_widget;
- 
- 		if (!swidget)
- 			continue;
- 
+ }
+@@ -183,6 +168,7 @@ static int sof_resume(struct device *dev, bool runtime_resume)
+ static int sof_suspend(struct device *dev, bool runtime_suspend)
+ {
+ 	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
++	const struct sof_ipc_pm_ops *pm_ops = sdev->ipc->ops->pm;
+ 	pm_message_t pm_state;
+ 	u32 target_state = 0;
+ 	int ret;
+@@ -232,21 +218,20 @@ static int sof_suspend(struct device *dev, bool runtime_suspend)
+ 		sof_cache_debugfs(sdev);
+ #endif
+ 	/* notify DSP of upcoming power down */
+-	ret = sof_send_pm_ctx_ipc(sdev, SOF_IPC_PM_CTX_SAVE);
+-	if (ret == -EBUSY || ret == -EAGAIN) {
 -		/*
--		 * The scheduler widget for a pipeline is not part of the connected DAPM
--		 * widget list and it needs to be set up before the widgets in the pipeline
--		 * are set up. The use_count for the scheduler widget is incremented for every
--		 * widget in a given pipeline to ensure that it is freed only after the last
--		 * widget in the pipeline is freed.
+-		 * runtime PM has logic to handle -EBUSY/-EAGAIN so
+-		 * pass these errors up
 -		 */
--		pipe_widget = swidget->pipe_widget;
--		if (!pipe_widget) {
--			dev_err(sdev->dev, "error: no pipeline widget found for %s\n",
--				swidget->widget->name);
--			ret = -EINVAL;
--			goto widget_free;
--		}
--
--		ret = sof_widget_setup(sdev, pipe_widget);
--		if (ret < 0)
--			goto widget_free;
--
- 		/* set up the widget */
- 		ret = sof_widget_setup(sdev, swidget);
--		if (ret < 0) {
--			sof_widget_free(sdev, pipe_widget);
-+		if (ret < 0)
- 			goto widget_free;
--		}
+-		dev_err(sdev->dev,
+-			"error: ctx_save ipc error during suspend %d\n",
+-			ret);
+-		return ret;
+-	} else if (ret < 0) {
+-		/* FW in unexpected state, continue to power down */
+-		dev_warn(sdev->dev,
+-			 "ctx_save ipc error %d, proceeding with suspend\n",
+-			 ret);
++	if (pm_ops && pm_ops->ctx_save) {
++		ret = pm_ops->ctx_save(sdev);
++		if (ret == -EBUSY || ret == -EAGAIN) {
++			/*
++			 * runtime PM has logic to handle -EBUSY/-EAGAIN so
++			 * pass these errors up
++			 */
++			dev_err(sdev->dev, "ctx_save IPC error during suspend: %d\n", ret);
++			return ret;
++		} else if (ret < 0) {
++			/* FW in unexpected state, continue to power down */
++			dev_warn(sdev->dev, "ctx_save IPC error: %d, proceeding with suspend\n",
++				 ret);
++		}
  	}
  
- 	/*
-@@ -456,7 +467,6 @@ int sof_widget_list_setup(struct snd_sof_dev *sdev, struct snd_sof_pcm *spcm, in
- 			break;
+ suspend:
+@@ -278,9 +263,11 @@ static int sof_suspend(struct device *dev, bool runtime_suspend)
  
- 		sof_widget_free(sdev, swidget);
--		sof_widget_free(sdev, swidget->pipe_widget);
- 	}
+ int snd_sof_dsp_power_down_notify(struct snd_sof_dev *sdev)
+ {
++	const struct sof_ipc_pm_ops *pm_ops = sdev->ipc->ops->pm;
++
+ 	/* Notify DSP of upcoming power down */
+-	if (sof_ops(sdev)->remove)
+-		return sof_send_pm_ctx_ipc(sdev, SOF_IPC_PM_CTX_SAVE);
++	if (sof_ops(sdev)->remove && pm_ops && pm_ops->ctx_save)
++		return pm_ops->ctx_save(sdev);
  
- 	return ret;
-@@ -490,10 +500,6 @@ int sof_widget_list_free(struct snd_sof_dev *sdev, struct snd_sof_pcm *spcm, int
- 		ret = sof_widget_free(sdev, swidget);
- 		if (ret < 0)
- 			ret1 = ret;
+ 	return 0;
+ }
+diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
+index 0b89c3e6ef21..3e883044dd0f 100644
+--- a/sound/soc/sof/sof-priv.h
++++ b/sound/soc/sof/sof-priv.h
+@@ -360,18 +360,28 @@ struct snd_sof_ipc_msg {
+ 	bool ipc_complete;
+ };
+ 
++/**
++ * struct sof_ipc_pm_ops - IPC-specific PM ops
++ * @ctx_save:		Function pointer for context save
++ * @ctx_restore:	Function pointer for context restore
++ */
++struct sof_ipc_pm_ops {
++	int (*ctx_save)(struct snd_sof_dev *sdev);
++	int (*ctx_restore)(struct snd_sof_dev *sdev);
++};
++
+ struct sof_ipc_tplg_ops;
+ 
+ /**
+  * struct sof_ipc_ops - IPC-specific ops
+  * @tplg:	Pointer to IPC-specific topology ops
++ * @pm:		Pointer to PM ops
+  */
+ struct sof_ipc_ops {
+ 	const struct sof_ipc_tplg_ops *tplg;
++	const struct sof_ipc_pm_ops *pm;
+ };
+ 
+-extern const struct sof_ipc_ops ipc3_ops;
 -
--		ret = sof_widget_free(sdev, swidget->pipe_widget);
--		if (ret < 0)
--			ret1 = ret;
- 	}
- 
- 	snd_soc_dapm_dai_free_widgets(&list);
+ /* SOF generic IPC data */
+ struct snd_sof_ipc {
+ 	struct snd_sof_dev *sdev;
 -- 
 2.25.1
 
