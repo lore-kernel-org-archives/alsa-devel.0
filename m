@@ -4,75 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0129AC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Mar 2022 17:56:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C062DC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Mar 2022 17:56:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 36F9918D9;
-	Thu, 17 Mar 2022 18:55:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 36F9918D9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0C64617F1;
+	Thu, 17 Mar 2022 18:55:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C64617F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647539759;
-	bh=EoyOH2QdU+zVON+BM/kXe3KoKzgX0+z/yk9kOPJSOeo=;
+	s=default; t=1647539771;
+	bh=s54QIOYxLYpwYIrccYCban+d46ntW9dfhPYNkjuOt28=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bmuZpaiE3J9T70TdzIcoU7aSlZPeHqP/KlPFL3vBVIu6VOwyu2B4Fne3IuwL1s6A3
-	 2ZyxP19QMaPyS9Kz/MYjownUAZFOQhfevGSNdJXJbWkZ+gwVOOQOP+PKCjDNO+aHS5
-	 gCZpkA5lm5JPbsT+usbXAdFGcth6Diye6H3p/k2Q=
+	b=BygShfO/Fpq4qipndOHstSUIqVoI3fpuFCysmNtC/E6FPPiiuAnFm97yLZ/9Q3OSi
+	 FUKLuo7JQ5eifWttElLFBK4up2nd+C4C0D9XPSQTDOnkbyorgSJbdb3W2hl55M1hoR
+	 H2Le54R3uad2cX/LHFNCUOcCYFWLHlQK0skgaS8c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6211AF80544;
+	by alsa1.perex.cz (Postfix) with ESMTP id F3133F80551;
 	Thu, 17 Mar 2022 18:52:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 39567F80536; Thu, 17 Mar 2022 18:52:05 +0100 (CET)
+ id 2B752F8023A; Thu, 17 Mar 2022 18:52:06 +0100 (CET)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 88B00F80519
- for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2022 18:51:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88B00F80519
+ by alsa1.perex.cz (Postfix) with ESMTPS id DEC97F8023A
+ for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2022 18:51:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DEC97F8023A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="OiDUVWbD"
+ header.b="hSYyJpIU"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1647539512; x=1679075512;
+ t=1647539515; x=1679075515;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=EoyOH2QdU+zVON+BM/kXe3KoKzgX0+z/yk9kOPJSOeo=;
- b=OiDUVWbDWDyVOEqacge0vdcyPOqb1hy1hFU4NCkG6esRJZeGI8OggCuz
- Js9JaVAllYyT2cLQFBKjYecVuFTLOi55Z2ArMiRDDg7S159qFTbFiRgrx
- yYsfNjERNi+WlodMZpMJqX7UhG69OYciqDk5pR3yBU8YKzj0qcbxwuA+o
- qm9fLk7WyqsO1IPtKp5i03E54KaHyyAGRCgU6DP+nUOiY7Oh1IvPUMzry
- HSw7tK/+yjzGM4DPplRIGJ3EzcPWfQcsqyhcaxTIUlPQZAtblspEAVZsA
- bIxxoaLcRn/lClS6gCE2mSDa9ceVYojSJn7VULU57N6EG+vOG9a8ceLSR Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10289"; a="254492899"
-X-IronPort-AV: E=Sophos;i="5.90,188,1643702400"; d="scan'208";a="254492899"
+ bh=s54QIOYxLYpwYIrccYCban+d46ntW9dfhPYNkjuOt28=;
+ b=hSYyJpIUJ/sK2rGxsZkQ9kA/Qopt2MyP41rO3cCJ4tlKz+Ca+yOAUHPq
+ G6XxmSwdzk+cBWFLOMMIWlG8kv+rEOH3Nm720fwA8SCpxbQBzA0pbhuWS
+ BpKdmggGbsTe/NGB036d/kjB/MeiRDTy8KgrNCyjlEOyO/mIjdY1dyFsS
+ g84iToAbcys/OpuS0J2tHyINQSyBOECN2J833/1GuODkcizLVNiLngNJy
+ kCshb3RwAwMbEFQgGpKfHk95k7NG7o8W1EV1SFINEm+nQzukqCtdFfOPN
+ Rs/U1tf3qzB3sMCN2zXIgVK2mkT3MlCaGif+l9DFGj/gNBDkvlN8mqAYX Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10289"; a="254492918"
+X-IronPort-AV: E=Sophos;i="5.90,188,1643702400"; d="scan'208";a="254492918"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Mar 2022 10:51:21 -0700
-X-IronPort-AV: E=Sophos;i="5.90,188,1643702400"; d="scan'208";a="550431109"
+ 17 Mar 2022 10:51:23 -0700
+X-IronPort-AV: E=Sophos;i="5.90,188,1643702400"; d="scan'208";a="550431139"
 Received: from jfbonin1-mobl6.amr.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.255.92.163])
  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Mar 2022 10:51:21 -0700
+ 17 Mar 2022 10:51:22 -0700
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 02/19] ASoC: SOF: Make sof_widget_setup/free IPC agnostic
-Date: Thu, 17 Mar 2022 10:50:27 -0700
-Message-Id: <20220317175044.1752400-3-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 10/19] ASoC: SOF: Add bytes_ext control IPC ops for IPC3
+Date: Thu, 17 Mar 2022 10:50:35 -0700
+Message-Id: <20220317175044.1752400-11-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220317175044.1752400-1-ranjani.sridharan@linux.intel.com>
 References: <20220317175044.1752400-1-ranjani.sridharan@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de,
+Cc: tiwai@suse.de, broonie@kernel.org,
  =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- broonie@kernel.org, Bard Liao <yung-chuan.liao@linux.intel.com>
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,838 +87,454 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add 3 new topology IPC ops for widget_setup, widget_free and dai_config
-in order to make the pipeline management code IPC agnostic and implement
-the ops for IPC3.
-
-Use the newly introduced tplg dai_config op to configure the DAI during
-BE DAI hw_params and hw_free.
-
-Also, in preparation for IPC4, modify BE hw_params callback to skip
-setting up the DAI widget. All widgets will be set up during FW
-hw_params and the DAI_CONFIG IPC should be sent only if the widget
-use_count is > 0. With setting up/freeing removed from the BE hw_params,
-remove the configured flag as it is no longer needed.
+Define and set the get/put/volatile_get control IPC ops for byte
+controls for IPC3.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-dai.c |  97 +++----------------
- sound/soc/sof/intel/hda.c     | 169 +++++++++-------------------------
- sound/soc/sof/intel/hda.h     |   7 +-
- sound/soc/sof/ipc3-topology.c | 150 ++++++++++++++++++++++++++++++
- sound/soc/sof/sof-audio.c     | 136 +++++----------------------
- sound/soc/sof/sof-audio.h     |  13 ++-
- 6 files changed, 246 insertions(+), 326 deletions(-)
+ sound/soc/sof/control.c      | 197 +++--------------------------------
+ sound/soc/sof/ipc3-control.c | 171 ++++++++++++++++++++++++++++++
+ 2 files changed, 188 insertions(+), 180 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda-dai.c b/sound/soc/sof/intel/hda-dai.c
-index 9b78eea8d76b..f9cb9f1f0237 100644
---- a/sound/soc/sof/intel/hda-dai.c
-+++ b/sound/soc/sof/intel/hda-dai.c
-@@ -162,58 +162,19 @@ static int hda_link_dma_params(struct hdac_ext_stream *hext_stream,
- 	return 0;
+diff --git a/sound/soc/sof/control.c b/sound/soc/sof/control.c
+index 2a4997e1cd1e..de1778c4002b 100644
+--- a/sound/soc/sof/control.c
++++ b/sound/soc/sof/control.c
+@@ -45,33 +45,6 @@ static void update_mute_led(struct snd_sof_control *scontrol,
+ #endif
  }
  
--/* Update config for the DAI widget */
--static struct sof_ipc_dai_config *hda_dai_update_config(struct snd_soc_dapm_widget *w,
--							int channel)
+-static void snd_sof_refresh_control(struct snd_sof_control *scontrol)
 -{
--	struct snd_sof_widget *swidget = w->dobj.private;
--	struct sof_dai_private_data *private;
--	struct sof_ipc_dai_config *config;
--	struct snd_sof_dai *sof_dai;
+-	struct sof_ipc_ctrl_data *cdata = scontrol->ipc_control_data;
+-	struct snd_soc_component *scomp = scontrol->scomp;
+-	int ret;
 -
--	if (!swidget)
--		return NULL;
+-	if (!scontrol->comp_data_dirty)
+-		return;
 -
--	sof_dai = swidget->private;
+-	if (!pm_runtime_active(scomp->dev))
+-		return;
 -
--	if (!sof_dai || !sof_dai->private) {
--		dev_err(swidget->scomp->dev, "%s: No private data for DAI %s\n", __func__,
--			w->name);
--		return NULL;
+-	/* set the ABI header values */
+-	cdata->data->magic = SOF_ABI_MAGIC;
+-	cdata->data->abi = SOF_ABI_VERSION;
+-
+-	/* refresh the component data from DSP */
+-	scontrol->comp_data_dirty = false;
+-	ret = snd_sof_ipc_set_get_comp_data(scontrol, false);
+-	if (ret < 0) {
+-		dev_err(scomp->dev, "Failed to get control data: %d\n", ret);
+-
+-		/* Set the flag to re-try next time to get the data */
+-		scontrol->comp_data_dirty = true;
 -	}
--
--	private = sof_dai->private;
--	if (!private->dai_config) {
--		dev_err(swidget->scomp->dev, "%s: No config for DAI %s\n", __func__, w->name);
--		return NULL;
--	}
--
--	config = &private->dai_config[sof_dai->current_config];
--
--	/* update config with stream tag */
--	config->hda.link_dma_ch = channel;
--
--	return config;
 -}
 -
- static int hda_link_dai_widget_update(struct sof_intel_hda_stream *hda_stream,
- 				      struct snd_soc_dapm_widget *w,
- 				      int channel, bool widget_setup)
+ int snd_sof_volume_get(struct snd_kcontrol *kcontrol,
+ 		       struct snd_ctl_elem_value *ucontrol)
  {
--	struct snd_sof_dev *sdev = hda_stream->sdev;
--	struct sof_ipc_dai_config *config;
-+	struct snd_sof_dai_config_data data;
- 
--	config = hda_dai_update_config(w, channel);
--	if (!config) {
--		dev_err(sdev->dev, "error: no config for DAI %s\n", w->name);
--		return -ENOENT;
--	}
-+	data.dai_data = channel;
- 
- 	/* set up/free DAI widget and send DAI_CONFIG IPC */
- 	if (widget_setup)
--		return hda_ctrl_dai_widget_setup(w, SOF_DAI_CONFIG_FLAGS_2_STEP_STOP);
-+		return hda_ctrl_dai_widget_setup(w, SOF_DAI_CONFIG_FLAGS_2_STEP_STOP, &data);
- 
--	return hda_ctrl_dai_widget_free(w, SOF_DAI_CONFIG_FLAGS_NONE);
-+	return hda_ctrl_dai_widget_free(w, SOF_DAI_CONFIG_FLAGS_NONE, &data);
- }
- 
- static int hda_link_hw_params(struct snd_pcm_substream *substream,
-@@ -302,35 +263,16 @@ static int hda_link_dai_config_pause_push_ipc(struct snd_soc_dapm_widget *w)
- 	struct snd_sof_widget *swidget = w->dobj.private;
- 	struct snd_soc_component *component = swidget->scomp;
- 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
--	struct sof_dai_private_data *private;
--	struct sof_ipc_dai_config *config;
--	struct snd_sof_dai *sof_dai;
--	struct sof_ipc_reply reply;
--	int ret;
--
--	sof_dai = swidget->private;
--
--	if (!sof_dai || !sof_dai->private) {
--		dev_err(sdev->dev, "%s: No private data for DAI %s\n", __func__, w->name);
--		return -EINVAL;
--	}
+@@ -221,74 +194,18 @@ int snd_sof_bytes_ext_put(struct snd_kcontrol *kcontrol,
+ 			  const unsigned int __user *binary_data,
+ 			  unsigned int size)
+ {
+-	struct soc_bytes_ext *be =
+-		(struct soc_bytes_ext *)kcontrol->private_value;
++	struct soc_bytes_ext *be = (struct soc_bytes_ext *)kcontrol->private_value;
+ 	struct snd_sof_control *scontrol = be->dobj.private;
+ 	struct snd_soc_component *scomp = scontrol->scomp;
+-	struct sof_ipc_ctrl_data *cdata = scontrol->ipc_control_data;
+-	struct snd_ctl_tlv header;
+-	const struct snd_ctl_tlv __user *tlvd =
+-		(const struct snd_ctl_tlv __user *)binary_data;
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
 +	const struct sof_ipc_tplg_ops *tplg_ops = sdev->ipc->ops->tplg;
-+	int ret = 0;
  
--	private = sof_dai->private;
--	if (!private->dai_config) {
--		dev_err(sdev->dev, "%s: No config for DAI %s\n", __func__, w->name);
--		return -EINVAL;
-+	if (tplg_ops->dai_config) {
-+		ret = tplg_ops->dai_config(sdev, swidget, SOF_DAI_CONFIG_FLAGS_PAUSE, NULL);
-+		if (ret < 0)
-+			dev_err(sdev->dev, "%s: DAI config failed for widget %s\n", __func__,
-+				w->name);
- 	}
- 
--	config = &private->dai_config[sof_dai->current_config];
--
--	/* set PAUSE command flag */
--	config->flags = FIELD_PREP(SOF_DAI_CONFIG_FLAGS_CMD_MASK, SOF_DAI_CONFIG_FLAGS_PAUSE);
--
--	ret = sof_ipc_tx_message(sdev->ipc, config->hdr.cmd, config, config->hdr.size,
--				 &reply, sizeof(reply));
--	if (ret < 0)
--		dev_err(sdev->dev, "DAI config for %s failed during pause push\n", w->name);
--
- 	return ret;
- }
- 
-@@ -470,30 +412,17 @@ struct ssp_dai_dma_data {
- static int ssp_dai_setup_or_free(struct snd_pcm_substream *substream, struct snd_soc_dai *dai,
- 				 bool setup)
- {
--	struct snd_soc_component *component;
--	struct snd_sof_widget *swidget;
- 	struct snd_soc_dapm_widget *w;
--	struct sof_ipc_fw_version *v;
--	struct snd_sof_dev *sdev;
- 
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
- 		w = dai->playback_widget;
- 	else
- 		w = dai->capture_widget;
- 
--	swidget = w->dobj.private;
--	component = swidget->scomp;
--	sdev = snd_soc_component_get_drvdata(component);
--	v = &sdev->fw_ready.version;
--
--	/* DAI_CONFIG IPC during hw_params is not supported in older firmware */
--	if (v->abi_version < SOF_ABI_VER(3, 18, 0))
--		return 0;
--
- 	if (setup)
--		return hda_ctrl_dai_widget_setup(w, SOF_DAI_CONFIG_FLAGS_NONE);
-+		return hda_ctrl_dai_widget_setup(w, SOF_DAI_CONFIG_FLAGS_NONE, NULL);
- 
--	return hda_ctrl_dai_widget_free(w, SOF_DAI_CONFIG_FLAGS_NONE);
-+	return hda_ctrl_dai_widget_free(w, SOF_DAI_CONFIG_FLAGS_NONE, NULL);
- }
- 
- static int ssp_dai_startup(struct snd_pcm_substream *substream,
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 7403b9848a56..019f8d6b91d4 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -41,114 +41,68 @@
- #define EXCEPT_MAX_HDR_SIZE	0x400
- #define HDA_EXT_ROM_STATUS_SIZE 8
- 
--int hda_ctrl_dai_widget_setup(struct snd_soc_dapm_widget *w, unsigned int quirk_flags)
-+int hda_ctrl_dai_widget_setup(struct snd_soc_dapm_widget *w, unsigned int quirk_flags,
-+			      struct snd_sof_dai_config_data *data)
- {
- 	struct snd_sof_widget *swidget = w->dobj.private;
- 	struct snd_soc_component *component = swidget->scomp;
- 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
--	struct sof_ipc_dai_config *config;
--	struct sof_dai_private_data *private;
--	struct snd_sof_dai *sof_dai;
--	struct sof_ipc_reply reply;
-+	const struct sof_ipc_tplg_ops *tplg_ops = sdev->ipc->ops->tplg;
-+	struct snd_sof_dai *sof_dai = swidget->private;
- 	int ret;
- 
--	sof_dai = swidget->private;
--
--	if (!sof_dai || !sof_dai->private) {
--		dev_err(sdev->dev, "%s: No private data for DAI %s\n", __func__, w->name);
--		return -EINVAL;
--	}
--
--	private = sof_dai->private;
--	if (!private->dai_config) {
--		dev_err(sdev->dev, "%s: No config for DAI %s\n", __func__, w->name);
-+	if (!sof_dai) {
-+		dev_err(sdev->dev, "%s: No DAI for DAI widget %s\n", __func__, w->name);
+ 	/* make sure we have at least a header */
+ 	if (size < sizeof(struct snd_ctl_tlv))
  		return -EINVAL;
- 	}
  
--	/* DAI already configured, reset it before reconfiguring it */
--	if (sof_dai->configured) {
--		ret = hda_ctrl_dai_widget_free(w, SOF_DAI_CONFIG_FLAGS_NONE);
--		if (ret < 0)
--			return ret;
+-	/*
+-	 * The beginning of bytes data contains a header from where
+-	 * the length (as bytes) is needed to know the correct copy
+-	 * length of data from tlvd->tlv.
+-	 */
+-	if (copy_from_user(&header, tlvd, sizeof(struct snd_ctl_tlv)))
+-		return -EFAULT;
+-
+-	/* make sure TLV info is consistent */
+-	if (header.length + sizeof(struct snd_ctl_tlv) > size) {
+-		dev_err_ratelimited(scomp->dev, "error: inconsistent TLV, data %d + header %zu > %d\n",
+-				    header.length, sizeof(struct snd_ctl_tlv), size);
+-		return -EINVAL;
 -	}
 -
--	config = &private->dai_config[sof_dai->current_config];
+-	/* be->max is coming from topology */
+-	if (header.length > be->max) {
+-		dev_err_ratelimited(scomp->dev, "error: Bytes data size %d exceeds max %d.\n",
+-				    header.length, be->max);
+-		return -EINVAL;
+-	}
+-
+-	/* Check that header id matches the command */
+-	if (header.numid != cdata->cmd) {
+-		dev_err_ratelimited(scomp->dev,
+-				    "error: incorrect numid %d\n",
+-				    header.numid);
+-		return -EINVAL;
+-	}
+-
+-	if (copy_from_user(cdata->data, tlvd->tlv, header.length))
+-		return -EFAULT;
+-
+-	if (cdata->data->magic != SOF_ABI_MAGIC) {
+-		dev_err_ratelimited(scomp->dev,
+-				    "error: Wrong ABI magic 0x%08x.\n",
+-				    cdata->data->magic);
+-		return -EINVAL;
+-	}
+-
+-	if (SOF_ABI_VERSION_INCOMPATIBLE(SOF_ABI_VERSION, cdata->data->abi)) {
+-		dev_err_ratelimited(scomp->dev, "error: Incompatible ABI version 0x%08x.\n",
+-				    cdata->data->abi);
+-		return -EINVAL;
+-	}
+-
+-	/* be->max has been verified to be >= sizeof(struct sof_abi_hdr) */
+-	if (cdata->data->size > be->max - sizeof(struct sof_abi_hdr)) {
+-		dev_err_ratelimited(scomp->dev, "error: Mismatch in ABI data size (truncated?).\n");
+-		return -EINVAL;
+-	}
+-
+-	/* notify DSP of byte control updates */
+-	if (pm_runtime_active(scomp->dev))
+-		snd_sof_ipc_set_get_comp_data(scontrol, true);
++	if (tplg_ops->control->bytes_ext_put)
++		return tplg_ops->control->bytes_ext_put(scontrol, binary_data, size);
+ 
+ 	return 0;
+ }
+@@ -299,67 +216,24 @@ int snd_sof_bytes_ext_volatile_get(struct snd_kcontrol *kcontrol, unsigned int _
+ 	struct soc_bytes_ext *be = (struct soc_bytes_ext *)kcontrol->private_value;
+ 	struct snd_sof_control *scontrol = be->dobj.private;
+ 	struct snd_soc_component *scomp = scontrol->scomp;
+-	struct sof_ipc_ctrl_data *cdata = scontrol->ipc_control_data;
+-	struct snd_ctl_tlv header;
+-	struct snd_ctl_tlv __user *tlvd = (struct snd_ctl_tlv __user *)binary_data;
+-	size_t data_size;
+-	int ret;
+-	int err;
 -
 -	/*
--	 * For static pipelines, the DAI widget would already be set up and calling
--	 * sof_widget_setup() simply returns without doing anything.
--	 * For dynamic pipelines, the DAI widget will be set up now.
+-	 * Decrement the limit by ext bytes header size to
+-	 * ensure the user space buffer is not exceeded.
 -	 */
--	ret = sof_widget_setup(sdev, swidget);
--	if (ret < 0) {
--		dev_err(sdev->dev, "error: failed setting up DAI widget %s\n", w->name);
--		return ret;
--	}
-+	if (tplg_ops->dai_config) {
-+		unsigned int flags;
+-	if (size < sizeof(struct snd_ctl_tlv))
+-		return -ENOSPC;
+-	size -= sizeof(struct snd_ctl_tlv);
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	const struct sof_ipc_tplg_ops *tplg_ops = sdev->ipc->ops->tplg;
++	int ret, err;
  
--	/* set HW_PARAMS flag along with quirks */
--	config->flags = SOF_DAI_CONFIG_FLAGS_HW_PARAMS |
--		       quirk_flags << SOF_DAI_CONFIG_FLAGS_QUIRK_SHIFT;
-+		/* set HW_PARAMS flag along with quirks */
-+		flags = SOF_DAI_CONFIG_FLAGS_HW_PARAMS |
-+			quirk_flags << SOF_DAI_CONFIG_FLAGS_QUIRK_SHIFT;
- 
--
--	/* send DAI_CONFIG IPC */
--	ret = sof_ipc_tx_message(sdev->ipc, config->hdr.cmd, config, config->hdr.size,
--				 &reply, sizeof(reply));
--	if (ret < 0) {
--		dev_err(sdev->dev, "error: failed setting DAI config for %s\n", w->name);
--		return ret;
-+		ret = tplg_ops->dai_config(sdev, swidget, flags, data);
-+		if (ret < 0) {
-+			dev_err(sdev->dev, "%s: DAI config failed for widget %s\n", __func__,
-+				w->name);
-+			return ret;
-+		}
+ 	ret = pm_runtime_get_sync(scomp->dev);
+ 	if (ret < 0 && ret != -EACCES) {
+-		dev_err_ratelimited(scomp->dev, "error: bytes_ext get failed to resume %d\n", ret);
++		dev_err_ratelimited(scomp->dev, "%s: failed to resume %d\n", __func__, ret);
+ 		pm_runtime_put_noidle(scomp->dev);
+ 		return ret;
  	}
  
--	sof_dai->configured = true;
+-	/* set the ABI header values */
+-	cdata->data->magic = SOF_ABI_MAGIC;
+-	cdata->data->abi = SOF_ABI_VERSION;
+-	/* get all the component data from DSP */
+-	ret = snd_sof_ipc_set_get_comp_data(scontrol, false);
+-	if (ret < 0)
+-		goto out;
 -
+-	/* check data size doesn't exceed max coming from topology */
+-	if (cdata->data->size > be->max - sizeof(struct sof_abi_hdr)) {
+-		dev_err_ratelimited(scomp->dev, "error: user data size %d exceeds max size %zu.\n",
+-				    cdata->data->size,
+-				    be->max - sizeof(struct sof_abi_hdr));
+-		ret = -EINVAL;
+-		goto out;
+-	}
+-
+-	data_size = cdata->data->size + sizeof(struct sof_abi_hdr);
++	if (tplg_ops->control->bytes_ext_volatile_get)
++		ret = tplg_ops->control->bytes_ext_volatile_get(scontrol, binary_data, size);
+ 
+-	/* make sure we don't exceed size provided by user space for data */
+-	if (data_size > size) {
+-		ret = -ENOSPC;
+-		goto out;
+-	}
+-
+-	header.numid = cdata->cmd;
+-	header.length = data_size;
+-	if (copy_to_user(tlvd, &header, sizeof(struct snd_ctl_tlv))) {
+-		ret = -EFAULT;
+-		goto out;
+-	}
+-
+-	if (copy_to_user(tlvd->tlv, cdata->data, data_size))
+-		ret = -EFAULT;
+-out:
+ 	pm_runtime_mark_last_busy(scomp->dev);
+ 	err = pm_runtime_put_autosuspend(scomp->dev);
+ 	if (err < 0)
+-		dev_err_ratelimited(scomp->dev, "error: bytes_ext get failed to idle %d\n", err);
++		dev_err_ratelimited(scomp->dev, "%s: failed to idle %d\n", __func__, err);
+ 
+ 	return ret;
+ }
+@@ -368,51 +242,14 @@ int snd_sof_bytes_ext_get(struct snd_kcontrol *kcontrol,
+ 			  unsigned int __user *binary_data,
+ 			  unsigned int size)
+ {
+-	struct soc_bytes_ext *be =
+-		(struct soc_bytes_ext *)kcontrol->private_value;
++	struct soc_bytes_ext *be = (struct soc_bytes_ext *)kcontrol->private_value;
+ 	struct snd_sof_control *scontrol = be->dobj.private;
+ 	struct snd_soc_component *scomp = scontrol->scomp;
+-	struct sof_ipc_ctrl_data *cdata = scontrol->ipc_control_data;
+-	struct snd_ctl_tlv header;
+-	struct snd_ctl_tlv __user *tlvd =
+-		(struct snd_ctl_tlv __user *)binary_data;
+-	size_t data_size;
+-
+-	snd_sof_refresh_control(scontrol);
+-
+-	/*
+-	 * Decrement the limit by ext bytes header size to
+-	 * ensure the user space buffer is not exceeded.
+-	 */
+-	if (size < sizeof(struct snd_ctl_tlv))
+-		return -ENOSPC;
+-	size -= sizeof(struct snd_ctl_tlv);
+-
+-	/* set the ABI header values */
+-	cdata->data->magic = SOF_ABI_MAGIC;
+-	cdata->data->abi = SOF_ABI_VERSION;
+-
+-	/* check data size doesn't exceed max coming from topology */
+-	if (cdata->data->size > be->max - sizeof(struct sof_abi_hdr)) {
+-		dev_err_ratelimited(scomp->dev, "error: user data size %d exceeds max size %zu.\n",
+-				    cdata->data->size,
+-				    be->max - sizeof(struct sof_abi_hdr));
+-		return -EINVAL;
+-	}
+-
+-	data_size = cdata->data->size + sizeof(struct sof_abi_hdr);
+-
+-	/* make sure we don't exceed size provided by user space for data */
+-	if (data_size > size)
+-		return -ENOSPC;
+-
+-	header.numid = cdata->cmd;
+-	header.length = data_size;
+-	if (copy_to_user(tlvd, &header, sizeof(struct snd_ctl_tlv)))
+-		return -EFAULT;
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	const struct sof_ipc_tplg_ops *tplg_ops = sdev->ipc->ops->tplg;
+ 
+-	if (copy_to_user(tlvd->tlv, cdata->data, data_size))
+-		return -EFAULT;
++	if (tplg_ops->control->bytes_ext_get)
++		return tplg_ops->control->bytes_ext_get(scontrol, binary_data, size);
+ 
+ 	return 0;
+ }
+diff --git a/sound/soc/sof/ipc3-control.c b/sound/soc/sof/ipc3-control.c
+index df8e4df9663d..cdd5ad860a94 100644
+--- a/sound/soc/sof/ipc3-control.c
++++ b/sound/soc/sof/ipc3-control.c
+@@ -270,6 +270,174 @@ static int sof_ipc3_bytes_put(struct snd_sof_control *scontrol,
  	return 0;
  }
  
--int hda_ctrl_dai_widget_free(struct snd_soc_dapm_widget *w, unsigned int quirk_flags)
-+int hda_ctrl_dai_widget_free(struct snd_soc_dapm_widget *w, unsigned int quirk_flags,
-+			     struct snd_sof_dai_config_data *data)
- {
- 	struct snd_sof_widget *swidget = w->dobj.private;
- 	struct snd_soc_component *component = swidget->scomp;
- 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
--	struct sof_dai_private_data *private;
--	struct sof_ipc_dai_config *config;
--	struct snd_sof_dai *sof_dai;
--	struct sof_ipc_reply reply;
--	int ret;
-+	const struct sof_ipc_tplg_ops *tplg_ops = sdev->ipc->ops->tplg;
-+	struct snd_sof_dai *sof_dai = swidget->private;
- 
--	sof_dai = swidget->private;
--
--	if (!sof_dai || !sof_dai->private) {
--		dev_err(sdev->dev, "%s: No private data for DAI %s\n", __func__, w->name);
--		return -EINVAL;
--	}
--
--	private = sof_dai->private;
--	if (!private->dai_config) {
--		dev_err(sdev->dev, "%s: No config for DAI %s\n", __func__, w->name);
-+	if (!sof_dai) {
-+		dev_err(sdev->dev, "%s: No DAI for BE DAI widget %s\n", __func__, w->name);
- 		return -EINVAL;
- 	}
- 
--	/* nothing to do if hw_free() is called without restarting the stream after resume. */
--	if (!sof_dai->configured)
--		return 0;
--
--	config = &private->dai_config[sof_dai->current_config];
-+	if (tplg_ops->dai_config) {
-+		unsigned int flags;
-+		int ret;
- 
--	/* set HW_FREE flag along with any quirks */
--	config->flags = SOF_DAI_CONFIG_FLAGS_HW_FREE |
--		       quirk_flags << SOF_DAI_CONFIG_FLAGS_QUIRK_SHIFT;
-+		/* set HW_FREE flag along with any quirks */
-+		flags = SOF_DAI_CONFIG_FLAGS_HW_FREE |
-+			quirk_flags << SOF_DAI_CONFIG_FLAGS_QUIRK_SHIFT;
- 
--	ret = sof_ipc_tx_message(sdev->ipc, config->hdr.cmd, config, config->hdr.size,
--				 &reply, sizeof(reply));
--	if (ret < 0)
--		dev_err(sdev->dev, "error: failed resetting DAI config for %s\n", w->name);
--
--	/*
--	 * Reset the configured_flag and free the widget even if the IPC fails to keep
--	 * the widget use_count balanced
--	 */
--	sof_dai->configured = false;
-+		ret = tplg_ops->dai_config(sdev, swidget, flags, data);
-+		if (ret < 0)
-+			dev_err(sdev->dev, "%s: DAI config failed for widget '%s'\n", __func__,
-+				w->name);
++static int sof_ipc3_bytes_ext_get(struct snd_sof_control *scontrol,
++				  const unsigned int __user *binary_data, unsigned int size)
++{
++	struct snd_ctl_tlv __user *tlvd = (struct snd_ctl_tlv __user *)binary_data;
++	struct sof_ipc_ctrl_data *cdata = scontrol->ipc_control_data;
++	struct snd_soc_component *scomp = scontrol->scomp;
++	struct snd_ctl_tlv header;
++	size_t data_size;
++
++	snd_sof_refresh_control(scontrol);
++
++	/*
++	 * Decrement the limit by ext bytes header size to
++	 * ensure the user space buffer is not exceeded.
++	 */
++	if (size < sizeof(struct snd_ctl_tlv))
++		return -ENOSPC;
++
++	size -= sizeof(struct snd_ctl_tlv);
++
++	/* set the ABI header values */
++	cdata->data->magic = SOF_ABI_MAGIC;
++	cdata->data->abi = SOF_ABI_VERSION;
++
++	/* check data size doesn't exceed max coming from topology */
++	if (cdata->data->size > scontrol->max_size - sizeof(struct sof_abi_hdr)) {
++		dev_err_ratelimited(scomp->dev, "User data size %d exceeds max size %zu\n",
++				    cdata->data->size,
++				    scontrol->max_size - sizeof(struct sof_abi_hdr));
++		return -EINVAL;
 +	}
- 
--	return sof_widget_free(sdev, swidget);
++
++	data_size = cdata->data->size + sizeof(struct sof_abi_hdr);
++
++	/* make sure we don't exceed size provided by user space for data */
++	if (data_size > size)
++		return -ENOSPC;
++
++	header.numid = cdata->cmd;
++	header.length = data_size;
++	if (copy_to_user(tlvd, &header, sizeof(struct snd_ctl_tlv)))
++		return -EFAULT;
++
++	if (copy_to_user(tlvd->tlv, cdata->data, data_size))
++		return -EFAULT;
++
 +	return 0;
- }
- 
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_INTEL_SOUNDWIRE)
-@@ -163,69 +117,34 @@ static int sdw_clock_stop_quirks = SDW_INTEL_CLK_STOP_BUS_RESET;
- module_param(sdw_clock_stop_quirks, int, 0444);
- MODULE_PARM_DESC(sdw_clock_stop_quirks, "SOF SoundWire clock stop quirks");
- 
--static int sdw_dai_config_ipc(struct snd_sof_dev *sdev,
--			      struct snd_soc_dapm_widget *w,
--			      int link_id, int alh_stream_id, int dai_id, bool setup)
--{
--	struct snd_sof_widget *swidget = w->dobj.private;
--	struct sof_dai_private_data *private;
--	struct sof_ipc_dai_config *config;
--	struct snd_sof_dai *sof_dai;
--
--	if (!swidget) {
--		dev_err(sdev->dev, "error: No private data for widget %s\n", w->name);
--		return -EINVAL;
--	}
--
--	sof_dai = swidget->private;
--
--	if (!sof_dai || !sof_dai->private) {
--		dev_err(sdev->dev, "%s: No private data for DAI %s\n", __func__, w->name);
--		return -EINVAL;
--	}
--
--	private = sof_dai->private;
--	if (!private->dai_config) {
--		dev_err(sdev->dev, "%s: No config for DAI %s\n", __func__, w->name);
--		return -EINVAL;
--	}
--
--	config = &private->dai_config[sof_dai->current_config];
--
--	/* update config with link and stream ID */
--	config->dai_index = (link_id << 8) | dai_id;
--	config->alh.stream_id = alh_stream_id;
--
--	if (setup)
--		return hda_ctrl_dai_widget_setup(w, SOF_DAI_CONFIG_FLAGS_NONE);
--
--	return hda_ctrl_dai_widget_free(w, SOF_DAI_CONFIG_FLAGS_NONE);
--}
--
- static int sdw_params_stream(struct device *dev,
- 			     struct sdw_intel_stream_params_data *params_data)
- {
--	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
- 	struct snd_soc_dai *d = params_data->dai;
-+	struct snd_sof_dai_config_data data;
- 	struct snd_soc_dapm_widget *w;
- 
- 	w = snd_soc_dai_get_widget(d, params_data->stream);
-+	data.dai_index = (params_data->link_id << 8) | d->id;
-+	data.dai_data = params_data->alh_stream_id;
- 
--	return sdw_dai_config_ipc(sdev, w, params_data->link_id, params_data->alh_stream_id,
--				  d->id, true);
-+	return hda_ctrl_dai_widget_setup(w, SOF_DAI_CONFIG_FLAGS_NONE, &data);
- }
- 
- static int sdw_free_stream(struct device *dev,
- 			   struct sdw_intel_stream_free_data *free_data)
- {
--	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
- 	struct snd_soc_dai *d = free_data->dai;
-+	struct snd_sof_dai_config_data data;
- 	struct snd_soc_dapm_widget *w;
- 
- 	w = snd_soc_dai_get_widget(d, free_data->stream);
-+	data.dai_index = (free_data->link_id << 8) | d->id;
- 
- 	/* send invalid stream_id */
--	return sdw_dai_config_ipc(sdev, w, free_data->link_id, 0xFFFF, d->id, false);
-+	data.dai_data = 0xFFFF;
++}
 +
-+	return hda_ctrl_dai_widget_free(w, SOF_DAI_CONFIG_FLAGS_NONE, &data);
- }
- 
- static const struct sdw_intel_ops sdw_callback = {
-diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index 13b509c9f481..05e5e158614a 100644
---- a/sound/soc/sof/intel/hda.h
-+++ b/sound/soc/sof/intel/hda.h
-@@ -17,6 +17,7 @@
- #include <sound/hda_codec.h>
- #include <sound/hdaudio_ext.h>
- #include "../sof-client-probes.h"
-+#include "../sof-audio.h"
- #include "shim.h"
- 
- /* PCI registers */
-@@ -730,8 +731,10 @@ int hda_pci_intel_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
- 
- struct snd_sof_dai;
- struct sof_ipc_dai_config;
--int hda_ctrl_dai_widget_setup(struct snd_soc_dapm_widget *w, unsigned int quirk_flags);
--int hda_ctrl_dai_widget_free(struct snd_soc_dapm_widget *w, unsigned int quirk_flags);
-+int hda_ctrl_dai_widget_setup(struct snd_soc_dapm_widget *w, unsigned int quirk_flags,
-+			      struct snd_sof_dai_config_data *data);
-+int hda_ctrl_dai_widget_free(struct snd_soc_dapm_widget *w, unsigned int quirk_flags,
-+			     struct snd_sof_dai_config_data *data);
- 
- #define SOF_HDA_POSITION_QUIRK_USE_SKYLAKE_LEGACY	(0) /* previous implementation */
- #define SOF_HDA_POSITION_QUIRK_USE_DPIB_REGISTERS	(1) /* recommended if VC0 only */
-diff --git a/sound/soc/sof/ipc3-topology.c b/sound/soc/sof/ipc3-topology.c
-index fe1d5a56080a..8d08ffb37008 100644
---- a/sound/soc/sof/ipc3-topology.c
-+++ b/sound/soc/sof/ipc3-topology.c
-@@ -1909,6 +1909,153 @@ static int sof_ipc3_complete_pipeline(struct snd_sof_dev *sdev, struct snd_sof_w
- 	return 1;
- }
- 
-+static int sof_ipc3_widget_free(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget)
++static int sof_ipc3_bytes_ext_put(struct snd_sof_control *scontrol,
++				  const unsigned int __user *binary_data,
++				  unsigned int size)
 +{
-+	struct sof_ipc_free ipc_free = {
-+		.hdr = {
-+			.size = sizeof(ipc_free),
-+			.cmd = SOF_IPC_GLB_TPLG_MSG,
-+		},
-+		.id = swidget->comp_id,
-+	};
-+	struct sof_ipc_reply reply;
++	const struct snd_ctl_tlv __user *tlvd = (const struct snd_ctl_tlv __user *)binary_data;
++	struct sof_ipc_ctrl_data *cdata = scontrol->ipc_control_data;
++	struct snd_soc_component *scomp = scontrol->scomp;
++	struct snd_ctl_tlv header;
++
++	/*
++	 * The beginning of bytes data contains a header from where
++	 * the length (as bytes) is needed to know the correct copy
++	 * length of data from tlvd->tlv.
++	 */
++	if (copy_from_user(&header, tlvd, sizeof(struct snd_ctl_tlv)))
++		return -EFAULT;
++
++	/* make sure TLV info is consistent */
++	if (header.length + sizeof(struct snd_ctl_tlv) > size) {
++		dev_err_ratelimited(scomp->dev, "Inconsistent TLV, data %d + header %zu > %d\n",
++				    header.length, sizeof(struct snd_ctl_tlv), size);
++		return -EINVAL;
++	}
++
++	/* be->max is coming from topology */
++	if (header.length > scontrol->max_size) {
++		dev_err_ratelimited(scomp->dev, "Bytes data size %d exceeds max %zu\n",
++				    header.length, scontrol->max_size);
++		return -EINVAL;
++	}
++
++	/* Check that header id matches the command */
++	if (header.numid != cdata->cmd) {
++		dev_err_ratelimited(scomp->dev, "Incorrect command for bytes put %d\n",
++				    header.numid);
++		return -EINVAL;
++	}
++
++	if (copy_from_user(cdata->data, tlvd->tlv, header.length))
++		return -EFAULT;
++
++	if (cdata->data->magic != SOF_ABI_MAGIC) {
++		dev_err_ratelimited(scomp->dev, "Wrong ABI magic 0x%08x\n", cdata->data->magic);
++		return -EINVAL;
++	}
++
++	if (SOF_ABI_VERSION_INCOMPATIBLE(SOF_ABI_VERSION, cdata->data->abi)) {
++		dev_err_ratelimited(scomp->dev, "Incompatible ABI version 0x%08x\n",
++				    cdata->data->abi);
++		return -EINVAL;
++	}
++
++	/* be->max has been verified to be >= sizeof(struct sof_abi_hdr) */
++	if (cdata->data->size > scontrol->max_size - sizeof(struct sof_abi_hdr)) {
++		dev_err_ratelimited(scomp->dev, "Mismatch in ABI data size (truncated?)\n");
++		return -EINVAL;
++	}
++
++	/* notify DSP of byte control updates */
++	if (pm_runtime_active(scomp->dev))
++		return snd_sof_ipc_set_get_comp_data(scontrol, true);
++
++	return 0;
++}
++
++static int sof_ipc3_bytes_ext_volatile_get(struct snd_sof_control *scontrol,
++					   const unsigned int __user *binary_data,
++					   unsigned int size)
++{
++	struct snd_ctl_tlv __user *tlvd = (struct snd_ctl_tlv __user *)binary_data;
++	struct sof_ipc_ctrl_data *cdata = scontrol->ipc_control_data;
++	struct snd_soc_component *scomp = scontrol->scomp;
++	struct snd_ctl_tlv header;
++	size_t data_size;
 +	int ret;
 +
-+	if (!swidget->private)
-+		return 0;
++	/*
++	 * Decrement the limit by ext bytes header size to
++	 * ensure the user space buffer is not exceeded.
++	 */
++	if (size < sizeof(struct snd_ctl_tlv))
++		return -ENOSPC;
 +
-+	switch (swidget->id) {
-+	case snd_soc_dapm_scheduler:
-+	{
-+		ipc_free.hdr.cmd |= SOF_IPC_TPLG_PIPE_FREE;
-+		break;
-+	}
-+	case snd_soc_dapm_buffer:
-+		ipc_free.hdr.cmd |= SOF_IPC_TPLG_BUFFER_FREE;
-+		break;
-+	default:
-+		ipc_free.hdr.cmd |= SOF_IPC_TPLG_COMP_FREE;
-+		break;
-+	}
++	size -= sizeof(struct snd_ctl_tlv);
 +
-+	ret = sof_ipc_tx_message(sdev->ipc, ipc_free.hdr.cmd, &ipc_free, sizeof(ipc_free),
-+				 &reply, sizeof(reply));
++	/* set the ABI header values */
++	cdata->data->magic = SOF_ABI_MAGIC;
++	cdata->data->abi = SOF_ABI_VERSION;
++
++	/* get all the component data from DSP */
++	ret = snd_sof_ipc_set_get_comp_data(scontrol, false);
 +	if (ret < 0)
-+		dev_err(sdev->dev, "failed to free widget %s\n", swidget->widget->name);
++		return ret;
++
++	/* check data size doesn't exceed max coming from topology */
++	if (cdata->data->size > scontrol->max_size - sizeof(struct sof_abi_hdr)) {
++		dev_err_ratelimited(scomp->dev, "User data size %d exceeds max size %zu\n",
++				    cdata->data->size,
++				    scontrol->max_size - sizeof(struct sof_abi_hdr));
++		return -EINVAL;
++	}
++
++	data_size = cdata->data->size + sizeof(struct sof_abi_hdr);
++
++	/* make sure we don't exceed size provided by user space for data */
++	if (data_size > size)
++		return -ENOSPC;
++
++	header.numid = cdata->cmd;
++	header.length = data_size;
++	if (copy_to_user(tlvd, &header, sizeof(struct snd_ctl_tlv)))
++		return -EFAULT;
++
++	if (copy_to_user(tlvd->tlv, cdata->data, data_size))
++		return -EFAULT;
 +
 +	return ret;
 +}
 +
-+static int sof_ipc3_dai_config(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget,
-+			       unsigned int flags, struct snd_sof_dai_config_data *data)
-+{
-+	struct sof_ipc_fw_version *v = &sdev->fw_ready.version;
-+	struct snd_sof_dai *dai = swidget->private;
-+	struct sof_dai_private_data *private;
-+	struct sof_ipc_dai_config *config;
-+	struct sof_ipc_reply reply;
-+	int ret = 0;
-+
-+	if (!dai || !dai->private) {
-+		dev_err(sdev->dev, "No private data for DAI %s\n", swidget->widget->name);
-+		return -EINVAL;
-+	}
-+
-+	private = dai->private;
-+	if (!private->dai_config) {
-+		dev_err(sdev->dev, "No config for DAI %s\n", dai->name);
-+		return -EINVAL;
-+	}
-+
-+	config = &private->dai_config[dai->current_config];
-+	if (!config) {
-+		dev_err(sdev->dev, "Invalid current config for DAI %s\n", dai->name);
-+		return -EINVAL;
-+	}
-+
-+	switch (config->type) {
-+	case SOF_DAI_INTEL_SSP:
-+		/*
-+		 * DAI_CONFIG IPC during hw_params/hw_free for SSP DAI's is not supported in older
-+		 * firmware
-+		 */
-+		if (v->abi_version < SOF_ABI_VER(3, 18, 0) &&
-+		    ((flags & SOF_DAI_CONFIG_FLAGS_HW_PARAMS) ||
-+		     (flags & SOF_DAI_CONFIG_FLAGS_HW_FREE)))
-+			return 0;
-+		break;
-+	case SOF_DAI_INTEL_HDA:
-+		if (data)
-+			config->hda.link_dma_ch = data->dai_data;
-+		break;
-+	case SOF_DAI_INTEL_ALH:
-+		if (data) {
-+			config->dai_index = data->dai_index;
-+			config->alh.stream_id = data->dai_data;
-+		}
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	config->flags = flags;
-+
-+	/* only send the IPC if the widget is set up in the DSP */
-+	if (swidget->use_count > 0) {
-+		ret = sof_ipc_tx_message(sdev->ipc, config->hdr.cmd, config, config->hdr.size,
-+					 &reply, sizeof(reply));
-+		if (ret < 0)
-+			dev_err(sdev->dev, "Failed to set dai config for %s\n", dai->name);
-+	}
-+
-+	return ret;
-+}
-+
-+static int sof_ipc3_widget_setup(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget)
-+{
-+	struct sof_ipc_comp_reply reply;
-+	int ret;
-+
-+	if (!swidget->private)
-+		return 0;
-+
-+	switch (swidget->id) {
-+	case snd_soc_dapm_dai_in:
-+	case snd_soc_dapm_dai_out:
-+	{
-+		struct snd_sof_dai *dai = swidget->private;
-+		struct sof_dai_private_data *dai_data = dai->private;
-+		struct sof_ipc_comp *comp = &dai_data->comp_dai->comp;
-+
-+		ret = sof_ipc_tx_message(sdev->ipc, comp->hdr.cmd, dai_data->comp_dai,
-+					 comp->hdr.size, &reply, sizeof(reply));
-+		break;
-+	}
-+	case snd_soc_dapm_scheduler:
-+	{
-+		struct sof_ipc_pipe_new *pipeline;
-+
-+		pipeline = swidget->private;
-+		ret = sof_ipc_tx_message(sdev->ipc, pipeline->hdr.cmd, pipeline,
-+					 sizeof(*pipeline), &reply, sizeof(reply));
-+		break;
-+	}
-+	default:
-+	{
-+		struct sof_ipc_cmd_hdr *hdr;
-+
-+		hdr = swidget->private;
-+		ret = sof_ipc_tx_message(sdev->ipc, hdr->cmd, swidget->private, hdr->size,
-+					 &reply, sizeof(reply));
-+		break;
-+	}
-+	}
-+	if (ret < 0)
-+		dev_err(sdev->dev, "Failed to setup widget %s\n", swidget->widget->name);
-+
-+	return ret;
-+}
-+
- /* token list for each topology object */
- static enum sof_tokens host_token_list[] = {
- 	SOF_CORE_TOKENS,
-@@ -2012,6 +2159,9 @@ static const struct sof_ipc_tplg_ops ipc3_tplg_ops = {
- 	.control_free = sof_ipc3_control_free,
- 	.pipeline_complete = sof_ipc3_complete_pipeline,
- 	.token_list = ipc3_token_list,
-+	.widget_free = sof_ipc3_widget_free,
-+	.widget_setup = sof_ipc3_widget_setup,
-+	.dai_config = sof_ipc3_dai_config,
- };
- 
- const struct sof_ipc_ops ipc3_ops = {
-diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
-index cc0d647a2d0d..7aa4ac313de3 100644
---- a/sound/soc/sof/sof-audio.c
-+++ b/sound/soc/sof/sof-audio.c
-@@ -27,31 +27,6 @@ static int sof_kcontrol_setup(struct snd_sof_dev *sdev, struct snd_sof_control *
- 	return ret;
- }
- 
--static int sof_dai_config_setup(struct snd_sof_dev *sdev, struct snd_sof_dai *dai)
--{
--	struct sof_dai_private_data *private = dai->private;
--	struct sof_ipc_dai_config *config;
--	struct sof_ipc_reply reply;
--	int ret;
--
--	config = &private->dai_config[dai->current_config];
--	if (!config) {
--		dev_err(sdev->dev, "error: no config for DAI %s\n", dai->name);
--		return -EINVAL;
--	}
--
--	/* set NONE flag to clear all previous settings */
--	config->flags = SOF_DAI_CONFIG_FLAGS_NONE;
--
--	ret = sof_ipc_tx_message(sdev->ipc, config->hdr.cmd, config, config->hdr.size,
--				 &reply, sizeof(reply));
--
--	if (ret < 0)
--		dev_err(sdev->dev, "error: failed to set dai config for %s\n", dai->name);
--
--	return ret;
--}
--
- static int sof_widget_kcontrol_setup(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget)
+ static void snd_sof_update_control(struct snd_sof_control *scontrol,
+ 				   struct sof_ipc_ctrl_data *cdata)
  {
- 	struct snd_sof_control *scontrol;
-@@ -96,15 +71,9 @@ static void sof_reset_route_setup_status(struct snd_sof_dev *sdev, struct snd_so
- 
- int sof_widget_free(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget)
- {
--	struct sof_ipc_free ipc_free = {
--		.hdr = {
--			.size = sizeof(ipc_free),
--			.cmd = SOF_IPC_GLB_TPLG_MSG,
--		},
--		.id = swidget->comp_id,
--	};
--	struct sof_ipc_reply reply;
--	int ret, err;
-+	const struct sof_ipc_tplg_ops *tplg_ops = sdev->ipc->ops->tplg;
-+	int err = 0;
-+	int ret;
- 
- 	if (!swidget->private)
- 		return 0;
-@@ -113,33 +82,9 @@ int sof_widget_free(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget)
- 	if (--swidget->use_count)
- 		return 0;
- 
--	switch (swidget->id) {
--	case snd_soc_dapm_scheduler:
--	{
--		ipc_free.hdr.cmd |= SOF_IPC_TPLG_PIPE_FREE;
--		break;
--	}
--	case snd_soc_dapm_buffer:
--		ipc_free.hdr.cmd |= SOF_IPC_TPLG_BUFFER_FREE;
--		break;
--	case snd_soc_dapm_dai_in:
--	case snd_soc_dapm_dai_out:
--	{
--		struct snd_sof_dai *dai = swidget->private;
--
--		dai->configured = false;
--		fallthrough;
--	}
--	default:
--		ipc_free.hdr.cmd |= SOF_IPC_TPLG_COMP_FREE;
--		break;
--	}
--
- 	/* continue to disable core even if IPC fails */
--	err = sof_ipc_tx_message(sdev->ipc, ipc_free.hdr.cmd, &ipc_free, sizeof(ipc_free),
--				 &reply, sizeof(reply));
--	if (err < 0)
--		dev_err(sdev->dev, "error: failed to free widget %s\n", swidget->widget->name);
-+	if (tplg_ops->widget_free)
-+		err = tplg_ops->widget_free(sdev, swidget);
- 
- 	/*
- 	 * disable widget core. continue to route setup status and complete flag
-@@ -176,11 +121,7 @@ EXPORT_SYMBOL(sof_widget_free);
- 
- int sof_widget_setup(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget)
- {
--	struct sof_ipc_pipe_new *pipeline;
--	struct sof_ipc_comp_reply r;
--	struct sof_ipc_cmd_hdr *hdr;
--	struct sof_ipc_comp *comp;
--	struct snd_sof_dai *dai;
-+	const struct sof_ipc_tplg_ops *tplg_ops = sdev->ipc->ops->tplg;
- 	int ret;
- 
- 	/* skip if there is no private data */
-@@ -219,53 +160,22 @@ int sof_widget_setup(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget)
- 		goto pipe_widget_free;
- 	}
- 
--	switch (swidget->id) {
--	case snd_soc_dapm_dai_in:
--	case snd_soc_dapm_dai_out:
--	{
--		struct sof_dai_private_data *dai_data;
--
--		dai = swidget->private;
--		dai_data = dai->private;
--		comp = &dai_data->comp_dai->comp;
--		dai->configured = false;
--
--		ret = sof_ipc_tx_message(sdev->ipc, comp->hdr.cmd, dai_data->comp_dai,
--					 comp->hdr.size, &r, sizeof(r));
--		if (ret < 0) {
--			dev_err(sdev->dev, "error: failed to load widget %s\n",
--				swidget->widget->name);
-+	/* setup widget in the DSP */
-+	if (tplg_ops->widget_setup) {
-+		ret = tplg_ops->widget_setup(sdev, swidget);
-+		if (ret < 0)
- 			goto core_put;
--		}
-+	}
- 
--		ret = sof_dai_config_setup(sdev, dai);
--		if (ret < 0) {
--			dev_err(sdev->dev, "error: failed to load dai config for DAI %s\n",
--				swidget->widget->name);
-+	/* send config for DAI components */
-+	if (WIDGET_IS_DAI(swidget->id)) {
-+		unsigned int flags = SOF_DAI_CONFIG_FLAGS_NONE;
- 
--			/*
--			 * widget use_count and core ref_count will both be decremented by
--			 * sof_widget_free()
--			 */
--			sof_widget_free(sdev, swidget);
--			return ret;
-+		if (tplg_ops->dai_config) {
-+			ret = tplg_ops->dai_config(sdev, swidget, flags, NULL);
-+			if (ret < 0)
-+				goto widget_free;
- 		}
--		break;
--	}
--	case snd_soc_dapm_scheduler:
--		pipeline = swidget->private;
--		ret = sof_ipc_tx_message(sdev->ipc, pipeline->hdr.cmd, pipeline,
--					 sizeof(*pipeline), &r, sizeof(r));
--		break;
--	default:
--		hdr = swidget->private;
--		ret = sof_ipc_tx_message(sdev->ipc, hdr->cmd, swidget->private, hdr->size,
--					 &r, sizeof(r));
--		break;
--	}
--	if (ret < 0) {
--		dev_err(sdev->dev, "error: failed to load widget %s\n", swidget->widget->name);
--		goto core_put;
- 	}
- 
- 	/* restore kcontrols for widget */
-@@ -273,18 +183,16 @@ int sof_widget_setup(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget)
- 	if (ret < 0) {
- 		dev_err(sdev->dev, "error: failed to restore kcontrols for widget %s\n",
- 			swidget->widget->name);
--		/*
--		 * widget use_count and core ref_count will both be decremented by
--		 * sof_widget_free()
--		 */
--		sof_widget_free(sdev, swidget);
--		return ret;
-+		goto widget_free;
- 	}
- 
- 	dev_dbg(sdev->dev, "widget %s setup complete\n", swidget->widget->name);
- 
- 	return 0;
- 
-+widget_free:
-+	/* widget use_count and core ref_count will both be decremented by sof_widget_free() */
-+	sof_widget_free(sdev, swidget);
- core_put:
- 	snd_sof_dsp_core_put(sdev, swidget->core);
- pipe_widget_free:
-diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
-index 622d43707b27..19386184d8f3 100644
---- a/sound/soc/sof/sof-audio.h
-+++ b/sound/soc/sof/sof-audio.h
-@@ -40,6 +40,11 @@ struct snd_sof_widget;
- struct snd_sof_route;
- struct snd_sof_control;
- 
-+struct snd_sof_dai_config_data {
-+	int dai_index;
-+	int dai_data; /* contains DAI-specific information */
-+};
-+
- /**
-  * struct sof_ipc_tplg_widget_ops - IPC-specific ops for topology widgets
-  * @ipc_setup: Function pointer for setting up widget IPC params
-@@ -69,6 +74,9 @@ struct sof_ipc_tplg_widget_ops {
-  * @control_setup: Function pointer for setting up kcontrol IPC-specific data
-  * @control_free: Function pointer for freeing kcontrol IPC-specific data
-  * @pipeline_complete: Function pointer for pipeline complete IPC
-+ * @widget_setup: Function pointer for setting up setup in the DSP
-+ * @widget_free: Function pointer for freeing widget in the DSP
-+ * @dai_config: Function pointer for sending DAI config IPC to the DSP
-  */
- struct sof_ipc_tplg_ops {
- 	const struct sof_ipc_tplg_widget_ops *widget;
-@@ -77,6 +85,10 @@ struct sof_ipc_tplg_ops {
- 	int (*control_setup)(struct snd_sof_dev *sdev, struct snd_sof_control *scontrol);
- 	int (*control_free)(struct snd_sof_dev *sdev, struct snd_sof_control *scontrol);
- 	int (*pipeline_complete)(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget);
-+	int (*widget_setup)(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget);
-+	int (*widget_free)(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget);
-+	int (*dai_config)(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget,
-+			  unsigned int flags, struct snd_sof_dai_config_data *data);
- };
- 
- /** struct snd_sof_tuple - Tuple info
-@@ -276,7 +288,6 @@ struct snd_sof_dai {
- 
- 	int number_configs;
- 	int current_config;
--	bool configured; /* DAI configured during BE hw_params */
- 	struct list_head list;	/* list in sdev dai list */
- 	void *private;
+@@ -419,5 +587,8 @@ const struct sof_ipc_tplg_control_ops tplg_ipc3_control_ops = {
+ 	.enum_get = sof_ipc3_enum_get,
+ 	.bytes_put = sof_ipc3_bytes_put,
+ 	.bytes_get = sof_ipc3_bytes_get,
++	.bytes_ext_put = sof_ipc3_bytes_ext_put,
++	.bytes_ext_get = sof_ipc3_bytes_ext_get,
++	.bytes_ext_volatile_get = sof_ipc3_bytes_ext_volatile_get,
+ 	.update = sof_ipc3_control_update,
  };
 -- 
 2.25.1
