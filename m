@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07008C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Mar 2022 08:32:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86C2BC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Mar 2022 08:32:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 57F841908;
-	Thu, 17 Mar 2022 09:31:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57F841908
+	by alsa0.perex.cz (Postfix) with ESMTPS id D350C18D2;
+	Thu, 17 Mar 2022 09:31:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D350C18D2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647505939;
-	bh=EhNlCs0VirRjwrUlptAH6Ex4BbLkPDAAokvL3IY13Mo=;
+	s=default; t=1647505960;
+	bh=hYGxH2zw+YWjTNpQWt2LjOMsC1FM30IAJWv1y+Qklyo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=M4lwQl/zgDeHzQLzulCYJhFetyOHqxPuUSDFsq00oxESy3EuHxwdEB78T/yIn9ZOQ
-	 x/I0nZhlhBj1SaU3EOJOE+AHn1+svA6e6sf6qwdSTNyb/6Fq0iA4IWOy9TMavgurTU
-	 SZ1Gj0BFWZzsIlBaom0+AHlaJzf9GHCd7bBTSpB4=
+	b=MuxHN8HroX41va0wP6+2F7AEd/WJRYBgZcer9yRJpzQq7lHzmuYfbwHG/bheu/GqV
+	 SyAsjv0tqlCVJxThVmLmjCCkTwH4/VJu5oDDoLXEVAhjBt0KmPK7J7749CEN0/pO/4
+	 Mg6V1g9oFWJ3P+lwAGtrzkuRlWJh084QgbvJaRWE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 58A22F80544;
-	Thu, 17 Mar 2022 09:29:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 13A04F80549;
+	Thu, 17 Mar 2022 09:29:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 67F15F8053E; Thu, 17 Mar 2022 09:29:00 +0100 (CET)
+ id AFD4AF8053E; Thu, 17 Mar 2022 09:29:00 +0100 (CET)
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
  [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7D627F80515
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7581FF80124
  for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2022 09:28:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D627F80515
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7581FF80124
 Received: from dude02.hi.pengutronix.de ([2001:67c:670:100:1d::28])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1nUlUo-000691-7g; Thu, 17 Mar 2022 09:28:34 +0100
+ id 1nUlUo-00068z-7j; Thu, 17 Mar 2022 09:28:34 +0100
 Received: from sha by dude02.hi.pengutronix.de with local (Exim 4.94.2)
  (envelope-from <sha@pengutronix.de>)
- id 1nUlUm-0027U6-Uy; Thu, 17 Mar 2022 09:28:32 +0100
+ id 1nUlUm-0027U0-Tk; Thu, 17 Mar 2022 09:28:32 +0100
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 11/19] ASoC: fsl_micfil: add multi fifo support
-Date: Thu, 17 Mar 2022 09:28:10 +0100
-Message-Id: <20220317082818.503143-12-s.hauer@pengutronix.de>
+Subject: [PATCH 09/19] dma: imx-sdma: error out on unsupported transfer types
+Date: Thu, 17 Mar 2022 09:28:08 +0100
+Message-Id: <20220317082818.503143-10-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220317082818.503143-1-s.hauer@pengutronix.de>
 References: <20220317082818.503143-1-s.hauer@pengutronix.de>
@@ -75,42 +75,78 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+The i.MX SDMA driver currently silently ignores unsupported transfer
+types. These transfer types are specified in the dma channel description
+in the device tree, so they should really be checked.
+Issue a message and error out when we hit unsupported transfer types.
+
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- sound/soc/fsl/fsl_micfil.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/dma/imx-sdma.c | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
-index 82b8fc83fd361..7795fc59d7d1a 100644
---- a/sound/soc/fsl/fsl_micfil.c
-+++ b/sound/soc/fsl/fsl_micfil.c
-@@ -15,6 +15,7 @@
- #include <linux/regmap.h>
- #include <linux/sysfs.h>
- #include <linux/types.h>
-+#include <linux/platform_data/dma-imx.h>
- #include <sound/dmaengine_pcm.h>
- #include <sound/pcm.h>
- #include <sound/soc.h>
-@@ -34,6 +35,7 @@ struct fsl_micfil {
- 	struct clk *busclk;
- 	struct clk *mclk;
- 	struct snd_dmaengine_dai_dma_data dma_params_rx;
-+	struct sdma_peripheral_config sdmacfg;
- 	unsigned int dataline;
- 	char name[32];
- 	int irq[MICFIL_IRQ_LINES];
-@@ -323,6 +325,10 @@ static int fsl_micfil_hw_params(struct snd_pcm_substream *substream,
- 		return ret;
+diff --git a/drivers/dma/imx-sdma.c b/drivers/dma/imx-sdma.c
+index 75ec0754d4ad4..1038f6bc7f846 100644
+--- a/drivers/dma/imx-sdma.c
++++ b/drivers/dma/imx-sdma.c
+@@ -924,7 +924,7 @@ static irqreturn_t sdma_int_handler(int irq, void *dev_id)
+ /*
+  * sets the pc of SDMA script according to the peripheral type
+  */
+-static void sdma_get_pc(struct sdma_channel *sdmac,
++static int sdma_get_pc(struct sdma_channel *sdmac,
+ 		enum sdma_peripheral_type peripheral_type)
+ {
+ 	struct sdma_engine *sdma = sdmac->sdma;
+@@ -1023,13 +1023,17 @@ static void sdma_get_pc(struct sdma_channel *sdmac,
+ 		emi_2_per = sdma->script_addrs->ext_mem_2_ipu_addr;
+ 		break;
+ 	default:
+-		break;
++		dev_err(sdma->dev, "Unsupported transfer type %d\n",
++			peripheral_type);
++		return -EINVAL;
  	}
  
-+	micfil->dma_params_rx.peripheral_config = &micfil->sdmacfg;
-+	micfil->dma_params_rx.peripheral_size = sizeof(micfil->sdmacfg);
-+	micfil->sdmacfg.n_fifos_src = channels;
-+	micfil->sdmacfg.sw_done = true;
- 	micfil->dma_params_rx.maxburst = channels * MICFIL_DMA_MAXBURST_RX;
+ 	sdmac->pc_from_device = per_2_emi;
+ 	sdmac->pc_to_device = emi_2_per;
+ 	sdmac->device_to_device = per_2_per;
+ 	sdmac->pc_to_pc = emi_2_emi;
++
++	return 0;
+ }
  
- 	return 0;
+ static int sdma_load_context(struct sdma_channel *sdmac)
+@@ -1197,6 +1201,7 @@ static void sdma_set_watermarklevel_for_p2p(struct sdma_channel *sdmac)
+ static int sdma_config_channel(struct dma_chan *chan)
+ {
+ 	struct sdma_channel *sdmac = to_sdma_chan(chan);
++	int ret;
+ 
+ 	sdma_disable_channel(chan);
+ 
+@@ -1217,7 +1222,9 @@ static int sdma_config_channel(struct dma_chan *chan)
+ 		break;
+ 	}
+ 
+-	sdma_get_pc(sdmac, sdmac->peripheral_type);
++	ret = sdma_get_pc(sdmac, sdmac->peripheral_type);
++	if (ret)
++		return ret;
+ 
+ 	if ((sdmac->peripheral_type != IMX_DMATYPE_MEMORY) &&
+ 			(sdmac->peripheral_type != IMX_DMATYPE_DSP)) {
+@@ -1333,7 +1340,9 @@ static int sdma_alloc_chan_resources(struct dma_chan *chan)
+ 		mem_data.dma_request2 = 0;
+ 		data = &mem_data;
+ 
+-		sdma_get_pc(sdmac, IMX_DMATYPE_MEMORY);
++		ret = sdma_get_pc(sdmac, IMX_DMATYPE_MEMORY);
++		if (ret)
++			return ret;
+ 	}
+ 
+ 	switch (data->priority) {
 -- 
 2.30.2
 
