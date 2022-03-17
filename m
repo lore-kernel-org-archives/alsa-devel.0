@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B685C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Mar 2022 08:32:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07008C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Mar 2022 08:32:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 44A1818D9;
-	Thu, 17 Mar 2022 09:31:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 44A1818D9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 57F841908;
+	Thu, 17 Mar 2022 09:31:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57F841908
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647505930;
-	bh=bOUqrlNNOJnh26vhC5/Efwc4Ilh1iEVRVq5/sHqrHQI=;
+	s=default; t=1647505939;
+	bh=EhNlCs0VirRjwrUlptAH6Ex4BbLkPDAAokvL3IY13Mo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FHUr/0oypNaiSd3zXkGi08ouFDobTzmDbzTKpJrBfVt7gCs+bIr7nj11JcmnE5WBb
-	 ygbYXZk4LEUE3grjI5S62+9Z77B5L8mM0Sor5A/F7BXzzwjHxyRzE21sRBB8pJioZJ
-	 9vBcOmUOXBpI+IOFXBdUGjjh5a03nqkqElostOiI=
+	b=M4lwQl/zgDeHzQLzulCYJhFetyOHqxPuUSDFsq00oxESy3EuHxwdEB78T/yIn9ZOQ
+	 x/I0nZhlhBj1SaU3EOJOE+AHn1+svA6e6sf6qwdSTNyb/6Fq0iA4IWOy9TMavgurTU
+	 SZ1Gj0BFWZzsIlBaom0+AHlaJzf9GHCd7bBTSpB4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 32D8AF8053E;
-	Thu, 17 Mar 2022 09:29:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 58A22F80544;
+	Thu, 17 Mar 2022 09:29:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5AB3BF802DF; Thu, 17 Mar 2022 09:28:53 +0100 (CET)
+ id 67F15F8053E; Thu, 17 Mar 2022 09:29:00 +0100 (CET)
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
  [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5F576F802DF
- for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2022 09:28:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F576F802DF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7D627F80515
+ for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2022 09:28:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D627F80515
 Received: from dude02.hi.pengutronix.de ([2001:67c:670:100:1d::28])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1nUlUt-000692-5f; Thu, 17 Mar 2022 09:28:39 +0100
+ id 1nUlUo-000691-7g; Thu, 17 Mar 2022 09:28:34 +0100
 Received: from sha by dude02.hi.pengutronix.de with local (Exim 4.94.2)
  (envelope-from <sha@pengutronix.de>)
- id 1nUlUm-0027U9-VT; Thu, 17 Mar 2022 09:28:32 +0100
+ id 1nUlUm-0027U6-Uy; Thu, 17 Mar 2022 09:28:32 +0100
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 12/19] ASoC: fsl_micfil: use define for OSR default value
-Date: Thu, 17 Mar 2022 09:28:11 +0100
-Message-Id: <20220317082818.503143-13-s.hauer@pengutronix.de>
+Subject: [PATCH 11/19] ASoC: fsl_micfil: add multi fifo support
+Date: Thu, 17 Mar 2022 09:28:10 +0100
+Message-Id: <20220317082818.503143-12-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220317082818.503143-1-s.hauer@pengutronix.de>
 References: <20220317082818.503143-1-s.hauer@pengutronix.de>
@@ -75,81 +75,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The OSR (OverSampling Rate) setting is set once to the default value
-and never changed throughout the driver. Nevertheless the value is
-read back from the register for further calculations. Just use the
-default value because we know what we have written.
-
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- sound/soc/fsl/fsl_micfil.c | 10 ++++++----
- sound/soc/fsl/fsl_micfil.h |  1 -
- 2 files changed, 6 insertions(+), 5 deletions(-)
+ sound/soc/fsl/fsl_micfil.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
-index 7795fc59d7d1a..48054b9bd4bb2 100644
+index 82b8fc83fd361..7795fc59d7d1a 100644
 --- a/sound/soc/fsl/fsl_micfil.c
 +++ b/sound/soc/fsl/fsl_micfil.c
-@@ -28,6 +28,8 @@
- #define FSL_MICFIL_RATES		SNDRV_PCM_RATE_8000_48000
- #define FSL_MICFIL_FORMATS		(SNDRV_PCM_FMTBIT_S16_LE)
- 
-+#define MICFIL_OSR_DEFAULT	16
-+
- struct fsl_micfil {
- 	struct platform_device *pdev;
- 	struct regmap *regmap;
-@@ -40,6 +42,7 @@ struct fsl_micfil {
+@@ -15,6 +15,7 @@
+ #include <linux/regmap.h>
+ #include <linux/sysfs.h>
+ #include <linux/types.h>
++#include <linux/platform_data/dma-imx.h>
+ #include <sound/dmaengine_pcm.h>
+ #include <sound/pcm.h>
+ #include <sound/soc.h>
+@@ -34,6 +35,7 @@ struct fsl_micfil {
+ 	struct clk *busclk;
+ 	struct clk *mclk;
+ 	struct snd_dmaengine_dai_dma_data dma_params_rx;
++	struct sdma_peripheral_config sdmacfg;
+ 	unsigned int dataline;
  	char name[32];
  	int irq[MICFIL_IRQ_LINES];
- 	int quality;	/*QUALITY 2-0 bits */
-+	unsigned int osr;
- };
- 
- struct fsl_micfil_soc_data {
-@@ -111,11 +114,11 @@ static inline int get_pdm_clk(struct fsl_micfil *micfil,
- 			      unsigned int rate)
- {
- 	u32 ctrl2_reg;
--	int qsel, osr;
-+	int qsel;
- 	int bclk;
-+	int osr = MICFIL_OSR_DEFAULT;
- 
- 	regmap_read(micfil->regmap, REG_MICFIL_CTRL2, &ctrl2_reg);
--	osr = 16 - FIELD_GET(MICFIL_CTRL2_CICOSR, ctrl2_reg);
- 	qsel = FIELD_GET(MICFIL_CTRL2_QSEL, ctrl2_reg);
- 
- 	switch (qsel) {
-@@ -281,7 +284,7 @@ static int fsl_set_clock_params(struct device *dev, unsigned int rate)
- 	/* set CICOSR */
- 	ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
- 				 MICFIL_CTRL2_CICOSR,
--				 FIELD_PREP(MICFIL_CTRL2_CICOSR, MICFIL_CTRL2_CICOSR_DEFAULT));
-+				 FIELD_PREP(MICFIL_CTRL2_CICOSR, 16 - MICFIL_OSR_DEFAULT));
- 	if (ret)
+@@ -323,6 +325,10 @@ static int fsl_micfil_hw_params(struct snd_pcm_substream *substream,
  		return ret;
+ 	}
  
-@@ -672,7 +675,6 @@ static int fsl_micfil_probe(struct platform_device *pdev)
- 	micfil->dma_params_rx.addr = res->start + REG_MICFIL_DATACH0;
- 	micfil->dma_params_rx.maxburst = MICFIL_DMA_MAXBURST_RX;
++	micfil->dma_params_rx.peripheral_config = &micfil->sdmacfg;
++	micfil->dma_params_rx.peripheral_size = sizeof(micfil->sdmacfg);
++	micfil->sdmacfg.n_fifos_src = channels;
++	micfil->sdmacfg.sw_done = true;
+ 	micfil->dma_params_rx.maxburst = channels * MICFIL_DMA_MAXBURST_RX;
  
--
- 	platform_set_drvdata(pdev, micfil);
- 
- 	pm_runtime_enable(&pdev->dev);
-diff --git a/sound/soc/fsl/fsl_micfil.h b/sound/soc/fsl/fsl_micfil.h
-index 5cecae2519795..08901827047db 100644
---- a/sound/soc/fsl/fsl_micfil.h
-+++ b/sound/soc/fsl/fsl_micfil.h
-@@ -58,7 +58,6 @@
- #define MICFIL_QSEL_VLOW2_QUALITY	4
- 
- #define MICFIL_CTRL2_CICOSR		GENMASK(19, 16)
--#define MICFIL_CTRL2_CICOSR_DEFAULT	0
- #define MICFIL_CTRL2_CLKDIV		GENMASK(7, 0)
- 
- /* MICFIL Status Register -- REG_MICFIL_STAT 0x08 */
+ 	return 0;
 -- 
 2.30.2
 
