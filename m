@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E09BC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Mar 2022 08:31:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37192C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Mar 2022 08:31:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B906C18E7;
-	Thu, 17 Mar 2022 09:30:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B906C18E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5006C18F8;
+	Thu, 17 Mar 2022 09:30:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5006C18F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647505879;
-	bh=pu9b/VGEfaa0EGzZkhkPBp1Hb4k2F0QvsISULA7CvUE=;
+	s=default; t=1647505887;
+	bh=xrBI0IyfGiLQjQiRiEVbQNo9U8/Bt/xha4wj3+sh0l4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=m+VTYNvDLBUcjX9yZqkqkKRSSBWjcQUUU0P/x9OLQ/KBoLmV4N010TFR6Hm/dM3n7
-	 jyX4kDv5mqE8/8BVgK0Aeuhn0zWMTFxxzqJk5hEmT1AROUvjkS4SKicNh2Q61qwTlb
-	 +y8DYRhOp0RY23uD987cOVV6bwALQgy+Ye4T4T3c=
+	b=AQhqRGEWpi9QzHaCQ/W2Xg3/HIyH8qwvXypO6CWSNqJ29k5VX8bpkR+muhY6hXT7A
+	 9mcNEEhkkjD5+0A6jkPbJcR6wT+lFvqP57JgX2RMXwE6agAdL5IGPtbMm+/nRwLCSU
+	 neQ7dfko4av+8tNnGEt6JcWONtKTP2zq7YlvHj3E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 66334F80536;
-	Thu, 17 Mar 2022 09:28:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EA865F8053A;
+	Thu, 17 Mar 2022 09:28:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 22F38F80159; Thu, 17 Mar 2022 09:28:50 +0100 (CET)
+ id 38A52F8023A; Thu, 17 Mar 2022 09:28:50 +0100 (CET)
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
  [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DFC02F8020D
- for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2022 09:28:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DFC02F8020D
+ by alsa1.perex.cz (Postfix) with ESMTPS id E51FAF8023A
+ for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2022 09:28:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E51FAF8023A
 Received: from dude02.hi.pengutronix.de ([2001:67c:670:100:1d::28])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1nUlUt-000690-4a; Thu, 17 Mar 2022 09:28:39 +0100
+ id 1nUlUo-00068r-7p; Thu, 17 Mar 2022 09:28:34 +0100
 Received: from sha by dude02.hi.pengutronix.de with local (Exim 4.94.2)
  (envelope-from <sha@pengutronix.de>)
- id 1nUlUm-0027U3-UI; Thu, 17 Mar 2022 09:28:32 +0100
+ id 1nUlUm-0027Tc-OB; Thu, 17 Mar 2022 09:28:32 +0100
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 10/19] dma: imx-sdma: Add multi fifo support
-Date: Thu, 17 Mar 2022 09:28:09 +0100
-Message-Id: <20220317082818.503143-11-s.hauer@pengutronix.de>
+Subject: [PATCH 01/19] ASoC: fsl_micfil: Drop unnecessary register read
+Date: Thu, 17 Mar 2022 09:28:00 +0100
+Message-Id: <20220317082818.503143-2-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220317082818.503143-1-s.hauer@pengutronix.de>
 References: <20220317082818.503143-1-s.hauer@pengutronix.de>
@@ -75,173 +75,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+in get_pdm_clk() REG_MICFIL_CTRL2 is read twice. Drop second read.
+
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- drivers/dma/imx-sdma.c                | 54 +++++++++++++++++++++++++++
- include/linux/platform_data/dma-imx.h |  7 ++++
- 2 files changed, 61 insertions(+)
+ sound/soc/fsl/fsl_micfil.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/dma/imx-sdma.c b/drivers/dma/imx-sdma.c
-index 1038f6bc7f846..21e1cec2ffde9 100644
---- a/drivers/dma/imx-sdma.c
-+++ b/drivers/dma/imx-sdma.c
-@@ -14,6 +14,7 @@
- #include <linux/iopoll.h>
- #include <linux/module.h>
- #include <linux/types.h>
-+#include <linux/bitfield.h>
- #include <linux/bitops.h>
- #include <linux/mm.h>
- #include <linux/interrupt.h>
-@@ -73,6 +74,7 @@
- #define SDMA_CHNENBL0_IMX35	0x200
- #define SDMA_CHNENBL0_IMX31	0x080
- #define SDMA_CHNPRI_0		0x100
-+#define SDMA_DONE0_CONFIG	0x1000
+diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
+index 9f90989ac59a6..64019d003784b 100644
+--- a/sound/soc/fsl/fsl_micfil.c
++++ b/sound/soc/fsl/fsl_micfil.c
+@@ -118,8 +118,6 @@ static inline int get_pdm_clk(struct fsl_micfil *micfil,
+ 	regmap_read(micfil->regmap, REG_MICFIL_CTRL2, &ctrl2_reg);
+ 	osr = 16 - ((ctrl2_reg & MICFIL_CTRL2_CICOSR_MASK)
+ 		    >> MICFIL_CTRL2_CICOSR_SHIFT);
+-
+-	regmap_read(micfil->regmap, REG_MICFIL_CTRL2, &ctrl2_reg);
+ 	qsel = ctrl2_reg & MICFIL_CTRL2_QSEL_MASK;
  
- /*
-  * Buffer descriptor status values.
-@@ -180,6 +182,12 @@
- 				 BIT(DMA_MEM_TO_DEV) | \
- 				 BIT(DMA_DEV_TO_DEV))
- 
-+#define SDMA_WATERMARK_LEVEL_N_FIFOS	GENMASK(15, 12)
-+#define SDMA_WATERMARK_LEVEL_SW_DONE	BIT(23)
-+
-+#define SDMA_DONE0_CONFIG_DONE_SEL	BIT(7)
-+#define SDMA_DONE0_CONFIG_DONE_DIS	BIT(6)
-+
- /**
-  * struct sdma_script_start_addrs - SDMA script start pointers
-  *
-@@ -441,6 +449,11 @@ struct sdma_channel {
- 	struct work_struct		terminate_worker;
- 	struct list_head                terminated;
- 	bool				is_ram_script;
-+	unsigned int			n_fifos;
-+	unsigned int			n_fifos_src;
-+	unsigned int			n_fifos_dst;
-+	bool				sw_done;
-+	u32				sw_done_sel;
- };
- 
- #define IMX_DMA_SG_LOOP		BIT(0)
-@@ -773,6 +786,14 @@ static void sdma_event_enable(struct sdma_channel *sdmac, unsigned int event)
- 	val = readl_relaxed(sdma->regs + chnenbl);
- 	__set_bit(channel, &val);
- 	writel_relaxed(val, sdma->regs + chnenbl);
-+
-+	/* Set SDMA_DONEx_CONFIG is sw_done enabled */
-+	if (sdmac->sw_done) {
-+		val = readl_relaxed(sdma->regs + SDMA_DONE0_CONFIG);
-+		val |= SDMA_DONE0_CONFIG_DONE_SEL;
-+		val &= ~SDMA_DONE0_CONFIG_DONE_DIS;
-+		writel_relaxed(val, sdma->regs + SDMA_DONE0_CONFIG);
-+	}
- }
- 
- static void sdma_event_disable(struct sdma_channel *sdmac, unsigned int event)
-@@ -1022,6 +1043,10 @@ static int sdma_get_pc(struct sdma_channel *sdmac,
- 	case IMX_DMATYPE_IPU_MEMORY:
- 		emi_2_per = sdma->script_addrs->ext_mem_2_ipu_addr;
- 		break;
-+	case IMX_DMATYPE_MULTI_SAI:
-+		per_2_emi = sdma->script_addrs->sai_2_mcu_addr;
-+		emi_2_per = sdma->script_addrs->mcu_2_sai_addr;
-+		break;
- 	default:
- 		dev_err(sdma->dev, "Unsupported transfer type %d\n",
- 			peripheral_type);
-@@ -1198,6 +1223,15 @@ static void sdma_set_watermarklevel_for_p2p(struct sdma_channel *sdmac)
- 	sdmac->watermark_level |= SDMA_WATERMARK_LEVEL_CONT;
- }
- 
-+static void sdma_set_watermarklevel_for_sais(struct sdma_channel *sdmac)
-+{
-+	if (sdmac->sw_done)
-+		sdmac->watermark_level |= SDMA_WATERMARK_LEVEL_SW_DONE;
-+
-+	sdmac->watermark_level |=
-+			FIELD_PREP(SDMA_WATERMARK_LEVEL_N_FIFOS, sdmac->n_fifos);
-+}
-+
- static int sdma_config_channel(struct dma_chan *chan)
- {
- 	struct sdma_channel *sdmac = to_sdma_chan(chan);
-@@ -1234,6 +1268,10 @@ static int sdma_config_channel(struct dma_chan *chan)
- 			    sdmac->peripheral_type == IMX_DMATYPE_ASRC)
- 				sdma_set_watermarklevel_for_p2p(sdmac);
- 		} else {
-+			if (sdmac->peripheral_type ==
-+					IMX_DMATYPE_MULTI_SAI)
-+				sdma_set_watermarklevel_for_sais(sdmac);
-+
- 			__set_bit(sdmac->event_id0, sdmac->event_mask);
- 		}
- 
-@@ -1669,6 +1707,7 @@ static int sdma_config_write(struct dma_chan *chan,
- 		sdmac->watermark_level = dmaengine_cfg->src_maxburst *
- 			dmaengine_cfg->src_addr_width;
- 		sdmac->word_size = dmaengine_cfg->src_addr_width;
-+		sdmac->n_fifos =  sdmac->n_fifos_src;
- 	} else if (direction == DMA_DEV_TO_DEV) {
- 		sdmac->per_address2 = dmaengine_cfg->src_addr;
- 		sdmac->per_address = dmaengine_cfg->dst_addr;
-@@ -1682,6 +1721,7 @@ static int sdma_config_write(struct dma_chan *chan,
- 		sdmac->watermark_level = dmaengine_cfg->dst_maxburst *
- 			dmaengine_cfg->dst_addr_width;
- 		sdmac->word_size = dmaengine_cfg->dst_addr_width;
-+		sdmac->n_fifos =  sdmac->n_fifos_dst;
- 	}
- 	sdmac->direction = direction;
- 	return sdma_config_channel(chan);
-@@ -1691,9 +1731,23 @@ static int sdma_config(struct dma_chan *chan,
- 		       struct dma_slave_config *dmaengine_cfg)
- {
- 	struct sdma_channel *sdmac = to_sdma_chan(chan);
-+	struct sdma_engine *sdma = sdmac->sdma;
- 
- 	memcpy(&sdmac->slave_config, dmaengine_cfg, sizeof(*dmaengine_cfg));
- 
-+	if (dmaengine_cfg->peripheral_config) {
-+		struct sdma_peripheral_config *sdmacfg = dmaengine_cfg->peripheral_config;
-+		if (dmaengine_cfg->peripheral_size != sizeof(struct sdma_peripheral_config)) {
-+			dev_err(sdma->dev, "Invalid peripheral size %zu, expected %zu\n",
-+				dmaengine_cfg->peripheral_size,
-+				sizeof(struct sdma_peripheral_config));
-+			return -EINVAL;
-+		}
-+		sdmac->n_fifos_src = sdmacfg->n_fifos_src;
-+		sdmac->n_fifos_dst = sdmacfg->n_fifos_dst;
-+		sdmac->sw_done = sdmacfg->sw_done;
-+	}
-+
- 	/* Set ENBLn earlier to make sure dma request triggered after that */
- 	if (sdmac->event_id0 >= sdmac->sdma->drvdata->num_events)
- 		return -EINVAL;
-diff --git a/include/linux/platform_data/dma-imx.h b/include/linux/platform_data/dma-imx.h
-index 281adbb26e6bd..4a43a048e1b4d 100644
---- a/include/linux/platform_data/dma-imx.h
-+++ b/include/linux/platform_data/dma-imx.h
-@@ -39,6 +39,7 @@ enum sdma_peripheral_type {
- 	IMX_DMATYPE_SSI_DUAL,	/* SSI Dual FIFO */
- 	IMX_DMATYPE_ASRC_SP,	/* Shared ASRC */
- 	IMX_DMATYPE_SAI,	/* SAI */
-+	IMX_DMATYPE_MULTI_SAI,	/* MULTI FIFOs For Audio */
- };
- 
- enum imx_dma_prio {
-@@ -65,4 +66,10 @@ static inline int imx_dma_is_general_purpose(struct dma_chan *chan)
- 		!strcmp(chan->device->dev->driver->name, "imx-dma");
- }
- 
-+struct sdma_peripheral_config {
-+	int n_fifos_src;
-+	int n_fifos_dst;
-+	bool sw_done;
-+};
-+
- #endif
+ 	switch (qsel) {
 -- 
 2.30.2
 
