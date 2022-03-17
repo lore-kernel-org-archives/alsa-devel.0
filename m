@@ -4,72 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6C5EC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Mar 2022 19:16:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D055C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Mar 2022 19:16:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BA8D41A94;
-	Thu, 17 Mar 2022 20:15:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA8D41A94
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3CBCD1945;
+	Thu, 17 Mar 2022 20:15:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3CBCD1945
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647544576;
-	bh=PSKfRijTfYruO+lkLju7czYgdKe0uroqn68x7LRv6WA=;
+	s=default; t=1647544594;
+	bh=Y+apd5wGVAcbGhJSYKEioR4SaIWjP+1tnLbv+JCtuTs=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=A+Zs7zKuKrgXF3KckHSeVtOrMeCzMc7UUwIGGSzMR/D1RibALg5/WMu33cTYD+o+e
-	 6GbWxN30z17OO7uVrrl6cAJBLrmdsmNO38pHYkWlDZhmhBnnsPVWHHOr0przBt574q
-	 0dUIMD4aLp8qf+VbutfvfgyFvwivRVmTC4DOSca8=
+	b=ZM1JOe204e8pe39fBpp8ogPHTxiRVpfFcKZFIsqLWsNWUx+mkouRXxjaX/D26SxQN
+	 c94qdSfK26xLGWD0/h95GyFt5DDF2c0UkeuzlJIp99P0seCtV+sKVfL8JWfpNFFFcP
+	 jsSJH2s7YPgPAilC9ASDJlaOqsc+72ynNhE4ornU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 04513F80159;
-	Thu, 17 Mar 2022 20:15:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 91316F8023A;
+	Thu, 17 Mar 2022 20:15:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B6F24F8013F; Thu, 17 Mar 2022 20:15:23 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 994EDF802DF; Thu, 17 Mar 2022 20:15:27 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3B2CEF80087;
- Thu, 17 Mar 2022 20:15:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3B2CEF80087
+ by alsa1.perex.cz (Postfix) with ESMTPS id EDAAEF8023A
+ for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2022 20:15:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EDAAEF8023A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="aUWg7Vjj"
+ header.b="YyV2Y3NN"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 8C09661840;
+ by sin.source.kernel.org (Postfix) with ESMTPS id 2224CCE2457;
+ Thu, 17 Mar 2022 19:15:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 689FCC340EC;
  Thu, 17 Mar 2022 19:15:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 941F9C340E9;
- Thu, 17 Mar 2022 19:15:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1647544515;
- bh=PSKfRijTfYruO+lkLju7czYgdKe0uroqn68x7LRv6WA=;
+ s=k20201202; t=1647544517;
+ bh=Y+apd5wGVAcbGhJSYKEioR4SaIWjP+1tnLbv+JCtuTs=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=aUWg7VjjplHJWL9OlEE34KgxWttpSCxgtoHxls66YA5v35nRX6BjT/iAxOGGtumEg
- RL6lKR0ncNFYDQkhixxOvHDz8udy2jM4I/GbyWrgDmwVbzUp2u6edqLM2dcvUHL3Bd
- kSemi8c77XbbcknINFSHW59VauJhCwddRp4JgXuC3iYbyiVp03iyy7T/+4lTsxD/y4
- vLQmFZi2/PFSHFcAJw0XGtigVCgEzhWwBAxKXptf880aG2dj6A94/aQD31D8Rzlqfh
- DrS0KsFtLYKw7NGwVodqukAjcY6cHkx7goWDwkmUv6y07wOt4u4HzfTTEEVHLBX256
- ogLwRac8w5jKA==
+ b=YyV2Y3NNRcDkNQ91mK4rRWosiPM6MGwZq9m1P8FwcGCGV1iQiSijyjAMR981+MIjF
+ znFuwFdxgDM6391YZkQ4Ifm91A01c3yN77rkj0ag3e1rY2BFnh7VrTevnW7GYICvaG
+ HeBRWJamGYKtyjiyw963tqomW9uZXWe/zllzz4mT1nv6RRCFWBXQaUtfeUKRNBbv5X
+ fHirIWXXn/2rxHB/MW3ttc4gy21na47hxcx7XwrfUYjWyEOk4pybewsEI4Li55SWL7
+ nRTVqvyJ/06aaLd1v+B8FN94HkSge75odjzuSx4IJkCo9/YskymnkRcX3Da06dGsmP
+ Lgn3XryG/Ey5Q==
 From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, Yihao Han <hanyihao@vivo.com>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
- sound-open-firmware@alsa-project.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Daniel Baluta <daniel.baluta@nxp.com>, Jaroslav Kysela <perex@perex.cz>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-In-Reply-To: <20220317093841.3414-1-hanyihao@vivo.com>
-References: <20220317093841.3414-1-hanyihao@vivo.com>
-Subject: Re: [PATCH] ASoC: SOF: topology: Use kmemdup() to replace kzalloc +
- memcpy
-Message-Id: <164754451230.3036648.11453509485052540237.b4-ty@kernel.org>
-Date: Thu, 17 Mar 2022 19:15:12 +0000
+To: festevam@gmail.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com,
+ perex@perex.cz, nicoleotsuka@gmail.com, tiwai@suse.com,
+ Shengjiu Wang <shengjiu.wang@nxp.com>, Xiubo.Lee@gmail.com,
+ shengjiu.wang@gmail.com
+In-Reply-To: <1647408538-2982-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1647408538-2982-1-git-send-email-shengjiu.wang@nxp.com>
+Subject: Re: [PATCH] ASoC: fsl_spdif: Add new registers included on i.MX8ULP
+Message-Id: <164754451515.3036648.9457796820741527004.b4-ty@kernel.org>
+Date: Thu, 17 Mar 2022 19:15:15 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: kernel@vivo.com
+Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,13 +82,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 17 Mar 2022 02:38:41 -0700, Yihao Han wrote:
-> fix memdup.cocci warning:
-> sound/soc/sof/topology.c:876:19-26: WARNING opportunity for kmemdup
+On Wed, 16 Mar 2022 13:28:58 +0800, Shengjiu Wang wrote:
+> There are some new registers added on i.MX8ULP, they are
+> the SPDIF transmit Professional C channel registers,
+> 192bit SPDIF receive C channel registers, and 192bit SPDIF
+> transmit C channel registers.
 > 
-> Generated by: scripts/coccinelle/api/memdup.cocci
+> There are two output lines, SPDIF_OUT1 and SPDIF_OUT2, the
+> original REG_SPDIF_STCSCH and REG_SPDIF_STCSCL are used for
+> SPDIF_OUT1, the new REG_SPDIF_STCSPH and REG_SPDIF_STCSPL
+> are used for SPDIF_OUT2, the 192bit SPDIF C channel registers
+> are used for both.
 > 
-> 
+> [...]
 
 Applied to
 
@@ -99,8 +102,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: topology: Use kmemdup() to replace kzalloc + memcpy
-      commit: b26f965f7c83464f60d5af411ef9a03079e41800
+[1/1] ASoC: fsl_spdif: Add new registers included on i.MX8ULP
+      commit: 638cec39339db40df9fc2ece0411a64856669b93
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
