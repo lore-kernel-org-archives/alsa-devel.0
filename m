@@ -4,80 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 377A5C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Mar 2022 14:20:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8EE09C433FE
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Mar 2022 14:42:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 100451816;
-	Thu, 17 Mar 2022 15:19:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 100451816
+	by alsa0.perex.cz (Postfix) with ESMTPS id 256991910;
+	Thu, 17 Mar 2022 15:41:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 256991910
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647526845;
-	bh=U6rXM0bflcprHQwN2TgyP68VKWMmXe8T0RivNVIeLO4=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1647528124;
+	bh=hxdofN2BPr2wGB36uoStlDdxkKMsJNBlXp5qDw4a4/8=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TfRdNSk8cCE2ZswDYvkMkcqsAt117eCuOkmcpVR05FLXAAZ6SqWA3mIu7RN3X2NTi
-	 MJNQIJNkPZL0MeBZDHAPejG2FooqAy1GI6UD1uTjegXqZ+sl0t2vU2EOpcLTBsSmLK
-	 34yTNS04UAKbtYjNSJf7sPyP7F/RPCk1y2S2NpKM=
+	b=a7MS2gV2HbNhlj3qGgRsJesXivp2Seope41xdC2DQqhILP6TLnIP8pz3HDNEScGNh
+	 NG+MVGuy3DXn+B4XXn92Hpn62PYGdyL/ztR0n2715I7pL4N3B88v3bEM/Lcw8oARe6
+	 YnSyu3anwLDPBu+/7ImuYTuSBqW7sSiY8y8xXKt0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9F8E6F80132;
-	Thu, 17 Mar 2022 15:19:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A9E9AF80132;
+	Thu, 17 Mar 2022 15:41:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F26C1F80132; Thu, 17 Mar 2022 15:19:52 +0100 (CET)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ id 8FBCFF8013F; Thu, 17 Mar 2022 15:41:12 +0100 (CET)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 075BAF80124;
- Thu, 17 Mar 2022 15:19:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 075BAF80124
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="Wto7U3OJ"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1647526787; x=1679062787;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=U6rXM0bflcprHQwN2TgyP68VKWMmXe8T0RivNVIeLO4=;
- b=Wto7U3OJJHYS8sfbUt0Jah/RZWh/yyzlsoret/1FUx/IJFuQb9tVLFML
- qfuCTy78AHa+yZGY2k1yh6xdquNBKK6wF//pmMRg/LeDu24yS9w1ZxbLk
- BVDYsQQ0bpbaidne7b9CRKflWF9CyTcPfocswmhNM+0mTPkUaCh9KSMft
- jnzqX2dvVCjxOow6No3Y835IgJlZv5yOQyjvVO8bVAjjm4KEOHlguKL/8
- kvpaS3wD51AqX9XvB27L8FrCJk6avYsNICqOR5AYvmijNNfegQjCAEuwv
- PV4KDQHzNL21Z32UpqRbosLCjzuTvFjdg8MoROBPEVzDJtoTcpCr3cA8W Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10289"; a="255703773"
-X-IronPort-AV: E=Sophos;i="5.90,188,1643702400"; d="scan'208";a="255703773"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Mar 2022 07:19:42 -0700
-X-IronPort-AV: E=Sophos;i="5.90,188,1643702400"; d="scan'208";a="541385197"
-Received: from knavalgu-mobl1.gar.corp.intel.com (HELO [10.251.29.221])
- ([10.251.29.221])
- by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Mar 2022 07:19:41 -0700
-Message-ID: <1b955086-94d0-d524-4cd4-b177df56f71c@linux.intel.com>
-Date: Thu, 17 Mar 2022 08:21:11 -0500
+ by alsa1.perex.cz (Postfix) with ESMTPS id 11643F80125
+ for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2022 15:41:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11643F80125
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <sha@pengutronix.de>)
+ id 1nUrJI-0002Oy-MK; Thu, 17 Mar 2022 15:41:04 +0100
+Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
+ (envelope-from <sha@pengutronix.de>)
+ id 1nUrJH-0001RD-3X; Thu, 17 Mar 2022 15:41:03 +0100
+Date: Thu, 17 Mar 2022 15:41:03 +0100
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Shengjiu Wang <shengjiu.wang@gmail.com>
+Subject: Re: [PATCH 10/19] dma: imx-sdma: Add multi fifo support
+Message-ID: <20220317144103.GV405@pengutronix.de>
+References: <20220317082818.503143-1-s.hauer@pengutronix.de>
+ <20220317082818.503143-11-s.hauer@pengutronix.de>
+ <CAA+D8APw-OHdz4s=oy9bWZOw6kj8mD8nss3OKXsYQty52=tb2Q@mail.gmail.com>
+ <20220317101950.GU405@pengutronix.de>
+ <CAA+D8AMdTzqfEQCH4pcQE3K1P-4oo71ctiGW1DD7XJPQDcVbTg@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.5.0
-Subject: Re: [PATCH] ASoC: SOF: topology: Use kmemdup() to replace kzalloc +
- memcpy
-Content-Language: en-US
-To: Yihao Han <hanyihao@vivo.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Daniel Baluta <daniel.baluta@nxp.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
-References: <20220317093841.3414-1-hanyihao@vivo.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20220317093841.3414-1-hanyihao@vivo.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: kernel@vivo.com
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAA+D8AMdTzqfEQCH4pcQE3K1P-4oo71ctiGW1DD7XJPQDcVbTg@mail.gmail.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-IRC: #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 15:38:07 up 96 days, 23:23, 78 users,  load average: 0.12, 0.16, 0.19
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>,
+ Vinod Koul <vkoul@kernel.org>, NXP Linux Team <linux-imx@nxp.com>,
+ Sascha Hauer <kernel@pengutronix.de>, dmaengine@vger.kernel.org,
+ Fabio Estevam <festevam@gmail.com>, joy.zou@nxp.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,38 +87,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-On 3/17/22 04:38, Yihao Han wrote:
-> fix memdup.cocci warning:
-> sound/soc/sof/topology.c:876:19-26: WARNING opportunity for kmemdup
+On Thu, Mar 17, 2022 at 08:20:22PM +0800, Shengjiu Wang wrote:
+>    Hi
+>    On Thu, Mar 17, 2022 at 6:19 PM Sascha Hauer <[1]s.hauer@pengutronix.de>
+>    wrote:
 > 
-> Generated by: scripts/coccinelle/api/memdup.cocci
+>      On Thu, Mar 17, 2022 at 05:08:55PM +0800, Shengjiu Wang wrote:
+>      >    On Thu, Mar 17, 2022 at 4:28 PM Sascha Hauer
+>      <[1][2]s.hauer@pengutronix.de>
+>      >    wrote:
+>      >
+>      >      +struct sdma_peripheral_config {
+>      >      +       int n_fifos_src;
+>      >      +       int n_fifos_dst;
+>      >      +       bool sw_done;
+>      >      +};
+>      >      +
+>      >       #endif
+>      >
+>      >    Hi Sascha
+>      >    This is our internal definition for this sdma_peripheral_config.
+>      >    Could you please adopt this?
 > 
-> Signed-off-by: Yihao Han <hanyihao@vivo.com>
-
-Thanks for the patch
-
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-> ---
->   sound/soc/sof/topology.c | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
+>      This structure is completely internal to the kernel and can be adjusted
+>      when we need it. I don't see a reason to add unused fields to it just to
+>      be compatible with a downstream kernel.
 > 
-> diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-> index 367fbe2d5b31..369693cc6d10 100644
-> --- a/sound/soc/sof/topology.c
-> +++ b/sound/soc/sof/topology.c
-> @@ -873,11 +873,10 @@ static int sof_control_load_bytes(struct snd_soc_component *scomp,
->   
->   	/* copy the private data */
->   	if (priv_size > 0) {
-> -		scontrol->priv = kzalloc(priv_size, GFP_KERNEL);
-> +		scontrol->priv = kmemdup(control->priv.data, priv_size, GFP_KERNEL);
->   		if (!scontrol->priv)
->   			return -ENOMEM;
->   
-> -		memcpy(scontrol->priv, control->priv.data, priv_size);
->   		scontrol->priv_size = priv_size;
->   	}
->   
+>    Yes, it is not used by micfil. But the fifo_offset and words_per_fifo
+>    is part the multi fifo script support scope, if only add fifo_num,  it
+>    looks
+>    like this feature is not complete.
+
+No, it's not. I only added the parts that I am interested in and that I
+can test. I have some multichannel audio stuff in my pipeline, I might add
+more pieces later.
+
+>    By the way,  which multi fifo script version are you using? seems it is
+>    not the latest compared with our release, right?
+
+I am using the latest firmware from linux-firmware.git.
+
+Sascha
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
