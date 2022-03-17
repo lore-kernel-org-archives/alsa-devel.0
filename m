@@ -4,80 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30805C433FE
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Mar 2022 09:34:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5209C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Mar 2022 09:34:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 63D5E1A00;
-	Thu, 17 Mar 2022 10:33:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 63D5E1A00
+	by alsa0.perex.cz (Postfix) with ESMTPS id E3B761935;
+	Thu, 17 Mar 2022 10:33:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3B761935
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647509656;
-	bh=u9SKefDaUbQXKzKyOx1sw/ZJj1GD6ClH59P9LsZbSYU=;
+	s=default; t=1647509664;
+	bh=nQZJ5FmlNIFdUXw10nDMZTznejBbSShfA0tRQPwZw1w=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LQ4rp61yZ4IFAGMMAgSM7i0+ETapaVQd+4vDA05dbaeRePH42piAiuirSFv5MoQUW
-	 jV2BbNBWSAAKfTKllMs/O5+n9dGpf0fl2c3hNMuAKkIiAZV191eVGzb2h1V2T7IxLV
-	 5JTIvphKnHQF2zYjz2SUs+FeMt2K1evtAniiFyi8=
+	b=imYfzVdqFlvivLedNll5pSacSVVAZoZSTLK/2mJl6QtlKCvOWyEZ2WYteg2BV2eTv
+	 Fa1Q8rvWFAol2tuuVCQSWEtf9w2muW7Q7LoFd/lAH0AuaJqKzqrAmr5NHYpeuoMvXv
+	 1zsD+cb90CMjjhoIM8OQGY0INPLxxqJ4fZVJJZM4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AE39BF80538;
-	Thu, 17 Mar 2022 10:31:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 367DBF8053B;
+	Thu, 17 Mar 2022 10:31:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C64E3F8013F; Thu, 17 Mar 2022 10:31:47 +0100 (CET)
+ id F37EEF802DF; Thu, 17 Mar 2022 10:31:47 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C5E7AF802DF
- for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2022 10:31:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5E7AF802DF
+ by alsa1.perex.cz (Postfix) with ESMTPS id CD69DF80515
+ for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2022 10:31:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CD69DF80515
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="htDPK9Fz"
+ header.b="l0hTMFV6"
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 22H5Kw4x025823;
- Thu, 17 Mar 2022 04:31:34 -0500
+ by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 22H5Kw4v025823;
+ Thu, 17 Mar 2022 04:31:32 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=pvLoPUP+zOIjxi5uLkLGyB32oVCSgHxrfK1CCMsoqYA=;
- b=htDPK9FzOkoHzqYV3xAR+nYrrdmtEjWIT/dsv2PGsLXO+Gvt0o+HA5Mnn6f2Ku3gefE8
- enAnynx9Qn4NNuMqi6wpN5BN+ij3nXtcB6/EDm83ocxTUUzyD31hlUkRuEzkoev4t/2S
- T1PRKYCmXHz4t5xPf3PP+zxKKSzMU2xZNEcm0GM7aIJYC2gNNiKd0KJIJ+b9bWgY54Pt
- AC98idF5pbT5ScvswExCU05efL8ruUKelpKHe20yO5XVpfeXXS23m5e7J6ec6+qs/iYq
- aG+Ed+ItHgmOb/IWXDcaytJShay7SGrCczzAZ4yO5evXvbZ+XjQV1Ic2+asiMnkTdlRD HA== 
+ bh=ywH4uvwDWdVJqzTUsp5wR4R1KwoCSnX2piA1HLbaG9Q=;
+ b=l0hTMFV6IazuJz6TB+dw++kBZLPd9qk34f9I2fcviKV0cxIUZAuMGooKAupI3B2mxa+5
+ /j5b3YzmzXs3xm+r0tDiPJnjZrEW0jHPfezk0F00xgo/BKbm3EwF5722KZ2+BzPe+B0w
+ PBxeyR9hpL3OyCZDBqcPR/MKPaa9/hgCTM8k4z7m+JpzLPPjjKTnyUHd9Z6pYb+mQSoZ
+ SUccxDj7GaH/ZCmypHwVgfil6VFfZDOsOcrkwow/GtUYM+lj4S/xHhoB7Vl4ktuzNPz+
+ YUNYrd4XN8TBfFGnzKhYEw5OWr37/hf0yzFR5BP1VTGqTDh3FE6ERR+OJ6MgDlLNqYCt OQ== 
 Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3et5yp475e-5
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3et5yp475e-3
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 17 Mar 2022 04:31:33 -0500
+ Thu, 17 Mar 2022 04:31:32 -0500
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Thu, 17 Mar
- 2022 09:31:32 +0000
+ 2022 09:31:31 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.18 via
- Frontend Transport; Thu, 17 Mar 2022 09:31:32 +0000
+ Frontend Transport; Thu, 17 Mar 2022 09:31:31 +0000
 Received: from aryzen.ad.cirrus.com (unknown [198.61.64.95])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4FAE47C;
- Thu, 17 Mar 2022 09:31:32 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 5299BB1A;
+ Thu, 17 Mar 2022 09:31:31 +0000 (UTC)
 From: Lucas Tanure <tanureal@opensource.cirrus.com>
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob
  Herring <robh+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
  Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v4 08/16] hda: cs35l41: Mute the device before shutdown
-Date: Thu, 17 Mar 2022 09:31:12 +0000
-Message-ID: <20220317093120.168534-9-tanureal@opensource.cirrus.com>
+Subject: [PATCH v4 05/16] ALSA: hda: cs35l41: Always configure the DAI
+Date: Thu, 17 Mar 2022 09:31:09 +0000
+Message-ID: <20220317093120.168534-6-tanureal@opensource.cirrus.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220317093120.168534-1-tanureal@opensource.cirrus.com>
 References: <20220317093120.168534-1-tanureal@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: DxkGdgUzFbHNg5injiTlogqrxiPuTZMc
-X-Proofpoint-GUID: DxkGdgUzFbHNg5injiTlogqrxiPuTZMc
+X-Proofpoint-ORIG-GUID: MA4vwpMKe2Tp4Xm78L4avb2EThe6ua7n
+X-Proofpoint-GUID: MA4vwpMKe2Tp4Xm78L4avb2EThe6ua7n
 X-Proofpoint-Spam-Reason: safe
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org, Lucas Tanure <tanureal@opensource.cirrus.com>,
@@ -97,46 +97,56 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Mute the device before shutdown to avoid pops and clicks for all types
-of boost.
+The dai configuration is always the same and should always configured
+during the opening the stream.
 
 Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
 ---
- sound/pci/hda/cs35l41_hda.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ sound/pci/hda/cs35l41_hda.c | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
 
 diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
-index 46e920ec3000..0709d09f4e13 100644
+index d2addae8c085..f853530eb385 100644
 --- a/sound/pci/hda/cs35l41_hda.c
 +++ b/sound/pci/hda/cs35l41_hda.c
-@@ -28,6 +28,11 @@ static const struct reg_sequence cs35l41_hda_config[] = {
- 	{ CS35L41_PWR_CTRL2,		0x00000001 }, // AMP_EN = 1
+@@ -111,8 +111,6 @@ static const struct reg_sequence cs35l41_reset_to_safe[] = {
+ static const struct cs35l41_hda_reg_sequence cs35l41_hda_reg_seq_no_bst = {
+ 	.probe		= cs35l41_reset_to_safe,
+ 	.num_probe	= ARRAY_SIZE(cs35l41_reset_to_safe),
+-	.open		= cs35l41_hda_config,
+-	.num_open	= ARRAY_SIZE(cs35l41_hda_config),
+ 	.prepare	= cs35l41_safe_to_active,
+ 	.num_prepare	= ARRAY_SIZE(cs35l41_safe_to_active),
+ 	.cleanup	= cs35l41_active_to_safe,
+@@ -120,8 +118,6 @@ static const struct cs35l41_hda_reg_sequence cs35l41_hda_reg_seq_no_bst = {
  };
  
-+static const struct reg_sequence cs35l41_hda_mute[] = {
-+	{ CS35L41_AMP_GAIN_CTRL,	0x00000000 }, // AMP_GAIN_PCM 0.5 dB
-+	{ CS35L41_AMP_DIG_VOL_CTRL,	0x0000A678 }, // AMP_VOL_PCM Mute
-+};
-+
- static const struct reg_sequence cs35l41_hda_start_bst[] = {
- 	{ CS35L41_PWR_CTRL2,		0x00000021 }, // BST_EN = 10, AMP_EN = 1
- 	{ CS35L41_PWR_CTRL1,		0x00000001, 3000}, // set GLOBAL_EN = 1
-@@ -89,7 +94,6 @@ static const struct reg_sequence cs35l41_active_to_safe[] = {
- 	{ 0x00000040,			0x00000055 },
- 	{ 0x00000040,			0x000000AA },
- 	{ 0x00007438,			0x00585941 },
--	{ CS35L41_AMP_DIG_VOL_CTRL,	0x0000A678 }, // AMP_VOL_PCM Mute
- 	{ CS35L41_PWR_CTRL2,		0x00000000 }, // AMP_EN = 0
- 	{ CS35L41_PWR_CTRL1,		0x00000000 },
- 	{ 0x0000742C,			0x00000009, 2000 },
-@@ -146,6 +150,7 @@ static void cs35l41_hda_playback_hook(struct device *dev, int action)
- 			ret = regmap_multi_reg_write(reg, reg_seq->prepare, reg_seq->num_prepare);
+ static const struct cs35l41_hda_reg_sequence cs35l41_hda_reg_seq_ext_bst = {
+-	.open		= cs35l41_hda_config,
+-	.num_open	= ARRAY_SIZE(cs35l41_hda_config),
+ 	.prepare	= cs35l41_start_ext_vspk,
+ 	.num_prepare	= ARRAY_SIZE(cs35l41_start_ext_vspk),
+ 	.cleanup	= cs35l41_stop_ext_vspk,
+@@ -129,8 +125,6 @@ static const struct cs35l41_hda_reg_sequence cs35l41_hda_reg_seq_ext_bst = {
+ };
+ 
+ static const struct cs35l41_hda_reg_sequence cs35l41_hda_reg_seq_int_bst = {
+-	.open		= cs35l41_hda_config,
+-	.num_open	= ARRAY_SIZE(cs35l41_hda_config),
+ 	.prepare	= cs35l41_hda_start_bst,
+ 	.num_prepare	= ARRAY_SIZE(cs35l41_hda_start_bst),
+ 	.cleanup	= cs35l41_hda_stop_bst,
+@@ -146,8 +140,8 @@ static void cs35l41_hda_playback_hook(struct device *dev, int action)
+ 
+ 	switch (action) {
+ 	case HDA_GEN_PCM_ACT_OPEN:
+-		if (reg_seq->open)
+-			ret = regmap_multi_reg_write(reg, reg_seq->open, reg_seq->num_open);
++		ret = regmap_multi_reg_write(reg, cs35l41_hda_config,
++					     ARRAY_SIZE(cs35l41_hda_config));
  		break;
- 	case HDA_GEN_PCM_ACT_CLEANUP:
-+		regmap_multi_reg_write(reg, cs35l41_hda_mute, ARRAY_SIZE(cs35l41_hda_mute));
- 		if (reg_seq->cleanup)
- 			ret = regmap_multi_reg_write(reg, reg_seq->cleanup, reg_seq->num_cleanup);
- 		break;
+ 	case HDA_GEN_PCM_ACT_PREPARE:
+ 		if (reg_seq->prepare)
 -- 
 2.35.1
 
