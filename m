@@ -4,64 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83A81C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Mar 2022 17:55:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 434B3C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Mar 2022 17:55:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B14A518E5;
-	Thu, 17 Mar 2022 18:54:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B14A518E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6CE8C18F4;
+	Thu, 17 Mar 2022 18:54:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6CE8C18F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647539708;
-	bh=//31PYFIAylqF9BN8lgzTSi6M1KjhCNv4fekcap99XU=;
+	s=default; t=1647539725;
+	bh=HwwaPa4ACpnTuzFjP03Rd66VY8t8NuKVtfI4ogqbS/M=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kwAo71GQLZdDuDGhBp9M7XGqTvgFFn8Abv2JK8APHrhLnnvnS1BQJpQWS2As1MWMG
-	 QAarvgxEb1PCYSsGif81YzuvMGnP8o6B8zsYsYdSm88R+TlbrI64ZDw5G9BhnsegO7
-	 YJoeqLD2LnbUaOCfyEivpCnTGQhArutJqOYMTBzE=
+	b=eIQOAKcNw+XepFALZKNZ5rj1eqR5pPIX2ibwHBHr6ND48UHObgRr+XhGHANcRNLLo
+	 KidS8nKFlC8+D95h0gUI34KRBWbBPIRdriSvCsYAU8aqblo93C4/BCjoHFHCdabis+
+	 BCqhw4m9b6RObx81mAcezCjoSIZ3Stok6Yv2s7J8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 59A1DF8052E;
-	Thu, 17 Mar 2022 18:52:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0E765F8053A;
+	Thu, 17 Mar 2022 18:52:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C7284F80534; Thu, 17 Mar 2022 18:51:59 +0100 (CET)
+ id 28098F80538; Thu, 17 Mar 2022 18:52:01 +0100 (CET)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 70ED7F80516
- for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2022 18:51:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70ED7F80516
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3B7B5F8051B
+ for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2022 18:51:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3B7B5F8051B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="S08ff3/+"
+ header.b="bvKV79+/"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1647539512; x=1679075512;
+ t=1647539513; x=1679075513;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=//31PYFIAylqF9BN8lgzTSi6M1KjhCNv4fekcap99XU=;
- b=S08ff3/+JMxFJCYL3MvyTcm6AJpJHLlKwvdhkg5IwqJko59Mh+ShWzLS
- UpAI1NJyXWLZemNITtotC3hwGFTWFqYu9Znb3RRdPCiXy2ig+cYus9Xce
- 7vrGFnUuOVS9T2fMXaLVAg+9USyK3nI3uVdSZqeRWc/sliWgiE+An2w0f
- 490DeW0AhGzM1a2pQo+NxTWm8/vXUiOei7LrnEiSPUk8i4y/l7Iew9XwX
- E7Tja8m67Uy+cx6msPdTQGCEbNyF+QrmpQqHfoUOksBvSwTxt4RnLlQBv
- DfZoOHRi9MWcxohA5uGMIyIfVwiKm8jG5C1/pI60xRXtAKbwIoTSMnQ6m A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10289"; a="254492916"
-X-IronPort-AV: E=Sophos;i="5.90,188,1643702400"; d="scan'208";a="254492916"
+ bh=HwwaPa4ACpnTuzFjP03Rd66VY8t8NuKVtfI4ogqbS/M=;
+ b=bvKV79+/IV5QZgsmKUA4FfIKRdOu7oY+Hd/DbEEVPmNFVvPW9z1TJp5l
+ 1GLvFw4YlpJ9NvdmYLi8pNPIz9m7jJylZJrLwIDUzYsKIKL5H4xep7qcG
+ OnanxxHb2opT1TXWnuwC7FMsESabbW+i+Wjk9COD1hoYnBvd8UwnuXM3l
+ qrnV42IFs49IO0IL60dlpuglKllqv/HSbS1P5vivA9QXZxY0xKdiU0JIs
+ CuwVtORX4ZJd6BfJ4wo896Gkzku6jQBnmP5D86U8A9GDJE8eFsQdfuybe
+ ZmFM0RzeFXMfuMTqQlhs0EQnDEKW1RwmJ4E9fm/TDZHKHyLuU2HtcWtzP g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10289"; a="254492923"
+X-IronPort-AV: E=Sophos;i="5.90,188,1643702400"; d="scan'208";a="254492923"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Mar 2022 10:51:22 -0700
-X-IronPort-AV: E=Sophos;i="5.90,188,1643702400"; d="scan'208";a="550431134"
+ 17 Mar 2022 10:51:23 -0700
+X-IronPort-AV: E=Sophos;i="5.90,188,1643702400"; d="scan'208";a="550431145"
 Received: from jfbonin1-mobl6.amr.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.255.92.163])
  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Mar 2022 10:51:22 -0700
+ 17 Mar 2022 10:51:23 -0700
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 09/19] ASoC: SOF: Add bytes_get/put control IPC ops for IPC3
-Date: Thu, 17 Mar 2022 10:50:34 -0700
-Message-Id: <20220317175044.1752400-10-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 12/19] ASoC: SOF: pcm: expose the
+ sof_pcm_setup_connected_widgets() function
+Date: Thu, 17 Mar 2022 10:50:37 -0700
+Message-Id: <20220317175044.1752400-13-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220317175044.1752400-1-ranjani.sridharan@linux.intel.com>
 References: <20220317175044.1752400-1-ranjani.sridharan@linux.intel.com>
@@ -87,188 +88,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Define and set the bytes_get/put IPC control ops for IPC3.
+It will be used in IPC-specific code.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/control.c      | 64 ++++++----------------------------
- sound/soc/sof/ipc3-control.c | 67 ++++++++++++++++++++++++++++++++++++
- 2 files changed, 77 insertions(+), 54 deletions(-)
+ sound/soc/sof/pcm.c       | 5 ++---
+ sound/soc/sof/sof-audio.h | 2 ++
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/sof/control.c b/sound/soc/sof/control.c
-index 499d426c5d38..2a4997e1cd1e 100644
---- a/sound/soc/sof/control.c
-+++ b/sound/soc/sof/control.c
-@@ -190,35 +190,14 @@ int snd_sof_enum_put(struct snd_kcontrol *kcontrol,
- int snd_sof_bytes_get(struct snd_kcontrol *kcontrol,
- 		      struct snd_ctl_elem_value *ucontrol)
- {
--	struct soc_bytes_ext *be =
--		(struct soc_bytes_ext *)kcontrol->private_value;
-+	struct soc_bytes_ext *be = (struct soc_bytes_ext *)kcontrol->private_value;
- 	struct snd_sof_control *scontrol = be->dobj.private;
- 	struct snd_soc_component *scomp = scontrol->scomp;
--	struct sof_ipc_ctrl_data *cdata = scontrol->ipc_control_data;
--	struct sof_abi_hdr *data = cdata->data;
--	size_t size;
--
--	snd_sof_refresh_control(scontrol);
--
--	if (be->max > sizeof(ucontrol->value.bytes.data)) {
--		dev_err_ratelimited(scomp->dev,
--				    "error: data max %d exceeds ucontrol data array size\n",
--				    be->max);
--		return -EINVAL;
--	}
--
--	/* be->max has been verified to be >= sizeof(struct sof_abi_hdr) */
--	if (data->size > be->max - sizeof(*data)) {
--		dev_err_ratelimited(scomp->dev,
--				    "error: %u bytes of control data is invalid, max is %zu\n",
--				    data->size, be->max - sizeof(*data));
--		return -EINVAL;
--	}
--
--	size = data->size + sizeof(*data);
-+	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
-+	const struct sof_ipc_tplg_ops *tplg_ops = sdev->ipc->ops->tplg;
- 
--	/* copy back to kcontrol */
--	memcpy(ucontrol->value.bytes.data, data, size);
-+	if (tplg_ops->control->bytes_get)
-+		return tplg_ops->control->bytes_get(scontrol, ucontrol);
- 
- 	return 0;
- }
-@@ -226,37 +205,14 @@ int snd_sof_bytes_get(struct snd_kcontrol *kcontrol,
- int snd_sof_bytes_put(struct snd_kcontrol *kcontrol,
- 		      struct snd_ctl_elem_value *ucontrol)
- {
--	struct soc_bytes_ext *be =
--		(struct soc_bytes_ext *)kcontrol->private_value;
-+	struct soc_bytes_ext *be = (struct soc_bytes_ext *)kcontrol->private_value;
- 	struct snd_sof_control *scontrol = be->dobj.private;
- 	struct snd_soc_component *scomp = scontrol->scomp;
--	struct sof_ipc_ctrl_data *cdata = scontrol->ipc_control_data;
--	struct sof_abi_hdr *data = cdata->data;
--	size_t size;
--
--	if (be->max > sizeof(ucontrol->value.bytes.data)) {
--		dev_err_ratelimited(scomp->dev,
--				    "error: data max %d exceeds ucontrol data array size\n",
--				    be->max);
--		return -EINVAL;
--	}
--
--	/* be->max has been verified to be >= sizeof(struct sof_abi_hdr) */
--	if (data->size > be->max - sizeof(*data)) {
--		dev_err_ratelimited(scomp->dev,
--				    "error: data size too big %u bytes max is %zu\n",
--				    data->size, be->max - sizeof(*data));
--		return -EINVAL;
--	}
--
--	size = data->size + sizeof(*data);
--
--	/* copy from kcontrol */
--	memcpy(data, ucontrol->value.bytes.data, size);
-+	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
-+	const struct sof_ipc_tplg_ops *tplg_ops = sdev->ipc->ops->tplg;
- 
--	/* notify DSP of byte control updates */
--	if (pm_runtime_active(scomp->dev))
--		snd_sof_ipc_set_get_comp_data(scontrol, true);
-+	if (tplg_ops->control->bytes_put)
-+		return tplg_ops->control->bytes_put(scontrol, ucontrol);
- 
- 	return 0;
- }
-diff --git a/sound/soc/sof/ipc3-control.c b/sound/soc/sof/ipc3-control.c
-index 03948f8f7eb0..df8e4df9663d 100644
---- a/sound/soc/sof/ipc3-control.c
-+++ b/sound/soc/sof/ipc3-control.c
-@@ -205,6 +205,71 @@ static bool sof_ipc3_enum_put(struct snd_sof_control *scontrol,
- 	return change;
+diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
+index 1661b0bc6f12..47599b57ff19 100644
+--- a/sound/soc/sof/pcm.c
++++ b/sound/soc/sof/pcm.c
+@@ -105,9 +105,8 @@ int sof_pcm_dsp_pcm_free(struct snd_pcm_substream *substream, struct snd_sof_dev
+ 	return ret;
  }
  
-+static int sof_ipc3_bytes_get(struct snd_sof_control *scontrol,
-+			      struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct sof_ipc_ctrl_data *cdata = scontrol->ipc_control_data;
-+	struct snd_soc_component *scomp = scontrol->scomp;
-+	struct sof_abi_hdr *data = cdata->data;
-+	size_t size;
-+
-+	snd_sof_refresh_control(scontrol);
-+
-+	if (scontrol->max_size > sizeof(ucontrol->value.bytes.data)) {
-+		dev_err_ratelimited(scomp->dev, "data max %zu exceeds ucontrol data array size\n",
-+				    scontrol->max_size);
-+		return -EINVAL;
-+	}
-+
-+	/* be->max has been verified to be >= sizeof(struct sof_abi_hdr) */
-+	if (data->size > scontrol->max_size - sizeof(*data)) {
-+		dev_err_ratelimited(scomp->dev,
-+				    "%u bytes of control data is invalid, max is %zu\n",
-+				    data->size, scontrol->max_size - sizeof(*data));
-+		return -EINVAL;
-+	}
-+
-+	size = data->size + sizeof(*data);
-+
-+	/* copy back to kcontrol */
-+	memcpy(ucontrol->value.bytes.data, data, size);
-+
-+	return 0;
-+}
-+
-+static int sof_ipc3_bytes_put(struct snd_sof_control *scontrol,
-+			      struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct sof_ipc_ctrl_data *cdata = scontrol->ipc_control_data;
-+	struct snd_soc_component *scomp = scontrol->scomp;
-+	struct sof_abi_hdr *data = cdata->data;
-+	size_t size;
-+
-+	if (scontrol->max_size > sizeof(ucontrol->value.bytes.data)) {
-+		dev_err_ratelimited(scomp->dev, "data max %zu exceeds ucontrol data array size\n",
-+				    scontrol->max_size);
-+		return -EINVAL;
-+	}
-+
-+	/* scontrol->max_size has been verified to be >= sizeof(struct sof_abi_hdr) */
-+	if (data->size > scontrol->max_size - sizeof(*data)) {
-+		dev_err_ratelimited(scomp->dev, "data size too big %u bytes max is %zu\n",
-+				    data->size, scontrol->max_size - sizeof(*data));
-+		return -EINVAL;
-+	}
-+
-+	size = data->size + sizeof(*data);
-+
-+	/* copy from kcontrol */
-+	memcpy(data, ucontrol->value.bytes.data, size);
-+
-+	/* notify DSP of byte control updates */
-+	if (pm_runtime_active(scomp->dev))
-+		return snd_sof_ipc_set_get_comp_data(scontrol, true);
-+
-+	return 0;
-+}
-+
- static void snd_sof_update_control(struct snd_sof_control *scontrol,
- 				   struct sof_ipc_ctrl_data *cdata)
+-static int sof_pcm_setup_connected_widgets(struct snd_sof_dev *sdev,
+-					   struct snd_soc_pcm_runtime *rtd,
+-					   struct snd_sof_pcm *spcm, int dir)
++int sof_pcm_setup_connected_widgets(struct snd_sof_dev *sdev, struct snd_soc_pcm_runtime *rtd,
++				    struct snd_sof_pcm *spcm, int dir)
  {
-@@ -352,5 +417,7 @@ const struct sof_ipc_tplg_control_ops tplg_ipc3_control_ops = {
- 	.switch_get = sof_ipc3_switch_get,
- 	.enum_put = sof_ipc3_enum_put,
- 	.enum_get = sof_ipc3_enum_get,
-+	.bytes_put = sof_ipc3_bytes_put,
-+	.bytes_get = sof_ipc3_bytes_get,
- 	.update = sof_ipc3_control_update,
- };
+ 	struct snd_soc_dai *dai;
+ 	int ret, j;
+diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
+index 4d25e781e5ae..3ec3f746663a 100644
+--- a/sound/soc/sof/sof-audio.h
++++ b/sound/soc/sof/sof-audio.h
+@@ -457,4 +457,6 @@ int get_token_uuid(void *elem, void *object, u32 offset);
+ int sof_update_ipc_object(struct snd_soc_component *scomp, void *object, enum sof_tokens token_id,
+ 			  struct snd_sof_tuple *tuples, int num_tuples,
+ 			  size_t object_size, int token_instance_num);
++int sof_pcm_setup_connected_widgets(struct snd_sof_dev *sdev, struct snd_soc_pcm_runtime *rtd,
++				    struct snd_sof_pcm *spcm, int dir);
+ #endif
 -- 
 2.25.1
 
