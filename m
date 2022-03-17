@@ -4,74 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2C0EC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Mar 2022 17:57:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1AEEC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Mar 2022 17:57:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 065FB1A28;
-	Thu, 17 Mar 2022 18:56:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 065FB1A28
+	by alsa0.perex.cz (Postfix) with ESMTPS id E0206170E;
+	Thu, 17 Mar 2022 18:56:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E0206170E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647539827;
-	bh=d7Jaj3et29s3ilvuz8zrQpLi6g1T1gU5riiWNKGfRQU=;
+	s=default; t=1647539855;
+	bh=UFO0mKXc1Pe4BdIkYJ4BmO0PrzhaI/opvkJbUhm0dfI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vWCwedEtXFbub/deDuva+KAcjNVKqH2aATyr33HIxpRMVTXuXsHQo7hNvaOaV9oLd
-	 vzOeX+rWj3wJER/3S4rI4379+BQZEyv/MPd5B9jL3lMVEUHGGLBLQxj1r9+rMX5yAN
-	 KyFFAsAwkVloaLoiq1jwRGMGZBKRVpGSXn+nV9oE=
+	b=Mx/bufb27BZxRi6rLnV50d9/lF9o9aaG/UCOhcCZXeNNyyvSGgC7roF1OC3hMiM0Z
+	 1BnDcUNSIENtiMv4DKSP2hQJTWflU8MwT1e0v1z4yuitjK/ewRJ429rZ1MOpDIS1Jy
+	 DnU3M/t1dIabFlpWa0kasacEchFd2pCuJGija9ME=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 140F5F80578;
-	Thu, 17 Mar 2022 18:52:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 18F59F805AB;
+	Thu, 17 Mar 2022 18:52:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5977FF80519; Thu, 17 Mar 2022 18:52:07 +0100 (CET)
+ id 65453F8051D; Thu, 17 Mar 2022 18:52:10 +0100 (CET)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3F6D7F80520
- for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2022 18:51:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3F6D7F80520
+ by alsa1.perex.cz (Postfix) with ESMTPS id EDB47F80527
+ for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2022 18:51:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EDB47F80527
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="hBprmR+0"
+ header.b="AZQdrqEt"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1647539515; x=1679075515;
+ t=1647539519; x=1679075519;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=d7Jaj3et29s3ilvuz8zrQpLi6g1T1gU5riiWNKGfRQU=;
- b=hBprmR+0A31Huny+enmjB0BW+pGI/CZjMMQZP12J41kzIMPI9mkvt3kZ
- Kuk7G+3MvBDEKsQq0NuXIV5PRt+4W/ZY2D8ZHFQnuw2OqWYL7Qvy74llN
- IW5cEfUY+ZSmPjTHEo+l4PoYq730nZCNOGlYc/wGeF+jNKt6G9x/7X8dC
- 8+dliJjNX/766UaAjLxk9LeBox2Q6K3y8VQ3Ofze2kIgCCMVa47DxIFz5
- fMJPnwCeJCMdX9zCXeSbmLeBBzCFMwLA43oDpBgG4C/EXUqdBxZZFsEbV
- qcH8DErC9PcJ1KlWVCo17iy6J+oFuAi4XwBs+Q466DZ5LT3y/0JDpDzxI g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10289"; a="254492928"
-X-IronPort-AV: E=Sophos;i="5.90,188,1643702400"; d="scan'208";a="254492928"
+ bh=UFO0mKXc1Pe4BdIkYJ4BmO0PrzhaI/opvkJbUhm0dfI=;
+ b=AZQdrqEtq6KZM8V0ggKoKukvjrOLG+t6cHm2vTEhUi6FmPdlipNH8vCW
+ LPzwpNKJ8Rp7UjN1tiZDsXZYG+p/1Nn1J9o5KZ4hY7ukWrdY+/9VRLKWA
+ CsM7zVvJXN2I472LSU9VKXh0fXVgzo55NFsFOPs8nANLQ9EAkqH8Q70ND
+ IhjKzKI5IcWos75z5qE5NgqMApZRzcUwlAMa4ksK85wj7WqTA04Bq1d3z
+ jiAS9xJ+EaUFfzcRRYU2Vn+k7Aoy2G10q7i6Gf8WKfUR9yEOj6ITrrNou
+ o0JgXLjug6g+p7WenX9s7j+gmcz3LOFU2azHlzNfvT+acoTb0aupZXvyh g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10289"; a="254492937"
+X-IronPort-AV: E=Sophos;i="5.90,188,1643702400"; d="scan'208";a="254492937"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Mar 2022 10:51:23 -0700
-X-IronPort-AV: E=Sophos;i="5.90,188,1643702400"; d="scan'208";a="550431153"
+ 17 Mar 2022 10:51:24 -0700
+X-IronPort-AV: E=Sophos;i="5.90,188,1643702400"; d="scan'208";a="550431163"
 Received: from jfbonin1-mobl6.amr.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.255.92.163])
  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Mar 2022 10:51:23 -0700
+ 17 Mar 2022 10:51:24 -0700
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 14/19] ASoC: SOF: Define hw_params PCM op for IPC3
-Date: Thu, 17 Mar 2022 10:50:39 -0700
-Message-Id: <20220317175044.1752400-15-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 19/19] ASoC: SOF: Add a new dai_get_clk topology IPC op
+Date: Thu, 17 Mar 2022 10:50:44 -0700
+Message-Id: <20220317175044.1752400-20-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220317175044.1752400-1-ranjani.sridharan@linux.intel.com>
 References: <20220317175044.1752400-1-ranjani.sridharan@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, broonie@kernel.org,
- =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
+ Rander Wang <rander.wang@intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,280 +86,156 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add the hw_params op for IPC3 and use it.
+This will help make the code for getting the mclk and bclk IPC specific.
+Add the implementation for IPC3 as well.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/sof/ipc3-pcm.c | 100 +++++++++++++++++++++++++++++++++++
- sound/soc/sof/pcm.c      | 110 ++++++---------------------------------
- 2 files changed, 115 insertions(+), 95 deletions(-)
+ sound/soc/sof/ipc3-topology.c | 29 +++++++++++++++++++++++++++++
+ sound/soc/sof/sof-audio.c     | 31 +++++++------------------------
+ sound/soc/sof/sof-audio.h     |  6 ++++++
+ 3 files changed, 42 insertions(+), 24 deletions(-)
 
-diff --git a/sound/soc/sof/ipc3-pcm.c b/sound/soc/sof/ipc3-pcm.c
-index 96f498b4b2d6..b715199a2aaa 100644
---- a/sound/soc/sof/ipc3-pcm.c
-+++ b/sound/soc/sof/ipc3-pcm.c
-@@ -38,6 +38,106 @@ static int sof_ipc3_pcm_hw_free(struct snd_soc_component *component,
- 				  sizeof(stream), &reply, sizeof(reply));
+diff --git a/sound/soc/sof/ipc3-topology.c b/sound/soc/sof/ipc3-topology.c
+index 3ac65dacc7b9..2f8450a8c0a1 100644
+--- a/sound/soc/sof/ipc3-topology.c
++++ b/sound/soc/sof/ipc3-topology.c
+@@ -2252,6 +2252,34 @@ static int sof_ipc3_tear_down_all_pipelines(struct snd_sof_dev *sdev, bool verif
+ 	return 0;
  }
  
-+static int sof_ipc3_pcm_hw_params(struct snd_soc_component *component,
-+				  struct snd_pcm_substream *substream,
-+				  struct snd_pcm_hw_params *params,
-+				  struct snd_sof_platform_stream_params *platform_params)
++static int sof_ipc3_dai_get_clk(struct snd_sof_dev *sdev, struct snd_sof_dai *dai, int clk_type)
 +{
-+	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
-+	struct sof_ipc_fw_version *v = &sdev->fw_ready.version;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct sof_ipc_pcm_params_reply ipc_params_reply;
-+	struct sof_ipc_pcm_params pcm;
-+	struct snd_sof_pcm *spcm;
-+	int ret;
++	struct sof_dai_private_data *private = dai->private;
 +
-+	spcm = snd_sof_find_spcm_dai(component, rtd);
-+	if (!spcm)
-+		return -EINVAL;
++	if (!private || !private->dai_config)
++		return 0;
 +
-+	memset(&pcm, 0, sizeof(pcm));
-+
-+	/* number of pages should be rounded up */
-+	pcm.params.buffer.pages = PFN_UP(runtime->dma_bytes);
-+
-+	/* set IPC PCM parameters */
-+	pcm.hdr.size = sizeof(pcm);
-+	pcm.hdr.cmd = SOF_IPC_GLB_STREAM_MSG | SOF_IPC_STREAM_PCM_PARAMS;
-+	pcm.comp_id = spcm->stream[substream->stream].comp_id;
-+	pcm.params.hdr.size = sizeof(pcm.params);
-+	pcm.params.buffer.phy_addr = spcm->stream[substream->stream].page_table.addr;
-+	pcm.params.buffer.size = runtime->dma_bytes;
-+	pcm.params.direction = substream->stream;
-+	pcm.params.sample_valid_bytes = params_width(params) >> 3;
-+	pcm.params.buffer_fmt = SOF_IPC_BUFFER_INTERLEAVED;
-+	pcm.params.rate = params_rate(params);
-+	pcm.params.channels = params_channels(params);
-+	pcm.params.host_period_bytes = params_period_bytes(params);
-+
-+	/* container size */
-+	ret = snd_pcm_format_physical_width(params_format(params));
-+	if (ret < 0)
-+		return ret;
-+	pcm.params.sample_container_bytes = ret >> 3;
-+
-+	/* format */
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_S16:
-+		pcm.params.frame_fmt = SOF_IPC_FRAME_S16_LE;
-+		break;
-+	case SNDRV_PCM_FORMAT_S24:
-+		pcm.params.frame_fmt = SOF_IPC_FRAME_S24_4LE;
-+		break;
-+	case SNDRV_PCM_FORMAT_S32:
-+		pcm.params.frame_fmt = SOF_IPC_FRAME_S32_LE;
-+		break;
-+	case SNDRV_PCM_FORMAT_FLOAT:
-+		pcm.params.frame_fmt = SOF_IPC_FRAME_FLOAT;
++	switch (private->dai_config->type) {
++	case SOF_DAI_INTEL_SSP:
++		switch (clk_type) {
++		case SOF_DAI_CLK_INTEL_SSP_MCLK:
++			return private->dai_config->ssp.mclk_rate;
++		case SOF_DAI_CLK_INTEL_SSP_BCLK:
++			return private->dai_config->ssp.bclk_rate;
++		default:
++			break;
++		}
++		dev_err(sdev->dev, "fail to get SSP clk %d rate\n", clk_type);
 +		break;
 +	default:
-+		return -EINVAL;
++		/* not yet implemented for platforms other than the above */
++		dev_err(sdev->dev, "DAI type %d not supported yet!\n", private->dai_config->type);
++		break;
 +	}
 +
-+	/* Update the IPC message with information from the platform */
-+	pcm.params.stream_tag = platform_params->stream_tag;
-+
-+	if (platform_params->use_phy_address)
-+		pcm.params.buffer.phy_addr = platform_params->phy_addr;
-+
-+	if (platform_params->no_ipc_position) {
-+		/* For older ABIs set host_period_bytes to zero to inform
-+		 * FW we don't want position updates. Newer versions use
-+		 * no_stream_position for this purpose.
-+		 */
-+		if (v->abi_version < SOF_ABI_VER(3, 10, 0))
-+			pcm.params.host_period_bytes = 0;
-+		else
-+			pcm.params.no_stream_position = 1;
-+	}
-+
-+	dev_dbg(component->dev, "stream_tag %d", pcm.params.stream_tag);
-+
-+	/* send hw_params IPC to the DSP */
-+	ret = sof_ipc_tx_message(sdev->ipc, pcm.hdr.cmd, &pcm, sizeof(pcm),
-+				 &ipc_params_reply, sizeof(ipc_params_reply));
-+	if (ret < 0) {
-+		dev_err(component->dev, "HW params ipc failed for stream %d\n",
-+			pcm.params.stream_tag);
-+		return ret;
-+	}
-+
-+	ret = snd_sof_set_stream_data_offset(sdev, substream, ipc_params_reply.posn_offset);
-+	if (ret < 0) {
-+		dev_err(component->dev, "%s: invalid stream data offset for PCM %d\n",
-+			__func__, spcm->pcm.pcm_id);
-+		return ret;
-+	}
-+
-+	return ret;
++	return -EINVAL;
 +}
 +
- const struct sof_ipc_pcm_ops ipc3_pcm_ops = {
-+	.hw_params = sof_ipc3_pcm_hw_params,
- 	.hw_free = sof_ipc3_pcm_hw_free,
+ /* token list for each topology object */
+ static enum sof_tokens host_token_list[] = {
+ 	SOF_CORE_TOKENS,
+@@ -2359,6 +2387,7 @@ const struct sof_ipc_tplg_ops ipc3_tplg_ops = {
+ 	.widget_free = sof_ipc3_widget_free,
+ 	.widget_setup = sof_ipc3_widget_setup,
+ 	.dai_config = sof_ipc3_dai_config,
++	.dai_get_clk = sof_ipc3_dai_get_clk,
+ 	.set_up_all_pipelines = sof_ipc3_set_up_all_pipelines,
+ 	.tear_down_all_pipelines = sof_ipc3_tear_down_all_pipelines,
  };
-diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
-index 8ef477aff938..8a194c130981 100644
---- a/sound/soc/sof/pcm.c
-+++ b/sound/soc/sof/pcm.c
-@@ -119,15 +119,12 @@ static int sof_pcm_hw_params(struct snd_soc_component *component,
- 			     struct snd_pcm_substream *substream,
- 			     struct snd_pcm_hw_params *params)
+diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
+index b4ee65cf9841..b2f009a0c5b7 100644
+--- a/sound/soc/sof/sof-audio.c
++++ b/sound/soc/sof/sof-audio.c
+@@ -628,40 +628,23 @@ struct snd_sof_dai *snd_sof_find_dai(struct snd_soc_component *scomp,
+ 	return NULL;
+ }
+ 
+-#define SOF_DAI_CLK_INTEL_SSP_MCLK	0
+-#define SOF_DAI_CLK_INTEL_SSP_BCLK	1
+-
+ static int sof_dai_get_clk(struct snd_soc_pcm_runtime *rtd, int clk_type)
  {
--	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
--	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
--	const struct sof_ipc_pcm_ops *pcm_ops = sdev->ipc->ops->pcm;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_sof_platform_stream_params platform_params = { 0 };
--	struct sof_ipc_fw_version *v = &sdev->fw_ready.version;
-+	const struct sof_ipc_pcm_ops *pcm_ops = sdev->ipc->ops->pcm;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_sof_pcm *spcm;
--	struct sof_ipc_pcm_params pcm;
--	struct sof_ipc_pcm_params_reply ipc_params_reply;
- 	int ret;
+ 	struct snd_soc_component *component =
+ 		snd_soc_rtdcom_lookup(rtd, SOF_AUDIO_PCM_DRV_NAME);
+ 	struct snd_sof_dai *dai =
+ 		snd_sof_find_dai(component, (char *)rtd->dai_link->name);
+-	struct sof_dai_private_data *private = dai->private;
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
++	const struct sof_ipc_tplg_ops *tplg_ops = sdev->ipc->ops->tplg;
  
- 	/* nothing to do for BE */
-@@ -153,117 +150,40 @@ static int sof_pcm_hw_params(struct snd_soc_component *component,
- 	dev_dbg(component->dev, "pcm: hw params stream %d dir %d\n",
- 		spcm->pcm.pcm_id, substream->stream);
+ 	/* use the tplg configured mclk if existed */
+-	if (!dai || !private || !private->dai_config)
++	if (!dai)
+ 		return 0;
  
--	memset(&pcm, 0, sizeof(pcm));
-+	/* if this is a repeated hw_params without hw_free, skip setting up widgets */
-+	if (!spcm->stream[substream->stream].list) {
-+		ret = sof_pcm_setup_connected_widgets(sdev, rtd, spcm, substream->stream);
-+		if (ret < 0)
-+			return ret;
-+	}
- 
- 	/* create compressed page table for audio firmware */
- 	if (runtime->buffer_changed) {
- 		ret = create_page_table(component, substream, runtime->dma_area,
- 					runtime->dma_bytes);
-+
- 		if (ret < 0)
- 			return ret;
- 	}
- 
--	/* number of pages should be rounded up */
--	pcm.params.buffer.pages = PFN_UP(runtime->dma_bytes);
--
--	/* set IPC PCM parameters */
--	pcm.hdr.size = sizeof(pcm);
--	pcm.hdr.cmd = SOF_IPC_GLB_STREAM_MSG | SOF_IPC_STREAM_PCM_PARAMS;
--	pcm.comp_id = spcm->stream[substream->stream].comp_id;
--	pcm.params.hdr.size = sizeof(pcm.params);
--	pcm.params.buffer.phy_addr =
--		spcm->stream[substream->stream].page_table.addr;
--	pcm.params.buffer.size = runtime->dma_bytes;
--	pcm.params.direction = substream->stream;
--	pcm.params.sample_valid_bytes = params_width(params) >> 3;
--	pcm.params.buffer_fmt = SOF_IPC_BUFFER_INTERLEAVED;
--	pcm.params.rate = params_rate(params);
--	pcm.params.channels = params_channels(params);
--	pcm.params.host_period_bytes = params_period_bytes(params);
--
--	/* container size */
--	ret = snd_pcm_format_physical_width(params_format(params));
--	if (ret < 0)
--		return ret;
--	pcm.params.sample_container_bytes = ret >> 3;
--
--	/* format */
--	switch (params_format(params)) {
--	case SNDRV_PCM_FORMAT_S16:
--		pcm.params.frame_fmt = SOF_IPC_FRAME_S16_LE;
--		break;
--	case SNDRV_PCM_FORMAT_S24:
--		pcm.params.frame_fmt = SOF_IPC_FRAME_S24_4LE;
--		break;
--	case SNDRV_PCM_FORMAT_S32:
--		pcm.params.frame_fmt = SOF_IPC_FRAME_S32_LE;
--		break;
--	case SNDRV_PCM_FORMAT_FLOAT:
--		pcm.params.frame_fmt = SOF_IPC_FRAME_FLOAT;
+-	switch (private->dai_config->type) {
+-	case SOF_DAI_INTEL_SSP:
+-		switch (clk_type) {
+-		case SOF_DAI_CLK_INTEL_SSP_MCLK:
+-			return private->dai_config->ssp.mclk_rate;
+-		case SOF_DAI_CLK_INTEL_SSP_BCLK:
+-			return private->dai_config->ssp.bclk_rate;
+-		default:
+-			dev_err(rtd->dev, "fail to get SSP clk %d rate\n",
+-				clk_type);
+-			return -EINVAL;
+-		}
 -		break;
 -	default:
+-		/* not yet implemented for platforms other than the above */
+-		dev_err(rtd->dev, "DAI type %d not supported yet!\n",
+-			private->dai_config->type);
 -		return -EINVAL;
 -	}
--
--	/* firmware already configured host stream */
--	ret = snd_sof_pcm_platform_hw_params(sdev,
--					     substream,
--					     params,
--					     &platform_params);
-+	ret = snd_sof_pcm_platform_hw_params(sdev, substream, params, &platform_params);
- 	if (ret < 0) {
--		dev_err(component->dev, "error: platform hw params failed\n");
-+		dev_err(component->dev, "platform hw params failed\n");
- 		return ret;
- 	}
- 
--	/* Update the IPC message with information from the platform */
--	pcm.params.stream_tag = platform_params.stream_tag;
--
--	if (platform_params.use_phy_address)
--		pcm.params.buffer.phy_addr = platform_params.phy_addr;
--
--	if (platform_params.no_ipc_position) {
--		/* For older ABIs set host_period_bytes to zero to inform
--		 * FW we don't want position updates. Newer versions use
--		 * no_stream_position for this purpose.
--		 */
--		if (v->abi_version < SOF_ABI_VER(3, 10, 0))
--			pcm.params.host_period_bytes = 0;
--		else
--			pcm.params.no_stream_position = 1;
--	}
--
--	dev_dbg(component->dev, "stream_tag %d", pcm.params.stream_tag);
--
--	/* if this is a repeated hw_params without hw_free, skip setting up widgets */
--	if (!spcm->stream[substream->stream].list) {
--		ret = sof_pcm_setup_connected_widgets(sdev, rtd, spcm, substream->stream);
-+	if (pcm_ops->hw_params) {
-+		ret = pcm_ops->hw_params(component, substream, params, &platform_params);
- 		if (ret < 0)
- 			return ret;
- 	}
- 
--	/* send hw_params IPC to the DSP */
--	ret = sof_ipc_tx_message(sdev->ipc, pcm.hdr.cmd, &pcm, sizeof(pcm),
--				 &ipc_params_reply, sizeof(ipc_params_reply));
--	if (ret < 0) {
--		dev_err(component->dev, "error: hw params ipc failed for stream %d\n",
--			pcm.params.stream_tag);
--		return ret;
--	}
--
--	ret = snd_sof_set_stream_data_offset(sdev, substream,
--					     ipc_params_reply.posn_offset);
--	if (ret < 0) {
--		dev_err(component->dev, "%s: invalid stream data offset for PCM %d\n",
--			__func__, spcm->pcm.pcm_id);
--		return ret;
--	}
--
- 	spcm->prepared[substream->stream] = true;
- 
- 	/* save pcm hw_params */
- 	memcpy(&spcm->params[substream->stream], params, sizeof(*params));
- 
--	return ret;
++	if (tplg_ops->dai_get_clk)
++		return tplg_ops->dai_get_clk(sdev, dai, clk_type);
++
 +	return 0;
  }
  
- static int sof_pcm_hw_free(struct snd_soc_component *component,
+ /*
+diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
+index b9a9956b5baa..7f15b3bc8196 100644
+--- a/sound/soc/sof/sof-audio.h
++++ b/sound/soc/sof/sof-audio.h
+@@ -30,6 +30,9 @@
+ 
+ #define WIDGET_IS_DAI(id) ((id) == snd_soc_dapm_dai_in || (id) == snd_soc_dapm_dai_out)
+ 
++#define SOF_DAI_CLK_INTEL_SSP_MCLK	0
++#define SOF_DAI_CLK_INTEL_SSP_BCLK	1
++
+ /*
+  * Volume fractional word length define to 16 sets
+  * the volume linear gain value to use Qx.16 format
+@@ -39,6 +42,7 @@
+ struct snd_sof_widget;
+ struct snd_sof_route;
+ struct snd_sof_control;
++struct snd_sof_dai;
+ 
+ struct snd_sof_dai_config_data {
+ 	int dai_index;
+@@ -117,6 +121,7 @@ struct sof_ipc_tplg_widget_ops {
+  * @widget_setup: Function pointer for setting up setup in the DSP
+  * @widget_free: Function pointer for freeing widget in the DSP
+  * @dai_config: Function pointer for sending DAI config IPC to the DSP
++ * @dai_get_clk: Function pointer for getting the DAI clock setting
+  * @set_up_all_pipelines: Function pointer for setting up all topology pipelines
+  * @tear_down_all_pipelines: Function pointer for tearing down all topology pipelines
+  */
+@@ -132,6 +137,7 @@ struct sof_ipc_tplg_ops {
+ 	int (*widget_free)(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget);
+ 	int (*dai_config)(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget,
+ 			  unsigned int flags, struct snd_sof_dai_config_data *data);
++	int (*dai_get_clk)(struct snd_sof_dev *sdev, struct snd_sof_dai *dai, int clk_type);
+ 	int (*set_up_all_pipelines)(struct snd_sof_dev *sdev, bool verify);
+ 	int (*tear_down_all_pipelines)(struct snd_sof_dev *sdev, bool verify);
+ };
 -- 
 2.25.1
 
