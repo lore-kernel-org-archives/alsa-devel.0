@@ -4,82 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4D9DC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Mar 2022 15:03:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3B96C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Mar 2022 15:10:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 063011630;
-	Tue, 22 Mar 2022 16:02:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 063011630
+	by alsa0.perex.cz (Postfix) with ESMTPS id BA58D1640;
+	Tue, 22 Mar 2022 16:10:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA58D1640
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647961402;
-	bh=DmP+HsgHS4e6BLC3kA8dcTMX9A72NBLr8WSj+lusSJ4=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=eTrDN72aY8ZxXqffueTsuZgo+FqCEL9atQvRvm7eUvlToX/cggvbkjFM7Djw5ShHO
-	 YtVcfWV1lo9c1r00f4WxLJ9txm7pl3lfwfUm+Bz1C4sYST44n3sBaRxQrY04PEd+34
-	 Ds/DO2Fa2LcBID+5DahNMHT0g2o5LINY5p12qubg=
+	s=default; t=1647961853;
+	bh=oRTv5m0e8ii6MGOnVm/A7ZMd75hYysl6VUrWXrqbs4U=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=q1BnkFhtb296wBAOkTid9fP9iVN3VXtfPjMPv3q4B/lEoioGqt7F3p3kODfhoSneR
+	 HrGDgnMxkcLaDti31JjGiScJZyj/LryMkoYtMCw26ZFbt5rUh+8gfDw0efoVzFUwp3
+	 1z1Ti23Tf1sgSjHWptznDgUK3PKHlRDx9NjbwBzM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 90547F8012A;
-	Tue, 22 Mar 2022 16:02:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 57085F800F5;
+	Tue, 22 Mar 2022 16:10:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BC838F8016C; Tue, 22 Mar 2022 16:02:29 +0100 (CET)
-Received: from mail-oa1-f42.google.com (mail-oa1-f42.google.com
- [209.85.160.42])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4DA63F80116
- for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2022 16:02:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4DA63F80116
-Received: by mail-oa1-f42.google.com with SMTP id
- 586e51a60fabf-ddfa38f1c1so1952077fac.11
- for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2022 08:02:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=LZrnZENFzHAcyG4z8YXGbb1cPaECVD2LaEEDGj9rfYI=;
- b=Ft3e8IQVD6vpaFHlY9XkahFOaKUmz3Y3muuYJoXpbMz8tR1wZLUnNptHKzMPhF5Bou
- Zsu+7IHubTY+uJ2n8zzUfVJymgx9iFwVi/Y18mhXBDoRXOhh84wlqUy4H7LcEC4IecHZ
- oG1UzbOIH4gjaD8fucBimkk8gYEKk4ZGyTzeFcxoUkP9OMs+SbfvF64cJgr6SMihoRdE
- JTIWofP24Ul6Bd0dRHPS6GktvYHzTritGd3wQMDqWk99D4vhHAfnJfcNs/81W6mb0/R+
- +CrGOTOTnEisH5K1fjeBVZYMMWsVs0V8ZKUuvWcA8Jia3coyoqDVPiFppOYJ6tJLtovW
- MP8g==
-X-Gm-Message-State: AOAM532CRDtq8yki8Aetrw19gIdfXRDYaE5RjfTwQ5cLLmkW7BxAqPAF
- rAb0XAWQziwctiv0wJQtJQ==
-X-Google-Smtp-Source: ABdhPJxdZIXeGXL5BgfAh0JHUsLAqnvcG4qAGL//HhwVWpYiVL440dU2hgKLJXDQsjMwp3OqJlK5gg==
-X-Received: by 2002:a05:6870:4789:b0:dd:e6e0:2471 with SMTP id
- c9-20020a056870478900b000dde6e02471mr1892795oaq.195.1647961338852; 
- Tue, 22 Mar 2022 08:02:18 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-144-107.dyn.grandenetworks.net.
- [66.90.144.107]) by smtp.gmail.com with ESMTPSA id
- n62-20020acaef41000000b002ef646e6690sm3141414oih.53.2022.03.22.08.02.17
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 22 Mar 2022 08:02:17 -0700 (PDT)
-Received: (nullmailer pid 2012421 invoked by uid 1000);
- Tue, 22 Mar 2022 15:02:16 -0000
-Date: Tue, 22 Mar 2022 10:02:16 -0500
-From: Rob Herring <robh@kernel.org>
-To: Jiaxin Yu <jiaxin.yu@mediatek.com>
-Subject: Re: [v5 1/4] ASoC: dt-bindings: mt8192-mt6359: add new compatible
- and new properties
-Message-ID: <Yjnk+AYb0Eo8ufJA@robh.at.kernel.org>
-References: <20220319114111.11496-1-jiaxin.yu@mediatek.com>
- <20220319114111.11496-2-jiaxin.yu@mediatek.com>
- <YjkLVwvxvOKr30qL@robh.at.kernel.org>
- <0e909de12a52ae88633634d868bd5001eef1b830.camel@mediatek.com>
+ id 4709FF8026D; Fri, 18 Mar 2022 10:49:33 +0100 (CET)
+Received: from n169-112.mail.139.com (n169-112.mail.139.com [120.232.169.112])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id ABD47F80121
+ for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2022 10:49:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ABD47F80121
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM: 
+X-RM-SPAM-FLAG: 00000000
+Received: from LAPTOP-39QA2GAC.localdomain (unknown[223.73.211.159])
+ by rmsmtp-lg-appmail-25-12028 (RichMail) with SMTP id 2efc623455949a0-42d88;
+ Fri, 18 Mar 2022 17:49:19 +0800 (CST)
+X-RM-TRANSID: 2efc623455949a0-42d88
+From: Raphael-Xu <13691752556@139.com>
+To: broonie@kernel.org
+Subject: [PATCH v2 1/2] support either TAS2764 or TAS2780 from TI-yaml
+Date: Fri, 18 Mar 2022 17:49:02 +0800
+Message-Id: <20220318094903.22026-1-13691752556@139.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0e909de12a52ae88633634d868bd5001eef1b830.camel@mediatek.com>
-Cc: devicetree@vger.kernel.org, linmq006@gmail.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org,
- Project_Global_Chrome_Upstream_Group@mediatek.com, tzungbi@google.com,
- broonie@kernel.org, linux-mediatek@lists.infradead.org, trevor.wu@mediatek.com,
- matthias.bgg@gmail.com, aaronyu@google.com,
- linux-arm-kernel@lists.infradead.org, angelogioacchino.delregno@collabora.com
+Content-Transfer-Encoding: 8bit
+X-Mailman-Approved-At: Tue, 22 Mar 2022 16:10:02 +0100
+Cc: navada@ti.com, alsa-devel@alsa-project.org, shenghao-ding@ti.com,
+ raphael-xu@ti.com, Raphael-Xu <13691752556@139.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,89 +64,56 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Mar 22, 2022 at 11:45:24AM +0800, Jiaxin Yu wrote:
-> On Mon, 2022-03-21 at 18:33 -0500, Rob Herring wrote:
-> > On Sat, Mar 19, 2022 at 07:41:08PM +0800, Jiaxin Yu wrote:
-> > > 1. Adds new compatible string "mt8192_mt6359_rt1015p_rt5682s" for
-> > > machines
-> > > with rt1015p and rt5682s.
-> > > 2. Adds new property "mediatek,headset-codec" for getting headset
-> > > codecs.
-> > > 3. Adds new property "mediatek,speaker-codec" for getting speaker
-> > > codecs.
-> > > 
-> > > Signed-off-by: Jiaxin Yu <jiaxin.yu@mediatek.com>
-> > > ---
-> > >  .../sound/mt8192-mt6359-rt1015-rt5682.yaml    | 29
-> > > +++++++++++++++++++
-> > >  1 file changed, 29 insertions(+)
-> > > 
-> > > diff --git a/Documentation/devicetree/bindings/sound/mt8192-mt6359-
-> > > rt1015-rt5682.yaml
-> > > b/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-
-> > > rt5682.yaml
-> > > index a781e7aaaa38..aa0476eedd38 100644
-> > > --- a/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-
-> > > rt5682.yaml
-> > > +++ b/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-
-> > > rt5682.yaml
-> > > @@ -18,6 +18,7 @@ properties:
-> > >      enum:
-> > >        - mediatek,mt8192_mt6359_rt1015_rt5682
-> > >        - mediatek,mt8192_mt6359_rt1015p_rt5682
-> > > +      - mediatek,mt8192_mt6359_rt1015p_rt5682s
-> > >  
-> > >    mediatek,platform:
-> > >      $ref: "/schemas/types.yaml#/definitions/phandle"
-> > > @@ -27,6 +28,25 @@ properties:
-> > >      $ref: "/schemas/types.yaml#/definitions/phandle"
-> > >      description: The phandle of HDMI codec.
-> > >  
-> > > +patternProperties:
-> > > +  "^mediatek,headset-codec$":
-> > 
-> > Fixed string, not a pattern. Move to 'properties'. Drop the vendor 
-> > prefix too.
-> > 
-> Hi Rob,
-> 
-> I originally referred to simple-card.yaml and move "xxx.yyy" to the
-> patternProperties.
-> 
-> Such as:
-> # use patternProperties to avoid naming "xxx,yyy" issue
-> patternProperties:
->   "^simple-audio-card,widgets$":
->     $ref: "#/definitions/widgets"
+Signed-off-by: Raphael-Xu <13691752556@139.com>
+---
+ .../sound/{tas2764.yaml => tas27xx.yaml}       | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
+ rename Documentation/devicetree/bindings/sound/{tas2764.yaml => tas27xx.yaml} (72%)
 
-That was working around an issue and I've now fixed this.
+diff --git a/Documentation/devicetree/bindings/sound/tas2764.yaml b/Documentation/devicetree/bindings/sound/tas27xx.yaml
+similarity index 72%
+rename from Documentation/devicetree/bindings/sound/tas2764.yaml
+rename to Documentation/devicetree/bindings/sound/tas27xx.yaml
+index 5bf8c76ecda1..191f4bceb4ee 100644
+--- a/Documentation/devicetree/bindings/sound/tas2764.yaml
++++ b/Documentation/devicetree/bindings/sound/tas27xx.yaml
+@@ -1,25 +1,27 @@
+ # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+-# Copyright (C) 2020 Texas Instruments Incorporated
++# Copyright (C) 2020-2022 Texas Instruments Incorporated
+ %YAML 1.2
+ ---
+-$id: "http://devicetree.org/schemas/sound/tas2764.yaml#"
++$id: "http://devicetree.org/schemas/sound/tas27xx.yaml#"
+ $schema: "http://devicetree.org/meta-schemas/core.yaml#"
+ 
+-title: Texas Instruments TAS2764 Smart PA
++title: Texas Instruments TAS2764/TAS2780 Smart PA
+ 
+ maintainers:
+-  - Dan Murphy <dmurphy@ti.com>
++  - Shenghao Ding <shenghao-ding@ti.com>
+ 
+ description: |
+-  The TAS2764 is a mono, digital input Class-D audio amplifier optimized for
+-  efficiently driving high peak power into small loudspeakers.
+-  Integrated speaker voltage and current sense provides for
+-  real time monitoring of loudspeaker behavior.
++  The TAS2764/TAS2780 is a mono, digital input Class-D audio amplifier
++  optimized for efficiently driving high peak power into small
++  loudspeakers. Integrated speaker voltage and current sense provides
++  for real time monitoring of loudspeaker behavior.
+ 
+ properties:
+   compatible:
+     enum:
+       - ti,tas2764
++      or
++      - ti,tas2780
+ 
+   reg:
+     maxItems: 1
+-- 
+2.35.1
 
-> 
-> But your comment is more reasonable. I will move them to 'properties'
-> and drop the vendor prefix. Thanks for your review.
-> 
-> 
-> > > +    description: Holds subnode which indicates headset dai.
-> > > +    type: object
-> > > +    properties:
-> > > +      sound-dai:
-> > > +        $ref: /schemas/types.yaml#/definitions/phandle-array
-> > 
-> > Standard property, don't need a type or description. Just how many
-> > and 
-> > what each one is if more than 1.
-> 
-> Should I describe them as below?
-> 
-> properties:
-> ...
->   speaker-codec:
->     type: object
->     properties:
->       sound-dai:
->          maxItems: 1
-> ...
 
-Yes.
-
-Rob
