@@ -4,71 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E561DC433FE
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Mar 2022 15:08:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27380C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Mar 2022 15:56:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1BA7617F6;
-	Fri, 18 Mar 2022 16:07:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1BA7617F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id BDF0E17B6;
+	Fri, 18 Mar 2022 16:56:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BDF0E17B6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647616106;
-	bh=0zKTp/GCp0/TdD06kjBlpjl1ybCeORir/PjecxfWxqw=;
-	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1647619017;
+	bh=SmPI/EHMn4lLqQpp53Jwfj1JGTcY1y+CknbEe2gtpms=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WytqI2W3eMCyw7oQNMFWI0ALe9o0ss75X/xgwQ1byyindaZfSvc9Qa4uGRzHzlLLM
-	 +A9yNo46ZxQQFpeB+AtsjkVTUTvAkyRTWlVkY5iMwNCTI7/JgI8UvB4I5oh9hVdJEc
-	 GIRcLYeHwtfKX5J0Z6o4cG9rimPHi1K4GwbuTw28=
+	b=rNPsAhoXKBds3NeEa0mVsyjtYOhedaWBImsEHOEmZvXzwwSguQ5tSSVr39LYLCeow
+	 /HQa1kAQ45A1fqc40G4mEEIXBkwUNsL7ifuyFPGUB9NP7P2Pwcx38y7EJdONrB+5/v
+	 AFbP0DUmAn/not621FjqSglrDjHwPPbFmxwtUqfk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9634DF80125;
-	Fri, 18 Mar 2022 16:07:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B3C86F80125;
+	Fri, 18 Mar 2022 16:56:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D15B5F8026A; Fri, 18 Mar 2022 16:07:33 +0100 (CET)
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+ id 9F557F80125; Fri, 18 Mar 2022 16:56:04 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A06B8F80121;
- Fri, 18 Mar 2022 16:07:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A06B8F80121
-X-UUID: 89c1cb16c47043e7b83638fb72e45818-20220318
-X-UUID: 89c1cb16c47043e7b83638fb72e45818-20220318
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
- (envelope-from <allen-kh.cheng@mediatek.com>)
- (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
- with ESMTP id 1426617950; Fri, 18 Mar 2022 23:07:14 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 18 Mar 2022 23:07:13 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 18 Mar 2022 23:07:13 +0800
-Message-ID: <0e6432862efc629377cb5dd40cd581c93b38cfed.camel@mediatek.com>
-Subject: Re: [RESEND v6 1/1] firmware: mediatek: add adsp ipc protocol
- interface
-From: allen-kh.cheng <allen-kh.cheng@mediatek.com>
-To: Matthias Brugger <matthias.bgg@gmail.com>, Mark Brown <broonie@kernel.org>
-Date: Fri, 18 Mar 2022 23:07:12 +0800
-In-Reply-To: <20220224133737.28056-2-allen-kh.cheng@mediatek.com>
-References: <20220224133737.28056-1-allen-kh.cheng@mediatek.com>
- <20220224133737.28056-2-allen-kh.cheng@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+ by alsa1.perex.cz (Postfix) with ESMTPS id 51D58F80125
+ for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2022 16:55:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51D58F80125
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="VbwGfrwU"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 22I4MHlb013781;
+ Fri, 18 Mar 2022 10:55:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=4ubhXnz6J+r1+/mUBniQ5DDmUxb8UDS9SG+xDXW1Xm4=;
+ b=VbwGfrwUVE3dPl+P3wUK4epol7xeR2T+kGb2o4HEgjytdknw4kYdFsl5GbqVEx9ltcmc
+ Ao5t5H0Yr/WcrRknYdVgWkeOEl8p+D98A0iqJ3egQ8GaaAGq1Jx0nDPMpxGPcirf+VC9
+ Nki0W52hypBd8oSxduJYctmwlykRY3IcYtcELmgOhsJflGIS17grk9gu+WbbPcnu3UZO
+ PaAykPGFfJoWovWYkg0jPSqYAl2ioHJMasv/7Nd7VRTOoHhivzpBrYfL++4jYHtv8DZT
+ 6aUxFRFMYpzjKYvy3T94PPwXBekFCUltw61ueJmCu7/ihVLeGTHJBGdlQ4SCamJTbvAD Ng== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3et5yp65wt-3
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Fri, 18 Mar 2022 10:55:55 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Fri, 18 Mar
+ 2022 15:55:54 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.18 via
+ Frontend Transport; Fri, 18 Mar 2022 15:55:54 +0000
+Received: from vitaly-Legion-7-16ACHg6.ad.cirrus.com (unknown [198.90.238.229])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id DF94CB16;
+ Fri, 18 Mar 2022 15:55:53 +0000 (UTC)
+From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH 2/6] ALSA: hda/cs8409: Re-order quirk table into ascending
+ order
+Date: Fri, 18 Mar 2022 15:55:48 +0000
+Message-ID: <20220318155552.24751-3-vitalyr@opensource.cirrus.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220318155552.24751-1-vitalyr@opensource.cirrus.com>
+References: <20220318155552.24751-1-vitalyr@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-MTK: N
-Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
- Linux-ALSA <alsa-devel@alsa-project.org>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, cujomalainey@google.com,
- Kevin Hilman <khilman@baylibre.com>, Takashi Iwai <tiwai@suse.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Project_Global_Chrome_Upstream_Group@mediatek.com, tzungbi@google.com,
- linux-mediatek@lists.infradead.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Chen-Yu Tsai <wenst@chromium.org>, Daniel Baluta <daniel.baluta@nxp.com>,
- linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: hKjp7SwX8dQ8qUsN2K_Jx3hokyPUa6FH
+X-Proofpoint-GUID: hKjp7SwX8dQ8qUsN2K_Jx3hokyPUa6FH
+X-Proofpoint-Spam-Reason: safe
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,346 +95,76 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Matthias,
+From: Stefan Binding <sbinding@opensource.cirrus.com>
 
-Could you please help me confirm this patch?
+Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+---
+ sound/pci/hda/patch_cs8409-tables.c | 34 ++++++++++++++---------------
+ 1 file changed, 17 insertions(+), 17 deletions(-)
 
-I'd appreciate your help
-
-Best regards,
-Allen
-
-On Thu, 2022-02-24 at 21:37 +0800, Allen-KH Cheng wrote:
-> From: Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
-> 
-> Some of mediatek processors contain
-> the Tensilica HiFix DSP for audio processing.
-> 
-> The communication between Host CPU and DSP firmware is
-> taking place using a shared memory area for message passing.
-> 
-> ADSP IPC protocol offers (send/recv) interfaces using
-> mediatek-mailbox APIs.
-> 
-> We use two mbox channels to implement a request-reply protocol.
-> 
-> Signed-off-by: Allen-KH Cheng <allen-kh.cheng@mediatek.com>
-> Reviewed-by: Pierre-Louis Bossart <
-> pierre-louis.bossart@linux.intel.com>
-> Reviewed-by: Curtis Malainey <cujomalainey@chromium.org>
-> Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
-> Reviewed-by: YC Hung <yc.hung@mediatek.com>
-> Reviewed-by: AngeloGioacchino Del Regno <
-> angelogioacchino.delregno@collabora.com>
-> ---
->  drivers/firmware/Kconfig                      |   1 +
->  drivers/firmware/Makefile                     |   1 +
->  drivers/firmware/mediatek/Kconfig             |   9 +
->  drivers/firmware/mediatek/Makefile            |   2 +
->  drivers/firmware/mediatek/mtk-adsp-ipc.c      | 161
-> ++++++++++++++++++
->  .../linux/firmware/mediatek/mtk-adsp-ipc.h    |  65 +++++++
->  6 files changed, 239 insertions(+)
->  create mode 100644 drivers/firmware/mediatek/Kconfig
->  create mode 100644 drivers/firmware/mediatek/Makefile
->  create mode 100644 drivers/firmware/mediatek/mtk-adsp-ipc.c
->  create mode 100644 include/linux/firmware/mediatek/mtk-adsp-ipc.h
-> 
-> diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
-> index 75cb91055c17..f3578c60cff0 100644
-> --- a/drivers/firmware/Kconfig
-> +++ b/drivers/firmware/Kconfig
-> @@ -299,6 +299,7 @@ source "drivers/firmware/cirrus/Kconfig"
->  source "drivers/firmware/google/Kconfig"
->  source "drivers/firmware/efi/Kconfig"
->  source "drivers/firmware/imx/Kconfig"
-> +source "drivers/firmware/mediatek/Kconfig"
->  source "drivers/firmware/meson/Kconfig"
->  source "drivers/firmware/psci/Kconfig"
->  source "drivers/firmware/smccc/Kconfig"
-> diff --git a/drivers/firmware/Makefile b/drivers/firmware/Makefile
-> index 4e58cb474a68..88fbdc110100 100644
-> --- a/drivers/firmware/Makefile
-> +++ b/drivers/firmware/Makefile
-> @@ -34,6 +34,7 @@ obj-$(CONFIG_GOOGLE_FIRMWARE)	+= google/
->  obj-$(CONFIG_EFI)		+= efi/
->  obj-$(CONFIG_UEFI_CPER)		+= efi/
->  obj-y				+= imx/
-> +obj-y				+= mediatek/
->  obj-y				+= psci/
->  obj-y				+= smccc/
->  obj-y				+= tegra/
-> diff --git a/drivers/firmware/mediatek/Kconfig
-> b/drivers/firmware/mediatek/Kconfig
-> new file mode 100644
-> index 000000000000..6d1e580b967b
-> --- /dev/null
-> +++ b/drivers/firmware/mediatek/Kconfig
-> @@ -0,0 +1,9 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +config MTK_ADSP_IPC
-> +	tristate "MTK ADSP IPC Protocol driver"
-> +	depends on MTK_ADSP_MBOX
-> +	help
-> +	  Say yes here to add support for the MediaTek ADSP IPC
-> +	  between host AP (Linux) and the firmware running on ADSP.
-> +	  ADSP exists on some mtk processors.
-> +	  Client might use shared memory to exchange information with
-> ADSP side.
-> diff --git a/drivers/firmware/mediatek/Makefile
-> b/drivers/firmware/mediatek/Makefile
-> new file mode 100644
-> index 000000000000..4e840b65650d
-> --- /dev/null
-> +++ b/drivers/firmware/mediatek/Makefile
-> @@ -0,0 +1,2 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +obj-$(CONFIG_MTK_ADSP_IPC)		+= mtk-adsp-ipc.o
-> diff --git a/drivers/firmware/mediatek/mtk-adsp-ipc.c
-> b/drivers/firmware/mediatek/mtk-adsp-ipc.c
-> new file mode 100644
-> index 000000000000..9c535d2688d9
-> --- /dev/null
-> +++ b/drivers/firmware/mediatek/mtk-adsp-ipc.c
-> @@ -0,0 +1,161 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2022 MediaTek Corporation. All rights reserved.
-> + * Author: Allen-KH Cheng <allen-kh.cheng@mediatek.com>
-> + */
-> +
-> +#include <linux/firmware/mediatek/mtk-adsp-ipc.h>
-> +#include <linux/kernel.h>
-> +#include <linux/mailbox_client.h>
-> +#include <linux/module.h>
-> +#include <linux/of_platform.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/slab.h>
-> +
-> +/*
-> + * mtk_adsp_ipc_send - send ipc cmd to MTK ADSP
-> + *
-> + * @ipc: ADSP IPC handle
-> + * @idx: index of the mailbox channel
-> + * @msg: IPC cmd (reply or request)
-> + *
-> + * Returns zero for success from mbox_send_message
-> + * negative value for error
-> + */
-> +int mtk_adsp_ipc_send(struct mtk_adsp_ipc *ipc, unsigned int idx,
-> uint32_t msg)
-> +{
-> +	struct mtk_adsp_chan *adsp_chan;
-> +	int ret;
-> +
-> +	if (idx >= MTK_ADSP_MBOX_NUM)
-> +		return -EINVAL;
-> +
-> +	adsp_chan = &ipc->chans[idx];
-> +	ret = mbox_send_message(adsp_chan->ch, &msg);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	/*
-> +	 * mbox_send_message returns non-negative value on success,
-> +	 * return zero for success
-> +	 */
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL(mtk_adsp_ipc_send);
-> +
-> +/*
-> + * mtk_adsp_ipc_recv - recv callback used by MTK ADSP mailbox
-> + *
-> + * @c: mbox client
-> + * @msg: message received
-> + *
-> + * Users of ADSP IPC will need to privde handle_reply and
-> handle_request
-> + * callbacks.
-> + */
-> +static void mtk_adsp_ipc_recv(struct mbox_client *c, void *msg)
-> +{
-> +	struct mtk_adsp_chan *chan = container_of(c, struct
-> mtk_adsp_chan, cl);
-> +	struct device *dev = c->dev;
-> +
-> +	switch (chan->idx) {
-> +	case MTK_ADSP_MBOX_REPLY:
-> +		chan->ipc->ops->handle_reply(chan->ipc);
-> +		break;
-> +	case MTK_ADSP_MBOX_REQUEST:
-> +		chan->ipc->ops->handle_request(chan->ipc);
-> +		break;
-> +	default:
-> +		dev_err(dev, "wrong mbox chan %d\n", chan->idx);
-> +		break;
-> +	}
-> +}
-> +
-> +static int mtk_adsp_ipc_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct mtk_adsp_ipc *adsp_ipc;
-> +	struct mtk_adsp_chan *adsp_chan;
-> +	struct mbox_client *cl;
-> +	char *chan_name;
-> +	int ret;
-> +	int i, j;
-> +
-> +	device_set_of_node_from_dev(&pdev->dev, pdev->dev.parent);
-> +
-> +	adsp_ipc = devm_kzalloc(dev, sizeof(*adsp_ipc), GFP_KERNEL);
-> +	if (!adsp_ipc)
-> +		return -ENOMEM;
-> +
-> +	for (i = 0; i < MTK_ADSP_MBOX_NUM; i++) {
-> +		chan_name = kasprintf(GFP_KERNEL, "mbox%d", i);
-> +		if (!chan_name) {
-> +			ret = -ENOMEM;
-> +			goto out;
-> +		}
-> +
-> +		adsp_chan = &adsp_ipc->chans[i];
-> +		cl = &adsp_chan->cl;
-> +		cl->dev = dev->parent;
-> +		cl->tx_block = false;
-> +		cl->knows_txdone = false;
-> +		cl->tx_prepare = NULL;
-> +		cl->rx_callback = mtk_adsp_ipc_recv;
-> +
-> +		adsp_chan->ipc = adsp_ipc;
-> +		adsp_chan->idx = i;
-> +		adsp_chan->ch = mbox_request_channel_byname(cl,
-> chan_name);
-> +		if (IS_ERR(adsp_chan->ch)) {
-> +			ret = PTR_ERR(adsp_chan->ch);
-> +			if (ret != -EPROBE_DEFER)
-> +				dev_err(dev, "Failed to request mbox
-> chan %d ret %d\n",
-> +					i, ret);
-> +			goto out_free;
-> +		}
-> +
-> +		dev_dbg(dev, "request mbox chan %s\n", chan_name);
-> +		kfree(chan_name);
-> +	}
-> +
-> +	adsp_ipc->dev = dev;
-> +	dev_set_drvdata(dev, adsp_ipc);
-> +	dev_dbg(dev, "MTK ADSP IPC initialized\n");
-> +
-> +	return 0;
-> +
-> +out_free:
-> +	kfree(chan_name);
-> +out:
-> +	for (j = 0; j < i; j++) {
-> +		adsp_chan = &adsp_ipc->chans[j];
-> +		mbox_free_channel(adsp_chan->ch);
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static int mtk_adsp_ipc_remove(struct platform_device *pdev)
-> +{
-> +	struct mtk_adsp_ipc *adsp_ipc = dev_get_drvdata(&pdev->dev);
-> +	struct mtk_adsp_chan *adsp_chan;
-> +	int i;
-> +
-> +	for (i = 0; i < MTK_ADSP_MBOX_NUM; i++) {
-> +		adsp_chan = &adsp_ipc->chans[i];
-> +		mbox_free_channel(adsp_chan->ch);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static struct platform_driver mtk_adsp_ipc_driver = {
-> +	.driver = {
-> +		.name = "mtk-adsp-ipc",
-> +	},
-> +	.probe = mtk_adsp_ipc_probe,
-> +	.remove = mtk_adsp_ipc_remove,
-> +};
-> +builtin_platform_driver(mtk_adsp_ipc_driver);
-> +
-> +MODULE_AUTHOR("Allen-KH Cheng <allen-kh.cheng@mediatek.com>");
-> +MODULE_DESCRIPTION("MTK ADSP IPC Driver");
-> +MODULE_LICENSE("GPL v2");
-> diff --git a/include/linux/firmware/mediatek/mtk-adsp-ipc.h
-> b/include/linux/firmware/mediatek/mtk-adsp-ipc.h
-> new file mode 100644
-> index 000000000000..28fd313340b8
-> --- /dev/null
-> +++ b/include/linux/firmware/mediatek/mtk-adsp-ipc.h
-> @@ -0,0 +1,65 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (c) 2022 MediaTek Inc.
-> + */
-> +
-> +#ifndef MTK_ADSP_IPC_H
-> +#define MTK_ADSP_IPC_H
-> +
-> +#include <linux/device.h>
-> +#include <linux/types.h>
-> +#include <linux/mailbox_controller.h>
-> +#include <linux/mailbox_client.h>
-> +
-> +#define MTK_ADSP_IPC_REQ 0
-> +#define MTK_ADSP_IPC_RSP 1
-> +#define MTK_ADSP_IPC_OP_REQ 0x1
-> +#define MTK_ADSP_IPC_OP_RSP 0x2
-> +
-> +enum {
-> +	MTK_ADSP_MBOX_REPLY,
-> +	MTK_ADSP_MBOX_REQUEST,
-> +	MTK_ADSP_MBOX_NUM,
-> +};
-> +
-> +struct mtk_adsp_ipc;
-> +
-> +struct mtk_adsp_ipc_ops {
-> +	void (*handle_reply)(struct mtk_adsp_ipc *ipc);
-> +	void (*handle_request)(struct mtk_adsp_ipc *ipc);
-> +};
-> +
-> +struct mtk_adsp_chan {
-> +	struct mtk_adsp_ipc *ipc;
-> +	struct mbox_client cl;
-> +	struct mbox_chan *ch;
-> +	char *name;
-> +	int idx;
-> +};
-> +
-> +struct mtk_adsp_ipc {
-> +	struct mtk_adsp_chan chans[MTK_ADSP_MBOX_NUM];
-> +	struct device *dev;
-> +	struct mtk_adsp_ipc_ops *ops;
-> +	void *private_data;
-> +};
-> +
-> +static inline void mtk_adsp_ipc_set_data(struct mtk_adsp_ipc *ipc,
-> void *data)
-> +{
-> +	if (!ipc)
-> +		return;
-> +
-> +	ipc->private_data = data;
-> +}
-> +
-> +static inline void *mtk_adsp_ipc_get_data(struct mtk_adsp_ipc *ipc)
-> +{
-> +	if (!ipc)
-> +		return NULL;
-> +
-> +	return ipc->private_data;
-> +}
-> +
-> +int mtk_adsp_ipc_send(struct mtk_adsp_ipc *ipc, unsigned int idx,
-> uint32_t op);
-> +
-> +#endif /* MTK_ADSP_IPC_H */
+diff --git a/sound/pci/hda/patch_cs8409-tables.c b/sound/pci/hda/patch_cs8409-tables.c
+index 2d1fa706327b..9c1fa97100ef 100644
+--- a/sound/pci/hda/patch_cs8409-tables.c
++++ b/sound/pci/hda/patch_cs8409-tables.c
+@@ -478,28 +478,29 @@ const struct snd_pci_quirk cs8409_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1028, 0x0A29, "Bullseye", CS8409_BULLSEYE),
+ 	SND_PCI_QUIRK(0x1028, 0x0A2A, "Bullseye", CS8409_BULLSEYE),
+ 	SND_PCI_QUIRK(0x1028, 0x0A2B, "Bullseye", CS8409_BULLSEYE),
++	SND_PCI_QUIRK(0x1028, 0x0A77, "Cyborg", CS8409_CYBORG),
++	SND_PCI_QUIRK(0x1028, 0x0A78, "Cyborg", CS8409_CYBORG),
++	SND_PCI_QUIRK(0x1028, 0x0A79, "Cyborg", CS8409_CYBORG),
++	SND_PCI_QUIRK(0x1028, 0x0A7A, "Cyborg", CS8409_CYBORG),
++	SND_PCI_QUIRK(0x1028, 0x0A7D, "Cyborg", CS8409_CYBORG),
++	SND_PCI_QUIRK(0x1028, 0x0A7E, "Cyborg", CS8409_CYBORG),
++	SND_PCI_QUIRK(0x1028, 0x0A7F, "Cyborg", CS8409_CYBORG),
++	SND_PCI_QUIRK(0x1028, 0x0A80, "Cyborg", CS8409_CYBORG),
+ 	SND_PCI_QUIRK(0x1028, 0x0AB0, "Warlock", CS8409_WARLOCK),
+ 	SND_PCI_QUIRK(0x1028, 0x0AB2, "Warlock", CS8409_WARLOCK),
+ 	SND_PCI_QUIRK(0x1028, 0x0AB1, "Warlock", CS8409_WARLOCK),
+ 	SND_PCI_QUIRK(0x1028, 0x0AB3, "Warlock", CS8409_WARLOCK),
+ 	SND_PCI_QUIRK(0x1028, 0x0AB4, "Warlock", CS8409_WARLOCK),
+ 	SND_PCI_QUIRK(0x1028, 0x0AB5, "Warlock", CS8409_WARLOCK),
++	SND_PCI_QUIRK(0x1028, 0x0ACF, "Dolphin", CS8409_DOLPHIN),
++	SND_PCI_QUIRK(0x1028, 0x0AD0, "Dolphin", CS8409_DOLPHIN),
++	SND_PCI_QUIRK(0x1028, 0x0AD1, "Dolphin", CS8409_DOLPHIN),
++	SND_PCI_QUIRK(0x1028, 0x0AD2, "Dolphin", CS8409_DOLPHIN),
++	SND_PCI_QUIRK(0x1028, 0x0AD3, "Dolphin", CS8409_DOLPHIN),
+ 	SND_PCI_QUIRK(0x1028, 0x0AD9, "Warlock", CS8409_WARLOCK),
+ 	SND_PCI_QUIRK(0x1028, 0x0ADA, "Warlock", CS8409_WARLOCK),
+ 	SND_PCI_QUIRK(0x1028, 0x0ADB, "Warlock", CS8409_WARLOCK),
+ 	SND_PCI_QUIRK(0x1028, 0x0ADC, "Warlock", CS8409_WARLOCK),
+-	SND_PCI_QUIRK(0x1028, 0x0AF4, "Warlock", CS8409_WARLOCK),
+-	SND_PCI_QUIRK(0x1028, 0x0AF5, "Warlock", CS8409_WARLOCK),
+-	SND_PCI_QUIRK(0x1028, 0x0BB5, "Warlock N3 15 TGL-U Nuvoton EC", CS8409_WARLOCK),
+-	SND_PCI_QUIRK(0x1028, 0x0BB6, "Warlock V3 15 TGL-U Nuvoton EC", CS8409_WARLOCK),
+-	SND_PCI_QUIRK(0x1028, 0x0A77, "Cyborg", CS8409_CYBORG),
+-	SND_PCI_QUIRK(0x1028, 0x0A78, "Cyborg", CS8409_CYBORG),
+-	SND_PCI_QUIRK(0x1028, 0x0A79, "Cyborg", CS8409_CYBORG),
+-	SND_PCI_QUIRK(0x1028, 0x0A7A, "Cyborg", CS8409_CYBORG),
+-	SND_PCI_QUIRK(0x1028, 0x0A7D, "Cyborg", CS8409_CYBORG),
+-	SND_PCI_QUIRK(0x1028, 0x0A7E, "Cyborg", CS8409_CYBORG),
+-	SND_PCI_QUIRK(0x1028, 0x0A7F, "Cyborg", CS8409_CYBORG),
+-	SND_PCI_QUIRK(0x1028, 0x0A80, "Cyborg", CS8409_CYBORG),
+ 	SND_PCI_QUIRK(0x1028, 0x0ADF, "Cyborg", CS8409_CYBORG),
+ 	SND_PCI_QUIRK(0x1028, 0x0AE0, "Cyborg", CS8409_CYBORG),
+ 	SND_PCI_QUIRK(0x1028, 0x0AE1, "Cyborg", CS8409_CYBORG),
+@@ -512,11 +513,10 @@ const struct snd_pci_quirk cs8409_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1028, 0x0AEE, "Cyborg", CS8409_CYBORG),
+ 	SND_PCI_QUIRK(0x1028, 0x0AEF, "Cyborg", CS8409_CYBORG),
+ 	SND_PCI_QUIRK(0x1028, 0x0AF0, "Cyborg", CS8409_CYBORG),
+-	SND_PCI_QUIRK(0x1028, 0x0AD0, "Dolphin", CS8409_DOLPHIN),
+-	SND_PCI_QUIRK(0x1028, 0x0AD1, "Dolphin", CS8409_DOLPHIN),
+-	SND_PCI_QUIRK(0x1028, 0x0AD2, "Dolphin", CS8409_DOLPHIN),
+-	SND_PCI_QUIRK(0x1028, 0x0AD3, "Dolphin", CS8409_DOLPHIN),
+-	SND_PCI_QUIRK(0x1028, 0x0ACF, "Dolphin", CS8409_DOLPHIN),
++	SND_PCI_QUIRK(0x1028, 0x0AF4, "Warlock", CS8409_WARLOCK),
++	SND_PCI_QUIRK(0x1028, 0x0AF5, "Warlock", CS8409_WARLOCK),
++	SND_PCI_QUIRK(0x1028, 0x0BB5, "Warlock N3 15 TGL-U Nuvoton EC", CS8409_WARLOCK),
++	SND_PCI_QUIRK(0x1028, 0x0BB6, "Warlock V3 15 TGL-U Nuvoton EC", CS8409_WARLOCK),
+ 	{} /* terminator */
+ };
+ 
+-- 
+2.25.1
 
