@@ -4,79 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61723C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Mar 2022 16:16:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01E1CC433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Mar 2022 16:30:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7AD8917EF;
-	Fri, 18 Mar 2022 17:15:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7AD8917EF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2212E1888;
+	Fri, 18 Mar 2022 17:29:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2212E1888
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647620181;
-	bh=kk0QEZb6sU6ljmyBf5iZtjDtuEKxL+HDQZU1VPh1Xao=;
-	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1647621049;
+	bh=d4pOgmWLH2AN0/vLZvvEU75NtwO+RNilito/Gin9Fhk=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ca5arU40eX1LA25ZJRMw+tWcws+4tSHTzFnLcybFXKejabxxxUDpjq2kZcNYrLNn4
-	 m5kZE7I1wsFXwFRIfZygClNQVoki8xqgYCPG2uzXoSTqw5Uy05rdZtV4vTNZPhm2m5
-	 aFt4uiNftxX2hjNGC1HRrdKVRjjvDscovvWuJVJ8=
+	b=LL3YJFkDvf51FNbvJQiYCTFNBiKVWCoLPe0v6IzEG57Qqx6oDV6Kz3jpm3l+gBawS
+	 lVWMMNwSR8otpkmaC95fy/QBP04mflsgf3C+ULprpSxGLePSxJw6WnLM2pJZBHfW+u
+	 6Nf3N73ci3AtA2nb50OkFLwNXiVkXrOesAkj1zjg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 13294F80118;
-	Fri, 18 Mar 2022 17:15:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 91DB1F8026D;
+	Fri, 18 Mar 2022 17:29:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CDF02F80124; Fri, 18 Mar 2022 17:15:28 +0100 (CET)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ id 18DD4F804DA; Fri, 18 Mar 2022 17:29:55 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C1523F80124;
- Fri, 18 Mar 2022 17:15:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1523F80124
+ by alsa1.perex.cz (Postfix) with ESMTPS id F1361F80118
+ for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2022 17:29:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1361F80118
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="DIBMC7c1"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1647620123; x=1679156123;
- h=message-id:subject:from:to:cc:date:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=kk0QEZb6sU6ljmyBf5iZtjDtuEKxL+HDQZU1VPh1Xao=;
- b=DIBMC7c1FyiS991tDppP5/CMXXdEr+LvktrQheGGDF95hQ3mtNdc6zFQ
- 9p8eZYuKg+GVuwvyRDtUNwde39TpL/x2hySpBF70lG9bkUT2FkOuZ9vEq
- 9DByVKzkqmy96QXhHwlNNXzTZPbuxWq+NS3Xs10VxfYLOyTjFMvSpGkYA
- AWoK+D1mdUnWoOSIdkwonKqtCIe4f9vWQAzN+t4vuBsUClvCfTVp2DO/8
- ToPWE2nfskXcgCR2U76AuVlAo0aiVZQ0wLlzFrRgPOFMqPLTlZbZSsyVc
- a0PutKdQzq8OnSvrEAAxroUg9Wgjnd6DK7rxrAnw3ADhM6aa/qPFX13EN g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10290"; a="257353784"
-X-IronPort-AV: E=Sophos;i="5.90,192,1643702400"; d="scan'208";a="257353784"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Mar 2022 09:14:56 -0700
-X-IronPort-AV: E=Sophos;i="5.90,192,1643702400"; d="scan'208";a="513940889"
-Received: from dcforman-mobl1.amr.corp.intel.com ([10.254.51.56])
- by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Mar 2022 09:14:55 -0700
-Message-ID: <1049c2410500a3a9ed97f83b5e41e89a74102c96.camel@linux.intel.com>
-Subject: Re: [PATCH 1/2] ASoC: SOF: Prevent NULL dereference in
- sof_pcm_dai_link_fixup()
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Dan
- Carpenter <dan.carpenter@oracle.com>
-Date: Fri, 18 Mar 2022 09:14:55 -0700
-In-Reply-To: <cf4c4a84-335d-8799-7a5b-afe298881342@linux.intel.com>
-References: <20220318071233.GB29472@kili>
- <cf4c4a84-335d-8799-7a5b-afe298881342@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3-0ubuntu1 
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="JfaMbQWP"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 22ICwIRC029747;
+ Fri, 18 Mar 2022 11:29:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=l0NijwQytPoPG4dLdvOKFpBqnKyQFX/aINmIG43AWEk=;
+ b=JfaMbQWPES688gHHkz6CLnteAvfE4KwBlmyXrPXCw1Dl1BiwOgUwnQRZTSOegeS3DGky
+ +ei+gHQ5f0zLrweM+Zrd4lAcqY5trgvgFJUwgKx4cpNjUgYagFaupmQcPDrqJNu0VKEk
+ t2IEUMMgMq/EeX4TlYOZs0CA9PVjiOyXSUnQngfufQN92aC70BgHXZmZ67kqSkKwbS3C
+ GLNa8BYmB24G8OYkcz8ZR2xOwYmJ1R8T6TqvAcKz63npGCGhhwomEkW6BHxLYJojFffy
+ lgKj8SK+okrsPhzUFk8K5j9lfT5vU0242rTV0qZ2XnLGlbwsMBoYL3HiIWAL5DXwbbCm tg== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3et5yp677a-2
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Fri, 18 Mar 2022 11:29:47 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Fri, 18 Mar
+ 2022 16:29:44 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.18 via
+ Frontend Transport; Fri, 18 Mar 2022 16:29:44 +0000
+Received: from debianA11184.ad.cirrus.com (debianA11184.ad.cirrus.com
+ [198.90.251.45])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 906D5B16;
+ Fri, 18 Mar 2022 16:29:44 +0000 (UTC)
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+To: <broonie@kernel.org>, <robh+dt@kernel.org>
+Subject: [PATCH 4/5] ASoC: dt-bindings: cs35l45: Cirrus Logic CS35L45 Smart Amp
+Date: Fri, 18 Mar 2022 16:29:42 +0000
+Message-ID: <20220318162943.1578102-5-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220318162943.1578102-1-rf@opensource.cirrus.com>
+References: <20220318162943.1578102-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Daniel Baluta <daniel.baluta@nxp.com>, kernel-janitors@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>,
- =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- sound-open-firmware@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: u-rQOLOt-rSSuFI52R6XCuBSzBQ7qCBh
+X-Proofpoint-GUID: u-rQOLOt-rSSuFI52R6XCuBSzBQ7qCBh
+X-Proofpoint-Spam-Reason: safe
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,61 +95,142 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 2022-03-18 at 09:42 -0500, Pierre-Louis Bossart wrote:
-> 
-> On 3/18/22 02:12, Dan Carpenter wrote:
-> > The "dia" pointer can be NULL, so handle that condition first
-> > before
-> > storing "dia->private".
-> > 
-> > Fixes: 839e484f9e17 ("ASoC: SOF: make struct snd_sof_dai IPC
-> > agnostic")
-> > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> 
-> Thanks for the patch.
-> 
-> This part will be removed in follow-up patches, likely the reason
-> why 
-> this problem was missed.
+This adds the schema binding for the Cirrus Logic CS35L45 Smart Amp
+and associated header file.
 
-Hi Dan/Pierre,
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+---
+ .../bindings/sound/cirrus,cs35l45.yaml        | 75 +++++++++++++++++++
+ MAINTAINERS                                   |  2 +
+ include/dt-bindings/sound/cs35l45.h           | 20 +++++
+ 3 files changed, 97 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/cirrus,cs35l45.yaml
+ create mode 100644 include/dt-bindings/sound/cs35l45.h
 
-Both these problems are address in the series I posted yesterday.
-Particularly patches 16 and 18.
-
-Thanks,
-Ranjani
-> 
-> Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> 
-> > ---
-> >   sound/soc/sof/pcm.c | 3 ++-
-> >   1 file changed, 2 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
-> > index 1661b0bc6f12..71f5bce0c4c7 100644
-> > --- a/sound/soc/sof/pcm.c
-> > +++ b/sound/soc/sof/pcm.c
-> > @@ -702,7 +702,7 @@ int sof_pcm_dai_link_fixup(struct
-> > snd_soc_pcm_runtime *rtd, struct snd_pcm_hw_pa
-> >   	struct snd_sof_dai *dai =
-> >   		snd_sof_find_dai(component, (char *)rtd->dai_link-
-> > >name);
-> >   	struct snd_sof_dev *sdev =
-> > snd_soc_component_get_drvdata(component);
-> > -	struct sof_dai_private_data *private = dai->private;
-> > +	struct sof_dai_private_data *private;
-> >   	struct snd_soc_dpcm *dpcm;
-> >   
-> >   	/* no topology exists for this BE, try a common configuration
-> > */
-> > @@ -727,6 +727,7 @@ int sof_pcm_dai_link_fixup(struct
-> > snd_soc_pcm_runtime *rtd, struct snd_pcm_hw_pa
-> >   	/* read format from topology */
-> >   	snd_mask_none(fmt);
-> >   
-> > +	private = dai->private;
-> >   	switch (private->comp_dai->config.frame_fmt) {
-> >   	case SOF_IPC_FRAME_S16_LE:
-> >   		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S16_LE);
+diff --git a/Documentation/devicetree/bindings/sound/cirrus,cs35l45.yaml b/Documentation/devicetree/bindings/sound/cirrus,cs35l45.yaml
+new file mode 100644
+index 000000000000..184a1344ea76
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/cirrus,cs35l45.yaml
+@@ -0,0 +1,75 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/cirrus,cs35l45.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Cirrus Logic CS35L45 Speaker Amplifier
++
++maintainers:
++  - Ricardo Rivera-Matos <rriveram@opensource.cirrus.com>
++  - Richard Fitzgerald <rf@opensource.cirrus.com>
++
++description: |
++  CS35L45 is a Boosted Mono Class D Amplifier with DSP
++  Speaker Protection and Adaptive Battery Management.
++
++properties:
++  compatible:
++    enum:
++      - cirrus,cs35l45
++
++  reg:
++    maxItems: 1
++
++  '#sound-dai-cells':
++    const: 1
++
++  reset-gpios:
++    maxItems: 1
++
++  vdd-a-supply:
++    description: voltage regulator phandle for the VDD_A supply
++
++  vdd-batt-supply:
++    description: voltage regulator phandle for the VDD_BATT supply
++
++  spi-max-frequency:
++    maximum: 5000000
++
++  cirrus,asp-sdout-hiz-ctrl:
++    description:
++      Audio serial port SDOUT Hi-Z control. Sets the Hi-Z
++      configuration for SDOUT pin of amplifier. Logical OR of
++      CS35L45_ASP_TX_HIZ_xxx values.
++    $ref: "/schemas/types.yaml#/definitions/uint32"
++    minimum: 0
++    maximum: 3
++    default: 2
++
++required:
++  - compatible
++  - reg
++  - "#sound-dai-cells"
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/sound/cs35l45.h>
++    spi {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        cs35l45: cs35l45@2 {
++          #sound-dai-cells = <1>;
++          compatible = "cirrus,cs35l45";
++          reg = <2>;
++          spi-max-frequency = <5000000>;
++          vdd-a-supply = <&dummy_vreg>;
++          vdd-batt-supply = <&dummy_vreg>;
++          reset-gpios = <&gpio 110 0>;
++          cirrus,asp-sdout-hiz-ctrl = <(CS35L45_ASP_TX_HIZ_UNUSED |
++                                        CS35L45_ASP_TX_HIZ_DISABLED)>;
++        };
++    };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 46ffe05eaeb7..0a2a8bcabbea 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4580,10 +4580,12 @@ CIRRUS LOGIC AUDIO CODEC DRIVERS
+ M:	James Schulman <james.schulman@cirrus.com>
+ M:	David Rhodes <david.rhodes@cirrus.com>
+ M:	Lucas Tanure <tanureal@opensource.cirrus.com>
++M:	Richard Fitzgerald <rf@opensource.cirrus.com>
+ L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
+ L:	patches@opensource.cirrus.com
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/sound/cirrus,cs*
++F:	include/dt-bindings/sound/cs*
+ F:	sound/pci/hda/cs*
+ F:	sound/soc/codecs/cs*
+ 
+diff --git a/include/dt-bindings/sound/cs35l45.h b/include/dt-bindings/sound/cs35l45.h
+new file mode 100644
+index 000000000000..076da4b2c28d
+--- /dev/null
++++ b/include/dt-bindings/sound/cs35l45.h
+@@ -0,0 +1,20 @@
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/*
++ * cs35l45.h -- CS35L45 ALSA SoC audio driver DT bindings header
++ *
++ * Copyright 2022 Cirrus Logic, Inc.
++ */
++
++#ifndef DT_CS35L45_H
++#define DT_CS35L45_H
++
++/*
++ * cirrus,asp-sdout-hiz-ctrl
++ *
++ * TX_HIZ_UNUSED:   TX pin high-impedance during unused slots.
++ * TX_HIZ_DISABLED: TX pin high-impedance when all channels disabled.
++ */
++#define CS35L45_ASP_TX_HIZ_UNUSED	0x1
++#define CS35L45_ASP_TX_HIZ_DISABLED	0x2
++
++#endif /* DT_CS35L45_H */
+-- 
+2.30.2
 
