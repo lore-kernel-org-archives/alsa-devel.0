@@ -4,72 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8CEAC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Mar 2022 08:05:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 573F7C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Mar 2022 08:20:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 63FD01862;
-	Fri, 18 Mar 2022 09:04:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 63FD01862
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0DCF91817;
+	Fri, 18 Mar 2022 09:19:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0DCF91817
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647590738;
-	bh=vU53DFdwJO+HNJlKgdxijfFcQUb2id8JfLxiHmyv0T8=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1647591619;
+	bh=mjkjZrMqN7OiEI4pgVIYUVNp3ZyXdaKhFB/E/2EE3bE=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GggPZ+BvNGvjlt56+/xdie+D1UJMp/EL9m7H00W6BAkuN6igzCVLmYv1Xzb/6Hu/q
-	 /JMaiXy+/+7EJ5wg3paAicBwhkrvKpU12vuJ/TgsOh/A+Fy+Qb8bJ4obrJ/WqGfx+Z
-	 nibcMxLjigarXv+C4fzRHOS0AXrZTxx4yX50RgdE=
+	b=GbY85IcHNoZLsvrEIA5/FaAxTLv96JhdlI3WHCnFG+/hZYy6LGvnthMxBD6pcDPvn
+	 1Y0L+KvudIxR16cpaWuYeGkow6w2e6ywSvDNsRn11PpXP8v+RywSkGvJmi+mmmILhV
+	 Ckpnqj6Q61cNsCwbok7y2KNV/ei9KzzDn3G5LQLo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EDBFFF80121;
-	Fri, 18 Mar 2022 09:04:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 98D61F80121;
+	Fri, 18 Mar 2022 09:19:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 50FBDF8026A; Fri, 18 Mar 2022 09:04:46 +0100 (CET)
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id EB429F8026A; Fri, 18 Mar 2022 09:19:26 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 28E74F80121
- for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2022 09:04:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 28E74F80121
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <sha@pengutronix.de>)
- id 1nV7bC-0007eu-LD; Fri, 18 Mar 2022 09:04:38 +0100
-Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
- (envelope-from <sha@pengutronix.de>)
- id 1nV7bA-0002SO-6j; Fri, 18 Mar 2022 09:04:36 +0100
-Date: Fri, 18 Mar 2022 09:04:36 +0100
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Shengjiu Wang <shengjiu.wang@gmail.com>
-Subject: Re: [PATCH 10/19] dma: imx-sdma: Add multi fifo support
-Message-ID: <20220318080436.GA12181@pengutronix.de>
-References: <20220317082818.503143-1-s.hauer@pengutronix.de>
- <20220317082818.503143-11-s.hauer@pengutronix.de>
- <CAA+D8AM5bm3Hncrf0=xdPNpC_rz_yMbokN6J-8z4tHi7-==jgA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAA+D8AM5bm3Hncrf0=xdPNpC_rz_yMbokN6J-8z4tHi7-==jgA@mail.gmail.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-IRC: #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 09:02:13 up 97 days, 16:47, 72 users,  load average: 0.55, 0.29, 0.16
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: alsa-devel@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>,
- Vinod Koul <vkoul@kernel.org>, NXP Linux Team <linux-imx@nxp.com>,
- Sascha Hauer <kernel@pengutronix.de>, dmaengine@vger.kernel.org,
- Fabio Estevam <festevam@gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 19EE9F80121
+ for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2022 09:19:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 19EE9F80121
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="Ydq868Uu"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="n5ygpjoN"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id E3DBD210EA;
+ Fri, 18 Mar 2022 08:19:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1647591558; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=IjCmVVbStmeSrUy8iam013ODXCyxxLPZ4pMuaBBq+B8=;
+ b=Ydq868Uun7pWUhB3UQ/UHADPMKp1aQk7+M+d5dLeIxW/utcL0+5VYCES2Mrv11whL1QjVi
+ bMUrOM2NbN7CEmXiFR4jaI1ykJ8p1F83GwccUhunmZEy7zURSoTT6kEZbQdQROuemK5NQD
+ KHANlFA/FFHHRCiDNeZyyla/hMTayq4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1647591558;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=IjCmVVbStmeSrUy8iam013ODXCyxxLPZ4pMuaBBq+B8=;
+ b=n5ygpjoNuP1rZLAc04mps10ejc5nX2j/0LEc4T4BAfNMHEO3yGf1QA7Q0OIAKdYnm5At94
+ 7MlSPgh3PL/J4RAg==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 57121A3B89;
+ Fri, 18 Mar 2022 08:19:18 +0000 (UTC)
+Date: Fri, 18 Mar 2022 09:19:18 +0100
+Message-ID: <s5hee2z4qrd.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: Re: [PATCH] ALSA: hda/realtek: Fix LED on Zbook Studio G9
+In-Reply-To: <20220317221134.566358-1-kai.heng.feng@canonical.com>
+References: <20220317221134.566358-1-kai.heng.feng@canonical.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Stefan Binding <sbinding@opensource.cirrus.com>,
+ Kailang Yang <kailang@realtek.com>,
+ Lucas Tanure <tanureal@opensource.cirrus.com>,
+ Jeremy Szu <jeremy.szu@canonical.com>, linux-kernel@vger.kernel.org,
+ tiwai@suse.com, Werner Sembach <wse@tuxedocomputers.com>,
+ Hui Wang <hui.wang@canonical.com>, Hans de Goede <hdegoede@redhat.com>,
+ Sami Loone <sami@loone.fi>, Cameron Berkenpas <cam@neo-zeon.de>,
+ alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,82 +94,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, Mar 18, 2022 at 01:42:51PM +0800, Shengjiu Wang wrote:
->    Hi
->    On Thu, Mar 17, 2022 at 4:28 PM Sascha Hauer <[1]s.hauer@pengutronix.de>
->    wrote:
+On Thu, 17 Mar 2022 23:11:33 +0100,
+Kai-Heng Feng wrote:
 > 
->      Signed-off-by: Sascha Hauer <[2]s.hauer@pengutronix.de>
->      ---
->       drivers/dma/imx-sdma.c                | 54 +++++++++++++++++++++++++++
->       include/linux/platform_data/dma-imx.h |  7 ++++
->       2 files changed, 61 insertions(+)
+> Commit 07bcab93946c ("ALSA: hda/realtek: Add support for HP Laptops")
+> breaks mute and micmute LEDs because it changed the LED quirk from
+> ALC285_FIXUP_HP_GPIO_LED to ALC245_FIXUP_HP_GPIO_LED, so change it back
+> here.
 > 
->      diff --git a/drivers/dma/imx-sdma.c b/drivers/dma/imx-sdma.c
->      index 1038f6bc7f846..21e1cec2ffde9 100644
->      --- a/drivers/dma/imx-sdma.c
->      +++ b/drivers/dma/imx-sdma.c
->      @@ -14,6 +14,7 @@
->       #include <linux/iopoll.h>
->       #include <linux/module.h>
->       #include <linux/types.h>
->      +#include <linux/bitfield.h>
->       #include <linux/bitops.h>
->       #include <linux/mm.h>
->       #include <linux/interrupt.h>
->      @@ -73,6 +74,7 @@
->       #define SDMA_CHNENBL0_IMX35    0x200
->       #define SDMA_CHNENBL0_IMX31    0x080
->       #define SDMA_CHNPRI_0          0x100
->      +#define SDMA_DONE0_CONFIG      0x1000
+> Also reorder the chain of quirks to ensure LED quirk is the last one
+> being applied.
 > 
->       /*
->        * Buffer descriptor status values.
->      @@ -180,6 +182,12 @@
->                                       BIT(DMA_MEM_TO_DEV) | \
->                                       BIT(DMA_DEV_TO_DEV))
-> 
->      +#define SDMA_WATERMARK_LEVEL_N_FIFOS   GENMASK(15, 12)
->      +#define SDMA_WATERMARK_LEVEL_SW_DONE   BIT(23)
->      +
->      +#define SDMA_DONE0_CONFIG_DONE_SEL     BIT(7)
->      +#define SDMA_DONE0_CONFIG_DONE_DIS     BIT(6)
->      +
->       /**
->        * struct sdma_script_start_addrs - SDMA script start pointers
->        *
->      @@ -441,6 +449,11 @@ struct sdma_channel {
->              struct work_struct              terminate_worker;
->              struct list_head                terminated;
->              bool                            is_ram_script;
->      +       unsigned int                    n_fifos;
->      +       unsigned int                    n_fifos_src;
->      +       unsigned int                    n_fifos_dst;
->      +       bool                            sw_done;
->      +       u32                             sw_done_sel;
-> 
->    "sw_done_sel" is not used, and may not be needed.
+> Fixes: 07bcab93946c ("ALSA: hda/realtek: Add support for HP Laptops")
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-Ok, will drop.
+Thanks, applied now.
 
->    And can we just add 'struct sdma_peripheral_config *pconfig'
->    to replace each item here ('n_fifos_src', 'n_fifos_dst',
->    'sw_done')? 
 
-I rather do not access the pointer to the peripheral_config outside of
-sdma_config because I know nothing about the lifetime of that structure.
-
->    the pconfig can point to the struct in dma_slave_config.
->    And 'n_fifos' can be moved to locally function in 
->    sdma_set_watermarklevel_for_sais(), then use sdmac->direction
->    to select 'n_fifos_dst' or 'n_fifos_src'.
-
-Ok.
-
-Sascha
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Takashi
