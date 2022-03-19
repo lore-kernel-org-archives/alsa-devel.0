@@ -4,146 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9FA6AC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Mar 2022 15:11:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 004CCC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Mar 2022 15:12:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7B4EF1692;
-	Tue, 22 Mar 2022 16:10:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B4EF1692
+	by alsa0.perex.cz (Postfix) with ESMTPS id 38E0616B8;
+	Tue, 22 Mar 2022 16:11:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38E0616B8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647961904;
-	bh=/nxa6Uofcd/z7lUkFfui2XnUMDqwuhm7imx2GshOHQE=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=gWd0rclVvBkWhT/i8RnvRdnPDbAcbe70x78EsbY2As13cc1UemL0igGt81nnUgiEc
-	 ZJclwyJe2rydDYRXy/qqByEOuihIi6ExQ6FrL6GfVA85gnKb8nQIfB3qYSl+ga5+ZT
-	 uAv1uT5x/wuts+YLjbe6Sxwf3xGWMdSzx1wCZydM=
+	s=default; t=1647961935;
+	bh=vhc7kUu16ZrQCTC1+cys0nZ9ltSOwDUnSD4PgVoaKJY=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=C+7r3tChYA2YJ/tBmmEb5hD+jq8Ur83sB+7cpXfsaMjSaXEzLT9z/KAad03V3hYh/
+	 pFKVZLeN49g7PwU/9PtlBNI2Vkec9Fu0ucjvqPom3+NT+gsAISDrqXE3rw0xhRlNwB
+	 bN1aLKlpEWXo5g9i9e9bbbBI6nmJTvdyWnUl+gx8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 70409F80516;
-	Tue, 22 Mar 2022 16:10:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B9CEBF8051A;
+	Tue, 22 Mar 2022 16:10:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D2FADF80271; Fri, 18 Mar 2022 21:59:18 +0100 (CET)
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com
- [IPv6:2607:f8b0:4864:20::d31])
+ id AE936F80236; Sat, 19 Mar 2022 06:36:02 +0100 (CET)
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com
+ [IPv6:2607:f8b0:4864:20::535])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B3B7DF80125
- for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2022 21:59:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3B7DF80125
+ by alsa1.perex.cz (Postfix) with ESMTPS id 13A34F80118
+ for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2022 06:35:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13A34F80118
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=linuxfoundation.org
- header.i=@linuxfoundation.org header.b="R3B03hXd"
-Received: by mail-io1-xd31.google.com with SMTP id k25so10610565iok.8
- for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2022 13:59:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=linuxfoundation.org; s=google;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=oNAPpR+5qx5bHO8wJ1SIgWig3LUKuwuqLo641jvFAak=;
- b=R3B03hXdzmRL4FMHavxss76+tb9Q0Hy78NbdGoHIgmWRsuIfciGr2JWywHMf/Kpkhf
- QniqntLtfhiE8E3Wo0oxTFcS1KWerJtG5tNgnrk3j2xUiX43wMMg+/mjp1wKd5A4aRIu
- ErIGjgvdava6sQlmLmDCO8Qr2P9RfzXvczFjE=
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="l3hkbqhu"
+Received: by mail-pg1-x535.google.com with SMTP id o23so6494263pgk.13
+ for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2022 22:35:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=gNnxz05ITktCjr1nYOEiyW+BK+GTcat0PUQxbZJOt2I=;
+ b=l3hkbqhu00/1TQ7/VnwTvO2aKIAzpckQRCH3U+7Q2ltAMwmJtVQ4xT6V6ZrWN89Py6
+ nbdSAeiDHlctj9zVzgwUUS+uMyuaYxjSu1I6UPf+SiPtqu0iaieKA6tbfdgg2HmGM6MF
+ kcPFk3owJGu/NIv++zAnih6cCYXPWewWboHyOqOoTt6nQhjo8+DS0M7TD5oRZ8rN7tJ1
+ iXXqobTALor8My722QrQOxt15JjA/2lehJP3nUvezcp4i4UsFoSdRWvk8ejpKdAeQIbG
+ 1olXLuSSpTqs4pHFoXZq5PZiBUznjbiaLbpB0cb81hIWYSj45QJ3HD+qX1320nVkzneE
+ iPew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
+ h=x-gm-message-state:from:to:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=oNAPpR+5qx5bHO8wJ1SIgWig3LUKuwuqLo641jvFAak=;
- b=fWIwQodAYngoBhCPh5qN8RVVFi2k92STI3B2LcazrJGCGnBarnyOim2blWeLJEHOc8
- dD94IK6IL+WDz8yA/iAxtXQZ77Oavefe/9nWe8yvGfQD+pyJy2SKBTadD1F/Fp7jG/n3
- F1us66WjXTwxNTLkHJFeL6fm+v2YXLbXTC8JgvX4JNtTDrEbwclNiFR+fhtR/jr+HE87
- +NHHlEFMId2e0kWhnkrcznUxlpJVAmYRSn5RFrN2kKoNCsuRjwKciIiXiREoyXZ89yMq
- R+oiBbUGuogKOWD7X5y7kfgX3yOiXGa+Qbd0IxAyNC5T//iYU4l5JgsfaqgU5HDad7bq
- UUaQ==
-X-Gm-Message-State: AOAM532RW6LSUWp5jLosBGrGMV8y6OLEVGyBu2pVb8YQFBYpzhRYCysV
- rnuVmzOZN/NFtp4Iz6m4Qr1fgg==
-X-Google-Smtp-Source: ABdhPJw+g6qtXnLujFKVRv55AGvVhZcbGPndogV4eznqetPdpLwXYueCN6beIFsP8OoV/l235xaSaw==
-X-Received: by 2002:a5d:9542:0:b0:648:f92b:7bc6 with SMTP id
- a2-20020a5d9542000000b00648f92b7bc6mr5223132ios.73.1647637149068; 
- Fri, 18 Mar 2022 13:59:09 -0700 (PDT)
-Received: from [192.168.1.128] ([71.205.29.0])
- by smtp.gmail.com with ESMTPSA id
- d14-20020a056602328e00b006494aa126c2sm3528385ioz.11.2022.03.18.13.59.05
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 18 Mar 2022 13:59:08 -0700 (PDT)
-Subject: Re: [PATCH 64/64] media: Kconfig: cleanup VIDEO_DEV dependencies
-To: Mauro Carvalho Chehab <mchehab@kernel.org>
-References: <cover.1647242578.git.mchehab@kernel.org>
- <decd26e90adc5c16470e4f738810f22fe6478b27.1647242579.git.mchehab@kernel.org>
-From: Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <9e02d88a-3344-8d91-c652-72cb989506de@linuxfoundation.org>
-Date: Fri, 18 Mar 2022 14:59:05 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ bh=gNnxz05ITktCjr1nYOEiyW+BK+GTcat0PUQxbZJOt2I=;
+ b=zrqxjpiPG3b9WBN1lQpt0O2DP8NotxIakl+y5rCyvpS8R9XM0MaWtdpPj3RK7No7Yb
+ 5PNna4TCvpgoEOg9ET2TiRff2DYcvWmnuNJIS1ezk97wkuv+pyFIb6wqTm4HcW/FrluX
+ RkA2Ot8No3wJyb37XlXY4QWN1XRSU9PxL9bRIg4NGuVrixywEVef9jxofC/f5173qSxu
+ fP8e6zpqbkY/Co/l8fMLIX3+8Wm0lQdwZV3oYFrwsnO93tKbOYAx4BUM8A8bGZgv9DWm
+ 4j1vP1/zd2PtfCce+HqaareiWHBbCHGtgNDVOv+LTOIiqibWpvJlTog83z3Kd+1/FFD1
+ aH4g==
+X-Gm-Message-State: AOAM531GvEM5ZCGMSVH1nDijC82y5LV18car4gr5mXdcmsUA1oVp6mXW
+ wUZa9BUl96L1jSZm77plJua297Er00ciOg==
+X-Google-Smtp-Source: ABdhPJyUaPDPr2dFQS5ebn4dg4UbnIc9Gz7XDAuNLmSWgquL2gsHXWRYdyX4bhTaCxCqeTpwXzC1Bw==
+X-Received: by 2002:a05:6a00:1312:b0:4e1:58c4:ddfd with SMTP id
+ j18-20020a056a00131200b004e158c4ddfdmr13642450pfu.65.1647668156469; 
+ Fri, 18 Mar 2022 22:35:56 -0700 (PDT)
+Received: from linus.localnet (135-180-48-111.fiber.dynamic.sonic.net.
+ [135.180.48.111]) by smtp.gmail.com with ESMTPSA id
+ a38-20020a056a001d2600b004f70d5e92basm11396352pfx.34.2022.03.18.22.35.56
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 18 Mar 2022 22:35:56 -0700 (PDT)
+From: Matt Kramer <mccleetus@gmail.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: hda/realtek: Add alc256-samsung-headphone fixup
+Date: Fri, 18 Mar 2022 22:35:55 -0700
+Message-ID: <4701574.GXAFRqVoOG@linus>
 MIME-Version: 1.0
-In-Reply-To: <decd26e90adc5c16470e4f738810f22fe6478b27.1647242579.git.mchehab@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Mailman-Approved-At: Tue, 22 Mar 2022 16:10:02 +0100
-Cc: Heiko Stuebner <heiko@sntech.de>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Hans Verkuil <hverkuil@xs4all.nl>, Pavel Machek <pavel@ucw.cz>,
- linux-stm32@st-md-mailman.stormreply.com, Jerome Brunet <jbrunet@baylibre.com>,
- Michael Grzeschik <m.grzeschik@pengutronix.de>, Joe Hung <joe_hung@ilitek.com>,
- Michal Simek <michal.simek@xilinx.com>,
- Ludovic Desroches <ludovic.desroches@microchip.com>,
- Jacob Chen <jacob-chen@iotwrt.com>, NXP Linux Team <linux-imx@nxp.com>,
- Steve Longerbeam <slongerbeam@gmail.com>, Jeff LaBundy <jeff@labundy.com>,
- linux-sunxi@lists.linux.dev, Nicolas Saenz Julienne <nsaenz@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>, Shuah Khan <skhan@linuxfoundation.org>,
- Hyun Kwon <hyun.kwon@xilinx.com>, Scott Branden <sbranden@broadcom.com>,
- Heungjun Kim <riverful.kim@samsung.com>, Randy Dunlap <rdunlap@infradead.org>,
- Michael Tretter <m.tretter@pengutronix.de>,
- Sowjanya Komatineni <skomatineni@nvidia.com>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Giulio Benetti <giulio.benetti@benettiengineering.com>,
- Ming Qian <ming.qian@nxp.com>, alsa-devel@alsa-project.org,
- linux-usb@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
- linux-kernel@vger.kernel.org, Thierry Reding <thierry.reding@gmail.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
- Jonathan Hunter <jonathanh@nvidia.com>, linux-rockchip@lists.infradead.org,
- Marek Szyprowski <m.szyprowski@samsung.com>,
- Tianshu Qiu <tian.shu.qiu@intel.com>, linux-media@vger.kernel.org,
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
- linux-arm-msm@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
- linux-samsung-soc@vger.kernel.org, Houlong Wei <houlong.wei@mediatek.com>,
- linux-amlogic@lists.infradead.org, Mike Isely <isely@pobox.com>,
- linux-arm-kernel@lists.infradead.org, linux-rpi-kernel@lists.infradead.org,
- Zhou Peng <eagle.zhou@nxp.com>, linux-renesas-soc@vger.kernel.org,
- Kyungmin Park <kyungmin.park@samsung.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Kevin Hilman <khilman@baylibre.com>,
- Jacek Anaszewski <jacek.anaszewski@gmail.com>, Sean Young <sean@mess.org>,
- Neil Armstrong <narmstrong@baylibre.com>,
- Stanimir Varbanov <stanimir.varbanov@linaro.org>, linux-tegra@vger.kernel.org,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Fabio Estevam <festevam@gmail.com>,
- Jean-Christophe Trotin <jean-christophe.trotin@foss.st.com>,
- Florian Fainelli <f.fainelli@gmail.com>, linux-staging@lists.linux.dev,
- Kieran Bingham <kieran.bingham@ideasonboard.com>,
- Jernej Skrabec <jernej.skrabec@gmail.com>, Shijie Qin <shijie.qin@nxp.com>,
- bcm-kernel-feedback-list@broadcom.com, Joel Stanley <joel@jms.id.au>,
- linux-input@vger.kernel.org, Ray Jui <rjui@broadcom.com>,
- mjpeg-users@lists.sourceforge.net, Vincent Knecht <vincent.knecht@mailoo.org>,
- Felipe Balbi <balbi@kernel.org>,
- Martina Krasteva <martinax.krasteva@intel.com>,
- Sakari Ailus <sakari.ailus@linux.intel.com>, Shawn Guo <shawnguo@kernel.org>,
- Minghsiu Tsai <minghsiu.tsai@mediatek.com>, Todor Tomov <todor.too@gmail.com>,
- Nicolas Ferre <nicolas.ferre@microchip.com>,
- Mirela Rabulea <mirela.rabulea@nxp.com>, Olivier Lorin <o.lorin@laposte.net>,
- Marek Vasut <marex@denx.de>, Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
- Rick Chang <rick.chang@mediatek.com>,
- Hugues Fruchet <hugues.fruchet@foss.st.com>, openbmc@lists.ozlabs.org,
- Yong Zhi <yong.zhi@intel.com>, Shawn Tu <shawnx.tu@intel.com>,
- linux-mediatek@lists.infradead.org, Yong Deng <yong.deng@magewell.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Tiffany Lin <tiffany.lin@mediatek.com>, Takashi Iwai <tiwai@suse.com>,
- Robert Foss <robert.foss@linaro.org>, Philipp Zabel <p.zabel@pengutronix.de>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Mailman-Approved-At: Tue, 22 Mar 2022 16:10:01 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -159,66 +94,91 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 3/14/22 1:55 AM, Mauro Carvalho Chehab wrote:
-> media Kconfig has two entries associated to V4L API:
-> VIDEO_DEV and VIDEO_V4L2.
-> 
-> On Kernel 2.6.x, there were two V4L APIs, each one with its own flag.
-> VIDEO_DEV were meant to:
-> 	1) enable Video4Linux and make its Kconfig options to appear;
-> 	2) it makes the Kernel build the V4L core.
-> 
-> while VIDEO_V4L2 where used to distinguish between drivers that
-> implement the newer API and drivers that implemented the former one.
-> 
-> With time, such meaning changed, specially after the removal of
-> all V4L version 1 drivers.
-> 
-> At the current implementation, VIDEO_DEV only does (1): it enables
-> the media options related to V4L, that now has:
-> 
-> 	menu "Video4Linux options"
-> 		visible if VIDEO_DEV
-> 
-> 	source "drivers/media/v4l2-core/Kconfig"
-> 	endmenu
-> 
-> but it doesn't affect anymore the V4L core drivers.
-> 
-> The rationale is that the V4L2 core has a "soft" dependency
-> at the I2C bus, and now requires to select a number of other
-> Kconfig options:
-> 
-> 	config VIDEO_V4L2
-> 		tristate
-> 		depends on (I2C || I2C=n) && VIDEO_DEV
-> 		select RATIONAL
-> 		select VIDEOBUF2_V4L2 if VIDEOBUF2_CORE
-> 		default (I2C || I2C=n) && VIDEO_DEV
-> 
-> In the past, merging them would be tricky, but it seems that it is now
-> possible to merge those symbols, in order to simplify V4L dependencies.
-> 
-> Let's keep VIDEO_DEV, as this one is used on some make *defconfig
-> configurations.
-> 
-> Suggested-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
-> ---
-> 
+This fixes the near-silence of the headphone jack on the ALC256-based Samsung 
+Galaxy Book Flex Alpha (NP730QCJ). The magic verbs were found through trial 
+and error, using known ALC298 hacks as inspiration. The fixup is auto-enabled 
+only when the NP730QCJ is detected. It can be manually enabled using 
+model=alc256-samsung-headphone.
 
->   drivers/media/test-drivers/vicodec/Kconfig    |   2 +-
->   drivers/media/test-drivers/vimc/Kconfig       |   2 +-
->   drivers/media/test-drivers/vivid/Kconfig      |   2 +-
->
+Signed-off-by: Matt Kramer <mccleetus at gmail.com>
+---
+ Documentation/sound/hd-audio/models.rst |  4 ++++
+ sound/pci/hda/patch_realtek.c           | 11 +++++++++++
+ 2 files changed, 15 insertions(+)
 
-For vimc change: (trimmed the recipient list to send response)
-
-Acked-by: Shuah Khan <skhan@linuxfoundation.org>
-
-thanks,
--- Shuah
+diff --git a/Documentation/sound/hd-audio/models.rst b/Documentation/sound/hd-
+audio/models.rst
+index d25335993e55..9b52f50a6854 100644
+--- a/Documentation/sound/hd-audio/models.rst
++++ b/Documentation/sound/hd-audio/models.rst
+@@ -261,6 +261,10 @@ alc-sense-combo
+ huawei-mbx-stereo
+     Enable initialization verbs for Huawei MBX stereo speakers;
+     might be risky, try this at your own risk
++alc298-samsung-headphone
++    Samsung laptops with ALC298
++alc256-samsung-headphone
++    Samsung laptops with ALC256
+ 
+ ALC66x/67x/892
+ ==============
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 1d14be4ee31d..f6ee67f41c45 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6958,6 +6958,7 @@ enum {
+ 	ALC236_FIXUP_HP_MUTE_LED,
+ 	ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF,
+ 	ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET,
++	ALC256_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET,
+ 	ALC295_FIXUP_ASUS_MIC_NO_PRESENCE,
+ 	ALC269VC_FIXUP_ACER_VCOPPERBOX_PINS,
+ 	ALC269VC_FIXUP_ACER_HEADSET_MIC,
+@@ -8286,6 +8287,14 @@ static const struct hda_fixup alc269_fixups[] = {
+ 			{ }
+ 		},
+ 	},
++	[ALC256_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET] = {
++		.type = HDA_FIXUP_VERBS,
++		.v.verbs = (const struct hda_verb[]) {
++			{ 0x20, AC_VERB_SET_COEF_INDEX, 0x08},
++			{ 0x20, AC_VERB_SET_PROC_COEF, 0x2fcf},
++			{ }
++		},
++	},
+ 	[ALC295_FIXUP_ASUS_MIC_NO_PRESENCE] = {
+ 		.type = HDA_FIXUP_PINS,
+ 		.v.pins = (const struct hda_pintbl[]) {
+@@ -9099,6 +9108,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x144d, 0xc740, "Samsung Ativ book 8 (NP870Z5G)", 
+ALC269_FIXUP_ATIV_BOOK_8),
+ 	SND_PCI_QUIRK(0x144d, 0xc812, "Samsung Notebook Pen S (NT950SBE-
+X58)", ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET),
+ 	SND_PCI_QUIRK(0x144d, 0xc830, "Samsung Galaxy Book Ion (NT950XCJ-
+X716A)", ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET),
++	SND_PCI_QUIRK(0x144d, 0xc832, "Samsung Galaxy Book Flex Alpha 
+(NP730QCJ)", ALC256_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET),
+ 	SND_PCI_QUIRK(0x1458, 0xfa53, "Gigabyte BXBT-2807", 
+ALC283_FIXUP_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1462, 0xb120, "MSI Cubi MS-B120", 
+ALC283_FIXUP_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1462, 0xb171, "Cubi N 8GL (MS-B171)", 
+ALC283_FIXUP_HEADSET_MIC),
+@@ -9445,6 +9455,7 @@ static const struct hda_model_fixup 
+alc269_fixup_models[] = {
+ 	{.id = ALC298_FIXUP_HUAWEI_MBX_STEREO, .name = "huawei-mbx-stereo"},
+ 	{.id = ALC256_FIXUP_MEDION_HEADSET_NO_PRESENCE, .name = "alc256-
+medion-headset"},
+ 	{.id = ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET, .name = "alc298-
+samsung-headphone"},
++	{.id = ALC256_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET, .name = "alc256-
+samsung-headphone"},
+ 	{.id = ALC255_FIXUP_XIAOMI_HEADSET_MIC, .name = "alc255-xiaomi-
+headset"},
+ 	{.id = ALC274_FIXUP_HP_MIC, .name = "alc274-hp-mic-detect"},
+ 	{.id = ALC245_FIXUP_HP_X360_AMP, .name = "alc245-hp-x360-amp"},
+-- 
+2.35.1
 
 
 
