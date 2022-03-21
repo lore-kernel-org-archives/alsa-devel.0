@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 928BEC433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Mar 2022 08:58:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 463C3C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Mar 2022 08:58:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5FB9316FA;
-	Mon, 21 Mar 2022 09:57:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5FB9316FA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7C8CB16EC;
+	Mon, 21 Mar 2022 09:57:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7C8CB16EC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647853112;
-	bh=X4vZ5/kgTQBN0PDemSv57ik5liN48wtTC/R4DCBxJM8=;
+	s=default; t=1647853129;
+	bh=QkrMO5edf6BhnfkEm1S1HJsBnkqdo1zfEs6as7zJY2s=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hDc9I5nUhGbrSQ6f9fSGyJ/7McssTQtDce9xnCwbkQm/ZpM+IuSRcvMTACdSJC9yE
-	 Rnorj8PwJng8kMCrR6Z33B9FIpXc72w8944gPHnfzvX3izou3B6ilen0L/FNDciCKi
-	 aNqtWkui19Qbj8y5Du8zBEfthnC0InaXQJ8FeHCE=
+	b=gtdNW7+u8/U3GjrHt7tRsxSPDDcUSKCH9AFIqG4B77twwLCvLZJ6AaapOvrzr3WDI
+	 Y84llnV6KbAaPrkLr8EQaic11pk/hiUTYrXtSTgXue1wLkoIXfcD4f88KgYM3Sa/28
+	 33kgPvRBGT4NF2JEKexGirrEtvRrkDiT+1dCnhJw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B0779F804AE;
-	Mon, 21 Mar 2022 09:57:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CDDCFF80519;
+	Mon, 21 Mar 2022 09:57:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5A57BF80431; Mon, 21 Mar 2022 09:57:00 +0100 (CET)
+ id DDD56F8051A; Mon, 21 Mar 2022 09:57:11 +0100 (CET)
 Received: from alexa-out.qualcomm.com (alexa-out.qualcomm.com [129.46.98.28])
  (using TLSv1.2 with cipher AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B8509F802D2
- for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2022 09:56:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8509F802D2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 26A61F80515
+ for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2022 09:56:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26A61F80515
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=quicinc.com header.i=@quicinc.com
- header.b="KxyQqX+l"
+ header.b="fv4JG7nd"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
- t=1647853015; x=1679389015;
+ t=1647853026; x=1679389026;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version;
- bh=ISCUgpFLNrcd0Zd2YYdxHLQx+tSivhuR0hYqwrnB+vc=;
- b=KxyQqX+l33G8qJE7RbDgI96WkPDr+aqL6pstCyx8q23QGJF9b51+WuK0
- stvGxKGqEdl6da8kgNCp045VDQGH9enHEMqqsn78fWqgpgrnkbEE4l7No
- EycacguetbGtIFRSHKeB/ktCEeeO6MAAbbZHmtbGm86UkBP9I0Du+Pg/n w=;
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
- by alexa-out.qualcomm.com with ESMTP; 21 Mar 2022 01:56:46 -0700
+ bh=M4kVC0r/rfY1s2TKqLyYnRyMBohGE64J9AJFvf+O4KQ=;
+ b=fv4JG7ndRzOj1V8BZGPOcx4Q+f705VCc3HtpvCr8IR78oENDV2iLtAkz
+ OQ+THyrIl1mRj+z97RmUj7jPTDaPAN1Fc3ppLq4ur0zusaOolueIo1bvu
+ ZkIvL52gRa/r0OUC8rfCqZBYni8eFMNu4+JbY7GCYLdtlXJJ28hxx2WGH A=;
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+ by alexa-out.qualcomm.com with ESMTP; 21 Mar 2022 01:56:56 -0700
 X-QCInternal: smtphost
 Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
- by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Mar 2022 01:56:45 -0700
+ by ironmsg09-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 Mar 2022 01:56:55 -0700
 Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
  nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.22; Mon, 21 Mar 2022 01:56:44 -0700
+ 15.2.986.22; Mon, 21 Mar 2022 01:56:55 -0700
 Received: from hu-srivasam-hyd.qualcomm.com (10.80.80.8) by
  nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.22; Mon, 21 Mar 2022 01:56:39 -0700
+ 15.2.986.22; Mon, 21 Mar 2022 01:56:50 -0700
 From: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
 To: <agross@kernel.org>, <bjorn.andersson@linaro.org>, <robh+dt@kernel.org>,
  <broonie@kernel.org>, <linux-arm-msm@vger.kernel.org>,
@@ -65,10 +65,10 @@ To: <agross@kernel.org>, <bjorn.andersson@linaro.org>, <robh+dt@kernel.org>,
  <rohitkr@codeaurora.org>, <srinivas.kandagatla@linaro.org>,
  <dianders@chromium.org>, <swboyd@chromium.org>, <judyhsiao@chromium.org>,
  <alsa-devel@alsa-project.org>, <krzysztof.kozlowski@canonical.com>
-Subject: [PATCH 1/3] ASoC: qcom: dt-bindings: Update bindings for clocks in
- lpass digital codes
-Date: Mon, 21 Mar 2022 14:26:19 +0530
-Message-ID: <1647852981-27895-2-git-send-email-quic_srivasam@quicinc.com>
+Subject: [PATCH 3/3] ASoC: dt-bindings: lpass-cpu: Update clocks and power
+ domain names for sc7280 platform
+Date: Mon, 21 Mar 2022 14:26:21 +0530
+Message-ID: <1647852981-27895-4-git-send-email-quic_srivasam@quicinc.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1647852981-27895-1-git-send-email-quic_srivasam@quicinc.com>
 References: <1647852981-27895-1-git-send-email-quic_srivasam@quicinc.com>
@@ -94,96 +94,74 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Update dt-bindings for clocks as per ADSP bypass solutions, in which macro
-dcodec GDSCs are enabled using power domains in lpass digital codec drivers.
+Update required clock-names used for MI2S primary path, VA macro's
+codec memory path and HDMI path in sc7280 based platforms.
+Update power domain names required for sc7280 platforms.
 
 Signed-off-by: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
 Co-developed-by: Venkata Prasad Potturu <quic_potturu@quicinc.com>
 Signed-off-by: Venkata Prasad Potturu <quic_potturu@quicinc.com>
 ---
- .../devicetree/bindings/sound/qcom,lpass-rx-macro.yaml  | 17 +++++++++++------
- .../devicetree/bindings/sound/qcom,lpass-tx-macro.yaml  | 17 +++++++++++------
- .../devicetree/bindings/sound/qcom,lpass-va-macro.yaml  | 11 +++++++----
- 3 files changed, 29 insertions(+), 16 deletions(-)
+ .../devicetree/bindings/sound/qcom,lpass-cpu.yaml       | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml
-index 6127df5..a6905bc 100644
---- a/Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml
-+++ b/Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml
-@@ -28,12 +28,17 @@ properties:
-     maxItems: 5
+diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
+index 2c81efb..e9a5330 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
++++ b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
+@@ -38,8 +38,8 @@ properties:
+     maxItems: 7
  
    clock-names:
--    items:
--      - const: mclk
--      - const: npl
--      - const: macro
--      - const: dcodec
--      - const: fsgen
-+    oneOf:
-+      - items:   #for ADSP based platforms
-+          - const: mclk
-+          - const: npl
-+          - const: macro
-+          - const: dcodec
-+          - const: fsgen
-+      - items:   #for ADSP bypass based platforms
-+          - const: mclk
-+          - const: npl
-+          - const: fsgen
+-    minItems: 3
+-    maxItems: 7
++    minItems: 1
++    maxItems: 10
  
-   clock-output-names:
-     items:
-diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml
-index 3f0f99c..324595a 100644
---- a/Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml
-+++ b/Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml
-@@ -28,12 +28,17 @@ properties:
-     maxItems: 5
+   interrupts:
+     minItems: 2
+@@ -62,6 +62,9 @@ properties:
+   power-domains:
+     maxItems: 1
  
-   clock-names:
--    items:
--      - const: mclk
--      - const: npl
--      - const: macro
--      - const: dcodec
--      - const: fsgen
-+    oneOf:
-+      - items:   #for ADSP based platforms
-+          - const: mclk
-+          - const: npl
-+          - const: macro
-+          - const: dcodec
-+          - const: fsgen
-+      - items:   #for ADSP bypass based platforms
-+          - const: mclk
-+          - const: npl
-+          - const: fsgen
++  power-domain-names:
++    maxItems: 1
++
+   '#sound-dai-cells':
+     const: 1
  
-   clock-output-names:
-     items:
-diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml
-index 9868a5e..7b4cc84 100644
---- a/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml
-+++ b/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml
-@@ -28,10 +28,13 @@ properties:
-     maxItems: 3
+@@ -192,15 +195,19 @@ allOf:
+           oneOf:
+             - items:   #for I2S
+                 - const: aon_cc_audio_hm_h
++                - const: audio_cc_ext_mclk0
+                 - const: core_cc_sysnoc_mport_core
++                - const: core_cc_ext_if0_ibit
+                 - const: core_cc_ext_if1_ibit
+             - items:   #for Soundwire
+                 - const: aon_cc_audio_hm_h
++                - const: audio_cc_codec_mem
+                 - const: audio_cc_codec_mem0
+                 - const: audio_cc_codec_mem1
+                 - const: audio_cc_codec_mem2
++                - const: aon_cc_va_mem0
+             - items:   #for HDMI
+-                - const: aon_cc_audio_hm_h
++                - const: core_cc_sysnoc_mport_core
  
-   clock-names:
--    items:
--      - const: mclk
--      - const: core
--      - const: dcodec
-+    oneOf:
-+      - items:   #for ADSP based platforms
-+          - const: mclk
-+          - const: core
-+          - const: dcodec
-+      - items:   #for ADSP bypass based platforms
-+          - const: mclk
+         reg-names:
+           anyOf:
+@@ -228,6 +235,10 @@ allOf:
+                 - const: lpass-irq-hdmi
+                 - const: lpass-irq-vaif
+                 - const: lpass-irq-rxtxif
++        power-domain-names:
++          allOf:
++            - items:
++                - const: lcx
  
-   clock-output-names:
-     items:
+       required:
+         - iommus
 -- 
 2.7.4
 
