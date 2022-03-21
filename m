@@ -4,59 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BD5FC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Mar 2022 08:57:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A65C9C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Mar 2022 08:58:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6E9EC16A5;
-	Mon, 21 Mar 2022 09:56:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E9EC16A5
+	by alsa0.perex.cz (Postfix) with ESMTPS id A17CF16F1;
+	Mon, 21 Mar 2022 09:57:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A17CF16F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647853061;
-	bh=UOJT9Lw4OKP2pZsX4wByJo3t6BW2xwAtYgQzOgLi6yk=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=qUxrOQfrd6GXLwsZZf/AM5Xeu+CoUnpQhkbUS1O7upqvadGpJRP7NHJTPx+HE9dWk
-	 /YPbqvedbM/TKLniuA38xTH9uATIFeHyQkvKcipVCYIeadV8GSXDBSht1OpKlWhzhp
-	 a3KqPf80cCnaResNrF5YLFviXxO7S5KONVja7Pd4=
+	s=default; t=1647853095;
+	bh=lIQxugaZWlsHr0wWO+gMinPNc7/fM36Kwgdypd+fAsY=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=fVU+1p9WVFzKu6IUCTUBsaOhaDX0quh0Aw0G72TtKaJhMSQWCEH7cbui+xphccvYc
+	 XRLQl+1FOreY+g7c7pFa2IASdgTQuWXjUiS+ME/nqRXHxWBA7DS6Y3S6Qg8q8KigA7
+	 Pf9FBE0ikTPZrYIoBpDxnBFatLe4wZooQDwFHSb4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 05855F800FD;
-	Mon, 21 Mar 2022 09:56:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 196EDF802D2;
+	Mon, 21 Mar 2022 09:57:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2CA41F80227; Mon, 21 Mar 2022 09:56:49 +0100 (CET)
-Received: from alexa-out-sd-01.qualcomm.com (alexa-out-sd-01.qualcomm.com
- [199.106.114.38])
+ id B9D5BF804AE; Mon, 21 Mar 2022 09:56:59 +0100 (CET)
+Received: from alexa-out-sd-02.qualcomm.com (alexa-out-sd-02.qualcomm.com
+ [199.106.114.39])
  (using TLSv1.2 with cipher AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EE446F800FD
- for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2022 09:56:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EE446F800FD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 16D2DF80116
+ for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2022 09:56:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16D2DF80116
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=quicinc.com header.i=@quicinc.com
- header.b="LBgg822w"
+ header.b="xiahhiJr"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
- t=1647853007; x=1679389007;
- h=from:to:cc:subject:date:message-id:mime-version;
- bh=Z7frmisJ/HESWHDo487rDBWlj2TEuAbGN63MQhhGsNg=;
- b=LBgg822wxXJ6FuN+QJvNmdZIAorA4uXCsLpL0p7sYuvx/6Kv40fBtFgp
- c2lA2d2s9g2SDi3QEzsU9YFC+3LXHsiulaP5KnIgrY8/jXz+n1QFRJG5W
- XSXesaXQRGEetXk7yjAaPko01KqWHGaXcOdZ3cXHfUnlwaprq+MXUDwhZ Y=;
-Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
- by alexa-out-sd-01.qualcomm.com with ESMTP; 21 Mar 2022 01:56:41 -0700
+ t=1647853014; x=1679389014;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version;
+ bh=URbiU5jvcH9B5cxRMZzjlAPwpblpt3Zp0vp6eDahlw4=;
+ b=xiahhiJr3VX8N3iTwDOcfuIrSWQMwTp7KAwcuyNoqd2J2l8AH3OwRshP
+ QzNKQEvzO58jwbhWYt0DjwVDBmklnE8jJw3WDCx4aKhB5F8/9m0CygAUC
+ hQkvESh/3+D6ckfUgbfdLs7aYbRum9YpEX1pY/B60jofZ+rtpY4V+Dj88 E=;
+Received: from unknown (HELO ironmsg02-sd.qualcomm.com) ([10.53.140.142])
+ by alexa-out-sd-02.qualcomm.com with ESMTP; 21 Mar 2022 01:56:50 -0700
 X-QCInternal: smtphost
 Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
- by ironmsg04-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Mar 2022 01:56:40 -0700
+ by ironmsg02-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 Mar 2022 01:56:50 -0700
 Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
  nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.22; Mon, 21 Mar 2022 01:56:39 -0700
+ 15.2.986.22; Mon, 21 Mar 2022 01:56:49 -0700
 Received: from hu-srivasam-hyd.qualcomm.com (10.80.80.8) by
  nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.22; Mon, 21 Mar 2022 01:56:35 -0700
+ 15.2.986.22; Mon, 21 Mar 2022 01:56:45 -0700
 From: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
 To: <agross@kernel.org>, <bjorn.andersson@linaro.org>, <robh+dt@kernel.org>,
  <broonie@kernel.org>, <linux-arm-msm@vger.kernel.org>,
@@ -64,16 +66,19 @@ To: <agross@kernel.org>, <bjorn.andersson@linaro.org>, <robh+dt@kernel.org>,
  <rohitkr@codeaurora.org>, <srinivas.kandagatla@linaro.org>,
  <dianders@chromium.org>, <swboyd@chromium.org>, <judyhsiao@chromium.org>,
  <alsa-devel@alsa-project.org>, <krzysztof.kozlowski@canonical.com>
-Subject: [PATCH 0/3] Update dt-bindings for sc7280 platform
-Date: Mon, 21 Mar 2022 14:26:18 +0530
-Message-ID: <1647852981-27895-1-git-send-email-quic_srivasam@quicinc.com>
+Subject: [PATCH 2/3] ASoC: dt-bindings: wcd938x: Add mic bias supply property
+Date: Mon, 21 Mar 2022 14:26:20 +0530
+Message-ID: <1647852981-27895-3-git-send-email-quic_srivasam@quicinc.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1647852981-27895-1-git-send-email-quic_srivasam@quicinc.com>
+References: <1647852981-27895-1-git-send-email-quic_srivasam@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.80.80.8]
 X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nalasex01a.na.qualcomm.com (10.47.209.196)
-Cc: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+Cc: Venkata Prasad Potturu <quic_potturu@quicinc.com>,
+ Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,23 +94,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch set is to update required clocks, power domain names for sc7280 platforms,
-and add mic bias supply for wcd938x codec.
+Add vdd mic bias supply, which is required to provide bias
+for wcd938x codec.
 
-Srinivasa Rao Mandadapu (3):
-  ASoC: qcom: dt-bindings: Update bindings for clocks in lpass digital
-    codes
-  ASoC: dt-bindings: wcd938x: Add mic bias supply property
-  ASoC: dt-bindings: lpass-cpu: Update clocks and power domain names for
-    sc7280 platform
+Signed-off-by: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+Co-developed-by: Venkata Prasad Potturu <quic_potturu@quicinc.com>
+Signed-off-by: Venkata Prasad Potturu <quic_potturu@quicinc.com>
+---
+ Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
 
- .../devicetree/bindings/sound/qcom,lpass-cpu.yaml       | 17 ++++++++++++++---
- .../devicetree/bindings/sound/qcom,lpass-rx-macro.yaml  | 17 +++++++++++------
- .../devicetree/bindings/sound/qcom,lpass-tx-macro.yaml  | 17 +++++++++++------
- .../devicetree/bindings/sound/qcom,lpass-va-macro.yaml  | 11 +++++++----
- .../devicetree/bindings/sound/qcom,wcd938x.yaml         |  3 +++
- 5 files changed, 46 insertions(+), 19 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml b/Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml
+index 7bf1a5f..5154719 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml
++++ b/Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml
+@@ -36,6 +36,9 @@ properties:
+   vdd-io-supply:
+     description: A reference to the 1.8V I/O supply
+ 
++  vdd-mic-bias-supply:
++    description: A reference to the 3.8V mic bias supply
++
+   qcom,tx-device:
+     $ref: /schemas/types.yaml#/definitions/phandle-array
+     description: A reference to Soundwire tx device phandle
 -- 
 2.7.4
 
