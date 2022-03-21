@@ -4,66 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33AA5C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Mar 2022 15:13:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B983BC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Mar 2022 15:14:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 656321733;
-	Mon, 21 Mar 2022 16:12:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 656321733
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0604D173D;
+	Mon, 21 Mar 2022 16:13:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0604D173D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647875622;
-	bh=9Y12UFEf0Mf9nHunCW2p4Tl8F6I/gFgWOZD/wYfYOMU=;
+	s=default; t=1647875641;
+	bh=ipkgJQjf5K2R+S1QsRulpTCFGjeQCivNGHqHR4lHm5g=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=By7ZEqQy6NQ2FVC8KtBveHFjoG1NMAUX5eaHQjwdPYinup/Z7rdFWVb8FT7YzZPBn
-	 20XvBUTwYuAOavGhXTUfXEfFUxq1mEFF4knJIvbtS/A79A5q6upSuNzc9Z7VNpu9+l
-	 gAhEfYh5hSn9L7WOEziOUiCUPZAYHzpkSx2/hF78=
+	b=Eg2tT8MS8n9jmMfP3+hVnLqXLPE7ch7BiHGLUXDcXIady39BhQZ5W8VjhhEasLE0Y
+	 GmYrNsZLYbgUaqmwlUcULVS3j7T1PAB+5myluTomiOTD+DLVaoi9emRzgRXmdreN+1
+	 oHqGjTPpZQpJ32Y85yC+LAUmjr9xqEr6KzusfTAk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 91541F802D2;
-	Mon, 21 Mar 2022 16:12:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C2B8EF804BB;
+	Mon, 21 Mar 2022 16:13:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BBD4EF80227; Mon, 21 Mar 2022 16:12:35 +0100 (CET)
+ id 6B0A4F80515; Mon, 21 Mar 2022 16:13:01 +0100 (CET)
 Received: from ams.source.kernel.org (ams.source.kernel.org
  [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9A6CFF80227
- for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2022 16:12:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A6CFF80227
+ by alsa1.perex.cz (Postfix) with ESMTPS id 11E1BF804AE
+ for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2022 16:12:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11E1BF804AE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="RiriLh88"
+ header.b="NlAnS+O1"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 340F7B8170A;
- Mon, 21 Mar 2022 15:12:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B19D8C340E8;
- Mon, 21 Mar 2022 15:12:25 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 543AFB8170A;
+ Mon, 21 Mar 2022 15:12:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8905C340E8;
+ Mon, 21 Mar 2022 15:12:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1647875547;
- bh=9Y12UFEf0Mf9nHunCW2p4Tl8F6I/gFgWOZD/wYfYOMU=;
+ s=k20201202; t=1647875577;
+ bh=ipkgJQjf5K2R+S1QsRulpTCFGjeQCivNGHqHR4lHm5g=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=RiriLh88bvOpCG0mZJ+XfNYOghNqemH6z0HFKHjpn01CIZL/8uy+fBu3RL2yZ/DeF
- eTvaFEST5+o9GuwG+/3fLNQMcCBLr0QnRiknPKr6YO6N/KUFRqGcuEmD2G3AFDLFXb
- b1A+5kJX6i2qDaa/J6EsuhGCfiWarZKgshXRXuZAzbioZMKnhryUdH14Kd8Sekcoqf
- wpJoFWDsQKMOmn0qTiSBbBHUTp3CHAQS7pBwsy/it0aq3Hwh/of1ahxnzo/+8jDEzq
- mOFsqnVuGbkbc6bT6JmC5XNEYsNSmuiVx0e6ypoJsd9ZaNQZkNw2V+UrJd8T8tT1qA
- 35UMMnX5ChagA==
-Date: Mon, 21 Mar 2022 23:12:23 +0800
+ b=NlAnS+O1h0ZwjtCK+NlIhwFXGU5XDIfc6JGdZ3urIL2RJgtikmxARsu5T/xn2sG44
+ +sMa8uQKAJl5lDfb0Gtk130vRqiUiPP4k7Ew+S0s4pW6avdeWP4xku+nyMuhTN2Rmp
+ iPSaHZ/oH4lRowbTla4PbRXLvuADQ/+xfZAP3HMpj7TQNLOIM2sr1tYVt+2Vt7cOKO
+ fY2tr+LI2U4d3OjryhCDpf+ExYtyfDMrOm2C/W/LtZRXW0qUNsEhHhU0rpggDyVl5b
+ yPNWxbwu/5SL1vBKAPkQ5TKZrNkyEeob1ohw/VLGf7GFhUoKlpm7JKIIKcT3ys79Cl
+ yMdFEDZAz58Qw==
+Date: Mon, 21 Mar 2022 23:12:52 +0800
 From: Tzung-Bi Shih <tzungbi@kernel.org>
 To: Trevor Wu <trevor.wu@mediatek.com>
-Subject: Re: [PATCH v3 4/6] ASoC: mediatek: mt8195: rename card controls
-Message-ID: <YjiV18IjpPMZrwvB@google.com>
+Subject: Re: [PATCH v3 5/6] ASoC: mediatek: mt8195: add machine support for
+ max98390 and rt5682
+Message-ID: <YjiV9DfLC7T1uweb@google.com>
 References: <20220321072312.14972-1-trevor.wu@mediatek.com>
- <20220321072312.14972-5-trevor.wu@mediatek.com>
+ <20220321072312.14972-6-trevor.wu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220321072312.14972-5-trevor.wu@mediatek.com>
+In-Reply-To: <20220321072312.14972-6-trevor.wu@mediatek.com>
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com,
  robh+dt@kernel.org, linux-kernel@vger.kernel.org, broonie@kernel.org,
  linux-mediatek@lists.infradead.org, yc.hung@mediatek.com,
@@ -84,15 +85,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Mar 21, 2022 at 03:23:10PM +0800, Trevor Wu wrote:
-> In order to be able to reuse the same configurations in user space,
-> rename the controls to generic names.
-> 
-> "Headphone Jack" -> "Headphone"
-> "Speakers" -> "Ext Spk"
-> "Left Speaker" -> "Left Spk"
-> "Right Speaker" -> "Right SPk"
-> 
-> Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
+On Mon, Mar 21, 2022 at 03:23:11PM +0800, Trevor Wu wrote:
+> diff --git a/sound/soc/mediatek/mt8195/mt8195-mt6359.c b/sound/soc/mediatek/mt8195/mt8195-mt6359.c
+[...]
+>  #define RT1011_SPEAKER_AMP_PRESENT		BIT(0)
+>  #define RT1019_SPEAKER_AMP_PRESENT		BIT(1)
+> +#define MAX98390_SPEAKER_AMP_PRESENT		BIT(2)
+> +
+> +#define MAX98390_CODEC_DAI	"max98390-aif1"
+> +#define MAX98390_DEV0_NAME	"max98390.2-0038" /* right */
+> +#define MAX98390_DEV1_NAME	"max98390.2-0039" /* left */
+>  
+>  #define RT1011_CODEC_DAI	"rt1011-aif"
+>  #define RT1011_DEV0_NAME	"rt1011.2-0038"
 
-Reviewed-by: Tzung-Bi Shih <tzungbi@kernel.org>
+The quirk bit order: RT1011, RT1019, and MAX98390.  To be neat, move
+MAX98390_CODEC_DAI, MAX98390_DEV0_NAME, and MAX98390_DEV1_NAME after
+RT1019_DEV0_NAME to maintain the order.
+
+> +static int mt8195_max98390_init(struct snd_soc_pcm_runtime *rtd)
+[...]
+> +
+> +	ret = snd_soc_dapm_add_routes(&card->dapm, mt8195_max98390_routes,
+> +				      ARRAY_SIZE(mt8195_max98390_routes));
+> +
+> +	if (ret)
+
+Remove the extra blank line.
