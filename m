@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12D26C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Mar 2022 15:12:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CAC24C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Mar 2022 15:13:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3AB3616C7;
-	Tue, 22 Mar 2022 16:11:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3AB3616C7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0C69A1666;
+	Tue, 22 Mar 2022 16:12:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C69A1666
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647961955;
-	bh=5vZj/bNP8k1FG7q4QIEvMAZwlyiOCZjgU3AhimqBAFw=;
+	s=default; t=1647961986;
+	bh=kw+oJL8+/opvBM864UPk5C4XJQyDqeuLXUZJjpvCxV0=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=aO1ZpSbGZ6yXBPmpJLWDjJbk5nGGXxWL3O7vrg3hzW99g83RWJtRoPX3watptHTma
-	 Qngjq4V0wGn+YW+ncJFR1SkCkn4QVkBlbsiEuwDwATL6DemzzBtZoltETb7xveyBP1
-	 qbFZzKl0qwA1pWxKH5SbA++goc3s/C5sx4EW3GX4=
+	b=fdhT0AUQ7TGuffZ9ztwPh0r5Y+V7Tb8U88WonalNvXcgmZKyv7M7EilkRKGfw4AKH
+	 VTLcQ4zS3M1ShK10IjRjVdebvZVGxVh6qgjOuYO0lirULAvLKI6zXLeTbt/nMTihmD
+	 Iwbo/SMgduNVOzZF2MUT54EQre9IeORIZy3a5MUs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5EF0DF80524;
-	Tue, 22 Mar 2022 16:10:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B49D6F8052F;
+	Tue, 22 Mar 2022 16:10:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CB24DF80253; Sun, 20 Mar 2022 14:02:12 +0100 (CET)
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com
- [IPv6:2607:f8b0:4864:20::f2a])
+ id 37174F80227; Mon, 21 Mar 2022 09:12:56 +0100 (CET)
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com
+ [IPv6:2607:f8b0:4864:20::835])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E5356F80109
- for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2022 14:02:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5356F80109
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9D42EF800FD
+ for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2022 09:12:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D42EF800FD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="FfWmFrmG"
-Received: by mail-qv1-xf2a.google.com with SMTP id gh15so5151612qvb.8
- for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2022 06:02:05 -0700 (PDT)
+ header.b="BhteqGXg"
+Received: by mail-qt1-x835.google.com with SMTP id j21so11367631qta.0
+ for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2022 01:12:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=gcqW7UEzOxBVIMD41+JK63ucodStg12ZivivGDJ0W6o=;
- b=FfWmFrmGHALDvL4MH8F2YLXXFyioPrRSCqFEqBQHOFAe1GzMRkzG1+kC1Vt3P7CdL/
- f9FVI4HECemmhYuoC3PQsfex8TnvaDby54wpfVE4i/jfbjnjL6h7LPkMA+36gv2Enk0Q
- OVgKseA+QBk8b5UIWQzcpS2zNfEeZJUO5+OrNGHR277cK57nzRBhhbb1sNa7Gsw11JaT
- 4h1YYnEgKQ/ChwYoRTxRck98XrF/gPQvNa+Dh89ecjljCl/Tux5bHKhtBjDKxy8CnXuM
- tDwD90eIHq1YpUUFgdcp1CT7JHlRWYwcGlofNmtxoYiJroCR0eFYZ29ALG4lBoHXnhPK
- 89xw==
+ :cc; bh=w8WxpDi03iWCNVX/uFr39maVmxk/vSYYBrdnUfsRbk0=;
+ b=BhteqGXg+Pn7xpMyGo516M8LYiHW9USQsdfdHYcgg01Az4565sFCdXsXTkpAXDlwrs
+ M4Jpb/zofdtQwxCE3qgmgsTAqF0fYnEz5FeAr4eQZO4H1Y1Rkn44qEdHYX47FpZSK54m
+ nq6IcZIJg9NcRCCcieOKukFmRQUvsw4nq7MwVLtHqrRV/KQY3UfaKVoi2kRYP4eBEq32
+ uObt0MK8gfYT+pxQQbkAIlGE/rtUhbPt57W0z39r6rAZbp2BKxPd5ss7G37yPQKtu6R+
+ HzbxT2vqI4ee3+m7jQ7HbfWA0C3CbPqA8u4fH9QdTWph5mEzP2kKGNZA8kV1q2PSEfai
+ 3dCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=gcqW7UEzOxBVIMD41+JK63ucodStg12ZivivGDJ0W6o=;
- b=kr67KV8IlnwA6Ttlqbl8V269IalNDs7gJvBznyEvAApbxxukeYVY7DzuGCygZtKnkX
- hed+AFZN9AAqCQLQqFQikdTy5K3ad7jEr8GxNVwISinBjPy5zw/y5AZMgbYsUmjIfcz+
- LYVoy02g8msDs7QQjcMiCxdevITiQpoX7j+fzzeH0TEcM2JjTPd2lmjHZxmLaTQJOau4
- ALCZGDgUnzYYW9Im9nSZ/g+ef/KROf4JI05hBKOuQjdJCi5w22s2LXJwworDfQHqQET7
- MJFIc2jTOe+s8b5dQzqx1niBGgVyd71RWiqe77HwDbqzlhRxEisxhVx0esZ8A3tHJGIU
- 7iSA==
-X-Gm-Message-State: AOAM533a803Y7DIjUb6hQNs2PdN/6BdPwVSQswHmoGlLDYI1m0xxVSW3
- 1DKNmy/3EMnbWZsZ0uWV2ZlykM805Yvl4EHXC4U=
-X-Google-Smtp-Source: ABdhPJz9f2B/NfP6ZH1mQTpSC0rxnf2LlpHCnhNEJPE/jjb3sXdjiEJXss/Q+Y+2AwHgvuArm3fA/P++Ur+6HqS0BOA=
-X-Received: by 2002:a05:6214:c67:b0:435:bbb2:5c40 with SMTP id
- t7-20020a0562140c6700b00435bbb25c40mr12738681qvj.21.1647781323142; Sun, 20
- Mar 2022 06:02:03 -0700 (PDT)
+ bh=w8WxpDi03iWCNVX/uFr39maVmxk/vSYYBrdnUfsRbk0=;
+ b=vIKpnR+AIVPFB7n/pSfWL5qoQQ4aFUEHepb+naHB3eNghnHIa1phWqDBzeARv/IvGQ
+ oB4l+V8AVNnvPMeJ2khs5DCiEPB2w871oBYPljQ02OR8ZouVOgr07V77gmxYNgMw66Zf
+ E1MCNvRyXXjU7z/M/xh7vlXbqxvbugX6h7PpjTkYzDfS0s4WHfONJcLdP7y4RLfuASLw
+ V9ngI1SAO9oZhu+gizBPsLN+7IrsVvNkPcIqmVuZR5E8uz876kb7BU7xMj1EjFDrjyzM
+ U4x3hOLpmCKy4fyg/EKWEZ/pS/ddo9DYqShQ9O8EGWXl8CPei1RP8zoWLTjHkrtnKcUw
+ KxiQ==
+X-Gm-Message-State: AOAM532MjjfxwALLHGureOsAQTVoapLSyO7XjlYRJf4JInug4Zq+6XTs
+ ytKm5vF9wURI7BuGzg4dWo7g+bxTlUiKYIJJmzc=
+X-Google-Smtp-Source: ABdhPJxZs050Ub4KULZ6aBWxvddTPid/SWEhORqtQwEbpEyPlqgGXMQLeDI11jwN2qQEtF7PT8eZdU9S6bWV0FXm2OI=
+X-Received: by 2002:ac8:5bd6:0:b0:2e1:c841:35f6 with SMTP id
+ b22-20020ac85bd6000000b002e1c84135f6mr15379502qtb.120.1647850363792; Mon, 21
+ Mar 2022 01:12:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220318093536.15385-1-tangmeng@uniontech.com>
-In-Reply-To: <20220318093536.15385-1-tangmeng@uniontech.com>
+References: <20220321065754.18307-1-tangmeng@uniontech.com>
+In-Reply-To: <20220321065754.18307-1-tangmeng@uniontech.com>
 From: Shengjiu Wang <shengjiu.wang@gmail.com>
-Date: Sun, 20 Mar 2022 21:01:52 +0800
-Message-ID: <CAA+D8APyyp1j=kSsTxYQFHqqajU6KbdAYmenkFtfxBPaBMO2uA@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: fsl-asoc-card: Fix jack_event() always return 0
+Date: Mon, 21 Mar 2022 16:12:32 +0800
+Message-ID: <CAA+D8AME8Ojc-Cfr0VEeqSk6_Jb+EB1S9NtNzTM3JpKR2TySzA@mail.gmail.com>
+Subject: Re: [PATCH v2] ASoC: fsl-asoc-card: Fix jack_event() always return 0
 To: Meng Tang <tangmeng@uniontech.com>
 X-Mailman-Approved-At: Tue, 22 Mar 2022 16:10:02 +0100
 Content-Type: text/plain; charset="UTF-8"
@@ -95,9 +95,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi
-
-On Fri, Mar 18, 2022 at 5:35 PM Meng Tang <tangmeng@uniontech.com> wrote:
+On Mon, Mar 21, 2022 at 2:58 PM Meng Tang <tangmeng@uniontech.com> wrote:
 
 > Today, hp_jack_event and mic_jack_event always return 0. However,
 > snd_soc_dapm_disable_pin and snd_soc_dapm_enable_pin may return a
@@ -105,72 +103,49 @@ On Fri, Mar 18, 2022 at 5:35 PM Meng Tang <tangmeng@uniontech.com> wrote:
 > and mic_jack_event don't know whether the operation was really
 > successfully.
 >
-> This patch corrects the behavior by properly returning 1 when the
-> value gets updated.
->
 > Signed-off-by: Meng Tang <tangmeng@uniontech.com>
+>
+
+Acked-by: Shengjiu Wang <shengjiu.wang@gmail.com>
+
+Best regards
+Wang Shengjiu
+
 > ---
->  sound/soc/fsl/fsl-asoc-card.c | 16 ++++++++++------
->  1 file changed, 10 insertions(+), 6 deletions(-)
+>  sound/soc/fsl/fsl-asoc-card.c | 12 ++++--------
+>  1 file changed, 4 insertions(+), 8 deletions(-)
 >
 > diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-> index 370bc790c6ba..f2641c2cb047 100644
+> index 370bc790c6ba..d9a0d4768c4d 100644
 > --- a/sound/soc/fsl/fsl-asoc-card.c
 > +++ b/sound/soc/fsl/fsl-asoc-card.c
-> @@ -457,16 +457,18 @@ static int fsl_asoc_card_audmux_init(struct
-> device_node *np,
->  static int hp_jack_event(struct notifier_block *nb, unsigned long event,
->                          void *data)
->  {
-> +       int ret;
-> +
->         struct snd_soc_jack *jack = (struct snd_soc_jack *)data;
->         struct snd_soc_dapm_context *dapm = &jack->card->dapm;
-
-The "int ret" should be here.
-The variables have order, the short one should be behind the long one.
-
-
+> @@ -462,11 +462,9 @@ static int hp_jack_event(struct notifier_block *nb,
+> unsigned long event,
 >
-
-
-
-
 >         if (event & SND_JACK_HEADPHONE)
 >                 /* Disable speaker if headphone is plugged in */
 > -               snd_soc_dapm_disable_pin(dapm, "Ext Spk");
-> +               ret = snd_soc_dapm_disable_pin(dapm, "Ext Spk");
+> +               return snd_soc_dapm_disable_pin(dapm, "Ext Spk");
 >         else
 > -               snd_soc_dapm_enable_pin(dapm, "Ext Spk");
-> +               ret = snd_soc_dapm_enable_pin(dapm, "Ext Spk");
->
+> -
 > -       return 0;
-> +       return ret;
+> +               return snd_soc_dapm_enable_pin(dapm, "Ext Spk");
 >  }
 >
 >  static struct notifier_block hp_jack_nb = {
-> @@ -476,16 +478,18 @@ static struct notifier_block hp_jack_nb = {
->  static int mic_jack_event(struct notifier_block *nb, unsigned long event,
->                           void *data)
->  {
-> +       int ret;
-> +
->         struct snd_soc_jack *jack = (struct snd_soc_jack *)data;
->         struct snd_soc_dapm_context *dapm = &jack->card->dapm;
->
-ditto.
-
+> @@ -481,11 +479,9 @@ static int mic_jack_event(struct notifier_block *nb,
+> unsigned long event,
 >
 >         if (event & SND_JACK_MICROPHONE)
 >                 /* Disable dmic if microphone is plugged in */
 > -               snd_soc_dapm_disable_pin(dapm, "DMIC");
-> +               ret = snd_soc_dapm_disable_pin(dapm, "DMIC");
+> +               return snd_soc_dapm_disable_pin(dapm, "DMIC");
 >         else
 > -               snd_soc_dapm_enable_pin(dapm, "DMIC");
-> +               ret = snd_soc_dapm_enable_pin(dapm, "DMIC");
->
+> -
 > -       return 0;
-> +       return ret;
+> +               return snd_soc_dapm_enable_pin(dapm, "DMIC");
 >  }
 >
 >  static struct notifier_block mic_jack_nb = {
