@@ -4,80 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A191EC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Mar 2022 15:20:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B082C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Mar 2022 15:20:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D2DFB1750;
-	Tue, 22 Mar 2022 16:19:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D2DFB1750
+	by alsa0.perex.cz (Postfix) with ESMTPS id 62D2316F4;
+	Tue, 22 Mar 2022 16:19:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 62D2316F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647962427;
-	bh=4rd2kAkFBF199+T2h/99JxhaD+we5j3urdJbd8EPafs=;
+	s=default; t=1647962432;
+	bh=u9SKefDaUbQXKzKyOx1sw/ZJj1GD6ClH59P9LsZbSYU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RrqMvat/MXayMz58AsgLXolzIN51J+nUXsM7JzHObP1H0Cd1hHMw+0fNnJnEZHHxv
-	 Y1EQQ5FCibmYlfsz+R3L9ENQzv+zfV04elOFJeymuhJcsX8pBpu8CygrTD/BodEe9C
-	 88m3SpS3m47uDGIwzH1psgrgSWOviR5pj5NobyDw=
+	b=RoDQQFeeiY/H9DT2sPukXKuPAT16VQgMHHWnMdVCZYtgH3jXZITBhcELFxjyscE+3
+	 YmC9+mxe4T6UY33XWv2AtCtQ/aVEalxuh3Nay0AmdrIUTeiDPrFmk8bN7pqsEVwUhw
+	 0KIeNb/fThvNe3hKCjZZgOlQVKcevze2CmUZzcBU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D33FDF80527;
-	Tue, 22 Mar 2022 16:18:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4260AF8047D;
+	Tue, 22 Mar 2022 16:18:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2CC35F8052F; Tue, 22 Mar 2022 16:18:49 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id 9233EF8052F; Tue, 22 Mar 2022 16:18:49 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ECB5DF8049C
- for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2022 16:18:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ECB5DF8049C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 242FAF804C1
+ for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2022 16:18:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 242FAF804C1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="jhnIhhmg"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 22MAwx9A011964;
- Tue, 22 Mar 2022 10:18:35 -0500
+ header.b="pb4LNLZd"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 22MCnUfB013136;
+ Tue, 22 Mar 2022 10:18:38 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=+0x79oIRY35Ch40WhjnDVCWyYz7xwNE/6qRLOJjSwpE=;
- b=jhnIhhmgqUK/TsLg+9JeupoWoUmQofhuoPuieVV8EcAEETB2utamxbLcHk1SIqInDYpH
- DmMt//jKQx0YhQr/LKWjypwk3wjmW1lpuKSrrLheumhfeMod/Z9wpjRzYo/uV+eL5wa0
- PGRbDLyMG1UDwTukmhq47RPlCFE73uwStvWZID2m+TJNMTRNlLXGUzc/bdamaz1eghZg
- TKvhHOheS0lhgIgeBhMlHu+/B1OgSdAlzjpCSx/D67TQmcH0QFY8V+0EjnJ/la6FItSy
- 4vebF+VuUGHzMPMLDbvZAUT2LCTvY3WKE0C9zoLb4XY7rTOPEh88J98Msk6AD+MGwFyo VQ== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3ewck1cb46-4
+ bh=pvLoPUP+zOIjxi5uLkLGyB32oVCSgHxrfK1CCMsoqYA=;
+ b=pb4LNLZdSuo8jlHKFskPbrnC3strBKtAP9H+wLyV6ceOFDlY/ZUpbM6uTLWYFRlZAJ0w
+ YbcIDYDMxf0enurZBrBhQnQHOsD/gWUxryvm0nGDpt3PCEM69B3277VlOMW9wNv+YMNc
+ hv6T2YZnLPMclGceR+lpHCQmVmLzlBwpBgqbuQkALh151uH66LMWH9pynjijZmUb36ot
+ Zrd3f3aQpbLfhy9zEOmpLasrLDiKhH/+M306l62EFBV6jBZRh1q4+E1nbziTjJjXa1id
+ u2/tgfGSedNJzYDh/iamMmmYZ6veygqwr0LxsItW9nvlf3Px/mG0Q3ZMquknCyHQ+oxv kQ== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3ewbknc0jc-5
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Tue, 22 Mar 2022 10:18:35 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ Tue, 22 Mar 2022 10:18:38 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Tue, 22 Mar
  2022 15:18:33 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.18 via
  Frontend Transport; Tue, 22 Mar 2022 15:18:33 +0000
 Received: from aryzen.ad.cirrus.com (unknown [198.61.65.125])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id C98E1B1A;
- Tue, 22 Mar 2022 15:18:32 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 73D35477;
+ Tue, 22 Mar 2022 15:18:33 +0000 (UTC)
 From: Lucas Tanure <tanureal@opensource.cirrus.com>
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob
  Herring <robh+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
  Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v5 06/16] ALSA: hda: cs35l41: Add Boost type flag
-Date: Tue, 22 Mar 2022 15:18:09 +0000
-Message-ID: <20220322151819.4299-7-tanureal@opensource.cirrus.com>
+Subject: [PATCH v5 08/16] ALSA: hda: cs35l41: Mute the device before shutdown
+Date: Tue, 22 Mar 2022 15:18:11 +0000
+Message-ID: <20220322151819.4299-9-tanureal@opensource.cirrus.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220322151819.4299-1-tanureal@opensource.cirrus.com>
 References: <20220322151819.4299-1-tanureal@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: -FuxyHnUgLyNTf18EBnkfhEwCkq9L-cU
-X-Proofpoint-GUID: -FuxyHnUgLyNTf18EBnkfhEwCkq9L-cU
+X-Proofpoint-ORIG-GUID: 5GjGhRhPzVeun6sh8HxrjNHK6o5xXlSc
+X-Proofpoint-GUID: 5GjGhRhPzVeun6sh8HxrjNHK6o5xXlSc
 X-Proofpoint-Spam-Reason: safe
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org, Lucas Tanure <tanureal@opensource.cirrus.com>,
@@ -97,141 +97,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Replace vspk_always_on by a enum that better characterizes the boost
-type, as there is 3 types of boost hardware.
-And with the new boost type other parts of the driver can better handle
-the configuration of the chip.
+Mute the device before shutdown to avoid pops and clicks for all types
+of boost.
 
 Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
 ---
- include/sound/cs35l41.h     |  9 ++++++--
- sound/pci/hda/cs35l41_hda.c | 43 +++++++++++++++++++++----------------
- 2 files changed, 31 insertions(+), 21 deletions(-)
+ sound/pci/hda/cs35l41_hda.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/include/sound/cs35l41.h b/include/sound/cs35l41.h
-index e312eb1f6e48..64d98cbd5c0e 100644
---- a/include/sound/cs35l41.h
-+++ b/include/sound/cs35l41.h
-@@ -725,6 +725,12 @@
- #define CS35L41_SPI_MAX_FREQ		4000000
- #define CS35L41_REGSTRIDE		4
- 
-+enum cs35l41_boost_type {
-+	CS35L41_INT_BOOST,
-+	CS35L41_EXT_BOOST,
-+	CS35L41_EXT_BOOST_NO_VSPK_SWITCH,
-+};
-+
- enum cs35l41_clk_ids {
- 	CS35L41_CLKID_SCLK = 0,
- 	CS35L41_CLKID_LRCLK = 1,
-@@ -768,8 +774,7 @@ struct cs35l41_hw_cfg {
- 	struct cs35l41_gpio_cfg gpio2;
- 	unsigned int spk_pos;
- 
--	/* Don't put the AMP in reset if VSPK can not be turned off */
--	bool vspk_always_on;
-+	enum cs35l41_boost_type bst_type;
- };
- 
- struct cs35l41_otp_packed_element_t {
 diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
-index f853530eb385..0dac622805c4 100644
+index 46e920ec3000..0709d09f4e13 100644
 --- a/sound/pci/hda/cs35l41_hda.c
 +++ b/sound/pci/hda/cs35l41_hda.c
-@@ -210,20 +210,30 @@ static const struct component_ops cs35l41_hda_comp_ops = {
- static int cs35l41_hda_apply_properties(struct cs35l41_hda *cs35l41)
- {
- 	struct cs35l41_hw_cfg *hw_cfg = &cs35l41->hw_cfg;
--	bool internal_boost = false;
- 	int ret;
+@@ -28,6 +28,11 @@ static const struct reg_sequence cs35l41_hda_config[] = {
+ 	{ CS35L41_PWR_CTRL2,		0x00000001 }, // AMP_EN = 1
+ };
  
- 	if (!cs35l41->hw_cfg.valid)
- 		return -EINVAL;
- 
--	if (hw_cfg->vspk_always_on) {
-+	switch (hw_cfg->bst_type) {
-+	case CS35L41_INT_BOOST:
-+		cs35l41->reg_seq = &cs35l41_hda_reg_seq_int_bst;
-+		ret = cs35l41_boost_config(cs35l41->dev, cs35l41->regmap,
-+					   hw_cfg->bst_ind, hw_cfg->bst_cap, hw_cfg->bst_ipk);
-+		if (ret)
-+			return ret;
-+		break;
-+	case CS35L41_EXT_BOOST:
-+		cs35l41->reg_seq = &cs35l41_hda_reg_seq_ext_bst;
-+		break;
-+	case CS35L41_EXT_BOOST_NO_VSPK_SWITCH:
- 		cs35l41->reg_seq = &cs35l41_hda_reg_seq_no_bst;
--		return 0;
-+		break;
-+	default:
-+		dev_err(cs35l41->dev, "Boost type %d not supported\n", hw_cfg->bst_type);
-+		return -EINVAL;
- 	}
- 
--	if (hw_cfg->bst_ind > 0 || hw_cfg->bst_cap > 0 || hw_cfg->bst_ipk > 0)
--		internal_boost = true;
--
- 	if (hw_cfg->gpio1.valid) {
- 		switch (hw_cfg->gpio1.func) {
- 		case CS35L41_NOT_USED:
-@@ -256,16 +266,6 @@ static int cs35l41_hda_apply_properties(struct cs35l41_hda *cs35l41)
- 
- 	cs35l41_gpio_config(cs35l41->regmap, hw_cfg);
- 
--	if (internal_boost) {
--		cs35l41->reg_seq = &cs35l41_hda_reg_seq_int_bst;
--		ret = cs35l41_boost_config(cs35l41->dev, cs35l41->regmap,
--					   hw_cfg->bst_ind, hw_cfg->bst_cap, hw_cfg->bst_ipk);
--		if (ret)
--			return ret;
--	} else {
--		cs35l41->reg_seq = &cs35l41_hda_reg_seq_ext_bst;
--	}
--
- 	return cs35l41_hda_channel_map(cs35l41->dev, 0, NULL, 1, &hw_cfg->spk_pos);
- }
- 
-@@ -363,6 +363,11 @@ static int cs35l41_hda_read_acpi(struct cs35l41_hda *cs35l41, const char *hid, i
- 	else
- 		hw_cfg->bst_cap = -1;
- 
-+	if (hw_cfg->bst_ind > 0 || hw_cfg->bst_cap > 0 || hw_cfg->bst_ipk > 0)
-+		hw_cfg->bst_type = CS35L41_INT_BOOST;
-+	else
-+		hw_cfg->bst_type = CS35L41_EXT_BOOST;
++static const struct reg_sequence cs35l41_hda_mute[] = {
++	{ CS35L41_AMP_GAIN_CTRL,	0x00000000 }, // AMP_GAIN_PCM 0.5 dB
++	{ CS35L41_AMP_DIG_VOL_CTRL,	0x0000A678 }, // AMP_VOL_PCM Mute
++};
 +
- 	hw_cfg->valid = true;
- 	put_device(physdev);
- 
-@@ -388,7 +393,7 @@ static int cs35l41_hda_read_acpi(struct cs35l41_hda *cs35l41, const char *hid, i
- 	/* check I2C address to assign the index */
- 	cs35l41->index = id == 0x40 ? 0 : 1;
- 	cs35l41->reset_gpio = gpiod_get_index(physdev, NULL, 0, GPIOD_OUT_HIGH);
--	cs35l41->hw_cfg.vspk_always_on = true;
-+	cs35l41->hw_cfg.bst_type = CS35L41_EXT_BOOST_NO_VSPK_SWITCH;
- 	cs35l41->hw_cfg.valid = true;
- 	put_device(physdev);
- 
-@@ -515,7 +520,7 @@ int cs35l41_hda_probe(struct device *dev, const char *device_name, int id, int i
- 	return 0;
- 
- err:
--	if (!cs35l41->hw_cfg.vspk_always_on)
-+	if (cs35l41->hw_cfg.bst_type != CS35L41_EXT_BOOST_NO_VSPK_SWITCH)
- 		gpiod_set_value_cansleep(cs35l41->reset_gpio, 0);
- 	gpiod_put(cs35l41->reset_gpio);
- 
-@@ -529,7 +534,7 @@ void cs35l41_hda_remove(struct device *dev)
- 
- 	component_del(cs35l41->dev, &cs35l41_hda_comp_ops);
- 
--	if (!cs35l41->hw_cfg.vspk_always_on)
-+	if (cs35l41->hw_cfg.bst_type != CS35L41_EXT_BOOST_NO_VSPK_SWITCH)
- 		gpiod_set_value_cansleep(cs35l41->reset_gpio, 0);
- 	gpiod_put(cs35l41->reset_gpio);
- }
+ static const struct reg_sequence cs35l41_hda_start_bst[] = {
+ 	{ CS35L41_PWR_CTRL2,		0x00000021 }, // BST_EN = 10, AMP_EN = 1
+ 	{ CS35L41_PWR_CTRL1,		0x00000001, 3000}, // set GLOBAL_EN = 1
+@@ -89,7 +94,6 @@ static const struct reg_sequence cs35l41_active_to_safe[] = {
+ 	{ 0x00000040,			0x00000055 },
+ 	{ 0x00000040,			0x000000AA },
+ 	{ 0x00007438,			0x00585941 },
+-	{ CS35L41_AMP_DIG_VOL_CTRL,	0x0000A678 }, // AMP_VOL_PCM Mute
+ 	{ CS35L41_PWR_CTRL2,		0x00000000 }, // AMP_EN = 0
+ 	{ CS35L41_PWR_CTRL1,		0x00000000 },
+ 	{ 0x0000742C,			0x00000009, 2000 },
+@@ -146,6 +150,7 @@ static void cs35l41_hda_playback_hook(struct device *dev, int action)
+ 			ret = regmap_multi_reg_write(reg, reg_seq->prepare, reg_seq->num_prepare);
+ 		break;
+ 	case HDA_GEN_PCM_ACT_CLEANUP:
++		regmap_multi_reg_write(reg, cs35l41_hda_mute, ARRAY_SIZE(cs35l41_hda_mute));
+ 		if (reg_seq->cleanup)
+ 			ret = regmap_multi_reg_write(reg, reg_seq->cleanup, reg_seq->num_cleanup);
+ 		break;
 -- 
 2.35.1
 
