@@ -4,69 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62746C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Mar 2022 11:57:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD926C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Mar 2022 11:58:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AF77D1660;
-	Tue, 22 Mar 2022 12:56:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF77D1660
+	by alsa0.perex.cz (Postfix) with ESMTPS id BBCB5168D;
+	Tue, 22 Mar 2022 12:57:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BBCB5168D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647950251;
-	bh=7xG5mNqi2R3wWhDgrDX/C46cSMJD++/cNXEOMfP18Vw=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1647950283;
+	bh=t8pxcym9iSTsPP+6Q5Ob/Yj/ZujPqhRL5s1Loz19qaM=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WKjl/bT4ctl1oLf+TUiQyVPC4t6B8TYgfnTG4S6gmh4ncNpCkmocJh7mxpGUZ3rSr
-	 lwAePyu9RjKukYusSyieoVfucgCNygzgusK40qG0i7+lUpq7pMXsNYvcu8Ul6yNWJ7
-	 HmbwUIw1tup4CvihZU2GTwoKUYrU4wHcIbRMUchM=
+	b=ZiM01b95mXtz1uGhKE/lFK9Q46XZKAAr/DQr/nAZtv+6fVcVn/nDS1QEQOjy+MWYh
+	 BFahNB04+NLF3T9IPibSiU86+mxZ1ob/x7bpZhyLY4KXavAbuZb4QrbT54vdKFLFSK
+	 /vTPt+Dvj3HAIqYTH4nIkBK/zoobD06CRkdNvb08=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4383CF800FD;
-	Tue, 22 Mar 2022 12:56:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E2F17F8047D;
+	Tue, 22 Mar 2022 12:57:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 97FAEF800FD; Tue, 22 Mar 2022 12:56:38 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 40035F800FD
- for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2022 12:56:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40035F800FD
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="QIpx7t1I"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id B0F3D61323;
- Tue, 22 Mar 2022 11:56:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE5C4C340EC;
- Tue, 22 Mar 2022 11:56:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1647950189;
- bh=7xG5mNqi2R3wWhDgrDX/C46cSMJD++/cNXEOMfP18Vw=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=QIpx7t1IES4wkzWdvaxOHvTLwjzz7j19a5wm3BtA9HcmeGkBpsSdSQemcv7Sog13g
- k6EY7vZvfoDb2bQOSwjMzcmsg7HZlgC6mdbYVRAqNdMUwsfdhMGb2RrIR4CuDhq6Id
- YVHw0K76gswezQyp8EdBfAaJEpgyYWWtjPXfKV+U87kVlJP/JjbtZszQMkYiBzhw0j
- X4BiJsRDv7mYgG7H/lAdscjlMqBw3bzIuclgUbcik6iRdw5SBprM4caFh4vcxDxjR4
- PNImqJITifwuR2AaoX/SkYe9CTldKyXEJXAw4zatenGcxPi1xAOFPsmp+1/TE8708G
- +wu1ADQwNJPBA==
-Date: Tue, 22 Mar 2022 11:56:24 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Raphael-Xu <13691752556@139.com>
-Subject: Re: [PATCH v3 1/2] Rename tas2764 to tas27xx
-Message-ID: <Yjm5aMn/i2DgDwG5@sirena.org.uk>
-References: <20220322070438.506-1-13691752556@139.com>
+ id 9FFF8F8049C; Tue, 22 Mar 2022 12:57:03 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 76DF1F80116
+ for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2022 12:56:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76DF1F80116
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="DhF17j+PZD3OJT8q"
-Content-Disposition: inline
-In-Reply-To: <20220322070438.506-1-13691752556@139.com>
-X-Cookie: Drop that pickle!
-Cc: navada@ti.com, alsa-devel@alsa-project.org, shenghao-ding@ti.com,
- raphael-xu@ti.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1647950216971451044-webhooks-bot@alsa-project.org>
+References: <1647950216971451044-webhooks-bot@alsa-project.org>
+Subject: pcm: plugin - fix avail_min calculation on rate plugin
+Message-Id: <20220322115703.9FFF8F8049C@alsa1.perex.cz>
+Date: Tue, 22 Mar 2022 12:57:03 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,38 +55,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+alsa-project/alsa-lib pull request #218 was opened from aditpape:
 
---DhF17j+PZD3OJT8q
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+commit 88e4ae27, ff1f669d introduced a dynamic recalculation of the slave's
+avail_min value.
+The calculated avail_min setting did not take into account, that the avail_min value
+depends on the used sampling rate and must be adapted accordingly
+if the slave is using a different sampling rate.
+That leads to too large/too small calculated avail_min settings and inaccurate
+period wake-up events if a rate converter plugin is used.
 
-On Tue, Mar 22, 2022 at 03:04:37PM +0800, Raphael-Xu wrote:
-> Signed-off-by: Raphael-Xu <13691752556@139.com>
-> ---
->  sound/soc/codecs/{tas2764.c => tas27xx.c} | 0
->  sound/soc/codecs/{tas2764.h => tas27xx.h} | 0
->  2 files changed, 0 insertions(+), 0 deletions(-)
->  rename sound/soc/codecs/{tas2764.c => tas27xx.c} (100%)
->  rename sound/soc/codecs/{tas2764.h => tas27xx.h} (100%)
+This patch is adapting the avail_min calculation to consider a different
+sampling rate between actual pcm and it's slave.
 
-This needs a change to the Makefile and Kconfig as well but is otherwise
-fine, however I was expecting another patch or two doing the updates
-that were in your initial patches so we'd end up with three or four
-patches.  Sorry if that wasn't clear.
+Signed-off-by: Andreas Pape <apape@de.adit-jv.com>
 
---DhF17j+PZD3OJT8q
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmI5uWcACgkQJNaLcl1U
-h9DD/wf/cHXWc5YwfSqGHwjCPfc6LROOe9Jx4tWXOMCBmCmgJGFuXxycDEvhJeds
-zzWTXY7J+HFHFx90kTMe48ywGM3Wvt6zkMZthf/uNZanlEdEcjMPmGiR4JcD6xzJ
-79HbD/jYYEd4/F6jjPUXkxaJj2k1J5J2x9fvwXmglmS+5O1qBAfWqpAmEQ1B+RqI
-UOnWmImSRldgFITerW6ID9PgqGZHg8c5CjW3kIq5uuBAkHbNfEbGmM0W9zEsN2dy
-PwodnZfeGGj5bqQ3WYURc9kTmaDNeOEIKiKS4xnEBsOdSGh3fn2Tc1MgMhcoAN7u
-AGb9FORiW9k6rAmJdS6iwoeweRdZpw==
-=M4/Y
------END PGP SIGNATURE-----
-
---DhF17j+PZD3OJT8q--
+Request URL   : https://github.com/alsa-project/alsa-lib/pull/218
+Patch URL     : https://github.com/alsa-project/alsa-lib/pull/218.patch
+Repository URL: https://github.com/alsa-project/alsa-lib
