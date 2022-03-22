@@ -4,91 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52068C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Mar 2022 07:29:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62746C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Mar 2022 11:57:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2B5F5168A;
-	Tue, 22 Mar 2022 08:28:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2B5F5168A
+	by alsa0.perex.cz (Postfix) with ESMTPS id AF77D1660;
+	Tue, 22 Mar 2022 12:56:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF77D1660
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1647934145;
-	bh=xwYI/GjpA+D0alZlqZJKLtwSvNurQ5BHAbfpu2KYW1M=;
+	s=default; t=1647950251;
+	bh=7xG5mNqi2R3wWhDgrDX/C46cSMJD++/cNXEOMfP18Vw=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AiC9vt+leVbzFnwDHxXjJ6efl2LW10I3cxnvxF+r8j4+yEbBOiv3skLvv/JJ6cwjO
-	 uI7W+UTcf+dViLAPihDOZ86w01wN80+miUcvoHIDmzhtp/x7K7RdRH7afyOfDfrO7x
-	 DmQ0PmcQgkVPfDCfnqksjaPHN9CtsOqDgtx4EGMM=
+	b=WKjl/bT4ctl1oLf+TUiQyVPC4t6B8TYgfnTG4S6gmh4ncNpCkmocJh7mxpGUZ3rSr
+	 lwAePyu9RjKukYusSyieoVfucgCNygzgusK40qG0i7+lUpq7pMXsNYvcu8Ul6yNWJ7
+	 HmbwUIw1tup4CvihZU2GTwoKUYrU4wHcIbRMUchM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BA418F800FD;
-	Tue, 22 Mar 2022 08:28:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4383CF800FD;
+	Tue, 22 Mar 2022 12:56:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 751F3F8016C; Tue, 22 Mar 2022 08:28:10 +0100 (CET)
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com
- [IPv6:2a00:1450:4864:20::429])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 97FAEF800FD; Tue, 22 Mar 2022 12:56:38 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7B4F8F800FD
- for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2022 08:28:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B4F8F800FD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 40035F800FD
+ for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2022 12:56:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40035F800FD
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="vucamHCL"
-Received: by mail-wr1-x429.google.com with SMTP id h23so23015704wrb.8
- for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2022 00:28:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:content-transfer-encoding:in-reply-to;
- bh=38s+vFh4hN6ma2OSEAh7532IeRnJs07vXfLx/FtTkeI=;
- b=vucamHCLCQ2IfBbc8GHxp5tlFQuyNU8dW3Bij+q2zvk5mWjPWiFriQ0nCNUerHF76w
- etA07VHJUUuBtndKIekxQRZ3AoouuVRcGZiyWY9dz8NelgiXQagbIQH2dKUxde1wutWF
- yK/y3ahbHCff65xR17gXHvDjSvg2ZEc9/QlsEFO9g8cnvYfX0wy1OoljQtfTxLNXdHyS
- 5rh4+RfVULw2BppPS+qAy7AAfLROY8MXidF6g3uV0V+BjsvZgdVUAAh4Yl3Q9/iJpvHu
- Knf9mCXbrTb9dSUAvTMZ7OlurxJn8q/nSiNyp/Df6Ly3jgtwmRScxgViIr6wOY1taXXi
- qX4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:content-transfer-encoding
- :in-reply-to;
- bh=38s+vFh4hN6ma2OSEAh7532IeRnJs07vXfLx/FtTkeI=;
- b=HhLHyTsNtf5PkLUIpumnHME2ncfbIHjtLD8CwUMkQwwehlhwKFSgo5HYjlhpRsdRf/
- fsyzvP52GPj2CRhtQf65FduqS6GLRkPlFKStWansvM0oOoJEN30NXvabvde20n/x65j7
- 9nguDtVZY1kTP/Xtj7cX0igIMQoN0mdB7aRBoiUtwSBgWaw/zKClgvOyGVzm5yvsWBDm
- klUWMx6PeBQ/4guz5PH8nGdTnnu1ce5ZtuD/azLdvZfysFywwCFjQwyzFFEiG0BV/Ak4
- dE8LAHa4PVg9Q9p3tr4C+qOrkURXbDP0oCGkFCNHnXtBN7spAc4Eb4KCrJXc6BbmRbQF
- TiMQ==
-X-Gm-Message-State: AOAM532J0wmlcAi3VWj7GuF1WhlTsrVgZGSP8wsNg5S8gyvJxaCvUgYW
- r3UFz9BLxWjjoi2LyrbDi6lM1w==
-X-Google-Smtp-Source: ABdhPJxw76tp7UaWDyAzzlAXHenQ+pVHhGiPNLiCsPef6Wq5fjJ0xKBS3IZng/PGd8GOGsaF9wcHnA==
-X-Received: by 2002:a05:6000:1ac7:b0:1f1:f9ee:7c57 with SMTP id
- i7-20020a0560001ac700b001f1f9ee7c57mr20441117wry.52.1647934078865; 
- Tue, 22 Mar 2022 00:27:58 -0700 (PDT)
-Received: from google.com (cpc155339-bagu17-2-0-cust87.1-3.cable.virginm.net.
- [86.27.177.88]) by smtp.gmail.com with ESMTPSA id
- j5-20020a05600c1c0500b0038ca4fdf7a5sm2053486wms.9.2022.03.22.00.27.57
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 22 Mar 2022 00:27:58 -0700 (PDT)
-Date: Tue, 22 Mar 2022 07:27:56 +0000
-From: Lee Jones <lee.jones@linaro.org>
-To: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v3] dt-bindings: mfd: Fix pinctrl node name warnings
-Message-ID: <Yjl6fP2Bylv6ud8W@google.com>
-References: <20220303232350.2591143-1-robh@kernel.org>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="QIpx7t1I"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id B0F3D61323;
+ Tue, 22 Mar 2022 11:56:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE5C4C340EC;
+ Tue, 22 Mar 2022 11:56:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1647950189;
+ bh=7xG5mNqi2R3wWhDgrDX/C46cSMJD++/cNXEOMfP18Vw=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=QIpx7t1IES4wkzWdvaxOHvTLwjzz7j19a5wm3BtA9HcmeGkBpsSdSQemcv7Sog13g
+ k6EY7vZvfoDb2bQOSwjMzcmsg7HZlgC6mdbYVRAqNdMUwsfdhMGb2RrIR4CuDhq6Id
+ YVHw0K76gswezQyp8EdBfAaJEpgyYWWtjPXfKV+U87kVlJP/JjbtZszQMkYiBzhw0j
+ X4BiJsRDv7mYgG7H/lAdscjlMqBw3bzIuclgUbcik6iRdw5SBprM4caFh4vcxDxjR4
+ PNImqJITifwuR2AaoX/SkYe9CTldKyXEJXAw4zatenGcxPi1xAOFPsmp+1/TE8708G
+ +wu1ADQwNJPBA==
+Date: Tue, 22 Mar 2022 11:56:24 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Raphael-Xu <13691752556@139.com>
+Subject: Re: [PATCH v3 1/2] Rename tas2764 to tas27xx
+Message-ID: <Yjm5aMn/i2DgDwG5@sirena.org.uk>
+References: <20220322070438.506-1-13691752556@139.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="DhF17j+PZD3OJT8q"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220303232350.2591143-1-robh@kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Charles Keepax <ckeepax@opensource.cirrus.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
- - <patches@opensource.cirrus.com>, Linus Walleij <linus.walleij@linaro.org>,
- linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
- Richard Fitzgerald <rf@opensource.cirrus.com>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+In-Reply-To: <20220322070438.506-1-13691752556@139.com>
+X-Cookie: Drop that pickle!
+Cc: navada@ti.com, alsa-devel@alsa-project.org, shenghao-ding@ti.com,
+ raphael-xu@ti.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -104,39 +82,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 03 Mar 2022, Rob Herring wrote:
 
-> The recent addition pinctrl.yaml in commit c09acbc499e8 ("dt-bindings:
-> pinctrl: use pinctrl.yaml") resulted in some node name warnings:
-> 
-> Documentation/devicetree/bindings/mfd/cirrus,lochnagar.example.dt.yaml: \
->  lochnagar-pinctrl: $nodename:0: 'lochnagar-pinctrl' does not match '^(pinctrl|pinmux)(@[0-9a-f]+)?$'
-> Documentation/devicetree/bindings/mfd/cirrus,madera.example.dt.yaml: \
->  codec@1a: $nodename:0: 'codec@1a' does not match '^(pinctrl|pinmux)(@[0-9a-f]+)?$'
-> Documentation/devicetree/bindings/mfd/brcm,cru.example.dt.yaml: \
->  pin-controller@1c0: $nodename:0: 'pin-controller@1c0' does not match '^(pinctrl|pinmux)(@[0-9a-f]+)?$'
-> 
-> Fix the node names to the preferred 'pinctrl'. For cirrus,madera,
-> nothing from pinctrl.yaml schema is used, so just drop the reference.
-> 
-> Fixes: c09acbc499e8 ("dt-bindings: pinctrl: use pinctrl.yaml")
-> Cc: Rafał Miłecki <rafal@milecki.pl>
-> Signed-off-by: Rob Herring <robh@kernel.org>
+--DhF17j+PZD3OJT8q
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Mar 22, 2022 at 03:04:37PM +0800, Raphael-Xu wrote:
+> Signed-off-by: Raphael-Xu <13691752556@139.com>
 > ---
-> v2:
->  - Fix lochnagar-pinctrl nodename in example
-> v3:
->  - And fix lochnagar-pinctrl nodename in 'required'. Sigh...
-> ---
->  Documentation/devicetree/bindings/mfd/brcm,cru.yaml         | 4 ++--
->  Documentation/devicetree/bindings/mfd/cirrus,lochnagar.yaml | 6 +++---
->  .../devicetree/bindings/pinctrl/cirrus,madera.yaml          | 3 ---
->  3 files changed, 5 insertions(+), 8 deletions(-)
+>  sound/soc/codecs/{tas2764.c => tas27xx.c} | 0
+>  sound/soc/codecs/{tas2764.h => tas27xx.h} | 0
+>  2 files changed, 0 insertions(+), 0 deletions(-)
+>  rename sound/soc/codecs/{tas2764.c => tas27xx.c} (100%)
+>  rename sound/soc/codecs/{tas2764.h => tas27xx.h} (100%)
 
-Requires rebase.  Doesn't presently apply.
+This needs a change to the Makefile and Kconfig as well but is otherwise
+fine, however I was expecting another patch or two doing the updates
+that were in your initial patches so we'd end up with three or four
+patches.  Sorry if that wasn't clear.
 
--- 
-Lee Jones [李琼斯]
-Principal Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+--DhF17j+PZD3OJT8q
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmI5uWcACgkQJNaLcl1U
+h9DD/wf/cHXWc5YwfSqGHwjCPfc6LROOe9Jx4tWXOMCBmCmgJGFuXxycDEvhJeds
+zzWTXY7J+HFHFx90kTMe48ywGM3Wvt6zkMZthf/uNZanlEdEcjMPmGiR4JcD6xzJ
+79HbD/jYYEd4/F6jjPUXkxaJj2k1J5J2x9fvwXmglmS+5O1qBAfWqpAmEQ1B+RqI
+UOnWmImSRldgFITerW6ID9PgqGZHg8c5CjW3kIq5uuBAkHbNfEbGmM0W9zEsN2dy
+PwodnZfeGGj5bqQ3WYURc9kTmaDNeOEIKiKS4xnEBsOdSGh3fn2Tc1MgMhcoAN7u
+AGb9FORiW9k6rAmJdS6iwoeweRdZpw==
+=M4/Y
+-----END PGP SIGNATURE-----
+
+--DhF17j+PZD3OJT8q--
