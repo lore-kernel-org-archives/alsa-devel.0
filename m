@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F561C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Mar 2022 16:46:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3B3BC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Mar 2022 16:47:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 85D3516DB;
-	Wed, 23 Mar 2022 17:45:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 85D3516DB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6C3C8172C;
+	Wed, 23 Mar 2022 17:46:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C3C8172C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648054001;
-	bh=CKFcYAgoqDNBy3ZpQQpKZOmkIqS1bHm3Jx5QVoTJ6T4=;
+	s=default; t=1648054020;
+	bh=rtyg9ywRJ7Gzj1dZNkC1kgb1oEcPUHht5/gTr5RCx74=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WOx1xcsuhHQZBzmHdY8OYChqQgQN8/cIuSvlsFux9nN2zWDNmdreuwzzTZqzicLCw
-	 RLauKu0gfQADPOun1ZdkKY+nh2uaTRE0mMiAr5LPSZf7EJ53oeTVB1b8on2p8C2pGb
-	 hMYi8ckz8qo4T46nLpYSgUeUkUJLPPcUEGpnb6Jc=
+	b=lL483ys53o9BZiNK/PnNOuZ+V+fo9v2HVCdBm0FDYv26tLFBj2MLcY/1o4x162WCf
+	 p8AMagBEiDjvUjqJ7Mdgh9w4zOTLFuU4FzXf2jVhSXv2fLVNeOzh/F2j2cPO35lzSG
+	 7cc2sdDGrAjz5jHRiNIwl1rAhm5nIa+VcxX8VpVs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EDA3FF804D2;
-	Wed, 23 Mar 2022 17:45:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 07056F80165;
+	Wed, 23 Mar 2022 17:45:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 33876F804BC; Wed, 23 Mar 2022 17:45:18 +0100 (CET)
+ id 862BBF80165; Wed, 23 Mar 2022 17:45:23 +0100 (CET)
 Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5F8E0F800C1
- for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2022 17:45:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F8E0F800C1
-X-UUID: b69873e1e97d4639b79618d02dda5565-20220324
-X-UUID: b69873e1e97d4639b79618d02dda5565-20220324
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by
- mailgw01.mediatek.com (envelope-from <jiaxin.yu@mediatek.com>)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 65FECF80165
+ for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2022 17:45:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 65FECF80165
+X-UUID: b39d201042df4a02b28857f019a98172-20220324
+X-UUID: b39d201042df4a02b28857f019a98172-20220324
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
+ (envelope-from <jiaxin.yu@mediatek.com>)
  (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
- with ESMTP id 140494633; Thu, 24 Mar 2022 00:45:02 +0800
+ with ESMTP id 405388953; Thu, 24 Mar 2022 00:45:06 +0800
 Received: from mtkcas10.mediatek.inc (172.21.101.39) by
  mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 24 Mar 2022 00:45:02 +0800
+ 15.0.1497.2; Thu, 24 Mar 2022 00:45:04 +0800
 Received: from localhost.localdomain (10.17.3.154) by mtkcas10.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 24 Mar 2022 00:45:01 +0800
+ Transport; Thu, 24 Mar 2022 00:45:03 +0800
 From: Jiaxin Yu <jiaxin.yu@mediatek.com>
 To: <broonie@kernel.org>, <robh+dt@kernel.org>, <tzungbi@google.com>
-Subject: [v6 1/4] ASoC: dt-bindings: mt8192-mt6359: add new compatible and new
- properties
-Date: Thu, 24 Mar 2022 00:44:39 +0800
-Message-ID: <20220323164442.921-2-jiaxin.yu@mediatek.com>
+Subject: [v6 3/4] ASoC: mediatek: mt8192: refactor for I2S8/I2S9 DAI links of
+ headset
+Date: Thu, 24 Mar 2022 00:44:41 +0800
+Message-ID: <20220323164442.921-4-jiaxin.yu@mediatek.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220323164442.921-1-jiaxin.yu@mediatek.com>
 References: <20220323164442.921-1-jiaxin.yu@mediatek.com>
@@ -78,78 +78,98 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-1. Adds new compatible string "mt8192_mt6359_rt1015p_rt5682s" for machines
-with rt1015p and rt5682s.
-2. Adds new property "headset-codec" for getting headset codec.
-3. Adds new property "speaker-codec" for getting speaker codecs.
+MT8192 platform use rt5682 codec, so through the snd_soc_of_get_dai_link_codes()
+to complete the configuration of I2S8/I2S9 dai_link's codecs.
 
 Signed-off-by: Jiaxin Yu <jiaxin.yu@mediatek.com>
 ---
- .../sound/mt8192-mt6359-rt1015-rt5682.yaml    | 32 +++++++++++++++++++
- 1 file changed, 32 insertions(+)
+ .../mt8192/mt8192-mt6359-rt1015-rt5682.c      | 34 ++++++++++++++-----
+ 1 file changed, 26 insertions(+), 8 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml b/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml
-index a781e7aaaa38..ad992342c883 100644
---- a/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml
-+++ b/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml
-@@ -18,6 +18,7 @@ properties:
-     enum:
-       - mediatek,mt8192_mt6359_rt1015_rt5682
-       - mediatek,mt8192_mt6359_rt1015p_rt5682
-+      - mediatek,mt8192_mt6359_rt1015p_rt5682s
+diff --git a/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c b/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c
+index 362bd6853e5e..328a71aa413b 100644
+--- a/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c
++++ b/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c
+@@ -28,9 +28,6 @@
+ #define RT1015_DEV0_NAME	"rt1015.1-0028"
+ #define RT1015_DEV1_NAME	"rt1015.1-0029"
  
-   mediatek,platform:
-     $ref: "/schemas/types.yaml#/definitions/phandle"
-@@ -27,11 +28,33 @@ properties:
-     $ref: "/schemas/types.yaml#/definitions/phandle"
-     description: The phandle of HDMI codec.
+-#define RT5682_CODEC_DAI	"rt5682-aif1"
+-#define RT5682_DEV0_NAME	"rt5682.1-001a"
+-
+ struct mt8192_mt6359_priv {
+ 	struct snd_soc_jack headset_jack;
+ 	struct snd_soc_jack hdmi_jack;
+@@ -626,14 +623,12 @@ SND_SOC_DAILINK_DEFS(i2s7,
  
-+  headset-codec:
-+    type: object
-+    properties:
-+      sound-dai:
-+        $ref: /schemas/types.yaml#/definitions/phandle
-+    required:
-+      - sound-dai
+ SND_SOC_DAILINK_DEFS(i2s8,
+ 		     DAILINK_COMP_ARRAY(COMP_CPU("I2S8")),
+-		     DAILINK_COMP_ARRAY(COMP_CODEC(RT5682_DEV0_NAME,
+-						   RT5682_CODEC_DAI)),
++		     DAILINK_COMP_ARRAY(COMP_EMPTY()),
+ 		     DAILINK_COMP_ARRAY(COMP_EMPTY()));
+ 
+ SND_SOC_DAILINK_DEFS(i2s9,
+ 		     DAILINK_COMP_ARRAY(COMP_CPU("I2S9")),
+-		     DAILINK_COMP_ARRAY(COMP_CODEC(RT5682_DEV0_NAME,
+-						   RT5682_CODEC_DAI)),
++		     DAILINK_COMP_ARRAY(COMP_EMPTY()),
+ 		     DAILINK_COMP_ARRAY(COMP_EMPTY()));
+ 
+ SND_SOC_DAILINK_DEFS(connsys_i2s,
+@@ -1114,7 +1109,7 @@ static int mt8192_mt6359_card_set_be_link(struct snd_soc_card *card,
+ static int mt8192_mt6359_dev_probe(struct platform_device *pdev)
+ {
+ 	struct snd_soc_card *card;
+-	struct device_node *platform_node, *hdmi_codec, *speaker_codec;
++	struct device_node *platform_node, *hdmi_codec, *headset_codec, *speaker_codec;
+ 	int ret, i;
+ 	struct snd_soc_dai_link *dai_link;
+ 	struct mt8192_mt6359_priv *priv;
+@@ -1145,6 +1140,13 @@ static int mt8192_mt6359_dev_probe(struct platform_device *pdev)
+ 		goto err_speaker_codec;
+ 	}
+ 
++	headset_codec = of_get_child_by_name(pdev->dev.of_node, "headset-codec");
++	if (!headset_codec) {
++		ret = -EINVAL;
++		dev_err_probe(&pdev->dev, ret, "Property 'headset_codec' missing or invalid\n");
++		goto err_headset_codec;
++	}
 +
-+  speaker-codec:
-+    type: object
-+    properties:
-+      sound-dai:
-+        minItems: 2
-+        maxItems: 2
-+        items:
-+          maxItems: 1
-+        $ref: /schemas/types.yaml#/definitions/phandle-array
-+    required:
-+      - sound-dai
-+
- additionalProperties: false
+ 	for_each_card_prelinks(card, i, dai_link) {
+ 		ret = mt8192_mt6359_card_set_be_link(card, dai_link, speaker_codec, "I2S3");
+ 		if (ret) {
+@@ -1153,6 +1155,20 @@ static int mt8192_mt6359_dev_probe(struct platform_device *pdev)
+ 			goto err_probe;
+ 		}
  
- required:
-   - compatible
-   - mediatek,platform
-+  - headset-codec
-+  - speaker-codec
- 
- examples:
-   - |
-@@ -44,6 +67,15 @@ examples:
-                         "aud_clk_mosi_on";
-         pinctrl-0 = <&aud_clk_mosi_off>;
-         pinctrl-1 = <&aud_clk_mosi_on>;
++		ret = mt8192_mt6359_card_set_be_link(card, dai_link, headset_codec, "I2S8");
++		if (ret) {
++			dev_err_probe(&pdev->dev, ret, "%s set headset_codec fail\n",
++				      dai_link->name);
++			goto err_probe;
++		}
 +
-+        headset-codec {
-+            sound-dai = <&rt5682>;
-+        };
++		ret = mt8192_mt6359_card_set_be_link(card, dai_link, headset_codec, "I2S9");
++		if (ret) {
++			dev_err_probe(&pdev->dev, ret, "%s set headset_codec fail\n",
++				      dai_link->name);
++			goto err_probe;
++		}
 +
-+        speaker-codec {
-+            sound-dai = <&rt1015_l>,
-+                        <&rt1015_r>;
-+        };
-     };
+ 		if (hdmi_codec && strcmp(dai_link->name, "TDM") == 0) {
+ 			dai_link->codecs->of_node = hdmi_codec;
+ 			dai_link->ignore = 0;
+@@ -1183,6 +1199,8 @@ static int mt8192_mt6359_dev_probe(struct platform_device *pdev)
+ 		dev_err_probe(&pdev->dev, ret, "%s snd_soc_register_card fail\n", __func__);
  
- ...
+ err_probe:
++	of_node_put(headset_codec);
++err_headset_codec:
+ 	of_node_put(speaker_codec);
+ err_speaker_codec:
+ 	of_node_put(hdmi_codec);
 -- 
 2.18.0
 
