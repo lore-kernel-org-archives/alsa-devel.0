@@ -4,74 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6B9DC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Mar 2022 19:47:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9EC82C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Mar 2022 20:13:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 73B2916EE;
-	Wed, 23 Mar 2022 20:46:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73B2916EE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0388816A5;
+	Wed, 23 Mar 2022 21:12:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0388816A5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648064833;
-	bh=q7XKqK7lYrNstZDl2OUGdDm0xZRoRoMopxSVN8wezhk=;
-	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=MX0YUuKsOydIpqaj9t1Qy8X+lWaXCgBSdsQ5rVCYeh9BgvFESF8nk6gTD7QCxxO9T
-	 bPIIwQ+rfoVzxcalkJSA3FOdRLslx3PnLFbVr+0HZvhcKETLVWbxuajM9bMuNziArb
-	 5CTaR6pZ3O3uICM8qdQ1yL3eQIaNXe305rFjGlMk=
+	s=default; t=1648066383;
+	bh=7ByDWDyS+LCqRXdsbKp6cLG4X3/H3svbbyMaS6YXycA=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=GQ7PfqgjEPxYv6o8w/vhXUolG7s9E/Cu2xHmMyF9jSCCWCjXFjHcg7KzyG8v2kOaU
+	 Fd8bVr3vbhJSd8eXXWtT74RxM6QciYinKZl40O4vwPWmkafA3ggQPmyYdTgjaQyhPl
+	 9BMYeFEAB76j5R6T1SL4pDp+9vDcSlrD69MEkCRY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0EC29F80165;
-	Wed, 23 Mar 2022 20:46:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8A99EF80165;
+	Wed, 23 Mar 2022 21:12:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D31E5F800F5; Wed, 23 Mar 2022 20:46:21 +0100 (CET)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ id 0D84DF802DB; Wed, 23 Mar 2022 21:12:10 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8E9EBF800AA
+ for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2022 21:12:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E9EBF800AA
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="r5WvsuU7"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3EFF4F800F5
- for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2022 20:46:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3EFF4F800F5
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="eRCumAPM"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1648064779; x=1679600779;
- h=message-id:date:mime-version:from:subject:to:cc:
- content-transfer-encoding;
- bh=q7XKqK7lYrNstZDl2OUGdDm0xZRoRoMopxSVN8wezhk=;
- b=eRCumAPMPDkJmHhiCCifjY1rgCsJukiA4MNjam7h4jZ62onxas47lotP
- wxOHslJ93w8ItzS2X2VzV5+LeZEKcRz0ocSwoJ8ryVG/KnAZC9El07GXB
- NPpfbuuQ257PLe22YZ19+Px1AnIFO1NkDqYNNvCB3WkuNUFdvTeJ4GY02
- MP1RjqSAkxcruMDVHnxXVZ7qqGup9yyey2lnQsp0AN06CeWdmHXIuQ1jV
- 48kchKczOvBKjDONX5Ex7SKE6c/gSaLprtCcApXX3dqPCcJy4GTCmZsQW
- ek8EM67lNPRYo6Z2c43Qc/4MtZUwVeKkc8HibRHYz3mOqiqTcUOZR8Y12 Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10295"; a="283064945"
-X-IronPort-AV: E=Sophos;i="5.90,204,1643702400"; d="scan'208";a="283064945"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Mar 2022 12:46:01 -0700
-X-IronPort-AV: E=Sophos;i="5.90,204,1643702400"; d="scan'208";a="519497343"
-Received: from thientha-mobl1.amr.corp.intel.com (HELO [10.251.10.76])
- ([10.251.10.76])
- by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Mar 2022 12:46:00 -0700
-Message-ID: <d0559e97-c4a0-b817-428c-d3e305390270@linux.intel.com>
-Date: Wed, 23 Mar 2022 14:45:59 -0500
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 6DC75615AC;
+ Wed, 23 Mar 2022 20:12:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F9D4C340E8;
+ Wed, 23 Mar 2022 20:12:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1648066323;
+ bh=7ByDWDyS+LCqRXdsbKp6cLG4X3/H3svbbyMaS6YXycA=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=r5WvsuU7sTh4lZioOOjEfVNNFSdwhe9JVqzBDFKeDO4KtA63jrKx7CNQEJ0aAWqYL
+ s4uVgaRlum7d5EycqsElwaYtHA+faCpxHmEM/MZ1/Z6xT4D0DEdL6rXCOOAmLyJFPE
+ Gg5tcHZrJdbLUUdqV6LqLFhxnnE9UzADSCgnSAjjFCYlF0nQLSHnaNf6ICIhxPj7bc
+ n1nz9Ck0fWbGSJBOT+6WQkF8Xe2abnH9lCAmjgUTK5S1HVHKG+Iyi+0+5ZnA//XYXP
+ Q8Y7FVGN8F3ych09XOv2a2ONpLC3aDyil5i8xR07iOKkCssN56dy/VBU+AfMQ1XcBm
+ W7TPili0Tw5Aw==
+Date: Wed, 23 Mar 2022 20:11:58 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: Conceptual bug on SoundWire probe/remove?
+Message-ID: <Yjt/DrGegbQHl76U@sirena.org.uk>
+References: <d0559e97-c4a0-b817-428c-d3e305390270@linux.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.5.0
-Content-Language: en-US
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Conceptual bug on SoundWire probe/remove?
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Vinod Koul <vkoul@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="VLUwqOQObN1wGNIg"
+Content-Disposition: inline
+In-Reply-To: <d0559e97-c4a0-b817-428c-d3e305390270@linux.intel.com>
+X-Cookie: Nice guys get sick.
 Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- Mark Brown <broonie@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.com>,
+ Vinod Koul <vkoul@kernel.org>,
  Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Takashi Iwai <tiwai@suse.com>
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,63 +85,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
-I could use feedback/guidance on a possible conceptual bug in the 
-SoundWire probe and bus handling.
 
-When we probe a driver, the code does this:
+--VLUwqOQObN1wGNIg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-static int sdw_drv_probe(struct device *dev)
-{
-	struct sdw_slave *slave = dev_to_sdw_dev(dev);
-	struct sdw_driver *drv = drv_to_sdw_driver(dev->driver);
-	const struct sdw_device_id *id;
-	const char *name;
-	int ret;
+On Wed, Mar 23, 2022 at 02:45:59PM -0500, Pierre-Louis Bossart wrote:
 
-	/*
-	 * fw description is mandatory to bind
-	 */
-	if (!dev->fwnode)
-		return -ENODEV;
+> The last line is the problematic one. If at some point, the user does an
+> rmmod and unbinds the SoundWire codec driver, the .remove will be called and
+> the 'drv' will no longer be valid, but we will still have a reference to
+> drv->ops and use that pointer in the bus code, e.g.
 
-	if (!IS_ENABLED(CONFIG_ACPI) && !dev->of_node)
-		return -ENODEV;
+...
 
-	id = sdw_get_device_id(slave, drv);
-	if (!id)
-		return -ENODEV;
+> where I force-reset this slave->ops pointer, but it is likely to be very
+> racy.
 
-	slave->ops = drv->ops;
+> We probably need to avoid such references, or have a clean mechanism to
+> unbind, e.g. with all commands and interrupts stopped while the codec driver
+> .remove routine is handled.
 
-The last line is the problematic one. If at some point, the user does an 
-rmmod and unbinds the SoundWire codec driver, the .remove will be called 
-and the 'drv' will no longer be valid, but we will still have a 
-reference to drv->ops and use that pointer in the bus code, e.g.
+Your analysis seems pretty much spot on - you'll need locking or other
+measures to make sure there are no live callbacks from the bus while the
+device is being removed.  It's a fairly standard problem unfortunately.
 
-		/* Update the Slave driver */
-		if (slave_notify && slave->ops &&
-		    slave->ops->interrupt_callback) {
-			slave_intr.sdca_cascade = sdca_cascade;
-			slave_intr.control_port = clear;
-			memcpy(slave_intr.port, &port_status,
-			       sizeof(slave_intr.port));
+--VLUwqOQObN1wGNIg
+Content-Type: application/pgp-signature; name="signature.asc"
 
-			slave->ops->interrupt_callback(slave,
-&slave_intr);
-		}
+-----BEGIN PGP SIGNATURE-----
 
-I noodled with a potential fix in
-https://github.com/thesofproject/linux/pull/3534/commits/82d64fb0fd39b532263f060a8ec86e47e9ab305b
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmI7fw4ACgkQJNaLcl1U
+h9AyMwf/Q3P6d2dQv4p0W8VwjJWKCPuKfkgL5UfuxOmypjnTKGPiT2DpNLtm2szg
+z+Q1ExYoO6ahRtmXZujWaE2i8Lzin6OIGuQrvOwhZoGiGqmrsQ9YfB3Lc3m75YIe
+JGm1ap41mKaF7hwqg8a0cRJWz0/R7e4tkN+AFcN5i/Hd+Xl0COepxE99imNeIDMG
+/2brFhnV9UMkH/KYzc7h7nfN6fEfFpkhaSUTsJAR89nnmxKbyzu6Jt3INsnppAxk
+MwaQRwf4hn3BJ8IXk+IDQ4dKNtnSUHkZzPYo72Wxl+VVAOXB9xLmtjU/XedTwb0g
+26OP6Us6aS8JNbmpDOP4ci6gsyqw+Q==
+=/t/Y
+-----END PGP SIGNATURE-----
 
-where I force-reset this slave->ops pointer, but it is likely to be very 
-racy.
-
-We probably need to avoid such references, or have a clean mechanism to 
-unbind, e.g. with all commands and interrupts stopped while the codec 
-driver .remove routine is handled.
-
-Initial error reports at https://github.com/thesofproject/linux/issues/3531
-
-Suggestions and comments welcome, thanks!
--Pierre
+--VLUwqOQObN1wGNIg--
