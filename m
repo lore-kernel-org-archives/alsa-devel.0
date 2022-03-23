@@ -4,76 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB06DC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Mar 2022 08:09:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21896C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Mar 2022 08:16:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0DFF616D9;
-	Wed, 23 Mar 2022 09:08:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0DFF616D9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5C50216DB;
+	Wed, 23 Mar 2022 09:15:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C50216DB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648022984;
-	bh=bKWUYaPmRwZBXbIQvYluCzRLQ9byY907LwzxS8aSO4k=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1648023378;
+	bh=QWe8jmBPdqBxhBsjDcaVIluy3OBdjlaYbzclENaZVJ4=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tHI+ftbZnaFM0gtsropCXOMV5+S3kjiGZBUViPVhgEvDWFhy+S+1DAMrOuHNjR+Vj
-	 Etx2JvoalxSYo4gKM/GWvAL/bYdzHNopj/pJGUbVWyZXMV/3DIxum3db9LbtQvFb1m
-	 85JZD65fbn6dvlHInEsDn4vsoCCQSbkDcHmUG5Eg=
+	b=qxgrR4QiFIZoITpijXuaK9jkaoofCedgDWhnIe6IO9hmebmXb4OQlqRrHTLBkoFnY
+	 OdzSPu5pq46R3sxBGWIU60d196ZpeKwKWz2DYcbdeDmVeM3F0/uf9oNoPi80/QUPAS
+	 3fHEpXI49uAKJn5ENPZ00fjZheBVs5MXQbASfL1Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9F98EF80165;
-	Wed, 23 Mar 2022 09:08:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CF56AF80165;
+	Wed, 23 Mar 2022 09:15:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 49550F802DB; Wed, 23 Mar 2022 09:08:52 +0100 (CET)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id A979BF802DB; Wed, 23 Mar 2022 09:15:26 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 76B04F800F5
- for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2022 09:08:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76B04F800F5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8D48CF800AA
+ for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2022 09:15:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D48CF800AA
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="l5WHtC9/"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1648022926; x=1679558926;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=bKWUYaPmRwZBXbIQvYluCzRLQ9byY907LwzxS8aSO4k=;
- b=l5WHtC9/fasO4ogdsgoXEdGD8OOvTp16gXXqKVojqZGw20sevBEXkqjw
- OznPWQ3vcOVVb2Aic0ASfw3jmvDJDOJsSmlkstcEByLgLynUv4vWjC6kX
- 2sVHipWTGa9QPM2ctZ7So0co1O0jXynP4gwFKOzfKWxw20JHZxYEJ8Jhh
- Bf362EeWBN7QZLgfoG7ABUjnQOELHFg6pXhe8ZL86dz0snz1SNZ2gkR5X
- YbA4p3S8h8+ueZ9Q8nqyFC7E1BZLk3uqUPUraBZg79HRUbBaXt0AF7R2D
- cr8cgw21hHTE+VTVHjL5um1SD73Org3lAA2jImNBpulslsZ6/z+qqEjhs g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10294"; a="282894290"
-X-IronPort-AV: E=Sophos;i="5.90,203,1643702400"; d="scan'208";a="282894290"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Mar 2022 01:08:28 -0700
-X-IronPort-AV: E=Sophos;i="5.90,203,1643702400"; d="scan'208";a="560790474"
-Received: from arturlex-mobl1.ger.corp.intel.com (HELO [10.99.249.37])
- ([10.99.249.37])
- by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Mar 2022 01:08:27 -0700
-Message-ID: <db933c9e-bf7b-dec6-8022-75074f9cebf7@linux.intel.com>
-Date: Wed, 23 Mar 2022 09:08:25 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="Goihwp7Z"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="sC0InqTC"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 093B41F37F;
+ Wed, 23 Mar 2022 08:15:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1648023320; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=g1osbJeXlQpB5//z8F0X+vu5CcbRy6xr+WwjWLHu7ME=;
+ b=Goihwp7Zy9WnNOAl84wO3Q/qKMVMCFj/rWC1JoKHO8SvxgV9u3GK9IUpAB687OYCoBGRaL
+ 1PDX7tSszzm8Lx7GqvDWTKs0KXlF3NKQ4X5JQ4NJ/YZJhMsfvtn3W+2x3kRby+cTVHWLhF
+ bFfrcKHpeDcVDmZDpKU2ayVKXhbHloY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1648023320;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=g1osbJeXlQpB5//z8F0X+vu5CcbRy6xr+WwjWLHu7ME=;
+ b=sC0InqTC4Xpudf7v+aBXZzhHaywMhlBzP21ZVPjCq8EC+vBAPxeA8r7+CM8N6TvhLDSX+b
+ nykL+KVgp4vomXCg==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id F0A8DA3B81;
+ Wed, 23 Mar 2022 08:15:19 +0000 (UTC)
+Date: Wed, 23 Mar 2022 09:15:19 +0100
+Message-ID: <s5hy211ult4.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Amadeusz SX2awiX4ski
+ <amadeuszx.slawinski@linux.intel.com>
 Subject: Re: [PATCH 3/4] ALSA: pcm: Fix races among concurrent prepare and
  hw_params/hw_free calls
-Content-Language: en-US
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+In-Reply-To: <db933c9e-bf7b-dec6-8022-75074f9cebf7@linux.intel.com>
 References: <20220322170720.3529-1-tiwai@suse.de>
  <20220322170720.3529-4-tiwai@suse.de>
-From: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-In-Reply-To: <20220322170720.3529-4-tiwai@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Hu Jiahui <kirin.say@gmail.com>, linux-kernel@vger.kernel.org
+ <db933c9e-bf7b-dec6-8022-75074f9cebf7@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, Hu Jiahui <kirin.say@gmail.com>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,103 +92,95 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 3/22/2022 6:07 PM, Takashi Iwai wrote:
-> Like the previous fixes to hw_params and hw_free ioctl races, we need
-> to paper over the concurrent prepare ioctl calls against hw_params and
-> hw_free, too.
+On Wed, 23 Mar 2022 09:08:25 +0100,
+Amadeusz SX2awiX4ski wrote:
 > 
-> This patch implements the locking with the existing
-> runtime->buffer_mutex for prepare ioctls.  Unlike the previous case
-> for snd_pcm_hw_hw_params() and snd_pcm_hw_free(), snd_pcm_prepare() is
-> performed to the linked streams, hence the lock can't be applied
-> simply on the top.  For tracking the lock in each linked substream, we
-> modify snd_pcm_action_group() slightly and apply the buffer_mutex for
-> the case stream_lock=false (formerly there was no lock applied)
-> there.
+> On 3/22/2022 6:07 PM, Takashi Iwai wrote:
+> > Like the previous fixes to hw_params and hw_free ioctl races, we need
+> > to paper over the concurrent prepare ioctl calls against hw_params and
+> > hw_free, too.
+> >
+> > This patch implements the locking with the existing
+> > runtime->buffer_mutex for prepare ioctls.  Unlike the previous case
+> > for snd_pcm_hw_hw_params() and snd_pcm_hw_free(), snd_pcm_prepare() is
+> > performed to the linked streams, hence the lock can't be applied
+> > simply on the top.  For tracking the lock in each linked substream, we
+> > modify snd_pcm_action_group() slightly and apply the buffer_mutex for
+> > the case stream_lock=false (formerly there was no lock applied)
+> > there.
+> >
+> > Cc: <stable@vger.kernel.org>
+> > Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> > ---
+> >   sound/core/pcm_native.c | 32 ++++++++++++++++++--------------
+> >   1 file changed, 18 insertions(+), 14 deletions(-)
+> >
+> > diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+> > index 266895374b83..0e4fbf5fd87b 100644
+> > --- a/sound/core/pcm_native.c
+> > +++ b/sound/core/pcm_native.c
+> > @@ -1190,15 +1190,17 @@ struct action_ops {
+> >   static int snd_pcm_action_group(const struct action_ops *ops,
+> >   				struct snd_pcm_substream *substream,
+> >   				snd_pcm_state_t state,
+> > -				bool do_lock)
+> > +				bool stream_lock)
+> >   {
+> >   	struct snd_pcm_substream *s = NULL;
+> >   	struct snd_pcm_substream *s1;
+> >   	int res = 0, depth = 1;
+> >     	snd_pcm_group_for_each_entry(s, substream) {
+> > -		if (do_lock && s != substream) {
+> > -			if (s->pcm->nonatomic)
+> > +		if (s != substream) {
+> > +			if (!stream_lock)
+> > +				mutex_lock_nested(&s->runtime->buffer_mutex, depth);
+> > +			else if (s->pcm->nonatomic)
+> >   				mutex_lock_nested(&s->self_group.mutex, depth);
+> >   			else
+> >   				spin_lock_nested(&s->self_group.lock, depth);
 > 
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->   sound/core/pcm_native.c | 32 ++++++++++++++++++--------------
->   1 file changed, 18 insertions(+), 14 deletions(-)
+> Maybe
+> 	if (!stream_lock)
+> 		mutex_lock_nested(&s->runtime->buffer_mutex, depth);
+> 	else
+> 		snd_pcm_group_lock(&s->self_group, s->pcm->nonatomic);
+> ?
+
+No, it must be nested locks with the given subclass.  That's why it
+has been the open code beforehand, too.
+
+> > @@ -1226,18 +1228,18 @@ static int snd_pcm_action_group(const struct action_ops *ops,
+> >   		ops->post_action(s, state);
+> >   	}
+> >    _unlock:
+> > -	if (do_lock) {
+> > -		/* unlock streams */
+> > -		snd_pcm_group_for_each_entry(s1, substream) {
+> > -			if (s1 != substream) {
+> > -				if (s1->pcm->nonatomic)
+> > -					mutex_unlock(&s1->self_group.mutex);
+> > -				else
+> > -					spin_unlock(&s1->self_group.lock);
+> > -			}
+> > -			if (s1 == s)	/* end */
+> > -				break;
+> > +	/* unlock streams */
+> > +	snd_pcm_group_for_each_entry(s1, substream) {
+> > +		if (s1 != substream) {
+> > +			if (!stream_lock)
+> > +				mutex_unlock(&s1->runtime->buffer_mutex);
+> > +			else if (s1->pcm->nonatomic)
+> > +				mutex_unlock(&s1->self_group.mutex);
+> > +			else
+> > +				spin_unlock(&s1->self_group.lock);
 > 
-> diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-> index 266895374b83..0e4fbf5fd87b 100644
-> --- a/sound/core/pcm_native.c
-> +++ b/sound/core/pcm_native.c
-> @@ -1190,15 +1190,17 @@ struct action_ops {
->   static int snd_pcm_action_group(const struct action_ops *ops,
->   				struct snd_pcm_substream *substream,
->   				snd_pcm_state_t state,
-> -				bool do_lock)
-> +				bool stream_lock)
->   {
->   	struct snd_pcm_substream *s = NULL;
->   	struct snd_pcm_substream *s1;
->   	int res = 0, depth = 1;
->   
->   	snd_pcm_group_for_each_entry(s, substream) {
-> -		if (do_lock && s != substream) {
-> -			if (s->pcm->nonatomic)
-> +		if (s != substream) {
-> +			if (!stream_lock)
-> +				mutex_lock_nested(&s->runtime->buffer_mutex, depth);
-> +			else if (s->pcm->nonatomic)
->   				mutex_lock_nested(&s->self_group.mutex, depth);
->   			else
->   				spin_lock_nested(&s->self_group.lock, depth);
+> And similarly to above, use snd_pcm_group_unlock() here?
 
-Maybe
-	if (!stream_lock)
-		mutex_lock_nested(&s->runtime->buffer_mutex, depth);
-	else
-		snd_pcm_group_lock(&s->self_group, s->pcm->nonatomic);
-?
+This side would be possible to use that macro but it's still better to
+have the consistent call pattern.
 
-> @@ -1226,18 +1228,18 @@ static int snd_pcm_action_group(const struct action_ops *ops,
->   		ops->post_action(s, state);
->   	}
->    _unlock:
-> -	if (do_lock) {
-> -		/* unlock streams */
-> -		snd_pcm_group_for_each_entry(s1, substream) {
-> -			if (s1 != substream) {
-> -				if (s1->pcm->nonatomic)
-> -					mutex_unlock(&s1->self_group.mutex);
-> -				else
-> -					spin_unlock(&s1->self_group.lock);
-> -			}
-> -			if (s1 == s)	/* end */
-> -				break;
-> +	/* unlock streams */
-> +	snd_pcm_group_for_each_entry(s1, substream) {
-> +		if (s1 != substream) {
-> +			if (!stream_lock)
-> +				mutex_unlock(&s1->runtime->buffer_mutex);
-> +			else if (s1->pcm->nonatomic)
-> +				mutex_unlock(&s1->self_group.mutex);
-> +			else
-> +				spin_unlock(&s1->self_group.lock);
 
-And similarly to above, use snd_pcm_group_unlock() here?
+thanks,
 
->   		}
-> +		if (s1 == s)	/* end */
-> +			break;
->   	}
->   	return res;
->   }
-> @@ -1367,10 +1369,12 @@ static int snd_pcm_action_nonatomic(const struct action_ops *ops,
->   
->   	/* Guarantee the group members won't change during non-atomic action */
->   	down_read(&snd_pcm_link_rwsem);
-> +	mutex_lock(&substream->runtime->buffer_mutex);
->   	if (snd_pcm_stream_linked(substream))
->   		res = snd_pcm_action_group(ops, substream, state, false);
->   	else
->   		res = snd_pcm_action_single(ops, substream, state);
-> +	mutex_unlock(&substream->runtime->buffer_mutex);
->   	up_read(&snd_pcm_link_rwsem);
->   	return res;
->   }
-
+Takashi
