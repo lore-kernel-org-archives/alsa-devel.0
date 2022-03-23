@@ -4,55 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2124DC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Mar 2022 09:13:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EFD73C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Mar 2022 09:14:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 661D1170D;
-	Wed, 23 Mar 2022 10:13:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 661D1170D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 36A721726;
+	Wed, 23 Mar 2022 10:13:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 36A721726
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648026837;
-	bh=IU/crHatmngN2x8n8sFszzi8i5dyhqWfy40w/oKZK1Q=;
+	s=default; t=1648026856;
+	bh=i2KOOwGkPefud8uEjfSEW99awEvXTTup/pS8oavJJcE=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=XXaGP9Zaisoru/vuyGHeze/PY5f30+vlu0Ii9B/p8IC4wCMX62WUO5Zbc6e5ENqob
-	 XiFgKlRVy3RhcOSOFQQhwkR/u7aXKrtk0JgBUA+j7NpQ6RPxXbailmdsuqfIfpyq0I
-	 OUE6fC1xMbbd4KGc5eBfUnCEi4wQ5zVWQC9wnYwk=
+	b=guxCAl9rkzMHfjSxMeKOrekvSkzxU58DkwTIxdhuJbKTXlfwkFpPEMWULnf4VymQg
+	 PUwvx0gbRSN5DPyIBcJXdsnx3Sso0JdTRq2wzEKDu7xhnQcP9OmnOekNv8UVsg9/1h
+	 GCBddzVN5jfdtJVut2wx+zUxTD1H4HDVQJDe3zBo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AC368F80310;
-	Wed, 23 Mar 2022 10:12:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 555E4F80516;
+	Wed, 23 Mar 2022 10:12:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 16A9CF802DB; Wed, 23 Mar 2022 04:43:16 +0100 (CET)
-Received: from mail.meizu.com (edge05.meizu.com [157.122.146.251])
- (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+ id 34F1FF802DB; Wed, 23 Mar 2022 10:10:13 +0100 (CET)
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1427EF800AA
- for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2022 04:43:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1427EF800AA
-Received: from IT-EXMB-1-125.meizu.com (172.16.1.125) by mz-mail12.meizu.com
- (172.16.1.108) with Microsoft SMTP Server (TLS) id 14.3.487.0; Wed, 23 Mar
- 2022 11:43:02 +0800
-Received: from meizu.meizu.com (172.16.137.70) by IT-EXMB-1-125.meizu.com
- (172.16.1.125) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.14; Wed, 23 Mar
- 2022 11:43:01 +0800
-From: Haowen Bai <baihaowen@meizu.com>
-To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
- <tiwai@suse.com>, <Vijendar.Mukunda@amd.com>
-Subject: [PATCH] ASoC: amd: Fix duplicate included module.h/io.h
-Date: Wed, 23 Mar 2022 11:42:59 +0800
-Message-ID: <1648006979-31031-1-git-send-email-baihaowen@meizu.com>
-X-Mailer: git-send-email 2.7.4
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1AC47F800AA;
+ Wed, 23 Mar 2022 10:10:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1AC47F800AA
+Received: from kwepemi500015.china.huawei.com (unknown [172.30.72.54])
+ by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4KNjBj2pW5zBrft;
+ Wed, 23 Mar 2022 17:06:05 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by kwepemi500015.china.huawei.com
+ (7.221.188.92) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.21; Wed, 23 Mar
+ 2022 17:10:00 +0800
+From: Zheng Bin <zhengbin13@huawei.com>
+To: <pierre-louis.bossart@linux.intel.com>, <lgirdwood@gmail.com>,
+ <ranjani.sridharan@linux.intel.com>, <kai.vehmanen@linux.intel.com>,
+ <daniel.baluta@nxp.com>, <broonie@kernel.org>, <perex@perex.cz>,
+ <tiwai@suse.com>, <peter.ujfalusi@linux.intel.com>,
+ <sound-open-firmware@alsa-project.org>, <alsa-devel@alsa-project.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] ASoC: SOF: Intel: Fix build error without
+ SND_SOC_SOF_PCI_DEV
+Date: Wed, 23 Mar 2022 17:25:01 +0800
+Message-ID: <20220323092501.145879-1-zhengbin13@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Originating-IP: [172.16.137.70]
-X-ClientProxiedBy: IT-EXMB-1-126.meizu.com (172.16.1.126) To
- IT-EXMB-1-125.meizu.com (172.16.1.125)
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemi500015.china.huawei.com (7.221.188.92)
+X-CFilter-Loop: Reflected
 X-Mailman-Approved-At: Wed, 23 Mar 2022 10:12:33 +0100
-Cc: alsa-devel@alsa-project.org, Haowen Bai <baihaowen@meizu.com>,
- linux-kernel@vger.kernel.org
+Cc: tangyizhou@huawei.com, limingming.li@huawei.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,33 +74,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Clean up the following includecheck warning:
+If SND_SOC_SOF_PCI_DEV is n, bulding fails:
 
-sound/soc/amd/vangogh/acp5x-mach.c: linux/module.h is included more than once.
-sound/soc/amd/vangogh/acp5x-mach.c: linux/io.h is included more than once.
+sound/soc/sof/intel/pci-tng.o:(.data+0x1c0): undefined reference to `sof_pci_probe'
+sound/soc/sof/intel/pci-tng.o:(.data+0x1c8): undefined reference to `sof_pci_remove'
+sound/soc/sof/intel/pci-tng.o:(.data+0x1e0): undefined reference to `sof_pci_shutdown'
+sound/soc/sof/intel/pci-tng.o:(.data+0x290): undefined reference to `sof_pci_pm'
 
-No functional change.
+Make SND_SOC_SOF_MERRIFIELD select SND_SOC_SOF_PCI_DEV to fix this.
 
-Signed-off-by: Haowen Bai <baihaowen@meizu.com>
+Fixes: 8d4ba1be3d22 ("ASoC: SOF: pci: split PCI into different drivers")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zheng Bin <zhengbin13@huawei.com>
 ---
- sound/soc/amd/vangogh/acp5x-mach.c | 2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/sof/intel/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/amd/vangogh/acp5x-mach.c b/sound/soc/amd/vangogh/acp5x-mach.c
-index 14cf325..cc8316b 100644
---- a/sound/soc/amd/vangogh/acp5x-mach.c
-+++ b/sound/soc/amd/vangogh/acp5x-mach.c
-@@ -17,10 +17,8 @@
- #include <linux/clk.h>
- #include <linux/gpio.h>
- #include <linux/gpio/consumer.h>
--#include <linux/module.h>
- #include <linux/i2c.h>
- #include <linux/input.h>
--#include <linux/io.h>
- #include <linux/acpi.h>
- #include <linux/dmi.h>
- 
--- 
-2.7.4
+diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
+index b53f216d4ecc..172419392b33 100644
+--- a/sound/soc/sof/intel/Kconfig
++++ b/sound/soc/sof/intel/Kconfig
+@@ -84,6 +84,7 @@ if SND_SOC_SOF_PCI
+ config SND_SOC_SOF_MERRIFIELD
+ 	tristate "SOF support for Tangier/Merrifield"
+ 	default SND_SOC_SOF_PCI
++	select SND_SOC_SOF_PCI_DEV
+ 	select SND_SOC_SOF_INTEL_ATOM_HIFI_EP
+ 	help
+ 	  This adds support for Sound Open Firmware for Intel(R) platforms
+--
+2.31.1
 
