@@ -4,66 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 407A7C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Mar 2022 05:32:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F506C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Mar 2022 05:40:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4F253168C;
-	Thu, 24 Mar 2022 06:31:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F253168C
+	by alsa0.perex.cz (Postfix) with ESMTPS id E800F168D;
+	Thu, 24 Mar 2022 06:39:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E800F168D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648099933;
-	bh=4iteKqxsPzZLy0etLDRis5xcpFfzFqpSStuX8ZFgp6M=;
-	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=jpbT/999Mmnpqye8D316FWpZk8793qkR4W1B3USeLYgJgtNF+8e6TbWA0+dPR6F80
-	 jcmEJViB3ad/qKbigqlhsAyywJAx+SRkactmMWcXKWDFiL6X0nZdgR2b38QU+08Z/r
-	 GAMUGuTxT3IBZJha6jX2N2B/oD3ybP6LPFuSilDQ=
+	s=default; t=1648100402;
+	bh=QYXuX0WMBET/2e/3ElgS8A3KwaSResO7+GWCFe4w+SU=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=FPecq81AHVlKx3AyUo1iqWRW7688bBJ0kUvYKPMwSIbThPel+KLUkvWjTySr6GmvK
+	 18/LUeTQJepGWqPxkz19ELY+FOy/4OrTz3HRlpDQ6SuBIpMhBPLvZnFgCSZUqLAxIN
+	 9GX5dwVhtpb9Io7AKG5BtAXjz6T/x8ZqwGAbRSEM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BEC72F80154;
-	Thu, 24 Mar 2022 06:31:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4D16EF80507;
+	Thu, 24 Mar 2022 06:39:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 25F47F80165; Thu, 24 Mar 2022 06:31:20 +0100 (CET)
+ id 1116AF80139; Thu, 24 Mar 2022 06:39:08 +0100 (CET)
 Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 40AEAF800AA
- for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2022 06:31:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40AEAF800AA
-X-UUID: 3adf9d07ec0d4988b759eb87e86a33be-20220324
-X-UUID: 3adf9d07ec0d4988b759eb87e86a33be-20220324
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8FD43F80139
+ for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2022 06:39:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8FD43F80139
+X-UUID: ba22f226372e49a3ac08b383e9f021dc-20220324
+X-UUID: ba22f226372e49a3ac08b383e9f021dc-20220324
 Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by
- mailgw01.mediatek.com (envelope-from <jiaxin.yu@mediatek.com>)
+ mailgw01.mediatek.com (envelope-from <trevor.wu@mediatek.com>)
  (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
- with ESMTP id 162818175; Thu, 24 Mar 2022 13:31:06 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 24 Mar 2022 13:31:05 +0800
-Received: from mhfsdcap04 (10.17.3.154) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 24 Mar 2022 13:31:04 +0800
-Message-ID: <6c331bb8e95aa7c1a88a6161622f51ff2fee3f98.camel@mediatek.com>
-Subject: Re: [v6 1/4] ASoC: dt-bindings: mt8192-mt6359: add new compatible
- and new properties
-From: Jiaxin Yu <jiaxin.yu@mediatek.com>
-To: Tzung-Bi Shih <tzungbi@kernel.org>
-Date: Thu, 24 Mar 2022 13:31:04 +0800
-In-Reply-To: <YjvBLf/8M1WUS/L+@google.com>
-References: <20220323164442.921-1-jiaxin.yu@mediatek.com>
- <20220323164442.921-2-jiaxin.yu@mediatek.com> <YjvBLf/8M1WUS/L+@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+ with ESMTP id 392250870; Thu, 24 Mar 2022 13:38:56 +0800
+Received: from mtkexhb01.mediatek.inc (172.21.101.102) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 24 Mar 2022 13:38:54 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by mtkexhb01.mediatek.inc
+ (172.21.101.102) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+ Thu, 24 Mar 2022 13:38:54 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via
+ Frontend Transport; Thu, 24 Mar 2022 13:38:54 +0800
+From: Trevor Wu <trevor.wu@mediatek.com>
+To: <broonie@kernel.org>, <tiwai@suse.com>, <robh+dt@kernel.org>,
+ <matthias.bgg@gmail.com>
+Subject: [PATCH v4 0/6] ASoC: mediatek: Add support for MT8195 sound card with
+ max98390 and rt5682
+Date: Thu, 24 Mar 2022 13:38:45 +0800
+Message-ID: <20220324053851.27350-1-trevor.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 X-MTK: N
-Cc: devicetree@vger.kernel.org, linmq006@gmail.com, alsa-devel@alsa-project.org,
- robh+dt@kernel.org, linux-kernel@vger.kernel.org,
- Project_Global_Chrome_Upstream_Group@mediatek.com, broonie@kernel.org,
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, tzungbi@google.com, miles.chen@mediatek.com,
  linux-mediatek@lists.infradead.org, trevor.wu@mediatek.com,
- matthias.bgg@gmail.com, aaronyu@google.com,
- linux-arm-kernel@lists.infradead.org, angelogioacchino.delregno@collabora.com
+ yc.hung@mediatek.com, aaronyu@google.com, linux-arm-kernel@lists.infradead.org,
+ angelogioacchino.delregno@collabora.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,28 +77,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 2022-03-24 at 08:54 +0800, Tzung-Bi Shih wrote:
-> On Thu, Mar 24, 2022 at 12:44:39AM +0800, Jiaxin Yu wrote:
-> > +  speaker-codec:
-> 
-> If it is possible to have 1 or more items, would "speaker-codecs" be
-> a better
-> name?
+This series of patches adds support for mt8195 board with mt6359, max98390
+and rt5682.
 
-Hi Tzung-Bi,
+To prevent from copy-paste components, mt8195 machine drivers and 
+dt-bindings are merged in the patch.
 
-Yes, it is better to use "speaker-codecs", I will change it that in
-driver patch and bindings patch.
+Patches are based on broonie tree "for-next" branch.
 
-Jiaxin.Yu
-Thanks
-> 
-> > +    type: object
-> > +    properties:
-> > +      sound-dai:
-> > +        minItems: 2
-> 
-> It should be 1.  Consider of rt1015p case.
+Changes since v3:
+  - apply some suggested changes from reviewers
 
-Yes, I will correct it.
+Changes since v2:
+  - split "merge machine driver" into two parts for better understanding
+
+Changes since v1:
+  - remove merged patches about reset controller
+  - propose a common machine driver instead of machine driver common code
+  - propose a common dt-bindings for mt8195 sound card
+
+Trevor Wu (6):
+  ASoC: mediatek: mt8195: revise mt8195-mt6359-rt1019-rt5682.c
+  ASoC: mediatek: mt8195: merge machine driver
+  ASoC: dt-bindings: mediatek: mt8195: merge mt8195 machine yaml
+  ASoC: mediatek: mt8195: rename card controls
+  ASoC: mediatek: mt8195: add machine support for max98390 and rt5682
+  ASoC: dt-bindings: mediatek: mt8195: support
+    mt8195-mt6359-max98390-rt5682
+
+ .../sound/mt8195-mt6359-rt1011-rt5682.yaml    |   51 -
+ ...-rt1019-rt5682.yaml => mt8195-mt6359.yaml} |    9 +-
+ sound/soc/mediatek/Kconfig                    |   26 +-
+ sound/soc/mediatek/mt8195/Makefile            |    3 +-
+ .../mt8195/mt8195-mt6359-rt1011-rt5682.c      | 1198 -----------------
+ ...mt6359-rt1019-rt5682.c => mt8195-mt6359.c} |  862 +++++++-----
+ 6 files changed, 566 insertions(+), 1583 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1011-rt5682.yaml
+ rename Documentation/devicetree/bindings/sound/{mt8195-mt6359-rt1019-rt5682.yaml => mt8195-mt6359.yaml} (84%)
+ delete mode 100644 sound/soc/mediatek/mt8195/mt8195-mt6359-rt1011-rt5682.c
+ rename sound/soc/mediatek/mt8195/{mt8195-mt6359-rt1019-rt5682.c => mt8195-mt6359.c} (78%)
+
+-- 
+2.18.0
 
