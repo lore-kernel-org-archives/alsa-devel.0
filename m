@@ -4,76 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24EB4C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Mar 2022 13:50:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42FD9C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Mar 2022 13:58:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B4A5916BE;
-	Fri, 25 Mar 2022 14:49:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B4A5916BE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 63E89166F;
+	Fri, 25 Mar 2022 14:57:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 63E89166F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648216231;
-	bh=wtFdY7L9jEbHbUZpEsaJVL8bmFr2sDAxxXdfZ2px3oI=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1648216685;
+	bh=Yok8IySePES7GFEb7QlYbVFKQbSvbM5xHMo/W3KrAq8=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MftasnLLZ2zkJ3Ufv2wiHmPJL+OcuGh2zOjpq1lGXQ4IbCte1W/bUsn0EoyMr/rnM
-	 gzobsrkw5JKFNBHhEfMO7XawjAQ3LCyjesD6JaYcsi0Kvv6bApbVshSLYm72IC656W
-	 nS8DsA3WZrkwSS0Sn+4xls62F4EtSn7KRIvNCSv4=
+	b=ZXKLpXR2KTT8AYs9qScudBy+NnxiPG5EKaduhE3ODZAZIB2eEQmw1W86cC7o/lH+o
+	 0UIMkiR9pAhSSd+QNc75DxHLgoQEjflo/K0oQgtNGoXaxpoSwHPsTt26cP1o7BkJas
+	 OLmRjKJ/94f+6JJ6DPAPpbynd90gxKzL6loDBBaQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4FC60F8012C;
-	Fri, 25 Mar 2022 14:49:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E2731F800F4;
+	Fri, 25 Mar 2022 14:57:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F10BFF80162; Fri, 25 Mar 2022 14:49:39 +0100 (CET)
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com
- [IPv6:2a00:1450:4864:20::632])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 22D32F80115; Fri, 25 Mar 2022 14:57:13 +0100 (CET)
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk
+ [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 60E34F80115
- for <alsa-devel@alsa-project.org>; Fri, 25 Mar 2022 14:49:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60E34F80115
+ by alsa1.perex.cz (Postfix) with ESMTPS id 15927F80115
+ for <alsa-devel@alsa-project.org>; Fri, 25 Mar 2022 14:56:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15927F80115
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="BaJZvsjy"
-Received: by mail-ej1-x632.google.com with SMTP id qx21so15440970ejb.13
- for <alsa-devel@alsa-project.org>; Fri, 25 Mar 2022 06:49:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=wtFdY7L9jEbHbUZpEsaJVL8bmFr2sDAxxXdfZ2px3oI=;
- b=BaJZvsjy2DkrATetK7H3L7xir9hO+k/EXO7DZZiJbce+DlXKd5VCZApZjtmo/n7hER
- 1AR2mU/epdU/QxaDgsu+thXCv93/FNGJzXhbNXms8Cv6+9090pmn/0u7o82Y1RXF1pmg
- frunay+g/Y57RopSrItzVpyEsdY7RCcg4yf4dspf0qEpzfLv6E8RcWAqqkf7pQjFHDwh
- o/z7NYOSYppHFkPX2cEi1wgJpzFfBFM6QJZD6ajGMZBq7tvRIQSdCsBkZbqYHjeHwhya
- yWGdjYe9oUoPYdHc3yX8+sufKDjdzyuZHqAJZAHmaLe833uiWfA5muy5PiY8GkK17Dx4
- dpJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=wtFdY7L9jEbHbUZpEsaJVL8bmFr2sDAxxXdfZ2px3oI=;
- b=XmdKAdgrv0Gkn+TF0WgrzVtojYCp2SAGh+1svJJNScyjes6abuqS+sNKPGtI2RxxLa
- mf/k4TPzWtMgYb0FB0hEbmajxtfvKQzS+vu6VkgLhgiy7BA/8dnToTLAYQaC9/67P7GR
- 6idZ9OqEIKYbeqvCc2Nu9aCU0ihMTPvPAdXDw47GsdmRSizKjWgqLoCAp1G6Tcg76dbW
- a52Zd9lAhPp6AEwPC/76oGPyKAWRuPk4u+1LIx9xV/fuekRbTyjBHTJAVrXTqfHCoJ+S
- lOBZnND7ybSGgMjlEI5CRXsbLaPKjVyW4ID9osKB5y8RAWwrblEVUulA11WBnKt+l1h9
- fskA==
-X-Gm-Message-State: AOAM530JSsX243m4h+0JYVcpcBc01zZpA9RLuDWqoAlcfVD2jp4zo5iv
- +whTGm4yZ3LY8NLEYPLAclD9ax+Jlu5cQVg3aVQ=
-X-Google-Smtp-Source: ABdhPJz3EPwc6GGnyxYAiulRj2xGw2MKAtvjd0z+LnHTEFNdudI7z/624RNYWrQ5ejxcXnuvBVN28dIXGNZElNwcEQQ=
-X-Received: by 2002:a17:906:32d0:b0:6ce:e1cf:3f2e with SMTP id
- k16-20020a17090632d000b006cee1cf3f2emr11263307ejk.214.1648216169815; Fri, 25
- Mar 2022 06:49:29 -0700 (PDT)
+ dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com
+ header.b="cDEsB6HT"
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+ (Authenticated sender: adalessandro) with ESMTPSA id 7BF251F462D8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+ s=mail; t=1648216618;
+ bh=Yok8IySePES7GFEb7QlYbVFKQbSvbM5xHMo/W3KrAq8=;
+ h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+ b=cDEsB6HTdtC52vnOaCKRXIafRpo7nxqy/2Oa0yrR4JXs9qtk/T8396sW+rAyfBxaw
+ mYwB3sGaJfCApzeUrgW+8vTivI92GxysMcYC2LPSzev7/rZ3phzhXe9lPSnx+gGMOu
+ cbnpJa+lUFw+4qyK4J52LCBcv6MohniLreUx2pqmESFXAPALS/yWqhMMsllKYUD/js
+ uECfcs9tGxleYYheriFqEFGDh9npoooDm1o4YPNZ2SSEOu5y/KCgzuhuxvdcqxeJvx
+ zBFDoD77T8V4WLbIoCtGJLzwmMOihpzQTkpKe0EMfBJOuSLdTpzu1uepku7r6jRACp
+ p/ZMZUIeXu6zw==
+Message-ID: <d9f14221-b0ad-9853-e9c8-a35d9111549b@collabora.com>
+Date: Fri, 25 Mar 2022 10:56:48 -0300
 MIME-Version: 1.0
-References: <20220323135601.42435-1-ariel.dalessandro@collabora.com>
-In-Reply-To: <20220323135601.42435-1-ariel.dalessandro@collabora.com>
-From: Fabio Estevam <festevam@gmail.com>
-Date: Fri, 25 Mar 2022 10:49:17 -0300
-Message-ID: <CAOMZO5D4_WboF4S0dgSLD1m15a13c2irK2yjDV4C77_Wb15=2w@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.1
 Subject: Re: [PATCH v4] arm64: dts: imx8mn-bsh-smm-s2pro: Add tlv320aic31xx
  audio card node
-To: "Ariel D'Alessandro" <ariel.dalessandro@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Language: en-US
+To: Fabio Estevam <festevam@gmail.com>
+References: <20220323135601.42435-1-ariel.dalessandro@collabora.com>
+ <CAOMZO5D4_WboF4S0dgSLD1m15a13c2irK2yjDV4C77_Wb15=2w@mail.gmail.com>
+From: Ariel D'Alessandro <ariel.dalessandro@collabora.com>
+In-Reply-To: <CAOMZO5D4_WboF4S0dgSLD1m15a13c2irK2yjDV4C77_Wb15=2w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Cc: "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
  <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
@@ -100,22 +89,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Mar 23, 2022 at 10:56 AM Ariel D'Alessandro
-<ariel.dalessandro@collabora.com> wrote:
->
-> BSH SystemMaster (SMM) S2 PRO board comes with an audio card based on
-> tlv320aic31xx family codec.
->
-> The audio card exposes two playback devices, one of them using the EASRC
-> (Enhanced Asynchronous Sample Rate Converter) module. Note that this
-> would require SDMA and EASRC firmware in order to work.
->
-> Signed-off-by: Ariel D'Alessandro <ariel.dalessandro@collabora.com>
-> Signed-off-by: Michael Trimarchi <michael@amarulasolutions.com>
-> ---
+Hi Fabio,
 
-What are the changes in v4?
+On 3/25/22 10:49, Fabio Estevam wrote:
+> On Wed, Mar 23, 2022 at 10:56 AM Ariel D'Alessandro
+> <ariel.dalessandro@collabora.com> wrote:
+>>
+>> BSH SystemMaster (SMM) S2 PRO board comes with an audio card based on
+>> tlv320aic31xx family codec.
+>>
+>> The audio card exposes two playback devices, one of them using the EASRC
+>> (Enhanced Asynchronous Sample Rate Converter) module. Note that this
+>> would require SDMA and EASRC firmware in order to work.
+>>
+>> Signed-off-by: Ariel D'Alessandro <ariel.dalessandro@collabora.com>
+>> Signed-off-by: Michael Trimarchi <michael@amarulasolutions.com>
+>> ---
+> 
+> What are the changes in v4?
 
-I see you removed 'clock-names' so this looks good:
+* Fixed the sound-tlv320aic31xx audio-codec property to point to the
+right codec node <&tlv320dac3101>
 
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
+* Reordered properties in tlv320dac3101, and removed clock-names property.
+
+> 
+> I see you removed 'clock-names' so this looks good:
+
+Indeed.
+
+> 
+> Reviewed-by: Fabio Estevam <festevam@gmail.com>
+
+Thanks!
