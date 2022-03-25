@@ -4,77 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10FD6C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Mar 2022 15:45:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6232AC433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Mar 2022 16:06:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 43C94171E;
-	Fri, 25 Mar 2022 16:44:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 43C94171E
+	by alsa0.perex.cz (Postfix) with ESMTPS id C5FCE172A;
+	Fri, 25 Mar 2022 17:06:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C5FCE172A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648223133;
-	bh=zW8PnmEKt5KbaGyqmP5Ywlvky3P9alY0nil2EBlvk0g=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=E4Of+8ZUOfberNPXENWJ7vXKuzpVaIIW2EZZQJ1fBtLmQoHj2BePgydP3Rz8WX+um
-	 Q84eI1tR/EVo5H07mhJ0Me2rIibEbkt9BMyTdMhGnuVBHZJEowVm4gIRkQoBYqe7yD
-	 dZ0fS2FhZ+vw7GKL/yd5MN/X6xQgycb1yQIBhXwM=
+	s=default; t=1648224416;
+	bh=5HvgwFHzfQh/lprqMnVmGjf8ke5Ber85AXfaMMALaOQ=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=S5nHvM7AnbQr1CVxIbbZ7XtxCAPwQnWMXCZdY2HIUj6Qd4mgokUhQsVO1FMVO3DKe
+	 9w25seMJsSBiPUUgxK07xwWBny2/4PrRIY2QPI2E3LI99uDN2vgBn1TRFuDEByXbik
+	 geliVZ6x/vGBVr2W4iN9tohSvfOQzf1hXosrHsqA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AF2CCF80519;
-	Fri, 25 Mar 2022 16:43:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 59FF9F800F4;
+	Fri, 25 Mar 2022 17:06:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0C03FF8051A; Fri, 25 Mar 2022 16:43:55 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id F1A63F800AA; Fri, 25 Mar 2022 17:06:04 +0100 (CET)
+Received: from smtp-relay-canonical-1.canonical.com
+ (smtp-relay-canonical-1.canonical.com [185.125.188.121])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BB46FF80517
- for <alsa-devel@alsa-project.org>; Fri, 25 Mar 2022 16:43:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB46FF80517
+ by alsa1.perex.cz (Postfix) with ESMTPS id 53969F800AA
+ for <alsa-devel@alsa-project.org>; Fri, 25 Mar 2022 17:05:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53969F800AA
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="TdouIa+g"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com
+ header.b="klGsK3do"
+Received: from localhost.localdomain (unknown [10.101.196.174])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id D77AAB827B7;
- Fri, 25 Mar 2022 15:43:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FC59C340E9;
- Fri, 25 Mar 2022 15:43:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1648223013;
- bh=zW8PnmEKt5KbaGyqmP5Ywlvky3P9alY0nil2EBlvk0g=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=TdouIa+g3hebWCbUeaeMhhpV3S+ZXbCTpX8A7X9CRhrUPsNwTYFQMLKwxnT7Ay5iG
- dFS4F/u13544RznyPEL6WObLRwJ3EtYrID0j5OTJpHG5DJFaVA+801oQ6DGiV85CXq
- uX2yQySJL5h/cnBgAxn4NAu41YBR/J1Ybz/lwE8zV2BFz2VkHHPxB/bKrbq5NEq/6S
- t2DUj8f6WxHXaet4nvbe6mO20ed0OrEbg3Mq96HCqqo1ufwPh3klvePL3XpAJIruha
- Jvb03JT17CSQPTk8ASpYZqpkFZOkZIVeFIkWBkwsqv8GjT7bDQQKeVEraNSVs+vV6S
- f/a555oM3gw+w==
-From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>,
- Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Subject: [PATCH v1 2/3] ASoC: atmel: Fix error handling in at91samg20ek probe()
-Date: Fri, 25 Mar 2022 15:42:40 +0000
-Message-Id: <20220325154241.1600757-3-broonie@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220325154241.1600757-1-broonie@kernel.org>
-References: <20220325154241.1600757-1-broonie@kernel.org>
+ by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id E28D93F740; 
+ Fri, 25 Mar 2022 16:05:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+ s=20210705; t=1648224354;
+ bh=OA8100kM+8BvVa/E6bZ9DGd04WTsE6yOkFCC60dlMtE=;
+ h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+ b=klGsK3do1OYdQZDfA2fuzXlRxnhQNtDq8VVOnt+utOHPEnHlsDRL1SzxKJkjXXPaa
+ eIWBiHurMaHMYITVzJeFPKaC+k46UBsrn1QKrUZq/+3NjhUkV70nldwj63r4dnSSjP
+ EXvBUibKhmgODO/ahn6ulyzxLkp083FCpapYTPTKnXdmZ/N7s+IsE+yuzphAO/pIVF
+ hKvncHpVrbVElll2Lpn+E5K7s1fXJyeNsZ2Rvf6ntJepNQXSLMXzxSFwMVIM/XOyK6
+ ClOZPVt9uhIg1UVkf0SRbbThS5+Lybv2P0wunvNSUu6h/T0nNfNtb8YGbKTY8xn+2k
+ TYTyhsfrpW3XA==
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+To: tiwai@suse.com
+Subject: [PATCH] ALSA: hda/realtek: Enable headset mic on Lenovo P360
+Date: Sat, 26 Mar 2022 00:05:00 +0800
+Message-Id: <20220325160501.705221-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1522; h=from:subject;
- bh=zW8PnmEKt5KbaGyqmP5Ywlvky3P9alY0nil2EBlvk0g=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBiPeLvLm54d5ZOtO4ZWPZ1JAbCbUeO6Eg4aIH6kUmb
- Du3dVQuJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYj3i7wAKCRAk1otyXVSH0I6uB/
- 9yO5SP2kSH0g+jaZH8UUdPEIoOjZfzVTk9Lq7m5Z6kNeJBCB8Yk862oQzwderh9AanncZ544C2tnWI
- kHfUop8HNKQf0Nc2HdUg6Z95PQ7o6LnWr8RjNxBx7GjfiXPOVHaNeCAC1Mgbg5nyJTURCW5/HjnO/q
- uRnz7Jylxka8tWPh68z++NqqaBTdozlmqR5P/2MRHPObkKZLae6dp5/0psYSYe8G5owd+rS0Kgc3Wl
- cBS057i1QMBEvHcjeuVvhqepJm6nUEAVmAZSo+oSbw0NblfTEeDJpLosW7BQPqJKpGSKTQikVsitIt
- U6irnBbuFEuYwxC+Zzw63EMQRYkG+3
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Kailang Yang <kailang@realtek.com>,
+ Lucas Tanure <tanureal@opensource.cirrus.com>,
+ Jeremy Szu <jeremy.szu@canonical.com>, linux-kernel@vger.kernel.org,
+ Werner Sembach <wse@tuxedocomputers.com>, Hui Wang <hui.wang@canonical.com>,
+ Kai-Heng Feng <kai.heng.feng@canonical.com>, Sami Loone <sami@loone.fi>,
+ Cameron Berkenpas <cam@neo-zeon.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,51 +80,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The error handling in the AT91SAM9G20-EK machine driver probe did not
-consistently free the SSC in error paths, sometimes immediately returning
-an error rather than doing cleanup. Fix this.
+Lenovo P360 is another platform equipped with ALC897, and it needs
+ALC897_FIXUP_HEADSET_MIC_PIN quirk to make its headset mic work.
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 ---
- sound/soc/atmel/sam9g20_wm8731.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/atmel/sam9g20_wm8731.c b/sound/soc/atmel/sam9g20_wm8731.c
-index 0d639a33ad96..d771843011ea 100644
---- a/sound/soc/atmel/sam9g20_wm8731.c
-+++ b/sound/soc/atmel/sam9g20_wm8731.c
-@@ -148,7 +148,8 @@ static int at91sam9g20ek_audio_probe(struct platform_device *pdev)
- 	codec_np = of_parse_phandle(np, "atmel,audio-codec", 0);
- 	if (!codec_np) {
- 		dev_err(&pdev->dev, "codec info missing\n");
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto err;
- 	}
- 	at91sam9g20ek_dai.codecs->of_node = codec_np;
- 
-@@ -159,7 +160,8 @@ static int at91sam9g20ek_audio_probe(struct platform_device *pdev)
- 	if (!cpu_np) {
- 		dev_err(&pdev->dev, "dai and pcm info missing\n");
- 		of_node_put(codec_np);
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto err;
- 	}
- 	at91sam9g20ek_dai.cpus->of_node = cpu_np;
- 	at91sam9g20ek_dai.platforms->of_node = cpu_np;
-@@ -170,9 +172,10 @@ static int at91sam9g20ek_audio_probe(struct platform_device *pdev)
- 	ret = snd_soc_register_card(card);
- 	if (ret) {
- 		dev_err(&pdev->dev, "snd_soc_register_card() failed\n");
-+		goto err;
- 	}
- 
--	return ret;
-+	return 0;
- 
- err:
- 	atmel_ssc_put_audio(0);
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index e88fbef57c40c..4c33cb57963db 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -11152,6 +11152,7 @@ static const struct snd_pci_quirk alc662_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x144d, 0xc051, "Samsung R720", ALC662_FIXUP_IDEAPAD),
+ 	SND_PCI_QUIRK(0x14cd, 0x5003, "USI", ALC662_FIXUP_USI_HEADSET_MODE),
+ 	SND_PCI_QUIRK(0x17aa, 0x1036, "Lenovo P520", ALC662_FIXUP_LENOVO_MULTI_CODECS),
++	SND_PCI_QUIRK(0x17aa, 0x1057, "Lenovo P360", ALC897_FIXUP_HEADSET_MIC_PIN),
+ 	SND_PCI_QUIRK(0x17aa, 0x32ca, "Lenovo ThinkCentre M80", ALC897_FIXUP_HEADSET_MIC_PIN),
+ 	SND_PCI_QUIRK(0x17aa, 0x32cb, "Lenovo ThinkCentre M70", ALC897_FIXUP_HEADSET_MIC_PIN),
+ 	SND_PCI_QUIRK(0x17aa, 0x32cf, "Lenovo ThinkCentre M950", ALC897_FIXUP_HEADSET_MIC_PIN),
 -- 
-2.30.2
+2.34.1
 
