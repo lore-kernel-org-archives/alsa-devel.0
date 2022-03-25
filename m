@@ -4,69 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BABB5C4167E
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Mar 2022 15:34:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 119C0C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Mar 2022 15:34:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D183F16D9;
-	Fri, 25 Mar 2022 16:33:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D183F16D9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 48C8B16F2;
+	Fri, 25 Mar 2022 16:34:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 48C8B16F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648222475;
-	bh=yhSS5QFzpSTHWJKj3nJOwCFOpGDbuX47CgX/7nUWtCg=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=oDqn+xuw0N0i3r03SxWAFCiEd9+fJX+iF/RmMrrrHO4YSMSQ3a/qVaKCU5zF+TDml
-	 xohxJExg2mOpCbi9c7jbITAwRqkR6yKwwy3MKrHy5+kJ7F8qZUnpArQFVpcTqhuli4
-	 lJROcL+zS7+xUq/swTXHoSnnxPJB6QgzyfdPKG4I=
+	s=default; t=1648222494;
+	bh=6Bi9GTvPd1v1a+BxZ0BqQppBlQg1pcrXvlQDy4BF64s=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=AjjqMa9EiuDDhR0rqMFCZPgYQ3kQtqH5Mxa6AeLRrJfHW9eepkjxWfg1lCCRZE5BI
+	 AZEHgC41uEThI8EvLG5MuOy2qJQn9TFSm6/Sd8em9TtwxOHwqHA2QTUXnR1AljH738
+	 xXifCmtykUz/mmOL+w0BdjKwFn2aZJIRyn87NLjA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 287DFF804CC;
-	Fri, 25 Mar 2022 16:33:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CD84DF8051A;
+	Fri, 25 Mar 2022 16:33:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 803F7F80115; Fri, 25 Mar 2022 16:33:09 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 8D12BF8051C; Fri, 25 Mar 2022 16:33:13 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 49321F800AA
- for <alsa-devel@alsa-project.org>; Fri, 25 Mar 2022 16:33:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49321F800AA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1A455F800AA
+ for <alsa-devel@alsa-project.org>; Fri, 25 Mar 2022 16:33:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A455F800AA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Kdj4BTu1"
+ header.b="H9PpOVvi"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 924516150F;
- Fri, 25 Mar 2022 15:33:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF06AC340E9;
- Fri, 25 Mar 2022 15:33:01 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id EB51B617B1;
+ Fri, 25 Mar 2022 15:33:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 075BFC340F3;
+ Fri, 25 Mar 2022 15:33:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1648222383;
- bh=yhSS5QFzpSTHWJKj3nJOwCFOpGDbuX47CgX/7nUWtCg=;
- h=From:To:Cc:Subject:Date:From;
- b=Kdj4BTu10epLytc8SO+NYgoUo/MB3lkIbCf0yvgwo83HOJwbtGuL7gbSGeQMnswtU
- n8EljbYgsZppSw8ypFaz7Bg/srzgxsp2nkXPfBDZLohm1CUAbsUyg4Y64UArBIur2U
- OAy/QEkcPbdzzAMKTj9c7y6YLyeLQ6LJftPhDr2GZRvxnWDNd6YHM3PjlWR/7ofVZb
- xkFVhvoPhqkU8ZK3e6/HzhnW5oa2y2L4qKP+u7jNxSTpi/YrSYMgd+1RTHMFIR8B1d
- 4vtDk5rjf0lYIG3bzFAv7DnKuNzm48/rrsZQ4sNWAmSQ0INUdp4t+lN7iOrHbUuhne
- uXHg2uMhAl2NA==
+ s=k20201202; t=1648222386;
+ bh=6Bi9GTvPd1v1a+BxZ0BqQppBlQg1pcrXvlQDy4BF64s=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=H9PpOVviwwk7dRIHuSpDKdIK+T/W+tUZZoqHkyXpKXFrJZywy+yDN6CJWpHPW4qRU
+ 9pHAmwzQ2T/yuARuvQMhUsvK/A99HOTcKJLuTc+mMlU51gvxGNhNtybMf6LZWj56VC
+ wQyVm923BJ8Zis0S10+qIBDudoESZkZRhfkLqi7gLMCnSS+U7+SEbKeNx3v/9Ws0ob
+ oltVrNeO25zrvddjWir/cir69sFVVX1QCnxEnFpr/5/fH7N1/KuWWKigVe9s1dU5uM
+ TxQiwITRq4ZlppTTbsMk7DdLUWMPJvCxf4HdHZT3fvyMoP4V7EzbNNe/bTQQJIO/sz
+ JTBtyD8skwVTA==
 From: Mark Brown <broonie@kernel.org>
 To: Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH v1 0/7] ASoC: wm8731: Overhaul of the driver
-Date: Fri, 25 Mar 2022 15:31:14 +0000
-Message-Id: <20220325153121.1598494-1-broonie@kernel.org>
+Subject: [PATCH v1 2/7] ASoC: wm8731: Factor component init out of bus code
+Date: Fri, 25 Mar 2022 15:31:16 +0000
+Message-Id: <20220325153121.1598494-3-broonie@kernel.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220325153121.1598494-1-broonie@kernel.org>
+References: <20220325153121.1598494-1-broonie@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1694; h=from:subject;
- bh=yhSS5QFzpSTHWJKj3nJOwCFOpGDbuX47CgX/7nUWtCg=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBiPeBDorb71NpJf4gC6utJJgQDs2pvR6PFVLbULEfF
- tuwCj9KJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYj3gQwAKCRAk1otyXVSH0H8GB/
- 4j9snS6BUjtlXOFzH/l1X2vn6+03EiGB+AM2tZy1XbeIKfJO8pDB++AlJtE5y02PegcM1O2qj8tAt1
- GOkviqYaUGgZ0e8TyLbNz3LIydUQcsu68rSyklxpzU8Pzzgt+qPCKOj92nHnPb2npDm5GKaO9Fsqql
- ZnJj4rayTbKtrmH/O2Q94UiBmyxoJoqAbf3i2gPgjhGjvjDEj3sGljRfkD8+AVLNDOWyBIGnZoxMo0
- h9IYX9N2STgQerZJdii/cabHB5pwQs/rNpsA4Qri6/By7KZ1k8HZZppGiu/QCBKk4x/Eu5idVIoyTR
- KvMXjknoOTJN/IFZ0+X9EGCIQlF5Gz
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3799; h=from:subject;
+ bh=6Bi9GTvPd1v1a+BxZ0BqQppBlQg1pcrXvlQDy4BF64s=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBiPeBE8klygmbF0KySqMYEMAYuLPfqZjSbiA998jUV
+ TJ087WaJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYj3gRAAKCRAk1otyXVSH0IOoB/
+ 97fIJ/2LRaVGSA7DxO/mO/r0SasB4f/BXAVwow6qewp17ZYlmqvH7rPZUcyLJBJCu4R9XG7fnJCwjl
+ TeA5gFCt+GUPlZHCeOhqlszH5rlJwEne6fZmVyMYYKp3GMH3UbC2uOU6rWLfMq6dkpHu2NL/tLyLP7
+ 39aB+pnf+OkiHGPB0LOEGJv6NSv7Nqpes1iED+NWb3r69Hq0sP5TEKYsHSQoVICWfK9Yz/bOvmpL9t
+ SN6ERtva/XFdM+UCXbY23QDsR1Mu5RLc6WzIJMpFmfYWgQkt6i6MxOiTUzT9KiWQOyDUZOPAOLI7dO
+ y0wnD7k3IYajgSDLHMTkIjRQw3iizj
 X-Developer-Key: i=broonie@kernel.org; a=openpgp;
  fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 Content-Transfer-Encoding: 8bit
@@ -87,40 +91,123 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This series contains a bunch of fairly minor changes which overhaul and
-modernise the WM8731 driver, there should be no impact on the driver's
-functionality.
+Both the I2C and SPI bus code register the component immediately after they
+call wm8731_hw_init(), factor the code out into the the common function and
+rename it to just be plain wm8731_init() while we're at it since it's not
+just for hardware init any more. This refactoring means we need to move the
+function after the declaration of the component driver.
 
-Mark Brown (7):
-  ASoC: wm8731: Update to modern DAI terminology
-  ASoC: wm8731: Factor component init out of bus code
-  ASoC: wm8731: Move regulator request into wm8731_init()
-  ASoC: wm8731: Factor our MCLK and mutex initialisation
-  ASoC: wm8731: Factor out the I2C and SPI bus code into separate
-    modules
-  ASoC: wm8731: Convert DT bindings to YAML format
-  ARM: configs: Update multi_v5_defconfig for WM8731 bus refactoring
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/wm8731.c | 67 ++++++++++++++++-----------------------
+ 1 file changed, 27 insertions(+), 40 deletions(-)
 
- .../devicetree/bindings/sound/wlf,wm8731.yaml |  97 +++++++
- .../devicetree/bindings/sound/wm8731.txt      |  27 --
- arch/arm/configs/multi_v5_defconfig           |   3 +-
- sound/soc/atmel/Kconfig                       |   4 +-
- sound/soc/au1x/Kconfig                        |   2 +-
- sound/soc/codecs/Kconfig                      |  18 +-
- sound/soc/codecs/Makefile                     |   4 +
- sound/soc/codecs/wm8731-i2c.c                 |  69 +++++
- sound/soc/codecs/wm8731-spi.c                 |  59 ++++
- sound/soc/codecs/wm8731.c                     | 266 +++---------------
- sound/soc/codecs/wm8731.h                     |  27 ++
- sound/soc/pxa/Kconfig                         |   4 +-
- 12 files changed, 323 insertions(+), 257 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/wlf,wm8731.yaml
- delete mode 100644 Documentation/devicetree/bindings/sound/wm8731.txt
- create mode 100644 sound/soc/codecs/wm8731-i2c.c
- create mode 100644 sound/soc/codecs/wm8731-spi.c
-
-
-base-commit: 0b88a659002151e354272a13ae29d8b795ef1b46
+diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
+index 5b399c631faf..b2ec03b1afed 100644
+--- a/sound/soc/codecs/wm8731.c
++++ b/sound/soc/codecs/wm8731.c
+@@ -594,7 +594,22 @@ static int wm8731_request_supplies(struct device *dev,
+ 	return 0;
+ }
+ 
+-static int wm8731_hw_init(struct device *dev, struct wm8731_priv *wm8731)
++static const struct snd_soc_component_driver soc_component_dev_wm8731 = {
++	.set_bias_level		= wm8731_set_bias_level,
++	.controls		= wm8731_snd_controls,
++	.num_controls		= ARRAY_SIZE(wm8731_snd_controls),
++	.dapm_widgets		= wm8731_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(wm8731_dapm_widgets),
++	.dapm_routes		= wm8731_intercon,
++	.num_dapm_routes	= ARRAY_SIZE(wm8731_intercon),
++	.suspend_bias_off	= 1,
++	.idle_bias_on		= 1,
++	.use_pmdown_time	= 1,
++	.endianness		= 1,
++	.non_legacy_dai_naming	= 1,
++};
++
++static int wm8731_init(struct device *dev, struct wm8731_priv *wm8731)
+ {
+ 	int ret = 0;
+ 
+@@ -618,6 +633,15 @@ static int wm8731_hw_init(struct device *dev, struct wm8731_priv *wm8731)
+ 
+ 	regcache_mark_dirty(wm8731->regmap);
+ 
++	ret = devm_snd_soc_register_component(dev,
++			&soc_component_dev_wm8731, &wm8731_dai, 1);
++	if (ret != 0) {
++		dev_err(dev, "Failed to register CODEC: %d\n", ret);
++		goto err_regulator_enable;
++	}
++
++	return 0;
++
+ err_regulator_enable:
+ 	/* Regulators will be enabled by bias management */
+ 	regulator_bulk_disable(ARRAY_SIZE(wm8731->supplies), wm8731->supplies);
+@@ -625,21 +649,6 @@ static int wm8731_hw_init(struct device *dev, struct wm8731_priv *wm8731)
+ 	return ret;
+ }
+ 
+-static const struct snd_soc_component_driver soc_component_dev_wm8731 = {
+-	.set_bias_level		= wm8731_set_bias_level,
+-	.controls		= wm8731_snd_controls,
+-	.num_controls		= ARRAY_SIZE(wm8731_snd_controls),
+-	.dapm_widgets		= wm8731_dapm_widgets,
+-	.num_dapm_widgets	= ARRAY_SIZE(wm8731_dapm_widgets),
+-	.dapm_routes		= wm8731_intercon,
+-	.num_dapm_routes	= ARRAY_SIZE(wm8731_intercon),
+-	.suspend_bias_off	= 1,
+-	.idle_bias_on		= 1,
+-	.use_pmdown_time	= 1,
+-	.endianness		= 1,
+-	.non_legacy_dai_naming	= 1,
+-};
+-
+ static const struct of_device_id wm8731_of_match[] = {
+ 	{ .compatible = "wlf,wm8731", },
+ 	{ }
+@@ -698,18 +707,7 @@ static int wm8731_spi_probe(struct spi_device *spi)
+ 		return ret;
+ 	}
+ 
+-	ret = wm8731_hw_init(&spi->dev, wm8731);
+-	if (ret != 0)
+-		return ret;
+-
+-	ret = devm_snd_soc_register_component(&spi->dev,
+-			&soc_component_dev_wm8731, &wm8731_dai, 1);
+-	if (ret != 0) {
+-		dev_err(&spi->dev, "Failed to register CODEC: %d\n", ret);
+-		return ret;
+-	}
+-
+-	return 0;
++	return wm8731_init(&spi->dev, wm8731);
+ }
+ 
+ static struct spi_driver wm8731_spi_driver = {
+@@ -762,18 +760,7 @@ static int wm8731_i2c_probe(struct i2c_client *i2c,
+ 		return ret;
+ 	}
+ 
+-	ret = wm8731_hw_init(&i2c->dev, wm8731);
+-	if (ret != 0)
+-		return ret;
+-
+-	ret = devm_snd_soc_register_component(&i2c->dev,
+-			&soc_component_dev_wm8731, &wm8731_dai, 1);
+-	if (ret != 0) {
+-		dev_err(&i2c->dev, "Failed to register CODEC: %d\n", ret);
+-		return ret;
+-	}
+-
+-	return 0;
++	return wm8731_init(&i2c->dev, wm8731);
+ }
+ 
+ static const struct i2c_device_id wm8731_i2c_id[] = {
 -- 
 2.30.2
 
