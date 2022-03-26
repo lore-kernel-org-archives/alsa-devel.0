@@ -4,71 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95F89C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Mar 2022 20:32:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63F65C433EF
+	for <alsa-devel@archiver.kernel.org>; Sat, 26 Mar 2022 03:10:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2F2101709;
-	Fri, 25 Mar 2022 21:31:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F2101709
+	by alsa0.perex.cz (Postfix) with ESMTPS id BE9A216D6;
+	Sat, 26 Mar 2022 04:09:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE9A216D6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648240328;
-	bh=FycWHzxQ04zpxhwqUWo2/O94K5XkFQApiHddF1z90ZE=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1648264198;
+	bh=YGl5J9QOIN29CsIQuA8zAXwHa8KHnzrTQRRxQyiSjHY=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iEFRRcHK85NfRGQDPfRTLr5lu3AscclPgK6k+D/77g++ykxlRS4RlhpwtM64TKN1Q
-	 +ZpAAzTSksDDt1UqoHRo7da7yf4orCFbSlMUGznEC4RhO7pha0V5K6kEuS4JQtNbtK
-	 AR0RazKNn2OX6qA8btRnYSa422ExJrsH8eCez2KQ=
+	b=geTAL18HsW72dLfLPGWfgxUkWk1J9Nvp1bVfIGfPIyK7RHr9DF6nM00Dl+tCkHqi8
+	 JrYCpqrCAHMvVkRCSzATtOWXMasrx+SOlgaPmrg+x4UkfYPMtlTdrJqvSjnLmEkRd+
+	 akEG2JRPlt+roWLN8pg7Z+uBccZlDxu6L1lpp5pw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A4E18F8012C;
-	Fri, 25 Mar 2022 21:31:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4E312F80153;
+	Sat, 26 Mar 2022 04:09:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 78899F80162; Fri, 25 Mar 2022 21:31:16 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6E01AF800AA;
- Fri, 25 Mar 2022 21:31:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6E01AF800AA
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="VMLwv2SX"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 748F161D2A;
- Fri, 25 Mar 2022 20:31:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7B2EC2BBE4;
- Fri, 25 Mar 2022 20:31:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1648240267;
- bh=FycWHzxQ04zpxhwqUWo2/O94K5XkFQApiHddF1z90ZE=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=VMLwv2SXI7sAXxmLr/JFAGsqzoi0PtHhpxK76sdkI15a7cxecBooiIWGO/BqUrPHK
- UdSGBGsqdcmjfwTZ7OGatDtj4n+jguuqkGrFYoR9jHSuicSFN9E74N5uWG65t+f21y
- Aq0hC2/umicnKXIAQqOkrabQPeB86YZ7g4enyx3mtMxzv7ZLGbTAD4Kl7EyF4sWM6n
- AIo25j2R3bicQ84ZtIrF3GZVQztxVb6I/id6MDsAmuuoNmq3hyWnZIrmEs1xI0jq49
- n/R+fambkh8ZI14RBFKZIJtGi1I+n3UrI3z2vNSqlUTl6B9WXbyun1s2hJmNCzLO2R
- AHtLNl6Tek+Aw==
-From: Mark Brown <broonie@kernel.org>
-To: pierre-louis.bossart@linux.intel.com, tiwai@suse.com, perex@perex.cz,
- linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org,
- alsa-devel@alsa-project.org, ranjani.sridharan@linux.intel.com,
- kai.vehmanen@linux.intel.com, Zheng Bin <zhengbin13@huawei.com>,
- lgirdwood@gmail.com, peter.ujfalusi@linux.intel.com, daniel.baluta@nxp.com
-In-Reply-To: <20220323092501.145879-1-zhengbin13@huawei.com>
-References: <20220323092501.145879-1-zhengbin13@huawei.com>
-Subject: Re: [PATCH -next] ASoC: SOF: Intel: Fix build error without
- SND_SOC_SOF_PCI_DEV
-Message-Id: <164824026450.2684178.16201590071915953774.b4-ty@kernel.org>
-Date: Fri, 25 Mar 2022 20:31:04 +0000
+ id 21DA6F8019D; Sat, 26 Mar 2022 04:09:06 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 22C5BF80115
+ for <alsa-devel@alsa-project.org>; Sat, 26 Mar 2022 04:08:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22C5BF80115
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: tangyizhou@huawei.com, limingming.li@huawei.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - edited <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1648264137404253006-webhooks-bot@alsa-project.org>
+References: <1648264137404253006-webhooks-bot@alsa-project.org>
+Subject: Add UCM for PinePhone
+Message-Id: <20220326030906.21DA6F8019D@alsa1.perex.cz>
+Date: Sat, 26 Mar 2022 04:09:06 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,40 +55,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 23 Mar 2022 17:25:01 +0800, Zheng Bin wrote:
-> If SND_SOC_SOF_PCI_DEV is n, bulding fails:
-> 
-> sound/soc/sof/intel/pci-tng.o:(.data+0x1c0): undefined reference to `sof_pci_probe'
-> sound/soc/sof/intel/pci-tng.o:(.data+0x1c8): undefined reference to `sof_pci_remove'
-> sound/soc/sof/intel/pci-tng.o:(.data+0x1e0): undefined reference to `sof_pci_shutdown'
-> sound/soc/sof/intel/pci-tng.o:(.data+0x290): undefined reference to `sof_pci_pm'
-> 
-> [...]
+alsa-project/alsa-ucm-conf pull request #134 was edited from tomfitzhenry:
 
-Applied to
+Fixes https://github.com/alsa-project/alsa-ucm-conf/issues/124.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-linus
+This PR adds support for the https://wiki.pine64.org/index.php/PinePhone 
 
-Thanks!
+This PR contains:
+* This UCM config copied from https://gitlab.com/pine64-org/pine64-alsa-ucm/, which was developed by many developers ( https://gitlab.com/pine64-org/pine64-alsa-ucm/-/merge_requests/1 ) and is BSD-3-Clause licensed.
+* Fix paths to be relative to alsa-ucm-conf root.
+* Some refactoring of the UCM config, incl. removing duplicate directives, and moving volume directives to BootSequence.
+* Updating the playback/boost volumes, in response to comments on this PR.
 
-[1/1] ASoC: SOF: Intel: Fix build error without SND_SOC_SOF_PCI_DEV
-      commit: 664d66dc0a64b32e60a5ad59a9aebb08676a612b
+I have tested:
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+* HiFi
+    * Record audio via the headset.
+    * Record audio via the internal mic.
+    * Play audio on the headphones.
+    * Play audio on the speaker.
+    * Play audio on the internal speaker.
+* Voice Call
+    * Speak on the headset.
+    * Speak on the internal mic.
+    * Listen on the headphones.
+    * Listen on the speaker. This induces an echo, and given the audio routing is entirely on chip, and the chip doesn't advertise echo cancellation, I don't see how this is avoidable.
+    * Listen on the internal speaker.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+See also:
+* `alsa-info`: https://alsa-project.org/db/?f=5e331f5ef10bd167b3bd7640bfcf0e879100f80d
+* `pa-info`: [pa-info.txt](https://github.com/alsa-project/alsa-ucm-conf/files/8015083/pa-info.txt)
+* https://gitlab.com/pine64-org/pine64-alsa-ucm/-/issues/3
+* Schematics/code
+    * The device-tree configuration has had a unique audio card name since 5.14: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi?h=v5.14#n436
+    * http://files.pine64.org/doc/PinePhone/PinePhone%20v1.2%20Released%20Schematic.pdf
+    * https://xnux.eu/devices/feature/audio-pp.html
+    * https://github.com/torvalds/linux/blob/master/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
+    * https://github.com/torvalds/linux/blob/master/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
+    * https://github.com/torvalds/linux/blob/master/sound/soc/sunxi/sun50i-codec-analog.c
+    * https://files.pine64.org/doc/datasheet/pine64/Allwinner_A64_User_Manual_V1.0.pdf
+    * https://static.chipdip.ru/lib/126/DOC001126567.pdf
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/134
+Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/134.patch
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
