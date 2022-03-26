@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63F65C433EF
-	for <alsa-devel@archiver.kernel.org>; Sat, 26 Mar 2022 03:10:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC90DC433EF
+	for <alsa-devel@archiver.kernel.org>; Sat, 26 Mar 2022 03:11:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BE9A216D6;
-	Sat, 26 Mar 2022 04:09:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE9A216D6
+	by alsa0.perex.cz (Postfix) with ESMTPS id BC00516DD;
+	Sat, 26 Mar 2022 04:10:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC00516DD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648264198;
-	bh=YGl5J9QOIN29CsIQuA8zAXwHa8KHnzrTQRRxQyiSjHY=;
+	s=default; t=1648264270;
+	bh=VQzeB7GuIGqhb6ywNL9sB/RvioC+oNMOZaDkAv225+k=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=geTAL18HsW72dLfLPGWfgxUkWk1J9Nvp1bVfIGfPIyK7RHr9DF6nM00Dl+tCkHqi8
-	 JrYCpqrCAHMvVkRCSzATtOWXMasrx+SOlgaPmrg+x4UkfYPMtlTdrJqvSjnLmEkRd+
-	 akEG2JRPlt+roWLN8pg7Z+uBccZlDxu6L1lpp5pw=
+	b=H2Cxs7GKCPH6L2Rvd8tiqMB3Wo6U5ZjpkT69CL5BXDGhIRltG/ukMa52IqdcP0w5P
+	 3OMztK9ruMtveGj2UP8zOY/1n6utY47Z/zsJq4avJRw+NM7hBY0KFGl8vQ0oxFvAWx
+	 RmttkYWaD3naovbAWs3ty8uS4yH1S+BltRuWfobs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4E312F80153;
-	Sat, 26 Mar 2022 04:09:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 69BEFF80115;
+	Sat, 26 Mar 2022 04:10:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 21DA6F8019D; Sat, 26 Mar 2022 04:09:06 +0100 (CET)
+ id 5EFC5F80153; Sat, 26 Mar 2022 04:10:18 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 22C5BF80115
- for <alsa-devel@alsa-project.org>; Sat, 26 Mar 2022 04:08:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22C5BF80115
+ by alsa1.perex.cz (Postfix) with ESMTP id 9E149F80153
+ for <alsa-devel@alsa-project.org>; Sat, 26 Mar 2022 04:10:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E149F80153
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub pull_request - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1648264137404253006-webhooks-bot@alsa-project.org>
-References: <1648264137404253006-webhooks-bot@alsa-project.org>
+In-Reply-To: <1648264212216631889-webhooks-bot@alsa-project.org>
+References: <1648264212216631889-webhooks-bot@alsa-project.org>
 Subject: Add UCM for PinePhone
-Message-Id: <20220326030906.21DA6F8019D@alsa1.perex.cz>
-Date: Sat, 26 Mar 2022 04:09:06 +0100 (CET)
+Message-Id: <20220326031018.5EFC5F80153@alsa1.perex.cz>
+Date: Sat, 26 Mar 2022 04:10:18 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -65,7 +65,7 @@ This PR contains:
 * This UCM config copied from https://gitlab.com/pine64-org/pine64-alsa-ucm/, which was developed by many developers ( https://gitlab.com/pine64-org/pine64-alsa-ucm/-/merge_requests/1 ) and is BSD-3-Clause licensed.
 * Fix paths to be relative to alsa-ucm-conf root.
 * Some refactoring of the UCM config, incl. removing duplicate directives, and moving volume directives to BootSequence.
-* Updating the playback/boost volumes, in response to comments on this PR.
+* Updating the routing/playback/boost volumes, in response to comments on this PR.
 
 I have tested:
 
