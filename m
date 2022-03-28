@@ -4,92 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6AF2C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Mar 2022 06:08:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72C27C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Mar 2022 06:08:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9B5691681;
-	Mon, 28 Mar 2022 08:07:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B5691681
+	by alsa0.perex.cz (Postfix) with ESMTPS id A0D201690;
+	Mon, 28 Mar 2022 08:07:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A0D201690
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648447692;
-	bh=MXVUkKL6zqmOeVQwt4GbXOSezBvloYwvaj2x/+Ep4vk=;
+	s=default; t=1648447709;
+	bh=a1okFYQ/qbCouSU3ZkQ0XsVWuSAgBcj3/DS6RK/4D6E=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YJLOFRM83Kj+jsxmQg3RNHZC8Q3WJrPMI4CBW4Lpp9sdV8hU859fZZPWFFj2VcKUk
-	 K7PqJMLG8Ds7ankUkRKR7A1zDTnYBw0txkh0mYhBWWTo880bI22DJPBDE977EDaiKf
-	 dLOtLJKBUW44Pplxa+tjAeOP2VHbDi0OUVBHCDNY=
+	b=qnbzfc0S/o9EvAAocTm/blZhf98431vmX2yakvbhUQyQo/uCbFIGt+9+wjMXI6q9D
+	 uObcoDurjw+TNLf1K8B7reeByytwH7EAEoVaPKNG/HOgfG4l19U5oxtowYDhgXCfPH
+	 ZYTqck3K4l9KBNKS8WgzmS1d7EtkAiNAWwlGSXD8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1C4C0F8026A;
-	Mon, 28 Mar 2022 08:06:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C26E8F8050F;
+	Mon, 28 Mar 2022 08:07:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6F6C1F800CB; Mon, 28 Mar 2022 08:06:52 +0200 (CEST)
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com
- (mail-bn8nam12on20629.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:fe5b::629])
+ id BBC49F80518; Mon, 28 Mar 2022 08:06:59 +0200 (CEST)
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com
+ (mail-dm6nam11on20608.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:7eaa::608])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1C855F800CB
- for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2022 08:06:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C855F800CB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6340DF804DA
+ for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2022 08:06:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6340DF804DA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com
- header.b="rurmFezf"
+ header.b="tslhgcHF"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FiePL8vqzVsHarnACoeqT5r2HLy+svdHatIBgUXVQL5T0ZFzTAlvuxVPYU28okkfb6Xsy/1k2ozYPXbonvNxt/dC4+Wikzh8IMfjvGPSysz38fC7QaoPC/ypfmby3Zy1wp2dgq4K6TsKfkGKtR6UTxrYSdeOGi3MDj/2xSSVITpDGUulpzsW4wxwLwYbAXEY8oXIcHZTvusajwEoyDdr0yvJcUZ2i4dpRZYIRCdqBTwv3g1MUYsHl+ecLs1N/yWGix6UAaIZGaADdEN9ZMQT+6vq6KuKz2ZMI71qdHL/Rs3lGbbupySyQ0TOxUlgT7U5PYa+XpbF3/QXcL1o/Ba5Jw==
+ b=k3HlQhq32bwKNWPDzOBKRQPRALxphialHM2kZZFa/2GPrtK/XKs2ab8hlG+rL2agGnOy+pmLTV3dQDHPjZDK8Goz7F+8EJq0mcQxoDhecfuYx/QrlSghfNBzfOO5DQhkTciIvW+J/li7EXY+hg3+Bk57qwbEMfv+HqtZ901sYfCwYeZ/VnCVcj+YGI3ZuCGWP08Gy5OplEtNVXUXFOPzeD7ZruBkDpLwGJ24Ssr10r86GRIvI9PNfg07vDuh2AbSKIR275N13jktctK6jdBijeRKA7ubcGPdyqfTCPJiy9GmlXHIdniyq53nLpeWy9bQ7KtAIlQlH8Ezuhy0uTm72w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8kaSMl4l3yOuOYqRVKCvJZQR+BIGjkX2obubDkXDwxA=;
- b=BbcrUcwESLXk40oukx2L9LJp9k0Y5EGP5RDHaeCNY0bzkabtdQE46iXO3DazcbWlaeMxuKnppRjVM1rZw1ZM4JXZRQ8K2LI7holOLTY40J/6/rMGoaM1llRYAAg4Li7epn6XeaHdngdMqTHPsi/pAuglA4fDijdMuYxVv0DCZBZ0xxAClk0UyXvtTGpPcSQVgMdOa2fs2ElFlGp3+31jsbubQFlhdKKIyictHreBAI0Th4J4u9bnKbmRGTgQ6fBWbDU7Seh8Y7u7hlXQm0M+9R+BDpCIP2mZYn8U7pXABdjhi5ZYPyRHaL0KfujO79cZr10KRdMsJLnxaQOZGgVXQQ==
+ bh=Qe5SYG1TP+sQ5em8T8L2BI8X1qzj8arzo+ME4eAewaQ=;
+ b=Zo/bg26uGaa+xpeMVu7FbkXvWM/bKlyNNUx/Rfn5fFOHot/fBmcKgRSq9GRclrNVi6M5egB5oftzZrSub+hpWQjXUIH+fNBrdc2bapL1+elBnqY0mtAKWcZEyjFP2+vxnhJ+7o9xXhUv12felvUuKsDSlDlbXG+dpBv7w0DOhTwpe8z8PcVkz44nCZa3o4Ald+kvzaqRL1cWArelEuMgk1Oe2GIvNWSAeNSOa2kPPyFo01nDoFPwl5+hzUinZuulqF7E4KHgV3Jwc5rZ6NBufaBh0/YZoSxMjrnCe2hwrJhw3pYDuO8YAQqCcMWbTSwOmp6E2M//+CGHNJSw5SyJjA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 12.22.5.236) smtp.rcpttodomain=alsa-project.org smtp.mailfrom=nvidia.com;
+ 12.22.5.238) smtp.rcpttodomain=alsa-project.org smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
  dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8kaSMl4l3yOuOYqRVKCvJZQR+BIGjkX2obubDkXDwxA=;
- b=rurmFezfzBHEgbnpOxbGQN/MtR99Fz0W9GvsLouIehL3WIWGe4eqr3MRVMdclKyRwuQhurjR3Ji8AMx1lzu+7skXHu32JN7A4zfbt8CVJEBzN3+iiiosrDS9/9pU72juhCueI1qAHxE822q3e/B3HFYYg8dUDsv97AX3Slb+FD06l9wjx+pWuk/dCpMEz59A9aAe4mnVB3EsGrFctP7sb0BzeKjgfEIIyuC38V8wwURvxYNFFvF1wrF/VeMY6eJUTmWZvpVH17e3yrqq9itGB+B3TGj4wo/iuKsxv4Hznlb/TtmCDNQmcG5aDMebA3EJtHaNd9JOfYtc3ZXY4IVP1g==
-Received: from DM6PR03CA0096.namprd03.prod.outlook.com (2603:10b6:5:333::29)
- by LV2PR12MB5847.namprd12.prod.outlook.com (2603:10b6:408:174::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5102.17; Mon, 28 Mar
- 2022 06:06:40 +0000
-Received: from DM6NAM11FT051.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:333:cafe::b4) by DM6PR03CA0096.outlook.office365.com
- (2603:10b6:5:333::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5102.17 via Frontend
- Transport; Mon, 28 Mar 2022 06:06:40 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 12.22.5.236)
+ bh=Qe5SYG1TP+sQ5em8T8L2BI8X1qzj8arzo+ME4eAewaQ=;
+ b=tslhgcHF8cf0RwepmlBS1xVNOJIiwWDdMWaDHtSWIceCRCqRZilZoAmftUDNu2W441P1M1dsPGV/zYTLzPypuopPXoIlDwoIVx5BwKvFxvcEkW4Z8JyKYMwd6JMTqc9UbiTNhA387+W/vMqoLwFxKD8xC6BWZmqfO7/BToxiLiRXs0bgX0YeLWdKdd3t5JbTBPv/aoUPuizjotr0H9fg2Daq3/+4fN96Fo7JaqBFV6Ukdc+rp+biKftu2WXtE75vTp6Sa0aSWFeQrAv7ouaa3PhZmg97ButR8oGp2WyX2Wxp4qJKDdqI2Dllk9wr5j51qJ/iocqrFLxiNlsP+I6YGw==
+Received: from DM5PR05CA0012.namprd05.prod.outlook.com (2603:10b6:3:d4::22) by
+ CH2PR12MB4134.namprd12.prod.outlook.com (2603:10b6:610:a7::15) with
+ Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.5102.17; Mon, 28 Mar 2022 06:06:48 +0000
+Received: from DM6NAM11FT050.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:3:d4:cafe::b8) by DM5PR05CA0012.outlook.office365.com
+ (2603:10b6:3:d4::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5123.16 via Frontend
+ Transport; Mon, 28 Mar 2022 06:06:48 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 12.22.5.238)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 12.22.5.236 as permitted sender) receiver=protection.outlook.com;
- client-ip=12.22.5.236; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (12.22.5.236) by
- DM6NAM11FT051.mail.protection.outlook.com (10.13.172.243) with Microsoft SMTP
+ 12.22.5.238 as permitted sender) receiver=protection.outlook.com;
+ client-ip=12.22.5.238; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (12.22.5.238) by
+ DM6NAM11FT050.mail.protection.outlook.com (10.13.173.111) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.5102.17 via Frontend Transport; Mon, 28 Mar 2022 06:06:39 +0000
-Received: from rnnvmail205.nvidia.com (10.129.68.10) by DRHQMAIL109.nvidia.com
- (10.27.9.19) with Microsoft SMTP Server (TLS) id 15.0.1497.32;
- Mon, 28 Mar 2022 06:06:37 +0000
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail205.nvidia.com
- (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
+ 15.20.5102.17 via Frontend Transport; Mon, 28 Mar 2022 06:06:47 +0000
+Received: from rnnvmail204.nvidia.com (10.129.68.6) by DRHQMAIL105.nvidia.com
+ (10.27.9.14) with Microsoft SMTP Server (TLS) id 15.0.1497.32;
+ Mon, 28 Mar 2022 06:06:47 +0000
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail204.nvidia.com
+ (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.22; Sun, 27 Mar
- 2022 23:06:36 -0700
+ 2022 23:06:46 -0700
 Received: from audio.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.7)
  with Microsoft SMTP Server id 15.2.986.22 via Frontend Transport;
- Sun, 27 Mar 2022 23:06:33 -0700
+ Sun, 27 Mar 2022 23:06:42 -0700
 From: Sameer Pujar <spujar@nvidia.com>
 To: <broonie@kernel.org>, <robh+dt@kernel.org>, <krzk+dt@kernel.org>,
  <thierry.reding@gmail.com>, <lgirdwood@gmail.com>, <perex@perex.cz>,
  <tiwai@suse.com>
-Subject: [PATCH 1/6] ASoC: tegra: Add binding doc for ASRC module
-Date: Mon, 28 Mar 2022 11:35:21 +0530
-Message-ID: <1648447526-14523-2-git-send-email-spujar@nvidia.com>
+Subject: [PATCH 3/6] ASoC: tegra: AHUB routes for ASRC module
+Date: Mon, 28 Mar 2022 11:35:23 +0530
+Message-ID: <1648447526-14523-4-git-send-email-spujar@nvidia.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1648447526-14523-1-git-send-email-spujar@nvidia.com>
 References: <1648447526-14523-1-git-send-email-spujar@nvidia.com>
@@ -97,27 +97,27 @@ MIME-Version: 1.0
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d2b56818-a87e-4671-996d-08da10811f78
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5847:EE_
-X-Microsoft-Antispam-PRVS: <LV2PR12MB5847750DD636CDC6CCA96101A71D9@LV2PR12MB5847.namprd12.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 2295bb59-2784-4e54-2d0d-08da108124a6
+X-MS-TrafficTypeDiagnostic: CH2PR12MB4134:EE_
+X-Microsoft-Antispam-PRVS: <CH2PR12MB41344B55AA6624237BB553FFA71D9@CH2PR12MB4134.namprd12.prod.outlook.com>
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3V/emu1nuDrs7gOQ7//yud8BJLmGZ54QD4hegEUeTwWqW/tHMSC0C9n+gcY757jK/jEUCMk5SW+Cgz0qNzXH34Ug7hpMN7HJcRApGUObejQxRtU/Jhokxpl8p73ym5/3eBtW3noLNo3zvwGNAp0zCQYUGSVYztBjJPkC2dYljF2mChPQ4pfdcAML+39Mc8swuWmX8ftP1vC7BIoqcJRocC9egyoU5Tde1iKECd+IuLTCEvXAJz0bEpUiQotn82/5dE1IRHwiIiVZztk/jUt1SVIUx7e/3+U4p2sw5zlonWOrmmyKucysVY6u2Q3Y68fAQP7LB1dnZkEoSLN0uqtDg7QoXGV8onnccR2teAwKW1n9x4DruBJa78SfxrtStcuFwAByXLewUESc9ScjroRHMveJ8OBwHwoxr+0Jc3tIc0kst700IKBVE+gnmoEPcSK89wVI3ML6m6MUJeZUK3VHW+/WnfP6NB3UE1ewxRDoGQfS4NirygnuoAnnyE+2upPL0n8dIcbJZB/reXNWKNaxSf9DTeJfDoB/iTROtTuhX3zOXgmNGvLBa5E6vEFvAxW5R5LcB4cxbAnvOvDkgwzEo8zBOASKn5c8OdFAdFhSj0QJ6qq2Uq1EAO04nQtE+cNo8Kix0OCIaaqOGEgWLR8GjA8Yox0FUxFlVyuILCHBbZMqStwLsDeDz16rmS9z/2uKhgDSGIuUdkS7g/87GuqAUtZQeL9PLVHFncpFTlElr9NbBG3qe4Y5qo7mwm5rdFuEege6nU/gsYx7W6ZpMe282kYulgHXw7fY/2w6GJnDUyAf3WvXLIzvO7GX61oJgdmHjYRJa94lWMlwqZK/QI7H/Q==
-X-Forefront-Antispam-Report: CIP:12.22.5.236; CTRY:US; LANG:en; SCL:1; SRV:;
+X-Microsoft-Antispam-Message-Info: wsqd7dhvcc0c5N57xvKDO2gEaVG3WjimWq5PTbQF5hJmTY6OJqCgDFompoqy+SMShOY4hajjIOHGxk58IP1PWWQmAZ85bcDPY2dk/CtkTYWPvrya8vR23tmU4CJ9h9TVN6eccgEotngKbYw3ZS2dFdk9zDLJZdM9BYm1wOMmkVV0X/mzrdPjYC1xr1TfY5RXny+D6G+KhFow/XYL0CQc2GQ52kmfMFV+DZDedrZgb6bSl3SNwSc6Zm0UBjUaYBYZiWAa7xed6PaxMZsEj1fkOyTDpts4G9wAaO/r6wqGMfQJLd3+X0aJjvtRcZfxzer4jHge8vY33EHW9dUTdkJE3z+aHTKdRaiLTdTCMvCkB+Xfs7sfA0n/5L8vKtf0DZgvGamTPGTJdv4YHY6lM6lR2VIDHX9x07fL2srWasU2fCqRQbiMU5GuR68d07eaJIrbUdedvybX+1QwJP3y9hF1B54oxs5mXIJaZsVBZYrSR9koLKw2u4gBi2EMcDBcY6H//Jg76Tid0tYT97/ACm9/UTWtS4tSi5GKMoKPha0pYG3KYYAi62THAaW98wCocVajLPTPNwwrOof281aHR618jzPwgb+hHqR6lVBGKSQlYtJIx4bq+uY0SJBtz08qjg29Yz2MZJz6uHeasAhW1kGj8LBlyUOm8HcHzf99yddKjgVMYaoMFJxTpL/HOBloNCx0GQf9t032ccY+9Um1XMTT5A==
+X-Forefront-Antispam-Report: CIP:12.22.5.238; CTRY:US; LANG:en; SCL:1; SRV:;
  IPV:CAL; SFV:NSPM; H:mail.nvidia.com; PTR:InfoNoRecords; CAT:NONE;
- SFS:(13230001)(4636009)(46966006)(36840700001)(40470700004)(2616005)(70586007)(966005)(81166007)(47076005)(508600001)(40460700003)(36756003)(36860700001)(2906002)(107886003)(82310400004)(4326008)(70206006)(426003)(8676002)(6666004)(54906003)(336012)(186003)(26005)(316002)(7696005)(356005)(8936002)(86362001)(5660300002)(110136005)(7416002)(36900700001);
+ SFS:(13230001)(4636009)(36840700001)(40470700004)(46966006)(82310400004)(8936002)(110136005)(316002)(2906002)(70586007)(426003)(336012)(107886003)(4326008)(8676002)(7416002)(6666004)(47076005)(36860700001)(26005)(70206006)(186003)(5660300002)(40460700003)(356005)(81166007)(83380400001)(2616005)(86362001)(7696005)(508600001)(54906003)(36756003)(36900700001);
  DIR:OUT; SFP:1101; 
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Mar 2022 06:06:39.0075 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d2b56818-a87e-4671-996d-08da10811f78
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Mar 2022 06:06:47.6792 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2295bb59-2784-4e54-2d0d-08da108124a6
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a; Ip=[12.22.5.236];
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a; Ip=[12.22.5.238];
  Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT051.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT050.eop-nam11.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR12MB5847
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4134
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
  catalin.marinas@arm.com, Sameer Pujar <spujar@nvidia.com>,
  linux-kernel@vger.kernel.org, jonathanh@nvidia.com,
@@ -138,121 +138,165 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch adds YAML schema for DT bindings of Asynchronous Sample Rate
-Converter (ASRC) module. It will be registered as an ASoC component and
-can be plugged into an audio path as per need via ALSA mixer controls.
-The bindings are applicable on Tegra186 and later where the ASRC device
-is present.
+Add AHUB routes for ASRC module. The ASRC module can be plugged into audio
+path as per the need. The routing controls can be used to setup the audio
+path with ASRC similar to the already existing routes. The routes are added
+to Tegra186 and later Tegra SoCs where ASRC module is present.
 
 Signed-off-by: Sameer Pujar <spujar@nvidia.com>
 ---
- .../bindings/sound/nvidia,tegra186-asrc.yaml       | 81 ++++++++++++++++++++++
- .../bindings/sound/nvidia,tegra210-ahub.yaml       |  4 ++
- 2 files changed, 85 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra186-asrc.yaml
+ sound/soc/tegra/tegra210_ahub.c | 82 ++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 81 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra186-asrc.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra186-asrc.yaml
-new file mode 100644
-index 0000000..520d0d0
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/nvidia,tegra186-asrc.yaml
-@@ -0,0 +1,81 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/nvidia,tegra186-asrc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Tegra186 ASRC Device Tree Bindings
-+
-+description: |
-+  Asynchronous Sample Rate Converter (ASRC) converts the sampling frequency
-+  of the input signal from one frequency to another. It can handle over a
-+  wide range of sample rate ratios (freq_in/freq_out) from 1:24 to 24:1.
-+  ASRC has two modes of operation. One where ratio can be programmed in SW
-+  and the other where it gets the information from ratio estimator module.
-+
-+  It supports  sample rate conversions in the range of 8 to 192 kHz and
-+  supports 6 streams upto 12 total channels. The input data size can be
-+  16, 24 and 32 bits.
-+
-+maintainers:
-+  - Jon Hunter <jonathanh@nvidia.com>
-+  - Mohan Kumar <mkumard@nvidia.com>
-+  - Sameer Pujar <spujar@nvidia.com>
-+
-+allOf:
-+  - $ref: name-prefix.yaml#
-+
-+properties:
-+  $nodename:
-+    pattern: "^asrc@[0-9a-f]*$"
-+
-+  compatible:
-+    oneOf:
-+      - const: nvidia,tegra186-asrc
-+      - items:
-+          - enum:
-+              - nvidia,tegra234-asrc
-+              - nvidia,tegra194-asrc
-+          - const: nvidia,tegra186-asrc
-+
-+  reg:
-+    maxItems: 1
-+
-+  sound-name-prefix:
-+    pattern: "^ASRC[1-9]$"
-+
-+  ports:
-+    $ref: /schemas/graph.yaml#/properties/ports
-+    description: |
-+      ASRC has seven input ports and six output ports. Accordingly ACIF
-+      (Audio Client Interfaces) port nodes are defined to represent the
-+      ASRC inputs (port 0 to 6) and outputs (port 7 to 12). These are
-+      connected to corresponding ports on AHUB (Audio Hub). Additional
-+      input (port 6) is for receiving ratio information from estimator.
-+
-+    patternProperties:
-+      '^port@[0-6]':
-+        $ref: audio-graph-port.yaml#
-+        unevaluatedProperties: false
-+        description: ASRC ACIF input ports
-+      '^port@[7-9]|1[1-2]':
-+        $ref: audio-graph-port.yaml#
-+        unevaluatedProperties: false
-+        description: ASRC ACIF output ports
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+
-+    asrc@2910000 {
-+        compatible = "nvidia,tegra186-asrc";
-+        reg = <0x2910000 0x2000>;
-+        sound-name-prefix = "ASRC1";
-+    };
-+
-+...
-diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml
-index 4727f1e..6df6f85 100644
---- a/Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml
-+++ b/Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml
-@@ -106,6 +106,10 @@ patternProperties:
-     type: object
-     $ref: nvidia,tegra210-mixer.yaml#
+diff --git a/sound/soc/tegra/tegra210_ahub.c b/sound/soc/tegra/tegra210_ahub.c
+index bccf8b8..e1f90da 100644
+--- a/sound/soc/tegra/tegra210_ahub.c
++++ b/sound/soc/tegra/tegra210_ahub.c
+@@ -280,6 +280,20 @@ static struct snd_soc_dai_driver tegra186_ahub_dais[] = {
+ 	DAI(MIXER1 TX3),
+ 	DAI(MIXER1 TX4),
+ 	DAI(MIXER1 TX5),
++	/* XBAR -> ASRC -> XBAR */
++	DAI(ASRC1 RX1),
++	DAI(ASRC1 TX1),
++	DAI(ASRC1 RX2),
++	DAI(ASRC1 TX2),
++	DAI(ASRC1 RX3),
++	DAI(ASRC1 TX3),
++	DAI(ASRC1 RX4),
++	DAI(ASRC1 TX4),
++	DAI(ASRC1 RX5),
++	DAI(ASRC1 TX5),
++	DAI(ASRC1 RX6),
++	DAI(ASRC1 TX6),
++	DAI(ASRC1 RX7),
+ };
  
-+  '^asrc@[0-9a-f]+$':
-+    type: object
-+    $ref: nvidia,tegra186-asrc.yaml#
-+
- required:
-   - compatible
-   - reg
+ static const char * const tegra210_ahub_mux_texts[] = {
+@@ -388,6 +402,12 @@ static const char * const tegra186_ahub_mux_texts[] = {
+ 	"MIXER1 TX3",
+ 	"MIXER1 TX4",
+ 	"MIXER1 TX5",
++	"ASRC1 TX1",
++	"ASRC1 TX2",
++	"ASRC1 TX3",
++	"ASRC1 TX4",
++	"ASRC1 TX5",
++	"ASRC1 TX6",
+ };
+ 
+ static const unsigned int tegra210_ahub_mux_values[] = {
+@@ -513,6 +533,13 @@ static const unsigned int tegra186_ahub_mux_values[] = {
+ 	MUX_VALUE(1, 2),
+ 	MUX_VALUE(1, 3),
+ 	MUX_VALUE(1, 4),
++	/* ASRC */
++	MUX_VALUE(3, 24),
++	MUX_VALUE(3, 25),
++	MUX_VALUE(3, 26),
++	MUX_VALUE(3, 27),
++	MUX_VALUE(3, 28),
++	MUX_VALUE(3, 29),
+ };
+ 
+ /* Controls for t210 */
+@@ -623,6 +650,13 @@ MUX_ENUM_CTRL_DECL_186(t186_mixer17_tx, 0x26);
+ MUX_ENUM_CTRL_DECL_186(t186_mixer18_tx, 0x27);
+ MUX_ENUM_CTRL_DECL_186(t186_mixer19_tx, 0x28);
+ MUX_ENUM_CTRL_DECL_186(t186_mixer110_tx, 0x29);
++MUX_ENUM_CTRL_DECL_186(t186_asrc11_tx, 0x6c);
++MUX_ENUM_CTRL_DECL_186(t186_asrc12_tx, 0x6d);
++MUX_ENUM_CTRL_DECL_186(t186_asrc13_tx, 0x6e);
++MUX_ENUM_CTRL_DECL_186(t186_asrc14_tx, 0x6f);
++MUX_ENUM_CTRL_DECL_186(t186_asrc15_tx, 0x70);
++MUX_ENUM_CTRL_DECL_186(t186_asrc16_tx, 0x71);
++MUX_ENUM_CTRL_DECL_186(t186_asrc17_tx, 0x72);
+ 
+ /* Controls for t234 */
+ MUX_ENUM_CTRL_DECL_234(t234_mvc1_tx, 0x44);
+@@ -651,6 +685,13 @@ MUX_ENUM_CTRL_DECL_234(t234_admaif17_tx, 0x60);
+ MUX_ENUM_CTRL_DECL_234(t234_admaif18_tx, 0x61);
+ MUX_ENUM_CTRL_DECL_234(t234_admaif19_tx, 0x62);
+ MUX_ENUM_CTRL_DECL_234(t234_admaif20_tx, 0x63);
++MUX_ENUM_CTRL_DECL_234(t234_asrc11_tx, 0x64);
++MUX_ENUM_CTRL_DECL_234(t234_asrc12_tx, 0x65);
++MUX_ENUM_CTRL_DECL_234(t234_asrc13_tx, 0x66);
++MUX_ENUM_CTRL_DECL_234(t234_asrc14_tx, 0x67);
++MUX_ENUM_CTRL_DECL_234(t234_asrc15_tx, 0x68);
++MUX_ENUM_CTRL_DECL_234(t234_asrc16_tx, 0x69);
++MUX_ENUM_CTRL_DECL_234(t234_asrc17_tx, 0x6a);
+ 
+ /*
+  * The number of entries in, and order of, this array is closely tied to the
+@@ -813,6 +854,19 @@ static const struct snd_soc_dapm_widget tegra186_ahub_widgets[] = {
+ 	TX_WIDGETS("MIXER1 TX3"),
+ 	TX_WIDGETS("MIXER1 TX4"),
+ 	TX_WIDGETS("MIXER1 TX5"),
++	WIDGETS("ASRC1 RX1", t186_asrc11_tx),
++	WIDGETS("ASRC1 RX2", t186_asrc12_tx),
++	WIDGETS("ASRC1 RX3", t186_asrc13_tx),
++	WIDGETS("ASRC1 RX4", t186_asrc14_tx),
++	WIDGETS("ASRC1 RX5", t186_asrc15_tx),
++	WIDGETS("ASRC1 RX6", t186_asrc16_tx),
++	WIDGETS("ASRC1 RX7", t186_asrc17_tx),
++	TX_WIDGETS("ASRC1 TX1"),
++	TX_WIDGETS("ASRC1 TX2"),
++	TX_WIDGETS("ASRC1 TX3"),
++	TX_WIDGETS("ASRC1 TX4"),
++	TX_WIDGETS("ASRC1 TX5"),
++	TX_WIDGETS("ASRC1 TX6"),
+ };
+ 
+ static const struct snd_soc_dapm_widget tegra234_ahub_widgets[] = {
+@@ -909,6 +963,19 @@ static const struct snd_soc_dapm_widget tegra234_ahub_widgets[] = {
+ 	TX_WIDGETS("MIXER1 TX3"),
+ 	TX_WIDGETS("MIXER1 TX4"),
+ 	TX_WIDGETS("MIXER1 TX5"),
++	WIDGETS("ASRC1 RX1", t234_asrc11_tx),
++	WIDGETS("ASRC1 RX2", t234_asrc12_tx),
++	WIDGETS("ASRC1 RX3", t234_asrc13_tx),
++	WIDGETS("ASRC1 RX4", t234_asrc14_tx),
++	WIDGETS("ASRC1 RX5", t234_asrc15_tx),
++	WIDGETS("ASRC1 RX6", t234_asrc16_tx),
++	WIDGETS("ASRC1 RX7", t234_asrc17_tx),
++	TX_WIDGETS("ASRC1 TX1"),
++	TX_WIDGETS("ASRC1 TX2"),
++	TX_WIDGETS("ASRC1 TX3"),
++	TX_WIDGETS("ASRC1 TX4"),
++	TX_WIDGETS("ASRC1 TX5"),
++	TX_WIDGETS("ASRC1 TX6"),
+ };
+ 
+ #define TEGRA_COMMON_MUX_ROUTES(name)					\
+@@ -975,7 +1042,13 @@ static const struct snd_soc_dapm_widget tegra234_ahub_widgets[] = {
+ 	{ name " Mux",		"ADX4 TX1",	"ADX4 TX1 XBAR-RX" },	\
+ 	{ name " Mux",		"ADX4 TX2",	"ADX4 TX2 XBAR-RX" },	\
+ 	{ name " Mux",		"ADX4 TX3",	"ADX4 TX3 XBAR-RX" },	\
+-	{ name " Mux",		"ADX4 TX4",	"ADX4 TX4 XBAR-RX" },
++	{ name " Mux",		"ADX4 TX4",	"ADX4 TX4 XBAR-RX" },	\
++	{ name " Mux",		"ASRC1 TX1",	"ASRC1 TX1 XBAR-RX" },	\
++	{ name " Mux",		"ASRC1 TX2",	"ASRC1 TX2 XBAR-RX" },	\
++	{ name " Mux",		"ASRC1 TX3",	"ASRC1 TX3 XBAR-RX" },	\
++	{ name " Mux",		"ASRC1 TX4",	"ASRC1 TX4 XBAR-RX" },	\
++	{ name " Mux",		"ASRC1 TX5",	"ASRC1 TX5 XBAR-RX" },	\
++	{ name " Mux",		"ASRC1 TX6",	"ASRC1 TX6 XBAR-RX" },
+ 
+ #define TEGRA210_MUX_ROUTES(name)						\
+ 	TEGRA_COMMON_MUX_ROUTES(name)
+@@ -1135,6 +1208,13 @@ static const struct snd_soc_dapm_route tegra186_ahub_routes[] = {
+ 	TEGRA186_MUX_ROUTES("MIXER1 RX8")
+ 	TEGRA186_MUX_ROUTES("MIXER1 RX9")
+ 	TEGRA186_MUX_ROUTES("MIXER1 RX10")
++	TEGRA186_MUX_ROUTES("ASRC1 RX1")
++	TEGRA186_MUX_ROUTES("ASRC1 RX2")
++	TEGRA186_MUX_ROUTES("ASRC1 RX3")
++	TEGRA186_MUX_ROUTES("ASRC1 RX4")
++	TEGRA186_MUX_ROUTES("ASRC1 RX5")
++	TEGRA186_MUX_ROUTES("ASRC1 RX6")
++	TEGRA186_MUX_ROUTES("ASRC1 RX7")
+ };
+ 
+ static const struct snd_soc_component_driver tegra210_ahub_component = {
 -- 
 2.7.4
 
