@@ -4,53 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6523EC433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Mar 2022 11:30:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4C7AC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Mar 2022 11:30:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A323917C9;
-	Mon, 28 Mar 2022 13:29:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A323917C9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 27CB917DE;
+	Mon, 28 Mar 2022 13:29:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 27CB917DE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648467024;
-	bh=GOy8uL/CowAMGOpAcbyxadYmWZJc9XMwySW7dFBYu0U=;
+	s=default; t=1648467041;
+	bh=FKCDWrqPHHqsx4ODOirjPScLr/QC4XTTjP+7cGqYBxw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tzpm1EdRpg44AohiFExYPtm+Z10AIVv3O70Ouf8ehmJffpAiy6o8SrWXBfK9721W7
-	 HbiXDlvk1Z4gJJS4aNmza+lIVjx+/qd66z7AL8peXf/OnRjyOh1YLBpSNlz4kBTTlt
-	 79u5buUBQUKDFlWuqgJ1mlsVBiYuE/TU0K5o3UvU=
+	b=ttOQmAW600Yrc/htLbBNjKDlBKoNBSAEjNDsS1+bsnI9pJl3g2/a/3/ZmfHdYO4CQ
+	 nqspS/3A9c8BFM4WUrfWn+vhZev0bqPfLqgBmbsbRsAh09J2qom3YejggkkCisjj/K
+	 nFyf2QO+DevVGK9IfmECqBRCW1hj/nCPqVqdiNs8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ACFFBF8051D;
-	Mon, 28 Mar 2022 13:28:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3A3B9F8051F;
+	Mon, 28 Mar 2022 13:28:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BB636F8051F; Mon, 28 Mar 2022 13:28:27 +0200 (CEST)
+ id 3F6C8F80526; Mon, 28 Mar 2022 13:28:28 +0200 (CEST)
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
  [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8DC56F800FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8D0E4F8026A
  for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2022 13:28:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8DC56F800FA
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D0E4F8026A
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1nYnXi-0003Sr-I3; Mon, 28 Mar 2022 13:28:14 +0200
+ id 1nYnXh-0003Pz-J5; Mon, 28 Mar 2022 13:28:13 +0200
 Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
  by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
  (envelope-from <sha@pengutronix.de>)
- id 1nYnXe-003Zlg-Sw; Mon, 28 Mar 2022 13:28:13 +0200
+ id 1nYnXd-003ZlO-Ux; Mon, 28 Mar 2022 13:28:12 +0200
 Received: from sha by dude02.red.stw.pengutronix.de with local (Exim 4.94.2)
  (envelope-from <sha@pengutronix.de>)
- id 1nYnXd-006bz9-O2; Mon, 28 Mar 2022 13:28:09 +0200
+ id 1nYnXd-006bz6-NT; Mon, 28 Mar 2022 13:28:09 +0200
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 19/19] ASoC: fsl_micfil: fold fsl_set_clock_params() into
- its only user
-Date: Mon, 28 Mar 2022 13:27:44 +0200
-Message-Id: <20220328112744.1575631-20-s.hauer@pengutronix.de>
+Subject: [PATCH v2 18/19] ASoC: fsl_micfil: drop support for undocumented
+ property
+Date: Mon, 28 Mar 2022 13:27:43 +0200
+Message-Id: <20220328112744.1575631-19-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220328112744.1575631-1-s.hauer@pengutronix.de>
 References: <20220328112744.1575631-1-s.hauer@pengutronix.de>
@@ -80,81 +80,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-fsl_set_clock_params() is used only once and easily be folded into its
-caller, do so.
+The "fsl,shared-interrupt" property is undocumented and unnecessary.
+Just pass IRQF_SHARED unconditionally.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- sound/soc/fsl/fsl_micfil.c | 41 ++++++++++++--------------------------
- 1 file changed, 13 insertions(+), 28 deletions(-)
+ sound/soc/fsl/fsl_micfil.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
-index 99c256f46f38e..26b3395020973 100644
+index f536ea2db89db..99c256f46f38e 100644
 --- a/sound/soc/fsl/fsl_micfil.c
 +++ b/sound/soc/fsl/fsl_micfil.c
-@@ -253,29 +253,6 @@ static int fsl_micfil_trigger(struct snd_pcm_substream *substream, int cmd,
- 	return 0;
- }
+@@ -553,7 +553,6 @@ static int fsl_micfil_probe(struct platform_device *pdev)
+ 	struct resource *res;
+ 	void __iomem *regs;
+ 	int ret, i;
+-	unsigned long irqflag = 0;
  
--static int fsl_set_clock_params(struct device *dev, unsigned int rate)
--{
--	struct fsl_micfil *micfil = dev_get_drvdata(dev);
--	int clk_div = 8;
--	int osr = MICFIL_OSR_DEFAULT;
--	int ret;
--
--	ret = clk_set_rate(micfil->mclk, rate * clk_div * osr * 8);
--	if (ret)
--		return ret;
--
--	ret = micfil_set_quality(micfil);
--	if (ret)
--		return ret;
--
--	ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
--				 MICFIL_CTRL2_CLKDIV | MICFIL_CTRL2_CICOSR,
--				 FIELD_PREP(MICFIL_CTRL2_CLKDIV, clk_div) |
--				 FIELD_PREP(MICFIL_CTRL2_CICOSR, 16 - osr));
--
--	return ret;
--}
--
- static int fsl_micfil_hw_params(struct snd_pcm_substream *substream,
- 				struct snd_pcm_hw_params *params,
- 				struct snd_soc_dai *dai)
-@@ -283,7 +260,8 @@ static int fsl_micfil_hw_params(struct snd_pcm_substream *substream,
- 	struct fsl_micfil *micfil = snd_soc_dai_get_drvdata(dai);
- 	unsigned int channels = params_channels(params);
- 	unsigned int rate = params_rate(params);
--	struct device *dev = &micfil->pdev->dev;
-+	int clk_div = 8;
-+	int osr = MICFIL_OSR_DEFAULT;
- 	int ret;
+ 	micfil = devm_kzalloc(&pdev->dev, sizeof(*micfil), GFP_KERNEL);
+ 	if (!micfil)
+@@ -617,12 +616,9 @@ static int fsl_micfil_probe(struct platform_device *pdev)
+ 			return micfil->irq[i];
+ 	}
  
- 	/* 1. Disable the module */
-@@ -298,11 +276,18 @@ static int fsl_micfil_hw_params(struct snd_pcm_substream *substream,
- 	if (ret)
- 		return ret;
+-	if (of_property_read_bool(np, "fsl,shared-interrupt"))
+-		irqflag = IRQF_SHARED;
+-
+ 	/* Digital Microphone interface interrupt */
+ 	ret = devm_request_irq(&pdev->dev, micfil->irq[0],
+-			       micfil_isr, irqflag,
++			       micfil_isr, IRQF_SHARED,
+ 			       micfil->name, micfil);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "failed to claim mic interface irq %u\n",
+@@ -632,7 +628,7 @@ static int fsl_micfil_probe(struct platform_device *pdev)
  
--	ret = fsl_set_clock_params(dev, rate);
--	if (ret < 0) {
--		dev_err(dev, "Failed to set clock parameters [%d]\n", ret);
-+	ret = clk_set_rate(micfil->mclk, rate * clk_div * osr * 8);
-+	if (ret)
- 		return ret;
--	}
-+
-+	ret = micfil_set_quality(micfil);
-+	if (ret)
-+		return ret;
-+
-+	ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
-+				 MICFIL_CTRL2_CLKDIV | MICFIL_CTRL2_CICOSR,
-+				 FIELD_PREP(MICFIL_CTRL2_CLKDIV, clk_div) |
-+				 FIELD_PREP(MICFIL_CTRL2_CICOSR, 16 - osr));
- 
- 	micfil->dma_params_rx.peripheral_config = &micfil->sdmacfg;
- 	micfil->dma_params_rx.peripheral_size = sizeof(micfil->sdmacfg);
+ 	/* Digital Microphone interface error interrupt */
+ 	ret = devm_request_irq(&pdev->dev, micfil->irq[1],
+-			       micfil_err_isr, irqflag,
++			       micfil_err_isr, IRQF_SHARED,
+ 			       micfil->name, micfil);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "failed to claim mic interface error irq %u\n",
 -- 
 2.30.2
 
