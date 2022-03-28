@@ -4,69 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1586AC433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Mar 2022 16:32:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3942BC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Mar 2022 16:35:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6A95E1868;
-	Mon, 28 Mar 2022 18:32:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A95E1868
+	by alsa0.perex.cz (Postfix) with ESMTPS id 22895189B;
+	Mon, 28 Mar 2022 18:34:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22895189B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648485174;
-	bh=hK7ZDdgQaPjqOYen8B81+Sjmp3Ahshxy0heHpeX2Ado=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1648485319;
+	bh=nX1PCkM7gZkE2WEvw/RmCsxYZ56Lru2DnDjOLN44NPI=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=p185/1GWe1t3xvX4HrwiHvEQHfHNgqx5Lmj2yR5tGhtJXR33qqptEvmSu9oqPArkx
-	 HbyrDhE+UUKfF5NRy6NcrHIlLfXqD0kQVVPdkvHkyX3yuJFVw8gFvXk7sTA6yfRr+E
-	 5Uf5UctaqY/G1RHSHMdxTwCaasEjiDdgzhppmWM4=
+	b=U7OVmhqUV+bfNPwfqMTguXsAoQCoc3MA7KFK4TBjk7td1/dpg2y3/i3yCDCxiCheC
+	 75ZeDd7hA0SDikf77M72M1C3jbNoqihcM8qHCm2DlvtBlP/n4keKuGsuGUbWTaT40b
+	 RfIHJCdxhEcQUWlK8TUs5SLa6tvW6WGLq6S4yXm4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E7090F80128;
-	Mon, 28 Mar 2022 18:32:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BAE45F80128;
+	Mon, 28 Mar 2022 18:34:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 63ABFF800FA; Mon, 28 Mar 2022 18:32:02 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 6E0A7F80121; Mon, 28 Mar 2022 18:34:27 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 025BBF800FA
- for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2022 18:31:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 025BBF800FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id E505EF80121
+ for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2022 18:34:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E505EF80121
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="V64A7qzb"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id DA0AF6147A;
- Mon, 28 Mar 2022 16:31:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D239C004DD;
- Mon, 28 Mar 2022 16:31:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1648485117;
- bh=hK7ZDdgQaPjqOYen8B81+Sjmp3Ahshxy0heHpeX2Ado=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=V64A7qzbboy0p+y9aBTjLc241GMoRliUriJxyNrw6yB/jmVHADwXP4GoWMZOiZVey
- fSVW6+r6DFMiNbPdvBTPox/Ah4BTa8+qYvJi1ghnduc9HW1EnDo37W4hDT+X9HbAKp
- nhvU1oQhmiwdiOGgkZXxGOMyoelYavWmr8AI57qTYbwi1lEdXsUAc3kQ/yoWrV+RO8
- 4YmZ/i4hfuEZcxWmuZ4ZW/bYCinDrRi/oLomJ56HpbbGFyCAJmvSLy0Pr+jSmQR3Yw
- NazZK5zP/Ga/fRV6B7z7EwI5hc6ahI+UjFP4be+aQapGo+bbSzrRPEt9ckM+CeQrHr
- 7/1QGw/bgTLhA==
-Date: Mon, 28 Mar 2022 17:31:51 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Xiaomeng Tong <xiam0nd.tong@gmail.com>
-Subject: Re: [PATCH] soc: soc-dapm: fix two incorrect uses of list iterator
-Message-ID: <YkHi98GDDWNie7GP@sirena.org.uk>
-References: <20220327082138.13696-1-xiam0nd.tong@gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="U/jhfLnga9E37WzA"
-Content-Disposition: inline
-In-Reply-To: <20220327082138.13696-1-xiam0nd.tong@gmail.com>
-X-Cookie: What hath Bob wrought?
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org, tiwai@suse.com
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="X3LNYmE1"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="oRDK7RUq"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id E2E19210EB;
+ Mon, 28 Mar 2022 16:34:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1648485259; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=WXfHB8pip7RehcZK88a989wFTtjRX8l+qmSj42LhTQs=;
+ b=X3LNYmE1PtBTtIMpUKo7v79c901HJ18jpHyMKyKxmNZ/+jOsNra5Ag0RDE2XPav3H9Nu2D
+ BvosPxhutPxN0r9SCX0CkijVQBpoCzlNKJB1AZKpaQsmCDAkciE2Rc2rD1VC5cpC0+YxvS
+ VQYq8TVMQVGY91AxDGqfy8nzBVAblOk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1648485259;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=WXfHB8pip7RehcZK88a989wFTtjRX8l+qmSj42LhTQs=;
+ b=oRDK7RUq0pRE3nDMd8nmiiYovwoggfQKXYMeY2Wuob4fnzdKpVbHKIC+OC+1i2Aq0b+fjr
+ a3dvKwbZhubz3HAg==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id C5006A3B82;
+ Mon, 28 Mar 2022 16:34:19 +0000 (UTC)
+Date: Mon, 28 Mar 2022 18:34:19 +0200
+Message-ID: <s5hbkxqjat0.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+Subject: Re: [PATCH 0/6] Add new HW variants and fix few minor issues
+In-Reply-To: <20220328115614.15761-1-vitalyr@opensource.cirrus.com>
+References: <20220328115614.15761-1-vitalyr@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,43 +88,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Mon, 28 Mar 2022 13:56:08 +0200,
+Vitaly Rodionov wrote:
+> 
+> This series adds new HW variants for Dell's Dolphin and Warlock,
+> and also fixies few very minor issues.
+> 
+> Stefan Binding (5):
+>   ALSA: hda/cs8409: Fix Warlock to use mono mic configuration
+>   ALSA: hda/cs8409: Re-order quirk table into ascending order
+>   ALSA: hda/cs8409: Fix Full Scale Volume setting for all variants
+>   ALSA: hda/cs8409: Support new Warlock MLK Variants
+>   ALSA: hda/cs8409: Disable HSBIAS_SENSE_EN for Cyborg
+> 
+> Vitaly Rodionov (1):
+>   ALSA: hda/cs8409: Add new Dolphin HW variants
 
---U/jhfLnga9E37WzA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks, applied now.
 
-On Sun, Mar 27, 2022 at 04:21:38PM +0800, Xiaomeng Tong wrote:
 
->  		case snd_soc_dapm_pre:
-> -			if (!w->event)
-> +			if (!w->event) {
->  				list_for_each_entry_safe_continue(w, n, list,
->  								  power_list);
-> +				break;
-> +			}
-
-This doesn't make much sense.  The intent here seems to clearly be to
-continue; the loop but this doesn't do that - instead it appears that
-continue doesn't actually do the equivalent of a continue but rather
-skips over an entry.  This should instead be replaced with a plain
-continue statement.
-
-THe naming of _continue() needs fixing I think - it's just asking to be
-a bug.  Fortunately there's very few users.
-
---U/jhfLnga9E37WzA
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmJB4vYACgkQJNaLcl1U
-h9CKuAf+J7JMfNycivcp5VxSUAzxAbiMWBbMwaM201sPHiXMYm9MwDk+lxEQ6yzi
-jhSvB1tSNDLp4rHftobH7ShFTed4UOx/RhLShGKJPPJo3l1sfpvZYRdYdS1KGbTm
-kjGx8Q4RaC6LyJjsZw8VGEvsf6lC/cJRP8MGMuTo7fN5OW8U5l8YpK9w53xaaIgo
-D9f4ah5tKdO4zwpXNrYvk5U6wKjkPT9qXM6MBarcJrWuoEn16JY36o8kcCvLr2PH
-xZnlW44J91Kgd/AQuUxl0wM2g5Wde5Pbk0QrlVJCrBwfIhnA0ql5RFezuS+sSZ/w
-7JuLdDfkWs7g9P1i+AH1hcRZ/1BNVQ==
-=Y449
------END PGP SIGNATURE-----
-
---U/jhfLnga9E37WzA--
+Takashi
