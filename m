@@ -4,73 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B0A3C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Mar 2022 11:10:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1658DC43219
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Mar 2022 11:29:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 216B3175D;
-	Mon, 28 Mar 2022 13:10:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 216B3175D
+	by alsa0.perex.cz (Postfix) with ESMTPS id A843F17A0;
+	Mon, 28 Mar 2022 13:28:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A843F17A0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648465850;
-	bh=dUqAVLvRN0zWckdC8lYFq9LPAv6eD+wzcTa3IBt3umI=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	s=default; t=1648466957;
+	bh=hYGxH2zw+YWjTNpQWt2LjOMsC1FM30IAJWv1y+Qklyo=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ExyWIyVzJifqVYVtIaN8oyLIQ0csHbgYy17si/9ACNO5gPfsMVTrI09nFZVRaQ5Bd
-	 TBhYquw3q1rtY8dWk7E9c0auD8bEOh5ChMhM+/5VtvPnhZfDg5z24WLn6o8OY8dz2F
-	 mO2z82pqYUtb/GK80M5cP7yiYVvLGeg0hFUWDaXU=
+	b=eJA1UqQLRzMDAGz/eGE9ducUJgKkB7j2w4zD2+usW6xaVC1J4TtAyjBXUPkQz187B
+	 gtEXR3xPWLAb+wt/ny+0Lhju7Mt+CCdEPJLC++5SAaaS+iNZ3fy2cMtB7a3/kzbgmp
+	 HDIRjFXeQl71QiZi7vsEtM7D2OMwOr9AvDlQ3Dh0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9E5C2F80128;
-	Mon, 28 Mar 2022 13:09:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 268B7F80520;
+	Mon, 28 Mar 2022 13:28:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C851FF8024C; Mon, 28 Mar 2022 13:09:57 +0200 (CEST)
-Received: from smtp-relay-canonical-1.canonical.com
- (smtp-relay-canonical-1.canonical.com [185.125.188.121])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id E5E1AF8051D; Mon, 28 Mar 2022 13:28:20 +0200 (CEST)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9EB91F800CB
- for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2022 13:09:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9EB91F800CB
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com
- header.b="gWIbvTNa"
-Received: from [192.168.0.108] (unknown [123.112.67.37])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 7696D3F75F; 
- Mon, 28 Mar 2022 11:09:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1648465788;
- bh=dUqAVLvRN0zWckdC8lYFq9LPAv6eD+wzcTa3IBt3umI=;
- h=Message-ID:Date:MIME-Version:Subject:To:References:From:
- In-Reply-To:Content-Type;
- b=gWIbvTNaGbApwDUqELgDF0mE7zgoefoMN+oNLAT0/KjSzbrLcuM/Ko9KwQbeTGngE
- 46X4grl4poOI1Lj/iutcs0HGtA/pFo5os3i8lyJgWAB0Zk+kKObauuxa/xqF8O+tQ8
- Wfy8pp31PcoPOIEhpfc07w/MkqZAbrmyBww1prbVec6MlFE9ZWHsQcc0gzN/iTtl+H
- 6fg1VZPYsKMzTZn+FLACoMo+RnKJ+RbdfCZmyp35xE0T27o6mdkGfNWmDixY2QziPi
- Cymqfhv+1YgpscrJhg2OsJMbNzw+tGEcYEnNpNxiGr+3+tuA/d+yRN1hKNDCXwbD8e
- mKzATB3Q1ZvUw==
-Message-ID: <5d0b581b-5b82-4367-81e5-31d362351d8a@canonical.com>
-Date: Mon, 28 Mar 2022 19:09:39 +0800
+ by alsa1.perex.cz (Postfix) with ESMTPS id 774DCF80128
+ for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2022 13:28:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 774DCF80128
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <sha@pengutronix.de>)
+ id 1nYnXh-0003Pw-8c; Mon, 28 Mar 2022 13:28:13 +0200
+Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
+ by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+ (envelope-from <sha@pengutronix.de>)
+ id 1nYnXd-003ZlF-KQ; Mon, 28 Mar 2022 13:28:12 +0200
+Received: from sha by dude02.red.stw.pengutronix.de with local (Exim 4.94.2)
+ (envelope-from <sha@pengutronix.de>)
+ id 1nYnXd-006byf-Hs; Mon, 28 Mar 2022 13:28:09 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH v2 09/19] dma: imx-sdma: error out on unsupported transfer
+ types
+Date: Mon, 28 Mar 2022 13:27:34 +0200
+Message-Id: <20220328112744.1575631-10-s.hauer@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220328112744.1575631-1-s.hauer@pengutronix.de>
+References: <20220328112744.1575631-1-s.hauer@pengutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH v2 2/2] ASoC: cs35l41: Don't hard-code the number of
- otp_elem in the array
-Content-Language: en-US
-To: Lucas tanure <tanureal@opensource.cirrus.com>,
- alsa-devel@alsa-project.org, broonie@kernel.org,
- patches@opensource.cirrus.com, ckeepax@opensource.cirrus.com
-References: <20220328042210.37660-1-hui.wang@canonical.com>
- <20220328042210.37660-2-hui.wang@canonical.com>
- <263781d6-00d5-dd7a-d7a1-dc102448811d@opensource.cirrus.com>
-From: Hui Wang <hui.wang@canonical.com>
-In-Reply-To: <263781d6-00d5-dd7a-d7a1-dc102448811d@opensource.cirrus.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: alsa-devel@alsa-project.org
+Cc: Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Vinod Koul <vkoul@kernel.org>,
+ NXP Linux Team <linux-imx@nxp.com>, kernel@pengutronix.de,
+ dmaengine@vger.kernel.org, Shengjiu Wang <shengjiu.wang@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,30 +80,78 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+The i.MX SDMA driver currently silently ignores unsupported transfer
+types. These transfer types are specified in the dma channel description
+in the device tree, so they should really be checked.
+Issue a message and error out when we hit unsupported transfer types.
 
-On 3/28/22 16:56, Lucas tanure wrote:
-> On 3/28/22 05:22, Hui Wang wrote:
->> The CS35L41_NUM_OTP_ELEM is 100, but only 99 entries are defined in
->> the array otp_map_1/2[CS35L41_NUM_OTP_ELEM], this will trigger UBSAN
->> to report a shift-out-of-bounds warning in the cs35l41_otp_unpack()
->> since the last entry in the array will resuilt in GENMASK(-1, 0).
-> result
->>
->> To fix it, removing the definition CS35L41_NUM_OTP_ELEM and use
->> ARRAY_SIZE to calculate the number of elements dynamically.
-> This a plain out-of-bounds access issue, you could just say that.
-> And at the end, you could say that UBSAN reported the issue.
->
-> Also the title should start with Fix, like:
-> "Fix out-of-bounds access in cs35l41_otp_packed_element_t"
->
->>
-> Fixes: 6450ef559056 ("ASoC: cs35l41: CS35L41 Boosted Smart Amplifier")
->> Signed-off-by: Hui Wang <hui.wang@canonical.com>
->
-> You are missing the Fixes tag.
->
-OK, got it, will address all comment.
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ drivers/dma/imx-sdma.c | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
 
-Thanks.
+diff --git a/drivers/dma/imx-sdma.c b/drivers/dma/imx-sdma.c
+index 75ec0754d4ad4..1038f6bc7f846 100644
+--- a/drivers/dma/imx-sdma.c
++++ b/drivers/dma/imx-sdma.c
+@@ -924,7 +924,7 @@ static irqreturn_t sdma_int_handler(int irq, void *dev_id)
+ /*
+  * sets the pc of SDMA script according to the peripheral type
+  */
+-static void sdma_get_pc(struct sdma_channel *sdmac,
++static int sdma_get_pc(struct sdma_channel *sdmac,
+ 		enum sdma_peripheral_type peripheral_type)
+ {
+ 	struct sdma_engine *sdma = sdmac->sdma;
+@@ -1023,13 +1023,17 @@ static void sdma_get_pc(struct sdma_channel *sdmac,
+ 		emi_2_per = sdma->script_addrs->ext_mem_2_ipu_addr;
+ 		break;
+ 	default:
+-		break;
++		dev_err(sdma->dev, "Unsupported transfer type %d\n",
++			peripheral_type);
++		return -EINVAL;
+ 	}
+ 
+ 	sdmac->pc_from_device = per_2_emi;
+ 	sdmac->pc_to_device = emi_2_per;
+ 	sdmac->device_to_device = per_2_per;
+ 	sdmac->pc_to_pc = emi_2_emi;
++
++	return 0;
+ }
+ 
+ static int sdma_load_context(struct sdma_channel *sdmac)
+@@ -1197,6 +1201,7 @@ static void sdma_set_watermarklevel_for_p2p(struct sdma_channel *sdmac)
+ static int sdma_config_channel(struct dma_chan *chan)
+ {
+ 	struct sdma_channel *sdmac = to_sdma_chan(chan);
++	int ret;
+ 
+ 	sdma_disable_channel(chan);
+ 
+@@ -1217,7 +1222,9 @@ static int sdma_config_channel(struct dma_chan *chan)
+ 		break;
+ 	}
+ 
+-	sdma_get_pc(sdmac, sdmac->peripheral_type);
++	ret = sdma_get_pc(sdmac, sdmac->peripheral_type);
++	if (ret)
++		return ret;
+ 
+ 	if ((sdmac->peripheral_type != IMX_DMATYPE_MEMORY) &&
+ 			(sdmac->peripheral_type != IMX_DMATYPE_DSP)) {
+@@ -1333,7 +1340,9 @@ static int sdma_alloc_chan_resources(struct dma_chan *chan)
+ 		mem_data.dma_request2 = 0;
+ 		data = &mem_data;
+ 
+-		sdma_get_pc(sdmac, IMX_DMATYPE_MEMORY);
++		ret = sdma_get_pc(sdmac, IMX_DMATYPE_MEMORY);
++		if (ret)
++			return ret;
+ 	}
+ 
+ 	switch (data->priority) {
+-- 
+2.30.2
 
