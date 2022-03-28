@@ -4,79 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C642C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Mar 2022 11:58:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19F2BC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Mar 2022 11:59:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6187018A4;
-	Mon, 28 Mar 2022 13:58:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6187018A4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 57D471899;
+	Mon, 28 Mar 2022 13:58:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57D471899
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648468735;
-	bh=IUcBHrfFRqA0eKvl48e0tSZLpNa6ZpdPAsBCPVkX31g=;
+	s=default; t=1648468753;
+	bh=3Zo06uD0k1Cy/BzyQxU6cxkhtAbE1Oa3vkFZbEA1DkU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RdjKrxHH2shjknlsx4E3BzF6kmvY04eLu0D1SUE/uYDEXl/OhcZ1gJkf2hOXfhjIe
-	 Pj5gDr5IBOLo7zqhBW6SPs3xT7i3INXnMRVKt6B9Cq/VnidW1rff5JpeflIbsOX3LY
-	 pH66qoloQ3BfLUwfkNGF2fChFGKy+DD98lkROR4s=
+	b=qGvm4M8gPY4t1YLJ2hQmLW2HPMczIE+15AFhx4XFvNroOwN6ih4lDsBe/QcjvGycr
+	 kZ0Q5fXdBtQOVMT34BzZ6PTFftD7+Zj/CJi+m9pl1LXob1h9axl/uri3ldBMdtZt1O
+	 iJhIHGeu+GzsdGeae85a5juX6rhPwHZaoQOe+M+I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 21572F80529;
+	by alsa1.perex.cz (Postfix) with ESMTP id B694BF8052D;
 	Mon, 28 Mar 2022 13:56:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5E53FF8024C; Mon, 28 Mar 2022 13:56:32 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id 7DE19F8051B; Mon, 28 Mar 2022 13:56:32 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EFCD8F8024C
- for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2022 13:56:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EFCD8F8024C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1DF35F800FA
+ for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2022 13:56:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1DF35F800FA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="U7ON9reU"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 22S89QbP026189;
- Mon, 28 Mar 2022 06:56:17 -0500
+ header.b="YxlVeCG1"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 22S8AHvc030601;
+ Mon, 28 Mar 2022 06:56:18 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=BqVvI50qJfymyVocoMdGpDh8a2HMwStDa0C5VbdhoD4=;
- b=U7ON9reU3o+tHo7OZyl1P/5+FL5ZqkAT1t9mZqSf1sU47Myy0ioWs0FW9VWgPCwSp6Ng
- nGzd2l/uIv54Nq2/WZHpNCZ/3Z82nWFYI3gD5jVW5MDZAjgQ2OjJ/CPPCAR/dRRXkB9R
- g4bjSwdeHsZkYxOE7RKiUnzLv1gJgolzY0BX6RIbB+xb0MmHlTw0sTtYnrkqrhFKdrzv
- 99DqAYhI3ba41/hEAtKsKGnxuK3zhjuYx8b9EplgJNIbAzv7XTXu39IuFUlOKScjdlgX
- Hv5DadInUPnRA+I0VFKZhSnssliNRjMlHX2F7PRBJuvOegDgK3GnmL7gp+dfYF+5t4HY FA== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3f1y8pad75-1
+ bh=9TVpbkm1MRlp+hgjJt9czyCr1ZPFU47JnpZNPwLM70g=;
+ b=YxlVeCG1DZ8GATC9xnMMhPWtOQmdXfm4XWN8CqpQvRljDzOskkfHREeuJOG/OVfdt+j6
+ p7uM653xgdZnNQAcmblZa6YobyGNcF7YoZr0dzar5GHM/2ajc1Y1JOPWCKhmKTwurwBP
+ myd48BU3/O2dRbAICh7lEikGQwqsC9T+IGOfxbCK0RVf6UJeq7/7Julr1lNKzRIojQkE
+ qMM4hfi6swwB7HvjNDNSIcQs/XU6rmTyFAdFesdF7rzYflAHCn6waG2bTuXOEBDSiDG7
+ tzxuW1C2gcyk9fZmpGrBP22D8OIS+BPnLs2fjqxgEbBcvpD1QNMDW1EOyymlGAz4R28n cQ== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3f2081apda-3
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Mon, 28 Mar 2022 06:56:17 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ Mon, 28 Mar 2022 06:56:18 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Mon, 28 Mar
  2022 12:56:16 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via
  Frontend Transport; Mon, 28 Mar 2022 12:56:16 +0100
 Received: from vitaly-Legion-7-16ACHg6.ad.cirrus.com (unknown [198.90.238.244])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id ED74C46A;
- Mon, 28 Mar 2022 11:56:15 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 9145046A;
+ Mon, 28 Mar 2022 11:56:16 +0000 (UTC)
 From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v2 2/6] ALSA: hda/cs8409: Re-order quirk table into ascending
- order
-Date: Mon, 28 Mar 2022 12:56:10 +0100
-Message-ID: <20220328115614.15761-3-vitalyr@opensource.cirrus.com>
+Subject: [PATCH v2 4/6] ALSA: hda/cs8409: Support new Warlock MLK Variants
+Date: Mon, 28 Mar 2022 12:56:12 +0100
+Message-ID: <20220328115614.15761-5-vitalyr@opensource.cirrus.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220328115614.15761-1-vitalyr@opensource.cirrus.com>
 References: <20220328115614.15761-1-vitalyr@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: jwUcPXNxDlLgf8-2HWsTOLuDbMYzXgYb
-X-Proofpoint-ORIG-GUID: jwUcPXNxDlLgf8-2HWsTOLuDbMYzXgYb
+X-Proofpoint-ORIG-GUID: xoBx6kjNmBa6J3WgDy-ofga5bXbzlcn_
+X-Proofpoint-GUID: xoBx6kjNmBa6J3WgDy-ofga5bXbzlcn_
 X-Proofpoint-Spam-Reason: safe
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>
@@ -97,8 +96,13 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Stefan Binding <sbinding@opensource.cirrus.com>
 
-To ensure consistancy, the quirk table should be re-ordered
-in ascending order
+Added 15 new laptops, with 2 variants:
+Warlock MLK and Warlock MLK with Dual Mic
+
+The only difference between the variants, is the
+the dual Mic variants use a stereo DMIC.
+
+These variants do no use reduce volume (Full Scale Volume)
 
 Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
@@ -107,71 +111,114 @@ Changes in v2:
 Add patch description in commit message.
 
 ---
- sound/pci/hda/patch_cs8409-tables.c | 34 ++++++++++++++---------------
- 1 file changed, 17 insertions(+), 17 deletions(-)
+ sound/pci/hda/patch_cs8409-tables.c | 29 +++++++++++++++++++++++++++++
+ sound/pci/hda/patch_cs8409.c        | 15 +++++++++++++--
+ sound/pci/hda/patch_cs8409.h        |  2 ++
+ 3 files changed, 44 insertions(+), 2 deletions(-)
 
 diff --git a/sound/pci/hda/patch_cs8409-tables.c b/sound/pci/hda/patch_cs8409-tables.c
-index 2d1fa706327b..9c1fa97100ef 100644
+index 9c1fa97100ef..8d20d7fb3d68 100644
 --- a/sound/pci/hda/patch_cs8409-tables.c
 +++ b/sound/pci/hda/patch_cs8409-tables.c
-@@ -478,28 +478,29 @@ const struct snd_pci_quirk cs8409_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1028, 0x0A29, "Bullseye", CS8409_BULLSEYE),
- 	SND_PCI_QUIRK(0x1028, 0x0A2A, "Bullseye", CS8409_BULLSEYE),
- 	SND_PCI_QUIRK(0x1028, 0x0A2B, "Bullseye", CS8409_BULLSEYE),
-+	SND_PCI_QUIRK(0x1028, 0x0A77, "Cyborg", CS8409_CYBORG),
-+	SND_PCI_QUIRK(0x1028, 0x0A78, "Cyborg", CS8409_CYBORG),
-+	SND_PCI_QUIRK(0x1028, 0x0A79, "Cyborg", CS8409_CYBORG),
-+	SND_PCI_QUIRK(0x1028, 0x0A7A, "Cyborg", CS8409_CYBORG),
-+	SND_PCI_QUIRK(0x1028, 0x0A7D, "Cyborg", CS8409_CYBORG),
-+	SND_PCI_QUIRK(0x1028, 0x0A7E, "Cyborg", CS8409_CYBORG),
-+	SND_PCI_QUIRK(0x1028, 0x0A7F, "Cyborg", CS8409_CYBORG),
-+	SND_PCI_QUIRK(0x1028, 0x0A80, "Cyborg", CS8409_CYBORG),
- 	SND_PCI_QUIRK(0x1028, 0x0AB0, "Warlock", CS8409_WARLOCK),
- 	SND_PCI_QUIRK(0x1028, 0x0AB2, "Warlock", CS8409_WARLOCK),
- 	SND_PCI_QUIRK(0x1028, 0x0AB1, "Warlock", CS8409_WARLOCK),
- 	SND_PCI_QUIRK(0x1028, 0x0AB3, "Warlock", CS8409_WARLOCK),
- 	SND_PCI_QUIRK(0x1028, 0x0AB4, "Warlock", CS8409_WARLOCK),
- 	SND_PCI_QUIRK(0x1028, 0x0AB5, "Warlock", CS8409_WARLOCK),
-+	SND_PCI_QUIRK(0x1028, 0x0ACF, "Dolphin", CS8409_DOLPHIN),
-+	SND_PCI_QUIRK(0x1028, 0x0AD0, "Dolphin", CS8409_DOLPHIN),
-+	SND_PCI_QUIRK(0x1028, 0x0AD1, "Dolphin", CS8409_DOLPHIN),
-+	SND_PCI_QUIRK(0x1028, 0x0AD2, "Dolphin", CS8409_DOLPHIN),
-+	SND_PCI_QUIRK(0x1028, 0x0AD3, "Dolphin", CS8409_DOLPHIN),
- 	SND_PCI_QUIRK(0x1028, 0x0AD9, "Warlock", CS8409_WARLOCK),
- 	SND_PCI_QUIRK(0x1028, 0x0ADA, "Warlock", CS8409_WARLOCK),
- 	SND_PCI_QUIRK(0x1028, 0x0ADB, "Warlock", CS8409_WARLOCK),
- 	SND_PCI_QUIRK(0x1028, 0x0ADC, "Warlock", CS8409_WARLOCK),
--	SND_PCI_QUIRK(0x1028, 0x0AF4, "Warlock", CS8409_WARLOCK),
--	SND_PCI_QUIRK(0x1028, 0x0AF5, "Warlock", CS8409_WARLOCK),
--	SND_PCI_QUIRK(0x1028, 0x0BB5, "Warlock N3 15 TGL-U Nuvoton EC", CS8409_WARLOCK),
--	SND_PCI_QUIRK(0x1028, 0x0BB6, "Warlock V3 15 TGL-U Nuvoton EC", CS8409_WARLOCK),
--	SND_PCI_QUIRK(0x1028, 0x0A77, "Cyborg", CS8409_CYBORG),
--	SND_PCI_QUIRK(0x1028, 0x0A78, "Cyborg", CS8409_CYBORG),
--	SND_PCI_QUIRK(0x1028, 0x0A79, "Cyborg", CS8409_CYBORG),
--	SND_PCI_QUIRK(0x1028, 0x0A7A, "Cyborg", CS8409_CYBORG),
--	SND_PCI_QUIRK(0x1028, 0x0A7D, "Cyborg", CS8409_CYBORG),
--	SND_PCI_QUIRK(0x1028, 0x0A7E, "Cyborg", CS8409_CYBORG),
--	SND_PCI_QUIRK(0x1028, 0x0A7F, "Cyborg", CS8409_CYBORG),
--	SND_PCI_QUIRK(0x1028, 0x0A80, "Cyborg", CS8409_CYBORG),
- 	SND_PCI_QUIRK(0x1028, 0x0ADF, "Cyborg", CS8409_CYBORG),
- 	SND_PCI_QUIRK(0x1028, 0x0AE0, "Cyborg", CS8409_CYBORG),
- 	SND_PCI_QUIRK(0x1028, 0x0AE1, "Cyborg", CS8409_CYBORG),
-@@ -512,11 +513,10 @@ const struct snd_pci_quirk cs8409_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1028, 0x0AEE, "Cyborg", CS8409_CYBORG),
- 	SND_PCI_QUIRK(0x1028, 0x0AEF, "Cyborg", CS8409_CYBORG),
+@@ -515,8 +515,23 @@ const struct snd_pci_quirk cs8409_fixup_tbl[] = {
  	SND_PCI_QUIRK(0x1028, 0x0AF0, "Cyborg", CS8409_CYBORG),
--	SND_PCI_QUIRK(0x1028, 0x0AD0, "Dolphin", CS8409_DOLPHIN),
--	SND_PCI_QUIRK(0x1028, 0x0AD1, "Dolphin", CS8409_DOLPHIN),
--	SND_PCI_QUIRK(0x1028, 0x0AD2, "Dolphin", CS8409_DOLPHIN),
--	SND_PCI_QUIRK(0x1028, 0x0AD3, "Dolphin", CS8409_DOLPHIN),
--	SND_PCI_QUIRK(0x1028, 0x0ACF, "Dolphin", CS8409_DOLPHIN),
-+	SND_PCI_QUIRK(0x1028, 0x0AF4, "Warlock", CS8409_WARLOCK),
-+	SND_PCI_QUIRK(0x1028, 0x0AF5, "Warlock", CS8409_WARLOCK),
-+	SND_PCI_QUIRK(0x1028, 0x0BB5, "Warlock N3 15 TGL-U Nuvoton EC", CS8409_WARLOCK),
-+	SND_PCI_QUIRK(0x1028, 0x0BB6, "Warlock V3 15 TGL-U Nuvoton EC", CS8409_WARLOCK),
+ 	SND_PCI_QUIRK(0x1028, 0x0AF4, "Warlock", CS8409_WARLOCK),
+ 	SND_PCI_QUIRK(0x1028, 0x0AF5, "Warlock", CS8409_WARLOCK),
++	SND_PCI_QUIRK(0x1028, 0x0B92, "Warlock MLK", CS8409_WARLOCK_MLK),
++	SND_PCI_QUIRK(0x1028, 0x0B93, "Warlock MLK Dual Mic", CS8409_WARLOCK_MLK_DUAL_MIC),
++	SND_PCI_QUIRK(0x1028, 0x0B94, "Warlock MLK", CS8409_WARLOCK_MLK),
++	SND_PCI_QUIRK(0x1028, 0x0B95, "Warlock MLK Dual Mic", CS8409_WARLOCK_MLK_DUAL_MIC),
++	SND_PCI_QUIRK(0x1028, 0x0B96, "Warlock MLK", CS8409_WARLOCK_MLK),
++	SND_PCI_QUIRK(0x1028, 0x0B97, "Warlock MLK Dual Mic", CS8409_WARLOCK_MLK_DUAL_MIC),
++	SND_PCI_QUIRK(0x1028, 0x0BB2, "Warlock MLK", CS8409_WARLOCK_MLK),
++	SND_PCI_QUIRK(0x1028, 0x0BB3, "Warlock MLK", CS8409_WARLOCK_MLK),
++	SND_PCI_QUIRK(0x1028, 0x0BB4, "Warlock MLK", CS8409_WARLOCK_MLK),
+ 	SND_PCI_QUIRK(0x1028, 0x0BB5, "Warlock N3 15 TGL-U Nuvoton EC", CS8409_WARLOCK),
+ 	SND_PCI_QUIRK(0x1028, 0x0BB6, "Warlock V3 15 TGL-U Nuvoton EC", CS8409_WARLOCK),
++	SND_PCI_QUIRK(0x1028, 0x0BB8, "Warlock MLK", CS8409_WARLOCK_MLK),
++	SND_PCI_QUIRK(0x1028, 0x0BB9, "Warlock MLK Dual Mic", CS8409_WARLOCK_MLK_DUAL_MIC),
++	SND_PCI_QUIRK(0x1028, 0x0BBA, "Warlock MLK", CS8409_WARLOCK_MLK),
++	SND_PCI_QUIRK(0x1028, 0x0BBB, "Warlock MLK Dual Mic", CS8409_WARLOCK_MLK_DUAL_MIC),
++	SND_PCI_QUIRK(0x1028, 0x0BBC, "Warlock MLK", CS8409_WARLOCK_MLK),
++	SND_PCI_QUIRK(0x1028, 0x0BBD, "Warlock MLK Dual Mic", CS8409_WARLOCK_MLK_DUAL_MIC),
  	{} /* terminator */
  };
  
+@@ -524,6 +539,8 @@ const struct snd_pci_quirk cs8409_fixup_tbl[] = {
+ const struct hda_model_fixup cs8409_models[] = {
+ 	{ .id = CS8409_BULLSEYE, .name = "bullseye" },
+ 	{ .id = CS8409_WARLOCK, .name = "warlock" },
++	{ .id = CS8409_WARLOCK_MLK, .name = "warlock mlk" },
++	{ .id = CS8409_WARLOCK_MLK_DUAL_MIC, .name = "warlock mlk dual mic" },
+ 	{ .id = CS8409_CYBORG, .name = "cyborg" },
+ 	{ .id = CS8409_DOLPHIN, .name = "dolphin" },
+ 	{}
+@@ -542,6 +559,18 @@ const struct hda_fixup cs8409_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = CS8409_FIXUPS,
+ 	},
++	[CS8409_WARLOCK_MLK] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = cs8409_cs42l42_pincfgs,
++		.chained = true,
++		.chain_id = CS8409_FIXUPS,
++	},
++	[CS8409_WARLOCK_MLK_DUAL_MIC] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = cs8409_cs42l42_pincfgs,
++		.chained = true,
++		.chain_id = CS8409_FIXUPS,
++	},
+ 	[CS8409_CYBORG] = {
+ 		.type = HDA_FIXUP_PINS,
+ 		.v.pins = cs8409_cs42l42_pincfgs,
+diff --git a/sound/pci/hda/patch_cs8409.c b/sound/pci/hda/patch_cs8409.c
+index 163ff3b3092a..ce5fc03a8065 100644
+--- a/sound/pci/hda/patch_cs8409.c
++++ b/sound/pci/hda/patch_cs8409.c
+@@ -912,9 +912,15 @@ static void cs8409_cs42l42_hw_init(struct hda_codec *codec)
+ 			cs8409_vendor_coef_set(codec, seq_bullseye->cir, seq_bullseye->coeff);
+ 	}
+ 
+-	/* DMIC1_MO=00b, DMIC1/2_SR=1 */
+-	if (codec->fixup_id == CS8409_CYBORG)
++	switch (codec->fixup_id) {
++	case CS8409_CYBORG:
++	case CS8409_WARLOCK_MLK_DUAL_MIC:
++		/* DMIC1_MO=00b, DMIC1/2_SR=1 */
+ 		cs8409_vendor_coef_set(codec, CS8409_DMIC_CFG, 0x0003);
++		break;
++	default:
++		break;
++	}
+ 
+ 	cs42l42_resume(cs42l42);
+ 
+@@ -1008,6 +1014,11 @@ void cs8409_cs42l42_fixups(struct hda_codec *codec, const struct hda_fixup *fix,
+ 			spec->scodecs[CS8409_CODEC0]->full_scale_vol =
+ 				CS42L42_FULL_SCALE_VOL_MINUS6DB;
+ 			break;
++		case CS8409_WARLOCK_MLK:
++		case CS8409_WARLOCK_MLK_DUAL_MIC:
++			spec->scodecs[CS8409_CODEC0]->hsbias_hiz = 0x0020;
++			spec->scodecs[CS8409_CODEC0]->full_scale_vol = CS42L42_FULL_SCALE_VOL_0DB;
++			break;
+ 		default:
+ 			spec->scodecs[CS8409_CODEC0]->hsbias_hiz = 0x0020;
+ 			spec->scodecs[CS8409_CODEC0]->full_scale_vol =
+diff --git a/sound/pci/hda/patch_cs8409.h b/sound/pci/hda/patch_cs8409.h
+index 8e846f292cd0..7df46bd8d2da 100644
+--- a/sound/pci/hda/patch_cs8409.h
++++ b/sound/pci/hda/patch_cs8409.h
+@@ -267,6 +267,8 @@ enum cs8409_coefficient_index_registers {
+ enum {
+ 	CS8409_BULLSEYE,
+ 	CS8409_WARLOCK,
++	CS8409_WARLOCK_MLK,
++	CS8409_WARLOCK_MLK_DUAL_MIC,
+ 	CS8409_CYBORG,
+ 	CS8409_FIXUPS,
+ 	CS8409_DOLPHIN,
 -- 
 2.25.1
 
