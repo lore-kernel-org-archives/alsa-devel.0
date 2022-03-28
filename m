@@ -4,64 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8CD40C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Mar 2022 17:17:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84183C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Mar 2022 17:17:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 82FDC18AE;
-	Mon, 28 Mar 2022 19:16:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 82FDC18AE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 97C9018B9;
+	Mon, 28 Mar 2022 19:16:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 97C9018B9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648487827;
-	bh=TPlo02GVT00uKwn/r0/jcn3Y3EgeGT6MHr7yKv3U8A4=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=f3qJX2p+SATTmgX6SNzTXV4vO7lEYajMYkU+qd29wS/bV+aPM+3xnK1dIZN5DeQO7
-	 SyPPEuDYsjuDIoc+8CCoMo2P/rVgT+RMxnCAUDXqCDBC6lH25SmllZ400OeNpXwTcZ
-	 p24UZrTrEfXGYcnIknrkkPpts1hla6fwLIealAL4=
+	s=default; t=1648487865;
+	bh=DhbwIhYY5+y7maBdgv0eNU3IzQNwYRQ518+9UsPAwJM=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=mREcPA413nbguHqf6YebzluVT93WtSRv/Xihmc45ngoDxFfbCyawIUQzPGm9qGiYb
+	 BnP4zUIXpJbRtP7URHR/BWXUirAwdN9CRw5fmyGBj6eDt+wtVYYVc5Jcu7X9HW7hLy
+	 PVapkuZtj+9XAx+oqsI26I6TlonhX5Ig4KsBMH9M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 17F76F8026A;
-	Mon, 28 Mar 2022 19:16:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D2A66F8051A;
+	Mon, 28 Mar 2022 19:16:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 70D80F800FA; Mon, 28 Mar 2022 19:16:15 +0200 (CEST)
+ id 08272F80518; Mon, 28 Mar 2022 19:16:21 +0200 (CEST)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ED05BF800FA
- for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2022 19:16:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED05BF800FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 38490F80128
+ for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2022 19:16:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38490F80128
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="HwB5xgdM"
+ header.b="OjN2MRYM"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1648487773; x=1680023773;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=TPlo02GVT00uKwn/r0/jcn3Y3EgeGT6MHr7yKv3U8A4=;
- b=HwB5xgdMyjPcS1UbMRPCshxO26nFJp7egsyIKpmv6RuiSaLpc9XG105G
- 5XtdLdMPhlNDwAftV0jq17wNvBd1ckpQ+xLqJnMwkJW+wefbzlJr+C9Jn
- lFSbZCZFjgaqhZCfYrJ3DzwdQVkEttPWn867+QreXydLojZPRcE2mVtdQ
- jfz/37RxH3hDnJi3ateSRrk9ShzTDSm9/u28mSeyAmUpsOEMBG1yBY3BT
- nGnEbDGFYDl1aYC6jk1mDMEk90wAS8FVsgRIPmEAL57/HRmevPGZoj0RD
- iKEsWKCSV7WukgZnZ0IiuwlZPjHDrfca8QFUsU5SHPySXzMnJ+g+5IRHo Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10300"; a="345494406"
-X-IronPort-AV: E=Sophos;i="5.90,217,1643702400"; d="scan'208";a="345494406"
+ t=1648487775; x=1680023775;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=DhbwIhYY5+y7maBdgv0eNU3IzQNwYRQ518+9UsPAwJM=;
+ b=OjN2MRYMcYBHKRuGXBwQaPQM73GaT7f76PAzaKKQ/eOefMqK5SFrYHpA
+ o8CPmOGsLbmw52ixWma/LP3X5H1fyV1VgPdmS7a9YFpLpcr+atWPhqimI
+ jzRGKCBAycVpFynuIwV/2qUa4BwB3tqVQlluo2Gx1UKdIknGpn5xhtQ6o
+ p5rNC/FrRREkGlstViyFCNDyKrw5WqYfxl9frWyYFS0L7XIyIn8ssa+Xe
+ 8XTjvlMkhvHk3rvFlkSc8hoXWTy/x0KbctjNBDFWyXtQLgW+oBqTbWD7w
+ 2PCFtrSKUhCOkofl2NkhdgL6MSLypbeByFbgWYcynykdn0A0jVOjCEpjx g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10300"; a="345494434"
+X-IronPort-AV: E=Sophos;i="5.90,217,1643702400"; d="scan'208";a="345494434"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 28 Mar 2022 10:13:47 -0700
+ 28 Mar 2022 10:13:52 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,217,1643702400"; d="scan'208";a="649141331"
+X-IronPort-AV: E=Sophos;i="5.90,217,1643702400"; d="scan'208";a="649141402"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga002.fm.intel.com with ESMTP; 28 Mar 2022 10:13:44 -0700
+ by fmsmga002.fm.intel.com with ESMTP; 28 Mar 2022 10:13:49 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH 00/14] ASoC: Intel: avs: Topology and path management
-Date: Mon, 28 Mar 2022 19:23:56 +0200
-Message-Id: <20220328172410.761309-1-cezary.rojewski@intel.com>
+Subject: [PATCH 02/14] ASoC: Intel: avs: Add topology parsing infrastructure
+Date: Mon, 28 Mar 2022 19:23:58 +0200
+Message-Id: <20220328172410.761309-3-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220328172410.761309-1-cezary.rojewski@intel.com>
+References: <20220328172410.761309-1-cezary.rojewski@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -85,12 +88,6 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-A continuation of avs-driver initial series [1]. This chapter covers
-path management and topology parsing part which was ealier path of the
-main series. The two patches that represented these two subjects in the
-initial series, have been split into many to allow for easier review and
-discussion.
-
 AVS topology is split into two major parts: dictionaries - found within
 ASoC topology manifest - and path templates.
 
@@ -100,63 +97,710 @@ module carry its own information, each refers to specific entry in
 specific dictionary by provided (from topology file) indexes. In
 consequence, most struct avs_tplg_xxx are made out of pointers.
 
+To support the above, range of parsing helpers for all value-types known
+to ALSA: uuid, bool, byte, short, word and string are added. Additional
+handlers help translate pointer-types and more complex objects such as
+audio formats and module base configs.
+
 Path templates are similar to path descriptions found in skylake-driver
 and they describe how given path shall look like in runtime - number of
-modules and pipelines that shape it and how they are laid out. A single
-path template is tied either to FE or BE and thus at most to a single,
-user-visible endpoint when speaking of FE.
+modules and pipelines that shape it and how they are laid out.
 
-Path is a software representation of its ADSP firmware equivalent. It's
-a logical container for pipelines which are themselves containers - this
-time for modules i.e. processing units.
-Depending on the number of audio formats supported, each path template
-may carry one or more descriptions of given path. During runtime, when
-audio format is known, description matching said format is selected and
-used when instantiating path on ADSP firmware side through IPCs.
-
-
-Changes RFC -> v1:
-- Plenty of rewordings and spelling fixes as requested by Pierre
-- any sysfs-functionality-related left in RFC dropped, will be part of
-  separate subject in the future
-- separated parsing of formatted strings into: "Support link_mask
-  formatted string" patch, increasing series size to 14 patches
-
-
-[1]: https://lore.kernel.org/alsa-devel/20220207122108.3780926-1-cezary.rojewski@intel.com/T/#t
-
-
-Cezary Rojewski (14):
-  ASoC: Intel: avs: Declare vendor tokens
-  ASoC: Intel: avs: Add topology parsing infrastructure
-  ASoC: Intel: avs: Parse module-extension tuples
-  ASoC: Intel: avs: Parse pplcfg and binding tuples
-  ASoC: Intel: avs: Parse pipeline and module tuples
-  ASoC: Intel: avs: Parse path and path templates tuples
-  ASoC: Intel: avs: Add topology loading operations
-  ASoC: Intel: avs: Support link_mask formatted string
-  ASoC: Intel: avs: Declare path and its components
-  ASoC: Intel: avs: Path creation and freeing
-  ASoC: Intel: avs: Path state management
-  ASoC: Intel: avs: Arm paths after creating them
-  ASoC: Intel: avs: Prepare modules before bindings them
-  ASoC: Intel: avs: Configure modules according to their type
-
- include/uapi/sound/intel/avs/tokens.h |  126 ++
- sound/soc/intel/Kconfig               |    2 +
- sound/soc/intel/avs/Makefile          |    3 +-
- sound/soc/intel/avs/avs.h             |   23 +
- sound/soc/intel/avs/path.c            | 1008 ++++++++++++++++
- sound/soc/intel/avs/path.h            |   72 ++
- sound/soc/intel/avs/topology.c        | 1600 +++++++++++++++++++++++++
- sound/soc/intel/avs/topology.h        |  194 +++
- 8 files changed, 3027 insertions(+), 1 deletion(-)
- create mode 100644 include/uapi/sound/intel/avs/tokens.h
- create mode 100644 sound/soc/intel/avs/path.c
- create mode 100644 sound/soc/intel/avs/path.h
+Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+---
+ sound/soc/intel/avs/avs.h      |  14 +
+ sound/soc/intel/avs/topology.c | 595 +++++++++++++++++++++++++++++++++
+ sound/soc/intel/avs/topology.h |  44 +++
+ 3 files changed, 653 insertions(+)
  create mode 100644 sound/soc/intel/avs/topology.c
  create mode 100644 sound/soc/intel/avs/topology.h
 
+diff --git a/sound/soc/intel/avs/avs.h b/sound/soc/intel/avs/avs.h
+index b48a342fd184..77bbaf292b01 100644
+--- a/sound/soc/intel/avs/avs.h
++++ b/sound/soc/intel/avs/avs.h
+@@ -13,10 +13,12 @@
+ #include <linux/firmware.h>
+ #include <sound/hda_codec.h>
+ #include <sound/hda_register.h>
++#include <sound/soc-component.h>
+ #include "messages.h"
+ #include "registers.h"
+ 
+ struct avs_dev;
++struct avs_tplg;
+ 
+ /*
+  * struct avs_dsp_ops - Platform-specific DSP operations
+@@ -244,4 +246,16 @@ int avs_hda_load_library(struct avs_dev *adev, struct firmware *lib, u32 id);
+ int avs_hda_transfer_modules(struct avs_dev *adev, bool load,
+ 			     struct avs_module_entry *mods, u32 num_mods);
+ 
++/* Soc component members */
++
++struct avs_soc_component {
++	struct snd_soc_component base;
++	struct avs_tplg *tplg;
++
++	struct list_head node;
++};
++
++#define to_avs_soc_component(comp) \
++	container_of(comp, struct avs_soc_component, base)
++
+ #endif /* __SOUND_SOC_INTEL_AVS_H */
+diff --git a/sound/soc/intel/avs/topology.c b/sound/soc/intel/avs/topology.c
+new file mode 100644
+index 000000000000..4ac44cb318f7
+--- /dev/null
++++ b/sound/soc/intel/avs/topology.c
+@@ -0,0 +1,595 @@
++// SPDX-License-Identifier: GPL-2.0-only
++//
++// Copyright(c) 2021 Intel Corporation. All rights reserved.
++//
++// Authors: Cezary Rojewski <cezary.rojewski@intel.com>
++//          Amadeusz Slawinski <amadeuszx.slawinski@linux.intel.com>
++//
++
++#include <linux/uuid.h>
++#include <sound/soc.h>
++#include <sound/soc-acpi.h>
++#include <sound/soc-topology.h>
++#include <uapi/sound/intel/avs/tokens.h>
++#include "avs.h"
++#include "topology.h"
++
++/* Get pointer to vendor array at the specified offset. */
++#define avs_tplg_vendor_array_at(array, offset) \
++	((struct snd_soc_tplg_vendor_array *)((u8 *)array + offset))
++
++/* Get pointer to vendor array that is next in line. */
++#define avs_tplg_vendor_array_next(array) \
++	(avs_tplg_vendor_array_at(array, le32_to_cpu((array)->size)))
++
++/*
++ * Scan provided block of tuples for the specified token. If found,
++ * @offset is updated with position at which first matching token is
++ * located.
++ *
++ * Returns 0 on success, -ENOENT if not found and error code otherwise.
++ */
++static int
++avs_tplg_vendor_array_lookup(struct snd_soc_tplg_vendor_array *tuples,
++			     u32 block_size, u32 token, u32 *offset)
++{
++	u32 pos = 0;
++
++	while (block_size > 0) {
++		struct snd_soc_tplg_vendor_value_elem *tuple;
++		u32 tuples_size = le32_to_cpu(tuples->size);
++
++		if (tuples_size > block_size)
++			return -EINVAL;
++
++		tuple = tuples->value;
++		if (le32_to_cpu(tuple->token) == token) {
++			*offset = pos;
++			return 0;
++		}
++
++		block_size -= tuples_size;
++		pos += tuples_size;
++		tuples = avs_tplg_vendor_array_next(tuples);
++	}
++
++	return -ENOENT;
++}
++
++/*
++ * See avs_tplg_vendor_array_lookup() for description.
++ *
++ * Behaves exactly like avs_tplg_vendor_lookup() but starts from the
++ * next vendor array in line. Useful when searching for the finish line
++ * of an arbitrary entry in a list of entries where each is composed of
++ * several vendor tuples and a specific token marks the beginning of
++ * a new entry block.
++ */
++static int
++avs_tplg_vendor_array_lookup_next(struct snd_soc_tplg_vendor_array *tuples,
++				  u32 block_size, u32 token, u32 *offset)
++{
++	u32 tuples_size = le32_to_cpu(tuples->size);
++	int ret;
++
++	if (tuples_size > block_size)
++		return -EINVAL;
++
++	tuples = avs_tplg_vendor_array_next(tuples);
++	block_size -= tuples_size;
++
++	ret = avs_tplg_vendor_array_lookup(tuples, block_size, token, offset);
++	if (!ret)
++		*offset += tuples_size;
++	return ret;
++}
++
++/*
++ * Scan provided block of tuples for the specified token which marks
++ * the border of an entry block. Behavior is similar to
++ * avs_tplg_vendor_array_lookup() except 0 is also returned if no
++ * matching token has been found. In such case, returned @size is
++ * assigned to @block_size as the entire block belongs to the current
++ * entry.
++ *
++ * Returns 0 on success, error code otherwise.
++ */
++static int
++avs_tplg_vendor_entry_size(struct snd_soc_tplg_vendor_array *tuples,
++			   u32 block_size, u32 entry_id_token, u32 *size)
++{
++	int ret;
++
++	ret = avs_tplg_vendor_array_lookup_next(tuples, block_size, entry_id_token, size);
++	if (ret == -ENOENT) {
++		*size = block_size;
++		ret = 0;
++	}
++
++	return ret;
++}
++
++/*
++ * Vendor tuple parsing descriptor.
++ *
++ * @token: vendor specific token that identifies tuple
++ * @type: tuple type, one of SND_SOC_TPLG_TUPLE_TYPE_XXX
++ * @offset: offset of a struct's field to initialize
++ * @parse: parsing function, extracts and assigns value to object's field
++ */
++struct avs_tplg_token_parser {
++	enum avs_tplg_token token;
++	u32 type;
++	u32 offset;
++	int (*parse)(struct snd_soc_component *comp, void *elem, void *object, u32 offset);
++};
++
++static int
++avs_parse_uuid_token(struct snd_soc_component *comp, void *elem, void *object, u32 offset)
++{
++	struct snd_soc_tplg_vendor_value_elem *tuple = elem;
++	guid_t *val = (guid_t *)((u8 *)object + offset);
++
++	guid_copy((guid_t *)val, (const guid_t *)&tuple->value);
++
++	return 0;
++}
++
++static int
++avs_parse_bool_token(struct snd_soc_component *comp, void *elem, void *object, u32 offset)
++{
++	struct snd_soc_tplg_vendor_value_elem *tuple = elem;
++	bool *val = (bool *)((u8 *)object + offset);
++
++	*val = le32_to_cpu(tuple->value);
++
++	return 0;
++}
++
++static int
++avs_parse_byte_token(struct snd_soc_component *comp, void *elem, void *object, u32 offset)
++{
++	struct snd_soc_tplg_vendor_value_elem *tuple = elem;
++	u8 *val = ((u8 *)object + offset);
++
++	*val = le32_to_cpu(tuple->value);
++
++	return 0;
++}
++
++static int
++avs_parse_short_token(struct snd_soc_component *comp, void *elem, void *object, u32 offset)
++{
++	struct snd_soc_tplg_vendor_value_elem *tuple = elem;
++	u16 *val = (u16 *)((u8 *)object + offset);
++
++	*val = le32_to_cpu(tuple->value);
++
++	return 0;
++}
++
++static int
++avs_parse_word_token(struct snd_soc_component *comp, void *elem, void *object, u32 offset)
++{
++	struct snd_soc_tplg_vendor_value_elem *tuple = elem;
++	u32 *val = (u32 *)((u8 *)object + offset);
++
++	*val = le32_to_cpu(tuple->value);
++
++	return 0;
++}
++
++static int
++avs_parse_string_token(struct snd_soc_component *comp, void *elem, void *object, u32 offset)
++{
++	struct snd_soc_tplg_vendor_string_elem *tuple = elem;
++	char *val = (char *)((u8 *)object + offset);
++
++	snprintf(val, SNDRV_CTL_ELEM_ID_NAME_MAXLEN, "%s", tuple->string);
++
++	return 0;
++}
++
++static int avs_parse_uuid_tokens(struct snd_soc_component *comp, void *object,
++				 const struct avs_tplg_token_parser *parsers, int count,
++				 struct snd_soc_tplg_vendor_array *tuples)
++{
++	struct snd_soc_tplg_vendor_uuid_elem *tuple;
++	int ret, i, j;
++
++	/* Parse element by element. */
++	for (i = 0; i < le32_to_cpu(tuples->num_elems); i++) {
++		tuple = &tuples->uuid[i];
++
++		for (j = 0; j < count; j++) {
++			/* Ignore non-UUID tokens. */
++			if (parsers[j].type != SND_SOC_TPLG_TUPLE_TYPE_UUID ||
++			    parsers[j].token != le32_to_cpu(tuple->token))
++				continue;
++
++			ret = parsers[j].parse(comp, tuple, object, parsers[j].offset);
++			if (ret)
++				return ret;
++		}
++	}
++
++	return 0;
++}
++
++static int avs_parse_string_tokens(struct snd_soc_component *comp, void *object,
++				   const struct avs_tplg_token_parser *parsers, int count,
++				   struct snd_soc_tplg_vendor_array *tuples)
++{
++	struct snd_soc_tplg_vendor_string_elem *tuple;
++	int ret, i, j;
++
++	/* Parse element by element. */
++	for (i = 0; i < le32_to_cpu(tuples->num_elems); i++) {
++		tuple = &tuples->string[i];
++
++		for (j = 0; j < count; j++) {
++			/* Ignore non-string tokens. */
++			if (parsers[j].type != SND_SOC_TPLG_TUPLE_TYPE_STRING ||
++			    parsers[j].token != le32_to_cpu(tuple->token))
++				continue;
++
++			ret = parsers[j].parse(comp, tuple, object, parsers[j].offset);
++			if (ret)
++				return ret;
++		}
++	}
++
++	return 0;
++}
++
++static int avs_parse_word_tokens(struct snd_soc_component *comp, void *object,
++				 const struct avs_tplg_token_parser *parsers, int count,
++				 struct snd_soc_tplg_vendor_array *tuples)
++{
++	struct snd_soc_tplg_vendor_value_elem *tuple;
++	int ret, i, j;
++
++	/* Parse element by element. */
++	for (i = 0; i < le32_to_cpu(tuples->num_elems); i++) {
++		tuple = &tuples->value[i];
++
++		for (j = 0; j < count; j++) {
++			/* Ignore non-integer tokens. */
++			if (!(parsers[j].type == SND_SOC_TPLG_TUPLE_TYPE_WORD ||
++			      parsers[j].type == SND_SOC_TPLG_TUPLE_TYPE_SHORT ||
++			      parsers[j].type == SND_SOC_TPLG_TUPLE_TYPE_BYTE ||
++			      parsers[j].type == SND_SOC_TPLG_TUPLE_TYPE_BOOL))
++				continue;
++
++			if (parsers[j].token != le32_to_cpu(tuple->token))
++				continue;
++
++			ret = parsers[j].parse(comp, tuple, object, parsers[j].offset);
++			if (ret)
++				return ret;
++		}
++	}
++
++	return 0;
++}
++
++static int avs_parse_tokens(struct snd_soc_component *comp, void *object,
++			    const struct avs_tplg_token_parser *parsers, size_t count,
++			    struct snd_soc_tplg_vendor_array *tuples, int priv_size)
++{
++	int array_size, ret;
++
++	while (priv_size > 0) {
++		array_size = le32_to_cpu(tuples->size);
++
++		if (array_size <= 0) {
++			dev_err(comp->dev, "invalid array size 0x%x\n", array_size);
++			return -EINVAL;
++		}
++
++		/* Make sure there is enough data before parsing. */
++		priv_size -= array_size;
++		if (priv_size < 0) {
++			dev_err(comp->dev, "invalid array size 0x%x\n", array_size);
++			return -EINVAL;
++		}
++
++		switch (le32_to_cpu(tuples->type)) {
++		case SND_SOC_TPLG_TUPLE_TYPE_UUID:
++			ret = avs_parse_uuid_tokens(comp, object, parsers, count, tuples);
++			break;
++		case SND_SOC_TPLG_TUPLE_TYPE_STRING:
++			ret = avs_parse_string_tokens(comp, object, parsers, count, tuples);
++			break;
++		case SND_SOC_TPLG_TUPLE_TYPE_BOOL:
++		case SND_SOC_TPLG_TUPLE_TYPE_BYTE:
++		case SND_SOC_TPLG_TUPLE_TYPE_SHORT:
++		case SND_SOC_TPLG_TUPLE_TYPE_WORD:
++			ret = avs_parse_word_tokens(comp, object, parsers, count, tuples);
++			break;
++		default:
++			dev_err(comp->dev, "unknown token type %d\n", tuples->type);
++			ret = -EINVAL;
++		}
++
++		if (ret) {
++			dev_err(comp->dev, "parsing %zu tokens of %d type failed: %d\n",
++				count, tuples->type, ret);
++			return ret;
++		}
++
++		tuples = avs_tplg_vendor_array_next(tuples);
++	}
++
++	return 0;
++}
++
++#define AVS_DEFINE_PTR_PARSER(name, type, member) \
++static int \
++avs_parse_##name##_ptr(struct snd_soc_component *comp, void *elem, void *object, u32 offset) \
++{ \
++	struct snd_soc_tplg_vendor_value_elem *tuple = elem;		\
++	struct avs_soc_component *acomp = to_avs_soc_component(comp);	\
++	type **val = (type **)(object + offset);			\
++	u32 idx;							\
++									\
++	idx = le32_to_cpu(tuple->value);				\
++	if (idx >= acomp->tplg->num_##member)				\
++		return -EINVAL;						\
++									\
++	*val = &acomp->tplg->member[idx];				\
++									\
++	return 0;							\
++}
++
++AVS_DEFINE_PTR_PARSER(audio_format, struct avs_audio_format, fmts);
++AVS_DEFINE_PTR_PARSER(modcfg_base, struct avs_tplg_modcfg_base, modcfgs_base);
++
++static int
++parse_audio_format_bitfield(struct snd_soc_component *comp, void *elem, void *object, u32 offset)
++{
++	struct snd_soc_tplg_vendor_value_elem *velem = elem;
++	struct avs_audio_format *audio_format = object;
++
++	switch (offset) {
++	case AVS_TKN_AFMT_NUM_CHANNELS_U32:
++		audio_format->num_channels = le32_to_cpu(velem->value);
++		break;
++	case AVS_TKN_AFMT_VALID_BIT_DEPTH_U32:
++		audio_format->valid_bit_depth = le32_to_cpu(velem->value);
++		break;
++	case AVS_TKN_AFMT_SAMPLE_TYPE_U32:
++		audio_format->sample_type = le32_to_cpu(velem->value);
++		break;
++	}
++
++	return 0;
++}
++
++static int parse_link_formatted_string(struct snd_soc_component *comp, void *elem,
++				       void *object, u32 offset)
++{
++	struct snd_soc_tplg_vendor_string_elem *tuple = elem;
++	struct snd_soc_acpi_mach *mach = dev_get_platdata(comp->card->dev);
++	char *val = (char *)((u8 *)object + offset);
++
++	/*
++	 * Dynamic naming - string formats, e.g.: ssp%d - supported only for
++	 * topologies describing single device e.g.: an I2S codec on SSP0.
++	 */
++	if (hweight_long(mach->link_mask) != 1)
++		return avs_parse_string_token(comp, elem, object, offset);
++
++	snprintf(val, SNDRV_CTL_ELEM_ID_NAME_MAXLEN, tuple->string,
++		 __ffs(mach->link_mask));
++
++	return 0;
++}
++
++static int
++parse_dictionary_header(struct snd_soc_component *comp,
++			struct snd_soc_tplg_vendor_array *tuples,
++			void **dict, u32 *num_entries, size_t entry_size,
++			u32 num_entries_token)
++{
++	struct snd_soc_tplg_vendor_value_elem *tuple;
++
++	/* Dictionary header consists of single tuple - entry count. */
++	tuple = tuples->value;
++	if (le32_to_cpu(tuple->token) != num_entries_token) {
++		dev_err(comp->dev, "invalid dictionary header, expected: %d\n",
++			num_entries_token);
++		return -EINVAL;
++	}
++
++	*num_entries = le32_to_cpu(tuple->value);
++	*dict = devm_kcalloc(comp->card->dev, *num_entries, entry_size, GFP_KERNEL);
++	if (!*dict)
++		return -ENOMEM;
++
++	return 0;
++}
++
++static int
++parse_dictionary_entries(struct snd_soc_component *comp,
++			 struct snd_soc_tplg_vendor_array *tuples, u32 block_size,
++			 void *dict, u32 num_entries, size_t entry_size,
++			 u32 entry_id_token,
++			 const struct avs_tplg_token_parser *parsers, size_t num_parsers)
++{
++	void *pos = dict;
++	int i;
++
++	for (i = 0; i < num_entries; i++) {
++		u32 esize;
++		int ret;
++
++		ret = avs_tplg_vendor_entry_size(tuples, block_size,
++						 entry_id_token, &esize);
++		if (ret)
++			return ret;
++
++		ret = avs_parse_tokens(comp, pos, parsers, num_parsers, tuples, esize);
++		if (ret < 0) {
++			dev_err(comp->dev, "parse entry: %d of type: %d failed: %d\n",
++				i, entry_id_token, ret);
++			return ret;
++		}
++
++		pos += entry_size;
++		block_size -= esize;
++		tuples = avs_tplg_vendor_array_at(tuples, esize);
++	}
++
++	return 0;
++}
++
++static int parse_dictionary(struct snd_soc_component *comp,
++			    struct snd_soc_tplg_vendor_array *tuples, u32 block_size,
++			    void **dict, u32 *num_entries, size_t entry_size,
++			    u32 num_entries_token, u32 entry_id_token,
++			    const struct avs_tplg_token_parser *parsers, size_t num_parsers)
++{
++	int ret;
++
++	ret = parse_dictionary_header(comp, tuples, dict, num_entries,
++				      entry_size, num_entries_token);
++	if (ret)
++		return ret;
++
++	block_size -= le32_to_cpu(tuples->size);
++	/* With header parsed, move on to parsing entries. */
++	tuples = avs_tplg_vendor_array_next(tuples);
++
++	return parse_dictionary_entries(comp, tuples, block_size, *dict,
++					*num_entries, entry_size,
++					entry_id_token, parsers, num_parsers);
++}
++
++static const struct avs_tplg_token_parser library_parsers[] = {
++	{
++		.token = AVS_TKN_LIBRARY_NAME_STRING,
++		.type = SND_SOC_TPLG_TUPLE_TYPE_STRING,
++		.offset = offsetof(struct avs_tplg_library, name),
++		.parse = avs_parse_string_token,
++	},
++};
++
++static int avs_tplg_parse_libraries(struct snd_soc_component *comp,
++				    struct snd_soc_tplg_vendor_array *tuples, u32 block_size)
++{
++	struct avs_soc_component *acomp = to_avs_soc_component(comp);
++	struct avs_tplg *tplg = acomp->tplg;
++
++	return parse_dictionary(comp, tuples, block_size, (void **)&tplg->libs,
++				&tplg->num_libs, sizeof(*tplg->libs),
++				AVS_TKN_MANIFEST_NUM_LIBRARIES_U32,
++				AVS_TKN_LIBRARY_ID_U32,
++				library_parsers, ARRAY_SIZE(library_parsers));
++}
++
++static const struct avs_tplg_token_parser audio_format_parsers[] = {
++	{
++		.token = AVS_TKN_AFMT_SAMPLE_RATE_U32,
++		.type = SND_SOC_TPLG_TUPLE_TYPE_WORD,
++		.offset = offsetof(struct avs_audio_format, sampling_freq),
++		.parse = avs_parse_word_token,
++	},
++	{
++		.token = AVS_TKN_AFMT_BIT_DEPTH_U32,
++		.type = SND_SOC_TPLG_TUPLE_TYPE_WORD,
++		.offset = offsetof(struct avs_audio_format, bit_depth),
++		.parse = avs_parse_word_token,
++	},
++	{
++		.token = AVS_TKN_AFMT_CHANNEL_MAP_U32,
++		.type = SND_SOC_TPLG_TUPLE_TYPE_WORD,
++		.offset = offsetof(struct avs_audio_format, channel_map),
++		.parse = avs_parse_word_token,
++	},
++	{
++		.token = AVS_TKN_AFMT_CHANNEL_CFG_U32,
++		.type = SND_SOC_TPLG_TUPLE_TYPE_WORD,
++		.offset = offsetof(struct avs_audio_format, channel_config),
++		.parse = avs_parse_word_token,
++	},
++	{
++		.token = AVS_TKN_AFMT_INTERLEAVING_U32,
++		.type = SND_SOC_TPLG_TUPLE_TYPE_WORD,
++		.offset = offsetof(struct avs_audio_format, interleaving),
++		.parse = avs_parse_word_token,
++	},
++	{
++		.token = AVS_TKN_AFMT_NUM_CHANNELS_U32,
++		.type = SND_SOC_TPLG_TUPLE_TYPE_WORD,
++		.offset = AVS_TKN_AFMT_NUM_CHANNELS_U32,
++		.parse = parse_audio_format_bitfield,
++	},
++	{
++		.token = AVS_TKN_AFMT_VALID_BIT_DEPTH_U32,
++		.type = SND_SOC_TPLG_TUPLE_TYPE_WORD,
++		.offset = AVS_TKN_AFMT_VALID_BIT_DEPTH_U32,
++		.parse = parse_audio_format_bitfield,
++	},
++	{
++		.token = AVS_TKN_AFMT_SAMPLE_TYPE_U32,
++		.type = SND_SOC_TPLG_TUPLE_TYPE_WORD,
++		.offset = AVS_TKN_AFMT_SAMPLE_TYPE_U32,
++		.parse = parse_audio_format_bitfield,
++	},
++};
++
++static int avs_tplg_parse_audio_formats(struct snd_soc_component *comp,
++					struct snd_soc_tplg_vendor_array *tuples,
++					u32 block_size)
++{
++	struct avs_soc_component *acomp = to_avs_soc_component(comp);
++	struct avs_tplg *tplg = acomp->tplg;
++
++	return parse_dictionary(comp, tuples, block_size, (void **)&tplg->fmts,
++				&tplg->num_fmts, sizeof(*tplg->fmts),
++				AVS_TKN_MANIFEST_NUM_AFMTS_U32,
++				AVS_TKN_AFMT_ID_U32,
++				audio_format_parsers, ARRAY_SIZE(audio_format_parsers));
++}
++
++static const struct avs_tplg_token_parser modcfg_base_parsers[] = {
++	{
++		.token = AVS_TKN_MODCFG_BASE_CPC_U32,
++		.type = SND_SOC_TPLG_TUPLE_TYPE_WORD,
++		.offset = offsetof(struct avs_tplg_modcfg_base, cpc),
++		.parse = avs_parse_word_token,
++	},
++	{
++		.token = AVS_TKN_MODCFG_BASE_IBS_U32,
++		.type = SND_SOC_TPLG_TUPLE_TYPE_WORD,
++		.offset = offsetof(struct avs_tplg_modcfg_base, ibs),
++		.parse = avs_parse_word_token,
++	},
++	{
++		.token = AVS_TKN_MODCFG_BASE_OBS_U32,
++		.type = SND_SOC_TPLG_TUPLE_TYPE_WORD,
++		.offset = offsetof(struct avs_tplg_modcfg_base, obs),
++		.parse = avs_parse_word_token,
++	},
++	{
++		.token = AVS_TKN_MODCFG_BASE_PAGES_U32,
++		.type = SND_SOC_TPLG_TUPLE_TYPE_WORD,
++		.offset = offsetof(struct avs_tplg_modcfg_base, is_pages),
++		.parse = avs_parse_word_token,
++	},
++};
++
++static int avs_tplg_parse_modcfgs_base(struct snd_soc_component *comp,
++				       struct snd_soc_tplg_vendor_array *tuples,
++				       u32 block_size)
++{
++	struct avs_soc_component *acomp = to_avs_soc_component(comp);
++	struct avs_tplg *tplg = acomp->tplg;
++
++	return parse_dictionary(comp, tuples, block_size, (void **)&tplg->modcfgs_base,
++				&tplg->num_modcfgs_base, sizeof(*tplg->modcfgs_base),
++				AVS_TKN_MANIFEST_NUM_MODCFGS_BASE_U32,
++				AVS_TKN_MODCFG_BASE_ID_U32,
++				modcfg_base_parsers, ARRAY_SIZE(modcfg_base_parsers));
++}
+diff --git a/sound/soc/intel/avs/topology.h b/sound/soc/intel/avs/topology.h
+new file mode 100644
+index 000000000000..a3ab5d15c9ee
+--- /dev/null
++++ b/sound/soc/intel/avs/topology.h
+@@ -0,0 +1,44 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Copyright(c) 2021 Intel Corporation. All rights reserved.
++ *
++ * Authors: Cezary Rojewski <cezary.rojewski@intel.com>
++ *          Amadeusz Slawinski <amadeuszx.slawinski@linux.intel.com>
++ */
++
++#ifndef __SOUND_SOC_INTEL_AVS_TPLG_H
++#define __SOUND_SOC_INTEL_AVS_TPLG_H
++
++#include <linux/list.h>
++#include "messages.h"
++
++#define INVALID_OBJECT_ID	UINT_MAX
++
++struct snd_soc_component;
++
++struct avs_tplg {
++	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
++	u32 version;
++	struct snd_soc_component *comp;
++
++	struct avs_tplg_library *libs;
++	u32 num_libs;
++	struct avs_audio_format *fmts;
++	u32 num_fmts;
++	struct avs_tplg_modcfg_base *modcfgs_base;
++	u32 num_modcfgs_base;
++};
++
++struct avs_tplg_library {
++	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
++};
++
++/* Matches header of struct avs_mod_cfg_base. */
++struct avs_tplg_modcfg_base {
++	u32 cpc;
++	u32 ibs;
++	u32 obs;
++	u32 is_pages;
++};
++
++#endif
 -- 
 2.25.1
 
