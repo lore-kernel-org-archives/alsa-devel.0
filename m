@@ -4,81 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19F2BC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Mar 2022 11:59:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3DF6C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Mar 2022 12:36:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 57D471899;
-	Mon, 28 Mar 2022 13:58:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57D471899
+	by alsa0.perex.cz (Postfix) with ESMTPS id 25CCF16F7;
+	Mon, 28 Mar 2022 14:36:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 25CCF16F7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648468753;
-	bh=3Zo06uD0k1Cy/BzyQxU6cxkhtAbE1Oa3vkFZbEA1DkU=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=qGvm4M8gPY4t1YLJ2hQmLW2HPMczIE+15AFhx4XFvNroOwN6ih4lDsBe/QcjvGycr
-	 kZ0Q5fXdBtQOVMT34BzZ6PTFftD7+Zj/CJi+m9pl1LXob1h9axl/uri3ldBMdtZt1O
-	 iJhIHGeu+GzsdGeae85a5juX6rhPwHZaoQOe+M+I=
+	s=default; t=1648471012;
+	bh=/Mcf3Xtc05RicaaDfP1rO1SMDmgoPSAQ2kNbmGOJ0oY=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=g+Ww5nX/F0ad2pHZz/17lR4GH4TiUJGySThx4gADU2auaKvl4+3gBAhIxBo84iX3U
+	 tBmMkbix+1JGpKRHK9zWyfbtmx+x240rDNkbqV+Z0Xo7ePK5UvxlEiMXp13PrXyvud
+	 fgaJuOYW+VttkFSRhX4lyISI+lI7kyNzxREZksP4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B694BF8052D;
-	Mon, 28 Mar 2022 13:56:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ADA2FF8024C;
+	Mon, 28 Mar 2022 14:36:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7DE19F8051B; Mon, 28 Mar 2022 13:56:32 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 9E994F8024C; Mon, 28 Mar 2022 14:35:59 +0200 (CEST)
+Received: from smtp-relay-canonical-1.canonical.com
+ (smtp-relay-canonical-1.canonical.com [185.125.188.121])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1DF35F800FA
- for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2022 13:56:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1DF35F800FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id C4172F80121
+ for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2022 14:35:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4172F80121
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="YxlVeCG1"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 22S8AHvc030601;
- Mon, 28 Mar 2022 06:56:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=9TVpbkm1MRlp+hgjJt9czyCr1ZPFU47JnpZNPwLM70g=;
- b=YxlVeCG1DZ8GATC9xnMMhPWtOQmdXfm4XWN8CqpQvRljDzOskkfHREeuJOG/OVfdt+j6
- p7uM653xgdZnNQAcmblZa6YobyGNcF7YoZr0dzar5GHM/2ajc1Y1JOPWCKhmKTwurwBP
- myd48BU3/O2dRbAICh7lEikGQwqsC9T+IGOfxbCK0RVf6UJeq7/7Julr1lNKzRIojQkE
- qMM4hfi6swwB7HvjNDNSIcQs/XU6rmTyFAdFesdF7rzYflAHCn6waG2bTuXOEBDSiDG7
- tzxuW1C2gcyk9fZmpGrBP22D8OIS+BPnLs2fjqxgEbBcvpD1QNMDW1EOyymlGAz4R28n cQ== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3f2081apda-3
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Mon, 28 Mar 2022 06:56:18 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Mon, 28 Mar
- 2022 12:56:16 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via
- Frontend Transport; Mon, 28 Mar 2022 12:56:16 +0100
-Received: from vitaly-Legion-7-16ACHg6.ad.cirrus.com (unknown [198.90.238.244])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 9145046A;
- Mon, 28 Mar 2022 11:56:16 +0000 (UTC)
-From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v2 4/6] ALSA: hda/cs8409: Support new Warlock MLK Variants
-Date: Mon, 28 Mar 2022 12:56:12 +0100
-Message-ID: <20220328115614.15761-5-vitalyr@opensource.cirrus.com>
+ dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com
+ header.b="GpT37Lq+"
+Received: from localhost.localdomain (unknown [123.112.67.37])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id D4B933F622; 
+ Mon, 28 Mar 2022 12:35:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+ s=20210705; t=1648470952;
+ bh=wswi+jnFbxPy9HMqDyETigFc3JyKkrEaBCs6wU1CA2c=;
+ h=From:To:Subject:Date:Message-Id:MIME-Version;
+ b=GpT37Lq+Yx8REI1O7ySXkJ8PYTOVXFx7hgWL7h9pxMekxwuYr9hzcbed3n6VmQTsK
+ i/2f6Z+QiE8LhmJ7zR7c5zKy4FTQCrg32rq3BdXkOaGjuNKMLZP8WvvEqLxuGsysmv
+ gaBHZKKdU0GM1uyf1fIlSs83rRUgFnYTk4EIYWg4826Ok1QI+qsLASl4qCHDiSC4gp
+ rzX4/KbrtqlWwVF/daaaiCoNbAqsY3Ru9LsBMAkR7fd074G/0JBI2/ARCOQqLHHQ6I
+ PTVQXrDmrCpLoCrRt2NMdVs7Pb/3HrlZvngD5O7tUCRSCYkCbt9DOBDD61vq2mXQER
+ 2/CL49UuOSB1Q==
+From: Hui Wang <hui.wang@canonical.com>
+To: alsa-devel@alsa-project.org, broonie@kernel.org,
+ patches@opensource.cirrus.com, ckeepax@opensource.cirrus.com,
+ tanureal@opensource.cirrus.com
+Subject: [PATCH v3 1/2] ASoC: cs35l41: Add one more variable in the debug log
+Date: Mon, 28 Mar 2022 20:35:34 +0800
+Message-Id: <20220328123535.50000-1-hui.wang@canonical.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220328115614.15761-1-vitalyr@opensource.cirrus.com>
-References: <20220328115614.15761-1-vitalyr@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: xoBx6kjNmBa6J3WgDy-ofga5bXbzlcn_
-X-Proofpoint-GUID: xoBx6kjNmBa6J3WgDy-ofga5bXbzlcn_
-X-Proofpoint-Spam-Reason: safe
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,131 +76,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Stefan Binding <sbinding@opensource.cirrus.com>
+otp_map[].size is a key variable to compute the value of otp_val and
+to update the bit_offset, it is helpful to debug if could put it in
+the debug log.
 
-Added 15 new laptops, with 2 variants:
-Warlock MLK and Warlock MLK with Dual Mic
-
-The only difference between the variants, is the
-the dual Mic variants use a stereo DMIC.
-
-These variants do no use reduce volume (Full Scale Volume)
-
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
-Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-
-Changes in v2:
-Add patch description in commit message.
-
+Reviewed-by: Lucas Tanure <tanureal@opensource.cirrus.com>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
 ---
- sound/pci/hda/patch_cs8409-tables.c | 29 +++++++++++++++++++++++++++++
- sound/pci/hda/patch_cs8409.c        | 15 +++++++++++++--
- sound/pci/hda/patch_cs8409.h        |  2 ++
- 3 files changed, 44 insertions(+), 2 deletions(-)
+ sound/soc/codecs/cs35l41-lib.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/hda/patch_cs8409-tables.c b/sound/pci/hda/patch_cs8409-tables.c
-index 9c1fa97100ef..8d20d7fb3d68 100644
---- a/sound/pci/hda/patch_cs8409-tables.c
-+++ b/sound/pci/hda/patch_cs8409-tables.c
-@@ -515,8 +515,23 @@ const struct snd_pci_quirk cs8409_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1028, 0x0AF0, "Cyborg", CS8409_CYBORG),
- 	SND_PCI_QUIRK(0x1028, 0x0AF4, "Warlock", CS8409_WARLOCK),
- 	SND_PCI_QUIRK(0x1028, 0x0AF5, "Warlock", CS8409_WARLOCK),
-+	SND_PCI_QUIRK(0x1028, 0x0B92, "Warlock MLK", CS8409_WARLOCK_MLK),
-+	SND_PCI_QUIRK(0x1028, 0x0B93, "Warlock MLK Dual Mic", CS8409_WARLOCK_MLK_DUAL_MIC),
-+	SND_PCI_QUIRK(0x1028, 0x0B94, "Warlock MLK", CS8409_WARLOCK_MLK),
-+	SND_PCI_QUIRK(0x1028, 0x0B95, "Warlock MLK Dual Mic", CS8409_WARLOCK_MLK_DUAL_MIC),
-+	SND_PCI_QUIRK(0x1028, 0x0B96, "Warlock MLK", CS8409_WARLOCK_MLK),
-+	SND_PCI_QUIRK(0x1028, 0x0B97, "Warlock MLK Dual Mic", CS8409_WARLOCK_MLK_DUAL_MIC),
-+	SND_PCI_QUIRK(0x1028, 0x0BB2, "Warlock MLK", CS8409_WARLOCK_MLK),
-+	SND_PCI_QUIRK(0x1028, 0x0BB3, "Warlock MLK", CS8409_WARLOCK_MLK),
-+	SND_PCI_QUIRK(0x1028, 0x0BB4, "Warlock MLK", CS8409_WARLOCK_MLK),
- 	SND_PCI_QUIRK(0x1028, 0x0BB5, "Warlock N3 15 TGL-U Nuvoton EC", CS8409_WARLOCK),
- 	SND_PCI_QUIRK(0x1028, 0x0BB6, "Warlock V3 15 TGL-U Nuvoton EC", CS8409_WARLOCK),
-+	SND_PCI_QUIRK(0x1028, 0x0BB8, "Warlock MLK", CS8409_WARLOCK_MLK),
-+	SND_PCI_QUIRK(0x1028, 0x0BB9, "Warlock MLK Dual Mic", CS8409_WARLOCK_MLK_DUAL_MIC),
-+	SND_PCI_QUIRK(0x1028, 0x0BBA, "Warlock MLK", CS8409_WARLOCK_MLK),
-+	SND_PCI_QUIRK(0x1028, 0x0BBB, "Warlock MLK Dual Mic", CS8409_WARLOCK_MLK_DUAL_MIC),
-+	SND_PCI_QUIRK(0x1028, 0x0BBC, "Warlock MLK", CS8409_WARLOCK_MLK),
-+	SND_PCI_QUIRK(0x1028, 0x0BBD, "Warlock MLK Dual Mic", CS8409_WARLOCK_MLK_DUAL_MIC),
- 	{} /* terminator */
- };
+diff --git a/sound/soc/codecs/cs35l41-lib.c b/sound/soc/codecs/cs35l41-lib.c
+index e5a56bcbb223..810643be13a4 100644
+--- a/sound/soc/codecs/cs35l41-lib.c
++++ b/sound/soc/codecs/cs35l41-lib.c
+@@ -822,8 +822,8 @@ int cs35l41_otp_unpack(struct device *dev, struct regmap *regmap)
+ 	word_offset = otp_map_match->word_offset;
  
-@@ -524,6 +539,8 @@ const struct snd_pci_quirk cs8409_fixup_tbl[] = {
- const struct hda_model_fixup cs8409_models[] = {
- 	{ .id = CS8409_BULLSEYE, .name = "bullseye" },
- 	{ .id = CS8409_WARLOCK, .name = "warlock" },
-+	{ .id = CS8409_WARLOCK_MLK, .name = "warlock mlk" },
-+	{ .id = CS8409_WARLOCK_MLK_DUAL_MIC, .name = "warlock mlk dual mic" },
- 	{ .id = CS8409_CYBORG, .name = "cyborg" },
- 	{ .id = CS8409_DOLPHIN, .name = "dolphin" },
- 	{}
-@@ -542,6 +559,18 @@ const struct hda_fixup cs8409_fixups[] = {
- 		.chained = true,
- 		.chain_id = CS8409_FIXUPS,
- 	},
-+	[CS8409_WARLOCK_MLK] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = cs8409_cs42l42_pincfgs,
-+		.chained = true,
-+		.chain_id = CS8409_FIXUPS,
-+	},
-+	[CS8409_WARLOCK_MLK_DUAL_MIC] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = cs8409_cs42l42_pincfgs,
-+		.chained = true,
-+		.chain_id = CS8409_FIXUPS,
-+	},
- 	[CS8409_CYBORG] = {
- 		.type = HDA_FIXUP_PINS,
- 		.v.pins = cs8409_cs42l42_pincfgs,
-diff --git a/sound/pci/hda/patch_cs8409.c b/sound/pci/hda/patch_cs8409.c
-index 163ff3b3092a..ce5fc03a8065 100644
---- a/sound/pci/hda/patch_cs8409.c
-+++ b/sound/pci/hda/patch_cs8409.c
-@@ -912,9 +912,15 @@ static void cs8409_cs42l42_hw_init(struct hda_codec *codec)
- 			cs8409_vendor_coef_set(codec, seq_bullseye->cir, seq_bullseye->coeff);
- 	}
- 
--	/* DMIC1_MO=00b, DMIC1/2_SR=1 */
--	if (codec->fixup_id == CS8409_CYBORG)
-+	switch (codec->fixup_id) {
-+	case CS8409_CYBORG:
-+	case CS8409_WARLOCK_MLK_DUAL_MIC:
-+		/* DMIC1_MO=00b, DMIC1/2_SR=1 */
- 		cs8409_vendor_coef_set(codec, CS8409_DMIC_CFG, 0x0003);
-+		break;
-+	default:
-+		break;
-+	}
- 
- 	cs42l42_resume(cs42l42);
- 
-@@ -1008,6 +1014,11 @@ void cs8409_cs42l42_fixups(struct hda_codec *codec, const struct hda_fixup *fix,
- 			spec->scodecs[CS8409_CODEC0]->full_scale_vol =
- 				CS42L42_FULL_SCALE_VOL_MINUS6DB;
- 			break;
-+		case CS8409_WARLOCK_MLK:
-+		case CS8409_WARLOCK_MLK_DUAL_MIC:
-+			spec->scodecs[CS8409_CODEC0]->hsbias_hiz = 0x0020;
-+			spec->scodecs[CS8409_CODEC0]->full_scale_vol = CS42L42_FULL_SCALE_VOL_0DB;
-+			break;
- 		default:
- 			spec->scodecs[CS8409_CODEC0]->hsbias_hiz = 0x0020;
- 			spec->scodecs[CS8409_CODEC0]->full_scale_vol =
-diff --git a/sound/pci/hda/patch_cs8409.h b/sound/pci/hda/patch_cs8409.h
-index 8e846f292cd0..7df46bd8d2da 100644
---- a/sound/pci/hda/patch_cs8409.h
-+++ b/sound/pci/hda/patch_cs8409.h
-@@ -267,6 +267,8 @@ enum cs8409_coefficient_index_registers {
- enum {
- 	CS8409_BULLSEYE,
- 	CS8409_WARLOCK,
-+	CS8409_WARLOCK_MLK,
-+	CS8409_WARLOCK_MLK_DUAL_MIC,
- 	CS8409_CYBORG,
- 	CS8409_FIXUPS,
- 	CS8409_DOLPHIN,
+ 	for (i = 0; i < otp_map_match->num_elements; i++) {
+-		dev_dbg(dev, "bitoffset= %d, word_offset=%d, bit_sum mod 32=%d\n",
+-			bit_offset, word_offset, bit_sum % 32);
++		dev_dbg(dev, "bitoffset= %d, word_offset=%d, bit_sum mod 32=%d, otp_map[i].size = %u\n",
++			bit_offset, word_offset, bit_sum % 32, otp_map[i].size);
+ 		if (bit_offset + otp_map[i].size - 1 >= 32) {
+ 			otp_val = (otp_mem[word_offset] &
+ 					GENMASK(31, bit_offset)) >> bit_offset;
 -- 
 2.25.1
 
