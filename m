@@ -4,78 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F004C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Mar 2022 21:37:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E61C8C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Mar 2022 23:36:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 858F9185C;
-	Mon, 28 Mar 2022 23:36:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 858F9185C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 690A11825;
+	Tue, 29 Mar 2022 01:35:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 690A11825
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648503424;
-	bh=DCWftDqezxZW1H4HwqNDkNoniGk2yx7m8eMctaLrnkk=;
+	s=default; t=1648510574;
+	bh=LtV0+JEr1vy1Fw22kzlPUf7y2fNBj8YPfE+w7QY/BIc=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=an6hCs51jU8t9NdXFsoi0iXiDaPTfYm+tCoFXgOj/NDbOKC98LELnfH1BfBEv5/Ri
-	 dT3QTp+aUsVGwaTVNTFy6IRyKiiAkAP11jupZcQ6thrmvlXcPG7/PSfIHbvX/oO/Hy
-	 0JSpuJF2I9W/un0PuiL6Ja/YV9ljV7PWv58YcvMk=
+	b=WKAItq48msbtL5gjzKxO47u+/Ra74X3ZOOqdINek8wJbF8bZY2Rd6c/Jhr4JxXJxm
+	 HK/K8ZMDQWItRd+SgPTgscufPPlqx5ZYnyKkR2M1ZMzVGFBc8rk0MB/g1Cp/RSCiZ4
+	 5MbNFIgn6DsIhnkBlgHYwLrg1g10VUtDQOKICXeY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 106ECF80128;
-	Mon, 28 Mar 2022 23:36:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E6655F80128;
+	Tue, 29 Mar 2022 01:35:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2B6DBF8024C; Mon, 28 Mar 2022 23:36:12 +0200 (CEST)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id A90EBF8024C; Tue, 29 Mar 2022 01:35:21 +0200 (CEST)
+Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com
+ [209.85.167.175])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 67B22F800FA
- for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2022 23:36:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67B22F800FA
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="m+mBeRdl"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1648503366; x=1680039366;
- h=date:from:to:cc:subject:message-id:references:
- mime-version:in-reply-to;
- bh=DCWftDqezxZW1H4HwqNDkNoniGk2yx7m8eMctaLrnkk=;
- b=m+mBeRdlYDHU7M09u6byzqkNVVbLJRJ+ewSEL0kbfmbMnG7UpWLY4o4e
- ZoGNQc6a+UulcjNFY11FY7Tqfys73aFbJ7C89jM0AMN0YrzYup5Ysc1Zu
- jJfgovrT4e/q5XOJK5hpS7F8DUNbDFRsO+fWEhMd38HoWM6uhGmdL/XIe
- 3ePDolaXK/pe196TS7YliZciZOtksqNx8m9b64Lm+tjuofnLfxal3TMGA
- lN0LmyjvY9pX/JyGNrJG+MwUwiSzfqvURACQFpYt0LEp55u8bZeIy1gVI
- 0aFnxxDTUFUn0T5/kc4x6DLyEPYWjYc1IL4aIMnmECZkLadflKBLhshHm A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10300"; a="257936042"
-X-IronPort-AV: E=Sophos;i="5.90,218,1643702400"; d="scan'208";a="257936042"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 28 Mar 2022 14:35:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,218,1643702400"; d="scan'208";a="639106707"
-Received: from lkp-server02.sh.intel.com (HELO 89b41b6ae01c) ([10.239.97.151])
- by FMSMGA003.fm.intel.com with ESMTP; 28 Mar 2022 14:35:51 -0700
-Received: from kbuild by 89b41b6ae01c with local (Exim 4.92)
- (envelope-from <lkp@intel.com>)
- id 1nYx1j-0002Kx-5x; Mon, 28 Mar 2022 21:35:51 +0000
-Date: Tue, 29 Mar 2022 05:34:58 +0800
-From: kernel test robot <lkp@intel.com>
-To: Cezary Rojewski <cezary.rojewski@intel.com>,
- alsa-devel@alsa-project.org, broonie@kernel.org
-Subject: Re: [PATCH 10/14] ASoC: Intel: avs: Path creation and freeing
-Message-ID: <202203290516.fzAxfExg-lkp@intel.com>
-References: <20220328172410.761309-11-cezary.rojewski@intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 323C4F800CB
+ for <alsa-devel@alsa-project.org>; Tue, 29 Mar 2022 01:35:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 323C4F800CB
+Received: by mail-oi1-f175.google.com with SMTP id v75so17413550oie.1
+ for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2022 16:35:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=SroNa1s30omGiI5Y9VrYvsu2x7qDgV7jwDVANE4sovM=;
+ b=CqzzNPidbKM1ZjeyxRa7iFmCPBJipXD1fV1WymYT1JC+fV7p1uG17R3Hwm+1L1B1kr
+ czGVF1QSminwkhFynApIqi/nB7EdSRQG5koIq5jxvhuokLm1bDefWuzfo3KE7vzG4Rl0
+ BBajd5xgJ25riv7fkmqlaFTHG85hs4pN9wgft9kbkj2KQD+wAJ3dHRB8x07bH5Ptkkt7
+ bEz3UQ9oSxtKIkr3nOAAPEHDW7c1TfCyPjGfr+yea4Vfb6kQDAayG/S1CaidM8QrKhCy
+ wDS+A6b/rYdu18rv/aOzrPulZQTL0deXP2I4NLru5JqzReRUgMspfmxmG2uBkiJEw8yT
+ 7gTA==
+X-Gm-Message-State: AOAM532D8jujcto5wxcdY9VlvP6VNO/3mPt9RRcpmaOV00/V7rnU8VLj
+ Kbh55U3Xt7iFt/irO7YFbw==
+X-Google-Smtp-Source: ABdhPJwkSu1O1DKPbpe99hnvB1lz+rBg9kLNZGBXNnWcQE2xKETugXJz1gq3e0uO5Ff/4VU0Ceh4iA==
+X-Received: by 2002:a54:4714:0:b0:2ec:f566:8da5 with SMTP id
+ k20-20020a544714000000b002ecf5668da5mr801500oik.97.1648510511483; 
+ Mon, 28 Mar 2022 16:35:11 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-144-107.dyn.grandenetworks.net.
+ [66.90.144.107]) by smtp.gmail.com with ESMTPSA id
+ r19-20020acaa813000000b002ed02ca6a3fsm8015753oie.1.2022.03.28.16.35.10
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 28 Mar 2022 16:35:11 -0700 (PDT)
+Received: (nullmailer pid 3257819 invoked by uid 1000);
+ Mon, 28 Mar 2022 23:35:10 -0000
+Date: Mon, 28 Mar 2022 18:35:10 -0500
+From: Rob Herring <robh@kernel.org>
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: Re: [PATCH 4/5] ASoC: dt-bindings: cs35l45: Cirrus Logic CS35L45
+ Smart Amp
+Message-ID: <YkJGLo/dAAO3QMq5@robh.at.kernel.org>
+References: <20220318162943.1578102-1-rf@opensource.cirrus.com>
+ <20220318162943.1578102-5-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220328172410.761309-11-cezary.rojewski@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, upstream@semihalf.com,
- harshapriya.n@intel.com, rad@semihalf.com,
- pierre-louis.bossart@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
- amadeuszx.slawinski@linux.intel.com, kbuild-all@lists.01.org,
- cujomalainey@chromium.org, lma@semihalf.com
+In-Reply-To: <20220318162943.1578102-5-rf@opensource.cirrus.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+ robh+dt@kernel.org, broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,71 +89,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Cezary,
+On Fri, 18 Mar 2022 16:29:42 +0000, Richard Fitzgerald wrote:
+> This adds the schema binding for the Cirrus Logic CS35L45 Smart Amp
+> and associated header file.
+> 
+> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+> ---
+>  .../bindings/sound/cirrus,cs35l45.yaml        | 75 +++++++++++++++++++
+>  MAINTAINERS                                   |  2 +
+>  include/dt-bindings/sound/cs35l45.h           | 20 +++++
+>  3 files changed, 97 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/cirrus,cs35l45.yaml
+>  create mode 100644 include/dt-bindings/sound/cs35l45.h
+> 
 
-I love your patch! Perhaps something to improve:
-
-[auto build test WARNING on broonie-sound/for-next]
-[also build test WARNING on tiwai-sound/for-next next-20220328]
-[cannot apply to v5.17]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Cezary-Rojewski/ASoC-Intel-avs-Topology-and-path-management/20220329-012230
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-config: arm64-allyesconfig (https://download.01.org/0day-ci/archive/20220329/202203290516.fzAxfExg-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/cd5b9e82ba0830b3e2874f6b88054cf8c09c977d
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Cezary-Rojewski/ASoC-Intel-avs-Topology-and-path-management/20220329-012230
-        git checkout cd5b9e82ba0830b3e2874f6b88054cf8c09c977d
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=arm64 SHELL=/bin/bash sound/soc/intel/avs/
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All warnings (new ones prefixed by >>):
-
-   sound/soc/intel/avs/path.c: In function 'avs_path_create_unlocked':
->> sound/soc/intel/avs/path.c:232:35: warning: variable 'acomp' set but not used [-Wunused-but-set-variable]
-     232 |         struct avs_soc_component *acomp;
-         |                                   ^~~~~
-
-
-vim +/acomp +232 sound/soc/intel/avs/path.c
-
-   228	
-   229	static struct avs_path *avs_path_create_unlocked(struct avs_dev *adev, u32 dma_id,
-   230							 struct avs_tplg_path *template)
-   231	{
- > 232		struct avs_soc_component *acomp;
-   233		struct avs_path *path;
-   234		int ret;
-   235	
-   236		acomp = to_avs_soc_component(template->owner->owner->comp);
-   237	
-   238		path = kzalloc(sizeof(*path), GFP_KERNEL);
-   239		if (!path)
-   240			return ERR_PTR(-ENOMEM);
-   241	
-   242		ret = avs_path_init(adev, path, template, dma_id);
-   243		if (ret < 0)
-   244			goto err;
-   245	
-   246		path->state = AVS_PPL_STATE_INVALID;
-   247		return path;
-   248	err:
-   249		avs_path_free_unlocked(path);
-   250		return ERR_PTR(ret);
-   251	}
-   252	
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+Reviewed-by: Rob Herring <robh@kernel.org>
