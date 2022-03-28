@@ -4,53 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3255C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Mar 2022 11:32:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8FC6AC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Mar 2022 11:32:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 18A1C17E6;
-	Mon, 28 Mar 2022 13:31:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 18A1C17E6
+	by alsa0.perex.cz (Postfix) with ESMTPS id D8FB417E2;
+	Mon, 28 Mar 2022 13:31:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8FB417E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648467126;
-	bh=GSpVf+6N5suDUn/Zqm3Gbov/Ast+mw4uPyrlD+70e4o=;
+	s=default; t=1648467141;
+	bh=SBX9+s3TOqS9GqxOKHIZ7Ia+8jp4XwIwyZPprJrGkFQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hOvYaDwkP07CzcwiQO53/1SFvDyttf+bsU5bbW4HPekjyA3zL7sNkQFUL0TPVTVus
-	 zS18M+Bx72LEdiFD7eibavbgHacz6Pw10GbKAlP9Jdh7RijbLkTYXpRoC6d0cmVF/9
-	 l20B+7ZhGk/2M00DSnzLhY5yv44/zseyCFtsudVg=
+	b=eeaqJaCV19R0Cw/JdzIhFmdBLAgEqUvkDY6N1W47zLXbSyed7zAI0oHUSPkWNO7Bz
+	 cQo2nmqkPrPCTNq6uNtyyHJ8XbshFY3wOYZMiF5s+hfRUdRkGTnx42NCiGgR9tNXbp
+	 2xc60H2inHNj3M921e9kfhg61YKL8B0trdfiH8cE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 84355F80128;
-	Mon, 28 Mar 2022 13:28:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 01A06F8053E;
+	Mon, 28 Mar 2022 13:28:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 805E2F804DA; Mon, 28 Mar 2022 13:28:33 +0200 (CEST)
+ id 1100CF8051D; Mon, 28 Mar 2022 13:28:35 +0200 (CEST)
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
  [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8A15FF80518
- for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2022 13:28:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8A15FF80518
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7F673F80271
+ for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2022 13:28:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F673F80271
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1nYnXh-0003Pv-5f; Mon, 28 Mar 2022 13:28:13 +0200
+ id 1nYnXj-0003TZ-Dy; Mon, 28 Mar 2022 13:28:15 +0200
 Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
  by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
  (envelope-from <sha@pengutronix.de>)
- id 1nYnXd-003ZlC-Ja; Mon, 28 Mar 2022 13:28:12 +0200
+ id 1nYnXf-003Zls-BO; Mon, 28 Mar 2022 13:28:14 +0200
 Received: from sha by dude02.red.stw.pengutronix.de with local (Exim 4.94.2)
  (envelope-from <sha@pengutronix.de>)
- id 1nYnXd-006byZ-GW; Mon, 28 Mar 2022 13:28:09 +0200
+ id 1nYnXd-006byu-L9; Mon, 28 Mar 2022 13:28:09 +0200
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 07/19] ASoC: fsl_micfil: drop error messages from failed
- register accesses
-Date: Mon, 28 Mar 2022 13:27:32 +0200
-Message-Id: <20220328112744.1575631-8-s.hauer@pengutronix.de>
+Subject: [PATCH v2 14/19] ASoC: fsl_micfil: simplify clock setting
+Date: Mon, 28 Mar 2022 13:27:39 +0200
+Message-Id: <20220328112744.1575631-15-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220328112744.1575631-1-s.hauer@pengutronix.de>
 References: <20220328112744.1575631-1-s.hauer@pengutronix.de>
@@ -80,167 +79,110 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Failed register accesses are really not expected in memory mapped
-registers. When it fails then the register access itself is likely not
-the reason, so no need to have extra error messages for each regmap
-access. Just drop the error messages. This also fixes some places where
-a return value is concatenated using 'ret |=' and then returned as
-error value.
+The reference manual has this for calculating the micfil internal clock
+divider:
+
+         MICFIL Clock rate
+clkdiv = -----------------
+         8 * OSR * outrate
+
+(with OSR == Oversampling Rate, outrate == output sample rate)
+
+The driver first sets the MICFIL Clock rate to (outrate * 1024) and then
+calculates back the clkdiv value from the above calculation.
+
+Simplify this by using a fixed clkdiv value of 8 and set the MICFIL
+Clock rate to (outrate * clkdiv * OSR * 8).
+
+While at it drop disabling the clock before setting its rate. The MICFIL
+module is disabled when the rate is changed and it is also resetted
+before it is started again, so I doubt it's necessary to disable the
+clock.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- sound/soc/fsl/fsl_micfil.c | 53 ++++++++++----------------------------
- 1 file changed, 13 insertions(+), 40 deletions(-)
+ sound/soc/fsl/fsl_micfil.c | 45 ++++----------------------------------
+ 1 file changed, 4 insertions(+), 41 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
-index 70185f75d8a04..b88ece31437ab 100644
+index 8335646a84d17..fd3b168a38661 100644
 --- a/sound/soc/fsl/fsl_micfil.c
 +++ b/sound/soc/fsl/fsl_micfil.c
-@@ -170,17 +170,13 @@ static int fsl_micfil_reset(struct device *dev)
+@@ -111,19 +111,6 @@ static const struct snd_kcontrol_new fsl_micfil_snd_controls[] = {
+ 		     snd_soc_get_enum_double, snd_soc_put_enum_double),
+ };
  
- 	ret = regmap_clear_bits(micfil->regmap, REG_MICFIL_CTRL1,
- 				MICFIL_CTRL1_MDIS);
--	if (ret) {
--		dev_err(dev, "failed to clear MDIS bit %d\n", ret);
-+	if (ret)
- 		return ret;
--	}
- 
- 	ret = regmap_set_bits(micfil->regmap, REG_MICFIL_CTRL1,
- 			      MICFIL_CTRL1_SRES);
--	if (ret) {
--		dev_err(dev, "failed to reset MICFIL: %d\n", ret);
-+	if (ret)
- 		return ret;
--	}
- 
+-static inline int get_clk_div(struct fsl_micfil *micfil,
+-			      unsigned int rate)
+-{
+-	long mclk_rate;
+-	int clk_div;
+-
+-	mclk_rate = clk_get_rate(micfil->mclk);
+-
+-	clk_div = mclk_rate / (rate * micfil->osr * 8);
+-
+-	return clk_div;
+-}
+-
+ /* The SRES is a self-negated bit which provides the CPU with the
+  * capability to initialize the PDM Interface module through the
+  * slave-bus interface. This bit always reads as zero, and this
+@@ -147,24 +134,6 @@ static int fsl_micfil_reset(struct device *dev)
  	return 0;
  }
-@@ -242,18 +238,14 @@ static int fsl_micfil_trigger(struct snd_pcm_substream *substream, int cmd,
- 		ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL1,
- 				MICFIL_CTRL1_DISEL,
- 				FIELD_PREP(MICFIL_CTRL1_DISEL, MICFIL_CTRL1_DISEL_DMA));
--		if (ret) {
--			dev_err(dev, "failed to update DISEL bits\n");
-+		if (ret)
- 			return ret;
--		}
  
- 		/* Enable the module */
- 		ret = regmap_set_bits(micfil->regmap, REG_MICFIL_CTRL1,
- 				      MICFIL_CTRL1_PDMIEN);
--		if (ret) {
--			dev_err(dev, "failed to enable the module\n");
-+		if (ret)
- 			return ret;
--		}
+-static int fsl_micfil_set_mclk_rate(struct fsl_micfil *micfil,
+-				    unsigned int freq)
+-{
+-	struct device *dev = &micfil->pdev->dev;
+-	int ret;
+-
+-	clk_disable_unprepare(micfil->mclk);
+-
+-	ret = clk_set_rate(micfil->mclk, freq * 1024);
+-	if (ret)
+-		dev_warn(dev, "failed to set rate (%u): %d\n",
+-			 freq * 1024, ret);
+-
+-	clk_prepare_enable(micfil->mclk);
+-
+-	return ret;
+-}
+-
+ static int fsl_micfil_startup(struct snd_pcm_substream *substream,
+ 			      struct snd_soc_dai *dai)
+ {
+@@ -238,13 +207,12 @@ static int fsl_micfil_trigger(struct snd_pcm_substream *substream, int cmd,
+ static int fsl_set_clock_params(struct device *dev, unsigned int rate)
+ {
+ 	struct fsl_micfil *micfil = dev_get_drvdata(dev);
+-	int clk_div;
++	int clk_div = 8;
+ 	int ret;
  
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
-@@ -262,18 +254,14 @@ static int fsl_micfil_trigger(struct snd_pcm_substream *substream, int cmd,
- 		/* Disable the module */
- 		ret = regmap_clear_bits(micfil->regmap, REG_MICFIL_CTRL1,
- 					MICFIL_CTRL1_PDMIEN);
--		if (ret) {
--			dev_err(dev, "failed to enable the module\n");
-+		if (ret)
- 			return ret;
--		}
- 
- 		ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL1,
- 				MICFIL_CTRL1_DISEL,
- 				FIELD_PREP(MICFIL_CTRL1_DISEL, MICFIL_CTRL1_DISEL_DISABLE));
--		if (ret) {
--			dev_err(dev, "failed to update DISEL bits\n");
-+		if (ret)
- 			return ret;
--		}
- 		break;
- 	default:
- 		return -EINVAL;
-@@ -293,24 +281,20 @@ static int fsl_set_clock_params(struct device *dev, unsigned int rate)
- 			clk_get_rate(micfil->mclk), rate);
- 
- 	/* set CICOSR */
--	ret |= regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
-+	ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
- 				 MICFIL_CTRL2_CICOSR,
- 				 FIELD_PREP(MICFIL_CTRL2_CICOSR, MICFIL_CTRL2_CICOSR_DEFAULT));
- 	if (ret)
--		dev_err(dev, "failed to set CICOSR in reg 0x%X\n",
--			REG_MICFIL_CTRL2);
+-	ret = fsl_micfil_set_mclk_rate(micfil, rate);
+-	if (ret < 0)
+-		dev_err(dev, "failed to set mclk[%lu] to rate %u\n",
+-			clk_get_rate(micfil->mclk), rate);
++	ret = clk_set_rate(micfil->mclk, rate * clk_div * micfil->osr * 8);
++	if (ret)
 +		return ret;
  
- 	/* set CLK_DIV */
- 	clk_div = get_clk_div(micfil, rate);
- 	if (clk_div < 0)
- 		ret = -EINVAL;
+ 	/* set CICOSR */
+ 	ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
+@@ -253,11 +221,6 @@ static int fsl_set_clock_params(struct device *dev, unsigned int rate)
+ 	if (ret)
+ 		return ret;
  
--	ret |= regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
-+	ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
+-	/* set CLK_DIV */
+-	clk_div = get_clk_div(micfil, rate);
+-	if (clk_div < 0)
+-		ret = -EINVAL;
+-
+ 	ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
  				 MICFIL_CTRL2_CLKDIV,
  				 FIELD_PREP(MICFIL_CTRL2_CLKDIV, clk_div));
--	if (ret)
--		dev_err(dev, "failed to set CLKDIV in reg 0x%X\n",
--			REG_MICFIL_CTRL2);
- 
- 	return ret;
- }
-@@ -328,19 +312,14 @@ static int fsl_micfil_hw_params(struct snd_pcm_substream *substream,
- 	/* 1. Disable the module */
- 	ret = regmap_clear_bits(micfil->regmap, REG_MICFIL_CTRL1,
- 				 MICFIL_CTRL1_PDMIEN);
--	if (ret) {
--		dev_err(dev, "failed to disable the module\n");
-+	if (ret)
- 		return ret;
--	}
- 
- 	/* enable channels */
- 	ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL1,
- 				 0xFF, ((1 << channels) - 1));
--	if (ret) {
--		dev_err(dev, "failed to enable channels %d, reg 0x%X\n", ret,
--			REG_MICFIL_CTRL1);
-+	if (ret)
- 		return ret;
--	}
- 
- 	ret = fsl_set_clock_params(dev, rate);
- 	if (ret < 0) {
-@@ -362,7 +341,6 @@ static const struct snd_soc_dai_ops fsl_micfil_dai_ops = {
- static int fsl_micfil_dai_probe(struct snd_soc_dai *cpu_dai)
- {
- 	struct fsl_micfil *micfil = dev_get_drvdata(cpu_dai->dev);
--	struct device *dev = cpu_dai->dev;
- 	int ret;
- 	int i;
- 
-@@ -370,11 +348,8 @@ static int fsl_micfil_dai_probe(struct snd_soc_dai *cpu_dai)
- 	ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
- 			MICFIL_CTRL2_QSEL,
- 			FIELD_PREP(MICFIL_CTRL2_QSEL, MICFIL_QSEL_MEDIUM_QUALITY));
--	if (ret) {
--		dev_err(dev, "failed to set quality mode bits, reg 0x%X\n",
--			REG_MICFIL_CTRL2);
-+	if (ret)
- 		return ret;
--	}
- 
- 	/* set default gain to max_gain */
- 	regmap_write(micfil->regmap, REG_MICFIL_OUT_CTRL, 0x77777777);
-@@ -388,10 +363,8 @@ static int fsl_micfil_dai_probe(struct snd_soc_dai *cpu_dai)
- 	ret = regmap_update_bits(micfil->regmap, REG_MICFIL_FIFO_CTRL,
- 			MICFIL_FIFO_CTRL_FIFOWMK,
- 			FIELD_PREP(MICFIL_FIFO_CTRL_FIFOWMK, micfil->soc->fifo_depth - 1));
--	if (ret) {
--		dev_err(dev, "failed to set FIFOWMK\n");
-+	if (ret)
- 		return ret;
--	}
- 
- 	return 0;
- }
 -- 
 2.30.2
 
