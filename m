@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8243C433FE
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Mar 2022 11:29:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A90B7C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Mar 2022 11:30:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CA80817E7;
-	Mon, 28 Mar 2022 13:29:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA80817E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9D0B417C6;
+	Mon, 28 Mar 2022 13:29:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D0B417C6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648466990;
-	bh=JupzhYh+6L7aoRiWiQiJeGSR06BN96s9PWUMwYu7zI8=;
+	s=default; t=1648467008;
+	bh=XS7aH2S5H+UOmagW+ieIW9SL4b3v/fjNbJrR+vTyHao=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Yzi2DlVMVooqvEa/DKkjXNrWba4FYrx3EnZEhFNQa51xAOwQDPvzotaR5zbJ+qF4h
-	 HN1ENEt9eNGN8YgrYG2MHUOs0LPnSZvpGo1J19Tbwi5qZlCVLr90Hs0oJVyALfioxC
-	 Q/5hXuYjC/oVOGWSKYM3fKIx8E9pWq7u7hAn8wz0=
+	b=higLeG3Qo+sSSKNki8cDoez8rRuYagTaYqkuM6tf8iYjdq0KPjE7Gj1sLaXz4DVDw
+	 OBBTmNHZVcilsaU1U7UzXY2Q/w362kMn9x8VIyUVLRFhp5iKN8d91aES+Inrsbnqar
+	 rW2jWlRrgLg+BaeHbUk0oePNlwduL8aSav0zBZ8Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7FA8CF80527;
-	Mon, 28 Mar 2022 13:28:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 258F7F8024C;
+	Mon, 28 Mar 2022 13:28:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CDD9EF80520; Mon, 28 Mar 2022 13:28:20 +0200 (CEST)
+ id A8745F80528; Mon, 28 Mar 2022 13:28:27 +0200 (CEST)
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
  [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2259DF800CB
- for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2022 13:28:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2259DF800CB
+ by alsa1.perex.cz (Postfix) with ESMTPS id D022DF8026D
+ for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2022 13:28:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D022DF8026D
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1nYnXg-0003PZ-7D; Mon, 28 Mar 2022 13:28:12 +0200
+ id 1nYnXi-0003SM-Gx; Mon, 28 Mar 2022 13:28:14 +0200
 Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
  by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
  (envelope-from <sha@pengutronix.de>)
- id 1nYnXb-003Zl5-Uh; Mon, 28 Mar 2022 13:28:10 +0200
+ id 1nYnXe-003ZlU-Ia; Mon, 28 Mar 2022 13:28:13 +0200
 Received: from sha by dude02.red.stw.pengutronix.de with local (Exim 4.94.2)
  (envelope-from <sha@pengutronix.de>)
- id 1nYnXd-006byN-DT; Mon, 28 Mar 2022 13:28:09 +0200
+ id 1nYnXd-006bz0-MV; Mon, 28 Mar 2022 13:28:09 +0200
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 03/19] ASoC: fsl_micfil: drop fsl_micfil_set_mclk_rate()
-Date: Mon, 28 Mar 2022 13:27:28 +0200
-Message-Id: <20220328112744.1575631-4-s.hauer@pengutronix.de>
+Subject: [PATCH v2 16/19] ASoC: fsl_micfil: drop unused include
+Date: Mon, 28 Mar 2022 13:27:41 +0200
+Message-Id: <20220328112744.1575631-17-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220328112744.1575631-1-s.hauer@pengutronix.de>
 References: <20220328112744.1575631-1-s.hauer@pengutronix.de>
@@ -79,52 +79,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-All that the .set_sysclk hook in the micfil driver does is to pass
-the sysclk frequency to fsl_micfil_set_mclk_rate(). This function
-expects the sample rate as argument though, not any kind of sysclk
-frequency. The resulting rate setting of the clock is overwritten
-in hw_params anyway, so drop this altogether.
+The micfil driver doesn't use anything from imx-pcm.h. Drop its
+inclusion.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- sound/soc/fsl/fsl_micfil.c | 20 --------------------
- 1 file changed, 20 deletions(-)
+ sound/soc/fsl/fsl_micfil.c | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
-index cf10c212d770d..5353474d0ff2b 100644
+index e28a2e2ba5c97..f7742a6e6c204 100644
 --- a/sound/soc/fsl/fsl_micfil.c
 +++ b/sound/soc/fsl/fsl_micfil.c
-@@ -358,30 +358,10 @@ static int fsl_micfil_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
+@@ -24,7 +24,6 @@
+ #include <sound/core.h>
  
--static int fsl_micfil_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
--				     unsigned int freq, int dir)
--{
--	struct fsl_micfil *micfil = snd_soc_dai_get_drvdata(dai);
--	struct device *dev = &micfil->pdev->dev;
--
--	int ret;
--
--	if (!freq)
--		return 0;
--
--	ret = fsl_micfil_set_mclk_rate(micfil, freq);
--	if (ret < 0)
--		dev_err(dev, "failed to set mclk[%lu] to rate %u\n",
--			clk_get_rate(micfil->mclk), freq);
--
--	return ret;
--}
--
- static const struct snd_soc_dai_ops fsl_micfil_dai_ops = {
- 	.startup = fsl_micfil_startup,
- 	.trigger = fsl_micfil_trigger,
- 	.hw_params = fsl_micfil_hw_params,
--	.set_sysclk = fsl_micfil_set_dai_sysclk,
- };
+ #include "fsl_micfil.h"
+-#include "imx-pcm.h"
  
- static int fsl_micfil_dai_probe(struct snd_soc_dai *cpu_dai)
+ #define FSL_MICFIL_RATES		SNDRV_PCM_RATE_8000_48000
+ #define FSL_MICFIL_FORMATS		(SNDRV_PCM_FMTBIT_S16_LE)
 -- 
 2.30.2
 
