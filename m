@@ -4,76 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CA28C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Mar 2022 01:22:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5CDB1C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Mar 2022 01:30:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BE442AE9;
-	Tue, 29 Mar 2022 03:21:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE442AE9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 314C71845;
+	Tue, 29 Mar 2022 03:29:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 314C71845
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648516961;
-	bh=5u/Pa+d+k7Lq+l76Pc1ONp5TA9ztK901DfYiN/QclJE=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=QcpYG6HdyQwgZzjVZOIyHKZHc1KzP4V8ZeQ7kOAjvhP/v95ZL8kq58g3yunpXnwV2
-	 spULaWxiECVdQCkUEKRWPWLYkGy4pNlmX4u6tqCUIChB/F3e6eQ/MDMrF0q86qcsKF
-	 lXcPYLLs9OG1UBne1i0JsQcbfHWi4bqkBRv68c9U=
+	s=default; t=1648517401;
+	bh=QSh65hitVh14SSDucE/mStGkBm9yg4aHlu+2aFNestA=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=j5dZc7PgVzk+uxxx8tTrCH6+96XR1uX9l+bIN1irXE1hSD5+O3mXt2TkkV6zGa6dS
+	 t7KfLXVM75RcThJnRk9eIAHSGz1UaAg+rX5B56aVmrkUzz19VYTeg7fLHAUH6wDZsL
+	 5o+zKQ9FGqiRLVdfGEijoLKhDPLjHciX/rdY+QX0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 58C78F80128;
-	Tue, 29 Mar 2022 03:21:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AE90FF80121;
+	Tue, 29 Mar 2022 03:29:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8873BF8024C; Tue, 29 Mar 2022 03:21:50 +0200 (CEST)
+ id 9A1E2F80311; Tue, 29 Mar 2022 03:29:05 +0200 (CEST)
 Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com
  [IPv6:2607:f8b0:4864:20::435])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E68C9F80121
- for <alsa-devel@alsa-project.org>; Tue, 29 Mar 2022 03:21:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E68C9F80121
+ by alsa1.perex.cz (Postfix) with ESMTPS id 840E9F80121
+ for <alsa-devel@alsa-project.org>; Tue, 29 Mar 2022 03:29:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 840E9F80121
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="CDT/Buav"
-Received: by mail-pf1-x435.google.com with SMTP id z16so14469880pfh.3
- for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2022 18:21:47 -0700 (PDT)
+ header.b="gmqfmXDE"
+Received: by mail-pf1-x435.google.com with SMTP id x31so7895834pfh.9
+ for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2022 18:29:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id;
- bh=nGUt+aj/CNfWrM2Ds8HvT/Dl56Vks6aVB/g96nW8bf8=;
- b=CDT/BuavpP8mQxwjlPaichjpYYhA3Pw5JcLcuD/nscNa9g9fnbkC3tpHyJqdSexocF
- zFhQRERUhpt+lkdFizRqiSfEzjvH94C69yp6cRX2WnpK9ax1Z/pulaCRMCJkMmdtu1/m
- kqKBw8HtGQgdVEFMMuJdfWWoounDtqP92su7IXtOCPxCVpFWJgwZ555vugcwen10Bw+Y
- 3zFCWzY8DEZAiRXmmsAlMptcmOJ0l3XDPVmDWbCKj5Ez/+UmTuJyDO8oYwBixSrRCL8o
- AJtCVg3evK6iTcQA0t3sBdngLoQRMxexm4kaWSC404LdoglxH6F8HdK7Hjzuv+zjydj0
- +ftQ==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references;
+ bh=8RWKOtmx36LC8yLEISKBczl/3PqgfL2wdJ+l1FkdZvo=;
+ b=gmqfmXDEr/Jg/JcEXwQ/nAYvX4nu4pGb0MkhP8/V3+vHw2sDt3mmAouBJdogl3FHoN
+ KINdxmZcZpu8iHiRrmgD7JkCVFSslmY1fD8C/gOFuvg6aR2YbomWdBaxjeXiAfG9cJaq
+ 2l5oL4+NHXleL7U3dNvCGRD+DEtiSq9M4FU463V6E8hxGwb6TSPUYIsxvDFe8EMpozOu
+ FCBgyTLLIx7Rqf9ikuDLNAHXSbby7NTrM7OVXleuoNh0/4RwcmGBvETds2XNxSxkQeuv
+ YlCCOexSVhM4KK0BQt+45333YxKPCzDi7uhR3YxypzjD/QUbt+o8jf26Xiq0vOKnPwa1
+ 752w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id;
- bh=nGUt+aj/CNfWrM2Ds8HvT/Dl56Vks6aVB/g96nW8bf8=;
- b=LNptu0U59+R3YJYNwl8FEL4c3jZ13W7+2K6iRBfnZ0DQvBlhMXAlzrPaybpEQhWb3m
- GsqQNdN1xvv2UOuW0ZxNrA2rqNQ1DlDsp4xTVv5PvphrnQqvtML9CaUsff2DGPRogJYe
- OW8LVZ3WkiJtUjy0JJAISY8g+EcOc+hy06tzkLSVMIZ/nBgm14DTsG1kSp/o1ENETRLT
- 7iaHfQMVTtGFq8NhygLBMqM6o0NeBQI4mW0KPggYMWBLu+VUTpW+iEPdVOofQKXvH/YO
- enKjkCOaKovjpMCi1P6sgwzzl1lMXwvDOEe+QKa+xXe9wY0gkj7XPSm4CVN9njydbwd/
- av3Q==
-X-Gm-Message-State: AOAM530PeWzGX89ZxpPziBGk4h4KygWUr6DxUPQ2O7Q8IMYJEUw0Oj7H
- BqPPeP6SAeqnBXIv2TWfYao=
-X-Google-Smtp-Source: ABdhPJwDvk6CTkxu40Th8VYA7G8Ypnxcz3UfPRvUwaSKEbrhu8GZ/6nnc6yLDNCGDEC1DyUuejQVKQ==
-X-Received: by 2002:a63:5020:0:b0:382:4781:7f4c with SMTP id
- e32-20020a635020000000b0038247817f4cmr176192pgb.230.1648516904993; 
- Mon, 28 Mar 2022 18:21:44 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references;
+ bh=8RWKOtmx36LC8yLEISKBczl/3PqgfL2wdJ+l1FkdZvo=;
+ b=sObsCf4gqR3/PUnvRIrZhVJaDk1S31+pVW30sB4FLWmYCZyN1nhOnJ0A3PFwReNC8M
+ CyBH6rBdcPfRl/zijlq6T+Y6TgMMdASQwllbBxeW61DrznYXUJLRvrQjXzYS4+W6D474
+ M6t+Nzp0elRJJ6kd3Rh/sZ9atng4UygYgCG/658vl54dbOZzs2y1rZsOpMOcbbXW01cy
+ ikdS/oXTWAicp1Jb+JgpvxNdIYbDWL8Ed0YOWzT4jha7nOGpWPD09cMiY1UWbCT3Il8k
+ vceV6JSWXevUtNXqqHti45r23j+icEZxuelpk/Ve42Rb6PNf8SeL3eo7YsW8UhPn2+U4
+ Kncg==
+X-Gm-Message-State: AOAM531of4g/0JzJHp2kGYoh1xv/NBw646Jijh+b66clubmDP0E6uOan
+ s4DPOCadRDDXNRrCycKW+og=
+X-Google-Smtp-Source: ABdhPJx3pXQp5CBClxzCKjbibsuK3ueJtHhSUlztbLQ0G6UdL+LbDrcIrkqV57I1BEtcrXg2kbUWbQ==
+X-Received: by 2002:a05:6a00:14c6:b0:4fa:eae3:ffe4 with SMTP id
+ w6-20020a056a0014c600b004faeae3ffe4mr24910871pfu.45.1648517337688; 
+ Mon, 28 Mar 2022 18:28:57 -0700 (PDT)
 Received: from localhost ([119.3.119.18]) by smtp.gmail.com with ESMTPSA id
- i15-20020a63b30f000000b003803aee35a2sm13711447pgf.31.2022.03.28.18.21.43
+ s10-20020a63a30a000000b003987eaef296sm348236pge.44.2022.03.28.18.28.56
  (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
- Mon, 28 Mar 2022 18:21:44 -0700 (PDT)
+ Mon, 28 Mar 2022 18:28:57 -0700 (PDT)
 From: Xiaomeng Tong <xiam0nd.tong@gmail.com>
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
-Subject: [PATCH v2] soc: soc-dapm: fix two incorrect uses of list iterator
-Date: Tue, 29 Mar 2022 09:21:34 +0800
-Message-Id: <20220329012134.9375-1-xiam0nd.tong@gmail.com>
+To: broonie@kernel.org
+Subject: Re: [PATCH] soc: soc-dapm: fix two incorrect uses of list iterator
+Date: Tue, 29 Mar 2022 09:28:48 +0800
+Message-Id: <20220329012848.9564-1-xiam0nd.tong@gmail.com>
 X-Mailer: git-send-email 2.17.1
-Cc: alsa-devel@alsa-project.org, Xiaomeng Tong <xiam0nd.tong@gmail.com>,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org
+In-Reply-To: <YkHi98GDDWNie7GP@sirena.org.uk>
+References: <YkHi98GDDWNie7GP@sirena.org.uk>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, stable@vger.kernel.org,
+ xiam0nd.tong@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,62 +94,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-These two bug are here:
-	list_for_each_entry_safe_continue(w, n, list,
-					power_list);
-	list_for_each_entry_safe_continue(w, n, list,
-					power_list);
+On Mon, 28 Mar 2022 17:31:51 +0100, Mark Brown wrote:
+> On Sun, Mar 27, 2022 at 04:21:38PM +0800, Xiaomeng Tong wrote:
+> 
+> >  		case snd_soc_dapm_pre:
+> > -			if (!w->event)
+> > +			if (!w->event) {
+> >  				list_for_each_entry_safe_continue(w, n, list,
+> >  								  power_list);
+> > +				break;
+> > +			}
+> 
+> This doesn't make much sense.  The intent here seems to clearly be to
+> continue; the loop but this doesn't do that - instead it appears that
+> continue doesn't actually do the equivalent of a continue but rather
+> skips over an entry.  This should instead be replaced with a plain
+> continue statement.
+> 
 
-After the list_for_each_entry_safe_continue() exits, the list iterator
-will always be a bogus pointer which point to an invalid struct objdect
-containing HEAD member. The funciton poniter 'w->event' will be a
-invalid value which can lead to a control-flow hijack if the 'w' can be
-controlled.
+Yes, you are right. Sorry for a slip of the pen in commit message:
+should be "to *continue* the outer list_for_each_entry_safe() loop"
+not "to break ...".
 
-The original intention was to continue the outer list_for_each_entry_safe()
-loop with the same entry if w->event is NULL, but misunderstanding the
-meaning of list_for_each_entry_safe_continue().
+I have resend a PATCH v2 for the fix as you suggested, and cc you.
+Thank you.
 
-So just add a 'continue;' to fix the bug.
+> THe naming of _continue() needs fixing I think - it's just asking to be
+> a bug.  Fortunately there's very few users.
 
-Cc: stable@vger.kernel.org
-Fixes: 163cac061c973 ("ASoC: Factor out DAPM sequence execution")
-Signed-off-by: Xiaomeng Tong <xiam0nd.tong@gmail.com>
----
-
-changes since v1:
- - use continue statement instead (Mark Brown)
-
-v1:https://lore.kernel.org/lkml/20220327082138.13696-1-xiam0nd.tong@gmail.com/
-
----
- sound/soc/soc-dapm.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index b06c5682445c..fb43b331a36e 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -1687,8 +1687,7 @@ static void dapm_seq_run(struct snd_soc_card *card,
- 		switch (w->id) {
- 		case snd_soc_dapm_pre:
- 			if (!w->event)
--				list_for_each_entry_safe_continue(w, n, list,
--								  power_list);
-+				continue;
- 
- 			if (event == SND_SOC_DAPM_STREAM_START)
- 				ret = w->event(w,
-@@ -1700,8 +1699,7 @@ static void dapm_seq_run(struct snd_soc_card *card,
- 
- 		case snd_soc_dapm_post:
- 			if (!w->event)
--				list_for_each_entry_safe_continue(w, n, list,
--								  power_list);
-+				continue;
- 
- 			if (event == SND_SOC_DAPM_STREAM_START)
- 				ret = w->event(w,
--- 
-2.17.1
-
+--
+Xiaomeng Tong
