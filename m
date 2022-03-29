@@ -4,79 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6931C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Mar 2022 17:19:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B343EC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Mar 2022 17:26:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 58A131749;
-	Tue, 29 Mar 2022 19:18:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 58A131749
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8E4D91753;
+	Tue, 29 Mar 2022 19:25:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E4D91753
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648574350;
-	bh=G2gSyeiMxKrx7casA9jg8qtqcQY0Rn2KOz8tiaELqvs=;
-	h=Date:To:From:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=QkiGETBtzNtk5Y5GzN5qkbrT/Gap3s0jfbQ89DEq3YqJje2miaUEHcpD4gU57/iJJ
-	 tBK9naEDC7g711JdHUnKYndGjslRYo2RjsQdzdHMFBmas0aCIQ2iVao7UWD+M14nb+
-	 JUp7yJOX4aTp07jXsHpWxYdLqCrJ0nj76Klcn0Wg=
+	s=default; t=1648574762;
+	bh=5L73kpv1rrIpyUGOuigpT7NzaQev0Ulcqo1n9VDo0pM=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=VWvWLYFLbPminDN9SCRHZzxmmeM9gLvpTLR67Smyh82YPbAGpGXOOj0oaUopDx2s/
+	 g115DpXUWWtZO4x+zVs/myVAb80h1+CVYt0/ptMJuJD609SOK9HIQTW/mgD6W69zek
+	 NXBDbj08UT9156LLkl7Q3eKUq8mIQ12CDSY/huZc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D9D2BF8014E;
-	Tue, 29 Mar 2022 19:18:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2B90CF80121;
+	Tue, 29 Mar 2022 19:25:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 67493F80311; Tue, 29 Mar 2022 19:18:18 +0200 (CEST)
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5295AF80121
- for <alsa-devel@alsa-project.org>; Tue, 29 Mar 2022 19:18:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5295AF80121
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net
- header.b="i+2yFCy6"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
- s=badeba3b8450; t=1648574291;
- bh=G2gSyeiMxKrx7casA9jg8qtqcQY0Rn2KOz8tiaELqvs=;
- h=X-UI-Sender-Class:Date:To:From:Subject;
- b=i+2yFCy6KtMwfQbZHeQdA/sfmoPeniIgdKDryo/wNAOd78Fmr3k+H6G1lpheym610
- TCiNAnU49KQ6jn3V64NMb6HyPzPMDUYAa/pejjRWhXZQOXmid0G0syOGzKkwxU6Ldj
- Co8eFQuREuzVZh5V8nUkQtsuc9+95Uiod7rY9otM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.1.14] ([141.70.45.131]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MhU5R-1oC8fI2gOh-00eaSP for
- <alsa-devel@alsa-project.org>; Tue, 29 Mar 2022 19:18:11 +0200
-Message-ID: <9146b00d-42c8-d965-4374-8b6689fd948f@gmx.de>
-Date: Tue, 29 Mar 2022 19:18:11 +0200
+ id BD6CCF80311; Tue, 29 Mar 2022 19:25:10 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 4FFBEF80121
+ for <alsa-devel@alsa-project.org>; Tue, 29 Mar 2022 19:25:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4FFBEF80121
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-From: ZTube <ztube@gmx.de>
-Subject: Focusrite Scarlett 8i6 silent input stream
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:BHJuD1tu3dnqVNvdzzfEYtp91CaKMU0iEzN6QV7yaUfLdyIQbz1
- eCeQ0HZTaYmN5EKpUwZa0JzKZCdjJ4kQuEHXcqiZrrd7PMArdHs9VBUVWCeMyLhf5WDDNr3
- TGDj7g6wt4/IPIUIhA1NOVyVZk7/3D5N0V3m0edv6QlILdWZZXJDtuyq4nBO9LghND+QSkQ
- vG+K1Pwwdod2GvGs5kAJQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:qXw04/acEK0=:TpbN/fOj7gzXeZZix5JOjC
- 7D9+Ka5tsIGEz9Vwo6/hSBVSxBcrmC+3WSG1kVC49gUzyRZK5G44h1jSYunqJDTJaw4dYt+tP
- hgDm4K31yabuu9Uv9xSpHZEw1ol83vkJUmWZA9XWYiIWDPqhKEOtvyTmoxEmjXRRdMXJAvov2
- DBgVKEj17hA8YCrDwDrBc5dcenP6H9fppvSEWr8pRkcSMLlAI7c//AcvJxI7cyIxHum6TRpCH
- Ez3nkjTPt9GmhUo6cvbGLk5xFilxQky4zMrK7twu82enpqoWYaf9tekLoZADeW7OjWu0I0VGs
- SMU5yog8o8VnTrs5aA/yFXeubXxuwt6S32Wo8R8tySv3CjlHIqX9g9jgHUHKhT8SV/kYZPMBP
- NVd7/5BFw01jSXYBQzjX+pV+dM9DXIc6XCvBM39F11EMgrYbnLnUUCVfHl2HgmZ+6CBGxvI61
- t/qU4p2k3FCbFK4AKbHSmlI6iUuY9NeJy0Vf3qqibawpOI6NzbwUOlQUTj+K+aenXKFnvlqpG
- oQlDJEJ38bERQgyk8uUrrdPmVRk8z+netuFnwknfX/D4C5vzUwKGhtH7zMXVpfh3lXYSkMZys
- IOePs7nu9yO2UuPCfBzPnCznfxJsNPLcY+qo6fEw6BDsOVIp7C0i2+SquTxqZG1DEeqvFVgZE
- QaOW8UtF552MkzltqxwPLiPyx0PTUZX07h/aMdTzKDqXOuu7oR9Stw7hTrbxM5U16PkgZNFH8
- rs24JdO+97PhotEicuArWsP1AvgzdtAHYgG+I5mkwiTfUxkxinkyZ8HbF60L5u8Hej2WLIWiC
- IL+nCjNn3B7lmmFuLeOZ3mKk9T6Ktp+P/oF/7Kj7NONgI9yIJGKXhsAiALym5AyV7xwmRQpmb
- FoYZ7viBmt2bd/kBeneS/FYeSapBD6ANN6rxAhJR11ZgUKJHwcK6M+uzjvmmJeHn+TndTzLk6
- 8c6cVdLMAIqUhCwe/UBzcHzSGBzFAsJLyinCgr6C+NhISBlIOk/v6pSVfja4oCM7VdyZ1jLK1
- hRZ5CSep7+19K4x9sgIw5HqsksN4sLptmPan83tYOgI6Uas6xTx/vbVlDqZFxagEf+k9CmjYH
- X28oWBEdEalqhA=
+In-Reply-To: <1648574706329361916-webhooks-bot@alsa-project.org>
+References: <1648574706329361916-webhooks-bot@alsa-project.org>
+Subject: Nhlt plugin and simple plugin interface
+Message-Id: <20220329172510.BD6CCF80311@alsa1.perex.cz>
+Date: Tue, 29 Mar 2022 19:25:10 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,22 +55,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-I'm trying to get my Focusrite Scarlett 8i6 to run with alsa, however
-while the sound output to the device works fine, the input does not and
-merely delivers a silent stream. Since I can't find any reason for the
-input stream to be completely silent I suspect this might be a driver bug.
+alsa-project/alsa-utils pull request #129 was edited from juimonen:
 
-$ arecord -D hw:0,0 -f S32_LE -r 48000 -c 10 | aplay
+Initial something... I need to figure out:
 
-just results in complete silence
+- where to specify which plugins to load/run (nhlt now hard coded)
+- where to install the plugins
+- how to get the to-be-loaded plugin names and where
+- is the "hidden-visibility" gcc flag ok to hide other than .so entrypoint
 
-
-I'd be happy to provide more logs/detail if needed. Any idea what might
-be going on?
-
-Thanks,
-
-ZTube
-
-[alsa-info.sh] https://paste.debian.net/1236037/
-
+Request URL   : https://github.com/alsa-project/alsa-utils/pull/129
+Patch URL     : https://github.com/alsa-project/alsa-utils/pull/129.patch
+Repository URL: https://github.com/alsa-project/alsa-utils
