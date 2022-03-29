@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B343EC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Mar 2022 17:26:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BFF5DC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Mar 2022 23:07:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8E4D91753;
-	Tue, 29 Mar 2022 19:25:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E4D91753
+	by alsa0.perex.cz (Postfix) with ESMTPS id 598111725;
+	Wed, 30 Mar 2022 01:06:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 598111725
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648574762;
-	bh=5L73kpv1rrIpyUGOuigpT7NzaQev0Ulcqo1n9VDo0pM=;
+	s=default; t=1648595218;
+	bh=3uBCuCUbcCpzJkxJm8G4XpAhoiMUYpth2uNcp0pUgAg=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VWvWLYFLbPminDN9SCRHZzxmmeM9gLvpTLR67Smyh82YPbAGpGXOOj0oaUopDx2s/
-	 g115DpXUWWtZO4x+zVs/myVAb80h1+CVYt0/ptMJuJD609SOK9HIQTW/mgD6W69zek
-	 NXBDbj08UT9156LLkl7Q3eKUq8mIQ12CDSY/huZc=
+	b=BnD09hqvTw/iPNfTc5d1KR0CFojKlxlzhWMvZ9AoZV14i7riiUFwFjvpy4dLZtwY7
+	 hMRmu9juuQ+LOgpisfi0nSoUpR+yPmz2aMfSRaDuxIcuef2pPdn/M9Gg9Nm1VZqUzG
+	 zn6z11tS3SO8pMEuImG9KBgLU9B/JRxDVjZiVu50=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2B90CF80121;
-	Tue, 29 Mar 2022 19:25:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D6CE4F8014E;
+	Wed, 30 Mar 2022 01:06:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BD6CCF80311; Tue, 29 Mar 2022 19:25:10 +0200 (CEST)
+ id 7524BF80121; Wed, 30 Mar 2022 01:06:05 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 4FFBEF80121
- for <alsa-devel@alsa-project.org>; Tue, 29 Mar 2022 19:25:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4FFBEF80121
+ by alsa1.perex.cz (Postfix) with ESMTP id B7EA8F80121
+ for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2022 01:05:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7EA8F80121
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - edited <github@alsa-project.org>
+From: GitHub pull_request - opened <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1648574706329361916-webhooks-bot@alsa-project.org>
-References: <1648574706329361916-webhooks-bot@alsa-project.org>
-Subject: Nhlt plugin and simple plugin interface
-Message-Id: <20220329172510.BD6CCF80311@alsa1.perex.cz>
-Date: Tue, 29 Mar 2022 19:25:10 +0200 (CEST)
+In-Reply-To: <1648595158134198904-webhooks-bot@alsa-project.org>
+References: <1648595158134198904-webhooks-bot@alsa-project.org>
+Subject: Fix support for sof-essx8336
+Message-Id: <20220329230605.7524BF80121@alsa1.perex.cz>
+Date: Wed, 30 Mar 2022 01:06:05 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -55,15 +55,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-utils pull request #129 was edited from juimonen:
+alsa-project/alsa-ucm-conf pull request #144 was opened from mchehab:
 
-Initial something... I need to figure out:
+There are a couple of issues at the support for sof-essx8336, causing it to fail working.
 
-- where to specify which plugins to load/run (nhlt now hard coded)
-- where to install the plugins
-- how to get the to-be-loaded plugin names and where
-- is the "hidden-visibility" gcc flag ok to hide other than .so entrypoint
+This PR fix them. Tested on Huawei Matebook D15. Before the fix, the device was appearing as "sysdefault:0" instead of "hw:0", and there were several other problems.
 
-Request URL   : https://github.com/alsa-project/alsa-utils/pull/129
-Patch URL     : https://github.com/alsa-project/alsa-utils/pull/129.patch
-Repository URL: https://github.com/alsa-project/alsa-utils
+ After the fix:
+- the device is now identified as hw:0;
+- calling alsamixer without `-Dsysdefault:0` (or `-Dhw:0`) now shows a mixer (instead of showing nothing);
+- The HDMI volume controls now appear;
+- Using `alsaucm load` now works fine.
+
+There are still a couple of things to be fixed, but I suspect that at least some of them would require firmware (or driver?) changes:
+- the internal microphone is not working yet;
+- the headphone/headset doesn't work.
+
+Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/144
+Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/144.patch
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
