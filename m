@@ -4,77 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9373FC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Mar 2022 20:21:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E5E9C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Mar 2022 20:21:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AEEFB1AAD;
-	Wed, 30 Mar 2022 22:20:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AEEFB1AAD
+	by alsa0.perex.cz (Postfix) with ESMTPS id C3CB0112;
+	Wed, 30 Mar 2022 22:20:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3CB0112
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648671688;
-	bh=v1AKXMhBFfjEwWOxrOxven0a28qinAa9HORzeGn2m/c=;
+	s=default; t=1648671704;
+	bh=//VLX0NSVXpvaYf1bPnlh5QRE3lJwScoas6Df7RnmF4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SYpDGXnL2L0zUOK3RRF3MeIF+QnD4t7sslSLd1Foj6zA/UBVV71iB9i0BT7WwZyH0
-	 zTkLBBI+/jXW54fmPEBO3+HIN5JvqzvM5Ck8BFYJRG3FUhaNLwYpCheTi3oSyx0zNi
-	 B+xWirakkoTazoixhOvGvy0vi2wOmQSN7g1bxWqQ=
+	b=uviwEv14SrFsYzd0zn44BKEssyIb4MK/JpPm3Fb5cbrOvjBlpSRA7FyeMI2Qo/TjF
+	 +zbpKfnJStl4kRggODQegI0ISBbF1/cY7RkatZ5MhMw6UAzTQr+IBZKc+aFbOGOwKf
+	 6toTwT2QWnXbUkZ1v8EmqcO77IuyytxrChNyYkkU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E7479F80254;
-	Wed, 30 Mar 2022 22:19:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3919EF8051E;
+	Wed, 30 Mar 2022 22:19:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 25FC1F8051C; Wed, 30 Mar 2022 22:19:51 +0200 (CEST)
+ id CAF93F8051A; Wed, 30 Mar 2022 22:19:50 +0200 (CEST)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AE387F80254
- for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2022 22:19:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE387F80254
+ by alsa1.perex.cz (Postfix) with ESMTPS id C6DC1F80155
+ for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2022 22:19:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C6DC1F80155
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="JffgXHXq"
+ header.b="LTWOsOZ8"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1648671583; x=1680207583;
+ t=1648671582; x=1680207582;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=v1AKXMhBFfjEwWOxrOxven0a28qinAa9HORzeGn2m/c=;
- b=JffgXHXqnCdY6KReLyyDra9y5cgsldbKPdT7RA1/pZNQdNGYyqa1VhdD
- AvyBn812nUDsm5b5sbbR7rtHzNbVB+3i/51IOckVCyaEI8hoX43xYMXFO
- iSw/Aw+PtsMs9BJvy1HOS/hzfigmVZlYQfjJi0wxHaK+Ik0kgIJrTyQ9I
- XyAmdVGJuxc0SoZwkfwEAI/9sM4H7xuPjCIHomAlIu+2T+7bK03GgIGkg
- PQGCUHbyfpoJPH5qkDAI8/3NbfwlTdqWyXV4zkoe19+VTMYc5JqsEvbOn
- fI2bMTSue90pbSWap+O/Iq81bxTRX6zsyeYsbZb6t+tklBuK/jiHFhXri w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10302"; a="322819828"
-X-IronPort-AV: E=Sophos;i="5.90,223,1643702400"; d="scan'208";a="322819828"
+ bh=//VLX0NSVXpvaYf1bPnlh5QRE3lJwScoas6Df7RnmF4=;
+ b=LTWOsOZ8/YwGenNhm06kKBQvJvTA7yXrnoyyFC4ci7cCLK8kA2JZJd9j
+ ep2XGTIdxNr0zY/tX8LrRSzESaVKnuBnTml4wqJSvVqEQuNfuzgv3JoZ4
+ 5es5Rg6Ilh6yEtCu/FMtihYHGpV9EDFvcuk+yHl6BCm+FfSqxqtKq7sbh
+ c4BWSkkE+eM+96a2nvOivWcT3KbKqIjOGxoD/Gkh543bPT3/SpVB6kgoJ
+ LTEdeI4m9cIDD/3Zaek7seKfAtJrwDkI1rPa7wcKklyIOHlC/g2yQzHk8
+ kKA24/V1QnKKEihhMcZWF1hDHg+i4VK5K/rskXm9Ky/TKNaaBHM5HuY75 Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10302"; a="322819825"
+X-IronPort-AV: E=Sophos;i="5.90,223,1643702400"; d="scan'208";a="322819825"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Mar 2022 13:19:37 -0700
-X-IronPort-AV: E=Sophos;i="5.90,223,1643702400"; d="scan'208";a="522045026"
+ 30 Mar 2022 13:19:36 -0700
+X-IronPort-AV: E=Sophos;i="5.90,223,1643702400"; d="scan'208";a="522045017"
 Received: from ggunnam-mobl.amr.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.254.28.195])
  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  30 Mar 2022 13:19:36 -0700
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 04/11] ASoC: SOF: ipc: Use ipc->max_payload_size for
- message/reply size checking
-Date: Wed, 30 Mar 2022 13:19:19 -0700
-Message-Id: <20220330201926.1330402-5-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 02/11] ASoC: SOF: Remove dmab and dmab_bdl from snd_sof_dev
+ struct
+Date: Wed, 30 Mar 2022 13:19:17 -0700
+Message-Id: <20220330201926.1330402-3-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220330201926.1330402-1-ranjani.sridharan@linux.intel.com>
 References: <20220330201926.1330402-1-ranjani.sridharan@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Daniel Baluta <daniel.baluta@nxp.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, tiwai@suse.de,
+Cc: tiwai@suse.de, broonie@kernel.org,
  Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Rander Wang <rander.wang@intel.com>, broonie@kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,35 +89,29 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 
-Use the ipc->max_payload_size for validating that the message or reply
-size can be supported.
+The dmab and dmab_bdl is not used by any platform, it can be removed from
+struct snd_sof_dev.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/ipc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/sof/sof-priv.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
-index af2efc1c8436..166d4906698b 100644
---- a/sound/soc/sof/ipc.c
-+++ b/sound/soc/sof/ipc.c
-@@ -373,8 +373,8 @@ int sof_ipc_tx_message_no_pm(struct snd_sof_ipc *ipc, u32 header,
- {
- 	int ret;
+diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
+index 0d9b640ae24c..93de5547b952 100644
+--- a/sound/soc/sof/sof-priv.h
++++ b/sound/soc/sof/sof-priv.h
+@@ -457,8 +457,6 @@ struct snd_sof_dev {
+ 	bool ipc_dump_printed;
  
--	if (msg_bytes > SOF_IPC_MSG_MAX_SIZE ||
--	    reply_bytes > SOF_IPC_MSG_MAX_SIZE)
-+	if (msg_bytes > ipc->max_payload_size ||
-+	    reply_bytes > ipc->max_payload_size)
- 		return -ENOBUFS;
- 
- 	/* Serialise IPC TX */
+ 	/* firmware loader */
+-	struct snd_dma_buffer dmab;
+-	struct snd_dma_buffer dmab_bdl;
+ 	struct sof_ipc_fw_ready fw_ready;
+ 	struct sof_ipc_fw_version fw_version;
+ 	struct sof_ipc_cc_version *cc_version;
 -- 
 2.25.1
 
