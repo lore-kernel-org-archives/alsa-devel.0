@@ -4,76 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5822DC433FE
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Mar 2022 11:59:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E48FEC433FE
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Mar 2022 12:00:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8009E1924;
-	Wed, 30 Mar 2022 13:58:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8009E1924
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2514A18FA;
+	Wed, 30 Mar 2022 13:59:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2514A18FA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648641582;
-	bh=o7G5zI7MNaBY1ywbLUsSUnTGxhdeWJI4/+wNTDy21Fc=;
+	s=default; t=1648641599;
+	bh=IVt9jYETt3TQfguSpdnH8Vu6cSpfeaiBih9Ro8JSimM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KVEcWTl0cbh9geWowrxCIIHZVEU0h3O13hppTr8MUgBMnJKr6WGCzHVcv4Fzpm/NF
-	 3iryEqtCf7YMWPsU6Q7qvqTFBNMpgaxnAixuiAO7j6gwnX8gYGAT0P/wS2s8fEflmQ
-	 PG4ibACViHDmMiuKVfVwpnLlxRoP0+uAbvnFHmDM=
+	b=nHyTdPG3nPpaYHZUryQBq7lCkz7D84FCFGpQN0/y/O/mi/ao+LouWlghDPcZyNze/
+	 1UB6rfA+s+27vpGooRFz9LM5lJKyEL+C2FqNCmYqdVU/lIdEHWxMpJecxDvw0GoKnG
+	 VmR542jvtqCECcYNV0i4QnoSiZ9oa/vg8Svd6Y+I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 40409F8060A;
-	Wed, 30 Mar 2022 13:50:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C9926F80605;
+	Wed, 30 Mar 2022 13:50:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C41DBF80533; Wed, 30 Mar 2022 13:50:01 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 7DD91F8060C; Wed, 30 Mar 2022 13:50:08 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1E2B6F80602
- for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2022 13:49:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E2B6F80602
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1BD9BF80253
+ for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2022 13:50:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1BD9BF80253
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="l50mm/sh"
+ header.b="XzxO3X2l"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id B5F0AB81C25;
- Wed, 30 Mar 2022 11:49:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46EF7C36AE2;
- Wed, 30 Mar 2022 11:49:52 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id C54F9616DC;
+ Wed, 30 Mar 2022 11:50:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8487CC340F2;
+ Wed, 30 Mar 2022 11:49:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1648640993;
- bh=o7G5zI7MNaBY1ywbLUsSUnTGxhdeWJI4/+wNTDy21Fc=;
+ s=k20201202; t=1648641000;
+ bh=IVt9jYETt3TQfguSpdnH8Vu6cSpfeaiBih9Ro8JSimM=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=l50mm/shwsZzQ5pD+XTkLPO0B39DI+Ta4rgx5yc/Eep3dmx+19MHJE74mZv3NBKIh
- Etj4zATjOfJYpaw5K+2fgqLXKKgLWLQufA3Shk+e7/RM4mbO4Q72siPxvLod/hRV0Z
- FDq0VHqkCuax5c7ZGYTaveaZ78VQaVbpmbVX7McB/zyhJZC0TvsZfjaJd+tYYSK3oF
- 2LIBDrspiSw8VHro1AVgy70a/HNgXC6aH9TftSPtB2CyO+SdstTKYstTfoIJIJXAdK
- icGQ842OK1wy0h/T6E4T2+7mnJSX0Dx6Y19AtkIYYo8JXWhOLXaudHlEiiBXiFmfa0
- lwOHrpWFH2Ubw==
+ b=XzxO3X2lWsmhu5zE/UIdGAH8RbKpNLefGucKCN5H4okNiWDzPOxDan5NVdBaNU2NR
+ rDHMd+0MqHypel6b/JAourRTbRNjHOth4Y7MeEKzqY9dIbS0O1b6S+yq2yGcre/s+n
+ SADrvMGUip1Me3zgqzT1GVYZquGLWk7AP1fUZYLxEMFAaqiyCZKwM4bjvSZFsKex44
+ ssNct8Zn0BCprwi+u+kmkYzrQBFSjTmHxEIVTMryxXK5UV3FMTb+Q5TiQ0DLg7l4/7
+ sDA2j6ZZ+RlNTiBIw9G70jxLPmKiBHAfZluisNHJ0lCQwJhJohscQ7AadBFLG8b3+9
+ 8fhm23TofbGjg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.16 52/59] ASoC: Intel: Revert "ASoC: Intel:
- sof_es8336: add quirk for Huawei D15 2021"
-Date: Wed, 30 Mar 2022 07:48:24 -0400
-Message-Id: <20220330114831.1670235-52-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.16 57/59] ASoC: ak4642: Use
+ of_device_get_match_data()
+Date: Wed, 30 Mar 2022 07:48:29 -0400
+Message-Id: <20220330114831.1670235-57-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220330114831.1670235-1-sashal@kernel.org>
 References: <20220330114831.1670235-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Bard Liao <yung-chuan.liao@linux.intel.com>, tiwai@suse.com,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>
+ Zeal Robot <zealci@zte.com.cn>, tiwai@suse.com, lgirdwood@gmail.com,
+ Minghao Chi <chi.minghao@zte.com.cn>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,45 +85,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Minghao Chi <chi.minghao@zte.com.cn>
 
-[ Upstream commit 1b5283483a782f6560999d8d5965b1874d104812 ]
+[ Upstream commit 835ca59799f5c60b4b54bdc7aa785c99552f63e4 ]
 
-This reverts commit ce6a70bfce21bb4edb7c0f29ecfb0522fa34ab71.
+Use of_device_get_match_data() to simplify the code.
 
-The next patch will add run-time detection of the required SSP and
-this hard-coded quirk is not needed.
-
-Acked-by: Mauro Carvalho Chehab <mchehab@kernel.org>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Link: https://lore.kernel.org/r/20220308192610.392950-14-pierre-louis.bossart@linux.intel.com
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Minghao Chi <chi.minghao@zte.com.cn>
+Link: https://lore.kernel.org/r/20220315023226.2118354-1-chi.minghao@zte.com.cn
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/sof_es8336.c | 8 --------
- 1 file changed, 8 deletions(-)
+ sound/soc/codecs/ak4613.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_es8336.c b/sound/soc/intel/boards/sof_es8336.c
-index e6d599f0cd26..20d577eaab6d 100644
---- a/sound/soc/intel/boards/sof_es8336.c
-+++ b/sound/soc/intel/boards/sof_es8336.c
-@@ -247,14 +247,6 @@ static const struct dmi_system_id sof_es8336_quirk_table[] = {
- 					SOF_ES8336_TGL_GPIO_QUIRK |
- 					SOF_ES8336_ENABLE_DMIC)
- 	},
--	{
--		.callback = sof_es8336_quirk_cb,
--		.matches = {
--			DMI_MATCH(DMI_SYS_VENDOR, "HUAWEI"),
--			DMI_MATCH(DMI_BOARD_NAME, "BOHB-WAX9-PCB-B2"),
--		},
--		.driver_data = (void *)SOF_ES8336_SSP_CODEC(0)
--	},
- 	{}
- };
+diff --git a/sound/soc/codecs/ak4613.c b/sound/soc/codecs/ak4613.c
+index 4d2e78101f28..034195c83bd7 100644
+--- a/sound/soc/codecs/ak4613.c
++++ b/sound/soc/codecs/ak4613.c
+@@ -653,15 +653,10 @@ static int ak4613_i2c_probe(struct i2c_client *i2c,
+ 	struct ak4613_priv *priv;
  
+ 	regmap_cfg = NULL;
+-	if (np) {
+-		const struct of_device_id *of_id;
+-
+-		of_id = of_match_device(ak4613_of_match, dev);
+-		if (of_id)
+-			regmap_cfg = of_id->data;
+-	} else {
++	if (np)
++		regmap_cfg = of_device_get_match_data(dev);
++	else
+ 		regmap_cfg = (const struct regmap_config *)id->driver_data;
+-	}
+ 
+ 	if (!regmap_cfg)
+ 		return -EINVAL;
 -- 
 2.34.1
 
