@@ -4,61 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D410CC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Mar 2022 11:49:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91BA7C433FE
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Mar 2022 11:50:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0323D1746;
-	Wed, 30 Mar 2022 13:49:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0323D1746
+	by alsa0.perex.cz (Postfix) with ESMTPS id DA67917F0;
+	Wed, 30 Mar 2022 13:49:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA67917F0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648640997;
-	bh=BIereeSl8OOvQHyMUSmTZlEVrUWpAJuLOWV5juCjHcQ=;
+	s=default; t=1648641012;
+	bh=kDKQLtxdtubo8cbSoy0C0473dnGZFJuLtrEEafSBCiw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vtix0GqV7O03XXZWn+blC4xMazEpmcrNN9osvRCOWOUGhvq9v54kL3o11ohOYq8wl
-	 vRaLA9NZ7T9kCKlQN36fltB/w9HgpKHo764ASHSNRIaqFPwYNX5MrB4Dt/xgYTUq/u
-	 om13O9ogwroLCs5eS0j2tJN76Q4Wews7wxmI/Jqo=
+	b=O3B4n/XGwY07qmOuGNhPJ9+rqSmCIEwPqBSV4g6OcDasvZGKiCIJlb+g0fsSiF5hQ
+	 UFooLDp9Vw0VRAylUU3wxpqLzWg6bELBbBjl399/+NvAt+Fx5RAVxrbqkwn1jSzyF2
+	 bhytj9zy0RyUuzhV/MB5D5XqRwK7lWm3nCq6qTX4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DC709F80533;
-	Wed, 30 Mar 2022 13:47:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6B9ABF80536;
+	Wed, 30 Mar 2022 13:47:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B955AF80534; Wed, 30 Mar 2022 13:47:45 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 9B9F1F80537; Wed, 30 Mar 2022 13:47:48 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6C519F800B8
- for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2022 13:47:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C519F800B8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6111FF80528
+ for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2022 13:47:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6111FF80528
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="EhxGmiMd"
+ header.b="pMEJT1KL"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 5A6CD6163F;
- Wed, 30 Mar 2022 11:47:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C038BC340F3;
- Wed, 30 Mar 2022 11:47:40 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 145716162C;
+ Wed, 30 Mar 2022 11:47:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01E54C34111;
+ Wed, 30 Mar 2022 11:47:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1648640861;
- bh=BIereeSl8OOvQHyMUSmTZlEVrUWpAJuLOWV5juCjHcQ=;
+ s=k20201202; t=1648640858;
+ bh=kDKQLtxdtubo8cbSoy0C0473dnGZFJuLtrEEafSBCiw=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=EhxGmiMdbpeNEMv6Vze4CQwd3H0A5EXLjgoFa6hWjnZG/EyMmbxosScrfSk201O57
- SBUGJ2feM/uny+c5DRWMgYF27dk6W0LmaAlos0dGoBdGMuUSUa0/OU7tLamXP8XLg3
- 7QW0BsczlXciOLxXTm4MNwI6KyE74IlzU6I8UKp1BbR9W+pnvydKTOE3Fe1R0OBqDY
- esstNjEmJsEzMCviapksaxu8bPjNUu2UeaUvk66wbLZ0C1uG57BQZaevq9V5c9dVA8
- j+hRtwBni7Yl6Rm7ZY32+Y/7WwsiuhuPPbsJFe3IBituYpp6Gfv4F6gQkhvO5mib4P
- dqCgXxCmX5gqw==
+ b=pMEJT1KLoh8zPaDlHJsR6dqkCaxpUBaN6fLjTr5VW9yhFgv/VtQJrzenG/W7WxR/9
+ Z8m7EZIJ+p8EItpX4fKjrRnaUkf55vpginzMfkb576BStHBUqNEQvGX1eRMn5w+rYR
+ 5QLlyaDIBDCUxWEVgPmyS85foU4qFOTYwRXckeqZXveujGfsgxmmEJZipncS+718NJ
+ A6OEbQqXe9gOMQgEpuUTK1ogpJh9eoXbKJoEVrBJnWyypB9WVWuS5sBn2VsTbSZwgb
+ 63uPA0MBdkXACkekhW5NSZ3nnoZHHhom3HOKbm2RvQmFEyCHtCBozwbbqLaObSORmL
+ 9HdRP1+i7a54w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.17 36/66] ASoC: Intel: sof_es8336: add quirk for
- Huawei D15 2021
-Date: Wed, 30 Mar 2022 07:46:15 -0400
-Message-Id: <20220330114646.1669334-36-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.17 34/66] ASoC: soc-core: skip zero num_dai
+ component in searching dai name
+Date: Wed, 30 Mar 2022 07:46:13 -0400
+Message-Id: <20220330114646.1669334-34-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220330114646.1669334-1-sashal@kernel.org>
 References: <20220330114646.1669334-1-sashal@kernel.org>
@@ -67,9 +68,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Mauro Carvalho Chehab <mchehab+huawei@kernel.org>, tiwai@suse.com,
- lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>
+ Shengjiu Wang <shengjiu.wang@nxp.com>, tiwai@suse.com, lgirdwood@gmail.com,
+ Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,40 +85,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
 
-[ Upstream commit ce6a70bfce21bb4edb7c0f29ecfb0522fa34ab71 ]
+[ Upstream commit f7d344a2bd5ec81fbd1ce76928fd059e57ec9bea ]
 
-Huawei D15 uses SSP_CODEC(0).
+In the case like dmaengine which's not a dai but as a component, the
+num_dai is zero, dmaengine component has the same component_of_node
+as cpu dai, when cpu dai component is not ready, but dmaengine component
+is ready, try to get cpu dai name, the snd_soc_get_dai_name() return
+-EINVAL, not -EPROBE_DEFER, that cause below error:
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
-Link: https://lore.kernel.org/r/d560a1c76edb633c37acf04a9a82518b6233a719.1640351150.git.mchehab@kernel.org
+asoc-simple-card <card name>: parse error -22
+asoc-simple-card: probe of <card name> failed with error -22
+
+The sound card failed to probe.
+
+So this patch fixes the issue above by skipping the zero num_dai
+component in searching dai name.
+
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Link: https://lore.kernel.org/r/1644491952-7457-1-git-send-email-shengjiu.wang@nxp.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/sof_es8336.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/soc-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/sof_es8336.c b/sound/soc/intel/boards/sof_es8336.c
-index 20d577eaab6d..e6d599f0cd26 100644
---- a/sound/soc/intel/boards/sof_es8336.c
-+++ b/sound/soc/intel/boards/sof_es8336.c
-@@ -247,6 +247,14 @@ static const struct dmi_system_id sof_es8336_quirk_table[] = {
- 					SOF_ES8336_TGL_GPIO_QUIRK |
- 					SOF_ES8336_ENABLE_DMIC)
- 	},
-+	{
-+		.callback = sof_es8336_quirk_cb,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "HUAWEI"),
-+			DMI_MATCH(DMI_BOARD_NAME, "BOHB-WAX9-PCB-B2"),
-+		},
-+		.driver_data = (void *)SOF_ES8336_SSP_CODEC(0)
-+	},
- 	{}
- };
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 434e61b46983..a088bc9f7dd7 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -3233,7 +3233,7 @@ int snd_soc_get_dai_name(const struct of_phandle_args *args,
+ 	for_each_component(pos) {
+ 		struct device_node *component_of_node = soc_component_to_node(pos);
  
+-		if (component_of_node != args->np)
++		if (component_of_node != args->np || !pos->num_dai)
+ 			continue;
+ 
+ 		ret = snd_soc_component_of_xlate_dai_name(pos, args, dai_name);
 -- 
 2.34.1
 
