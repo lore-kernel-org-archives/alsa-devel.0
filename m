@@ -4,77 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E97BEC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Mar 2022 11:57:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 429F9C433FE
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Mar 2022 11:58:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3F43C1910;
-	Wed, 30 Mar 2022 13:56:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F43C1910
+	by alsa0.perex.cz (Postfix) with ESMTPS id 84AD21911;
+	Wed, 30 Mar 2022 13:57:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84AD21911
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648641465;
-	bh=yYfrJKaF9krMZCNaEhmJFzesfjs9bBX/zErQAzrdgyg=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1648641480;
+	bh=v1luuvpj5UTKQupxrRu/rhsBPsNSE/Jx1YwX0tOiZ3g=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=H8FhO4q/jDbKFetCQasbbV2xQfi3sgE12kmlZvH2gsgXLWeiFpaI2fCnr9PIek60t
-	 s1Ajw2IlVWqaZwLGTgcqf1PAf//aWGh/umoSA8TFi6Q+v9zYSNXZannt9RAvDuuyQL
-	 xsm7cKkZef56641fX5uBTDI5dXtNGU6caLYC1TRA=
+	b=ux4/wZ3bQozA4dW8dDfh0m+n6xOr7sRCa2FPT9g6i4NsLqtfIQKzQa8vBeW12zh0a
+	 FJ46XtEjqQOsMv0WKTNr5Nt+4KR7b8dO0Lr4kugmpy1vYGu6GnFAJ1yEJw6T2VeyBt
+	 DtKSGXv3f2eTH1dArzRF0H9PizRyAvfU4qPPlj8o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8AB09F80539;
-	Wed, 30 Mar 2022 13:49:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2F48EF805F9;
+	Wed, 30 Mar 2022 13:49:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8B358F80520; Wed, 30 Mar 2022 13:49:43 +0200 (CEST)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ id F3761F805FB; Wed, 30 Mar 2022 13:49:50 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E5386F805F7
+ for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2022 13:49:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5386F805F7
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="sZWHiwuG"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 24805F80520
- for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2022 13:49:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24805F80520
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="chNWNEhO"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1648640978; x=1680176978;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=yYfrJKaF9krMZCNaEhmJFzesfjs9bBX/zErQAzrdgyg=;
- b=chNWNEhOJ7bZupBN0MTlHpnw/x2nYoE/ZMhNHu7kdHmnZtREq+Zzmeqt
- Tq4poPbDLAtuel/dL4yI4GKYoM1P+t/PY2AEa878r+dhQfnvsUJem2X2u
- IBKuvvtxnFOF15wlAj1d+uf6AmejZWWvM03CVZg/Jb+D+3Bn06+gqhGuH
- Fs3mdvzJ+QnPTqME3foIH2oiV1r9ztOiKlng+K7bXWMI/QDKwkUFRsTov
- NIaQlpZIU3N1vY1gshbrtNXvpSUs/U7jJsiPvOsfL3RQwqiLlfvhLjOik
- XhCaBfow2hWyDTsJgrGorh35DyxdTD7/h+LXuZDZkhWF+EJ3pt/s4ky+k A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10301"; a="239452259"
-X-IronPort-AV: E=Sophos;i="5.90,222,1643702400"; d="scan'208";a="239452259"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Mar 2022 04:49:34 -0700
-X-IronPort-AV: E=Sophos;i="5.90,222,1643702400"; d="scan'208";a="695075787"
-Received: from dhoffend-mobl1.ger.corp.intel.com (HELO [10.251.210.66])
- ([10.251.210.66])
- by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Mar 2022 04:49:32 -0700
-Message-ID: <2a865fa9-f8e0-60d6-3b5a-790ef78cf47a@linux.intel.com>
-Date: Wed, 30 Mar 2022 14:49:44 +0300
+ by ams.source.kernel.org (Postfix) with ESMTPS id 209CDB81C28;
+ Wed, 30 Mar 2022 11:49:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0FD4C340EE;
+ Wed, 30 Mar 2022 11:49:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1648640982;
+ bh=v1luuvpj5UTKQupxrRu/rhsBPsNSE/Jx1YwX0tOiZ3g=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=sZWHiwuGqlLW1c8voCZk4tS8lex4t0Sis/xZwkStFSgr/qRB9m9L7hBkrXFOmqsgi
+ eA5lE4Qoy6XhBk7bCiezc1C4jenaLPKKG9YKMlVgbO+IYmuU5U30PENpxF7nfs213j
+ Agp4ClVd8E8zzqxkaovzZUV76sn33HfZm7b/9P7/Gd4UMZLMYafgg1WSv9sbNYqGXB
+ yEbX/oCWIhQghK84+tEh2IVVx5Lm/IcayYd2/lOFIy+/oFtiVEpV3Xb79mn7Q7dSHD
+ 850msC16xvlCd1SiXiyheWL5IMZEIQhCixMhTCwXyMM9OmUqYO0H8XJWGea4YotW3U
+ w+txDPgdGPc2w==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.16 45/59] ASoC: amd: vangogh: fix uninitialized
+ symbol warning in machine driver
+Date: Wed, 30 Mar 2022 07:48:17 -0400
+Message-Id: <20220330114831.1670235-45-sashal@kernel.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220330114831.1670235-1-sashal@kernel.org>
+References: <20220330114831.1670235-1-sashal@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH v2] ASoC: SOF: topology: use new sound control LED layer
-Content-Language: en-US
-To: Jaroslav Kysela <perex@perex.cz>,
- ALSA development <alsa-devel@alsa-project.org>
-References: <20220329120039.2394138-1-perex@perex.cz>
-From: =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <20220329120039.2394138-1-perex@perex.cz>
-Content-Type: text/plain; charset=UTF-8
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ tiwai@suse.com, lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>,
+ Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+ Dan Carpenter <dan.carpenter@oracle.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,150 +86,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 
+[ Upstream commit 6f989800639a7a29ab9a02e165b04dc144dd4f2b ]
 
-On 29/03/2022 15:00, Jaroslav Kysela wrote:
-> Use the new sound control LED layer instead the direct ledtrig_audio_set()
-> call - see 22d8de62f11b ("ALSA: control - add generic LED trigger module
-> as the new control layer").
-> 
-> Signed-off-by: Jaroslav Kysela <perex@perex.cz>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> Cc: Bard Liao <yung-chuan.liao@linux.intel.com>
-> Cc: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-> Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> 
-> -----
-> v2:
->   - add Mark to Cc:
->   - add snd_ctl_led_request() call
-> ---
->  sound/soc/sof/control.c  | 33 ---------------------------------
->  sound/soc/sof/sof-priv.h |  1 +
->  sound/soc/sof/topology.c | 16 ++++++++++++++++
->  3 files changed, 17 insertions(+), 33 deletions(-)
-> 
-> diff --git a/sound/soc/sof/control.c b/sound/soc/sof/control.c
-> index de1778c4002b..3b5718a3516d 100644
-> --- a/sound/soc/sof/control.c
-> +++ b/sound/soc/sof/control.c
-> @@ -15,36 +15,6 @@
->  #include "sof-priv.h"
->  #include "sof-audio.h"
->  
-> -static void update_mute_led(struct snd_sof_control *scontrol,
-> -			    struct snd_kcontrol *kcontrol,
-> -			    struct snd_ctl_elem_value *ucontrol)
-> -{
-> -	int temp = 0;
-> -	int mask;
-> -	int i;
-> -
-> -	mask = 1U << snd_ctl_get_ioffidx(kcontrol, &ucontrol->id);
-> -
-> -	for (i = 0; i < scontrol->num_channels; i++) {
-> -		if (ucontrol->value.integer.value[i]) {
-> -			temp |= mask;
-> -			break;
-> -		}
-> -	}
-> -
-> -	if (temp == scontrol->led_ctl.led_value)
-> -		return;
-> -
-> -	scontrol->led_ctl.led_value = temp;
-> -
-> -#if IS_REACHABLE(CONFIG_LEDS_TRIGGER_AUDIO)
-> -	if (!scontrol->led_ctl.direction)
-> -		ledtrig_audio_set(LED_AUDIO_MUTE, temp ? LED_OFF : LED_ON);
-> -	else
-> -		ledtrig_audio_set(LED_AUDIO_MICMUTE, temp ? LED_OFF : LED_ON);
-> -#endif
-> -}
-> -
->  int snd_sof_volume_get(struct snd_kcontrol *kcontrol,
->  		       struct snd_ctl_elem_value *ucontrol)
->  {
-> @@ -121,9 +91,6 @@ int snd_sof_switch_put(struct snd_kcontrol *kcontrol,
->  	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
->  	const struct sof_ipc_tplg_ops *tplg_ops = sdev->ipc->ops->tplg;
->  
-> -	if (scontrol->led_ctl.use_led)
-> -		update_mute_led(scontrol, kcontrol, ucontrol);
-> -
->  	if (tplg_ops->control->switch_put)
->  		return tplg_ops->control->switch_put(scontrol, ucontrol);
->  
-> diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-> index 0d9b640ae24c..e537b1258aa8 100644
-> --- a/sound/soc/sof/sof-priv.h
-> +++ b/sound/soc/sof/sof-priv.h
-> @@ -473,6 +473,7 @@ struct snd_sof_dev {
->  	struct list_head route_list;
->  	struct snd_soc_component *component;
->  	u32 enabled_cores_mask; /* keep track of enabled cores */
-> +	bool led_present;
->  
->  	/* FW configuration */
->  	struct sof_ipc_window *info_window;
-> diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-> index 9b11e9795a7a..e47a64934c04 100644
-> --- a/sound/soc/sof/topology.c
-> +++ b/sound/soc/sof/topology.c
-> @@ -773,6 +773,7 @@ static int sof_control_load_volume(struct snd_soc_component *scomp,
->  	struct snd_soc_tplg_mixer_control *mc =
->  		container_of(hdr, struct snd_soc_tplg_mixer_control, hdr);
->  	int tlv[TLV_ITEMS];
-> +	unsigned int mask;
->  	int ret;
->  
->  	/* validate topology data */
-> @@ -821,6 +822,16 @@ static int sof_control_load_volume(struct snd_soc_component *scomp,
->  		goto err;
->  	}
->  
-> +	if (scontrol->led_ctl.use_led) {
-> +		mask = scontrol->led_ctl.direction ? SNDRV_CTL_ELEM_ACCESS_MIC_LED :
-> +							SNDRV_CTL_ELEM_ACCESS_SPK_LED;
-> +		scontrol->access &= ~SNDRV_CTL_ELEM_ACCESS_LED_MASK;
-> +		scontrol->access |= mask;
-> +		kc->access &= ~SNDRV_CTL_ELEM_ACCESS_LED_MASK;
-> +		kc->access |= mask;
-> +		sdev->led_present = true;
-> +	}
-> +
->  	dev_dbg(scomp->dev, "tplg: load kcontrol index %d chans %d\n",
->  		scontrol->comp_id, scontrol->num_channels);
->  
-> @@ -2027,6 +2038,7 @@ static struct snd_soc_tplg_ops sof_tplg_ops = {
->  
->  int snd_sof_load_topology(struct snd_soc_component *scomp, const char *file)
->  {
-> +	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
->  	const struct firmware *fw;
->  	int ret;
->  
-> @@ -2049,6 +2061,10 @@ int snd_sof_load_topology(struct snd_soc_component *scomp, const char *file)
->  	}
+Fixed below smatch static checker warning.
+sound/soc/amd/vangogh/acp5x-mach.c:190 acp5x_cs35l41_hw_params()
+error: uninitialized symbol 'ret'.
 
-Nitpick, but I would probably done:
-- 	}
-+ 	} else if (sdev->led_present) {
-+		ret = snd_ctl_led_request();
-+ 	}
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Link: https://lore.kernel.org/r/20220225193054.24916-4-Vijendar.Mukunda@amd.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ sound/soc/amd/vangogh/acp5x-mach.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Reviewed-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-
->  
->  	release_firmware(fw);
-> +
-> +	if (ret >= 0 && sdev->led_present)
-> +		ret = snd_ctl_led_request();
-> +
->  	return ret;
->  }
->  EXPORT_SYMBOL(snd_sof_load_topology);
-
+diff --git a/sound/soc/amd/vangogh/acp5x-mach.c b/sound/soc/amd/vangogh/acp5x-mach.c
+index 14cf325e4b23..5d7a17755fa7 100644
+--- a/sound/soc/amd/vangogh/acp5x-mach.c
++++ b/sound/soc/amd/vangogh/acp5x-mach.c
+@@ -165,6 +165,7 @@ static int acp5x_cs35l41_hw_params(struct snd_pcm_substream *substream,
+ 	unsigned int num_codecs = rtd->num_codecs;
+ 	unsigned int bclk_val;
+ 
++	ret = 0;
+ 	for (i = 0; i < num_codecs; i++) {
+ 		codec_dai = asoc_rtd_to_codec(rtd, i);
+ 		if ((strcmp(codec_dai->name, "spi-VLV1776:00") == 0) ||
 -- 
-Péter
+2.34.1
+
