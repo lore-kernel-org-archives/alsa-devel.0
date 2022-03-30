@@ -4,77 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51D98C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Mar 2022 20:22:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D6A2C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Mar 2022 20:22:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 946BE1ACB;
-	Wed, 30 Mar 2022 22:21:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 946BE1ACB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 33F281AD4;
+	Wed, 30 Mar 2022 22:21:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33F281AD4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648671721;
-	bh=219w+WAhFOLOTuSWfHn8ygxlqsJUkzHLHdtOW7b9fFY=;
+	s=default; t=1648671739;
+	bh=JmxjxkctsBbCt8FQmgaxOp19DTK3oUUVnv7oCGuBITA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=srRJ4pIgzOU14UehmHElPv3GBzvMv6F7k4Lq/Dwbheutsf4PbX+vAtUt9/M+euz8N
-	 I9jdzM7wkPrycKz9mKpSSyabqOFk3SbVLoNDOgkW85FySPhfvpYVXjnCK/GUm8y0Ye
-	 78/2KmxP1e+wXnIAoA99ATjGFQeM9EtxdB8yMaGo=
+	b=Ptw7C9qqkqjkKLVaM+zRxWUSPBKPwXrfKf9TFZQ95xbVv4UeytQ1swgDGW9scWp41
+	 21KiKtt8o6SR5sk7aumMK7D/VZ32s0LN4hAE29XWdcMwitVoeAA+odPzwPII1Hz9Nj
+	 9BIqN9y++b9CpsTNkzI7AYe6LVYugCrM52qZu1qk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C13F5F80524;
-	Wed, 30 Mar 2022 22:19:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7DF5EF80528;
+	Wed, 30 Mar 2022 22:19:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 36E5CF80254; Wed, 30 Mar 2022 22:19:51 +0200 (CEST)
+ id 45886F80155; Wed, 30 Mar 2022 22:19:51 +0200 (CEST)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 97B37F8025A
+ by alsa1.perex.cz (Postfix) with ESMTPS id BB781F804B4
  for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2022 22:19:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97B37F8025A
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB781F804B4
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="clJh/wdM"
+ header.b="PiwsU77I"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
  t=1648671583; x=1680207583;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=219w+WAhFOLOTuSWfHn8ygxlqsJUkzHLHdtOW7b9fFY=;
- b=clJh/wdMRyXQjfmQJF9SbP6ANPLMBOk1D94EKByMkqmmJvtOb65F5+he
- bn8WE25R1nJ2co54BheGPc+ZHUug6QeJVb9Y57cUOuXTdQgOquVw8w6F0
- AtDGj0GwGbAQqW/B6P0iuABRWxPm0D1Z7prFs22RfeK/pJwIv55350Kc/
- VoCK/2AYlpX20ufQRhkHbEyT4jMhDBBcFzgGOf8WqGRWLqUtfozMxiLus
- E0emZj/Y0Z0x0SGjdRrl1oCQCnq4jRXwYLXs6pzmLgsLUvGImy8sldP8M
- i2P3Sl+azK4b//JEM+nD77QZapIjOyAqpxozBt4mpnkS5umdWl98W3SOT g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10302"; a="322819826"
-X-IronPort-AV: E=Sophos;i="5.90,223,1643702400"; d="scan'208";a="322819826"
+ bh=JmxjxkctsBbCt8FQmgaxOp19DTK3oUUVnv7oCGuBITA=;
+ b=PiwsU77Irk5qsLo6iQ4xf1X5eXhj9nln8vpuJkQtJbr25yG69oL3Z+oh
+ cNTBwczbCCgM0IqVFI5kG9OfYgFqzg6oNLslU9xiXiSTQoNNP/UTfHG3I
+ lhJxtWXmMg688zuTBk6YC5YIVS8bhIBFNXGpi/YqaZLPSv1nVAj1xm9BD
+ 6z2NWILhWEuu6Q1QZabyEMyK+V+xzV1BlFmRUkGM7TdVREJeeWqjuS9wD
+ StIrpfrLBQRz/9m3yx0RBsC8CNq9i6gdveMnh6fWc6A0yrYMZjivMXrnH
+ 0c7HV5PMx2wzov34m2pr7d4+lY3yZPgoLlxXZq2HWKZXZ7jmfYEphCBDn A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10302"; a="322819829"
+X-IronPort-AV: E=Sophos;i="5.90,223,1643702400"; d="scan'208";a="322819829"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Mar 2022 13:19:36 -0700
-X-IronPort-AV: E=Sophos;i="5.90,223,1643702400"; d="scan'208";a="522045022"
+ 30 Mar 2022 13:19:37 -0700
+X-IronPort-AV: E=Sophos;i="5.90,223,1643702400"; d="scan'208";a="522045031"
 Received: from ggunnam-mobl.amr.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.254.28.195])
  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Mar 2022 13:19:36 -0700
+ 30 Mar 2022 13:19:37 -0700
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 03/11] ASoC: SOF: ipc: Add max_payload_size field in struct
- snd_sof_ipc
-Date: Wed, 30 Mar 2022 13:19:18 -0700
-Message-Id: <20220330201926.1330402-4-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 05/11] ASoC: SOF: Drop support for mapped control data
+Date: Wed, 30 Mar 2022 13:19:20 -0700
+Message-Id: <20220330201926.1330402-6-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220330201926.1330402-1-ranjani.sridharan@linux.intel.com>
 References: <20220330201926.1330402-1-ranjani.sridharan@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Daniel Baluta <daniel.baluta@nxp.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, tiwai@suse.de,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Rander Wang <rander.wang@intel.com>, broonie@kernel.org,
+Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>
+ Kai Vehmanen <kai.vehmanen@intel.com>, broonie@kernel.org,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,48 +88,87 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 
-The max_payload_size is an IPC level constraint. Add a new field,
-max_payload_size to struct snd_sof_ipc and set it during IPC init.
+Access through mmapped memory is not supported and it is explicitly
+disabled with scontrol->readback_offset = 0; when a control is created.
+
+Remove the dead code and the confusion around this feature.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@intel.com>
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/ipc.c      | 2 ++
- sound/soc/sof/sof-priv.h | 3 +++
- 2 files changed, 5 insertions(+)
+ sound/soc/sof/ipc.c       | 22 ----------------------
+ sound/soc/sof/sof-audio.c |  3 ---
+ sound/soc/sof/sof-audio.h |  1 -
+ 3 files changed, 26 deletions(-)
 
 diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
-index 5f5753608c79..af2efc1c8436 100644
+index 166d4906698b..c722ca0b00a6 100644
 --- a/sound/soc/sof/ipc.c
 +++ b/sound/soc/sof/ipc.c
-@@ -1005,6 +1005,8 @@ int sof_ipc_init_msg_memory(struct snd_sof_dev *sdev)
- 	if (!msg->reply_data)
- 		return -ENOMEM;
+@@ -823,7 +823,6 @@ int snd_sof_ipc_set_get_comp_data(struct snd_sof_control *scontrol, bool set)
+ 	enum sof_ipc_ctrl_type ctrl_type;
+ 	struct snd_sof_widget *swidget;
+ 	bool widget_found = false;
+-	size_t send_bytes;
+ 	u32 ipc_cmd;
+ 	int err;
  
-+	sdev->ipc->max_payload_size = SOF_IPC_MSG_MAX_SIZE;
-+
- 	return 0;
- }
+@@ -847,27 +846,6 @@ int snd_sof_ipc_set_get_comp_data(struct snd_sof_control *scontrol, bool set)
+ 	if (!swidget->use_count)
+ 		return 0;
  
-diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index 93de5547b952..f75c6f76297e 100644
---- a/sound/soc/sof/sof-priv.h
-+++ b/sound/soc/sof/sof-priv.h
-@@ -394,6 +394,9 @@ struct snd_sof_ipc {
- 	/* disables further sending of ipc's */
- 	bool disable_ipc_tx;
+-	/* read or write firmware volume */
+-	if (scontrol->readback_offset != 0) {
+-		/* write/read value header via mmaped region */
+-		send_bytes = sizeof(struct sof_ipc_ctrl_value_chan) *
+-		cdata->num_elems;
+-		if (set)
+-			err = snd_sof_dsp_block_write(sdev, SOF_FW_BLK_TYPE_IRAM,
+-						      scontrol->readback_offset,
+-						      cdata->chanv, send_bytes);
+-
+-		else
+-			err = snd_sof_dsp_block_read(sdev, SOF_FW_BLK_TYPE_IRAM,
+-						     scontrol->readback_offset,
+-						     cdata->chanv, send_bytes);
+-
+-		if (err)
+-			dev_err_once(sdev->dev, "error: %s TYPE_IRAM failed\n",
+-				     set ? "write to" :  "read from");
+-		return err;
+-	}
+-
+ 	/*
+ 	 * Select the IPC cmd and the ctrl_type based on the ctrl_cmd and the
+ 	 * direction
+diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
+index b2f009a0c5b7..49fdfe06a9a3 100644
+--- a/sound/soc/sof/sof-audio.c
++++ b/sound/soc/sof/sof-audio.c
+@@ -16,9 +16,6 @@ static int sof_kcontrol_setup(struct snd_sof_dev *sdev, struct snd_sof_control *
+ {
+ 	int ret;
  
-+	/* Maximum allowed size of a single IPC message/reply */
-+	size_t max_payload_size;
-+
- 	struct snd_sof_ipc_msg msg;
- 
- 	/* IPC ops based on version */
+-	/* reset readback offset for scontrol */
+-	scontrol->readback_offset = 0;
+-
+ 	ret = snd_sof_ipc_set_get_comp_data(scontrol, true);
+ 	if (ret < 0)
+ 		dev_err(sdev->dev, "error: failed kcontrol value set for widget: %d\n",
+diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
+index 7f15b3bc8196..4a8cd7f2a0eb 100644
+--- a/sound/soc/sof/sof-audio.h
++++ b/sound/soc/sof/sof-audio.h
+@@ -247,7 +247,6 @@ struct snd_sof_control {
+ 	int max_volume_step; /* max volume step for volume_table */
+ 	int num_channels;
+ 	unsigned int access;
+-	u32 readback_offset; /* offset to mmapped data if used */
+ 	int info_type;
+ 	int index; /* pipeline ID */
+ 	void *priv; /* private data copied from topology */
 -- 
 2.25.1
 
