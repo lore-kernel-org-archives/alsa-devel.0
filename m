@@ -4,61 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05344C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Mar 2022 12:01:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8BD28C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Mar 2022 12:01:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 477C7193B;
-	Wed, 30 Mar 2022 14:00:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 477C7193B
+	by alsa0.perex.cz (Postfix) with ESMTPS id CA2681A22;
+	Wed, 30 Mar 2022 14:00:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA2681A22
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648641686;
-	bh=I6aGqWjrqvnZkEehH1G0+jL/Sh2jVVvHMXxT5JjDfXE=;
+	s=default; t=1648641700;
+	bh=U5KdjcZpRwnm8d/Y39hurzwu6xnD8BhkqRY0h6mwIEw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mai9ClM4uE+d8YnUt9+Jd/b7QrJ7aW/f4sDuypsSxnMks3Y4HwHOnAB1MeUDsLGBm
-	 m3XDOe2b20XdV9DE5s6Cre4B5+63AqKsFyWrJfIGOGH9Ffkb6RCH/xSSbRhENgkVld
-	 cjArQJ5M8SGzg8k8OvgtHRjOzk+wYWCDVEVfl/u8=
+	b=E5S/7R9+fgNqfxnYTQKAP9s75ChSnvf6sXbnohaHLNuw9onaU8h08ASe+yxc2fJwo
+	 /eMz0vBg+ss/K+7h6XaLgiGGY02wrPpfv7j9q0ZTNK2rLDb84S7pyKW3nTHhRx1Ofq
+	 3iUH6IhCyeJx8ToRxEkiCw0GzOunOkP+fGo9El9Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 599F8F8053A;
-	Wed, 30 Mar 2022 13:50:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DA5F6F80542;
+	Wed, 30 Mar 2022 13:51:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2717DF8053B; Wed, 30 Mar 2022 13:50:49 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+ id C66C9F80563; Wed, 30 Mar 2022 13:51:02 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3E241F8025A
- for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2022 13:50:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E241F8025A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 245C7F8054A
+ for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2022 13:50:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 245C7F8054A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="GKvjqnYH"
+ header.b="ggcEj8X6"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id 1A0E9CE1D40;
- Wed, 30 Mar 2022 11:50:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C25BC36AE5;
- Wed, 30 Mar 2022 11:50:35 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 1BE4A616A6;
+ Wed, 30 Mar 2022 11:50:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9AC97C340F2;
+ Wed, 30 Mar 2022 11:50:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1648641036;
- bh=I6aGqWjrqvnZkEehH1G0+jL/Sh2jVVvHMXxT5JjDfXE=;
+ s=k20201202; t=1648641054;
+ bh=U5KdjcZpRwnm8d/Y39hurzwu6xnD8BhkqRY0h6mwIEw=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=GKvjqnYHg5/V95XG7llIBj9tdf7G/en/yIUUC9ddTUeSpp7EFK1YkHRiGnc4DadG/
- 7SyBS0XCB5gXOsL0NHg7jA3xvdSjl1Z8ebvNfbVA1YBt7rWuy/T0SwZ2HRksO6bsF8
- 9gItuWot3d9lLjU2SaCgSqVx03lMDvX60wA20gw0Sm0/CJ0KXf8XHxw5kj2VLA2KaX
- DrjtJp0CryBbUXAuPMfICYhQp0ww/wtK1ysn39nstHXCLJL9OB9M3JOqAgiFcDQ7aB
- e5P+GG3Qt1Bn7gYSVnBWaMrpgCGW+dStfb7gA8PB8z8xWojKkZtslvu4qaX9No6WsQ
- sAQwuY70Wzvrw==
+ b=ggcEj8X6g5+CPicTa5bTzT5sI0bvvXHc+iWSTbxVGGZ5rPpZVDCtHB/wSubfEPcns
+ 2mtTzGp1U7xqcKyxDUdZ7xDUKVS60nvDx/1DSSz0ryocj7TdYMYufC31ATr5iIW9s0
+ GD+6ZwiSbGMjo50G639OxG7E3TC5rOoiUVAKFtmoSQEQhmFKScoBAyKq6b1SRRZU6n
+ iTLPohf21UWWaEXg0Au1BFwyOJ8Mgf38c/TPh3Ma3udbzICrnox1PQQwasqI0G9frq
+ 2pm8j3Zj7NVCDrjSEE0MxeZ04kzk9/IKVdn+NzjMogLnkEI/SPCKLDt5RZ9v76sRCj
+ PQtsg1C3K2rBw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 19/50] ASoC: madera: Add dependencies on MFD
-Date: Wed, 30 Mar 2022 07:49:33 -0400
-Message-Id: <20220330115005.1671090-19-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 32/50] ASoC: soc-core: skip zero num_dai
+ component in searching dai name
+Date: Wed, 30 Mar 2022 07:49:46 -0400
+Message-Id: <20220330115005.1671090-32-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220330115005.1671090-1-sashal@kernel.org>
 References: <20220330115005.1671090-1-sashal@kernel.org>
@@ -67,8 +68,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Charles Keepax <ckeepax@opensource.cirrus.com>, tiwai@suse.com,
- lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>
+ Shengjiu Wang <shengjiu.wang@nxp.com>, tiwai@suse.com, lgirdwood@gmail.com,
+ Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,58 +85,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
 
-[ Upstream commit ec29170c724ca30305fc3a19ba2ee73ecac65509 ]
+[ Upstream commit f7d344a2bd5ec81fbd1ce76928fd059e57ec9bea ]
 
-The Madera CODECs use regmap_irq functions but nothing ensures that
-regmap_irq is built into the kernel. Add dependencies on the ASoC
-symbols for the relevant MFD component. There is no point in building
-the ASoC driver if the MFD doesn't support it and the MFD part contains
-the necessary dependencies to ensure everything is built into the
-kernel.
+In the case like dmaengine which's not a dai but as a component, the
+num_dai is zero, dmaengine component has the same component_of_node
+as cpu dai, when cpu dai component is not ready, but dmaengine component
+is ready, try to get cpu dai name, the snd_soc_get_dai_name() return
+-EINVAL, not -EPROBE_DEFER, that cause below error:
 
-Reported-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20220203115025.16464-1-ckeepax@opensource.cirrus.com
+asoc-simple-card <card name>: parse error -22
+asoc-simple-card: probe of <card name> failed with error -22
+
+The sound card failed to probe.
+
+So this patch fixes the issue above by skipping the zero num_dai
+component in searching dai name.
+
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Link: https://lore.kernel.org/r/1644491952-7457-1-git-send-email-shengjiu.wang@nxp.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/Kconfig | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/soc/soc-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index f12c9b942678..47e675e8bd00 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -690,6 +690,7 @@ config SND_SOC_CS4349
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 80ca260595fd..5da762807824 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -3208,7 +3208,7 @@ int snd_soc_get_dai_name(const struct of_phandle_args *args,
+ 	for_each_component(pos) {
+ 		struct device_node *component_of_node = soc_component_to_node(pos);
  
- config SND_SOC_CS47L15
- 	tristate
-+	depends on MFD_CS47L15
+-		if (component_of_node != args->np)
++		if (component_of_node != args->np || !pos->num_dai)
+ 			continue;
  
- config SND_SOC_CS47L24
- 	tristate
-@@ -697,15 +698,19 @@ config SND_SOC_CS47L24
- 
- config SND_SOC_CS47L35
- 	tristate
-+	depends on MFD_CS47L35
- 
- config SND_SOC_CS47L85
- 	tristate
-+	depends on MFD_CS47L85
- 
- config SND_SOC_CS47L90
- 	tristate
-+	depends on MFD_CS47L90
- 
- config SND_SOC_CS47L92
- 	tristate
-+	depends on MFD_CS47L92
- 
- # Cirrus Logic Quad-Channel ADC
- config SND_SOC_CS53L30
+ 		ret = snd_soc_component_of_xlate_dai_name(pos, args, dai_name);
 -- 
 2.34.1
 
