@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44559C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Mar 2022 11:52:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8715C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Mar 2022 11:52:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 861BE189F;
-	Wed, 30 Mar 2022 13:51:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 861BE189F
+	by alsa0.perex.cz (Postfix) with ESMTPS id DA51F1843;
+	Wed, 30 Mar 2022 13:51:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA51F1843
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648641151;
-	bh=yPQlBLQGEvHpOmVboz3fBeiBvatZ09xFfJx8JBLUUOI=;
+	s=default; t=1648641169;
+	bh=kKgbNHwddUiwkQ0fNo9UvyNztXfEeCzHFDRq0uA6vRs=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HE0SUOmBIMW5be9WaGUEQDuh4qJje9Lt854tEAuDO4ehjFv+5QFbjwbA5oeYJDJSg
-	 Oc7nSgmplrjoSm9QzNVUXpKquYTcT/YNxkLsbJPM8mLHSgVTN6r+kxgZyMr4c9jNWM
-	 EZ3T4PmiFoRQvPX9dozHeUnLs2HFWy7hh6MM0H2A=
+	b=GRmx3JHKKi5pCjauPYaG3cQKvu4+vo8gicdNzySkg1980giTgJoZz8zmbad0szBpX
+	 yTeLPmKSvKQMmvaGR+kRNACq5BPXx71ad4lUFO13m+OoNYuxhVQb8Uk6eHlkjhxeyA
+	 644Xc0edxMAVq7jvShXVZr9jwQ8L/bxTPpD6EusU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1470DF8057B;
+	by alsa1.perex.cz (Postfix) with ESMTP id E88BEF80528;
 	Wed, 30 Mar 2022 13:48:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0FCCBF8057D; Wed, 30 Mar 2022 13:48:23 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+ id 3BCCEF8057C; Wed, 30 Mar 2022 13:48:23 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3725AF80528
+ by alsa1.perex.cz (Postfix) with ESMTPS id 77D21F80518
  for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2022 13:48:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3725AF80528
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77D21F80518
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="eREUXjID"
+ header.b="XqDRx/GT"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id 24B63CE1921;
+ by ams.source.kernel.org (Postfix) with ESMTPS id CC714B81C48;
+ Wed, 30 Mar 2022 11:48:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C336C340F2;
  Wed, 30 Mar 2022 11:48:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C028C3410F;
- Wed, 30 Mar 2022 11:48:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1648640890;
- bh=yPQlBLQGEvHpOmVboz3fBeiBvatZ09xFfJx8JBLUUOI=;
+ s=k20201202; t=1648640894;
+ bh=kKgbNHwddUiwkQ0fNo9UvyNztXfEeCzHFDRq0uA6vRs=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=eREUXjIDNpU33bJAEQnwHyNFXTaOXrvpy9Gw0GMZqevwI6bt1DGJhHEtFa+Nor+Ok
- 0Kh7i4/SdayfBmfcbJ4rCIS6Pot3oafZLu2ohnWI+CVA19C2ZQvoamQEDPOShqafO2
- MTbCWkqAFDaR4T9a41n5moRljLJzUt68wOZro+pn+RyfZQRqrVkZeQSQpavvSJN72K
- n96fjbdu1vPbwqQiKZR6qpfPc4BDXy6uqdBrjye116FxTe8KEUW6iZN6A6RlGCtE2b
- yBvVthUs6n0y3pn6tBCBVRYXdulMBlgJAvYe9wQzHPo2Mbk++VgMReyigOIhy5K7Jc
- I7r8g6kNIKh4w==
+ b=XqDRx/GTUBXmbWi/2KFdyLxY7QFRlHIOgfvMpqe2xdiOkFGUUVOEJjRJssSh3Xri7
+ oT6TwIP0M5PbadGATMQUMNsJedco676kLs59w1fofSxLQyJu9uyH7KaT3c7X7H528U
+ lON4qnIA1DWHvDdkQUKCa2S5igdFP6X8as7sZCKcNIA9r2KMmZcdvgOkFEeg7pDwzA
+ n9qD+uE0k5JmvBUHa0RNq5HvlG177sbbm9wygZZpgJORWDBCHf5h1sRXbS7ftpC670
+ 2IPq5V/en6K9ZxCJ6tMoTxEdiGFAqa8NtuLWlTw24YIJJfOLGbYMMwJYFSw9r3xjRV
+ Q3wVtauHxW9ZQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.17 54/66] ALSA: intel-nhlt: add helper to detect SSP
- link mask
-Date: Wed, 30 Mar 2022 07:46:33 -0400
-Message-Id: <20220330114646.1669334-54-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.17 56/66] ASoC: Intel: soc-acpi: add more ACPI HIDs
+ for ES83x6 devices
+Date: Wed, 30 Mar 2022 07:46:35 -0400
+Message-Id: <20220330114646.1669334-56-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220330114646.1669334-1-sashal@kernel.org>
 References: <20220330114646.1669334-1-sashal@kernel.org>
@@ -69,9 +69,10 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.de>, Bard Liao <yung-chuan.liao@linux.intel.com>,
- tiwai@suse.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Mark Brown <broonie@kernel.org>,
+ anthony tonitch <d.tonitch@gmail.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>, tiwai@suse.com,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>,
  =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -90,123 +91,155 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit 0c470db0399e17310ed2ba54dd1c25cfa16ce0d3 ]
+[ Upstream commit 1cedb6eabf0f2dd8285d3bb0ce1abd2369529084 ]
 
-The NHLT information can be used to figure out which SSPs are enabled
-in a platform.
+We only saw ESSX8336 so far, but now with reports of 'ESSX8326' we
+need to expand to a full list. Let's reuse the 'snd_soc_acpi_codecs'
+structure to store the information.
 
-The 'SSP' link type is too broad for machine drivers, since it can
-cover the Bluetooth sideband and the analog audio codec connections,
-so this helper exposes a parameter to filter with the device
-type (DEVICE_I2S refers to analog audio codec in NHLT parlance).
+Note that ES8326 will need a dedicated codec driver, but the plan is
+to use the same machine driver for all Everest Audio devices.
 
-The helper returns a mask, since more than one SSP may be used for
-analog audio, e.g. the NHLT spec describes the use of SSP0 for
-amplifiers and SSP1 for headset codec. Note that if more than one bit
-is set, it's impossible to determine which SSP is connected to what
-external component. Additional platform-specific information based on
-e.g. DMI quirks would still be required in the machine driver to
-configure the relevant dailinks.
-
+Reported-by: anthony tonitch <d.tonitch@gmail.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Acked-by: Takashi Iwai <tiwai@suse.de>
-Link: https://lore.kernel.org/r/20220308192610.392950-5-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20220308192610.392950-9-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/sound/intel-nhlt.h | 22 +++++++++++++++-------
- sound/hda/intel-nhlt.c     | 22 ++++++++++++++++++++++
- 2 files changed, 37 insertions(+), 7 deletions(-)
+ sound/soc/intel/common/soc-acpi-intel-bxt-match.c | 7 ++++++-
+ sound/soc/intel/common/soc-acpi-intel-cml-match.c | 7 ++++++-
+ sound/soc/intel/common/soc-acpi-intel-glk-match.c | 7 ++++++-
+ sound/soc/intel/common/soc-acpi-intel-jsl-match.c | 7 ++++++-
+ sound/soc/intel/common/soc-acpi-intel-tgl-match.c | 7 ++++++-
+ 5 files changed, 30 insertions(+), 5 deletions(-)
 
-diff --git a/include/sound/intel-nhlt.h b/include/sound/intel-nhlt.h
-index 089a760d36eb..6fb2d5e378fd 100644
---- a/include/sound/intel-nhlt.h
-+++ b/include/sound/intel-nhlt.h
-@@ -18,6 +18,13 @@ enum nhlt_link_type {
- 	NHLT_LINK_INVALID
- };
+diff --git a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
+index 342d34052204..04a92e74d99b 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
+@@ -41,6 +41,11 @@ static struct snd_soc_acpi_mach *apl_quirk(void *arg)
+ 	return mach;
+ }
  
-+enum nhlt_device_type {
-+	NHLT_DEVICE_BT = 0,
-+	NHLT_DEVICE_DMIC = 1,
-+	NHLT_DEVICE_I2S = 4,
-+	NHLT_DEVICE_INVALID
++static const struct snd_soc_acpi_codecs essx_83x6 = {
++	.num_codecs = 3,
++	.codecs = { "ESSX8316", "ESSX8326", "ESSX8336"},
 +};
 +
- #if IS_ENABLED(CONFIG_ACPI) && IS_ENABLED(CONFIG_SND_INTEL_NHLT)
+ static const struct snd_soc_acpi_codecs bxt_codecs = {
+ 	.num_codecs = 1,
+ 	.codecs = {"MX98357A"}
+@@ -83,7 +88,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_bxt_machines[] = {
+ 		.sof_tplg_filename = "sof-apl-tdf8532.tplg",
+ 	},
+ 	{
+-		.id = "ESSX8336",
++		.comp_ids = &essx_83x6,
+ 		.drv_name = "sof-essx8336",
+ 		.sof_fw_filename = "sof-apl.ri",
+ 		.sof_tplg_filename = "sof-apl-es8336.tplg",
+diff --git a/sound/soc/intel/common/soc-acpi-intel-cml-match.c b/sound/soc/intel/common/soc-acpi-intel-cml-match.c
+index 4eebc79d4b48..14395833d89e 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-cml-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-cml-match.c
+@@ -9,6 +9,11 @@
+ #include <sound/soc-acpi.h>
+ #include <sound/soc-acpi-intel-match.h>
  
- struct wav_fmt {
-@@ -41,13 +48,6 @@ struct wav_fmt_ext {
- 	u8 sub_fmt[16];
- } __packed;
++static const struct snd_soc_acpi_codecs essx_83x6 = {
++	.num_codecs = 3,
++	.codecs = { "ESSX8316", "ESSX8326", "ESSX8336"},
++};
++
+ static const struct snd_soc_acpi_codecs rt1011_spk_codecs = {
+ 	.num_codecs = 1,
+ 	.codecs = {"10EC1011"}
+@@ -82,7 +87,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_cml_machines[] = {
+ 		.sof_tplg_filename = "sof-cml-da7219-max98390.tplg",
+ 	},
+ 	{
+-		.id = "ESSX8336",
++		.comp_ids = &essx_83x6,
+ 		.drv_name = "sof-essx8336",
+ 		.sof_fw_filename = "sof-cml.ri",
+ 		.sof_tplg_filename = "sof-cml-es8336.tplg",
+diff --git a/sound/soc/intel/common/soc-acpi-intel-glk-match.c b/sound/soc/intel/common/soc-acpi-intel-glk-match.c
+index 8492b7e2a945..7aa6a870d5a5 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-glk-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-glk-match.c
+@@ -9,6 +9,11 @@
+ #include <sound/soc-acpi.h>
+ #include <sound/soc-acpi-intel-match.h>
  
--enum nhlt_device_type {
--	NHLT_DEVICE_BT = 0,
--	NHLT_DEVICE_DMIC = 1,
--	NHLT_DEVICE_I2S = 4,
--	NHLT_DEVICE_INVALID
--};
--
- struct nhlt_specific_cfg {
- 	u32 size;
- 	u8 caps[];
-@@ -133,6 +133,9 @@ void intel_nhlt_free(struct nhlt_acpi_table *addr);
- int intel_nhlt_get_dmic_geo(struct device *dev, struct nhlt_acpi_table *nhlt);
++static const struct snd_soc_acpi_codecs essx_83x6 = {
++	.num_codecs = 3,
++	.codecs = { "ESSX8316", "ESSX8326", "ESSX8336"},
++};
++
+ static const struct snd_soc_acpi_codecs glk_codecs = {
+ 	.num_codecs = 1,
+ 	.codecs = {"MX98357A"}
+@@ -58,7 +63,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_glk_machines[] = {
+ 		.sof_tplg_filename = "sof-glk-cs42l42.tplg",
+ 	},
+ 	{
+-		.id = "ESSX8336",
++		.comp_ids = &essx_83x6,
+ 		.drv_name = "sof-essx8336",
+ 		.sof_fw_filename = "sof-glk.ri",
+ 		.sof_tplg_filename = "sof-glk-es8336.tplg",
+diff --git a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
+index 278ec196da7b..9d0d0e1437a4 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
+@@ -9,6 +9,11 @@
+ #include <sound/soc-acpi.h>
+ #include <sound/soc-acpi-intel-match.h>
  
- bool intel_nhlt_has_endpoint_type(struct nhlt_acpi_table *nhlt, u8 link_type);
++static const struct snd_soc_acpi_codecs essx_83x6 = {
++	.num_codecs = 3,
++	.codecs = { "ESSX8316", "ESSX8326", "ESSX8336"},
++};
 +
-+int intel_nhlt_ssp_endpoint_mask(struct nhlt_acpi_table *nhlt, u8 device_type);
-+
- struct nhlt_specific_cfg *
- intel_nhlt_get_endpoint_blob(struct device *dev, struct nhlt_acpi_table *nhlt,
- 			     u32 bus_id, u8 link_type, u8 vbps, u8 bps,
-@@ -163,6 +166,11 @@ static inline bool intel_nhlt_has_endpoint_type(struct nhlt_acpi_table *nhlt,
- 	return false;
- }
+ static const struct snd_soc_acpi_codecs jsl_7219_98373_codecs = {
+ 	.num_codecs = 1,
+ 	.codecs = {"MX98373"}
+@@ -87,7 +92,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_jsl_machines[] = {
+ 		.sof_tplg_filename = "sof-jsl-cs42l42-mx98360a.tplg",
+ 	},
+ 	{
+-		.id = "ESSX8336",
++		.comp_ids = &essx_83x6,
+ 		.drv_name = "sof-essx8336",
+ 		.sof_fw_filename = "sof-jsl.ri",
+ 		.sof_tplg_filename = "sof-jsl-es8336.tplg",
+diff --git a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
+index da31bb3cca17..e2658bca6931 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
+@@ -10,6 +10,11 @@
+ #include <sound/soc-acpi-intel-match.h>
+ #include "soc-acpi-intel-sdw-mockup-match.h"
  
-+static inline int intel_nhlt_ssp_endpoint_mask(struct nhlt_acpi_table *nhlt, u8 device_type)
-+{
-+	return 0;
-+}
++static const struct snd_soc_acpi_codecs essx_83x6 = {
++	.num_codecs = 3,
++	.codecs = { "ESSX8316", "ESSX8326", "ESSX8336"},
++};
 +
- static inline struct nhlt_specific_cfg *
- intel_nhlt_get_endpoint_blob(struct device *dev, struct nhlt_acpi_table *nhlt,
- 			     u32 bus_id, u8 link_type, u8 vbps, u8 bps,
-diff --git a/sound/hda/intel-nhlt.c b/sound/hda/intel-nhlt.c
-index 128476aa7c61..4063da378283 100644
---- a/sound/hda/intel-nhlt.c
-+++ b/sound/hda/intel-nhlt.c
-@@ -130,6 +130,28 @@ bool intel_nhlt_has_endpoint_type(struct nhlt_acpi_table *nhlt, u8 link_type)
- }
- EXPORT_SYMBOL(intel_nhlt_has_endpoint_type);
- 
-+int intel_nhlt_ssp_endpoint_mask(struct nhlt_acpi_table *nhlt, u8 device_type)
-+{
-+	struct nhlt_endpoint *epnt;
-+	int ssp_mask = 0;
-+	int i;
-+
-+	if (!nhlt || (device_type != NHLT_DEVICE_BT && device_type != NHLT_DEVICE_I2S))
-+		return 0;
-+
-+	epnt = (struct nhlt_endpoint *)nhlt->desc;
-+	for (i = 0; i < nhlt->endpoint_count; i++) {
-+		if (epnt->linktype == NHLT_LINK_SSP && epnt->device_type == device_type) {
-+			/* for SSP the virtual bus id is the SSP port */
-+			ssp_mask |= BIT(epnt->virtual_bus_id);
-+		}
-+		epnt = (struct nhlt_endpoint *)((u8 *)epnt + epnt->length);
-+	}
-+
-+	return ssp_mask;
-+}
-+EXPORT_SYMBOL(intel_nhlt_ssp_endpoint_mask);
-+
- static struct nhlt_specific_cfg *
- nhlt_get_specific_cfg(struct device *dev, struct nhlt_fmt *fmt, u8 num_ch,
- 		      u32 rate, u8 vbps, u8 bps)
+ static const struct snd_soc_acpi_codecs tgl_codecs = {
+ 	.num_codecs = 1,
+ 	.codecs = {"MX98357A"}
+@@ -389,7 +394,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_machines[] = {
+ 		.sof_tplg_filename = "sof-tgl-rt1011-rt5682.tplg",
+ 	},
+ 	{
+-		.id = "ESSX8336",
++		.comp_ids = &essx_83x6,
+ 		.drv_name = "sof-essx8336",
+ 		.sof_fw_filename = "sof-tgl.ri",
+ 		.sof_tplg_filename = "sof-tgl-es8336.tplg",
 -- 
 2.34.1
 
