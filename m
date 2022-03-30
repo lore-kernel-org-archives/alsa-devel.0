@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 429F9C433FE
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Mar 2022 11:58:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43FCEC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Mar 2022 11:58:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 84AD21911;
-	Wed, 30 Mar 2022 13:57:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84AD21911
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8FC7E191A;
+	Wed, 30 Mar 2022 13:57:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8FC7E191A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648641480;
-	bh=v1luuvpj5UTKQupxrRu/rhsBPsNSE/Jx1YwX0tOiZ3g=;
+	s=default; t=1648641497;
+	bh=bF8a6Emkq3gGLNP8ZkwyAhhn/XpyikbfTHyhhlYcDH4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ux4/wZ3bQozA4dW8dDfh0m+n6xOr7sRCa2FPT9g6i4NsLqtfIQKzQa8vBeW12zh0a
-	 FJ46XtEjqQOsMv0WKTNr5Nt+4KR7b8dO0Lr4kugmpy1vYGu6GnFAJ1yEJw6T2VeyBt
-	 DtKSGXv3f2eTH1dArzRF0H9PizRyAvfU4qPPlj8o=
+	b=uDBHcj7EvLhG9jtegkRD04MfRIkZAFegrpx95Z6KcefV0/fvNiGxwXepyhtPaN7H0
+	 OmcSX8t0Fbd+2hVvZs2KLLbQsce43YR/okwSAILy0EF7uGqF77Sa0zfHi2oTq17UY6
+	 Xt4Uct2wzAaEBb+4bpHgNM9kQRAaSiI1YjMu1IdU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2F48EF805F9;
-	Wed, 30 Mar 2022 13:49:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 93969F805FF;
+	Wed, 30 Mar 2022 13:49:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F3761F805FB; Wed, 30 Mar 2022 13:49:50 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 48562F805FD; Wed, 30 Mar 2022 13:49:53 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E5386F805F7
+ by alsa1.perex.cz (Postfix) with ESMTPS id CBB7FF8052D
  for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2022 13:49:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5386F805F7
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CBB7FF8052D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="sZWHiwuG"
+ header.b="Jx72+IEl"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 209CDB81C28;
- Wed, 30 Mar 2022 11:49:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0FD4C340EE;
- Wed, 30 Mar 2022 11:49:41 +0000 (UTC)
+ by sin.source.kernel.org (Postfix) with ESMTPS id DE20ECE1D38;
+ Wed, 30 Mar 2022 11:49:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 407AAC340F2;
+ Wed, 30 Mar 2022 11:49:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1648640982;
- bh=v1luuvpj5UTKQupxrRu/rhsBPsNSE/Jx1YwX0tOiZ3g=;
+ s=k20201202; t=1648640981;
+ bh=bF8a6Emkq3gGLNP8ZkwyAhhn/XpyikbfTHyhhlYcDH4=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=sZWHiwuGqlLW1c8voCZk4tS8lex4t0Sis/xZwkStFSgr/qRB9m9L7hBkrXFOmqsgi
- eA5lE4Qoy6XhBk7bCiezc1C4jenaLPKKG9YKMlVgbO+IYmuU5U30PENpxF7nfs213j
- Agp4ClVd8E8zzqxkaovzZUV76sn33HfZm7b/9P7/Gd4UMZLMYafgg1WSv9sbNYqGXB
- yEbX/oCWIhQghK84+tEh2IVVx5Lm/IcayYd2/lOFIy+/oFtiVEpV3Xb79mn7Q7dSHD
- 850msC16xvlCd1SiXiyheWL5IMZEIQhCixMhTCwXyMM9OmUqYO0H8XJWGea4YotW3U
- w+txDPgdGPc2w==
+ b=Jx72+IElfrvtdAfYJKmfficNxRtmN7Z3EfqBIJwzN+H+tJK/I02wwzZhExGoDdBoq
+ 6A4Bzal1Nl1H0M7Q8N/IjcmrweA1sO1hrebNtCRNZqtOjCPu29SxEKQA4q3xSyFcST
+ xXtjQXpEOuJBa1nldNFnMnauE9jQs4orTcDJE5l6gzqEWZhVZJKJPm6HE+QcVg+jUt
+ i6hAoZ4ltHBL7AT45B0STvbvDbEW0RJYGkyX8nacrsSUycxzerYtPeJObPFHR8kxuV
+ md8Hinyr69cYrkZ6TSy0wUpFCK/38ebltjk3rKWz4Uo794yxlKBwsMQuDVMnIeddRz
+ Qei9jOfEjeUqA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.16 45/59] ASoC: amd: vangogh: fix uninitialized
- symbol warning in machine driver
-Date: Wed, 30 Mar 2022 07:48:17 -0400
-Message-Id: <20220330114831.1670235-45-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.16 44/59] ASoC: amd: vg: fix for pm resume callback
+ sequence
+Date: Wed, 30 Mar 2022 07:48:16 -0400
+Message-Id: <20220330114831.1670235-44-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220330114831.1670235-1-sashal@kernel.org>
 References: <20220330114831.1670235-1-sashal@kernel.org>
@@ -68,9 +68,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- tiwai@suse.com, lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>,
- Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
- Dan Carpenter <dan.carpenter@oracle.com>
+ kernel test robot <lkp@intel.com>, tiwai@suse.com, lgirdwood@gmail.com,
+ Mark Brown <broonie@kernel.org>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,33 +87,115 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 
-[ Upstream commit 6f989800639a7a29ab9a02e165b04dc144dd4f2b ]
+[ Upstream commit 83b713619ee1b15e09eae11a92a7f3305534223d ]
 
-Fixed below smatch static checker warning.
-sound/soc/amd/vangogh/acp5x-mach.c:190 acp5x_cs35l41_hw_params()
-error: uninitialized symbol 'ret'.
+The previous condition is used to cross check only the active
+stream status for I2S HS instance playback and capture use cases.
 
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Modified logic to invoke sequence for two i2s controller instances.
+
+This also fixes warnings reported by kernel robot:
+"warning: variable 'frmt_val' set but not used"
+"warning: variable 'reg_val' set but not used"
+
+Reported-by: kernel test robot <lkp@intel.com>
 Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Link: https://lore.kernel.org/r/20220225193054.24916-4-Vijendar.Mukunda@amd.com
+Link: https://lore.kernel.org/r/20220225193054.24916-1-Vijendar.Mukunda@amd.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/amd/vangogh/acp5x-mach.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/amd/vangogh/acp5x-pcm-dma.c | 66 +++++++++++++--------------
+ 1 file changed, 33 insertions(+), 33 deletions(-)
 
-diff --git a/sound/soc/amd/vangogh/acp5x-mach.c b/sound/soc/amd/vangogh/acp5x-mach.c
-index 14cf325e4b23..5d7a17755fa7 100644
---- a/sound/soc/amd/vangogh/acp5x-mach.c
-+++ b/sound/soc/amd/vangogh/acp5x-mach.c
-@@ -165,6 +165,7 @@ static int acp5x_cs35l41_hw_params(struct snd_pcm_substream *substream,
- 	unsigned int num_codecs = rtd->num_codecs;
- 	unsigned int bclk_val;
+diff --git a/sound/soc/amd/vangogh/acp5x-pcm-dma.c b/sound/soc/amd/vangogh/acp5x-pcm-dma.c
+index f10de38976cb..3aa2d9a36880 100644
+--- a/sound/soc/amd/vangogh/acp5x-pcm-dma.c
++++ b/sound/soc/amd/vangogh/acp5x-pcm-dma.c
+@@ -426,51 +426,51 @@ static int acp5x_audio_remove(struct platform_device *pdev)
+ static int __maybe_unused acp5x_pcm_resume(struct device *dev)
+ {
+ 	struct i2s_dev_data *adata;
+-	u32 val, reg_val, frmt_val;
++	struct i2s_stream_instance *rtd;
++	u32 val;
  
-+	ret = 0;
- 	for (i = 0; i < num_codecs; i++) {
- 		codec_dai = asoc_rtd_to_codec(rtd, i);
- 		if ((strcmp(codec_dai->name, "spi-VLV1776:00") == 0) ||
+-	reg_val = 0;
+-	frmt_val = 0;
+ 	adata = dev_get_drvdata(dev);
+ 
+ 	if (adata->play_stream && adata->play_stream->runtime) {
+-		struct i2s_stream_instance *rtd =
+-			adata->play_stream->runtime->private_data;
++		rtd = adata->play_stream->runtime->private_data;
+ 		config_acp5x_dma(rtd, SNDRV_PCM_STREAM_PLAYBACK);
+-		switch (rtd->i2s_instance) {
+-		case I2S_HS_INSTANCE:
+-			reg_val = ACP_HSTDM_ITER;
+-			frmt_val = ACP_HSTDM_TXFRMT;
+-			break;
+-		case I2S_SP_INSTANCE:
+-		default:
+-			reg_val = ACP_I2STDM_ITER;
+-			frmt_val = ACP_I2STDM_TXFRMT;
++		acp_writel((rtd->xfer_resolution  << 3), rtd->acp5x_base + ACP_HSTDM_ITER);
++		if (adata->tdm_mode == TDM_ENABLE) {
++			acp_writel(adata->tdm_fmt, adata->acp5x_base + ACP_HSTDM_TXFRMT);
++			val = acp_readl(adata->acp5x_base + ACP_HSTDM_ITER);
++			acp_writel(val | 0x2, adata->acp5x_base + ACP_HSTDM_ITER);
++		}
++	}
++	if (adata->i2ssp_play_stream && adata->i2ssp_play_stream->runtime) {
++		rtd = adata->i2ssp_play_stream->runtime->private_data;
++		config_acp5x_dma(rtd, SNDRV_PCM_STREAM_PLAYBACK);
++		acp_writel((rtd->xfer_resolution  << 3), rtd->acp5x_base + ACP_I2STDM_ITER);
++		if (adata->tdm_mode == TDM_ENABLE) {
++			acp_writel(adata->tdm_fmt, adata->acp5x_base + ACP_I2STDM_TXFRMT);
++			val = acp_readl(adata->acp5x_base + ACP_I2STDM_ITER);
++			acp_writel(val | 0x2, adata->acp5x_base + ACP_I2STDM_ITER);
+ 		}
+-		acp_writel((rtd->xfer_resolution  << 3),
+-			   rtd->acp5x_base + reg_val);
+ 	}
+ 
+ 	if (adata->capture_stream && adata->capture_stream->runtime) {
+-		struct i2s_stream_instance *rtd =
+-			adata->capture_stream->runtime->private_data;
++		rtd = adata->capture_stream->runtime->private_data;
+ 		config_acp5x_dma(rtd, SNDRV_PCM_STREAM_CAPTURE);
+-		switch (rtd->i2s_instance) {
+-		case I2S_HS_INSTANCE:
+-			reg_val = ACP_HSTDM_IRER;
+-			frmt_val = ACP_HSTDM_RXFRMT;
+-			break;
+-		case I2S_SP_INSTANCE:
+-		default:
+-			reg_val = ACP_I2STDM_IRER;
+-			frmt_val = ACP_I2STDM_RXFRMT;
++		acp_writel((rtd->xfer_resolution  << 3), rtd->acp5x_base + ACP_HSTDM_IRER);
++		if (adata->tdm_mode == TDM_ENABLE) {
++			acp_writel(adata->tdm_fmt, adata->acp5x_base + ACP_HSTDM_RXFRMT);
++			val = acp_readl(adata->acp5x_base + ACP_HSTDM_IRER);
++			acp_writel(val | 0x2, adata->acp5x_base + ACP_HSTDM_IRER);
+ 		}
+-		acp_writel((rtd->xfer_resolution  << 3),
+-			   rtd->acp5x_base + reg_val);
+ 	}
+-	if (adata->tdm_mode == TDM_ENABLE) {
+-		acp_writel(adata->tdm_fmt, adata->acp5x_base + frmt_val);
+-		val = acp_readl(adata->acp5x_base + reg_val);
+-		acp_writel(val | 0x2, adata->acp5x_base + reg_val);
++	if (adata->i2ssp_capture_stream && adata->i2ssp_capture_stream->runtime) {
++		rtd = adata->i2ssp_capture_stream->runtime->private_data;
++		config_acp5x_dma(rtd, SNDRV_PCM_STREAM_CAPTURE);
++		acp_writel((rtd->xfer_resolution  << 3), rtd->acp5x_base + ACP_I2STDM_IRER);
++		if (adata->tdm_mode == TDM_ENABLE) {
++			acp_writel(adata->tdm_fmt, adata->acp5x_base + ACP_I2STDM_RXFRMT);
++			val = acp_readl(adata->acp5x_base + ACP_I2STDM_IRER);
++			acp_writel(val | 0x2, adata->acp5x_base + ACP_I2STDM_IRER);
++		}
+ 	}
+ 	acp_writel(1, adata->acp5x_base + ACP_EXTERNAL_INTR_ENB);
+ 	return 0;
 -- 
 2.34.1
 
