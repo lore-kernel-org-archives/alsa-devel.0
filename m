@@ -4,72 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91952C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Mar 2022 11:52:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB355C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Mar 2022 11:52:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D0C0117B6;
-	Wed, 30 Mar 2022 13:51:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D0C0117B6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 10D5C182B;
+	Wed, 30 Mar 2022 13:51:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 10D5C182B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648641118;
-	bh=uqLAIvzQVZ7zsBQfr13bl/skVcfcHbCBT+09pEPcM8g=;
+	s=default; t=1648641137;
+	bh=n1yKYr6ib+uBTiB1zGsnOcKC0HJM7ZyAz+w+jiqCJxM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vvFSsLqmk3adukMQgjYKxutlOPCWZDPBKhqVS6uyqd8yaBlfTUy24lWAT202AbXgY
-	 x35TUaDyE7kTll2rVJbVXFCrTW3qWEkAtie3k2GwZjdZvWm4uCQrekDOKe2Mia1LGL
-	 V8ShbA04T1CpantK1rX8BzojRfqPL/0Tk2gQBSCU=
+	b=p/p0nhk918ttn/4lrjMNm/WwhrND7O2jCMlzZmNHfJqKKj+b9l6NNHQ16pkRWB+bH
+	 7zqOX4gdTNSvuUcZ1JABOC/IDS6kT/1FytR5csLyiuFDjoE7+hnb13gy6/gu/SWOKR
+	 WurdM0OhcfS4gVdIOtqtOwGzOniZ1SIulxa6Bflg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4940BF80567;
-	Wed, 30 Mar 2022 13:48:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1DFEBF80578;
+	Wed, 30 Mar 2022 13:48:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7671DF80564; Wed, 30 Mar 2022 13:48:14 +0200 (CEST)
+ id CFB40F80578; Wed, 30 Mar 2022 13:48:19 +0200 (CEST)
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8008AF80548
- for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2022 13:48:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8008AF80548
+ by alsa1.perex.cz (Postfix) with ESMTPS id 573EEF8055C
+ for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2022 13:48:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 573EEF8055C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="dHgYOBGR"
+ header.b="kBpQPLT0"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id DDD3EB81C35;
- Wed, 30 Mar 2022 11:48:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11968C340F2;
- Wed, 30 Mar 2022 11:48:05 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id A1698B81C28;
+ Wed, 30 Mar 2022 11:48:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16163C340F2;
+ Wed, 30 Mar 2022 11:48:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1648640887;
- bh=uqLAIvzQVZ7zsBQfr13bl/skVcfcHbCBT+09pEPcM8g=;
+ s=k20201202; t=1648640892;
+ bh=n1yKYr6ib+uBTiB1zGsnOcKC0HJM7ZyAz+w+jiqCJxM=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=dHgYOBGR8rJI0R+8xo7cMd6BZSgr8DhC2Icx13dbYLW7XIQHv2JaQ3zHlBO/YxiD4
- GD3N3+DCGFylrrTRd4xXEw0o9zSP1jILSC3xdtwB81akGwXpse/vyQx3iSAjnfZoe0
- X6vuYGmw6ULhI2nmDA1y8Sz7xluWO+jlL/jxbpNC0WIKF4gYe1fbtg9KcXKah0W7vS
- EkWXBzQRjV8rn9wCyxGj6GRqa2shBUOm4VPjZjuymRH8BNdfz0tGbievKzKs5Kl8vh
- TG/AMiCqnJLmGTU/XxT4LTx0lrCYiXBebcXa1jNqsGlnBG+IiFmKkpyT7dELDo+wmD
- QfGMG/djnQcdQ==
+ b=kBpQPLT0aBW0QFdr9HHKiThT8aPMSAnC+p+cLIvT8ysk/F9pV0iLeOTlDkE9VoOjp
+ N9u31NfL5e34VratvW3hQxfciEjEKeZm9LVoSQiA4fFJwt6w+Wwac+9MOiFeZwpu1O
+ lymf4pvwwMjD8939XKf0LToLsAK/ysb+gqD8j1dX4y+CEXpwWtP+XOM2YCv844eEd+
+ 9qxlOqV6wrQ4qd7UMqCAvxbFzDPAgpjqjzyQU3chilaSNljKiGN2agvz9cGnxnJNs9
+ g8kKbJZZleWUKQsfM2rVpg40xAaZl/1Di/PIXkdQIPQ2nEId94p/CUZs4whVoOUz9H
+ xLuBLrZFiAbGQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.17 52/66] ASoC: Intel: sof_sdw: fix quirks for 2022
- HP Spectre x360 13"
-Date: Wed, 30 Mar 2022 07:46:31 -0400
-Message-Id: <20220330114646.1669334-52-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.17 55/66] ALSA: intel-dsp-config: add more ACPI HIDs
+ for ES83x6 devices
+Date: Wed, 30 Mar 2022 07:46:34 -0400
+Message-Id: <20220330114646.1669334-55-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220330114646.1669334-1-sashal@kernel.org>
 References: <20220330114646.1669334-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- tiwai@suse.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>,
- Anthony I Gilea <i@cpp.in>, Rander Wang <rander.wang@intel.com>
+ anthony tonitch <d.tonitch@gmail.com>, Takashi Iwai <tiwai@suse.de>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>, tiwai@suse.com,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>,
+ =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,52 +88,124 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Anthony I Gilea <i@cpp.in>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit ce73ef6ec67104d1fcc4c5911d77ce83288a0998 ]
+[ Upstream commit de24d97fb845ffd2229811ee256438e42b5a8d12 ]
 
-HP changed the DMI identification for 2022 devices:
-Product Name: HP Spectre x360 Conv 13-ap0001na
-Product Name: 8709
-This patch relaxes the DMI_MATCH criterion to work with all versions of this product.
+We only saw ESSX8336 so far, but now with reports of 'ESSX8326' we
+need to expand to a full list. Let's reuse the 'snd_soc_acpi_codecs'
+structure to store the information.
 
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Signed-off-by: Anthony I Gilea <i@cpp.in>
+Reported-by: anthony tonitch <d.tonitch@gmail.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20220304204532.54675-4-pierre-louis.bossart@linux.intel.com
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Acked-by: Takashi Iwai <tiwai@suse.de>
+Link: https://lore.kernel.org/r/20220308192610.392950-8-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soundwire/dmi-quirks.c   | 2 +-
- sound/soc/intel/boards/sof_sdw.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ sound/hda/intel-dsp-config.c | 31 ++++++++++++++++++++++---------
+ 1 file changed, 22 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/soundwire/dmi-quirks.c b/drivers/soundwire/dmi-quirks.c
-index 0ca2a3e3a02e..747983743a14 100644
---- a/drivers/soundwire/dmi-quirks.c
-+++ b/drivers/soundwire/dmi-quirks.c
-@@ -59,7 +59,7 @@ static const struct dmi_system_id adr_remap_quirk_table[] = {
+diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
+index 4fb90ceb4053..b9b7bf5a5553 100644
+--- a/sound/hda/intel-dsp-config.c
++++ b/sound/hda/intel-dsp-config.c
+@@ -11,6 +11,7 @@
+ #include <sound/core.h>
+ #include <sound/intel-dsp-config.h>
+ #include <sound/intel-nhlt.h>
++#include <sound/soc-acpi.h>
+ 
+ static int dsp_driver;
+ 
+@@ -31,7 +32,12 @@ struct config_entry {
+ 	u16 device;
+ 	u8 acpi_hid[ACPI_ID_LEN];
+ 	const struct dmi_system_id *dmi_table;
+-	u8 codec_hid[ACPI_ID_LEN];
++	const struct snd_soc_acpi_codecs *codec_hid;
++};
++
++static const struct snd_soc_acpi_codecs __maybe_unused essx_83x6 = {
++	.num_codecs = 3,
++	.codecs = { "ESSX8316", "ESSX8326", "ESSX8336"},
+ };
+ 
+ /*
+@@ -77,7 +83,7 @@ static const struct config_entry config_table[] = {
  	{
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "HP"),
--			DMI_MATCH(DMI_PRODUCT_NAME, "HP Spectre x360 Convertible"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "HP Spectre x360 Conv"),
- 		},
- 		.driver_data = (void *)intel_tgl_bios,
+ 		.flags = FLAG_SOF,
+ 		.device = 0x5a98,
+-		.codec_hid = "ESSX8336",
++		.codec_hid =  &essx_83x6,
  	},
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index da515eb1ddbe..1f00679b4240 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -185,7 +185,7 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
- 		.callback = sof_sdw_quirk_cb,
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "HP"),
--			DMI_MATCH(DMI_PRODUCT_NAME, "HP Spectre x360 Convertible"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "HP Spectre x360 Conv"),
- 		},
- 		.driver_data = (void *)(SOF_SDW_TGL_HDMI |
- 					SOF_SDW_PCH_DMIC |
+ #endif
+ #if IS_ENABLED(CONFIG_SND_SOC_INTEL_APL)
+@@ -163,7 +169,7 @@ static const struct config_entry config_table[] = {
+ 	{
+ 		.flags = FLAG_SOF,
+ 		.device = 0x3198,
+-		.codec_hid = "ESSX8336",
++		.codec_hid =  &essx_83x6,
+ 	},
+ #endif
+ 
+@@ -251,7 +257,7 @@ static const struct config_entry config_table[] = {
+ 	{
+ 		.flags = FLAG_SOF,
+ 		.device = 0x02c8,
+-		.codec_hid = "ESSX8336",
++		.codec_hid =  &essx_83x6,
+ 	},
+ 	{
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+@@ -280,7 +286,7 @@ static const struct config_entry config_table[] = {
+ 	{
+ 		.flags = FLAG_SOF,
+ 		.device = 0x06c8,
+-		.codec_hid = "ESSX8336",
++		.codec_hid =  &essx_83x6,
+ 	},
+ 	{
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+@@ -327,7 +333,7 @@ static const struct config_entry config_table[] = {
+ 	{
+ 		.flags = FLAG_SOF,
+ 		.device = 0x4dc8,
+-		.codec_hid = "ESSX8336",
++		.codec_hid =  &essx_83x6,
+ 	},
+ 	{
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC,
+@@ -353,7 +359,7 @@ static const struct config_entry config_table[] = {
+ 	{
+ 		.flags = FLAG_SOF,
+ 		.device = 0xa0c8,
+-		.codec_hid = "ESSX8336",
++		.codec_hid =  &essx_83x6,
+ 	},
+ 	{
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+@@ -414,8 +420,15 @@ static const struct config_entry *snd_intel_dsp_find_config
+ 			continue;
+ 		if (table->dmi_table && !dmi_check_system(table->dmi_table))
+ 			continue;
+-		if (table->codec_hid[0] && !acpi_dev_present(table->codec_hid, NULL, -1))
+-			continue;
++		if (table->codec_hid) {
++			int i;
++
++			for (i = 0; i < table->codec_hid->num_codecs; i++)
++				if (acpi_dev_present(table->codec_hid->codecs[i], NULL, -1))
++					break;
++			if (i == table->codec_hid->num_codecs)
++				continue;
++		}
+ 		return table;
+ 	}
+ 	return NULL;
 -- 
 2.34.1
 
