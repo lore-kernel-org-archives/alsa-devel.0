@@ -4,61 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CBA40C433FE
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Mar 2022 11:55:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21F31C43217
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Mar 2022 11:55:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EC70018D5;
-	Wed, 30 Mar 2022 13:54:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC70018D5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3AF9C18CE;
+	Wed, 30 Mar 2022 13:54:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3AF9C18CE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648641305;
-	bh=qMSq2ZM7H+t3XIYKOQd73sqX230ds6e20YdaLYU4CE0=;
+	s=default; t=1648641324;
+	bh=HHjBaMZZNUVS7HlclTpFmCYSIBZArxrZX0QEnHO+Zzk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EtarWbvYdB6GzmkqOWeST5t+JbwGHgIh8wvjdsFhsfHpexzpRt98JY7CcbzZK9B7N
-	 PMTErQup/OcvFfJCS3uHswbkCG3DQFGKRCv5hEnNcrtAEvEkWGhY6oV0bMti+Fgq3n
-	 Aa0rfen8MNLjusDh9dMbSdemFffep550s5xHLEMU=
+	b=Ph7KJVq9kQk0xqY0iZ+wmJ+bSRZewT7YOpY8MBMvQxHqJAObEDQByYTv2XOUB19wH
+	 YbcqVhMBO5nVfW1WC2ytO9gQl0t95tvPh6RDcewBCqNtKOiZTRI1q/VZh7PSkry2Bc
+	 SxiIWXGyiRidV1mmWcOfzi8LsrT3UXp2cuzBD1DA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C18AEF805C9;
-	Wed, 30 Mar 2022 13:48:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DD370F80517;
+	Wed, 30 Mar 2022 13:48:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ABC17F805DA; Wed, 30 Mar 2022 13:48:48 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 5F9D1F80524; Wed, 30 Mar 2022 13:48:50 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3FED1F805C9
- for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2022 13:48:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3FED1F805C9
+ by alsa1.perex.cz (Postfix) with ESMTPS id DC9A7F805D7
+ for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2022 13:48:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC9A7F805D7
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="X+Pc8kSf"
+ header.b="Ngt4D4eP"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id A8DB5B81C29;
- Wed, 30 Mar 2022 11:48:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06922C36AE3;
- Wed, 30 Mar 2022 11:48:43 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 9F40661626;
+ Wed, 30 Mar 2022 11:48:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC384C36AE2;
+ Wed, 30 Mar 2022 11:48:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1648640925;
- bh=qMSq2ZM7H+t3XIYKOQd73sqX230ds6e20YdaLYU4CE0=;
+ s=k20201202; t=1648640922;
+ bh=HHjBaMZZNUVS7HlclTpFmCYSIBZArxrZX0QEnHO+Zzk=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=X+Pc8kSfrsdtamEMikiNN2EfvAQ84TM2JNc+39J28G1kzot6loz236yEm+bKiGy/n
- I3GyZJIyqXkjzjUkMOcOcT4RhPiJS3+OdZDn50tjW7zKqSQ7nTrqf0edMMi/TlJK/u
- PMy8TQm9qWsSD9xMBAL5U8thzJnXM8vZU6d4bjD8IrwnjsI2o1zR+cVMKv+8a8iNNR
- 6V+rtMvRW9BrlDYUb5dlGu5lls5BBDZmJEx2vAm5W4ec9gUhoLFtq7S6HNeBvdorT7
- 91oc7GG+UsMhIMgRfhEvF1SOAF9HKhadcxAzetbBkH6MVt1HvdRZHdaI1dfsyqpRQH
- OtWpR2v03x0LQ==
+ b=Ngt4D4eP2xmEVf7N4D2jMAB/G1k/9cAsJWgUyUAsJEkdUgNEyEk47qVUQHeqp2p3u
+ YwGatRF0uVDsy+96yiJZzb1piO/qxzXkJ/YQFfkK0yGoGCHS+AANuzL4Hz5AmSFrQg
+ /kLJgndJnbCZ4YlUyZ8tXP5QxzALQuOEFYeek62mv+3+lCvI7vudlXKLw4msjrUFJn
+ 3InEEkziYHkQPasD0EcKpBBKbvFLfOIireV/lEvi2EA+FHp6X/FzOYRwP2D5IAFQxk
+ shzOrwMmVyX/PRwMWf97cSIFRzBWoAngH7DDyrJXaXv6K9zv2jVHttWHMjIgp9PvFW
+ 8ObFuoffpiXcg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.16 08/59] ASoC: SOF: Intel: match sdw version on
- link_slaves_found
-Date: Wed, 30 Mar 2022 07:47:40 -0400
-Message-Id: <20220330114831.1670235-8-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.16 06/59] ASoC: sh: rz-ssi: Make the data structures
+ available before registering the handlers
+Date: Wed, 30 Mar 2022 07:47:38 -0400
+Message-Id: <20220330114831.1670235-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220330114831.1670235-1-sashal@kernel.org>
 References: <20220330114831.1670235-1-sashal@kernel.org>
@@ -67,12 +68,9 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- lgirdwood@gmail.com, tiwai@suse.com,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Mark Brown <broonie@kernel.org>, Reddy Muralidhar <muralidhar.reddy@intel.com>,
- Rander Wang <rander.wang@intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>
+ Pavel Machek <pavel@denx.de>, tiwai@suse.com, lgirdwood@gmail.com,
+ Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+ Mark Brown <broonie@kernel.org>, Biju Das <biju.das.jz@bp.renesas.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,83 +86,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
+From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-[ Upstream commit f67c0c0d3b9048d86ea6ae52e36a2b78c48f265d ]
+[ Upstream commit 0788785c78342d422f93b1c9831c2b2b7f137937 ]
 
-Codecs with the same part id, manufacturer id and part id, but different
-sdw version should be treated as different codecs. For example, rt711 and
-rt711-sdca are different. So, we should match sdw version as well.
+Initialize the spinlock and make the data structures available before
+registering the interrupt handlers.
 
-Reported-by: Reddy Muralidhar <muralidhar.reddy@intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20220120232157.199919-2-pierre-louis.bossart@linux.intel.com
+Reported-by: Pavel Machek <pavel@denx.de>
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+Link: https://lore.kernel.org/r/20220110094711.8574-3-prabhakar.mahadev-lad.rj@bp.renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sof/intel/hda.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
+ sound/soc/sh/rz-ssi.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 25200a0e1dc9..fc88296ab898 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -1200,7 +1200,7 @@ static bool link_slaves_found(struct snd_sof_dev *sdev,
- 	struct hdac_bus *bus = sof_to_bus(sdev);
- 	struct sdw_intel_slave_id *ids = sdw->ids;
- 	int num_slaves = sdw->num_slaves;
--	unsigned int part_id, link_id, unique_id, mfg_id;
-+	unsigned int part_id, link_id, unique_id, mfg_id, version;
- 	int i, j, k;
+diff --git a/sound/soc/sh/rz-ssi.c b/sound/soc/sh/rz-ssi.c
+index fa0cc08f70ec..f6ba00bfcc80 100644
+--- a/sound/soc/sh/rz-ssi.c
++++ b/sound/soc/sh/rz-ssi.c
+@@ -975,6 +975,9 @@ static int rz_ssi_probe(struct platform_device *pdev)
+ 	ssi->playback.priv = ssi;
+ 	ssi->capture.priv = ssi;
  
- 	for (i = 0; i < link->num_adr; i++) {
-@@ -1210,12 +1210,14 @@ static bool link_slaves_found(struct snd_sof_dev *sdev,
- 		mfg_id = SDW_MFG_ID(adr);
- 		part_id = SDW_PART_ID(adr);
- 		link_id = SDW_DISCO_LINK_ID(adr);
-+		version = SDW_VERSION(adr);
++	spin_lock_init(&ssi->lock);
++	dev_set_drvdata(&pdev->dev, ssi);
++
+ 	/* Error Interrupt */
+ 	ssi->irq_int = platform_get_irq_byname(pdev, "int_req");
+ 	if (ssi->irq_int < 0)
+@@ -1022,8 +1025,6 @@ static int rz_ssi_probe(struct platform_device *pdev)
+ 	pm_runtime_enable(&pdev->dev);
+ 	pm_runtime_resume_and_get(&pdev->dev);
  
- 		for (j = 0; j < num_slaves; j++) {
- 			/* find out how many identical parts were reported on that link */
- 			if (ids[j].link_id == link_id &&
- 			    ids[j].id.part_id == part_id &&
--			    ids[j].id.mfg_id == mfg_id)
-+			    ids[j].id.mfg_id == mfg_id &&
-+			    ids[j].id.sdw_version == version)
- 				reported_part_count++;
- 		}
- 
-@@ -1224,21 +1226,24 @@ static bool link_slaves_found(struct snd_sof_dev *sdev,
- 
- 			if (ids[j].link_id != link_id ||
- 			    ids[j].id.part_id != part_id ||
--			    ids[j].id.mfg_id != mfg_id)
-+			    ids[j].id.mfg_id != mfg_id ||
-+			    ids[j].id.sdw_version != version)
- 				continue;
- 
- 			/* find out how many identical parts are expected */
- 			for (k = 0; k < link->num_adr; k++) {
- 				u64 adr2 = link->adr_d[k].adr;
--				unsigned int part_id2, link_id2, mfg_id2;
-+				unsigned int part_id2, link_id2, mfg_id2, version2;
- 
- 				mfg_id2 = SDW_MFG_ID(adr2);
- 				part_id2 = SDW_PART_ID(adr2);
- 				link_id2 = SDW_DISCO_LINK_ID(adr2);
-+				version2 = SDW_VERSION(adr2);
- 
- 				if (link_id2 == link_id &&
- 				    part_id2 == part_id &&
--				    mfg_id2 == mfg_id)
-+				    mfg_id2 == mfg_id &&
-+				    version2 == version)
- 					expected_part_count++;
- 			}
- 
+-	spin_lock_init(&ssi->lock);
+-	dev_set_drvdata(&pdev->dev, ssi);
+ 	ret = devm_snd_soc_register_component(&pdev->dev, &rz_ssi_soc_component,
+ 					      rz_ssi_soc_dai,
+ 					      ARRAY_SIZE(rz_ssi_soc_dai));
 -- 
 2.34.1
 
