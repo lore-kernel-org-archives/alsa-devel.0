@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E1D0C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Mar 2022 12:01:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05344C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Mar 2022 12:01:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BA6A41957;
-	Wed, 30 Mar 2022 14:00:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA6A41957
+	by alsa0.perex.cz (Postfix) with ESMTPS id 477C7193B;
+	Wed, 30 Mar 2022 14:00:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 477C7193B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648641666;
-	bh=73n2kpjKjVfcEIGK9ACsjcNs/FDx2rkxpRD6WZBYkQM=;
+	s=default; t=1648641686;
+	bh=I6aGqWjrqvnZkEehH1G0+jL/Sh2jVVvHMXxT5JjDfXE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=N0o2RLaEimslDazrV8qd5tbyF91Tv1/3tJXkk2gPr2VfxQiqEivPzRO6qXKu3BAsy
-	 X/RSOIEFFoVaN1TYgbdREgQS/9guzo1GhhP5egYwCcEg5fr2gJ3ZJkdaNA0OI27bad
-	 wufakthGSkevLI3V4ck8dGYVyEzjIHqqVc3XhYS8=
+	b=mai9ClM4uE+d8YnUt9+Jd/b7QrJ7aW/f4sDuypsSxnMks3Y4HwHOnAB1MeUDsLGBm
+	 m3XDOe2b20XdV9DE5s6Cre4B5+63AqKsFyWrJfIGOGH9Ffkb6RCH/xSSbRhENgkVld
+	 cjArQJ5M8SGzg8k8OvgtHRjOzk+wYWCDVEVfl/u8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8DA3CF80621;
-	Wed, 30 Mar 2022 13:50:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 599F8F8053A;
+	Wed, 30 Mar 2022 13:50:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A0D1BF80620; Wed, 30 Mar 2022 13:50:25 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 2717DF8053B; Wed, 30 Mar 2022 13:50:49 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9A0D0F8053E
- for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2022 13:50:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A0D0F8053E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3E241F8025A
+ for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2022 13:50:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E241F8025A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="XUhqZSnw"
+ header.b="GKvjqnYH"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 89CF36162F;
- Wed, 30 Mar 2022 11:50:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02B4AC340F2;
- Wed, 30 Mar 2022 11:50:15 +0000 (UTC)
+ by sin.source.kernel.org (Postfix) with ESMTPS id 1A0E9CE1D40;
+ Wed, 30 Mar 2022 11:50:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C25BC36AE5;
+ Wed, 30 Mar 2022 11:50:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1648641017;
- bh=73n2kpjKjVfcEIGK9ACsjcNs/FDx2rkxpRD6WZBYkQM=;
+ s=k20201202; t=1648641036;
+ bh=I6aGqWjrqvnZkEehH1G0+jL/Sh2jVVvHMXxT5JjDfXE=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=XUhqZSnwvEYFw4GlhGq4mO3Srn8HeFbk36kMvuyavIN1eV6GTj9gyM5djx0Hy3fgk
- 7hXQ7kQOYmNulifrVDD/vc6VFv+jiSrUTs4KPEi4Pt70zRTvX3fzPiYqHqLyUCGicl
- 4jesOWpITNbCUsdGTjZeFCnkcFPgeK5qdBuv7zrTSuXDFeYbWKnl78UWlxHHFanhEK
- 0p9GkOMkXzl7/cdHKqeTP8bKRf01RwbQue8nzuZH9GZT+YvLeCgLYaQbZeOmHTMsM2
- 8DiZii7Kp7GIQ9m/rc+E78OpLxlovfhyTc2behJU4YpxZENxYOVy7SVp+3Citf/Sk4
- tNNyT7sNSULng==
+ b=GKvjqnYHg5/V95XG7llIBj9tdf7G/en/yIUUC9ddTUeSpp7EFK1YkHRiGnc4DadG/
+ 7SyBS0XCB5gXOsL0NHg7jA3xvdSjl1Z8ebvNfbVA1YBt7rWuy/T0SwZ2HRksO6bsF8
+ 9gItuWot3d9lLjU2SaCgSqVx03lMDvX60wA20gw0Sm0/CJ0KXf8XHxw5kj2VLA2KaX
+ DrjtJp0CryBbUXAuPMfICYhQp0ww/wtK1ysn39nstHXCLJL9OB9M3JOqAgiFcDQ7aB
+ e5P+GG3Qt1Bn7gYSVnBWaMrpgCGW+dStfb7gA8PB8z8xWojKkZtslvu4qaX9No6WsQ
+ sAQwuY70Wzvrw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 07/50] ASoC: SOF: Intel: match sdw version on
- link_slaves_found
-Date: Wed, 30 Mar 2022 07:49:21 -0400
-Message-Id: <20220330115005.1671090-7-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 19/50] ASoC: madera: Add dependencies on MFD
+Date: Wed, 30 Mar 2022 07:49:33 -0400
+Message-Id: <20220330115005.1671090-19-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220330115005.1671090-1-sashal@kernel.org>
 References: <20220330115005.1671090-1-sashal@kernel.org>
@@ -67,12 +67,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- lgirdwood@gmail.com, tiwai@suse.com,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Mark Brown <broonie@kernel.org>, Reddy Muralidhar <muralidhar.reddy@intel.com>,
- Rander Wang <rander.wang@intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>
+ Charles Keepax <ckeepax@opensource.cirrus.com>, tiwai@suse.com,
+ lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,83 +84,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-[ Upstream commit f67c0c0d3b9048d86ea6ae52e36a2b78c48f265d ]
+[ Upstream commit ec29170c724ca30305fc3a19ba2ee73ecac65509 ]
 
-Codecs with the same part id, manufacturer id and part id, but different
-sdw version should be treated as different codecs. For example, rt711 and
-rt711-sdca are different. So, we should match sdw version as well.
+The Madera CODECs use regmap_irq functions but nothing ensures that
+regmap_irq is built into the kernel. Add dependencies on the ASoC
+symbols for the relevant MFD component. There is no point in building
+the ASoC driver if the MFD doesn't support it and the MFD part contains
+the necessary dependencies to ensure everything is built into the
+kernel.
 
-Reported-by: Reddy Muralidhar <muralidhar.reddy@intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20220120232157.199919-2-pierre-louis.bossart@linux.intel.com
+Reported-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20220203115025.16464-1-ckeepax@opensource.cirrus.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sof/intel/hda.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
+ sound/soc/codecs/Kconfig | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index ef92cca7ae01..ddf70902e53c 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -1072,7 +1072,7 @@ static bool link_slaves_found(struct snd_sof_dev *sdev,
- 	struct hdac_bus *bus = sof_to_bus(sdev);
- 	struct sdw_intel_slave_id *ids = sdw->ids;
- 	int num_slaves = sdw->num_slaves;
--	unsigned int part_id, link_id, unique_id, mfg_id;
-+	unsigned int part_id, link_id, unique_id, mfg_id, version;
- 	int i, j, k;
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index f12c9b942678..47e675e8bd00 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -690,6 +690,7 @@ config SND_SOC_CS4349
  
- 	for (i = 0; i < link->num_adr; i++) {
-@@ -1082,12 +1082,14 @@ static bool link_slaves_found(struct snd_sof_dev *sdev,
- 		mfg_id = SDW_MFG_ID(adr);
- 		part_id = SDW_PART_ID(adr);
- 		link_id = SDW_DISCO_LINK_ID(adr);
-+		version = SDW_VERSION(adr);
+ config SND_SOC_CS47L15
+ 	tristate
++	depends on MFD_CS47L15
  
- 		for (j = 0; j < num_slaves; j++) {
- 			/* find out how many identical parts were reported on that link */
- 			if (ids[j].link_id == link_id &&
- 			    ids[j].id.part_id == part_id &&
--			    ids[j].id.mfg_id == mfg_id)
-+			    ids[j].id.mfg_id == mfg_id &&
-+			    ids[j].id.sdw_version == version)
- 				reported_part_count++;
- 		}
+ config SND_SOC_CS47L24
+ 	tristate
+@@ -697,15 +698,19 @@ config SND_SOC_CS47L24
  
-@@ -1096,21 +1098,24 @@ static bool link_slaves_found(struct snd_sof_dev *sdev,
+ config SND_SOC_CS47L35
+ 	tristate
++	depends on MFD_CS47L35
  
- 			if (ids[j].link_id != link_id ||
- 			    ids[j].id.part_id != part_id ||
--			    ids[j].id.mfg_id != mfg_id)
-+			    ids[j].id.mfg_id != mfg_id ||
-+			    ids[j].id.sdw_version != version)
- 				continue;
+ config SND_SOC_CS47L85
+ 	tristate
++	depends on MFD_CS47L85
  
- 			/* find out how many identical parts are expected */
- 			for (k = 0; k < link->num_adr; k++) {
- 				u64 adr2 = link->adr_d[k].adr;
--				unsigned int part_id2, link_id2, mfg_id2;
-+				unsigned int part_id2, link_id2, mfg_id2, version2;
+ config SND_SOC_CS47L90
+ 	tristate
++	depends on MFD_CS47L90
  
- 				mfg_id2 = SDW_MFG_ID(adr2);
- 				part_id2 = SDW_PART_ID(adr2);
- 				link_id2 = SDW_DISCO_LINK_ID(adr2);
-+				version2 = SDW_VERSION(adr2);
+ config SND_SOC_CS47L92
+ 	tristate
++	depends on MFD_CS47L92
  
- 				if (link_id2 == link_id &&
- 				    part_id2 == part_id &&
--				    mfg_id2 == mfg_id)
-+				    mfg_id2 == mfg_id &&
-+				    version2 == version)
- 					expected_part_count++;
- 			}
- 
+ # Cirrus Logic Quad-Channel ADC
+ config SND_SOC_CS53L30
 -- 
 2.34.1
 
