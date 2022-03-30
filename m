@@ -4,70 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77D71C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Mar 2022 08:20:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7A4BC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Mar 2022 08:22:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ABD83174D;
-	Wed, 30 Mar 2022 10:19:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ABD83174D
+	by alsa0.perex.cz (Postfix) with ESMTPS id EB34616FC;
+	Wed, 30 Mar 2022 10:21:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB34616FC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648628443;
-	bh=UixZDeRTrhsKgzzqeAfm88dzf7voTXF+9DAsFdXgx0E=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1648628528;
+	bh=m3bXBYtGuizT4HU/1XKYd+KGzPFBrk1IXh76PVloyT8=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=odIZ6ubkvm5hCt4Tj6YpHm3y01hlp7xINNhOgwP3wx7yjO8E5/7tOz35fTiM6yJuz
-	 RY2xmLWbgZQfzRHSbXpLP+4Cc3D1wgy4zCXzsoA/gVVdQ9O9Cb9WT1vX+USfLoKEAV
-	 ZlkVfFFk8SmmYWi+IHiD2x+bssTCehXk0rehDntc=
+	b=tW2Jyn3XfsXLvCvJVD9jsLO3uGpLmf9CpahYoHVAtN/3JO0ocGwQtI01v0J5andG2
+	 k7nEuk67KxLIYG051E+Ca8NGzX7da5NCXbMU0M3Ag3jnj+QfPsYEoMI1IQaAv7p60Y
+	 0JnKgUgxQ7KFdhtYnoN1PuUnSVTuoXx5tKA72dWs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 68DFBF8025A;
-	Wed, 30 Mar 2022 10:19:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 94487F80425;
+	Wed, 30 Mar 2022 10:21:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 141FFF80311; Wed, 30 Mar 2022 00:30:18 +0200 (CEST)
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk
- [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id D8E34F804B4; Wed, 30 Mar 2022 10:21:15 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D894DF80121
- for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2022 00:30:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D894DF80121
+ by alsa1.perex.cz (Postfix) with ESMTPS id AB949F80253
+ for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2022 10:21:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB949F80253
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com
- header.b="dyeLb4CU"
-Received: from [127.0.0.1] (localhost [127.0.0.1])
- (Authenticated sender: nfraprado) with ESMTPSA id BDAD71F441AF
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
- s=mail; t=1648593008;
- bh=UixZDeRTrhsKgzzqeAfm88dzf7voTXF+9DAsFdXgx0E=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=dyeLb4CUcnoS6OTYufOPl9rds549X/ysJ1Nkf+RZtUFca1Wj4/mSy5TeTvJjyrtTV
- h8zlfY5lMwt8dNnnPWBZBQEnccS7ul1GfzKC1ojCH8NgTaEKTPR/3wvFBxFwOlJw27
- Njd0g1n7M7+95c+9BodNYbmVV4wF3nSyF4m98mg4irkgx7GITVIeJLDgeMYsIIwjEU
- U4YvwVgVfZuutU/VXE2Z+TdBIlqcUPpWphH8igtk0YQw9QzKmSmxawnpSX+M5/9YUQ
- lkzlRUYWtAK2qKXyht+fHU0jFkWJDV2/2PhPCRx37pRxzJJiYlONUwevIUMPLNh92F
- S0x7VC5ezhgvQ==
-Date: Tue, 29 Mar 2022 18:30:02 -0400
-From: =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado <nfraprado@collabora.com>
-To: Jiaxin Yu <jiaxin.yu@mediatek.com>
-Subject: Re: [v7 2/4] ASoC: mediatek: mt8192: refactor for I2S3 DAI link of
- speaker
-Message-ID: <20220329223002.uo7kiemopkh7ak4x@notapiano>
-References: <20220324064511.10665-1-jiaxin.yu@mediatek.com>
- <20220324064511.10665-3-jiaxin.yu@mediatek.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220324064511.10665-3-jiaxin.yu@mediatek.com>
-X-Mailman-Approved-At: Wed, 30 Mar 2022 10:19:17 +0200
-Cc: devicetree@vger.kernel.org, linmq006@gmail.com, alsa-devel@alsa-project.org,
- robh+dt@kernel.org, linux-kernel@vger.kernel.org,
- Project_Global_Chrome_Upstream_Group@mediatek.com, tzungbi@google.com,
- broonie@kernel.org, linux-mediatek@lists.infradead.org, trevor.wu@mediatek.com,
- Tzung-Bi Shih <tzungbi@kernel.org>, matthias.bgg@gmail.com, aaronyu@google.com,
- linux-arm-kernel@lists.infradead.org, angelogioacchino.delregno@collabora.com
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="P6DRSmJO"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="1cthgBtX"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 8B5201F86B;
+ Wed, 30 Mar 2022 08:21:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1648628469; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=JZqpMZhlCgF2AWsu+Wq2l6pQPVihV5vbzAZIPvQvkpk=;
+ b=P6DRSmJOVf7Vt858EakxkCUkSH3NaDE3Ipe4F9v3z8Q3n1BltUFCOoXst/Izqt6plHgqDD
+ J1U0aSPIrAUlc6XeW5eDfRMYq/mJPbXAyJ417RuH0rgrLkRupcWccIAZLieKdpFg/79xf2
+ 5esi4G+YmpqqT6ykGXsopfOPfU9+QMM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1648628469;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=JZqpMZhlCgF2AWsu+Wq2l6pQPVihV5vbzAZIPvQvkpk=;
+ b=1cthgBtX0KqqTG8I7YTX0nCdrUyLGezaYJ1+7ERJ1wJ8QVY0VjcFYdL2Q7ffpd+rHOMRLQ
+ XXBkoT3LIMLEWkDQ==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 76E45A3BA9;
+ Wed, 30 Mar 2022 08:21:09 +0000 (UTC)
+Date: Wed, 30 Mar 2022 10:21:09 +0200
+Message-ID: <s5hv8vvhmve.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Mohan Kumar <mkumard@nvidia.com>
+Subject: Re: [PATCH] ALSA: hda: Avoid unsol event during RPM suspending
+In-Reply-To: <20220329155940.26331-1-mkumard@nvidia.com>
+References: <20220329155940.26331-1-mkumard@nvidia.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: jonathanh@nvidia.com, alsa-devel@alsa-project.org,
+ kai.vehmanen@linux.intel.com, linux-kernel@vger.kernel.org, tiwai@suse.com,
+ thierry.reding@gmail.com, ville.syrjala@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,206 +89,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Jiaxin,
-
-On Thu, Mar 24, 2022 at 02:45:09PM +0800, Jiaxin Yu wrote:
-> MT8192 platform will use rt1015 or rt105p codec, so through the
-> snd_soc_of_get_dai_link_codecs() to complete the configuration
-> of dai_link's codecs.
+On Tue, 29 Mar 2022 17:59:40 +0200,
+Mohan Kumar wrote:
 > 
-> Signed-off-by: Jiaxin Yu <jiaxin.yu@mediatek.com>
-> Reviewed-by: Tzung-Bi Shih <tzungbi@kernel.org>
-> ---
->  .../mt8192/mt8192-mt6359-rt1015-rt5682.c      | 108 ++++++++++--------
->  1 file changed, 59 insertions(+), 49 deletions(-)
+> There is a corner case with unsol event handling during codec runtime
+> suspending state. When the codec runtime suspend call initiated, the
+> codec->in_pm atomic variable would be 0, currently the codec runtime
+> suspend function calls snd_hdac_enter_pm() which will just increments
+> the codec->in_pm atomic variable. Consider unsol event happened just
+> after this step and before snd_hdac_leave_pm() in the codec runtime
+> suspend function. The snd_hdac_power_up_pm() in the unsol event
+> flow in hdmi_present_sense_via_verbs() function would just increment
+> the codec->in_pm atomic variable without calling pm_runtime_get_sync
+> function.
 > 
-> diff --git a/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c b/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c
-> index ee91569c0911..837c2ccd5b3d 100644
-> --- a/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c
-> +++ b/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c
-> @@ -604,17 +604,9 @@ SND_SOC_DAILINK_DEFS(i2s2,
->  		     DAILINK_COMP_ARRAY(COMP_DUMMY()),
->  		     DAILINK_COMP_ARRAY(COMP_EMPTY()));
->  
-> -SND_SOC_DAILINK_DEFS(i2s3_rt1015,
-> +SND_SOC_DAILINK_DEFS(i2s3,
->  		     DAILINK_COMP_ARRAY(COMP_CPU("I2S3")),
-> -		     DAILINK_COMP_ARRAY(COMP_CODEC(RT1015_DEV0_NAME,
-> -						   RT1015_CODEC_DAI),
-> -					COMP_CODEC(RT1015_DEV1_NAME,
-> -						   RT1015_CODEC_DAI)),
-> -		     DAILINK_COMP_ARRAY(COMP_EMPTY()));
-> -
-> -SND_SOC_DAILINK_DEFS(i2s3_rt1015p,
-> -		     DAILINK_COMP_ARRAY(COMP_CPU("I2S3")),
-> -		     DAILINK_COMP_ARRAY(COMP_CODEC("rt1015p", "HiFi")),
-> +		     DAILINK_COMP_ARRAY(COMP_EMPTY()),
->  		     DAILINK_COMP_ARRAY(COMP_EMPTY()));
->  
->  SND_SOC_DAILINK_DEFS(i2s5,
-> @@ -929,6 +921,7 @@ static struct snd_soc_dai_link mt8192_mt6359_dai_links[] = {
->  		.dpcm_playback = 1,
->  		.ignore_suspend = 1,
->  		.be_hw_params_fixup = mt8192_i2s_hw_params_fixup,
-> +		SND_SOC_DAILINK_REG(i2s3),
->  	},
->  	{
->  		.name = "I2S5",
-> @@ -1100,55 +1093,64 @@ static struct snd_soc_card mt8192_mt6359_rt1015p_rt5682_card = {
->  	.num_dapm_routes = ARRAY_SIZE(mt8192_mt6359_rt1015p_rt5682_routes),
->  };
->  
-> +static int mt8192_mt6359_card_set_be_link(struct snd_soc_card *card,
-> +					  struct snd_soc_dai_link *link,
-> +					  struct device_node *node,
-> +					  char *link_name)
-> +{
-> +	int ret;
-> +
-> +	if (node && strcmp(link->name, link_name) == 0) {
-> +		ret = snd_soc_of_get_dai_link_codecs(card->dev, node, link);
-> +		if (ret < 0) {
-> +			dev_err_probe(card->dev, ret, "get dai link codecs fail\n");
-> +			return ret;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static int mt8192_mt6359_dev_probe(struct platform_device *pdev)
->  {
->  	struct snd_soc_card *card;
-> -	struct device_node *platform_node, *hdmi_codec;
-> +	struct device_node *platform_node, *hdmi_codec, *speaker_codec;
->  	int ret, i;
->  	struct snd_soc_dai_link *dai_link;
->  	struct mt8192_mt6359_priv *priv;
->  
-> -	platform_node = of_parse_phandle(pdev->dev.of_node,
-> -					 "mediatek,platform", 0);
-> -	if (!platform_node) {
-> -		dev_err(&pdev->dev, "Property 'platform' missing or invalid\n");
-> +	card = (struct snd_soc_card *)of_device_get_match_data(&pdev->dev);
-> +	if (!card)
->  		return -EINVAL;
-> +	card->dev = &pdev->dev;
-> +
-> +	platform_node = of_parse_phandle(pdev->dev.of_node, "mediatek,platform", 0);
-> +	if (!platform_node) {
-> +		ret = -EINVAL;
-> +		dev_err_probe(&pdev->dev, ret, "Property 'platform' missing or invalid\n");
-> +		goto err_platform_node;
->  	}
->  
-> -	card = (struct snd_soc_card *)of_device_get_match_data(&pdev->dev);
-> -	if (!card) {
-> +	hdmi_codec = of_parse_phandle(pdev->dev.of_node, "mediatek,hdmi-codec", 0);
-> +	if (!hdmi_codec) {
->  		ret = -EINVAL;
-> -		goto put_platform_node;
-> +		dev_err_probe(&pdev->dev, ret, "Property 'hdmi-codec' missing or invalid\n");
-> +		goto err_hdmi_codec;
-
-You're making hdmi-codec a required property, since now the driver fails to
-probe without it. Is it really required though? The driver code still checks for
-the presence of hdmi_codec before using it, so shouldn't it be fine to let it be
-optional?
-
-If it is really required now though, then I guess at least the dt-binding should
-be updated accordingly. (Although I think this would technically break the ABI?)
-
-Thanks,
-Nícolas
-
->  	}
-> -	card->dev = &pdev->dev;
->  
-> -	hdmi_codec = of_parse_phandle(pdev->dev.of_node,
-> -				      "mediatek,hdmi-codec", 0);
-> +	speaker_codec = of_get_child_by_name(pdev->dev.of_node, "speaker-codecs");
-> +	if (!speaker_codec) {
-> +		ret = -EINVAL;
-> +		dev_err_probe(&pdev->dev, ret, "Property 'speaker-codecs' missing or invalid\n");
-> +		goto err_speaker_codec;
-> +	}
->  
->  	for_each_card_prelinks(card, i, dai_link) {
-> -		if (strcmp(dai_link->name, "I2S3") == 0) {
-> -			if (card == &mt8192_mt6359_rt1015_rt5682_card) {
-> -				dai_link->ops = &mt8192_rt1015_i2s_ops;
-> -				dai_link->cpus = i2s3_rt1015_cpus;
-> -				dai_link->num_cpus =
-> -					ARRAY_SIZE(i2s3_rt1015_cpus);
-> -				dai_link->codecs = i2s3_rt1015_codecs;
-> -				dai_link->num_codecs =
-> -					ARRAY_SIZE(i2s3_rt1015_codecs);
-> -				dai_link->platforms = i2s3_rt1015_platforms;
-> -				dai_link->num_platforms =
-> -					ARRAY_SIZE(i2s3_rt1015_platforms);
-> -			} else if (card == &mt8192_mt6359_rt1015p_rt5682_card) {
-> -				dai_link->cpus = i2s3_rt1015p_cpus;
-> -				dai_link->num_cpus =
-> -					ARRAY_SIZE(i2s3_rt1015p_cpus);
-> -				dai_link->codecs = i2s3_rt1015p_codecs;
-> -				dai_link->num_codecs =
-> -					ARRAY_SIZE(i2s3_rt1015p_codecs);
-> -				dai_link->platforms = i2s3_rt1015p_platforms;
-> -				dai_link->num_platforms =
-> -					ARRAY_SIZE(i2s3_rt1015p_platforms);
-> -			}
-> +		ret = mt8192_mt6359_card_set_be_link(card, dai_link, speaker_codec, "I2S3");
-> +		if (ret) {
-> +			dev_err_probe(&pdev->dev, ret, "%s set speaker_codec fail\n",
-> +				      dai_link->name);
-> +			goto err_probe;
->  		}
->  
->  		if (hdmi_codec && strcmp(dai_link->name, "TDM") == 0) {
-> @@ -1156,6 +1158,9 @@ static int mt8192_mt6359_dev_probe(struct platform_device *pdev)
->  			dai_link->ignore = 0;
->  		}
->  
-> +		if (strcmp(dai_link->codecs[0].dai_name, RT1015_CODEC_DAI) == 0)
-> +			dai_link->ops = &mt8192_rt1015_i2s_ops;
-> +
->  		if (!dai_link->platforms->name)
->  			dai_link->platforms->of_node = platform_node;
->  	}
-> @@ -1163,22 +1168,27 @@ static int mt8192_mt6359_dev_probe(struct platform_device *pdev)
->  	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
->  	if (!priv) {
->  		ret = -ENOMEM;
-> -		goto put_hdmi_codec;
-> +		goto err_probe;
->  	}
->  	snd_soc_card_set_drvdata(card, priv);
->  
->  	ret = mt8192_afe_gpio_init(&pdev->dev);
->  	if (ret) {
-> -		dev_err(&pdev->dev, "init gpio error %d\n", ret);
-> -		goto put_hdmi_codec;
-> +		dev_err_probe(&pdev->dev, ret, "%s init gpio error\n", __func__);
-> +		goto err_probe;
->  	}
->  
->  	ret = devm_snd_soc_register_card(&pdev->dev, card);
-> +	if (ret)
-> +		dev_err_probe(&pdev->dev, ret, "%s snd_soc_register_card fail\n", __func__);
->  
-> -put_hdmi_codec:
-> +err_probe:
-> +	of_node_put(speaker_codec);
-> +err_speaker_codec:
->  	of_node_put(hdmi_codec);
-> -put_platform_node:
-> +err_hdmi_codec:
->  	of_node_put(platform_node);
-> +err_platform_node:
->  	return ret;
->  }
->  
-> -- 
-> 2.18.0
+> As codec runtime suspend flow is already in progress and in parallel
+> unsol event is also accessing the codec verbs, as soon as codec
+> suspend flow completes and clocks are  switched off before completing
+> the unsol event handling as both functions doesn't wait for each other.
+> This will result in below errors
 > 
+> [  589.428020] tegra-hda 3510000.hda: azx_get_response timeout, switching
+> to polling mode: last cmd=0x505f2f57
+> [  589.428344] tegra-hda 3510000.hda: spurious response 0x80000074:0x5,
+> last cmd=0x505f2f57
+> [  589.428547] tegra-hda 3510000.hda: spurious response 0x80000065:0x5,
+> last cmd=0x505f2f57
 > 
+> To avoid this, the unsol event flow should not perform any codec verb
+> related operations during RPM_SUSPENDING state.
+> 
+> Signed-off-by: Mohan Kumar <mkumard@nvidia.com>
+
+Thanks, applied now.
+
+
+Takashi
