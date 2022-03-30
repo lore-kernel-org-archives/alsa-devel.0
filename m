@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7314C4167B
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Mar 2022 11:55:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D87AC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Mar 2022 11:55:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ECEE518C1;
-	Wed, 30 Mar 2022 13:54:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ECEE518C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id D023A18C6;
+	Wed, 30 Mar 2022 13:55:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D023A18C6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648641339;
-	bh=e/QTXOR4IKo2wWU/0hmkkw381mCDHN8YxiKFRH0zEm0=;
+	s=default; t=1648641355;
+	bh=hM7XmzpCz1LY2zUE0Z1Ob1vRypXKE20pNn9jFFw1gE0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AKjwQNWjLvhtEUjkc7DD+VaCHnY1MmszqbKRsNs3u3MnQvliVcSTaYg3JgdR9ZFGp
-	 zQG2+fI8MfvgNVs2KCy8ntztQDajaaSW9HTdsHdqDKbFDTrvkku79QpsM+Nt6PZFzy
-	 yOwu2EYRADs22l51pjM85FpNNgZxv1jmOqzH5Vuc=
+	b=jfy+kNg++P1GVvsseomcL4IzhDFcqOP+0Cb1y+OX4ht3h5JhUWCOEu7/UDN2SA4M1
+	 TAYDQsDaZiFP4QaEnPUpeH7aH2sBh16jy6YuLsjwbCcl5DuVRMDrrSe+VF97ChZOS9
+	 PfrjsaI1L9X5AxchRc5m6euQBXEwB8q1TZE920Nc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 93AC8F805D8;
-	Wed, 30 Mar 2022 13:48:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 211C9F805DF;
+	Wed, 30 Mar 2022 13:48:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 67EEBF804E4; Wed, 30 Mar 2022 13:48:51 +0200 (CEST)
+ id 53124F805D9; Wed, 30 Mar 2022 13:48:52 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0466CF804E4
- for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2022 13:48:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0466CF804E4
+ by alsa1.perex.cz (Postfix) with ESMTPS id A7D84F805D8
+ for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2022 13:48:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7D84F805D8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="okgVZxXE"
+ header.b="C4Pfoj3r"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id EB1E16137A;
- Wed, 30 Mar 2022 11:48:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EE07C36AE7;
- Wed, 30 Mar 2022 11:48:42 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 913A161602;
+ Wed, 30 Mar 2022 11:48:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1416EC36AF8;
+ Wed, 30 Mar 2022 11:48:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1648640923;
- bh=e/QTXOR4IKo2wWU/0hmkkw381mCDHN8YxiKFRH0zEm0=;
+ s=k20201202; t=1648640928;
+ bh=hM7XmzpCz1LY2zUE0Z1Ob1vRypXKE20pNn9jFFw1gE0=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=okgVZxXE9nccnCBJT40YVOpIqYwA6p2KzE6n3bk01UWM8bE4M1Lp670yG7nfgGIxf
- Imf2X9w5uL6FtlGtu2/uUi5OW4F0VFB20d/M7qzUZH8rio9TeMN0d3dEMtBg+X7sPr
- zMEg7HGAGLpLzpRT4DPgz8p8PTVS3EqN9LUEd7vqB7kCVNg9LrMAdVuPQV4XPrY99p
- zQCICkKV/a1aFJts81ALqMJ1rVunj3NKxzedYHImbmG7IpetZjv44SPOtmlTi8Q1wz
- /qhJyUsyQPfaukSqU2f8YSne1uQ2c7GAoCkRIxj1R7vFr/+aS+O7tqv5xS92sgBeba
- ACXQo5BZSxOYQ==
+ b=C4Pfoj3r5zBHz7SEfLir8om9RKYAAK0JkR2/bz8Y/27ye7KGESqq4UsahJkhWdGYh
+ mLGDoEoaCfds7CudHszwmhpI0sDqMEq146Pi1g79LTRrxRBM2BG9YgkdcMMkx9iU30
+ qRWfPjn+IfGN0D8bUc8gmpPBoAuxOzDNW3pDtOYWqmlQqdedGLCgu2LpwU+T+oQpj9
+ MN2cS2qP7e8QHTbmrtZXdUXAvyMvU7qlwVP/GnEA6oA+7GlVPrC4U3Z5TekO8Fif9x
+ eCJ1hMBs9QrCKfdJr+RN1Qqr5S+XAKtElWjfA66T2SABkzVKxS6Dtj3kAkUN+Pz3d3
+ nItJfgYO3ao2g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.16 07/59] ASoC: cs42l42: Report full jack status
- when plug is detected
-Date: Wed, 30 Mar 2022 07:47:39 -0400
-Message-Id: <20220330114831.1670235-7-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.16 10/59] ASoC: SOF: Intel: hda: Remove link
+ assignment limitation
+Date: Wed, 30 Mar 2022 07:47:42 -0400
+Message-Id: <20220330114831.1670235-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220330114831.1670235-1-sashal@kernel.org>
 References: <20220330114831.1670235-1-sashal@kernel.org>
@@ -66,10 +66,13 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, brian.austin@cirrus.com,
- alsa-devel@alsa-project.org, tiwai@suse.com, lgirdwood@gmail.com,
- Paul.Handrigan@cirrus.com, Richard Fitzgerald <rf@opensource.cirrus.com>,
- Mark Brown <broonie@kernel.org>
+Cc: Sasha Levin <sashal@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ lgirdwood@gmail.com, tiwai@suse.com,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Rander Wang <rander.wang@intel.com>, Mark Brown <broonie@kernel.org>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,65 +88,63 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
-[ Upstream commit 8d06f797f844d04a961f201f886f7f9985edc9bf ]
+[ Upstream commit 2ce0d008dcc59f9c01f43277b9f9743af7b01dad ]
 
-When a plug event is detect report the full state of all status
-bits, don't assume that there will have been a previous unplug
-event to clear all the bits. Report the state of both HEADPHONE
-and MICROPHONE bits according to detected type, and clear all the
-button status bits. The current button status is already checked
-and reported at the end of the function.
+The limitation to assign a link DMA channel for a BE iff the
+corresponding host DMA channel is assigned to a connected FE is only
+applicable if the PROCEN_FMT_QUIRK is set. So, remove it for platforms
+that do not enable the quirk.
 
-During a system suspend the jack could be unplugged and plugged,
-possibly changing the jack type. On resume the interrupt status will
-indicate a plug event - there will not be an unplug event to clear
-the bits.
-
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20220121120412.672284-2-rf@opensource.cirrus.com
+Complements: a792bfc1c2bc ("ASoC: SOF: Intel: hda-stream: limit PROCEN workaround")
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Link: https://lore.kernel.org/r/20220128130017.28508-1-peter.ujfalusi@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/cs42l42.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ sound/soc/sof/intel/hda-dai.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index a63fba4e6c9c..eb170d106396 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -1630,7 +1630,11 @@ static irqreturn_t cs42l42_irq_thread(int irq, void *data)
+diff --git a/sound/soc/sof/intel/hda-dai.c b/sound/soc/sof/intel/hda-dai.c
+index 76579383d290..1b7ba7f3e99b 100644
+--- a/sound/soc/sof/intel/hda-dai.c
++++ b/sound/soc/sof/intel/hda-dai.c
+@@ -62,6 +62,8 @@ static struct hdac_ext_stream *
+ {
+ 	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+ 	struct sof_intel_hda_stream *hda_stream;
++	const struct sof_intel_dsp_desc *chip;
++	struct snd_sof_dev *sdev;
+ 	struct hdac_ext_stream *res = NULL;
+ 	struct hdac_stream *stream = NULL;
  
- 	mutex_lock(&cs42l42->jack_detect_mutex);
+@@ -80,9 +82,20 @@ static struct hdac_ext_stream *
+ 			continue;
  
--	/* Check auto-detect status */
-+	/*
-+	 * Check auto-detect status. Don't assume a previous unplug event has
-+	 * cleared the flags. If the jack is unplugged and plugged during
-+	 * system suspend there won't have been an unplug event.
-+	 */
- 	if ((~masks[5]) & irq_params_table[5].mask) {
- 		if (stickies[5] & CS42L42_HSDET_AUTO_DONE_MASK) {
- 			cs42l42_process_hs_type_detect(cs42l42);
-@@ -1638,11 +1642,15 @@ static irqreturn_t cs42l42_irq_thread(int irq, void *data)
- 			case CS42L42_PLUG_CTIA:
- 			case CS42L42_PLUG_OMTP:
- 				snd_soc_jack_report(cs42l42->jack, SND_JACK_HEADSET,
--						    SND_JACK_HEADSET);
-+						    SND_JACK_HEADSET |
-+						    SND_JACK_BTN_0 | SND_JACK_BTN_1 |
-+						    SND_JACK_BTN_2 | SND_JACK_BTN_3);
- 				break;
- 			case CS42L42_PLUG_HEADPHONE:
- 				snd_soc_jack_report(cs42l42->jack, SND_JACK_HEADPHONE,
--						    SND_JACK_HEADPHONE);
-+						    SND_JACK_HEADSET |
-+						    SND_JACK_BTN_0 | SND_JACK_BTN_1 |
-+						    SND_JACK_BTN_2 | SND_JACK_BTN_3);
- 				break;
- 			default:
- 				break;
+ 		hda_stream = hstream_to_sof_hda_stream(hstream);
++		sdev = hda_stream->sdev;
++		chip = get_chip_info(sdev->pdata);
+ 
+ 		/* check if link is available */
+ 		if (!hstream->link_locked) {
++			/*
++			 * choose the first available link for platforms that do not have the
++			 * PROCEN_FMT_QUIRK set.
++			 */
++			if (!(chip->quirks & SOF_INTEL_PROCEN_FMT_QUIRK)) {
++				res = hstream;
++				break;
++			}
++
+ 			if (stream->opened) {
+ 				/*
+ 				 * check if the stream tag matches the stream
 -- 
 2.34.1
 
