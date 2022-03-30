@@ -4,73 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C75D7C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Mar 2022 20:23:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD230C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Mar 2022 20:24:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EF14B16DE;
-	Wed, 30 Mar 2022 22:22:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF14B16DE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 163F61AE2;
+	Wed, 30 Mar 2022 22:23:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 163F61AE2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648671825;
-	bh=4BnXKvZKuSID7h2I+0QNQw18nHyoNl3kL/EGdhEs0G8=;
+	s=default; t=1648671842;
+	bh=q3y09Q4+2MYqqMm3rWuuzbvhMnK3N+8P3Skff+My+Cw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KhAhvhEqcOO0n6cHiDYi2q/ppoFexg3iI/LkUj+wgOeLnHWptRcaeemYXMcDVCHGW
-	 4hZZYJtD+bBsB9Up++N7l4i7KWtMZl/CVG81vXG+e4LvwAOYtR4hMrZQMsKoEHGJwq
-	 35yVokMLEewRVOhxLW4AxiQfaBzW5Mmm2Tg6DB1Y=
+	b=aba49CAkecmZrY9EcJfNDlRp90oF397C4ol1IkNkZbI6SOkZDdJN+EoOq6iBvfYBR
+	 Adc3hEX872zGjqfTxXHDy8kaGKZhsFoS+qOU3AeGlcUemTQ2dB3V0ATJr3U3T9GyEt
+	 BhSikigDex+6kdXb+kjamCpdHmqPCfuIggKEtCTA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2F005F80549;
+	by alsa1.perex.cz (Postfix) with ESMTP id BF4E6F80553;
 	Wed, 30 Mar 2022 22:20:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E3329F80536; Wed, 30 Mar 2022 22:19:58 +0200 (CEST)
+ id C1826F80537; Wed, 30 Mar 2022 22:19:59 +0200 (CEST)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 64914F80519
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8AF0AF8051B
  for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2022 22:19:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64914F80519
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8AF0AF8051B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="CYPHQWVO"
+ header.b="gte5sARB"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
  t=1648671588; x=1680207588;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=4BnXKvZKuSID7h2I+0QNQw18nHyoNl3kL/EGdhEs0G8=;
- b=CYPHQWVOlfAtRhvhe/YWNfZzApkrpWK7l98MJLw0dvmFli+gQPUyU7y9
- R5h7St2TXqv2ykvrClkPRQZBQkE0PTviWsklaWKLPQ0D7M+xdkItcTl2A
- oYfQCL/ZFHkinTSjYvdTwMC/sxnVnVvFe5TTmsaya1vNUOyQ3ZvCGTOPv
- CqzkxHEhfXmSTbUM/qy55132xmV4IFlhEHjYEFR4DqchmxJwDW8N+vkbR
- NA4ZZrVYUFKodNSSTUTnLpZz9x8qLu+gTthHLUQwgM3dZxoEfPr5SsVRD
- BHQlSiJnBMyOopdZ+0W4l0Tx299kl6V1P+jZF31VzVue9YBnrLOgSQjZ/ A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10302"; a="322819835"
-X-IronPort-AV: E=Sophos;i="5.90,223,1643702400"; d="scan'208";a="322819835"
+ bh=q3y09Q4+2MYqqMm3rWuuzbvhMnK3N+8P3Skff+My+Cw=;
+ b=gte5sARBmBeIcU/DXPSvU7Od8Do0mlPWmLSeJOxevVqpKhCmjw/1JGX5
+ HpA/7FYjj688O2h+ob3KKwo+C1eyUNF8V20vm7eZKQtKTrL1Uq+J3y22z
+ wkPgH+YTACfRunjHGU2hfB/dVRxaeYKyjRknBnQU65QFmYsOo9y57tf8j
+ WtwEIl2TzTUJGuRond8subpujcVrQ2v+rR1ITtP6WOrFXJSner31N6Ccr
+ N4p2ATVDodqNHUSTSw/AkLStWOwAszWm5wkcf4ebQwdLDPA763PJX/Xh2
+ f8utv8iJ1z0KaOPSK23sGYc3UDfxZAsnRfvSkWNvl5YGuVqlyUPjuvPMD g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10302"; a="322819836"
+X-IronPort-AV: E=Sophos;i="5.90,223,1643702400"; d="scan'208";a="322819836"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  30 Mar 2022 13:19:39 -0700
-X-IronPort-AV: E=Sophos;i="5.90,223,1643702400"; d="scan'208";a="522045048"
+X-IronPort-AV: E=Sophos;i="5.90,223,1643702400"; d="scan'208";a="522045049"
 Received: from ggunnam-mobl.amr.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.254.28.195])
  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Mar 2022 13:19:38 -0700
+ 30 Mar 2022 13:19:39 -0700
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 10/11] ASoC: SOF: Remove header from struct snd_sof_ipc_msg
-Date: Wed, 30 Mar 2022 13:19:25 -0700
-Message-Id: <20220330201926.1330402-11-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 11/11] ASoC: SOF: Remove redundant return statements
+Date: Wed, 30 Mar 2022 13:19:26 -0700
+Message-Id: <20220330201926.1330402-12-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220330201926.1330402-1-ranjani.sridharan@linux.intel.com>
 References: <20220330201926.1330402-1-ranjani.sridharan@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+Cc: tiwai@suse.de, tangmeng <tangmeng@uniontech.com>,
+ =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- broonie@kernel.org, Rander Wang <rander.wang@intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
+ Daniel Baluta <daniel.baluta@nxp.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,31 +88,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+From: tangmeng <tangmeng@uniontech.com>
 
-The header field is no longer used by the underlying code and
-can be dropped from the snd_sof_ipc_msg struct.
+After the free PCM action is executed, no matter what
+the return result is, it will return directly in sof_pcm_trigger.
+So the return statement here is redundant.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
+Signed-off-by: tangmeng <tangmeng@uniontech.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/sof-priv.h | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/sof/pcm.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index fd815ae7f20a..414413932b06 100644
---- a/sound/soc/sof/sof-priv.h
-+++ b/sound/soc/sof/sof-priv.h
-@@ -349,7 +349,6 @@ struct snd_sof_mailbox {
- /* IPC message descriptor for host <-> DSP IO */
- struct snd_sof_ipc_msg {
- 	/* message data */
--	u32 header;
- 	void *msg_data;
- 	void *reply_data;
- 	size_t msg_size;
+diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
+index 658cd8966c9a..b5cbc8b5c0ee 100644
+--- a/sound/soc/sof/pcm.c
++++ b/sound/soc/sof/pcm.c
+@@ -347,12 +347,9 @@ static int sof_pcm_trigger(struct snd_soc_component *component,
+ 		snd_sof_pcm_platform_trigger(sdev, substream, cmd);
+ 
+ 	/* free PCM if reset_hw_params is set and the STOP IPC is successful */
+-	if (!ret && reset_hw_params) {
++	if (!ret && reset_hw_params)
+ 		ret = sof_pcm_stream_free(sdev, substream, spcm, substream->stream,
+ 					  free_widget_list);
+-		if (ret < 0)
+-			return ret;
+-	}
+ 
+ 	return ret;
+ }
 -- 
 2.25.1
 
