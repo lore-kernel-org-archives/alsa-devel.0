@@ -4,73 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D6A2C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Mar 2022 20:22:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D356C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Mar 2022 20:22:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 33F281AD4;
-	Wed, 30 Mar 2022 22:21:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33F281AD4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 906FE1AB8;
+	Wed, 30 Mar 2022 22:21:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 906FE1AB8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648671739;
-	bh=JmxjxkctsBbCt8FQmgaxOp19DTK3oUUVnv7oCGuBITA=;
+	s=default; t=1648671755;
+	bh=+CWO3E0FqqR57eXIy8K3/SJkwOMxql9KJrJ5lLu4+uU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ptw7C9qqkqjkKLVaM+zRxWUSPBKPwXrfKf9TFZQ95xbVv4UeytQ1swgDGW9scWp41
-	 21KiKtt8o6SR5sk7aumMK7D/VZ32s0LN4hAE29XWdcMwitVoeAA+odPzwPII1Hz9Nj
-	 9BIqN9y++b9CpsTNkzI7AYe6LVYugCrM52qZu1qk=
+	b=mtk+A0Pjn/Gsd80e9c0HMYyfHLiPyXepGtK6mdhNl6mHRVrcR2cD3dcWM8abpnKGo
+	 dZJkENt1CoQzqmdLZaK0bsOpU6fQlr47Nxwa/RLNp3KjihpMnANpmgFLJVeq355Mxd
+	 lh5GuHwvXzKlCPlmkdBP21dyjNpoO/13ZXx6DsAI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7DF5EF80528;
-	Wed, 30 Mar 2022 22:19:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 07207F8052F;
+	Wed, 30 Mar 2022 22:19:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 45886F80155; Wed, 30 Mar 2022 22:19:51 +0200 (CEST)
+ id 4D0AFF8051A; Wed, 30 Mar 2022 22:19:53 +0200 (CEST)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BB781F804B4
- for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2022 22:19:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB781F804B4
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1EE8BF800F2
+ for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2022 22:19:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1EE8BF800F2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="PiwsU77I"
+ header.b="AVnOn2EW"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1648671583; x=1680207583;
+ t=1648671586; x=1680207586;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=JmxjxkctsBbCt8FQmgaxOp19DTK3oUUVnv7oCGuBITA=;
- b=PiwsU77Irk5qsLo6iQ4xf1X5eXhj9nln8vpuJkQtJbr25yG69oL3Z+oh
- cNTBwczbCCgM0IqVFI5kG9OfYgFqzg6oNLslU9xiXiSTQoNNP/UTfHG3I
- lhJxtWXmMg688zuTBk6YC5YIVS8bhIBFNXGpi/YqaZLPSv1nVAj1xm9BD
- 6z2NWILhWEuu6Q1QZabyEMyK+V+xzV1BlFmRUkGM7TdVREJeeWqjuS9wD
- StIrpfrLBQRz/9m3yx0RBsC8CNq9i6gdveMnh6fWc6A0yrYMZjivMXrnH
- 0c7HV5PMx2wzov34m2pr7d4+lY3yZPgoLlxXZq2HWKZXZ7jmfYEphCBDn A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10302"; a="322819829"
-X-IronPort-AV: E=Sophos;i="5.90,223,1643702400"; d="scan'208";a="322819829"
+ bh=+CWO3E0FqqR57eXIy8K3/SJkwOMxql9KJrJ5lLu4+uU=;
+ b=AVnOn2EWFapg48XzKz0LWWvbn3JpKgggYP6GotWZdmVESoDBWT1o+WOM
+ nDaNVBBVUBTeUWIwXge3t/0dSEVJe4/KbX7o/8Bx/Vpt4Q9BawFO79SC+
+ FNooaeHlHT+QI4HfJBw8WlNz7goiCpG+qEb7+4ZRBjJ1OmBDFJuModcG2
+ cbDANNopkU/2g0EELcYx8NRs1eXDUc3IGpZGNFgfToTFZt1n+4P+TSuQy
+ ghQUlIwC02x604M4NsK7ZYbkgq3+isEpw36mydOXc0k8TbgwFs1w5W3qg
+ O8iyxBNtzHAs90ttN14cn8N/f+I/IHfjujJKwu12QGp/t5k6ptkEBrCXT A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10302"; a="322819832"
+X-IronPort-AV: E=Sophos;i="5.90,223,1643702400"; d="scan'208";a="322819832"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Mar 2022 13:19:37 -0700
-X-IronPort-AV: E=Sophos;i="5.90,223,1643702400"; d="scan'208";a="522045031"
+ 30 Mar 2022 13:19:38 -0700
+X-IronPort-AV: E=Sophos;i="5.90,223,1643702400"; d="scan'208";a="522045039"
 Received: from ggunnam-mobl.amr.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.254.28.195])
  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  30 Mar 2022 13:19:37 -0700
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 05/11] ASoC: SOF: Drop support for mapped control data
-Date: Wed, 30 Mar 2022 13:19:20 -0700
-Message-Id: <20220330201926.1330402-6-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 07/11] ASoC: SOF: disable dma trace in s0ix
+Date: Wed, 30 Mar 2022 13:19:22 -0700
+Message-Id: <20220330201926.1330402-8-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220330201926.1330402-1-ranjani.sridharan@linux.intel.com>
 References: <20220330201926.1330402-1-ranjani.sridharan@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+Cc: Libin Yang <libin.yang@intel.com>, tiwai@suse.de,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
  Kai Vehmanen <kai.vehmanen@intel.com>, broonie@kernel.org,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+ =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,89 +87,54 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+From: Libin Yang <libin.yang@intel.com>
 
-Access through mmapped memory is not supported and it is explicitly
-disabled with scontrol->readback_offset = 0; when a control is created.
+When system enters s0ix, the dma trace won't be used. Otherwise,
+the DMA will access the host memory, which will prevent entering
+S0ix. Driver has notified firmware not to send message through
+dma trace. Let's also trigger stop dma trace in driver side.
 
-Remove the dead code and the confusion around this feature.
-
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Libin Yang <libin.yang@intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/ipc.c       | 22 ----------------------
- sound/soc/sof/sof-audio.c |  3 ---
- sound/soc/sof/sof-audio.h |  1 -
- 3 files changed, 26 deletions(-)
+ sound/soc/sof/pm.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
-index 166d4906698b..c722ca0b00a6 100644
---- a/sound/soc/sof/ipc.c
-+++ b/sound/soc/sof/ipc.c
-@@ -823,7 +823,6 @@ int snd_sof_ipc_set_get_comp_data(struct snd_sof_control *scontrol, bool set)
- 	enum sof_ipc_ctrl_type ctrl_type;
- 	struct snd_sof_widget *swidget;
- 	bool widget_found = false;
--	size_t send_bytes;
- 	u32 ipc_cmd;
- 	int err;
+diff --git a/sound/soc/sof/pm.c b/sound/soc/sof/pm.c
+index a1a645a13c6d..44008dd075c2 100644
+--- a/sound/soc/sof/pm.c
++++ b/sound/soc/sof/pm.c
+@@ -102,11 +102,18 @@ static int sof_resume(struct device *dev, bool runtime_resume)
  
-@@ -847,27 +846,6 @@ int snd_sof_ipc_set_get_comp_data(struct snd_sof_control *scontrol, bool set)
- 	if (!swidget->use_count)
- 		return 0;
- 
--	/* read or write firmware volume */
--	if (scontrol->readback_offset != 0) {
--		/* write/read value header via mmaped region */
--		send_bytes = sizeof(struct sof_ipc_ctrl_value_chan) *
--		cdata->num_elems;
--		if (set)
--			err = snd_sof_dsp_block_write(sdev, SOF_FW_BLK_TYPE_IRAM,
--						      scontrol->readback_offset,
--						      cdata->chanv, send_bytes);
--
--		else
--			err = snd_sof_dsp_block_read(sdev, SOF_FW_BLK_TYPE_IRAM,
--						     scontrol->readback_offset,
--						     cdata->chanv, send_bytes);
--
--		if (err)
--			dev_err_once(sdev->dev, "error: %s TYPE_IRAM failed\n",
--				     set ? "write to" :  "read from");
--		return err;
--	}
--
  	/*
- 	 * Select the IPC cmd and the ctrl_type based on the ctrl_cmd and the
- 	 * direction
-diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
-index b2f009a0c5b7..49fdfe06a9a3 100644
---- a/sound/soc/sof/sof-audio.c
-+++ b/sound/soc/sof/sof-audio.c
-@@ -16,9 +16,6 @@ static int sof_kcontrol_setup(struct snd_sof_dev *sdev, struct snd_sof_control *
- {
- 	int ret;
+ 	 * Nothing further to be done for platforms that support the low power
+-	 * D0 substate.
++	 * D0 substate. Resume trace and return when resuming from
++	 * low-power D0 substate
+ 	 */
+ 	if (!runtime_resume && sof_ops(sdev)->set_power_state &&
+-	    old_state == SOF_DSP_PM_D0)
++	    old_state == SOF_DSP_PM_D0) {
++		ret = snd_sof_trace_resume(sdev);
++		if (ret < 0)
++			/* non fatal */
++			dev_warn(sdev->dev,
++				 "failed to enable trace after resume %d\n", ret);
+ 		return 0;
++	}
  
--	/* reset readback offset for scontrol */
--	scontrol->readback_offset = 0;
--
- 	ret = snd_sof_ipc_set_get_comp_data(scontrol, true);
- 	if (ret < 0)
- 		dev_err(sdev->dev, "error: failed kcontrol value set for widget: %d\n",
-diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
-index 7f15b3bc8196..4a8cd7f2a0eb 100644
---- a/sound/soc/sof/sof-audio.h
-+++ b/sound/soc/sof/sof-audio.h
-@@ -247,7 +247,6 @@ struct snd_sof_control {
- 	int max_volume_step; /* max volume step for volume_table */
- 	int num_channels;
- 	unsigned int access;
--	u32 readback_offset; /* offset to mmapped data if used */
- 	int info_type;
- 	int index; /* pipeline ID */
- 	void *priv; /* private data copied from topology */
+ 	sof_set_fw_state(sdev, SOF_FW_BOOT_PREPARE);
+ 
+@@ -201,6 +208,7 @@ static int sof_suspend(struct device *dev, bool runtime_suspend)
+ 
+ 	/* Skip to platform-specific suspend if DSP is entering D0 */
+ 	if (target_state == SOF_DSP_PM_D0) {
++		snd_sof_trace_suspend(sdev, pm_state);
+ 		/* Notify clients not managed by pm framework about core suspend */
+ 		sof_suspend_clients(sdev, pm_state);
+ 		goto suspend;
 -- 
 2.25.1
 
