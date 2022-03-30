@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DD5CC4321E
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Mar 2022 11:59:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C269C43217
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Mar 2022 11:59:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7B08218FE;
-	Wed, 30 Mar 2022 13:58:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B08218FE
+	by alsa0.perex.cz (Postfix) with ESMTPS id DEA46191D;
+	Wed, 30 Mar 2022 13:58:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DEA46191D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648641548;
-	bh=udRcMs7kmOyAA+RyJhsEG9iF/vW5/VUQI/1wSi442CM=;
+	s=default; t=1648641564;
+	bh=kKgbNHwddUiwkQ0fNo9UvyNztXfEeCzHFDRq0uA6vRs=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VwDU8K94O73IQ3nUijJDoD2VUmWfn4YRbnPDITVg7P+alwtZseogB/LKydDQZ3JuP
-	 U405iV5Yzb/RHqQ0d1vPeOBREmprN/K5QLaOCwX596+tOvWVyVbpEOUhVORCV1SZcp
-	 8+xnQ2GZUCvVTRvQ0UtWzatOo655CnACCcCxC+Ec=
+	b=rIe359Kjs6pl8Rz4TQEeGy9YPlMDVIF9f+xrapJEKWbgI+9ZZcn1MTH8YuFXWm9OF
+	 Z5TJRLH9b+Q+XJNggfwoEwDCHuKyIB1Tr83XSlW8PYN5zUk691Ddabz89lcRJi1Aw5
+	 Q0Sc7wW2V9QE6jksId1FNJeMxmXnGL73lF65iTYQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 67E7AF800B8;
-	Wed, 30 Mar 2022 13:50:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3F861F80608;
+	Wed, 30 Mar 2022 13:50:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B28C8F80603; Wed, 30 Mar 2022 13:50:01 +0200 (CEST)
+ id 96C5BF80604; Wed, 30 Mar 2022 13:50:01 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D5033F80533
- for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2022 13:49:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5033F80533
+ by alsa1.perex.cz (Postfix) with ESMTPS id B85C0F805FC
+ for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2022 13:49:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B85C0F805FC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="iKWmJVDv"
+ header.b="vE9YiXW7"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id A40F7616E0;
- Wed, 30 Mar 2022 11:49:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 051C5C36AE9;
- Wed, 30 Mar 2022 11:49:53 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id F252761618;
+ Wed, 30 Mar 2022 11:49:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86E65C36AE5;
+ Wed, 30 Mar 2022 11:49:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1648640995;
- bh=udRcMs7kmOyAA+RyJhsEG9iF/vW5/VUQI/1wSi442CM=;
+ s=k20201202; t=1648640991;
+ bh=kKgbNHwddUiwkQ0fNo9UvyNztXfEeCzHFDRq0uA6vRs=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=iKWmJVDv9Zy3cJ8d9MSrVdPgRNpKZ8LX15+AHxo3ESuEQ19a/BsHLZQNQZlID59b0
- TbBc6HpIjo94lF5LEm7016wSDizFcTuZe1LfQgPSo/SAjgVgLWnPabYtrsJbrx4bt5
- 7CyYRuBtIm8BPyLzPwle/Jn/9jshXu4SBo9dz57/Fs8YP6jFjjHeP+vfs+eI5SneN0
- F1Xv7HCNMh3uO9ZTBlTMYXlCijhoxjiXAttI0HXxqrhyawGrK8S0h0vggnMTQ3t6r9
- yNx3ZWYZhE1/rQYsmp61Pg44TwaZmXAiJ6QnS7vh9bHjmu6cza9LhJzqwjmi/4Wa7g
- tQSuu735GFLwQ==
+ b=vE9YiXW7AU+0t1SnmbF3n/Tk8Uw4P9RgYtXcV96ONXlzfqGJPD8GpArJT+0Cr+SS9
+ +jvmamRn5y1MuWyxxxTPDhtccxh+u2pi+RmsEPVpCWddDi5PpwyOSPaB+w1r+QcKAj
+ Wk6hfDYsCJrqqLVEMCUJtFj8Iv+dZG6TY4F4uFHHl1Rn6NQGvkY7Fq5vv2/EszIRKt
+ biyika6r75vSLyru/n8ixeITD6M68etG7WnJnSQa/uV4Qywo3yXFr4VfMXWAGAo1B3
+ VZP24hg4mpaIeQ471RQJ9G/wBeQqD3qyik3NDpyJKS3p9GrM+idnfPh6gcPhtmwTIl
+ mul9pVX6jiEFQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.16 53/59] ASoC: Intel: sof_es8336: use NHLT
- information to set dmic and SSP
-Date: Wed, 30 Mar 2022 07:48:25 -0400
-Message-Id: <20220330114831.1670235-53-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.16 51/59] ASoC: Intel: soc-acpi: add more ACPI HIDs
+ for ES83x6 devices
+Date: Wed, 30 Mar 2022 07:48:23 -0400
+Message-Id: <20220330114831.1670235-51-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220330114831.1670235-1-sashal@kernel.org>
 References: <20220330114831.1670235-1-sashal@kernel.org>
@@ -69,10 +69,10 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ anthony tonitch <d.tonitch@gmail.com>,
  Bard Liao <yung-chuan.liao@linux.intel.com>, tiwai@suse.com,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
  =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -91,122 +91,155 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit 651c304df7f6e3fbb4779527efa3eb128ef91329 ]
+[ Upstream commit 1cedb6eabf0f2dd8285d3bb0ce1abd2369529084 ]
 
-Since we see a proliferation of devices with various configurations,
-we want to automatically set the DMIC and SSP information. This patch
-relies on the information extracted from NHLT and partially reverts
-existing DMI quirks added by commit a164137ce91a ("ASoC: Intel: add
-machine driver for SOF+ES8336")
+We only saw ESSX8336 so far, but now with reports of 'ESSX8326' we
+need to expand to a full list. Let's reuse the 'snd_soc_acpi_codecs'
+structure to store the information.
 
-Note that NHLT can report multiple SSPs, choosing from the
-ssp_link_mask in an MSB-first manner was found experimentally to work
-fine.
+Note that ES8326 will need a dedicated codec driver, but the plan is
+to use the same machine driver for all Everest Audio devices.
 
-The only thing that cannot be detected is the GPIO type, and users may
-want to use the quirk override parameter if the 'wrong' solution is
-provided.
-
-Tested-by: Mauro Carvalho Chehab <mchehab@kernel.org>
+Reported-by: anthony tonitch <d.tonitch@gmail.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Link: https://lore.kernel.org/r/20220308192610.392950-15-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20220308192610.392950-9-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/sof_es8336.c | 56 +++++++++++++++++++++--------
- 1 file changed, 41 insertions(+), 15 deletions(-)
+ sound/soc/intel/common/soc-acpi-intel-bxt-match.c | 7 ++++++-
+ sound/soc/intel/common/soc-acpi-intel-cml-match.c | 7 ++++++-
+ sound/soc/intel/common/soc-acpi-intel-glk-match.c | 7 ++++++-
+ sound/soc/intel/common/soc-acpi-intel-jsl-match.c | 7 ++++++-
+ sound/soc/intel/common/soc-acpi-intel-tgl-match.c | 7 ++++++-
+ 5 files changed, 30 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_es8336.c b/sound/soc/intel/boards/sof_es8336.c
-index 20d577eaab6d..46e453915f82 100644
---- a/sound/soc/intel/boards/sof_es8336.c
-+++ b/sound/soc/intel/boards/sof_es8336.c
-@@ -228,24 +228,25 @@ static int sof_es8336_quirk_cb(const struct dmi_system_id *id)
- 	return 1;
+diff --git a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
+index 342d34052204..04a92e74d99b 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
+@@ -41,6 +41,11 @@ static struct snd_soc_acpi_mach *apl_quirk(void *arg)
+ 	return mach;
  }
  
-+/*
-+ * this table should only be used to add GPIO or jack-detection quirks
-+ * that cannot be detected from ACPI tables. The SSP and DMIC
-+ * information are providing by the platform driver and are aligned
-+ * with the topology used.
-+ *
-+ * If the GPIO support is missing, the quirk parameter can be used to
-+ * enable speakers. In that case it's recommended to keep the SSP and DMIC
-+ * information consistent, overriding the SSP and DMIC can only be done
-+ * if the topology file is modified as well.
-+ */
- static const struct dmi_system_id sof_es8336_quirk_table[] = {
--	{
--		.callback = sof_es8336_quirk_cb,
--		.matches = {
--			DMI_MATCH(DMI_SYS_VENDOR, "CHUWI Innovation And Technology"),
--			DMI_MATCH(DMI_BOARD_NAME, "Hi10 X"),
--		},
--		.driver_data = (void *)SOF_ES8336_SSP_CODEC(2)
--	},
- 	{
- 		.callback = sof_es8336_quirk_cb,
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "IP3 tech"),
- 			DMI_MATCH(DMI_BOARD_NAME, "WN1"),
- 		},
--		.driver_data = (void *)(SOF_ES8336_SSP_CODEC(0) |
--					SOF_ES8336_TGL_GPIO_QUIRK |
--					SOF_ES8336_ENABLE_DMIC)
-+		.driver_data = (void *)(SOF_ES8336_TGL_GPIO_QUIRK)
++static const struct snd_soc_acpi_codecs essx_83x6 = {
++	.num_codecs = 3,
++	.codecs = { "ESSX8316", "ESSX8326", "ESSX8336"},
++};
++
+ static const struct snd_soc_acpi_codecs bxt_codecs = {
+ 	.num_codecs = 1,
+ 	.codecs = {"MX98357A"}
+@@ -83,7 +88,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_bxt_machines[] = {
+ 		.sof_tplg_filename = "sof-apl-tdf8532.tplg",
  	},
- 	{}
- };
-@@ -470,11 +471,33 @@ static int sof_es8336_probe(struct platform_device *pdev)
- 	card = &sof_es8336_card;
- 	card->dev = dev;
+ 	{
+-		.id = "ESSX8336",
++		.comp_ids = &essx_83x6,
+ 		.drv_name = "sof-essx8336",
+ 		.sof_fw_filename = "sof-apl.ri",
+ 		.sof_tplg_filename = "sof-apl-es8336.tplg",
+diff --git a/sound/soc/intel/common/soc-acpi-intel-cml-match.c b/sound/soc/intel/common/soc-acpi-intel-cml-match.c
+index 4eebc79d4b48..14395833d89e 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-cml-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-cml-match.c
+@@ -9,6 +9,11 @@
+ #include <sound/soc-acpi.h>
+ #include <sound/soc-acpi-intel-match.h>
  
--	if (!dmi_check_system(sof_es8336_quirk_table))
--		quirk = SOF_ES8336_SSP_CODEC(2);
-+	/* check GPIO DMI quirks */
-+	dmi_check_system(sof_es8336_quirk_table);
++static const struct snd_soc_acpi_codecs essx_83x6 = {
++	.num_codecs = 3,
++	.codecs = { "ESSX8316", "ESSX8326", "ESSX8336"},
++};
++
+ static const struct snd_soc_acpi_codecs rt1011_spk_codecs = {
+ 	.num_codecs = 1,
+ 	.codecs = {"10EC1011"}
+@@ -82,7 +87,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_cml_machines[] = {
+ 		.sof_tplg_filename = "sof-cml-da7219-max98390.tplg",
+ 	},
+ 	{
+-		.id = "ESSX8336",
++		.comp_ids = &essx_83x6,
+ 		.drv_name = "sof-essx8336",
+ 		.sof_fw_filename = "sof-cml.ri",
+ 		.sof_tplg_filename = "sof-cml-es8336.tplg",
+diff --git a/sound/soc/intel/common/soc-acpi-intel-glk-match.c b/sound/soc/intel/common/soc-acpi-intel-glk-match.c
+index 8492b7e2a945..7aa6a870d5a5 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-glk-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-glk-match.c
+@@ -9,6 +9,11 @@
+ #include <sound/soc-acpi.h>
+ #include <sound/soc-acpi-intel-match.h>
  
--	if (quirk & SOF_ES8336_ENABLE_DMIC)
--		dmic_be_num = 2;
-+	if (!mach->mach_params.i2s_link_mask) {
-+		dev_warn(dev, "No I2S link information provided, using SSP0. This may need to be modified with the quirk module parameter\n");
-+	} else {
-+		/*
-+		 * Set configuration based on platform NHLT.
-+		 * In this machine driver, we can only support one SSP for the
-+		 * ES8336 link, the else-if below are intentional.
-+		 * In some cases multiple SSPs can be reported by NHLT, starting MSB-first
-+		 * seems to pick the right connection.
-+		 */
-+		unsigned long ssp = 0;
++static const struct snd_soc_acpi_codecs essx_83x6 = {
++	.num_codecs = 3,
++	.codecs = { "ESSX8316", "ESSX8326", "ESSX8336"},
++};
 +
-+		if (mach->mach_params.i2s_link_mask & BIT(2))
-+			ssp = SOF_ES8336_SSP_CODEC(2);
-+		else if (mach->mach_params.i2s_link_mask & BIT(1))
-+			ssp = SOF_ES8336_SSP_CODEC(1);
-+		else  if (mach->mach_params.i2s_link_mask & BIT(0))
-+			ssp = SOF_ES8336_SSP_CODEC(0);
-+
-+		quirk |= ssp;
-+	}
-+
-+	if (mach->mach_params.dmic_num)
-+		quirk |= SOF_ES8336_ENABLE_DMIC;
+ static const struct snd_soc_acpi_codecs glk_codecs = {
+ 	.num_codecs = 1,
+ 	.codecs = {"MX98357A"}
+@@ -58,7 +63,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_glk_machines[] = {
+ 		.sof_tplg_filename = "sof-glk-cs42l42.tplg",
+ 	},
+ 	{
+-		.id = "ESSX8336",
++		.comp_ids = &essx_83x6,
+ 		.drv_name = "sof-essx8336",
+ 		.sof_fw_filename = "sof-glk.ri",
+ 		.sof_tplg_filename = "sof-glk-es8336.tplg",
+diff --git a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
+index 278ec196da7b..9d0d0e1437a4 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
+@@ -9,6 +9,11 @@
+ #include <sound/soc-acpi.h>
+ #include <sound/soc-acpi-intel-match.h>
  
- 	if (quirk_override != -1) {
- 		dev_info(dev, "Overriding quirk 0x%lx => 0x%x\n",
-@@ -483,6 +506,9 @@ static int sof_es8336_probe(struct platform_device *pdev)
- 	}
- 	log_quirks(dev);
- 
-+	if (quirk & SOF_ES8336_ENABLE_DMIC)
-+		dmic_be_num = 2;
++static const struct snd_soc_acpi_codecs essx_83x6 = {
++	.num_codecs = 3,
++	.codecs = { "ESSX8316", "ESSX8326", "ESSX8336"},
++};
 +
- 	sof_es8336_card.num_links += dmic_be_num + hdmi_num;
- 	dai_links = sof_card_dai_links_create(dev,
- 					      SOF_ES8336_SSP_CODEC(quirk),
+ static const struct snd_soc_acpi_codecs jsl_7219_98373_codecs = {
+ 	.num_codecs = 1,
+ 	.codecs = {"MX98373"}
+@@ -87,7 +92,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_jsl_machines[] = {
+ 		.sof_tplg_filename = "sof-jsl-cs42l42-mx98360a.tplg",
+ 	},
+ 	{
+-		.id = "ESSX8336",
++		.comp_ids = &essx_83x6,
+ 		.drv_name = "sof-essx8336",
+ 		.sof_fw_filename = "sof-jsl.ri",
+ 		.sof_tplg_filename = "sof-jsl-es8336.tplg",
+diff --git a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
+index da31bb3cca17..e2658bca6931 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
+@@ -10,6 +10,11 @@
+ #include <sound/soc-acpi-intel-match.h>
+ #include "soc-acpi-intel-sdw-mockup-match.h"
+ 
++static const struct snd_soc_acpi_codecs essx_83x6 = {
++	.num_codecs = 3,
++	.codecs = { "ESSX8316", "ESSX8326", "ESSX8336"},
++};
++
+ static const struct snd_soc_acpi_codecs tgl_codecs = {
+ 	.num_codecs = 1,
+ 	.codecs = {"MX98357A"}
+@@ -389,7 +394,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_machines[] = {
+ 		.sof_tplg_filename = "sof-tgl-rt1011-rt5682.tplg",
+ 	},
+ 	{
+-		.id = "ESSX8336",
++		.comp_ids = &essx_83x6,
+ 		.drv_name = "sof-essx8336",
+ 		.sof_fw_filename = "sof-tgl.ri",
+ 		.sof_tplg_filename = "sof-tgl-es8336.tplg",
 -- 
 2.34.1
 
