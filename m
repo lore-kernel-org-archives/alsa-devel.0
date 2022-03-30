@@ -4,74 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9556AC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Mar 2022 20:23:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4BB7C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Mar 2022 20:23:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CA9B81AEC;
-	Wed, 30 Mar 2022 22:22:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA9B81AEC
+	by alsa0.perex.cz (Postfix) with ESMTPS id EB5A91A95;
+	Wed, 30 Mar 2022 22:22:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB5A91A95
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648671790;
-	bh=OqFKwt4A9we7mD2JOnrn8nl7vvqgCI6+8961qBDqWCw=;
+	s=default; t=1648671807;
+	bh=v11+v2k1DlGBmwphV6cblvuhJSgKZv8bXM99X6gnTfk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FSEfs2lMv4BJtZpvUn5sA5RjxAtiFK5esM75gEb9dSB/qmOvRGVAm0KILxvPAJMPh
-	 GJzkGSeVVfvqsHGo+K9MiKSoD1dDHxGZspjiH8eAjieUfIOwCLUW/nZiur3R6fjo4Z
-	 VcX7FEp+V3s9M54iTRmE1Xq04Ey/hy8nGSYwJoGw=
+	b=BidtqCPt8cPED+A5FoqUJgVpa6rpWXLhexGJTqHYVhaGH0bx/fmbaFXQYhWbOyLdK
+	 bpZpHH2uLquaK3Fp/Bzxye0pIbxbD8XdGoFzECGXDMWzGNZKBEDpBbiRgL9pYcCKde
+	 gvwue6s+H2+kDoQBDC6GXfXbopZPfCAWJcNxZA6Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ECE2AF8053B;
-	Wed, 30 Mar 2022 22:20:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 92610F80542;
+	Wed, 30 Mar 2022 22:20:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 77B48F80536; Wed, 30 Mar 2022 22:19:58 +0200 (CEST)
+ id 825B0F8052E; Wed, 30 Mar 2022 22:19:58 +0200 (CEST)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 46B48F8050F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 26F66F804E4
  for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2022 22:19:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46B48F8050F
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26F66F804E4
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="lzJUDUff"
+ header.b="j/K6FUw3"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
  t=1648671586; x=1680207586;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=OqFKwt4A9we7mD2JOnrn8nl7vvqgCI6+8961qBDqWCw=;
- b=lzJUDUffGP4wOWi951Ax49dA0SWiUtZzC/P94aucoUC3l4BtBmka0fgC
- nDfLXhAtnmwptJ2NE7KTg5QM+YvtvbgnujQKqGhMZ61Wcj+i/Y7Y2CVYU
- Y+znq6yELKTEUod+1hkCYSOedV03mp22sBI8jrS+TkOVlOisbwp7BF4uk
- wH4DJQu7HjA1L8b6PY2qKGUIiKLX3lnwIHOVo38rU2NYogeyrMWqi5J8l
- o+QEiQfnx1ecUWubm1xaYZHd09iYy/uHM2eYjlaeydHlPU0IUyQNZiDcg
- DfIGGSth+ppnZtdyAUX/+TIW3h1cYiyYgttVIPlGA7pxljFru08kI7xof A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10302"; a="322819833"
-X-IronPort-AV: E=Sophos;i="5.90,223,1643702400"; d="scan'208";a="322819833"
+ bh=v11+v2k1DlGBmwphV6cblvuhJSgKZv8bXM99X6gnTfk=;
+ b=j/K6FUw38OnClq1LqKlIFtrQHrbufb4uPr1CXU09M1/2astYIO6c5znY
+ VFrq0ceWyjaTJ8+56r6K9zzzqBpR8kXMBfUpJumDpe8iaKqf3JivvdihF
+ tvinYtZyWf3AQG+KHL2/e8c4wJxxfg72Jv0SSQ3uWTxL5L5u1pn89B2Ze
+ YI2XTxM3/UUcOOrNV0aqX7WV9C4AyMfT8DVl2u/pgrF4CiiiPTe8Vmzvo
+ 71w2Zh4vRJtfWLExUO+0DNdW+P3mjZKhrUKpRS2reYIDvUkPWRTTXglbZ
+ dPJR/n08rk89CzA1Geyr/SkFfOHYrt6iLoBTDTqLxJQkSIs3gSFknQ1uP g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10302"; a="322819831"
+X-IronPort-AV: E=Sophos;i="5.90,223,1643702400"; d="scan'208";a="322819831"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Mar 2022 13:19:38 -0700
-X-IronPort-AV: E=Sophos;i="5.90,223,1643702400"; d="scan'208";a="522045040"
+ 30 Mar 2022 13:19:37 -0700
+X-IronPort-AV: E=Sophos;i="5.90,223,1643702400"; d="scan'208";a="522045034"
 Received: from ggunnam-mobl.amr.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.254.28.195])
  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Mar 2022 13:19:38 -0700
+ 30 Mar 2022 13:19:37 -0700
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 08/11] ASoC: SOF: ipc: Use msg->reply_data directly in
- snd_sof_ipc_get_reply()
-Date: Wed, 30 Mar 2022 13:19:23 -0700
-Message-Id: <20220330201926.1330402-9-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 06/11] ASoC: SOF: extend the interface to stop DMA trace
+Date: Wed, 30 Mar 2022 13:19:21 -0700
+Message-Id: <20220330201926.1330402-7-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220330201926.1330402-1-ranjani.sridharan@linux.intel.com>
 References: <20220330201926.1330402-1-ranjani.sridharan@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: Bard Liao <yung-chuan.liao@linux.intel.com>, tiwai@suse.de,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
- Daniel Baluta <daniel.baluta@nxp.com>
+Cc: Libin Yang <libin.yang@intel.com>, tiwai@suse.de,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@intel.com>, broonie@kernel.org,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,92 +87,275 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+From: Libin Yang <libin.yang@intel.com>
 
-Instead of using a local reply to first read out the header from the
-mailbox then memcpy it or read it again to msg->reply_data, read it
-directly to it's final place from the start.
+Change the interface to stop the DMA trace for suspend. Replace the
+snd_sof_init_trace_ipc() and snd_sof_release_trace() calls with more
+explicit interface for PM (the sole user for this interface).
 
-If we received an error we do not need to do a memcpy anymore.
-If the reply is reporting a success then we don not need to read the reply
-again from the mailbox if the reply_size equals to the already read header
-size.
+The new snd_sof_trace_suspend() call takes the target PM state as argument,
+allowing the trace implementation to decide how to handle the transition.
+Use this information to release DMA resources only if DSP is suspended and
+will not remain in D0.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Signed-off-by: Libin Yang <libin.yang@intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/ipc.c | 30 ++++++++++++++++--------------
- 1 file changed, 16 insertions(+), 14 deletions(-)
+ sound/soc/sof/pm.c       |  8 +++----
+ sound/soc/sof/sof-priv.h | 12 +++++++---
+ sound/soc/sof/trace.c    | 52 +++++++++++++++++++++++++++++-----------
+ 3 files changed, 51 insertions(+), 21 deletions(-)
 
-diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
-index c722ca0b00a6..46c40dfd9f2b 100644
---- a/sound/soc/sof/ipc.c
-+++ b/sound/soc/sof/ipc.c
-@@ -393,7 +393,7 @@ EXPORT_SYMBOL(sof_ipc_tx_message_no_pm);
- void snd_sof_ipc_get_reply(struct snd_sof_dev *sdev)
+diff --git a/sound/soc/sof/pm.c b/sound/soc/sof/pm.c
+index 1c319582ca6f..a1a645a13c6d 100644
+--- a/sound/soc/sof/pm.c
++++ b/sound/soc/sof/pm.c
+@@ -135,8 +135,8 @@ static int sof_resume(struct device *dev, bool runtime_resume)
+ 		return ret;
+ 	}
+ 
+-	/* resume DMA trace, only need send ipc */
+-	ret = snd_sof_init_trace_ipc(sdev);
++	/* resume DMA trace */
++	ret = snd_sof_trace_resume(sdev);
+ 	if (ret < 0) {
+ 		/* non fatal */
+ 		dev_warn(sdev->dev,
+@@ -209,8 +209,8 @@ static int sof_suspend(struct device *dev, bool runtime_suspend)
+ 	if (tplg_ops->tear_down_all_pipelines)
+ 		tplg_ops->tear_down_all_pipelines(sdev, false);
+ 
+-	/* release trace */
+-	snd_sof_release_trace(sdev);
++	/* suspend DMA trace */
++	snd_sof_trace_suspend(sdev, pm_state);
+ 
+ 	/* Notify clients not managed by pm framework about core suspend */
+ 	sof_suspend_clients(sdev, pm_state);
+diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
+index f75c6f76297e..0fb1db0ed7cd 100644
+--- a/sound/soc/sof/sof-priv.h
++++ b/sound/soc/sof/sof-priv.h
+@@ -403,6 +403,12 @@ struct snd_sof_ipc {
+ 	const struct sof_ipc_ops *ops;
+ };
+ 
++enum sof_dtrace_state {
++	SOF_DTRACE_DISABLED,
++	SOF_DTRACE_STOPPED,
++	SOF_DTRACE_ENABLED,
++};
++
+ /*
+  * SOF Device Level.
+  */
+@@ -489,9 +495,9 @@ struct snd_sof_dev {
+ 	wait_queue_head_t trace_sleep;
+ 	u32 host_offset;
+ 	bool dtrace_is_supported; /* set with Kconfig or module parameter */
+-	bool dtrace_is_enabled;
+ 	bool dtrace_error;
+ 	bool dtrace_draining;
++	enum sof_dtrace_state dtrace_state;
+ 
+ 	bool msi_enabled;
+ 
+@@ -595,7 +601,6 @@ static inline void snd_sof_ipc_process_reply(struct snd_sof_dev *sdev, u32 msg_i
+  * Trace/debug
+  */
+ int snd_sof_init_trace(struct snd_sof_dev *sdev);
+-void snd_sof_release_trace(struct snd_sof_dev *sdev);
+ void snd_sof_free_trace(struct snd_sof_dev *sdev);
+ int snd_sof_dbg_init(struct snd_sof_dev *sdev);
+ void snd_sof_free_debug(struct snd_sof_dev *sdev);
+@@ -609,7 +614,8 @@ void sof_print_oops_and_stack(struct snd_sof_dev *sdev, const char *level,
+ 			      u32 panic_code, u32 tracep_code, void *oops,
+ 			      struct sof_ipc_panic_info *panic_info,
+ 			      void *stack, size_t stack_words);
+-int snd_sof_init_trace_ipc(struct snd_sof_dev *sdev);
++void snd_sof_trace_suspend(struct snd_sof_dev *sdev, pm_message_t pm_state);
++int snd_sof_trace_resume(struct snd_sof_dev *sdev);
+ void snd_sof_handle_fw_exception(struct snd_sof_dev *sdev);
+ int snd_sof_dbg_memory_info_init(struct snd_sof_dev *sdev);
+ int snd_sof_debugfs_add_region_item_iomem(struct snd_sof_dev *sdev,
+diff --git a/sound/soc/sof/trace.c b/sound/soc/sof/trace.c
+index ea8e4506d02e..26d9381596ff 100644
+--- a/sound/soc/sof/trace.c
++++ b/sound/soc/sof/trace.c
+@@ -11,6 +11,7 @@
+ #include <linux/debugfs.h>
+ #include <linux/sched/signal.h>
+ #include "sof-priv.h"
++#include "sof-audio.h"
+ #include "ops.h"
+ #include "sof-utils.h"
+ 
+@@ -263,7 +264,7 @@ static size_t sof_wait_trace_avail(struct snd_sof_dev *sdev,
+ 	if (ret)
+ 		return ret;
+ 
+-	if (!sdev->dtrace_is_enabled && sdev->dtrace_draining) {
++	if (sdev->dtrace_state != SOF_DTRACE_ENABLED && sdev->dtrace_draining) {
+ 		/*
+ 		 * tracing has ended and all traces have been
+ 		 * read by client, return EOF
+@@ -344,7 +345,7 @@ static int sof_dfsentry_trace_release(struct inode *inode, struct file *file)
+ 	struct snd_sof_dev *sdev = dfse->sdev;
+ 
+ 	/* avoid duplicate traces at next open */
+-	if (!sdev->dtrace_is_enabled)
++	if (sdev->dtrace_state != SOF_DTRACE_ENABLED)
+ 		sdev->host_offset = 0;
+ 
+ 	return 0;
+@@ -384,7 +385,7 @@ static int trace_debugfs_create(struct snd_sof_dev *sdev)
+ 	return 0;
+ }
+ 
+-int snd_sof_init_trace_ipc(struct snd_sof_dev *sdev)
++static int snd_sof_enable_trace(struct snd_sof_dev *sdev)
  {
- 	struct snd_sof_ipc_msg *msg = sdev->msg;
--	struct sof_ipc_reply reply;
-+	struct sof_ipc_reply *reply;
- 	int ret = 0;
+ 	struct sof_ipc_fw_ready *ready = &sdev->fw_ready;
+ 	struct sof_ipc_fw_version *v = &ready->version;
+@@ -395,9 +396,12 @@ int snd_sof_init_trace_ipc(struct snd_sof_dev *sdev)
+ 	if (!sdev->dtrace_is_supported)
+ 		return 0;
+ 
+-	if (sdev->dtrace_is_enabled || !sdev->dma_trace_pages)
++	if (sdev->dtrace_state == SOF_DTRACE_ENABLED || !sdev->dma_trace_pages)
+ 		return -EINVAL;
+ 
++	if (sdev->dtrace_state == SOF_DTRACE_STOPPED)
++		goto start;
++
+ 	/* set IPC parameters */
+ 	params.hdr.cmd = SOF_IPC_GLB_TRACE_MSG;
+ 	/* PARAMS_EXT is only supported from ABI 3.7.0 onwards */
+@@ -435,6 +439,7 @@ int snd_sof_init_trace_ipc(struct snd_sof_dev *sdev)
+ 		goto trace_release;
+ 	}
+ 
++start:
+ 	ret = snd_sof_dma_trace_trigger(sdev, SNDRV_PCM_TRIGGER_START);
+ 	if (ret < 0) {
+ 		dev_err(sdev->dev,
+@@ -442,7 +447,7 @@ int snd_sof_init_trace_ipc(struct snd_sof_dev *sdev)
+ 		goto trace_release;
+ 	}
+ 
+-	sdev->dtrace_is_enabled = true;
++	sdev->dtrace_state = SOF_DTRACE_ENABLED;
+ 
+ 	return 0;
+ 
+@@ -459,7 +464,7 @@ int snd_sof_init_trace(struct snd_sof_dev *sdev)
+ 		return 0;
+ 
+ 	/* set false before start initialization */
+-	sdev->dtrace_is_enabled = false;
++	sdev->dtrace_state = SOF_DTRACE_DISABLED;
+ 
+ 	/* allocate trace page table buffer */
+ 	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, sdev->dev,
+@@ -498,7 +503,7 @@ int snd_sof_init_trace(struct snd_sof_dev *sdev)
+ 
+ 	init_waitqueue_head(&sdev->trace_sleep);
+ 
+-	ret = snd_sof_init_trace_ipc(sdev);
++	ret = snd_sof_enable_trace(sdev);
+ 	if (ret < 0)
+ 		goto table_err;
+ 
+@@ -518,7 +523,8 @@ int snd_sof_trace_update_pos(struct snd_sof_dev *sdev,
+ 	if (!sdev->dtrace_is_supported)
+ 		return 0;
+ 
+-	if (sdev->dtrace_is_enabled && sdev->host_offset != posn->host_offset) {
++	if (sdev->dtrace_state == SOF_DTRACE_ENABLED &&
++	    sdev->host_offset != posn->host_offset) {
+ 		sdev->host_offset = posn->host_offset;
+ 		wake_up(&sdev->trace_sleep);
+ 	}
+@@ -537,14 +543,14 @@ void snd_sof_trace_notify_for_error(struct snd_sof_dev *sdev)
+ 	if (!sdev->dtrace_is_supported)
+ 		return;
+ 
+-	if (sdev->dtrace_is_enabled) {
++	if (sdev->dtrace_state == SOF_DTRACE_ENABLED) {
+ 		sdev->dtrace_error = true;
+ 		wake_up(&sdev->trace_sleep);
+ 	}
+ }
+ EXPORT_SYMBOL(snd_sof_trace_notify_for_error);
+ 
+-void snd_sof_release_trace(struct snd_sof_dev *sdev)
++static void snd_sof_release_trace(struct snd_sof_dev *sdev, bool only_stop)
+ {
+ 	struct sof_ipc_fw_ready *ready = &sdev->fw_ready;
+ 	struct sof_ipc_fw_version *v = &ready->version;
+@@ -552,13 +558,14 @@ void snd_sof_release_trace(struct snd_sof_dev *sdev)
+ 	struct sof_ipc_reply ipc_reply;
+ 	int ret;
+ 
+-	if (!sdev->dtrace_is_supported || !sdev->dtrace_is_enabled)
++	if (!sdev->dtrace_is_supported || sdev->dtrace_state == SOF_DTRACE_DISABLED)
+ 		return;
+ 
+ 	ret = snd_sof_dma_trace_trigger(sdev, SNDRV_PCM_TRIGGER_STOP);
+ 	if (ret < 0)
+ 		dev_err(sdev->dev,
+ 			"error: snd_sof_dma_trace_trigger: stop: %d\n", ret);
++	sdev->dtrace_state = SOF_DTRACE_STOPPED;
  
  	/*
-@@ -407,13 +407,12 @@ void snd_sof_ipc_get_reply(struct snd_sof_dev *sdev)
+ 	 * stop and free trace DMA in the DSP. TRACE_DMA_FREE is only supported from
+@@ -574,23 +581,40 @@ void snd_sof_release_trace(struct snd_sof_dev *sdev)
+ 			dev_err(sdev->dev, "DMA_TRACE_FREE failed with error: %d\n", ret);
  	}
  
- 	/* get the generic reply */
--	snd_sof_dsp_mailbox_read(sdev, sdev->host_box.offset, &reply,
--				 sizeof(reply));
-+	reply = msg->reply_data;
-+	snd_sof_dsp_mailbox_read(sdev, sdev->host_box.offset, reply, sizeof(*reply));
++	if (only_stop)
++		goto out;
++
+ 	ret = snd_sof_dma_trace_release(sdev);
+ 	if (ret < 0)
+ 		dev_err(sdev->dev,
+ 			"error: fail in snd_sof_dma_trace_release %d\n", ret);
  
--	if (reply.error < 0) {
--		memcpy(msg->reply_data, &reply, sizeof(reply));
--		ret = reply.error;
--	} else if (!reply.hdr.size) {
-+	if (reply->error < 0) {
-+		ret = reply->error;
-+	} else if (!reply->hdr.size) {
- 		/* Reply should always be >= sizeof(struct sof_ipc_reply) */
- 		if (msg->reply_size)
- 			dev_err(sdev->dev,
-@@ -424,24 +423,27 @@ void snd_sof_ipc_get_reply(struct snd_sof_dev *sdev)
+-	sdev->dtrace_is_enabled = false;
++	sdev->dtrace_state = SOF_DTRACE_DISABLED;
++
++out:
+ 	sdev->dtrace_draining = true;
+ 	wake_up(&sdev->trace_sleep);
+ }
+-EXPORT_SYMBOL(snd_sof_release_trace);
++
++void snd_sof_trace_suspend(struct snd_sof_dev *sdev, pm_message_t pm_state)
++{
++	snd_sof_release_trace(sdev, pm_state.event == SOF_DSP_PM_D0);
++}
++EXPORT_SYMBOL(snd_sof_trace_suspend);
++
++int snd_sof_trace_resume(struct snd_sof_dev *sdev)
++{
++	return snd_sof_enable_trace(sdev);
++}
++EXPORT_SYMBOL(snd_sof_trace_resume);
  
- 		ret = -EINVAL;
- 	} else if (msg->reply_size > 0) {
--		if (reply.hdr.size == msg->reply_size) {
-+		if (reply->hdr.size == msg->reply_size) {
- 			ret = 0;
--		} else if (reply.hdr.size < msg->reply_size) {
-+		} else if (reply->hdr.size < msg->reply_size) {
- 			dev_dbg(sdev->dev,
- 				"reply size (%u) is less than expected (%zu)\n",
--				reply.hdr.size, msg->reply_size);
-+				reply->hdr.size, msg->reply_size);
+ void snd_sof_free_trace(struct snd_sof_dev *sdev)
+ {
+ 	if (!sdev->dtrace_is_supported)
+ 		return;
  
--			msg->reply_size = reply.hdr.size;
-+			msg->reply_size = reply->hdr.size;
- 			ret = 0;
- 		} else {
- 			dev_err(sdev->dev,
- 				"reply size (%u) exceeds the buffer size (%zu)\n",
--				reply.hdr.size, msg->reply_size);
-+				reply->hdr.size, msg->reply_size);
- 			ret = -EINVAL;
- 		}
+-	snd_sof_release_trace(sdev);
++	/* release trace */
++	snd_sof_release_trace(sdev, false);
  
--		/* get the full message if reply.hdr.size <= msg->reply_size */
--		if (!ret)
-+		/*
-+		 * get the full message if reply->hdr.size <= msg->reply_size
-+		 * and the reply->hdr.size > sizeof(struct sof_ipc_reply)
-+		 */
-+		if (!ret && msg->reply_size > sizeof(*reply))
- 			snd_sof_dsp_mailbox_read(sdev, sdev->host_box.offset,
- 						 msg->reply_data, msg->reply_size);
- 	}
+ 	if (sdev->dma_trace_pages) {
+ 		snd_dma_free_pages(&sdev->dmatb);
 -- 
 2.25.1
 
