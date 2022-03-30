@@ -4,74 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DDA9C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Mar 2022 11:53:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17532C4167B
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Mar 2022 11:54:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D8D091726;
-	Wed, 30 Mar 2022 13:53:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8D091726
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6A1261898;
+	Wed, 30 Mar 2022 13:53:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A1261898
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648641235;
-	bh=ESR58k0+i9Fcq2CL1NwXMkUZoliC3eLirvD6WS7Nz4E=;
+	s=default; t=1648641252;
+	bh=CdMizYcg0vqRMBZy3nZIQsY6pEwDwVuUydNu+uhIk38=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SppfeZ1290BsEyiPyUOsWQaGiWyc5wGClk7QxgUvwLEw5N25KCl27l3jWxrutntwV
-	 ulHwEMl7qokrfuN88Sg4FWx0FBjAvNLpRAfdpNqIRb+o/6JNYgSrcur67kfzONC2j3
-	 AmHvZVHQZhY3TPsQdu6hsRslg8xgiwdoTBS5Og9A=
+	b=aKuxi9b41cBEdPhRk1TZsNAEti0LTzgcSbrtKbnNmWO0bHSJRjItA9jVtS5Bezl8N
+	 JcMbUGWKYvCkW6C4o/UngzTFgUGMau+cLORDx+8vCky8QYMrMABMufk+KqKUvTPXC+
+	 hFX2kC/r6e0rqxbV2Qogvm/FGHN/Q/zuZHim6Lys=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 160F8F805B2;
-	Wed, 30 Mar 2022 13:48:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A5061F805B6;
+	Wed, 30 Mar 2022 13:48:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A7FF2F80589; Wed, 30 Mar 2022 13:48:25 +0200 (CEST)
+ id 2A6FAF805AB; Wed, 30 Mar 2022 13:48:30 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 34EC1F8056F
- for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2022 13:48:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34EC1F8056F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3751AF8057A
+ for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2022 13:48:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3751AF8057A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="VVwb4Kud"
+ header.b="hxx23rJV"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id A91886163F;
- Wed, 30 Mar 2022 11:48:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F23FDC34112;
- Wed, 30 Mar 2022 11:48:14 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id E080861637;
+ Wed, 30 Mar 2022 11:48:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2FD1C34112;
+ Wed, 30 Mar 2022 11:48:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1648640896;
- bh=ESR58k0+i9Fcq2CL1NwXMkUZoliC3eLirvD6WS7Nz4E=;
+ s=k20201202; t=1648640905;
+ bh=CdMizYcg0vqRMBZy3nZIQsY6pEwDwVuUydNu+uhIk38=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=VVwb4Kudegm6xzzzcGg8Go2dn83sEGEz2jjVnuzRjp+6K0Do131AuzLIpifWqoVU9
- XtbMt6fqvTwCrqj9uFSRlvX6yiI3E4/v/c888whd+6wvO9uJjr7e+y7W7emqq5si7K
- s1YLALGWMpQ3P9NV9SYR2GWhR+F+tlo//ELFhvZrcIoc9CKybFhPyDj5ZwuIRrHaPa
- JBuUWcT5V1RRcnaV6coozfLe2Ci978Tzg8MFAv5B6ZJV/FT0HeHTHmn7x59RgPVm78
- +GbPA4Up4jRfMi6lFA/o5J8+RF6+LIy6h/lE/nVAgxWcRNYqUZYZOhqCizm8bqppvt
- +ForFtUMZDBnw==
+ b=hxx23rJVV3pAQMX36J9gEjQqNIY2BS7XRvHlsJCvjgWmhEunErpOxX979TXFCFdOK
+ wkK+GQVSZCjLlP/ffm0wvStIxm1AUpZUjCwtwGFNEsA3X5Q+3G3LZChLls5d9E1LMf
+ K4XxoZP1jOUeqJaeYk0wn/naNR/+qyKWT0JZRbKyoIDGQAnrPG4+XD/l2lmA4+Q/C3
+ LlQyXEGhlP9XqmLdGHEGVggNIRyoFQnSMHBhgEmP2nkHR8U8BSqZPL7RMbUvPU9+N3
+ A8t0G9yeBC5PX87x4FGy+qokDiaYxnGIzx4MlcBFsvOJ1WX+YcdtwO53c+9oprCNQ3
+ VKt7VkUqBuZtw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.17 57/66] ALSA: intel-dspconfig: add ES8336 support
- for CNL
-Date: Wed, 30 Mar 2022 07:46:36 -0400
-Message-Id: <20220330114646.1669334-57-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.17 63/66] ASoC: mediatek: Fix error handling in
+ mt8183_da7219_max98357_dev_probe
+Date: Wed, 30 Mar 2022 07:46:42 -0400
+Message-Id: <20220330114646.1669334-63-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220330114646.1669334-1-sashal@kernel.org>
 References: <20220330114646.1669334-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.de>, Bard Liao <yung-chuan.liao@linux.intel.com>,
- tiwai@suse.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Nikolai Kostrigin <nickel@altlinux.org>, Mark Brown <broonie@kernel.org>,
- =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>
+Cc: Sasha Levin <sashal@kernel.org>, Miaoqian Lin <linmq006@gmail.com>,
+ alsa-devel@alsa-project.org, tiwai@suse.com, lgirdwood@gmail.com,
+ Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org,
+ Tzung-Bi Shih <tzungbi@kernel.org>, matthias.bgg@gmail.com,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,40 +86,82 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Miaoqian Lin <linmq006@gmail.com>
 
-[ Upstream commit cded07a2dccd5493696a3adce175f01e413423c6 ]
+[ Upstream commit 28a265a1ee11febeec5ea73a804f30dcec3181ca ]
 
-We're missing this check for the CNL PCI id
+The device_node pointer is returned by of_parse_phandle()  with refcount
+incremented. We should use of_node_put() on it when done.
 
-Reported-by: Nikolai Kostrigin <nickel@altlinux.org>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Acked-by: Takashi Iwai <tiwai@suse.de>
-Link: https://lore.kernel.org/r/20220308192610.392950-10-pierre-louis.bossart@linux.intel.com
+This function only calls of_node_put() in the regular path.
+And it will cause refcount leak in error paths.
+Fix this by calling of_node_put() in error handling too.
+
+Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
+Reviewed-by: Tzung-Bi Shih <tzungbi@kernel.org>
+Link: https://lore.kernel.org/r/20220316014059.19292-1-linmq006@gmail.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/hda/intel-dsp-config.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ .../mediatek/mt8183/mt8183-da7219-max98357.c  | 23 +++++++++++++------
+ 1 file changed, 16 insertions(+), 7 deletions(-)
 
-diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
-index b9b7bf5a5553..70fd8b13938e 100644
---- a/sound/hda/intel-dsp-config.c
-+++ b/sound/hda/intel-dsp-config.c
-@@ -199,6 +199,11 @@ static const struct config_entry config_table[] = {
- 			{}
- 		}
- 	},
-+	{
-+		.flags = FLAG_SOF,
-+		.device = 0x09dc8,
-+		.codec_hid =  &essx_83x6,
-+	},
- 	{
- 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
- 		.device = 0x9dc8,
+diff --git a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
+index 718505c75418..f090dee0c7a4 100644
+--- a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
++++ b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
+@@ -695,8 +695,11 @@ static int mt8183_da7219_max98357_dev_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	card = (struct snd_soc_card *)of_device_get_match_data(&pdev->dev);
+-	if (!card)
+-		return -EINVAL;
++	if (!card) {
++		ret = -EINVAL;
++		goto put_platform_node;
++	}
++
+ 	card->dev = &pdev->dev;
+ 
+ 	hdmi_codec = of_parse_phandle(pdev->dev.of_node,
+@@ -761,12 +764,15 @@ static int mt8183_da7219_max98357_dev_probe(struct platform_device *pdev)
+ 	if (!mt8183_da7219_max98357_headset_dev.dlc.of_node) {
+ 		dev_err(&pdev->dev,
+ 			"Property 'mediatek,headset-codec' missing/invalid\n");
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto put_hdmi_codec;
+ 	}
+ 
+ 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+-	if (!priv)
+-		return -ENOMEM;
++	if (!priv) {
++		ret = -ENOMEM;
++		goto put_hdmi_codec;
++	}
+ 
+ 	snd_soc_card_set_drvdata(card, priv);
+ 
+@@ -775,13 +781,16 @@ static int mt8183_da7219_max98357_dev_probe(struct platform_device *pdev)
+ 		ret = PTR_ERR(pinctrl);
+ 		dev_err(&pdev->dev, "%s failed to select default state %d\n",
+ 			__func__, ret);
+-		return ret;
++		goto put_hdmi_codec;
+ 	}
+ 
+ 	ret = devm_snd_soc_register_card(&pdev->dev, card);
+ 
+-	of_node_put(platform_node);
++
++put_hdmi_codec:
+ 	of_node_put(hdmi_codec);
++put_platform_node:
++	of_node_put(platform_node);
+ 	return ret;
+ }
+ 
 -- 
 2.34.1
 
