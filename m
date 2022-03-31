@@ -4,59 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58DFCC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 31 Mar 2022 00:08:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3EDFC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 31 Mar 2022 02:26:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 90F411AD3;
-	Thu, 31 Mar 2022 02:07:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 90F411AD3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4723118EC;
+	Thu, 31 Mar 2022 04:25:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4723118EC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648685290;
-	bh=+fNKPocUjxQXDuz3GDZUxg0u1ctHRF6erM6q0fnGmzI=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1648693601;
+	bh=iWPNMw9W12xpP6KHeikmbn0F77oR3uTYshL6+jB2dc8=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jr0hAJbPwK7AzbXP3GyX79oVFG7kTczac2LQ0awAdPDsrQjseOORL1U/Jts58oBKH
-	 mvskzqpIVEZtHO2kyFOPn2rgkOgLUksOr9G2jsqbOgv3Jyj7bpfdewEqyFvOJlUVAw
-	 kvZ5GeMYGjQggQm8Jq90W7RhfbiO2b6XdNz1NWsQ=
+	b=C3LE8B6QZEiFnMgd76+6R667nLRnGYhkQYzjLQ7G4XVnuFoetjndzpKt6DxsBqimj
+	 hgh/yIUtC7PlGK6k0JPr1tOds9jx+WBouIMSpkpfPDHt/L08pYJu3yurVLfyMv2Hj4
+	 F0mtVEWs67wknVWNkdRtTkFGp6qxJS9kbNa8KQzs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D2473F80534;
-	Thu, 31 Mar 2022 02:05:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C9B1CF8020D;
+	Thu, 31 Mar 2022 04:25:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9F5B5F8051D; Thu, 31 Mar 2022 02:05:45 +0200 (CEST)
-Received: from hutie.ust.cz (hutie.ust.cz [185.8.165.127])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 45339F80253
- for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2022 02:05:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45339F80253
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=cutebit.org header.i=@cutebit.org
- header.b="VpQis266"
-From: =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cutebit.org; s=mail;
- t=1648685133; bh=Ea0QBaJP2Xhb2qk22MNKaoz+blbZuooVi0kGOsoChyQ=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References;
- b=VpQis266M9BalLOWg7P4c+68owWtkGGUriBUeUvRyIyl43yyS9AeR6+npb/uhLoFt
- cMdw2Woc8wg62T4OF3zn6GU3pC59+r9ZlLV67mAu/hz1u2cugNWW+fk+SqwpnZqlhG
- tWrI+oOjiZ4p8wuTk6iLkVWaYDX6HAojQwwwLI0o=
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [RFC PATCH 4/5] ASoC: Introduce snd_soc_of_get_dai_link_cpus
-Date: Thu, 31 Mar 2022 02:04:48 +0200
-Message-Id: <20220331000449.41062-5-povik+lin@cutebit.org>
-In-Reply-To: <20220331000449.41062-1-povik+lin@cutebit.org>
-References: <20220331000449.41062-1-povik+lin@cutebit.org>
+ id 8FEEAF80227; Thu, 31 Mar 2022 04:25:48 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id C9209F800B8
+ for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2022 04:25:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9209F800B8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Sven Peter <sven@svenpeter.dev>, Hector Martin <marcan@marcan.st>,
- linux-kernel@vger.kernel.org, Mark Kettenis <kettenis@openbsd.org>,
- =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1648693541401184082-webhooks-bot@alsa-project.org>
+References: <1648693541401184082-webhooks-bot@alsa-project.org>
+Subject: [PATCH 0/7] meson: refactor common part of configuration
+Message-Id: <20220331022548.8FEEAF80227@alsa1.perex.cz>
+Date: Thu, 31 Mar 2022 04:25:48 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,121 +55,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This function is an analogue of snd_soc_of_get_dai_link_codecs to help
-machine drivers read CPU DAI lists from devicetrees.
+alsa-project/alsa-gobject pull request #66 was opened from takaswie:
 
-Signed-off-by: Martin Povišer <povik+lin@cutebit.org>
----
- include/sound/soc.h  |  4 +++
- sound/soc/soc-core.c | 80 ++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 84 insertions(+)
+In this project, meson configuration for included libraries consists of
+two parts; common and specific. During development, the common part
+gains differences between libraries. This patchset refactors meson
+configuration to increase the same expression in the common part.
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 0ab664500b8f..0bf9d1d0768c 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1266,6 +1266,10 @@ int snd_soc_of_get_dai_link_codecs(struct device *dev,
- 				   struct device_node *of_node,
- 				   struct snd_soc_dai_link *dai_link);
- void snd_soc_of_put_dai_link_codecs(struct snd_soc_dai_link *dai_link);
-+int snd_soc_of_get_dai_link_cpus(struct device *dev,
-+				 struct device_node *of_node,
-+				 struct snd_soc_dai_link *dai_link);
-+void snd_soc_of_put_dai_link_cpus(struct snd_soc_dai_link *dai_link);
- 
- int snd_soc_add_pcm_runtime(struct snd_soc_card *card,
- 			    struct snd_soc_dai_link *dai_link);
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 0bf05d98ec0d..a97476ec01ab 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -3400,6 +3400,86 @@ int snd_soc_of_get_dai_link_codecs(struct device *dev,
- }
- EXPORT_SYMBOL_GPL(snd_soc_of_get_dai_link_codecs);
- 
-+/*
-+ * snd_soc_of_put_dai_link_cpus - Dereference device nodes in the codecs array
-+ * @dai_link: DAI link
-+ *
-+ * Dereference device nodes acquired by snd_soc_of_get_dai_link_cpus().
-+ */
-+void snd_soc_of_put_dai_link_cpus(struct snd_soc_dai_link *dai_link)
-+{
-+	struct snd_soc_dai_link_component *component;
-+	int index;
-+
-+	for_each_link_cpus(dai_link, index, component) {
-+		if (!component->of_node)
-+			break;
-+		of_node_put(component->of_node);
-+		component->of_node = NULL;
-+	}
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_of_put_dai_link_cpus);
-+
-+/*
-+ * snd_soc_of_get_dai_link_cpus - Parse a list of CPU DAIs in the devicetree
-+ * @dev: Card device
-+ * @of_node: Device node
-+ * @dai_link: DAI link
-+ *
-+ * Is analogous to snd_soc_of_get_dai_link_codecs but parses a list of CPU DAIs
-+ * instead.
-+ *
-+ * Returns 0 for success
-+ */
-+int snd_soc_of_get_dai_link_cpus(struct device *dev,
-+				 struct device_node *of_node,
-+				 struct snd_soc_dai_link *dai_link)
-+{
-+	struct of_phandle_args args;
-+	struct snd_soc_dai_link_component *component;
-+	char *name;
-+	int index, num_codecs, ret;
-+
-+	/* Count the number of CODECs */
-+	name = "sound-dai";
-+	num_codecs = of_count_phandle_with_args(of_node, name,
-+						"#sound-dai-cells");
-+	if (num_codecs <= 0) {
-+		if (num_codecs == -ENOENT)
-+			dev_err(dev, "No 'sound-dai' property\n");
-+		else
-+			dev_err(dev, "Bad phandle in 'sound-dai'\n");
-+		return num_codecs;
-+	}
-+	component = devm_kcalloc(dev,
-+				 num_codecs, sizeof(*component),
-+				 GFP_KERNEL);
-+	if (!component)
-+		return -ENOMEM;
-+	dai_link->cpus = component;
-+	dai_link->num_cpus = num_codecs;
-+
-+	/* Parse the list */
-+	for_each_link_cpus(dai_link, index, component) {
-+		ret = of_parse_phandle_with_args(of_node, name,
-+						 "#sound-dai-cells",
-+						 index, &args);
-+		if (ret)
-+			goto err;
-+		component->of_node = args.np;
-+		ret = snd_soc_get_dai_name(&args, &component->dai_name);
-+		if (ret < 0)
-+			goto err;
-+	}
-+	return 0;
-+err:
-+	snd_soc_of_put_dai_link_codecs(dai_link);
-+	dai_link->cpus = NULL;
-+	dai_link->num_cpus = 0;
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_of_get_dai_link_cpus);
-+
- static int __init snd_soc_init(void)
- {
- 	snd_soc_debugfs_init();
--- 
-2.33.0
+```
+Takashi Sakamoto (7):
+  timer: code refactoring for search path of alsatimer header
+  meson: aggregate dependency declaration on glib/gobject and libudev
+  meson: aggregate module imports
+  meson: fulfill missing sources for gir scanner which are blank
+  meson: move pkg-config description to metadata part
+  meson: aggregate and move extra gir to metadata part
+  meson: move path to top header to metadata part
 
+ meson.build             |  2 --
+ src/ctl/meson.build     | 37 +++++++++++++++-------------------
+ src/hwdep/meson.build   | 39 ++++++++++++++++--------------------
+ src/meson.build         | 15 ++++++++++++++
+ src/rawmidi/meson.build | 38 ++++++++++++++++-------------------
+ src/seq/meson.build     | 44 ++++++++++++++++++-----------------------
+ src/timer/meson.build   | 40 +++++++++++++++++--------------------
+ 7 files changed, 102 insertions(+), 113 deletions(-)
+```
+
+Request URL   : https://github.com/alsa-project/alsa-gobject/pull/66
+Patch URL     : https://github.com/alsa-project/alsa-gobject/pull/66.patch
+Repository URL: https://github.com/alsa-project/alsa-gobject
