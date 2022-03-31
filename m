@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BFE9BC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 31 Mar 2022 13:46:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB7B5C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 31 Mar 2022 13:46:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F3DF21935;
-	Thu, 31 Mar 2022 15:45:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F3DF21935
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2C9C31AC8;
+	Thu, 31 Mar 2022 15:45:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C9C31AC8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648734380;
-	bh=6t4BVgiNwXM6MOf7z76xDBWIimSZbQvEhznZmbs2Hfo=;
+	s=default; t=1648734402;
+	bh=gdUlhBmuIeI3/ouGV5W0tbLrSX4BClenfDAUfQD0EOE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pGKsKPEYLVJ1QQv0S5qtfku0dFjYkhIZqjTOAe9dBeAU1A4saoBknt32fXC/eyYdU
-	 cOLs7XsAE0Ib8jk8LEEwGYXPZSNcf8jDJTwzoKKqZ2DSm68X77lzTT42PAZZTKj28H
-	 AOjv0Xw47DsplN9fQqqZ8bweuw7wnJKzwWn5BdhU=
+	b=ROxanVHM1vnGgZqbCXgcn/p94QNkJFq/8kcX3ij4nzozZUfR+FUXJDp/Tk+hxNZxg
+	 NVx2U1kqd42CdnJv9nvViiF1994tLS1MPu//wV/S8EDFWDms0ORKxV2O2UZLCwpnM+
+	 XuyDAC1U+qDoNJlOeoXw0YG9BHb/8rzIAJIR/Gqs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 50225F80563;
-	Thu, 31 Mar 2022 15:42:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4FB7FF80578;
+	Thu, 31 Mar 2022 15:42:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B993CF80559; Thu, 31 Mar 2022 15:42:47 +0200 (CEST)
+ id EFD7AF80570; Thu, 31 Mar 2022 15:42:52 +0200 (CEST)
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B0C70F80534
- for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2022 15:42:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0C70F80534
+ by alsa1.perex.cz (Postfix) with ESMTPS id 994CDF80566
+ for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2022 15:42:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 994CDF80566
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="T238f5l8"
+ header.b="g4eF3WZf"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1648734161; x=1680270161;
+ t=1648734170; x=1680270170;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=6t4BVgiNwXM6MOf7z76xDBWIimSZbQvEhznZmbs2Hfo=;
- b=T238f5l898aA28+QY2aCQ+0NlEQIaGc2/8mYSgJfXNLpaxq+kNz6dyzT
- njXkNtZfsT8SG2BpFn0URwM1dVvEMePT5otXB1jLZUpqSMIWlGyAAgDHB
- RjxwlcPAumxyGZFUsiF2a9tuQORP6187nb4cPuz79r2i3xg9hasfNr494
- 89oeV01qrU4r338V9rZb7ldG4/tbt+LXJ6vCD9+jH37ifc66q0ztLUkoe
- n9Dbvv8bd1ipToXBWDLkIq1PGge449/riFOCAB8r09RXzGpkQbZex+Zlb
- iqpBFfc3fD5BFqN8De1QqvacQb54s/lpyp9CQ92uAB4q/WJitiNeldLkb w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10302"; a="259819188"
-X-IronPort-AV: E=Sophos;i="5.90,225,1643702400"; d="scan'208";a="259819188"
+ bh=gdUlhBmuIeI3/ouGV5W0tbLrSX4BClenfDAUfQD0EOE=;
+ b=g4eF3WZfC2nWxRi4ze8PVfb3uNi/D83XeIalmA7VXjZ3Om+Rf35TAlnm
+ DO4I43DOPKHi44KqnswQw8ykgWnWT/wYD7mJF3L0/cijDcQ8C7CKI15U2
+ pCzyTfuqd6EcjAKQVktfsMNfy0s3qlJi9SSoSYNf2jJo/Y8O0oUlgS6jN
+ Fvb2W4pzRd/DAwFDkPMr1k0zU8vPznXoOAGHjhtfvEr36i5zugaMQlE5v
+ mznLE7iOJlRvYRygNn5KjPYdg/BH3HJVSszQm9Ls5IBm1G0sgbPWQfLIh
+ gUcGwo1k3has9O/RWBx3j3TeW2XmsgRCAYt46ie0OjNtL8Fub1ljMeO5c g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10302"; a="259819215"
+X-IronPort-AV: E=Sophos;i="5.90,225,1643702400"; d="scan'208";a="259819215"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Mar 2022 06:42:39 -0700
+ 31 Mar 2022 06:42:49 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,225,1643702400"; d="scan'208";a="522349223"
+X-IronPort-AV: E=Sophos;i="5.90,225,1643702400"; d="scan'208";a="522349276"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by orsmga006.jf.intel.com with ESMTP; 31 Mar 2022 06:42:36 -0700
+ by orsmga006.jf.intel.com with ESMTP; 31 Mar 2022 06:42:46 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH v2 09/14] ASoC: Intel: avs: Declare path and its components
-Date: Thu, 31 Mar 2022 15:52:41 +0200
-Message-Id: <20220331135246.993089-10-cezary.rojewski@intel.com>
+Subject: [PATCH v2 12/14] ASoC: Intel: avs: Arm paths after creating them
+Date: Thu, 31 Mar 2022 15:52:44 +0200
+Message-Id: <20220331135246.993089-13-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220331135246.993089-1-cezary.rojewski@intel.com>
 References: <20220331135246.993089-1-cezary.rojewski@intel.com>
@@ -88,86 +88,237 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Declare representatives for all crucial elements which stream on ADSP
-side is made of. That covers pipelines and modules subject which are
-presented by struct avs_path_pipeline and avs_path_module respectively.
-While struct avs_path_binding and struct avs_path do not represent any
-object on firmware side directly, they are needed to help track the
-interconnections and membership of every pipeline and module created.
+Creating the pipelines and instantiating the modules alone is
+insufficient to have a fully operational stream. Before it can be run,
+stream components need to be bound. Add arming functions to ensure all
+necessary operations are completed before path is yielded back to the
+avs_path_create() caller.
 
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/avs/path.h | 60 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 60 insertions(+)
- create mode 100644 sound/soc/intel/avs/path.h
+ sound/soc/intel/avs/path.c | 180 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 180 insertions(+)
 
-diff --git a/sound/soc/intel/avs/path.h b/sound/soc/intel/avs/path.h
-new file mode 100644
-index 000000000000..ecfb687fdf36
---- /dev/null
-+++ b/sound/soc/intel/avs/path.h
-@@ -0,0 +1,60 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright(c) 2021 Intel Corporation. All rights reserved.
-+ *
-+ * Authors: Cezary Rojewski <cezary.rojewski@intel.com>
-+ *          Amadeusz Slawinski <amadeuszx.slawinski@linux.intel.com>
-+ */
+diff --git a/sound/soc/intel/avs/path.c b/sound/soc/intel/avs/path.c
+index 7febd5118a5d..13006c24ebf8 100644
+--- a/sound/soc/intel/avs/path.c
++++ b/sound/soc/intel/avs/path.c
+@@ -13,6 +13,73 @@
+ #include "path.h"
+ #include "topology.h"
+ 
++/* Must be called with adev->comp_list_mutex held. */
++static struct avs_tplg *
++avs_path_find_tplg(struct avs_dev *adev, const char *name)
++{
++	struct avs_soc_component *acomp;
 +
-+#ifndef __SOUND_SOC_INTEL_AVS_PATH_H
-+#define __SOUND_SOC_INTEL_AVS_PATH_H
++	list_for_each_entry(acomp, &adev->comp_list, node)
++		if (!strcmp(acomp->tplg->name, name))
++			return acomp->tplg;
++	return NULL;
++}
 +
-+#include <linux/list.h>
-+#include "avs.h"
-+#include "topology.h"
++static struct avs_path_module *
++avs_path_find_module(struct avs_path_pipeline *ppl, u32 template_id)
++{
++	struct avs_path_module *mod;
 +
-+struct avs_path {
-+	u32 dma_id;
-+	struct list_head ppl_list;
-+	u32 state;
++	list_for_each_entry(mod, &ppl->mod_list, node)
++		if (mod->template->id == template_id)
++			return mod;
++	return NULL;
++}
 +
-+	struct avs_tplg_path *template;
-+	struct avs_dev *owner;
-+	/* device path management */
-+	struct list_head node;
-+};
++static struct avs_path_pipeline *
++avs_path_find_pipeline(struct avs_path *path, u32 template_id)
++{
++	struct avs_path_pipeline *ppl;
 +
-+struct avs_path_pipeline {
-+	u8 instance_id;
-+	struct list_head mod_list;
-+	struct list_head binding_list;
++	list_for_each_entry(ppl, &path->ppl_list, node)
++		if (ppl->template->id == template_id)
++			return ppl;
++	return NULL;
++}
 +
-+	struct avs_tplg_pipeline *template;
-+	struct avs_path *owner;
-+	/* path pipelines management */
-+	struct list_head node;
-+};
++static struct avs_path *
++avs_path_find_path(struct avs_dev *adev, const char *name, u32 template_id)
++{
++	struct avs_tplg_path_template *pos, *template = NULL;
++	struct avs_tplg *tplg;
++	struct avs_path *path;
 +
-+struct avs_path_module {
-+	u16 module_id;
-+	u16 instance_id;
++	tplg = avs_path_find_tplg(adev, name);
++	if (!tplg)
++		return NULL;
 +
-+	struct avs_tplg_module *template;
-+	struct avs_path_pipeline *owner;
-+	/* pipeline modules management */
-+	struct list_head node;
-+};
++	list_for_each_entry(pos, &tplg->path_tmpl_list, node) {
++		if (pos->id == template_id) {
++			template = pos;
++			break;
++		}
++	}
++	if (!template)
++		return NULL;
 +
-+struct avs_path_binding {
-+	struct avs_path_module *source;
-+	u8 source_pin;
-+	struct avs_path_module *sink;
-+	u8 sink_pin;
++	spin_lock(&adev->path_list_lock);
++	/* Only one variant of given path template may be instantiated at a time. */
++	list_for_each_entry(path, &adev->path_list, node) {
++		if (path->template->owner == template) {
++			spin_unlock(&adev->path_list_lock);
++			return path;
++		}
++	}
 +
-+	struct avs_tplg_binding *template;
-+	struct avs_path_pipeline *owner;
-+	/* pipeline bindings management */
-+	struct list_head node;
-+};
++	spin_unlock(&adev->path_list_lock);
++	return NULL;
++}
 +
-+#endif
+ static bool avs_test_hw_params(struct snd_pcm_hw_params *params,
+ 			       struct avs_audio_format *fmt)
+ {
+@@ -75,6 +142,58 @@ avs_path_module_create(struct avs_dev *adev,
+ 	return mod;
+ }
+ 
++static int avs_path_binding_arm(struct avs_dev *adev, struct avs_path_binding *binding)
++{
++	struct avs_path_module *this_mod, *target_mod;
++	struct avs_path_pipeline *target_ppl;
++	struct avs_path *target_path;
++	struct avs_tplg_binding *t;
++
++	t = binding->template;
++	this_mod = avs_path_find_module(binding->owner,
++					t->mod_id);
++	if (!this_mod) {
++		dev_err(adev->dev, "path mod %d not found\n", t->mod_id);
++		return -EINVAL;
++	}
++
++	/* update with target_tplg_name too */
++	target_path = avs_path_find_path(adev, t->target_tplg_name,
++					 t->target_path_tmpl_id);
++	if (!target_path) {
++		dev_err(adev->dev, "target path %s:%d not found\n",
++			t->target_tplg_name, t->target_path_tmpl_id);
++		return -EINVAL;
++	}
++
++	target_ppl = avs_path_find_pipeline(target_path,
++					    t->target_ppl_id);
++	if (!target_ppl) {
++		dev_err(adev->dev, "target ppl %d not found\n", t->target_ppl_id);
++		return -EINVAL;
++	}
++
++	target_mod = avs_path_find_module(target_ppl, t->target_mod_id);
++	if (!target_mod) {
++		dev_err(adev->dev, "target mod %d not found\n", t->target_mod_id);
++		return -EINVAL;
++	}
++
++	if (t->is_sink) {
++		binding->sink = this_mod;
++		binding->sink_pin = t->mod_pin;
++		binding->source = target_mod;
++		binding->source_pin = t->target_mod_pin;
++	} else {
++		binding->sink = target_mod;
++		binding->sink_pin = t->target_mod_pin;
++		binding->source = this_mod;
++		binding->source_pin = t->mod_pin;
++	}
++
++	return 0;
++}
++
+ static void avs_path_binding_free(struct avs_dev *adev, struct avs_path_binding *binding)
+ {
+ 	kfree(binding);
+@@ -97,6 +216,38 @@ static struct avs_path_binding *avs_path_binding_create(struct avs_dev *adev,
+ 	return binding;
+ }
+ 
++static int avs_path_pipeline_arm(struct avs_dev *adev,
++				 struct avs_path_pipeline *ppl)
++{
++	struct avs_path_module *mod;
++
++	list_for_each_entry(mod, &ppl->mod_list, node) {
++		struct avs_path_module *source, *sink;
++		int ret;
++
++		/*
++		 * Only one module (so it's implicitly last) or it is the last
++		 * one, either way we don't have next module to bind it to.
++		 */
++		if (mod == list_last_entry(&ppl->mod_list,
++					   struct avs_path_module, node))
++			break;
++
++		/* bind current module to next module on list */
++		source = mod;
++		sink = list_next_entry(mod, node);
++		if (!source || !sink)
++			return -EINVAL;
++
++		ret = avs_ipc_bind(adev, source->module_id, source->instance_id,
++				   sink->module_id, sink->instance_id, 0, 0);
++		if (ret)
++			return AVS_IPC_RET(ret);
++	}
++
++	return 0;
++}
++
+ static void avs_path_pipeline_free(struct avs_dev *adev,
+ 				   struct avs_path_pipeline *ppl)
+ {
+@@ -212,6 +363,31 @@ static int avs_path_init(struct avs_dev *adev, struct avs_path *path,
+ 	return 0;
+ }
+ 
++static int avs_path_arm(struct avs_dev *adev, struct avs_path *path)
++{
++	struct avs_path_pipeline *ppl;
++	struct avs_path_binding *binding;
++	int ret;
++
++	list_for_each_entry(ppl, &path->ppl_list, node) {
++		/*
++		 * Arm all ppl bindings before binding internal modules
++		 * as it costs no IPCs which isn't true for the latter.
++		 */
++		list_for_each_entry(binding, &ppl->binding_list, node) {
++			ret = avs_path_binding_arm(adev, binding);
++			if (ret < 0)
++				return ret;
++		}
++
++		ret = avs_path_pipeline_arm(adev, ppl);
++		if (ret < 0)
++			return ret;
++	}
++
++	return 0;
++}
++
+ static void avs_path_free_unlocked(struct avs_path *path)
+ {
+ 	struct avs_path_pipeline *ppl, *save;
+@@ -240,6 +416,10 @@ static struct avs_path *avs_path_create_unlocked(struct avs_dev *adev, u32 dma_i
+ 	if (ret < 0)
+ 		goto err;
+ 
++	ret = avs_path_arm(adev, path);
++	if (ret < 0)
++		goto err;
++
+ 	path->state = AVS_PPL_STATE_INVALID;
+ 	return path;
+ err:
 -- 
 2.25.1
 
