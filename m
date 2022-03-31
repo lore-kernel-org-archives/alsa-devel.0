@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F808C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 31 Mar 2022 13:44:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83872C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 31 Mar 2022 13:44:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CE98E1A5E;
-	Thu, 31 Mar 2022 15:43:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE98E1A5E
+	by alsa0.perex.cz (Postfix) with ESMTPS id D4F111A97;
+	Thu, 31 Mar 2022 15:44:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D4F111A97
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648734279;
-	bh=JozjEFYT0n5R2/ELtQW5VthZtkWkVtC1XHvhYosr5T8=;
+	s=default; t=1648734291;
+	bh=s1W7+ewhoG6bbq3Q6knIEUw9a+/uZ/sgGvvyBl5LrGs=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KTsK9f8VA2ji7rE3pqzRQp1htDIkLVEG4nvwagycVCeoicoevwIcG0nIflG4VozgI
-	 vfAjsxWwlgsFnBjzBmODkTEhXqKWqP4FTcadbhRn1Wm3S8lV6kAYL6wJ+5SuPJfcNP
-	 BzU+EtuNL71/QMwSyYUpcenQ367CWBhaYW/UuGaQ=
+	b=nEoLR+wbNcbESrvudtycA7qFniLF1m3j1Lm5drNd9Zl5gpLwiPPO2t3mZXDcDRLIH
+	 0HmmljDrh5MtpqZGrf/pbjcgBSb0kC+PthR1JfJf94u/YuWiuKyxTzB4ehFMCPWTlX
+	 YobK3Pg+yT4f1K1d641+CZkCPfFSXtbo8/OxKEZg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C9E6AF8052E;
-	Thu, 31 Mar 2022 15:42:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 99187F80535;
+	Thu, 31 Mar 2022 15:42:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5F035F8052E; Thu, 31 Mar 2022 15:42:32 +0200 (CEST)
+ id 6BA6FF80529; Thu, 31 Mar 2022 15:42:32 +0200 (CEST)
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 649EBF804AE
- for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2022 15:42:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 649EBF804AE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6B733F8051A
+ for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2022 15:42:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B733F8051A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="BYqhjD46"
+ header.b="ee4fUhyC"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1648734148; x=1680270148;
+ t=1648734146; x=1680270146;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=JozjEFYT0n5R2/ELtQW5VthZtkWkVtC1XHvhYosr5T8=;
- b=BYqhjD46AoBQ8RwUq8Q4OD4FF2ZNiucKyrHjLZVKF3Vf+65FrhwjA18w
- bpWYuY9KkFkvADjGeHYYGLjqTqa/UVgdadtaYUsNS5gQ3K9MCnSjwnK+4
- 63mP36CgH1oTD0gRG+ji874eSbXmhuGYY6UPgvJEGs2mEZxD7MRqA1AIN
- u1dzy8yZWhZOuW1SkFpd4miKlg5Fw26fNehyS8/KYy1NDV0Ts/h6NWysX
- PRXCI0aeCGsa7kwvhfqK6G5Qj76okoT51TGd94Z7O7SpEihbXVuj/2Pyw
- j2qcWZ+tCWsIM359RWc1zKc981y6ViWrKo3BBTPQ8r4clR0syTzJ0Uuk6 g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10302"; a="259819142"
-X-IronPort-AV: E=Sophos;i="5.90,225,1643702400"; d="scan'208";a="259819142"
+ bh=s1W7+ewhoG6bbq3Q6knIEUw9a+/uZ/sgGvvyBl5LrGs=;
+ b=ee4fUhyCrXhvMcbYriTO56WlR8sqTapM61sblMaNM3ERuVBAFd1o0L54
+ a0JS7mkv+mPIV7yiryBn07CUvDi8tADl17CoUY1q1m5uMvSNrY5H1Pz1r
+ a9+r+AVA1G0BQWSpy0RJpHtEG4eIWeBcM20In1dcVygtyjIQNyVTYNY2O
+ zfDZxZzJENk1Li1TOGyVcfrX282CGImAH8fxuIIMJYTReEO0mGyUszA+3
+ 1VvRy7lWp4cfv65toLWDhpjBcywjssPmnuVXTGhkMOrgcY7rjLYzqzvoH
+ 4OwKB9i6eOVdLsm1TiuDiPKALRBYIDVmidzVGCyt0UAIBtfM6VoPZfQ6E A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10302"; a="259819131"
+X-IronPort-AV: E=Sophos;i="5.90,225,1643702400"; d="scan'208";a="259819131"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Mar 2022 06:42:26 -0700
+ 31 Mar 2022 06:42:23 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,225,1643702400"; d="scan'208";a="522349165"
+X-IronPort-AV: E=Sophos;i="5.90,225,1643702400"; d="scan'208";a="522349151"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by orsmga006.jf.intel.com with ESMTP; 31 Mar 2022 06:42:23 -0700
+ by orsmga006.jf.intel.com with ESMTP; 31 Mar 2022 06:42:20 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH v2 05/14] ASoC: Intel: avs: Parse pipeline and module tuples
-Date: Thu, 31 Mar 2022 15:52:37 +0200
-Message-Id: <20220331135246.993089-6-cezary.rojewski@intel.com>
+Subject: [PATCH v2 04/14] ASoC: Intel: avs: Parse pplcfg and binding tuples
+Date: Thu, 31 Mar 2022 15:52:36 +0200
+Message-Id: <20220331135246.993089-5-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220331135246.993089-1-cezary.rojewski@intel.com>
 References: <20220331135246.993089-1-cezary.rojewski@intel.com>
@@ -88,240 +88,187 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Shape of a path on DSP side, that is, the number and the layout of its
-pipelines and modules is paramount for streaming to be efficient and low
-power-consuming. Add parsing helpers to support loading such information
-from the topology file.
+Path in ADSP firmware is represented by one or more pipelines. Just like
+modules, these are described by a config structure. Add parsing helpers
+to support loading such information from the topology file.
 
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/avs/topology.c | 177 +++++++++++++++++++++++++++++++++
- sound/soc/intel/avs/topology.h |  31 ++++++
- 2 files changed, 208 insertions(+)
+ sound/soc/intel/avs/topology.c | 114 +++++++++++++++++++++++++++++++++
+ sound/soc/intel/avs/topology.h |  28 ++++++++
+ 2 files changed, 142 insertions(+)
 
 diff --git a/sound/soc/intel/avs/topology.c b/sound/soc/intel/avs/topology.c
-index 3d87ce508134..5eaa8d91ce97 100644
+index d13e27dd655e..3d87ce508134 100644
 --- a/sound/soc/intel/avs/topology.c
 +++ b/sound/soc/intel/avs/topology.c
-@@ -1004,3 +1004,180 @@ static int avs_tplg_parse_bindings(struct snd_soc_component *comp,
- 				AVS_TKN_BINDING_ID_U32,
- 				binding_parsers, ARRAY_SIZE(binding_parsers));
+@@ -345,6 +345,8 @@ avs_parse_##name##_ptr(struct snd_soc_component *comp, void *elem, void *object,
+ AVS_DEFINE_PTR_PARSER(audio_format, struct avs_audio_format, fmts);
+ AVS_DEFINE_PTR_PARSER(modcfg_base, struct avs_tplg_modcfg_base, modcfgs_base);
+ AVS_DEFINE_PTR_PARSER(modcfg_ext, struct avs_tplg_modcfg_ext, modcfgs_ext);
++AVS_DEFINE_PTR_PARSER(pplcfg, struct avs_tplg_pplcfg, pplcfgs);
++AVS_DEFINE_PTR_PARSER(binding, struct avs_tplg_binding, bindings);
+ 
+ static int
+ parse_audio_format_bitfield(struct snd_soc_component *comp, void *elem, void *object, u32 offset)
+@@ -890,3 +892,115 @@ static int avs_tplg_parse_modcfgs_ext(struct snd_soc_component *comp,
+ 
+ 	return 0;
  }
 +
-+static const struct avs_tplg_token_parser module_parsers[] = {
++static const struct avs_tplg_token_parser pplcfg_parsers[] = {
 +	{
-+		.token = AVS_TKN_MOD_ID_U32,
++		.token = AVS_TKN_PPLCFG_REQ_SIZE_U16,
++		.type = SND_SOC_TPLG_TUPLE_TYPE_SHORT,
++		.offset = offsetof(struct avs_tplg_pplcfg, req_size),
++		.parse = avs_parse_short_token,
++	},
++	{
++		.token = AVS_TKN_PPLCFG_PRIORITY_U8,
++		.type = SND_SOC_TPLG_TUPLE_TYPE_BYTE,
++		.offset = offsetof(struct avs_tplg_pplcfg, priority),
++		.parse = avs_parse_byte_token,
++	},
++	{
++		.token = AVS_TKN_PPLCFG_LOW_POWER_BOOL,
++		.type = SND_SOC_TPLG_TUPLE_TYPE_BOOL,
++		.offset = offsetof(struct avs_tplg_pplcfg, lp),
++		.parse = avs_parse_bool_token,
++	},
++	{
++		.token = AVS_TKN_PPLCFG_ATTRIBUTES_U16,
++		.type = SND_SOC_TPLG_TUPLE_TYPE_SHORT,
++		.offset = offsetof(struct avs_tplg_pplcfg, attributes),
++		.parse = avs_parse_short_token,
++	},
++	{
++		.token = AVS_TKN_PPLCFG_TRIGGER_U32,
 +		.type = SND_SOC_TPLG_TUPLE_TYPE_WORD,
-+		.offset = offsetof(struct avs_tplg_module, id),
++		.offset = offsetof(struct avs_tplg_pplcfg, trigger),
 +		.parse = avs_parse_word_token,
-+	},
-+	{
-+		.token = AVS_TKN_MOD_MODCFG_BASE_ID_U32,
-+		.type = SND_SOC_TPLG_TUPLE_TYPE_WORD,
-+		.offset = offsetof(struct avs_tplg_module, cfg_base),
-+		.parse = avs_parse_modcfg_base_ptr,
-+	},
-+	{
-+		.token = AVS_TKN_MOD_IN_AFMT_ID_U32,
-+		.type = SND_SOC_TPLG_TUPLE_TYPE_WORD,
-+		.offset = offsetof(struct avs_tplg_module, in_fmt),
-+		.parse = avs_parse_audio_format_ptr,
-+	},
-+	{
-+		.token = AVS_TKN_MOD_CORE_ID_U8,
-+		.type = SND_SOC_TPLG_TUPLE_TYPE_BYTE,
-+		.offset = offsetof(struct avs_tplg_module, core_id),
-+		.parse = avs_parse_byte_token,
-+	},
-+	{
-+		.token = AVS_TKN_MOD_PROC_DOMAIN_U8,
-+		.type = SND_SOC_TPLG_TUPLE_TYPE_BYTE,
-+		.offset = offsetof(struct avs_tplg_module, domain),
-+		.parse = avs_parse_byte_token,
-+	},
-+	{
-+		.token = AVS_TKN_MOD_MODCFG_EXT_ID_U32,
-+		.type = SND_SOC_TPLG_TUPLE_TYPE_WORD,
-+		.offset = offsetof(struct avs_tplg_module, cfg_ext),
-+		.parse = avs_parse_modcfg_ext_ptr,
 +	},
 +};
 +
-+static struct avs_tplg_module *
-+avs_tplg_module_create(struct snd_soc_component *comp, struct avs_tplg_pipeline *owner,
-+		       struct snd_soc_tplg_vendor_array *tuples, u32 block_size)
++static int avs_tplg_parse_pplcfgs(struct snd_soc_component *comp,
++				  struct snd_soc_tplg_vendor_array *tuples,
++				  u32 block_size)
 +{
-+	struct avs_tplg_module *module;
-+	int ret;
++	struct avs_soc_component *acomp = to_avs_soc_component(comp);
++	struct avs_tplg *tplg = acomp->tplg;
 +
-+	module = devm_kzalloc(comp->card->dev, sizeof(*module), GFP_KERNEL);
-+	if (!module)
-+		return ERR_PTR(-ENOMEM);
-+
-+	ret = avs_parse_tokens(comp, module, module_parsers,
-+			       ARRAY_SIZE(module_parsers), tuples, block_size);
-+	if (ret < 0)
-+		return ERR_PTR(ret);
-+
-+	module->owner = owner;
-+	INIT_LIST_HEAD(&module->node);
-+
-+	return module;
++	return parse_dictionary(comp, tuples, block_size, (void **)&tplg->pplcfgs,
++				&tplg->num_pplcfgs, sizeof(*tplg->pplcfgs),
++				AVS_TKN_MANIFEST_NUM_PPLCFGS_U32,
++				AVS_TKN_PPLCFG_ID_U32,
++				pplcfg_parsers, ARRAY_SIZE(pplcfg_parsers));
 +}
 +
-+static const struct avs_tplg_token_parser pipeline_parsers[] = {
++static const struct avs_tplg_token_parser binding_parsers[] = {
 +	{
-+		.token = AVS_TKN_PPL_ID_U32,
++		.token = AVS_TKN_BINDING_TARGET_TPLG_NAME_STRING,
++		.type = SND_SOC_TPLG_TUPLE_TYPE_STRING,
++		.offset = offsetof(struct avs_tplg_binding, target_tplg_name),
++		.parse = parse_link_formatted_string,
++	},
++	{
++		.token = AVS_TKN_BINDING_TARGET_PATH_TMPL_ID_U32,
 +		.type = SND_SOC_TPLG_TUPLE_TYPE_WORD,
-+		.offset = offsetof(struct avs_tplg_pipeline, id),
++		.offset = offsetof(struct avs_tplg_binding, target_path_tmpl_id),
 +		.parse = avs_parse_word_token,
 +	},
 +	{
-+		.token = AVS_TKN_PPL_PPLCFG_ID_U32,
++		.token = AVS_TKN_BINDING_TARGET_PPL_ID_U32,
 +		.type = SND_SOC_TPLG_TUPLE_TYPE_WORD,
-+		.offset = offsetof(struct avs_tplg_pipeline, cfg),
-+		.parse = avs_parse_pplcfg_ptr,
-+	},
-+	{
-+		.token = AVS_TKN_PPL_NUM_BINDING_IDS_U32,
-+		.type = SND_SOC_TPLG_TUPLE_TYPE_WORD,
-+		.offset = offsetof(struct avs_tplg_pipeline, num_bindings),
++		.offset = offsetof(struct avs_tplg_binding, target_ppl_id),
 +		.parse = avs_parse_word_token,
 +	},
-+};
-+
-+static const struct avs_tplg_token_parser bindings_parsers[] = {
 +	{
-+		.token = AVS_TKN_PPL_BINDING_ID_U32,
++		.token = AVS_TKN_BINDING_TARGET_MOD_ID_U32,
 +		.type = SND_SOC_TPLG_TUPLE_TYPE_WORD,
-+		.offset = 0, /* to treat pipeline->bindings as dictionary */
-+		.parse = avs_parse_binding_ptr,
++		.offset = offsetof(struct avs_tplg_binding, target_mod_id),
++		.parse = avs_parse_word_token,
++	},
++	{
++		.token = AVS_TKN_BINDING_TARGET_MOD_PIN_U8,
++		.type = SND_SOC_TPLG_TUPLE_TYPE_BYTE,
++		.offset = offsetof(struct avs_tplg_binding, target_mod_pin),
++		.parse = avs_parse_byte_token,
++	},
++	{
++		.token = AVS_TKN_BINDING_MOD_ID_U32,
++		.type = SND_SOC_TPLG_TUPLE_TYPE_WORD,
++		.offset = offsetof(struct avs_tplg_binding, mod_id),
++		.parse = avs_parse_word_token,
++	},
++	{
++		.token = AVS_TKN_BINDING_MOD_PIN_U8,
++		.type = SND_SOC_TPLG_TUPLE_TYPE_BYTE,
++		.offset = offsetof(struct avs_tplg_binding, mod_pin),
++		.parse = avs_parse_byte_token,
++	},
++	{
++		.token = AVS_TKN_BINDING_IS_SINK_U8,
++		.type = SND_SOC_TPLG_TUPLE_TYPE_BYTE,
++		.offset = offsetof(struct avs_tplg_binding, is_sink),
++		.parse = avs_parse_byte_token,
 +	},
 +};
 +
-+static struct avs_tplg_pipeline *
-+avs_tplg_pipeline_create(struct snd_soc_component *comp, struct avs_tplg_path *owner,
-+			 struct snd_soc_tplg_vendor_array *tuples, u32 block_size)
++static int avs_tplg_parse_bindings(struct snd_soc_component *comp,
++				   struct snd_soc_tplg_vendor_array *tuples,
++				   u32 block_size)
 +{
-+	struct avs_tplg_pipeline *pipeline;
-+	u32 modblk_size, offset;
-+	int ret;
++	struct avs_soc_component *acomp = to_avs_soc_component(comp);
++	struct avs_tplg *tplg = acomp->tplg;
 +
-+	pipeline = devm_kzalloc(comp->card->dev, sizeof(*pipeline), GFP_KERNEL);
-+	if (!pipeline)
-+		return ERR_PTR(-ENOMEM);
-+
-+	pipeline->owner = owner;
-+	INIT_LIST_HEAD(&pipeline->mod_list);
-+
-+	/* Pipeline header MUST be followed by at least one module. */
-+	ret = avs_tplg_vendor_array_lookup(tuples, block_size,
-+					   AVS_TKN_MOD_ID_U32, &offset);
-+	if (!ret && !offset)
-+		ret = -EINVAL;
-+	if (ret)
-+		return ERR_PTR(ret);
-+
-+	/* Process header which precedes module sections. */
-+	ret = avs_parse_tokens(comp, pipeline, pipeline_parsers,
-+			       ARRAY_SIZE(pipeline_parsers), tuples, offset);
-+	if (ret < 0)
-+		return ERR_PTR(ret);
-+
-+	block_size -= offset;
-+	tuples = avs_tplg_vendor_array_at(tuples, offset);
-+
-+	/* Optionally, binding sections follow module ones. */
-+	ret = avs_tplg_vendor_array_lookup_next(tuples, block_size,
-+						AVS_TKN_PPL_BINDING_ID_U32, &offset);
-+	if (ret) {
-+		if (ret != -ENOENT)
-+			return ERR_PTR(ret);
-+
-+		/* Does header information match actual block layout? */
-+		if (pipeline->num_bindings)
-+			return ERR_PTR(-EINVAL);
-+
-+		modblk_size = block_size;
-+	} else {
-+		pipeline->bindings = devm_kcalloc(comp->card->dev, pipeline->num_bindings,
-+						  sizeof(*pipeline->bindings), GFP_KERNEL);
-+		if (!pipeline->bindings)
-+			return ERR_PTR(-ENOMEM);
-+
-+		modblk_size = offset;
-+	}
-+
-+	block_size -= modblk_size;
-+	do {
-+		struct avs_tplg_module *module;
-+		u32 esize;
-+
-+		ret = avs_tplg_vendor_entry_size(tuples, modblk_size,
-+						 AVS_TKN_MOD_ID_U32, &esize);
-+		if (ret)
-+			return ERR_PTR(ret);
-+
-+		module = avs_tplg_module_create(comp, pipeline, tuples, esize);
-+		if (IS_ERR(module)) {
-+			dev_err(comp->dev, "parse module failed: %ld\n",
-+				PTR_ERR(module));
-+			return ERR_CAST(module);
-+		}
-+
-+		list_add_tail(&module->node, &pipeline->mod_list);
-+		modblk_size -= esize;
-+		tuples = avs_tplg_vendor_array_at(tuples, esize);
-+	} while (modblk_size > 0);
-+
-+	/* What's left is optional range of bindings. */
-+	ret = parse_dictionary_entries(comp, tuples, block_size, pipeline->bindings,
-+				       pipeline->num_bindings, sizeof(*pipeline->bindings),
-+				       AVS_TKN_PPL_BINDING_ID_U32,
-+				       bindings_parsers, ARRAY_SIZE(bindings_parsers));
-+	if (ret)
-+		return ERR_PTR(ret);
-+
-+	return pipeline;
++	return parse_dictionary(comp, tuples, block_size, (void **)&tplg->bindings,
++				&tplg->num_bindings, sizeof(*tplg->bindings),
++				AVS_TKN_MANIFEST_NUM_BINDINGS_U32,
++				AVS_TKN_BINDING_ID_U32,
++				binding_parsers, ARRAY_SIZE(binding_parsers));
 +}
 diff --git a/sound/soc/intel/avs/topology.h b/sound/soc/intel/avs/topology.h
-index 7199d30cdab8..0a19302cef1a 100644
+index ce51fd7a99de..7199d30cdab8 100644
 --- a/sound/soc/intel/avs/topology.h
 +++ b/sound/soc/intel/avs/topology.h
-@@ -128,4 +128,35 @@ struct avs_tplg_binding {
- 	u8 is_sink;
+@@ -29,6 +29,10 @@ struct avs_tplg {
+ 	u32 num_modcfgs_base;
+ 	struct avs_tplg_modcfg_ext *modcfgs_ext;
+ 	u32 num_modcfgs_ext;
++	struct avs_tplg_pplcfg *pplcfgs;
++	u32 num_pplcfgs;
++	struct avs_tplg_binding *bindings;
++	u32 num_bindings;
  };
  
-+struct avs_tplg_path {
-+	u32 id;
+ struct avs_tplg_library {
+@@ -100,4 +104,28 @@ struct avs_tplg_modcfg_ext {
+ 	};
+ };
+ 
++/* Specifies path behaviour during PCM ->trigger(START) command. */
++enum avs_tplg_trigger {
++	AVS_TPLG_TRIGGER_AUTO = 0,
 +};
 +
-+struct avs_tplg_pipeline {
-+	u32 id;
-+
-+	struct avs_tplg_pplcfg *cfg;
-+	struct avs_tplg_binding **bindings;
-+	u32 num_bindings;
-+	struct list_head mod_list;
-+
-+	struct avs_tplg_path *owner;
-+	/* Path pipelines management. */
-+	struct list_head node;
++struct avs_tplg_pplcfg {
++	u16 req_size;
++	u8 priority;
++	bool lp;
++	u16 attributes;
++	enum avs_tplg_trigger trigger;
 +};
 +
-+struct avs_tplg_module {
-+	u32 id;
-+
-+	struct avs_tplg_modcfg_base *cfg_base;
-+	struct avs_audio_format *in_fmt;
-+	u8 core_id;
-+	u8 domain;
-+	struct avs_tplg_modcfg_ext *cfg_ext;
-+
-+	struct avs_tplg_pipeline *owner;
-+	/* Pipeline modules management. */
-+	struct list_head node;
++struct avs_tplg_binding {
++	char target_tplg_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
++	u32 target_path_tmpl_id;
++	u32 target_ppl_id;
++	u32 target_mod_id;
++	u8 target_mod_pin;
++	u32 mod_id;
++	u8 mod_pin;
++	u8 is_sink;
 +};
 +
  #endif
