@@ -4,125 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48F95C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 31 Mar 2022 14:07:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C173C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 31 Mar 2022 14:19:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 829C21B13;
-	Thu, 31 Mar 2022 16:06:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 829C21B13
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8FD3A1AF2;
+	Thu, 31 Mar 2022 16:18:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8FD3A1AF2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648735620;
-	bh=QHWN3QbyzGiu5qe2fWTWkkhW6wj24O5pbeA73pEIzAk=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1648736367;
+	bh=esnRoKwPaWXl+mUZ11prb3bCZgCH28Gl04pKeuJeJMw=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QujFYZdryOe36a+BB5yAETors5hHNzA419m3kmKLkbhH6jjhasmLRxHoCpUQ0Ivg6
-	 nvOy3d1VBOq62RKqIghK1TgPxp+mtKznO+GR2Ck2N12if0fnLS6XTzoOJElxuv5Itc
-	 bsX/O7sWFS7+LqsKu2vRZpAgsLwsWWHesjzQ2FUc=
+	b=CdJYOA9rAUboIhMev9JtTDRubH3no3Cv9bArDjiBzZmnnO88t10aqSquUXJmVs0pH
+	 fJNcQyov/9TMJdO6TYd++GJfn8oCI/AbXN8NgrbjlJIdmYOz0j/C2nVNjXV2w9tQSm
+	 ghGYUL2zdfWpntEuIY2qg7cYAV4fUx7+f2E/+EX0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7171DF80538;
-	Thu, 31 Mar 2022 16:04:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1ED4DF80100;
+	Thu, 31 Mar 2022 16:18:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 74C8EF80539; Thu, 31 Mar 2022 16:04:29 +0200 (CEST)
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com
- (mail-mw2nam08on2061c.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:7e8c::61c])
+ id E2E0CF8020D; Thu, 31 Mar 2022 16:18:35 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3F8E5F800B8
+ for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2022 16:18:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3F8E5F800B8
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="OuVRxthY"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D40DBF80537
- for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2022 16:04:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D40DBF80537
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com
- header.b="uFIRhD1I"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gNqQ7pGHB2M7juiOyYHBmTZJf4mQ1dVRcbh0T76Z7jPp+VAB4A0jrxes6HaHTjoL3u9saPVE3m5OJNO1Ut2hoUWQg85N4vIQCzZVbh3kASpexyz2NzcsqdYcjJMqUT3FXNbTRwxH7xiK3Mv0OTbkoo6vex8SbMWmiCtQeVjZFYxWwmcdcWwed2BJDEnEEKY+pGx00KPSx6Y3FpICoTZpc6H2bV9RM+6oNf95IHKSuF550bka+k4pg7BQIVT5xE52YI5Vm7fwfqVxUHr2xfYz+HFPN4vNtRi+Z+0kafWRBJvTR6bHLqzeKQbxBC4ptm2xzo44sWtGf63UiiivTVAPNQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lvBL2G1yjeV6OA5thnvh+CqEDiFd6WmrNsoTXXT5OBw=;
- b=NK2E+Xbnuu5FZ+7vZhMR77w4AbF5MGAhcT6U+aROqzxFvKANy3JGKMn3gy3xMmOFEsc0pMdex1UMvxILFBlKYBzocDuOGHtBODntv4GIQa9I55RBP9oYlkJOmvjH85706IeZtEOel3Dry7fEiyc2WDPQLA3hUuVmbJL0ECTJ9Gz1B5TRaMb2C+/Y/WwkMPCdDZVlbM+3jrYRU5a2DHcwTVPZEEFcuC72Vg4yCRyHB6WLhKkFjH6w4Z/hv0QWoAE13Yz9YuN4sC0gGMao3P6Vo3ePMWOrp9C8RQwBEHxBRYsBeG2K0k2aMfopr/YvkzNsYf9gSUonpx8fWvw+U0f1DA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 12.22.5.235) smtp.rcpttodomain=alsa-project.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lvBL2G1yjeV6OA5thnvh+CqEDiFd6WmrNsoTXXT5OBw=;
- b=uFIRhD1Iyw5AdDKlNaU2D9jnlV4CGB5WdFNZTlgwHReyM4gY5r60QLaO2c0hIHfSL2CQL3GdTBqfOqP+2COZCYSCu7T758QHEMpAegEcuuORttZqmL4NWflD+PMjdcK10jf0ItU1vV3wxXEGdN/0MyuQq8gB8LFpz334Rh0meAG1sDo79Mb3B1lWLd351fqqRhdtG30kTn/EkjCudq4gZFKqjnzHJxAYzSWgq5649+9KAEA5wHmcB5kLHunCM8ReWOIMJ/2xyfW9RQQojjZRQnro83W6ygkyynbUaqYlJ16iuoHpbRiZt5945FuoSXYdmPrW06GmDM+LDy8nn2qDUA==
-Received: from BN9PR03CA0089.namprd03.prod.outlook.com (2603:10b6:408:fc::34)
- by CY4PR12MB1926.namprd12.prod.outlook.com (2603:10b6:903:11b::11)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5123.23; Thu, 31 Mar
- 2022 14:04:20 +0000
-Received: from BN8NAM11FT053.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:fc:cafe::79) by BN9PR03CA0089.outlook.office365.com
- (2603:10b6:408:fc::34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5123.23 via Frontend
- Transport; Thu, 31 Mar 2022 14:04:20 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 12.22.5.235)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 12.22.5.235 as permitted sender) receiver=protection.outlook.com;
- client-ip=12.22.5.235; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (12.22.5.235) by
- BN8NAM11FT053.mail.protection.outlook.com (10.13.177.209) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.5123.19 via Frontend Transport; Thu, 31 Mar 2022 14:04:19 +0000
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1497.32;
- Thu, 31 Mar 2022 14:04:08 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail204.nvidia.com
- (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.22; Thu, 31 Mar
- 2022 07:04:07 -0700
-Received: from audio.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.8)
- with Microsoft SMTP Server id 15.2.986.22 via Frontend Transport;
- Thu, 31 Mar 2022 07:04:03 -0700
-From: Sameer Pujar <spujar@nvidia.com>
-To: <broonie@kernel.org>, <robh+dt@kernel.org>, <krzk+dt@kernel.org>,
- <thierry.reding@gmail.com>, <lgirdwood@gmail.com>, <perex@perex.cz>,
- <tiwai@suse.com>
-Subject: [PATCH v2 5/6] arm64: tegra: Add ASRC device on Tegra186 and later
-Date: Thu, 31 Mar 2022 19:33:31 +0530
-Message-ID: <1648735412-32220-6-git-send-email-spujar@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1648735412-32220-1-git-send-email-spujar@nvidia.com>
-References: <1648735412-32220-1-git-send-email-spujar@nvidia.com>
+ by ams.source.kernel.org (Postfix) with ESMTPS id 6437EB81FB7;
+ Thu, 31 Mar 2022 14:18:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6ED4DC340ED;
+ Thu, 31 Mar 2022 14:18:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1648736311;
+ bh=esnRoKwPaWXl+mUZ11prb3bCZgCH28Gl04pKeuJeJMw=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=OuVRxthYGIVQh8Qd+oZBXVLCkWmukm9g7G48c22SH+zMZmK4CgOQQ1QZLOFyGirn7
+ z5f8/KNpTNPt9XS1P+DZejUoEXH0pKG1wBg5AAFkj4H0hb9vhiy0k4fwWvH+5RxtXQ
+ NR+OtOYjGIyCmjIaSRoGB7gqRJXB8lf0PBGV0XxXY/+tPbC9eR+0VfDFyYBwh5Gscj
+ c1MXWPz0s3lV9X3gCvggzHJsZzumQlHX+awirVZ2MVFEcC5oP64r60gHNprKrI7gVa
+ hf02crrQRIR711tL5eEOYt4qr0m2j0Tbgo6CR2ggL9M+LXDKKO+n9TxxeGfSoPktKD
+ urORRDAKvxMbA==
+Date: Thu, 31 Mar 2022 15:18:24 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Martin =?utf-8?Q?Povi=C5=A1er?= <povik@cutebit.org>
+Subject: Re: [RFC PATCH 0/5] Apple Macs machine-level ASoC driver
+Message-ID: <YkW4MPh8VWc8eSGg@sirena.org.uk>
+References: <20220331000449.41062-1-povik+lin@cutebit.org>
+ <YkWfziQzprEsWL72@sirena.org.uk>
+ <CCE4A06E-6D6F-457D-B3C5-C36209BF38D3@cutebit.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3bee82ce-5c26-494b-e424-08da131f5982
-X-MS-TrafficTypeDiagnostic: CY4PR12MB1926:EE_
-X-Microsoft-Antispam-PRVS: <CY4PR12MB1926C32A0F6E88A2D8FD9D11A7E19@CY4PR12MB1926.namprd12.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vbkJywPlesf1eMtLW/rk/ba9Tu+uqFk5ZZpAWG8rMwNV5AtH3D3sEepFlYzPFIo9l4iQPQmd6QdbgoiiB3FktRwkRDoe+HY5FzoLTtjm617unUV9khJLqG8EbV9Y3h3u//W2GSHLKGTLnbjCny4evLZpBlZS+KphUOoHvn8gr/bG/Ziy3SZJPd0LjKDdavESFTIncG9SCiykBefuBY1yNDenRejAhg73MoPp3gJ3C8lY2j06wd1M7WsHmWdWfHzyx9wxmtWGF4OiAz0Xic7PO07KO7/kbXmXZVQKbAg5TsX8sqrcKGUfehNDuL6yfGAkCx7IoQgcYOO1336RAhiZrWSxjjHA/cylbYTxJmAXfHPeSK1h8oyZkf6OI8KtCz/INTwqKlhnOzG4cK5wc3OWbSk+15IzOtPqeTL8WGSJArlMeIt7kqybkhzv3v1rQGEoyOleaCbC4yj75erhx02KihzTJiz3pMs1uA+EkVI09KRL/OWzjN49NAKS7AOIPZwnSJEIyQ+xz6ehk06LmOoczffqWMGf2oZ/xZcsuX+5fa+1TP3N+87/coz9Cv5Dp8PT+KPiOx7VeI0XatNt1KU/aYY8uSm/32W/tApKG9AONtZMonXwQ38d1lFe5i+68dN2zAOLSJysO+fTKtmKwmxRJDxdpf9QAHmPh53KxCchkR79DWG0+F4LBpWYLCuSHtsvShj2cbqHLjIwvQQUA3gQbw==
-X-Forefront-Antispam-Report: CIP:12.22.5.235; CTRY:US; LANG:en; SCL:1; SRV:;
- IPV:CAL; SFV:NSPM; H:mail.nvidia.com; PTR:InfoNoRecords; CAT:NONE;
- SFS:(13230001)(4636009)(46966006)(36840700001)(40470700004)(110136005)(356005)(54906003)(86362001)(82310400004)(4326008)(70586007)(70206006)(316002)(8936002)(8676002)(426003)(336012)(107886003)(2616005)(26005)(186003)(47076005)(5660300002)(36860700001)(83380400001)(6666004)(508600001)(40460700003)(81166007)(7696005)(36756003)(7416002)(2906002)(36900700001);
- DIR:OUT; SFP:1101; 
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Mar 2022 14:04:19.1136 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3bee82ce-5c26-494b-e424-08da131f5982
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a; Ip=[12.22.5.235];
- Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT053.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1926
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="zQ72vPhT+YMlpKH0"
+Content-Disposition: inline
+In-Reply-To: <CCE4A06E-6D6F-457D-B3C5-C36209BF38D3@cutebit.org>
+X-Cookie: Reunite Gondwondaland!
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- catalin.marinas@arm.com, Sameer Pujar <spujar@nvidia.com>,
- linux-kernel@vger.kernel.org, jonathanh@nvidia.com,
- linux-tegra@vger.kernel.org, will@kernel.org,
- linux-arm-kernel@lists.infradead.org
+ Sven Peter <sven@svenpeter.dev>, linux-kernel@vger.kernel.org,
+ Hector Martin <marcan@marcan.st>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Mark Kettenis <kettenis@openbsd.org>,
+ Martin =?utf-8?Q?Povi=C5=A1er?= <povik+lin@cutebit.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -138,73 +88,114 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Asynchronous Sample Rate Converter (ASRC) is a client of AHUB and is
-present on Tegra186 and later generations of Tegra SoC. Add this device
-on the relevant SoC DTSI files.
 
-Signed-off-by: Sameer Pujar <spujar@nvidia.com>
----
- arch/arm64/boot/dts/nvidia/tegra186.dtsi | 7 +++++++
- arch/arm64/boot/dts/nvidia/tegra194.dtsi | 8 ++++++++
- arch/arm64/boot/dts/nvidia/tegra234.dtsi | 8 ++++++++
- 3 files changed, 23 insertions(+)
+--zQ72vPhT+YMlpKH0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/arm64/boot/dts/nvidia/tegra186.dtsi b/arch/arm64/boot/dts/nvidia/tegra186.dtsi
-index e9b40f5..2e7faa1 100644
---- a/arch/arm64/boot/dts/nvidia/tegra186.dtsi
-+++ b/arch/arm64/boot/dts/nvidia/tegra186.dtsi
-@@ -516,6 +516,13 @@
- 				sound-name-prefix = "MIXER1";
- 				status = "disabled";
- 			};
-+
-+			tegra_asrc: asrc@2910000 {
-+				compatible = "nvidia,tegra186-asrc";
-+				reg = <0x2910000 0x2000>;
-+				sound-name-prefix = "ASRC1";
-+				status = "disabled";
-+			};
- 		};
- 	};
- 
-diff --git a/arch/arm64/boot/dts/nvidia/tegra194.dtsi b/arch/arm64/boot/dts/nvidia/tegra194.dtsi
-index 751ebe5..4306181 100644
---- a/arch/arm64/boot/dts/nvidia/tegra194.dtsi
-+++ b/arch/arm64/boot/dts/nvidia/tegra194.dtsi
-@@ -569,6 +569,14 @@
- 					sound-name-prefix = "MIXER1";
- 					status = "disabled";
- 				};
-+
-+				tegra_asrc: asrc@2910000 {
-+					compatible = "nvidia,tegra194-asrc",
-+						     "nvidia,tegra186-asrc";
-+					reg = <0x2910000 0x2000>;
-+					sound-name-prefix = "ASRC1";
-+					status = "disabled";
-+				};
- 			};
- 		};
- 
-diff --git a/arch/arm64/boot/dts/nvidia/tegra234.dtsi b/arch/arm64/boot/dts/nvidia/tegra234.dtsi
-index aaace60..0a6ff6d 100644
---- a/arch/arm64/boot/dts/nvidia/tegra234.dtsi
-+++ b/arch/arm64/boot/dts/nvidia/tegra234.dtsi
-@@ -378,6 +378,14 @@
- 					iommus = <&smmu_niso0 TEGRA234_SID_APE>;
- 					status = "disabled";
- 				};
-+
-+				tegra_asrc: asrc@2910000 {
-+					compatible = "nvidia,tegra234-asrc",
-+						     "nvidia,tegra186-asrc";
-+					reg = <0x2910000 0x2000>;
-+					sound-name-prefix = "ASRC1";
-+					status = "disabled";
-+				};
- 			};
- 
- 			adma: dma-controller@2930000 {
--- 
-2.7.4
+On Thu, Mar 31, 2022 at 03:28:12PM +0200, Martin Povi=C5=A1er wrote:
+> > On 31. 3. 2022, at 14:34, Mark Brown <broonie@kernel.org> wrote:
 
+> > The broad issue here is that what you consider ridiculous someone else
+> > might have some bright ideas for configuring dynamically - if things are
+> > being exposed for dynamic configuration it's probably because someone
+> > wanted them, if the control is genuinely useless then it should just be
+
+> Well but these are codec drivers reused on different systems, it can both
+> be 'not genuinely useless=E2=80=99 on some system and ridiculous to leave=
+ open on
+> the systems I am trying to write drivers for.
+
+It wouldn't be the first time that we've had someone turn up with a new
+idea for how to configure an already existing bit of hardware, part of
+the reason for this approach is that people do get surprised by user
+creativity with their systems.
+
+> > The TDM swap thing you're mentioning looks like it's a left/right
+> > selection which people do use sometimes as a way of doing mono mixes and
+> > reorientation.  The ISENSE/VSENSE is less obvious, though it's possible
+> > there's issues with not having enough slots on a heavily used TDM bus or
+> > sometimes disabling the speaker protection processing for whatever
+> > reason.
+
+> Not only that. On TAS2770 the default value for =E2=80=98ASI1 Sel=E2=80=
+=99 is =E2=80=98I2C offset=E2=80=99
+> meaning the speaker amp driver ignores my set_tdm_slot calls. If you tell
+> me it=E2=80=99s okay to change that behaviour and it won=E2=80=99t be con=
+sidered backwards
+> compatibility breaking, that would be part of the solution I am seeking
+> here.
+
+Having the default state be muted or not routed is quite common, UCM
+files or equivalent are typically required for embedded style hardware
+like this.
+
+> But even then, what for example if the system has a single speaker (as it
+> does on the Mac mini to be covered by this driver) and the I2S bus is left
+> undriven for the duration of unused TDM slots? That may genuinely pose
+> a risk of people blowing their speakers by switching something in alsamix=
+er.
+
+Right, so that's a more sensible and valid use case.  We do have the
+platform_max feature available for precisely this reason - that's
+probably more appropriate here since if there's a danger of people
+blowing their speaker with a floating input they could also blow their
+speaker with just a very loud audio signal so limiting the volume people
+can set on the speaker driver seems sensible and would also cover them
+for misrouting.  Whatever the device might pick up from noise on an
+undriven bus could also be played as audio down the bus.  This does
+become a little fun with speaker protection as we'd want to raise the
+kernel limit so that userspace can dynamically manage the volume to
+contorl power (though that might be done with software control), but
+it's easy enoguh to raise limits later.
+
+On the other hand it seems like userspace might reasonably choose to do
+a mono mix for this output entirely in software, in which case telling
+the speaker amp to pick up one channel would make sense, or to just play
+out a stereo signal over I2S and have the amplifier do a mono mix and
+I'm not seeing why we'd force one or the other in the machine driver.
+
+> The ISENSE/VSENSE controls are also actually useless on these systems as =
+we
+> are not doing anything to pick up the measured values (which are sent back
+> over the I2S lines). I don=E2=80=99t know if there can be driver conflict=
+ between
+
+Presumably someone might want to work on figuring that out though, and
+=66rom a hardware safety point of view it would be better if they did.
+
+> two speaker amps trying to drive the I2S lines at the same time should
+> the user happen to enable SENSE facilities on more than one of them.
+> Now I can grudgingly study that and rule it out but I would rather hide
+> the controls altogether.
+
+Yes, having two devices driving the bus at the same time wouldn't be
+great.  How is the TDM slot selection for the signals done in the
+hardware, I'm not seeing anything immediately obvious in the driver?
+I'd have thought that things would be implemented such that you could
+implement speaker protection on all speakers simultaneously but perhaps
+not.
+
+> That=E2=80=99s the reasoning anyway. To reiterate, seems to me the contro=
+ls
+> are useless/confusing at best and dangerous at worst.
+
+I'm just not seeing an issue for the slot selection.
+
+--zQ72vPhT+YMlpKH0
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmJFuDAACgkQJNaLcl1U
+h9A9lwf/ddJhTaQ1UaqX3Bsb+GxAlui6cFVoONTfyUAR+vMtAaidhxfYhY8qmtt0
+pkQSmWdb1l8QtQ5pz0SQdW/ZhFi7CfdvDHLGtDCZHAUxCBrya28XC3ebn72jeGgK
+5vNs8vzfVvSpt7B7vseX89U1CvevM4iVkiu2paMQInPWGKjXAN/HtrELENEW20SE
+FV3WAR7m1aNrPc7sZ0d5Nvyr0QQsdTvUeDG48ZlPxy1Ta1SV2zX5qx5os9kXQE6K
+nTzwHh8cyH+t0kJASLEzsV28RBKGOUfCiNM8PSen/SfnsBAXEIeajIYeAGT7ZuJd
+r82cdFoj4At/BFUt9A/IvZMhqO36dQ==
+=YzFu
+-----END PGP SIGNATURE-----
+
+--zQ72vPhT+YMlpKH0--
