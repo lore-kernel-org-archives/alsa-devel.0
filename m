@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E022EC433F5
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 Apr 2022 12:03:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1ABE9C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 Apr 2022 12:04:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 01D6A1914;
-	Fri,  1 Apr 2022 14:02:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 01D6A1914
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5FE311AA3;
+	Fri,  1 Apr 2022 14:03:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5FE311AA3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648814629;
-	bh=8LyawD9hWZllrSuMdo8QF3pMioUDcgJtjC8c9TRvJ7w=;
+	s=default; t=1648814650;
+	bh=ZJ7PZDtj2cJTotXfaME9bXbPIE0eX6Cd3oqrQIJCo4U=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AtsqtamlVMO69uwXvJZgVECiKkm9Pw/dWtH3zpseDURHAvfOtIC0xhR8n7bR8l7L6
-	 an9awXuzZiIzR9bh/9h+n1uGBsQKxBI/DyJk0pdwja+Gw/6WwRMC0NOYnYHgMx0UVJ
-	 aWdSXKb4LP7jqxYyG1HdqoL9rOZJhd4uxIlTO6mk=
+	b=vPu4LJkR4MXmGEuuHbG9mwEeQM0F2FvSFtzJ+Q43xntM9gk9XD+G0euWxgC7ymSJU
+	 s4+GqbgWC4sZeFxccmlB9tZRjGujtKlH877kTr8bs0pAzUa0Ou+OhR29dV62oiTc14
+	 9F8LACkhu3hFSRlU8UFabM2qdNZSZTd143C28oiY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9F1C1F8051E;
-	Fri,  1 Apr 2022 14:02:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 238DBF80519;
+	Fri,  1 Apr 2022 14:02:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3A298F8051B; Fri,  1 Apr 2022 14:02:25 +0200 (CEST)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ id 41CA3F80526; Fri,  1 Apr 2022 14:02:30 +0200 (CEST)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 805EBF801D8
- for <alsa-devel@alsa-project.org>; Fri,  1 Apr 2022 14:02:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 805EBF801D8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8F22BF8047D
+ for <alsa-devel@alsa-project.org>; Fri,  1 Apr 2022 14:02:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F22BF8047D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="gq5gYgZA"
+ header.b="FHO1LPGt"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1648814539; x=1680350539;
+ t=1648814546; x=1680350546;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=8LyawD9hWZllrSuMdo8QF3pMioUDcgJtjC8c9TRvJ7w=;
- b=gq5gYgZANVWfa6rmf7kJFZ/IaRXAZ04uRJ9YXFj0dzLLlOL/YU46vvuD
- Hu9NZtgEJmqlL8E5zUy3+Lg7FtvokZtbgdYiCxqbe6gb/TDYX5kPBprSI
- etuYvxgBVGUcbzZd7R63McyG6mdO21brbNUfBfJC3kP6E1JfXLNrwYe0p
- wozmywrkz7PAgnTw+R/7HeL4JKdPtWlMcxvqJkavsM8sdXvCk4S6YtD/z
- Z3SAC0SwhgkOmM/DnjQyf4ljNi9YpNtriRr2dA2dL6cTlOFg58sbVa0hk
- yY50k1NASBxXs3mG3hVkcfaR5oLf63d6xW4JPj3QQm4cKxKMyBpHx0lZz A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10303"; a="258945841"
-X-IronPort-AV: E=Sophos;i="5.90,227,1643702400"; d="scan'208";a="258945841"
+ bh=ZJ7PZDtj2cJTotXfaME9bXbPIE0eX6Cd3oqrQIJCo4U=;
+ b=FHO1LPGtJ+M61YvREbQGVy9RLK09lNu0+pCQk4rZ2glpUwnvafOjEAVv
+ sICCcvtTw9X8wasL2szbf680TfQ8URDeBtXa8/gAe9qZoCD7nO1fXdlel
+ BefMHxoW07B5stPc2TpUDMqEbwt+uB2UqFc9wAi1ahIVeXfmqhm4jYHKN
+ /tKKn08e+iqrDHlNGStNZzpr6UKRB9+6taLH8sfNRTeCENASSWVxGhbfl
+ HHfWCGxDfG+yRM9nqf/vyYx2eDgu9pYkZ8GPVZPlmB1ldoA4XafE6wdqY
+ 9/pyzQbq7Mij4FhjiJ3QLV25g8T6+al1dD5+VuENIIzAC/p/llssHzXJ4 g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10303"; a="240705826"
+X-IronPort-AV: E=Sophos;i="5.90,227,1643702400"; d="scan'208";a="240705826"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Apr 2022 05:02:10 -0700
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 01 Apr 2022 05:02:21 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,227,1643702400"; d="scan'208";a="567431973"
+X-IronPort-AV: E=Sophos;i="5.90,227,1643702400"; d="scan'208";a="567432098"
 Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
- by orsmga008.jf.intel.com with ESMTP; 01 Apr 2022 05:02:06 -0700
+ by orsmga008.jf.intel.com with ESMTP; 01 Apr 2022 05:02:18 -0700
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>
-Subject: [PATCH 1/6] ASoC: topology: Use for loop instead of while
-Date: Fri,  1 Apr 2022 14:01:55 +0200
-Message-Id: <20220401120200.4047867-2-amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH 6/6] ASoC: topology: Rename soc_tplg_init_kcontrol() function
+Date: Fri,  1 Apr 2022 14:02:00 +0200
+Message-Id: <20220401120200.4047867-7-amadeuszx.slawinski@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220401120200.4047867-1-amadeuszx.slawinski@linux.intel.com>
 References: <20220401120200.4047867-1-amadeuszx.slawinski@linux.intel.com>
@@ -88,61 +88,85 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The 'while' loop can be replaced with a 'for' loop, making it more clear
-about what possible values there are, by having all of it in one place,
-instead of scattered around.
+Other functions used for callbacks are named after function they call,
+however function calling control_load seems to be an exception. Rename
+it to soc_tplg_control_load().
 
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 ---
- sound/soc/soc-topology.c | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
+ sound/soc/soc-topology.c | 17 +++++++----------
+ 1 file changed, 7 insertions(+), 10 deletions(-)
 
 diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 72e50df7052c..bd2155bb6532 100644
+index 3390bf0f8295..ddbc05306a8f 100644
 --- a/sound/soc/soc-topology.c
 +++ b/sound/soc/soc-topology.c
-@@ -2550,10 +2550,8 @@ static int soc_tplg_process_headers(struct soc_tplg *tplg)
+@@ -618,7 +618,7 @@ int snd_soc_tplg_widget_bind_event(struct snd_soc_dapm_widget *w,
+ EXPORT_SYMBOL_GPL(snd_soc_tplg_widget_bind_event);
+ 
+ /* optionally pass new dynamic kcontrol to component driver. */
+-static int soc_tplg_init_kcontrol(struct soc_tplg *tplg,
++static int soc_tplg_control_load(struct soc_tplg *tplg,
+ 	struct snd_kcontrol_new *k, struct snd_soc_tplg_ctl_hdr *hdr)
  {
- 	int ret;
- 
--	tplg->pass = SOC_TPLG_PASS_START;
--
- 	/* process the header types from start to end */
--	while (tplg->pass <= SOC_TPLG_PASS_END) {
-+	for (tplg->pass = SOC_TPLG_PASS_START; tplg->pass <= SOC_TPLG_PASS_END; tplg->pass++) {
- 		struct snd_soc_tplg_hdr *hdr;
- 
- 		tplg->hdr_pos = tplg->fw->data;
-@@ -2585,8 +2583,6 @@ static int soc_tplg_process_headers(struct soc_tplg *tplg)
- 			hdr = (struct snd_soc_tplg_hdr *)tplg->hdr_pos;
- 		}
- 
--		/* next data type pass */
--		tplg->pass++;
+ 	if (tplg->ops && tplg->ops->control_load)
+@@ -725,7 +725,7 @@ static int soc_tplg_dbytes_create(struct soc_tplg *tplg, size_t size)
  	}
  
- 	/* signal DAPM we are complete */
-@@ -2653,10 +2649,10 @@ int snd_soc_tplg_component_remove(struct snd_soc_component *comp)
- {
- 	struct snd_card *card = comp->card->snd_card;
- 	struct snd_soc_dobj *dobj, *next_dobj;
--	int pass = SOC_TPLG_PASS_END;
-+	int pass;
- 
- 	/* process the header types from end to start */
--	while (pass >= SOC_TPLG_PASS_START) {
-+	for (pass = SOC_TPLG_PASS_END; pass >= SOC_TPLG_PASS_START; pass--) {
- 
- 		/* remove mixer controls */
- 		down_write(&card->controls_rwsem);
-@@ -2699,7 +2695,6 @@ int snd_soc_tplg_component_remove(struct snd_soc_component *comp)
- 			}
- 		}
- 		up_write(&card->controls_rwsem);
--		pass--;
+ 	/* pass control to driver for optional further init */
+-	ret = soc_tplg_init_kcontrol(tplg, &kc, (struct snd_soc_tplg_ctl_hdr *)be);
++	ret = soc_tplg_control_load(tplg, &kc, (struct snd_soc_tplg_ctl_hdr *)be);
+ 	if (ret < 0) {
+ 		dev_err(tplg->dev, "ASoC: failed to init %s\n", be->hdr.name);
+ 		goto err;
+@@ -809,7 +809,7 @@ static int soc_tplg_dmixer_create(struct soc_tplg *tplg, size_t size)
  	}
  
- 	/* let caller know if FW can be freed when no objects are left */
+ 	/* pass control to driver for optional further init */
+-	ret = soc_tplg_init_kcontrol(tplg, &kc, (struct snd_soc_tplg_ctl_hdr *)mc);
++	ret = soc_tplg_control_load(tplg, &kc, (struct snd_soc_tplg_ctl_hdr *)mc);
+ 	if (ret < 0) {
+ 		dev_err(tplg->dev, "ASoC: failed to init %s\n", mc->hdr.name);
+ 		goto err;
+@@ -977,7 +977,7 @@ static int soc_tplg_denum_create(struct soc_tplg *tplg, size_t size)
+ 	}
+ 
+ 	/* pass control to driver for optional further init */
+-	ret = soc_tplg_init_kcontrol(tplg, &kc, (struct snd_soc_tplg_ctl_hdr *)ec);
++	ret = soc_tplg_control_load(tplg, &kc, (struct snd_soc_tplg_ctl_hdr *)ec);
+ 	if (ret < 0) {
+ 		dev_err(tplg->dev, "ASoC: failed to init %s\n", ec->hdr.name);
+ 		goto err;
+@@ -1193,8 +1193,7 @@ static int soc_tplg_dapm_widget_dmixer_create(struct soc_tplg *tplg, struct snd_
+ 	}
+ 
+ 	/* pass control to driver for optional further init */
+-	err = soc_tplg_init_kcontrol(tplg, kc,
+-				     (struct snd_soc_tplg_ctl_hdr *)mc);
++	err = soc_tplg_control_load(tplg, kc, (struct snd_soc_tplg_ctl_hdr *)mc);
+ 	if (err < 0) {
+ 		dev_err(tplg->dev, "ASoC: failed to init %s\n",
+ 			mc->hdr.name);
+@@ -1278,8 +1277,7 @@ static int soc_tplg_dapm_widget_denum_create(struct soc_tplg *tplg, struct snd_k
+ 	}
+ 
+ 	/* pass control to driver for optional further init */
+-	err = soc_tplg_init_kcontrol(tplg, kc,
+-				     (struct snd_soc_tplg_ctl_hdr *)ec);
++	err = soc_tplg_control_load(tplg, kc, (struct snd_soc_tplg_ctl_hdr *)ec);
+ 	if (err < 0) {
+ 		dev_err(tplg->dev, "ASoC: failed to init %s\n",
+ 			ec->hdr.name);
+@@ -1331,8 +1329,7 @@ static int soc_tplg_dapm_widget_dbytes_create(struct soc_tplg *tplg, struct snd_
+ 	}
+ 
+ 	/* pass control to driver for optional further init */
+-	err = soc_tplg_init_kcontrol(tplg, kc,
+-				     (struct snd_soc_tplg_ctl_hdr *)be);
++	err = soc_tplg_control_load(tplg, kc, (struct snd_soc_tplg_ctl_hdr *)be);
+ 	if (err < 0) {
+ 		dev_err(tplg->dev, "ASoC: failed to init %s\n",
+ 			be->hdr.name);
 -- 
 2.25.1
 
