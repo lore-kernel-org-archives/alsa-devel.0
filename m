@@ -4,50 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8EEC6C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 Apr 2022 15:04:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CECF0C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 Apr 2022 15:29:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AFB101AD7;
-	Fri,  1 Apr 2022 17:03:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AFB101AD7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 93F651774;
+	Fri,  1 Apr 2022 17:28:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93F651774
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648825471;
-	bh=wVyq9J1SSbisUk8t9r2GT4LhTm0byo/d3aeBXkM2RMo=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=JFPBDuvGhI3RZTzaCfWRgVy0uwoNJwTh+t/vEhG/SdLFT4kSeIf79SLJf5yX2TCTF
-	 kTZjE32g7S7/JbDZubrrelUDc70tEbTGnr8RYuanb9D54OuyEpdk3OsCPVVO8+4iJp
-	 wMiM0Bbd0Ol6x4x4SWl5FMB730LSlnBy7DG0eshE=
+	s=default; t=1648826955;
+	bh=0+Qy6DqL3DzylnNPp1BpGcwg8sHoEzTpg9tt+67cetk=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Ly5dShNGON9UHv41cUxtLXekrbl8vbYaf41CRz/zbHiKaOfldK3bcYRL/YRukKjUl
+	 PxAwr7inKPBQVG4dQg4mWw6xwj5Br4aNN9KRpFaotEBbJD7F6wugZTBArCsPRa/yA2
+	 BZ8iA0yxd89INVevDMxIgjcJ+/OIlEv6BStBZWbI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0C96EF80520;
-	Fri,  1 Apr 2022 17:03:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2AA08F8020D;
+	Fri,  1 Apr 2022 17:28:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4EA0DF80520; Fri,  1 Apr 2022 17:03:34 +0200 (CEST)
-Received: from n169-112.mail.139.com (n169-112.mail.139.com [120.232.169.112])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 226CAF8020D
- for <alsa-devel@alsa-project.org>; Fri,  1 Apr 2022 17:03:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 226CAF8020D
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM: 
-X-RM-SPAM-FLAG: 00000000
-Received: from LAPTOP-39QA2GAC.localdomain (unknown[120.231.214.8])
- by rmsmtp-lg-appmail-27-12032 (RichMail) with SMTP id 2f0062471426e32-0cadd;
- Fri, 01 Apr 2022 23:03:14 +0800 (CST)
-X-RM-TRANSID: 2f0062471426e32-0cadd
-From: Raphael-Xu <13691752556@139.com>
-To: broonie@kernel.org
-Subject: [PATCH v6 1/3] rename tas2764 to tas27xx
-Date: Fri,  1 Apr 2022 23:02:59 +0800
-Message-Id: <20220401150301.1011-1-13691752556@139.com>
-X-Mailer: git-send-email 2.35.1
+ id A6C3EF80279; Fri,  1 Apr 2022 17:28:22 +0200 (CEST)
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk
+ [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 36492F80100
+ for <alsa-devel@alsa-project.org>; Fri,  1 Apr 2022 17:28:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36492F80100
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com
+ header.b="oaadmmE9"
+Received: from [127.0.0.1] (localhost [127.0.0.1]) (Authenticated sender: sre)
+ with ESMTPSA id CD6A51F47CE7
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+ s=mail; t=1648826893;
+ bh=0+Qy6DqL3DzylnNPp1BpGcwg8sHoEzTpg9tt+67cetk=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=oaadmmE9l2jBobRHcuF+5apmP/oV1M+yQTgaQXh/490G5z2SvOZp7QLQgtzJgg9LJ
+ kSSRoR/nvZ9CwLp45EzhG+gsEx3koHVUSuHt1JW59/t+bmT8pXUVS2QmnY9xmsUTpC
+ X1WV89JttUN6+Th3tQeeGyVC1YwWsXUAEy4E+P0Xan4XfKtfPr4ZtwGN333euh6WrD
+ N3loL42J+dcFCtia8Qc/ofLuqb3G3buKPaL9WdfbuFavNDoIIMZDK0K3IoFi0LcBXI
+ AskMmI0jNnVIhTdrzAIT7CJxNibpnxmJUqkKLyDRo57zBD7XpsP3QwbD56h1ddTp85
+ QH8WLFv/Q71Kg==
+Received: by mercury (Postfix, from userid 1000)
+ id 2CCD61060582; Fri,  1 Apr 2022 17:28:11 +0200 (CEST)
+Date: Fri, 1 Apr 2022 17:28:11 +0200
+From: Sebastian Reichel <sebastian.reichel@collabora.com>
+To: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH] dt-bindings: Fix 'enum' lists with duplicate entries
+Message-ID: <20220401152811.uv3wm55byrmk4gqc@mercury.elektranox.org>
+References: <20220401141247.2993925-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: navada@ti.com, alsa-devel@alsa-project.org, shenghao-ding@ti.com,
- raphael-xu@ti.com, Raphael-Xu <13691752556@139.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="gjfd7i3tbgmmz62e"
+Content-Disposition: inline
+In-Reply-To: <20220401141247.2993925-1-robh@kernel.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Charles Keepax <ckeepax@opensource.cirrus.com>, linux-pm@vger.kernel.org,
+ Tony Lindgren <tony@atomide.com>, Yunfei Dong <yunfei.dong@mediatek.com>,
+ Linus Walleij <linus.walleij@linaro.org>, linux-kernel@vger.kernel.org,
+ Jonathan Hunter <jonathanh@nvidia.com>, linux-gpio@vger.kernel.org,
+ Thierry Reding <thierry.reding@gmail.com>, - <patches@opensource.cirrus.com>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>, linux-media@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -63,75 +84,154 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-rename tas2764.c and tas2764.h to tas27xx.c and tas27xx.h
 
-rename tas2764 to tas27xx in Kconfig and Makefile
+--gjfd7i3tbgmmz62e
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Raphael-Xu <13691752556@139.com>
----
- sound/soc/codecs/Kconfig                  | 6 +++---
- sound/soc/codecs/Makefile                 | 4 ++--
- sound/soc/codecs/{tas2764.c => tas27xx.c} | 0
- sound/soc/codecs/{tas2764.h => tas27xx.h} | 0
- 4 files changed, 5 insertions(+), 5 deletions(-)
- rename sound/soc/codecs/{tas2764.c => tas27xx.c} (100%)
- rename sound/soc/codecs/{tas2764.h => tas27xx.h} (100%)
+Hi,
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index f46a22660103..3aa5f35c1d7c 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -213,7 +213,7 @@ config SND_SOC_ALL_CODECS
- 	imply SND_SOC_STI_SAS
- 	imply SND_SOC_TAS2552
- 	imply SND_SOC_TAS2562
--	imply SND_SOC_TAS2764
-+	imply SND_SOC_TAS27XX
- 	imply SND_SOC_TAS2770
- 	imply SND_SOC_TAS5086
- 	imply SND_SOC_TAS571X
-@@ -1472,8 +1472,8 @@ config SND_SOC_TAS2562
- 	tristate "Texas Instruments TAS2562 Mono Audio amplifier"
- 	depends on I2C
- 
--config SND_SOC_TAS2764
--	tristate "Texas Instruments TAS2764 Mono Audio amplifier"
-+config SND_SOC_TAS27XX
-+	tristate "Texas Instruments TAS27xx Mono Audio amplifier"
- 	depends on I2C
- 
- config SND_SOC_TAS2770
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 8637e9e869e3..15ceb95d42f5 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -337,7 +337,7 @@ snd-soc-simple-amplifier-objs := simple-amplifier.o
- snd-soc-tpa6130a2-objs := tpa6130a2.o
- snd-soc-tas2552-objs := tas2552.o
- snd-soc-tas2562-objs := tas2562.o
--snd-soc-tas2764-objs := tas2764.o
-+snd-soc-tas27xx-objs := tas27xx.o
- # Mux
- snd-soc-simple-mux-objs := simple-mux.o
- 
-@@ -574,7 +574,7 @@ obj-$(CONFIG_SND_SOC_STAC9766)	+= snd-soc-stac9766.o
- obj-$(CONFIG_SND_SOC_STI_SAS)	+= snd-soc-sti-sas.o
- obj-$(CONFIG_SND_SOC_TAS2552)	+= snd-soc-tas2552.o
- obj-$(CONFIG_SND_SOC_TAS2562)	+= snd-soc-tas2562.o
--obj-$(CONFIG_SND_SOC_TAS2764)	+= snd-soc-tas2764.o
-+obj-$(CONFIG_SND_SOC_TAS27XX)	+= snd-soc-tas27xx.o
- obj-$(CONFIG_SND_SOC_TAS5086)	+= snd-soc-tas5086.o
- obj-$(CONFIG_SND_SOC_TAS571X)	+= snd-soc-tas571x.o
- obj-$(CONFIG_SND_SOC_TAS5720)	+= snd-soc-tas5720.o
-diff --git a/sound/soc/codecs/tas2764.c b/sound/soc/codecs/tas27xx.c
-similarity index 100%
-rename from sound/soc/codecs/tas2764.c
-rename to sound/soc/codecs/tas27xx.c
-diff --git a/sound/soc/codecs/tas2764.h b/sound/soc/codecs/tas27xx.h
-similarity index 100%
-rename from sound/soc/codecs/tas2764.h
-rename to sound/soc/codecs/tas27xx.h
--- 
-2.35.1
+On Fri, Apr 01, 2022 at 09:12:47AM -0500, Rob Herring wrote:
+> There's no reason to list the same value twice in an 'enum'. Fix all the
+> occurrences in the tree. A meta-schema change will catch future ones.
+>=20
+> Cc: Krzysztof Kozlowski <krzk+dt@kernel.org>
+> Cc: Thierry Reding <thierry.reding@gmail.com>
+> Cc: Jonathan Hunter <jonathanh@nvidia.com>
+> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Cc: Charles Keepax <ckeepax@opensource.cirrus.com>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Sebastian Reichel <sre@kernel.org>
+> Cc: Tony Lindgren <tony@atomide.com>
+> Cc: Yunfei Dong <yunfei.dong@mediatek.com>
+> Cc: - <patches@opensource.cirrus.com>
+> Cc: linux-media@vger.kernel.org
+> Cc: alsa-devel@alsa-project.org
+> Cc: linux-gpio@vger.kernel.org
+> Cc: linux-pm@vger.kernel.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
 
+Acked-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 
+-- Sebastian
+
+> There's also one other occurrence in snps,dwmac.yaml I didn't fix as=20
+> there's a patch[1] for it which prompted this patch.
+>=20
+> Rob
+>=20
+> [1] https://lore.kernel.org/r/20220401030847epcms1p8cf7a8e1d8cd7d325dacf3=
+0f78da36328@epcms1p8
+>=20
+>  .../bindings/arm/tegra/nvidia,tegra20-pmc.yaml        |  1 -
+>  Documentation/devicetree/bindings/bus/ti-sysc.yaml    |  1 -
+>  .../bindings/media/mediatek,vcodec-encoder.yaml       |  1 -
+>  .../devicetree/bindings/pinctrl/cirrus,madera.yaml    | 11 +++++------
+>  .../devicetree/bindings/power/supply/bq2415x.yaml     |  1 -
+>  5 files changed, 5 insertions(+), 10 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/arm/tegra/nvidia,tegra20-p=
+mc.yaml b/Documentation/devicetree/bindings/arm/tegra/nvidia,tegra20-pmc.ya=
+ml
+> index 0afec83cc723..564ae6aaccf7 100644
+> --- a/Documentation/devicetree/bindings/arm/tegra/nvidia,tegra20-pmc.yaml
+> +++ b/Documentation/devicetree/bindings/arm/tegra/nvidia,tegra20-pmc.yaml
+> @@ -13,7 +13,6 @@ maintainers:
+>  properties:
+>    compatible:
+>      enum:
+> -      - nvidia,tegra20-pmc
+>        - nvidia,tegra20-pmc
+>        - nvidia,tegra30-pmc
+>        - nvidia,tegra114-pmc
+> diff --git a/Documentation/devicetree/bindings/bus/ti-sysc.yaml b/Documen=
+tation/devicetree/bindings/bus/ti-sysc.yaml
+> index bd40213302da..fced4082b047 100644
+> --- a/Documentation/devicetree/bindings/bus/ti-sysc.yaml
+> +++ b/Documentation/devicetree/bindings/bus/ti-sysc.yaml
+> @@ -34,7 +34,6 @@ properties:
+>      oneOf:
+>        - items:
+>            - enum:
+> -              - ti,sysc-omap2
+>                - ti,sysc-omap2
+>                - ti,sysc-omap4
+>                - ti,sysc-omap4-simple
+> diff --git a/Documentation/devicetree/bindings/media/mediatek,vcodec-enco=
+der.yaml b/Documentation/devicetree/bindings/media/mediatek,vcodec-encoder.=
+yaml
+> index e7b65a91c92c..df7df06c378f 100644
+> --- a/Documentation/devicetree/bindings/media/mediatek,vcodec-encoder.yaml
+> +++ b/Documentation/devicetree/bindings/media/mediatek,vcodec-encoder.yaml
+> @@ -106,7 +106,6 @@ allOf:
+>            enum:
+>              - mediatek,mt8173-vcodec-enc
+>              - mediatek,mt8192-vcodec-enc
+> -            - mediatek,mt8173-vcodec-enc
+> =20
+>      then:
+>        properties:
+> diff --git a/Documentation/devicetree/bindings/pinctrl/cirrus,madera.yaml=
+ b/Documentation/devicetree/bindings/pinctrl/cirrus,madera.yaml
+> index 8a90d8273767..6bd42e43cdab 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/cirrus,madera.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/cirrus,madera.yaml
+> @@ -48,13 +48,12 @@ properties:
+>                Name of one pin group to configure.
+>              enum: [ aif1, aif2, aif3, aif4, mif1, mif2, mif3, pdmspk1,
+>                      pdmspk2, dmic4, dmic5, dmic6, gpio1, gpio2, gpio3,
+> -                    gpio4, gpio5, gpio6, gpio7, gpio7, gpio8, gpio9,
+> +                    gpio4, gpio5, gpio6, gpio7, gpio8, gpio9,
+>                      gpio10, gpio11, gpio12, gpio13, gpio14, gpio15,
+> -                    gpio16, gpio17, gpio17, gpio18, gpio19, gpio20,
+> -                    gpio21, gpio22, gpio23, gpio24, gpio25, gpio26,
+> -                    gpio27, gpio27, gpio28, gpio29, gpio30, gpio31,
+> -                    gpio32, gpio33, gpio34, gpio35, gpio36, gpio37,
+> -                    gpio37, gpio38, gpio39 ]
+> +                    gpio16, gpio17, gpio18, gpio19, gpio20, gpio21,
+> +                    gpio22, gpio23, gpio24, gpio25, gpio26, gpio27,
+> +                    gpio28, gpio29, gpio30, gpio31, gpio32, gpio33,
+> +                    gpio34, gpio35, gpio36, gpio37, gpio38, gpio39 ]
+> =20
+>            function:
+>              description:
+> diff --git a/Documentation/devicetree/bindings/power/supply/bq2415x.yaml =
+b/Documentation/devicetree/bindings/power/supply/bq2415x.yaml
+> index f8461f06e6f4..118cf484cc69 100644
+> --- a/Documentation/devicetree/bindings/power/supply/bq2415x.yaml
+> +++ b/Documentation/devicetree/bindings/power/supply/bq2415x.yaml
+> @@ -16,7 +16,6 @@ allOf:
+>  properties:
+>    compatible:
+>      enum:
+> -      - ti,bq24150
+>        - ti,bq24150
+>        - ti,bq24150a
+>        - ti,bq24151
+> --=20
+> 2.32.0
+>=20
+
+--gjfd7i3tbgmmz62e
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmJHGggACgkQ2O7X88g7
++po2uA/+OS0hkCudE7TWE85KDv5+/Qb+6/JFLz20iy0f8rQr3U1VOufXZccdMBmV
+lPY7v8Tzl+P3F2tHUdy1A6MSRvSrfxGQi32YeaSR/jNylRY7Lpmm73psjokmXsX/
+FZZMXB7SvHvSLPqIdfKfs9sxuWjeZqw/YsYTDXHvubTSX5LkDuxx1p9KYYoTtZ5y
+jDDUYqCdc1j8+z6u302ErkzZLLxowhYXlfy5I0D3I9VlVA42X6+gVT6j108fgLMw
+ARg8mB8LrTwigl+qpW4E91pH0IOwwVbyIoUAJOUEQlj2qsAxfxAvNOaAbT5KbRZS
+Tj+4TqPQYM+srE8e4dqKCQHB5GQFqHlgFa4r4ATqaqCddL04Zvl1MhaVqoXIuGL/
+NH28aDPnRib2ZR7JkbAQ77NyLnBFtfEbJ7EU58YeTkD+QWJ41Xj9OzH4oEDdurCx
+ggml7FuQj4LaC4uy4cR2MDyHlsrg2wS24+R9rFeXc47HchTboXS14r+a5fOLetpp
+BydxRULRfek5NWLZZGaWLzZZmWwGgG3/hNeNFXDPazkECoHC6HtfpNGX5XAuR3dx
+/PUycmAYpb2KfL3gVZksITrrAZ2qc3tGJgn//rsmCHcouG1w5Kf9NlvRsCzCUAAY
+gbTebdGk0p0ilzuOB4jo1QTy5xJgR6pUMzCWXigh4jkRzJU2pYI=
+=3CSB
+-----END PGP SIGNATURE-----
+
+--gjfd7i3tbgmmz62e--
