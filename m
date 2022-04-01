@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 934B1C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 Apr 2022 12:04:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7DB6FC433F5
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 Apr 2022 12:05:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D459A1AE7;
-	Fri,  1 Apr 2022 14:03:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D459A1AE7
+	by alsa0.perex.cz (Postfix) with ESMTPS id B2EE91ABF;
+	Fri,  1 Apr 2022 14:04:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2EE91ABF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648814680;
-	bh=N6NfxZHXxXFFv18aQesiaGnM/IbG+3X5X0YYB9JhCOU=;
+	s=default; t=1648814699;
+	bh=1U5depfYt/u2kbEpPbWdvWaNrKM0r9KePLowB6sh1KE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZD63avhHXABG2VPxcBKxYAGXAo/D62+ia63NZpuegu6r/G50Q34Jm17bMw+Lh599Z
-	 sOxeGa311NhrL8D4u27G7MpnL+nFNQ+hquPf+Xct4tlSm+ZFFA1rxa4NMWVw1y06ru
-	 bOWNnFIgt+GCUuE59mcbBZyci8ymFqQ0kY4Z3tcY=
+	b=HYuog196cTRX96QIY3QifQBFNaFwbUjzUxQm8ndRNM5qOvY+1a+uctNVbgJf49smN
+	 T9zTrlW+pGwNnup6uRxl3597ZlM6i72Uyf2yaYky8+0E7HvtqnR+nkkxmddUnITEKj
+	 iVFX4oIgfGiuAITPVryfJIS3LawNDt6xHm9BxFdQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DF0D7F8052F;
-	Fri,  1 Apr 2022 14:02:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6477EF80538;
+	Fri,  1 Apr 2022 14:02:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 49601F8047D; Fri,  1 Apr 2022 14:02:30 +0200 (CEST)
+ id 11AC5F80527; Fri,  1 Apr 2022 14:02:31 +0200 (CEST)
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 94E63F80518
- for <alsa-devel@alsa-project.org>; Fri,  1 Apr 2022 14:02:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94E63F80518
+ by alsa1.perex.cz (Postfix) with ESMTPS id 49CD2F80517
+ for <alsa-devel@alsa-project.org>; Fri,  1 Apr 2022 14:02:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49CD2F80517
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="kS5bx2Z9"
+ header.b="JQUpf7Z2"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1648814543; x=1680350543;
+ t=1648814545; x=1680350545;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=N6NfxZHXxXFFv18aQesiaGnM/IbG+3X5X0YYB9JhCOU=;
- b=kS5bx2Z9d0TMd/daz/of8cT0hwUIrcoHcNWUzh71r8pu6slKPCmdypZu
- pkjakpMUOMkNvADgh1NATOv9HDgpdWkgthAXoDel2OyBuhIlKrFJTnMCQ
- 4yeqXI1j71TdDpbnYpCn7hLJ6sSI0IazBBa3VaHh2dNYd38HzK4x5cFja
- SPCABnmwOSIJhTzjR0D33CxjxbU/gpqcL1hptz+5WogynG+wSIZ07lv0N
- U/XrE3SR2Ev5BITEwOUUNOOFNN93Nq3zPsUmcvs6GVZ17LdtBGHsIjVu/
- ZTzFVMI361ey7/PEATiV++JNT/cMaqsSB7+aLbgx5JQ/gOiKxECVDU/gV A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10303"; a="258945863"
-X-IronPort-AV: E=Sophos;i="5.90,227,1643702400"; d="scan'208";a="258945863"
+ bh=1U5depfYt/u2kbEpPbWdvWaNrKM0r9KePLowB6sh1KE=;
+ b=JQUpf7Z2JAqvktGhxrYsgETA1gNUmmLLB1Jy0sZjzOY5qy2U6LkbBd9o
+ Z8+LjOUAUpr1MlT7+p+Xjmb5mdTa16lq0ynUzzQpBmBBeP6/4VugzUdNd
+ Bjiv0b+hD7rKqJTx2Fb+V2s3JbWmCUJW5ilhD8tzAeTGi7dEnuDlLTfyZ
+ bb9NCI6mKQwABNtZ6hDRybiGGsAhOWzESos9yVgcxK6p2fa9IMOn+GUwI
+ Uol9y3ei9ozrvV2qDeFIR4Eti/BJ21ZKr57yugc6dMviSKgMWHcvijRqC
+ rT9avn51tGY7QirxMeY57CqgKasRBRuEG+Pu99g1eghbfPoJFsUX5F88/ A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10303"; a="258945883"
+X-IronPort-AV: E=Sophos;i="5.90,227,1643702400"; d="scan'208";a="258945883"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Apr 2022 05:02:14 -0700
+ 01 Apr 2022 05:02:18 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,227,1643702400"; d="scan'208";a="567432020"
+X-IronPort-AV: E=Sophos;i="5.90,227,1643702400"; d="scan'208";a="567432065"
 Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
- by orsmga008.jf.intel.com with ESMTP; 01 Apr 2022 05:02:12 -0700
+ by orsmga008.jf.intel.com with ESMTP; 01 Apr 2022 05:02:16 -0700
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>
-Subject: [PATCH 3/6] ASoC: topology: Return bool instead of int
-Date: Fri,  1 Apr 2022 14:01:57 +0200
-Message-Id: <20220401120200.4047867-4-amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH 5/6] ASoC: topology: Correct error message
+Date: Fri,  1 Apr 2022 14:01:59 +0200
+Message-Id: <20220401120200.4047867-6-amadeuszx.slawinski@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220401120200.4047867-1-amadeuszx.slawinski@linux.intel.com>
 References: <20220401120200.4047867-1-amadeuszx.slawinski@linux.intel.com>
@@ -88,35 +88,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-In practice soc_tplg_is_eof() returns boolean value and caller uses the
-return value in such way, so convert the function to really do it.
+Error message refers to mixer, but it is used for various other types of
+controls, so change it to refer to generic "controls".
 
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 ---
- sound/soc/soc-topology.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/soc-topology.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index f5446aac8ac6..f8e482d616fb 100644
+index 4e7dabcd69a4..3390bf0f8295 100644
 --- a/sound/soc/soc-topology.c
 +++ b/sound/soc/soc-topology.c
-@@ -104,13 +104,13 @@ static int soc_tplg_check_elem_count(struct soc_tplg *tplg, size_t elem_size,
- 	return 0;
- }
- 
--static inline int soc_tplg_is_eof(struct soc_tplg *tplg)
-+static inline bool soc_tplg_is_eof(struct soc_tplg *tplg)
+@@ -237,7 +237,7 @@ static inline void soc_control_err(struct soc_tplg *tplg,
+ 	struct snd_soc_tplg_ctl_hdr *hdr, const char *name)
  {
- 	const u8 *end = tplg->hdr_pos;
- 
- 	if (end >= tplg->fw->data + tplg->fw->size)
--		return 1;
--	return 0;
-+		return true;
-+	return false;
+ 	dev_err(tplg->dev,
+-		"ASoC: no complete mixer IO handler for %s type (g,p,i) %d:%d:%d at 0x%lx\n",
++		"ASoC: no complete control IO handler for %s type (g,p,i) %d:%d:%d at 0x%lx\n",
+ 		name, hdr->ops.get, hdr->ops.put, hdr->ops.info,
+ 		soc_tplg_get_offset(tplg));
  }
- 
- static inline unsigned long soc_tplg_get_hdr_offset(struct soc_tplg *tplg)
 -- 
 2.25.1
 
