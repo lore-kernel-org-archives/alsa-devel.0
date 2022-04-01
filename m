@@ -4,76 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20DCDC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 Apr 2022 00:32:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58ADCC433F5
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 Apr 2022 01:06:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8E1071878;
-	Fri,  1 Apr 2022 02:31:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E1071878
+	by alsa0.perex.cz (Postfix) with ESMTPS id A1C431868;
+	Fri,  1 Apr 2022 03:05:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A1C431868
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648773146;
-	bh=+nnBuIBIAVX2d/dhKfj010uwH+wDm5wsaOnAbeMU4FY=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1648775199;
+	bh=YUrasn1FgxdUNw4JxzSoOr6Wy/ZMaHL12dBIlgDQFN8=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=o1j8LAt0NSn0S301b7g3gZ1zIVPAFEiaJ4aDju3wRY+H6glKR+zACBPDUhfFrvorL
-	 gZV+T9Q4iTdGZgKqpbK1+Bt2gIiamIci9A543+fXLHC5lDZmjsLaTvx8WRPvsTfatc
-	 ozNcVJs4XlCjzm4dhwj1Lz/IRDPhHWMEixjvbQGA=
+	b=Dirn6n9I2E9hAcuOA081p3J91I5rhHmXKyivIn2+2LaZrDolte9ZblxvbRE5v8Z46
+	 EcGKPYLdULHU6EsVIN/5G9ZlX/WimEh303ap3fwaK/Qbov2DeLj8cVpkALJbOkP4JF
+	 8ohLs/Xrphk+En/jA20GWWDF9GsrtZjDdYb8cMfc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1451EF8020D;
-	Fri,  1 Apr 2022 02:31:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3DAFBF8020D;
+	Fri,  1 Apr 2022 03:05:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C0E79F80227; Fri,  1 Apr 2022 02:31:34 +0200 (CEST)
-Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com
- [209.85.210.47])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E6169F800E4
- for <alsa-devel@alsa-project.org>; Fri,  1 Apr 2022 02:31:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6169F800E4
-Received: by mail-ot1-f47.google.com with SMTP id
- b17-20020a0568301df100b005ce0456a9efso1051524otj.9
- for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2022 17:31:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=D5cr3r23PKmWXKI5ds8p4b/z7cymBQyFMfAsTXiC4Ok=;
- b=BuU9V3DP6oqbPVsAsqHQubX51h9JAi79WvfLfNkkf1zoDm3w8cduwNu6pfTjtSuPLK
- YlQw+bi2kqEHkAdGHWCAUTYWT9bxnx0zpNbcRSSnclta2iw7sl00MNxiISQK80MdyhH4
- 9oRkILUo+c+7Vrxv8f/BBVCX2EobF3lNd32xFkeeYwfN+HKhmIt8skhxDVNh9hbSvlMe
- ezxGtrJUIJXjb2MeJSnt34pKEKMaJc1eV/QQduRWRfJYoKKK6sDpg1rC5WsTJxvlyUAw
- NqIScPdYhq/ECp6OsvMlEUtRakc/uUO2uQAWghqeOEbtTlzVJ6jZ2Vatp2dr08D1aXNn
- 6EFg==
-X-Gm-Message-State: AOAM531pwsyyBbrpVYJ59eXQc8tRVhGEMAkMQ/PGY3oaC9QT3f639PuS
- NAdXC7YuyhdsDHxu40vRyw==
-X-Google-Smtp-Source: ABdhPJxRzaIa0rAVr3FONaUGWR2ZWDQ4AeQia8rId7qKfEc0hObFzENieEMh6VCRUXsKdowW25wPoQ==
-X-Received: by 2002:a05:6830:248c:b0:5c9:2b53:7ee8 with SMTP id
- u12-20020a056830248c00b005c92b537ee8mr6552641ots.258.1648773089769; 
- Thu, 31 Mar 2022 17:31:29 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-144-107.dyn.grandenetworks.net.
- [66.90.144.107]) by smtp.gmail.com with ESMTPSA id
- p4-20020a056870a54400b000da07609a6dsm418060oal.22.2022.03.31.17.31.29
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 31 Mar 2022 17:31:29 -0700 (PDT)
-Received: (nullmailer pid 1785575 invoked by uid 1000);
- Fri, 01 Apr 2022 00:31:28 -0000
-Date: Thu, 31 Mar 2022 19:31:28 -0500
-From: Rob Herring <robh@kernel.org>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v1 6/7] ASoC: wm8731: Convert DT bindings to YAML format
-Message-ID: <YkZH4C6nzTgFtdNq@robh.at.kernel.org>
-References: <20220325153121.1598494-1-broonie@kernel.org>
- <20220325153121.1598494-7-broonie@kernel.org>
+ id 6F672F8020D; Fri,  1 Apr 2022 03:05:47 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 11C68F800B8
+ for <alsa-devel@alsa-project.org>; Fri,  1 Apr 2022 03:05:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11C68F800B8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220325153121.1598494-7-broonie@kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- patches@opensource.cirrus.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1648775142388217926-webhooks-bot@alsa-project.org>
+References: <1648775142388217926-webhooks-bot@alsa-project.org>
+Subject: [PATCH 0/6] add internal static library to include common utilities
+Message-Id: <20220401010547.6F672F8020D@alsa1.perex.cz>
+Date: Fri,  1 Apr 2022 03:05:47 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,20 +55,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 25 Mar 2022 15:31:20 +0000, Mark Brown wrote:
-> Convert the WM8731 DT bindings to YAML format, including addition of
-> documentation for the regulator and clock bindings which the driver has
-> had for some time but which were not covered in the bindings document.
-> 
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: devicetree@vger.kernel.org
-> ---
->  .../devicetree/bindings/sound/wlf,wm8731.yaml | 97 +++++++++++++++++++
->  .../devicetree/bindings/sound/wm8731.txt      | 27 ------
->  2 files changed, 97 insertions(+), 27 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/sound/wlf,wm8731.yaml
->  delete mode 100644 Documentation/devicetree/bindings/sound/wm8731.txt
-> 
+alsa-project/alsa-gobject pull request #67 was opened from takaswie:
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Current implementation of included libraries have duplicated codes
+to operate over sysfs by libudev and so. It's inconvenient in a point of
+maintenance.
+
+This patchset adds internal static library to include such codes.
+
+```
+Takashi Sakamoto (6):
+  utils: build internal static library including common utilities
+  utils: add utility to compute integer value from string literal
+  utils: add utilities to allocate string information for device
+  utils: add utilitiy to generate list of sysnum by prefix of sysname
+  utils: add utilities to request control ioctl
+  utils: add utility macros to generate GError with file domain
+
+ src/ctl/card.c            |   5 +-
+ src/ctl/meson.build       |   2 +-
+ src/ctl/query.c           | 261 ++----------------------------
+ src/hwdep/meson.build     |   2 +-
+ src/hwdep/query.c         | 306 +++--------------------------------
+ src/meson.build           |   1 +
+ src/rawmidi/meson.build   |   2 +-
+ src/rawmidi/query.c       | 324 ++++----------------------------------
+ src/rawmidi/stream-pair.c |   5 +-
+ src/seq/meson.build       |   2 +-
+ src/seq/query.c           |  87 ++--------
+ src/seq/user-client.c     |   5 +-
+ src/timer/meson.build     |   2 +-
+ src/timer/query.c         | 105 +++---------
+ src/timer/user-instance.c |   5 +-
+ src/utils/ioctl.c         |  45 ++++++
+ src/utils/meson.build     |  23 +++
+ src/utils/string.c        |  47 ++++++
+ src/utils/sysfs.c         | 176 +++++++++++++++++++++
+ src/utils/utils.h         | 176 +++++++++++++++++++++
+ 20 files changed, 578 insertions(+), 1003 deletions(-)
+ create mode 100644 src/utils/ioctl.c
+ create mode 100644 src/utils/meson.build
+ create mode 100644 src/utils/string.c
+ create mode 100644 src/utils/sysfs.c
+ create mode 100644 src/utils/utils.h
+```
+
+Request URL   : https://github.com/alsa-project/alsa-gobject/pull/67
+Patch URL     : https://github.com/alsa-project/alsa-gobject/pull/67.patch
+Repository URL: https://github.com/alsa-project/alsa-gobject
