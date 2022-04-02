@@ -4,66 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B253DC433F5
-	for <alsa-devel@archiver.kernel.org>; Sat,  2 Apr 2022 05:20:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8BC08C433F5
+	for <alsa-devel@archiver.kernel.org>; Sat,  2 Apr 2022 11:40:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EC1AB1867;
-	Sat,  2 Apr 2022 07:19:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC1AB1867
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8AD3F173C;
+	Sat,  2 Apr 2022 13:39:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8AD3F173C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648876832;
-	bh=j1I8PNaKWRq/NuQLQzthSDghW7e5ofzk7565zsIt1qo=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Awjn+iQ+D2nmrqvCp0Ky89myOySKStb6T6VGViqf7DtLfK9qd2QBOGmJLbKcY8fT0
-	 5c4n2iiOnq0K0FnJHGbcMX4ah8peaDcJYWDl62GeatNn1vxmI+C3nn7iZXaMg7OKSx
-	 VMq4D2yLxq99fK+GSxp6wla4y3Fc9DoWEp8B/cfs=
+	s=default; t=1648899643;
+	bh=DyfhQdwciYl2eXyXFmZNDhV7bU6Locc+4Q9k8v+Sl3g=;
+	h=Subject:To:From:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=LLH2DT9BQopxuG8U+5wovX+z96f/pK/MRxxzjyMZlzXsFVpRTg4HsDDqf3+IKNhmd
+	 DL4SMg33kT4jXUMX3NAEm8+GmTSRuI7aNYmnaqUDmoQ6/+/yAqItJI+L8HxxQI8u/M
+	 FPdqr8mVg9Qv3iQYwIWhCN150Wr1Lcnn29G6Lmek=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8AFA6F80527;
-	Sat,  2 Apr 2022 07:18:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 211A7F801D8;
+	Sat,  2 Apr 2022 13:39:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 21306F80528; Sat,  2 Apr 2022 07:18:24 +0200 (CEST)
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+ id 87827F802DB; Sat,  2 Apr 2022 13:39:50 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 608D9F8016C;
+ Sat,  2 Apr 2022 13:39:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 608D9F8016C
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=linuxfoundation.org
+ header.i=@linuxfoundation.org header.b="0AHFLFDU"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C8C9CF801D8
- for <alsa-devel@alsa-project.org>; Sat,  2 Apr 2022 07:18:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8C9CF801D8
-X-UUID: 30b09f86c13345aa939a8e0a772d83fd-20220402
-X-UUID: 30b09f86c13345aa939a8e0a772d83fd-20220402
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by
- mailgw01.mediatek.com (envelope-from <jiaxin.yu@mediatek.com>)
- (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
- with ESMTP id 204577288; Sat, 02 Apr 2022 13:18:01 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3; 
- Sat, 2 Apr 2022 13:17:59 +0800
-Received: from localhost.localdomain (10.17.3.154) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sat, 2 Apr 2022 13:17:58 +0800
-From: Jiaxin Yu <jiaxin.yu@mediatek.com>
-To: <broonie@kernel.org>, <robh+dt@kernel.org>, <tzungbi@google.com>
-Subject: [v8 3/4] ASoC: mediatek: mt8192: refactor for I2S8/I2S9 DAI links of
- headset
-Date: Sat, 2 Apr 2022 13:17:53 +0800
-Message-ID: <20220402051754.17513-4-jiaxin.yu@mediatek.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220402051754.17513-1-jiaxin.yu@mediatek.com>
-References: <20220402051754.17513-1-jiaxin.yu@mediatek.com>
+ by dfw.source.kernel.org (Postfix) with ESMTPS id A71E760FF5;
+ Sat,  2 Apr 2022 11:39:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8D53C340EC;
+ Sat,  2 Apr 2022 11:39:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+ s=korg; t=1648899580;
+ bh=DyfhQdwciYl2eXyXFmZNDhV7bU6Locc+4Q9k8v+Sl3g=;
+ h=Subject:To:Cc:From:Date:From;
+ b=0AHFLFDUC/icxfDyIezwnB3uDKAlAYrunY8gVSSpWrqMtIE298srywyzQttENnMxj
+ FHSSYay97aLamAfM1LdKT0O9GAwQ04X3BUMfhC2OoPo8PT7wCR+gavVjr8Rx3toG4j
+ rvmLZCvMzGj1drlivK7kyT+CjIESfuH2Bf1pAXYY=
+Subject: Patch "ASoC: SOF: Intel: Fix NULL ptr dereference when ENOMEM" has
+ been added to the 5.17-stable tree
+To: alsa-devel@alsa-project.org, ammarfaizi2@gnuweeb.org, broonie@kernel.org,
+ daniel.baluta@nxp.com, gregkh@linuxfoundation.org,
+ kai.vehmanen@linux.intel.com, lgirdwood@gmail.com, perex@perex.cz,
+ peter.ujfalusi@linux.intel.com, pierre-louis.bossart@linux.intel.com,
+ rander.wang@intel.com, ranjani.sridharan@linux.intel.com,
+ sound-open-firmware@alsa-project.org, tiwai@suse.com, yang.jie@linux.intel.com
+From: <gregkh@linuxfoundation.org>
+Date: Sat, 02 Apr 2022 13:38:52 +0200
+Message-ID: <1648899532128136@kroah.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-MTK: N
-Cc: devicetree@vger.kernel.org, linmq006@gmail.com, alsa-devel@alsa-project.org,
- Jiaxin Yu <jiaxin.yu@mediatek.com>, linux-kernel@vger.kernel.org,
- Project_Global_Chrome_Upstream_Group@mediatek.com,
- linux-mediatek@lists.infradead.org, trevor.wu@mediatek.com,
- Tzung-Bi Shih <tzungbi@kernel.org>, matthias.bgg@gmail.com, aaronyu@google.com,
- linux-arm-kernel@lists.infradead.org, angelogioacchino.delregno@collabora.com
+X-stable: commit
+X-Patchwork-Hint: ignore 
+Cc: stable-commits@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,99 +80,130 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-MT8192 platform use rt5682 codec, so through the snd_soc_of_get_dai_link_codecs()
-to complete the configuration of I2S8/I2S9 dai_link's codecs.
 
-Signed-off-by: Jiaxin Yu <jiaxin.yu@mediatek.com>
-Reviewed-by: Tzung-Bi Shih <tzungbi@kernel.org>
+This is a note to let you know that I've just added the patch titled
+
+    ASoC: SOF: Intel: Fix NULL ptr dereference when ENOMEM
+
+to the 5.17-stable tree which can be found at:
+    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
+
+The filename of the patch is:
+     asoc-sof-intel-fix-null-ptr-dereference-when-enomem.patch
+and it can be found in the queue-5.17 subdirectory.
+
+If you, or anyone else, feels it should not be added to the stable tree,
+please let <stable@vger.kernel.org> know about it.
+
+
+From b7fb0ae09009d076964afe4c1a2bde1ee2bd88a9 Mon Sep 17 00:00:00 2001
+From: Ammar Faizi <ammarfaizi2@gnuweeb.org>
+Date: Fri, 25 Feb 2022 01:58:36 +0700
+Subject: ASoC: SOF: Intel: Fix NULL ptr dereference when ENOMEM
+
+From: Ammar Faizi <ammarfaizi2@gnuweeb.org>
+
+commit b7fb0ae09009d076964afe4c1a2bde1ee2bd88a9 upstream.
+
+Do not call snd_dma_free_pages() when snd_dma_alloc_pages() returns
+-ENOMEM because it leads to a NULL pointer dereference bug.
+
+The dmesg says:
+
+  [ T1387] sof-audio-pci-intel-tgl 0000:00:1f.3: error: memory alloc failed: -12
+  [ T1387] BUG: kernel NULL pointer dereference, address: 0000000000000000
+  [ T1387] #PF: supervisor read access in kernel mode
+  [ T1387] #PF: error_code(0x0000) - not-present page
+  [ T1387] PGD 0 P4D 0
+  [ T1387] Oops: 0000 [#1] PREEMPT SMP NOPTI
+  [ T1387] CPU: 6 PID: 1387 Comm: alsa-sink-HDA A Tainted: G        W         5.17.0-rc4-superb-owl-00055-g80d47f5de5e3
+  [ T1387] Hardware name: HP HP Laptop 14s-dq2xxx/87FD, BIOS F.15 09/15/2021
+  [ T1387] RIP: 0010:dma_free_noncontiguous+0x37/0x80
+  [ T1387] Code: [... snip ...]
+  [ T1387] RSP: 0000:ffffc90002b87770 EFLAGS: 00010246
+  [ T1387] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+  [ T1387] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff888101db30d0
+  [ T1387] RBP: 00000000fffffff4 R08: 0000000000000000 R09: 0000000000000000
+  [ T1387] R10: 0000000000000000 R11: ffffc90002b874d0 R12: 0000000000000001
+  [ T1387] R13: 0000000000058000 R14: ffff888105260c68 R15: ffff888105260828
+  [ T1387] FS:  00007f42e2ffd640(0000) GS:ffff888466b80000(0000) knlGS:0000000000000000
+  [ T1387] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  [ T1387] CR2: 0000000000000000 CR3: 000000014acf0003 CR4: 0000000000770ee0
+  [ T1387] PKRU: 55555554
+  [ T1387] Call Trace:
+  [ T1387]  <TASK>
+  [ T1387]  cl_stream_prepare+0x10a/0x120 [snd_sof_intel_hda_common 146addf995b9279ae7f509621078cccbe4f875e1]
+  [... snip ...]
+  [ T1387]  </TASK>
+
+Cc: Daniel Baluta <daniel.baluta@nxp.com>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Cc: Keyon Jie <yang.jie@linux.intel.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Rander Wang <rander.wang@intel.com>
+Cc: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: sound-open-firmware@alsa-project.org
+Cc: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org # v5.2+
+Fixes: d16046ffa6de040bf580a64d5f4d0aa18258a854 ("ASoC: SOF: Intel: Add Intel specific HDA firmware loader")
+Link: https://lore.kernel.org/lkml/20220224145124.15985-1-ammarfaizi2@gnuweeb.org/ # v1
+Link: https://lore.kernel.org/lkml/20220224180850.34592-1-ammarfaizi2@gnuweeb.org/ # v2
+Link: https://lore.kernel.org/lkml/20220224182818.40301-1-ammarfaizi2@gnuweeb.org/ # v3
+Reviewed-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Ammar Faizi <ammarfaizi2@gnuweeb.org>
+Link: https://lore.kernel.org/r/20220224185836.44907-1-ammarfaizi2@gnuweeb.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- .../mt8192/mt8192-mt6359-rt1015-rt5682.c      | 34 ++++++++++++++-----
- 1 file changed, 26 insertions(+), 8 deletions(-)
+ sound/soc/sof/intel/hda-loader.c |   11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c b/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c
-index a0b305c45ac8..fd140df0fd23 100644
---- a/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c
-+++ b/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c
-@@ -28,9 +28,6 @@
- #define RT1015_DEV0_NAME	"rt1015.1-0028"
- #define RT1015_DEV1_NAME	"rt1015.1-0029"
- 
--#define RT5682_CODEC_DAI	"rt5682-aif1"
--#define RT5682_DEV0_NAME	"rt5682.1-001a"
--
- struct mt8192_mt6359_priv {
- 	struct snd_soc_jack headset_jack;
- 	struct snd_soc_jack hdmi_jack;
-@@ -626,14 +623,12 @@ SND_SOC_DAILINK_DEFS(i2s7,
- 
- SND_SOC_DAILINK_DEFS(i2s8,
- 		     DAILINK_COMP_ARRAY(COMP_CPU("I2S8")),
--		     DAILINK_COMP_ARRAY(COMP_CODEC(RT5682_DEV0_NAME,
--						   RT5682_CODEC_DAI)),
-+		     DAILINK_COMP_ARRAY(COMP_EMPTY()),
- 		     DAILINK_COMP_ARRAY(COMP_EMPTY()));
- 
- SND_SOC_DAILINK_DEFS(i2s9,
- 		     DAILINK_COMP_ARRAY(COMP_CPU("I2S9")),
--		     DAILINK_COMP_ARRAY(COMP_CODEC(RT5682_DEV0_NAME,
--						   RT5682_CODEC_DAI)),
-+		     DAILINK_COMP_ARRAY(COMP_EMPTY()),
- 		     DAILINK_COMP_ARRAY(COMP_EMPTY()));
- 
- SND_SOC_DAILINK_DEFS(connsys_i2s,
-@@ -1114,7 +1109,7 @@ static int mt8192_mt6359_card_set_be_link(struct snd_soc_card *card,
- static int mt8192_mt6359_dev_probe(struct platform_device *pdev)
- {
- 	struct snd_soc_card *card;
--	struct device_node *platform_node, *hdmi_codec, *speaker_codec;
-+	struct device_node *platform_node, *hdmi_codec, *headset_codec, *speaker_codec;
- 	int ret, i;
- 	struct snd_soc_dai_link *dai_link;
- 	struct mt8192_mt6359_priv *priv;
-@@ -1142,6 +1137,13 @@ static int mt8192_mt6359_dev_probe(struct platform_device *pdev)
- 		goto err_speaker_codec;
+--- a/sound/soc/sof/intel/hda-loader.c
++++ b/sound/soc/sof/intel/hda-loader.c
+@@ -47,7 +47,7 @@ static struct hdac_ext_stream *cl_stream
+ 	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV_SG, &pci->dev, size, dmab);
+ 	if (ret < 0) {
+ 		dev_err(sdev->dev, "error: memory alloc failed: %d\n", ret);
+-		goto error;
++		goto out_put;
  	}
  
-+	headset_codec = of_get_child_by_name(pdev->dev.of_node, "headset-codec");
-+	if (!headset_codec) {
-+		ret = -EINVAL;
-+		dev_err_probe(&pdev->dev, ret, "Property 'headset-codec' missing or invalid\n");
-+		goto err_headset_codec;
-+	}
-+
- 	for_each_card_prelinks(card, i, dai_link) {
- 		ret = mt8192_mt6359_card_set_be_link(card, dai_link, speaker_codec, "I2S3");
- 		if (ret) {
-@@ -1150,6 +1152,20 @@ static int mt8192_mt6359_dev_probe(struct platform_device *pdev)
- 			goto err_probe;
+ 	hstream->period_bytes = 0;/* initialize period_bytes */
+@@ -58,22 +58,23 @@ static struct hdac_ext_stream *cl_stream
+ 		ret = hda_dsp_iccmax_stream_hw_params(sdev, dsp_stream, dmab, NULL);
+ 		if (ret < 0) {
+ 			dev_err(sdev->dev, "error: iccmax stream prepare failed: %d\n", ret);
+-			goto error;
++			goto out_free;
  		}
+ 	} else {
+ 		ret = hda_dsp_stream_hw_params(sdev, dsp_stream, dmab, NULL);
+ 		if (ret < 0) {
+ 			dev_err(sdev->dev, "error: hdac prepare failed: %d\n", ret);
+-			goto error;
++			goto out_free;
+ 		}
+ 		hda_dsp_stream_spib_config(sdev, dsp_stream, HDA_DSP_SPIB_ENABLE, size);
+ 	}
  
-+		ret = mt8192_mt6359_card_set_be_link(card, dai_link, headset_codec, "I2S8");
-+		if (ret) {
-+			dev_err_probe(&pdev->dev, ret, "%s set headset_codec fail\n",
-+				      dai_link->name);
-+			goto err_probe;
-+		}
-+
-+		ret = mt8192_mt6359_card_set_be_link(card, dai_link, headset_codec, "I2S9");
-+		if (ret) {
-+			dev_err_probe(&pdev->dev, ret, "%s set headset_codec fail\n",
-+				      dai_link->name);
-+			goto err_probe;
-+		}
-+
- 		if (hdmi_codec && strcmp(dai_link->name, "TDM") == 0) {
- 			dai_link->codecs->of_node = hdmi_codec;
- 			dai_link->ignore = 0;
-@@ -1180,6 +1196,8 @@ static int mt8192_mt6359_dev_probe(struct platform_device *pdev)
- 		dev_err_probe(&pdev->dev, ret, "%s snd_soc_register_card fail\n", __func__);
+ 	return dsp_stream;
  
- err_probe:
-+	of_node_put(headset_codec);
-+err_headset_codec:
- 	of_node_put(speaker_codec);
- err_speaker_codec:
- 	of_node_put(platform_node);
--- 
-2.18.0
+-error:
+-	hda_dsp_stream_put(sdev, direction, hstream->stream_tag);
++out_free:
+ 	snd_dma_free_pages(dmab);
++out_put:
++	hda_dsp_stream_put(sdev, direction, hstream->stream_tag);
+ 	return ERR_PTR(ret);
+ }
+ 
 
+
+Patches currently in stable-queue which might be from ammarfaizi2@gnuweeb.org are
+
+queue-5.17/asoc-sof-intel-fix-null-ptr-dereference-when-enomem.patch
