@@ -4,53 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00071C43217
-	for <alsa-devel@archiver.kernel.org>; Sun,  3 Apr 2022 10:25:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25110C433F5
+	for <alsa-devel@archiver.kernel.org>; Sun,  3 Apr 2022 10:26:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D59E517B4;
-	Sun,  3 Apr 2022 12:24:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D59E517B4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5B5BF17DA;
+	Sun,  3 Apr 2022 12:25:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5B5BF17DA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648981545;
-	bh=j/5tDEcr4uwpIHDqOnfXsy3VKAmLbLfALLScCp6XurE=;
+	s=default; t=1648981563;
+	bh=KEqOcO6qLULMSDvyLnnZVRehrhlgS7AFNXV+BQjXcLg=;
 	h=Subject:To:From:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=cUH9gA3Qeb+sobLmX8a50thHSQ5G1kCWxy08RAR7yZcUe5mOVucteJIEsvtBpQ70d
-	 pXZdR2sdQd46PZV2lnag4TXASh/AT8r4h1kPTb+Cx9Rhy/D4/br9N75Qc8PehxwO66
-	 J9zFvJY+W/odozCH87boseItWFwJHuCNHSa9qQqY=
+	b=F07QAl9L8woH3aqhKFLyBi8KRE7Nd+JLO6MMqqBClL+X65Q1CSPS3LGwoUA9O7gg7
+	 SbPLKMxG0C1OLKchYujWMTzqlcnLKl7B4Nes27iHQNRJ0lUbWFqnlCrKA06dfsUvD/
+	 8JH4wrnOpz/b5u7VVaN80sk8agqL60TKegxJ11jk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1C917F80302;
-	Sun,  3 Apr 2022 12:24:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B8C0EF8013F;
+	Sun,  3 Apr 2022 12:25:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 29FD5F80248; Sun,  3 Apr 2022 12:24:52 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 175ABF8012A; Sun,  3 Apr 2022 12:24:58 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 52183F800E9;
- Sun,  3 Apr 2022 12:24:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52183F800E9
+ by alsa1.perex.cz (Postfix) with ESMTPS id CC27BF8012A;
+ Sun,  3 Apr 2022 12:24:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC27BF8012A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=linuxfoundation.org
- header.i=@linuxfoundation.org header.b="mweQPTB8"
+ header.i=@linuxfoundation.org header.b="gA1TEfyT"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id D972060FC7;
- Sun,  3 Apr 2022 10:24:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B325DC340ED;
- Sun,  3 Apr 2022 10:24:39 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 4E8AE60FFF;
+ Sun,  3 Apr 2022 10:24:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 506D2C340ED;
+ Sun,  3 Apr 2022 10:24:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1648981480;
- bh=j/5tDEcr4uwpIHDqOnfXsy3VKAmLbLfALLScCp6XurE=;
+ s=korg; t=1648981489;
+ bh=KEqOcO6qLULMSDvyLnnZVRehrhlgS7AFNXV+BQjXcLg=;
  h=Subject:To:Cc:From:Date:From;
- b=mweQPTB8KrVvBcWhgrdZbTEirSmF6NJ76iMZgPKOO/ohWieA6rf63YSd1VY4UOQMd
- 7Wz++av6VWWucZTiPyQIg9zi/HvEIqLeh+YNRUjoWpUOlCZbV812vOVzs8K9pigpG+
- OZGh4bAJeEhRpLY5YMQKy8vWnPt/ok/sgD3aKLn4=
+ b=gA1TEfyT/xf+a3OGDjez0Ca9Oupke8duPJG/KLN6dYjwcvDB4jLzp9FN0SugDrpdO
+ qXid/m7umtdKMKAY0AVPKROybEfqiyMhlfRFiDCgUtA8EHO9wGvY9b8m1sN1j2uh5v
+ i8u/kmyf2moSHWHbBhRvW4Q6e3eVFM40PtMrwi+o=
 Subject: Patch "ASoC: SOF: Intel: Fix NULL ptr dereference when ENOMEM" has
- been added to the 5.4-stable tree
+ been added to the 5.10-stable tree
 To: alsa-devel@alsa-project.org, ammarfaizi2@gnuweeb.org, broonie@kernel.org,
  daniel.baluta@nxp.com, gregkh@linuxfoundation.org,
  kai.vehmanen@linux.intel.com, lgirdwood@gmail.com, perex@perex.cz,
@@ -58,8 +57,8 @@ To: alsa-devel@alsa-project.org, ammarfaizi2@gnuweeb.org, broonie@kernel.org,
  rander.wang@intel.com, ranjani.sridharan@linux.intel.com,
  sound-open-firmware@alsa-project.org, tiwai@suse.com, yang.jie@linux.intel.com
 From: <gregkh@linuxfoundation.org>
-Date: Sun, 03 Apr 2022 12:24:37 +0200
-Message-ID: <1648981477183201@kroah.com>
+Date: Sun, 03 Apr 2022 12:24:47 +0200
+Message-ID: <164898148723199@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
@@ -86,12 +85,12 @@ This is a note to let you know that I've just added the patch titled
 
     ASoC: SOF: Intel: Fix NULL ptr dereference when ENOMEM
 
-to the 5.4-stable tree which can be found at:
+to the 5.10-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
      asoc-sof-intel-fix-null-ptr-dereference-when-enomem.patch
-and it can be found in the queue-5.4 subdirectory.
+and it can be found in the queue-5.10 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
 please let <stable@vger.kernel.org> know about it.
@@ -159,16 +158,16 @@ Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Ammar Faizi <ammarfaizi2@gnuweeb.org>
 Link: https://lore.kernel.org/r/20220224185836.44907-1-ammarfaizi2@gnuweeb.org
 Signed-off-by: Mark Brown <broonie@kernel.org>
-[ammarfaizi2: Backport to Linux 5.4 LTS]
+[ammarfaizi2: Backport to Linux 5.10 LTS]
 Signed-off-by: Ammar Faizi <ammarfaizi2@gnuweeb.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/soc/sof/intel/hda-loader.c |    9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ sound/soc/sof/intel/hda-loader.c |   11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
 --- a/sound/soc/sof/intel/hda-loader.c
 +++ b/sound/soc/sof/intel/hda-loader.c
-@@ -50,7 +50,7 @@ static int cl_stream_prepare(struct snd_
+@@ -47,7 +47,7 @@ static struct hdac_ext_stream *cl_stream
  	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV_SG, &pci->dev, size, dmab);
  	if (ret < 0) {
  		dev_err(sdev->dev, "error: memory alloc failed: %x\n", ret);
@@ -177,17 +176,24 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	}
  
  	hstream->period_bytes = 0;/* initialize period_bytes */
-@@ -60,16 +60,17 @@ static int cl_stream_prepare(struct snd_
- 	ret = hda_dsp_stream_hw_params(sdev, dsp_stream, dmab, NULL);
- 	if (ret < 0) {
- 		dev_err(sdev->dev, "error: hdac prepare failed: %x\n", ret);
--		goto error;
-+		goto out_free;
+@@ -58,22 +58,23 @@ static struct hdac_ext_stream *cl_stream
+ 		ret = hda_dsp_iccmax_stream_hw_params(sdev, dsp_stream, dmab, NULL);
+ 		if (ret < 0) {
+ 			dev_err(sdev->dev, "error: iccmax stream prepare failed: %x\n", ret);
+-			goto error;
++			goto out_free;
+ 		}
+ 	} else {
+ 		ret = hda_dsp_stream_hw_params(sdev, dsp_stream, dmab, NULL);
+ 		if (ret < 0) {
+ 			dev_err(sdev->dev, "error: hdac prepare failed: %x\n", ret);
+-			goto error;
++			goto out_free;
+ 		}
+ 		hda_dsp_stream_spib_config(sdev, dsp_stream, HDA_DSP_SPIB_ENABLE, size);
  	}
  
- 	hda_dsp_stream_spib_config(sdev, dsp_stream, HDA_DSP_SPIB_ENABLE, size);
- 
- 	return hstream->stream_tag;
+ 	return dsp_stream;
  
 -error:
 -	hda_dsp_stream_put(sdev, direction, hstream->stream_tag);
@@ -195,11 +201,11 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	snd_dma_free_pages(dmab);
 +out_put:
 +	hda_dsp_stream_put(sdev, direction, hstream->stream_tag);
- 	return ret;
+ 	return ERR_PTR(ret);
  }
  
 
 
 Patches currently in stable-queue which might be from ammarfaizi2@gnuweeb.org are
 
-queue-5.4/asoc-sof-intel-fix-null-ptr-dereference-when-enomem.patch
+queue-5.10/asoc-sof-intel-fix-null-ptr-dereference-when-enomem.patch
