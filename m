@@ -4,70 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09A77C433EF
-	for <alsa-devel@archiver.kernel.org>; Sun,  3 Apr 2022 09:01:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1CC0BC433F5
+	for <alsa-devel@archiver.kernel.org>; Sun,  3 Apr 2022 09:01:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1D6121745;
-	Sun,  3 Apr 2022 11:00:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D6121745
+	by alsa0.perex.cz (Postfix) with ESMTPS id 308FA175E;
+	Sun,  3 Apr 2022 11:00:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 308FA175E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648976463;
-	bh=8NKDu5zCu7H/G9k0E5Bk0gLf0mwDJcqOkFVjnVIzf/U=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=p9yTKltHfiZ/g2iFxAYh575yr5oVII8lPPHvGnADjKZ6i2P2uQZZGGNef3a09liGN
-	 uT1EOnJr7JbekAwpi9SVsaMjvjjryeJHZIYSzV0Or9fzHtY1S/E6rOmxIyIu7xcFno
-	 KbMXy+jcNyM/f4t1XMjLjt0FxYzamXHUnWlYK+a4=
+	s=default; t=1648976482;
+	bh=+MRl4rjdWzvUS2WdlS62P5OnEWVQOdoGiz49cpOtwgg=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=FFGl1HWA4sDCAfOc+MuPnopwnBcL6Xd3jFVMQ8oU9Parkrjic24pkpuElfhANYRSo
+	 IiN6+0HBfH+EYMrrKceh8JuaZZV8bosgnaf52ZR0BUioT6NbTVGO+1/4BDasxFmAPt
+	 2FpwUAzoubPcvKQXnjaBKg4od+DVidyM1v8n00Fg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 77C34F804CA;
-	Sun,  3 Apr 2022 10:59:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 31EA5F8051C;
+	Sun,  3 Apr 2022 10:59:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EB780F8028B; Sun,  3 Apr 2022 10:59:38 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 9AAB0F80100; Sun,  3 Apr 2022 10:59:39 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DF9FDF8013F
- for <alsa-devel@alsa-project.org>; Sun,  3 Apr 2022 10:59:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF9FDF8013F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 38CC0F8012A
+ for <alsa-devel@alsa-project.org>; Sun,  3 Apr 2022 10:59:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38CC0F8012A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Q6A3008E"
+ header.b="e/UxQhRf"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id D04E060F43;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id CAF8560FEA;
  Sun,  3 Apr 2022 08:59:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 261E9C36AE3;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 227A8C340F3;
  Sun,  3 Apr 2022 08:59:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
  s=k20201202; t=1648976371;
- bh=8NKDu5zCu7H/G9k0E5Bk0gLf0mwDJcqOkFVjnVIzf/U=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=Q6A3008EXzY+Ctoi7fg8HJhZuPlPKPT2rgVwf8xPIOZMkgp8xjpVi2obAI8fhwlls
- yHH77Jqfvejwt7sr0biqLKkhCQ6ydg5xIVDhjLtSBvJZ1uI4wldA7IxvI8SsL3/bk7
- Ii2RLcaES4zIBYuGQJM2TCFeDxAfjz2JQxtoizGj9i6osZSrR747yRPzPbizvJ+f2p
- 1ScWo9XJPtV7hfANnNN7RujQB0XcyH6iES/92qVxCMM404Mfb+nX902OofKEYAKi6M
- GHkU6qEpl5JfixJsOC/sZYhzO5QFI/vONNbFD7+YJCGJQRHMc4LLF49Si6q2YLdfqJ
- SmuYiCMrUeftw==
+ bh=+MRl4rjdWzvUS2WdlS62P5OnEWVQOdoGiz49cpOtwgg=;
+ h=From:To:Cc:Subject:Date:From;
+ b=e/UxQhRf7BDgVVBto0RfrPHS5nJwc3nj5bm9X+9H/bcsRhxwHuQIfmdfMd3B9Ap84
+ td9OWJ8SFL9YLEGhDfgdv9NyQe3ecY3Sz2KUplVel5FFjb1lEWIt4Efumncx8W+1bs
+ OSLr7NmMWm7jAdVGUPfBmT7B9XbTURf5MB/grhSLmhd0iqzhwQBQpEqgsbnlkDJSgD
+ 05P1AFDMmMCn7u+T3sq09iPWikzNVjzPtd60q0a2J0G3tY9mXtZoW3URJ+ov28yMEY
+ r0ClxWttx+wA5uh+PkMRY0ffCVzu7ReGo+ddZES9RkI7VP+u+Mb3EPfnz+zxunVMj1
+ mhskVBBOEQ1qw==
 Received: from mchehab by mail.kernel.org with local (Exim 4.94.2)
  (envelope-from <mchehab@kernel.org>)
- id 1naw52-00D6f8-N1; Sun, 03 Apr 2022 10:59:28 +0200
+ id 1naw52-00D6f1-GH; Sun, 03 Apr 2022 10:59:28 +0200
 From: Mauro Carvalho Chehab <mchehab@kernel.org>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH RFC 2/2] ASoC: Intel: sof_es8336: Huawei Matebook D15 uses a
- headphone gpio
-Date: Sun,  3 Apr 2022 10:59:25 +0200
-Message-Id: <67d97e8a367511bc593395f33edcf2391f8066ef.1648975926.git.mchehab@kernel.org>
+Subject: [PATCH RFC 0/2] Make headphone work on Huawei Matebook D15
+Date: Sun,  3 Apr 2022 10:59:23 +0200
+Message-Id: <cover.1648975926.git.mchehab@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <cover.1648975926.git.mchehab@kernel.org>
-References: <cover.1648975926.git.mchehab@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
- Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
  Bard Liao <yung-chuan.liao@linux.intel.com>,
  Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
  Liam Girdwood <liam.r.girdwood@linux.intel.com>,
@@ -90,42 +86,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+The headphone output at Huawei Matebook D15 is controlled by a separate
+GPIO than the speaker. So, the es8336 boards logic need to handle two events:
+one for the speaker switch and another one for the headphone.
 
-Based on experimental tests, Huawei Matebook D15 actually uses
-both gpio0 and gpio1: the first one controls the speaker, while
-the other one controls the headphone.
+Please notice that this is my first real incursion at SOC/SOF. While this is working
+fine, I'm still struggling with some troubles with pipewire, which I believe are
+due to UCM support, as, sometimes when pavucontrol starts, the playback stucks.
+Also, sometimes the mixers won't change when jack plug/unplug is detected.
 
-Add a quirk for that.
+So, more debug is needed, and probably the UCM will also need to be closer to
+the definitions that are used at ucm2/codecs/es8316/, as es8336 is a variant of
+it.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
----
+Anyway, let me submit this as as RFC, in order to get some feedback if this is
+going at the right way to support the headphone switch event.
 
-See [PATCH RFC 0/2] at: https://lore.kernel.org/all/cover.1648975926.git.mchehab@kernel.org/
+Mauro Carvalho Chehab (2):
+  ASoC: Intel: sof_es8336: support a separate gpio to control headphone
+  ASoC: Intel: sof_es8336: Huawei Matebook D15 uses a headphone gpio
 
- sound/soc/intel/boards/sof_es8336.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/intel/boards/sof_es8336.c | 84 ++++++++++++++++++++++-------
+ 1 file changed, 65 insertions(+), 19 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_es8336.c b/sound/soc/intel/boards/sof_es8336.c
-index 96920d3eed8a..fd47aba1bd5d 100644
---- a/sound/soc/intel/boards/sof_es8336.c
-+++ b/sound/soc/intel/boards/sof_es8336.c
-@@ -290,6 +290,14 @@ static const struct dmi_system_id sof_es8336_quirk_table[] = {
- 		},
- 		.driver_data = (void *)(SOF_ES8336_TGL_GPIO_QUIRK)
- 	},
-+	{
-+		.callback = sof_es8336_quirk_cb,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "HUAWEI"),
-+			DMI_MATCH(DMI_BOARD_NAME, "BOHB-WAX9-PCB-B2"),
-+		},
-+		.driver_data = (void *)(SOF_ES8336_HEADPHONE_GPIO)
-+	},
- 	{}
- };
- 
 -- 
 2.35.1
+
 
