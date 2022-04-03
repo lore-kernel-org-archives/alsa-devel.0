@@ -4,84 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 217F2C433F5
-	for <alsa-devel@archiver.kernel.org>; Sun,  3 Apr 2022 07:16:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB5E2C433F5
+	for <alsa-devel@archiver.kernel.org>; Sun,  3 Apr 2022 09:00:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A408C1717;
-	Sun,  3 Apr 2022 09:15:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A408C1717
+	by alsa0.perex.cz (Postfix) with ESMTPS id 13D3D16FA;
+	Sun,  3 Apr 2022 10:59:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 13D3D16FA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648970201;
-	bh=Puosx4ScBJ1d6mX7dzd4LfScEkjyaJqMLV7/dbri1Gg=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1648976430;
+	bh=+Ovtq48x9WL5YWh33WVxrg+kW8FgwJJJ7TN4VKMgd2A=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XYcniFlLb+3GKrZb4nN/d3+vAiM+1N26SOrrlczf2NoXZoTwwhyWOEtv5vMNZS8GP
-	 199v5RbfJVlMFk1Ad8siwWEnJAmOrr800HWCRC4MSR8hK/p0XzUY8lT6WF959nhkXA
-	 r1e4gFTxBl6oQGv6w/lTl6QZZmyc862eCKbx+6QE=
+	b=fG++ovGja8i7K9lg9so7am6Vtb5nVNVOjsWnXUj6w82U88izgyNAlMzUFPTqXwnPY
+	 EneXmLFLC5l9naMJ7MwhqF9M2YTOcaw0/DAFLBVIbKPFyJP8wqGW8TA5owb52yenUc
+	 oOqFyCO6POZWNaTryREW9l59nCJJC0kuGFUEeHHI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 44615F8012A;
-	Sun,  3 Apr 2022 09:15:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9F679F8012A;
+	Sun,  3 Apr 2022 10:59:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1DAFCF8012A; Sun,  3 Apr 2022 09:15:48 +0200 (CEST)
-Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com
- [IPv6:2607:f8b0:4864:20::1135])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id E3CDFF8028B; Sun,  3 Apr 2022 10:59:37 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DA15CF8012A
- for <alsa-devel@alsa-project.org>; Sun,  3 Apr 2022 09:15:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA15CF8012A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 66981F80100
+ for <alsa-devel@alsa-project.org>; Sun,  3 Apr 2022 10:59:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66981F80100
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="qo2t7nuA"
-Received: by mail-yw1-x1135.google.com with SMTP id
- 00721157ae682-2eb46d33db9so17310377b3.12
- for <alsa-devel@alsa-project.org>; Sun, 03 Apr 2022 00:15:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=3ico19JA9GM1O/bamMVefJvScGGPa2Lrj2Zc1+4P3Dk=;
- b=qo2t7nuAanNyShzJs/m0KlPwYeN9qpYNzHsYelLVUb2PNs9YGroYb0QL4chF5qTOSL
- u/EKCIP3IE46DZANB0DLpNf26qDX6ABIsmYWV9Z/f+LybfmqazCiNDvQw9UxO07CTld8
- Sk0xP1fzpPRNXJE8k6CkhGFQ9oGigFmUwn//xjvEYv7dKaOc0QGIUubd0y2I2cnIl0xJ
- /HL8KOYAgrdwavKhJv2A/U/r32UUKL19657BcYRf4iRGI+KK5VgLwdrl8ir1zeyfA0IS
- em7NfctS7baSBoi6wrr2iAVVLR1EbLguqkz+HWAKz2A2VcIz0lPAcfc0nac5u4tmpUpZ
- ATNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=3ico19JA9GM1O/bamMVefJvScGGPa2Lrj2Zc1+4P3Dk=;
- b=PcXuXC9cmGImi/ssG53kSchw3i/nvzYdNXhPUUIm6oweH0rhFXnOnkPUDOPFr1523d
- DselZg3E4uku2VerGPWID9tiqHplVqdbotqOJ3pfFLXmZPvgGxB2ov53yQXnCw2Uz/oq
- d5QEthnyinu9+D+MHyLieYVUDErDKJ570GvslkJ9FfSHvqLm832sGU6AO5aqhfmQszVM
- /mWwTWc0UxRssEgZ8myitXJfT1vi+BC72N6iM2xbUx8WobK8SoK5ydktWdw87vf5DbGA
- K2Uqpn71zT4OLQYH30M2Qj/LsjOCSaE98KRFG9RhIm6jRrAfft+ltLIPZ/02gFrk3Mpn
- Rwcg==
-X-Gm-Message-State: AOAM530WzVWl9Kd5gTNVAyAQrx+M8ULlFj/xZmO9PWS+qIxMGLCxa3nC
- HYJ4WKHov03C7RB3vuDXcj2AuwAKI2ZQ0jYSpLg=
-X-Google-Smtp-Source: ABdhPJxKdHGO5wEnJx1da4CESMJxQvp/xmr8bKemy8fruAhYWGq2jYiClxmZKW8HCNdyfXkNV4G3fZut275u30L10eg=
-X-Received: by 2002:a81:6c4b:0:b0:2e5:e0c0:3eaf with SMTP id
- h72-20020a816c4b000000b002e5e0c03eafmr16978188ywc.408.1648970142661; Sun, 03
- Apr 2022 00:15:42 -0700 (PDT)
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="Wn7ZsKtU"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id C84C260FE1;
+ Sun,  3 Apr 2022 08:59:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FD09C340ED;
+ Sun,  3 Apr 2022 08:59:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1648976371;
+ bh=+Ovtq48x9WL5YWh33WVxrg+kW8FgwJJJ7TN4VKMgd2A=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=Wn7ZsKtU5/LIt20FVIU+LruzwbQQhvTwUzUso8KkfOCC31Hf2S5lmWk7ZIf42xQzV
+ vkdWEokkgWAoeWYusINceJ4rUbOEFWRFCQP0RnwUGg7GjkGM4erSvDPVG00R3mUWAJ
+ wjjcXar7QLc4P+RfFsdUQL4ZpWUBI+aPgVBAdRBMTWwFjuyD8lQX7MpNeM076vRAuz
+ CwbjM1rg6+7GWjUCLYvjwqL9/d1nN6jb0DBQAF3fl6LxgBT7w6YGEQMSvgPfG8wEhX
+ wLPGEn4zwe0fH268gsTDtI7agn/7OPVc+MlZxFCCe66BiKoeYL96Ux3WXHAT2pvwSI
+ dcwEWbOK2H1Bg==
+Received: from mchehab by mail.kernel.org with local (Exim 4.94.2)
+ (envelope-from <mchehab@kernel.org>)
+ id 1naw52-00D6f4-JN; Sun, 03 Apr 2022 10:59:28 +0200
+From: Mauro Carvalho Chehab <mchehab@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH RFC 1/2] ASoC: Intel: sof_es8336: support a separate gpio to
+ control headphone
+Date: Sun,  3 Apr 2022 10:59:24 +0200
+Message-Id: <f9195a8287598fbc0f4187c8b976848f5eba3e88.1648975926.git.mchehab@kernel.org>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <cover.1648975926.git.mchehab@kernel.org>
+References: <cover.1648975926.git.mchehab@kernel.org>
 MIME-Version: 1.0
-References: <20220307084523.28687-1-linmq006@gmail.com>
- <93751991-30ce-93a0-0f33-105f99b8dfe3@wanadoo.fr>
-In-Reply-To: <93751991-30ce-93a0-0f33-105f99b8dfe3@wanadoo.fr>
-From: =?UTF-8?B?5p6X5aaZ5YCp?= <linmq006@gmail.com>
-Date: Sun, 3 Apr 2022 15:15:31 +0800
-Message-ID: <CAH-r-ZGw+toVfasD-45p4Z4Rryn2advNOZbgJd0g4SGw_Kd6FQ@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: msm8916-wcd-digital: Fix missing
- clk_disable_unprepare() in msm8916_wcd_digital_probe
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Content-Transfer-Encoding: 8bit
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
+ Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,58 +91,177 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-Yes, I agree with you. We should check the error code of
-devm_snd_soc_register_component() and do corresponding
-handling.
+Some devices may use both gpio0 and gpio1 to independently switch
+the speaker and the headphone.
 
-Christophe JAILLET <christophe.jaillet@wanadoo.fr> =E4=BA=8E2022=E5=B9=B44=
-=E6=9C=883=E6=97=A5=E5=91=A8=E6=97=A5 13:51=E5=86=99=E9=81=93=EF=BC=9A
+Add support for that.
 
-> Le 07/03/2022 =C3=A0 09:45, Miaoqian Lin a =C3=A9crit :
-> > Fix the missing clk_disable_unprepare() before return
-> > from msm8916_wcd_digital_probe in the error handling case.
-> >
-> > Fixes: 150db8c5afa1 ("ASoC: codecs: Add msm8916-wcd digital codec")
-> > Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
-> > ---
-> >   sound/soc/codecs/msm8916-wcd-digital.c | 5 ++++-
-> >   1 file changed, 4 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/sound/soc/codecs/msm8916-wcd-digital.c
-> b/sound/soc/codecs/msm8916-wcd-digital.c
-> > index fcc10c8bc625..9ad7fc0baf07 100644
-> > --- a/sound/soc/codecs/msm8916-wcd-digital.c
-> > +++ b/sound/soc/codecs/msm8916-wcd-digital.c
-> > @@ -1201,7 +1201,7 @@ static int msm8916_wcd_digital_probe(struct
-> platform_device *pdev)
-> >       ret =3D clk_prepare_enable(priv->mclk);
-> >       if (ret < 0) {
-> >               dev_err(dev, "failed to enable mclk %d\n", ret);
-> > -             return ret;
-> > +             goto err_clk;
-> >       }
-> >
-> >       dev_set_drvdata(dev, priv);
-> > @@ -1209,6 +1209,9 @@ static int msm8916_wcd_digital_probe(struct
-> platform_device *pdev)
-> >       return devm_snd_soc_register_component(dev, &msm8916_wcd_digital,
-> >                                     msm8916_wcd_digital_dai,
-> >                                     ARRAY_SIZE(msm8916_wcd_digital_dai)=
-);
-> > +err_clk:
-> > +     clk_disable_unprepare(priv->ahbclk);
-> > +     return ret;
-> >   }
-> >
-> >   static int msm8916_wcd_digital_remove(struct platform_device *pdev)
->
-> Hi,
-> I think that the same should be done for 'priv->mclk' if
-> devm_snd_soc_register_component() returns an error.
->
-> Can you give it a look?
->
-> CJ
->
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
+---
+
+See [PATCH RFC 0/2] at: https://lore.kernel.org/all/cover.1648975926.git.mchehab@kernel.org/
+
+ sound/soc/intel/boards/sof_es8336.c | 76 +++++++++++++++++++++--------
+ 1 file changed, 57 insertions(+), 19 deletions(-)
+
+diff --git a/sound/soc/intel/boards/sof_es8336.c b/sound/soc/intel/boards/sof_es8336.c
+index 5e0529aa4f1d..96920d3eed8a 100644
+--- a/sound/soc/intel/boards/sof_es8336.c
++++ b/sound/soc/intel/boards/sof_es8336.c
+@@ -30,6 +30,7 @@
+ #define SOF_ES8336_TGL_GPIO_QUIRK		BIT(4)
+ #define SOF_ES8336_ENABLE_DMIC			BIT(5)
+ #define SOF_ES8336_JD_INVERTED			BIT(6)
++#define SOF_ES8336_HEADPHONE_GPIO		BIT(7)
+ 
+ static unsigned long quirk;
+ 
+@@ -39,10 +40,9 @@ MODULE_PARM_DESC(quirk, "Board-specific quirk override");
+ 
+ struct sof_es8336_private {
+ 	struct device *codec_dev;
+-	struct gpio_desc *gpio_pa;
++	struct gpio_desc *gpio_pa, *gpio_pa_headphone;
+ 	struct snd_soc_jack jack;
+ 	struct list_head hdmi_pcm_list;
+-	bool speaker_en;
+ };
+ 
+ struct sof_hdmi_pcm {
+@@ -51,15 +51,28 @@ struct sof_hdmi_pcm {
+ 	int device;
+ };
+ 
+-static const struct acpi_gpio_params pa_enable_gpio = { 0, 0, true };
++static const struct acpi_gpio_params pa_enable_gpio0 = { 0, 0, true };
++static const struct acpi_gpio_params pa_enable_gpio1 = { 1, 0, true };
++
+ static const struct acpi_gpio_mapping acpi_es8336_gpios[] = {
+-	{ "pa-enable-gpios", &pa_enable_gpio, 1 },
++	{ "pa-enable-gpios", &pa_enable_gpio0, 1 },
+ 	{ }
+ };
+ 
+-static const struct acpi_gpio_params quirk_pa_enable_gpio = { 1, 0, true };
+ static const struct acpi_gpio_mapping quirk_acpi_es8336_gpios[] = {
+-	{ "pa-enable-gpios", &quirk_pa_enable_gpio, 1 },
++	{ "pa-enable-gpios", &pa_enable_gpio1, 1 },
++	{ }
++};
++
++static const struct acpi_gpio_mapping quirk_acpi_headphone_es8336_gpios[] = {
++	{ "pa-enable-gpios", &pa_enable_gpio0, 1 },
++	{ "pa-enable-headphone-gpios", &pa_enable_gpio1, 1 },
++	{ }
++};
++
++static const struct acpi_gpio_mapping quirk_tgl_acpi_headphone_es8336_gpios[] = {
++	{ "pa-enable-gpios", &pa_enable_gpio1, 1 },
++	{ "pa-enable-headphone-gpios", &pa_enable_gpio0, 1 },
+ 	{ }
+ };
+ 
+@@ -71,6 +84,8 @@ static void log_quirks(struct device *dev)
+ 	dev_info(dev, "quirk SSP%ld\n",  SOF_ES8336_SSP_CODEC(quirk));
+ 	if (quirk & SOF_ES8336_ENABLE_DMIC)
+ 		dev_info(dev, "quirk DMIC enabled\n");
++	if (quirk & SOF_ES8336_HEADPHONE_GPIO)
++		dev_info(dev, "quirk headphone GPIO enabled\n");
+ 	if (quirk & SOF_ES8336_TGL_GPIO_QUIRK)
+ 		dev_info(dev, "quirk TGL GPIO enabled\n");
+ 	if (quirk & SOF_ES8336_JD_INVERTED)
+@@ -84,24 +99,35 @@ static int sof_es8316_speaker_power_event(struct snd_soc_dapm_widget *w,
+ 	struct sof_es8336_private *priv = snd_soc_card_get_drvdata(card);
+ 
+ 	if (SND_SOC_DAPM_EVENT_ON(event))
+-		priv->speaker_en = false;
+-	else
+-		priv->speaker_en = true;
++		msleep(70);
+ 
+-	gpiod_set_value_cansleep(priv->gpio_pa, priv->speaker_en);
++	gpiod_set_value_cansleep(priv->gpio_pa, !SND_SOC_DAPM_EVENT_ON(event));
++
++	return 0;
++}
++
++static int sof_es8316_headphone_power_event(struct snd_soc_dapm_widget *w,
++					  struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_card *card = w->dapm->card;
++	struct sof_es8336_private *priv = snd_soc_card_get_drvdata(card);
++
++	if (!(quirk & SOF_ES8336_HEADPHONE_GPIO))
++		return 0;
++
++	if (SND_SOC_DAPM_EVENT_ON(event))
++		msleep(70);
++
++	gpiod_set_value_cansleep(priv->gpio_pa_headphone, SND_SOC_DAPM_EVENT_ON(event));
+ 
+ 	return 0;
+ }
+ 
+ static const struct snd_soc_dapm_widget sof_es8316_widgets[] = {
+-	SND_SOC_DAPM_SPK("Speaker", NULL),
+-	SND_SOC_DAPM_HP("Headphone", NULL),
++	SND_SOC_DAPM_SPK("Speaker", sof_es8316_speaker_power_event),
++	SND_SOC_DAPM_HP("Headphone", sof_es8316_headphone_power_event),
+ 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
+ 	SND_SOC_DAPM_MIC("Internal Mic", NULL),
+-
+-	SND_SOC_DAPM_SUPPLY("Speaker Power", SND_SOC_NOPM, 0, 0,
+-			    sof_es8316_speaker_power_event,
+-			    SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMU),
+ };
+ 
+ static const struct snd_soc_dapm_widget dmic_widgets[] = {
+@@ -114,11 +140,10 @@ static const struct snd_soc_dapm_route sof_es8316_audio_map[] = {
+ 
+ 	/*
+ 	 * There is no separate speaker output instead the speakers are muxed to
+-	 * the HP outputs. The mux is controlled by the "Speaker Power" supply.
++	 * the HP outputs. The mux is controlled Speaker and/or headphone switch.
+ 	 */
+ 	{"Speaker", NULL, "HPOL"},
+ 	{"Speaker", NULL, "HPOR"},
+-	{"Speaker", NULL, "Speaker Power"},
+ };
+ 
+ static const struct snd_soc_dapm_route sof_es8316_intmic_in1_map[] = {
+@@ -233,8 +258,14 @@ static int sof_es8336_quirk_cb(const struct dmi_system_id *id)
+ {
+ 	quirk = (unsigned long)id->driver_data;
+ 
+-	if (quirk & SOF_ES8336_TGL_GPIO_QUIRK)
++	if (quirk & SOF_ES8336_HEADPHONE_GPIO) {
++		if (quirk & SOF_ES8336_TGL_GPIO_QUIRK)
++			gpio_mapping = quirk_tgl_acpi_headphone_es8336_gpios;
++		else
++			gpio_mapping = quirk_acpi_headphone_es8336_gpios;
++	} else if (quirk & SOF_ES8336_TGL_GPIO_QUIRK) {
+ 		gpio_mapping = quirk_acpi_es8336_gpios;
++	}
+ 
+ 	return 1;
+ }
+@@ -592,6 +623,13 @@ static int sof_es8336_probe(struct platform_device *pdev)
+ 		goto err_put_codec;
+ 	}
+ 
++	priv->gpio_pa_headphone = gpiod_get_optional(codec_dev, "pa-enable-headphone", GPIOD_OUT_LOW);
++	if (IS_ERR(priv->gpio_pa_headphone)) {
++		ret = dev_err_probe(dev, PTR_ERR(priv->gpio_pa_headphone),
++				    "could not get pa-enable-headphone GPIO\n");
++		goto err_put_codec;
++	}
++
+ 	INIT_LIST_HEAD(&priv->hdmi_pcm_list);
+ 
+ 	snd_soc_card_set_drvdata(card, priv);
+-- 
+2.35.1
+
