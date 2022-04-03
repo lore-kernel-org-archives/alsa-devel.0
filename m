@@ -4,73 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1CC0BC433F5
-	for <alsa-devel@archiver.kernel.org>; Sun,  3 Apr 2022 09:01:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16984C433EF
+	for <alsa-devel@archiver.kernel.org>; Sun,  3 Apr 2022 09:14:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 308FA175E;
-	Sun,  3 Apr 2022 11:00:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 308FA175E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 353D11759;
+	Sun,  3 Apr 2022 11:13:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 353D11759
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648976482;
-	bh=+MRl4rjdWzvUS2WdlS62P5OnEWVQOdoGiz49cpOtwgg=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=FFGl1HWA4sDCAfOc+MuPnopwnBcL6Xd3jFVMQ8oU9Parkrjic24pkpuElfhANYRSo
-	 IiN6+0HBfH+EYMrrKceh8JuaZZV8bosgnaf52ZR0BUioT6NbTVGO+1/4BDasxFmAPt
-	 2FpwUAzoubPcvKQXnjaBKg4od+DVidyM1v8n00Fg=
+	s=default; t=1648977238;
+	bh=D2itVu7GIoHUR47Nm0OsBTITwtQii9HP5+pPJMzvq4c=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=C1+5/UhwcFsqHQqGRtgkxFmnEzRFe29+dgHVpGZwxBZR5A2D9P3IVwnAftTBlh/ba
+	 qLFcyTF+mVmd/ChvJX16DcVYB/H13AStac7ghMCxHE7hmyOqJMUOqq21wWGwaPU2im
+	 egYFy4i+h19Zk0IecHJ0f3U4Gp/PB5Uf6kM3Ehws=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 31EA5F8051C;
-	Sun,  3 Apr 2022 10:59:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CAEB8F8013F;
+	Sun,  3 Apr 2022 11:13:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9AAB0F80100; Sun,  3 Apr 2022 10:59:39 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 0BCEEF80248; Sun,  3 Apr 2022 11:13:07 +0200 (CEST)
+Received: from smtp.smtpout.orange.fr (smtp07.smtpout.orange.fr
+ [80.12.242.129])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 38CC0F8012A
- for <alsa-devel@alsa-project.org>; Sun,  3 Apr 2022 10:59:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38CC0F8012A
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="e/UxQhRf"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id CAF8560FEA;
- Sun,  3 Apr 2022 08:59:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 227A8C340F3;
- Sun,  3 Apr 2022 08:59:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1648976371;
- bh=+MRl4rjdWzvUS2WdlS62P5OnEWVQOdoGiz49cpOtwgg=;
- h=From:To:Cc:Subject:Date:From;
- b=e/UxQhRf7BDgVVBto0RfrPHS5nJwc3nj5bm9X+9H/bcsRhxwHuQIfmdfMd3B9Ap84
- td9OWJ8SFL9YLEGhDfgdv9NyQe3ecY3Sz2KUplVel5FFjb1lEWIt4Efumncx8W+1bs
- OSLr7NmMWm7jAdVGUPfBmT7B9XbTURf5MB/grhSLmhd0iqzhwQBQpEqgsbnlkDJSgD
- 05P1AFDMmMCn7u+T3sq09iPWikzNVjzPtd60q0a2J0G3tY9mXtZoW3URJ+ov28yMEY
- r0ClxWttx+wA5uh+PkMRY0ffCVzu7ReGo+ddZES9RkI7VP+u+Mb3EPfnz+zxunVMj1
- mhskVBBOEQ1qw==
-Received: from mchehab by mail.kernel.org with local (Exim 4.94.2)
- (envelope-from <mchehab@kernel.org>)
- id 1naw52-00D6f1-GH; Sun, 03 Apr 2022 10:59:28 +0200
-From: Mauro Carvalho Chehab <mchehab@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH RFC 0/2] Make headphone work on Huawei Matebook D15
-Date: Sun,  3 Apr 2022 10:59:23 +0200
-Message-Id: <cover.1648975926.git.mchehab@kernel.org>
-X-Mailer: git-send-email 2.35.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6922CF8012A
+ for <alsa-devel@alsa-project.org>; Sun,  3 Apr 2022 11:13:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6922CF8012A
+Received: from [192.168.1.18] ([90.126.236.122]) by smtp.orange.fr with ESMTPA
+ id awI7nFC7WRGzQawI7nw1jb; Sun, 03 Apr 2022 11:13:01 +0200
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
+X-ME-Date: Sun, 03 Apr 2022 11:13:01 +0200
+X-ME-IP: 90.126.236.122
+Message-ID: <6dd4ac07-397c-1e02-2ac5-2a8f243bfefe@wanadoo.fr>
+Date: Sun, 3 Apr 2022 11:12:59 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [PATCH] ASoC: msm8916-wcd-digital: Fix missing
+ clk_disable_unprepare() in msm8916_wcd_digital_probe
+Content-Language: en-US
+To: =?UTF-8?B?5p6X5aaZ5YCp?= <linmq006@gmail.com>
+References: <20220307084523.28687-1-linmq006@gmail.com>
+ <93751991-30ce-93a0-0f33-105f99b8dfe3@wanadoo.fr>
+ <CAH-r-ZGw+toVfasD-45p4Z4Rryn2advNOZbgJd0g4SGw_Kd6FQ@mail.gmail.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <CAH-r-ZGw+toVfasD-45p4Z4Rryn2advNOZbgJd0g4SGw_Kd6FQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
- linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,30 +74,64 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The headphone output at Huawei Matebook D15 is controlled by a separate
-GPIO than the speaker. So, the es8336 boards logic need to handle two events:
-one for the speaker switch and another one for the headphone.
+Le 03/04/2022 à 09:15, 林妙倩 a écrit :
+> Hi,
+> 
+> Yes, I agree with you. We should check the error code of
+> devm_snd_soc_register_component() and do corresponding
+> handling.
 
-Please notice that this is my first real incursion at SOC/SOF. While this is working
-fine, I'm still struggling with some troubles with pipewire, which I believe are
-due to UCM support, as, sometimes when pavucontrol starts, the playback stucks.
-Also, sometimes the mixers won't change when jack plug/unplug is detected.
+You already fixed the first issue, do you mind sending a patch for this 
+one as well?
 
-So, more debug is needed, and probably the UCM will also need to be closer to
-the definitions that are used at ucm2/codecs/es8316/, as es8336 is a variant of
-it.
-
-Anyway, let me submit this as as RFC, in order to get some feedback if this is
-going at the right way to support the headphone switch event.
-
-Mauro Carvalho Chehab (2):
-  ASoC: Intel: sof_es8336: support a separate gpio to control headphone
-  ASoC: Intel: sof_es8336: Huawei Matebook D15 uses a headphone gpio
-
- sound/soc/intel/boards/sof_es8336.c | 84 ++++++++++++++++++++++-------
- 1 file changed, 65 insertions(+), 19 deletions(-)
-
--- 
-2.35.1
-
+CJ
+> 
+> Christophe JAILLET <christophe.jaillet@wanadoo.fr> 于2022年4月3日周日 13:51写道：
+> 
+>> Le 07/03/2022 à 09:45, Miaoqian Lin a écrit :
+>>> Fix the missing clk_disable_unprepare() before return
+>>> from msm8916_wcd_digital_probe in the error handling case.
+>>>
+>>> Fixes: 150db8c5afa1 ("ASoC: codecs: Add msm8916-wcd digital codec")
+>>> Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
+>>> ---
+>>>    sound/soc/codecs/msm8916-wcd-digital.c | 5 ++++-
+>>>    1 file changed, 4 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/sound/soc/codecs/msm8916-wcd-digital.c
+>> b/sound/soc/codecs/msm8916-wcd-digital.c
+>>> index fcc10c8bc625..9ad7fc0baf07 100644
+>>> --- a/sound/soc/codecs/msm8916-wcd-digital.c
+>>> +++ b/sound/soc/codecs/msm8916-wcd-digital.c
+>>> @@ -1201,7 +1201,7 @@ static int msm8916_wcd_digital_probe(struct
+>> platform_device *pdev)
+>>>        ret = clk_prepare_enable(priv->mclk);
+>>>        if (ret < 0) {
+>>>                dev_err(dev, "failed to enable mclk %d\n", ret);
+>>> -             return ret;
+>>> +             goto err_clk;
+>>>        }
+>>>
+>>>        dev_set_drvdata(dev, priv);
+>>> @@ -1209,6 +1209,9 @@ static int msm8916_wcd_digital_probe(struct
+>> platform_device *pdev)
+>>>        return devm_snd_soc_register_component(dev, &msm8916_wcd_digital,
+>>>                                      msm8916_wcd_digital_dai,
+>>>                                      ARRAY_SIZE(msm8916_wcd_digital_dai));
+>>> +err_clk:
+>>> +     clk_disable_unprepare(priv->ahbclk);
+>>> +     return ret;
+>>>    }
+>>>
+>>>    static int msm8916_wcd_digital_remove(struct platform_device *pdev)
+>>
+>> Hi,
+>> I think that the same should be done for 'priv->mclk' if
+>> devm_snd_soc_register_component() returns an error.
+>>
+>> Can you give it a look?
+>>
+>> CJ
+>>
+> 
 
