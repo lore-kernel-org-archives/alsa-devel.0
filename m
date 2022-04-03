@@ -4,70 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DED38C433EF
-	for <alsa-devel@archiver.kernel.org>; Sun,  3 Apr 2022 10:26:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8D814C433F5
+	for <alsa-devel@archiver.kernel.org>; Sun,  3 Apr 2022 11:53:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1B22C17E9;
-	Sun,  3 Apr 2022 12:25:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B22C17E9
+	by alsa0.perex.cz (Postfix) with ESMTPS id D878B17A8;
+	Sun,  3 Apr 2022 13:52:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D878B17A8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1648981596;
-	bh=RvHM58+WCVSmdblL+XcB4dmfmhFU3wC8gZT9rrOz3DY=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=YfUgGb5XaqIZbew8MeDMi3MdmMjuXwXr2AJ2EtZUj43BNJBeuDF94nmgWTX2LEqyK
-	 t+FVOGfHczUbxpEVMtfF7Cd+93zrTL04AlwiwMpHEE1UKcmkZdzDWvw/GVJSCZnqfX
-	 1zeInXZdF4TCLGsJO4b1pKGa0tq596RcME0PW438=
+	s=default; t=1648986825;
+	bh=4VzAfZDC0ofALBTowMNImjIi200C7b217ZkVwVf5aeI=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=JAeDS7zZJr8oG0HYt1wAPU3LOxdX+s5JZ9a1LupGnQdz2OS/QlXVII47nGqYi7mxd
+	 W59eafatdUaTJufzKB7qGpmzQMFoF4gQLdV+PtpG6molFh01ROif0H93T3yKw0q3CH
+	 ZShP8CsrR8Z14PdWII28uTnQUGNn/LJ/7w8hYVCM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7C225F8051B;
-	Sun,  3 Apr 2022 12:25:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 62489F8013F;
+	Sun,  3 Apr 2022 13:52:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 553DDF8051C; Sun,  3 Apr 2022 12:25:04 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 551C2F80248; Sun,  3 Apr 2022 13:52:53 +0200 (CEST)
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com
+ [IPv6:2607:f8b0:4864:20::436])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 10699F8050F;
- Sun,  3 Apr 2022 12:25:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10699F8050F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 11E5FF80100
+ for <alsa-devel@alsa-project.org>; Sun,  3 Apr 2022 13:52:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11E5FF80100
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=linuxfoundation.org
- header.i=@linuxfoundation.org header.b="WtvY7jHb"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id C35CA60FF8;
- Sun,  3 Apr 2022 10:24:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A416FC340ED;
- Sun,  3 Apr 2022 10:24:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1648981499;
- bh=RvHM58+WCVSmdblL+XcB4dmfmhFU3wC8gZT9rrOz3DY=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=WtvY7jHbpQ0hk9paN5/seBFJmvgS7OB/skxReyOVy25PKTDkHbZIXjtPyvNtp4efi
- pH07baedTwQD2WyOQxBiuKoECvft8ECfBQk4gzgQDOHlQFvTF37qBe2plosclWSxLq
- lJgFirF+EEvFH+1nsHa8v8EAqJShGHYRcDcP55c4=
-Date: Sun, 3 Apr 2022 12:24:48 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Ammar Faizi <ammarfaizi2@gnuweeb.org>
-Subject: Re: [PATCH for-stable] ASoC: SOF: Intel: Fix NULL ptr dereference
- when ENOMEM
-Message-ID: <Ykl18HLtHn/xwtdC@kroah.com>
-References: <20220402163026.11299-1-ammarfaizi2@gnuweeb.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220402163026.11299-1-ammarfaizi2@gnuweeb.org>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org, gwml@vger.gnuweeb.org,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
- Keyon Jie <yang.jie@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>,
- stable@vger.kernel.org, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Rander Wang <rander.wang@intel.com>, Daniel Baluta <daniel.baluta@nxp.com>,
- linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="Ee9rnOJh"
+Received: by mail-pf1-x436.google.com with SMTP id x16so1122250pfa.10
+ for <alsa-devel@alsa-project.org>; Sun, 03 Apr 2022 04:52:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id;
+ bh=sR5C+V0BrLQBvN4cusDa5moM4/Z0FLGEO0DiyFna108=;
+ b=Ee9rnOJhOBjbwfUSmVUZIZfOs5YVvsbxIvZdyUKIdR3l3FHoadRLpLaEPPQikn9aGS
+ QAVB3GDAeU4bYDihcUQh3U619pl56DdpqOWgDKWnxJU5BOpBIq0Hn9NZH25OEpJ+kEIA
+ jjbpr/qAV+Vhxb3Uy/IdWyuLyevXlGQsMkRGYeBtsu8lHcVvjN2gEX/iFunRkImPZ7xq
+ GVB6Eng8EqQ1jI2R0JG9S3JZVhj09A8EXXVQKTNaCtDMfPvzThbv9syAWoQhO7/FtgHt
+ BS3WKNZQRTt5hmf1tjc2Pipfx90evF7PZbrW9dIvxCizxDTkM2SBB1tomOQ+j88E7w6G
+ Jn9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id;
+ bh=sR5C+V0BrLQBvN4cusDa5moM4/Z0FLGEO0DiyFna108=;
+ b=zBnLeKCfoCm7f07sEnkkNx/17DZnuAN4oEZBWRehGgq/A05IKM+Vidxw4SifM/L38V
+ 4xK36DqKg6J7SA+HChRkHduOPdGVWCdOGeKLA+dJBmEMLO3NFIX71otyVsJ34BEjqwqt
+ 3ZuvecB9YuPpzGty2jqi9xQiC5kitXc+CTFv6Ry9WQSm+5Tbb0RvC1MuPT7is6FxOlLE
+ 7Nsuz/fp+uPMrNf3dB2ybTWjvhxuKIIyQhz9baYILH9Vm2hPAyZQXOesoTy8tTvat9D6
+ OTDxXfsMXm6U+8vwm9njVRIQtdwP2lpEDu1CEwVSfE+LGBjq6MSetVg6fP+3Cswr+ljF
+ B/aQ==
+X-Gm-Message-State: AOAM531hShFG1Vu7x+VYvuNHD/ReQsRxweoD/h/MO5kF83jLN1hz1IBd
+ 4lnrGeuQi6IIPapj9fuG5NA=
+X-Google-Smtp-Source: ABdhPJxJpvKl7ZEMtIJIZuVzN0aHjDDFf0Pkq8k5nYH6/FmT/Hogjjvq7L3y8TNkvFQMZ69xqIWeAw==
+X-Received: by 2002:a62:cd83:0:b0:4fa:7410:6d86 with SMTP id
+ o125-20020a62cd83000000b004fa74106d86mr53480921pfg.52.1648986765232; 
+ Sun, 03 Apr 2022 04:52:45 -0700 (PDT)
+Received: from localhost.localdomain ([159.226.95.43])
+ by smtp.googlemail.com with ESMTPSA id
+ u18-20020a056a00125200b004fb112ee9b7sm8031095pfi.75.2022.04.03.04.52.42
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sun, 03 Apr 2022 04:52:44 -0700 (PDT)
+From: Miaoqian Lin <linmq006@gmail.com>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@codeaurora.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: msm8916-wcd-digital: Check failure for
+ devm_snd_soc_register_component
+Date: Sun,  3 Apr 2022 11:52:39 +0000
+Message-Id: <20220403115239.30140-1-linmq006@gmail.com>
+X-Mailer: git-send-email 2.17.1
+Cc: linmq006@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,33 +94,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, Apr 02, 2022 at 11:30:26PM +0700, Ammar Faizi wrote:
-> 
-> Hello Greg,
-> 
-> commit b7fb0ae09009d076964afe4c1a2bde1ee2bd88a9 upstream.
-> 
-> Please take these two backport patches:
-> 1. For Linux 5.4 LTS.
-> 2. For Linux 5.10 LTS.
-> 
-> Both will be sent as a reply to this email.
-> 
-> Thank you!
-> 
-> =====
-> 
-> 5.4 failed report:
-> https://lore.kernel.org/stable/164889915082249@kroah.com/
-> 
-> 
-> 5.10 failed report:
-> https://lore.kernel.org/stable/164889914960214@kroah.com/
-> 
-> -- 
-> Ammar Faizi
-> 
+devm_snd_soc_register_component() may fails, we should check the error
+and do the corresponding error handling.
 
-Both now queued up, thanks!
+Fixes: 150db8c5afa1 ("ASoC: codecs: Add msm8916-wcd digital codec")
+Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
+---
+ sound/soc/codecs/msm8916-wcd-digital.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-greg k-h
+diff --git a/sound/soc/codecs/msm8916-wcd-digital.c b/sound/soc/codecs/msm8916-wcd-digital.c
+index 9ad7fc0baf07..20a07c92b2fc 100644
+--- a/sound/soc/codecs/msm8916-wcd-digital.c
++++ b/sound/soc/codecs/msm8916-wcd-digital.c
+@@ -1206,9 +1206,16 @@ static int msm8916_wcd_digital_probe(struct platform_device *pdev)
+ 
+ 	dev_set_drvdata(dev, priv);
+ 
+-	return devm_snd_soc_register_component(dev, &msm8916_wcd_digital,
++	ret = devm_snd_soc_register_component(dev, &msm8916_wcd_digital,
+ 				      msm8916_wcd_digital_dai,
+ 				      ARRAY_SIZE(msm8916_wcd_digital_dai));
++	if (ret)
++		goto err_mclk;
++
++	return 0;
++
++err_mclk:
++	clk_disable_unprepare(priv->mclk);
+ err_clk:
+ 	clk_disable_unprepare(priv->ahbclk);
+ 	return ret;
+-- 
+2.17.1
+
