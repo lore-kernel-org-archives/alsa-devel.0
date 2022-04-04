@@ -4,70 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C06DC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 14:03:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EFFACC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 14:06:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7E9301689;
-	Tue,  5 Apr 2022 16:02:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E9301689
+	by alsa0.perex.cz (Postfix) with ESMTPS id BBBEEF7;
+	Tue,  5 Apr 2022 16:05:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BBBEEF7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649167398;
-	bh=GnA4g+UKLIMkvGQrZKHeAzi6hA8riPDDqpGJ82LWMrY=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1649167598;
+	bh=RykHeuHfrYKWlYaQCFedGFkCWMVDu/x+vCVK9n5m7R8=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AXEOPzLOz1EYFXYtQwQaAFLuip0UAIW2sAJAV3TXaM5CqJ07ctlA3LZlXp3cq3JL9
-	 ae/NZIMGOuAK0gFzdLdS24YC5dki0UJej6sEmbSy4CaDAzRurT4rw9K2Xj7p0Pq049
-	 cwAw3bcBK73KRtoPjGnzrDrrsOcF+soGN5vCkhwQ=
+	b=LawUIIyYRGh271fC1XkFZhvtdDVg0Fx0adVOtXIrfT6hlFWWgOQG+Ihqfe2lL4j7S
+	 E3CAIQfcLa4n/6JOy4Y81AlYGUG4lchGUgLLV/KN3/rjOD1s2+ERqDy3NzfNa74c9s
+	 210I72xQ990/GGPG36gcRGS3dnH6OBl1GyEmVFKA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 033E8F8014B;
-	Tue,  5 Apr 2022 16:02:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6003CF8016A;
+	Tue,  5 Apr 2022 16:05:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E6BCBF800D2; Tue,  5 Apr 2022 16:02:25 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5EAA1F800D2
- for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 16:02:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5EAA1F800D2
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="AC7aTD5q"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id D9B3FF8016B; Tue,  5 Apr 2022 16:05:47 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 6B86BB81BA9;
- Tue,  5 Apr 2022 14:02:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE28CC385A0;
- Tue,  5 Apr 2022 14:02:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1649167340;
- bh=GnA4g+UKLIMkvGQrZKHeAzi6hA8riPDDqpGJ82LWMrY=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=AC7aTD5qXCiOV2jQ4INX8R997tlTCfw4NaWwJZaUG2m71xbmRqn20+4f33P1EMtIM
- CACxKPCze5Ca7q7bHtDSXIfX3vymH0PfaQNx1kjpAXR6C8Sr9TeNfmSTs/6stLomSN
- 7giE49Wb3ZC3L+m4Fa6pW0NLs+2doUE8IM3zc691TbF5+RuPbBslQ/OaxD0eE+dP7y
- k/rB+EMwN16DJWXLxrmRopZNNw4zJUhDjaiViI5cB87Z8oW/xZi63hDOEW3UswFJMi
- 8S17kqQs4Q7t11tN1RvdNWIBazsyF5V2DlEV2ainUQiQVsgR8p19/YnOisygiN8tei
- rPyQ9ucNpyVgQ==
-Date: Tue, 5 Apr 2022 15:02:15 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Zhu Ning <zhuning0077@gmail.com>
-Subject: Re: [PATCH] ASoC: codecs: add support for ES8326
-Message-ID: <YkxL51j8E11u0uV/@sirena.org.uk>
-References: <20220405131220.1149-1-zhuning0077@gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id D7FADF800D2;
+ Tue,  5 Apr 2022 16:05:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7FADF800D2
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="mR9/Teoo"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1649167542; x=1680703542;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=RykHeuHfrYKWlYaQCFedGFkCWMVDu/x+vCVK9n5m7R8=;
+ b=mR9/TeoodxZ0DDr1KsHycGl7Yv+7uvc/bmHrF8bsOQrF+VA9NYhLM9zN
+ P3ezNTXDm+ZXIQY2TjcSOfZj7HRv1y4Nd3VmhPFH/0nZM1BBJfuPv27oG
+ b7e4xxsGro7gXcnXAF1pqsju9R+4Xa2Z5QXQIUN6A9BNwkVC38dpJsyN0
+ a0kWlbc8uI+ilqREUvuUCAlaAl3wZ/PWc399vEAVDpuqDDFnNL1Pmz1/q
+ ADBxaCK70RP1GIKZS9L2xMegE/cJ3rSp3eXSZQVDZgetsF+suG/qL3t3R
+ NmfGJGNdEQUeD4hVakJ9VPWUiNOrOon4zCTVnZNEb8p/Qfv14D+1uLc3Y g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10307"; a="347196771"
+X-IronPort-AV: E=Sophos;i="5.90,236,1643702400"; d="scan'208";a="347196771"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 05 Apr 2022 07:05:36 -0700
+X-IronPort-AV: E=Sophos;i="5.90,236,1643702400"; d="scan'208";a="651903446"
+Received: from ctveazey-mobl2.amr.corp.intel.com (HELO [10.255.230.126])
+ ([10.255.230.126])
+ by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 05 Apr 2022 07:05:32 -0700
+Message-ID: <a312c7ea-9ae3-689d-5a23-4d16400bbbf1@linux.intel.com>
+Date: Mon, 4 Apr 2022 10:58:08 -0500
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="BMbLmEImQ6t4Ji2F"
-Content-Disposition: inline
-In-Reply-To: <20220405131220.1149-1-zhuning0077@gmail.com>
-X-Cookie: diplomacy, n:
-Cc: Zhu Ning <zhuning@everest-semi.com>, alsa-devel@alsa-project.org,
- pierre-louis.bossart@linux.intel.com,
- yangxiaohua <yangxiaohua@everest-semi.com>, tiwai@suse.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.5.0
+Subject: Re: [PATCH v1] ASoC: Intel: sof_rt5682: Add support for max98360a
+ speaker amp on SSP2
+Content-Language: en-US
+To: Ajye Huang <ajye.huang@gmail.com>, linux-kernel@vger.kernel.org
+References: <20220324084708.2009375-1-ajye_huang@compal.corp-partner.google.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20220324084708.2009375-1-ajye_huang@compal.corp-partner.google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org, Cezary Rojewski <cezary.rojewski@intel.com>,
+ sound-open-firmware@alsa-project.org,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Mac Chiang <mac.chiang@intel.com>, Mark Brown <broonie@kernel.org>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
+ Daniel Baluta <daniel.baluta@nxp.com>, Brent Lu <brent.lu@intel.com>,
+ Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>,
+ Yong Zhi <yong.zhi@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,104 +99,62 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---BMbLmEImQ6t4Ji2F
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Tue, Apr 05, 2022 at 09:12:20PM +0800, Zhu Ning wrote:
+On 3/24/22 03:47, Ajye Huang wrote:
+> Follow Intel's design to replace max98360a amp SSP2 reather than SSP1
+> by judging DMI_OEM_STRING in sof_rt5682_quirk_table struct.
+> And reusing max98357's topology since DAI setting could be leveraged.
+> 
+> Signed-off-by: Ajye Huang <ajye_huang@compal.corp-partner.google.com>
 
-> The ES8326 codec is not compatible with ES8316 and requires a dedicated driver.
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-This looks mostly good - a few things below but nothing huge that should
-require big restructurings or anything.
-
-> +++ b/sound/soc/codecs/es8326.c
-> @@ -0,0 +1,753 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * es8326.c -- es8326 ALSA SoC audio driver
-> + * Copyright Everest Semiconductor Co., Ltd
-
-Please make the entire comment a C++ one so things look more
-intentional.
-
-> +#include <linux/clk.h>
-> +#include <linux/gpio.h>
-
-The driver doesn't actually seem to use the GPIO APIs?
-
-> +	/* The lock protects the situation that an irq is generated
-> +	 * while the previous irq is still being processed.
-> +	 */
-> +	struct mutex lock;
-
-It doesn't seem to, it seems to protect registrations and
-deregistrations from racing against each other?  The actual interrupt
-handling doesn't use it.
-
-> +	SOC_SINGLE_TLV("ADC Analog PGA Gain", ES8326_PAGGAIN_23, 0, 10, 0, adc_analog_pga_tlv),
-
-Control name should end in Volume - see control-names.rst.
-
-> +	regmap_write(es8326->regmap, ES8326_CLK_CTL_01, ES8326_CLK_ON);
-> +	/* Two channel ADC */
-> +	regmap_write(es8326->regmap, ES8326_PULLUP_CTL_F9, 0x02);
-> +	regmap_write(es8326->regmap, ES8326_CLK_INV_02, 0x00);
-> +	regmap_write(es8326->regmap, ES8326_CLK_DIV_CPC_0C, 0x1F);
-> +	regmap_write(es8326->regmap, ES8326_CLK_TRI_0E, 0x00);
-> +	regmap_write(es8326->regmap, ES8326_CLK_VMIDS1_10, 0xC8);
-> +	regmap_write(es8326->regmap, ES8326_CLK_VMIDS2_11, 0x88);
-> +	regmap_write(es8326->regmap, ES8326_CLK_CAL_TIME_12, 0x20);
-> +	regmap_write(es8326->regmap, ES8326_DAC_MUTE_14, 0x00);
-> +	regmap_write(es8326->regmap, ES8326_ANA_LOWPOWER_19, 0xF0);
-> +	regmap_write(es8326->regmap, ES8326_SYS_BIAS_1D, 0x08);
-> +	regmap_write(es8326->regmap, ES8326_DAC2HPMIX_25, 0x22);
-> +	regmap_write(es8326->regmap, ES8326_ADC_SCALE_29, 0x00);
-> +	regmap_write(es8326->regmap, ES8326_ADC1_SRC_2A, es8326->mic1_src);
-> +	regmap_write(es8326->regmap, ES8326_ADC2_SRC_2B, es8326->mic2_src);
-> +	regmap_write(es8326->regmap, ES8326_HP_CAL_4A, 0x00);
-> +	regmap_write(es8326->regmap, ES8326_DAC_DSM_4D, 0x08);
-> +	regmap_write(es8326->regmap, ES8326_DAC_RAMPRATE_4E, 0x20);
-> +	regmap_write(es8326->regmap, ES8326_DAC_VPPSCALE_4F, 0x15);
-> +	regmap_write(es8326->regmap, ES8326_HPJACK_TIMER_56, 0x88);
-> +	regmap_write(es8326->regmap, ES8326_HP_DET_57,
-> +		     ES8326_HP_DET_SRC_PIN9 | es8326->jack_pol);
-> +	regmap_write(es8326->regmap, ES8326_INT_SOURCE_58, 0x08);
-> +	regmap_write(es8326->regmap, ES8326_INTOUT_IO_59, 0x45);
-> +	regmap_write(es8326->regmap, ES8326_RESET_00, ES8326_CSM_ON);
-> +	snd_soc_component_update_bits(component, ES8326_PAGGAIN_23,
-> +				      ES8326_MIC_SEL_MASK, ES8326_MIC1_SEL);
-
-This looks like some or all of it is doing routing which would normally
-be configured from userspace using controls - the ADC1/2 sources and
-DAC controls jump out for example.  Some of it like the pullups might
-make sense fixed, or as DT properties like the jack detect polarity is
-here, but not all of it.
-
-> +#ifdef CONFIG_OF
-> +static const struct i2c_device_id es8326_i2c_id[] = {
-> +	{"es8326", 0 },
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(i2c, es8326_i2c_id);
-> +#endif
-
-This should be unconditional, the ifdefs should be around
-es8326_of_match instead.
-
---BMbLmEImQ6t4Ji2F
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmJMS+YACgkQJNaLcl1U
-h9B7qwf/cq6HuiiTZKmhMZSKZf1xbCh016wpsRV1XD42vdtGkRxxohv6oZXcbKLK
-OrE15UZsZaeztO5QYa/gM0Rw1ecX/FoqcWTDuOUfd5HyAAzQw67l9Z+bce6LiVwJ
-BLK4B8p39hrQ6tmeGthaijLtcceBj9wL3sV4Fi7Lpg5lwHjn1QVn8AXidy+RO6y3
-WkDZi8h5/HlHcs12IE2Pyf8YoewekHLrWKMq6UYtJqGvjVUgLcZrjzXc6WIsDQ5e
-4PT5P4o/+jxS4RBBQG6uoYBZ+BtdN3J+shWNTtHTfoNHEQUlTQVFq+SNJr+2KLdj
-/2fnx9yiYSn6cGk/jXDJpnY/7ixpDA==
-=YJm8
------END PGP SIGNATURE-----
-
---BMbLmEImQ6t4Ji2F--
+> ---
+>   sound/soc/intel/boards/sof_rt5682.c | 13 +++++++++++++
+>   sound/soc/sof/sof-pci-dev.c         |  9 ++++++++-
+>   2 files changed, 21 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
+> index ebec4d15edaa..7126fcb63d90 100644
+> --- a/sound/soc/intel/boards/sof_rt5682.c
+> +++ b/sound/soc/intel/boards/sof_rt5682.c
+> @@ -212,6 +212,19 @@ static const struct dmi_system_id sof_rt5682_quirk_table[] = {
+>   					SOF_SSP_BT_OFFLOAD_PRESENT),
+>   
+>   	},
+> +	{
+> +		.callback = sof_rt5682_quirk_cb,
+> +		.matches = {
+> +			DMI_MATCH(DMI_PRODUCT_FAMILY, "Google_Brya"),
+> +			DMI_MATCH(DMI_OEM_STRING, "AUDIO-MAX98360_ALC5682I_I2S_AMP_SSP2"),
+> +		},
+> +		.driver_data = (void *)(SOF_RT5682_MCLK_EN |
+> +					SOF_RT5682_SSP_CODEC(0) |
+> +					SOF_SPEAKER_AMP_PRESENT |
+> +					SOF_MAX98360A_SPEAKER_AMP_PRESENT |
+> +					SOF_RT5682_SSP_AMP(2) |
+> +					SOF_RT5682_NUM_HDMIDEV(4)),
+> +	},
+>   	{}
+>   };
+>   
+> diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
+> index 4c9596742844..12f5cff22448 100644
+> --- a/sound/soc/sof/sof-pci-dev.c
+> +++ b/sound/soc/sof/sof-pci-dev.c
+> @@ -83,7 +83,14 @@ static const struct dmi_system_id sof_tplg_table[] = {
+>   		},
+>   		.driver_data = "sof-adl-max98357a-rt5682-2way.tplg",
+>   	},
+> -
+> +	{
+> +		.callback = sof_tplg_cb,
+> +		.matches = {
+> +			DMI_MATCH(DMI_PRODUCT_FAMILY, "Google_Brya"),
+> +			DMI_MATCH(DMI_OEM_STRING, "AUDIO-MAX98360_ALC5682I_I2S_AMP_SSP2"),
+> +		},
+> +		.driver_data = "sof-adl-max98357a-rt5682.tplg",
+> +	},
+>   	{}
+>   };
+>   
