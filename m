@@ -4,73 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4867C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Apr 2022 07:49:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0002C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Apr 2022 07:49:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EC27718B4;
-	Fri,  8 Apr 2022 09:48:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC27718B4
+	by alsa0.perex.cz (Postfix) with ESMTPS id DF03818D7;
+	Fri,  8 Apr 2022 09:48:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF03818D7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649404145;
-	bh=JU22GVqt3YFsin8HP04zkf0GPNXOR8Lqs2b49RMLDG8=;
+	s=default; t=1649404176;
+	bh=xdQZa32pNo5xnf5JXsjAQp2Droc/xkiIYpA/NtwNZAg=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ebUt3nLZXloV0hNld/khT/N3LLmPUto0tvwDPCbdMhz/E0yl81TRTulqmCcGfbfFV
-	 WJ7Rz/7pFst0CSpkKSkza7lpHYSctT+7E2dztoFsymeE42/OgQBBKW2qHBM2hAlODc
-	 DnQxney/ljLQMTHKh3PuZfplsFXt7FOz7noexMqM=
+	b=mt9VhQU/T/JEdZl4EVuHmfxlnYIr4q/l8zoaajA7o3aTEf1yekjt/Fikp5o1cU1RZ
+	 wLqecoTgEcpo2VSiKN3+mfed5rFTPTvhSp+dN7tpYnKDJy89HwlXeInsRyITxARLN0
+	 Wh1GgOIb77d3QdJ0y8HmCLkrnlka9vqib1CgEQ0A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7E7ADF8012A;
-	Fri,  8 Apr 2022 09:48:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2EA20F804B1;
+	Fri,  8 Apr 2022 09:48:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 90025F80162; Mon,  4 Apr 2022 11:17:37 +0200 (CEST)
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com
- [IPv6:2a00:1450:4864:20::62a])
+ id F149DF80162; Mon,  4 Apr 2022 12:15:36 +0200 (CEST)
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com
+ [IPv6:2a00:1450:4864:20::529])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 34453F8010B
- for <alsa-devel@alsa-project.org>; Mon,  4 Apr 2022 11:17:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34453F8010B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 95F83F80100
+ for <alsa-devel@alsa-project.org>; Mon,  4 Apr 2022 12:15:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95F83F80100
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="hQlbcki1"
-Received: by mail-ej1-x62a.google.com with SMTP id n6so4459317ejc.13
- for <alsa-devel@alsa-project.org>; Mon, 04 Apr 2022 02:17:29 -0700 (PDT)
+ header.b="M6UB/xq5"
+Received: by mail-ed1-x529.google.com with SMTP id d10so5639504edj.0
+ for <alsa-devel@alsa-project.org>; Mon, 04 Apr 2022 03:15:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=aFF6p4tYsR549sWrfv4bnU2v+ruL8I5/W5YzMr/thlg=;
- b=hQlbcki1WeC3gkSnk83L4xArF1FpAwUwcbPIaOMkJlzK+bh9pgMN60HjAqA9G0XpuC
- 3Bprvok5U0s7Z1W/ZawyWzSbHo70bfJbRx7oPeBhE/2fGvpn7wCQbZqlvuNGvgHsVjQq
- r/wKFSU7xB5ZHODeRpMa6ErNEopcgryJWjRJjgXQCJkk3liL7jI4iywOC/rM00bXTbtl
- pmNkssVD/iJNe8tAe5q9UEBT+HP+cJeGalWYEIgNn71NWfAeNK0dD/7xSnaeqbeBCKsb
- THPnJ2jW59TDoW+ic9pCzBwfUOBySS1J3o8UfMTFXNWAg/FIQ3SVn0tuGl33QwLfjnUE
- +cQg==
+ :cc; bh=s/rlqtfSH/+OKtlWbKj/8X8QmPBtgrwTTfh5H/AMmr8=;
+ b=M6UB/xq5U2lez0akpMy5cdYkLpWp5TY7avZOr9EOmD3mOmC7LnKWizhrsWVbS9OYXV
+ WxZR1L3Zip6LzxkB/OPBaxvuvHRQ+I4ccmh7WVg7layXLF9PfwqQYZ+jlB6EvWgmb6tq
+ 0lZWCE3uc7LImkbQu2mlfWDe2OdVL/M2gk8b/f83Msuz2BzcI+DWU/n4c03LXmBik2KW
+ KbNMC8korkh/nF0C0QAzLDf4TOGpyF8a6IoEG8l74xBIia5wiIab+cBhjD/6K3P9R06b
+ EK2dkk2s3pESu8s3Lp5ePedMQzZPflgxpC1RgXqt3TXscJmh/VeMBZJdhbyeZhLuCe4J
+ VwFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=aFF6p4tYsR549sWrfv4bnU2v+ruL8I5/W5YzMr/thlg=;
- b=TTezMV+MdfWLJuFrgKEzejYfG0OBB0D+59gBWLYLDn9RC9tnfZFYvjqpEnUerLwhVK
- 51QyPnDUi6nTALjJVlQq+n8GIDkhvUfZwLQAY8YgLfv/jBiOnv6UUVvnpPH5LSFMC9GJ
- PUciMehgSnjTAJfT+ajpPoPZXGnpznmUAqmSOH0fLpyGJ5zE+pKlH5zmMxY6YGHBaurY
- LwZY+6JH/DFnb7d/cEzC4d9vMiKl3xpMaOpp5+TawGLBHFtHKGt+jzqAh5IqIeZmxgLS
- F5RpIarrcGba2F3qxyVmi4qcl2V3FrxLqFcLXiJ8LCqtli0KUzVROYS6hkeCKHe0dIad
- Tq+Q==
-X-Gm-Message-State: AOAM530EtTWSz1HjemQuJ48zmOFKjGmXVgTt606jqHbX50mwME3UEGFa
- IQlXR7XKWsZ7mYbgCQoImr8mkct+Lz8MA+Af5hM=
-X-Google-Smtp-Source: ABdhPJztVV4vk0bsoiQVYou423ZyvJCH+cGZa4t4gBoSJScuWRUyyZG1JPNItw+pyflHlcb4ktsJ/PrqzuCd6UZZVuc=
-X-Received: by 2002:a17:907:e8d:b0:6e0:19e7:9549 with SMTP id
- ho13-20020a1709070e8d00b006e019e79549mr10112344ejc.44.1649063847683; Mon, 04
- Apr 2022 02:17:27 -0700 (PDT)
+ bh=s/rlqtfSH/+OKtlWbKj/8X8QmPBtgrwTTfh5H/AMmr8=;
+ b=sxr+6xtO7wUYLsg2NQaoA0VtqIhhNvwGpv5KRpcswAovUlpDXepr/+Dp6Z6pgCa2SG
+ cxyluYMWmSujEpt5XUSJetG3gMuKuxTZn9h1HgS3sbkifQAnpQ+5OiHGxLloefdYP3A1
+ RvpkRno4U/4i1bk8c0XNP/qbrZEU4W/JZSSz3ZlZ6HdHE9HjpDzDVnu+lAQf8ROdvFch
+ 28GsTShfEC/U9dc+yGwCCocbonfGPzTMB3t7g93II4Ypz4BrvhH9z1xyFOeFWPT6s1bW
+ g2qahsOO8NdDaKP3x0A1tctuXp+5t0bxIckfON91T6/KE/YEr+rIbAndA/iWvAN/5IDO
+ ohIA==
+X-Gm-Message-State: AOAM5317G8vuhbSvi14fVr+8kOdM/3LlHGdd2Bq9rdmGcixJzRSCM1rn
+ UxtQwJb1fYpoPKU6GTaY01GIyORMvQS3+UklbvU=
+X-Google-Smtp-Source: ABdhPJxh9T+A1Yt+ILwhaxqoZIRZw7XK7bOr8aWn5QI6DqXoAfRnxar+91mJpxHWbEEB8aKP53yR05gviFAyUrKxBls=
+X-Received: by 2002:a05:6402:b19:b0:41c:d713:5cba with SMTP id
+ bm25-20020a0564020b1900b0041cd7135cbamr2668518edb.270.1649067326747; Mon, 04
+ Apr 2022 03:15:26 -0700 (PDT)
 MIME-Version: 1.0
 References: <20220403183758.192236-1-krzysztof.kozlowski@linaro.org>
  <20220403183758.192236-2-krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20220403183758.192236-2-krzysztof.kozlowski@linaro.org>
+ <CAHp75Vczm9f9Bx_w4nW31cnBgwEzPiN-Eqn-7DKZuB+Hew0F=Q@mail.gmail.com>
+ <2976f4f9-4fda-c04f-45cf-351518f88ec0@linaro.org>
+In-Reply-To: <2976f4f9-4fda-c04f-45cf-351518f88ec0@linaro.org>
 From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Mon, 4 Apr 2022 12:16:23 +0300
-Message-ID: <CAHp75Vczm9f9Bx_w4nW31cnBgwEzPiN-Eqn-7DKZuB+Hew0F=Q@mail.gmail.com>
+Date: Mon, 4 Apr 2022 13:14:22 +0300
+Message-ID: <CAHp75Vd-=-unRzQPtpfOs80dN=pDSsBaj=10nwOmmyWE8OqDPg@mail.gmail.com>
 Subject: Re: [PATCH v6 01/12] driver: platform: Add helper for safer setting
  of driver_override
 To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
@@ -115,120 +117,86 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, Apr 3, 2022 at 9:38 PM Krzysztof Kozlowski
+On Mon, Apr 4, 2022 at 12:34 PM Krzysztof Kozlowski
 <krzysztof.kozlowski@linaro.org> wrote:
->
-> Several core drivers and buses expect that driver_override is a
-> dynamically allocated memory thus later they can kfree() it.
->
-> However such assumption is not documented, there were in the past and
-> there are already users setting it to a string literal. This leads to
-> kfree() of static memory during device release (e.g. in error paths or
-> during unbind):
->
->     kernel BUG at ../mm/slub.c:3960!
->     Internal error: Oops - BUG: 0 [#1] PREEMPT SMP ARM
->     ...
->     (kfree) from [<c058da50>] (platform_device_release+0x88/0xb4)
->     (platform_device_release) from [<c0585be0>] (device_release+0x2c/0x90)
->     (device_release) from [<c0a69050>] (kobject_put+0xec/0x20c)
->     (kobject_put) from [<c0f2f120>] (exynos5_clk_probe+0x154/0x18c)
->     (exynos5_clk_probe) from [<c058de70>] (platform_drv_probe+0x6c/0xa4)
->     (platform_drv_probe) from [<c058b7ac>] (really_probe+0x280/0x414)
->     (really_probe) from [<c058baf4>] (driver_probe_device+0x78/0x1c4)
->     (driver_probe_device) from [<c0589854>] (bus_for_each_drv+0x74/0xb8)
->     (bus_for_each_drv) from [<c058b48c>] (__device_attach+0xd4/0x16c)
->     (__device_attach) from [<c058a638>] (bus_probe_device+0x88/0x90)
->     (bus_probe_device) from [<c05871fc>] (device_add+0x3dc/0x62c)
->     (device_add) from [<c075ff10>] (of_platform_device_create_pdata+0x94/0xbc)
->     (of_platform_device_create_pdata) from [<c07600ec>] (of_platform_bus_create+0x1a8/0x4fc)
->     (of_platform_bus_create) from [<c0760150>] (of_platform_bus_create+0x20c/0x4fc)
->     (of_platform_bus_create) from [<c07605f0>] (of_platform_populate+0x84/0x118)
->     (of_platform_populate) from [<c0f3c964>] (of_platform_default_populate_init+0xa0/0xb8)
->     (of_platform_default_populate_init) from [<c01031f8>] (do_one_initcall+0x8c/0x404)
->
-> Provide a helper which clearly documents the usage of driver_override.
-> This will allow later to reuse the helper and reduce the amount of
-> duplicated code.
->
-> Convert the platform driver to use a new helper and make the
-> driver_override field const char (it is not modified by the core).
+> On 04/04/2022 11:16, Andy Shevchenko wrote:
+> > On Sun, Apr 3, 2022 at 9:38 PM Krzysztof Kozlowski
+> > <krzysztof.kozlowski@linaro.org> wrote:
 
 ...
 
-> +int driver_set_override(struct device *dev, const char **override,
-> +                       const char *s, size_t len)
-> +{
-> +       const char *new, *old;
-> +       char *cp;
+> >> +int driver_set_override(struct device *dev, const char **override,
+> >> +                       const char *s, size_t len)
+> >> +{
+> >> +       const char *new, *old;
+> >> +       char *cp;
+> >
+> >> +       if (!override || !s)
+> >> +               return -EINVAL;
+> >
+> > Still not sure if we should distinguish (s == NULL && len == 0) from
+> > (s != NULL && len == 0).
+> > Supplying the latter seems confusing (yes, I see that in the old code). Perhaps
+> > !s test, in case you want to leave it, should be also commented.
+>
+> The old semantics were focused on sysfs usage, so clearing is by passing
+> an empty string. In the case of sysfs empty string is actually "\n". I
+> intend to keep the semantics also for the in-kernel usage and in such
+> case empty string can be also "".
+>
+> If I understand your comment correctly, you propose to change it to NULL
+> for in-kernel usage, but that would change the semantics.
 
-> +       if (!override || !s)
-> +               return -EINVAL;
+Yes. It's also possible to have a wrapper for sysfs use.
 
-Still not sure if we should distinguish (s == NULL && len == 0) from
-(s != NULL && len == 0).
-Supplying the latter seems confusing (yes, I see that in the old code). Perhaps
-!s test, in case you want to leave it, should be also commented.
+> > Another approach is to split above to two checks and move !s after !len.
+>
+> I don't follow why... The !override and !s are invalid uses. !len is a
+> valid user for internal callers, just like "\n" is for sysfs.
 
-Another approach is to split above to two checks and move !s after !len.
+I understand but always supplying s maybe an overhead for in-kernel usages.
 
-> +       /*
-> +        * The stored value will be used in sysfs show callback (sysfs_emit()),
-> +        * which has a length limit of PAGE_SIZE and adds a trailing newline.
-> +        * Thus we can store one character less to avoid truncation during sysfs
-> +        * show.
-> +        */
-> +       if (len >= (PAGE_SIZE - 1))
-> +               return -EINVAL;
+In any case, it's not critical right now, just a remark that it can be modified.
 
-Perhaps explain the case in the comment here?
+> >> +       /*
+> >> +        * The stored value will be used in sysfs show callback (sysfs_emit()),
+> >> +        * which has a length limit of PAGE_SIZE and adds a trailing newline.
+> >> +        * Thus we can store one character less to avoid truncation during sysfs
+> >> +        * show.
+> >> +        */
+> >> +       if (len >= (PAGE_SIZE - 1))
+> >> +               return -EINVAL;
+> >
+> > Perhaps explain the case in the comment here?
+>
+> You mean the case we discuss here (to clear override with "")? Sure.
 
-> +       if (!len) {
-> +               device_lock(dev);
-> +               old = *override;
-> +               *override = NULL;
+Yep. Before the below check.
 
-> +               device_unlock(dev);
-> +               goto out_free;
-
-You may deduplicate this one, by
-
-               goto out_unlock_free;
-
-But I understand your intention to keep lock-unlock in one place, so
-perhaps dropping that label would be even better in this case and
-keeping it
-
-       kfree(old);
-       return 0;
-
-here instead of goto.
-
-> +       }
-> +
-> +       cp = strnchr(s, len, '\n');
-> +       if (cp)
-> +               len = cp - s;
-> +
-> +       new = kstrndup(s, len, GFP_KERNEL);
-> +       if (!new)
-> +               return -ENOMEM;
-> +
-> +       device_lock(dev);
-> +       old = *override;
-> +       if (cp != s) {
-> +               *override = new;
-> +       } else {
-> +               kfree(new);
-> +               *override = NULL;
-> +       }
-> +       device_unlock(dev);
-> +
-> +out_free:
-> +       kfree(old);
-> +
-> +       return 0;
-> +}
+> >> +       if (!len) {
+> >> +               device_lock(dev);
+> >> +               old = *override;
+> >> +               *override = NULL;
+> >
+> >> +               device_unlock(dev);
+> >> +               goto out_free;
+> >
+> > You may deduplicate this one, by
+> >
+> >                goto out_unlock_free;
+> >
+> > But I understand your intention to keep lock-unlock in one place, so
+> > perhaps dropping that label would be even better in this case and
+> > keeping it
+>
+> Yes, exactly.
+>
+> >        kfree(old);
+> >        return 0;
+> >
+> > here instead of goto.
+>
+> Slightly more code, but indeed maybe easier to follow. I'll do like this.
 
 
 -- 
