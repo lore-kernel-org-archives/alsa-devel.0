@@ -4,82 +4,114 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F25CEC433F5
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Apr 2022 07:50:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 719C2C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Apr 2022 07:50:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E655018CD;
-	Fri,  8 Apr 2022 09:49:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E655018CD
+	by alsa0.perex.cz (Postfix) with ESMTPS id BEC9D18E6;
+	Fri,  8 Apr 2022 09:49:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BEC9D18E6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649404205;
-	bh=FsyREYMYKn1QmBjCJun6dJg1NNqvs5q63rhd5zU1eOs=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=hKqR+696G4rTQN7xSgeHy77+IZVJLuQOJXwtVLuJU2WZBHaobbdYVm7SxBF07DTEm
-	 2GrqfKKFnjhqHZ0nfP8w6lOD6WcC814qMUUKHyat71JpDe8aoeTEHsGXpVTtY1McAy
-	 yjhux/gnDWVYapTF3xNZxqlzNu5pc6uj3KtRd9sY=
+	s=default; t=1649404228;
+	bh=/hx8Yrf99eaTbqv/H/8PL5wwo9NJFVFS2q4y8yzBWXw=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=mQIq3qtztVwFi04tgMrld0D+atvbIiZk3JC0jM3w9kRaudtW+H4ylCLiwoedimc07
+	 HRzXdaOyOxXPG/wEOtAbbYHKwJykXN1A89cKsjiEeqytny+aTySln8JV5+Ke8qqBj9
+	 Ei8Bo+uGm7oUmmg/zNfqAmq4TuhhrmCaCKQE70N0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7219EF8051A;
-	Fri,  8 Apr 2022 09:48:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5B711F80527;
+	Fri,  8 Apr 2022 09:48:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 12E98F8016A; Tue,  5 Apr 2022 14:10:56 +0200 (CEST)
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com
- [IPv6:2607:f8b0:4864:20::102b])
+ id 472F4F800D1; Mon,  4 Apr 2022 11:35:03 +0200 (CEST)
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
+ [IPv6:2a00:1450:4864:20::329])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 513E7F8012C
- for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 14:10:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 513E7F8012C
+ by alsa1.perex.cz (Postfix) with ESMTPS id D9585F800D1
+ for <alsa-devel@alsa-project.org>; Mon,  4 Apr 2022 11:34:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9585F800D1
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="f90euc1z"
-Received: by mail-pj1-x102b.google.com with SMTP id gt4so5808184pjb.4
- for <alsa-devel@alsa-project.org>; Tue, 05 Apr 2022 05:10:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=FbiE+hfmclVFPMzSs7FFPFZTMtCm2FkL6jROPMDnRco=;
- b=f90euc1zGDb5iI2Drt4AgWz4VSglJB6yfAjqBN2f2PEHYRVTGUMuR2aWLT+B9bQLYZ
- 5mdNK58woXp0Y4e9aOv3d8OX/VqNTyQtckVs5+qiav9/te+260XIfZTexMNJ1laI1MOS
- UPtB203QxYia416r6lnWw63WrEB3TjBwSdLl2sTYYDa5Dgjfxv/80o+ItR/X4Fci8vsc
- bDwtnerqMSS5Tg51zD50a1oBl0zZM6gHRDpyLX+uQxW4P4PyIiMXRCZF7LYrOp504pSZ
- 5By7/QzVinQqc/m+fx/fy/oyq/uJtMRlCqlfknv48FM1UjI/IphqHLC/x1Unw5gvUOJs
- T4tw==
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="QyIkbrvP"
+Received: by mail-wm1-x329.google.com with SMTP id r7so5514278wmq.2
+ for <alsa-devel@alsa-project.org>; Mon, 04 Apr 2022 02:34:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=message-id:date:mime-version:user-agent:subject:content-language:to
+ :cc:references:from:in-reply-to:content-transfer-encoding;
+ bh=xry0fvSIyDxjB2H9TftOM1VVr7Z84GMJx65XGE7l1g8=;
+ b=QyIkbrvP3PXHYn8SZb3YFGNOU4YEWKwijKbTOMes2v3n/iFjy3E0l83+3PU1OyKdiC
+ 28W9oIBBI4K+hraVFUC4rWiUr33rPk2ySKcvsAeR22WUXi4iM2aHnZd8Fn1GeAeirYrD
+ vpYCRqjh9PypWsECcQ9s8YJ0IOwuqrtnIou1JtT8aMLsJeQiP8+/F14BOx45Pzoc5hOs
+ zFVa0z20WuRvfR9IM3W6B7NXFHL5NIRr3q2/9wWYRFFUZeBeGzMux4sUyMGNAuZjF3t0
+ mwwwBGsWFJCRgizWUZXY7qrl7cdc2T3DX58d8hKruK4mcWNDpPeP1QmPVvKj4hi4kGzf
+ uymg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+ :content-language:to:cc:references:from:in-reply-to
  :content-transfer-encoding;
- bh=FbiE+hfmclVFPMzSs7FFPFZTMtCm2FkL6jROPMDnRco=;
- b=hQTAeriAqE2mG/OTQMe3GAzlKswLxXDKww3cGDs2weEQJlgg5gOfMauWIiTTrNZO+4
- Fx8palcs2Qiu4oRS7Ja1KBIZhr9gMZBy9z3MiM++t1uVcSBsCff98TupQl2vhPXrtSoo
- IGKJnaPCv7IEIkN/2S46JKJBLhH9F7JiW39hG18+7Dlpo7l4s4WM8YFEuRd/UQUI4oWT
- XvwdZJB+JHWqTp6tsidoEnUGNeHloxRmAYds/CctAJtsuVD5qiT7c2fkNFTTVn/XB5NT
- 5g/tsCg7oAyAKBxKFt4Nv+K3AdynLTWA1jr/8uZ9Bd/YwYw51bdZ3vd48BXxb3HtdK9h
- GTQQ==
-X-Gm-Message-State: AOAM5325TjryUMg6XqYqlAdrmKRHLUYTOtPIvWKtAmh4CUiQgPpds0FL
- laEx+hzGRqhXYM/6lcw1xg==
-X-Google-Smtp-Source: ABdhPJysxtv6ffWslGA0KEeiw5vxSuzfXJxSlxUJAcxN0jasthK2NULv5We+duXJGrrCrP1B3w4OZw==
-X-Received: by 2002:a17:902:e748:b0:153:b484:bdf4 with SMTP id
- p8-20020a170902e74800b00153b484bdf4mr3198892plf.66.1649160650444; 
- Tue, 05 Apr 2022 05:10:50 -0700 (PDT)
-Received: from localhost.localdomain ([144.202.91.207])
- by smtp.gmail.com with ESMTPSA id
- n52-20020a056a000d7400b004fad9132d73sm14980117pfv.129.2022.04.05.05.10.47
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 05 Apr 2022 05:10:49 -0700 (PDT)
-From: Zheyu Ma <zheyuma97@gmail.com>
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
-Subject: [PATCH] ASoC: wm8731: Disable the regulator when probing fails
-Date: Tue,  5 Apr 2022 20:10:38 +0800
-Message-Id: <20220405121038.4094051-1-zheyuma97@gmail.com>
-X-Mailer: git-send-email 2.25.1
+ bh=xry0fvSIyDxjB2H9TftOM1VVr7Z84GMJx65XGE7l1g8=;
+ b=NTxAv77u8nvXhgjYPq425F62cx8b7mo5XTgdq/lB+0RFjAj7GunRxvbwhL4Ju0CX3P
+ GHvZduhrPL97/b3ecP3QnCwqth9DofF0uJFxtrrDtS3aQqRx91iENhQNBkHJiUcB626P
+ nK0ft1/UiJexKrVMbZCN0L9W05fsmGLoCEiVQiKB6fm9aBxyCpcogQoQBOapWAlPXxbX
+ P4hWmxSWYsrlY2IheIN6lqImNufXWcX5EQrldO/00hoX6aAA2P7tVr8ybm0dedDKLDbt
+ F8ts4m9L6ynRQfs7E5RXnisQw03k3fT/NWx2IUK9E52Fj3M4P9JSJIb1Qlr76XHIqyzs
+ glug==
+X-Gm-Message-State: AOAM5339ScRMr5526MUMAqtB14vSsPpfLeZEMSnf2IHQY2agHFDYpERG
+ kIiVdBi4B7VxN9imYa83hKDIAw==
+X-Google-Smtp-Source: ABdhPJw+vbnPc6vft6RqA6zSnbRtvDlS1NwlZFp269pvENQ083BNJ7dEdI8BO5JpR9Ta6ymEkaX/jQ==
+X-Received: by 2002:a05:600c:3487:b0:38c:9a42:4d49 with SMTP id
+ a7-20020a05600c348700b0038c9a424d49mr18900226wmq.29.1649064894420; 
+ Mon, 04 Apr 2022 02:34:54 -0700 (PDT)
+Received: from [192.168.0.173] (xdsl-188-155-201-27.adslplus.ch.
+ [188.155.201.27]) by smtp.gmail.com with ESMTPSA id
+ o4-20020a5d6484000000b002057ad822d4sm9143811wri.48.2022.04.04.02.34.53
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Mon, 04 Apr 2022 02:34:54 -0700 (PDT)
+Message-ID: <2976f4f9-4fda-c04f-45cf-351518f88ec0@linaro.org>
+Date: Mon, 4 Apr 2022 11:34:52 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Mailman-Approved-At: Fri, 08 Apr 2022 09:48:11 +0200
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- Zheyu Ma <zheyuma97@gmail.com>, linux-kernel@vger.kernel.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [PATCH v6 01/12] driver: platform: Add helper for safer setting
+ of driver_override
+Content-Language: en-US
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+References: <20220403183758.192236-1-krzysztof.kozlowski@linaro.org>
+ <20220403183758.192236-2-krzysztof.kozlowski@linaro.org>
+ <CAHp75Vczm9f9Bx_w4nW31cnBgwEzPiN-Eqn-7DKZuB+Hew0F=Q@mail.gmail.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <CAHp75Vczm9f9Bx_w4nW31cnBgwEzPiN-Eqn-7DKZuB+Hew0F=Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Mailman-Approved-At: Fri, 08 Apr 2022 09:48:12 +0200
+Cc: Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+ Stuart Yoder <stuyoder@gmail.com>, "Rafael J. Wysocki" <rafael@kernel.org>,
+ linux-pci <linux-pci@vger.kernel.org>, linux-remoteproc@vger.kernel.org,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Vineeth Vijayan <vneethv@linux.ibm.com>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ "K. Y. Srinivasan" <kys@microsoft.com>, linux-clk <linux-clk@vger.kernel.org>,
+ linux-s390@vger.kernel.org, Wei Liu <wei.liu@kernel.org>,
+ Stephen Hemminger <sthemmin@microsoft.com>, Dexuan Cui <decui@microsoft.com>,
+ Andy Gross <agross@kernel.org>, NXP Linux Team <linux-imx@nxp.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ linux-arm-msm@vger.kernel.org, Haiyang Zhang <haiyangz@microsoft.com>,
+ linux-spi <linux-spi@vger.kernel.org>,
+ Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+ Bjorn Helgaas <bhelgaas@google.com>, virtualization@lists.linux-foundation.org,
+ linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Peter Oberparleiter <oberpar@linux.ibm.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Sven Schnelle <svens@linux.ibm.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,81 +127,116 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When the driver fails during probing, the driver should disable the
-regulator, not just handle it in wm8731_hw_init().
+On 04/04/2022 11:16, Andy Shevchenko wrote:
+> On Sun, Apr 3, 2022 at 9:38 PM Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+>>
+>> Several core drivers and buses expect that driver_override is a
+>> dynamically allocated memory thus later they can kfree() it.
+>>
+>> However such assumption is not documented, there were in the past and
+>> there are already users setting it to a string literal. This leads to
+>> kfree() of static memory during device release (e.g. in error paths or
+>> during unbind):
+>>
+>>     kernel BUG at ../mm/slub.c:3960!
+>>     Internal error: Oops - BUG: 0 [#1] PREEMPT SMP ARM
+>>     ...
+>>     (kfree) from [<c058da50>] (platform_device_release+0x88/0xb4)
+>>     (platform_device_release) from [<c0585be0>] (device_release+0x2c/0x90)
+>>     (device_release) from [<c0a69050>] (kobject_put+0xec/0x20c)
+>>     (kobject_put) from [<c0f2f120>] (exynos5_clk_probe+0x154/0x18c)
+>>     (exynos5_clk_probe) from [<c058de70>] (platform_drv_probe+0x6c/0xa4)
+>>     (platform_drv_probe) from [<c058b7ac>] (really_probe+0x280/0x414)
+>>     (really_probe) from [<c058baf4>] (driver_probe_device+0x78/0x1c4)
+>>     (driver_probe_device) from [<c0589854>] (bus_for_each_drv+0x74/0xb8)
+>>     (bus_for_each_drv) from [<c058b48c>] (__device_attach+0xd4/0x16c)
+>>     (__device_attach) from [<c058a638>] (bus_probe_device+0x88/0x90)
+>>     (bus_probe_device) from [<c05871fc>] (device_add+0x3dc/0x62c)
+>>     (device_add) from [<c075ff10>] (of_platform_device_create_pdata+0x94/0xbc)
+>>     (of_platform_device_create_pdata) from [<c07600ec>] (of_platform_bus_create+0x1a8/0x4fc)
+>>     (of_platform_bus_create) from [<c0760150>] (of_platform_bus_create+0x20c/0x4fc)
+>>     (of_platform_bus_create) from [<c07605f0>] (of_platform_populate+0x84/0x118)
+>>     (of_platform_populate) from [<c0f3c964>] (of_platform_default_populate_init+0xa0/0xb8)
+>>     (of_platform_default_populate_init) from [<c01031f8>] (do_one_initcall+0x8c/0x404)
+>>
+>> Provide a helper which clearly documents the usage of driver_override.
+>> This will allow later to reuse the helper and reduce the amount of
+>> duplicated code.
+>>
+>> Convert the platform driver to use a new helper and make the
+>> driver_override field const char (it is not modified by the core).
+> 
+> ...
+> 
+>> +int driver_set_override(struct device *dev, const char **override,
+>> +                       const char *s, size_t len)
+>> +{
+>> +       const char *new, *old;
+>> +       char *cp;
+> 
+>> +       if (!override || !s)
+>> +               return -EINVAL;
+> 
+> Still not sure if we should distinguish (s == NULL && len == 0) from
+> (s != NULL && len == 0).
+> Supplying the latter seems confusing (yes, I see that in the old code). Perhaps
+> !s test, in case you want to leave it, should be also commented.
 
-The following log reveals it:
+The old semantics were focused on sysfs usage, so clearing is by passing
+an empty string. In the case of sysfs empty string is actually "\n". I
+intend to keep the semantics also for the in-kernel usage and in such
+case empty string can be also "".
 
-[   17.812483] WARNING: CPU: 1 PID: 364 at drivers/regulator/core.c:2257 _regulator_put+0x3ec/0x4e0
-[   17.815958] RIP: 0010:_regulator_put+0x3ec/0x4e0
-[   17.824467] Call Trace:
-[   17.824774]  <TASK>
-[   17.825040]  regulator_bulk_free+0x82/0xe0
-[   17.825514]  devres_release_group+0x319/0x3d0
-[   17.825882]  i2c_device_probe+0x766/0x940
-[   17.829198]  i2c_register_driver+0xb5/0x130
+If I understand your comment correctly, you propose to change it to NULL
+for in-kernel usage, but that would change the semantics.
 
-Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
----
- sound/soc/codecs/wm8731.c | 19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
+> Another approach is to split above to two checks and move !s after !len.
 
-diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
-index 5d4949c2ec9b..b14c6d104e6d 100644
---- a/sound/soc/codecs/wm8731.c
-+++ b/sound/soc/codecs/wm8731.c
-@@ -602,7 +602,7 @@ static int wm8731_hw_init(struct device *dev, struct wm8731_priv *wm8731)
- 	ret = wm8731_reset(wm8731->regmap);
- 	if (ret < 0) {
- 		dev_err(dev, "Failed to issue reset: %d\n", ret);
--		goto err_regulator_enable;
-+		goto err;
- 	}
- 
- 	/* Clear POWEROFF, keep everything else disabled */
-@@ -619,10 +619,7 @@ static int wm8731_hw_init(struct device *dev, struct wm8731_priv *wm8731)
- 
- 	regcache_mark_dirty(wm8731->regmap);
- 
--err_regulator_enable:
--	/* Regulators will be enabled by bias management */
--	regulator_bulk_disable(ARRAY_SIZE(wm8731->supplies), wm8731->supplies);
--
-+err:
- 	return ret;
- }
- 
-@@ -760,21 +757,27 @@ static int wm8731_i2c_probe(struct i2c_client *i2c,
- 		ret = PTR_ERR(wm8731->regmap);
- 		dev_err(&i2c->dev, "Failed to allocate register map: %d\n",
- 			ret);
--		return ret;
-+		goto err_regulator_enable;
- 	}
- 
- 	ret = wm8731_hw_init(&i2c->dev, wm8731);
- 	if (ret != 0)
--		return ret;
-+		goto err_regulator_enable;
- 
- 	ret = devm_snd_soc_register_component(&i2c->dev,
- 			&soc_component_dev_wm8731, &wm8731_dai, 1);
- 	if (ret != 0) {
- 		dev_err(&i2c->dev, "Failed to register CODEC: %d\n", ret);
--		return ret;
-+		goto err_regulator_enable;
- 	}
- 
- 	return 0;
-+
-+err_regulator_enable:
-+	/* Regulators will be enabled by bias management */
-+	regulator_bulk_disable(ARRAY_SIZE(wm8731->supplies), wm8731->supplies);
-+
-+	return ret;
- }
- 
- static const struct i2c_device_id wm8731_i2c_id[] = {
--- 
-2.25.1
+I don't follow why... The !override and !s are invalid uses. !len is a
+valid user for internal callers, just like "\n" is for sysfs.
 
+> 
+>> +       /*
+>> +        * The stored value will be used in sysfs show callback (sysfs_emit()),
+>> +        * which has a length limit of PAGE_SIZE and adds a trailing newline.
+>> +        * Thus we can store one character less to avoid truncation during sysfs
+>> +        * show.
+>> +        */
+>> +       if (len >= (PAGE_SIZE - 1))
+>> +               return -EINVAL;
+> 
+> Perhaps explain the case in the comment here?
+
+You mean the case we discuss here (to clear override with "")? Sure.
+
+> 
+>> +       if (!len) {
+>> +               device_lock(dev);
+>> +               old = *override;
+>> +               *override = NULL;
+> 
+>> +               device_unlock(dev);
+>> +               goto out_free;
+> 
+> You may deduplicate this one, by
+> 
+>                goto out_unlock_free;
+> 
+> But I understand your intention to keep lock-unlock in one place, so
+> perhaps dropping that label would be even better in this case and
+> keeping it
+
+Yes, exactly.
+
+> 
+>        kfree(old);
+>        return 0;
+> 
+> here instead of goto.
+
+Slightly more code, but indeed maybe easier to follow. I'll do like this.
+
+
+Best regards,
+Krzysztof
