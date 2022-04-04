@@ -4,42 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F8F9C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Apr 2022 21:52:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2606C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Apr 2022 21:54:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 15E4F1696;
-	Mon,  4 Apr 2022 23:51:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 15E4F1696
+	by alsa0.perex.cz (Postfix) with ESMTPS id D9AE6169A;
+	Mon,  4 Apr 2022 23:54:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D9AE6169A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649109163;
-	bh=8t3rCD6NbtU6MhrJBrNN5oZIBhRxPuUVrwX+x6ushYo=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1649109294;
+	bh=mMumu2ZetFz0Sa0k6kt0FzuJE0EAVYj3Rp5eusG2wxI=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=aTeMk5eHA6xqUcmt+1pANROBsXMD8dCNkF1Pdl9tC6LF+uNe3zCp9fg/SIPZhpuoZ
-	 SrBnoetKOShaKLcKcZ3xrVrJ7Z+DoRDxJ7El4olR2EbVsVTJfyfI7QSZvX43Otv/64
-	 OaFhk1xecPP3o1C5VF31IHDByoopuFxUaX4o/YhI=
+	b=QHgTip2nmjiEeOXXK8MRSUTNqNulqGOmrl8X8SsX2ySYNbCz0BifJ3InaVruwfE9w
+	 lHYmsIjkwLxMBg6pT88xb7p/JOTHXRb6K5qoBDeNBMIqATgyAFnspm7GIsOFQP+EQD
+	 gLwxB4W/d4a+RkNXfXTQjIXYqUAY9zDwIZNr+P5w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A2020F8012C;
-	Mon,  4 Apr 2022 23:51:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7B540F8012C;
+	Mon,  4 Apr 2022 23:54:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E7793F80162; Mon,  4 Apr 2022 23:51:51 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 50DEEF8010B
- for <alsa-devel@alsa-project.org>; Mon,  4 Apr 2022 23:51:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50DEEF8010B
+ id 553B5F80162; Mon,  4 Apr 2022 23:54:03 +0200 (CEST)
+Received: from casper.infradead.org (casper.infradead.org
+ [IPv6:2001:8b0:10b:1236::1])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 46A95F8010B
+ for <alsa-devel@alsa-project.org>; Mon,  4 Apr 2022 23:53:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46A95F8010B
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
+ header.b="hxBa3lsW"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+ In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+ :Reply-To:Content-ID:Content-Description;
+ bh=MoHK6CDLxM8OKokZRtLof+OJ17ZVmNTtNJ4h0pYEAC0=; b=hxBa3lsW/sg50L70Js2RoegUKA
+ jhhISe0FgFbpAk5zn77bHe7IqUj4mo3REKHjGWMVKNGZ+bil/ldB3mIL7iyaGiFxjSeA6eCAouyRV
+ ASpHWa9mnncA2d0Hs9F4SJc87dBaSmqUCBF71B8I6ghocsvH+FLhIsHbkkruaU+whE97RcsbBQLvg
+ 8ihE9Y1YDZDbS0va11SrJgKn/+IDijiqALqL9LQQ++mRwpVTvCAwmpsYQC3bJ/6fP5GKfTPCQsRR3
+ EpKe2rd3gAumTqvfVYD8g1w3JAHBz6bYIlMIj6wGd6jyJHp7Ji/d7VZphhej6Z2j5fPl2x3ClJOnQ
+ NSkaScGg==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+ by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nbUdg-00658B-SP; Mon, 04 Apr 2022 21:53:35 +0000
+Message-ID: <d5c831f3-91db-4ba7-fa30-51847588c305@infradead.org>
+Date: Mon, 4 Apr 2022 14:53:28 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [PATCH v2] sound/oss/dmasound: fix build when drivers are mixed
+ =y/=m
+Content-Language: en-US
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+References: <20220403222510.12670-1-rdunlap@infradead.org>
+ <CAMuHMdUCdGKE04U4yMqv7TPUztwfih7aLwoTfEP5vcATW=CCxw@mail.gmail.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <CAMuHMdUCdGKE04U4yMqv7TPUztwfih7aLwoTfEP5vcATW=CCxw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1649109108747370005-webhooks-bot@alsa-project.org>
-References: <1649109108747370005-webhooks-bot@alsa-project.org>
-Subject: Presence of "default" device name crashes unity3d games
-Message-Id: <20220404215151.E7793F80162@alsa1.perex.cz>
-Date: Mon,  4 Apr 2022 23:51:51 +0200 (CEST)
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ kernel test robot <lkp@intel.com>, Arnd Bergmann <arnd@arndb.de>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -55,31 +83,115 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #214 was edited from the3dfxdude:
+Hi Geert,
 
-In a recent Slackware 15.0 distro release, the alsa-lib version is now 1.2.5.1. This causes a crash in Kerbal Space Program similar to issue #27. A change was made to close issue #27 in alsa-lib 1.2.3. That change did not correct the crash however in 1.2.3 or 1.2.5.1 in my case.
+On 4/4/22 06:57, Geert Uytterhoeven wrote:
+> Hi Randy,
+> 
+> On Mon, Apr 4, 2022 at 12:25 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+>> When CONFIG_DMASOUND_ATARI=m and CONFIG_DMASOUND_Q40=y (or vice versa),
+>> dmasound_core.o can be built without dmasound_deinit() being defined,
+>> causing a build error:
+>>
+>> ERROR: modpost: "dmasound_deinit" [sound/oss/dmasound/dmasound_atari.ko] undefined!
+>>
+>> Modify dmasound_core.c so that dmasound_deinit() is always available.
+>>
+>> Suggested-by: Arnd Bergmann <arnd@arndb.de>
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> 
+> Thanks for spending more time on this ;-)
 
-This is the noted difference for "aplay -L" between 1.2.3 and 1.2.1:
-```
---- dump_1_2_1	2022-03-10 12:38:16.991433004 -0700
-+++ dump_1_2_3	2022-03-10 12:37:53.467443226 -0700
-@@ -1,5 +1,9 @@
- null
-     Discard all samples (playback) or generate zero samples (capture)
-+default
-+    Default Audio Device
-+sysdefault
-+    Default Audio Device
- default:CARD=IXP
-     ATI IXP, ATI IXP AC97
-     Default Audio Device
-```
+Well that bot keeps reporting this problem, although I suppose
+that we could ask for it to be ignored...
 
-Removing this "default" device entry fixes the issue on this system. You may remove the default device name by editing src/conf/pcm/default.conf and adding under the hint section "omit_noargs true".
+>> --- linux-next-20220401.orig/sound/oss/dmasound/dmasound_core.c
+>> +++ linux-next-20220401/sound/oss/dmasound/dmasound_core.c
+>> @@ -1424,27 +1424,29 @@ int dmasound_init(void)
+>>         return 0;
+>>  }
+>>
+>> -#ifdef MODULE
+>> -
+>>  void dmasound_deinit(void)
+>>  {
+>> +#ifdef MODULE
+> 
+> I think this #ifdef must not be added: if the modular subdriver
+> calls dmasound_deinit(), the resources should be freed, else a subsequent
+> reload of the subdriver will not work.  This does mean all variables
+> protected by "#ifdef MODULE" must exist unconditionally.
 
-Unity must be parsing the device name, and with certain device names, if there is no ':' doing something bad, as there is a pattern here on what it trips on. I have no idea how to get them to correct this, so opening the issue here at least for the record if anyone else has an issue with this.
+OK, I like that simplification.
 
-Also, I am not sure what triggers "default" to show. I did a survey and 3 out of 5 of my slackware 15.0 systems have it. And 2 do not. Does this have something to do with parsing the system alsa config and the available sound devices in the system? I don't define any asound.conf for any of these, so these are almost 100% stock slackware systems, there should otherwise be no difference.
+> Alternatively, the test can be replaced by "#ifdef CONFIG_MODULES".
+> 
+> One big caveat below...
+> 
+>>         if (irq_installed) {
+>>                 sound_silence();
+>>                 dmasound.mach.irqcleanup();
+>>                 irq_installed = 0;
+>>         }
+>> +#endif
+>>
+>>         write_sq_release_buffers();
+>>
+>> +#ifdef MODULE
+> 
+> Likewise.
+> 
+>>         if (mixer_unit >= 0)
+>>                 unregister_sound_mixer(mixer_unit);
+>>         if (state_unit >= 0)
+>>                 unregister_sound_special(state_unit);
+>>         if (sq_unit >= 0)
+>>                 unregister_sound_dsp(sq_unit);
+>> +#endif
+>>  }
+>>
+>> -#else /* !MODULE */
+>> +#ifndef MODULE
+>>
+>>  static int dmasound_setup(char *str)
+>>  {
+> 
+>> --- linux-next-20220401.orig/sound/oss/dmasound/dmasound.h
+>> +++ linux-next-20220401/sound/oss/dmasound/dmasound.h
+>> @@ -88,11 +88,7 @@ static inline int ioctl_return(int __use
+>>       */
+>>
+>>  extern int dmasound_init(void);
+>> -#ifdef MODULE
+>>  extern void dmasound_deinit(void);
+>> -#else
+>> -#define dmasound_deinit()      do { } while (0)
+>> -#endif
+>>
+>>  /* description of the set-up applies to either hard or soft settings */
+> 
+> ... Below, there is:
+> 
+>     typedef struct {
+>         [...]
+>     #ifdef MODULE
+>         void (*irqcleanup)(void);
+>     #endif
+>         [...]
+>     } MACHINE;
+> 
+> This means the MACHINE struct is not compatible between builtin
+> and modular code :-(  Hence the "#ifdef MODULE" should be removed,
+> or replaced by "#ifdef CONFIG_MODULES", too.
 
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/214
-Repository URL: https://github.com/alsa-project/alsa-lib
+ditto
+
+> P.S. I think the younger myself is responsible for this mess.
+>      Please accept my apologies, after +25 years...
+
+:)
+
+I'll see how it goes.  Thanks.
+
+-- 
+~Randy
