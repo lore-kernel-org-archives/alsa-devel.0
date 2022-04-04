@@ -4,62 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7941C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Apr 2022 07:16:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4867C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Apr 2022 07:49:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B216518B7;
-	Fri,  8 Apr 2022 09:15:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B216518B7
+	by alsa0.perex.cz (Postfix) with ESMTPS id EC27718B4;
+	Fri,  8 Apr 2022 09:48:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC27718B4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649402202;
-	bh=6466gEGhxznW7rwa3hxyltu9py8601v4dqiiQAcvWk0=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1649404145;
+	bh=JU22GVqt3YFsin8HP04zkf0GPNXOR8Lqs2b49RMLDG8=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WkLdpv0MYFViPxhQWIJzKF27WADlztXOGqwG5ub7xNvPigeLdfRPVaT/x9DmyTgAV
-	 XnW/owlqMaLEK9jqt3a/fwkXxCWDRuPiPTfezkBWh/wZYX1JHKY6hrdd1xuBrhTw8h
-	 FNOQcSCA8V2M88sUSPABqASF2ii5bRNkl2h7xx/8=
+	b=ebUt3nLZXloV0hNld/khT/N3LLmPUto0tvwDPCbdMhz/E0yl81TRTulqmCcGfbfFV
+	 WJ7Rz/7pFst0CSpkKSkza7lpHYSctT+7E2dztoFsymeE42/OgQBBKW2qHBM2hAlODc
+	 DnQxney/ljLQMTHKh3PuZfplsFXt7FOz7noexMqM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 44729F80054;
-	Fri,  8 Apr 2022 09:15:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7E7ADF8012A;
+	Fri,  8 Apr 2022 09:48:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1AEF5F8014E; Fri,  8 Apr 2022 09:15:50 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 11403F80054
- for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2022 09:15:42 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id C3043A003F;
- Fri,  8 Apr 2022 09:15:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz C3043A003F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1649402141; bh=rjFZNSHy7qwYLLuTgA1fJ9Peq7sBnKo73nRP4i9Z6NY=;
- h=Date:Subject:To:References:Cc:From:In-Reply-To:From;
- b=dxarWlC7r9ol4cGzW0VGZRY+mEDK/sHwYilZvBkoF21G6hoHoyImz8927rwEPQmEp
- 7XIIADIS7ZiWz5umk8THtU2HOwOVT77WU/Rrpc/Q17Ch6c1R24mHxwAj1cgHK8znVw
- VCqFZGkCJn9wIIKi7peKp3KQtK+v8gas0IxCH2ic=
-Received: from [192.168.100.98] (unknown [192.168.100.98])
+ id 90025F80162; Mon,  4 Apr 2022 11:17:37 +0200 (CEST)
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com
+ [IPv6:2a00:1450:4864:20::62a])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Fri,  8 Apr 2022 09:15:39 +0200 (CEST)
-Message-ID: <31de7ea6-5319-7f9e-81a1-f0b501d5bdf9@perex.cz>
-Date: Fri, 8 Apr 2022 09:15:39 +0200
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 34453F8010B
+ for <alsa-devel@alsa-project.org>; Mon,  4 Apr 2022 11:17:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34453F8010B
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="hQlbcki1"
+Received: by mail-ej1-x62a.google.com with SMTP id n6so4459317ejc.13
+ for <alsa-devel@alsa-project.org>; Mon, 04 Apr 2022 02:17:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=aFF6p4tYsR549sWrfv4bnU2v+ruL8I5/W5YzMr/thlg=;
+ b=hQlbcki1WeC3gkSnk83L4xArF1FpAwUwcbPIaOMkJlzK+bh9pgMN60HjAqA9G0XpuC
+ 3Bprvok5U0s7Z1W/ZawyWzSbHo70bfJbRx7oPeBhE/2fGvpn7wCQbZqlvuNGvgHsVjQq
+ r/wKFSU7xB5ZHODeRpMa6ErNEopcgryJWjRJjgXQCJkk3liL7jI4iywOC/rM00bXTbtl
+ pmNkssVD/iJNe8tAe5q9UEBT+HP+cJeGalWYEIgNn71NWfAeNK0dD/7xSnaeqbeBCKsb
+ THPnJ2jW59TDoW+ic9pCzBwfUOBySS1J3o8UfMTFXNWAg/FIQ3SVn0tuGl33QwLfjnUE
+ +cQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=aFF6p4tYsR549sWrfv4bnU2v+ruL8I5/W5YzMr/thlg=;
+ b=TTezMV+MdfWLJuFrgKEzejYfG0OBB0D+59gBWLYLDn9RC9tnfZFYvjqpEnUerLwhVK
+ 51QyPnDUi6nTALjJVlQq+n8GIDkhvUfZwLQAY8YgLfv/jBiOnv6UUVvnpPH5LSFMC9GJ
+ PUciMehgSnjTAJfT+ajpPoPZXGnpznmUAqmSOH0fLpyGJ5zE+pKlH5zmMxY6YGHBaurY
+ LwZY+6JH/DFnb7d/cEzC4d9vMiKl3xpMaOpp5+TawGLBHFtHKGt+jzqAh5IqIeZmxgLS
+ F5RpIarrcGba2F3qxyVmi4qcl2V3FrxLqFcLXiJ8LCqtli0KUzVROYS6hkeCKHe0dIad
+ Tq+Q==
+X-Gm-Message-State: AOAM530EtTWSz1HjemQuJ48zmOFKjGmXVgTt606jqHbX50mwME3UEGFa
+ IQlXR7XKWsZ7mYbgCQoImr8mkct+Lz8MA+Af5hM=
+X-Google-Smtp-Source: ABdhPJztVV4vk0bsoiQVYou423ZyvJCH+cGZa4t4gBoSJScuWRUyyZG1JPNItw+pyflHlcb4ktsJ/PrqzuCd6UZZVuc=
+X-Received: by 2002:a17:907:e8d:b0:6e0:19e7:9549 with SMTP id
+ ho13-20020a1709070e8d00b006e019e79549mr10112344ejc.44.1649063847683; Mon, 04
+ Apr 2022 02:17:27 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH] ALSA: usb-audio: Increase max buffer size
-Content-Language: en-US
-To: Takashi Iwai <tiwai@suse.de>
-References: <20220407212740.17920-1-tiwai@suse.de>
-From: Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <20220407212740.17920-1-tiwai@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: ALSA development <alsa-devel@alsa-project.org>
+References: <20220403183758.192236-1-krzysztof.kozlowski@linaro.org>
+ <20220403183758.192236-2-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20220403183758.192236-2-krzysztof.kozlowski@linaro.org>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Mon, 4 Apr 2022 12:16:23 +0300
+Message-ID: <CAHp75Vczm9f9Bx_w4nW31cnBgwEzPiN-Eqn-7DKZuB+Hew0F=Q@mail.gmail.com>
+Subject: Re: [PATCH v6 01/12] driver: platform: Add helper for safer setting
+ of driver_override
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailman-Approved-At: Fri, 08 Apr 2022 09:48:11 +0200
+Cc: Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+ Stuart Yoder <stuyoder@gmail.com>, "Rafael J. Wysocki" <rafael@kernel.org>,
+ linux-pci <linux-pci@vger.kernel.org>, linux-remoteproc@vger.kernel.org,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Vineeth Vijayan <vneethv@linux.ibm.com>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ "K. Y. Srinivasan" <kys@microsoft.com>, linux-clk <linux-clk@vger.kernel.org>,
+ linux-s390@vger.kernel.org, Wei Liu <wei.liu@kernel.org>,
+ Stephen Hemminger <sthemmin@microsoft.com>, Dexuan Cui <decui@microsoft.com>,
+ Andy Gross <agross@kernel.org>, NXP Linux Team <linux-imx@nxp.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ linux-arm-msm@vger.kernel.org, Haiyang Zhang <haiyangz@microsoft.com>,
+ linux-spi <linux-spi@vger.kernel.org>,
+ Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+ Bjorn Helgaas <bhelgaas@google.com>, virtualization@lists.linux-foundation.org,
+ linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Peter Oberparleiter <oberpar@linux.ibm.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Sven Schnelle <svens@linux.ibm.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,37 +115,122 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 07. 04. 22 23:27, Takashi Iwai wrote:
-> The current limit of max buffer size 1MB seems too small for modern
-> devices with lots of channels and high sample rates.
-> Let's make bigger, 4MB.
+On Sun, Apr 3, 2022 at 9:38 PM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> Several core drivers and buses expect that driver_override is a
+> dynamically allocated memory thus later they can kfree() it.
+>
+> However such assumption is not documented, there were in the past and
+> there are already users setting it to a string literal. This leads to
+> kfree() of static memory during device release (e.g. in error paths or
+> during unbind):
+>
+>     kernel BUG at ../mm/slub.c:3960!
+>     Internal error: Oops - BUG: 0 [#1] PREEMPT SMP ARM
+>     ...
+>     (kfree) from [<c058da50>] (platform_device_release+0x88/0xb4)
+>     (platform_device_release) from [<c0585be0>] (device_release+0x2c/0x90)
+>     (device_release) from [<c0a69050>] (kobject_put+0xec/0x20c)
+>     (kobject_put) from [<c0f2f120>] (exynos5_clk_probe+0x154/0x18c)
+>     (exynos5_clk_probe) from [<c058de70>] (platform_drv_probe+0x6c/0xa4)
+>     (platform_drv_probe) from [<c058b7ac>] (really_probe+0x280/0x414)
+>     (really_probe) from [<c058baf4>] (driver_probe_device+0x78/0x1c4)
+>     (driver_probe_device) from [<c0589854>] (bus_for_each_drv+0x74/0xb8)
+>     (bus_for_each_drv) from [<c058b48c>] (__device_attach+0xd4/0x16c)
+>     (__device_attach) from [<c058a638>] (bus_probe_device+0x88/0x90)
+>     (bus_probe_device) from [<c05871fc>] (device_add+0x3dc/0x62c)
+>     (device_add) from [<c075ff10>] (of_platform_device_create_pdata+0x94/0xbc)
+>     (of_platform_device_create_pdata) from [<c07600ec>] (of_platform_bus_create+0x1a8/0x4fc)
+>     (of_platform_bus_create) from [<c0760150>] (of_platform_bus_create+0x20c/0x4fc)
+>     (of_platform_bus_create) from [<c07605f0>] (of_platform_populate+0x84/0x118)
+>     (of_platform_populate) from [<c0f3c964>] (of_platform_default_populate_init+0xa0/0xb8)
+>     (of_platform_default_populate_init) from [<c01031f8>] (do_one_initcall+0x8c/0x404)
+>
+> Provide a helper which clearly documents the usage of driver_override.
+> This will allow later to reuse the helper and reduce the amount of
+> duplicated code.
+>
+> Convert the platform driver to use a new helper and make the
+> driver_override field const char (it is not modified by the core).
 
-Reviewed-by: Jaroslav Kysela <perex@perex.cz>
+...
 
-Thanks,
-	Jaroslav
+> +int driver_set_override(struct device *dev, const char **override,
+> +                       const char *s, size_t len)
+> +{
+> +       const char *new, *old;
+> +       char *cp;
 
-> 
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->   sound/usb/pcm.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-> index 6a460225f2e3..37ee6df8b15a 100644
-> --- a/sound/usb/pcm.c
-> +++ b/sound/usb/pcm.c
-> @@ -659,7 +659,7 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
->   #define hwc_debug(fmt, args...) do { } while(0)
->   #endif
->   
-> -#define MAX_BUFFER_BYTES	(1024 * 1024)
-> +#define MAX_BUFFER_BYTES	(4 * 1024 * 1024)
->   #define MAX_PERIOD_BYTES	(512 * 1024)
->   
->   static const struct snd_pcm_hardware snd_usb_hardware =
+> +       if (!override || !s)
+> +               return -EINVAL;
+
+Still not sure if we should distinguish (s == NULL && len == 0) from
+(s != NULL && len == 0).
+Supplying the latter seems confusing (yes, I see that in the old code). Perhaps
+!s test, in case you want to leave it, should be also commented.
+
+Another approach is to split above to two checks and move !s after !len.
+
+> +       /*
+> +        * The stored value will be used in sysfs show callback (sysfs_emit()),
+> +        * which has a length limit of PAGE_SIZE and adds a trailing newline.
+> +        * Thus we can store one character less to avoid truncation during sysfs
+> +        * show.
+> +        */
+> +       if (len >= (PAGE_SIZE - 1))
+> +               return -EINVAL;
+
+Perhaps explain the case in the comment here?
+
+> +       if (!len) {
+> +               device_lock(dev);
+> +               old = *override;
+> +               *override = NULL;
+
+> +               device_unlock(dev);
+> +               goto out_free;
+
+You may deduplicate this one, by
+
+               goto out_unlock_free;
+
+But I understand your intention to keep lock-unlock in one place, so
+perhaps dropping that label would be even better in this case and
+keeping it
+
+       kfree(old);
+       return 0;
+
+here instead of goto.
+
+> +       }
+> +
+> +       cp = strnchr(s, len, '\n');
+> +       if (cp)
+> +               len = cp - s;
+> +
+> +       new = kstrndup(s, len, GFP_KERNEL);
+> +       if (!new)
+> +               return -ENOMEM;
+> +
+> +       device_lock(dev);
+> +       old = *override;
+> +       if (cp != s) {
+> +               *override = new;
+> +       } else {
+> +               kfree(new);
+> +               *override = NULL;
+> +       }
+> +       device_unlock(dev);
+> +
+> +out_free:
+> +       kfree(old);
+> +
+> +       return 0;
+> +}
 
 
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+With Best Regards,
+Andy Shevchenko
