@@ -4,68 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44011C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 09:34:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E017C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 09:34:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 967751742;
-	Tue,  5 Apr 2022 11:33:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 967751742
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8966A1632;
+	Tue,  5 Apr 2022 11:33:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8966A1632
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649151260;
-	bh=wy56N3GzvYwz3j65YfFa+VXSzdPu9MSFvDzmV75JFcI=;
+	s=default; t=1649151277;
+	bh=Fzz3ascwScSN8mlgX8AOFuaHlsRdXJCzGKE041uMtYo=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fCtHg7FRnM7y7gEhon7m0DJ6SqDi4IMTLnmo+nmUj0JuKCeFk0sqBSW/F+994xp5n
-	 EIM8lyrC61m2fu2Cr4k8w00g/2ZSC3dsxEFJoKdduTLT88CvPYH9BO+bayO40yAHlF
-	 6ER2j42BT6cDjbqqYTNBVACZATii8eTqxUPWhQgk=
+	b=AqhYy4qOJdo2/HmhxLIZPMcTAOPIrZ9zHoCBJKq69EEIydwafJJDlvstDx11YMyNq
+	 k6OZt7G5PhAnEA4vdH1PJkH+s0hAMAHaQFp0QwkywR3Q6ANO6934kXhV4TF4+sKjyw
+	 erbkqEtlJc+3erpwhAvK7H9d/LN8pPVOzNQGv8PA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7D8AFF80539;
-	Tue,  5 Apr 2022 11:31:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 297E5F8053D;
+	Tue,  5 Apr 2022 11:31:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9FA54F80538; Tue,  5 Apr 2022 11:31:24 +0200 (CEST)
+ id 54A1FF8053E; Tue,  5 Apr 2022 11:31:28 +0200 (CEST)
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1D591F80529
- for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 11:31:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D591F80529
+ by alsa1.perex.cz (Postfix) with ESMTPS id B755FF8053B
+ for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 11:31:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B755FF8053B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Uw9NTNC/"
+ header.b="sO1+eaDG"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 42DA2B81CBA;
- Tue,  5 Apr 2022 09:31:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46064C385A4;
- Tue,  5 Apr 2022 09:31:18 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 3C89BB81CBD;
+ Tue,  5 Apr 2022 09:31:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 984E1C385A4;
+ Tue,  5 Apr 2022 09:31:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1649151080;
- bh=wy56N3GzvYwz3j65YfFa+VXSzdPu9MSFvDzmV75JFcI=;
+ s=k20201202; t=1649151084;
+ bh=Fzz3ascwScSN8mlgX8AOFuaHlsRdXJCzGKE041uMtYo=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=Uw9NTNC//zeTxqHZTEt4wLakcW6Vca5oWrRklfwR41ipRkQD1LKGG7M4UAp02aGd3
- cGdIRa5b6cTKewezf1I9Y0medT9WnPanu8PiTQrk/VtC8ATTFt2pgz4CKGS+gmCrxM
- Csd12UL4VZTJELkoUiw6KDb4RA7pg8OBIRMN9nRmS/3H8yytd6dRUyFxSqtYL9gWCo
- h54HRHwAW7L/Pyb3SY1v50Ct+V2TteZDEZbbTQOaIGpOT3HadOvZHRQ+N7N/3yvG8B
- lGDalUeSuET+N3cxZfsnuSZyLtEc4eG6tT9Vzy6iGmDDrONkzbSDC/FgOL01D8Pz6f
- 2NDkk0PylUgrw==
+ b=sO1+eaDGwua4hTwxsxWvwQ4f9PWir/mw48Nu5p/k7OyC6gmrvDP7lBnwF26eLUenH
+ jfTfrQ5J/fLHjSaBEVrKDonwR9/M/NQDyihJIxaYf90frnR2KGF3kh0133LJxoKxnl
+ rkwuSapewEPukF55NcBd7yNegPZdodUzzybuLVpAD0V5IuQymM1e+BJ96bj77VvxKv
+ MAfbAedBidV7QuIggcgG8TEo/2CdqSZ97cn8CmHYJw8hjsSUZ7wCHemNSspUcV6YVa
+ y3/dtTe3HYOc7GvBbNT/Cj1OItEF9L5+q8xwf+DBvWaCqb37ZPyPxkTt6RLOqdQ+I/
+ 0/aG2LQwVKxJQ==
 From: Mark Brown <broonie@kernel.org>
-To: xiam0nd.tong@gmail.com, oder_chiou@realtek.com, lgirdwood@gmail.com,
- tiwai@suse.com, perex@perex.cz
-In-Reply-To: <20220327081002.12684-1-xiam0nd.tong@gmail.com>
-References: <20220327081002.12684-1-xiam0nd.tong@gmail.com>
-Subject: Re: [PATCH] codecs: rt5682: fix an incorrect NULL check on list
- iterator
-Message-Id: <164915107801.276574.16249779388452959492.b4-ty@kernel.org>
-Date: Tue, 05 Apr 2022 10:31:18 +0100
+To: tiwai@suse.com, xiam0nd.tong@gmail.com, perex@perex.cz, lgirdwood@gmail.com
+In-Reply-To: <20220329012134.9375-1-xiam0nd.tong@gmail.com>
+References: <20220329012134.9375-1-xiam0nd.tong@gmail.com>
+Subject: Re: [PATCH v2] soc: soc-dapm: fix two incorrect uses of list iterator
+Message-Id: <164915108235.276574.3850661736822524747.b4-ty@kernel.org>
+Date: Tue, 05 Apr 2022 10:31:22 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, derek.fang@realtek.com,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,18 +79,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 27 Mar 2022 16:10:02 +0800, Xiaomeng Tong wrote:
-> The bug is here:
-> 	if (!dai) {
+On Tue, 29 Mar 2022 09:21:34 +0800, Xiaomeng Tong wrote:
+> These two bug are here:
+> 	list_for_each_entry_safe_continue(w, n, list,
+> 					power_list);
+> 	list_for_each_entry_safe_continue(w, n, list,
+> 					power_list);
 > 
-> The list iterator value 'dai' will *always* be set and non-NULL
-> by for_each_component_dais(), so it is incorrect to assume that
-> the iterator value will be NULL if the list is empty or no element
-> is found (In fact, it will be a bogus pointer to an invalid struct
-> object containing the HEAD). Otherwise it will bypass the check
-> 'if (!dai) {' (never call dev_err() and never return -ENODEV;)
-> and lead to invalid memory access lately when calling
-> 'rt5682_set_bclk1_ratio(dai, factor);'.
+> After the list_for_each_entry_safe_continue() exits, the list iterator
+> will always be a bogus pointer which point to an invalid struct objdect
+> containing HEAD member. The funciton poniter 'w->event' will be a
+> invalid value which can lead to a control-flow hijack if the 'w' can be
+> controlled.
 > 
 > [...]
 
@@ -102,8 +100,8 @@ Applied to
 
 Thanks!
 
-[1/1] codecs: rt5682: fix an incorrect NULL check on list iterator
-      commit: c8618d65007ba68d7891130642d73e89372101e8
+[1/1] soc: soc-dapm: fix two incorrect uses of list iterator
+      commit: f730a46b931d894816af34a0ff8e4ad51565b39f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
