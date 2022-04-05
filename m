@@ -4,77 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9AFBC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 08:46:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 190ECC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 08:47:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8644917A0;
-	Tue,  5 Apr 2022 10:45:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8644917A0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2D9C41760;
+	Tue,  5 Apr 2022 10:47:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D9C41760
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649148364;
-	bh=nRMo+z2lBnIeY2gWA47akGjKJTExBImxtqaJZH6LZRY=;
+	s=default; t=1649148470;
+	bh=6/cQjaXqq6vyOdwI/I7vG3d/NAXAZj9v3wIcWjLZh04=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FXYU9m15zRYctwqTUoi+b5zeK6NwyyBDzyCCJYJSt90tE+lyTr3PiwPjS02DNyLhs
-	 6Mt1q0sXEUGo0mB2CheOUNunbYciHIiYLfH3gqNn3OuTRV9i9uNP2Z80WRYFVcESNA
-	 L8m3lThyr4RYEQMO4rb8CFDf4cWb6R8HOIQDELmE=
+	b=msbwOy2J+vw0ZUxxcBd0pUgcG6dHKCeLX1LuL0g7jLp/gwVmbxmQO6i0Np2jggnwW
+	 y8zkXWUciLIKKgo58fRHy2tQGy4keE9p1gYBMhr9TaCT9YufjbJbvFqhoNeaoyXT9k
+	 DzTC1+VDbCLPAzVd4rvhbePBcQxvzVBB6GBZZKl8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AE462F80516;
-	Tue,  5 Apr 2022 10:44:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C56D6F800D2;
+	Tue,  5 Apr 2022 10:46:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3B184F8049C; Tue,  5 Apr 2022 10:44:24 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id BB926F8012C; Tue,  5 Apr 2022 10:46:58 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B4B56F800D2
- for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 10:44:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4B56F800D2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2556EF8012C
+ for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 10:46:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2556EF8012C
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ovHq+AmO"
+ dkim=pass (1024-bit key) header.d=linuxfoundation.org
+ header.i=@linuxfoundation.org header.b="iQq0jXcm"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 8D4C1614E4;
- Tue,  5 Apr 2022 08:44:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8D46C385A7;
- Tue,  5 Apr 2022 08:44:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1649148258;
- bh=nRMo+z2lBnIeY2gWA47akGjKJTExBImxtqaJZH6LZRY=;
+ by ams.source.kernel.org (Postfix) with ESMTPS id 38A3CB81A0C;
+ Tue,  5 Apr 2022 08:46:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96C30C385A0;
+ Tue,  5 Apr 2022 08:46:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+ s=korg; t=1649148411;
+ bh=6/cQjaXqq6vyOdwI/I7vG3d/NAXAZj9v3wIcWjLZh04=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=ovHq+AmOb8oZDAWUl+4rgcc4gCndwuQhRTKEqQVdjzw5XyCv0rAVlwZ53MA5rtR6K
- QBD754frewQOGxu4lI7foMOe0xE19P7cJmEtaxetu2jZ56bYJxRe0SHOvpO7cVxsP3
- 8XdcpSOIuEEgQMTXfQu9oMzAsCnwfKeRNCVckSntstTibsr1/O0WzK4SYvdEo04tvo
- k1DMtCn9f+Ia67PGwyBXbs38aGaX9aNg6LYqANyK9JCLkdBIRen3qPrpjFA1gJIrM0
- 4dEvT2xbyZbhplrWROhEVpJ5bgyhzbROfjxDffvo3QowqRMwRSvq1RXMWh/OuJpijP
- qpoGZh/q2dA0g==
-Received: from mchehab by mail.kernel.org with local (Exim 4.94.2)
- (envelope-from <mchehab@kernel.org>)
- id 1nbenP-001IBq-EM; Tue, 05 Apr 2022 10:44:15 +0200
-From: Mauro Carvalho Chehab <mchehab@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v2 2/2] ASoC: Intel: sof_es8336: Huawei Matebook D15 uses a
- headphone gpio
-Date: Tue,  5 Apr 2022 10:44:13 +0200
-Message-Id: <01ca33a28b8f7ef084bfa1317ada0cca1b0589f6.1649147890.git.mchehab@kernel.org>
+ b=iQq0jXcmDoBB4EuNXrGM+AqPOlZXyvQTIxlYiJvmvFqcbiDZmlJJvU7C/fQW+4NSS
+ x4ph8iWcjp12/eKXn2pjamGOFuot3EGkrEzrk7/CFwQ2yzVEPKbZMDwlTDOrGo8z2v
+ 30DQHJZUutxuH2l4OMiBrKlLkchOdwI4cpSNeiTk=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH 5.16 0308/1017] ASoC: max98927: add missing header file
+Date: Tue,  5 Apr 2022 09:20:21 +0200
+Message-Id: <20220405070403.419004572@linuxfoundation.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <cover.1649147890.git.mchehab@kernel.org>
-References: <cover.1649147890.git.mchehab@kernel.org>
+In-Reply-To: <20220405070354.155796697@linuxfoundation.org>
+References: <20220405070354.155796697@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
- Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
- linux-kernel@vger.kernel.org
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ kernel test robot <lkp@intel.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Randy Dunlap <rdunlap@infradead.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ stable@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Mark Brown <broonie@kernel.org>, Alejandro Tafalla <atafalla@dnyon.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,42 +83,53 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-Based on experimental tests, Huawei Matebook D15 actually uses
-both gpio0 and gpio1: the first one controls the speaker, while
-the other one controls the headphone.
+[ Upstream commit bb45f689fa62110c263c86070bfcb9ecbb6e1e23 ]
 
-Add a quirk for that.
+Add a header file that provides the missing function prototypes
+and macro to fix these build errors (seen on arch/alpha/):
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
+../sound/soc/codecs/max98927.c: In function 'max98927_i2c_probe':
+../sound/soc/codecs/max98927.c:902:19: error: implicit declaration of function 'devm_gpiod_get_optional'; did you mean 'devm_regulator_get_optional'? [-Werror=implicit-function-declaration]
+  902 |                 = devm_gpiod_get_optional(&i2c->dev, "reset", GPIOD_OUT_HIGH);
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~
+../sound/soc/codecs/max98927.c:902:63: error: 'GPIOD_OUT_HIGH' undeclared (first use in this function); did you mean 'GPIOF_INIT_HIGH'?
+  902 |                 = devm_gpiod_get_optional(&i2c->dev, "reset", GPIOD_OUT_HIGH);
+      |                                                               ^~~~~~~~~~~~~~
+../sound/soc/codecs/max98927.c:909:17: error: implicit declaration of function 'gpiod_set_value_cansleep'; did you mean 'gpio_set_value_cansleep'? [-Werror=implicit-function-declaration]
+  909 |                 gpiod_set_value_cansleep(max98927->reset_gpio, 0);
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~
+
+Fixes: 4d67dc1998f1 ("ASoC: max98927: Handle reset gpio when probing i2c")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Alejandro Tafalla <atafalla@dnyon.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org
+Link: https://lore.kernel.org/r/20220129080259.19964-1-rdunlap@infradead.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
+ sound/soc/codecs/max98927.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-See [PATCH v2 0/2] at: https://lore.kernel.org/all/cover.1649147890.git.mchehab@kernel.org/
-
- sound/soc/intel/boards/sof_es8336.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/sound/soc/intel/boards/sof_es8336.c b/sound/soc/intel/boards/sof_es8336.c
-index bcd80870d252..79cf9777c4fc 100644
---- a/sound/soc/intel/boards/sof_es8336.c
-+++ b/sound/soc/intel/boards/sof_es8336.c
-@@ -292,6 +292,14 @@ static const struct dmi_system_id sof_es8336_quirk_table[] = {
- 		},
- 		.driver_data = (void *)(SOF_ES8336_TGL_GPIO_QUIRK)
- 	},
-+	{
-+		.callback = sof_es8336_quirk_cb,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "HUAWEI"),
-+			DMI_MATCH(DMI_BOARD_NAME, "BOHB-WAX9-PCB-B2"),
-+		},
-+		.driver_data = (void *)(SOF_ES8336_HEADPHONE_GPIO)
-+	},
- 	{}
- };
- 
+diff --git a/sound/soc/codecs/max98927.c b/sound/soc/codecs/max98927.c
+index 5ba5f876eab8..fd84780bf689 100644
+--- a/sound/soc/codecs/max98927.c
++++ b/sound/soc/codecs/max98927.c
+@@ -16,6 +16,7 @@
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+ #include <linux/gpio.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/of_gpio.h>
+ #include <sound/tlv.h>
+ #include "max98927.h"
 -- 
-2.35.1
+2.34.1
+
+
 
