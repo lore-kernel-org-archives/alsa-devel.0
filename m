@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78824C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 09:37:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22374C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 09:38:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 35A391838;
-	Tue,  5 Apr 2022 11:36:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 35A391838
+	by alsa0.perex.cz (Postfix) with ESMTPS id F31371848;
+	Tue,  5 Apr 2022 11:37:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F31371848
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649151463;
-	bh=akJwXD5N3s4UPZe2aQccirJblgU77qRMdXJ8Vx02u74=;
+	s=default; t=1649151478;
+	bh=86V35tezb7CnVylE5xhcOrRZJnrJztG/nm4t18+1yUk=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=puKLgLY1IQLDyYFVLluLtOk3PXszTLxc3uF0h4KiaaHj1OH5aUUJvGfJz6Kbuv/lt
-	 sMRUov1MS33fc+U1RzaaBGt+VJmw5xcc3W3+cm64OqJLA9HZNNup/S1LsTez+EU+di
-	 EWfdmmLha/aPlOBp65Y/KT5OdD0YA6QjRhKGzYIM=
+	b=Gn/X9Wi77NGWIOa3gptlBEnvXxy/M9q1uFErBAnl8wEbfIew0cr92gC5LtrsmFoiU
+	 ba/ACu3tjlj2w16hh/XRw131j6j+1G8lEIok+LMYK/kc1ZscQPWeSRi3xI44NxorMp
+	 1RZd7aAokq/7F4Hv4uA/A3nzuDQwXuK8i5+NyIqM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 85440F805C0;
-	Tue,  5 Apr 2022 11:31:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 381B9F805C5;
+	Tue,  5 Apr 2022 11:31:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B64DCF805C0; Tue,  5 Apr 2022 11:31:56 +0200 (CEST)
+ id 33DA9F805BF; Tue,  5 Apr 2022 11:31:57 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1DB3AF805B6
- for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 11:31:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1DB3AF805B6
+ by alsa1.perex.cz (Postfix) with ESMTPS id 88848F805BD
+ for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 11:31:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88848F805BD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="QY5Z55ca"
+ header.b="cgaphUKP"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id A2F4B616AE;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 649E6616D6;
+ Tue,  5 Apr 2022 09:31:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CF9CC385A8;
  Tue,  5 Apr 2022 09:31:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7C1AC385A4;
- Tue,  5 Apr 2022 09:31:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1649151110;
- bh=akJwXD5N3s4UPZe2aQccirJblgU77qRMdXJ8Vx02u74=;
+ s=k20201202; t=1649151112;
+ bh=86V35tezb7CnVylE5xhcOrRZJnrJztG/nm4t18+1yUk=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=QY5Z55casbm5lR6qsgeuDF3G8adn/VXiErF+RjsEtRsfg4GpaCYaLtvuCO7PosAxH
- kkHB4iFMUltTTxoOVUAWWxvmuuENoZDt3kuzHs39r1ZJlxfJo0FdygNGNwcPqzn05n
- alNWru1jDELUfjINuCrFeKn+QHu7c7guZdOzI3Ydp+JBlBhvMWG3hlkDXFuvqSvHwJ
- U7Q/Eb5Lx3JOF0FPj5sUmQgVwgZuTweYoqr0Xm5Xuss8HGf8VTC/aTBs55mnupUSb6
- 0Gns2AVqDzFaYzE8FSOdZR42prBZ4S4Y3h/Je4fBzLhPxmb93jke+bOB178wwnQJwf
- mSfQ0BvfzW62w==
+ b=cgaphUKPI+f4uVShNLg3NRNpwdZ7b84IuOhO5OSefGnWv3VRUTRgWBR9cTlKAkPC0
+ qOK4leaT5YVrerXCeE2R7WAA1rcaWnV0pOS5fM/rSmYWdiCZwBBHVvxNPQ74jxQVIC
+ /AsqTeRA+guAKOWTijKZ0CgWOIDMoDYLqgxEvcHv12iBpQbRfrQ1tN0Z0EIr9BoB+Q
+ JNVcua9PMUUtZfcjZHrOxbHYt+TbIzgSxtbftttbVVSo0IUOf//shbNr+zZHbmLlXL
+ rbuM5UvcdsEdoLUXwDz9wg4i59nRvb5VmzFKqdlU7v5uk2Q7P48bQ9duifOtcmOPme
+ GHagk96RP9o7w==
 From: Mark Brown <broonie@kernel.org>
-To: Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Jaroslav Kysela <perex@perex.cz>, Rob Herring <robh+dt@kernel.org>,
- povik+lin@cutebit.org, Krzysztof Kozlowski <krzk+dt@kernel.org>
-In-Reply-To: <20220331000449.41062-1-povik+lin@cutebit.org>
-References: <20220331000449.41062-1-povik+lin@cutebit.org>
-Subject: Re: (subset) [RFC PATCH 0/5] Apple Macs machine-level ASoC driver
-Message-Id: <164915110754.276574.17127953624002951420.b4-ty@kernel.org>
-Date: Tue, 05 Apr 2022 10:31:47 +0100
+To: Judy Hsiao <judyhsiao@chromium.org>
+In-Reply-To: <20220331084201.62815-1-judyhsiao@chromium.org>
+References: <20220331084201.62815-1-judyhsiao@chromium.org>
+Subject: Re: [v2] ASoC: qcom: Add driver support for ALC5682I-VS
+Message-Id: <164915111030.276574.7396913741525054470.b4-ty@kernel.org>
+Date: Tue, 05 Apr 2022 10:31:50 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, kettenis@openbsd.org,
- alsa-devel@alsa-project.org, sven@svenpeter.dev, marcan@marcan.st,
- linux-kernel@vger.kernel.org
+Cc: judyhsiao@google.com, dianders@chromium.org, cychiang@google.com,
+ alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, swboyd@chromium.org,
+ yuhsuan@chromium.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,22 +82,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 31 Mar 2022 02:04:44 +0200, Martin Povišer wrote:
-> I put together a machine-level ASoC driver for recent Apple Macs (the
-> ones with ARM64 SoCs) and want to gauge opinions.
+On Thu, 31 Mar 2022 16:42:01 +0800, Judy Hsiao wrote:
+> Add Machine driver support for ALC5682I-VS codec.
 > 
-> Commit 1 is the binding. It is some subset of simple-audio-card with
-> the extra distinction of allowing multiple CPU/CODEC DAIs per a DAI
-> link. I want to draw special attention to the issue of describing
-> speaker topologies. The way it now works is that the driver expects
-> the speakers to be declared in a fixed order in the sound-dai= list.
-> This populates a topology the driver expects on a particular machine
-> model. Mark (in CC) has made the suggestion of keeping the topology
-> descriptions with the codec nodes themselves in some generic manner,
-> akin to how sound-name-prefix= already helps identify codecs to the
-> user.
 > 
-> [...]
 
 Applied to
 
@@ -105,8 +93,8 @@ Applied to
 
 Thanks!
 
-[4/5] ASoC: Introduce snd_soc_of_get_dai_link_cpus
-      commit: 900dedd7e47cc3f8d93dfa0ae6ac6cf49eda0c97
+[1/1] ASoC: qcom: Add driver support for ALC5682I-VS
+      commit: c5198db82d4c257d4d9fb9dc0db329482f3d08b9
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
