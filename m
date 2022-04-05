@@ -4,70 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0726C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 07:54:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62F84C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 08:01:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 211021725;
-	Tue,  5 Apr 2022 09:53:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 211021725
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7FFFF1728;
+	Tue,  5 Apr 2022 10:00:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7FFFF1728
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649145268;
-	bh=6/cQjaXqq6vyOdwI/I7vG3d/NAXAZj9v3wIcWjLZh04=;
+	s=default; t=1649145663;
+	bh=xrBI0IyfGiLQjQiRiEVbQNo9U8/Bt/xha4wj3+sh0l4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AcMaBQu17k7cvTtThekBe/IR3tKvKWc46yQw/8mE2UTFORUPh7AqAVbK/+qdHTMhf
-	 2o0ohwaX3oLnMxCFfC+GjXDbQEm2DwhU/9Mwx66Rzhb47q0HTVwqLiqEEgRfcOTxK1
-	 UQHmPwB4WNUf8PxXg7HJ3Ww+X6Z0ga1nvAJ0Myq4=
+	b=nS/U9yGSD3w7Ye4lJxF3AspdPi9OPnf1S1bLvAzkMiWl5YP2BZkOOCd1zLFFEyKiJ
+	 KsP5GJgN69yNvjEzG4KcuI50KDXemBHzXBh2XOG9FBGvTYp5jjvX8n76tAqQ44qefA
+	 5jxIAe9US4Elu1N9dIJtBXuN/hr+O46Gwn8+ZmKo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A6434F8014B;
-	Tue,  5 Apr 2022 09:53:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D9147F8012C;
+	Tue,  5 Apr 2022 10:00:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0878BF8012C; Tue,  5 Apr 2022 09:53:36 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5F06EF8012C
- for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 09:53:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F06EF8012C
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=linuxfoundation.org
- header.i=@linuxfoundation.org header.b="a6QAf1iI"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 641ABF80526; Tue,  5 Apr 2022 10:00:11 +0200 (CEST)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id CF39AB81BB1;
- Tue,  5 Apr 2022 07:53:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A252C340EE;
- Tue,  5 Apr 2022 07:53:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1649145206;
- bh=6/cQjaXqq6vyOdwI/I7vG3d/NAXAZj9v3wIcWjLZh04=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=a6QAf1iIPl5avnxNFi5kzuBZ/vELNDk9wzIqHElQOXji2FiwGAzW+l6iMSeXVh69V
- OifnVep1deg2yBH5i4J54/9/DZMDz2lAO7mOM3xf+BO4FgHYMEt+Lg/mzy2YPYU2ze
- AXehbpy9v8KwmLiU+jcdyfPXkWSi1ZMbxAMykUgQ=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH 5.17 0323/1126] ASoC: max98927: add missing header file
-Date: Tue,  5 Apr 2022 09:17:50 +0200
-Message-Id: <20220405070417.098371956@linuxfoundation.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220405070407.513532867@linuxfoundation.org>
-References: <20220405070407.513532867@linuxfoundation.org>
-User-Agent: quilt/0.66
+ by alsa1.perex.cz (Postfix) with ESMTPS id 35BF3F800D2
+ for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 10:00:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35BF3F800D2
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <sha@pengutronix.de>)
+ id 1nbe6d-0003Za-Dv; Tue, 05 Apr 2022 10:00:03 +0200
+Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
+ by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+ (envelope-from <sha@pengutronix.de>)
+ id 1nbe6d-001BGM-J3; Tue, 05 Apr 2022 10:00:02 +0200
+Received: from sha by dude02.red.stw.pengutronix.de with local (Exim 4.94.2)
+ (envelope-from <sha@pengutronix.de>)
+ id 1nbe6a-00BXZe-R5; Tue, 05 Apr 2022 10:00:00 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH v3 01/20] ASoC: fsl_micfil: Drop unnecessary register read
+Date: Tue,  5 Apr 2022 09:59:40 +0200
+Message-Id: <20220405075959.2744803-2-s.hauer@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220405075959.2744803-1-s.hauer@pengutronix.de>
+References: <20220405075959.2744803-1-s.hauer@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- kernel test robot <lkp@intel.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Randy Dunlap <rdunlap@infradead.org>, Liam Girdwood <lgirdwood@gmail.com>,
- stable@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Mark Brown <broonie@kernel.org>, Alejandro Tafalla <atafalla@dnyon.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: alsa-devel@alsa-project.org
+Cc: Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Vinod Koul <vkoul@kernel.org>,
+ NXP Linux Team <linux-imx@nxp.com>, kernel@pengutronix.de,
+ dmaengine@vger.kernel.org, Shengjiu Wang <shengjiu.wang@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,53 +79,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Randy Dunlap <rdunlap@infradead.org>
+in get_pdm_clk() REG_MICFIL_CTRL2 is read twice. Drop second read.
 
-[ Upstream commit bb45f689fa62110c263c86070bfcb9ecbb6e1e23 ]
-
-Add a header file that provides the missing function prototypes
-and macro to fix these build errors (seen on arch/alpha/):
-
-../sound/soc/codecs/max98927.c: In function 'max98927_i2c_probe':
-../sound/soc/codecs/max98927.c:902:19: error: implicit declaration of function 'devm_gpiod_get_optional'; did you mean 'devm_regulator_get_optional'? [-Werror=implicit-function-declaration]
-  902 |                 = devm_gpiod_get_optional(&i2c->dev, "reset", GPIOD_OUT_HIGH);
-      |                   ^~~~~~~~~~~~~~~~~~~~~~~
-../sound/soc/codecs/max98927.c:902:63: error: 'GPIOD_OUT_HIGH' undeclared (first use in this function); did you mean 'GPIOF_INIT_HIGH'?
-  902 |                 = devm_gpiod_get_optional(&i2c->dev, "reset", GPIOD_OUT_HIGH);
-      |                                                               ^~~~~~~~~~~~~~
-../sound/soc/codecs/max98927.c:909:17: error: implicit declaration of function 'gpiod_set_value_cansleep'; did you mean 'gpio_set_value_cansleep'? [-Werror=implicit-function-declaration]
-  909 |                 gpiod_set_value_cansleep(max98927->reset_gpio, 0);
-      |                 ^~~~~~~~~~~~~~~~~~~~~~~~
-
-Fixes: 4d67dc1998f1 ("ASoC: max98927: Handle reset gpio when probing i2c")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Alejandro Tafalla <atafalla@dnyon.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org
-Link: https://lore.kernel.org/r/20220129080259.19964-1-rdunlap@infradead.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- sound/soc/codecs/max98927.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/fsl/fsl_micfil.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/sound/soc/codecs/max98927.c b/sound/soc/codecs/max98927.c
-index 5ba5f876eab8..fd84780bf689 100644
---- a/sound/soc/codecs/max98927.c
-+++ b/sound/soc/codecs/max98927.c
-@@ -16,6 +16,7 @@
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
- #include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/of_gpio.h>
- #include <sound/tlv.h>
- #include "max98927.h"
+diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
+index 9f90989ac59a6..64019d003784b 100644
+--- a/sound/soc/fsl/fsl_micfil.c
++++ b/sound/soc/fsl/fsl_micfil.c
+@@ -118,8 +118,6 @@ static inline int get_pdm_clk(struct fsl_micfil *micfil,
+ 	regmap_read(micfil->regmap, REG_MICFIL_CTRL2, &ctrl2_reg);
+ 	osr = 16 - ((ctrl2_reg & MICFIL_CTRL2_CICOSR_MASK)
+ 		    >> MICFIL_CTRL2_CICOSR_SHIFT);
+-
+-	regmap_read(micfil->regmap, REG_MICFIL_CTRL2, &ctrl2_reg);
+ 	qsel = ctrl2_reg & MICFIL_CTRL2_QSEL_MASK;
+ 
+ 	switch (qsel) {
 -- 
-2.34.1
-
-
+2.30.2
 
