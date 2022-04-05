@@ -4,68 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DA31C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 09:38:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CABFDC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 09:38:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4D802184E;
-	Tue,  5 Apr 2022 11:37:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4D802184E
+	by alsa0.perex.cz (Postfix) with ESMTPS id DE033187A;
+	Tue,  5 Apr 2022 11:37:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE033187A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649151489;
-	bh=Uqt4Rvg63aRdj9hZ0vXZpJjI/ZA6EwWuIDLv54bOxwo=;
+	s=default; t=1649151507;
+	bh=OpxkvsWDpiQYTePXfsp0MaQAGyq3eu748KArM++RvRE=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KVp6u93k/WEnMWVcwWPK0C9nFKE7LxywzMdCzgj+vkWQrDGZUywbGJszxOdbZRUnn
-	 SebqyHRPYsvOJavhAbKFXjt8WPEwLRDV2FCiRQpmsbZgzCoZDI/3qU4WcOPdT7nfGJ
-	 hn7VtHaBB8OEXPPrHR5POZiX7CDVGG3BTufX99do=
+	b=cdwg0Hs24+e6R33Btze6APdQPgZ2G01i8+rw0nQmcvTGv/Xz/Mx1zgTwjhzYiSl8R
+	 cRfh4cPLlyEpixUFKGCjB/jLP9s+aGgNhSk4tW3qsUUnmWP/TRKdBLVtBh/FoaHm94
+	 /5v/wZ4fA4D56sRo7Z+wjTxSc6//wLdNPLUvDqAg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BEFF9F805C8;
-	Tue,  5 Apr 2022 11:32:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 63825F805BF;
+	Tue,  5 Apr 2022 11:32:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 76918F805B6; Tue,  5 Apr 2022 11:32:02 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 741F6F805BF; Tue,  5 Apr 2022 11:32:04 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 63818F805B6
- for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 11:31:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63818F805B6
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3428DF805C4
+ for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 11:31:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3428DF805C4
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="n36vOthX"
+ header.b="UEwXMYlv"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 42EA5616D7;
- Tue,  5 Apr 2022 09:31:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45C92C385A3;
- Tue,  5 Apr 2022 09:31:53 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id A64DEB81C6E;
+ Tue,  5 Apr 2022 09:31:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 265B3C385A6;
+ Tue,  5 Apr 2022 09:31:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1649151114;
- bh=Uqt4Rvg63aRdj9hZ0vXZpJjI/ZA6EwWuIDLv54bOxwo=;
+ s=k20201202; t=1649151116;
+ bh=OpxkvsWDpiQYTePXfsp0MaQAGyq3eu748KArM++RvRE=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=n36vOthXHLgBR8U70GkSdWRXUPZFWLhaRMeE3ILrsNnW5h3OafWHu93Wy/AsNC2U6
- l+txKfz2aN2JQw5HqWS9snn9+wIGbK2n7DV4QmnsULkM4ZE7TaxkNrL8KwqZ1NnsCx
- fSv1g/3uJh+1swLEUBStio3W6YBoU3njTpt3ITtyPkD+hUBalr+tK9SDK5v1CCmk4Y
- Mw5vOPZILCIlXFnGCZNvj29YK3zp8k5fV8EbT6/kZ8IWQCahclIQfEgtTfh+eSMA3u
- F7XaFfVFf+WE+Q69jAwtmyuksgdVjYxKRY0rZoEMKmMonmEHWk/TGa90gxd3DYrJFz
- cqp+Jjh+fiKRg==
+ b=UEwXMYlv3ocbTerZaJ/KE7KQ0iEzOoVWYxZx/TQUAf/hGvY3Z+xSnRykcSmN2x4mV
+ QljNF43EE7mgLY1LdBDalZ59MOOxuk3FgrXmmR4gWrppNzCPhwKj2JAosJ7XPD2HkF
+ lN/HTYShoXCypVzRnQZMDAGRGLRu9Uw8s9pZL1M8KnjGiifJUJs9WPZXXfajtJD4G0
+ sJxlBX+yq7kjvl27x9evTaRyDLPcY0phKo0oAXg2Ve99t7Sh1l5cjL/+16lWJ0rezM
+ EIODOyMoGfQSRp2DcCKGhFjkdh5BVQdvvRp05REq3/kAY1TI8ciQ4gO8hl0xBegw+i
+ MnmcJnQ+30hRA==
 From: Mark Brown <broonie@kernel.org>
-To: ALSA development <alsa-devel@alsa-project.org>,
- Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <20220329120039.2394138-1-perex@perex.cz>
-References: <20220329120039.2394138-1-perex@perex.cz>
-Subject: Re: [PATCH v2] ASoC: SOF: topology: use new sound control LED layer
-Message-Id: <164915111301.276574.1983288641297607846.b4-ty@kernel.org>
-Date: Tue, 05 Apr 2022 10:31:53 +0100
+To: cezary.rojewski@intel.com, alsa-devel@alsa-project.org
+In-Reply-To: <20220403141647.1037173-1-cezary.rojewski@intel.com>
+References: <20220403141647.1037173-1-cezary.rojewski@intel.com>
+Subject: Re: [PATCH] ASoC: Intel: catpt: Drop redundant enum constant
+Message-Id: <164915111486.276574.4849436518929535974.b4-ty@kernel.org>
+Date: Tue, 05 Apr 2022 10:31:54 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, peter.ujfalusi@linux.intel.com,
- yung-chuan.liao@linux.intel.com, pierre-louis.bossart@linux.intel.com,
- ranjani.sridharan@linux.intel.com
+Cc: hdegoede@redhat.com, amadeuszx.slawinski@linux.intel.com, tiwai@suse.com,
+ pierre-louis.bossart@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,19 +80,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 29 Mar 2022 14:00:39 +0200, Jaroslav Kysela wrote:
-> Use the new sound control LED layer instead the direct ledtrig_audio_set()
-> call - see 22d8de62f11b ("ALSA: control - add generic LED trigger module
-> as the new control layer").
+On Sun, 3 Apr 2022 16:16:47 +0200, Cezary Rojewski wrote:
+> CATPT_SSP_IFACE_LAST is being used only to calculate CATPT_SSP_COUNT.
+> Make CATPT_SSP_COUNT part of the enum directly and remove the redundant
+> constant.
 > 
-> Signed-off-by: Jaroslav Kysela <perex@perex.cz>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> Cc: Bard Liao <yung-chuan.liao@linux.intel.com>
-> Cc: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-> Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 > 
-> [...]
 
 Applied to
 
@@ -101,8 +93,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: topology: use new sound control LED layer
-      commit: 9b014266ef8ad0159b39920a752f191bcd6f356c
+[1/1] ASoC: Intel: catpt: Drop redundant enum constant
+      commit: b695f5c0a86ea685500a72b6a9959da041f26da6
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
