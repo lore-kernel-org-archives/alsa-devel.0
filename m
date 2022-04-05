@@ -4,49 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A25BFC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 13:29:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3104FC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 13:47:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0914517A3;
-	Tue,  5 Apr 2022 15:28:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0914517A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9072217AA;
+	Tue,  5 Apr 2022 15:46:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9072217AA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649165344;
-	bh=851Am/y/3Qe8RTujRmNXmGwSJgfHwN1co9+dKMyVOiE=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=VCFHjr3HQqmZBPOLSng6/lHrBYLFNCZdyAvtJY1x5NMx0ttuQ7WNj07SLVCjiM35J
-	 SYlfI46ksXPHY6Me4Dtlu4nb4wF1KOFHIlIo5yQ4AJsQwGbGPl8Wg/naY8pflTwhYd
-	 yVCtj2AWudkKoKysvUvFV6NMkluMnPAxIQ98oenw=
+	s=default; t=1649166455;
+	bh=6FT+vsrk7A58unbigsMpXJ/ejV9CaB4GUTSWS8aQnMI=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=P064i5cJI5Epsir5ZoEbAMdwUeHDCRUWloQjf9oFWSt6w+q08QiqBNWGUSlyWN9rp
+	 908l8RZjti31tgPOhFMWliXxi/bFEgMNkUs2Jkn0+kTIFTyeAhPAGxW8i7O6I+GZLw
+	 ybTGkTk0fGxPQp90Zhbm/vaZhqqyfYczhBDypLFc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7026CF8014B;
-	Tue,  5 Apr 2022 15:28:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 217F7F8014B;
+	Tue,  5 Apr 2022 15:46:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B3E5DF8016A; Tue,  5 Apr 2022 15:28:09 +0200 (CEST)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id DA7F8F800D1
- for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 15:28:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA7F8F800D1
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E8D57D6E;
- Tue,  5 Apr 2022 06:27:58 -0700 (PDT)
-Received: from e121345-lin.cambridge.arm.com (e121345-lin.cambridge.arm.com
- [10.1.196.40])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 24DE73F5A1;
- Tue,  5 Apr 2022 06:27:58 -0700 (PDT)
-From: Robin Murphy <robin.murphy@arm.com>
-To: perex@perex.cz,
-	tiwai@suse.com
-Subject: [PATCH v2] ALSA: emu10k1: Stop using iommu_present()
-Date: Tue,  5 Apr 2022 14:27:54 +0100
-Message-Id: <9b506b4a4fe8a7f40aa8bad1aafc82426cf3dd92.1649165210.git.robin.murphy@arm.com>
-X-Mailer: git-send-email 2.28.0.dirty
+ id 906F2F8016A; Tue,  5 Apr 2022 15:46:43 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 45FBCF800D1
+ for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 15:46:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45FBCF800D1
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="QNkingbn"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 3F4DAB81BA8;
+ Tue,  5 Apr 2022 13:46:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7758DC385A4;
+ Tue,  5 Apr 2022 13:46:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1649166394;
+ bh=6FT+vsrk7A58unbigsMpXJ/ejV9CaB4GUTSWS8aQnMI=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=QNkingbns+F3xZH2JBDdTZEGJWrWRjIfFc+oondKc0Y34iIdykbIkMu7yUSFtipMy
+ sx46AiNX2rdrBCkDCG6Lt7xSCA7iFqf/TQvmps5xLV+RazivPdRv2W6DOFa5RRq5fX
+ r7DLOZ/3+SmK/qQnzpBCtuWdDxFwGTjA/BGwa/v7NBVDtb1lommH1/5fzIYR7cUqQp
+ zhaRpo1TNsYnQAB8WcN9sPA00PWMzHPJmCfoecHXL/1CWMV0aU4JhCwnd/I0DESK4o
+ myVgvJLOzAnwHKr8aKV0ASGQnlbmNOpp5+CnJwr7Rg9YMsDeT+ko0yisrvSScS9DrB
+ sddOJli3tSvMA==
+Date: Tue, 5 Apr 2022 14:46:30 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Zhu Ning <zhuning0077@gmail.com>
+Subject: Re: [PATCH] ASoC: codecs: add support for ES8326 dts
+Message-ID: <YkxINieRax8jQBg1@sirena.org.uk>
+References: <20220405133121.2655-1-zhuning0077@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: iommu@lists.linux-foundation.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="J732WEfHxTc1+GHp"
+Content-Disposition: inline
+In-Reply-To: <20220405133121.2655-1-zhuning0077@gmail.com>
+X-Cookie: diplomacy, n:
+Cc: Zhu Ning <zhuning@everest-semi.com>, alsa-devel@alsa-project.org,
+ pierre-louis.bossart@linux.intel.com,
+ yangxiaohua <yangxiaohua@everest-semi.com>, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -62,35 +82,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-iommu_get_domain_for_dev() is already perfectly happy to return NULL
-if the given device has no IOMMU. Drop the unnecessary check in favour
-of just handling that condition appropriately.
 
-Signed-off-by: Robin Murphy <robin.murphy@arm.com>
----
+--J732WEfHxTc1+GHp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-v2: Get "!domain" condition right
+On Tue, Apr 05, 2022 at 09:31:21PM +0800, Zhu Ning wrote:
 
- sound/pci/emu10k1/emu10k1_main.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+> +  mclk-rate:
+> +    description:
+> +      clock rate of mclk
+> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> +    minItems: 1
 
-diff --git a/sound/pci/emu10k1/emu10k1_main.c b/sound/pci/emu10k1/emu10k1_main.c
-index 86cc1ca025e4..3880f359e688 100644
---- a/sound/pci/emu10k1/emu10k1_main.c
-+++ b/sound/pci/emu10k1/emu10k1_main.c
-@@ -1751,11 +1751,8 @@ static void snd_emu10k1_detect_iommu(struct snd_emu10k1 *emu)
- 
- 	emu->iommu_workaround = false;
- 
--	if (!iommu_present(emu->card->dev->bus))
--		return;
--
- 	domain = iommu_get_domain_for_dev(emu->card->dev);
--	if (domain && domain->type == IOMMU_DOMAIN_IDENTITY)
-+	if (!domain || domain->type == IOMMU_DOMAIN_IDENTITY)
- 		return;
- 
- 	dev_notice(emu->card->dev,
--- 
-2.28.0.dirty
+There's a standard clock binding for assigning rates to clocks
+(assigned-clocks) - that should be used instead of having a custom
+binding for the MCLK rate.
 
+--J732WEfHxTc1+GHp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmJMSDUACgkQJNaLcl1U
+h9CYTQf/ZU4z7387cNsYOqxlHUcHVNM/5IYA5VfmanRzyDacOs6gMj/FxH8hd2qN
+nWfmaf3K/pQNckcLZrsqAE/7IVJZLjcnixWc2WWQAl843j2A6ZaNhO5Yw3Fq6BCl
+rTEQmKD0JmMGpedMWLh8ph5gs6egBYBLUyFoNlAqNr0jefFc7rA8y+ejs5wMlhsf
+aJczbaeSinDUrAGwf+cRyE4m7ztLJZJiEy02KBgl87RSLwnT7vHAw0HMnVwVIfFN
+eMaxn5KIUj1myPb6TLQ/4A4diDJozqWK0MxK1h/8wEzP745SrmzdrbUFQ14kGrSV
+eBTDEol8UHpgoI3kz7VWKOVx9YbWjg==
+=3vCp
+-----END PGP SIGNATURE-----
+
+--J732WEfHxTc1+GHp--
