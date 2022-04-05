@@ -4,70 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 190ECC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 08:47:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41256C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 09:01:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2D9C41760;
-	Tue,  5 Apr 2022 10:47:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D9C41760
+	by alsa0.perex.cz (Postfix) with ESMTPS id E53BF1635;
+	Tue,  5 Apr 2022 11:00:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E53BF1635
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649148470;
-	bh=6/cQjaXqq6vyOdwI/I7vG3d/NAXAZj9v3wIcWjLZh04=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1649149309;
+	bh=MXo8A8/wIUuv9w8db70UptiJnP918L1XIJKSFtWGfHE=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=msbwOy2J+vw0ZUxxcBd0pUgcG6dHKCeLX1LuL0g7jLp/gwVmbxmQO6i0Np2jggnwW
-	 y8zkXWUciLIKKgo58fRHy2tQGy4keE9p1gYBMhr9TaCT9YufjbJbvFqhoNeaoyXT9k
-	 DzTC1+VDbCLPAzVd4rvhbePBcQxvzVBB6GBZZKl8=
+	b=AvIBMGhr6GqAiNkPDYMOSPSBO2Xsz3EbxTOMpV68B5wY0a0SVKs88hBWQRiXMV+AH
+	 HOIk68st3T6jC5HUzoy1GVUlIAJ4NKhXdcTx8uFwBrr+4WdoN1I9LK0i5NUXCGSqPW
+	 /mmuwsrPM8XvAAFEcbCwEnuXAyR6uf5D1UbmIxvE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C56D6F800D2;
-	Tue,  5 Apr 2022 10:46:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 77D3BF8012C;
+	Tue,  5 Apr 2022 11:00:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BB926F8012C; Tue,  5 Apr 2022 10:46:58 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2556EF8012C
- for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 10:46:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2556EF8012C
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=linuxfoundation.org
- header.i=@linuxfoundation.org header.b="iQq0jXcm"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 014B9F8016A; Tue,  5 Apr 2022 11:00:57 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 38A3CB81A0C;
- Tue,  5 Apr 2022 08:46:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96C30C385A0;
- Tue,  5 Apr 2022 08:46:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1649148411;
- bh=6/cQjaXqq6vyOdwI/I7vG3d/NAXAZj9v3wIcWjLZh04=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=iQq0jXcmDoBB4EuNXrGM+AqPOlZXyvQTIxlYiJvmvFqcbiDZmlJJvU7C/fQW+4NSS
- x4ph8iWcjp12/eKXn2pjamGOFuot3EGkrEzrk7/CFwQ2yzVEPKbZMDwlTDOrGo8z2v
- 30DQHJZUutxuH2l4OMiBrKlLkchOdwI4cpSNeiTk=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH 5.16 0308/1017] ASoC: max98927: add missing header file
-Date: Tue,  5 Apr 2022 09:20:21 +0200
-Message-Id: <20220405070403.419004572@linuxfoundation.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220405070354.155796697@linuxfoundation.org>
-References: <20220405070354.155796697@linuxfoundation.org>
-User-Agent: quilt/0.66
+ by alsa1.perex.cz (Postfix) with ESMTPS id 62605F800D1
+ for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 11:00:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62605F800D1
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
+ header.b="IPdPmOQM"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1649149248;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=HSO/TqrwqUyxFxKxwKZYjfIE5/lfFHPLnUnqeq3HIT8=;
+ b=IPdPmOQMSEE1XF/C3s3rhtmpiYidgc0eHtQ79DLqtbpk6mmdupX7rgfvsDe7DtZtinAznt
+ mPi3/KHQJmXsXwsqiA+Qr6bN8HitF/QH1GI5K3unwMjv0wR3x66P4Kw8ZzS/Q25CRhqNwZ
+ PLloOe8O6unm8jHKsK9l1lyhiafqOSQ=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-464-LIZ7FcykO1-z3xsGWwyjaQ-1; Tue, 05 Apr 2022 05:00:47 -0400
+X-MC-Unique: LIZ7FcykO1-z3xsGWwyjaQ-1
+Received: by mail-ej1-f70.google.com with SMTP id
+ sg13-20020a170907a40d00b006e7e8234ae2so2902028ejc.2
+ for <alsa-devel@alsa-project.org>; Tue, 05 Apr 2022 02:00:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+ :content-language:to:cc:references:from:in-reply-to
+ :content-transfer-encoding;
+ bh=HSO/TqrwqUyxFxKxwKZYjfIE5/lfFHPLnUnqeq3HIT8=;
+ b=NDnJyRdjjq6Zpg+J4AudYJC2TsbdnM42c7JC7ggSVrGv/BjH7G8j2I0vfB8OwjSZw9
+ f81+0yQG5C8iasGablSkOWfVLd2C071RYw9Kv8xSTS/qNq/OodZ5L1RGbYqXMuxk08gg
+ ZRMEOGeH+WAABP1Fz2d0VTuA4+MJuCsvZfKUOdxQv05MBvbaG6Yx2ZU4NSimXTtSynhY
+ YG8KKm2aUq3O7lnGTBebCIWV8PcmhB8xkomEcODWBtDZ/hLaCJ87Hi8q0dKpLKnkXFih
+ zPOdjlBDfDa/fRuUE5rlH1Hc1VBnnKECvSJjfxM7wxhvELnylwio31zyffRZtsRI21nD
+ AXKQ==
+X-Gm-Message-State: AOAM530rIwEv8P56qKTYwE3HUmwsL66p+aLgS0Ib0sGdhnSa+fZ2nDC/
+ dft1/gr2forg5yVau8BFLv+pT8kescalHEh7bU+ZAyVyBZQ0iZT4NeTwYYoHZ0l9Qlr7yyaTKpY
+ L1xdPXa8G2v3JYaOaNZ3UX10=
+X-Received: by 2002:aa7:c946:0:b0:416:226f:f8a6 with SMTP id
+ h6-20020aa7c946000000b00416226ff8a6mr2429363edt.360.1649149245924; 
+ Tue, 05 Apr 2022 02:00:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxoDqgawidQhMilYXxAI8B1jQnINDAvkJZhtA332a2gcFfHYdlmk8fXP+9rXPGfmSTwJsmNSQ==
+X-Received: by 2002:aa7:c946:0:b0:416:226f:f8a6 with SMTP id
+ h6-20020aa7c946000000b00416226ff8a6mr2429335edt.360.1649149245754; 
+ Tue, 05 Apr 2022 02:00:45 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1db8:22d3:1bc9:8ca1?
+ (2001-1c00-0c1e-bf00-1db8-22d3-1bc9-8ca1.cable.dynamic.v6.ziggo.nl.
+ [2001:1c00:c1e:bf00:1db8:22d3:1bc9:8ca1])
+ by smtp.gmail.com with ESMTPSA id
+ gn33-20020a1709070d2100b006dfcce8be86sm5235523ejc.225.2022.04.05.02.00.44
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 05 Apr 2022 02:00:45 -0700 (PDT)
+Message-ID: <168fe6c3-6a7d-4019-16e3-066caf394b8a@redhat.com>
+Date: Tue, 5 Apr 2022 11:00:44 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [PATCH v2 0/2] Make headphone work on Huawei Matebook D15
+To: Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+References: <cover.1649147890.git.mchehab@kernel.org>
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <cover.1649147890.git.mchehab@kernel.org>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- kernel test robot <lkp@intel.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Randy Dunlap <rdunlap@infradead.org>, Liam Girdwood <lgirdwood@gmail.com>,
- stable@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Mark Brown <broonie@kernel.org>, Alejandro Tafalla <atafalla@dnyon.com>
+Content-Transfer-Encoding: 7bit
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
+ =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+ Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,53 +122,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Randy Dunlap <rdunlap@infradead.org>
+Hi,
 
-[ Upstream commit bb45f689fa62110c263c86070bfcb9ecbb6e1e23 ]
+On 4/5/22 10:44, Mauro Carvalho Chehab wrote:
+> At Huawei Matebook D15 two different GPIOs are used to control the output:
+> 	- gpio0 controls the speaker output;
+> 	- gpio1 controls the headphone output.
+> 
+> Changing both at the same time cause spurious events that are mis-interpreted
+> as input events, causing troubles on apps. So, a delay is needed before turning
+> on such gpios.
+> 
+> With this patch, plugging a headphone causes a jack event to trigger the speaker
+> supply, powering down the speaker and powering up the headphone output.
+> Removing the headphone also triggers the power supply, powering up the speaker
+> and powering down the headphone.
+> 
+> Mauro Carvalho Chehab (2):
+>   ASoC: Intel: sof_es8336: support a separate gpio to control headphone
+>   ASoC: Intel: sof_es8336: Huawei Matebook D15 uses a headphone gpio
 
-Add a header file that provides the missing function prototypes
-and macro to fix these build errors (seen on arch/alpha/):
+There is something weird with the patches here, at least for me in Thunderbird
+both patches show up as nameless attachments to emails with empty bodies.
 
-../sound/soc/codecs/max98927.c: In function 'max98927_i2c_probe':
-../sound/soc/codecs/max98927.c:902:19: error: implicit declaration of function 'devm_gpiod_get_optional'; did you mean 'devm_regulator_get_optional'? [-Werror=implicit-function-declaration]
-  902 |                 = devm_gpiod_get_optional(&i2c->dev, "reset", GPIOD_OUT_HIGH);
-      |                   ^~~~~~~~~~~~~~~~~~~~~~~
-../sound/soc/codecs/max98927.c:902:63: error: 'GPIOD_OUT_HIGH' undeclared (first use in this function); did you mean 'GPIOF_INIT_HIGH'?
-  902 |                 = devm_gpiod_get_optional(&i2c->dev, "reset", GPIOD_OUT_HIGH);
-      |                                                               ^~~~~~~~~~~~~~
-../sound/soc/codecs/max98927.c:909:17: error: implicit declaration of function 'gpiod_set_value_cansleep'; did you mean 'gpio_set_value_cansleep'? [-Werror=implicit-function-declaration]
-  909 |                 gpiod_set_value_cansleep(max98927->reset_gpio, 0);
-      |                 ^~~~~~~~~~~~~~~~~~~~~~~~
+After saving the attachments the patches look good to me, so:
 
-Fixes: 4d67dc1998f1 ("ASoC: max98927: Handle reset gpio when probing i2c")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Alejandro Tafalla <atafalla@dnyon.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org
-Link: https://lore.kernel.org/r/20220129080259.19964-1-rdunlap@infradead.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- sound/soc/codecs/max98927.c | 1 +
- 1 file changed, 1 insertion(+)
+Acked-by: Hans de Goede <hdegoede@redhat.com>
 
-diff --git a/sound/soc/codecs/max98927.c b/sound/soc/codecs/max98927.c
-index 5ba5f876eab8..fd84780bf689 100644
---- a/sound/soc/codecs/max98927.c
-+++ b/sound/soc/codecs/max98927.c
-@@ -16,6 +16,7 @@
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
- #include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/of_gpio.h>
- #include <sound/tlv.h>
- #include "max98927.h"
--- 
-2.34.1
+for the series.
 
+Regards,
 
+Hans
 
