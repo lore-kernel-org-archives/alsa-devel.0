@@ -4,75 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4FDC6C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 16:24:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13B7FC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 16:58:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0D14E17EE;
-	Tue,  5 Apr 2022 18:23:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D14E17EE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6747417EE;
+	Tue,  5 Apr 2022 18:57:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6747417EE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649175870;
-	bh=Acwl1YGGaUG/UELr2kBw1zQD2VA5itprzAwhR6TsnEs=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=NKllEuVVrrm6kQ4ISJnJSf8kd5jI5Ips0eVuvb6TmB6Nqn2Z3hXhK5K5zFx6FcEY2
-	 LV63eE6tL4m3I3YMUCClzjU15cYBvmffm03JCuVnVGgfkHhawigIUmojxiKBNelypU
-	 +GFlDyRfFSxqwUbXgZwDdEwsMr80JJAzf1hy2550=
+	s=default; t=1649177924;
+	bh=ms+BtckZ9MEqSCkK6doSJsbJF0vV+8oKpXtP6XAZwOU=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=e9fCQnJa3AW7irKzREddq/yrQngAgEw4Yelj9Q4CIwBFi2DO5r+Y4JZb6tdHjk/Bf
+	 dKeX+VIHcTeV094w1v21xQYnzGYi3Ktm908M8LwJK4tqQkFpErsYEjpfoBO7Ww7q+k
+	 FZL2vzn6+AVZqgx4+/r4f85FTABaf5gSxjay14fs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 99657F8014B;
-	Tue,  5 Apr 2022 18:23:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DCA19F800D2;
+	Tue,  5 Apr 2022 18:57:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ECD38F8016A; Tue,  5 Apr 2022 18:23:38 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 8945FF8016E; Tue,  5 Apr 2022 18:57:51 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 90DCDF800D2
- for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 18:23:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90DCDF800D2
+ by alsa1.perex.cz (Postfix) with ESMTPS id DE503F800D1
+ for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 18:57:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE503F800D1
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="B8Cvl2gR"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="x5OdFof4"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 5ECBE1F37D;
- Tue,  5 Apr 2022 16:23:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1649175816; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ykCeFdRHzbg8pKxVJSeHKqINfG4k8lBXawxc1XeGUzs=;
- b=B8Cvl2gRF/UvEV542lJvIKELM2F+jVH71W3lwsdZEXpvO0bQJOUjfLi3WD+BYghHVjpXcX
- UzLcEKuEgbxfgq+BU5RAH/4DokxMwx09qLYwQCGin+0WPliO4w00Py61aCwCzJzIKyfjzd
- 8PK6ar07GtJGKVZTqF8cWDkJ9YVuqJ0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1649175816;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ykCeFdRHzbg8pKxVJSeHKqINfG4k8lBXawxc1XeGUzs=;
- b=x5OdFof40ytH5uaj8vjGonl47B8YgmvZpJHEacavNebJgg809dMf/LGZrsvLaaxta/hQni
- NcsT5NVkqjM74jAA==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 51C16A3B87;
- Tue,  5 Apr 2022 16:23:35 +0000 (UTC)
-Date: Tue, 05 Apr 2022 18:23:35 +0200
-Message-ID: <s5hczhv5wjc.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH v3 0/3] firewire: assist unit driver to compute packet
- time stamp
-In-Reply-To: <20220405072221.226217-1-o-takashi@sakamocchi.jp>
-References: <20220405072221.226217-1-o-takashi@sakamocchi.jp>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="DID+z+a3"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id E9B3DB81E92;
+ Tue,  5 Apr 2022 16:57:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 008D4C385A7;
+ Tue,  5 Apr 2022 16:57:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1649177866;
+ bh=ms+BtckZ9MEqSCkK6doSJsbJF0vV+8oKpXtP6XAZwOU=;
+ h=From:To:Cc:Subject:Date:From;
+ b=DID+z+a35JPU0wg3v8o+heAYAG3WEdKWMnjWMd5Ia/miFQsCgEW4juZf/3sDflrfk
+ dKB3nrAMPQvQSJcb06MYXeA9ftNwL+KfSFpPgQEYU14IAkiFdEBWoq1FQkKz9YIvXF
+ 8YplWZ3k0ELG3Ggv1TfMAnX4qJRiWJ0gSGbkmpKJIdSoQKwZsljWvaO5fimjZK4Ksr
+ B319re//ltbAenKSFo4oF02i3i85Ca1OJsmMPpW2/RIYVkSvKodqG7xl+YqTPYpZoE
+ hrvQqSSOD5yL63ah7DH83U+Za/QvH3RAGFcBih3xcPrR79uAyFF5TjRdfxUNDSYS1V
+ WZV29PSlQwIhQ==
+Received: from mchehab by mail.kernel.org with local (Exim 4.94.2)
+ (envelope-from <mchehab@kernel.org>)
+ id 1nbmUx-002uYM-BB; Tue, 05 Apr 2022 18:57:43 +0200
+From: Mauro Carvalho Chehab <mchehab@kernel.org>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH v3 0/3] Make headphone work on Huawei Matebook D15
+Date: Tue,  5 Apr 2022 18:57:31 +0200
+Message-Id: <cover.1649177516.git.mchehab@kernel.org>
+X-Mailer: git-send-email 2.35.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
+ Jie Yang <yang.jie@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,37 +86,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 05 Apr 2022 09:22:18 +0200,
-Takashi Sakamoto wrote:
-> 
-> Hi,
-> 
-> Current implementation of Linux FireWire subsystem doesn't allow unit
-> driver to operate content of packet in IR context according to
-> time stamp. Additionally it doesn't allow unit driver to read current value
-> of CYCLE_TIME register in OHCI 1394 controller. It brings disadvantages to
-> drivers in Linux sound subsystem in regards of handling time for sampled
-> data such as PCM frames and MIDI messages.
-> 
-> This rerolled patchset is first step to improve the situation.
-> 
-> Changes in v3:
->  * Rebase v2 patchset to v5.18-rc1
-> Changes in v2:
->  * Rebase v1 patchset to v5.16 release
->  * https://lore.kernel.org/lkml/20220212022131.199855-1-o-takashi@sakamocchi.jp/
-> V1:
->  * https://lore.kernel.org/lkml/20211202113457.24011-1-o-takashi@sakamocchi.jp/
-> 
-> Hector Martin (1):
->   firewire: Add dummy read_csr/write_csr functions
-> 
-> Takashi Sakamoto (2):
->   firewire: add kernel API to access CYCLE_TIME register
->   firewire: add kernel API to access packet structure in request
->     structure for AR context
+At Huawei Matebook D15 two different GPIOs are used to control the output:
+	- gpio0 controls the speaker output;
+	- gpio1 controls the headphone output.
 
-Thanks, applied all three patches now to for-next branch.
+Changing both at the same time cause spurious events that are mis-interpreted
+as input events, causing troubles on apps. So, a delay is needed before turning
+on such gpios.
+
+With this patch, plugging a headphone causes a jack event to trigger the speaker
+supply, powering down the speaker and powering up the headphone output.
+Removing the headphone also triggers the power supply, powering up the speaker
+and powering down the headphone.
+
+---
+
+v3:
+  - add a patch changing GPIO quirk speaker naming. Patch 2 got rebased on the top of it.
+
+Mauro Carvalho Chehab (2):
+  ASoC: Intel: sof_es8336: support a separate gpio to control headphone
+  ASoC: Intel: sof_es8336: Huawei Matebook D15 uses a headphone gpio
+
+Pierre-Louis Bossart (1):
+  ASoC: Intel: sof_es8336: simplify speaker gpio naming
+
+ sound/soc/intel/boards/sof_es8336.c | 97 +++++++++++++++++++++--------
+ 1 file changed, 72 insertions(+), 25 deletions(-)
+
+-- 
+2.35.1
 
 
-Takashi
