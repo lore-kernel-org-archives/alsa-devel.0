@@ -4,69 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4475BC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 09:37:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20A2EC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 09:37:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 737E2183A;
-	Tue,  5 Apr 2022 11:36:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 737E2183A
+	by alsa0.perex.cz (Postfix) with ESMTPS id AFC921828;
+	Tue,  5 Apr 2022 11:36:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AFC921828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649151427;
-	bh=0vz34CJ0FB+7vsvfoFBThEvYA29dXDDzlk1RjUZ6jzo=;
+	s=default; t=1649151443;
+	bh=zT3irbGVt3X2Et8+vyXx6aZg/vZcNg0U56oJku84TFQ=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ixc9GLb9ZwrPKt2niOx11x3SCUFmHgeRmy5R6ci6FXiRJLpj8jDT7Syzd5/raxSUd
-	 ma7XwMFOJuryGsuZh/rCEWz/eUm/s6NqGmZLPXQlBk5MXQ425RXhjjrHo0I7oCJPL/
-	 56lsIC2mGj3QFzhRxchOCkj1xRFoFRQ8SgeZRhT4=
+	b=UBE/nWdMYeBHSzIgvlHZ9WuKECUoaiwgrfT/WWybHSbeXh/eWFn6pODTmPsJPJ8IF
+	 zJAhtfTW60XwY6/bDUrobkja+Hr3SwvmKSZQppqHwp6N2ADUr9vO3ELrYzIoVinIaJ
+	 OnexPpt4I8+aUmgurWk7U3XhKiMPxcjaVewPcd4A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5A222F805B2;
-	Tue,  5 Apr 2022 11:31:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F2471F805B5;
+	Tue,  5 Apr 2022 11:31:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4621FF805AB; Tue,  5 Apr 2022 11:31:50 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id BDD6BF805B2; Tue,  5 Apr 2022 11:31:51 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 89B13F8058C
- for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 11:31:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89B13F8058C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 26216F805A1
+ for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 11:31:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26216F805A1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="qSISWvFG"
+ header.b="fMuWo0ZP"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id E2EE1B81CBE;
- Tue,  5 Apr 2022 09:31:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4EF3FC385A6;
- Tue,  5 Apr 2022 09:31:44 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id A7D9FB81CBF;
+ Tue,  5 Apr 2022 09:31:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24A4CC385A0;
+ Tue,  5 Apr 2022 09:31:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1649151105;
- bh=0vz34CJ0FB+7vsvfoFBThEvYA29dXDDzlk1RjUZ6jzo=;
+ s=k20201202; t=1649151107;
+ bh=zT3irbGVt3X2Et8+vyXx6aZg/vZcNg0U56oJku84TFQ=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=qSISWvFGSM/JmHiXv+7rPJJbQWnZdmHQr08bYw3h9WynMjFRIYq5H3wHWKrEgOiCK
- 5DilHVjdh7sokm3AJS2hkWFbQsaIN2pxu07k+uLP6s58BK4kW21b4SiCd6fUOxVRB4
- Vb9fNRDFW8Tqew12kuMrVKPEuMunu0Zu4gcQAPp4uvCl5nTOPPJ2jHyVGhmyIeryTJ
- zVP+izIqC9UBoqLpyNl1YW6uWgZDlAItD/Leoq6b0BOhBvI7umpHapklCqTQcnrbXJ
- tFPCTGJ+5Y3RDGU5hVgQeAjVmoAuhw2sJqe/BYL6POag6s+KdqxyaknhozDKyjQ1oX
- 3E6n9UjmnaaRg==
+ b=fMuWo0ZPlANVzGu5ppJQecXaqhpBpe3Ree39VRgMJUXfLsZcnlWZYn4Bb6JdZzEt6
+ kfkkCbgXpZBizbqONNyDQgreSvyQYUCLkzlWARPDRG8JoqrGilHIn4h7APVsQ2ePTB
+ KIybPbxVXq8FkDoNnU+DH07tgj+E1L/cjetl9t8910rALz8YrkXpWLX+corUg6AYga
+ 6/DMSzjY0UeSFx/AeONqJh0dQHy2ZA7Ah1jIf0QWepnhvAsJQKuUmsjD18he4ZFV5M
+ Z4hgI7SRU41//csuz/06aQ8w1ET2X5HwjlShDbUUQH/H396oJCgv5pECOlphfzu0Tj
+ ruzsbMq413xMA==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com,
- peter.ujfalusi@linux.intel.com
-In-Reply-To: <20220331114757.32551-1-peter.ujfalusi@linux.intel.com>
-References: <20220331114757.32551-1-peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH] ASoC: SOF: ipc3-topology: Set scontrol->priv to NULL
- after freeing it
-Message-Id: <164915110405.276574.9680395728506086018.b4-ty@kernel.org>
-Date: Tue, 05 Apr 2022 10:31:44 +0100
+To: jaska.uimonen@linux.intel.com, pierre-louis.bossart@linux.intel.com,
+ peter.ujfalusi@linux.intel.com, lgirdwood@gmail.com
+In-Reply-To: <20220331114957.519-1-peter.ujfalusi@linux.intel.com>
+References: <20220331114957.519-1-peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH] ASoC: topology: Correct error handling in
+ soc_tplg_dapm_widget_create()
+Message-Id: <164915110588.276574.4721484381493432444.b4-ty@kernel.org>
+Date: Tue, 05 Apr 2022 10:31:45 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, daniel.baluta@nxp.com,
- ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com
+Cc: alsa-devel@alsa-project.org, ranjani.sridharan@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,9 +80,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 31 Mar 2022 14:47:57 +0300, Peter Ujfalusi wrote:
-> Since the scontrol->priv is freed up during load operation it should be set
-> to NULL to be safe against double freeing attempt.
+On Thu, 31 Mar 2022 14:49:57 +0300, Peter Ujfalusi wrote:
+> Academic correction of error handling:
+> In case the allocation of kc or kcontrol_type fails the correct label to
+> jump is hdr_err since the template.sname has been also allocated at this
+> point.
 > 
 > 
 
@@ -94,8 +94,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: ipc3-topology: Set scontrol->priv to NULL after freeing it
-      commit: a403993ce98fb401f696da7c4f374739a7609cff
+[1/1] ASoC: topology: Correct error handling in soc_tplg_dapm_widget_create()
+      commit: 9c363532413cda3e2c6dfa10e5cca7cd221877a0
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
