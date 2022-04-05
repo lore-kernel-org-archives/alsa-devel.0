@@ -4,71 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C575DC433FE
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 09:32:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0683FC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 09:33:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B88BF17CC;
-	Tue,  5 Apr 2022 11:32:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B88BF17CC
+	by alsa0.perex.cz (Postfix) with ESMTPS id F01A917E8;
+	Tue,  5 Apr 2022 11:32:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F01A917E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649151173;
-	bh=YypSHEp1rOHcihtmVFUWRUSVBqn1rhBtj2pQDDhyoOI=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1649151189;
+	bh=w/qmrPEIOfBh1lZCVrt3be7cmnNT8Ingtoi9EdxNVuo=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rPwrn9qYQtJ6ksMvlqEW6gnjWGejHlHEcu2vfyYom8SeEPJ4VzKH1STRCdG1/LVT6
-	 nlru++Rh754kbYSFIsADeWcpKjLRKQP+OLdFYT9vezvC5Tgzs+oKlqhbZ7mSOT4q09
-	 zvIZvXG32SxaIDLC15Ldvxb6fyNLp0uJEHK+mD3M=
+	b=oAnFH74PcNC/ppcR7YCops6MILClWYtkIOmLc77qaa/QaWkvdKvTY2OS65kHBTzr9
+	 EAFYLza+GEnm5Nc3oTGKrI67Tu01PrSmgRcq0bxscViCotkZgLG/v0dxmGxdHx31jz
+	 3Uw0iabcFEWJBX6fTEgSJ+XaKhu8X5pJFunGjetw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5CF43F80519;
-	Tue,  5 Apr 2022 11:31:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A1520F80520;
+	Tue,  5 Apr 2022 11:31:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 99401F8016A; Tue,  5 Apr 2022 11:31:10 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 8A927F800D2; Tue,  5 Apr 2022 11:31:13 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2DC1DF8014B
- for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 11:31:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2DC1DF8014B
+ by alsa1.perex.cz (Postfix) with ESMTPS id ADDFDF8049C
+ for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 11:31:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ADDFDF8049C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="OQgUIMa2"
+ header.b="VvYIo+BX"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 619ACB81C6E;
- Tue,  5 Apr 2022 09:31:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81404C385A2;
- Tue,  5 Apr 2022 09:31:03 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 31231616D2;
+ Tue,  5 Apr 2022 09:31:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEC50C385A0;
+ Tue,  5 Apr 2022 09:31:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1649151066;
- bh=YypSHEp1rOHcihtmVFUWRUSVBqn1rhBtj2pQDDhyoOI=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=OQgUIMa2+Jl5ZN/tEN/rPzkKmhEaurR5d+v0K2yZR31kmlkdJkgvJ1UiBhBzt5RSM
- ydqLwdVnexufAh7HFSeU/S0f2WHs6PYKrJOB1GpykjS42ntFc3btzZzVpLYEU8V481
- 5xnHiBquaMN7puc//Amlvcf2iRbUseZUCom+xKF66Nm87x/vy11Phosp0dENqtVdkG
- WkgGsQd1vJpfhYNB0H0g8IcYzxPeMSwSGV1XxmNF3AtxqaHR9nCMjA6iQ+TduCEobD
- z/Dt03CLIwASXP+0esQU+i1N9gdzwE5cTKsr/P7p7sOhaxmLVUNB7FtbmJC7ECnRTw
- yeHets5eAbOyw==
+ s=k20201202; t=1649151068;
+ bh=w/qmrPEIOfBh1lZCVrt3be7cmnNT8Ingtoi9EdxNVuo=;
+ h=From:To:In-Reply-To:References:Subject:Date:From;
+ b=VvYIo+BX32qG55V3iMfHtdiN/sPr8AkGsOxSwhz016IUSGNCSsQWp/fvjJRUO9Xae
+ XYv/o1ku/6mUjCjcDt5DC1tMXx/x7t9YELIisUpksc5BzHEbGaH7D47y2k9wXKziZu
+ jnMj38HUQuCSQJdFLDnuSrGz2tDxA+zuo/jAxtKwWvgYhGuhk+ZWnBeX6TkrNJwMPg
+ Rz8QcWHz/zKRQQEbTw/G5QIu9RY/HzgW7L2LpQzeoIaYWh5heLo/S9affHOm5yHdZn
+ hGINCP4ejKeYB+gbMoUwGLGhkak14ePpsZHCze0pO9m0LnbK/n4kE11BVBgF/+R+Id
+ ogLDHsrqW2oQg==
 From: Mark Brown <broonie@kernel.org>
-To: tiwai@suse.com, trevor.wu@mediatek.com, robh+dt@kernel.org,
- matthias.bgg@gmail.com
-In-Reply-To: <20220324053851.27350-1-trevor.wu@mediatek.com>
-References: <20220324053851.27350-1-trevor.wu@mediatek.com>
-Subject: Re: [PATCH v4 0/6] ASoC: mediatek: Add support for MT8195 sound card
- with max98390 and rt5682
-Message-Id: <164915106325.276574.14625118005435337786.b4-ty@kernel.org>
-Date: Tue, 05 Apr 2022 10:31:03 +0100
+To: patches@opensource.cirrus.com, tanureal@opensource.cirrus.com,
+ alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com,
+ hui.wang@canonical.com
+In-Reply-To: <20220324081839.62009-1-hui.wang@canonical.com>
+References: <20220324081839.62009-1-hui.wang@canonical.com>
+Subject: Re: [PATCH 1/2] ASoC: cs35l41: Add one more variable in the debug log
+Message-Id: <164915106640.276574.12404607783112800825.b4-ty@kernel.org>
+Date: Tue, 05 Apr 2022 10:31:06 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, tzungbi@google.com, miles.chen@mediatek.com,
- linux-mediatek@lists.infradead.org, yc.hung@mediatek.com, aaronyu@google.com,
- linux-arm-kernel@lists.infradead.org, angelogioacchino.delregno@collabora.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,16 +79,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 24 Mar 2022 13:38:45 +0800, Trevor Wu wrote:
-> This series of patches adds support for mt8195 board with mt6359, max98390
-> and rt5682.
+On Thu, 24 Mar 2022 16:18:38 +0800, Hui Wang wrote:
+> otp_map[].size is a key variable to compute the value of otp_val and
+> to update the bit_offset, it is helpful to debug if could put it in
+> the debug log.
 > 
-> To prevent from copy-paste components, mt8195 machine drivers and
-> dt-bindings are merged in the patch.
 > 
-> Patches are based on broonie tree "for-next" branch.
-> 
-> [...]
 
 Applied to
 
@@ -101,18 +92,10 @@ Applied to
 
 Thanks!
 
-[1/6] ASoC: mediatek: mt8195: revise mt8195-mt6359-rt1019-rt5682.c
-      commit: 4dbc714fe07641e7a07731f82152448ef09f3002
-[2/6] ASoC: mediatek: mt8195: merge machine driver
-      commit: 094e30efa444a118a535cb67ec000bbee9f8d150
-[3/6] ASoC: dt-bindings: mediatek: mt8195: merge mt8195 machine yaml
-      commit: dc16399078aea4c98f17aa99f0cdea9d5ac9c4a9
-[4/6] ASoC: mediatek: mt8195: rename card controls
-      commit: 3a0323c26c6720447fd5eff6495c1aea514b77d5
-[5/6] ASoC: mediatek: mt8195: add machine support for max98390 and rt5682
-      commit: 86a6b9c9dffff1bd653d582cfc5138da75e5f7b0
-[6/6] ASoC: dt-bindings: mediatek: mt8195: support mt8195-mt6359-max98390-rt5682
-      commit: cae34da5323b6ce4d0dc365d1b971f838dcff318
+[1/2] ASoC: cs35l41: Add one more variable in the debug log
+      commit: c598ccfbeb26cb9452f99e7beb92ef779dcb16b1
+[2/2] ASoC: cs35l41: Fix a shift-out-of-bounds warning found by UBSAN
+      commit: 0b3d5d2e358ca6772fc3662fca27acb12a682fbf
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
